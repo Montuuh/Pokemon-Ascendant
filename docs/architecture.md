@@ -120,7 +120,7 @@ positional modifiers only on Melee, scenarios reference existing species/consuma
 singleton. Tests assert every referenced asset exists on disk. Ids are permanent kebab-case.
 
 ## 6. UI architecture
-- **Stores**: `useAppStore` (screen + URL sync; `?scenario=` boots a fight), `useCombatStore` (state, action log,
+- **Stores**: `useAppStore` (the screen; deep links `?screen=`/`?scenario=` are read on boot and cleaned off the bar, and the tab remembers its screen in sessionStorage for a reload), `useCombatStore` (state, action log,
   `dispatch` with rejection capture, selection `{mode: none|card|step-back|consumable-ally, cardId}`, `combatKey`).
 - **Interaction model** (single enemy): click a card to select (preview appears), click the enemy or the card
   again to play; Step-Backward asks for a bench click; ally-target consumables ask for a team click; benches

@@ -10,6 +10,7 @@ import styles from './MainMenu.module.css';
 // Per docs/design/ui/03 §3.2 — warm-light front-end. The vista is CSS layers until a generated key image lands.
 export function MainMenu() {
   const goTo = useAppStore((s) => s.goTo);
+  const rememberScenario = useAppStore((s) => s.rememberScenario);
   const start = useCombatStore((s) => s.start);
   const loadSave = useRunStore((s) => s.loadSave);
   const saveSummary = useRunStore((s) => s.saveSummary);
@@ -19,10 +20,8 @@ export function MainMenu() {
 
   function quickFight() {
     start('wild-basic');
-    const url = new URL(window.location.href);
-    url.searchParams.set('scenario', 'wild-basic');
-    url.searchParams.delete('screen');
-    window.history.replaceState(null, '', url);
+    // Remembered for a reload, not written to the URL — the address bar is the player's, not the router's.
+    rememberScenario('wild-basic');
     goTo('combat');
   }
 

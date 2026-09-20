@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { readUrl, useAppStore } from '@/app/store';
+import { readEntry, useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
 import { CenterScreen } from '@/ui/screens/CenterScreen';
@@ -30,7 +30,7 @@ export function App() {
   // Deep link: /?scenario=<id>[&seed=n] boots straight into that fight (the web ScenarioLauncher).
   // A reload on /?screen=map has no run in memory, so the save is the source of truth (§10.8).
   useEffect(() => {
-    const { screen: fromUrl, scenario, seed } = readUrl();
+    const { screen: fromUrl, scenario, seed } = readEntry();
     if (scenario && !hasCombat) {
       try {
         start(scenario, seed ?? undefined);

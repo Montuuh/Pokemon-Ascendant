@@ -70,3 +70,39 @@ test('end turn advances to turn 2 and the enemy acts', async ({ page }) => {
   await expect(page.getByTestId('combat-screen')).toHaveAttribute('data-turn', '2');
   await expect(page.getByTestId('combat-log')).toContainText('Turn 2');
 });
+
+test('the address bar stays clean: deep links are consumed, F5 restores the screen, a fresh tab starts at the menu', async ({ page, browser }) => {
+  // A deep link works — and is gone from the bar the moment it has been read. The query string was a
+  // developer affordance that had leaked into every player's history.
+  await page.goto('/?screen=hub');
+  await expect(page.getByTestId('hub-screen')).toBeVisible();
+  expect(new URL(page.url()).search).toBe('');
+
+  // Navigating writes nothing to the URL either…
+  await page.getByTestId('btn-hub-back').click();
+  await page.getByTestId('btn-settings').click();
+  await expect(page.getByTestId('settings-screen')).toBeVisible();
+  expect(new URL(page.url()).search).toBe('');
+
+  // …yet a reload lands where you were, because the tab remembers for itself.
+  await page.reload();
+  await expect(page.getByTestId('settings-screen')).toBeVisible();
+  expect(new URL(page.url()).search).toBe('');
+
+  // A practice fixture survives a reload the same way, seed and all — the same fight, not a re-roll.
+  await page.goto('/?scenario=wild-basic&seed=11');
+  await expect(page.getByTestId('combat-screen')).toBeVisible();
+  expect(new URL(page.url()).search).toBe('');
+  const before = await page.evaluate(() => JSON.stringify((window as never as { __ascendant: { dump: () => unknown } }).__ascendant.dump()));
+  await page.reload();
+  await expect(page.getByTestId('combat-screen')).toBeVisible();
+  const after = await page.evaluate(() => JSON.stringify((window as never as { __ascendant: { dump: () => unknown } }).__ascendant.dump()));
+  expect(after).toBe(before);
+
+  // And a brand-new tab knows none of this: it opens on the menu, as a fresh visit should.
+  const fresh = await browser.newContext();
+  const tab = await fresh.newPage();
+  await tab.goto('/');
+  await expect(tab.getByTestId('main-menu')).toBeVisible();
+  await fresh.close();
+});

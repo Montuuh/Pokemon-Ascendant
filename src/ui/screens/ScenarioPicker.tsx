@@ -10,16 +10,14 @@ import styles from './ScenarioPicker.module.css';
 // v0.1 dev/playtest entry: the six combat fixtures as cards. Deep-link: /?scenario=<id>.
 export function ScenarioPicker() {
   const goTo = useAppStore((s) => s.goTo);
+  const rememberScenario = useAppStore((s) => s.rememberScenario);
   const start = useCombatStore((s) => s.start);
   const content = getContent();
   const scenarios = content.allScenarios();
 
   function launch(id: string) {
     start(id);
-    const url = new URL(window.location.href);
-    url.searchParams.set('scenario', id);
-    url.searchParams.delete('screen');
-    window.history.replaceState(null, '', url);
+    rememberScenario(id);
     goTo('combat');
   }
 
