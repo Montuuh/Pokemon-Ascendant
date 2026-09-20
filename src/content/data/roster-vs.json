@@ -1,0 +1,267 @@
+{
+  "_note": "GENERATED from species.json by scripts/gen-roster.mjs — the art manifest. dex numbers drive public/art/pokemon/<kind>/NNN-<id>.png; ids drive the Showdown battle sprites.",
+  "lines": [
+    {
+      "line": "bulbasaur",
+      "species": [
+        {
+          "dex": 1,
+          "id": "bulbasaur"
+        },
+        {
+          "dex": 2,
+          "id": "ivysaur"
+        },
+        {
+          "dex": 3,
+          "id": "venusaur"
+        }
+      ]
+    },
+    {
+      "line": "charmander",
+      "species": [
+        {
+          "dex": 4,
+          "id": "charmander"
+        },
+        {
+          "dex": 5,
+          "id": "charmeleon"
+        },
+        {
+          "dex": 6,
+          "id": "charizard"
+        }
+      ]
+    },
+    {
+      "line": "squirtle",
+      "species": [
+        {
+          "dex": 7,
+          "id": "squirtle"
+        },
+        {
+          "dex": 8,
+          "id": "wartortle"
+        },
+        {
+          "dex": 9,
+          "id": "blastoise"
+        }
+      ]
+    },
+    {
+      "line": "caterpie",
+      "species": [
+        {
+          "dex": 10,
+          "id": "caterpie"
+        },
+        {
+          "dex": 11,
+          "id": "metapod"
+        },
+        {
+          "dex": 12,
+          "id": "butterfree"
+        }
+      ]
+    },
+    {
+      "line": "weedle",
+      "species": [
+        {
+          "dex": 13,
+          "id": "weedle"
+        },
+        {
+          "dex": 14,
+          "id": "kakuna"
+        },
+        {
+          "dex": 15,
+          "id": "beedrill"
+        }
+      ]
+    },
+    {
+      "line": "pidgey",
+      "species": [
+        {
+          "dex": 16,
+          "id": "pidgey"
+        },
+        {
+          "dex": 17,
+          "id": "pidgeotto"
+        },
+        {
+          "dex": 18,
+          "id": "pidgeot"
+        }
+      ]
+    },
+    {
+      "line": "rattata",
+      "species": [
+        {
+          "dex": 19,
+          "id": "rattata"
+        },
+        {
+          "dex": 20,
+          "id": "raticate"
+        }
+      ]
+    },
+    {
+      "line": "zubat",
+      "species": [
+        {
+          "dex": 41,
+          "id": "zubat"
+        },
+        {
+          "dex": 42,
+          "id": "golbat"
+        }
+      ]
+    },
+    {
+      "line": "oddish",
+      "species": [
+        {
+          "dex": 43,
+          "id": "oddish"
+        },
+        {
+          "dex": 44,
+          "id": "gloom"
+        },
+        {
+          "dex": 45,
+          "id": "vileplume"
+        }
+      ]
+    },
+    {
+      "line": "diglett",
+      "species": [
+        {
+          "dex": 50,
+          "id": "diglett"
+        },
+        {
+          "dex": 51,
+          "id": "dugtrio"
+        }
+      ]
+    },
+    {
+      "line": "psyduck",
+      "species": [
+        {
+          "dex": 54,
+          "id": "psyduck"
+        },
+        {
+          "dex": 55,
+          "id": "golduck"
+        }
+      ]
+    },
+    {
+      "line": "poliwag",
+      "species": [
+        {
+          "dex": 60,
+          "id": "poliwag"
+        },
+        {
+          "dex": 61,
+          "id": "poliwhirl"
+        }
+      ]
+    },
+    {
+      "line": "machop",
+      "species": [
+        {
+          "dex": 66,
+          "id": "machop"
+        },
+        {
+          "dex": 67,
+          "id": "machoke"
+        },
+        {
+          "dex": 68,
+          "id": "machamp"
+        }
+      ]
+    },
+    {
+      "line": "geodude",
+      "species": [
+        {
+          "dex": 74,
+          "id": "geodude"
+        },
+        {
+          "dex": 75,
+          "id": "graveler"
+        },
+        {
+          "dex": 76,
+          "id": "golem"
+        }
+      ]
+    },
+    {
+      "line": "onix",
+      "species": [
+        {
+          "dex": 95,
+          "id": "onix"
+        }
+      ]
+    },
+    {
+      "line": "krabby",
+      "species": [
+        {
+          "dex": 98,
+          "id": "krabby"
+        },
+        {
+          "dex": 99,
+          "id": "kingler"
+        }
+      ]
+    },
+    {
+      "line": "magikarp",
+      "species": [
+        {
+          "dex": 129,
+          "id": "magikarp"
+        },
+        {
+          "dex": 130,
+          "id": "gyarados"
+        }
+      ]
+    },
+    {
+      "line": "snorlax",
+      "species": [
+        {
+          "dex": 143,
+          "id": "snorlax"
+        }
+      ]
+    }
+  ]
+}

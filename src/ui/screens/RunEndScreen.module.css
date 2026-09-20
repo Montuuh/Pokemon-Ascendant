@@ -1,0 +1,155 @@
+.root {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-5);
+  overflow: auto;
+  color: var(--ink-primary);
+}
+.won {
+  background: radial-gradient(130% 90% at 50% 0%, #fff4cf 0%, var(--surface-0) 62%);
+}
+.lost {
+  background: radial-gradient(130% 90% at 50% 0%, #f7e3d2 0%, var(--surface-0) 62%);
+}
+.card {
+  width: min(700px, 100%);
+  background: var(--surface-1);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6);
+  box-shadow: 0 24px 60px rgba(58, 46, 34, 0.25);
+  display: grid;
+  gap: var(--sp-3);
+  align-content: start;
+}
+.title {
+  margin: 0;
+  text-align: center;
+  font-size: var(--type-display);
+  color: var(--brand-red);
+}
+.sub {
+  margin: 0;
+  text-align: center;
+  color: var(--ink-secondary);
+}
+.badge {
+  justify-self: center;
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  border: 2px solid var(--accent-action);
+  color: var(--ink-primary);
+  font-size: var(--type-h3);
+}
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  text-align: left;
+}
+.badgeRow img {
+  image-rendering: pixelated;
+}
+.badgeRow > span {
+  display: grid;
+}
+/* What the Badge does, under its name — it is permanent, so it is the one line worth reading here. */
+.badgeEffect {
+  font-size: var(--type-body-sm);
+  font-style: normal;
+  color: var(--ink-secondary);
+}
+.metrics {
+  margin: var(--sp-3) 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+.metrics > div {
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3);
+  text-align: center;
+}
+.metrics dt {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.metrics dd {
+  margin: 2px 0 0;
+  font-size: var(--type-h2);
+}
+.sectionTitle {
+  margin: var(--sp-4) 0 0;
+  font-size: var(--type-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.team {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-2);
+}
+.team li {
+  display: grid;
+  grid-template-columns: 56px 1fr auto auto auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+}
+.memberName {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.hp {
+  color: var(--ink-secondary);
+}
+.fainted {
+  opacity: 0.55;
+  filter: grayscale(0.6);
+}
+.trauma {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-warning);
+  color: #4a2a06;
+}
+.actions {
+  margin-top: var(--sp-5);
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-3);
+}
+.continue,
+.again {
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-6);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-h3);
+}
+.continue {
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  border: 1px solid var(--border-subtle);
+}
+.again {
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  box-shadow: 0 6px 0 #d9a51d;
+}
+.again:hover {
+  transform: translateY(-2px);
+}

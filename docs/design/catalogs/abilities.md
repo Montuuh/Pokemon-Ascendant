@@ -1,0 +1,134 @@
+# Ability catalog — 38 abilities
+
+> Implements §6.5 (ability system), §6.6 (launch pool), §6.5.1 (`AvailableAbilities`, taught at the Dojo,
+> one passive slot, swap allowed). Hooks map to `AbilityHook` in `src/sim/content/defs.ts`; a new hook is a sim
+> change, not just content. Status legend in `README.md`.
+>
+> **How a Pokémon gets one** (§6.5.1, decided 2026-09-19): each species carries an `availableAbilities` pool.
+> The **first entry is granted automatically at the first evolution**, and the **Dojo sets or swaps** the slot to
+> any entry in the pool. Pure auto-grant makes the Dojo pointless; pure Dojo-only means most Pokémon have no
+> passive at all. The hybrid gives every evolved Pokémon an identity and makes the Dojo the place you *change*
+> it.
+
+## 1. Hook vocabulary (the sim contract)
+
+Adding an ability means picking an existing hook or adding one. Hooks in **bold** are live in v0.1.
+
+| Hook | Fires | Params | Live |
+|---|---|---|---|
+| **`none`** | never (flavour / reserved) | — | ✅ |
+| **`low-hp-type-boost`** | damage calc | `type`, `threshold` (0.3), `multiplier` (1.2) | ✅ |
+| **`range-boost`** | damage calc | `range` (melee/ranged), `multiplier` | ✅ |
+| **`lead-flat-reduction`** | incoming damage, wearer is Lead | `amount` | ✅ |
+| **`riders-always-apply`** | status rider roll | — | ✅ |
+| **`reveal-intents`** | combat start | — | ✅ |
+| **`sturdy`** | lethal damage, once per combat | — | ✅ |
+| **`turn-end-bench-heal`** | end of Resolution | `amount` | ✅ |
+| **`start-stage`** | combat start | `stat`, `stages` | ✅ |
+| **`status-immunity`** | status application | `status` | ✅ v0.3 |
+| `type-immunity` | damage calc, before type chart | `type` | 🆕 v0.3 |
+| **`type-absorb`** | damage calc | `type`, `percentOfMaxHp` → heal instead of damage | ✅ v0.3 |
+| **`on-enter-lead`** | Lead changes to the wearer (swap, Step-Forward or replacement, not combat start) | `target`, `stat`, `stages` | ✅ v0.3 |
+| `on-faint-team` | any ally faints | effect payload | 🆕 v0.4 |
+| `stab-multiplier` | damage calc | `multiplier` | 🆕 v0.3 |
+| **`super-effective-reduction`** | incoming damage, type multiplier > 1 | `multiplier` (0.75) | ✅ v0.3 |
+| `crit-on-crit-taken` | the wearer is critted | — | 🆕 v0.4 |
+| `dot-immunity` | status tick | — | 🆕 v0.3 |
+| `turn-start-ap` | Draw phase | `amount`, `turn` | 🆕 v0.4 |
+| `field-draw` | Draw phase, field active | `field`, `cards` | 🆕 v0.7 |
+| `lead-aura` | while the wearer is Lead | `type`, `percent` | 🆕 v0.4 (§6.5.4) |
+| `post-combat-loot` | combat end | `chance`, `pool` | 🆕 v0.4 |
+| `low-hp-damage-reduction` | incoming damage | `threshold`, `multiplier` | 🆕 v0.4 |
+| `ignore-immunity` | damage calc | — | 🆕 v0.6 |
+| `rider-force-plus-damage` | rider + damage | `multiplier` | 🆕 v0.6 |
+
+## 2. Catalog
+
+| id | Name | Category | Effect | Hook (params) | Species pools | Status |
+|---|---|---|---|---|---|---|
+| `overgrow` | Overgrow | Combat | Grass moves +20 % below 30 % HP | `low-hp-type-boost` (grass) | bulbasaur | ✅ |
+| `blaze` | Blaze | Combat | Fire moves +20 % below 30 % HP | `low-hp-type-boost` (fire) | charmander | ✅ |
+| `torrent` | Torrent | Combat | Water moves +20 % below 30 % HP | `low-hp-type-boost` (water) | squirtle | ✅ |
+| `swarm` | Swarm | Combat | Bug moves +20 % below 30 % HP | `low-hp-type-boost` (bug) | caterpie, weedle | ✅ v0.3 |
+| `tough-claws` | Tough Claws | Combat | Melee +15 % | `range-boost` (melee) | charizard, venusaur, golem, aerodactyl | ✅ |
+| `snipe` | Snipe | Combat | Ranged +15 % | `range-boost` (ranged) | beedrill, zubat, bellsprout, charmander | ✅ |
+| `shell-armor` | Shell Armor | Combat | Lead takes −2 per hit | `lead-flat-reduction` (2) | squirtle, krabby | ✅ |
+| `solid-rock` | Solid Rock | Combat | Super-effective hits deal −25 % | **`super-effective-reduction`** (0.75) | geodude | ✅ v0.3 |
+| `compound-eyes` | Compound Eyes | Combat | Status riders always apply | `riders-always-apply` | caterpie | ✅ |
+| `sheer-force` | Sheer Force | Combat | Rider moves +20 % damage; riders still apply | `rider-force-plus-damage` (1.2) | krabby | 🆕 |
+| `keen-eye` | Keen Eye | Vision | All Unknown intents revealed at combat start | `reveal-intents` | pidgey, aerodactyl(→`pressure` alt) | ✅ |
+| `anticipation` | Anticipation | Vision | The first enemy intent each combat is revealed | `reveal-intents` (`firstOnly`) | eevee | 🆕 |
+| `sturdy` | Sturdy | Survival | Survive one lethal hit per combat at 1 HP | `sturdy` | geodude, onix | ✅ |
+| `rock-head` | Rock Head | Survival | The wearer takes no self-damage from recoil moves | `dot-immunity` (`recoilOnly`) | geodude, onix, marowak, aerodactyl | 🆕 |
+| `magic-guard` | Magic Guard | Survival | Immune to Burn/Poison DoT (the status still applies) | `dot-immunity` | — (reserved, §6.6) | 🆕 |
+| `multiscale` | Multiscale | Survival | At full HP the wearer takes −50 % from the first hit each combat | `low-hp-damage-reduction` (inverted) | — (reserved) | 🔒 |
+| `battle-armor` | Battle Armor | Survival | The wearer cannot be critted | `low-hp-damage-reduction` (`critOnly`) | marowak | 🆕 |
+| `weak-armor` | Weak Armor | Survival | When hit: Def −1, Atk +1 | `on-damaged`, with a stage payload instead of a rider | onix | 🆕 |
+| `levitate` | Levitate | Type | Immune to Ground moves | `type-immunity` (ground) | marowak-spirit | 🆕 |
+| `water-absorb` | Water Absorb | Type | Water moves heal instead of damaging | `type-absorb` (water) | vaporeon, poliwag, lapras | ✅ v0.3 |
+| `volt-absorb` | Volt Absorb | Type | Electric moves heal instead of damaging | `type-absorb` (electric) | jolteon | 🆕 |
+| `flash-fire` | Flash Fire | Type | Fire moves deal 0 and grant Atk +1 | `type-absorb` (fire, `buffInstead`) | flareon | 🆕 |
+| `lightning-rod` | Lightning Rod | Type | Electric intents targeting a bench slot redirect to the wearer, at −50 % | `on-enter-lead` variant → new `redirect` | marowak | 🆕 |
+| `thick-fat` | Thick Fat | Type | Fire and Ice moves deal −50 % | `low-hp-damage-reduction` (`types`) | snorlax | 🆕 |
+| `immunity` | Immunity | Status | Cannot be Poisoned | `status-immunity` (poison) | snorlax | 🆕 |
+| `insomnia` | Insomnia | Status | Cannot be put to Sleep | `status-immunity` (sleep) | — (R3 Hypno) | 🔒 |
+| `limber` | Limber | Status | Cannot be Paralysed | `status-immunity` (paralysis) | — (R3 Persian) | 🔒 |
+| `inner-focus` | Inner Focus | Status | Cannot be Confused | `status-immunity` (confusion) | zubat | ✅ v0.3 |
+| `vital-spirit` | Vital Spirit | Status | Cannot be put to Sleep | `status-immunity` (sleep) | mankey | 🆕 |
+| `effect-spore` | Effect Spore | Status | A Melee attacker is Poisoned (30 %) | **`on-damaged`** (melee, poison, 0.30) | oddish | ✅ v0.3 |
+| `poison-point` | Poison Point | Status | A Melee attacker is Poisoned (30 %) | **`on-damaged`** (melee, poison, 0.30) | weedle | ✅ v0.3 |
+| `cursed-body` | Cursed Body | Status | The attacker's move goes on cooldown 1 turn | `on-damaged`, with a cooldown payload instead of a rider | marowak-spirit | 🆕 |
+| `intimidate` | Intimidate | Positional | On entering Lead: all enemies Atk −1 | `on-enter-lead` | gyarados | ✅ v0.3 |
+| `steadfast` | Steadfast | Positional | On entering Lead: self Atk +1 | `on-enter-lead` | machop | ✅ v0.3 |
+| `run-down` | Run Down | Positional | The first manual swap each combat costs 0 AP | new `swap-discount` | rattata, eevee | 🆕 |
+| `infiltrator` | Infiltrator | Positional | The wearer's moves ignore the enemy Home Field bonus | `ignore-immunity` variant | zubat | 🆕 |
+| `healer` | Healer | Support | At turn end, heal a bench ally 3 HP | `turn-end-bench-heal` (3) | pidgeot, bulbasaur, oddish | ✅ |
+| `friend-guard` | Friend Guard | Support | Bench takes −10 % Cleave damage | `low-hp-damage-reduction` (`cleaveOnly`) | — (reserved) | 🔒 |
+| `rain-dish` | Rain Dish | Support | Heal `floor(maxHP/16)` at turn end while Rain is active | `field-draw` variant | squirtle | 🔒 v0.7 |
+| `hydration` | Hydration | Support | Status conditions clear at turn end while Rain is active | `field-draw` variant | lapras | 🔒 v0.7 |
+| `iron-shell` | Iron Shell | Combat | At combat start Def +1 | `start-stage` (def, 1) | metapod | ✅ |
+| `guts` | Guts | Combat | +30 % Atk while statused (and Burn's −25 % does not apply) | **`while-statused`** (1.3) | machop, mankey, rattata, flareon | ✅ v0.3 |
+| `sand-veil` | Sand Veil | Combat | Incoming Ranged attacks deal −15 % | `low-hp-damage-reduction` (`rangedOnly`) | diglett | 🆕 |
+| `arena-trap-x` | — | — | **Reserved id, do not implement.** Arena Trap was replaced by Sand Veil: there is no flee mechanic to trap. | — | — | 🔒 |
+| `hustle` | Hustle | Combat | Melee +25 %, the wearer's rider chances −15 pp | `range-boost` (melee, 1.25) + param | rattata, diglett | ✅ v0.3 |
+| `anger-point` | Anger Point | Combat | After being critted, every move the wearer plays next turn always-crits | `crit-on-crit-taken` | mankey | 🆕 |
+| `moxie` | Moxie | Combat | Atk +1 whenever the wearer faints an enemy | new `on-kill` | gyarados | 🆕 |
+| `adaptability` | Adaptability | Combat | STAB 1.5 → 1.75 | `stab-multiplier` (1.75) | eevee | 🆕 |
+| `speed-boost` | Speed Boost | Combat | +1 AP on turn 2 of each combat | `turn-start-ap` (1, turn 2) | jolteon | 🆕 |
+| `swift-swim` | Swift Swim | Combat | Draw +1 on turn 1 of Rain combats | `field-draw` (rain, 1) | magikarp, poliwag, psyduck | ✅ (inert until v0.7) |
+| `chlorophyll` | Chlorophyll | Combat | Draw +1 on turn 1 of Sun combats | `field-draw` (sun, 1) | oddish, bellsprout, bulbasaur | 🔒 v0.7 |
+| `cloud-nine` | Cloud Nine | Combat | All field effects are suppressed while the wearer is Lead | `field-draw` variant | psyduck | 🔒 v0.7 |
+| `damp` | Damp | Combat | Self-destruct-style moves fail; the wearer takes −50 % from them | new `suppress-move-tag` | psyduck, poliwag | 🆕 |
+| `pickup` | Pickup | Meta | 25 % chance of a random consumable after a combat win | `post-combat-loot` | — (R2 Meowth) | 🔒 |
+| `gluttony` | Gluttony | Meta | Healing consumables used on the wearer restore +50 % | `post-combat-loot` variant | snorlax, bellsprout | 🆕 |
+| `pressure` | Pressure | Combat | The enemy's cooldowns last +1 turn while the wearer is Lead | new `enemy-cooldown` | aerodactyl | 🆕 |
+| `no-guard` | No Guard | Combat | Both the wearer's and its attacker's riders always apply | `riders-always-apply` (`bothSides`) | machop | ✅ v0.3 |
+| `hyper-cutter` | Hyper Cutter | Combat | The wearer's Atk cannot be lowered | new `stage-immunity` (atk) | krabby | 🆕 |
+| `tangled-feet` | Tangled Feet | Combat | While Confused the wearer takes −30 % damage | `low-hp-damage-reduction` (`whileConfused`) | pidgey | 🆕 |
+| `mold-breaker` | Mold Breaker | Combat | The wearer's moves ignore type immunities | `ignore-immunity` | — (Champion-tier) | 🔒 |
+
+**Counts:** 22 live · 31 in `abilities.json` · 38 authored for R1–R2 · 8 reserved for later regions.
+§6.6's "~30 launch abilities" is met.
+
+v0.3 added six simulation hooks — `while-statused`, `on-damaged`, `status-immunity`, `on-enter-lead`,
+`type-absorb`, `super-effective-reduction` — and turned seven rows from flavour into behaviour. Nine rows in the
+JSON are still inert because the system they need has not landed: Swift Swim, Chlorophyll and Cloud Nine wait on
+field effects (v0.7); Tangled Feet, Run Down, Sand Veil, Rock Head, Moxie and Damp wait on v0.4. The Dojo shows
+those with "no effect until a later version" rather than selling a no-op.
+
+**Four lines' canonical first entry is one of those.** Oddish's Chlorophyll, Diglett's Sand Veil, Magikarp's
+Swift Swim and Psyduck's Cloud Nine are what §6.5.1 grants at the first evolution, so those Pokémon currently
+evolve into a passive that does nothing. Pool order is design and has been left alone; the archetype branches
+lean on a live entry where one exists (Gloom → Effect Spore, Dugtrio → Hustle, Gyarados → Intimidate), and the
+Dojo can swap the rest. Psyduck has no live option at all until v0.7.
+
+## 3. Assignment rules
+
+- **Pool order matters**: the first entry is what the first evolution grants, so it should be the species'
+  most characteristic passive.
+- Every **base form** lists 2–3 pool entries; evolved forms inherit the pool and may add 1 (so a Dojo visit
+  before evolving is not wasted).
+- A pool never contains two abilities with the same hook (no "which +15 % is better" non-choices).
+- Exactly one entry per pool is a **defensive/utility** option, so the Dojo is a real fork rather than a damage
+  upgrade (Pillar 3).
+- Boss-only abilities (`mold-breaker`, `pressure` on a boss) are marked 🔒 and never appear in a player pool.

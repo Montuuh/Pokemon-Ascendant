@@ -1,0 +1,56 @@
+/* Poké Dollars. §1.2 — the coin is an accent *fill*, never accent-coloured text. */
+
+.money,
+.price {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--ink-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.price {
+  padding: 2px var(--sp-2);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+}
+
+/* Cannot afford: the border and the coin carry it, the number stays legible ink. */
+.short {
+  border-color: var(--accent-warning);
+  background: color-mix(in srgb, var(--accent-warning) 10%, var(--surface-1));
+}
+
+.short .coin {
+  fill: var(--surface-3);
+}
+
+.glyph {
+  flex: none;
+  display: block;
+}
+
+.coin {
+  fill: var(--accent-action);
+}
+
+.rim {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink-primary) 22%, transparent);
+  stroke-width: 0.8;
+}
+
+.mark {
+  fill: none;
+  stroke: var(--ink-primary);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* On the dim stage theme the coin needs a brighter rim to stay readable. */
+:global(.theme-stage) .rim {
+  stroke: color-mix(in srgb, #fff 35%, transparent);
+}

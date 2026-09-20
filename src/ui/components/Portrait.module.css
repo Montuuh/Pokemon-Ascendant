@@ -1,0 +1,205 @@
+.portrait {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--sp-2);
+  text-align: center;
+  color: var(--ink-primary);
+  transition:
+    transform var(--motion-base) var(--ease-spring),
+    box-shadow var(--motion-base) ease,
+    border-color var(--motion-fast) ease;
+  backdrop-filter: blur(4px);
+}
+.portrait:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+.lead {
+  border: 4px solid var(--accent-action);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-3);
+  width: 212px;
+}
+.bench {
+  width: 140px;
+  padding-bottom: var(--sp-4);
+}
+.bench .art {
+  aspect-ratio: 5 / 4;
+}
+.targeted {
+  border-color: var(--accent-negative);
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.45), 0 0 24px rgba(255, 107, 107, 0.35);
+}
+.selectable {
+  border-color: var(--accent-positive);
+  animation: glowPulse 1.2s ease-out infinite;
+  cursor: pointer;
+}
+.fainted {
+  filter: saturate(0.2) brightness(0.8);
+  opacity: 0.8;
+}
+.fainted:hover {
+  transform: none;
+  box-shadow: none;
+}
+.slotTag {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-3);
+  color: var(--ink-secondary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  padding: 1px 8px;
+  z-index: 3;
+}
+.lead .slotTag {
+  background: var(--accent-action);
+  color: #3a2e22;
+  top: -11px;
+}
+.art {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.art img {
+  width: 92%;
+  height: 92%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.35));
+  animation: breathe 3.2s ease-in-out infinite;
+}
+.fainted .art img {
+  animation: none;
+}
+.faintedTag {
+  position: absolute;
+  inset: auto 0 8px;
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+.cornerTL,
+.cornerTR {
+  position: absolute;
+  top: 12px;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+}
+.cornerTL {
+  left: -8px;
+  flex-direction: column;
+}
+.cornerTR {
+  right: -8px;
+  flex-direction: column;
+}
+.lead .cornerTL {
+  left: -10px;
+  top: 14px;
+}
+.lead .cornerTR {
+  right: -10px;
+  top: 14px;
+}
+.crown {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  color: var(--accent-action);
+  z-index: 3;
+  display: flex;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+}
+.name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+  line-height: 1.1;
+}
+.lead .name {
+  font-size: var(--type-h3);
+}
+.level {
+  font-size: var(--type-caption);
+  color: var(--ink-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 6px;
+  /* §9.6 — "Lv 13" is two words and a pill, and at 150 % text it was breaking between them, which turned a
+     badge into two stacked lines beside the name. A level never wraps. */
+  white-space: nowrap;
+}
+.hpText {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+  line-height: 1;
+}
+.lead .hpText {
+  font-size: var(--type-small);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  justify-content: center;
+}
+.chipUp,
+.chipDown,
+.chipTrauma {
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  color: #3a2e22;
+}
+.chipUp {
+  background: var(--accent-positive);
+}
+.chipDown {
+  background: var(--accent-negative);
+}
+.chipTrauma {
+  background: var(--accent-warning);
+}
+.swapChip,
+.swapChipOff {
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--accent-action);
+}
+.swapChipOff {
+  color: var(--ink-muted);
+  border-color: var(--border-subtle);
+}

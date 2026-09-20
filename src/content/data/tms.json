@@ -1,0 +1,36 @@
+{
+  "_note": "TM catalog (§6.4.1, §7.5, docs/design/catalogs/tms.md). A TM is applied from the Map View and permanently adds its move to a compatible Pokémon's Learned Move Pool — it never enters the combat consumable pile. Single use. v0.3 ships the three whose moves already exist; the remaining twelve land with the Shop in v0.4. `compatibleSpecies` is the catalog's list narrowed to the species this build actually has.",
+  "tms": [
+    {
+      "id": "tm04-flamethrower",
+      "name": "TM04 Flamethrower",
+      "move": "flamethrower",
+      "compatibleSpecies": ["charmander", "charmeleon", "charizard"],
+      "description": "A Fire beam that reaches any slot and leaves a Burn behind it more often than it looks."
+    },
+    {
+      "id": "tm05-surf",
+      "name": "TM05 Surf",
+      "move": "surf",
+      "compatibleSpecies": [
+        "squirtle",
+        "wartortle",
+        "blastoise",
+        "magikarp",
+        "gyarados",
+        "poliwag",
+        "poliwhirl",
+        "psyduck",
+        "golduck"
+      ],
+      "description": "A wave across the whole enemy line. The only Cleave most Water types will ever hold."
+    },
+    {
+      "id": "tm07-earthquake",
+      "name": "TM07 Earthquake",
+      "move": "earthquake",
+      "compatibleSpecies": ["geodude", "graveler", "golem", "diglett", "dugtrio", "onix"],
+      "description": "Hits every occupied slot for full damage. Expensive, and worth it against a wide team."
+    }
+  ]
+}

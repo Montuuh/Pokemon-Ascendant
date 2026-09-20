@@ -1,0 +1,209 @@
+.card {
+  --band: color-mix(in srgb, var(--card-type) 62%, #1a1020);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 152px;
+  padding: var(--sp-2);
+  border-radius: var(--radius-md); /* skill cards keep the crisper silhouette (§1.1 corner language) */
+  background: linear-gradient(180deg, color-mix(in srgb, var(--card-type) 88%, white) 0%, var(--card-type) 55%, color-mix(in srgb, var(--card-type) 80%, black) 100%);
+  border: 2px solid var(--band);
+  color: #fff;
+  text-align: left;
+  transform-origin: 50% 120%;
+  transform: rotate(var(--rot)) translateY(var(--lift));
+  transition:
+    transform var(--motion-base) var(--ease-spring),
+    box-shadow var(--motion-base) ease,
+    filter var(--motion-base) ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  flex: 0 0 auto;
+}
+.card:hover,
+.selected {
+  transform: rotate(0) translateY(-22px) scale(1.06);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.5);
+  z-index: 3;
+}
+.selected {
+  outline: 3px solid var(--accent-action);
+  outline-offset: 2px;
+  animation: glowPulse 1.2s ease-out infinite;
+}
+.noAp {
+  filter: grayscale(0.75);
+  opacity: 0.62;
+  border-color: var(--accent-warning);
+}
+.locked {
+  cursor: not-allowed;
+}
+.mech {
+  position: absolute;
+  top: -10px;
+  left: 8px;
+  display: flex;
+  gap: 3px;
+  z-index: 3;
+}
+.badge {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-pill);
+  background: #2c2440;
+  border: 2px solid #16120f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mod {
+  background: #ffd451;
+  color: #7a5a12;
+}
+.eff {
+  position: absolute;
+  top: -12px;
+  right: 8px;
+  z-index: 3;
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+  font-size: 12px;
+  border: 2px solid #16120f;
+}
+.effUp {
+  background: var(--accent-positive);
+  color: #143a22;
+}
+.effDown {
+  background: #c9c1d6;
+  color: #3a2e22;
+}
+.band {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--band);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+}
+.rangeIcon {
+  opacity: 0.85;
+  flex: 0 0 auto;
+}
+.name {
+  flex: 1;
+  font-size: var(--type-caption);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.art {
+  position: relative;
+  height: 76px;
+  margin-top: var(--sp-1);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: radial-gradient(72% 85% at 50% 32%, rgba(255, 248, 235, 0.92), rgba(255, 243, 226, 0.34));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+.portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center 38%;
+  padding: 2px 2px 12px;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+}
+/* The type sits on the art as a chip rather than being the art, so both facts fit in one window. */
+.typeChip {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 253, 248, 0.92);
+  border: 2px solid var(--band);
+  display: grid;
+  place-items: center;
+}
+.owner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1px 4px;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(26, 16, 32, 0) 0%, rgba(26, 16, 32, 0.78) 45%);
+}
+.plate {
+  background: #fff3e2;
+  color: #3a2e22;
+  border-radius: var(--radius-sm);
+  padding: 5px 7px;
+  font-size: 11px;
+  line-height: 1.35;
+  min-height: 32px;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 2px 0;
+}
+.dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: var(--radius-pill);
+  background: #ffe08a;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.free {
+  font-size: 10px;
+  opacity: 0.85;
+}
+.costNote {
+  font-size: 10px;
+  opacity: 0.8;
+}
+.warn {
+  color: var(--accent-warning);
+}
+.power {
+  font-size: 19px;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.lock {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  background: rgba(40, 52, 80, 0.62);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: #fff;
+  text-align: center;
+  padding: 0 6px;
+}
+.lock small {
+  font-size: 11px;
+  color: #cfe0ff;
+}

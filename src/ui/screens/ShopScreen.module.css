@@ -1,0 +1,128 @@
+/* Poké Mart, §2.9.2 — node-screen chrome (header · content · Leave), shared in shape with the Dojo. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  background: radial-gradient(130% 90% at 50% 0%, #fdf0d8 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow: hidden;
+}
+
+.topBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+
+.sub {
+  margin: 2px 0 0;
+  max-width: 68ch;
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+
+.wallet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+}
+.walletLabel { color: var(--ink-muted); }
+
+/* Three columns at most. Bare `auto-fill` gave five on a 1920 screen and the shelf read as a spreadsheet
+   with a page of empty space under it. A Mart has a counter, not an aisle. */
+.shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  align-content: start;
+  gap: var(--sp-3);
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  overflow-y: auto;
+  padding-right: var(--sp-2);
+}
+
+.sold {
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  color: var(--ink-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.footer {
+  display: grid;
+  gap: var(--sp-2);
+  justify-items: center;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.reroll,
+.leave {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: var(--type-small);
+  cursor: pointer;
+  transition: transform var(--motion-fast) ease, background var(--motion-fast) ease;
+}
+.reroll:hover:not(:disabled),
+.leave:hover { transform: translateY(-1px); background: var(--surface-2); }
+.reroll:disabled { opacity: 0.5; cursor: not-allowed; }
+.reroll:focus-visible,
+.leave:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+.leave {
+  background: var(--accent-action);
+  border-color: var(--border-strong);
+  font-weight: 700;
+}
+
+.toast {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  border-left: 4px solid var(--accent-warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: color-mix(in srgb, var(--accent-warning) 14%, var(--surface-1));
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+}
+
+@media (max-width: 720px) {
+  .root { padding: var(--sp-4); }
+  .shelf { grid-template-columns: 1fr; }
+}

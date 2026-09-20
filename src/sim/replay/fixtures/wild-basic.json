@@ -1,0 +1,70 @@
+{
+  "scenarioId": "wild-basic",
+  "seed": 1001,
+  "actions": [
+    {
+      "type": "play-card",
+      "cardId": "c6"
+    },
+    {
+      "type": "swap",
+      "benchIndex": 2
+    },
+    {
+      "type": "play-card",
+      "cardId": "c8"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c9"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c3"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c10"
+    },
+    {
+      "type": "swap",
+      "benchIndex": 0
+    },
+    {
+      "type": "play-card",
+      "cardId": "c0"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c1"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c2"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c6"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "swap",
+      "benchIndex": 2
+    },
+    {
+      "type": "play-card",
+      "cardId": "c8"
+    }
+  ],
+  "fingerprint": "t4 victory lead=2 ap=1 team=[charmander:45/53,squirtle:62/62,bulbasaur:53/63] enemies=[pidgey:0/52] events=55 rng=2839372223",
+  "turns": 4,
+  "outcome": "victory"
+}

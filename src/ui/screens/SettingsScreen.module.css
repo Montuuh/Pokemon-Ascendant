@@ -1,0 +1,95 @@
+/* §9.6 — settings. Deliberately narrow and calm: two decisions, each with its own consequence written out. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr;
+  gap: var(--sp-5);
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  background: radial-gradient(120% 80% at 50% 0%, #fdf0dd 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow-y: auto;
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.title {
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+.back,
+.reset {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+
+.group {
+  display: grid;
+  gap: var(--sp-2);
+  max-width: 900px;
+  width: 100%;
+  justify-self: center;
+}
+.groupTitle {
+  margin: 0;
+  font-size: var(--type-h3);
+}
+.groupNote {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--sp-3);
+}
+.option {
+  display: grid;
+  gap: var(--sp-1);
+  text-align: left;
+  padding: var(--sp-3) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  cursor: pointer;
+}
+.on {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+}
+.optionLabel {
+  font-size: var(--type-body);
+}
+.optionNote {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+
+/* A line of the game's own voice at the current size, so the choice is made against the real thing rather
+   than against the word "Large". */
+.sample {
+  margin: 0;
+  align-self: start;
+  justify-self: center;
+  max-width: 900px;
+  padding: var(--sp-4) var(--sp-5);
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}

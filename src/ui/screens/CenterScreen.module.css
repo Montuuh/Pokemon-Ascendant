@@ -1,0 +1,148 @@
+/* Pokémon Center, §2.9.1 — the warmest screen. Node-screen chrome: header · content · Leave. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  background: radial-gradient(130% 90% at 50% 0%, #fff0e6 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow: hidden;
+}
+
+.topBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+
+.sub {
+  margin: 2px 0 0;
+  max-width: 68ch;
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+
+.wallet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+}
+.walletLabel { color: var(--ink-muted); }
+
+.body {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  gap: var(--sp-3);
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.colTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h3);
+}
+
+.list {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  align-content: start;
+}
+
+.patient {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--motion-fast) ease, border-color var(--motion-fast) ease;
+}
+.patient:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--border-strong); }
+.patient:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.off { opacity: 0.55; cursor: not-allowed; }
+
+.patientBody { display: grid; gap: 4px; min-width: 0; }
+.patientName { font-size: var(--type-body); font-weight: 700; }
+.patientMeta { color: var(--ink-secondary); font-size: var(--type-caption); }
+
+.empty,
+.note {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+.empty {
+  padding: var(--sp-5);
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.list { max-height: 46vh; }
+.note { font-size: var(--type-caption); }
+
+.footer { display: grid; gap: var(--sp-2); justify-items: center; }
+
+.leave {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  font: inherit;
+  font-weight: 700;
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.leave:hover { transform: translateY(-1px); }
+.leave:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+.toast {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  border-left: 4px solid var(--accent-warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: color-mix(in srgb, var(--accent-warning) 14%, var(--surface-1));
+  font-size: var(--type-small);
+}
+
+@media (max-width: 720px) {
+  .root { padding: var(--sp-4); }
+}

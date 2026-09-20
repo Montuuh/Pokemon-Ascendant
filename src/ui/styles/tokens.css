@@ -1,0 +1,129 @@
+/* ============================================================================
+   tokens.css — master design tokens.
+   Canon: docs/design/10-art-ui-audio.md §9.1.3 + docs/design/ui/01-design-system.md §1.1–§1.3
+   (CL-023 warm two-theme system). Consume via var(); never hardcode a value that has a token.
+   Theme scoping: the front-end is the default (warm light); a screen root with class
+   .theme-stage switches to the warm-dim combat/map stage theme.
+   ============================================================================ */
+:root {
+  /* ---- Spacing scale (§1.1) — the only allowed gap/padding values ---- */
+  --sp-0: 0px;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-8: 48px;
+  --sp-10: 64px;
+
+  /* ---- Radius scale (§1.1, warm/rounded per Pillar 5) ---- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  /* ---- Surfaces & elevation — front-end, warm light (§1.2 default) ---- */
+  --surface-0: #fbf4e6;
+  --surface-1: #fffdf8;
+  --surface-2: #f3e7d0;
+  --surface-3: #ead9b8;
+  --surface-sunken: #d9c4a0;
+  --ink-primary: #3a2e22;
+  --ink-secondary: #6b5a45;
+  --ink-muted: #78664f; /* WCAG AA-adjusted (was #A8967C) */
+  --border-subtle: #e4d4b5;
+  --border-strong: #c9a86a;
+  --scrim: rgba(58, 46, 34, 0.55);
+
+  /* ---- Semantic accents (§1.2). On the LIGHT theme: fill/border/icon only, never text colour. ---- */
+  --accent-action: #ffcb3d;
+  --accent-positive: #54d98a;
+  --accent-negative: #ff6b6b;
+  --accent-warning: #ff9f45;
+
+  /* ---- Friendly secondary accents ---- */
+  --brand-red: #e84c4c;
+  --brand-blue: #4fa3e3;
+  --brand-cream: #fff1d6;
+  --shield: #a8e6f0;
+
+  /* ---- Pokémon type palette (§9.1.3.2, Gen I 15 — canonical hues, kept verbatim) ---- */
+  --type-normal: #a8a878;
+  --type-fire: #f08030;
+  --type-water: #6890f0;
+  --type-electric: #f8d030;
+  --type-grass: #78c850;
+  --type-ice: #98d8d8;
+  --type-fighting: #c03028;
+  --type-poison: #a040a0;
+  --type-ground: #e0c068;
+  --type-flying: #a890f0;
+  --type-psychic: #f85888;
+  --type-bug: #a8b820;
+  --type-rock: #b8a038;
+  --type-ghost: #705898;
+  --type-dragon: #7038f8;
+
+  /* ---- Status condition palette (matches public/art/icons/status/*.svg fills) ---- */
+  --status-burn: #f08030;
+  --status-poison: #a040a0;
+  --status-paralysis: #e0b43c;
+  --status-sleep: #6e8bc0;
+  --status-freeze: #79c7d6;
+  --status-confusion: #e27aa8;
+
+  /* ---- Typography (§1.3) ---- */
+  --font-display: 'Baloo 2', 'Nunito', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+  /* §9.6 — the text-size setting (80 / 100 / 125 / 150 %). One multiplier on the scale rather than a
+     per-screen font size, because every layout in the game reads these eight tokens and nothing else. The
+     layouts were built to survive 150 %; the setting is what proves it. */
+  --text-scale: 1;
+  --type-display: calc(40px * var(--text-scale));
+  --type-h1: calc(30px * var(--text-scale));
+  --type-h2: calc(24px * var(--text-scale));
+  --type-h3: calc(20px * var(--text-scale));
+  --type-body: calc(17px * var(--text-scale));
+  --type-small: calc(15px * var(--text-scale));
+  --type-caption: calc(13px * var(--text-scale));
+  --type-number: calc(22px * var(--text-scale));
+
+  /* ---- Motion (§1.6) — reduced-motion collapses these to 0 ---- */
+  --motion-fast: 120ms;
+  --motion-base: 220ms;
+  --motion-slow: 350ms;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- Z-layers (§1.1) ---- */
+  --z-hud: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+  --z-tooltip: 500;
+  --z-curtain: 600;
+}
+
+/* ---- Combat / map stage override — warm dim (§1.2). Accents, spacing, radius are shared. ---- */
+.theme-stage {
+  --surface-0: #2a2230;
+  --surface-1: #3a3040;
+  --surface-2: #4a3e50;
+  --surface-3: #5a4c62;
+  --surface-sunken: #140f1a;
+  --ink-primary: #fff6ec;
+  --ink-secondary: #e0d2c2;
+  --ink-muted: #9e8fa0;
+  --border-subtle: #4a3e50;
+  --border-strong: #ffc15a;
+  --scrim: rgba(26, 18, 28, 0.66);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+    --motion-slow: 0ms;
+  }
+}

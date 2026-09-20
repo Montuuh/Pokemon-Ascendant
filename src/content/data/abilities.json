@@ -1,0 +1,321 @@
+{
+  "_note": "Per §6.5 / §6.6 — passive, always-on, no AP. `hook` names the sim hook that implements it; `none` = data only until its system exists (noted in `pending`).",
+  "abilities": [
+    {
+      "id": "overgrow",
+      "name": "Overgrow",
+      "category": "combat",
+      "description": "Grass moves deal +20% damage while HP is below 30%.",
+      "hook": "low-hp-type-boost",
+      "params": {
+        "type": "grass"
+      },
+      "gdd": "§6.5.3.4"
+    },
+    {
+      "id": "blaze",
+      "name": "Blaze",
+      "category": "combat",
+      "description": "Fire moves deal +20% damage while HP is below 30%.",
+      "hook": "low-hp-type-boost",
+      "params": {
+        "type": "fire"
+      },
+      "gdd": "§6.5.3.4"
+    },
+    {
+      "id": "torrent",
+      "name": "Torrent",
+      "category": "combat",
+      "description": "Water moves deal +20% damage while HP is below 30%.",
+      "hook": "low-hp-type-boost",
+      "params": {
+        "type": "water"
+      },
+      "gdd": "§6.5.3.4"
+    },
+    {
+      "id": "tough-claws",
+      "name": "Tough Claws",
+      "category": "combat",
+      "description": "Melee moves deal +15% damage.",
+      "hook": "range-boost",
+      "params": {
+        "range": "melee",
+        "multiplier": 1.15
+      },
+      "gdd": "§6.6"
+    },
+    {
+      "id": "snipe",
+      "name": "Snipe",
+      "category": "combat",
+      "description": "Ranged moves deal +15% damage.",
+      "hook": "range-boost",
+      "params": {
+        "range": "ranged",
+        "multiplier": 1.15
+      },
+      "gdd": "§6.6"
+    },
+    {
+      "id": "shell-armor",
+      "name": "Shell Armor",
+      "category": "combat",
+      "description": "While Lead, incoming hits deal 2 less damage.",
+      "hook": "lead-flat-reduction",
+      "params": {
+        "amount": 2
+      },
+      "gdd": "§6.3"
+    },
+    {
+      "id": "swift-swim",
+      "name": "Swift Swim",
+      "category": "combat",
+      "description": "Draw +1 skill card on turn 1 of Rain Dance combats.",
+      "hook": "none",
+      "pending": "field effects (v0.7)",
+      "gdd": "§6.6"
+    },
+    {
+      "id": "compound-eyes",
+      "name": "Compound Eyes",
+      "category": "combat",
+      "description": "Status riders on this Pokémon's moves always apply.",
+      "hook": "riders-always-apply",
+      "gdd": "§6.6"
+    },
+    {
+      "id": "keen-eye",
+      "name": "Keen Eye",
+      "category": "vision",
+      "description": "Unknown intents are revealed at combat start.",
+      "hook": "reveal-intents",
+      "gdd": "§6.5.3.1"
+    },
+    {
+      "id": "sturdy",
+      "name": "Sturdy",
+      "category": "survival",
+      "description": "Survive one lethal hit per combat at 1 HP.",
+      "hook": "sturdy",
+      "gdd": "§6.6"
+    },
+    {
+      "id": "healer",
+      "name": "Healer",
+      "category": "support",
+      "description": "At turn end, restore 3 HP to a random bench ally.",
+      "hook": "turn-end-bench-heal",
+      "params": {
+        "amount": 3
+      },
+      "gdd": "§6.6"
+    },
+    {
+      "id": "iron-shell",
+      "name": "Iron Shell",
+      "category": "survival",
+      "description": "At combat start, Defense rises by 1 stage.",
+      "hook": "start-stage",
+      "params": {
+        "stat": "defense",
+        "stages": 1
+      },
+      "gdd": "§6.5.1"
+    },
+    {
+      "id": "swarm",
+      "name": "Swarm",
+      "category": "Combat",
+      "description": "Bug moves deal +20 % damage while HP is below 30 %.",
+      "hook": "low-hp-type-boost",
+      "params": {
+        "type": "bug"
+      }
+    },
+    {
+      "id": "hustle",
+      "name": "Hustle",
+      "category": "Combat",
+      "description": "Melee moves deal +25 % damage.",
+      "hook": "range-boost",
+      "params": {
+        "range": "melee",
+        "multiplier": 1.25
+      }
+    },
+    {
+      "id": "guts",
+      "name": "Guts",
+      "category": "Combat",
+      "description": "Attack rises while this Pokémon carries a status condition.",
+      "hook": "while-statused",
+      "params": {
+        "stat": "attack",
+        "multiplier": 1.3
+      }
+    },
+    {
+      "id": "poison-point",
+      "name": "Poison Point",
+      "category": "Status",
+      "description": "A melee attacker risks being Poisoned.",
+      "hook": "on-damaged",
+      "params": {
+        "range": "melee",
+        "status": "poison",
+        "chance": 0.3
+      }
+    },
+    {
+      "id": "effect-spore",
+      "name": "Effect Spore",
+      "category": "Status",
+      "description": "A melee attacker risks being Poisoned.",
+      "hook": "on-damaged",
+      "params": {
+        "range": "melee",
+        "status": "poison",
+        "chance": 0.3
+      }
+    },
+    {
+      "id": "tangled-feet",
+      "name": "Tangled Feet",
+      "category": "Combat",
+      "description": "Takes less damage while Confused.",
+      "hook": "conditional-reduction",
+      "params": {
+        "when": "confused",
+        "multiplier": 0.7
+      }
+    },
+    {
+      "id": "run-down",
+      "name": "Run Down",
+      "category": "Positional",
+      "description": "The first manual swap each combat costs 0 AP.",
+      "hook": "swap-discount",
+      "params": {}
+    },
+    {
+      "id": "chlorophyll",
+      "name": "Chlorophyll",
+      "category": "Combat",
+      "description": "Draws an extra card on turn 1 of Sun combats.",
+      "hook": "none",
+      "pending": "needs field effects (v0.7)"
+    },
+    {
+      "id": "inner-focus",
+      "name": "Inner Focus",
+      "category": "Status",
+      "description": "Cannot be Confused.",
+      "hook": "status-immunity",
+      "params": {
+        "status": "confusion"
+      }
+    },
+    {
+      "id": "sand-veil",
+      "name": "Sand Veil",
+      "category": "Combat",
+      "description": "Incoming Ranged attacks deal 15 % less damage.",
+      "hook": "conditional-reduction",
+      "params": {
+        "when": "ranged",
+        "multiplier": 0.85
+      }
+    },
+    {
+      "id": "rock-head",
+      "name": "Rock Head",
+      "category": "Survival",
+      "description": "Takes no self-damage from recoil moves.",
+      "hook": "recoil-immunity",
+      "params": {}
+    },
+    {
+      "id": "steadfast",
+      "name": "Steadfast",
+      "category": "Positional",
+      "description": "On entering Lead, its Attack rises a stage.",
+      "hook": "on-enter-lead",
+      "params": {
+        "target": "self",
+        "stat": "attack",
+        "stages": 1
+      }
+    },
+    {
+      "id": "no-guard",
+      "name": "No Guard",
+      "category": "Combat",
+      "description": "Status riders on both sides always apply.",
+      "hook": "riders-always-apply"
+    },
+    {
+      "id": "intimidate",
+      "name": "Intimidate",
+      "category": "Positional",
+      "description": "On entering Lead, every enemy loses an Attack stage.",
+      "hook": "on-enter-lead",
+      "params": {
+        "target": "foe",
+        "stat": "attack",
+        "stages": -1
+      }
+    },
+    {
+      "id": "moxie",
+      "name": "Moxie",
+      "category": "Combat",
+      "description": "Attack rises a stage whenever it faints an enemy.",
+      "hook": "on-kill",
+      "params": {
+        "stat": "attack",
+        "stages": 1
+      }
+    },
+    {
+      "id": "water-absorb",
+      "name": "Water Absorb",
+      "category": "Type",
+      "description": "Water moves heal this Pokémon instead of damaging it.",
+      "hook": "type-absorb",
+      "params": {
+        "type": "water",
+        "percentOfMaxHp": 0.2
+      }
+    },
+    {
+      "id": "damp",
+      "name": "Damp",
+      "category": "Combat",
+      "description": "Self-destructing moves fail against this Pokémon.",
+      "hook": "none",
+      "pending": "needs a self-destruct move to suppress; none is authored"
+    },
+    {
+      "id": "cloud-nine",
+      "name": "Cloud Nine",
+      "category": "Combat",
+      "description": "Field effects are suppressed while this Pokémon leads.",
+      "hook": "none",
+      "pending": "needs field effects (v0.7)"
+    },
+    {
+      "id": "solid-rock",
+      "name": "Solid Rock",
+      "category": "Combat",
+      "description": "Super-effective hits deal 25 % less.",
+      "hook": "super-effective-reduction",
+      "params": {
+        "multiplier": 0.75
+      },
+      "gdd": "§6.5.2"
+    }
+  ]
+}

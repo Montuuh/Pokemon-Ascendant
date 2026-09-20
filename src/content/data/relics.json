@@ -1,0 +1,839 @@
+{
+  "_note": "Relic catalog — Common (25) + Uncommon (18), the v0.4 half of §7.8's build order. Rare and Legendary are v0.5. Rows come from docs/design/catalogs/relics.md; `hook` maps each onto §7.7's named-hook vocabulary, so a new relic is data as long as its hook already exists. The hand is discarded whole each turn (§3.4), so \"max hand size +1\" and \"draw +1\" are the same effect here and the descriptions say the one the player sees. Three rows ship inert because they need an activated action or a system that does not exist; each carries `pending` and the UI shows it rather than selling a no-op.",
+  "relics": [
+    {
+      "id": "soft-sand",
+      "name": "Soft Sand",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with ground moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "ground",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "mystic-water-charm",
+      "name": "Mystic Water Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with water moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "water",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "charcoal-charm",
+      "name": "Charcoal Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with fire moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "fire",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "miracle-seed-charm",
+      "name": "Miracle Seed Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with grass moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "grass",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "hard-stone",
+      "name": "Hard Stone",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with rock moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "rock",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "sharp-beak-charm",
+      "name": "Sharp Beak Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with flying moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "flying",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "magnet-charm",
+      "name": "Magnet Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with electric moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "electric",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "twisted-spoon-charm",
+      "name": "Twisted Spoon Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with psychic moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "psychic",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "black-belt-charm",
+      "name": "Black Belt Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with fighting moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "fighting",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "pink-bow",
+      "name": "Pink Bow",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +15 % with normal moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "normal",
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "barrier-charm",
+      "name": "Barrier Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "The first enemy hit of each combat deals 20 % less.",
+      "hook": "damage-taken",
+      "params": {
+        "firstHit": true,
+        "multiplier": 0.8
+      }
+    },
+    {
+      "id": "berry-pouch",
+      "name": "Berry Pouch",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Healing items restore 20 % more.",
+      "hook": "heal-bonus",
+      "params": {
+        "multiplier": 1.2
+      }
+    },
+    {
+      "id": "coin-pouch",
+      "name": "Coin Pouch",
+      "rarity": "common",
+      "categories": [
+        "meta"
+      ],
+      "description": "Poké Dollar rewards are worth 25 % more.",
+      "hook": "money-multiplier",
+      "params": {
+        "multiplier": 1.25
+      }
+    },
+    {
+      "id": "cleanse-tag",
+      "name": "Cleanse Tag",
+      "rarity": "common",
+      "categories": [
+        "status"
+      ],
+      "description": "The first status applied to your side each combat is blocked.",
+      "hook": "status-shield",
+      "params": {
+        "charges": 1
+      }
+    },
+    {
+      "id": "lucky-egg-token",
+      "name": "Lucky Egg Token",
+      "rarity": "common",
+      "categories": [
+        "meta"
+      ],
+      "description": "Your Pokémon earn 15 % more XP.",
+      "hook": "xp-multiplier",
+      "params": {
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "exp-share",
+      "name": "Exp Share",
+      "rarity": "common",
+      "categories": [
+        "meta"
+      ],
+      "description": "Benched Box Pokémon earn full XP instead of three quarters.",
+      "hook": "bench-xp-share",
+      "params": {
+        "share": 1
+      }
+    },
+    {
+      "id": "quick-draw",
+      "name": "Quick Draw",
+      "rarity": "common",
+      "categories": [
+        "card"
+      ],
+      "description": "Draw one extra card on the first turn of each combat.",
+      "hook": "draw",
+      "params": {
+        "turn": 1,
+        "cards": 1
+      }
+    },
+    {
+      "id": "brave-charm",
+      "name": "Brave Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "A Pokémon below half HP deals 10 % more.",
+      "hook": "damage-dealt",
+      "params": {
+        "belowHp": 0.5,
+        "multiplier": 1.1
+      }
+    },
+    {
+      "id": "recycle-tag",
+      "name": "Recycle Tag",
+      "rarity": "common",
+      "categories": [
+        "card"
+      ],
+      "description": "Draw one extra card on the turn after the deck reshuffles.",
+      "hook": "draw",
+      "params": {
+        "onReshuffle": true,
+        "cards": 1
+      }
+    },
+    {
+      "id": "hikers-coat",
+      "name": "Hiker's Coat",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your Lead takes 10 % less from Cleave attacks.",
+      "hook": "damage-taken",
+      "params": {
+        "cleaveOnly": true,
+        "leadOnly": true,
+        "multiplier": 0.9
+      }
+    },
+    {
+      "id": "defense-curl-charm",
+      "name": "Defense Curl Charm",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Every third manual swap, the incoming Lead gains Defence +1.",
+      "hook": "reactive-stage",
+      "params": {
+        "on": "swap-count",
+        "every": 3,
+        "target": "lead",
+        "stat": "defense",
+        "stages": 1
+      }
+    },
+    {
+      "id": "soothe-bell",
+      "name": "Soothe Bell",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "A Pokémon still at full HP deals 5 % more.",
+      "hook": "damage-dealt",
+      "params": {
+        "atFullHp": true,
+        "multiplier": 1.05
+      }
+    },
+    {
+      "id": "wide-lens",
+      "name": "Wide Lens",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Status riders land before the damage, so a faint never eats one.",
+      "hook": "rider-first"
+    },
+    {
+      "id": "battle-hat",
+      "name": "Battle Hat",
+      "rarity": "common",
+      "categories": [
+        "card"
+      ],
+      "description": "End a turn without swapping and you keep one card for the next one.",
+      "hook": "retain-card",
+      "params": {
+        "cards": 1
+      }
+    },
+    {
+      "id": "quick-claw-charm",
+      "name": "Quick Claw Charm",
+      "rarity": "common",
+      "categories": [
+        "card"
+      ],
+      "description": "Replay the last card you played, free, once per combat.",
+      "hook": "none",
+      "pending": "needs an activated card-replay action the combat UI does not have"
+    },
+    {
+      "id": "choice-specs",
+      "name": "Choice Specs",
+      "rarity": "uncommon",
+      "categories": [
+        "card"
+      ],
+      "description": "Your first Ranged move each turn is free; later Ranged moves cost 1 more.",
+      "hook": "ap-cost",
+      "params": {
+        "range": "ranged",
+        "firstEachTurn": true,
+        "freeFirst": true,
+        "laterDelta": 1
+      }
+    },
+    {
+      "id": "choice-band-relic",
+      "name": "Choice Band (relic)",
+      "rarity": "uncommon",
+      "categories": [
+        "card"
+      ],
+      "description": "Your first Melee move each turn is free; later Melee moves cost 1 more.",
+      "hook": "ap-cost",
+      "params": {
+        "range": "melee",
+        "firstEachTurn": true,
+        "freeFirst": true,
+        "laterDelta": 1
+      }
+    },
+    {
+      "id": "type-resonance",
+      "name": "Type Resonance",
+      "rarity": "uncommon",
+      "categories": [
+        "combat"
+      ],
+      "description": "Active Pokémon sharing a primary type buff each other: +10 % for each one that shares it.",
+      "hook": "damage-dealt",
+      "params": {
+        "sharedType": true,
+        "multiplier": 1.1
+      }
+    },
+    {
+      "id": "adrenal-surge",
+      "name": "Adrenal Surge",
+      "rarity": "uncommon",
+      "categories": [
+        "combat"
+      ],
+      "description": "When one of your Pokémon faints, the rest of the Active Team gains Attack +1.",
+      "hook": "reactive-stage",
+      "params": {
+        "on": "faint",
+        "target": "team",
+        "stat": "attack",
+        "stages": 1
+      }
+    },
+    {
+      "id": "reactor-core",
+      "name": "Reactor Core",
+      "rarity": "uncommon",
+      "categories": [
+        "card"
+      ],
+      "description": "Draw one extra card every turn.",
+      "hook": "draw",
+      "params": {
+        "cards": 1
+      }
+    },
+    {
+      "id": "pressure-plate",
+      "name": "Pressure Plate",
+      "rarity": "uncommon",
+      "categories": [
+        "combat"
+      ],
+      "description": "After a 3-AP move, the next move that turn costs 1 less.",
+      "hook": "ap-cost",
+      "params": {
+        "afterMinAp": 3,
+        "delta": -1
+      }
+    },
+    {
+      "id": "vital-pendant",
+      "name": "Vital Pendant",
+      "rarity": "uncommon",
+      "categories": [
+        "combat"
+      ],
+      "description": "Once per combat, a Pokémon dropping below a quarter HP heals to half.",
+      "hook": "pinch-heal",
+      "params": {
+        "belowPercent": 25,
+        "toPercent": 50
+      }
+    },
+    {
+      "id": "tacticians-coin",
+      "name": "Tactician's Coin",
+      "rarity": "uncommon",
+      "categories": [
+        "lead"
+      ],
+      "description": "Your first manual swap each combat is free.",
+      "hook": "free-swap",
+      "params": {
+        "swaps": 1
+      }
+    },
+    {
+      "id": "steady-aim",
+      "name": "Steady Aim",
+      "rarity": "uncommon",
+      "categories": [
+        "combat"
+      ],
+      "description": "Critical hits deal 1.75× instead of 1.5×.",
+      "hook": "crit-multiplier",
+      "params": {
+        "multiplier": 1.75
+      }
+    },
+    {
+      "id": "status-lance",
+      "name": "Status Lance",
+      "rarity": "uncommon",
+      "categories": [
+        "status"
+      ],
+      "description": "Statuses you apply last one turn longer. Sleep and Freeze are unchanged.",
+      "hook": "status-duration",
+      "params": {
+        "extraTurns": 1
+      }
+    },
+    {
+      "id": "healers-kit",
+      "name": "Healer's Kit",
+      "rarity": "uncommon",
+      "categories": [
+        "status"
+      ],
+      "description": "Curing a status also restores 15 HP.",
+      "hook": "heal-bonus",
+      "params": {
+        "flatOnCure": 15
+      }
+    },
+    {
+      "id": "bond-bracelet",
+      "name": "Bond Bracelet",
+      "rarity": "uncommon",
+      "categories": [
+        "combat"
+      ],
+      "description": "The first time your Lead drops below half HP, the whole bench gains Defence +1.",
+      "hook": "reactive-stage",
+      "params": {
+        "on": "lead-low",
+        "belowPercent": 50,
+        "target": "bench",
+        "stat": "defense",
+        "stages": 1
+      }
+    },
+    {
+      "id": "lure-module",
+      "name": "Lure Module",
+      "rarity": "uncommon",
+      "categories": [
+        "meta"
+      ],
+      "description": "Wild Areas offer four species to choose from instead of three.",
+      "hook": "wild-choices",
+      "params": {
+        "extra": 1
+      }
+    },
+    {
+      "id": "cycle-cell",
+      "name": "Cycle Cell",
+      "rarity": "uncommon",
+      "categories": [
+        "card"
+      ],
+      "description": "When your deck reshuffles, you gain 1 AP the next turn.",
+      "hook": "banked-ap",
+      "params": {
+        "on": "reshuffle",
+        "ap": 1
+      }
+    },
+    {
+      "id": "move-echo",
+      "name": "Move Echo",
+      "rarity": "uncommon",
+      "categories": [
+        "card"
+      ],
+      "description": "Play three different moves from one Pokémon in a turn and gain 1 AP the next turn.",
+      "hook": "banked-ap",
+      "params": {
+        "on": "three-from-one",
+        "ap": 1
+      }
+    },
+    {
+      "id": "trauma-salve",
+      "name": "Trauma Salve",
+      "rarity": "uncommon",
+      "categories": [
+        "meta"
+      ],
+      "description": "Clears all Trauma from your most damaged Pokémon the moment you pick it up.",
+      "hook": "on-acquire",
+      "params": {
+        "effect": "clear-trauma"
+      }
+    },
+    {
+      "id": "hand-off-pouch",
+      "name": "Hand-Off Pouch",
+      "rarity": "uncommon",
+      "categories": [
+        "card"
+      ],
+      "description": "Discard a card at turn start to draw a new one.",
+      "hook": "none",
+      "pending": "needs an activated discard-to-draw action the combat UI does not have"
+    },
+    {
+      "id": "battle-tracker",
+      "name": "Battle Tracker",
+      "rarity": "uncommon",
+      "categories": [
+        "meta"
+      ],
+      "description": "Improves Pokédex reveal rates on species you have beaten.",
+      "hook": "none",
+      "pending": "needs the Pokédex (v0.6)"
+    },
+    {
+      "id": "champions-crest",
+      "name": "Champion's Crest",
+      "rarity": "rare",
+      "categories": [
+        "combat"
+      ],
+      "description": "Each enemy a Pokémon defeats makes it hit 5 % harder for the rest of the run, up to +25 %.",
+      "hook": "damage-dealt",
+      "params": {
+        "perDefeat": 0.05,
+        "cap": 0.25
+      }
+    },
+    {
+      "id": "phoenix-feather",
+      "name": "Phoenix Feather",
+      "rarity": "rare",
+      "categories": [
+        "combat"
+      ],
+      "description": "Once per run, the first Pokémon that would faint survives at 1 HP. The feather is spent.",
+      "hook": "endure",
+      "params": {
+        "scope": "team",
+        "oncePerRun": true
+      }
+    },
+    {
+      "id": "sages-tome",
+      "name": "Sage's Tome",
+      "rarity": "rare",
+      "categories": [
+        "card"
+      ],
+      "description": "Draw 2 more cards each turn, and take 1 more AP.",
+      "hook": "draw",
+      "params": {
+        "cards": 2
+      },
+      "also": {
+        "hook": "banked-ap",
+        "params": {
+          "on": "always",
+          "ap": 1
+        }
+      }
+    },
+    {
+      "id": "crown-of-echoes",
+      "name": "Crown of Echoes",
+      "rarity": "rare",
+      "categories": [
+        "combat"
+      ],
+      "description": "The first card you play each combat comes back, free, in your hand next turn.",
+      "hook": "draw",
+      "params": {
+        "echoFirstCard": true
+      }
+    },
+    {
+      "id": "master-ball-charm",
+      "name": "Master Ball Charm",
+      "rarity": "rare",
+      "categories": [
+        "meta"
+      ],
+      "description": "Once per run, a Poké Ball catches whatever it is thrown at, whatever the gauge says.",
+      "hook": "none",
+      "pending": "needs a catch override the gauge does not expose yet (§2.6.4) — v0.6"
+    },
+    {
+      "id": "time-spinner",
+      "name": "Time Spinner",
+      "rarity": "rare",
+      "categories": [
+        "combat"
+      ],
+      "description": "Once per combat, skip the enemy’s whole turn.",
+      "hook": "none",
+      "pending": "needs an activated action; nothing in combat has one yet (§3.6) — v0.6"
+    },
+    {
+      "id": "soul-link",
+      "name": "Soul Link",
+      "rarity": "rare",
+      "categories": [
+        "combat"
+      ],
+      "description": "Bond two Pokémon on pickup: while both are standing, they each deal 10 % more.",
+      "hook": "none",
+      "pending": "needs a choose-a-Pokémon step when a relic is taken (§7.3.7) — v0.6"
+    },
+    {
+      "id": "flow-state",
+      "name": "Flow State",
+      "rarity": "legendary",
+      "categories": [
+        "lead"
+      ],
+      "description": "Your first manual swap each combat is free.",
+      "hook": "free-swap",
+      "params": {
+        "swaps": 1
+      }
+    },
+    {
+      "id": "last-stand",
+      "name": "Last Stand",
+      "rarity": "legendary",
+      "categories": [
+        "combat"
+      ],
+      "description": "Once per combat, the first Pokémon that would faint survives at 1 HP.",
+      "hook": "endure",
+      "params": {
+        "scope": "team"
+      }
+    },
+    {
+      "id": "type-mastery",
+      "name": "Type Mastery",
+      "rarity": "legendary",
+      "categories": [
+        "combat"
+      ],
+      "description": "Super-effective moves hit 15 % harder still.",
+      "hook": "damage-dealt",
+      "params": {
+        "superEffective": true,
+        "multiplier": 1.15
+      }
+    },
+    {
+      "id": "clear-mind",
+      "name": "Clear Mind",
+      "rarity": "legendary",
+      "categories": [
+        "combat"
+      ],
+      "description": "No enemy intent is ever hidden from you.",
+      "hook": "reveal-intents"
+    },
+    {
+      "id": "evolutions-edge",
+      "name": "Evolution's Edge",
+      "rarity": "legendary",
+      "categories": [
+        "combat"
+      ],
+      "description": "Fully-evolved Pokémon deal 10 % more.",
+      "hook": "damage-dealt",
+      "params": {
+        "fullyEvolved": true,
+        "multiplier": 1.1
+      }
+    },
+    {
+      "id": "grandmasters-tempo",
+      "name": "Grandmaster's Tempo",
+      "rarity": "legendary",
+      "categories": [
+        "card"
+      ],
+      "description": "Draw 1 more card each turn, and your first card each turn is free.",
+      "hook": "draw",
+      "params": {
+        "cards": 1
+      },
+      "also": {
+        "hook": "ap-cost",
+        "params": {
+          "firstEachTurn": true,
+          "freeFirst": true
+        }
+      }
+    },
+    {
+      "id": "living-legend",
+      "name": "Living Legend",
+      "rarity": "legendary",
+      "categories": [
+        "meta"
+      ],
+      "description": "Every Pokémon gains 30 % more XP, and anyone you recruit arrives 2 levels up with no Trauma.",
+      "hook": "xp-multiplier",
+      "params": {
+        "multiplier": 1.3
+      },
+      "also": {
+        "hook": "on-acquire",
+        "params": {
+          "recruitBonusLevels": 2,
+          "recruitZeroTrauma": true
+        }
+      }
+    },
+    {
+      "id": "unbreakable-will",
+      "name": "Unbreakable Will",
+      "rarity": "legendary",
+      "categories": [
+        "status"
+      ],
+      "description": "Shrug off the first status each combat, and the ones you inflict last a turn longer.",
+      "hook": "status-shield",
+      "params": {
+        "charges": 1
+      },
+      "also": {
+        "hook": "status-duration",
+        "params": {
+          "extraTurns": 1
+        }
+      }
+    },
+    {
+      "id": "apex-predator",
+      "name": "Apex Predator",
+      "rarity": "legendary",
+      "categories": [
+        "combat"
+      ],
+      "description": "While your Lead is untouched it deals 20 % more. One scratch and that stops until it is healed.",
+      "hook": "damage-dealt",
+      "params": {
+        "atFullHp": true,
+        "leadOnly": true,
+        "multiplier": 1.2
+      }
+    },
+    {
+      "id": "battle-hardened",
+      "name": "Battle Hardened",
+      "rarity": "legendary",
+      "categories": [
+        "combat"
+      ],
+      "description": "Every Pokémon starts each combat behind a shield worth a tenth of its health.",
+      "hook": "start-shield",
+      "params": {
+        "percentOfMaxHp": 0.1
+      }
+    }
+  ]
+}

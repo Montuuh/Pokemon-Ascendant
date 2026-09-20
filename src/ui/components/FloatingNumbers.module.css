@@ -1,0 +1,52 @@
+.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-tooltip);
+  overflow: visible;
+}
+.num {
+  position: absolute;
+  top: 30%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  color: #fff;
+  -webkit-text-stroke: 1.5px rgba(20, 15, 26, 0.9);
+  paint-order: stroke fill;
+  text-shadow: 0 3px 0 rgba(20, 15, 26, 0.9), 0 0 12px rgba(0, 0, 0, 0.5);
+  animation: floatUp 1100ms ease-out forwards;
+  white-space: nowrap;
+}
+.damage {
+  color: #ffd6d6;
+}
+.heal {
+  color: #b9f5cf;
+}
+.status {
+  color: #ffe9b3;
+  font-size: 20px;
+}
+.text {
+  color: #f5efff;
+  font-size: 20px;
+}
+.crit {
+  font-size: 40px;
+  color: #ffcb3d;
+}
+.super {
+  font-size: 36px;
+  color: #ff9f45;
+}
+.weak {
+  font-size: 24px;
+  color: #c9c1d6;
+}
+.immune {
+  font-size: 22px;
+  color: #c9c1d6;
+}

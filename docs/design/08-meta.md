@@ -1,0 +1,502 @@
+# Topic 8 — Meta Progression
+
+> **Canon.** `§` numbers are an API cited from code and tests — never renumber or delete a section.
+>
+> **This topic owns:** everything that survives a run — Trauma, Trainer XP and Tokens, the Hub, starter and relic unlocks, achievements and difficulty modifiers.
+> **It does not own:** what any of those things do inside a fight (Topics 3–5) or a run (Topic 2).
+
+---
+
+# §8.1 Philosophy
+
+Three guarantees hold the meta layer together.
+
+1. **Failure is fuel.** Every run, won or lost, materially improves the next one through Trainer XP and Pokédex
+   mastery. A wipe in Region 1 is worth 80–150 XP; a wipe in Region 3 is worth 400–600.
+2. **Unlocks expand the option space, never the power floor.** Meta-unlocks add Pokémon, relics, starters and
+   modifiers. They never add damage, HP or any baseline number. A first-run player and a hundred-hour player face
+   **the same maths**; the veteran simply has more choices.
+3. **Trauma is the in-run consequence layer.** Without it, "failure is fuel" would make a run consequence-free.
+
+The explicitly rejected anti-pattern is permanent stat upgrades that gradually trivialise the content. Pokémon Ascendant's
+meta progression is **horizontal**, not vertical.
+
+---
+
+# §8.2 Trauma
+
+## §8.2.1 The mechanic
+
+Every time a Pokémon's HP reaches 0, it accrues **one Trauma stack** for the rest of the run. Trauma belongs to
+the **instance**, not the species or the slot.
+
+```
+EffectiveMaxHP = floor( BaseMaxHP × max(0.25, 1 − 0.05·min(s,5) − 0.10·max(0, min(s,10) − 5)) )
+```
+
+| Stacks | Multiplier | Effective Max HP (base 100) |
+|---|---|---|
+| 0 | 1.00 | 100 |
+| 1 | 0.95 | 95 |
+| 2 | 0.90 | 90 |
+| 3 | 0.85 | 85 |
+| 4 | 0.80 | 80 |
+| 5 | 0.75 | 75 |
+| 6 | 0.65 | 65 |
+| 7 | 0.55 | 55 |
+| 8 | 0.45 | 45 |
+| 9 | 0.35 | 35 |
+| **10 +** | **0.25** | **25** *(floor)* |
+
+**Two zones, on purpose.** Stacks 1–5 cost 5 % each, so ordinary play — the occasional faint — barely registers.
+Stacks 6–10 cost 10 % each, so a Pokémon that keeps fainting visibly breaks down. The steep zone is a
+**rest-or-retire signal**, not a flat punishment, and the floor at −75 % means it never becomes an
+unrecoverable spiral.
+
+Anti-spiral protection comes from three places: the soft cap, Trauma being per-instance (rotate the Box), and
+benched Pokémon still earning 75 % XP (§6.2.1) so rotation is painless.
+
+## §8.2.2 Timing and visibility
+
+Stacks apply **instantly at the moment of faint**, during Resolution.
+
+| Where | What is shown |
+|---|---|
+| **In combat** | Nothing. The Pokémon has already left the Active Team; the penalty is irrelevant until the map |
+| **Map View** | A `⚠ N` badge over the portrait. Hover shows the Effective Max HP and the formula |
+| **Pre-combat** | The team-selection panel shows each Pokémon's Effective Max HP and stack count |
+| **Post-combat** | `+1 Trauma → [Pokémon]` with the new effective maximum |
+| **First ever stack** | A one-time explanation popup. Silent thereafter |
+
+**Healing interaction — the load-bearing consequence.** Every heal computes against Effective Max HP. A Pokémon
+Center restores you to your *current ceiling*, never to your original one. Full heals never undo faints.
+
+**Damage-over-time uses the same number**: `floor(EffectiveMaxHP / 16)`. The combat HP bar caps at the effective
+maximum, so "a sixteenth of your bar" reads true.
+
+## §8.2.3 Persistence
+
+| Scope | Behaviour |
+|---|---|
+| **Within a run** | Stacks persist across combats, nodes, Cities and Regions. They never decay with time |
+| **Across runs** | Discarded at run end with the rest of run state. Trauma is run-scoped |
+| **In the Box** | A benched Pokémon keeps its stacks — they belong to the instance, not the Active slot |
+| **On recruitment** | A new recruit always starts at 0, however badly the run has gone |
+| **Through evolution** | Stacks carry. The new base HP is multiplied by the same factor, so the effective maximum still rises — evolution is identity continuity, not a reset |
+
+## §8.2.4 Clearing stacks
+
+Three routes, all scarcity-gated:
+
+| Source | Type | Cost | Effect |
+|---|---|---|---|
+| **Trauma Salve** | Uncommon relic, single charge | Found or bought | Removes **all** stacks from one Pokémon. Consumed |
+| **Therapy** | Pokémon Center service | `100 × (1 + stacks)` ₽ | Removes **1** stack. Repeatable while affordable |
+| **Daycare Recovery** | Rare Mystery event | Skip the node's reward; the Pokémon misses the next combat | Removes **all** stacks from one Pokémon |
+
+The player can always recover, but recovery costs money, an inventory slot, or tempo. That keeps Trauma a live
+threat all run without ever soft-locking an unlucky start.
+
+## §8.2.5 Telegraphing
+
+Per Pillar 1, Trauma is never a hidden cost. The badge is on the portrait, the effective maximum is on the
+pre-combat panel, and the combat HP bar simply *is* the effective maximum — there is no ghost segment showing
+what you lost. The bar tells the truth of the moment.
+
+## §8.2.6 Edge cases
+
+| Case | Resolution |
+|---|---|
+| Multiple stacks in one combat? | No. One faint, one stack — a Pokémon cannot faint twice, it leaves the Active Team |
+| Sturdy saves at 1 HP | No stack. No HP-reaches-0 event fires |
+| The `last-stand` Legendary saves at 1 HP | No stack, same reason |
+| Trauma Salve on a 0-stack Pokémon | The option is greyed out; the Salve cannot be wasted |
+| Therapy at 0 stacks | Hidden from the service list |
+| Does boss AI see Trauma? | No. It is player-side state and never enters intent scoring |
+| An Apex or Elite Wild recruit | Always 0 stacks |
+
+## §8.2.7 Why this shape
+
+Four alternatives were considered and rejected: uncapped stacks (unrecoverable spirals in Region 3); a penalty
+applied only at Pokémon Centers (a Region 3 faint would cost nothing before the League); suppressing a move for
+one combat (too volatile for the deck economy, and it punishes exactly the repositioning Pillar 2 rewards); and
+no consequence at all (which makes "failure is fuel" hollow). The chosen design is visible, telegraphed,
+recoverable by three explicit paths, and incapable of spiralling.
+
+---
+
+# §8.3 Trainer XP and Level
+
+## §8.3.1 What Trainer XP is
+
+The persistent account currency, earned in every run whether it is won or lost. It drives **Trainer Level**,
+which advances the **reward track** (§8.3.5).
+
+**Trainer XP is never spent.** It accrues. It is also never power: it unlocks starters, relics, modifiers and
+Hub conveniences, and never a single point of damage or HP.
+
+## §8.3.2 Sources
+
+| Source | XP |
+|---|---|
+| Combat node cleared | 5 — wild, trainer and elite alike, so every fight counts |
+| Recruitment (first of a species this run) | 10 |
+| Evolution | 15 |
+| Gym Leader | 50 |
+| Victory Road Gauntlet | 75 |
+| Elite Four member | 100 |
+| Champion | 250 |
+| **Failed run** | `floor(layersCleared × 50)`, capped at 400 |
+| Pokédex tier promotion | 25 / 75 / 200 |
+| Achievement | 50–500 by medal tier |
+
+| Run outcome | Typical total |
+|---|---|
+| Wipe in Region 1 | 80–150 |
+| Wipe in Region 3 | 400–600 |
+| Win | 900–1 200 |
+| Win, achievement-heavy | up to 2 000 |
+
+Difficulty modifiers multiply the run's total (§8.8.3).
+
+## §8.3.3 The level curve
+
+```
+cumulative XP to reach Level N = floor(500 × N^1.6)
+```
+
+| Level | Cumulative | Meaning |
+|---|---|---|
+| 2 | 500 | |
+| 5 | 5 000 | End of a first weekend, ~10 hours |
+| 10 | 19 952 | All three meta-starters and two Hub upgrades |
+| 15 | 43 267 | |
+| 20 | 75 789 | Completionist tier — all run content visible |
+| 30 | 167 290 | Prestige cap; future Ascension entry |
+
+Soft-logarithmic: early levels arrive fast, late levels gate long-tail content.
+
+## §8.3.4 Two currencies
+
+| | Trainer XP | Trainer Tokens |
+|---|---|---|
+| **Earned** | Everything in §8.3.2 | Milestone levels (every 5th) + Gold and Platinum achievements |
+| **Spent** | Never — it drives the track | Manually, at the Pokémart |
+| **Buys** | The authored reward at each level | **Tier-3 Mastery relics only**, 5 Tokens each |
+
+**Why two.** A single bar where every unlock competes is the "XP funnel" trap: progress feels slow and no choice
+feels meaningful. The track guarantees something visible every level — failure is fuel, made legible — while
+Tokens preserve **agency** over the one lane where choice matters most.
+
+## §8.3.5 The reward track
+
+Every Trainer Level grants its authored reward the moment it is reached. About 80 % of levels auto-grant an
+option-expanding reward; every fifth level grants **Tokens**.
+
+| Level | Reward |
+|---|---|
+| 2 | Relic pool +1 (Tier-1 signature) |
+| 3 | Hub: Curated Starting Relic +1 (3 → 4 offers) |
+| 4 | **Meta-Starter: Pikachu** |
+| 5 | 🎟 +5 Tokens |
+| 6 | Hub: Expanded Box (6 → 8) |
+| 7 | Hub: Pokédex Insight |
+| 8 | **Meta-Starter: Eevee** |
+| 9 | Hub: Trauma Salve Cache |
+| 10 | 🎟 +5 Tokens — the Mastery-relic lane opens |
+| 11 | Hub: Apex Pokémon Reveal |
+| 12 | **Meta-Starter: Magikarp** |
+| 13 | Hub: Difficulty Modifier Slot +1 |
+| 14 | New difficulty modifier |
+| 15 | 🎟 +8 Tokens |
+| 16 | Relic pool +1 |
+| 17 | New difficulty modifier |
+| 18 | Hub: Second Starter Slot (Twin Run) |
+| 19 | Cosmetic: trainer title / card frame |
+| 20 | 🎟 +8 Tokens |
+| 21 | New difficulty modifier |
+| 22 | Relic pool +1 |
+| 23 | Cosmetic: Pokédex frame |
+| 24 | Relic pool +1 |
+| 25 | 🎟 +10 Tokens |
+| 26 | Relic pool +1 |
+| 27 | Cosmetic: prestige flair |
+| 28 | Relic pool +1 |
+| 29 | Cosmetic: prestige flair |
+| 30 | 🎟 +10 Tokens + prestige cap |
+
+Level placements and Token amounts are tunable; the anchors are **all three meta-starters by Level 12** and the
+**prestige cap at 30**. The track yields ~44 Tokens and the Mastery lane needs 50 — achievements top up the
+difference deliberately, so the last few relics are earned rather than waited for.
+
+---
+
+# §8.4 The Trainer Hub
+
+The pre-run and post-run menu. Not a 3D space: a clean 2D hub styled as a Pokémon Center interior, with kiosks.
+
+## §8.4.1 Kiosks
+
+| Kiosk | Function | Available |
+|---|---|---|
+| **PC Terminal** | Pokédex, run history, statistics, achievements | From the start |
+| **Trainer Card** | Level, total XP, Tokens, profile stats | From the start |
+| **Pokémart** | Spend Tokens on Tier-3 Mastery relics | From the start |
+| **Daycare Lady** | Configure the starting roster, difficulty modifiers, run options | Trainer Level 3 |
+| **Mystery Door** | Daily Seed runs, leaderboards, prestige Ascension | Post-launch (previewable at 15) |
+
+## §8.4.2 Hub upgrades
+
+Each is quality-of-life or option-expanding, never power, and each is **auto-granted on the reward track** at
+the level shown.
+
+| Upgrade | Level | Effect |
+|---|---|---|
+| Curated Starting Relic +1 | 3 | Run start offers 4 Starting Relics instead of 3 |
+| Expanded Box | 6 | Box capacity 6 → 8 for all future runs |
+| Pokédex Insight | 7 | The first combat against an unseen species at Familiar tier reveals 1 intent free |
+| Trauma Salve Cache | 9 | City 1's shop is guaranteed to stock at least one Trauma Salve |
+| Apex Pokémon Reveal | 11 | The Victory Road Apex species is shown on entering Region 3 |
+| Difficulty Modifier Slot +1 | 13 | Stack 2 difficulty modifiers per run instead of 1 |
+| Second Starter Slot (Twin Run) | 18 | Choose two starters; the Box starts +1 larger. Active Team stays 3 |
+
+## §8.4.3 The Trainer Card
+
+Level and XP bar · Token balance · runs won and lost · fastest run · highest difficulty cleared · Pokédex
+completion · achievement completion · Pokémon recruited, evolved and mastered · favourite Lead (most
+Lead-turns). No mechanical effect — it is the profile, and the goal-setting surface.
+
+---
+
+# §8.5 Starters
+
+## §8.5.1 Default (available from run 1)
+
+| Starter | Type | Archetypes |
+|---|---|---|
+| **Bulbasaur** | Grass → Grass/Poison | Vanguard · Specialist · Support |
+| **Charmander** | Fire → Fire/Flying | Vanguard · Specialist · Support |
+| **Squirtle** | Water | Vanguard · Specialist · Support |
+
+Starters get three archetypes per evolution; most species get two (§6.3.3).
+
+## §8.5.2 Meta-unlocked
+
+Three more, unlocked on the reward track, each widening build diversity rather than raising power.
+
+| Starter | Level | Type | Design slot |
+|---|---|---|---|
+| **Pikachu** | 4 | Electric | The iconic pick. Ranged-leaning kit |
+| **Eevee** | 8 | Normal | The branch-flex pick: its evolution *is* its type choice — Vaporeon, Jolteon or Flareon |
+| **Magikarp** | 12 | Water → Water/Flying | The late bloomer. Nearly useless until level 18, a monster afterwards |
+
+**Eevee has three branches, not four.** Gen I has exactly three Eeveelutions, and the Gen I constraint (§1.6.2)
+outranks a promise of a fourth.
+
+**Magikarp replaces Riolu** as the third meta-starter. Riolu is a Gen IV Pokémon in a Gen I project, and the
+"weak early, devastating later" fantasy it was chosen for is exactly what the Magikarp line already delivers —
+with a three-card deck for the first stretch of the run, which is a far more interesting cost.
+*(Both decided 2026-09-19.)*
+
+## §8.5.3 Starter run modifiers
+
+Small thematic flourishes, balance-neutral by intent:
+
+- **Pikachu:** starts holding a Light Ball (+25 % Electric damage, Pikachu only).
+- **Eevee:** the first Mystery node visited is guaranteed to be a Stone Cache — a free evolution stone of your
+  choice.
+- **Magikarp:** starting relic offers are biased toward Water and toward survivability, because the first two
+  Regions are a defensive problem.
+
+---
+
+# §8.6 The relic pool
+
+## §8.6.1 Availability tiers
+
+| Tier | Count | Available | Unlocked by |
+|---|---|---|---|
+| **Tier 1 — Foundation** | 20 | Run 1 | Always in the pool |
+| **Tier 2 — Discovered** | 20 | Progressive | Triggering a specific run event, once, across any runs |
+| **Tier 3 — Mastery** | 10 | Trainer Level 10+ | 5 Trainer Tokens each, at the Pokémart, in any order |
+
+**Tier is not rarity.** Tier decides whether a relic is in your account's pool at all; rarity decides how often
+it drops once it is (§7.3.1).
+
+Tier 2 creates ongoing discovery: even at Trainer Level 20 there are relics you have not met because you have
+not done the thing that unlocks them. All twenty criteria: [`catalogs/relics.md`](catalogs/relics.md).
+
+Tier 3 is the **only** Token-spend lane, and all ten entries change *how a run works* rather than how hard it
+hits.
+
+**Legendary** is a separate axis again — a **rarity class** (§7.3.7), available from run 1, never randomly
+dropped, obtained only by a guaranteed 1-of-3 pick, maximum 2 per run.
+
+## §8.6.2 Building a run's pool
+
+At run start: all Tier 1, plus every unlocked Tier 2, plus every unlocked Tier 3. A seed-stable subset of that
+pool drives every drop in the run.
+
+**Drop weighting is by rarity, always**: Common 60 % / Uncommon 30 % / Rare 10 %, regardless of which tiers you
+have unlocked. Unlocking more relics never makes the good ones rarer.
+
+## §8.6.3 Starting Relic curation
+
+The 1-of-3 (or 1-of-4) Starting Relic offer is drawn from **Common and Uncommon only** — never Rare, never
+Legendary. A Starting Relic sets a direction; it does not decide the build.
+
+---
+
+# §8.7 Achievements
+
+Achievements grant Trainer XP always, and Tokens at the harder tiers. They are also the discovery signal for
+Tier-2 relics and they carry the meta-starters' old thematic criteria as flavour.
+
+## §8.7.0 Medal tiers
+
+| Tier | Difficulty | XP | Tokens | Extra |
+|---|---|---|---|---|
+| 🥉 Bronze | Easy | 50–100 | — | — |
+| 🥈 Silver | Medium | 150–250 | — | — |
+| 🥇 Gold | Hard | 250–400 | **+2** | Occasional cosmetic title |
+| 💎 Platinum | Very hard | 400–500 | **+5** | Occasional Tier-2 relic or cosmetic |
+
+About 20 % are **Hidden**: the description is revealed on completion.
+
+## §8.7.1 Categories
+
+Eight, fifty achievements, distributed: First Steps 5 · Recruitment 6 · Evolution 6 · Mastery 6 · Combat 7 ·
+Boss 7 · Build Identity 7 · Endurance 6. Twenty grant Tokens.
+
+| Category | Flavour | Examples |
+|---|---|---|
+| **First Steps** | The tutorial beats | Win your first combat · earn your first Badge |
+| **Recruitment** | Breadth of roster | Recruit 25 species · recruit with a full Box |
+| **Evolution** | Using the branch system | Evolve into all 3 archetypes of one species |
+| **Mastery** | Depth with one species | Master a species · master 10 |
+| **Combat** | Single-fight skill | Win taking no damage · win with only Ranged moves |
+| **Boss** | The climaxes | Beat all 3 Gyms in a run · beat a Gym with no faints |
+| **Build Identity** | Self-imposed constraints | All-one-type team · no evolutions · 2 or fewer relics |
+| **Endurance** | Consistency | Win 5 runs in a row · clear Region 3 without healing |
+
+### §8.7.1.1 The catalogue
+
+All fifty, with medal tier, hidden flag **and the trigger event each one listens for**:
+[`catalogs/achievements.md`](catalogs/achievements.md). The trigger column is the difference between a list and
+an implementable system — an achievement without a named event cannot be built.
+
+## §8.7.2 Surface
+
+The PC Terminal shows the full list by category: name, description (or `???` if hidden and incomplete), reward,
+a progress bar where one applies, and the completion date.
+
+## §8.7.3 Hidden achievements
+
+Roughly 20 %, reserved for discovery moments — "the first time you play a 4-AP ultimate" beats. Everything
+chase-able is visible.
+
+---
+
+# §8.8 Difficulty modifiers
+
+## §8.8.1 Structure
+
+At run start the player picks 0–N modifiers from the unlocked pool. **N = 1** by default; the Difficulty
+Modifier Slot +1 Hub upgrade makes it 2.
+
+Each modifier carries a display name and flavour text, one or more mechanical effects, an XP multiplier, and an
+unlock criterion.
+
+## §8.8.2 The pool
+
+| Modifier | Effect | XP × | Unlock |
+|---|---|---|---|
+| **Iron Will** | Wild encounters have +20 % HP | 1.15 | Level 3 |
+| **Tight Schedule** | League micro-rest heals 20 % instead of 30 % | 1.15 | Level 4 |
+| **One Path** | **Both Gym fork routes show the same type** — no counter-pick | 1.10 | Level 4 |
+| **Dense Fog** | Every non-boss enemy starts with one Unknown intent | 1.15 | Level 5 |
+| **No Refunds** | Consumables are expended on use and do not return at combat end | 1.30 | Level 6 |
+| **Box Squeeze** | Box capacity 4, not expandable | 1.20 | Level 7 |
+| **Trauma Surge** | Trauma costs 2 pp more per stack in each zone (−7 % / −12 %; cap unchanged) | 1.20 | Level 8 |
+| **Faint Echo** | A fainted Pokémon's discarded cards stay in the discard pile until the end of next turn | 1.20 | Level 9 |
+| **Greater Threats** | Each Region's enemies use the next Region's stat tier | 1.40 | Level 10 |
+| **Master's Challenge** | Every boss gains one extra phase; aces get a fourth | 1.50 | Level 15 + a Champion clear |
+
+**One Path** removes the informed choice at the fork, which is a genuine difficulty increase and a deliberate,
+opt-in relaxation of Pillar 1 — the one place the player may choose to know less.
+
+**Faint Echo** delays only the discard-pile half of the faint purge. The deck purge is still immediate,
+otherwise you could draw cards from a Pokémon that no longer exists.
+
+## §8.8.3 Stacking
+
+XP multipliers stack **multiplicatively**: ×1.15 and ×1.20 give ×1.38. Mechanical effects apply independently.
+Mutually exclusive pairs are declared per modifier and the picker blocks them; none conflict today.
+
+## §8.8.4 No inverse difficulty
+
+There is no "make it easier" modifier. Playing without modifiers **is** the easy mode, and baseline is the floor.
+This keeps "every run is real" intact and removes the "I won, but on baby mode" asterisk.
+
+---
+
+# §8.9 Pokédex persistence
+
+The Pokédex system itself — tiers, thresholds and rewards — is §5.13. This section owns only how it persists:
+
+- Tracked **per account**, across every run, and never reset.
+- Tier promotions award one-time Trainer XP (§8.3.2).
+- The PC Terminal is its home surface: browsable by species, filterable by tier.
+- Mastery Moves exist as content for every implemented line; the Master tier is what unlocks them.
+
+---
+
+# §8.10 What persists
+
+The account-level save holds: Trainer XP and Level · Tokens and claimed milestones · unlocked starters, Tier-2
+and Tier-3 relics, difficulty modifiers and Hub upgrades · achievement progress · Pokédex progress · lifetime
+statistics.
+
+It is written at run end and on every Pokémart purchase. Format, versioning, atomicity and the three-layer
+model (Meta / Run / Settings): §9.8.
+
+---
+
+# §8.11 Cross-system promises resolved here
+
+| Promise | Where |
+|---|---|
+| §1.6 — 6 starters | §8.5 |
+| §1.6 — 60 relics | §8.6 + §7.3 |
+| §1.7 — stackable difficulty | §8.8 |
+| §2.1.7 — XP on a failed run | §8.3.2 |
+| §2.4.4 — the cost of fainting | §8.2 |
+| §5.13 — who owns the Pokédex | §5.13 owns it; §8.9 persists it |
+
+---
+
+# §8.12 Build order
+
+| System | Version |
+|---|---|
+| Trauma stacks and Effective Max HP | v0.2 (with HP persistence) |
+| Trauma services (Therapy, Salve, Daycare) | v0.4 |
+| Achievements (first 10) | v0.5 |
+| Difficulty modifiers (first 3) | v0.4, full pool v0.6 |
+| Trainer XP, Level, the track, Tokens, the Hub | v0.6 |
+| Pokédex tiers and Mastery Moves | v0.6 |
+
+---
+
+# §8.13 Glossary additions
+
+**Trauma stack** — a per-instance, per-run counter incremented on faint; reduces Effective Max HP on the
+two-zone curve of §6.2.1.
+**Effective Max HP** — the Trauma-adjusted ceiling every heal and every damage-over-time tick uses.
+**Trainer XP** — persistent account XP; never spent; drives Trainer Level.
+**Trainer Level** — the account metric that advances the reward track and gates unlocks.
+**Trainer Token** — the agency currency; milestone levels and hard achievements; spent only on Tier-3 relics.
+**Hub upgrade** — a permanent quality-of-life or option-expanding unlock, granted on the track.
+**Tier 1 / 2 / 3** — a relic's meta-unlock status. Not its rarity.
+**Legendary relic** — a 4th rarity class above Rare: choice-only, never dropped, max 2 per run (§7.3.7).
+**Difficulty modifier** — an opt-in run-start challenge that multiplies the run's Trainer XP.

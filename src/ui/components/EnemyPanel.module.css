@@ -1,0 +1,215 @@
+.zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  max-width: 360px;
+}
+.intent {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
+  border: 2px solid var(--accent-negative);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: var(--type-small);
+  color: var(--ink-primary);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  max-width: 100%;
+}
+.intentHidden {
+  border-color: var(--ink-muted);
+  color: var(--ink-secondary);
+}
+.intentIdle {
+  border-color: var(--brand-blue);
+}
+.intentIcon {
+  filter: invert(1) brightness(1.4);
+  flex: 0 0 auto;
+}
+.intentText small {
+  display: block;
+  color: var(--ink-muted);
+  font-size: 11px;
+}
+.dmg {
+  color: var(--accent-negative);
+}
+.card {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  background: color-mix(in srgb, var(--surface-1) 90%, transparent);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-3);
+  color: var(--ink-primary);
+  text-align: left;
+  backdrop-filter: blur(4px);
+  transition:
+    box-shadow var(--motion-base) ease,
+    border-color var(--motion-fast) ease,
+    transform var(--motion-base) var(--ease-spring);
+}
+.targetable {
+  border-color: var(--accent-action);
+  animation: glowPulse 1.1s ease-out infinite;
+  cursor: crosshair;
+}
+.targetable:hover {
+  transform: scale(1.02);
+}
+.fainted {
+  filter: saturate(0.2);
+  opacity: 0.7;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.types {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.icon {
+  width: 48px;
+  height: 40px;
+  object-fit: contain;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+}
+.nameBlock {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.name {
+  font-size: var(--type-h2);
+  line-height: 1;
+}
+.meta {
+  font-size: var(--type-caption);
+  color: var(--ink-muted);
+}
+.phase {
+  color: var(--accent-warning);
+}
+.badges {
+  display: flex;
+  gap: 2px;
+}
+.spriteWrap {
+  position: relative;
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.sprite {
+  position: relative;
+  z-index: 1;
+  height: 150px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.45));
+}
+.shadow {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+}
+.hpRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.hpText {
+  font-size: var(--type-number);
+  line-height: 1;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  justify-content: flex-end;
+}
+.chipUp,
+.chipDown,
+.chipInfo {
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  color: #3a2e22;
+}
+.chipUp {
+  background: var(--accent-positive);
+}
+.chipDown {
+  background: var(--accent-negative);
+}
+.chipInfo {
+  background: var(--brand-cream);
+}
+.catch {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
+  border: 1px solid var(--brand-red);
+  border-radius: var(--radius-pill);
+  padding: 5px 12px 5px 8px;
+  backdrop-filter: blur(4px);
+}
+.catchReady {
+  border-width: 2px;
+  box-shadow: 0 0 18px rgba(84, 217, 138, 0.55);
+}
+.ball {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--brand-red) 48%, #2a2230 48% 56%, #fff 56%);
+  border: 2px solid #2a2230;
+  flex: 0 0 auto;
+}
+.catchTrack {
+  width: 120px;
+  height: 9px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.catchFill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-warning), var(--accent-positive));
+  transition: width var(--motion-slow) ease-out;
+}
+.catchLabel {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  min-width: 46px;
+}
+.catchReady .catchLabel {
+  color: var(--accent-positive);
+}
+.catchBalls {
+  font-size: 12px;
+  color: var(--ink-muted);
+}

@@ -1,0 +1,14 @@
+# Line endings: LF in the repository and LF in every working copy, whatever the machine's core.autocrlf says.
+# .editorconfig already declares lf and Prettier enforces it; without this, a Windows checkout with the
+# default autocrlf=true rewrites every text file to CRLF on disk and the Git Bash hooks stop running.
+* text=auto eol=lf
+
+# Binary art and fonts: never touch the bytes.
+*.png binary
+*.jpg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary

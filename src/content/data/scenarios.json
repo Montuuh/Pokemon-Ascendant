@@ -1,0 +1,272 @@
+{
+  "_note": "Combat fixtures (docs/roadmap.md v0.1 tooling). Each is a complete CombatSetup: deep-link with /?scenario=<id>, used by Playwright, golden-master replays and playtests. Enemies listed in order are fought SEQUENTIALLY (Gym leaders field 2, §5.9.3); simultaneous multi-enemy is v0.7. `hpPercent`/`status` seed a mid-fight state. Stage keys map to public/art/stages/<stage>.jpg.",
+  "scenarios": [
+    {
+      "id": "wild-basic",
+      "name": "Wild — Route 1 Pidgey",
+      "description": "The first fight of a run: three basic starters against a wild Pidgey. Learn the hand, the AP, the Lead.",
+      "kind": "wild",
+      "stage": "meadow",
+      "seed": 1001,
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 8
+          },
+          {
+            "species": "squirtle",
+            "level": 7
+          },
+          {
+            "species": "bulbasaur",
+            "level": 7
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "potion",
+          "potion",
+          "antidote",
+          "poke-ball"
+        ],
+        "balls": 3
+      },
+      "enemies": [
+        {
+          "species": "pidgey",
+          "level": 7,
+          "tier": "wild",
+          "phaseCount": 1
+        }
+      ]
+    },
+    {
+      "id": "wild-catch-ready",
+      "name": "Wild — Catch a Caterpie",
+      "description": "A weakened wild Caterpie: read the Catchability gauge, weaken or status it, throw when READY.",
+      "kind": "wild",
+      "stage": "forest",
+      "seed": 1002,
+      "player": {
+        "team": [
+          {
+            "species": "squirtle",
+            "level": 8
+          },
+          {
+            "species": "charmander",
+            "level": 8
+          },
+          {
+            "species": "pidgey",
+            "level": 6
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "potion",
+          "poke-ball",
+          "ether"
+        ],
+        "balls": 2
+      },
+      "enemies": [
+        {
+          "species": "caterpie",
+          "level": 8,
+          "tier": "wild",
+          "phaseCount": 1,
+          "hpPercent": 60
+        }
+      ]
+    },
+    {
+      "id": "trainer-2enemy",
+      "name": "Trainer — Youngster Joey",
+      "description": "A trainer with two Pokémon fought back to back. No catching; the second one comes in fresh.",
+      "kind": "trainer",
+      "stage": "meadow",
+      "seed": 1003,
+      "trainer": {
+        "name": "Youngster Joey",
+        "sprite": "youngster"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "bulbasaur",
+            "level": 9
+          },
+          {
+            "species": "charmander",
+            "level": 9
+          },
+          {
+            "species": "squirtle",
+            "level": 8
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "potion",
+          "potion",
+          "antidote",
+          "x-attack"
+        ],
+        "balls": 2
+      },
+      "enemies": [
+        {
+          "species": "caterpie",
+          "level": 8,
+          "tier": "trainer",
+          "phaseCount": 1
+        },
+        {
+          "species": "pidgey",
+          "level": 10,
+          "tier": "trainer",
+          "phaseCount": 1
+        }
+      ]
+    },
+    {
+      "id": "status-showcase",
+      "name": "Wild — Butterfree in the fog",
+      "description": "Your team starts Burned, Poisoned and Paralysed; Butterfree brings Sleep and Confusion. Every status rule on one screen.",
+      "kind": "wild",
+      "stage": "forest",
+      "seed": 1004,
+      "player": {
+        "team": [
+          {
+            "species": "charmeleon",
+            "level": 12,
+            "status": "poison"
+          },
+          {
+            "species": "wartortle",
+            "level": 12,
+            "status": "burn"
+          },
+          {
+            "species": "ivysaur",
+            "level": 12,
+            "status": "paralysis"
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "antidote",
+          "burn-heal",
+          "paralyze-heal",
+          "full-heal",
+          "awakening",
+          "potion"
+        ],
+        "balls": 1
+      },
+      "enemies": [
+        {
+          "species": "butterfree",
+          "level": 13,
+          "tier": "wild",
+          "phaseCount": 1
+        }
+      ]
+    },
+    {
+      "id": "full-hand-3mon",
+      "name": "Wild — Graveler, full deck",
+      "description": "Three mid-stage Pokémon, twelve cards, a Rock/Ground wall. The swap decision at full hand size.",
+      "kind": "wild",
+      "stage": "cave",
+      "seed": 1005,
+      "player": {
+        "team": [
+          {
+            "species": "wartortle",
+            "level": 13
+          },
+          {
+            "species": "ivysaur",
+            "level": 13
+          },
+          {
+            "species": "charmeleon",
+            "level": 13
+          }
+        ],
+        "leadIndex": 2,
+        "consumables": [
+          "super-potion",
+          "potion",
+          "ether",
+          "x-attack",
+          "poke-ball"
+        ],
+        "balls": 3
+      },
+      "enemies": [
+        {
+          "species": "graveler",
+          "level": 13,
+          "tier": "wild",
+          "phaseCount": 1
+        }
+      ]
+    },
+    {
+      "id": "wild-boss-3phase",
+      "name": "Gym — Rock Leader Brock",
+      "description": "The Region 1 climax, fought by a team that actually walked the route: Geodude, then the Golem ace with three phases, Cleave, Backstrike and Sturdy.",
+      "kind": "boss",
+      "stage": "gym",
+      "seed": 1006,
+      "trainer": {
+        "name": "Leader Brock",
+        "sprite": "brock"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "wartortle",
+            "level": 14
+          },
+          {
+            "species": "butterfree",
+            "level": 13
+          },
+          {
+            "species": "rattata",
+            "level": 13
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "super-potion",
+          "potion",
+          "full-heal",
+          "ether",
+          "x-attack"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "geodude",
+          "level": 14,
+          "tier": "boss",
+          "phaseCount": 2
+        },
+        {
+          "species": "golem",
+          "level": 16,
+          "tier": "boss",
+          "phaseCount": 3
+        }
+      ]
+    }
+  ]
+}

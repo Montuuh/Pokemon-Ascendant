@@ -1,0 +1,174 @@
+.root {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+  overflow: auto;
+  padding-right: var(--sp-1);
+}
+.heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: var(--sp-2) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.count {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-2);
+}
+.empty {
+  margin: 0;
+  font-size: var(--type-caption);
+  color: var(--ink-muted);
+}
+.row {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 50px 1fr auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  background: var(--surface-2);
+  text-align: left;
+  transition: transform var(--motion-fast) var(--ease-spring);
+}
+.row:hover:not(:disabled) {
+  transform: translateX(2px);
+}
+.row:disabled {
+  cursor: default;
+}
+.active {
+  background: var(--surface-1);
+  border-color: var(--border-strong);
+}
+.lead {
+  border-color: var(--accent-action);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-action) 30%, transparent);
+}
+.fainted {
+  opacity: 0.55;
+  filter: grayscale(0.6);
+}
+.crown {
+  position: absolute;
+  top: -8px;
+  left: -6px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-action);
+  color: #5a4406;
+  border: 2px solid var(--surface-1);
+}
+.body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.nameRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.name {
+  font-size: var(--type-small);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.level {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.xp {
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.xpFill {
+  display: block;
+  height: 100%;
+  background: var(--brand-blue);
+}
+.badges {
+  display: grid;
+  gap: 3px;
+  justify-items: center;
+}
+.trauma {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-warning);
+  color: #4a2a06;
+}
+.lockNote {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--type-caption);
+  color: var(--ink-muted);
+}
+
+/* §6.7.2 — the Move Manager handle. Sits on the row rather than inside it: the row's own click is the
+   Active/Lead decision, and stacking two meanings on one button was how the Unity build got confusing. */
+.item {
+  position: relative;
+}
+.moves {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--ink-secondary);
+  line-height: 1;
+}
+.moves:hover {
+  background: var(--accent-action);
+  color: var(--ink-primary);
+}
+.movesWaiting {
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  border-color: var(--ink-primary);
+}
+.movesCount {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-caption);
+}

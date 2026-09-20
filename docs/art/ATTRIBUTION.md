@@ -1,0 +1,45 @@
+# Attribution
+
+**Pokémon Ascendant is a free, non-commercial fan project.** It is not sold, it carries no advertising, and it takes no
+payment of any kind. It is not affiliated with, endorsed by or connected to Nintendo, Creatures Inc.,
+GAME FREAK inc. or The Pokémon Company. Pokémon, the Poké Ball device, Gym Badges, the Pokémon Centre and
+Poké Mart marks, and all Pokémon names are trademarks of Nintendo / Creatures / GAME FREAK.
+
+**On the art, in two halves.**
+
+*Generated:* two scenes, and only two — the main-menu vista and the Region 1 route plate. Both are drawn as
+**top-down pixel art**, in the franchise's own overworld register, deliberately and knowingly, on the basis
+that the project is free and stays free. v0.4 also generated the four battle backdrops; v0.5 replaced them
+with the real ones, because a place the player has stood in is an object like any other.
+
+*Real assets:* everything the player already knows by heart — every item, the Boulder Badge, the Pokémon
+Centre, the trainer classes, the Pokémon themselves. A generative model approximates an object; it cannot
+reproduce a specific one, and an approximate Potion reads as wrong however well it is drawn. These are
+Nintendo / Creatures / GAME FREAK artwork, mirrored by fan archives and used here under the same
+non-commercial fan terms as everything else in this file.
+
+If Pokémon Ascendant ever stopped being non-commercial, none of this could ship as it stands.
+
+| Asset family | Source | Licence / terms | Path |
+|---|---|---|---|
+| Pokémon official artwork, Gen VIII box icons | [PokeAPI/sprites](https://github.com/PokeAPI/sprites) (mirrors official assets) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/pokemon/{portraits,icons}` |
+| Animated battle sprites (gen5ani) | [Pokémon Showdown](https://play.pokemonshowdown.com/sprites/) / Smogon sprite project | © Nintendo / Creatures / GAME FREAK; sprite edits by the Smogon community; fan use | `public/art/pokemon/battle` |
+| Stage backdrops (13) | **The real battle backgrounds** — Pokémon Showdown's gen6 rips (`npm run art:fetch`) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/stages` |
+| Game glyph SVG set (type, status, intent, trait, modifier, rarity, medal, action, nav, toolbar) | Authored for this project | project licence | `public/art/icons/**` |
+| Scene art: the Region 1 route plate and the main-menu vista | Generated with Google Gemini image models (`npm run art:gen`) | generated work, Pokémon-themed by intent; outputs carry a SynthID watermark and are usable per Google's terms | `public/art/map/region-1.png`, `public/art/ui/menu-vista.png` |
+| 11 consumable item icons | **The real item renders**, Scarlet & Violet, 160², via [Serebii's itemdex](https://www.serebii.net/itemdex/) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/items` |
+| Map emblems: the Boulder Badge, the HGSS Pokémon Centre, the HGSS tall-grass tile, the FRLG Fighting Dojo | **The real assets**, via the [Bulbagarden Archives](https://archives.bulbagarden.net) MediaWiki API | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/icons/map` |
+| TM discs, one per type (Normal, Fire, Water, Ground) | **The real assets** — the Scarlet & Violet bag sprites, same archive | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/items/tm*.png` |
+| Map emblems: the four trainer classes | The Showdown trainer-class sprites already in the project, mounted on the same badge disc | as the trainer sprites above | `public/art/icons/map` |
+| Nav / system icons | [Tabler Icons](https://tabler.io/icons) | MIT | `@tabler/icons-react` |
+| Baloo 2 | Ek Type | SIL OFL 1.1 (`src/assets/fonts/OFL-Baloo2.txt`) | `src/assets/fonts` |
+| Nunito | Vernon Adams, Cyreal, Jacques Le Bailly | SIL OFL 1.1 (`src/assets/fonts/OFL-Nunito.txt`) | `src/assets/fonts` |
+
+Add a row for every third-party asset you bring in (game-icons.net entries need the author name per CC BY 3.0).
+
+## Trainer sprites
+
+`public/art/trainers` holds twelve Pokémon Showdown trainer-class sprites — the archetypes (`youngster`,
+`lass`, `bug-catcher`, `hiker`, `swimmer`, `camper`, `picnicker`, `acetrainer`) and the four Region 1 Gym
+Leaders (`brock`, `misty`, `bugsy`, `whitney`) — fetched by `npm run art:trainers`. Same terms as the battle
+sprites: © Nintendo / Creatures / GAME FREAK, community sprite work, fan use only.

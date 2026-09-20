@@ -1,0 +1,22 @@
+/* Bundled variable fonts (SIL OFL — licences in src/assets/fonts/). No network fetch at runtime. */
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('../../assets/fonts/Baloo2-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('../../assets/fonts/Nunito-VariableFont_wght.ttf') format('truetype');
+  font-weight: 200 1000;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('../../assets/fonts/Nunito-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 200 1000;
+  font-style: italic;
+  font-display: swap;
+}

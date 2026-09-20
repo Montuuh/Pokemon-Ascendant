@@ -1,0 +1,50 @@
+{
+  "scenarioId": "full-hand-3mon",
+  "seed": 1005,
+  "actions": [
+    {
+      "type": "play-card",
+      "cardId": "c2"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c10"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c4"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c0"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c8"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c4"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c2"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c9"
+    },
+    {
+      "type": "end-turn"
+    }
+  ],
+  "fingerprint": "t3 victory lead=2 ap=1 team=[wartortle:95/95,ivysaur:96/96,charmeleon:33/82] enemies=[graveler:0/91] events=51 rng=1751726669",
+  "turns": 3,
+  "outcome": "victory"
+}

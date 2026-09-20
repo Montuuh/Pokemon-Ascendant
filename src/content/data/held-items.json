@@ -1,0 +1,209 @@
+{
+  "_note": "Held Item catalog — all 19 of docs/design/catalogs/held-items.md. One slot per Pokémon, always on, wearer-only, swapped only in the Map View and kept until the run ends (§7.4.1). Releasing a Pokémon drops its item back to the bag rather than losing it. Ids differ from the same-named relics on purpose: the relic is party-wide and weaker, the item is one Pokémon and stronger (§7.4.2). `thick-club` is locked to Marowak and never enters a random pool (§7.4.6); Marowak is not in the build yet, so it is authored and unreachable rather than dropped from the file.",
+  "items": [
+    {
+      "id": "charcoal",
+      "name": "Charcoal",
+      "description": "The wearer deals +20 % with fire moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "fire",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "mystic-water",
+      "name": "Mystic Water",
+      "description": "The wearer deals +20 % with water moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "water",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "magnet",
+      "name": "Magnet",
+      "description": "The wearer deals +20 % with electric moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "electric",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "miracle-seed",
+      "name": "Miracle Seed",
+      "description": "The wearer deals +20 % with grass moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "grass",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "nevermeltice",
+      "name": "NeverMeltIce",
+      "description": "The wearer deals +20 % with ice moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "ice",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "black-belt",
+      "name": "Black Belt",
+      "description": "The wearer deals +20 % with fighting moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "fighting",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "sharp-beak",
+      "name": "Sharp Beak",
+      "description": "The wearer deals +20 % with flying moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "flying",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "twisted-spoon",
+      "name": "Twisted Spoon",
+      "description": "The wearer deals +20 % with psychic moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "psychic",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "splash-plate",
+      "name": "Splash Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with water moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "water",
+        "percent": 5
+      },
+      "grantsLeadAura": "water"
+    },
+    {
+      "id": "flame-plate",
+      "name": "Flame Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with fire moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "fire",
+        "percent": 5
+      },
+      "grantsLeadAura": "fire"
+    },
+    {
+      "id": "zap-plate",
+      "name": "Zap Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with electric moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "electric",
+        "percent": 5
+      },
+      "grantsLeadAura": "electric"
+    },
+    {
+      "id": "meadow-plate",
+      "name": "Meadow Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with grass moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "grass",
+        "percent": 5
+      },
+      "grantsLeadAura": "grass"
+    },
+    {
+      "id": "mind-plate",
+      "name": "Mind Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with psychic moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "psychic",
+        "percent": 5
+      },
+      "grantsLeadAura": "psychic"
+    },
+    {
+      "id": "leftovers",
+      "name": "Leftovers",
+      "description": "The wearer recovers a sixteenth of its HP at the end of every turn.",
+      "hook": "turn-end-heal",
+      "params": {
+        "divisor": 16
+      }
+    },
+    {
+      "id": "eviolite",
+      "name": "Eviolite",
+      "description": "While the wearer is not fully evolved, it takes 20 % less damage.",
+      "hook": "damage-taken",
+      "params": {
+        "notFullyEvolved": true,
+        "multiplier": 0.8,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "focus-sash",
+      "name": "Focus Sash",
+      "description": "Once per combat, the wearer survives a lethal hit at 1 HP.",
+      "hook": "endure",
+      "params": {
+        "charges": 1
+      }
+    },
+    {
+      "id": "choice-band",
+      "name": "Choice Band",
+      "description": "The wearer deals +25 % with Melee moves, and cannot play Ranged ones at all.",
+      "hook": "choice-lock",
+      "params": {
+        "range": "melee",
+        "multiplier": 1.25
+      }
+    },
+    {
+      "id": "choice-scarf",
+      "name": "Choice Scarf",
+      "description": "The wearer's moves cost 1 less AP, but only one of them may be played each turn.",
+      "hook": "choice-lock",
+      "params": {
+        "apDelta": -1,
+        "onePerTurn": true
+      }
+    },
+    {
+      "id": "thick-club",
+      "name": "Thick Club",
+      "description": "Marowak only: +50 % with Melee moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "range": "melee",
+        "multiplier": 1.5,
+        "wearerOnly": true
+      },
+      "speciesLock": "marowak"
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "_note": "Per §3.5 / §7.2 — per-combat-use roster, restored at combat end. Ported from Unity VS_ItemSeeder. `target`: ally (pick a team member) | self-lead | none | enemy. Icons: public/art/items/<id>.png (PokéAPI item sprites).",
+  "consumables": [
+    {
+      "id": "potion",
+      "name": "Potion",
+      "apCost": 1,
+      "tier": 1,
+      "target": "ally",
+      "effect": {
+        "kind": "heal-flat",
+        "amount": 20
+      },
+      "description": "Restore 20 HP to one Pokémon.",
+      "gdd": "§7.2.1",
+      "upgradeTo": "super-potion"
+    },
+    {
+      "id": "super-potion",
+      "name": "Super Potion",
+      "apCost": 1,
+      "tier": 2,
+      "target": "ally",
+      "effect": {
+        "kind": "heal-flat",
+        "amount": 60
+      },
+      "description": "Restore 60 HP to one Pokémon.",
+      "gdd": "§7.2.1",
+      "upgradeTo": "hyper-potion"
+    },
+    {
+      "id": "antidote",
+      "name": "Antidote",
+      "apCost": 0,
+      "tier": 1,
+      "target": "ally",
+      "effect": {
+        "kind": "cure",
+        "status": "poison"
+      },
+      "description": "Cure Poison on one Pokémon.",
+      "gdd": "§7.2.3"
+    },
+    {
+      "id": "burn-heal",
+      "name": "Burn Heal",
+      "apCost": 0,
+      "tier": 1,
+      "target": "ally",
+      "effect": {
+        "kind": "cure",
+        "status": "burn"
+      },
+      "description": "Cure Burn on one Pokémon.",
+      "gdd": "§7.2.3"
+    },
+    {
+      "id": "ice-heal",
+      "name": "Ice Heal",
+      "apCost": 0,
+      "tier": 1,
+      "target": "ally",
+      "effect": {
+        "kind": "cure",
+        "status": "freeze"
+      },
+      "description": "Thaw a Frozen Pokémon.",
+      "gdd": "§4.2.7"
+    },
+    {
+      "id": "awakening",
+      "name": "Awakening",
+      "apCost": 0,
+      "tier": 1,
+      "target": "ally",
+      "effect": {
+        "kind": "cure",
+        "status": "sleep"
+      },
+      "description": "Wake a Sleeping Pokémon.",
+      "gdd": "§7.2.3"
+    },
+    {
+      "id": "paralyze-heal",
+      "name": "Paralyze Heal",
+      "apCost": 0,
+      "tier": 1,
+      "target": "ally",
+      "effect": {
+        "kind": "cure",
+        "status": "paralysis"
+      },
+      "description": "Cure Paralysis on one Pokémon.",
+      "gdd": "§7.2.3"
+    },
+    {
+      "id": "full-heal",
+      "name": "Full Heal",
+      "apCost": 1,
+      "tier": 1,
+      "target": "ally",
+      "effect": {
+        "kind": "cure",
+        "status": "all"
+      },
+      "description": "Cure every status condition on one Pokémon, including Confusion.",
+      "gdd": "§7.2.3"
+    },
+    {
+      "id": "ether",
+      "name": "Ether",
+      "apCost": 1,
+      "tier": 1,
+      "target": "none",
+      "effect": {
+        "kind": "ap",
+        "amount": 2
+      },
+      "description": "Gain 2 AP this turn. It costs 1, so the net is +1.",
+      "gdd": "§7.2.4"
+    },
+    {
+      "id": "x-attack",
+      "name": "X Attack",
+      "apCost": 1,
+      "tier": 1,
+      "target": "ally",
+      "effect": {
+        "kind": "stage",
+        "stat": "attack",
+        "stages": 1
+      },
+      "description": "Raise one Pokémon's Attack by 1 stage.",
+      "gdd": "§7.2.4"
+    },
+    {
+      "id": "poke-ball",
+      "name": "Poké Ball",
+      "apCost": 1,
+      "tier": 1,
+      "target": "enemy",
+      "effect": {
+        "kind": "catch",
+        "thresholdPercent": 30,
+        "statusBonusPercent": 20
+      },
+      "description": "Catch a wild Pokémon once the Catchability gauge reads READY (HP ≤ 30%, or ≤ 50% with a status). Costs a ball whether it works or not.",
+      "gdd": "§2.6.4 (CL-014)"
+    },
+    {
+      "id": "hyper-potion",
+      "name": "Hyper Potion",
+      "apCost": 1,
+      "tier": 3,
+      "target": "ally",
+      "effect": {
+        "kind": "heal-flat",
+        "amount": 120
+      },
+      "description": "Restore 120 HP to one Pokémon.",
+      "gdd": "§7.2.1",
+      "upgradeTo": "max-potion"
+    },
+    {
+      "id": "max-potion",
+      "name": "Max Potion",
+      "apCost": 1,
+      "tier": 4,
+      "target": "ally",
+      "effect": {
+        "kind": "heal-percent",
+        "percent": 100
+      },
+      "description": "Restore one Pokémon to its full Max HP.",
+      "gdd": "§7.2.1"
+    },
+    {
+      "id": "revive",
+      "name": "Revive",
+      "apCost": 2,
+      "tier": 4,
+      "target": "ally",
+      "effect": {
+        "kind": "revive",
+        "percent": 50
+      },
+      "description": "Bring a fainted Pokémon back at half HP. The only revival there is inside a fight.",
+      "gdd": "§2.4.3"
+    },
+    {
+      "id": "x-defense",
+      "name": "X Defense",
+      "apCost": 1,
+      "tier": 2,
+      "target": "ally",
+      "effect": {
+        "kind": "stage",
+        "stat": "defense",
+        "stages": 1
+      },
+      "description": "Raise one Pokémon’s Defense by one stage for the rest of the combat.",
+      "gdd": "§7.2.4"
+    }
+  ]
+}

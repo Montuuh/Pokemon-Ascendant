@@ -1,0 +1,184 @@
+/* §4.4 — the Move Manager. Overlay chrome shared with the other management screens: title bar, Close ✕,
+   Esc closes, focus trapped by the caller. Embedded inside the Dojo it drops the chrome and keeps the body. */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-5);
+  background: var(--scrim);
+  z-index: 40;
+}
+.panel {
+  position: relative;
+  width: min(720px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  padding: var(--sp-5);
+  background: var(--surface-1);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 60px rgba(58, 46, 34, 0.35);
+}
+.close {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+}
+.close:hover {
+  background: var(--surface-3);
+}
+
+.body {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.who {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-bottom: var(--sp-3);
+  border-bottom: 2px solid var(--border-subtle);
+}
+.name {
+  margin: 0;
+  font-size: var(--type-h2);
+}
+.sub {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.auto {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-small);
+}
+.auto:hover {
+  background: var(--accent-action);
+}
+
+.column {
+  display: grid;
+  gap: var(--sp-2);
+}
+.colTitle {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  font-size: var(--type-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.count {
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  color: var(--ink-primary);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.move {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease,
+    transform 120ms ease;
+}
+.move:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  transform: translateX(2px);
+}
+.inKit {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+}
+.blocked {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.tm {
+  grid-template-columns: auto 1fr auto;
+  border-style: dashed;
+}
+
+.moveBody {
+  display: grid;
+}
+.moveName {
+  font-size: var(--type-body);
+}
+.moveMeta {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.stat,
+.ap {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-small);
+}
+.ap {
+  color: var(--ink-secondary);
+}
+.grab {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+}
+
+.slotHint,
+.empty {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-muted);
+}
+
+.toast {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--accent-warning);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+}

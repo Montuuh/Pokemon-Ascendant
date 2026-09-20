@@ -1,0 +1,44 @@
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  display: grid;
+  place-items: center;
+  z-index: var(--z-modal);
+  backdrop-filter: blur(3px);
+}
+.panel {
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6) var(--sp-8);
+  min-width: 420px;
+  max-width: 720px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+.victory {
+  border-color: var(--accent-action);
+}
+.defeat {
+  border-color: var(--accent-negative);
+}
+.title {
+  margin: 0 0 var(--sp-4);
+  font-size: var(--type-display);
+  line-height: 1;
+}
+/* Prose rather than a prompt: wider, left-aligned, and allowed to scroll inside the viewport so a long
+   panel does not run off the bottom at 720p. */
+.reading {
+  max-width: 860px;
+  width: min(860px, calc(100vw - 2 * var(--sp-6)));
+  max-height: min(86vh, 860px);
+  overflow: auto;
+  text-align: left;
+  padding: var(--sp-6);
+}
+.reading .title {
+  text-align: center;
+}

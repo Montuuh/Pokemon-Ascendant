@@ -1,0 +1,393 @@
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: radial-gradient(120% 80% at 50% 0%, #fffaf0 0%, var(--surface-0) 60%);
+  color: var(--ink-primary);
+}
+.chrome {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding: var(--sp-5) var(--sp-8) var(--sp-3);
+  border-bottom: 2px solid var(--border-subtle);
+}
+.title {
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+.dots {
+  display: flex;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dot,
+.dotOn {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+  color: var(--ink-muted);
+}
+.dot::before,
+.dotOn::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border-subtle);
+}
+.dotOn {
+  color: var(--ink-primary);
+  font-weight: 700;
+}
+.dotOn::before {
+  background: var(--accent-action);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-action) 35%, transparent);
+}
+
+.body {
+  overflow: auto;
+  padding: var(--sp-6) var(--sp-8);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--sp-6);
+  align-content: start;
+}
+.difficulties {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-3);
+  align-content: start;
+  overflow-y: auto;
+  padding: var(--sp-1);
+}
+.diffCard {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  text-align: left;
+  padding: var(--sp-4);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  transition: transform var(--motion-fast) var(--ease-spring);
+}
+.diffCard:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.diffName {
+  font-size: var(--type-h3);
+  padding-right: 64px;
+}
+.rec {
+  justify-self: start;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-primary);
+}
+.diffEffect {
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+.diffReward {
+  font-size: var(--type-small);
+  font-weight: 700;
+  color: var(--ink-primary);
+  border-left: 4px solid var(--accent-positive);
+  padding-left: var(--sp-2);
+}
+/* A locked or partial row explains itself in place, under the effect — an asterisk with no footnote is
+   exactly the kind of thing §7.7 exists to stop. */
+.lockTag,
+.partialTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px var(--sp-2);
+  border-left: 3px solid var(--border-strong);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+  font-size: 11px;
+  line-height: 1.3;
+}
+.partialTag {
+  border-left-color: var(--accent-warning);
+  background: color-mix(in srgb, var(--accent-warning) 12%, transparent);
+  color: var(--ink-primary);
+}
+.partialTag svg { color: var(--accent-warning); flex: none; }
+.lockTag svg { flex: none; }
+
+/* §8.8.3 — the XP premium is the whole reason to take one, so it sits where the eye lands first. */
+.diffXp {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.picked {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-red) 22%, transparent);
+}
+
+.roster {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+  align-content: start;
+}
+.tile {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  transition: transform var(--motion-fast) var(--ease-spring);
+}
+.tile:hover {
+  transform: translateY(-3px);
+}
+.tile img {
+  image-rendering: auto;
+  filter: drop-shadow(0 8px 10px rgba(58, 46, 34, 0.22));
+}
+.tileType {
+  position: absolute;
+  top: var(--sp-3);
+  left: var(--sp-3);
+}
+.tileName {
+  font-size: var(--type-h3);
+}
+
+.detail {
+  background: var(--surface-1);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+}
+.detailHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.detailName {
+  margin: 0;
+  font-size: var(--type-h2);
+}
+.chips {
+  display: flex;
+  gap: var(--sp-2);
+}
+.typeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: capitalize;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  padding: 2px var(--sp-2) 2px 2px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+}
+.flavour {
+  margin: 0 0 var(--sp-2);
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+.sectionTitle {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--type-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.stats {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+.statRow {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+}
+.statRow dt {
+  color: var(--ink-secondary);
+}
+.statRow dd {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 36px;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.statTrack {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.statFill {
+  display: block;
+  height: 100%;
+  background: var(--accent-action);
+}
+.moves {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.moveChip {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 4px var(--sp-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+}
+.moveCost {
+  font-weight: 700;
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.line {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-8);
+  border-top: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+.back,
+.next {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-5);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-h3);
+}
+.back {
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+  border: 1px solid var(--border-subtle);
+}
+.next {
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  box-shadow: 0 6px 0 #d9a51d;
+}
+.next:hover {
+  transform: translateY(-2px);
+}
+
+/* Region 1 Gym matchup. Tone is carried by a left border and a word, never by colour alone (ui.md). */
+.gym {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-left: 4px solid var(--border-strong);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--type-small);
+}
+.gymGood {
+  border-left-color: var(--accent-positive);
+}
+.gymFair {
+  border-left-color: var(--border-strong);
+}
+.gymHard {
+  border-left-color: var(--accent-warning);
+}
+
+/* Step chrome shared by the Difficulty and Relic steps: a heading, a lede, then the grid. */
+.diffIntro {
+  grid-column: 1 / -1;
+  max-width: 68ch;
+  margin: 0 auto var(--sp-4);
+  text-align: center;
+}
+.stepTitle {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+.stepLede {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+  line-height: 1.5;
+}
+.xpTally {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--type-small);
+}
+.xpNote { color: var(--ink-muted); }
+
+/* §8.6.3 — the 1-of-3 Starting Relic offer. */
+.relics {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
+  gap: var(--sp-4);
+  justify-content: center;
+  align-content: start;
+}
+.relicTake {
+  color: var(--ink-muted);
+  font-size: var(--type-caption);
+}
+.skipNote {
+  grid-column: 1 / -1;
+  margin: var(--sp-4) 0 0;
+  text-align: center;
+  color: var(--ink-muted);
+  font-size: var(--type-caption);
+}

@@ -1,0 +1,63 @@
+{
+  "name": "pokemon-ascendant",
+  "private": true,
+  "version": "0.4.0-dev",
+  "description": "Pokémon Ascendant — roguelike deckbuilder where the party is the deck (web build).",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite --port 5173 --strictPort",
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "playwright test",
+    "shot": "playwright test e2e/screens.spec.ts",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run check:refs && npm run check:catalogs",
+    "art:sprites": "node scripts/fetch-sprites.mjs",
+    "art:gen": "node scripts/gen-image.mjs",
+    "art:portraits": "node scripts/fetch-portraits.mjs",
+    "art:fetch": "node scripts/fetch-art.mjs",
+    "balance": "vitest run src/sim/balance --reporter=verbose",
+    "check:catalogs": "node scripts/check-catalogs.mjs --strict",
+    "check:refs": "node scripts/check-refs.mjs --strict",
+    "art:trainers": "node scripts/fetch-trainers.mjs",
+    "art:nodes": "node scripts/fetch-node-icons.mjs",
+    "art:prompts": "node scripts/art-prompts.mjs",
+    "art:batch": "node scripts/art-batch.mjs",
+    "art:install": "node scripts/install-art.mjs",
+    "art:pokemon": "node scripts/fetch-pokemon-assets.mjs",
+    "art:items": "node scripts/fetch-item-icons.mjs"
+  },
+  "dependencies": {
+    "@tabler/icons-react": "^3.46.0",
+    "immer": "^11.1.18",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^10.11.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.12.0",
+    "prettier": "^3.9.8",
+    "sharp": "^0.35.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}

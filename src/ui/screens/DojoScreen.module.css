@@ -1,0 +1,208 @@
+/* Dojo, screen 4.7 of docs/design/ui/screens.md — node-screen chrome (header · content · Leave), shared in shape with the Center and the Shop. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  background: radial-gradient(130% 90% at 50% 0%, #fdf0d8 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow: hidden;
+}
+
+.topBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.title {
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+.sub {
+  margin: 2px 0 0;
+  max-width: 68ch;
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+.credits {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--sp-4);
+  min-height: 0;
+}
+
+.roster,
+.services {
+  min-height: 0;
+  overflow: auto;
+  padding: var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+/* Two columns: what you can buy on the left, what the deck looks like on the right, so the consequence of a
+   purchase is on screen next to the purchase. One column below 1300px. */
+.services {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4) var(--sp-5);
+  align-content: start;
+}
+.service {
+  display: grid;
+  gap: var(--sp-2);
+  align-content: start;
+}
+.deck {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.colTitle {
+  margin: 0;
+  font-size: var(--type-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.pick,
+.offer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease,
+    transform 120ms ease;
+}
+.pick:hover,
+.offer:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  transform: translateX(2px);
+}
+.picked {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+}
+.off {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.pickBody,
+.offerBody {
+  display: grid;
+  flex: 1;
+}
+.pickName,
+.offerName {
+  font-size: var(--type-body);
+}
+.pickMeta,
+.offerMeta {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.ap {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.tag {
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+.empty {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-muted);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.toast {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--accent-warning);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+}
+.leave {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-md);
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-h3);
+  box-shadow: 0 6px 0 #d9a51d;
+}
+.leave:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1300px) {
+  .services {
+    grid-template-columns: 1fr;
+  }
+  .deck {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+@media (max-width: 1000px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.creditsLabel {
+  color: var(--ink-muted);
+}

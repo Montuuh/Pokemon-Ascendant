@@ -1,0 +1,83 @@
+/* §7.3.7 — the Legendary 1-of-3 at a Gym victory. Ceremonial: this is the rarest thing the run hands out,
+   so the page is centred, uncluttered, and warmer than the service screens. */
+
+.root {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-6) var(--sp-5);
+  background: radial-gradient(130% 90% at 50% 0%, #fbeecb 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow-y: auto;
+}
+
+.card {
+  width: min(960px, 100%);
+  display: grid;
+  gap: var(--sp-5);
+  justify-items: center;
+  text-align: center;
+  padding: var(--sp-6);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 2px solid var(--accent-action);
+  box-shadow: var(--shadow-2);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+
+.lede {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--ink-secondary);
+}
+
+.offer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--sp-4);
+  width: 100%;
+}
+
+.take {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+
+.actions {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.confirm {
+  padding: var(--sp-3) var(--sp-6);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-h3);
+  cursor: pointer;
+}
+.confirm:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Declining is a real option (§7.3.7's cap makes it one), so it reads as a choice and not as a way out. */
+.decline {
+  padding: var(--sp-3) var(--sp-5);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+  cursor: pointer;
+}

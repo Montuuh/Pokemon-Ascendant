@@ -1,0 +1,197 @@
+/* The inventory drawer (§7.2–§7.5). Lives inside the shared Modal, so it owns layout, not chrome. */
+
+/* The shared Modal's "reading" size already sets the width and the scrolling; this only lays the drawer out
+   inside it. Setting a width here as well is what produced a horizontal scrollbar. */
+.root {
+  display: grid;
+  gap: var(--sp-3);
+  width: 100%;
+  min-width: 0;
+  grid-template-rows: auto auto 1fr auto;
+}
+
+.lede {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+  text-align: left;
+}
+.lede svg { flex: none; }
+
+.tabs {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-secondary);
+  font: inherit;
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.tab:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.tabOn {
+  border-color: var(--border-strong);
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  font-weight: 700;
+}
+
+.panel {
+  overflow-y: auto;
+  padding-right: var(--sp-2);
+  text-align: left;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  align-content: start;
+  gap: var(--sp-3);
+}
+
+.items { display: grid; gap: var(--sp-3); }
+
+.sub {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.worn {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wornRow {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+
+.wornBody { display: grid; gap: 2px; min-width: 0; }
+.wornItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+}
+.wornItem img { image-rendering: pixelated; }
+
+.takeOff {
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: var(--type-caption);
+  cursor: pointer;
+}
+.takeOff:hover { border-color: var(--border-strong); }
+.takeOff:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+.baggedWrap { display: grid; gap: var(--sp-2); align-content: start; }
+
+.hint { color: var(--ink-muted); font-size: var(--type-caption); }
+
+.wearers {
+  display: grid;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: var(--sp-2);
+  list-style: none;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.wearer {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-1) var(--sp-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: var(--type-caption);
+  text-align: left;
+  cursor: pointer;
+}
+.wearer:hover:not(:disabled) { background: var(--surface-1); }
+.wearer:disabled { opacity: 0.45; cursor: not-allowed; }
+.wearer:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 1px; }
+
+.swapNote {
+  margin-left: auto;
+  color: var(--ink-muted);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.empty {
+  margin: 0;
+  padding: var(--sp-5);
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+  text-align: center;
+}
+
+.toast {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  border-left: 4px solid var(--accent-warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: color-mix(in srgb, var(--accent-warning) 14%, var(--surface-1));
+  font-size: var(--type-small);
+  text-align: left;
+}
+
+.close {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-5);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  font: inherit;
+  font-weight: 700;
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.close:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+}
