@@ -198,6 +198,20 @@
 - **Verify a codemod, do not trust its output.** The first pass *reported* a file as written that still held
   both old spellings. Re-grep afterwards, case-insensitively, and look at what is left.
 
+## Hosting
+
+- **Every asset URL goes through `asset()` in `src/content/paths.ts`.** GitHub Pages serves the game under
+  `/Pokemon-Ascendant/`, and a root-absolute `/art/…` there asks the wrong site for the sprite. The helper reads
+  Vite's `BASE_URL`; the workflow sets `VITE_BASE` from the repo name; dev and tests stay at `/`. Fifteen inline
+  strings became named builders in `ui/art.ts` so a new screen cannot reintroduce the bug by accident.
+- **Verify a hosted build by loading it under the sub-path, not by grepping the bundle.** `BASE_URL` is inlined
+  as a string and concatenated at runtime, so the final URLs never appear in `dist`. A throwaway static server
+  at the sub-path plus one Playwright pass counting broken images is the check that means something.
+- **Git Bash rewrites a leading `/` in an env value into a Windows path** (`VITE_BASE=/x/` became
+  `/Program Files/Git/x/`). Prefix with `MSYS_NO_PATHCONV=1` for any local reproduction of the CI build.
+- **Pages on a private repo needs a paid plan.** The account is on Free, so the repo is public — which the
+  Pages URL makes moot anyway. The deploy source is GitHub Actions; there is no `gh-pages` branch to sync.
+
 ## Environment gotchas
 
 - **Rewriting a CSS module wholesale leaves Vite serving an empty object**, so every class comes back

@@ -27,11 +27,11 @@
   medal. The folder moved too — `CODE - Proyectos/Pokémon Ascendant`. The rename found its own bug: the codemod flattened the
   migration table onto itself, which fails silently by construction — `app/storageKeys.test.ts` is now the
   thing that would catch it.
-**Next action:** a human playtest of the whole Region — that is v0.5's exit criterion and the only thing left
+**Next action:** a human playtest of the whole Region — the link above is what to hand testers — that is v0.5's exit criterion and the only thing left
 in it. Then v0.6 Meta: Trainer XP and Tokens, the other four hub kiosks, Pokédex tiers and Mastery moves.
 **Blocked on:** nothing.
-**Last commit:** `fb30736` — feat: Pokémon Ascendant v0.5 — Region 1 complete. The first commit, 746 files.
-Git is the design history from here.
+**Last commit:** `e2f6577` — GitHub Pages deploy, MIT licence, README rewrite. Public repo at
+https://github.com/Montuuh/Pokemon-Ascendant · **live at https://montuuh.github.io/Pokemon-Ascendant/** on every push to `main`.
 **Test status:** `npm run check` green — 328/328 Vitest, typecheck, lint, 2,754 § citations, 792 catalogue
 ids. 43/43 Playwright. Production build clean.
 **Balance (120 seeds):** Bulbasaur 67 % · Charmander 66 % · Squirtle 73 %. A 30-seed table read 63/67/80 and
