@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
+import { menuVista } from '@/ui/art';
 import { portraitUrl } from '@/content/schemas/species';
 import { HowToPlay } from '@/ui/components/HowToPlay';
 import styles from './MainMenu.module.css';
@@ -37,7 +38,7 @@ export function MainMenu() {
   return (
     <main className={styles.root} data-testid="main-menu">
       <div className={styles.vista} aria-hidden="true">
-        <img className={styles.plate} src="/art/ui/menu-vista.png" alt="" />
+        <img className={styles.plate} src={menuVista()} alt="" />
         <div className={styles.warmth} />
         <img className={styles.mascot} src={portraitUrl(4, 'charmander')} alt="" />
       </div>

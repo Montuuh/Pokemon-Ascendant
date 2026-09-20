@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { asset } from '../paths';
 import { POKEMON_TYPES } from '@/sim/types';
 
 // Per docs/design/10-foundations.md §10.3.2 (PokemonSpeciesSO) — web counterpart.
@@ -42,11 +43,11 @@ export type Roster = z.infer<typeof RosterSchema>;
 
 /** Art path helpers — the only place that knows the on-disk naming convention. */
 export function portraitUrl(dex: number, id: string): string {
-  return `/art/pokemon/portraits/${String(dex).padStart(3, '0')}-${id}.png`;
+  return asset(`art/pokemon/portraits/${String(dex).padStart(3, '0')}-${id}.png`);
 }
 export function boxIconUrl(dex: number, id: string): string {
-  return `/art/pokemon/icons/${String(dex).padStart(3, '0')}-${id}.png`;
+  return asset(`art/pokemon/icons/${String(dex).padStart(3, '0')}-${id}.png`);
 }
 export function battleSpriteUrl(id: string, side: 'front' | 'back' = 'front'): string {
-  return `/art/pokemon/battle/${id}${side === 'back' ? '-back' : ''}.gif`;
+  return asset(`art/pokemon/battle/${id}${side === 'back' ? '-back' : ''}.gif`);
 }

@@ -2,6 +2,7 @@ import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { GYMS, LAYERS, maxHpOf } from '@/sim';
+import { nodeBadge } from '@/ui/art';
 import { MonIcon } from '@/ui/components/MonIcon';
 import styles from './RunEndScreen.module.css';
 
@@ -56,7 +57,7 @@ export function RunEndScreen({ outcome }: { outcome: 'victory' | 'defeat' }) {
           <div className={styles.badge} data-testid="badge-award">
             {badges.map((b) => (
               <div key={b.id} className={styles.badgeRow}>
-                <img src={`/art/icons/map/node-gym-${b.type}.png`} alt="" width={48} height={48} />
+                <img src={nodeBadge(`gym-${b.type}`)} alt="" width={48} height={48} />
                 <span>
                   <span className="display">{b.name}</span>
                   {/* §5.10 — a Badge is permanent, so what it does is worth reading even at the end of a

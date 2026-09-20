@@ -1,4 +1,5 @@
 import type { PokemonType } from '@/sim';
+import { statusGlyph, typeGlyph } from '@/ui/art';
 import styles from './TypeBadge.module.css';
 
 // Per §9.4 — type identity is colour + glyph (shape carries meaning for colour-blind players, §9.6).
@@ -12,7 +13,7 @@ export function TypeBadge({ type, size = 22, title }: { type: PokemonType; size?
       title={title ?? type}
       aria-label={type}
     >
-      <img src={`/art/icons/type/icon-type-${type}.svg`} alt="" width={size * 0.72} height={size * 0.72} />
+      <img src={typeGlyph(type)} alt="" width={size * 0.72} height={size * 0.72} />
     </span>
   );
 }
@@ -21,7 +22,7 @@ export function TypeBadge({ type, size = 22, title }: { type: PokemonType; size?
 export function StatusBadge({ status, size = 22 }: { status: string; size?: number }) {
   return (
     <span className={styles.bare} style={{ width: size, height: size }} title={status} aria-label={status}>
-      <img src={`/art/icons/status/icon-status-${status}.svg`} alt="" width={size} height={size} />
+      <img src={statusGlyph(status)} alt="" width={size} height={size} />
     </span>
   );
 }

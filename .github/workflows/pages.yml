@@ -1,0 +1,52 @@
+# Build the game and publish it to GitHub Pages on every push to main.
+#
+# Two things worth knowing if this ever fails. The build needs VITE_BASE set to the repo's sub-path — a Pages
+# project site is served at https://<owner>.github.io/<repo>/, and without the base every asset URL asks the
+# wrong site for its sprite. And the deploy uses the Actions source (not a gh-pages branch), which is why the
+# repo's Pages setting is "GitHub Actions" and there is no branch to keep in sync.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a newer push cancels an older one still queued, but never one mid-flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # The same gate as local: typecheck, lint, unit tests, and the § and catalogue guards. A build that
+      # ships a broken citation is not a build worth hosting.
+      - run: npm run check
+      - run: npm run build
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

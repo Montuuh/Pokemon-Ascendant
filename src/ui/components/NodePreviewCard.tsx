@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { getContent } from '@/content/registry';
 import { TRAINERS, type MapNode, type PartyMon } from '@/sim';
-import { trainerSprite } from '@/ui/art';
+import { nodeBadge, trainerSprite } from '@/ui/art';
 import { NODE_HINT, NODE_LABEL } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import styles from './NodePreviewCard.module.css';
@@ -43,7 +43,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         data-testid="node-preview"
       >
         <header className={styles.head}>
-          <img className={styles.kindIcon} src={`/art/icons/map/node-${node.preview.icon ?? node.kind}.png`} alt="" width={44} height={44} />
+          <img className={styles.kindIcon} src={nodeBadge(node.preview.icon ?? node.kind)} alt="" width={44} height={44} />
           <div>
             <p className={styles.kind}>{NODE_LABEL[node.kind]}</p>
             <h2 className={`${styles.title} display`}>{node.preview.title}</h2>

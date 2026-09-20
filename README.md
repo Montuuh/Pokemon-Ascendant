@@ -1,63 +1,88 @@
 # Pokémon Ascendant
 
-Roguelike deckbuilder where **your party is your deck**. Three active Pokémon each contribute four moves to one
-shared hand; swapping your Lead costs action points and is never free; branching evolutions rewrite your deck
-mid-run. Web build (TypeScript + React + Vite), packaged for desktop with Tauri at v1.0.
+A roguelike deckbuilder where **your party is your deck**.
 
-> **An unofficial, free, non-commercial fan project.** Not affiliated with, endorsed by or connected to
-> Nintendo, Creatures Inc., GAME FREAK inc. or The Pokémon Company. Pokémon and all related marks are their
-> trademarks. Nothing here is sold, and nothing here carries advertising. Full terms and every asset's
-> provenance: [`docs/art/ATTRIBUTION.md`](docs/art/ATTRIBUTION.md).
+**▶ Play it in the browser: https://montuuh.github.io/Pokemon-Ascendant/**
 
-> Successor of *Project Ascendant* (Unity) — the name picks that lineage back up, after a spell as *Evoline*.
-> The design canon, content values and art carried over; the code was re-implemented where the iteration loop
-> is fast. See `docs/migration/from-unity.md`.
+> Unofficial, free, non-commercial fan project. Not affiliated with, endorsed by or connected to Nintendo,
+> Creatures Inc., GAME FREAK inc. or The Pokémon Company. Pokémon and all related marks are their trademarks.
 
-## Play it
+![A fight: Charmander leads against a wild Pidgey, whose next move is shown before you act](docs/screenshots/combat.jpg)
 
-```bash
-npm install
-npm run dev          # http://localhost:5173 — Quick fight, or /?scenario=wild-boss-3phase
-```
+## How a fight works
 
-Six combat fixtures (wild, catch, trainer, statuses, full deck, Gym Leader with a 3-phase ace). Click a card to
-select it, click the enemy to play it; click a bench Pokémon to swap it in (1/2/3 AP); End Turn to see the
-telegraphed enemy move land on whoever holds the targeted slot.
+- **Three active Pokémon, four moves each — that is your twelve-card deck.** You draw five skill cards and two
+  item cards a turn and have **3 action points** to spend them with.
+- **One of the three is the Lead.** It takes every single-target hit. **Melee** cards can only be played by the
+  Lead; **Ranged** cards can be played from the bench.
+- **Swapping the Lead is never free.** The first swap of a turn costs 1 AP, the second 2, the third 3. Some
+  moves step a Pokémon forward or back as part of their effect — those are the swaps you *want*.
+- **Every enemy move is telegraphed.** You see what it will do, to which slot, for how much, before you commit
+  a card. The game is about answering what you can see, not gambling on what you cannot.
+- Statuses, stat stages, type matchups and critical hits work the way you expect from the series. Gym Leaders
+  and Elite fights have **multi-phase aces** that change behaviour at HP thresholds. Wild Pokémon can be
+  **caught** — the gauge is deterministic, and a caught Pokémon joins your Box mid-run.
 
-## Verify
+![The Region 1 map: a twelve-layer lattice of nodes forking towards one of two Gyms](docs/screenshots/map.jpg)
 
-```bash
-npm run check        # typecheck + lint + 151 unit tests (rules, content, determinism, golden masters, balance)
-npm run e2e          # Playwright: every fixture boots, interactions work, a full fight is won through the UI
-npm run shot         # screenshots of every screen into playtest/
-npm run balance      # auto-player balance table across fixtures
-```
+## How a run works
 
-Requires Node ≥ 20 and Google Chrome (Playwright runs the system Chrome; see `playwright.config.ts`).
-
-## Where things are
-
-| Path | What |
-|---|---|
-| `docs/roadmap.md` | Versions v0.1 → v1.0, scope and exit criteria |
-| `docs/design/` | **Design canon** (10 topics, UI pass, mockups, change-log, open questions) |
-| `docs/architecture.md` | Engineering canon for the web build |
-| `docs/art/pipeline.md` | Art lanes, sizes, licences; `scripts/fetch-*.mjs` pull assets from public sources |
-| `docs/playtests/` | Playtest reports |
-| `docs/ai/claude-code-guide.md` | How to work on this project with Claude Code |
-| `src/sim` | Pure deterministic rules (the game) |
-| `src/content` | JSON content + Zod schemas |
-| `src/ui` | React screens/components + design tokens |
-| `public/art` | Portraits, sprites, icons, items, trainers, stages |
-| `CLAUDE.md`, `.claude/` | AI configuration: rules, skills, agents, hooks |
+- **Region 1 is twelve layers of nodes** — wild fights, trainers, an Elite Trainer, a Pokémon Centre, a Poké
+  Mart, a Dojo, Mystery Events, and sometimes an Elite Wild you can catch or defeat but not both.
+- **The route forks.** Two of the Region's four Gyms are drawn per run and named on the map from the first
+  node. The path splits at layer 8 into two lanes that never rejoin, and each lane *looks like* its Gym for four
+  layers — caves and Hikers on the way to the Rock Gym, rivers and Swimmers on the way to the Water Gym. Plan in
+  the trunk, commit at the fork.
+- **Your Box holds six Pokémon; three are active.** Recruit from wild fights, choose who fights before each
+  node, and decide who leaves when the Box is full.
+- **Evolution is a choice.** At the threshold you pick an **archetype** — Vanguard, Specialist or Support — and
+  the branch rewrites part of that Pokémon's four cards. The same species can become a different fighter every
+  run.
+- **A fainted Pokémon comes back, marked.** Each faint adds a stack of **Trauma** that lowers max HP until a
+  Centre treats it. Money buys items, tutor moves, therapy — and never quite enough of all three.
+- **Relics** are run-long passives; **held items** are one-per-Pokémon; a **Region Modifier** chosen at the start
+  changes one rule for the whole Region; beating the Gym wins a **Badge** and a **1-of-3 Legendary relic**.
+- **Ten achievements** persist across runs in the Trainer Hub.
 
 ## Status
 
-**v0.1 Combat Slice — code complete (2026-09-19).** Full combat rules (§3–§4 of the design canon), 18 species /
-56 moves / 11 consumables, real combat screen with animated sprites and stage backdrops, deterministic replays,
-balance harness. Next: external playtest, then v0.2 First Route.
+**v0.5 — Region 1 complete (code).** One full Region is playable end to end: 43 species, 163 moves, 60 relics,
+19 held items, 17 Region Modifiers, 4 Gyms. Next is v0.6 *Meta* — Trainer XP, the remaining Hub kiosks, Pokédex
+tiers and Mastery moves — then Regions 2 and 3. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
 
-## Legal
+## Run it locally
 
-Pokémon © Nintendo / Creatures Inc. / GAME FREAK inc. This is an unofficial fan project, not affiliated with or
-endorsed by the rights holders, distributed free of charge. Third-party asset credits: `docs/art/ATTRIBUTION.md`.
+```bash
+npm install
+npm run dev        # http://localhost:5173
+```
+
+```bash
+npm run check      # typecheck, lint, 333 unit tests, design-doc guards
+npm run e2e        # 45 Playwright tests, including a full run played through the UI
+npm run balance    # auto-player win rates per starter
+```
+
+Node ≥ 20. Playwright uses the system Chrome.
+
+## Under the hood
+
+TypeScript · React 19 · Vite · Vitest · Playwright · Zustand · Zod. The simulation in `src/sim` is pure and
+deterministic — a seed and an input log replay a fight identically, which is what the golden-master tests and
+the balance harness are built on. The UI is a view over it.
+
+| | |
+|---|---|
+| [`docs/design/`](docs/design/) | The design canon — ten topics, every rule stated once. Code cites it by section (`§3.3.1`) and a guard proves every citation resolves. |
+| [`docs/design/catalogs/`](docs/design/catalogs/) | Every species, move, relic, item, trainer and event, authored here first. |
+| [`docs/architecture.md`](docs/architecture.md) | How the code is organised and why. |
+| [`docs/art/pipeline.md`](docs/art/pipeline.md) | Where each asset comes from. Pokémon, items, badges and backdrops are the real ones; the two scenes are generated. |
+
+Successor of *Project Ascendant*, a Unity build of the same design; the code was re-implemented for the web
+where the iteration loop is fast. See [`docs/migration/from-unity.md`](docs/migration/from-unity.md).
+
+## Licence
+
+The code, design documents and original assets are **MIT** — see [`LICENSE`](LICENSE). The Pokémon material is
+not covered by that licence and is not mine to license: it is © Nintendo / Creatures Inc. / GAME FREAK inc.,
+included on non-commercial fan-work terms, and itemised in [`docs/art/ATTRIBUTION.md`](docs/art/ATTRIBUTION.md).

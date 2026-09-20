@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { IconMenu2, IconBackpack, IconFlag, IconSparkles } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
+import { regionPlate } from '@/ui/art';
 import { getContent } from '@/content/registry';
 import { LAYERS, boxCapacity, gymById, nodesInLayer, type MapNode, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
@@ -256,7 +257,7 @@ export function MapScreen() {
         </aside>
 
         <section className={styles.graph} data-testid="map-graph" aria-label={`Region ${run.regionIndex + 1} route map, ${LAYERS} layers`}>
-          <img className={styles.backdrop} src="/art/map/region-1.png" alt="" aria-hidden="true" />
+          <img className={styles.backdrop} src={regionPlate(1)} alt="" aria-hidden="true" />
           <div className={styles.veil} aria-hidden="true" />
           <svg className={styles.edgeLayer} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             {edges.map((e) => (
