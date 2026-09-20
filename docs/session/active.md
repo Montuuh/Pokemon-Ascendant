@@ -30,8 +30,8 @@
 **Next action:** a human playtest of the whole Region — that is v0.5's exit criterion and the only thing left
 in it. Then v0.6 Meta: Trainer XP and Tokens, the other four hub kiosks, Pokédex tiers and Mastery moves.
 **Blocked on:** nothing.
-**Last commit:** none — the whole tree is still uncommitted. **Commit it.** Git is now the design history and
-there is a great deal of it; a careless one-liner already cost this file once.
+**Last commit:** `fb30736` — feat: Pokémon Ascendant v0.5 — Region 1 complete. The first commit, 746 files.
+Git is the design history from here.
 **Test status:** `npm run check` green — 328/328 Vitest, typecheck, lint, 2,754 § citations, 792 catalogue
 ids. 43/43 Playwright. Production build clean.
 **Balance (120 seeds):** Bulbasaur 67 % · Charmander 66 % · Squirtle 73 %. A 30-seed table read 63/67/80 and
