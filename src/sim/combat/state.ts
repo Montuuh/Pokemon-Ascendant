@@ -253,6 +253,8 @@ export type RejectReason =
   | 'invalid-index'
   | 'not-wild'
   | 'no-balls'
+  /** §2.6.4.1 — the gauge is below READY, so the throw would fail for certain. The card waits. */
+  | 'not-ready'
   | 'nothing-to-cure'
   /** §7.4.5 — a held item forbids this card: Choice Band's Ranged lock, or Choice Scarf's one-a-turn. */
   | 'choice-locked';

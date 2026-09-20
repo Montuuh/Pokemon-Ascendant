@@ -56,9 +56,11 @@ export function PauseMenu({ onResume }: { onResume: () => void }) {
 
   return (
     <Modal title="Paused" testId="pause-menu">
-      <p className={styles.body}>
-        {run ? `Region ${run.regionIndex + 1} · ${run.stats.nodesCleared} nodes cleared · ${run.stats.catches} caught.` : ''}
-      </p>
+      {run && (
+        <p className={styles.body}>
+          Region {run.regionIndex + 1} · {run.stats.nodesCleared} nodes cleared · {run.stats.catches} caught.
+        </p>
+      )}
       <div className={styles.stack}>
         <button type="button" className={styles.primary} onClick={onResume} data-testid="btn-resume">
           Resume
@@ -67,19 +69,23 @@ export function PauseMenu({ onResume }: { onResume: () => void }) {
           type="button"
           className={styles.secondary}
           onClick={() => {
-            save();
+            // In a run the save is already current (it is written on every node boundary and at the start
+            // of every fight); outside one there is nothing to save and this is just the way out.
+            if (run) save();
             goTo('menu');
           }}
           data-testid="btn-save-quit"
         >
-          Save and quit to menu
+          {run ? 'Save and quit to menu' : 'Quit to menu'}
         </button>
         <button type="button" className={styles.secondary} onClick={() => setHelp(true)} data-testid="btn-help">
           How to play
         </button>
-        <button type="button" className={styles.quiet} onClick={() => setConfirmAbandon(true)} data-testid="btn-abandon">
-          Abandon run
-        </button>
+        {run && (
+          <button type="button" className={styles.quiet} onClick={() => setConfirmAbandon(true)} data-testid="btn-abandon">
+            Abandon run
+          </button>
+        )}
       </div>
     </Modal>
   );

@@ -1,4 +1,5 @@
 import styles from './Money.module.css';
+import { Tip, Tipped } from '@/ui/tooltip';
 
 // §2.14 — Poké Dollars on screen. One component so the currency looks the same in the Shop, the Dojo, the
 // map HUD and a reward line, and so the glyph is drawn rather than typed: ₽ (U+20BD) is the sign the games
@@ -33,9 +34,9 @@ export function Money({ amount, size = 14, className = '' }: { amount: number; s
  */
 export function Price({ amount, affordable, size = 14 }: { amount: number; affordable: boolean; size?: number }) {
   return (
-    <span className={`${styles.price} ${affordable ? '' : styles.short}`} title={affordable ? undefined : 'Not enough money.'}>
+    <Tipped tip={affordable ? null : <Tip title="Not enough money" body="Poké Dollars come from fights. Wild fights pay little, trainers more, the Elite and the Gym most." />} className={`${styles.price} ${affordable ? '' : styles.short}`} tabIndex={affordable ? -1 : 0}>
       <PokeDollar size={size} />
       <b className="tabular">{amount.toLocaleString('en-GB')}</b>
-    </span>
+    </Tipped>
   );
 }

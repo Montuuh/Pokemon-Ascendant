@@ -12,7 +12,7 @@ import { create } from 'zustand';
 //   sessionStorage is WRITTEN on every navigation and read on boot when the URL says nothing. It lives exactly
 //   as long as the tab does, which is the behaviour a player expects: F5 mid-run lands back on the map; a fresh
 //   visit lands on the menu. localStorage would make every visit resume, and the URL made every visit ugly.
-export const SCREENS = ['menu', 'scenarios', 'combat', 'starter', 'map', 'victory', 'defeat', 'hub', 'settings'] as const;
+export const SCREENS = ['menu', 'scenarios', 'combat', 'starter', 'map', 'victory', 'defeat', 'hub', 'settings', 'about'] as const;
 export type Screen = (typeof SCREENS)[number];
 
 /** What a boot has to know: the screen, and the practice fixture if that is what was asked for. */

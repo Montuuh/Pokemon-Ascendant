@@ -3,6 +3,7 @@ import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { LEGENDARY_CAP } from '@/sim';
 import { ItemCard } from '@/ui/components/ItemCard';
+import { InfoDot, Tip } from '@/ui/tooltip';
 import styles from './LegendaryScreen.module.css';
 
 // §7.3.7 — the guaranteed 1-of-3 that closes a Gym victory.
@@ -26,12 +27,19 @@ export function LegendaryScreen() {
   return (
     <main className={styles.root} data-testid="legendary-screen">
       <div className={`${styles.card} fx-pop`}>
-        <h1 className={`${styles.title} display`}>{atCap ? 'One more, from the Gym' : 'The Gym owes you something'}</h1>
-        <p className={styles.lede}>
-          {atCap
-            ? `You are already carrying ${LEGENDARY_CAP} legendary relics, which is the most anyone carries. These are the next tier down, and they are still yours for the asking.`
-            : 'Three legendary relics. Take one — they are never sold, never dropped, and you will only ever hold two at a time.'}
-        </p>
+        <h1 className={`${styles.title} display`}>
+          {atCap ? 'One more, from the Gym' : 'The Gym owes you something'}
+          <InfoDot
+            tip={
+              <Tip
+                title="Legendary relics"
+                body={atCap ? `You already hold ${LEGENDARY_CAP}, the most anyone carries, so this offer is the tier below.` : 'Never sold and never dropped — the only way to one is a pick like this, at a Gym victory. You hold at most two per run.'}
+                footer="Leaving all three is allowed."
+              />
+            }
+          />
+        </h1>
+        <p className={styles.lede}>{atCap ? 'Three Rare relics. Take one, or none.' : 'Three Legendary relics. Take one, or none.'}</p>
 
         <div className={styles.offer}>
           {offer.map((id) => {

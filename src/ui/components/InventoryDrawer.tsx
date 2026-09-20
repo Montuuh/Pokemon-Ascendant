@@ -169,12 +169,12 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
                                       if (act({ type: 'equip-item', uid: mon.uid, itemId: id })) setEquipping(null);
                                     }}
                                     data-testid={`equip-${id}-${mon.speciesId}`}
-                                    title={
+                                    aria-label={
                                       locked
                                         ? `${item.name} only fits ${content.species(item.speciesLock!).name}.`
                                         : busy
-                                          ? `Swaps with ${content.heldItem(mon.heldItem!).name}, which goes back in the bag.`
-                                          : `Give it to ${content.species(mon.speciesId).name}.`
+                                          ? `Give to ${content.species(mon.speciesId).name}, swapping out ${content.heldItem(mon.heldItem!).name}`
+                                          : `Give to ${content.species(mon.speciesId).name}`
                                     }
                                   >
                                     <MonIcon speciesId={mon.speciesId} size={28} />

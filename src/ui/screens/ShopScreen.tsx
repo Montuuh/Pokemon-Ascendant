@@ -7,6 +7,7 @@ import { ItemCard, type ItemKind, type Rarity } from '@/ui/components/ItemCard';
 import { Money, Price } from '@/ui/components/Money';
 import { RUN_REJECT_TEXT } from '@/ui/strings';
 import styles from './ShopScreen.module.css';
+import { Tip, Tipped } from '@/ui/tooltip';
 
 // Poké Mart, §2.9.2 — node-screen chrome (header · shelf · Leave), same shape as the Dojo and the Centre.
 //
@@ -128,23 +129,18 @@ export function ShopScreen() {
         <div className={styles.actions}>
           {/* §2.9.3 — the ladder is 25 → 50 → 100 and it is on the button, so the third re-roll is a decision
               and not a surprise. A sold slot is not re-rolled: you keep what you bought. */}
-          <button
+          <Tipped
+            as="button"
             type="button"
+            tip={<Tip title="Re-roll" meta={['25 · 50 · 100 ₽', 'Three per visit']} body={reroll === null ? 'Three re-rolls is the limit for this visit.' : unsold === 0 ? 'Nothing left to re-roll — you bought the shelf.' : `Re-rolls the ${unsold} unsold slot${unsold === 1 ? '' : 's'}. What you already bought stays yours.`} />}
             className={styles.reroll}
             disabled={reroll === null || run.money < reroll || unsold === 0}
             onClick={() => act({ type: 'reroll-shop' })}
             data-testid="btn-reroll"
-            title={
-              reroll === null
-                ? 'Three re-rolls is the limit for this visit.'
-                : unsold === 0
-                  ? 'Nothing left to re-roll.'
-                  : `Re-roll the ${unsold} unsold slot${unsold === 1 ? '' : 's'}.`
-            }
           >
             <IconDice5 size={18} />
             {reroll === null ? 'No re-rolls left' : <>Re-roll the shelf <Price amount={reroll} affordable={run.money >= reroll} /></>}
-          </button>
+          </Tipped>
 
           <button type="button" className={styles.leave} onClick={() => act({ type: 'leave-shop' })} data-testid="btn-leave-shop">
             <IconDoorExit size={18} /> Back to the route

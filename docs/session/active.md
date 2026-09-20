@@ -1,39 +1,31 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-09-20
-**Version in progress:** **v0.5 Region 1 complete — code done.** v0.1–v0.4 complete.
-**Sprint goal:** finish the Region. The route was the first half; the second half is what the route *pays*.
-**Shipped this session:**
-- **Art audit.** Every battle backdrop is the real one again (Showdown's gen6 rips) — v0.4 had replaced the
-  four in-use ones with generated illustrations, and a generated backdrop behind a real sprite is the one
-  place the seam always shows. Each Gym now stands in its own lane's biome at depth or at dusk, the `river`
-  biome stopped borrowing the forest, and the two encounter builders stopped hardcoding `'meadow'` — which
-  had quietly been putting every Hiker in a field four layers into a cave lane. The menu vista and the route
-  plate were regenerated as **top-down pixel art**, the same overworld register, and the plate lost the
-  painted Gym that was reading as a third one between the two real Gym badges.
-- **The four Region 1 Badges (§5.10.1)**, on the same §7.7 hooks as relics.
-- **All sixty relics.** Rare joins the drop table at 10 %; Legendary is outside it and comes only from the
-  guaranteed **1-of-3 pick at a Gym victory** (§7.3.7), capped at two.
-- **The seventeen Region Modifiers (§2.11.3)**, one in force, expiring with the Region, offered as the
-  fourth step of the new-run stepper — where `ui/screens.md` §3.3 always drew it.
-- **Ten achievements (§8.7)**, folded from events *diffed* off the run so nothing touches the save.
-- **The Trainer Hub shell (§8.4)** with the PC Terminal open, and **Settings (§9.6)**: text size at
-  80/100/125/150 % and a motion override.
-- Two real bugs found on the way: `playedThisTurn` was never written, so every "first card each turn" clause
-  in the game was true on *every* card (Choice Specs made all Ranged moves free); and the run looked every
-  spent charge up as a relic, which threw the moment a Region Modifier spent one.
-- **Renamed to Pokémon Ascendant** (was Evoline). 134 occurrences over 40 files, the dev hook is
-  `window.__ascendant`, and the three localStorage keys moved with a migration so nobody loses a save or a
-  medal. The folder moved too — `CODE - Proyectos/Pokémon Ascendant`. The rename found its own bug: the codemod flattened the
-  migration table onto itself, which fails silently by construction — `app/storageKeys.test.ts` is now the
-  thing that would catch it.
-**Next action:** a human playtest of the whole Region — the link above is what to hand testers — that is v0.5's exit criterion and the only thing left
-in it. Then v0.6 Meta: Trainer XP and Tokens, the other four hub kiosks, Pokédex tiers and Mastery moves.
+**Date:** 2026-09-21
+**Version in progress:** **v0.6 Meta — starting.** v0.1–v0.5 complete; v0.5.0 is the shipped build.
+**Sprint goal:** the pre-v0.6 fixes the user asked for on 2026-09-21 are done; v0.6 proper begins next.
+**Shipped this session (pre-v0.6 fixes):**
+- **Catching was reading as a broken probability.** The gauge is deterministic by design (§2.6.4) but the pill
+  showed `64%` beside a ball, and a throw below READY failed for certain while spending the ball. The pill now
+  names the HP target; the Poké Ball card is **locked until READY** and never a wasted throw — a rule change,
+  recorded in §2.6.4.1 with its reasoning.
+- **Combat chrome:** the back arrow (to the practice picker, from inside a run) and the dead restart are gone;
+  one ☰ opens the same pause menu the map has. **Menu:** Quick fight, Practice fights and How to play are off it
+  (fixtures stay reachable by `?scenario=`; the rules live in the pause menu).
+- **A tooltip system** (`src/ui/tooltip`): one portal layer, 450 ms on hover, instant on focus, Escape/scroll
+  dismiss. All 63 native `title=` attributes are gone; every explanation is built in `src/ui/tips.tsx` from the
+  content rows so the game speaks in one voice. Move cards, items, intents, statuses, types (with weaknesses),
+  portraits, the AP pool, the swap ladder, the catch gauge, node markers, the map HUD, the Box, the Move Manager
+  and the Dojo all explain themselves on hover. Seven long screen ledes became one line plus an ⓘ.
+- **About screen** with the version (from `package.json`) and a roadmap timeline parsed from
+  `docs/roadmap.md` at build time — so shipping a version is two edits and the game follows.
+- `package.json` bumped to **0.5.0**.
+**Next action:** v0.6 Meta — Trainer XP and Tokens (§8.3), the other four Hub kiosks (§8.4), Pokédex tiers and
+Mastery moves (§5.13, §6.8), unlock trees, meta starters (§8.5), relic tiers (§8.6).
 **Blocked on:** nothing.
 **Last commit:** `e2f6577` — GitHub Pages deploy, MIT licence, README rewrite. Public repo at
 https://github.com/Montuuh/Pokemon-Ascendant · **live at https://montuuh.github.io/Pokemon-Ascendant/** on every push to `main`.
-**Test status:** `npm run check` green — 328/328 Vitest, typecheck, lint, 2,754 § citations, 792 catalogue
-ids. 43/43 Playwright. Production build clean.
+**Test status:** `npm run check` green — 337/337 Vitest, typecheck, lint, § and catalogue guards. 52/52
+Playwright. Production build clean.
 **Balance (120 seeds):** Bulbasaur 67 % · Charmander 66 % · Squirtle 73 %. A 30-seed table read 63/67/80 and
 the 80 was noise — the standing rule about the standard error of a *difference* earned its place again.
 **Open questions:** three, all carried. (a) §3.1, whether a *costly* disengage from a wild fight should

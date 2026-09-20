@@ -7,6 +7,8 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { tmIcon } from '@/ui/art';
 import { ARCHETYPE_LABEL, RUN_REJECT_TEXT } from '@/ui/strings';
+import { moveDefTip } from '@/ui/tips';
+import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './MoveManager.module.css';
 
 // Per docs/design/ui/screens.md §4.4 and §6.7.2 — the Move Manager. Free, unlimited, out of combat.
@@ -56,22 +58,15 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
     const blocked = (!inKit && full) || last;
     return (
       <li key={moveId}>
-        <button
+        <Tipped
+          as="button"
           type="button"
+          tip={moveDefTip(move)}
           className={`${styles.move} ${inKit ? styles.inKit : ''} ${blocked ? styles.blocked : ''}`}
           onClick={() => setMoves(inKit ? active.filter((m) => m !== moveId) : [...active, moveId])}
           disabled={blocked}
           data-testid={`move-${moveId}`}
           data-in-kit={inKit}
-          title={
-            last
-              ? 'A Pokémon needs at least one card.'
-              : blocked
-                ? 'Four cards is the budget — take one out first.'
-                : inKit
-                  ? `Move ${move.name} back to the pool`
-                  : `Put ${move.name} in the active 4`
-          }
           aria-label={[
             move.name,
             move.type,
@@ -100,7 +95,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
           <span className={styles.grab} aria-hidden="true">
             {blocked ? <IconLock size={15} /> : inKit ? <IconMinus size={16} /> : <IconPlus size={16} />}
           </span>
-        </button>
+        </Tipped>
       </li>
     );
   };
@@ -119,15 +114,16 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
             {mon.abilityId && content.ability(mon.abilityId).hook === 'none' && ' (inert in this build)'}
           </p>
         </div>
-        <button
+        <Tipped
+          as="button"
           type="button"
+          tip={<Tip title="Auto-pick" body="Keeps the two strongest attacks, always one Ranged card, and fills the rest with the newest moves. The same rule the game uses when you do not choose." />}
           className={styles.auto}
           onClick={() => setMoves(autoPickMoves(mon.pool, content))}
           data-testid="btn-auto-pick"
-          title="Keep the two strongest attacks, then fill with the newest moves"
         >
           <IconArrowsShuffle size={16} /> Auto
-        </button>
+        </Tipped>
       </header>
 
       <section className={styles.column} aria-label="Active 4">
@@ -160,15 +156,16 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
               return (
                 <li key={tm.id}>
                   {/* §6.4.1 — an incompatible target is greyed, never hidden. */}
-                  <button
+                  <Tipped
+                    as="button"
                     type="button"
+                    tip={<Tip icon={<img src={tmIcon(tm.id)} alt="" width={22} height={22} />} title={tm.name} meta={[move.name, move.type.charAt(0).toUpperCase() + move.type.slice(1), `${move.apCost} AP`]} body={tm.description} footer={known ? `${species.name} already knows ${move.name}.` : compatible ? 'Single use. Teaches the move into the pool; put it in the four from there.' : `${tm.name} does not work on ${species.name}.`} />}
                     className={`${styles.move} ${styles.tm} ${!compatible || known ? styles.blocked : ''}`}
                     disabled={!compatible || known}
                     onClick={() => {
                       if (!dispatch({ type: 'use-tm', uid, tmId: tm.id })) say(useRunStore.getState().lastRejected?.reason);
                     }}
                     data-testid={`tm-${tm.id}`}
-                    title={known ? `${species.name} already knows ${move.name}.` : compatible ? tm.description : `${tm.name} does not work on ${species.name}.`}
                   >
                     <img src={tmIcon(tm.id)} alt="" width={22} height={22} />
                     <span className={styles.moveBody}>
@@ -181,7 +178,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
                     <span className={styles.grab} aria-hidden="true">
                       {compatible && !known ? <IconPlus size={16} /> : <IconLock size={15} />}
                     </span>
-                  </button>
+                  </Tipped>
                 </li>
               );
             })}

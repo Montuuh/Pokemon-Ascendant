@@ -1,6 +1,7 @@
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { TEXT_SCALES, useSettingsStore, type MotionMode, type TextScale } from '@/app/settingsStore';
+import { InfoDot, Tip } from '@/ui/tooltip';
 import styles from './SettingsScreen.module.css';
 
 // §9.6 — the settings screen. Two rows, both accessibility, both scheduled for v0.5 by name.
@@ -36,11 +37,10 @@ export function SettingsScreen() {
       </header>
 
       <section className={styles.group}>
-        <h2 className={styles.groupTitle}>Text size</h2>
-        <p className={styles.groupNote}>
-          Every screen in the game is built to hold together at the largest of these. If something clips, that
-          is a bug worth reporting.
-        </p>
+        <h2 className={styles.groupTitle}>
+          Text size
+          <InfoDot tip={<Tip title="Text size" body="Every screen is built to hold together at the largest setting. If something clips at 150 %, that is a bug worth reporting." />} />
+        </h2>
         <div className={styles.options} role="group" aria-label="Text size">
           {TEXT_SCALES.map((scale) => (
             <button

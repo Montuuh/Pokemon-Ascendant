@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { IconArrowLeft, IconCards, IconRefresh } from '@tabler/icons-react';
+import { IconCards, IconMenu2 } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
@@ -19,12 +19,15 @@ import { ConsumableCard } from '@/ui/components/ConsumableCard';
 import { EnemyPanel } from '@/ui/components/EnemyPanel';
 import { FloatingNumbers } from '@/ui/components/FloatingNumbers';
 import { Modal } from '@/ui/components/Modal';
+import { PauseMenu } from '@/ui/components/PauseMenu';
 import { MoveCard } from '@/ui/components/MoveCard';
 import { OutcomeOverlay } from '@/ui/components/OutcomeOverlay';
 import { Portrait } from '@/ui/components/Portrait';
 import { useCombatFx } from '@/ui/hooks/useCombatFx';
 import { ENCOUNTER_LABEL, REJECT_TEXT } from '@/ui/strings';
 import { iconOf } from '@/ui/art';
+import { apTip, swapTip } from '@/ui/tips';
+import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './CombatScreen.module.css';
 
 // Per docs/design/10 §9.2 + ui/02 §2.1 — the combat screen bound to the live sim state.
@@ -33,6 +36,7 @@ import styles from './CombatScreen.module.css';
 export function CombatScreen() {
   const goTo = useAppStore((s) => s.goTo);
   const { ctx, state, selection, select, clearSelection, restart, combatKey } = useCombatStore();
+  const [paused, setPaused] = useState(false);
   // A run fight reports its result home; a fixture fight is its own world (§2.4).
   const inRun = useRunStore((s) => s.run?.phase === 'combat');
   const hasRun = useRunStore((s) => s.run !== null);
@@ -182,8 +186,11 @@ export function CombatScreen() {
       </p>
       <header className={styles.topbar}>
         <div className={styles.chips}>
-          <button type="button" className={styles.iconBtn} onClick={() => goTo('scenarios')} title="Back to scenarios" data-testid="btn-menu">
-            <IconArrowLeft size={18} />
+          {/* One way out of a fight, and it is the same menu the map has. The back arrow this replaced went to
+              the practice-fight picker — from inside a run — and the restart beside it rebuilt a fixture that
+              a run fight does not have. Neither belonged on a player's screen. */}
+          <button type="button" className={styles.iconBtn} onClick={() => setPaused(true)} aria-label="Menu" data-testid="btn-pause">
+            <IconMenu2 size={18} />
           </button>
           <span className={`${styles.chip} ${styles.chipStrong}`}>{scenarioName(state)}</span>
           <span className={styles.chip}>{ENCOUNTER_LABEL[state.kind] ?? state.kind}</span>
@@ -193,12 +200,9 @@ export function CombatScreen() {
           <span className={styles.chip} data-testid="turn-chip">
             Turn {state.turn}
           </span>
-          <span className={styles.chip} title="Skill deck · discard">
+          <Tipped tip={<Tip title="Skill deck" meta={[`${state.player.deck.length} to draw`, `${state.player.discard.length} discarded`]} body="Your three active Pokémon's four moves each: twelve cards. You draw five a turn; when the deck runs out, the discard pile shuffles back in." />} className={styles.chip}>
             <IconCards size={14} /> {state.player.deck.length} · {state.player.discard.length}
-          </span>
-          <button type="button" className={styles.iconBtn} onClick={restart} title="Restart this fight (same seed)" data-testid="btn-restart-top">
-            <IconRefresh size={18} />
-          </button>
+          </Tipped>
         </div>
       </header>
 
@@ -229,7 +233,7 @@ export function CombatScreen() {
             </div>
           )}
           {state.trainer && enemy && (
-            <img className={`${styles.trainer} pixel`} src={trainerSprite(state.trainer.sprite)} alt={state.trainer.name} title={state.trainer.name} draggable={false} />
+            <img className={`${styles.trainer} pixel`} src={trainerSprite(state.trainer.sprite)} alt={state.trainer.name} draggable={false} />
           )}
           {enemy && (
             <div className={`${styles.enemySprite} ${fx.classes[enemy.uid] ?? ''}`} data-testid="arena-enemy">
@@ -263,12 +267,12 @@ export function CombatScreen() {
             <div className={styles.chip}>No enemies remain</div>
           )}
           {state.enemyQueue.length > 0 && (
-            <div className={styles.queue} title="Still to come">
+            <Tipped as="div" tip={<Tip title="Still to come" body="This trainer sends out the next Pokémon when this one falls. You fight them one at a time." />} className={styles.queue}>
               {state.enemyQueue.map((e) => (
                 <img key={e.uid} className="pixel" src={iconOf(e)} alt={e.name} width={34} height={28} />
               ))}
               <span>next</span>
-            </div>
+            </Tipped>
           )}
         </div>
 
@@ -295,20 +299,20 @@ export function CombatScreen() {
 
       <footer className={styles.tray}>
         <div className={styles.trayHeader}>
-          <div className={styles.ap} data-testid="ap-pips" title="Action Points this turn">
+          <Tipped as="div" tip={apTip(state.player.ap, ctx.config.baseApPerTurn)} className={styles.ap} data-testid="ap-pips">
             {Array.from({ length: Math.max(ctx.config.baseApPerTurn, state.player.ap) }, (_, i) => (
               <span key={i} className={i < state.player.ap ? styles.pip : styles.pipDim} />
             ))}
             <span className="tabular">{state.player.ap} AP</span>
             {state.player.defensiveDiscount && (
-              <span className={styles.discount} title="Your manual swap discounts the next Defensive card by 1 AP">
+              <Tipped tip={<Tip title="Defensive discount" body="You swapped this turn, so your next Defensive card costs 1 AP less. Spent the moment you play one." />} className={styles.discount}>
                 −1 Def
-              </span>
+              </Tipped>
             )}
-            <span className={styles.swapInfo} title="Manual swaps this turn cost 1, then 2, then 3 AP">
+            <Tipped tip={swapTip(Math.min(3, state.player.swapCounter + 1), state.player.swapCounter)} className={styles.swapInfo}>
               Next swap: {Math.min(3, state.player.swapCounter + 1)} AP
-            </span>
-          </div>
+            </Tipped>
+          </Tipped>
           <button type="button" className={`${styles.endTurn} display`} onClick={() => dispatch({ type: 'end-turn' })} disabled={!interactive} data-testid="btn-end-turn">
             End Turn
           </button>
@@ -344,6 +348,7 @@ export function CombatScreen() {
           </div>
         </Modal>
       )}
+      {paused && <PauseMenu onResume={() => setPaused(false)} />}
       {ended && (
         <OutcomeOverlay
           state={state}

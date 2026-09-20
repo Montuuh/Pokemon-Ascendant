@@ -1,0 +1,92 @@
+/* The one tooltip bubble (TooltipLayer) and the shape of its contents (Tip). Dark on every theme: a tooltip
+   is read against whatever is under it, and the stage palette is the one that reads on both. */
+
+.bubble {
+  position: fixed;
+  z-index: 1000;
+  max-width: 320px;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-md);
+  background: #2a2230;
+  color: #fff6ec;
+  border: 1px solid rgba(255, 246, 236, 0.14);
+  box-shadow: 0 14px 34px rgba(20, 15, 26, 0.45);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--motion-fast) ease-out,
+    transform var(--motion-fast) ease-out;
+}
+.bubble.below {
+  transform: translateY(-4px);
+}
+.bubble.placed {
+  opacity: 1;
+  transform: none;
+}
+
+.tip {
+  display: grid;
+  gap: var(--sp-2);
+  font-size: calc(14px * var(--text-scale));
+  line-height: 1.4;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.icon {
+  display: inline-flex;
+  flex: none;
+}
+.icon img {
+  image-rendering: pixelated;
+}
+.title {
+  font-size: calc(16px * var(--text-scale));
+  line-height: 1.2;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.pill {
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 246, 236, 0.12);
+  font-size: calc(12px * var(--text-scale));
+  white-space: nowrap;
+}
+.body {
+  color: #e0d2c2;
+}
+.footer {
+  color: #9e8fa0;
+  font-size: calc(12px * var(--text-scale));
+}
+
+/* The ⓘ. Quiet until hovered; inherits the surrounding text colour so it sits in a heading or a sentence. */
+.infoDot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-inline-start: 4px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: help;
+  vertical-align: middle;
+}
+.infoDot:hover,
+.infoDot:focus-visible {
+  color: var(--ink-primary);
+  background: var(--surface-3);
+  outline: none;
+}

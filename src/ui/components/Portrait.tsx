@@ -1,10 +1,11 @@
 import { IconCrown } from '@tabler/icons-react';
 import type { Combatant } from '@/sim';
 import { portraitOf } from '@/ui/art';
-import { STATUS_HINT, STATUS_LABEL } from '@/ui/strings';
 import { FloatingNumbers, type FloatingFx } from './FloatingNumbers';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
+import { combatantTip, traumaTip } from '@/ui/tips';
+import { Tipped, useTip } from '@/ui/tooltip';
 import styles from './Portrait.module.css';
 
 type Variant = 'lead' | 'bench';
@@ -41,30 +42,28 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
     .filter(Boolean)
     .join(' ');
   const stageChips = (['attack', 'defense'] as const).filter((s) => mon.stages[s] !== 0);
-  const title = fainted ? `${mon.name} fainted` : swapHint ?? `${mon.name} · ${slotLabel}`;
+  // 2026-09-21 — the portrait's bubble is the Pokémon's summary: types, ability, held item, status, Trauma,
+  // and its role right now (Lead, or what a swap costs). It replaced five native titles on the card's corners.
+  const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost } : {}) }));
 
   return (
-    <button type="button" className={classes} onClick={onClick} title={title} data-testid={`portrait-${variant}-${mon.speciesId}`} data-slot={slotLabel}>
+    <button type="button" className={classes} onClick={onClick} data-testid={`portrait-${variant}-${mon.speciesId}`} data-slot={slotLabel} aria-label={fainted ? `${mon.name} fainted` : swapHint ?? `${mon.name} · ${slotLabel}`} {...tip}>
       <span className={styles.slotTag}>{slotLabel}</span>
       {variant === 'lead' && (
-        <span className={styles.crown} title="Lead — absorbs single-target hits">
+        <span className={styles.crown}>
           <IconCrown size={18} stroke={2.4} />
         </span>
       )}
       <span className={styles.cornerTL}>
-        <TypeBadge type={primary} size={variant === 'bench' ? 22 : 26} />
-        {mon.types[1] && <TypeBadge type={mon.types[1]} size={variant === 'bench' ? 22 : 26} />}
+        <TypeBadge type={primary} size={variant === 'bench' ? 22 : 26} defenderTypes={mon.types} />
+        {mon.types[1] && <TypeBadge type={mon.types[1]} size={variant === 'bench' ? 22 : 26} defenderTypes={mon.types} />}
       </span>
       <span className={styles.cornerTR}>
         {mon.status && (
-          <span title={`${STATUS_LABEL[mon.status.kind]} — ${STATUS_HINT[mon.status.kind]}`}>
-            <StatusBadge status={mon.status.kind} size={variant === 'bench' ? 24 : 28} />
-          </span>
+          <StatusBadge status={mon.status.kind} size={variant === 'bench' ? 24 : 28} />
         )}
         {mon.confusionTurns > 0 && (
-          <span title={`${STATUS_LABEL.confusion} — ${STATUS_HINT.confusion}`}>
-            <StatusBadge status="confusion" size={variant === 'bench' ? 24 : 28} />
-          </span>
+          <StatusBadge status="confusion" size={variant === 'bench' ? 24 : 28} />
         )}
       </span>
       <span className={styles.art} style={{ background: `color-mix(in srgb, var(--type-${primary}) 30%, var(--surface-2))` }}>
@@ -88,9 +87,9 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
             </span>
           ))}
           {mon.traumaStacks > 0 && (
-            <span className={styles.chipTrauma} title="Trauma: −5% Max HP per stack">
+            <Tipped tip={traumaTip(mon.traumaStacks, mon.maxHp)} className={styles.chipTrauma}>
               Trauma ×{mon.traumaStacks}
-            </span>
+            </Tipped>
           )}
         </span>
       )}

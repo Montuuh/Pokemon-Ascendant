@@ -7,6 +7,7 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { HpBar } from '@/ui/components/HpBar';
 import { Money, Price } from '@/ui/components/Money';
 import { RUN_REJECT_TEXT } from '@/ui/strings';
+import { InfoDot, Tip } from '@/ui/tooltip';
 import styles from './CenterScreen.module.css';
 
 // Pokémon Center, §2.9.1 + §8.2.4 — "the warmest screen" (docs/design/ui/screens.md 4.6).
@@ -38,8 +39,8 @@ export function CenterScreen() {
             <IconHeartPlus size={26} /> Pokémon Center
           </h1>
           <p className={styles.sub}>
-            Everyone is back to full health, and it cost nothing. What the machine cannot fix is the wear —
-            that takes a session with the counter staff, and they do charge.
+            Everyone is healed, free.
+            <InfoDot tip={<Tip title="The Centre" body="Healing and status cures are free on entry. What the machine cannot fix is Trauma — that is Therapy, at the counter, and it charges more the worse the stack." />} />
           </p>
         </div>
         <span className={styles.wallet} data-testid="center-money">
@@ -72,7 +73,7 @@ export function CenterScreen() {
                     disabled={!affordable}
                     onClick={() => act({ type: 'use-therapy', uid: mon.uid })}
                     data-testid={`therapy-${s.id}`}
-                    title={affordable ? `Take one stack off ${s.name}.` : 'Not enough money.'}
+                    aria-label={affordable ? `Therapy for ${s.name}: take one Trauma stack off` : `Therapy for ${s.name}: not enough money`}
                   >
                     <MonIcon speciesId={s.id} size={44} />
                     <span className={styles.patientBody}>
@@ -92,8 +93,8 @@ export function CenterScreen() {
         )}
 
         <p className={styles.note}>
-          Trauma costs 5 % of Max HP per stack up to five, then 10 % each. It never heals on its own — a
-          Centre is the only place it comes off.
+          Trauma never heals on its own.
+          <InfoDot tip={<Tip title="Trauma" body="Each stack costs 5 % of max HP up to five, then 10 % each. It never heals on its own — Therapy at a Centre is the only place it comes off, and the price rises with the count." />} />
         </p>
       </section>
 

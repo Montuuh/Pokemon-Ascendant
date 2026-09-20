@@ -127,14 +127,16 @@ test('looping motion stops under prefers-reduced-motion', async ({ page }) => {
   expect(looping, 'elements still animating forever').toBe(0);
 });
 
-test('the rules are one click away, on the menu and mid-run', async ({ page }) => {
-  // §9.6.1 — a first-time player meets six unfamiliar systems at once. Discoverable-by-tooltip is not the
-  // same as explained, so the panel has to exist, be reachable from both places, and be readable text.
+test('the rules are one click away from the map and from a fight', async ({ page }) => {
+  // §9.6.1 — a first-time player meets six unfamiliar systems at once. The panel came off the main menu on
+  // 2026-09-21 (the rules are taught in place now, not as a wall before the first click), so "one click away"
+  // means from the pause menu — on the map, and inside a fight, which is where you are when you need it.
   await page.goto('/?screen=menu');
   await page.evaluate(() => window.localStorage.clear());
   await page.goto('/?screen=menu');
-
-  await page.getByTestId('btn-how-to-play').click();
+  await startRun(page);
+  await page.getByTestId('btn-pause').click();
+  await page.getByTestId('btn-help').click();
   const panel = page.getByTestId('how-to-play');
   await expect(panel).toBeVisible();
   // Six fight rules and four route rules, in two headed groups. Six is the number a player needs before
@@ -158,11 +160,17 @@ test('the rules are one click away, on the menu and mid-run', async ({ page }) =
   await page.getByTestId('btn-close-how-to-play').click();
   await expect(panel).toBeHidden();
 
-  // And again from the pause menu, which is where you are when you actually need it.
-  await startRun(page);
-  await page.getByTestId('btn-pause').click();
-  await page.getByTestId('btn-help').click();
-  await expect(page.getByTestId('how-to-play')).toBeVisible();
+  // And from inside a fight, through the same menu — the combat screen's only exit as of 2026-09-21.
+  await page.getByTestId('btn-resume').click();
+  await expect(page.getByTestId('pause-menu')).toBeHidden();
+  await page.locator('[data-testid^="node-"][data-status="reachable"]').first().click();
+  await page.getByTestId('btn-enter-node').click();
+  await page.waitForTimeout(200);
+  if ((await page.getByTestId('combat-screen').count()) > 0) {
+    await page.getByTestId('btn-pause').click();
+    await page.getByTestId('btn-help').click();
+    await expect(page.getByTestId('how-to-play')).toBeVisible();
+  }
 });
 
 test('the fan-project disclaimer is reachable at every supported size', async ({ page }) => {

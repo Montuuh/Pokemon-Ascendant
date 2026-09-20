@@ -15,4 +15,9 @@ paths:
 - **Testable by construction:** every screen root and every interactive element a test could need has a stable `data-testid`. Every screen is reachable by `?screen=` (later `?scenario=`) so Playwright and the browser tool can deep-link.
 - **Motion:** CSS transitions/keyframes driven by tokens and sim events; honour `prefers-reduced-motion` (tokens collapse to 0 ms). Card feel per §9.9 (draw 200 ms, play 350 ms, discard 150 ms).
 - **Text:** user-facing strings gathered per screen (ready for i18n at v0.9); rules text comes from the sim/content, never assembled ad hoc in JSX.
+- **Short on the screen, the explanation on hover (2026-09-21).** A label, an icon or a number on the screen; the
+  paragraph in a tooltip. Never a native `title=` — use `useTip()` on an interactive element, `<Tipped>` on an
+  inline one, `<InfoDot>` beside a heading. Every tooltip's prose lives in `src/ui/tips.tsx` and is built from the
+  content row or the string tables, so the game explains itself in one voice. A screen lede longer than one line
+  is a tooltip that has not been written yet.
 - **Verify visually.** After any visual change run `npm run shot` and Read the PNG, or screenshot via the browser tool. Hover, drag and animation are verified with Playwright actions, not assumed.

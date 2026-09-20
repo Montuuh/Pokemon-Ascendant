@@ -128,6 +128,10 @@ export function consumablePlayability(state: CombatState, cardId: string, ctx: C
   else if (def.effect.kind === 'catch' && state.kind !== 'wild') reason = 'not-wild';
   else if (def.effect.kind === 'catch' && state.player.balls <= 0) reason = 'no-balls';
   else if (def.effect.kind === 'catch' && !activeEnemy(state)) reason = 'no-enemy';
+  // §2.6.4.1 — a throw below READY always fails and still spends the ball. That is not a decision, it is a
+  // trap dressed as one, and it was reading as "the RNG robbed me" — the exact feeling §2.6.4.3 exists to
+  // prevent. The card stays visible with the gauge on it and plays the moment it would actually catch.
+  else if (def.effect.kind === 'catch' && !catchGauge(activeEnemy(state)!, def.effect).ready) reason = 'not-ready';
   return { cardId, def, playable: reason === null, reason, needsAllyTarget: def.target === 'ally' };
 }
 

@@ -1,6 +1,7 @@
 import type { MapNode } from '@/sim';
 import { nodeBadge } from '@/ui/art';
-import { NODE_LABEL } from '@/ui/strings';
+import { NODE_HINT, NODE_LABEL } from '@/ui/strings';
+import { Tip, useTip } from '@/ui/tooltip';
 import styles from './NodeMarker.module.css';
 
 export type NodeStatus = 'reachable' | 'locked' | 'visited' | 'current';
@@ -38,6 +39,16 @@ export function NodeMarker({
   onClick?: () => void;
   style?: React.CSSProperties;
 }) {
+  // The node's whole story in one bubble: what it is, who is in it, the level band, and whether you can go.
+  // The full preview card opens on click; this is the glance before the click.
+  const tip = useTip(
+    <Tip
+      title={node.preview.title}
+      meta={[NODE_LABEL[node.kind] ?? node.kind, `Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`, STATUS_TEXT[status]]}
+      body={node.preview.detail}
+      footer={NODE_HINT[node.kind]}
+    />,
+  );
   return (
     <button
       type="button"
@@ -49,7 +60,7 @@ export function NodeMarker({
       disabled={status !== 'reachable'}
       aria-label={`${NODE_LABEL[node.kind]}, ${STATUS_TEXT[status]}. ${node.preview.title}`}
       aria-current={status === 'current' ? 'location' : undefined}
-      title={`${node.preview.title} · ${STATUS_TEXT[status]}`}
+      {...tip}
       data-testid={`node-${node.id}`}
       data-kind={node.kind}
       data-status={status}

@@ -71,6 +71,9 @@ state, and any place the build still disagrees with canon.
 - Feature / multi-file: state the plan in a few lines (files, approach, § touched), then build unless the user objects. Ask only when different readings would produce materially different work.
 - **No commits or pushes unless asked.** Conventional commits: `feat(sim): …`, `feat(ui): …`, `content: …`, `design: …`, `docs: …`.
 - End of a task: update `docs/session/active.md` (≤ 30 lines) and, if scope moved, `docs/roadmap.md`.
+- **Shipping a version is two edits, nowhere else:** bump `"version"` in `package.json` (the menu footnote and the
+  About screen read it at build time) and mark the row in `docs/roadmap.md`'s summary table (`✅ YYYY-MM-DD`; the
+  About screen parses that table). The README's status line is the one manual line left.
 - Subagents (`.claude/agents/`): `designer` for pillar/balance review, `qa` for edge-case hunts. Use them for review, not for writing code in parallel on the same files.
 
 ## Art

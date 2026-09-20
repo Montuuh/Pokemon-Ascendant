@@ -2,9 +2,11 @@ import { IconQuestionMark } from '@tabler/icons-react';
 import type { CombatCtx, CombatState, EnemyCombatant } from '@/sim';
 import { SLOT_LABEL, catchStatus, currentPhase, phaseMarkers, predictIntentDamage, slotOccupant } from '@/sim';
 import { iconOf, intentGlyph } from '@/ui/art';
-import { INTENT_LABEL, STATUS_HINT, STATUS_LABEL } from '@/ui/strings';
+import { INTENT_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
+import { catchTip, intentTip } from '@/ui/tips';
+import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EnemyPanel.module.css';
 
 interface Props {
@@ -26,6 +28,8 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
   const slotOcc = intent?.targetSlot ? slotOccupant(state, intent.targetSlot) : null;
   const phase = currentPhase(enemy, ctx.config);
   const gauge = catchStatus(state, ctx);
+  const intentTipProps = useTip(intent ? intentTip(intent.kind, move ? move.name : undefined, intent.hidden) : null);
+  const catchTipProps = useTip(gauge ? catchTip(gauge) : null);
   const stageChips = (['attack', 'defense'] as const).filter((s) => enemy.stages[s] !== 0);
   // §2.8.2 — an Elite Wild is boss-*tier* and is not a Gym Leader, so the label reads the scenario's kind
   // first. Tier is how hard it hits; kind is what it is, and the chip is telling the player what it is.
@@ -38,11 +42,11 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
 
   return (
     <div className={styles.zone} data-testid="foe-panel">
-      <div className={[styles.intent, intent?.hidden ? styles.intentHidden : '', intent?.kind === 'incapacitated' ? styles.intentIdle : ''].join(' ')} data-testid="intent-chip" title="What the enemy will do this turn, and where it lands">
+      <div className={[styles.intent, intent?.hidden ? styles.intentHidden : '', intent?.kind === 'incapacitated' ? styles.intentIdle : ''].join(' ')} data-testid="intent-chip" {...intentTipProps}>
         {intent?.hidden ? (
           <>
             <IconQuestionMark size={18} />
-            <span>Unknown intent — survive its first move to reveal its pattern.</span>
+            <span>Unknown intent</span>
           </>
         ) : intent ? (
           <>
@@ -72,13 +76,12 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
         className={[styles.card, targetable ? styles.targetable : '', enemy.hp <= 0 ? styles.fainted : '', fxClass ?? ''].join(' ')}
         onClick={onClick}
         data-testid={`enemy-${enemy.speciesId}`}
-        title={targetable ? 'Click to play the selected card here' : `${enemy.name} Lv ${enemy.level}`}
       >
         <span className={styles.header}>
           <img className={`${styles.icon} pixel`} src={iconOf(enemy)} alt="" width={48} height={40} />
           <span className={styles.types}>
             {enemy.types.map((t) => (
-              <TypeBadge key={t} type={t} size={24} />
+              <TypeBadge key={t} type={t} size={24} defenderTypes={enemy.types} />
             ))}
           </span>
           <span className={styles.nameBlock}>
@@ -90,14 +93,10 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
           </span>
           <span className={styles.badges}>
             {enemy.status && (
-              <span title={`${STATUS_LABEL[enemy.status.kind]} — ${STATUS_HINT[enemy.status.kind]}`}>
-                <StatusBadge status={enemy.status.kind} size={28} />
-              </span>
+              <StatusBadge status={enemy.status.kind} size={28} />
             )}
             {enemy.confusionTurns > 0 && (
-              <span title={`${STATUS_LABEL.confusion} — picks its moves at random`}>
-                <StatusBadge status="confusion" size={28} />
-              </span>
+              <StatusBadge status="confusion" size={28} />
             )}
           </span>
         </span>
@@ -114,21 +113,24 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
               </span>
             ))}
             {enemy.sturdyAvailable && (
-              <span className={styles.chipInfo} title="Sturdy: survives one lethal hit at 1 HP">
+              <Tipped tip={<Tip title="Sturdy" body="Survives one hit that would have knocked it out, at 1 HP. Once per fight." />} className={styles.chipInfo}>
                 Sturdy
-              </span>
+              </Tipped>
             )}
           </span>
         </span>
       </button>
 
       {gauge && (
-        <div className={[styles.catch, gauge.ready ? styles.catchReady : ''].join(' ')} data-testid="catch-pill" title={`Catch when the gauge is READY: HP ≤ ${gauge.thresholdPercent}%${gauge.hasStatus ? ' (status bonus active)' : ' — a status raises it to 50%'}. Balls left: ${gauge.ballsLeft}.`}>
+        <div className={[styles.catch, gauge.ready ? styles.catchReady : ''].join(' ')} data-testid="catch-pill" {...catchTipProps}>
           <span className={styles.ball} />
           <span className={styles.catchTrack}>
             <span className={styles.catchFill} style={{ width: `${gauge.gauge}%` }} />
           </span>
-          <span className={`${styles.catchLabel} display`}>{gauge.ballsLeft === 0 ? 'no balls' : gauge.ready ? 'READY' : `${gauge.gauge}%`}</span>
+          {/* §2.6.4 — never a bare percentage. "64%" beside a Poké Ball reads as a catch *chance*, and the
+              gauge is not one: below READY a throw fails for certain. The label names the target instead, so
+              what it says is what to do — get its HP under this — and the bar shows how far along that is. */}
+          <span className={`${styles.catchLabel} display`}>{gauge.ballsLeft === 0 ? 'no balls' : gauge.ready ? 'READY' : `HP ≤ ${gauge.thresholdPercent}%`}</span>
           <span className={styles.catchBalls}>×{gauge.ballsLeft}</span>
         </div>
       )}

@@ -7,6 +7,7 @@ import { GYM, MODIFIERS, RUN_START, STARTER_IDS, activeMoves, isOfferable, modif
 import { portraitUrl } from '@/content/schemas/species';
 import { ItemCard } from '@/ui/components/ItemCard';
 import { TypeBadge } from '@/ui/components/TypeBadge';
+import { InfoDot, Tip } from '@/ui/tooltip';
 import styles from './StarterSelect.module.css';
 
 // Per docs/design/ui/screens.md §3.3 — the new-run stepper, all four steps as of v0.5: difficulty (§8.8),
@@ -117,11 +118,11 @@ export function StarterSelect() {
       {step === 0 ? (
         <section className={styles.body} data-testid="step-difficulty">
           <div className={styles.diffIntro}>
-            <h2 className={`${styles.stepTitle} display`}>Make it harder, if you want to</h2>
-            <p className={styles.stepLede}>
-              There is no easier setting: the baseline is the floor. Every modifier makes the run worse for
-              you and pays for it in Trainer XP, and you may take {MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.
-            </p>
+            <h2 className={`${styles.stepTitle} display`}>
+              Make it harder, if you want to
+              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting — the baseline is the floor. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer="Trainer XP arrives in v0.6; the multiplier is already counted." />} />
+            </h2>
+            <p className={styles.stepLede}>Optional. The baseline is the floor.</p>
             <p className={styles.xpTally} data-testid="difficulty-xp">
               Trainer XP this run: <b className="tabular">×{xpBonus.toFixed(2)}</b>
               {modifiers.length === 0 && <span className={styles.xpNote}> — baseline. Nothing selected.</span>}
@@ -140,7 +141,6 @@ export function StarterSelect() {
                   disabled={!d.available}
                   aria-pressed={on}
                   data-testid={`difficulty-${d.id}`}
-                  title={d.available ? d.effect : d.pending}
                 >
                   <span className={`${styles.diffName} display`}>{d.name}</span>
                   <span className={styles.diffXp}>×{d.xpMultiplier.toFixed(2)} XP</span>
@@ -165,11 +165,11 @@ export function StarterSelect() {
       ) : step === 2 ? (
         <section className={styles.body} data-testid="step-relic">
           <div className={styles.diffIntro}>
-            <h2 className={`${styles.stepTitle} display`}>One relic to start with</h2>
-            <p className={styles.stepLede}>
-              Common and Uncommon only — a Starting Relic sets a direction, it does not decide the build. It
-              works from the first fight and never comes off.
-            </p>
+            <h2 className={`${styles.stepTitle} display`}>
+              One relic to start with
+              <InfoDot tip={<Tip title="Starting Relic" body="Common and Uncommon only: it sets a direction, it does not decide the build. Works from the first fight and never comes off." footer="You can take none." />} />
+            </h2>
+            <p className={styles.stepLede}>Works from the first fight. Never comes off.</p>
           </div>
 
           <div className={styles.relics}>
@@ -192,16 +192,16 @@ export function StarterSelect() {
               );
             })}
           </div>
-          <p className={styles.skipNote}>You can also take none — the run starts a little leaner and a little freer.</p>
+
         </section>
       ) : step === 3 ? (
         <section className={styles.body} data-testid="step-region">
           <div className={styles.diffIntro}>
-            <h2 className={`${styles.stepTitle} display`}>One rule for the whole Region</h2>
-            <p className={styles.stepLede}>
-              A Region Modifier is in force from the first node to the Gym and then it is gone. You hold
-              exactly one — they never stack, and this is the only one you will be offered.
-            </p>
+            <h2 className={`${styles.stepTitle} display`}>
+              One rule for the whole Region
+              <InfoDot tip={<Tip title="Region Modifier" body="In force from the first node to the Gym, then gone. You hold exactly one; they never stack, and this is the only offer." footer="You can take none." />} />
+            </h2>
+            <p className={styles.stepLede}>From the first node to the Gym, then gone.</p>
           </div>
 
           <div className={styles.relics}>
@@ -223,7 +223,7 @@ export function StarterSelect() {
               );
             })}
           </div>
-          <p className={styles.skipNote}>Taking none is allowed. The Region is simply the Region.</p>
+
         </section>
       ) : (
         <section className={styles.body} data-testid="step-starter">

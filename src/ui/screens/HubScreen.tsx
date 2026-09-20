@@ -3,6 +3,7 @@ import { IconArrowLeft } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useAchievementStore } from '@/app/achievementStore';
 import { ACHIEVEMENTS, type AchievementDef, type MedalTier } from '@/sim';
+import { InfoDot, Tip } from '@/ui/tooltip';
 import styles from './HubScreen.module.css';
 
 // §8.4 — the Trainer Hub, as much of it as v0.5 can honestly show.
@@ -111,8 +112,8 @@ export function HubScreen() {
           </div>
         ))}
         <p className={styles.note}>
-          Ten of the fifty in the design are here. The rest wait on Trainer XP, the Pokédex and Regions 2
-          and 3 — a medal you could never earn is not a goal, it is a blank.
+          Ten of fifty medals so far.
+          <InfoDot tip={<Tip title="Why ten" body="The other forty wait on Trainer XP, the Pokédex and Regions 2 and 3. A medal you could never earn is not a goal, it is a blank — they arrive with the systems that make them possible." />} />
         </p>
       </section>
     </main>

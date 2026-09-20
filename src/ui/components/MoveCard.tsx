@@ -3,6 +3,8 @@ import type { CardPlayability } from '@/sim';
 import { portraitOf, typeGlyph } from '@/ui/art';
 import { describeMove } from '@/ui/moveText';
 import { REJECT_TEXT } from '@/ui/strings';
+import { moveTip } from '@/ui/tips';
+import { useTip } from '@/ui/tooltip';
 import styles from './MoveCard.module.css';
 
 interface Props {
@@ -36,6 +38,10 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
   const rot = total > 1 ? ((index - mid) / Math.max(1, mid)) * 6 : 0;
   const lift = Math.abs(index - mid) * 4;
   const reasonText = play.reason ? REJECT_TEXT[play.reason] : '';
+  // §9.6 / 2026-09-21 — one bubble for the whole card: type, range, cost, power, what it does, what it will
+  // do to this target, and why it is locked. It replaced nine native `title`s spread over the card's parts,
+  // none of which anyone waited a second for.
+  const tip = useTip(moveTip(play));
 
   return (
     <button
@@ -43,8 +49,15 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
       className={`${classes} fx-card-in`}
       style={{ ['--card-type' as string]: `var(--type-${move.type})`, ['--rot' as string]: `${rot}deg`, ['--lift' as string]: `${lift}px`, animationDelay: `${index * 40}ms` }}
       onClick={onClick}
-      onMouseEnter={() => onHover(true)}
-      onMouseLeave={() => onHover(false)}
+      {...tip}
+      onMouseEnter={(e) => {
+        tip.onMouseEnter(e);
+        onHover(true);
+      }}
+      onMouseLeave={(e) => {
+        tip.onMouseLeave(e);
+        onHover(false);
+      }}
       data-testid={`card-${move.id}`}
       data-card-id={play.card.id}
       data-state={state === 'no-ap' ? 'no-ap' : state === 'locked' ? (play.reason ?? 'locked') : 'playable'}
@@ -67,19 +80,18 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
       ]
         .filter(Boolean)
         .join('. ')}
-      title={`${move.name} — ${describeMove(play)}${reasonText ? ` · ${reasonText}` : ''}`}
     >
       <span className={styles.mech}>
-        <span className={styles.badge} title={move.role}>
+        <span className={styles.badge}>
           <Role size={12} stroke={2.6} />
         </span>
         {move.modifier === 'step-forward' && (
-          <span className={`${styles.badge} ${styles.mod}`} title="Step-Forward: plays from the bench and takes the Lead first">
+          <span className={`${styles.badge} ${styles.mod}`}>
             <IconArrowForwardUp size={12} stroke={2.6} />
           </span>
         )}
         {move.modifier === 'step-backward' && (
-          <span className={`${styles.badge} ${styles.mod}`} title="Step-Backward: resolves, then retreats to a chosen bench">
+          <span className={`${styles.badge} ${styles.mod}`}>
             <IconArrowBackUp size={12} stroke={2.6} />
           </span>
         )}
@@ -87,7 +99,6 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
       {play.damage && play.damage.typeMultiplier !== 1 && (
         <span
           className={`${styles.eff} ${play.damage.typeMultiplier > 1 ? styles.effUp : styles.effDown} display`}
-          title={`Type effectiveness: ${effectivenessPhrase(play.damage.typeMultiplier)}`}
         >
           {play.damage.typeMultiplier === 0 ? '×0' : `×${play.damage.typeMultiplier}`}
         </span>
@@ -96,7 +107,7 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
           whose card this is, and a 22 px avatar tucked beside the title was not telling anyone. */}
       <span className={styles.art}>
         <img className={styles.portrait} src={portraitOf(owner)} alt="" draggable={false} />
-        <span className={styles.typeChip} title={move.type}>
+        <span className={styles.typeChip}>
           <img src={typeGlyph(move.type)} alt="" width={20} height={20} />
         </span>
         <span className={`${styles.owner} display`}>{owner.name}</span>
@@ -107,19 +118,19 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
       </span>
       <span className={styles.plate}>{describeMove(play)}</span>
       <span className={styles.footer}>
-        <span className={styles.dots} title={`${play.apCost} AP`}>
+        <span className={styles.dots}>
           {state === 'no-ap' && <IconAlertTriangle size={13} className={styles.warn} />}
           {Array.from({ length: play.apCost }, (_, i) => (
             <span key={i} className={styles.dot} />
           ))}
           {play.apCost === 0 && <span className={styles.free}>free</span>}
           {play.apCost !== move.apCost && (
-            <span className={styles.costNote} title="Base cost modified by Paralysis or the defensive-swap discount">
+            <span className={styles.costNote}>
               ({move.apCost})
             </span>
           )}
         </span>
-        <span className={`${styles.power} display tabular`} title={play.damage ? `${play.damage.final} damage` : 'no damage'}>
+        <span className={`${styles.power} display tabular`}>
           {play.damage ? play.damage.final : move.power > 0 ? move.power : '—'}
         </span>
       </span>

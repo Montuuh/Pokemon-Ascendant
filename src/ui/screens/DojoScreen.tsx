@@ -8,6 +8,8 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { RUN_REJECT_TEXT } from '@/ui/strings';
+import { moveDefTip } from '@/ui/tips';
+import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './DojoScreen.module.css';
 
 // Per docs/design/ui/screens.md (Dojo / Tutor, screen 4.7) and §2.9.4 — the Dojo. Node-screen chrome: header, content, Leave.
@@ -101,13 +103,14 @@ export function DojoScreen() {
               <ul className={styles.list}>
                 {tutorList.map(({ id, move, known }) => (
                   <li key={id}>
-                    <button
+                    <Tipped
+                      as="button"
                       type="button"
+                      tip={moveDefTip(move)}
                       className={`${styles.offer} ${known || !canMove ? styles.off : ''}`}
                       disabled={known || !canMove}
                       onClick={() => act({ type: 'teach-move', uid, moveId: id })}
                       data-testid={`tutor-${id}`}
-                      title={known ? `${species.name} already knows ${move.name}.` : !canMove ? 'Not enough money.' : move.name}
                     >
                       <TypeBadge type={move.type} size={20} />
                       <span className={styles.offerBody}>
@@ -120,7 +123,7 @@ export function DojoScreen() {
                       </span>
                       <span className={`${styles.ap} tabular`}>{move.apCost} AP</span>
                       {known ? <IconCheck size={16} /> : <Price amount={PRICES.dojoMove} affordable={canMove} />}
-                    </button>
+                    </Tipped>
                   </li>
                 ))}
               </ul>
@@ -134,13 +137,14 @@ export function DojoScreen() {
                 const inert = def.hook === 'none';
                 return (
                   <li key={id}>
-                    <button
+                    <Tipped
+                      as="button"
                       type="button"
+                      tip={<Tip title={def.name} meta={['Ability', 'Passive']} body={def.description} footer={inert ? 'No effect until a later version.' : equipped ? 'Already equipped.' : 'Replaces the current passive. One slot per Pokémon.'} />}
                       className={`${styles.offer} ${equipped || !canAbility ? styles.off : ''}`}
                       disabled={equipped || !canAbility}
                       onClick={() => act({ type: 'set-ability', uid, abilityId: id })}
                       data-testid={`ability-${id}`}
-                      title={equipped ? 'Already equipped.' : !canAbility ? 'Not enough money.' : def.description}
                     >
                       <span className={styles.offerBody}>
                         <span className={`${styles.offerName} display`}>{def.name}</span>
@@ -152,7 +156,7 @@ export function DojoScreen() {
                         </span>
                       </span>
                       {equipped ? <span className={styles.tag}>equipped</span> : <Price amount={PRICES.dojoAbility} affordable={canAbility} />}
-                    </button>
+                    </Tipped>
                   </li>
                 );
               })}

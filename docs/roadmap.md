@@ -3,6 +3,10 @@
 > The version being built is the only scope. Anything else is out unless the user overrides. Each version has
 > a **playable claim** (what a tester can do), **exit criteria** (how we know it is done), and the **art it
 > needs**. Design references point to `docs/design/`. Status: ☐ planned · ◐ in progress · ✅ done.
+>
+> **The table below is read by the game.** The About screen parses it (`src/content/roadmap.ts`), so it is the
+> one place a version's status and date live: mark the row and the game follows. Keep the four columns and
+> the `✅ YYYY-MM-DD` shape on a finished row.
 
 ## Principle: validate the core before widening
 
@@ -12,12 +16,12 @@ loop layer and re-tests the core inside it.
 
 | Version | Name | Playable claim | Status |
 |---|---|---|---|
-| **v0.1** | **Combat Slice (Vertical Slice)** | Fight a full 3-Pokémon battle against a wild enemy and a 3-phase boss; the swap decision matters | ✅ code complete 2026-09-19 · ◐ external playtest |
-| v0.2 | First Route | Start a run, walk a short Region 1 route (wild + trainers + Center + Gym), win or lose, resume a save | ✅ code · ◐ playtest |
-| v0.3 | Identity through Evolution | Evolve with a branch choice, sculpt the active 4 from a move pool, learn TMs/tutor moves | ✅ code · ◐ playtest |
-| v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ code 2026-09-20 · ◐ playtest |
-| v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ code 2026-09-20 · ◐ playtest |
-| v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ☐ |
+| v0.1 | Combat Slice | Fight a full 3-Pokémon battle against a wild enemy and a 3-phase boss; the swap decision matters | ✅ 2026-09-19 · ◐ playtest |
+| v0.2 | First Route | Start a run, walk a short Region 1 route (wild + trainers + Center + Gym), win or lose, resume a save | ✅ 2026-09-19 · ◐ playtest |
+| v0.3 | Identity through Evolution | Evolve with a branch choice, sculpt the active 4 from a move pool, learn TMs/tutor moves | ✅ 2026-09-19 · ◐ playtest |
+| v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
+| v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
+| v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ◐ in progress |
 | v0.7 | Regions 2 & 3 | Status-on-intents, multi-enemy, field effects, cities, R2/R3 content | ☐ |
 | v0.8 | Victory Road & League | Gauntlet, Apex, Training Grounds, 5-fight League, Champion, boons | ☐ |
 | v0.9 | Polish | Audio, accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |

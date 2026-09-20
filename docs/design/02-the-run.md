@@ -367,13 +367,20 @@ gauge     = clamp(0, 100, round(100 × (100 − HP%) / (100 − threshold)))
 Full HP reads 0. Reaching the threshold reads 100 — READY. Applying a status moves the threshold from 30 % to
 50 %, which makes the gauge visibly **jump**; that jump is the tutorial moment for the whole system.
 
-| Throw | Result |
+| Gauge | The Poké Ball card |
 |---|---|
-| At gauge 100 | **Always catches.** Combat ends |
-| Below 100 | **Always fails.** The ball is still spent, combat continues |
+| 100 — READY | **Playable, and always catches.** Combat ends |
+| Below 100 | **Locked** — visible in hand, marked with what it needs, unplayable |
 | Target at 0 HP | The recruit is lost |
 
 A basic ball therefore catches at HP ≤ 30 %, or ≤ 50 % with any status.
+
+*(Changed 2026-09-21.)* The card used to be playable below READY, always fail, and spend the ball. That row
+was removed because it had no decision in it — a throw that fails for certain is not a gamble, it is a tax on
+not having read the tooltip — and because in play it produced the one feeling this whole section exists to
+prevent: a gauge at 80 % that "failed" read as the RNG robbing the player, when there was no RNG at all. The
+gauge on screen names the HP target rather than a percentage for the same reason. What is left is the pure
+form of the rule: the ball plays when it will catch, and the only way to lose the recruit is to knock it out.
 
 5. On a catch: combat ends as a **Victory** with **full combat XP** — a catch is never worth less than a kill —
    and the Pokémon enters the Box, or triggers Swap-or-Skip if the Box is full (§2.3.1).

@@ -1,0 +1,210 @@
+import type { ReactNode } from 'react';
+import { POKEMON_TYPES, typeMultiplier, type BadgeDef, type CardPlayability, type Combatant, type ConsumableDef, type HeldItemDef, type MoveDef, type PokemonType, type RegionModifierDef, type RelicDef } from '@/sim';
+import type { CatchGauge } from '@/sim/combat/catch';
+import { getContent } from '@/content/registry';
+import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
+import { describeMoveDef } from '@/ui/moveText';
+import { INTENT_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL } from '@/ui/strings';
+import { Tip } from '@/ui/tooltip';
+
+// Every explanation the game offers on hover, in one file.
+//
+// The rule the user set on 2026-09-21: short text on the screen, the explanation in a bubble when you rest on
+// it. That only works if the bubbles say the same kind of thing in the same voice everywhere, so they are all
+// built here from the content rows and the string tables — a component never writes tooltip prose of its own.
+// Nothing in this file is a rule: every sentence restates something the sim already does, in the player's
+// words, and the § it comes from is named in a comment rather than in the text (players do not read §).
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const typeName = (t: string) => cap(t);
+
+// ── Types and statuses ───────────────────────────────────────────────────────────────────────────────────
+
+/** §4.1.2 — the type, and what it is weak to. Weakness is the fact a player actually wants at a glance. */
+export function typeTip(type: PokemonType, defenderTypes?: readonly PokemonType[]): ReactNode {
+  const weakTo = POKEMON_TYPES.filter((atk) => typeMultiplier(atk, defenderTypes ?? [type]) > 1).map(typeName);
+  const resists = POKEMON_TYPES.filter((atk) => {
+    const m = typeMultiplier(atk, defenderTypes ?? [type]);
+    return m > 0 && m < 1;
+  }).map(typeName);
+  const immune = POKEMON_TYPES.filter((atk) => typeMultiplier(atk, defenderTypes ?? [type]) === 0).map(typeName);
+  const meta: ReactNode[] = [];
+  if (weakTo.length) meta.push(`Weak to ${weakTo.join(', ')}`);
+  if (resists.length) meta.push(`Resists ${resists.join(', ')}`);
+  if (immune.length) meta.push(`Immune to ${immune.join(', ')}`);
+  return <Tip icon={<img src={typeGlyph(type)} alt="" width={20} height={20} />} title={`${typeName(type)} type`} meta={meta} />;
+}
+
+/** §4.2 — a status condition, what it does, and how long it lasts. */
+export function statusTip(status: string): ReactNode {
+  return <Tip icon={<img src={statusGlyph(status)} alt="" width={20} height={20} />} title={STATUS_LABEL[status] ?? cap(status)} body={STATUS_HINT[status]} />;
+}
+
+// ── Moves ────────────────────────────────────────────────────────────────────────────────────────────────
+
+const RANGE_BODY = {
+  melee: 'Melee: only your Lead can play it.',
+  ranged: 'Ranged: anyone on your team can play it, from the bench too.',
+} as const;
+
+const MODIFIER_BODY = {
+  'step-forward': 'Step-Forward: the Pokémon that owns this card steps up to Lead first, then the move resolves. That swap is free and does not count towards the swap ladder.',
+  'step-backward': 'Step-Backward: the move resolves, then the Pokémon retreats to a bench of your choice. Free, and off the ladder.',
+  none: null,
+} as const;
+
+/** §3.3.4, §4.1 — a move card in full: what it is, what it does, what it will do to this target. */
+export function moveTip(play: CardPlayability): ReactNode {
+  const { move, owner } = play;
+  const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', `${play.apCost} AP${play.apCost !== move.apCost ? ` (base ${move.apCost})` : ''}`];
+  if (move.power > 0) meta.push(`${move.power} power`);
+  if (move.targeting === 'cleave') meta.push('Hits every slot');
+  const lines: ReactNode[] = [describeMoveDef(move)];
+  lines.push(RANGE_BODY[move.range]);
+  const mod = MODIFIER_BODY[move.modifier];
+  if (mod) lines.push(mod);
+  let footer: ReactNode = `${owner.name}'s card.`;
+  if (play.damage) {
+    const eff = play.damage.typeMultiplier;
+    footer = `Against this target: ${play.damage.final} damage${eff === 0 ? ' — no effect' : eff > 1 ? ` (super effective ×${eff})` : eff < 1 ? ` (not very effective ×${eff})` : ''}${play.damage.isCrit ? ', critical' : ''}.`;
+  }
+  if (!play.playable && play.reason) footer = <span>Locked — {REJECT_TEXT[play.reason]}</span>;
+  return <Tip icon={<img src={typeGlyph(move.type)} alt="" width={20} height={20} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
+}
+
+/** The same card, outside a fight (Move Manager, Dojo): no target, no cost changes. */
+export function moveDefTip(move: MoveDef): ReactNode {
+  const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', `${move.apCost} AP`];
+  if (move.power > 0) meta.push(`${move.power} power`);
+  const lines: ReactNode[] = [describeMoveDef(move), RANGE_BODY[move.range]];
+  const mod = MODIFIER_BODY[move.modifier];
+  if (mod) lines.push(mod);
+  return <Tip icon={<img src={typeGlyph(move.type)} alt="" width={20} height={20} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} />;
+}
+
+// ── Intents ──────────────────────────────────────────────────────────────────────────────────────────────
+
+const INTENT_BODY: Record<string, string> = {
+  attack: 'A single hit on the slot named. Whoever is standing in that slot when the turn ends takes it — swap, and the newcomer takes it instead.',
+  cleave: 'Hits every one of your slots at once. Nobody can dodge it by swapping; a shield or a swap to a sturdier Lead is the answer.',
+  backstrike: 'Aims past your Lead at a bench slot. If that slot is empty when it lands, it fizzles.',
+  buff: 'Raising one of its own stats this turn. It is not hitting you — this is the turn to hit it.',
+  debuff: 'Lowering one of your stats. Usually aimed at the Lead.',
+  stall: 'Recovering HP or setting up. A free turn for you.',
+  status: 'Trying to inflict a status on your Lead. A swap moves the target.',
+  unknown: 'Hidden. You can see what kind of thing is coming, not how hard or where. Some abilities and relics reveal it.',
+  incapacitated: 'Asleep, frozen or flinching. It does nothing this turn.',
+};
+
+/** §5.5 — what an intent means and what to do about it. `hidden` intents show the kind only. */
+export function intentTip(kind: string, detail?: string, hidden = false): ReactNode {
+  return <Tip title={`Enemy intent: ${INTENT_LABEL[kind] ?? cap(kind)}`} meta={detail && !hidden ? [detail] : undefined} body={INTENT_BODY[hidden ? 'unknown' : kind] ?? INTENT_BODY.unknown} footer="Every enemy move is telegraphed a turn ahead. Nothing here is a guess." />;
+}
+
+// ── AP, swaps, the Lead ──────────────────────────────────────────────────────────────────────────────────
+
+/** §3.2.2 — the AP pool. */
+export function apTip(ap: number, max = 3): ReactNode {
+  return <Tip title={`${ap} of ${max} action points`} body="Every card and every swap costs AP. You get 3 at the start of each turn; unspent AP is lost, so a turn that ends with points left is a turn that did less than it could." />;
+}
+
+/** §3.3.1 — the swap ladder. */
+export function swapTip(nextCost: number, swapsSoFar: number): ReactNode {
+  return <Tip title={`Next swap: ${nextCost} AP`} meta={['1st swap 1 AP', '2nd 2 AP', '3rd 3 AP']} body={`Swapping your Lead costs more each time you do it in a turn — ${swapsSoFar} so far this turn. The ladder resets every turn. Step-Forward and Step-Backward cards swap for free and do not climb it.`} footer="After a manual swap, your first Defensive card that turn is cheaper." />;
+}
+
+/** §3.3 — the Lead slot. */
+export function leadTip(name: string): ReactNode {
+  return <Tip title={`${name} is your Lead`} body="The Lead takes every single-target hit and is the only one who can play Melee cards. Swap it to move the enemy's next attack onto someone else." />;
+}
+
+/** §3.3.1 — a bench slot, and what swapping it in costs right now. */
+export function benchTip(name: string, cost: number, locked: string | null): ReactNode {
+  return <Tip title={`${name} — on the bench`} meta={locked ? [locked] : [`Swap in: ${cost} AP`]} body="Bench Pokémon are safe from single-target attacks and can still play their Ranged cards. Click to make it the Lead." />;
+}
+
+// ── Abilities, items, relics, badges, modifiers ──────────────────────────────────────────────────────────
+
+/** §6.5 — a passive ability, from the content row. */
+export function abilityTip(abilityId: string): ReactNode {
+  const a = getContent().ability(abilityId);
+  return <Tip title={a.name} meta={['Ability']} body={a.description} footer="Always on. Granted at the first evolution or swapped in at the Dojo." />;
+}
+
+/** §7.2 — a consumable card. */
+export function consumableTip(c: ConsumableDef, playable = true, reason: string | null = null): ReactNode {
+  const meta: ReactNode[] = [c.apCost === 0 ? 'Free' : `${c.apCost} AP`, 'Single use'];
+  return <Tip icon={<img src={itemIcon(c.id)} alt="" width={22} height={22} />} title={c.name} meta={meta} body={c.description} footer={!playable && reason ? `Locked — ${reason}` : 'Used up when played. Buy more at a Poké Mart.'} />;
+}
+
+/** §7.3 — a relic. */
+export function relicTip(r: RelicDef): ReactNode {
+  return <Tip icon={<img src={itemIcon(r.id)} alt="" width={22} height={22} />} title={r.name} meta={[cap(r.rarity), 'Relic']} body={r.description} footer={r.pending ? `Not working yet: ${r.pending}` : 'Lasts the whole run. Never comes off.'} />;
+}
+
+/** §7.4 — a held item. */
+export function heldItemTip(h: HeldItemDef, wearer?: string): ReactNode {
+  return <Tip icon={<img src={itemIcon(h.id)} alt="" width={22} height={22} />} title={h.name} meta={['Held item', wearer ? `Held by ${wearer}` : 'In the bag']} body={h.description} footer={h.pending ? `Not working yet: ${h.pending}` : 'One per Pokémon. Only the holder benefits.'} />;
+}
+
+/** §5.10 — a Badge. */
+export function badgeTip(b: BadgeDef): ReactNode {
+  return <Tip title={b.name} meta={[`${typeName(b.type)} Gym`, 'Badge']} body={b.description} footer={b.flavour} />;
+}
+
+/** §2.11.3 — a Region Modifier. */
+export function regionModifierTip(m: RegionModifierDef): ReactNode {
+  return <Tip title={m.name} meta={[cap(m.tier), 'Region Modifier']} body={m.description} footer={m.pending ? `Not working yet: ${m.pending}` : 'In force from the first node to the Gym, then gone. You hold one at a time.'} />;
+}
+
+// ── Catching, money, balls ───────────────────────────────────────────────────────────────────────────────
+
+/** §2.6.4 — the gauge. The one tooltip that has to undo an assumption: it is not a chance. */
+export function catchTip(gauge: CatchGauge & { ballsLeft: number }): ReactNode {
+  return (
+    <Tip
+      title={gauge.ready ? 'READY — the ball will catch' : `Catch at HP ≤ ${gauge.thresholdPercent}%`}
+      meta={[`${gauge.ballsLeft} ball${gauge.ballsLeft === 1 ? '' : 's'}`, gauge.hasStatus ? 'Status bonus on' : 'No status yet']}
+      body={
+        gauge.ready
+          ? 'Play the Poké Ball card. It always catches when the gauge reads READY.'
+          : `This is not a chance — it is a target. Bring its HP to ${gauge.thresholdPercent}% or lower and the Poké Ball unlocks and catches every time.${gauge.hasStatus ? '' : ' Any status condition widens the window to 50%.'}`
+      }
+      footer="Knock it out and the recruit is lost."
+    />
+  );
+}
+
+/** §2.14 — Poké Dollars. */
+export function moneyTip(amount: number): ReactNode {
+  return <Tip title={`${amount} ₽`} body="Poké Dollars. Earned from fights, spent at the Poké Mart, the Dojo and the Centre's Therapy. What you do not spend carries into the next Region." />;
+}
+
+/** §2.6.4 — balls as a counted resource. */
+export function ballsTip(count: number): ReactNode {
+  return <Tip title={`${count} Poké Ball${count === 1 ? '' : 's'}`} body="One is spent per catch. With none, wild fights offer no catch card. Buy more at a Poké Mart for 50 ₽." />;
+}
+
+/** §8.2 — Trauma. */
+export function traumaTip(stacks: number, max: number): ReactNode {
+  return <Tip title={`Trauma ×${stacks}`} meta={[`Max HP ${max}`]} body="Each faint leaves a stack, and each stack lowers max HP a little. A Pokémon Centre's Therapy removes them, for a price that rises with the count." />;
+}
+
+/** The Pokémon itself: species, types, level, ability, item — the summary a portrait owes on hover. */
+export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number }): ReactNode {
+  const content = getContent();
+  const meta: ReactNode[] = [`Lv ${c.level}`, ...c.types.map(typeName)];
+  const lines: ReactNode[] = [];
+  if (c.abilityIds[0]) {
+    const a = content.ability(c.abilityIds[0]);
+    lines.push(<div key="a"><b>{a.name}</b> — {a.description}</div>);
+  }
+  if (c.heldItemId) {
+    const h = content.heldItem(c.heldItemId);
+    lines.push(<div key="h"><b>{h.name}</b> — {h.description}</div>);
+  }
+  if (c.status) lines.push(<div key="s"><b>{STATUS_LABEL[c.status.kind]}</b> — {STATUS_HINT[c.status.kind]}</div>);
+  if (c.traumaStacks > 0) lines.push(<div key="t"><b>Trauma ×{c.traumaStacks}</b> — max HP is lowered until treated.</div>);
+  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP.` : undefined;
+  return <Tip title={c.name} meta={meta} body={lines.length ? lines : undefined} footer={footer} />;
+}

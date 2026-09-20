@@ -1,0 +1,202 @@
+/* About: two calm columns — the game and its credits on the left, the roadmap as a timeline on the right. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--sp-5);
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  background: radial-gradient(120% 80% at 50% 0%, #fdf0dd 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow-y: auto;
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.title {
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+.versionPill {
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  border: 2px solid var(--accent-action);
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.2fr);
+  gap: var(--sp-5);
+  align-items: start;
+  max-width: 1200px;
+  width: 100%;
+  justify-self: center;
+}
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 2px solid var(--border-subtle);
+}
+.gameTitle {
+  margin: 0;
+  font-size: var(--type-h2);
+  color: var(--brand-red);
+}
+.pitch {
+  margin: 0;
+}
+.disclaimer {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.repo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  justify-self: start;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  text-decoration: none;
+  font-family: var(--font-display);
+}
+.repo:hover {
+  background: var(--surface-3);
+}
+
+.sectionTitle {
+  margin: var(--sp-2) 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  font-size: var(--type-h3);
+}
+.count {
+  font-size: var(--type-small);
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--ink-secondary);
+}
+
+.credits {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-1) var(--sp-4);
+  font-size: var(--type-small);
+}
+.credits dt {
+  color: var(--ink-secondary);
+}
+.credits dd {
+  margin: 0;
+}
+
+/* The timeline: a spine of status icons with a line through them, one row per version. */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+.row {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--sp-3);
+  position: relative;
+  padding-bottom: var(--sp-3);
+}
+.row:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 22px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-subtle);
+}
+.spine {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 22px;
+  color: var(--ink-muted);
+}
+.done .spine {
+  color: var(--accent-positive);
+}
+.active .spine {
+  color: var(--accent-action);
+}
+.rowBody {
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  cursor: help;
+}
+.rowBody:hover,
+.rowBody:focus-visible {
+  background: var(--surface-2);
+  outline: none;
+}
+.active .rowBody {
+  background: var(--surface-2);
+  border: 2px solid var(--accent-action);
+}
+.rowHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.version {
+  min-width: 3.2em;
+  color: var(--ink-secondary);
+}
+.planned .name,
+.planned .version {
+  color: var(--ink-muted);
+}
+.when {
+  margin-left: auto;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+.claim {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}

@@ -26,12 +26,15 @@ describe('Catching — §2.6.4 (CL-014)', () => {
     expect(catchGauge(mon, BALL).gauge).toBe(0);
   });
 
-  it('Throw_BeforeReady_FailsAndSpendsBall', () => {
-    let s = withConsumableHand(wild(), ['poke-ball']);
-    s = dispatch(s, { type: 'use-consumable', cardId: consumableCard(s, 'poke-ball').id });
-    expect(s.outcome).toBe('in-progress');
-    expect(s.player.balls).toBe(1);
-    expect((eventsOf(s, 'catch')[0] as { success: boolean }).success).toBe(false);
+  it('Throw_BeforeReady_IsLocked_AndCostsNothing', () => {
+    // §2.6.4.1 (changed 2026-09-21) — a throw that fails for certain is not a decision. Below READY the card
+    // is visible, says why it waits, and cannot be played; the ball is not spent on a guaranteed miss.
+    const s = withConsumableHand(wild(), ['poke-ball']);
+    expect(catchStatus(s, ctx)!.ready).toBe(false);
+    const balls = s.player.balls;
+    expect(reject(s, { type: 'use-consumable', cardId: consumableCard(s, 'poke-ball').id })).toBe('not-ready');
+    expect(s.player.balls).toBe(balls);
+    expect(eventsOf(s, 'catch')).toHaveLength(0);
   });
 
   it('Throw_WhenReady_CatchesAndEndsCombat', () => {
@@ -46,8 +49,10 @@ describe('Catching — §2.6.4 (CL-014)', () => {
   });
 
   it('Throw_NoBallsLeft_Rejected', () => {
+    // At READY, so the only thing standing between the card and the throw is the ball count.
     let s = tweak(withConsumableHand(wild(), ['poke-ball']), (d) => {
       d.player.balls = 0;
+      d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.25);
     });
     expect(reject(s, { type: 'use-consumable', cardId: consumableCard(s, 'poke-ball').id })).toBe('no-balls');
     s = tweak(s, (d) => {

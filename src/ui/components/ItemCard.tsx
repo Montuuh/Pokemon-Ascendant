@@ -1,6 +1,7 @@
 import { IconAlertTriangle } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { itemIcon, tmIcon } from '@/ui/art';
+import { Tip, useTip } from '@/ui/tooltip';
 import styles from './ItemCard.module.css';
 
 // One card shape for everything you can own (§7.2–§7.4): a consumable, a relic, a held item, a TM, a ball.
@@ -34,10 +35,23 @@ export interface ItemCardProps {
   testId?: string;
 }
 
+const KIND_LABEL: Record<ItemKind, string> = { consumable: 'Item · single use', relic: 'Relic · whole run', 'held-item': 'Held item · one Pokémon', tm: 'TM · teaches a move', ball: 'Poké Ball' };
+
 export function ItemCard(props: ItemCardProps) {
   const { id, kind, name, description, rarity, tag, pending, footer, selected, disabled, dim, onClick, testId } = props;
   const interactive = !!onClick;
   const Tag = interactive ? 'button' : 'div';
+  // Every card explains itself the same way: what it is, how rare, what it does, and whether it works yet.
+  // The card's own face stays short; this is where the sentence lives.
+  const tip = useTip(
+    <Tip
+      icon={<img src={kind === 'tm' ? tmIcon(id) : itemIcon(id)} alt="" width={22} height={22} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />}
+      title={name}
+      meta={[rarity ? rarity.charAt(0).toUpperCase() + rarity.slice(1) : null, KIND_LABEL[kind]].filter((m): m is string => !!m)}
+      body={description}
+      footer={pending ? `Not working yet: ${pending}` : undefined}
+    />,
+  );
 
   return (
     <Tag
@@ -50,7 +64,7 @@ export function ItemCard(props: ItemCardProps) {
       disabled={interactive ? disabled : undefined}
       onClick={onClick}
       data-testid={testId}
-      title={pending ? `${name} — ${pending}` : name}
+      {...tip}
     >
       <span className={styles.art}>
         {/* §6.4.1 — a TM is a disc coloured by its move's type, so it has its own resolver; everything else

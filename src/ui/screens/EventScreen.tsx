@@ -89,7 +89,6 @@ export function EventScreen() {
               disabled={!affordable}
               onClick={() => choose(i)}
               data-testid={`event-choice-${i}`}
-              title={affordable ? choice.detail : 'Not enough money.'}
             >
               <span className={`${styles.choiceLabel} display`}>{choice.label}</span>
               {/* The promise, verbatim from the content row. `eventContent.test.ts` holds this string and the

@@ -15,6 +15,8 @@ import { PauseMenu } from '@/ui/components/PauseMenu';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { RUN_REJECT_TEXT } from '@/ui/strings';
+import { ballsTip, moneyTip } from '@/ui/tips';
+import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './MapScreen.module.css';
 
 // Per docs/design/ui/screens.md §2.2 — the Region map. The left column is the Active Team and the Box (§2.3,
@@ -52,6 +54,7 @@ export function MapScreen() {
   const [managing, setManaging] = useState<string | null>(null);
   /** §7.2–§7.5 — the inventory drawer: relics, held items, the bag. The only place a Held Item moves. */
   const [inventory, setInventory] = useState(false);
+  const bagTip = useTip(<Tip title="Your bag" body="Relics, held items and consumables. Equip held items on a Pokémon from here." />);
 
   const phase = run?.phase;
   const outcome = run?.outcome;
@@ -179,16 +182,16 @@ export function MapScreen() {
               const gym = gymById(id);
               const shut = committedLane !== null && committedLane !== lane;
               return (
-                <span
+                <Tipped
                   key={id}
+                  tip={<Tip title={gym.name} meta={[`${gym.type.charAt(0).toUpperCase() + gym.type.slice(1)} Gym`, shut ? 'Not on your lane' : 'One of two endings']} body={shut ? `${gym.name} is on the lane you did not take.` : gym.telegraph} footer={shut ? undefined : 'Two of the four Gyms are drawn each run. The path forks at layer 8 and the lanes never rejoin.'} />}
                   className={`${styles.forkGym} ${shut ? styles.forkShut : ''}`}
                   data-type={gym.type}
                   data-lane={lane}
-                  title={shut ? `${gym.name} is on the lane you did not take.` : gym.telegraph}
                 >
                   <TypeBadge type={gym.type} size={16} />
                   {gym.name.replace(/^Leader /, '')}
-                </span>
+                </Tipped>
               );
             })}
           </span>
@@ -196,39 +199,40 @@ export function MapScreen() {
         <div className={styles.purse}>
           {/* §2.14 — the wallet is on the map because the map is where you decide whether a Shop or a Dojo
               is worth the fight it costs. Deciding that without knowing the balance is not a decision. */}
-          <span className={styles.stat} title="Poké Dollars" data-testid="map-money">
+          <Tipped tip={moneyTip(run.money)} className={styles.stat} data-testid="map-money">
             <Money amount={run.money} size={20} />
-          </span>
-          <span className={styles.stat} title="Poké Balls left">
+          </Tipped>
+          <Tipped tip={ballsTip(run.balls)} className={styles.stat}>
             <img src={itemIcon('poke-ball')} alt="" width={22} height={22} />
             <b className="tabular">{run.balls}</b>
-          </span>
+          </Tipped>
           {run.relics.length > 0 && (
-            <span
+            <Tipped
+              tip={<Tip title={`${run.relics.length} relic${run.relics.length === 1 ? '' : 's'}`} body={run.relics.map((r) => getContent().relic(r).name).join(' · ')} footer="Run-long passives. Open the bag to read each one." />}
               className={styles.stat}
-              title={`Relics: ${run.relics.map((r) => getContent().relic(r).name).join(', ')}`}
               data-testid="relic-count"
             >
               <IconSparkles size={20} />
               <b className="tabular">{run.relics.length}</b>
-            </span>
+            </Tipped>
           )}
           {run.tms.length > 0 && (
-            <span className={styles.stat} title={`TMs to teach: ${run.tms.map((t) => getContent().tm(t).name).join(', ')}`} data-testid="tm-count">
+            <Tipped tip={<Tip title={`${run.tms.length} TM${run.tms.length === 1 ? '' : 's'} to teach`} body={run.tms.map((t) => getContent().tm(t).name).join(' · ')} footer="Teach one from a Pokémon's card in the Box panel. Single use." />} className={styles.stat} data-testid="tm-count">
               <img src={tmIcon(run.tms[0]!)} alt="" width={22} height={22} />
               <b className="tabular">{run.tms.length}</b>
-            </span>
+            </Tipped>
           )}
-          <span className={styles.stat} title="Nodes cleared">
+          <Tipped tip={<Tip title={`${run.stats.nodesCleared} of ${LAYERS} nodes cleared`} body="One node per layer. The Gym is the last." />} className={styles.stat}>
             <IconFlag size={20} />
             <b className="tabular">{run.stats.nodesCleared}</b>
-          </span>
+          </Tipped>
           <button
             type="button"
             className={styles.bagBtn}
             onClick={() => setInventory(true)}
             data-testid="btn-inventory"
-            title="Relics, Held Items and the bag"
+            aria-label="Bag: relics, held items and consumables"
+            {...bagTip}
           >
             <IconBackpack size={18} />
             <b className="tabular">{run.consumables.length + run.bag.length}</b>

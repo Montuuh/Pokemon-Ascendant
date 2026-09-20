@@ -9,6 +9,7 @@ import { EventScreen } from '@/ui/screens/EventScreen';
 import { LegendaryScreen } from '@/ui/screens/LegendaryScreen';
 import { HubScreen } from '@/ui/screens/HubScreen';
 import { SettingsScreen } from '@/ui/screens/SettingsScreen';
+import { AboutScreen } from '@/ui/screens/AboutScreen';
 import { EvolutionScreen } from '@/ui/screens/EvolutionScreen';
 import { MainMenu } from '@/ui/screens/MainMenu';
 import { MapScreen } from '@/ui/screens/MapScreen';
@@ -18,8 +19,9 @@ import { ScenarioPicker } from '@/ui/screens/ScenarioPicker';
 import { ShopScreen } from '@/ui/screens/ShopScreen';
 import { StarterSelect } from '@/ui/screens/StarterSelect';
 import { SwapOrSkip } from '@/ui/components/SwapOrSkip';
+import { TooltipLayer } from '@/ui/tooltip';
 
-export function App() {
+function Screens() {
   const screen = useAppStore((s) => s.screen);
   const goTo = useAppStore((s) => s.goTo);
   const start = useCombatStore((s) => s.start);
@@ -81,6 +83,8 @@ export function App() {
       return <HubScreen />;
     case 'settings':
       return <SettingsScreen />;
+    case 'about':
+      return <AboutScreen />;
     case 'victory':
       return <RunEndScreen outcome="victory" />;
     case 'defeat':
@@ -89,4 +93,14 @@ export function App() {
     default:
       return <MainMenu />;
   }
+}
+
+/** The screen router plus the one tooltip layer every screen borrows (see src/ui/tooltip). */
+export function App() {
+  return (
+    <>
+      <Screens />
+      <TooltipLayer />
+    </>
+  );
 }

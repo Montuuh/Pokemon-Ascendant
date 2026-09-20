@@ -8,8 +8,7 @@ export function MonIcon({ speciesId, size = 44, title }: { speciesId: string; si
   return (
     <img
       src={portraitUrl(species.dex, species.id)}
-      alt=""
-      title={title ?? species.name}
+      alt={title ?? species.name}
       width={size}
       height={size}
       style={{ objectFit: 'contain', flex: 'none' }}

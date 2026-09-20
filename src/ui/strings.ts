@@ -18,6 +18,7 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
   'invalid-index': 'Invalid target.',
   'not-wild': 'You can only catch wild Pokémon.',
   'no-balls': 'No Poké Balls left.',
+  'not-ready': 'Not yet — bring its HP down until the gauge reads READY.',
   'nothing-to-cure': 'Nothing to cure.',
   'choice-locked': 'Its held item will not let it play that.',
 };
