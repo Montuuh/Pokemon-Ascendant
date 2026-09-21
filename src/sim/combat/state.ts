@@ -107,7 +107,7 @@ export interface ConsumableCard {
 }
 
 export type Phase = 'draw' | 'intent' | 'action' | 'resolution' | 'ended';
-export type Outcome = 'in-progress' | 'victory' | 'defeat' | 'caught';
+export type Outcome = 'in-progress' | 'victory' | 'defeat' | 'caught' | 'escaped';
 
 export interface PlayerState {
   team: Combatant[];
@@ -246,7 +246,9 @@ export type CombatAction =
   | { type: 'use-consumable'; cardId: string; targetIndex?: number }
   | { type: 'swap'; benchIndex: number }
   | { type: 'pick-lead'; benchIndex: number }
-  | { type: 'end-turn' };
+  | { type: 'end-turn' }
+  /** §3.1.2 — run from the fight: the enemy takes its telegraphed action, then the fight ends as Escaped. */
+  | { type: 'flee' };
 
 /** Why an action is not currently legal — surfaced verbatim by the UI. */
 export type RejectReason =
@@ -266,6 +268,8 @@ export type RejectReason =
   | 'invalid-index'
   | 'not-wild'
   | 'no-balls'
+  /** §3.1.2 — there is no running from a Gym. */
+  | 'no-fleeing-a-gym'
   | 'nothing-to-cure'
   /** §7.4.5 — a held item forbids this card: Choice Band's Ranged lock, or Choice Scarf's one-a-turn. */
   | 'choice-locked';

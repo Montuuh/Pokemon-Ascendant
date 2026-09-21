@@ -10,6 +10,7 @@ import { benchXpShare, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, reroll
 import { mysteryEvent, rollEvent, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, traumaZone1Pct, victoryHealPct } from './regionModifiers';
+import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, type ProgressionConfig } from './xp';
 import type { LevelUp, PartyMon, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
 
@@ -129,7 +130,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     pendingEvolutions: [],
     outcome: 'in-progress',
     cursors: { MapRNG: mapRng.cursor, EncounterRNG: streams.get('EncounterRNG').cursor, LootRNG: streams.get('LootRNG').cursor },
-    stats: { nodesCleared: 0, combatsWon: 0, catches: 0, faints: 0, turnsPlayed: 0, recruits: 0, statusesTaken: 0, startedAt: 0 },
+    stats: { nodesCleared: 0, combatsWon: 0, catches: 0, faints: 0, turnsPlayed: 0, recruits: 0, statusesTaken: 0, escapes: 0, startedAt: 0 },
     perks: { ...perks, mastery: { ...perks.mastery }, bond: { ...(perks.bond ?? {}) }, familiar: [...perks.familiar], relicPool: perks.relicPool ? [...perks.relicPool] : null },
     log: [second ? `A new run begins with ${ctx.content.species(starterId).name} and ${ctx.content.species(second.speciesId).name}.` : `A new run begins with ${ctx.content.species(starterId).name}.`],
     ...(startingRelic ? { relics: [startingRelic] } : {}),
@@ -448,7 +449,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
         // §2.11.3 Pocket Healer — a share of max HP back for winning, applied *after* the fight's HP is
         // carried across so it heals the damage that was actually taken rather than the damage predicted.
-        const healPct = report.outcome !== 'defeat' ? victoryHealPct(draft, ctx.content) : 0;
+        const healPct = report.outcome === 'victory' || report.outcome === 'caught' ? victoryHealPct(draft, ctx.content) : 0;
 
         // §8.6.1 Cleanse Tag's discovery counts statuses taken across the whole run.
         draft.stats.statusesTaken += report.tally?.statusesTaken ?? 0;
@@ -478,6 +479,45 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           draft.outcome = 'defeat';
           draft.phase = 'ended';
           say(draft, 'Your team was wiped. The run ends here.');
+          break;
+        }
+
+        // §3.1.2 — you ran. The parting shot has already landed (it is in the HP carried above); this is the
+        // toll: money, Trauma, and for the bigger fights something from the bag. No XP, no drop, no reward
+        // screen — the node is behind you and that is all it is.
+        if (report.outcome === 'escaped') {
+          const tier = fleeTierFor(node.kind);
+          const toll = FLEE_TOLL[tier ?? 'wild'];
+          const lost = Math.floor((draft.money * toll.moneyPct) / 100);
+          draft.money -= lost;
+          const lead = draft.box.find((m) => m.uid === draft.activeUids[0]);
+          const shaken = toll.trauma === 'all' ? activeOf(draft) : lead ? [lead] : [];
+          for (const mon of shaken) mon.traumaStacks = Math.min(10, mon.traumaStacks + 1);
+          const lootRng = new RngStreams(draft.seed).get('LootRNG');
+          lootRng.cursor = draft.cursors.LootRNG ?? lootRng.cursor;
+          let taken: string | null = null;
+          if (toll.loot === 'relic') {
+            // Never a Legendary: those are a pick, not a drop, and losing one would undo a Gym.
+            const pool = draft.relics.filter((id) => ctx.content.relic(id).rarity !== 'legendary');
+            if (pool.length) {
+              taken = pool[lootRng.range(0, pool.length)]!;
+              draft.relics = draft.relics.filter((id) => id !== taken);
+              say(draft, `The ${ctx.content.relic(taken).name} was left behind.`);
+            }
+          }
+          if ((toll.loot === 'consumable' || (toll.loot === 'relic' && !taken)) && draft.consumables.length) {
+            const at = lootRng.range(0, draft.consumables.length);
+            taken = draft.consumables[at]!;
+            draft.consumables.splice(at, 1);
+            say(draft, `A ${ctx.content.consumable(taken).name} was dropped in the scramble.`);
+          }
+          draft.cursors.LootRNG = lootRng.cursor;
+          draft.stats.escapes += 1;
+          say(draft, `Got away — ${describeToll(toll)}${lost ? ` (${lost} ₽)` : ''}.`);
+          draft.pendingScenario = null;
+          advanceFrom(draft, node.id);
+          draft.pendingNodeId = null;
+          draft.phase = 'map';
           break;
         }
 

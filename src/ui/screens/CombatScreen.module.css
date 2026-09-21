@@ -396,3 +396,23 @@
     height: 140px;
   }
 }
+
+/* §3.1.2 — the Run button: quiet next to End Turn, because it is the exit and not the plan. */
+.flee {
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-secondary);
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.flee:hover:not(:disabled) {
+  border-color: var(--accent-warning);
+  color: var(--ink-primary);
+}
+.flee:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

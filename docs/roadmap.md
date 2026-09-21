@@ -341,6 +341,18 @@ Terminal as a third tab. Built on unstyled primitives (`radix-ui` Tabs/Progress/
 `@number-flow/react`, `react-circular-progressbar`) under our own tokens. Pokédex Whisper shipped on the
 same first-only reveal flag as Anticipation.
 
+**2026-09-21 — three design points closed before v0.7 (v0.6.2).**
+- **Bond (§6.8)** replaces Pokédex tiers + Mastery levels: one track per line, filled by *playing* it, five
+  ranks that open Mastery Lv1 · Shiny · the hidden ability · Mastery Lv2 · Lv3 / the opening-hand card and the
+  right to start a run. The Pokédex keeps Familiar only (§5.13). The PC Terminal opens on a Companions tab.
+- **Catching is a roll at a shown number (§2.6.4)** — species ceiling × HP curve × status × ball, 1–90 %,
+  seeded; the card plays at any odds; Master Ball Charm arms one sure throw per run.
+- **Running (§3.1.2)** — the enemy's telegraphed action lands, the fight ends as Escaped, and the toll comes
+  off by fight tier (wild −20 % ₽ + Trauma on the Lead · trainer −30 % + all + a consumable · Elite −50 % +
+  all + a relic); never from a Gym.
+- Also: the three "New difficulty modifier" track rows are "Relic pool +1"; Pokédex Insight worded as a
+  first-meeting peek; Pokédex Whisper live; tooltips re-anchor on scroll instead of closing.
+
 **Deferred to v0.7:** Pikachu's kit · Eevee's Stone Cache (Evolution Items) · Trainer's Instinct (the intent
 queue) · Greater Threats (Region 2's stat tier) · the Trauma Salve Cache upgrade (Cities) · the Master Ball
 Charm criterion (a throw cannot fail since §2.6.4.1 — re-author) · the two ⚠️ OPEN flags in §8.3.5 and §8.4.2.

@@ -246,3 +246,51 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.relics.length)).toBe(1);
   });
 });
+
+test.describe('Running from a fight — §3.1.2', () => {
+  test('the Run button prices the exit, takes the parting shot, and the toll comes off on the map', async ({ page }) => {
+    await freshRun(page, { seed: 7 });
+    await page.evaluate(() => window.__ascendant!.run.pay(1000));
+    // Walk into the first wild node from layer 0 and open the fight.
+    const opened = await page.evaluate(() => {
+      const dev = window.__ascendant!;
+      const run = dev.run.state()!;
+      const wild = run.reachable.find((id) => run.map.nodes[id]!.kind === 'wild');
+      if (!wild) return false;
+      dev.run.dispatch({ type: 'enter-node', nodeId: wild });
+      return true;
+    });
+    if (!opened) return; // this seed has no wild on layer 0
+    await page.getByTestId('btn-enter-node').click();
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+
+    // The button is there, enabled, and its tooltip names the toll.
+    const run = page.getByTestId('btn-flee');
+    await expect(run).toBeEnabled();
+    await run.hover();
+    await page.waitForTimeout(700);
+    await expect(page.getByTestId('tooltip')).toContainText('−20 % ₽');
+    await expect(page.getByTestId('tooltip')).toContainText('parting shot');
+    await page.screenshot({ path: 'playtest/combat-run-button.png' });
+
+    await run.click();
+    await expect(page.getByTestId('outcome-overlay')).toContainText('Got away');
+    await page.getByTestId('btn-continue-run').click();
+    await expect(page.getByTestId('map-screen')).toBeVisible();
+    const after = await page.evaluate(() => {
+      const r = window.__ascendant!.run.state()!;
+      return { money: r.money, trauma: r.box[0]!.traumaStacks, escapes: r.stats.escapes, phase: r.phase };
+    });
+    expect(after.money).toBe(800);
+    expect(after.trauma).toBe(1);
+    expect(after.escapes).toBe(1);
+    expect(after.phase).toBe('map');
+  });
+
+  test('there is no running from a Gym', async ({ page }) => {
+    await page.goto('/?scenario=wild-boss-3phase&seed=1');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    // A practice fixture is not a run, so the button is not there at all; inside a run the Gym disables it.
+    await expect(page.getByTestId('btn-flee')).toHaveCount(0);
+  });
+});

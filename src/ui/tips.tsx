@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { POKEMON_TYPES, typeMultiplier, type BadgeDef, type CardPlayability, type Combatant, type ConsumableDef, type HeldItemDef, type MoveDef, type PokemonType, type RegionModifierDef, type RelicDef } from '@/sim';
+import { POKEMON_TYPES, describeToll, typeMultiplier, type BadgeDef, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type HeldItemDef, type MoveDef, type PokemonType, type RegionModifierDef, type RelicDef } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
@@ -273,4 +273,19 @@ export function relicTierTip(r: RelicDef, state: 'pool' | 'discoverable' | 'buya
     : state === 'locked' ? 'The Poké Mart sells it from Trainer Level 10.'
     : progress ? `Discover it: ${progress.text} (${progress.have} / ${progress.goal}).` : 'Reachable through the reward track.';
   return <Tip icon={<img src={itemIcon(r.id)} alt="" width={22} height={22} />} title={r.name} meta={[cap(r.rarity), tierName]} body={r.description} footer={r.pending ? `Not working yet: ${r.pending}` : footer} />;
+}
+
+
+/** §3.1.2 — the Run button: what it costs here, or why it cannot be pressed. */
+export function fleeTip(tier: FleeTier | null, toll: FleeToll | null): ReactNode {
+  if (!tier || !toll) return <Tip title="No running from a Gym" body="The fork was the choice. A Gym Leader is fought to the end." />;
+  const WHO: Record<FleeTier, string> = { wild: 'A wild fight', trainer: 'A trainer', elite: 'An Elite' };
+  return (
+    <Tip
+      title="Run"
+      meta={[WHO[tier], describeToll(toll)]}
+      body="The enemy takes the action it has telegraphed first — the parting shot — then the fight ends. No XP, no drop, no catch; the node is behind you."
+      footer={toll.loot === 'relic' ? 'The relic is picked at random, never a Legendary.' : toll.loot === 'consumable' ? 'The consumable is picked at random.' : 'Cheaper than a wipe, dearer than a win.'}
+    />
+  );
 }

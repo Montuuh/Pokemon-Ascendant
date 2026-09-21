@@ -15,6 +15,7 @@
 |---|---|---|---|---|
 | Combat loop, five phases | §3.2 | `sim/combat/turn.ts`, `reducer.ts`, `state.ts` | `setup`, `cards`, `faint` | ✅ |
 | Lead and swap | §3.3 | `reducer.ts`, `slots.ts`, `preview.ts` | `swap`, `faint` | ✅ |
+| Running (Escaped) | §3.1.2 | `combat/turn.ts` (`flee`), `run/flee.ts`, `run/run.ts` | `flee`, `run` | ✅ parting shot, then the toll by fight tier; never from a Gym |
 | Deck, hand, consumables | §3.4, §3.5 | `sim/combat/deck.ts` | `cards`, `status` | ✅ 15 of 28 consumables, the §7.2.6 healing chain complete |
 | Damage and type chart | §4.1 | `damage.ts`, `typeChart.ts`, `damageFlow.ts`, `stats.ts` | `damage`, `typeChart`, `statStages` | ✅ |
 | Status and stat stages | §4.2 | `status.ts`, `statStages.ts`, ticks in `turn.ts` | `status`, `statStages` | ✅ |

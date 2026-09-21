@@ -11,7 +11,7 @@ import { rngFromState } from './setup';
 import { activeEnemy, lead } from './slots';
 import type { CombatAction, CombatState, RejectReason } from './state';
 import { cureStatus } from './status';
-import { beginTurn, checkOutcome, finish, resolveTurn } from './turn';
+import { beginTurn, checkOutcome, finish, flee, resolveTurn } from './turn';
 import { isPositionLocked } from './status';
 
 // The combat reducer: (state, action, ctx) → state. Pure over state (RNG cursor lives in the state).
@@ -31,6 +31,11 @@ export function validateAction(state: CombatState, action: CombatAction, ctx: Co
       return pickLeadOptions(state).includes(action.benchIndex) ? null : 'invalid-index';
     case 'end-turn':
       return state.phase !== 'action' ? 'not-action-phase' : null;
+    case 'flee':
+      // §3.1.2 — any turn of the Action phase, never from a Gym; the Lead pick comes first like everything else.
+      if (state.phase !== 'action') return 'not-action-phase';
+      if (state.player.pendingLeadPick) return 'lead-pick-pending';
+      return state.kind === 'boss' ? 'no-fleeing-a-gym' : null;
     case 'play-card': {
       const p = cardPlayability(state, action.cardId, ctx);
       if (!p) return 'card-not-in-hand';
@@ -83,6 +88,8 @@ function apply(state: CombatState, action: CombatAction, ctx: RunCtx): void {
       return pickLead(state, action.benchIndex, ctx);
     case 'end-turn':
       return resolveTurn(state, ctx);
+    case 'flee':
+      return flee(state, ctx);
   }
 }
 

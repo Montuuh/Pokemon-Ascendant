@@ -3,7 +3,7 @@ import { buildRegistry } from '@/content/registry';
 import {
   activeSetups, applyBranch, autoPickMoves, createRun, defaultRunCtx, deserialiseRun, generateRegion,
   isEvolutionReady, LAYERS, maxHpOf, nodesInLayer, runReducer, serialiseRun, xpToNext, assertRegionContent,
-  grantXp, newPartyMon, wildBandFor, PRICES, gymById,
+  grantXp, newPartyMon, wildBandFor, PRICES, gymById, FLEE_TOLL, fleeTierFor,
   type CombatOutcomeReport, type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
@@ -964,5 +964,55 @@ describe('Badges — §5.10', () => {
     // The run is over, so nothing that touches the cleared Gym again may stack a second copy.
     const again = runReducer(s, { type: 'claim-reward' }, ctx);
     expect(again.state.badges).toEqual(once);
+  });
+});
+
+describe('Running from a fight — §3.1.2', () => {
+  const escape = (s: RunState): RunState =>
+    apply(s, {
+      type: 'finish-combat',
+      report: { outcome: 'escaped', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 2 },
+    });
+
+  it('AWildEscape_CostsMoneyAndTheLeadsNerve_AndPaysNothing', () => {
+    let s = start(7);
+    s = { ...s, money: 1000, consumables: ['potion', 'antidote'] };
+    s = enter(s, 'wild');
+    s = apply(s, { type: 'begin-combat' });
+    const before = s.stats.nodesCleared;
+    s = escape(s);
+    expect(s.phase).toBe('map');
+    expect(s.money).toBe(800);
+    expect(s.box[0]!.traumaStacks).toBe(1);
+    expect(s.consumables).toEqual(['potion', 'antidote']);
+    expect(s.pendingReward).toBeNull();
+    expect(s.stats.escapes).toBe(1);
+    expect(s.stats.combatsWon).toBe(0);
+    // The node is behind you: cleared, no reward, the next layer open.
+    expect(s.stats.nodesCleared).toBe(before + 1);
+    expect(s.reachable.length).toBeGreaterThan(0);
+  });
+
+  it('ATrainerEscape_ShakesTheWholeTeam_AndDropsAConsumable', () => {
+    let s = start(7);
+    s = { ...s, money: 1000, consumables: ['potion', 'antidote', 'burn-heal'] };
+    s = { ...s, box: [...s.box, newPartyMon('pidgey', 6, content, 2), newPartyMon('geodude', 6, content, 3)] };
+    s = { ...s, activeUids: s.box.map((m) => m.uid) };
+    const trainerId = Object.values(s.map.nodes).find((n) => n.kind === 'trainer' && s.reachable.includes(n.id))?.id;
+    if (!trainerId) return; // this seed opens with no trainer on layer 0
+    s = apply(s, { type: 'enter-node', nodeId: trainerId });
+    s = apply(s, { type: 'begin-combat' });
+    s = escape(s);
+    expect(s.money).toBe(700);
+    expect(s.box.every((m) => m.traumaStacks === 1)).toBe(true);
+    expect(s.consumables).toHaveLength(2);
+  });
+
+  it('TheTollTable_IsTheCanonOne', () => {
+    expect(FLEE_TOLL.wild).toEqual({ moneyPct: 20, trauma: 'lead', loot: 'none' });
+    expect(FLEE_TOLL.trainer).toEqual({ moneyPct: 30, trauma: 'all', loot: 'consumable' });
+    expect(FLEE_TOLL.elite).toEqual({ moneyPct: 50, trauma: 'all', loot: 'relic' });
+    expect(fleeTierFor('elite-wild')).toBe('elite');
+    expect(fleeTierFor('gym')).toBeNull();
   });
 });

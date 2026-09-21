@@ -215,9 +215,25 @@ export function checkOutcome(state: CombatState): boolean {
   return false;
 }
 
+/**
+ * §3.1.2 — run. The enemy gets the action it telegraphed (the parting shot); if the team survives it, the fight
+ * ends as Escaped. No XP, no drop, no catch — the run layer collects the toll (§3.1.2's table).
+ */
+export function flee(state: CombatState, ctx: RunCtx): void {
+  state.phase = 'resolution';
+  log(state, 'player', 'You break for the exit —');
+  for (const e of [...state.enemies]) {
+    if (e.hp <= 0 || state.outcome !== 'in-progress') continue;
+    executeIntent(state, e, ctx);
+    if (checkOutcome(state)) return finish(state);
+  }
+  state.outcome = 'escaped';
+  finish(state);
+}
+
 export function finish(state: CombatState): void {
   state.phase = 'ended';
   emit(state, { t: 'outcome', outcome: state.outcome });
-  log(state, 'system', state.outcome === 'defeat' ? 'Your team was wiped out…' : state.outcome === 'caught' ? 'Gotcha!' : 'Victory!');
+  log(state, 'system', state.outcome === 'defeat' ? 'Your team was wiped out…' : state.outcome === 'caught' ? 'Gotcha!' : state.outcome === 'escaped' ? 'Got away.' : 'Victory!');
   // §4.2.7 — statuses and stages clear at combat end (kept in state for the summary; the run layer resets).
 }

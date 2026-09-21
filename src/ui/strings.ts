@@ -2,6 +2,7 @@ import type { RejectReason } from '@/sim';
 
 // User-facing strings for the combat screen, gathered for the v0.9 localisation pass.
 export const REJECT_TEXT: Record<RejectReason, string> = {
+  'no-fleeing-a-gym': 'There is no running from a Gym Leader.',
   'not-action-phase': 'Not now.',
   'lead-pick-pending': 'Choose a new Lead first.',
   'card-not-in-hand': 'That card is not in your hand.',

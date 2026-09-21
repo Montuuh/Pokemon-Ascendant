@@ -14,8 +14,9 @@ interface Props {
 // Victory / Defeat / Caught summary (docs/design/ui/03 §3.8–3.9 tone: warm, never punishing).
 export function OutcomeOverlay({ state, onRestart, onExit, runMode = false }: Props) {
   const caught = state.outcome === 'caught';
+  const escaped = state.outcome === 'escaped';
   const won = state.outcome === 'victory' || caught;
-  const title = caught ? 'Gotcha!' : won ? 'Victory!' : 'Wiped out…';
+  const title = caught ? 'Gotcha!' : won ? 'Victory!' : escaped ? 'Got away' : 'Wiped out…';
   const swaps = state.events.filter((e) => e.t === 'swap' && e.kind === 'manual').length;
   const cardsPlayed = state.events.filter((e) => e.t === 'card-played').length;
   const dmgDealt = state.events.filter((e) => e.t === 'damage' && e.sourceUid?.startsWith('p')).reduce((a, e) => a + (e.t === 'damage' ? e.amount : 0), 0);
@@ -29,7 +30,9 @@ export function OutcomeOverlay({ state, onRestart, onExit, runMode = false }: Pr
           ? `${state.defeatedEnemies.at(-1)?.name} joins the Box. A catch counts as a full Victory.`
           : won
             ? `${state.trainer ? state.trainer.name : 'The wild Pokémon'} ${state.trainer ? 'is out of usable Pokémon' : 'fainted'}.`
-            : 'Every faint leaves a Trauma stack. Rest, rethink the Lead, try again.'}
+            : escaped
+              ? 'No XP, no drop. The toll comes off on the map: money, Trauma, and for the bigger fights something from the bag.'
+              : 'Every faint leaves a Trauma stack. Rest, rethink the Lead, try again.'}
       </p>
       <div className={styles.team}>
         {state.player.team.map((c) => (
@@ -70,7 +73,7 @@ export function OutcomeOverlay({ state, onRestart, onExit, runMode = false }: Pr
       <div className={styles.actions}>
         {runMode ? (
           <button type="button" className={styles.primary} onClick={onExit} data-testid="btn-continue-run">
-            {won ? 'Continue' : 'See how far you got'}
+            {won || escaped ? 'Continue' : 'See how far you got'}
           </button>
         ) : (
           <>

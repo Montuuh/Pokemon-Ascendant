@@ -24,7 +24,7 @@ export type MedalTier = 'bronze' | 'silver' | 'gold' | 'platinum';
 export type MetaEvent =
   | {
       t: 'combat-end';
-      outcome: 'victory' | 'defeat' | 'caught';
+      outcome: 'victory' | 'defeat' | 'caught' | 'escaped';
       kind: string;
       damageTaken: number;
       manualSwaps: number;
@@ -92,7 +92,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: 'first-blood', category: 'first-steps', name: 'First Blood', tier: 'bronze', goal: 1,
     description: 'Win your first fight.',
-    count: (e) => (e.t === 'combat-end' && e.outcome !== 'defeat' ? 1 : 0),
+    count: (e) => (e.t === 'combat-end' && (e.outcome === 'victory' || e.outcome === 'caught') ? 1 : 0),
   },
   {
     id: 'gotcha', category: 'first-steps', name: 'Gotcha!', tier: 'bronze', goal: 1,
@@ -163,12 +163,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: 'untouchable', category: 'combat', name: 'Untouchable', tier: 'silver', goal: 1,
     description: 'Win a fight without taking a single point of damage.',
-    count: (e) => (e.t === 'combat-end' && e.outcome !== 'defeat' && e.damageTaken === 0 ? 1 : 0),
+    count: (e) => (e.t === 'combat-end' && (e.outcome === 'victory' || e.outcome === 'caught') && e.damageTaken === 0 ? 1 : 0),
   },
   {
     id: 'swap-maestro', category: 'combat', name: 'Swap Maestro', tier: 'silver', goal: 1,
     description: 'Win a fight in which you paid for five or more manual swaps.',
-    count: (e) => (e.t === 'combat-end' && e.outcome !== 'defeat' && e.manualSwaps >= 5 ? 1 : 0),
+    count: (e) => (e.t === 'combat-end' && (e.outcome === 'victory' || e.outcome === 'caught') && e.manualSwaps >= 5 ? 1 : 0),
   },
   {
     // #28
@@ -180,7 +180,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     // #30
     id: 'comeback-kid', category: 'combat', name: 'Comeback Kid', tier: 'silver', goal: 1, hidden: true,
     description: 'Win a fight with your last standing Pokémon, after the other two fell.',
-    count: (e) => (e.t === 'combat-end' && e.outcome !== 'defeat' && (e.activeSpecies?.length ?? 0) === 3 && e.faints === 2 ? 1 : 0),
+    count: (e) => (e.t === 'combat-end' && (e.outcome === 'victory' || e.outcome === 'caught') && (e.activeSpecies?.length ?? 0) === 3 && e.faints === 2 ? 1 : 0),
   },
   // ── Boss
   {

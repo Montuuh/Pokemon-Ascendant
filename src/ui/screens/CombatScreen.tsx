@@ -6,9 +6,11 @@ import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import {
+  FLEE_TOLL,
   SLOT_LABEL,
   bondRank,
   cardPlayability,
+  fleeTierFor,
   consumablePlayability,
   indexToSlot,
   pickLeadOptions,
@@ -29,7 +31,7 @@ import { Portrait } from '@/ui/components/Portrait';
 import { useCombatFx } from '@/ui/hooks/useCombatFx';
 import { ENCOUNTER_LABEL, REJECT_TEXT } from '@/ui/strings';
 import { iconOf } from '@/ui/art';
-import { apTip, swapTip } from '@/ui/tips';
+import { apTip, fleeTip, swapTip } from '@/ui/tips';
 import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './CombatScreen.module.css';
 
@@ -95,6 +97,10 @@ export function CombatScreen() {
   const swaps = useMemo(() => (state ? swapOptions(state) : []), [state]);
 
   const bond = useAccountStore((s) => s.account.bond);
+  // §3.1.2 — the toll this fight would cost to run from, from the node the run is standing on.
+  const nodeKind = useRunStore((s) => (s.run?.pendingNodeId ? s.run.map.nodes[s.run.pendingNodeId]?.kind ?? null : null));
+  const fleeTier = nodeKind ? fleeTierFor(nodeKind) : null;
+  const fleeToll = fleeTier ? FLEE_TOLL[fleeTier] : null;
 
   if (!state) {
     return (
@@ -321,6 +327,22 @@ export function CombatScreen() {
               Next swap: {Math.min(3, state.player.swapCounter + 1)} AP
             </Tipped>
           </Tipped>
+          {/* §3.1.2 — running is a decision with a price on it, so the price is on the button. Outside a run
+              (a practice fixture) there is no toll to pay and no map to return to, so there is no button. */}
+          {inRun && (
+            <Tipped
+              as="button"
+              type="button"
+              tip={fleeTip(fleeTier, fleeToll)}
+              className={styles.flee}
+              onClick={() => fleeTier && dispatch({ type: 'flee' })}
+              disabled={!interactive || !fleeTier}
+              aria-disabled={!fleeTier}
+              data-testid="btn-flee"
+            >
+              Run
+            </Tipped>
+          )}
           <button type="button" className={`${styles.endTurn} display`} onClick={() => dispatch({ type: 'end-turn' })} disabled={!interactive} data-testid="btn-end-turn">
             End Turn
           </button>

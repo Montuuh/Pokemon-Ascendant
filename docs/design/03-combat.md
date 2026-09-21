@@ -28,11 +28,28 @@ the team is gone.
 
 A catch ends combat as a Victory and awards **full** combat XP; it is never an XP penalty compared with a kill.
 
-**Fleeing is not in scope.** A free exit would devalue the swap decision that Pillar 2 is built on.
+## §3.1.2 Running
 
-> ⚠️ **OPEN (2026-09-19).** A *costly* disengage — spending a consumable, or HP, to leave a wild fight — has
-> never been explored and might be a good pressure valve. Revisit at v0.2, when wild fights sit inside a real
-> run with real HP attrition. Decides: user.
+A fight can be left, and leaving is never free. *(Decided 2026-09-21; the question had been open since v0.1.)*
+
+**How.** *Run* is an action in the Action Phase, any turn, once the Lead pick — if one is pending — is made.
+The enemy takes the action it has **telegraphed** first (the parting shot); if the team survives it, the fight
+ends as **Escaped**: no XP, no drop, no catch, no reward screen. The node counts as walked and the next layer
+opens. Then the run collects the toll, which climbs with the stakes of the fight you left:
+
+| Fight | Money | Trauma | And |
+|---|---|---|---|
+| Wild | −20 % of the wallet | +1 on the Lead | — |
+| Trainer | −30 % | +1 on every Active member | one random consumable is dropped |
+| Elite Trainer · Elite Wild | −50 % | +1 on every Active member | one random relic is left behind (never a Legendary; a consumable if you hold no relic) |
+| **Gym** | **cannot run** | | |
+
+The toll is printed on the button before it is pressed (Pillar 1), and the parting shot is the intent you can
+already see. What running buys is the rest of the run; what it costs is set so that it is cheaper than a wipe
+and dearer than the win you gave up — a free exit would have devalued the swap decision Pillar 2 is built on,
+and this is what makes it a decision instead of an undo. The Gym is exempt because the fork was the choice and
+it was made (§2.5). Losing a *Pokémon* was considered for the Elite tier and rejected: a Pokémon carries its
+levels and its Bond, and losing one reads as losing the run.
 
 ---
 

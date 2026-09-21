@@ -125,6 +125,8 @@ export interface RunStats {
   recruits: number;
   /** §8.6.1 Cleanse Tag's discovery: statuses your side has taken this run. */
   statusesTaken: number;
+  /** §3.1.2 — fights run from. */
+  escapes: number;
   /** Wall-clock is not part of the sim; the app layer fills this in on save. */
   startedAt: number;
 }
@@ -290,7 +292,7 @@ export interface RunPerks {
 
 /** What a finished combat reports back to the run layer. */
 export interface CombatOutcomeReport {
-  outcome: 'victory' | 'defeat' | 'caught';
+  outcome: 'victory' | 'defeat' | 'caught' | 'escaped';
   /** Final HP and status for each Active Pokémon, keyed by uid. */
   team: { uid: string; hp: number; status: StatusCondition | null; fainted: boolean; defeats?: number }[];
   /** The wild Pokémon that was caught, if any. */

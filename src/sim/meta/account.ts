@@ -365,7 +365,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
 
   switch (e.t) {
     case 'combat-end': {
-      if (e.outcome !== 'defeat') {
+      if (e.outcome === 'victory' || e.outcome === 'caught') {
         bump(delta, next, XP.combat, ctx);
         next.stats.combatsWon += 1;
         if (e.outcome === 'caught') next.stats.catches += 1;
@@ -385,7 +385,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
 
       // §8.6.1 — the discovery criteria a fight can satisfy (catalogs/relics.md §5).
       const t = e.tally;
-      const won = e.outcome !== 'defeat';
+      const won = e.outcome === 'victory' || e.outcome === 'caught';
       const active = e.activeSpecies ?? [];
       if (won) {
         count(next, 'combats-won');

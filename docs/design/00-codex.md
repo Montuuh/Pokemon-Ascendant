@@ -61,6 +61,10 @@ cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.
 8 biomes bound to Regions; only **Naturalist's Lens** can steer them.
 **Recruit bands:** R1 5–10 · R2 12–20 · R3 22–30.
 
+**Running (§3.1.2, 2026-09-21)** — any Action-phase turn except a Gym: the enemy's telegraphed action lands, the
+fight ends as Escaped (no XP/drop/catch), and the toll comes off: wild −20 % ₽ + Trauma on the Lead · trainer
+−30 % + Trauma on all + a consumable · Elite −50 % + Trauma on all + a relic (never Legendary).
+
 **Catching — a roll at a shown number** (2026-09-21). `p = catchRate × (1 − 0.9·HP%)^1.7 × status × ball`,
 clamped 1–90 %: the species' ceiling (common 0.9 · uncommon 0.7 · rare 0.5, ×0.65 middle stage, ×0.4 final;
 Snorlax 0.2), a steep HP curve, ×1.5 asleep/frozen or ×1.2 any other status. ~2 % at full HP for a common

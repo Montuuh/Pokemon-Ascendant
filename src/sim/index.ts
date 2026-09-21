@@ -33,6 +33,7 @@ export { MODIFIERS, AVAILABLE_MODIFIERS, modifierById, modifierValue, hasModifie
 export { activeRegionModifier, regionModifierValue, rollRegionModifierOffer, priceFor, traumaZone1Pct, victoryHealPct } from './run/regionModifiers';
 export { DEFAULT_PROGRESSION, encounterXp, grantXp, xpToNext, isEvolutionReady, applyBranch, autoPickMoves, learnMove, previewBranch, type ProgressionConfig, type BranchPreview } from './run/xp';
 export { buildOutcomeReport } from './run/report';
+export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } from './run/flee';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';
 
 // §8.7 — achievements. Pure definitions and a pure fold; persistence is the app layer's (achievementStore).
