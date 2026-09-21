@@ -3,8 +3,8 @@ import type { CombatCtx, RunCtx } from './context';
 import { emit, log } from './context';
 import { absorbedByAbility, applyMoveEffects, breakdownFor, changeStage, heal, onEnterLead, strike } from './damageFlow';
 import { buildSkillDeck, drawSkillCards } from './deck';
-import { echoesFirstCard, itemCureHeal, itemRidersFirst, swapDrawBonus, swapHealAmount } from './items';
-import { catchGauge } from './catch';
+import { echoesFirstCard, itemCureHeal, itemRidersFirst, swapDrawBonus, swapHealAmount, guaranteedCatch } from './items';
+import { catchOdds } from './catch';
 import { declareIntent } from './intents';
 import { cardPlayability, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
 import { rngFromState } from './setup';
@@ -257,10 +257,15 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
       break;
     case 'catch': {
       const enemy = activeEnemy(state)!;
-      const gauge = catchGauge(enemy, fx);
+      // §8.6.1 Master Ball Charm — armed until its one throw; the throw spends it whatever else happens.
+      const charm = guaranteedCatch(state, ctx.content);
+      const odds = catchOdds(enemy, fx, ctx.content, charm !== null);
+      if (charm) player.spent.push(charm);
       player.balls = Math.max(0, player.balls - 1);
-      emit(state, { t: 'catch', success: gauge.ready, gauge: gauge.gauge, ballsLeft: player.balls });
-      if (gauge.ready) {
+      // §2.6.4 — one roll at the shown chance, from the fight's own stream so a replay throws the same ball.
+      const success = odds.guaranteed || ctx.rng.chance(odds.chance);
+      emit(state, { t: 'catch', success, chance: odds.chance, ballsLeft: player.balls });
+      if (success) {
         log(state, 'player', `Gotcha! ${enemy.name} was caught!`);
         state.outcome = 'caught';
         enemy.intent = null;
@@ -269,7 +274,8 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
         finish(state);
         return;
       }
-      log(state, 'player', `${enemy.name} broke free! (${gauge.gauge}% — weaken it further)`);
+      player.tally.catchFails += 1;
+      log(state, 'player', `${enemy.name} broke free! (${Math.round(odds.chance * 100)}% — weaken it, or status it, and try again)`);
       break;
     }
   }

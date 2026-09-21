@@ -115,7 +115,7 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
       totalManualSwaps: 0,
       totalDamageTaken: 0,
       leadTurns: {},
-      tally: { crits: 0, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0 },
+      tally: { crits: 0, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0, catchFails: 0 },
     },
     enemies: [],
     enemyQueue: [],

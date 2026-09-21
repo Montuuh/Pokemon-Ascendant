@@ -3409,7 +3409,8 @@
       "evolvesTo": [],
       "rarity": "rare",
       "archetype": "vanguard",
-      "hiddenAbilityPending": "Gluttony — arrives in v0.7"
+      "hiddenAbilityPending": "Gluttony — arrives in v0.7",
+      "catchRate": 0.2
     },
     {
       "id": "eevee",

@@ -60,9 +60,9 @@ combo partner. Both are deliberately the priciest utilities.
 
 | id | AP | Effect | Threshold | Price ₽ | Status |
 |---|---|---|---|---|---|
-| `poke-ball` | 1 | catch attempt | base 30 % HP (+20 pp with any status) | 50 | ✅ v0.1 |
-| `great-ball` | 1 | catch attempt | +15 pp → 45 % / 65 % | 120 | 🔒 post-launch (§2.6.4.2) |
-| `ultra-ball` | 1 | catch attempt | +30 pp → 60 % / 80 % | 250 | 🔒 post-launch |
+| `poke-ball` | 1 | catch attempt | `ballMultiplier` 1 on the §2.6.4.1 chance | 50 | ✅ v0.1 · roll since 2026-09-21 |
+| `great-ball` | 1 | catch attempt | ×1.5 | 120 | 🔒 post-launch (§2.6.4.2) |
+| `ultra-ball` | 1 | catch attempt | ×2 | 250 | 🔒 post-launch |
 
 Balls are a **counted run resource**: start 3 (`EconomyConfig.startingPokeballs`), +1 per Region, buyable. A
 throw spends one whether it succeeds or fails. The catch card appears in a wild combat only while the count > 0.

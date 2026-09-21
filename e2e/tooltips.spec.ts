@@ -36,19 +36,22 @@ test.describe('Tooltips', () => {
     await expect(page.getByTestId('tooltip')).toHaveCount(0);
   });
 
-  test('the catch pill says it is a target, not a chance, and the ball waits for READY', async ({ page }) => {
+  test('the catch pill is the chance, the ball is always throwable, and the tooltip says what moves the odds', async ({ page }) => {
     await page.goto('/?scenario=wild-basic&seed=3');
     await expect(page.getByTestId('combat-screen')).toBeVisible();
-    // §2.6.4 — the pill names the HP target; a bare percentage read as a catch chance and it is not one.
-    await expect(page.getByTestId('catch-pill')).toContainText(/HP ≤ \d+%/);
-    await expect(page.getByTestId('catch-pill')).not.toContainText(/^\d+%$/);
-    // §2.6.4.1 (2026-09-21) — below READY the ball is visible and locked, never a wasted throw.
+    // §2.6.4 (2026-09-21) — the pill prints the real chance: a low one at full HP.
+    await expect(page.getByTestId('catch-pill')).toContainText(/\d+%/);
+    const chance = Number(await page.getByTestId('catch-pill').getAttribute('data-chance'));
+    expect(chance).toBeGreaterThanOrEqual(1);
+    expect(chance).toBeLessThan(20);
+    // The ball is a real card at any odds; the throw is the player's call.
     const ball = page.getByTestId('consumable-poke-ball');
     await expect(ball).toBeVisible();
-    await expect(ball).toHaveAttribute('data-state', 'locked');
+    await expect(ball).toHaveAttribute('data-state', 'playable');
     await page.getByTestId('catch-pill').hover();
     await page.waitForTimeout(700);
-    await expect(page.getByTestId('tooltip')).toContainText('not a chance');
+    await expect(page.getByTestId('tooltip')).toContainText('to catch');
+    await expect(page.getByTestId('tooltip')).toContainText('Sleep and Freeze');
   });
 
   test('an enemy type badge tells you what it is weak to', async ({ page }) => {

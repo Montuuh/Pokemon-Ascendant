@@ -204,7 +204,7 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'faint'; uid: string; side: 'player' | 'enemy' }
   | { t: 'enemy-enter'; enemyUid: string }
   | { t: 'phase'; enemyUid: string; phase: 1 | 2 | 3 }
-  | { t: 'catch'; success: boolean; gauge: number; ballsLeft: number }
+  | { t: 'catch'; success: boolean; chance: number; ballsLeft: number }
   | { t: 'lead-pick-required' }
   | { t: 'outcome'; outcome: Outcome }
 );
@@ -266,8 +266,6 @@ export type RejectReason =
   | 'invalid-index'
   | 'not-wild'
   | 'no-balls'
-  /** §2.6.4.1 — the gauge is below READY, so the throw would fail for certain. The card waits. */
-  | 'not-ready'
   | 'nothing-to-cure'
   /** §7.4.5 — a held item forbids this card: Choice Band's Ranged lock, or Choice Scarf's one-a-turn. */
   | 'choice-locked';

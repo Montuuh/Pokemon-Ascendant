@@ -17,6 +17,8 @@ export function TooltipLayer() {
   const hide = useTipStore((s) => s.hide);
   const box = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ left: number; top: number; below: boolean } | null>(null);
+  // Bumped on every scroll so the bubble follows its anchor instead of floating away from it.
+  const [tick, setTick] = useState(0);
 
   // Measure after paint, so the bubble's own size is known before it is placed.
   useLayoutEffect(() => {
@@ -41,15 +43,17 @@ export function TooltipLayer() {
       if (top + b.height > vh - MARGIN) top = Math.max(MARGIN, vh - b.height - MARGIN);
     }
     setPos({ left, top, below });
-  }, [anchor, content]);
+  }, [anchor, content, tick]);
 
-  // Escape and scroll both dismiss: a tooltip that survives a scroll floats away from its anchor.
+  // Escape dismisses. A scroll re-anchors rather than dismissing: focusing a card at the bottom of the hand
+  // scrolls it into view, and the bubble that opened on that focus must not be closed by its own arrival
+  // (2026-09-21 — it was, and only when the page happened to need the scroll).
   useEffect(() => {
     if (!anchor) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') hide();
     };
-    const onScroll = () => hide();
+    const onScroll = () => setTick((t) => t + 1);
     window.addEventListener('keydown', onKey);
     window.addEventListener('scroll', onScroll, true);
     return () => {

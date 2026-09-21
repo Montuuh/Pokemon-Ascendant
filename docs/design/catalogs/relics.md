@@ -67,7 +67,7 @@
 
 | id | Name | Cat | Effect | Meta tier | Status |
 |---|---|---|---|---|---|
-| `master-ball-charm` | Master Ball Charm | meta | Once per run: a Pokéball use is a guaranteed catch (ignores the gauge) | T2 | ✅ |
+| `master-ball-charm` | Master Ball Charm | meta | Once per run: a Pokéball throw cannot miss (`guaranteed-catch`, once per run) | T2 | ✅ v0.6.2 |
 | `champions-crest` | Champion's Crest | combat | Each enemy a Pokémon defeats: +5 % damage for it this run (cap +25 %) | T3 | ✅ |
 | `time-spinner` | Time Spinner | combat | Once per combat: skip the whole enemy Resolution | T3 | ✅ |
 | `phoenix-feather` | Phoenix Feather | combat | Once per run: prevent a faint, restore to 1 HP. Consumed. | T2 | ✅ |
@@ -109,7 +109,7 @@ Road Summit and the Black Market (~4 pick moments per run).
 | `lure-module` | Recruit 3 Pokémon in one Region |
 | `battle-tracker` | Reach Familiar tier on 5 species |
 | `bond-bracelet` | Finish a combat with all 3 Active Pokémon alive, 10 times |
-| `master-ball-charm` | Fail 5 catch attempts (the consolation unlock) — **unreachable since §2.6.4.1 locked the ball until READY**; reward track only until re-authored ⚠️ |
+| `master-ball-charm` | Have 5 Poké Balls broken out of (the consolation unlock) — reachable again since the catch became a roll (§2.6.4, 2026-09-21) |
 | `phoenix-feather` | Lose a run to a party wipe in Region 3 — reward track only until Region 3 (v0.7) |
 | `hand-off-pouch` | Discard 20 cards to Confusion |
 | `type-resonance` | Field an all-one-type Active Team |

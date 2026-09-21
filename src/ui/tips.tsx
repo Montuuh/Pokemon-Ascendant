@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { POKEMON_TYPES, typeMultiplier, type BadgeDef, type CardPlayability, type Combatant, type ConsumableDef, type HeldItemDef, type MoveDef, type PokemonType, type RegionModifierDef, type RelicDef } from '@/sim';
-import type { CatchGauge } from '@/sim/combat/catch';
+import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
@@ -161,16 +161,18 @@ export function regionModifierTip(m: RegionModifierDef): ReactNode {
 
 // ── Catching, money, balls ───────────────────────────────────────────────────────────────────────────────
 
-/** §2.6.4 — the gauge. The one tooltip that has to undo an assumption: it is not a chance. */
-export function catchTip(gauge: CatchGauge & { ballsLeft: number }): ReactNode {
+/** §2.6.4 — the odds. The number is the chance, and this says what moves it. */
+export function catchTip(odds: CatchOdds & { ballsLeft: number }): ReactNode {
+  const pct = Math.max(1, Math.round(odds.chance * 100));
+  const ceiling = Math.round(odds.catchRate * 100);
   return (
     <Tip
-      title={gauge.ready ? 'READY — the ball will catch' : `Catch at HP ≤ ${gauge.thresholdPercent}%`}
-      meta={[`${gauge.ballsLeft} ball${gauge.ballsLeft === 1 ? '' : 's'}`, gauge.hasStatus ? 'Status bonus on' : 'No status yet']}
+      title={odds.guaranteed ? 'Master Ball Charm — this throw cannot miss' : `${pct}% to catch`}
+      meta={[`${odds.ballsLeft} ball${odds.ballsLeft === 1 ? '' : 's'}`, odds.hasStatus ? (odds.statusMult >= 1.5 ? 'Asleep or frozen ×1.5' : 'Status ×1.2') : 'No status yet', `Species ceiling ${ceiling}%`]}
       body={
-        gauge.ready
-          ? 'Play the Poké Ball card. It always catches when the gauge reads READY.'
-          : `This is not a chance — it is a target. Bring its HP to ${gauge.thresholdPercent}% or lower and the Poké Ball unlocks and catches every time.${gauge.hasStatus ? '' : ' Any status condition widens the window to 50%.'}`
+        odds.guaranteed
+          ? 'Play the Poké Ball card. The charm is spent on this run whatever happens.'
+          : `Each throw is one roll at this chance and spends a ball either way. The chance climbs as its HP falls — steeply in the last quarter — and a status multiplies it; Sleep and Freeze most.`
       }
       footer="Knock it out and the recruit is lost."
     />

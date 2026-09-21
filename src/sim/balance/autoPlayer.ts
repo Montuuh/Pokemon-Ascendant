@@ -44,13 +44,13 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   const l = lead(state);
   if (!enemy || !l) return { type: 'end-turn' };
 
-  // 1. Catch when READY.
+  // 1. Catch when the odds are even or better — a player's rule of thumb, not an optimum.
   if (opts.tryCatch && state.kind === 'wild') {
-    const gauge = catchStatus(state, ctx);
+    const odds = catchStatus(state, ctx);
     const ball = state.player.consumables.hand
       .map((c) => consumablePlayability(state, c.id, ctx)!)
       .find((p) => p.def.effect.kind === 'catch' && p.playable);
-    if (gauge?.ready && ball) return { type: 'use-consumable', cardId: ball.cardId };
+    if (odds && odds.chance >= 0.5 && ball) return { type: 'use-consumable', cardId: ball.cardId };
   }
 
   // 2. Heal a low Lead. Both healing kinds, best first — §7.2.2 made healing a percentage of Effective Max

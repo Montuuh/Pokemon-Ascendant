@@ -110,6 +110,8 @@ export interface SpeciesDef {
    */
   hiddenAbility?: string;
   hiddenAbilityPending?: string;
+  /** §2.6.4.1 — the chance at ~0 HP with a Poké Ball. Absent: the rarity × stage default in `catch.ts`. */
+  catchRate?: number;
   /** §6.4.3 — the Dojo's off-learnset list for *this stage*. Evolving changes the menu. */
   tutorMoves: string[];
   /** §6.2.4 — the level this species evolves at. Absent on a final form. */
@@ -200,6 +202,8 @@ export type ItemHook =
   | 'early-evolution'
   /** Box Expander — `bonus` more Box slots for the run. Run layer. */
   | 'box-capacity'
+  /** Master Ball Charm — once per run, a throw cannot miss. */
+  | 'guaranteed-catch'
   /** Authored, but the system it needs does not exist yet. Inert, and the UI says so. */
   | 'none';
 
@@ -366,7 +370,8 @@ export type ConsumableEffect =
   | { kind: 'ap'; amount: number }
   | { kind: 'stage'; stat: Stat; stages: number }
   /** §2.6.4 (CL-014) — deterministic catch gauge. */
-  | { kind: 'catch'; thresholdPercent: number; statusBonusPercent: number };
+  /** §2.6.4 — a ball: its multiplier on the catch chance (Poké Ball 1). */
+  | { kind: 'catch'; ballMultiplier: number };
 
 export interface ConsumableDef {
   id: string;

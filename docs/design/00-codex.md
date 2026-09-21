@@ -61,10 +61,12 @@ cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.
 8 biomes bound to Regions; only **Naturalist's Lens** can steer them.
 **Recruit bands:** R1 5–10 · R2 12–20 · R3 22–30.
 
-**Catching — deterministic, no roll.** `threshold = 30 % + 20 (any status) + ball bonus`;
-`gauge = clamp(0,100, 100 × (100−HP%)/(100−threshold))`. At 100 a throw **always** catches; below 100 it
-**always** fails and still spends the ball. 0 HP loses the recruit. A catch is a **Victory with full XP**.
-Balls are counted: start 3, +1 per Region, one per attempt either way.
+**Catching — a roll at a shown number** (2026-09-21). `p = catchRate × (1 − 0.9·HP%)^1.7 × status × ball`,
+clamped 1–90 %: the species' ceiling (common 0.9 · uncommon 0.7 · rare 0.5, ×0.65 middle stage, ×0.4 final;
+Snorlax 0.2), a steep HP curve, ×1.5 asleep/frozen or ×1.2 any other status. ~2 % at full HP for a common
+basic, 33 % at half, 58 % at a quarter. The card plays at any odds; a miss spends the ball and the turn. Seeded
+from the fight's stream. Master Ball Charm arms one sure throw per run. 0 HP loses the recruit. A catch is a
+**Victory with full XP**. Balls are counted: start 3, +1 per Region, one per attempt either way.
 
 **Trainers** — 9 archetypes, 1–2 Pokémon sequential, band = wild +1/+2, no hidden intents.
 **Elite Trainer** — guaranteed, 2 Pokémon 2 phases, **Rare relic 1 of 3**. Roster by Region: Rival 80/60/40 %,

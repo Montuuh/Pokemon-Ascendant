@@ -346,8 +346,9 @@ A species that appears in two biomes is the same species with different flavour 
 
 ## §2.6.4 Catching
 
-Catching is a **combat objective**, not a probability roll. Weaken or status the target, watch a gauge fill,
-throw when it reads READY.
+Catching is a **roll at a number you can see**. Weaken or status the target, watch the chance climb, throw
+when the odds are worth a ball. *(Redesigned 2026-09-21 — the deterministic gauge it replaces is in
+§2.6.4.3.)*
 
 ### §2.6.4.1 The encounter
 
@@ -355,32 +356,33 @@ throw when it reads READY.
 2. If the run holds at least one Pokéball, a **Pokéball card** joins the consumable pile for this combat. With
    zero balls, no catch card appears and the map HUD shows why (`◓ 0`).
 3. Combat proceeds normally.
-4. To catch it, fill the **Catchability gauge** to 100 and play the Pokéball.
+4. To catch it, play the Pokéball. The card is playable at **any** odds; the throw is the player's call.
 
-**The gauge**
+**The chance**
 
 ```
-threshold = 30 %  +  20 (any status on the target, non-stacking)  +  ball bonus
-gauge     = clamp(0, 100, round(100 × (100 − HP%) / (100 − threshold)))
+p = catchRate(species) × (1 − 0.9 × HP%)^1.7 × status × ball        clamped to [1 %, 90 %]
 ```
 
-Full HP reads 0. Reaching the threshold reads 100 — READY. Applying a status moves the threshold from 30 % to
-50 %, which makes the gauge visibly **jump**; that jump is the tutorial moment for the whole system.
-
-| Gauge | The Poké Ball card |
+| Term | Value |
 |---|---|
-| 100 — READY | **Playable, and always catches.** Combat ends |
-| Below 100 | **Locked** — visible in hand, marked with what it needs, unplayable |
+| **catchRate** | The species' ceiling, at ~0 HP with a Poké Ball. By default rarity × stage: common 0.90 · uncommon 0.70 · rare 0.50 · legendary-class 0.20; ×0.65 for a middle stage, ×0.40 for a final. A species row may set its own (`catchRate`; Snorlax is 0.20) |
+| **HP** | The steep part: the last quarter of the bar is worth more than the first three |
+| **status** | ×1.5 if the target is Asleep or Frozen · ×1.2 for any other condition or Confusion |
+| **ball** | Poké Ball ×1 (§2.6.4.2 for the others) |
+
+Anchors, Poké Ball on a common basic species: **full HP ≈ 2 %** · half HP 33 % · a quarter 58 % · a tenth
+77 % · asleep at a quarter 87 % · the cap is 90 %. A Snorlax at full HP sits on the 1 % floor.
+
+| The throw | Result |
+|---|---|
+| Roll ≤ p | **Caught.** Combat ends |
+| Roll > p | **Broke free.** The ball is spent, the fight goes on, the enemy's turn comes |
 | Target at 0 HP | The recruit is lost |
 
-A basic ball therefore catches at HP ≤ 30 %, or ≤ 50 % with any status.
-
-*(Changed 2026-09-21.)* The card used to be playable below READY, always fail, and spend the ball. That row
-was removed because it had no decision in it — a throw that fails for certain is not a gamble, it is a tax on
-not having read the tooltip — and because in play it produced the one feeling this whole section exists to
-prevent: a gauge at 80 % that "failed" read as the RNG robbing the player, when there was no RNG at all. The
-gauge on screen names the HP target rather than a percentage for the same reason. What is left is the pure
-form of the rule: the ball plays when it will catch, and the only way to lose the recruit is to knock it out.
+The chance is printed on the pill beside the enemy and on the ball card, and the tooltip says what moves it.
+The roll comes from the fight's own RNG stream, so a replay throws the same ball (§10.7). **Master Ball
+Charm** (§8.6.1) arms one throw per run that cannot miss; the pill reads SURE while it is armed.
 
 5. On a catch: combat ends as a **Victory** with **full combat XP** — a catch is never worth less than a kill —
    and the Pokémon enters the Box, or triggers Swap-or-Skip if the Box is full (§2.3.1).
@@ -391,15 +393,21 @@ attempt whether it succeeds or fails**.
 
 ### §2.6.4.2 Higher-tier balls
 
-Post-launch. A Great Ball adds +15 points to the threshold (catch at ≤ 45 %, or ≤ 65 % with a status); an Ultra
-Ball adds +30 (≤ 60 % / ≤ 80 %). The architecture already carries a threshold field per ball.
+Post-launch. A Great Ball multiplies the chance ×1.5, an Ultra Ball ×2, both under the same 90 % cap. The
+architecture already carries a `ballMultiplier` per ball.
 
-### §2.6.4.3 Why deterministic
+### §2.6.4.3 Why a roll, and why a shown one
 
-Pure determinism aligns catching with Pillar 1: the threshold is on the ball's tooltip, the gauge is on screen,
-and "apply a status to widen the window" is taught in the first Region. A failure still happens — you can knock
-the target out — but it reads as *"I committed to damage when I should have thrown"*, never as *"the RNG robbed
-me"*. The gauge supplies the satisfying filling-meter feel of a catch rate without a roll behind it.
+From v0.1 to v0.6.0 catching was **deterministic**: a gauge filled as HP fell and the ball caught for certain at
+READY (HP ≤ 30 %, or ≤ 50 % with a status). It aligned with Pillar 1 and it had one problem in play: the moment
+before READY had no decision in it — a throw either could not happen or could not fail — and "wearing it down
+to 30 %" felt like a chore rather than a gamble. The user asked for the franchise's shape back on 2026-09-21:
+a chance that is never zero, that rises with damage and status, and that differs by species.
+
+The redesign keeps what Pillar 1 actually protects. The number is **on screen before the throw**, exact, with
+its causes in the tooltip; nothing about *how much* is being risked is hidden. What the dice decide is only
+whether *this* ball was the one — and a miss costs a ball and a turn, which is a price the player chose to pay
+at a percentage they read. Balancing of ball counts and prices waits on the consumables decision (§7.2).
 
 ## §2.6.5 Wild stat tiers
 

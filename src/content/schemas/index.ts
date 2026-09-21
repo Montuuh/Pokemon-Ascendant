@@ -71,6 +71,7 @@ export const SpeciesSchema = z.object({
   availableAbilities: z.array(KebabId),
   hiddenAbility: KebabId.optional(),
   hiddenAbilityPending: z.string().optional(),
+  catchRate: z.number().min(0.01).max(1).optional(),
   /** §6.4.3 — this stage's off-learnset tutor list. */
   tutorMoves: z.array(KebabId).default([]),
   /** §6.2.4 — absent on a final form. */
@@ -93,7 +94,7 @@ export const ItemHookSchema = z.enum([
   // v0.5 (§2.11.3) — the Region Modifier pool.
   'swap-heal', 'trauma-relief', 'victory-heal', 'price-multiplier',
   // v0.6 (§8.6.1) — the Tier-3 Mastery lane.
-  'recall-discard', 'early-evolution', 'box-capacity',
+  'recall-discard', 'early-evolution', 'box-capacity', 'guaranteed-catch',
   'none',
 ]);
 const ItemParams = z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]));
@@ -191,7 +192,7 @@ export const ConsumableEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('cure'), status: z.union([StatusSchema, z.literal('all')]) }),
   z.object({ kind: z.literal('ap'), amount: z.number().int().positive() }),
   z.object({ kind: z.literal('stage'), stat: StatSchema, stages: z.number().int().min(-6).max(6) }),
-  z.object({ kind: z.literal('catch'), thresholdPercent: z.number().min(0).max(100), statusBonusPercent: z.number().min(0).max(100) }),
+  z.object({ kind: z.literal('catch'), ballMultiplier: z.number().positive() }),
 ]);
 
 export const ConsumableSchema = z.object({

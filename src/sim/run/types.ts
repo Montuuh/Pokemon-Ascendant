@@ -339,6 +339,8 @@ export interface CombatTally {
   maxApMove: number;
   /** The most skill cards in hand at the moment a turn ended. */
   peakHandAtTurnEnd: number;
+  /** §8.6.1 Master Ball Charm's discovery — throws the target broke out of. */
+  catchFails: number;
 }
 
 export type RunAction =

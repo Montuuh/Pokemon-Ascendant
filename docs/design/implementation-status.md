@@ -23,7 +23,7 @@
 | Bosses, Gyms, Badges | §5.8–§5.10 | `boss.ts`, `damageFlow.ts`, `run/region.ts`, `content/data/badges.json` | `boss`, `mapRules`, `badges`, the Gym fixture | ✅ all four R1 Gyms with band-derived levels; the four R1 Badges resolve through §7.7's hooks beside relics. R2/R3 Badges arrive with their Gyms |
 | Elite Four, Champion | §5.11, §5.12 | — | — | ☐ v0.8 |
 | Pokédex and Bond | §5.13, §6.8 | `meta/pokedex.ts`, `meta/bond.ts`, `meta/mastery.ts`, `meta/account.ts`, `run/run.ts` (`abilityLocked`), `combat/setup.ts` (the opener), `content/data/mastery.json`, `ui/screens/hub/PcTerminal.tsx` | `account`, `mastery`, `run`, `e2e/meta` | ✅ Pokédex = knowledge (Familiar only, KO count, caught flag). Bond per line from play (wins, lead, evolutions, recruits, runs) with five ranks: Mastery Lv1 · Shiny · hidden ability (the third authored; 6 lines pending) · Lv2 · Lv3 / opening-hand card + starter eligibility. Mastery Lv1 moves for 13 lines |
-| Catching | §2.6.4 | `catch.ts`, `reducer.ts` | `catch`, the catch fixture | ✅ |
+| Catching | §2.6.4 | `catch.ts`, `reducer.ts`, `preview.ts` | `catch`, the catch fixture | ✅ a shown roll since 2026-09-21: species ceiling × HP curve × status × ball, 1–90 %, seeded; Master Ball Charm arms one sure throw per run |
 | HP economy and Trauma | §2.4, §8.2 | `combat/stats.ts`, `battleConfig.ts`, `run/run.ts` | `setup`, `run` | ✅ |
 | XP, levels, evolution | §6.2, §6.3 | `run/xp.ts`, `ui/screens/EvolutionScreen.tsx` | `run`, `runBalance`, `e2e/progression` | ✅ 63 branches, archetype picked per evolution |
 | Moves, abilities, the Dojo | §6.4–§6.7 | `abilities.ts` (19 hooks), `run/xp.ts`, `ui/components/MoveManager.tsx`, `ui/screens/DojoScreen.tsx` | `abilities`, `moveEffects`, `run`, `e2e/progression` | ✅ pool, Move Manager, 3 TMs, Dojo at canon prices; 4 abilities inert pending v0.7 |
@@ -53,7 +53,7 @@ four, and v0.4 closed all of those. What is left is content waiting on a system,
 | 5 | Krabby learns `mud-shot` at 13, `metal-claw` at 17 and `stomp` at 21 (`catalogs/species-r1.md`) | Its evolveLevel is 12, so §6.9 makes all three unreachable — a catalogue slip. They moved onto Kingler at the same levels, so the *line* keeps every move | **catalogue fix** |
 | 6 | Four lines' first pool entry is their most characteristic passive (§6.5.1) | It is, and for Oddish, Diglett, Magikarp and Psyduck that passive is inert until the field system lands | **v0.7** |
 | 7 | Eevee's first Mystery node is a Stone Cache; Pikachu is a starter at Level 4 (§8.5) | Evolution Items and Pikachu's kit are v0.7; the Daycare Lady and the track row say so | **v0.7** |
-| 8 | Trainer's Instinct sees intents one turn further ahead; Master Ball Charm is discovered by five failed catches (`catalogs/relics.md`) | Enemies plan one turn at a time until the intent queue; a throw cannot fail since §2.6.4.1 — both rows are inert / track-only and labelled | **v0.7 / catalogue fix** |
+| 8 | Trainer's Instinct sees intents one turn further ahead (`catalogs/relics.md`) | Enemies plan one turn at a time until the intent queue; the row is inert and labelled | **v0.7** |
 
 **Closed in v0.6:** the whole account layer (§8.3–§8.6, §8.9, §8.10) · the Pokédex tiers and the Mastery slot (§5.13, §6.8) · One Path (§8.8.2), now the fork exists · 14 more achievements (§8.7) · the Eevee line (§8.5.2) · the four Tier-3 relics the catalogue authored (§8.6.1).
 

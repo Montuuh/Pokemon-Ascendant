@@ -2,10 +2,10 @@ import type { ConsumableDef, MoveDef } from '../content/defs';
 import type { CombatCtx } from './context';
 import { breakdownFor } from './damageFlow';
 import type { DamageBreakdown } from './damage';
-import { catchGauge, type CatchGauge } from './catch';
+import { catchOdds, type CatchOdds } from './catch';
 import { activeEnemy, benchIndices, lead } from './slots';
 import type { Combatant, CombatState, RejectReason, SkillCard } from './state';
-import { choiceLockBlocks, itemApDelta } from './items';
+import { choiceLockBlocks, itemApDelta, guaranteedCatch } from './items';
 import { cardsLocked, isPositionLocked, paralysisApBonus } from './status';
 
 // Read-only selectors the UI (and the auto-player) use to know what is legal and what it would do.
@@ -128,23 +128,19 @@ export function consumablePlayability(state: CombatState, cardId: string, ctx: C
   else if (def.effect.kind === 'catch' && state.kind !== 'wild') reason = 'not-wild';
   else if (def.effect.kind === 'catch' && state.player.balls <= 0) reason = 'no-balls';
   else if (def.effect.kind === 'catch' && !activeEnemy(state)) reason = 'no-enemy';
-  // §2.6.4.1 — a throw below READY always fails and still spends the ball. That is not a decision, it is a
-  // trap dressed as one, and it was reading as "the RNG robbed me" — the exact feeling §2.6.4.3 exists to
-  // prevent. The card stays visible with the gauge on it and plays the moment it would actually catch.
-  else if (def.effect.kind === 'catch' && !catchGauge(activeEnemy(state)!, def.effect).ready) reason = 'not-ready';
   return { cardId, def, playable: reason === null, reason, needsAllyTarget: def.target === 'ally' };
 }
 
-/** §2.6.4 — live catch gauge for the UI pill (null when not a wild fight or no ball available). */
-export function catchStatus(state: CombatState, ctx: CombatCtx): (CatchGauge & { ballsLeft: number }) | null {
+/** §2.6.4 — the live catch odds for the UI pill (null when not a wild fight or no ball available). */
+export function catchStatus(state: CombatState, ctx: CombatCtx): (CatchOdds & { ballsLeft: number }) | null {
   if (state.kind !== 'wild') return null;
   const enemy = activeEnemy(state);
   if (!enemy) return null;
-  const ballDef = [...state.player.consumables.pool, ...state.player.consumables.hand, ...state.player.consumables.used]
+  const ballDef = [...state.player.consumables.hand, ...state.player.consumables.pool]
     .map((c) => ctx.content.consumable(c.consumableId))
     .find((d) => d.effect.kind === 'catch');
-  const effect = ballDef?.effect.kind === 'catch' ? ballDef.effect : { kind: 'catch' as const, thresholdPercent: 30, statusBonusPercent: 20 };
-  return { ...catchGauge(enemy, effect), ballsLeft: state.player.balls };
+  const effect = ballDef?.effect.kind === 'catch' ? ballDef.effect : { kind: 'catch' as const, ballMultiplier: 1 };
+  return { ...catchOdds(enemy, effect, ctx.content, guaranteedCatch(state, ctx.content) !== null), ballsLeft: state.player.balls };
 }
 
 export function pickLeadOptions(state: CombatState): number[] {

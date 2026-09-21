@@ -402,6 +402,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
         if (t.peakHandAtTurnEnd >= 7) count(next, 'hand-of-seven');
         if (t.reshuffles >= 3) count(next, 'triple-reshuffle');
         if (t.maxApMove >= 4) count(next, 'four-ap-moves');
+        if (t.catchFails) count(next, 'catch-fails', t.catchFails);
         if (t.statusesApplied.length >= 4) count(next, 'four-statuses-one-fight');
       }
       if ((e.statusesTakenThisRun ?? 0) >= 10) count(next, 'ten-statuses-one-run', 1, true);

@@ -197,7 +197,7 @@ describe('Bond — §6.8', () => {
 describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
   it('ACriterionMet_OpensItsRelic_Once', () => {
     // Ten crits across three fights: Steady Aim. A fourth fight with more crits does not discover it twice.
-    const crit = (n: number) => win({ tally: { crits: n, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0 } });
+    const crit = (n: number) => win({ tally: { crits: n, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0, catchFails: 0 } });
     const { state, delta } = applyAccountEvents(seasoned(), [crit(4), crit(4), crit(2)], ctx);
     expect(state.counters.crits).toBe(10);
     expect(delta.discoveredRelics).toContain('steady-aim');

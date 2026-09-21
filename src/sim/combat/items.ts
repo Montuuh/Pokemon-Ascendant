@@ -431,6 +431,12 @@ export function startShield(state: CombatState, c: Combatant, content: ContentRe
 export const relicsRevealIntents = (state: CombatState, content: ContentRegistry, firstIntent = false): boolean =>
   relicsOf(state, content).some((r) => r.hook === 'reveal-intents' && (!r.params?.firstOnly || firstIntent));
 
+/** §8.6.1 Master Ball Charm — is the once-per-run guaranteed catch still armed? Spent through `player.spent` like Phoenix Feather. */
+export const guaranteedCatch = (state: CombatState, content: ContentRegistry): string | null => {
+  const r = relicsOf(state, content).find((x) => x.hook === 'guaranteed-catch');
+  return r && !state.player.spent.includes(r.id) ? r.id : null;
+};
+
 /** §8.6.1 Perfect Recall — is the once-per-fight discard recall still available? */
 export const recallsDiscard = (state: CombatState, content: ContentRegistry): boolean =>
   !state.player.spent.includes('perfect-recall') && relicsOf(state, content).some((r) => r.hook === 'recall-discard');

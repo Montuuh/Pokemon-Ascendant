@@ -142,8 +142,7 @@
       "target": "enemy",
       "effect": {
         "kind": "catch",
-        "thresholdPercent": 30,
-        "statusBonusPercent": 20
+        "ballMultiplier": 1
       },
       "description": "Catch a wild Pokémon once the Catchability gauge reads READY (HP ≤ 30%, or ≤ 50% with a status). Costs a ball whether it works or not.",
       "gdd": "§2.6.4 (CL-014)"

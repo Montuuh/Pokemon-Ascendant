@@ -766,10 +766,17 @@
       "categories": [
         "meta"
       ],
-      "description": "Once per run, a Poké Ball catches whatever it is thrown at, whatever the gauge says.",
-      "hook": "none",
-      "pending": "needs a catch override the gauge does not expose yet (§2.6.4) — v0.6",
-      "tier": 2
+      "description": "Once per run, a Poké Ball catches whatever it is thrown at, whatever the odds say.",
+      "hook": "guaranteed-catch",
+      "tier": 2,
+      "params": {
+        "oncePerRun": true
+      },
+      "discovery": {
+        "counter": "catch-fails",
+        "goal": 5,
+        "text": "Have 5 Poké Balls broken out of"
+      }
     },
     {
       "id": "time-spinner",

@@ -1,6 +1,6 @@
 import { IconQuestionMark } from '@tabler/icons-react';
 import type { CombatCtx, CombatState, EnemyCombatant } from '@/sim';
-import { SLOT_LABEL, catchStatus, currentPhase, phaseMarkers, predictIntentDamage, slotOccupant } from '@/sim';
+import { SLOT_LABEL, catchPercent, catchStatus, currentPhase, phaseMarkers, predictIntentDamage, slotOccupant } from '@/sim';
 import { iconOf, intentGlyph } from '@/ui/art';
 import { INTENT_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
@@ -122,15 +122,14 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
       </button>
 
       {gauge && (
-        <div className={[styles.catch, gauge.ready ? styles.catchReady : ''].join(' ')} data-testid="catch-pill" {...catchTipProps}>
+        <div className={[styles.catch, gauge.chance >= 0.5 ? styles.catchReady : ''].join(' ')} data-testid="catch-pill" data-chance={catchPercent(gauge)} {...catchTipProps}>
           <span className={styles.ball} />
           <span className={styles.catchTrack}>
-            <span className={styles.catchFill} style={{ width: `${gauge.gauge}%` }} />
+            <span className={styles.catchFill} style={{ width: `${catchPercent(gauge)}%` }} />
           </span>
-          {/* §2.6.4 — never a bare percentage. "64%" beside a Poké Ball reads as a catch *chance*, and the
-              gauge is not one: below READY a throw fails for certain. The label names the target instead, so
-              what it says is what to do — get its HP under this — and the bar shows how far along that is. */}
-          <span className={`${styles.catchLabel} display`}>{gauge.ballsLeft === 0 ? 'no balls' : gauge.ready ? 'READY' : `HP ≤ ${gauge.thresholdPercent}%`}</span>
+          {/* §2.6.4 (2026-09-21) — the number *is* the chance now, so it is printed as one. Weaken or status
+              the target and watch it climb; the bar is the same number as a length. */}
+          <span className={`${styles.catchLabel} display`}>{gauge.ballsLeft === 0 ? 'no balls' : gauge.guaranteed ? 'SURE' : `${catchPercent(gauge)}%`}</span>
           <span className={styles.catchBalls}>×{gauge.ballsLeft}</span>
         </div>
       )}
