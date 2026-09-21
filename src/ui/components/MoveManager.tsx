@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react';
 import { IconArrowsShuffle, IconLock, IconMinus, IconPlus, IconX } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { autoPickMoves, type PartyMon } from '@/sim';
+import { autoPickMoves, masteryMoveFor, type PartyMon } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { tmIcon } from '@/ui/art';
 import { ARCHETYPE_LABEL, RUN_REJECT_TEXT } from '@/ui/strings';
-import { moveDefTip } from '@/ui/tips';
+import { masteryCardTip, moveDefTip } from '@/ui/tips';
 import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './MoveManager.module.css';
 
@@ -41,6 +41,8 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
   if (!mon) return null;
   const species = content.species(mon.speciesId);
   const active = mon.moveIds;
+  // §5.13.2 — the fifth slot, read off the run's snapshot of the account. Shown, never editable.
+  const mastery = masteryMoveFor(mon.speciesId, run.perks?.mastery[content.lineBase(mon.speciesId)] ?? 0, content);
   const benched = mon.pool.filter((m) => !active.includes(m));
 
   function say(reason: string | undefined) {
@@ -132,6 +134,13 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
         </h4>
         <ul className={styles.list}>{active.map((m) => row(m, true, mon))}</ul>
         {active.length < 4 && <p className={styles.slotHint}>{4 - active.length} slot{active.length === 3 ? '' : 's'} free.</p>}
+        {mastery && (
+          <Tipped tip={masteryCardTip(content.move(mastery), species.name)} className={styles.masteryRow} data-testid="mastery-slot">
+            <TypeBadge type={content.move(mastery).type} size={18} />
+            <span className={styles.masteryName}>★ {content.move(mastery).name}</span>
+            <span className={styles.masteryTag}>Mastery · fixed</span>
+          </Tipped>
+        )}
       </section>
 
       <section className={styles.column} aria-label="Learned move pool">

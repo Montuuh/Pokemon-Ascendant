@@ -11,7 +11,7 @@ import { mysteryEvent, rollEvent, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, type ProgressionConfig } from './xp';
-import type { LevelUp, PartyMon, RunAction, RunReduceResult, RunState, ShopSlot } from './types';
+import type { LevelUp, PartyMon, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
 
 /** A shop row in the player's words, for the log line after a purchase. */
 export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
@@ -34,7 +34,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 5;
+export const RUN_SAVE_VERSION = 6;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -78,13 +78,22 @@ export function newPartyMon(speciesId: string, level: number, content: ContentRe
   return mon;
 }
 
-/** §2.1.1 — pre-run setup is over; build the route and put the starter in the Box. */
-export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIndex = 0, modifiers: readonly string[] = [], startingRelic?: string, regionModifier?: string): RunState {
+/** The run of an account that has nothing yet — and of every fixture, which is the same thing. */
+export const DEFAULT_PERKS: Readonly<RunPerks> = Object.freeze({ boxBonus: 0, relicPool: null, mastery: {}, familiar: [], insight: false });
+
+/**
+ * §2.1.1 — pre-run setup is over; build the route and put the starter in the Box.
+ *
+ * `perks` is the account's contribution (§8.10), frozen into the save here; `twin` is §8.4.2's second starter,
+ * which arrives beside the first at the same level and shares the opening Active Team.
+ */
+export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIndex = 0, modifiers: readonly string[] = [], startingRelic?: string, regionModifier?: string, perks: RunPerks = DEFAULT_PERKS, twin?: string): RunState {
   resetUidCounter();
   const streams = new RngStreams(seed);
   const mapRng = streams.get('MapRNG');
-  const map = generateRegion(mapRng, ctx.content, regionIndex, seed);
+  const map = generateRegion(mapRng, ctx.content, regionIndex, seed, modifiers);
   const starter = newPartyMon(starterId, RUN_START.starterLevel, ctx.content, seed);
+  const second = twin ? newPartyMon(twin, RUN_START.starterLevel, ctx.content, seed + 1) : null;
 
   return {
     version: RUN_SAVE_VERSION,
@@ -94,8 +103,8 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     position: null,
     reachable: [...map.entry],
     visited: [],
-    box: [starter],
-    activeUids: [starter.uid],
+    box: second ? [starter, second] : [starter],
+    activeUids: second ? [starter.uid, second.uid] : [starter.uid],
     balls: RUN_START.balls,
     consumables: [...RUN_START.consumables],
     tms: [],
@@ -110,6 +119,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     pendingEvent: null,
     eventResult: null,
     seenEvents: [],
+    seenSpecies: [],
     phase: 'map',
     pendingNodeId: null,
     pendingScenario: null,
@@ -119,8 +129,9 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     pendingEvolutions: [],
     outcome: 'in-progress',
     cursors: { MapRNG: mapRng.cursor, EncounterRNG: streams.get('EncounterRNG').cursor, LootRNG: streams.get('LootRNG').cursor },
-    stats: { nodesCleared: 0, combatsWon: 0, catches: 0, faints: 0, turnsPlayed: 0, startedAt: 0 },
-    log: [`A new run begins with ${ctx.content.species(starterId).name}.`],
+    stats: { nodesCleared: 0, combatsWon: 0, catches: 0, faints: 0, turnsPlayed: 0, recruits: 0, statusesTaken: 0, startedAt: 0 },
+    perks: { ...perks, mastery: { ...perks.mastery }, familiar: [...perks.familiar], relicPool: perks.relicPool ? [...perks.relicPool] : null },
+    log: [second ? `A new run begins with ${ctx.content.species(starterId).name} and ${ctx.content.species(second.speciesId).name}.` : `A new run begins with ${ctx.content.species(starterId).name}.`],
     ...(startingRelic ? { relics: [startingRelic] } : {}),
   };
 }
@@ -155,8 +166,24 @@ export function effectiveMax(run: RunState, mon: PartyMon, content: ContentRegis
   return maxHpOf(mon, content, 5, Math.max(1, z1 - relief), Math.max(1, z2 - relief), 10);
 }
 
-/** §2.3.1 with §8.8 — how many the Box holds. Box Squeeze takes it from six to four. */
-export const boxCapacity = (run: RunState): number => modifierValue(run.modifiers, 'box-squeeze', 'boxCapacity', RUN_START.boxCapacity);
+/**
+ * §2.3.1 with §8.8 and §8.4.2 — how many the Box holds. Box Squeeze takes it to four and says "not expandable",
+ * so the account's Expanded Box and the Box Expander relic both stand down under it.
+ */
+export function boxCapacity(run: RunState): number {
+  if (hasModifier(run.modifiers, 'box-squeeze')) return modifierValue(run.modifiers, 'box-squeeze', 'boxCapacity', 4);
+  return RUN_START.boxCapacity + (run.perks?.boxBonus ?? 0) + (run.relics.includes('box-expander') ? 2 : 0);
+}
+
+/**
+ * §8.6.1 Evolution Catalyst — once per run, the first Pokémon to come within `levels` of its threshold evolves
+ * there. The screen it opens is the ordinary one; the relic is spent when that evolution is chosen.
+ */
+function catalystLevels(run: RunState, content: ContentRegistry): number {
+  if (!run.relics.includes('evolution-catalyst') || run.spentRelics.includes('evolution-catalyst')) return 0;
+  const levels = content.relic('evolution-catalyst').params?.levels;
+  return typeof levels === 'number' ? levels : 0;
+}
 
 /** After a node is cleared, the next layer's linked nodes open up. */
 function advanceFrom(draft: RunState, nodeId: string): void {
@@ -190,7 +217,7 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
     // Its own cursor on the loot stream, so a reload offers the same three (§10.8.6).
     const pickRng = new RngStreams(draft.seed).get('LootRNG');
     pickRng.cursor = draft.cursors.LootRNG ?? pickRng.cursor;
-    const offer = rollLegendaryOffer(pickRng, ctx.content, draft.relics);
+    const offer = rollLegendaryOffer(pickRng, ctx.content, draft.relics, 3, draft.perks.relicPool);
     draft.cursors.LootRNG = pickRng.cursor;
     if (offer.length) {
       draft.pendingLegendary = offer;
@@ -206,9 +233,13 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
 
 /** §6.3.1 — every Pokémon standing at its threshold owes one Evolution screen, in Box order. */
 function queueEvolutions(draft: RunState, content: ContentRegistry): void {
+  let early = catalystLevels(draft, content);
   for (const mon of draft.box) {
-    if (!isEvolutionReady(mon, content)) continue;
+    const ready = isEvolutionReady(mon, content) || (early > 0 && isEvolutionReady(mon, content, early));
+    if (!ready) continue;
     if (draft.pendingEvolutions.some((p) => p.uid === mon.uid)) continue;
+    // One Pokémon per run: the first that qualifies takes the Catalyst's four levels, and nobody else does.
+    if (!isEvolutionReady(mon, content)) early = 0;
     draft.pendingEvolutions.push({
       uid: mon.uid,
       from: mon.speciesId,
@@ -251,7 +282,7 @@ function resolveEventOutcome(draft: RunState, outcome: EventOutcome, ctx: RunCtx
       say(draft, `Picked up ${outcome.ids.map((id) => ctx.content.consumable(id).name).join(', ')}.`);
       break;
     case 'relic': {
-      const id = rollRelic(rng, ctx.content, draft.relics, outcome.rarity);
+      const id = rollRelic(rng, ctx.content, draft.relics, outcome.rarity, draft.perks.relicPool);
       if (id) acquireRelic(draft, id, ctx.content);
       break;
     }
@@ -409,6 +440,11 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // carried across so it heals the damage that was actually taken rather than the damage predicted.
         const healPct = report.outcome !== 'defeat' ? victoryHealPct(draft, ctx.content) : 0;
 
+        // §8.6.1 Cleanse Tag's discovery counts statuses taken across the whole run.
+        draft.stats.statusesTaken += report.tally?.statusesTaken ?? 0;
+        // §8.4.2 — every species this fight fielded is now met.
+        for (const e of draft.pendingScenario?.enemies ?? []) if (!draft.seenSpecies.includes(e.species)) draft.seenSpecies.push(e.species);
+
         // 1. Carry HP, status and Trauma back out of the fight (§2.4, §8.2.2).
         for (const result of report.team) {
           const mon = draft.box.find((m) => m.uid === result.uid);
@@ -506,7 +542,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         if (node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym' || beatTheEliteWild) {
           const chance = node.kind === 'trainer' ? RELIC_DROP_CHANCE : 1;
           if (lootRng.chance(chance)) {
-            relicDrop = rollRelic(lootRng, ctx.content, draft.relics, node.kind === 'trainer' ? undefined : 'uncommon');
+            relicDrop = rollRelic(lootRng, ctx.content, draft.relics, node.kind === 'trainer' ? undefined : 'uncommon', draft.perks.relicPool);
             if (relicDrop) acquireRelic(draft, relicDrop, ctx.content);
           }
         }
@@ -542,6 +578,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           if (draft.box.length < boxCapacity(draft)) {
             const recruit = newPartyMon(caught.speciesId, caught.level, ctx.content, draft.seed);
             draft.box.push(recruit);
+            draft.stats.recruits += 1;
             if (draft.activeUids.length < 3) draft.activeUids.push(recruit.uid);
             say(draft, `Caught ${ctx.content.species(caught.speciesId).name}!`);
           } else {
@@ -585,6 +622,11 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const pending = draft.pendingEvolutions[0]!;
         const mon = draft.box.find((m) => m.uid === pending.uid)!;
         const from = ctx.content.species(mon.speciesId).name;
+        // §8.6.1 Evolution Catalyst — an evolution below the threshold is the one it paid for.
+        if (!isEvolutionReady(mon, ctx.content) && !draft.spentRelics.includes('evolution-catalyst')) {
+          draft.spentRelics.push('evolution-catalyst');
+          say(draft, 'The Evolution Catalyst is spent.');
+        }
         applyBranch(mon, action.branchId, ctx.content);
         const branch = ctx.content.branch(action.branchId);
         say(draft, `${from} evolved into ${ctx.content.species(mon.speciesId).name} — ${branch.label}.`);
@@ -605,6 +647,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             draft.activeUids = draft.activeUids.filter((u) => u !== action.releaseUid);
             const fresh = newPartyMon(recruit.speciesId, recruit.level, ctx.content, draft.seed);
             draft.box.push(fresh);
+            draft.stats.recruits += 1;
             if (draft.activeUids.length < 3) draft.activeUids.push(fresh.uid);
             say(draft, `Released ${ctx.content.species(released!.speciesId).name} for ${ctx.content.species(recruit.speciesId).name}.`);
           }

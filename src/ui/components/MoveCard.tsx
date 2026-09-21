@@ -60,6 +60,7 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
       }}
       data-testid={`card-${move.id}`}
       data-card-id={play.card.id}
+      data-mastery={play.card.mastery || undefined}
       data-state={state === 'no-ap' ? 'no-ap' : state === 'locked' ? (play.reason ?? 'locked') : 'playable'}
       aria-pressed={selected}
       // The card's visible content is icons, dots and a number. Spelled out, it becomes a sentence a screen
@@ -85,6 +86,10 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
         <span className={styles.badge}>
           <Role size={12} stroke={2.6} />
         </span>
+        {/* §5.13.2 — the Mastery star. A badge like the others, not a new layout. */}
+        {play.card.mastery && (
+          <span className={`${styles.badge} ${styles.mastery}`} aria-hidden="true">★</span>
+        )}
         {move.modifier === 'step-forward' && (
           <span className={`${styles.badge} ${styles.mod}`}>
             <IconArrowForwardUp size={12} stroke={2.6} />

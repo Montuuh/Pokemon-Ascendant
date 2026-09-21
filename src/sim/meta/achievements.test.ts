@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import {
-  ACHIEVEMENTS, applyMetaEvent, applyMetaEvents, createRun, defaultRunCtx, emptyProgress, metaEventsFor,
+  ACHIEVEMENTS, accountContextFor, applyAccountEvents, applyMetaEvent, applyMetaEvents, createRun, defaultRunCtx, emptyAccount, emptyProgress, metaEventsFor,
   newPartyMon, type MetaEvent, type RunState,
 } from '@/sim';
 
@@ -17,21 +17,28 @@ const combatEnd = (over: Partial<Extract<MetaEvent, { t: 'combat-end' }>> = {}):
 
 describe('Achievements — §8.7', () => {
   it('EveryRowHasAGoalAndATrigger_AndNoDescriptionLeaksASectionNumber', () => {
-    expect(ACHIEVEMENTS).toHaveLength(10);
-    expect(new Set(ACHIEVEMENTS.map((a) => a.id)).size).toBe(10);
+    expect(ACHIEVEMENTS).toHaveLength(24);
+    expect(new Set(ACHIEVEMENTS.map((a) => a.id)).size).toBe(24);
     for (const a of ACHIEVEMENTS) {
       expect(a.goal, a.id).toBeGreaterThan(0);
       expect(a.description, a.id).not.toMatch(/§\d/);
       // A row nothing can ever fire is the thing this whole file exists to prevent (§8.7.1.1).
+      const tally = { crits: 0, reshuffles: 0, statusesApplied: ['burn', 'poison', 'sleep', 'paralysis'], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0 };
       const fires = [
-        combatEnd({ damageTaken: 0, manualSwaps: 5, kind: 'boss' }),
+        combatEnd({ damageTaken: 0, manualSwaps: 5, kind: 'boss', tally }),
+        combatEnd({ faints: 2, activeSpecies: ['a', 'b', 'c'] }),
         { t: 'recruit', speciesId: 'pidgey', boxFull: true },
         { t: 'evolution', uid: 'u', toSpeciesId: 'wartortle' },
         { t: 'badge-awarded', badgeId: 'boulder-badge' },
         { t: 'relic-acquired', relicId: 'coin-pouch', heldCount: 8 },
-        { t: 'run-end', won: true, catches: 0, badges: 1 },
+        { t: 'run-end', won: true, catches: 0, badges: 1, monoType: true, relicCount: 1, modifierCount: 2 },
+        { t: 'dex-tier-up', speciesId: 'pidgey', tier: 1 },
+        { t: 'dex-tier-up', speciesId: 'pidgey', tier: 2 },
+        { t: 'dex-tier-up', speciesId: 'pidgey', tier: 3 },
       ] satisfies MetaEvent[];
-      expect(fires.some((e) => a.count(e, emptyProgress()) > 0), `${a.id} can never fire`).toBe(true);
+      // The streak rows read a streak already in progress.
+      const streak = { ...emptyProgress(), winStreak: 4 };
+      expect(fires.some((e) => a.count(e, streak) > 0), `${a.id} can never fire`).toBe(true);
     }
   });
 
@@ -113,8 +120,41 @@ describe('Reading events off the run — §8.7', () => {
     const won: RunState = { ...before, outcome: 'victory', badges: ['boulder-badge'] };
     const events = metaEventsFor(before, won, content);
     const end = events.find((e) => e.t === 'run-end');
-    expect(end).toEqual({ t: 'run-end', won: true, catches: 0, badges: 1 });
+    expect(end).toMatchObject({ t: 'run-end', won: true, catches: 0, badges: 1, layersCleared: 0 });
     // And not again on the next diff, because the run was already over.
     expect(metaEventsFor(won, won, content).some((e) => e.t === 'run-end')).toBe(false);
+  });
+});
+
+describe('The v0.6 rows — §8.7.1.1', () => {
+  it('MasteryMedals_CountPokedexPromotions_ThroughTheAccountFold', () => {
+    // §5.13.1 — ten defeats of a common species is Familiar. Five species at Familiar is Acquaintance.
+    const events: MetaEvent[] = [];
+    for (const sid of ['pidgey', 'rattata', 'caterpie', 'weedle', 'zubat']) {
+      for (let i = 0; i < 10; i++) events.push({ t: 'combat-end', outcome: 'victory', kind: 'wild', damageTaken: 1, manualSwaps: 0, faints: 0, defeated: [sid], activeSpecies: [] });
+    }
+    const { state, delta } = applyAccountEvents(emptyAccount(), events, accountContextFor(content));
+    expect(state.achievements.counts.acquaintance).toBe(5);
+    expect(delta.unlockedAchievements.map((a) => a.id)).toContain('acquaintance');
+  });
+
+  it('TheStreakRows_ReadTheStreakBeforeThisRunCountsIt', () => {
+    const won: MetaEvent = { t: 'run-end', won: true, catches: 1, badges: 1 };
+    const lost: MetaEvent = { t: 'run-end', won: false, catches: 0, badges: 0 };
+    const two = applyMetaEvents(emptyProgress(), [won, won]);
+    expect(two.progress.unlocked).toContain('back-to-back');
+    expect(two.progress.unlocked).not.toContain('win-streak');
+    // A loss resets the streak; the next win starts again from one.
+    const broken = applyMetaEvents(emptyProgress(), [won, lost, won]);
+    expect(broken.progress.unlocked).not.toContain('back-to-back');
+    expect(broken.progress.winStreak).toBe(1);
+  });
+
+  it('TheRunEndFacts_DriveTheBuildIdentityRows', () => {
+    const mono: MetaEvent = { t: 'run-end', won: true, catches: 2, badges: 1, monoType: true, relicCount: 2, modifierCount: 2 };
+    const { progress } = applyMetaEvent(emptyProgress(), mono);
+    expect(progress.unlocked).toEqual(expect.arrayContaining(['monotype-master', 'minimalist', 'modifier-master']));
+    const many: MetaEvent = { t: 'relic-acquired', relicId: 'coin-pouch', heldCount: 8 };
+    expect(applyMetaEvent(emptyProgress(), many).progress.unlocked).toContain('relic-hoarder');
   });
 });

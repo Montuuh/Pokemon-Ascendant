@@ -104,6 +104,8 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   // every card: Choice Specs made every Ranged move free rather than the first, and Choice Band never
   // charged its surcharge. It was invisible because both relics still looked like they were working.
   player.playedThisTurn.push({ ownerUid: owner.uid, moveId: move.id, apCost: p.apCost });
+  // §8.6.1 Pressure Plate's discovery reads the printed cost, not the discounted one.
+  player.tally.maxApMove = Math.max(player.tally.maxApMove, move.apCost);
 
   // §7.3.5 Crown of Echoes — the combat's first card comes back free next turn. Tracked in `spent` so it
   // fires once per combat rather than once per turn.

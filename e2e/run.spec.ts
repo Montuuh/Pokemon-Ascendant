@@ -233,6 +233,11 @@ test('a full run reaches the Gym and the victory summary', async ({ page }) => {
 
   // Either ending is a legal run; what must hold is that the summary is honest and the save is gone.
   await expect(victory.or(defeat)).toContainText(/Nodes cleared|Depth reached/);
+  // §8.3 — and that the account was paid: a lost run pays by depth, a won one paid along the way, so the XP
+  // line is never zero after a run that cleared a node.
+  await expect(page.getByTestId('account-summary')).toBeVisible();
+  const xpLine = await page.getByTestId('summary-xp').textContent();
+  expect(Number(xpLine?.replace(/[^0-9]/g, ''))).toBeGreaterThan(0);
   await victory.or(defeat).getByTestId('btn-end-continue').click();
   await expect(page.getByTestId('main-menu')).toBeVisible();
   await expect(page.getByTestId('btn-continue-run')).toHaveCount(0);

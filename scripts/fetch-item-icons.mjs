@@ -97,6 +97,12 @@ const RELIC_ICON = {
   'unbreakable-will': 'lum-berry',
   'apex-predator': 'razor-claw',
   'battle-hardened': 'assault-vest',
+  // §8.6.1 Tier-3 lane (v0.6). Perfect Recall recycles the discard, Trainer's Instinct is a lens on the
+  // enemy, the Catalyst is an evolution stone, the Expander is a bigger Box in spirit.
+  'perfect-recall': 'reveal-glass',
+  'trainers-instinct': 'scope-lens',
+  'evolution-catalyst': 'dawn-stone',
+  'box-expander': 'exp-share',
 };
 
 const url = (slug) => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${slug}.png`;

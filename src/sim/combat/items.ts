@@ -428,6 +428,10 @@ export function startShield(state: CombatState, c: Combatant, content: ContentRe
 export const relicsRevealIntents = (state: CombatState, content: ContentRegistry): boolean =>
   relicsOf(state, content).some((r) => r.hook === 'reveal-intents');
 
+/** §8.6.1 Perfect Recall — is the once-per-fight discard recall still available? */
+export const recallsDiscard = (state: CombatState, content: ContentRegistry): boolean =>
+  !state.player.spent.includes('perfect-recall') && relicsOf(state, content).some((r) => r.hook === 'recall-discard');
+
 /** §7.3.5 Crown of Echoes — does a relic copy the combat's first card back into your hand? */
 export const echoesFirstCard = (state: CombatState, content: ContentRegistry): boolean =>
   relicsOf(state, content).some((r) => r.hook === 'draw' && r.params?.echoFirstCard);

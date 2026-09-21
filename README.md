@@ -42,13 +42,16 @@ A roguelike deckbuilder where **your party is your deck**.
   Centre treats it. Money buys items, tutor moves, therapy — and never quite enough of all three.
 - **Relics** are run-long passives; **held items** are one-per-Pokémon; a **Region Modifier** chosen at the start
   changes one rule for the whole Region; beating the Gym wins a **Badge** and a **1-of-3 Legendary relic**.
-- **Ten achievements** persist across runs in the Trainer Hub.
+- **The account outlives the run.** Every fight, recruit and Badge pays **Trainer XP**; each level hands out
+  something on a 30-row track — starters, relics, Hub conveniences, **Tokens** for the Poké Mart's Tier-3 lane.
+  The **Pokédex** turns fights into knowledge: fight a species enough and its intents are revealed, your own
+  copies turn shiny, and its line earns a fifth card. Twenty-four achievements so far.
 
 ## Status
 
-**v0.5 — Region 1 complete (code).** One full Region is playable end to end: 43 species, 163 moves, 60 relics,
-19 held items, 17 Region Modifiers, 4 Gyms. Next is v0.6 *Meta* — Trainer XP, the remaining Hub kiosks, Pokédex
-tiers and Mastery moves — then Regions 2 and 3. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
+**v0.6 — Meta (code).** One full Region end to end, and an account that carries across runs: 47 species,
+181 moves, 64 relics in three meta tiers, 19 held items, 17 Region Modifiers, 4 Gyms, the Trainer Hub with its
+four kiosks. Next is v0.7 *Regions 2 & 3*. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Run it locally
 

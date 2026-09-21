@@ -53,10 +53,10 @@ export const LEGENDARY_CAP = 2;
  * At the hold cap the offer becomes Rares instead of a skip-or-nothing, because a pick-moment that can only
  * be declined is not a moment. Returns fewer than three only when the pool itself has run dry.
  */
-export function rollLegendaryOffer(rng: GameRng, content: ContentRegistry, held: readonly string[], count = 3): string[] {
+export function rollLegendaryOffer(rng: GameRng, content: ContentRegistry, held: readonly string[], count = 3, accountPool: readonly string[] | null = null): string[] {
   const atCap = held.filter((id) => content.relic(id).rarity === 'legendary').length >= LEGENDARY_CAP;
   const wanted: RelicRarity = atCap ? 'rare' : 'legendary';
-  const pool = content.allRelics().filter((r) => r.rarity === wanted && isOfferable(r) && !held.includes(r.id));
+  const pool = content.allRelics().filter((r) => r.rarity === wanted && isOfferable(r) && inPool(r, accountPool) && !held.includes(r.id));
   const out: string[] = [];
   const bag = [...pool];
   for (let i = 0; i < count && bag.length; i++) {
@@ -75,19 +75,24 @@ export function rollLegendaryOffer(rng: GameRng, content: ContentRegistry, held:
  */
 export const isOfferable = (row: { pending?: string }): boolean => !row.pending;
 
+/** §8.6.2 — is the relic in this account's pool? `null` is "no account": the whole catalogue. */
+export const inPool = (r: { id: string }, accountPool: readonly string[] | null | undefined): boolean => !accountPool || accountPool.includes(r.id);
+
 /**
  * §7.3 — pick a relic the run does not already hold. Duplicates are excluded from every offer and drop for
  * the rest of the run, which is what stops a long run turning into five Coin Pouches.
  */
-export function rollRelic(rng: GameRng, content: ContentRegistry, held: readonly string[], rarity?: RelicRarity): string | null {
+export function rollRelic(rng: GameRng, content: ContentRegistry, held: readonly string[], rarity?: RelicRarity, accountPool: readonly string[] | null = null): string | null {
   const wanted = rarity ?? pickRarity(rng);
   // §7.3.7 — Legendary is never in the drop pool, whatever rarity was asked for.
-  const eligible = content.allRelics().filter((r) => isOfferable(r) && r.rarity !== 'legendary' && !held.includes(r.id));
+  // §8.6.2 — and a Tier-2 or Tier-3 relic the account has not opened is not in the pool at all.
+  const eligible = content.allRelics().filter((r) => isOfferable(r) && inPool(r, accountPool) && r.rarity !== 'legendary' && !held.includes(r.id));
   const pool = eligible.filter((r) => r.rarity === wanted);
   // Fall back across rarities rather than returning nothing: a reward that silently does not arrive is worse
   // than one slightly off its weight.
+  // A pool with only Rares left still pays: the last relic in a long run is a Rare, not nothing.
   const fallback = eligible.filter((r) => r.rarity === 'common' || r.rarity === 'uncommon');
-  const from = pool.length ? pool : fallback;
+  const from = pool.length ? pool : fallback.length ? fallback : eligible;
   if (!from.length) return null;
   return from[Math.min(from.length - 1, Math.floor(rng.range01() * from.length))]!.id;
 }
@@ -164,7 +169,7 @@ export function rollShopStock(rng: GameRng, content: ContentRegistry, run: RunSt
   slots.push({ kind: 'ball', id: 'poke-ball', price: PRICES.ball, sold: false });
 
   for (const rarity of ['common', 'uncommon'] as const) {
-    const id = rollRelic(rng, content, run.relics, rarity);
+    const id = rollRelic(rng, content, run.relics, rarity, run.perks?.relicPool ?? null);
     if (id) slots.push({ kind: 'relic', id, price: PRICES.relic[rarity], sold: false });
   }
 

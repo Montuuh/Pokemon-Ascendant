@@ -42,8 +42,8 @@ describe('Difficulty modifiers — §8.8', () => {
 
   it('AnUnavailableModifier_IsInertEvenIfASaveNamesIt', () => {
     // A save from a later build, or a hand-edited one, must not switch on a rule the sim cannot honour.
-    expect(hasModifier(['one-path'], 'one-path')).toBe(false);
-    expect(modifierXpMultiplier(['one-path'])).toBe(1);
+    expect(hasModifier(['greater-threats'], 'greater-threats')).toBe(false);
+    expect(modifierXpMultiplier(['greater-threats'])).toBe(1);
     expect(modifierValue(['greater-threats'], 'greater-threats', 'anything', 42)).toBe(42);
   });
 

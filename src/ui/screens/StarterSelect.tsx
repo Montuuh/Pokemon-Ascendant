@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react';
 import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconLock } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
+import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { GYM, MODIFIERS, RUN_START, STARTER_IDS, activeMoves, isOfferable, modifierXpMultiplier, rollRegionModifierOffer, typeMultiplier } from '@/sim';
+import { GYM, MODIFIERS, RUN_START, activeMoves, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, rollRegionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState } from '@/sim';
 import { portraitUrl } from '@/content/schemas/species';
 import { ItemCard } from '@/ui/components/ItemCard';
 import { TypeBadge } from '@/ui/components/TypeBadge';
@@ -17,22 +18,31 @@ import styles from './StarterSelect.module.css';
 // Region and no Cities, so it is offered here instead — which is where §3.3's own stepper always had it.
 // The rule it has to keep is the one in §2.11.3.2: one at a time, and it expires with its Region.
 //
-// §8.8.2 gives one modifier slot by default and raises it to two with a Hub upgrade. Meta progression is
-// v0.6, so nothing is *unlocked* by a Trainer level yet — the whole implemented pool is offered and the slot
-// count is the canon one. Saying "0 or 1" plainly beats faking an unlock ladder with nothing behind it.
-const MODIFIER_SLOTS = 1;
+// §8.8.2 gives one modifier slot by default and two with the Level-13 Hub upgrade; each modifier opens at a
+// Trainer Level. §8.6.3 offers three Starting Relics, four with the Level-3 upgrade, from the account's pool.
+// §8.4.2 Twin Run adds a second starter. All of it is read off the account here and frozen into the run.
 
 type Step = 0 | 1 | 2 | 3;
 const LAST_STEP: Step = 3;
 
 const STAT_MAX = { hp: 120, attack: 120, defense: 120, speed: 120 };
 
-/** §8.6.3 — the offer is Common and Uncommon only, three of them, seeded off the run seed. */
-function relicOffer(seed: number, count = 3): string[] {
-  const pool = getContent()
+/**
+ * §8.5.3 Magikarp — its Starting Relic offer is biased toward Water and toward survivability, "because the
+ * first two Regions are a defensive problem". Implemented as a guarantee: at least one of these is in the
+ * offer when Magikarp is the pick, drawn from the same seed so a shared seed still reproduces the pre-run.
+ */
+const MAGIKARP_LEAN = ['mystic-water-charm', 'barrier-charm', 'berry-pouch', 'hikers-coat', 'vital-pendant', 'brave-charm'];
+
+/** §8.6.3 — the offer is Common and Uncommon only, from the account's pool, seeded off the run seed. */
+function relicOffer(seed: number, count: number, account: AccountState, lean: readonly string[] = []): string[] {
+  const content = getContent();
+  const accountPool = relicPoolFor(account, content);
+  const pool = content
     .allRelics()
     // §7.7 — same rule as every other offer: a relic whose system does not exist is not on the menu.
-    .filter((r) => isOfferable(r) && (r.rarity === 'common' || r.rarity === 'uncommon'));
+    // §8.6.2 — and a Tier-2 or Tier-3 relic the account has not opened is not in the pool at all.
+    .filter((r) => isOfferable(r) && inPool(r, accountPool) && (r.rarity === 'common' || r.rarity === 'uncommon'));
   // A tiny deterministic shuffle: the offer has to be stable across re-renders, and seeding it off the run
   // seed means a shared seed reproduces the whole pre-run, not just the map.
   const out: string[] = [];
@@ -42,26 +52,38 @@ function relicOffer(seed: number, count = 3): string[] {
     x = (x * 1664525 + 1013904223) >>> 0;
     out.push(rest.splice(x % rest.length, 1)[0]!.id);
   }
+  const leanPool = pool.map((r) => r.id).filter((id) => lean.includes(id) && !out.includes(id));
+  if (lean.length && leanPool.length && !out.some((id) => lean.includes(id))) {
+    x = (x * 1664525 + 1013904223) >>> 0;
+    out[out.length - 1] = leanPool[x % leanPool.length]!;
+  }
   return out;
 }
 
 export function StarterSelect() {
   const goTo = useAppStore((s) => s.goTo);
   const newRun = useRunStore((s) => s.newRun);
+  const account = useAccountStore((s) => s.account);
   const [step, setStep] = useState<Step>(0);
   const [modifiers, setModifiers] = useState<string[]>([]);
-  const [pick, setPick] = useState(STARTER_IDS[0]!);
+  const content = getContent();
+  const starterIds = useMemo(() => unlockedStarters(account, content), [account, content]);
+  const [pick, setPick] = useState(starterIds[0]!);
+  // §8.4.2 Twin Run — the second starter, when the upgrade is held. Null is "just the one".
+  const twin = twinRun(account);
+  const [second, setSecond] = useState<string | null>(null);
+  const MODIFIER_SLOTS = modifierSlots(account);
+  const trainerLevel = levelFor(account.xp);
   // The seed is drawn once, when the screen opens, so the relic offer does not reshuffle under the cursor.
   const [seed] = useState(() => Math.floor(Math.random() * 2 ** 31));
   const [relic, setRelic] = useState<string | null>(null);
   const [region, setRegion] = useState<string | null>(null);
 
-  const content = getContent();
-  const offer = useMemo(() => relicOffer(seed), [seed]);
+  const offer = useMemo(() => relicOffer(seed, startingRelicOffers(account), account, pick === 'magikarp' ? MAGIKARP_LEAN : []), [seed, account, pick]);
   // §2.11.3 — three of the seventeen, weighted. At run start there is no team to weight against yet, which
   // is the honest shape of the choice here: it is a direction, not a response.
   const regionOffer = useMemo(() => rollRegionModifierOffer(seed ^ 0x5f3a, content, [], RUN_START.money), [seed, content]);
-  const starters = useMemo(() => STARTER_IDS.map((id) => content.species(id)), [content]);
+  const starters = useMemo(() => starterIds.map((id) => content.species(id)), [starterIds, content]);
   const chosen = content.species(pick);
 
   /** How this starter's own type fares against the Gym ace it will have to get through. */
@@ -78,6 +100,11 @@ export function StarterSelect() {
     const names = [chosen.name];
     let cur = chosen;
     while (cur.evolvesTo.length) {
+      // §8.5.2 Eevee — a line that forks into species, not archetypes, is shown as the fork it is.
+      if (cur.evolvesTo.length > 1) {
+        names.push(cur.evolvesTo.map((id) => content.species(id).name).join(' / '));
+        break;
+      }
       const next = content.species(cur.evolvesTo[0]!);
       names.push(next.name);
       cur = next;
@@ -86,8 +113,18 @@ export function StarterSelect() {
   }, [chosen, content]);
 
   function begin() {
-    newRun(pick, seed, modifiers, relic ?? undefined, region ?? undefined);
+    newRun(pick, seed, modifiers, relic ?? undefined, region ?? undefined, second && second !== pick ? second : undefined);
     goTo('map');
+  }
+
+  /** Clicking a tile picks the starter; with Twin Run, a second click on another tile picks the partner. */
+  function choose(id: string) {
+    if (!twin) return setPick(id);
+    if (id === pick) return setSecond(null);
+    if (id === second) return setSecond(null);
+    if (second === null && pick !== id) return setSecond(id);
+    setPick(id);
+    setSecond(null);
   }
 
   function toggleModifier(id: string) {
@@ -120,7 +157,7 @@ export function StarterSelect() {
           <div className={styles.diffIntro}>
             <h2 className={`${styles.stepTitle} display`}>
               Make it harder, if you want to
-              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting — the baseline is the floor. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer="Trainer XP arrives in v0.6; the multiplier is already counted." />} />
+              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting — the baseline is the floor. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={`Each opens at a Trainer Level; you are ${trainerLevel}. The Daycare Lady in the Hub lists them.`} />} />
             </h2>
             <p className={styles.stepLede}>Optional. The baseline is the floor.</p>
             <p className={styles.xpTally} data-testid="difficulty-xp">
@@ -130,15 +167,17 @@ export function StarterSelect() {
           </div>
 
           <div className={styles.difficulties}>
-            {MODIFIERS.map((d) => {
+            {[...MODIFIERS].sort((a, b) => a.unlockLevel - b.unlockLevel).map((d) => {
               const on = modifiers.includes(d.id);
+              // §8.8.2 — a row below your Trainer Level is shown, named and locked, not hidden.
+              const open = d.available && modifierUnlocked(account, d);
               return (
                 <button
                   key={d.id}
                   type="button"
-                  className={`${styles.diffCard} ${on ? styles.picked : ''} ${d.available ? '' : styles.locked}`}
-                  onClick={() => d.available && toggleModifier(d.id)}
-                  disabled={!d.available}
+                  className={`${styles.diffCard} ${on ? styles.picked : ''} ${open ? '' : styles.locked}`}
+                  onClick={() => open && toggleModifier(d.id)}
+                  disabled={!open}
                   aria-pressed={on}
                   data-testid={`difficulty-${d.id}`}
                 >
@@ -147,11 +186,15 @@ export function StarterSelect() {
                   <span className={styles.diffEffect}>{d.effect}</span>
                   {/* §7.7's rule applied to modifiers: a row whose system does not exist says so and cannot
                       be taken, rather than charging its XP premium for nothing. */}
-                  {!d.available && (
+                  {!d.available ? (
                     <span className={styles.lockTag}>
                       <IconLock size={13} /> {d.pending}
                     </span>
-                  )}
+                  ) : !open ? (
+                    <span className={styles.lockTag} data-testid={`difficulty-lock-${d.id}`}>
+                      <IconLock size={13} /> {d.unlock}
+                    </span>
+                  ) : null}
                   {d.available && d.partial && (
                     <span className={styles.partialTag}>
                       <IconAlertTriangle size={13} /> {d.partial}
@@ -167,7 +210,7 @@ export function StarterSelect() {
           <div className={styles.diffIntro}>
             <h2 className={`${styles.stepTitle} display`}>
               One relic to start with
-              <InfoDot tip={<Tip title="Starting Relic" body="Common and Uncommon only: it sets a direction, it does not decide the build. Works from the first fight and never comes off." footer="You can take none." />} />
+              <InfoDot tip={<Tip title="Starting Relic" body="Common and Uncommon only, drawn from your account's pool: it sets a direction, it does not decide the build. Works from the first fight and never comes off." footer={offer.length === 4 ? 'Four offers — the Curated Starting Relic +1 upgrade. You can take none.' : 'You can take none.'} />} />
             </h2>
             <p className={styles.stepLede}>Works from the first fight. Never comes off.</p>
           </div>
@@ -232,18 +275,25 @@ export function StarterSelect() {
               <button
                 key={s.id}
                 type="button"
-                className={`${styles.tile} ${pick === s.id ? styles.picked : ''}`}
-                onClick={() => setPick(s.id)}
+                className={`${styles.tile} ${pick === s.id ? styles.picked : ''} ${second === s.id ? styles.pickedSecond : ''}`}
+                onClick={() => choose(s.id)}
                 data-testid={`starter-${s.id}`}
-                aria-pressed={pick === s.id}
+                aria-pressed={pick === s.id || second === s.id}
               >
                 <span className={styles.tileType}>
                   <TypeBadge type={s.types[0]!} size={24} />
                 </span>
                 <img src={portraitUrl(s.dex, s.id)} alt={s.name} width={132} height={132} />
                 <span className={`${styles.tileName} display`}>{s.name}</span>
+                {second === s.id && <span className={styles.twinTag}>Partner</span>}
               </button>
             ))}
+            {twin && (
+              <p className={styles.twinNote} data-testid="twin-note">
+                Twin Run: pick a second tile for a partner{second ? ` — ${content.species(second).name} joins ${chosen.name}.` : '.'}
+                <InfoDot tip={<Tip title="Twin Run" body="The Second Starter Slot from the reward track. Two starters, both at the starting level, and the Box starts one larger. The Active Team is still three." footer="Optional — one starter is still a run." />} />
+              </p>
+            )}
           </div>
 
           <aside className={styles.detail} data-testid="starter-detail">
@@ -329,9 +379,9 @@ export function StarterSelect() {
           data-testid="btn-continue"
         >
           {step === LAST_STEP
-            ? `Set out with ${chosen.name}`
+            ? `Set out with ${chosen.name}${second ? ` and ${content.species(second).name}` : ''}`
             : step === 1
-              ? `Continue as ${chosen.name}`
+              ? `Continue as ${chosen.name}${second ? ` and ${content.species(second).name}` : ''}`
               : 'Continue'}{' '}
           <IconArrowRight size={18} />
         </button>

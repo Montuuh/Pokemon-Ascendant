@@ -44,6 +44,7 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
     abilityIds,
     sturdyAvailable: abilityIds.some((id) => ctx.content.ability(id).hook === 'sturdy'),
     moveIds: setup.moves ? [...setup.moves] : activeMoves(ctx.content, species.id, setup.level),
+    masteryMoveId: (setup as TeamMemberSetup).masteryMove ?? null,
     traumaStacks,
     regen: null,
     heldItemId: (setup as TeamMemberSetup).heldItem ?? null,
@@ -79,6 +80,8 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
     scenarioId: scenario.id,
     kind: scenario.kind,
     modifiers: [...(scenario.modifiers ?? [])],
+    familiar: [...(scenario.player.familiar ?? [])],
+    insight: [...(scenario.player.insight ?? [])],
     stage: scenario.stage,
     trainer: scenario.trainer ? { ...scenario.trainer } : null,
     seed,
@@ -111,6 +114,8 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
       queuedCards: [],
       totalManualSwaps: 0,
       totalDamageTaken: 0,
+      leadTurns: {},
+      tally: { crits: 0, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0 },
     },
     enemies: [],
     enemyQueue: [],
@@ -144,9 +149,10 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
   });
 
   // §3.2.1 — deck from the 4 moves of each Active Pokémon, shuffled once.
+  // §5.13.2 — plus the Mastery card of any member whose line has one: 12 + 1 per such member, 15 at most.
   const deck = buildSkillDeck(
     state,
-    state.player.team.map((c) => [c.uid, c.moveIds] as [string, string[]]),
+    state.player.team.map((c) => [c.uid, c.moveIds, c.masteryMoveId] as [string, string[], string | null]),
   );
   state.player.deck = rng.shuffle(deck);
 

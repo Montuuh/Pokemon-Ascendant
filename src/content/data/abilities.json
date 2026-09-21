@@ -316,6 +316,59 @@
         "multiplier": 0.75
       },
       "gdd": "§6.5.2"
+    },
+    {
+      "id": "adaptability",
+      "name": "Adaptability",
+      "category": "Combat",
+      "description": "Same-type moves hit for ×1.75 instead of ×1.5.",
+      "hook": "stab-multiplier",
+      "params": {
+        "multiplier": 1.75
+      }
+    },
+    {
+      "id": "anticipation",
+      "name": "Anticipation",
+      "category": "Vision",
+      "description": "Each enemy's first intent is revealed.",
+      "hook": "reveal-intents",
+      "params": {
+        "firstOnly": 1
+      }
+    },
+    {
+      "id": "volt-absorb",
+      "name": "Volt Absorb",
+      "category": "Type",
+      "description": "Electric moves heal this Pokémon instead of damaging it.",
+      "hook": "type-absorb",
+      "params": {
+        "type": "electric",
+        "percentOfMaxHp": 0.2
+      }
+    },
+    {
+      "id": "speed-boost",
+      "name": "Speed Boost",
+      "category": "Combat",
+      "description": "+1 AP on turn 2 of each fight.",
+      "hook": "turn-start-ap",
+      "params": {
+        "ap": 1,
+        "turn": 2
+      }
+    },
+    {
+      "id": "flash-fire",
+      "name": "Flash Fire",
+      "category": "Type",
+      "description": "Fire moves do nothing to this Pokémon and raise its Attack instead.",
+      "hook": "type-absorb",
+      "params": {
+        "type": "fire",
+        "buffInstead": "attack"
+      }
     }
   ]
 }

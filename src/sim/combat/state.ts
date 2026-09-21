@@ -1,3 +1,4 @@
+import type { CombatTally } from '../run/types';
 import type { EncounterKind, EnemyTier } from '../content/defs';
 import type { IntentKind, PokemonType, PrimaryStatus, SlotId, Stat, StatusCondition } from '../types';
 import type { Effectiveness } from './typeChart';
@@ -31,6 +32,8 @@ export interface Combatant {
   hp: number;
   /** Level-scaled base stats before stages/status (§6.2.3). */
   base: { attack: number; defense: number; speed: number };
+  /** §5.13.2 — the Mastery Move dealt beside the active four, if the line has one unlocked. Player side only. */
+  masteryMoveId: string | null;
   /** §4.2.6 — stat stages, ±6. */
   stages: Record<Stat, number>;
   status: StatusInstance | null;
@@ -89,6 +92,8 @@ export interface SkillCard {
   id: string;
   moveId: string;
   ownerUid: string;
+  /** §5.13.2 — the immutable fifth slot. The UI marks it; the rules treat it as any other card. */
+  mastery?: true;
   /**
    * §8.8 Faint Echo — the turn after which this dead card finally leaves the discard pile. Undefined on
    * every card in every other run; a card with it set is inert and only there to pad the reshuffle.
@@ -158,6 +163,10 @@ export interface PlayerState {
    */
   totalManualSwaps: number;
   totalDamageTaken: number;
+  /** §8.4.3 — turns each Pokémon (by uid) has begun as Lead, for the Trainer Card's favourite. */
+  leadTurns: Record<string, number>;
+  /** §8.6.1 — the fight's discovery tallies. Read once at combat end; never a rule input. */
+  tally: CombatTally;
   /**
    * §5.10.1 Hive Badge — cards promised to next turn's hand.
    *
@@ -205,6 +214,10 @@ export interface CombatState {
   kind: EncounterKind;
   /** §8.8 — the run's difficulty modifiers. Only the two that change a mid-fight rule read this. */
   modifiers: string[];
+  /** §5.13.1 Familiar — enemy species whose intents are never hidden from this account. */
+  familiar: string[];
+  /** §8.4.2 Pokédex Insight — enemy species whose *first* intent this fight is shown free. */
+  insight: string[];
   stage: string;
   trainer: { name: string; sprite: string } | null;
   seed: number;

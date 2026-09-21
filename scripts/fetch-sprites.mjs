@@ -12,10 +12,16 @@ const OUT = resolve(ROOT, 'public/art/pokemon/battle');
 const roster = JSON.parse(readFileSync(resolve(ROOT, 'src/content/data/roster-vs.json'), 'utf8'));
 const force = process.argv.includes('--force');
 
+// §5.13.1 Veteran makes your own copies Shiny. Canon planned a runtime hue-shift so no second set had to be
+// *authored*; Showdown carries the official shiny palettes, so nothing is authored here either — fetched, like
+// the rest. Fan-project use only, same as above.
 const SOURCES = {
   front: (id) => `https://play.pokemonshowdown.com/sprites/gen5ani/${id}.gif`,
   back: (id) => `https://play.pokemonshowdown.com/sprites/gen5ani-back/${id}.gif`,
+  'shiny': (id) => `https://play.pokemonshowdown.com/sprites/gen5ani-shiny/${id}.gif`,
+  'shiny-back': (id) => `https://play.pokemonshowdown.com/sprites/gen5ani-back-shiny/${id}.gif`,
 };
+const SUFFIX = { front: '', back: '-back', shiny: '-shiny', 'shiny-back': '-shiny-back' };
 
 async function exists(p) {
   try {
@@ -41,7 +47,7 @@ let skip = 0;
 let fail = 0;
 for (const s of species) {
   for (const [side, make] of Object.entries(SOURCES)) {
-    const dest = resolve(OUT, `${s.id}${side === 'back' ? '-back' : ''}.gif`);
+    const dest = resolve(OUT, `${s.id}${SUFFIX[side]}.gif`);
     try {
       const r = await fetchOne(make(s.id), dest);
       r === 'ok' ? ok++ : skip++;

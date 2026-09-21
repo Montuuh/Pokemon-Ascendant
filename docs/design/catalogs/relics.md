@@ -109,8 +109,8 @@ Road Summit and the Black Market (~4 pick moments per run).
 | `lure-module` | Recruit 3 Pokémon in one Region |
 | `battle-tracker` | Reach Familiar tier on 5 species |
 | `bond-bracelet` | Finish a combat with all 3 Active Pokémon alive, 10 times |
-| `master-ball-charm` | Fail 5 catch attempts (the consolation unlock) |
-| `phoenix-feather` | Lose a run to a party wipe in Region 3 |
+| `master-ball-charm` | Fail 5 catch attempts (the consolation unlock) — **unreachable since §2.6.4.1 locked the ball until READY**; reward track only until re-authored ⚠️ |
+| `phoenix-feather` | Lose a run to a party wipe in Region 3 — reward track only until Region 3 (v0.7) |
 | `hand-off-pouch` | Discard 20 cards to Confusion |
 | `type-resonance` | Field an all-one-type Active Team |
 | `adrenal-surge` | Win a combat after losing 2 Pokémon |
@@ -133,10 +133,15 @@ the lane. Every Tier-3 relic should change *how a run works*, not how much damag
 | `crown-of-echoes` | Crown of Echoes | combat | The first move each combat is copied free into hand on turn 2 | ✅ |
 | `soul-link` | Soul Link | combat | A chosen pair deals +10 % while both live | ✅ |
 | `reactor-core` | Reactor Core | card | Max hand +1 (also reachable as a Tier-2 discovery) | ✅ |
-| `perfect-recall` | Perfect Recall | card | Once per combat: shuffle the discard pile back into the deck at turn start | 🆕 |
-| `trainers-instinct` | Trainer's Instinct | combat | See each enemy's intent **one turn further ahead** | 🆕 |
-| `evolution-catalyst` | Evolution Catalyst | meta | One Pokémon may evolve 4 levels early | 🆕 |
-| `box-expander` | Box Expander | meta | Box capacity +2 for this run | 🆕 |
+| `perfect-recall` | Perfect Recall | card | Once per combat, when the deck would run short at turn start, the discard pile is shuffled back in before the draw | ✅ v0.6 |
+| `trainers-instinct` | Trainer's Instinct | combat | See each enemy's intent **one turn further ahead** | ⏳ inert until the intent queue (v0.7) |
+| `evolution-catalyst` | Evolution Catalyst | meta | Once per run, the first Pokémon to come within 4 levels of its threshold evolves there | ✅ v0.6 |
+| `box-expander` | Box Expander | meta | Box capacity +2 for this run (stands down under Box Squeeze) | ✅ v0.6 |
+
+**Shipped state (2026-09-21, v0.6).** `tier` and `discovery` are fields on every relic row in `relics.json`.
+Eighteen of the twenty criteria are tracked (`counters` on the account, folded from the combat tally and the
+run's end facts); the two above are reachable only through the track's "Relic pool +1", which discovers Tier-2
+rows in catalogue order. Reactor Core is Tier 2 *and* on the Pokémart shelf (`mastery: true`).
 
 ## 7. Pool construction rules (§8.6.2)
 

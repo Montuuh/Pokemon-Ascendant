@@ -12,8 +12,8 @@ export function iconOf(c: Pick<Combatant, 'speciesId'>): string {
   const s = getContent().species(c.speciesId);
   return boxIconUrl(s.dex, s.id);
 }
-export function spriteOf(c: Pick<Combatant, 'speciesId'>, side: 'front' | 'back'): string {
-  return battleSpriteUrl(c.speciesId, side);
+export function spriteOf(c: Pick<Combatant, 'speciesId'>, side: 'front' | 'back', shiny = false): string {
+  return battleSpriteUrl(c.speciesId, side, shiny);
 }
 export const itemIcon = (consumableId: string) => asset(`art/items/${consumableId}.png`);
 /**

@@ -1,0 +1,89 @@
+/* §8.3 — the account block on the run-end card. Same surfaces as the card around it; the XP bar is the one
+   accent, because "how far to the next level" is the reason to press Run again. */
+
+.root {
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  text-align: left;
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  font-size: var(--type-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.level {
+  font-family: var(--font-display);
+  font-size: var(--type-h2);
+}
+.level b {
+  color: var(--brand-red);
+}
+.xpRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.xp {
+  font-family: var(--font-display);
+  font-size: var(--type-h3);
+}
+.bar {
+  position: relative;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  transition: width var(--motion-slow) var(--ease-spring);
+}
+.toNext {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.tokens {
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+}
+.lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  max-height: 160px;
+  overflow-y: auto;
+  font-size: var(--type-small);
+}
+.lines li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: var(--sp-1);
+  align-items: baseline;
+}
+.glyph {
+  text-align: center;
+}

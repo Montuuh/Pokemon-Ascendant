@@ -121,6 +121,10 @@ export interface RunStats {
   catches: number;
   faints: number;
   turnsPlayed: number;
+  /** §8.6.1 Lure Module's discovery counts recruits per Region; the Trainer Card counts them for life. */
+  recruits: number;
+  /** §8.6.1 Cleanse Tag's discovery: statuses your side has taken this run. */
+  statusesTaken: number;
   /** Wall-clock is not part of the sim; the app layer fills this in on save. */
   startedAt: number;
 }
@@ -235,6 +239,8 @@ export interface RunState {
   eventResult: string[] | null;
   /** §2.10.4 — events already seen this run; the pool is drawn from without replacement. */
   seenEvents: string[];
+  /** §8.4.2 Pokédex Insight — enemy species this run has already met, so the free reveal is a first-meeting thing. */
+  seenSpecies: string[];
   phase: RunPhase;
   /** Set while `phase` is 'preview' or 'combat'. */
   pendingNodeId: string | null;
@@ -249,7 +255,35 @@ export interface RunState {
   /** One cursor per RNG stream, so a resumed run continues the same sequences (§10.8.6). */
   cursors: Record<string, number>;
   stats: RunStats;
+  /**
+   * §8.10 — what the account handed this run when it started, frozen. The sim never reads the account: a run
+   * that asked it mid-flight would replay differently on a machine with a different account (§10.8).
+   */
+  perks: RunPerks;
   log: string[];
+}
+
+/**
+ * §8.10 — the account's contribution to one run, snapshotted at run start.
+ *
+ * Every field is a *widening*: a bigger Box, a bigger relic pool, a species whose intents you have earned the
+ * right to see, a Mastery card a line has unlocked. None of them is a point of damage (§8.3.1).
+ */
+export interface RunPerks {
+  /** §8.4.2 Expanded Box (+2) and Twin Run (+1), on top of `RUN_START.boxCapacity`. */
+  boxBonus: number;
+  /**
+   * §8.6.2 — the relic ids this account may drop, offer or stock: all Tier 1, plus discovered Tier 2, plus
+   * bought Tier 3. `null` is the whole catalogue — the fixtures, the balance harness and any run started
+   * before there was an account.
+   */
+  relicPool: string[] | null;
+  /** §6.8 — Mastery tier unlocked per line (keyed by base species id). Absent is 0. */
+  mastery: Record<string, number>;
+  /** §5.13.1 Familiar — species whose Unknown intents are revealed at combat start. */
+  familiar: string[];
+  /** §8.4.2 Pokédex Insight — the Hub upgrade is in force. */
+  insight: boolean;
 }
 
 /** What a finished combat reports back to the run layer. */
@@ -268,7 +302,41 @@ export interface CombatOutcomeReport {
   /** §8.7 — what the fight looked like, for the achievements that ask. Derived, never balance input. */
   damageTaken?: number;
   manualSwaps?: number;
+  /** §5.13.1 — every enemy species knocked out, one entry per knockout. The Pokédex counts these. */
+  defeated?: string[];
+  /** §8.4.3 — turns each of your species spent as Lead this fight. */
+  leadTurns?: Record<string, number>;
+  /** §8.6.1 — the fight's running tallies, for the Tier-2 discoveries that ask. */
+  tally?: CombatTally;
+  /** §8.6.1 Vital Pendant's discovery — the Lead's HP as a fraction of its max when the fight ended. */
+  leadHpFraction?: number;
+  /** §8.6.1 Type Resonance's discovery — the Active Team's species at the end, in slot order. */
+  activeSpecies?: string[];
   turns: number;
+}
+
+/**
+ * §8.6.1 — what a fight counts as it goes, read once at its end. Every number here is a discovery criterion
+ * from the relic catalogue and nothing here is a balance input: a tally that drove a rule would belong on
+ * the Combatant or the PlayerState proper.
+ */
+export interface CombatTally {
+  /** Critical hits your side landed. */
+  crits: number;
+  /** Times the skill deck ran dry and the discard came back. */
+  reshuffles: number;
+  /** Distinct conditions your moves put on the enemy. */
+  statusesApplied: string[];
+  /** Conditions applied to your Pokémon. */
+  statusesTaken: number;
+  /** Conditions cured on your side, by any means. */
+  statusesCured: number;
+  /** A rider of yours that never landed because the target had already fainted. */
+  riderFizzles: number;
+  /** The highest printed AP cost you played. */
+  maxApMove: number;
+  /** The most skill cards in hand at the moment a turn ended. */
+  peakHandAtTurnEnd: number;
 }
 
 export type RunAction =

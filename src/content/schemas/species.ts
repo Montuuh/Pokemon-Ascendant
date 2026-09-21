@@ -48,6 +48,7 @@ export function portraitUrl(dex: number, id: string): string {
 export function boxIconUrl(dex: number, id: string): string {
   return asset(`art/pokemon/icons/${String(dex).padStart(3, '0')}-${id}.png`);
 }
-export function battleSpriteUrl(id: string, side: 'front' | 'back' = 'front'): string {
-  return asset(`art/pokemon/battle/${id}${side === 'back' ? '-back' : ''}.gif`);
+/** §5.13.1 Veteran — `shiny` picks the official shiny palette of the same sprite. */
+export function battleSpriteUrl(id: string, side: 'front' | 'back' = 'front', shiny = false): string {
+  return asset(`art/pokemon/battle/${id}${shiny ? '-shiny' : ''}${side === 'back' ? '-back' : ''}.gif`);
 }

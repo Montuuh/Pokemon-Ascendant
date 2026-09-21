@@ -30,6 +30,9 @@ export function scenario(partial: {
   regionModifier?: string;
   /** §8.8 — the run's difficulty modifiers. */
   modifiers?: string[];
+  /** §5.13.1 / §8.4.2 — species whose intents the account has earned a look at. */
+  familiar?: string[];
+  insight?: string[];
 }): ScenarioDef {
   const def: ScenarioDef = {
     id: partial.id ?? 'test',
@@ -46,6 +49,8 @@ export function scenario(partial: {
       relics: partial.relics ?? [],
       badges: partial.badges ?? [],
       ...(partial.regionModifier ? { regionModifier: partial.regionModifier } : {}),
+      ...(partial.familiar ? { familiar: partial.familiar } : {}),
+      ...(partial.insight ? { insight: partial.insight } : {}),
     },
     enemies: partial.enemies,
   };

@@ -20,6 +20,11 @@ export function abilityAttackMultiplier(attacker: Combatant, move: MoveDef, cont
     if (a.hook === 'range-boost' && a.params?.range === move.range) {
       m *= Number(a.params.multiplier ?? 1);
     }
+    // §6.5.2 Adaptability — STAB 1.5 → 1.75. Expressed as a ratio over the config's STAB so the base formula
+    // keeps its one STAB term and this stays a multiplier like every other ability.
+    if (a.hook === 'stab-multiplier' && attacker.types.includes(move.type)) {
+      m *= Number(a.params?.multiplier ?? config.stabMultiplier) / config.stabMultiplier;
+    }
     // §6.5.2 Guts — the wearer hits harder while statused, and Burn's −25 % Attack stops applying. The
     // cancellation is a division rather than a branch in effectiveAttack, so the two stay independent.
     if (a.hook === 'while-statused' && attacker.status) {
@@ -50,6 +55,24 @@ export function abilityTypeAbsorb(target: Combatant, moveType: PokemonType, cont
     }
   }
   return null;
+}
+
+/** §6.5.2 Flash Fire — the absorbed type raises a stat instead of healing. The stat, or null for a plain absorb. */
+export function abilityAbsorbBuff(target: Combatant, moveType: PokemonType, content: ContentRegistry): Stat | null {
+  for (const a of hooks(target, content)) {
+    if (a.hook === 'type-absorb' && a.params?.type === moveType && typeof a.params.buffInstead === 'string') return a.params.buffInstead as Stat;
+  }
+  return null;
+}
+
+/** §6.5.2 Speed Boost — extra AP at the start of a given turn, summed over the living team. */
+export function abilityTurnStartAp(team: readonly Combatant[], turn: number, content: ContentRegistry): number {
+  let ap = 0;
+  for (const c of team) {
+    if (c.hp <= 0) continue;
+    for (const a of hooks(c, content)) if (a.hook === 'turn-start-ap' && Number(a.params?.turn ?? 0) === turn) ap += Number(a.params?.ap ?? 1);
+  }
+  return ap;
 }
 
 /** §6.5.2 Inner Focus and friends — one condition simply cannot land on the wearer. */
@@ -141,8 +164,12 @@ export function hasSturdy(c: Combatant, content: ContentRegistry): boolean {
 }
 
 /** Keen Eye — reveals hidden intents for the whole team (§6.5.3.1). */
-export function teamRevealsIntents(team: readonly Combatant[], content: ContentRegistry): boolean {
-  return team.some((c) => c.hp > 0 && hooks(c, content).some((a) => a.hook === 'reveal-intents'));
+/**
+ * §6.5.3 Keen Eye reveals every intent; §6.5.2 Anticipation (`firstOnly`) reveals only an enemy's first.
+ * `firstIntent` says which kind of moment this is.
+ */
+export function teamRevealsIntents(team: readonly Combatant[], content: ContentRegistry, firstIntent = false): boolean {
+  return team.some((c) => c.hp > 0 && hooks(c, content).some((a) => a.hook === 'reveal-intents' && (!a.params?.firstOnly || firstIntent)));
 }
 
 export function turnEndBenchHeal(c: Combatant, content: ContentRegistry): number {

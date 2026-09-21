@@ -262,6 +262,27 @@
           "id": "snorlax"
         }
       ]
+    },
+    {
+      "line": "eevee",
+      "species": [
+        {
+          "dex": 133,
+          "id": "eevee"
+        },
+        {
+          "dex": 134,
+          "id": "vaporeon"
+        },
+        {
+          "dex": 135,
+          "id": "jolteon"
+        },
+        {
+          "dex": 136,
+          "id": "flareon"
+        }
+      ]
     }
   ]
 }

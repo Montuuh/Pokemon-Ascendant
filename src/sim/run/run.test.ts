@@ -587,6 +587,31 @@ describe('Evolution — §6.2.4, §6.3', () => {
     expect(s.phase).toBe('map');
   });
 
+  it('Eevee_EvolvesIntoTheSpeciesItsBranchNames_§8.5.2', () => {
+    // §8.5.2 — Eevee's archetype *is* its species choice: three branches, three species, one type each.
+    for (const [branchId, to, ability] of [['eevee-vanguard', 'flareon', 'flash-fire'], ['eevee-specialist', 'jolteon', 'volt-absorb'], ['eevee-support', 'vaporeon', 'water-absorb']] as const) {
+      let s = start(7, 'eevee');
+      const mon = s.box[0]!;
+      mon.level = 11;
+      mon.xp = xpToNext(11) - 1;
+      s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'center')!);
+      s = apply(s, { type: 'begin-combat' });
+      s = apply(s, {
+        type: 'finish-combat',
+        report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 3 },
+      });
+      s = apply(s, { type: 'claim-reward' });
+      expect(s.phase).toBe('evolution');
+      expect(s.pendingEvolutions[0]!.branchIds).toEqual(['eevee-vanguard', 'eevee-specialist', 'eevee-support']);
+      s = apply(s, { type: 'choose-branch', uid: mon.uid, branchId });
+      const evolved = s.box[0]!;
+      expect(evolved.speciesId).toBe(to);
+      expect(evolved.abilityId).toBe(ability);
+      expect(content.species(to).stage).toBe('stage1');
+      expect(s.phase).toBe('map');
+    }
+  });
+
   it('Kit_KeepsItsTwoStrongestAttacks_NotJustTheNewest_§6.3.6', () => {
     // Oddish learns Absorb at 1 and Acid at 7; "the four most recent" dropped its only Grass attack.
     const mon = newPartyMon('oddish', 10, content, 1);

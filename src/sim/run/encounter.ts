@@ -4,6 +4,7 @@ import { activeMoves } from '../combat/stats';
 import type { BiomeId } from './region';
 import { BIOMES, ELITE, ELITE_WILD, GYM, LANE_THEME, TRAINERS, eliteWildTeamFor, gymById, gymTeamFor } from './region';
 import { modifierValue } from './modifiers';
+import { masteryMoveFor } from '../meta/mastery';
 import type { ActiveSetup, MapNode, PartyMon, RunState } from './types';
 
 /** The catch consumable's catalog id (§7.2.5). */
@@ -52,6 +53,9 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
       if (mon.heldItem) setup.heldItem = mon.heldItem;
       // §7.3.5 — the run's record walks into the fight, so Champion's Crest is worth what it has earned.
       if (mon.defeats) setup.defeats = mon.defeats;
+      // §5.13.2 — the fifth slot, from the account's Mastery tier for this line (frozen into the run's perks).
+      const mastery = masteryMoveFor(mon.speciesId, run.perks?.mastery[content.lineBase(mon.speciesId)] ?? 0, content);
+      if (mastery) setup.masteryMove = mastery;
       return setup;
     });
 }
@@ -254,5 +258,20 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
         return null;
     }
   })();
-  return base ? applyModifiers(base, run) : null;
+  return base ? applyPerks(applyModifiers(base, run), run) : null;
+}
+
+/**
+ * §8.10 — what the account's snapshot tells the fight: which enemy species never hide their intents
+ * (§5.13.1 Familiar) and, under Pokédex Insight (§8.4.2), which get one intent shown free because this run
+ * has not met them yet. Nothing here touches a number.
+ */
+function applyPerks(scenario: ScenarioDef, run: RunState): ScenarioDef {
+  const perks = run.perks;
+  if (!perks) return scenario;
+  const species = [...new Set(scenario.enemies.map((e) => e.species))];
+  const familiar = species.filter((id) => perks.familiar.includes(id));
+  const insight = perks.insight ? species.filter((id) => !perks.familiar.includes(id) && !run.seenSpecies.includes(id)) : [];
+  if (!familiar.length && !insight.length) return scenario;
+  return { ...scenario, player: { ...scenario.player, ...(familiar.length ? { familiar } : {}), ...(insight.length ? { insight } : {}) } };
 }

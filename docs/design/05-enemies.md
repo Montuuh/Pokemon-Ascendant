@@ -355,7 +355,10 @@ size stays 5. When a Mastery-unlocked Pokémon faints, **5** cards leave the dec
 
 Full line-by-line catalogue: [`catalogs/mastery-moves.md`](catalogs/mastery-moves.md).
 
-**Shiny implementation:** a runtime hue-shift over the existing sprite; no second sprite set is authored.
+**Shiny implementation:** no second sprite set is *authored*. The build fetches the official shiny palette of
+each battle sprite beside the normal one (the same source as the rest of the sprites), because a real shiny
+palette is available and a hue-shift over a real sprite would be the one invented thing on screen. A
+hue-shift remains the fallback for any species whose shiny is missing.
 
 ---
 

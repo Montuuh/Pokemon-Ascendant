@@ -4,6 +4,7 @@ import { getContent } from '@/content/registry';
 import { GYMS, LAYERS, maxHpOf } from '@/sim';
 import { nodeBadge } from '@/ui/art';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { AccountSummary } from './hub/AccountSummary';
 import styles from './RunEndScreen.module.css';
 
 // Per docs/design/ui/screens.md §3.8 / §3.9 — one result chrome for both endings: header, the run in numbers,
@@ -68,6 +69,10 @@ export function RunEndScreen({ outcome }: { outcome: 'victory' | 'defeat' }) {
             ))}
           </div>
         )}
+
+        {/* §8.3 — what the run did for the account. Failure is fuel, made legible: the lost run's XP is the
+            first thing under the numbers, not a footnote. */}
+        <AccountSummary />
 
         <dl className={styles.metrics}>
           {metrics.map((m) => (

@@ -186,6 +186,13 @@ export type ItemHook =
   | 'victory-heal'
   /** Bargain Hunter — Shop and Dojo prices scale. Run layer. */
   | 'price-multiplier'
+  // ── v0.6 (§8.6.1), the Tier-3 Mastery lane
+  /** Perfect Recall — once per combat, a short deck takes its discard back before the draw. */
+  | 'recall-discard'
+  /** Evolution Catalyst — once per run, an evolution threshold is met `levels` early. Run layer. */
+  | 'early-evolution'
+  /** Box Expander — `bonus` more Box slots for the run. Run layer. */
+  | 'box-capacity'
   /** Authored, but the system it needs does not exist yet. Inert, and the UI says so. */
   | 'none';
 
@@ -206,6 +213,16 @@ export interface RelicDef {
   also?: { hook: ItemHook; params?: Record<string, string | number | boolean> };
   /** Set when the system the effect needs does not exist yet; shown in the UI rather than sold as working. */
   pending?: string;
+  /**
+   * §8.6.1 — the meta tier. Absent is Tier 1, always in the pool. Tier 2 is discovered by `discovery`, once,
+   * across any runs; Tier 3 is bought with Tokens at the Pokémart. Tier is not rarity: it decides whether
+   * the relic is in your pool at all, and `rarity` decides how often it drops once it is.
+   */
+  tier?: 2 | 3;
+  /** Tier 2 — the run event that unlocks it, keyed by the account counter that tracks it. */
+  discovery?: { counter: string; goal: number; text: string };
+  /** §8.6.1 — also sold at the Pokémart, for the one relic that is reachable both ways (Reactor Core). */
+  mastery?: boolean;
 }
 
 /**
@@ -306,7 +323,12 @@ export type AbilityHook =
   /** Tangled Feet, Sand Veil — incoming damage softened under a condition. */
   | 'conditional-reduction'
   /** Run Down — the first manual swap each combat is free. */
-  | 'swap-discount';
+  | 'swap-discount'
+  // ── v0.6 (§8.5.2), the Eevee line
+  /** Adaptability — a replacement STAB multiplier for the wearer. */
+  | 'stab-multiplier'
+  /** Speed Boost — `ap` extra AP at the start of turn `turn`. */
+  | 'turn-start-ap';
 
 export interface AbilityDef {
   id: string;
@@ -367,6 +389,11 @@ export interface TeamMemberSetup {
   heldItem?: string;
   /** §7.3.5 Champion's Crest — enemies this Pokémon has defeated so far this run. */
   defeats?: number;
+  /**
+   * §5.13.2 — the Mastery Move in the immutable fifth slot, if this line has unlocked one. It is dealt into
+   * the deck beside the active four and no Move Manager, TM or tutor can reach it.
+   */
+  masteryMove?: string;
 }
 
 export interface EnemySetup {
@@ -402,6 +429,10 @@ export interface ScenarioDef {
     badges?: string[];
     /** §2.11.3 — the Region Modifier in force, if any. One at a time, and it never leaves its Region. */
     regionModifier?: string;
+    /** §5.13.1 Familiar — enemy species whose Unknown intents open revealed. */
+    familiar?: string[];
+    /** §8.4.2 Pokédex Insight — enemy species whose first intent this fight is shown free. */
+    insight?: string[];
   };
   enemies: EnemySetup[];
   /**
@@ -434,7 +465,14 @@ export interface ContentRegistry {
    * Evolving never forgets: a Charmeleon still knows what it learned as a Charmander.
    */
   lineLearnset(id: string): readonly { level: number; move: string }[];
+  /** §6.8 / §5.13 — the base species of a line, which is what Mastery and the Pokédex are keyed on. */
+  lineBase(id: string): string;
+  allSpecies(): readonly SpeciesDef[];
   hasMove(id: string): boolean;
+  /** §8.5.2 — a starter can be unlocked on the account before its kit ships; the picker checks here. */
+  hasSpecies(id: string): boolean;
+  /** §5.13.2 — a line's Mastery Moves by tier (index 0 = Lv1); null where that tier has no shipped move. */
+  masteryMoves(lineId: string): readonly (string | null)[];
   /** §6.3 — a branch by id, from whichever species offers it. */
   branch(id: string): EvolutionBranch;
   /** §6.4.1 — every TM in the catalogue, for the Move Manager's teach list. */

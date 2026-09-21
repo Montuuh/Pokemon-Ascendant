@@ -59,11 +59,13 @@ export function moveTip(play: CardPlayability): ReactNode {
   const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', `${play.apCost} AP${play.apCost !== move.apCost ? ` (base ${move.apCost})` : ''}`];
   if (move.power > 0) meta.push(`${move.power} power`);
   if (move.targeting === 'cleave') meta.push('Hits every slot');
+  // §5.13.2 — the fifth card says so: it is the one card in the hand no Move Manager can reach.
+  if (play.card.mastery) meta.push('★ Mastery');
   const lines: ReactNode[] = [describeMoveDef(move)];
   lines.push(RANGE_BODY[move.range]);
   const mod = MODIFIER_BODY[move.modifier];
   if (mod) lines.push(mod);
-  let footer: ReactNode = `${owner.name}'s card.`;
+  let footer: ReactNode = play.card.mastery ? `${owner.name}'s Mastery Move — a fifth card its line has earned.` : `${owner.name}'s card.`;
   if (play.damage) {
     const eff = play.damage.typeMultiplier;
     footer = `Against this target: ${play.damage.final} damage${eff === 0 ? ' — no effect' : eff > 1 ? ` (super effective ×${eff})` : eff < 1 ? ` (not very effective ×${eff})` : ''}${play.damage.isCrit ? ', critical' : ''}.`;
@@ -207,4 +209,58 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
   if (c.traumaStacks > 0) lines.push(<div key="t"><b>Trauma ×{c.traumaStacks}</b> — max HP is lowered until treated.</div>);
   const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP.` : undefined;
   return <Tip title={c.name} meta={meta} body={lines.length ? lines : undefined} footer={footer} />;
+}
+
+// ── The account (§8.3–§8.6, §5.13) ───────────────────────────────────────────────────────────────────────
+
+/** §8.3.1 — Trainer Level and the bar under it. */
+export function trainerLevelTip(level: number, into: number, span: number, max: number): ReactNode {
+  const body = level >= max
+    ? 'The prestige cap. Every reward on the track is yours.'
+    : `${span - into} XP to Level ${level + 1}. Trainer XP comes from every fight, recruit, evolution and Badge, and from a lost run too. It is never spent and never a point of damage: each level opens something.`;
+  return <Tip title={`Trainer Level ${level}`} meta={level < max ? [`${into} / ${span} XP`] : ['Max']} body={body} />;
+}
+
+/** §8.3.4 — Tokens. */
+export function tokenTip(tokens: number, earned: number): ReactNode {
+  return <Tip title={`${tokens} Token${tokens === 1 ? '' : 's'}`} meta={[`${earned} earned`]} body="Every fifth Trainer Level and every Gold or Platinum medal pays Tokens. They buy one thing: Tier-3 relics at the Poké Mart, five each, from Level 10." />;
+}
+
+/** §8.3.5 — one row of the reward track. */
+export function trackRewardTip(level: number, label: string, state: 'claimed' | 'next' | 'locked', xpNeeded: number): ReactNode {
+  const footer = state === 'claimed' ? 'Claimed.' : state === 'next' ? `${xpNeeded} XP away.` : `Reached at ${xpNeeded} lifetime XP.`;
+  return <Tip title={`Level ${level}`} body={label} footer={footer} />;
+}
+
+/** §8.4.2 — a Hub upgrade. */
+export function hubUpgradeTip(name: string, effect: string, level: number, granted: boolean, pending?: string): ReactNode {
+  return <Tip title={name} meta={[`Level ${level}`, granted ? 'Yours' : 'Locked']} body={effect} footer={pending ? `Granted, but waiting: ${pending}.` : 'Quality of life, never power.'} />;
+}
+
+/** §5.13.1 — a species' Pokédex standing. */
+export function dexTip(speciesName: string, rarity: string, tier: number, defeats: number, next: { tier: number; need: number } | null, mastery: number): ReactNode {
+  const TIER = ['—', 'Familiar', 'Veteran', 'Master'];
+  const REWARD = ['', 'Its hidden intents are shown from the first turn.', 'Your own copies are Shiny.', 'Its Mastery Move is open.'];
+  const lines: ReactNode[] = [];
+  if (tier > 0) lines.push(<div key="t"><b>{TIER[tier]}</b> — {REWARD[tier]}</div>);
+  if (next) lines.push(<div key="n">{next.need - defeats} more defeat{next.need - defeats === 1 ? '' : 's'} to {TIER[next.tier]}.</div>);
+  if (mastery > 0) lines.push(<div key="m"><b>Mastery Lv{mastery}</b> — this line brings a fifth card into the fight.</div>);
+  return <Tip title={speciesName} meta={[cap(rarity), `${defeats} defeated`]} body={lines.length ? lines : 'Defeat it — in the wild or on a trainer — to learn it. Catching does not count.'} footer="Thresholds scale with rarity: 10 / 30 / 50 for a common species, 2 / 5 / 10 for a rare one." />;
+}
+
+/** §5.13.2 — the fifth card, on a card face. */
+export function masteryCardTip(move: MoveDef, ownerName: string): ReactNode {
+  return <Tip title={`${move.name} — Mastery`} meta={[typeName(move.type), `${move.apCost} AP`, move.power ? `${move.power} power` : 'Utility']} body={describeMoveDef(move)} footer={`${ownerName}'s Mastery Move: a fifth card no TM or Move Manager can touch.`} />;
+}
+
+/** §8.6.1 — a relic's meta tier, for the Poké Mart and the Pokédex's relic view. */
+export function relicTierTip(r: RelicDef, state: 'pool' | 'discoverable' | 'buyable' | 'owned' | 'locked', progress?: { have: number; goal: number; text: string } | null): ReactNode {
+  const tierName = r.tier === 3 ? 'Tier 3 · Mastery' : r.tier === 2 ? 'Tier 2 · Discovered' : 'Tier 1 · Foundation';
+  const footer =
+    state === 'pool' ? 'Always in your pool.'
+    : state === 'owned' ? 'In your pool.'
+    : state === 'buyable' ? 'Five Tokens at the Poké Mart, from Trainer Level 10.'
+    : state === 'locked' ? 'The Poké Mart sells it from Trainer Level 10.'
+    : progress ? `Discover it: ${progress.text} (${progress.have} / ${progress.goal}).` : 'Reachable through the reward track.';
+  return <Tip icon={<img src={itemIcon(r.id)} alt="" width={22} height={22} />} title={r.name} meta={[cap(r.rarity), tierName]} body={r.description} footer={r.pending ? `Not working yet: ${r.pending}` : footer} />;
 }

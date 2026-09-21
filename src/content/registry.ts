@@ -1,5 +1,5 @@
 import type { AbilityDef, BadgeDef, ConsumableDef, ContentRegistry, EvolutionBranch, HeldItemDef, MoveDef, RegionModifierDef, RelicDef, ScenarioDef, SpeciesDef, TmDef } from '@/sim/content/defs';
-import { AbilitiesFileSchema, BadgesFileSchema, ConsumablesFileSchema, HeldItemsFileSchema, MovesFileSchema, RegionModifiersFileSchema, RelicsFileSchema, ScenariosFileSchema, SpeciesFileSchema, TmsFileSchema } from './schemas';
+import { AbilitiesFileSchema, BadgesFileSchema, ConsumablesFileSchema, HeldItemsFileSchema, MasteryFileSchema, MovesFileSchema, RegionModifiersFileSchema, RelicsFileSchema, ScenariosFileSchema, SpeciesFileSchema, TmsFileSchema } from './schemas';
 import movesJson from './data/moves.json';
 import speciesJson from './data/species.json';
 import abilitiesJson from './data/abilities.json';
@@ -10,6 +10,7 @@ import relicsJson from './data/relics.json';
 import badgesJson from './data/badges.json';
 import regionModifiersJson from './data/region-modifiers.json';
 import heldItemsJson from './data/held-items.json';
+import masteryJson from './data/mastery.json';
 
 // The single in-memory content index. Parsed once with Zod (throws loudly on drift), then cross-referenced:
 // every move/ability/consumable id a species or scenario mentions must exist. Content is immutable after load.
@@ -34,6 +35,7 @@ class MapRegistry implements ContentRegistry {
     private readonly badges: ReadonlyMap<string, BadgeDef>,
     private readonly regionModifiers: ReadonlyMap<string, RegionModifierDef>,
     private readonly heldItems: ReadonlyMap<string, HeldItemDef>,
+    private readonly mastery: ReadonlyMap<string, readonly (string | null)[]>,
   ) {
     for (const s of speciesMap.values()) {
       for (const child of s.evolvesTo) this.preEvolution.set(child, s.id);
@@ -117,8 +119,24 @@ class MapRegistry implements ContentRegistry {
   allMoves(): MoveDef[] {
     return [...this.moves.values()];
   }
+  lineBase(id: string): string {
+    let cur = id;
+    for (let guard = 0; guard < 4; guard++) {
+      const parent = this.preEvolution.get(cur);
+      if (!parent) break;
+      cur = parent;
+    }
+    return cur;
+  }
+
   allSpecies(): SpeciesDef[] {
     return [...this.speciesMap.values()];
+  }
+  hasSpecies(id: string): boolean {
+    return this.speciesMap.has(id);
+  }
+  masteryMoves(lineId: string): readonly (string | null)[] {
+    return this.mastery.get(lineId) ?? [null, null, null];
   }
   allAbilities(): AbilityDef[] {
     return [...this.abilities.values()];
@@ -157,6 +175,7 @@ export function buildRegistry(): MapRegistry {
   const badges: BadgeDef[] = BadgesFileSchema.parse(badgesJson).badges;
   const regionModifiers: RegionModifierDef[] = RegionModifiersFileSchema.parse(regionModifiersJson).modifiers;
   const heldItems: HeldItemDef[] = HeldItemsFileSchema.parse(heldItemsJson).items;
+  const mastery = MasteryFileSchema.parse(masteryJson).lines;
 
   const reg = new MapRegistry(
     indexById(moves, 'move'),
@@ -169,6 +188,7 @@ export function buildRegistry(): MapRegistry {
     indexById(badges, 'badge'),
     indexById(regionModifiers, 'region modifier'),
     indexById(heldItems, 'held item'),
+    new Map(Object.entries(mastery)),
   );
 
   // Cross-reference integrity (fails fast at boot / in tests).
@@ -198,6 +218,12 @@ export function buildRegistry(): MapRegistry {
   for (const t of tms) {
     reg.move(t.move);
     for (const id of t.compatibleSpecies) reg.species(id);
+  }
+  // §5.13.2 — a Mastery line is keyed by a base form we ship, and every named tier is a move we ship.
+  for (const [line, tiers] of Object.entries(mastery)) {
+    const s = reg.species(line);
+    if (s.stage !== 'basic') throw new ContentError(`§5.13.2: Mastery line "${line}" is not a base form`);
+    for (const id of tiers) if (id) reg.move(id);
   }
   for (const m of moves) {
     if (m.modifier !== 'none' && m.range !== 'melee') throw new ContentError(`§3.3.4: ${m.id} has a positional modifier but is not Melee`);

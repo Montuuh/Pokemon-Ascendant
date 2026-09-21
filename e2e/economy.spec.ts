@@ -189,11 +189,22 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
   test('a difficulty modifier is opt-in, priced in XP, and locked rows say why', async ({ page }) => {
     await page.goto('/?screen=starter');
     await page.waitForFunction(() => !!window.__ascendant);
+    await page.evaluate(() => window.localStorage.clear());
+    await page.goto('/?screen=starter');
+    await page.waitForFunction(() => !!window.__ascendant);
     await expect(page.getByTestId('step-difficulty')).toBeVisible();
 
     // §8.8.4 — the baseline is the floor: nothing is selected to begin with.
     await expect(page.getByTestId('difficulty-xp')).toContainText('×1.00');
 
+    // §8.8.2 — on a fresh account every row is below its Trainer Level: named, locked, and saying which level.
+    await expect(page.getByTestId('difficulty-iron-will')).toBeDisabled();
+    await expect(page.getByTestId('difficulty-lock-iron-will')).toContainText('Lv 3');
+
+    // Six levels in, the first four rows are open.
+    await page.evaluate(() => window.__ascendant!.meta.xp(9_000));
+    await page.goto('/?screen=starter');
+    await page.waitForFunction(() => !!window.__ascendant);
     await page.getByTestId('difficulty-iron-will').click();
     await expect(page.getByTestId('difficulty-xp')).toContainText('×1.15');
 
@@ -202,8 +213,11 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await expect(page.getByTestId('difficulty-xp')).toContainText('×1.30');
 
     // §7.7 — a modifier whose system does not exist cannot be taken, and the card names the version.
-    await expect(page.getByTestId('difficulty-one-path')).toBeDisabled();
-    await expect(page.getByTestId('difficulty-one-path')).toContainText('v0.5');
+    await expect(page.getByTestId('difficulty-greater-threats')).toBeDisabled();
+    await expect(page.getByTestId('difficulty-greater-threats')).toContainText('v0.7');
+    // And a row above your level is locked by level, not by version.
+    await expect(page.getByTestId('difficulty-faint-echo')).toBeDisabled();
+    await expect(page.getByTestId('difficulty-lock-faint-echo')).toContainText('Lv 9');
     await page.screenshot({ path: 'playtest/new-run-difficulty.png' });
   });
 

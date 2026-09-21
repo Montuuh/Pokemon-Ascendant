@@ -1,4 +1,4 @@
-import { useAchievementStore } from '@/app/achievementStore';
+import { useAccountStore } from '@/app/accountStore';
 import { useAppStore, type Screen } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
@@ -33,10 +33,14 @@ export interface AscendantDevTools {
   replay: () => sim.RecordedCombat | null;
   state: () => sim.CombatState | null;
   run: AscendantRunTools;
-  /** §8.7 — the account's medal record, for looking at it and for putting it back. */
+  /** §8.10 — the account, for looking at it and for putting it somewhere. */
   meta: {
-    record: (events: sim.MetaEvent[]) => void;
+    record: (events: sim.MetaEvent[]) => sim.AccountDelta;
     progress: () => sim.AchievementProgress;
+    account: () => sim.AccountState;
+    /** Set lifetime XP outright (levels settle on the next fold) — the fast way to see a track reward. */
+    xp: (xp: number) => void;
+    tokens: (n: number) => void;
     reset: () => void;
   };
   sim: typeof sim;
@@ -81,9 +85,19 @@ export function installDevTools(): void {
   window.__ascendant = {
     version: __APP_VERSION__,
     meta: {
-      record: (events) => useAchievementStore.getState().record(events),
-      progress: () => useAchievementStore.getState().progress,
-      reset: () => useAchievementStore.getState().reset(),
+      record: (events) => useAccountStore.getState().record(events),
+      progress: () => useAccountStore.getState().account.achievements,
+      account: () => useAccountStore.getState().account,
+      xp: (xp) => {
+        useAccountStore.setState({ account: { ...useAccountStore.getState().account, xp } });
+        useAccountStore.getState().record([{ t: 'relic-acquired', relicId: 'dev', heldCount: 0 }]);
+      },
+      tokens: (n) => {
+        useAccountStore.setState({ account: { ...useAccountStore.getState().account, tokens: n } });
+        // An empty fold writes the account, so the number survives the reload the next test step does.
+        useAccountStore.getState().record([]);
+      },
+      reset: () => useAccountStore.getState().reset(),
     },
     goTo: (screen) => useAppStore.getState().goTo(screen),
     start: (id, seed) => combat().start(id, seed),

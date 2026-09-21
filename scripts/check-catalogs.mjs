@@ -37,6 +37,8 @@ const ALLOW = new Set([
   'grant-item', 'grant-relic', 'grant-money', 'grant-balls', 'heal-box', 'clear-trauma', 'add-trauma', 'recruit',
   'start-combat', 'reveal-map', 'stat-boost', 'swap-stats', 'upgrade-consumable', 'reroll-ability', 'reroll-relic',
   'modify-next-node', 'hand-size', 'xp-multiplier',
+  // v0.6 field names on a relic / mastery row
+  'tier', 'discovery', 'counters', 'null',
   // map / biome / region ids that live in biomes-regions.md headings
   'region-1', 'region-2', 'region-3',
   // art + tooling

@@ -1,5 +1,5 @@
 {
-  "_note": "Relic catalog — Common (25) + Uncommon (18), the v0.4 half of §7.8's build order. Rare and Legendary are v0.5. Rows come from docs/design/catalogs/relics.md; `hook` maps each onto §7.7's named-hook vocabulary, so a new relic is data as long as its hook already exists. The hand is discarded whole each turn (§3.4), so \"max hand size +1\" and \"draw +1\" are the same effect here and the descriptions say the one the player sees. Three rows ship inert because they need an activated action or a system that does not exist; each carries `pending` and the UI shows it rather than selling a no-op.",
+  "_note": "Relic catalog — Common (25) + Uncommon (18), the v0.4 half of §7.8's build order. Rare and Legendary are v0.5; `tier`, `discovery` and the four Tier-3 rows are v0.6 (§8.6.1). Rows come from docs/design/catalogs/relics.md; `hook` maps each onto §7.7's named-hook vocabulary, so a new relic is data as long as its hook already exists. The hand is discarded whole each turn (§3.4), so \"max hand size +1\" and \"draw +1\" are the same effect here and the descriptions say the one the player sees. Three rows ship inert because they need an activated action or a system that does not exist; each carries `pending` and the UI shows it rather than selling a no-op.",
   "relics": [
     {
       "id": "soft-sand",
@@ -153,6 +153,12 @@
       "params": {
         "firstHit": true,
         "multiplier": 0.8
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "wins-no-faint",
+        "goal": 1,
+        "text": "Win a fight with no Pokémon fainting"
       }
     },
     {
@@ -192,6 +198,12 @@
       "hook": "status-shield",
       "params": {
         "charges": 1
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "ten-statuses-one-run",
+        "goal": 1,
+        "text": "Take 10 statuses in one run"
       }
     },
     {
@@ -205,6 +217,12 @@
       "hook": "xp-multiplier",
       "params": {
         "multiplier": 1.15
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "combats-won",
+        "goal": 50,
+        "text": "Win 50 fights"
       }
     },
     {
@@ -306,6 +324,12 @@
       "params": {
         "atFullHp": true,
         "multiplier": 1.05
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "runs-won-no-salve",
+        "goal": 1,
+        "text": "Win a run without using a Trauma Salve"
       }
     },
     {
@@ -316,7 +340,13 @@
         "combat"
       ],
       "description": "Status riders land before the damage, so a faint never eats one.",
-      "hook": "rider-first"
+      "hook": "rider-first",
+      "tier": 2,
+      "discovery": {
+        "counter": "rider-fizzles",
+        "goal": 1,
+        "text": "Have a rider fizzle because its target fainted first"
+      }
     },
     {
       "id": "battle-hat",
@@ -386,6 +416,12 @@
       "params": {
         "sharedType": true,
         "multiplier": 1.1
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "mono-type-teams",
+        "goal": 1,
+        "text": "Field an Active Team that shares one type"
       }
     },
     {
@@ -402,6 +438,12 @@
         "target": "team",
         "stat": "attack",
         "stages": 1
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "wins-after-two-faints",
+        "goal": 1,
+        "text": "Win a fight after losing two Pokémon"
       }
     },
     {
@@ -415,7 +457,14 @@
       "hook": "draw",
       "params": {
         "cards": 1
-      }
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "hand-of-seven",
+        "goal": 1,
+        "text": "End a turn holding 7 cards"
+      },
+      "mastery": true
     },
     {
       "id": "pressure-plate",
@@ -429,6 +478,12 @@
       "params": {
         "afterMinAp": 3,
         "delta": -1
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "four-ap-moves",
+        "goal": 1,
+        "text": "Play a 4-AP move"
       }
     },
     {
@@ -443,6 +498,12 @@
       "params": {
         "belowPercent": 25,
         "toPercent": 50
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "lead-under-ten",
+        "goal": 1,
+        "text": "Win a fight with the Lead under 10 % HP"
       }
     },
     {
@@ -469,6 +530,12 @@
       "hook": "crit-multiplier",
       "params": {
         "multiplier": 1.75
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "crits",
+        "goal": 10,
+        "text": "Land 10 critical hits"
       }
     },
     {
@@ -482,6 +549,12 @@
       "hook": "status-duration",
       "params": {
         "extraTurns": 1
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "four-statuses-one-fight",
+        "goal": 1,
+        "text": "Apply four different statuses in one fight"
       }
     },
     {
@@ -495,6 +568,12 @@
       "hook": "heal-bonus",
       "params": {
         "flatOnCure": 15
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "statuses-cured",
+        "goal": 15,
+        "text": "Cure 15 statuses"
       }
     },
     {
@@ -512,6 +591,12 @@
         "target": "bench",
         "stat": "defense",
         "stages": 1
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "full-team-wins",
+        "goal": 10,
+        "text": "Win 10 fights with all three Active Pokémon standing"
       }
     },
     {
@@ -525,6 +610,12 @@
       "hook": "wild-choices",
       "params": {
         "extra": 1
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "region-recruits-three",
+        "goal": 1,
+        "text": "Recruit 3 Pokémon in one Region"
       }
     },
     {
@@ -539,6 +630,12 @@
       "params": {
         "on": "reshuffle",
         "ap": 1
+      },
+      "tier": 2,
+      "discovery": {
+        "counter": "triple-reshuffle",
+        "goal": 1,
+        "text": "Reshuffle the deck three times in one fight"
       }
     },
     {
@@ -577,7 +674,8 @@
       ],
       "description": "Discard a card at turn start to draw a new one.",
       "hook": "none",
-      "pending": "needs an activated discard-to-draw action the combat UI does not have"
+      "pending": "needs an activated discard-to-draw action the combat UI does not have",
+      "tier": 2
     },
     {
       "id": "battle-tracker",
@@ -588,7 +686,13 @@
       ],
       "description": "Improves Pokédex reveal rates on species you have beaten.",
       "hook": "none",
-      "pending": "needs the Pokédex (v0.6)"
+      "pending": "needs the Pokédex (v0.6)",
+      "tier": 2,
+      "discovery": {
+        "counter": "familiar-species",
+        "goal": 5,
+        "text": "Reach Familiar tier on 5 species"
+      }
     },
     {
       "id": "champions-crest",
@@ -602,7 +706,8 @@
       "params": {
         "perDefeat": 0.05,
         "cap": 0.25
-      }
+      },
+      "tier": 3
     },
     {
       "id": "phoenix-feather",
@@ -616,7 +721,8 @@
       "params": {
         "scope": "team",
         "oncePerRun": true
-      }
+      },
+      "tier": 2
     },
     {
       "id": "sages-tome",
@@ -636,7 +742,8 @@
           "on": "always",
           "ap": 1
         }
-      }
+      },
+      "tier": 3
     },
     {
       "id": "crown-of-echoes",
@@ -649,7 +756,8 @@
       "hook": "draw",
       "params": {
         "echoFirstCard": true
-      }
+      },
+      "tier": 3
     },
     {
       "id": "master-ball-charm",
@@ -660,7 +768,8 @@
       ],
       "description": "Once per run, a Poké Ball catches whatever it is thrown at, whatever the gauge says.",
       "hook": "none",
-      "pending": "needs a catch override the gauge does not expose yet (§2.6.4) — v0.6"
+      "pending": "needs a catch override the gauge does not expose yet (§2.6.4) — v0.6",
+      "tier": 2
     },
     {
       "id": "time-spinner",
@@ -671,7 +780,8 @@
       ],
       "description": "Once per combat, skip the enemy’s whole turn.",
       "hook": "none",
-      "pending": "needs an activated action; nothing in combat has one yet (§3.6) — v0.6"
+      "pending": "needs an activated action; nothing in combat has one yet (§3.6) — v0.6",
+      "tier": 3
     },
     {
       "id": "soul-link",
@@ -682,7 +792,8 @@
       ],
       "description": "Bond two Pokémon on pickup: while both are standing, they each deal 10 % more.",
       "hook": "none",
-      "pending": "needs a choose-a-Pokémon step when a relic is taken (§7.3.7) — v0.6"
+      "pending": "needs a choose-a-Pokémon step when a relic is taken (§7.3.7) — v0.6",
+      "tier": 3
     },
     {
       "id": "flow-state",
@@ -834,6 +945,58 @@
       "params": {
         "percentOfMaxHp": 0.1
       }
+    },
+    {
+      "id": "perfect-recall",
+      "name": "Perfect Recall",
+      "rarity": "rare",
+      "categories": [
+        "card"
+      ],
+      "description": "Once per fight, when the deck would run short at the start of a turn, the discard pile is shuffled back in before you draw.",
+      "hook": "recall-discard",
+      "tier": 3
+    },
+    {
+      "id": "trainers-instinct",
+      "name": "Trainer's Instinct",
+      "rarity": "rare",
+      "categories": [
+        "combat"
+      ],
+      "description": "See each enemy's intent one turn further ahead.",
+      "hook": "none",
+      "tier": 3,
+      "pending": "Enemies plan one turn at a time until the intent queue arrives in v0.7"
+    },
+    {
+      "id": "evolution-catalyst",
+      "name": "Evolution Catalyst",
+      "rarity": "rare",
+      "categories": [
+        "meta"
+      ],
+      "description": "Once per run, a Pokémon may evolve four levels early.",
+      "hook": "early-evolution",
+      "params": {
+        "levels": 4,
+        "oncePerRun": true
+      },
+      "tier": 3
+    },
+    {
+      "id": "box-expander",
+      "name": "Box Expander",
+      "rarity": "rare",
+      "categories": [
+        "meta"
+      ],
+      "description": "The Box holds two more for this run.",
+      "hook": "box-capacity",
+      "params": {
+        "bonus": 2
+      },
+      "tier": 3
     }
   ]
 }

@@ -182,3 +182,23 @@
   background: var(--surface-2);
   font-size: var(--type-small);
 }
+
+/* §5.13.2 — the Mastery slot under the active four: same row shape, gold edge, no controls. */
+.masteryRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
+  border: 2px solid var(--accent-action);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+}
+.masteryName {
+  flex: 1;
+  font-family: var(--font-display);
+}
+.masteryTag {
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+}

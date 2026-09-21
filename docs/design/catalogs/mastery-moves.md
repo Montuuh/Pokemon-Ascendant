@@ -76,3 +76,12 @@ with an unlocked Mastery faints, **5** cards are purged from the deck and discar
 
 **Scope**: the Mastery *slot* mechanic is v0.6; the Lv1 moves should exist as data from v0.3 so that the
 evolution screen can show the full future kit (Pillar 4 — the player should see what a line becomes).
+
+**Shipped state (2026-09-21, v0.6).** The slot, the deck maths and the faint purge are in. `mastery.json` holds
+the table for the 19 shipped lines; a tier is `null` until its move has a row in `moves.json`, and the slot
+then keeps the tier below. Lv1 ships for 13 lines — Bulbasaur, Charmander, Squirtle, Caterpie, Pidgey, Oddish,
+Zubat, Geodude, Onix, Magikarp, Poliwag, Psyduck, Krabby. Six Lv1 moves wait on an effect kind the sim lacks
+(`venoshock` ×2 vs Poisoned, `super-fang` half current HP, `revenge` conditional power, `tri-attack-d`
+cycling status, `last-resort` hand condition, `belly-drum-s` self HP loss). Lv2 and Lv3 wait on §6.8.2–§6.8.3's
+achievements. Lv1 unlocks by any of §6.8.1's three triggers, tracked per line; the Pokédex Master tier grants
+at least Lv1 as §5.13.1 says.

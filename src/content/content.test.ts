@@ -21,6 +21,9 @@ describe('content registry', () => {
       expect(existsSync(`public${boxIconUrl(s.dex, s.id)}`), `${s.id} icon`).toBe(true);
       expect(existsSync(`public${battleSpriteUrl(s.id)}`), `${s.id} front sprite`).toBe(true);
       expect(existsSync(`public${battleSpriteUrl(s.id, 'back')}`), `${s.id} back sprite`).toBe(true);
+      // §5.13.1 Veteran — the shiny palette, front and back, for every species you could own.
+      expect(existsSync(`public${battleSpriteUrl(s.id, 'front', true)}`), `${s.id} shiny sprite`).toBe(true);
+      expect(existsSync(`public${battleSpriteUrl(s.id, 'back', true)}`), `${s.id} shiny back sprite`).toBe(true);
     }
   });
 

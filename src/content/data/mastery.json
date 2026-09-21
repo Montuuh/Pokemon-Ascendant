@@ -1,0 +1,100 @@
+{
+  "_note": "Mastery Moves per line (§5.13.2, §6.8; catalogs/mastery-moves.md). Index 0 is Lv1 on the base form, 1 is Lv2 on the middle stage or a two-stage line's final form, 2 is Lv3 on a three-stage final. A tier is null until its move has a row in moves.json — the slot then simply keeps the tier below. Lv2 and Lv3 wait on the achievements of §6.8.2–§6.8.3; Lv1 moves whose row needs an effect kind the sim lacks (Venoshock, Super Fang, Revenge, Tri Attack, Last Resort, Belly Drum) are null too.",
+  "lines": {
+    "bulbasaur": [
+      "seed-bomb",
+      null,
+      null
+    ],
+    "charmander": [
+      "fire-fang-m",
+      null,
+      null
+    ],
+    "squirtle": [
+      "aqua-tail",
+      null,
+      null
+    ],
+    "caterpie": [
+      "sticky-web",
+      null,
+      null
+    ],
+    "weedle": [
+      null,
+      "fell-stinger-v",
+      null
+    ],
+    "pidgey": [
+      "brave-bird",
+      null,
+      "sky-attack"
+    ],
+    "rattata": [
+      null,
+      null,
+      null
+    ],
+    "oddish": [
+      "spore-cloud",
+      "aromatherapy-m",
+      "petal-dance"
+    ],
+    "zubat": [
+      "screech",
+      null,
+      null
+    ],
+    "geodude": [
+      "rock-slide-m",
+      null,
+      null
+    ],
+    "diglett": [
+      null,
+      null,
+      null
+    ],
+    "onix": [
+      "dragon-tail",
+      null,
+      null
+    ],
+    "machop": [
+      null,
+      null,
+      null
+    ],
+    "magikarp": [
+      "splash-m",
+      null,
+      null
+    ],
+    "poliwag": [
+      "circle-throw",
+      null,
+      null
+    ],
+    "psyduck": [
+      "psyshock",
+      null,
+      null
+    ],
+    "krabby": [
+      "slam-k",
+      null,
+      null
+    ],
+    "snorlax": [
+      null,
+      null,
+      null
+    ],
+    "eevee": [
+      null,
+      null,
+      null
+    ]
+  }
+}

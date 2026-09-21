@@ -1,54 +1,120 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// §8.4 / §8.7 / §9.6 — the three v0.5 screens that live outside a run: the Hub with its PC Terminal, the
-// medals it shows, and the settings that have to survive a reload.
+// §8.3 / §8.4 / §8.6 / §8.7 / §9.6 — the screens that live outside a run: the Hub's four open kiosks, the
+// account they read, the medals, and the settings that have to survive a reload.
 
 async function menu(page: Page): Promise<void> {
   await page.goto('/?screen=menu');
   await page.evaluate(() => window.localStorage.clear());
   await page.goto('/?screen=menu');
+  await page.waitForFunction(() => !!window.__ascendant);
 }
 
+/** A fight the account can count: a clean win with a Pidgey knocked out and Squirtle leading. */
+const win = () => ({
+  t: 'combat-end', outcome: 'victory', kind: 'wild', damageTaken: 4, manualSwaps: 0, faints: 0,
+  defeated: ['pidgey'], activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 },
+  tally: { crits: 0, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 2, peakHandAtTurnEnd: 5 },
+  leadHpFraction: 0.8,
+});
+
 test.describe('The Trainer Hub — §8.4', () => {
-  test('the PC Terminal lists every medal, and the locked kiosks say what opens them', async ({ page }) => {
+  test('a fresh account opens on the Trainer Card at Level 1, and the locked kiosks say what opens them', async ({ page }) => {
     await menu(page);
     await page.getByTestId('btn-hub').click();
     await expect(page.getByTestId('hub-screen')).toBeVisible();
+    await expect(page.getByTestId('hub-level')).toContainText('1');
+    await expect(page.getByTestId('trainer-card')).toBeVisible();
+    await expect(page.getByTestId('trainer-xp')).toContainText('0 / 1515');
 
-    // §8.7 — ten rows, all of them visible, none of them earned on a fresh account.
-    await expect(page.locator('[data-testid^="achievement-"]')).toHaveCount(10);
-    await expect(page.getByTestId('hub-achievement-count')).toContainText('0 / 10');
+    // §8.3.5 — the whole track is visible: 29 rows, level 2 is next, nothing claimed.
+    await expect(page.locator('[data-testid^="track-"]')).toHaveCount(29);
+    await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'next');
+    await expect(page.getByTestId('track-4')).toContainText('Pikachu');
 
-    // §8.7.3 — a hidden row keeps its description and says so.
+    // §8.4.1 — three kiosks open from the start; the Daycare Lady needs Level 3 and the Door is post-launch.
+    for (const id of ['card', 'pc', 'mart']) await expect(page.getByTestId(`kiosk-${id}`)).toBeEnabled();
+    await expect(page.getByTestId('kiosk-daycare')).toBeDisabled();
+    await expect(page.getByTestId('kiosk-daycare')).toContainText('Level 3');
+    await expect(page.getByTestId('kiosk-door')).toBeDisabled();
+
+    // §8.7 — the medal case: twenty-four rows, all visible, none earned; a hidden row keeps its description.
+    await page.getByTestId('kiosk-pc').click();
+    await page.getByTestId('pc-tab-medals').click();
+    await expect(page.locator('[data-testid^="achievement-"]')).toHaveCount(24);
+    await expect(page.getByTestId('pc-tab-medals')).toContainText('0 / 24');
     await expect(page.getByTestId('achievement-full-house')).toContainText('???');
     await expect(page.getByTestId('achievement-full-house')).toContainText('hidden');
 
-    // §8.4.1 — the PC Terminal is open and the other four are not, each naming what it waits on (§7.7).
-    await expect(page.getByTestId('kiosk-pc')).toBeEnabled();
-    for (const id of ['card', 'mart', 'daycare', 'door']) {
-      await expect(page.getByTestId(`kiosk-${id}`)).toBeDisabled();
-    }
-    await expect(page.getByTestId('kiosk-card')).toContainText('v0.6');
+    // §5.13 — and the Pokédex: every species listed, every one unknown.
+    await page.getByTestId('pc-tab-dex').click();
+    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '0');
     await page.screenshot({ path: 'playtest/hub.png' });
   });
 
-  test('a medal earned in a run is still there on the next visit', async ({ page }) => {
+  test('fights pay XP, cross levels, discover relics and fill the Pokédex — and it all survives a reload', async ({ page }) => {
     await menu(page);
-    // §8.7 — the record is the account's, not the run's: it has to outlive the run save.
-    await page.evaluate(() => {
-      const e = (window as unknown as { __ascendant: Record<string, never> }).__ascendant;
-      (e as unknown as { meta: { record: (events: unknown[]) => void } }).meta.record([
-        { t: 'combat-end', outcome: 'victory', kind: 'wild', damageTaken: 4, manualSwaps: 0, faints: 0 },
-      ]);
-    });
+    // §8.3.2 — 303 clean wins is 1 515 XP (level 2) plus the first-win medal's 75; §8.6.1 discovers Barrier
+    // Charm on the first no-faint win and Lucky Egg at fifty; §5.13.1 takes Pidgey all the way to Master (50).
+    await page.evaluate((w) => {
+      window.__ascendant!.meta.record(Array.from({ length: 303 }, () => w) as never[]);
+    }, win());
     await page.getByTestId('btn-hub').click();
-    await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
-    await expect(page.getByTestId('hub-achievement-count')).toContainText('1 / 10');
+    await expect(page.getByTestId('hub-level')).toContainText('2');
+    await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'claimed');
+    await expect(page.getByTestId('track-3')).toHaveAttribute('data-state', 'next');
 
-    // A reload is the real test: this lives in its own storage key, beside the run save and not inside it.
+    await page.getByTestId('kiosk-pc').click();
+    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '3');
+    // §5.13.1 Master opens the line's Mastery Move: Pidgey's fifth card is Brave Bird.
+    await expect(page.getByTestId('dex-pidgey')).toContainText('Brave Bird');
+    await page.getByTestId('pc-tab-medals').click();
+    await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
+
+    await page.getByTestId('kiosk-mart').click();
+    await expect(page.getByTestId('discovery-barrier-charm')).toHaveAttribute('data-state', 'open');
+    await expect(page.getByTestId('discovery-lucky-egg-token')).toHaveAttribute('data-state', 'open');
+    await expect(page.getByTestId('discovery-steady-aim')).toHaveAttribute('data-state', 'locked');
+    await page.screenshot({ path: 'playtest/hub-mart.png' });
+
+    // A reload is the real test: the account lives in its own key, beside the run save and not inside it.
     await page.reload();
     await page.goto('/?screen=hub');
-    await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
+    await expect(page.getByTestId('hub-level')).toContainText('2');
+    await page.getByTestId('kiosk-pc').click();
+    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '3');
+  });
+
+  test('the Poké Mart sells a Tier-3 relic for five Tokens from Level 10, and not before', async ({ page }) => {
+    await menu(page);
+    await page.getByTestId('btn-hub').click();
+    await page.getByTestId('kiosk-mart').click();
+    // Level 1: the shelf is visible, priced, and locked.
+    await expect(page.getByTestId('mart-sages-tome')).toBeVisible();
+    await expect(page.getByTestId('mart-price-sages-tome')).toContainText('Lv 10');
+
+    // §8.3.4 — Level 10 with Tokens in hand: the buy goes through and the Tokens come off.
+    await page.evaluate(() => {
+      window.__ascendant!.meta.xp(20_000);
+      window.__ascendant!.meta.tokens(7);
+    });
+    await page.goto('/?screen=hub');
+    await page.getByTestId('kiosk-mart').click();
+    await expect(page.getByTestId('mart-tokens')).toContainText('7');
+    await page.getByTestId('mart-sages-tome').click();
+    await expect(page.getByTestId('mart-notice')).toContainText("Sage's Tome joins your pool");
+    await expect(page.getByTestId('mart-tokens')).toContainText('2');
+    await expect(page.getByTestId('mart-price-sages-tome')).toContainText('In your pool');
+    // A second Tier-3 is now unaffordable, and the shelf says so without hiding it.
+    await page.getByTestId('mart-crown-of-echoes').click();
+    await expect(page.getByTestId('mart-notice')).toContainText('Five Tokens each');
+
+    // §8.4.1 — and at Level 10 the Daycare Lady is open, listing the starters the track has handed out.
+    await page.getByTestId('kiosk-daycare').click();
+    await expect(page.getByTestId('daycare-starter-eevee')).toHaveAttribute('data-state', 'ready');
+    await expect(page.getByTestId('daycare-starter-magikarp')).toHaveAttribute('data-state', 'locked');
+    await expect(page.getByTestId('daycare-starter-pikachu')).toHaveAttribute('data-state', 'waiting');
+    await page.screenshot({ path: 'playtest/hub-daycare.png' });
   });
 });
 
@@ -93,9 +159,9 @@ test.describe('Settings — §9.6', () => {
   });
 });
 
-test('a save written before the rename is carried onto the new key', async ({ page }) => {
-  // §10.8 — the project was renamed on 2026-09-20 and the localStorage keys moved with it. This is the real
-  // browser doing what `storageKeys.test.ts` proves in isolation: a player who updates mid-run keeps it.
+test('a medal case from before the rename becomes the first account, paid what it was worth', async ({ page }) => {
+  // §10.8 — the project was renamed on 2026-09-20 and the localStorage keys moved with it; then v0.6 folded
+  // the medal case into the account. A player who updates across both keeps the medal *and* its XP.
   await page.goto('/?screen=menu');
   await page.evaluate(() => {
     localStorage.clear();
@@ -104,14 +170,20 @@ test('a save written before the rename is carried onto the new key', async ({ pa
   });
   await page.goto('/?screen=hub');
 
-  // The medal survived the rename, under the new key, and the old one is gone.
+  // The medal survived, the account holds it, and the pre-account keys are gone.
+  await page.getByTestId('kiosk-pc').click();
+  await page.getByTestId('pc-tab-medals').click();
   await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
   const keys = await page.evaluate(() => ({
-    newAch: localStorage.getItem('ascendant.achievements.v1'),
+    account: localStorage.getItem('ascendant.account.v1'),
+    ach: localStorage.getItem('ascendant.achievements.v1'),
     oldAch: localStorage.getItem('evoline.achievements.v1'),
     newSet: localStorage.getItem('ascendant.settings.v1'),
   }));
-  expect(keys.newAch).toContain('first-blood');
+  expect(keys.account).toContain('first-blood');
+  // §8.7.0 — First Blood is Bronze: 75 XP, back-paid.
+  expect(JSON.parse(keys.account!).account.xp).toBeGreaterThan(0);
+  expect(keys.ach, 'the medal case is folded into the account and then removed').toBeNull();
   expect(keys.oldAch, 'the pre-rename key should be cleared once it is carried').toBeNull();
   expect(keys.newSet).toContain('1.25');
 

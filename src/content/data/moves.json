@@ -1,5 +1,5 @@
 {
-  "_note": "Move kits ported from Unity VS_ContentSeeder (§6.3.6 kit rules, §3.6 taxonomy). Mastery moves (§5.13) are post-VS and omitted. `targeting`: single (default) | cleave (all slots, never fizzles) | backstrike (declared bench slot, fizzles if empty) — §4.3.4. `cooldown` turns gate enemy re-use (§5.3 CooldownGate). Range modifier is applied by the sim from BattleConfig (ranged 0.75), not stored here.",
+  "_note": "Move kits ported from Unity VS_ContentSeeder (§6.3.6 kit rules, §3.6 taxonomy). Mastery Lv1 moves (§5.13.2) land in v0.6 for the lines whose row fits an existing effect kind; the rest wait on theirs (see mastery.json). `targeting`: single (default) | cleave (all slots, never fizzles) | backstrike (declared bench slot, fizzles if empty) — §4.3.4. `cooldown` turns gate enemy re-use (§5.3 CooldownGate). Range modifier is applied by the sim from BattleConfig (ranged 0.75), not stored here.",
   "moves": [
     {
       "id": "tackle",
@@ -1562,7 +1562,7 @@
     },
     {
       "id": "rock-slide-m",
-      "name": "Rock Slide M",
+      "name": "Rock Slide",
       "type": "rock",
       "role": "offensive",
       "range": "ranged",
@@ -2475,6 +2475,284 @@
           "target": "self",
           "stat": "defense",
           "stages": 2
+        }
+      ]
+    },
+    {
+      "id": "seed-bomb",
+      "name": "Seed Bomb",
+      "type": "grass",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 65,
+      "effects": []
+    },
+    {
+      "id": "fire-fang-m",
+      "name": "Fire Fang",
+      "type": "fire",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 70,
+      "effects": []
+    },
+    {
+      "id": "aqua-tail",
+      "name": "Aqua Tail",
+      "type": "water",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 65,
+      "effects": []
+    },
+    {
+      "id": "sticky-web",
+      "name": "Sticky Web",
+      "type": "bug",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "spore-cloud",
+      "name": "Spore Cloud",
+      "type": "grass",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "sleep",
+          "chance": 1
+        },
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 1
+        }
+      ]
+    },
+    {
+      "id": "screech",
+      "name": "Screech",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "dragon-tail",
+      "name": "Dragon Tail",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-backward",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "splash-m",
+      "name": "Splash",
+      "type": "water",
+      "role": "utility",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 0,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "draw",
+          "cards": 2
+        }
+      ]
+    },
+    {
+      "id": "circle-throw",
+      "name": "Circle Throw",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-backward",
+      "apCost": 1,
+      "power": 55,
+      "effects": []
+    },
+    {
+      "id": "psyshock",
+      "name": "Psyshock",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": [],
+      "ignoresDefenseStages": true
+    },
+    {
+      "id": "slam-k",
+      "name": "Slam",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 60,
+      "effects": []
+    },
+    {
+      "id": "acid-armor",
+      "name": "Acid Armor",
+      "type": "poison",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 3
+        }
+      ]
+    },
+    {
+      "id": "thunder-shock",
+      "name": "Thunder Shock",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.2
+        }
+      ]
+    },
+    {
+      "id": "agility",
+      "name": "Agility",
+      "type": "psychic",
+      "role": "utility",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 0,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        },
+        {
+          "kind": "draw",
+          "cards": 1
+        }
+      ]
+    },
+    {
+      "id": "thunderbolt",
+      "name": "Thunderbolt",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.2
+        }
+      ]
+    },
+    {
+      "id": "thunder",
+      "name": "Thunder",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 120,
+      "cooldown": 1,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.4
+        }
+      ]
+    },
+    {
+      "id": "thunder-wave",
+      "name": "Thunder Wave",
+      "type": "electric",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 1
+        }
+      ]
+    },
+    {
+      "id": "wish",
+      "name": "Wish",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.4,
+          "durationTurns": 1
         }
       ]
     }

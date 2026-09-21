@@ -167,14 +167,15 @@ cumulative XP to reach Level N = floor(500 × N^1.6)
 
 | Level | Cumulative | Meaning |
 |---|---|---|
-| 2 | 500 | |
-| 5 | 5 000 | End of a first weekend, ~10 hours |
-| 10 | 19 952 | All three meta-starters and two Hub upgrades |
-| 15 | 43 267 | |
-| 20 | 75 789 | Completionist tier — all run content visible |
-| 30 | 167 290 | Prestige cap; future Ascension entry |
+| 2 | 1 515 | After the first won run, or the second lost one |
+| 5 | 6 566 | End of a first weekend |
+| 10 | 19 905 | All three meta-starters and two Hub upgrades; the Mastery lane opens |
+| 15 | 38 081 | |
+| 20 | 60 341 | Completionist tier — all run content visible |
+| 30 | 115 442 | Prestige cap; future Ascension entry |
 
-Soft-logarithmic: early levels arrive fast, late levels gate long-tail content.
+Soft-logarithmic: levels 2–10 are a few runs apart, 20–30 are dozens. *(The table was recomputed from the
+formula on 2026-09-21 — the earlier one had drifted from it by up to 45 %; the formula is the rule.)*
 
 ## §8.3.4 Two currencies
 
@@ -229,6 +230,16 @@ Level placements and Token amounts are tunable; the anchors are **all three meta
 **prestige cap at 30**. The track yields ~44 Tokens and the Mastery lane needs 50 — achievements top up the
 difference deliberately, so the last few relics are earned rather than waited for.
 
+The track is settled **idempotently**: every level at or below the current one whose reward has not been
+claimed is claimed on the next XP, not only the levels this event crossed. An account from before a row
+existed, or a save that missed a level, collects it rather than never (v0.6).
+
+> ⚠️ **OPEN (2026-09-21)**: the three "New difficulty modifier" rows (14, 17, 21) overlap §8.8.2, which already
+> opens every modifier by Trainer Level — the last at 15. With both as written, Level 14 opens Master's
+> Challenge a level early and 17 and 21 have nothing left to open. The build implements exactly that (a row
+> that finds nothing locked grants nothing and says so). `game-designer` decides: three future modifiers
+> reserved for these rows, or the rows re-authored as something else.
+
 ---
 
 # §8.4 The Trainer Hub
@@ -255,6 +266,11 @@ the level shown.
 | Curated Starting Relic +1 | 3 | Run start offers 4 Starting Relics instead of 3 |
 | Expanded Box | 6 | Box capacity 6 → 8 for all future runs |
 | Pokédex Insight | 7 | The first combat against an unseen species at Familiar tier reveals 1 intent free |
+
+> ⚠️ **OPEN (2026-09-21)**: "unseen species at Familiar tier" contradicts itself — a Familiar species already
+> reveals every intent (§5.13.1). The build reads it as *the first fight this run against a species you have
+> **not yet** made Familiar shows its opening intent free*, which is the reading with something left to grant.
+> `game-designer` confirms or re-words.
 | Trauma Salve Cache | 9 | City 1's shop is guaranteed to stock at least one Trauma Salve |
 | Apex Pokémon Reveal | 11 | The Victory Road Apex species is shown on entering Region 3 |
 | Difficulty Modifier Slot +1 | 13 | Stack 2 difficulty modifiers per run instead of 1 |
@@ -304,9 +320,12 @@ Small thematic flourishes, balance-neutral by intent:
 
 - **Pikachu:** starts holding a Light Ball (+25 % Electric damage, Pikachu only).
 - **Eevee:** the first Mystery node visited is guaranteed to be a Stone Cache — a free evolution stone of your
-  choice.
+  choice. *(Waits on Evolution Items, v0.7; Eevee itself ships in v0.6 with its three branches.)*
 - **Magikarp:** starting relic offers are biased toward Water and toward survivability, because the first two
-  Regions are a defensive problem.
+  Regions are a defensive problem. Implemented as a guarantee: at least one Water or defensive relic is in the
+  offer, drawn from the same seed.
+- **Pikachu:** ships on the track at Level 4; its kit is authored for v0.7, and until then the starter screen
+  says so rather than offering an empty species.
 
 ---
 
@@ -457,8 +476,10 @@ The account-level save holds: Trainer XP and Level · Tokens and claimed milesto
 and Tier-3 relics, difficulty modifiers and Hub upgrades · achievement progress · Pokédex progress · lifetime
 statistics.
 
-It is written at run end and on every Pokémart purchase. Format, versioning, atomicity and the three-layer
-model (Meta / Run / Settings): §9.8.
+It is written at run end and on every Pokémart purchase — and, in the browser build, after every fold, because
+a tab closes without ceremony and a level earned mid-run must not depend on reaching the summary. The fold is
+idempotent (claimed levels, medal list, discovery list), so an extra write costs nothing. Format, versioning,
+atomicity and the three-layer model (Meta / Run / Settings): §9.8.
 
 ---
 

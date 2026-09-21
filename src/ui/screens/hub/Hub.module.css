@@ -1,0 +1,578 @@
+/* §8.4 — the four open kiosks share one sheet: the same cards, chips, bars and rows, so the Hub reads as one
+   room rather than four screens. Light theme: semantic accents are fills and borders, never running text. */
+
+.muted {
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+.lede {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-body);
+  color: var(--ink-secondary);
+}
+.section {
+  display: grid;
+  gap: var(--sp-2);
+}
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  font-size: var(--type-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.tokens {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+}
+.primary {
+  padding: var(--sp-2) var(--sp-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--brand-red);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+  cursor: pointer;
+}
+.notice {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-left: 4px solid var(--accent-action);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+}
+
+/* ── Trainer Card ─────────────────────────────────────────────────────────────────────────────────────── */
+.card {
+  display: grid;
+  gap: var(--sp-5);
+}
+.cardHead {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
+}
+.level {
+  display: grid;
+  gap: var(--sp-2);
+  align-items: center;
+}
+.levelBig {
+  font-size: var(--type-display);
+  line-height: 1;
+  color: var(--brand-red);
+}
+.titleRibbon {
+  justify-self: start;
+  padding: 2px var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--brand-blue);
+  color: #fff;
+  font-size: var(--type-small);
+  font-family: var(--font-display);
+}
+.xpBar {
+  position: relative;
+  height: 14px;
+  max-width: 480px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.xpFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  transition: width var(--motion-slow) var(--ease-spring);
+}
+.xpText {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--sp-2);
+  margin: 0;
+}
+.fact {
+  display: grid;
+  gap: 2px;
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.fact dt {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.fact dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-h3);
+}
+.fav {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+  opacity: 0.7;
+}
+.chipOn {
+  border-color: var(--accent-positive);
+  opacity: 1;
+}
+.chipWaiting {
+  border-color: var(--accent-warning);
+  border-style: dashed;
+  opacity: 1;
+}
+
+.track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--sp-1);
+}
+.trackRow {
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+}
+.trackInner {
+  display: grid;
+  grid-template-columns: 28px 1fr 18px;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--type-small);
+}
+.trackLevel {
+  font-family: var(--font-display);
+  color: var(--ink-secondary);
+}
+.trackLabel {
+  line-height: 1.2;
+}
+.trackMark {
+  text-align: right;
+  color: var(--ink-secondary);
+}
+.track_claimed {
+  border-color: var(--accent-positive);
+}
+.track_claimed .trackLabel {
+  color: var(--ink-secondary);
+}
+.track_next {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+}
+.track_locked {
+  opacity: 0.7;
+}
+
+/* ── PC Terminal ──────────────────────────────────────────────────────────────────────────────────────── */
+.pc {
+  display: grid;
+  gap: var(--sp-3);
+}
+.tabs {
+  display: flex;
+  gap: var(--sp-2);
+}
+.tab {
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+.tabOn {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+}
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.filters {
+  display: flex;
+  gap: var(--sp-1);
+}
+.filter {
+  padding: 2px var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.filterOn {
+  border-color: var(--brand-blue);
+  background: var(--surface-2);
+}
+.dexGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-2);
+}
+.dexRow {
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.dexRow[data-tier='1'] { border-color: var(--brand-blue); }
+.dexRow[data-tier='2'] { border-color: var(--type-psychic); }
+.dexRow[data-tier='3'] { border-color: var(--accent-action); }
+/* An unknown species is greyed, never hidden (ui.md): the row is the goal. */
+.dexUnknown img {
+  filter: grayscale(1) brightness(0.9);
+  opacity: 0.6;
+}
+.dexInner {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+}
+.dexBody {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dexName {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-wrap: wrap;
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+}
+.dexBadge {
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  font-family: var(--font-body);
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.dexMastery {
+  background: var(--accent-action);
+  color: var(--ink-primary);
+}
+.dexTierLine {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+}
+.dexTier {
+  min-width: 62px;
+  color: var(--ink-secondary);
+}
+.dexTier[data-tier='1'],
+.dexTier[data-tier='2'],
+.dexTier[data-tier='3'] {
+  color: var(--ink-primary);
+  font-weight: 600;
+}
+.dexBar {
+  position: relative;
+  flex: 1;
+  height: 16px;
+  max-width: 140px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.dexFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--brand-blue);
+}
+.dexBarText {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: var(--type-caption);
+}
+
+.medals {
+  display: grid;
+  gap: var(--sp-4);
+}
+.group {
+  display: grid;
+  gap: var(--sp-2);
+}
+.groupTitle {
+  margin: 0;
+  font-size: var(--type-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-2);
+}
+.list li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.got {
+  border-color: var(--accent-positive);
+}
+.pendingRow .medal {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+.medal {
+  font-size: 22px;
+}
+.rowBody {
+  display: grid;
+}
+.rowName {
+  font-size: var(--type-body);
+}
+.rowDesc {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.state {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.bar {
+  position: relative;
+  width: 110px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent-action);
+}
+.barText {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: var(--type-small);
+}
+.note {
+  margin: 0;
+  max-width: 70ch;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+
+/* ── Poké Mart ────────────────────────────────────────────────────────────────────────────────────────── */
+.mart,
+.daycare {
+  display: grid;
+  gap: var(--sp-4);
+}
+.martHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.shelf {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--sp-2);
+}
+.price {
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+}
+.priceOk {
+  background: var(--accent-action);
+}
+.discoveries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--sp-1);
+}
+.discovery {
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  opacity: 0.85;
+}
+.discoveryOn {
+  border-color: var(--accent-positive);
+  opacity: 1;
+}
+.discoveryInner {
+  display: grid;
+  gap: 1px;
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--type-small);
+}
+.discoveryName {
+  font-family: var(--font-display);
+}
+.discoveryHow {
+  color: var(--ink-secondary);
+}
+
+/* ── Daycare ──────────────────────────────────────────────────────────────────────────────────────────── */
+.starters {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--sp-2);
+}
+.starter {
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.starterInner {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: var(--sp-2);
+  text-align: center;
+}
+.starterName {
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+}
+.starterBlank {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  font-family: var(--font-display);
+  color: var(--ink-secondary);
+}
+.starter_ready {
+  border-color: var(--accent-positive);
+}
+.starter_waiting {
+  border-style: dashed;
+  border-color: var(--accent-warning);
+}
+.starter_locked img {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+.modList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-1);
+}
+.modRow {
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+}
+.modInner {
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--type-small);
+}
+.modName {
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+}
+.modEffect {
+  color: var(--ink-secondary);
+}
+.mod_open {
+  border-color: var(--accent-positive);
+}
+.mod_locked,
+.mod_pending {
+  opacity: 0.7;
+}

@@ -391,3 +391,33 @@
   color: var(--ink-muted);
   font-size: var(--type-caption);
 }
+
+/* §8.4.2 Twin Run — the partner tile is marked in blue so the two picks read as first and second. The roster
+   wraps once the meta-starters arrive (§8.5.2): three columns was the default trio, not a rule. */
+.roster {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+.pickedSecond {
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-blue) 22%, transparent);
+}
+.twinTag {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-2);
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--brand-blue);
+  color: #fff;
+  font-size: var(--type-caption);
+  font-family: var(--font-display);
+}
+.twinNote {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}

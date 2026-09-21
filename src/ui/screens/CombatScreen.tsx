@@ -3,6 +3,7 @@ import { IconCards, IconMenu2 } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
+import { useAccountStore } from '@/app/accountStore';
 import {
   SLOT_LABEL,
   cardPlayability,
@@ -91,6 +92,8 @@ export function CombatScreen() {
   const consumablePlays = useMemo(() => (state ? state.player.consumables.hand.map((c) => consumablePlayability(state, c.id, ctx)!) : []), [state, ctx]);
   const swaps = useMemo(() => (state ? swapOptions(state) : []), [state]);
 
+  const dex = useAccountStore((s) => s.account.dex);
+
   if (!state) {
     return (
       <main className={`${styles.root} theme-stage`} data-testid="combat-empty">
@@ -107,6 +110,9 @@ export function CombatScreen() {
   const enemy = state.enemies[0] ?? null;
   const leadIdx = state.player.leadIndex;
   const lead = state.player.team[leadIdx]!;
+  // §5.13.1 Veteran — your own copies of a species you have fought thirty times wear the shiny palette.
+  // Read from the account, not the fight: it is a fact about the player, and the sim never sees it.
+  const shiny = (dex[lead.speciesId]?.tier ?? 0) >= 2;
   const benches = state.player.team.map((_, i) => i).filter((i) => i !== leadIdx);
   const selectedPlay = selection.mode === 'card' || selection.mode === 'step-back' ? plays.find((p) => p.card.id === selection.cardId) ?? null : null;
   const previewPlay = plays.find((p) => p.card.id === hoverCardId) ?? selectedPlay;
@@ -228,7 +234,7 @@ export function CombatScreen() {
         <div className={styles.arena} aria-hidden="true">
           {lead.hp > 0 && (
             <div className={`${styles.leadSprite} ${fx.classes[lead.uid] === 'fx-lunge-right' ? 'fx-lunge-right' : ''}`}>
-              <img className="pixel" src={spriteOf(lead, 'back')} alt="" draggable={false} />
+              <img className="pixel" src={spriteOf(lead, 'back', shiny)} alt="" draggable={false} data-shiny={shiny || undefined} />
               <span className={styles.platform} />
             </div>
           )}

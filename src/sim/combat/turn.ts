@@ -6,8 +6,8 @@ import { dealDamage, heal } from './damageFlow';
 import { declareIntent } from './intents';
 import { aliveTeam, benchIndices, lead } from './slots';
 import type { Combatant, CombatState } from './state';
-import { turnEndBenchHeal } from './abilities';
-import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, reshuffleCopies } from './items';
+import { abilityTurnStartAp, turnEndBenchHeal } from './abilities';
+import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, recallsDiscard, reshuffleCopies } from './items';
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeIntent } from './enemyTurn';
 
@@ -20,16 +20,30 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
 
   // §3.2.2 — AP refill (Tempo Control may tax it), swap counter and discount reset.
   // §7.3 — AP banked by a relic last turn (Cycle Cell, Move Echo) lands on top of the refill.
-  p.ap = Math.max(0, ctx.config.baseApPerTurn - tempoApTax(state, ctx.config)) + p.bankedAp;
+  // §6.5.2 Speed Boost — its turn-2 AP lands beside the banked AP.
+  p.ap = Math.max(0, ctx.config.baseApPerTurn - tempoApTax(state, ctx.config)) + p.bankedAp + abilityTurnStartAp(p.team, state.turn, ctx.content);
   p.bankedAp = 0;
   p.swapCounter = 0;
   p.defensiveDiscount = false;
   p.playedThisTurn = [];
+  // §8.4.3 — whoever starts the turn as Lead gets the turn on their record.
+  const leadNow = p.team[p.leadIndex];
+  if (leadNow && leadNow.hp > 0) p.leadTurns[leadNow.uid] = (p.leadTurns[leadNow.uid] ?? 0) + 1;
   emit(state, { t: 'turn-start', ap: p.ap });
   log(state, 'turn', `— Turn ${state.turn} —`);
 
+  // §8.6.1 Perfect Recall — once per fight, a deck about to run short takes its discard back *before* the
+  // draw, so the turn is drawn from a full deck rather than a reshuffle mid-draw. It is not a reshuffle: the
+  // relics that pay on one do not fire, which is what keeps it a Tier-3 convenience and not a Cycle Cell engine.
+  const want = ctx.config.baseSkillCardsPerTurn + itemDrawBonus(state, state.turn, ctx.content);
+  if (recallsDiscard(state, ctx.content) && p.deck.length < want && p.discard.length > 0) {
+    p.deck = ctx.rng.shuffle([...p.deck, ...p.discard.filter((c) => c.echoUntilTurn === undefined)]);
+    p.discard = p.discard.filter((c) => c.echoUntilTurn !== undefined);
+    p.spent.push('perfect-recall');
+    log(state, 'system', 'Perfect Recall: the discard pile returns to the deck.');
+  }
   // §7.3 — relics that add cards do it here, so the extra card is in hand before the intent is read.
-  const drawn = drawSkillCards(state, ctx.config.baseSkillCardsPerTurn + itemDrawBonus(state, state.turn, ctx.content), ctx.rng);
+  const drawn = drawSkillCards(state, want, ctx.rng);
 
   // §5.10.1 Hive Badge — last turn's deck cycle promised free copies; they land on top of the draw, so the
   // hand is complete before the intent is read and the player can plan against it.
@@ -89,6 +103,8 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
 /** §3.2.5 — Resolution: enemy intents → abilities → status ticks → cooldowns → discard → outcome → next turn. */
 export function resolveTurn(state: CombatState, ctx: RunCtx): void {
   state.phase = 'resolution';
+  // §8.6.1 Reactor Core's discovery — how many cards you were still holding when you ended the turn.
+  state.player.tally.peakHandAtTurnEnd = Math.max(state.player.tally.peakHandAtTurnEnd, state.player.hand.length);
 
   // Enemies act in slot order (supports first, lead enemy last — §5.6; single enemy in v0.1).
   for (const e of [...state.enemies]) {

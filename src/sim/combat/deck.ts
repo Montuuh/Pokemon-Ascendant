@@ -4,12 +4,14 @@ import type { CombatState, ConsumableCard, SkillCard } from './state';
 // §3.4 — the Skill Deck: 4 cards per Active Pokémon, discard-and-reshuffle, purge on faint.
 // §3.5 — the Consumable Pile: per-combat-use roster, 2 drawn per turn, unused return to the pool.
 
-export function buildSkillDeck(state: CombatState, moveIdsByUid: ReadonlyArray<[string, string[]]>): SkillCard[] {
+export function buildSkillDeck(state: CombatState, moveIdsByUid: ReadonlyArray<[string, string[], (string | null)?]>): SkillCard[] {
   const cards: SkillCard[] = [];
-  for (const [ownerUid, moveIds] of moveIdsByUid) {
+  for (const [ownerUid, moveIds, mastery] of moveIdsByUid) {
     for (const moveId of moveIds) {
       cards.push({ id: `c${state.nextCardSerial++}`, moveId, ownerUid });
     }
+    // §5.13.2 — the fifth card. Same owner, so a faint purges five instead of four without a special case.
+    if (mastery) cards.push({ id: `c${state.nextCardSerial++}`, moveId: mastery, ownerUid, mastery: true });
   }
   return cards;
 }
@@ -25,6 +27,7 @@ export function drawSkillCards(state: CombatState, count: number, rng: GameRng):
       p.discard = [];
       // §7.3 — Recycle Tag and Cycle Cell both pay out on a reshuffle; flag it once, read it twice.
       p.reshuffled = true;
+      p.tally.reshuffles += 1;
     }
     const card = p.deck.pop()!;
     p.hand.push(card);

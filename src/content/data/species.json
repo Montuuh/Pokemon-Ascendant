@@ -3392,6 +3392,284 @@
       "evolvesTo": [],
       "rarity": "rare",
       "archetype": "vanguard"
+    },
+    {
+      "id": "eevee",
+      "dex": 133,
+      "name": "Eevee",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 55,
+        "attack": 65,
+        "defense": 58,
+        "speed": 55
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "tail-whip"
+        },
+        {
+          "level": 4,
+          "move": "sand-attack"
+        },
+        {
+          "level": 7,
+          "move": "quick-attack"
+        },
+        {
+          "level": 9,
+          "move": "bite"
+        },
+        {
+          "level": 11,
+          "move": "swift"
+        }
+      ],
+      "availableAbilities": [
+        "adaptability",
+        "run-down",
+        "anticipation"
+      ],
+      "evolvesTo": [
+        "flareon",
+        "jolteon",
+        "vaporeon"
+      ],
+      "rarity": "rare",
+      "evolveLevel": 12,
+      "tutorMoves": [
+        "dig",
+        "body-slam",
+        "charm"
+      ],
+      "branches": [
+        {
+          "id": "eevee-vanguard",
+          "archetype": "vanguard",
+          "label": "Flareon",
+          "description": "Fire. The heaviest Attack of the three, up close.",
+          "to": "flareon",
+          "upgrades": [
+            {
+              "from": "bite",
+              "to": "fire-fang"
+            }
+          ],
+          "adds": [
+            "flare-blitz"
+          ],
+          "abilityId": "flash-fire"
+        },
+        {
+          "id": "eevee-specialist",
+          "archetype": "specialist",
+          "label": "Jolteon",
+          "description": "Electric. Fast, Ranged, and it paralyses from the bench.",
+          "to": "jolteon",
+          "upgrades": [
+            {
+              "from": "swift",
+              "to": "thunderbolt"
+            }
+          ],
+          "adds": [
+            "thunder-wave"
+          ],
+          "abilityId": "volt-absorb"
+        },
+        {
+          "id": "eevee-support",
+          "archetype": "support",
+          "label": "Vaporeon",
+          "description": "Water. The biggest HP pool in the Region, and it heals.",
+          "to": "vaporeon",
+          "upgrades": [
+            {
+              "from": "tail-whip",
+              "to": "aqua-ring"
+            }
+          ],
+          "adds": [
+            "wish"
+          ],
+          "abilityId": "water-absorb"
+        }
+      ]
+    },
+    {
+      "id": "vaporeon",
+      "dex": 134,
+      "name": "Vaporeon",
+      "types": [
+        "water"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 130,
+        "attack": 110,
+        "defense": 85,
+        "speed": 65
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 22,
+          "move": "water-gun"
+        },
+        {
+          "level": 26,
+          "move": "aqua-ring"
+        },
+        {
+          "level": 32,
+          "move": "hydro-pump"
+        },
+        {
+          "level": 38,
+          "move": "acid-armor"
+        }
+      ],
+      "availableAbilities": [
+        "adaptability",
+        "run-down",
+        "anticipation",
+        "water-absorb"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "tutorMoves": [
+        "surf",
+        "water-pulse",
+        "toxic"
+      ],
+      "branches": []
+    },
+    {
+      "id": "jolteon",
+      "dex": 135,
+      "name": "Jolteon",
+      "types": [
+        "electric"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 65,
+        "attack": 110,
+        "defense": 85,
+        "speed": 130
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 22,
+          "move": "thunder-shock"
+        },
+        {
+          "level": 26,
+          "move": "agility"
+        },
+        {
+          "level": 32,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 38,
+          "move": "thunder"
+        }
+      ],
+      "availableAbilities": [
+        "adaptability",
+        "run-down",
+        "anticipation",
+        "volt-absorb",
+        "speed-boost"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "tutorMoves": [
+        "double-edge",
+        "iron-tail",
+        "zen-headbutt"
+      ],
+      "branches": []
+    },
+    {
+      "id": "flareon",
+      "dex": 136,
+      "name": "Flareon",
+      "types": [
+        "fire"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 65,
+        "attack": 130,
+        "defense": 85,
+        "speed": 65
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 22,
+          "move": "ember"
+        },
+        {
+          "level": 26,
+          "move": "fire-fang"
+        },
+        {
+          "level": 32,
+          "move": "flamethrower"
+        },
+        {
+          "level": 38,
+          "move": "flare-blitz"
+        }
+      ],
+      "availableAbilities": [
+        "adaptability",
+        "run-down",
+        "anticipation",
+        "flash-fire",
+        "guts"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "tutorMoves": [
+        "heat-wave",
+        "will-o-wisp",
+        "iron-tail"
+      ],
+      "branches": []
     }
   ]
 }

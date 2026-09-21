@@ -90,6 +90,8 @@ export const ItemHookSchema = z.enum([
   'reveal-intents', 'start-shield',
   // v0.5 (§2.11.3) — the Region Modifier pool.
   'swap-heal', 'trauma-relief', 'victory-heal', 'price-multiplier',
+  // v0.6 (§8.6.1) — the Tier-3 Mastery lane.
+  'recall-discard', 'early-evolution', 'box-capacity',
   'none',
 ]);
 const ItemParams = z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]));
@@ -110,7 +112,15 @@ export const RelicSchema = z.object({
    */
   also: z.object({ hook: ItemHookSchema, params: ItemParams.optional() }).optional(),
   pending: z.string().optional(),
+  // §8.6.1 — the meta tier and, for Tier 2, the run event that discovers it. Absent is Tier 1.
+  tier: z.union([z.literal(2), z.literal(3)]).optional(),
+  discovery: z.object({ counter: KebabId, goal: z.number().int().positive(), text: z.string().min(1) }).optional(),
+  mastery: z.literal(true).optional(),
 });
+
+/** §5.13.2 — one line's Mastery Moves, base form first. A tier without a shipped move is `null`. */
+export const MasteryLineSchema = z.tuple([KebabId.nullable(), KebabId.nullable(), KebabId.nullable()]);
+export const MasteryFileSchema = z.object({ _note: z.string().optional(), lines: z.record(KebabId, MasteryLineSchema) });
 
 /**
  * §5.10 — a Badge row.
@@ -164,6 +174,8 @@ export const AbilitySchema = z.object({
     'while-statused', 'on-damaged', 'status-immunity', 'on-enter-lead', 'type-absorb', 'super-effective-reduction',
     // v0.4 (§7.4)
     'recoil-immunity', 'on-kill', 'conditional-reduction', 'swap-discount',
+    // v0.6 (§8.5.2)
+    'stab-multiplier', 'turn-start-ap',
   ]),
   params: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
   pending: z.string().optional(),

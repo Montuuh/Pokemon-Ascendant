@@ -6,6 +6,7 @@ import {
   defaultRunCtx,
   deserialiseRun,
   describeSave,
+  runPerksFor,
   runReducer,
   serialiseRun,
   validateRunAction,
@@ -17,7 +18,7 @@ import {
 } from '@/sim';
 import { localSaveProvider } from '@/app/saveProvider';
 import { useCombatStore } from '@/app/combatStore';
-import { useAchievementStore } from '@/app/achievementStore';
+import { useAccountStore } from '@/app/accountStore';
 
 // The run's React bridge (§2, §10.8). It owns one RunState, forwards actions to the pure reducer and decides
 // when to write the save. It also drives the combat store: entering a fight hands the generated scenario over,
@@ -30,8 +31,12 @@ interface RunStore {
   /** Bumped on every new run so screens can reset local state. */
   runKey: number;
 
-  /** §8.8 modifiers and §8.6.3's Starting Relic are chosen before the run exists, so they arrive here. */
-  newRun: (starterId: string, seed?: number, modifiers?: readonly string[], startingRelic?: string, regionModifier?: string) => void;
+  /**
+   * §8.8 modifiers and §8.6.3's Starting Relic are chosen before the run exists, so they arrive here; the
+   * account's perks (§8.10) are snapshotted from the account store at the same moment. `twin` is §8.4.2's
+   * second starter.
+   */
+  newRun: (starterId: string, seed?: number, modifiers?: readonly string[], startingRelic?: string, regionModifier?: string, twin?: string) => void;
   dispatch: (action: RunAction) => boolean;
   /** Enter the pending node's fight: reduce, then boot the combat store with the generated scenario. */
   beginCombat: () => boolean;
@@ -59,9 +64,12 @@ export const useRunStore = create<RunStore>((set, get) => ({
   lastRejected: null,
   runKey: 0,
 
-  newRun: (starterId, seed, modifiers = [], startingRelic, regionModifier) => {
-    const run = createRun(starterId, seed ?? freshSeed(), ctx(), 0, modifiers, startingRelic, regionModifier);
+  newRun: (starterId, seed, modifiers = [], startingRelic, regionModifier, twin) => {
+    const account = useAccountStore.getState();
+    const perks = runPerksFor(account.account, getContent(), !!twin);
+    const run = createRun(starterId, seed ?? freshSeed(), ctx(), 0, modifiers, startingRelic, regionModifier, perks, twin);
     run.stats.startedAt = Date.now();
+    account.beginRun();
     set({ run, lastRejected: null, runKey: get().runKey + 1 });
     get().save();
   },
@@ -78,7 +86,7 @@ export const useRunStore = create<RunStore>((set, get) => ({
     // §8.7 — the account's record watches every accepted action and folds whatever visibly happened. A diff
     // rather than an event queue on RunState: the run save has to replay identically (§10.8) and account
     // bookkeeping has no business inside it. See metaEventsFor.
-    useAchievementStore.getState().observe(run, result.state, action.type === 'finish-combat' ? action.report : undefined);
+    useAccountStore.getState().observe(run, result.state, action.type === 'finish-combat' ? action.report : undefined);
     // §10.8.1 — autosave at every node boundary, and after anything permanent: an evolution branch, a TM,
     // a tutor move and an ability swap all cost something the player cannot get back by reloading.
     const AUTOSAVE: RunAction['type'][] = [

@@ -5,6 +5,7 @@ import {
   gymById, gymTeamFor, rostersOf, trainerTeamFor, wildBandFor, type BiomeId, type GymDef, type TrainerRoster,
 } from './region';
 import { PRICES } from './economy';
+import { hasModifier } from './modifiers';
 import type { MapNode, NodeKind, NodePreview, RegionMap } from './types';
 
 // §2.5 — the Region map, v2: a twelve-layer branching tree that forks near the end into two Gym lanes.
@@ -115,11 +116,13 @@ export function biomeFor(rng: GameRng): BiomeId {
  * §5.9.2 — draw **two distinct** Gym types for this Region, and assign one to each lane. Nine of the twelve
  * Gym types are missed by any one run, which is what makes a three-Badge combination worth talking about.
  */
-export function drawGymPair(rng: GameRng): [GymDef, GymDef] {
+export function drawGymPair(rng: GameRng, onePath = false): [GymDef, GymDef] {
   const pool = [...GYMS];
   const a = pool.splice(Math.floor(rng.range01() * pool.length), 1)[0]!;
   const b = pool[Math.min(pool.length - 1, Math.floor(rng.range01() * pool.length))]!;
-  return [a, b];
+  // §8.8.2 One Path — both lanes lead to the same Gym, so the fork offers a route and never a counter-pick.
+  // The second draw still happens, so a seed's map is otherwise the same with the modifier on or off.
+  return [a, onePath ? a : b];
 }
 
 /**
@@ -271,13 +274,14 @@ function rolled(rng: GameRng, weights: Partial<Record<NodeKind, number>>, row: r
 }
 
 /** §2.5 — build a Region. Deterministic in `rng`, which the caller seeds from the run seed. */
-export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0): RegionMap {
+export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0, modifiers: readonly string[] = []): RegionMap {
   const nodes: Record<string, MapNode> = {};
   const byLayer: MapNode[][] = [];
   const usedTrainers = new Set<string>();
 
   // §5.9.2 — two distinct Gyms, drawn before anything else so every lane node can be themed by its own.
-  const [gymA, gymB] = drawGymPair(rng);
+  // §8.8.2 One Path collapses them to one.
+  const [gymA, gymB] = drawGymPair(rng, hasModifier(modifiers, 'one-path'));
   const lanes: GymDef[] = [gymA, gymB];
 
   // §2.5.1 — the two rolled specials. Both are decided up front so the layer loop stays a pure placement.

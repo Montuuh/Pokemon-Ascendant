@@ -21,7 +21,7 @@ loop layer and re-tests the core inside it.
 | v0.3 | Identity through Evolution | Evolve with a branch choice, sculpt the active 4 from a move pool, learn TMs/tutor moves | ✅ 2026-09-19 · ◐ playtest |
 | v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
-| v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ◐ in progress |
+| v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
 | v0.7 | Regions 2 & 3 | Status-on-intents, multi-enemy, field effects, cities, R2/R3 content | ☐ |
 | v0.8 | Victory Road & League | Gauntlet, Apex, Training Grounds, 5-fight League, Champion, boons | ☐ |
 | v0.9 | Polish | Audio, accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
@@ -296,11 +296,52 @@ the 80 was noise, exactly as the standing rule about the standard error of a *di
 **Exit:** a 60-minute run; three testers come back for a second run unprompted. (This is the old Unity
 "Region 1 end-to-end" VS.)
 
-## v0.6 — Meta  ☐
-Trainer XP / Tokens (§8.3), hub kiosks (§8.4), Pokédex tiers + Mastery moves (§5.13, §6.8), unlock trees, meta starters (§8.5), relic tiers (§8.6), Trauma services.
+## v0.6 — Meta  ✅ 2026-09-21
+
+**Goal.** Make the *second run* worth starting. v0.5 made one run whole; v0.6 gives every run — won or lost —
+somewhere to land: an account that levels, a track that hands something out at every level, a Pokédex that
+turns fights into knowledge, and a fifth card a line can earn.
+
+**Shipped 2026-09-21**
+- **The account (§8.3, §8.9, §8.10)** — `AccountState`: lifetime XP on the §8.3.3 curve (recomputed from the
+  formula; the old table had drifted by up to 45 %), the 30-row reward track settled **idempotently** (every
+  unclaimed level at or below the current one, so a save from before a row existed still collects it), Tokens
+  from milestone levels and Gold/Platinum medals, lifetime stats for the Trainer Card. A pure fold over the same
+  `MetaEvent`s v0.5 diffed from the run; the app persists it after every fold, and folds v0.5's medal case into
+  the first account paid what those medals were worth.
+- **The Hub (§8.4)** — all four kiosks open: the **Trainer Card** (level, XP bar, Tokens, the whole track, the
+  seven Hub upgrades), the **PC Terminal** (the Pokédex, browsable and filterable, beside the medals), the
+  **Poké Mart** (nine Tier-3 relics at five Tokens from Level 10, and the Tier-2 discovery board), and the
+  **Daycare Lady** at Level 3 (starters and modifiers, open and locked alike). The Mystery Door stays labelled.
+- **Relic tiers (§8.6)** — `tier` and `discovery` on every relic row; a run's pool is Tier 1 + discovered
+  Tier 2 + bought Tier 3, frozen into the save as `RunPerks` so a replay never asks the account. Eighteen of the
+  twenty discovery criteria are tracked through a per-fight `CombatTally` and the run's end facts; the four
+  🆕 Tier-3 rows the catalogue authored are in, three of them working.
+- **The Pokédex and Mastery (§5.13, §6.8)** — kill credit per species with catching excluded; Familiar reveals
+  intents from turn one, Veteran shows the **official shiny sprite** (fetched, not hue-shifted — the doctrine
+  is "fetch the object"), Master opens the Mastery Move. The immutable fifth card: 12 + 1 per member, 15 at most,
+  a faint purges five. Lv1 for 13 lines by §6.8.1's three triggers; six Lv1 moves and every Lv2/Lv3 wait on their
+  effect kinds and achievements.
+- **Meta-starters (§8.5)** — the **Eevee line** ported (three branches = three species, five new abilities
+  including Adaptability, Anticipation, Speed Boost and Flash Fire), Magikarp's Water-and-survivability lean on
+  the Starting Relic offer, **Twin Run** with a second starter tile. Pikachu is granted at Level 4 and says its kit
+  is v0.7.
+- **Modifiers (§8.8)** — every row gated by Trainer Level; **One Path** enabled now the fork exists (8 of 10 live).
+- **Achievements (§8.7)** — 24 of 50, with a Mastery category fed by a `dex-tier-up` event the account raises.
+- **The run-end summary** — XP earned, the level moved, rewards, medals, promotions and discoveries, kept in a
+  ledger beside the account so a mid-run reload does not lose the total.
+
+**Deferred to v0.7:** Pikachu's kit · Eevee's Stone Cache (Evolution Items) · Trainer's Instinct (the intent
+queue) · Greater Threats (Region 2's stat tier) · the Trauma Salve Cache upgrade (Cities) · the Master Ball
+Charm criterion (a throw cannot fail since §2.6.4.1 — re-author) · the two ⚠️ OPEN flags in §8.3.5 and §8.4.2.
+
+**Balance.** Unchanged by design — the harness runs an account-less run, and the fixtures a null pool. 30 seeds
+read 63 / 70 / 80, inside the noise of v0.5's 30-seed table.
+
+**Exit:** a lost run still feels like progress; a third run starts with something the first two earned.
 
 ## v0.7 — Regions 2 & 3  ☐
-Mechanical escalation (§2.2): status-on-intents, multi-enemy (1 lead + supports), field effects (§4.3), Cities (§2.1 / CL-015), R2/R3 gyms and biomes, content expansion.
+Mechanical escalation (§2.2): status-on-intents, multi-enemy (1 lead + supports), field effects (§4.3), Cities (§2.1 / CL-015), R2/R3 gyms and biomes, content expansion. Carried from v0.6: Pikachu's kit, Evolution Items (Eevee's Stone Cache, the Mysterious Stone event), the intent queue (Trainer's Instinct), Greater Threats, the Trauma Salve Cache.
 
 ## v0.8 — Victory Road & League  ☐
 §2.12 nodes (Gauntlet, Apex, Training Grounds, Summit), League 5 fights with micro-rest, Champion signature (§5.12), League Boons.

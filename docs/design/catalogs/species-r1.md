@@ -17,8 +17,9 @@
 > some rows here break — Bulbasaur cannot learn Sleep Powder at 13 and evolve at 12); ten branch additions ship
 > with their effect clause omitted pending v0.4 effect kinds (`moves.md` section 0); and pools drop the four
 > abilities not yet authored into `abilities.json` (`rain-dish`, `infiltrator`, `weak-armor`, and the reserved
-> `arena-trap-x`). Lines not in the build — Bellsprout, Mankey, Eevee, Krabby, Aerodactyl, Lapras, Snorlax,
-> Marowak — keep their tables for the version that needs them.
+> `arena-trap-x`). Lines not in the build — Bellsprout, Mankey, Aerodactyl, Lapras, Marowak — keep their
+> tables for the version that needs them. *(Krabby and Snorlax joined in v0.5; Eevee in v0.6 as the Level-8
+> meta-starter, with its three branches and the five abilities its line needed.)*
 
 ## 0. Shared rules (data, not prose)
 

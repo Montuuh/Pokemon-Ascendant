@@ -13,11 +13,14 @@ const LEGACY_PREFIX = 'evoline.';
 const PREFIX = 'ascendant.';
 
 export const RUN_SAVE_KEY = `${PREFIX}run.v2`;
+/** v0.5's medal case. Read once by the account store, folded into the account, then removed (§8.10). */
 export const ACHIEVEMENTS_KEY = `${PREFIX}achievements.v1`;
+/** §8.10 — the account: XP, Tokens, the track, the Pokédex, the medals. One save. */
+export const ACCOUNT_KEY = `${PREFIX}account.v1`;
 export const SETTINGS_KEY = `${PREFIX}settings.v1`;
 
 /** Every key this app owns, so the test can walk them rather than trusting a hand-kept list. */
-export const ALL_KEYS = [RUN_SAVE_KEY, ACHIEVEMENTS_KEY, SETTINGS_KEY] as const;
+export const ALL_KEYS = [RUN_SAVE_KEY, ACHIEVEMENTS_KEY, ACCOUNT_KEY, SETTINGS_KEY] as const;
 
 /**
  * The pre-rename name of a key.

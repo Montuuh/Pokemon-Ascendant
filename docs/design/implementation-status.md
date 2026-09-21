@@ -3,7 +3,7 @@
 > What is built, where its code lives, and where the build still disagrees with canon. **Derived** — canon is
 > the topic files; this is the map from a rule to the file that implements it.
 >
-> Update a row whenever a system's status changes. Last reviewed 2026-09-20 (during v0.5).
+> Update a row whenever a system's status changes. Last reviewed 2026-09-21 (v0.6).
 
 **Legend** ✅ complete for its scope · ◐ partially built · ☐ not started · ⚠ built but diverges from canon
 
@@ -22,16 +22,16 @@
 | Enemy AI and intents | §5.1–§5.7 | `intents.ts`, `slots.ts` | `intents`, goldens | ✅ |
 | Bosses, Gyms, Badges | §5.8–§5.10 | `boss.ts`, `damageFlow.ts`, `run/region.ts`, `content/data/badges.json` | `boss`, `mapRules`, `badges`, the Gym fixture | ✅ all four R1 Gyms with band-derived levels; the four R1 Badges resolve through §7.7's hooks beside relics. R2/R3 Badges arrive with their Gyms |
 | Elite Four, Champion | §5.11, §5.12 | — | — | ☐ v0.8 |
-| Pokédex and Mastery | §5.13 | — | — | ☐ v0.6 |
+| Pokédex and Mastery | §5.13, §6.8 | `meta/pokedex.ts`, `meta/mastery.ts`, `meta/account.ts`, `combat/deck.ts`, `combat/intents.ts`, `content/data/mastery.json`, `ui/screens/hub/PcTerminal.tsx` | `account`, `e2e/meta` | ✅ tiers by rarity, kill credit per species (catching excluded), Familiar reveals intents, Veteran shows the official shiny sprite, Master opens the Mastery slot; the fifth card for 13 lines at Lv1 |
 | Catching | §2.6.4 | `catch.ts`, `reducer.ts` | `catch`, the catch fixture | ✅ |
 | HP economy and Trauma | §2.4, §8.2 | `combat/stats.ts`, `battleConfig.ts`, `run/run.ts` | `setup`, `run` | ✅ |
 | XP, levels, evolution | §6.2, §6.3 | `run/xp.ts`, `ui/screens/EvolutionScreen.tsx` | `run`, `runBalance`, `e2e/progression` | ✅ 63 branches, archetype picked per evolution |
 | Moves, abilities, the Dojo | §6.4–§6.7 | `abilities.ts` (19 hooks), `run/xp.ts`, `ui/components/MoveManager.tsx`, `ui/screens/DojoScreen.tsx` | `abilities`, `moveEffects`, `run`, `e2e/progression` | ✅ pool, Move Manager, 3 TMs, Dojo at canon prices; 4 abilities inert pending v0.7 |
 | Map, nodes, run flow | §2.1, §2.5–§2.14 | `run/map.ts`, `region.ts`, `run.ts`, `encounter.ts`, `events.ts` | `run`, `mapRules`, `runBalance`, `e2e/run`, `e2e/economy` | ✅ **Map v2**: 12 layers, ~47 nodes, the Gym fork 2-of-4 with themed lanes, Elite Wild at 45 %, extra Elite at 22 % |
 | Items, relics, economy | §7 | `run/economy.ts`, `combat/items.ts`, `reducer.ts`, `ui/screens/ShopScreen.tsx`, `ui/screens/LegendaryScreen.tsx` | `items`, `run`, `e2e/economy`, `e2e/run` | ✅ money, **all 60 relics** (25/18/7/10), 19 held items, Mart + re-rolls, Therapy, the §7.3.7 Legendary 1-of-3 at a Gym victory. 3 relic rows inert; the Black Market is v0.7 |
-| Meta progression | §8.3–§8.9 | `run/modifiers.ts`, `run/regionModifiers.ts`, `meta/achievements.ts`, `app/achievementStore.ts`, `ui/screens/{StarterSelect,HubScreen}.tsx` | `regionModifiers`, `achievements`, `e2e/meta`, `e2e/economy` | ◐ §8.8 difficulty modifiers (7 of 10), §8.6.3 Starting Relic, §2.11.3 Region Modifiers (13 of 17 live), §8.7 achievements (10 of 50), §8.4 the hub shell with the PC Terminal open. Trainer XP, Tokens and the other four kiosks v0.6 |
+| Meta progression | §8.3–§8.10 | `meta/account.ts`, `meta/unlocks.ts`, `meta/achievements.ts`, `run/modifiers.ts`, `run/regionModifiers.ts`, `app/accountStore.ts`, `ui/screens/HubScreen.tsx`, `ui/screens/hub/*`, `ui/screens/StarterSelect.tsx` | `account`, `achievements`, `regionModifiers`, `e2e/meta`, `e2e/economy`, `e2e/run` | ✅ Trainer XP, the level curve, the 30-row track with idempotent settling, Tokens, the Pokémart lane (9 of 10 Tier-3 rows live), relic tiers with 18 of 20 Tier-2 discoveries tracked, 8 of 10 modifiers with level gates, 7 Hub upgrades (5 in force, 2 waiting on Cities / Victory Road), Twin Run, meta-starters Eevee and Magikarp (Pikachu's kit v0.7), 24 of 50 achievements, all four open kiosks, the run-end account summary, `RunPerks` frozen into the save (§8.10) |
 | Determinism, RNG, replay | §10.7 | `sim/rng/*`, `sim/replay/*` | `gameRng`, `determinism`, `golden` | ✅ |
-| Save | §10.8 | `run/save.ts`, `app/saveProvider.ts`, `app/runStore.ts` | `run` | ✅ local; server profile v0.6 |
+| Save | §10.8 | `run/save.ts`, `app/saveProvider.ts`, `app/runStore.ts`, `app/accountStore.ts`, `app/storageKeys.ts` | `run`, `storageKeys`, `e2e/meta` | ✅ local: run save v6 (carries `perks`), account save v1 (folded from v0.5's medal case on first load), settings |
 | Presentation | §9 | `src/ui/*`, `src/app/*` | `e2e/screens`, `e2e/playthrough`, `e2e/run`, `e2e/progression`, `e2e/economy`, `e2e/meta`, `e2e/a11y` | ◐ 22 of 27 screens + the §9.6.1 rules panel; §9.6's text size (80/100/125/150 %) and motion override ship in Settings |
 
 Code paths are relative to `src/`. The full architecture is in [`docs/architecture.md`](../architecture.md).
@@ -52,6 +52,12 @@ four, and v0.4 closed all of those. What is left is content waiting on a system,
 | 4 | Snorlax's boss script runs `snore` (playable only while asleep), `yawn` (delayed status), `heavy-slam` (conditional power) and `giga-impact-v` (recharge) | Four effect kinds the sim does not have. The shipped profile is the half that has a definition — Amnesia, Rest, Body Slam, Crunch — and the §2.8.2 catch mechanic, which is the reason the node exists, is intact | **v0.6** |
 | 5 | Krabby learns `mud-shot` at 13, `metal-claw` at 17 and `stomp` at 21 (`catalogs/species-r1.md`) | Its evolveLevel is 12, so §6.9 makes all three unreachable — a catalogue slip. They moved onto Kingler at the same levels, so the *line* keeps every move | **catalogue fix** |
 | 6 | Four lines' first pool entry is their most characteristic passive (§6.5.1) | It is, and for Oddish, Diglett, Magikarp and Psyduck that passive is inert until the field system lands | **v0.7** |
+| 7 | The track's "New difficulty modifier" rows at 14, 17 and 21 (§8.3.5) | Every modifier is already open by Level 15 (§8.8.2), so 14 opens Master's Challenge early and 17 and 21 grant nothing; the row says so. Flagged ⚠️ OPEN in §8.3.5 | **design call** |
+| 8 | Pokédex Insight: "the first combat against an unseen species at Familiar tier" (§8.4.2) | Read as the first fight this run against a species *not yet* Familiar; its opening intent is shown. Flagged ⚠️ OPEN in §8.4.2 | **design call** |
+| 9 | Eevee's first Mystery node is a Stone Cache; Pikachu is a starter at Level 4 (§8.5) | Evolution Items and Pikachu's kit are v0.7; the Daycare Lady and the track row say so | **v0.7** |
+| 10 | Trainer's Instinct sees intents one turn further ahead; Master Ball Charm is discovered by five failed catches (`catalogs/relics.md`) | Enemies plan one turn at a time until the intent queue; a throw cannot fail since §2.6.4.1 — both rows are inert / track-only and labelled | **v0.7 / catalogue fix** |
+
+**Closed in v0.6:** the whole account layer (§8.3–§8.6, §8.9, §8.10) · the Pokédex tiers and the Mastery slot (§5.13, §6.8) · One Path (§8.8.2), now the fork exists · 14 more achievements (§8.7) · the Eevee line (§8.5.2) · the four Tier-3 relics the catalogue authored (§8.6.1).
 
 **Closed in v0.5:** the twelve-layer map with the Gym fork (§2.5) · all four Region 1 Gyms with levels derived from the wild band (§5.9.3) · the Elite Wild and its catch-or-kill rule (§2.8.2) · the wild band ramped across the whole route rather than the first half.
 
@@ -84,19 +90,19 @@ applies — two strongest attacks, fill by recency, and always one Ranged card (
 
 | Class | Catalogued | In JSON |
 |---|---|---|
-| Species | 24 R1 lines + 17 reserved | 43 species (18 lines), with learnsets, catalogue ability pools, stage tutor lists and 65 evolution branches |
-| Moves | ~150 | 163, all with their full effect |
-| Abilities | 38 | 31 · 27 live, 4 inert pending the field system (v0.7) |
+| Species | 24 R1 lines + 17 reserved | 47 species (19 lines), with learnsets, catalogue ability pools, stage tutor lists and 68 evolution branches; `mastery.json` holds each line's Mastery tiers |
+| Moves | ~150 | 181, all with their full effect (11 Mastery Lv1 moves and the Eevee line's 7 joined in v0.6) |
+| Abilities | 38 | 36 · 32 live, 4 inert pending the field system (v0.7) |
 | Consumables | 28 | 15, including the whole §7.2.6 healing chain and §2.4.3 Revive |
 | Scenarios | — | 6 fixtures + generated run nodes |
 | Trainers · gyms | all | 10 R1 rosters over 5 archetypes (Swimmers joined for the Water lane); **all four** R1 Gyms |
 | TMs | 15 | 3 (the ones whose move exists) |
-| Relics | 25 Common + 18 Uncommon | 43 · 40 live, 3 inert and excluded from every offer |
+| Relics | 25 Common + 18 Uncommon + 11 Rare + 10 Legendary | 64 · 60 live, 4 inert and excluded from every offer; every row carries its meta tier and, for Tier 2, its discovery criterion |
 | Held items | 19 | 19 · 18 reachable; Thick Club waits on Marowak |
 | Mystery events | 22 | 9 (3 Safe · 4 Tradeoff · 2 Gamble) |
-| Difficulty modifiers | 10 | 10 listed · 7 selectable, 3 locked with the version that unblocks them |
+| Difficulty modifiers | 10 | 10 listed · 8 selectable behind their Trainer Level, 2 locked with the version that unblocks them |
 | Elites | 2 R1 archetypes + 2 Elite Wilds | 1 Elite Trainer (the Ace Trainer; the Rival wants a run spanning Regions) + 1 Elite Wild (Snorlax) |
-| Achievements | all | none yet — v0.6 |
+| Achievements | 50 | 24 (`achievements.ts`); the rest wait on Regions 2–3, the League and the card log |
 
 Port a catalogue row when its roadmap version comes up; every row carries that version.
 `npm run check:catalogs` guards the catalogues, and the content tests guard the JSON.
@@ -107,8 +113,8 @@ Port a catalogue row when its roadmap version comes up; every row carries that v
 
 | Gate | Command | Current |
 |---|---|---|
-| Typecheck, lint, unit tests, catalogue guard | `npm run check` | green — 292 tests |
-| Screens, a UI playthrough, a full route, the v0.3 progression screens and the v0.4 economy | `npm run e2e` | green — 38 tests (1920×1080 and 1280×720) |
-| Section references resolve | `npm run check:refs` | green — 2476 citations, 359 sections |
+| Typecheck, lint, unit tests, catalogue guard | `npm run check` | green — 367 tests |
+| Screens, a UI playthrough, a full route, the progression screens, the economy, the Hub and the account | `npm run e2e` | green — 53 tests (1920×1080 and 1280×720) |
+| Section references resolve | `npm run check:refs` | green — ~3030 citations, 359 sections |
 | Combat pacing | `npm run balance` | wild 3.8 turns / 100 % · Gym 11.3 / 100 % |
 | Whole-run pacing | `npm run balance` | win rate 58–70 % by starter (60 seeds) · ~37 turns · 3–4 evolutions |

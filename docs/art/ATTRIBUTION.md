@@ -23,7 +23,7 @@ If Pokémon Ascendant ever stopped being non-commercial, none of this could ship
 | Asset family | Source | Licence / terms | Path |
 |---|---|---|---|
 | Pokémon official artwork, Gen VIII box icons | [PokeAPI/sprites](https://github.com/PokeAPI/sprites) (mirrors official assets) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/pokemon/{portraits,icons}` |
-| Animated battle sprites (gen5ani) | [Pokémon Showdown](https://play.pokemonshowdown.com/sprites/) / Smogon sprite project | © Nintendo / Creatures / GAME FREAK; sprite edits by the Smogon community; fan use | `public/art/pokemon/battle` |
+| Animated battle sprites (gen5ani, and the gen5ani-shiny palettes for §5.13.1 Veteran) | [Pokémon Showdown](https://play.pokemonshowdown.com/sprites/) / Smogon sprite project | © Nintendo / Creatures / GAME FREAK; sprite edits by the Smogon community; fan use | `public/art/pokemon/battle` |
 | Stage backdrops (13) | **The real battle backgrounds** — Pokémon Showdown's gen6 rips (`npm run art:fetch`) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/stages` |
 | Game glyph SVG set (type, status, intent, trait, modifier, rarity, medal, action, nav, toolbar) | Authored for this project | project licence | `public/art/icons/**` |
 | Scene art: the Region 1 route plate and the main-menu vista | Generated with Google Gemini image models (`npm run art:gen`) | generated work, Pokémon-themed by intent; outputs carry a SynthID watermark and are usable per Google's terms | `public/art/map/region-1.png`, `public/art/ui/menu-vista.png` |

@@ -133,9 +133,9 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
 }
 
 /** §6.2.4 — is this Pokémon standing at its evolution threshold, with a branch to pick? */
-export function isEvolutionReady(mon: PartyMon, content: ContentRegistry): boolean {
+export function isEvolutionReady(mon: PartyMon, content: ContentRegistry, early = 0): boolean {
   const species = content.species(mon.speciesId);
-  return species.evolveLevel !== undefined && mon.level >= species.evolveLevel && species.branches.length > 0;
+  return species.evolveLevel !== undefined && mon.level + early >= species.evolveLevel && species.branches.length > 0;
 }
 
 /**

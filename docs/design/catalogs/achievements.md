@@ -65,6 +65,10 @@
 Endurance 6. Hidden: 10 (20 %). Token-granting (🥇/💎): 20 achievements → up to 64 Tokens, which with the ~44
 from the Battle Pass track comfortably funds the 50 Tokens the Tier-3 Mastery lane needs (§8.3.5).
 
+**Shipped state (2026-09-21, v0.6).** 24 of 50 in `achievements.ts`: the ten v0.5 rows plus #8, #12, #18–#21
+(the Mastery category, fed by a `dex-tier-up` event the account fold raises on every promotion), #28, #30,
+#38, #42, #43, #45, #46 and #49. The rest wait on Regions 2–3, the League, the card log and a shiny recruit.
+
 ## Required run-tally surface
 
 The triggers above need the run to keep these counters, which is the actual implementation cost:

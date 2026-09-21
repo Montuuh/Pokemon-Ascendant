@@ -207,3 +207,14 @@
   font-size: 11px;
   color: #cfe0ff;
 }
+
+/* §5.13.2 — the Mastery card: a gold star badge and a gold edge, so the fifth card reads as earned. */
+.mastery {
+  background: var(--accent-action);
+  color: var(--ink-primary);
+  font-size: 11px;
+  line-height: 1;
+}
+.card[data-mastery='true'] {
+  box-shadow: inset 0 0 0 2px var(--accent-action);
+}

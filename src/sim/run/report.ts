@@ -37,9 +37,23 @@ export function buildOutcomeReport(combat: CombatState, run: RunState): CombatOu
   // layer knows what happened, and the content row knows whether it was the last time.
   const spentRelics = [...combat.player.spent];
 
+  const lead = combat.player.team[combat.player.leadIndex];
+
   return {
     outcome, team, caught, ballsLeft: combat.player.balls, spentConsumables, spentRelics, turns: combat.turn,
     damageTaken: combat.player.totalDamageTaken,
     manualSwaps: combat.player.totalManualSwaps,
+    // §8.6.1 — the discovery tallies, and the two end-of-fight facts the criteria need.
+    tally: { ...combat.player.tally, statusesApplied: [...combat.player.tally.statusesApplied] },
+    leadHpFraction: lead && lead.maxHp > 0 ? lead.hp / lead.maxHp : 1,
+    activeSpecies: combat.player.team.map((c) => c.speciesId),
+    // §5.13.1 — a caught Pokémon is in `defeatedEnemies` too (the fight ends with it there), and catching is
+    // explicitly not a kill, so it is left out.
+    defeated: combat.defeatedEnemies.filter((e) => e.hp <= 0).map((e) => e.speciesId),
+    // Lead turns are keyed by combat uid; map them back to species, which is what the account keeps.
+    leadTurns: Object.fromEntries(
+      combat.player.team.map((c, i) => [setups[i]?.uid ?? c.uid, combat.player.leadTurns[c.uid] ?? 0] as const).filter(([, n]) => n > 0)
+        .map(([uid, n]) => [combat.player.team.find((c, i) => (setups[i]?.uid ?? c.uid) === uid)?.speciesId ?? uid, n]),
+    ),
   };
 }

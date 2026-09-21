@@ -13,6 +13,7 @@ import {
   abilityOnEnterLead,
   abilityOnKill,
   abilityRiposte,
+  abilityAbsorbBuff,
   abilityTypeAbsorb,
   hasSturdy,
   ridersAlwaysApply,
@@ -124,6 +125,13 @@ export function absorbedByAbility(state: CombatState, ctx: RunCtx, target: Comba
   if (move.power <= 0 || target.hp <= 0) return false;
   const amount = abilityTypeAbsorb(target, move.type, ctx.content);
   if (amount === null) return false;
+  // §6.5.2 Flash Fire — the same swallow, but the wearer is buffed rather than healed.
+  const buff = abilityAbsorbBuff(target, move.type, ctx.content);
+  if (buff) {
+    changeStage(state, target, buff, 1);
+    log(state, 'system', `${target.name} absorbed the ${move.type} and its ${buff} rose.`);
+    return true;
+  }
   const healed = heal(state, target, amount, 'ability');
   log(state, 'system', healed > 0 ? `${target.name} absorbed the ${move.type} and recovered ${healed} HP.` : `${target.name} absorbed the ${move.type}.`);
   return true;
@@ -356,7 +364,11 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
     switch (fx.kind) {
       case 'status': {
         const recipient = fx.self ? attacker : target;
-        if (!recipient || recipient.hp <= 0) break;
+        if (!recipient || recipient.hp <= 0) {
+          // §8.6.1 Wide Lens's discovery — your rider had a target and the target was already down.
+          if (recipient && !fx.self && isPlayers(state, attacker)) state.player.tally.riderFizzles += 1;
+          break;
+        }
         const roll = fx.chance >= 1 || alwaysRider ? true : ctx.rng.chance(fx.chance);
         if (!roll) break;
         // §6.5.2 — an ability immunity reads exactly like a type immunity to the player.

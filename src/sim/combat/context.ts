@@ -21,6 +21,28 @@ export type EventBody = DistributiveOmit<CombatEvent, 'seq' | 'turn'>;
 
 export function emit(state: CombatState, body: EventBody): void {
   state.events.push({ ...body, seq: state.nextSeq++, turn: state.turn } as CombatEvent);
+  tallyEvent(state, body);
+}
+
+/**
+ * §8.6.1 — the discovery tallies that are simplest to read off the event stream. Counting here, at the one
+ * place every happening passes through, means a new damage or status site cannot forget to count.
+ */
+function tallyEvent(state: CombatState, e: EventBody): void {
+  const t = state.player.tally;
+  const mine = (uid: string | null | undefined) => !!uid && state.player.team.some((c) => c.uid === uid);
+  switch (e.t) {
+    case 'damage':
+      if (e.crit && e.cause === 'move' && mine(e.sourceUid)) t.crits += 1;
+      break;
+    case 'status-applied':
+      if (mine(e.targetUid)) t.statusesTaken += 1;
+      else if (!t.statusesApplied.includes(e.status)) t.statusesApplied.push(e.status);
+      break;
+    case 'status-cleared':
+      if (e.cause === 'cured' && mine(e.targetUid)) t.statusesCured += 1;
+      break;
+  }
 }
 
 export function log(state: CombatState, category: LogCategory, text: string): void {
