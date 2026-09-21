@@ -64,9 +64,11 @@ function load(): Persisted {
         achievements: isProgress(a.achievements) ? a.achievements : base.achievements,
         stats: { ...base.stats, ...(a.stats ?? {}) },
         dex: a.dex && typeof a.dex === 'object' ? a.dex : {},
-        mastery: a.mastery && typeof a.mastery === 'object' ? a.mastery : {},
+        bond: a.bond && typeof a.bond === 'object' ? a.bond : bondFromMastery((a as { mastery?: Record<string, number> }).mastery),
         counters: a.counters && typeof a.counters === 'object' ? a.counters : {},
       };
+      // v0.6.0 Pokédex tiers went to Master (3); §5.13 has only Familiar since 2026-09-21. Clamp, keep the count.
+      for (const e of Object.values(account.dex)) if (e.tier > 1) e.tier = 1;
       const ledger = parsed.ledger && typeof parsed.ledger === 'object' ? { ...emptyLedger(account), ...parsed.ledger } : emptyLedger(account);
       return { account, ledger };
     }
@@ -95,6 +97,16 @@ function persist(p: Persisted): void {
   }
 }
 
+/**
+ * v0.6.0 kept a Mastery tier per line, earned by §6.8.1's triggers. Bond (§6.8, 2026-09-21) replaces it; a
+ * tier already earned lands at the first rank that grants the same thing, so nobody loses a fifth card.
+ */
+function bondFromMastery(mastery: Record<string, number> | undefined): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [line, tier] of Object.entries(mastery ?? {})) out[line] = tier >= 3 ? 100 : tier === 2 ? 60 : tier === 1 ? 5 : 0;
+  return out;
+}
+
 function addTo(ledger: Ledger, d: AccountDelta): Ledger {
   return {
     ...ledger,
@@ -104,7 +116,8 @@ function addTo(ledger: Ledger, d: AccountDelta): Ledger {
     rewards: [...ledger.rewards, ...d.rewards],
     unlockedAchievements: [...ledger.unlockedAchievements, ...d.unlockedAchievements],
     dexPromotions: [...ledger.dexPromotions, ...d.dexPromotions],
-    masteryUnlocks: [...ledger.masteryUnlocks, ...d.masteryUnlocks],
+    bondGains: [...ledger.bondGains, ...d.bondGains],
+    bondRankUps: [...ledger.bondRankUps, ...d.bondRankUps],
     discoveredRelics: [...ledger.discoveredRelics, ...d.discoveredRelics],
   };
 }

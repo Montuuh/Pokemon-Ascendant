@@ -3,6 +3,7 @@ import type { DifficultyModifier } from '../run/modifiers';
 import { STARTER_IDS } from '../run/region';
 import type { RunPerks } from '../run/types';
 import { hasHubUpgrade, levelFor, type AccountContext, type AccountState } from './account';
+import { bondRank, bondUnlocks, isThreeStageLine } from './bond';
 
 // §8.4–§8.6, §8.8 — what an account has opened, answered from the account and the content tables.
 //
@@ -55,7 +56,16 @@ export const modifierSlots = (account: AccountState): number => 1 + (hasHubUpgra
  */
 export function unlockedStarters(account: AccountState, content: ContentRegistry): string[] {
   const extra = account.starters.filter((id) => content.hasSpecies(id));
-  return [...STARTER_IDS, ...extra];
+  // §6.8.2 rank 5 — a Soulbound line may start a run, whatever it is.
+  const bonded = Object.entries(account.bond)
+    .filter(([line, pts]) => bondRank(pts) >= 5 && content.hasSpecies(line))
+    .map(([line]) => line);
+  return [...new Set([...STARTER_IDS, ...extra, ...bonded])];
+}
+
+/** §6.8.2 — the Mastery tier a line may carry, from its Bond rank and whether it has a third stage. */
+export function masteryTierFor(account: AccountState, line: string, content: ContentRegistry): number {
+  return bondUnlocks(bondRank(account.bond[line] ?? 0), isThreeStageLine(line, content)).mastery;
 }
 
 /** §8.4.2 Twin Run — two starters, and the Box one larger. */
@@ -67,14 +77,15 @@ export const startingRelicOffers = (account: AccountState): number => 3 + (hasHu
 // ── The run's snapshot (§8.10) ───────────────────────────────────────────────────────────────────────────
 
 /** The account before any of this existed: the fixtures, the harness, and a fresh install. */
-export const defaultPerks = (): RunPerks => ({ boxBonus: 0, relicPool: null, mastery: {}, familiar: [], insight: false });
+export const defaultPerks = (): RunPerks => ({ boxBonus: 0, relicPool: null, mastery: {}, bond: {}, familiar: [], insight: false });
 
 /** §8.10 — everything a run takes from the account, frozen at its start. */
 export function runPerksFor(account: AccountState, content: ContentRegistry, twin = false): RunPerks {
   return {
     boxBonus: (hasHubUpgrade(account, 'expanded-box') ? 2 : 0) + (twin ? 1 : 0),
     relicPool: relicPoolFor(account, content),
-    mastery: { ...account.mastery },
+    mastery: Object.fromEntries(Object.keys(account.bond).map((line) => [line, masteryTierFor(account, line, content)]).filter(([, t]) => (t as number) > 0)),
+    bond: Object.fromEntries(Object.entries(account.bond).map(([line, pts]) => [line, bondRank(pts)]).filter(([, r]) => (r as number) > 0)),
     familiar: Object.entries(account.dex).filter(([, e]) => e.tier >= 1).map(([id]) => id),
     insight: hasHubUpgrade(account, 'pokedex-insight'),
   };

@@ -103,6 +103,13 @@ export interface SpeciesDef {
   learnset: { level: number; move: string }[];
   /** §6.5.1 — the species' ability pool; the first entry is granted at the first evolution. */
   availableAbilities: string[];
+  /**
+   * §6.8.3 — the line's hidden ability: the last of its three authored abilities, in the pool but locked
+   * until the line reaches Bond rank 3. Set on the base form; the line inherits it. Absent when the third
+   * ability is not authored yet (`hiddenAbilityPending` says which and when).
+   */
+  hiddenAbility?: string;
+  hiddenAbilityPending?: string;
   /** §6.4.3 — the Dojo's off-learnset list for *this stage*. Evolving changes the menu. */
   tutorMoves: string[];
   /** §6.2.4 — the level this species evolves at. Absent on a final form. */
@@ -394,6 +401,8 @@ export interface TeamMemberSetup {
    * the deck beside the active four and no Move Manager, TM or tutor can reach it.
    */
   masteryMove?: string;
+  /** §6.8.2 rank 5 (two-stage lines) — the Mastery card is dealt into the opening hand. */
+  masteryOpener?: boolean;
 }
 
 export interface EnemySetup {

@@ -69,6 +69,8 @@ export const SpeciesSchema = z.object({
   learnset: z.array(z.object({ level: z.number().int().min(1), move: KebabId })).min(1),
   /** §6.5.1 — the Dojo pool. The first entry is granted at the first evolution. */
   availableAbilities: z.array(KebabId),
+  hiddenAbility: KebabId.optional(),
+  hiddenAbilityPending: z.string().optional(),
   /** §6.4.3 — this stage's off-learnset tutor list. */
   tutorMoves: z.array(KebabId).default([]),
   /** §6.2.4 — absent on a final form. */

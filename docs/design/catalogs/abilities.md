@@ -8,7 +8,8 @@
 > The **first entry is granted automatically at the first evolution**, and the **Dojo sets or swaps** the slot to
 > any entry in the pool. Pure auto-grant makes the Dojo pointless; pure Dojo-only means most Pokémon have no
 > passive at all. The hybrid gives every evolved Pokémon an identity and makes the Dojo the place you *change*
-> it.
+> it. **The third entry of each line is its hidden ability** (§6.8.3, 2026-09-21): listed at the Dojo, locked
+> until the line's Bond reaches rank 3. `species.json` carries it as `hiddenAbility`.
 
 ## 1. Hook vocabulary (the sim contract)
 

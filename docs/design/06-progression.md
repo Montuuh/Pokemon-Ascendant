@@ -286,6 +286,9 @@ evolved Pokémon has an identity, and the Dojo's job is what it should be — **
 Ability pools never contain two entries with the same hook (no "which +15 % is better" non-choice), and every
 pool contains at least one defensive or utility option so the Dojo is a fork rather than a damage upgrade.
 
+The pool's **third** entry is the line's hidden ability: listed, greyed, and locked until the line's Bond reaches
+rank 3 (§6.8.3).
+
 ## §6.5.2 Categories
 
 | Category | Does | Example |
@@ -397,45 +400,55 @@ the player made it. That is "synergy is sculpted, not drafted" expressed as an i
 
 ---
 
-# §6.8 Mastery Move progression
+# §6.8 Bond — a line gets better by being played
 
-Each species line has up to three Mastery tiers, tracked per account (§5.13.2). Two-stage lines cap at Lv2.
+Each evolution line has a **Bond**, tracked per account (§8.9), that grows with what you do *with* it and opens
+one concrete thing on the line at each of five ranks: its Mastery Move tiers, its Shiny palette, its hidden
+ability, and at the top the right to start a run. Charmander, Charmeleon and Charizard share one Bond.
 
-## §6.8.1 Lv1 — "Familiar Bond"
+Bond replaced two overlapping systems on 2026-09-21 — Pokédex tiers earned by *knocking out* the species, and
+Mastery levels earned by species-specific achievements. The first read backwards to the first player who met it
+("do I have to kill it? with it?"), the second was a hundred authored quests for a feeling the play itself
+already produces. What the player wanted was to feel a Pokémon improve *poco a poco, run a run*, by playing it;
+Bond is that, and nothing here is a point of damage: every unlock is a card, a palette, an option or a door.
 
-Universal. Any **one** of: win 3 combats with this Pokémon in the Active Team · recruit it for the first time ·
-finish any run with it in the Active Team. Once unlocked it is permanent for that species.
+## §6.8.1 Bond points
 
-## §6.8.2 Lv2 — "Trusted Partner"
+Earned by a line while it is in the **Active Team**:
 
-Species-specific and themed to its combat identity. Examples:
-
-| Line | Achievement |
+| What you did with the line | Bond |
 |---|---|
-| Bulbasaur | Apply Poison or Sleep to 5 enemies with its moves |
-| Charmander | Land a single 40+ damage Fire hit with it |
-| Squirtle | Absorb 60+ incoming damage with Defensive moves while it leads |
-| Caterpie | Win a combat without it taking damage (DoT excluded) |
-| Pidgey | Use Step-Forward or Step-Backward 10+ times with it |
-| Geodude | Survive a lethal hit via Sturdy while it leads |
-| Magikarp | Evolve it into Gyarados |
-| Snorlax | Catch it rather than defeating it |
-| *fallback* | Win 3 runs with it in the Active Team |
+| Won a fight | +1 — and +1 more for the member that led the most turns of that fight |
+| Evolved | +5 |
+| Recruited it (first of the line this run) | +2 |
+| Finished a run with it | +8 |
+| Won a run with it | +15 (replaces the +8) |
 
-For a two-stage line this is the top tier.
+A first run with a starter leaves it at roughly 30: rank 2 on the first evening, rank 3 on the second, rank 5
+around the fifth. The numbers are tunable; the anchor is **one run ≈ one rank early on, and Soulbound is a
+commitment of several runs, not one lucky one.**
 
-## §6.8.3 Lv3 — "Deep Bond"
+## §6.8.2 Ranks and unlocks
 
-Three-stage lines only, and genuinely hard — sustained multi-run intent:
+| Rank | Bond | Name | Opens on the line |
+|---|---|---|---|
+| 1 | 5 | Companion | **Mastery Move Lv1** — the fifth card (§5.13.2) |
+| 2 | 15 | Trusted | **Shiny** — your copies wear the official shiny palette |
+| 3 | 35 | Veteran | **Hidden ability** (§6.8.3) |
+| 4 | 60 | Deep Bond | **Mastery Move Lv2** (the stage still caps it: middle stage or a two-stage final) |
+| 5 | 100 | Soulbound | **Mastery Move Lv3** on a three-stage line; on a two-stage or single-stage line the Mastery card is dealt into **every opening hand**. Either way the line **may start a run** (§8.5.2) |
 
-| Line | Achievement |
-|---|---|
-| Bulbasaur | Win a run with Venusaur leading for 60 %+ of all combat turns |
-| Charmander | Win a run using no consumables |
-| Squirtle | Win a run with no Active Pokémon ever fainting |
-| Caterpie | Apply a status to every enemy in a combat, five times |
-| Pidgey | Win a run on the highest difficulty with Pidgeot in the Active Team |
-| Machop | Win a combat using only Machamp's Melee moves |
+Rank-ups are folded by the account the moment the event lands (§8.10), so a rank crossed mid-run applies from
+the next fight. Crossing a rank pays no Trainer XP — Bond is the line's, XP is the trainer's.
+
+## §6.8.3 Hidden abilities
+
+Every line's catalogue row authors **three** abilities (`catalogs/species-r1.md`). The **third is the hidden
+one**: it sits in the pool, the Dojo lists it greyed and named as hidden, and it opens at Bond rank 3. The first
+entry is still what the first evolution grants (§6.5.1); the second is the Dojo's choice from the start.
+
+Six lines' third abilities are not authored yet (Rain Dish, Infiltrator, Arena Trap, Weak Armor, Sheer Force,
+Gluttony — each waits on a system of v0.7); their rank-3 slot says so, and the rank still grants the rest.
 
 ## §6.8.4 Power targets
 

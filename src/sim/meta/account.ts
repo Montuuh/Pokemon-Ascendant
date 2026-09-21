@@ -1,6 +1,7 @@
 import type { ContentRegistry } from '../content/defs';
 import { ACHIEVEMENTS, achievementById, applyMetaEvent, emptyProgress, MEDAL_XP, type AchievementDef, type AchievementProgress, type MetaEvent } from './achievements';
 import { dexTierFor, DEX_TIER_XP, type DexEntry, type DexTier } from './pokedex';
+import { BOND, bondRank } from './bond';
 
 // §8.3–§8.6, §8.9, §8.10 — the account: everything that outlives a run.
 //
@@ -54,8 +55,8 @@ export interface AccountState {
   titles: string[];
   /** §5.13 / §8.9 — the Pokédex, per species. */
   dex: Record<string, DexEntry>;
-  /** §6.8 — Mastery Move tier unlocked per *line* (keyed by base species), 0–3. */
-  mastery: Record<string, number>;
+  /** §6.8 — Bond points per *line* (keyed by base species). `bondRank` turns them into ranks 0–5. */
+  bond: Record<string, number>;
   achievements: AchievementProgress;
   stats: LifetimeStats;
   /**
@@ -77,7 +78,7 @@ export const emptyAccount = (): AccountState => ({
   hub: [],
   titles: [],
   dex: {},
-  mastery: {},
+  bond: {},
   achievements: emptyProgress(),
   stats: { runs: 0, wins: 0, losses: 0, combatsWon: 0, recruits: 0, evolutions: 0, catches: 0, leadTurns: {}, hardestWin: 0 },
   counters: {},
@@ -194,12 +195,15 @@ export interface AccountDelta {
   rewards: { level: number; reward: TrackReward }[];
   unlockedAchievements: AchievementDef[];
   dexPromotions: { speciesId: string; tier: DexTier }[];
-  masteryUnlocks: { line: string; tier: number }[];
+  /** §6.8.1 — Bond points earned per line by this event. */
+  bondGains: { line: string; points: number }[];
+  /** §6.8.2 — ranks crossed by this event, in order. */
+  bondRankUps: { line: string; rank: number }[];
   /** §8.6.1 — Tier-2 relics discovered by a criterion (the track's "Relic pool +1" reports under `rewards`). */
   discoveredRelics: string[];
 }
 
-export const emptyDelta = (): AccountDelta => ({ xp: 0, tokens: 0, levelsGained: [], rewards: [], unlockedAchievements: [], dexPromotions: [], masteryUnlocks: [], discoveredRelics: [] });
+export const emptyDelta = (): AccountDelta => ({ xp: 0, tokens: 0, levelsGained: [], rewards: [], unlockedAchievements: [], dexPromotions: [], bondGains: [], bondRankUps: [], discoveredRelics: [] });
 
 export interface AccountContext {
   content: ContentRegistry;
@@ -273,25 +277,16 @@ function promote(next: AccountState, speciesId: string, ctx: AccountContext, del
   const entry = dexEntry(next, speciesId);
   const rarity = ctx.content.species(speciesId).rarity;
   const tier = dexTierFor(entry.defeats, rarity);
-  while (entry.tier < tier) {
-    entry.tier = (entry.tier + 1) as DexTier;
+  if (entry.tier < tier) {
+    entry.tier = tier;
     const xpBefore = next.xp;
     bump(delta, next, DEX_TIER_XP[entry.tier], ctx);
     delta.dexPromotions.push({ speciesId, tier: entry.tier });
-    // §8.7 — the Mastery-category medals count promotions; the promotion is an event of its own.
-    foldMedals(next, { t: 'dex-tier-up', speciesId, tier: entry.tier as 1 | 2 | 3 }, ctx, delta);
+    // §8.7 Acquaintance counts species reaching Familiar; the promotion is an event of its own.
+    foldMedals(next, { t: 'dex-tier-up', speciesId, tier: 1 }, ctx, delta);
     settleLevels(next, xpBefore, ctx, delta);
   }
-  // §5.13.1 Master "unlocks this species' Mastery Move": the line holds at least Lv1 from here, whatever
-  // §6.8.1's three triggers have or have not done. Familiar Bond is the easier road; this is the certain one.
-  if (entry.tier >= 3) {
-    const line = lineOf(speciesId, ctx.content);
-    if ((next.mastery[line] ?? 0) < 1) {
-      next.mastery[line] = 1;
-      delta.masteryUnlocks.push({ line, tier: 1 });
-    }
-  }
-  // §8.6.1 Battle Tracker's discovery counts species at Familiar or above.
+  // §8.6.1 Battle Tracker's discovery counts species at Familiar.
   next.counters['familiar-species'] = Object.values(next.dex).filter((e) => e.tier >= 1).length;
 }
 
@@ -317,18 +312,24 @@ function discover(next: AccountState, ctx: AccountContext, delta: AccountDelta):
 const monoType = (species: readonly string[], content: ContentRegistry): boolean =>
   species.length === 3 && new Set(species.map((id) => content.species(id).types[0])).size === 1;
 
-/** §6.8.1 — Lv1 "Familiar Bond": any of three things, once, per line. */
-function familiarBond(next: AccountState, speciesId: string, ctx: AccountContext, delta: AccountDelta): void {
+/**
+ * §6.8.1 — Bond points for a line, and the rank-ups they cross. Crossing a rank raises `bond-rank-up` for the
+ * medals (§8.7) and settles nothing else: Bond is not Trainer XP, it opens things on the line only.
+ */
+function bond(next: AccountState, speciesId: string, points: number, ctx: AccountContext, delta: AccountDelta): void {
+  if (points <= 0) return;
   const line = lineOf(speciesId, ctx.content);
-  if ((next.mastery[line] ?? 0) >= 1) return;
-  const e = dexEntry(next, speciesId);
-  if (e.recruited || e.winsWith >= 3 || e.runsFinishedWith >= 1) {
-    next.mastery[line] = 1;
-    delta.masteryUnlocks.push({ line, tier: 1 });
+  const before = bondRank(next.bond[line] ?? 0);
+  next.bond[line] = (next.bond[line] ?? 0) + points;
+  delta.bondGains.push({ line, points });
+  const after = bondRank(next.bond[line]);
+  for (let r = before + 1; r <= after; r++) {
+    delta.bondRankUps.push({ line, rank: r });
+    foldMedals(next, { t: 'bond-rank-up', line, rank: r }, ctx, delta);
   }
 }
 
-/** The base species of a line — Mastery is tracked per line, whatever stage the Pokémon is at. */
+/** The base species of a line — Bond is tracked per line, whatever stage the Pokémon is at. */
 export const lineOf = (speciesId: string, content: ContentRegistry): string => content.lineBase(speciesId);
 
 /**
@@ -368,10 +369,11 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
         bump(delta, next, XP.combat, ctx);
         next.stats.combatsWon += 1;
         if (e.outcome === 'caught') next.stats.catches += 1;
-        // §6.8.1 — wins with a species in the Active Team.
+        // §6.8.1 — a won fight is Bond for every line in the Active Team, and one more for the one that led.
+        const lead = Object.entries(e.leadTurns ?? {}).sort((a, b) => b[1] - a[1])[0]?.[0];
         for (const sid of e.activeSpecies ?? []) {
           dexEntry(next, sid).winsWith += 1;
-          familiarBond(next, sid, ctx, delta);
+          bond(next, sid, BOND.win + (sid === lead ? BOND.lead : 0), ctx, delta);
         }
       }
       // §5.13.1 — kill credit for every species defeated, whoever landed the blow. Catching is not a kill.
@@ -410,7 +412,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
       if (e.firstThisRun) bump(delta, next, XP.recruit, ctx);
       const entry = dexEntry(next, e.speciesId);
       entry.recruited = true;
-      familiarBond(next, e.speciesId, ctx, delta);
+      if (e.firstThisRun) bond(next, e.speciesId, BOND.recruit, ctx, delta);
       // §8.6.1 Lure Module — three in one Region. Region 1 is the run until v0.7, so "this run" is the measure.
       if ((e.recruitsThisRun ?? 0) >= 3) count(next, 'region-recruits-three', 1, true);
       break;
@@ -418,12 +420,15 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
     case 'evolution':
       next.stats.evolutions += 1;
       bump(delta, next, XP.evolution, ctx);
+      // §6.8.1 — an evolution is the biggest single Bond step: it is the line changing in your hands.
+      bond(next, e.toSpeciesId, BOND.evolution, ctx, delta);
       break;
     case 'badge-awarded':
       bump(delta, next, XP.gym, ctx);
       break;
     case 'relic-acquired':
     case 'dex-tier-up':
+    case 'bond-rank-up':
       break;
     case 'run-end': {
       next.stats.runs += 1;
@@ -437,10 +442,10 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
         // §8.3.2 — a failed run still pays: floor(layers × 50), capped. Failure is fuel, made legible.
         bump(delta, next, Math.min(XP.failedRunCap, (e.layersCleared ?? 0) * XP.failedRunPerLayer), ctx);
       }
-      // §6.8.1 — finishing a run with a species in the Active Team.
+      // §6.8.1 — finishing a run with a line in the Active Team, and more for winning it.
       for (const sid of e.activeSpecies ?? []) {
         dexEntry(next, sid).runsFinishedWith += 1;
-        familiarBond(next, sid, ctx, delta);
+        bond(next, sid, e.won ? BOND.runWon : BOND.runFinished, ctx, delta);
       }
       break;
     }
@@ -487,7 +492,8 @@ export function applyAccountEvents(state: AccountState, events: readonly MetaEve
     total.rewards.push(...step.delta.rewards);
     total.unlockedAchievements.push(...step.delta.unlockedAchievements);
     total.dexPromotions.push(...step.delta.dexPromotions);
-    total.masteryUnlocks.push(...step.delta.masteryUnlocks);
+    total.bondGains.push(...step.delta.bondGains);
+    total.bondRankUps.push(...step.delta.bondRankUps);
     total.discoveredRelics.push(...step.delta.discoveredRelics);
   }
   return { state: cur, delta: total };

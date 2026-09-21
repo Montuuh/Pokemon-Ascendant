@@ -759,7 +759,13 @@ describe('The Dojo — §2.9.4', () => {
     expect(s.money).toBe(before - PRICES.dojoMove);
 
     // One service no longer ends the visit — running out of money does.
-    expect(reject(s, { type: 'set-ability', uid, abilityId: 'healer' })).toBe('cannot-afford');
+    expect(reject(s, { type: 'set-ability', uid, abilityId: 'chlorophyll' })).toBe('cannot-afford');
+
+    // §6.8.3 — the line's hidden ability (Bulbasaur's third, Healer) is in the pool but locked until Bond rank 3.
+    const rich = { ...s, money: 10_000 };
+    expect(reject(rich, { type: 'set-ability', uid, abilityId: 'healer' })).toBe('ability-locked');
+    const bonded = { ...rich, perks: { ...rich.perks, bond: { bulbasaur: 3 } } };
+    expect(reject(bonded, { type: 'set-ability', uid, abilityId: 'healer' })).toBeNull();
 
     s = apply(s, { type: 'leave-dojo' });
     expect(s.phase).toBe('map');

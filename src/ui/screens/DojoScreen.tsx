@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { IconCheck, IconDoorExit } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { PRICES, type PartyMon } from '@/sim';
+import { PRICES, abilityLocked, type PartyMon } from '@/sim';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
@@ -41,7 +41,8 @@ export function DojoScreen() {
   // §6.4.3 — the tutor list belongs to this *stage*, so evolving changes the menu and delaying one to take a
   // pre-form move is a legal play.
   const tutorList = species.tutorMoves.map((id) => ({ id, move: content.move(id), known: mon.pool.includes(id) }));
-  const abilities = species.availableAbilities.map((id) => ({ id, def: content.ability(id), equipped: mon.abilityId === id }));
+  // §6.8.3 — the line's hidden ability is listed, greyed and named as such, until the line's Bond opens it.
+  const abilities = species.availableAbilities.map((id) => ({ id, def: content.ability(id), equipped: mon.abilityId === id, locked: abilityLocked(run, mon.speciesId, id, content) }));
 
   return (
     // A node service screen is front-end chrome, not stage chrome: warm light, like the Pokémon Centre
@@ -133,29 +134,31 @@ export function DojoScreen() {
           <div className={styles.service}>
             <h2 className={styles.colTitle}>Passive ability</h2>
             <ul className={styles.list}>
-              {abilities.map(({ id, def, equipped }) => {
+              {abilities.map(({ id, def, equipped, locked }) => {
                 const inert = def.hook === 'none';
                 return (
                   <li key={id}>
                     <Tipped
                       as="button"
                       type="button"
-                      tip={<Tip title={def.name} meta={['Ability', 'Passive']} body={def.description} footer={inert ? 'No effect until a later version.' : equipped ? 'Already equipped.' : 'Replaces the current passive. One slot per Pokémon.'} />}
-                      className={`${styles.offer} ${equipped || !canAbility ? styles.off : ''}`}
-                      disabled={equipped || !canAbility}
+                      tip={<Tip title={def.name} meta={['Ability', 'Passive', ...(locked ? ['Hidden'] : [])]} body={def.description} footer={locked ? RUN_REJECT_TEXT['ability-locked'] : inert ? 'No effect until a later version.' : equipped ? 'Already equipped.' : 'Replaces the current passive. One slot per Pokémon.'} />}
+                      className={`${styles.offer} ${equipped || !canAbility || locked ? styles.off : ''}`}
+                      disabled={equipped || !canAbility || locked}
                       onClick={() => act({ type: 'set-ability', uid, abilityId: id })}
                       data-testid={`ability-${id}`}
+                      data-locked={locked || undefined}
                     >
                       <span className={styles.offerBody}>
-                        <span className={`${styles.offerName} display`}>{def.name}</span>
+                        <span className={`${styles.offerName} display`}>{locked ? '🧬 ' : ''}{def.name}</span>
                         <span className={styles.offerMeta}>
                           {def.description}
                           {/* Honesty over polish: a Region-1 passive that waits on a system this build does not
                               have yet says so rather than selling a no-op. */}
                           {inert && ' · no effect until a later version'}
+                          {locked && ' · hidden ability — opens at Bond rank 3'}
                         </span>
                       </span>
-                      {equipped ? <span className={styles.tag}>equipped</span> : <Price amount={PRICES.dojoAbility} affordable={canAbility} />}
+                      {equipped ? <span className={styles.tag}>equipped</span> : locked ? <span className={styles.tag}>locked</span> : <Price amount={PRICES.dojoAbility} affordable={canAbility} />}
                     </Tipped>
                   </li>
                 );

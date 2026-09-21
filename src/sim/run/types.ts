@@ -278,8 +278,10 @@ export interface RunPerks {
    * before there was an account.
    */
   relicPool: string[] | null;
-  /** §6.8 — Mastery tier unlocked per line (keyed by base species id). Absent is 0. */
+  /** §6.8 — Mastery tier the line may carry (keyed by base species id), derived from its Bond rank. Absent is 0. */
   mastery: Record<string, number>;
+  /** §6.8.2 — Bond rank per line, for the hidden ability (rank 3) and the opening-hand Mastery card (rank 5). */
+  bond: Record<string, number>;
   /** §5.13.1 Familiar — species whose Unknown intents are revealed at combat start. */
   familiar: string[];
   /** §8.4.2 Pokédex Insight — the Hub upgrade is in force. */
@@ -378,6 +380,8 @@ export type RunAction =
   | { type: 'pick-legendary'; relicId: string | null };
 
 export type RunRejectReason =
+  /** §6.8.3 — the line's hidden ability, before Bond rank 3. */
+  | 'ability-locked'
   | 'not-on-map'
   | 'node-unreachable'
   | 'wrong-phase'

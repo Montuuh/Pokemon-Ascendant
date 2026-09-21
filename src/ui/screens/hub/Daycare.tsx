@@ -1,7 +1,7 @@
 import { useAccountStore } from '@/app/accountStore';
 import { useAppStore } from '@/app/store';
 import { getContent } from '@/content/registry';
-import { MODIFIERS, REWARD_TRACK, STARTER_IDS, levelFor, modifierSlots, modifierUnlocked, startingRelicOffers, twinRun } from '@/sim';
+import { MODIFIERS, REWARD_TRACK, STARTER_IDS, bondRank, levelFor, modifierSlots, modifierUnlocked, startingRelicOffers, twinRun } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import styles from './Hub.module.css';
@@ -40,19 +40,23 @@ export function Daycare() {
       </div>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Starters</h2>
+        <h2 className={styles.sectionTitle}>
+          Starters
+          <InfoDot tip={<Tip title="Who can start a run" body="The three defaults, the three the reward track hands out — and any line you have taken to Soulbound (Bond rank 5) in the PC Terminal's Companions tab." />} />
+        </h2>
         <ul className={styles.starters}>
-          {[...STARTER_IDS, ...META_STARTERS].map((id) => {
+          {[...STARTER_IDS, ...META_STARTERS, ...Object.keys(account.bond).filter((line) => bondRank(account.bond[line]!) >= 5 && !(STARTER_IDS as readonly string[]).includes(line) && !META_STARTERS.includes(line))].map((id) => {
             const shipped = content.hasSpecies(id);
             const isDefault = (STARTER_IDS as readonly string[]).includes(id);
-            const unlocked = isDefault || account.starters.includes(id);
+            const soulbound = bondRank(account.bond[id] ?? 0) >= 5;
+            const unlocked = isDefault || soulbound || account.starters.includes(id);
             const at = starterLevel(id);
             const name = shipped ? content.species(id).name : id.charAt(0).toUpperCase() + id.slice(1);
             const state = unlocked && shipped ? 'ready' : unlocked ? 'waiting' : 'locked';
             const tip = (
               <Tip
                 title={name}
-                meta={[isDefault ? 'From run 1' : `Level ${at}`]}
+                meta={[isDefault ? 'From run 1' : soulbound ? 'Soulbound' : `Level ${at}`]}
                 body={state === 'ready' ? 'Available on the starter screen.' : state === 'waiting' ? 'Unlocked on your account. Its move kit is authored for v0.7, so it is not on the starter screen yet.' : `Reaches your account at Trainer Level ${at}.`}
               />
             );

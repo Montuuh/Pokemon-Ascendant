@@ -100,6 +100,7 @@ export const NODE_HINT: Record<string, string> = {
 };
 
 export const RUN_REJECT_TEXT: Record<string, string> = {
+  'ability-locked': 'This is the line\'s hidden ability — it opens at Bond rank 3 (Veteran).',
   'not-on-map': 'Finish what you are doing first.',
   'node-unreachable': 'You cannot get there from here.',
   'wrong-phase': 'Not now.',

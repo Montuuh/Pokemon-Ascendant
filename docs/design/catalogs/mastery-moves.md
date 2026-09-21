@@ -35,12 +35,13 @@
 | `snorlax` | `belly-drum-s` | `pulverizing-pancake` | — |
 | `marowak` | `bonemerang-m` | `bone-rush-max` | — |
 
-## Unlock achievements (§6.8)
+## Unlocks (§6.8.2) — by Bond rank since 2026-09-21
 
-**Lv1 — "Familiar Bond"** (universal, any one of): win 3 combats with it in the Active Team · recruit it for
-the first time · finish any run with it in the Active Team.
+Lv1 at **Companion** (5 Bond), Lv2 at **Deep Bond** (60), Lv3 at **Soulbound** (100) on a three-stage line; a
+Soulbound two-stage line opens every fight with its Mastery card in hand. The species-specific achievements
+below are the superseded design, kept for the flavour they may lend future medals — none of them gates a tier.
 
-**Lv2 — "Trusted Partner"** (species-specific):
+**Lv2 — "Trusted Partner"** (superseded):
 
 | Line | Achievement |
 |---|---|
@@ -56,7 +57,7 @@ the first time · finish any run with it in the Active Team.
 | `marowak` | Catch the Spirit and field the living Marowak |
 | *(generic fallback)* | Win 3 runs with it in the Active Team |
 
-**Lv3 — "Deep Bond"** (3-stage lines only, hard):
+**Lv3 — "Deep Bond"** (superseded):
 
 | Line | Achievement |
 |---|---|
@@ -83,5 +84,5 @@ then keeps the tier below. Lv1 ships for 13 lines — Bulbasaur, Charmander, Squ
 Zubat, Geodude, Onix, Magikarp, Poliwag, Psyduck, Krabby. Six Lv1 moves wait on an effect kind the sim lacks
 (`venoshock` ×2 vs Poisoned, `super-fang` half current HP, `revenge` conditional power, `tri-attack-d`
 cycling status, `last-resort` hand condition, `belly-drum-s` self HP loss). Lv2 and Lv3 wait on §6.8.2–§6.8.3's
-achievements. Lv1 unlocks by any of §6.8.1's three triggers, tracked per line; the Pokédex Master tier grants
-at least Lv1 as §5.13.1 says.
+achievements — and since the same day, every tier unlocks by **Bond rank** (§6.8.2): Lv1 at rank 1, Lv2 at
+rank 4, Lv3 at rank 5.

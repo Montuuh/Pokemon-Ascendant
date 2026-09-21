@@ -319,22 +319,26 @@ remaining HP bars.
 
 # §5.13 The Pokédex
 
-The Pokédex is the **cross-run knowledge artifact**: it tracks how many of each species you have defeated and
-converts that into information and, eventually, power. This section owns the thresholds and the rewards; §8.9
-owns only how it is persisted.
+The Pokédex is the **cross-run knowledge artifact**: it records the species you have met, caught and knocked
+out, and converts knock-outs into information about the enemy. It is about the species you *fight*; making
+your own Pokémon better is the Bond (§6.8). This section owns the threshold and the reward; §8.9 owns only how
+it is persisted.
 
-## §5.13.1 Mastery tiers
+## §5.13.1 Familiar
 
-Thresholds scale with the species' rarity.
+| Rarity | Knock-outs | Reward |
+|---|---|---|
+| Common | 10 | **Familiar** — the species' Unknown intents are revealed from turn one, in every fight from then on |
+| Uncommon | 5 | |
+| Rare | 2 | |
 
-| Tier | Common | Uncommon | Rare | Reward |
-|---|---|---|---|---|
-| **Familiar** | 10 kills | 5 | 2 | Unknown intents for this species are permanently revealed at combat start |
-| **Veteran** | 30 | 15 | 5 | Your own Pokémon of this species become **Shiny** |
-| **Master** | 50 | 25 | 10 | Unlocks this species' **Mastery Move** |
+Kill credit comes from knocking a copy of the species out — wild or trainer-owned — with **any** of your
+Pokémon. **Catching does not award kill credit** — you learn about a species by fighting it.
 
-Kill credit comes from defeating a Pokémon, including trainer-owned ones. **Catching does not award kill
-credit** — you learn about a species by fighting it.
+Familiar is the only tier. The Pokédex used to climb to Veteran (Shiny) and Master (the Mastery Move); both
+moved to the Bond on 2026-09-21, because earning your partner's palette and its signature card by knocking out
+its wild cousins read backwards, and because the Pokédex is better at one thing said clearly than three things
+said confusingly.
 
 ## §5.13.2 Mastery Moves
 
@@ -347,8 +351,9 @@ active-4 configuration.
   (110–140, 2–3 AP, a composite species-unique effect).
 - **It advances with evolution**, but only if that tier has been unlocked in your account. Otherwise the
   Pokémon keeps the tier it has.
-- **Unlocks are per species, across runs**: Lv1 "Familiar Bond" is universal (win 3 combats with it, or recruit
-  it, or finish a run with it); Lv2 and Lv3 are species-specific achievements (§6.8).
+- **Unlocks are per line, across runs**, by Bond rank (§6.8.2): Lv1 at Companion, Lv2 at Deep Bond, Lv3 at
+  Soulbound on a three-stage line. A Soulbound two-stage line instead opens every fight with its Mastery card
+  in hand.
 
 **Deck integration.** Deck size = 12 + 1 per Active member with an unlocked Mastery, to a maximum of 15. Hand
 size stays 5. When a Mastery-unlocked Pokémon faints, **5** cards leave the deck and discard, not 4.

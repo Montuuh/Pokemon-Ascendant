@@ -309,6 +309,9 @@ Three more, unlocked on the reward track, each widening build diversity rather t
 **Eevee has three branches, not four.** Gen I has exactly three Eeveelutions, and the Gen I constraint (§1.6.2)
 outranks a promise of a fourth.
 
+**Any line at Bond rank 5 may also start a run** (§6.8.2) — a fourth road to the starter screen, earned by
+playing the line across several runs rather than by Trainer Level. *(Added 2026-09-21.)*
+
 **Magikarp replaces Riolu** as the third meta-starter. Riolu is a Gen IV Pokémon in a Gen I project, and the
 "weak early, devastating later" fantasy it was chosen for is exactly what the Magikarp line already delivers —
 with a three-card deck for the first stretch of the run, which is a far more interesting cost.
@@ -464,9 +467,9 @@ This keeps "every run is real" intact and removes the "I won, but on baby mode" 
 The Pokédex system itself — tiers, thresholds and rewards — is §5.13. This section owns only how it persists:
 
 - Tracked **per account**, across every run, and never reset.
-- Tier promotions award one-time Trainer XP (§8.3.2).
-- The PC Terminal is its home surface: browsable by species, filterable by tier.
-- Mastery Moves exist as content for every implemented line; the Master tier is what unlocks them.
+- Reaching Familiar awards one-time Trainer XP (§8.3.2).
+- The PC Terminal is its home surface: browsable by species, filterable by Familiar / unknown.
+- The **Bond** (§6.8) is persisted beside it, per line, and has its own tab — Companions.
 
 ---
 

@@ -1,6 +1,6 @@
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { DEX_TIER_NAME, MAX_LEVEL, levelFor, levelProgress } from '@/sim';
+import { BOND_LADDER, BOND_RANK_NAME, DEX_TIER_NAME, MAX_LEVEL, levelFor, levelProgress } from '@/sim';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { tokenTip, trainerLevelTip } from '@/ui/tips';
 import { trackRewardLabel } from './trackText';
@@ -25,7 +25,14 @@ export function AccountSummary() {
   for (const r of ledger.rewards) lines.push({ key: `r${r.level}`, glyph: '★', text: `Level ${r.level}: ${trackRewardLabel(r.reward, content)}` });
   for (const a of ledger.unlockedAchievements) lines.push({ key: `a${a.id}`, glyph: MEDAL_GLYPH[a.tier] ?? '🏅', text: `${a.name} — ${a.description}` });
   for (const d of ledger.dexPromotions) lines.push({ key: `d${d.speciesId}${d.tier}`, glyph: '📖', text: `${content.species(d.speciesId).name} is now ${DEX_TIER_NAME[d.tier]}` });
-  for (const m of ledger.masteryUnlocks) lines.push({ key: `m${m.line}${m.tier}`, glyph: '✦', text: `${content.species(m.line).name} line: Mastery Lv${m.tier}` });
+  // §6.8 — Bond: one line per line, the points and any rank it crossed.
+  const bondByLine = new Map<string, number>();
+  for (const g of ledger.bondGains) bondByLine.set(g.line, (bondByLine.get(g.line) ?? 0) + g.points);
+  for (const [line, pts] of bondByLine) {
+    const ups = ledger.bondRankUps.filter((r) => r.line === line).map((r) => r.rank);
+    const top = ups.length ? Math.max(...ups) : null;
+    lines.push({ key: `b${line}`, glyph: '✦', text: `${content.species(line).name} line: +${pts} Bond${top ? ` → ${BOND_RANK_NAME[top]} (${BOND_LADDER[top - 1]!.unlock})` : ''}` });
+  }
   for (const id of ledger.discoveredRelics) lines.push({ key: `x${id}`, glyph: '◆', text: `Discovered ${content.relic(id).name}` });
 
   return (

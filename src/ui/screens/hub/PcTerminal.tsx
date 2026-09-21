@@ -1,29 +1,30 @@
 import { useMemo, useState } from 'react';
-import { IconCheck, IconEye, IconPokeball, IconSparkles, IconStar, IconSwords } from '@tabler/icons-react';
+import { IconCheck, IconEye, IconPokeball, IconSwords } from '@tabler/icons-react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, DEX_TIER_NAME, dexNext, discoveryProgress, isOfferable, masteryMoveFor, relicTier, relicUnlocked, type AchievementDef, type MedalTier } from '@/sim';
+import { ACHIEVEMENTS, BOND_LADDER, BOND_RANK_NAME, bondRank, bondUnlocks, dexNext, discoveryProgress, isOfferable, isThreeStageLine, masteryTierFor, relicTier, relicUnlocked, type AchievementDef, type MedalTier } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon } from '@/ui/art';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { dexTip, relicTierTip } from '@/ui/tips';
-import { TierBar } from './TierBar';
+import { bondTip, dexTip, relicTierTip } from '@/ui/tips';
+import { BondBar } from './BondBar';
+import { RANK_ICON } from './rankIcons';
 import styles from './Hub.module.css';
 
-// §8.4.1 — the PC Terminal: what the account *knows*. Three tabs — the Pokédex (§5.13, §8.9), the medal case
-// (§8.7) and the relic discoveries (§8.6.1). The Tier-2 board lived on the Poké Mart in v0.6.0 and made the
-// shop read as two things; it is knowledge, so it lives with the other knowledge.
+// §8.4.1 — the PC Terminal: what the account *knows* and what it has *earned*. Four tabs — Companions (the
+// Bond of every line you have played, §6.8), the Pokédex (knowledge about the species you fight, §5.13), the
+// medal case (§8.7) and the relic discoveries (§8.6.1).
 //
-// The Pokédex opens with the verb. The v0.6.0 panel said "defeat a species to learn it" and players still
-// asked whether they had to catch it, or beat it *with* it — so the legend now says all three things it needs
-// to say, with the reward icon of each tier beside the number that earns it.
+// Both the Companions tab and the Pokédex open with the verb. The first v0.6 panel said "defeat a species to
+// learn it" and the first player asked whether they had to catch it, or beat it *with* it — so each tab says
+// what earns what, with the reward icon beside the number that earns it.
 
 const CATEGORY_LABEL: Record<AchievementDef['category'], string> = {
   'first-steps': 'First steps',
   recruitment: 'Recruitment',
   evolution: 'Evolution',
-  mastery: 'Mastery',
+  mastery: 'Bond',
   combat: 'Combat',
   boss: 'Gym Leaders',
   'build-identity': 'Build identity',
@@ -32,7 +33,7 @@ const CATEGORY_LABEL: Record<AchievementDef['category'], string> = {
 
 const MEDAL_GLYPH: Record<MedalTier, string> = { bronze: '🥉', silver: '🥈', gold: '🥇', platinum: '💎' };
 
-type DexFilter = 'all' | 'known' | 'unknown' | 'mastery';
+type DexFilter = 'all' | 'known' | 'unknown';
 
 export function PcTerminal() {
   const account = useAccountStore((s) => s.account);
@@ -42,13 +43,18 @@ export function PcTerminal() {
   const species = useMemo(() => [...content.allSpecies()].sort((a, b) => a.dex - b.dex), [content]);
   const rows = species.filter((s) => {
     const tier = account.dex[s.id]?.tier ?? 0;
-    const mastery = account.mastery[content.lineBase(s.id)] ?? 0;
     if (filter === 'known') return tier >= 1;
     if (filter === 'unknown') return tier === 0;
-    if (filter === 'mastery') return mastery >= 1;
     return true;
   });
   const known = species.filter((s) => (account.dex[s.id]?.tier ?? 0) >= 1).length;
+
+  // §6.8 — one row per line, base forms; the lines you have played first, then dex order.
+  const lines = useMemo(
+    () => species.filter((s) => s.stage === 'basic').sort((a, b) => (account.bond[b.id] ?? 0) - (account.bond[a.id] ?? 0) || a.dex - b.dex),
+    [species, account.bond],
+  );
+  const bonded = lines.filter((l) => (account.bond[l.id] ?? 0) > 0).length;
 
   const byCategory = useMemo(() => {
     const out = new Map<AchievementDef['category'], AchievementDef[]>();
@@ -64,8 +70,11 @@ export function PcTerminal() {
   const discovered = discoverable.filter((r) => relicUnlocked(account, r)).length;
 
   return (
-    <Tabs.Root className={styles.pc} defaultValue="dex" data-testid="pc-terminal">
+    <Tabs.Root className={styles.pc} defaultValue="companions" data-testid="pc-terminal">
       <Tabs.List className={styles.tabs} aria-label="PC Terminal">
+        <Tabs.Trigger className={styles.tab} value="companions" data-testid="pc-tab-companions">
+          Companions <span className={`${styles.muted} tabular`}>{bonded} / {lines.length}</span>
+        </Tabs.Trigger>
         <Tabs.Trigger className={styles.tab} value="dex" data-testid="pc-tab-dex">
           Pokédex <span className={`${styles.muted} tabular`}>{known} / {species.length}</span>
         </Tabs.Trigger>
@@ -77,9 +86,76 @@ export function PcTerminal() {
         </Tabs.Trigger>
       </Tabs.List>
 
-      {/* ── Pokédex ─────────────────────────────────────────────────────────────────────────────────────── */}
+      {/* ── Companions (§6.8) ─────────────────────────────────────────────────────────────────────────── */}
+      <Tabs.Content value="companions" className={styles.tabPanel}>
+        <div className={`${styles.legend} ${styles.legendBond}`} data-testid="bond-legend">
+          <div className={`${styles.legendStep} ${styles.legendWide}`}>
+            <span className={styles.legendIcon}><IconSwords size={18} /></span>
+            <span className={styles.legendText}>
+              <b>Play a line and its Bond grows:</b> +1 per fight won with it in the Active Team (+1 more if it led), +5 per evolution, +2 the first time you recruit it in a run, +8 for finishing a run with it, +15 for winning one.
+            </span>
+          </div>
+          {BOND_LADDER.map((r) => (
+            <div key={r.rank} className={styles.legendStep} data-rank={r.rank}>
+              <span className={styles.legendIcon} data-rank={r.rank}>{RANK_ICON[r.rank](18)}</span>
+              <span className={styles.legendText}><b>{r.rank} · {r.name}</b> — {r.unlock}</span>
+            </div>
+          ))}
+        </div>
+
+        <ul className={styles.bondGrid} data-testid="bond-grid">
+          {lines.map((l) => {
+            const points = account.bond[l.id] ?? 0;
+            const rank = bondRank(points);
+            const three = isThreeStageLine(l.id, content);
+            const u = bondUnlocks(rank, three);
+            const masteryNow = masteryTierFor(account, l.id, content);
+            const masteryMoves = content.masteryMoves(l.id);
+            const hidden = l.hiddenAbility ? content.ability(l.hiddenAbility) : null;
+            // A tier whose move is not shipped yet says so in two characters, not a sentence: the ladder is the
+            // point of the row, and every line would otherwise carry the same caveat three times.
+            const soon = (id: string | null | undefined, fallback: string) => (id ? content.move(id).name : fallback);
+            const shipped = (id: string | null | undefined) => !!id;
+            const hiddenName = hidden ? hidden.name : (l.hiddenAbilityPending ?? 'Hidden ability').split(' — ')[0]!;
+            const chips: { key: string; on: boolean; text: string; soon?: string }[] = [
+              { key: 'm1', on: u.mastery >= 1, text: `★ ${soon(masteryMoves[0], 'Mastery Lv1')}`, soon: shipped(masteryMoves[0]) ? undefined : 'v0.7' },
+              { key: 'shiny', on: u.shiny, text: '✨ Shiny' },
+              { key: 'hidden', on: u.hiddenAbility, text: `🧬 ${hiddenName}`, soon: hidden ? undefined : 'v0.7' },
+              { key: 'm2', on: u.mastery >= 2, text: `★★ ${soon(masteryMoves[1], 'Mastery Lv2')}`, soon: shipped(masteryMoves[1]) ? undefined : 'v0.7' },
+              three
+                ? { key: 'm3', on: u.mastery >= 3, text: `★★★ ${soon(masteryMoves[2], 'Mastery Lv3')}`, soon: shipped(masteryMoves[2]) ? undefined : 'v0.7' }
+                : { key: 'opener', on: u.opener, text: '★ In every opening hand' },
+              { key: 'starter', on: u.starter, text: 'Can start a run' },
+            ];
+            return (
+              <li key={l.id} className={`${styles.bondRow} ${points === 0 ? styles.bondUnplayed : ''}`} data-testid={`bond-${l.id}`} data-rank={rank}>
+                <Tipped tip={bondTip(l.name, points, rank, three, masteryNow)} className={styles.bondInner}>
+                  <MonIcon speciesId={l.id} size={48} />
+                  <span className={styles.bondBody}>
+                    <span className={styles.bondName}>
+                      {l.name} line
+                      <span className={styles.bondRank} data-rank={rank}>{rank > 0 ? `${BOND_RANK_NAME[rank]} · rank ${rank}` : 'Not yet played'}</span>
+                    </span>
+                    <BondBar points={points} />
+                    <span className={styles.bondChips}>
+                      {chips.map((c) => (
+                        <span key={c.key} className={`${styles.bondChip} ${c.on ? styles.bondChipOn : ''}`} data-on={c.on || undefined}>
+                          {c.on && <IconCheck size={11} stroke={3} />} {c.text}
+                          {c.soon && <em className={styles.bondNote}>{c.soon}</em>}
+                        </span>
+                      ))}
+                    </span>
+                  </span>
+                </Tipped>
+              </li>
+            );
+          })}
+        </ul>
+      </Tabs.Content>
+
+      {/* ── Pokédex (§5.13) ───────────────────────────────────────────────────────────────────────────── */}
       <Tabs.Content value="dex" className={styles.tabPanel}>
-        <div className={styles.legend} data-testid="dex-legend">
+        <div className={`${styles.legend} ${styles.legendTwo}`} data-testid="dex-legend">
           <div className={styles.legendStep}>
             <span className={styles.legendIcon}><IconSwords size={18} /></span>
             <span className={styles.legendText}>
@@ -89,17 +165,9 @@ export function PcTerminal() {
           </div>
           <div className={styles.legendStep}>
             <span className={styles.legendIcon}><IconEye size={18} /></span>
-            <span className={styles.legendText}><b>Familiar</b> — its hidden intents are shown from turn one.</span>
-          </div>
-          <div className={styles.legendStep}>
-            <span className={styles.legendIcon}><IconSparkles size={18} /></span>
-            <span className={styles.legendText}><b>Veteran</b> — your own copies are Shiny.</span>
-          </div>
-          <div className={styles.legendStep}>
-            <span className={styles.legendIcon}><IconStar size={18} /></span>
             <span className={styles.legendText}>
-              <b>Master</b> — its Mastery Move joins the deck as a fifth card.
-              <InfoDot tip={<Tip title="Thresholds" body="Knock-outs needed for Familiar / Veteran / Master: a common species 10 / 30 / 50, an uncommon one 5 / 15 / 25, a rare one 2 / 5 / 10. The bar on each row is drawn to that species' own numbers." footer="A line's Mastery Move also opens by recruiting it, winning three fights with it, or finishing a run with it." />} />
+              <b>Familiar</b> — its hidden intents are shown from turn one, in every fight from then on.
+              <InfoDot tip={<Tip title="Thresholds" body="Knock-outs for Familiar: 10 for a common species, 5 for an uncommon one, 2 for a rare one." footer="The Pokédex is knowledge about the species you fight. Making your own better is the Bond — the Companions tab." />} />
             </span>
           </div>
         </div>
@@ -107,9 +175,9 @@ export function PcTerminal() {
         <div className={styles.filterRow}>
           <span className={styles.muted}>{rows.length} species</span>
           <div className={styles.filters} role="group" aria-label="Filter">
-            {(['all', 'known', 'unknown', 'mastery'] as DexFilter[]).map((f) => (
+            {(['all', 'known', 'unknown'] as DexFilter[]).map((f) => (
               <button key={f} type="button" className={`${styles.filter} ${filter === f ? styles.filterOn : ''}`} onClick={() => setFilter(f)} aria-pressed={filter === f} data-testid={`dex-filter-${f}`}>
-                {f === 'all' ? 'All' : f === 'known' ? 'Known' : f === 'unknown' ? 'Unknown' : '★ Mastery'}
+                {f === 'all' ? 'All' : f === 'known' ? 'Familiar' : 'Unknown'}
               </button>
             ))}
           </div>
@@ -121,25 +189,28 @@ export function PcTerminal() {
             const tier = entry?.tier ?? 0;
             const defeats = entry?.defeats ?? 0;
             const next = dexNext(entry, s.rarity);
-            const line = content.lineBase(s.id);
-            const mastery = account.mastery[line] ?? 0;
-            const masteryMove = masteryMoveFor(s.id, mastery, content);
+            const need = next?.need ?? defeats;
+            const pct = next ? Math.min(100, Math.round((defeats / next.need) * 100)) : 100;
             return (
               <li key={s.id} className={`${styles.dexRow} ${tier === 0 ? styles.dexUnknown : ''}`} data-testid={`dex-${s.id}`} data-tier={tier}>
-                <Tipped tip={dexTip(s.name, s.rarity, tier, defeats, next, mastery)} className={styles.dexInner}>
+                <Tipped tip={dexTip(s.name, s.rarity, tier, defeats, next)} className={styles.dexInner}>
                   <MonIcon speciesId={s.id} size={44} />
                   <span className={styles.dexBody}>
                     <span className={styles.dexName}>
                       <span className={`${styles.muted} tabular`}>#{String(s.dex).padStart(3, '0')}</span> {s.name}
                       <span className={styles.dexRarity}>{s.rarity}</span>
                       {entry?.recruited && <span className={styles.dexBadge}><IconPokeball size={11} /> caught</span>}
-                      {masteryMove && <span className={`${styles.dexBadge} ${styles.dexMastery}`}>★ {content.move(masteryMove).name}</span>}
                     </span>
                     <span className={styles.dexKo}>
                       <IconSwords size={14} className={styles.koIcon} />
-                      <span className="tabular"><b>{defeats}</b> KO{next ? ` · ${next.need - defeats} more to ${DEX_TIER_NAME[next.tier]}` : ' · Master'}</span>
+                      <span className="tabular"><b>{defeats}</b> KO{next ? ` · ${next.need - defeats} more to Familiar` : ' · Familiar'}</span>
                     </span>
-                    <TierBar defeats={defeats} rarity={s.rarity} tier={tier} />
+                    <span className={styles.dexFamiliarRow}>
+                      <Progress.Root className={styles.dexBar} value={pct} aria-label={`${defeats} of ${need}`}>
+                        <Progress.Indicator className={styles.dexFill} style={{ width: `${pct}%` }} />
+                      </Progress.Root>
+                      <span className={`${styles.dexEye} ${tier >= 1 ? styles.dexEyeOn : ''}`} aria-hidden="true"><IconEye size={13} stroke={2.4} /> {need}</span>
+                    </span>
                   </span>
                 </Tipped>
               </li>

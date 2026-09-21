@@ -42,8 +42,13 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('kiosk-daycare')).toContainText('Level 3');
     await expect(page.getByTestId('kiosk-door')).toBeDisabled();
 
-    // §5.13 — the Pokédex opens with the verb, every species listed, every one unknown.
+    // §6.8 — the PC Terminal opens on Companions: every line listed, none played, the ladder explained.
     await page.getByTestId('kiosk-pc').click();
+    await expect(page.getByTestId('bond-legend')).toContainText('Play a line and its Bond grows');
+    await expect(page.getByTestId('bond-squirtle')).toHaveAttribute('data-rank', '0');
+    await expect(page.getByTestId('bond-squirtle')).toContainText('Not yet played');
+    // §5.13 — the Pokédex opens with the verb, every species listed, every one unknown.
+    await page.getByTestId('pc-tab-dex').click();
     await expect(page.getByTestId('dex-legend')).toContainText('Knock a species out');
     await expect(page.getByTestId('dex-legend')).toContainText('Catching it does not count');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '0');
@@ -75,10 +80,16 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'claimed');
     await expect(page.getByTestId('track-3')).toHaveAttribute('data-state', 'next');
 
+    // §6.8 — 303 wins leading with Squirtle is 606 Bond: Soulbound, every unlock lit, Aqua Tail named.
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '3');
-    // §5.13.1 Master opens the line's Mastery Move: Pidgey's fifth card is Brave Bird.
-    await expect(page.getByTestId('dex-pidgey')).toContainText('Brave Bird');
+    await expect(page.getByTestId('bond-squirtle')).toHaveAttribute('data-rank', '5');
+    await expect(page.getByTestId('bond-squirtle')).toContainText('Aqua Tail');
+    await expect(page.getByTestId('bond-squirtle')).toContainText('Can start a run');
+    await page.screenshot({ path: 'playtest/hub-companions.png' });
+    // §5.13 — and Pidgey, knocked out 303 times, is Familiar: the only tier the Pokédex has.
+    await page.getByTestId('pc-tab-dex').click();
+    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
+    await expect(page.getByTestId('dex-pidgey')).toContainText('Familiar');
     await page.getByTestId('pc-tab-medals').click();
     await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
 
@@ -94,7 +105,9 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.goto('/?screen=hub');
     await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '2');
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '3');
+    await expect(page.getByTestId('bond-squirtle')).toHaveAttribute('data-rank', '5');
+    await page.getByTestId('pc-tab-dex').click();
+    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
   });
 
   test('the Poké Mart sells a Tier-3 relic for five Tokens from Level 10, and not before', async ({ page }) => {

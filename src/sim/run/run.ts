@@ -34,7 +34,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 6;
+export const RUN_SAVE_VERSION = 7;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -79,7 +79,7 @@ export function newPartyMon(speciesId: string, level: number, content: ContentRe
 }
 
 /** The run of an account that has nothing yet — and of every fixture, which is the same thing. */
-export const DEFAULT_PERKS: Readonly<RunPerks> = Object.freeze({ boxBonus: 0, relicPool: null, mastery: {}, familiar: [], insight: false });
+export const DEFAULT_PERKS: Readonly<RunPerks> = Object.freeze({ boxBonus: 0, relicPool: null, mastery: {}, bond: {}, familiar: [], insight: false });
 
 /**
  * §2.1.1 — pre-run setup is over; build the route and put the starter in the Box.
@@ -130,7 +130,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     outcome: 'in-progress',
     cursors: { MapRNG: mapRng.cursor, EncounterRNG: streams.get('EncounterRNG').cursor, LootRNG: streams.get('LootRNG').cursor },
     stats: { nodesCleared: 0, combatsWon: 0, catches: 0, faints: 0, turnsPlayed: 0, recruits: 0, statusesTaken: 0, startedAt: 0 },
-    perks: { ...perks, mastery: { ...perks.mastery }, familiar: [...perks.familiar], relicPool: perks.relicPool ? [...perks.relicPool] : null },
+    perks: { ...perks, mastery: { ...perks.mastery }, bond: { ...(perks.bond ?? {}) }, familiar: [...perks.familiar], relicPool: perks.relicPool ? [...perks.relicPool] : null },
     log: [second ? `A new run begins with ${ctx.content.species(starterId).name} and ${ctx.content.species(second.speciesId).name}.` : `A new run begins with ${ctx.content.species(starterId).name}.`],
     ...(startingRelic ? { relics: [startingRelic] } : {}),
   };
@@ -164,6 +164,16 @@ export function effectiveMax(run: RunState, mon: PartyMon, content: ContentRegis
   // deliberately chose: 5 → 4 by default, and 8 → 7 under Trauma Surge, never 8 → 4.
   const relief = 5 - traumaZone1Pct(run, content);
   return maxHpOf(mon, content, 5, Math.max(1, z1 - relief), Math.max(1, z2 - relief), 10);
+}
+
+/**
+ * §6.8.3 — is this ability the line's hidden one, still locked for this run's account? The hidden ability is
+ * authored on the base form and applies to every stage of the line; the rank travels in the run's perks.
+ */
+export function abilityLocked(run: RunState, speciesId: string, abilityId: string, content: ContentRegistry): boolean {
+  const line = content.lineBase(speciesId);
+  const hidden = content.species(line).hiddenAbility;
+  return hidden === abilityId && (run.perks?.bond?.[line] ?? 0) < 3;
 }
 
 /**
@@ -933,6 +943,8 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       const mon = state.box.find((m) => m.uid === action.uid);
       if (!mon) return 'unknown-pokemon';
       if (!ctx.content.species(mon.speciesId).availableAbilities.includes(action.abilityId)) return 'ability-not-in-pool';
+      // §6.8.3 — the line's hidden ability is in the pool but locked until Bond rank 3.
+      if (abilityLocked(state, mon.speciesId, action.abilityId, ctx.content)) return 'ability-locked';
       if (mon.abilityId === action.abilityId) return 'already-known';
       return state.money < priceFor(state, ctx.content, PRICES.dojoAbility) ? 'cannot-afford' : undefined;
     }

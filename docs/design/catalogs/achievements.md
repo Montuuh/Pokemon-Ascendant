@@ -27,10 +27,10 @@
 | 15 | Evolution | Full Bloom | Field an all-final-stage Active Team in one combat | 🥈 | `combat-start` team check |
 | 16 | Evolution | Late Bloomer (H) | Evolve on the final layer before a Gym | 🥉 | `evolution(layer=preGym)` |
 | 17 | Evolution | Two-Stage Climb | Take one Pokémon through both evolutions in a run | 🥈 | `evolution` per-instance counter |
-| 18 | Mastery | Acquaintance | Familiar tier with 5 species | 🥉 | `dex-tier-up(familiar)` |
-| 19 | Mastery | Veteran Trainer | Veteran tier with 10 species | 🥈 | `dex-tier-up(veteran)` |
-| 20 | Mastery | Specialist | Master one species | 🥇 | `dex-tier-up(master)` |
-| 21 | Mastery | Living Pokédex | Master 10 species | 💎 | `dex-tier-up(master)` counter |
+| 18 | Mastery | Acquaintance | Familiar with 5 species | 🥉 | `dex-tier-up(familiar)` |
+| 19 | Mastery | Veteran Trainer | Bond rank 3 (Veteran) with 10 lines | 🥈 | `bond-rank-up(3)` |
+| 20 | Mastery | Specialist | Bond rank 5 (Soulbound) with one line | 🥇 | `bond-rank-up(5)` |
+| 21 | Mastery | Living Pokédex | Soulbound with 10 lines | 💎 | `bond-rank-up(5)` counter |
 | 22 | Mastery | Shiny Hunter (H) | Recruit a Shiny | 🥇 | `recruit(shiny)` |
 | 23 | Mastery | Move Master | Use a Mastery Move in combat | 🥈 | `card-played(mastery)` |
 | 24 | Combat | Untouchable | Win a combat taking no damage | 🥈 | `combat-end` + damage tally |

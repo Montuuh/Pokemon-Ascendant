@@ -165,9 +165,14 @@ Fighting, Normal) · Tempo Control (Electric, Psychic, Ice, Water).
 R3 Psychic/Ground/Fighting/Ice. **12 Badges, 3 per run, max 4.**
 **Champion:** 5 Pokémon, the last two simultaneous, +5 % Attack per fallen ally, cap +20 %.
 
-**Pokédex** — cross-run kill tracking. **Familiar** (10/5/2 kills by rarity) reveals Unknown intents ·
-**Veteran** (30/15/5) makes your own Shiny · **Master** (50/25/10) unlocks the species' **Mastery Move**, the
-immutable 5th card. Catching awards no kill credit.
+**Pokédex** — cross-run knowledge about the species you fight. **Familiar** (10/5/2 knock-outs by rarity)
+reveals Unknown intents from turn one, and is the only tier. Catching awards no kill credit.
+
+**Bond** (§6.8, 2026-09-21) — per *line*, filled by playing it: +1 per won fight in the Active Team (+1 leading),
++5 per evolution, +2 a first recruit, +8 finishing a run, +15 winning one. Five ranks at 5/15/35/60/100:
+**Companion** Mastery Lv1 (the immutable 5th card) · **Trusted** Shiny · **Veteran** the hidden ability (the
+line's third authored one, greyed at the Dojo until then) · **Deep Bond** Mastery Lv2 · **Soulbound** Mastery
+Lv3 on three-stage lines or the Mastery card in every opening hand, and the line may start a run.
 
 ---
 

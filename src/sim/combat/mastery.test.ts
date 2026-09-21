@@ -25,6 +25,15 @@ describe('The Mastery slot — §5.13.2', () => {
     expect(removed).toBe(5);
   });
 
+  it('ASoulboundTwoStageLine_OpensWithItsMasteryCardInHand_§6.8.2', () => {
+    // Rattata is a two-stage line; at rank 5 its Mastery card is moved to the top after the shuffle.
+    const team = [{ species: 'rattata', level: 12, masteryMove: 'quick-attack', masteryOpener: true }, ...STARTERS.slice(1)];
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const s = start(scenario({ team, enemies: [PIDGEY], seed }));
+      expect(s.player.hand.some((c) => c.mastery && c.ownerUid === 'p0'), `seed ${seed}`).toBe(true);
+    }
+  });
+
   it('TheDeckNeverExceedsFifteen_ThreeMasteries', () => {
     const team = STARTERS.map((m) => ({ ...m, masteryMove: 'aqua-tail' }));
     const s = start(scenario({ team, enemies: [PIDGEY] }));

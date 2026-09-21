@@ -102,7 +102,8 @@
           "adds": [],
           "abilityId": "healer"
         }
-      ]
+      ],
+      "hiddenAbility": "healer"
     },
     {
       "id": "ivysaur",
@@ -363,7 +364,8 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "hiddenAbility": "snipe"
     },
     {
       "id": "charmeleon",
@@ -633,7 +635,8 @@
           "adds": [],
           "abilityId": "shell-armor"
         }
-      ]
+      ],
+      "hiddenAbilityPending": "Rain Dish — arrives with weather in v0.7"
     },
     {
       "id": "wartortle",
@@ -882,7 +885,8 @@
           "adds": [],
           "abilityId": "iron-shell"
         }
-      ]
+      ],
+      "hiddenAbility": "swarm"
     },
     {
       "id": "metapod",
@@ -1119,7 +1123,8 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "hiddenAbility": "snipe"
     },
     {
       "id": "kakuna",
@@ -1357,7 +1362,8 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "hiddenAbility": "healer"
     },
     {
       "id": "pidgeotto",
@@ -1607,7 +1613,8 @@
           ],
           "abilityId": "hustle"
         }
-      ]
+      ],
+      "hiddenAbility": "run-down"
     },
     {
       "id": "raticate",
@@ -1752,7 +1759,8 @@
           ],
           "abilityId": "snipe"
         }
-      ]
+      ],
+      "hiddenAbilityPending": "Infiltrator — arrives in v0.7"
     },
     {
       "id": "golbat",
@@ -1907,7 +1915,8 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "hiddenAbility": "healer"
     },
     {
       "id": "gloom",
@@ -2156,7 +2165,8 @@
           ],
           "abilityId": "sand-veil"
         }
-      ]
+      ],
+      "hiddenAbilityPending": "Arena Trap — arrives with the multi-enemy fights in v0.7"
     },
     {
       "id": "dugtrio",
@@ -2295,7 +2305,8 @@
             "psych-up"
           ]
         }
-      ]
+      ],
+      "hiddenAbility": "swift-swim"
     },
     {
       "id": "golduck",
@@ -2449,7 +2460,8 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "hiddenAbility": "swift-swim"
     },
     {
       "id": "poliwhirl",
@@ -2591,7 +2603,8 @@
           "adds": [],
           "abilityId": "steadfast"
         }
-      ]
+      ],
+      "hiddenAbility": "steadfast"
     },
     {
       "id": "machoke",
@@ -2829,7 +2842,8 @@
           "adds": [],
           "abilityId": "solid-rock"
         }
-      ]
+      ],
+      "hiddenAbility": "solid-rock"
     },
     {
       "id": "graveler",
@@ -3053,7 +3067,8 @@
         "bulldoze",
         "body-press"
       ],
-      "branches": []
+      "branches": [],
+      "hiddenAbilityPending": "Weak Armor — arrives in v0.7"
     },
     {
       "dex": 98,
@@ -3144,7 +3159,8 @@
           ],
           "abilityId": "shell-armor"
         }
-      ]
+      ],
+      "hiddenAbilityPending": "Sheer Force — arrives in v0.7"
     },
     {
       "dex": 99,
@@ -3282,7 +3298,8 @@
           ],
           "abilityId": "intimidate"
         }
-      ]
+      ],
+      "hiddenAbility": "moxie"
     },
     {
       "id": "gyarados",
@@ -3391,7 +3408,8 @@
       ],
       "evolvesTo": [],
       "rarity": "rare",
-      "archetype": "vanguard"
+      "archetype": "vanguard",
+      "hiddenAbilityPending": "Gluttony — arrives in v0.7"
     },
     {
       "id": "eevee",
@@ -3508,7 +3526,8 @@
           ],
           "abilityId": "water-absorb"
         }
-      ]
+      ],
+      "hiddenAbility": "anticipation"
     },
     {
       "id": "vaporeon",

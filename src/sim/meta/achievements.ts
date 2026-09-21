@@ -45,8 +45,10 @@ export type MetaEvent =
   | { t: 'badge-awarded'; badgeId: string }
   | { t: 'relic-acquired'; relicId: string; heldCount: number }
   | { t: 'run-end'; won: boolean; catches: number; badges: number; /** §8.3.2 — for the failed-run formula. */ layersCleared?: number; activeSpecies?: string[]; modifierCount?: number; /** §8.6.1 Soothe Bell — a Trauma Salve was taken this run. */ usedSalve?: boolean; /** §8.7 Monotype Master — the Active Team shared one first type. */ monoType?: boolean; /** §8.7 Minimalist — relics held at the end. */ relicCount?: number }
-  /** §5.13.1 — a species crossed a Pokédex tier. Raised by the account fold, never by the run diff. */
-  | { t: 'dex-tier-up'; speciesId: string; tier: 1 | 2 | 3 };
+  /** §5.13.1 — a species reached Familiar. Raised by the account fold, never by the run diff. */
+  | { t: 'dex-tier-up'; speciesId: string; tier: 1 }
+  /** §6.8.2 — a line crossed a Bond rank. Raised by the account fold. */
+  | { t: 'bond-rank-up'; line: string; rank: number };
 
 export interface AchievementDef {
   id: string;
@@ -140,22 +142,22 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     count: (e) => (e.t === 'dex-tier-up' && e.tier === 1 ? 1 : 0),
   },
   {
-    // #19
+    // #19 — Bond rank 3 (Veteran) with ten lines.
     id: 'veteran-trainer', category: 'mastery', name: 'Veteran Trainer', tier: 'silver', goal: 10,
-    description: 'Reach Veteran tier with ten species.',
-    count: (e) => (e.t === 'dex-tier-up' && e.tier === 2 ? 1 : 0),
+    description: 'Reach Veteran Bond with ten lines.',
+    count: (e) => (e.t === 'bond-rank-up' && e.rank === 3 ? 1 : 0),
   },
   {
-    // #20
+    // #20 — Bond rank 5 with one line.
     id: 'specialist', category: 'mastery', name: 'Specialist', tier: 'gold', goal: 1,
-    description: 'Master one species.',
-    count: (e) => (e.t === 'dex-tier-up' && e.tier === 3 ? 1 : 0),
+    description: 'Reach Soulbound with one line.',
+    count: (e) => (e.t === 'bond-rank-up' && e.rank === 5 ? 1 : 0),
   },
   {
-    // #21
+    // #21 — Bond rank 5 with ten lines.
     id: 'living-pokedex', category: 'mastery', name: 'Living Pokédex', tier: 'platinum', goal: 10,
-    description: 'Master ten species.',
-    count: (e) => (e.t === 'dex-tier-up' && e.tier === 3 ? 1 : 0),
+    description: 'Reach Soulbound with ten lines.',
+    count: (e) => (e.t === 'bond-rank-up' && e.rank === 5 ? 1 : 0),
   },
   // ── Combat
   {

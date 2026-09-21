@@ -237,15 +237,23 @@ export function hubUpgradeTip(name: string, effect: string, level: number, grant
   return <Tip title={name} meta={[`Level ${level}`, granted ? 'Yours' : 'Locked']} body={effect} footer={pending ? `Granted, but waiting: ${pending}.` : 'Quality of life, never power.'} />;
 }
 
-/** §5.13.1 — a species' Pokédex standing. */
-export function dexTip(speciesName: string, rarity: string, tier: number, defeats: number, next: { tier: number; need: number } | null, mastery: number): ReactNode {
-  const TIER = ['—', 'Familiar', 'Veteran', 'Master'];
-  const REWARD = ['', 'Its hidden intents are shown from the first turn.', 'Your own copies are Shiny.', 'Its Mastery Move is open.'];
+/** §5.13.1 — a species' Pokédex standing: knowledge about the species you fight. */
+export function dexTip(speciesName: string, rarity: string, tier: number, defeats: number, next: { tier: number; need: number } | null): ReactNode {
   const lines: ReactNode[] = [];
-  if (tier > 0) lines.push(<div key="t"><b>{TIER[tier]}</b> — {REWARD[tier]}</div>);
-  if (next) lines.push(<div key="n">{next.need - defeats} more defeat{next.need - defeats === 1 ? '' : 's'} to {TIER[next.tier]}.</div>);
-  if (mastery > 0) lines.push(<div key="m"><b>Mastery Lv{mastery}</b> — this line brings a fifth card into the fight.</div>);
-  return <Tip title={speciesName} meta={[cap(rarity), `${defeats} defeated`]} body={lines.length ? lines : 'Defeat it — in the wild or on a trainer — to learn it. Catching does not count.'} footer="Thresholds scale with rarity: 10 / 30 / 50 for a common species, 2 / 5 / 10 for a rare one." />;
+  if (tier >= 1) lines.push(<div key="t"><b>Familiar</b> — its hidden intents are shown from turn one, every fight.</div>);
+  if (next) lines.push(<div key="n">{next.need - defeats} more knock-out{next.need - defeats === 1 ? '' : 's'} to Familiar.</div>);
+  return <Tip title={speciesName} meta={[cap(rarity), `${defeats} KO`]} body={lines.length ? lines : 'Knock it out — in the wild or on a trainer, with any of your Pokémon — to learn it. Catching does not count.'} footer="Familiar at 10 knock-outs for a common species, 5 for an uncommon one, 2 for a rare one. Making your own better is the Bond." />;
+}
+
+/** §6.8 — a line's Bond. */
+export function bondTip(lineName: string, points: number, rank: number, threeStage: boolean, masteryTier: number): ReactNode {
+  const NAMES = ['—', 'Companion', 'Trusted', 'Veteran', 'Deep Bond', 'Soulbound'];
+  const NEXT = [5, 15, 35, 60, 100];
+  const lines: ReactNode[] = [];
+  if (rank >= 1) lines.push(<div key="m">Mastery Move Lv{masteryTier} rides with it as a fifth card{rank >= 2 ? '; your copies are Shiny' : ''}{rank >= 3 ? '; its hidden ability is open at the Dojo' : ''}.</div>);
+  if (rank < 5) lines.push(<div key="n">{NEXT[rank]! - points} more Bond to {NAMES[rank + 1]}.</div>);
+  else lines.push(<div key="s">{threeStage ? 'Every Mastery tier open' : 'Its Mastery card opens every fight in hand'}, and the line can start a run.</div>);
+  return <Tip title={`${lineName} line — ${NAMES[rank]}`} meta={[`${points} Bond`, `Rank ${rank} / 5`]} body={lines} footer="Bond grows by playing the line: fights won with it (+1, +1 more leading), evolutions (+5), a first recruit (+2), finishing a run (+8) or winning one (+15)." />;
 }
 
 /** §5.13.2 — the fifth card, on a card face. */

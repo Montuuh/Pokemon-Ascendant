@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import { accountFromProgress, applyAccountEvent, applyAccountEvents, buyTier3, emptyAccount, levelFor, levelProgress, REWARD_TRACK, TIER3_PRICE, XP, xpForLevel, type AccountContext } from './account';
-import { dexTierFor, DEX_THRESHOLDS } from './pokedex';
-import { accountContextFor, discoverableRelics, modifierUnlocked, relicPoolFor, runPerksFor } from './unlocks';
+import { dexTierFor, DEX_FAMILIAR } from './pokedex';
+import { BOND, bondRank } from './bond';
+import { accountContextFor, discoverableRelics, modifierUnlocked, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
 import { emptyProgress, type MetaEvent } from './achievements';
 import { MODIFIERS } from '../run/modifiers';
 
@@ -133,12 +134,12 @@ describe('The reward track — §8.3.5', () => {
 });
 
 describe('The Pokédex — §5.13', () => {
-  it('ThresholdsScaleWithRarity', () => {
+  it('FamiliarScalesWithRarity_AndIsTheOnlyTier', () => {
     expect(dexTierFor(10, 'common')).toBe(1);
     expect(dexTierFor(9, 'common')).toBe(0);
     expect(dexTierFor(2, 'rare')).toBe(1);
-    expect(dexTierFor(50, 'common')).toBe(3);
-    expect(DEX_THRESHOLDS.uncommon).toEqual([5, 15, 25]);
+    expect(dexTierFor(50, 'common')).toBe(1);
+    expect(DEX_FAMILIAR.uncommon).toBe(5);
   });
 
   it('KillsPromote_AndAPromotionPaysOnce_§8.3.2', () => {
@@ -158,20 +159,38 @@ describe('The Pokédex — §5.13', () => {
   });
 });
 
-describe('Mastery Lv1 — §6.8.1', () => {
-  it('AnyOfThreeThingsUnlocksFamiliarBond_Once', () => {
-    // Recruiting it.
-    const a = applyAccountEvent(emptyAccount(), { t: 'recruit', speciesId: 'geodude', boxFull: false, firstThisRun: true }, ctx);
-    expect(a.state.mastery.geodude).toBe(1);
-    expect(a.delta.masteryUnlocks).toEqual([{ line: 'geodude', tier: 1 }]);
-    // Three wins with it.
-    const wins: MetaEvent[] = Array.from({ length: 3 }, () => win({ activeSpecies: ['charmander'] }));
-    const b = applyAccountEvents(emptyAccount(), wins, ctx);
-    expect(b.state.mastery.charmander).toBe(1);
-    expect(b.delta.masteryUnlocks).toHaveLength(1);
-    // Finishing a run with it — and it is tracked per *line*: a Charmeleon counts for Charmander's line.
-    const c = applyAccountEvent(emptyAccount(), { t: 'run-end', won: false, catches: 0, badges: 0, layersCleared: 2, activeSpecies: ['charmeleon'] }, ctx);
-    expect(c.state.mastery.charmander).toBe(1);
+describe('Bond — §6.8', () => {
+  it('PlayingWithALine_EarnsBond_AndTheLeadEarnsOneMore', () => {
+    // A won fight with Charmander leading and Pidgey on the bench: 2 for the line that led, 1 for the other.
+    const { state, delta } = applyAccountEvent(seasoned(), win({ activeSpecies: ['charmander', 'pidgey'], leadTurns: { charmander: 4, pidgey: 1 } }), ctx);
+    expect(state.bond.charmander).toBe(BOND.win + BOND.lead);
+    expect(state.bond.pidgey).toBe(BOND.win);
+    expect(delta.bondGains).toEqual([{ line: 'charmander', points: 2 }, { line: 'pidgey', points: 1 }]);
+  });
+
+  it('EvolutionRecruitAndTheRunsEnd_AllFeedTheLine_PerLine', () => {
+    // It is tracked per *line*: a Charmeleon's evolution and a Charizard's run count for Charmander.
+    const events: MetaEvent[] = [
+      { t: 'recruit', speciesId: 'charmander', boxFull: false, firstThisRun: true },
+      { t: 'evolution', uid: 'u', toSpeciesId: 'charmeleon' },
+      { t: 'run-end', won: true, catches: 0, badges: 1, layersCleared: 12, activeSpecies: ['charizard'] },
+    ];
+    const { state } = applyAccountEvents(seasoned(), events, ctx);
+    expect(state.bond.charmander).toBe(BOND.recruit + BOND.evolution + BOND.runWon);
+    expect(state.bond.charmeleon).toBeUndefined();
+  });
+
+  it('CrossingARank_IsReportedOnce_AndPaysTheMedal', () => {
+    // Five clean wins leading: 10 points, ranks 1 (5) and 2 (10 < 15? no) — rank 1 only.
+    const wins: MetaEvent[] = Array.from({ length: 5 }, () => win({ activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 } }));
+    const { state, delta } = applyAccountEvents(seasoned(), wins, ctx);
+    expect(state.bond.squirtle).toBe(10);
+    expect(bondRank(state.bond.squirtle!)).toBe(1);
+    expect(delta.bondRankUps).toEqual([{ line: 'squirtle', rank: 1 }]);
+    // A big single step crosses several ranks in order.
+    const big = applyAccountEvent({ ...seasoned(), bond: { squirtle: 34 } }, { t: 'run-end', won: true, catches: 0, badges: 1, activeSpecies: ['squirtle'] }, ctx);
+    expect(big.delta.bondRankUps).toEqual([{ line: 'squirtle', rank: 3 }]);
+    expect(big.state.bond.squirtle).toBe(49);
   });
 });
 
@@ -199,13 +218,22 @@ describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
   });
 
   it('RunPerks_AreTheAccountsWidenings_AndNothingElse', () => {
-    const a = { ...emptyAccount(), hub: ['expanded-box', 'pokedex-insight'], mastery: { squirtle: 1 }, dex: { pidgey: { defeats: 10, recruited: false, winsWith: 0, runsFinishedWith: 0, tier: 1 as const } } };
+    // Squirtle at 60 Bond is rank 4: Mastery Lv2. Rattata at 100 is rank 5 on a two-stage line: still Lv2.
+    const a = { ...emptyAccount(), hub: ['expanded-box', 'pokedex-insight'], bond: { squirtle: 60, rattata: 100, pidgey: 3 }, dex: { pidgey: { defeats: 10, recruited: false, winsWith: 0, runsFinishedWith: 0, tier: 1 as const } } };
     const perks = runPerksFor(a, content);
     expect(perks.boxBonus).toBe(2);
     expect(perks.insight).toBe(true);
     expect(perks.familiar).toEqual(['pidgey']);
-    expect(perks.mastery).toEqual({ squirtle: 1 });
+    expect(perks.mastery).toEqual({ squirtle: 2, rattata: 2 });
+    expect(perks.bond).toEqual({ squirtle: 4, rattata: 5 });
     expect(runPerksFor(a, content, true).boxBonus).toBe(3);
+  });
+
+  it('ASoulboundLine_CanStartARun_§6.8.2', () => {
+    const a = { ...emptyAccount(), bond: { geodude: 100, pidgey: 99 } };
+    const starters = unlockedStarters(a, content);
+    expect(starters).toContain('geodude');
+    expect(starters).not.toContain('pidgey');
   });
 
   it('ModifiersOpenByLevel_OrByTheTrack_§8.8.2', () => {

@@ -5,6 +5,7 @@ import type { BiomeId } from './region';
 import { BIOMES, ELITE, ELITE_WILD, GYM, LANE_THEME, TRAINERS, eliteWildTeamFor, gymById, gymTeamFor } from './region';
 import { modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
+import { isThreeStageLine } from '../meta/bond';
 import type { ActiveSetup, MapNode, PartyMon, RunState } from './types';
 
 /** The catch consumable's catalog id (§7.2.5). */
@@ -54,8 +55,11 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
       // §7.3.5 — the run's record walks into the fight, so Champion's Crest is worth what it has earned.
       if (mon.defeats) setup.defeats = mon.defeats;
       // §5.13.2 — the fifth slot, from the account's Mastery tier for this line (frozen into the run's perks).
-      const mastery = masteryMoveFor(mon.speciesId, run.perks?.mastery[content.lineBase(mon.speciesId)] ?? 0, content);
+      const line = content.lineBase(mon.speciesId);
+      const mastery = masteryMoveFor(mon.speciesId, run.perks?.mastery[line] ?? 0, content);
       if (mastery) setup.masteryMove = mastery;
+      // §6.8.2 rank 5 on a line that caps at Lv2 — the Mastery card opens every fight in hand.
+      if (mastery && (run.perks?.bond?.[line] ?? 0) >= 5 && !isThreeStageLine(line, content)) setup.masteryOpener = true;
       return setup;
     });
 }
