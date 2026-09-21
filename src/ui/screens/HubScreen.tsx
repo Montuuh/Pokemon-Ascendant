@@ -36,7 +36,7 @@ export function HubScreen() {
   const KIOSKS: { id: Kiosk; name: string; blurb: string; icon: React.ReactNode; open: boolean; needs?: string }[] = [
     { id: 'card', name: 'Trainer Card', blurb: 'Your level, the road ahead, the record.', icon: <IconId size={22} />, open: true },
     { id: 'pc', name: 'PC Terminal', blurb: 'Companions, Pokédex, medals, discoveries.', icon: <IconBook2 size={22} />, open: true },
-    { id: 'mart', name: 'Poké Mart', blurb: 'Spend Tokens on Tier-3 relics.', icon: <IconBuildingStore size={22} />, open: true },
+    { id: 'mart', name: 'Poké Mart', blurb: 'Spend Tokens: starters, upgrades, relics, cosmetics.', icon: <IconBuildingStore size={22} />, open: true },
     { id: 'daycare', name: 'Daycare Lady', blurb: 'Starters and run options.', icon: <IconEgg size={22} />, open: level >= 3, needs: `Opens at Level 3 — you are ${level}` },
     { id: 'door', name: 'Mystery Door', blurb: 'Daily seeds, leaderboards, Ascension.', icon: <IconDoor size={22} />, open: false, needs: 'Post-launch' },
   ];

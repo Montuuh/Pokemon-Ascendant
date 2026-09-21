@@ -45,11 +45,17 @@ export {
 // §8.3–§8.6, §8.9, §8.10 — the account: Trainer XP, the track, Tokens, the Pokédex, Mastery, what is unlocked.
 // Pure state and a pure fold; persistence is the app layer's (accountStore).
 export {
-  ACCOUNT_VERSION, MAX_LEVEL, REWARD_TRACK, HUB_UPGRADE_LABEL, TIER3_PRICE, XP,
-  emptyAccount, emptyDelta, xpForLevel, levelFor, levelProgress, applyAccountEvent, applyAccountEvents, accountFromProgress,
-  buyTier3, hasHubUpgrade, medalCount, lineOf,
-  type AccountState, type AccountDelta, type AccountContext, type TrackReward, type HubUpgrade, type LifetimeStats,
+  ACCOUNT_VERSION, MAX_LEVEL, REWARD_TRACK, TRACK_TOKENS, SHELVES, SHELF_ORDER, HUB_UPGRADE_LABEL, XP,
+  emptyAccount, emptyDelta, xpForLevel, levelFor, levelProgress, trackTokensBetween, applyAccountEvent, applyAccountEvents, accountFromProgress,
+  upgradeAccount, hasHubUpgrade, medalCount, lineOf,
+  type AccountState, type AccountDelta, type AccountContext, type TrackReward, type ShelfId, type HubUpgrade, type LifetimeStats, type LegacyAccountFields,
 } from './meta/account';
+// §8.3.4, §8.4.1, §8.4.4 — the Poké Mart: shelves by level, prices in Tokens, cosmetics.
+export {
+  MART_PRICE, META_STARTERS, shelfOpen, discoveryShelf, martShelf, martPrice, martOwned, martPending, shelfItems, shopTotal, buy, wear,
+  type MartItem, type MartError,
+} from './meta/mart';
+export { COSMETICS, COSMETIC_PRICE, cosmeticById, TITLE_ID_BY_NAME, type CosmeticDef, type CosmeticKind } from './meta/cosmetics';
 export { DEX_FAMILIAR, DEX_TIER_XP, DEX_TIER_NAME, dexTierFor, dexNext, type DexTier, type DexEntry } from './meta/pokedex';
 export { BOND, BOND_RANKS, BOND_RANK_NAME, BOND_LADDER, MAX_BOND_RANK, bondRank, bondProgress, bondUnlocks, isThreeStageLine, hiddenAbilityOf, type BondUnlocks } from './meta/bond';
 export {

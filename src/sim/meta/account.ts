@@ -2,18 +2,21 @@ import type { ContentRegistry } from '../content/defs';
 import { ACHIEVEMENTS, achievementById, applyMetaEvent, emptyProgress, MEDAL_XP, type AchievementDef, type AchievementProgress, type MetaEvent } from './achievements';
 import { dexTierFor, DEX_TIER_XP, type DexEntry, type DexTier } from './pokedex';
 import { BOND, bondRank } from './bond';
+import { TITLE_ID_BY_NAME, type CosmeticKind } from './cosmetics';
 
 // §8.3–§8.6, §8.9, §8.10 — the account: everything that outlives a run.
 //
-// Trainer XP, the level it drives, the Tokens that milestone levels and hard achievements pay, what the reward
-// track has handed out, which starters, relics, modifiers and Hub conveniences are unlocked, the Pokédex, the
-// medals, and the lifetime numbers on the Trainer Card. §8.10 says it is one save; this is that save's shape.
+// Trainer XP, the level it drives, the Tokens that every level and the hard achievements pay, which starters,
+// relics, Hub conveniences and cosmetics have been bought at the Poké Mart, the Pokédex, the Bond, the medals,
+// and the lifetime numbers on the Trainer Card. §8.10 says it is one save; this is that save's shape.
 //
 // The same discipline as the run: a pure state and a pure fold over events. `RunState` is diffed into
 // `MetaEvent`s by the run layer (see achievements.ts — nothing account-side ever lives inside a save that has
-// to replay identically), and `applyAccountEvent` folds each one in. The app layer persists the result.
+// to replay identically), and `applyAccountEvent` folds each one in. The app layer persists the result. The
+// spending side — the shelves, the prices, `buy` — is mart.ts.
 
-export const ACCOUNT_VERSION = 1;
+/** 2 since 2026-09-21: the track pays Tokens at every level and the Mart sells what it used to grant (`upgradeAccount`). */
+export const ACCOUNT_VERSION = 2;
 
 export interface LifetimeStats {
   runs: number;
@@ -37,11 +40,11 @@ export interface AccountState {
   tokens: number;
   /** Lifetime Tokens earned, so the card can say so even after they are spent. */
   tokensEarned: number;
-  /** §8.3.5 — reward-track levels whose reward has been granted. The fold is idempotent through this. */
+  /** §8.3.5 — reward-track levels whose Tokens have been paid. The fold is idempotent through this. */
   claimedLevels: number[];
-  /** §8.5.2 — meta-starters unlocked, by species id. The three defaults are never listed. */
+  /** §8.5.2 — meta-starters bought at the Mart, by species id. The three defaults are never listed. */
   starters: string[];
-  /** §8.6.1 — Tier-2 relics discovered and Tier-3 relics bought. Tier 1 is always in the pool and never listed. */
+  /** §8.6.1 — Tier-2 relics discovered or bought, and Tier-3 relics bought. Tier 1 is always in the pool and never listed. */
   relics: string[];
   /**
    * §8.8 — difficulty modifiers opened by something other than Trainer Level. Nothing writes here since the
@@ -49,10 +52,12 @@ export interface AccountState {
    * saves keep their shape.
    */
   modifiers: string[];
-  /** §8.4.2 — Hub upgrades granted by the track. */
+  /** §8.4.2 — Hub upgrades bought at the Mart (or granted by the v0.6.0 track, which counts the same). */
   hub: string[];
-  /** §8.7 — cosmetic titles granted by the track; the first is the one the card wears. */
-  titles: string[];
+  /** §8.4.4 — cosmetics bought at the Trainer's Corner, by id. */
+  cosmetics: string[];
+  /** §8.4.4 — the one cosmetic of each kind the card wears. Buying one wears it; the Corner can swap. */
+  wearing: Partial<Record<CosmeticKind, string>>;
   /** §5.13 / §8.9 — the Pokédex, per species. */
   dex: Record<string, DexEntry>;
   /** §6.8 — Bond points per *line* (keyed by base species). `bondRank` turns them into ranks 0–5. */
@@ -76,7 +81,8 @@ export const emptyAccount = (): AccountState => ({
   relics: [],
   modifiers: [],
   hub: [],
-  titles: [],
+  cosmetics: [],
+  wearing: {},
   dex: {},
   bond: {},
   achievements: emptyProgress(),
@@ -108,15 +114,35 @@ export function levelProgress(xp: number): { level: number; into: number; span: 
   return { level, into, span, fraction: span > 0 ? into / span : 1 };
 }
 
-// ── The reward track (§8.3.5) ────────────────────────────────────────────────────────────────────────────
+// ── The shelves and the reward track (§8.3.5, §8.4.1) ───────────────────────────────────────────────────
 
-export type TrackReward =
-  | { kind: 'tokens'; amount: number }
-  | { kind: 'starter'; speciesId: string }
-  | { kind: 'hub'; upgrade: HubUpgrade }
-  /** §8.3.5 "Relic pool +1": a Tier-2 relic discovered for free, in catalogue order (§8.6.1's ongoing discovery). */
-  | { kind: 'relic' }
-  | { kind: 'title'; title: string };
+/** §8.4.1 — the Poké Mart's five shelves. Trainer Level opens them; Tokens buy from them. */
+export type ShelfId = 'corner' | 'starters' | 'hub' | 'discoveries' | 'mastery';
+
+export const SHELF_ORDER: readonly ShelfId[] = ['corner', 'starters', 'hub', 'discoveries', 'mastery'];
+
+/** §8.3.5 — what each shelf sells and the level that opens it. The Corner is the floor: open from Level 1. */
+export const SHELVES: Record<ShelfId, { name: string; level: number; sells: string }> = {
+  corner: { name: "Trainer's Corner", level: 1, sells: 'Titles, avatars and frames for the Trainer Card — and a fourth Starting Relic offer.' },
+  starters: { name: 'Starters', level: 3, sells: 'Magikarp, Eevee and Pikachu, to start a run with.' },
+  hub: { name: 'Hub upgrades', level: 5, sells: 'A bigger Box, a second modifier slot, a second starter — conveniences, never power.' },
+  discoveries: { name: 'Discoveries', level: 8, sells: 'Any Tier-2 relic you have not discovered yet — the shortcut past a criterion you keep missing.' },
+  mastery: { name: 'Mastery lane', level: 10, sells: 'The Tier-3 relics: the ones that change how a run works rather than how hard it hits.' },
+};
+
+/** §8.3.5 — what a level pays. Every level pays; the milestones pay more and are where a shelf tends to open. */
+export interface TrackReward {
+  tokens: number;
+  /** The shelf this level opens at the Poké Mart, when it opens one. */
+  opens?: ShelfId;
+}
+
+export const TRACK_TOKENS = {
+  /** Every level from 2 to 30 that is not a milestone. */
+  level: 2,
+  /** Every fifth level. */
+  milestone: { 5: 5, 10: 5, 15: 8, 20: 8, 25: 10, 30: 10 } as Record<number, number>,
+} as const;
 
 /** §8.4.2 — the seven Hub upgrades. Each is quality-of-life or option-expanding, never power. */
 export type HubUpgrade =
@@ -138,41 +164,27 @@ export const HUB_UPGRADE_LABEL: Record<HubUpgrade, { name: string; effect: strin
   'twin-run': { name: 'Second Starter Slot (Twin Run)', effect: 'Choose two starters; the Box starts one larger.' },
 };
 
-/** §8.3.5 — the whole track, one row per level. Level 1 is the floor and grants nothing. */
-export const REWARD_TRACK: Record<number, TrackReward> = {
-  2: { kind: 'relic' },
-  3: { kind: 'hub', upgrade: 'starting-relic-plus-one' },
-  4: { kind: 'starter', speciesId: 'pikachu' },
-  5: { kind: 'tokens', amount: 5 },
-  6: { kind: 'hub', upgrade: 'expanded-box' },
-  7: { kind: 'hub', upgrade: 'pokedex-insight' },
-  8: { kind: 'starter', speciesId: 'eevee' },
-  9: { kind: 'hub', upgrade: 'trauma-salve-cache' },
-  10: { kind: 'tokens', amount: 5 },
-  11: { kind: 'hub', upgrade: 'apex-reveal' },
-  12: { kind: 'starter', speciesId: 'magikarp' },
-  13: { kind: 'hub', upgrade: 'modifier-slot-plus-one' },
-  14: { kind: 'relic' },
-  15: { kind: 'tokens', amount: 8 },
-  16: { kind: 'relic' },
-  17: { kind: 'relic' },
-  18: { kind: 'hub', upgrade: 'twin-run' },
-  19: { kind: 'title', title: 'Ace Trainer' },
-  20: { kind: 'tokens', amount: 8 },
-  21: { kind: 'relic' },
-  22: { kind: 'relic' },
-  23: { kind: 'title', title: 'Pokédex Scholar' },
-  24: { kind: 'relic' },
-  25: { kind: 'tokens', amount: 10 },
-  26: { kind: 'relic' },
-  27: { kind: 'title', title: 'Veteran' },
-  28: { kind: 'relic' },
-  29: { kind: 'title', title: 'Champion in Waiting' },
-  30: { kind: 'tokens', amount: 10 },
-};
+/**
+ * §8.3.5 — the whole track, one row per level. Level 1 is the floor and grants nothing; every level after pays
+ * Tokens, and the four that open a shelf say so. 92 Tokens in all by Level 30.
+ *
+ * Derived rather than written out: the track *is* "two a level, more at the milestones, a shelf at 3/5/8/10",
+ * and a table of twenty-nine rows would only be that sentence with room for a typo.
+ */
+export const REWARD_TRACK: Record<number, TrackReward> = Object.fromEntries(
+  Array.from({ length: 29 }, (_, i) => i + 2).map((level) => {
+    const opens = SHELF_ORDER.find((s) => SHELVES[s].level === level);
+    const reward: TrackReward = { tokens: TRACK_TOKENS.milestone[level] ?? TRACK_TOKENS.level, ...(opens ? { opens } : {}) };
+    return [level, reward];
+  }),
+);
 
-/** §8.3.4 — the price of a Tier-3 relic at the Pokémart. */
-export const TIER3_PRICE = 5;
+/** §8.3.5 — the Tokens the track pays from the level after `from` up to and including `to`. */
+export const trackTokensBetween = (from: number, to: number): number => {
+  let sum = 0;
+  for (let l = from + 1; l <= to; l++) sum += REWARD_TRACK[l]?.tokens ?? 0;
+  return sum;
+};
 
 // ── XP sources (§8.3.2) ──────────────────────────────────────────────────────────────────────────────────
 
@@ -199,7 +211,7 @@ export interface AccountDelta {
   bondGains: { line: string; points: number }[];
   /** §6.8.2 — ranks crossed by this event, in order. */
   bondRankUps: { line: string; rank: number }[];
-  /** §8.6.1 — Tier-2 relics discovered by a criterion (the track's "Relic pool +1" reports under `rewards`). */
+  /** §8.6.1 — Tier-2 relics discovered by a criterion. */
   discoveredRelics: string[];
 }
 
@@ -209,11 +221,6 @@ export interface AccountContext {
   content: ContentRegistry;
   /** §8.8.3 — the run's difficulty multiplier, applied to every XP the run earns. 1 outside a run. */
   xpMultiplier: number;
-  /**
-   * §8.3.5 "Relic pool +1" needs to know which Tier-2 rows are still closed, in catalogue order. Supplied by
-   * the caller so this module does not import the relic tier table.
-   */
-  discoverableRelics: readonly string[];
 }
 
 function bump(delta: AccountDelta, next: AccountState, xp: number, ctx: AccountContext): void {
@@ -222,31 +229,13 @@ function bump(delta: AccountDelta, next: AccountState, xp: number, ctx: AccountC
   delta.xp += earned;
 }
 
-/** Grant one track reward. Idempotent through `claimedLevels`, which the caller checks first. */
-function grant(next: AccountState, level: number, ctx: AccountContext, delta: AccountDelta): void {
+/** Pay one track level. Idempotent through `claimedLevels`, which the caller checks first. */
+function grant(next: AccountState, level: number, delta: AccountDelta): void {
   const reward = REWARD_TRACK[level];
   if (!reward) return;
-  switch (reward.kind) {
-    case 'tokens':
-      next.tokens += reward.amount;
-      next.tokensEarned += reward.amount;
-      delta.tokens += reward.amount;
-      break;
-    case 'starter':
-      if (!next.starters.includes(reward.speciesId)) next.starters.push(reward.speciesId);
-      break;
-    case 'hub':
-      if (!next.hub.includes(reward.upgrade)) next.hub.push(reward.upgrade);
-      break;
-    case 'relic': {
-      const nextRelic = ctx.discoverableRelics.find((id) => !next.relics.includes(id));
-      if (nextRelic) next.relics.push(nextRelic);
-      break;
-    }
-    case 'title':
-      if (!next.titles.includes(reward.title)) next.titles.push(reward.title);
-      break;
-  }
+  next.tokens += reward.tokens;
+  next.tokensEarned += reward.tokens;
+  delta.tokens += reward.tokens;
   next.claimedLevels.push(level);
   delta.rewards.push({ level, reward });
 }
@@ -258,13 +247,13 @@ function grant(next: AccountState, level: number, ctx: AccountContext, delta: Ac
  * somehow sits at level 9 with level 4 unclaimed — a track row added in a later version, a save from before
  * the track existed — collects it on the next XP rather than never. `claimedLevels` keeps it idempotent.
  */
-function settleLevels(next: AccountState, before: number, ctx: AccountContext, delta: AccountDelta): void {
+function settleLevels(next: AccountState, before: number, delta: AccountDelta): void {
   const now = levelFor(next.xp);
   const crossedFrom = levelFor(before);
   for (let l = 2; l <= now; l++) {
     if (next.claimedLevels.includes(l)) continue;
     if (l > crossedFrom) delta.levelsGained.push(l);
-    grant(next, l, ctx, delta);
+    grant(next, l, delta);
   }
 }
 
@@ -284,7 +273,7 @@ function promote(next: AccountState, speciesId: string, ctx: AccountContext, del
     delta.dexPromotions.push({ speciesId, tier: entry.tier });
     // §8.7 Acquaintance counts species reaching Familiar; the promotion is an event of its own.
     foldMedals(next, { t: 'dex-tier-up', speciesId, tier: 1 }, ctx, delta);
-    settleLevels(next, xpBefore, ctx, delta);
+    settleLevels(next, xpBefore, delta);
   }
   // §8.6.1 Battle Tracker's discovery counts species at Familiar.
   next.counters['familiar-species'] = Object.values(next.dex).filter((e) => e.tier >= 1).length;
@@ -453,7 +442,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
   }
 
   discover(next, ctx, delta);
-  settleLevels(next, xpBefore, ctx, delta);
+  settleLevels(next, xpBefore, delta);
   return { state: next, delta };
 }
 
@@ -477,7 +466,7 @@ export function accountFromProgress(progress: AchievementProgress, ctx: AccountC
     next.tokens += tokens;
     next.tokensEarned += tokens;
   }
-  settleLevels(next, 0, ctx, delta);
+  settleLevels(next, 0, delta);
   return next;
 }
 
@@ -500,17 +489,41 @@ export function applyAccountEvents(state: AccountState, events: readonly MetaEve
   return { state: cur, delta: total };
 }
 
-// ── Spending (§8.3.4, §8.6.1) ────────────────────────────────────────────────────────────────────────────
+// ── Older saves (§8.10) ──────────────────────────────────────────────────────────────────────────────────
 
-/** Buy a Tier-3 relic at the Pokémart. Returns null when it cannot be bought, with the reason. */
-export function buyTier3(state: AccountState, relicId: string): { state: AccountState } | { error: 'locked' | 'owned' | 'cannot-afford' } {
-  if (levelFor(state.xp) < 10) return { error: 'locked' };
-  if (state.relics.includes(relicId)) return { error: 'owned' };
-  if (state.tokens < TIER3_PRICE) return { error: 'cannot-afford' };
-  const next = structuredClone(state);
-  next.tokens -= TIER3_PRICE;
-  next.relics.push(relicId);
-  return { state: next };
+/** The v1 fields a v2 account no longer has. */
+export interface LegacyAccountFields {
+  /** v0.6.0–v0.6.2 — cosmetic titles the track granted, stored by name. */
+  titles?: string[];
+}
+
+/**
+ * Bring a save from an earlier account version up to this one. Pure; the app layer calls it on load.
+ *
+ * v1 → v2 (2026-09-21): the track paid Tokens only at the milestones and granted everything else outright.
+ * Now every level pays and the Mart sells. What was granted stays granted — a Pikachu at Level 4 is not taken
+ * back — and every claimed level that used to pay nothing pays its two Tokens now, so a returning player
+ * opens the shop with the wallet the new track would have given them. Titles held by name become the
+ * cosmetic ids the Corner sells, and the first one is worn, as the card used to do.
+ */
+export function upgradeAccount(state: AccountState & LegacyAccountFields): AccountState {
+  if (state.version >= ACCOUNT_VERSION) return state;
+  const next: AccountState & LegacyAccountFields = structuredClone(state);
+  if (next.version < 2) {
+    const backPay = next.claimedLevels.filter((l) => TRACK_TOKENS.milestone[l] === undefined).length * TRACK_TOKENS.level;
+    next.tokens += backPay;
+    next.tokensEarned += backPay;
+    next.cosmetics = [...(next.cosmetics ?? [])];
+    next.wearing = { ...(next.wearing ?? {}) };
+    for (const name of next.titles ?? []) {
+      const id = TITLE_ID_BY_NAME[name];
+      if (id && !next.cosmetics.includes(id)) next.cosmetics.push(id);
+      if (id && !next.wearing.title) next.wearing.title = id;
+    }
+    delete next.titles;
+  }
+  next.version = ACCOUNT_VERSION;
+  return next;
 }
 
 /** Which Hub upgrades are in force. A pending one is granted but does nothing until its system exists. */

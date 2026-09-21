@@ -225,7 +225,7 @@ export function trainerLevelTip(level: number, into: number, span: number, max: 
 
 /** §8.3.4 — Tokens. */
 export function tokenTip(tokens: number, earned: number): ReactNode {
-  return <Tip title={`${tokens} Token${tokens === 1 ? '' : 's'}`} meta={[`${earned} earned`]} body="Every fifth Trainer Level and every Gold or Platinum medal pays Tokens. They buy one thing: Tier-3 relics at the Poké Mart, five each, from Level 10." />;
+  return <Tip title={`${tokens} Token${tokens === 1 ? '' : 's'}`} meta={[`${earned} earned`]} body="Every Trainer Level pays Tokens — two, more at every fifth — and so does every Gold or Platinum medal. They are spent at the Poké Mart: starters, Hub upgrades, relics and cosmetics, on five shelves that Trainer Level opens." />;
 }
 
 /** §8.3.5 — one row of the reward track. */
@@ -234,9 +234,27 @@ export function trackRewardTip(level: number, label: string, state: 'claimed' | 
   return <Tip title={`Level ${level}`} body={label} footer={footer} />;
 }
 
-/** §8.4.2 — a Hub upgrade. */
-export function hubUpgradeTip(name: string, effect: string, level: number, granted: boolean, pending?: string): ReactNode {
-  return <Tip title={name} meta={[`Level ${level}`, granted ? 'Yours' : 'Locked']} body={effect} footer={pending ? `Granted, but waiting: ${pending}.` : 'Quality of life, never power.'} />;
+/** §8.4.2 — a Hub upgrade: what it does, and where and for how much the Mart sells it. */
+export function hubUpgradeTip(name: string, effect: string, price: number, shelfLevel: number, owned: boolean, pending?: string): ReactNode {
+  const footer = pending ? (owned ? `Yours, but waiting: ${pending}.` : `Not sold yet: ${pending}.`) : 'Quality of life, never power.';
+  return <Tip title={name} meta={[owned ? 'Yours' : `${price} Tokens`, `Poké Mart · Level ${shelfLevel}`]} body={effect} footer={footer} />;
+}
+
+/** §8.4.4 — a cosmetic on the Trainer's Corner shelf. */
+export function cosmeticTip(name: string, kind: string, blurb: string, price: number, state: 'wearing' | 'owned' | 'buyable' | 'locked'): ReactNode {
+  const footer = state === 'wearing' ? 'On your card now.' : state === 'owned' ? 'Yours — Wear puts it on.' : state === 'buyable' ? `${price} Tokens at the Trainer's Corner.` : 'Not enough Tokens yet.';
+  return <Tip title={name} meta={[cap(kind), state === 'owned' || state === 'wearing' ? 'Yours' : `${price} Tokens`]} body={blurb} footer={footer} />;
+}
+
+/** §8.5.2 — a starter on the Starters shelf. */
+export function starterTip(name: string, blurb: string, price: number, state: 'owned' | 'soulbound' | 'buyable' | 'locked' | 'pending', detail?: string): ReactNode {
+  const footer =
+    state === 'owned' ? 'Yours — on the starter screen.'
+    : state === 'soulbound' ? 'Soulbound: the line earned its place by being played (Bond rank 5).'
+    : state === 'pending' ? `Not sold yet: ${detail}.`
+    : state === 'buyable' ? `${price} Tokens at the Starters shelf.`
+    : detail ?? 'Not enough Tokens yet.';
+  return <Tip title={name} meta={[state === 'owned' || state === 'soulbound' ? 'Yours' : `${price} Tokens`, 'Poké Mart · Level 3']} body={blurb} footer={footer} />;
 }
 
 /** §5.13.1 — a species' Pokédex standing: knowledge about the species you fight. */
@@ -263,15 +281,16 @@ export function masteryCardTip(move: MoveDef, ownerName: string): ReactNode {
   return <Tip title={`${move.name} — Mastery`} meta={[typeName(move.type), `${move.apCost} AP`, move.power ? `${move.power} power` : 'Utility']} body={describeMoveDef(move)} footer={`${ownerName}'s Mastery Move: a fifth card no TM or Move Manager can touch.`} />;
 }
 
-/** §8.6.1 — a relic's meta tier, for the Poké Mart and the Pokédex's relic view. */
-export function relicTierTip(r: RelicDef, state: 'pool' | 'discoverable' | 'buyable' | 'owned' | 'locked', progress?: { have: number; goal: number; text: string } | null): ReactNode {
+/** §8.6.1 — a relic's meta tier, for the Poké Mart and the PC Terminal's discoveries board. */
+export function relicTierTip(r: RelicDef, state: 'pool' | 'discoverable' | 'buyable' | 'owned' | 'locked', progress?: { have: number; goal: number; text: string } | null, sale?: { price: number; level: number }): ReactNode {
   const tierName = r.tier === 3 ? 'Tier 3 · Mastery' : r.tier === 2 ? 'Tier 2 · Discovered' : 'Tier 1 · Foundation';
+  const discover = progress ? `Discover it: ${progress.text} (${progress.have} / ${progress.goal}).` : null;
   const footer =
     state === 'pool' ? 'Always in your pool.'
     : state === 'owned' ? 'In your pool.'
-    : state === 'buyable' ? 'Five Tokens at the Poké Mart, from Trainer Level 10.'
-    : state === 'locked' ? 'The Poké Mart sells it from Trainer Level 10.'
-    : progress ? `Discover it: ${progress.text} (${progress.have} / ${progress.goal}).` : 'Reachable through the reward track.';
+    : state === 'buyable' ? [`${sale?.price ?? 5} Tokens at the Poké Mart.`, discover].filter(Boolean).join(' ')
+    : state === 'locked' ? [`The Poké Mart sells it from Trainer Level ${sale?.level ?? 10}.`, discover].filter(Boolean).join(' ')
+    : discover ?? "Sold at the Poké Mart's Discoveries shelf from Level 8.";
   return <Tip icon={<img src={itemIcon(r.id)} alt="" width={22} height={22} />} title={r.name} meta={[cap(r.rarity), tierName]} body={r.description} footer={r.pending ? `Not working yet: ${r.pending}` : footer} />;
 }
 

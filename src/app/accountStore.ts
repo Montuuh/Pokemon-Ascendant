@@ -3,17 +3,23 @@ import {
   accountContextFor,
   accountFromProgress,
   applyAccountEvents,
-  buyTier3,
+  buy as buyItem,
   emptyAccount,
   emptyDelta,
   levelFor,
   metaEventsFor,
   modifierXpMultiplier,
+  upgradeAccount,
+  wear as wearItem,
   type AccountDelta,
   type AccountState,
   type AchievementDef,
   type AchievementProgress,
   type CombatOutcomeReport,
+  type CosmeticKind,
+  type LegacyAccountFields,
+  type MartError,
+  type MartItem,
   type MetaEvent,
   type RunState,
 } from '@/sim';
@@ -26,7 +32,7 @@ import { ACCOUNT_KEY, ACHIEVEMENTS_KEY, claimLegacyKey } from './storageKeys';
 // is deleted when that run ends (§10.8), while this survives every run and is the point of playing more than
 // one. Abandoning a run must never cost you a level.
 //
-// Canon says the account is written at run end and on every Pokémart purchase. A browser tab is not a
+// Canon says the account is written at run end and on every Poké Mart purchase. A browser tab is not a
 // console: it is closed mid-run without ceremony, so this writes after every fold instead. The fold is
 // idempotent through `claimedLevels`, the medal list and the discovery list, so an extra write costs nothing.
 
@@ -57,16 +63,21 @@ function load(): Persisted {
       // Defensive rather than schema-validated on purpose: a corrupt field should cost you that field, not
       // the ability to start the game. Every top-level field falls back to its empty value on its own.
       const base = emptyAccount();
-      const a = (parsed.account ?? {}) as Partial<AccountState>;
-      const account: AccountState = {
+      const a = (parsed.account ?? {}) as Partial<AccountState> & LegacyAccountFields;
+      const loaded: AccountState & LegacyAccountFields = {
         ...base,
         ...a,
+        version: typeof a.version === 'number' ? a.version : 1,
         achievements: isProgress(a.achievements) ? a.achievements : base.achievements,
         stats: { ...base.stats, ...(a.stats ?? {}) },
         dex: a.dex && typeof a.dex === 'object' ? a.dex : {},
         bond: a.bond && typeof a.bond === 'object' ? a.bond : bondFromMastery((a as { mastery?: Record<string, number> }).mastery),
+        cosmetics: Array.isArray(a.cosmetics) ? a.cosmetics : [],
+        wearing: a.wearing && typeof a.wearing === 'object' ? a.wearing : {},
         counters: a.counters && typeof a.counters === 'object' ? a.counters : {},
       };
+      // v1 → v2: the track pays every level now and the Mart sells; `upgradeAccount` back-pays and re-keys the titles.
+      const account = upgradeAccount(loaded);
       // v0.6.0 Pokédex tiers went to Master (3); §5.13 has only Familiar since 2026-09-21. Clamp, keep the count.
       for (const e of Object.values(account.dex)) if (e.tier > 1) e.tier = 1;
       const ledger = parsed.ledger && typeof parsed.ledger === 'object' ? { ...emptyLedger(account), ...parsed.ledger } : emptyLedger(account);
@@ -132,8 +143,10 @@ interface AccountStore {
   observe: (before: RunState | null, after: RunState | null, report?: CombatOutcomeReport) => void;
   /** Fold events directly — used by the dev hook and the tests. `xpMultiplier` defaults to 1. */
   record: (events: readonly MetaEvent[], xpMultiplier?: number) => AccountDelta;
-  /** §8.6.1 — the Pokémart. Returns the reason it did not happen, or null on success. */
-  buy: (relicId: string) => 'locked' | 'owned' | 'cannot-afford' | null;
+  /** §8.3.4 — the Poké Mart. Returns the reason it did not happen, or null on success. */
+  buy: (item: MartItem) => MartError | null;
+  /** §8.4.4 — wear an owned cosmetic, or none of that kind. */
+  wear: (kind: CosmeticKind, id: string | null) => void;
   /** A new run opens a new ledger. */
   beginRun: () => void;
   acknowledge: () => void;
@@ -163,12 +176,19 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
     return delta;
   },
 
-  buy: (relicId) => {
-    const result = buyTier3(get().account, relicId);
+  buy: (item) => {
+    const result = buyItem(get().account, item, getContent());
     if ('error' in result) return result.error;
     persist({ account: result.state, ledger: get().ledger });
     set({ account: result.state });
     return null;
+  },
+
+  wear: (kind, id) => {
+    const account = wearItem(get().account, kind, id);
+    if (account === get().account) return;
+    persist({ account, ledger: get().ledger });
+    set({ account });
   },
 
   beginRun: () => {

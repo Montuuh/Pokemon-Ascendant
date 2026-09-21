@@ -353,6 +353,16 @@ same first-only reveal flag as Anticipation.
 - Also: the three "New difficulty modifier" track rows are "Relic pool +1"; Pokédex Insight worded as a
   first-meeting peek; Pokédex Whisper live; tooltips re-anchor on scroll instead of closing.
 
+**2026-09-21 — the Poké Mart as the shop of the pass (v0.6.3).** The user's point: Tokens were earned from
+Level 5 with nothing to buy until Level 10, and the road was a list of gifts nobody chose. Now the track
+**pays Tokens at every level** (2; 5/5/8/8/10/10 at the milestones; 92 by Level 30) and **opens shelves** at
+3/5/8/10, and the Mart sells everything meta: the Trainer's Corner from Level 1 (titles 2, avatars 3, frames
+2, Curated Starting Relic +1 3), Starters at 3 (Magikarp 4, Eevee 6, Pikachu 6 once its kit ships), Hub
+upgrades at 5 (4–8), Discoveries at 8 (any undiscovered Tier-2, 4), the Mastery lane at 10 (Tier-3, 5). The
+shop (~210) outruns the income (~156) on purpose. §8.3.4–§8.3.5, §8.4.1–§8.4.2, new §8.4.4 (cosmetics), §8.5.2,
+§8.6.1. `meta/mart.ts`, `meta/cosmetics.ts`; account v2 back-pays a v0.6.0–v0.6.2 save the Tokens its
+levels now pay and keeps what the old track granted. The Trainer Card wears what the Corner sold.
+
 **Deferred to v0.7:** Pikachu's kit · Eevee's Stone Cache (Evolution Items) · Trainer's Instinct (the intent
 queue) · Greater Threats (Region 2's stat tier) · the Trauma Salve Cache upgrade (Cities) · the Master Ball
 Charm criterion (a throw cannot fail since §2.6.4.1 — re-author) · the two ⚠️ OPEN flags in §8.3.5 and §8.4.2.

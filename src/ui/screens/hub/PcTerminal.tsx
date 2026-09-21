@@ -264,7 +264,7 @@ export function PcTerminal() {
       <Tabs.Content value="relics" className={styles.tabPanel}>
         <p className={styles.lede}>
           {discoverable.length} relics join your pool the first time you do a particular thing, in any run.
-          <InfoDot tip={<Tip title="Tier-2 relics" body="Your pool is what a run can drop, offer or stock. Tier 1 is always in it; Tier 2 joins when you meet its criterion; Tier 3 is bought at the Poké Mart. The reward track also opens one Tier-2 relic at a time, in this order, at Levels 2, 14, 16, 17, 21, 22, 24, 26 and 28." footer="Tier is not rarity: tier decides whether a relic is in your pool at all; rarity decides how often it drops once it is." />} />
+          <InfoDot tip={<Tip title="Tier-2 relics" body="Your pool is what a run can drop, offer or stock. Tier 1 is always in it; Tier 2 joins when you meet its criterion; Tier 3 is bought at the Poké Mart. The Poké Mart's Discoveries shelf sells any of them for four Tokens from Level 8 — the shortcut past a criterion you keep missing." footer="Tier is not rarity: tier decides whether a relic is in your pool at all; rarity decides how often it drops once it is." />} />
         </p>
         <ul className={styles.discoveries} data-testid="discoveries">
           {discoverable.map((r) => {

@@ -14,11 +14,11 @@ import { bondRank, bondUnlocks, isThreeStageLine } from './bond';
 
 export const relicTier = (r: RelicDef): 1 | 2 | 3 => r.tier ?? 1;
 
-/** §8.6.1 — the Tier-2 rows in catalogue order: the order the track's "Relic pool +1" discovers them in. */
+/** §8.6.1 — the Tier-2 rows this build ships, in catalogue order: what can be discovered, and what the Discoveries shelf sells. */
 export const discoverableRelics = (content: ContentRegistry): string[] =>
   content.allRelics().filter((r) => relicTier(r) === 2 && !r.pending).map((r) => r.id);
 
-/** §8.6.1 — the Pokémart's shelf: every Tier-3 row plus the one Tier-2 row that is also sold there. */
+/** §8.6.1 — the Mastery lane: every Tier-3 row plus the one Tier-2 row that is also sold there. */
 export const masteryRelics = (content: ContentRegistry): RelicDef[] =>
   content.allRelics().filter((r) => relicTier(r) === 3 || r.mastery === true);
 
@@ -50,9 +50,9 @@ export const modifierSlots = (account: AccountState): number => 1 + (hasHubUpgra
 // ── Starters (§8.5) ──────────────────────────────────────────────────────────────────────────────────────
 
 /**
- * §8.5.2 — the three defaults plus whatever the track has unlocked, filtered to species this build ships.
- * Pikachu is on the track at Level 4 and has no authored kit yet; it stays unlocked on the account and off
- * the picker, and the picker says so.
+ * §8.5.2 — the three defaults plus whatever the Mart has sold, filtered to species this build ships.
+ * Pikachu is on the Starters shelf and has no authored kit yet; bought, it stays on the account and off the
+ * picker, and the picker says so.
  */
 export function unlockedStarters(account: AccountState, content: ContentRegistry): string[] {
   const extra = account.starters.filter((id) => content.hasSpecies(id));
@@ -91,7 +91,7 @@ export function runPerksFor(account: AccountState, content: ContentRegistry, twi
   };
 }
 
-/** The fold's context for this account: what is still discoverable, and the run's XP multiplier. */
+/** The fold's context for this account: the content and the run's XP multiplier. */
 export function accountContextFor(content: ContentRegistry, xpMultiplier = 1): AccountContext {
-  return { content, xpMultiplier, discoverableRelics: discoverableRelics(content) };
+  return { content, xpMultiplier };
 }

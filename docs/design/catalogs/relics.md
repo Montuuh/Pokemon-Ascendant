@@ -110,7 +110,7 @@ Road Summit and the Black Market (~4 pick moments per run).
 | `battle-tracker` | Reach Familiar tier on 5 species |
 | `bond-bracelet` | Finish a combat with all 3 Active Pokémon alive, 10 times |
 | `master-ball-charm` | Have 5 Poké Balls broken out of (the consolation unlock) — reachable again since the catch became a roll (§2.6.4, 2026-09-21) |
-| `phoenix-feather` | Lose a run to a party wipe in Region 3 — reward track only until Region 3 (v0.7) |
+| `phoenix-feather` | Lose a run to a party wipe in Region 3 — the Discoveries shelf only until Region 3 (v0.7) |
 | `hand-off-pouch` | Discard 20 cards to Confusion |
 | `type-resonance` | Field an all-one-type Active Team |
 | `adrenal-surge` | Win a combat after losing 2 Pokémon |
@@ -120,7 +120,7 @@ Road Summit and the Black Market (~4 pick moments per run).
 | `cleanse-tag` | Take 10 statuses in one run |
 | `wide-lens` | Have a rider fail to land because the target fainted first |
 
-## 6. Tier-3 Mastery lane (10) — 5 Tokens each at the Pokémart (§8.6.1)
+## 6. Tier-3 Mastery lane (10) — 5 Tokens each on the Poké Mart's Mastery lane, from Trainer Level 10 (§8.6.1)
 
 §8.6.1 wants exactly 10 Tier-3 relics; §7.3 authors 7 Rares, of which 5 are Tier 3. The four rows marked 🆕 fill
 the lane. Every Tier-3 relic should change *how a run works*, not how much damage it does.
@@ -140,8 +140,9 @@ the lane. Every Tier-3 relic should change *how a run works*, not how much damag
 
 **Shipped state (2026-09-21, v0.6).** `tier` and `discovery` are fields on every relic row in `relics.json`.
 Eighteen of the twenty criteria are tracked (`counters` on the account, folded from the combat tally and the
-run's end facts); the two above are reachable only through the track's "Relic pool +1", which discovers Tier-2
-rows in catalogue order. Reactor Core is Tier 2 *and* on the Pokémart shelf (`mastery: true`).
+run's end facts); every Tier-2 row is also sold on the Poké Mart's Discoveries shelf for 4 Tokens from Trainer
+Level 8 (§8.3.5), which is the only road to the two above until their systems ship. Reactor Core is Tier 2
+*and* on the Mastery lane (`mastery: true`), so the Discoveries shelf leaves it out.
 
 ## 7. Pool construction rules (§8.6.2)
 

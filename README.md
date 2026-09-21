@@ -49,9 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.6 — Meta (code).** One full Region end to end, and an account that carries across runs: 47 species,
-181 moves, 64 relics in three meta tiers, 19 held items, 17 Region Modifiers, 4 Gyms, the Trainer Hub with its
-four kiosks. Next is v0.7 *Regions 2 & 3*. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
+**v0.6.3 — Meta (code), closed out.** One full Region end to end, and an account that carries across runs: 47
+species, 181 moves, 64 relics in three meta tiers, 19 held items, 17 Region Modifiers, 4 Gyms, the Trainer Hub
+with its four kiosks — Bond per line, a shown catch roll, running with a toll, and a Poké Mart whose shelves
+the reward track opens. Next is v0.7 *Regions 2 & 3*. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Run it locally
 

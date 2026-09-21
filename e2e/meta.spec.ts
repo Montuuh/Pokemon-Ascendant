@@ -31,10 +31,12 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.locator('li[data-testid^="track-"]')).toHaveCount(29);
     await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'next');
     await expect(page.getByTestId('track-detail')).toContainText('Level 2');
-    await expect(page.getByTestId('track-detail')).toContainText('Relic pool +1');
-    // Clicking a stop explains it.
-    await page.getByTestId('track-4').getByRole('button').click();
-    await expect(page.getByTestId('track-detail')).toContainText('Pikachu');
+    await expect(page.getByTestId('track-detail')).toContainText('+2 Tokens');
+    // Clicking a stop explains it; the storefront stops say which shelf they open.
+    await page.getByTestId('track-3').getByRole('button').click();
+    await expect(page.getByTestId('track-3')).toHaveAttribute('data-opens', 'starters');
+    await expect(page.getByTestId('track-detail')).toContainText('Starters shelf opens');
+    await expect(page.getByTestId('track-detail')).toContainText('Magikarp, Eevee and Pikachu');
 
     // §8.4.1 — three kiosks open from the start; the Daycare Lady needs Level 3 and the Door is post-launch.
     for (const id of ['card', 'pc', 'mart']) await expect(page.getByTestId(`kiosk-${id}`)).toBeEnabled();
@@ -110,41 +112,86 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
   });
 
-  test('the Poké Mart sells a Tier-3 relic for five Tokens from Level 10, and not before', async ({ page }) => {
+  test('the Poké Mart opens a shelf per level and sells for Tokens — cosmetics from Level 1, the Mastery lane from 10', async ({ page }) => {
     await menu(page);
     await page.getByTestId('btn-hub').click();
     await page.getByTestId('kiosk-mart').click();
-    // Level 1: the shelf is visible and priced, the banner says what opens it, and the button says why not.
+    // Level 1: the Trainer's Corner is open, the other four shelves are tabs that say their level, and a
+    // closed shelf is still readable — priced, with a banner that says what opens it.
+    await expect(page.getByTestId('mart-tab-corner')).toHaveAttribute('data-open', 'true');
+    await expect(page.getByTestId('mart-tab-mastery')).toHaveAttribute('data-open', 'false');
+    await expect(page.getByTestId('mart-tab-mastery')).toContainText('Lv 10');
+    await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
+    await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'locked');
+    await expect(page.getByTestId('mart-title-veteran')).toContainText('Not enough Tokens');
+    await page.getByTestId('mart-tab-mastery').click();
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-banner')).toContainText('Opens at Trainer Level 10');
+    await expect(page.getByTestId('mart-banner')).toContainText('opens at Trainer Level 10');
     await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'locked');
     await expect(page.getByTestId('mart-sages-tome')).toContainText('Level 10');
     await page.screenshot({ path: 'playtest/hub-mart-locked.png' });
 
-    // §8.3.4 — Level 10 with Tokens in hand: the buy goes through and the Tokens come off.
+    // §8.4.4 — seven Tokens at Level 1 buy a title, an avatar and a frame at the Corner; the Trainer Card
+    // wears each the moment it is bought, and a second title is a Wear button away.
+    await page.evaluate(() => window.__ascendant!.meta.tokens(9));
+    await page.goto('/?screen=hub');
+    await page.getByTestId('kiosk-mart').click();
+    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '9');
+    await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'buyable');
+    await page.getByTestId('mart-price-title-veteran').click();
+    await expect(page.getByTestId('mart-notice')).toContainText('Veteran is yours');
+    await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'owned');
+    await expect(page.getByTestId('mart-title-veteran')).toContainText('Wearing');
+    await page.getByTestId('mart-price-avatar-hiker').click();
+    await page.getByTestId('mart-price-frame-great').click();
+    await page.getByTestId('mart-price-title-ace-trainer').click();
+    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '0');
+    await expect(page.getByTestId('mart-title-ace-trainer')).toContainText('Wearing');
+    await expect(page.getByTestId('mart-wear-title-veteran')).toBeVisible();
+    await page.screenshot({ path: 'playtest/hub-mart-corner.png' });
+    await page.getByTestId('mart-wear-title-veteran').click();
+    await expect(page.getByTestId('mart-title-veteran')).toContainText('Wearing');
+    await page.getByTestId('kiosk-card').click();
+    await expect(page.getByTestId('card-title')).toHaveText('Veteran');
+    await expect(page.getByTestId('card-avatar')).toBeVisible();
+    await expect(page.getByTestId('card-head')).toHaveAttribute('data-frame', 'frame-great');
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: 'playtest/hub-card-worn.png' });
+
+    // §8.3.4 — Level 10 with Tokens in hand: the Mart opens on the newest shelf, the Mastery lane sells a
+    // Tier-3 for five, the Starters shelf sells Eevee for six, and the Tokens come off each time.
     await page.evaluate(() => {
       window.__ascendant!.meta.xp(20_000);
-      window.__ascendant!.meta.tokens(7);
+      window.__ascendant!.meta.tokens(13);
     });
     await page.goto('/?screen=hub');
     await page.getByTestId('kiosk-mart').click();
+    await expect(page.getByTestId('mart-tab-mastery')).toHaveAttribute('data-open', 'true');
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
-    await expect(page.getByTestId('mart-tokens')).toContainText('7');
+    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '13');
     await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'buyable');
     await page.getByTestId('mart-price-sages-tome').click();
     await expect(page.getByTestId('mart-notice')).toContainText("Sage's Tome is in your pool");
-    await expect(page.getByTestId('mart-tokens')).toContainText('2');
+    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '8');
     await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'owned');
     await page.screenshot({ path: 'playtest/hub-mart.png' });
-    // A second Tier-3 is now unaffordable, and the shelf says so without hiding it.
-    await expect(page.getByTestId('mart-crown-of-echoes')).toContainText('Not enough Tokens');
-    await expect(page.getByTestId('mart-crown-of-echoes')).toHaveAttribute('data-state', 'locked');
+    await page.getByTestId('mart-tab-starters').click();
+    await expect(page.getByTestId('mart-eevee')).toHaveAttribute('data-state', 'buyable');
+    await page.getByTestId('mart-price-eevee').click();
+    await expect(page.getByTestId('mart-notice')).toContainText('Eevee can start your next run');
+    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '2');
+    // Magikarp at four is now unaffordable, and the shelf says so without hiding it; Pikachu waits on its kit.
+    await expect(page.getByTestId('mart-magikarp')).toContainText('Not enough Tokens');
+    await expect(page.getByTestId('mart-magikarp')).toHaveAttribute('data-state', 'locked');
+    await expect(page.getByTestId('mart-pikachu')).toContainText('Not sold yet');
+    await page.screenshot({ path: 'playtest/hub-mart-starters.png' });
 
-    // §8.4.1 — and at Level 10 the Daycare Lady is open, listing the starters the track has handed out.
+    // §8.4.1 — and the Daycare Lady lists what was bought as ready, and prices what was not.
     await page.getByTestId('kiosk-daycare').click();
     await expect(page.getByTestId('daycare-starter-eevee')).toHaveAttribute('data-state', 'ready');
     await expect(page.getByTestId('daycare-starter-magikarp')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('daycare-starter-pikachu')).toHaveAttribute('data-state', 'waiting');
+    await expect(page.getByTestId('daycare-starter-magikarp')).toContainText('4');
+    await expect(page.getByTestId('daycare-starter-pikachu')).toHaveAttribute('data-state', 'locked');
     await page.screenshot({ path: 'playtest/hub-daycare.png' });
   });
 });

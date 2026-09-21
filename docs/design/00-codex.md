@@ -239,23 +239,26 @@ the Trauma Salve relic (all), Therapy at `100×(1+stacks)` ₽ (one), or the Day
 Stand prevent the faint, so they prevent the stack.
 
 **Two currencies.** **Trainer XP** is earned every run and never spent; it drives **Trainer Level**
-(`floor(500 × N^1.6)`), which advances a **reward track** granting something at every level. **Trainer Tokens**
-come from milestone levels (every 5th) and Gold/Platinum achievements, and buy **only** the 10 Tier-3 Mastery
-relics at 5 each. The track yields ~44 of the 50 needed — achievements top up the rest on purpose.
+(`floor(500 × N^1.6)`), which advances a **reward track** that **pays Tokens at every level** (2; 5/5/8/8/10/10
+at the milestones; 92 by Level 30) and **opens the Poké Mart's shelves** at 3/5/8/10. **Trainer Tokens** also
+come from Gold (+2) and Platinum (+5) achievements, and buy **everything on an open shelf**. XP decides what is
+for sale; Tokens decide what you take home. The shop (~210) outruns the income (~156) on purpose.
 
-**Hub** — PC Terminal, Trainer Card, Pokémart (from the start), Daycare Lady (Lv 3), Mystery Door (post-launch).
-7 Hub upgrades, all QoL, granted on the track.
-**Starters** — 3 default + 3 meta: **Pikachu** (Lv 4), **Eevee** (Lv 8, 3 branches), **Magikarp** (Lv 12).
-**Relics** — 60 = 50 drop-pool + 10 Legendary. Meta tiers T1 20 / T2 20 event-unlocked / T3 10 Token-bought;
-tier ≠ rarity. Drop weight 60/30/10.
+**Hub** — PC Terminal, Trainer Card, Poké Mart (from the start), Daycare Lady (Lv 3), Mystery Door (post-launch).
+**Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·
+Starters Lv 3 (Magikarp 4, Eevee 6, Pikachu 6) · Hub upgrades Lv 5 (4–8) · Discoveries Lv 8 (any undiscovered
+Tier-2, 4) · Mastery lane Lv 10 (Tier-3, 5). 7 Hub upgrades, all QoL, all sold.
+**Starters** — 3 default + 3 meta bought at the Mart; any Soulbound line (Bond 5) for free.
+**Relics** — 60 = 50 drop-pool + 10 Legendary. Meta tiers T1 20 / T2 20 event-unlocked or bought / T3 10
+Token-bought; tier ≠ rarity. Drop weight 60/30/10.
 **Achievements** — 50, four medal tiers, ~20 % hidden, 20 grant Tokens, every one with a named trigger event.
 **Difficulty** — 10 stackable modifiers multiplying run XP; **no easier mode**; baseline is the floor. Each
-opens at a Trainer Level (§8.8.2) and only there — the track hands out relics, starters, Hub upgrades, Tokens
-and titles (nine "Relic pool +1" rows since 2026-09-21).
+opens at a Trainer Level (§8.8.2) and only there — the track pays Tokens and opens shelves, nothing else.
 
-*(Section reflects canon as of 2026-09-21: the track settles idempotently, the account is written after every
-fold in the browser, Pokédex Insight is a first-meeting peek at species not yet Familiar (§8.4.2), and Shiny is
-the official palette fetched rather than a hue-shift — §5.13.2.)*
+*(Section reflects canon as of 2026-09-21 evening: the track pays and opens, the Mart sells (§8.3.4–§8.3.5,
+§8.4.4 cosmetics); the track settles idempotently, the account is written after every fold in the browser,
+Pokédex Insight is a first-meeting peek at species not yet Familiar (§8.4.2), and Shiny is the official palette
+fetched rather than a hue-shift — §5.13.2.)*
 
 ---
 

@@ -22,7 +22,7 @@ export function AccountSummary() {
   const to = levelFor(account.xp);
 
   const lines: { key: string; glyph: string; text: string }[] = [];
-  for (const r of ledger.rewards) lines.push({ key: `r${r.level}`, glyph: '★', text: `Level ${r.level}: ${trackRewardLabel(r.reward, content)}` });
+  for (const r of ledger.rewards) lines.push({ key: `r${r.level}`, glyph: '★', text: `Level ${r.level}: ${trackRewardLabel(r.reward)}` });
   for (const a of ledger.unlockedAchievements) lines.push({ key: `a${a.id}`, glyph: MEDAL_GLYPH[a.tier] ?? '🏅', text: `${a.name} — ${a.description}` });
   for (const d of ledger.dexPromotions) lines.push({ key: `d${d.speciesId}${d.tier}`, glyph: '📖', text: `${content.species(d.speciesId).name} is now ${DEX_TIER_NAME[d.tier]}` });
   // §6.8 — Bond: one line per line, the points and any rank it crossed.
@@ -40,7 +40,7 @@ export function AccountSummary() {
       <div className={styles.head}>
         <h2 className={styles.title}>
           Trainer
-          <InfoDot tip={<Tip title="Trainer XP" body="Every fight, recruit, evolution and Badge paid into your account, and a lost run pays by how far it got. XP is never spent: each level opens something on the reward track." footer="The Trainer Card in the Hub has the whole track." />} />
+          <InfoDot tip={<Tip title="Trainer XP" body="Every fight, recruit, evolution and Badge paid into your account, and a lost run pays by how far it got. XP is never spent: each level pays Tokens, and four of them open a shelf at the Poké Mart." footer="The Trainer Card in the Hub has the whole track." />} />
         </h2>
         <Tipped tip={trainerLevelTip(p.level, p.into, p.span, MAX_LEVEL)}>
           <span className={styles.level} data-testid="summary-level">

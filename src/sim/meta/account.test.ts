@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
-import { accountFromProgress, applyAccountEvent, applyAccountEvents, buyTier3, emptyAccount, levelFor, levelProgress, REWARD_TRACK, TIER3_PRICE, XP, xpForLevel, type AccountContext } from './account';
+import { accountFromProgress, applyAccountEvent, applyAccountEvents, emptyAccount, levelFor, levelProgress, REWARD_TRACK, SHELVES, trackTokensBetween, upgradeAccount, XP, xpForLevel, type AccountContext } from './account';
 import { dexTierFor, DEX_FAMILIAR } from './pokedex';
 import { BOND, bondRank } from './bond';
-import { accountContextFor, discoverableRelics, modifierUnlocked, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
+import { accountContextFor, modifierUnlocked, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
+import { shelfOpen } from './mart';
 import { emptyProgress, type MetaEvent } from './achievements';
 import { MODIFIERS } from '../run/modifiers';
 
@@ -79,20 +80,31 @@ describe('XP sources — §8.3.2', () => {
 });
 
 describe('The reward track — §8.3.5', () => {
-  it('CrossingALevel_GrantsItsReward_Once', () => {
-    // 1 515 XP is level 2: a free Tier-2 relic. Starting from a seasoned account so no medal XP muddies it.
-    // Three hundred clean wins also *discover* two relics on the way (§8.6.1: a no-faint win, fifty wins), so
-    // the track's own pick is the next undiscovered row in catalogue order.
+  it('EveryLevelPaysTokens_MilestonesPayMore_NinetyTwoInAll', () => {
+    expect(REWARD_TRACK[2]).toEqual({ tokens: 2 });
+    expect(REWARD_TRACK[5]).toEqual({ tokens: 5, opens: 'hub' });
+    expect(REWARD_TRACK[15]).toEqual({ tokens: 8 });
+    expect(REWARD_TRACK[30]).toEqual({ tokens: 10 });
+    expect(REWARD_TRACK[1]).toBeUndefined();
+    expect(Object.keys(REWARD_TRACK)).toHaveLength(29);
+    expect(trackTokensBetween(1, 30)).toBe(92);
+    // The four stops that open a shelf sit where the shelves say they do.
+    expect(Object.entries(REWARD_TRACK).filter(([, r]) => r.opens).map(([l, r]) => [Number(l), r.opens])).toEqual([[3, 'starters'], [5, 'hub'], [8, 'discoveries'], [10, 'mastery']]);
+    expect(SHELVES.corner.level).toBe(1);
+  });
+
+  it('CrossingALevel_PaysItsTokens_Once', () => {
+    // 1 515 XP is level 2: two Tokens. Starting from a seasoned account so no medal XP muddies it.
     const events: MetaEvent[] = Array.from({ length: 303 }, () => win());
     const { state, delta } = applyAccountEvents(seasoned(), events, ctx);
     expect(levelFor(state.xp)).toBe(2);
     expect(delta.levelsGained).toEqual([2]);
-    expect(delta.rewards[0]).toEqual({ level: 2, reward: REWARD_TRACK[2] });
+    expect(delta.rewards).toEqual([{ level: 2, reward: REWARD_TRACK[2] }]);
+    expect(delta.tokens).toBe(2);
+    expect(state.tokens).toBe(2);
+    // Three hundred clean wins also *discover* two relics on the way (§8.6.1: a no-faint win, fifty wins).
     expect(delta.discoveredRelics).toEqual(['barrier-charm', 'lucky-egg-token']);
-    const order = discoverableRelics(content);
-    const trackPick = order.find((id) => id !== 'barrier-charm' && id !== 'lucky-egg-token')!;
-    expect(state.relics).toEqual(['barrier-charm', 'lucky-egg-token', trackPick]);
-    // Folding more XP inside the same level grants nothing again.
+    // Folding more XP inside the same level pays nothing again.
     const again = applyAccountEvent(state, win(), ctx);
     expect(again.delta.rewards).toHaveLength(0);
     expect(again.state.claimedLevels).toEqual([2]);
@@ -108,7 +120,7 @@ describe('The reward track — §8.3.5', () => {
     expect(levelFor(account.xp)).toBe(account.claimedLevels.length + 1);
   });
 
-  it('OneFightThatCrossesTwoLevels_GrantsBothInOrder', () => {
+  it('OneFightThatCrossesTwoLevels_PaysBothInOrder', () => {
     // Sit just under level 2, then take a big hit of XP.
     let state = seasoned();
     state = { ...state, xp: 1_514 };
@@ -116,20 +128,43 @@ describe('The reward track — §8.3.5', () => {
     const { state: after, delta } = applyAccountEvent(state, win(), big);
     expect(levelFor(after.xp)).toBe(3);
     expect(delta.levelsGained).toEqual([2, 3]);
-    expect(after.hub).toContain('starting-relic-plus-one');
+    expect(delta.rewards.map((r) => r.level)).toEqual([2, 3]);
+    expect(after.tokens).toBe(4);
+    // Level 3 opened the Starters shelf; nothing was handed out — the shelf sells.
+    expect(shelfOpen(after, 'starters')).toBe(true);
+    expect(after.starters).toEqual([]);
   });
 
-  it('MilestoneLevelsPayTokens_AndStartersLandOnTheirLevels', () => {
+  it('UnclaimedLevelsBelowTheCurrentOne_AreBackFilled', () => {
     const state = { ...seasoned(), xp: xpForLevel(12) - 1 };
-    // The levels below were never claimed on this account, so crossing 12 back-fills 2..12 — including the
-    // Tokens at 5 and 10 and all three meta-starters. That is the right behaviour for an account created
-    // before the track existed, and the same code path an ordinary level-up takes.
+    // The levels below were never claimed on this account, so crossing 12 back-fills 2..12: nine ordinary
+    // levels at two and the milestones at 5 and 10 at five — 28 Tokens. That is the right behaviour for an
+    // account created before the track existed, and the same code path an ordinary level-up takes.
     const { state: after } = applyAccountEvent(state, win(), ctx);
     expect(levelFor(after.xp)).toBe(12);
-    expect(after.tokens).toBe(10);
-    expect(after.starters).toEqual(['pikachu', 'eevee', 'magikarp']);
-    expect(after.hub).toEqual(expect.arrayContaining(['starting-relic-plus-one', 'expanded-box', 'pokedex-insight']));
+    expect(after.tokens).toBe(28);
     expect(after.claimedLevels).toHaveLength(11);
+    expect(after.hub).toEqual([]);
+  });
+
+  it('AVersionOneSave_IsBackPaidTheTokensItsLevelsNowPay_AndKeepsWhatItWasGranted', () => {
+    // A v0.6.2 account at Level 9: the old track paid 5 Tokens (Level 5) and granted Pikachu, Eevee and three
+    // Hub upgrades. It keeps all of that and gains 2 × 7 for the seven levels that paid nothing.
+    const old = {
+      ...emptyAccount(), version: 1, xp: xpForLevel(9), tokens: 5, tokensEarned: 5, claimedLevels: [2, 3, 4, 5, 6, 7, 8, 9],
+      starters: ['pikachu', 'eevee'], hub: ['starting-relic-plus-one', 'expanded-box', 'pokedex-insight'], titles: ['Ace Trainer'],
+    };
+    const now = upgradeAccount(old);
+    expect(now.version).toBe(2);
+    expect(now.tokens).toBe(5 + 14);
+    expect(now.tokensEarned).toBe(19);
+    expect(now.starters).toEqual(['pikachu', 'eevee']);
+    expect(now.hub).toHaveLength(3);
+    expect(now.cosmetics).toEqual(['title-ace-trainer']);
+    expect(now.wearing).toEqual({ title: 'title-ace-trainer' });
+    expect('titles' in now).toBe(false);
+    // Already current: untouched.
+    expect(upgradeAccount(now)).toBe(now);
   });
 });
 
@@ -241,18 +276,5 @@ describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
     expect(modifierUnlocked(emptyAccount(), ironWill)).toBe(false);
     expect(modifierUnlocked({ ...emptyAccount(), xp: xpForLevel(3) }, ironWill)).toBe(true);
     expect(modifierUnlocked({ ...emptyAccount(), modifiers: ['iron-will'] }, ironWill)).toBe(true);
-  });
-});
-
-describe('Tokens and the Pokémart — §8.3.4, §8.6.1', () => {
-  it('Tier3IsLockedBeforeLevelTen_ThenCostsFive', () => {
-    const poor = { ...emptyAccount(), tokens: 20 };
-    expect(buyTier3(poor, 'sages-tome')).toEqual({ error: 'locked' });
-    const rich = { ...emptyAccount(), xp: xpForLevel(10), tokens: 7 };
-    const bought = buyTier3(rich, 'sages-tome');
-    expect('state' in bought && bought.state.tokens).toBe(7 - TIER3_PRICE);
-    expect('state' in bought && bought.state.relics).toContain('sages-tome');
-    expect(buyTier3('state' in bought ? bought.state : rich, 'sages-tome')).toEqual({ error: 'owned' });
-    expect(buyTier3({ ...rich, tokens: 4 }, 'sages-tome')).toEqual({ error: 'cannot-afford' });
   });
 });

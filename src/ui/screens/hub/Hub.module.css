@@ -542,11 +542,12 @@
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  align-items: start;
   gap: var(--sp-2);
 }
 .shelfCard {
   display: grid;
-  grid-template-columns: 40px 1fr auto;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-3);
@@ -628,8 +629,97 @@
   font-size: var(--type-small);
 }
 .shelfReason {
+  max-width: 16ch;
   font-size: var(--type-caption);
   color: var(--ink-secondary);
+  text-align: right;
+}
+/* The five shelves as tabs; a closed one keeps its tab, dimmed, with the level on it. */
+.shelfTabs {
+  flex-wrap: wrap;
+}
+.shelfTab[data-open='false'] {
+  border-style: dashed;
+  color: var(--ink-secondary);
+}
+.shelfTabIcon {
+  display: inline-grid;
+  place-items: center;
+}
+.shelfSection {
+  display: grid;
+  gap: var(--sp-3);
+}
+.shelfFace {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--ink-secondary);
+}
+.shelfOwned .shelfFace {
+  color: var(--ink-primary);
+}
+.shelfAvatar {
+  height: 44px;
+  width: auto;
+  image-rendering: pixelated;
+}
+.shelfAlt {
+  color: var(--ink-muted);
+}
+.shelfWorn {
+  border-color: var(--accent-action);
+}
+.wear {
+  padding: 2px var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  cursor: pointer;
+}
+.wear:hover {
+  border-color: var(--accent-action);
+}
+/* §8.4.4 — the three frames: a swatch on the shelf, a border around the card's head. Ball palettes. */
+.frameSwatch {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 4px solid var(--border-strong);
+  border-radius: var(--radius-md);
+}
+.frameGreat {
+  border-color: var(--brand-blue);
+  box-shadow: inset 0 0 0 2px var(--brand-red);
+}
+.frameUltra {
+  border-color: var(--ink-primary);
+  box-shadow: inset 0 0 0 2px var(--accent-action);
+}
+.frameMaster {
+  border-color: var(--type-psychic);
+  box-shadow: inset 0 0 0 2px var(--type-poison);
+}
+/* The card's head wearing a frame. */
+.cardHead.frameGreat,
+.cardHead.frameUltra,
+.cardHead.frameMaster {
+  padding: var(--sp-4);
+  border-width: 4px;
+  border-style: solid;
+  border-radius: var(--radius-lg);
+}
+/* The avatar beside the card's name. */
+.avatar {
+  height: 56px;
+  width: auto;
+  image-rendering: pixelated;
+  align-self: end;
 }
 /* The Tier-2 board, on the PC Terminal. */
 .discoveries {
