@@ -319,7 +319,11 @@ button.heroChip:hover {
   color: var(--ink-secondary);
 }
 
-/* ── The line: stages, then the Bond, then the ladder ─────────────────────────────────────────────────── */
+/* ── The Line tab: stages, then the Bond, then the ladder ─────────────────────────────────────────────── */
+.embedded {
+  display: grid;
+  gap: var(--sp-4);
+}
 .stages {
   display: flex;
   align-items: center;
@@ -369,13 +373,18 @@ button.heroChip:hover {
 }
 .bondBlock {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   padding: var(--sp-3) var(--sp-4);
   border: 2px solid var(--border-subtle);
   border-radius: var(--radius-md);
   background: var(--surface-1);
+}
+.bondMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
 }
 .bondRankName {
   font-family: var(--font-display);

@@ -257,16 +257,14 @@ export function starterTip(name: string, blurb: string, price: number, state: 'o
   return <Tip title={name} meta={[state === 'owned' || state === 'soulbound' ? 'Yours' : `${price} Tokens`, 'Poké Mart · Level 3']} body={blurb} footer={footer} />;
 }
 
-/** §5.13 / §8.9 — a Pokédex card: number, types, met or not. The sheet has the rest. */
-export function dexCardTip(name: string, dex: number, types: readonly string[], met: boolean, encounters: number): ReactNode {
-  return <Tip title={`#${String(dex).padStart(3, '0')} ${name}`} meta={types.map(cap)} body={met ? `Met ${encounters} time${encounters === 1 ? '' : 's'}.` : 'Not met yet — a silhouette until it takes the field against you.'} footer="Open for its record and its kit." />;
-}
-
-/** §6.8 — a Companions card: the line and its rank. The sheet has the ladder. */
-export function lineCardTip(lineName: string, points: number, rank: number): ReactNode {
+/** §5.13 / §8.9 — a Pokédex card: number, types, met or not, the line's rank. The sheet has the rest. */
+export function dexCardTip(name: string, dex: number, types: readonly string[], met: boolean, encounters: number, lineName: string, rank: number): ReactNode {
   const NAMES = ['—', 'Companion', 'Trusted', 'Veteran', 'Deep Bond', 'Soulbound'];
-  const NEXT = [5, 15, 35, 60, 100];
-  return <Tip title={`${lineName} line`} meta={rank > 0 ? [NAMES[rank]!, `${points} Bond`] : ['Not yet played']} body={rank >= 5 ? 'Soulbound: everything the line can open is open.' : `${NEXT[rank]! - points} more Bond to ${NAMES[rank + 1]}.`} footer="Open for its stages and what each rank unlocks." />;
+  const lines: ReactNode[] = [
+    <div key="m">{met ? `Faced ${encounters} time${encounters === 1 ? '' : 's'}.` : 'Not faced yet — a silhouette until it takes the field against you.'}</div>,
+    <div key="b">{rank > 0 ? `${lineName} line: ${NAMES[rank]} (rank ${rank}).` : `${lineName} line: not yet played.`}</div>,
+  ];
+  return <Tip title={`#${String(dex).padStart(3, '0')} ${name}`} meta={types.map(cap)} body={lines} footer="Open for its record, its kit and its line." />;
 }
 
 /** §6.8 — a line's Bond. */

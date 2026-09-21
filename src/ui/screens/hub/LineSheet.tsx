@@ -1,4 +1,4 @@
-import { IconArrowRight, IconCheck, IconPokeball } from '@tabler/icons-react';
+import { IconArrowRight, IconCheck } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
 import { BOND, BOND_LADDER, BOND_RANK_NAME, BOND_RANKS, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, isThreeStageLine, type AccountState } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
@@ -7,9 +7,9 @@ import { BondBar } from './BondBar';
 import { RANK_ICON } from './rankIcons';
 import styles from './PcSheet.module.css';
 
-// §6.8 — one evolution line's sheet: its stages (each a door to that species' Pokédex sheet), the Bond so
-// far, and the ladder of what each rank opens *for this line* — the fifth card by name, the hidden ability by
-// name. The Companions grid behind shows only the portrait, the name and the bar; the reading is here.
+// §6.8 — the Line tab of a Pokédex sheet: the evolution line's stages (each a door to that species' sheet, the
+// one you are on marked), the Bond so far, and the ladder of what each rank opens *for this line* — the fifth
+// card by name, the hidden ability by name — with how Bond grows at the foot.
 
 /** The line as columns: the base, then what it evolves into, then what those evolve into. Eevee fans out. */
 function stagesOf(line: string): string[][] {
@@ -22,7 +22,7 @@ function stagesOf(line: string): string[][] {
   }
 }
 
-export function LineSheet({ line, account, onSpecies }: { line: string; account: AccountState; onSpecies: (id: string) => void }) {
+export function LineSheet({ line, account, current, onSpecies }: { line: string; account: AccountState; current?: string; onSpecies: (id: string) => void }) {
   const content = getContent();
   const base = content.species(line);
   const points = account.bond[line] ?? 0;
@@ -49,21 +49,7 @@ export function LineSheet({ line, account, onSpecies }: { line: string; account:
 
   return (
     <div data-testid="line-sheet" data-line={line} data-rank={rank}>
-      <div className={styles.hero} style={{ ['--sheet-type' as string]: `var(--type-${base.types[0]})` }}>
-        <span className={styles.heroBall} aria-hidden="true"><IconPokeball size={220} stroke={1.2} /></span>
-        <span className={styles.heroArt}><MonIcon speciesId={line} size={140} /></span>
-        <div className={styles.heroBody}>
-          <span className={styles.heroNumber}>Evolution line</span>
-          <h2 className={`${styles.heroName} display`}>{base.name} line</h2>
-          <div className={styles.heroMeta}>
-            <span className={styles.heroChip}>{rank > 0 ? `${BOND_RANK_NAME[rank]} · rank ${rank}` : 'Not yet played'}</span>
-            <span className={styles.heroChip}>{three ? 'Three stages' : cols.length > 1 ? 'Two stages' : 'One stage'}</span>
-            {u.starter && <span className={`${styles.heroChip} ${styles.chipOn}`}><IconCheck size={13} stroke={3} /> Can start a run</span>}
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.body}>
+      <div className={styles.embedded}>
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>Stages <span className={styles.muted}>— open one for its Pokédex sheet</span></h3>
           <div className={styles.stages} data-testid="line-sheet-stages">
@@ -77,7 +63,7 @@ export function LineSheet({ line, account, onSpecies }: { line: string; account:
                 )}
                 <div className={styles.stageCol}>
                   {col.map((id) => (
-                    <button key={id} type="button" className={styles.stage} onClick={() => onSpecies(id)} data-testid={`line-stage-${id}`}>
+                    <button key={id} type="button" className={`${styles.stage} ${id === current ? styles.stageOn : ''}`} onClick={() => { if (id !== current) onSpecies(id); }} aria-current={id === current || undefined} data-testid={`line-stage-${id}`}>
                       <MonIcon speciesId={id} size={64} />
                       <span className={styles.stageName}>{content.species(id).name}</span>
                       <span className={`${styles.muted} tabular`}>#{String(content.species(id).dex).padStart(3, '0')}</span>
@@ -96,8 +82,9 @@ export function LineSheet({ line, account, onSpecies }: { line: string; account:
           </h3>
           <div className={styles.bondBlock} data-testid="line-sheet-bond">
             <BondBar points={points} />
-            <span className={styles.bondRankName}>
-              {p.next === null ? 'Every rank open' : `${p.next - points} to ${BOND_RANK_NAME[rank + 1]}`}
+            <span className={styles.bondMeta}>
+              <span className={styles.bondRankName}>{p.next === null ? 'Every rank open' : `${p.next - points} to ${BOND_RANK_NAME[rank + 1]}`}</span>
+              {u.starter && <span className={`${styles.heroChip} ${styles.chipOn}`}><IconCheck size={13} stroke={3} /> Can start a run</span>}
             </span>
           </div>
         </section>

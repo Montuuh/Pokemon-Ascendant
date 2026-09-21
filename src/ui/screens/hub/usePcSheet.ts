@@ -1,9 +1,15 @@
 import { useState } from 'react';
 
-// §8.4.1 — which sheet the PC Terminal has open, as a small history: a line's stage opens its species and
-// Back returns to the line. Kept apart from the dialog so the grids can open a sheet without owning it.
+// §8.4.1 — which Pokédex sheet is open, as a small history: an evolution or a stage on the Line tab opens
+// that species and Back returns. Kept apart from the dialog so the grid can open a sheet without owning it.
 
-export type SheetPage = { kind: 'species'; id: string } | { kind: 'line'; id: string };
+export type SheetTab = 'record' | 'kit' | 'line';
+
+export interface SheetPage {
+  id: string;
+  /** The tab to open on; the Record by default. */
+  tab?: SheetTab;
+}
 
 export interface PcSheetState {
   stack: SheetPage[];

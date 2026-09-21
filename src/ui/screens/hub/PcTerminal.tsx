@@ -1,28 +1,29 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { IconCheck, IconPokeball } from '@tabler/icons-react';
 import { motion } from 'motion/react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, BOND, BOND_RANKS, BOND_RANK_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier } from '@/sim';
+import { ACHIEVEMENTS, BOND, BOND_RANKS, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon, typeGlyph } from '@/ui/art';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { dexCardTip, lineCardTip, relicTierTip } from '@/ui/tips';
+import { dexCardTip, relicTierTip } from '@/ui/tips';
 import { PcSheet } from './PcSheet';
 import { usePcSheet } from './usePcSheet';
 import styles from './Hub.module.css';
 
-// §8.4.1 — the PC Terminal: what the account *knows* and what it has *earned*. Four tabs — Companions (the
-// Bond of every line you have played, §6.8), the Pokédex (§5.13, §8.9), the medal case (§8.7) and the relic
-// discoveries (§8.6.1).
+// §8.4.1 — the PC Terminal: what the account *knows* and what it has *earned*. Three tabs — the Pokédex
+// (§5.13, §8.9, and the Bond of every line inside it, §6.8), the medal case (§8.7) and the relic discoveries
+// (§8.6.1).
 //
-// Companions and the Pokédex are *pictures*: a card per line or per species with a portrait, a name and one
-// number, and nothing else. Every card is a button that opens a sheet (PcSheet) where the reading is — the
-// line's ladder and how Bond grows, the species' record and kit. The v0.6.1 panels put all of that on the
-// grid itself and the first reader called it too much; the rule since 2026-09-22 is the picture on the grid,
-// the paragraph one click away.
+// The Pokédex is a *picture*: a card per species with number, sprite, name, type glyphs and the line's rank as
+// five pips — nothing else. Every card is a button that opens a sheet (PcSheet) where the reading is: the
+// species' record and kit, and the line's stages, Bond bar and ladder. The v0.6.1 panels put all of that on
+// the grid itself and the first reader called it too much; the rule since 2026-09-22 is the picture on the
+// grid, the paragraph one click away. A separate Companions tab lasted a day: the Bond is per line and a line
+// is a page of the Pokédex, so it lives there, and "By Bond" orders the book by the lines you have played.
 
 const CATEGORY_LABEL: Record<AchievementDef['category'], string> = {
   'first-steps': 'First steps',
@@ -42,6 +43,7 @@ export function PcTerminal() {
   const content = getContent();
   const animate = useMotionPref();
   const sheet = usePcSheet();
+  const [order, setOrder] = useState<'dex' | 'bond'>('dex');
 
   const species = useMemo(() => [...content.allSpecies()].sort((a, b) => a.dex - b.dex), [content]);
   // §8.9 — "met" is any trace of the species on the account: faced, knocked out, recruited or fought with.
@@ -49,13 +51,16 @@ export function PcTerminal() {
     const e = normalizeDexEntry(account.dex[s.id]);
     return e.encounters > 0 || e.defeats > 0 || e.recruits > 0 || e.winsWith > 0;
   }).length;
-
-  // §6.8 — one row per line, base forms; the lines you have played first, then dex order.
-  const lines = useMemo(
-    () => species.filter((s) => s.stage === 'basic').sort((a, b) => (account.bond[b.id] ?? 0) - (account.bond[a.id] ?? 0) || a.dex - b.dex),
-    [species, account.bond],
+  // §6.8 — the Bond is per line; "By Bond" puts the lines you have played first, whole, then the rest by number.
+  const bondOf = (id: string) => account.bond[content.lineBase(id)] ?? 0;
+  const lineOrder = useMemo(() => Object.fromEntries(species.filter((s) => s.stage === 'basic').map((s) => [s.id, s.dex])), [species]);
+  const shown = useMemo(
+    () => (order === 'dex' ? species : [...species].sort((a, b) => bondOf(b.id) - bondOf(a.id) || lineOrder[content.lineBase(a.id)]! - lineOrder[content.lineBase(b.id)]! || a.dex - b.dex)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [order, species, account.bond],
   );
-  const bonded = lines.filter((l) => (account.bond[l.id] ?? 0) > 0).length;
+  const linesPlayed = species.filter((s) => s.stage === 'basic' && (account.bond[s.id] ?? 0) > 0).length;
+  const linesTotal = species.filter((s) => s.stage === 'basic').length;
 
   const byCategory = useMemo(() => {
     const out = new Map<AchievementDef['category'], AchievementDef[]>();
@@ -73,11 +78,8 @@ export function PcTerminal() {
   return (
     <>
     <PcSheet sheet={sheet} account={account} />
-    <Tabs.Root className={styles.pc} defaultValue="companions" data-testid="pc-terminal">
+    <Tabs.Root className={styles.pc} defaultValue="dex" data-testid="pc-terminal">
       <Tabs.List className={styles.tabs} aria-label="PC Terminal">
-        <Tabs.Trigger className={styles.tab} value="companions" data-testid="pc-tab-companions">
-          Companions <span className={`${styles.muted} tabular`}>{bonded} / {lines.length}</span>
-        </Tabs.Trigger>
         <Tabs.Trigger className={styles.tab} value="dex" data-testid="pc-tab-dex">
           Pokédex <span className={`${styles.muted} tabular`}>{met} / {species.length}</span>
         </Tabs.Trigger>
@@ -89,60 +91,27 @@ export function PcTerminal() {
         </Tabs.Trigger>
       </Tabs.List>
 
-      {/* ── Companions (§6.8) ─────────────────────────────────────────────────────────────────────────── */}
-      <Tabs.Content value="companions" className={styles.tabPanel}>
-        <p className={styles.lede} data-testid="bond-legend">
-          Every line you have played, and how far the Bond has gone. Open one for its ladder.
-          <InfoDot tip={<Tip title="Bond" body={`A line gets better by being played: +${BOND.win} per fight won with it on the Active Team (+${BOND.lead} more if it led), +${BOND.evolution} per evolution, +${BOND.recruit} the first time you recruit it in a run, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one. Five ranks, at ${BOND_RANKS.join(' · ')}: a fifth card, Shiny, the hidden ability, a second Mastery Move, and Soulbound — a third Mastery tier or the card in every opening hand, and the right to start a run.`} footer="Each line's sheet names what its own ranks open." />} />
-        </p>
-        <ul className={styles.lineGrid} data-testid="bond-grid">
-          {lines.map((l, i) => {
-            const points = account.bond[l.id] ?? 0;
-            const rank = bondRank(points);
-            return (
-              <motion.li
-                key={l.id}
-                initial={animate ? { opacity: 0, y: 8 } : false}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: Math.min(i, 16) * 0.025, duration: 0.25 }}
-              >
-                <Tipped
-                  as="button"
-                  type="button"
-                  tip={lineCardTip(l.name, points, rank)}
-                  className={`${styles.lineCard} ${points === 0 ? styles.lineUnplayed : ''}`}
-                  style={{ ['--card-type' as string]: `var(--type-${l.types[0]})` }}
-                  onClick={() => sheet.open({ kind: 'line', id: l.id })}
-                  data-testid={`bond-${l.id}`}
-                  data-rank={rank}
-                >
-                  <span className={styles.cardBall} aria-hidden="true"><IconPokeball size={96} stroke={1.4} /></span>
-                  <span className={styles.lineArt}><MonIcon speciesId={l.id} size={84} /></span>
-                  <span className={`${styles.lineName} display`}>{l.name} line</span>
-                  <span className={styles.lineRank} data-rank={rank}>{rank > 0 ? BOND_RANK_NAME[rank] : 'Not yet played'}</span>
-                  <span className={styles.pips} aria-hidden="true">
-                    {[1, 2, 3, 4, 5].map((r) => <i key={r} className={`${styles.pip} ${rank >= r ? styles.pipOn : ''}`} />)}
-                  </span>
-                </Tipped>
-              </motion.li>
-            );
-          })}
-        </ul>
-      </Tabs.Content>
-
       {/* ── Pokédex (§5.13, §8.9) ─────────────────────────────────────────────────────────────────────── */}
       <Tabs.Content value="dex" className={styles.tabPanel}>
-        <p className={styles.lede} data-testid="dex-legend">
-          {met} of {species.length} met. Open one for its record and its kit.
-          <InfoDot tip={<Tip title="The Pokédex" body="Every species of the Region, in number order. A silhouette is one you have not met in a fight yet. Each sheet keeps the record — met, knocked out, caught, what your own copies did — and the kit: learnset, tutor list, abilities, Mastery Moves, evolutions." />} />
-        </p>
+        <div className={styles.dexHead}>
+          <p className={styles.lede} data-testid="dex-legend">
+            {met} of {species.length} met · {linesPlayed} of {linesTotal} lines played. Open one for its record, its kit and its line.
+            <InfoDot tip={<Tip title="The Pokédex" body={`Every species of the Region. A silhouette is one you have not faced yet; the five pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A line gets better by being played: +${BOND.win} per fight won with it (+${BOND.lead} leading), +${BOND.evolution} per evolution, +${BOND.recruit} for a first recruit, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one — ranks at ${BOND_RANKS.join(' · ')}.`} />} />
+          </p>
+          <div className={styles.order} role="group" aria-label="Order">
+            <button type="button" className={`${styles.orderBtn} ${order === 'dex' ? styles.orderOn : ''}`} onClick={() => setOrder('dex')} aria-pressed={order === 'dex'} data-testid="dex-order-dex">By number</button>
+            <button type="button" className={`${styles.orderBtn} ${order === 'bond' ? styles.orderOn : ''}`} onClick={() => setOrder('bond')} aria-pressed={order === 'bond'} data-testid="dex-order-bond">By Bond</button>
+          </div>
+        </div>
         <ul className={styles.dexGrid} data-testid="dex-grid">
-          {species.map((sp, i) => {
+          {shown.map((sp, i) => {
             const entry = normalizeDexEntry(account.dex[sp.id]);
             const isMet = entry.encounters > 0 || entry.defeats > 0 || entry.recruits > 0 || entry.winsWith > 0;
+            const rank = bondRank(bondOf(sp.id));
             return (
               <motion.li
                 key={sp.id}
+                layout={animate}
                 initial={animate ? { opacity: 0, scale: 0.96 } : false}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: Math.min(i, 24) * 0.015, duration: 0.2 }}
@@ -150,13 +119,14 @@ export function PcTerminal() {
                 <Tipped
                   as="button"
                   type="button"
-                  tip={dexCardTip(sp.name, sp.dex, sp.types, isMet, entry.encounters)}
+                  tip={dexCardTip(sp.name, sp.dex, sp.types, isMet, entry.encounters, content.species(content.lineBase(sp.id)).name, rank)}
                   className={styles.dexCard}
                   style={{ ['--card-type' as string]: `var(--type-${sp.types[0]})` }}
-                  onClick={() => sheet.open({ kind: 'species', id: sp.id })}
+                  onClick={() => sheet.open({ id: sp.id })}
                   data-testid={`dex-${sp.id}`}
                   data-tier={entry.tier}
                   data-met={isMet}
+                  data-rank={rank}
                 >
                   <span className={`${styles.dexNo} tabular`}>#{String(sp.dex).padStart(3, '0')}</span>
                   <span className={styles.cardBall} aria-hidden="true"><IconPokeball size={72} stroke={1.4} /></span>
@@ -164,6 +134,9 @@ export function PcTerminal() {
                   <span className={`${styles.dexName} display`}>{sp.name}</span>
                   <span className={styles.dexTypes} aria-hidden="true">
                     {sp.types.map((t) => <img key={t} src={typeGlyph(t)} alt="" width={14} height={14} />)}
+                  </span>
+                  <span className={styles.pips} aria-hidden="true">
+                    {[1, 2, 3, 4, 5].map((r) => <i key={r} className={`${styles.pip} ${rank >= r ? styles.pipOn : ''}`} />)}
                   </span>
                 </Tipped>
               </motion.li>

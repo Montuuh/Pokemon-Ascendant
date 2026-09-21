@@ -71,7 +71,7 @@ export function bondUnlocks(rank: number, threeStageLine: boolean): BondUnlocks 
   };
 }
 
-/** §6.8.2 — the ladder, in the player's words, for the Companions tab and the tooltips. */
+/** §6.8.2 — the ladder, in the player's words, for the Pokédex sheet's Line tab and the tooltips. */
 export const BOND_LADDER: { rank: 1 | 2 | 3 | 4 | 5; name: string; unlock: string }[] = [
   { rank: 1, name: 'Companion', unlock: 'Mastery Move Lv1 — a fifth card' },
   { rank: 2, name: 'Trusted', unlock: 'Shiny' },

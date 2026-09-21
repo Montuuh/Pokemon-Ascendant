@@ -246,7 +246,7 @@ The pre-run and post-run menu. Not a 3D space: a clean 2D hub styled as a Pokém
 
 | Kiosk | Function | Available |
 |---|---|---|
-| **PC Terminal** | Companions (the Bond per line, §6.8), the Pokédex and its record (§5.13, §8.9), the medal case (§8.7), the relic discoveries (§8.6.1) | From the start |
+| **PC Terminal** | The Pokédex — every species, its record, its kit and its line's Bond (§5.13, §6.8, §8.9) — the medal case (§8.7), the relic discoveries (§8.6.1) | From the start |
 | **Trainer Card** | Level, total XP, Tokens, profile stats | From the start |
 | **Poké Mart** | Five shelves — Trainer's Corner, Starters, Hub upgrades, Discoveries, Mastery lane — opened by Trainer Level (1/3/5/8/10), paid in Tokens (§8.3.5) | From the start (the Corner); every shelf by Level 10 |
 | **Daycare Lady** | Configure the starting roster, difficulty modifiers, run options | Trainer Level 3 |
@@ -495,7 +495,7 @@ what else the entry remembers:
 
 - Tracked **per account**, across every run, and never reset.
 - Reaching Familiar awards one-time Trainer XP (§8.3.2).
-- The **Bond** (§6.8) is persisted beside it, per line, and has its own tab — Companions.
+- The **Bond** (§6.8) is persisted beside it, per line, and is read on the line's page of the Pokédex (§8.9.2).
 
 ## §8.9.1 The record
 
@@ -520,15 +520,19 @@ the fight's end, like every other account fact; a saved entry from before a numb
 
 ## §8.9.2 The surface
 
-The PC Terminal is the Pokédex's home, and it is a **picture first**: a card per species with its number, its
-sprite and its name — a silhouette until the species has been faced — and nothing else on the grid. A card
-opens the species' **sheet**: the record above, the Familiar standing, and the kit (the line's learnset, the
-Dojo tutor list, the abilities with the hidden one marked, the Mastery Moves by rank, what it evolves into,
-each evolution a door to its own sheet). The Companions tab is the same shape: a card per line with portrait,
-name, rank and five pips; the line's sheet holds its stages (doors to their Pokédex sheets), its Bond bar and
-the ladder of what each rank opens for that line by name, with how Bond grows at the foot. *(Redrawn
-2026-09-22: the v0.6.1 grids printed the ladder, the thresholds and every unlock chip on every row, and the
-first reader called it too much. The rule since: the picture on the grid, the paragraph one click away.)*
+The PC Terminal is the Pokédex's home, and the Pokédex is **the one book**: every species, and through it every
+line. It is a **picture first**: a card per species with its number, its sprite, its name, its type glyphs and
+five pips for its line's Bond rank — a silhouette until the species has been faced — and nothing else on the
+grid. Two orders: by number, and **by Bond**, which puts the lines you have played first, whole. A card opens
+the species' **sheet**, three tabs: **Record** (the numbers above and the Familiar standing), **Kit** (the
+line's learnset, the Dojo tutor list, the abilities with the hidden one marked, the Mastery Moves by rank,
+what it evolves into — each evolution a door to its own sheet) and **the line** (its stages as doors, its
+Bond bar, the ladder of what each rank opens for that line by name, and how Bond grows at the foot).
+
+*(Redrawn 2026-09-22, twice. The v0.6.1 grids printed the ladder, the thresholds and every unlock chip on
+every row, and the first reader called it too much; the rule since is the picture on the grid, the paragraph
+one click away. A separate Companions tab — a card per line — lasted the morning: the Bond is per line and a
+line is a page of the Pokédex, so two tabs were two doors to the same room. One book, ordered two ways.)*
 
 ---
 

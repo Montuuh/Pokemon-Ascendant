@@ -37,7 +37,7 @@ export function Daycare() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>
           Starters
-          <InfoDot tip={<Tip title="Who can start a run" body={`The three defaults, the three the Poké Mart sells on its Starters shelf from Level ${SHELVES.starters.level} — and any line you have taken to Soulbound (Bond rank 5) in the PC Terminal's Companions tab.`} />} />
+          <InfoDot tip={<Tip title="Who can start a run" body={`The three defaults, the three the Poké Mart sells on its Starters shelf from Level ${SHELVES.starters.level} — and any line you have taken to Soulbound (Bond rank 5) — see its page in the Pokédex.`} />} />
         </h2>
         <ul className={styles.starters}>
           {[...STARTER_IDS, ...META_STARTERS, ...Object.keys(account.bond).filter((line) => bondRank(account.bond[line]!) >= 5 && !(STARTER_IDS as readonly string[]).includes(line) && !META_STARTERS.includes(line))].map((id) => {

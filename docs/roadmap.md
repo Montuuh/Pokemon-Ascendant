@@ -370,7 +370,8 @@ the line's stages, Bond bar and named ladder (§8.9.2); the species' hero, **rec
 out, caught, recruited, fights and runs with, KOs landed, damage dealt, fainted, Lead turns, evolved; new
 `CombatTally.koBy/faintsOf/damageBy`, `enemies`, `caughtSpecies`, `fromSpeciesId`) and kit. Unmet species
 are silhouettes. Radix Dialog with a Back stack; the legend text lives in tooltips and at the foot of the line
-sheet.
+sheet. Later the same day the Companions tab folded into the Pokédex: the line is the sheet's third tab, the
+card carries the line's rank as five pips, and "By Bond" orders the book by the lines played (v0.6.5).
 
 **Deferred to v0.7:** Pikachu's kit · Eevee's Stone Cache (Evolution Items) · Trainer's Instinct (the intent
 queue) · Greater Threats (Region 2's stat tier) · the Trauma Salve Cache upgrade (Cities) · the Master Ball

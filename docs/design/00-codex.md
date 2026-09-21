@@ -244,9 +244,9 @@ at the milestones; 92 by Level 30) and **opens the Poké Mart's shelves** at 3/5
 come from Gold (+2) and Platinum (+5) achievements, and buy **everything on an open shelf**. XP decides what is
 for sale; Tokens decide what you take home. The shop (~210) outruns the income (~156) on purpose.
 
-**Hub** — PC Terminal (Companions · Pokédex · Medals · Discoveries; cards that open sheets, §8.9.2 — the Pokédex
-keeps a per-species record, §8.9.1), Trainer Card, Poké Mart (from the start), Daycare Lady (Lv 3), Mystery
-Door (post-launch).
+**Hub** — PC Terminal (Pokédex · Medals · Discoveries; the Pokédex is the one book: cards that open a sheet with
+Record · Kit · the line's Bond, §8.9.2, and a per-species record, §8.9.1), Trainer Card, Poké Mart (from the
+start), Daycare Lady (Lv 3), Mystery Door (post-launch).
 **Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·
 Starters Lv 3 (Magikarp 4, Eevee 6, Pikachu 6) · Hub upgrades Lv 5 (4–8) · Discoveries Lv 8 (any undiscovered
 Tier-2, 4) · Mastery lane Lv 10 (Tier-3, 5). 7 Hub upgrades, all QoL, all sold.

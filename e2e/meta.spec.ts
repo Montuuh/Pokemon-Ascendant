@@ -44,28 +44,30 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('kiosk-daycare')).toContainText('Level 3');
     await expect(page.getByTestId('kiosk-door')).toBeDisabled();
 
-    // §6.8 — the PC Terminal opens on Companions: a card per line, none played; the ladder is one click away.
+    // §5.13 / §8.9 — the PC Terminal opens on the Pokédex: number, silhouette, name, the line's pips; every
+    // species listed, none met, no line played.
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('bond-squirtle')).toHaveAttribute('data-rank', '0');
-    await expect(page.getByTestId('bond-squirtle')).toContainText('Not yet played');
-    await page.getByTestId('bond-squirtle').click();
+    await expect(page.getByTestId('dex-legend')).toContainText('0 of 47 met');
+    await expect(page.getByTestId('dex-legend')).toContainText('0 of 19 lines played');
+    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-met', 'false');
+    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-rank', '0');
+    await expect(page.getByTestId('dex-pidgey')).toContainText('#016');
+    await expect(page.getByTestId('dex-pidgey')).not.toContainText('KO');
+    // §6.8 — the line is the sheet's third tab: its stages, the ladder with this line's names, how Bond grows.
+    await page.getByTestId('dex-squirtle').click();
+    await page.getByTestId('dex-sheet-tab-line').click();
     await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-line', 'squirtle');
     await expect(page.getByTestId('line-sheet-ladder')).toContainText('Aqua Tail');
     await expect(page.getByTestId('line-sheet-ladder')).toContainText('Shiny');
     await expect(page.getByTestId('line-sheet')).toContainText('Bond grows by playing the line');
-    // A stage on the line sheet opens that species' Pokédex sheet; Back returns to the line.
+    // A stage opens that species' sheet on the same tab; Back returns.
     await page.getByTestId('line-stage-wartortle').click();
     await expect(page.getByTestId('dex-sheet')).toHaveAttribute('data-species', 'wartortle');
-    await page.getByTestId('pc-sheet-back').click();
     await expect(page.getByTestId('line-sheet')).toBeVisible();
+    await page.getByTestId('pc-sheet-back').click();
+    await expect(page.getByTestId('dex-sheet')).toHaveAttribute('data-species', 'squirtle');
     await page.getByTestId('pc-sheet-close').click();
     await expect(page.getByTestId('pc-sheet')).toHaveCount(0);
-    // §5.13 / §8.9 — the Pokédex is number, silhouette, name; every species listed, none met yet.
-    await page.getByTestId('pc-tab-dex').click();
-    await expect(page.getByTestId('dex-legend')).toContainText('0 of 47 met');
-    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-met', 'false');
-    await expect(page.getByTestId('dex-pidgey')).toContainText('#016');
-    await expect(page.getByTestId('dex-pidgey')).not.toContainText('KO');
     // The cards fade in over ~0.6 s; the screenshot is of the finished picture.
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'playtest/hub-pokedex.png' });
@@ -108,20 +110,25 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'claimed');
     await expect(page.getByTestId('track-3')).toHaveAttribute('data-state', 'next');
 
-    // §6.8 — 303 wins leading with Squirtle is 606 Bond: Soulbound on the card, every rung lit on the sheet.
+    // §6.8 — 303 wins leading with Squirtle is 606 Bond: five pips on every card of the line, "By Bond" puts
+    // the line first, and every rung is lit on the sheet.
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('bond-squirtle')).toHaveAttribute('data-rank', '5');
-    await expect(page.getByTestId('bond-squirtle')).toContainText('Soulbound');
+    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '5');
+    await expect(page.getByTestId('dex-blastoise')).toHaveAttribute('data-rank', '5');
+    await expect(page.getByTestId('dex-legend')).toContainText('1 of 19 lines played');
+    await page.getByTestId('dex-order-bond').click();
+    await expect(page.locator('[data-testid="dex-grid"] li').first()).toContainText('Squirtle');
     await page.waitForTimeout(600);
-    await page.screenshot({ path: 'playtest/hub-companions.png' });
-    await page.getByTestId('bond-squirtle').click();
+    await page.screenshot({ path: 'playtest/hub-pokedex-by-bond.png' });
+    await page.getByTestId('dex-squirtle').click();
+    await page.getByTestId('dex-sheet-tab-line').click();
     await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-rank', '5');
     await expect(page.getByTestId('line-sheet')).toContainText('Can start a run');
     await expect(page.locator('[data-testid="line-sheet-ladder"] li[data-on="true"]')).toHaveCount(5);
     await page.screenshot({ path: 'playtest/hub-line-sheet.png' });
     await page.keyboard.press('Escape');
+    await page.getByTestId('dex-order-dex').click();
     // §5.13 / §8.9 — Pidgey, met and knocked out 303 times, is Familiar; the record kept every number.
-    await page.getByTestId('pc-tab-dex').click();
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-met', 'true');
     await page.getByTestId('dex-pidgey').click();
@@ -151,8 +158,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.goto('/?screen=hub');
     await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '2');
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('bond-squirtle')).toHaveAttribute('data-rank', '5');
-    await page.getByTestId('pc-tab-dex').click();
+    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '5');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
     await page.getByTestId('dex-squirtle').click();
     await expect(page.getByTestId('dex-stat-kos')).toContainText('303');

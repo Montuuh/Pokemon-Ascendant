@@ -9,21 +9,26 @@ import { spriteOf, portraitOf } from '@/ui/art';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { abilityTip, moveDefTip } from '@/ui/tips';
 import { BondBar } from './BondBar';
+import { LineSheet } from './LineSheet';
+import type { SheetTab } from './usePcSheet';
 import styles from './PcSheet.module.css';
 
-// §5.13 / §8.9 — one species' Pokédex sheet: the hero (number, sprite, name, types), then two tabs. *Record*
-// is the numbers the account kept about this species — met, knocked out, caught, what your own copies did.
+// §5.13 / §8.9 — one species' Pokédex sheet: the hero (number, sprite, name, types), then three tabs. *Record*
+// is the numbers the account kept about this species — faced, knocked out, caught, what your own copies did.
 // *Kit* is what it fights with: the learnset, the tutor list, the abilities, the Mastery Moves of its line,
-// what it evolves into. The grid behind shows only number, sprite and name; everything else lives here.
+// what it evolves into. *Line* is the evolution line and its Bond (§6.8): the stages, the bar, the ladder.
+// The Pokédex is the one book (2026-09-22 — it absorbed the Companions tab); the grid behind shows only
+// number, sprite, name and the line's rank pips, and everything else lives here.
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export function SpeciesSheet({ speciesId, account, onSpecies, onLine }: {
+export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpecies }: {
   speciesId: string;
   account: AccountState;
-  onSpecies: (id: string) => void;
-  onLine: (line: string) => void;
+  initialTab?: SheetTab;
+  onSpecies: (id: string, tab?: SheetTab) => void;
 }) {
+  const [tab, setTab] = useState<SheetTab>(initialTab);
   const content = getContent();
   const s = content.species(speciesId);
   const line = content.lineBase(speciesId);
@@ -54,7 +59,7 @@ export function SpeciesSheet({ speciesId, account, onSpecies, onLine }: {
             {s.types.map((t) => <TypeBadge key={t} type={t} size={26} defenderTypes={s.types} />)}
             <span className={styles.heroChip}>{cap(s.rarity)}</span>
             <span className={styles.heroChip}>{s.stage === 'basic' ? 'Basic' : s.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}</span>
-            <button type="button" className={styles.heroChip} onClick={() => onLine(line)} data-testid="dex-sheet-line">
+            <button type="button" className={styles.heroChip} onClick={() => setTab('line')} data-testid="dex-sheet-line">
               {content.species(line).name} line · {rank > 0 ? BOND_RANK_NAME[rank] : 'no Bond yet'}
             </button>
           </div>
@@ -63,10 +68,11 @@ export function SpeciesSheet({ speciesId, account, onSpecies, onLine }: {
       </div>
 
       <div className={styles.body}>
-        <Tabs.Root defaultValue="record">
+        <Tabs.Root value={tab} onValueChange={(v) => setTab(v as SheetTab)}>
           <Tabs.List className={styles.tabs} aria-label="Pokédex sheet">
             <Tabs.Trigger className={styles.tab} value="record" data-testid="dex-sheet-tab-record">Record</Tabs.Trigger>
             <Tabs.Trigger className={styles.tab} value="kit" data-testid="dex-sheet-tab-kit">Kit</Tabs.Trigger>
+            <Tabs.Trigger className={styles.tab} value="line" data-testid="dex-sheet-tab-line">{content.species(line).name} line</Tabs.Trigger>
           </Tabs.List>
 
           <Tabs.Content value="record" className={styles.panel}>
@@ -84,6 +90,10 @@ export function SpeciesSheet({ speciesId, account, onSpecies, onLine }: {
 
           <Tabs.Content value="kit" className={styles.panel}>
             <Kit s={s} account={account} onSpecies={onSpecies} />
+          </Tabs.Content>
+
+          <Tabs.Content value="line" className={styles.panel}>
+            <LineSheet line={line} account={account} current={speciesId} onSpecies={(id) => onSpecies(id, 'line')} />
           </Tabs.Content>
         </Tabs.Root>
       </div>
