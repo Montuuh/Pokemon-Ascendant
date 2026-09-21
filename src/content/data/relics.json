@@ -370,7 +370,7 @@
       ],
       "description": "Replay the last card you played, free, once per combat.",
       "hook": "none",
-      "pending": "needs an activated card-replay action the combat UI does not have"
+      "pending": "needs an activated \"replay a card\" action the combat UI does not have yet — v0.7"
     },
     {
       "id": "choice-specs",
@@ -674,7 +674,7 @@
       ],
       "description": "Discard a card at turn start to draw a new one.",
       "hook": "none",
-      "pending": "needs an activated discard-to-draw action the combat UI does not have",
+      "pending": "needs an activated \"discard to draw\" action the combat UI does not have yet — v0.7",
       "tier": 2
     },
     {
@@ -686,7 +686,7 @@
       ],
       "description": "Improves Pokédex reveal rates on species you have beaten.",
       "hook": "none",
-      "pending": "needs the Pokédex (v0.6)",
+      "pending": "needs the Witnessed reveal rate, which arrives with the intent queue in v0.7",
       "tier": 2,
       "discovery": {
         "counter": "familiar-species",
@@ -780,7 +780,7 @@
       ],
       "description": "Once per combat, skip the enemy’s whole turn.",
       "hook": "none",
-      "pending": "needs an activated action; nothing in combat has one yet (§3.6) — v0.6",
+      "pending": "needs an activated action; nothing in combat has one yet — v0.7",
       "tier": 3
     },
     {
@@ -792,7 +792,7 @@
       ],
       "description": "Bond two Pokémon on pickup: while both are standing, they each deal 10 % more.",
       "hook": "none",
-      "pending": "needs a choose-a-Pokémon step when a relic is taken (§7.3.7) — v0.6",
+      "pending": "needs a choose-a-Pokémon step when a relic is taken — v0.7",
       "tier": 3
     },
     {

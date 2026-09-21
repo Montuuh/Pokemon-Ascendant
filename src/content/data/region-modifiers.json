@@ -7,7 +7,9 @@
       "tier": "strong",
       "description": "Draw one more card every turn, all Region.",
       "hook": "draw",
-      "params": { "cards": 1 }
+      "params": {
+        "cards": 1
+      }
     },
     {
       "id": "swap-fuel",
@@ -15,7 +17,9 @@
       "tier": "strong",
       "description": "Every manual swap heals your new Lead 5 HP.",
       "hook": "swap-heal",
-      "params": { "amount": 5 }
+      "params": {
+        "amount": 5
+      }
     },
     {
       "id": "sturdy-lead",
@@ -23,7 +27,9 @@
       "tier": "strong",
       "description": "Once each fight, the first Pokémon that would faint survives at 1 HP.",
       "hook": "endure",
-      "params": { "scope": "team" }
+      "params": {
+        "scope": "team"
+      }
     },
     {
       "id": "type-affinity",
@@ -31,7 +37,10 @@
       "tier": "strong",
       "description": "Your team's best type deals 10 % more, all Region.",
       "hook": "damage-dealt",
-      "params": { "multiplier": 1.1, "typeFromTeam": true }
+      "params": {
+        "multiplier": 1.1,
+        "typeFromTeam": true
+      }
     },
     {
       "id": "trauma-resistance",
@@ -39,7 +48,9 @@
       "tier": "strong",
       "description": "Each Trauma stack costs 4 % of max HP instead of 5 %.",
       "hook": "trauma-relief",
-      "params": { "zone1Pct": 4 }
+      "params": {
+        "zone1Pct": 4
+      }
     },
     {
       "id": "lucky-draw",
@@ -47,7 +58,10 @@
       "tier": "medium",
       "description": "Draw an extra item card on the first turn of every fight.",
       "hook": "draw",
-      "params": { "consumables": 1, "turn": 1 }
+      "params": {
+        "consumables": 1,
+        "turn": 1
+      }
     },
     {
       "id": "status-mastery",
@@ -55,7 +69,9 @@
       "tier": "medium",
       "description": "The status conditions you inflict last a turn longer.",
       "hook": "status-duration",
-      "params": { "extraTurns": 1 }
+      "params": {
+        "extraTurns": 1
+      }
     },
     {
       "id": "pocket-healer",
@@ -63,7 +79,9 @@
       "tier": "medium",
       "description": "Winning a fight heals your whole team 5 % of its health.",
       "hook": "victory-heal",
-      "params": { "percentOfMaxHp": 5 }
+      "params": {
+        "percentOfMaxHp": 5
+      }
     },
     {
       "id": "coin-purse",
@@ -71,7 +89,9 @@
       "tier": "medium",
       "description": "Poké Dollars come in half again as fast.",
       "hook": "money-multiplier",
-      "params": { "multiplier": 1.5 }
+      "params": {
+        "multiplier": 1.5
+      }
     },
     {
       "id": "glass-cannon",
@@ -79,8 +99,15 @@
       "tier": "medium",
       "description": "You deal 20 % more damage, and take 20 % more.",
       "hook": "damage-dealt",
-      "params": { "multiplier": 1.2 },
-      "also": { "hook": "damage-taken", "params": { "multiplier": 1.2 } }
+      "params": {
+        "multiplier": 1.2
+      },
+      "also": {
+        "hook": "damage-taken",
+        "params": {
+          "multiplier": 1.2
+        }
+      }
     },
     {
       "id": "quick-study",
@@ -88,7 +115,9 @@
       "tier": "medium",
       "description": "Every Pokémon gains 15 % more XP from a fight.",
       "hook": "xp-multiplier",
-      "params": { "multiplier": 1.15 }
+      "params": {
+        "multiplier": 1.15
+      }
     },
     {
       "id": "bargain-hunter",
@@ -96,7 +125,9 @@
       "tier": "medium",
       "description": "The Shop and the Dojo cost you a fifth less.",
       "hook": "price-multiplier",
-      "params": { "multiplier": 0.8 }
+      "params": {
+        "multiplier": 0.8
+      }
     },
     {
       "id": "iron-skin",
@@ -104,7 +135,10 @@
       "tier": "niche",
       "description": "Every Pokémon takes 1 less damage from Cleave attacks.",
       "hook": "damage-taken",
-      "params": { "cleaveOnly": true, "flat": 1 }
+      "params": {
+        "cleaveOnly": true,
+        "flat": 1
+      }
     },
     {
       "id": "naturalists-lens",
@@ -112,15 +146,17 @@
       "tier": "medium",
       "description": "Choose a biome; it becomes the Region's most common one.",
       "hook": "none",
-      "pending": "needs a choose-a-biome step and a map re-roll after it — v0.6"
+      "pending": "needs a choose-a-biome step and a map re-roll after it — v0.7"
     },
     {
       "id": "pokedex-whisper",
       "name": "Pokédex Whisper",
       "tier": "niche",
       "description": "The first hidden intent of each fight is revealed.",
-      "hook": "none",
-      "pending": "needs a first-only variant of the intent reveal — v0.6"
+      "hook": "reveal-intents",
+      "params": {
+        "firstOnly": 1
+      }
     },
     {
       "id": "mass-mobilization",
@@ -128,7 +164,7 @@
       "tier": "niche",
       "description": "Step-Forward and Step-Backward also draw you a card.",
       "hook": "none",
-      "pending": "needs a draw hook on the positional modifiers — v0.6"
+      "pending": "needs a draw hook on the positional modifiers — v0.7"
     },
     {
       "id": "field-surveyor",
@@ -136,7 +172,7 @@
       "tier": "niche",
       "description": "You choose the battlefield for every wild fight.",
       "hook": "none",
-      "pending": "Battlefields are Region 3 (§4.3) — v0.7"
+      "pending": "Battlefields are a Region 3 thing — v0.7"
     }
   ]
 }

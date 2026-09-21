@@ -1,0 +1,69 @@
+/* §5.13.1 — three segments, three rewards. Each segment's width is its share of the road to Master. */
+
+.root {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  min-width: 0;
+}
+.segment {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex-basis: 0;
+}
+.track {
+  position: relative;
+  flex: 1;
+  height: 10px;
+  min-width: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+  /* Radix sets translateZ for the indicator; the clip stays honest under it. */
+  transform: translateZ(0);
+}
+.fill {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--brand-blue);
+  transition: transform var(--motion-slow) var(--ease-spring);
+}
+.segment:nth-child(2) .fill {
+  background: var(--type-psychic);
+}
+.segment:nth-child(3) .fill {
+  background: var(--accent-action);
+}
+/* The reward at the end of the segment: grey until reached, then coloured and filled. */
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  padding: 2px 5px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  color: var(--ink-muted);
+  font-size: var(--type-caption);
+  line-height: 1;
+}
+.markOn {
+  color: var(--ink-primary);
+}
+.markOn[data-tier='1'] { background: color-mix(in srgb, var(--brand-blue) 35%, var(--surface-1)); }
+.markOn[data-tier='2'] { background: color-mix(in srgb, var(--type-psychic) 40%, var(--surface-1)); }
+.markOn[data-tier='3'] { background: var(--accent-action); }
+.at {
+  font-size: var(--type-caption);
+}
+.compact .track {
+  height: 7px;
+}
+.compact .mark {
+  padding: 2px 3px;
+}

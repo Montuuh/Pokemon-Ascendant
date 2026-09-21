@@ -52,7 +52,7 @@ export {
 export { DEX_THRESHOLDS, DEX_TIER_XP, DEX_TIER_NAME, dexTierFor, dexNext, type DexTier, type DexEntry } from './meta/pokedex';
 export {
   relicTier, discoverableRelics, masteryRelics, relicUnlocked, relicPoolFor, discoveryProgress,
-  modifierUnlocked, lockableModifiers, modifierSlots, unlockedStarters, twinRun, startingRelicOffers,
+  modifierUnlocked, modifierSlots, unlockedStarters, twinRun, startingRelicOffers,
   defaultPerks, runPerksFor, accountContextFor,
 } from './meta/unlocks';
 export { masteryMoveFor, stageTierCap, MASTERY_DECK_CAP } from './meta/mastery';

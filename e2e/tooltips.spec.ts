@@ -88,9 +88,10 @@ test.describe('About', () => {
     await expect(rows).toHaveCount(10);
     await expect(page.getByTestId('roadmap-v0.1')).toHaveAttribute('data-status', 'done');
     await expect(page.getByTestId('roadmap-v1.0')).toHaveAttribute('data-status', 'planned');
-    // Exactly one "building now", and it says what it is without a hover.
-    await expect(page.locator('[data-testid^="roadmap-v"][data-status="active"]')).toHaveCount(1);
-    await expect(page.locator('[data-testid^="roadmap-v"][data-status="active"]')).toContainText(/Trainer XP|Meta/);
+    // At most one "building now" — none between versions, as after v0.6 shipped — and it names itself without a hover.
+    const active = page.locator('[data-testid^="roadmap-v"][data-status="active"]');
+    expect(await active.count()).toBeLessThanOrEqual(1);
+    if ((await active.count()) === 1) await expect(active).toContainText(/w+/);
 
     // A shipped row keeps its claim behind a hover.
     await page.getByTestId('roadmap-v0.2').hover();

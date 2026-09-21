@@ -331,6 +331,16 @@ turns fights into knowledge, and a fifth card a line can earn.
 - **The run-end summary** — XP earned, the level moved, rewards, medals, promotions and discoveries, kept in a
   ledger beside the account so a mid-run reload does not lose the total.
 
+**2026-09-21 — the Hub, redrawn (v0.6.1).** A first look at the four kiosks found the level a number lost in
+a card, the track a table of contents, the Pokédex missing its verb and the Poké Mart doing two jobs. The level
+is now a dial (ring + rolling number) that sits in the Hub's header on every kiosk; the track is a horizontal
+road of twenty-nine stops drawn as what they hand out, the next one lit and explained; the Pokédex opens with
+a four-step legend (knock out — Familiar 👁 — Veteran ✨ — Master ★) and a three-segment bar per species; the
+Poké Mart is a shelf with a Buy button and a banner that says what opens it; the Tier-2 board moved to the PC
+Terminal as a third tab. Built on unstyled primitives (`radix-ui` Tabs/Progress/ScrollArea, `motion`,
+`@number-flow/react`, `react-circular-progressbar`) under our own tokens. Pokédex Whisper shipped on the
+same first-only reveal flag as Anticipation.
+
 **Deferred to v0.7:** Pikachu's kit · Eevee's Stone Cache (Evolution Items) · Trainer's Instinct (the intent
 queue) · Greater Threats (Region 2's stat tier) · the Trauma Salve Cache upgrade (Cities) · the Master Ball
 Charm criterion (a throw cannot fail since §2.6.4.1 — re-author) · the two ⚠️ OPEN flags in §8.3.5 and §8.4.2.

@@ -424,9 +424,12 @@ export function startShield(state: CombatState, c: Combatant, content: ContentRe
   return shield;
 }
 
-/** §7.3.7 Clear Mind — the relic half of the reveal; the ability half lives in abilities.ts. */
-export const relicsRevealIntents = (state: CombatState, content: ContentRegistry): boolean =>
-  relicsOf(state, content).some((r) => r.hook === 'reveal-intents');
+/**
+ * §7.3.7 Clear Mind reveals every intent; §2.11.3 Pokédex Whisper (`firstOnly`) only an enemy's first. The
+ * ability half lives in abilities.ts and takes the same flag.
+ */
+export const relicsRevealIntents = (state: CombatState, content: ContentRegistry, firstIntent = false): boolean =>
+  relicsOf(state, content).some((r) => r.hook === 'reveal-intents' && (!r.params?.firstOnly || firstIntent));
 
 /** §8.6.1 Perfect Recall — is the once-per-fight discard recall still available? */
 export const recallsDiscard = (state: CombatState, content: ContentRegistry): boolean =>

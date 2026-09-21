@@ -48,7 +48,9 @@
 }
 .kiosk {
   display: grid;
-  gap: var(--sp-1);
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--sp-3);
   text-align: left;
   padding: var(--sp-3) var(--sp-4);
   border: 2px solid var(--border-subtle);
@@ -83,7 +85,54 @@
 }
 .status {
   display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.statusRing {
+  display: inline-flex;
+  align-items: center;
   gap: var(--sp-2);
+}
+.statusXp {
+  display: grid;
+  gap: 4px;
+  min-width: 120px;
+}
+.statusXpText {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+.statusBar {
+  display: block;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.statusFill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  transition: width var(--motion-slow) var(--ease-spring);
+}
+.kioskIcon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--ink-primary);
+}
+.kioskOn .kioskIcon {
+  background: var(--accent-action);
+}
+.kioskText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
 }
 .statusPill {
   display: inline-flex;

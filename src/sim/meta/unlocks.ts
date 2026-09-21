@@ -1,5 +1,5 @@
 import type { ContentRegistry, RelicDef } from '../content/defs';
-import { MODIFIERS, type DifficultyModifier } from '../run/modifiers';
+import type { DifficultyModifier } from '../run/modifiers';
 import { STARTER_IDS } from '../run/region';
 import type { RunPerks } from '../run/types';
 import { hasHubUpgrade, levelFor, type AccountContext, type AccountState } from './account';
@@ -38,13 +38,10 @@ export function discoveryProgress(account: AccountState, r: RelicDef): { have: n
 
 // ── Difficulty modifiers (§8.8) ──────────────────────────────────────────────────────────────────────────
 
-/** §8.8.2 — unlocked by Trainer Level, or handed out early by the track's "New difficulty modifier". */
+/** §8.8.2 — unlocked by Trainer Level (or by an explicit grant on the account, of which there are none yet). */
 export function modifierUnlocked(account: AccountState, m: DifficultyModifier): boolean {
   return levelFor(account.xp) >= m.unlockLevel || account.modifiers.includes(m.id);
 }
-
-/** The rows the track may hand out early, hardest gate first. */
-export const lockableModifiers = (): string[] => [...MODIFIERS].filter((m) => m.available).sort((a, b) => b.unlockLevel - a.unlockLevel).map((m) => m.id);
 
 /** §8.8.1 — how many modifiers a run may stack. */
 export const modifierSlots = (account: AccountState): number => 1 + (hasHubUpgrade(account, 'modifier-slot-plus-one') ? 1 : 0);
@@ -85,5 +82,5 @@ export function runPerksFor(account: AccountState, content: ContentRegistry, twi
 
 /** The fold's context for this account: what is still discoverable, and the run's XP multiplier. */
 export function accountContextFor(content: ContentRegistry, xpMultiplier = 1): AccountContext {
-  return { content, xpMultiplier, discoverableRelics: discoverableRelics(content), lockableModifiers: lockableModifiers() };
+  return { content, xpMultiplier, discoverableRelics: discoverableRelics(content) };
 }

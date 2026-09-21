@@ -21,3 +21,8 @@ paths:
   content row or the string tables, so the game explains itself in one voice. A screen lede longer than one line
   is a tooltip that has not been written yet.
 - **Verify visually.** After any visual change run `npm run shot` and Read the PNG, or screenshot via the browser tool. Hover, drag and animation are verified with Playwright actions, not assumed.
+- **Widgets (2026-09-21).** Unstyled primitives from `radix-ui` (Tabs, Progress, ScrollArea, Accordion) for
+  anything with keyboard/ARIA semantics — styled by our CSS Modules, never by a theme. `motion` for entrance
+  and layout animation, always through `useMotionPref()` so the Settings override wins. `@number-flow/react`
+  for any counter that changes while the player watches (XP, Tokens). `react-circular-progressbar` is the
+  level ring. Do not add a component library with its own look; the tokens are the look.

@@ -40,6 +40,12 @@ describe('Familiar and Insight — §5.13.1, §8.4.2', () => {
     expect(known.enemies[0]!.intent?.hidden).toBe(false);
   });
 
+  it('PokedexWhisper_RevealsTheFirstIntent_LikeAnticipation_§2.11.3', () => {
+    // The Region Modifier rides the same first-only flag §6.5.2's Anticipation shipped with.
+    const s = start(scenario({ team: STARTERS, enemies: [BOSS], kind: 'boss', regionModifier: 'pokedex-whisper' }));
+    expect(s.enemies[0]!.intent?.hidden).toBe(false);
+  });
+
   it('Insight_ShowsTheFirstIntentOnly', () => {
     let s = start(scenario({ team: STARTERS, enemies: [BOSS], kind: 'boss', insight: ['onix'] }));
     expect(s.enemies[0]!.intent?.hidden).toBe(false);

@@ -208,14 +208,14 @@ option-expanding reward; every fifth level grants **Tokens**.
 | 11 | Hub: Apex Pokémon Reveal |
 | 12 | **Meta-Starter: Magikarp** |
 | 13 | Hub: Difficulty Modifier Slot +1 |
-| 14 | New difficulty modifier |
+| 14 | Relic pool +1 |
 | 15 | 🎟 +8 Tokens |
 | 16 | Relic pool +1 |
-| 17 | New difficulty modifier |
+| 17 | Relic pool +1 |
 | 18 | Hub: Second Starter Slot (Twin Run) |
 | 19 | Cosmetic: trainer title / card frame |
 | 20 | 🎟 +8 Tokens |
-| 21 | New difficulty modifier |
+| 21 | Relic pool +1 |
 | 22 | Relic pool +1 |
 | 23 | Cosmetic: Pokédex frame |
 | 24 | Relic pool +1 |
@@ -234,11 +234,11 @@ The track is settled **idempotently**: every level at or below the current one w
 claimed is claimed on the next XP, not only the levels this event crossed. An account from before a row
 existed, or a save that missed a level, collects it rather than never (v0.6).
 
-> ⚠️ **OPEN (2026-09-21)**: the three "New difficulty modifier" rows (14, 17, 21) overlap §8.8.2, which already
-> opens every modifier by Trainer Level — the last at 15. With both as written, Level 14 opens Master's
-> Challenge a level early and 17 and 21 have nothing left to open. The build implements exactly that (a row
-> that finds nothing locked grants nothing and says so). `game-designer` decides: three future modifiers
-> reserved for these rows, or the rows re-authored as something else.
+**Difficulty modifiers are not on the track.** They open by Trainer Level (§8.8.2), which the Daycare Lady
+shows as one ladder; a second path to the same rows would make that ladder lie, and with every modifier open by
+Level 15 the three rows this table once spent on "New difficulty modifier" (14, 17, 21) had nothing left to
+give. They are "Relic pool +1" now — nine track rows in all, so nine of the twenty Tier-2 relics reach a
+player who never meets their criterion, and the other eleven stay discoveries. *(Decided 2026-09-21.)*
 
 ---
 
@@ -265,16 +265,16 @@ the level shown.
 |---|---|---|
 | Curated Starting Relic +1 | 3 | Run start offers 4 Starting Relics instead of 3 |
 | Expanded Box | 6 | Box capacity 6 → 8 for all future runs |
-| Pokédex Insight | 7 | The first combat against an unseen species at Familiar tier reveals 1 intent free |
-
-> ⚠️ **OPEN (2026-09-21)**: "unseen species at Familiar tier" contradicts itself — a Familiar species already
-> reveals every intent (§5.13.1). The build reads it as *the first fight this run against a species you have
-> **not yet** made Familiar shows its opening intent free*, which is the reading with something left to grant.
-> `game-designer` confirms or re-words.
+| Pokédex Insight | 7 | The first fight each run against a species you have **not yet** made Familiar shows its opening intent free |
 | Trauma Salve Cache | 9 | City 1's shop is guaranteed to stock at least one Trauma Salve |
 | Apex Pokémon Reveal | 11 | The Victory Road Apex species is shown on entering Region 3 |
 | Difficulty Modifier Slot +1 | 13 | Stack 2 difficulty modifiers per run instead of 1 |
 | Second Starter Slot (Twin Run) | 18 | Choose two starters; the Box starts +1 larger. Active Team stays 3 |
+
+Pokédex Insight is a *peek*, not progress: a Familiar species already shows every intent (§5.13.1), so the
+upgrade covers the species you have not learned yet, once per run each, first meeting only. It stays information
+rather than a Pokédex shortcut because the Pokédex's tiers are meant to be earned by fighting. *(Worded
+2026-09-21; the earlier text said "unseen species at Familiar tier", which contradicts itself.)*
 
 ## §8.4.3 The Trainer Card
 

@@ -42,7 +42,11 @@ export interface AccountState {
   starters: string[];
   /** §8.6.1 — Tier-2 relics discovered and Tier-3 relics bought. Tier 1 is always in the pool and never listed. */
   relics: string[];
-  /** §8.8 — difficulty modifiers the track has unlocked, beyond the ones available from run 1. */
+  /**
+   * §8.8 — difficulty modifiers opened by something other than Trainer Level. Nothing writes here since the
+   * track stopped handing modifiers out (2026-09-21, §8.3.5); kept so a future unlock has a home and old
+   * saves keep their shape.
+   */
   modifiers: string[];
   /** §8.4.2 — Hub upgrades granted by the track. */
   hub: string[];
@@ -111,8 +115,6 @@ export type TrackReward =
   | { kind: 'hub'; upgrade: HubUpgrade }
   /** §8.3.5 "Relic pool +1": a Tier-2 relic discovered for free, in catalogue order (§8.6.1's ongoing discovery). */
   | { kind: 'relic' }
-  /** §8.3.5 "New difficulty modifier": the next locked modifier becomes available. */
-  | { kind: 'modifier' }
   | { kind: 'title'; title: string };
 
 /** §8.4.2 — the seven Hub upgrades. Each is quality-of-life or option-expanding, never power. */
@@ -149,14 +151,14 @@ export const REWARD_TRACK: Record<number, TrackReward> = {
   11: { kind: 'hub', upgrade: 'apex-reveal' },
   12: { kind: 'starter', speciesId: 'magikarp' },
   13: { kind: 'hub', upgrade: 'modifier-slot-plus-one' },
-  14: { kind: 'modifier' },
+  14: { kind: 'relic' },
   15: { kind: 'tokens', amount: 8 },
   16: { kind: 'relic' },
-  17: { kind: 'modifier' },
+  17: { kind: 'relic' },
   18: { kind: 'hub', upgrade: 'twin-run' },
   19: { kind: 'title', title: 'Ace Trainer' },
   20: { kind: 'tokens', amount: 8 },
-  21: { kind: 'modifier' },
+  21: { kind: 'relic' },
   22: { kind: 'relic' },
   23: { kind: 'title', title: 'Pokédex Scholar' },
   24: { kind: 'relic' },
@@ -204,11 +206,10 @@ export interface AccountContext {
   /** §8.8.3 — the run's difficulty multiplier, applied to every XP the run earns. 1 outside a run. */
   xpMultiplier: number;
   /**
-   * §8.3.5 "Relic pool +1" and "New difficulty modifier" need to know what is still locked. Supplied by the
-   * caller so this module does not import the relic tier table or the modifier list.
+   * §8.3.5 "Relic pool +1" needs to know which Tier-2 rows are still closed, in catalogue order. Supplied by
+   * the caller so this module does not import the relic tier table.
    */
   discoverableRelics: readonly string[];
-  lockableModifiers: readonly string[];
 }
 
 function bump(delta: AccountDelta, next: AccountState, xp: number, ctx: AccountContext): void {
@@ -236,11 +237,6 @@ function grant(next: AccountState, level: number, ctx: AccountContext, delta: Ac
     case 'relic': {
       const nextRelic = ctx.discoverableRelics.find((id) => !next.relics.includes(id));
       if (nextRelic) next.relics.push(nextRelic);
-      break;
-    }
-    case 'modifier': {
-      const nextMod = ctx.lockableModifiers.find((id) => !next.modifiers.includes(id));
-      if (nextMod) next.modifiers.push(nextMod);
       break;
     }
     case 'title':

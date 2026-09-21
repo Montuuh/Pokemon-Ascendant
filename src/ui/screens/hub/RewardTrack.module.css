@@ -1,0 +1,192 @@
+/* §8.3.5 — the road. Stops sit on a line; the line is drawn by the list's pseudo-element so it runs under
+   every stop whatever the scroll. Claimed = green fill + tick, next = pulsing accent ring, locked = dim. */
+
+.root {
+  display: grid;
+  gap: var(--sp-3);
+}
+.scroll {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+.viewport {
+  width: 100%;
+  padding: var(--sp-2) 0 var(--sp-3);
+}
+.road {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--sp-3);
+  display: flex;
+  gap: var(--sp-3);
+  width: max-content;
+}
+.road::before {
+  content: '';
+  position: absolute;
+  left: var(--sp-3);
+  right: var(--sp-3);
+  top: 26px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+}
+.stop {
+  position: relative;
+  flex: none;
+}
+.stopButton {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-primary);
+  cursor: pointer;
+  font: inherit;
+}
+.stopButton:focus-visible .face {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+.face {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 3px solid var(--border-subtle);
+  border-radius: 50%;
+  background: var(--surface-1);
+  overflow: visible;
+  transition: transform var(--motion-fast) ease, border-color var(--motion-fast) ease;
+}
+.face img {
+  border-radius: 50%;
+}
+.stopButton:hover .face {
+  transform: translateY(-2px);
+}
+.lvl {
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.check {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--surface-1);
+  border-radius: 50%;
+  background: var(--accent-positive);
+  color: var(--ink-primary);
+}
+.stop_claimed .face {
+  border-color: var(--accent-positive);
+}
+.stop_next .face {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-action) 60%, transparent);
+  animation: pulse 1.8s ease-out infinite;
+}
+.stop_next .lvl {
+  color: var(--ink-primary);
+}
+.stop_locked .face {
+  opacity: 0.55;
+  filter: grayscale(0.6);
+}
+.stop_locked .lvl {
+  color: var(--ink-muted);
+}
+.stopSelected .face {
+  border-color: var(--brand-blue);
+  opacity: 1;
+  filter: none;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-action) 60%, transparent); }
+  100% { box-shadow: 0 0 0 12px color-mix(in srgb, var(--accent-action) 0%, transparent); }
+}
+html[data-motion='reduced'] .stop_next .face {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) .stop_next .face {
+    animation: none;
+  }
+}
+
+.scrollbar {
+  display: flex;
+  height: 8px;
+  padding: 1px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  touch-action: none;
+  user-select: none;
+}
+.thumb {
+  flex: 1;
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+}
+
+/* The selected stop, explained. */
+.detail {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.detail[data-state='next'] {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+}
+.detail[data-state='claimed'] {
+  border-color: var(--accent-positive);
+}
+.detailFace {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface-3);
+}
+.detailBody {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.detailKicker {
+  font-size: var(--type-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.detailTitle {
+  font-size: var(--type-h3);
+}
+.detailWhy {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.detailXp {
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}

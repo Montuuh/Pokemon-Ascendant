@@ -4,6 +4,7 @@ import { DEX_TIER_NAME, MAX_LEVEL, levelFor, levelProgress } from '@/sim';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { tokenTip, trainerLevelTip } from '@/ui/tips';
 import { trackRewardLabel } from './trackText';
+import { TokenIcon } from './TokenIcon';
 import styles from './AccountSummary.module.css';
 
 // §8.3 — what the run just did for the account: XP earned, the level moved, the track rewards, Tokens, medals,
@@ -53,7 +54,7 @@ export function AccountSummary() {
         <span className={`${styles.toNext} tabular`}>{p.level >= MAX_LEVEL ? 'Max' : `${p.span - p.into} to Lv ${p.level + 1}`}</span>
         {ledger.tokens > 0 && (
           <Tipped tip={tokenTip(account.tokens, account.tokensEarned)}>
-            <span className={styles.tokens} data-testid="summary-tokens"><span aria-hidden="true">🎟</span> +{ledger.tokens}</span>
+            <span className={styles.tokens} data-testid="summary-tokens"><TokenIcon /> +{ledger.tokens}</span>
           </Tipped>
         )}
       </div>

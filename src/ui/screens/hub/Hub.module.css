@@ -63,26 +63,43 @@
 }
 .cardHead {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: start;
-  gap: var(--sp-4);
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--sp-5);
   padding: var(--sp-4) var(--sp-5);
   border: 2px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   background: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 100%);
 }
-.level {
+.headBody {
   display: grid;
-  gap: var(--sp-2);
-  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
 }
-.levelBig {
-  font-size: var(--type-display);
-  line-height: 1;
-  color: var(--brand-red);
+.headTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.headTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h2);
+}
+.headLede {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
 }
 .titleRibbon {
-  justify-self: start;
   padding: 2px var(--sp-3);
   border-radius: var(--radius-pill);
   background: var(--brand-blue);
@@ -90,29 +107,9 @@
   font-size: var(--type-small);
   font-family: var(--font-display);
 }
-.xpBar {
-  position: relative;
-  height: 14px;
-  max-width: 480px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-sunken);
-  overflow: hidden;
-}
-.xpFill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  border-radius: var(--radius-pill);
-  background: var(--accent-action);
-  transition: width var(--motion-slow) var(--ease-spring);
-}
-.xpText {
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
-}
-
 .facts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: var(--sp-2);
   margin: 0;
 }
@@ -125,8 +122,16 @@
   background: var(--surface-1);
 }
 .fact dt {
-  font-size: var(--type-small);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--type-caption);
   color: var(--ink-secondary);
+}
+.factIcon {
+  display: inline-grid;
+  place-items: center;
+  color: var(--ink-muted);
 }
 .fact dd {
   margin: 0;
@@ -137,6 +142,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
+  font-size: var(--type-body);
 }
 
 .chips {
@@ -167,51 +173,9 @@
   border-style: dashed;
   opacity: 1;
 }
-
-.track {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: var(--sp-1);
-}
-.trackRow {
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  background: var(--surface-1);
-}
-.trackInner {
-  display: grid;
-  grid-template-columns: 28px 1fr 18px;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-1) var(--sp-2);
-  font-size: var(--type-small);
-}
-.trackLevel {
-  font-family: var(--font-display);
-  color: var(--ink-secondary);
-}
-.trackLabel {
-  line-height: 1.2;
-}
-.trackMark {
-  text-align: right;
-  color: var(--ink-secondary);
-}
-.track_claimed {
-  border-color: var(--accent-positive);
-}
-.track_claimed .trackLabel {
-  color: var(--ink-secondary);
-}
-.track_next {
-  border-color: var(--accent-action);
-  background: var(--surface-2);
-}
-.track_locked {
-  opacity: 0.7;
+.chipTick {
+  color: var(--accent-positive);
+  font-weight: 700;
 }
 
 /* ── PC Terminal ──────────────────────────────────────────────────────────────────────────────────────── */
@@ -224,17 +188,68 @@
   gap: var(--sp-2);
 }
 .tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-4);
   border: 2px solid var(--border-subtle);
   border-radius: var(--radius-pill);
   background: var(--surface-1);
   color: var(--ink-primary);
   font-family: var(--font-display);
+  font-size: var(--type-body);
   cursor: pointer;
 }
-.tabOn {
+.tab[data-state='active'] {
   border-color: var(--accent-action);
   background: var(--surface-2);
+}
+.tab:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+.tabPanel {
+  display: grid;
+  gap: var(--sp-3);
+  outline: none;
+}
+/* The Pokédex legend: the verb, then the three rewards, as one strip the eye reads left to right. */
+.legend {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  gap: var(--sp-2);
+}
+.legendStep {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+}
+.legendIcon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--ink-primary);
+}
+.legendStep:nth-child(2) .legendIcon { background: color-mix(in srgb, var(--brand-blue) 35%, var(--surface-1)); }
+.legendStep:nth-child(3) .legendIcon { background: color-mix(in srgb, var(--type-psychic) 40%, var(--surface-1)); }
+.legendStep:nth-child(4) .legendIcon { background: var(--accent-action); }
+.legendText {
+  display: inline;
+  line-height: 1.35;
+}
+@media (max-width: 1100px) {
+  .legend {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 .filterRow {
   display: flex;
@@ -265,7 +280,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   gap: var(--sp-2);
 }
 .dexRow {
@@ -283,14 +298,14 @@
 }
 .dexInner {
   display: grid;
-  grid-template-columns: 40px 1fr;
+  grid-template-columns: 44px 1fr;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-3);
   padding: var(--sp-2) var(--sp-3);
 }
 .dexBody {
   display: grid;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
 }
 .dexName {
@@ -301,7 +316,19 @@
   font-family: var(--font-display);
   font-size: var(--type-body);
 }
+.dexRarity {
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  font-family: var(--font-body);
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+  text-transform: capitalize;
+}
 .dexBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   padding: 0 var(--sp-2);
   border-radius: var(--radius-pill);
   background: var(--surface-3);
@@ -313,42 +340,18 @@
   background: var(--accent-action);
   color: var(--ink-primary);
 }
-.dexTierLine {
-  display: flex;
+.dexKo {
+  display: inline-flex;
   align-items: center;
-  gap: var(--sp-2);
+  gap: 6px;
   font-size: var(--type-small);
-}
-.dexTier {
-  min-width: 62px;
   color: var(--ink-secondary);
 }
-.dexTier[data-tier='1'],
-.dexTier[data-tier='2'],
-.dexTier[data-tier='3'] {
+.dexKo b {
   color: var(--ink-primary);
-  font-weight: 600;
 }
-.dexBar {
-  position: relative;
-  flex: 1;
-  height: 16px;
-  max-width: 140px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-sunken);
-  overflow: hidden;
-}
-.dexFill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: var(--brand-blue);
-}
-.dexBarText {
-  position: relative;
-  display: grid;
-  place-items: center;
-  height: 100%;
-  font-size: var(--type-caption);
+.koIcon {
+  color: var(--ink-muted);
 }
 
 .medals {
@@ -404,8 +407,14 @@
   color: var(--ink-secondary);
 }
 .state {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: var(--type-small);
   color: var(--ink-secondary);
+}
+.stateGot {
+  color: var(--ink-primary);
 }
 .bar {
   position: relative;
@@ -447,37 +456,195 @@
   flex-wrap: wrap;
   gap: var(--sp-2);
 }
+.martBanner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border: 2px solid var(--accent-action);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+.martBanner[data-state='locked'] {
+  border-color: var(--border-strong);
+  border-style: dashed;
+  background: var(--surface-1);
+}
+.martBannerIcon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-action);
+  color: var(--ink-primary);
+}
+.martBanner[data-state='locked'] .martBannerIcon {
+  background: var(--surface-3);
+}
+.martBannerBody {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.martBannerTitle {
+  font-size: var(--type-h3);
+}
+.martBannerText {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.martUnlockBar {
+  position: relative;
+  height: 8px;
+  max-width: 360px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+  transform: translateZ(0);
+}
+.martUnlockFill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  transition: width var(--motion-slow) var(--ease-spring);
+}
+.wallet {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.walletLabel {
+  font-size: var(--type-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.walletValue {
+  font-size: var(--type-h2);
+  line-height: 1;
+}
+.noticeOk {
+  border-left-color: var(--accent-positive);
+}
 .shelf {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: var(--sp-2);
 }
-.price {
-  padding: 2px var(--sp-2);
+.shelfCard {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-left: 5px solid var(--type-psychic);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.shelfOwned {
+  border-left-color: var(--accent-positive);
+  background: var(--surface-2);
+}
+.shelfInert {
+  opacity: 0.7;
+}
+.shelfIcon {
+  image-rendering: pixelated;
+}
+.shelfBody {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.shelfName {
+  font-size: var(--type-body);
+}
+.shelfDesc {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.shelfPending {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+  font-style: italic;
+}
+.shelfAction {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+.buy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
   border-radius: var(--radius-pill);
-  background: var(--surface-3);
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+.buyOk {
+  border-color: var(--accent-action);
+  background: var(--accent-action);
+  color: var(--ink-primary);
+}
+.buy:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.buyLabel {
   font-family: var(--font-display);
   font-size: var(--type-small);
 }
-.priceOk {
-  background: var(--accent-action);
+.buyPrice {
+  font-family: var(--font-display);
+  font-size: var(--type-small);
 }
+.shelfOwnedTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--accent-positive);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+}
+.shelfReason {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+/* The Tier-2 board, on the PC Terminal. */
 .discoveries {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--sp-1);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-2);
 }
 .discovery {
   border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: var(--surface-1);
-  opacity: 0.85;
+  opacity: 0.9;
 }
 .discoveryOn {
   border-color: var(--accent-positive);
@@ -485,15 +652,58 @@
 }
 .discoveryInner {
   display: grid;
-  gap: 1px;
-  padding: var(--sp-1) var(--sp-2);
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
   font-size: var(--type-small);
 }
+.discoveryIcon {
+  image-rendering: pixelated;
+}
+.discoveryBody {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
 .discoveryName {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-display);
+}
+.discoveryTick {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-positive);
+  color: var(--ink-primary);
 }
 .discoveryHow {
   color: var(--ink-secondary);
+}
+.discoveryBar {
+  position: relative;
+  height: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+  transform: translateZ(0);
+}
+.discoveryFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--radius-pill);
+  background: var(--brand-blue);
+}
+.discoveryBarText {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: var(--type-caption);
 }
 
 /* ── Daycare ──────────────────────────────────────────────────────────────────────────────────────────── */
@@ -575,4 +785,11 @@
 .mod_locked,
 .mod_pending {
   opacity: 0.7;
+}
+
+.factWide {
+  grid-column: span 2;
+}
+.fav .muted {
+  white-space: nowrap;
 }

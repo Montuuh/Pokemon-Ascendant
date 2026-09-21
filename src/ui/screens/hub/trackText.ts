@@ -16,8 +16,6 @@ export function trackRewardLabel(reward: TrackReward, content: ContentRegistry):
       return `Hub: ${HUB_UPGRADE_LABEL[reward.upgrade].name}`;
     case 'relic':
       return 'Relic pool +1';
-    case 'modifier':
-      return 'New difficulty modifier';
     case 'title':
       return `Title: ${reward.title}`;
   }

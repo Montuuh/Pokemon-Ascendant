@@ -239,12 +239,12 @@ relics at 5 each. The track yields ~44 of the 50 needed — achievements top up 
 tier ≠ rarity. Drop weight 60/30/10.
 **Achievements** — 50, four medal tiers, ~20 % hidden, 20 grant Tokens, every one with a named trigger event.
 **Difficulty** — 10 stackable modifiers multiplying run XP; **no easier mode**; baseline is the floor. Each
-opens at a Trainer Level (§8.8.2); the track's "New difficulty modifier" rows overlap that and are flagged
-⚠️ OPEN in §8.3.5.
+opens at a Trainer Level (§8.8.2) and only there — the track hands out relics, starters, Hub upgrades, Tokens
+and titles (nine "Relic pool +1" rows since 2026-09-21).
 
 *(Section reflects canon as of 2026-09-21: the track settles idempotently, the account is written after every
-fold in the browser, Pokédex Insight's wording is flagged in §8.4.2, and Shiny is the official palette fetched
-rather than a hue-shift — §5.13.2.)*
+fold in the browser, Pokédex Insight is a first-meeting peek at species not yet Familiar (§8.4.2), and Shiny is
+the official palette fetched rather than a hue-shift — §5.13.2.)*
 
 ---
 
