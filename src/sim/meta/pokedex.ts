@@ -32,6 +32,33 @@ export interface DexEntry {
   winsWith: number;
   runsFinishedWith: number;
   tier: DexTier;
+  // §8.9 — the record (2026-09-22): the numbers the Pokédex sheet shows. None of them is a rule input.
+  /** Fights the species took the field against you. Zero means you have never met it. */
+  encounters: number;
+  /** Times a copy went into a Poké Ball. */
+  caught: number;
+  /** Times a copy joined the Box, by any road. */
+  recruits: number;
+  /** Enemy knock-outs your copies landed (the blow, not the status tick — §7.3.5's rule). */
+  knockouts: number;
+  /** Times a copy of yours fainted. */
+  faints: number;
+  /** Damage your copies dealt to enemies. */
+  damageDealt: number;
+  /** Times a copy of yours evolved *from* this species. */
+  evolutions: number;
+}
+
+export const emptyDexEntry = (): DexEntry => ({
+  defeats: 0, recruited: false, winsWith: 0, runsFinishedWith: 0, tier: 0,
+  encounters: 0, caught: 0, recruits: 0, knockouts: 0, faints: 0, damageDealt: 0, evolutions: 0,
+});
+
+/** A saved entry from before a field existed, made whole. `recruits` is inferred from the old boolean. */
+export function normalizeDexEntry(raw: Partial<DexEntry> | undefined): DexEntry {
+  const e = { ...emptyDexEntry(), ...(raw ?? {}) };
+  if (raw && raw.recruits === undefined && raw.recruited) e.recruits = 1;
+  return e;
 }
 
 export function dexTierFor(defeats: number, rarity: RarityTier): DexTier {

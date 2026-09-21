@@ -363,6 +363,15 @@ shop (~210) outruns the income (~156) on purpose. §8.3.4–§8.3.5, §8.4.1–�
 §8.6.1. `meta/mart.ts`, `meta/cosmetics.ts`; account v2 back-pays a v0.6.0–v0.6.2 save the Tokens its
 levels now pay and keeps what the old track granted. The Trainer Card wears what the Corner sold.
 
+**2026-09-22 — the PC Terminal as pictures and sheets (v0.6.4).** The user's note: too much on the screen —
+the Bond legend, the ladder and every unlock chip on every Companions row; knock-out counts and Familiar bars on
+every Pokédex row. Now both tabs are grids of cards (portrait, name, one number) and every card opens a sheet:
+the line's stages, Bond bar and named ladder (§8.9.2); the species' hero, **record** (§8.9.1 — faced, knocked
+out, caught, recruited, fights and runs with, KOs landed, damage dealt, fainted, Lead turns, evolved; new
+`CombatTally.koBy/faintsOf/damageBy`, `enemies`, `caughtSpecies`, `fromSpeciesId`) and kit. Unmet species
+are silhouettes. Radix Dialog with a Back stack; the legend text lives in tooltips and at the foot of the line
+sheet.
+
 **Deferred to v0.7:** Pikachu's kit · Eevee's Stone Cache (Evolution Items) · Trainer's Instinct (the intent
 queue) · Greater Threats (Region 2's stat tier) · the Trauma Salve Cache upgrade (Cities) · the Master Ball
 Charm criterion (a throw cannot fail since §2.6.4.1 — re-author) · the two ⚠️ OPEN flags in §8.3.5 and §8.4.2.

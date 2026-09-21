@@ -1,0 +1,439 @@
+/* §8.4.1 — the PC Terminal's sheets: one species, or one evolution line, on a card that opens over the room.
+   The grid behind stays a picture (number, sprite, name); the reading happens here. Type hue arrives as
+   --sheet-type on the content element and tints only the hero band, never running text. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: var(--scrim);
+  backdrop-filter: blur(3px);
+}
+.content {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--sp-5);
+  pointer-events: none;
+}
+.sheet {
+  pointer-events: auto;
+  width: min(760px, 100%);
+  max-height: min(88vh, 900px);
+  overflow: auto;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  outline: none;
+}
+.chrome {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  background: color-mix(in srgb, var(--surface-1) 80%, transparent);
+  backdrop-filter: blur(6px);
+}
+.chromeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.chromeBtn:hover {
+  border-color: var(--border-strong);
+}
+.chromeBtn:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+
+/* ── The hero band ────────────────────────────────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  align-items: center;
+  gap: var(--sp-5);
+  margin: calc(-1 * var(--sp-8)) 0 0;
+  padding: var(--sp-8) var(--sp-6) var(--sp-5);
+  background:
+    radial-gradient(circle at 18% 60%, color-mix(in srgb, var(--sheet-type, var(--surface-3)) 55%, var(--surface-1)) 0%, transparent 42%),
+    linear-gradient(160deg, color-mix(in srgb, var(--sheet-type, var(--surface-3)) 32%, var(--surface-1)) 0%, var(--surface-1) 78%);
+  overflow: hidden;
+}
+.heroBall {
+  position: absolute;
+  right: -28px;
+  top: -20px;
+  color: var(--ink-primary);
+  opacity: 0.06;
+  pointer-events: none;
+}
+.heroArt {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 180px;
+  height: 160px;
+}
+.heroSprite {
+  image-rendering: pixelated;
+  height: 128px;
+  width: auto;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.18));
+}
+.heroSilhouette {
+  filter: brightness(0) opacity(0.35);
+}
+.heroBody {
+  display: grid;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.heroNumber {
+  font-family: var(--font-display);
+  font-size: var(--type-h3);
+  color: var(--ink-secondary);
+  letter-spacing: 0.04em;
+}
+.heroName {
+  margin: 0;
+  font-size: var(--type-display);
+  line-height: 1;
+}
+.heroMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.heroChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: var(--type-small);
+}
+button.heroChip {
+  cursor: pointer;
+}
+button.heroChip:hover {
+  border-color: var(--brand-blue);
+}
+
+/* ── Body ─────────────────────────────────────────────────────────────────────────────────────────────── */
+.body {
+  display: grid;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-6) var(--sp-6);
+}
+.tabs {
+  display: flex;
+  gap: var(--sp-2);
+}
+.tab {
+  padding: var(--sp-1) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+  cursor: pointer;
+}
+.tab[data-state='active'] {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+}
+.tab:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+.panel {
+  display: grid;
+  gap: var(--sp-4);
+  outline: none;
+}
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  font-size: var(--type-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.section {
+  display: grid;
+  gap: var(--sp-2);
+}
+.muted {
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+
+/* The record: a grid of tiles, one number each. */
+.record {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--sp-2);
+  margin: 0;
+}
+.tile {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: var(--sp-2);
+  align-items: center;
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.tileIcon {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+}
+.tile dt {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.tile dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-h3);
+  line-height: 1.1;
+}
+.tileZero dd {
+  color: var(--ink-muted);
+}
+.knowledge {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-left: 4px solid var(--brand-blue);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+}
+.knowledge[data-known='false'] {
+  border-left-color: var(--border-strong);
+}
+
+/* The kit: learnset rows. */
+.moves {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
+  gap: var(--sp-1) var(--sp-2);
+}
+.move {
+  display: grid;
+  grid-template-columns: 44px 22px 1fr auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 4px var(--sp-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--type-small);
+}
+.move:hover {
+  background: var(--surface-2);
+}
+.moveLv {
+  font-family: var(--font-display);
+  color: var(--ink-secondary);
+}
+.moveName {
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.moveWide {
+  grid-column: 2 / -1;
+  font-style: italic;
+  color: var(--ink-secondary);
+}
+.moveStat {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+.moveLocked {
+  opacity: 0.55;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+}
+.chipOn {
+  border-color: var(--accent-positive);
+}
+.chipLocked {
+  border-style: dashed;
+  color: var(--ink-secondary);
+}
+
+/* ── The line: stages, then the Bond, then the ladder ─────────────────────────────────────────────────── */
+.stages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.stageCol {
+  display: grid;
+  gap: var(--sp-2);
+}
+.stage {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  cursor: pointer;
+  min-width: 108px;
+}
+.stage:hover {
+  border-color: var(--brand-blue);
+  transform: translateY(-2px);
+}
+.stage:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+.stageOn {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+}
+.stageName {
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+}
+.stageArrow {
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+}
+.bondBlock {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.bondRankName {
+  font-family: var(--font-display);
+  font-size: var(--type-h3);
+}
+.ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-1);
+}
+.rung {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  opacity: 0.6;
+}
+.rungOn {
+  opacity: 1;
+  border-color: var(--accent-positive);
+}
+.rungIcon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface-2);
+}
+.rungOn .rungIcon {
+  background: var(--accent-action);
+}
+.rungBody {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.rungName {
+  font-family: var(--font-display);
+}
+.rungUnlock {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.rungAt {
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+.how {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}

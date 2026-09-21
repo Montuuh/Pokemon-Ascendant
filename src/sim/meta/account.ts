@@ -1,6 +1,6 @@
 import type { ContentRegistry } from '../content/defs';
 import { ACHIEVEMENTS, achievementById, applyMetaEvent, emptyProgress, MEDAL_XP, type AchievementDef, type AchievementProgress, type MetaEvent } from './achievements';
-import { dexTierFor, DEX_TIER_XP, type DexEntry, type DexTier } from './pokedex';
+import { dexTierFor, DEX_TIER_XP, emptyDexEntry, type DexEntry, type DexTier } from './pokedex';
 import { BOND, bondRank } from './bond';
 import { TITLE_ID_BY_NAME, type CosmeticKind } from './cosmetics';
 
@@ -258,7 +258,7 @@ function settleLevels(next: AccountState, before: number, delta: AccountDelta): 
 }
 
 function dexEntry(next: AccountState, speciesId: string): DexEntry {
-  return (next.dex[speciesId] ??= { defeats: 0, recruited: false, winsWith: 0, runsFinishedWith: 0, tier: 0 });
+  return (next.dex[speciesId] ??= emptyDexEntry());
 }
 
 /** §5.13.1 — re-evaluate a species' tier after its counters moved; award the promotion XP once. */
@@ -370,6 +370,12 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
         dexEntry(next, sid).defeats += 1;
         promote(next, sid, ctx, delta);
       }
+      // §8.9 — the record: met, caught, and what your own copies did out there.
+      for (const sid of e.enemies ?? []) dexEntry(next, sid).encounters += 1;
+      if (e.caughtSpecies) dexEntry(next, e.caughtSpecies).caught += 1;
+      for (const [sid, n] of Object.entries(e.tally?.koBy ?? {})) dexEntry(next, sid).knockouts += n;
+      for (const [sid, n] of Object.entries(e.tally?.faintsOf ?? {})) dexEntry(next, sid).faints += n;
+      for (const [sid, n] of Object.entries(e.tally?.damageBy ?? {})) dexEntry(next, sid).damageDealt += n;
       for (const [sid, turns] of Object.entries(e.leadTurns ?? {})) next.stats.leadTurns[sid] = (next.stats.leadTurns[sid] ?? 0) + turns;
 
       // §8.6.1 — the discovery criteria a fight can satisfy (catalogs/relics.md §5).
@@ -402,6 +408,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
       if (e.firstThisRun) bump(delta, next, XP.recruit, ctx);
       const entry = dexEntry(next, e.speciesId);
       entry.recruited = true;
+      entry.recruits += 1;
       if (e.firstThisRun) bond(next, e.speciesId, BOND.recruit, ctx, delta);
       // §8.6.1 Lure Module — three in one Region. Region 1 is the run until v0.7, so "this run" is the measure.
       if ((e.recruitsThisRun ?? 0) >= 3) count(next, 'region-recruits-three', 1, true);
@@ -412,6 +419,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
       bump(delta, next, XP.evolution, ctx);
       // §6.8.1 — an evolution is the biggest single Bond step: it is the line changing in your hands.
       bond(next, e.toSpeciesId, BOND.evolution, ctx, delta);
+      if (e.fromSpeciesId) dexEntry(next, e.fromSpeciesId).evolutions += 1;
       break;
     case 'badge-awarded':
       bump(delta, next, XP.gym, ctx);

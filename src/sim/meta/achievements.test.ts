@@ -23,7 +23,7 @@ describe('Achievements — §8.7', () => {
       expect(a.goal, a.id).toBeGreaterThan(0);
       expect(a.description, a.id).not.toMatch(/§\d/);
       // A row nothing can ever fire is the thing this whole file exists to prevent (§8.7.1.1).
-      const tally = { crits: 0, reshuffles: 0, statusesApplied: ['burn', 'poison', 'sleep', 'paralysis'], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0, catchFails: 0 };
+      const tally = { crits: 0, reshuffles: 0, statusesApplied: ['burn', 'poison', 'sleep', 'paralysis'], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0, catchFails: 0, koBy: {}, faintsOf: {}, damageBy: {} };
       const fires = [
         combatEnd({ damageTaken: 0, manualSwaps: 5, kind: 'boss', tally }),
         combatEnd({ faints: 2, activeSpecies: ['a', 'b', 'c'] }),

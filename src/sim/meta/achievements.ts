@@ -39,9 +39,12 @@ export type MetaEvent =
       tally?: CombatTally;
       leadHpFraction?: number;
       statusesTakenThisRun?: number;
+      /** §8.9 — every enemy species that took the field, once each; and the one that went into the ball. */
+      enemies?: string[];
+      caughtSpecies?: string;
     }
   | { t: 'recruit'; speciesId: string; boxFull: boolean; /** §8.3.2 — the first of this species this run. */ firstThisRun?: boolean; /** §8.6.1 Lure Module — recruits so far this Region. */ recruitsThisRun?: number }
-  | { t: 'evolution'; uid: string; toSpeciesId: string }
+  | { t: 'evolution'; uid: string; /** §8.9 — the species it evolved from, for that species' record. */ fromSpeciesId?: string; toSpeciesId: string }
   | { t: 'badge-awarded'; badgeId: string }
   | { t: 'relic-acquired'; relicId: string; heldCount: number }
   | { t: 'run-end'; won: boolean; catches: number; badges: number; /** §8.3.2 — for the failed-run formula. */ layersCleared?: number; activeSpecies?: string[]; modifierCount?: number; /** §8.6.1 Soothe Bell — a Trauma Salve was taken this run. */ usedSalve?: boolean; /** §8.7 Monotype Master — the Active Team shared one first type. */ monoType?: boolean; /** §8.7 Minimalist — relics held at the end. */ relicCount?: number }
@@ -310,6 +313,8 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
       ...(report.tally ? { tally: report.tally } : {}),
       ...(report.leadHpFraction !== undefined ? { leadHpFraction: report.leadHpFraction } : {}),
       statusesTakenThisRun: after.stats.statusesTaken,
+      enemies: report.enemies ?? [],
+      ...(report.caught ? { caughtSpecies: report.caught.speciesId } : {}),
     });
   }
 
@@ -327,7 +332,7 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
   // An evolution is a Pokémon whose species changed under the same uid.
   for (const mon of after.box) {
     const was = before.box.find((m) => m.uid === mon.uid);
-    if (was && was.speciesId !== mon.speciesId) events.push({ t: 'evolution', uid: mon.uid, toSpeciesId: mon.speciesId });
+    if (was && was.speciesId !== mon.speciesId) events.push({ t: 'evolution', uid: mon.uid, fromSpeciesId: was.speciesId, toSpeciesId: mon.speciesId });
   }
 
   for (const id of after.badges) if (!before.badges.includes(id)) events.push({ t: 'badge-awarded', badgeId: id });

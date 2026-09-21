@@ -257,12 +257,16 @@ export function starterTip(name: string, blurb: string, price: number, state: 'o
   return <Tip title={name} meta={[state === 'owned' || state === 'soulbound' ? 'Yours' : `${price} Tokens`, 'Poké Mart · Level 3']} body={blurb} footer={footer} />;
 }
 
-/** §5.13.1 — a species' Pokédex standing: knowledge about the species you fight. */
-export function dexTip(speciesName: string, rarity: string, tier: number, defeats: number, next: { tier: number; need: number } | null): ReactNode {
-  const lines: ReactNode[] = [];
-  if (tier >= 1) lines.push(<div key="t"><b>Familiar</b> — its hidden intents are shown from turn one, every fight.</div>);
-  if (next) lines.push(<div key="n">{next.need - defeats} more knock-out{next.need - defeats === 1 ? '' : 's'} to Familiar.</div>);
-  return <Tip title={speciesName} meta={[cap(rarity), `${defeats} KO`]} body={lines.length ? lines : 'Knock it out — in the wild or on a trainer, with any of your Pokémon — to learn it. Catching does not count.'} footer="Familiar at 10 knock-outs for a common species, 5 for an uncommon one, 2 for a rare one. Making your own better is the Bond." />;
+/** §5.13 / §8.9 — a Pokédex card: number, types, met or not. The sheet has the rest. */
+export function dexCardTip(name: string, dex: number, types: readonly string[], met: boolean, encounters: number): ReactNode {
+  return <Tip title={`#${String(dex).padStart(3, '0')} ${name}`} meta={types.map(cap)} body={met ? `Met ${encounters} time${encounters === 1 ? '' : 's'}.` : 'Not met yet — a silhouette until it takes the field against you.'} footer="Open for its record and its kit." />;
+}
+
+/** §6.8 — a Companions card: the line and its rank. The sheet has the ladder. */
+export function lineCardTip(lineName: string, points: number, rank: number): ReactNode {
+  const NAMES = ['—', 'Companion', 'Trusted', 'Veteran', 'Deep Bond', 'Soulbound'];
+  const NEXT = [5, 15, 35, 60, 100];
+  return <Tip title={`${lineName} line`} meta={rank > 0 ? [NAMES[rank]!, `${points} Bond`] : ['Not yet played']} body={rank >= 5 ? 'Soulbound: everything the line can open is open.' : `${NEXT[rank]! - points} more Bond to ${NAMES[rank + 1]}.`} footer="Open for its stages and what each rank unlocks." />;
 }
 
 /** §6.8 — a line's Bond. */

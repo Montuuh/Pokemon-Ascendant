@@ -93,4 +93,20 @@ describe('The fight tally — §8.6.1', () => {
     s = dispatch(s, { type: 'end-turn' });
     expect(s.player.tally.peakHandAtTurnEnd).toBe(4);
   });
+
+  it('TheRecord_CreditsDamageAndTheKnockoutToTheSpeciesThatLandedIt_AndAFaintToTheOneThatFell_§8.9', () => {
+    // Water Gun is Squirtle's card, so the damage and the knock-out are Squirtle's, whoever leads.
+    let s = start(scenario({ team: STARTERS, enemies: [PIDGEY] }));
+    s = tweak(s, (d) => { d.enemies[0]!.hp = 1; });
+    s = withHand(s, ['water-gun', 'tackle', 'growl', 'tail-whip', 'scratch']);
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'water-gun').id });
+    expect(s.player.tally.koBy).toEqual({ squirtle: 1 });
+    expect(s.player.tally.damageBy.squirtle).toBeGreaterThanOrEqual(1);
+    expect(s.player.tally.faintsOf).toEqual({});
+    // A Lead that falls is one faint on its species' record.
+    let f = start(scenario({ team: [{ species: 'caterpie', level: 3 }, { species: 'pidgey', level: 5 }], enemies: [{ ...PIDGEY, level: 12 }] }));
+    f = tweak(f, (d) => { d.player.team[0]!.hp = 1; });
+    f = dispatch(f, { type: 'end-turn' });
+    expect(f.player.tally.faintsOf).toEqual({ caterpie: 1 });
+  });
 });

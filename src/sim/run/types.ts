@@ -316,6 +316,8 @@ export interface CombatOutcomeReport {
   leadHpFraction?: number;
   /** §8.6.1 Type Resonance's discovery — the Active Team's species at the end, in slot order. */
   activeSpecies?: string[];
+  /** §8.9 — every enemy species that took the field, once each. The Pokédex counts these as met. */
+  enemies?: string[];
   turns: number;
 }
 
@@ -343,6 +345,10 @@ export interface CombatTally {
   peakHandAtTurnEnd: number;
   /** §8.6.1 Master Ball Charm's discovery — throws the target broke out of. */
   catchFails: number;
+  /** §8.9 — per *your* species, for the Pokédex record: enemy knock-outs landed, faints, damage dealt. */
+  koBy: Record<string, number>;
+  faintsOf: Record<string, number>;
+  damageBy: Record<string, number>;
 }
 
 export type RunAction =

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import { accountFromProgress, applyAccountEvent, applyAccountEvents, emptyAccount, levelFor, levelProgress, REWARD_TRACK, SHELVES, trackTokensBetween, upgradeAccount, XP, xpForLevel, type AccountContext } from './account';
-import { dexTierFor, DEX_FAMILIAR } from './pokedex';
+import { dexTierFor, DEX_FAMILIAR, emptyDexEntry, normalizeDexEntry } from './pokedex';
 import { BOND, bondRank } from './bond';
 import { accountContextFor, modifierUnlocked, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
 import { shelfOpen } from './mart';
@@ -18,6 +18,7 @@ const seasoned = () => {
   a.achievements.unlocked.push('first-blood', 'gotcha', 'growing-up', 'badge-collector', 'untouchable', 'swap-maestro', 'flawless-gym');
   return a;
 };
+const emptyTally = () => ({ crits: 0, reshuffles: 0, statusesApplied: [] as string[], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0, catchFails: 0, koBy: {}, faintsOf: {}, damageBy: {} });
 const win = (over: Partial<Extract<MetaEvent, { t: 'combat-end' }>> = {}): MetaEvent => ({ t: 'combat-end', outcome: 'victory', kind: 'wild', damageTaken: 5, manualSwaps: 0, faints: 0, defeated: [], activeSpecies: [], ...over });
 
 describe('The level curve — §8.3.3', () => {
@@ -187,6 +188,27 @@ describe('The Pokédex — §5.13', () => {
     expect(delta.xp).toBe(10 * XP.combat + 25);
   });
 
+  it('TheRecord_CountsMetCaughtKnockoutsFaintsDamageAndEvolutions_§8.9', () => {
+    // A fight against a Pidgey and a Rattata: Charmander landed two knock-outs for 40 damage, Pidgey (yours)
+    // fainted once; the Rattata went into the ball.
+    const fight = win({
+      outcome: 'caught', defeated: ['pidgey'], enemies: ['pidgey', 'rattata'], caughtSpecies: 'rattata', activeSpecies: ['charmander', 'pidgey'],
+      tally: { ...emptyTally(), koBy: { charmander: 2 }, faintsOf: { pidgey: 1 }, damageBy: { charmander: 40, pidgey: 3 } },
+    });
+    const events: MetaEvent[] = [fight, { t: 'recruit', speciesId: 'rattata', boxFull: false, firstThisRun: true }, { t: 'evolution', uid: 'u', fromSpeciesId: 'charmander', toSpeciesId: 'charmeleon' }];
+    const { state } = applyAccountEvents(seasoned(), events, ctx);
+    expect(state.dex.pidgey).toMatchObject({ encounters: 1, defeats: 1, faints: 1, damageDealt: 3, winsWith: 1 });
+    expect(state.dex.rattata).toMatchObject({ encounters: 1, caught: 1, recruits: 1, recruited: true, defeats: 0 });
+    expect(state.dex.charmander).toMatchObject({ knockouts: 2, damageDealt: 40, evolutions: 1, winsWith: 1 });
+    expect(state.dex.charmeleon).toBeUndefined();
+  });
+
+  it('AnEntrySavedBeforeTheRecord_IsMadeWhole', () => {
+    const old = normalizeDexEntry({ defeats: 4, recruited: true, winsWith: 2, runsFinishedWith: 1, tier: 0 });
+    expect(old).toMatchObject({ defeats: 4, recruits: 1, encounters: 0, caught: 0, knockouts: 0, faints: 0, damageDealt: 0, evolutions: 0 });
+    expect(normalizeDexEntry(undefined)).toEqual(emptyDexEntry());
+  });
+
   it('CatchingIsNotAKill_§5.13.1', () => {
     const { state } = applyAccountEvent(emptyAccount(), win({ outcome: 'caught', defeated: [] }), ctx);
     expect(state.dex.pidgey).toBeUndefined();
@@ -232,7 +254,7 @@ describe('Bond — §6.8', () => {
 describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
   it('ACriterionMet_OpensItsRelic_Once', () => {
     // Ten crits across three fights: Steady Aim. A fourth fight with more crits does not discover it twice.
-    const crit = (n: number) => win({ tally: { crits: n, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0, catchFails: 0 } });
+    const crit = (n: number) => win({ tally: { ...emptyTally(), crits: n } });
     const { state, delta } = applyAccountEvents(seasoned(), [crit(4), crit(4), crit(2)], ctx);
     expect(state.counters.crits).toBe(10);
     expect(delta.discoveredRelics).toContain('steady-aim');
@@ -254,7 +276,7 @@ describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
 
   it('RunPerks_AreTheAccountsWidenings_AndNothingElse', () => {
     // Squirtle at 60 Bond is rank 4: Mastery Lv2. Rattata at 100 is rank 5 on a two-stage line: still Lv2.
-    const a = { ...emptyAccount(), hub: ['expanded-box', 'pokedex-insight'], bond: { squirtle: 60, rattata: 100, pidgey: 3 }, dex: { pidgey: { defeats: 10, recruited: false, winsWith: 0, runsFinishedWith: 0, tier: 1 as const } } };
+    const a = { ...emptyAccount(), hub: ['expanded-box', 'pokedex-insight'], bond: { squirtle: 60, rattata: 100, pidgey: 3 }, dex: { pidgey: { ...emptyDexEntry(), defeats: 10, tier: 1 as const } } };
     const perks = runPerksFor(a, content);
     expect(perks.boxBonus).toBe(2);
     expect(perks.insight).toBe(true);

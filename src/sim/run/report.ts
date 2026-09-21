@@ -47,6 +47,9 @@ export function buildOutcomeReport(combat: CombatState, run: RunState): CombatOu
     tally: { ...combat.player.tally, statusesApplied: [...combat.player.tally.statusesApplied] },
     leadHpFraction: lead && lead.maxHp > 0 ? lead.hp / lead.maxHp : 1,
     activeSpecies: combat.player.team.map((c) => c.speciesId),
+    // §8.9 — every enemy species that took the field, once each: the ones still standing, the queue never
+    // reached is not counted, and the ones already down.
+    enemies: [...new Set([...combat.defeatedEnemies, ...combat.enemies].map((e) => e.speciesId))],
     // §5.13.1 — a caught Pokémon is in `defeatedEnemies` too (the fight ends with it there), and catching is
     // explicitly not a kill, so it is left out.
     defeated: combat.defeatedEnemies.filter((e) => e.hp <= 0).map((e) => e.speciesId),

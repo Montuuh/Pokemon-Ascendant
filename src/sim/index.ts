@@ -56,7 +56,7 @@ export {
   type MartItem, type MartError,
 } from './meta/mart';
 export { COSMETICS, COSMETIC_PRICE, cosmeticById, TITLE_ID_BY_NAME, type CosmeticDef, type CosmeticKind } from './meta/cosmetics';
-export { DEX_FAMILIAR, DEX_TIER_XP, DEX_TIER_NAME, dexTierFor, dexNext, type DexTier, type DexEntry } from './meta/pokedex';
+export { DEX_FAMILIAR, DEX_TIER_XP, DEX_TIER_NAME, dexTierFor, dexNext, emptyDexEntry, normalizeDexEntry, type DexTier, type DexEntry } from './meta/pokedex';
 export { BOND, BOND_RANKS, BOND_RANK_NAME, BOND_LADDER, MAX_BOND_RANK, bondRank, bondProgress, bondUnlocks, isThreeStageLine, hiddenAbilityOf, type BondUnlocks } from './meta/bond';
 export {
   relicTier, discoverableRelics, masteryRelics, relicUnlocked, relicPoolFor, discoveryProgress,

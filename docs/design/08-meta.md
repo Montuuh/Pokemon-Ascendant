@@ -246,7 +246,7 @@ The pre-run and post-run menu. Not a 3D space: a clean 2D hub styled as a Pokém
 
 | Kiosk | Function | Available |
 |---|---|---|
-| **PC Terminal** | Pokédex, run history, statistics, achievements | From the start |
+| **PC Terminal** | Companions (the Bond per line, §6.8), the Pokédex and its record (§5.13, §8.9), the medal case (§8.7), the relic discoveries (§8.6.1) | From the start |
 | **Trainer Card** | Level, total XP, Tokens, profile stats | From the start |
 | **Poké Mart** | Five shelves — Trainer's Corner, Starters, Hub upgrades, Discoveries, Mastery lane — opened by Trainer Level (1/3/5/8/10), paid in Tokens (§8.3.5) | From the start (the Corner); every shelf by Level 10 |
 | **Daycare Lady** | Configure the starting roster, difficulty modifiers, run options | Trainer Level 3 |
@@ -490,12 +490,45 @@ This keeps "every run is real" intact and removes the "I won, but on baby mode" 
 
 # §8.9 Pokédex persistence
 
-The Pokédex system itself — tiers, thresholds and rewards — is §5.13. This section owns only how it persists:
+The Pokédex system itself — tiers, thresholds and rewards — is §5.13. This section owns how it persists and
+what else the entry remembers:
 
 - Tracked **per account**, across every run, and never reset.
 - Reaching Familiar awards one-time Trainer XP (§8.3.2).
-- The PC Terminal is its home surface: browsable by species, filterable by Familiar / unknown.
 - The **Bond** (§6.8) is persisted beside it, per line, and has its own tab — Companions.
+
+## §8.9.1 The record
+
+Every species' entry keeps a **record** — numbers that are fun to read and drive nothing. *(Added 2026-09-22;
+before it the entry held only the knock-outs the Familiar tier counts.)*
+
+| Number | Counts | Credited to |
+|---|---|---|
+| Faced | fights the species took the field against you | each enemy species, once per fight |
+| Knocked out | knock-outs of the species by your side (§5.13.1's number) | the species that fell |
+| Caught | copies that went into a Poké Ball | the species caught |
+| Recruited | copies that joined the Box, by any road | the species recruited |
+| Fights won with · Runs finished with | fights and runs ended with a copy on the Active Team | each Active species |
+| KOs landed | enemies a copy of yours finished | the species whose card landed the blow — a status tick credits nobody, §7.3.5's rule |
+| Damage dealt | every point a copy of yours dealt to an enemy | the species whose card dealt it |
+| Fainted | copies of yours that went down | the species that fell |
+| Turns as Lead | turns a copy spent in the Lead slot (§8.4.3's number) | the species leading |
+| Evolved | copies that evolved *from* this form | the form left behind |
+
+The per-species numbers are counted at the fight's single event site (the tally) and folded into the account at
+the fight's end, like every other account fact; a saved entry from before a number existed reads as zero.
+
+## §8.9.2 The surface
+
+The PC Terminal is the Pokédex's home, and it is a **picture first**: a card per species with its number, its
+sprite and its name — a silhouette until the species has been faced — and nothing else on the grid. A card
+opens the species' **sheet**: the record above, the Familiar standing, and the kit (the line's learnset, the
+Dojo tutor list, the abilities with the hidden one marked, the Mastery Moves by rank, what it evolves into,
+each evolution a door to its own sheet). The Companions tab is the same shape: a card per line with portrait,
+name, rank and five pips; the line's sheet holds its stages (doors to their Pokédex sheets), its Bond bar and
+the ladder of what each rank opens for that line by name, with how Bond grows at the foot. *(Redrawn
+2026-09-22: the v0.6.1 grids printed the ladder, the thresholds and every unlock chip on every row, and the
+first reader called it too much. The rule since: the picture on the grid, the paragraph one click away.)*
 
 ---
 

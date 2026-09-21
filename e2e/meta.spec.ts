@@ -10,11 +10,11 @@ async function menu(page: Page): Promise<void> {
   await page.waitForFunction(() => !!window.__ascendant);
 }
 
-/** A fight the account can count: a clean win with a Pidgey knocked out and Squirtle leading. */
+/** A fight the account can count: a clean win with a Pidgey knocked out (by Squirtle, for 12) and Squirtle leading. */
 const win = () => ({
   t: 'combat-end', outcome: 'victory', kind: 'wild', damageTaken: 4, manualSwaps: 0, faints: 0,
-  defeated: ['pidgey'], activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 },
-  tally: { crits: 0, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 2, peakHandAtTurnEnd: 5 },
+  defeated: ['pidgey'], enemies: ['pidgey'], activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 },
+  tally: { crits: 0, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 2, peakHandAtTurnEnd: 5, catchFails: 0, koBy: { squirtle: 1 }, faintsOf: {}, damageBy: { squirtle: 12 } },
   leadHpFraction: 0.8,
 });
 
@@ -44,17 +44,43 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('kiosk-daycare')).toContainText('Level 3');
     await expect(page.getByTestId('kiosk-door')).toBeDisabled();
 
-    // §6.8 — the PC Terminal opens on Companions: every line listed, none played, the ladder explained.
+    // §6.8 — the PC Terminal opens on Companions: a card per line, none played; the ladder is one click away.
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('bond-legend')).toContainText('Play a line and its Bond grows');
     await expect(page.getByTestId('bond-squirtle')).toHaveAttribute('data-rank', '0');
     await expect(page.getByTestId('bond-squirtle')).toContainText('Not yet played');
-    // §5.13 — the Pokédex opens with the verb, every species listed, every one unknown.
+    await page.getByTestId('bond-squirtle').click();
+    await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-line', 'squirtle');
+    await expect(page.getByTestId('line-sheet-ladder')).toContainText('Aqua Tail');
+    await expect(page.getByTestId('line-sheet-ladder')).toContainText('Shiny');
+    await expect(page.getByTestId('line-sheet')).toContainText('Bond grows by playing the line');
+    // A stage on the line sheet opens that species' Pokédex sheet; Back returns to the line.
+    await page.getByTestId('line-stage-wartortle').click();
+    await expect(page.getByTestId('dex-sheet')).toHaveAttribute('data-species', 'wartortle');
+    await page.getByTestId('pc-sheet-back').click();
+    await expect(page.getByTestId('line-sheet')).toBeVisible();
+    await page.getByTestId('pc-sheet-close').click();
+    await expect(page.getByTestId('pc-sheet')).toHaveCount(0);
+    // §5.13 / §8.9 — the Pokédex is number, silhouette, name; every species listed, none met yet.
     await page.getByTestId('pc-tab-dex').click();
-    await expect(page.getByTestId('dex-legend')).toContainText('Knock a species out');
-    await expect(page.getByTestId('dex-legend')).toContainText('Catching it does not count');
-    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '0');
-    await expect(page.getByTestId('dex-pidgey')).toContainText('0 KO');
+    await expect(page.getByTestId('dex-legend')).toContainText('0 of 47 met');
+    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-met', 'false');
+    await expect(page.getByTestId('dex-pidgey')).toContainText('#016');
+    await expect(page.getByTestId('dex-pidgey')).not.toContainText('KO');
+    // The cards fade in over ~0.6 s; the screenshot is of the finished picture.
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: 'playtest/hub-pokedex.png' });
+    // Its sheet: the record at zero, the knowledge line counting to Familiar, the kit on the second tab.
+    await page.getByTestId('dex-pidgey').click();
+    await expect(page.getByTestId('dex-sheet')).toHaveAttribute('data-met', 'false');
+    await expect(page.getByTestId('dex-stat-ko')).toContainText('0');
+    await expect(page.getByTestId('dex-sheet-knowledge')).toContainText('10 more knock-outs to Familiar');
+    await page.getByTestId('dex-sheet-tab-kit').click();
+    await expect(page.getByTestId('dex-sheet')).toContainText('Gust');
+    await page.getByTestId('dex-sheet-evolves-pidgeotto').click();
+    await expect(page.getByTestId('dex-sheet')).toHaveAttribute('data-species', 'pidgeotto');
+    await page.screenshot({ path: 'playtest/hub-pokedex-sheet.png' });
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('pc-sheet')).toHaveCount(0);
 
     // §8.7 — the medal case: twenty-four rows, all visible, none earned; a hidden row keeps its description.
     await page.getByTestId('pc-tab-medals').click();
@@ -82,16 +108,34 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'claimed');
     await expect(page.getByTestId('track-3')).toHaveAttribute('data-state', 'next');
 
-    // §6.8 — 303 wins leading with Squirtle is 606 Bond: Soulbound, every unlock lit, Aqua Tail named.
+    // §6.8 — 303 wins leading with Squirtle is 606 Bond: Soulbound on the card, every rung lit on the sheet.
     await page.getByTestId('kiosk-pc').click();
     await expect(page.getByTestId('bond-squirtle')).toHaveAttribute('data-rank', '5');
-    await expect(page.getByTestId('bond-squirtle')).toContainText('Aqua Tail');
-    await expect(page.getByTestId('bond-squirtle')).toContainText('Can start a run');
+    await expect(page.getByTestId('bond-squirtle')).toContainText('Soulbound');
+    await page.waitForTimeout(600);
     await page.screenshot({ path: 'playtest/hub-companions.png' });
-    // §5.13 — and Pidgey, knocked out 303 times, is Familiar: the only tier the Pokédex has.
+    await page.getByTestId('bond-squirtle').click();
+    await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-rank', '5');
+    await expect(page.getByTestId('line-sheet')).toContainText('Can start a run');
+    await expect(page.locator('[data-testid="line-sheet-ladder"] li[data-on="true"]')).toHaveCount(5);
+    await page.screenshot({ path: 'playtest/hub-line-sheet.png' });
+    await page.keyboard.press('Escape');
+    // §5.13 / §8.9 — Pidgey, met and knocked out 303 times, is Familiar; the record kept every number.
     await page.getByTestId('pc-tab-dex').click();
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
-    await expect(page.getByTestId('dex-pidgey')).toContainText('Familiar');
+    await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-met', 'true');
+    await page.getByTestId('dex-pidgey').click();
+    await expect(page.getByTestId('dex-sheet-knowledge')).toContainText('Familiar');
+    await expect(page.getByTestId('dex-stat-met')).toContainText('303');
+    await expect(page.getByTestId('dex-stat-ko')).toContainText('303');
+    await page.keyboard.press('Escape');
+    // Squirtle's own record: the knock-outs it landed and the damage it dealt, from the fight tally.
+    await page.getByTestId('dex-squirtle').click();
+    await expect(page.getByTestId('dex-stat-kos')).toContainText('303');
+    await expect(page.getByTestId('dex-stat-dmg')).toContainText('3636');
+    await expect(page.getByTestId('dex-stat-lead')).toContainText('909');
+    await page.screenshot({ path: 'playtest/hub-pokedex-record.png' });
+    await page.keyboard.press('Escape');
     await page.getByTestId('pc-tab-medals').click();
     await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
 
@@ -110,6 +154,8 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('bond-squirtle')).toHaveAttribute('data-rank', '5');
     await page.getByTestId('pc-tab-dex').click();
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
+    await page.getByTestId('dex-squirtle').click();
+    await expect(page.getByTestId('dex-stat-kos')).toContainText('303');
   });
 
   test('the Poké Mart opens a shelf per level and sells for Tokens — cosmetics from Level 1, the Mastery lane from 10', async ({ page }) => {
