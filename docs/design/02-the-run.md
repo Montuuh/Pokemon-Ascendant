@@ -871,17 +871,34 @@ Badges are the run-long systems.
 
 ## §2.11.5 The Game Corner
 
-Celadon's casino, and the one place in the game where the odds are the content. You bet Poké Dollars on a
-wheel with its **payout table printed on the screen**; the expected value is deliberately **below 1**, so over
-many spins the house wins. It is an **open** door: play as long as the money lasts. The house edge, not a cap,
-is what keeps it honest — with an expectation below 1 there is nothing to farm.
+Celadon's casino, and the one place in the game where the odds are the content. An **open** door (§2.11.0)
+with **two machines**, each with its **table printed beside it** — every outcome, its chance and what it pays.
+Both lose in the long run (expected value below 1): the house edge, not a cap, is what keeps them honest, and
+with an expectation below 1 there is nothing to farm.
+
+| | **The Wheel** | **The Slots** |
+|---|---|---|
+| Stake | You choose, up to **200 ₽** a spin | Fixed: **50 ₽** a pull |
+| Outcomes | ×0 66 % · ×2 24 % · ×4 8 % · ×8 2 % | nothing 76.6 % · ×2 15 % · ×4 6 % · ×10 2 % · **×50 jackpot 0.4 %** |
+| Expected value | 0.96 | 0.94 |
+| Feels like | Frequent small wins, sized by you | Rare wins, and one dream |
+
+Two machines so the two ways of gambling each have a home: the wheel is a bet you size, the slots a lottery
+ticket at a fixed price — the only place a run can ever see a ×50. The fixed stake is what bounds the jackpot:
+2 500 ₽ is more than a Region pays, but not a shop emptied. *(Both chosen 2026-09-22: the user asked for a
+spinning multiplier wheel and, if its numbers were right and it was easy to play, a slot machine.)*
+
+**Honest by construction.** The outcome is rolled against the printed table *first*, and the wheel's segment
+or the reels are then drawn to show it — so the odds on screen are exactly the odds and the machines are pure
+presentation. Every roll comes from the run's seeded RNG with its cursor saved (§10.7), so a reload shows the
+same next result: the casino cannot be save-scummed. The reels nod to the Gen I Game Corner machines (a 7 for
+the jackpot); the symbol set is chosen at build. Stakes and tables are first values, retuned in the global
+balance pass (backlog).
 
 Its purpose is not income — it is **variance**. A pile of money too small to buy the thing you need is dead
-weight; the wheel is the run's only way to turn it into a *chance* at the thing you need, at a known price in
-expectation. Printing the table is what keeps it inside Pillar 1: the gamble is chosen with the numbers in
+weight; the machines are the run's only way to turn it into a *chance* at the thing you need, at a known price
+in expectation. Printing the tables is what keeps it inside Pillar 1: the gamble is chosen with the numbers in
 view, like the catch roll (§2.6.4.3).
-
-> ⚠️ **OPEN (2026-09-22)**: the wheel's segments, its payouts and the largest bet a spin takes. Decides: user.
 
 ## §2.11.6 Doors in development
 
@@ -993,7 +1010,7 @@ and Ghost. Gym pool: Psychic, Ground, Fighting, Ice. No City — Region 3 ends i
 | City Shop | No | spend | — | — | 8 curated slots (Mart) / floors (Department Store) |
 | City Dojo | No | spend | — | — | Off-learnset moves + abilities |
 | Challenge Ring | Yes | fee → prize | — | Loot on the way out | 2–3 fights, no heal between; a loss is not a run loss |
-| Game Corner | No | bet | — | — | Printed odds, EV below 1 |
+| Game Corner | No | bet | — | — | Two machines — the Wheel (EV 0.96) and the Slots (EV 0.94) — tables printed |
 | City Reflection | No | — | — | — | Region Modifier; it closes the City |
 
 ---

@@ -399,7 +399,8 @@ loop can be played and felt before its content exists.
 **Exit:** a three-Region run end to end, with two City visits, on a single seed.
 
 ### v0.7.2 — The city  ☐
-**Celadon City**: the Department Store by floors, the wider City Dojo, the Game Corner (§2.11.5) and the Black
+**Celadon City**: the Department Store by floors, the wider City Dojo, the Game Corner's two machines — the
+Wheel and the Slots, tables printed (§2.11.5) — and the Black
 Market door drawn beneath it, in development. The **Challenge Ring** in both Dojos (§2.9.4.1): a ladder of
 trainers — two rungs in the town, three in the city — where you see the next rival and choose to cash out or
 climb. The only new combat surface of the City.
