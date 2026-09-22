@@ -28,6 +28,10 @@ With `coin-pouch` (×1.25) or the `coin-purse` modifier (×1.5) a Region can rea
 
 ## 3. Prices
 
+> Since 2026-09-22 a route has no Shop: its travelling merchant stocks basics only (§2.9.2), and the Region
+> Shop column reads as the merchant's price where it stocks the item. The City Shop column is the Poké Mart and
+> the Department Store (§2.11.2). Numbers are re-tuned in v0.7.1 against the new flow.
+
 | Item class | Region Shop | City Shop (+30 %) | Notes |
 |---|---|---|---|
 | Consumable T1 | 25–50 ₽ | 35–65 ₽ | 3 randomised slots |
@@ -46,10 +50,10 @@ With `coin-pouch` (×1.25) or the `coin-purse` modifier (×1.5) a Region can rea
 
 | Service | Cost | Where |
 |---|---|---|
-| Heal | free | Region Center, City Center |
-| Therapy (−1 Trauma stack) | `100 × (1 + stacks)` ₽ | Centers |
+| Heal | free | City Center (full, every status) · the route's nurse (50 %, every status) |
+| Therapy (−1 Trauma stack) | `100 × (1 + stacks)` ₽ | City Center only |
 | Daycare (+1 level, skips the next combat) | 200 ₽ | City Center |
-| Dojo: off-learnset move | 150 ₽ (`EconomyConfig.dojoMoveCost`) | Dojo, Grand Dojo (+30 %) |
+| Dojo: off-learnset move | 150 ₽ (`EconomyConfig.dojoMoveCost`) | Town Dojo · City Dojo (+30 %) |
 | Dojo: ability (set or swap) | 200 ₽ (`EconomyConfig.dojoAbilityCost`) | same |
 
 The Dojo is the intended main ₽ sink: a Region's income buys roughly 3–5 Dojo services *or* a relic and a TM.

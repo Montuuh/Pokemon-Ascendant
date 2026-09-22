@@ -77,8 +77,8 @@ stateDiagram-v2
 - The **consumable pile** is built from the player's inventory.
 - The Lead is the front slot of the Active Team, as ordered in the Map View.
 - **Pokémon enter at their current HP.** There is no restoration on entering a fight (§2.4).
-- Stat stages and the timed conditions start clear; a **Burn or Poison** carried from an earlier fight is
-  still in effect from turn one (§4.2.7.1).
+- Stat stages start clear. **Any status** a Pokémon ended its last fight with is still in effect from turn
+  one, with what is left of its duration (§4.2.7.1).
 - Any field effect for this encounter is set, including a boss's Home Field (§4.3.5).
 
 ## §3.2.2 Draw Phase

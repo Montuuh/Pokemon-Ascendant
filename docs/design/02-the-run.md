@@ -579,7 +579,7 @@ One per Gym lane, just before the Gym. No combat, no building: a nurse with a fo
 
 | Service | Effect | Cost |
 |---|---|---|
-| **First aid** | Restores **50 %** of Effective Max HP to every Pokémon in the Box, and cures **Burn and Poison** — the two conditions that outlive a fight (§4.2.7.1) | Free |
+| **First aid** | Restores **50 %** of Effective Max HP to every Pokémon in the Box, and cures **every status** — they all outlive the fight that inflicted them (§4.2.7.1) | Free |
 
 That is the whole list. She does not treat **Trauma** — that is a Pokémon Center's job and Centers are in
 Cities now (§2.11.1). Half a heal before a Gym is enough to make the fight winnable and not enough to make it
@@ -637,16 +637,25 @@ A third counter — **extra moves** beyond the tutor list — is drawn in the Do
 
 ### §2.9.4.1 The Challenge Ring
 
-Inside the Dojo, a second door: a **paid ladder of fights**. You pay the entry fee, then fight 2–3 battles
-back to back with no healing between them; the prize grows with how far you get and is claimed only on the way
-out. Losing costs the fee and leaves the fallen with their Trauma — it never ends the run.
+Inside the Dojo, a second door: a **ladder of trainer fights you pay to climb**.
 
-This replaced the **City Gym** of the previous design (a full Gym-tier boss one click after the Region's own
-Gym). The ring keeps the "bet your team on a hard fight" moment without the second climax and without a Badge
-riding on it.
+- **Two rungs in Pallet Town, three in Celadon City** — the big city is the big challenge.
+- Each rung is a trainer stronger than the last, and **you see the next rung's team before you fight it**.
+- **No healing between rungs.** HP, statuses and Trauma carry from rung to rung, as between any two fights.
+- After each rung won, you choose: **cash out** — take everything the ladder has paid so far and leave — or
+  **climb**. Losing a rung loses everything earned on this ladder, and the fallen keep their Trauma. It never
+  ends the run.
+- Once per City visit (§2.11.0).
 
-> ⚠️ **OPEN (2026-09-22)**: the ring's fee, ladder length and prize table, and whether a Region's fourth
-> **Badge** still exists now that the City Gym is gone (§2.12.6). Decides: user.
+The decision *is* the design: "two down, my Lead at half HP and asleep, and the third is a Fire team — do I
+stop?" Every rung is chosen with the next opponent in view (Pillar 1), and the ladder reuses the trainer-battle
+generator. *(Chosen by the user on 2026-09-22 over a single all-or-nothing master fight and an endless
+survival ladder.)*
+
+It replaced the **City Gym** of the previous design — a full Gym-tier boss one click after the Region's own
+Gym — and, unlike it, **pays no Badge** (§2.12.6).
+
+> ⚠️ **OPEN (2026-09-22)**: the entry fee, each rung's level and what each rung pays. Decides: user.
 
 ---
 
@@ -910,9 +919,9 @@ Black Market. The Boon system no longer exists as a separate mechanic.
 
 Up to one extra Badge per run, beyond the three from Gyms.
 
-- **§2.12.6 The City Gym is gone** (2026-09-22). It was the primary bonus-Badge source; the City's fight is the
-  Challenge Ring now (§2.9.4.1), which pays money and loot rather than a Badge.
-  > ⚠️ **OPEN (2026-09-22)**: whether a fourth Badge per Region still exists, and where it comes from. Decides: user.
+- **Cities pay no Badge** (2026-09-22). The City Gym that used to was replaced by the Challenge Ring
+  (§2.9.4.1), which pays money and loot. A way to earn the Badges of Gym types a run's pool never offered is in
+  the backlog.
 - **§2.12.6 Victory Road Perfect Clear**: clearing a Gauntlet with no Pokémon fainting awards the Badge of the
   Gym path you did *not* take in the matching Region tier.
 

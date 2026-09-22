@@ -393,15 +393,16 @@ The run no longer ends at the Region 1 Gym: Gym → City → next Region. **Pall
 §2.11): Pokémon Center, Poké Mart, Dojo, the Safari door drawn and closed, and the gate that opens the
 Reflection (§2.11.3, already built) and leaves. Routes lose their Center, Shop and Dojo and gain the nurse and
 the travelling merchant (§2.9); the freed L6 node becomes a third Mystery Event (§2.5.1). The Trauma Salve
-Cache Hub upgrade goes live. **Burn and Poison carry over between fights** (§4.2.7.1) and the nurse cures
-them. Regions 2 and 3 are Region 1's generator at a higher level band — placeholders on purpose, so the whole
+Cache Hub upgrade goes live. **Every status carries over between fights** (§4.2.7.1) and the nurse cures
+them. The town Dojo shows the Challenge Ring's door marked in development until v0.7.2. Regions 2 and 3 are Region 1's generator at a higher level band — placeholders on purpose, so the whole
 loop can be played and felt before its content exists.
 **Exit:** a three-Region run end to end, with two City visits, on a single seed.
 
 ### v0.7.2 — The city  ☐
 **Celadon City**: the Department Store by floors, the wider City Dojo, the Game Corner (§2.11.5) and the Black
-Market door drawn beneath it, closed. The Challenge Ring inside the Dojo (§2.9.4.1) — the only new combat
-surface of the City, and the first thing to cut if the version runs long.
+Market door drawn beneath it, in development. The **Challenge Ring** in both Dojos (§2.9.4.1): a ladder of
+trainers — two rungs in the town, three in the city — where you see the next rival and choose to cash out or
+climb. The only new combat surface of the City.
 **Exit:** two Cities that feel different sizes, not two copies.
 
 ### v0.7.3 — Region 2, Coastal Cliffs  ☐
@@ -463,6 +464,6 @@ Kept here so they stop living in chat. Nothing on this list is promised, and non
 | **The Black Market** | Legendary relics paid in HP or Trauma, Pokémon traded for Pokémon — the things a Mart will not sell (§2.11.6) | Beneath the Game Corner |
 | **The Dojo's extra moves** | A move catalogue beyond each species' tutor list (§2.11.6) | The Dojo's third counter, drawn in development |
 | **HMs (MO)** | Cut, Fly, Surf, Strength, Flash — as battle moves, a field use, or not at all. Needs its own design; may never ship | — |
-| **The fourth Badge** | The City Gym paid one; the Challenge Ring does not. Open question (§2.12.6) | — |
+| **Recovering missed Badges** | A way to earn the Badges of Gym types your run never met — a run earns three of twelve, and the fork decides which (§2.12.6) | — |
 | **End-of-run ₽ surplus** | What leftover money converts into at a run's end | §8.3 |
 | **Consumables that are spent** | The user's idea: consumables are consumed for real, and found far more often | §7.2 |

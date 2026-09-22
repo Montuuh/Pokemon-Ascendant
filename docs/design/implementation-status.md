@@ -18,7 +18,7 @@
 | Running (Escaped) | §3.1.2 | `combat/turn.ts` (`flee`), `run/flee.ts`, `run/run.ts` | `flee`, `run` | ✅ parting shot, then the toll by fight tier; never from a Gym |
 | Deck, hand, consumables | §3.4, §3.5 | `sim/combat/deck.ts` | `cards`, `status` | ✅ 15 of 28 consumables, the §7.2.6 healing chain complete |
 | Damage and type chart | §4.1 | `damage.ts`, `typeChart.ts`, `damageFlow.ts`, `stats.ts` | `damage`, `typeChart`, `statStages` | ✅ |
-| Status and stat stages | §4.2 | `status.ts`, `statStages.ts`, ticks in `turn.ts` | `status`, `statStages` | ⚠ in combat ✅; **carry-over** (§4.2.7.1, 2026-09-22) not built — `run/report.ts` still hard-sets `status: null`. Burn and Poison persist from v0.7.1 |
+| Status and stat stages | §4.2 | `status.ts`, `statStages.ts`, ticks in `turn.ts` | `status`, `statStages` | ⚠ in combat ✅; **carry-over** (§4.2.7.1, 2026-09-22) not built — `run/report.ts` still hard-sets `status: null`. every status persists (Burn/Poison until cured, timed ones with their turns left) from v0.7.1 |
 | Field effects | §4.3 | — | — | ☐ v0.8, with multi-enemy |
 | Cities | §2.1.4, §2.11 | — | — | ☐ v0.7.1 (Pallet Town) · v0.7.2 (Celadon). The run still ends at the Region 1 Gym (`run.ts`) |
 | Route service nodes | §2.9 | `run/map.ts`, `ui/screens/{ShopScreen,CenterScreen,DojoScreen}.tsx` | `mapRules`, `e2e/economy`, `e2e/progression` | ⚠ built to the pre-2026-09-22 canon: the route still carries a full Center, Shop and Dojo. v0.7.1 cuts them to the nurse (§2.9.1) and the merchant (§2.9.2) and moves the Shop and Dojo screens into the City |

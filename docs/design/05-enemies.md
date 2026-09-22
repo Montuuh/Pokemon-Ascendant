@@ -229,8 +229,7 @@ what is coming.
 # §5.10 Badges
 
 Twelve Badges, one per Gym type. **Three per run** from the Gyms you fight, plus up to **one** bonus Badge —
-Victory Road's Perfect Clear (§2.12.6); whether a City can also pay one is open there. A Badge is permanent
-from the moment it is awarded.
+Victory Road's Perfect Clear (§2.12.6); a City pays none. A Badge is permanent from the moment it is awarded.
 
 ## §5.10.1 Region 1 tier
 

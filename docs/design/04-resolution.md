@@ -137,12 +137,12 @@ old one.
 
 ### §4.2.2.1 Burn 🔥
 `floor(EffectiveMaxHP / 16)` damage at the end of each Resolution Phase, and **Attack −25 %**.
-Permanent until cured — it **survives the end of the combat** (§4.2.7.1). **Fire-types are immune.**
+Permanent until cured (§4.2.7). **Fire-types are immune.**
 *Offensive disruption — the burned Pokémon wants to come off the front line.*
 
 ### §4.2.2.2 Poison ☠️
 `floor(EffectiveMaxHP / 16)` damage at the end of each Resolution Phase, and **Defence −15 %**.
-Permanent until cured — it **survives the end of the combat** (§4.2.7.1). **Poison-types are immune.**
+Permanent until cured (§4.2.7). **Poison-types are immune.**
 *Defensive disruption — the poisoned Pokémon wants to come off the Lead.*
 
 > Burn and Poison are deliberate mirrors: same chip damage, one attacks your offence and one your defence, and
@@ -200,6 +200,9 @@ at the moment of application.
 | Freeze | Primary | 1 turn | Its cards unplayable | ×1.5 Fire damage taken | **Yes** |
 | Confusion | Secondary | 3 turns | −1 skill card per turn, per Confused Pokémon | — | No |
 
+**Every one of them outlives the combat that inflicted it** — the timed ones with what is left of their turns
+(§4.2.7.1).
+
 ## §4.2.6 Stat stages
 
 Separate from status conditions, and they do not occupy a status slot.
@@ -218,26 +221,29 @@ Separate from status conditions, and they do not occupy a status slot.
 | `full-heal` | Any primary status **and** Confusion, 1 AP |
 | Specific moves | As written on the card |
 | **Swapping** | Nothing |
-| **Combat end** | Paralysis, Sleep, Freeze, Confusion and every stat stage, automatically. **Not** Burn or Poison (§4.2.7.1) |
+| **Combat end** | Every stat stage, automatically. **No status** — a status outlives the fight (§4.2.7.1) |
 | **Fainting** | Everything the fainted Pokémon carried |
-| **Field Aid** — the route's nurse (§2.9.1) | Burn and Poison, for the whole Box |
+| **Field Aid** — the route's nurse (§2.9.1) | Every status, for the whole Box |
 | **Pokémon Center heal** — in a City (§2.11.1) | Every status, for the whole Box |
 
-### §4.2.7.1 Carry-over — Burn and Poison persist
+### §4.2.7.1 Carry-over — every status outlives the fight
 
-A Burn or a Poison **outlives the combat that inflicted it**: the Pokémon walks to the next node with it, is
-drawn with its badge on the map and in the Box, and enters the next fight with it already in effect — ticking
-from the first Resolution Phase. It ends only when something in the table above cures it. An evolution into a
-type that is immune to it (§4.2.4) clears it.
+A Pokémon that ends a combat with a status **keeps it into the next one**. Burn and Poison stay until cured, as
+they always did. The timed conditions — Paralysis, Sleep, Freeze, Confusion — keep **what is left of their
+duration**, and their clock stops between fights: a Pokémon that ends a fight Asleep with one turn to go starts
+the next fight Asleep for one turn. A carried status is in effect from turn one — it was applied in an earlier
+fight, so §4.2.1's one-turn delay has already run. It is drawn on the Pokémon in the Box and on the map, so the
+Active Team is chosen knowing it. Fainting clears it, an evolution into an immune type (§4.2.4) clears it, and
+the nurse and the Center cure it (the table above). **Stat stages are not statuses** and still reset at combat
+end.
 
-The rule follows the two conditions' own design. Burn and Poison were always *permanent until cured*; they
-are attrition, and attrition that stops at the edge of a fight is not attrition. Paralysis, Sleep, Freeze and
-Confusion are counted in turns — they are one-fight tempo puzzles, and carried into a new fight they would
-become an opening turn the player never got to answer. Carry-over also gives Region 2's accent (status on
-enemy intents, §2.2) a cost that lasts beyond one fight, gives the merchant's cures and the nurse a job, and is
-faithful to the series. It is telegraphed (Pillar 1): the badge is on the Pokémon before you pick the Active
-Team, so benching the poisoned one is a real decision (Pillar 2). *(Decided 2026-09-22; until then combat end
-cleared everything.)*
+**The cost, stated plainly:** a Pokémon that ends a fight Asleep or Frozen starts the next one unable to play a
+card, and a Frozen one cannot leave its slot until it thaws. That is deliberate. It makes a fight's last turns
+matter — finishing the enemy while your Lead is asleep has a price — it gives the status cures a job beyond
+the turn they are drawn, and it grows sharper once consumables are spent instead of returned (backlog). The
+telegraph that keeps it inside Pillar 1 is the Box: nothing carried is hidden, and a Frozen Pokémon can simply
+be left out of the Active Team. *(Decided by the user on 2026-09-22 — "más restrictivo" — over the narrower
+Burn-and-Poison-only rule proposed earlier the same day.)*
 
 ## §4.2.8 Status on the enemy side
 
