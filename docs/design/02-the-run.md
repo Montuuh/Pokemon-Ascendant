@@ -655,7 +655,34 @@ survival ladder.)*
 It replaced the **City Gym** of the previous design — a full Gym-tier boss one click after the Region's own
 Gym — and, unlike it, **pays no Badge** (§2.12.6).
 
-> ⚠️ **OPEN (2026-09-22)**: the entry fee, each rung's level and what each rung pays. Decides: user.
+**What it pays.** Money on the lower rungs; the top rung pays what money cannot promise — a **Rare relic,
+1 of 3**, as after an Elite Trainer (§2.8.1). Cashing out takes everything paid so far.
+
+| | Entry | Rung 1 | Rung 2 | Rung 3 |
+|---|---|---|---|---|
+| **Pallet Town** | 250 ₽ | 300 ₽ | Rare relic, 1 of 3 | — |
+| **Celadon City** | 400 ₽ | 400 ₽ | +600 ₽ | Rare relic, 1 of 3 |
+
+The money tempts an early stop; the relic is the reason to risk the last fight. A Rare in the City shop costs
+600 ₽ and is on the shelf half the time (§2.11.2.2), so *choosing* one from three is worth well over its price.
+*(Chosen 2026-09-22 over all-money prizes and a player-chosen stake, which duplicated the Game Corner.)*
+
+**How hard it is — it is meant to be lost.** The Ring is a hard challenge where losing is the normal outcome.
+Targets, measured by the balance harness with the team a run actually brings to the City:
+
+| | Rung 1 won | Whole ladder cleared |
+|---|---|---|
+| **Pallet Town** | about half | about **1 in 6** |
+| **Celadon City** | about half | **under 1 in 10** (rung 2 about a quarter) |
+
+Rung 1 is winnable on purpose: a ladder whose first step is a wall is a toll, not a gamble — the cash-out only
+means something if the first prize is reachable. It is every rung after it that is brutal.
+
+**Starting values**, which the harness tunes rather than a hand: every rung is an Elite-class trainer with a
+full team; rung 1 stands at the City's Gym level **+2**, and each later rung **+3** more. In Pallet that is
+Lv 18, then Lv 21, against a Region 1 Gym whose ace is Lv 16. *(The user asked for it harder than a Gym
+and for the balance to be set to a low win rate, 2026-09-22.)* The fee, the prizes and the offsets are retuned
+with everything else in the global balance pass (backlog).
 
 ---
 

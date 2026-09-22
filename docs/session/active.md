@@ -18,8 +18,9 @@ Nothing of v0.7 is coded: the user wants the version's bases settled first.
 - **Roadmap:** v0.8 multi-enemy + field effects · v0.9 Victory Road & League · v1.0 Release · v1.1 Polish ·
   v1.2 map revamp. Backlog at the roadmap's tail (fossils, role events, Safari, Black Market, extra moves, HMs…).
 
-**Design questions, one at a time:** ✅ 1 Ring format (the ladder) · 2 Ring fee and prize ← asked · ✅ 3 bonus
-Badge (none; backlog) · 4 the Game Corner's wheel. Biome field effects wait for v0.8.
+**Design questions, one at a time:** ✅ Ring format (ladder) · ✅ Ring prize (₽ below, Rare 1-of-3 at the top;
+meant to be lost — clear-rate bands in §2.9.4.1) · ✅ bonus Badge (none; backlog) · the Game Corner's wheel ← asked.
+Global balance pass → backlog. Biome field effects wait for v0.8.
 
 **Next action:** answer the queue, then v0.7.1 — the seam in `run/run.ts` (Gym → City → `regionIndex + 1`),
 the City lobby screen, strip the route nodes, carry every status (`run/report.ts` hard-sets `status: null`).

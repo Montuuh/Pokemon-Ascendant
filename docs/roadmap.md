@@ -403,7 +403,9 @@ loop can be played and felt before its content exists.
 Market door drawn beneath it, in development. The **Challenge Ring** in both Dojos (§2.9.4.1): a ladder of
 trainers — two rungs in the town, three in the city — where you see the next rival and choose to cash out or
 climb. The only new combat surface of the City.
-**Exit:** two Cities that feel different sizes, not two copies.
+**Exit:** two Cities that feel different sizes, not two copies — and a balance test that holds the Ring's
+clear rates inside their bands (§2.9.4.1: rung 1 about half; the whole ladder about 1 in 6 in the town, under
+1 in 10 in the city).
 
 ### v0.7.3 — Region 2, Coastal Cliffs  ☐
 Biomes `sea` and `power-plant`, ~10 authored lines (kits, learnsets, branches), trainer rosters, the four R2
@@ -465,5 +467,6 @@ Kept here so they stop living in chat. Nothing on this list is promised, and non
 | **The Dojo's extra moves** | A move catalogue beyond each species' tutor list (§2.11.6) | The Dojo's third counter, drawn in development |
 | **HMs (MO)** | Cut, Fly, Surf, Strength, Flash — as battle moves, a field use, or not at all. Needs its own design; may never ship | — |
 | **Recovering missed Badges** | A way to earn the Badges of Gym types your run never met — a run earns three of twelve, and the fork decides which (§2.12.6) | — |
+| **The global balance pass** | Levels, money, consumables, relics, prices — together, against a whole run. Natural moment: after v0.7.5, when three Regions and two Cities exist to balance; v1.0's pass is the final one | All of §2, §7, `catalogs/economy.md` |
 | **End-of-run ₽ surplus** | What leftover money converts into at a run's end | §8.3 |
 | **Consumables that are spent** | The user's idea: consumables are consumed for real, and found far more often | §7.2 |
