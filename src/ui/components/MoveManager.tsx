@@ -83,7 +83,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
             .filter(Boolean)
             .join(', ')}
         >
-          <TypeBadge type={move.type} size={15} />
+          <TypeBadge type={move.type} size={18} />
           <span className={styles.moveBody}>
             <span className={`${styles.moveName} display`}>{move.name}</span>
             <span className={styles.moveMeta}>
@@ -95,7 +95,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
           <span className={`${styles.stat} tabular`}>{move.power > 0 ? move.power : '—'}</span>
           <span className={`${styles.ap} tabular`}>{move.apCost} AP</span>
           <span className={styles.grab} aria-hidden="true">
-            {blocked ? <IconLock size={15} /> : inKit ? <IconMinus size={16} /> : <IconPlus size={16} />}
+            {blocked ? <IconLock size={18} /> : inKit ? <IconMinus size={16} /> : <IconPlus size={16} />}
           </span>
         </Tipped>
       </li>
@@ -136,7 +136,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
         {active.length < 4 && <p className={styles.slotHint}>{4 - active.length} slot{active.length === 3 ? '' : 's'} free.</p>}
         {mastery && (
           <Tipped tip={masteryCardTip(content.move(mastery), species.name)} className={styles.masteryRow} data-testid="mastery-slot">
-            <TypeBadge type={content.move(mastery).type} size={15} />
+            <TypeBadge type={content.move(mastery).type} size={18} />
             <span className={styles.masteryName}>★ {content.move(mastery).name}</span>
             <span className={styles.masteryTag}>Mastery · fixed</span>
           </Tipped>
@@ -185,7 +185,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
                       </span>
                     </span>
                     <span className={styles.grab} aria-hidden="true">
-                      {compatible && !known ? <IconPlus size={16} /> : <IconLock size={15} />}
+                      {compatible && !known ? <IconPlus size={16} /> : <IconLock size={18} />}
                     </span>
                   </Tipped>
                 </li>

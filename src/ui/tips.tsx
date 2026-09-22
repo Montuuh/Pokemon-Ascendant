@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { POKEMON_TYPES, describeToll, typeMultiplier, type BadgeDef, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type HeldItemDef, type MoveDef, type PokemonType, type RegionModifierDef, type RelicDef } from '@/sim';
+import { BOND_RANK_NAME, POKEMON_TYPES, SHELVES, describeToll, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
@@ -115,16 +115,6 @@ export function swapTip(nextCost: number, swapsSoFar: number): ReactNode {
   return <Tip title={`Next swap: ${nextCost} AP`} meta={['1st swap 1 AP', '2nd 2 AP', '3rd 3 AP']} body={`Swapping your Lead costs more each time you do it in a turn — ${swapsSoFar} so far this turn. The ladder resets every turn. Step-Forward and Step-Backward cards swap for free and do not climb it.`} footer="After a manual swap, your first Defensive card that turn is cheaper." />;
 }
 
-/** §3.3 — the Lead slot. */
-export function leadTip(name: string): ReactNode {
-  return <Tip title={`${name} is your Lead`} body="The Lead takes every single-target hit and is the only one who can play Melee cards. Swap it to move the enemy's next attack onto someone else." />;
-}
-
-/** §3.3.1 — a bench slot, and what swapping it in costs right now. */
-export function benchTip(name: string, cost: number, locked: string | null): ReactNode {
-  return <Tip title={`${name} — on the bench`} meta={locked ? [locked] : [`Swap in: ${cost} AP`]} body="Bench Pokémon are safe from single-target attacks and can still play their Ranged cards. Click to make it the Lead." />;
-}
-
 // ── Abilities, items, relics, badges, modifiers ──────────────────────────────────────────────────────────
 
 /** §6.5 — a passive ability, from the content row. */
@@ -137,26 +127,6 @@ export function abilityTip(abilityId: string): ReactNode {
 export function consumableTip(c: ConsumableDef, playable = true, reason: string | null = null): ReactNode {
   const meta: ReactNode[] = [c.apCost === 0 ? 'Free' : `${c.apCost} AP`, 'Single use'];
   return <Tip icon={<img src={itemIcon(c.id)} alt="" width={22} height={22} />} title={c.name} meta={meta} body={c.description} footer={!playable && reason ? `Locked — ${reason}` : 'Used up when played. Buy more at a Poké Mart.'} />;
-}
-
-/** §7.3 — a relic. */
-export function relicTip(r: RelicDef): ReactNode {
-  return <Tip icon={<img src={itemIcon(r.id)} alt="" width={22} height={22} />} title={r.name} meta={[cap(r.rarity), 'Relic']} body={r.description} footer={r.pending ? `Not working yet: ${r.pending}` : 'Lasts the whole run. Never comes off.'} />;
-}
-
-/** §7.4 — a held item. */
-export function heldItemTip(h: HeldItemDef, wearer?: string): ReactNode {
-  return <Tip icon={<img src={itemIcon(h.id)} alt="" width={22} height={22} />} title={h.name} meta={['Held item', wearer ? `Held by ${wearer}` : 'In the bag']} body={h.description} footer={h.pending ? `Not working yet: ${h.pending}` : 'One per Pokémon. Only the holder benefits.'} />;
-}
-
-/** §5.10 — a Badge. */
-export function badgeTip(b: BadgeDef): ReactNode {
-  return <Tip title={b.name} meta={[`${typeName(b.type)} Gym`, 'Badge']} body={b.description} footer={b.flavour} />;
-}
-
-/** §2.11.3 — a Region Modifier. */
-export function regionModifierTip(m: RegionModifierDef): ReactNode {
-  return <Tip title={m.name} meta={[cap(m.tier), 'Region Modifier']} body={m.description} footer={m.pending ? `Not working yet: ${m.pending}` : 'In force from the first node to the Gym, then gone. You hold one at a time.'} />;
 }
 
 // ── Catching, money, balls ───────────────────────────────────────────────────────────────────────────────
@@ -254,28 +224,16 @@ export function starterTip(name: string, blurb: string, price: number, state: 'o
     : state === 'pending' ? `Not sold yet: ${detail}.`
     : state === 'buyable' ? `${price} Tokens at the Starters shelf.`
     : detail ?? 'Not enough Tokens yet.';
-  return <Tip title={name} meta={[state === 'owned' || state === 'soulbound' ? 'Yours' : `${price} Tokens`, 'Poké Mart · Level 3']} body={blurb} footer={footer} />;
+  return <Tip title={name} meta={[state === 'owned' || state === 'soulbound' ? 'Yours' : `${price} Tokens`, `Poké Mart · Level ${SHELVES.starters.level}`]} body={blurb} footer={footer} />;
 }
 
 /** §5.13 / §8.9 — a Pokédex card: number, types, met or not, the line's rank. The sheet has the rest. */
 export function dexCardTip(name: string, dex: number, types: readonly string[], met: boolean, encounters: number, lineName: string, rank: number): ReactNode {
-  const NAMES = ['—', 'Companion', 'Trusted', 'Veteran', 'Deep Bond', 'Soulbound'];
   const lines: ReactNode[] = [
     <div key="m">{met ? `Faced ${encounters} time${encounters === 1 ? '' : 's'}.` : 'Not faced yet — a silhouette until it takes the field against you.'}</div>,
-    <div key="b">{rank > 0 ? `${lineName} line: ${NAMES[rank]} (rank ${rank}).` : `${lineName} line: not yet played.`}</div>,
+    <div key="b">{rank > 0 ? `${lineName} line: ${BOND_RANK_NAME[rank]} (rank ${rank}).` : `${lineName} line: not yet played.`}</div>,
   ];
   return <Tip title={`#${String(dex).padStart(3, '0')} ${name}`} meta={types.map(cap)} body={lines} footer="Open for its record, its kit and its line." />;
-}
-
-/** §6.8 — a line's Bond. */
-export function bondTip(lineName: string, points: number, rank: number, threeStage: boolean, masteryTier: number): ReactNode {
-  const NAMES = ['—', 'Companion', 'Trusted', 'Veteran', 'Deep Bond', 'Soulbound'];
-  const NEXT = [5, 15, 35, 60, 100];
-  const lines: ReactNode[] = [];
-  if (rank >= 1) lines.push(<div key="m">Mastery Move Lv{masteryTier} rides with it as a fifth card{rank >= 2 ? '; your copies are Shiny' : ''}{rank >= 3 ? '; its hidden ability is open at the Dojo' : ''}.</div>);
-  if (rank < 5) lines.push(<div key="n">{NEXT[rank]! - points} more Bond to {NAMES[rank + 1]}.</div>);
-  else lines.push(<div key="s">{threeStage ? 'Every Mastery tier open' : 'Its Mastery card opens every fight in hand'}, and the line can start a run.</div>);
-  return <Tip title={`${lineName} line — ${NAMES[rank]}`} meta={[`${points} Bond`, `Rank ${rank} / 5`]} body={lines} footer="Bond grows by playing the line: fights won with it (+1, +1 more leading), evolutions (+5), a first recruit (+2), finishing a run (+8) or winning one (+15)." />;
 }
 
 /** §5.13.2 — the fifth card, on a card face. */
@@ -292,10 +250,9 @@ export function relicTierTip(r: RelicDef, state: 'pool' | 'discoverable' | 'buya
     : state === 'owned' ? 'In your pool.'
     : state === 'buyable' ? [`${sale?.price ?? 5} Tokens at the Poké Mart.`, discover].filter(Boolean).join(' ')
     : state === 'locked' ? [`The Poké Mart sells it from Trainer Level ${sale?.level ?? 10}.`, discover].filter(Boolean).join(' ')
-    : discover ?? "Sold at the Poké Mart's Discoveries shelf from Level 8.";
+    : discover ?? `Sold at the Poké Mart's Discoveries shelf from Level ${SHELVES.discoveries.level}.`;
   return <Tip icon={<img src={itemIcon(r.id)} alt="" width={22} height={22} />} title={r.name} meta={[cap(r.rarity), tierName]} body={r.description} footer={r.pending ? `Not working yet: ${r.pending}` : footer} />;
 }
-
 
 /** §3.1.2 — the Run button: what it costs here, or why it cannot be pressed. */
 export function fleeTip(tier: FleeTier | null, toll: FleeToll | null): ReactNode {

@@ -11,7 +11,7 @@ export function BondBar({ points, compact = false }: { points: number; compact?:
   const max = BOND_RANKS[MAX_BOND_RANK - 1]!;
   const pct = Math.min(100, Math.round((Math.min(points, max) / max) * 100));
   return (
-    <div className={`${styles.root} ${compact ? styles.compact : ''}`} data-testid="bond-bar" data-rank={p.rank}>
+    <div className={`${styles.root} ${compact ? styles.compact : ''}`} data-rank={p.rank}>
       <Progress.Root className={styles.track} value={pct} aria-label={`Bond ${points} of ${max}`}>
         <Progress.Indicator className={styles.fill} style={{ width: `${pct}%` }} />
         {BOND_RANKS.map((at, i) => {

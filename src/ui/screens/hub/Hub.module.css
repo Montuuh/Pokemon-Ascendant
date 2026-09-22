@@ -26,22 +26,11 @@
   text-transform: uppercase;
   color: var(--ink-secondary);
 }
-.tokens {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-1) var(--sp-3);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-pill);
-  background: var(--surface-1);
-  font-family: var(--font-display);
-  font-size: var(--type-body);
-}
 .primary {
   padding: var(--sp-2) var(--sp-5);
   border: 0;
   border-radius: var(--radius-pill);
-  background: var(--brand-red);
+  background: var(--brand-red-deep);
   color: #fff;
   font-family: var(--font-display);
   font-size: var(--type-body);
@@ -90,20 +79,13 @@
   margin: 0;
   font-size: var(--type-h2);
 }
-.headLede {
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-1);
-  margin: 0;
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
-}
+/* A tint with ink on it (9.6:1), not white on blue (2.7:1). D5. */
 .titleRibbon {
   padding: 2px var(--sp-3);
+  border: 2px solid var(--brand-blue);
   border-radius: var(--radius-pill);
-  background: var(--brand-blue);
-  color: #fff;
+  background: color-mix(in srgb, var(--brand-blue) 28%, var(--surface-1));
+  color: var(--ink-primary);
   font-size: var(--type-small);
   font-family: var(--font-display);
 }
@@ -268,7 +250,7 @@
 .state {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   font-size: var(--type-small);
   color: var(--ink-secondary);
 }
@@ -344,7 +326,7 @@
 }
 .martBannerBody {
   display: grid;
-  gap: 4px;
+  gap: var(--sp-1);
   min-width: 0;
 }
 .martBannerTitle {
@@ -357,6 +339,16 @@
   gap: var(--sp-1);
   font-size: var(--type-small);
   color: var(--ink-secondary);
+}
+.martUnlockRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.martUnlockText {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+  white-space: nowrap;
 }
 .martUnlockBar {
   position: relative;
@@ -445,7 +437,7 @@
 .shelfAction {
   display: grid;
   justify-items: end;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 .buy {
   display: inline-flex;
@@ -479,19 +471,13 @@
 .shelfOwnedTag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   padding: var(--sp-1) var(--sp-3);
   border-radius: var(--radius-pill);
   background: var(--accent-positive);
   color: var(--ink-primary);
   font-family: var(--font-display);
   font-size: var(--type-small);
-}
-.shelfReason {
-  max-width: 16ch;
-  font-size: var(--type-caption);
-  color: var(--ink-secondary);
-  text-align: right;
 }
 /* The five shelves as tabs; a closed one keeps its tab, dimmed, with the level on it. */
 .shelfTabs {
@@ -524,8 +510,14 @@
   width: auto;
   image-rendering: pixelated;
 }
-.shelfAlt {
-  color: var(--ink-muted);
+.shelfProgress {
+  display: inline-block;
+  margin-left: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
 }
 .shelfWorn {
   border-color: var(--accent-action);
@@ -701,32 +693,36 @@
   filter: grayscale(1);
   opacity: 0.55;
 }
+/* Ten modifiers as tiles, name + state; the effect is in the bubble (D3/D4). */
 .modList {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--sp-1);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--sp-2);
 }
 .modRow {
   border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: var(--surface-1);
 }
 .modInner {
-  display: grid;
-  grid-template-columns: 150px 1fr auto;
+  display: flex;
   align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-1) var(--sp-3);
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
   font-size: var(--type-small);
+}
+.modState {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+  white-space: nowrap;
 }
 .modName {
   font-family: var(--font-display);
   font-size: var(--type-body);
-}
-.modEffect {
-  color: var(--ink-secondary);
 }
 .mod_open {
   border-color: var(--accent-positive);
@@ -800,7 +796,7 @@
 /* Five pips, one per Bond rank of the line: the bar is on the sheet; the card only needs "how many". */
 .pips {
   display: flex;
-  gap: 4px;
+  gap: var(--sp-1);
   margin-top: 3px;
 }
 .pip {
@@ -847,7 +843,7 @@
   border-color: var(--brand-blue);
   background: var(--surface-2);
 }
-/* The Pokédex card: the number top-left like a page, the sprite, the name, the type glyphs. */
+/* The Pokédex card: the number top-left like a page, the sprite, the name, the type labels. */
 .dexNo {
   position: absolute;
   top: 6px;
@@ -863,7 +859,7 @@
 }
 .dexTypes {
   display: flex;
-  gap: 4px;
+  gap: var(--sp-1);
   min-height: 14px;
 }
 /* A species not yet met is a silhouette — the oldest Pokédex convention there is. */

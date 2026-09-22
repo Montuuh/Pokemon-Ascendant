@@ -7,9 +7,3 @@ export function trackRewardLabel(reward: TrackReward): string {
   const tokens = `+${reward.tokens} Token${reward.tokens === 1 ? '' : 's'}`;
   return reward.opens ? `${tokens} · ${SHELVES[reward.opens].name} shelf opens` : tokens;
 }
-
-/** One sentence on what the stop changes at the Poké Mart. */
-export function describeReward(reward: TrackReward): string {
-  if (reward.opens) return `The ${SHELVES[reward.opens].name} shelf opens at the Poké Mart: ${SHELVES[reward.opens].sells}`;
-  return 'Tokens are spent at the Poké Mart — on starters, Hub upgrades, relics and cosmetics, as their shelves open.';
-}

@@ -3,7 +3,7 @@ import { IconArrowLeft, IconBook2, IconBuildingStore, IconDoor, IconEgg, IconId 
 import NumberFlow from '@number-flow/react';
 import { useAppStore } from '@/app/store';
 import { useAccountStore } from '@/app/accountStore';
-import { levelFor, levelProgress } from '@/sim';
+import { MAX_LEVEL, levelFor, levelProgress } from '@/sim';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { Tipped } from '@/ui/tooltip';
 import { tokenTip } from '@/ui/tips';
@@ -52,12 +52,12 @@ export function HubScreen() {
           <span className={styles.statusRing} data-testid="hub-level" data-level={level}>
             <LevelRing xp={account.xp} size={56} />
             <span className={styles.statusXp}>
-              <span className={`${styles.statusXpText} tabular`}>{p.level >= 30 ? 'Max' : `${p.span - p.into} XP to Lv ${p.level + 1}`}</span>
+              <span className={`${styles.statusXpText} tabular`}>{p.level >= MAX_LEVEL ? 'Max' : `${p.span - p.into} XP to Lv ${p.level + 1}`}</span>
               <span className={styles.statusBar} aria-hidden="true"><span className={styles.statusFill} style={{ width: `${Math.round(p.fraction * 100)}%` }} /></span>
             </span>
           </span>
           <Tipped tip={tokenTip(account.tokens, account.tokensEarned)}>
-            <span className={styles.statusPill} data-testid="hub-tokens"><TokenIcon /> <b className="tabular"><NumberFlow value={account.tokens} animated={animate} /></b></span>
+            <span className={styles.statusPill} aria-label={`${account.tokens} Tokens`}><TokenIcon /> <b className="tabular"><NumberFlow value={account.tokens} animated={animate} /></b></span>
           </Tipped>
         </div>
       </header>

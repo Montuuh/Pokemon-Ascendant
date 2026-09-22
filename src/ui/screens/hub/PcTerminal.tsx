@@ -19,12 +19,11 @@ import styles from './Hub.module.css';
 // (§5.13, §8.9, and the Bond of every line inside it, §6.8), the medal case (§8.7) and the relic discoveries
 // (§8.6.1).
 //
-// The Pokédex is a *picture*: a card per species with number, sprite, name, type glyphs and the line's rank as
+// The Pokédex is a *picture*: a card per species with number, sprite, name, type label and the line's rank as
 // five pips — nothing else. Every card is a button that opens a sheet (PcSheet) where the reading is: the
-// species' record and kit, and the line's stages, Bond bar and ladder. The v0.6.1 panels put all of that on
-// the grid itself and the first reader called it too much; the rule since 2026-09-22 is the picture on the
-// grid, the paragraph one click away. A separate Companions tab lasted a day: the Bond is per line and a line
-// is a page of the Pokédex, so it lives there, and "By Bond" orders the book by the lines you have played.
+// species' record and kit, and the line's stages, Bond bar and ladder (docs/design/ui-doctrine.md — the picture
+// on the grid, the paragraph one click away). The Bond is per line and a line is a page of the Pokédex, so it
+// lives here; "By Bond" orders the book by the lines you have played.
 
 const CATEGORY_LABEL: Record<AchievementDef['category'], string> = {
   'first-steps': 'First steps',
@@ -96,7 +95,7 @@ export function PcTerminal() {
       <Tabs.Content value="dex" className={styles.tabPanel}>
         <div className={styles.dexHead}>
           <p className={styles.lede} data-testid="dex-legend">
-            {met} of {species.length} met · {linesPlayed} of {linesTotal} lines played. Open one for its record, its kit and its line.
+            {met} of {species.length} met · {linesPlayed} of {linesTotal} lines played.
             <InfoDot tip={<Tip title="The Pokédex" body={`Every species of the Region. A silhouette is one you have not faced yet; the five pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A line gets better by being played: +${BOND.win} per fight won with it (+${BOND.lead} leading), +${BOND.evolution} per evolution, +${BOND.recruit} for a first recruit, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one — ranks at ${BOND_RANKS.join(' · ')}.`} />} />
           </p>
           <div className={styles.order} role="group" aria-label="Order">

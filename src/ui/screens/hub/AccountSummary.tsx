@@ -43,7 +43,7 @@ export function AccountSummary() {
           <InfoDot tip={<Tip title="Trainer XP" body="Every fight, recruit, evolution and Badge paid into your account, and a lost run pays by how far it got. XP is never spent: each level pays Tokens, and four of them open a shelf at the Poké Mart." footer="The Trainer Card in the Hub has the whole track." />} />
         </h2>
         <Tipped tip={trainerLevelTip(p.level, p.into, p.span, MAX_LEVEL)}>
-          <span className={styles.level} data-testid="summary-level">
+          <span className={styles.level}>
             {to > from ? (
               <>Lv {from} <span aria-hidden="true">→</span> <b>{to}</b></>
             ) : (
@@ -61,13 +61,13 @@ export function AccountSummary() {
         <span className={`${styles.toNext} tabular`}>{p.level >= MAX_LEVEL ? 'Max' : `${p.span - p.into} to Lv ${p.level + 1}`}</span>
         {ledger.tokens > 0 && (
           <Tipped tip={tokenTip(account.tokens, account.tokensEarned)}>
-            <span className={styles.tokens} data-testid="summary-tokens"><TokenIcon /> +{ledger.tokens}</span>
+            <span className={styles.tokens}><TokenIcon /> +{ledger.tokens}</span>
           </Tipped>
         )}
       </div>
 
       {lines.length > 0 && (
-        <ul className={styles.lines} data-testid="summary-lines">
+        <ul className={styles.lines}>
           {lines.map((l) => (
             <li key={l.key}>
               <span className={styles.glyph} aria-hidden="true">{l.glyph}</span>

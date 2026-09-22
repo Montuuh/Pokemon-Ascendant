@@ -39,12 +39,17 @@
 
   /* ---- Semantic accents (§1.2). On the LIGHT theme: fill/border/icon only, never text colour. ---- */
   --accent-action: #ffcb3d;
+  /* Ink for text sitting on --accent-action and --brand-* fills: the same dark ink on every theme. D5/D6. */
+  --ink-on-accent: #3a2e22;
+  --accent-action-deep: #d9a51d;
   --accent-positive: #54d98a;
   --accent-negative: #ff6b6b;
   --accent-warning: #ff9f45;
 
   /* ---- Friendly secondary accents ---- */
   --brand-red: #e84c4c;
+  /* White text on --brand-red is 3.77:1; a filled button needs the deeper red (5.06:1). D5. */
+  --brand-red-deep: #c93a3a;
   --brand-blue: #4fa3e3;
   --brand-cream: #fff1d6;
   --shield: #a8e6f0;

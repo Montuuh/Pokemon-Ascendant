@@ -1,8 +1,8 @@
 import { useState, type ReactNode } from 'react';
-import { IconArrowsShuffle, IconEye, IconEyeOff, IconFlag, IconHeartBroken, IconLock, IconPokeball, IconSkull, IconSwords, IconTargetArrow, IconTrophy, IconUsers, IconWand } from '@tabler/icons-react';
+import { IconArrowsShuffle, IconCrown, IconEye, IconEyeOff, IconFlag, IconHeartBroken, IconLock, IconPokeball, IconSwords, IconTargetArrow, IconTrophy, IconUsers, IconWand } from '@tabler/icons-react';
 import { Tabs } from 'radix-ui';
 import { getContent } from '@/content/registry';
-import { BOND_RANK_NAME, DEX_FAMILIAR, bondRank, hiddenAbilityOf, isThreeStageLine, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef } from '@/sim';
+import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, isThreeStageLine, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { spriteOf, portraitOf } from '@/ui/art';
@@ -17,8 +17,8 @@ import styles from './PcSheet.module.css';
 // is the numbers the account kept about this species — faced, knocked out, caught, what your own copies did.
 // *Kit* is what it fights with: the learnset, the tutor list, the abilities, the Mastery Moves of its line,
 // what it evolves into. *Line* is the evolution line and its Bond (§6.8): the stages, the bar, the ladder.
-// The Pokédex is the one book (2026-09-22 — it absorbed the Companions tab); the grid behind shows only
-// number, sprite, name and the line's rank pips, and everything else lives here.
+// The Pokédex is the one book; the grid behind shows only number, sprite, name and the line's rank pips,
+// and everything else lives here.
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -57,13 +57,15 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
           <h2 className={`${styles.heroName} display`}>{s.name}</h2>
           <div className={styles.heroMeta}>
             {s.types.map((t) => <TypeBadge key={t} type={t} size={24} defenderTypes={s.types} />)}
-            <span className={styles.heroChip}>{cap(s.rarity)}</span>
-            <span className={styles.heroChip}>{s.stage === 'basic' ? 'Basic' : s.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}</span>
+            <Tipped tip={<Tip title={`${cap(s.rarity)} species`} body={`Familiar after ${familiarAt} knock-out${familiarAt === 1 ? '' : 's'}. Catch ceiling with a Poké Ball at ~0 HP: ${Math.round(catchRateOf(s.id, content) * 100)} %.`} />} className={styles.heroChip}>{cap(s.rarity)}</Tipped>
+            <Tipped tip={<Tip title={s.stage === 'basic' ? 'Basic form' : s.stage === 'stage1' ? 'First evolution' : 'Final evolution'} body={s.evolvesTo.length ? `Evolves at Lv ${s.evolveLevel} — the Kit tab has where.` : 'This line goes no further.'} />} className={styles.heroChip}>{s.stage === 'basic' ? 'Basic' : s.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}</Tipped>
             <button type="button" className={styles.heroChip} onClick={() => setTab('line')} data-testid="dex-sheet-line">
               {content.species(line).name} line · {rank > 0 ? BOND_RANK_NAME[rank] : 'no Bond yet'}
             </button>
           </div>
-          <BondBar points={points} compact />
+          <Tipped tip={<Tip title={`${content.species(line).name} line — ${rank > 0 ? BOND_RANK_NAME[rank] : 'no Bond yet'}`} meta={[`${points} Bond`]} body={bondProgress(points).next === null ? 'Every rank open.' : `${bondProgress(points).next! - points} more Bond to ${BOND_RANK_NAME[rank + 1]}.`} footer={`Ranks at ${BOND_RANKS.join(' · ')}. The line tab has what each one opens.`} />}>
+            <BondBar points={points} compact />
+          </Tipped>
         </div>
       </div>
 
@@ -84,7 +86,7 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
                   ? <><b>Familiar.</b> Its hidden intents are shown from turn one, every fight.</>
                   : <><b>{Math.max(0, familiarAt - entry.defeats)}</b> more knock-out{familiarAt - entry.defeats === 1 ? '' : 's'} to Familiar — then its hidden intents show from turn one.</>}
               </span>
-              <InfoDot tip={<Tip title="Familiar" body="Knock a species out — wild or on a trainer's team, with any of your Pokémon — enough times and you know it: its hidden intents are shown from the first turn of every fight after. Catching it does not count." footer={`Ten knock-outs for a common species, five for an uncommon one, two for a rare one. ${s.name} is ${s.rarity}: ${familiarAt}.`} />} />
+              <InfoDot tip={<Tip title="Familiar" body="Knock a species out — wild or on a trainer's team, with any of your Pokémon — enough times and you know it: its hidden intents are shown from the first turn of every fight after. Catching it does not count." footer={`${DEX_FAMILIAR.common} knock-outs for a common species, ${DEX_FAMILIAR.uncommon} for an uncommon one, ${DEX_FAMILIAR.rare} for a rare one. ${s.name} is ${s.rarity}: ${familiarAt}.`} />} />
             </div>
           </Tabs.Content>
 
@@ -113,11 +115,11 @@ function Record({ entry, leadTurns }: { entry: ReturnType<typeof normalizeDexEnt
     { key: 'kos', icon: <IconTargetArrow size={18} />, label: 'KOs landed', value: entry.knockouts, tip: 'Enemies your copies finished — the blow, not the burn.' },
     { key: 'dmg', icon: <IconWand size={18} />, label: 'Damage dealt', value: entry.damageDealt, tip: 'Every point your copies dealt to an enemy.' },
     { key: 'faints', icon: <IconHeartBroken size={18} />, label: 'Fainted', value: entry.faints, tip: 'Times a copy of yours went down.' },
-    { key: 'lead', icon: <IconSkull size={18} />, label: 'Turns as Lead', value: leadTurns, tip: 'Turns a copy of yours spent in the Lead slot.' },
+    { key: 'lead', icon: <IconCrown size={18} />, label: 'Turns as Lead', value: leadTurns, tip: 'Turns a copy of yours spent in the Lead slot.' },
     { key: 'evo', icon: <IconArrowsShuffle size={18} />, label: 'Evolved', value: entry.evolutions, tip: 'Times a copy of yours evolved from this form.' },
   ];
   return (
-    <dl className={styles.record} data-testid="dex-sheet-record">
+    <dl className={styles.record}>
       {tiles.map((t) => (
         <Tipped key={t.key} tip={<Tip title={t.label} body={t.tip} />} className={`${styles.tile} ${t.value === 0 ? styles.tileZero : ''}`} data-testid={`dex-stat-${t.key}`}>
           <span className={styles.tileIcon} aria-hidden="true">{t.icon}</span>
@@ -144,7 +146,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
     return (
       <Tipped key={key} as="li" tip={moveDefTip(m)} className={`${styles.move} ${locked ? styles.moveLocked : ''}`}>
         <span className={`${styles.moveLv} tabular`}>{lv === null ? '—' : `Lv ${lv}`}</span>
-        <TypeBadge type={m.type} size={15} />
+        <TypeBadge type={m.type} size={18} />
         <span className={styles.moveName}>{m.name}</span>
         <span className={`${styles.moveStat} tabular`}>{m.apCost} AP{m.power > 0 ? ` · ${m.power}` : ''}</span>
       </Tipped>
@@ -166,12 +168,12 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
       )}
 
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Mastery Moves <InfoDot tip={<Tip title="Mastery Moves" body="A fifth card the line earns through its Bond: Lv1 at Companion, Lv2 at Deep Bond, Lv3 at Soulbound for a three-stage line. No TM or Move Manager can touch it." />} /></h3>
+        <h3 className={styles.sectionTitle}>Mastery Moves <InfoDot tip={<Tip title="Mastery Moves" body={`A fifth card the line earns through its Bond: Lv1 at ${BOND_RANK_NAME[1]}, Lv2 at ${BOND_RANK_NAME[4]}, Lv3 at ${BOND_RANK_NAME[5]} for a three-stage line. No TM or Move Manager can touch it.`} />} /></h3>
         <ul className={styles.moves}>
           {masteryMoves.slice(0, three ? 3 : 2).map((id, i) => {
             const tier = i + 1;
             const open = masteryTier >= tier;
-            if (!id) return <li key={`m${tier}`} className={`${styles.move} ${styles.moveLocked}`}><span className={styles.moveLv}>Lv{tier}</span><span className={styles.moveWide}>Not authored yet — v0.7</span></li>;
+            if (!id) return <li key={`m${tier}`} className={`${styles.move} ${styles.moveLocked}`}><span className={styles.moveLv}>Lv{tier}</span><span className={styles.moveWide}>Not written yet</span></li>;
             return moveRow(id, null, !open, `m${tier}`);
           })}
         </ul>
@@ -179,7 +181,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
       </section>
 
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Abilities <InfoDot tip={<Tip title="Abilities" body="The pool this form can carry. The first is granted at the first evolution; the Dojo swaps among the rest. The hidden one opens at Bond rank 3 (Veteran)." />} /></h3>
+        <h3 className={styles.sectionTitle}>Abilities <InfoDot tip={<Tip title="Abilities" body={`The pool this form can carry. The first is granted at the first evolution; the Dojo swaps among the rest. The hidden one opens at Bond rank 3 (${BOND_RANK_NAME[3]}).`} />} /></h3>
         <div className={styles.chips}>
           {abilities.map((id) => (
             <Tipped key={id} tip={abilityTip(id)} className={styles.chip}>{content.ability(id).name}</Tipped>
@@ -189,7 +191,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
               {rank >= 3 ? null : <IconLock size={13} />} {content.ability(hidden).name} <span className={styles.muted}>· hidden</span>
             </Tipped>
           ) : (
-            <span className={`${styles.chip} ${styles.chipLocked}`}><IconLock size={13} /> {(content.species(line).hiddenAbilityPending ?? 'Hidden ability').split(' — ')[0]} <span className={styles.muted}>· v0.7</span></span>
+            <span className={`${styles.chip} ${styles.chipLocked}`}><IconLock size={13} /> {(content.species(line).hiddenAbilityPending ?? 'Hidden ability').split(' — ')[0]} <span className={styles.muted}>· not yet</span></span>
           )}
         </div>
       </section>

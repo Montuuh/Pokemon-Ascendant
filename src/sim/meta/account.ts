@@ -123,11 +123,11 @@ export const SHELF_ORDER: readonly ShelfId[] = ['corner', 'starters', 'hub', 'di
 
 /** §8.3.5 — what each shelf sells and the level that opens it. The Corner is the floor: open from Level 1. */
 export const SHELVES: Record<ShelfId, { name: string; level: number; sells: string }> = {
-  corner: { name: "Trainer's Corner", level: 1, sells: 'Titles, avatars and frames for the Trainer Card — and a fourth Starting Relic offer.' },
+  corner: { name: "Trainer's Corner", level: 1, sells: 'Titles, avatars and frames for the card, and a fourth Starting Relic offer.' },
   starters: { name: 'Starters', level: 3, sells: 'Magikarp, Eevee and Pikachu, to start a run with.' },
-  hub: { name: 'Hub upgrades', level: 5, sells: 'A bigger Box, a second modifier slot, a second starter — conveniences, never power.' },
-  discoveries: { name: 'Discoveries', level: 8, sells: 'Any Tier-2 relic you have not discovered yet — the shortcut past a criterion you keep missing.' },
-  mastery: { name: 'Mastery lane', level: 10, sells: 'The Tier-3 relics: the ones that change how a run works rather than how hard it hits.' },
+  hub: { name: 'Hub upgrades', level: 5, sells: 'A bigger Box, a second modifier slot, a second starter. Never power.' },
+  discoveries: { name: 'Discoveries', level: 8, sells: 'Any Tier-2 relic you have not discovered yet.' },
+  mastery: { name: 'Mastery lane', level: 10, sells: 'The Tier-3 relics: they change how a run works, not how hard it hits.' },
 };
 
 /** §8.3.5 — what a level pays. Every level pays; the milestones pay more and are where a shelf tends to open. */
@@ -158,8 +158,8 @@ export const HUB_UPGRADE_LABEL: Record<HubUpgrade, { name: string; effect: strin
   'starting-relic-plus-one': { name: 'Curated Starting Relic +1', effect: 'A run start offers four Starting Relics instead of three.' },
   'expanded-box': { name: 'Expanded Box', effect: 'Box capacity 6 → 8 for every future run.' },
   'pokedex-insight': { name: 'Pokédex Insight', effect: 'The first fight against a species at Familiar tier reveals one intent free.' },
-  'trauma-salve-cache': { name: 'Trauma Salve Cache', effect: 'The first City shop always stocks a Trauma Salve.', pending: 'Cities arrive in v0.7' },
-  'apex-reveal': { name: 'Apex Pokémon Reveal', effect: 'The Victory Road Apex species is shown on entering Region 3.', pending: 'Victory Road arrives in v0.8' },
+  'trauma-salve-cache': { name: 'Trauma Salve Cache', effect: 'The first City shop always stocks a Trauma Salve.', pending: 'there are no Cities yet' },
+  'apex-reveal': { name: 'Apex Pokémon Reveal', effect: 'The Victory Road Apex species is shown on entering Region 3.', pending: 'there is no Victory Road yet' },
   'modifier-slot-plus-one': { name: 'Difficulty Modifier Slot +1', effect: 'Stack two difficulty modifiers per run instead of one.' },
   'twin-run': { name: 'Second Starter Slot (Twin Run)', effect: 'Choose two starters; the Box starts one larger.' },
 };

@@ -113,7 +113,7 @@ export function DojoScreen() {
                       onClick={() => act({ type: 'teach-move', uid, moveId: id })}
                       data-testid={`tutor-${id}`}
                     >
-                      <TypeBadge type={move.type} size={15} />
+                      <TypeBadge type={move.type} size={18} />
                       <span className={styles.offerBody}>
                         <span className={`${styles.offerName} display`}>{move.name}</span>
                         <span className={styles.offerMeta}>

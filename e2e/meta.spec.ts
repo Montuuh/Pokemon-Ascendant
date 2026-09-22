@@ -59,7 +59,9 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-line', 'squirtle');
     await expect(page.getByTestId('line-sheet-ladder')).toContainText('Aqua Tail');
     await expect(page.getByTestId('line-sheet-ladder')).toContainText('Shiny');
-    await expect(page.getByTestId('line-sheet')).toContainText('Bond grows by playing the line');
+    // How Bond grows is a door, not a paragraph: the InfoDot by the Bond heading carries it.
+    await page.getByTestId('line-sheet').getByRole('button', { name: 'More about this' }).first().hover();
+    await expect(page.getByTestId('tooltip')).toContainText('Play the line');
     // A stage opens that species' sheet on the same tab; Back returns.
     await page.getByTestId('line-stage-wartortle').click();
     await expect(page.getByTestId('dex-sheet')).toHaveAttribute('data-species', 'wartortle');
@@ -175,12 +177,12 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('mart-tab-mastery')).toContainText('Lv 10');
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
     await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-title-veteran')).toContainText('Not enough Tokens');
+    await expect(page.getByTestId('mart-price-title-veteran')).toHaveAttribute('aria-disabled', 'true');
     await page.getByTestId('mart-tab-mastery').click();
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'locked');
     await expect(page.getByTestId('mart-banner')).toContainText('opens at Trainer Level 10');
     await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-sages-tome')).toContainText('Level 10');
+    await expect(page.getByTestId('mart-price-sages-tome')).toHaveAttribute('aria-label', /Opens at Level 10/);
     await page.screenshot({ path: 'playtest/hub-mart-locked.png' });
 
     // §8.4.4 — seven Tokens at Level 1 buy a title, an avatar and a frame at the Corner; the Trainer Card
@@ -233,7 +235,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('mart-notice')).toContainText('Eevee can start your next run');
     await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '2');
     // Magikarp at four is now unaffordable, and the shelf says so without hiding it; Pikachu waits on its kit.
-    await expect(page.getByTestId('mart-magikarp')).toContainText('Not enough Tokens');
+    await expect(page.getByTestId('mart-price-magikarp')).toHaveAttribute('aria-label', /Not enough Tokens/);
     await expect(page.getByTestId('mart-magikarp')).toHaveAttribute('data-state', 'locked');
     await expect(page.getByTestId('mart-pikachu')).toContainText('Not sold yet');
     await page.screenshot({ path: 'playtest/hub-mart-starters.png' });

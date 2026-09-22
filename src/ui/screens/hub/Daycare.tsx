@@ -52,7 +52,7 @@ export function Daycare() {
               <Tip
                 title={name}
                 meta={[isDefault ? 'From run 1' : soulbound ? 'Soulbound' : unlocked ? 'Bought' : `${price} Tokens`]}
-                body={state === 'ready' ? 'Available on the starter screen.' : state === 'waiting' ? 'Yours. Its move kit is authored for v0.7, so it is not on the starter screen yet.' : shelfIsOpen ? `Sold at the Poké Mart's Starters shelf for ${price} Tokens.` : `Sold at the Poké Mart's Starters shelf, which opens at Trainer Level ${SHELVES.starters.level}.`}
+                body={state === 'ready' ? 'Available on the starter screen.' : state === 'waiting' ? 'Yours. Its move kit is not written yet, so it is not on the starter screen yet.' : shelfIsOpen ? `Sold at the Poké Mart's Starters shelf for ${price} Tokens.` : `Sold at the Poké Mart's Starters shelf, which opens at Trainer Level ${SHELVES.starters.level}.`}
               />
             );
             return (
@@ -60,7 +60,7 @@ export function Daycare() {
                 <Tipped tip={tip} className={styles.starterInner}>
                   {shipped ? <MonIcon speciesId={id} size={44} /> : <span className={styles.starterBlank} aria-hidden="true">?</span>}
                   <span className={styles.starterName}>{name}</span>
-                  <span className={styles.muted}>{state === 'ready' ? 'Ready' : state === 'waiting' ? 'Kit in v0.7' : shelfIsOpen ? <><TokenIcon size={13} /> {price}</> : `Mart · Lv ${SHELVES.starters.level}`}</span>
+                  <span className={styles.muted}>{state === 'ready' ? 'Ready' : state === 'waiting' ? 'Kit not yet' : shelfIsOpen ? <><TokenIcon size={13} /> {price}</> : `Mart · Lv ${SHELVES.starters.level}`}</span>
                 </Tipped>
               </li>
             );
@@ -81,8 +81,7 @@ export function Daycare() {
               <li key={m.id} className={`${styles.modRow} ${styles[`mod_${state}`]}`} data-testid={`daycare-mod-${m.id}`} data-state={state}>
                 <Tipped tip={<Tip title={m.name} meta={[`×${m.xpMultiplier.toFixed(2)} XP`, m.unlock]} body={m.effect} footer={m.pending ? `Not yet: ${m.pending}.` : open ? 'Open.' : `Opens at Trainer Level ${m.unlockLevel} — you are ${level}.`} />} className={styles.modInner}>
                   <span className={styles.modName}>{m.name}</span>
-                  <span className={styles.modEffect}>{m.effect}</span>
-                  <span className={`${styles.muted} tabular`}>{state === 'open' ? `×${m.xpMultiplier.toFixed(2)}` : state === 'pending' ? 'Later' : `Lv ${m.unlockLevel}`}</span>
+                  <span className={`${styles.modState} tabular`} data-state={state}>{state === 'open' ? `×${m.xpMultiplier.toFixed(2)} XP` : state === 'pending' ? 'Not yet' : `Lv ${m.unlockLevel}`}</span>
                 </Tipped>
               </li>
             );

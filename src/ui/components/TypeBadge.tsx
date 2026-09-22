@@ -4,7 +4,7 @@ import { statusTip, typeTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
 import styles from './TypeBadge.module.css';
 
-// Per §9.4 — type identity is colour + glyph (shape carries meaning for colour-blind players, §9.6).
+// Per §9.4 / §9.6 — type identity is colour + a word, never colour alone.
 // The type badge is the games' own pixel label — the "FIRE" / "WATER" box of FireRed/LeafGreen, 32×12, fetched
 // by `npm run art:types` — drawn at an integer or half multiple of its size with nearest-neighbour scaling, so it
 // sits with the pixel-art sprites rather than beside them. The label carries its colour and its word, which is

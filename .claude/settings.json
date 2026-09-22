@@ -8,6 +8,8 @@
       "Bash(npm run test*)",
       "Bash(npm run shot*)",
       "Bash(npm run e2e*)",
+      "Bash(npm run ui:audit*)",
+      "Bash(node .claude/hooks/ui-clear.mjs)",
       "Bash(npx vitest*)",
       "Bash(npx tsc*)",
       "Bash(git status*)",
@@ -22,6 +24,18 @@
       {
         "matcher": "",
         "hooks": [{ "type": "command", "command": "bash .claude/hooks/session-start.sh" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/ui-change.mjs" }]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/ui-stop.mjs" }]
       }
     ]
   }

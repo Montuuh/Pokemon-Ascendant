@@ -240,7 +240,7 @@
   transform: translateX(-50%);
   z-index: var(--z-toast);
   background: var(--accent-action);
-  color: #3a2e22;
+  color: var(--ink-on-accent);
   border-radius: var(--radius-pill);
   padding: 6px 14px;
   font-size: var(--type-caption);
@@ -311,18 +311,18 @@
   font-size: 11px;
 }
 .swapInfo {
-  color: var(--ink-muted);
+  color: var(--ink-secondary);
   font-weight: 600;
   margin-left: var(--sp-2);
 }
 .endTurn {
   background: var(--accent-action);
-  border: 2px solid #d9a51d;
+  border: 2px solid var(--accent-action-deep);
   border-radius: var(--radius-pill);
   padding: var(--sp-2) var(--sp-6);
   font-size: var(--type-h3);
-  color: #3a2e22;
-  box-shadow: 0 4px 0 #d9a51d;
+  color: var(--ink-on-accent);
+  box-shadow: 0 4px 0 var(--accent-action-deep);
   transition: transform var(--motion-fast) var(--ease-spring);
 }
 .endTurn:hover:not(:disabled) {

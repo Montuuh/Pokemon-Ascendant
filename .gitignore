@@ -16,3 +16,8 @@ playwright-report/
 .DS_Store
 Thumbs.db
 *.log
+
+# UI-review queue and stamps (hooks)
+.claude/state/
+# UI audit output (regenerate with `npm run ui:audit`)
+playtest/ui-audit/

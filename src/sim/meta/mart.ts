@@ -104,7 +104,7 @@ export function martPending(item: MartItem, content: ContentRegistry): string | 
   if (item.kind === 'hub') return HUB_UPGRADE_LABEL[item.id]?.pending ?? null;
   if (item.kind === 'relic') return relicRow(item.id, content)?.pending ?? null;
   // §8.5.2 — Pikachu is on the shelf before its kit ships; it is priced, and not sold, until the kit is there.
-  if (item.kind === 'starter' && !content.hasSpecies(item.id)) return 'its move kit arrives in v0.7';
+  if (item.kind === 'starter' && !content.hasSpecies(item.id)) return 'its move kit is not written yet';
   return null;
 }
 

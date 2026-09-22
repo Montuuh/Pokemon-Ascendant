@@ -51,7 +51,8 @@ Tiebreaker: when Pokémon faithfulness conflicts with pacing or a pillar, pacing
 
 1. `npm run check` — must be green; paste failures, never summarise them away.
 2. UI change → `npm run shot` then **Read** the PNG(s) in `playtest/`, or open the dev server in the browser tool and screenshot. Hover/drag/animation: Playwright actions or the browser tool, then screenshot.
-3. State questions → `window.__ascendant.dump()` in the browser console / `javascript_tool`.
+3. UI change → **the UI review** (`.claude/skills/ui-review`): `npm run ui:audit` measures the changed screens, the `ui-reviewer` agent judges them against `docs/design/ui-doctrine.md`, you fix, then `node .claude/hooks/ui-clear.mjs`. A hook queues every edit under `src/ui`/`src/app` and the Stop hook will not end the turn while the queue is unreviewed (defer on purpose: `.claude/state/ui-skip`).
+4. State questions → `window.__ascendant.dump()` in the browser console / `javascript_tool`.
 Never claim "tests pass" or "looks right" without the output or the image in this session.
 
 ## Design canon lives in `docs/design/` (Notion is retired)
@@ -74,7 +75,7 @@ state, and any place the build still disagrees with canon.
 - **Shipping a version is two edits, nowhere else:** bump `"version"` in `package.json` (the menu footnote and the
   About screen read it at build time) and mark the row in `docs/roadmap.md`'s summary table (`✅ YYYY-MM-DD`; the
   About screen parses that table). The README's status line is the one manual line left.
-- Subagents (`.claude/agents/`): `designer` for pillar/balance review, `qa` for edge-case hunts. Use them for review, not for writing code in parallel on the same files.
+- Subagents (`.claude/agents/`): `designer` for pillar/balance review, `qa` for edge-case hunts, `ui-reviewer` for every visual change (doctrine in `docs/design/ui-doctrine.md`). Use them for review, not for writing code in parallel on the same files.
 
 ## Art
 

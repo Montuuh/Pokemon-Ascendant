@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { IconArrowLeft, IconX } from '@tabler/icons-react';
 import { Dialog } from 'radix-ui';
 import type { AccountState } from '@/sim';
@@ -13,11 +14,24 @@ import styles from './PcSheet.module.css';
 export function PcSheet({ sheet, account }: { sheet: PcSheetState; account: AccountState }) {
   const content = getContent();
   const page = sheet.stack[sheet.stack.length - 1];
+  // The card the sheet was opened from, so closing hands focus back to it: a keyboard player keeps their
+  // place in a grid of forty-seven (D8). Remembered here because the stack is empty by the time we close.
+  const openedFrom = useRef<string | null>(null);
+  useEffect(() => {
+    if (sheet.stack[0]) openedFrom.current = sheet.stack[0].id;
+  }, [sheet.stack]);
   return (
     <Dialog.Root open={!!page} onOpenChange={(o) => { if (!o) sheet.close(); }}>
       <Dialog.Portal>
         <Dialog.Overlay className={styles.overlay} />
-        <Dialog.Content className={styles.content} aria-describedby={undefined}>
+        <Dialog.Content
+          className={styles.content}
+          aria-describedby={undefined}
+          onCloseAutoFocus={(e) => {
+            const card = openedFrom.current ? document.querySelector<HTMLElement>(`[data-testid="dex-${openedFrom.current}"]`) : null;
+            if (card) { e.preventDefault(); card.focus(); }
+          }}
+        >
           {page && (
             <div className={styles.sheet} data-testid="pc-sheet">
               <Dialog.Title style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>{content.species(page.id).name}</Dialog.Title>

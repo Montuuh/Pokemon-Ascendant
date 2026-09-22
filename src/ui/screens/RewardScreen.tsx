@@ -63,7 +63,7 @@ export function RewardScreen() {
               </h2>
               <span className={styles.types}>
                 {caughtSpecies.types.map((t) => (
-                  <TypeBadge key={t} type={t} size={15} />
+                  <TypeBadge key={t} type={t} size={18} />
                 ))}
               </span>
               <p className={styles.catchNote}>

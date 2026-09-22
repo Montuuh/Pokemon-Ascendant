@@ -66,7 +66,9 @@ recargaba el dominio y el puente se congelaba. Aquí Claude tiene ojos y manos n
 | skill `design-change` | protocolo de cambio de canon (opciones → decides → se registra) |
 | skill `pillar-check` / `balance-check` | validación rápida / numérica |
 | skill `port-from-unity` | portar un sistema o contenido desde `../ProjectAscendant` |
+| skill `ui-review` | tras cada cambio visual: `npm run ui:audit` mide, el agente juzga, se arregla, se limpia la cola |
 | agente `designer` | revisión de pilares, feel, informes de playtest |
+| agente `ui-reviewer` | UI/UX: texto mínimo, puertas (tooltips/fichas), widgets sobre grids, contraste, basura — doctrina en `docs/design/ui-doctrine.md` |
 | agente `qa` | casos límite, tests que fallan, informes de bug |
 
 No hay diez agentes ni cinco puertas de aprobación: con una persona y una IA sobra. Los agentes son revisores,

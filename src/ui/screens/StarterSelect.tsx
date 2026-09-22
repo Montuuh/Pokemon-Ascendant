@@ -302,7 +302,7 @@ export function StarterSelect() {
               <span className={styles.chips}>
                 {chosen.types.map((t) => (
                   <span key={t} className={styles.typeChip}>
-                    <TypeBadge type={t} size={15} />
+                    <TypeBadge type={t} size={18} />
                     {t}
                   </span>
                 ))}
@@ -333,7 +333,7 @@ export function StarterSelect() {
                 const move = content.move(m);
                 return (
                   <li key={m} className={styles.moveChip}>
-                    <TypeBadge type={move.type} size={15} />
+                    <TypeBadge type={move.type} size={18} />
                     <span>{move.name}</span>
                     <span className={styles.moveCost}>{move.apCost} AP</span>
                   </li>

@@ -7,7 +7,7 @@ import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { Tipped } from '@/ui/tooltip';
 import { trackRewardTip } from '@/ui/tips';
 import { TokenIcon } from './TokenIcon';
-import { describeReward, trackRewardLabel } from './trackText';
+import { trackRewardLabel } from './trackText';
 import styles from './RewardTrack.module.css';
 
 // §8.3.5 — the reward track as a road: twenty-nine stops on a line, each drawn as what it pays, the next one
@@ -98,7 +98,7 @@ export function RewardTrack({ account }: { account: AccountState }) {
             {selState === 'claimed' ? ' · claimed' : selState === 'next' ? ' · next' : ''}
           </span>
           <span className={`${styles.detailTitle} display`}>{trackRewardLabel(sel)}</span>
-          <span className={styles.detailWhy}>{describeReward(sel)}</span>
+          {sel.opens && <span className={styles.detailWhy}>{SHELVES[sel.opens].sells}</span>}
         </span>
         <span className={`${styles.detailXp} tabular`}>
           {selState === 'claimed' ? 'Yours' : xpToSel > 0 ? `${xpToSel} XP away` : 'Now'}

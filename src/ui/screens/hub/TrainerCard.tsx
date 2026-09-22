@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
-import { IconBook2, IconBolt, IconEgg, IconMedal, IconSwords, IconTrophy, IconUsers } from '@tabler/icons-react';
+import { IconBook2, IconBolt, IconCheck, IconEgg, IconMedal, IconSwords, IconTrophy, IconUsers } from '@tabler/icons-react';
 import NumberFlow from '@number-flow/react';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, HUB_UPGRADE_LABEL, MART_PRICE, MAX_LEVEL, SHELVES, bondRank, cosmeticById, levelProgress, martShelf, type HubUpgrade } from '@/sim';
+import { ACHIEVEMENTS, HUB_UPGRADE_LABEL, MART_PRICE, MAX_LEVEL, SHELVES, XP, bondRank, cosmeticById, martShelf, trackTokensBetween, type HubUpgrade } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { trainerSprite } from '@/ui/art';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { hubUpgradeTip, tokenTip } from '@/ui/tips';
+import { hubUpgradeTip } from '@/ui/tips';
 import { FRAME_CLASS } from './frames';
 import { LevelRing } from './LevelRing';
 import { RewardTrack } from './RewardTrack';
@@ -24,7 +24,6 @@ export function TrainerCard() {
   const account = useAccountStore((s) => s.account);
   const content = getContent();
   const animate = useMotionPref();
-  const p = levelProgress(account.xp);
   const stats = account.stats;
 
   const favourite = useMemo(() => {
@@ -41,14 +40,15 @@ export function TrainerCard() {
   const frame = account.wearing.frame ? FRAME_CLASS[account.wearing.frame] : undefined;
   const medals = account.achievements.unlocked.length;
 
-  const facts: { icon: React.ReactNode; label: string; value: React.ReactNode }[] = [
-    { icon: <IconTrophy size={18} />, label: 'Runs won · lost', value: `${stats.wins} · ${stats.losses}` },
-    { icon: <IconSwords size={18} />, label: 'Fights won', value: <NumberFlow value={stats.combatsWon} animated={animate} /> },
-    { icon: <IconUsers size={18} />, label: 'Recruited · evolved', value: `${stats.recruits} · ${stats.evolutions}` },
-    { icon: <IconBook2 size={18} />, label: 'Pokédex', value: `${dexKnown} / ${dexTotal}` },
-    { icon: <IconMedal size={18} />, label: 'Medals', value: `${medals} / ${ACHIEVEMENTS.length}` },
-    { icon: <IconEgg size={18} />, label: 'Soulbound lines', value: String(mastered) },
-    { icon: <IconBolt size={18} />, label: 'Hardest win', value: stats.hardestWin > 0 ? `${stats.hardestWin} modifier${stats.hardestWin === 1 ? '' : 's'}` : stats.wins > 0 ? 'Baseline' : '—' },
+  // §8.4.3 — the record. Every tile has a door (D2): the label is short, the bubble says what counts.
+  const facts: { icon: React.ReactNode; label: string; value: React.ReactNode; tip: string }[] = [
+    { icon: <IconTrophy size={18} />, label: 'Runs won · lost', value: `${stats.wins} · ${stats.losses}`, tip: 'Runs that reached the end, and runs that did not.' },
+    { icon: <IconSwords size={18} />, label: 'Fights won', value: <NumberFlow value={stats.combatsWon} animated={animate} />, tip: 'Every fight won, wild or trainer, across every run.' },
+    { icon: <IconUsers size={18} />, label: 'Recruited · evolved', value: `${stats.recruits} · ${stats.evolutions}`, tip: 'Pokémon that joined a Box of yours, and evolutions you chose.' },
+    { icon: <IconBook2 size={18} />, label: 'Pokédex', value: `${dexKnown} / ${dexTotal}`, tip: 'Species you know: their hidden intents show from turn one.' },
+    { icon: <IconMedal size={18} />, label: 'Medals', value: `${medals} / ${ACHIEVEMENTS.length}`, tip: 'The medal case in the PC Terminal.' },
+    { icon: <IconEgg size={18} />, label: 'Soulbound lines', value: String(mastered), tip: 'Lines at Bond rank 5 — every unlock open, and the line can start a run.' },
+    { icon: <IconBolt size={18} />, label: 'Hardest win', value: stats.hardestWin > 0 ? `${stats.hardestWin} modifier${stats.hardestWin === 1 ? '' : 's'}` : stats.wins > 0 ? 'Baseline' : '—', tip: 'The most difficulty modifiers a won run carried.' },
   ];
 
   return (
@@ -61,25 +61,15 @@ export function TrainerCard() {
               {avatar?.sprite && <img src={trainerSprite(avatar.sprite)} alt={avatar.name} className={styles.avatar} data-testid="card-avatar" />}
               Trainer
               {title && <span className={styles.titleRibbon} data-testid="card-title">{title.name}</span>}
+              <InfoDot tip={<Tip title="Trainer XP and Tokens" body={`XP is never spent: it moves the level, and every level pays Tokens and, four times, opens a shelf at the Poké Mart. A fight pays ${XP.combat}, a first recruit ${XP.recruit}, an evolution ${XP.evolution}, a Badge ${XP.gym}; a lost run pays by how far it got. Tokens also come from Gold and Platinum medals, and buy everything the Mart sells.`} footer={`${account.xp} lifetime XP · ${account.tokensEarned} Tokens earned`} />} />
             </h2>
-            <Tipped tip={tokenTip(account.tokens, account.tokensEarned)}>
-              <span className={styles.tokens} data-testid="trainer-tokens">
-                <TokenIcon /> <b className="tabular"><NumberFlow value={account.tokens} animated={animate} /></b> Tokens
-              </span>
-            </Tipped>
           </div>
-          <p className={styles.headLede}>
-            {p.level >= MAX_LEVEL
-              ? 'Every reward on the track is yours.'
-              : <><b className="tabular">{p.span - p.into} XP</b> to Level {p.level + 1}. Every fight pays 5, a recruit 10, an evolution 15, a Badge 50 — and a lost run pays by how far it got.</>}
-            <InfoDot tip={<Tip title="Trainer XP and Tokens" body="XP is never spent: it only moves the level, and every level pays Tokens and, four times, opens a shelf at the Poké Mart. Tokens are the other currency — from every level and from Gold and Platinum medals — and buy everything the Mart sells." footer={`${account.xp} lifetime XP · ${account.tokensEarned} Tokens earned`} />} />
-          </p>
           <dl className={styles.facts}>
             {facts.map((f) => (
-              <div key={f.label} className={styles.fact}>
+              <Tipped key={f.label} tip={<Tip title={f.label} body={f.tip} />} className={styles.fact}>
                 <dt><span className={styles.factIcon} aria-hidden="true">{f.icon}</span>{f.label}</dt>
                 <dd className="tabular">{f.value}</dd>
-              </div>
+              </Tipped>
             ))}
             <div className={`${styles.fact} ${styles.factWide}`}>
               <dt><span className={styles.factIcon} aria-hidden="true"><IconUsers size={18} /></span>Favourite Lead</dt>
@@ -98,7 +88,7 @@ export function TrainerCard() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>
           The road ahead
-          <InfoDot tip={<Tip title="The reward track" body="Every Trainer Level pays Tokens the moment it is reached — two, more at every fifth — and the storefront stops open a shelf at the Poké Mart: Starters at 3, Hub upgrades at 5, Discoveries at 8, the Mastery lane at 10. Click a stop to read it." footer="92 Tokens by Level 30; the cap is 30." />} />
+          <InfoDot tip={<Tip title="The reward track" body={`Every Trainer Level pays Tokens the moment it is reached — two, more at every fifth — and the storefront stops open a shelf at the Poké Mart: Starters at ${SHELVES.starters.level}, Hub upgrades at ${SHELVES.hub.level}, Discoveries at ${SHELVES.discoveries.level}, the Mastery lane at ${SHELVES.mastery.level}. Click a stop to read it.`} footer={`${trackTokensBetween(1, MAX_LEVEL)} Tokens by Level ${MAX_LEVEL}.`} />} />
         </h2>
         <RewardTrack account={account} />
       </section>
@@ -116,7 +106,7 @@ export function TrainerCard() {
               <li key={u}>
                 <Tipped tip={hubUpgradeTip(row.name, row.effect, MART_PRICE.hub[u], SHELVES[martShelf({ kind: 'hub', id: u }, content) ?? 'hub'].level, got, row.pending)}>
                   <span className={`${styles.chip} ${got ? (row.pending ? styles.chipWaiting : styles.chipOn) : ''}`} data-testid={`hub-upgrade-${u}`}>
-                    {got && !row.pending && <span className={styles.chipTick} aria-hidden="true">✓</span>}
+                    {got && !row.pending && <span className={styles.chipTick} aria-hidden="true"><IconCheck size={13} stroke={3} /></span>}
                     {row.name} <span className={styles.muted}>· {got ? 'Yours' : <><TokenIcon size={13} /> {MART_PRICE.hub[u]}</>}</span>
                   </span>
                 </Tipped>

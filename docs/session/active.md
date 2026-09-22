@@ -5,8 +5,7 @@
 **Sprint goal:** the pre-v0.7 close-out is done. 2026-09-21: the Hub redrawn (v0.6.1); **Bond** (§6.8); **catching
 as a shown roll** (§2.6.4); **running with a toll** (§3.1.2) (v0.6.2); **the Poké Mart as the shop of the pass**
 (v0.6.3). 2026-09-22: **the PC Terminal as pictures and sheets** (v0.6.4), then **one Pokédex** (v0.6.5 — the
-Companions tab folded in). Open with the user: the type-icon set (the web uses the official-glyph set, same as
-Unity's final; the `_old` set was the minimal one) — awaiting confirmation.
+Companions tab folded in). Type badges are the games' own FireRed/LeafGreen pixel labels (`npm run art:types`).
 **Shipped in v0.6.4–v0.6.5 — the PC Terminal (§8.9.1, §8.9.2):**
 - Three tabs: Pokédex · Medals · Discoveries. The Pokédex is a card grid (number · sprite · name · type glyphs ·
   five pips for the line's Bond rank; silhouettes for unfaced species; "By number / By Bond" order). Every card
@@ -35,6 +34,9 @@ Unity's final; the `_old` set was the minimal one) — awaiting confirmation.
   stops at 3/5/8/10 (`track-N[data-opens]`); Daycare prices unbought starters; TrainerCard chips show prices.
 **Next action:** v0.7 — *Regions 2 & 3* (see `docs/roadmap.md`): Pikachu's kit, Evolution Items, the intent
 queue, Greater Threats, Cities/Trauma Salve Cache, the 6 pending hidden abilities, unshipped Mastery moves.
+**UI review loop (2026-09-22):** `docs/design/ui-doctrine.md` (D1–D10) · `scripts/ui-audit.mjs` (`npm run ui:audit`,
+needs :5173) · agent `ui-reviewer` · skill `ui-review` · hooks: PostToolUse queues `src/ui|app` edits in
+`.claude/state/ui-pending.txt`, Stop blocks once while unreviewed, `ui-clear.mjs` stamps. Defer: `.claude/state/ui-skip`.
 **Blocked on:** nothing.
 **Last commit:** see `git log -1` — v0.6.5.
 **Test status:** `npm run check` green — 393 Vitest, typecheck, lint, § (361) and catalogue guards. Playwright

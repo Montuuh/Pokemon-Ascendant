@@ -144,7 +144,6 @@ function Shelf({ id, account, notice, onBuy, onWear }: {
   const open = shelfOpen(account, id);
   const level = levelFor(account.xp);
   const items = shelfItems(id, content);
-  const owned = items.filter((i) => martOwned(account, i, content)).length;
   const xpToOpen = Math.max(0, xpForLevel(def.level) - account.xp);
   const pctToOpen = def.level <= 1 ? 100 : Math.min(100, Math.round((account.xp / xpForLevel(def.level)) * 100));
 
@@ -154,16 +153,16 @@ function Shelf({ id, account, notice, onBuy, onWear }: {
         <span className={styles.martBannerIcon} aria-hidden="true">{open ? <IconShoppingCart size={26} /> : <IconLock size={26} />}</span>
         <span className={styles.martBannerBody}>
           <span className={`${styles.martBannerTitle} display`}>
-            {open ? `${def.name} · ${owned} of ${items.length} yours` : `${def.name} · opens at Trainer Level ${def.level}`}
+            {open ? def.name : `${def.name} · opens at Trainer Level ${def.level}`}
           </span>
-          <span className={styles.martBannerText}>
-            {def.sells}
-            {!open && <> You are Level {level} — <b className="tabular">{xpToOpen} XP</b> to go. Priced already; Tokens keep until then.</>}
-          </span>
+          <span className={styles.martBannerText}>{def.sells}</span>
           {!open && (
-            <Progress.Root className={styles.martUnlockBar} value={pctToOpen} aria-label={`${pctToOpen}% of the way to Level ${def.level}`}>
-              <Progress.Indicator className={styles.martUnlockFill} style={{ width: `${pctToOpen}%` }} />
-            </Progress.Root>
+            <Tipped tip={<Tip title={`Level ${def.level}`} body={`You are Level ${level}. The shelf is priced already; Tokens keep until it opens.`} footer={`${xpToOpen} XP to go.`} />} className={styles.martUnlockRow}>
+              <Progress.Root className={styles.martUnlockBar} value={pctToOpen} aria-label={`${pctToOpen}% of the way to Level ${def.level}`}>
+                <Progress.Indicator className={styles.martUnlockFill} style={{ width: `${pctToOpen}%` }} />
+              </Progress.Root>
+              <span className={`${styles.martUnlockText} tabular`}>{xpToOpen} XP</span>
+            </Tipped>
           )}
         </span>
       </div>
@@ -174,7 +173,7 @@ function Shelf({ id, account, notice, onBuy, onWear }: {
         </p>
       )}
 
-      <ul className={styles.shelf} data-testid="mart-shelf">
+      <ul className={styles.shelf}>
         {items.map((item) => (
           <MartCard key={item.id} item={item} account={account} open={open} onBuy={() => onBuy(item)} onWear={onWear} />
         ))}
@@ -197,7 +196,8 @@ function MartCard({ item, account, open, onBuy, onWear }: {
   const affordable = account.tokens >= price;
   const canBuy = open && !owned && !pending && affordable;
   const shelfLevel = SHELVES[martShelf(item, content) ?? 'corner'].level;
-  const reason = owned ? null : pending ? 'Not yet' : !open ? `Level ${shelfLevel}` : !affordable ? 'Not enough Tokens' : null;
+  // The reason a Buy is greyed rides in its name and its bubble (D4); the banner and the wallet already say it.
+  const reason = owned ? null : pending ? 'Not yet' : !open ? `Opens at Level ${shelfLevel}` : !affordable ? 'Not enough Tokens' : null;
 
   // What the card is, by kind: face, name, one line, tooltip, and — for a cosmetic — whether it is worn.
   let face: ReactNode;
@@ -247,7 +247,7 @@ function MartCard({ item, account, open, onBuy, onWear }: {
       desc = (
         <>
           {r.description}
-          {prog && !owned && <span className={styles.shelfAlt}> Or discover it: {prog.text} <span className="tabular">({prog.have} / {prog.goal})</span>.</span>}
+          {prog && !owned && <span className={styles.shelfProgress}><span className="tabular">{prog.have} / {prog.goal}</span> to discover</span>}
         </>
       );
       face = <img src={itemIcon(r.id)} alt="" width={40} height={40} className={styles.shelfIcon} onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }} />;
@@ -284,7 +284,6 @@ function MartCard({ item, account, open, onBuy, onWear }: {
             <span className={`${styles.buyPrice} tabular`}><TokenIcon /> {price}</span>
           </button>
         )}
-        {!owned && reason && <span className={styles.shelfReason}>{reason}</span>}
       </span>
     </li>
   );

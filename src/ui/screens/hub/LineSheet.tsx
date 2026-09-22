@@ -34,8 +34,8 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
   const hidden = hiddenAbilityOf(line, content);
   const cols = stagesOf(line);
 
-  const moveName = (id: string | null | undefined) => (id ? content.move(id).name : 'not authored yet (v0.7)');
-  const hiddenName = hidden ? content.ability(hidden).name : `${(base.hiddenAbilityPending ?? 'Hidden ability').split(' — ')[0]} (v0.7)`;
+  const moveName = (id: string | null | undefined) => (id ? content.move(id).name : 'not written yet');
+  const hiddenName = hidden ? content.ability(hidden).name : `${(base.hiddenAbilityPending ?? 'Hidden ability').split(' — ')[0]} (not yet)`;
   // §6.8.2 — the ladder, with this line's own names on it.
   const rungs: { rank: 1 | 2 | 3 | 4 | 5; on: boolean; unlock: string }[] = [
     { rank: 1, on: u.mastery >= 1, unlock: `Mastery Move Lv1 — ${moveName(masteryMoves[0])}, a fifth card` },
@@ -51,7 +51,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
     <div data-testid="line-sheet" data-line={line} data-rank={rank}>
       <div className={styles.embedded}>
         <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>Stages <span className={styles.muted}>— open one for its Pokédex sheet</span></h3>
+          <h3 className={styles.sectionTitle}>Stages</h3>
           <div className={styles.stages} data-testid="line-sheet-stages">
             {cols.map((col, i) => (
               <div key={i} style={{ display: 'contents' }}>
@@ -83,7 +83,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
           <div className={styles.bondBlock} data-testid="line-sheet-bond">
             <BondBar points={points} />
             <span className={styles.bondMeta}>
-              <span className={styles.bondRankName}>{p.next === null ? 'Every rank open' : `${p.next - points} to ${BOND_RANK_NAME[rank + 1]}`}</span>
+              <span className={styles.bondRankName}>{p.next === null ? 'Every rank open' : `Next: ${BOND_RANK_NAME[rank + 1]}`}</span>
               {u.starter && <span className={`${styles.heroChip} ${styles.chipOn}`}><IconCheck size={13} stroke={3} /> Can start a run</span>}
             </span>
           </div>
@@ -103,9 +103,6 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
               </li>
             ))}
           </ol>
-          <p className={styles.how}>
-            Bond grows by playing the line: +{BOND.win} per fight won with it (+{BOND.lead} leading), +{BOND.evolution} per evolution, +{BOND.recruit} for a first recruit in a run, +{BOND.runFinished} for finishing a run with it, +{BOND.runWon} for winning one.
-          </p>
         </section>
       </div>
     </div>
