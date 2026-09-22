@@ -870,12 +870,10 @@
 .dexCard[data-met='false'] {
   background: var(--surface-1);
 }
-.dexCard[data-met='false'] img {
+/* Only the portrait is silhouetted: the type label is a fact of the species, not a secret. */
+.dexCard[data-met='false'] .dexArt img {
   filter: brightness(0);
   opacity: 0.28;
-}
-.dexCard[data-met='false'] .dexTypes img {
-  opacity: 0.35;
 }
 .dexCard[data-met='false'] .dexName {
   color: var(--ink-secondary);

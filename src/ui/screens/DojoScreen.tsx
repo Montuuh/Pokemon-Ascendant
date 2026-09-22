@@ -86,7 +86,7 @@ export function DojoScreen() {
                       </span>
                     </span>
                     {s.types.map((t) => (
-                      <TypeBadge key={t} type={t} size={16} />
+                      <TypeBadge key={t} type={t} size={12} />
                     ))}
                   </button>
                 </li>
@@ -113,7 +113,7 @@ export function DojoScreen() {
                       onClick={() => act({ type: 'teach-move', uid, moveId: id })}
                       data-testid={`tutor-${id}`}
                     >
-                      <TypeBadge type={move.type} size={20} />
+                      <TypeBadge type={move.type} size={15} />
                       <span className={styles.offerBody}>
                         <span className={`${styles.offerName} display`}>{move.name}</span>
                         <span className={styles.offerMeta}>

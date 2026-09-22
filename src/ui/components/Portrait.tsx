@@ -55,8 +55,8 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
         </span>
       )}
       <span className={styles.cornerTL}>
-        <TypeBadge type={primary} size={variant === 'bench' ? 22 : 26} defenderTypes={mon.types} />
-        {mon.types[1] && <TypeBadge type={mon.types[1]} size={variant === 'bench' ? 22 : 26} defenderTypes={mon.types} />}
+        <TypeBadge type={primary} size={variant === 'bench' ? 12 : 18} defenderTypes={mon.types} />
+        {mon.types[1] && <TypeBadge type={mon.types[1]} size={variant === 'bench' ? 12 : 18} defenderTypes={mon.types} />}
       </span>
       <span className={styles.cornerTR}>
         {mon.status && (

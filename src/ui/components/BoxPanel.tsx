@@ -94,7 +94,7 @@ function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenM
         </span>
         <span className={styles.badges}>
           {species.types.map((t) => (
-            <TypeBadge key={t} type={t} size={18} />
+            <TypeBadge key={t} type={t} size={12} />
           ))}
           {mon.traumaStacks > 0 && (
             <Tipped tip={traumaTip(mon.traumaStacks, max)} className={styles.trauma}>

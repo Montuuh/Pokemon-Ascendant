@@ -99,7 +99,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
           </p>
           <span className={styles.types}>
             {after.types.map((t) => (
-              <TypeBadge key={t} type={t} size={22} />
+              <TypeBadge key={t} type={t} size={15} />
             ))}
           </span>
           <dl className={styles.stats}>
@@ -154,7 +154,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
                       <span className={styles.old}>{content.move(u.from).name}</span>
                       <IconArrowNarrowRight size={15} />
                       <span className={styles.new}>
-                        <TypeBadge type={content.move(u.to).type} size={15} />
+                        <TypeBadge type={content.move(u.to).type} size={12} />
                         {content.move(u.to).name}
                       </span>
                       <span className={styles.power}>
@@ -167,7 +167,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
                     <li key={a} className={styles.add}>
                       <IconPlus size={14} />
                       <span className={styles.new}>
-                        <TypeBadge type={content.move(a).type} size={15} />
+                        <TypeBadge type={content.move(a).type} size={12} />
                         {content.move(a).name}
                       </span>
                       <span className={styles.power}>

@@ -1,12 +1,21 @@
+/* The type label is a pixel sprite: nearest-neighbour scaling, its own colour box, a soft shadow so it sits on
+   any surface. The wrapper only exists to carry the tooltip and the focus ring. */
+.label {
+  display: block;
+  width: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+  flex: 0 0 auto;
+}
 .badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-pill);
-  background: var(--brand-cream);
-  border: 2.5px solid currentColor;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  border-radius: 3px;
   flex: 0 0 auto;
+}
+.badge:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 2px;
 }
 .bare {
   display: inline-flex;

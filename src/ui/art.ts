@@ -27,7 +27,8 @@ export function tmIcon(tmId: string): string {
 }
 export const stageBackdrop = (stage: string) => asset(`art/stages/${stage}.jpg`);
 export const trainerSprite = (sprite: string) => asset(`art/trainers/${sprite}.png`);
-export const typeGlyph = (type: string) => asset(`art/icons/type/icon-type-${type}.svg`);
+/** The games' own pixel type label (32×12, FireRed/LeafGreen), fetched by `npm run art:types`. */
+export const typeGlyph = (type: string) => asset(`art/icons/type/icon-type-${type}.png`);
 export const statusGlyph = (status: string) => asset(`art/icons/status/icon-status-${status}.svg`);
 export const intentGlyph = (kind: string) => asset(`art/icons/intent/icon-intent-${kind}.svg`);
 /** §9 — a map node's badge, by the preview's icon id (`wild-cave`, `trainer-hiker`, `gym-rock`) or its kind. */

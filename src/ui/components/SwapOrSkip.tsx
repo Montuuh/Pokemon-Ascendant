@@ -31,7 +31,7 @@ export function SwapOrSkip() {
           </h3>
           <span className={styles.types}>
             {species.types.map((t) => (
-              <TypeBadge key={t} type={t} size={20} />
+              <TypeBadge key={t} type={t} size={15} />
             ))}
           </span>
           <p className={styles.note}>Release someone to make room, or let this one go.</p>

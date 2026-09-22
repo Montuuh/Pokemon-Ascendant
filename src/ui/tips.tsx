@@ -32,7 +32,7 @@ export function typeTip(type: PokemonType, defenderTypes?: readonly PokemonType[
   if (weakTo.length) meta.push(`Weak to ${weakTo.join(', ')}`);
   if (resists.length) meta.push(`Resists ${resists.join(', ')}`);
   if (immune.length) meta.push(`Immune to ${immune.join(', ')}`);
-  return <Tip icon={<img src={typeGlyph(type)} alt="" width={20} height={20} />} title={`${typeName(type)} type`} meta={meta} />;
+  return <Tip icon={<img src={typeGlyph(type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={`${typeName(type)} type`} meta={meta} />;
 }
 
 /** §4.2 — a status condition, what it does, and how long it lasts. */
@@ -71,7 +71,7 @@ export function moveTip(play: CardPlayability): ReactNode {
     footer = `Against this target: ${play.damage.final} damage${eff === 0 ? ' — no effect' : eff > 1 ? ` (super effective ×${eff})` : eff < 1 ? ` (not very effective ×${eff})` : ''}${play.damage.isCrit ? ', critical' : ''}.`;
   }
   if (!play.playable && play.reason) footer = <span>Locked — {REJECT_TEXT[play.reason]}</span>;
-  return <Tip icon={<img src={typeGlyph(move.type)} alt="" width={20} height={20} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
+  return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
 }
 
 /** The same card, outside a fight (Move Manager, Dojo): no target, no cost changes. */
@@ -81,7 +81,7 @@ export function moveDefTip(move: MoveDef): ReactNode {
   const lines: ReactNode[] = [describeMoveDef(move), RANGE_BODY[move.range]];
   const mod = MODIFIER_BODY[move.modifier];
   if (mod) lines.push(mod);
-  return <Tip icon={<img src={typeGlyph(move.type)} alt="" width={20} height={20} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} />;
+  return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} />;
 }
 
 // ── Intents ──────────────────────────────────────────────────────────────────────────────────────────────

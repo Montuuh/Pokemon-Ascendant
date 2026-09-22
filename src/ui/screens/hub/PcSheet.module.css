@@ -262,7 +262,7 @@ button.heroChip:hover {
 }
 .move {
   display: grid;
-  grid-template-columns: 44px 22px 1fr auto;
+  grid-template-columns: 44px auto 1fr auto;
   align-items: center;
   gap: var(--sp-2);
   padding: 4px var(--sp-2);

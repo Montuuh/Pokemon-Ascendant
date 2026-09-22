@@ -5,17 +5,25 @@ import { useTip } from '@/ui/tooltip';
 import styles from './TypeBadge.module.css';
 
 // Per §9.4 — type identity is colour + glyph (shape carries meaning for colour-blind players, §9.6).
-// The type SVGs are filled silhouettes in the type hue, so the badge is a cream disc with a type-coloured ring;
-// painting the disc in the type colour would hide the glyph.
+// The type badge is the games' own pixel label — the "FIRE" / "WATER" box of FireRed/LeafGreen, 32×12, fetched
+// by `npm run art:types` — drawn at an integer or half multiple of its size with nearest-neighbour scaling, so it
+// sits with the pixel-art sprites rather than beside them. The label carries its colour and its word, which is
+// as colour-blind-safe as a badge gets. `size` is the label's height; its width follows the sprite.
 //
 // Both badges carry their own tooltip, so every place one appears explains itself without the caller doing
 // anything. `defenderTypes` lets a badge on a dual-typed Pokémon answer "weak to what?" for the pair rather
 // than for its own type alone — the question a player is actually asking when they hover an enemy's types.
-export function TypeBadge({ type, size = 22, defenderTypes }: { type: PokemonType; size?: number; defenderTypes?: readonly PokemonType[] }) {
+
+/** The label alone, for callers that already own a tooltip (a move card, a Tip's icon slot). */
+export function TypeLabel({ type, size = 18, className }: { type: PokemonType | string; size?: number; className?: string }) {
+  return <img src={typeGlyph(type)} alt={type} height={size} className={`${styles.label} ${className ?? ''}`} draggable={false} />;
+}
+
+export function TypeBadge({ type, size = 18, defenderTypes }: { type: PokemonType; size?: number; defenderTypes?: readonly PokemonType[] }) {
   const tip = useTip(typeTip(type, defenderTypes));
   return (
-    <span className={styles.badge} style={{ width: size, height: size, borderColor: `var(--type-${type})` }} aria-label={type} tabIndex={0} {...tip}>
-      <img src={typeGlyph(type)} alt="" width={size * 0.72} height={size * 0.72} />
+    <span className={styles.badge} aria-label={type} tabIndex={0} {...tip}>
+      <TypeLabel type={type} size={size} />
     </span>
   );
 }

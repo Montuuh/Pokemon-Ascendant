@@ -6,7 +6,8 @@ import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import { ACHIEVEMENTS, BOND, BOND_RANKS, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
-import { itemIcon, typeGlyph } from '@/ui/art';
+import { itemIcon } from '@/ui/art';
+import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { dexCardTip, relicTierTip } from '@/ui/tips';
@@ -133,7 +134,7 @@ export function PcTerminal() {
                   <span className={styles.dexArt}><MonIcon speciesId={sp.id} size={64} /></span>
                   <span className={`${styles.dexName} display`}>{sp.name}</span>
                   <span className={styles.dexTypes} aria-hidden="true">
-                    {sp.types.map((t) => <img key={t} src={typeGlyph(t)} alt="" width={14} height={14} />)}
+                    {sp.types.map((t) => <TypeLabel key={t} type={t} size={12} />)}
                   </span>
                   <span className={styles.pips} aria-hidden="true">
                     {[1, 2, 3, 4, 5].map((r) => <i key={r} className={`${styles.pip} ${rank >= r ? styles.pipOn : ''}`} />)}

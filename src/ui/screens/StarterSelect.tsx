@@ -281,7 +281,7 @@ export function StarterSelect() {
                 aria-pressed={pick === s.id || second === s.id}
               >
                 <span className={styles.tileType}>
-                  <TypeBadge type={s.types[0]!} size={24} />
+                  <TypeBadge type={s.types[0]!} size={18} />
                 </span>
                 <img src={portraitUrl(s.dex, s.id)} alt={s.name} width={132} height={132} />
                 <span className={`${styles.tileName} display`}>{s.name}</span>
@@ -302,7 +302,7 @@ export function StarterSelect() {
               <span className={styles.chips}>
                 {chosen.types.map((t) => (
                   <span key={t} className={styles.typeChip}>
-                    <TypeBadge type={t} size={20} />
+                    <TypeBadge type={t} size={15} />
                     {t}
                   </span>
                 ))}
@@ -333,7 +333,7 @@ export function StarterSelect() {
                 const move = content.move(m);
                 return (
                   <li key={m} className={styles.moveChip}>
-                    <TypeBadge type={move.type} size={18} />
+                    <TypeBadge type={move.type} size={15} />
                     <span>{move.name}</span>
                     <span className={styles.moveCost}>{move.apCost} AP</span>
                   </li>

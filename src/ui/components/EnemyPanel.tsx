@@ -81,7 +81,7 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
           <img className={`${styles.icon} pixel`} src={iconOf(enemy)} alt="" width={48} height={40} />
           <span className={styles.types}>
             {enemy.types.map((t) => (
-              <TypeBadge key={t} type={t} size={24} defenderTypes={enemy.types} />
+              <TypeBadge key={t} type={t} size={18} defenderTypes={enemy.types} />
             ))}
           </span>
           <span className={styles.nameBlock}>

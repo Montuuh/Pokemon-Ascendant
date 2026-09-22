@@ -83,7 +83,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
             .filter(Boolean)
             .join(', ')}
         >
-          <TypeBadge type={move.type} size={20} />
+          <TypeBadge type={move.type} size={15} />
           <span className={styles.moveBody}>
             <span className={`${styles.moveName} display`}>{move.name}</span>
             <span className={styles.moveMeta}>
@@ -136,7 +136,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
         {active.length < 4 && <p className={styles.slotHint}>{4 - active.length} slot{active.length === 3 ? '' : 's'} free.</p>}
         {mastery && (
           <Tipped tip={masteryCardTip(content.move(mastery), species.name)} className={styles.masteryRow} data-testid="mastery-slot">
-            <TypeBadge type={content.move(mastery).type} size={18} />
+            <TypeBadge type={content.move(mastery).type} size={15} />
             <span className={styles.masteryName}>★ {content.move(mastery).name}</span>
             <span className={styles.masteryTag}>Mastery · fixed</span>
           </Tipped>

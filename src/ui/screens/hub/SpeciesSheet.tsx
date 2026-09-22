@@ -56,7 +56,7 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
           <span className={`${styles.heroNumber} tabular`}>#{String(s.dex).padStart(3, '0')}</span>
           <h2 className={`${styles.heroName} display`}>{s.name}</h2>
           <div className={styles.heroMeta}>
-            {s.types.map((t) => <TypeBadge key={t} type={t} size={26} defenderTypes={s.types} />)}
+            {s.types.map((t) => <TypeBadge key={t} type={t} size={24} defenderTypes={s.types} />)}
             <span className={styles.heroChip}>{cap(s.rarity)}</span>
             <span className={styles.heroChip}>{s.stage === 'basic' ? 'Basic' : s.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}</span>
             <button type="button" className={styles.heroChip} onClick={() => setTab('line')} data-testid="dex-sheet-line">
@@ -144,7 +144,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
     return (
       <Tipped key={key} as="li" tip={moveDefTip(m)} className={`${styles.move} ${locked ? styles.moveLocked : ''}`}>
         <span className={`${styles.moveLv} tabular`}>{lv === null ? '—' : `Lv ${lv}`}</span>
-        <TypeBadge type={m.type} size={20} />
+        <TypeBadge type={m.type} size={15} />
         <span className={styles.moveName}>{m.name}</span>
         <span className={`${styles.moveStat} tabular`}>{m.apCost} AP{m.power > 0 ? ` · ${m.power}` : ''}</span>
       </Tipped>

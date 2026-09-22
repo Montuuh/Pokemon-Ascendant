@@ -14,7 +14,7 @@ markers stay **game-icons.net (CC BY 3.0)** — those are *not* in this folder.
 ## Families & files (44)
 | Folder | Count | Colour | Notes |
 |--------|------:|--------|-------|
-| `Type/` | 15 | fixed type palette (§9.1.3.2) | filled silhouettes — normal/fire/water/electric/grass/ice/fighting/poison/ground/flying/psychic/bug/rock/ghost/dragon |
+| ~~`Type/`~~ | — | — | **Retired 2026-09-22.** The type badge is the games' own pixel label now (`npm run art:types`, see `pipeline.md`); the authored silhouettes are in git history |
 | `Status/` | 6 | fixed condition colour | filled **badge** + a unique **colorblind hatch/dot pattern** per condition + white glyph — burn/poison/paralysis/sleep/freeze/confusion |
 | `Intent/` | 7 | **monochrome `#3A2E22`** → tint in USS | attack/cleave/backstrike/buff/stall/status/unknown |
 | `Trait/` | 5 | **monochrome** → tint | category: offensive/defensive/utility · range: melee/ranged |

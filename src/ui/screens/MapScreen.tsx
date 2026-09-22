@@ -189,7 +189,7 @@ export function MapScreen() {
                   data-type={gym.type}
                   data-lane={lane}
                 >
-                  <TypeBadge type={gym.type} size={16} />
+                  <TypeBadge type={gym.type} size={12} />
                   {gym.name.replace(/^Leader /, '')}
                 </Tipped>
               );

@@ -33,7 +33,8 @@
     "art:batch": "node scripts/art-batch.mjs",
     "art:install": "node scripts/install-art.mjs",
     "art:pokemon": "node scripts/fetch-pokemon-assets.mjs",
-    "art:items": "node scripts/fetch-item-icons.mjs"
+    "art:items": "node scripts/fetch-item-icons.mjs",
+    "art:types": "node scripts/fetch-type-icons.mjs"
   },
   "dependencies": {
     "@number-flow/react": "^0.6.2",

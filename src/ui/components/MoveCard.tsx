@@ -1,6 +1,7 @@
 import { IconAlertTriangle, IconArrowBackUp, IconArrowForwardUp, IconHandGrab, IconLock, IconShieldHalf, IconSparkles, IconSword, IconTargetArrow, IconZzz } from '@tabler/icons-react';
 import type { CardPlayability } from '@/sim';
-import { portraitOf, typeGlyph } from '@/ui/art';
+import { portraitOf } from '@/ui/art';
+import { TypeLabel } from './TypeBadge';
 import { describeMove } from '@/ui/moveText';
 import { REJECT_TEXT } from '@/ui/strings';
 import { moveTip } from '@/ui/tips';
@@ -113,7 +114,7 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
       <span className={styles.art}>
         <img className={styles.portrait} src={portraitOf(owner)} alt="" draggable={false} />
         <span className={styles.typeChip}>
-          <img src={typeGlyph(move.type)} alt="" width={20} height={20} />
+          <TypeLabel type={move.type} size={18} />
         </span>
         <span className={`${styles.owner} display`}>{owner.name}</span>
       </span>
