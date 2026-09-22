@@ -137,12 +137,12 @@ old one.
 
 ### §4.2.2.1 Burn 🔥
 `floor(EffectiveMaxHP / 16)` damage at the end of each Resolution Phase, and **Attack −25 %**.
-Permanent until cured or combat ends. **Fire-types are immune.**
+Permanent until cured — it **survives the end of the combat** (§4.2.7.1). **Fire-types are immune.**
 *Offensive disruption — the burned Pokémon wants to come off the front line.*
 
 ### §4.2.2.2 Poison ☠️
 `floor(EffectiveMaxHP / 16)` damage at the end of each Resolution Phase, and **Defence −15 %**.
-Permanent until cured or combat ends. **Poison-types are immune.**
+Permanent until cured — it **survives the end of the combat** (§4.2.7.1). **Poison-types are immune.**
 *Defensive disruption — the poisoned Pokémon wants to come off the Lead.*
 
 > Burn and Poison are deliberate mirrors: same chip damage, one attacks your offence and one your defence, and
@@ -218,7 +218,26 @@ Separate from status conditions, and they do not occupy a status slot.
 | `full-heal` | Any primary status **and** Confusion, 1 AP |
 | Specific moves | As written on the card |
 | **Swapping** | Nothing |
-| **Combat end** | Everything, automatically — statuses and stages |
+| **Combat end** | Paralysis, Sleep, Freeze, Confusion and every stat stage, automatically. **Not** Burn or Poison (§4.2.7.1) |
+| **Fainting** | Everything the fainted Pokémon carried |
+| **Field Aid** — the route's nurse (§2.9.1) | Burn and Poison, for the whole Box |
+| **Pokémon Center heal** — in a City (§2.11.1) | Every status, for the whole Box |
+
+### §4.2.7.1 Carry-over — Burn and Poison persist
+
+A Burn or a Poison **outlives the combat that inflicted it**: the Pokémon walks to the next node with it, is
+drawn with its badge on the map and in the Box, and enters the next fight with it already in effect — ticking
+from the first Resolution Phase. It ends only when something in the table above cures it. An evolution into a
+type that is immune to it (§4.2.4) clears it.
+
+The rule follows the two conditions' own design. Burn and Poison were always *permanent until cured*; they
+are attrition, and attrition that stops at the edge of a fight is not attrition. Paralysis, Sleep, Freeze and
+Confusion are counted in turns — they are one-fight tempo puzzles, and carried into a new fight they would
+become an opening turn the player never got to answer. Carry-over also gives Region 2's accent (status on
+enemy intents, §2.2) a cost that lasts beyond one fight, gives the merchant's cures and the nurse a job, and is
+faithful to the series. It is telegraphed (Pillar 1): the badge is on the Pokémon before you pick the Active
+Team, so benching the poisoned one is a real decision (Pillar 2). *(Decided 2026-09-22; until then combat end
+cleared everything.)*
 
 ## §4.2.8 Status on the enemy side
 

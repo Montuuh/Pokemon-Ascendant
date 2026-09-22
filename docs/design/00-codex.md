@@ -131,7 +131,8 @@ types multiply; immunity always wins. Steel-typed source moves are typed Rock he
 
 **Crit:** base **0 %**. Only AlwaysCrit moves, consumables and abilities grant it; additive, soft cap ~30–35 %.
 
-**Status** — all deterministic, all cleared at combat end, one primary plus Confusion:
+**Status** — all deterministic, one primary plus Confusion. **Burn and Poison persist between fights** until
+cured (§4.2.7.1); the timed ones and stat stages clear at combat end:
 
 | | Effect | Duration | Immune |
 |---|---|---|---|

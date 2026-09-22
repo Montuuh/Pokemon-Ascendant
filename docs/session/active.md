@@ -24,14 +24,19 @@ the shipped build. Nothing of v0.7 is coded yet: the design was re-planned first
 - **Backlog** (roadmap tail): fossils and the Laboratory, role events (Fan Club, Rocket, the Magikarp
   swindle, Silph Co.), the Safari and Black Market designs, the fourth Badge, ₽ surplus, spent consumables.
 
-**Open flags planted (never guessed):** §2.11.1 does Celadon have a Center · §2.9.4 what "movimientos
-ocultos" means (tutor list or Gen I HMs) · §2.9.4.1 the ring's numbers and whether a 4th Badge survives
-(§2.12.6) · §2.11.5 the wheel's table · §2.11.6 Safari and Black Market · §2.6.1 which effect each biome carries.
+**Also decided 2026-09-22 (second pass):** Burn and Poison carry over between fights (§4.2.7.1), the timed
+conditions clear; the nurse cures Burn/Poison + 50 % HP. The Game Corner is an open door (no cap, EV < 1); the
+Black Market commits once it opens. Celadon has a Center. Safari, Black Market and the Dojo's extra-move counter
+are drawn and enterable, marked **in development**. HMs → backlog.
+
+**Design questions, one at a time (the user asked for them explained singly):** 1 the Challenge Ring's format ·
+2 its fee and prize · 3 whether a City can pay a bonus Badge (§2.12.6) · 4 the Game Corner's wheel. Asked: #1.
+Biome field effects (§2.6.1) wait for v0.8.
 
 **Next action:** v0.7.1. Order: the seam in `run/run.ts` (Gym victory → City → next Region, `regionIndex + 1`),
 then the City screen as a lobby, then strip the route nodes. Placeholder R2/R3 = R1's generator at a higher band.
-**Blocked on:** nothing — the open flags above are all *inside* v0.7.2+ except the Celadon Center, which the
-town build does not need.
+**Blocked on:** nothing for the seam and the town; the four questions above shape v0.7.2 (the city). The user
+wants the version's bases settled before development starts.
 **Last commit:** see `git log -1`.
 **Test status:** `npm run check` green — 396 Vitest, typecheck, lint, § (367 sections) and catalogue guards.
 55/55 Playwright.

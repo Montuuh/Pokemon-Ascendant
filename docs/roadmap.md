@@ -393,8 +393,9 @@ The run no longer ends at the Region 1 Gym: Gym → City → next Region. **Pall
 §2.11): Pokémon Center, Poké Mart, Dojo, the Safari door drawn and closed, and the gate that opens the
 Reflection (§2.11.3, already built) and leaves. Routes lose their Center, Shop and Dojo and gain the nurse and
 the travelling merchant (§2.9); the freed L6 node becomes a third Mystery Event (§2.5.1). The Trauma Salve
-Cache Hub upgrade goes live. Regions 2 and 3 are Region 1's generator at a higher level band — placeholders on
-purpose, so the whole loop can be played and felt before its content exists.
+Cache Hub upgrade goes live. **Burn and Poison carry over between fights** (§4.2.7.1) and the nurse cures
+them. Regions 2 and 3 are Region 1's generator at a higher level band — placeholders on purpose, so the whole
+loop can be played and felt before its content exists.
 **Exit:** a three-Region run end to end, with two City visits, on a single seed.
 
 ### v0.7.2 — The city  ☐
@@ -460,6 +461,8 @@ Kept here so they stop living in chat. Nothing on this list is promised, and non
 | **Role events** | The Pokémon Fan Club, Team Rocket, the Magikarp salesman's swindle, Silph Co. — written encounters with a choice, in a City rather than on a route | §2.10 / §2.11 |
 | **The Safari Zone** | Entry fee, a fixed number of balls, species the routes never offer (§2.11.6) | The door is already drawn |
 | **The Black Market** | Legendary relics paid in HP or Trauma, Pokémon traded for Pokémon — the things a Mart will not sell (§2.11.6) | Beneath the Game Corner |
+| **The Dojo's extra moves** | A move catalogue beyond each species' tutor list (§2.11.6) | The Dojo's third counter, drawn in development |
+| **HMs (MO)** | Cut, Fly, Surf, Strength, Flash — as battle moves, a field use, or not at all. Needs its own design; may never ship | — |
 | **The fourth Badge** | The City Gym paid one; the Challenge Ring does not. Open question (§2.12.6) | — |
 | **End-of-run ₽ surplus** | What leftover money converts into at a run's end | §8.3 |
 | **Consumables that are spent** | The user's idea: consumables are consumed for real, and found far more often | §7.2 |

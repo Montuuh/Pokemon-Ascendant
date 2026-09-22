@@ -579,11 +579,10 @@ One per Gym lane, just before the Gym. No combat, no building: a nurse with a fo
 
 | Service | Effect | Cost |
 |---|---|---|
-| **First aid** | Restores **50 %** of Effective Max HP to every Pokémon in the Box | Free |
+| **First aid** | Restores **50 %** of Effective Max HP to every Pokémon in the Box, and cures **Burn and Poison** — the two conditions that outlive a fight (§4.2.7.1) | Free |
 
 That is the whole list. She does not treat **Trauma** — that is a Pokémon Center's job and Centers are in
-Cities now (§2.11.1) — and there is nothing else to cure, because a status never survives the combat that
-inflicted it (§4.2.7). Half a heal before a Gym is enough to make the fight winnable and not enough to make it
+Cities now (§2.11.1). Half a heal before a Gym is enough to make the fight winnable and not enough to make it
 comfortable, which is the point of the last stop before a boss.
 
 ---
@@ -633,9 +632,8 @@ The Dojo is the game's main Poké Dollar sink and its key deliberate-sculpt stop
 being what it was dealt and becomes what you built (Pillar 3). Region 1 has no Dojo at all, which is the
 teaching Region's own escalation: you play what you find until the first town.
 
-> ⚠️ **OPEN (2026-09-22)**: the user asked the City Dojo to teach "movimientos ocultos". Two readings — the
-> off-learnset tutor list it already sells, or a separate catalogue of Gen I **HMs** (Cut, Fly, Surf, Strength,
-> Flash) as battle moves. Decides: user.
+A third counter — **extra moves** beyond the tutor list — is drawn in the Dojo and marked in development
+(§2.11.6). Gen I **HMs** are a separate idea and sit in the backlog, possibly never to ship.
 
 ### §2.9.4.1 The Challenge Ring
 
@@ -719,20 +717,21 @@ the doors, and you walk out through the gate when you are ready (§2.1.4).
 ## §2.11.0 How a lobby works
 
 - **No visit budget.** Enter what you like. Money, HP and Trauma are the only rations.
-- **Two kinds of door.** The **open** ones — Pokémon Center, shop, Dojo — may be entered and left as often as
-  you like; they take your money, not your turn. The **committing** ones — the Challenge Ring (§2.9.4.1), the
-  Game Corner, and the doors not yet open (§2.11.6) — resolve **once per visit** and then close for good.
+- **Two kinds of door.** The **open** ones — Pokémon Center, shop, Dojo, Game Corner — may be entered and left
+  as often as you like; they take your money, not your turn. The **committing** ones — the Challenge Ring
+  (§2.9.4.1) and, when it opens, the Black Market (§2.11.6) — resolve **once per visit** and close behind you.
 - **The gate closes the City.** Leaving opens the Reflection (§2.11.3): pick one Region Modifier, and the pick
   *is* the departure. Nothing else can be done after it.
-- **A closed door is still drawn.** A building that is coming later is on the map, clickable, and says what it
-  will be — a door you can see is a goal, one that silently does nothing is furniture (§7.7, and the same
-  treatment as the Hub's Mystery Door).
+- **A door in development is still a door.** A building that is coming later is drawn on the map and can be
+  entered; inside, a small panel names it, says in one line what it will be, and says it is **in development**.
+  A door you can see is a goal; one that silently does nothing is furniture (§7.7, the same treatment as the
+  Hub's Mystery Door).
 
 ## §2.11.1 The Pokémon Center
 
 | Service | Effect | Cost |
 |---|---|---|
-| **Heal** | Full restore of every Box Pokémon to Effective Max HP | **Free, always, as often as you like** |
+| **Heal** | Full restore of every Box Pokémon to Effective Max HP, and every status cured | **Free, always, as often as you like** |
 | **Therapy** | Remove **1** Trauma stack from one Pokémon. Repeatable while affordable | `100 × (1 + stacks)` ₽ |
 | **Daycare** | Deposit one Pokémon: +1 level instantly, and it skips the next combat | 200 ₽ |
 | **PC Box** | Inspect and reorder the Box | Free |
@@ -741,9 +740,7 @@ Healing is free because healing is free in Pokémon, and a fan game that charges
 the fantasy for a few coins. The squeeze is **Trauma**, which is the only damage a route cannot undo (§2.9.1)
 and the only one that compounds.
 
-> ⚠️ **OPEN (2026-09-22)**: whether Celadon has a Center at all. The user listed it under the town. Written
-> here as "both", because arriving at Region 3 — the hardest — with no full heal and no therapy is a very
-> sharp edge. Decides: user.
+Both Cities have one. *(Confirmed 2026-09-22.)*
 
 ## §2.11.2 The shop
 
@@ -831,28 +828,29 @@ Badges are the run-long systems.
 | **Shop** (§2.11.2) — Mart / Department Store | ✅ | ✅ | Open |
 | **Dojo** (§2.9.4) — tutor and abilities | ✅ | ✅ wider | Open |
 | **Challenge Ring** (§2.9.4.1) — inside the Dojo | ✅ | ✅ | Committing, once per visit |
-| **Game Corner** (§2.11.5) | — | ✅ | Committing, one session |
-| **Safari Zone** (§2.11.6) | 🔒 | 🔒 | Not open yet |
-| **Black Market** (§2.11.6) — beneath the Game Corner | — | 🔒 | Not open yet |
+| **Game Corner** (§2.11.5) | — | ✅ | Open |
+| **Safari Zone** (§2.11.6) | 🚧 | 🚧 | In development — enterable, says so |
+| **Black Market** (§2.11.6) — beneath the Game Corner | — | 🚧 | In development; committing once it opens |
 | **The gate** (§2.11.3) | ✅ | ✅ | Ends the City |
 
 ## §2.11.5 The Game Corner
 
 Celadon's casino, and the one place in the game where the odds are the content. You bet Poké Dollars on a
 wheel with its **payout table printed on the screen**; the expected value is deliberately **below 1**, so over
-many spins the house wins, and the session is capped at a few spins per visit.
+many spins the house wins. It is an **open** door: play as long as the money lasts. The house edge, not a cap,
+is what keeps it honest — with an expectation below 1 there is nothing to farm.
 
 Its purpose is not income — it is **variance**. A pile of money too small to buy the thing you need is dead
 weight; the wheel is the run's only way to turn it into a *chance* at the thing you need, at a known price in
 expectation. Printing the table is what keeps it inside Pillar 1: the gamble is chosen with the numbers in
 view, like the catch roll (§2.6.4.3).
 
-> ⚠️ **OPEN (2026-09-22)**: the wheel's segments, payouts and the per-visit cap. Decides: user, after a
-> playtest with real prices.
+> ⚠️ **OPEN (2026-09-22)**: the wheel's segments, its payouts and the largest bet a spin takes. Decides: user.
 
-## §2.11.6 Doors not yet open
+## §2.11.6 Doors in development
 
-Both are on the map from the first build, drawn, clickable and labelled with what they will be.
+On the map from the first build, drawn and enterable, each opening onto a panel that says what it will be and
+that it is in development (§2.11.0). Their designs are backlog (`docs/roadmap.md`).
 
 **🦌 Safari Zone** *(town and city)* — a paid catching ground: a flat entry fee, a fixed number of balls, and
 species that the routes never offer. The Box-filling building.
@@ -861,8 +859,8 @@ species that the routes never offer. The Box-filling building.
 instead of money, Pokémon traded for other Pokémon, and the rest of the things a Poké Mart will not sell. The
 Rocket hideout was under the Celadon Game Corner in Gen I, and this is that joke made mechanical.
 
-> ⚠️ **OPEN (2026-09-22)**: both designs. Deliberately deferred past v0.7 — the doors ship closed so the city
-> is the right shape from the first build. Decides: user, when they come up the roadmap.
+**📜 The Dojo's third counter** *(inside both Dojos)* — **extra moves**: a catalogue beyond each species'
+tutor list, sold by the Dojo. Drawn beside the tutor and the ability counters, and in development.
 
 ---
 
