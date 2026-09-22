@@ -84,7 +84,9 @@ describe('Buying — §8.3.4', () => {
     expect(after.tokens).toBe(20 - MART_PRICE.hub['expanded-box']);
     // The Corner sells the fourth Starting Relic from Level 1.
     expect(ok(buy(at(1, 3), { kind: 'hub', id: 'starting-relic-plus-one' }, content)).hub).toEqual(['starting-relic-plus-one']);
-    expect(buy(at(5, 20), { kind: 'hub', id: 'trauma-salve-cache' }, content)).toEqual({ error: 'pending' });
+    // v0.7.1 — the Cities opened, so the Salve Cache is sold now; the Apex Reveal still waits on Victory Road.
+    expect(ok(buy(at(5, 20), { kind: 'hub', id: 'trauma-salve-cache' }, content)).hub).toEqual(['trauma-salve-cache']);
+    expect(buy(at(5, 20), { kind: 'hub', id: 'apex-reveal' }, content)).toEqual({ error: 'pending' });
   });
 
   it('ASoulboundLine_CountsAsAnOwnedStarter_§6.8.2', () => {

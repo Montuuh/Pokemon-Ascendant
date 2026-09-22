@@ -118,7 +118,7 @@ describe('Difficulty modifiers — §8.8', () => {
     for (const modifiers of [[], ['no-refunds']]) {
       let s = start(modifiers, 7);
       const before = [...s.consumables];
-      const node = s.reachable.find((id) => s.map.nodes[id]!.kind !== 'center')!;
+      const node = s.reachable.find((id) => s.map.nodes[id]!.kind !== 'aid')!;
       s = apply(apply(s, { type: 'enter-node', nodeId: node }), { type: 'begin-combat' });
       if (s.phase !== 'combat') continue;
       s = apply(s, { type: 'finish-combat', report: { ...report(['potion']), team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })) } });

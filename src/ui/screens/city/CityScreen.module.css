@@ -1,0 +1,290 @@
+/* §2.11 — the City lobby: a header, then the town drawn edge to edge with its doors laid over the buildings. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--surface-sunken);
+  color: var(--ink-primary);
+  overflow: hidden;
+  position: relative;
+}
+
+.topBar {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface-1);
+  border-bottom: 2px solid var(--border-subtle);
+}
+/* The name, its bubble and the Badge case sit side by side, but only the name is the heading. */
+.nameBlock {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.name {
+  margin: 0;
+  font-size: var(--type-h2);
+}
+.purse {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.stat b {
+  color: var(--ink-primary);
+  font-size: var(--type-body);
+}
+.bagBtn,
+.menuBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  cursor: pointer;
+}
+.bagBtn:focus-visible,
+.menuBtn:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+
+/* The town keeps its 16:9 whatever the window: the doors are percentages of the art, so the art must never be
+   cropped. The stage is a size container and the town takes the largest 16:9 box that fits in it. */
+.stage {
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-3);
+  container-type: size;
+}
+.town {
+  position: relative;
+  width: min(100cqw, calc(100cqh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 2px solid var(--border-subtle);
+}
+.art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Pixel art: nearest-neighbour at every size, or the tiles turn to mush. */
+  image-rendering: pixelated;
+  user-select: none;
+}
+
+/* A door is the building itself: invisible until you rest on it, then it lights. The plate is what says
+   "this is a door" before you touch anything. */
+.door {
+  position: absolute;
+  padding: 0;
+  border: 3px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color var(--motion-fast) ease, background-color var(--motion-fast) ease;
+}
+.door:hover,
+.door:focus-visible {
+  border-color: var(--brand-cream);
+  background: color-mix(in srgb, var(--brand-cream) 18%, transparent);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ink-primary);
+}
+.door[data-state='soon']:hover,
+.door[data-state='soon']:focus-visible {
+  border-style: dashed;
+}
+
+.plate {
+  position: absolute;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--ink-primary);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-body);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 0 var(--ink-primary);
+  transition: transform var(--motion-fast) var(--ease-spring);
+}
+.plateBottom { bottom: -14px; }
+.plateTop { top: -14px; }
+.door:hover .plate,
+.door:focus-visible .plate {
+  transform: translateX(-50%) translateY(-2px);
+}
+.door[data-state='soon'] .plate {
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+}
+.soonIcon { color: var(--accent-warning); }
+
+/* The gate is the way forward, so it wears the action colour. */
+.gate .plate {
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+}
+
+/* The Box, in the header: who needs the Center. */
+.party {
+  display: flex;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chip {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 46px;
+  border-radius: var(--radius-sm);
+}
+.chip:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 1px;
+}
+.chipBar { width: 100%; }
+.chipStatus {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+/* Trauma, as the Box panel marks it: the count on the warning colour. */
+.chipTrauma {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-pill);
+  background: var(--accent-warning);
+  color: var(--ink-on-accent);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: var(--sp-5);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  border-left: 4px solid var(--accent-warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+  z-index: var(--z-toast);
+}
+
+/* The Reflection at the gate. (A door in development opens the shared DoorSoonPanel.) */
+.lede {
+  margin: 0 0 var(--sp-3);
+  color: var(--ink-secondary);
+}
+
+.offer {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+.mod {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--motion-fast) ease, border-color var(--motion-fast) ease;
+}
+.mod:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.mod:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.modPicked {
+  border-color: var(--ink-primary);
+  box-shadow: 0 0 0 3px var(--accent-action);
+}
+.modName { font-size: var(--type-body); font-weight: 700; }
+.modBody { color: var(--ink-secondary); font-size: var(--type-small); }
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.primary { background: var(--accent-action); color: var(--ink-on-accent); }
+.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.secondary { background: var(--surface-2); color: var(--ink-primary); }
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+
+/* Below a full-HD window the town is drawn smaller, so the plates step down with it and keep off their
+   neighbours (the Black Market's plate sits beside the Game Corner). */
+@media (max-width: 1500px) {
+  .plate { font-size: var(--type-small); }
+}
+@media (max-width: 900px) {
+  .offer { grid-template-columns: 1fr; }
+  .plate { font-size: var(--type-caption); }
+}
+
+/* §5.10 — the Badge case beside the town's name. */
+.badges {
+  display: inline-flex;
+  gap: var(--sp-1);
+  margin-left: var(--sp-2);
+}
+.badgeIcon {
+  display: inline-flex;
+}
+.badgeIcon img { image-rendering: pixelated; }

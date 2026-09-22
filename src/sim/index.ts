@@ -24,10 +24,12 @@ export * from './replay/replay';
 // ── the run layer (§2)
 export * from './run/types';
 export { generateRegion, nodesInLayer, laneGymOf, drawGymPair, LAYERS, FORK_LAYER, biomeFor } from './run/map';
-export { BIOMES, TRAINERS, TRAINER_SPRITES, ELITE, ELITE_WILD, GYM, GYMS, LANE_THEME, gymById, rostersOf, eliteWildTeamFor, type GymDef, type LaneTheme, RUN_START, STARTER_IDS, WILD_LEVEL_BAND, ROUTE_LAYERS, gymTeamFor, TM_DROP_CHANCE, RELIC_DROP_CHANCE, HELD_ITEM_DROP_CHANCE, wildBandFor, trainerTeamFor, eliteTeamFor, REGION1_BIOME_WEIGHTS, assertRegionContent, type BiomeId, type BiomePool, type TrainerRoster } from './run/region';
-export { createRun, runReducer, validateRunAction, newPartyMon, resetUidCounter, runHelpers, defaultRunCtx, validateKit, shopSlotName, effectiveMax, boxCapacity, abilityLocked, RUN_SAVE_VERSION, DEFAULT_PERKS, type RunCtx } from './run/run';
+export { BIOMES, TRAINERS, TRAINER_SPRITES, ELITE, ELITE_WILD, GYM, GYMS, LANE_THEME, gymById, rostersOf, eliteWildTeamFor, type GymDef, type LaneTheme, RUN_START, STARTER_IDS, WILD_LEVEL_BAND, ROUTE_LAYERS, gymTeamFor, TM_DROP_CHANCE, RELIC_DROP_CHANCE, HELD_ITEM_DROP_CHANCE, wildBandFor, trainerTeamFor, eliteTeamFor, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, assertRegionContent, type BiomeId, type BiomePool, type TrainerRoster } from './run/region';
+export { createRun, runReducer, validateRunAction, newPartyMon, resetUidCounter, runHelpers, defaultRunCtx, validateKit, shopSlotName, effectiveMax, boxCapacity, abilityLocked, arriveAtCity, dojoPrice, isServiceNode, RUN_SAVE_VERSION, DEFAULT_PERKS, type RunCtx } from './run/run';
+// §2.1.4, §2.11 — the Cities between Regions.
+export { CITIES, REGION_COUNT, cityAfter, isFinalRegion, type CityDef } from './run/cities';
 export { activeSetups, buildScenario, maxHpOf } from './run/encounter';
-export { MONEY_REWARD, PRICES, LEGENDARY_CAP, isOfferable, inPool, rollRelic, rollLegendaryOffer, rollHeldItem, ownedItems, relicMultiplier, benchXpShare, wildChoices, rollShopStock, rerollPrice, therapyPrice } from './run/economy';
+export { AID_HEAL_PCT, MONEY_REWARD, PRICES, LEGENDARY_CAP, isOfferable, inPool, rollRelic, rollLegendaryOffer, rollHeldItem, ownedItems, relicMultiplier, benchXpShare, wildChoices, rollShopStock, rerollPrice, therapyPrice, sellPrice } from './run/economy';
 export { MYSTERY_EVENTS, mysteryEvent, rollEvent, allOutcomes, assertEventContent, eventRiskOf, RISK_LABEL, type MysteryEvent, type EventChoice, type EventOutcome, type EventRisk } from './run/events';
 export { MODIFIERS, AVAILABLE_MODIFIERS, modifierById, modifierValue, hasModifier, modifierXpMultiplier, battleConfigFor, type DifficultyModifier } from './run/modifiers';
 export { activeRegionModifier, regionModifierValue, rollRegionModifierOffer, priceFor, traumaZone1Pct, victoryHealPct } from './run/regionModifiers';

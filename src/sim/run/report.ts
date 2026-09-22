@@ -14,8 +14,11 @@ export function buildOutcomeReport(combat: CombatState, run: RunState): CombatOu
     hp: c.hp,
     // §7.3.5 — the running total, not the delta: the fight was handed the run's count and grew it.
     defeats: c.defeats,
-    // §4.2.7 — a status does not survive the fight it was inflicted in; only the run's own carry-over does.
-    status: null,
+    // §4.2.7.1 — every status outlives the fight, with what is left of its clock. Fainting clears it.
+    status: c.hp > 0 && c.status
+      ? { kind: c.status.kind, turnsLeft: c.status.turnsLeft, ...(c.status.escalatingTicks !== undefined ? { escalatingTicks: c.status.escalatingTicks } : {}) }
+      : null,
+    confusionTurns: c.hp > 0 ? c.confusionTurns : 0,
     fainted: c.hp <= 0,
   }));
 

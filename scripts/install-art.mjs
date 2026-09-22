@@ -29,6 +29,8 @@ const PROFILES = {
   // JPEG is the wrong container for it twice over: the ringing lands exactly on the hard edges that make it
   // read as pixel art, and a 16-colour tile palette compresses smaller as a PNG than as a photo.
   'pixel-vista': { dir: 'public/art/ui', ext: 'png', w: 1920, h: 1080, fit: 'cover', kernel: 'nearest', palette: true },
+  // §2.11 — a City's lobby background: the same generated top-down pixel register as the route plate.
+  town: { dir: 'public/art/towns', ext: 'png', w: 1920, h: 1080, fit: 'cover', kernel: 'nearest', palette: true },
   icon: { dir: 'public/art/items', ext: 'png', w: 128, h: 128, fit: 'contain', cut: 42 },
   // An official render already carries its own alpha, so cutting a background out of it would only chew
   // into the artwork. Resize and ship.
@@ -44,7 +46,7 @@ const PROFILES = {
 const [kind, src, name, sizeArg] = process.argv.slice(2);
 const profile = PROFILES[kind];
 if (!profile || !src || !name) {
-  console.error('usage: install-art <stage|map|pixel|vista|icon|item|node|badge> <src.png> <name> [px]');
+  console.error('usage: install-art <stage|map|pixel|vista|town|icon|item|node|badge> <src.png> <name> [px]');
   console.error(`profiles: ${Object.keys(PROFILES).join(', ')}`);
   process.exit(2);
 }

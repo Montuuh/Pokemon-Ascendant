@@ -333,8 +333,18 @@ export const LANE_THEME: Record<string, LaneTheme> = {
 };
 
 /** §2.6.4 / §7.2.5 — what a run starts with. */
+/**
+ * §2.1 / §2.2 — how far above Region 1 each Region's levels sit. **Placeholder** (v0.7.1): Regions 2 and 3
+ * reuse Region 1's generator — its rosters, biomes and Gyms — shifted up this many levels, so the whole
+ * three-Region loop can be played before their content exists (v0.7.3, v0.7.4). Region 3's +16 lands its
+ * Gyms at the levels its catalogue rows already name (`catalogs/gyms.md` §3, L33–36).
+ */
+export const REGION_LEVEL_OFFSET: readonly number[] = [0, 7, 16];
+
 export const RUN_START = {
   balls: 3,
+  /** docs/design/catalogs/economy.md §1 — "start 3, +1 per Region": one more ball as each new Region begins. */
+  ballsPerRegion: 1,
   /**
    * Canon does not fix the starting kit, so this is ours to tune against the harness. A consumable is a
    * per-combat roster, not ammunition (§3.5), so this is three Potions *per fight*, not three per run.

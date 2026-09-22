@@ -119,9 +119,10 @@ describe('Run pacing — §2.1, §3.7', () => {
    */
   const AB_SEEDS = Math.max(SEEDS, 80);
 
+  // §2.9 — the route's service nodes are the merchant and the Mysteries; the Dojo and the Shop moved into the
+  // Cities (2026-09-22), where a visit costs no fight and so has no trade to measure here.
   it.each([
-    ['the Dojo', { takeDojo: false }] as const,
-    ['the Shop', { takeShop: false }] as const,
+    ['the merchant', { takeShop: false }] as const,
     ['a Mystery', { takeMystery: false }] as const,
   ])(
     'Run_TakingAServiceNode_IsNotATrap_%s',
@@ -137,6 +138,22 @@ describe('Run pacing — §2.1, §3.7', () => {
       }
     },
   );
+
+  it('Run_ContinuesPastTheFirstGym_ThroughBothCities_§2.1.4', { timeout: 120_000 }, () => {
+    // §2.1 — the seam. The whole run, three Regions and two Cities, played by the harness: every City visit
+    // (Center, shop, Dojo, gate) has to be answerable, or autoRun throws on the rejected action. Regions 2
+    // and 3 are placeholders at REGION_LEVEL_OFFSET until v0.7.3, so this asserts the run *continues*, not
+    // how hard the later Regions are.
+    let reachedRegion3 = 0;
+    for (const starter of STARTER_IDS) {
+      for (let seed = 1; seed <= 6; seed++) {
+        const r = autoRun(7000 + seed, starter, ctx, DEFAULT_RUN_POLICY, 3);
+        expect(r.regionsCleared).toBeLessThanOrEqual(3);
+        if (r.regionsCleared >= 2) reachedRegion3++;
+      }
+    }
+    expect(reachedRegion3, 'no run walked through both Cities').toBeGreaterThan(0);
+  });
 
   it('Run_ThickensTheDeck_SomethingEvolvesEveryRun', () => {
     // §6.2.4 — a base form's learnset ends before its threshold, so a run with no evolution is a run whose

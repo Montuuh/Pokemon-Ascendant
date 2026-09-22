@@ -1,11 +1,15 @@
 import type { ScenarioDef, TeamMemberSetup } from '../content/defs';
-import type { BranchArchetype, StatusCondition } from '../types';
+import type { BranchArchetype, PrimaryStatus } from '../types';
 
 // The run layer: everything outside a fight (§2). Pure and deterministic like the combat sim — the same seed
 // and the same action log rebuild the same run, which is what makes the save a seed plus a list (§10.7.4).
 
-/** §2.5 — the node types a simplified Region 1 route offers. */
-export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'center', 'dojo', 'shop', 'mystery', 'gym'] as const;
+/**
+ * §2.5 — the node types a route offers. Since 2026-09-22 a route's services are small (§2.9): the field nurse
+ * (`aid`) and the travelling merchant. The Pokémon Center, the Mart and the Dojo are City buildings (§2.11),
+ * reached through `RunState.city`, not map nodes.
+ */
+export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'gym'] as const;
 export type NodeKind = (typeof NODE_KINDS)[number];
 
 export interface MapNode {
@@ -77,8 +81,13 @@ export interface PartyMon {
   abilityId: string | null;
   /** §6.3 — the archetype picked at the last evolution. Null on a base form. */
   archetype: BranchArchetype | null;
-  /** Carried out of a fight so a Center visit still matters (§4.2.7 clears it at combat end, not run-wide). */
-  status: StatusCondition | null;
+  /**
+   * §4.2.7.1 — the primary condition carried out of the last fight, with what is left of its clock. Every status
+   * outlives the fight that inflicted it; the nurse and the Center cure it.
+   */
+  status: CarriedStatus | null;
+  /** §4.2.7.1 — Confusion's remaining turns, carried like the primary. 0 is none. */
+  confusionTurns: number;
   /** §7.4 — the one held-item slot. Releasing this Pokémon drops the item back to the bag, never loses it. */
   heldItem: string | null;
   /** §7.3.5 Champion's Crest — enemies this Pokémon has personally knocked out this run. */
@@ -98,11 +107,15 @@ export type RunPhase =
   | 'evolution'
   /** The Box is full and a recruit is waiting (§2.3.1). */
   | 'swap-or-skip'
-  /** §2.9.1 / §8.2.4 — standing in a Centre. The heal already happened; Therapy is what is left to decide. */
+  /** §2.9.1 — the route's field nurse. The half-heal already happened; the screen says what it did. */
+  | 'aid'
+  /** §2.11 — standing in a City's lobby, between buildings. */
+  | 'city'
+  /** §2.11.1 / §8.2.4 — inside a City's Pokémon Center. The heal already happened; Therapy is left to decide. */
   | 'center'
-  /** §2.9.4 — standing in the Dojo, spending the visit. */
+  /** §2.9.4 — inside a City's Dojo, spending money. */
   | 'dojo'
-  /** §2.9.2 — standing in a Shop, spending money. */
+  /** §2.9.2 / §2.11.2 — at the travelling merchant's cart, or inside a City's Mart. */
   | 'shop'
   /** §2.10 — a Mystery Event is on screen, waiting for a choice. */
   | 'event'
@@ -175,12 +188,40 @@ export interface ShopSlot {
   id: string;
   price: number;
   sold: boolean;
+  /** How many the slot hands over. Absent is one; the merchant's Poké Balls come three to a slot (§2.9.2). */
+  qty?: number;
 }
 
 export interface ShopStock {
   slots: ShopSlot[];
-  /** §2.9.3 — 25 → 50 → 100 ₽, up to three per visit. */
+  /** §2.9.3 — re-rolls used so far this visit. */
   rerolls: number;
+  /** §2.9.3 — how many this shop allows: one at the merchant, three at a City shop. */
+  maxRerolls: number;
+}
+
+/** §4.2.7.1 — a primary condition as it leaves a fight: the kind, its remaining clock, and Toxic's escalation. */
+export interface CarriedStatus {
+  kind: PrimaryStatus;
+  /** Turns left for a timed condition; null for Burn and Poison, which last until cured. */
+  turnsLeft: number | null;
+  /** §7.5 Toxic — ticks already taken, so the escalation resumes rather than resetting. */
+  escalatingTicks?: number;
+}
+
+/** §2.11 — the two Cities of a run: the small town after Gym 1 and the big city after Gym 2. */
+export type CityId = 'pallet-town' | 'celadon-city';
+
+/** §2.11.4 — the buildings a player can walk into. Doors still in development are drawn by the UI only. */
+export type CityBuilding = 'center' | 'mart' | 'dojo';
+
+/** §2.11 — the City the run is standing in. Everything here was rolled on arrival, so re-entering never re-rolls. */
+export interface CityState {
+  id: CityId;
+  /** §2.11.2 — the shop's stock. Carried between visits to the building; a sold slot stays sold. */
+  shop: ShopStock;
+  /** §2.11.3 — the three Region Modifiers the gate offers. Picking one leaves the City. */
+  reflection: string[];
 }
 
 export interface PendingRecruit {
@@ -229,8 +270,10 @@ export interface RunState {
    * Region: this is a single id rather than an array so "they never stack" is a type, not a convention.
    */
   regionModifier: string | null;
-  /** §2.9.2 — the stock of the Shop currently being visited, re-rolled at a rising price. */
+  /** §2.9.2 — the stock of the shop currently being visited, re-rolled at a rising price. */
   pendingShop: ShopStock | null;
+  /** §2.11 — the City the run is standing in, between two Regions. Null on a route. */
+  city: CityState | null;
   /** §2.10 — the Mystery Event on screen. */
   pendingEvent: string | null;
   /**
@@ -288,13 +331,15 @@ export interface RunPerks {
   familiar: string[];
   /** §8.4.2 Pokédex Insight — the Hub upgrade is in force. */
   insight: boolean;
+  /** §8.4.2 Trauma Salve Cache — the first City's shop always stocks a Trauma Salve. */
+  salveCache?: boolean;
 }
 
 /** What a finished combat reports back to the run layer. */
 export interface CombatOutcomeReport {
   outcome: 'victory' | 'defeat' | 'caught' | 'escaped';
-  /** Final HP and status for each Active Pokémon, keyed by uid. */
-  team: { uid: string; hp: number; status: StatusCondition | null; fainted: boolean; defeats?: number }[];
+  /** Final HP and status for each Active Pokémon, keyed by uid. §4.2.7.1 — the status leaves with its clock. */
+  team: { uid: string; hp: number; status: CarriedStatus | null; confusionTurns?: number; fainted: boolean; defeats?: number }[];
   /** The wild Pokémon that was caught, if any. */
   caught: { speciesId: string; level: number } | null;
   /** Poké Balls still in stock. A miss costs a ball too, so the run takes the fight's own count (§2.6.4). */
@@ -357,7 +402,6 @@ export type RunAction =
   | { type: 'begin-combat' }
   | { type: 'finish-combat'; report: CombatOutcomeReport }
   | { type: 'claim-reward' }
-  | { type: 'use-center' }
   | { type: 'set-active'; uids: string[] }
   | { type: 'set-lead'; uid: string }
   | { type: 'resolve-recruit'; releaseUid: string | null }
@@ -373,6 +417,14 @@ export type RunAction =
   | { type: 'set-ability'; uid: string; abilityId: string }
   | { type: 'leave-dojo' }
   | { type: 'leave-center' }
+  /** §2.9.1 — walk on from the field nurse. */
+  | { type: 'leave-aid' }
+  /** §2.11.0 — walk into one of the City's open buildings. Leaving it returns to the lobby. */
+  | { type: 'enter-building'; building: CityBuilding }
+  /** §2.11.3 — the gate: pick one of the three Region Modifiers, which *is* leaving the City for the next Region. */
+  | { type: 'depart-city'; modifierId: string }
+  /** §2.11.2.4 — sell a bagged held item for 30 % of its listed price. City shops only. */
+  | { type: 'sell-item'; itemId: string }
   /** §2.9.2 — buy the stock in slot `index`. */
   | { type: 'buy'; index: number }
   /** §2.9.3 — re-roll the unsold slots at 25 → 50 → 100 ₽. */
@@ -416,6 +468,10 @@ export type RunRejectReason =
   | 'item-locked-to-species'
   | 'no-trauma'
   | 'unknown-option'
+  /** §2.11 — a City action outside a City, or a City shop action at the route's merchant. */
+  | 'not-in-city'
+  /** §2.11.4 — a building this City does not have open. */
+  | 'building-closed'
   /** §7.3.7 — a Legendary pick that names a relic the offer did not contain. */
   | 'not-offered';
 

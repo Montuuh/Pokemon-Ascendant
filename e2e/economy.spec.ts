@@ -44,17 +44,95 @@ async function runAt(page: Page, kind: string, opts: { starter?: string; seed?: 
       }
       return dev.run.state()!.phase;
     }, kind);
-    const want = kind === 'mystery' ? 'event' : kind;
-    if (phase === want || phase === 'ended') break;
+    const want = kind === 'mystery' ? 'event' : kind === 'merchant' ? 'shop' : kind;
+    if (phase === want || phase === 'ended' || phase === 'city') break;
   }
 
   if (money !== undefined) await page.evaluate((m) => window.__ascendant!.run.pay(m as number), money);
   await page.evaluate(() => window.__ascendant!.goTo('map'));
 }
 
-test.describe('The Poké Mart — §2.9.2', () => {
+/** §2.11 — stand a fresh run in Pallet Town, the way a Gym win would, without walking the Region. */
+async function inTown(page: Page, opts: { money?: number; cityIndex?: number } = {}): Promise<void> {
+  await freshRun(page);
+  await page.evaluate((i) => window.__ascendant!.run.city(i), opts.cityIndex ?? 0);
+  if (opts.money !== undefined) await page.evaluate((m) => window.__ascendant!.run.pay(m as number), opts.money);
+  await expect(page.getByTestId('city-screen')).toBeVisible();
+}
+
+test.describe('The town — §2.11', () => {
+  test('the buildings are doors: open ones lead in and back, the rest say they are coming', async ({ page }) => {
+    await inTown(page);
+    for (const door of ['center', 'mart', 'dojo', 'safari', 'gate']) await expect(page.getByTestId(`door-${door}`)).toBeVisible();
+    // §2.9.4.1 — the Challenge Ring's door is inside the Dojo, not on the square.
+    await expect(page.getByTestId('door-ring')).toHaveCount(0);
+    await expect(page.getByTestId('city-money')).toContainText(/\d/);
+    await expect(page.getByTestId('door-safari')).toHaveAttribute('data-state', 'soon');
+    await page.screenshot({ path: 'playtest/city-pallet.png' });
+
+    // §2.11.0 — a door in development is still a door: it opens, and it says so.
+    await page.getByTestId('door-safari').click();
+    await expect(page.getByTestId('door-soon')).toBeVisible();
+    await page.getByTestId('btn-door-back').click();
+    await expect(page.getByTestId('door-soon')).toHaveCount(0);
+
+    // An open door leads in, and back out to the same town.
+    await page.getByTestId('door-mart').click();
+    await expect(page.getByTestId('shop-screen')).toBeVisible();
+    await page.getByTestId('btn-leave-shop').click();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
+  });
+
+  test('the gate is the Reflection: one modifier for the next Region, and the pick leaves town', async ({ page }) => {
+    await inTown(page);
+    await page.getByTestId('door-gate').click();
+    await expect(page.getByTestId('reflection')).toBeVisible();
+    await expect(page.getByTestId('btn-depart')).toBeDisabled();
+    await page.screenshot({ path: 'playtest/city-reflection.png' });
+
+    // Staying is allowed — the town is still there.
+    await page.getByTestId('btn-stay').click();
+    await expect(page.getByTestId('reflection')).toHaveCount(0);
+
+    await page.getByTestId('door-gate').click();
+    await page.locator('[data-testid^="reflection-"]').first().click();
+    await page.getByTestId('btn-depart').click();
+    await expect(page.getByTestId('map-screen')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Region 2' })).toBeVisible();
+    const run = await page.evaluate(() => window.__ascendant!.run.state()!);
+    expect(run.regionIndex).toBe(1);
+    expect(run.regionModifier).toBeTruthy();
+    expect(run.city).toBeNull();
+  });
+
+  test('Celadon City has the Department Store and the Game Corner behind it', async ({ page }) => {
+    await inTown(page, { cityIndex: 1 });
+    await expect(page.getByTestId('city-screen')).toHaveAttribute('data-city', 'celadon-city');
+    for (const door of ['center', 'department-store', 'dojo', 'game-corner', 'black-market', 'safari', 'gate']) await expect(page.getByTestId(`door-${door}`)).toBeVisible();
+    await page.screenshot({ path: 'playtest/city-celadon.png' });
+  });
+});
+
+test.describe('Statuses between fights — §4.2.7.1', () => {
+  test('a carried status shows on the map and in town, and the Center clears it', async ({ page }) => {
+    await freshRun(page);
+    await page.evaluate(() => window.__ascendant!.run.afflict('burn'));
+    await expect(page.getByTestId('box-status-squirtle')).toBeVisible();
+
+    await page.evaluate(() => window.__ascendant!.run.city(0));
+    await expect(page.getByTestId('city-party')).toBeVisible();
+    await expect(page.getByTestId('city-mon-squirtle')).toHaveAttribute('aria-label', /Burn/);
+
+    await page.getByTestId('door-center').click();
+    await page.getByTestId('btn-leave-center').click();
+    await expect(page.getByTestId('city-mon-squirtle')).not.toHaveAttribute('aria-label', /Burn/);
+  });
+});
+
+test.describe('The Poké Mart — §2.11.2', () => {
   test('buying takes the money, marks the slot sold, and leaves it on the shelf', async ({ page }) => {
-    await runAt(page, 'shop', { money: 400 });
+    await inTown(page, { money: 400 });
+    await page.getByTestId('door-mart').click();
     await expect(page.getByTestId('shop-screen')).toBeVisible();
     await page.screenshot({ path: 'playtest/run-shop.png' });
 
@@ -70,10 +148,16 @@ test.describe('The Poké Mart — §2.9.2', () => {
     await expect(page.getByTestId('shop-sold-0')).toBeVisible();
     await expect(slot).toBeDisabled();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBeLessThan(before);
+
+    // §2.11.0 — and it is still sold when you come back in.
+    await page.getByTestId('btn-leave-shop').click();
+    await page.getByTestId('door-mart').click();
+    await expect(page.getByTestId('shop-sold-0')).toBeVisible();
   });
 
   test('the re-roll ladder is priced on the button and stops after three', async ({ page }) => {
-    await runAt(page, 'shop', { money: 2000 });
+    await inTown(page, { money: 2000 });
+    await page.getByTestId('door-mart').click();
     const reroll = page.getByTestId('btn-reroll');
     await expect(reroll).toContainText('25');
     await reroll.click();
@@ -85,14 +169,49 @@ test.describe('The Poké Mart — §2.9.2', () => {
     await expect(reroll).toBeDisabled();
   });
 
+  test('the counter buys a held item back for 30 % — §2.11.2.4', async ({ page }) => {
+    await inTown(page, { money: 0 });
+    await page.evaluate(() => window.__ascendant!.run.wear('leftovers'));
+    await page.getByTestId('door-mart').click();
+    await expect(page.getByTestId('shop-sell')).toBeVisible();
+    await page.getByTestId('sell-leftovers').click();
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(90);
+    await expect(page.getByTestId('shop-sell')).toHaveCount(0);
+  });
+
   test('a shelf you cannot pay for is readable, not hidden', async ({ page }) => {
-    await runAt(page, 'shop', { money: 0 });
+    await inTown(page, { money: 0 });
+    await page.getByTestId('door-mart').click();
     // Every slot is disabled, and every one still shows its name and its price: this is the shelf you are
     // saving toward, and a blanked-out shelf tells you nothing about whether to come back.
     const slots = page.locator('[data-testid^="shop-slot-"]');
     await expect(slots.first()).toBeDisabled();
     await expect(slots.first()).not.toBeEmpty();
     await page.getByTestId('btn-leave-shop').click();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
+  });
+});
+
+test.describe('The route services — §2.9', () => {
+  test('the merchant sells Poké Balls by three and re-rolls once', async ({ page }) => {
+    await runAt(page, 'merchant', { money: 2000 });
+    await expect(page.getByTestId('shop-screen')).toBeVisible();
+    await expect(page.getByTestId('shop-screen')).toContainText('Travelling merchant');
+    await expect(page.getByTestId('shop-screen')).toContainText('Poké Ball ×3');
+    await page.screenshot({ path: 'playtest/run-merchant.png' });
+    const reroll = page.getByTestId('btn-reroll');
+    await reroll.click();
+    await expect(reroll).toContainText('No re-rolls left');
+    await page.getByTestId('btn-leave-shop').click();
+    await expect(page.getByTestId('map-screen')).toBeVisible();
+  });
+
+  test('the field nurse heals on arrival and waves you on', async ({ page }) => {
+    await runAt(page, 'aid');
+    await expect(page.getByTestId('aid-screen')).toBeVisible();
+    await expect(page.getByTestId('aid-box').locator('li')).toHaveCount(await page.evaluate(() => window.__ascendant!.run.state()!.box.length));
+    await page.screenshot({ path: 'playtest/run-aid.png' });
+    await page.getByTestId('btn-leave-aid').click();
     await expect(page.getByTestId('map-screen')).toBeVisible();
   });
 });
@@ -133,12 +252,13 @@ test.describe('Mystery Events — §2.10', () => {
   });
 });
 
-test.describe('The Pokémon Centre — §2.9.1, §8.2.4', () => {
+test.describe('The Pokémon Centre — §2.11.1, §8.2.4', () => {
   test('the heal is free and automatic; Therapy is the decision', async ({ page }) => {
-    await runAt(page, 'center', { money: 900 });
+    await inTown(page, { money: 900 });
+    await page.getByTestId('door-center').click();
     await expect(page.getByTestId('center-screen')).toBeVisible();
 
-    // §2.9.1 — the restore already happened on entry, so nobody is hurt when the screen opens.
+    // §2.11.1 — the restore already happened on entry, so nobody is hurt when the screen opens.
     const hurt = await page.evaluate(() => window.__ascendant!.run.state()!.box.filter((m) => m.hp <= 0).length);
     expect(hurt).toBe(0);
 
@@ -157,7 +277,7 @@ test.describe('The Pokémon Centre — §2.9.1, §8.2.4', () => {
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.traumaStacks)).toBe(2);
 
     await page.getByTestId('btn-leave-center').click();
-    await expect(page.getByTestId('map-screen')).toBeVisible();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
   });
 });
 

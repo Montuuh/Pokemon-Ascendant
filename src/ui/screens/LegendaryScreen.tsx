@@ -3,7 +3,9 @@ import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { LEGENDARY_CAP } from '@/sim';
 import { ItemCard } from '@/ui/components/ItemCard';
-import { InfoDot, Tip } from '@/ui/tooltip';
+import { nodeBadge } from '@/ui/art';
+import { badgeTip } from '@/ui/tips';
+import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import styles from './LegendaryScreen.module.css';
 
 // §7.3.7 — the guaranteed 1-of-3 that closes a Gym victory.
@@ -23,10 +25,19 @@ export function LegendaryScreen() {
 
   const held = run.relics.filter((id) => content.relic(id).rarity === 'legendary').length;
   const atCap = held >= LEGENDARY_CAP;
+  // §5.10 — the Badge this Gym just paid. The run-end summary used to be where it was shown; since v0.7.1 a Gym
+  // leads to a City, so this screen is the one moment between the win and the town.
+  const won = run.badges.length ? content.badge(run.badges[run.badges.length - 1]!) : null;
 
   return (
     <main className={styles.root} data-testid="legendary-screen">
       <div className={`${styles.card} fx-pop`}>
+        {won && (
+          <Tipped tip={badgeTip(won.name, won.description)} className={styles.badge} data-testid="badge-award">
+            <img src={nodeBadge(`gym-${won.type}`)} alt="" width={40} height={40} />
+            <span className="display">{won.name} earned</span>
+          </Tipped>
+        )}
         <h1 className={`${styles.title} display`}>
           {atCap ? 'One more, from the Gym' : 'The Gym owes you something'}
           <InfoDot

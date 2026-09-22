@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { BOND_RANK_NAME, POKEMON_TYPES, SHELVES, describeToll, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
+import { AID_HEAL_PCT, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { INTENT_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL } from '@/ui/strings';
+import { CITY_DOOR_HINT, INTENT_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 
 // Every explanation the game offers on hover, in one file.
@@ -266,4 +266,59 @@ export function fleeTip(tier: FleeTier | null, toll: FleeToll | null): ReactNode
       footer={toll.loot === 'relic' ? 'The relic is picked at random, never a Legendary.' : toll.loot === 'consumable' ? 'The consumable is picked at random.' : 'Cheaper than a wipe, dearer than a win.'}
     />
   );
+}
+
+// ── Cities ───────────────────────────────────────────────────────────────────────────────────────────────
+
+/** §2.11.4 — a City's door: what is behind it, and whether it is open, under the name the screen gives it. */
+export function doorTip(door: CityDoor, open: boolean, title: string): ReactNode {
+  return <Tip title={title} meta={[open ? (door === 'gate' ? 'Ends the visit' : 'Open') : 'Not open yet']} body={CITY_DOOR_HINT[door]} />;
+}
+
+/** §2.11.0 — the town itself: how a lobby works, in the bubble beside its name. */
+export function townTip(name: string, nextRegion: number): ReactNode {
+  return <Tip title={name} body="Every labelled building is a door — walk in as often as you like. The road at the top leaves town." footer={`Region ${nextRegion} is next.`} />;
+}
+
+/** §7.2–§7.5 — the bag button, on the map and in town. */
+export function bagTip(): ReactNode {
+  return <Tip title="Your bag" body="Relics, held items and consumables. Equip held items on a Pokémon from here." />;
+}
+
+/** §2.11.1 — a Box member seen from the town or the nurse: what a Pokémon Center would still fix. */
+export function partyTip(name: string, level: number, hp: number, max: number, status: string | null, trauma: number): ReactNode {
+  const meta = [`Lv ${level}`, `${hp} / ${max} HP`, ...(status ? [STATUS_LABEL[status] ?? status] : []), ...(trauma ? [`Trauma ×${trauma}`] : [])];
+  const hurt = hp < max || status !== null;
+  return <Tip title={name} meta={meta} body={hurt ? 'A Pokémon Center heals and cures, free — every town has one.' : 'Fighting fit.'} footer={trauma ? 'Trauma comes off only with Therapy, at a Pokémon Center.' : undefined} />;
+}
+
+/** §2.9.1 — the field nurse. */
+export function nurseTip(): ReactNode {
+  return <Tip title="Field nurse" body={`${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free.`} footer="Trauma stays — only a Pokémon Center's Therapy takes it off." />;
+}
+
+/** §2.9.2 / §2.11.2 — which shop this is, and how it differs from the other kind. */
+export function shopTip(title: string, inCity: boolean): ReactNode {
+  return inCity
+    ? <Tip title={title} body={`Picked for your team, a little dearer than the merchant. What you leave stays on the shelf until you leave town, and the counter buys held items back for ${Math.round(PRICES.sellShare * 100)} % of their price.`} />
+    : <Tip title={title} body={`The basics at route prices: cures, Poké Balls by ${PRICES.merchantBalls.qty}, and one thing worth a look. Once you walk on, the cart is gone.`} />;
+}
+
+/** §2.11.2.4 — the sell counter, and each item on it. */
+export function sellTip(): ReactNode {
+  return <Tip title="The counter" body={`Any held item in your bag sells for ${sellPrice()} ₽ — ${Math.round(PRICES.sellShare * 100)} % of its price. The merchant on the route does not buy.`} />;
+}
+export function heldItemSellTip(itemId: string): ReactNode {
+  const item = getContent().heldItem(itemId);
+  return <Tip title={item.name} meta={['Held item', `Sells for ${sellPrice()} ₽`]} body={item.description} footer="Selling is for good." />;
+}
+
+/** §2.9.4 — the Dojo, beside its one-line lede. */
+export function dojoTip(): ReactNode {
+  return <Tip title="The Dojo" body="The master teaches a Pokémon a move it would never learn by levelling, or swaps its passive ability. As many as you can pay for; the price is on every offer." />;
+}
+
+/** §5.10 — a Badge: permanent, so what it does is the whole tip. */
+export function badgeTip(name: string, description: string): ReactNode {
+  return <Tip title={name} meta={['Badge']} body={description} footer="Kept for the rest of the run." />;
 }

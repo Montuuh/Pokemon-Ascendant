@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { IconMenu2, IconBackpack, IconFlag, IconSparkles } from '@tabler/icons-react';
+import { IconMenu2, IconBackpack, IconSparkles } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { regionPlate } from '@/ui/art';
 import { getContent } from '@/content/registry';
-import { LAYERS, boxCapacity, gymById, nodesInLayer, type MapNode, type PartyMon } from '@/sim';
+import { LAYERS, boxCapacity, gymById, isServiceNode, nodesInLayer, type MapNode, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { InventoryDrawer } from '@/ui/components/InventoryDrawer';
 import { Money } from '@/ui/components/Money';
@@ -15,7 +15,7 @@ import { PauseMenu } from '@/ui/components/PauseMenu';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { RUN_REJECT_TEXT } from '@/ui/strings';
-import { ballsTip, moneyTip } from '@/ui/tips';
+import { bagTip, ballsTip, moneyTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './MapScreen.module.css';
 
@@ -54,7 +54,7 @@ export function MapScreen() {
   const [managing, setManaging] = useState<string | null>(null);
   /** §7.2–§7.5 — the inventory drawer: relics, held items, the bag. The only place a Held Item moves. */
   const [inventory, setInventory] = useState(false);
-  const bagTip = useTip(<Tip title="Your bag" body="Relics, held items and consumables. Equip held items on a Pokémon from here." />);
+  const bagBubble = useTip(bagTip());
 
   const phase = run?.phase;
   const outcome = run?.outcome;
@@ -197,7 +197,7 @@ export function MapScreen() {
           </span>
         </div>
         <div className={styles.purse}>
-          {/* §2.14 — the wallet is on the map because the map is where you decide whether a Shop or a Dojo
+          {/* §2.14 — the wallet is on the map because the map is where you decide whether the merchant
               is worth the fight it costs. Deciding that without knowing the balance is not a decision. */}
           <Tipped tip={moneyTip(run.money)} className={styles.stat} data-testid="map-money">
             <Money amount={run.money} size={20} />
@@ -222,17 +222,13 @@ export function MapScreen() {
               <b className="tabular">{run.tms.length}</b>
             </Tipped>
           )}
-          <Tipped tip={<Tip title={`${run.stats.nodesCleared} of ${LAYERS} nodes cleared`} body="One node per layer. The Gym is the last." />} className={styles.stat}>
-            <IconFlag size={20} />
-            <b className="tabular">{run.stats.nodesCleared}</b>
-          </Tipped>
           <button
             type="button"
             className={styles.bagBtn}
             onClick={() => setInventory(true)}
             data-testid="btn-inventory"
             aria-label="Bag: relics, held items and consumables"
-            {...bagTip}
+            {...bagBubble}
           >
             <IconBackpack size={18} />
             <b className="tabular">{run.consumables.length + run.bag.length}</b>
@@ -296,8 +292,8 @@ export function MapScreen() {
         <NodePreviewCard
           node={pending}
           active={active}
-          canEnter={pending.kind === 'center' || pending.kind === 'dojo' || healthy}
-          blockedReason={pending.kind !== 'center' && pending.kind !== 'dojo' && !healthy ? RUN_REJECT_TEXT['no-healthy-pokemon']! : null}
+          canEnter={isServiceNode(pending.kind) || healthy}
+          blockedReason={!isServiceNode(pending.kind) && !healthy ? RUN_REJECT_TEXT['no-healthy-pokemon']! : null}
           onEnter={() => beginCombat()}
           onCancel={() => dispatch({ type: 'cancel-preview' })}
         />

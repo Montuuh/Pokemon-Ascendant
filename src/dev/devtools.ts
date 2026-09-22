@@ -2,6 +2,8 @@ import { useAccountStore } from '@/app/accountStore';
 import { useAppStore, type Screen } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
+import { getContent } from '@/content/registry';
+import { produce } from 'immer';
 import * as sim from '@/sim';
 import { nextAction } from '@/sim/balance/autoPlayer';
 
@@ -16,13 +18,15 @@ import { nextAction } from '@/sim/balance/autoPlayer';
 //   __ascendant.run.dump()             compact JSON of the live run (position, box, reachable, phase)
 //   __ascendant.run.dispatch({...})    a RunAction
 //   __ascendant.run.fill(6)            top the Box up to N Pokémon — the fast way to reach Swap-or-Skip
-//   __ascendant.run.goto('dojo')       walk to the nearest node of a kind, auto-playing every fight on the way
+//   __ascendant.run.goto('merchant')   walk to the nearest node of a kind, auto-playing every fight on the way
+//   __ascendant.run.city()             stand the run in Pallet Town (1: Celadon City) without walking there
 //   __ascendant.run.levelTo(11)        put the Lead at a level, learnset and all
 //   __ascendant.run.grantTm('tm05-surf')
 //   __ascendant.run.wear('leftovers')   put a held item in the bag (§7.4)
 //   __ascendant.run.wear()              one of every generic held item, for eyeballing the inventory drawer
 //   __ascendant.run.trauma(3)           give the Lead N Trauma stacks — the fast way to see §8.2.4's Therapy
 //   __ascendant.run.pay(2000)           set the wallet, for pricing screens without grinding for the money
+//   __ascendant.run.afflict('burn')     give the Lead a carried status (§4.2.7.1), as a fight would have left it
 export interface AscendantDevTools {
   version: string;
   dump: () => Record<string, unknown> | null;
@@ -70,6 +74,13 @@ export interface AscendantRunTools {
   trauma: (stacks: number, uid?: string) => void;
   /** §2.14 — set the wallet outright. */
   pay: (amount: number) => void;
+  /** §4.2.7.1 — leave a status on a Box Pokémon, as if its last fight had ended with it. */
+  afflict: (kind: sim.PrimaryStatus, uid?: string) => void;
+  /**
+   * §2.11 — stand the run in the City after Region `regionIndex` (0 → Pallet Town, 1 → Celadon City), with the
+   * lobby rolled the way a Gym win would roll it. The route is skipped; the City is the real one.
+   */
+  city: (regionIndex?: number) => void;
   save: () => void;
   load: () => boolean;
 }
@@ -179,6 +190,22 @@ export function installDevTools(): void {
         useRunStore.setState({ run: { ...run, money: Math.max(0, Math.floor(amount)) } });
       },
 
+      afflict: (kind, uid) => {
+        const run = useRunStore.getState().run;
+        if (!run) return;
+        const target = uid ?? run.activeUids[0] ?? run.box[0]?.uid;
+        const box = run.box.map((m) => (m.uid === target ? { ...m, status: { kind, turnsLeft: null } } : m));
+        useRunStore.setState({ run: { ...run, box } });
+      },
+
+      city: (regionIndex = 0) => {
+        const run = useRunStore.getState().run;
+        if (!run) return;
+        const ctx = sim.defaultRunCtx(getContent());
+        useRunStore.setState({ run: produce(run, (d) => { d.regionIndex = regionIndex; sim.arriveAtCity(d, ctx); }) });
+        useAppStore.getState().goTo('map');
+      },
+
       /**
        * Walk to the nearest node of a kind, auto-playing every fight and taking the first archetype at every
        * Evolution screen. Everything goes through the real reducers, so what it reaches is a state the game
@@ -201,16 +228,17 @@ export function installDevTools(): void {
           if (run.phase === 'reward') { store().dispatch({ type: 'claim-reward' }); continue; }
           if (run.phase === 'swap-or-skip') { store().dispatch({ type: 'resolve-recruit', releaseUid: null }); continue; }
 
-          // Arrived: stop and hand the screen over. A Mystery node's phase is `event`, not `mystery` — the
-          // node kind and the phase share a name for the other three and not for this one.
-          if (run.phase === (kind === 'mystery' ? 'event' : kind)) break;
+          // Arrived: stop and hand the screen over. A node's phase is not always its kind's name: a Mystery
+          // opens `event` and the merchant opens `shop`.
+          if (run.phase === (kind === 'mystery' ? 'event' : kind === 'merchant' ? 'shop' : kind)) break;
+          // §7.3.7 / §2.11 — a Gym's win stops on the Legendary pick (the walk's arrival for `goto('gym')`), and
+          // after it the City; neither is walked through.
+          if (run.phase === 'legendary' || run.phase === 'city') break;
 
-          // A service node on the way is walked *through*, not stopped at. The shortest path to the Dojo at
-          // L6 runs past the Mart at L3, and a `goto('dojo')` that parks in the Mart is a walk that did not
-          // finish — which is exactly what it used to do.
+          // A service node on the way is walked *through*, not stopped at. A `goto('mystery')` that parks at
+          // the merchant is a walk that did not finish — which is exactly what it used to do.
           if (run.phase === 'shop') { store().dispatch({ type: 'leave-shop' }); continue; }
-          if (run.phase === 'center') { store().dispatch({ type: 'leave-center' }); continue; }
-          if (run.phase === 'dojo') { store().dispatch({ type: 'leave-dojo' }); continue; }
+          if (run.phase === 'aid') { store().dispatch({ type: 'leave-aid' }); continue; }
           if (run.phase === 'event') {
             // Option 0 is a real choice made by the real reducer; the walker just always takes the first.
             if (!run.eventResult) store().dispatch({ type: 'choose-event', option: 0 });

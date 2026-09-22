@@ -43,6 +43,17 @@ describe('createCombat — §3.2.1 Combat Start', () => {
     expect(c.status?.kind).toBe('poison');
   });
 
+  it('Start_CarriedStatus_KeepsItsClock_§4.2.7.1', () => {
+    // A status carried in from the run's last fight resumes with what was left of it, not a fresh duration.
+    const s = start(scenario({ team: [{ species: 'charmander', level: 8, status: 'sleep', statusTurnsLeft: 1, confusionTurns: 2 }], enemies: [PIDGEY] }));
+    const c = s.player.team[0]!;
+    expect(c.status?.kind).toBe('sleep');
+    expect(c.status?.turnsLeft).toBe(1);
+    // §4.2.3.1 — Confusion bites at the start of a turn, and turn 1 has already started: two carried turns
+    // are the fumble on turn 1 (spent) and one more to come.
+    expect(c.confusionTurns).toBe(1);
+  });
+
   it('Start_Trauma_TwoZoneCurve_FloorsAtSeventyFivePercentOff', () => {
     // §8.2.1 — zone 1 is gentle (5 %/stack), zone 2 is the rest-or-retire signal (10 %/stack), floor −75 %.
     expect(effectiveMaxHp(100, 0, ctx.config)).toBe(100);

@@ -1,9 +1,11 @@
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { GYMS, LAYERS, maxHpOf } from '@/sim';
+import { GYMS, LAYERS, REGION_COUNT, maxHpOf } from '@/sim';
 import { nodeBadge } from '@/ui/art';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { badgeTip } from '@/ui/tips';
+import { Tipped } from '@/ui/tooltip';
 import { AccountSummary } from './hub/AccountSummary';
 import styles from './RunEndScreen.module.css';
 
@@ -34,38 +36,37 @@ export function RunEndScreen({ outcome }: { outcome: 'victory' | 'defeat' }) {
   // §5.10 — the Badge you actually won, from the lane you actually took. This read `GYM` until v0.5, which
   // was fine while every run ended at Brock and congratulated a Misty run on its Boulder Badge afterwards.
   const badges = run.badges.map((id) => content.badge(id));
-  const beaten = GYMS.find((g) => run.badges.includes(g.badgeId)) ?? null;
+  // The Gym that ended it: the last Badge in the case, not the first.
+  const lastBadge = run.badges[run.badges.length - 1];
+  const beaten = GYMS.find((g) => g.badgeId === lastBadge) ?? null;
   const metrics: { label: string; value: string }[] = [
-    { label: 'Nodes cleared', value: `${run.stats.nodesCleared} / ${LAYERS}` },
+    { label: 'Regions cleared', value: `${won ? run.regionIndex + 1 : run.regionIndex} / ${REGION_COUNT}` },
+    { label: 'Nodes cleared', value: String(run.stats.nodesCleared) },
     { label: 'Fights won', value: String(run.stats.combatsWon) },
     { label: 'Turns played', value: String(run.stats.turnsPlayed) },
     { label: 'Pokémon caught', value: String(run.stats.catches) },
     { label: 'Faints', value: String(run.stats.faints) },
-    { label: 'Depth reached', value: `Layer ${depth} / ${LAYERS}` },
+    // Where it ended, on a loss only: a won run ended at the last Gym, and "Regions cleared" already says so.
+    ...(won ? [] : [{ label: 'Depth reached', value: `Layer ${depth} / ${LAYERS}` }]),
   ];
 
   return (
     <main className={`${styles.root} ${won ? styles.won : styles.lost}`} data-testid={`${outcome}-screen`}>
       <div className={`${styles.card} fx-pop`}>
-        <h1 className={`${styles.title} display`}>{won ? 'Region cleared!' : 'Run over'}</h1>
+        <h1 className={`${styles.title} display`}>{won ? 'Run complete!' : 'Run over'}</h1>
         <p className={styles.sub}>
           {won
-            ? `${beaten?.name ?? 'The Gym Leader'} is beaten — and so is the road out of Region 1.`
+            ? `${beaten?.name ?? 'The last Gym Leader'} is beaten, and the run is yours.`
             : 'Every Pokémon in your Box was down. That is where the run ends, and where the next one starts smarter.'}
         </p>
 
         {won && badges.length > 0 && (
           <div className={styles.badge} data-testid="badge-award">
             {badges.map((b) => (
-              <div key={b.id} className={styles.badgeRow}>
+              <Tipped key={b.id} tip={badgeTip(b.name, b.description)} className={styles.badgeRow}>
                 <img src={nodeBadge(`gym-${b.type}`)} alt="" width={48} height={48} />
-                <span>
-                  <span className="display">{b.name}</span>
-                  {/* §5.10 — a Badge is permanent, so what it does is worth reading even at the end of a
-                      Region: it is the thing the next one starts with. */}
-                  <em className={styles.badgeEffect}>{b.description}</em>
-                </span>
-              </div>
+                <span className="display">{b.name}</span>
+              </Tipped>
             ))}
           </div>
         )}

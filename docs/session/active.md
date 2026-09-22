@@ -1,34 +1,32 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-09-22 · **Version:** v0.7 — Cities & Regions 2–3, five subversions. v0.6.5 is the shipped build.
-Nothing of v0.7 is coded: the user wants the version's bases settled first.
-**Sprint goal:** v0.7.1 — the seam and the town. The run must stop ending at the Region 1 Gym (`run.ts:238`).
+**Date:** 2026-09-22 · **Version:** v0.7.1 shipped (*The seam and the town*). v0.7 has five subversions.
+**Sprint goal next:** v0.7.2 — *The city*: Celadon's Department Store by floors, the wider Dojo, the Game
+Corner's two machines (§2.11.5) and the Challenge Ring ladder (§2.9.4.1) behind the doors already drawn.
 
-**Decided 2026-09-22 (canon rewritten, `docs/roadmap.md` renumbered):**
-- **Cities are lobbies** (§2.1.4, §2.11): a drawn town, buildings as doors, no visit budget. Open doors
-  (Center, shop, Dojo, Game Corner) re-enterable; the Challenge Ring (and the Black Market, once open) commit
-  once per visit. The gate opens the Reflection (§2.11.3) and leaves.
-- **Pallet Town** (Center · Poké Mart · Dojo · Safari 🚧) then **Celadon City** (Center · Department Store ·
-  Dojo · Game Corner · Black Market 🚧 beneath it · Safari 🚧). 🚧 = drawn, enterable, "in development".
-- **Routes** keep only a nurse (+50 % HP, cures every status, never Trauma) and a travelling merchant (§2.9);
-  the Shop and the Dojo live in the Cities; the freed L6 node is a third Mystery Event.
-- **Every status carries over between fights** (§4.2.7.1) — timed ones with their turns left; stat stages clear.
-- **The City Gym is gone** → the Challenge Ring (§2.9.4.1): a ladder, 2 rungs town / 3 city, see the next rival,
-  cash out or climb. Cities pay no Badge (recovering missed Badges → backlog). Game Corner: printed odds, EV < 1.
-- **Roadmap:** v0.8 multi-enemy + field effects · v0.9 Victory Road & League · v1.0 Release · v1.1 Polish ·
-  v1.2 map revamp. Backlog at the roadmap's tail (fossils, role events, Safari, Black Market, extra moves, HMs…).
+**What v0.7.1 built:**
+- **The seam** (§2.1.4): Gym → Legendary → City (`arriveAtCity`) → the gate's Reflection (`depart-city`) →
+  next Region. The third Gym wins. Regions 2–3 = Region 1's generator + `REGION_LEVEL_OFFSET` (+7/+16), beaten
+  Gyms excluded; the Gym scenario now reads its levels off the preview so the shift reaches it.
+- **Towns** (`ui/screens/city/`): Pallet Town and Celadon City as generated pixel-art lobbies
+  (`public/art/towns/`, prompts in `docs/art/prompts/`), doors as % boxes in `towns.ts`. Open: Center, shop
+  (8 + Poké Balls, ×1.3, 3 re-rolls, sells held items at 30 %), Dojo (+30 % in Celadon). In development:
+  Ring, Safari, Game Corner, Black Market. Dev hook: `__ascendant.run.city(0|1)`.
+- **Route**: field nurse (`aid`) and travelling merchant; third Mystery at L6. Badges from Showdown sprites.
+- **Statuses carry between fights** with their clocks (§4.2.7.1); the Box panel shows them.
+- Trauma Salve Cache Hub upgrade sold and live (first City's shelf).
 
-**Design questions: all closed.** Ring = cash-out ladder, ₽ below and a Rare 1-of-3 at the top, meant to be
-lost (clear-rate bands, §2.9.4.1) · no City Badge (backlog) · Game Corner = the Wheel (EV 0.96) + the Slots
-(EV 0.94, ×50 jackpot at a fixed 50 ₽), seeded and printed (§2.11.5). Balance pass → backlog. Biome field
-effects wait for v0.8. **One question before building the lobby: the town background's source.**
+**Findings to act on:**
+- Placeholder Regions are too gentle: every autoplayed run that beat Gym 1 beat Gyms 2 and 3 (60 runs).
+  v0.7.3's own content has to carry the difficulty — don't just raise the offset.
+- Not built from §2.11: the Center's Daycare and PC Box services, scored shop curation (§2.11.2.1).
+- The v1.2 map revamp should rebuild the towns from tilesets; the door boxes are measured off the PNGs.
 
-**Next action:** answer the queue, then v0.7.1 — the seam in `run/run.ts` (Gym → City → `regionIndex + 1`),
-the City lobby screen, strip the route nodes, carry every status (`run/report.ts` hard-sets `status: null`).
-**Blocked on:** nothing for the seam and the town; the four questions shape v0.7.2 (the city).
-**Test status:** `npm run check` green — 396 Vitest, typecheck, lint, § (368) and catalogue guards. 55/55 e2e.
-**UI review loop:** after every `src/ui`/`src/app` change run the `ui-review` skill. Doctrine:
-`docs/design/ui-doctrine.md`.
+**Open for the user:** the reviewer asks whether the doctrine should require 4.5:1 on text a player reads to plan
+even on a disabled control (unaffordable shop cards fade to 3.9:1 today) — a D5 amendment, not yet made.
+
+**Test status:** `npm run check` green — 417 Vitest, typecheck, lint, § (368) and catalogue guards. 63/63 e2e.
+**UI review loop:** after every `src/ui`/`src/app` change run the `ui-review` skill (v0.7.1: Ship after one round of fixes).
 
 ## Standing facts
 

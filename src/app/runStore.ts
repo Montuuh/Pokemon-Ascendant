@@ -92,6 +92,9 @@ export const useRunStore = create<RunStore>((set, get) => ({
     const AUTOSAVE: RunAction['type'][] = [
       'enter-node', 'claim-reward', 'resolve-recruit', 'begin-combat',
       'choose-branch', 'use-tm', 'teach-move', 'set-ability', 'leave-dojo',
+      // §2.11 — a City visit: the doors, what was bought and sold at them, and the gate out.
+      'pick-legendary', 'leave-aid', 'leave-shop', 'leave-center', 'buy', 'sell-item', 'use-therapy',
+      'enter-building', 'depart-city',
     ];
     if (AUTOSAVE.includes(action.type)) get().save();
     return true;

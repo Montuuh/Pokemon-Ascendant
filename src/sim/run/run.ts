@@ -3,16 +3,19 @@ import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { RngStreams } from '../rng/rngStreams';
 import { knownMoves } from '../combat/stats';
+import { isImmuneToStatus } from '../combat/status';
 import { buildScenario, maxHpOf } from './encounter';
 import { generateRegion } from './map';
-import { GYM, gymById, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
-import { benchXpShare, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollShopStock, therapyPrice } from './economy';
+import { GYM, GYMS, gymById, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
+import { AID_HEAL_PCT, benchXpShare, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollShopStock, sellPrice, therapyPrice } from './economy';
+import { CITIES, cityAfter, isFinalRegion } from './cities';
 import { mysteryEvent, rollEvent, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
-import { priceFor, traumaZone1Pct, victoryHealPct } from './regionModifiers';
+import { priceFor, rollRegionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, type ProgressionConfig } from './xp';
-import type { LevelUp, PartyMon, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
+import type { LevelUp, NodeKind, PartyMon, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
+
 
 /** A shop row in the player's words, for the log line after a purchase. */
 export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
@@ -33,9 +36,11 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 // §2 — the run reducer. Pure: (state, action) → state, exactly like the combat reducer, so a run is a seed
 // plus an action log and a save is that pair (§10.7.4, §10.8).
 
+// 8 — v0.7.1: the City (`city`), the route's nurse and merchant replacing its Center, Shop and Dojo nodes,
+//     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 7;
+export const RUN_SAVE_VERSION = 8;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -73,6 +78,7 @@ export function newPartyMon(speciesId: string, level: number, content: ContentRe
     abilityId: species.stage === 'basic' ? null : (species.availableAbilities[0] ?? null),
     archetype: species.archetype ?? null,
     status: null,
+    confusionTurns: 0,
     heldItem: null,
   };
   mon.hp = maxHpOf(mon, content);
@@ -117,6 +123,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     modifiers: [...modifiers],
     regionModifier: regionModifier ?? null,
     pendingShop: null,
+    city: null,
     pendingEvent: null,
     eventResult: null,
     seenEvents: [],
@@ -196,6 +203,65 @@ function catalystLevels(run: RunState, content: ContentRegistry): number {
   return typeof levels === 'number' ? levels : 0;
 }
 
+/** §4.2.7 — every status off one Pokémon: the nurse, the Center and a faint all do this. */
+function cureAll(mon: PartyMon): void {
+  mon.status = null;
+  mon.confusionTurns = 0;
+}
+
+/** §2.9.4 — a Dojo service's price here: the City's markup (base in the town, +30 % in the city), then any Region Modifier. */
+export function dojoPrice(run: RunState, content: ContentRegistry, service: 'move' | 'ability'): number {
+  const base = service === 'move' ? PRICES.dojoMove : PRICES.dojoAbility;
+  const markup = run.city ? CITIES[run.city.id].dojoMarkup : 1;
+  return priceFor(run, content, Math.round(base * markup));
+}
+
+/**
+ * §2.1.4 — a Region's Gym is behind the run: stop in the next City, or — after the last Region — win it.
+ * Victory Road and the League arrive in v0.9; until then the third Gym is the end of the run.
+ */
+function endRegion(draft: RunState, ctx: RunCtx): void {
+  if (isFinalRegion(draft.regionIndex) || !cityAfter(draft.regionIndex)) {
+    draft.outcome = 'victory';
+    draft.phase = 'ended';
+    return;
+  }
+  arriveAtCity(draft, ctx);
+}
+
+/**
+ * §2.11 — walk into the City after a Gym. Everything the lobby offers is rolled here, once: the shop's stock
+ * and the three Region Modifiers at the gate, so leaving a building and coming back is never a re-roll.
+ * The Region's modifier expires with the Region (§2.1.4.1); the next one is picked at the gate.
+ *
+ * Exported for the dev hook, which uses it to stand a run in a City without playing a Region to get there.
+ */
+export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
+  const id = cityAfter(draft.regionIndex) ?? 'pallet-town';
+  const rng = encounterRng(draft);
+  const shop = rollShopStock(rng, ctx.content, draft, 'city');
+  draft.cursors.EncounterRNG = rng.cursor;
+  // §8.4.2 Trauma Salve Cache — the first City's shelf always has a Salve. It takes the Uncommon relic's slot
+  // (the Salve is an Uncommon), so the shelf keeps its eight; a run already holding one gets the roll instead.
+  if (draft.perks.salveCache && draft.regionIndex === 0 && !draft.relics.includes('trauma-salve') && !shop.slots.some((s) => s.id === 'trauma-salve')) {
+    const i = shop.slots.findIndex((s) => s.kind === 'relic' && ctx.content.relic(s.id).rarity === 'uncommon');
+    const slot = { kind: 'relic' as const, id: 'trauma-salve', price: priceFor(draft, ctx.content, Math.round(PRICES.relic.uncommon * PRICES.cityMarkup)), sold: false };
+    if (i >= 0) shop.slots[i] = slot;
+    else shop.slots.push(slot);
+  }
+  // The gate's offer is seeded from the run and the Region, like the pre-run offer is seeded from the run.
+  const reflection = rollRegionModifierOffer((draft.seed ^ Math.imul(draft.regionIndex + 1, 0x9e3779b1)) >>> 0, ctx.content, draft.box, draft.money);
+  draft.city = { id, shop, reflection };
+  draft.regionModifier = null;
+  draft.pendingNodeId = null;
+  draft.pendingShop = null;
+  draft.phase = 'city';
+  say(draft, `You arrive in ${CITIES[id].name}.`);
+}
+
+/** §2.9 — the nodes that are not a fight: nobody needs to be standing to walk into one. */
+export const isServiceNode = (kind: NodeKind): boolean => kind === 'aid' || kind === 'merchant' || kind === 'mystery';
+
 /** After a node is cleared, the next layer's linked nodes open up. */
 function advanceFrom(draft: RunState, nodeId: string): void {
   const node = draft.map.nodes[nodeId];
@@ -221,7 +287,7 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
     // §5.10 — the Badge, before the run is marked won, so a save taken at the summary already has it.
     const gym = node.lane !== undefined ? gymById(draft.map.gyms[node.lane] ?? GYM.id) : GYM;
     if (!draft.badges.includes(gym.badgeId)) draft.badges.push(gym.badgeId);
-    draft.log.push(`${gym.name} is beaten. Region 1 is cleared.`);
+    draft.log.push(`${gym.name} is beaten. Region ${draft.regionIndex + 1} is cleared.`);
 
     // §7.3.7 — a Gym victory is a Legendary pick-moment. It stands between the Gym and the summary rather
     // than after it, because a choice offered on the results screen is a choice nobody makes.
@@ -235,8 +301,7 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
       draft.phase = 'legendary';
       return;
     }
-    draft.outcome = 'victory';
-    draft.phase = 'ended';
+    endRegion(draft, ctx);
   } else {
     draft.phase = 'map';
   }
@@ -385,17 +450,10 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
       case 'begin-combat': {
         const node = draft.map.nodes[draft.pendingNodeId!]!;
-        if (node.kind === 'dojo') {
-          // §2.9.4 — the Dojo is a utility stop, not a fight. Money is the gate now; the credit it used to
-          // carry in v0.3 is gone.
-          draft.phase = 'dojo';
-          say(draft, 'The Dojo master looks your team over.');
-          break;
-        }
-        if (node.kind === 'shop') {
-          // §2.9.2 — stock is seeded per visit, so leaving and coming back is not a re-roll.
+        if (node.kind === 'merchant') {
+          // §2.9.2 — the travelling merchant's cart. Stock is seeded per visit.
           const rng = encounterRng(draft);
-          draft.pendingShop = rollShopStock(rng, ctx.content, draft);
+          draft.pendingShop = rollShopStock(rng, ctx.content, draft, 'merchant');
           draft.cursors.EncounterRNG = rng.cursor;
           draft.phase = 'shop';
           break;
@@ -409,16 +467,17 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           draft.phase = 'event';
           break;
         }
-        if (node.kind === 'center') {
-          // §2.9.1 — the restore is free, automatic and complete: it is not a decision, so it happens on
-          // entry rather than behind a button. §8.2.4's Therapy *is* a decision, and it needs a screen to be
-          // made on — which is why the Centre stopped handing the map straight back in v0.4.
+        if (node.kind === 'aid') {
+          // §2.9.1 — the field nurse: half a heal for everyone in the Box, fainted or not, and every status
+          // cured. Not a decision, so it happens on arrival; the screen only says what she did. Trauma is a
+          // Pokémon Center's work, and the Centers are in the Cities now.
           for (const mon of draft.box) {
-            mon.hp = effectiveMax(draft, mon, ctx.content);
-            mon.status = null;
+            const max = effectiveMax(draft, mon, ctx.content);
+            mon.hp = Math.min(max, mon.hp + Math.floor((max * AID_HEAL_PCT) / 100));
+            cureAll(mon);
           }
-          say(draft, 'The Pokémon Center restored your whole Box.');
-          draft.phase = 'center';
+          say(draft, 'The nurse patched everyone up.');
+          draft.phase = 'aid';
           break;
         }
         const rng = encounterRng(draft);
@@ -461,7 +520,9 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           const mon = draft.box.find((m) => m.uid === result.uid);
           if (!mon) continue;
           mon.hp = Math.max(0, result.hp);
-          mon.status = result.status;
+          // §4.2.7.1 — the status leaves the fight with its clock; a faint has already cleared it.
+          mon.status = result.fainted ? null : result.status;
+          mon.confusionTurns = result.fainted ? 0 : (result.confusionTurns ?? 0);
           // §7.3.5 Champion's Crest — the record follows the Pokémon, not the fight.
           if (result.defeats !== undefined) mon.defeats = result.defeats;
           if (healPct > 0 && mon.hp > 0) {
@@ -678,6 +739,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           say(draft, 'The Evolution Catalyst is spent.');
         }
         applyBranch(mon, action.branchId, ctx.content);
+        // §4.2.7.1 — an evolution into a type immune to the status it carries clears it.
+        if (mon.status && isImmuneToStatus(ctx.content.species(mon.speciesId).types, mon.status.kind)) mon.status = null;
         const branch = ctx.content.branch(action.branchId);
         say(draft, `${from} evolved into ${ctx.content.species(mon.speciesId).name} — ${branch.label}.`);
         draft.pendingEvolutions.shift();
@@ -713,15 +776,6 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
-      case 'use-center': {
-        for (const mon of draft.box) {
-          mon.hp = effectiveMax(draft, mon, ctx.content);
-          mon.status = null;
-        }
-        say(draft, 'Everyone is back to full health.');
-        break;
-      }
-
       case 'set-active': {
         draft.activeUids = [...action.uids];
         break;
@@ -754,7 +808,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       // §6.4.2 — the Dojo's tutor service: an off-learnset move for this stage, the kind nature would never give.
       case 'teach-move': {
         const mon = draft.box.find((m) => m.uid === action.uid)!;
-        draft.money -= priceFor(draft, ctx.content, PRICES.dojoMove);
+        draft.money -= dojoPrice(draft, ctx.content, 'move');
         learnMove(mon, action.moveId);
         if (mon.moveIds.length < 4) mon.moveIds.push(action.moveId);
         say(draft, `The tutor taught ${ctx.content.species(mon.speciesId).name} ${ctx.content.move(action.moveId).name}.`);
@@ -764,7 +818,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       // §6.4.2 / §6.5.1 — the ability service. One passive slot; swapping back is allowed on purpose.
       case 'set-ability': {
         const mon = draft.box.find((m) => m.uid === action.uid)!;
-        draft.money -= priceFor(draft, ctx.content, PRICES.dojoAbility);
+        draft.money -= dojoPrice(draft, ctx.content, 'ability');
         mon.abilityId = action.abilityId;
         say(draft, `${ctx.content.species(mon.speciesId).name}'s passive is now ${ctx.content.ability(action.abilityId).name}.`);
         break;
@@ -772,7 +826,70 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
       case 'leave-dojo':
       case 'leave-center': {
+        // §2.11.0 — a City building's door leads back to the lobby, not onward.
+        if (draft.city) {
+          draft.phase = 'city';
+          break;
+        }
         leaveNode(draft, draft.pendingNodeId!, ctx);
+        break;
+      }
+
+      case 'leave-aid': {
+        leaveNode(draft, draft.pendingNodeId!, ctx);
+        break;
+      }
+
+      // §2.11.0 — the open doors. The Center heals on the way in, like the route's Centers always did; the
+      // shop brings back the stock rolled on arrival, so a sold slot stays sold across visits.
+      case 'enter-building': {
+        const city = draft.city!;
+        if (action.building === 'center') {
+          for (const mon of draft.box) {
+            mon.hp = effectiveMax(draft, mon, ctx.content);
+            cureAll(mon);
+          }
+          say(draft, 'The Pokémon Center restored your whole Box.');
+          draft.phase = 'center';
+        } else if (action.building === 'mart') {
+          draft.pendingShop = city.shop;
+          draft.phase = 'shop';
+        } else {
+          say(draft, 'The Dojo master looks your team over.');
+          draft.phase = 'dojo';
+        }
+        break;
+      }
+
+      // §2.11.3 — the gate. The pick *is* the departure: the modifier is set for the Region about to begin,
+      // the next map is drawn, and the City is behind you.
+      case 'depart-city': {
+        draft.regionModifier = action.modifierId;
+        draft.city = null;
+        draft.regionIndex += 1;
+        const mapRng = new RngStreams(draft.seed).get('MapRNG');
+        mapRng.cursor = draft.cursors.MapRNG ?? mapRng.cursor;
+        // §2.1 placeholder — a Gym whose Badge you hold is not drawn again.
+        const beaten = GYMS.filter((g) => draft.badges.includes(g.badgeId)).map((g) => g.id);
+        draft.map = generateRegion(mapRng, ctx.content, draft.regionIndex, draft.seed, draft.modifiers, beaten);
+        draft.cursors.MapRNG = mapRng.cursor;
+        draft.position = null;
+        draft.reachable = [...draft.map.entry];
+        draft.visited = [];
+        draft.pendingNodeId = null;
+        // docs/design/catalogs/economy.md §1 — one more Poké Ball as each Region begins.
+        draft.balls += RUN_START.ballsPerRegion;
+        draft.phase = 'map';
+        say(draft, `Region ${draft.regionIndex + 1} begins — ${ctx.content.regionModifier(action.modifierId).name}.`);
+        break;
+      }
+
+      // §2.11.2.4 — the run's one Poké Dollar exit valve.
+      case 'sell-item': {
+        draft.bag.splice(draft.bag.indexOf(action.itemId), 1);
+        const price = sellPrice();
+        draft.money += price;
+        say(draft, `Sold a ${ctx.content.heldItem(action.itemId).name} for ${price} ₽.`);
         break;
       }
 
@@ -786,7 +903,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             draft.consumables.push(slot.id);
             break;
           case 'ball':
-            draft.balls += 1;
+            draft.balls += slot.qty ?? 1;
             break;
           case 'relic':
             acquireRelic(draft, slot.id, ctx.content);
@@ -807,7 +924,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const stock = draft.pendingShop!;
         draft.money -= rerollPrice(stock)!;
         const rng = encounterRng(draft);
-        const fresh = rollShopStock(rng, ctx.content, draft);
+        const fresh = rollShopStock(rng, ctx.content, draft, draft.city ? 'city' : 'merchant');
         draft.cursors.EncounterRNG = rng.cursor;
         const sold = stock.slots.filter((s) => s.sold);
         stock.slots = [...sold, ...fresh.slots.slice(0, Math.max(0, stock.slots.length - sold.length))];
@@ -817,6 +934,13 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       }
 
       case 'leave-shop': {
+        // §2.11.0 — a City shop keeps what it sold for the next visit; the route's merchant is gone once passed.
+        if (draft.city) {
+          draft.city.shop = draft.pendingShop!;
+          draft.pendingShop = null;
+          draft.phase = 'city';
+          break;
+        }
         draft.pendingShop = null;
         leaveNode(draft, draft.pendingNodeId!, ctx);
         break;
@@ -884,8 +1008,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         if (action.relicId) acquireRelic(draft, action.relicId, ctx.content);
         else say(draft, 'You leave all three where they are.');
         draft.pendingLegendary = null;
-        draft.outcome = 'victory';
-        draft.phase = 'ended';
+        endRegion(draft, ctx);
         break;
       }
     }
@@ -910,7 +1033,8 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
     case 'begin-combat': {
       if (state.phase !== 'preview' || !state.pendingNodeId) return 'wrong-phase';
       const node = state.map.nodes[state.pendingNodeId];
-      if (node && node.kind !== 'center' && !state.activeUids.some((u) => (state.box.find((m) => m.uid === u)?.hp ?? 0) > 0))
+      // A service needs no one standing: the nurse is where a battered team goes, and the merchant does not fight.
+      if (node && !isServiceNode(node.kind) && !state.activeUids.some((u) => (state.box.find((m) => m.uid === u)?.hp ?? 0) > 0))
         return 'no-healthy-pokemon';
       return undefined;
     }
@@ -922,17 +1046,16 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (state.phase !== 'swap-or-skip' || !state.pendingRecruit) return 'wrong-phase';
       if (action.releaseUid && !state.box.some((m) => m.uid === action.releaseUid)) return 'unknown-pokemon';
       return undefined;
-    case 'use-center':
-      return state.phase === 'map' ? undefined : 'wrong-phase';
     case 'set-active': {
-      if (state.phase !== 'map' && state.phase !== 'preview') return 'wrong-phase';
+      // §2.3 — the loadout changes on the map, in a preview, and in a City's lobby.
+      if (state.phase !== 'map' && state.phase !== 'preview' && state.phase !== 'city') return 'wrong-phase';
       if (action.uids.length > 3) return 'team-too-large';
       if (action.uids.some((u) => !state.box.some((m) => m.uid === u))) return 'unknown-pokemon';
       if (!action.uids.some((u) => (state.box.find((m) => m.uid === u)?.hp ?? 0) > 0)) return 'no-healthy-pokemon';
       return undefined;
     }
     case 'set-lead':
-      if (state.phase !== 'map' && state.phase !== 'preview') return 'wrong-phase';
+      if (state.phase !== 'map' && state.phase !== 'preview' && state.phase !== 'city') return 'wrong-phase';
       if (!state.activeUids.includes(action.uid)) return 'unknown-pokemon';
       return undefined;
 
@@ -975,7 +1098,7 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       // §6.4.3 — the list is this stage's, so evolving changes what is on the menu.
       if (!ctx.content.species(mon.speciesId).tutorMoves.includes(action.moveId)) return 'not-on-tutor-list';
       if (mon.pool.includes(action.moveId)) return 'already-known';
-      return state.money < priceFor(state, ctx.content, PRICES.dojoMove) ? 'cannot-afford' : undefined;
+      return state.money < dojoPrice(state, ctx.content, 'move') ? 'cannot-afford' : undefined;
     }
 
     case 'set-ability': {
@@ -986,7 +1109,7 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       // §6.8.3 — the line's hidden ability is in the pool but locked until Bond rank 3.
       if (abilityLocked(state, mon.speciesId, action.abilityId, ctx.content)) return 'ability-locked';
       if (mon.abilityId === action.abilityId) return 'already-known';
-      return state.money < priceFor(state, ctx.content, PRICES.dojoAbility) ? 'cannot-afford' : undefined;
+      return state.money < dojoPrice(state, ctx.content, 'ability') ? 'cannot-afford' : undefined;
     }
 
     case 'leave-dojo':
@@ -994,6 +1117,25 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
 
     case 'leave-center':
       return state.phase === 'center' ? undefined : 'wrong-phase';
+
+    case 'leave-aid':
+      return state.phase === 'aid' ? undefined : 'wrong-phase';
+
+    case 'enter-building': {
+      if (state.phase !== 'city' || !state.city) return 'not-in-city';
+      return CITIES[state.city.id].open.includes(action.building) ? undefined : 'building-closed';
+    }
+
+    case 'depart-city': {
+      if (state.phase !== 'city' || !state.city) return 'not-in-city';
+      return state.city.reflection.includes(action.modifierId) ? undefined : 'not-offered';
+    }
+
+    case 'sell-item': {
+      if (state.phase !== 'shop') return 'wrong-phase';
+      if (!state.city) return 'not-in-city';
+      return state.bag.includes(action.itemId) ? undefined : 'no-such-item';
+    }
 
     case 'buy': {
       if (state.phase !== 'shop' || !state.pendingShop) return 'wrong-phase';

@@ -15,14 +15,23 @@ export const MONEY_REWARD: Record<string, [number, number]> = {
   gym: [500, 500],
 };
 
-/** §3 — prices. A Region Shop sells at these; a City Shop adds 30 %, and Cities are v0.7. */
+/** §2.9.1 — the field nurse restores this share of Effective Max HP. */
+export const AID_HEAL_PCT = 50;
+
+/** §3 — prices. The route's merchant sells at these; a City shop adds 30 % (§2.11.2.3). */
 export const PRICES = {
   consumableTier: [0, 40, 110, 200, 320] as number[],
   ball: 50,
+  /** §2.9.2 — the merchant's Poké Balls come three to a slot. */
+  merchantBalls: { qty: 3, price: 120 },
+  /** §2.11.2.3 — a City shop's markup over the merchant: you pay for selection. */
+  cityMarkup: 1.3,
+  /** §2.11.2.4 — a held item sells for this share of its listed price. City shops only. */
+  sellShare: 0.3,
   relic: { common: 150, uncommon: 300, rare: 600, legendary: 0 } as Record<RelicRarity, number>,
   heldItem: 300,
   tm: 350,
-  /** §2.9.3 — the re-roll ladder, up to three per visit. */
+  /** §2.9.3 — the re-roll ladder: the merchant stops after the first rung, a City shop after the third. */
   rerolls: [25, 50, 100] as number[],
   /** §8.2.4 — Therapy costs more the worse the Trauma is: 100 × (1 + stacks). */
   therapy: (stacks: number) => 100 * (1 + Math.max(0, stacks)),
@@ -147,40 +156,71 @@ export function wildChoices(run: RunState, content: ContentRegistry, base: numbe
   return n;
 }
 
-/**
- * §2.9.2 — a Region Shop's stock: three randomised consumables, a Poké Ball, one Common relic, one Uncommon,
- * and a special slot that is a Held Item or a TM curated to the team. Seeded per visit.
- *
- * Curation matters more than variety here: a TM nobody on the team can learn is not a choice, it is a
- * decoration, so the special slot only ever offers something at least one Box member can use.
- */
-export function rollShopStock(rng: GameRng, content: ContentRegistry, run: RunState): ShopStock {
-  const slots: ShopSlot[] = [];
+/** Draw `n` *different* entries. With replacement, the same Ice Heal took two slots of one shelf. */
+function drawDistinct<T>(rng: GameRng, list: T[], n: number): T[] {
+  const bag = [...list];
+  const out: T[] = [];
+  for (let i = 0; i < n && bag.length; i++) out.push(bag.splice(Math.min(bag.length - 1, Math.floor(rng.range01() * bag.length)), 1)[0]!);
+  return out;
+}
 
-  // Three *different* consumables. Drawing with replacement put the same Ice Heal in two slots of a
-  // seven-slot shelf, which is not variety, it is a wasted slot: the second one is a strictly worse buy
-  // than whatever it displaced.
-  const consumables = content.allConsumables().filter((c) => c.effect.kind !== 'catch' && c.tier <= 2);
-  for (let i = 0; i < 3 && consumables.length; i++) {
-    const def = consumables.splice(Math.min(consumables.length - 1, Math.floor(rng.range01() * consumables.length)), 1)[0]!;
-    slots.push({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 50, sold: false });
-  }
-
-  slots.push({ kind: 'ball', id: 'poke-ball', price: PRICES.ball, sold: false });
-
-  for (const rarity of ['common', 'uncommon'] as const) {
-    const id = rollRelic(rng, content, run.relics, rarity, run.perks?.relicPool ?? null);
-    if (id) slots.push({ kind: 'relic', id, price: PRICES.relic[rarity], sold: false });
-  }
-
-  // §2.9.2 slot 7/8 — a Held Item or a TM, whichever the team can actually use.
+/** A Held Item or a TM, whichever the team can actually use — a TM nobody can learn is a decoration. */
+function teamSpecial(rng: GameRng, content: ContentRegistry, run: RunState, kind: 'tm' | 'held-item' | 'either'): ShopSlot | null {
   const usableTms = content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
   const itemId = rollHeldItem(rng, content, ownedItems(run));
-  if (usableTms.length && (rng.range01() < 0.5 || !itemId)) {
+  const wantTm = kind === 'tm' || (kind === 'either' && usableTms.length > 0 && (rng.range01() < 0.5 || !itemId));
+  if (wantTm && usableTms.length) {
     const tm = usableTms[Math.min(usableTms.length - 1, Math.floor(rng.range01() * usableTms.length))]!;
-    slots.push({ kind: 'tm', id: tm.id, price: PRICES.tm, sold: false });
-  } else if (itemId) {
-    slots.push({ kind: 'held-item', id: itemId, price: PRICES.heldItem, sold: false });
+    return { kind: 'tm', id: tm.id, price: PRICES.tm, sold: false };
+  }
+  return itemId && kind !== 'tm' ? { kind: 'held-item', id: itemId, price: PRICES.heldItem, sold: false } : null;
+}
+
+/**
+ * A shop's stock, seeded per visit.
+ *
+ * **The travelling merchant** (§2.9.2) — four slots, basics only: two Tier-1 consumables, three Poké Balls, and
+ * a wildcard that is a Common relic or a Held Item. One re-roll.
+ *
+ * **A City shop** (§2.11.2) — the Mart's eight curated slots (§2.11.2.2): two Tier-1 consumables, one Tier-2,
+ * a Common and an Uncommon relic, a Rare half the time (otherwise a second Uncommon), a Held Item and a TM,
+ * plus Poké Balls always on the counter; everything 30 % dearer than the merchant (§2.11.2.3); three re-rolls.
+ */
+export function rollShopStock(rng: GameRng, content: ContentRegistry, run: RunState, kind: 'merchant' | 'city' = 'merchant'): ShopStock {
+  const slots: ShopSlot[] = [];
+  const pool = run.perks?.relicPool ?? null;
+  const tier = (t: number) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && c.tier === t);
+
+  if (kind === 'merchant') {
+    for (const def of drawDistinct(rng, tier(1), 2)) slots.push({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 50, sold: false });
+    slots.push({ kind: 'ball', id: 'poke-ball', price: PRICES.merchantBalls.price, qty: PRICES.merchantBalls.qty, sold: false });
+    // The wildcard: a Common relic or a Held Item, a coin flip between them.
+    const relic = rng.range01() < 0.5 ? rollRelic(rng, content, run.relics, 'common', pool) : null;
+    if (relic) slots.push({ kind: 'relic', id: relic, price: PRICES.relic.common, sold: false });
+    else {
+      const item = teamSpecial(rng, content, run, 'held-item');
+      if (item) slots.push(item);
+    }
+  } else {
+    for (const def of drawDistinct(rng, tier(1), 2)) slots.push({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 50, sold: false });
+    for (const def of drawDistinct(rng, tier(2), 1)) slots.push({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 110, sold: false });
+    const held: string[] = [...run.relics];
+    const rarities: ('common' | 'uncommon' | 'rare')[] = ['common', 'uncommon', rng.range01() < 0.5 ? 'rare' : 'uncommon'];
+    for (const rarity of rarities) {
+      const id = rollRelic(rng, content, held, rarity, pool);
+      if (id) {
+        held.push(id);
+        slots.push({ kind: 'relic', id, price: PRICES.relic[content.relic(id).rarity], sold: false });
+      }
+    }
+    const item = teamSpecial(rng, content, run, 'held-item');
+    if (item) slots.push(item);
+    const tm = teamSpecial(rng, content, run, 'tm');
+    if (tm) slots.push(tm);
+    // §2.11.2.2 — Poké Balls are always on a City counter, outside the eight: a City that cannot sell you a ball
+    // after the route's merchant stopped carrying many would be a Mart in name only.
+    slots.push({ kind: 'ball', id: 'poke-ball', price: PRICES.ball, sold: false });
+    for (const slot of slots) slot.price = Math.round(slot.price * PRICES.cityMarkup);
   }
 
   // §2.11.3 Bargain Hunter — the shelf is priced once, here, so the ticket and the affordability guard can
@@ -188,11 +228,15 @@ export function rollShopStock(rng: GameRng, content: ContentRegistry, run: RunSt
   // pointing one way: economy knows nothing about which modifier is in force, only what a price is.
   for (const slot of slots) slot.price = priceFor(run, content, slot.price);
 
-  return { slots, rerolls: 0 };
+  return { slots, rerolls: 0, maxRerolls: kind === 'merchant' ? 1 : PRICES.rerolls.length };
 }
 
 /** §2.9.3 — what the next re-roll costs, or null when the visit is out of them. */
-export const rerollPrice = (stock: ShopStock): number | null => PRICES.rerolls[stock.rerolls] ?? null;
+export const rerollPrice = (stock: ShopStock): number | null =>
+  stock.rerolls >= (stock.maxRerolls ?? PRICES.rerolls.length) ? null : (PRICES.rerolls[stock.rerolls] ?? null);
+
+/** §2.11.2.4 — what a held item fetches at a City shop: 30 % of its listed price. */
+export const sellPrice = (): number => Math.floor(PRICES.heldItem * PRICES.sellShare);
 
 /** §8.2.4 — Therapy: one stack off, priced by how bad it already is. */
 export const therapyPrice = (mon: PartyMon): number => PRICES.therapy(mon.traumaStacks);

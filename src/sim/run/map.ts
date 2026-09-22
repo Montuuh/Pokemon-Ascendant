@@ -1,10 +1,10 @@
 import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import {
-  BIOMES, ELITE, GYMS, LANE_THEME, REGION1_BIOME_WEIGHTS, TRAINERS, eliteTeamFor, eliteWildTeamFor,
+  BIOMES, ELITE, GYMS, LANE_THEME, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, TRAINERS, eliteTeamFor, eliteWildTeamFor,
   gymById, gymTeamFor, rostersOf, trainerTeamFor, wildBandFor, type BiomeId, type GymDef, type TrainerRoster,
 } from './region';
-import { PRICES } from './economy';
+import { AID_HEAL_PCT } from './economy';
 import { hasModifier } from './modifiers';
 import type { MapNode, NodeKind, NodePreview, RegionMap } from './types';
 
@@ -15,7 +15,7 @@ import type { MapNode, NodeKind, NodePreview, RegionMap } from './types';
 //   L7      the last shared layer. The Elite Trainer is the middle of three: guaranteed on the map,
 //           optional to walk into, and the hardest fight before the Gym
 //   L8      THE FORK. Two lanes, each themed after the Gym at the end of it. They never rejoin.
-//   L8–L10  each lane: fights in its Gym's biome, a guaranteed Centre before the end
+//   L8–L10  each lane: fights in its Gym's biome, the field nurse before the end (§2.9.1)
 //   L11     two Gyms, drawn 2-of-4 from the Region's pool. You fight the one your lane reaches.
 //
 // **What makes this different from v0.4's ten-layer ladder.**
@@ -41,12 +41,13 @@ const GYM_LAYER = LAYERS - 1;
 export const FORK_LAYER = 8;
 /** §2.8.1 — the Elite Trainer, guaranteed *on the map* and beside two ordinary fights: a trade, not a gate. */
 const ELITE_LAYER = FORK_LAYER - 1;
-/** §2.9.2 — one Poké Mart, early-trunk, so a relic has the rest of the route to pay itself back. */
-const SHOP_LAYER = 3;
-/** §2.9.4 — one Dojo, mid-trunk, late enough that §6.4.3's per-stage tutor list is the evolved one. */
-const DOJO_LAYER = 6;
-/** §2.5.1 — two Mystery nodes, spread across the trunk. */
-const MYSTERY_LAYERS = [2, 5];
+/** §2.9.2 — the travelling merchant, early-trunk, so what it sells has the rest of the route to pay back. */
+const MERCHANT_LAYER = 3;
+/**
+ * §2.5.1 — three Mystery nodes across the trunk. L6 was the Dojo's until the Dojo moved into the Cities
+ * (§2.9.4, 2026-09-22); a non-combat beat still belongs there, and events are the route's other one.
+ */
+const MYSTERY_LAYERS = [2, 5, 6];
 
 /**
  * How wide each layer is. The trunk is four or five columns, the Elite layer narrows to three, and the Gym
@@ -68,8 +69,8 @@ const LANE_WIDTH = 2;
  *   weighting: four entry nodes, three of them Wild, and *which* wild is still a real choice because each
  *   one names its three species.
  *
- *   **No Centre in the trunk.** Centres belong to the lanes (§2.5), one per lane, before its Gym. A Centre
- *   at layer 2 is a rest you did not need that costs a fight you did.
+ *   **No nurse in the trunk.** The field nurse belongs to the lanes (§2.9.1), one per lane, before its Gym.
+ *   A rest at layer 2 is a rest you did not need that costs a fight you did.
  */
 const WEIGHTS: Record<number, Partial<Record<NodeKind, number>>> = {
   0: { wild: 9, trainer: 2 },
@@ -116,8 +117,12 @@ export function biomeFor(rng: GameRng): BiomeId {
  * §5.9.2 — draw **two distinct** Gym types for this Region, and assign one to each lane. Nine of the twelve
  * Gym types are missed by any one run, which is what makes a three-Badge combination worth talking about.
  */
-export function drawGymPair(rng: GameRng, onePath = false): [GymDef, GymDef] {
-  const pool = [...GYMS];
+export function drawGymPair(rng: GameRng, onePath = false, exclude: readonly string[] = []): [GymDef, GymDef] {
+  // §2.1 placeholder (v0.7.1) — Regions 2 and 3 draw from Region 1's pool until their own Gyms exist, so a Gym
+  // whose Badge the run already holds is left out: nobody fights Brock twice. Only if that would leave fewer
+  // than two does the full pool come back.
+  const fresh = GYMS.filter((g) => !exclude.includes(g.id));
+  const pool = fresh.length >= 2 ? [...fresh] : fresh.length === 1 && onePath ? [...fresh] : [...GYMS];
   const a = pool.splice(Math.floor(rng.range01() * pool.length), 1)[0]!;
   const b = pool[Math.min(pool.length - 1, Math.floor(rng.range01() * pool.length))]!;
   // §8.8.2 One Path — both lanes lead to the same Gym, so the fork offers a route and never a counter-pick.
@@ -183,23 +188,18 @@ function trainerPreview(rng: GameRng, content: ContentRegistry, used: Set<string
   };
 }
 
-const CENTER_PREVIEW: NodePreview = {
-  title: 'Pokémon Center',
-  detail: 'Restores every Pokémon in the Box to full, free. Therapy takes a Trauma stack off, for a price.',
+/** §2.9.1 — the field nurse. */
+const AID_PREVIEW: NodePreview = {
+  title: 'Field nurse',
+  detail: `${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free. Trauma stays — only a Pokémon Center's Therapy takes it off.`,
   speciesIds: [],
   levelBand: [0, 0],
 };
 
-const DOJO_PREVIEW: NodePreview = {
-  title: 'The Dojo',
-  detail: `Tutor moves off the learnset (${PRICES.dojoMove} ₽) and passive abilities (${PRICES.dojoAbility} ₽). As many as you can pay for.`,
-  speciesIds: [],
-  levelBand: [0, 0],
-};
-
-const SHOP_PREVIEW: NodePreview = {
-  title: 'Poké Mart',
-  detail: 'Consumables, Poké Balls, a relic or two and something curated for your team. Re-rolls cost extra.',
+/** §2.9.2 — the travelling merchant. */
+const MERCHANT_PREVIEW: NodePreview = {
+  title: 'Travelling merchant',
+  detail: 'A cart with the basics: a couple of cures, Poké Balls, and one thing worth a look. One re-roll.',
   speciesIds: [],
   levelBand: [0, 0],
 };
@@ -273,15 +273,30 @@ function rolled(rng: GameRng, weights: Partial<Record<NodeKind, number>>, row: r
   return kind;
 }
 
+/**
+ * §2.1 placeholder — a preview moved up the level ladder. Every level a fight uses is read off its preview
+ * (the wild band, the trainer and Gym rosters), so shifting the preview shifts the fight, and the map and the
+ * fight can never disagree. A service node has no levels to move.
+ */
+function shifted(preview: NodePreview, offset: number): NodePreview {
+  if (!offset || (preview.levelBand[0] === 0 && preview.levelBand[1] === 0)) return preview;
+  const levelBand: [number, number] = [preview.levelBand[0] + offset, preview.levelBand[1] + offset];
+  const enemies = preview.enemies?.map((e) => ({ ...e, level: e.level + offset }));
+  const detail = enemies ? preview.detail.replace(/\bL(\d+)\b/g, (_, n: string) => `L${Number(n) + offset}`) : preview.detail;
+  return { ...preview, levelBand, detail, ...(enemies ? { enemies } : {}) };
+}
+
 /** §2.5 — build a Region. Deterministic in `rng`, which the caller seeds from the run seed. */
-export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0, modifiers: readonly string[] = []): RegionMap {
+export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0, modifiers: readonly string[] = [], excludeGyms: readonly string[] = []): RegionMap {
   const nodes: Record<string, MapNode> = {};
   const byLayer: MapNode[][] = [];
   const usedTrainers = new Set<string>();
 
   // §5.9.2 — two distinct Gyms, drawn before anything else so every lane node can be themed by its own.
   // §8.8.2 One Path collapses them to one.
-  const [gymA, gymB] = drawGymPair(rng, hasModifier(modifiers, 'one-path'));
+  const [gymA, gymB] = drawGymPair(rng, hasModifier(modifiers, 'one-path'), excludeGyms);
+  // §2.1 placeholder — how far above Region 1 this Region's levels sit (REGION_LEVEL_OFFSET).
+  const offset = REGION_LEVEL_OFFSET[regionIndex] ?? REGION_LEVEL_OFFSET[REGION_LEVEL_OFFSET.length - 1]!;
   const lanes: GymDef[] = [gymA, gymB];
 
   // §2.5.1 — the two rolled specials. Both are decided up front so the layer loop stays a pure placement.
@@ -289,12 +304,12 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
   // The extra Elite Trainer goes in a **lane**, not the trunk. A second Elite before the fork is a wall in a
   // corridor everyone walks; in a lane it is a reason to take the other one, which is the same difficulty
   // spent on a decision instead of a tax. It also has somewhere to go: the trunk's free layers are 0, 1 and
-  // 4 once the Mart, the Dojo and the two Mysteries have claimed theirs, and the first two are far too early.
+  // 4 once the merchant and the three Mysteries have claimed theirs, and the first two are far too early.
   const extraEliteLane = rng.range01() < EXTRA_ELITE_TRAINER_CHANCE ? Math.floor(rng.range01() * 2) : -1;
   const extraEliteLayer = FORK_LAYER + Math.floor(rng.range01() * 2);
   const eliteWildLayer = rng.range01() < ELITE_WILD_CHANCE ? FORK_LAYER + Math.floor(rng.range01() * 2) : -1;
   const eliteWildLane = Math.floor(rng.range01() * 2);
-  /** §2.5 — one Centre per lane, in the last two layers before its Gym. */
+  /** §2.9.1 — one field nurse per lane, in the last two layers before its Gym. */
   const centreLayer = [FORK_LAYER + 1 + Math.floor(rng.range01() * 2), FORK_LAYER + 1 + Math.floor(rng.range01() * 2)];
 
   for (let layer = 0; layer < LAYERS; layer++) {
@@ -314,30 +329,30 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
       // was not a decision; beside two ordinary fights it is the trade it was meant to be — the hardest
       // fight before the Gym, for a guaranteed relic, and you may walk past it.
       else if (layer === ELITE_LAYER) kind = col === 1 ? 'elite' : rolled(rng, WEIGHTS[6]!, row);
-      // §2.9.4 / §2.9.2 / §2.5.1 — a service takes the last column of its layer, so taking it is always a
-      // fork against the fight beside it. The other columns roll normally: pinning them to one kind deletes
-      // fights from every route, which is how v0.4's Dojo layer quietly cost two levels.
-      else if (layer === DOJO_LAYER) kind = col === width - 1 ? 'dojo' : rolled(rng, WEIGHTS[layer]!, row);
-      else if (layer === SHOP_LAYER) kind = col === width - 1 ? 'shop' : rolled(rng, WEIGHTS[layer]!, row);
+      // §2.9.2 / §2.5.1 — a service takes the last column of its layer, so taking it is always a fork against
+      // the fight beside it. The other columns roll normally: pinning them to one kind deletes fights from
+      // every route, which is how v0.4's Dojo layer quietly cost two levels.
+      else if (layer === MERCHANT_LAYER) kind = col === width - 1 ? 'merchant' : rolled(rng, WEIGHTS[layer]!, row);
       else if (MYSTERY_LAYERS.includes(layer)) kind = col === width - 1 ? 'mystery' : rolled(rng, WEIGHTS[layer]!, row);
-      else if (inLane && layer === centreLayer[laneIndex] && laneCol === LANE_WIDTH - 1) kind = 'center';
+      else if (inLane && layer === centreLayer[laneIndex] && laneCol === LANE_WIDTH - 1) kind = 'aid';
       else if (inLane && layer === eliteWildLayer && laneIndex === eliteWildLane && laneCol === 0) kind = 'elite-wild';
-      // A lane holds at most one special, and the Centre wins the tie: a lane with an Elite Wild *and* an
-      // extra Elite and no Centre is not hard, it is unfinishable.
+      // A lane holds at most one special, and the nurse wins the tie: a lane with an Elite Wild *and* an
+      // extra Elite and no rest is not hard, it is unfinishable.
       else if (inLane && laneIndex === extraEliteLane && layer === extraEliteLayer && laneCol === 0 && layer !== eliteWildLayer) kind = 'elite';
       else kind = rolled(rng, inLane ? LANE_WEIGHTS : WEIGHTS[layer]!, row);
 
       const id = `n${layer}-${col}`;
-      const preview =
+      const preview = shifted(
         kind === 'wild' ? wildPreview(rng, content, layer, lane).preview
         : kind === 'trainer' ? trainerPreview(rng, content, usedTrainers, layer, lane)
-        : kind === 'center' ? CENTER_PREVIEW
-        : kind === 'dojo' ? DOJO_PREVIEW
-        : kind === 'shop' ? SHOP_PREVIEW
+        : kind === 'aid' ? AID_PREVIEW
+        : kind === 'merchant' ? MERCHANT_PREVIEW
         : kind === 'mystery' ? MYSTERY_PREVIEW
         : kind === 'elite' ? elitePreview(content, layer)
         : kind === 'elite-wild' ? eliteWildPreview(content, layer)
-        : gymPreview(content, layer === GYM_LAYER ? lanes[col]! : gymA);
+        : gymPreview(content, layer === GYM_LAYER ? lanes[col]! : gymA),
+        offset,
+      );
 
       const node: MapNode = { id, layer, col, kind, next: [], preview };
       if (inLane || layer === GYM_LAYER) node.lane = layer === GYM_LAYER ? col : laneIndex;

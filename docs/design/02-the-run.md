@@ -814,6 +814,10 @@ The Mart's eight, and the shape each Department Store floor follows:
 | 7 | Held Item, curated to the team |
 | 8 | TM, curated to the team's compatibility |
 
+**Poké Balls are always on the counter, outside the eight.** The route's merchant sells them three to a slot and
+nobody else on the route sells them at all, so a City that could roll a shelf without one would leave a run
+unable to catch for a whole Region on the luck of a draw. *(Settled while building v0.7.1, 2026-09-22.)*
+
 ### §2.11.2.3 Pricing
 About 30 % above the travelling merchant's prices. You are paying for selection quality.
 

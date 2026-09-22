@@ -88,6 +88,7 @@ export function runPerksFor(account: AccountState, content: ContentRegistry, twi
     bond: Object.fromEntries(Object.entries(account.bond).map(([line, pts]) => [line, bondRank(pts)]).filter(([, r]) => (r as number) > 0)),
     familiar: Object.entries(account.dex).filter(([, e]) => e.tier >= 1).map(([id]) => id),
     insight: hasHubUpgrade(account, 'pokedex-insight'),
+    salveCache: hasHubUpgrade(account, 'trauma-salve-cache'),
   };
 }
 

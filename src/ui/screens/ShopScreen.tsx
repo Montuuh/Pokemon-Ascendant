@@ -1,19 +1,22 @@
 import { useState } from 'react';
-import { IconDice5, IconDoorExit, IconShoppingBag } from '@tabler/icons-react';
+import { IconBackpack, IconBuildingStore, IconCoins, IconDice5, IconDoorExit, IconShoppingBag } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { rerollPrice, type ShopSlot } from '@/sim';
+import { CITIES, PRICES, rerollPrice, sellPrice, type ShopSlot } from '@/sim';
+import { itemIcon } from '@/ui/art';
 import { ItemCard, type ItemKind, type Rarity } from '@/ui/components/ItemCard';
 import { Money, Price } from '@/ui/components/Money';
 import { RUN_REJECT_TEXT } from '@/ui/strings';
 import styles from './ShopScreen.module.css';
-import { Tip, Tipped } from '@/ui/tooltip';
+import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
+import { heldItemSellTip, sellTip, shopTip } from '@/ui/tips';
 
-// Poké Mart, §2.9.2 — node-screen chrome (header · shelf · Leave), same shape as the Dojo and the Centre.
+// The shop, two ways (header · shelf · Leave): the route's travelling merchant (§2.9.2) and a City's Poké Mart or
+// Department Store (§2.11.2). The shelf is the sim's; the screen only names which one you are standing at.
 //
-// The shelf is fixed for the visit: leaving and coming back is not a re-roll (the stock is seeded per visit),
-// and a sold slot stays sold through a re-roll. Both of those are §2.9.3 rules the screen has to *show*, not
-// just obey — a sold-out row stays on the shelf, greyed, so you can see what your money went on.
+// A sold slot stays sold through a re-roll, and in a City it stays sold across visits (§2.11.0). Both are rules
+// the screen has to *show*, not just obey — a sold-out row stays on the shelf, greyed, so you can see what your
+// money went on. Only a City shop buys held items back (§2.11.2.4), so only a City shop shows the counter.
 
 const KIND_TAG: Record<ShopSlot['kind'], string> = {
   relic: 'Relic',
@@ -40,7 +43,11 @@ function describe(slot: ShopSlot): { name: string; description: string; kind: It
       return { name: t.name, description: t.description, kind: 'tm' };
     }
     case 'ball':
-      return { name: 'Poké Ball', description: 'One more throw at a wild Pokémon. Balls are spent on the throw, not the catch.', kind: 'ball' };
+      return {
+        name: slot.qty && slot.qty > 1 ? `Poké Ball ×${slot.qty}` : 'Poké Ball',
+        description: slot.qty && slot.qty > 1 ? `${slot.qty} more throws at wild Pokémon.` : 'One more throw at a wild Pokémon.',
+        kind: 'ball',
+      };
     case 'consumable': {
       const c = content.consumable(slot.id);
       return { name: c.name, description: c.description, kind: 'consumable' };
@@ -64,17 +71,23 @@ export function ShopScreen() {
   }
 
   const unsold = stock?.slots.filter((s) => !s.sold).length ?? 0;
+  const city = run.city ? CITIES[run.city.id] : null;
+  const title = !city ? 'Travelling merchant' : city.shop === 'department-store' ? 'Department Store' : 'Poké Mart';
+  const TitleIcon = !city ? IconBackpack : city.shop === 'department-store' ? IconBuildingStore : IconShoppingBag;
+  // §2.9.3 — the ladder this shop climbs: one rung for the merchant, all three in a City.
+  const ladder = PRICES.rerolls.slice(0, stock?.maxRerolls ?? PRICES.rerolls.length);
+  const heldInBag = run.bag;
 
   return (
     <main className={styles.root} data-testid="shop-screen">
       <header className={styles.topBar}>
         <div>
           <h1 className={`${styles.title} display`}>
-            <IconShoppingBag size={26} /> Poké Mart
+            <TitleIcon size={26} /> {title}
           </h1>
           <p className={styles.sub}>
-            One shelf, this visit only. What you leave here you cannot come back for — the next Mart is a
-            Region away.
+            {city ? 'The shelf waits while you are in town.' : 'One cart, this visit only.'}
+            <InfoDot tip={shopTip(title, !!city)} />
           </p>
         </div>
         <span className={styles.wallet} data-testid="shop-money">
@@ -116,6 +129,29 @@ export function ShopScreen() {
         })}
       </div>
 
+      {city && heldInBag.length > 0 && (
+        <section className={styles.sell} aria-label="Sell held items" data-testid="shop-sell">
+          <h2 className={styles.sellTitle}>
+            <IconCoins size={18} /> Sell
+            <InfoDot tip={sellTip()} />
+          </h2>
+          <ul className={styles.sellList}>
+            {heldInBag.map((id, i) => {
+              const item = getContent().heldItem(id);
+              return (
+                <li key={`${id}-${i}`}>
+                  <Tipped as="button" type="button" tip={heldItemSellTip(id)} className={styles.sellBtn} onClick={() => act({ type: 'sell-item', itemId: id })} data-testid={`sell-${id}`} aria-label={`Sell ${item.name} for ${sellPrice()} Poké Dollars`}>
+                    <img src={itemIcon(id)} alt="" width={24} height={24} />
+                    {item.name}
+                    <Price amount={sellPrice()} affordable />
+                  </Tipped>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
       <footer className={styles.footer}>
         {toast && (
           <p className={styles.toast} role="status" data-testid="shop-toast">
@@ -132,7 +168,7 @@ export function ShopScreen() {
           <Tipped
             as="button"
             type="button"
-            tip={<Tip title="Re-roll" meta={['25 · 50 · 100 ₽', 'Three per visit']} body={reroll === null ? 'Three re-rolls is the limit for this visit.' : unsold === 0 ? 'Nothing left to re-roll — you bought the shelf.' : `Re-rolls the ${unsold} unsold slot${unsold === 1 ? '' : 's'}. What you already bought stays yours.`} />}
+            tip={<Tip title="Re-roll" meta={[`${ladder.join(' · ')} ₽`, ladder.length === 1 ? 'One per visit' : `${ladder.length} per visit`]} body={reroll === null ? 'No re-rolls left this visit.' : unsold === 0 ? 'Nothing left to re-roll — you bought the shelf.' : `Re-rolls the ${unsold} unsold slot${unsold === 1 ? '' : 's'}. What you already bought stays yours.`} />}
             className={styles.reroll}
             disabled={reroll === null || run.money < reroll || unsold === 0}
             onClick={() => act({ type: 'reroll-shop' })}
@@ -143,7 +179,7 @@ export function ShopScreen() {
           </Tipped>
 
           <button type="button" className={styles.leave} onClick={() => act({ type: 'leave-shop' })} data-testid="btn-leave-shop">
-            <IconDoorExit size={18} /> Back to the route
+            <IconDoorExit size={18} /> {city ? 'Back to town' : 'Back to the route'}
           </button>
         </div>
       </footer>

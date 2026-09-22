@@ -40,7 +40,7 @@ describe('content registry', () => {
     }
     expect(existsSync('public/art/map/region-1.png'), 'region 1 route plate').toBe(true);
     expect(existsSync('public/art/ui/menu-vista.png'), 'main menu vista').toBe(true);
-    for (const icon of ['node-wild', 'node-trainer', 'node-center', 'node-gym', 'node-dojo', 'node-trainer-bug-catcher', 'node-trainer-youngster', 'node-trainer-lass', 'node-trainer-hiker']) {
+    for (const icon of ['node-wild', 'node-trainer', 'node-aid', 'node-merchant', 'node-gym', 'node-trainer-bug-catcher', 'node-trainer-youngster', 'node-trainer-lass', 'node-trainer-hiker']) {
       expect(existsSync(`public/art/icons/map/${icon}.png`), `map node badge ${icon}`).toBe(true);
     }
   });

@@ -13,9 +13,8 @@ const OUT = resolve(ROOT, 'playtest/artgen');
 const force = process.argv.includes('--force');
 
 // local name → Archives File: title. Keeping the HGSS set together is what makes the badges look like one
-// map rather than a collage: the Centre and the Dojo are already HGSS-era, so the Mart and the ? match.
+// map rather than a collage: the ? matches the HGSS era of the rest of the map's emblems.
 const EMBLEMS = {
-  'emblem-shop': 'PokéMart HGSS.png',
   'emblem-mystery': 'HGSS Question Mark Sprite.png',
   // §5.10 — the four Region 1 badges, one per Gym type, so the two ends of the fork are told apart by the
   // thing the player is actually choosing between rather than by a caption.
@@ -54,5 +53,5 @@ for (const [local, title] of Object.entries(EMBLEMS)) {
   }
 }
 console.log(`\n${ok} downloaded, ${skip} skipped, ${fail} failed`);
-console.log('Next: node scripts/install-art.mjs badge playtest/artgen/emblem-shop.png node-shop');
+console.log('Next: node scripts/install-art.mjs badge playtest/artgen/emblem-gym-rock.png node-gym-rock');
 process.exit(fail ? 1 : 0);

@@ -46,7 +46,13 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
       const maxAtFull = maxHpOf(mon, content);
       const pct = Math.max(1, Math.min(100, Math.round((mon.hp / maxAtFull) * 100)));
       if (pct < 100) setup.hpPercent = pct;
-      if (mon.status) setup.status = mon.status;
+      // §4.2.7.1 — every status outlives its fight: the kind, and what is left of its clock.
+      if (mon.status) {
+        setup.status = mon.status.kind;
+        setup.statusTurnsLeft = mon.status.turnsLeft;
+        if (mon.status.escalatingTicks !== undefined) setup.statusEscalating = mon.status.escalatingTicks;
+      }
+      if (mon.confusionTurns > 0) setup.confusionTurns = mon.confusionTurns;
       // §6.5.1 — the Box owns the passive slot now: whatever an evolution granted or the Dojo swapped in is
       // what walks into the fight, not the species default.
       if (mon.abilityId) setup.abilityId = mon.abilityId;
@@ -212,8 +218,9 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
-    // §5.9.3 — the team the *preview* promised, which is the band-derived one, not the catalogue row.
-    enemies: gymTeamFor(gym).map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'boss', phaseCount: m.phaseCount })),
+    // §5.9.3 — the team the *preview* promised, which is the band-derived one, not the catalogue row. The
+    // level is read off the preview too, so a later Region's shift (§2.1 placeholder) reaches the Gym.
+    enemies: gymTeamFor(gym).map((m, i): EnemySetup => ({ species: m.species, level: node.preview.enemies?.[i]?.level ?? m.level, tier: 'boss', phaseCount: m.phaseCount })),
   };
 }
 
@@ -255,9 +262,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
       case 'elite-wild':
         return buildEliteWildScenario(node, run, content, rng);
       // A service node has no fight to build.
-      case 'center':
-      case 'dojo':
-      case 'shop':
+      case 'aid':
+      case 'merchant':
       case 'mystery':
         return null;
     }

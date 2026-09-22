@@ -6,7 +6,7 @@
   display: grid;
   place-items: center;
   padding: var(--sp-6) var(--sp-5);
-  background: radial-gradient(130% 90% at 50% 0%, #fbeecb 0%, var(--surface-0) 70%);
+  background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
   color: var(--ink-primary);
   overflow-y: auto;
 }
@@ -81,3 +81,17 @@
   font-size: var(--type-body);
   cursor: pointer;
 }
+
+/* §5.10 — the Badge just won, above the offer. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-4) var(--sp-1) var(--sp-1);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--accent-action);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-weight: 700;
+}
+.badge img { image-rendering: pixelated; }

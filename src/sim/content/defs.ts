@@ -392,6 +392,15 @@ export interface TeamMemberSetup {
   level: number;
   hpPercent?: number;
   status?: StatusCondition;
+  /**
+   * §4.2.7.1 — a status carried from an earlier fight arrives with what is left of its clock. Absent is a fresh
+   * application (the fixtures); null is Burn/Poison's "until cured".
+   */
+  statusTurnsLeft?: number | null;
+  /** §7.5 Toxic — ticks already taken before this fight. */
+  statusEscalating?: number;
+  /** §4.2.7.1 — Confusion carried in, as remaining turns. */
+  confusionTurns?: number;
   traumaStacks?: number;
   /** Override the active moves (§6.7); defaults to the level-derived kit (§6.9). */
   moves?: string[];

@@ -44,7 +44,12 @@ export function NodeMarker({
   const tip = useTip(
     <Tip
       title={node.preview.title}
-      meta={[NODE_LABEL[node.kind] ?? node.kind, `Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`, STATUS_TEXT[status]]}
+      meta={[
+        // The kind only when the title does not already say it, and a level band only where there is a fight.
+        ...(NODE_LABEL[node.kind] && NODE_LABEL[node.kind] !== node.preview.title ? [NODE_LABEL[node.kind]!] : []),
+        ...(node.preview.levelBand[1] > 0 ? [`Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`] : []),
+        STATUS_TEXT[status],
+      ]}
       body={node.preview.detail}
       footer={NODE_HINT[node.kind]}
     />,

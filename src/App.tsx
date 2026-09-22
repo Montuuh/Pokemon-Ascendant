@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 import { readEntry, useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
+import { AidScreen } from '@/ui/screens/AidScreen';
 import { CenterScreen } from '@/ui/screens/CenterScreen';
+import { CityScreen } from '@/ui/screens/city/CityScreen';
 import { CombatScreen } from '@/ui/screens/CombatScreen';
 import { DojoScreen } from '@/ui/screens/DojoScreen';
 import { EventScreen } from '@/ui/screens/EventScreen';
@@ -54,7 +56,7 @@ function Screens() {
   }, []);
 
   // The run's own phase decides what sits over the map: a reward, an evolution, a service node, a recruit,
-  // or nothing. The order matches the reducer's, so the router never has to know the rules.
+  // a City, or nothing. The order matches the reducer's, so the router never has to know the rules.
   if (screen === 'map') {
     if (runPhase === 'reward') return <RewardScreen />;
     if (runPhase === 'evolution') return <EvolutionScreen />;
@@ -62,6 +64,9 @@ function Screens() {
     if (runPhase === 'shop') return <ShopScreen />;
     if (runPhase === 'event') return <EventScreen />;
     if (runPhase === 'center') return <CenterScreen />;
+    if (runPhase === 'aid') return <AidScreen />;
+    // §2.11 — a Gym is behind the run and the town is the lobby; its buildings open the screens above.
+    if (runPhase === 'city') return <CityScreen />;
     // §7.3.7 — the Gym is beaten and the 1-of-3 is open; the run is not over until it is answered.
     if (runPhase === 'legendary') return <LegendaryScreen />;
     return (

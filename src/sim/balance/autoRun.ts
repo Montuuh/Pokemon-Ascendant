@@ -1,7 +1,7 @@
 import { createCombat } from '../combat/setup';
 import type { CombatCtx } from '../combat/context';
 import { buildOutcomeReport } from '../run/report';
-import { createRun, defaultRunCtx, runReducer } from '../run/run';
+import { createRun, defaultRunCtx, dojoPrice, runReducer } from '../run/run';
 import { RUN_START, gymById, gymTeamFor } from '../run/region';
 import { applyBranch, autoPickMoves } from '../run/xp';
 import { maxHpOf } from '../run/encounter';
@@ -17,16 +17,13 @@ import { autoPlay, type AutoPlayerOptions } from './autoPlayer';
 // where to go, who to field, when to throw a ball — so the pacing numbers cover the run, not just one fight.
 
 export interface RunPolicy extends AutoPlayerOptions {
-  /** Take a Centre whenever the team is below this share of its effective Max HP. */
+  /** Take the field nurse whenever the team is below this share of its effective Max HP (§2.9.1). */
   restBelow: number;
   /** Prefer a Wild node while the Box has fewer than this many Pokémon: you need a team. */
   recruitUntil: number;
-  /**
-   * §2.9.4 — take the Dojo when the route offers it. A service node costs a fight, so this is a real trade
-   * and the harness can measure it both ways.
-   */
+  /** §2.9.4 — spend at a City's Dojo. The Dojo left the route on 2026-09-22; this is a City visit now. */
   takeDojo: boolean;
-  /** §2.9.2 — take the Shop when the route offers it. Same trade as the Dojo, different currency of return. */
+  /** §2.9.2 — take the travelling merchant when the route offers it, and spend at a City's shop. */
   takeShop: boolean;
   /** §2.10 — take a Mystery node. Off by default in the A/B runs so the gamble does not blur the signal. */
   takeMystery: boolean;
@@ -56,7 +53,10 @@ export const DEFAULT_RUN_POLICY: RunPolicy = {
 };
 
 export interface RunSimResult {
+  /** 'victory' is "cleared the Regions asked for" — the whole run when `regions` is 3. */
   outcome: 'victory' | 'defeat';
+  /** §2.1 — Gyms beaten this run. */
+  regionsCleared: number;
   /** How many layers deep the run got, 1-based. */
   depth: number;
   nodesCleared: number;
@@ -124,20 +124,15 @@ function chooseAmong(run: RunState, content: CombatCtx['content'], policy: RunPo
   const laneElite = options.find((n) => n.kind === 'elite');
   if (laneElite && healthShare(run, content) > 0.85) return laneElite;
 
-  const hurt = healthShare(run, content) < policy.restBelow;
-  const centre = options.find((n) => n.kind === 'center');
-  if (hurt && centre) return centre;
+  // §2.9.1 — the nurse, when hurt or carrying a status into the next fight (§4.2.7.1).
+  const hurt = healthShare(run, content) < policy.restBelow || run.box.some((m) => m.hp > 0 && (m.status || m.confusionTurns > 0));
+  const aid = options.find((n) => n.kind === 'aid');
+  if (hurt && aid) return aid;
 
-  // §2.9.4 — the Dojo sculpts the deck, but only if there is money to sculpt with. A player who cannot
-  // afford the cheaper of the two services walks past it and takes the fight, which is the trade v0.4 added:
-  // in v0.3 the visit was free, so the node was never a question.
-  const dojo = options.find((n) => n.kind === 'dojo');
-  if (dojo && policy.takeDojo && run.box.length >= 2 && run.money >= PRICES.dojoMove) return dojo;
-
-  // §2.9.2 — the Shop is worth a fight's worth of XP only if you can buy something with it. Below the
-  // cheapest relic it is a vending machine for Potions, and Potions are not worth a node.
-  const shop = options.find((n) => n.kind === 'shop');
-  if (shop && policy.takeShop && run.money >= PRICES.relic.common) return shop;
+  // §2.9.2 — the merchant is worth a fight's worth of XP only if you can buy its wildcard. Below that it is
+  // a vending machine for Potions, and Potions are not worth a node.
+  const merchant = options.find((n) => n.kind === 'merchant');
+  if (merchant && policy.takeShop && run.money >= PRICES.relic.common) return merchant;
 
   // §2.10 — a Mystery is taken when the team is healthy enough to absorb a bad one.
   const mystery = options.find((n) => n.kind === 'mystery');
@@ -149,7 +144,7 @@ function chooseAmong(run: RunState, content: CombatCtx['content'], policy: RunPo
 
   // Otherwise take the trainer: more XP, and the route is short.
   const trainer = options.find((n) => n.kind === 'trainer');
-  return trainer ?? wild ?? options.find((n) => n.kind !== 'center') ?? options[0]!;
+  return trainer ?? wild ?? options.find((n) => n.kind !== 'aid') ?? options[0]!;
 }
 
 /**
@@ -233,7 +228,7 @@ function visitDojo(get: () => RunState, content: CombatCtx['content'], policy: R
   // action stale by the time the re-pick needs the widened pool.
   for (let bought = 0; bought < 6; bought++) {
     const run = get();
-    if (run.money - PRICES.dojoMove < policy.keepReserve) break;
+    if (run.money - dojoPrice(run, content, 'move') < policy.keepReserve) break;
 
     // A player at a tutor buys the thing their deck cannot already do, so coverage outranks raw power: a
     // Charmeleon holding four Fire and Normal cards takes Brick Break over Crunch, and that one habit is
@@ -354,7 +349,37 @@ function answerEvent(run: RunState, policy: RunPolicy): number {
   return best;
 }
 
-export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy: RunPolicy = DEFAULT_RUN_POLICY): RunSimResult {
+/**
+ * §2.11 — spend a City visit the way the route's services used to be spent: heal and treat Trauma at the
+ * Center, buy at the shop, sculpt at the Dojo, then leave by the gate with the first modifier on offer (the
+ * same "no preference" rule as the Legendary pick).
+ */
+function visitCity(get: () => RunState, content: CombatCtx['content'], policy: RunPolicy, step: (a: Parameters<typeof runReducer>[1]) => void): void {
+  step({ type: 'enter-building', building: 'center' });
+  for (let bought = 0; bought < 6; bought++) {
+    const run = get();
+    const worst = [...run.box].filter((m) => m.traumaStacks > 0).sort((a, b) => b.traumaStacks - a.traumaStacks)[0];
+    if (!worst || run.money - therapyPrice(worst) < policy.keepReserve) break;
+    step({ type: 'use-therapy', uid: worst.uid });
+  }
+  step({ type: 'leave-center' });
+  if (policy.takeShop) {
+    step({ type: 'enter-building', building: 'mart' });
+    visitShop(get, content, policy, step);
+    equipFromBag(get, content, step);
+  }
+  if (policy.takeDojo && get().box.length >= 2) {
+    step({ type: 'enter-building', building: 'dojo' });
+    visitDojo(get, content, policy, step);
+  }
+  step({ type: 'depart-city', modifierId: get().city!.reflection[0]! });
+}
+
+/**
+ * Play a run. `regions` is how many Gyms to beat before calling it: 1 (the default) measures Region 1's pacing
+ * exactly as it was measured before the run continued past it; 3 plays the whole run, Cities included.
+ */
+export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy: RunPolicy = DEFAULT_RUN_POLICY, regions = 1): RunSimResult {
   const runCtx = defaultRunCtx(ctx.content);
   // §2.11.3 — the offer is weighted, and the harness takes the first of the three exactly as it takes the
   // first Legendary: modelling a preference here would add variance without adding information.
@@ -372,8 +397,16 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
   // The phase is read through a function so TypeScript does not narrow it across the reducer's mutations.
   const phase = () => run.phase;
 
+  let regionsCleared = 0;
   // One iteration per node; the hard cap is a runaway guard, not a rule.
-  for (let node = 0; node < 40 && run.outcome === 'in-progress'; node++) {
+  for (let node = 0; node < 40 * regions && run.outcome === 'in-progress'; node++) {
+    // §2.11 — a Gym is behind us. Either that is as far as this measurement goes, or spend the City and walk on.
+    if (phase() === 'city') {
+      regionsCleared = run.regionIndex + 1;
+      if (regionsCleared >= regions) break;
+      visitCity(() => run, ctx.content, policy, step);
+      continue;
+    }
     if (phase() !== 'map') break;
 
     const target = chooseNode(run, ctx.content, policy);
@@ -383,25 +416,15 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
     step({ type: 'enter-node', nodeId: target.id });
     step({ type: 'begin-combat' });
 
-    // §2.9.4 — spend the Dojo visit: an off-learnset move for whoever is leading, then leave.
-    if (phase() === 'dojo') {
-      visitDojo(() => run, ctx.content, policy, step);
-      continue;
-    }
+    // §2.9.2 — the merchant's cart.
     if (phase() === 'shop') {
       visitShop(() => run, ctx.content, policy, step);
       equipFromBag(() => run, ctx.content, step);
       continue;
     }
-    // §8.2.4 — the Centre heals on entry; Therapy is what is left to decide. Buy it worst-first while the
-    // money lasts: Trauma is a permanent Max-HP tax, so it is the only purchase that gets *worse* with delay.
-    if (phase() === 'center') {
-      for (let bought = 0; bought < 6; bought++) {
-        const worst = [...run.box].filter((m) => m.traumaStacks > 0).sort((a, b) => b.traumaStacks - a.traumaStacks)[0];
-        if (!worst || run.money - therapyPrice(worst) < policy.keepReserve) break;
-        step({ type: 'use-therapy', uid: worst.uid });
-      }
-      step({ type: 'leave-center' });
+    // §2.9.1 — the nurse healed on arrival; there is nothing to decide.
+    if (phase() === 'aid') {
+      step({ type: 'leave-aid' });
       continue;
     }
     if (phase() === 'event') {
@@ -417,7 +440,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
       equipFromBag(() => run, ctx.content, step);
       continue;
     }
-    if (!run.pendingScenario) continue; // a Centre heals and hands the map straight back
+    if (!run.pendingScenario) continue;
 
     const combat = autoPlay(createCombat(run.pendingScenario, ctx, run.pendingScenario.seed), ctx, policy);
     turns += combat.turns;
@@ -444,9 +467,9 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
 
     // §7.3.7 — a Gym victory opens the Legendary 1-of-3 and the run does not end until it is answered.
     //
-    // The harness takes the first on offer rather than modelling a preference. That is deliberate: a
-    // Legendary lands at the very end of a Region 1 run and cannot affect it, so a "smart" pick here would
-    // add variance to the measurement without adding information. Re-visit when Region 2 exists.
+    // The harness takes the first on offer rather than modelling a preference. Modelling one would add
+    // variance to the measurement without adding information until the Regions after it have their own
+    // content to be good or bad against (v0.7.3).
     if (phase() === 'legendary') {
       step({ type: 'pick-legendary', relicId: run.pendingLegendary?.[0] ?? null });
     }
@@ -482,9 +505,12 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
     }
   }
 
+  if (phase() === 'city') regionsCleared = Math.max(regionsCleared, run.regionIndex + 1);
+  if (run.outcome === 'victory') regionsCleared = run.regionIndex + 1;
   const depth = run.position ? run.map.nodes[run.position]!.layer + 1 : 0;
   return {
-    outcome: run.outcome === 'victory' ? 'victory' : 'defeat',
+    outcome: run.outcome === 'victory' || regionsCleared >= regions ? 'victory' : 'defeat',
+    regionsCleared,
     depth,
     nodesCleared: run.stats.nodesCleared,
     catches: run.stats.catches,

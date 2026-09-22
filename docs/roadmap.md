@@ -22,7 +22,7 @@ loop layer and re-tests the core inside it.
 | v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
-| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, then Regions 2 and 3 with their own accents. **Five subversions** | ☐ |
+| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, then Regions 2 and 3 with their own accents. **Five subversions** | ◐ in progress |
 | v0.8 | Multi-enemy & field effects | 1 lead + 1–2 supports: slots, targeting, intents, AI, preview — and the field effects biomes hang off | ☐ |
 | v0.9 | Victory Road & League | Gauntlet, Apex, Training Grounds, 5-fight League, Champion, boons | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
@@ -384,11 +384,11 @@ read 63 / 70 / 80, inside the noise of v0.5's 30-seed table.
 
 **Exit:** a lost run still feels like progress; a third run starts with something the first two earned.
 
-## v0.7 — Cities & Regions 2–3  ☐
+## v0.7 — Cities & Regions 2–3  ◐
 
 Split into five, because the run has to *continue* before it can escalate. Each one ships.
 
-### v0.7.1 — The seam and the town  ☐
+### v0.7.1 — The seam and the town  ✅ 2026-09-22
 The run no longer ends at the Region 1 Gym: Gym → City → next Region. **Pallet Town** as a lobby (§2.1.4,
 §2.11): Pokémon Center, Poké Mart, Dojo, the Safari door drawn and closed, and the gate that opens the
 Reflection (§2.11.3, already built) and leaves. Routes lose their Center, Shop and Dojo and gain the nurse and
@@ -397,6 +397,16 @@ Cache Hub upgrade goes live. **Every status carries over between fights** (§4.2
 them. The town Dojo shows the Challenge Ring's door marked in development until v0.7.2. Regions 2 and 3 are Region 1's generator at a higher level band — placeholders on purpose, so the whole
 loop can be played and felt before its content exists.
 **Exit:** a three-Region run end to end, with two City visits, on a single seed.
+
+**Shipped.** Gym → Legendary pick → City → the gate's Reflection → the next Region; the third Gym wins the run.
+Pallet Town and Celadon City are drawn (generated top-down pixel art, `public/art/towns/`) with every door
+placed over its building; the Center, the shop (sells held items back) and the Dojo are open in both, the Ring,
+Safari, Game Corner and Black Market doors say they are in development. The route has the field nurse and the
+travelling merchant; statuses carry between fights with their clocks; the Trauma Salve Cache is sold. The
+exit is a test: `cities.test` walks one seed through all three Regions and both Cities, and the harness plays
+whole runs (`runBalance`). **Finding for v0.7.3:** at +7 / +16 levels the placeholder Regions are too gentle
+— across 60 autoplayed runs, every run that beat Gym 1 also beat Gyms 2 and 3. Their own content, not the
+offset, is where the difficulty has to come from.
 
 ### v0.7.2 — The city  ☐
 **Celadon City**: the Department Store by floors, the wider City Dojo, the Game Corner's two machines — the

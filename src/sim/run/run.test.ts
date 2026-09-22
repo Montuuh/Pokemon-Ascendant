@@ -38,8 +38,9 @@ const settle = (s: RunState): RunState => {
 
 /**
  * Clear whatever node the run is standing in, whatever kind it turned out to be, and hand back the map.
- * v0.4 added three phases a route-walk can land in (`shop`, `event`, `center`), and a test that only knows
- * how to finish a fight silently stops walking the moment the route offers one of them.
+ * A route-walk can land in a fight, the merchant's `shop`, an `event` or the nurse's `aid`, and a test that only
+ * knows how to finish a fight silently stops walking the moment the route offers one of the others. A City's
+ * buildings (`center`, `dojo`, `shop`) lead back to the lobby; the lobby itself is left through the gate.
  */
 const clearNode = (s: RunState): RunState => {
   switch (s.phase) {
@@ -47,6 +48,8 @@ const clearNode = (s: RunState): RunState => {
     case 'dojo': return apply(s, { type: 'leave-dojo' });
     case 'shop': return apply(s, { type: 'leave-shop' });
     case 'center': return apply(s, { type: 'leave-center' });
+    case 'aid': return apply(s, { type: 'leave-aid' });
+    case 'city': return apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0]! });
     case 'event': return settle(apply(apply(s, { type: 'choose-event', option: 0 }), { type: 'leave-event' }));
     // §7.3.7 — a Gym victory opens the Legendary 1-of-3 before the run ends. A walker that does not answer
     // it stops one action short of the victory it was testing for.
@@ -59,13 +62,13 @@ const clearNode = (s: RunState): RunState => {
  * Walk one layer: enter the first reachable node of `prefer` if there is one, else the first reachable.
  *
  * `clearNode` resolves one phase, and a node can leave the run in another — a fight ends on the Evolution
- * screen, a Gym ends on §7.3.7's Legendary pick. So this drains phases until the run is back on the map or
- * over, rather than resolving exactly one and assuming that was enough.
+ * screen, a Gym ends on §7.3.7's Legendary pick. So this drains phases until the run is back on the map, in a
+ * City (§2.1.4) or over, rather than resolving exactly one and assuming that was enough.
  */
 const walk = (s: RunState, prefer?: string): RunState => {
   const id = (prefer && s.reachable.find((n) => s.map.nodes[n]!.kind === prefer)) ?? s.reachable[0]!;
   let out = clearNode(apply(apply(s, { type: 'enter-node', nodeId: id }), { type: 'begin-combat' }));
-  for (let guard = 0; guard < 6 && out.phase !== 'map' && out.phase !== 'ended'; guard++) {
+  for (let guard = 0; guard < 6 && out.phase !== 'map' && out.phase !== 'city' && out.phase !== 'ended'; guard++) {
     const next = clearNode(out);
     if (next === out) break;
     out = next;
@@ -108,20 +111,20 @@ describe('Region map — §2.5', () => {
     expect(wild / total, 'the opening should be mostly Wild').toBeGreaterThan(0.6);
   });
 
-  it('Map_HasNoCentreBeforeTheFork_ARestYouDidNotNeedCostsAFightYouDid', () => {
+  it('Map_HasNoNurseBeforeTheFork_ARestYouDidNotNeedCostsAFightYouDid', () => {
     for (let seed = 1; seed <= 40; seed++) {
       const m = generateRegion(new RngStreams(seed).get('MapRNG'), content, 0, seed);
       for (const n of Object.values(m.nodes)) {
-        if (n.layer < m.forkLayer) expect(n.kind, `seed ${seed} ${n.id}`).not.toBe('center');
+        if (n.layer < m.forkLayer) expect(n.kind, `seed ${seed} ${n.id}`).not.toBe('aid');
       }
     }
   });
 
-  it('Map_GivesEachLaneItsOwnCentre_BeforeItsGym', () => {
+  it('Map_GivesEachLaneItsOwnNurse_BeforeItsGym_§2.9.1', () => {
     for (let seed = 1; seed <= 40; seed++) {
       const m = generateRegion(new RngStreams(seed).get('MapRNG'), content, 0, seed);
       for (const lane of [0, 1]) {
-        const centres = Object.values(m.nodes).filter((n) => n.kind === 'center' && n.lane === lane);
+        const centres = Object.values(m.nodes).filter((n) => n.kind === 'aid' && n.lane === lane);
         expect(centres, `seed ${seed} lane ${lane}`).toHaveLength(1);
         expect(centres[0]!.layer, `seed ${seed} lane ${lane} centre placement`).toBeLessThan(LAYERS - 1);
       }
@@ -261,27 +264,31 @@ describe('Walking the route — §2.1.2', () => {
     expect(s.reachable).toEqual(s.map.nodes[first]!.next);
   });
 
-  it('Centre_HealsTheWholeBox_AndCostsNoFight_§2.9.1', () => {
+  it('Nurse_HealsHalf_CuresEveryStatus_AndCostsNoFight_§2.9.1', () => {
     let s = start();
-    s = { ...s, box: [{ ...s.box[0]!, hp: 1, status: 'burn' }] };
-    // §2.5 — the Centre lives in a lane now, not on a fixed layer, so walk until one is next rather than
-    // counting layers. A route that reaches the Gym without passing one is a generator bug, and the map
-    // tests above own that assertion; this one is about what a Centre *does*.
-    let centre: string | undefined;
-    for (let step = 0; step < LAYERS && !centre; step++) {
-      centre = s.reachable.find((n) => s.map.nodes[n]!.kind === 'center');
-      if (!centre) s = walk(s);
+    // §2.5 — the nurse lives in a lane, not on a fixed layer, so walk until one is next rather than counting
+    // layers. A route that reaches the Gym without passing one is a generator bug, and the map tests above own
+    // that assertion; this one is about what the nurse *does*.
+    let aid: string | undefined;
+    for (let step = 0; step < LAYERS && !aid; step++) {
+      aid = s.reachable.find((n) => s.map.nodes[n]!.kind === 'aid');
+      if (!aid) s = walk(s);
     }
-    expect(centre, 'a Centre is reachable before the Gym').toBeTruthy();
-    s = apply(s, { type: 'enter-node', nodeId: centre! });
+    expect(aid, 'a nurse is reachable before the Gym').toBeTruthy();
+    s = { ...s, box: [{ ...s.box[0]!, hp: 1, status: { kind: 'burn', turnsLeft: null }, confusionTurns: 2, traumaStacks: 1 }] };
+    const max = maxHpOf(s.box[0]!, content);
+    s = apply(s, { type: 'enter-node', nodeId: aid! });
     s = apply(s, { type: 'begin-combat' });
-    // §2.9.1 — the restore lands on entry; §8.2.4's Therapy is why the Centre is a screen and not a doorway.
-    expect(s.phase).toBe('center');
-    expect(s.box[0]!.hp).toBe(maxHpOf(s.box[0]!, content));
+    // The heal lands on entry; the screen only says what she did.
+    expect(s.phase).toBe('aid');
+    expect(s.box[0]!.hp).toBe(Math.min(max, 1 + Math.floor(max / 2)));
     expect(s.box[0]!.status).toBeNull();
-    s = apply(s, { type: 'leave-center' });
+    expect(s.box[0]!.confusionTurns).toBe(0);
+    // Trauma is a Pokémon Center's work.
+    expect(s.box[0]!.traumaStacks).toBe(1);
+    s = apply(s, { type: 'leave-aid' });
     expect(s.phase).toBe('map');
-    expect(s.visited).toContain(centre);
+    expect(s.visited).toContain(aid);
   });
 });
 
@@ -328,9 +335,9 @@ describe('HP, Trauma and defeat — §2.4, §8.2', () => {
     s = enter(s, s.map.nodes[s.reachable[0]!]!.kind);
     s = apply(s, { type: 'begin-combat' });
     if (s.phase !== 'combat') return;
-    s = win(s, { team: s.activeUids.map((uid) => ({ uid, hp: 4, status: 'poison' as const, fainted: false })) });
+    s = win(s, { team: s.activeUids.map((uid) => ({ uid, hp: 4, status: { kind: 'poison' as const, turnsLeft: null }, fainted: false })) });
     expect(s.box[0]!.hp).toBe(4);
-    expect(s.box[0]!.status).toBe('poison');
+    expect(s.box[0]!.status).toMatchObject({ kind: 'poison', turnsLeft: null });
   });
 
   it('Faint_AddsATraumaStack_AndLowersEffectiveMaxHp', () => {
@@ -359,7 +366,7 @@ describe('HP, Trauma and defeat — §2.4, §8.2', () => {
 
   it('BeginCombat_RefusedWithNoHealthyPokemon', () => {
     let s = start();
-    s = apply(s, { type: 'enter-node', nodeId: s.reachable.find((n) => s.map.nodes[n]!.kind !== 'center')! });
+    s = apply(s, { type: 'enter-node', nodeId: s.reachable.find((n) => s.map.nodes[n]!.kind !== 'aid')! });
     s = { ...s, box: s.box.map((m) => ({ ...m, hp: 0 })) };
     expect(reject(s, { type: 'begin-combat' })).toBe('no-healthy-pokemon');
   });
@@ -438,15 +445,23 @@ describe('The Active Team — §2.3', () => {
 });
 
 describe('Winning the region — §2.1.3', () => {
-  it('BeatingTheGym_EndsTheRunInVictory', () => {
+  it('BeatingTheFirstGym_StopsInPalletTown_§2.1.4', () => {
     let s = start();
-    for (let layer = 0; layer < LAYERS; layer++) {
-      s = walk(s);
-      if (s.outcome !== 'in-progress') break;
-    }
+    for (let layer = 0; layer < LAYERS && s.phase !== 'city'; layer++) s = walk(s);
+    expect(s.outcome).toBe('in-progress');
+    expect(s.phase).toBe('city');
+    expect(s.city?.id).toBe('pallet-town');
+    expect(s.stats.nodesCleared).toBe(LAYERS);
+  });
+
+  it('BeatingTheThirdGym_EndsTheRunInVictory_§2.1', () => {
+    let s = start();
+    for (let step = 0; step < LAYERS * 3 + 2 && s.phase !== 'ended'; step++) s = s.phase === 'city' ? clearNode(s) : walk(s);
     expect(s.outcome).toBe('victory');
     expect(s.phase).toBe('ended');
-    expect(s.stats.nodesCleared).toBe(LAYERS);
+    expect(s.regionIndex).toBe(2);
+    expect(s.badges).toHaveLength(3);
+    expect(s.stats.nodesCleared).toBe(LAYERS * 3);
   });
 });
 
@@ -476,7 +491,7 @@ describe('Save and resume — §10.8', () => {
 
   it('Resume_ContinuesTheSameEncounterSequence', () => {
     let s = start(55);
-    s = apply(s, { type: 'enter-node', nodeId: s.reachable.find((n) => s.map.nodes[n]!.kind !== 'center')! });
+    s = apply(s, { type: 'enter-node', nodeId: s.reachable.find((n) => s.map.nodes[n]!.kind !== 'aid')! });
     s = apply(s, { type: 'begin-combat' });
     const liveScenario = JSON.stringify(s.pendingScenario);
 
@@ -571,7 +586,7 @@ describe('Evolution — §6.2.4, §6.3', () => {
     mon.level = 11;
     mon.xp = xpToNext(11) - 1;
 
-    s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'center')!);
+    s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'aid')!);
     s = apply(s, { type: 'begin-combat' });
     s = apply(s, {
       type: 'finish-combat',
@@ -594,7 +609,7 @@ describe('Evolution — §6.2.4, §6.3', () => {
       const mon = s.box[0]!;
       mon.level = 11;
       mon.xp = xpToNext(11) - 1;
-      s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'center')!);
+      s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'aid')!);
       s = apply(s, { type: 'begin-combat' });
       s = apply(s, {
         type: 'finish-combat',
@@ -705,43 +720,21 @@ describe('TMs — §6.4.1', () => {
 });
 
 describe('The Dojo — §2.9.4', () => {
-  /** Walk the shortest route to the Dojo, clearing whatever is in the way, and step inside. */
+  /** Walk Region 1 to its Gym, arrive in Pallet Town, and step into the Dojo. */
   const reachDojo = (seed = 7): RunState => {
     let s = start(seed, 'bulbasaur');
-    const target = Object.values(s.map.nodes).find((n) => n.kind === 'dojo')!;
-
-    // Breadth-first from the entry row, so the walk follows the edges rather than hoping col 0 leads there.
-    const cameFrom = new Map<string, string>();
-    const queue = [...s.map.entry];
-    for (let i = 0; i < queue.length; i++) {
-      const id = queue[i]!;
-      if (id === target.id) break;
-      for (const next of s.map.nodes[id]!.next) {
-        if (cameFrom.has(next) || s.map.entry.includes(next)) continue;
-        cameFrom.set(next, id);
-        queue.push(next);
-      }
-    }
-    const path: string[] = [target.id];
-    while (cameFrom.has(path[0]!)) path.unshift(cameFrom.get(path[0]!)!);
-
-    for (const id of path) {
-      s = apply(s, { type: 'enter-node', nodeId: id });
-      s = apply(s, { type: 'begin-combat' });
-      if (s.phase === 'dojo') return s;
-      s = clearNode(s);
-    }
-    throw new Error('the route never reached the Dojo');
+    for (let layer = 0; layer < LAYERS && s.phase !== 'city'; layer++) s = walk(s);
+    if (s.phase !== 'city') throw new Error('the route never reached Pallet Town');
+    return apply(s, { type: 'enter-building', building: 'dojo' });
   };
 
-  it('EveryRouteHasExactlyOne_§2.9.4', () => {
+  it('LivesInTheCities_NotOnTheRoute_§2.9.4', () => {
+    // §2.9 — the route keeps a nurse and a merchant; the Dojo moved into the Cities on 2026-09-22.
     for (const seed of [1, 7, 42, 999, 20260919]) {
       const map = generateRegion(new RngStreams(seed).get('MapRNG'), content, 0, seed);
-      const dojos = Object.values(map.nodes).filter((n) => n.kind === 'dojo');
-      expect(dojos, `seed ${seed}`).toHaveLength(1);
-      // It has to be reachable, or it may as well not be there.
-      const reachable = Object.values(map.nodes).some((n) => n.next.includes(dojos[0]!.id));
-      expect(reachable, `seed ${seed} dojo unreachable`).toBe(true);
+      const kinds = new Set(Object.values(map.nodes).map((n) => n.kind as string));
+      expect(kinds.has('dojo'), `seed ${seed}`).toBe(false);
+      expect(kinds.has('shop'), `seed ${seed}`).toBe(false);
     }
   });
 
@@ -767,9 +760,10 @@ describe('The Dojo — §2.9.4', () => {
     const bonded = { ...rich, perks: { ...rich.perks, bond: { bulbasaur: 3 } } };
     expect(reject(bonded, { type: 'set-ability', uid, abilityId: 'healer' })).toBeNull();
 
+    // §2.11.0 — the door leads back to the lobby, and the lobby lets you back in.
     s = apply(s, { type: 'leave-dojo' });
-    expect(s.phase).toBe('map');
-    expect(s.visited.length).toBeGreaterThan(0);
+    expect(s.phase).toBe('city');
+    expect(reject(s, { type: 'enter-building', building: 'dojo' })).toBeNull();
   });
 
   it('Visit_SellsAsManyServicesAsYouCanPayFor_§2.9.4', () => {
@@ -811,7 +805,7 @@ describe('The Dojo — §2.9.4', () => {
     expect(s.box[0]!.abilityId).toBe(swapTo);
     expect(s.money).toBe(0);
     // §6.5.1 — swapping back is allowed, and it costs the same again.
-    expect(reject(s, { type: 'set-ability', uid: mon.uid, abilityId: pool[0]! })).toBe('cannot-afford');
+    expect(reject(s, { type: 'set-ability', uid: mon.uid, abilityId: mon.abilityId ?? pool[0]! })).toBe('cannot-afford');
   });
 
   it('EveryTutorMove_IsOffTheSpeciesOwnLine_§6.4.3', () => {
@@ -933,9 +927,9 @@ describe('Badges — §5.10', () => {
     // that was actually fought. Until v0.5 the run ended the same way whichever lane you took, so this is
     // the assertion that the fork reaches all the way to the trophy.
     let s = start(11);
-    for (let layer = 0; layer < LAYERS && s.phase !== 'ended'; layer++) s = walk(s);
+    for (let layer = 0; layer < LAYERS && s.phase !== 'city'; layer++) s = walk(s);
 
-    expect(s.outcome).toBe('victory');
+    expect(s.phase).toBe('city');
     expect(s.badges).toHaveLength(1);
 
     const gymNode = s.map.nodes[s.position!]!;
@@ -948,7 +942,7 @@ describe('Badges — §5.10', () => {
 
   it('ABadgeTravelsIntoEveryLaterFight_§7.3.6', () => {
     // A Badge is permanent from the moment it is awarded, so the scenario builder has to carry it the way it
-    // carries relics. Region 1 ends at its Gym, so this is checked by putting one in the case directly.
+    // carries relics. Checked by putting one in the case directly rather than walking a Region to earn it.
     let s = start(11);
     s = { ...s, badges: ['boulder-badge'] };
     s = apply(s, { type: 'enter-node', nodeId: s.reachable[0]! });
@@ -958,10 +952,10 @@ describe('Badges — §5.10', () => {
 
   it('ABadgeIsNeverAwardedTwice_§5.10', () => {
     let s = start(11);
-    for (let layer = 0; layer < LAYERS && s.phase !== 'ended'; layer++) s = walk(s);
+    for (let layer = 0; layer < LAYERS && s.phase !== 'city'; layer++) s = walk(s);
     const once = [...s.badges];
     expect(new Set(once).size).toBe(once.length);
-    // The run is over, so nothing that touches the cleared Gym again may stack a second copy.
+    // The Gym is behind the run, so nothing that touches the cleared Gym again may stack a second copy.
     const again = runReducer(s, { type: 'claim-reward' }, ctx);
     expect(again.state.badges).toEqual(once);
   });

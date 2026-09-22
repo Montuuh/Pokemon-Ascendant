@@ -56,11 +56,11 @@ describe('Map generation rules — §2.5', () => {
     expect(seen.size).toBe(4);
   });
 
-  it('TheOpeningIsWildHeavy_AndNeverCentres_§2.5', () => {
+  it('TheOpeningIsWildHeavy_AndNeverRests_§2.5', () => {
     const early = maps.flatMap((m) => [...nodesInLayer(m, 0), ...nodesInLayer(m, 1)]);
     const wild = early.filter((n) => n.kind === 'wild').length;
     expect(wild / early.length, 'a lone Lv 5 starter needs bodies before it needs XP').toBeGreaterThan(0.6);
-    expect(early.some((n) => n.kind === 'center')).toBe(false);
+    expect(early.some((n) => n.kind === 'aid')).toBe(false);
     // And every single map offers one to walk into, so the weighting can never roll a route with none.
     for (const m of maps) expect([...nodesInLayer(m, 0), ...nodesInLayer(m, 1)].some((n) => n.kind === 'wild')).toBe(true);
   });

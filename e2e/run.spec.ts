@@ -1,9 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// A whole Region 1 run driven through the real UI: new-run flow, ten layers of node choices, fights,
-// rewards, evolutions with their branch pick, the Dojo, a Centre, the Gym, and the Victory summary. Nothing
-// here reaches into a store — if this passes, a player can finish a run with a mouse. Also covers the §10.8
-// save: quit mid-route and come back.
+// A whole Region 1 driven through the real UI: new-run flow, twelve layers of node choices, fights, rewards,
+// evolutions with their branch pick, the field nurse, the Gym, the Legendary pick and the walk into Pallet
+// Town — then out of its gate into Region 2. Nothing here reaches into a store — if this passes, a player can
+// get from the first node to the next Region with a mouse. Also covers the §10.8 save: quit mid-route and
+// come back.
 
 /** Kept in step with src/sim/run/map.ts by hand; the spec runs in Node, outside the Vite alias. */
 const LAYERS = 12;
@@ -115,9 +116,11 @@ test('the new-run flow reaches a twelve-layer forked map with four first choices
   // the largest thing the map can telegraph and it decides what you recruit for ten nodes before you arrive.
   await expect(page.locator('[data-kind="gym"]')).toHaveCount(2);
   await expect(page.getByTestId('fork-banner')).toBeVisible();
-  // §2.9.4 / §2.9.2 / §2.8.1 — and so are the landmarks, exactly one each, so they can be planned for.
-  await expect(page.locator('[data-kind="dojo"]')).toHaveCount(1);
-  await expect(page.locator('[data-kind="shop"]')).toHaveCount(1);
+  // §2.9.2 / §2.8.1 — and so are the landmarks, so they can be planned for: one travelling merchant, and no
+  // Dojo or Poké Mart on the route — those are in the towns now (§2.11.4).
+  await expect(page.locator('[data-kind="merchant"]')).toHaveCount(1);
+  await expect(page.locator('[data-kind="dojo"]')).toHaveCount(0);
+  await expect(page.locator('[data-kind="shop"]')).toHaveCount(0);
   // §2.5.1 — one Elite Trainer is guaranteed and a second appears in a lane about a fifth of the time, so
   // this asserts the *rule* rather than a number a seeded roll is allowed to change.
   const elites = await page.locator('[data-kind="elite"]').count();
@@ -125,9 +128,9 @@ test('the new-run flow reaches a twelve-layer forked map with four first choices
   expect(elites).toBeLessThanOrEqual(2);
   // §2.8.2 — the Elite Wild is the other rolled special, at most one, and not on every map.
   expect(await page.locator('[data-kind="elite-wild"]').count()).toBeLessThanOrEqual(1);
-  // §2.5.1 — two Mystery nodes, spread across the trunk; one Centre per lane, none before the fork.
-  await expect(page.locator('[data-kind="mystery"]')).toHaveCount(2);
-  await expect(page.locator('[data-kind="center"]')).toHaveCount(2);
+  // §2.5.1 — three Mystery nodes, spread across the trunk; one field nurse per lane, none before the fork.
+  await expect(page.locator('[data-kind="mystery"]')).toHaveCount(3);
+  await expect(page.locator('[data-kind="aid"]')).toHaveCount(2);
   await expect(page.getByTestId('box-panel')).toContainText('Bulbasaur');
   await page.screenshot({ path: 'playtest/run-map.png' });
 });
@@ -184,40 +187,34 @@ test('quitting mid-route and continuing resumes the same map', async ({ page }) 
   expect(await page.locator('header').first().textContent()).toBe(seedLine);
 });
 
-test('a full run reaches the Gym and the victory summary', async ({ page }) => {
+test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', async ({ page }) => {
   test.setTimeout(400_000);
   await startRun(page);
 
   for (let layer = 0; layer < LAYERS + 1; layer++) {
-    if ((await page.getByTestId('victory-screen').count()) > 0) break;
+    if ((await page.getByTestId('city-screen').count()) > 0) break;
     if ((await page.getByTestId('defeat-screen').count()) > 0) break;
     await expect(page.getByTestId('map-screen')).toBeVisible();
 
-    // Prefer a Centre when anything is hurt; the run is long and the Gym is the point.
-    const centre = page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="center"]');
+    // Take the field nurse when she is next, and a wild fight over a trainer when there is one: the walker
+    // plays like a mouse, not a strategist, and a Lv 5 starter alone loses a trainer often enough to matter.
+    const nurse = page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="aid"]');
+    const wild = page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="wild"]');
     const any = page.locator('[data-testid^="node-"][data-status="reachable"]');
-    const target = (await centre.count()) > 0 ? centre.first() : any.first();
+    const target = (await nurse.count()) > 0 ? nurse.first() : (await wild.count()) > 0 ? wild.first() : any.first();
     await target.click();
 
     await expect(page.getByTestId('node-preview')).toBeVisible();
     await page.getByTestId('btn-enter-node').click();
     await page.waitForTimeout(200);
 
-    // §2.9.4 — a Dojo is a screen, not a fight: buy the first thing on offer, then walk out.
-    if ((await page.getByTestId('dojo-screen').count()) > 0) {
-      await expect(page.getByTestId('dojo-credits')).toContainText('1');
-      const offer = page.locator('[data-testid^="tutor-"]:not([disabled])');
-      if ((await offer.count()) > 0) {
-        await offer.first().click();
-        await expect(page.getByTestId('dojo-credits')).toContainText('0');
-      }
-      await page.screenshot({ path: 'playtest/run-dojo.png' });
-      await page.getByTestId('btn-leave-dojo').click();
+    // §2.9.1 — the nurse is a screen, not a fight: she heals on arrival, and you walk on.
+    if ((await page.getByTestId('aid-screen').count()) > 0) {
+      await page.getByTestId('btn-leave-aid').click();
       await page.waitForTimeout(150);
       continue;
     }
 
-    // A Centre heals and returns straight to the map; everything else is a fight.
     if ((await page.getByTestId('combat-screen').count()) > 0) {
       const result = await fightToTheEnd(page);
       await page.waitForTimeout(200);
@@ -226,19 +223,31 @@ test('a full run reaches the Gym and the victory summary', async ({ page }) => {
     }
   }
 
-  const victory = page.getByTestId('victory-screen');
+  const town = page.getByTestId('city-screen');
   const defeat = page.getByTestId('defeat-screen');
-  await expect(victory.or(defeat)).toBeVisible();
-  await page.screenshot({ path: 'playtest/run-summary.png', fullPage: true });
+  await expect(town.or(defeat)).toBeVisible();
 
-  // Either ending is a legal run; what must hold is that the summary is honest and the save is gone.
-  await expect(victory.or(defeat)).toContainText(/Nodes cleared|Depth reached/);
-  // §8.3 — and that the account was paid: a lost run pays by depth, a won one paid along the way, so the XP
-  // line is never zero after a run that cleared a node.
+  // §2.1.4 — a Gym win is not the end of the run any more: it is Pallet Town, and its gate is Region 2.
+  if ((await town.count()) > 0) {
+    await page.screenshot({ path: 'playtest/run-town.png' });
+    await page.getByTestId('door-gate').click();
+    await page.locator('[data-testid^="reflection-"]').first().click();
+    await page.getByTestId('btn-depart').click();
+    await expect(page.getByTestId('map-screen')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Region 2' })).toBeVisible();
+    return;
+  }
+
+  await page.screenshot({ path: 'playtest/run-summary.png', fullPage: true });
+  // A defeat is a legal run too; what must hold is that the summary is honest and the save is gone.
+  await expect(defeat).toContainText(/Nodes cleared|Depth reached/);
+  // §8.3 — and that the account was paid: a lost run pays by depth, so the XP line is never zero after a run
+  // that cleared a node. A run lost on the very first node has cleared none, and owes nothing.
   await expect(page.getByTestId('account-summary')).toBeVisible();
+  const cleared = await page.evaluate(() => window.__ascendant?.run.state()?.stats.nodesCleared ?? 0);
   const xpLine = await page.getByTestId('summary-xp').textContent();
-  expect(Number(xpLine?.replace(/[^0-9]/g, ''))).toBeGreaterThan(0);
-  await victory.or(defeat).getByTestId('btn-end-continue').click();
+  if (cleared > 0) expect(Number(xpLine?.replace(/[^0-9]/g, ''))).toBeGreaterThan(0);
+  await defeat.getByTestId('btn-end-continue').click();
   await expect(page.getByTestId('main-menu')).toBeVisible();
   await expect(page.getByTestId('btn-continue-run')).toHaveCount(0);
 });
@@ -273,7 +282,7 @@ test('the map is usable at 1280x720', async ({ page }) => {
   await expect(page.getByTestId('btn-enter-node')).toBeInViewport();
 });
 
-test('the Gym hands out a Badge and a Legendary pick before the summary', async ({ page }) => {
+test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ page }) => {
   // §5.10 / §7.3.7 — the two things a Gym victory owes the player. Driven through the dev hook rather than
   // twelve layers of clicking, because what is under test is the *ending*, not the route.
   await startRun(page);
@@ -299,17 +308,45 @@ test('the Gym hands out a Badge and a Legendary pick before the summary', async 
     await page.waitForTimeout(150);
   }
 
-  // §7.3.7 — three Legendaries, and declining is a real answer.
+  // §7.3.7 — three Legendaries, and declining is a real answer. §5.10 — the Badge just won is named above them.
   const offer = page.getByTestId('legendary-screen');
   await expect(offer).toBeVisible();
+  await expect(page.getByTestId('badge-award')).toContainText('Badge earned');
   await expect(page.locator('[data-testid^="legendary-offer-"]')).toHaveCount(3);
   await page.screenshot({ path: 'playtest/run-legendary.png' });
   await page.locator('[data-testid^="legendary-offer-"]').first().click();
   await page.getByTestId('btn-take-legendary').click();
 
-  // §5.10 — and the Badge is on the summary, named, with what it does.
-  await expect(page.getByTestId('victory-screen')).toBeVisible();
+  // §2.1.4 — and then Pallet Town, with the Badge in its case.
+  await expect(page.getByTestId('city-screen')).toBeVisible();
+  await expect(page.getByTestId('city-badges').locator('img')).toHaveCount(1);
+  await page.screenshot({ path: 'playtest/run-town-badge.png' });
+});
+
+test('the third Gym ends the run with the summary — §2.1', async ({ page }) => {
+  // Driven through the dev hook: stand the run in Celadon City, leave through the gate into Region 3, and let
+  // the walker fight to its Gym. What is under test is the ending, not twelve layers of clicking.
+  test.setTimeout(240_000);
+  await startRun(page);
+  await page.evaluate(() => {
+    const dev = window.__ascendant!;
+    dev.run.fill(3);
+    for (const m of dev.run.state()!.box) dev.run.levelTo(45, m.uid);
+    dev.run.city(1);
+    dev.run.dispatch({ type: 'depart-city', modifierId: dev.run.state()!.city!.reflection[0]! });
+    dev.run.goto('gym');
+  });
+  const phase = await page.evaluate(() => window.__ascendant!.run.state()!.phase);
+  test.skip(phase !== 'legendary', `the walk ended in ${phase}, not at the last Gym's pick; the ending is covered by the sim`);
+
+  await page.evaluate(() => window.__ascendant!.goTo('map'));
+  await expect(page.getByTestId('legendary-screen')).toBeVisible();
+  await page.getByTestId('btn-decline-legendary').click();
+
+  const victory = page.getByTestId('victory-screen');
+  await expect(victory).toBeVisible();
+  await expect(victory).toContainText('Run complete');
+  await expect(victory).toContainText('Regions');
   await expect(page.getByTestId('badge-award')).toBeVisible();
-  await expect(page.getByTestId('badge-award')).toContainText('Badge');
   await page.screenshot({ path: 'playtest/run-victory.png' });
 });

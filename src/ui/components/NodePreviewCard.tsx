@@ -45,7 +45,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         <header className={styles.head}>
           <img className={styles.kindIcon} src={nodeBadge(node.preview.icon ?? node.kind)} alt="" width={44} height={44} />
           <div>
-            <p className={styles.kind}>{NODE_LABEL[node.kind]}</p>
+            {NODE_LABEL[node.kind] !== node.preview.title && <p className={styles.kind}>{NODE_LABEL[node.kind]}</p>}
             <h2 className={`${styles.title} display`}>{node.preview.title}</h2>
           </div>
           {roster && <img className={styles.trainer} src={trainerSprite(roster.sprite)} alt="" />}
@@ -76,7 +76,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           </>
         )}
 
-        <h3 className={styles.sectionTitle}>{node.kind === 'center' || node.kind === 'dojo' ? 'Bringing along' : 'Going in with'}</h3>
+        <h3 className={styles.sectionTitle}>{node.kind === 'aid' || node.kind === 'merchant' ? 'Bringing along' : 'Going in with'}</h3>
         <ul className={styles.team} data-testid="preview-team">
           {active.map((m, i) => {
             const s = content.species(m.speciesId);
@@ -100,7 +100,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
             Not yet
           </button>
           <button ref={enterRef} type="button" className={styles.enter} onClick={onEnter} disabled={!canEnter} data-testid="btn-enter-node">
-            {node.kind === 'center' ? 'Rest here' : node.kind === 'dojo' ? 'Step inside' : 'Enter'}
+            {node.kind === 'aid' ? 'Rest here' : node.kind === 'merchant' ? 'Browse' : 'Enter'}
           </button>
         </div>
       </div>

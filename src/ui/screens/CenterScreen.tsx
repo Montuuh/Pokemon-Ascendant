@@ -10,7 +10,8 @@ import { RUN_REJECT_TEXT } from '@/ui/strings';
 import { InfoDot, Tip } from '@/ui/tooltip';
 import styles from './CenterScreen.module.css';
 
-// Pokémon Center, §2.9.1 + §8.2.4 — "the warmest screen" (docs/design/ui/screens.md 4.6).
+// Pokémon Center, §2.11.1 + §8.2.4 — "the warmest screen" (docs/design/ui/screens.md 4.6). A City building:
+// its door leads back to the town.
 //
 // The heal already happened: it is free, automatic and total, so it is reported rather than offered. What is
 // left is Therapy, and that *is* a decision — §8.2.4 prices it at 100 × (1 + stacks), so the Pokémon you have
@@ -108,7 +109,7 @@ export function CenterScreen() {
           {run.log.slice(-1).join(' ')}
         </p>
         <button type="button" className={styles.leave} onClick={() => act({ type: 'leave-center' })} data-testid="btn-leave-center">
-          <IconDoorExit size={18} /> Back to the route
+          <IconDoorExit size={18} /> Back to town
         </button>
       </footer>
     </main>

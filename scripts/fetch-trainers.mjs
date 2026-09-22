@@ -24,6 +24,10 @@ const TRAINERS = {
   misty: 'misty',
   bugsy: 'bugsy',
   whitney: 'whitney',
+  // v0.7.1 — the route's two services (§2.9): the field nurse, and the travelling merchant (a Backpacker: a
+  // trainer class that walks the routes with everything on its back, which is what the merchant is).
+  nurse: 'nurse',
+  merchant: 'backpacker',
 };
 
 const url = (id) => `https://play.pokemonshowdown.com/sprites/trainers/${id}.png`;

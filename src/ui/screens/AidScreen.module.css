@@ -1,0 +1,78 @@
+/* The field nurse, §2.9.1 — a warm stop on the route: who she is, the Box after her, and the way on. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-content: center;
+  justify-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow: hidden;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.nurse {
+  image-rendering: pixelated;
+}
+.text { display: grid; gap: var(--sp-1); }
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red-deep);
+}
+.sub {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 900px;
+}
+.patient {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  width: 128px;
+  padding: var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.patient:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.patient > :last-child { width: 100%; }
+.name { font-size: var(--type-small); font-weight: 700; }
+
+.leave {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font: inherit;
+  font-weight: 700;
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.leave:hover { transform: translateY(-1px); }
+.leave:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }

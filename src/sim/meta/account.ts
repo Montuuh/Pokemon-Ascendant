@@ -158,7 +158,7 @@ export const HUB_UPGRADE_LABEL: Record<HubUpgrade, { name: string; effect: strin
   'starting-relic-plus-one': { name: 'Curated Starting Relic +1', effect: 'A run start offers four Starting Relics instead of three.' },
   'expanded-box': { name: 'Expanded Box', effect: 'Box capacity 6 → 8 for every future run.' },
   'pokedex-insight': { name: 'Pokédex Insight', effect: 'The first fight against a species at Familiar tier reveals one intent free.' },
-  'trauma-salve-cache': { name: 'Trauma Salve Cache', effect: 'The first City shop always stocks a Trauma Salve.', pending: 'there are no Cities yet' },
+  'trauma-salve-cache': { name: 'Trauma Salve Cache', effect: 'The first City shop always stocks a Trauma Salve.' },
   'apex-reveal': { name: 'Apex Pokémon Reveal', effect: 'The Victory Road Apex species is shown on entering Region 3.', pending: 'there is no Victory Road yet' },
   'modifier-slot-plus-one': { name: 'Difficulty Modifier Slot +1', effect: 'Stack two difficulty modifiers per run instead of one.' },
   'twin-run': { name: 'Second Starter Slot (Twin Run)', effect: 'Choose two starters; the Box starts one larger.' },

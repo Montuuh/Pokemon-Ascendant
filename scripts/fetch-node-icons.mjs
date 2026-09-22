@@ -13,12 +13,10 @@ const force = process.argv.includes('--force');
 export const ICONS = {
   'node-wild': ['delapouite', 'grass'],
   'node-trainer': ['lorc', 'crossed-swords'],
-  'node-center': ['sbed', 'health-normal'],
   'node-gym': ['lorc', 'stone-tower'],
   // v0.4 nodes. The Elite is a sharper blade than a Trainer's crossed swords; the Shop is a shop; the
   // Mystery is deliberately the vaguest glyph in the set, because that is what the node is.
   'node-elite': ['lorc', 'sword-brandish'],
-  'node-shop': ['delapouite', 'shop'],
   'node-mystery': ['lorc', 'perspective-dice-six-faces-random'],
   'node-cleared': ['delapouite', 'check-mark'],
   'node-locked': ['lorc', 'padlock'],

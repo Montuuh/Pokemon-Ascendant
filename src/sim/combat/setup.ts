@@ -141,8 +141,22 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
   state.enemyQueue = enemies.slice(1);
 
   // Seeded statuses (fixtures) count as applied "before" the fight so they act from turn 1 (§4.2.1 G7).
+  // §4.2.7.1 — a status carried from the run's last fight is the same thing with its clock restored: what was
+  // left of it when that fight ended, not a fresh duration.
   scenario.player.team.forEach((m, i) => {
-    if (m.status) applyStatus(state.player.team[i]!, m.status, -1, ctx.config);
+    const c = state.player.team[i]!;
+    const setup: TeamMemberSetup = m;
+    if (setup.status) {
+      const applied = applyStatus(c, setup.status, -1, ctx.config, setup.statusEscalating !== undefined);
+      if (applied === 'applied' && c.status) {
+        if (setup.statusTurnsLeft !== undefined) c.status.turnsLeft = setup.statusTurnsLeft;
+        if (setup.statusEscalating !== undefined) c.status.escalatingTicks = setup.statusEscalating;
+      }
+    }
+    if (setup.confusionTurns && setup.confusionTurns > 0 && c.hp > 0) {
+      c.confusionTurns = setup.confusionTurns;
+      c.confusionAppliedTurn = -1;
+    }
   });
   scenario.enemies.forEach((e, i) => {
     if (e.status) applyStatus(enemies[i]!, e.status, -1, ctx.config);

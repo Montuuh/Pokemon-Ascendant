@@ -80,9 +80,8 @@ export const NODE_LABEL: Record<string, string> = {
   trainer: 'Trainer',
   elite: 'Elite Trainer',
   'elite-wild': 'Elite Wild',
-  center: 'Pokémon Center',
-  dojo: 'The Dojo',
-  shop: 'Poké Mart',
+  aid: 'Field nurse',
+  merchant: 'Merchant',
   mystery: 'Mystery',
   gym: 'Gym',
 };
@@ -92,11 +91,10 @@ export const NODE_HINT: Record<string, string> = {
   trainer: 'A trainer with a full team. More XP than a wild fight, and no catching.',
   elite: 'Two Pokémon, both with a second phase. The hardest fight before the Gym — and a relic for winning it.',
   'elite-wild': 'A boss-sized wild Pokémon. Catch it and it joins you; beat it and you take a relic. Never both.',
-  center: 'Rest here. The whole Box is healed and every status cleared — no fight.',
-  dojo: 'No fight. Buy tutor moves and passive abilities for as long as the money lasts.',
-  shop: 'No fight. Consumables, balls, two relics and something picked for your team. Re-rolls cost extra.',
+  aid: 'No fight, so you can walk in with nobody standing.',
+  merchant: 'No fight. Once you walk on, the cart is gone.',
   mystery: 'No fight. A scene and a choice, with every outcome written on the button before you press it.',
-  gym: 'The Gym Leader. Clear it and the region is yours.',
+  gym: 'The Gym Leader. Beat it and the next town is yours to rest in.',
 };
 
 export const RUN_REJECT_TEXT: Record<string, string> = {
@@ -118,6 +116,12 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'not-on-tutor-list': 'The tutor does not teach that at this stage.',
   'ability-not-in-pool': 'That ability is not in this species’ pool.',
   'no-dojo-credit': 'The Dojo has nothing left to offer this visit.',
+  'cannot-afford': 'Not enough money.',
+  'already-sold': 'That one is sold.',
+  'not-in-city': 'Only in a town.',
+  'building-closed': 'That door is not open yet.',
+  'not-offered': 'That is not on offer.',
+  'no-such-item': 'You are not carrying that.',
 };
 
 // §6.3.4 — the three archetypes, in the words the Evolution screen uses.
@@ -132,3 +136,36 @@ export const ARCHETYPE_HINT: Record<string, string> = {
   specialist: 'Ranged and coverage, with status riders. Works from the bench without losing much.',
   support: 'Defensive and utility: healing, shields and stat stages for whoever is holding the front.',
 };
+
+// §2.11.4 — a City's doors, in the lobby's words. The door ids are the UI's: the shop is one sim building
+// (`mart`) drawn as the Poké Mart in the town and the Department Store in the city, and the doors that are
+// not open yet have no sim building at all.
+export type CityDoor = 'center' | 'mart' | 'department-store' | 'dojo' | 'ring' | 'safari' | 'game-corner' | 'black-market' | 'gate';
+/** Every door but the gate, which is named by where it leads ("To Region 2"), not by a fixed word. */
+export type CityBuildingDoor = Exclude<CityDoor, 'gate'>;
+
+export const CITY_DOOR_LABEL: Record<CityBuildingDoor, string> = {
+  center: 'Pokémon Center',
+  mart: 'Poké Mart',
+  'department-store': 'Department Store',
+  dojo: 'Dojo',
+  ring: 'Challenge Ring',
+  safari: 'Safari Zone',
+  'game-corner': 'Game Corner',
+  'black-market': 'Black Market',
+};
+
+export const CITY_DOOR_HINT: Record<CityDoor, string> = {
+  center: 'Heals the whole Box and cures every status, free, as often as you like. Therapy takes Trauma off, for a price.',
+  mart: 'A shelf picked for your team, and Poké Balls. Dearer than the merchant; buys held items back.',
+  'department-store': 'The biggest shelf of the run, and Poké Balls. Dearer than the merchant; buys held items back.',
+  dojo: 'Tutor moves off the learnset and passive abilities, as many as you can pay for.',
+  ring: 'A ladder of rivals. See the next one, then cash out or climb. You only get one go per visit.',
+  safari: 'A park of Pokémon the routes do not have, caught with its own rules.',
+  'game-corner': 'The Wheel and the Slots, the odds printed beside each.',
+  'black-market': 'Beneath the Game Corner. Rare stock, no questions, once per visit.',
+  gate: 'Choose one rule for the next Region, then set off. The town stays behind.',
+};
+
+/** §2.11.0 — what a door in development says when you walk in anyway. */
+export const CITY_DOOR_SOON = 'Not open yet — this door is in development.';

@@ -6,7 +6,7 @@
   grid-template-rows: auto 1fr auto;
   gap: var(--sp-4);
   padding: var(--sp-5);
-  background: radial-gradient(130% 90% at 50% 0%, #fdf0d8 0%, var(--surface-0) 70%);
+  background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
   color: var(--ink-primary);
   overflow: hidden;
 }
@@ -24,6 +24,9 @@
   color: var(--brand-red);
 }
 .sub {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
   margin: 2px 0 0;
   max-width: 68ch;
   color: var(--ink-secondary);
@@ -182,7 +185,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--type-h3);
-  box-shadow: 0 6px 0 #d9a51d;
+  box-shadow: 0 6px 0 var(--accent-action-deep);
 }
 .leave:hover {
   transform: translateY(-2px);
@@ -206,3 +209,20 @@
 .creditsLabel {
   color: var(--ink-muted);
 }
+
+/* §2.9.4.1 — the Challenge Ring's door, in development until the Ring opens. */
+.ring {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--border-strong);
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  cursor: pointer;
+}
+.ring:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.soonIcon { color: var(--accent-warning); }

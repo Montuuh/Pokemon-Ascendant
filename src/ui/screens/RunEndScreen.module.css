@@ -7,10 +7,10 @@
   color: var(--ink-primary);
 }
 .won {
-  background: radial-gradient(130% 90% at 50% 0%, #fff4cf 0%, var(--surface-0) 62%);
+  background: radial-gradient(130% 90% at 50% 0%, color-mix(in srgb, var(--accent-action) 22%, var(--surface-0)) 0%, var(--surface-0) 62%);
 }
 .lost {
-  background: radial-gradient(130% 90% at 50% 0%, #f7e3d2 0%, var(--surface-0) 62%);
+  background: radial-gradient(130% 90% at 50% 0%, var(--surface-2) 0%, var(--surface-0) 62%);
 }
 .card {
   width: min(700px, 100%);
@@ -56,12 +56,6 @@
 }
 .badgeRow > span {
   display: grid;
-}
-/* What the Badge does, under its name — it is permanent, so it is the one line worth reading here. */
-.badgeEffect {
-  font-size: var(--type-body-sm);
-  font-style: normal;
-  color: var(--ink-secondary);
 }
 .metrics {
   margin: var(--sp-3) 0 0;
@@ -124,7 +118,7 @@
   padding: 1px 6px;
   border-radius: var(--radius-pill);
   background: var(--accent-warning);
-  color: #4a2a06;
+  color: var(--ink-on-accent);
 }
 .actions {
   margin-top: var(--sp-5);
@@ -148,7 +142,7 @@
 .again {
   background: var(--accent-action);
   color: var(--ink-primary);
-  box-shadow: 0 6px 0 #d9a51d;
+  box-shadow: 0 6px 0 var(--accent-action-deep);
 }
 .again:hover {
   transform: translateY(-2px);

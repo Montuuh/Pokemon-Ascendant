@@ -68,8 +68,10 @@ test('the Dojo sells as many services as the money covers — §2.9.4', async ({
   await newRun(page, 'squirtle');
   await page.evaluate(() => window.__ascendant!.run.fill(4));
   await page.evaluate(() => window.__ascendant!.run.levelTo(16));
-  const where = await page.evaluate(() => window.__ascendant!.run.goto('dojo'));
-  expect(where).toContain('dojo');
+  // §2.11.4 — the Dojo is a building in the town now, not a node on the route.
+  await page.evaluate(() => window.__ascendant!.run.city());
+  await expect(page.getByTestId('city-screen')).toBeVisible();
+  await page.getByTestId('door-dojo').click();
   await expect(page.getByTestId('dojo-screen')).toBeVisible();
 
   // v0.3 rationed the visit to one free service because there was no money. v0.4 restores canon: 150 ₽ a
@@ -87,16 +89,27 @@ test('the Dojo sells as many services as the money covers — §2.9.4', async ({
 
   await page.locator('[data-testid^="tutor-"]:not([disabled])').first().click();
   await expect(page.getByTestId('dojo-money')).toContainText('20');
-  // Broke: every offer closes, and the Leave button stops pretending there is money to keep.
+  // Broke: every offer closes.
   await expect(page.locator('[data-testid^="tutor-"]').first()).toBeDisabled();
-  await expect(page.getByTestId('btn-leave-dojo')).toContainText('Back to the route');
+  await expect(page.getByTestId('btn-leave-dojo')).toContainText('Back to town');
 
   const poolAfter = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.pool.length);
   expect(poolAfter).toBe(poolBefore + 2);
   await page.screenshot({ path: 'playtest/run-dojo.png' });
 
+  // §2.11.0 — the Challenge Ring's door is in here, and it says it is not open yet.
+  await page.getByTestId('door-ring').click();
+  await expect(page.getByTestId('door-soon')).toBeVisible();
+  await page.getByTestId('btn-door-back').click();
+  await expect(page.getByTestId('door-soon')).toHaveCount(0);
+  // …and Escape closes it too.
+  await page.getByTestId('door-ring').click();
+  await expect(page.getByTestId('door-soon')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('door-soon')).toHaveCount(0);
+
   await page.getByTestId('btn-leave-dojo').click();
-  await expect(page.getByTestId('map-screen')).toBeVisible();
+  await expect(page.getByTestId('city-screen')).toBeVisible();
 });
 
 test('a TM is greyed out on an incompatible Pokémon, never hidden', async ({ page }) => {

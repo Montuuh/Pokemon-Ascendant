@@ -4,7 +4,9 @@ import { maxHpOf, xpToNext, type PartyMon } from '@/sim';
 import { HpBar } from './HpBar';
 import { MonIcon } from './MonIcon';
 import { TypeBadge } from './TypeBadge';
-import { traumaTip } from '@/ui/tips';
+import { statusGlyph } from '@/ui/art';
+import { STATUS_LABEL } from '@/ui/strings';
+import { statusTip, traumaTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './BoxPanel.module.css';
 
@@ -64,6 +66,7 @@ function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenM
           `level ${mon.level}`,
           fainted ? 'fainted' : `${mon.hp} of ${max} HP`,
           mon.traumaStacks ? `Trauma ${mon.traumaStacks}` : null,
+          mon.status ? STATUS_LABEL[mon.status.kind] ?? mon.status.kind : null,
           isLead ? 'Lead' : active ? 'Active' : 'in the Box',
           locked ? 'team locked' : active ? (index > 0 ? 'press to make Lead' : 'press to bench') : 'press to field',
         ]
@@ -87,7 +90,7 @@ function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenM
             <span className="tabular">
               {mon.hp}/{max}
             </span>
-            <Tipped tip={<Tip title={`${mon.xp} / ${xpToNext(mon.level)} XP`} body="To the next level. Every Pokémon on the Active Team earns XP from a fight; the bench earns a share too." />} className={styles.xp}>
+            <Tipped tip={<Tip title={`${mon.xp} / ${xpToNext(mon.level)} XP`} body="To the next level. Every Pokémon on the Active Team earns XP from a fight; the bench earns a share too." />} className={styles.xp} tabIndex={-1}>
               <span className={styles.xpFill} style={{ width: `${Math.min(100, (mon.xp / xpToNext(mon.level)) * 100)}%` }} />
             </Tipped>
           </span>
@@ -96,8 +99,14 @@ function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenM
           {species.types.map((t) => (
             <TypeBadge key={t} type={t} size={12} />
           ))}
+          {/* §4.2.7.1 — a status outlives its fight, so the Box shows who is walking into the next one with it. */}
+          {mon.status && (
+            <Tipped tip={statusTip(mon.status.kind)} className={styles.status} tabIndex={-1} data-testid={`box-status-${mon.speciesId}`}>
+              <img src={statusGlyph(mon.status.kind)} alt={STATUS_LABEL[mon.status.kind] ?? mon.status.kind} width={16} height={16} />
+            </Tipped>
+          )}
           {mon.traumaStacks > 0 && (
-            <Tipped tip={traumaTip(mon.traumaStacks, max)} className={styles.trauma}>
+            <Tipped tip={traumaTip(mon.traumaStacks, max)} className={styles.trauma} tabIndex={-1}>
               <IconAlertTriangle size={12} stroke={2.6} />
               {mon.traumaStacks}
             </Tipped>

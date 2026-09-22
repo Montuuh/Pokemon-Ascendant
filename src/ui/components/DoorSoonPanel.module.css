@@ -1,0 +1,37 @@
+/* §2.11.0 — the panel behind a door in development. */
+
+.lede {
+  margin: 0 0 var(--sp-3);
+  color: var(--ink-secondary);
+}
+.tag {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  border: 2px dashed var(--border-strong);
+  background: var(--surface-2);
+  font-weight: 700;
+}
+.tag svg { color: var(--accent-warning); }
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--sp-4);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.back:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }

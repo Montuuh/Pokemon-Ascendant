@@ -1,22 +1,24 @@
 import { useState } from 'react';
-import { IconCheck, IconDoorExit } from '@tabler/icons-react';
+import { IconBarrierBlock, IconCheck, IconDoorExit, IconTrophy } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { PRICES, abilityLocked, type PartyMon } from '@/sim';
+import { abilityLocked, dojoPrice, type PartyMon } from '@/sim';
+import { DoorSoonPanel } from '@/ui/components/DoorSoonPanel';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { RUN_REJECT_TEXT } from '@/ui/strings';
-import { moveDefTip } from '@/ui/tips';
-import { Tip, Tipped } from '@/ui/tooltip';
+import { CITY_DOOR_LABEL, RUN_REJECT_TEXT } from '@/ui/strings';
+import { dojoTip, doorTip, moveDefTip } from '@/ui/tips';
+import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import styles from './DojoScreen.module.css';
 
-// Per docs/design/ui/screens.md (Dojo / Tutor, screen 4.7) and §2.9.4 — the Dojo. Node-screen chrome: header, content, Leave.
+// Per docs/design/ui/screens.md (Dojo / Tutor, screen 4.7) and §2.9.4 — the Dojo, a City building since v0.7.1
+// (§2.11.4): header, content, and a door back to town. The Challenge Ring's door (§2.9.4.1) is in here too.
 //
-// v0.3 rationed the visit to one free service because there was no money. v0.4 restores canon: 150 ₽ a tutor
-// move, 200 ₽ an ability, as many as you can pay for. The Dojo is the run's main money sink, so the wallet is
-// in the header and every offer wears its price — deciding *whether* is now part of the node, not just which.
+// As many services as you can pay for, each priced by the sim (`dojoPrice`: the town's price, the city's +30 %,
+// any modifier's discount). The Dojo is the run's main money sink, so the wallet is in the header and every
+// offer wears its price — deciding *whether* is part of the visit, not just which.
 
 export function DojoScreen() {
   const run = useRunStore((s) => s.run)!;
@@ -24,12 +26,16 @@ export function DojoScreen() {
   const content = getContent();
   const [uid, setUid] = useState<string>(run.activeUids[0] ?? run.box[0]!.uid);
   const [toast, setToast] = useState<string | null>(null);
+  /** §2.11.0 — the Challenge Ring's door, in development: it opens a panel that says so. */
+  const [ring, setRing] = useState(false);
 
   const mon = run.box.find((m) => m.uid === uid) ?? run.box[0]!;
   const species = content.species(mon.speciesId);
-  const canMove = run.money >= PRICES.dojoMove;
-  const canAbility = run.money >= PRICES.dojoAbility;
-  const broke = !canMove && !canAbility;
+  // §2.9.4 — the town's price, the city's +30 %, and any modifier's discount: the sim prices it, not the screen.
+  const movePrice = dojoPrice(run, content, 'move');
+  const abilityPrice = dojoPrice(run, content, 'ability');
+  const canMove = run.money >= movePrice;
+  const canAbility = run.money >= abilityPrice;
 
   function act(action: Parameters<typeof dispatch>[0]) {
     if (!dispatch(action)) {
@@ -52,8 +58,8 @@ export function DojoScreen() {
         <div>
           <h1 className={`${styles.title} display`}>The Dojo</h1>
           <p className={styles.sub}>
-            The master will work with anyone you can pay for. Teach a Pokémon something off its learnset, or
-            change what it does without a card.
+            Moves off the learnset, and passives.
+            <InfoDot tip={dojoTip()} />
           </p>
         </div>
         <span className={styles.credits} data-testid="dojo-money">
@@ -123,7 +129,7 @@ export function DojoScreen() {
                         </span>
                       </span>
                       <span className={`${styles.ap} tabular`}>{move.apCost} AP</span>
-                      {known ? <IconCheck size={16} /> : <Price amount={PRICES.dojoMove} affordable={canMove} />}
+                      {known ? <IconCheck size={16} /> : <Price amount={movePrice} affordable={canMove} />}
                     </Tipped>
                   </li>
                 ))}
@@ -158,7 +164,7 @@ export function DojoScreen() {
                           {locked && ' · hidden ability — opens at Bond rank 3'}
                         </span>
                       </span>
-                      {equipped ? <span className={styles.tag}>equipped</span> : locked ? <span className={styles.tag}>locked</span> : <Price amount={PRICES.dojoAbility} affordable={canAbility} />}
+                      {equipped ? <span className={styles.tag}>equipped</span> : locked ? <span className={styles.tag}>locked</span> : <Price amount={abilityPrice} affordable={canAbility} />}
                     </Tipped>
                   </li>
                 );
@@ -184,10 +190,15 @@ export function DojoScreen() {
         <p className="sr-only" role="status" aria-live="polite">
           {run.log.slice(-1).join(' ')}
         </p>
+        <Tipped as="button" type="button" tip={doorTip('ring', false, CITY_DOOR_LABEL.ring)} className={styles.ring} onClick={() => setRing(true)} data-testid="door-ring" aria-label={`${CITY_DOOR_LABEL.ring} — not open yet`}>
+          <IconTrophy size={18} /> {CITY_DOOR_LABEL.ring} <IconBarrierBlock size={16} className={styles.soonIcon} aria-hidden="true" />
+        </Tipped>
         <button type="button" className={styles.leave} onClick={() => act({ type: 'leave-dojo' })} data-testid="btn-leave-dojo">
-          <IconDoorExit size={18} /> {broke ? 'Back to the route' : 'Leave — keep the money'}
+          <IconDoorExit size={18} /> Back to town
         </button>
       </footer>
+
+      {ring && <DoorSoonPanel door="ring" onClose={() => setRing(false)} backLabel="Back to the Dojo" />}
     </main>
   );
 }

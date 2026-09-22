@@ -14,7 +14,7 @@
   font-size: var(--type-caption);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink-muted);
+  color: var(--ink-secondary);
 }
 .count {
   font-size: var(--type-caption);
@@ -30,7 +30,7 @@
 .empty {
   margin: 0;
   font-size: var(--type-caption);
-  color: var(--ink-muted);
+  color: var(--ink-secondary);
 }
 .row {
   position: relative;
@@ -74,7 +74,7 @@
   height: 22px;
   border-radius: 50%;
   background: var(--accent-action);
-  color: #5a4406;
+  color: var(--ink-on-accent);
   border: 2px solid var(--surface-1);
 }
 .body {
@@ -131,12 +131,12 @@
   padding: 1px 5px;
   border-radius: var(--radius-pill);
   background: var(--accent-warning);
-  color: #4a2a06;
+  color: var(--ink-on-accent);
 }
 .lockNote {
   margin: var(--sp-2) 0 0;
   font-size: var(--type-caption);
-  color: var(--ink-muted);
+  color: var(--ink-secondary);
 }
 
 /* §6.7.2 — the Move Manager handle. Sits on the row rather than inside it: the row's own click is the
@@ -171,4 +171,9 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--type-caption);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
 }

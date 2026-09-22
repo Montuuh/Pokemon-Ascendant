@@ -38,12 +38,18 @@ const SCREENS = {
   starter: { url: '/?screen=starter', match: [/screens\/StarterSelect/] },
   combat: { url: '/?scenario=wild-basic&seed=7', match: [/screens\/CombatScreen/, /components\/(EnemyPanel|Portrait|MoveCard|HpBar|ConsumableCard|CombatLog|FloatingNumbers|SwapOrSkip|TypeBadge|OutcomeOverlay)/, /ui\/tooltip/, /ui\/tips/] },
   'combat-boss': { url: '/?scenario=wild-boss-3phase&seed=7', match: [/components\/EnemyPanel/, /combat\/boss/] },
-  map: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)'], match: [/screens\/MapScreen/, /components\/(NodeMarker|NodePreviewCard|BoxPanel|InventoryDrawer|Money)/] },
-  dojo: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("dojo")'], match: [/screens\/DojoScreen/, /components\/MoveManager/] },
-  center: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("center")'], match: [/screens\/CenterScreen/] },
-  shop: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("shop")'], match: [/screens\/ShopScreen/, /components\/ItemCard/] },
-  mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("mystery")'], match: [/screens\/EventScreen/] },
-  evolution: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("wild", true)'], match: [/screens\/EvolutionScreen/] },
+  map: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'goTo("map")'], match: [/screens\/MapScreen/, /components\/(NodeMarker|NodePreviewCard|BoxPanel|InventoryDrawer|Money)/] },
+  // §2.11 — the towns. `run.city(n)` stands the run in one (0 Pallet Town, 1 Celadon City); the buildings are clicks.
+  city: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(4)', 'run.city(0)'], match: [/screens\/city\//, /ui\/strings/] },
+  'city-celadon': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)'], match: [/screens\/city\//] },
+  'city-gate': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)'], clicks: ['door-gate'], match: [/screens\/city\/CityScreen/] },
+  dojo: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(600)'], clicks: ['door-dojo'], match: [/screens\/DojoScreen/, /components\/MoveManager/] },
+  center: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.trauma(2)', 'run.pay(600)'], clicks: ['door-center'], match: [/screens\/CenterScreen/] },
+  shop: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.pay(600)', 'run.wear("leftovers")'], clicks: ['door-mart'], match: [/screens\/ShopScreen/, /components\/ItemCard/] },
+  merchant: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("merchant")', 'goTo("map")'], match: [/screens\/ShopScreen/] },
+  aid: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("aid")', 'goTo("map")'], match: [/screens\/AidScreen/] },
+  mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("mystery")', 'goTo("map")'], match: [/screens\/EventScreen/] },
+  evolution: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("wild", true)', 'goTo("map")'], match: [/screens\/EvolutionScreen/] },
 };
 
 // ── Which screens? ───────────────────────────────────────────────────────────────────────────────────────
