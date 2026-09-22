@@ -71,17 +71,24 @@ Defeating it awards a **Badge** (a permanent run modifier, §5.10), a guaranteed
 
 ## §2.1.4 Cities (after Gyms 1 and 2)
 
-A City is a **Choice Plaza**: a rest-and-restock hub with a limited visit budget rather than a fixed sequence.
+A City is a **lobby**: a drawn town you stand in, with its notable buildings as doors, and a gate that leaves
+for the next Region when *you* say so. There is no visit budget and no timer — the budget is your money, your
+HP and your Trauma. What stops you taking everything is that everything costs.
 
-| Always available | Pick **2** of |
-|---|---|
-| **Curated Shop** — 8 team-aware slots (§2.11.2) | **City Gym** — an optional Gym-tier fight for a 4th Badge |
-| **Reflection** — pick 1 of 3 Region Modifiers (§2.11.3) | **Pokémon Center** — heal, Trauma therapy, Daycare |
-| | **Grand Dojo** — city-tier move and ability tutor |
-| | **Black Market** — a Legendary relic for HP or Trauma instead of ₽ |
+Two per run, and they are deliberately different sizes:
 
-The Center being *optional* is the point: healing costs you the Dojo, and the City Gym costs you the heal. Full
-node detail: §2.11.4.
+| | **Pallet Town** — after Gym 1 | **Celadon City** — after Gym 2 |
+|---|---|---|
+| Feel | A small town: four doors, cheap, warm | The big city: more doors, dearer, louder |
+| Doors | Pokémon Center · Poké Mart · Dojo · Safari Zone *(closed)* | Pokémon Center · Department Store · Dojo · Game Corner *(Black Market beneath it, closed)* · Safari Zone *(closed)* |
+| Leaving | The gate → Reflection (§2.11.3) → Region 2 | The gate → Reflection → Region 3 |
+
+**The city is where a team is built.** Routes carry a travelling merchant and a field nurse and nothing else
+(§2.9) — the real shop and the only Dojo are here. That is what makes arriving an event, and it is why money
+saved on a route has somewhere to go. Full detail: §2.11. *(Redesigned 2026-09-22: the previous "Choice
+Plaza", a menu of six options with a 2-of-4 visit budget, put a second Gym-tier boss one click after the
+Region's own Gym and duplicated the route's own service nodes. The lobby keeps the pressure — money — and
+drops the ration.)*
 
 ### §2.1.4.1 Region Modifiers are per-Region
 
@@ -267,10 +274,9 @@ take is visible the whole way up, which is what makes the one you did feel chose
 | Trainer Battle | ≈18 | Archetype is free in the trunk and **the Gym's own** inside a lane |
 | Elite Trainer | **1 guaranteed**, +1 at **22 %** | The guaranteed one is the middle of three at L7; the rolled one is in a lane |
 | Elite Wild | **≤1, at 45 %** | Seeded special (§2.8.2) — genuinely not on every map, and never more than one |
-| Pokémon Center | 1 per Gym lane | Pre-Gym restore. **Never before the fork** — a rest you did not need costs a fight you did |
-| Shop | 1 | L3, early, so a relic has the rest of the route to pay itself back |
-| **Dojo** | 1 | L6, late enough that §6.4.3's per-stage tutor list is the evolved one |
-| Mystery Event | 2 | L2 and L5 |
+| Field Aid | 1 per Gym lane | The nurse: half a heal before the Gym (§2.9.1). **Never before the fork** — a rest you did not need costs a fight you did |
+| Travelling merchant | 1 | L3, basics only (§2.9.2). The real shop is the City's |
+| Mystery Event | 3 | L2, L5 and L6 — L6 was the Dojo's node until the Dojo moved to the City (§2.9.4) |
 | Gym | 2 | The terminal node of each lane |
 
 **Why two of these are percentages.** The Elite Trainer at L7 is the landmark — guaranteed, the thing you
@@ -319,6 +325,17 @@ Each Region has a fixed eligible set and a primary biome that appears most often
 canon**: biomes always follow the Region's theme, and Region Modifiers never steer them — with one deliberate
 exception, **Naturalist's Lens** (§2.11.3.1), which lets the player promote one *eligible* biome to primary for
 that Region. Dominant, never exclusive, so the three-species offer never starves.
+
+**A biome is a species pool and a backdrop, and it must be wide enough to surprise.** Region 1 shipped with
+four to six species per biome, which is thin enough that a lane starts repeating itself by its third node; the
+pools grow as Regions 2 and 3 author their lines, and a species may sit in more than one biome. A pool that
+offers the same three Pokémon twice is the failure state to watch for. *(Noted 2026-09-22.)*
+
+**Biomes will also carry a field effect** — most visibly in the lane that ends at a Gym of that biome's type,
+so the ground you fight on is part of what the lane telegraphs (§2.5.0).
+
+> ⚠️ **OPEN (2026-09-22)**: which effect each biome carries, and whether it applies to the whole lane or only
+> near the Gym. Waits on field effects themselves (§4.3, v0.8). Decides: user.
 
 ## §2.6.2 What a Wild node offers
 
@@ -547,68 +564,91 @@ Road Apex node. It carries its own map marker.
 
 # §2.9 Service nodes
 
-Three non-combat stops. None of them fights; all of them cost something, even the free one — a node you spend
-on healing is a node you did not spend on money or sculpting.
+Two non-combat stops, and both of them are small. A route sells you what you need *today*; the City sells you
+what you are building (§2.11). Every service node still costs something, even the free one — a node you spend
+on healing is a node you did not spend on a fight.
 
-## §2.9.1 Pokémon Centers
+*(Rewritten 2026-09-22. Until then a route carried a full Pokémon Center, a Shop and a Dojo, and the City
+carried premium copies of all three, which made a City "the route again, dearer". The economy moved wholesale:
+routes keep a nurse and a pedlar, Cities keep the shop and the Dojo. The consequence is deliberate — you save
+across a Region and spend it all at once.)*
 
-One per Gym lane, just before the Gym. No combat — pure utility.
+## §2.9.1 Field Aid — the nurse
+
+One per Gym lane, just before the Gym. No combat, no building: a nurse with a folding table.
 
 | Service | Effect | Cost |
 |---|---|---|
-| **Heal** | Full restore of every Box Pokémon to Effective Max HP | Free |
-| **Therapy** | Remove **1** Trauma stack from one Pokémon. Repeatable while affordable | `100 × (1 + stacks)` ₽ |
+| **First aid** | Restores **50 %** of Effective Max HP to every Pokémon in the Box | Free |
 
-Centers do **not** teach moves. Tutoring moved to the Dojo (§2.9.4); a Center heals and treats Trauma, and that is
-its whole identity.
+That is the whole list. She does not treat **Trauma** — that is a Pokémon Center's job and Centers are in
+Cities now (§2.11.1) — and there is nothing else to cure, because a status never survives the combat that
+inflicted it (§4.2.7). Half a heal before a Gym is enough to make the fight winnable and not enough to make it
+comfortable, which is the point of the last stop before a boss.
 
 ---
 
-## §2.9.2 Shops
+## §2.9.2 The travelling merchant
 
-Smaller and less curated than a City Shop. One per Region, mid-trunk.
+One per Region, mid-trunk, at L3. A cart, four slots, basics only.
 
-### Stock
-
-| Slot | Count | Price |
+| Slot | Content | Price |
 |---|---|---|
-| Consumables | 3, randomised | 25–150 ₽ |
-| Common relic | 1 | 150 ₽ |
-| Uncommon relic | 1 | 300 ₽ |
-| Pokéball | 1 | 50 ₽ |
-| Special — Held Item **or** TM | 1 | 250–500 ₽ |
+| 1–2 | Tier-1 consumables — potions, status cures | 25–150 ₽ |
+| 3 | Poké Balls ×3 | 120 ₽ |
+| 4 | Wildcard — a Common relic **or** a Held Item | 150–250 ₽ |
 
-Stock is seeded per visit.
+Stock is seeded per visit. The merchant does **not** buy anything: selling exists only in a City (§2.11.2.4).
 
 ## §2.9.3 Re-rolling
 
-25 ₽ for the first re-roll, then 50 ₽, then 100 ₽ — up to three per visit. Region Shops do **not** buy items;
-selling exists only in a City (§2.11.2.4).
+The merchant re-rolls **once**, for 25 ₽. The City shop keeps the full ladder — 25 ₽, then 50 ₽, then 100 ₽,
+up to three per visit — because that is where the stock is worth fishing for.
 
 ---
 
 ## §2.9.4 The Dojo
 
-A standalone **non-combat utility node**, roughly one per Region in the mid-trunk, telegraphed on the map. It
-replaced the Move Tutor service that used to live in Pokémon Centers.
+**The Dojo is a City building** (§2.11 — one in the town, a wider one in the city). It is documented here
+because this section is where the rules live and thirty citations point at it; only its *location* changed on
+2026-09-22.
 
-**The service.** Pick one of your Pokémon and pay Poké Dollars to teach it:
+A non-combat utility screen. Pick one of your Pokémon and pay Poké Dollars to teach it:
 
 - **An off-learnset move** — the full tutor list for that Pokémon's **current evolution stage**, minus what it
   already knows. There is **no offer cap**: every available move is listed. These are the moves the Pokémon
   would never learn naturally under the lean learnset of §6.9, which is exactly what makes them worth money.
 - **An ability** — any entry from the species' `availableAbilities` pool, including the one currently equipped,
-  so a swap is allowed. One passive slot per Pokémon; teaching replaces what is there.
+  so a swap is allowed. One passive slot per Pokémon; teaching replaces what is there. The line's **hidden
+  ability** appears here once its Bond reaches rank 3 (§6.8.3), locked and named before then.
 
-You may teach several things in one visit if you can afford them.
+You may teach several things in one visit if you can afford them, and you may leave and come back.
 
-| | Region Dojo | Grand Dojo (City) |
+| | Town Dojo | City Dojo |
 |---|---|---|
-| Off-learnset move | 150 ₽ | +30 % |
+| Off-learnset move | 150 ₽ | +30 %, and a wider list |
 | Ability (set or swap) | 200 ₽ | +30 % |
 
-The Dojo is the game's main Poké Dollar sink and its key deliberate-sculpt stop — the node where a run stops
-being what it was dealt and becomes what you built (Pillar 3).
+The Dojo is the game's main Poké Dollar sink and its key deliberate-sculpt stop — the place where a run stops
+being what it was dealt and becomes what you built (Pillar 3). Region 1 has no Dojo at all, which is the
+teaching Region's own escalation: you play what you find until the first town.
+
+> ⚠️ **OPEN (2026-09-22)**: the user asked the City Dojo to teach "movimientos ocultos". Two readings — the
+> off-learnset tutor list it already sells, or a separate catalogue of Gen I **HMs** (Cut, Fly, Surf, Strength,
+> Flash) as battle moves. Decides: user.
+
+### §2.9.4.1 The Challenge Ring
+
+Inside the Dojo, a second door: a **paid ladder of fights**. You pay the entry fee, then fight 2–3 battles
+back to back with no healing between them; the prize grows with how far you get and is claimed only on the way
+out. Losing costs the fee and leaves the fallen with their Trauma — it never ends the run.
+
+This replaced the **City Gym** of the previous design (a full Gym-tier boss one click after the Region's own
+Gym). The ring keeps the "bet your team on a hard fight" moment without the second climax and without a Badge
+riding on it.
+
+> ⚠️ **OPEN (2026-09-22)**: the ring's fee, ladder length and prize table, and whether a Region's fourth
+> **Badge** still exists now that the City Gym is gone (§2.12.6). Decides: user.
 
 ---
 
@@ -673,23 +713,46 @@ node's type, adjust hand size or swap cost, multiply XP.
 
 # §2.11 Cities
 
-After Gyms 1 and 2. A City is a **Choice Plaza** — the macro-scale version of the same "you cannot have
-everything" pressure that AP applies inside a fight.
+Two stops per run, after Gyms 1 and 2. A City is a **lobby**, not a menu: the city is drawn, its buildings are
+the doors, and you walk out through the gate when you are ready (§2.1.4).
 
-## §2.11.1 The Pokémon Center (City version)
+## §2.11.0 How a lobby works
+
+- **No visit budget.** Enter what you like. Money, HP and Trauma are the only rations.
+- **Two kinds of door.** The **open** ones — Pokémon Center, shop, Dojo — may be entered and left as often as
+  you like; they take your money, not your turn. The **committing** ones — the Challenge Ring (§2.9.4.1), the
+  Game Corner, and the doors not yet open (§2.11.6) — resolve **once per visit** and then close for good.
+- **The gate closes the City.** Leaving opens the Reflection (§2.11.3): pick one Region Modifier, and the pick
+  *is* the departure. Nothing else can be done after it.
+- **A closed door is still drawn.** A building that is coming later is on the map, clickable, and says what it
+  will be — a door you can see is a goal, one that silently does nothing is furniture (§7.7, and the same
+  treatment as the Hub's Mystery Door).
+
+## §2.11.1 The Pokémon Center
 
 | Service | Effect | Cost |
 |---|---|---|
-| **Heal** | Full restore | Free |
-| **Therapy** | Remove 1 Trauma stack | `100 × (1 + stacks)` ₽ |
+| **Heal** | Full restore of every Box Pokémon to Effective Max HP | **Free, always, as often as you like** |
+| **Therapy** | Remove **1** Trauma stack from one Pokémon. Repeatable while affordable | `100 × (1 + stacks)` ₽ |
 | **Daycare** | Deposit one Pokémon: +1 level instantly, and it skips the next combat | 200 ₽ |
 | **PC Box** | Inspect and reorder the Box | Free |
 
-In a City this is one of the **optional** premium visits, not a guaranteed stop.
+Healing is free because healing is free in Pokémon, and a fan game that charges for it is picking a fight with
+the fantasy for a few coins. The squeeze is **Trauma**, which is the only damage a route cannot undo (§2.9.1)
+and the only one that compounds.
 
-## §2.11.2 The Curated Shop
+> ⚠️ **OPEN (2026-09-22)**: whether Celadon has a Center at all. The user listed it under the town. Written
+> here as "both", because arriving at Region 3 — the hardest — with no full heal and no therapy is a very
+> sharp edge. Decides: user.
 
-The run's largest economic surface, and always available. **Eight slots, curated to your team.**
+## §2.11.2 The shop
+
+The run's largest economic surface, and always open. Its size is the difference between the two Cities.
+
+**Pallet Town — the Poké Mart.** One counter, **8 slots**, curated to your team.
+
+**Celadon City — the Department Store.** Several floors, each a category: consumables · TMs · Held Items ·
+relics · the rare counter. Far more stock than a Mart, and the only place a run ever sees that much at once.
 
 ### §2.11.2.1 Curation
 
@@ -702,9 +765,11 @@ score = BaseRelevance
       + SeededJitter
 ```
 
-The top 8 populate the shop, sorted by category.
+The top N populate the shop, sorted by category: 8 at the Mart, more per floor at the Department Store.
 
 ### §2.11.2.2 Slots
+
+The Mart's eight, and the shape each Department Store floor follows:
 
 | Slot | Content |
 |---|---|
@@ -717,16 +782,16 @@ The top 8 populate the shop, sorted by category.
 | 8 | TM, curated to the team's compatibility |
 
 ### §2.11.2.3 Pricing
-About 30 % above Region Shop prices. You are paying for selection quality.
+About 30 % above the travelling merchant's prices. You are paying for selection quality.
 
 ### §2.11.2.4 Selling
-Any held item sells for **30 % of its listed price**. This is the run's only Poké Dollar exit valve, and Region
-Shops do not offer it.
+Any held item sells for **30 % of its listed price**. This is the run's only Poké Dollar exit valve; the
+merchant on the route does not buy (§2.9.2).
 
 ## §2.11.3 Reflection — the Region Modifier
 
-Always available, and it closes the City. Three modifiers are offered, seeded and weighted to your team;
-you pick one; it applies to the **next Region only** (§2.1.4.1).
+The gate. Three modifiers are offered, seeded and weighted to your team; you pick one; it applies to the
+**next Region only** (§2.1.4.1), and the pick is what leaves the City.
 
 ### §2.11.3.1 The pool — 17 modifiers
 
@@ -758,25 +823,46 @@ is excluded (Field Surveyor never appears before Region 3).
 Exactly one modifier is active at a time and it **expires with its Region**. Modifiers never stack. Relics and
 Badges are the run-long systems.
 
-## §2.11.4 The Choice Plaza
+## §2.11.4 The doors
 
-The Shop and the Reflection are always available. Beyond those, the player may visit **2 of 4**:
+| Door | Town | City | Kind |
+|---|---|---|---|
+| **Pokémon Center** (§2.11.1) | ✅ | ✅ | Open — enter and leave freely |
+| **Shop** (§2.11.2) — Mart / Department Store | ✅ | ✅ | Open |
+| **Dojo** (§2.9.4) — tutor and abilities | ✅ | ✅ wider | Open |
+| **Challenge Ring** (§2.9.4.1) — inside the Dojo | ✅ | ✅ | Committing, once per visit |
+| **Game Corner** (§2.11.5) | — | ✅ | Committing, one session |
+| **Safari Zone** (§2.11.6) | 🔒 | 🔒 | Not open yet |
+| **Black Market** (§2.11.6) — beneath the Game Corner | — | 🔒 | Not open yet |
+| **The gate** (§2.11.3) | ✅ | ✅ | Ends the City |
 
-**🏟 City Gym** *(risky, optional)* — a full Gym-tier fight against a leader of a type **outside this run's Gym
-pool**. Reward: a **4th Badge**, a guaranteed Rare relic and money. Risk: you enter at **current HP** (healing
-would cost you the Center visit), and while a wipe here does not end the run, the fainted Pokémon keep their
-Trauma and the Badge attempt is forfeit for this City. This is the primary bonus-Badge source (§2.12.6).
+## §2.11.5 The Game Corner
 
-**❤️ Pokémon Center** — the full slate of §2.11.1, but spending one of your two visits and a small fee.
+Celadon's casino, and the one place in the game where the odds are the content. You bet Poké Dollars on a
+wheel with its **payout table printed on the screen**; the expected value is deliberately **below 1**, so over
+many spins the house wins, and the session is capped at a few spins per visit.
 
-**🥋 Grand Dojo** — a city-tier Dojo (§2.9.4): a wider tutor list and the ability service, priced above the
-Region Dojo.
+Its purpose is not income — it is **variance**. A pile of money too small to buy the thing you need is dead
+weight; the wheel is the run's only way to turn it into a *chance* at the thing you need, at a known price in
+expectation. Printing the table is what keeps it inside Pillar 1: the gamble is chosen with the numbers in
+view, like the catch roll (§2.6.4.3).
 
-**🖤 Black Market** — a single **Legendary relic** offered at an **HP or Trauma cost** instead of money. A
-high-risk power spike, and the third Legendary pick-moment of a run.
+> ⚠️ **OPEN (2026-09-22)**: the wheel's segments, payouts and the per-visit cap. Decides: user, after a
+> playtest with real prices.
 
-The visit budget is the point: healing, sculpting, gambling and the bonus Badge all compete for the same two
-slots.
+## §2.11.6 Doors not yet open
+
+Both are on the map from the first build, drawn, clickable and labelled with what they will be.
+
+**🦌 Safari Zone** *(town and city)* — a paid catching ground: a flat entry fee, a fixed number of balls, and
+species that the routes never offer. The Box-filling building.
+
+**🖤 Black Market** *(beneath the Game Corner)* — the back room. Legendary relics paid for in **HP or Trauma**
+instead of money, Pokémon traded for other Pokémon, and the rest of the things a Poké Mart will not sell. The
+Rocket hideout was under the Celadon Game Corner in Gen I, and this is that joke made mechanical.
+
+> ⚠️ **OPEN (2026-09-22)**: both designs. Deliberately deferred past v0.7 — the doors ship closed so the city
+> is the right shape from the first build. Decides: user, when they come up the roadmap.
 
 ---
 
@@ -826,9 +912,9 @@ Black Market. The Boon system no longer exists as a separate mechanic.
 
 Up to one extra Badge per run, beyond the three from Gyms.
 
-- **§2.12.6 The City Gym** (§2.11.4) is the primary source: an optional Gym-tier fight in a City, for a Badge of
-  a type outside the run's pool plus a Rare relic. Losing it does not lose the run, but the fainted Pokémon keep
-  their Trauma and the Badge attempt is forfeit for that City.
+- **§2.12.6 The City Gym is gone** (2026-09-22). It was the primary bonus-Badge source; the City's fight is the
+  Challenge Ring now (§2.9.4.1), which pays money and loot rather than a Badge.
+  > ⚠️ **OPEN (2026-09-22)**: whether a fourth Badge per Region still exists, and where it comes from. Decides: user.
 - **§2.12.6 Victory Road Perfect Clear**: clearing a Gauntlet with no Pokémon fainting awards the Badge of the
   Gym path you did *not* take in the matching Region tier.
 
@@ -839,12 +925,16 @@ Up to one extra Badge per run, beyond the three from Gyms.
 ## §2.13.1 Region 1 — Verdant Route 🌿
 Meadow primary; River and Cave secondary. Saturated greens, soft yellows, sky blue — cheerful and warm. Light
 flute and strings, birdsong; a bright upbeat combat motif. Enemies are Bug, Normal and Grass, with the occasional
-Water from the river. Gym pool: Rock, Water, Bug, Normal. City: **Pallet Plaza**, small-town comfort.
+Water from the river. Gym pool: Rock, Water, Bug, Normal. City after it: **Pallet Town** — the smallest, warmest
+town in the franchise, four doors and a laboratory it has not opened yet (§2.11).
 
 ## §2.13.2 Region 2 — Coastal Cliffs 🌊
 Sea primary; River and Power Plant secondary. Cool blues, weathered greys, deep purples — dynamic and dramatic.
 Waves, gulls, orchestral strings; a tense building combat motif. Enemies are Water, Electric and sea-variant
-Bug. Gym pool: Fire, Grass, Electric, Poison. City: **Vermilion Harbor**, a bustling port.
+Bug. Gym pool: Fire, Grass, Electric, Poison. City after it: **Celadon City** — the largest city of Gen I, a
+department store several floors tall and a Game Corner with something underneath it (§2.11). *(Was "Vermilion
+Harbor" until 2026-09-22; the brief asked for the biggest city in the game, and Celadon carries the two
+buildings the City is built around.)*
 
 ## §2.13.3 Region 3 — Volcanic Highlands 🔥
 Volcano primary; Cave, Sky and Abandoned Tower secondary. Reds, oranges, blacks, purples — saturated and
@@ -861,15 +951,16 @@ and Ghost. Gym pool: Psychic, Ground, Fighting, Ice. No City — Region 3 ends i
 | Trainer | Yes | 50–150 | 5 | Loot table | — |
 | Elite Trainer | Yes | ~300 | 25 | **Rare relic, 1 of 3** | Rival / Giovanni / Specialist |
 | Elite Wild | Yes | small | recruit XP | **Catch → recruit, or defeat → 1 Rare relic** | Catch-or-kill |
-| Pokémon Center | No | — | — | — | Heal + Therapy |
-| Shop | No | spend | — | — | Seeded stock + re-roll |
-| Dojo | No | spend | — | — | Off-learnset moves + abilities |
+| Field Aid (nurse) | No | — | — | — | +50 % HP, no Trauma |
+| Travelling merchant | No | spend | — | — | 4 basic slots + one re-roll |
 | Mystery | Varies | Varies | Varies | Varies | Choice-driven |
 | **Gym Leader** | Yes | 500 | 50 | **Rare relic + a 1-of-3 Legendary pick** | **Badge** |
-| City Shop | No | spend | — | — | 8 curated slots |
-| City Reflection | No | — | — | — | Region Modifier |
-| City Gym | Yes | yes | 50 | Rare relic | **4th Badge**; a loss is not a run loss |
-| Black Market | No | HP / Trauma | — | — | A Legendary relic |
+| City Center | No | spend on Trauma | — | — | Free heal + Therapy + Daycare |
+| City Shop | No | spend | — | — | 8 curated slots (Mart) / floors (Department Store) |
+| City Dojo | No | spend | — | — | Off-learnset moves + abilities |
+| Challenge Ring | Yes | fee → prize | — | Loot on the way out | 2–3 fights, no heal between; a loss is not a run loss |
+| Game Corner | No | bet | — | — | Printed odds, EV below 1 |
+| City Reflection | No | — | — | — | Region Modifier; it closes the City |
 
 ---
 

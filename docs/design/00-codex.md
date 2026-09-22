@@ -34,7 +34,10 @@ Pokémon.
   **locks the seed and generates the map**. The Box holds only the starter.
 - **A Region:** a seeded 12-layer branching tree ending in a **Gym fork** at L9 — two routes, two Gyms, both
   announced. One guaranteed Elite Trainer ≈L7, one Center per Gym lane, ≈1 Dojo, 2 Mystery, 1 Shop, ≤1 Elite Wild.
-- **A City** (after Gyms 1 and 2) is a **Choice Plaza**: Shop and Reflection always, plus **2 of** {City Gym,
+- **A City** (after Gyms 1 and 2) is a **lobby** — a drawn town whose buildings are doors, no visit budget, the
+  gate leaves when you say so. **Pallet Town** (4 doors) then **Celadon City** (more, dearer). Routes keep only a
+  nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
+  Superseded: a City was a **Choice Plaza** — Shop and Reflection always, plus **2 of** {City Gym,
   Center, Grand Dojo, Black Market}.
 - **Region Modifiers are per-Region**: exactly 1 active, re-picked each Region, expiring with it. Relics and
   Badges are the run-long systems.

@@ -42,7 +42,7 @@
 | 30 | Combat | Comeback Kid (H) | Win a combat down to your last standing Pokémon | 🥈 | `combat-end` + team state |
 | 31 | Boss | Gym Sweep | Defeat all 3 Gym Leaders in one run | 🥇 | `badge-awarded` ×3 |
 | 32 | Boss | Flawless Gym | Beat a Gym Leader with no faints | 🥇 | `combat-end(gym)` + faints |
-| 33 | Boss | City Conqueror | Win the optional City Gym (4th Badge) | 🥇 | `badge-awarded(city)` |
+| 33 | Boss | ~~City Conqueror~~ | 🔒 **Retired 2026-09-22** — the City Gym is gone (§2.12.6). A replacement waits on the Challenge Ring's design (§2.9.4.1) | 🥇 | — |
 | 34 | Boss | Champion ◆ | Defeat the Champion | 💎 | `run-end(win)` |
 | 35 | Boss | Underdog ★◆ | Beat the Champion with no fully-evolved Pokémon | 💎 | `run-end(win)` + team |
 | 36 | Boss | Speedrunner ◆ | Beat the Champion in under 90 minutes | 💎 | `run-end(win)` + timer |

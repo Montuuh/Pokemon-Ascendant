@@ -87,8 +87,10 @@ test.describe('About', () => {
     await expect(page.getByTestId('about-screen')).toBeVisible();
 
     await expect(page.getByTestId('about-version')).toHaveText(/^v\d+\.\d+\.\d+/);
+    // One row per version in docs/roadmap.md — twelve since the v0.7 split (2026-09-22), and growing.
     const rows = page.locator('[data-testid^="roadmap-v"]');
-    await expect(rows).toHaveCount(10);
+    await expect(rows).toHaveCount(12);
+    await expect(page.getByTestId('roadmap-v1.2')).toBeVisible();
     await expect(page.getByTestId('roadmap-v0.1')).toHaveAttribute('data-status', 'done');
     await expect(page.getByTestId('roadmap-v1.0')).toHaveAttribute('data-status', 'planned');
     // At most one "building now" — none between versions, as after v0.6 shipped — and it names itself without a hover.

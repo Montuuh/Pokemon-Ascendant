@@ -1,51 +1,42 @@
 # Session State — Pokémon Ascendant
 
 **Date:** 2026-09-22
-**Version in progress:** **v0.6.x closed — v0.7 next.** v0.1–v0.6 complete; v0.6.5 is the shipped build.
-**Sprint goal:** the pre-v0.7 close-out is done. 2026-09-21: the Hub redrawn (v0.6.1); **Bond** (§6.8); **catching
-as a shown roll** (§2.6.4); **running with a toll** (§3.1.2) (v0.6.2); **the Poké Mart as the shop of the pass**
-(v0.6.3). 2026-09-22: **the PC Terminal as pictures and sheets** (v0.6.4), then **one Pokédex** (v0.6.5 — the
-Companions tab folded in). Type badges are the games' own FireRed/LeafGreen pixel labels (`npm run art:types`).
-**Shipped in v0.6.4–v0.6.5 — the PC Terminal (§8.9.1, §8.9.2):**
-- Three tabs: Pokédex · Medals · Discoveries. The Pokédex is a card grid (number · sprite · name · type glyphs ·
-  five pips for the line's Bond rank; silhouettes for unfaced species; "By number / By Bond" order). Every card
-  opens a sheet (`hub/PcSheet.tsx` — Radix Dialog with a Back stack) with three tabs: Record tiles + Familiar
-  line · Kit (line learnset, tutor list, Mastery Moves, abilities w/ hidden, evolutions as doors) · the line
-  (`LineSheet` embedded: stages as doors with the current one marked, Bond bar, named ladder, how Bond grows).
-- **Record** on `DexEntry`: encounters, caught, recruits, knockouts, faints, damageDealt, evolutions
-  (+ `normalizeDexEntry` for old saves). Fed by `CombatTally.koBy/faintsOf/damageBy` (counted at `emit()`),
-  report `enemies`, event `caughtSpecies` and `fromSpeciesId`. Testids: `dex-<id>[data-met]`, `dex-sheet`,
-  `dex-stat-<key>`, `dex-sheet-knowledge`, `dex-sheet-tab-record|kit|line`, `dex-order-dex|bond`,
-  `dex-<id>[data-rank]`, `line-sheet[data-rank]`, `line-stage-<id>`, `pc-sheet-back/close`. `bond-<line>` and
-  `pc-tab-companions` are gone.
-**Shipped in v0.6.3 — the Mart (§8.3.4, §8.3.5, §8.4.1, §8.4.2, §8.4.4, §8.5.2, §8.6.1):**
-- The track **pays Tokens at every level** (2; 5/5/8/8/10/10 at milestones; 92 by Level 30) and **opens
-  shelves** at 3/5/8/10. Nothing else is on it. `REWARD_TRACK` is derived, `TrackReward = {tokens, opens?}`.
-- Five shelves in `meta/mart.ts` (`shelfItems`, `martPrice`, `buy`, `wear`): Trainer's Corner Lv 1 (titles 2,
-  avatars 3, frames 2, Curated Starting Relic +1 3) · Starters Lv 3 (Magikarp 4, Eevee 6, Pikachu 6 — priced,
-  `pending` until its kit) · Hub upgrades Lv 5 (4–8; pending ones priced, not sold) · Discoveries Lv 8 (any
-  undiscovered Tier-2, 4; Reactor Core stays on the lane) · Mastery lane Lv 10 (Tier-3, 5). `shopTotal` ≈ 214.
-- Cosmetics in `meta/cosmetics.ts`; `account.cosmetics` + `account.wearing`; the Trainer Card wears them
-  (`card-title`, `card-avatar`, `card-head[data-frame]`). `titles` is gone.
-- `ACCOUNT_VERSION = 2`; `upgradeAccount` back-pays 2 Tokens per claimed non-milestone level, keeps granted
-  starters/hub, re-keys titles → cosmetic ids. `AccountContext` lost `discoverableRelics`.
-- UI: Mart = Radix Tabs per shelf (`mart-tab-<shelf>[data-open]`, `mart-banner[data-state]`, `mart-<id>`,
-  `mart-price-<id>`, `mart-wear-<id>`, `mart-tokens[data-tokens]`); road stops are "+N" faces, storefront
-  stops at 3/5/8/10 (`track-N[data-opens]`); Daycare prices unbought starters; TrainerCard chips show prices.
-**Next action:** v0.7 — *Regions 2 & 3* (see `docs/roadmap.md`): Pikachu's kit, Evolution Items, the intent
-queue, Greater Threats, Cities/Trauma Salve Cache, the 6 pending hidden abilities, unshipped Mastery moves.
-**UI review loop (2026-09-22):** `docs/design/ui-doctrine.md` (D1–D10) · `scripts/ui-audit.mjs` (`npm run ui:audit`,
-needs :5173) · agent `ui-reviewer` · skill `ui-review` · hooks: PostToolUse queues `src/ui|app` edits in
-`.claude/state/ui-pending.txt`, Stop blocks once while unreviewed, `ui-clear.mjs` stamps. Defer: `.claude/state/ui-skip`.
-**Blocked on:** nothing.
-**Last commit:** see `git log -1` — v0.6.5.
-**Test status:** `npm run check` green — 393 Vitest, typecheck, lint, § (361) and catalogue guards. Playwright
-green (see the last run in this file's git history if in doubt).
-**Balance:** unchanged (the harness is account-less).
-**Open questions:** (a) end-of-run ₽ surplus — parked until the full run exists. (b) consumables
-spent-but-found-more-often — mentioned by the user, not yet valued; catch/flee balance waits on it. (c) Mart
-prices and track amounts are first numbers; revisit after a few real accounts level.
+**Version in progress:** **v0.7 — Cities & Regions 2–3**, in five subversions. v0.1–v0.6 complete; v0.6.5 is
+the shipped build. Nothing of v0.7 is coded yet: the design was re-planned first.
+**Sprint goal:** v0.7.1 — the seam and the town. The run must stop ending at the Region 1 Gym (`run.ts:238`).
 
+**Decided 2026-09-22 (canon rewritten, no code yet):**
+- **Cities are lobbies** (§2.1.4, §2.11): a drawn town, buildings as doors, no visit budget — money, HP and
+  Trauma are the budget. Open doors (Center, shop, Dojo) are re-enterable; committing ones (Challenge Ring,
+  Game Corner) resolve once per visit. The gate opens the Reflection (§2.11.3) and leaves.
+- **Pallet Town** after Gym 1 (Center · Poké Mart · Dojo · Safari closed) and **Celadon City** after Gym 2
+  (Center · Department Store by floors · wider Dojo · Game Corner with the Black Market closed beneath ·
+  Safari closed). Was "Pallet Plaza / Vermilion Harbor".
+- **Routes lose the Center, the Shop and the Dojo** (§2.9): a nurse who heals 50 % and never touches Trauma
+  (§2.9.1 — statuses need no curing, §4.2.7 clears them at combat end) and a travelling merchant with four
+  basic slots (§2.9.2). The freed L6 node becomes a third Mystery Event (§2.5.1).
+- **The City Gym is gone**; the Dojo's **Challenge Ring** (§2.9.4.1) is the "bet your team" fight — a fee, 2–3
+  fights with no heal between, the prize on the way out, never a run loss.
+- **The Game Corner** (§2.11.5) bets ₽ on a wheel with the payout table printed, EV below 1: variance, not income.
+- **Biomes stay** (§2.6.1): pools widen as R2/R3 author their lines, and biomes will carry a field effect in
+  v0.8. Multi-enemy + field effects moved out of v0.7 into **v0.8**; the League assumes them, so they precede
+  Victory Road (now v0.9). v1.0 Release · v1.1 Polish · v1.2 the map revamp (horizontal, tileset).
+- **Backlog** (roadmap tail): fossils and the Laboratory, role events (Fan Club, Rocket, the Magikarp
+  swindle, Silph Co.), the Safari and Black Market designs, the fourth Badge, ₽ surplus, spent consumables.
+
+**Open flags planted (never guessed):** §2.11.1 does Celadon have a Center · §2.9.4 what "movimientos
+ocultos" means (tutor list or Gen I HMs) · §2.9.4.1 the ring's numbers and whether a 4th Badge survives
+(§2.12.6) · §2.11.5 the wheel's table · §2.11.6 Safari and Black Market · §2.6.1 which effect each biome carries.
+
+**Next action:** v0.7.1. Order: the seam in `run/run.ts` (Gym victory → City → next Region, `regionIndex + 1`),
+then the City screen as a lobby, then strip the route nodes. Placeholder R2/R3 = R1's generator at a higher band.
+**Blocked on:** nothing — the open flags above are all *inside* v0.7.2+ except the Celadon Center, which the
+town build does not need.
+**Last commit:** see `git log -1`.
+**Test status:** `npm run check` green — 396 Vitest, typecheck, lint, § (367 sections) and catalogue guards.
+55/55 Playwright.
+**UI review loop:** after every `src/ui`/`src/app` change run the `ui-review` skill (`npm run ui:audit` → the
+`ui-reviewer` agent → fix → `node .claude/hooks/ui-clear.mjs`). Doctrine: `docs/design/ui-doctrine.md`.
 
 ## Standing facts
 

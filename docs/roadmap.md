@@ -22,10 +22,12 @@ loop layer and re-tests the core inside it.
 | v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
-| v0.7 | Regions 2 & 3 | Status-on-intents, multi-enemy, field effects, cities, R2/R3 content | ☐ |
-| v0.8 | Victory Road & League | Gauntlet, Apex, Training Grounds, 5-fight League, Champion, boons | ☐ |
-| v0.9 | Polish | Audio, accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
+| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, then Regions 2 and 3 with their own accents. **Five subversions** | ☐ |
+| v0.8 | Multi-enemy & field effects | 1 lead + 1–2 supports: slots, targeting, intents, AI, preview — and the field effects biomes hang off | ☐ |
+| v0.9 | Victory Road & League | Gauntlet, Apex, Training Grounds, 5-fight League, Champion, boons | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
+| v1.1 | Polish | Audio, accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
+| v1.2 | Map revamp | A horizontal route you scroll, painted from a tileset with the biome on top | ☐ |
 
 ---
 
@@ -382,13 +384,52 @@ read 63 / 70 / 80, inside the noise of v0.5's 30-seed table.
 
 **Exit:** a lost run still feels like progress; a third run starts with something the first two earned.
 
-## v0.7 — Regions 2 & 3  ☐
-Mechanical escalation (§2.2): status-on-intents, multi-enemy (1 lead + supports), field effects (§4.3), Cities (§2.1 / CL-015), R2/R3 gyms and biomes, content expansion. Carried from v0.6: Pikachu's kit, Evolution Items (Eevee's Stone Cache, the Mysterious Stone event), the intent queue (Trainer's Instinct), Greater Threats, the Trauma Salve Cache.
+## v0.7 — Cities & Regions 2–3  ☐
 
-## v0.8 — Victory Road & League  ☐
+Split into five, because the run has to *continue* before it can escalate. Each one ships.
+
+### v0.7.1 — The seam and the town  ☐
+The run no longer ends at the Region 1 Gym: Gym → City → next Region. **Pallet Town** as a lobby (§2.1.4,
+§2.11): Pokémon Center, Poké Mart, Dojo, the Safari door drawn and closed, and the gate that opens the
+Reflection (§2.11.3, already built) and leaves. Routes lose their Center, Shop and Dojo and gain the nurse and
+the travelling merchant (§2.9); the freed L6 node becomes a third Mystery Event (§2.5.1). The Trauma Salve
+Cache Hub upgrade goes live. Regions 2 and 3 are Region 1's generator at a higher level band — placeholders on
+purpose, so the whole loop can be played and felt before its content exists.
+**Exit:** a three-Region run end to end, with two City visits, on a single seed.
+
+### v0.7.2 — The city  ☐
+**Celadon City**: the Department Store by floors, the wider City Dojo, the Game Corner (§2.11.5) and the Black
+Market door drawn beneath it, closed. The Challenge Ring inside the Dojo (§2.9.4.1) — the only new combat
+surface of the City, and the first thing to cut if the version runs long.
+**Exit:** two Cities that feel different sizes, not two copies.
+
+### v0.7.3 — Region 2, Coastal Cliffs  ☐
+Biomes `sea` and `power-plant`, ~10 authored lines (kits, learnsets, branches), trainer rosters, the four R2
+Gyms and their Badges, and the accent: **status conditions on enemy intents** (§2.2). Pikachu's kit lands here
+— it is a power-plant species. Region 1's thin biome pools widen at the same time (§2.6.1).
+**Exit:** Region 2 plays differently from Region 1, not just harder.
+
+### v0.7.4 — Region 3, Volcanic Highlands  ☐
+Biomes `volcano`, `cave`, `sky`, `tower`, ~10 authored lines, the four R3 Gyms and Badges. Its mechanical
+accent (multi-enemy, field effects) is **v0.8** — R3 ships on R2's combat rules and gains them later.
+**Exit:** three Regions with three rosters and twelve possible Gyms.
+
+### v0.7.5 — The leftovers  ☐
+Evolution Items (Eevee's Stone Cache, the Mysterious Stone event), the intent queue (Trainer's Instinct),
+Greater Threats, the six pending hidden abilities, the unwritten Mastery moves, the inert relic rows, the
+Master Ball Charm criterion.
+**Exit:** nothing in the build is marked "pending v0.7".
+
+## v0.8 — Multi-enemy & field effects  ☐
+1 lead + 1–2 supports: slots, targeting, intents, AI, damage preview, Cleave and Backstrike against several
+bodies, and the field effects (§4.3) that biomes hang their identity on (§2.6.1). Separated from the Regions
+on 2026-09-22 because it is not content — it is the combat engine, and a targeting bug must not look like a
+content bug. The League assumes it, so it comes before Victory Road.
+
+## v0.9 — Victory Road & League  ☐
 §2.12 nodes (Gauntlet, Apex, Training Grounds, Summit), League 5 fights with micro-rest, Champion signature (§5.12), League Boons.
 
-## v0.9 — Polish  ☐
+## v1.1 — Polish  ☐
 Audio direction + stems + SFX bible (§9.5), accessibility tier (§9.6), localisation architecture + es-ES/en-US (§9.10), generated backdrop set (`ui/07`), VFX pass, performance pass.
 
 ## v1.0 — Release  ☐
@@ -399,3 +440,26 @@ Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads, b
 ## Change control
 Scope moves only through this file. When a version's scope changes, add a dated line under it and a
 note in the canon section if design moved. Keep `docs/session/active.md` pointing at the current version and task.
+
+## v1.2 — Map revamp  ☐
+The Region map redrawn: **horizontal**, scrolled left to right the way a route is walked, and painted from a
+**tileset** with the biome laid over it instead of one flat backdrop per lane. Decided as post-release on
+2026-09-22 — it is an art and tooling system (atlas, autotiling, seams) rather than a rule change, and the
+current map works. The horizontal reading is the part that matters: a Pokémon route runs left to right, and
+the vertical map is a roguelike convention borrowed from a game about climbing a tower.
+
+---
+
+# Backlog — good ideas with no version yet
+
+Kept here so they stop living in chat. Nothing on this list is promised, and none of it blocks a version.
+
+| Idea | What it is | Where it would live |
+|---|---|---|
+| **Fossils and the Laboratory** | Revive Omanyte, Kabuto or Aerodactyl into a recruit no route offers. The town's fourth door | Pallet Town (§2.11.4) |
+| **Role events** | The Pokémon Fan Club, Team Rocket, the Magikarp salesman's swindle, Silph Co. — written encounters with a choice, in a City rather than on a route | §2.10 / §2.11 |
+| **The Safari Zone** | Entry fee, a fixed number of balls, species the routes never offer (§2.11.6) | The door is already drawn |
+| **The Black Market** | Legendary relics paid in HP or Trauma, Pokémon traded for Pokémon — the things a Mart will not sell (§2.11.6) | Beneath the Game Corner |
+| **The fourth Badge** | The City Gym paid one; the Challenge Ring does not. Open question (§2.12.6) | — |
+| **End-of-run ₽ surplus** | What leftover money converts into at a run's end | §8.3 |
+| **Consumables that are spent** | The user's idea: consumables are consumed for real, and found far more often | §7.2 |
