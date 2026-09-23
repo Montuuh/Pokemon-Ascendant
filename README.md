@@ -49,11 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.7.2 — The city.** A run crosses three Regions and stops in two drawn Cities between them. Pallet Town has a
-Pokémon Center, a Poké Mart and a Dojo; Celadon City is the big one — a five-floor Department Store, a Dojo with a
-wider tutor list, and the Game Corner's Wheel and Slots with their odds printed. Both Dojos hold the Challenge
-Ring, a ladder of hard trainer fights you pay to climb and can cash out of. Regions 2 and 3 are placeholders at a
-higher level until v0.7.3. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
+**v0.7.3 — Region 2, Coastal Cliffs.** A run crosses three Regions with two drawn Cities between them, and the
+second Region is its own place now: a coastal route of sea, power plant and cave, twenty-six new Pokémon (Tentacool,
+Staryu, Magnemite, Pikachu, Growlithe, Lapras…), its own trainers and Elites, and the Gyms of Blaine, Erika, Surge
+and Koga. Pikachu can be bought as a starter. Region 3 is still a placeholder at a higher level until v0.7.4. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Run it locally
 

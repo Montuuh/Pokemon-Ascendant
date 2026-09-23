@@ -33,6 +33,8 @@ export interface CityDef {
    * §2.9.4.1 — the Challenge Ring: its fee, what each rung pays (bottom to top), and how hard it is — rung 1
    * `firstOffset` levels above the Gym the run just beat, each later rung `stepOffset` more, rivals fielding
    * `teamSize` Pokémon. Per City, because the teams that reach Celadon are not the teams that reach Pallet.
+   * Celadon's rivals are Region 2's rosters since v0.7.3 — final forms, where Region 1's had been evolved up —
+   * so its ladder was retuned then: rivals of 3 rather than 4, which moved rung 1 far more than any level did.
    */
   ring: { fee: number; prizes: ({ money: number } | { relicPick: true })[]; firstOffset: number; stepOffset: number; teamSize: number };
 }
@@ -44,7 +46,7 @@ export const CITIES: Record<CityId, CityDef> = {
   },
   'celadon-city': {
     id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'game-corner'], shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
-    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 16, stepOffset: 4, teamSize: 4 },
+    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 10, stepOffset: 2, teamSize: 3 },
   },
 };
 

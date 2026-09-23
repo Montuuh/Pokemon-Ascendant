@@ -43,6 +43,11 @@ export interface NodePreview {
    * promise). Falls back to the node kind.
    */
   icon?: string;
+  /**
+   * §2.7.1 — a trainer node's roster, by id. Two rosters may share a display name (every Rocket Grunt is a
+   * "Rocket Grunt"), so the fight and the preview card find the roster by this and never by its title.
+   */
+  rosterId?: string;
 }
 
 export interface RegionMap {

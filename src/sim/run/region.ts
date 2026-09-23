@@ -1,11 +1,16 @@
 import type { ContentRegistry } from '../content/defs';
 import type { PokemonType } from '../types';
 
-// Region 1 content tables: biomes, wild pools, trainer rosters and the Gym (§2.6.1, §2.6.3, §2.7.1, §5.9).
-// Rows mirror docs/design/catalogs/{biomes-regions,trainers,gyms}.md; ids are validated against the registry
-// by `assertRegionContent`, so a typo here fails the content test rather than a playthrough.
+// The Regions' content tables: biomes, wild pools, trainer rosters, the Elites and the Gyms (§2.6.1, §2.6.3,
+// §2.7.1, §2.8, §5.9), one `RegionContent` per Region. Rows mirror docs/design/catalogs/{biomes-regions,trainers,
+// elites,gyms,species-r2}.md; ids are validated against the registry by `assertRegionContent`, so a typo here
+// fails the content test rather than a playthrough.
+//
+// The Region 1 tables keep their historical names (`BIOMES`, `TRAINERS`, `GYMS`, `ELITE`…) because fixtures,
+// tests and the v0.2–v0.6 code read them by those names; everything that has to know *which* Region asks
+// `regionContent(index)`.
 
-export type BiomeId = 'meadow' | 'cave' | 'river';
+export type BiomeId = 'meadow' | 'cave' | 'river' | 'sea' | 'power-plant';
 
 export interface BiomePool {
   id: BiomeId;
@@ -17,25 +22,31 @@ export interface BiomePool {
   rare: string[];
 }
 
-/** §2.6.3 — the Region 1 wild pools. A Wild node offers 2 Common + 1 Uncommon (§2.6.2). */
-export const BIOMES: Record<BiomeId, BiomePool> = {
+/**
+ * §2.6.3 — the Region 1 wild pools. A Wild node offers 2 Common + 1 Uncommon (§2.6.2).
+ *
+ * v0.7.3 widened them (§2.6.1: "a pool that offers the same three Pokémon twice is the failure state"): the
+ * Meadow gains Bellsprout, the River Krabby, and the Rares are the catalogue's finds now — an Eevee in the grass
+ * and Lapras in the water — instead of an Uncommon repeated in the Rare slot.
+ */
+export const BIOMES: Partial<Record<BiomeId, BiomePool>> & Record<'meadow' | 'cave' | 'river', BiomePool> = {
   meadow: {
     id: 'meadow', name: 'Meadow', stage: 'meadow',
     common: ['caterpie', 'weedle', 'pidgey', 'rattata'],
-    uncommon: ['oddish'],
-    rare: ['psyduck'],
+    uncommon: ['oddish', 'bellsprout'],
+    rare: ['eevee'],
   },
   cave: {
     id: 'cave', name: 'Cave', stage: 'cave',
     common: ['zubat', 'geodude', 'diglett'],
     uncommon: ['machop', 'onix'],
-    rare: ['onix'],
+    rare: ['lapras'],
   },
   river: {
     id: 'river', name: 'River', stage: 'river',
     common: ['magikarp', 'poliwag'],
-    uncommon: ['psyduck'],
-    rare: ['poliwag'],
+    uncommon: ['psyduck', 'krabby'],
+    rare: ['lapras'],
   },
 };
 
@@ -66,8 +77,8 @@ export const ROUTE_LAYERS = 12;
  * eighth, so a team walked into the Gym four fights over-levelled: the harness measured 18–20 against a Gym
  * built for 14. The band is a *ramp across the route* now, not an offset from the layer index.
  */
-export function wildBandFor(layer: number): [number, number] {
-  const [lo, hi] = WILD_LEVEL_BAND;
+export function wildBandFor(layer: number, band: readonly [number, number] = WILD_LEVEL_BAND): [number, number] {
+  const [lo, hi] = band;
   const t = Math.min(1, Math.max(0, layer) / (ROUTE_LAYERS - 2));
   const base = Math.round(lo + (hi - lo - 1) * t);
   return [base, base + 1];
@@ -77,8 +88,8 @@ export function wildBandFor(layer: number): [number, number] {
  * §2.7.3 — a trainer sits 1–2 levels above the wild band of its layer. The roster table keeps the team's
  * internal spread; the layer decides where that spread sits.
  */
-export function trainerTeamFor(roster: TrainerRoster, layer: number): { species: string; level: number }[] {
-  const base = wildBandFor(layer)[1] + 1;
+export function trainerTeamFor(roster: TrainerRoster, layer: number, band: readonly [number, number] = WILD_LEVEL_BAND): { species: string; level: number }[] {
+  const base = wildBandFor(layer, band)[1] + 1;
   const floor = Math.min(...roster.team.map((m) => m.level));
   return roster.team.map((m) => ({ species: m.species, level: base + (m.level - floor) }));
 }
@@ -136,22 +147,30 @@ export const rostersOf = (archetype: string): TrainerRoster[] => TRAINERS.filter
  * Ivysaur. The counter-pick needs a Rival who reappears across Regions to mean anything, so v0.4 ships the
  * Specialist — the same fight, minus a narrative hook that has nowhere to land yet.
  */
-export const ELITE = {
+export interface EliteDef {
+  id: string;
+  name: string;
+  sprite: string;
+  line: string;
+  team: { species: string; level: number; phaseCount: 1 | 2 | 3 }[];
+}
+
+export const ELITE: EliteDef = {
   id: 'elite-ace-trainer-r1',
   name: 'Ace Trainer Nadia',
   sprite: 'acetrainer',
   line: 'I only battle people who are going somewhere. Show me.',
   team: [
-    { species: 'pidgeotto', level: 12, phaseCount: 2 as const },
-    { species: 'ivysaur', level: 13, phaseCount: 2 as const },
+    { species: 'pidgeotto', level: 12, phaseCount: 2 },
+    { species: 'ivysaur', level: 13, phaseCount: 2 },
   ],
 };
 
 /** §2.8.1 — the Elite sits two levels above the wild band of its layer. It is the run's hardest fight but one. */
-export function eliteTeamFor(layer: number): { species: string; level: number }[] {
-  const base = wildBandFor(layer)[1] + 2;
-  const floor = Math.min(...ELITE.team.map((m) => m.level));
-  return ELITE.team.map((m) => ({ species: m.species, level: base + (m.level - floor) }));
+export function eliteTeamFor(layer: number, elite: EliteDef = ELITE, band: readonly [number, number] = WILD_LEVEL_BAND): { species: string; level: number }[] {
+  const base = wildBandFor(layer, band)[1] + 2;
+  const floor = Math.min(...elite.team.map((m) => m.level));
+  return elite.team.map((m) => ({ species: m.species, level: base + (m.level - floor) }));
 }
 
 /**
@@ -167,23 +186,36 @@ export function eliteTeamFor(layer: number): { species: string; level: number }[
  * Slam and Crunch when it wakes. The catch threshold still rises in Phase 2, which is the mechanic the node
  * exists for (§2.8.2: "it is tiring — throw now").
  */
-export const ELITE_WILD = {
+export interface EliteWildDef {
+  id: string;
+  species: string;
+  level: number;
+  phaseCount: 2;
+  stage: string;
+  line: string;
+  /** §2.8.2 — the boss script's kit when the catalogue gives it one; otherwise the species' own at its level. */
+  moves?: string[];
+}
+
+export const ELITE_WILD: EliteWildDef = {
   id: 'elite-wild-snorlax',
   species: 'snorlax',
   level: 15,
   /** §2.8.2 — boss-tier HP, two phases, no evolution: it is a wild, not an ace. */
-  phaseCount: 2 as const,
+  phaseCount: 2,
   stage: 'meadow',
   line: 'Something enormous is asleep across the path. It has not noticed you yet.',
 };
 
 /** §2.8.2 — the Elite Wild sits with the Elite Trainer's premium: it is the other hardest fight but one. */
-export function eliteWildTeamFor(layer: number): { species: string; level: number }[] {
-  return [{ species: ELITE_WILD.species, level: wildBandFor(layer)[1] + 3 }];
+export function eliteWildTeamFor(layer: number, eliteWild: EliteWildDef = ELITE_WILD, band: readonly [number, number] = WILD_LEVEL_BAND): { species: string; level: number }[] {
+  return [{ species: eliteWild.species, level: wildBandFor(layer, band)[1] + 3 }];
 }
 
 export interface GymDef {
   id: string;
+  /** §5.9.2 — the Region whose pool it belongs to (1–3); its levels come from that Region's band. */
+  region: number;
   name: string;
   sprite: string;
   type: PokemonType;
@@ -212,6 +244,7 @@ export interface GymDef {
 export const GYMS: GymDef[] = [
   {
     id: 'rock-gym-r1',
+    region: 1,
     name: 'Leader Brock',
     sprite: 'brock',
     type: 'rock',
@@ -230,6 +263,7 @@ export const GYMS: GymDef[] = [
   },
   {
     id: 'water-gym-r1',
+    region: 1,
     name: 'Leader Misty',
     sprite: 'misty',
     type: 'water',
@@ -246,6 +280,7 @@ export const GYMS: GymDef[] = [
   },
   {
     id: 'bug-gym-r1',
+    region: 1,
     name: 'Leader Aster',
     sprite: 'bugsy',
     type: 'bug',
@@ -260,6 +295,7 @@ export const GYMS: GymDef[] = [
   },
   {
     id: 'normal-gym-r1',
+    region: 1,
     name: 'Leader Wren',
     sprite: 'whitney',
     type: 'normal',
@@ -281,12 +317,14 @@ export const GYMS: GymDef[] = [
  * exactly what v0.5's jump from ten layers to twelve did on its first measurement.
  */
 export function gymTeamFor(gym: GymDef): { species: string; level: number; phaseCount: 1 | 2 | 3 }[] {
-  const top = wildBandFor(ROUTE_LAYERS - 2)[1];
+  const top = wildBandFor(ROUTE_LAYERS - 2, regionContent(gym.region - 1).wildBand)[1];
   return gym.team.map((m, i) => ({ ...m, level: top + (i === gym.team.length - 1 ? 6 : 4) }));
 }
 
-const GYM_BY_ID = new Map(GYMS.map((g) => [g.id, g]));
+const GYM_BY_ID = new Map<string, GymDef>();
+/** Every Gym in the game, by id — the map stores ids, and a later Region's run still names Region 1's Badge. */
 export const gymById = (id: string): GymDef => {
+  if (!GYM_BY_ID.size) for (const g of ALL_GYMS) GYM_BY_ID.set(g.id, g);
   const g = GYM_BY_ID.get(id);
   if (!g) throw new Error(`Unknown gym "${id}"`);
   return g;
@@ -332,14 +370,230 @@ export const LANE_THEME: Record<string, LaneTheme> = {
   normal: { biome: 'meadow', favours: ['pidgey', 'rattata'], counter: 'machop', trainers: ['youngster', 'lass'] },
 };
 
-/** §2.6.4 / §7.2.5 — what a run starts with. */
+// ── Region 2 — Coastal Cliffs (v0.7.3) ──────────────────────────────────────────────────────────────────────
+
 /**
- * §2.1 / §2.2 — how far above Region 1 each Region's levels sit. **Placeholder** (v0.7.1): Regions 2 and 3
- * reuse Region 1's generator — its rosters, biomes and Gyms — shifted up this many levels, so the whole
- * three-Region loop can be played before their content exists (v0.7.3, v0.7.4). Region 3's +16 lands its
- * Gyms at the levels its catalogue rows already name (`catalogs/gyms.md` §3, L33–36).
+ * §2.6.1 / §2.6.3 — Region 2's pools. The Sea is primary; the River, the Power Plant and the Cave are its
+ * secondaries and the Meadow is rare. Region 1 species that appear here arrive at Region 2's band and evolve
+ * after the catch, the same as a Region 2 basic (every basic evolves at 12, `catalogs/species-r1.md` §0).
  */
-export const REGION_LEVEL_OFFSET: readonly number[] = [0, 7, 16];
+export const BIOMES_R2: Partial<Record<BiomeId, BiomePool>> = {
+  sea: {
+    id: 'sea', name: 'Sea', stage: 'sea',
+    common: ['tentacool', 'shellder', 'horsea'],
+    uncommon: ['staryu', 'seel'],
+    rare: ['lapras'],
+  },
+  river: {
+    id: 'river', name: 'River', stage: 'river',
+    common: ['poliwag', 'horsea', 'magikarp'],
+    uncommon: ['psyduck', 'krabby'],
+    rare: ['lapras'],
+  },
+  'power-plant': {
+    id: 'power-plant', name: 'Power Plant', stage: 'power-plant',
+    common: ['voltorb', 'magnemite'],
+    uncommon: ['pikachu'],
+    rare: ['electabuzz'],
+  },
+  cave: {
+    id: 'cave', name: 'Cave', stage: 'cave',
+    common: ['koffing', 'zubat', 'geodude'],
+    uncommon: ['machop', 'onix'],
+    rare: ['lapras'],
+  },
+  meadow: {
+    id: 'meadow', name: 'Meadow', stage: 'meadow',
+    common: ['bellsprout', 'pidgey', 'rattata'],
+    uncommon: ['growlithe', 'oddish'],
+    rare: ['eevee'],
+  },
+};
+
+/** §2.6.1 — the Sea is Region 2's primary; the Meadow is the rare one. */
+export const REGION2_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
+  { biome: 'sea', weight: 5 },
+  { biome: 'power-plant', weight: 3 },
+  { biome: 'river', weight: 2 },
+  { biome: 'cave', weight: 2 },
+  { biome: 'meadow', weight: 1 },
+];
+
+/**
+ * §2.7 — the Region 2 rosters (`catalogs/trainers.md` §3), two per archetype. Written in the forms their band
+ * warrants (every Region 2 line evolves at 12) and walked through `evolvedAt` on top, so a roster level the band
+ * lifts past a threshold still fields the right form. The Hex Maniac waits for Region 3, where its Ghosts are.
+ */
+export const TRAINERS_R2: TrainerRoster[] = [
+  { id: 'youngster-r2-a', archetype: 'youngster', name: 'Youngster Calvin', sprite: 'youngster', line: 'I have been training since Pallet. Look how big they got!',
+    team: [{ species: 'raticate', level: 15 }, { species: 'pidgeotto', level: 16 }] },
+  { id: 'youngster-r2-b', archetype: 'youngster', name: 'Youngster Otis', sprite: 'youngster', line: 'Only one Pokémon. It is the only one I need.',
+    team: [{ species: 'raichu', level: 17 }] },
+  { id: 'lass-r2-a', archetype: 'lass', name: 'Lass Dana', sprite: 'lass', line: 'The sea breeze is lovely. So is a good Sleep Powder.',
+    team: [{ species: 'gloom', level: 16 }, { species: 'starmie', level: 17 }] },
+  { id: 'lass-r2-b', archetype: 'lass', name: 'Lass Mei', sprite: 'lass', line: 'Careful — mine sting.',
+    team: [{ species: 'weepinbell', level: 16 }, { species: 'raichu', level: 17 }] },
+  { id: 'hiker-r2-a', archetype: 'hiker', name: 'Hiker Bruno', sprite: 'hiker', line: 'These cliffs are softer than my Pokémon.',
+    team: [{ species: 'graveler', level: 17 }, { species: 'machoke', level: 17 }] },
+  { id: 'hiker-r2-b', archetype: 'hiker', name: 'Hiker Alan', sprite: 'hiker', line: 'The tide cannot move a mountain.',
+    team: [{ species: 'onix', level: 17 }, { species: 'graveler', level: 18 }] },
+  { id: 'swimmer-r2-a', archetype: 'swimmer', name: 'Swimmer Luis', sprite: 'swimmer', line: 'Out here the water bites back.',
+    team: [{ species: 'dewgong', level: 16 }, { species: 'tentacruel', level: 17 }] },
+  { id: 'swimmer-r2-b', archetype: 'swimmer', name: 'Swimmer Paula', sprite: 'swimmer', line: 'I race the Seadra to the point every morning.',
+    team: [{ species: 'seadra', level: 16 }, { species: 'cloyster', level: 17 }] },
+  { id: 'engineer-r2-a', archetype: 'engineer', name: 'Engineer Hugo', sprite: 'scientist', line: 'Give me two turns and I will show you a real current.',
+    team: [{ species: 'magneton', level: 17 }, { species: 'electrode', level: 18 }] },
+  { id: 'engineer-r2-b', archetype: 'engineer', name: 'Engineer Ines', sprite: 'scientist', line: 'The plant never sleeps. Neither do I.',
+    team: [{ species: 'electrode', level: 17 }, { species: 'electabuzz', level: 18 }] },
+  { id: 'rocket-grunt-r2-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Hand over anything rare and nobody gets poisoned.',
+    team: [{ species: 'weezing', level: 18 }, { species: 'golbat', level: 18 }] },
+  { id: 'rocket-grunt-r2-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'You picked the wrong pier, kid.',
+    team: [{ species: 'raticate', level: 17 }, { species: 'weezing', level: 18 }] },
+];
+
+/**
+ * §2.8.1 — the Region 2 Specialist (`catalogs/elites.md` §3). The Karate King's second Pokémon is a Machoke in
+ * place of the catalogue's Primeape, whose line is not in the build yet; Hitmonchan's three elemental punches are
+ * why a Fighting type check does not beat it.
+ */
+export const ELITE_R2: EliteDef = {
+  id: 'elite-karate-king-r2',
+  name: 'Karate King Kiyo',
+  sprite: 'blackbelt',
+  line: 'I trained on these cliffs until the sea gave up first. Come.',
+  team: [
+    { species: 'machoke', level: 22, phaseCount: 2 },
+    { species: 'hitmonchan', level: 23, phaseCount: 2 },
+  ],
+};
+
+/**
+ * §2.8.2 — Lapras, the Region 2 boss-wild (catalogs/elites.md §5): Sing and Ice Shard to control, Ice Beam and
+ * Surf when it tires. Its learnset only reaches Ice Beam at 30, so the script is its kit, not its level's.
+ */
+export const ELITE_WILD_R2: EliteWildDef = {
+  id: 'elite-wild-lapras',
+  species: 'lapras',
+  level: 24,
+  phaseCount: 2,
+  stage: 'sea',
+  moves: ['sing', 'ice-shard', 'ice-beam', 'surf'],
+  line: 'A song carries over the water. Something large is riding the swell toward you.',
+};
+
+/**
+ * §5.9.2 — the Region 2 pool: Fire · Grass · Electric · Poison (`catalogs/gyms.md` §2). Same shape as Region 1:
+ * slot 1 two-phase, the ace three-phase, levels from the band (§5.9.3), one off-type answer each.
+ */
+export const GYMS_R2: GymDef[] = [
+  {
+    id: 'fire-gym-r2', region: 2, name: 'Leader Blaine', sprite: 'blaine', type: 'fire', badgeId: 'volcano-badge',
+    stage: 'volcano',
+    line: 'Hah! I hope you brought Burn Heal. My Pokémon burn hotter than this whole coast.',
+    telegraph: 'A burst race on a Home Field that makes every Fire hit land harder. Bring Water or Rock, or bring more HP.',
+    team: [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3 }],
+  },
+  {
+    id: 'grass-gym-r2', region: 2, name: 'Leader Erika', sprite: 'erika', type: 'grass', badgeId: 'rainbow-badge',
+    stage: 'forest',
+    line: 'Oh… I was dozing among the flowers. Shall we? I do not intend to lose.',
+    telegraph: 'Floods your Lead with Sleep and Poison. Bring cures, Fire or Flying.',
+    team: [{ species: 'weepinbell', level: 20, phaseCount: 2 }, { species: 'vileplume', level: 22, phaseCount: 3 }],
+  },
+  {
+    id: 'electric-gym-r2', region: 2, name: 'Leader Surge', sprite: 'ltsurge', type: 'electric', badgeId: 'thunder-badge',
+    stage: 'power-plant',
+    line: 'Hey, kid! Electric Pokémon saved me in the war. They will shock you just the same!',
+    telegraph: 'Taxes your AP and locks your Lead with Paralysis. Bring Ground, and cards you can afford.',
+    team: [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3 }],
+  },
+  {
+    id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'marsh-badge',
+    stage: 'dark-city',
+    line: 'Fwahahaha! A ninja does not strike. He waits for the poison to do it.',
+    telegraph: 'Poisons everything and waits you out. Bring cures, Psychic or Ground.',
+    team: [{ species: 'koffing', level: 20, phaseCount: 2 }, { species: 'weezing', level: 22, phaseCount: 3 }],
+  },
+];
+
+/**
+ * §2.5 — Region 2's lanes. Each Gym's lane is its biome and its archetype: the Fire and Grass lanes walk the
+ * coastal Meadow (Youngsters; Lasses), the Electric lane the Power Plant (Engineers), the Poison lane the Cave
+ * (Rocket Grunts). Each carries one counter to its own Gym, as in Region 1.
+ */
+export const LANE_THEME_R2: Record<string, LaneTheme> = {
+  fire: { biome: 'meadow', favours: ['growlithe', 'rattata', 'pidgey'], counter: 'horsea', trainers: ['youngster'] },
+  grass: { biome: 'meadow', favours: ['bellsprout', 'oddish'], counter: 'growlithe', trainers: ['lass'] },
+  electric: { biome: 'power-plant', favours: ['voltorb', 'magnemite', 'pikachu'], counter: 'geodude', trainers: ['engineer'] },
+  poison: { biome: 'cave', favours: ['koffing', 'zubat'], counter: 'staryu', trainers: ['rocket-grunt'] },
+};
+
+// ── The Regions ─────────────────────────────────────────────────────────────────────────────────────────────
+
+/** §2.1 / §2.2 — one Region's generator input: everything `generateRegion` and the encounters read. */
+export interface RegionContent {
+  index: number;
+  /** §2.13 — the Region's name, shown on the map. */
+  name: string;
+  biomes: Partial<Record<BiomeId, BiomePool>>;
+  biomeWeights: { biome: BiomeId; weight: number }[];
+  /** §2.6.5 — the recruit band the route ramps across. */
+  wildBand: readonly [number, number];
+  /** Where a fight in the shared trunk happens (§2.5): a lane uses its own biome. */
+  trunkStage: string;
+  trainers: TrainerRoster[];
+  elite: EliteDef;
+  eliteWild: EliteWildDef;
+  gyms: GymDef[];
+  laneThemes: Record<string, LaneTheme>;
+  /**
+   * §2.1 placeholder — levels this far above the tables' own and every species walked to the form those levels
+   * warrant. Region 3 until v0.7.4 is Region 1 at +16, which lands its Gyms where `catalogs/gyms.md` §3 puts them.
+   */
+  levelOffset: number;
+  /** A roster's species are walked through `evolvedAt` at its band-derived level (Regions 2 on). */
+  evolveRosters: boolean;
+}
+
+export const REGIONS: readonly RegionContent[] = [
+  {
+    index: 0, name: 'Verdant Route', biomes: BIOMES, biomeWeights: REGION1_BIOME_WEIGHTS, wildBand: WILD_LEVEL_BAND, trunkStage: 'meadow',
+    trainers: TRAINERS, elite: ELITE, eliteWild: ELITE_WILD, gyms: GYMS, laneThemes: LANE_THEME, levelOffset: 0, evolveRosters: false,
+  },
+  {
+    index: 1, name: 'Coastal Cliffs', biomes: BIOMES_R2, biomeWeights: REGION2_BIOME_WEIGHTS, wildBand: [12, 20], trunkStage: 'river',
+    trainers: TRAINERS_R2, elite: ELITE_R2, eliteWild: ELITE_WILD_R2, gyms: GYMS_R2, laneThemes: LANE_THEME_R2, levelOffset: 0, evolveRosters: true,
+  },
+  {
+    index: 2, name: 'Volcanic Highlands', biomes: BIOMES, biomeWeights: REGION1_BIOME_WEIGHTS, wildBand: WILD_LEVEL_BAND, trunkStage: 'meadow',
+    trainers: TRAINERS, elite: ELITE, eliteWild: ELITE_WILD, gyms: GYMS, laneThemes: LANE_THEME, levelOffset: 16, evolveRosters: false,
+  },
+];
+
+/**
+ * §2.13 — the name the map shows for a Region, or null while it is still the placeholder (Region 3 until v0.7.4):
+ * a name promises a place, and a Volcanic Highlands drawn as Region 1's meadow is not one.
+ */
+export function regionName(regionIndex: number): string | null {
+  const r = regionContent(regionIndex);
+  return r.levelOffset ? null : r.name;
+}
+
+/** The content a Region's route is generated from. Past the last Region, the last one. */
+export function regionContent(regionIndex: number): RegionContent {
+  return REGIONS[Math.min(Math.max(0, regionIndex), REGIONS.length - 1)]!;
+}
+
+/** Every roster, Elite and Gym in the game — for lookups by id or name that cannot know the Region. */
+export const ALL_TRAINERS: readonly TrainerRoster[] = [...TRAINERS, ...TRAINERS_R2];
+export const ALL_GYMS: readonly GymDef[] = [...GYMS, ...GYMS_R2];
+export const ALL_ELITES: readonly EliteDef[] = [ELITE, ELITE_R2];
+
+/**
+ * §2.1 / §2.2 — how far above its own tables each Region's levels sit (`RegionContent.levelOffset`). Region 2
+ * has its own content and band since v0.7.3; Region 3 is still the placeholder.
+ */
+export const REGION_LEVEL_OFFSET: readonly number[] = REGIONS.map((r) => r.levelOffset);
 
 /**
  * §2.1 placeholder, §2.7.3 — the form a Pokémon of this line has at this level: it walks `evolvesTo` for as long
@@ -427,6 +681,8 @@ export const RUN_START = {
    */
   consumables: ['potion', 'potion', 'antidote', 'paralyze-heal'],
   starterLevel: 5,
+  /** §8.5.3 — a starter's run flourish: Pikachu walks in holding a Light Ball. */
+  starterItems: { pikachu: 'light-ball' } as Readonly<Record<string, string>>,
   boxCapacity: 6,
   /**
    * docs/design/catalogs/economy.md §2 — a Region earns roughly 1 000–1 700 ₽, and the Dojo is meant to
@@ -449,17 +705,22 @@ export const HELD_ITEM_DROP_CHANCE = 0.2;
 export const STARTER_IDS = ['bulbasaur', 'charmander', 'squirtle'];
 
 /** Every sprite a roster or the Gym names, so a missing file is caught by a test and not by a player. */
-export const TRAINER_SPRITES = [...new Set([...TRAINERS.map((t) => t.sprite), ...GYMS.map((g) => g.sprite), ELITE.sprite])];
+export const TRAINER_SPRITES = [...new Set([...ALL_TRAINERS.map((t) => t.sprite), ...ALL_GYMS.map((g) => g.sprite), ...ALL_ELITES.map((e) => e.sprite)])];
 
 /** Fails loudly at load if a table above names content that does not exist. */
 export function assertRegionContent(content: ContentRegistry): void {
   const check = (id: string) => content.species(id);
-  for (const b of Object.values(BIOMES)) [...b.common, ...b.uncommon, ...b.rare].forEach(check);
-  for (const t of TRAINERS) t.team.forEach((m) => check(m.species));
-  for (const g of GYMS) g.team.forEach((m) => check(m.species));
-  ELITE.team.forEach((m) => check(m.species));
-  // §2.5 — a lane theme that names a species the Region cannot produce is a lane that silently falls back.
-  for (const t of Object.values(LANE_THEME)) [...t.favours, t.counter].forEach(check);
+  for (const r of REGIONS) {
+    for (const b of Object.values(r.biomes)) [...b!.common, ...b!.uncommon, ...b!.rare].forEach(check);
+    for (const t of r.trainers) t.team.forEach((m) => check(m.species));
+    for (const g of r.gyms) g.team.forEach((m) => check(m.species));
+    r.elite.team.forEach((m) => check(m.species));
+    check(r.eliteWild.species);
+    // §2.5 — a lane theme that names a species the Region cannot produce is a lane that silently falls back.
+    for (const t of Object.values(r.laneThemes)) [...t.favours, t.counter].forEach(check);
+    // …and a lane whose biome is not in its Region's pools has nowhere to draw from.
+    for (const t of Object.values(r.laneThemes)) if (!r.biomes[t.biome]) throw new Error(`${r.name}: lane biome ${t.biome} has no pool`);
+  }
   STARTER_IDS.forEach(check);
   for (const c of RUN_START.consumables) content.consumable(c);
 }

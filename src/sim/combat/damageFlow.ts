@@ -2,7 +2,7 @@ import type { MoveDef } from '../content/defs';
 import type { RunCtx } from './context';
 import { emit, log } from './context';
 import { computeDamage, type DamageBreakdown } from './damage';
-import { purgeOwner } from './deck';
+import { drawSkillCards, purgeOwner } from './deck';
 import {
   abilityAttackMultiplier,
   abilityBlocksStatus,
@@ -18,7 +18,7 @@ import {
   hasSturdy,
   ridersAlwaysApply,
 } from './abilities';
-import { firstHitRelic, itemAttackMultiplier, itemCureHeal, itemDefenceMultiplier, itemEndures, itemFlatReduction, itemHealMultiplier, itemPinchHeal, itemReactiveStages, itemStatusExtraTurns, teamEndureRelic, type ReactiveStage } from './items';
+import { statusApplyDrawBonus, firstHitRelic, itemAttackMultiplier, itemCureHeal, itemDefenceMultiplier, itemEndures, itemFlatReduction, itemHealMultiplier, itemPinchHeal, itemReactiveStages, itemStatusExtraTurns, teamEndureRelic, type ReactiveStage } from './items';
 import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { effectiveAttack, effectiveDefense } from './stats';
 import { applyStatus, cureStatus } from './status';
@@ -387,6 +387,15 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         if (res === 'applied') {
           emit(state, { t: 'status-applied', targetUid: recipient.uid, status: fx.status });
           log(state, 'system', `${recipient.name} was ${statusVerb(fx.status)}!`);
+          // §5.10.2 Marsh Badge — a status you put on an enemy hands you a card, now, while the turn is yours.
+          if (!fx.self && isPlayers(state, attacker) && !isPlayers(state, recipient)) {
+            const cards = statusApplyDrawBonus(state, ctx.content);
+            const drawn = cards > 0 ? drawSkillCards(state, cards, ctx.rng) : [];
+            if (drawn.length) {
+              emit(state, { t: 'draw', cardIds: drawn.map((c) => c.id), consumableIds: [] });
+              log(state, 'system', `The Marsh Badge turns the ${fx.status} into ${drawn.length === 1 ? 'a card' : `${drawn.length} cards`}.`);
+            }
+          }
         } else if (res === 'immune') {
           emit(state, { t: 'status-immune', targetUid: recipient.uid, status: fx.status });
           log(state, 'system', `${recipient.name} is immune to ${fx.status}.`);

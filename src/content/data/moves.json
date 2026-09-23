@@ -2755,6 +2755,563 @@
           "durationTurns": 1
         }
       ]
+    },
+    {
+      "id": "powder-snow",
+      "name": "Powder Snow",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "freeze",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "ice-shard",
+      "name": "Ice Shard",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": []
+    },
+    {
+      "id": "icy-wind",
+      "name": "Icy Wind",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 60,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -1
+        }
+      ],
+      "targeting": "cleave"
+    },
+    {
+      "id": "aurora-beam",
+      "name": "Aurora Beam",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "icicle-spear",
+      "name": "Icicle Spear",
+      "type": "ice",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 25,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "ice-punch",
+      "name": "Ice Punch",
+      "type": "ice",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "freeze",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "ice-beam",
+      "name": "Ice Beam",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "freeze",
+          "chance": 0.2
+        }
+      ]
+    },
+    {
+      "id": "blizzard",
+      "name": "Blizzard",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "freeze",
+          "chance": 0.2
+        }
+      ],
+      "targeting": "cleave",
+      "cooldown": 1
+    },
+    {
+      "id": "spark",
+      "name": "Spark",
+      "type": "electric",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 1,
+      "power": 50,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.2
+        }
+      ]
+    },
+    {
+      "id": "charge-beam",
+      "name": "Charge Beam",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 50,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "thunder-punch",
+      "name": "Thunder Punch",
+      "type": "electric",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "discharge",
+      "name": "Discharge",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 80,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.3
+        }
+      ],
+      "targeting": "cleave"
+    },
+    {
+      "id": "volt-tackle",
+      "name": "Volt Tackle",
+      "type": "electric",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 3,
+      "power": 110,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.33
+        }
+      ]
+    },
+    {
+      "id": "zap-cannon",
+      "name": "Zap Cannon",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 1
+        }
+      ],
+      "cooldown": 1
+    },
+    {
+      "id": "sing",
+      "name": "Sing",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "sleep",
+          "chance": 1
+        }
+      ]
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "type": "normal",
+      "role": "utility",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 0,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "wrap",
+      "name": "Wrap",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "take-down",
+      "name": "Take Down",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.25
+        }
+      ]
+    },
+    {
+      "id": "extreme-speed",
+      "name": "Extreme Speed",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 2,
+      "power": 80,
+      "effects": []
+    },
+    {
+      "id": "self-destruct",
+      "name": "Self-Destruct",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 130,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.5
+        }
+      ]
+    },
+    {
+      "id": "explosion",
+      "name": "Explosion",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 170,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.75
+        }
+      ],
+      "cooldown": 2
+    },
+    {
+      "id": "recover",
+      "name": "Recover",
+      "type": "normal",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.4
+        }
+      ],
+      "cooldown": 2
+    },
+    {
+      "id": "tri-attack",
+      "name": "Tri Attack",
+      "type": "normal",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 80,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 0.07
+        },
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.07
+        },
+        {
+          "kind": "status",
+          "status": "freeze",
+          "chance": 0.07
+        }
+      ]
+    },
+    {
+      "id": "mist",
+      "name": "Mist",
+      "type": "water",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "sheer-cold-l",
+      "name": "Sheer Cold",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "freeze",
+          "chance": 0.4
+        }
+      ],
+      "cooldown": 2
+    },
+    {
+      "id": "leaf-storm-s",
+      "name": "Leaf Storm",
+      "type": "grass",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 100,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "smog",
+      "name": "Smog",
+      "type": "poison",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 30,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.4
+        }
+      ]
+    },
+    {
+      "id": "sludge-wave",
+      "name": "Sludge Wave",
+      "type": "poison",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.1
+        }
+      ],
+      "targeting": "cleave"
+    },
+    {
+      "id": "clamp",
+      "name": "Clamp",
+      "type": "water",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "speed",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "dragon-pulse",
+      "name": "Dragon Pulse",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": []
+    },
+    {
+      "id": "fire-punch",
+      "name": "Fire Punch",
+      "type": "fire",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "mach-punch",
+      "name": "Mach Punch",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "sky-uppercut",
+      "name": "Sky Uppercut",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 85,
+      "effects": []
+    },
+    {
+      "id": "leaf-blade",
+      "name": "Leaf Blade",
+      "type": "grass",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 3,
+      "power": 90,
+      "effects": [],
+      "alwaysCrit": true
     }
   ]
 }

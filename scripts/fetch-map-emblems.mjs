@@ -22,6 +22,11 @@ const EMBLEMS = {
   'emblem-gym-water': 'Cascade Badge.png',
   'emblem-gym-bug': 'Hive Badge.png',
   'emblem-gym-normal': 'Plain Badge.png',
+  // v0.7.3 — the four Region 2 badges, by name: canon's Marsh Badge is the Poison Gym's (§5.10.2).
+  'emblem-gym-fire': 'Volcano Badge.png',
+  'emblem-gym-grass': 'Rainbow Badge.png',
+  'emblem-gym-electric': 'Thunder Badge.png',
+  'emblem-gym-poison': 'Marsh Badge.png',
 };
 
 const API = 'https://archives.bulbagarden.net/w/api.php';

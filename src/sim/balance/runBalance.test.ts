@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { autoRun, DEFAULT_RUN_POLICY } from './autoRun';
+import { autoRun, DEFAULT_RUN_POLICY, type FightTrace } from './autoRun';
 import { ctx } from '../testing/harness';
 import { LAYERS } from '../run/map';
 import { STARTER_IDS } from '../run/region';
@@ -150,11 +150,14 @@ describe('Run pacing — §2.1, §3.7', () => {
    * blocks at a fixed tier. So the bands are the target ±~20 pp — wide enough for a block, narrow enough that
    * losing an accent or a tier (Region 3 given 2 back at 1.00, a full run at half the runs) fails at once.
    */
+  // The Region-2-plays-differently measure (§2.2, v0.7.3's exit) rides on the same runs as the curve below.
+  const fights: FightTrace[] = [];
+
   it('Run_EachRegionCostsRuns_InsideItsBand_§2.2.1', { timeout: 180_000 }, () => {
     const cleared = [0, 0, 0, 0];
     for (const starter of STARTER_IDS) {
       for (let seed = 1; seed <= 40; seed++) {
-        const r = autoRun(7000 + seed, starter, ctx, DEFAULT_RUN_POLICY, 3);
+        const r = autoRun(7000 + seed, starter, ctx, DEFAULT_RUN_POLICY, 3, (f) => fights.push(f));
         cleared[r.regionsCleared]! += 1;
       }
     }
@@ -171,6 +174,28 @@ describe('Run pacing — §2.1, §3.7', () => {
     expect(r3, 'Region 3, given Region 2').toBeLessThan(0.72);
     expect(full, 'the whole run').toBeGreaterThan(0.06);
     expect(full, 'the whole run').toBeLessThan(0.32);
+  });
+
+  it('RegionTwo_PlaysDifferently_NotJustHarder_§2.2', () => {
+    // v0.7.3's exit criterion, as three measurements over the fights the runs above played:
+    //   · most of what Region 2 fields is new — species Region 1 never shows you;
+    //   · it brings types Region 1 has none of (Electric and Ice);
+    //   · its accent is felt — far more fights leave a status on the team to carry out (§2.2, §4.2.7.1).
+    const inRegion = (r: number) => fights.filter((f) => f.region === r);
+    const r1 = inRegion(0);
+    const r2 = inRegion(1);
+    expect(r2.length).toBeGreaterThan(100);
+    const r1Species = new Set(r1.flatMap((f) => f.enemies.map((e) => e.species)));
+    const r2Enemies = r2.flatMap((f) => f.enemies);
+    const fresh = r2Enemies.filter((e) => !r1Species.has(e.species)).length / r2Enemies.length;
+    const typed = (list: typeof r2Enemies, types: string[]) => list.filter((e) => ctx.content.species(e.species).types.some((t) => types.includes(t))).length / Math.max(1, list.length);
+    const statused = (list: FightTrace[]) => list.filter((f) => f.team.some((m) => m.status)).length / Math.max(1, list.length);
+    const r1Enemies = r1.flatMap((f) => f.enemies);
+    console.log(`region 2: new species ${fresh.toFixed(2)} · electric/ice ${typed(r2Enemies, ['electric', 'ice']).toFixed(2)} (R1 ${typed(r1Enemies, ['electric', 'ice']).toFixed(2)}) · fights leaving a status ${statused(r2).toFixed(2)} (R1 ${statused(r1).toFixed(2)})`);
+    expect(fresh, 'Region 2 enemies Region 1 never fields').toBeGreaterThan(0.5);
+    expect(typed(r2Enemies, ['electric', 'ice'])).toBeGreaterThan(0.15);
+    expect(typed(r1Enemies, ['electric', 'ice'])).toBeLessThan(0.05);
+    expect(statused(r2), 'fights that leave a status on the team').toBeGreaterThan(statused(r1) * 1.5);
   });
 
   it('Run_ThickensTheDeck_SomethingEvolvesEveryRun', () => {

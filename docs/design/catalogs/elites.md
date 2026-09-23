@@ -32,7 +32,7 @@ It is the Gen I beat everyone remembers, it makes the fight different every run,
 | Region | id | Name | Team | Levels |
 |---|---|---|---|---|
 | R1 | `elite-ace-trainer-r1` | Ace Trainer | `pidgeotto` + `ivysaur` | 12, 13 |
-| R2 | `elite-karate-king-r2` | Karate King | `hitmonchan*` + `primeape` | 23, 24 |
+| R2 | `elite-karate-king-r2` | Karate King | `machoke` + `hitmonchan*` | 22, 23 — ✅ v0.7.3. Machoke stands in for Primeape, whose line is not built; Hitmonchan's three elemental punches are what stop a type check beating it |
 | R2 (alt) | `elite-channeler-r2` | Channeler | `haunter*` + `hypno*` | 23, 24 |
 | R3 | `elite-cooltrainer-r3` | Cooltrainer | `dewgong*` + `cloyster*` | 33, 34 |
 
@@ -52,7 +52,7 @@ design, because the Elite Trainer already owns the "pick 1 of 3" beat.
 |---|---|---|---|---|
 | `elite-wild-snorlax` | R1 | `snorlax` | 14–16 | Boss HP ≈ 2× an Elite Pokémon. P1 stall (`rest-s` heals 50 % max HP + self-Sleep 2t, P1 only; `snore`; `amnesia`) → P2 offence (`body-slam` 30 % Paralysis, `crunch`) and +15 pp catch threshold. Thick Fat + Immunity. Catch → recruit Snorlax. |
 | `elite-wild-marowak-spirit` | R1 | `marowak-spirit` | 14–16 | `curse-ms` (user loses 25 % max HP → 3-turn DoT), `confuse-ray`, `shadow-bone`, `lick`. Levitate + Cursed Body. **Catch → recruit a living Ground `marowak`** carrying `thick-club`. |
-| `elite-wild-lapras` | R2 | `lapras` | 24–26 | 🆕 P1 control (`sing`, `mist`, `ice-shard`) → P2 `ice-beam` + `surf`. Catch → recruit Lapras. |
+| `elite-wild-lapras` | R2 | `lapras` | 24–26 | ✅ v0.7.3. P1 control (`sing`, `mist`, `ice-shard`) → P2 `ice-beam` + `surf`. Catch → recruit Lapras. Its learnset only reaches Ice Beam at 30, so the fight carries the script as its kit: `sing` `ice-shard` `ice-beam` `surf` |
 | `elite-wild-aerodactyl` | R3 | `aerodactyl` | 34–36 | 🆕 P1 `agility`/`ancient-power` setup → P2 `sky-drop` + `rock-slide-m`. Catch → recruit Aerodactyl. |
 
 One boss-wild per Region is drawn per encounter (never both). No mid-fight evolution — it is a wild, not a

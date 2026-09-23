@@ -9,8 +9,8 @@ import { STARTER_IDS } from '../run/region';
 //   Pallet Town   rung 1 about half · the whole ladder about 1 in 6
 //   Celadon City  rung 1 about half · rung 2 about a quarter · the whole ladder under 1 in 10
 //
-// Tuned over 70 Pallet and 47 Celadon climbs (Pallet +7 levels, +3 a rung, rivals of 3: 0.64 / 0.17; Celadon
-// +16, +4, rivals of 4: 0.47 / 0.17 / 0.04). This guard runs a smaller sample, so its bands are wide: they catch
+// Tuned over 70 Pallet and 89 Celadon climbs (Pallet +7 levels, +3 a rung, rivals of 3: 0.64 / 0.17; Celadon
+// +10, +2, rivals of 3 against Region 2's rosters since v0.7.3: 0.60 / 0.22 / 0.03). This guard runs a smaller sample, so its bands are wide: they catch
 // a Ring that turned into a formality (v0.7.2's canon starting values cleared the town ladder 63 % of the time)
 // or into a wall, not a few points of drift.
 

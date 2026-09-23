@@ -16,10 +16,10 @@
 | `lass` | Lass | Generalist with a status lean | R1, R2 | `lass` |
 | `hiker` | Hiker | Slow, durable, Defence-stacking; punishes a damage race | R1, R2 | `hiker` |
 | `swimmer` | Swimmer | Water, status-heavy (Confusion, Burn-shred) | R1 (river), R2 | `swimmer` |
-| `engineer` | Engineer | Buff-stall: sets up before striking | R2, R3 | `scientist` |
-| `hex-maniac` | Hex Maniac | Vision disruption — generates Unknown intents | R2, R3 | `hexmaniac` |
+| `engineer` | Engineer | Buff-stall: sets up before striking | R2 ✅, R3 | `scientist` |
+| `hex-maniac` | Hex Maniac | Vision disruption — generates Unknown intents | R3 | `hexmaniac` |
 | `ace-trainer` | Ace Trainer | Two high-stat Pokémon, multi-type | R3 (+ R1 Elite specialist) | `acetrainer` |
-| `rocket-grunt` | Rocket Grunt | Aggressive Cleave/Backstrike kits, Poison | R2, R3 | `rocketgrunt` |
+| `rocket-grunt` | Rocket Grunt | Aggressive Cleave/Backstrike kits, Poison | R2 ✅, R3 | `rocketgrunt` |
 
 > §2.7.1 lists 8; `youngster` and `lass` were one row ("Lass / Youngster") and `sailor`/`swimmer` another. They
 > are split here into distinct rosters because they need different species pools — the count is 9 ids, 8 canon
@@ -43,19 +43,31 @@
 Each archetype has two variants so a Region with 4 trainer nodes never repeats a roster. The generator picks
 without replacement (§2.7.3, seeded).
 
-## 3. Region 2 rosters (levels 14–22) 🔒 v0.7
+## 3. Region 2 rosters (levels 14–22) ✅ v0.7.3
 
-| Archetype | Team | Levels |
-|---|---|---|
-| `youngster` | `raticate` + `pidgeotto` | 15, 16 |
-| `lass` | `gloom` + `jigglypuff*` | 17, 16 |
-| `hiker` | `graveler` + `machoke` | 18, 18 |
-| `swimmer` | `seel*` + `tentacool*` | 17, 18 |
-| `engineer` | `magnemite*` + `voltorb*` | 18, 19 |
-| `hex-maniac` | `haunter*` + `drowzee*` | 20, 19 |
-| `rocket-grunt` | `koffing*` + `ekans*` | 19, 20 |
+Written in the forms Region 2's band warrants — every Region 2 line evolves at 12 — and walked through the
+line's thresholds at the level the layer gives them (§2.7.3). Species rows: `species-r2.md`.
 
-`*` = species defined in `species-pool-r2-r3.md`.
+| id | Archetype | Team | Levels |
+|---|---|---|---|
+| `youngster-r2-a` | Youngster | `raticate` + `pidgeotto` | 15, 16 |
+| `youngster-r2-b` | Youngster | `raichu` | 17 |
+| `lass-r2-a` | Lass | `gloom` + `starmie` | 16, 17 |
+| `lass-r2-b` | Lass | `weepinbell` + `raichu` | 16, 17 |
+| `hiker-r2-a` | Hiker | `graveler` + `machoke` | 17, 17 |
+| `hiker-r2-b` | Hiker | `onix` + `graveler` | 17, 18 |
+| `swimmer-r2-a` | Swimmer | `dewgong` + `tentacruel` | 16, 17 |
+| `swimmer-r2-b` | Swimmer | `seadra` + `cloyster` | 16, 17 |
+| `engineer-r2-a` | Engineer | `magneton` + `electrode` | 17, 18 |
+| `engineer-r2-b` | Engineer | `electrode` + `electabuzz` | 17, 18 |
+| `rocket-grunt-r2-a` | Rocket Grunt | `weezing` + `golbat` | 18, 18 |
+| `rocket-grunt-r2-b` | Rocket Grunt | `raticate` + `weezing` | 17, 18 |
+
+**The Gym lanes** (§2.5): Youngsters walk the Fire lane, Lasses the Grass lane, Engineers the Electric lane and
+Rocket Grunts the Poison lane; Hikers and Swimmers are the trunk's. **Three substitutions**, because their lines
+are not in the build: the Lass's Jigglypuff became a Starmie (and, in the second roster, a Raichu), the Rocket
+Grunt's Ekans became a Golbat or a Raticate — the Gen I Rocket's other two — and the **Hex Maniac moved to Region 3**
+with the Ghosts its identity needs. *(Settled while building v0.7.3, 2026-09-23.)*
 
 ## 4. Region 3 rosters (levels 26–34) 🔒 v0.7
 

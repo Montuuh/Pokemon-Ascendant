@@ -1,8 +1,8 @@
 import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import {
-  BIOMES, ELITE, GYMS, LANE_THEME, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, TRAINERS, eliteTeamFor, eliteWildTeamFor, evolvedAt,
-  gymById, gymTeamFor, rostersOf, trainerTeamFor, wildBandFor, type BiomeId, type GymDef, type TrainerRoster,
+  GYMS, REGION1_BIOME_WEIGHTS, eliteTeamFor, eliteWildTeamFor, evolvedAt, gymById, gymTeamFor, regionContent, trainerTeamFor,
+  wildBandFor, type BiomeId, type GymDef, type RegionContent, type TrainerRoster,
 } from './region';
 import { AID_HEAL_PCT } from './economy';
 import { hasModifier } from './modifiers';
@@ -109,20 +109,20 @@ function pickOne<T>(rng: GameRng, list: readonly T[]): T {
   return list[Math.min(list.length - 1, Math.floor(rng.range01() * list.length))]!;
 }
 
-export function biomeFor(rng: GameRng): BiomeId {
-  return pickWeighted(rng, REGION1_BIOME_WEIGHTS.map((b) => ({ value: b.biome, weight: b.weight })));
+export function biomeFor(rng: GameRng, weights: readonly { biome: BiomeId; weight: number }[] = REGION1_BIOME_WEIGHTS): BiomeId {
+  return pickWeighted(rng, weights.map((b) => ({ value: b.biome, weight: b.weight })));
 }
 
 /**
  * §5.9.2 — draw **two distinct** Gym types for this Region, and assign one to each lane. Nine of the twelve
  * Gym types are missed by any one run, which is what makes a three-Badge combination worth talking about.
  */
-export function drawGymPair(rng: GameRng, onePath = false, exclude: readonly string[] = []): [GymDef, GymDef] {
-  // §2.1 placeholder (v0.7.1) — Regions 2 and 3 draw from Region 1's pool until their own Gyms exist, so a Gym
-  // whose Badge the run already holds is left out: nobody fights Brock twice. Only if that would leave fewer
-  // than two does the full pool come back.
-  const fresh = GYMS.filter((g) => !exclude.includes(g.id));
-  const pool = fresh.length >= 2 ? [...fresh] : fresh.length === 1 && onePath ? [...fresh] : [...GYMS];
+export function drawGymPair(rng: GameRng, onePath = false, exclude: readonly string[] = [], gyms: readonly GymDef[] = GYMS): [GymDef, GymDef] {
+  // §2.1 placeholder — Region 3 draws from Region 1's pool until its own Gyms exist (v0.7.4), so a Gym whose
+  // Badge the run already holds is left out: nobody fights Brock twice. Only if that would leave fewer than two
+  // does the full pool come back.
+  const fresh = gyms.filter((g) => !exclude.includes(g.id));
+  const pool = fresh.length >= 2 ? [...fresh] : fresh.length === 1 && onePath ? [...fresh] : [...gyms];
   const a = pool.splice(Math.floor(rng.range01() * pool.length), 1)[0]!;
   const b = pool[Math.min(pool.length - 1, Math.floor(rng.range01() * pool.length))]!;
   // §8.8.2 One Path — both lanes lead to the same Gym, so the fork offers a route and never a counter-pick.
@@ -137,10 +137,10 @@ export function drawGymPair(rng: GameRng, onePath = false, exclude: readonly str
  * weighted up inside it. The lane's `counter` — the one species that answers its own Gym — is seeded into the
  * Uncommon slot at a fixed rate, so a lane is a commitment and never a dead end.
  */
-function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, lane: GymDef | null): { preview: NodePreview; biome: BiomeId } {
-  const theme = lane ? LANE_THEME[lane.type] : undefined;
-  const biome = theme ? theme.biome : biomeFor(rng);
-  const pool = BIOMES[biome];
+function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, lane: GymDef | null, region: RegionContent): { preview: NodePreview; biome: BiomeId } {
+  const theme = lane ? region.laneThemes[lane.type] : undefined;
+  const biome = theme ? theme.biome : biomeFor(rng, region.biomeWeights);
+  const pool = region.biomes[biome]!;
 
   // Inside the biome, the lane's favoured species are three times as likely to fill a Common slot.
   const weighted = pool.common.map((id) => ({ value: id, weight: theme?.favours.includes(id) ? 3 : 1 }));
@@ -161,25 +161,35 @@ function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, lane
       title: `Wild — ${pool.name}`,
       detail: speciesIds.map((id) => content.species(id).name).join(' · '),
       speciesIds,
-      levelBand: wildBandFor(layer),
+      levelBand: wildBandFor(layer, region.wildBand),
       icon: `wild-${biome}`,
     },
   };
 }
 
-/** A trainer node. In a lane, the archetype is the Gym's; in the trunk, anything Region 1 fields. */
-function trainerPreview(rng: GameRng, content: ContentRegistry, used: Set<string>, layer: number, lane: GymDef | null): NodePreview {
-  const themed = lane ? LANE_THEME[lane.type]!.trainers.flatMap(rostersOf) : TRAINERS;
+/**
+ * A Region from v0.7.3 on writes its rosters in the forms its band warrants and walks them through `evolvedAt`
+ * as well (§2.7.3), so a band-derived level past a threshold still fields the right form. Region 1 does not: its
+ * rosters are the teaching Region's, and its Caterpie stays a Caterpie.
+ */
+function evolveTeam<T extends { species: string; level: number }>(team: T[], region: RegionContent, content: ContentRegistry): T[] {
+  return region.evolveRosters ? team.map((m) => ({ ...m, species: evolvedAt(m.species, m.level, content) })) : team;
+}
+
+/** A trainer node. In a lane, the archetype is the Gym's; in the trunk, anything the Region fields. */
+function trainerPreview(rng: GameRng, content: ContentRegistry, used: Set<string>, layer: number, lane: GymDef | null, region: RegionContent): NodePreview {
+  const themed = lane ? region.laneThemes[lane.type]!.trainers.flatMap((a) => region.trainers.filter((t) => t.archetype === a)) : region.trainers;
   const unused = themed.filter((t) => !used.has(t.id));
   // A lane has only two rosters of its archetype, so a long lane will repeat one; that is better than a
   // Swimmer lane with a Hiker in the middle of it, which would break the telegraph the lane exists to give.
-  const roster: TrainerRoster = pickOne(rng, unused.length ? unused : themed.length ? themed : TRAINERS);
+  const roster: TrainerRoster = pickOne(rng, unused.length ? unused : themed.length ? themed : region.trainers);
   used.add(roster.id);
 
-  const team = trainerTeamFor(roster, layer);
+  const team = evolveTeam(trainerTeamFor(roster, layer, region.wildBand), region, content);
   const levels = team.map((m) => m.level);
   return {
     title: roster.name,
+    rosterId: roster.id,
     icon: `trainer-${roster.archetype}`,
     detail: team.map((m) => `${content.species(m.species).name} L${m.level}`).join(' · '),
     speciesIds: team.map((m) => m.species),
@@ -212,11 +222,11 @@ const MYSTERY_PREVIEW: NodePreview = {
 };
 
 /** §2.8.1 — the Elite Trainer: two Pokémon, both two-phase, a guaranteed relic. */
-function elitePreview(content: ContentRegistry, layer: number): NodePreview {
-  const team = eliteTeamFor(layer);
+function elitePreview(content: ContentRegistry, layer: number, region: RegionContent): NodePreview {
+  const team = evolveTeam(eliteTeamFor(layer, region.elite, region.wildBand), region, content);
   const levels = team.map((m) => m.level);
   return {
-    title: ELITE.name,
+    title: region.elite.name,
     icon: 'elite',
     detail: `${team.map((m) => `${content.species(m.species).name} L${m.level}`).join(' · ')} · reward: a relic`,
     speciesIds: team.map((m) => m.species),
@@ -226,8 +236,8 @@ function elitePreview(content: ContentRegistry, layer: number): NodePreview {
 }
 
 /** §2.8.2 — the Elite Wild: a boss-tier catchable. Catch it or beat it, never both. */
-function eliteWildPreview(content: ContentRegistry, layer: number): NodePreview {
-  const team = eliteWildTeamFor(layer);
+function eliteWildPreview(content: ContentRegistry, layer: number, region: RegionContent): NodePreview {
+  const team = eliteWildTeamFor(layer, region.eliteWild, region.wildBand);
   const levels = team.map((m) => m.level);
   return {
     title: `Wild ${content.species(team[0]!.species).name}`,
@@ -306,11 +316,13 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
   const byLayer: MapNode[][] = [];
   const usedTrainers = new Set<string>();
 
+  // §2.1 — which Region's tables this route is built from (Region 3 is still Region 1's, shifted).
+  const region = regionContent(regionIndex);
   // §5.9.2 — two distinct Gyms, drawn before anything else so every lane node can be themed by its own.
   // §8.8.2 One Path collapses them to one.
-  const [gymA, gymB] = drawGymPair(rng, hasModifier(modifiers, 'one-path'), excludeGyms);
-  // §2.1 placeholder — how far above Region 1 this Region's levels sit (REGION_LEVEL_OFFSET).
-  const offset = REGION_LEVEL_OFFSET[regionIndex] ?? REGION_LEVEL_OFFSET[REGION_LEVEL_OFFSET.length - 1]!;
+  const [gymA, gymB] = drawGymPair(rng, hasModifier(modifiers, 'one-path'), excludeGyms, region.gyms);
+  // §2.1 placeholder — how far above its tables this Region's levels sit.
+  const offset = region.levelOffset;
   const lanes: GymDef[] = [gymA, gymB];
 
   // §2.5.1 — the two rolled specials. Both are decided up front so the layer loop stays a pure placement.
@@ -357,13 +369,13 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
 
       const id = `n${layer}-${col}`;
       const preview = shifted(
-        kind === 'wild' ? wildPreview(rng, content, layer, lane).preview
-        : kind === 'trainer' ? trainerPreview(rng, content, usedTrainers, layer, lane)
+        kind === 'wild' ? wildPreview(rng, content, layer, lane, region).preview
+        : kind === 'trainer' ? trainerPreview(rng, content, usedTrainers, layer, lane, region)
         : kind === 'aid' ? AID_PREVIEW
         : kind === 'merchant' ? MERCHANT_PREVIEW
         : kind === 'mystery' ? MYSTERY_PREVIEW
-        : kind === 'elite' ? elitePreview(content, layer)
-        : kind === 'elite-wild' ? eliteWildPreview(content, layer)
+        : kind === 'elite' ? elitePreview(content, layer, region)
+        : kind === 'elite-wild' ? eliteWildPreview(content, layer, region)
         : gymPreview(content, layer === GYM_LAYER ? lanes[col]! : gymA),
         offset,
         content,

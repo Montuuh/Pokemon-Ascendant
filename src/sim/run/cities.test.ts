@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
   activeSetups, arriveAtCity, createRun, defaultRunCtx, dojoPrice, GYMS, LAYERS, nodesInLayer, PRICES,
-  REGION_LEVEL_OFFSET, rerollPrice, rollShopStock, runReducer, sellPrice, xpToNext,
+  REGIONS, rerollPrice, wildBandFor, rollShopStock, runReducer, sellPrice, xpToNext,
   type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
@@ -86,11 +86,11 @@ describe('The seam — §2.1.4', () => {
     // §2.1 placeholder — the Gym whose Badge the run holds is not drawn again.
     const beaten = GYMS.filter((g) => s.badges.includes(g.badgeId)).map((g) => g.id);
     for (const id of beaten) expect(s.map.gyms).not.toContain(id);
-    // …and every fight sits REGION_LEVEL_OFFSET[1] levels above where Region 1's did.
+    // …and every fight sits on Region 2's own band (§2.6.5), not Region 1's.
     const band = (m: RunState['map'], l: number) => nodesInLayer(m, l).find((n) => n.kind === 'wild')?.preview.levelBand;
-    const before = band(firstMap, 0);
+    expect(band(firstMap, 0)).toEqual(wildBandFor(0, REGIONS[0]!.wildBand));
     const after = band(s.map, 0);
-    if (before && after) expect(after[0] - before[0]).toBe(REGION_LEVEL_OFFSET[1]);
+    if (after) expect(after).toEqual(wildBandFor(0, REGIONS[1]!.wildBand));
   });
 
   it('TheGym_FightsAtTheShiftedLevels_TheMapPromised_§5.9.3', () => {

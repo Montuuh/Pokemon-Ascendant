@@ -9,7 +9,10 @@
       "description": "Your Lead takes 1 less damage from every hit.",
       "flavour": "Proof of a willpower as hard as rock.",
       "hook": "damage-taken",
-      "params": { "leadOnly": true, "flat": 1 }
+      "params": {
+        "leadOnly": true,
+        "flat": 1
+      }
     },
     {
       "id": "cascade-badge",
@@ -19,7 +22,10 @@
       "description": "Every manual swap draws you an extra card.",
       "flavour": "Proof of a mind that flows around what it cannot break.",
       "hook": "draw",
-      "params": { "onManualSwap": true, "cards": 1 }
+      "params": {
+        "onManualSwap": true,
+        "cards": 1
+      }
     },
     {
       "id": "hive-badge",
@@ -29,7 +35,11 @@
       "description": "When your deck runs out and cycles, a 20 % chance of a free copy of a card next turn.",
       "flavour": "Proof of patience with small things that add up.",
       "hook": "draw",
-      "params": { "onReshuffle": true, "chance": 0.2, "copies": 1 }
+      "params": {
+        "onReshuffle": true,
+        "chance": 0.2,
+        "copies": 1
+      }
     },
     {
       "id": "normal-badge",
@@ -39,7 +49,64 @@
       "description": "The first card you play each turn costs 1 less AP.",
       "flavour": "Proof that nothing fancy, done well, beats most things.",
       "hook": "ap-cost",
-      "params": { "firstEachTurn": true, "delta": -1 }
+      "params": {
+        "firstEachTurn": true,
+        "delta": -1
+      }
+    },
+    {
+      "id": "volcano-badge",
+      "name": "Volcano Badge",
+      "type": "fire",
+      "region": 2,
+      "description": "Offensive cards costing 3 or more AP deal +20 % damage.",
+      "flavour": "Proof of a temper worth the wait.",
+      "hook": "damage-dealt",
+      "params": {
+        "minApCost": 3,
+        "multiplier": 1.2
+      }
+    },
+    {
+      "id": "rainbow-badge",
+      "name": "Rainbow Badge",
+      "type": "grass",
+      "region": 2,
+      "description": "At turn start, a Lead with a status condition restores 3 HP.",
+      "flavour": "Proof that a garden grows through anything.",
+      "hook": "turn-end-heal",
+      "params": {
+        "atTurnStart": true,
+        "leadOnly": true,
+        "whileStatused": true,
+        "amount": 3
+      }
+    },
+    {
+      "id": "thunder-badge",
+      "name": "Thunder Badge",
+      "type": "electric",
+      "region": 2,
+      "description": "The first Ranged move you play each turn costs 1 less AP.",
+      "flavour": "Proof of a spark that arrives before the thunder.",
+      "hook": "ap-cost",
+      "params": {
+        "firstOfRange": "ranged",
+        "delta": -1
+      }
+    },
+    {
+      "id": "marsh-badge",
+      "name": "Marsh Badge",
+      "type": "poison",
+      "region": 2,
+      "description": "Applying a status condition to an enemy draws you a card.",
+      "flavour": "Proof of patience with a slow poison.",
+      "hook": "draw",
+      "params": {
+        "onStatusApplied": true,
+        "cards": 1
+      }
     }
   ]
 }

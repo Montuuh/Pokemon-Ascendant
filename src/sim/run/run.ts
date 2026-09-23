@@ -6,7 +6,7 @@ import { knownMoves } from '../combat/stats';
 import { isImmuneToStatus } from '../combat/status';
 import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
 import { generateRegion } from './map';
-import { ELITE, GYM, GYMS, TRAINERS, evolvedAt, gymById, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
+import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
 import { AID_HEAL_PCT, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
 import { CASINO, CITIES, RING, cityAfter, isFinalRegion } from './cities';
 import { mysteryEvent, rollEvent, type EventOutcome } from './events';
@@ -102,6 +102,9 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
   const mapRng = streams.get('MapRNG');
   const map = generateRegion(mapRng, ctx.content, regionIndex, seed, modifiers);
   const starter = newPartyMon(starterId, RUN_START.starterLevel, ctx.content, seed);
+  // §8.5.3 — the starter's flourish, if it has one (Pikachu's Light Ball).
+  const starterItem = RUN_START.starterItems[starterId];
+  if (starterItem && ctx.content.allHeldItems().some((i) => i.id === starterItem)) starter.heldItem = starterItem;
   const second = twin ? newPartyMon(twin, RUN_START.starterLevel, ctx.content, seed + 1) : null;
 
   return {
@@ -269,9 +272,11 @@ function rollRing(rng: GameRng, draft: RunState, ctx: RunCtx): RingState {
   const nodes = Object.values(draft.map.nodes);
   const gymNode = nodes.find((n) => n.id === draft.position && n.kind === 'gym') ?? nodes.find((n) => n.kind === 'gym');
   const gymLevel = Math.max(1, ...(gymNode?.preview.enemies ?? []).map((e) => e.level));
+  // The rivals are the Region you just walked: Pallet's are Region 1's rosters, Celadon's Region 2's (§2.9.4.1).
+  const region = regionContent(draft.regionIndex);
   // Distinct archetypes where the rosters allow it, drawn without replacement.
-  const rosters = [...TRAINERS];
-  const picked: typeof TRAINERS = [];
+  const rosters = [...region.trainers];
+  const picked: typeof rosters = [];
   for (let i = 0; i < def.ring.prizes.length && rosters.length; i++) {
     const fresh = rosters.filter((r) => !picked.some((p) => p.archetype === r.archetype));
     const from = fresh.length ? fresh : rosters;
@@ -282,7 +287,7 @@ function rollRing(rng: GameRng, draft: RunState, ctx: RunCtx): RingState {
   const rungs: RingRung[] = picked.map((roster, i) => {
     const level = gymLevel + def.ring.firstOffset + def.ring.stepOffset * i;
     const species: string[] = [];
-    for (const m of [...roster.team, ...ELITE.team, ...TRAINERS.flatMap((t) => t.team)]) {
+    for (const m of [...roster.team, ...region.elite.team, ...region.trainers.flatMap((t) => t.team)]) {
       const form = evolvedAt(m.species, level, ctx.content);
       if (!species.includes(form) && species.length < def.ring.teamSize) species.push(form);
     }
@@ -837,6 +842,9 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             draft.stats.recruits += 1;
             if (draft.activeUids.length < 3) draft.activeUids.push(recruit.uid);
             say(draft, `Caught ${ctx.content.species(caught.speciesId).name}!`);
+            // §6.3.1 — a recruit caught past its threshold owes its Evolution screen now, like anyone else: a
+            // Region 2 basic arrives at Lv 12–20 and every basic evolves at 12, so the catch is where its branch is chosen.
+            queueEvolutions(draft, ctx.content);
           } else {
             // §2.3.1 — the Box is full: Swap or Skip, and releasing is permanent.
             draft.pendingRecruit = caught;
@@ -1091,8 +1099,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         draft.regionIndex += 1;
         const mapRng = new RngStreams(draft.seed).get('MapRNG');
         mapRng.cursor = draft.cursors.MapRNG ?? mapRng.cursor;
-        // §2.1 placeholder — a Gym whose Badge you hold is not drawn again.
-        const beaten = GYMS.filter((g) => draft.badges.includes(g.badgeId)).map((g) => g.id);
+        // §2.1 placeholder — a Gym whose Badge you hold is not drawn again (Region 3 still draws Region 1's pool).
+        const beaten = ALL_GYMS.filter((g) => draft.badges.includes(g.badgeId)).map((g) => g.id);
         draft.map = generateRegion(mapRng, ctx.content, draft.regionIndex, draft.seed, draft.modifiers, beaten);
         draft.cursors.MapRNG = mapRng.cursor;
         draft.position = null;

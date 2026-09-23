@@ -119,6 +119,8 @@ export function abilityConditionalReduction(target: Combatant, move: MoveDef, co
     const when = String(a.params?.when ?? '');
     if (when === 'confused' && target.confusionTurns <= 0) continue;
     if (when === 'ranged' && move.range !== 'ranged') continue;
+    // §6.5.2 Thick Fat — only the listed types (a comma list, because params are flat).
+    if (when === 'type' && !String(a.params?.types ?? '').split(',').includes(move.type)) continue;
     m *= Number(a.params?.multiplier ?? 1);
   }
   return m;

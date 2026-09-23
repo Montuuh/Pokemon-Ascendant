@@ -204,6 +204,17 @@
         "wearerOnly": true
       },
       "speciesLock": "marowak"
+    },
+    {
+      "id": "light-ball",
+      "name": "Light Ball",
+      "description": "Pikachu only: its Electric moves deal +25 %. Evolving into Raichu leaves it inert.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "electric",
+        "multiplier": 1.25
+      },
+      "speciesLock": "pikachu"
     }
   ]
 }

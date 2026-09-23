@@ -342,15 +342,15 @@ with a three-card deck for the first stretch of the run, which is a far more int
 
 Small thematic flourishes, balance-neutral by intent:
 
-- **Pikachu:** starts holding a Light Ball (+25 % Electric damage, Pikachu only).
+- **Pikachu:** starts holding a Light Ball (+25 % Electric damage, Pikachu only). A Raichu keeps holding it and
+  it stops working, which makes "evolve or keep the ball" a real Pillar-4 choice. *(Built v0.7.3.)*
 - **Eevee:** the first Mystery node visited is guaranteed to be a Stone Cache — a free evolution stone of your
   choice. *(Waits on Evolution Items, v0.7; Eevee itself ships in v0.6 with its three branches.)*
 - **Magikarp:** starting relic offers are biased toward Water and toward survivability, because the first two
   Regions are a defensive problem. Implemented as a guarantee: at least one Water or defensive relic is in the
   offer, drawn from the same seed.
-- **Pikachu:** is on the Starters shelf, priced, and not sold until its kit ships in v0.7 — the shelf says so
-  rather than selling an empty species. (A v0.6.0–v0.6.2 save the old track granted it to keeps it, off the
-  picker, and the picker says why.)
+- **Pikachu:** its kit shipped with Region 2 (v0.7.3), and the Starters shelf sells it. Until then it was priced
+  and not sold — a shelf that says so beats selling an empty species.
 
 ---
 

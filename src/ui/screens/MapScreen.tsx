@@ -4,7 +4,7 @@ import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { regionPlate } from '@/ui/art';
 import { getContent } from '@/content/registry';
-import { LAYERS, boxCapacity, gymById, isServiceNode, nodesInLayer, type MapNode, type PartyMon } from '@/sim';
+import { LAYERS, boxCapacity, gymById, isServiceNode, nodesInLayer, regionName, type MapNode, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { InventoryDrawer } from '@/ui/components/InventoryDrawer';
 import { Money } from '@/ui/components/Money';
@@ -169,7 +169,8 @@ export function MapScreen() {
             <InfoDot tip={regionTip(run.regionIndex, run.modifiers.includes('greater-threats'))} />
           </div>
           <p className={styles.progress}>
-            Layer <b className="tabular">{Math.min(standingLayer + 2, LAYERS)}</b> of <b className="tabular">{LAYERS}</b>
+            {regionName(run.regionIndex) ? `${regionName(run.regionIndex)} · ` : ''}
+            {'Layer '}<b className="tabular">{Math.min(standingLayer + 2, LAYERS)}</b> of <b className="tabular">{LAYERS}</b>
             {' · seed '}
             <span className="tabular">{run.seed}</span>
           </p>
@@ -260,7 +261,7 @@ export function MapScreen() {
         </aside>
 
         <section className={styles.graph} data-testid="map-graph" aria-label={`Region ${run.regionIndex + 1} route map, ${LAYERS} layers`}>
-          <img className={styles.backdrop} src={regionPlate(1)} alt="" aria-hidden="true" />
+          <img className={styles.backdrop} src={regionPlate(run.regionIndex + 1)} alt="" aria-hidden="true" />
           <div className={styles.veil} aria-hidden="true" />
           <svg className={styles.edgeLayer} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             {edges.map((e) => (

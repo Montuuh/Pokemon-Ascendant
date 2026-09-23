@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { getContent } from '@/content/registry';
-import { TRAINERS, type MapNode, type PartyMon } from '@/sim';
+import { ALL_TRAINERS, type MapNode, type PartyMon } from '@/sim';
 import { nodeBadge, trainerSprite } from '@/ui/art';
 import { NODE_HINT, NODE_LABEL } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
@@ -21,7 +21,7 @@ interface Props {
 export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter, onCancel }: Props) {
   const content = getContent();
   const enterRef = useRef<HTMLButtonElement>(null);
-  const roster = node.kind === 'trainer' ? TRAINERS.find((t) => t.name === node.preview.title) : undefined;
+  const roster = node.kind === 'trainer' ? (ALL_TRAINERS.find((t) => t.id === node.preview.rosterId) ?? ALL_TRAINERS.find((t) => t.name === node.preview.title)) : undefined;
 
   useEffect(() => {
     enterRef.current?.focus();

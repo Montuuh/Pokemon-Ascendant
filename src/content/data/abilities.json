@@ -369,6 +369,30 @@
         "type": "fire",
         "buffInstead": "attack"
       }
+    },
+    {
+      "id": "static",
+      "name": "Static",
+      "category": "Status",
+      "description": "A melee attacker risks being Paralysed.",
+      "hook": "on-damaged",
+      "params": {
+        "range": "melee",
+        "status": "paralysis",
+        "chance": 0.3
+      }
+    },
+    {
+      "id": "thick-fat",
+      "name": "Thick Fat",
+      "category": "Type",
+      "description": "Fire and Ice moves deal half damage to this Pokémon.",
+      "hook": "conditional-reduction",
+      "params": {
+        "when": "type",
+        "types": "fire,ice",
+        "multiplier": 0.5
+      }
     }
   ]
 }

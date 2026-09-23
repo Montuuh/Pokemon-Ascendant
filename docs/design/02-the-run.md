@@ -145,6 +145,19 @@ Confuse Ray; Supersonic for a type the games gave none — unless its kit alread
 around — the nurse, the cures in the bag, an immune Lead — not a nuisance inside one fight. Region 3 inherits it.
 *(Built 2026-09-22.)*
 
+**Region 2 is its own Region, not Region 1 raised** (v0.7.3). It draws its own biomes (§2.6.3), rosters (§2.7),
+Elites (§2.8) and Gyms (§5.9.2), with ten new lines and three single stages (`catalogs/species-r2.md`), and it
+brings types Region 1 has none of. Measured over the harness's runs (`runBalance.test.ts` guards all three):
+
+| Measure | Region 1 | Region 2 |
+|---|---|---|
+| Enemies of a species Region 1 never fields | — | **76 %** |
+| Enemies with an Electric or Ice type | 0 % | **26 %** |
+| Fights that send a status home with the team (§4.2.7.1) | 8 % | **19 %** |
+
+That is the exit v0.7.3 was built to: Region 2 plays differently, not just harder. Region 3 stays Region 1's
+tables sixteen levels up until v0.7.4 writes its own; the map does not name it until then (§2.13).
+
 ## §2.2.1 The difficulty curve
 
 A run is meant to be lost more often than won, and **each Region is meant to cost runs** — not only the first.
@@ -165,7 +178,9 @@ bands (§2.6.5) and nothing else, and every autoplayed run that beat Gym 1 beat 
 fight — a team of evolved Pokémon with relics and Badges out-grows a band that only adds levels.
 
 1. **XP scales with the level gap** (§6.2.1), so a team stops running away from its Region's band.
-2. **Enemies field the forms their levels warrant** from Region 2 on (§2.7.3): a Lv 29 Geodude is a Golem.
+2. **Trainers, Elites and the Ring field the forms their levels warrant** from Region 2 on (§2.7.3): a Lv 29
+   Geodude is a Golem. Wild Areas offer base forms — a biome is where the base form spawns — and a Region 2
+   catch evolves after the catch fight (§6.3.1).
 3. **The status accent** above.
 4. **The enemy stat tier** — every enemy's Max HP and Attack, by Region:
 
@@ -184,6 +199,9 @@ borrows the next Region's tier, and past Region 3 it extrapolates one more step 
 Attack ×3.0).
 The numbers are tuned against the bands, not chosen: change one and read the harness. *(2026-09-22, set by the
 difficulty pass after v0.7.1; the user asked for the later routes to be harder and left the method to design.)*
+**Re-measured on Region 2's own roster** (v0.7.3, 720 runs): Region 2 given Region 1 **59 %**, Region 3 given
+Region 2 **45 %**, the whole run **15 %** — inside every band, so the tier stayed as it was. The tier was tuned on
+Region 1's species evolved up; a real roster turned out to cost runs at the same rate.
 
 ---
 
@@ -375,9 +393,11 @@ exception, **Naturalist's Lens** (§2.11.3.1), which lets the player promote one
 that Region. Dominant, never exclusive, so the three-species offer never starves.
 
 **A biome is a species pool and a backdrop, and it must be wide enough to surprise.** Region 1 shipped with
-four to six species per biome, which is thin enough that a lane starts repeating itself by its third node; the
-pools grow as Regions 2 and 3 author their lines, and a species may sit in more than one biome. A pool that
-offers the same three Pokémon twice is the failure state to watch for. *(Noted 2026-09-22.)*
+four to six species per biome, which is thin enough that a lane starts repeating itself by its third node, and a
+Rare slot that repeated an Uncommon. v0.7.3 widened it — Bellsprout in the Meadow, Krabby in the River, and a
+real find in every Rare slot (Eevee in the grass, Lapras in the water) — and Region 2 brought five pools of
+its own; a species may sit in more than one biome, and in more than one Region. A pool that offers the same
+three Pokémon twice is the failure state to watch for. *(Noted 2026-09-22; widened 2026-09-23.)*
 
 **Biomes will also carry a field effect** — most visibly in the lane that ends at a Gym of that biome's type,
 so the ground you fight on is part of what the lane telegraphs (§2.5.0).
@@ -406,6 +426,21 @@ Full Region 1 pools with dex numbers, stats, learnsets and archetypes:
 | Meadow | Caterpie · Weedle · Pidgey · Rattata | Oddish · Bellsprout · Mankey | Eevee |
 | Cave | Zubat · Geodude · Diglett | Onix · Machop | Aerodactyl · Lapras |
 | River | Magikarp · Poliwag | Psyduck · Krabby | Lapras |
+
+Region 2 (v0.7.3). A Region 1 species found here arrives at Region 2's band and evolves after the catch, like
+any Region 2 basic:
+
+| Biome | Common | Uncommon | Rare |
+|---|---|---|---|
+| **Sea** (primary) | Tentacool · Shellder · Horsea | Staryu · Seel | Lapras |
+| Power Plant | Voltorb · Magnemite | Pikachu | Electabuzz |
+| River | Poliwag · Horsea · Magikarp | Psyduck · Krabby | Lapras |
+| Cave | Koffing · Zubat · Geodude | Machop · Onix | Lapras |
+| Meadow (rare) | Bellsprout · Pidgey · Rattata | Growlithe · Oddish | Eevee |
+
+The Sea is drawn five times in thirteen, the Power Plant three, the River and the Cave two each, the Meadow once.
+The Gym lanes (§2.5) walk their own: the Fire and Grass lanes the Meadow, the Electric lane the Power Plant, the
+Poison lane the Cave.
 
 A species that appears in two biomes is the same species with different flavour text, not a variant.
 
@@ -511,12 +546,12 @@ Elites (§2.8) and Gyms (§5.8).
 | **Hiker** | Slow, durable, Defence-stacking; punishes a damage race | R1, R2 |
 | **Swimmer** | Water, status-heavy | R1 (river), R2 |
 | **Engineer** | Buff-stall: sets up, then strikes | R2, R3 |
-| **Hex Maniac** | Vision disruption — generates Unknown intents | R2, R3 |
+| **Hex Maniac** | Vision disruption — generates Unknown intents | R3 (with its Ghosts; its Region 2 row waits for them) |
 | **Rocket Grunt** | Aggressive Cleave and Backstrike kits, Poison | R2, R3 |
 | **Ace Trainer** | Two high-stat Pokémon, multi-type | R3 |
 
-Rosters, levels and rewards for all 21: [`catalogs/trainers.md`](catalogs/trainers.md). Each archetype has two
-Region-1 variants so a Region with four trainer nodes never repeats a team.
+Rosters, levels and rewards: [`catalogs/trainers.md`](catalogs/trainers.md). Each archetype has two variants per
+Region so a Region with four trainer nodes never repeats a team.
 
 ## §2.7.2 Rewards
 
@@ -539,7 +574,7 @@ same list, so a preview can never turn out to have been a guess (Pillar 1).
 
 **Authoring rules.** A trainer's level band is **its layer's** wild band +1 to +2 (§2.6.5) — a step up from a wild fight,
 not a boss. The archetype must be readable from the team at a glance, because the node preview names it and the
-player counter-picks their Active 3 from it. No hidden intents at baseline. **From Region 2 on, every enemy
+player counter-picks their Active 3 from it. No hidden intents at baseline. **From Region 2 on, every trainer's Pokémon
 fields the form its level warrants** — it walks its line's `evolveLevel`s, the thresholds the player's own team
 evolves on (§6.2.4) — and the map's preview names that form, so the node never promises a Geodude and fields a
 Golem. Region 1 is authored as it stands. And no trainer fields a fully-evolved
@@ -752,12 +787,14 @@ the rest. The ladder is rolled on arrival, so the next rival is always on screen
 | | Rung 1 | Each later rung | Team | Measured: rung 1 · rung 2 · ladder (runs) |
 |---|---|---|---|---|
 | **Pallet Town** | Gym ace **+7** (Lv 26) | **+3** | 3 | 0.64 · — · **0.17** (70) |
-| **Celadon City** | Gym ace **+16** (Lv 42) | **+4** | 4 | 0.47 · 0.17 · **0.04** (47) |
+| **Celadon City** | Gym ace **+10** (Lv 36) | **+2** | 3 | 0.60 · 0.22 · **0.03** (89) |
 
 The offsets are per City because the teams that reach Celadon are not the teams that reach Pallet, and they
 were set by the balance harness (`playRing`: a Center heal, the healthiest three, every rung climbed), not by
-hand — the canon starting values (+2, +3 a rung) let a Pallet team clear 63 % of ladders. **Attrition, not the
-step, is what makes the ladder lost**: with no healing between rungs, the second fight is played on what the
+hand — the canon starting values (+2, +3 a rung) let a Pallet team clear 63 % of ladders. Celadon was retuned in
+v0.7.3, when its rivals became Region 2's rosters — final forms, where Region 1's had been evolved up — and the
+first tuning (+16, +4, rivals of four) dropped rung 1 to a quarter; **the size of the rival's team moved it far
+more than any level did.** **Attrition, not the step, is what makes the ladder lost**: with no healing between rungs, the second fight is played on what the
 first one left. `src/sim/balance/ring.test.ts` holds the bands (Pallet rung 1 0.35–0.85, ladder 0.02–0.35;
 Celadon rung 1 0.2–0.8, ladder under 0.25) at the harness's sample size. *(The user asked for it harder than a
 Gym and for the balance to be set to a low win rate, 2026-09-22. Tuned 2026-09-23.)* The fee, the prizes and
@@ -1081,8 +1118,9 @@ town in the franchise, four doors and a laboratory it has not opened yet (§2.11
 
 ## §2.13.2 Region 2 — Coastal Cliffs 🌊
 Sea primary; River and Power Plant secondary. Cool blues, weathered greys, deep purples — dynamic and dramatic.
-Waves, gulls, orchestral strings; a tense building combat motif. Enemies are Water, Electric and sea-variant
-Bug. Gym pool: Fire, Grass, Electric, Poison. City after it: **Celadon City** — the largest city of Gen I, a
+Waves, gulls, orchestral strings; a tense building combat motif. Enemies are Water, Electric, Ice and Poison,
+with Fire and Grass in the Gym lanes. Its route plate is a cliff-top path between the sea and a power plant
+(`public/art/map/region-2.png`). Gym pool: Fire, Grass, Electric, Poison. City after it: **Celadon City** — the largest city of Gen I, a
 department store several floors tall and a Game Corner with something underneath it (§2.11). *(Was "Vermilion
 Harbor" until 2026-09-22; the brief asked for the biggest city in the game, and Celadon carries the two
 buildings the City is built around.)*
@@ -1090,7 +1128,9 @@ buildings the City is built around.)*
 ## §2.13.3 Region 3 — Volcanic Highlands 🔥
 Volcano primary; Cave, Sky and Abandoned Tower secondary. Reds, oranges, blacks, purples — saturated and
 intense, but never grim (Pillar 5). Heavy percussion, brass, tremolo strings. Enemies are Fire, Rock, Psychic
-and Ghost. Gym pool: Psychic, Ground, Fighting, Ice. No City — Region 3 ends in Victory Road.
+and Ghost. Gym pool: Psychic, Ground, Fighting, Ice. No City — Region 3 ends in Victory Road. **Until v0.7.4 it is
+Region 1's tables sixteen levels up**, on Region 1's plate, and the map calls it "Region 3" rather than a place it
+does not yet look like.
 
 ---
 

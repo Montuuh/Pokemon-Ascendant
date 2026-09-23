@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { activeMoves, knownMoves, BIOMES, ELITE_WILD, GYMS, TRAINER_SPRITES, GYM } from '@/sim';
+import { activeMoves, knownMoves, BIOMES, ELITE_WILD, GYMS, REGIONS, TRAINER_SPRITES, GYM } from '@/sim';
 import { existsSync } from 'node:fs';
 import { buildRegistry } from './registry';
 import { boxIconUrl, portraitUrl, battleSpriteUrl } from './schemas/species';
@@ -35,12 +35,17 @@ describe('content registry', () => {
     // Every backdrop the run can name, not just the default Gym's. §2.5 gives each biome and each of the
     // four Gyms its own place, so a stage key that ships without a file is a black screen behind a real
     // fight — and it would only ever show up on the one seed that drew that Gym.
-    for (const stage of [GYM.stage, ...GYMS.map((g) => g.stage), ...Object.values(BIOMES).map((b) => b.stage), ELITE_WILD.stage]) {
+    const everyRegion = REGIONS.flatMap((r) => [r.trunkStage, r.eliteWild.stage, ...r.gyms.map((g) => g.stage), ...Object.values(r.biomes).map((b) => b!.stage)]);
+    for (const stage of [GYM.stage, ...GYMS.map((g) => g.stage), ...Object.values(BIOMES).map((b) => b!.stage), ELITE_WILD.stage, ...everyRegion]) {
       expect(existsSync(`public/art/stages/${stage}.jpg`), `stage ${stage}`).toBe(true);
     }
     expect(existsSync('public/art/map/region-1.png'), 'region 1 route plate').toBe(true);
+    expect(existsSync('public/art/map/region-2.png'), 'region 2 route plate').toBe(true);
     expect(existsSync('public/art/ui/menu-vista.png'), 'main menu vista').toBe(true);
-    for (const icon of ['node-wild', 'node-trainer', 'node-aid', 'node-merchant', 'node-gym', 'node-trainer-bug-catcher', 'node-trainer-youngster', 'node-trainer-lass', 'node-trainer-hiker']) {
+    // Every archetype a Region fields and every Gym type it can draw has its own badge on the map (§2.5).
+    const archetypes = REGIONS.flatMap((r) => r.trainers.map((t) => `node-trainer-${t.archetype}`));
+    const gymTypes = REGIONS.flatMap((r) => r.gyms.map((g) => `node-gym-${g.type}`));
+    for (const icon of [...new Set(['node-wild', 'node-trainer', 'node-aid', 'node-merchant', 'node-gym', ...archetypes, ...gymTypes])]) {
       expect(existsSync(`public/art/icons/map/${icon}.png`), `map node badge ${icon}`).toBe(true);
     }
   });

@@ -39,7 +39,12 @@
   (Cleave, cd1). The wall is the phase.
 - P3 (≤20 %): cooldowns reset, `stone-edge` (always-crit) fires uncapped, Sturdy survives one lethal hit.
 
-## 2. Region 2 pool — Fire · Grass · Electric · Poison 🔒 v0.7
+## 2. Region 2 pool — Fire · Grass · Electric · Poison ✅ v0.7.3
+
+> The levels below are the catalogue's; the fight's come from the band (§5.9.3's +4 / +6 on Region 2's 12–20
+> route), so every Region 2 Gym fields slot 1 at Lv 24 and its ace at Lv 26. Slot 1 is the line's young one on
+> purpose — Growlithe, Weepinbell, Voltorb, Koffing — which is why a Gym, alone of Region 2's rosters, is not
+> walked through its evolutions (§2.7.3). Stages: volcano, forest, power-plant, dark-city.
 
 | id | Leader | Type | Slot 1 | Ace | Phase-2 archetype | Badge |
 |---|---|---|---|---|---|---|

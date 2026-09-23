@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
+import { AID_HEAL_PCT, regionContent, regionName, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
@@ -292,7 +292,11 @@ const capitalise = (line: string) => line.charAt(0).toUpperCase() + line.slice(1
 
 /** §2.2 — the Region you are in, beside its name on the map. */
 export function regionTip(regionIndex: number, greaterThreats: boolean): ReactNode {
-  return <Tip title={`Region ${regionIndex + 1}`} body={capitalise(regionAccent(regionIndex, greaterThreats))} footer={regionIndex >= STATUS_ACCENT_FROM ? 'Enemies here also field the forms their levels warrant.' : undefined} />;
+  // §2.6.1 — the biomes it is made of, primary first: what the wild nodes here will offer.
+  const region = regionContent(regionIndex);
+  const biomes = [...region.biomeWeights].sort((x, y) => y.weight - x.weight).map((b) => region.biomes[b.biome]?.name ?? b.biome);
+  const name = regionName(regionIndex);
+  return <Tip title={name ? `Region ${regionIndex + 1} — ${name}` : `Region ${regionIndex + 1}`} meta={biomes} body={capitalise(regionAccent(regionIndex, greaterThreats))} footer={regionIndex >= STATUS_ACCENT_FROM ? 'Enemies here also field the forms their levels warrant.' : undefined} />;
 }
 
 /** §2.11.0 — the town itself: how a lobby works, and what waits past its gate. */

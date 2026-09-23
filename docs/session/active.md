@@ -1,27 +1,28 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-09-23 · **Version:** v0.7.2 shipped (*The city*).
-**Sprint goal next:** v0.7.3 — *Region 2, Coastal Cliffs*: biomes `sea` + `power-plant`, ~10 authored lines,
-trainer rosters, the four R2 Gyms and Badges; then re-measure the §2.2.1 curve on the real roster.
+**Date:** 2026-09-23 · **Version:** v0.7.3 shipped (*Region 2, Coastal Cliffs*).
+**Sprint goal next:** v0.7.4 — *Region 3, Volcanic Highlands*: biomes `volcano` `cave` `sky` `tower`, ~10 lines,
+the four R3 Gyms and Badges (Psychic, Ground, Fighting, Ice), a route plate; retire Region 3's +16 placeholder.
 
-**v0.7.2:** Celadon is the bigger City — Department Store as five floor tabs (21 slots, a re-roll restocks one
-floor), a Dojo teaching every reached stage (`tutorListFor`), the Game Corner (Wheel + Slots, tables printed,
-outcome rolled first on `CasinoRNG`). The Challenge Ring behind both Dojos (`RING`, `rollRing`/`resolveRing`,
-`RingScreen`, `RingPrizeScreen`): Elite-class rivals at evolved forms, no heal between rungs, cash out or climb,
-no XP. Tuned per City by `playRing` (Pallet +7/+3, 3 mons; Celadon +16/+4, 4 mons); `ring.test` holds the bands.
-Top prize tops up from the rarity below when the account has < 3 Rares open (`rarePickOpen` keeps the label honest).
-Save version 9. Dev hooks: `run.city(0|1)`, `run.jump(kind)`, `run.afflict(kind)`, `run.heal()`.
+**v0.7.3:** every Region is a `RegionContent` (`REGIONS`, `regionContent`, `regionName` in `run/region.ts`).
+Region 2 has its own biomes (Sea 5 · Power Plant 3 · River 2 · Cave 2 · Meadow 1), 12 rosters (lanes: Fire →
+Youngster, Grass → Lass, Electric → Engineer, Poison → Rocket Grunt), Karate King Elite, Lapras Elite Wild (scripted
+kit), Blaine/Erika/Surge/Koga with four live Badges (`items.ts`). 26 species / 34 moves via
+`scripts/add-v073-content.mjs` (catalogue rows won over first drafts). A recruit past its threshold evolves at the
+catch (§6.3.1). Pikachu sold, starts with a Light Ball. Trainer nodes carry `rosterId`. R1 pools widened. Region 3
+= Region 1 at +16, unnamed on the map. Celadon Ring retuned (+10/+2, rivals of 3).
 
-**Difficulty curve** (v0.7.1 pass): R2|R1 ~60 %, R3|R2 ~50 %, full ~17 % (§2.2.1). **Re-measure when R2/R3 get
-real rosters (v0.7.3/4)** — the stat tier and the Ring offsets were tuned on Region 1 species evolved up.
+**Measured:** the curve on the real roster (720 runs) 59 % · 45 % · 15 %, tier unchanged. Region 2 plays
+differently: 76 % new species, 26 % Electric/Ice (R1 0 %), ~17 % of fights send a status home (R1 ~8 %).
 
 **Findings to act on:**
+- Map captions on locked nodes are under 4.5:1 (pre-existing, task filed). Region 2 Mastery lines: v0.7.5.
 - Not built from §2.11: the Center's Daycare and PC Box services, scored shop curation (§2.11.2.1).
 - Still doors in development: Safari, Black Market, the Dojo's extra-moves counter (§2.11.6).
-- The v1.2 map revamp should rebuild the towns from tilesets; the door boxes are measured off the PNGs.
 
-**Test status:** `npm run check` green — 450 Vitest, typecheck, lint, § (369) and catalogue guards. 70/70 e2e.
-**UI review loop:** after every `src/ui`/`src/app` change run the `ui-review` skill.
+**Test status:** `npm run check` green — 468 Vitest, typecheck, lint, § and catalogue guards.
+**UI review loop:** after every `src/ui`/`src/app` change run the `ui-review` skill. The audit's D8 now also
+reports *spills* (content escaping its card without scrolling the page) at 1080p and 720p — `--all` is clean.
 
 ## Standing facts
 

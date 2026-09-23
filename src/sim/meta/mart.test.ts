@@ -95,9 +95,11 @@ describe('Buying — §8.3.4', () => {
     expect(buy(soul, { kind: 'starter', id: 'eevee' }, content)).toEqual({ error: 'owned' });
   });
 
-  it('PikachuIsPricedAndNotSold_UntilItsKitShips_§8.5.2', () => {
+  it('Pikachu_IsSold_NowItsKitShips_§8.5.2', () => {
+    // v0.7.3 — the kit shipped with Region 2, so the shelf that priced it since v0.6 sells it now.
     expect(martPrice({ kind: 'starter', id: 'pikachu' }, content)).toBe(6);
-    expect(buy(at(3, 20), { kind: 'starter', id: 'pikachu' }, content)).toEqual({ error: 'pending' });
+    const bought = buy(at(3, 20), { kind: 'starter', id: 'pikachu' }, content);
+    expect('state' in bought && bought.state.starters).toContain('pikachu');
   });
 
   it('TheMartDoesNotSellWhatItDoesNotKnow', () => {

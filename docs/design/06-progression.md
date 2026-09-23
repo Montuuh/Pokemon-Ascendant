@@ -110,6 +110,9 @@ contributes, and it is the primary creative expression inside a run (Pillar 4).
   learnset ends below its threshold, so holding one back is a dead end rather than a tactic. What is
   player-initiated is the **branch** — and that choice is permanent, so the screen confirms it.
 - The Victory Road Training Grounds can force an early evolution (§2.12.3).
+- **A recruit caught past its threshold owes its screen straight away**, queued with the catch. Region 2's
+  recruits arrive at Lv 12–20 and every basic evolves at 12, so the catch is where a Region 2 Pokémon chooses its
+  branch — the same beat as levelling into it, one fight earlier. *(v0.7.3.)*
 
 > *Changed 2026-09-19 (v0.3).* This section used to say evolution was player-initiated and that delaying it was
 > a legitimate tactic, which contradicted §6.2.2. §6.2.2 is right and this now matches it: the level-up

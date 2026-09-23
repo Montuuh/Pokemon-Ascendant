@@ -33,6 +33,12 @@ Each Wild Area node offers **3 species, visible before entering**: 2 Common + 1 
 | `river` | `magikarp` `poliwag` | `psyduck` `krabby` | `lapras` |
 | `sea` | `tentacool*` `shellder*` `horsea*` | `staryu*` `seel*` | `dratini*` |
 | `power-plant` | `voltorb*` `magnemite*` | `pikachu*` `electabuzz*` | `zapdos*` 🔒 |
+
+> **As built (v0.7.3).** Region 1 is the rows above without the unbuilt lines: the Meadow drops Mankey, and the
+> Cave's Rare is `lapras` alone until Aerodactyl ships. Region 2's five pools
+> are §2.6.3's table: the Sea as above with `lapras` for the unbuilt `dratini`; the Power Plant with
+> `electabuzz` as its Rare while Zapdos is locked; and Region 2's own River, Cave and Meadow, which reuse Region 1
+> species at Region 2's band. Weights: Sea 5 · Power Plant 3 · River 2 · Cave 2 · Meadow 1.
 | `volcano` | `vulpix*` `growlithe*` | `magmar*` `ponyta*` | `moltres*` 🔒 |
 | `sky` | `spearow*` `pidgey` | `doduo*` `farfetchd*` | `articuno*` 🔒 |
 | `tower` | `gastly*` | `haunter*` `drowzee*` | `cubone*` `mr-mime*` |

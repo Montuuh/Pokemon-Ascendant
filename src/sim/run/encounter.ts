@@ -2,7 +2,7 @@ import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { activeMoves } from '../combat/stats';
 import type { BiomeId } from './region';
-import { BIOMES, ELITE, ELITE_WILD, GYM, LANE_THEME, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, TRAINERS, eliteWildTeamFor, gymById, gymTeamFor, statTierFor } from './region';
+import { ALL_TRAINERS, GYM, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
 import { hasModifier, modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
 import { isThreeStageLine } from '../meta/bond';
@@ -21,10 +21,11 @@ const BALL_ITEM = 'poke-ball';
  * layers deep into a cave lane — the one place the theming had to hold, undone by a default.
  */
 function stageFor(node: MapNode, run: RunState): string {
-  if (node.lane === undefined) return BIOMES.meadow.stage;
+  const region = regionContent(run.regionIndex);
+  if (node.lane === undefined) return region.trunkStage;
   const gymId = run.map.gyms[node.lane];
-  if (!gymId) return BIOMES.meadow.stage;
-  return BIOMES[LANE_THEME[gymById(gymId).type]!.biome].stage;
+  const theme = gymId ? region.laneThemes[gymById(gymId).type] : undefined;
+  return (theme && region.biomes[theme.biome]?.stage) ?? region.trunkStage;
 }
 
 // Turning a map node into a fight (§2.6–§2.8, §5.9). Everything the combat sim needs comes from here, so the
@@ -91,8 +92,10 @@ export function buildWildScenario(node: MapNode, run: RunState, content: Content
   // The node drew its biome when the map generated and wrote it into the badge (§2.5); going back to the
   // species for it gets a shared one wrong — Psyduck is in both the Meadow and the River pool, and the
   // lookup would answer Meadow for a Psyduck standing in the River lane.
-  const drawn = BIOMES[(node.preview.icon ?? '').replace('wild-', '') as BiomeId];
-  const biome = drawn ?? Object.values(BIOMES).find((b) => b.common.includes(speciesId) || b.uncommon.includes(speciesId) || b.rare.includes(speciesId));
+  const region = regionContent(run.regionIndex);
+  const drawn = region.biomes[(node.preview.icon ?? '').replace('wild-', '') as BiomeId];
+  const pools = REGIONS.flatMap((r) => Object.values(r.biomes)).filter((b): b is NonNullable<typeof b> => !!b);
+  const biome = drawn ?? pools.find((b) => b.common.includes(speciesId) || b.uncommon.includes(speciesId) || b.rare.includes(speciesId));
   return {
     id: `run-${node.id}`,
     name: `Wild ${content.species(speciesId).name}`,
@@ -116,7 +119,10 @@ export function buildWildScenario(node: MapNode, run: RunState, content: Content
 
 /** §2.7 — a trainer fight. The roster is fixed by the preview, so what you saw is what you get. */
 export function buildTrainerScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng): ScenarioDef {
-  const roster = TRAINERS.find((t) => t.name === node.preview.title) ?? TRAINERS[0]!;
+  const region = regionContent(run.regionIndex);
+  // By id; a save from before v0.7.3 has no id on its preview, and only then does the title stand in.
+  const roster = ALL_TRAINERS.find((t) => t.id === node.preview.rosterId)
+    ?? region.trainers.find((t) => t.name === node.preview.title) ?? ALL_TRAINERS.find((t) => t.name === node.preview.title) ?? region.trainers[0]!;
   // The node fixed its roster when the map was generated (§2.7.1), so what you saw is what you get.
   const team = node.preview.enemies ?? roster.team;
   return {
@@ -145,16 +151,16 @@ export function buildTrainerScenario(node: MapNode, run: RunState, content: Cont
  * the only fight before the Gym where a phase transition happens at all.
  */
 export function buildEliteScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng): ScenarioDef {
-  const team = node.preview.enemies ?? ELITE.team;
-  const phases = new Map(ELITE.team.map((m) => [m.species, m.phaseCount]));
+  const elite = regionContent(run.regionIndex).elite;
+  const team = node.preview.enemies ?? elite.team;
   return {
     id: `run-${node.id}`,
-    name: ELITE.name,
-    description: ELITE.line,
+    name: elite.name,
+    description: elite.line,
     kind: 'elite',
     stage: stageFor(node, run),
     seed: rng.cursor,
-    trainer: { name: ELITE.name, sprite: ELITE.sprite },
+    trainer: { name: elite.name, sprite: elite.sprite },
     player: {
       team: activeSetups(run, content),
       leadIndex: 0,
@@ -164,7 +170,8 @@ export function buildEliteScenario(node: MapNode, run: RunState, content: Conten
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
-    enemies: team.map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: phases.get(m.species) ?? 2 })),
+    // By slot, not by species: a later Region's preview may have evolved the species the row names.
+    enemies: team.map((m, i): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: elite.team[i]?.phaseCount ?? 2 })),
   };
 }
 
@@ -176,14 +183,15 @@ export function buildEliteScenario(node: MapNode, run: RunState, content: Conten
  * `tier`, which is what gives it the HP and the phases.
  */
 export function buildEliteWildScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng): ScenarioDef {
-  const team = node.preview.enemies ?? eliteWildTeamFor(node.layer);
+  const region = regionContent(run.regionIndex);
+  const team = node.preview.enemies ?? eliteWildTeamFor(node.layer, region.eliteWild, region.wildBand);
   const mon = team[0]!;
   return {
     id: `run-${node.id}`,
     name: `Wild ${content.species(mon.species).name}`,
-    description: ELITE_WILD.line,
+    description: region.eliteWild.line,
     kind: 'wild',
-    stage: ELITE_WILD.stage,
+    stage: region.eliteWild.stage,
     seed: rng.cursor,
     player: {
       team: activeSetups(run, content),
@@ -194,7 +202,7 @@ export function buildEliteWildScenario(node: MapNode, run: RunState, content: Co
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
-    enemies: [{ species: mon.species, level: mon.level, tier: 'boss', phaseCount: ELITE_WILD.phaseCount }],
+    enemies: [{ species: mon.species, level: mon.level, tier: 'boss', phaseCount: region.eliteWild.phaseCount, ...(region.eliteWild.moves ? { moves: [...region.eliteWild.moves] } : {}) }],
   };
 }
 

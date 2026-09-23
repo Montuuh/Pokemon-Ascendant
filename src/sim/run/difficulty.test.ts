@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import {
-  createRun, defaultRunCtx, evolvedAt, levelXpFactor, runReducer, statTierFor, DEFAULT_PROGRESSION,
+  activeMoves, createRun, defaultRunCtx, evolvedAt, levelXpFactor, runReducer, statTierFor, DEFAULT_PROGRESSION,
   REGION_STAT_TIER, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_MOVES,
   type RunAction, type RunState,
 } from '@/sim';
@@ -51,8 +51,14 @@ describe('Enemies at the forms their levels warrant — §2.7.3', () => {
     expect(r1Species.some((id) => evolvedAt(id, 30, content) !== id), 'Region 1 fields basic forms').toBe(true);
     // Region 2's rosters are already at their forms, and the preview names what the fight will field.
     for (const n of Object.values(r2.map.nodes)) {
-      for (const e of n.preview.enemies ?? []) expect(evolvedAt(e.species, e.level, content), `${n.id} ${e.species}@${e.level}`).toBe(e.species);
-      if (n.kind === 'wild') for (const id of n.preview.speciesIds) expect(evolvedAt(id, n.preview.levelBand[0], content), `${n.id} ${id}`).toBe(id);
+      for (const e of n.preview.enemies ?? []) {
+        // A Gym's slot 1 is the line's young one on purpose (catalogs/gyms.md §2); every other roster is walked.
+        if (n.kind === 'gym') continue;
+        expect(evolvedAt(e.species, e.level, content), `${n.id} ${e.species}@${e.level}`).toBe(e.species);
+      }
+      // …while its Wild nodes offer the base forms, which evolve after the catch (species-r1.md §0: "where the
+      // base form spawns").
+      if (n.kind === 'wild') for (const id of n.preview.speciesIds) expect(content.species(id).stage, `${n.id} ${id}`).toBe('basic');
     }
   });
 
@@ -73,10 +79,13 @@ describe('The status accent — §2.2', () => {
   it('FromRegionTwo_EveryEnemyCarriesAStatusMove', () => {
     for (const regionIndex of [1, 2]) {
       for (const e of firstFight(regionIndex).enemies) {
-        expect(e.moves?.some(isStatusMove), `${e.species} in Region ${regionIndex + 1}`).toBe(true);
+        // An enemy whose own kit already carries one keeps its kit untouched (§2.2: "unless its kit already has one").
+        const kit = e.moves ?? activeMoves(content, e.species, e.level);
+        expect(kit.some(isStatusMove), `${e.species} in Region ${regionIndex + 1}`).toBe(true);
+        if (!e.moves) continue;
         const type = content.species(e.species).types[0]!;
-        const kitHadOne = e.moves!.slice(0, -1).some(isStatusMove);
-        if (!kitHadOne) expect(e.moves!.at(-1)).toBe(STATUS_ACCENT_MOVES[type] ?? STATUS_ACCENT_FALLBACK);
+        const kitHadOne = e.moves.slice(0, -1).some(isStatusMove);
+        if (!kitHadOne) expect(e.moves.at(-1)).toBe(STATUS_ACCENT_MOVES[type] ?? STATUS_ACCENT_FALLBACK);
       }
     }
   });

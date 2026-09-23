@@ -78,6 +78,8 @@ export function itemAttackMultiplier(
       if (p.belowHp && attacker.hp / attacker.maxHp >= num(p.belowHp, 0)) continue;
       if (p.atFullHp && attacker.hp < attacker.maxHp) continue;
       if (p.leadOnly && state.player.team[state.player.leadIndex]?.uid !== attacker.uid) continue;
+      // §5.10.2 Volcano Badge — the heavy cards only, by what the card is printed at, not what it cost today.
+      if (p.minApCost && move.apCost < num(p.minApCost, 0)) continue;
       // §7.3.7 Type Mastery — a further term on top of the type roll, not a replacement for it.
       if (p.superEffective && (opts.typeMultiplier ?? 1) <= 1) continue;
       // §7.3.7 Evolution's Edge — the reward for having committed to a branch (Pillar 4).
@@ -107,7 +109,9 @@ export function itemAttackMultiplier(
     const p = own.params ?? {};
     const typeOk = !p.type || p.type === move.type;
     const rangeOk = !p.range || p.range === move.range;
-    if (typeOk && rangeOk) m *= num(p.multiplier, 1);
+    // §8.5.3 Light Ball — Pikachu only. A Raichu still holding it has evolved out of the bonus (Pillar 4's price).
+    const speciesOk = !own.speciesLock || own.speciesLock === attacker.speciesId;
+    if (typeOk && rangeOk && speciesOk) m *= num(p.multiplier, 1);
   }
   if (own && own.hook === 'choice-lock' && own.params?.range === move.range) m *= num(own.params.multiplier, 1);
 
@@ -253,6 +257,13 @@ export function itemApDelta(state: CombatState, owner: Combatant, move: MoveDef,
   for (const relic of relicsOf(state, content)) {
     if (relic.hook !== 'ap-cost') continue;
     const p = relic.params ?? {};
+    // §5.10.2 Thunder Badge — the first move of a range each turn is cheaper; the rest cost what they cost.
+    if (p.firstOfRange) {
+      if (move.range !== p.firstOfRange) continue;
+      if (played.some((x) => content.move(x.moveId).range === p.firstOfRange)) continue;
+      delta += num(p.delta, 0);
+      continue;
+    }
     if (p.range) {
       const priorOfRange = played.filter((x) => content.move(x.moveId).range === p.range).length;
       if (move.range !== p.range) continue;
@@ -297,6 +308,8 @@ export function itemDrawBonus(state: CombatState, turn: number, content: Content
     // A draw that fires on an event of its own is not a turn-start draw. Without this the Cascade Badge
     // would pay out once per swap *and* once per turn, which is twice what §5.10.1 promises.
     if (p.onManualSwap) continue;
+    // §5.10.2 Marsh Badge — it draws when a status lands, not at the top of the turn.
+    if (p.onStatusApplied) continue;
     // Lucky Draw draws from the consumable pile, not the skill deck; it is counted by its own query.
     if (p.consumables) continue;
     if (p.turn !== undefined && p.turn !== turn) continue;
@@ -304,6 +317,29 @@ export function itemDrawBonus(state: CombatState, turn: number, content: Content
     extra += num(p.cards, 0);
   }
   return extra;
+}
+
+/** §5.10.2 Marsh Badge — cards drawn the moment one of your moves puts a status on an enemy. */
+export function statusApplyDrawBonus(state: CombatState, content: ContentRegistry): number {
+  let cards = 0;
+  for (const src of relicsOf(state, content)) if (src.hook === 'draw' && src.params?.onStatusApplied) cards += num(src.params.cards, 0);
+  return cards;
+}
+
+/**
+ * §5.10.2 Rainbow Badge — at turn start, a Lead carrying a status condition gets a little back. It is the
+ * Region 2 Badge that answers Region 2's accent (§2.2): the statuses the route leaves on you pay you instead.
+ */
+export function itemTurnStartLeadHeal(state: CombatState, content: ContentRegistry): number {
+  const leadMon = state.player.team[state.player.leadIndex];
+  if (!leadMon || leadMon.hp <= 0) return 0;
+  let amount = 0;
+  for (const src of relicsOf(state, content)) {
+    if (src.hook !== 'turn-end-heal' || !src.params?.atTurnStart) continue;
+    if (src.params.whileStatused && !leadMon.status) continue;
+    amount += num(src.params.amount, 0);
+  }
+  return amount;
 }
 
 /** §2.11.3 Lucky Draw — extra consumable cards on a given turn. A different pile from the skill deck. */

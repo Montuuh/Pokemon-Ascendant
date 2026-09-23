@@ -58,7 +58,8 @@ export interface FightTrace {
   layer: number;
   kind: MapNode['kind'];
   enemies: { species: string; level: number }[];
-  team: { species: string; level: number; hpBefore: number; hpAfter: number; max: number }[];
+  /** `status` is what the Pokémon walked out of the fight carrying (§4.2.7.1), for the accent measure (§2.2). */
+  team: { species: string; level: number; hpBefore: number; hpAfter: number; max: number; status: string | null }[];
   turns: number;
   outcome: string;
 }
@@ -466,7 +467,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
         enemies: scenario.enemies.map((e) => ({ species: e.species, level: e.level })),
         team: before.map((b) => {
           const m = run.box.find((x) => x.uid === b.uid);
-          return { species: m?.speciesId ?? '?', level: m?.level ?? 0, hpBefore: b.hp, hpAfter: m?.hp ?? 0, max: m ? maxHpOf(m, ctx.content) : 0 };
+          return { species: m?.speciesId ?? '?', level: m?.level ?? 0, hpBefore: b.hp, hpAfter: m?.hp ?? 0, max: m ? maxHpOf(m, ctx.content) : 0, status: m?.status?.kind ?? null };
         }),
         turns: combat.turns,
         outcome: String(run.outcome),

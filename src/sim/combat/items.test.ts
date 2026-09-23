@@ -182,7 +182,8 @@ describe('Held items — §7.4', () => {
     for (const i of content.allHeldItems().filter((x) => x.hook === 'none')) {
       expect(i.pending, `${i.id} is inert but does not say why`).toBeTruthy();
     }
-    expect(content.allHeldItems()).toHaveLength(19);
+    // v0.7.3 added Pikachu's Light Ball (§8.5.3).
+    expect(content.allHeldItems()).toHaveLength(20);
   });
 
   it('AnItemLockedToASpeciesTheGameCannotProduce_NeverReachesAPlayer_§7.4.2', () => {

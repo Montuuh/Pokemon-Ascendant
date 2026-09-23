@@ -50,8 +50,13 @@ Pokémon.
   (full heal + 1-of-3 Legendary + League preview).
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 multi-enemy + field effects. The
-  numeric half (§2.2.1): enemies at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×2.3, HP
+  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×2.3, HP
   ×1 / ×1 / ×1.15), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
+- **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
+  Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
+  Elite, the Lapras Elite Wild and the Fire · Grass · Electric · Poison Gyms with their Badges. 76 % of what it
+  fields is new, a quarter Electric or Ice. A Region 2 basic evolves after its catch. Region 3 is Region 1 at +16
+  until v0.7.4. *(2026-09-23.)*
 
 **Box & Active Team.** Box capacity 6 (→8). Active Team is 3, locked on node entry; only those 3 contribute
 cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.
@@ -262,7 +267,7 @@ for sale; Tokens decide what you take home. The shop (~210) outruns the income (
 Record · Kit · the line's Bond, §8.9.2, and a per-species record, §8.9.1), Trainer Card, Poké Mart (from the
 start), Daycare Lady (Lv 3), Mystery Door (post-launch).
 **Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·
-Starters Lv 3 (Magikarp 4, Eevee 6, Pikachu 6) · Hub upgrades Lv 5 (4–8) · Discoveries Lv 8 (any undiscovered
+Starters Lv 3 (Magikarp 4, Eevee 6, Pikachu 6 — sold since v0.7.3, holding a Light Ball) · Hub upgrades Lv 5 (4–8) · Discoveries Lv 8 (any undiscovered
 Tier-2, 4) · Mastery lane Lv 10 (Tier-3, 5). 7 Hub upgrades, all QoL, all sold.
 **Starters** — 3 default + 3 meta bought at the Mart; any Soulbound line (Bond 5) for free.
 **Relics** — 60 = 50 drop-pool + 10 Legendary. Meta tiers T1 20 / T2 20 event-unlocked or bought / T3 10

@@ -1,4 +1,4 @@
-# Species pool — Regions 2 and 3 (ids reserved) 🔒 v0.7
+# Species pool — Regions 2 and 3 (ids reserved)
 
 > Reserves ids, types, biomes and rarities so that R2/R3 trainers, gyms and elites in the other catalogs
 > resolve today, without authoring full kits before they are needed. Stat blocks, learnsets, archetype payloads
@@ -8,6 +8,11 @@
 > lines / ~92 species, which is the ceiling, not a commitment: trim to the ~30 that earn their keep.
 
 ## Region 2 — Coastal Cliffs (sea primary; river, power-plant secondary)
+
+> ✅ **v0.7.3 built** `tentacool` `shellder` `horsea` `staryu` `seel` `voltorb` `magnemite` `pikachu` `electabuzz`
+> `growlithe` `koffing` `hitmonchan` — full rows in [`species-r2.md`](species-r2.md) — and, from `species-r1.md`,
+> `bellsprout` and `lapras`. The rest of this table (`dratini`, `jigglypuff`, `meowth`, `ekans`, `exeggcute`) is
+> still reserved; `species-r2.md` §5 says what stands in for each.
 
 | Line | Species (dex) | Types | Biome | Rarity |
 |---|---|---|---|---|

@@ -117,6 +117,19 @@
       ]
     },
     {
+      "line": "pikachu",
+      "species": [
+        {
+          "dex": 25,
+          "id": "pikachu"
+        },
+        {
+          "dex": 26,
+          "id": "raichu"
+        }
+      ]
+    },
+    {
       "line": "zubat",
       "species": [
         {
@@ -173,6 +186,19 @@
       ]
     },
     {
+      "line": "growlithe",
+      "species": [
+        {
+          "dex": 58,
+          "id": "growlithe"
+        },
+        {
+          "dex": 59,
+          "id": "arcanine"
+        }
+      ]
+    },
+    {
       "line": "poliwag",
       "species": [
         {
@@ -203,6 +229,36 @@
       ]
     },
     {
+      "line": "bellsprout",
+      "species": [
+        {
+          "dex": 69,
+          "id": "bellsprout"
+        },
+        {
+          "dex": 70,
+          "id": "weepinbell"
+        },
+        {
+          "dex": 71,
+          "id": "victreebel"
+        }
+      ]
+    },
+    {
+      "line": "tentacool",
+      "species": [
+        {
+          "dex": 72,
+          "id": "tentacool"
+        },
+        {
+          "dex": 73,
+          "id": "tentacruel"
+        }
+      ]
+    },
+    {
       "line": "geodude",
       "species": [
         {
@@ -216,6 +272,45 @@
         {
           "dex": 76,
           "id": "golem"
+        }
+      ]
+    },
+    {
+      "line": "magnemite",
+      "species": [
+        {
+          "dex": 81,
+          "id": "magnemite"
+        },
+        {
+          "dex": 82,
+          "id": "magneton"
+        }
+      ]
+    },
+    {
+      "line": "seel",
+      "species": [
+        {
+          "dex": 86,
+          "id": "seel"
+        },
+        {
+          "dex": 87,
+          "id": "dewgong"
+        }
+      ]
+    },
+    {
+      "line": "shellder",
+      "species": [
+        {
+          "dex": 90,
+          "id": "shellder"
+        },
+        {
+          "dex": 91,
+          "id": "cloyster"
         }
       ]
     },
@@ -242,6 +337,76 @@
       ]
     },
     {
+      "line": "voltorb",
+      "species": [
+        {
+          "dex": 100,
+          "id": "voltorb"
+        },
+        {
+          "dex": 101,
+          "id": "electrode"
+        }
+      ]
+    },
+    {
+      "line": "hitmonchan",
+      "species": [
+        {
+          "dex": 107,
+          "id": "hitmonchan"
+        }
+      ]
+    },
+    {
+      "line": "koffing",
+      "species": [
+        {
+          "dex": 109,
+          "id": "koffing"
+        },
+        {
+          "dex": 110,
+          "id": "weezing"
+        }
+      ]
+    },
+    {
+      "line": "horsea",
+      "species": [
+        {
+          "dex": 116,
+          "id": "horsea"
+        },
+        {
+          "dex": 117,
+          "id": "seadra"
+        }
+      ]
+    },
+    {
+      "line": "staryu",
+      "species": [
+        {
+          "dex": 120,
+          "id": "staryu"
+        },
+        {
+          "dex": 121,
+          "id": "starmie"
+        }
+      ]
+    },
+    {
+      "line": "electabuzz",
+      "species": [
+        {
+          "dex": 125,
+          "id": "electabuzz"
+        }
+      ]
+    },
+    {
       "line": "magikarp",
       "species": [
         {
@@ -255,11 +420,11 @@
       ]
     },
     {
-      "line": "snorlax",
+      "line": "lapras",
       "species": [
         {
-          "dex": 143,
-          "id": "snorlax"
+          "dex": 131,
+          "id": "lapras"
         }
       ]
     },
@@ -281,6 +446,15 @@
         {
           "dex": 136,
           "id": "flareon"
+        }
+      ]
+    },
+    {
+      "line": "snorlax",
+      "species": [
+        {
+          "dex": 143,
+          "id": "snorlax"
         }
       ]
     }

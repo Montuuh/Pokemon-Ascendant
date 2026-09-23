@@ -47,8 +47,8 @@ test.describe('The Trainer Hub — §8.4', () => {
     // §5.13 / §8.9 — the PC Terminal opens on the Pokédex: number, silhouette, name, the line's pips; every
     // species listed, none met, no line played.
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('dex-legend')).toContainText('0 of 47 met');
-    await expect(page.getByTestId('dex-legend')).toContainText('0 of 19 lines played');
+    await expect(page.getByTestId('dex-legend')).toContainText('0 of 73 met');
+    await expect(page.getByTestId('dex-legend')).toContainText('0 of 33 lines played');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-met', 'false');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-rank', '0');
     await expect(page.getByTestId('dex-pidgey')).toContainText('#016');
@@ -117,7 +117,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('kiosk-pc').click();
     await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '5');
     await expect(page.getByTestId('dex-blastoise')).toHaveAttribute('data-rank', '5');
-    await expect(page.getByTestId('dex-legend')).toContainText('1 of 19 lines played');
+    await expect(page.getByTestId('dex-legend')).toContainText('1 of 33 lines played');
     await page.getByTestId('dex-order-bond').click();
     await expect(page.locator('[data-testid="dex-grid"] li').first()).toContainText('Squirtle');
     await page.waitForTimeout(600);
@@ -234,10 +234,11 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('mart-price-eevee').click();
     await expect(page.getByTestId('mart-notice')).toContainText('Eevee can start your next run');
     await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '2');
-    // Magikarp at four is now unaffordable, and the shelf says so without hiding it; Pikachu waits on its kit.
+    // Magikarp at four is now unaffordable, and the shelf says so without hiding it; so is Pikachu at six, whose
+    // kit shipped with Region 2 (v0.7.3) — sold, just not to a wallet of two.
     await expect(page.getByTestId('mart-price-magikarp')).toHaveAttribute('aria-label', /Not enough Tokens/);
     await expect(page.getByTestId('mart-magikarp')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-pikachu')).toContainText('Not sold yet');
+    await expect(page.getByTestId('mart-price-pikachu')).toHaveAttribute('aria-label', /Not enough Tokens/);
     await page.screenshot({ path: 'playtest/hub-mart-starters.png' });
 
     // §8.4.1 — and the Daycare Lady lists what was bought as ready, and prices what was not.

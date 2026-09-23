@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { PIDGEY, STARTERS, content, ctx, dispatch, leadOf, scenario, start, teamWithKit, tweak } from '../testing/harness';
+import { PIDGEY, STARTERS, content, ctx, dispatch, enemyOf, handCard, leadOf, scenario, start, teamWithKit, tweak, withHand } from '../testing/harness';
 import { dealDamage } from './damageFlow';
-import { itemApDelta } from './items';
-import { GYMS } from '../run/region';
+import { itemApDelta, itemAttackMultiplier } from './items';
+import { GYMS, GYMS_R2 } from '../run/region';
 
 // §5.10 — the four Region 1 Badges, each asserted against the same fight without it.
 //
@@ -141,5 +141,63 @@ describe('Badges — §5.10.1', () => {
       expect(b.description, b.id).not.toMatch(/§\d/);
       expect(b.flavour, b.id).not.toMatch(/§\d/);
     }
+  });
+});
+
+// §5.10.2 — the four Region 2 Badges (v0.7.3), each against the same fight without it.
+describe('Badges — §5.10.2', () => {
+  it('EveryRegionTwoGymAwardsARegionTwoBadge_§5.10.2', () => {
+    for (const gym of GYMS_R2) {
+      const badge = content.badge(gym.badgeId);
+      expect(badge.type, `${gym.id} awards a ${badge.type} badge`).toBe(gym.type);
+      expect(badge.region).toBe(2);
+    }
+    expect(new Set(GYMS_R2.map((g) => g.badgeId)).size, 'two Gyms share a Badge').toBe(GYMS_R2.length);
+  });
+
+  it('Volcano_PaysOnTheHeavyCardsOnly_§5.10.2', () => {
+    const state = bare({ team: teamWithKit(['hydro-pump', 'water-gun']), enemies: [PIDGEY], badges: ['volcano-badge'] });
+    const lead = leadOf(state);
+    expect(itemAttackMultiplier(state, lead, content.move('hydro-pump'), content)).toBeCloseTo(1.2);
+    expect(itemAttackMultiplier(state, lead, content.move('water-gun'), content)).toBe(1);
+  });
+
+  it('Thunder_MakesTheFirstRangedMoveCheaper_AndOnlyTheFirst_§5.10.2', () => {
+    const state = bare({ team: teamWithKit(['water-gun', 'tackle']), enemies: [PIDGEY], badges: ['thunder-badge'] });
+    const owner = leadOf(state);
+    expect(itemApDelta(state, owner, content.move('water-gun'), content)).toBe(-1);
+    // A Melee card is not what it pays for, and playing one first does not spend it.
+    expect(itemApDelta(state, owner, content.move('tackle'), content)).toBe(0);
+    const afterMelee = tweak(state, (d) => { d.player.playedThisTurn = [{ ownerUid: owner.uid, moveId: 'tackle', apCost: 1 }]; });
+    expect(itemApDelta(afterMelee, owner, content.move('water-gun'), content)).toBe(-1);
+    const afterRanged = tweak(state, (d) => { d.player.playedThisTurn = [{ ownerUid: owner.uid, moveId: 'water-gun', apCost: 0 }]; });
+    expect(itemApDelta(afterRanged, owner, content.move('water-gun'), content)).toBe(0);
+  });
+
+  it('Marsh_DrawsACardWhenYourStatusLands_§5.10.2', () => {
+    const play = (badges: string[]) => {
+      let s = withHand(bare({ team: teamWithKit(['poison-powder', 'tackle']), enemies: [PIDGEY], badges }), ['poison-powder']);
+      s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'poison-powder').id });
+      return s;
+    };
+    const withBadge = play(['marsh-badge']);
+    const without = play([]);
+    expect(enemyOf(withBadge).status?.kind).toBe('poison');
+    expect(withBadge.player.hand.length).toBe(without.player.hand.length + 1);
+    // It is not a turn-start draw: the opening hand is the same size either way.
+    const opening = (badges: string[]) => bare({ team: [...STARTERS], enemies: [PIDGEY], badges }).player.hand.length;
+    expect(opening(['marsh-badge'])).toBe(opening([]));
+  });
+
+  it('Rainbow_HealsAStatusedLeadAtTurnStart_AndNobodyElse_§5.10.2', () => {
+    const team = (status?: 'poison') => [{ species: 'squirtle', level: 12, moves: ['tackle'], hpPercent: 50, ...(status ? { status } : {}) }, STARTERS[0]!, STARTERS[2]!];
+    const opening = (badges: string[], status?: 'poison') => bare({ team: team(status), enemies: [PIDGEY], badges });
+    // Poisoned: turn 1 opens 3 HP up, and every later turn start pays again (turn 2 is 6 up).
+    expect(leadOf(opening(['rainbow-badge'], 'poison')).hp - leadOf(opening([], 'poison')).hp).toBe(3);
+    const next = (badges: string[]) => dispatch(opening(badges, 'poison'), { type: 'end-turn' });
+    expect(leadOf(next(['rainbow-badge'])).hp - leadOf(next([])).hp).toBe(6);
+    // Clean: nothing, and the bench is never the one healed.
+    expect(leadOf(opening(['rainbow-badge'])).hp).toBe(leadOf(opening([])).hp);
+    expect(opening(['rainbow-badge'], 'poison').player.team[1]!.hp).toBe(opening([], 'poison').player.team[1]!.hp);
   });
 });

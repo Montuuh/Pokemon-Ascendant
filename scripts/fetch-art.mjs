@@ -41,6 +41,8 @@ const STAGE_SOURCES = {
   'ice-cave': 'bg-icecave.jpg',
   library: 'bg-library.jpg',
   'sky-pillar': 'bg-skypillar.jpg',
+  // v0.7.3 — Region 2's Poison Gym at night in the city.
+  'dark-city': 'bg-darkcity.jpg',
 };
 const stageUrl = (file) => `https://play.pokemonshowdown.com/sprites/gen6bgs/${file}`;
 

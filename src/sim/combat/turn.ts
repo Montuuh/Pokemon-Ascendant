@@ -7,7 +7,7 @@ import { declareIntent } from './intents';
 import { aliveTeam, benchIndices, lead } from './slots';
 import type { Combatant, CombatState } from './state';
 import { abilityTurnStartAp, turnEndBenchHeal } from './abilities';
-import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, recallsDiscard, reshuffleCopies } from './items';
+import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies } from './items';
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeIntent } from './enemyTurn';
 
@@ -31,6 +31,10 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   if (leadNow && leadNow.hp > 0) p.leadTurns[leadNow.uid] = (p.leadTurns[leadNow.uid] ?? 0) + 1;
   emit(state, { t: 'turn-start', ap: p.ap });
   log(state, 'turn', `— Turn ${state.turn} —`);
+
+  // §5.10.2 Rainbow Badge — a statused Lead restores a little at the top of the turn.
+  const bloom = itemTurnStartLeadHeal(state, ctx.content);
+  if (bloom > 0 && leadNow && leadNow.hp > 0 && leadNow.hp < leadNow.maxHp) heal(state, leadNow, bloom, 'ability');
 
   // §8.6.1 Perfect Recall — once per fight, a deck about to run short takes its discard back *before* the
   // draw, so the turn is drawn from a full deck rather than a reshuffle mid-draw. It is not a reshuffle: the

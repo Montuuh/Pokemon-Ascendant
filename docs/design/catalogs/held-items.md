@@ -45,11 +45,12 @@ ability-granted aura on the same Pokémon.
 | `choice-band` | Choice Band | Melee +25 %; the wearer's Ranged moves are unplayable |
 | `choice-scarf` | Choice Scarf | The wearer's moves cost −1 AP (min 0); only one of the wearer's moves may be played per turn |
 
-## 5. Signature (1)
+## 5. Signature (2)
 
 | id | Name | Effect | Notes |
 |---|---|---|---|
 | `thick-club` | Thick Club | Marowak-only: Melee +50 % | Auto-equipped on the Marowak recruited by catching `marowak-spirit` |
+| `light-ball` | Light Ball | Pikachu-only: Electric moves +25 % | ✅ v0.7.3. A Pikachu run starts holding it (§8.5.3); a Raichu keeps it and it stops working |
 
 ## 6. Rules
 

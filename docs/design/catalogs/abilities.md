@@ -33,6 +33,7 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `on-faint-team` | any ally faints | effect payload | 🆕 v0.4 |
 | `stab-multiplier` | damage calc | `multiplier` | 🆕 v0.3 |
 | **`super-effective-reduction`** | incoming damage, type multiplier > 1 | `multiplier` (0.75) | ✅ v0.3 |
+| `conditional-reduction` | incoming damage, under a condition the wearer cannot choose | when (confused · ranged · type), `types` (a comma list, for type), `multiplier` | ✅ v0.3 (`type` v0.7.3) |
 | `crit-on-crit-taken` | the wearer is critted | — | 🆕 v0.4 |
 | `dot-immunity` | status tick | — | 🆕 v0.3 |
 | `turn-start-ap` | Draw phase | `amount`, `turn` | 🆕 v0.4 |
@@ -77,7 +78,9 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `inner-focus` | Inner Focus | Status | Cannot be Confused | `status-immunity` (confusion) | zubat | ✅ v0.3 |
 | `vital-spirit` | Vital Spirit | Status | Cannot be put to Sleep | `status-immunity` (sleep) | mankey | 🆕 |
 | `effect-spore` | Effect Spore | Status | A Melee attacker is Poisoned (30 %) | **`on-damaged`** (melee, poison, 0.30) | oddish | ✅ v0.3 |
-| `poison-point` | Poison Point | Status | A Melee attacker is Poisoned (30 %) | **`on-damaged`** (melee, poison, 0.30) | weedle | ✅ v0.3 |
+| `poison-point` | Poison Point | Status | A Melee attacker is Poisoned (30 %) | **`on-damaged`** (melee, poison, 0.30) | weedle, tentacool, koffing | ✅ v0.3 |
+| `static` | Static | Status | A Melee attacker is Paralysed (30 %) | **`on-damaged`** (melee, paralysis, 0.30) | pikachu, voltorb, magnemite, electabuzz | ✅ v0.7.3 |
+| `thick-fat` | Thick Fat | Type | Fire and Ice moves deal half damage | **`conditional-reduction`** (when: type, fire+ice, 0.5) | seel | ✅ v0.7.3 |
 | `cursed-body` | Cursed Body | Status | The attacker's move goes on cooldown 1 turn | `on-damaged`, with a cooldown payload instead of a rider | marowak-spirit | 🆕 |
 | `intimidate` | Intimidate | Positional | On entering Lead: all enemies Atk −1 | `on-enter-lead` | gyarados | ✅ v0.3 |
 | `steadfast` | Steadfast | Positional | On entering Lead: self Atk +1 | `on-enter-lead` | machop | ✅ v0.3 |

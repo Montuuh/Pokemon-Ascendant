@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
-  arriveAtCity, CASINO, CITIES, casinoExpectedValue, createRun, defaultRunCtx, deserialiseRun, evolvedAt, PRICES,
+  activeMoves, arriveAtCity, CASINO, CITIES, casinoExpectedValue, createRun, defaultRunCtx, deserialiseRun, evolvedAt, PRICES,
   floorRestockable, RING, rarePickOpen, runReducer, serialiseRun, tutorListFor, STORE_FLOORS,
   type CombatOutcomeReport, type RunAction, type RunState,
 } from '@/sim';
@@ -82,7 +82,8 @@ describe('The Challenge Ring — §2.9.4.1', () => {
       expect(e.phaseCount).toBe(RING.phaseCount);
       // Celadon is Region 2's City: its Ring fights at Region 2's tier and carries Region 2's accent.
       expect(e.attackMultiplier).toBeGreaterThan(1);
-      expect(e.moves?.length).toBeGreaterThan(0);
+      const kit = e.moves ?? activeMoves(content, e.species, e.level);
+      expect(kit.some((id) => content.move(id).power === 0 && content.move(id).effects.some((fx) => fx.kind === 'status' && !fx.self)), e.species).toBe(true);
     }
   });
 

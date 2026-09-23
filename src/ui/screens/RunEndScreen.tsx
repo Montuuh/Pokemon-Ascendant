@@ -1,7 +1,7 @@
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { GYMS, LAYERS, REGION_COUNT, maxHpOf } from '@/sim';
+import { ALL_GYMS, LAYERS, REGION_COUNT, maxHpOf } from '@/sim';
 import { nodeBadge } from '@/ui/art';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { badgeTip } from '@/ui/tips';
@@ -38,7 +38,7 @@ export function RunEndScreen({ outcome }: { outcome: 'victory' | 'defeat' }) {
   const badges = run.badges.map((id) => content.badge(id));
   // The Gym that ended it: the last Badge in the case, not the first.
   const lastBadge = run.badges[run.badges.length - 1];
-  const beaten = GYMS.find((g) => g.badgeId === lastBadge) ?? null;
+  const beaten = ALL_GYMS.find((g) => g.badgeId === lastBadge) ?? null;
   const metrics: { label: string; value: string }[] = [
     { label: 'Regions cleared', value: `${won ? run.regionIndex + 1 : run.regionIndex} / ${REGION_COUNT}` },
     { label: 'Nodes cleared', value: String(run.stats.nodesCleared) },

@@ -162,7 +162,11 @@
 | → `gloom` | `absorb` → `mega-drain` | `acid` → `sludge` | `sweet-scent` → `aromatic-mist` |
 | → `vileplume` | `mega-drain` → `giga-drain` · **+`petal-dance`** | `sludge` → `sludge-bomb` · **+`toxic`** | `moonlight` → `moonlight-plus` · **+`aromatherapy-m`** |
 
-### `bellsprout` line — Grass/Poison · 2 archetypes (Vanguard, Specialist) · 🆕 · uncommon (Leaf Stone ≥ L24)
+### `bellsprout` line — Grass/Poison · 2 archetypes (Vanguard, Specialist) · ✅ v0.7.3 · uncommon (Leaf Stone ≥ L24)
+
+> Shipped with Region 2 (the Grass Gym's slot 1, and Region 1's widened Meadow). Learnset levels are compressed
+> under each threshold, as every Region 1 line's were (§6.9): 1/1/4/7/10 · 13/16/20/23 · 27/32/38. Gluttony is not
+> authored, so the pool is Chlorophyll with Snipe as the hidden third; `leaf-storm-s` ships as its row says.
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
@@ -286,7 +290,11 @@
 
 **Growth** 3/3/2/4 (+25 %) · **Abilities** `rock-head` `pressure` `tough-claws` · **Mastery** `iron-head-a` → `supersonic-skystrike`
 
-### `lapras` — Water/Ice · single stage · 🆕 · rare (Cave lake + River)
+### `lapras` — Water/Ice · single stage · ✅ v0.7.3 · rare (Cave lake + River, and Region 2's Sea)
+
+> Shipped with Region 2 as the Sea's rare and the Elite Wild (`elites.md` §5). Growth is the row's with the
+> single-stage +25 % rounded up (5/3/4/3, Onix's convention); Hydration is not authored. `mist`'s team-wide
+> guard needs an effect kind the sim does not have, so it ships as self Def +1 (v0.3's substitute for Safeguard).
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|

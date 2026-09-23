@@ -434,11 +434,24 @@ climb, no XP), and its top prize is a relic 1-of-3 (Rare once the account has th
 0.04 — and `city.test` / `e2e/city` cover the ladder, the machines and the floors. The Black Market stays
 a door in development, as do the Safari and the Dojo's extra-moves counter.
 
-### v0.7.3 — Region 2, Coastal Cliffs  ☐
+### v0.7.3 — Region 2, Coastal Cliffs  ✅ 2026-09-23
 Biomes `sea` and `power-plant`, ~10 authored lines (kits, learnsets, branches), trainer rosters, the four R2
 Gyms and their Badges, and the accent: **status conditions on enemy intents** (§2.2). Pikachu's kit lands here
 — it is a power-plant species. Region 1's thin biome pools widen at the same time (§2.6.1).
 **Exit:** Region 2 plays differently from Region 1, not just harder.
+
+**Shipped.** Region 2 is its own Region: every Region reads a `RegionContent` table, and Region 2's has its own
+biomes (the Sea primary, the Power Plant, River, Cave and a rare Meadow), twelve trainer rosters, the Karate King
+Elite, the Lapras Elite Wild and the Fire · Grass · Electric · Poison Gyms — Blaine, Erika, Surge, Koga — with the
+Volcano, Rainbow, Thunder and Marsh Badges live in the sim. Ten new lines plus Electabuzz, Hitmonchan, Lapras and
+Bellsprout's line (26 species, 34 moves — Ice had none before), `static` and `thick-fat`, and Pikachu sold on the
+Starters shelf, starting with its Light Ball. A Region 2 basic is caught at Lv 12–20 and chooses its branch at the
+catch. Region 1's pools widened (Bellsprout, Krabby, real Rares). A generated coastal route plate, the real
+backdrops and emblems. The exit is measured, not asserted (`runBalance`): 76 % of Region 2's enemies are species
+Region 1 never fields, 26 % are Electric or Ice (Region 1: none), and 19 % of its fights send a status home
+(Region 1: 8 %). The curve held on the real roster without retuning (720 runs: 59 % · 45 % · 15 %); Celadon's
+Ring was retuned for Region 2's rivals (+10, +2, rivals of 3: 60 % · 22 % · 3 %). Region 3 stays the placeholder
+for v0.7.4, and goes unnamed on the map until then.
 
 ### v0.7.4 — Region 3, Volcanic Highlands  ☐
 Biomes `volcano`, `cave`, `sky`, `tower`, ~10 authored lines, the four R3 Gyms and Badges. Its mechanical

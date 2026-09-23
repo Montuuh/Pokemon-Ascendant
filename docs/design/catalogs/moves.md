@@ -30,7 +30,9 @@
 | v0.1 | 56 | section 1 below |
 | v0.2 | +72 | the level-gated learnsets of `species-r1.md` |
 | v0.3 | +28 | the evolution-branch payloads: every upgrade target and addition the branch tables name |
-| **Total in `moves.json`** | **156** | the rest of section 2 lands with the content its version needs |
+| v0.4–v0.7.2 | +25 | the Krabby line, Snorlax, Eevee and the Eeveelutions, the Mastery moves that shipped |
+| v0.7.3 | +34 | Region 2's kits: the rows marked v0.7.3 in section 2, plus `mist`, `sheer-cold-l`, `leaf-storm-s` (Lapras, Victreebel) |
+| **Total in `moves.json`** | **215** | the rest of section 2 lands with the content its version needs |
 
 **Ten v0.3 moves ship with their effect clause omitted**, because it needs a `MoveEffect` kind the sim does not
 have. They carry their catalogued type, role, range, modifier, AP and power, so the budget and the kit rules
@@ -115,10 +117,16 @@ payloads, so 100 of these are live. Rather than mark a hundred rows, section 0 c
 version has not come up — Mastery (v0.6), the Region 2 and 3 pools (v0.7), and the ten effect clauses listed
 in section 0.
 
-### Normal (26)
+### Normal (32)
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `take-down` | Off | Melee | — | 2 | 90 | — | recoil 25 % (v0.7.3) |
+| `extreme-speed` | Off | Melee | SF | 2 | 80 | — | — (`arcanine`, v0.7.3) |
+| `self-destruct` | Off | Melee | — | 3 | 130 | — | recoil 50 % (`voltorb`, `koffing`, v0.7.3) |
+| `explosion` | Off | Melee | — | 4 | 170 | cd2 | recoil 75 % (v0.7.3) |
+| `recover` | Def | Melee | — | 1 | — | cd2 | heal 40 % (`starmie`, v0.7.3) |
+| `tri-attack` | Off | Ranged | — | 3 | 80 | — | Burn · Paralysis · Freeze 7 % each (`magneton`, v0.7.3) |
 | `leer` | Util | Ranged | — | 0 | — | — | foe Def −1 |
 | `bite` | Off | Melee | — | 1 | 50 | — | — |
 | `crunch` | Off | Melee | — | 2 | 75 | — | foe Def −1 |
@@ -167,10 +175,11 @@ in section 0.
 | `synthesis` | Util | Melee | — | 1 | — | — | heal 40 % |
 | `petal-dance` | Off | Melee | SF | 3 | 100 | — | self Confusion after 2 turns (deterministic) |
 
-### Fire (9)
+### Fire (10)
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `fire-punch` | Off | Melee | — | 2 | 75 | — | Burn 10 % (v0.7.3) |
 | `fire-fang` | Off | Melee | SF | 1 | 50 | — | Burn 20 % |
 | `flame-wheel-r` | Off | Ranged | — | 2 | 70 | — | Burn 30 % |
 | `fire-spin` | Off | Ranged | — | 2 | 55 | — | 15 dmg/turn × 3 (trap DoT) |
@@ -181,10 +190,11 @@ in section 0.
 | `will-o-wisp-plus` | Util | Ranged | — | 1 | — | — | Burn 100 %, foe Atk −1 |
 | `flash-fire-m` | Off | Ranged | — | 2 | 80 | — | +50 % power if the user is Burned (never: Fire is immune — flavour only; do not ship) |
 
-### Water (14)
+### Water (15)
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `clamp` | Off | Melee | — | 1 | 45 | — | foe Spd −1 (`shellder`, v0.7.3) |
 | `bubble` | Off | Ranged | — | 1 | 40 | — | foe Atk −1 |
 | `bubble-beam` | Off | Ranged | — | 2 | 65 | — | foe Atk −1 |
 | `water-pulse` | Off | Ranged | — | 2 | 70 | — | Confusion 25 % |
@@ -206,18 +216,29 @@ in section 0.
 | `iron-defense` | Def | Melee | SB | 1 | — | — | self Def +2 |
 | `hydro-vortex` | Off | Ranged | — | 3 | 125 | — | Mastery Lv2/3 (`vaporeon`, `lapras`) |
 
-### Ice (3)
+### Ice (8)
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `powder-snow` | Off | Ranged | — | 1 | 40 | — | Freeze 10 % (v0.7.3) |
+| `aurora-beam` | Off | Ranged | — | 2 | 65 | — | foe Atk −1 (v0.7.3) |
+| `icicle-spear` | Off | Melee | — | 2 | 25 | — | 3 hits (`cloyster`, v0.7.3) |
+| `ice-punch` | Off | Melee | — | 2 | 75 | — | Freeze 10 % (v0.7.3) |
+| `blizzard` | Off | Ranged | — | 4 | 120 | cleave · cd1 | Freeze 20 % (v0.7.3) |
 | `ice-shard` | Off | Ranged | — | 1 | 45 | — | — |
 | `ice-beam` | Off | Ranged | — | 3 | 95 | — | Freeze 20 % |
 | `icy-wind` | Off | Ranged | — | 2 | 60 | cleave | foe Atk −1 |
 
-### Electric (6)
+### Electric (12)
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `spark` | Off | Melee | SF | 1 | 50 | — | Paralysis 20 % (v0.7.3) |
+| `charge-beam` | Off | Ranged | — | 2 | 50 | — | self Atk +1 (v0.7.3) |
+| `thunder-punch` | Off | Melee | — | 2 | 75 | — | Paralysis 10 % (v0.7.3) |
+| `discharge` | Off | Ranged | — | 3 | 80 | cleave | Paralysis 30 % (v0.7.3) |
+| `volt-tackle` | Off | Melee | SF | 3 | 110 | — | recoil 33 % (`raichu`, v0.7.3) |
+| `zap-cannon` | Off | Ranged | — | 4 | 120 | cd1 | Paralysis 100 % (`magneton`, v0.7.3) |
 | `thunder-shock` | Off | Ranged | — | 1 | 45 | — | Paralysis 20 % |
 | `thunderbolt` | Off | Ranged | — | 3 | 95 | — | Paralysis 20 % |
 | `thunder` | Off | Ranged | — | 4 | 120 | cd1 | Paralysis 40 % |
@@ -225,10 +246,12 @@ in section 0.
 | `agility` | Util | Melee | — | 0 | — | — | self Atk +1, draw 1 |
 | `gigavolt-havoc` | Off | Ranged | — | 3 | 125 | — | Mastery (`jolteon`) |
 
-### Poison (9)
+### Poison (11)
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `smog` | Off | Ranged | — | 1 | 30 | — | Poison 40 % (`koffing`, v0.7.3) |
+| `sludge-wave` | Off | Ranged | — | 3 | 90 | cleave | Poison 10 % (v0.7.3) |
 | `poison-sting` | Off | Melee | — | 1 | 40 | — | Poison 20 % |
 | `poison-sting-plus` | Off | Melee | SF | 1 | 50 | — | Poison 35 % |
 | `poison-powder` | Util | Ranged | — | 1 | — | — | Poison 100 % |
@@ -282,10 +305,12 @@ in section 0.
 | `bone-rush-max` | Off | Melee | SF | 3 | 120 | — | hits 3 times, ignores 1 Def stage (Mastery Lv2) |
 | `heavy-slam` | Off | Melee | — | 3 | 100 | — | +20 % power per 40 max-HP over the target |
 
-### Fighting (12)
+### Fighting (14)
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `mach-punch` | Off | Melee | SF | 1 | 40 | — | — (`hitmonchan`, v0.7.3) |
+| `sky-uppercut` | Off | Melee | — | 2 | 85 | — | — (`hitmonchan`, v0.7.3) |
 | `low-kick` | Off | Melee | — | 1 | 45 | — | — |
 | `karate-chop` | Off | Melee | SF | 1 | 50 | — | always-crit |
 | `seismic-toss` | Off | Melee | — | 2 | — | — | damage = the user's level × 2 (level-scaling, ignores stats) |
@@ -308,7 +333,7 @@ in section 0.
 | `circle-throw` | Off | Melee | SB | 1 | 55 | — | Mastery Lv1 (`poliwag`) |
 | `knock-off` | Off | Melee | — | 1 | 50 | — | the target's Home Field / held bonus is suppressed this combat |
 
-### Psychic / Ghost / Flying / misc (13)
+### Psychic / Ghost / Flying / misc (14)
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
@@ -332,6 +357,7 @@ in section 0.
 | `sky-drop` | Flying Off | Melee | SB | 3 | 95 | — | the target's next intent is cancelled |
 | `supersonic-skystrike` | Flying Off | Melee | SF | 3 | 130 | cd2 | Mastery (`aerodactyl`) |
 | `dragon-rage` | Dragon Off | Ranged | — | 1 | — | — | fixed 40 damage, ignores type and stats |
+| `dragon-pulse` | Dragon Off | Ranged | — | 3 | 90 | — | — (`seadra`, v0.7.3) |
 | `dragon-dance` | Util | Melee | — | 1 | — | — | self Atk +1, draw 1 (Mastery Lv2, `gyarados`) |
 | `dragon-tail` | Dragon Off | Melee | SB | 2 | 75 | — | Mastery Lv1 (`onix`) |
 | `metal-claw` | Rock Off | Melee | SF | 1 | 50 | — | self Atk +1 (Steel is not a type in the 15-type chart, so it is typed Rock) |

@@ -1669,6 +1669,166 @@
       "branches": []
     },
     {
+      "dex": 25,
+      "id": "pikachu",
+      "name": "Pikachu",
+      "types": [
+        "electric"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 35,
+        "attack": 55,
+        "defense": 40,
+        "speed": 90
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "thunder-shock"
+        },
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 4,
+          "move": "quick-attack"
+        },
+        {
+          "level": 7,
+          "move": "thunder-wave"
+        },
+        {
+          "level": 10,
+          "move": "agility"
+        }
+      ],
+      "availableAbilities": [
+        "static",
+        "run-down"
+      ],
+      "hiddenAbility": "volt-absorb",
+      "tutorMoves": [
+        "swift",
+        "surf"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "raichu"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "raichu-vanguard",
+          "archetype": "vanguard",
+          "label": "Volt Tackle",
+          "description": "The quick jab becomes a full-body charge that burns some of its own tail on the way in.",
+          "to": "raichu",
+          "upgrades": [
+            {
+              "from": "quick-attack",
+              "to": "volt-tackle"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "raichu-specialist",
+          "archetype": "specialist",
+          "label": "Storm Cheeks",
+          "description": "The shock grows into a bolt, and a thunderhead gathers behind it.",
+          "to": "raichu",
+          "upgrades": [
+            {
+              "from": "thunder-shock",
+              "to": "thunderbolt"
+            }
+          ],
+          "adds": [
+            "thunder"
+          ]
+        },
+        {
+          "id": "raichu-support",
+          "archetype": "support",
+          "label": "Static Field",
+          "description": "The growl turns charming, and a discharge crackles over everything in front of it.",
+          "to": "raichu",
+          "upgrades": [
+            {
+              "from": "growl",
+              "to": "charm"
+            }
+          ],
+          "adds": [
+            "discharge"
+          ],
+          "abilityId": "static"
+        }
+      ]
+    },
+    {
+      "dex": 26,
+      "id": "raichu",
+      "name": "Raichu",
+      "types": [
+        "electric"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 60,
+        "attack": 90,
+        "defense": 73,
+        "speed": 100
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "slam"
+        },
+        {
+          "level": 18,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 22,
+          "move": "iron-tail"
+        },
+        {
+          "level": 28,
+          "move": "thunder"
+        },
+        {
+          "level": 34,
+          "move": "volt-tackle"
+        }
+      ],
+      "availableAbilities": [
+        "static",
+        "run-down"
+      ],
+      "tutorMoves": [
+        "thunder-punch",
+        "body-slam"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
       "id": "zubat",
       "dex": 41,
       "name": "Zubat",
@@ -2361,6 +2521,152 @@
       "branches": []
     },
     {
+      "dex": 58,
+      "id": "growlithe",
+      "name": "Growlithe",
+      "types": [
+        "fire"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 55,
+        "attack": 70,
+        "defense": 48,
+        "speed": 60
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "bite"
+        },
+        {
+          "level": 1,
+          "move": "leer"
+        },
+        {
+          "level": 4,
+          "move": "ember"
+        },
+        {
+          "level": 7,
+          "move": "fire-fang"
+        },
+        {
+          "level": 10,
+          "move": "take-down"
+        }
+      ],
+      "availableAbilities": [
+        "intimidate",
+        "flash-fire"
+      ],
+      "hiddenAbility": "steadfast",
+      "tutorMoves": [
+        "will-o-wisp",
+        "agility"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "arcanine"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "arcanine-vanguard",
+          "archetype": "vanguard",
+          "label": "Legend Hound",
+          "description": "The bite hardens into a crunch, and it learns the speed the old stories gave it.",
+          "to": "arcanine",
+          "upgrades": [
+            {
+              "from": "bite",
+              "to": "crunch"
+            }
+          ],
+          "adds": [
+            "extreme-speed"
+          ],
+          "abilityId": "intimidate"
+        },
+        {
+          "id": "arcanine-specialist",
+          "archetype": "specialist",
+          "label": "Firestorm",
+          "description": "The embers become a flamethrower, and the heat rolls over everything in front of it.",
+          "to": "arcanine",
+          "upgrades": [
+            {
+              "from": "ember",
+              "to": "flamethrower"
+            }
+          ],
+          "adds": [
+            "heat-wave"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 59,
+      "id": "arcanine",
+      "name": "Arcanine",
+      "types": [
+        "fire"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 90,
+        "attack": 110,
+        "defense": 80,
+        "speed": 95
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "flame-wheel"
+        },
+        {
+          "level": 18,
+          "move": "crunch"
+        },
+        {
+          "level": 22,
+          "move": "extreme-speed"
+        },
+        {
+          "level": 26,
+          "move": "flamethrower"
+        },
+        {
+          "level": 32,
+          "move": "flare-blitz"
+        }
+      ],
+      "availableAbilities": [
+        "intimidate",
+        "flash-fire"
+      ],
+      "tutorMoves": [
+        "fire-blast",
+        "iron-tail"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
       "id": "poliwag",
       "dex": 60,
       "name": "Poliwag",
@@ -2741,6 +3047,371 @@
       "branches": []
     },
     {
+      "dex": 69,
+      "id": "bellsprout",
+      "name": "Bellsprout",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 50,
+        "attack": 75,
+        "defense": 53,
+        "speed": 40
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "vine-whip"
+        },
+        {
+          "level": 1,
+          "move": "growth"
+        },
+        {
+          "level": 4,
+          "move": "wrap"
+        },
+        {
+          "level": 7,
+          "move": "poison-powder"
+        },
+        {
+          "level": 10,
+          "move": "acid"
+        }
+      ],
+      "availableAbilities": [
+        "chlorophyll"
+      ],
+      "hiddenAbility": "snipe",
+      "tutorMoves": [
+        "leech-seed",
+        "mega-drain"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "weepinbell"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "weepinbell-vanguard",
+          "archetype": "vanguard",
+          "label": "Snapjaw",
+          "description": "The wrap becomes a slam: it stops holding on and starts swinging.",
+          "to": "weepinbell",
+          "upgrades": [
+            {
+              "from": "wrap",
+              "to": "slam"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "weepinbell-specialist",
+          "archetype": "specialist",
+          "label": "Cutting Leaves",
+          "description": "The vine sharpens into leaves it can throw from anywhere.",
+          "to": "weepinbell",
+          "upgrades": [
+            {
+              "from": "vine-whip",
+              "to": "razor-leaf"
+            }
+          ],
+          "adds": []
+        }
+      ]
+    },
+    {
+      "dex": 70,
+      "id": "weepinbell",
+      "name": "Weepinbell",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 65,
+        "attack": 90,
+        "defense": 68,
+        "speed": 55
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 13,
+          "move": "razor-leaf"
+        },
+        {
+          "level": 16,
+          "move": "stun-spore"
+        },
+        {
+          "level": 20,
+          "move": "sludge"
+        },
+        {
+          "level": 23,
+          "move": "slam"
+        }
+      ],
+      "availableAbilities": [
+        "chlorophyll"
+      ],
+      "tutorMoves": [
+        "giga-drain",
+        "toxic"
+      ],
+      "evolveLevel": 26,
+      "evolvesTo": [
+        "victreebel"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "victreebel-vanguard",
+          "archetype": "vanguard",
+          "label": "Flytrap",
+          "description": "The slam becomes a whip, and a blade that always finds the soft part comes with it.",
+          "to": "victreebel",
+          "upgrades": [
+            {
+              "from": "slam",
+              "to": "power-whip"
+            }
+          ],
+          "adds": [
+            "leaf-blade"
+          ]
+        },
+        {
+          "id": "victreebel-specialist",
+          "archetype": "specialist",
+          "label": "Acid Pitcher",
+          "description": "The acid concentrates into sludge, and a storm of leaves it pays for afterwards.",
+          "to": "victreebel",
+          "upgrades": [
+            {
+              "from": "acid",
+              "to": "sludge-bomb"
+            }
+          ],
+          "adds": [
+            "leaf-storm-s"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 71,
+      "id": "victreebel",
+      "name": "Victreebel",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "stage": "stage2",
+      "baseStats": {
+        "hp": 80,
+        "attack": 105,
+        "defense": 83,
+        "speed": 70
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 27,
+          "move": "power-whip"
+        },
+        {
+          "level": 32,
+          "move": "leaf-blade"
+        },
+        {
+          "level": 38,
+          "move": "sludge-bomb"
+        }
+      ],
+      "availableAbilities": [
+        "chlorophyll"
+      ],
+      "tutorMoves": [
+        "solar-beam",
+        "double-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
+      "dex": 72,
+      "id": "tentacool",
+      "name": "Tentacool",
+      "types": [
+        "water",
+        "poison"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 40,
+        "attack": 100,
+        "defense": 68,
+        "speed": 70
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "poison-sting"
+        },
+        {
+          "level": 1,
+          "move": "supersonic"
+        },
+        {
+          "level": 4,
+          "move": "water-gun"
+        },
+        {
+          "level": 7,
+          "move": "acid"
+        },
+        {
+          "level": 10,
+          "move": "bubble-beam"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "water-absorb"
+      ],
+      "hiddenAbility": "swift-swim",
+      "tutorMoves": [
+        "aqua-ring",
+        "screech"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "tentacruel"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "tentacruel-specialist",
+          "archetype": "specialist",
+          "label": "Man-o'-War",
+          "description": "The acid turns to sludge and the jet to a pulse: a long reach that poisons what it touches.",
+          "to": "tentacruel",
+          "upgrades": [
+            {
+              "from": "acid",
+              "to": "sludge-bomb"
+            },
+            {
+              "from": "water-gun",
+              "to": "water-pulse"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "tentacruel-support",
+          "archetype": "support",
+          "label": "Stinging Veil",
+          "description": "Confusion becomes a poison that worsens every turn, and the body goes to jelly.",
+          "to": "tentacruel",
+          "upgrades": [
+            {
+              "from": "supersonic",
+              "to": "toxic"
+            }
+          ],
+          "adds": [
+            "acid-armor"
+          ],
+          "abilityId": "poison-point"
+        }
+      ]
+    },
+    {
+      "dex": 73,
+      "id": "tentacruel",
+      "name": "Tentacruel",
+      "types": [
+        "water",
+        "poison"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 80,
+        "attack": 120,
+        "defense": 93,
+        "speed": 100
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "poison-jab"
+        },
+        {
+          "level": 18,
+          "move": "toxic"
+        },
+        {
+          "level": 22,
+          "move": "sludge-wave"
+        },
+        {
+          "level": 28,
+          "move": "hydro-pump"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "water-absorb"
+      ],
+      "tutorMoves": [
+        "surf",
+        "brine"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
       "id": "geodude",
       "dex": 74,
       "name": "Geodude",
@@ -3002,6 +3673,450 @@
       "branches": []
     },
     {
+      "dex": 81,
+      "id": "magnemite",
+      "name": "Magnemite",
+      "types": [
+        "electric"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 25,
+        "attack": 95,
+        "defense": 83,
+        "speed": 45
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "supersonic"
+        },
+        {
+          "level": 4,
+          "move": "thunder-shock"
+        },
+        {
+          "level": 7,
+          "move": "thunder-wave"
+        },
+        {
+          "level": 10,
+          "move": "charge-beam"
+        }
+      ],
+      "availableAbilities": [
+        "sturdy",
+        "static"
+      ],
+      "hiddenAbility": "solid-rock",
+      "tutorMoves": [
+        "rollout",
+        "metal-claw"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "magneton"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "magneton-specialist",
+          "archetype": "specialist",
+          "label": "Tri-Coil",
+          "description": "Three magnets, three elements: the shock becomes a bolt and the Tri Attack comes with it.",
+          "to": "magneton",
+          "upgrades": [
+            {
+              "from": "thunder-shock",
+              "to": "thunderbolt"
+            }
+          ],
+          "adds": [
+            "tri-attack"
+          ]
+        },
+        {
+          "id": "magneton-support",
+          "archetype": "support",
+          "label": "Field Lock",
+          "description": "The hum grinds armour down, and the body locks itself into a wall.",
+          "to": "magneton",
+          "upgrades": [
+            {
+              "from": "supersonic",
+              "to": "screech"
+            }
+          ],
+          "adds": [
+            "iron-defense"
+          ],
+          "abilityId": "sturdy"
+        }
+      ]
+    },
+    {
+      "dex": 82,
+      "id": "magneton",
+      "name": "Magneton",
+      "types": [
+        "electric"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 50,
+        "attack": 120,
+        "defense": 108,
+        "speed": 70
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "swift"
+        },
+        {
+          "level": 18,
+          "move": "screech"
+        },
+        {
+          "level": 22,
+          "move": "tri-attack"
+        },
+        {
+          "level": 26,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 34,
+          "move": "zap-cannon"
+        }
+      ],
+      "availableAbilities": [
+        "sturdy",
+        "static"
+      ],
+      "tutorMoves": [
+        "thunder",
+        "double-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 86,
+      "id": "seel",
+      "name": "Seel",
+      "types": [
+        "water"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 65,
+        "attack": 70,
+        "defense": 63,
+        "speed": 45
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 4,
+          "move": "powder-snow"
+        },
+        {
+          "level": 7,
+          "move": "aqua-jet"
+        },
+        {
+          "level": 10,
+          "move": "icy-wind"
+        }
+      ],
+      "availableAbilities": [
+        "thick-fat",
+        "iron-shell"
+      ],
+      "hiddenAbility": "healer",
+      "tutorMoves": [
+        "water-gun",
+        "headbutt"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "dewgong"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "dewgong-vanguard",
+          "archetype": "vanguard",
+          "label": "Tusk",
+          "description": "All the weight goes forward: a charge that costs it a little, and a tail that follows through.",
+          "to": "dewgong",
+          "upgrades": [
+            {
+              "from": "tackle",
+              "to": "take-down"
+            },
+            {
+              "from": "aqua-jet",
+              "to": "aqua-tail"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "dewgong-support",
+          "archetype": "support",
+          "label": "Floe",
+          "description": "The growl softens into a lullaby, and a nap on the ice puts it back together.",
+          "to": "dewgong",
+          "upgrades": [
+            {
+              "from": "growl",
+              "to": "sing"
+            }
+          ],
+          "adds": [
+            "rest-s"
+          ],
+          "abilityId": "thick-fat"
+        }
+      ]
+    },
+    {
+      "dex": 87,
+      "id": "dewgong",
+      "name": "Dewgong",
+      "types": [
+        "water",
+        "ice"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 90,
+        "attack": 95,
+        "defense": 88,
+        "speed": 70
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "aurora-beam"
+        },
+        {
+          "level": 18,
+          "move": "rest-s"
+        },
+        {
+          "level": 22,
+          "move": "take-down"
+        },
+        {
+          "level": 26,
+          "move": "ice-beam"
+        },
+        {
+          "level": 32,
+          "move": "surf"
+        }
+      ],
+      "availableAbilities": [
+        "thick-fat",
+        "iron-shell"
+      ],
+      "tutorMoves": [
+        "hydro-pump",
+        "blizzard"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
+      "dex": 90,
+      "id": "shellder",
+      "name": "Shellder",
+      "types": [
+        "water"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 30,
+        "attack": 65,
+        "defense": 73,
+        "speed": 40
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 4,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "withdraw"
+        },
+        {
+          "level": 4,
+          "move": "clamp"
+        },
+        {
+          "level": 7,
+          "move": "supersonic"
+        },
+        {
+          "level": 10,
+          "move": "ice-shard"
+        }
+      ],
+      "availableAbilities": [
+        "shell-armor",
+        "iron-shell"
+      ],
+      "hiddenAbility": "sturdy",
+      "tutorMoves": [
+        "water-gun",
+        "harden"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "cloyster"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "cloyster-vanguard",
+          "archetype": "vanguard",
+          "label": "Spike Shell",
+          "description": "The shell opens to fire its spikes: three icicles a card, and a punch behind the shard.",
+          "to": "cloyster",
+          "upgrades": [
+            {
+              "from": "tackle",
+              "to": "icicle-spear"
+            },
+            {
+              "from": "ice-shard",
+              "to": "ice-punch"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "cloyster-support",
+          "archetype": "support",
+          "label": "Pearl Fortress",
+          "description": "Withdraw hardens into Iron Defense, and the aurora it sheds saps the hitter.",
+          "to": "cloyster",
+          "upgrades": [
+            {
+              "from": "withdraw",
+              "to": "iron-defense"
+            }
+          ],
+          "adds": [
+            "aurora-beam"
+          ],
+          "abilityId": "shell-armor"
+        }
+      ]
+    },
+    {
+      "dex": 91,
+      "id": "cloyster",
+      "name": "Cloyster",
+      "types": [
+        "water",
+        "ice"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 50,
+        "attack": 95,
+        "defense": 133,
+        "speed": 70
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 4,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "aurora-beam"
+        },
+        {
+          "level": 18,
+          "move": "icicle-spear"
+        },
+        {
+          "level": 22,
+          "move": "iron-defense"
+        },
+        {
+          "level": 28,
+          "move": "ice-beam"
+        },
+        {
+          "level": 34,
+          "move": "blizzard"
+        }
+      ],
+      "availableAbilities": [
+        "shell-armor",
+        "iron-shell"
+      ],
+      "tutorMoves": [
+        "hydro-pump",
+        "surf"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
       "id": "onix",
       "dex": 95,
       "name": "Onix",
@@ -3216,6 +4331,716 @@
       "archetype": "vanguard"
     },
     {
+      "dex": 100,
+      "id": "voltorb",
+      "name": "Voltorb",
+      "types": [
+        "electric"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 40,
+        "attack": 55,
+        "defense": 53,
+        "speed": 100
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 2,
+        "defense": 2,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "screech"
+        },
+        {
+          "level": 4,
+          "move": "thunder-shock"
+        },
+        {
+          "level": 7,
+          "move": "spark"
+        },
+        {
+          "level": 10,
+          "move": "self-destruct"
+        }
+      ],
+      "availableAbilities": [
+        "static",
+        "run-down"
+      ],
+      "hiddenAbility": "speed-boost",
+      "tutorMoves": [
+        "thunder-wave",
+        "rollout"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "electrode"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "electrode-vanguard",
+          "archetype": "vanguard",
+          "label": "Ball Lightning",
+          "description": "Everything it has, all at once: the blast gets bigger and the tackle heavier.",
+          "to": "electrode",
+          "upgrades": [
+            {
+              "from": "self-destruct",
+              "to": "explosion"
+            },
+            {
+              "from": "tackle",
+              "to": "take-down"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "electrode-specialist",
+          "archetype": "specialist",
+          "label": "Capacitor",
+          "description": "It learns to hold the charge instead of spending it, and to let it go at everything in front of it.",
+          "to": "electrode",
+          "upgrades": [
+            {
+              "from": "thunder-shock",
+              "to": "charge-beam"
+            }
+          ],
+          "adds": [
+            "discharge"
+          ],
+          "abilityId": "static"
+        }
+      ]
+    },
+    {
+      "dex": 101,
+      "id": "electrode",
+      "name": "Electrode",
+      "types": [
+        "electric"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 60,
+        "attack": 80,
+        "defense": 75,
+        "speed": 140
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 2,
+        "defense": 2,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "charge-beam"
+        },
+        {
+          "level": 18,
+          "move": "swift"
+        },
+        {
+          "level": 22,
+          "move": "discharge"
+        },
+        {
+          "level": 26,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 32,
+          "move": "explosion"
+        }
+      ],
+      "availableAbilities": [
+        "static",
+        "run-down"
+      ],
+      "tutorMoves": [
+        "thunder",
+        "tri-attack"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 107,
+      "id": "hitmonchan",
+      "name": "Hitmonchan",
+      "types": [
+        "fighting"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 50,
+        "attack": 105,
+        "defense": 57,
+        "speed": 76
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 4,
+        "defense": 3,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "mach-punch"
+        },
+        {
+          "level": 1,
+          "move": "bulk-up"
+        },
+        {
+          "level": 6,
+          "move": "fire-punch"
+        },
+        {
+          "level": 12,
+          "move": "ice-punch"
+        },
+        {
+          "level": 18,
+          "move": "thunder-punch"
+        },
+        {
+          "level": 24,
+          "move": "sky-uppercut"
+        },
+        {
+          "level": 30,
+          "move": "close-combat"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "steadfast"
+      ],
+      "tutorMoves": [
+        "agility",
+        "body-slam"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "vanguard"
+    },
+    {
+      "dex": 109,
+      "id": "koffing",
+      "name": "Koffing",
+      "types": [
+        "poison"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 40,
+        "attack": 65,
+        "defense": 78,
+        "speed": 35
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 2,
+        "defense": 4,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "smog"
+        },
+        {
+          "level": 4,
+          "move": "smokescreen"
+        },
+        {
+          "level": 7,
+          "move": "sludge"
+        },
+        {
+          "level": 10,
+          "move": "self-destruct"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "cloud-nine"
+      ],
+      "tutorMoves": [
+        "acid-armor",
+        "screech"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "weezing"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "weezing-support",
+          "archetype": "support",
+          "label": "Miasma",
+          "description": "The smoke turns to poison, and the gas learns to burn as well.",
+          "to": "weezing",
+          "upgrades": [
+            {
+              "from": "smokescreen",
+              "to": "poison-powder"
+            }
+          ],
+          "adds": [
+            "will-o-wisp"
+          ],
+          "abilityId": "poison-point"
+        },
+        {
+          "id": "weezing-vanguard",
+          "archetype": "vanguard",
+          "label": "Detonator",
+          "description": "Two heads, one fuse: the blast gets bigger and the body behind it heavier.",
+          "to": "weezing",
+          "upgrades": [
+            {
+              "from": "self-destruct",
+              "to": "explosion"
+            },
+            {
+              "from": "tackle",
+              "to": "take-down"
+            }
+          ],
+          "adds": []
+        }
+      ]
+    },
+    {
+      "dex": 110,
+      "id": "weezing",
+      "name": "Weezing",
+      "types": [
+        "poison"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 65,
+        "attack": 90,
+        "defense": 103,
+        "speed": 60
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 2,
+        "defense": 4,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "toxic"
+        },
+        {
+          "level": 18,
+          "move": "sludge-bomb"
+        },
+        {
+          "level": 24,
+          "move": "sludge-wave"
+        },
+        {
+          "level": 30,
+          "move": "explosion"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "cloud-nine"
+      ],
+      "tutorMoves": [
+        "flamethrower",
+        "thunderbolt"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 116,
+      "id": "horsea",
+      "name": "Horsea",
+      "types": [
+        "water"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 30,
+        "attack": 70,
+        "defense": 70,
+        "speed": 60
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "bubble"
+        },
+        {
+          "level": 1,
+          "move": "smokescreen"
+        },
+        {
+          "level": 4,
+          "move": "water-gun"
+        },
+        {
+          "level": 7,
+          "move": "focus-energy"
+        },
+        {
+          "level": 10,
+          "move": "dragon-rage"
+        }
+      ],
+      "availableAbilities": [
+        "snipe",
+        "damp"
+      ],
+      "hiddenAbility": "swift-swim",
+      "tutorMoves": [
+        "aqua-jet",
+        "swift"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "seadra"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "seadra-specialist",
+          "archetype": "specialist",
+          "label": "Riptide",
+          "description": "A sniper from the deep: the jet becomes a pulse and the dragon in it wakes up.",
+          "to": "seadra",
+          "upgrades": [
+            {
+              "from": "water-gun",
+              "to": "water-pulse"
+            }
+          ],
+          "adds": [
+            "dragon-pulse"
+          ],
+          "abilityId": "snipe"
+        },
+        {
+          "id": "seadra-support",
+          "archetype": "support",
+          "label": "Ink Cloud",
+          "description": "The ink blinds harder, and the tide quickens its shooters.",
+          "to": "seadra",
+          "upgrades": [
+            {
+              "from": "smokescreen",
+              "to": "screech"
+            }
+          ],
+          "adds": [
+            "agility"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 117,
+      "id": "seadra",
+      "name": "Seadra",
+      "types": [
+        "water"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 55,
+        "attack": 95,
+        "defense": 95,
+        "speed": 85
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "bubble-beam"
+        },
+        {
+          "level": 18,
+          "move": "agility"
+        },
+        {
+          "level": 22,
+          "move": "dragon-pulse"
+        },
+        {
+          "level": 28,
+          "move": "hydro-pump"
+        }
+      ],
+      "availableAbilities": [
+        "snipe",
+        "damp"
+      ],
+      "tutorMoves": [
+        "surf",
+        "ice-beam"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 120,
+      "id": "staryu",
+      "name": "Staryu",
+      "types": [
+        "water"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 30,
+        "attack": 70,
+        "defense": 63,
+        "speed": 85
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "harden"
+        },
+        {
+          "level": 4,
+          "move": "water-gun"
+        },
+        {
+          "level": 7,
+          "move": "rapid-spin"
+        },
+        {
+          "level": 10,
+          "move": "swift"
+        }
+      ],
+      "availableAbilities": [
+        "healer",
+        "anticipation"
+      ],
+      "hiddenAbility": "adaptability",
+      "tutorMoves": [
+        "bubble-beam",
+        "agility"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "starmie"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "starmie-specialist",
+          "archetype": "specialist",
+          "label": "Prism Core",
+          "description": "The core lights up: Swift becomes a psybeam, and a full Psychic follows it.",
+          "to": "starmie",
+          "upgrades": [
+            {
+              "from": "swift",
+              "to": "psybeam"
+            }
+          ],
+          "adds": [
+            "psychic"
+          ]
+        },
+        {
+          "id": "starmie-support",
+          "archetype": "support",
+          "label": "Mender",
+          "description": "Harden becomes Recover, and the gem learns to confuse what it cannot outlast.",
+          "to": "starmie",
+          "upgrades": [
+            {
+              "from": "harden",
+              "to": "recover"
+            }
+          ],
+          "adds": [
+            "confuse-ray"
+          ],
+          "abilityId": "healer"
+        }
+      ]
+    },
+    {
+      "dex": 121,
+      "id": "starmie",
+      "name": "Starmie",
+      "types": [
+        "water",
+        "psychic"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 60,
+        "attack": 100,
+        "defense": 93,
+        "speed": 115
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "psybeam"
+        },
+        {
+          "level": 18,
+          "move": "recover"
+        },
+        {
+          "level": 22,
+          "move": "confuse-ray"
+        },
+        {
+          "level": 26,
+          "move": "psychic"
+        },
+        {
+          "level": 32,
+          "move": "hydro-pump"
+        }
+      ],
+      "availableAbilities": [
+        "healer",
+        "anticipation"
+      ],
+      "tutorMoves": [
+        "surf",
+        "thunderbolt"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
+      "dex": 125,
+      "id": "electabuzz",
+      "name": "Electabuzz",
+      "types": [
+        "electric"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 65,
+        "attack": 85,
+        "defense": 71,
+        "speed": 105
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 4,
+        "defense": 3,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "quick-attack"
+        },
+        {
+          "level": 1,
+          "move": "leer"
+        },
+        {
+          "level": 5,
+          "move": "thunder-shock"
+        },
+        {
+          "level": 9,
+          "move": "low-kick"
+        },
+        {
+          "level": 13,
+          "move": "thunder-punch"
+        },
+        {
+          "level": 18,
+          "move": "screech"
+        },
+        {
+          "level": 24,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 30,
+          "move": "thunder"
+        }
+      ],
+      "availableAbilities": [
+        "static",
+        "hustle"
+      ],
+      "tutorMoves": [
+        "fire-punch",
+        "ice-punch"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "vanguard"
+    },
+    {
       "id": "magikarp",
       "dex": 129,
       "name": "Magikarp",
@@ -3359,58 +5184,76 @@
       "branches": []
     },
     {
-      "dex": 143,
-      "id": "snorlax",
-      "name": "Snorlax",
+      "dex": 131,
+      "id": "lapras",
+      "name": "Lapras",
       "types": [
-        "normal"
+        "water",
+        "ice"
       ],
       "stage": "basic",
       "baseStats": {
-        "hp": 160,
-        "attack": 110,
-        "defense": 65,
-        "speed": 30
+        "hp": 130,
+        "attack": 95,
+        "defense": 88,
+        "speed": 60
       },
       "growth": {
         "hp": 5,
         "attack": 3,
-        "defense": 3,
-        "speed": 1
+        "defense": 4,
+        "speed": 3
       },
       "learnset": [
         {
           "level": 1,
-          "move": "tackle"
+          "move": "water-gun"
         },
         {
           "level": 1,
-          "move": "amnesia"
+          "move": "sing"
         },
         {
           "level": 6,
-          "move": "rest-s"
+          "move": "mist"
         },
         {
-          "level": 10,
+          "level": 12,
+          "move": "ice-shard"
+        },
+        {
+          "level": 18,
           "move": "body-slam"
         },
         {
-          "level": 14,
-          "move": "crunch"
+          "level": 24,
+          "move": "confuse-ray"
+        },
+        {
+          "level": 30,
+          "move": "ice-beam"
+        },
+        {
+          "level": 36,
+          "move": "surf"
+        },
+        {
+          "level": 42,
+          "move": "sheer-cold-l"
         }
       ],
       "availableAbilities": [
-        "sturdy"
+        "water-absorb",
+        "shell-armor"
       ],
       "tutorMoves": [
-        "double-edge"
+        "hydro-pump",
+        "thunderbolt"
       ],
       "evolvesTo": [],
       "rarity": "rare",
-      "archetype": "vanguard",
-      "hiddenAbilityPending": "Gluttony — arrives in v0.7",
-      "catchRate": 0.2
+      "branches": [],
+      "archetype": "support"
     },
     {
       "id": "eevee",
@@ -3690,6 +5533,60 @@
         "iron-tail"
       ],
       "branches": []
+    },
+    {
+      "dex": 143,
+      "id": "snorlax",
+      "name": "Snorlax",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 160,
+        "attack": 110,
+        "defense": 65,
+        "speed": 30
+      },
+      "growth": {
+        "hp": 5,
+        "attack": 3,
+        "defense": 3,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "amnesia"
+        },
+        {
+          "level": 6,
+          "move": "rest-s"
+        },
+        {
+          "level": 10,
+          "move": "body-slam"
+        },
+        {
+          "level": 14,
+          "move": "crunch"
+        }
+      ],
+      "availableAbilities": [
+        "sturdy"
+      ],
+      "tutorMoves": [
+        "double-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "archetype": "vanguard",
+      "hiddenAbilityPending": "Gluttony — arrives in v0.7",
+      "catchRate": 0.2
     }
   ]
 }
