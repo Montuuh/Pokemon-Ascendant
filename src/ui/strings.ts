@@ -122,6 +122,26 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'building-closed': 'That door is not open yet.',
   'not-offered': 'That is not on offer.',
   'no-such-item': 'You are not carrying that.',
+  'ring-closed': 'The Ring is done for this visit.',
+  'nothing-to-restock': 'Nothing else to stock on this floor.',
+  'bad-stake': 'That stake is not on the table.',
+};
+
+/** §2.11.2 — the Department Store's floors, in the words on the lift buttons. */
+export const STORE_FLOOR_LABEL: Record<string, string> = {
+  consumables: 'Medicine',
+  tms: 'TMs',
+  'held-items': 'Held items',
+  relics: 'Relics',
+  rare: 'Rare counter',
+};
+
+/** §2.11.5 — the Slots' faces, named for screen readers. */
+export const SLOT_FACE_LABEL: Record<string, string> = {
+  cherry: 'Cherry',
+  bell: 'Bell',
+  bar: 'BAR',
+  seven: 'Seven',
 };
 
 // §6.3.4 — the three archetypes, in the words the Evolution screen uses.
@@ -140,7 +160,7 @@ export const ARCHETYPE_HINT: Record<string, string> = {
 // §2.11.4 — a City's doors, in the lobby's words. The door ids are the UI's: the shop is one sim building
 // (`mart`) drawn as the Poké Mart in the town and the Department Store in the city, and the doors that are
 // not open yet have no sim building at all.
-export type CityDoor = 'center' | 'mart' | 'department-store' | 'dojo' | 'ring' | 'safari' | 'game-corner' | 'black-market' | 'gate';
+export type CityDoor = 'center' | 'mart' | 'department-store' | 'dojo' | 'ring' | 'extra-moves' | 'safari' | 'game-corner' | 'black-market' | 'gate';
 /** Every door but the gate, which is named by where it leads ("To Region 2"), not by a fixed word. */
 export type CityBuildingDoor = Exclude<CityDoor, 'gate'>;
 
@@ -150,6 +170,7 @@ export const CITY_DOOR_LABEL: Record<CityBuildingDoor, string> = {
   'department-store': 'Department Store',
   dojo: 'Dojo',
   ring: 'Challenge Ring',
+  'extra-moves': 'Extra moves',
   safari: 'Safari Zone',
   'game-corner': 'Game Corner',
   'black-market': 'Black Market',
@@ -160,9 +181,10 @@ export const CITY_DOOR_HINT: Record<CityDoor, string> = {
   mart: 'A shelf picked for your team, and Poké Balls. Dearer than the merchant; buys held items back.',
   'department-store': 'The biggest shelf of the run, and Poké Balls. Dearer than the merchant; buys held items back.',
   dojo: 'Tutor moves off the learnset and passive abilities, as many as you can pay for.',
-  ring: 'A ladder of rivals. See the next one, then cash out or climb. You only get one go per visit.',
+  ring: 'A ladder of rivals for a fee. See the next one, then fight or cash out — nothing heals between rungs, and a lost rung loses what the ladder paid. Once per visit.',
+  'extra-moves': 'A catalogue of moves beyond each species\' tutor list.',
   safari: 'A park of Pokémon the routes do not have, caught with its own rules.',
-  'game-corner': 'The Wheel and the Slots, the odds printed beside each.',
+  'game-corner': 'The Wheel and the Slots, every outcome and its odds printed beside each machine.',
   'black-market': 'Beneath the Game Corner. Rare stock, no questions, once per visit.',
   gate: 'Choose one rule for the next Region, then set off. The town stays behind.',
 };

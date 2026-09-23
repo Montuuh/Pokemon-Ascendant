@@ -1,7 +1,7 @@
 import { createCombat } from '../combat/setup';
 import type { CombatCtx } from '../combat/context';
 import { buildOutcomeReport } from '../run/report';
-import { createRun, defaultRunCtx, dojoPrice, runReducer } from '../run/run';
+import { createRun, defaultRunCtx, dojoPrice, runReducer, tutorListFor } from '../run/run';
 import { RUN_START, gymById, gymTeamFor } from '../run/region';
 import { applyBranch, autoPickMoves } from '../run/xp';
 import { maxHpOf } from '../run/encounter';
@@ -248,9 +248,8 @@ function visitDojo(get: () => RunState, content: CombatCtx['content'], policy: R
       .map((uid) => run.box.find((m) => m.uid === uid))
       .filter((m): m is PartyMon => !!m)
       .flatMap((mon) =>
-        content
-          .species(mon.speciesId)
-          .tutorMoves.filter((t) => !mon.pool.includes(t))
+        tutorListFor(run, mon, content)
+          .filter((t) => !mon.pool.includes(t))
           .map((moveId) => ({ mon, moveId, value: tutorValue(mon, moveId, content) })),
       )
       .sort((a, b) => b.value - a.value);
@@ -552,3 +551,49 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
 }
 
 export const RUN_BOX_CAPACITY = RUN_START.boxCapacity;
+
+/** What one climb of the Challenge Ring came to. */
+export interface RingClimb {
+  rungs: number;
+  won: number;
+}
+
+/**
+ * §2.9.4.1 — climb a City's Challenge Ring the way a player committed to it would, from a run standing in that
+ * City: heal at the Center first, field the three healthiest, and climb every rung (never cashing out), re-
+ * picking the three healthiest between rungs since nothing heals there. It is the measurement behind the
+ * Ring's clear-rate bands, so it pays the fee out of thin air rather than skip a poor run — the question is how
+ * hard the fights are, not how often a run can afford them.
+ */
+export function playRing(start: RunState, ctx: CombatCtx, policy: RunPolicy = DEFAULT_RUN_POLICY): RingClimb | null {
+  const runCtx = defaultRunCtx(ctx.content);
+  let run = start;
+  const step = (action: Parameters<typeof runReducer>[1]) => {
+    const r = runReducer(run, action, runCtx);
+    if (r.rejected) throw new Error(`ring rejected ${action.type}: ${r.rejected}`);
+    run = r.state;
+  };
+  if (run.phase !== 'city' || !run.city?.ring) return null;
+  const healthiest = () =>
+    [...run.box].filter((m) => m.hp > 0).sort((a, b) => b.level - a.level || b.hp - a.hp).slice(0, 3).map((m) => m.uid);
+  step({ type: 'enter-building', building: 'center' });
+  step({ type: 'leave-center' });
+  step({ type: 'set-active', uids: healthiest() });
+  step({ type: 'enter-building', building: 'dojo' });
+  run = { ...run, money: Math.max(run.money, run.city!.ring!.fee) };
+  step({ type: 'enter-ring' });
+  const rungs = run.city!.ring!.rungs.length;
+  let won = 0;
+  while (run.phase === 'ring') {
+    const team = healthiest();
+    if (!team.length) break;
+    step({ type: 'set-active', uids: team });
+    step({ type: 'ring-fight' });
+    const combat = autoPlay(createCombat(run.pendingScenario!, ctx, run.pendingScenario!.seed), ctx, policy);
+    const before = run.city!.ring!.cleared;
+    step({ type: 'finish-combat', report: buildOutcomeReport(combat.state, run) });
+    if ((run.city?.ring?.cleared ?? before) > before) won += 1;
+  }
+  if (run.phase === 'relic-pick') step({ type: 'ring-pick', relicId: run.city!.ring!.pick![0] ?? null });
+  return { rungs, won };
+}

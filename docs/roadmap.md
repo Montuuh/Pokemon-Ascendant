@@ -414,7 +414,7 @@ enemy carries its type's status move), and an Attack-weighted enemy stat tier. M
 `runBalance` guards the bands. Greater Threats went live with the tier. The D5 doctrine now keeps full
 contrast on unaffordable offers (the price chip says "not now", not a fade).
 
-### v0.7.2 — The city  ☐
+### v0.7.2 — The city  ✅ 2026-09-23
 **Celadon City**: the Department Store by floors, the wider City Dojo, the Game Corner's two machines — the
 Wheel and the Slots, tables printed (§2.11.5) — and the Black
 Market door drawn beneath it, in development. The **Challenge Ring** in both Dojos (§2.9.4.1): a ladder of
@@ -423,6 +423,16 @@ climb. The only new combat surface of the City.
 **Exit:** two Cities that feel different sizes, not two copies — and a balance test that holds the Ring's
 clear rates inside their bands (§2.9.4.1: rung 1 about half; the whole ladder about 1 in 6 in the town, under
 1 in 10 in the city).
+
+**Shipped.** Celadon is the bigger City now. Its Department Store is five floors as tabs (21 slots; a re-roll
+restocks the floor on screen). Its Dojo teaches every stage the line has reached. Its Game Corner has the Wheel
+(a 50-segment rim that *is* the table, stake 10–200 ₽) and the Slots (cherry · bell · BAR · 7, 50 ₽ a pull):
+the outcome is rolled first on its own stream, then drawn. The Challenge Ring opens behind both Dojos (2 rungs /
+3 rungs of Elite-class rivals at evolved forms, the next one always in view, nothing heals between, cash out or
+climb, no XP), and its top prize is a relic 1-of-3 (Rare once the account has three open). The exit is a test:
+`ring.test` holds the harness's clear rates — tuned per City to Pallet 0.64 / 0.17 and Celadon 0.47 / 0.17 /
+0.04 — and `city.test` / `e2e/city` cover the ladder, the machines and the floors. The Black Market stays
+a door in development, as do the Safari and the Dojo's extra-moves counter.
 
 ### v0.7.3 — Region 2, Coastal Cliffs  ☐
 Biomes `sea` and `power-plant`, ~10 authored lines (kits, learnsets, branches), trainer rosters, the four R2

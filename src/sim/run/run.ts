@@ -4,17 +4,17 @@ import type { GameRng } from '../rng/gameRng';
 import { RngStreams } from '../rng/rngStreams';
 import { knownMoves } from '../combat/stats';
 import { isImmuneToStatus } from '../combat/status';
-import { buildScenario, maxHpOf } from './encounter';
+import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
 import { generateRegion } from './map';
-import { GYM, GYMS, gymById, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
-import { AID_HEAL_PCT, benchXpShare, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollShopStock, sellPrice, therapyPrice } from './economy';
-import { CITIES, cityAfter, isFinalRegion } from './cities';
+import { ELITE, GYM, GYMS, TRAINERS, evolvedAt, gymById, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
+import { AID_HEAL_PCT, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
+import { CASINO, CITIES, RING, cityAfter, isFinalRegion } from './cities';
 import { mysteryEvent, rollEvent, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, rollRegionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, type ProgressionConfig } from './xp';
-import type { LevelUp, NodeKind, PartyMon, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
+import type { LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
 
 
 /** A shop row in the player's words, for the log line after a purchase. */
@@ -36,11 +36,13 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 // §2 — the run reducer. Pure: (state, action) → state, exactly like the combat reducer, so a run is a seed
 // plus an action log and a save is that pair (§10.7.4, §10.8).
 
+// 9 — v0.7.2: the City carries its Challenge Ring and the Game Corner's last result; Department Store slots
+//     carry their floor; the CasinoRNG cursor (§2.9.4.1, §2.11.2, §2.11.5).
 // 8 — v0.7.1: the City (`city`), the route's nurse and merchant replacing its Center, Shop and Dojo nodes,
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 8;
+export const RUN_SAVE_VERSION = 9;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -229,6 +231,137 @@ function endRegion(draft: RunState, ctx: RunCtx): void {
   arriveAtCity(draft, ctx);
 }
 
+/** §2.11.2 — which shelf a shop visit is standing at. */
+function shopKindFor(run: RunState): 'merchant' | 'city' | 'department-store' {
+  if (!run.city) return 'merchant';
+  return CITIES[run.city.id].shop === 'department-store' ? 'department-store' : 'city';
+}
+
+/**
+ * §6.4.3, §2.9.4 — what the Dojo teaches this Pokémon, here. The town's Dojo sells the current stage's list;
+ * the city's "wider list" (`dojoWide`) sells every stage the line has reached, so a Pokémon no longer has to hold
+ * an evolution back to buy a pre-form move there.
+ */
+export function tutorListFor(run: RunState, mon: PartyMon, content: ContentRegistry): string[] {
+  const own = content.species(mon.speciesId).tutorMoves;
+  if (!run.city || !CITIES[run.city.id].dojoWide) return [...own];
+  // The path from the line's base to this species, along evolvesTo (a branching line takes the branch it took).
+  const path: string[] = [];
+  const walk = (id: string): boolean => {
+    path.push(id);
+    if (id === mon.speciesId) return true;
+    for (const next of content.species(id).evolvesTo ?? []) if (content.hasSpecies(next) && walk(next)) return true;
+    path.pop();
+    return false;
+  };
+  const stages = walk(content.lineBase(mon.speciesId)) ? path : [mon.speciesId];
+  return [...new Set(stages.flatMap((id) => content.species(id).tutorMoves))];
+}
+
+/**
+ * §2.9.4.1 — roll the Challenge Ring for this City: one rival per rung from the trainer rosters (the ladder
+ * "reuses the trainer-battle generator"), each filled to a full team from the Elite's (then the other rosters'),
+ * every Pokémon at the form its level warrants. Rung 1 stands the City's `firstOffset` above the Gym the run just
+ * beat, each later rung `stepOffset` more.
+ */
+function rollRing(rng: GameRng, draft: RunState, ctx: RunCtx): RingState {
+  const def = CITIES[draft.city?.id ?? cityAfter(draft.regionIndex) ?? 'pallet-town'];
+  const nodes = Object.values(draft.map.nodes);
+  const gymNode = nodes.find((n) => n.id === draft.position && n.kind === 'gym') ?? nodes.find((n) => n.kind === 'gym');
+  const gymLevel = Math.max(1, ...(gymNode?.preview.enemies ?? []).map((e) => e.level));
+  // Distinct archetypes where the rosters allow it, drawn without replacement.
+  const rosters = [...TRAINERS];
+  const picked: typeof TRAINERS = [];
+  for (let i = 0; i < def.ring.prizes.length && rosters.length; i++) {
+    const fresh = rosters.filter((r) => !picked.some((p) => p.archetype === r.archetype));
+    const from = fresh.length ? fresh : rosters;
+    const roster = from[rng.range(0, from.length)]!;
+    picked.push(roster);
+    rosters.splice(rosters.indexOf(roster), 1);
+  }
+  const rungs: RingRung[] = picked.map((roster, i) => {
+    const level = gymLevel + def.ring.firstOffset + def.ring.stepOffset * i;
+    const species: string[] = [];
+    for (const m of [...roster.team, ...ELITE.team, ...TRAINERS.flatMap((t) => t.team)]) {
+      const form = evolvedAt(m.species, level, ctx.content);
+      if (!species.includes(form) && species.length < def.ring.teamSize) species.push(form);
+    }
+    return {
+      trainer: roster.name,
+      sprite: roster.sprite,
+      line: roster.line,
+      // The last Pokémon is the ace, a level above the rest.
+      team: species.map((id, k) => ({ species: id, level: level + (k === species.length - 1 ? 1 : 0) })),
+      prize: def.ring.prizes[i]!,
+    };
+  });
+  return { fee: def.ring.fee, rungs, entered: false, cleared: 0, banked: 0, fighting: false, done: false, pick: null };
+}
+
+/**
+ * §2.9.4.1 — the ladder ends paid: everything banked goes to the wallet, and the Ring is shut for this visit.
+ * The Ring is inside the Dojo, so its door leads back into the Dojo, not out to the town.
+ */
+function payRing(draft: RunState): void {
+  const ring = draft.city!.ring!;
+  if (ring.banked) say(draft, `The Ring pays out ${ring.banked} ₽.`);
+  draft.money += ring.banked;
+  ring.banked = 0;
+  ring.done = true;
+  draft.phase = 'dojo';
+}
+
+/**
+ * §2.9.4.1 — a rung's fight is over. Won: its prize is banked (or, at the top, the Rare 1-of-3 opens). Lost —
+ * or run from — and the ladder is lost with everything it paid; the fallen already carry their Trauma. It never
+ * ends the run. No XP and no drop: the Ring pays its prizes, and a ladder that paid levels would be a second
+ * route to farm.
+ */
+function resolveRing(draft: RunState, won: boolean, ctx: RunCtx): void {
+  const ring = draft.city!.ring!;
+  ring.fighting = false;
+  draft.pendingScenario = null;
+  if (!won) {
+    const lost = ring.banked;
+    ring.banked = 0;
+    ring.done = true;
+    draft.phase = 'dojo';
+    say(draft, `The Ring is lost${lost ? `, and the ${lost} ₽ it had paid with it` : ''}.`);
+    return;
+  }
+  const rung = ring.rungs[ring.cleared]!;
+  ring.cleared += 1;
+  draft.stats.combatsWon += 1;
+  if ('money' in rung.prize) {
+    ring.banked += rung.prize.money;
+    say(draft, `${rung.trainer} is beaten — ${rung.prize.money} ₽ banked.`);
+    draft.phase = 'ring';
+    return;
+  }
+  const lootRng = new RngStreams(draft.seed).get('LootRNG');
+  lootRng.cursor = draft.cursors.LootRNG ?? lootRng.cursor;
+  // Rares first. An account that has not opened three Rares yet (§8.6.2) is topped up the way every relic roll
+  // falls back (§7.3): the top of the ladder always holds a pick, never a silent nothing.
+  const pick = rollRelicOffer(lootRng, ctx.content, draft.relics, 'rare', RING.pickCount, draft.perks.relicPool);
+  while (pick.length < RING.pickCount) {
+    const id = rollRelic(lootRng, ctx.content, [...draft.relics, ...pick], 'rare', draft.perks.relicPool);
+    if (!id) break;
+    pick.push(id);
+  }
+  ring.pick = pick;
+  draft.cursors.LootRNG = lootRng.cursor;
+  say(draft, `${rung.trainer} is beaten — the ladder is yours.`);
+  if (ring.pick.length) draft.phase = 'relic-pick';
+  else payRing(draft);
+}
+
+/** §2.11.5 — the Game Corner's own stream, resumed from the save so a reload shows the same next result. */
+function casinoRng(draft: RunState): GameRng {
+  const rng = new RngStreams(draft.seed).get('CasinoRNG');
+  rng.cursor = draft.cursors.CasinoRNG ?? rng.cursor;
+  return rng;
+}
+
 /**
  * §2.11 — walk into the City after a Gym. Everything the lobby offers is rolled here, once: the shop's stock
  * and the three Region Modifiers at the gate, so leaving a building and coming back is never a re-roll.
@@ -239,19 +372,20 @@ function endRegion(draft: RunState, ctx: RunCtx): void {
 export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
   const id = cityAfter(draft.regionIndex) ?? 'pallet-town';
   const rng = encounterRng(draft);
-  const shop = rollShopStock(rng, ctx.content, draft, 'city');
-  draft.cursors.EncounterRNG = rng.cursor;
+  const shop = rollShopStock(rng, ctx.content, draft, CITIES[id].shop === 'department-store' ? 'department-store' : 'city');
   // §8.4.2 Trauma Salve Cache — the first City's shelf always has a Salve. It takes the Uncommon relic's slot
   // (the Salve is an Uncommon), so the shelf keeps its eight; a run already holding one gets the roll instead.
   if (draft.perks.salveCache && draft.regionIndex === 0 && !draft.relics.includes('trauma-salve') && !shop.slots.some((s) => s.id === 'trauma-salve')) {
     const i = shop.slots.findIndex((s) => s.kind === 'relic' && ctx.content.relic(s.id).rarity === 'uncommon');
-    const slot = { kind: 'relic' as const, id: 'trauma-salve', price: priceFor(draft, ctx.content, Math.round(PRICES.relic.uncommon * PRICES.cityMarkup)), sold: false };
-    if (i >= 0) shop.slots[i] = slot;
+    const slot: ShopSlot = { kind: 'relic', id: 'trauma-salve', price: priceFor(draft, ctx.content, Math.round(PRICES.relic.uncommon * PRICES.cityMarkup)), sold: false };
+    if (i >= 0) shop.slots[i] = { ...slot, ...(shop.slots[i]!.floor ? { floor: shop.slots[i]!.floor } : {}) };
     else shop.slots.push(slot);
   }
+  const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null } } }, ctx);
+  draft.cursors.EncounterRNG = rng.cursor;
   // The gate's offer is seeded from the run and the Region, like the pre-run offer is seeded from the run.
   const reflection = rollRegionModifierOffer((draft.seed ^ Math.imul(draft.regionIndex + 1, 0x9e3779b1)) >>> 0, ctx.content, draft.box, draft.money);
-  draft.city = { id, shop, reflection };
+  draft.city = { id, shop, reflection, ring, casino: { wheel: null, slots: null } };
   draft.regionModifier = null;
   draft.pendingNodeId = null;
   draft.pendingShop = null;
@@ -534,6 +668,13 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             draft.stats.faints += 1;
             say(draft, `${ctx.content.species(mon.speciesId).name} fainted — Trauma ${mon.traumaStacks}.`);
           }
+        }
+
+        // §2.9.4.1 — a Ring rung is not a map node: its prize or the ladder, and a lost rung costs the ladder,
+        // not the run. Everything above (HP, statuses, Trauma, spent charges) has carried out as after any fight.
+        if (draft.city?.ring?.fighting) {
+          resolveRing(draft, report.outcome === 'victory', ctx);
+          break;
         }
 
         if (report.outcome === 'defeat') {
@@ -858,10 +999,87 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         } else if (action.building === 'mart') {
           draft.pendingShop = city.shop;
           draft.phase = 'shop';
+        } else if (action.building === 'game-corner') {
+          draft.phase = 'game-corner';
         } else {
           say(draft, 'The Dojo master looks your team over.');
           draft.phase = 'dojo';
         }
+        break;
+      }
+
+      // §2.9.4.1 — the Challenge Ring, from inside the Dojo: the fee is paid on the way onto the ladder.
+      case 'enter-ring': {
+        const ring = draft.city!.ring!;
+        draft.money -= ring.fee;
+        ring.entered = true;
+        draft.phase = 'ring';
+        say(draft, `Paid ${ring.fee} ₽ to step into the Ring.`);
+        break;
+      }
+
+      // §2.9.4.1 — the next rung. No healing between rungs: the Box walks in as the last rung left it.
+      case 'ring-fight': {
+        const ring = draft.city!.ring!;
+        const rng = encounterRng(draft);
+        draft.pendingScenario = buildRingScenario(draft, ring.rungs[ring.cleared]!, ring.cleared, ctx.content, rng);
+        draft.cursors.EncounterRNG = rng.cursor;
+        ring.fighting = true;
+        draft.phase = 'combat';
+        break;
+      }
+
+      case 'ring-cash-out': {
+        payRing(draft);
+        break;
+      }
+
+      // §2.9.4.1 — the top rung's Rare relic, one of three (or none); the ladder then pays out whatever it banked.
+      case 'ring-pick': {
+        const ring = draft.city!.ring!;
+        if (action.relicId) acquireRelic(draft, action.relicId, ctx.content);
+        ring.pick = null;
+        payRing(draft);
+        break;
+      }
+
+      // §2.11.5 — the Wheel: a uniform stop on the printed rim, so the segment *is* the odds.
+      case 'spin-wheel': {
+        const rng = casinoRng(draft);
+        const face = rng.range(0, CASINO.wheel.segments.length);
+        draft.cursors.CasinoRNG = rng.cursor;
+        const multiplier = CASINO.wheel.segments[face]!;
+        const payout = action.stake * multiplier;
+        draft.money += payout - action.stake;
+        draft.city!.casino.wheel = { machine: 'wheel', stake: action.stake, multiplier, payout, face };
+        say(draft, multiplier ? `The Wheel stops on ×${multiplier}: ${payout} ₽.` : `The Wheel stops on ×0. The ${action.stake} ₽ is gone.`);
+        break;
+      }
+
+      // §2.11.5 — the Slots: the outcome from the table first, then three faces drawn to show it.
+      case 'pull-slots': {
+        const rng = casinoRng(draft);
+        const multiplier = rng.pickWeighted(CASINO.slots.table.map((r) => [r.multiplier, r.weight] as const));
+        let face: string[];
+        const three = CASINO.slots.faces[multiplier];
+        if (three) face = [three, three, three];
+        else {
+          const symbols = CASINO.slots.symbols;
+          face = [0, 1, 2].map(() => symbols[rng.range(0, symbols.length)]!);
+          // A losing pull never shows three of a kind: the faces only ever tell the truth.
+          if (face[0] === face[1] && face[1] === face[2]) face[2] = symbols[(symbols.indexOf(face[2]!) + 1) % symbols.length]!;
+        }
+        draft.cursors.CasinoRNG = rng.cursor;
+        const stake = CASINO.slots.stake;
+        const payout = stake * multiplier;
+        draft.money += payout - stake;
+        draft.city!.casino.slots = { machine: 'slots', stake, multiplier, payout, face };
+        say(draft, multiplier ? `Three of a kind — ×${multiplier}, ${payout} ₽.` : 'Nothing lines up.');
+        break;
+      }
+
+      case 'leave-game-corner': {
+        draft.phase = 'city';
         break;
       }
 
@@ -928,10 +1146,20 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const stock = draft.pendingShop!;
         draft.money -= rerollPrice(stock)!;
         const rng = encounterRng(draft);
-        const fresh = rollShopStock(rng, ctx.content, draft, draft.city ? 'city' : 'merchant');
+        const kind = shopKindFor(draft);
+        if (kind === 'department-store' && action.floor) {
+          // §2.11.2 — a store re-roll restocks one floor; the other floors and anything sold stay as they are.
+          const floor = action.floor;
+          const fresh = rollShopStock(rng, ctx.content, draft, kind, [floor]).slots;
+          const keep = stock.slots.filter((s) => s.floor !== floor || s.sold);
+          const open = stock.slots.filter((s) => s.floor === floor && !s.sold).length;
+          stock.slots = [...keep, ...fresh.slice(0, open)];
+        } else {
+          const fresh = rollShopStock(rng, ctx.content, draft, kind);
+          const sold = stock.slots.filter((s) => s.sold);
+          stock.slots = [...sold, ...fresh.slots.slice(0, Math.max(0, stock.slots.length - sold.length))];
+        }
         draft.cursors.EncounterRNG = rng.cursor;
-        const sold = stock.slots.filter((s) => s.sold);
-        stock.slots = [...sold, ...fresh.slots.slice(0, Math.max(0, stock.slots.length - sold.length))];
         stock.rerolls += 1;
         say(draft, 'The shopkeeper rummages under the counter.');
         break;
@@ -1051,15 +1279,15 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (action.releaseUid && !state.box.some((m) => m.uid === action.releaseUid)) return 'unknown-pokemon';
       return undefined;
     case 'set-active': {
-      // §2.3 — the loadout changes on the map, in a preview, and in a City's lobby.
-      if (state.phase !== 'map' && state.phase !== 'preview' && state.phase !== 'city') return 'wrong-phase';
+      // §2.3 — the loadout changes on the map, in a preview, in a City's lobby, and between Ring rungs.
+      if (state.phase !== 'map' && state.phase !== 'preview' && state.phase !== 'city' && state.phase !== 'ring') return 'wrong-phase';
       if (action.uids.length > 3) return 'team-too-large';
       if (action.uids.some((u) => !state.box.some((m) => m.uid === u))) return 'unknown-pokemon';
       if (!action.uids.some((u) => (state.box.find((m) => m.uid === u)?.hp ?? 0) > 0)) return 'no-healthy-pokemon';
       return undefined;
     }
     case 'set-lead':
-      if (state.phase !== 'map' && state.phase !== 'preview' && state.phase !== 'city') return 'wrong-phase';
+      if (state.phase !== 'map' && state.phase !== 'preview' && state.phase !== 'city' && state.phase !== 'ring') return 'wrong-phase';
       if (!state.activeUids.includes(action.uid)) return 'unknown-pokemon';
       return undefined;
 
@@ -1099,8 +1327,8 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (state.phase !== 'dojo') return 'wrong-phase';
       const mon = state.box.find((m) => m.uid === action.uid);
       if (!mon) return 'unknown-pokemon';
-      // §6.4.3 — the list is this stage's, so evolving changes what is on the menu.
-      if (!ctx.content.species(mon.speciesId).tutorMoves.includes(action.moveId)) return 'not-on-tutor-list';
+      // §6.4.3 — the list is this stage's (every reached stage's, in the city Dojo), so evolving changes the menu.
+      if (!tutorListFor(state, mon, ctx.content).includes(action.moveId)) return 'not-on-tutor-list';
       if (mon.pool.includes(action.moveId)) return 'already-known';
       return state.money < dojoPrice(state, ctx.content, 'move') ? 'cannot-afford' : undefined;
     }
@@ -1118,6 +1346,41 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
 
     case 'leave-dojo':
       return state.phase === 'dojo' ? undefined : 'wrong-phase';
+
+    case 'enter-ring': {
+      if (state.phase !== 'dojo') return 'wrong-phase';
+      const ring = state.city?.ring;
+      if (!ring || ring.entered || ring.done) return 'ring-closed';
+      return state.money < ring.fee ? 'cannot-afford' : undefined;
+    }
+    case 'ring-fight': {
+      const ring = state.city?.ring;
+      if (state.phase !== 'ring' || !ring) return 'wrong-phase';
+      if (!ring.entered || ring.done || ring.cleared >= ring.rungs.length) return 'ring-closed';
+      if (!state.activeUids.some((u) => (state.box.find((m) => m.uid === u)?.hp ?? 0) > 0)) return 'no-healthy-pokemon';
+      return undefined;
+    }
+    case 'ring-cash-out': {
+      const ring = state.city?.ring;
+      if (state.phase !== 'ring' || !ring) return 'wrong-phase';
+      return ring.entered && !ring.done ? undefined : 'ring-closed';
+    }
+    case 'ring-pick': {
+      const ring = state.city?.ring;
+      if (state.phase !== 'relic-pick' || !ring?.pick) return 'wrong-phase';
+      return action.relicId === null || ring.pick.includes(action.relicId) ? undefined : 'not-offered';
+    }
+    case 'spin-wheel': {
+      if (state.phase !== 'game-corner') return 'wrong-phase';
+      const { minStake, maxStake, step } = CASINO.wheel;
+      if (!Number.isInteger(action.stake) || action.stake < minStake || action.stake > maxStake || action.stake % step !== 0) return 'bad-stake';
+      return state.money < action.stake ? 'cannot-afford' : undefined;
+    }
+    case 'pull-slots':
+      if (state.phase !== 'game-corner') return 'wrong-phase';
+      return state.money < CASINO.slots.stake ? 'cannot-afford' : undefined;
+    case 'leave-game-corner':
+      return state.phase === 'game-corner' ? undefined : 'wrong-phase';
 
     case 'leave-center':
       return state.phase === 'center' ? undefined : 'wrong-phase';
@@ -1156,7 +1419,10 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (state.phase !== 'shop' || !state.pendingShop) return 'wrong-phase';
       const price = rerollPrice(state.pendingShop);
       if (price === null) return 'no-rerolls-left';
-      return state.money < price ? 'cannot-afford' : undefined;
+      if (state.money < price) return 'cannot-afford';
+      // §2.11.2 — a store floor with nothing else to draw is not charged for showing the same shelf again.
+      if (action.floor && shopKindFor(state) === 'department-store' && !floorRestockable(state, action.floor, ctx.content)) return 'nothing-to-restock';
+      return undefined;
     }
 
     case 'leave-shop':

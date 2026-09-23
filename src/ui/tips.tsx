@@ -342,3 +342,67 @@ export function dojoTip(): ReactNode {
 export function badgeTip(name: string, description: string): ReactNode {
   return <Tip title={name} meta={['Badge']} body={description} footer="Kept for the rest of the run." />;
 }
+
+// ── The city (v0.7.2) ─────────────────────────────────────────────────────────────────────────────────────
+
+/** §2.9.4.1 — the Ring's door inside the Dojo: the fee, the ladder, and whether it is still open this visit. */
+export function ringDoorTip(fee: number, prizes: string[], open: boolean): ReactNode {
+  return <Tip title="Challenge Ring" meta={open ? [`${fee} ₽ to enter`] : ['Done for this visit']} body={CITY_DOOR_HINT.ring} footer={`Pays ${prizes.join(' → ')}.`} />;
+}
+
+/** §2.9.4.1 — a rung of the ladder, by what it pays and whether it is behind you. */
+export function rungTip(index: number, prize: string, level: number, state: 'won' | 'next' | 'ahead', top: boolean): ReactNode {
+  const meta = [`Rung ${index + 1}`, `Lv ${level}+`, state === 'won' ? 'Won' : state === 'next' ? 'Next' : 'Ahead'];
+  const body = top
+    ? 'The top of the ladder: win it to pick one relic of three, and the ladder pays out what it banked.'
+    : state === 'won'
+      ? 'Banked — yours if you cash out, gone if you lose a rung.'
+      : 'Win the rung to bank it.';
+  return <Tip title={prize} meta={meta} body={body} />;
+}
+
+/** §2.9.4.1 — the Ring's own heading bubble. */
+export function ringTip(): ReactNode {
+  return <Tip title="Challenge Ring" body={CITY_DOOR_HINT.ring} footer="Nothing heals between rungs. Losing one loses the ladder, never the run." />;
+}
+
+/** §2.9.4.1 — what the ladder has paid so far. */
+export function bankedTip(banked: number): ReactNode {
+  return <Tip title="Banked" meta={[`${banked} ₽`]} body="What the rungs you have won have paid. Yours if you cash out; gone if you lose a rung." />;
+}
+
+/** §2.11.5 — the Game Corner's heading bubble. */
+export function gameCornerTip(): ReactNode {
+  return <Tip title="Game Corner" body="Two machines, the odds printed beside each. Both return a little less than they take, on average — they turn money you cannot use into a chance at something you can." />;
+}
+
+/** §2.11.2 / §2.9.3 — the re-roll button: the ladder, and why it is off when it is. */
+export function rerollTip(ladder: number[], price: number | null, unsold: number, restockable: boolean, floor: boolean): ReactNode {
+  const body =
+    price === null
+      ? 'No re-rolls left this visit.'
+      : unsold === 0
+        ? 'Nothing left to re-roll — you bought the shelf.'
+        : !restockable
+          ? 'Nothing else to stock on this floor — a re-roll would show the same shelf.'
+          : `Re-rolls the ${unsold} unsold slot${unsold === 1 ? '' : 's'}${floor ? ' on this floor' : ''}. What you already bought stays yours.`;
+  return <Tip title="Re-roll" meta={[`${ladder.join(' · ')} ₽`, ladder.length === 1 ? 'One per visit' : `${ladder.length} per visit`]} body={body} />;
+}
+
+/** §2.9.4.1 — the top rung's prize: Rares, or what the account has open when it has fewer than three (§8.6.2). */
+export function ringPrizeTip(banked: number, allRare: boolean): ReactNode {
+  const body = allRare
+    ? 'A Rare relic, chosen from three — the one prize the Ring holds back for the top rung.'
+    : 'A relic, chosen from three. Rares join this offer as the account opens them; until then the rarity below fills the gap.';
+  return <Tip title="The Ring's prize" body={body} footer={banked ? `The ${banked} ₽ the ladder banked is paid out as well.` : 'Leaving all three is allowed.'} />;
+}
+
+/** §2.11.5 — a machine's printed table, as the bubble on its name. */
+export function machineTip(machine: 'wheel' | 'slots', table: string, ev: number): ReactNode {
+  return <Tip title={machine === 'wheel' ? 'The Wheel' : 'The Slots'} meta={[`Returns ${Math.round(ev * 100)} % on average`]} body={table} footer="The outcome is rolled against this table first, then shown. The house edge is real." />;
+}
+
+/** §2.11.2 — a Department Store floor. */
+export function floorTip(label: string, count: number): ReactNode {
+  return <Tip title={label} meta={[`${count} on the shelf`]} body="Each floor sells one kind of thing. A re-roll restocks the floor you are on; the others stay as they are." />;
+}

@@ -169,3 +169,49 @@
 }
 .sellBtn:hover { border-color: var(--border-strong); }
 .sellBtn:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+/* §2.11.2 — the Department Store: lift buttons, then the floor's shelf. */
+.store {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.floors {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.floor {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.floor[data-state='active'] {
+  border-color: var(--ink-primary);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+}
+.floor:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.floorNo {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+}
+.floorPanel { min-height: 0; display: grid; }
+/* A hidden floor stays hidden: the class above would otherwise override the attribute. */
+.floorPanel[hidden] { display: none; }

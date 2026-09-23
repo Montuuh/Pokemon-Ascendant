@@ -18,6 +18,7 @@
   --sp-10: 64px;
 
   /* ---- Radius scale (§1.1, warm/rounded per Pillar 5) ---- */
+  --radius-xs: 3px;
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 22px;
@@ -100,6 +101,10 @@
   --motion-base: 220ms;
   --motion-slow: 350ms;
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* §2.11.5 — the Game Corner: the wheel's long decelerating spin and the reels' shuffle. */
+  --motion-spin: 2400ms;
+  --motion-reel: 700ms;
+  --ease-spin: cubic-bezier(0.15, 0.85, 0.25, 1);
 
   /* ---- Z-layers (§1.1) ---- */
   --z-hud: 100;
@@ -130,5 +135,7 @@
     --motion-fast: 0ms;
     --motion-base: 0ms;
     --motion-slow: 0ms;
+    --motion-spin: 0ms;
+    --motion-reel: 0ms;
   }
 }

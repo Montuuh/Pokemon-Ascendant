@@ -46,6 +46,20 @@ const SCREENS = {
   dojo: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(600)'], clicks: ['door-dojo'], match: [/screens\/DojoScreen/, /components\/MoveManager/] },
   center: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.trauma(2)', 'run.pay(600)'], clicks: ['door-center'], match: [/screens\/CenterScreen/] },
   shop: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.pay(600)', 'run.wear("leftovers")'], clicks: ['door-mart'], match: [/screens\/ShopScreen/, /components\/ItemCard/] },
+  // v0.7.2 — the city: the Ring behind the Dojo (§2.9.4.1), its prize, the Game Corner (§2.11.5), the store's floors (§2.11.2).
+  ring: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-dojo', 'door-ring'], match: [/screens\/RingScreen/] },
+  'ring-prize': {
+    url: '/?screen=menu',
+    setup: [
+      'run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)',
+      'run.dispatch({ type: "enter-building", building: "dojo" })', 'run.dispatch({ type: "enter-ring" })',
+      ...[0, 1].flatMap(() => ['run.dispatch({ type: "ring-fight" })', 'run.dispatch({ type: "finish-combat", report: { outcome: "victory", team: a.run.state().activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: a.run.state().balls, turns: 5 } })']),
+      'goTo("map")',
+    ],
+    match: [/screens\/RingPrizeScreen/, /components\/RelicOffer/, /screens\/LegendaryScreen/],
+  },
+  'game-corner': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner', 'btn-spin', 'btn-pull'], match: [/screens\/GameCornerScreen/] },
+  store: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(3000)'], clicks: ['door-department-store'], match: [/screens\/ShopScreen/] },
   merchant: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("merchant")', 'goTo("map")'], match: [/screens\/ShopScreen/] },
   aid: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("aid")', 'goTo("map")'], match: [/screens\/AidScreen/] },
   mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("mystery")', 'goTo("map")'], match: [/screens\/EventScreen/] },

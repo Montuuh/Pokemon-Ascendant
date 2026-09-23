@@ -21,6 +21,7 @@ import { nextAction } from '@/sim/balance/autoPlayer';
 //   __ascendant.run.goto('merchant')   walk to the nearest node of a kind, auto-playing every fight on the way
 //   __ascendant.run.city()             stand the run in Pallet Town (1: Celadon City) without walking there
 //   __ascendant.run.levelTo(11)        put the Lead at a level, learnset and all
+//   __ascendant.run.heal()             refill every Box Pokémon's bars, as a Center would (levelTo does not)
 //   __ascendant.run.grantTm('tm05-surf')
 //   __ascendant.run.wear('leftovers')   put a held item in the bag (§7.4)
 //   __ascendant.run.wear()              one of every generic held item, for eyeballing the inventory drawer
@@ -67,6 +68,8 @@ export interface AscendantRunTools {
   goto: (kind: sim.NodeKind, stopAtEvolution?: boolean) => string;
   /** Put a Pokémon at a level, learnset and all — the fast way to stand one at its evolution threshold. */
   levelTo: (level: number, uid?: string) => void;
+  /** §2.11.1 — every Box Pokémon to full HP and no status, as the Center's heal: levelTo raises the level, not the HP. */
+  heal: () => void;
   /** Drop TMs into the bag without waiting on §7.5's loot roll. */
   grantTm: (...tmIds: string[]) => void;
   /** §7.4 — drop held items into the bag. No argument means one of every generic item. */
@@ -152,6 +155,12 @@ export function installDevTools(): void {
         }
         useRunStore.setState({ run: { ...run, box } });
         return added;
+      },
+      heal: () => {
+        const run = useRunStore.getState().run;
+        if (!run) return;
+        const content = combat().ctx.content;
+        useRunStore.setState({ run: { ...run, box: run.box.map((m) => ({ ...m, hp: sim.maxHpOf(m, content), status: null, confusionTurns: 0 })) } });
       },
       levelTo: (level, uid) => {
         const run = useRunStore.getState().run;

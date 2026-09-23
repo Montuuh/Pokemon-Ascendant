@@ -6,7 +6,8 @@ import { BIOMES, ELITE, ELITE_WILD, GYM, LANE_THEME, STATUS_ACCENT_FALLBACK, STA
 import { hasModifier, modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
 import { isThreeStageLine } from '../meta/bond';
-import type { ActiveSetup, MapNode, PartyMon, RunState } from './types';
+import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
+import { RING } from './cities';
 
 /** The catch consumable's catalog id (§7.2.5). */
 const BALL_ITEM = 'poke-ball';
@@ -275,6 +276,34 @@ function applyModifiers(scenario: ScenarioDef, run: RunState): ScenarioDef {
         : {}),
     })),
   };
+}
+
+/**
+ * §2.9.4.1 — a Challenge Ring rung as a fight: an Elite-class trainer (every Pokémon two-phase) in the arena,
+ * folded through the same Region tier, accent, modifiers and perks as any route fight, so the Ring in Celadon
+ * is Region 2's Ring. No balls: a rival's Pokémon are not for catching.
+ */
+export function buildRingScenario(run: RunState, rung: RingRung, index: number, content: ContentRegistry, rng: GameRng): ScenarioDef {
+  const base: ScenarioDef = {
+    id: `ring-${run.city?.id ?? 'city'}-${index}`,
+    name: rung.trainer,
+    description: rung.line,
+    kind: 'trainer',
+    stage: 'gym',
+    seed: rng.cursor,
+    trainer: { name: rung.trainer, sprite: rung.sprite },
+    player: {
+      team: activeSetups(run, content),
+      leadIndex: 0,
+      consumables: [...run.consumables],
+      balls: 0,
+      relics: [...run.relics],
+      badges: [...run.badges],
+      ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
+    },
+    enemies: rung.team.map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: RING.phaseCount })),
+  };
+  return applyPerks(applyModifiers(applyRegion(base, run, content), run), run);
 }
 
 export function buildScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng, wildChoice?: string): ScenarioDef | null {

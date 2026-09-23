@@ -41,7 +41,7 @@ export const TOWNS: Record<CityId, TownLayout> = {
       { door: 'center', building: 'center', box: [6.3, 11.6, 11.7, 18.5], plate: 'bottom' },
       { door: 'department-store', building: 'mart', box: [51.6, 3.5, 23.4, 40], plate: 'bottom' },
       { door: 'dojo', building: 'dojo', box: [6.1, 65.6, 13.8, 23.8], plate: 'bottom' },
-      { door: 'game-corner', box: [50.8, 66.7, 16.9, 22.3], plate: 'bottom' },
+      { door: 'game-corner', building: 'game-corner', box: [50.8, 66.7, 16.9, 22.3], plate: 'bottom' },
       { door: 'black-market', box: [70, 75.7, 6, 13.6], plate: 'top' },
       { door: 'safari', box: [82, 15.7, 17.5, 52.8], plate: 'top' },
       { door: 'gate', box: [31, 0, 8.5, 14], plate: 'bottom' },

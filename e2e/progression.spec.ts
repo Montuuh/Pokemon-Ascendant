@@ -97,13 +97,14 @@ test('the Dojo sells as many services as the money covers — §2.9.4', async ({
   expect(poolAfter).toBe(poolBefore + 2);
   await page.screenshot({ path: 'playtest/run-dojo.png' });
 
-  // §2.11.0 — the Challenge Ring's door is in here, and it says it is not open yet.
-  await page.getByTestId('door-ring').click();
+  // §2.11.0 — the extra-moves counter is a door in here that says it is not open yet (the Ring is open: city.spec).
+  await expect(page.getByTestId('door-ring')).toBeVisible();
+  await page.getByTestId('door-extra-moves').click();
   await expect(page.getByTestId('door-soon')).toBeVisible();
   await page.getByTestId('btn-door-back').click();
   await expect(page.getByTestId('door-soon')).toHaveCount(0);
   // …and Escape closes it too.
-  await page.getByTestId('door-ring').click();
+  await page.getByTestId('door-extra-moves').click();
   await expect(page.getByTestId('door-soon')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('door-soon')).toHaveCount(0);

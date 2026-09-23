@@ -1,0 +1,8 @@
+/* §2.11.5 — the reel faces' palette. Tokens only, so the pixels follow the theme. */
+
+.face { display: block; image-rendering: pixelated; }
+.ink { fill: var(--ink-primary); }
+.red { fill: var(--brand-red); }
+.leaf { fill: var(--type-grass); }
+.gold { fill: var(--accent-action); }
+.shine { fill: var(--surface-1); }

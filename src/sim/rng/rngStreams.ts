@@ -5,7 +5,8 @@ import { GameRng } from './gameRng';
 // The fmix32 finaliser (MurmurHash3) is a deliberate departure from the Unity build: xorshift32's first
 // outputs are strongly correlated for nearby seeds (1001, 1002, …), which made "different fights" open with
 // the same roll. Parity note recorded in docs/migration/from-unity.md §5.
-export const RNG_STREAM_NAMES = ['MapRNG', 'CombatRNG', 'LootRNG', 'MysteryRNG', 'EncounterRNG'] as const;
+// CasinoRNG (§2.11.5) is its own stream so a Game Corner pull never moves a fight's or a shelf's rolls.
+export const RNG_STREAM_NAMES = ['MapRNG', 'CombatRNG', 'LootRNG', 'MysteryRNG', 'EncounterRNG', 'CasinoRNG'] as const;
 export type RngStreamName = (typeof RNG_STREAM_NAMES)[number];
 
 /** §10.8.6 — JSON-safe snapshot of every stream cursor, persisted in the run save. */
@@ -44,6 +45,7 @@ export class RngStreams {
       LootRNG: make('LootRNG'),
       MysteryRNG: make('MysteryRNG'),
       EncounterRNG: make('EncounterRNG'),
+      CasinoRNG: make('CasinoRNG'),
     };
   }
 

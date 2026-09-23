@@ -8,6 +8,9 @@ import { CityScreen } from '@/ui/screens/city/CityScreen';
 import { CombatScreen } from '@/ui/screens/CombatScreen';
 import { DojoScreen } from '@/ui/screens/DojoScreen';
 import { EventScreen } from '@/ui/screens/EventScreen';
+import { GameCornerScreen } from '@/ui/screens/GameCornerScreen';
+import { RingPrizeScreen } from '@/ui/screens/RingPrizeScreen';
+import { RingScreen } from '@/ui/screens/RingScreen';
 import { LegendaryScreen } from '@/ui/screens/LegendaryScreen';
 import { HubScreen } from '@/ui/screens/HubScreen';
 import { SettingsScreen } from '@/ui/screens/SettingsScreen';
@@ -67,6 +70,10 @@ function Screens() {
     if (runPhase === 'aid') return <AidScreen />;
     // §2.11 — a Gym is behind the run and the town is the lobby; its buildings open the screens above.
     if (runPhase === 'city') return <CityScreen />;
+    // §2.9.4.1 — the Challenge Ring between rungs, and its top prize. §2.11.5 — the Game Corner.
+    if (runPhase === 'ring') return <RingScreen />;
+    if (runPhase === 'relic-pick') return <RingPrizeScreen />;
+    if (runPhase === 'game-corner') return <GameCornerScreen />;
     // §7.3.7 — the Gym is beaten and the 1-of-3 is open; the run is not over until it is answered.
     if (runPhase === 'legendary') return <LegendaryScreen />;
     return (

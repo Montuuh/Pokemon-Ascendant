@@ -291,8 +291,11 @@ test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ p
     (e.run as unknown as { fill: (n: number) => void }).fill(3);
     // The whole Box, not only the Lead: XP scales with the level gap (§6.2.1), so a Lv 20 Lead no longer drags
     // a Lv 6 bench up to the Gym on its own.
-    const run = e.run as unknown as { state: () => { box: { uid: string }[] }; levelTo: (n: number, uid?: string) => void };
+    const run = e.run as unknown as { state: () => { box: { uid: string }[] }; levelTo: (n: number, uid?: string) => void; heal: () => void };
     for (const m of run.state().box) run.levelTo(20, m.uid);
+    run.heal();
+    // Straight to the Gym: an unseeded route can wear the team down before it, and the route is not under test.
+    (e.run as unknown as { jump: (k: string) => boolean }).jump('gym');
     (e.run as unknown as { goto: (k: string) => string }).goto('gym');
   });
 
@@ -302,6 +305,8 @@ test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ p
     await page.waitForTimeout(200);
     if (result === 'defeat') test.skip(true, 'the Gym won this seed; the ending is covered by the full-run test');
   }
+  const outcome = await page.evaluate(() => window.__ascendant!.run.state()?.outcome);
+  test.skip(outcome === 'defeat', 'the Gym won this seed; the ending is covered by the full-run test');
 
   // The reward, the evolutions and the recruit all queue ahead of the Gym's own rewards (§2.4).
   if ((await page.getByTestId('reward-screen').count()) > 0) await page.getByTestId('btn-claim').click();

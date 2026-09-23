@@ -40,6 +40,8 @@ interface RunStore {
   dispatch: (action: RunAction) => boolean;
   /** Enter the pending node's fight: reduce, then boot the combat store with the generated scenario. */
   beginCombat: () => boolean;
+  /** §2.9.4.1 — fight the Challenge Ring's next rung: the run builds the scenario, the combat store runs it. */
+  startRingFight: () => boolean;
   /** Read the finished combat back into the run. Safe to call once the combat has an outcome. */
   finishCombat: () => boolean;
   /** Rebuild the in-flight fight after a reload, from the scenario the save carries (§10.8.6). */
@@ -95,6 +97,8 @@ export const useRunStore = create<RunStore>((set, get) => ({
       // §2.11 — a City visit: the doors, what was bought and sold at them, and the gate out.
       'pick-legendary', 'leave-aid', 'leave-shop', 'leave-center', 'buy', 'sell-item', 'use-therapy',
       'enter-building', 'depart-city',
+      // v0.7.2 — the Ring's fee, its cash-out and prize, and every Game Corner result (a reload must show the same).
+      'enter-ring', 'ring-cash-out', 'ring-pick', 'spin-wheel', 'pull-slots', 'leave-game-corner',
     ];
     if (AUTOSAVE.includes(action.type)) get().save();
     return true;
@@ -115,6 +119,13 @@ export const useRunStore = create<RunStore>((set, get) => ({
     if (next.phase === 'combat' && next.pendingScenario) {
       useCombatStore.getState().startScenario(next.pendingScenario, next.pendingScenario.seed);
     }
+    return true;
+  },
+
+  startRingFight: () => {
+    if (!get().dispatch({ type: 'ring-fight' })) return false;
+    const next = get().run!;
+    if (next.phase === 'combat' && next.pendingScenario) useCombatStore.getState().startScenario(next.pendingScenario, next.pendingScenario.seed);
     return true;
   },
 

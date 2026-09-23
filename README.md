@@ -49,11 +49,11 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.7.1 — The seam and the town.** The run no longer ends at the first Gym: it stops in Pallet Town, a drawn
-lobby whose buildings are the doors (Pokémon Center, Poké Mart, Dojo), leaves through the gate into Region 2,
-passes Celadon City, and ends at the third Gym. Routes carry a field nurse and a travelling merchant, and
-statuses last between fights. Regions 2 and 3 are placeholders at a higher level until v0.7.3. Next is v0.7.2
-*The city* — Celadon's Department Store, Game Corner and Challenge Ring. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
+**v0.7.2 — The city.** A run crosses three Regions and stops in two drawn Cities between them. Pallet Town has a
+Pokémon Center, a Poké Mart and a Dojo; Celadon City is the big one — a five-floor Department Store, a Dojo with a
+wider tutor list, and the Game Corner's Wheel and Slots with their odds printed. Both Dojos hold the Challenge
+Ring, a ladder of hard trainer fights you pay to climb and can cash out of. Regions 2 and 3 are placeholders at a
+higher level until v0.7.3. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Run it locally
 

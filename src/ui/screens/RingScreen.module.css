@@ -1,0 +1,160 @@
+/* §2.9.4.1 — the Challenge Ring between rungs: the ladder · the next rival · who fights · fight or cash out. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow: hidden;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+.purse { display: flex; align-items: center; gap: var(--sp-3); }
+.banked,
+.wallet {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  font-weight: 700;
+}
+.banked { border-color: var(--accent-action); }
+
+.body {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr) 300px;
+  gap: var(--sp-4);
+  min-height: 0;
+}
+
+/* The ladder: rungs stacked like the steps they are, the next one lit. */
+.ladder {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rung {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+.rungMark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-weight: 700;
+}
+.rungPrize { display: inline-flex; align-items: center; gap: var(--sp-1); font-weight: 700; }
+.rungLevel { color: var(--ink-secondary); font-size: var(--type-small); }
+.won { border-color: var(--accent-positive); }
+.won .rungMark { background: var(--accent-positive); color: var(--ink-on-accent); }
+.next { border-color: var(--accent-action); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-action) 35%, transparent); }
+.next .rungMark { background: var(--accent-action); color: var(--ink-on-accent); }
+.ahead { border-style: dashed; }
+
+/* The next rival, in full. */
+.rival {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-self: start;
+  align-content: start;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+}
+.sprite { image-rendering: pixelated; }
+.rivalBody { display: grid; gap: var(--sp-3); align-content: start; }
+.rivalName { margin: 0; font-size: var(--type-h2); }
+.team { display: grid; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; }
+.member {
+  display: grid;
+  grid-template-columns: 40px 1fr auto auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+.memberName { font-weight: 700; }
+.types { display: inline-flex; gap: var(--sp-1); }
+
+.side {
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-3);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.toast {
+  margin: 0 auto 0 0;
+  padding: var(--sp-2) var(--sp-4);
+  border-left: 4px solid var(--accent-warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-1);
+  font-size: var(--type-small);
+}
+.cashOut,
+.fight {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cashOut { background: var(--surface-2); color: var(--ink-primary); }
+.fight { background: var(--accent-action); color: var(--ink-on-accent); font-size: var(--type-h3); }
+.fight:disabled { cursor: not-allowed; border-style: dashed; }
+.cashOut:focus-visible,
+.fight:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+@media (max-width: 1100px) {
+  .body { grid-template-columns: 200px minmax(0, 1fr); }
+  .side { grid-column: 1 / -1; }
+}

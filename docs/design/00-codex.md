@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) as of 2026-09-23. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -37,6 +37,11 @@ Pokémon.
 - **A City** (after Gyms 1 and 2) is a **lobby** — a drawn town whose buildings are doors, no visit budget, the
   gate leaves when you say so. **Pallet Town** (4 doors) then **Celadon City** (more, dearer). Routes keep only a
   nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
+  Celadon is the bigger City: a five-floor **Department Store**, a Dojo whose tutor list spans every stage the
+  line has reached, and the **Game Corner** — the Wheel (stake ≤200 ₽, EV 0.96) and the Slots (50 ₽, ×50 jackpot,
+  EV 0.94), tables printed, outcome rolled first. Both Dojos hold the **Challenge Ring**: 2 rungs / 3 rungs of
+  Elite-class rivals, no healing between, cash out or climb; money below, a Rare relic 1-of-3 on top, no XP.
+  Meant to be lost (ladder ≈1 in 6 in the town, under 1 in 10 in the city). *(2026-09-23.)*
   Superseded: a City was a **Choice Plaza** — Shop and Reflection always, plus **2 of** {City Gym,
   Center, Grand Dojo, Black Market}.
 - **Region Modifiers are per-Region**: exactly 1 active, re-picked each Region, expiring with it. Relics and
@@ -85,7 +90,8 @@ Giovanni 30 % in R3, otherwise a Specialist. The **Rival counter-picks your star
 **Mystery Events** — 22, tagged 🟢 Safe 30 % / 🟡 Tradeoff 50 % / 🔴 Gamble 20 %, badge visible before entering,
 never repeating in a run.
 **Shops** — Region: 3 consumables + 2 relics + ball + 1 special, re-roll 25/50/100 ₽. City: 8 **team-curated**
-slots, +30 % prices, sells at 30 % (the only money exit).
+slots, +30 % prices, sells at 30 % (the only money exit). Celadon's Department Store: five floors, 21 slots, a
+re-roll restocks one floor.
 
 ---
 

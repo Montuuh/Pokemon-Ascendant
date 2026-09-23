@@ -59,8 +59,11 @@ it; the implementer removes it in the same change.
 ### D8 — Still works, in every detail
 After the change, every interactive element on the modified screen does what it says: hover opens the right
 bubble, focus is visible and Escape closes, buttons have accessible names, the deep-link (`?screen=` /
-`?scenario=`) still lands, and nothing overflows or wraps into a column at 1920 × 1080 or 1280 × 720. The
-e2e for the screen passes and its screenshot has been *read*.
+`?scenario=`) still lands, and nothing overflows or wraps into a column at 1920 × 1080 or 1280 × 720 — a
+card's content spilling out of its card counts, not only a scrolling page. The e2e for the screen passes and its
+screenshot has been *read*. **An animated outcome reveals its result when the animation lands**: a result line,
+a lit row or a wallet that updates while the wheel is still turning has told the player before the machine did.
+*(Added 2026-09-23 from the v0.7.2 Game Corner review.)*
 
 ### D9 — Pixel-art kin
 The battle sprites, portraits and type labels are pixel art. Anything placed beside them is either pixel art

@@ -119,6 +119,12 @@ export type RunPhase =
   | 'shop'
   /** §2.10 — a Mystery Event is on screen, waiting for a choice. */
   | 'event'
+  /** §2.9.4.1 — on the Challenge Ring's ladder, between rungs: fight the next one or cash out. */
+  | 'ring'
+  /** §2.9.4.1 — the Ring's top rung is won and its Rare relic 1-of-3 is open. */
+  | 'relic-pick'
+  /** §2.11.5 — inside Celadon's Game Corner, at the Wheel and the Slots. */
+  | 'game-corner'
   /**
    * §7.3.7 — a Gym is beaten and the Legendary 1-of-3 is open. It sits *between* the Gym and the end of the
    * run rather than beside the reward screen, because it is the Gym's own reward and the last decision the
@@ -190,7 +196,13 @@ export interface ShopSlot {
   sold: boolean;
   /** How many the slot hands over. Absent is one; the merchant's Poké Balls come three to a slot (§2.9.2). */
   qty?: number;
+  /** §2.11.2 — the Department Store floor the slot is on. Absent everywhere else. */
+  floor?: StoreFloor;
 }
+
+/** §2.11.2 — the Department Store's floors, one category each, bottom to top. */
+export const STORE_FLOORS = ['consumables', 'tms', 'held-items', 'relics', 'rare'] as const;
+export type StoreFloor = (typeof STORE_FLOORS)[number];
 
 export interface ShopStock {
   slots: ShopSlot[];
@@ -213,7 +225,46 @@ export interface CarriedStatus {
 export type CityId = 'pallet-town' | 'celadon-city';
 
 /** §2.11.4 — the buildings a player can walk into. Doors still in development are drawn by the UI only. */
-export type CityBuilding = 'center' | 'mart' | 'dojo';
+export type CityBuilding = 'center' | 'mart' | 'dojo' | 'game-corner';
+
+/** §2.9.4.1 — one rung of the Challenge Ring: a rival, their team (seen before you fight it), and the prize. */
+export interface RingRung {
+  trainer: string;
+  sprite: string;
+  line: string;
+  team: { species: string; level: number }[];
+  /** Poké Dollars banked for winning it, or the Rare relic 1-of-3 at the top of the ladder. */
+  prize: { money: number } | { relicPick: true };
+}
+
+/** §2.9.4.1 — the Challenge Ring for this City visit. Rolled on arrival; resolves once per visit. */
+export interface RingState {
+  fee: number;
+  rungs: RingRung[];
+  /** The fee is paid and the ladder is open. */
+  entered: boolean;
+  /** Rungs won so far. */
+  cleared: number;
+  /** Money the won rungs have paid, held until a cash-out and lost with a lost rung. */
+  banked: number;
+  /** A rung's fight is in progress. */
+  fighting: boolean;
+  /** The ladder is over for this visit: cashed out, cleared or lost. */
+  done: boolean;
+  /** The top rung's prize, while it is being picked. */
+  pick: string[] | null;
+}
+
+/** §2.11.5 — the last thing a Game Corner machine did, so the screen can show it and a reload shows the same. */
+export interface CasinoResult {
+  machine: 'wheel' | 'slots';
+  stake: number;
+  multiplier: number;
+  /** What paid out: `stake × multiplier`. The stake itself is already gone. */
+  payout: number;
+  /** The wheel segment it stopped on, or the three reel faces. Presentation, drawn *after* the outcome. */
+  face: number | string[];
+}
 
 /** §2.11 — the City the run is standing in. Everything here was rolled on arrival, so re-entering never re-rolls. */
 export interface CityState {
@@ -222,6 +273,10 @@ export interface CityState {
   shop: ShopStock;
   /** §2.11.3 — the three Region Modifiers the gate offers. Picking one leaves the City. */
   reflection: string[];
+  /** §2.9.4.1 — the Challenge Ring inside this City's Dojo. */
+  ring: RingState | null;
+  /** §2.11.5 — each Game Corner machine's last result, for the screen. */
+  casino: { wheel: CasinoResult | null; slots: CasinoResult | null };
 }
 
 export interface PendingRecruit {
@@ -427,8 +482,21 @@ export type RunAction =
   | { type: 'sell-item'; itemId: string }
   /** §2.9.2 — buy the stock in slot `index`. */
   | { type: 'buy'; index: number }
-  /** §2.9.3 — re-roll the unsold slots at 25 → 50 → 100 ₽. */
-  | { type: 'reroll-shop' }
+  /** §2.9.3 — re-roll the unsold slots at 25 → 50 → 100 ₽; in the Department Store, one floor's. */
+  | { type: 'reroll-shop'; floor?: StoreFloor }
+  /** §2.9.4.1 — pay the Challenge Ring's fee and step onto the ladder (from inside the Dojo). */
+  | { type: 'enter-ring' }
+  /** §2.9.4.1 — fight the next rung. */
+  | { type: 'ring-fight' }
+  /** §2.9.4.1 — take what the ladder has paid and leave it. */
+  | { type: 'ring-cash-out' }
+  /** §2.9.4.1 — the top rung's Rare relic, or null to leave all three. */
+  | { type: 'ring-pick'; relicId: string | null }
+  /** §2.11.5 — spin the Wheel for a stake of your choosing. */
+  | { type: 'spin-wheel'; stake: number }
+  /** §2.11.5 — pull the Slots at their fixed stake. */
+  | { type: 'pull-slots' }
+  | { type: 'leave-game-corner' }
   | { type: 'leave-shop' }
   /** §8.2.4 — a Centre's Therapy service: one Trauma stack off one Pokémon. */
   | { type: 'use-therapy'; uid: string }
@@ -473,7 +541,11 @@ export type RunRejectReason =
   /** §2.11.4 — a building this City does not have open. */
   | 'building-closed'
   /** §7.3.7 — a Legendary pick that names a relic the offer did not contain. */
-  | 'not-offered';
+  | 'not-offered'
+  /** §2.9.4.1 — the Ring is not open for this: already run this visit, not entered, or no rung left. */
+  | 'ring-closed' | 'nothing-to-restock'
+  /** §2.11.5 — a Wheel stake outside the table's range or off its step. */
+  | 'bad-stake';
 
 export interface RunReduceResult {
   state: RunState;

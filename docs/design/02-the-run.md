@@ -679,6 +679,12 @@ You may teach several things in one visit if you can afford them, and you may le
 | Off-learnset move | 150 ₽ | +30 %, and a wider list |
 | Ability (set or swap) | 200 ₽ | +30 % |
 
+**The wider list** is the tutor list of **every stage the line has reached**, not only the current one: a
+Venusaur in Celadon is offered what the Dojo teaches Bulbasaur, Ivysaur and Venusaur. The town Dojo keeps the
+current stage's list, so "delay the evolution to take a pre-form move" stays a real play there, and the city
+Dojo is where a run that evolved early buys back what it skipped. *(Settled while building v0.7.2, 2026-09-23:
+canon named the wider list without saying how much wider.)*
+
 The Dojo is the game's main Poké Dollar sink and its key deliberate-sculpt stop — the place where a run stops
 being what it was dealt and becomes what you built (Pillar 3). Region 1 has no Dojo at all, which is the
 teaching Region's own escalation: you play what you find until the first town.
@@ -696,7 +702,8 @@ Inside the Dojo, a second door: a **ladder of trainer fights you pay to climb**.
 - After each rung won, you choose: **cash out** — take everything the ladder has paid so far and leave — or
   **climb**. Losing a rung loses everything earned on this ladder, and the fallen keep their Trauma. It never
   ends the run.
-- Once per City visit (§2.11.0).
+- Once per City visit (§2.11.0). Every way off the ladder — cashing out, the top prize, a lost rung — walks back
+  into the Dojo the Ring is inside, not out to the town.
 
 The decision *is* the design: "two down, my Lead at half HP and asleep, and the third is a Fire team — do I
 stop?" Every rung is chosen with the next opponent in view (Pillar 1), and the ladder reuses the trainer-battle
@@ -707,7 +714,15 @@ It replaced the **City Gym** of the previous design — a full Gym-tier boss one
 Gym — and, unlike it, **pays no Badge** (§2.12.6).
 
 **What it pays.** Money on the lower rungs; the top rung pays what money cannot promise — a **Rare relic,
-1 of 3**, as after an Elite Trainer (§2.8.1). Cashing out takes everything paid so far.
+1 of 3**, as after an Elite Trainer (§2.8.1). Cashing out takes everything paid so far. **The prizes are the
+whole reward**: a rung pays no XP and drops nothing, because the Ring is a wager on the team you brought, not a
+place to grow it — and a ladder that levelled the team would be farmed rather than weighed.
+
+**An account that has not opened three Rares** (§8.6.2 — every Rare is Tier 2 or 3) is offered the rarity below
+in their place, the way every relic roll falls back (§7.3): the top of the ladder always holds a pick, never a
+silent nothing. The ladder and the Dojo door say "Relic" rather than "Rare relic" until the account can be paid
+in Rares, so the prize is never promised above what it will be. *(Found while building v0.7.2: a fresh account
+climbed the whole ladder for nothing.)*
 
 | | Entry | Rung 1 | Rung 2 | Rung 3 |
 |---|---|---|---|---|
@@ -729,11 +744,24 @@ Targets, measured by the balance harness with the team a run actually brings to 
 Rung 1 is winnable on purpose: a ladder whose first step is a wall is a toll, not a gamble — the cash-out only
 means something if the first prize is reachable. It is every rung after it that is brutal.
 
-**Starting values**, which the harness tunes rather than a hand: every rung is an Elite-class trainer with a
-full team; rung 1 stands at the City's Gym level **+2**, and each later rung **+3** more. In Pallet that is
-Lv 18, then Lv 21, against a Region 1 Gym whose ace is Lv 16. *(The user asked for it harder than a Gym
-and for the balance to be set to a low win rate, 2026-09-22.)* The fee, the prizes and the offsets are retuned
-with everything else in the global balance pass (backlog).
+**The rivals.** Every rung is an **Elite-class trainer** — two phases (§2.8.1), the Region's stat tier (§2.2.1)
+— drawn from the trainer rosters with distinct archetypes where they allow it, filled to a full team from the
+Elite and trainer pools, every Pokémon **evolved to its level** (§2.2.1) and the last one the ace, a level above
+the rest. The ladder is rolled on arrival, so the next rival is always on screen before you pay to fight it.
+
+| | Rung 1 | Each later rung | Team | Measured: rung 1 · rung 2 · ladder (runs) |
+|---|---|---|---|---|
+| **Pallet Town** | Gym ace **+7** (Lv 26) | **+3** | 3 | 0.64 · — · **0.17** (70) |
+| **Celadon City** | Gym ace **+16** (Lv 42) | **+4** | 4 | 0.47 · 0.17 · **0.04** (47) |
+
+The offsets are per City because the teams that reach Celadon are not the teams that reach Pallet, and they
+were set by the balance harness (`playRing`: a Center heal, the healthiest three, every rung climbed), not by
+hand — the canon starting values (+2, +3 a rung) let a Pallet team clear 63 % of ladders. **Attrition, not the
+step, is what makes the ladder lost**: with no healing between rungs, the second fight is played on what the
+first one left. `src/sim/balance/ring.test.ts` holds the bands (Pallet rung 1 0.35–0.85, ladder 0.02–0.35;
+Celadon rung 1 0.2–0.8, ladder under 0.25) at the harness's sample size. *(The user asked for it harder than a
+Gym and for the balance to be set to a low win rate, 2026-09-22. Tuned 2026-09-23.)* The fee, the prizes and
+the offsets are retuned with everything else in the global balance pass (backlog).
 
 ---
 
@@ -835,8 +863,23 @@ The run's largest economic surface, and always open. Its size is the difference 
 
 **Pallet Town — the Poké Mart.** One counter, **8 slots**, curated to your team.
 
-**Celadon City — the Department Store.** Several floors, each a category: consumables · TMs · Held Items ·
-relics · the rare counter. Far more stock than a Mart, and the only place a run ever sees that much at once.
+**Celadon City — the Department Store.** Five floors, each a category, each its own shelf and tab:
+
+| Floor | Stock |
+|---|---|
+| **1F Medicine** | two Tier-1 consumables, two Tier-2, one Tier-3, and Poké Balls |
+| **2F TMs** | four, each learnable by someone in the Box |
+| **3F Held items** | four |
+| **4F Relics** | two Common, two Uncommon |
+| **5F Rare counter** | two Rare relics and a Tier-4 consumable |
+
+Twenty-one slots against the Mart's eight: far more stock than a Mart, and the only place a run ever sees that
+much at once. Prices carry the City markup (§2.11.2.3). **A re-roll restocks the floor you are standing on**
+and leaves the others as they were, on the same 25 / 50 / 100 ₽ ladder (§2.9.3) — so fishing for a Rare costs
+one floor, not the TM you already decided to buy. **A floor with nothing new to draw cannot be re-rolled** — a Box
+that can learn one TM is not charged to see the same TM again. A floor whose relic rarity the account has not opened (§8.6.2)
+falls back a rarity, as every relic roll does (§7.3). *(Floor sizes and the per-floor re-roll settled while
+building v0.7.2, 2026-09-23: canon named the floors, not what was on them.)*
 
 ### §2.11.2.1 Curation
 
@@ -946,9 +989,11 @@ spinning multiplier wheel and, if its numbers were right and it was easy to play
 **Honest by construction.** The outcome is rolled against the printed table *first*, and the wheel's segment
 or the reels are then drawn to show it — so the odds on screen are exactly the odds and the machines are pure
 presentation. Every roll comes from the run's seeded RNG with its cursor saved (§10.7), so a reload shows the
-same next result: the casino cannot be save-scummed. The reels nod to the Gen I Game Corner machines (a 7 for
-the jackpot); the symbol set is chosen at build. Stakes and tables are first values, retuned in the global
-balance pass (backlog).
+same next result: the casino cannot be save-scummed. The Game Corner has its own RNG stream, so a spin never
+shifts a later fight or drop. The wheel's rim is the table: **fifty segments** (33 × ×0, 12 × ×2, 4 × ×4, 1 × ×8),
+each coloured by what it pays. The reels nod to the Gen I Game Corner machines: **cherry ×2 · bell ×4 · BAR ×10 ·
+7 ×50**, a paying pull shows three of a kind, and a losing one never does. Each machine keeps its own last result
+on screen. Stakes and tables are first values, retuned in the global balance pass (backlog).
 
 Its purpose is not income — it is **variance**. A pile of money too small to buy the thing you need is dead
 weight; the machines are the run's only way to turn it into a *chance* at the thing you need, at a known price

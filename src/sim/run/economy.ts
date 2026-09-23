@@ -1,6 +1,6 @@
 import type { ContentRegistry, RelicRarity } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
-import type { PartyMon, RunState, ShopSlot, ShopStock } from './types';
+import type { PartyMon, RunState, ShopSlot, ShopStock, StoreFloor } from './types';
 import { priceFor } from './regionModifiers';
 
 // §2.14 / docs/design/catalogs/economy.md — money, prices, drops and shop stock. Every number here names the
@@ -176,6 +176,103 @@ function teamSpecial(rng: GameRng, content: ContentRegistry, run: RunState, kind
   return itemId && kind !== 'tm' ? { kind: 'held-item', id: itemId, price: PRICES.heldItem, sold: false } : null;
 }
 
+/** §2.9.4.1 — a relic 1-of-N of one rarity, distinct, none already held: the Ring's top prize. */
+export function rollRelicOffer(rng: GameRng, content: ContentRegistry, held: readonly string[], rarity: RelicRarity, count: number, accountPool: readonly string[] | null = null): string[] {
+  const pool = content.allRelics().filter((r) => r.rarity === rarity && isOfferable(r) && inPool(r, accountPool) && !held.includes(r.id));
+  return drawDistinct(rng, pool, count).map((r) => r.id);
+}
+
+/**
+ * §2.9.4.1 — will the Ring's top prize be three Rares for this run? Not until the account has opened three it
+ * does not already hold (§8.6.2); until then the pick tops up from the rarity below. The screens ask this so
+ * the ladder never promises a Rare it cannot pay.
+ */
+export function rarePickOpen(content: ContentRegistry, held: readonly string[], accountPool: readonly string[] | null, count: number): boolean {
+  return content.allRelics().filter((r) => r.rarity === 'rare' && isOfferable(r) && inPool(r, accountPool) && !held.includes(r.id)).length >= count;
+}
+
+/**
+ * §2.11.2 — the Department Store, one floor per category (the order is `STORE_FLOORS`, bottom to top). Each floor
+ * follows the Mart's slot table for its category, only more of it — "far more stock than a Mart, and the only
+ * place a run ever sees that much at once":
+ *
+ *   consumables  two Tier-1, two Tier-2, a Tier-3, and Poké Balls on the counter
+ *   TMs          four the team can learn
+ *   held items   four
+ *   relics       two Common, two Uncommon
+ *   rare         two Rare relics and a Tier-4 consumable
+ *
+ * *(Settled while building v0.7.2: canon names the floors, not their size. Recorded in §2.11.2.)*
+ */
+function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor: StoreFloor, held: string[]): ShopSlot[] {
+  const pool = run.perks?.relicPool ?? null;
+  const tier = (t: number) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && c.tier === t);
+  const consumable = (t: number, n: number): ShopSlot[] =>
+    drawDistinct(rng, tier(t), n).map((def) => ({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 50, sold: false }));
+  const relics = (rarity: RelicRarity, n: number): ShopSlot[] => {
+    const out: ShopSlot[] = [];
+    for (let i = 0; i < n; i++) {
+      const id = rollRelic(rng, content, held, rarity, pool);
+      if (!id) break;
+      held.push(id);
+      out.push({ kind: 'relic', id, price: PRICES.relic[content.relic(id).rarity], sold: false });
+    }
+    return out;
+  };
+  switch (floor) {
+    case 'consumables':
+      return [...consumable(1, 2), ...consumable(2, 2), ...consumable(3, 1), { kind: 'ball', id: 'poke-ball', price: PRICES.ball, sold: false }];
+    case 'tms': {
+      const usable = content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
+      return drawDistinct(rng, usable, 4).map((tm) => ({ kind: 'tm', id: tm.id, price: PRICES.tm, sold: false }));
+    }
+    case 'held-items': {
+      const owned = ownedItems(run);
+      const items = content.allHeldItems().filter((i) => isOfferable(i) && !i.speciesLock && !owned.includes(i.id));
+      return drawDistinct(rng, items, 4).map((i) => ({ kind: 'held-item', id: i.id, price: PRICES.heldItem, sold: false }));
+    }
+    case 'relics':
+      return [...relics('common', 2), ...relics('uncommon', 2)];
+    case 'rare':
+      return [...relics('rare', 2), ...consumable(4, 1)];
+  }
+}
+
+/**
+ * §2.11.2 — can a re-roll put anything new on this floor? Only if the floor's pool holds something that is not
+ * already on its shelf: a Box that can learn one TM has a TMs floor that a re-roll would only charge to show again.
+ * The pools are the ones `storeFloor` draws from, with the same fallback across relic rarities (§7.3).
+ */
+export function floorRestockable(run: RunState, floor: StoreFloor, content: ContentRegistry): boolean {
+  const shown = new Set((run.pendingShop?.slots ?? []).filter((s) => s.floor === floor && !s.sold).map((s) => s.id));
+  const pool = run.perks?.relicPool ?? null;
+  const consumables = (...tiers: number[]) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && tiers.includes(c.tier)).map((c) => c.id);
+  const relics = (...rarities: RelicRarity[]) => {
+    const eligible = content.allRelics().filter((r) => isOfferable(r) && inPool(r, pool) && r.rarity !== 'legendary' && !run.relics.includes(r.id));
+    const wanted = eligible.filter((r) => rarities.includes(r.rarity));
+    return (wanted.length ? wanted : eligible).map((r) => r.id);
+  };
+  const candidates: Record<StoreFloor, () => string[]> = {
+    consumables: () => consumables(1, 2, 3),
+    tms: () => content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move))).map((tm) => tm.id),
+    'held-items': () => {
+      const owned = ownedItems(run);
+      return content.allHeldItems().filter((i) => isOfferable(i) && !i.speciesLock && !owned.includes(i.id)).map((i) => i.id);
+    },
+    relics: () => relics('common', 'uncommon'),
+    rare: () => [...relics('rare'), ...consumables(4)],
+  };
+  return candidates[floor]().some((id) => !shown.has(id));
+}
+
+/** §2.11.2 — every floor of the store, each slot marked with its floor and priced at the City markup. */
+function rollStore(rng: GameRng, content: ContentRegistry, run: RunState, floors: readonly StoreFloor[]): ShopSlot[] {
+  const held: string[] = [...run.relics];
+  const slots: ShopSlot[] = [];
+  for (const floor of floors) for (const slot of storeFloor(rng, content, run, floor, held)) slots.push({ ...slot, floor });
+  return slots;
+}
+
 /**
  * A shop's stock, seeded per visit.
  *
@@ -185,8 +282,17 @@ function teamSpecial(rng: GameRng, content: ContentRegistry, run: RunState, kind
  * **A City shop** (§2.11.2) — the Mart's eight curated slots (§2.11.2.2): two Tier-1 consumables, one Tier-2,
  * a Common and an Uncommon relic, a Rare half the time (otherwise a second Uncommon), a Held Item and a TM,
  * plus Poké Balls always on the counter; everything 30 % dearer than the merchant (§2.11.2.3); three re-rolls.
+ *
+ * **The Department Store** (§2.11.2) — `storeFloor` above, every floor at once, or only `floors` when a re-roll
+ * restocks one. Same markup, same three re-rolls, spent a floor at a time.
  */
-export function rollShopStock(rng: GameRng, content: ContentRegistry, run: RunState, kind: 'merchant' | 'city' = 'merchant'): ShopStock {
+export function rollShopStock(
+  rng: GameRng,
+  content: ContentRegistry,
+  run: RunState,
+  kind: 'merchant' | 'city' | 'department-store' = 'merchant',
+  floors: readonly StoreFloor[] = ['consumables', 'tms', 'held-items', 'relics', 'rare'],
+): ShopStock {
   const slots: ShopSlot[] = [];
   const pool = run.perks?.relicPool ?? null;
   const tier = (t: number) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && c.tier === t);
@@ -201,6 +307,9 @@ export function rollShopStock(rng: GameRng, content: ContentRegistry, run: RunSt
       const item = teamSpecial(rng, content, run, 'held-item');
       if (item) slots.push(item);
     }
+  } else if (kind === 'department-store') {
+    slots.push(...rollStore(rng, content, run, floors));
+    for (const slot of slots) slot.price = Math.round(slot.price * PRICES.cityMarkup);
   } else {
     for (const def of drawDistinct(rng, tier(1), 2)) slots.push({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 50, sold: false });
     for (const def of drawDistinct(rng, tier(2), 1)) slots.push({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 110, sold: false });

@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { IconBarrierBlock, IconCheck, IconDoorExit, IconTrophy } from '@tabler/icons-react';
+import { IconBarrierBlock, IconBook, IconCheck, IconDoorExit, IconTrophy } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { abilityLocked, dojoPrice, type PartyMon } from '@/sim';
+import { abilityLocked, dojoPrice, rarePickOpen, RING, tutorListFor, type PartyMon } from '@/sim';
 import { DoorSoonPanel } from '@/ui/components/DoorSoonPanel';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { CITY_DOOR_LABEL, RUN_REJECT_TEXT } from '@/ui/strings';
-import { dojoTip, doorTip, moveDefTip } from '@/ui/tips';
+import { dojoTip, doorTip, moveDefTip, ringDoorTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import styles from './DojoScreen.module.css';
 
@@ -26,8 +26,8 @@ export function DojoScreen() {
   const content = getContent();
   const [uid, setUid] = useState<string>(run.activeUids[0] ?? run.box[0]!.uid);
   const [toast, setToast] = useState<string | null>(null);
-  /** §2.11.0 — the Challenge Ring's door, in development: it opens a panel that says so. */
-  const [ring, setRing] = useState(false);
+  /** §2.11.6 — the third counter, extra moves, in development: it opens a panel that says so. */
+  const [extra, setExtra] = useState(false);
 
   const mon = run.box.find((m) => m.uid === uid) ?? run.box[0]!;
   const species = content.species(mon.speciesId);
@@ -46,7 +46,13 @@ export function DojoScreen() {
 
   // §6.4.3 — the tutor list belongs to this *stage*, so evolving changes the menu and delaying one to take a
   // pre-form move is a legal play.
-  const tutorList = species.tutorMoves.map((id) => ({ id, move: content.move(id), known: mon.pool.includes(id) }));
+  // §2.9.4 — the city Dojo's list is wider: every stage the line has reached (tutorListFor).
+  const tutorList = tutorListFor(run, mon, content).map((id) => ({ id, move: content.move(id), known: mon.pool.includes(id) }));
+  // §2.9.4.1 — the Challenge Ring's door: open once per visit, for its fee.
+  const ringState = run.city?.ring ?? null;
+  const ringOpen = !!ringState && !ringState.entered && !ringState.done;
+  const rare = rarePickOpen(content, run.relics, run.perks.relicPool, RING.pickCount);
+  const ringPrizes = ringState?.rungs.map((r) => ('money' in r.prize ? `${r.prize.money} ₽` : rare ? 'a Rare relic' : 'a relic')) ?? [];
   // §6.8.3 — the line's hidden ability is listed, greyed and named as such, until the line's Bond opens it.
   const abilities = species.availableAbilities.map((id) => ({ id, def: content.ability(id), equipped: mon.abilityId === id, locked: abilityLocked(run, mon.speciesId, id, content) }));
 
@@ -190,15 +196,30 @@ export function DojoScreen() {
         <p className="sr-only" role="status" aria-live="polite">
           {run.log.slice(-1).join(' ')}
         </p>
-        <Tipped as="button" type="button" tip={doorTip('ring', false, CITY_DOOR_LABEL.ring)} className={styles.ring} onClick={() => setRing(true)} data-testid="door-ring" aria-label={`${CITY_DOOR_LABEL.ring} — not open yet`}>
-          <IconTrophy size={18} /> {CITY_DOOR_LABEL.ring} <IconBarrierBlock size={16} className={styles.soonIcon} aria-hidden="true" />
+        {ringState && (
+          <Tipped
+            as="button"
+            type="button"
+            tip={ringDoorTip(ringState.fee, ringPrizes, ringOpen)}
+            className={styles.ringOpen}
+            onClick={() => act({ type: 'enter-ring' })}
+            disabled={!ringOpen}
+            data-testid="door-ring"
+            aria-label={ringOpen ? `${CITY_DOOR_LABEL.ring}, ${ringState.fee} Poké Dollars to enter${run.money >= ringState.fee ? '' : ', not enough money'}` : `${CITY_DOOR_LABEL.ring} — done for this visit`}
+          >
+            <IconTrophy size={18} /> {CITY_DOOR_LABEL.ring}{' '}
+            {ringOpen ? <Price amount={ringState.fee} affordable={run.money >= ringState.fee} /> : <span className={styles.ringFee}>done</span>}
+          </Tipped>
+        )}
+        <Tipped as="button" type="button" tip={doorTip('extra-moves', false, CITY_DOOR_LABEL['extra-moves'])} className={styles.soonDoor} onClick={() => setExtra(true)} data-testid="door-extra-moves" aria-label={`${CITY_DOOR_LABEL['extra-moves']} — not open yet`}>
+          <IconBook size={18} /> {CITY_DOOR_LABEL['extra-moves']} <IconBarrierBlock size={16} className={styles.soonIcon} aria-hidden="true" />
         </Tipped>
         <button type="button" className={styles.leave} onClick={() => act({ type: 'leave-dojo' })} data-testid="btn-leave-dojo">
           <IconDoorExit size={18} /> Back to town
         </button>
       </footer>
 
-      {ring && <DoorSoonPanel door="ring" onClose={() => setRing(false)} backLabel="Back to the Dojo" />}
+      {extra && <DoorSoonPanel door="extra-moves" onClose={() => setExtra(false)} backLabel="Back to the Dojo" />}
     </main>
   );
 }

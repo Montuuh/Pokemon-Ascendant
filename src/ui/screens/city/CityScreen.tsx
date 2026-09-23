@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  IconArrowBigUpLines, IconBackpack, IconBarrierBlock, IconBuildingStore, IconClover, IconHeartPlus, IconKarate,
+  IconArrowBigUpLines, IconBackpack, IconBarrierBlock, IconBook, IconBuildingStore, IconClover, IconHeartPlus, IconKarate,
   IconMenu2, IconShoppingBag, IconStairsDown, IconTrees, IconTrophy,
 } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
@@ -33,6 +33,7 @@ const DOOR_ICON: Record<CityDoor, typeof IconHeartPlus> = {
   'department-store': IconBuildingStore,
   dojo: IconKarate,
   ring: IconTrophy,
+  'extra-moves': IconBook,
   safari: IconTrees,
   'game-corner': IconClover,
   'black-market': IconStairsDown,
