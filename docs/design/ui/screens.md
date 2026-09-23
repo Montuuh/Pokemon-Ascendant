@@ -798,7 +798,9 @@ reorder/swap; **Confirm** commits the loadout (Pillar 2 weight; §2.3) — unrea
 entered. Lead is the front Active slot, gold-crowned. Bottom bar opens overlays (Inventory/Pokédex/
 Settings) via UIRouter push. Save & Quit → confirm modal → autosave (§10.8) → Main Menu.
 
-**States.** *Reachable vs locked nodes* (locked = dimmed, not hidden) · *Current node* (pulse ring) ·
+**States.** *Reachable vs locked nodes* (locked = greyed, faded badge in a dashed ring, not hidden — the Gym and
+the Elite keep their colour, the ring still says "not yet"; every caption keeps full contrast, D5, and every node
+opens its bubble on hover, only a reachable one takes a click) · *Current node* (pulse ring) ·
 *Trauma'd Box member* (⚠ badge, can still be fielded) · *Loadout dirty* (Confirm button highlights) ·
 *Gym layer* (👑 layer visually emphasized as the Region climax) · *Resume* (CL-022: map re-derived by
 MapRNG replay — must render identically).

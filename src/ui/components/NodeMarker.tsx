@@ -25,9 +25,9 @@ const STATUS_TEXT: Record<NodeStatus, string> = {
   locked: 'not reachable yet',
 };
 
-// Per docs/design/ui/screens.md §2.2 art notes — 44 px marker, 58 px for the current node and the Gym,
-// locked dimmed, visited ticked. The badges are full-colour Pokémon emblems, so state is carried by scale,
-// ring and saturation rather than by tint, and every state also has a word in the label.
+// Per docs/design/ui/screens.md §2.2 — the badges are full-colour Pokémon emblems, so state is carried by
+// size, ring, tick and the badge's own saturation rather than by tint, and every state also has a word in the
+// label. The caption is never faded: the route is what the player plans on (ui-doctrine D5).
 export function NodeMarker({
   node,
   status,
@@ -54,6 +54,9 @@ export function NodeMarker({
       footer={NODE_HINT[node.kind]}
     />,
   );
+  // Not `disabled`: a disabled button gets no mouse events, and the bubble is how a node you cannot enter yet
+  // is read — who is in it, how strong, which Gym is which. It still takes no click and no Tab stop.
+  const enterable = status === 'reachable';
   return (
     <button
       type="button"
@@ -61,8 +64,9 @@ export function NodeMarker({
         .filter(Boolean)
         .join(' ')}
       style={style}
-      onClick={onClick}
-      disabled={status !== 'reachable'}
+      onClick={enterable ? onClick : undefined}
+      aria-disabled={enterable ? undefined : true}
+      tabIndex={enterable ? undefined : -1}
       aria-label={`${NODE_LABEL[node.kind]}, ${STATUS_TEXT[status]}. ${node.preview.title}`}
       aria-current={status === 'current' ? 'location' : undefined}
       {...tip}

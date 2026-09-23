@@ -12,6 +12,8 @@
   display: grid;
   place-items: center;
   filter: drop-shadow(0 4px 8px rgba(26, 18, 28, 0.5));
+  /* Only a reachable node can be entered; the others still open their bubble on hover. */
+  cursor: not-allowed;
   transition:
     transform var(--motion-fast) var(--ease-spring),
     filter var(--motion-fast) ease;
@@ -24,7 +26,8 @@
 }
 .caption {
   position: absolute;
-  top: 46px;
+  /* Just under the badge, whatever size the state makes it. */
+  top: calc(100% - 2px);
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
@@ -34,8 +37,9 @@
   letter-spacing: 0.02em;
   padding: 1px 8px;
   border-radius: var(--radius-pill);
-  background: rgba(26, 18, 28, 0.7);
-  color: #fff6ec;
+  /* Opaque, in every state: the route is what the player plans on (D5), so no caption rides on the plate. */
+  background: var(--surface-0);
+  color: var(--ink-primary);
   pointer-events: none;
 }
 
@@ -47,8 +51,13 @@
   filter: drop-shadow(0 6px 12px rgba(26, 18, 28, 0.55)) brightness(1.06);
 }
 
+/* Not reachable yet is said by the badge and the ring, never by fading the node: the caption under it is a
+   place on the route the player is planning toward, so it keeps full contrast (D5). */
 .locked {
-  filter: grayscale(0.85) brightness(0.78) drop-shadow(0 3px 6px rgba(26, 18, 28, 0.45));
+  filter: drop-shadow(0 3px 6px rgba(26, 18, 28, 0.45));
+}
+.locked .badge {
+  filter: grayscale(0.85) brightness(0.78);
   opacity: 0.7;
 }
 .locked::before {
@@ -56,10 +65,9 @@
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  border: 2px dashed rgba(255, 253, 248, 0.55);
-}
-.locked .caption {
-  background: rgba(26, 18, 28, 0.5);
+  border: 2px dashed color-mix(in srgb, var(--ink-primary) 70%, transparent);
+  /* The ring reaches past the button; at 720 it would take the pointer meant for the badge beneath. */
+  pointer-events: none;
 }
 
 .visited {
@@ -78,11 +86,9 @@
   inset: -5px;
   border-radius: 50%;
   border: 3px solid var(--accent-action);
+  pointer-events: none;
   box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-action) 34%, transparent);
   animation: pulse 1.6s ease-in-out infinite;
-}
-.current .caption {
-  top: 60px;
 }
 
 /* The Gym is the Region's climax: bigger, and haloed even while it is out of reach. */
@@ -91,16 +97,19 @@
   height: 62px;
   margin: -31px 0 0 -31px;
 }
-.climax .caption {
-  top: 60px;
-}
 .climax.reachable,
 .climax.locked,
 .climax.visited {
   filter: drop-shadow(0 0 14px color-mix(in srgb, var(--accent-action) 60%, transparent))
     drop-shadow(0 4px 8px rgba(26, 18, 28, 0.5));
 }
-.climax.locked {
+/* The two landmarks keep their colour out of reach — they are what the route is steered toward — and only
+   fade a little; the ring still says "not yet". */
+.climax.locked .badge,
+.major.locked .badge {
+  filter: none;
+}
+.climax.locked .badge {
   opacity: 0.85;
 }
 
@@ -116,11 +125,20 @@
   font-size: 12px;
   font-weight: 700;
   line-height: 1;
-  color: #fff6ec;
+  color: var(--ink-primary);
   background: #2f7d4f;
-  border: 2px solid rgba(255, 253, 248, 0.9);
+  border: 2px solid color-mix(in srgb, var(--ink-primary) 90%, transparent);
 }
-
+/* On a short window the twelve layers sit closer than a badge is tall, so the opaque caption tucks onto its own
+   badge's rim rather than across the head of the badge beneath it — and the visited tick climbs above it. */
+@media (max-height: 800px) {
+  .caption {
+    top: calc(100% - 11px);
+  }
+  .tick {
+    bottom: 11px;
+  }
+}
 
 @keyframes pulse {
   0%,
@@ -143,9 +161,6 @@
   width: 54px;
   height: 54px;
   margin: -27px 0 0 -27px;
-}
-.major .caption {
-  top: 52px;
 }
 .major.reachable,
 .major.locked,
