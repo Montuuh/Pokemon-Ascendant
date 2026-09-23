@@ -49,11 +49,11 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.7.3 — Region 2, Coastal Cliffs.** A run crosses three Regions with two drawn Cities between them, and the
-second Region is its own place now: a coastal route of sea, power plant and cave, twenty-six new Pokémon (Tentacool,
-Staryu, Magnemite, Pikachu, Growlithe, Lapras…), its own trainers and Elites, and the Gyms of Blaine, Erika, Surge
-and Koga. Pikachu can be bought as a starter. All 151 Gen I Pokémon are designed and in the Pokédex, as
-silhouettes until you meet them; the Regions place them as they arrive. Region 3 is still a placeholder at a higher level until v0.7.4. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
+**v0.7.4 — Region 3, Volcanic Highlands.** A run crosses three Regions with two Cities between them, and every
+Region is its own place now: the meadows and caves of the first, the coast and power plant of the second, and the
+volcano, sky cliffs and old tower of the third — twelve Gyms, three drawn per run, from Brock to Lorelei. All 151
+Gen I Pokémon are designed and in the Pokédex, as silhouettes until you meet them. What changed in every version is
+in the game (What's new) and in [`CHANGELOG.md`](CHANGELOG.md). The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Run it locally
 
@@ -63,8 +63,8 @@ npm run dev        # http://localhost:5173
 ```
 
 ```bash
-npm run check      # typecheck, lint, 333 unit tests, design-doc guards
-npm run e2e        # 45 Playwright tests, including a full run played through the UI
+npm run check      # typecheck, lint, ~490 unit tests, design-doc and version guards
+npm run e2e        # ~70 Playwright tests, including a full run played through the UI
 npm run balance    # auto-player win rates per starter
 ```
 

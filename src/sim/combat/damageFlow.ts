@@ -18,7 +18,7 @@ import {
   hasSturdy,
   ridersAlwaysApply,
 } from './abilities';
-import { statusApplyDrawBonus, firstHitRelic, itemAttackMultiplier, itemCureHeal, itemDefenceMultiplier, itemEndures, itemFlatReduction, itemHealMultiplier, itemPinchHeal, itemReactiveStages, itemStatusExtraTurns, teamEndureRelic, type ReactiveStage } from './items';
+import { statusApplyDrawBonus, statusChillMultiplier, firstHitRelic, itemAttackMultiplier, itemCureHeal, itemDefenceMultiplier, itemEndures, itemFlatReduction, itemHealMultiplier, itemPinchHeal, itemReactiveStages, itemStatusExtraTurns, teamEndureRelic, type ReactiveStage } from './items';
 import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { effectiveAttack, effectiveDefense } from './stats';
 import { applyStatus, cureStatus } from './status';
@@ -69,8 +69,11 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
       firstHitAvailable: firstHitRelic(state, ctx.content) !== null,
     });
   }
+  // §5.10.3 Glacier Badge — a chilled attacker's next hit is blunted. On the combatant, not the relic list, so the
+  // intent's predicted damage (which has no state to read) shows the smaller number too (Pillar 1).
+  const chill = attacker.chill ?? 1;
   // Ability and thaw multipliers are applied to the pre-floor value so a single floor remains (§4.1.1).
-  const final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire);
+  const final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill);
   return { ...raw, final };
 }
 
@@ -107,6 +110,8 @@ export function strike(
     });
   }
 
+  // §5.10.3 — the chill is spent by the attack it blunted.
+  if (attacker.chill !== undefined) delete attacker.chill;
   riposte(state, ctx, attacker, target, move);
   applyOnKill(state, ctx, attacker, move, target);
   applyRecoil(state, ctx, attacker, move, dealt);
@@ -149,6 +154,19 @@ export function riposte(state: CombatState, ctx: RunCtx, attacker: Combatant, ta
   if (applyStatus(attacker, back.status, state.turn, ctx.config) !== 'applied') return;
   emit(state, { t: 'status-applied', targetUid: attacker.uid, status: back.status });
   log(state, 'system', `${attacker.name} was ${statusVerb(back.status)} on contact!`);
+  chillOnStatus(state, ctx, attacker);
+}
+
+/**
+ * §5.10.3 Glacier Badge — when a status lands on an enemy, by any road (a move's rider, a contact ability), its
+ * next attack deals less. Set, not stacked: a Pokémon holds one status at a time, so it can be chilled once.
+ */
+function chillOnStatus(state: CombatState, ctx: RunCtx, target: Combatant): void {
+  if (isPlayers(state, target)) return;
+  const m = statusChillMultiplier(state, ctx.content);
+  if (m === 1) return;
+  target.chill = m;
+  log(state, 'system', `The Glacier Badge chills ${target.name}: its next attack is weaker.`);
 }
 
 /**
@@ -387,6 +405,7 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         if (res === 'applied') {
           emit(state, { t: 'status-applied', targetUid: recipient.uid, status: fx.status });
           log(state, 'system', `${recipient.name} was ${statusVerb(fx.status)}!`);
+          chillOnStatus(state, ctx, recipient);
           // §5.10.2 Marsh Badge — a status you put on an enemy hands you a card, now, while the turn is yours.
           if (!fx.self && isPlayers(state, attacker) && !isPlayers(state, recipient)) {
             const cards = statusApplyDrawBonus(state, ctx.content);

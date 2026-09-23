@@ -177,12 +177,13 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     // §8.8 Dense Fog extends the same one-intent blind to the ordinary enemies, which is the whole modifier:
     // it does not hide *more*, it hides the same amount from everyone.
     const fogged = state.modifiers.includes('dense-fog') && !enemy.witnessed;
-    const hides = fogged || ((enemy.tier === 'boss' || enemy.tier === 'elite') && !enemy.witnessed);
+    // §2.7.1 — a Hex Maniac's Pokémon plays by the Elite's rule: its first intent is hidden too.
+    const hides = fogged || ((enemy.tier === 'boss' || enemy.tier === 'elite' || enemy.veiled === true) && !enemy.witnessed);
     // §5.13.1 Familiar — a species you have fought enough never hides from you again. §8.4.2 Pokédex Insight
     // shows one intent free the first time you meet a species you have not yet earned that on.
     const known = state.familiar.includes(enemy.speciesId) || (!enemy.witnessed && state.insight.includes(enemy.speciesId));
     // §7.3.7 Clear Mind does what §6.5.2's ability does, from the relic case instead of the party.
-    enemy.intent.hidden = hides && !known && !teamRevealsIntents(state.player.team, ctx.content, !enemy.witnessed) && !relicsRevealIntents(state, ctx.content, !enemy.witnessed);
+    enemy.intent.hidden = hides && !known && !teamRevealsIntents(state.player.team, ctx.content, !enemy.witnessed) && !relicsRevealIntents(state, ctx.content, !enemy.witnessed, state.turn);
   }
   emit(state, { t: 'intent', enemyUid: enemy.uid, intent: { ...enemy.intent } });
   if (!enemy.intent.hidden) log(state, 'enemy', `${enemy.name} ${describeIntent(state, enemy, ctx)}`);

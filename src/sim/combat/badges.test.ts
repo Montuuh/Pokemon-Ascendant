@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { PIDGEY, STARTERS, content, ctx, dispatch, enemyOf, handCard, leadOf, scenario, start, teamWithKit, tweak, withHand } from '../testing/harness';
-import { dealDamage } from './damageFlow';
-import { itemApDelta, itemAttackMultiplier } from './items';
-import { GYMS, GYMS_R2 } from '../run/region';
+import { breakdownFor, dealDamage } from './damageFlow';
+import { itemApDelta, itemAttackMultiplier, relicsRevealIntents } from './items';
+import { GYMS, GYMS_R2, GYMS_R3 } from '../run/region';
 
 // §5.10 — the four Region 1 Badges, each asserted against the same fight without it.
 //
@@ -199,5 +199,69 @@ describe('Badges — §5.10.2', () => {
     // Clean: nothing, and the bench is never the one healed.
     expect(leadOf(opening(['rainbow-badge'])).hp).toBe(leadOf(opening([])).hp);
     expect(opening(['rainbow-badge'], 'poison').player.team[1]!.hp).toBe(opening([], 'poison').player.team[1]!.hp);
+  });
+});
+
+describe('Badges — §5.10.3', () => {
+  it('EveryRegionThreeGym_AwardsItsOwnBadge_§5.10.3', () => {
+    for (const gym of GYMS_R3) {
+      const badge = content.badge(gym.badgeId);
+      expect(badge.type, `${gym.id} awards a ${badge.type} badge`).toBe(gym.type);
+      expect(badge.region).toBe(3);
+    }
+    expect(new Set(GYMS_R3.map((g) => g.badgeId)).size, 'two Gyms share a Badge').toBe(GYMS_R3.length);
+  });
+
+  it('Soul_RevealsEveryHiddenIntent_ForTheFirstTwoTurns_§5.10.3', () => {
+    const elite = { ...PIDGEY, tier: 'elite' as const, phaseCount: 2 as const };
+    // An Elite hides its first intent (§5.5); the Soul Badge shows it.
+    expect(enemyOf(bare({ team: [...STARTERS], enemies: [elite] })).intent!.hidden).toBe(true);
+    const withBadge = bare({ team: [...STARTERS], enemies: [elite], badges: ['soul-badge'] });
+    expect(enemyOf(withBadge).intent!.hidden).toBe(false);
+    // Two turns, and no more.
+    expect(relicsRevealIntents(withBadge, content, false, 2)).toBe(true);
+    expect(relicsRevealIntents(withBadge, content, false, 3)).toBe(false);
+  });
+
+  it('Soul_ReadsThroughAHexManiacsVeil_§2.7.1', () => {
+    const veiled = { ...PIDGEY, tier: 'trainer' as const, veiled: true };
+    expect(enemyOf(bare({ team: [...STARTERS], enemies: [veiled] })).intent!.hidden).toBe(true);
+    expect(enemyOf(bare({ team: [...STARTERS], enemies: [veiled], badges: ['soul-badge'] })).intent!.hidden).toBe(false);
+    // An ordinary trainer's Pokémon was never hidden.
+    expect(enemyOf(bare({ team: [...STARTERS], enemies: [{ ...PIDGEY, tier: 'trainer' }] })).intent!.hidden).toBe(false);
+  });
+
+  it('Earth_MakesThePositionalCardsCheaper_AndNothingElse_§5.10.3', () => {
+    const state = bare({ team: teamWithKit(['wing-attack', 'flame-wheel', 'tackle']), enemies: [PIDGEY], badges: ['earth-badge'] });
+    const owner = leadOf(state);
+    expect(itemApDelta(state, owner, content.move('wing-attack'), content)).toBe(-1);
+    expect(itemApDelta(state, owner, content.move('flame-wheel'), content)).toBe(-1);
+    expect(itemApDelta(state, owner, content.move('tackle'), content)).toBe(0);
+  });
+
+  it('Fist_PaysOnMeleeOnly_§5.10.3', () => {
+    const state = bare({ team: teamWithKit(['tackle', 'water-gun']), enemies: [PIDGEY], badges: ['fist-badge'] });
+    const lead = leadOf(state);
+    expect(itemAttackMultiplier(state, lead, content.move('tackle'), content)).toBeCloseTo(1.25);
+    expect(itemAttackMultiplier(state, lead, content.move('water-gun'), content)).toBe(1);
+  });
+
+  it('Glacier_AStatusedEnemysNextAttackHitsSofter_ThenTheChillIsSpent_§5.10.3', () => {
+    // An enemy whose only card is an attack, so its next action is the hit the chill is meant for.
+    const brute = { species: 'pidgey', level: 20, tier: 'wild' as const, phaseCount: 1 as const, moves: ['tackle'] };
+    const play = (badges: string[]) => {
+      const s = withHand(bare({ team: teamWithKit(['poison-powder', 'tackle']), enemies: [brute], badges }), ['poison-powder']);
+      return dispatch(s, { type: 'play-card', cardId: handCard(s, 'poison-powder').id });
+    };
+    const withBadge = play(['glacier-badge']);
+    const without = play([]);
+    expect(enemyOf(withBadge).status?.kind).toBe('poison');
+    expect(enemyOf(withBadge).chill).toBeCloseTo(0.85);
+    expect(enemyOf(without).chill).toBeUndefined();
+    // The hit it has telegraphed is smaller — the number on the intent says so before it lands (Pillar 1).
+    const hit = (s: typeof withBadge) => breakdownFor(enemyOf(s), leadOf(s), content.move('tackle'), false, ctx).final;
+    expect(hit(withBadge)).toBeLessThan(hit(without));
+    // It attacks, and the chill is gone.
+    expect(enemyOf(dispatch(withBadge, { type: 'end-turn' })).chill).toBeUndefined();
   });
 });

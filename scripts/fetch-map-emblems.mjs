@@ -27,6 +27,12 @@ const EMBLEMS = {
   'emblem-gym-grass': 'Rainbow Badge.png',
   'emblem-gym-electric': 'Thunder Badge.png',
   'emblem-gym-poison': 'Marsh Badge.png',
+  // v0.7.4 — the four Region 3 badges (§5.10.3). Canon's Fist Badge has no game art of its own, so it wears
+  // the Knuckle Badge, the games' own Fighting-Gym badge.
+  'emblem-gym-psychic': 'Soul Badge.png',
+  'emblem-gym-ground': 'Earth Badge.png',
+  'emblem-gym-fighting': 'Knuckle Badge.png',
+  'emblem-gym-ice': 'Glacier Badge.png',
 };
 
 const API = 'https://archives.bulbagarden.net/w/api.php';

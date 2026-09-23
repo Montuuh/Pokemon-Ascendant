@@ -10,7 +10,7 @@ import type { PokemonType } from '../types';
 // tests and the v0.2–v0.6 code read them by those names; everything that has to know *which* Region asks
 // `regionContent(index)`.
 
-export type BiomeId = 'meadow' | 'cave' | 'river' | 'sea' | 'power-plant';
+export type BiomeId = 'meadow' | 'cave' | 'river' | 'sea' | 'power-plant' | 'volcano' | 'sky' | 'tower';
 
 export interface BiomePool {
   id: BiomeId;
@@ -104,6 +104,11 @@ export interface TrainerRoster {
   /** §2.7.3 — a trainer sits 1–2 levels above the wild band. */
   team: { species: string; level: number }[];
   line: string;
+  /**
+   * §2.7.1 Hex Maniac — "vision disruption": every one of its Pokémon hides its first intent, the rule an Elite
+   * or a Gym plays by (§5.5), on an ordinary trainer. Keen Eye, the Soul Badge or a Familiar species read through it.
+   */
+  veiled?: boolean;
 }
 
 /**
@@ -223,7 +228,11 @@ export interface GymDef {
   badgeId: string;
   stage: string;
   line: string;
-  team: { species: string; level: number; phaseCount: 1 | 2 | 3 }[];
+  /**
+   * `moves` scripts a member's kit when its learnset at that level has no off-type answer (§5.9.3: "a Gym you
+   * can hard-counter with a single type is not a fight").
+   */
+  team: { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[] }[];
   /** §2.5 — the one-line promise the map shows from layer 0, so the fork is never a surprise. */
   telegraph: string;
 }
@@ -316,7 +325,7 @@ export const GYMS: GymDef[] = [
  * instead means a change to the route length cannot silently leave the climax four levels behind, which is
  * exactly what v0.5's jump from ten layers to twelve did on its first measurement.
  */
-export function gymTeamFor(gym: GymDef): { species: string; level: number; phaseCount: 1 | 2 | 3 }[] {
+export function gymTeamFor(gym: GymDef): { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[] }[] {
   const top = wildBandFor(ROUTE_LAYERS - 2, regionContent(gym.region - 1).wildBand)[1];
   return gym.team.map((m, i) => ({ ...m, level: top + (i === gym.team.length - 1 ? 6 : 4) }));
 }
@@ -453,12 +462,13 @@ export const TRAINERS_R2: TrainerRoster[] = [
 
 /**
  * §2.8.1 — the Region 2 Specialist (`catalogs/elites.md` §3). The Karate King's second Pokémon is a Machoke in
- * place of the catalogue's Primeape, whose line is not in the build yet; Hitmonchan's three elemental punches are
- * why a Fighting type check does not beat it.
+ * place of the catalogue's Primeape (kept: a Machoke is what the fight was tuned on); Hitmonchan's three elemental
+ * punches are why a Fighting type check does not beat it. He is Koichi, FireRed's Karate King — Kiyo, the other
+ * one, leads Region 3's Fighting Gym, and one man at two ranks would read as a mistake.
  */
 export const ELITE_R2: EliteDef = {
   id: 'elite-karate-king-r2',
-  name: 'Karate King Kiyo',
+  name: 'Karate King Koichi',
   sprite: 'blackbelt',
   line: 'I trained on these cliffs until the sea gave up first. Come.',
   team: [
@@ -528,6 +538,167 @@ export const LANE_THEME_R2: Record<string, LaneTheme> = {
   poison: { biome: 'cave', favours: ['koffing', 'zubat'], counter: 'staryu', trainers: ['rocket-grunt'] },
 };
 
+// ── Region 3 — Volcanic Highlands (v0.7.4) ──────────────────────────────────────────────────────────────────
+
+/**
+ * §2.6.1 / §2.6.3 — Region 3's pools (`catalogs/biomes-regions.md` §2, `species-pool-r2-r3.md`). The Volcano
+ * is primary; the Cave, the Sky and the rare Abandoned Tower are its secondaries. Every species here exists since
+ * the Gen I pass, so the Region *places* lines rather than authoring them. The Legendaries the catalogue names as
+ * Rares (Moltres, Articuno) stay out of every pool; a Pokémon the Region has no other home for takes the slot.
+ *
+ * The Cave is shared by two lanes — the Fighting lane's Machop and Mankey, the Ice lane's Seel and Shellder (the
+ * Seafoam register) — the way Region 1's Meadow carries both its Bug and its Normal lane.
+ */
+export const BIOMES_R3: Partial<Record<BiomeId, BiomePool>> = {
+  volcano: {
+    id: 'volcano', name: 'Volcano Slope', stage: 'volcano',
+    common: ['vulpix', 'ponyta', 'sandshrew'],
+    uncommon: ['rhyhorn', 'growlithe'],
+    rare: ['magmar'],
+  },
+  cave: {
+    id: 'cave', name: 'Cave', stage: 'cave',
+    common: ['zubat', 'geodude', 'machop', 'mankey', 'seel', 'shellder'],
+    uncommon: ['abra', 'nidoran-f', 'jynx'],
+    rare: ['aerodactyl'],
+  },
+  sky: {
+    id: 'sky', name: 'Sky Cliffs', stage: 'sky-pillar',
+    common: ['spearow', 'pidgey'],
+    uncommon: ['doduo', 'farfetchd'],
+    rare: ['scyther'],
+  },
+  tower: {
+    id: 'tower', name: 'Abandoned Tower', stage: 'tower',
+    common: ['gastly', 'drowzee'],
+    uncommon: ['cubone', 'grimer'],
+    rare: ['mr-mime'],
+  },
+};
+
+/** §2.6.1 — the Volcano is Region 3's primary; the Abandoned Tower is the rare one. */
+export const REGION3_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
+  { biome: 'volcano', weight: 5 },
+  { biome: 'cave', weight: 3 },
+  { biome: 'sky', weight: 2 },
+  { biome: 'tower', weight: 1 },
+];
+
+/**
+ * §2.7 — the Region 3 rosters (`catalogs/trainers.md` §4), two per archetype, written in their forms and walked
+ * through `evolvedAt` like Region 2's. The Hex Maniacs are veiled (§2.7.1): each of their Pokémon hides its first
+ * intent. Swimmers stay on for the Ice lane, whose cave is the Seafoam kind.
+ */
+export const TRAINERS_R3: TrainerRoster[] = [
+  { id: 'ace-trainer-r3-a', archetype: 'ace-trainer', name: 'Ace Trainer Rhea', sprite: 'acetrainer', line: 'Two Pokémon, both at their best. That is all an Ace needs.',
+    team: [{ species: 'pidgeot', level: 30 }, { species: 'arcanine', level: 32 }] },
+  { id: 'ace-trainer-r3-b', archetype: 'ace-trainer', name: 'Ace Trainer Dario', sprite: 'acetrainer', line: 'Mind or muscle? I brought both.',
+    team: [{ species: 'alakazam', level: 31 }, { species: 'machamp', level: 32 }] },
+  { id: 'hex-maniac-r3-a', archetype: 'hex-maniac', name: 'Hex Maniac Vera', sprite: 'hexmaniac', line: 'You cannot see what they are planning. That is the point.', veiled: true,
+    team: [{ species: 'hypno', level: 30 }, { species: 'gengar', level: 31 }] },
+  { id: 'hex-maniac-r3-b', archetype: 'hex-maniac', name: 'Hex Maniac Mona', sprite: 'hexmaniac', line: 'The tower tells me your moves. It tells you nothing.', veiled: true,
+    team: [{ species: 'mr-mime', level: 30 }, { species: 'slowbro', level: 31 }] },
+  { id: 'rocket-grunt-r3-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'The Boss wants this mountain. You are standing on it.',
+    team: [{ species: 'weezing', level: 30 }, { species: 'arbok', level: 31 }] },
+  { id: 'rocket-grunt-r3-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Team Rocket never loses twice. Well — never three times.',
+    team: [{ species: 'golbat', level: 30 }, { species: 'muk', level: 31 }] },
+  { id: 'engineer-r3-a', archetype: 'engineer', name: 'Engineer Otto', sprite: 'scientist', line: 'The geothermal plant runs on these two. So do I.',
+    team: [{ species: 'electrode', level: 30 }, { species: 'magneton', level: 31 }] },
+  { id: 'engineer-r3-b', archetype: 'engineer', name: 'Engineer Silvia', sprite: 'scientist', line: 'Porygon was built at Silph. I rebuilt it better.',
+    team: [{ species: 'porygon', level: 30 }, { species: 'magneton', level: 31 }] },
+  { id: 'hiker-r3-a', archetype: 'hiker', name: 'Hiker Ernesto', sprite: 'hiker', line: 'This mountain was here before you. So were we.',
+    team: [{ species: 'rhyhorn', level: 31 }, { species: 'golem', level: 32 }] },
+  { id: 'hiker-r3-b', archetype: 'hiker', name: 'Hiker Ivan', sprite: 'hiker', line: 'I carried Machamp up here. Then it carried me.',
+    team: [{ species: 'onix', level: 30 }, { species: 'machamp', level: 32 }] },
+  { id: 'swimmer-r3-a', archetype: 'swimmer', name: 'Swimmer Nerea', sprite: 'swimmer', line: 'The water under the ice is freezing. You get used to it.',
+    team: [{ species: 'dewgong', level: 30 }, { species: 'seaking', level: 31 }] },
+  { id: 'swimmer-r3-b', archetype: 'swimmer', name: 'Swimmer Marco', sprite: 'swimmer', line: 'Swim the ice caves long enough and nothing scares you.',
+    team: [{ species: 'cloyster', level: 30 }, { species: 'starmie', level: 31 }] },
+];
+
+/**
+ * §2.8.1 — the Region 3 Elite Trainer: Giovanni's lane (`catalogs/elites.md` §4). Of the three the catalogue
+ * weighs for Region 3, the Rival waits for the counter-pick that gives him meaning and the Specialist's Dewgong
+ * and Cloyster are Lorelei's own team; Giovanni can also lead the Ground Gym, and canon keeps both.
+ */
+export const ELITE_R3: EliteDef = {
+  id: 'elite-giovanni-r3',
+  name: 'Boss Giovanni',
+  sprite: 'giovanni',
+  line: 'So you are the one who keeps getting in Team Rocket’s way. I will end that here.',
+  team: [
+    { species: 'dugtrio', level: 32, phaseCount: 2 },
+    { species: 'persian', level: 34, phaseCount: 2 },
+  ],
+};
+
+/**
+ * §2.8.2 — Aerodactyl, the Region 3 boss-wild (catalogs/elites.md §5): Agility and Ancient Power to set up, Sky
+ * Drop and Rock Slide when it tires. The script is its kit, as Lapras's is.
+ */
+export const ELITE_WILD_R3: EliteWildDef = {
+  id: 'elite-wild-aerodactyl',
+  species: 'aerodactyl',
+  level: 34,
+  phaseCount: 2,
+  stage: 'sky-pillar',
+  moves: ['agility', 'ancient-power', 'sky-drop', 'rock-slide-m'],
+  line: 'A shriek from the crags. Something ancient is circling overhead, and it has seen you.',
+};
+
+/**
+ * §5.9.2 — the Region 3 pool: Psychic · Ground · Fighting · Ice (`catalogs/gyms.md` §3). Same shape as the other
+ * two, one off-type answer each (§5.9.3): Alakazam's Shadow Ball and Machamp's Thunder Punch are scripted because
+ * their learnsets at the Gym's level are all their own type; Rhydon's Megahorn and Dewgong's Surf are their own.
+ */
+export const GYMS_R3: GymDef[] = [
+  {
+    id: 'psychic-gym-r3', region: 3, name: 'Leader Sabrina', sprite: 'sabrina', type: 'psychic', badgeId: 'soul-badge',
+    stage: 'library',
+    line: 'I foresaw your arrival. I also foresaw how this ends.',
+    telegraph: 'Taxes your AP and locks your hand. Bring Bug or Ghost, and cards you can afford.',
+    team: [
+      { species: 'kadabra', level: 33, phaseCount: 2 },
+      { species: 'alakazam', level: 35, phaseCount: 3, moves: ['psychic', 'psyshock', 'calm-mind', 'shadow-ball'] },
+    ],
+  },
+  {
+    id: 'ground-gym-r3', region: 3, name: 'Leader Giovanni', sprite: 'giovanni', type: 'ground', badgeId: 'earth-badge',
+    stage: 'desert',
+    line: 'This Gym is the last thing between you and the League. It does not move.',
+    telegraph: 'A wall that braces harder the more you hit it. Bring Water, Grass or Ice.',
+    team: [{ species: 'nidoqueen', level: 34, phaseCount: 2 }, { species: 'rhydon', level: 36, phaseCount: 3 }],
+  },
+  {
+    id: 'fighting-gym-r3', region: 3, name: 'Leader Kiyo', sprite: 'kiyo', type: 'fighting', badgeId: 'fist-badge',
+    stage: 'gym',
+    line: 'A hundred days on this mountain, training. Show me your hundred.',
+    telegraph: 'A burst race on a Home Field that makes every Fighting hit land harder. Bring Psychic or Flying, or more HP.',
+    team: [
+      { species: 'machoke', level: 34, phaseCount: 2 },
+      { species: 'machamp', level: 36, phaseCount: 3, moves: ['cross-chop', 'dynamic-punch', 'close-combat', 'thunder-punch'] },
+    ],
+  },
+  {
+    id: 'ice-gym-r3', region: 3, name: 'Leader Lorelei', sprite: 'lorelei', type: 'ice', badgeId: 'glacier-badge',
+    stage: 'ice-cave',
+    line: 'Your Pokémon will freeze before they reach me. Let us see how long you last.',
+    telegraph: 'Freezes your Lead and taxes your AP. Bring Fighting, Electric or Rock.',
+    team: [{ species: 'dewgong', level: 34, phaseCount: 2 }, { species: 'cloyster', level: 36, phaseCount: 3 }],
+  },
+];
+
+/**
+ * §2.5 — Region 3's lanes: the Psychic lane climbs the Tower (Hex Maniacs), the Ground lane the Volcano (Rocket
+ * Grunts, Giovanni's), the Fighting lane and the Ice lane share the Cave (Hikers; Swimmers). One counter each.
+ */
+export const LANE_THEME_R3: Record<string, LaneTheme> = {
+  psychic: { biome: 'tower', favours: ['drowzee', 'gastly'], counter: 'scyther', trainers: ['hex-maniac'] },
+  ground: { biome: 'volcano', favours: ['sandshrew', 'vulpix'], counter: 'exeggcute', trainers: ['rocket-grunt'] },
+  fighting: { biome: 'cave', favours: ['machop', 'mankey'], counter: 'abra', trainers: ['hiker'] },
+  ice: { biome: 'cave', favours: ['seel', 'shellder'], counter: 'machop', trainers: ['swimmer'] },
+};
+
 // ── The Regions ─────────────────────────────────────────────────────────────────────────────────────────────
 
 /** §2.1 / §2.2 — one Region's generator input: everything `generateRegion` and the encounters read. */
@@ -548,7 +719,8 @@ export interface RegionContent {
   laneThemes: Record<string, LaneTheme>;
   /**
    * §2.1 placeholder — levels this far above the tables' own and every species walked to the form those levels
-   * warrant. Region 3 until v0.7.4 is Region 1 at +16, which lands its Gyms where `catalogs/gyms.md` §3 puts them.
+   * warrant. Region 3 was Region 1 at +16 until v0.7.4 wrote its own tables; every Region is 0 now, and the
+   * mechanism stays for a Region that ships before its content does.
    */
   levelOffset: number;
   /** A roster's species are walked through `evolvedAt` at its band-derived level (Regions 2 on). */
@@ -565,13 +737,13 @@ export const REGIONS: readonly RegionContent[] = [
     trainers: TRAINERS_R2, elite: ELITE_R2, eliteWild: ELITE_WILD_R2, gyms: GYMS_R2, laneThemes: LANE_THEME_R2, levelOffset: 0, evolveRosters: true,
   },
   {
-    index: 2, name: 'Volcanic Highlands', biomes: BIOMES, biomeWeights: REGION1_BIOME_WEIGHTS, wildBand: WILD_LEVEL_BAND, trunkStage: 'meadow',
-    trainers: TRAINERS, elite: ELITE, eliteWild: ELITE_WILD, gyms: GYMS, laneThemes: LANE_THEME, levelOffset: 16, evolveRosters: false,
+    index: 2, name: 'Volcanic Highlands', biomes: BIOMES_R3, biomeWeights: REGION3_BIOME_WEIGHTS, wildBand: [22, 30], trunkStage: 'volcano',
+    trainers: TRAINERS_R3, elite: ELITE_R3, eliteWild: ELITE_WILD_R3, gyms: GYMS_R3, laneThemes: LANE_THEME_R3, levelOffset: 0, evolveRosters: true,
   },
 ];
 
 /**
- * §2.13 — the name the map shows for a Region, or null while it is still the placeholder (Region 3 until v0.7.4):
+ * §2.13 — the name the map shows for a Region, or null while it is a placeholder (Region 3 was, until v0.7.4):
  * a name promises a place, and a Volcanic Highlands drawn as Region 1's meadow is not one.
  */
 export function regionName(regionIndex: number): string | null {
@@ -585,13 +757,13 @@ export function regionContent(regionIndex: number): RegionContent {
 }
 
 /** Every roster, Elite and Gym in the game — for lookups by id or name that cannot know the Region. */
-export const ALL_TRAINERS: readonly TrainerRoster[] = [...TRAINERS, ...TRAINERS_R2];
-export const ALL_GYMS: readonly GymDef[] = [...GYMS, ...GYMS_R2];
-export const ALL_ELITES: readonly EliteDef[] = [ELITE, ELITE_R2];
+export const ALL_TRAINERS: readonly TrainerRoster[] = [...TRAINERS, ...TRAINERS_R2, ...TRAINERS_R3];
+export const ALL_GYMS: readonly GymDef[] = [...GYMS, ...GYMS_R2, ...GYMS_R3];
+export const ALL_ELITES: readonly EliteDef[] = [ELITE, ELITE_R2, ELITE_R3];
 
 /**
- * §2.1 / §2.2 — how far above its own tables each Region's levels sit (`RegionContent.levelOffset`). Region 2
- * has its own content and band since v0.7.3; Region 3 is still the placeholder.
+ * §2.1 / §2.2 — how far above its own tables each Region's levels sit (`RegionContent.levelOffset`). Every
+ * Region has its own content and band since v0.7.4, so every entry is 0.
  */
 export const REGION_LEVEL_OFFSET: readonly number[] = REGIONS.map((r) => r.levelOffset);
 
@@ -645,6 +817,10 @@ export const STATUS_ACCENT_FALLBACK = 'supersonic';
  * **Attack-heavy on purpose.** An even split (×1.2/×1.55 on both) bought similar clear rates with Region 3
  * fights 7.5 turns long; weighting Attack keeps every Region between 4 and 5. More HP makes a fight longer,
  * more Attack makes it dangerous, and the curve is meant to be tension, not length. Measured over 720 runs.
+ *
+ * Region 3's Attack came down from ×2.3 to ×1.95 in v0.7.4: ×2.3 was tuned on the placeholder (Region 1's lines
+ * evolved up), and Region 3's own roster — Alakazam, Gengar, Machamp — hits harder by itself, which took Region 3
+ * given Region 2 from ~45 % to 37 %. At ×1.95 it reads 47 % over 720 runs, fights 4.9 turns long.
  */
 export interface StatTier {
   hp: number;
@@ -653,7 +829,7 @@ export interface StatTier {
 export const REGION_STAT_TIER: readonly StatTier[] = [
   { hp: 1, attack: 1 },
   { hp: 1, attack: 1.6 },
-  { hp: 1.15, attack: 2.3 },
+  { hp: 1.15, attack: 1.95 },
 ];
 
 /**

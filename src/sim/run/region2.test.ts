@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import {
-  BIOMES, BIOMES_R2, createRun, defaultRunCtx, ELITE_R2, GYMS, GYMS_R2, LANE_THEME_R2, REGIONS, regionName, runReducer, TRAINERS_R2, wildBandFor,
+  BIOMES, BIOMES_R2, createRun, defaultRunCtx, ELITE_R2, GYMS_R2, LANE_THEME_R2, REGIONS, regionName, runReducer, TRAINERS_R2, wildBandFor,
   type CombatOutcomeReport, type RunAction, type RunState,
 } from '@/sim';
 import { abilityConditionalReduction } from '@/sim/combat/abilities';
@@ -70,14 +70,8 @@ describe('Region 2 — its own content — §2.2, §2.6.1', () => {
     }
   });
 
-  it('RegionThree_IsStillRegionOne_ShiftedUp_UntilItsOwnContent', () => {
-    const map = createRun('squirtle', 5, ctx, 2).map;
-    for (const id of map.gyms) expect(GYMS.map((g) => g.id)).toContain(id);
-    expect(REGIONS[2]!.levelOffset).toBe(16);
-    expect(REGIONS[1]!.levelOffset).toBe(0);
-    // §2.13 — so the map does not name it yet: a name promises a place.
+  it('RegionTwo_IsNamed_§2.13', () => {
     expect(regionName(1)).toBe('Coastal Cliffs');
-    expect(regionName(2)).toBeNull();
   });
 
   it('ATrainerNode_FightsTheRosterItsPreviewNamed_ById_§2.7.1', () => {

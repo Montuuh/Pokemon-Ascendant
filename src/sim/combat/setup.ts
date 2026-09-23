@@ -68,6 +68,7 @@ function makeEnemy(uid: string, setup: EnemySetup, ctx: CombatCtx): EnemyCombata
     intent: null,
     cooldowns: {},
     witnessed: false,
+    ...(setup.veiled ? { veiled: true } : {}),
   };
 }
 

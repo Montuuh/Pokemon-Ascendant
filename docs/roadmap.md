@@ -454,13 +454,25 @@ Region 1 never fields, 26 % are Electric or Ice (Region 1: none), and 19 % of it
 Ring was retuned for Region 2's rivals (+10, +2, rivals of 3: 60 % · 22 % · 3 %). Region 3 stays the placeholder
 for v0.7.4, and goes unnamed on the map until then.
 
-### v0.7.4 — Region 3, Volcanic Highlands  ☐
+### v0.7.4 — Region 3, Volcanic Highlands  ✅ 2026-09-23
 Biomes `volcano`, `cave`, `sky`, `tower`, ~10 lines, the four R3 Gyms and Badges. Its mechanical
 accent (multi-enemy, field effects) is **v0.8** — R3 ships on R2's combat rules and gains them later.
 **Done ahead of it (2026-09-23):** all 151 Gen I species are built (`catalogs/species-gen1.md`) and sit in no
 pool, so Region 3 *places* its lines rather than authoring them; the Pokédex hides an unmet species behind a
 silhouette, "???" and no types (§8.9.2).
 **Exit:** three Regions with three rosters and twelve possible Gyms.
+
+**Shipped.** Region 3 is its own Region: the Volcano primary, the Cave (shared by the Fighting and the Ice lanes),
+the Sky and a rare Abandoned Tower; twelve rosters over six archetypes, the Hex Maniacs veiled (each of their
+Pokémon hides its first intent, §2.7.1); Boss Giovanni as the Elite Trainer and Aerodactyl as the Elite Wild; and
+Sabrina, Giovanni, Kiyo and Lorelei with the Soul, Earth, Fist and Glacier Badges live — the last on a new
+`status-chill` hook whose smaller number shows on the intent. Two aces carry a scripted off-type answer. A generated
+volcanic route plate and Tower backdrop; the Leaders', the Hex Maniac's and the four emblems fetched. The map names
+it now. Measured, not asserted: 67 % of what Region 3 fields is new, 13 % Psychic or Ghost (earlier Regions 1 %);
+its own roster hit harder than the placeholder, so its Attack tier came down from ×2.3 to ×1.95, which puts Region 3
+given Region 2 at 47 % over 720 runs and the whole run at 15 %. Also in this version: What's new and the release
+doctrine (every version written down and stamped everywhere), and Karate King Koichi, Region 2's Elite, renamed so
+Kiyo can lead the Fighting Gym. The exit holds: three Regions, three rosters, twelve Gyms.
 
 ### v0.7.5 — The leftovers  ☐
 Evolution Items (Eevee's Stone Cache, the Mysterious Stone event), the intent queue (Trainer's Instinct),

@@ -142,7 +142,7 @@ export function buildTrainerScenario(node: MapNode, run: RunState, content: Cont
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
-    enemies: team.map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'trainer', phaseCount: 1 })),
+    enemies: team.map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'trainer', phaseCount: 1, ...(roster.veiled ? { veiled: true } : {}) })),
   };
 }
 
@@ -229,7 +229,14 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
     },
     // §5.9.3 — the team the *preview* promised, which is the band-derived one, not the catalogue row. The
     // species and level are read off the preview too, so a later Region's shift and evolution reach the Gym.
-    enemies: gymTeamFor(gym).map((m, i): EnemySetup => ({ species: node.preview.enemies?.[i]?.species ?? m.species, level: node.preview.enemies?.[i]?.level ?? m.level, tier: 'boss', phaseCount: m.phaseCount })),
+    // §5.9.3 — a scripted kit (the off-type answer a learnset lacks) travels with its slot.
+    enemies: gymTeamFor(gym).map((m, i): EnemySetup => ({
+      species: node.preview.enemies?.[i]?.species ?? m.species,
+      level: node.preview.enemies?.[i]?.level ?? m.level,
+      tier: 'boss',
+      phaseCount: m.phaseCount,
+      ...(m.moves ? { moves: [...m.moves] } : {}),
+    })),
   };
 }
 

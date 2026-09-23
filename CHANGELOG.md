@@ -9,16 +9,22 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one line of lede, then
 > `- **Headline.** One sentence.` bullets. `## Next` collects what reached the game since the last version.
 
-## Next
-
-- **All 151 Pokémon.** Every Gen I species is designed — stats, moves, evolutions, abilities — and waits for its Region.
-- **A Pokédex that keeps secrets.** A species you have not met is a silhouette named "???", with no types and no moves.
-- **What's new.** This page. The version on the main menu opens it, and a dot says when there is something unread.
-- **Readable map captions.** Every node's caption is at full contrast, and every node shows its preview on hover.
-
 ## v0.7 — Cities & Regions 2–3 · in progress
 
 The run goes on past the first Gym: three Regions, and a City between each.
+
+### v0.7.4 — Region 3, Volcanic Highlands · 2026-09-23
+
+The last Region is its own place now — a volcano, an old tower, and four new Gyms.
+
+- **Volcanic Highlands.** Region 3's routes climb a volcano, a cave, the sky cliffs and an old tower, each with its own wild Pokémon.
+- **Sabrina, Giovanni, Kiyo and Lorelei.** Four new Gyms and four new Badges: Soul, Earth, Fist and Glacier.
+- **Hex Maniacs.** Their Pokémon keep their first move hidden — the Soul Badge sees through them.
+- **New Elites.** Boss Giovanni guards the road, and a wild Aerodactyl circles the crags.
+- **All 151 Pokémon.** Every Gen I species is designed — stats, moves, evolutions, abilities — ready for its Region.
+- **A Pokédex that keeps secrets.** A species you have not met is a silhouette named "???", with no types and no moves.
+- **What's new.** This page. The version on the main menu opens it, and a dot says when there is something unread.
+- **Readable map captions.** Every node's caption is at full contrast, and every node shows its preview on hover.
 
 ### v0.7.3 — Region 2, Coastal Cliffs · 2026-09-23
 

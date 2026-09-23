@@ -204,6 +204,8 @@ export type ItemHook =
   | 'box-capacity'
   /** Master Ball Charm — once per run, a throw cannot miss. */
   | 'guaranteed-catch'
+  /** §5.10.3 Glacier Badge — a status that lands on an enemy multiplies its next attack by `multiplier`. */
+  | 'status-chill'
   /** Authored, but the system it needs does not exist yet. Inert, and the UI says so. */
   | 'none';
 
@@ -433,6 +435,8 @@ export interface EnemySetup {
   status?: StatusCondition;
   moves?: string[];
   abilityId?: string;
+  /** §2.7.1 Hex Maniac — hides its first intent like an Elite does (§5.5), on an ordinary trainer's Pokémon. */
+  veiled?: boolean;
 }
 
 export interface ScenarioDef {

@@ -95,6 +95,8 @@ export const ItemHookSchema = z.enum([
   'swap-heal', 'trauma-relief', 'victory-heal', 'price-multiplier',
   // v0.6 (§8.6.1) — the Tier-3 Mastery lane.
   'recall-discard', 'early-evolution', 'box-capacity', 'guaranteed-catch',
+  // v0.7.4 (§5.10.3) — the Glacier Badge: a status on an enemy blunts its next attack.
+  'status-chill',
   'none',
 ]);
 const ItemParams = z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]));
@@ -227,6 +229,7 @@ const EnemySetupSchema = z.object({
   status: StatusSchema.optional(),
   moves: z.array(KebabId).min(1).max(5).optional(),
   abilityId: KebabId.optional(),
+  veiled: z.boolean().optional(),
 });
 
 export const ScenarioSchema = z.object({

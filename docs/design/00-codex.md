@@ -50,13 +50,17 @@ Pokémon.
   (full heal + 1-of-3 Legendary + League preview).
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 multi-enemy + field effects. The
-  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×2.3, HP
+  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×1.95, HP
   ×1 / ×1 / ×1.15), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
   Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
   Elite, the Lapras Elite Wild and the Fire · Grass · Electric · Poison Gyms with their Badges. 76 % of what it
-  fields is new, a quarter Electric or Ice. A Region 2 basic evolves after its catch. Region 3 is Region 1 at +16
-  until v0.7.4. *(2026-09-23.)*
+  fields is new, a quarter Electric or Ice. A Region 2 basic evolves after its catch. *(2026-09-23.)*
+- **Region 3 (Volcanic Highlands) is its own content** since v0.7.4: Volcano primary, Cave, Sky, rare Abandoned
+  Tower; twelve rosters (the Hex Maniac hides each Pokémon's first intent), Giovanni as the Elite Trainer,
+  Aerodactyl as the Elite Wild, and the Psychic · Ground · Fighting · Ice Gyms of Sabrina, Giovanni, Kiyo and
+  Lorelei with the Soul, Earth, Fist and Glacier Badges. Two thirds of what it fields is new. Its accent (multi-enemy,
+  field effects) is v0.8's. *(2026-09-23.)*
 
 **Box & Active Team.** Box capacity 6 (→8). Active Team is 3, locked on node entry; only those 3 contribute
 cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.

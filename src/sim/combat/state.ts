@@ -61,6 +61,11 @@ export interface Combatant {
   moveIds: string[];
   traumaStacks: number;
   regen: Regen | null;
+  /**
+   * §5.10.3 Glacier Badge — a multiplier on this Pokémon's *next* attack, set when a status lands on it and spent
+   * by that attack. Absent (the usual case) is 1.
+   */
+  chill?: number;
 }
 
 export interface EnemyCombatant extends Combatant {
@@ -77,6 +82,8 @@ export interface EnemyCombatant extends Combatant {
   cooldowns: Record<string, number>;
   /** §5.5 (CL-011) — once the enemy has fired any move, its intents are Witnessed. */
   witnessed: boolean;
+  /** §2.7.1 Hex Maniac — its first intent is hidden, as an Elite's is. */
+  veiled?: boolean;
 }
 
 export interface Intent {

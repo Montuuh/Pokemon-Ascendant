@@ -37,6 +37,9 @@
 
 ## Region 3 — Volcanic Highlands (volcano primary; cave, sky, tower secondary)
 
+> ✅ **v0.7.4 placed** every basic below in Region 3's pools (`biomes-regions.md` §2 has the pools as built), and
+> Chansey and Kangaskhan stay for Victory Road.
+
 | Line | Species (dex) | Types | Biome | Rarity |
 |---|---|---|---|---|
 | `vulpix` | `vulpix` 37 → `ninetales` 38 | Fire | volcano | common |

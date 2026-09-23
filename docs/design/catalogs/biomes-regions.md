@@ -13,9 +13,9 @@
 | `river` | River / Lake 💧 | R1, R2 | — | Water, Bug-Water | `river.png` (use `forest.png` until fetched) |
 | `sea` | Sea 🌊 | R2 | **R2** | deep-water Water, Ice | ☐ |
 | `power-plant` | Power Plant ⚡ | R2, R3 | — | Electric | ☐ |
-| `volcano` | Volcano Slope 🔥 | R3 | **R3** | Fire, Rock-Fire, Ground | ☐ |
-| `sky` | Sky / Cliffs 🦅 | R3 | — | Flying, Bug-Flying, Psychic | ☐ |
-| `tower` | Abandoned Tower 👻 | R3 (rare) | — | Ghost, Poison, Psychic | ☐ |
+| `volcano` | Volcano Slope 🔥 | R3 | **R3** | Fire, Rock-Fire, Ground | ✅ `volcano.jpg` |
+| `sky` | Sky / Cliffs 🦅 | R3 | — | Flying, Bug-Flying, Psychic | ✅ `sky-pillar.jpg` |
+| `tower` | Abandoned Tower 👻 | R3 (rare) | — | Ghost, Poison, Psychic | ✅ `tower.jpg` (generated, v0.7.4) |
 
 **Binding is canon**: the eligible set and the primary weighting are fixed per Region. The only thing
 that changes them is the opt-in `naturalist-lens` Region Modifier, which promotes one **eligible** biome to
@@ -42,6 +42,13 @@ Each Wild Area node offers **3 species, visible before entering**: 2 Common + 1 
 | `volcano` | `vulpix*` `growlithe*` | `magmar*` `ponyta*` | `moltres*` 🔒 |
 | `sky` | `spearow*` `pidgey` | `doduo*` `farfetchd*` | `articuno*` 🔒 |
 | `tower` | `gastly*` | `haunter*` `drowzee*` | `cubone*` `mr-mime*` |
+
+> **As built (v0.7.4).** A Wild node offers base forms (§2.2.1), so Region 3's pools are the rows above in their
+> first forms, without the Legendaries: the Volcano `vulpix` `ponyta` `sandshrew` · `rhyhorn` `growlithe` ·
+> `magmar`; the Cave `zubat` `geodude` `machop` `mankey` `seel` `shellder` · `abra` `nidoran-f` `jynx` ·
+> `aerodactyl` (two lanes share it, the Fighting lane's and the Ice lane's); the Sky `spearow` `pidgey` ·
+> `doduo` `farfetchd` · `scyther` (for the locked Articuno); the Tower `gastly` `drowzee` · `cubone`
+> `grimer` · `mr-mime`. Weights: Volcano 5 · Cave 3 · Sky 2 · Tower 1.
 
 ## 3. Level bands (§2.6.5)
 

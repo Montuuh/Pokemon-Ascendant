@@ -53,7 +53,14 @@
 | `electric-gym-r2` | Surge | Electric | `voltorb*` L20 | `electrode*` L22 | **Tempo Control** | `thunder-badge` |
 | `poison-gym-r2` | Koga | Poison | `koffing*` L20 | `weezing*` L22 | **Status Siege** | `marsh-badge` |
 
-## 3. Region 3 pool — Psychic · Ground · Fighting · Ice 🔒 v0.7
+## 3. Region 3 pool — Psychic · Ground · Fighting · Ice ✅ v0.7.4
+
+> As built: levels from the band (22–30, so slot 1 at 34 and the ace at 36). Stages: library, desert, gym,
+> ice-cave. Two aces carry a scripted kit for the off-type answer their learnset lacks at 36 (§5.9.3):
+> Alakazam `psychic` `psyshock` `calm-mind` **`shadow-ball`**, Machamp `cross-chop` `dynamic-punch`
+> `close-combat` **`thunder-punch`**; Rhydon's Megahorn and Dewgong's Surf are their own. Kiyo wears the
+> Gen IV Black Belt sprite, Lorelei FireRed's. Nidoqueen's primary type is Poison, so Giovanni's slot 1 plays
+> Status Siege and his ace the Entrenchment the table names (§5.9.4 reads the Pokémon's own type).
 
 | id | Leader | Type | Slot 1 | Ace | Phase-2 archetype | Badge |
 |---|---|---|---|---|---|---|

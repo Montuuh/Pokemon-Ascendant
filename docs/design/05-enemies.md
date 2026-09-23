@@ -257,6 +257,9 @@ the player cannot feel is not a reward.)*
 
 ## §5.10.3 Region 3 tier
 
+*(Built v0.7.4. The Glacier Badge's blunted attack sits on the chilled enemy until it next attacks, so the
+number on its intent is already the smaller one — the telegraph stays honest.)*
+
 **🔮 Soul Badge** *(Psychic)* — Every Unknown intent is revealed for the first 2 turns of each combat.
 **🌍 Earth Badge** *(Ground)* — Step-Forward and Step-Backward moves cost 1 less AP (minimum 0).
 **🥊 Fist Badge** *(Fighting)* — Melee moves deal **+25 %** damage.
@@ -280,6 +283,14 @@ the player cannot feel is not a reward.)*
 | Glacier | Ice | R3 | Statused enemy attacks −15 % |
 
 Synergy notes and the counter-pick logic: [`catalogs/modifiers.md`](catalogs/modifiers.md).
+
+> ⚠️ **OPEN (2026-09-23)**: two Badge names differ from Gen I, and the map shows each Badge's real art. In the games
+> Koga (Poison) gives the **Soul** Badge and Sabrina (Psychic) the **Marsh** Badge; this table gives Poison the Marsh
+> and Psychic the Soul, so Sabrina's Gym wears Koga's pink heart and the other way round. Options: (a) keep the
+> names as they read — a marsh is poisonous, a soul is psychic — and accept the swap against the games; (b) swap
+> the two names and emblems back to Gen I's, ids unchanged, effects staying with their types. Likewise the Fist
+> Badge wears the Knuckle Badge's art and the Normal Badge the Plain Badge's. No pillar is at stake either way.
+> Decides: the user.
 
 ---
 

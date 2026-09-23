@@ -37,6 +37,15 @@ const TRAINERS = {
   erika: 'erika',
   ltsurge: 'ltsurge',
   koga: 'koga',
+  // v0.7.4 — Region 3: the Hex Maniac, Giovanni (the Elite and the Ground Gym), and the other three Leaders.
+  // Showdown has no default Hex Maniac or Lorelei, so their FireRed/LeafGreen sprites stand in (the closest
+  // register to the rest); Kiyo, the Karate King who leads the Fighting Gym, is the Gen IV Black Belt, which
+  // keeps him apart from Region 2's Karate King on the plain `blackbelt`.
+  hexmaniac: 'hexmaniac-gen3',
+  giovanni: 'giovanni',
+  sabrina: 'sabrina',
+  lorelei: 'lorelei-gen3',
+  kiyo: 'blackbelt-gen4',
 };
 
 const url = (id) => `https://play.pokemonshowdown.com/sprites/trainers/${id}.png`;

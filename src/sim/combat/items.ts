@@ -80,6 +80,8 @@ export function itemAttackMultiplier(
       if (p.leadOnly && state.player.team[state.player.leadIndex]?.uid !== attacker.uid) continue;
       // §5.10.2 Volcano Badge — the heavy cards only, by what the card is printed at, not what it cost today.
       if (p.minApCost && move.apCost < num(p.minApCost, 0)) continue;
+      // §5.10.3 Fist Badge — one range only.
+      if (p.range && p.range !== move.range) continue;
       // §7.3.7 Type Mastery — a further term on top of the type roll, not a replacement for it.
       if (p.superEffective && (opts.typeMultiplier ?? 1) <= 1) continue;
       // §7.3.7 Evolution's Edge — the reward for having committed to a branch (Pillar 4).
@@ -269,6 +271,12 @@ export function itemApDelta(state: CombatState, owner: Combatant, move: MoveDef,
       if (move.range !== p.range) continue;
       if (priorOfRange === 0 && p.freeFirst) return -99; // free, and nothing else can make it cheaper
       if (priorOfRange > 0) delta += num(p.laterDelta, 0);
+      continue;
+    }
+    // §5.10.3 Earth Badge — the positional cards (Step-Forward, Step-Backward) are cheaper; nothing else is.
+    if (p.stepOnly) {
+      if (move.modifier === 'none') continue;
+      delta += num(p.delta, 0);
       continue;
     }
     if (p.afterMinAp) {
@@ -461,11 +469,23 @@ export function startShield(state: CombatState, c: Combatant, content: ContentRe
 }
 
 /**
- * §7.3.7 Clear Mind reveals every intent; §2.11.3 Pokédex Whisper (`firstOnly`) only an enemy's first. The
- * ability half lives in abilities.ts and takes the same flag.
+ * §7.3.7 Clear Mind reveals every intent; §2.11.3 Pokédex Whisper (`firstOnly`) only an enemy's first; §5.10.3
+ * the Soul Badge (`untilTurn`) every intent of a combat's first turns. The ability half lives in abilities.ts.
  */
-export const relicsRevealIntents = (state: CombatState, content: ContentRegistry, firstIntent = false): boolean =>
-  relicsOf(state, content).some((r) => r.hook === 'reveal-intents' && (!r.params?.firstOnly || firstIntent));
+export const relicsRevealIntents = (state: CombatState, content: ContentRegistry, firstIntent = false, turn = 1): boolean =>
+  relicsOf(state, content).some(
+    (r) => r.hook === 'reveal-intents' && (!r.params?.firstOnly || firstIntent) && (r.params?.untilTurn === undefined || turn <= num(r.params.untilTurn, 0)),
+  );
+
+/**
+ * §5.10.3 Glacier Badge — what an enemy's next attack is multiplied by once a status lands on it: the product of
+ * every `status-chill` source the player carries, or 1 when there is none. Only the player's side has Badges.
+ */
+export function statusChillMultiplier(state: CombatState, content: ContentRegistry): number {
+  let m = 1;
+  for (const src of relicsOf(state, content)) if (src.hook === 'status-chill') m *= num(src.params?.multiplier, 1);
+  return m;
+}
 
 /** §8.6.1 Master Ball Charm — is the once-per-run guaranteed catch still armed? Spent through `player.spent` like Phoenix Feather. */
 export const guaranteedCatch = (state: CombatState, content: ContentRegistry): string | null => {

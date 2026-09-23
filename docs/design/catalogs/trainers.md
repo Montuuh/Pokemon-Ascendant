@@ -14,11 +14,11 @@
 | `bug-catcher` | Bug Catcher | High volume, low individual threat; Confusion and Sleep riders | R1 | `bugcatcher` |
 | `youngster` | Youngster | Generalist, the difficulty floor; one randomised Pokémon | R1, R2 | `youngster` |
 | `lass` | Lass | Generalist with a status lean | R1, R2 | `lass` |
-| `hiker` | Hiker | Slow, durable, Defence-stacking; punishes a damage race | R1, R2 | `hiker` |
-| `swimmer` | Swimmer | Water, status-heavy (Confusion, Burn-shred) | R1 (river), R2 | `swimmer` |
+| `hiker` | Hiker | Slow, durable, Defence-stacking; punishes a damage race | R1, R2, R3 ✅ | `hiker` |
+| `swimmer` | Swimmer | Water, status-heavy (Confusion, Burn-shred) | R1 (river), R2, R3 ✅ (the Ice lane's cave) | `swimmer` |
 | `engineer` | Engineer | Buff-stall: sets up before striking | R2 ✅, R3 | `scientist` |
-| `hex-maniac` | Hex Maniac | Vision disruption — generates Unknown intents | R3 | `hexmaniac` |
-| `ace-trainer` | Ace Trainer | Two high-stat Pokémon, multi-type | R3 (+ R1 Elite specialist) | `acetrainer` |
+| `hex-maniac` | Hex Maniac | Vision disruption — each of its Pokémon hides its first intent, as an Elite's does (a veiled roster) | R3 ✅ | `hexmaniac` (FRLG sprite) |
+| `ace-trainer` | Ace Trainer | Two high-stat Pokémon, multi-type | R3 ✅ (+ R1 Elite specialist) | `acetrainer` |
 | `rocket-grunt` | Rocket Grunt | Aggressive Cleave/Backstrike kits, Poison | R2 ✅, R3 | `rocketgrunt` |
 
 > §2.7.1 lists 8; `youngster` and `lass` were one row ("Lass / Youngster") and `sailor`/`swimmer` another. They
@@ -69,16 +69,31 @@ are not in the build: the Lass's Jigglypuff became a Starmie (and, in the second
 Grunt's Ekans became a Golbat or a Raticate — the Gen I Rocket's other two — and the **Hex Maniac moved to Region 3**
 with the Ghosts its identity needs. *(Settled while building v0.7.3, 2026-09-23.)*
 
-## 4. Region 3 rosters (levels 26–34) 🔒 v0.7
+## 4. Region 3 rosters (levels 26–34) ✅ v0.7.4
 
-| Archetype | Team | Levels |
-|---|---|---|
-| `ace-trainer` | `pidgeot` + `arcanine*` | 30, 32 |
-| `ace-trainer-b` | `alakazam*` + `machamp` | 31, 32 |
-| `hex-maniac` | `gengar*` + `hypno*` | 31, 30 |
-| `rocket-grunt` | `weezing*` + `arbok*` | 30, 31 |
-| `engineer` | `magneton*` + `electrode*` | 31, 30 |
-| `hiker` | `golem` + `rhyhorn*` | 32, 31 |
+Two per archetype, as Region 2's; the catalogue's six rows are the first of each pair, the second written to the
+same identity. Levels here are the spread; the band places them (§2.7.3).
+
+| id | Archetype | Team | Levels |
+|---|---|---|---|
+| `ace-trainer-r3-a` | Ace Trainer | `pidgeot` + `arcanine` | 30, 32 |
+| `ace-trainer-r3-b` | Ace Trainer | `alakazam` + `machamp` | 31, 32 |
+| `hex-maniac-r3-a` | Hex Maniac (veiled) | `hypno` + `gengar` | 30, 31 |
+| `hex-maniac-r3-b` | Hex Maniac (veiled) | `mr-mime` + `slowbro` | 30, 31 |
+| `rocket-grunt-r3-a` | Rocket Grunt | `weezing` + `arbok` | 30, 31 |
+| `rocket-grunt-r3-b` | Rocket Grunt | `golbat` + `muk` | 30, 31 |
+| `engineer-r3-a` | Engineer | `electrode` + `magneton` | 30, 31 |
+| `engineer-r3-b` | Engineer | `porygon` + `magneton` | 30, 31 |
+| `hiker-r3-a` | Hiker | `rhyhorn` + `golem` | 31, 32 |
+| `hiker-r3-b` | Hiker | `onix` + `machamp` | 30, 32 |
+| `swimmer-r3-a` | Swimmer | `dewgong` + `seaking` | 30, 31 |
+| `swimmer-r3-b` | Swimmer | `cloyster` + `starmie` | 30, 31 |
+
+**The Gym lanes** (§2.5): Hex Maniacs climb the Psychic lane's Tower, Rocket Grunts guard the Ground lane's
+Volcano (they are Giovanni's), Hikers walk the Fighting lane's Cave and Swimmers the Ice lane's; the Ace
+Trainers and the Engineers are the trunk's. The Swimmer is Region 3's by necessity rather than by the table
+above: the Ice Gym is the Seafoam kind, and a lane needs an archetype that looks like its Gym. *(Built
+2026-09-23.)*
 
 ## 5. Rewards (§2.7.2)
 

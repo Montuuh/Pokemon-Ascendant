@@ -198,6 +198,24 @@ describe('Run pacing — §2.1, §3.7', () => {
     expect(statused(r2), 'fights that leave a status on the team').toBeGreaterThan(statused(r1) * 1.5);
   });
 
+  it('RegionThree_PlaysDifferently_NotJustHarder_§2.2', () => {
+    // v0.7.4's exit, measured the same way: Region 3 fields species the first two Regions never show you, and
+    // its identity (§2.13.3: "Fire, Rock, Psychic and Ghost") is what you fight, not a label on the map.
+    const inRegion = (r: number) => fights.filter((f) => f.region === r);
+    const earlier = [...inRegion(0), ...inRegion(1)];
+    const r3 = inRegion(2);
+    expect(r3.length).toBeGreaterThan(40);
+    const seen = new Set(earlier.flatMap((f) => f.enemies.map((e) => e.species)));
+    const r3Enemies = r3.flatMap((f) => f.enemies);
+    const fresh = r3Enemies.filter((e) => !seen.has(e.species)).length / r3Enemies.length;
+    const typed = (list: typeof r3Enemies, types: string[]) => list.filter((e) => ctx.content.species(e.species).types.some((t) => types.includes(t))).length / Math.max(1, list.length);
+    const identity = ['psychic', 'ghost'];
+    const earlierEnemies = earlier.flatMap((f) => f.enemies);
+    console.log(`region 3: new species ${fresh.toFixed(2)} · psychic/ghost ${typed(r3Enemies, identity).toFixed(2)} (R1+R2 ${typed(earlierEnemies, identity).toFixed(2)}) · fire/rock/ground ${typed(r3Enemies, ['fire', 'rock', 'ground']).toFixed(2)}`);
+    expect(fresh, 'Region 3 enemies the first two Regions never field').toBeGreaterThan(0.5);
+    expect(typed(r3Enemies, identity)).toBeGreaterThan(typed(earlierEnemies, identity) * 2);
+  });
+
   it('Run_ThickensTheDeck_SomethingEvolvesEveryRun', () => {
     // §6.2.4 — a base form's learnset ends before its threshold, so a run with no evolution is a run whose
     // Pokémon stopped learning. This is the guard that caught that.

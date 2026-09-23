@@ -22,10 +22,10 @@
 | `rainbow-badge` | Rainbow | Grass | R2 | At turn start, a statused Lead restores 3 HP | `on-turn-start` | ✅ |
 | `thunder-badge` | Thunder | Electric | R2 | The first Ranged move each turn costs −1 AP (min 0) | `on-ap-cost` | ✅ |
 | `marsh-badge` | Marsh | Poison | R2 | Applying a status to an enemy draws 1 skill card | `on-status-apply` | ✅ |
-| `soul-badge` | Soul | Psychic | R3 | Every Unknown intent is revealed for the first 2 turns of each combat | `on-combat-start` | ✅ |
-| `earth-badge` | Earth | Ground | R3 | Step-Forward and Step-Backward moves cost −1 AP (min 0) | `on-ap-cost` | ✅ |
-| `fist-badge` | Fist | Fighting | R3 | Melee moves deal +25 % | `on-damage` | ✅ |
-| `glacier-badge` | Glacier | Ice | R3 | When an enemy gains a status, its next attack deals −15 % | `on-status-apply` | ✅ |
+| `soul-badge` | Soul | Psychic | R3 | Every Unknown intent is revealed for the first 2 turns of each combat | `on-combat-start` | ✅ built v0.7.4 (`reveal-intents`, until turn 2; also reads through a Hex Maniac's veil) |
+| `earth-badge` | Earth | Ground | R3 | Step-Forward and Step-Backward moves cost −1 AP (min 0) | `on-ap-cost` | ✅ built v0.7.4 (the ap-cost hook, step moves only) |
+| `fist-badge` | Fist | Fighting | R3 | Melee moves deal +25 % | `on-damage` | ✅ built v0.7.4 (`damage-dealt`, range melee); wears the Knuckle Badge art |
+| `glacier-badge` | Glacier | Ice | R3 | When an enemy gains a status, its next attack deals −15 % | `on-status-apply` | ✅ built v0.7.4 (a new status-chill hook; the intent shows the smaller number) |
 
 ## Two resolved in the 2026-09-19 pass
 

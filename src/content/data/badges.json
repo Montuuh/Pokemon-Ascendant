@@ -1,5 +1,5 @@
 {
-  "_note": "Badge catalog — the four Region 1 Badges (§5.10.1). Rows come from docs/design/catalogs/modifiers.md. A Badge carries the same `hook` + `params` vocabulary as a relic (§7.7) on purpose: §7.3.6 states that type-boost relics, held items, Badges and fields are independent multiplicative terms, so the combat sim resolves all of them through one code path and the distinction that matters — a relic is picked up, a Badge is won — stays in the run layer where it belongs. The eight Region 2 and 3 Badges (§5.10.2, §5.10.3) arrive with the Gyms that award them.",
+  "_note": "Badge catalog — the four Region 1 Badges (§5.10.1). Rows come from docs/design/catalogs/modifiers.md. A Badge carries the same `hook` + `params` vocabulary as a relic (§7.7) on purpose: §7.3.6 states that type-boost relics, held items, Badges and fields are independent multiplicative terms, so the combat sim resolves all of them through one code path and the distinction that matters — a relic is picked up, a Badge is won — stays in the run layer where it belongs. Region 2 (§5.10.2) arrived with v0.7.3 and Region 3 (§5.10.3) with v0.7.4, each with the Gyms that award them.",
   "badges": [
     {
       "id": "boulder-badge",
@@ -106,6 +106,56 @@
       "params": {
         "onStatusApplied": true,
         "cards": 1
+      }
+    },
+    {
+      "id": "soul-badge",
+      "name": "Soul Badge",
+      "type": "psychic",
+      "region": 3,
+      "description": "Every hidden intent is revealed for the first 2 turns of each combat.",
+      "flavour": "Proof of a mind that sees what is coming.",
+      "hook": "reveal-intents",
+      "params": {
+        "untilTurn": 2
+      }
+    },
+    {
+      "id": "earth-badge",
+      "name": "Earth Badge",
+      "type": "ground",
+      "region": 3,
+      "description": "Step-Forward and Step-Backward moves cost 1 less AP.",
+      "flavour": "Proof that the ground under you is yours to move on.",
+      "hook": "ap-cost",
+      "params": {
+        "stepOnly": true,
+        "delta": -1
+      }
+    },
+    {
+      "id": "fist-badge",
+      "name": "Fist Badge",
+      "type": "fighting",
+      "region": 3,
+      "description": "Melee moves deal +25 % damage.",
+      "flavour": "Proof of a hundred days of training.",
+      "hook": "damage-dealt",
+      "params": {
+        "range": "melee",
+        "multiplier": 1.25
+      }
+    },
+    {
+      "id": "glacier-badge",
+      "name": "Glacier Badge",
+      "type": "ice",
+      "region": 3,
+      "description": "When an enemy gains a status condition, its next attack deals 15 % less damage.",
+      "flavour": "Proof of a cold that slows everything it touches.",
+      "hook": "status-chill",
+      "params": {
+        "multiplier": 0.85
       }
     }
   ]

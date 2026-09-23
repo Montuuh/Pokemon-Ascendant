@@ -155,8 +155,21 @@ brings types Region 1 has none of. Measured over the harness's runs (`runBalance
 | Enemies with an Electric or Ice type | 0 % | **26 %** |
 | Fights that send a status home with the team (§4.2.7.1) | 8 % | **19 %** |
 
-That is the exit v0.7.3 was built to: Region 2 plays differently, not just harder. Region 3 stays Region 1's
-tables sixteen levels up until v0.7.4 writes its own; the map does not name it until then (§2.13).
+That is the exit v0.7.3 was built to: Region 2 plays differently, not just harder.
+
+**Region 3 is its own Region too** (v0.7.4): its own biomes — the Volcano primary, the Cave, the Sky and the rare
+Abandoned Tower — twelve rosters, Giovanni as its Elite Trainer and Aerodactyl as its Elite Wild, and the Psychic
+· Ground · Fighting · Ice Gyms of Sabrina, Giovanni, Kiyo and Lorelei (`catalogs/biomes-regions.md`,
+`trainers.md`, `elites.md`, `gyms.md`). Its species were all built ahead of it (`species-gen1.md`), so the Region
+places lines rather than authoring them. Measured the same way (`runBalance.test.ts` guards both):
+
+| Measure | Regions 1–2 | Region 3 |
+|---|---|---|
+| Enemies of a species the earlier Regions never field | — | **67 %** |
+| Enemies with a Psychic or Ghost type | 1 % | **13 %** |
+
+Its mechanical accent — multi-enemy fights and field effects — is v0.8's (§5.6, §4.3); until then Region 3 plays on
+Region 2's rules, and the Hex Maniac's veil (§2.7.1) is the one new wrinkle a trainer brings.
 
 ## §2.2.1 The difficulty curve
 
@@ -188,7 +201,7 @@ fight — a team of evolved Pokémon with relics and Badges out-grows a band tha
 |---|---|---|
 | 1 | ×1 | ×1 |
 | 2 | ×1 | ×1.6 |
-| 3 | ×1.15 | ×2.3 |
+| 3 | ×1.15 | ×1.95 |
 
 **Attack-heavy on purpose**: an even split (×1.2 / ×1.55 on both) reached similar clear rates with Region 3
 fights 7.5 turns long; this one keeps every Region between 4 and 5 turns a fight (4.3 / 4.6 / 4.6). More HP
@@ -196,12 +209,14 @@ makes a fight longer, more Attack makes it dangerous, and the curve is meant to 
 
 The tier is the numeric half; the accent is the half the player is meant to notice. **Greater Threats** (§8.8)
 borrows the next Region's tier, and past Region 3 it extrapolates one more step of the same size (HP ×1.3,
-Attack ×3.0).
+Attack ×2.3).
 The numbers are tuned against the bands, not chosen: change one and read the harness. *(2026-09-22, set by the
 difficulty pass after v0.7.1; the user asked for the later routes to be harder and left the method to design.)*
-**Re-measured on Region 2's own roster** (v0.7.3, 720 runs): Region 2 given Region 1 **59 %**, Region 3 given
-Region 2 **45 %**, the whole run **15 %** — inside every band, so the tier stayed as it was. The tier was tuned on
-Region 1's species evolved up; a real roster turned out to cost runs at the same rate.
+**Re-measured on each Region's own roster.** Region 2's (v0.7.3, 720 runs) cost runs at the rate the tier was tuned
+for on Region 1's species evolved up — 59 % given Region 1 — so its tier stayed. Region 3's did not (v0.7.4):
+Alakazam, Gengar and Machamp hit harder by themselves than Region 1's lines raised sixteen levels, and at ×2.3
+Region 3 given Region 2 fell to **37 %**. Its Attack came down to **×1.95**: **47 %** over 720 runs, the whole run
+**15 %**, fights 4.9 turns long.
 
 ---
 
@@ -544,9 +559,9 @@ Elites (§2.8) and Gyms (§5.8).
 | **Youngster** | Generalist; the difficulty floor | R1, R2 |
 | **Lass** | Generalist with a status lean | R1, R2 |
 | **Hiker** | Slow, durable, Defence-stacking; punishes a damage race | R1, R2 |
-| **Swimmer** | Water, status-heavy | R1 (river), R2 |
+| **Swimmer** | Water, status-heavy | R1 (river), R2, R3 (the Ice lane's cave) |
 | **Engineer** | Buff-stall: sets up, then strikes | R2, R3 |
-| **Hex Maniac** | Vision disruption — generates Unknown intents | R3 (with its Ghosts; its Region 2 row waits for them) |
+| **Hex Maniac** | Vision disruption: each of its Pokémon hides its first intent, as an Elite's does (§5.5) — Keen Eye, the Soul Badge and a Familiar species read through it | R3 |
 | **Rocket Grunt** | Aggressive Cleave and Backstrike kits, Poison | R2, R3 |
 | **Ace Trainer** | Two high-stat Pokémon, multi-type | R3 |
 
@@ -615,6 +630,10 @@ lanes are canon; a run may defeat both.
 
 **Specialists** are elevated versions of the trainer archetypes — a Karate King, a Channeler, a Cooltrainer —
 one authored per Region. Rosters: [`catalogs/elites.md`](catalogs/elites.md).
+
+**As built**, each Region fields one Elite Trainer until the Rival's counter-pick has a run-long story to land in:
+the Specialist in Regions 1 and 2 (an Ace Trainer; the Karate King), and **Giovanni** in Region 3 — the
+Specialist written for Region 3 fields Lorelei's own Dewgong and Cloyster.
 
 ## §2.8.2 The Elite Wild
 
@@ -1128,9 +1147,9 @@ buildings the City is built around.)*
 ## §2.13.3 Region 3 — Volcanic Highlands 🔥
 Volcano primary; Cave, Sky and Abandoned Tower secondary. Reds, oranges, blacks, purples — saturated and
 intense, but never grim (Pillar 5). Heavy percussion, brass, tremolo strings. Enemies are Fire, Rock, Psychic
-and Ghost. Gym pool: Psychic, Ground, Fighting, Ice. No City — Region 3 ends in Victory Road. **Until v0.7.4 it is
-Region 1's tables sixteen levels up**, on Region 1's plate, and the map calls it "Region 3" rather than a place it
-does not yet look like.
+and Ghost. Gym pool: Psychic, Ground, Fighting, Ice. No City — Region 3 ends in Victory Road. Its route plate is a
+volcanic plateau between a lava field and the cliffs of an old tower (`public/art/map/region-3.png`). *(Until
+v0.7.4 it was Region 1's tables sixteen levels up and went unnamed on the map.)*
 
 ---
 
