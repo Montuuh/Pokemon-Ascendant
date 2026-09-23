@@ -316,7 +316,7 @@ export function itemDrawBonus(state: CombatState, turn: number, content: Content
     // A draw that fires on an event of its own is not a turn-start draw. Without this the Cascade Badge
     // would pay out once per swap *and* once per turn, which is twice what §5.10.1 promises.
     if (p.onManualSwap) continue;
-    // §5.10.2 Marsh Badge — it draws when a status lands, not at the top of the turn.
+    // §5.10.2 Soul Badge — it draws when a status lands, not at the top of the turn.
     if (p.onStatusApplied) continue;
     // Lucky Draw draws from the consumable pile, not the skill deck; it is counted by its own query.
     if (p.consumables) continue;
@@ -327,7 +327,7 @@ export function itemDrawBonus(state: CombatState, turn: number, content: Content
   return extra;
 }
 
-/** §5.10.2 Marsh Badge — cards drawn the moment one of your moves puts a status on an enemy. */
+/** §5.10.2 Soul Badge — cards drawn the moment one of your moves puts a status on an enemy. */
 export function statusApplyDrawBonus(state: CombatState, content: ContentRegistry): number {
   let cards = 0;
   for (const src of relicsOf(state, content)) if (src.hook === 'draw' && src.params?.onStatusApplied) cards += num(src.params.cards, 0);
@@ -470,7 +470,7 @@ export function startShield(state: CombatState, c: Combatant, content: ContentRe
 
 /**
  * §7.3.7 Clear Mind reveals every intent; §2.11.3 Pokédex Whisper (`firstOnly`) only an enemy's first; §5.10.3
- * the Soul Badge (`untilTurn`) every intent of a combat's first turns. The ability half lives in abilities.ts.
+ * the Marsh Badge (`untilTurn`) every intent of a combat's first turns. The ability half lives in abilities.ts.
  */
 export const relicsRevealIntents = (state: CombatState, content: ContentRegistry, firstIntent = false, turn = 1): boolean =>
   relicsOf(state, content).some(

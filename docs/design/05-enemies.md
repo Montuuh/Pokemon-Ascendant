@@ -92,7 +92,7 @@ Gym ace's hidden opener was a Cleave that removed a bench member.)*
 |---|---|---|
 | **Witnessed** | The enemy uses the move | Rest of this combat; permanently logged in the Pokédex |
 | **Scouted** | `foresight` move or `radar-scope` consumable | This combat |
-| **Researched** | The `keen-eye` ability, the Soul Badge, the `clear-mind` Legendary | This run, from combat start |
+| **Researched** | The `keen-eye` ability, the Marsh Badge, the `clear-mind` Legendary | This run, from combat start |
 
 # §5.6 Multi-enemy encounters
 
@@ -116,7 +116,7 @@ uses the same scoring function, so a Debuffer never double-applies and a Healer 
 
 # §5.7 Counter-intel
 
-When a boss's intent pool is **fully** revealed — by Keen Eye, the Soul Badge, Radar Scope, the `clear-mind`
+When a boss's intent pool is **fully** revealed — by Keen Eye, the Marsh Badge, Radar Scope, the `clear-mind`
 Legendary, or a combination — the boss's AI changes:
 
 - Its top-scored intent is multiplied by **0.7**, so it sometimes plays its second or third choice.
@@ -243,7 +243,7 @@ Victory Road's Perfect Clear (§2.12.6); a City pays none. A Badge is permanent 
 generate a free copy in your hand next turn.
 *Deck velocity. Cheap, fast decks cycle more and get paid more.*
 
-**⭐ Normal Badge** *(Normal)* — The **first card you play each turn costs 1 less AP** (minimum 0).
+**⭐ Plain Badge** *(Normal)* — The **first card you play each turn costs 1 less AP** (minimum 0).
 *Universal efficiency, and the only Badge that changes how every single turn is built.*
 *(Redesigned 2026-09-19. The original "+10 % to damage dealt and received" was close to neutral, and a Gym reward
 the player cannot feel is not a reward.)*
@@ -253,16 +253,16 @@ the player cannot feel is not a reward.)*
 **🔥 Volcano Badge** *(Fire)* — Offensive cards costing 3 or more AP deal +20 % damage.
 **🌿 Rainbow Badge** *(Grass)* — At turn start, a Lead with a status condition restores 3 HP.
 **⚡ Thunder Badge** *(Electric)* — The first Ranged move each turn costs 1 less AP (minimum 0).
-**💜 Marsh Badge** *(Poison)* — Applying a status condition to an enemy draws 1 skill card.
+**💗 Soul Badge** *(Poison)* — Applying a status condition to an enemy draws 1 skill card.
 
 ## §5.10.3 Region 3 tier
 
 *(Built v0.7.4. The Glacier Badge's blunted attack sits on the chilled enemy until it next attacks, so the
 number on its intent is already the smaller one — the telegraph stays honest.)*
 
-**🔮 Soul Badge** *(Psychic)* — Every Unknown intent is revealed for the first 2 turns of each combat.
+**🔮 Marsh Badge** *(Psychic)* — Every Unknown intent is revealed for the first 2 turns of each combat.
 **🌍 Earth Badge** *(Ground)* — Step-Forward and Step-Backward moves cost 1 less AP (minimum 0).
-**🥊 Fist Badge** *(Fighting)* — Melee moves deal **+25 %** damage.
+**🥊 Knuckle Badge** *(Fighting)* — Melee moves deal **+25 %** damage.
 **❄️ Glacier Badge** *(Ice)* — When an enemy gains a status condition, its next attack deals 15 % less damage.
 
 ## §5.10.4 Summary
@@ -272,25 +272,24 @@ number on its intent is already the smaller one — the telegraph stays honest.)
 | Boulder | Rock | R1 | Lead takes −1 incoming damage |
 | Cascade | Water | R1 | Manual swap → draw 1 |
 | Hive | Bug | R1 | Deck cycling: 20 % free copy |
-| Normal | Normal | R1 | First card each turn −1 AP |
+| Plain | Normal | R1 | First card each turn −1 AP |
 | Volcano | Fire | R2 | 3+ AP offensive cards +20 % |
 | Rainbow | Grass | R2 | Statused Lead heals 3/turn |
 | Thunder | Electric | R2 | First Ranged move −1 AP |
-| Marsh | Poison | R2 | Applying status → draw 1 |
-| Soul | Psychic | R3 | Unknown intents revealed, 2 turns |
+| Soul | Poison | R2 | Applying status → draw 1 |
+| Marsh | Psychic | R3 | Unknown intents revealed, 2 turns |
 | Earth | Ground | R3 | SF/SB moves −1 AP |
-| Fist | Fighting | R3 | Melee +25 % |
+| Knuckle | Fighting | R3 | Melee +25 % |
 | Glacier | Ice | R3 | Statused enemy attacks −15 % |
 
 Synergy notes and the counter-pick logic: [`catalogs/modifiers.md`](catalogs/modifiers.md).
 
-> ⚠️ **OPEN (2026-09-23)**: two Badge names differ from Gen I, and the map shows each Badge's real art. In the games
-> Koga (Poison) gives the **Soul** Badge and Sabrina (Psychic) the **Marsh** Badge; this table gives Poison the Marsh
-> and Psychic the Soul, so Sabrina's Gym wears Koga's pink heart and the other way round. Options: (a) keep the
-> names as they read — a marsh is poisonous, a soul is psychic — and accept the swap against the games; (b) swap
-> the two names and emblems back to Gen I's, ids unchanged, effects staying with their types. Likewise the Fist
-> Badge wears the Knuckle Badge's art and the Normal Badge the Plain Badge's. No pillar is at stake either way.
-> Decides: the user.
+**The names are the games' own** (2026-09-24). The map shows each Badge's real art, and a player reads the name
+beside it, so a Badge is called what the badge in the picture is called: Koga's Poison Gym gives the **Soul** Badge
+and Sabrina's Psychic Gym the **Marsh** Badge, as in Gen I (they were the other way round, named for how they
+sounded — a marsh is poisonous, a soul psychic — which put Koga's pink heart on Sabrina's door), and the Normal
+and Fighting Badges take the names of the badges whose art they wear, Whitney's **Plain** and the **Knuckle**
+Badge. The effects stay with their types.
 
 ---
 

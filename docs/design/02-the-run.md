@@ -561,7 +561,7 @@ Elites (§2.8) and Gyms (§5.8).
 | **Hiker** | Slow, durable, Defence-stacking; punishes a damage race | R1, R2 |
 | **Swimmer** | Water, status-heavy | R1 (river), R2, R3 (the Ice lane's cave) |
 | **Engineer** | Buff-stall: sets up, then strikes | R2, R3 |
-| **Hex Maniac** | Vision disruption: each of its Pokémon hides its first intent, as an Elite's does (§5.5) — Keen Eye, the Soul Badge and a Familiar species read through it | R3 |
+| **Hex Maniac** | Vision disruption: each of its Pokémon hides its first intent, as an Elite's does (§5.5) — Keen Eye, the Marsh Badge and a Familiar species read through it | R3 |
 | **Rocket Grunt** | Aggressive Cleave and Backstrike kits, Poison | R2, R3 |
 | **Ace Trainer** | Two high-stat Pokémon, multi-type | R3 |
 

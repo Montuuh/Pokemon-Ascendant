@@ -36,13 +36,15 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 // §2 — the run reducer. Pure: (state, action) → state, exactly like the combat reducer, so a run is a seed
 // plus an action log and a save is that pair (§10.7.4, §10.8).
 
+// 10 — the Badges take the games' names (§5.10.4): the Poison and Psychic ids trade places and two are renamed.
+//      Nothing else changed shape, so a version-9 save is migrated rather than refused (save.ts).
 // 9 — v0.7.2: the City carries its Challenge Ring and the Game Corner's last result; Department Store slots
 //     carry their floor; the CasinoRNG cursor (§2.9.4.1, §2.11.2, §2.11.5).
 // 8 — v0.7.1: the City (`city`), the route's nurse and merchant replacing its Center, Shop and Dojo nodes,
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 9;
+export const RUN_SAVE_VERSION = 10;
 
 export interface RunCtx {
   content: ContentRegistry;

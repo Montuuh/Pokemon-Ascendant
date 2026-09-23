@@ -59,7 +59,7 @@ Pokémon.
 - **Region 3 (Volcanic Highlands) is its own content** since v0.7.4: Volcano primary, Cave, Sky, rare Abandoned
   Tower; twelve rosters (the Hex Maniac hides each Pokémon's first intent), Giovanni as the Elite Trainer,
   Aerodactyl as the Elite Wild, and the Psychic · Ground · Fighting · Ice Gyms of Sabrina, Giovanni, Kiyo and
-  Lorelei with the Soul, Earth, Fist and Glacier Badges. Two thirds of what it fields is new. Its accent (multi-enemy,
+  Lorelei with the Marsh, Earth, Knuckle and Glacier Badges (every Badge carries the name of the badge its art is — Koga's is the Soul Badge, as in Gen I; 2026-09-24). Two thirds of what it fields is new. Its accent (multi-enemy,
   field effects) is v0.8's. *(2026-09-23.)*
 
 **Box & Active Team.** Box capacity 6 (→8). Active Team is 3, locked on node entry; only those 3 contribute

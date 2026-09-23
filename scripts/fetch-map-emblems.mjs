@@ -22,14 +22,14 @@ const EMBLEMS = {
   'emblem-gym-water': 'Cascade Badge.png',
   'emblem-gym-bug': 'Hive Badge.png',
   'emblem-gym-normal': 'Plain Badge.png',
-  // v0.7.3 — the four Region 2 badges, by name: canon's Marsh Badge is the Poison Gym's (§5.10.2).
+  // v0.7.3 — the four Region 2 badges. Koga's Poison Gym gives the Soul Badge, as in Gen I (§5.10.2).
   'emblem-gym-fire': 'Volcano Badge.png',
   'emblem-gym-grass': 'Rainbow Badge.png',
   'emblem-gym-electric': 'Thunder Badge.png',
-  'emblem-gym-poison': 'Marsh Badge.png',
-  // v0.7.4 — the four Region 3 badges (§5.10.3). Canon's Fist Badge has no game art of its own, so it wears
-  // the Knuckle Badge, the games' own Fighting-Gym badge.
-  'emblem-gym-psychic': 'Soul Badge.png',
+  'emblem-gym-poison': 'Soul Badge.png',
+  // v0.7.4 — the four Region 3 badges (§5.10.3): Sabrina's Marsh Badge, Giovanni's Earth, the Knuckle Badge
+  // (the games' Fighting-Gym badge) and Pryce's Glacier.
+  'emblem-gym-psychic': 'Marsh Badge.png',
   'emblem-gym-ground': 'Earth Badge.png',
   'emblem-gym-fighting': 'Knuckle Badge.png',
   'emblem-gym-ice': 'Glacier Badge.png',

@@ -106,7 +106,7 @@ export interface TrainerRoster {
   line: string;
   /**
    * §2.7.1 Hex Maniac — "vision disruption": every one of its Pokémon hides its first intent, the rule an Elite
-   * or a Gym plays by (§5.5), on an ordinary trainer. Keen Eye, the Soul Badge or a Familiar species read through it.
+   * or a Gym plays by (§5.5), on an ordinary trainer. Keen Eye, the Marsh Badge or a Familiar species read through it.
    */
   veiled?: boolean;
 }
@@ -308,7 +308,7 @@ export const GYMS: GymDef[] = [
     name: 'Leader Wren',
     sprite: 'whitney',
     type: 'normal',
-    badgeId: 'normal-badge',
+    badgeId: 'plain-badge',
     stage: 'night-meadow',
     line: 'Nothing fancy. Just everything, all at once.',
     telegraph: 'No weakness to exploit and a Home Field that makes every hit land harder. Bring Fighting, or bring more HP.',
@@ -518,7 +518,7 @@ export const GYMS_R2: GymDef[] = [
     team: [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3 }],
   },
   {
-    id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'marsh-badge',
+    id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'soul-badge',
     stage: 'dark-city',
     line: 'Fwahahaha! A ninja does not strike. He waits for the poison to do it.',
     telegraph: 'Poisons everything and waits you out. Bring cures, Psychic or Ground.',
@@ -653,7 +653,7 @@ export const ELITE_WILD_R3: EliteWildDef = {
  */
 export const GYMS_R3: GymDef[] = [
   {
-    id: 'psychic-gym-r3', region: 3, name: 'Leader Sabrina', sprite: 'sabrina', type: 'psychic', badgeId: 'soul-badge',
+    id: 'psychic-gym-r3', region: 3, name: 'Leader Sabrina', sprite: 'sabrina', type: 'psychic', badgeId: 'marsh-badge',
     stage: 'library',
     line: 'I foresaw your arrival. I also foresaw how this ends.',
     telegraph: 'Taxes your AP and locks your hand. Bring Bug or Ghost, and cards you can afford.',
@@ -670,7 +670,7 @@ export const GYMS_R3: GymDef[] = [
     team: [{ species: 'nidoqueen', level: 34, phaseCount: 2 }, { species: 'rhydon', level: 36, phaseCount: 3 }],
   },
   {
-    id: 'fighting-gym-r3', region: 3, name: 'Leader Kiyo', sprite: 'kiyo', type: 'fighting', badgeId: 'fist-badge',
+    id: 'fighting-gym-r3', region: 3, name: 'Leader Kiyo', sprite: 'kiyo', type: 'fighting', badgeId: 'knuckle-badge',
     stage: 'gym',
     line: 'A hundred days on this mountain, training. Show me your hundred.',
     telegraph: 'A burst race on a Home Field that makes every Fighting hit land harder. Bring Psychic or Flying, or more HP.',

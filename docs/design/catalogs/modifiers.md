@@ -17,36 +17,38 @@
 | `boulder-badge` | Boulder | Rock | R1 | The Lead reduces all incoming damage by 1 (min 0) | `on-damage-taken` | ✅ canon |
 | `cascade-badge` | Cascade | Water | R1 | After a **manual** Lead swap, draw 1 extra skill card this turn | `on-swap` | ✅ |
 | `hive-badge` | Hive | Bug | R1 | When a card cycles discard → deck, 20 % chance of a free copy in hand next turn | `on-reshuffle` | ✅ |
-| `normal-badge` | Normal | Normal | R1 | **The first card you play each turn costs 1 less AP** (min 0) | `on-ap-cost` | ✅ redesigned 2026-09-19 |
+| `plain-badge` | Plain | Normal | R1 | **The first card you play each turn costs 1 less AP** (min 0) | `on-ap-cost` | ✅ redesigned 2026-09-19 |
 | `volcano-badge` | Volcano | Fire | R2 | Offensive cards costing 3+ AP deal +20 % | `on-damage` | ✅ |
 | `rainbow-badge` | Rainbow | Grass | R2 | At turn start, a statused Lead restores 3 HP | `on-turn-start` | ✅ |
 | `thunder-badge` | Thunder | Electric | R2 | The first Ranged move each turn costs −1 AP (min 0) | `on-ap-cost` | ✅ |
-| `marsh-badge` | Marsh | Poison | R2 | Applying a status to an enemy draws 1 skill card | `on-status-apply` | ✅ |
-| `soul-badge` | Soul | Psychic | R3 | Every Unknown intent is revealed for the first 2 turns of each combat | `on-combat-start` | ✅ built v0.7.4 (`reveal-intents`, until turn 2; also reads through a Hex Maniac's veil) |
+| `soul-badge` | Soul | Poison | R2 | Applying a status to an enemy draws 1 skill card | `on-status-apply` | ✅ |
+| `marsh-badge` | Marsh | Psychic | R3 | Every Unknown intent is revealed for the first 2 turns of each combat | `on-combat-start` | ✅ built v0.7.4 (`reveal-intents`, until turn 2; also reads through a Hex Maniac's veil) |
 | `earth-badge` | Earth | Ground | R3 | Step-Forward and Step-Backward moves cost −1 AP (min 0) | `on-ap-cost` | ✅ built v0.7.4 (the ap-cost hook, step moves only) |
-| `fist-badge` | Fist | Fighting | R3 | Melee moves deal +25 % | `on-damage` | ✅ built v0.7.4 (`damage-dealt`, range melee); wears the Knuckle Badge art |
+| `knuckle-badge` | Knuckle | Fighting | R3 | Melee moves deal +25 % | `on-damage` | ✅ built v0.7.4 (`damage-dealt`, range melee) |
 | `glacier-badge` | Glacier | Ice | R3 | When an enemy gains a status, its next attack deals −15 % | `on-status-apply` | ✅ built v0.7.4 (a new status-chill hook; the intent shows the smaller number) |
 
 ## Two resolved in the 2026-09-19 pass
 
-- **Normal Badge was redesigned.** "+10 % to damage dealt *and* received" was close to neutral — it sped fights
+*(The names are the games' own since 2026-09-24 — Soul for Poison, Marsh for Psychic, Plain, Knuckle; §5.10.4 has why.)*
+
+- **The Plain Badge (Normal) was redesigned.** "+10 % to damage dealt *and* received" was close to neutral — it sped fights
   up slightly and helped whoever hit harder. Every other Badge changes how you play; this one now does too, and
   an AP discount is the most universally useful lever there is, which fits Normal's identity as flexibility.
-- **Fist Badge is +25 % Melee, flat.** The old summary table said "+15 % bench / +25 % Lead"; Melee is already
+- **The Knuckle Badge (Fighting) is +25 % Melee, flat.** The old summary table said "+15 % bench / +25 % Lead"; Melee is already
   Lead-gated, so a second Lead condition was redundant.
 
 ## Synergy map (for the Gym fork counter-pick)
 
 | Badge | Pairs well with |
 |---|---|
-| Boulder | Cascade, Rainbow, Fist (durable Lead-centric play) |
-| Cascade | Boulder, Marsh, Earth, Hive (swap-tempo engine) |
-| Hive | Cascade, Marsh, Normal (deck cycling) |
-| Volcano | Soul, Earth, Fist (expensive-card builds) |
-| Thunder | Cascade, Soul (Ranged economy; partly offsets the ×0.75 range modifier) |
-| Marsh | Cascade, Glacier, Hive (status engine) |
-| Earth | Cascade, Volcano, Fist (positional combo turns) |
-| Glacier | Marsh, Rainbow (status as defence) |
+| Boulder | Cascade, Rainbow, Knuckle (durable Lead-centric play) |
+| Cascade | Boulder, Soul, Earth, Hive (swap-tempo engine) |
+| Hive | Cascade, Soul, Plain (deck cycling) |
+| Volcano | Marsh, Earth, Knuckle (expensive-card builds) |
+| Thunder | Cascade, Marsh (Ranged economy; partly offsets the ×0.75 range modifier) |
+| Soul | Cascade, Glacier, Hive (status engine) |
+| Earth | Cascade, Volcano, Knuckle (positional combo turns) |
+| Glacier | Soul, Rainbow (status as defence) |
 
 The fork at L9 shows both Badges, so the choice is "which engine do I want for the rest of the run" — that is
 the macro expression of Pillar 3.

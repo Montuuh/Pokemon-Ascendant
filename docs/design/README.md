@@ -63,7 +63,7 @@ block underneath the old text — that is how a document ends up teaching the wr
 top to bottom. A superseded design goes in a clearly-marked historical section at the end of its file, if it is
 worth remembering at all.
 
-**Rationale lives next to the rule.** Why Trauma has two zones, why the Normal Badge was redesigned, why
+**Rationale lives next to the rule.** Why Trauma has two zones, why the Plain Badge was redesigned, why
 catching is deterministic — all of it belongs in the section, in a sentence or two. There is no separate
 decision log; git holds the diffs and the prose holds the reasoning.
 

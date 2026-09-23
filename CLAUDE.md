@@ -13,7 +13,7 @@ code re-implemented — see `docs/migration/from-unity.md`.
 3. `docs/design/00-codex.md` — the whole game in one file. Then the **topic that owns** what you are touching
    (`docs/design/NN-*.md`, canon — each one says at the top what it owns), then
    `docs/design/implementation-status.md` for where the code is and where it still diverges. Content lives in
-   `docs/design/catalogs/`. An unresolved point is an inline `⚠️ OPEN` flag in its section — never invent an answer.
+   `docs/design/catalogs/`. The docs are **mutable, not sacred**: a better name, idea or item gets written in (see below).
 4. `docs/architecture.md` — how the code is organised and why.
 
 ## Stack & commands
@@ -59,8 +59,11 @@ Never claim "tests pass" or "looks right" without the output or the image in thi
 
 Ten topics, each stating what it owns. **A rule is stated once, in its place** — when it changes, rewrite the
 section rather than appending an override, and put the rationale in the same paragraph. Git is the change log.
-Unresolved points are inline `> ⚠️ **OPEN (date)**: …` flags. Design changes follow
-`.claude/skills/design-change` (options → user decides → record). Keep `00-codex.md` in sync.
+**The written design is mutable** (user, 2026-09-24): when a better name, design idea or item turns up — or a row
+that is not quite right — change, delete or add it directly, with its rationale, and say so in the report. Taste
+calls are delegated. Only a call that changes the game's direction (a new mode, a pillar, a big scope shift) goes
+through `.claude/skills/design-change` (options → user decides → record) or an inline `> ⚠️ **OPEN (date)**: …`
+flag; an idea the user likes but wants later goes to the roadmap's backlog. Keep `00-codex.md` in sync.
 
 **Authoring content**: the row goes in `docs/design/catalogs/<class>.md` first (stable kebab id, its §, a status
 mark, the roadmap version), then into `src/content/data/`. **Touching a system**: check `docs/design/implementation-status.md` first — it maps the system to its code, its

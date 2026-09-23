@@ -1,5 +1,5 @@
 {
-  "_note": "Badge catalog — the four Region 1 Badges (§5.10.1). Rows come from docs/design/catalogs/modifiers.md. A Badge carries the same `hook` + `params` vocabulary as a relic (§7.7) on purpose: §7.3.6 states that type-boost relics, held items, Badges and fields are independent multiplicative terms, so the combat sim resolves all of them through one code path and the distinction that matters — a relic is picked up, a Badge is won — stays in the run layer where it belongs. Region 2 (§5.10.2) arrived with v0.7.3 and Region 3 (§5.10.3) with v0.7.4, each with the Gyms that award them.",
+  "_note": "Badge catalog — the four Region 1 Badges (§5.10.1). Rows come from docs/design/catalogs/modifiers.md. A Badge carries the same `hook` + `params` vocabulary as a relic (§7.7) on purpose: §7.3.6 states that type-boost relics, held items, Badges and fields are independent multiplicative terms, so the combat sim resolves all of them through one code path and the distinction that matters — a relic is picked up, a Badge is won — stays in the run layer where it belongs. Region 2 (§5.10.2) arrived with v0.7.3 and Region 3 (§5.10.3) with v0.7.4, each with the Gyms that award them. Names are the games' own (2026-09-24): Koga's Poison Gym gives the Soul Badge and Sabrina's Psychic Gym the Marsh Badge, as in Gen I; the Normal and Fighting Badges take the names of the badges whose art they wear (Plain, Knuckle).",
   "badges": [
     {
       "id": "boulder-badge",
@@ -42,8 +42,8 @@
       }
     },
     {
-      "id": "normal-badge",
-      "name": "Normal Badge",
+      "id": "plain-badge",
+      "name": "Plain Badge",
       "type": "normal",
       "region": 1,
       "description": "The first card you play each turn costs 1 less AP.",
@@ -96,8 +96,8 @@
       }
     },
     {
-      "id": "marsh-badge",
-      "name": "Marsh Badge",
+      "id": "soul-badge",
+      "name": "Soul Badge",
       "type": "poison",
       "region": 2,
       "description": "Applying a status condition to an enemy draws you a card.",
@@ -109,8 +109,8 @@
       }
     },
     {
-      "id": "soul-badge",
-      "name": "Soul Badge",
+      "id": "marsh-badge",
+      "name": "Marsh Badge",
       "type": "psychic",
       "region": 3,
       "description": "Every hidden intent is revealed for the first 2 turns of each combat.",
@@ -134,8 +134,8 @@
       }
     },
     {
-      "id": "fist-badge",
-      "name": "Fist Badge",
+      "id": "knuckle-badge",
+      "name": "Knuckle Badge",
       "type": "fighting",
       "region": 3,
       "description": "Melee moves deal +25 % damage.",

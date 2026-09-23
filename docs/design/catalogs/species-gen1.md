@@ -23,11 +23,10 @@
 > `legendary`, and placed nowhere: how a run ever meets one is still a post-launch question
 > (`species-pool-r2-r3.md`).
 >
-> ⚠️ **OPEN (2026-09-23)**: **Ditto's Transform.** In the games it copies its target — types, stats, moves. The
-> sim has no copy kind, so Ditto ships with a stand-in (`transform-d`, self Atk +1 and Def +1) and a spare card,
-> and its two-card kit is a recorded exception to §6.9's four (like Magikarp's three). Options when it matters:
-> copy the enemy Lead's four cards into the shared hand for the fight; copy its types and stats only; or keep the
-> stand-in and never place Ditto in a pool. Decides: user.
+> **Ditto's Transform is in the backlog** (the user likes it and wants it later, 2026-09-24; `docs/roadmap.md`).
+> In the games it copies its target — types, stats, moves; the sim has no copy kind yet, so Ditto ships with a
+> stand-in (`transform-d`, self Atk +1 and Def +1) and a spare card, and its two-card kit is a recorded exception
+> to §6.9's four (like Magikarp's three). Until the real move exists, Ditto sits in no pool.
 
 ## 1. Routes and meadows
 

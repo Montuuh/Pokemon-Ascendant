@@ -139,7 +139,7 @@ in section 0.
 | `minimize` | Def | Melee | — | 1 | — | — | self Def +2 (Gen I, 2026-09-23) |
 | `swords-dance` | Util | Melee | — | 1 | — | — | self Atk +2 (Gen I, 2026-09-23) |
 | `hyper-voice` | Off | Ranged | — | 3 | 80 | cleave | — (Gen I, 2026-09-23) |
-| `transform-d` | Util | Melee | — | 1 | — | — | stand-in: self Atk +1, Def +1 — ⚠️ Ditto's Transform is open (`species-gen1.md`) (Gen I, 2026-09-23) |
+| `transform-d` | Util | Melee | — | 1 | — | — | stand-in: self Atk +1, Def +1 — the real Transform is in the backlog (`species-gen1.md`) (Gen I, 2026-09-23) |
 | `take-down` | Off | Melee | — | 2 | 90 | — | recoil 25 % (v0.7.3) |
 | `extreme-speed` | Off | Melee | SF | 2 | 80 | — | — (`arcanine`, v0.7.3) |
 | `self-destruct` | Off | Melee | — | 3 | 130 | — | recoil 50 % (`voltorb`, `koffing`, v0.7.3) |

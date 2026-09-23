@@ -37,6 +37,27 @@ export function serialiseRun(run: RunState, savedAt = 0): string {
   return JSON.stringify(envelope);
 }
 
+/**
+ * §5.10.4 — version 9 → 10: the Badges took the games' names. Koga's Poison Badge was `marsh-badge` and is
+ * `soul-badge`; Sabrina's Psychic Badge the other way round; `normal-badge` is `plain-badge` and `fist-badge`
+ * `knuckle-badge`. A run in progress keeps what it won — the same effect under its new name.
+ */
+const BADGE_IDS_V10: Readonly<Record<string, string>> = {
+  'marsh-badge': 'soul-badge',
+  'soul-badge': 'marsh-badge',
+  'normal-badge': 'plain-badge',
+  'fist-badge': 'knuckle-badge',
+};
+
+function migrateBadgesTo10(run: RunState): void {
+  const rename = (ids: string[]) => ids.map((id) => BADGE_IDS_V10[id] ?? id);
+  run.badges = rename(run.badges);
+  if (run.pendingScenario?.player.badges) run.pendingScenario.player.badges = rename(run.pendingScenario.player.badges);
+}
+
+/** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10 };
+
 export type LoadResult =
   | { ok: true; run: RunState }
   | { ok: false; reason: 'empty' | 'unreadable' | 'corrupt' | 'version' };
@@ -52,11 +73,14 @@ export function deserialiseRun(text: string | null, content: ContentRegistry): L
   }
   if (!envelope || typeof envelope !== 'object' || !envelope.run) return { ok: false, reason: 'unreadable' };
 
-  // §10.8.3 — an older save could be migrated; a NEWER one is refused rather than half-read.
+  // §10.8.3 — an older save is migrated step by step when every step is known; a NEWER one, or an older one with
+  // a missing step, is refused rather than half-read.
   if (envelope.version > RUN_SAVE_VERSION) return { ok: false, reason: 'version' };
-  if (envelope.version < RUN_SAVE_VERSION) return { ok: false, reason: 'version' };
+  for (let v = envelope.version; v < RUN_SAVE_VERSION; v++) if (!MIGRATIONS[v]) return { ok: false, reason: 'version' };
 
+  // The checksum is of the run as it was written, so it is checked before any migration touches it.
   if (checksum(JSON.stringify(envelope.run)) !== envelope.checksum) return { ok: false, reason: 'corrupt' };
+  for (let v = envelope.version; v < RUN_SAVE_VERSION; v++) MIGRATIONS[v]!(envelope.run);
 
   // Content ids are part of the contract: a save that names a species we no longer ship is not loadable.
   try {

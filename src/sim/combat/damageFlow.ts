@@ -406,13 +406,13 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
           emit(state, { t: 'status-applied', targetUid: recipient.uid, status: fx.status });
           log(state, 'system', `${recipient.name} was ${statusVerb(fx.status)}!`);
           chillOnStatus(state, ctx, recipient);
-          // §5.10.2 Marsh Badge — a status you put on an enemy hands you a card, now, while the turn is yours.
+          // §5.10.2 Soul Badge — a status you put on an enemy hands you a card, now, while the turn is yours.
           if (!fx.self && isPlayers(state, attacker) && !isPlayers(state, recipient)) {
             const cards = statusApplyDrawBonus(state, ctx.content);
             const drawn = cards > 0 ? drawSkillCards(state, cards, ctx.rng) : [];
             if (drawn.length) {
               emit(state, { t: 'draw', cardIds: drawn.map((c) => c.id), consumableIds: [] });
-              log(state, 'system', `The Marsh Badge turns the ${fx.status} into ${drawn.length === 1 ? 'a card' : `${drawn.length} cards`}.`);
+              log(state, 'system', `The Soul Badge turns the ${fx.status} into ${drawn.length === 1 ? 'a card' : `${drawn.length} cards`}.`);
             }
           }
         } else if (res === 'immune') {

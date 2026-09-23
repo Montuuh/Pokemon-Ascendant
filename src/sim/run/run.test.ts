@@ -491,6 +491,19 @@ describe('Save and resume — §10.8', () => {
     expect(deserialiseRun(JSON.stringify(envelope), content)).toEqual({ ok: false, reason: 'version' });
   });
 
+  it('Save_FromVersion9_KeepsItsBadges_UnderTheirNewNames_§5.10.4', () => {
+    // A run saved before the Badges took the games' names: Koga's Badge was `marsh-badge`, Brock's is unchanged.
+    const old = { ...start(), badges: ['marsh-badge', 'normal-badge', 'boulder-badge'] };
+    const envelope = JSON.parse(serialiseRun(old));
+    envelope.version = 9;
+    const loaded = deserialiseRun(JSON.stringify(envelope), content);
+    expect(loaded.ok).toBe(true);
+    if (loaded.ok) expect(loaded.run.badges).toEqual(['soul-badge', 'plain-badge', 'boulder-badge']);
+    // A save from before the last step with a migration is still refused, not half-read.
+    envelope.version = 8;
+    expect(deserialiseRun(JSON.stringify(envelope), content)).toEqual({ ok: false, reason: 'version' });
+  });
+
   it('Resume_ContinuesTheSameEncounterSequence', () => {
     let s = start(55);
     s = apply(s, { type: 'enter-node', nodeId: s.reachable.find((n) => s.map.nodes[n]!.kind !== 'aid')! });

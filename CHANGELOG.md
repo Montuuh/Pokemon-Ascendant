@@ -9,6 +9,10 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one line of lede, then
 > `- **Headline.** One sentence.` bullets. `## Next` collects what reached the game since the last version.
 
+## Next
+
+- **Badges named as in the games.** Koga's Gym gives the Soul Badge and Sabrina's the Marsh Badge, and the Normal and Fighting Badges are the Plain and Knuckle Badges — each the badge its picture shows.
+
 ## v0.7 — Cities & Regions 2–3 · in progress
 
 The run goes on past the first Gym: three Regions, and a City between each.

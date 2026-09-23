@@ -59,9 +59,9 @@ describe('Badges — §5.10.1', () => {
     expect(after).toBe(0);
   });
 
-  it('Normal_MakesTheFirstCardOfTheTurnCheaper_AndOnlyTheFirst_§5.10.1', () => {
+  it('Plain_MakesTheFirstCardOfTheTurnCheaper_AndOnlyTheFirst_§5.10.1', () => {
     const team = teamWithKit(['water-gun', 'tackle']);
-    const state = bare({ team, enemies: [PIDGEY], badges: ['normal-badge'] });
+    const state = bare({ team, enemies: [PIDGEY], badges: ['plain-badge'] });
     const move = content.move('water-gun');
     const owner = leadOf(state);
 
@@ -174,19 +174,19 @@ describe('Badges — §5.10.2', () => {
     expect(itemApDelta(afterRanged, owner, content.move('water-gun'), content)).toBe(0);
   });
 
-  it('Marsh_DrawsACardWhenYourStatusLands_§5.10.2', () => {
+  it('Soul_DrawsACardWhenYourStatusLands_§5.10.2', () => {
     const play = (badges: string[]) => {
       let s = withHand(bare({ team: teamWithKit(['poison-powder', 'tackle']), enemies: [PIDGEY], badges }), ['poison-powder']);
       s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'poison-powder').id });
       return s;
     };
-    const withBadge = play(['marsh-badge']);
+    const withBadge = play(['soul-badge']);
     const without = play([]);
     expect(enemyOf(withBadge).status?.kind).toBe('poison');
     expect(withBadge.player.hand.length).toBe(without.player.hand.length + 1);
     // It is not a turn-start draw: the opening hand is the same size either way.
     const opening = (badges: string[]) => bare({ team: [...STARTERS], enemies: [PIDGEY], badges }).player.hand.length;
-    expect(opening(['marsh-badge'])).toBe(opening([]));
+    expect(opening(['soul-badge'])).toBe(opening([]));
   });
 
   it('Rainbow_HealsAStatusedLeadAtTurnStart_AndNobodyElse_§5.10.2', () => {
@@ -212,21 +212,21 @@ describe('Badges — §5.10.3', () => {
     expect(new Set(GYMS_R3.map((g) => g.badgeId)).size, 'two Gyms share a Badge').toBe(GYMS_R3.length);
   });
 
-  it('Soul_RevealsEveryHiddenIntent_ForTheFirstTwoTurns_§5.10.3', () => {
+  it('Marsh_RevealsEveryHiddenIntent_ForTheFirstTwoTurns_§5.10.3', () => {
     const elite = { ...PIDGEY, tier: 'elite' as const, phaseCount: 2 as const };
-    // An Elite hides its first intent (§5.5); the Soul Badge shows it.
+    // An Elite hides its first intent (§5.5); the Marsh Badge shows it.
     expect(enemyOf(bare({ team: [...STARTERS], enemies: [elite] })).intent!.hidden).toBe(true);
-    const withBadge = bare({ team: [...STARTERS], enemies: [elite], badges: ['soul-badge'] });
+    const withBadge = bare({ team: [...STARTERS], enemies: [elite], badges: ['marsh-badge'] });
     expect(enemyOf(withBadge).intent!.hidden).toBe(false);
     // Two turns, and no more.
     expect(relicsRevealIntents(withBadge, content, false, 2)).toBe(true);
     expect(relicsRevealIntents(withBadge, content, false, 3)).toBe(false);
   });
 
-  it('Soul_ReadsThroughAHexManiacsVeil_§2.7.1', () => {
+  it('Marsh_ReadsThroughAHexManiacsVeil_§2.7.1', () => {
     const veiled = { ...PIDGEY, tier: 'trainer' as const, veiled: true };
     expect(enemyOf(bare({ team: [...STARTERS], enemies: [veiled] })).intent!.hidden).toBe(true);
-    expect(enemyOf(bare({ team: [...STARTERS], enemies: [veiled], badges: ['soul-badge'] })).intent!.hidden).toBe(false);
+    expect(enemyOf(bare({ team: [...STARTERS], enemies: [veiled], badges: ['marsh-badge'] })).intent!.hidden).toBe(false);
     // An ordinary trainer's Pokémon was never hidden.
     expect(enemyOf(bare({ team: [...STARTERS], enemies: [{ ...PIDGEY, tier: 'trainer' }] })).intent!.hidden).toBe(false);
   });
@@ -239,8 +239,8 @@ describe('Badges — §5.10.3', () => {
     expect(itemApDelta(state, owner, content.move('tackle'), content)).toBe(0);
   });
 
-  it('Fist_PaysOnMeleeOnly_§5.10.3', () => {
-    const state = bare({ team: teamWithKit(['tackle', 'water-gun']), enemies: [PIDGEY], badges: ['fist-badge'] });
+  it('Knuckle_PaysOnMeleeOnly_§5.10.3', () => {
+    const state = bare({ team: teamWithKit(['tackle', 'water-gun']), enemies: [PIDGEY], badges: ['knuckle-badge'] });
     const lead = leadOf(state);
     expect(itemAttackMultiplier(state, lead, content.move('tackle'), content)).toBeCloseTo(1.25);
     expect(itemAttackMultiplier(state, lead, content.move('water-gun'), content)).toBe(1);

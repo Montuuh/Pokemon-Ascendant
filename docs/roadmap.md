@@ -513,19 +513,47 @@ the vertical map is a roguelike convention borrowed from a game about climbing a
 # Backlog — good ideas with no version yet
 
 Kept here so they stop living in chat. Nothing on this list is promised, and none of it blocks a version.
+**Priority order** below is the user's pass on 2026-09-24 — a pickup order, not a design, and not a version
+commitment. **Not yet prioritized** is everything else, in no particular order.
+
+## Balance fixes found in playtesting (2026-09-24)
 
 | Idea | What it is | Where it would live |
 |---|---|---|
-| **Fossils and the Laboratory** | Revive Omanyte, Kabuto or Aerodactyl into a recruit no route offers. The town's fourth door | Pallet Town (§2.11.4) |
-| **Role events** | The Pokémon Fan Club, Team Rocket, the Magikarp salesman's swindle, Silph Co. — written encounters with a choice, in a City rather than on a route | §2.10 / §2.11 |
-| **The Safari Zone** | Entry fee, a fixed number of balls, species the routes never offer (§2.11.6) | The door is already drawn |
-| **The Black Market** | Legendary relics paid in HP or Trauma, Pokémon traded for Pokémon — the things a Mart will not sell (§2.11.6) | Beneath the Game Corner |
-| **The Dojo's extra moves** | A move catalogue beyond each species' tutor list (§2.11.6) | The Dojo's third counter, drawn in development |
-| **HMs (MO)** | Cut, Fly, Surf, Strength, Flash — as battle moves, a field use, or not at all. Needs its own design; may never ship | — |
-| **Recovering missed Badges** | A way to earn the Badges of Gym types your run never met — a run earns three of twelve, and the fork decides which (§2.12.6) | — |
-| **The global balance pass** | Levels, money, consumables, relics, prices — together, against a whole run. Natural moment: after v0.7.5, when three Regions and two Cities exist to balance; v1.0's pass is the final one | All of §2, §7, `catalogs/economy.md` |
-| **End-of-run ₽ surplus** | What leftover money converts into at a run's end | §8.3 |
-| **Consumables that are spent** | The user's idea: consumables are consumed for real, and found far more often | §7.2 |
-| **The catch, animated** | A catch resolves instantly today. The user's idea (2026-09-23): a bar that lights up to the throw's catch %, and a Poké Ball swinging side to side, slowing little by little before it settles. The outcome is still rolled first (§2.6.4.1) — the animation only shows it | §2.6.4, §9.9 · the combat screen |
-| **The Ring moves out of the Dojo** | The Challenge Ring leaves the Dojo's counters and becomes its own building on the City art, drawn right next to the Dojo (user, 2026-09-23) | §2.9.4.1, §2.11 · Pallet Town and Celadon's art |
-| **Multiplayer — a dual mode** | The user wants a two-player mode. Nothing designed yet: to be talked through with the user before anything is written (2026-09-23) | — |
+| **Nerf: Sleep** | Playtesting found you can put an already-sleeping Pokémon to sleep again. §4.2.2.4 gives Sleep "No immunity" on purpose — it's the one status without a type lock — but nothing stops a second Sleep-inducing move from landing on a target already asleep. Needs a design pass: self-immunity while active, a refresh-not-stack rule, or something else | §4.2.2.4 / §4.2.5 status table |
+| **Nerf: Mega Drain** | 50 power, 2 AP, Ranged, heals 25 % of the damage dealt back — the strongest sustain-per-AP card in the Grass kit. Wants a numbers pass | `catalogs/moves.md` → `mega-drain`, §4.1 |
+
+## Priority order (2026-09-24, per the user)
+
+Nothing here is designed yet — this is only the order to pick them up in.
+
+| # | Idea | Category | What it is | Where it would live |
+|---|---|---|---|---|
+| 1 | **The Safari Zone** | New location | Entry fee, a fixed number of balls, species the routes never offer | The door is already drawn (§2.11.6) |
+| 2 | **The Black Market** | New location | Legendary relics paid in HP or Trauma, Pokémon traded for Pokémon — the things a Mart will not sell | Beneath the Game Corner (§2.11.6) |
+| 3 | **Routes, revamped** | Systems revamp | No detail yet — the current route generation/nodes/pacing flagged for a pass; scope undecided | §2.5 map / §2.9 route nodes |
+| 4 | **The global balance pass** | Balance | Levels, money, consumables, relics, prices — together, against a whole run. Natural moment: after v0.7.5; v1.0's pass is the final one | All of §2, §7, `catalogs/economy.md` |
+| 5 | **Bond, revamped** | Systems revamp | No detail yet — scope undecided | §6.8 |
+| 6 | **Shiny, revamped** | Systems revamp | No detail yet — today "shiny" is only the Bond-Veteran sprite reveal, not an acquisition mechanic; scope undecided | §6.8, §5.13 |
+| 7 | **Player level & Poké Mart, revamped** | Systems revamp | No detail yet — likely touches Trainer Level and/or the Mart's still-unbuilt scored shop curation; scope undecided | §8.3, §2.11.2.1 |
+| 8 | **Consumables that are spent** | Balance/mechanic | The user's idea: consumables are consumed for real, and found far more often | §7.2 |
+| 9 | **Double-attack enemy intents** | Mechanic | No detail yet — an enemy intent that resolves two hits in one turn; scope undecided | §5 intents/AI |
+| 10 | **The catch, animated** | Presentation | A catch resolves instantly today. The user's idea: a bar that lights up to the throw's catch %, and a Poké Ball swinging side to side, slowing little by little before it settles. The outcome is still rolled first (§2.6.4.1) — the animation only shows it | §2.6.4, §9.9 · the combat screen |
+| 11 | **The Ring moves out of the Dojo** | Presentation | The Challenge Ring leaves the Dojo's counters and becomes its own building on the City art, drawn right next to the Dojo | §2.9.4.1, §2.11 · Pallet Town and Celadon's art |
+
+> **Flag:** "multi-enemy fights" was in the same list but it isn't backlog — it's **v0.8**, already scheduled
+> right after v0.7.5. Pulling it earlier (e.g. ahead of the revamps above) would be a version-order change, not
+> a backlog insert. Say so explicitly if that's the intent.
+
+## Not yet prioritized
+
+| Idea | Category | What it is | Where it would live |
+|---|---|---|---|
+| **Fossils and the Laboratory** | New location | Revive Omanyte, Kabuto or Aerodactyl into a recruit no route offers. The town's fourth door | Pallet Town (§2.11.4) |
+| **Role events** | Narrative | The Pokémon Fan Club, Team Rocket, the Magikarp salesman's swindle, Silph Co. — written encounters with a choice, in a City rather than on a route | §2.10 / §2.11 |
+| **The Dojo's extra moves** | New location | A move catalogue beyond each species' tutor list | The Dojo's third counter, drawn in development (§2.11.6) |
+| **HMs (MO)** | Mechanic | Cut, Fly, Surf, Strength, Flash — as battle moves, a field use, or not at all. Needs its own design; may never ship | — |
+| **Recovering missed Badges** | Mechanic | A way to earn the Badges of Gym types your run never met — a run earns three of twelve, and the fork decides which | §2.12.6 |
+| **End-of-run ₽ surplus** | Balance | What leftover money converts into at a run's end | §8.3 |
+| **Ditto's Transform** | Ditto copies what it faces. Candidates: the enemy Lead's four cards enter the shared hand for the fight; or its types and stats only, keeping Ditto's cards. Needs a copy effect kind. Until then Ditto ships with a stand-in and sits in no pool (user, 2026-09-24: "me gusta la idea, pero dejémoslo para un futuro") | §6.9 · `catalogs/species-gen1.md` |
+| **Multiplayer — a dual mode** | Big feature | The user wants a two-player mode. Nothing designed yet: to be talked through with the user before anything is written | — |

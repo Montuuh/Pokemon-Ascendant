@@ -19,7 +19,7 @@
 | `rock-gym-r1` | Brock | Rock | `geodude` L14 | `graveler` L16 | **Entrenchment** (+2 Def, race the wall) | `boulder-badge` |
 | `water-gym-r1` | Misty | Water | `krabby` L12 | `kingler` L14 | **Tempo Control** (AP tax + Confusion) | `cascade-badge` |
 | `bug-gym-r1` | Aster | Bug | `caterpie` L12 | `butterfree` L15 | **Status Siege** (Sleep/Confusion flood) | `hive-badge` |
-| `normal-gym-r1` | Wren | Normal | `pidgey` L13 | `raticate` L15 | **Onslaught** (Mass Attack ×1.5 Home Field) | `normal-badge` |
+| `normal-gym-r1` | Wren | Normal | `pidgey` L13 | `raticate` L15 | **Onslaught** (Mass Attack ×1.5 Home Field) | `plain-badge` |
 
 > **The Water Gym fields Krabby and Kingler** (decided 2026-09-19). The Unity build used Squirtle and
 > Wartortle — a starter line the player may own themselves, which cannibalises the starter's identity. A Gym
@@ -51,7 +51,7 @@
 | `fire-gym-r2` | Blaine | Fire | `growlithe*` L20 | `arcanine*` L22 | **Onslaught** | `volcano-badge` |
 | `grass-gym-r2` | Erika | Grass | `weepinbell` L20 | `vileplume` L22 | **Status Siege** | `rainbow-badge` |
 | `electric-gym-r2` | Surge | Electric | `voltorb*` L20 | `electrode*` L22 | **Tempo Control** | `thunder-badge` |
-| `poison-gym-r2` | Koga | Poison | `koffing*` L20 | `weezing*` L22 | **Status Siege** | `marsh-badge` |
+| `poison-gym-r2` | Koga | Poison | `koffing*` L20 | `weezing*` L22 | **Status Siege** | `soul-badge` |
 
 ## 3. Region 3 pool — Psychic · Ground · Fighting · Ice ✅ v0.7.4
 
@@ -64,9 +64,9 @@
 
 | id | Leader | Type | Slot 1 | Ace | Phase-2 archetype | Badge |
 |---|---|---|---|---|---|---|
-| `psychic-gym-r3` | Sabrina | Psychic | `kadabra*` L33 | `alakazam*` L35 | **Tempo Control** | `soul-badge` |
+| `psychic-gym-r3` | Sabrina | Psychic | `kadabra*` L33 | `alakazam*` L35 | **Tempo Control** | `marsh-badge` |
 | `ground-gym-r3` | Giovanni | Ground | `nidoqueen*` L34 | `rhydon*` L36 | **Entrenchment** | `earth-badge` |
-| `fighting-gym-r3` | Kiyo | Fighting | `machoke` L34 | `machamp` L36 | **Onslaught** | `fist-badge` |
+| `fighting-gym-r3` | Kiyo | Fighting | `machoke` L34 | `machamp` L36 | **Onslaught** | `knuckle-badge` |
 | `ice-gym-r3` | Lorelei | Ice | `dewgong*` L34 | `cloyster*` L36 | **Tempo Control** | `glacier-badge` |
 
 Giovanni appears **both** here and at the R3 Elite Trainer node (`elites.md`) — both lanes are canon

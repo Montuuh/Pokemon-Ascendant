@@ -315,7 +315,7 @@ rank 3 (§6.8.3).
 
 ### §6.5.3.1 Keen Eye *(Vision)*
 While this Pokémon is in the Active Team, every Unknown intent is revealed at combat start, for the whole run.
-Stacks conceptually with the Soul Badge and Radar Scope into a full vision build.
+Stacks conceptually with the Marsh Badge and Radar Scope into a full vision build.
 
 ### §6.5.3.2 Foresight *(a move, not an ability)*
 A 0-AP Utility card that reveals every Unknown intent **for the current turn**. Deliberately the active,
