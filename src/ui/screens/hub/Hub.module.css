@@ -866,7 +866,7 @@
 .dexCard[data-met='false'] {
   background: var(--surface-1);
 }
-/* Only the portrait is silhouetted: the type label is a fact of the species, not a secret. */
+/* §8.9.2 — unmet is a silhouette and "???", with no types and no tint: nothing about it is known yet. */
 .dexCard[data-met='false'] .dexArt img {
   filter: brightness(0);
   opacity: 0.28;

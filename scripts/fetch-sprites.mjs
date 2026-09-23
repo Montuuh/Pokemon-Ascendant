@@ -21,6 +21,8 @@ const SOURCES = {
   'shiny': (id) => `https://play.pokemonshowdown.com/sprites/gen5ani-shiny/${id}.gif`,
   'shiny-back': (id) => `https://play.pokemonshowdown.com/sprites/gen5ani-back-shiny/${id}.gif`,
 };
+// Showdown names a species by its letters only: Nidoran♀ is `nidoranf`, Mr. Mime `mrmime`. Our ids keep the hyphen.
+const showdownId = (id) => id.replace(/-/g, '');
 const SUFFIX = { front: '', back: '-back', shiny: '-shiny', 'shiny-back': '-shiny-back' };
 
 async function exists(p) {
@@ -49,7 +51,7 @@ for (const s of species) {
   for (const [side, make] of Object.entries(SOURCES)) {
     const dest = resolve(OUT, `${s.id}${SUFFIX[side]}.gif`);
     try {
-      const r = await fetchOne(make(s.id), dest);
+      const r = await fetchOne(make(showdownId(s.id)), dest);
       r === 'ok' ? ok++ : skip++;
       process.stdout.write(`${r.padEnd(4)} ${s.id} ${side}\n`);
     } catch (e) {

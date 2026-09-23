@@ -3,12 +3,12 @@ import { portraitUrl } from '@/content/schemas/species';
 
 // The Gen VIII box icons are a 68×56 canvas with a small sprite inside, so they read as a smudge in a list
 // row. The official-artwork portraits are square and high-resolution, so the run screens scale those instead.
-export function MonIcon({ speciesId, size = 44, title }: { speciesId: string; size?: number; title?: string }) {
+export function MonIcon({ speciesId, size = 44, alt }: { speciesId: string; size?: number; alt?: string }) {
   const species = getContent().species(speciesId);
   return (
     <img
       src={portraitUrl(species.dex, species.id)}
-      alt={title ?? species.name}
+      alt={alt ?? species.name}
       width={size}
       height={size}
       style={{ objectFit: 'contain', flex: 'none' }}

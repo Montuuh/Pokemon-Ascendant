@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { IconArrowLeft, IconX } from '@tabler/icons-react';
 import { Dialog } from 'radix-ui';
-import type { AccountState } from '@/sim';
+import { UNMET_NAME, isMet, type AccountState } from '@/sim';
 import { getContent } from '@/content/registry';
 import { SpeciesSheet } from './SpeciesSheet';
 import type { PcSheetState } from './usePcSheet';
@@ -34,7 +34,7 @@ export function PcSheet({ sheet, account }: { sheet: PcSheetState; account: Acco
         >
           {page && (
             <div className={styles.sheet} data-testid="pc-sheet">
-              <Dialog.Title style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>{content.species(page.id).name}</Dialog.Title>
+              <Dialog.Title style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>{isMet(account.dex[page.id], account.stats.leadTurns[page.id]) ? content.species(page.id).name : UNMET_NAME}</Dialog.Title>
               <div className={styles.chrome}>
                 {sheet.stack.length > 1 ? (
                   <button type="button" className={styles.chromeBtn} onClick={sheet.back} data-testid="pc-sheet-back"><IconArrowLeft size={16} /> Back</button>

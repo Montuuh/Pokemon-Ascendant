@@ -4,8 +4,9 @@
 > resolve today, without authoring full kits before they are needed. Stat blocks, learnsets, archetype payloads
 > and Mastery lines are filled in when v0.7 starts — the columns are the same as `species-r1.md`.
 >
-> §1.6 targets ~30 fully-implemented evolution lines at launch. R1 has 24; this file brings the total to 41
-> lines / ~92 species, which is the ceiling, not a commitment: trim to the ~30 that earn their keep.
+> §1.6 targeted ~30 fully-implemented evolution lines at launch. Since 2026-09-23 every Gen I species is built
+> (`species-gen1.md` holds the 78 this file and `species-r1.md` did not): this file now says which Region *uses*
+> a species, not which ones exist.
 
 ## Region 2 — Coastal Cliffs (sea primary; river, power-plant secondary)
 

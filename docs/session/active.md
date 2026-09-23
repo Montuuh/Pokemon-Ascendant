@@ -1,28 +1,29 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-09-23 · **Version:** v0.7.3 shipped (*Region 2, Coastal Cliffs*).
-**Sprint goal next:** v0.7.4 — *Region 3, Volcanic Highlands*: biomes `volcano` `cave` `sky` `tower`, ~10 lines,
-the four R3 Gyms and Badges (Psychic, Ground, Fighting, Ice), a route plate; retire Region 3's +16 placeholder.
+**Date:** 2026-09-23 · **Version:** v0.7.3 shipped (*Region 2, Coastal Cliffs*) + the Gen I pass.
+**Sprint goal next:** v0.7.4 — *Region 3, Volcanic Highlands*: biomes `volcano` `cave` `sky` `tower`, ~10 lines
+*placed* (every species exists now), the four R3 Gyms and Badges (Psychic, Ground, Fighting, Ice), a route plate.
 
-**v0.7.3:** every Region is a `RegionContent` (`REGIONS`, `regionContent`, `regionName` in `run/region.ts`).
-Region 2 has its own biomes (Sea 5 · Power Plant 3 · River 2 · Cave 2 · Meadow 1), 12 rosters (lanes: Fire →
-Youngster, Grass → Lass, Electric → Engineer, Poison → Rocket Grunt), Karate King Elite, Lapras Elite Wild (scripted
-kit), Blaine/Erika/Surge/Koga with four live Badges (`items.ts`). 26 species / 34 moves via
-`scripts/add-v073-content.mjs` (catalogue rows won over first drafts). A recruit past its threshold evolves at the
-catch (§6.3.1). Pikachu sold, starts with a Light Ball. Trainer nodes carry `rosterId`. R1 pools widened. Region 3
-= Region 1 at +16, unnamed on the map. Celadon Ring retuned (+10/+2, rivals of 3).
+**Gen I pass (before v0.7.4, user request):** all 151 species built — 78 new via `scripts/add-gen1-content.mjs`
+(catalogue: `catalogs/species-gen1.md`), 64 moves, 9 abilities on existing hooks, Poliwrath; art for every one
+(`fetch-sprites` maps hyphenated ids to Showdown's). None sits in a pool yet: balance unchanged. Legendaries
+are rarity `legendary`. ⚠️ OPEN: Ditto's Transform (a stand-in ships).
+**Pokédex (§8.9.2):** an unmet species is a silhouette, "???", no types, a locked Kit, "???" stages;
+`isMet` (`meta/pokedex.ts`) — any trace, including a turn as Lead.
 
 **Measured:** the curve on the real roster (720 runs) 59 % · 45 % · 15 %, tier unchanged. Region 2 plays
 differently: 76 % new species, 26 % Electric/Ice (R1 0 %), ~17 % of fights send a status home (R1 ~8 %).
 
 **Findings to act on:**
-- Map captions on locked nodes are under 4.5:1 (pre-existing, task filed). Region 2 Mastery lines: v0.7.5.
+- Region 2 Mastery lines: v0.7.5. Map captions fixed (opaque pill, 14:1 on every node; "not yet" is the badge +
+  dashed ring; every node opens its bubble, only a reachable one takes a click). Left: caption `font-size: 11px`
+  should be `--type-caption` (§9.6 text size) once 720 has room; the tick's `#2f7d4f` has no token.
 - Not built from §2.11: the Center's Daycare and PC Box services, scored shop curation (§2.11.2.1).
 - Still doors in development: Safari, Black Market, the Dojo's extra-moves counter (§2.11.6).
+- 13 abilities in `abilities.json` still carry 🆕 in the catalogue (stale marks, pre-existing).
 
-**Test status:** `npm run check` green — 468 Vitest, typecheck, lint, § and catalogue guards.
-**UI review loop:** after every `src/ui`/`src/app` change run the `ui-review` skill. The audit's D8 now also
-reports *spills* (content escaping its card without scrolling the page) at 1080p and 720p — `--all` is clean.
+**Test status:** `npm run check` green — 471 Vitest, typecheck, lint, § and catalogue guards.
+**UI review loop:** after every `src/ui`/`src/app` change run the `ui-review` skill (audit D8 reports spills).
 
 ## Standing facts
 

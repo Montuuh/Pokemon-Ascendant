@@ -61,6 +61,19 @@ export function normalizeDexEntry(raw: Partial<DexEntry> | undefined): DexEntry 
   return e;
 }
 
+/**
+ * §8.9.2 — has the account met this species? Any trace counts: faced, knocked out, caught, recruited, fought
+ * with, or led a turn (`leadTurns` — a starter is met the moment it takes the field, win or lose). Until then the
+ * Pokédex shows a silhouette and nothing else: no name, no types, no kit.
+ */
+export function isMet(raw: Partial<DexEntry> | undefined, leadTurns = 0): boolean {
+  const e = normalizeDexEntry(raw);
+  return e.encounters > 0 || e.defeats > 0 || e.caught > 0 || e.recruits > 0 || e.winsWith > 0 || e.runsFinishedWith > 0 || leadTurns > 0;
+}
+
+/** What the Pokédex prints in place of an unmet species' name. */
+export const UNMET_NAME = '???';
+
 export function dexTierFor(defeats: number, rarity: RarityTier): DexTier {
   return defeats >= DEX_FAMILIAR[rarity] ? 1 : 0;
 }

@@ -32,7 +32,8 @@
 | v0.3 | +28 | the evolution-branch payloads: every upgrade target and addition the branch tables name |
 | v0.4–v0.7.2 | +25 | the Krabby line, Snorlax, Eevee and the Eeveelutions, the Mastery moves that shipped |
 | v0.7.3 | +34 | Region 2's kits: the rows marked v0.7.3 in section 2, plus `mist`, `sheer-cold-l`, `leaf-storm-s` (Lapras, Victreebel) |
-| **Total in `moves.json`** | **215** | the rest of section 2 lands with the content its version needs |
+| Gen I (2026-09-23) | +64 | the rest of the 151 (`species-gen1.md`): the catalogue rows those kits name, shipped as written, and the rows marked Gen I below |
+| **Total in `moves.json`** | **279** | the rest of section 2 lands with the content its version needs |
 
 **Ten v0.3 moves ship with their effect clause omitted**, because it needs a `MoveEffect` kind the sim does not
 have. They carry their catalogued type, role, range, modifier, AP and power, so the budget and the kit rules
@@ -121,6 +122,24 @@ in section 0.
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `pound` | Off | Melee | — | 1 | 40 | — | — (Gen I, 2026-09-23) |
+| `pay-day` | Off | Ranged | — | 1 | 45 | — | — (Gen I, 2026-09-23) |
+| `horn-attack` | Off | Melee | — | 2 | 65 | — | — (Gen I, 2026-09-23) |
+| `horn-drill` | Off | Melee | — | 4 | 130 | cd2 | ignores Def stages (Gen I, 2026-09-23) |
+| `guillotine` | Off | Melee | — | 4 | 130 | cd2 | ignores Def stages (`pinsir`) (Gen I, 2026-09-23) |
+| `glare` | Util | Ranged | — | 1 | — | — | Paralysis 100 % (Gen I, 2026-09-23) |
+| `lovely-kiss` | Util | Ranged | — | 1 | — | — | Sleep 100 % (Gen I, 2026-09-23) |
+| `egg-bomb` | Off | Ranged | — | 3 | 100 | — | — (Gen I, 2026-09-23) |
+| `softboiled` | Def | Melee | — | 1 | — | cd2 | heal 50 % (Gen I, 2026-09-23) |
+| `dizzy-punch` | Off | Melee | — | 2 | 70 | — | Confusion 20 % (Gen I, 2026-09-23) |
+| `mega-kick` | Off | Melee | — | 3 | 100 | — | — (Gen I, 2026-09-23) |
+| `barrage` | Off | Ranged | — | 1 | 18 | — | 3 hits (Gen I, 2026-09-23) |
+| `comet-punch` | Off | Melee | — | 1 | 18 | — | 3 hits (Gen I, 2026-09-23) |
+| `spike-cannon` | Off | Ranged | — | 1 | 18 | — | 3 hits (Gen I, 2026-09-23) |
+| `minimize` | Def | Melee | — | 1 | — | — | self Def +2 (Gen I, 2026-09-23) |
+| `swords-dance` | Util | Melee | — | 1 | — | — | self Atk +2 (Gen I, 2026-09-23) |
+| `hyper-voice` | Off | Ranged | — | 3 | 80 | cleave | — (Gen I, 2026-09-23) |
+| `transform-d` | Util | Melee | — | 1 | — | — | stand-in: self Atk +1, Def +1 — ⚠️ Ditto's Transform is open (`species-gen1.md`) (Gen I, 2026-09-23) |
 | `take-down` | Off | Melee | — | 2 | 90 | — | recoil 25 % (v0.7.3) |
 | `extreme-speed` | Off | Melee | SF | 2 | 80 | — | — (`arcanine`, v0.7.3) |
 | `self-destruct` | Off | Melee | — | 3 | 130 | — | recoil 50 % (`voltorb`, `koffing`, v0.7.3) |
@@ -179,6 +198,7 @@ in section 0.
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `lava-plume` | Off | Ranged | — | 2 | 60 | cleave | Burn 30 % (Gen I, 2026-09-23) |
 | `fire-punch` | Off | Melee | — | 2 | 75 | — | Burn 10 % (v0.7.3) |
 | `fire-fang` | Off | Melee | SF | 1 | 50 | — | Burn 20 % |
 | `flame-wheel-r` | Off | Ranged | — | 2 | 70 | — | Burn 30 % |
@@ -194,6 +214,7 @@ in section 0.
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `waterfall` | Off | Melee | — | 2 | 75 | — | — (Gen I, 2026-09-23) |
 | `clamp` | Off | Melee | — | 1 | 45 | — | foe Spd −1 (`shellder`, v0.7.3) |
 | `bubble` | Off | Ranged | — | 1 | 40 | — | foe Atk −1 |
 | `bubble-beam` | Off | Ranged | — | 2 | 65 | — | foe Atk −1 |
@@ -220,6 +241,7 @@ in section 0.
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `haze` | Util | Ranged | — | 1 | — | — | cures the whole team's statuses (Gen I, 2026-09-23) |
 | `powder-snow` | Off | Ranged | — | 1 | 40 | — | Freeze 10 % (v0.7.3) |
 | `aurora-beam` | Off | Ranged | — | 2 | 65 | — | foe Atk −1 (v0.7.3) |
 | `icicle-spear` | Off | Melee | — | 2 | 25 | — | 3 hits (`cloyster`, v0.7.3) |
@@ -250,6 +272,7 @@ in section 0.
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `gunk-shot` | Off | Ranged | — | 4 | 120 | cd1 | Poison 30 % (Gen I, 2026-09-23) |
 | `smog` | Off | Ranged | — | 1 | 30 | — | Poison 40 % (`koffing`, v0.7.3) |
 | `sludge-wave` | Off | Ranged | — | 3 | 90 | cleave | Poison 10 % (v0.7.3) |
 | `poison-sting` | Off | Melee | — | 1 | 40 | — | Poison 20 % |
@@ -309,6 +332,11 @@ in section 0.
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
+| `double-kick` | Off | Melee | — | 1 | 25 | — | 2 hits (Gen I, 2026-09-23) |
+| `rolling-kick` | Off | Melee | — | 1 | 50 | — | — (Gen I, 2026-09-23) |
+| `jump-kick` | Off | Melee | SF | 2 | 80 | — | self takes 20 % of damage dealt (Gen I, 2026-09-23) |
+| `hi-jump-kick` | Off | Melee | SF | 3 | 110 | — | self takes 25 % of damage dealt (Gen I, 2026-09-23) |
+| `aura-sphere` | Off | Ranged | — | 3 | 90 | — | — (Gen I, 2026-09-23) |
 | `mach-punch` | Off | Melee | SF | 1 | 40 | — | — (`hitmonchan`, v0.7.3) |
 | `sky-uppercut` | Off | Melee | — | 2 | 85 | — | — (`hitmonchan`, v0.7.3) |
 | `low-kick` | Off | Melee | — | 1 | 45 | — | — |
@@ -320,8 +348,8 @@ in section 0.
 | `submission` | Off | Melee | SF | 3 | 100 | — | self takes 25 % of damage dealt |
 | `close-combat` | Off | Melee | SF | 3 | 110 | — | self Def −2 |
 | `dynamic-punch` | Off | Melee | SF | 3 | 100 | — | Confusion 100 % |
-| `fury-swipes` | Off | Melee | — | 2 | 60 | — | hits 3 times for 20 |
-| `thrash` | Off | Melee | — | 2 | 85 | — | must be replayed next turn if drawn (fixed 2 turns) |
+| `fury-swipes` | Normal Off | Melee | — | 2 | 60 | — | hits 3 times for 20 |
+| `thrash` | Normal Off | Melee | — | 2 | 85 | — | must be replayed next turn if drawn (fixed 2 turns) — ships without the repeat |
 | `vital-throw` | Off | Melee | SB | 2 | 70 | — | — |
 | `bulk-up` / `bulk-up-plus` | Util | Melee | — | 1 | — | — | self Atk +1 Def +1 / +2 each |
 | `counter` | Def | Melee | — | 1 | — | — | the next single-target hit on the Lead deals its damage back (Mastery Lv2, `machop`) |
@@ -358,6 +386,28 @@ in section 0.
 | `supersonic-skystrike` | Flying Off | Melee | SF | 3 | 130 | cd2 | Mastery (`aerodactyl`) |
 | `dragon-rage` | Dragon Off | Ranged | — | 1 | — | — | fixed 40 damage, ignores type and stats |
 | `dragon-pulse` | Dragon Off | Ranged | — | 3 | 90 | — | — (`seadra`, v0.7.3) |
+| `twister` | Dragon Off | Ranged | — | 1 | 40 | cleave | — (Gen I, 2026-09-23) |
+| `outrage` | Dragon Off | Melee | — | 3 | 110 | — | self Confusion 100 % (Gen I, 2026-09-23) |
+| `night-shade` | Ghost Off | Ranged | — | 2 | 70 | — | — (Gen I, 2026-09-23) |
+| `shadow-punch` | Ghost Off | Melee | SF | 2 | 70 | — | — (Gen I, 2026-09-23) |
+| `shadow-ball` | Ghost Off | Ranged | — | 3 | 95 | — | — (Gen I, 2026-09-23) |
+| `kinesis` | Psychic Util | Ranged | — | 0 | — | — | foe Atk −1 (Gen I, 2026-09-23) |
+| `psywave` | Psychic Off | Ranged | — | 1 | 50 | — | — (Gen I, 2026-09-23) |
+| `extrasensory` | Psychic Off | Ranged | — | 2 | 80 | — | — (Gen I, 2026-09-23) |
+| `barrier` | Psychic Def | Melee | — | 1 | — | — | self Def +2 (Gen I, 2026-09-23) |
+| `reflect` | Psychic Def | Melee | — | 1 | — | — | self Def +1, bench Def +1 (Gen I, 2026-09-23) |
+| `light-screen` | Psychic Def | Melee | — | 1 | — | — | the next Cleave on the team deals 50 % less (Gen I, 2026-09-23) |
+| `calm-mind` | Psychic Util | Melee | — | 1 | — | — | self Atk +1, Def +1 (Gen I, 2026-09-23) |
+| `psystrike` | Psychic Off | Ranged | — | 4 | 130 | cd2 | ignores Def stages (`mewtwo`) (Gen I, 2026-09-23) |
+| `peck` | Flying Off | Melee | — | 1 | 40 | — | — (Gen I, 2026-09-23) |
+| `drill-peck` | Flying Off | Melee | — | 2 | 75 | — | — (Gen I, 2026-09-23) |
+| `fly` | Flying Off | Melee | SF | 3 | 90 | — | — (Gen I, 2026-09-23) |
+| `earth-power` | Ground Off | Ranged | — | 3 | 90 | — | foe Def −1 (Gen I, 2026-09-23) |
+| `drill-run` | Ground Off | Melee | — | 2 | 70 | — | always-crit (Gen I, 2026-09-23) |
+| `power-gem` | Rock Off | Ranged | — | 2 | 80 | — | — (Gen I, 2026-09-23) |
+| `x-scissor` | Bug Off | Melee | — | 2 | 75 | — | — (Gen I, 2026-09-23) |
+| `megahorn` | Bug Off | Melee | — | 3 | 100 | — | — (Gen I, 2026-09-23) |
+| `ingrain` | Grass Def | Melee | — | 1 | — | — | heal 12.5 % a turn for 3 turns (Gen I, 2026-09-23) |
 | `dragon-dance` | Util | Melee | — | 1 | — | — | self Atk +1, draw 1 (Mastery Lv2, `gyarados`) |
 | `dragon-tail` | Dragon Off | Melee | SB | 2 | 75 | — | Mastery Lv1 (`onix`) |
 | `metal-claw` | Rock Off | Melee | SF | 1 | 50 | — | self Atk +1 (Steel is not a type in the 15-type chart, so it is typed Rock) |

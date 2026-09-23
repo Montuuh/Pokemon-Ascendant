@@ -181,7 +181,7 @@
 | → `weepinbell` | `wrap` → `slam` | `vine-whip` → `razor-leaf` | — |
 | → `victreebel` | `slam` → `power-whip` · **+`leaf-blade`** | `acid` → `sludge-bomb` · **+`leaf-storm-s`** | — |
 
-### `mankey` line — Fighting · 2 archetypes (Vanguard, Specialist) · 🆕 · uncommon
+### `mankey` line — Fighting · 2 archetypes (Vanguard, Specialist) · ✅ Gen I (2026-09-23, the built kit is in `species-gen1.md`) · uncommon
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
@@ -282,7 +282,7 @@
 | → `machoke` | `karate-chop` → `cross-chop` | — | `leer` → `bulk-up` |
 | → `machamp` | `cross-chop` → `dynamic-punch` · **+`close-combat`** | — | `bulk-up` → `bulk-up-plus` · **+`wide-guard`** |
 
-### `aerodactyl` — Rock/Flying · single stage · 🆕 · rare (Cave; Fossil Mystery Event)
+### `aerodactyl` — Rock/Flying · single stage · ✅ Gen I (2026-09-23) · rare (Cave; Fossil Mystery Event)
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
@@ -321,7 +321,7 @@
 
 > The Magikarp "investment" fantasy: worthless recruit, monster at L18. Its 3-move learnset means a deck of 2–3 cards until evolution — a deliberate cost. Splash is a 0-AP utility that draws 1 (so the card is never dead).
 
-### `poliwag` line — Water → Water/Fighting · 3 archetypes · 🆕 · common (Water Stone: Poliwhirl may evolve from L26)
+### `poliwag` line — Water → Water/Fighting · 3 archetypes · ✅ (Poliwrath: Gen I, 2026-09-23) · common (Water Stone: Poliwhirl may evolve from L26)
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
@@ -375,7 +375,7 @@
 **Growth** 5/3/2/1 (+25 %) · **Abilities** `thick-fat` `immunity` `gluttony` · **Mastery** `belly-drum-s` → `pulverizing-pancake`
 **Boss script**: P1 stall (`rest-s` heals 50 % max HP, self-Sleep 2 turns, P1 only · `snore` Ranged 60, only while asleep · `amnesia` +2 Def) → P2 offence (`body-slam` Melee 85, 30 % Paralysis · `crunch`). Catch → recruit `snorlax` at its level with 0 Trauma.
 
-### `marowak` (+ `marowak-spirit` boss variant) — Ground / Ghost · ✅
+### `marowak` (+ `marowak-spirit` boss variant) — Ground / Ghost · ✅ (the `cubone` line of `species-gen1.md` evolves into it)
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|

@@ -117,6 +117,32 @@
       ]
     },
     {
+      "line": "spearow",
+      "species": [
+        {
+          "dex": 21,
+          "id": "spearow"
+        },
+        {
+          "dex": 22,
+          "id": "fearow"
+        }
+      ]
+    },
+    {
+      "line": "ekans",
+      "species": [
+        {
+          "dex": 23,
+          "id": "ekans"
+        },
+        {
+          "dex": 24,
+          "id": "arbok"
+        }
+      ]
+    },
+    {
       "line": "pikachu",
       "species": [
         {
@@ -126,6 +152,92 @@
         {
           "dex": 26,
           "id": "raichu"
+        }
+      ]
+    },
+    {
+      "line": "sandshrew",
+      "species": [
+        {
+          "dex": 27,
+          "id": "sandshrew"
+        },
+        {
+          "dex": 28,
+          "id": "sandslash"
+        }
+      ]
+    },
+    {
+      "line": "nidoran-f",
+      "species": [
+        {
+          "dex": 29,
+          "id": "nidoran-f"
+        },
+        {
+          "dex": 30,
+          "id": "nidorina"
+        },
+        {
+          "dex": 31,
+          "id": "nidoqueen"
+        }
+      ]
+    },
+    {
+      "line": "nidoran-m",
+      "species": [
+        {
+          "dex": 32,
+          "id": "nidoran-m"
+        },
+        {
+          "dex": 33,
+          "id": "nidorino"
+        },
+        {
+          "dex": 34,
+          "id": "nidoking"
+        }
+      ]
+    },
+    {
+      "line": "clefairy",
+      "species": [
+        {
+          "dex": 35,
+          "id": "clefairy"
+        },
+        {
+          "dex": 36,
+          "id": "clefable"
+        }
+      ]
+    },
+    {
+      "line": "vulpix",
+      "species": [
+        {
+          "dex": 37,
+          "id": "vulpix"
+        },
+        {
+          "dex": 38,
+          "id": "ninetales"
+        }
+      ]
+    },
+    {
+      "line": "jigglypuff",
+      "species": [
+        {
+          "dex": 39,
+          "id": "jigglypuff"
+        },
+        {
+          "dex": 40,
+          "id": "wigglytuff"
         }
       ]
     },
@@ -160,6 +272,32 @@
       ]
     },
     {
+      "line": "paras",
+      "species": [
+        {
+          "dex": 46,
+          "id": "paras"
+        },
+        {
+          "dex": 47,
+          "id": "parasect"
+        }
+      ]
+    },
+    {
+      "line": "venonat",
+      "species": [
+        {
+          "dex": 48,
+          "id": "venonat"
+        },
+        {
+          "dex": 49,
+          "id": "venomoth"
+        }
+      ]
+    },
+    {
       "line": "diglett",
       "species": [
         {
@@ -173,6 +311,19 @@
       ]
     },
     {
+      "line": "meowth",
+      "species": [
+        {
+          "dex": 52,
+          "id": "meowth"
+        },
+        {
+          "dex": 53,
+          "id": "persian"
+        }
+      ]
+    },
+    {
       "line": "psyduck",
       "species": [
         {
@@ -182,6 +333,19 @@
         {
           "dex": 55,
           "id": "golduck"
+        }
+      ]
+    },
+    {
+      "line": "mankey",
+      "species": [
+        {
+          "dex": 56,
+          "id": "mankey"
+        },
+        {
+          "dex": 57,
+          "id": "primeape"
         }
       ]
     },
@@ -208,6 +372,27 @@
         {
           "dex": 61,
           "id": "poliwhirl"
+        },
+        {
+          "dex": 62,
+          "id": "poliwrath"
+        }
+      ]
+    },
+    {
+      "line": "abra",
+      "species": [
+        {
+          "dex": 63,
+          "id": "abra"
+        },
+        {
+          "dex": 64,
+          "id": "kadabra"
+        },
+        {
+          "dex": 65,
+          "id": "alakazam"
         }
       ]
     },
@@ -276,6 +461,32 @@
       ]
     },
     {
+      "line": "ponyta",
+      "species": [
+        {
+          "dex": 77,
+          "id": "ponyta"
+        },
+        {
+          "dex": 78,
+          "id": "rapidash"
+        }
+      ]
+    },
+    {
+      "line": "slowpoke",
+      "species": [
+        {
+          "dex": 79,
+          "id": "slowpoke"
+        },
+        {
+          "dex": 80,
+          "id": "slowbro"
+        }
+      ]
+    },
+    {
       "line": "magnemite",
       "species": [
         {
@@ -285,6 +496,28 @@
         {
           "dex": 82,
           "id": "magneton"
+        }
+      ]
+    },
+    {
+      "line": "farfetchd",
+      "species": [
+        {
+          "dex": 83,
+          "id": "farfetchd"
+        }
+      ]
+    },
+    {
+      "line": "doduo",
+      "species": [
+        {
+          "dex": 84,
+          "id": "doduo"
+        },
+        {
+          "dex": 85,
+          "id": "dodrio"
         }
       ]
     },
@@ -302,6 +535,19 @@
       ]
     },
     {
+      "line": "grimer",
+      "species": [
+        {
+          "dex": 88,
+          "id": "grimer"
+        },
+        {
+          "dex": 89,
+          "id": "muk"
+        }
+      ]
+    },
+    {
       "line": "shellder",
       "species": [
         {
@@ -315,11 +561,41 @@
       ]
     },
     {
+      "line": "gastly",
+      "species": [
+        {
+          "dex": 92,
+          "id": "gastly"
+        },
+        {
+          "dex": 93,
+          "id": "haunter"
+        },
+        {
+          "dex": 94,
+          "id": "gengar"
+        }
+      ]
+    },
+    {
       "line": "onix",
       "species": [
         {
           "dex": 95,
           "id": "onix"
+        }
+      ]
+    },
+    {
+      "line": "drowzee",
+      "species": [
+        {
+          "dex": 96,
+          "id": "drowzee"
+        },
+        {
+          "dex": 97,
+          "id": "hypno"
         }
       ]
     },
@@ -350,11 +626,55 @@
       ]
     },
     {
+      "line": "exeggcute",
+      "species": [
+        {
+          "dex": 102,
+          "id": "exeggcute"
+        },
+        {
+          "dex": 103,
+          "id": "exeggutor"
+        }
+      ]
+    },
+    {
+      "line": "cubone",
+      "species": [
+        {
+          "dex": 104,
+          "id": "cubone"
+        },
+        {
+          "dex": 105,
+          "id": "marowak"
+        }
+      ]
+    },
+    {
+      "line": "hitmonlee",
+      "species": [
+        {
+          "dex": 106,
+          "id": "hitmonlee"
+        }
+      ]
+    },
+    {
       "line": "hitmonchan",
       "species": [
         {
           "dex": 107,
           "id": "hitmonchan"
+        }
+      ]
+    },
+    {
+      "line": "lickitung",
+      "species": [
+        {
+          "dex": 108,
+          "id": "lickitung"
         }
       ]
     },
@@ -372,6 +692,46 @@
       ]
     },
     {
+      "line": "rhyhorn",
+      "species": [
+        {
+          "dex": 111,
+          "id": "rhyhorn"
+        },
+        {
+          "dex": 112,
+          "id": "rhydon"
+        }
+      ]
+    },
+    {
+      "line": "chansey",
+      "species": [
+        {
+          "dex": 113,
+          "id": "chansey"
+        }
+      ]
+    },
+    {
+      "line": "tangela",
+      "species": [
+        {
+          "dex": 114,
+          "id": "tangela"
+        }
+      ]
+    },
+    {
+      "line": "kangaskhan",
+      "species": [
+        {
+          "dex": 115,
+          "id": "kangaskhan"
+        }
+      ]
+    },
+    {
       "line": "horsea",
       "species": [
         {
@@ -381,6 +741,19 @@
         {
           "dex": 117,
           "id": "seadra"
+        }
+      ]
+    },
+    {
+      "line": "goldeen",
+      "species": [
+        {
+          "dex": 118,
+          "id": "goldeen"
+        },
+        {
+          "dex": 119,
+          "id": "seaking"
         }
       ]
     },
@@ -398,11 +771,65 @@
       ]
     },
     {
+      "line": "mr-mime",
+      "species": [
+        {
+          "dex": 122,
+          "id": "mr-mime"
+        }
+      ]
+    },
+    {
+      "line": "scyther",
+      "species": [
+        {
+          "dex": 123,
+          "id": "scyther"
+        }
+      ]
+    },
+    {
+      "line": "jynx",
+      "species": [
+        {
+          "dex": 124,
+          "id": "jynx"
+        }
+      ]
+    },
+    {
       "line": "electabuzz",
       "species": [
         {
           "dex": 125,
           "id": "electabuzz"
+        }
+      ]
+    },
+    {
+      "line": "magmar",
+      "species": [
+        {
+          "dex": 126,
+          "id": "magmar"
+        }
+      ]
+    },
+    {
+      "line": "pinsir",
+      "species": [
+        {
+          "dex": 127,
+          "id": "pinsir"
+        }
+      ]
+    },
+    {
+      "line": "tauros",
+      "species": [
+        {
+          "dex": 128,
+          "id": "tauros"
         }
       ]
     },
@@ -429,6 +856,15 @@
       ]
     },
     {
+      "line": "ditto",
+      "species": [
+        {
+          "dex": 132,
+          "id": "ditto"
+        }
+      ]
+    },
+    {
       "line": "eevee",
       "species": [
         {
@@ -450,11 +886,117 @@
       ]
     },
     {
+      "line": "porygon",
+      "species": [
+        {
+          "dex": 137,
+          "id": "porygon"
+        }
+      ]
+    },
+    {
+      "line": "omanyte",
+      "species": [
+        {
+          "dex": 138,
+          "id": "omanyte"
+        },
+        {
+          "dex": 139,
+          "id": "omastar"
+        }
+      ]
+    },
+    {
+      "line": "kabuto",
+      "species": [
+        {
+          "dex": 140,
+          "id": "kabuto"
+        },
+        {
+          "dex": 141,
+          "id": "kabutops"
+        }
+      ]
+    },
+    {
+      "line": "aerodactyl",
+      "species": [
+        {
+          "dex": 142,
+          "id": "aerodactyl"
+        }
+      ]
+    },
+    {
       "line": "snorlax",
       "species": [
         {
           "dex": 143,
           "id": "snorlax"
+        }
+      ]
+    },
+    {
+      "line": "articuno",
+      "species": [
+        {
+          "dex": 144,
+          "id": "articuno"
+        }
+      ]
+    },
+    {
+      "line": "zapdos",
+      "species": [
+        {
+          "dex": 145,
+          "id": "zapdos"
+        }
+      ]
+    },
+    {
+      "line": "moltres",
+      "species": [
+        {
+          "dex": 146,
+          "id": "moltres"
+        }
+      ]
+    },
+    {
+      "line": "dratini",
+      "species": [
+        {
+          "dex": 147,
+          "id": "dratini"
+        },
+        {
+          "dex": 148,
+          "id": "dragonair"
+        },
+        {
+          "dex": 149,
+          "id": "dragonite"
+        }
+      ]
+    },
+    {
+      "line": "mewtwo",
+      "species": [
+        {
+          "dex": 150,
+          "id": "mewtwo"
+        }
+      ]
+    },
+    {
+      "line": "mew",
+      "species": [
+        {
+          "dex": 151,
+          "id": "mew"
         }
       ]
     }

@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, BOND, BOND_RANKS, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier } from '@/sim';
+import { ACHIEVEMENTS, BOND, BOND_RANKS, UNMET_NAME, bondRank, discoveryProgress, isMet, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon } from '@/ui/art';
 import { TypeLabel } from '@/ui/components/TypeBadge';
@@ -46,11 +46,9 @@ export function PcTerminal() {
   const [order, setOrder] = useState<'dex' | 'bond'>('dex');
 
   const species = useMemo(() => [...content.allSpecies()].sort((a, b) => a.dex - b.dex), [content]);
-  // §8.9 — "met" is any trace of the species on the account: faced, knocked out, recruited or fought with.
-  const met = species.filter((s) => {
-    const e = normalizeDexEntry(account.dex[s.id]);
-    return e.encounters > 0 || e.defeats > 0 || e.recruits > 0 || e.winsWith > 0;
-  }).length;
+  // §8.9.2 — "met" is any trace of the species on the account (`isMet`). An unmet species is a silhouette.
+  const metOf = (id: string) => isMet(account.dex[id], account.stats.leadTurns[id]);
+  const met = species.filter((s) => metOf(s.id)).length;
   // §6.8 — the Bond is per line; "By Bond" puts the lines you have played first, whole, then the rest by number.
   const bondOf = (id: string) => account.bond[content.lineBase(id)] ?? 0;
   const lineOrder = useMemo(() => Object.fromEntries(species.filter((s) => s.stage === 'basic').map((s) => [s.id, s.dex])), [species]);
@@ -96,7 +94,7 @@ export function PcTerminal() {
         <div className={styles.dexHead}>
           <p className={styles.lede} data-testid="dex-legend">
             {met} of {species.length} met · {linesPlayed} of {linesTotal} lines played.
-            <InfoDot tip={<Tip title="The Pokédex" body={`Every species of the Region. A silhouette is one you have not faced yet; the five pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A line gets better by being played: +${BOND.win} per fight won with it (+${BOND.lead} leading), +${BOND.evolution} per evolution, +${BOND.recruit} for a first recruit, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one — ranks at ${BOND_RANKS.join(' · ')}.`} />} />
+            <InfoDot tip={<Tip title="The Pokédex" body={`Every species there is. A silhouette is one you have not met yet — its name, types and kit stay unknown until it takes the field against you or with you; the five pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A line gets better by being played: +${BOND.win} per fight won with it (+${BOND.lead} leading), +${BOND.evolution} per evolution, +${BOND.recruit} for a first recruit, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one — ranks at ${BOND_RANKS.join(' · ')}.`} />} />
           </p>
           <div className={styles.order} role="group" aria-label="Order">
             <button type="button" className={`${styles.orderBtn} ${order === 'dex' ? styles.orderOn : ''}`} onClick={() => setOrder('dex')} aria-pressed={order === 'dex'} data-testid="dex-order-dex">By number</button>
@@ -106,8 +104,9 @@ export function PcTerminal() {
         <ul className={styles.dexGrid} data-testid="dex-grid">
           {shown.map((sp, i) => {
             const entry = normalizeDexEntry(account.dex[sp.id]);
-            const isMet = entry.encounters > 0 || entry.defeats > 0 || entry.recruits > 0 || entry.winsWith > 0;
+            const known = metOf(sp.id);
             const rank = bondRank(bondOf(sp.id));
+            const lineBase = content.lineBase(sp.id);
             return (
               <motion.li
                 key={sp.id}
@@ -116,24 +115,25 @@ export function PcTerminal() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: Math.min(i, 24) * 0.015, duration: 0.2 }}
               >
+                {/* §8.9.2 — unmet: a silhouette and "???", no types, and no type tint on the card either. */}
                 <Tipped
                   as="button"
                   type="button"
-                  tip={dexCardTip(sp.name, sp.dex, sp.types, isMet, entry.encounters, content.species(content.lineBase(sp.id)).name, rank)}
+                  tip={dexCardTip(known ? sp.name : UNMET_NAME, sp.dex, known ? sp.types : [], known, entry.encounters, metOf(lineBase) ? content.species(lineBase).name : UNMET_NAME, rank)}
                   className={styles.dexCard}
-                  style={{ ['--card-type' as string]: `var(--type-${sp.types[0]})` }}
+                  style={known ? { ['--card-type' as string]: `var(--type-${sp.types[0]})` } : undefined}
                   onClick={() => sheet.open({ id: sp.id })}
                   data-testid={`dex-${sp.id}`}
                   data-tier={entry.tier}
-                  data-met={isMet}
+                  data-met={known}
                   data-rank={rank}
                 >
                   <span className={`${styles.dexNo} tabular`}>#{String(sp.dex).padStart(3, '0')}</span>
                   <span className={styles.cardBall} aria-hidden="true"><IconPokeball size={72} stroke={1.4} /></span>
-                  <span className={styles.dexArt}><MonIcon speciesId={sp.id} size={64} /></span>
-                  <span className={`${styles.dexName} display`}>{sp.name}</span>
+                  <span className={styles.dexArt}><MonIcon speciesId={sp.id} size={64} alt={known ? sp.name : UNMET_NAME} /></span>
+                  <span className={`${styles.dexName} display`}>{known ? sp.name : UNMET_NAME}</span>
                   <span className={styles.dexTypes} aria-hidden="true">
-                    {sp.types.map((t) => <TypeLabel key={t} type={t} size={12} />)}
+                    {known && sp.types.map((t) => <TypeLabel key={t} type={t} size={12} />)}
                   </span>
                   <span className={styles.pips} aria-hidden="true">
                     {[1, 2, 3, 4, 5].map((r) => <i key={r} className={`${styles.pip} ${rank >= r ? styles.pipOn : ''}`} />)}

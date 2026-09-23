@@ -47,17 +47,23 @@ test.describe('The Trainer Hub — §8.4', () => {
     // §5.13 / §8.9 — the PC Terminal opens on the Pokédex: number, silhouette, name, the line's pips; every
     // species listed, none met, no line played.
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('dex-legend')).toContainText('0 of 73 met');
-    await expect(page.getByTestId('dex-legend')).toContainText('0 of 33 lines played');
+    await expect(page.getByTestId('dex-legend')).toContainText('0 of 151 met');
+    await expect(page.getByTestId('dex-legend')).toContainText('0 of 79 lines played');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-met', 'false');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-rank', '0');
     await expect(page.getByTestId('dex-pidgey')).toContainText('#016');
     await expect(page.getByTestId('dex-pidgey')).not.toContainText('KO');
-    // §6.8 — the line is the sheet's third tab: its stages, the ladder with this line's names, how Bond grows.
+    // §8.9.2 — not met: a silhouette and ???, no name and no types, and its sheet keeps its kit to itself.
+    await expect(page.getByTestId('dex-pidgey')).toContainText('???');
+    await expect(page.getByTestId('dex-pidgey')).not.toContainText('Pidgey');
+    await expect(page.getByTestId('dex-pidgey').locator('img[alt]').first()).toHaveAttribute('alt', '???');
+    // §6.8 — the line is the sheet's third tab: its stages, the ladder, how Bond grows. §8.9.2 — nothing of the
+    // line is met yet, so the ladder says what each rank opens without naming the line's own moves.
     await page.getByTestId('dex-squirtle').click();
     await page.getByTestId('dex-sheet-tab-line').click();
     await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-line', 'squirtle');
-    await expect(page.getByTestId('line-sheet-ladder')).toContainText('Aqua Tail');
+    await expect(page.getByTestId('line-sheet-ladder')).toContainText('Mastery Move Lv1, a fifth card');
+    await expect(page.getByTestId('line-sheet-ladder')).not.toContainText('Aqua Tail');
     await expect(page.getByTestId('line-sheet-ladder')).toContainText('Shiny');
     // How Bond grows is a door, not a paragraph: the InfoDot by the Bond heading carries it.
     await page.getByTestId('line-sheet').getByRole('button', { name: 'More about this' }).first().hover();
@@ -73,14 +79,20 @@ test.describe('The Trainer Hub — §8.4', () => {
     // The cards fade in over ~0.6 s; the screenshot is of the finished picture.
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'playtest/hub-pokedex.png' });
-    // Its sheet: the record at zero, the knowledge line counting to Familiar, the kit on the second tab.
+    // §8.9.2 — its sheet keeps everything to itself: no record, no Familiar count (it would give the rarity
+    // away), a locked kit, and a line tab without names or evolution levels.
     await page.getByTestId('dex-pidgey').click();
     await expect(page.getByTestId('dex-sheet')).toHaveAttribute('data-met', 'false');
-    await expect(page.getByTestId('dex-stat-ko')).toContainText('0');
-    await expect(page.getByTestId('dex-sheet-knowledge')).toContainText('10 more knock-outs to Familiar');
+    await expect(page.getByTestId('dex-sheet-record-empty')).toBeVisible();
+    await expect(page.getByTestId('dex-sheet-knowledge')).toContainText('Knock it out to start toward Familiar');
+    // §8.9.2 — an unmet species keeps its kit to itself; its line's stages are still doors, as silhouettes.
     await page.getByTestId('dex-sheet-tab-kit').click();
-    await expect(page.getByTestId('dex-sheet')).toContainText('Gust');
-    await page.getByTestId('dex-sheet-evolves-pidgeotto').click();
+    await expect(page.getByTestId('dex-sheet-kit-locked')).toBeVisible();
+    await expect(page.getByTestId('dex-sheet')).not.toContainText('Gust');
+    await page.getByTestId('dex-sheet-tab-line').click();
+    await expect(page.getByTestId('line-sheet')).not.toContainText('Lv 12');
+    await expect(page.getByTestId('line-sheet')).toContainText('Hidden ability, open at the Dojo');
+    await page.getByTestId('line-stage-pidgeotto').click();
     await expect(page.getByTestId('dex-sheet')).toHaveAttribute('data-species', 'pidgeotto');
     await page.screenshot({ path: 'playtest/hub-pokedex-sheet.png' });
     await page.keyboard.press('Escape');
@@ -117,7 +129,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('kiosk-pc').click();
     await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '5');
     await expect(page.getByTestId('dex-blastoise')).toHaveAttribute('data-rank', '5');
-    await expect(page.getByTestId('dex-legend')).toContainText('1 of 33 lines played');
+    await expect(page.getByTestId('dex-legend')).toContainText('1 of 79 lines played');
     await page.getByTestId('dex-order-bond').click();
     await expect(page.locator('[data-testid="dex-grid"] li').first()).toContainText('Squirtle');
     await page.waitForTimeout(600);

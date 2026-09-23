@@ -1,4 +1,4 @@
-# Ability catalog — 38 abilities
+# Ability catalog — 65 abilities
 
 > Implements §6.5 (ability system), §6.6 (launch pool), §6.5.1 (`AvailableAbilities`, taught at the Dojo,
 > one passive slot, swap allowed). Hooks map to `AbilityHook` in `src/sim/content/defs.ts`; a new hook is a sim
@@ -64,23 +64,26 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `rock-head` | Rock Head | Survival | The wearer takes no self-damage from recoil moves | `dot-immunity` (`recoilOnly`) | geodude, onix, marowak, aerodactyl | 🆕 |
 | `magic-guard` | Magic Guard | Survival | Immune to Burn/Poison DoT (the status still applies) | `dot-immunity` | — (reserved, §6.6) | 🆕 |
 | `multiscale` | Multiscale | Survival | At full HP the wearer takes −50 % from the first hit each combat | `low-hp-damage-reduction` (inverted) | — (reserved) | 🔒 |
-| `battle-armor` | Battle Armor | Survival | The wearer cannot be critted | `low-hp-damage-reduction` (`critOnly`) | marowak | 🆕 |
+| `battle-armor` | Battle Armor | Survival | While Lead, incoming hits deal 2 less | **`lead-flat-reduction`** (2) | cubone, kabuto lines | ✅ Gen I — ships as a Lead flat reduction: the no-crit variant (`critOnly`) has no hook yet, and the shell reads as armour either way |
 | `weak-armor` | Weak Armor | Survival | When hit: Def −1, Atk +1 | `on-damaged`, with a stage payload instead of a rider | onix | 🆕 |
 | `levitate` | Levitate | Type | Immune to Ground moves | `type-immunity` (ground) | marowak-spirit | 🆕 |
 | `water-absorb` | Water Absorb | Type | Water moves heal instead of damaging | `type-absorb` (water) | vaporeon, poliwag, lapras | ✅ v0.3 |
 | `volt-absorb` | Volt Absorb | Type | Electric moves heal instead of damaging | `type-absorb` (electric) | jolteon | 🆕 |
 | `flash-fire` | Flash Fire | Type | Fire moves deal 0 and grant Atk +1 | `type-absorb` (fire, `buffInstead`) | flareon | 🆕 |
 | `lightning-rod` | Lightning Rod | Type | Electric intents targeting a bench slot redirect to the wearer, at −50 % | `on-enter-lead` variant → new `redirect` | marowak | 🆕 |
-| `thick-fat` | Thick Fat | Type | Fire and Ice moves deal −50 % | `low-hp-damage-reduction` (`types`) | snorlax | 🆕 |
-| `immunity` | Immunity | Status | Cannot be Poisoned | `status-immunity` (poison) | snorlax | 🆕 |
-| `insomnia` | Insomnia | Status | Cannot be put to Sleep | `status-immunity` (sleep) | — (R3 Hypno) | 🔒 |
-| `limber` | Limber | Status | Cannot be Paralysed | `status-immunity` (paralysis) | — (R3 Persian) | 🔒 |
+| `thick-fat` | Thick Fat | Type | Fire and Ice moves deal half damage | **`conditional-reduction`** (when: type, fire+ice, 0.5) | seel line · Snorlax's catalogue pool | ✅ v0.7.3 |
+| `flame-body` | Flame Body | Status | A Melee attacker is Burned (30 %) | **`on-damaged`** (melee, burn, 0.30) | vulpix, ponyta, magmar, moltres | ✅ Gen I |
+| `cute-charm` | Cute Charm | Status | A Melee attacker is Confused (30 %) | **`on-damaged`** (melee, confusion, 0.30) | clefairy, jigglypuff lines | ✅ Gen I |
+| `water-veil` | Water Veil | Status | Cannot be Burned | **`status-immunity`** (burn) | goldeen line | ✅ Gen I |
+| `own-tempo` | Own Tempo | Status | Cannot be Confused | **`status-immunity`** (confusion) | slowpoke line, lickitung, jynx | ✅ Gen I |
+| `immunity` | Immunity | Status | Cannot be Poisoned | **`status-immunity`** (poison) | — (Snorlax's catalogue pool; the built Snorlax carries `sturdy`) | ✅ Gen I |
+| `insomnia` | Insomnia | Status | Cannot be put to Sleep | **`status-immunity`** (sleep) | drowzee line | ✅ Gen I |
+| `limber` | Limber | Status | Cannot be Paralysed | **`status-immunity`** (paralysis) | hitmonlee, ditto | ✅ Gen I |
 | `inner-focus` | Inner Focus | Status | Cannot be Confused | `status-immunity` (confusion) | zubat | ✅ v0.3 |
-| `vital-spirit` | Vital Spirit | Status | Cannot be put to Sleep | `status-immunity` (sleep) | mankey | 🆕 |
+| `vital-spirit` | Vital Spirit | Status | Cannot be put to Sleep | **`status-immunity`** (sleep) | mankey line, magmar | ✅ Gen I |
 | `effect-spore` | Effect Spore | Status | A Melee attacker is Poisoned (30 %) | **`on-damaged`** (melee, poison, 0.30) | oddish | ✅ v0.3 |
 | `poison-point` | Poison Point | Status | A Melee attacker is Poisoned (30 %) | **`on-damaged`** (melee, poison, 0.30) | weedle, tentacool, koffing | ✅ v0.3 |
 | `static` | Static | Status | A Melee attacker is Paralysed (30 %) | **`on-damaged`** (melee, paralysis, 0.30) | pikachu, voltorb, magnemite, electabuzz | ✅ v0.7.3 |
-| `thick-fat` | Thick Fat | Type | Fire and Ice moves deal half damage | **`conditional-reduction`** (when: type, fire+ice, 0.5) | seel | ✅ v0.7.3 |
 | `cursed-body` | Cursed Body | Status | The attacker's move goes on cooldown 1 turn | `on-damaged`, with a cooldown payload instead of a rider | marowak-spirit | 🆕 |
 | `intimidate` | Intimidate | Positional | On entering Lead: all enemies Atk −1 | `on-enter-lead` | gyarados | ✅ v0.3 |
 | `steadfast` | Steadfast | Positional | On entering Lead: self Atk +1 | `on-enter-lead` | machop | ✅ v0.3 |
@@ -111,7 +114,7 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `tangled-feet` | Tangled Feet | Combat | While Confused the wearer takes −30 % damage | `low-hp-damage-reduction` (`whileConfused`) | pidgey | 🆕 |
 | `mold-breaker` | Mold Breaker | Combat | The wearer's moves ignore type immunities | `ignore-immunity` | — (Champion-tier) | 🔒 |
 
-**Counts:** 22 live · 31 in `abilities.json` · 38 authored for R1–R2 · 8 reserved for later regions.
+**Counts:** 65 rows · 47 in `abilities.json` (the Gen I pass of 2026-09-23 added nine: the rows marked ✅ Gen I, every one on a hook that already existed) · 9 reserved for later regions.
 §6.6's "~30 launch abilities" is met.
 
 v0.3 added six simulation hooks — `while-statused`, `on-damaged`, `status-immunity`, `on-enter-lead`,

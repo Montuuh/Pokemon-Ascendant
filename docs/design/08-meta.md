@@ -522,12 +522,23 @@ the fight's end, like every other account fact; a saved entry from before a numb
 
 The PC Terminal is the Pokédex's home, and the Pokédex is **the one book**: every species, and through it every
 line. It is a **picture first**: a card per species with its number, its sprite, its name, its type glyphs and
-five pips for its line's Bond rank — a silhouette until the species has been faced — and nothing else on the
-grid. Two orders: by number, and **by Bond**, which puts the lines you have played first, whole. A card opens
+five pips for its line's Bond rank, and nothing else on the grid. Two orders: by number, and **by Bond**, which puts the lines you have played first, whole. A card opens
 the species' **sheet**, three tabs: **Record** (the numbers above and the Familiar standing), **Kit** (the
 line's learnset, the Dojo tutor list, the abilities with the hidden one marked, the Mastery Moves by rank,
 what it evolves into — each evolution a door to its own sheet) and **the line** (its stages as doors, its
 Bond bar, the ladder of what each rank opens for that line by name, and how Bond grows at the foot).
+
+**An unmet species keeps everything to itself.** A species is **met** once the account holds any trace of it —
+faced, knocked out, caught, recruited, fought or finished a run with, or a turn as Lead (a starter is met the
+moment it takes the field, win or lose). Until then its card is a black silhouette with its number, **"???"**
+for the name, no type glyphs and no type tint. Its sheet has nothing on record and no Familiar count (the count
+is the rarity), shows the Kit as locked, and its line tab names every unmet stage "???" behind a silhouette,
+with no evolution level into it; until some stage of the line is met, the Bond ladder says what each rank opens
+without naming the line's Mastery Moves or hidden ability. Meeting it opens the real sprite, the name, the types
+and the kit at once. The book holds all 151 species from the first run, so the grid is mostly silhouettes — a
+list of what the world still has to show you. *(User request, 2026-09-23. Before it only the portrait was
+hidden and the type label counted as a fact of the species; with the whole of Gen I in the book, a name and
+types on every card gave the surprise away.)*
 
 *(Redrawn 2026-09-22, twice. The v0.6.1 grids printed the ladder, the thresholds and every unlock chip on
 every row, and the first reader called it too much; the rule since is the picture on the grid, the paragraph

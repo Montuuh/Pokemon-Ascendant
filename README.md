@@ -52,7 +52,8 @@ A roguelike deckbuilder where **your party is your deck**.
 **v0.7.3 — Region 2, Coastal Cliffs.** A run crosses three Regions with two drawn Cities between them, and the
 second Region is its own place now: a coastal route of sea, power plant and cave, twenty-six new Pokémon (Tentacool,
 Staryu, Magnemite, Pikachu, Growlithe, Lapras…), its own trainers and Elites, and the Gyms of Blaine, Erika, Surge
-and Koga. Pikachu can be bought as a starter. Region 3 is still a placeholder at a higher level until v0.7.4. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
+and Koga. Pikachu can be bought as a starter. All 151 Gen I Pokémon are designed and in the Pokédex, as
+silhouettes until you meet them; the Regions place them as they arrive. Region 3 is still a placeholder at a higher level until v0.7.4. The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Run it locally
 

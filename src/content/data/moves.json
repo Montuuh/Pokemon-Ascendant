@@ -3312,6 +3312,927 @@
       "power": 90,
       "effects": [],
       "alwaysCrit": true
+    },
+    {
+      "id": "rage",
+      "name": "Rage",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": []
+    },
+    {
+      "id": "mega-punch",
+      "name": "Mega Punch",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 2,
+      "power": 80,
+      "effects": []
+    },
+    {
+      "id": "hyper-beam",
+      "name": "Hyper Beam",
+      "type": "normal",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 130,
+      "effects": [],
+      "cooldown": 2
+    },
+    {
+      "id": "giga-impact-v",
+      "name": "Giga Impact",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 130,
+      "effects": [],
+      "cooldown": 2
+    },
+    {
+      "id": "fury-swipes",
+      "name": "Fury Swipes",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 20,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "thrash",
+      "name": "Thrash",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 85,
+      "effects": []
+    },
+    {
+      "id": "signal-beam",
+      "name": "Signal Beam",
+      "type": "bug",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "confusion",
+          "chance": 0.2
+        }
+      ]
+    },
+    {
+      "id": "ancient-power",
+      "name": "Ancient Power",
+      "type": "rock",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        },
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "heavy-slam",
+      "name": "Heavy Slam",
+      "type": "rock",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 100,
+      "effects": []
+    },
+    {
+      "id": "bone-club",
+      "name": "Bone Club",
+      "type": "ground",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 50,
+      "effects": []
+    },
+    {
+      "id": "bonemerang",
+      "name": "Bonemerang",
+      "type": "ground",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 35,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 2
+        }
+      ]
+    },
+    {
+      "id": "bone-rush",
+      "name": "Bone Rush",
+      "type": "ground",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 3,
+      "power": 30,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "lick",
+      "name": "Lick",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "air-cutter",
+      "name": "Air Cutter",
+      "type": "flying",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 60,
+      "effects": [],
+      "targeting": "cleave"
+    },
+    {
+      "id": "sky-drop",
+      "name": "Sky Drop",
+      "type": "flying",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-backward",
+      "apCost": 3,
+      "power": 95,
+      "effects": []
+    },
+    {
+      "id": "night-shade",
+      "name": "Night Shade",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": []
+    },
+    {
+      "id": "shadow-punch",
+      "name": "Shadow Punch",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 2,
+      "power": 70,
+      "effects": []
+    },
+    {
+      "id": "shadow-ball",
+      "name": "Shadow Ball",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 95,
+      "effects": []
+    },
+    {
+      "id": "kinesis",
+      "name": "Kinesis",
+      "type": "psychic",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 0,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "psywave",
+      "name": "Psywave",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 50,
+      "effects": []
+    },
+    {
+      "id": "extrasensory",
+      "name": "Extrasensory",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 80,
+      "effects": []
+    },
+    {
+      "id": "barrier",
+      "name": "Barrier",
+      "type": "psychic",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 2
+        }
+      ]
+    },
+    {
+      "id": "reflect",
+      "name": "Reflect",
+      "type": "psychic",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        },
+        {
+          "kind": "stage",
+          "target": "bench",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "light-screen",
+      "name": "Light Screen",
+      "type": "psychic",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "team-guard",
+          "guard": "cleave",
+          "percent": 50
+        }
+      ]
+    },
+    {
+      "id": "calm-mind",
+      "name": "Calm Mind",
+      "type": "psychic",
+      "role": "utility",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        },
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "psystrike",
+      "name": "Psystrike",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 130,
+      "effects": [],
+      "cooldown": 2,
+      "ignoresDefenseStages": true
+    },
+    {
+      "id": "pound",
+      "name": "Pound",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "pay-day",
+      "name": "Pay Day",
+      "type": "normal",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": []
+    },
+    {
+      "id": "horn-attack",
+      "name": "Horn Attack",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": []
+    },
+    {
+      "id": "horn-drill",
+      "name": "Horn Drill",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 130,
+      "effects": [],
+      "cooldown": 2,
+      "ignoresDefenseStages": true
+    },
+    {
+      "id": "guillotine",
+      "name": "Guillotine",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 130,
+      "effects": [],
+      "cooldown": 2,
+      "ignoresDefenseStages": true
+    },
+    {
+      "id": "glare",
+      "name": "Glare",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 1
+        }
+      ]
+    },
+    {
+      "id": "lovely-kiss",
+      "name": "Lovely Kiss",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "sleep",
+          "chance": 1
+        }
+      ]
+    },
+    {
+      "id": "egg-bomb",
+      "name": "Egg Bomb",
+      "type": "normal",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 100,
+      "effects": []
+    },
+    {
+      "id": "softboiled",
+      "name": "Soft-Boiled",
+      "type": "normal",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.5
+        }
+      ],
+      "cooldown": 2
+    },
+    {
+      "id": "dizzy-punch",
+      "name": "Dizzy Punch",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "confusion",
+          "chance": 0.2
+        }
+      ]
+    },
+    {
+      "id": "mega-kick",
+      "name": "Mega Kick",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 100,
+      "effects": []
+    },
+    {
+      "id": "barrage",
+      "name": "Barrage",
+      "type": "normal",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 18,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "comet-punch",
+      "name": "Comet Punch",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 18,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "spike-cannon",
+      "name": "Spike Cannon",
+      "type": "normal",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 18,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "minimize",
+      "name": "Minimize",
+      "type": "normal",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 2
+        }
+      ]
+    },
+    {
+      "id": "swords-dance",
+      "name": "Swords Dance",
+      "type": "normal",
+      "role": "utility",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 2
+        }
+      ]
+    },
+    {
+      "id": "hyper-voice",
+      "name": "Hyper Voice",
+      "type": "normal",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 80,
+      "effects": [],
+      "targeting": "cleave"
+    },
+    {
+      "id": "transform-d",
+      "name": "Transform",
+      "type": "normal",
+      "role": "utility",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        },
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "peck",
+      "name": "Peck",
+      "type": "flying",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "drill-peck",
+      "name": "Drill Peck",
+      "type": "flying",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "fly",
+      "name": "Fly",
+      "type": "flying",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 3,
+      "power": 90,
+      "effects": []
+    },
+    {
+      "id": "double-kick",
+      "name": "Double Kick",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 25,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 2
+        }
+      ]
+    },
+    {
+      "id": "rolling-kick",
+      "name": "Rolling Kick",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 50,
+      "effects": []
+    },
+    {
+      "id": "jump-kick",
+      "name": "Jump Kick",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 2,
+      "power": 80,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.2
+        }
+      ]
+    },
+    {
+      "id": "hi-jump-kick",
+      "name": "High Jump Kick",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 3,
+      "power": 110,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.25
+        }
+      ]
+    },
+    {
+      "id": "aura-sphere",
+      "name": "Aura Sphere",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": []
+    },
+    {
+      "id": "earth-power",
+      "name": "Earth Power",
+      "type": "ground",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "drill-run",
+      "name": "Drill Run",
+      "type": "ground",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": [],
+      "alwaysCrit": true
+    },
+    {
+      "id": "power-gem",
+      "name": "Power Gem",
+      "type": "rock",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 80,
+      "effects": []
+    },
+    {
+      "id": "waterfall",
+      "name": "Waterfall",
+      "type": "water",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "twister",
+      "name": "Twister",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": [],
+      "targeting": "cleave"
+    },
+    {
+      "id": "outrage",
+      "name": "Outrage",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 110,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "confusion",
+          "chance": 1,
+          "self": true
+        }
+      ]
+    },
+    {
+      "id": "lava-plume",
+      "name": "Lava Plume",
+      "type": "fire",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 60,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 0.3
+        }
+      ],
+      "targeting": "cleave"
+    },
+    {
+      "id": "x-scissor",
+      "name": "X-Scissor",
+      "type": "bug",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "megahorn",
+      "name": "Megahorn",
+      "type": "bug",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 100,
+      "effects": []
+    },
+    {
+      "id": "gunk-shot",
+      "name": "Gunk Shot",
+      "type": "poison",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 4,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.3
+        }
+      ],
+      "cooldown": 1
+    },
+    {
+      "id": "ingrain",
+      "name": "Ingrain",
+      "type": "grass",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.125,
+          "durationTurns": 3
+        }
+      ]
+    },
+    {
+      "id": "haze",
+      "name": "Haze",
+      "type": "ice",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "team-cure"
+        }
+      ]
     }
   ]
 }

@@ -95,8 +95,9 @@ describe('content registry', () => {
     for (const s of reg.allSpecies()) {
       if (s.stage !== 'basic') continue;
       expect(knownMoves(reg, s.id, 1).length, s.id).toBe(2);
-      // Magikarp is the deliberate exception: a three-card deck until it evolves is the whole joke.
-      const floor = s.id === 'magikarp' ? 3 : 4;
+      // Two deliberate exceptions: Magikarp's three-card deck until it evolves is the whole joke, and Ditto is a
+      // Transform and a spare (species-gen1.md — the Transform mechanic is an open question).
+      const floor = s.id === 'magikarp' ? 3 : s.id === 'ditto' ? 2 : 4;
       expect(activeMoves(reg, s.id, s.evolveLevel ?? 20).length, s.id).toBeGreaterThanOrEqual(floor);
     }
   });

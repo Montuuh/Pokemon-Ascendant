@@ -1669,6 +1669,297 @@
       "branches": []
     },
     {
+      "dex": 21,
+      "id": "spearow",
+      "name": "Spearow",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 40,
+        "attack": 60,
+        "defense": 31,
+        "speed": 70
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "peck"
+        },
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 4,
+          "move": "leer"
+        },
+        {
+          "level": 7,
+          "move": "fury-attack"
+        },
+        {
+          "level": 10,
+          "move": "aerial-ace"
+        }
+      ],
+      "availableAbilities": [
+        "keen-eye",
+        "tangled-feet"
+      ],
+      "hiddenAbility": "snipe",
+      "tutorMoves": [
+        "quick-attack",
+        "swift"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "fearow"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "fearow-vanguard",
+          "archetype": "vanguard",
+          "label": "Drill Beak",
+          "description": "The peck becomes a drill, and it learns to dive beak-first into the ground as well.",
+          "to": "fearow",
+          "upgrades": [
+            {
+              "from": "peck",
+              "to": "drill-peck"
+            }
+          ],
+          "adds": [
+            "drill-run"
+          ]
+        },
+        {
+          "id": "fearow-specialist",
+          "archetype": "specialist",
+          "label": "Skyhunter",
+          "description": "It stops pecking and starts cutting the air itself.",
+          "to": "fearow",
+          "upgrades": [
+            {
+              "from": "aerial-ace",
+              "to": "air-slash"
+            }
+          ],
+          "adds": []
+        }
+      ]
+    },
+    {
+      "dex": 22,
+      "id": "fearow",
+      "name": "Fearow",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 65,
+        "attack": 90,
+        "defense": 63,
+        "speed": 100
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "drill-peck"
+        },
+        {
+          "level": 18,
+          "move": "agility"
+        },
+        {
+          "level": 22,
+          "move": "drill-run"
+        },
+        {
+          "level": 28,
+          "move": "air-slash"
+        },
+        {
+          "level": 34,
+          "move": "brave-bird"
+        }
+      ],
+      "availableAbilities": [
+        "keen-eye",
+        "tangled-feet"
+      ],
+      "tutorMoves": [
+        "sky-attack",
+        "double-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 23,
+      "id": "ekans",
+      "name": "Ekans",
+      "types": [
+        "poison"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 35,
+        "attack": 60,
+        "defense": 42,
+        "speed": 55
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "wrap"
+        },
+        {
+          "level": 1,
+          "move": "leer"
+        },
+        {
+          "level": 4,
+          "move": "poison-sting"
+        },
+        {
+          "level": 7,
+          "move": "bite"
+        },
+        {
+          "level": 10,
+          "move": "glare"
+        }
+      ],
+      "availableAbilities": [
+        "intimidate",
+        "poison-point"
+      ],
+      "hiddenAbility": "guts",
+      "tutorMoves": [
+        "acid-armor",
+        "dig"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "arbok"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "arbok-vanguard",
+          "archetype": "vanguard",
+          "label": "Cobra",
+          "description": "The bite hardens into a crunch, and the fangs start carrying venom.",
+          "to": "arbok",
+          "upgrades": [
+            {
+              "from": "bite",
+              "to": "crunch"
+            }
+          ],
+          "adds": [
+            "poison-fang"
+          ]
+        },
+        {
+          "id": "arbok-support",
+          "archetype": "support",
+          "label": "Hood",
+          "description": "The hood flares: the glare turns into a screech, and it sheds every status in the air.",
+          "to": "arbok",
+          "upgrades": [
+            {
+              "from": "leer",
+              "to": "screech"
+            }
+          ],
+          "adds": [
+            "haze"
+          ],
+          "abilityId": "intimidate"
+        }
+      ]
+    },
+    {
+      "dex": 24,
+      "id": "arbok",
+      "name": "Arbok",
+      "types": [
+        "poison"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 60,
+        "attack": 85,
+        "defense": 67,
+        "speed": 80
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "acid"
+        },
+        {
+          "level": 18,
+          "move": "poison-fang"
+        },
+        {
+          "level": 22,
+          "move": "crunch"
+        },
+        {
+          "level": 28,
+          "move": "sludge-bomb"
+        },
+        {
+          "level": 34,
+          "move": "gunk-shot"
+        }
+      ],
+      "availableAbilities": [
+        "intimidate",
+        "poison-point"
+      ],
+      "tutorMoves": [
+        "earthquake",
+        "iron-tail"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
       "dex": 25,
       "id": "pikachu",
       "name": "Pikachu",
@@ -1826,6 +2117,1025 @@
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
+      "branches": []
+    },
+    {
+      "dex": 27,
+      "id": "sandshrew",
+      "name": "Sandshrew",
+      "types": [
+        "ground"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 50,
+        "attack": 75,
+        "defense": 58,
+        "speed": 40
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "scratch"
+        },
+        {
+          "level": 1,
+          "move": "defense-curl"
+        },
+        {
+          "level": 4,
+          "move": "sand-attack"
+        },
+        {
+          "level": 7,
+          "move": "rollout"
+        },
+        {
+          "level": 10,
+          "move": "fury-swipes"
+        }
+      ],
+      "availableAbilities": [
+        "sand-veil",
+        "iron-shell"
+      ],
+      "hiddenAbility": "tough-claws",
+      "tutorMoves": [
+        "mud-shot",
+        "bulldoze"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "sandslash"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "sandslash-vanguard",
+          "archetype": "vanguard",
+          "label": "Claw",
+          "description": "The scratch grows into a slash, and the claws learn to drill.",
+          "to": "sandslash",
+          "upgrades": [
+            {
+              "from": "scratch",
+              "to": "slash"
+            }
+          ],
+          "adds": [
+            "drill-run"
+          ]
+        },
+        {
+          "id": "sandslash-support",
+          "archetype": "support",
+          "label": "Spined Ball",
+          "description": "It curls tighter, and the spines along its back lock into armour.",
+          "to": "sandslash",
+          "upgrades": [
+            {
+              "from": "defense-curl",
+              "to": "iron-defense"
+            }
+          ],
+          "adds": [],
+          "abilityId": "iron-shell"
+        }
+      ]
+    },
+    {
+      "dex": 28,
+      "id": "sandslash",
+      "name": "Sandslash",
+      "types": [
+        "ground"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 75,
+        "attack": 100,
+        "defense": 83,
+        "speed": 65
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "slash"
+        },
+        {
+          "level": 18,
+          "move": "dig"
+        },
+        {
+          "level": 24,
+          "move": "drill-run"
+        },
+        {
+          "level": 30,
+          "move": "earthquake"
+        }
+      ],
+      "availableAbilities": [
+        "sand-veil",
+        "iron-shell"
+      ],
+      "tutorMoves": [
+        "stone-edge",
+        "x-scissor"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 29,
+      "id": "nidoran-f",
+      "name": "Nidoran♀",
+      "types": [
+        "poison"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 55,
+        "attack": 47,
+        "defense": 46,
+        "speed": 41
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 1,
+          "move": "scratch"
+        },
+        {
+          "level": 4,
+          "move": "tail-whip"
+        },
+        {
+          "level": 7,
+          "move": "poison-sting"
+        },
+        {
+          "level": 10,
+          "move": "double-kick"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "hustle"
+      ],
+      "hiddenAbility": "guts",
+      "tutorMoves": [
+        "quick-attack",
+        "poison-fang"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "nidorina"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "nidorina-vanguard",
+          "archetype": "vanguard",
+          "label": "Thorn",
+          "description": "The scratch becomes a flurry of swipes.",
+          "to": "nidorina",
+          "upgrades": [
+            {
+              "from": "scratch",
+              "to": "fury-swipes"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "nidorina-support",
+          "archetype": "support",
+          "label": "Den Mother",
+          "description": "The growl softens into a charm that takes the fight out of whatever comes near.",
+          "to": "nidorina",
+          "upgrades": [
+            {
+              "from": "growl",
+              "to": "charm"
+            }
+          ],
+          "adds": [],
+          "abilityId": "poison-point"
+        }
+      ]
+    },
+    {
+      "dex": 30,
+      "id": "nidorina",
+      "name": "Nidorina",
+      "types": [
+        "poison"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 70,
+        "attack": 62,
+        "defense": 61,
+        "speed": 56
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 13,
+          "move": "bite"
+        },
+        {
+          "level": 16,
+          "move": "fury-swipes"
+        },
+        {
+          "level": 20,
+          "move": "toxic"
+        },
+        {
+          "level": 23,
+          "move": "crunch"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "hustle"
+      ],
+      "tutorMoves": [
+        "sludge",
+        "take-down"
+      ],
+      "evolveLevel": 26,
+      "evolvesTo": [
+        "nidoqueen"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "nidoqueen-vanguard",
+          "archetype": "vanguard",
+          "label": "Earthshaker",
+          "description": "The kicks give way to its whole weight, and the ground answers when it lands.",
+          "to": "nidoqueen",
+          "upgrades": [
+            {
+              "from": "double-kick",
+              "to": "body-slam"
+            }
+          ],
+          "adds": [
+            "earthquake"
+          ]
+        },
+        {
+          "id": "nidoqueen-specialist",
+          "archetype": "specialist",
+          "label": "Poison Queen",
+          "description": "The sting becomes a sludge bomb, and the earth itself turns against her enemies.",
+          "to": "nidoqueen",
+          "upgrades": [
+            {
+              "from": "poison-sting",
+              "to": "sludge-bomb"
+            }
+          ],
+          "adds": [
+            "earth-power"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 31,
+      "id": "nidoqueen",
+      "name": "Nidoqueen",
+      "types": [
+        "poison",
+        "ground"
+      ],
+      "stage": "stage2",
+      "baseStats": {
+        "hp": 90,
+        "attack": 82,
+        "defense": 81,
+        "speed": 76
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 27,
+          "move": "body-slam"
+        },
+        {
+          "level": 32,
+          "move": "earth-power"
+        },
+        {
+          "level": 38,
+          "move": "sludge-wave"
+        },
+        {
+          "level": 44,
+          "move": "earthquake"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "hustle"
+      ],
+      "tutorMoves": [
+        "surf",
+        "ice-beam"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
+      "dex": 32,
+      "id": "nidoran-m",
+      "name": "Nidoran♂",
+      "types": [
+        "poison"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 46,
+        "attack": 57,
+        "defense": 40,
+        "speed": 50
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "leer"
+        },
+        {
+          "level": 1,
+          "move": "peck"
+        },
+        {
+          "level": 4,
+          "move": "focus-energy"
+        },
+        {
+          "level": 7,
+          "move": "poison-sting"
+        },
+        {
+          "level": 10,
+          "move": "double-kick"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "hustle"
+      ],
+      "hiddenAbility": "guts",
+      "tutorMoves": [
+        "quick-attack",
+        "poison-fang"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "nidorino"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "nidorino-vanguard",
+          "archetype": "vanguard",
+          "label": "Horn",
+          "description": "The peck becomes a horn thrust.",
+          "to": "nidorino",
+          "upgrades": [
+            {
+              "from": "peck",
+              "to": "horn-attack"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "nidorino-specialist",
+          "archetype": "specialist",
+          "label": "Venom Horn",
+          "description": "The sting grows into a jab that poisons what it pierces.",
+          "to": "nidorino",
+          "upgrades": [
+            {
+              "from": "poison-sting",
+              "to": "poison-jab"
+            }
+          ],
+          "adds": []
+        }
+      ]
+    },
+    {
+      "dex": 33,
+      "id": "nidorino",
+      "name": "Nidorino",
+      "types": [
+        "poison"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 61,
+        "attack": 72,
+        "defense": 56,
+        "speed": 65
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 13,
+          "move": "horn-attack"
+        },
+        {
+          "level": 16,
+          "move": "fury-attack"
+        },
+        {
+          "level": 20,
+          "move": "poison-jab"
+        },
+        {
+          "level": 23,
+          "move": "thrash"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "hustle"
+      ],
+      "tutorMoves": [
+        "sludge",
+        "take-down"
+      ],
+      "evolveLevel": 26,
+      "evolvesTo": [
+        "nidoking"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "nidoking-vanguard",
+          "archetype": "vanguard",
+          "label": "Earth King",
+          "description": "The horn becomes a megahorn, and it learns to shake the ground it stands on.",
+          "to": "nidoking",
+          "upgrades": [
+            {
+              "from": "horn-attack",
+              "to": "megahorn"
+            }
+          ],
+          "adds": [
+            "earthquake"
+          ]
+        },
+        {
+          "id": "nidoking-specialist",
+          "archetype": "specialist",
+          "label": "Toxic King",
+          "description": "The jab floods into a wave of sludge, and the earth rises with it.",
+          "to": "nidoking",
+          "upgrades": [
+            {
+              "from": "poison-jab",
+              "to": "sludge-wave"
+            }
+          ],
+          "adds": [
+            "earth-power"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 34,
+      "id": "nidoking",
+      "name": "Nidoking",
+      "types": [
+        "poison",
+        "ground"
+      ],
+      "stage": "stage2",
+      "baseStats": {
+        "hp": 81,
+        "attack": 92,
+        "defense": 76,
+        "speed": 85
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 27,
+          "move": "earth-power"
+        },
+        {
+          "level": 32,
+          "move": "megahorn"
+        },
+        {
+          "level": 38,
+          "move": "earthquake"
+        },
+        {
+          "level": 44,
+          "move": "horn-drill"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "hustle"
+      ],
+      "tutorMoves": [
+        "thunderbolt",
+        "ice-beam"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
+      "dex": 35,
+      "id": "clefairy",
+      "name": "Clefairy",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 70,
+        "attack": 60,
+        "defense": 54,
+        "speed": 35
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "pound"
+        },
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 4,
+          "move": "sing"
+        },
+        {
+          "level": 7,
+          "move": "double-slap"
+        },
+        {
+          "level": 10,
+          "move": "minimize"
+        }
+      ],
+      "availableAbilities": [
+        "cute-charm",
+        "solid-rock"
+      ],
+      "hiddenAbility": "healer",
+      "tutorMoves": [
+        "charm",
+        "swift"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "clefable"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "clefable-support",
+          "archetype": "support",
+          "label": "Moon Dancer",
+          "description": "It shrinks away from harm into moonlight, and makes wishes for whoever needs them.",
+          "to": "clefable",
+          "upgrades": [
+            {
+              "from": "minimize",
+              "to": "moonlight"
+            }
+          ],
+          "adds": [
+            "wish"
+          ],
+          "abilityId": "cute-charm"
+        },
+        {
+          "id": "clefable-specialist",
+          "archetype": "specialist",
+          "label": "Moon Child",
+          "description": "The slaps become a voice that fills the arena, and a screen of light goes up behind it.",
+          "to": "clefable",
+          "upgrades": [
+            {
+              "from": "double-slap",
+              "to": "hyper-voice"
+            }
+          ],
+          "adds": [
+            "light-screen"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 36,
+      "id": "clefable",
+      "name": "Clefable",
+      "types": [
+        "normal"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 95,
+        "attack": 85,
+        "defense": 79,
+        "speed": 60
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "body-slam"
+        },
+        {
+          "level": 18,
+          "move": "moonlight"
+        },
+        {
+          "level": 22,
+          "move": "light-screen"
+        },
+        {
+          "level": 28,
+          "move": "double-edge"
+        }
+      ],
+      "availableAbilities": [
+        "cute-charm",
+        "solid-rock"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "thunderbolt"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
+      "dex": 37,
+      "id": "vulpix",
+      "name": "Vulpix",
+      "types": [
+        "fire"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 38,
+        "attack": 65,
+        "defense": 53,
+        "speed": 65
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "ember"
+        },
+        {
+          "level": 1,
+          "move": "tail-whip"
+        },
+        {
+          "level": 4,
+          "move": "quick-attack"
+        },
+        {
+          "level": 7,
+          "move": "confuse-ray"
+        },
+        {
+          "level": 10,
+          "move": "fire-spin"
+        }
+      ],
+      "availableAbilities": [
+        "flash-fire",
+        "flame-body"
+      ],
+      "hiddenAbility": "anticipation",
+      "tutorMoves": [
+        "agility",
+        "swift"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "ninetales"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "ninetales-specialist",
+          "archetype": "specialist",
+          "label": "Ninefold Flame",
+          "description": "The embers become a flamethrower, and nine tails of heat roll out behind it.",
+          "to": "ninetales",
+          "upgrades": [
+            {
+              "from": "ember",
+              "to": "flamethrower"
+            }
+          ],
+          "adds": [
+            "heat-wave"
+          ]
+        },
+        {
+          "id": "ninetales-support",
+          "archetype": "support",
+          "label": "Kitsune",
+          "description": "The confusing light turns to a burning one, and the fox learns to wait.",
+          "to": "ninetales",
+          "upgrades": [
+            {
+              "from": "confuse-ray",
+              "to": "will-o-wisp"
+            }
+          ],
+          "adds": [
+            "calm-mind"
+          ],
+          "abilityId": "flash-fire"
+        }
+      ]
+    },
+    {
+      "dex": 38,
+      "id": "ninetales",
+      "name": "Ninetales",
+      "types": [
+        "fire"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 73,
+        "attack": 100,
+        "defense": 88,
+        "speed": 100
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "flamethrower"
+        },
+        {
+          "level": 18,
+          "move": "will-o-wisp"
+        },
+        {
+          "level": 22,
+          "move": "extrasensory"
+        },
+        {
+          "level": 28,
+          "move": "heat-wave"
+        },
+        {
+          "level": 34,
+          "move": "fire-blast"
+        }
+      ],
+      "availableAbilities": [
+        "flash-fire",
+        "flame-body"
+      ],
+      "tutorMoves": [
+        "solar-beam",
+        "psyshock"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 39,
+      "id": "jigglypuff",
+      "name": "Jigglypuff",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 115,
+        "attack": 45,
+        "defense": 23,
+        "speed": 20
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 2,
+        "defense": 1,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "sing"
+        },
+        {
+          "level": 1,
+          "move": "pound"
+        },
+        {
+          "level": 4,
+          "move": "defense-curl"
+        },
+        {
+          "level": 7,
+          "move": "double-slap"
+        },
+        {
+          "level": 10,
+          "move": "rest-s"
+        }
+      ],
+      "availableAbilities": [
+        "cute-charm",
+        "iron-shell"
+      ],
+      "hiddenAbility": "healer",
+      "tutorMoves": [
+        "charm",
+        "disable"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "wigglytuff"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "wigglytuff-vanguard",
+          "archetype": "vanguard",
+          "label": "Big Balloon",
+          "description": "All that air goes behind the body: the pound becomes a body slam, and a heavier one follows.",
+          "to": "wigglytuff",
+          "upgrades": [
+            {
+              "from": "pound",
+              "to": "body-slam"
+            }
+          ],
+          "adds": [
+            "double-edge"
+          ]
+        },
+        {
+          "id": "wigglytuff-support",
+          "archetype": "support",
+          "label": "Encore",
+          "description": "It puffs up out of reach and sings its wishes to the team.",
+          "to": "wigglytuff",
+          "upgrades": [
+            {
+              "from": "defense-curl",
+              "to": "minimize"
+            }
+          ],
+          "adds": [
+            "wish"
+          ],
+          "abilityId": "cute-charm"
+        }
+      ]
+    },
+    {
+      "dex": 40,
+      "id": "wigglytuff",
+      "name": "Wigglytuff",
+      "types": [
+        "normal"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 140,
+        "attack": 70,
+        "defense": 48,
+        "speed": 45
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 2,
+        "defense": 1,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "body-slam"
+        },
+        {
+          "level": 18,
+          "move": "wish"
+        },
+        {
+          "level": 22,
+          "move": "hyper-voice"
+        },
+        {
+          "level": 28,
+          "move": "double-edge"
+        }
+      ],
+      "availableAbilities": [
+        "cute-charm",
+        "iron-shell"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "psychic"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
       "branches": []
     },
     {
@@ -2235,6 +3545,298 @@
       "branches": []
     },
     {
+      "dex": 46,
+      "id": "paras",
+      "name": "Paras",
+      "types": [
+        "bug",
+        "grass"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 35,
+        "attack": 70,
+        "defense": 55,
+        "speed": 25
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 3,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "scratch"
+        },
+        {
+          "level": 1,
+          "move": "stun-spore"
+        },
+        {
+          "level": 4,
+          "move": "absorb"
+        },
+        {
+          "level": 7,
+          "move": "leech-life"
+        },
+        {
+          "level": 10,
+          "move": "spore-cloud"
+        }
+      ],
+      "availableAbilities": [
+        "effect-spore",
+        "swarm"
+      ],
+      "hiddenAbility": "damp",
+      "tutorMoves": [
+        "growth",
+        "fury-swipes"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "parasect"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "parasect-vanguard",
+          "archetype": "vanguard",
+          "label": "Cordyceps",
+          "description": "The mushroom takes over: the scratch becomes a slash, and a scissor cut follows.",
+          "to": "parasect",
+          "upgrades": [
+            {
+              "from": "scratch",
+              "to": "slash"
+            }
+          ],
+          "adds": [
+            "x-scissor"
+          ]
+        },
+        {
+          "id": "parasect-support",
+          "archetype": "support",
+          "label": "Spore Host",
+          "description": "It drinks deeper, and the spores learn to put things to sleep.",
+          "to": "parasect",
+          "upgrades": [
+            {
+              "from": "absorb",
+              "to": "mega-drain"
+            }
+          ],
+          "adds": [
+            "sleep-powder"
+          ],
+          "abilityId": "effect-spore"
+        }
+      ]
+    },
+    {
+      "dex": 47,
+      "id": "parasect",
+      "name": "Parasect",
+      "types": [
+        "bug",
+        "grass"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 60,
+        "attack": 95,
+        "defense": 80,
+        "speed": 30
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 3,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "slash"
+        },
+        {
+          "level": 18,
+          "move": "mega-drain"
+        },
+        {
+          "level": 22,
+          "move": "x-scissor"
+        },
+        {
+          "level": 28,
+          "move": "giga-drain"
+        }
+      ],
+      "availableAbilities": [
+        "effect-spore",
+        "swarm"
+      ],
+      "tutorMoves": [
+        "solar-beam",
+        "swords-dance"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 48,
+      "id": "venonat",
+      "name": "Venonat",
+      "types": [
+        "bug",
+        "poison"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 60,
+        "attack": 55,
+        "defense": 45,
+        "speed": 45
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "disable"
+        },
+        {
+          "level": 4,
+          "move": "supersonic"
+        },
+        {
+          "level": 7,
+          "move": "confusion"
+        },
+        {
+          "level": 10,
+          "move": "poison-powder"
+        }
+      ],
+      "availableAbilities": [
+        "compound-eyes",
+        "snipe"
+      ],
+      "hiddenAbility": "run-down",
+      "tutorMoves": [
+        "leech-life",
+        "stun-spore"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "venomoth"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "venomoth-specialist",
+          "archetype": "specialist",
+          "label": "Dust Wings",
+          "description": "The confusion sharpens into a beam, and the wings start to buzz.",
+          "to": "venomoth",
+          "upgrades": [
+            {
+              "from": "confusion",
+              "to": "psybeam"
+            }
+          ],
+          "adds": [
+            "bug-buzz"
+          ]
+        },
+        {
+          "id": "venomoth-support",
+          "archetype": "support",
+          "label": "Powder Moth",
+          "description": "The poison dust turns to a sleeping one, and the wind off its wings carries it.",
+          "to": "venomoth",
+          "upgrades": [
+            {
+              "from": "poison-powder",
+              "to": "sleep-powder"
+            }
+          ],
+          "adds": [
+            "silver-wind"
+          ],
+          "abilityId": "compound-eyes"
+        }
+      ]
+    },
+    {
+      "dex": 49,
+      "id": "venomoth",
+      "name": "Venomoth",
+      "types": [
+        "bug",
+        "poison"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 70,
+        "attack": 90,
+        "defense": 75,
+        "speed": 90
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "psybeam"
+        },
+        {
+          "level": 18,
+          "move": "silver-wind"
+        },
+        {
+          "level": 22,
+          "move": "sleep-powder"
+        },
+        {
+          "level": 28,
+          "move": "psychic"
+        },
+        {
+          "level": 34,
+          "move": "bug-buzz"
+        }
+      ],
+      "availableAbilities": [
+        "compound-eyes",
+        "snipe"
+      ],
+      "tutorMoves": [
+        "signal-beam",
+        "giga-drain"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
       "id": "diglett",
       "dex": 50,
       "name": "Diglett",
@@ -2373,6 +3975,151 @@
         "crunch",
         "stone-edge"
       ],
+      "branches": []
+    },
+    {
+      "dex": 52,
+      "id": "meowth",
+      "name": "Meowth",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 40,
+        "attack": 45,
+        "defense": 38,
+        "speed": 90
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 2,
+        "defense": 2,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "scratch"
+        },
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 4,
+          "move": "bite"
+        },
+        {
+          "level": 7,
+          "move": "pay-day"
+        },
+        {
+          "level": 10,
+          "move": "fury-swipes"
+        }
+      ],
+      "availableAbilities": [
+        "run-down",
+        "tough-claws"
+      ],
+      "hiddenAbility": "moxie",
+      "tutorMoves": [
+        "quick-attack",
+        "charm"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "persian"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "persian-vanguard",
+          "archetype": "vanguard",
+          "label": "Prowler",
+          "description": "The scratch becomes a slash, and it learns to strike first.",
+          "to": "persian",
+          "upgrades": [
+            {
+              "from": "scratch",
+              "to": "slash"
+            }
+          ],
+          "adds": [
+            "sucker-punch"
+          ]
+        },
+        {
+          "id": "persian-specialist",
+          "archetype": "specialist",
+          "label": "Jewel",
+          "description": "The coin on its brow becomes a gem it can fire.",
+          "to": "persian",
+          "upgrades": [
+            {
+              "from": "pay-day",
+              "to": "power-gem"
+            }
+          ],
+          "adds": [
+            "swift"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 53,
+      "id": "persian",
+      "name": "Persian",
+      "types": [
+        "normal"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 65,
+        "attack": 70,
+        "defense": 63,
+        "speed": 115
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 2,
+        "defense": 2,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "slash"
+        },
+        {
+          "level": 18,
+          "move": "screech"
+        },
+        {
+          "level": 22,
+          "move": "power-gem"
+        },
+        {
+          "level": 28,
+          "move": "agility"
+        },
+        {
+          "level": 34,
+          "move": "hyper-voice"
+        }
+      ],
+      "availableAbilities": [
+        "run-down",
+        "tough-claws"
+      ],
+      "tutorMoves": [
+        "thunderbolt",
+        "iron-tail"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
       "branches": []
     },
     {
@@ -2518,6 +4265,149 @@
         "aerial-ace",
         "brick-break"
       ],
+      "branches": []
+    },
+    {
+      "dex": 56,
+      "id": "mankey",
+      "name": "Mankey",
+      "types": [
+        "fighting"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 40,
+        "attack": 80,
+        "defense": 35,
+        "speed": 70
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 1,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "scratch"
+        },
+        {
+          "level": 1,
+          "move": "leer"
+        },
+        {
+          "level": 4,
+          "move": "low-kick"
+        },
+        {
+          "level": 7,
+          "move": "karate-chop"
+        },
+        {
+          "level": 10,
+          "move": "focus-energy"
+        }
+      ],
+      "availableAbilities": [
+        "vital-spirit"
+      ],
+      "hiddenAbility": "guts",
+      "tutorMoves": [
+        "bulk-up",
+        "rolling-kick"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "primeape"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "primeape-vanguard",
+          "archetype": "vanguard",
+          "label": "Fury",
+          "description": "The chop becomes a cross chop, and nothing holds it back after.",
+          "to": "primeape",
+          "upgrades": [
+            {
+              "from": "karate-chop",
+              "to": "cross-chop"
+            }
+          ],
+          "adds": [
+            "close-combat"
+          ]
+        },
+        {
+          "id": "primeape-specialist",
+          "archetype": "specialist",
+          "label": "Brawler",
+          "description": "The kick turns into a throw, and the claws into a flurry.",
+          "to": "primeape",
+          "upgrades": [
+            {
+              "from": "low-kick",
+              "to": "seismic-toss"
+            }
+          ],
+          "adds": [
+            "fury-swipes"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 57,
+      "id": "primeape",
+      "name": "Primeape",
+      "types": [
+        "fighting"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 65,
+        "attack": 105,
+        "defense": 60,
+        "speed": 95
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 1,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "seismic-toss"
+        },
+        {
+          "level": 18,
+          "move": "fury-swipes"
+        },
+        {
+          "level": 22,
+          "move": "cross-chop"
+        },
+        {
+          "level": 28,
+          "move": "thrash"
+        },
+        {
+          "level": 34,
+          "move": "close-combat"
+        }
+      ],
+      "availableAbilities": [
+        "vital-spirit"
+      ],
+      "tutorMoves": [
+        "brick-break",
+        "stone-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
       "branches": []
     },
     {
@@ -2812,13 +4702,331 @@
         "damp",
         "swift-swim"
       ],
-      "evolvesTo": [],
+      "evolvesTo": [
+        "poliwrath"
+      ],
       "rarity": "common",
       "tutorMoves": [
         "surf",
         "psybeam",
         "body-press"
       ],
+      "branches": [
+        {
+          "id": "poliwrath-vanguard",
+          "archetype": "vanguard",
+          "label": "Fighting Tadpole",
+          "description": "The body slam becomes a submission, and a dizzying punch comes after it.",
+          "to": "poliwrath",
+          "upgrades": [
+            {
+              "from": "body-slam",
+              "to": "submission"
+            }
+          ],
+          "adds": [
+            "dynamic-punch"
+          ]
+        },
+        {
+          "id": "poliwrath-specialist",
+          "archetype": "specialist",
+          "label": "Torrent Fist",
+          "description": "The bubbles become a hydro pump.",
+          "to": "poliwrath",
+          "upgrades": [
+            {
+              "from": "bubble-beam",
+              "to": "hydro-pump"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "poliwrath-support",
+          "archetype": "support",
+          "label": "Spiral Sleep",
+          "description": "The spiral puts itself to sleep to mend, and it guards the team while it does.",
+          "to": "poliwrath",
+          "upgrades": [
+            {
+              "from": "hypnosis-plus",
+              "to": "rest-s"
+            }
+          ],
+          "adds": [
+            "wide-guard"
+          ]
+        }
+      ],
+      "evolveLevel": 26
+    },
+    {
+      "dex": 62,
+      "id": "poliwrath",
+      "name": "Poliwrath",
+      "types": [
+        "water",
+        "fighting"
+      ],
+      "stage": "stage2",
+      "baseStats": {
+        "hp": 90,
+        "attack": 85,
+        "defense": 83,
+        "speed": 70
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 27,
+          "move": "submission"
+        },
+        {
+          "level": 32,
+          "move": "hydro-pump"
+        },
+        {
+          "level": 38,
+          "move": "dynamic-punch"
+        }
+      ],
+      "availableAbilities": [
+        "water-absorb",
+        "damp"
+      ],
+      "hiddenAbility": "swift-swim",
+      "tutorMoves": [
+        "ice-punch",
+        "earthquake"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 63,
+      "id": "abra",
+      "name": "Abra",
+      "types": [
+        "psychic"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 25,
+        "attack": 105,
+        "defense": 60,
+        "speed": 90
+      },
+      "growth": {
+        "hp": 1,
+        "attack": 3,
+        "defense": 1,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "psywave"
+        },
+        {
+          "level": 1,
+          "move": "kinesis"
+        },
+        {
+          "level": 4,
+          "move": "confusion"
+        },
+        {
+          "level": 7,
+          "move": "disable"
+        },
+        {
+          "level": 10,
+          "move": "barrier"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "anticipation"
+      ],
+      "hiddenAbility": "adaptability",
+      "tutorMoves": [
+        "swift",
+        "thunder-wave"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "kadabra"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "kadabra-specialist",
+          "archetype": "specialist",
+          "label": "Spoonbender",
+          "description": "The wave of force focuses into a beam.",
+          "to": "kadabra",
+          "upgrades": [
+            {
+              "from": "psywave",
+              "to": "psybeam"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "kadabra-support",
+          "archetype": "support",
+          "label": "Mind Wall",
+          "description": "Kinesis turns outward: a reflecting wall for the whole team.",
+          "to": "kadabra",
+          "upgrades": [
+            {
+              "from": "kinesis",
+              "to": "reflect"
+            }
+          ],
+          "adds": [],
+          "abilityId": "inner-focus"
+        }
+      ]
+    },
+    {
+      "dex": 64,
+      "id": "kadabra",
+      "name": "Kadabra",
+      "types": [
+        "psychic"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 40,
+        "attack": 120,
+        "defense": 75,
+        "speed": 105
+      },
+      "growth": {
+        "hp": 1,
+        "attack": 3,
+        "defense": 1,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 13,
+          "move": "psybeam"
+        },
+        {
+          "level": 16,
+          "move": "recover"
+        },
+        {
+          "level": 20,
+          "move": "reflect"
+        },
+        {
+          "level": 23,
+          "move": "psychic"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "anticipation"
+      ],
+      "tutorMoves": [
+        "zen-headbutt",
+        "thunder-punch"
+      ],
+      "evolveLevel": 26,
+      "evolvesTo": [
+        "alakazam"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "alakazam-specialist",
+          "archetype": "specialist",
+          "label": "Grand Mind",
+          "description": "The beam becomes the full weight of its mind, and a shock that goes through armour.",
+          "to": "alakazam",
+          "upgrades": [
+            {
+              "from": "psybeam",
+              "to": "psychic"
+            }
+          ],
+          "adds": [
+            "psyshock"
+          ]
+        },
+        {
+          "id": "alakazam-support",
+          "archetype": "support",
+          "label": "Clairvoyant",
+          "description": "It stops mending and starts preparing: a calmer mind, and a screen of light.",
+          "to": "alakazam",
+          "upgrades": [
+            {
+              "from": "recover",
+              "to": "calm-mind"
+            }
+          ],
+          "adds": [
+            "light-screen"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 65,
+      "id": "alakazam",
+      "name": "Alakazam",
+      "types": [
+        "psychic"
+      ],
+      "stage": "stage2",
+      "baseStats": {
+        "hp": 55,
+        "attack": 135,
+        "defense": 90,
+        "speed": 120
+      },
+      "growth": {
+        "hp": 1,
+        "attack": 3,
+        "defense": 1,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 27,
+          "move": "calm-mind"
+        },
+        {
+          "level": 32,
+          "move": "psyshock"
+        },
+        {
+          "level": 38,
+          "move": "shadow-ball"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "anticipation"
+      ],
+      "tutorMoves": [
+        "fire-punch",
+        "ice-punch"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
       "branches": []
     },
     {
@@ -3673,6 +5881,295 @@
       "branches": []
     },
     {
+      "dex": 77,
+      "id": "ponyta",
+      "name": "Ponyta",
+      "types": [
+        "fire"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 50,
+        "attack": 85,
+        "defense": 60,
+        "speed": 90
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 4,
+          "move": "ember"
+        },
+        {
+          "level": 7,
+          "move": "stomp"
+        },
+        {
+          "level": 10,
+          "move": "fire-spin"
+        }
+      ],
+      "availableAbilities": [
+        "flash-fire",
+        "flame-body"
+      ],
+      "hiddenAbility": "run-down",
+      "tutorMoves": [
+        "double-kick",
+        "quick-attack"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "rapidash"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "rapidash-vanguard",
+          "archetype": "vanguard",
+          "label": "Blaze Charger",
+          "description": "The tackle becomes a full gallop, and the mane follows it in.",
+          "to": "rapidash",
+          "upgrades": [
+            {
+              "from": "tackle",
+              "to": "take-down"
+            }
+          ],
+          "adds": [
+            "flare-blitz"
+          ]
+        },
+        {
+          "id": "rapidash-specialist",
+          "archetype": "specialist",
+          "label": "Sunfire Mane",
+          "description": "The embers become a flamethrower, and the heat of its mane rolls outward.",
+          "to": "rapidash",
+          "upgrades": [
+            {
+              "from": "ember",
+              "to": "flamethrower"
+            }
+          ],
+          "adds": [
+            "heat-wave"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 78,
+      "id": "rapidash",
+      "name": "Rapidash",
+      "types": [
+        "fire"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 65,
+        "attack": 100,
+        "defense": 75,
+        "speed": 105
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "flame-wheel"
+        },
+        {
+          "level": 18,
+          "move": "agility"
+        },
+        {
+          "level": 24,
+          "move": "flare-blitz"
+        },
+        {
+          "level": 30,
+          "move": "megahorn"
+        }
+      ],
+      "availableAbilities": [
+        "flash-fire",
+        "flame-body"
+      ],
+      "tutorMoves": [
+        "drill-run",
+        "solar-beam"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 79,
+      "id": "slowpoke",
+      "name": "Slowpoke",
+      "types": [
+        "water",
+        "psychic"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 90,
+        "attack": 65,
+        "defense": 53,
+        "speed": 15
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 2,
+        "defense": 2,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 4,
+          "move": "water-gun"
+        },
+        {
+          "level": 7,
+          "move": "confusion"
+        },
+        {
+          "level": 10,
+          "move": "disable"
+        }
+      ],
+      "availableAbilities": [
+        "own-tempo",
+        "healer"
+      ],
+      "hiddenAbility": "solid-rock",
+      "tutorMoves": [
+        "bubble-beam",
+        "body-slam"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "slowbro"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "slowbro-specialist",
+          "archetype": "specialist",
+          "label": "Tide Sage",
+          "description": "Whatever bit its tail woke something up: the confusion becomes a full Psychic.",
+          "to": "slowbro",
+          "upgrades": [
+            {
+              "from": "confusion",
+              "to": "psychic"
+            }
+          ],
+          "adds": [
+            "calm-mind"
+          ]
+        },
+        {
+          "id": "slowbro-support",
+          "archetype": "support",
+          "label": "Shell Tail",
+          "description": "It forgets everything but how to last: amnesia, and a slow recovery.",
+          "to": "slowbro",
+          "upgrades": [
+            {
+              "from": "growl",
+              "to": "amnesia"
+            }
+          ],
+          "adds": [
+            "recover"
+          ],
+          "abilityId": "own-tempo"
+        }
+      ]
+    },
+    {
+      "dex": 80,
+      "id": "slowbro",
+      "name": "Slowbro",
+      "types": [
+        "water",
+        "psychic"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 95,
+        "attack": 80,
+        "defense": 95,
+        "speed": 30
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 2,
+        "defense": 2,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "withdraw"
+        },
+        {
+          "level": 18,
+          "move": "headbutt"
+        },
+        {
+          "level": 22,
+          "move": "amnesia"
+        },
+        {
+          "level": 28,
+          "move": "psychic"
+        },
+        {
+          "level": 34,
+          "move": "surf"
+        }
+      ],
+      "availableAbilities": [
+        "own-tempo",
+        "healer"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "flamethrower"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
       "dex": 81,
       "id": "magnemite",
       "name": "Magnemite",
@@ -3816,6 +6313,223 @@
       ],
       "evolvesTo": [],
       "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 83,
+      "id": "farfetchd",
+      "name": "Farfetch'd",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 52,
+        "attack": 65,
+        "defense": 57,
+        "speed": 60
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 4,
+        "defense": 3,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "peck"
+        },
+        {
+          "level": 1,
+          "move": "sand-attack"
+        },
+        {
+          "level": 5,
+          "move": "leer"
+        },
+        {
+          "level": 9,
+          "move": "fury-attack"
+        },
+        {
+          "level": 13,
+          "move": "aerial-ace"
+        },
+        {
+          "level": 18,
+          "move": "swords-dance"
+        },
+        {
+          "level": 24,
+          "move": "slash"
+        },
+        {
+          "level": 30,
+          "move": "leaf-blade"
+        },
+        {
+          "level": 36,
+          "move": "brave-bird"
+        }
+      ],
+      "availableAbilities": [
+        "keen-eye",
+        "inner-focus"
+      ],
+      "tutorMoves": [
+        "air-cutter",
+        "x-scissor"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": [],
+      "archetype": "vanguard"
+    },
+    {
+      "dex": 84,
+      "id": "doduo",
+      "name": "Doduo",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 35,
+        "attack": 85,
+        "defense": 40,
+        "speed": 75
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "peck"
+        },
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 4,
+          "move": "quick-attack"
+        },
+        {
+          "level": 7,
+          "move": "fury-attack"
+        },
+        {
+          "level": 10,
+          "move": "rage"
+        }
+      ],
+      "availableAbilities": [
+        "keen-eye",
+        "tangled-feet"
+      ],
+      "hiddenAbility": "run-down",
+      "tutorMoves": [
+        "double-kick",
+        "swift"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "dodrio"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "dodrio-vanguard",
+          "archetype": "vanguard",
+          "label": "Three Heads",
+          "description": "Three beaks, one drill, and a dive none of them can stop.",
+          "to": "dodrio",
+          "upgrades": [
+            {
+              "from": "peck",
+              "to": "drill-peck"
+            }
+          ],
+          "adds": [
+            "brave-bird"
+          ]
+        },
+        {
+          "id": "dodrio-specialist",
+          "archetype": "specialist",
+          "label": "Triple Call",
+          "description": "The rage splits three ways into a tri-attack.",
+          "to": "dodrio",
+          "upgrades": [
+            {
+              "from": "rage",
+              "to": "tri-attack"
+            }
+          ],
+          "adds": []
+        }
+      ]
+    },
+    {
+      "dex": 85,
+      "id": "dodrio",
+      "name": "Dodrio",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 60,
+        "attack": 110,
+        "defense": 65,
+        "speed": 100
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "drill-peck"
+        },
+        {
+          "level": 18,
+          "move": "agility"
+        },
+        {
+          "level": 22,
+          "move": "tri-attack"
+        },
+        {
+          "level": 28,
+          "move": "thrash"
+        },
+        {
+          "level": 34,
+          "move": "brave-bird"
+        }
+      ],
+      "availableAbilities": [
+        "keen-eye",
+        "tangled-feet"
+      ],
+      "tutorMoves": [
+        "sky-attack",
+        "double-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
       "branches": []
     },
     {
@@ -3968,6 +6682,148 @@
       "branches": []
     },
     {
+      "dex": 88,
+      "id": "grimer",
+      "name": "Grimer",
+      "types": [
+        "poison"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 80,
+        "attack": 80,
+        "defense": 45,
+        "speed": 25
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 2,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "pound"
+        },
+        {
+          "level": 1,
+          "move": "smog"
+        },
+        {
+          "level": 4,
+          "move": "harden"
+        },
+        {
+          "level": 7,
+          "move": "sludge"
+        },
+        {
+          "level": 10,
+          "move": "minimize"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "guts"
+      ],
+      "hiddenAbility": "iron-shell",
+      "tutorMoves": [
+        "mud-slap",
+        "disable"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "muk"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "muk-vanguard",
+          "archetype": "vanguard",
+          "label": "Sludge Slam",
+          "description": "All that sludge goes behind the blow, and the rest is thrown.",
+          "to": "muk",
+          "upgrades": [
+            {
+              "from": "pound",
+              "to": "body-slam"
+            }
+          ],
+          "adds": [
+            "gunk-shot"
+          ]
+        },
+        {
+          "id": "muk-support",
+          "archetype": "support",
+          "label": "Toxic Sludge",
+          "description": "It hardens into acid armour and breathes out a haze that clears the field.",
+          "to": "muk",
+          "upgrades": [
+            {
+              "from": "harden",
+              "to": "acid-armor"
+            }
+          ],
+          "adds": [
+            "haze"
+          ],
+          "abilityId": "poison-point"
+        }
+      ]
+    },
+    {
+      "dex": 89,
+      "id": "muk",
+      "name": "Muk",
+      "types": [
+        "poison"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 105,
+        "attack": 105,
+        "defense": 70,
+        "speed": 50
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 2,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "acid-armor"
+        },
+        {
+          "level": 18,
+          "move": "sludge-bomb"
+        },
+        {
+          "level": 22,
+          "move": "screech"
+        },
+        {
+          "level": 28,
+          "move": "gunk-shot"
+        }
+      ],
+      "availableAbilities": [
+        "poison-point",
+        "guts"
+      ],
+      "tutorMoves": [
+        "fire-punch",
+        "thunder-punch"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
       "dex": 90,
       "id": "shellder",
       "name": "Shellder",
@@ -4117,6 +6973,229 @@
       "branches": []
     },
     {
+      "dex": 92,
+      "id": "gastly",
+      "name": "Gastly",
+      "types": [
+        "ghost",
+        "poison"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 30,
+        "attack": 100,
+        "defense": 65,
+        "speed": 80
+      },
+      "growth": {
+        "hp": 1,
+        "attack": 3,
+        "defense": 1,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "lick"
+        },
+        {
+          "level": 1,
+          "move": "hypnosis"
+        },
+        {
+          "level": 4,
+          "move": "confuse-ray"
+        },
+        {
+          "level": 7,
+          "move": "night-shade"
+        },
+        {
+          "level": 10,
+          "move": "smog"
+        }
+      ],
+      "availableAbilities": [
+        "anticipation",
+        "snipe"
+      ],
+      "hiddenAbility": "adaptability",
+      "tutorMoves": [
+        "psywave",
+        "screech"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "haunter"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "haunter-specialist",
+          "archetype": "specialist",
+          "label": "Nightmare",
+          "description": "The night shade condenses into a ball of shadow.",
+          "to": "haunter",
+          "upgrades": [
+            {
+              "from": "night-shade",
+              "to": "shadow-ball"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "haunter-support",
+          "archetype": "support",
+          "label": "Hypnotist",
+          "description": "The hypnosis deepens and takes the guard down with it.",
+          "to": "haunter",
+          "upgrades": [
+            {
+              "from": "hypnosis",
+              "to": "hypnosis-plus"
+            }
+          ],
+          "adds": [],
+          "abilityId": "anticipation"
+        }
+      ]
+    },
+    {
+      "dex": 93,
+      "id": "haunter",
+      "name": "Haunter",
+      "types": [
+        "ghost",
+        "poison"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 45,
+        "attack": 115,
+        "defense": 80,
+        "speed": 95
+      },
+      "growth": {
+        "hp": 1,
+        "attack": 3,
+        "defense": 1,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 13,
+          "move": "shadow-punch"
+        },
+        {
+          "level": 16,
+          "move": "disable"
+        },
+        {
+          "level": 20,
+          "move": "shadow-ball"
+        },
+        {
+          "level": 23,
+          "move": "toxic"
+        }
+      ],
+      "availableAbilities": [
+        "anticipation",
+        "snipe"
+      ],
+      "tutorMoves": [
+        "thunderbolt",
+        "sludge-wave"
+      ],
+      "evolveLevel": 26,
+      "evolvesTo": [
+        "gengar"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "gengar-vanguard",
+          "archetype": "vanguard",
+          "label": "Shadow Fist",
+          "description": "The lick becomes a punch from the shadows, and it learns to strike before you do.",
+          "to": "gengar",
+          "upgrades": [
+            {
+              "from": "lick",
+              "to": "shadow-punch"
+            }
+          ],
+          "adds": [
+            "sucker-punch"
+          ]
+        },
+        {
+          "id": "gengar-specialist",
+          "archetype": "specialist",
+          "label": "Ghastly Eye",
+          "description": "The smog thickens into sludge, and the mind behind it wakes.",
+          "to": "gengar",
+          "upgrades": [
+            {
+              "from": "smog",
+              "to": "sludge-bomb"
+            }
+          ],
+          "adds": [
+            "psychic"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 94,
+      "id": "gengar",
+      "name": "Gengar",
+      "types": [
+        "ghost",
+        "poison"
+      ],
+      "stage": "stage2",
+      "baseStats": {
+        "hp": 60,
+        "attack": 130,
+        "defense": 95,
+        "speed": 110
+      },
+      "growth": {
+        "hp": 1,
+        "attack": 3,
+        "defense": 1,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 27,
+          "move": "sludge-bomb"
+        },
+        {
+          "level": 33,
+          "move": "psychic"
+        },
+        {
+          "level": 40,
+          "move": "hyper-beam"
+        }
+      ],
+      "availableAbilities": [
+        "anticipation",
+        "snipe"
+      ],
+      "tutorMoves": [
+        "ice-punch",
+        "fire-punch"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
       "id": "onix",
       "dex": 95,
       "name": "Onix",
@@ -4184,6 +7263,152 @@
       ],
       "branches": [],
       "hiddenAbilityPending": "Weak Armor — arrives in v0.7"
+    },
+    {
+      "dex": 96,
+      "id": "drowzee",
+      "name": "Drowzee",
+      "types": [
+        "psychic"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 60,
+        "attack": 90,
+        "defense": 68,
+        "speed": 42
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "pound"
+        },
+        {
+          "level": 1,
+          "move": "hypnosis"
+        },
+        {
+          "level": 4,
+          "move": "disable"
+        },
+        {
+          "level": 7,
+          "move": "confusion"
+        },
+        {
+          "level": 10,
+          "move": "headbutt"
+        }
+      ],
+      "availableAbilities": [
+        "insomnia",
+        "inner-focus"
+      ],
+      "hiddenAbility": "anticipation",
+      "tutorMoves": [
+        "kinesis",
+        "swift"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "hypno"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "hypno-specialist",
+          "archetype": "specialist",
+          "label": "Pendulum",
+          "description": "The confusion swings into a beam, and a shock that finds the soft spot.",
+          "to": "hypno",
+          "upgrades": [
+            {
+              "from": "confusion",
+              "to": "psybeam"
+            }
+          ],
+          "adds": [
+            "psyshock"
+          ]
+        },
+        {
+          "id": "hypno-support",
+          "archetype": "support",
+          "label": "Sleepwalker",
+          "description": "Its hypnosis deepens, and it learns to wait out a fight with a calm mind.",
+          "to": "hypno",
+          "upgrades": [
+            {
+              "from": "hypnosis",
+              "to": "hypnosis-plus"
+            }
+          ],
+          "adds": [
+            "calm-mind"
+          ],
+          "abilityId": "insomnia"
+        }
+      ]
+    },
+    {
+      "dex": 97,
+      "id": "hypno",
+      "name": "Hypno",
+      "types": [
+        "psychic"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 85,
+        "attack": 115,
+        "defense": 93,
+        "speed": 67
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "psybeam"
+        },
+        {
+          "level": 18,
+          "move": "zen-headbutt"
+        },
+        {
+          "level": 22,
+          "move": "psychic"
+        },
+        {
+          "level": 28,
+          "move": "calm-mind"
+        },
+        {
+          "level": 34,
+          "move": "psyshock"
+        }
+      ],
+      "availableAbilities": [
+        "insomnia",
+        "inner-focus"
+      ],
+      "tutorMoves": [
+        "ice-punch",
+        "thunder-punch"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
     },
     {
       "dex": 98,
@@ -4479,6 +7704,349 @@
       "branches": []
     },
     {
+      "dex": 102,
+      "id": "exeggcute",
+      "name": "Exeggcute",
+      "types": [
+        "grass",
+        "psychic"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 60,
+        "attack": 60,
+        "defense": 70,
+        "speed": 40
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 3,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "barrage"
+        },
+        {
+          "level": 1,
+          "move": "hypnosis"
+        },
+        {
+          "level": 4,
+          "move": "leech-seed"
+        },
+        {
+          "level": 7,
+          "move": "confusion"
+        },
+        {
+          "level": 10,
+          "move": "stun-spore"
+        }
+      ],
+      "availableAbilities": [
+        "chlorophyll",
+        "healer"
+      ],
+      "tutorMoves": [
+        "absorb",
+        "mega-drain"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "exeggutor"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "exeggutor-specialist",
+          "archetype": "specialist",
+          "label": "Coconut",
+          "description": "The eggs stop bouncing and start exploding, and the heads above them think as one.",
+          "to": "exeggutor",
+          "upgrades": [
+            {
+              "from": "barrage",
+              "to": "egg-bomb"
+            }
+          ],
+          "adds": [
+            "psychic"
+          ]
+        },
+        {
+          "id": "exeggutor-support",
+          "archetype": "support",
+          "label": "Seed Bearer",
+          "description": "The seed turns to a sleeping powder, and a wall of light goes up for the team.",
+          "to": "exeggutor",
+          "upgrades": [
+            {
+              "from": "leech-seed",
+              "to": "sleep-powder"
+            }
+          ],
+          "adds": [
+            "reflect"
+          ],
+          "abilityId": "healer"
+        }
+      ]
+    },
+    {
+      "dex": 103,
+      "id": "exeggutor",
+      "name": "Exeggutor",
+      "types": [
+        "grass",
+        "psychic"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 95,
+        "attack": 125,
+        "defense": 105,
+        "speed": 55
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 2,
+        "defense": 3,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "stomp"
+        },
+        {
+          "level": 18,
+          "move": "egg-bomb"
+        },
+        {
+          "level": 24,
+          "move": "psychic"
+        },
+        {
+          "level": 30,
+          "move": "solar-beam"
+        }
+      ],
+      "availableAbilities": [
+        "chlorophyll",
+        "healer"
+      ],
+      "tutorMoves": [
+        "giga-drain",
+        "extrasensory"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
+      "dex": 104,
+      "id": "cubone",
+      "name": "Cubone",
+      "types": [
+        "ground"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 50,
+        "attack": 50,
+        "defense": 68,
+        "speed": 35
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 1,
+          "move": "bone-club"
+        },
+        {
+          "level": 4,
+          "move": "tail-whip"
+        },
+        {
+          "level": 7,
+          "move": "headbutt"
+        },
+        {
+          "level": 10,
+          "move": "focus-energy"
+        }
+      ],
+      "availableAbilities": [
+        "rock-head"
+      ],
+      "hiddenAbility": "battle-armor",
+      "tutorMoves": [
+        "mud-slap",
+        "dig"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "marowak"
+      ],
+      "rarity": "rare",
+      "branches": [
+        {
+          "id": "marowak-vanguard",
+          "archetype": "vanguard",
+          "label": "Bone Rush",
+          "description": "The headbutt gives way to the bone, swung three times, and a rage it will not put down.",
+          "to": "marowak",
+          "upgrades": [
+            {
+              "from": "headbutt",
+              "to": "bone-rush"
+            }
+          ],
+          "adds": [
+            "thrash"
+          ]
+        },
+        {
+          "id": "marowak-specialist",
+          "archetype": "specialist",
+          "label": "Boomerang",
+          "description": "It learns to throw the club and catch it again.",
+          "to": "marowak",
+          "upgrades": [
+            {
+              "from": "bone-club",
+              "to": "bonemerang"
+            }
+          ],
+          "adds": []
+        }
+      ]
+    },
+    {
+      "dex": 105,
+      "id": "marowak",
+      "name": "Marowak",
+      "types": [
+        "ground"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 60,
+        "attack": 80,
+        "defense": 80,
+        "speed": 45
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "bonemerang"
+        },
+        {
+          "level": 20,
+          "move": "thrash"
+        },
+        {
+          "level": 26,
+          "move": "bone-rush"
+        },
+        {
+          "level": 32,
+          "move": "earthquake"
+        }
+      ],
+      "availableAbilities": [
+        "rock-head"
+      ],
+      "tutorMoves": [
+        "swords-dance",
+        "rock-slide-m"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": []
+    },
+    {
+      "dex": 106,
+      "id": "hitmonlee",
+      "name": "Hitmonlee",
+      "types": [
+        "fighting"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 50,
+        "attack": 120,
+        "defense": 44,
+        "speed": 87
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 4,
+        "defense": 3,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "double-kick"
+        },
+        {
+          "level": 1,
+          "move": "focus-energy"
+        },
+        {
+          "level": 6,
+          "move": "rolling-kick"
+        },
+        {
+          "level": 12,
+          "move": "jump-kick"
+        },
+        {
+          "level": 18,
+          "move": "mega-kick"
+        },
+        {
+          "level": 24,
+          "move": "hi-jump-kick"
+        },
+        {
+          "level": 30,
+          "move": "close-combat"
+        }
+      ],
+      "availableAbilities": [
+        "limber",
+        "rock-head"
+      ],
+      "tutorMoves": [
+        "bulk-up",
+        "low-kick"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "vanguard"
+    },
+    {
       "dex": 107,
       "id": "hitmonchan",
       "name": "Hitmonchan",
@@ -4540,6 +8108,73 @@
       "rarity": "rare",
       "branches": [],
       "archetype": "vanguard"
+    },
+    {
+      "dex": 108,
+      "id": "lickitung",
+      "name": "Lickitung",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 90,
+        "attack": 60,
+        "defense": 68,
+        "speed": 30
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "lick"
+        },
+        {
+          "level": 1,
+          "move": "supersonic"
+        },
+        {
+          "level": 5,
+          "move": "wrap"
+        },
+        {
+          "level": 10,
+          "move": "stomp"
+        },
+        {
+          "level": 15,
+          "move": "disable"
+        },
+        {
+          "level": 20,
+          "move": "slam"
+        },
+        {
+          "level": 26,
+          "move": "screech"
+        },
+        {
+          "level": 32,
+          "move": "power-whip"
+        }
+      ],
+      "availableAbilities": [
+        "own-tempo",
+        "cloud-nine"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "thunderbolt"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "support"
     },
     {
       "dex": 109,
@@ -4685,6 +8320,364 @@
       "branches": []
     },
     {
+      "dex": 111,
+      "id": "rhyhorn",
+      "name": "Rhyhorn",
+      "types": [
+        "ground",
+        "rock"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 80,
+        "attack": 85,
+        "defense": 63,
+        "speed": 25
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 3,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "horn-attack"
+        },
+        {
+          "level": 1,
+          "move": "tail-whip"
+        },
+        {
+          "level": 4,
+          "move": "stomp"
+        },
+        {
+          "level": 7,
+          "move": "fury-attack"
+        },
+        {
+          "level": 10,
+          "move": "rock-throw"
+        }
+      ],
+      "availableAbilities": [
+        "rock-head",
+        "solid-rock"
+      ],
+      "tutorMoves": [
+        "bulldoze",
+        "iron-tail"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "rhydon"
+      ],
+      "rarity": "uncommon",
+      "branches": [
+        {
+          "id": "rhydon-vanguard",
+          "archetype": "vanguard",
+          "label": "Drill Horn",
+          "description": "The horn starts to spin, and a megahorn comes after it.",
+          "to": "rhydon",
+          "upgrades": [
+            {
+              "from": "horn-attack",
+              "to": "drill-run"
+            }
+          ],
+          "adds": [
+            "megahorn"
+          ]
+        },
+        {
+          "id": "rhydon-specialist",
+          "archetype": "specialist",
+          "label": "Landslide",
+          "description": "It stops throwing rocks and starts bringing the hillside down, then the ground under it.",
+          "to": "rhydon",
+          "upgrades": [
+            {
+              "from": "rock-throw",
+              "to": "rock-slide-m"
+            }
+          ],
+          "adds": [
+            "earthquake"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 112,
+      "id": "rhydon",
+      "name": "Rhydon",
+      "types": [
+        "ground",
+        "rock"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 105,
+        "attack": 130,
+        "defense": 83,
+        "speed": 40
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 3,
+        "speed": 1
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "rock-slide-m"
+        },
+        {
+          "level": 18,
+          "move": "horn-drill"
+        },
+        {
+          "level": 22,
+          "move": "earthquake"
+        },
+        {
+          "level": 28,
+          "move": "stone-edge"
+        },
+        {
+          "level": 34,
+          "move": "megahorn"
+        }
+      ],
+      "availableAbilities": [
+        "rock-head",
+        "solid-rock"
+      ],
+      "tutorMoves": [
+        "surf",
+        "thunderbolt"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": []
+    },
+    {
+      "dex": 113,
+      "id": "chansey",
+      "name": "Chansey",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 250,
+        "attack": 105,
+        "defense": 55,
+        "speed": 50
+      },
+      "growth": {
+        "hp": 6,
+        "attack": 2,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "pound"
+        },
+        {
+          "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 5,
+          "move": "double-slap"
+        },
+        {
+          "level": 10,
+          "move": "sing"
+        },
+        {
+          "level": 15,
+          "move": "softboiled"
+        },
+        {
+          "level": 20,
+          "move": "minimize"
+        },
+        {
+          "level": 26,
+          "move": "egg-bomb"
+        },
+        {
+          "level": 32,
+          "move": "light-screen"
+        },
+        {
+          "level": 38,
+          "move": "double-edge"
+        }
+      ],
+      "availableAbilities": [
+        "healer"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "thunderbolt"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "support"
+    },
+    {
+      "dex": 114,
+      "id": "tangela",
+      "name": "Tangela",
+      "types": [
+        "grass"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 65,
+        "attack": 100,
+        "defense": 108,
+        "speed": 60
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 4,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "vine-whip"
+        },
+        {
+          "level": 1,
+          "move": "wrap"
+        },
+        {
+          "level": 5,
+          "move": "absorb"
+        },
+        {
+          "level": 10,
+          "move": "poison-powder"
+        },
+        {
+          "level": 15,
+          "move": "stun-spore"
+        },
+        {
+          "level": 20,
+          "move": "mega-drain"
+        },
+        {
+          "level": 26,
+          "move": "ingrain"
+        },
+        {
+          "level": 32,
+          "move": "giga-drain"
+        },
+        {
+          "level": 38,
+          "move": "power-whip"
+        }
+      ],
+      "availableAbilities": [
+        "chlorophyll",
+        "healer"
+      ],
+      "tutorMoves": [
+        "sleep-powder",
+        "ancient-power"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": [],
+      "archetype": "support"
+    },
+    {
+      "dex": 115,
+      "id": "kangaskhan",
+      "name": "Kangaskhan",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 105,
+        "attack": 95,
+        "defense": 60,
+        "speed": 90
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 3,
+        "defense": 3,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "comet-punch"
+        },
+        {
+          "level": 1,
+          "move": "leer"
+        },
+        {
+          "level": 5,
+          "move": "bite"
+        },
+        {
+          "level": 10,
+          "move": "rage"
+        },
+        {
+          "level": 15,
+          "move": "mega-punch"
+        },
+        {
+          "level": 20,
+          "move": "dizzy-punch"
+        },
+        {
+          "level": 26,
+          "move": "crunch"
+        },
+        {
+          "level": 32,
+          "move": "body-slam"
+        },
+        {
+          "level": 38,
+          "move": "giga-impact-v"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "guts"
+      ],
+      "tutorMoves": [
+        "earthquake",
+        "fire-punch"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "vanguard"
+    },
+    {
       "dex": 116,
       "id": "horsea",
       "name": "Horsea",
@@ -4821,6 +8814,149 @@
       "tutorMoves": [
         "surf",
         "ice-beam"
+      ],
+      "evolvesTo": [],
+      "rarity": "common",
+      "branches": []
+    },
+    {
+      "dex": 118,
+      "id": "goldeen",
+      "name": "Goldeen",
+      "types": [
+        "water"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 45,
+        "attack": 67,
+        "defense": 55,
+        "speed": 63
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "peck"
+        },
+        {
+          "level": 1,
+          "move": "tail-whip"
+        },
+        {
+          "level": 4,
+          "move": "water-gun"
+        },
+        {
+          "level": 7,
+          "move": "supersonic"
+        },
+        {
+          "level": 10,
+          "move": "horn-attack"
+        }
+      ],
+      "availableAbilities": [
+        "water-veil",
+        "swift-swim"
+      ],
+      "hiddenAbility": "snipe",
+      "tutorMoves": [
+        "aqua-jet",
+        "flail"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "seaking"
+      ],
+      "rarity": "common",
+      "branches": [
+        {
+          "id": "seaking-vanguard",
+          "archetype": "vanguard",
+          "label": "Horn Diver",
+          "description": "The horn grows into a megahorn and it charges up the falls with it.",
+          "to": "seaking",
+          "upgrades": [
+            {
+              "from": "horn-attack",
+              "to": "megahorn"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "seaking-specialist",
+          "archetype": "specialist",
+          "label": "Waterfall",
+          "description": "The jet becomes a waterfall, and a ring of water keeps it going.",
+          "to": "seaking",
+          "upgrades": [
+            {
+              "from": "water-gun",
+              "to": "waterfall"
+            }
+          ],
+          "adds": [
+            "aqua-ring"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 119,
+      "id": "seaking",
+      "name": "Seaking",
+      "types": [
+        "water"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 80,
+        "attack": 92,
+        "defense": 73,
+        "speed": 68
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "waterfall"
+        },
+        {
+          "level": 18,
+          "move": "agility"
+        },
+        {
+          "level": 22,
+          "move": "aqua-ring"
+        },
+        {
+          "level": 28,
+          "move": "megahorn"
+        },
+        {
+          "level": 34,
+          "move": "horn-drill"
+        }
+      ],
+      "availableAbilities": [
+        "water-veil",
+        "swift-swim"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "surf"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -4974,6 +9110,221 @@
       "branches": []
     },
     {
+      "dex": 122,
+      "id": "mr-mime",
+      "name": "Mr. Mime",
+      "types": [
+        "psychic"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 40,
+        "attack": 100,
+        "defense": 83,
+        "speed": 90
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 3,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "confusion"
+        },
+        {
+          "level": 1,
+          "move": "barrier"
+        },
+        {
+          "level": 5,
+          "move": "double-slap"
+        },
+        {
+          "level": 10,
+          "move": "light-screen"
+        },
+        {
+          "level": 15,
+          "move": "reflect"
+        },
+        {
+          "level": 20,
+          "move": "psybeam"
+        },
+        {
+          "level": 26,
+          "move": "psychic"
+        },
+        {
+          "level": 32,
+          "move": "calm-mind"
+        },
+        {
+          "level": 38,
+          "move": "psyshock"
+        }
+      ],
+      "availableAbilities": [
+        "solid-rock",
+        "inner-focus"
+      ],
+      "tutorMoves": [
+        "thunder-wave",
+        "hypnosis"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "support"
+    },
+    {
+      "dex": 123,
+      "id": "scyther",
+      "name": "Scyther",
+      "types": [
+        "bug",
+        "flying"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 70,
+        "attack": 110,
+        "defense": 68,
+        "speed": 105
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 4,
+        "defense": 3,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "quick-attack"
+        },
+        {
+          "level": 1,
+          "move": "leer"
+        },
+        {
+          "level": 5,
+          "move": "focus-energy"
+        },
+        {
+          "level": 10,
+          "move": "wing-attack"
+        },
+        {
+          "level": 15,
+          "move": "slash"
+        },
+        {
+          "level": 20,
+          "move": "swords-dance"
+        },
+        {
+          "level": 26,
+          "move": "x-scissor"
+        },
+        {
+          "level": 32,
+          "move": "air-slash"
+        },
+        {
+          "level": 38,
+          "move": "fly"
+        }
+      ],
+      "availableAbilities": [
+        "swarm",
+        "steadfast"
+      ],
+      "tutorMoves": [
+        "aerial-ace",
+        "double-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "vanguard"
+    },
+    {
+      "dex": 124,
+      "id": "jynx",
+      "name": "Jynx",
+      "types": [
+        "ice",
+        "psychic"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 65,
+        "attack": 95,
+        "defense": 65,
+        "speed": 95
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "pound"
+        },
+        {
+          "level": 1,
+          "move": "lovely-kiss"
+        },
+        {
+          "level": 5,
+          "move": "lick"
+        },
+        {
+          "level": 10,
+          "move": "powder-snow"
+        },
+        {
+          "level": 15,
+          "move": "double-slap"
+        },
+        {
+          "level": 20,
+          "move": "ice-punch"
+        },
+        {
+          "level": 26,
+          "move": "ice-beam"
+        },
+        {
+          "level": 32,
+          "move": "psychic"
+        },
+        {
+          "level": 38,
+          "move": "blizzard"
+        }
+      ],
+      "availableAbilities": [
+        "anticipation",
+        "own-tempo"
+      ],
+      "tutorMoves": [
+        "psyshock",
+        "calm-mind"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "specialist"
+    },
+    {
       "dex": 125,
       "id": "electabuzz",
       "name": "Electabuzz",
@@ -5034,6 +9385,215 @@
       "tutorMoves": [
         "fire-punch",
         "ice-punch"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "vanguard"
+    },
+    {
+      "dex": 126,
+      "id": "magmar",
+      "name": "Magmar",
+      "types": [
+        "fire"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 65,
+        "attack": 95,
+        "defense": 71,
+        "speed": 93
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 4,
+        "defense": 3,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "ember"
+        },
+        {
+          "level": 1,
+          "move": "leer"
+        },
+        {
+          "level": 5,
+          "move": "smog"
+        },
+        {
+          "level": 10,
+          "move": "confuse-ray"
+        },
+        {
+          "level": 15,
+          "move": "fire-punch"
+        },
+        {
+          "level": 20,
+          "move": "lava-plume"
+        },
+        {
+          "level": 26,
+          "move": "flamethrower"
+        },
+        {
+          "level": 32,
+          "move": "fire-blast"
+        }
+      ],
+      "availableAbilities": [
+        "flame-body",
+        "vital-spirit"
+      ],
+      "tutorMoves": [
+        "thunder-punch",
+        "psychic"
+      ],
+      "evolvesTo": [],
+      "rarity": "uncommon",
+      "branches": [],
+      "archetype": "specialist"
+    },
+    {
+      "dex": 127,
+      "id": "pinsir",
+      "name": "Pinsir",
+      "types": [
+        "bug"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 65,
+        "attack": 125,
+        "defense": 78,
+        "speed": 85
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 4,
+        "defense": 3,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "vice-grip"
+        },
+        {
+          "level": 1,
+          "move": "focus-energy"
+        },
+        {
+          "level": 5,
+          "move": "harden"
+        },
+        {
+          "level": 10,
+          "move": "seismic-toss"
+        },
+        {
+          "level": 15,
+          "move": "x-scissor"
+        },
+        {
+          "level": 20,
+          "move": "swords-dance"
+        },
+        {
+          "level": 26,
+          "move": "submission"
+        },
+        {
+          "level": 32,
+          "move": "guillotine"
+        },
+        {
+          "level": 38,
+          "move": "megahorn"
+        }
+      ],
+      "availableAbilities": [
+        "moxie",
+        "guts"
+      ],
+      "tutorMoves": [
+        "earthquake",
+        "stone-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "vanguard"
+    },
+    {
+      "dex": 128,
+      "id": "tauros",
+      "name": "Tauros",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 75,
+        "attack": 100,
+        "defense": 83,
+        "speed": 110
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 4,
+        "defense": 3,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "tail-whip"
+        },
+        {
+          "level": 5,
+          "move": "rage"
+        },
+        {
+          "level": 10,
+          "move": "horn-attack"
+        },
+        {
+          "level": 15,
+          "move": "stomp"
+        },
+        {
+          "level": 20,
+          "move": "take-down"
+        },
+        {
+          "level": 26,
+          "move": "zen-headbutt"
+        },
+        {
+          "level": 32,
+          "move": "thrash"
+        },
+        {
+          "level": 38,
+          "move": "giga-impact-v"
+        }
+      ],
+      "availableAbilities": [
+        "intimidate",
+        "guts"
+      ],
+      "tutorMoves": [
+        "earthquake",
+        "body-slam"
       ],
       "evolvesTo": [],
       "rarity": "rare",
@@ -5250,6 +9810,45 @@
         "hydro-pump",
         "thunderbolt"
       ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "support"
+    },
+    {
+      "dex": 132,
+      "id": "ditto",
+      "name": "Ditto",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 48,
+        "attack": 48,
+        "defense": 48,
+        "speed": 48
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 2,
+        "defense": 2,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "transform-d"
+        },
+        {
+          "level": 1,
+          "move": "pound"
+        }
+      ],
+      "availableAbilities": [
+        "limber"
+      ],
+      "tutorMoves": [],
       "evolvesTo": [],
       "rarity": "rare",
       "branches": [],
@@ -5535,6 +10134,436 @@
       "branches": []
     },
     {
+      "dex": 137,
+      "id": "porygon",
+      "name": "Porygon",
+      "types": [
+        "normal"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 65,
+        "attack": 75,
+        "defense": 73,
+        "speed": 40
+      },
+      "growth": {
+        "hp": 3,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "tackle"
+        },
+        {
+          "level": 1,
+          "move": "focus-energy"
+        },
+        {
+          "level": 5,
+          "move": "psybeam"
+        },
+        {
+          "level": 10,
+          "move": "agility"
+        },
+        {
+          "level": 15,
+          "move": "recover"
+        },
+        {
+          "level": 20,
+          "move": "tri-attack"
+        },
+        {
+          "level": 26,
+          "move": "discharge"
+        },
+        {
+          "level": 32,
+          "move": "zap-cannon"
+        },
+        {
+          "level": 38,
+          "move": "hyper-beam"
+        }
+      ],
+      "availableAbilities": [
+        "adaptability",
+        "anticipation"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "thunderbolt"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "specialist"
+    },
+    {
+      "dex": 138,
+      "id": "omanyte",
+      "name": "Omanyte",
+      "types": [
+        "rock",
+        "water"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 35,
+        "attack": 90,
+        "defense": 95,
+        "speed": 35
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "water-gun"
+        },
+        {
+          "level": 1,
+          "move": "withdraw"
+        },
+        {
+          "level": 4,
+          "move": "bite"
+        },
+        {
+          "level": 7,
+          "move": "ancient-power"
+        },
+        {
+          "level": 10,
+          "move": "spike-cannon"
+        }
+      ],
+      "availableAbilities": [
+        "shell-armor",
+        "swift-swim"
+      ],
+      "tutorMoves": [
+        "mud-shot",
+        "aurora-beam"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "omastar"
+      ],
+      "rarity": "rare",
+      "branches": [
+        {
+          "id": "omastar-specialist",
+          "archetype": "specialist",
+          "label": "Ancient Spiral",
+          "description": "The jet becomes a hydro pump, and the old shell starts to shine.",
+          "to": "omastar",
+          "upgrades": [
+            {
+              "from": "water-gun",
+              "to": "hydro-pump"
+            }
+          ],
+          "adds": [
+            "power-gem"
+          ]
+        },
+        {
+          "id": "omastar-vanguard",
+          "archetype": "vanguard",
+          "label": "Spike Shell",
+          "description": "The spikes stop flying and start hammering.",
+          "to": "omastar",
+          "upgrades": [
+            {
+              "from": "spike-cannon",
+              "to": "rock-blast"
+            }
+          ],
+          "adds": [],
+          "abilityId": "shell-armor"
+        }
+      ]
+    },
+    {
+      "dex": 139,
+      "id": "omastar",
+      "name": "Omastar",
+      "types": [
+        "rock",
+        "water"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 70,
+        "attack": 115,
+        "defense": 120,
+        "speed": 55
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 3,
+        "speed": 2
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "brine"
+        },
+        {
+          "level": 18,
+          "move": "rock-blast"
+        },
+        {
+          "level": 22,
+          "move": "power-gem"
+        },
+        {
+          "level": 28,
+          "move": "hydro-pump"
+        }
+      ],
+      "availableAbilities": [
+        "shell-armor",
+        "swift-swim"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "earth-power"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": []
+    },
+    {
+      "dex": 140,
+      "id": "kabuto",
+      "name": "Kabuto",
+      "types": [
+        "rock",
+        "water"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 30,
+        "attack": 80,
+        "defense": 68,
+        "speed": 55
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 3,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "scratch"
+        },
+        {
+          "level": 1,
+          "move": "harden"
+        },
+        {
+          "level": 4,
+          "move": "absorb"
+        },
+        {
+          "level": 7,
+          "move": "aqua-jet"
+        },
+        {
+          "level": 10,
+          "move": "ancient-power"
+        }
+      ],
+      "availableAbilities": [
+        "battle-armor",
+        "swift-swim"
+      ],
+      "tutorMoves": [
+        "mud-shot",
+        "rock-throw"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "kabutops"
+      ],
+      "rarity": "rare",
+      "branches": [
+        {
+          "id": "kabutops-vanguard",
+          "archetype": "vanguard",
+          "label": "Scythe",
+          "description": "The claws lengthen into blades.",
+          "to": "kabutops",
+          "upgrades": [
+            {
+              "from": "scratch",
+              "to": "slash"
+            }
+          ],
+          "adds": [
+            "x-scissor"
+          ]
+        },
+        {
+          "id": "kabutops-specialist",
+          "archetype": "specialist",
+          "label": "Leech Shell",
+          "description": "It drinks harder, and the cliffs come down on whatever it points at.",
+          "to": "kabutops",
+          "upgrades": [
+            {
+              "from": "absorb",
+              "to": "mega-drain"
+            }
+          ],
+          "adds": [
+            "rock-slide-m"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 141,
+      "id": "kabutops",
+      "name": "Kabutops",
+      "types": [
+        "rock",
+        "water"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 60,
+        "attack": 115,
+        "defense": 88,
+        "speed": 80
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 3,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 14,
+          "move": "slash"
+        },
+        {
+          "level": 18,
+          "move": "mega-drain"
+        },
+        {
+          "level": 22,
+          "move": "rock-slide-m"
+        },
+        {
+          "level": 28,
+          "move": "x-scissor"
+        },
+        {
+          "level": 34,
+          "move": "stone-edge"
+        }
+      ],
+      "availableAbilities": [
+        "battle-armor",
+        "swift-swim"
+      ],
+      "tutorMoves": [
+        "swords-dance",
+        "waterfall"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": []
+    },
+    {
+      "dex": 142,
+      "id": "aerodactyl",
+      "name": "Aerodactyl",
+      "types": [
+        "rock",
+        "flying"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 80,
+        "attack": 105,
+        "defense": 63,
+        "speed": 130
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 4,
+        "defense": 3,
+        "speed": 5
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "wing-attack"
+        },
+        {
+          "level": 1,
+          "move": "supersonic"
+        },
+        {
+          "level": 6,
+          "move": "bite"
+        },
+        {
+          "level": 12,
+          "move": "ancient-power"
+        },
+        {
+          "level": 18,
+          "move": "agility"
+        },
+        {
+          "level": 24,
+          "move": "crunch"
+        },
+        {
+          "level": 30,
+          "move": "rock-slide-m"
+        },
+        {
+          "level": 36,
+          "move": "sky-drop"
+        },
+        {
+          "level": 42,
+          "move": "giga-impact-v"
+        }
+      ],
+      "availableAbilities": [
+        "rock-head"
+      ],
+      "hiddenAbility": "tough-claws",
+      "tutorMoves": [
+        "earthquake",
+        "fire-fang"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "archetype": "vanguard"
+    },
+    {
       "dex": 143,
       "id": "snorlax",
       "name": "Snorlax",
@@ -5587,6 +10616,619 @@
       "archetype": "vanguard",
       "hiddenAbilityPending": "Gluttony — arrives in v0.7",
       "catchRate": 0.2
+    },
+    {
+      "dex": 144,
+      "id": "articuno",
+      "name": "Articuno",
+      "types": [
+        "ice",
+        "flying"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 90,
+        "attack": 125,
+        "defense": 113,
+        "speed": 85
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 3,
+        "defense": 4,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "gust"
+        },
+        {
+          "level": 1,
+          "move": "powder-snow"
+        },
+        {
+          "level": 8,
+          "move": "mist"
+        },
+        {
+          "level": 16,
+          "move": "ice-shard"
+        },
+        {
+          "level": 24,
+          "move": "agility"
+        },
+        {
+          "level": 32,
+          "move": "ice-beam"
+        },
+        {
+          "level": 40,
+          "move": "hurricane"
+        },
+        {
+          "level": 48,
+          "move": "blizzard"
+        },
+        {
+          "level": 56,
+          "move": "sheer-cold-l"
+        }
+      ],
+      "availableAbilities": [
+        "snipe",
+        "inner-focus"
+      ],
+      "tutorMoves": [
+        "roost",
+        "haze"
+      ],
+      "evolvesTo": [],
+      "rarity": "legendary",
+      "branches": [],
+      "archetype": "specialist"
+    },
+    {
+      "dex": 145,
+      "id": "zapdos",
+      "name": "Zapdos",
+      "types": [
+        "electric",
+        "flying"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 90,
+        "attack": 125,
+        "defense": 105,
+        "speed": 100
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 3,
+        "defense": 3,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "peck"
+        },
+        {
+          "level": 1,
+          "move": "thunder-shock"
+        },
+        {
+          "level": 8,
+          "move": "thunder-wave"
+        },
+        {
+          "level": 16,
+          "move": "agility"
+        },
+        {
+          "level": 24,
+          "move": "drill-peck"
+        },
+        {
+          "level": 32,
+          "move": "discharge"
+        },
+        {
+          "level": 40,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 48,
+          "move": "zap-cannon"
+        },
+        {
+          "level": 56,
+          "move": "thunder"
+        }
+      ],
+      "availableAbilities": [
+        "static",
+        "volt-absorb"
+      ],
+      "tutorMoves": [
+        "roost",
+        "charge-beam"
+      ],
+      "evolvesTo": [],
+      "rarity": "legendary",
+      "branches": [],
+      "archetype": "specialist"
+    },
+    {
+      "dex": 146,
+      "id": "moltres",
+      "name": "Moltres",
+      "types": [
+        "fire",
+        "flying"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 90,
+        "attack": 125,
+        "defense": 108,
+        "speed": 90
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 3,
+        "defense": 3,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "wing-attack"
+        },
+        {
+          "level": 1,
+          "move": "ember"
+        },
+        {
+          "level": 8,
+          "move": "fire-spin"
+        },
+        {
+          "level": 16,
+          "move": "agility"
+        },
+        {
+          "level": 24,
+          "move": "flamethrower"
+        },
+        {
+          "level": 32,
+          "move": "air-slash"
+        },
+        {
+          "level": 40,
+          "move": "heat-wave"
+        },
+        {
+          "level": 48,
+          "move": "sky-attack"
+        },
+        {
+          "level": 56,
+          "move": "fire-blast"
+        }
+      ],
+      "availableAbilities": [
+        "flame-body",
+        "flash-fire"
+      ],
+      "tutorMoves": [
+        "roost",
+        "will-o-wisp"
+      ],
+      "evolvesTo": [],
+      "rarity": "legendary",
+      "branches": [],
+      "archetype": "specialist"
+    },
+    {
+      "dex": 147,
+      "id": "dratini",
+      "name": "Dratini",
+      "types": [
+        "dragon"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 41,
+        "attack": 64,
+        "defense": 48,
+        "speed": 50
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "wrap"
+        },
+        {
+          "level": 1,
+          "move": "leer"
+        },
+        {
+          "level": 4,
+          "move": "thunder-wave"
+        },
+        {
+          "level": 7,
+          "move": "twister"
+        },
+        {
+          "level": 10,
+          "move": "dragon-rage"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "iron-shell"
+      ],
+      "hiddenAbility": "solid-rock",
+      "tutorMoves": [
+        "aqua-jet",
+        "body-slam"
+      ],
+      "evolveLevel": 12,
+      "evolvesTo": [
+        "dragonair"
+      ],
+      "rarity": "rare",
+      "branches": [
+        {
+          "id": "dragonair-vanguard",
+          "archetype": "vanguard",
+          "label": "Coil",
+          "description": "The wrap becomes a slam: the whole serpent, swung.",
+          "to": "dragonair",
+          "upgrades": [
+            {
+              "from": "wrap",
+              "to": "slam"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "dragonair-specialist",
+          "archetype": "specialist",
+          "label": "Serpent",
+          "description": "The twister gathers into a pulse of dragon energy.",
+          "to": "dragonair",
+          "upgrades": [
+            {
+              "from": "twister",
+              "to": "dragon-pulse"
+            }
+          ],
+          "adds": []
+        },
+        {
+          "id": "dragonair-support",
+          "archetype": "support",
+          "label": "Aura",
+          "description": "The crystals on its neck calm the air: a guard against status, and a ring of water.",
+          "to": "dragonair",
+          "upgrades": [
+            {
+              "from": "thunder-wave",
+              "to": "safeguard"
+            }
+          ],
+          "adds": [
+            "aqua-ring"
+          ],
+          "abilityId": "inner-focus"
+        }
+      ]
+    },
+    {
+      "dex": 148,
+      "id": "dragonair",
+      "name": "Dragonair",
+      "types": [
+        "dragon"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 61,
+        "attack": 84,
+        "defense": 68,
+        "speed": 70
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 13,
+          "move": "slam"
+        },
+        {
+          "level": 16,
+          "move": "agility"
+        },
+        {
+          "level": 20,
+          "move": "aqua-tail"
+        },
+        {
+          "level": 23,
+          "move": "dragon-pulse"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "iron-shell"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "thunderbolt"
+      ],
+      "evolveLevel": 26,
+      "evolvesTo": [
+        "dragonite"
+      ],
+      "rarity": "rare",
+      "branches": [
+        {
+          "id": "dragonite-vanguard",
+          "archetype": "vanguard",
+          "label": "Dragon Rush",
+          "description": "The slam becomes an outrage, and it learns a speed no dragon should have.",
+          "to": "dragonite",
+          "upgrades": [
+            {
+              "from": "slam",
+              "to": "outrage"
+            }
+          ],
+          "adds": [
+            "extreme-speed"
+          ]
+        },
+        {
+          "id": "dragonite-specialist",
+          "archetype": "specialist",
+          "label": "Storm Dragon",
+          "description": "The pulse becomes a hurricane, and a beam it pays for after.",
+          "to": "dragonite",
+          "upgrades": [
+            {
+              "from": "dragon-pulse",
+              "to": "hurricane"
+            }
+          ],
+          "adds": [
+            "hyper-beam"
+          ]
+        },
+        {
+          "id": "dragonite-support",
+          "archetype": "support",
+          "label": "Guardian",
+          "description": "It trades speed for staying power: rest on the wing, and a guard for the team.",
+          "to": "dragonite",
+          "upgrades": [
+            {
+              "from": "agility",
+              "to": "roost"
+            }
+          ],
+          "adds": [
+            "safeguard"
+          ]
+        }
+      ]
+    },
+    {
+      "dex": 149,
+      "id": "dragonite",
+      "name": "Dragonite",
+      "types": [
+        "dragon",
+        "flying"
+      ],
+      "stage": "stage2",
+      "baseStats": {
+        "hp": 91,
+        "attack": 134,
+        "defense": 98,
+        "speed": 80
+      },
+      "growth": {
+        "hp": 2,
+        "attack": 3,
+        "defense": 2,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 27,
+          "move": "wing-attack"
+        },
+        {
+          "level": 32,
+          "move": "outrage"
+        },
+        {
+          "level": 38,
+          "move": "hurricane"
+        },
+        {
+          "level": 44,
+          "move": "hyper-beam"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "iron-shell"
+      ],
+      "tutorMoves": [
+        "fire-punch",
+        "thunder-punch"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": []
+    },
+    {
+      "dex": 150,
+      "id": "mewtwo",
+      "name": "Mewtwo",
+      "types": [
+        "psychic"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 106,
+        "attack": 154,
+        "defense": 122,
+        "speed": 130
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 4,
+        "defense": 3,
+        "speed": 4
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "confusion"
+        },
+        {
+          "level": 1,
+          "move": "disable"
+        },
+        {
+          "level": 8,
+          "move": "swift"
+        },
+        {
+          "level": 16,
+          "move": "barrier"
+        },
+        {
+          "level": 24,
+          "move": "psychic"
+        },
+        {
+          "level": 32,
+          "move": "recover"
+        },
+        {
+          "level": 40,
+          "move": "aura-sphere"
+        },
+        {
+          "level": 48,
+          "move": "calm-mind"
+        },
+        {
+          "level": 56,
+          "move": "psystrike"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "adaptability"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "thunderbolt"
+      ],
+      "evolvesTo": [],
+      "rarity": "legendary",
+      "branches": [],
+      "archetype": "specialist"
+    },
+    {
+      "dex": 151,
+      "id": "mew",
+      "name": "Mew",
+      "types": [
+        "psychic"
+      ],
+      "stage": "basic",
+      "baseStats": {
+        "hp": 100,
+        "attack": 100,
+        "defense": 100,
+        "speed": 100
+      },
+      "growth": {
+        "hp": 4,
+        "attack": 3,
+        "defense": 3,
+        "speed": 3
+      },
+      "learnset": [
+        {
+          "level": 1,
+          "move": "pound"
+        },
+        {
+          "level": 1,
+          "move": "reflect"
+        },
+        {
+          "level": 10,
+          "move": "mega-punch"
+        },
+        {
+          "level": 20,
+          "move": "barrier"
+        },
+        {
+          "level": 30,
+          "move": "ancient-power"
+        },
+        {
+          "level": 40,
+          "move": "psychic"
+        },
+        {
+          "level": 50,
+          "move": "aura-sphere"
+        },
+        {
+          "level": 60,
+          "move": "amnesia"
+        }
+      ],
+      "availableAbilities": [
+        "inner-focus",
+        "solid-rock"
+      ],
+      "tutorMoves": [
+        "flamethrower",
+        "thunderbolt",
+        "ice-beam",
+        "earthquake"
+      ],
+      "evolvesTo": [],
+      "rarity": "legendary",
+      "branches": [],
+      "archetype": "support"
     }
   ]
 }

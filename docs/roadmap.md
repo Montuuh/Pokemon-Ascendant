@@ -454,8 +454,11 @@ Ring was retuned for Region 2's rivals (+10, +2, rivals of 3: 60 % · 22 % · 3 
 for v0.7.4, and goes unnamed on the map until then.
 
 ### v0.7.4 — Region 3, Volcanic Highlands  ☐
-Biomes `volcano`, `cave`, `sky`, `tower`, ~10 authored lines, the four R3 Gyms and Badges. Its mechanical
+Biomes `volcano`, `cave`, `sky`, `tower`, ~10 lines, the four R3 Gyms and Badges. Its mechanical
 accent (multi-enemy, field effects) is **v0.8** — R3 ships on R2's combat rules and gains them later.
+**Done ahead of it (2026-09-23):** all 151 Gen I species are built (`catalogs/species-gen1.md`) and sit in no
+pool, so Region 3 *places* its lines rather than authoring them; the Pokédex hides an unmet species behind a
+silhouette, "???" and no types (§8.9.2).
 **Exit:** three Regions with three rosters and twelve possible Gyms.
 
 ### v0.7.5 — The leftovers  ☐

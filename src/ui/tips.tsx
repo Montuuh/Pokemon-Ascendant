@@ -230,7 +230,7 @@ export function starterTip(name: string, blurb: string, price: number, state: 'o
 /** §5.13 / §8.9 — a Pokédex card: number, types, met or not, the line's rank. The sheet has the rest. */
 export function dexCardTip(name: string, dex: number, types: readonly string[], met: boolean, encounters: number, lineName: string, rank: number): ReactNode {
   const lines: ReactNode[] = [
-    <div key="m">{met ? `Faced ${encounters} time${encounters === 1 ? '' : 's'}.` : 'Not faced yet — a silhouette until it takes the field against you.'}</div>,
+    <div key="m">{met ? `Faced ${encounters} time${encounters === 1 ? '' : 's'}.` : 'Not met yet — its name, types and kit are unknown until it takes the field.'}</div>,
     <div key="b">{rank > 0 ? `${lineName} line: ${BOND_RANK_NAME[rank]} (rank ${rank}).` : `${lineName} line: not yet played.`}</div>,
   ];
   return <Tip title={`#${String(dex).padStart(3, '0')} ${name}`} meta={types.map(cap)} body={lines} footer="Open for its record, its kit and its line." />;

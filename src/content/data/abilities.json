@@ -393,6 +393,100 @@
         "types": "fire,ice",
         "multiplier": 0.5
       }
+    },
+    {
+      "id": "flame-body",
+      "name": "Flame Body",
+      "category": "Status",
+      "description": "A melee attacker risks being Burned.",
+      "hook": "on-damaged",
+      "params": {
+        "range": "melee",
+        "status": "burn",
+        "chance": 0.3
+      }
+    },
+    {
+      "id": "cute-charm",
+      "name": "Cute Charm",
+      "category": "Status",
+      "description": "A melee attacker risks being Confused.",
+      "hook": "on-damaged",
+      "params": {
+        "range": "melee",
+        "status": "confusion",
+        "chance": 0.3
+      }
+    },
+    {
+      "id": "battle-armor",
+      "name": "Battle Armor",
+      "category": "Positional",
+      "description": "While Lead, incoming hits deal 2 less damage.",
+      "hook": "lead-flat-reduction",
+      "params": {
+        "amount": 2
+      }
+    },
+    {
+      "id": "insomnia",
+      "name": "Insomnia",
+      "category": "Status",
+      "description": "Cannot fall asleep.",
+      "hook": "status-immunity",
+      "params": {
+        "status": "sleep"
+      }
+    },
+    {
+      "id": "vital-spirit",
+      "name": "Vital Spirit",
+      "category": "Status",
+      "description": "Cannot fall asleep.",
+      "hook": "status-immunity",
+      "params": {
+        "status": "sleep"
+      }
+    },
+    {
+      "id": "limber",
+      "name": "Limber",
+      "category": "Status",
+      "description": "Cannot be Paralysed.",
+      "hook": "status-immunity",
+      "params": {
+        "status": "paralysis"
+      }
+    },
+    {
+      "id": "water-veil",
+      "name": "Water Veil",
+      "category": "Status",
+      "description": "Cannot be Burned.",
+      "hook": "status-immunity",
+      "params": {
+        "status": "burn"
+      }
+    },
+    {
+      "id": "immunity",
+      "name": "Immunity",
+      "category": "Status",
+      "description": "Cannot be Poisoned.",
+      "hook": "status-immunity",
+      "params": {
+        "status": "poison"
+      }
+    },
+    {
+      "id": "own-tempo",
+      "name": "Own Tempo",
+      "category": "Status",
+      "description": "Cannot be Confused.",
+      "hook": "status-immunity",
+      "params": {
+        "status": "confusion"
+      }
     }
   ]
 }
