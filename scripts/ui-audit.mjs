@@ -27,8 +27,9 @@ const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : null
 // ── Screens: how to reach each one, and which source files it is the picture of ──────────────────────────
 // `setup` runs against window.__ascendant (the dev hook); `clicks` are data-testids pressed in order.
 const SCREENS = {
-  menu: { url: '/?screen=menu', match: [/screens\/MenuScreen/, /App\.tsx/] },
+  menu: { url: '/?screen=menu', match: [/screens\/MainMenu/, /App\.tsx/] },
   about: { url: '/?screen=about', match: [/screens\/AboutScreen/] },
+  changelog: { url: '/?screen=changelog', match: [/screens\/ChangelogScreen/, /content\/changelog/] },
   settings: { url: '/?screen=settings', match: [/screens\/SettingsScreen/] },
   hub: { url: '/?screen=hub', match: [/screens\/HubScreen/, /hub\/(TrainerCard|LevelRing|RewardTrack|Hub\.module|trackText|TokenIcon)/] },
   'hub-pc': { url: '/?screen=hub', clicks: ['kiosk-pc'], match: [/hub\/(PcTerminal|BondBar|rankIcons|Hub\.module)/] },

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
+import { changelogUnread } from '@/app/changelogSeen';
 import { menuVista } from '@/ui/art';
 import { portraitUrl } from '@/content/schemas/species';
 import styles from './MainMenu.module.css';
@@ -17,6 +18,8 @@ export function MainMenu() {
   const saveSummary = useRunStore((s) => s.saveSummary);
   // §10.8 — the Continue line is read once, at first render: the menu should not re-parse the save each time.
   const [resumable, setResumable] = useState<string | null>(() => saveSummary());
+  // docs/release-doctrine.md — the version is the door to what it added; a dot until this browser has read it.
+  const [unread] = useState(changelogUnread);
 
   function resume() {
     const result = loadSave();
@@ -65,9 +68,16 @@ export function MainMenu() {
           </button>
         </nav>
         {/* Read from package.json at build time, so it cannot go stale the way "First Route v0.2" did. */}
-        <p className={styles.footnote}>
-          v{__APP_VERSION__} · Fan project · not affiliated with Nintendo, Game Freak or The Pokémon Company.
-        </p>
+        <button type="button" className={styles.whatsNew} onClick={() => goTo('changelog')} data-testid="btn-changelog" data-unread={unread}>
+          <span className="tabular">v{__APP_VERSION__}</span> · What's new
+          {unread && (
+            <>
+              <span className={styles.newDot} aria-hidden="true" />
+              <span className="sr-only">(unread)</span>
+            </>
+          )}
+        </button>
+        <p className={styles.footnote}>Fan project · not affiliated with Nintendo, Game Freak or The Pokémon Company.</p>
       </section>
     </main>
   );

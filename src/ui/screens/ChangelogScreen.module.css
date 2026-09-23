@@ -1,0 +1,312 @@
+/* What's new: one calm column of versions, each as loud as its level (docs/release-doctrine.md R1). */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--sp-5);
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  background: radial-gradient(120% 80% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow-y: auto;
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.title {
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+.versionPill {
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  border: 2px solid var(--accent-action);
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+}
+
+.column {
+  display: grid;
+  gap: var(--sp-5);
+  align-content: start;
+  width: 100%;
+  max-width: 980px;
+  justify-self: center;
+}
+
+/* ---- New since the current version: a dashed "not yet a version" frame ---- */
+.next {
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-4) var(--sp-5);
+  border: 2px dashed var(--accent-action-deep);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+.nextTitle {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-h3);
+}
+
+.releases {
+  display: grid;
+  gap: var(--sp-5);
+}
+
+/* ---- A minor: a banner with a big number ---- */
+.release {
+  position: relative;
+  overflow: hidden;
+  padding: var(--sp-5);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: radial-gradient(120% 90% at 0% 0%, var(--brand-cream) 0%, var(--surface-1) 55%);
+}
+.watermark {
+  position: absolute;
+  top: calc(var(--sp-10) * -1);
+  right: calc(var(--sp-8) * -1);
+  color: var(--surface-2);
+  pointer-events: none;
+}
+.header {
+  position: relative;
+  margin: 0;
+  font: inherit;
+}
+.releaseTrigger {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-5);
+  cursor: pointer;
+}
+.number {
+  font-size: var(--type-hero);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--brand-red);
+}
+.headText {
+  display: grid;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.status[data-building='true'] {
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+}
+.name {
+  font-size: var(--type-h1);
+  line-height: 1.1;
+  color: var(--ink-primary);
+}
+.chevron {
+  color: var(--ink-secondary);
+  transition: transform var(--motion-base) ease;
+}
+.releaseTrigger[data-state='open'] .chevron,
+.patchTrigger[data-state='open'] .chevron {
+  transform: rotate(180deg);
+}
+.releaseTrigger:focus-visible,
+.patchTrigger:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+.lede {
+  position: relative;
+  margin: var(--sp-3) 0 0;
+  font-size: var(--type-body);
+  color: var(--ink-secondary);
+}
+.content {
+  position: relative;
+  overflow: hidden;
+}
+.content[data-state='open'] {
+  animation: open var(--motion-base) ease;
+}
+@keyframes open {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+/* ---- A major: the loudest — a gold frame, a warmer field, the biggest number ---- */
+.major {
+  border: 3px solid var(--accent-action-deep);
+  background: radial-gradient(130% 100% at 0% 0%, color-mix(in srgb, var(--accent-action) 45%, var(--surface-1)) 0%, var(--brand-cream) 45%, var(--surface-1) 80%);
+}
+.major .number {
+  font-size: var(--type-hero-major);
+  color: var(--brand-red-deep);
+}
+.major .name {
+  font-size: var(--type-display);
+}
+.major .kicker {
+  color: var(--ink-primary);
+}
+
+/* ---- What a version added ---- */
+.items {
+  list-style: none;
+  margin: var(--sp-4) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--sp-3);
+}
+.items .item {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-top: 4px solid var(--accent-action);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.itemTitle {
+  font-size: var(--type-body);
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+.itemBody {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.itemsCompact {
+  list-style: none;
+  margin: var(--sp-2) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-2);
+}
+.itemsCompact .item {
+  font-size: var(--type-small);
+}
+.itemsCompact .itemTitle {
+  margin-right: var(--sp-2);
+  font-size: var(--type-small);
+}
+
+/* ---- A patch: a small card on the minor's spine ---- */
+.patches {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-5);
+  padding-left: var(--sp-4);
+  border-left: 3px solid var(--border-strong);
+}
+.patch {
+  padding: var(--sp-3) var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-0);
+}
+.patch[data-current='true'] {
+  border-color: var(--accent-action-deep);
+}
+.patchTrigger {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  cursor: pointer;
+}
+.patchNumber {
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--type-h3);
+  font-weight: 700;
+  color: var(--brand-red-deep);
+}
+.patchName {
+  font-size: var(--type-h3);
+}
+.current {
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+.when {
+  margin-left: auto;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.patchLede {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+
+@media (max-width: 640px) {
+  .releaseTrigger {
+    grid-template-columns: 1fr auto;
+  }
+  .number {
+    grid-column: 1 / -1;
+  }
+}

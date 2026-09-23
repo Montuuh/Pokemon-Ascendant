@@ -95,6 +95,10 @@
   --type-small: calc(15px * var(--text-scale));
   --type-caption: calc(13px * var(--text-scale));
   --type-number: calc(22px * var(--text-scale));
+  /* The What's new page (docs/release-doctrine.md R1): a version's number grows with its level — a patch
+     reads at h3, a minor at hero, a major at hero-major. The only two sizes above display. */
+  --type-hero: calc(60px * var(--text-scale));
+  --type-hero-major: calc(84px * var(--text-scale));
 
   /* ---- Motion (§1.6) — reduced-motion collapses these to 0 ---- */
   --motion-fast: 120ms;

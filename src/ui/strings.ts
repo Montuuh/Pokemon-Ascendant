@@ -1,6 +1,23 @@
 import type { RejectReason } from '@/sim';
 
 // User-facing strings for the combat screen, gathered for the v0.9 localisation pass.
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/**
+ * 2026-09-20 → 20 Sep 2026. The About timeline and the What's new page. In the game's language (D10), not the
+ * browser's — a Spanish browser printed "23 sept 2026" beside English text — and spelled out here rather than by
+ * `toLocaleDateString`, whose English month is "Sep" or "Sept" depending on the browser's ICU.
+ */
+export function niceDate(iso: string | null): string | null {
+  if (!iso) return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  const month = m ? MONTHS[Number(m[2]) - 1] : undefined;
+  return m && month ? `${Number(m[3])} ${month} ${m[1]}` : iso;
+}
+
+/** docs/release-doctrine.md R1 — a major says what it is in words too; a minor and a patch say it by size. */
+export const MAJOR_RELEASE_LABEL = 'Major release';
+
 export const REJECT_TEXT: Record<RejectReason, string> = {
   'no-fleeing-a-gym': 'There is no running from a Gym Leader.',
   'not-action-phase': 'Not now.',

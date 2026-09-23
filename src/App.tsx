@@ -15,6 +15,7 @@ import { LegendaryScreen } from '@/ui/screens/LegendaryScreen';
 import { HubScreen } from '@/ui/screens/HubScreen';
 import { SettingsScreen } from '@/ui/screens/SettingsScreen';
 import { AboutScreen } from '@/ui/screens/AboutScreen';
+import { ChangelogScreen } from '@/ui/screens/ChangelogScreen';
 import { EvolutionScreen } from '@/ui/screens/EvolutionScreen';
 import { MainMenu } from '@/ui/screens/MainMenu';
 import { MapScreen } from '@/ui/screens/MapScreen';
@@ -97,6 +98,8 @@ function Screens() {
       return <SettingsScreen />;
     case 'about':
       return <AboutScreen />;
+    case 'changelog':
+      return <ChangelogScreen />;
     case 'victory':
       return <RunEndScreen outcome="victory" />;
     case 'defeat':

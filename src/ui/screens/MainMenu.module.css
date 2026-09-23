@@ -100,8 +100,41 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
-.footnote {
+/* The version, as the door to What's new (docs/release-doctrine.md). */
+.whatsNew {
+  position: relative;
+  justify-self: start;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
   margin: var(--sp-6) 0 0;
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  cursor: pointer;
+  transition: border-color var(--motion-fast) ease;
+}
+.whatsNew:hover,
+.whatsNew[data-unread='true'] {
+  border-color: var(--accent-action-deep);
+}
+.newDot {
+  position: absolute;
+  top: calc(var(--sp-1) * -1);
+  right: calc(var(--sp-1) * -1);
+  width: var(--sp-3);
+  height: var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--brand-red);
+  border: 2px solid var(--surface-1);
+}
+.footnote {
+  margin: var(--sp-2) 0 0;
   font-size: var(--type-caption);
   color: var(--ink-muted);
 }

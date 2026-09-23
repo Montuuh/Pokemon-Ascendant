@@ -41,6 +41,11 @@
   border: 2px solid var(--accent-action);
   font-family: var(--font-display);
   font-size: var(--type-body);
+  color: var(--ink-primary);
+  cursor: pointer;
+}
+.versionPill:hover {
+  background: var(--surface-3);
 }
 
 .columns {

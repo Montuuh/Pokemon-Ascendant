@@ -1,6 +1,7 @@
 import { IconArrowLeft, IconBrandGithub, IconCircleCheck, IconCircleDashed, IconProgress } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { APP_VERSION, ROADMAP, type RoadmapVersion } from '@/content/roadmap';
+import { niceDate } from '@/ui/strings';
 import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './AboutScreen.module.css';
 
@@ -13,13 +14,6 @@ const REPO = 'https://github.com/Montuuh/Pokemon-Ascendant';
 
 const STATUS_ICON = { done: IconCircleCheck, active: IconProgress, planned: IconCircleDashed } as const;
 const STATUS_WORD = { done: 'Shipped', active: 'Building now', planned: 'Planned' } as const;
-
-/** 2026-09-20 → 20 Sep 2026, in the reader's locale. */
-function niceDate(iso: string | null): string | null {
-  if (!iso) return null;
-  const d = new Date(`${iso}T00:00:00`);
-  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-}
 
 function Row({ v }: { v: RoadmapVersion }) {
   const Icon = STATUS_ICON[v.status];
@@ -54,9 +48,10 @@ export function AboutScreen() {
           <IconArrowLeft size={18} /> Menu
         </button>
         <h1 className={`${styles.title} display`}>About</h1>
-        <span className={`${styles.versionPill} tabular`} data-testid="about-version">
-          v{APP_VERSION}
-        </span>
+        {/* docs/release-doctrine.md — the version is a door to what it added. */}
+        <button type="button" className={`${styles.versionPill} tabular`} onClick={() => goTo('changelog')} data-testid="about-version">
+          v{APP_VERSION} · What's new
+        </button>
       </header>
 
       <div className={styles.columns}>

@@ -56,7 +56,9 @@ export function parseRoadmap(markdown: string = roadmapMd): RoadmapVersion[] {
       .replace(/[·◐☐✅]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
-    out.push({ version, name, claim, status, date, note });
+    // The table is markdown; the game prints text. "**Five subversions**" must not reach the About screen as asterisks.
+    const plain = (s: string) => s.replace(/\*\*(.+?)\*\*/g, '$1');
+    out.push({ version, name: plain(name), claim: plain(claim), status, date, note });
   }
   return out;
 }

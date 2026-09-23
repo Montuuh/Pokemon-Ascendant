@@ -6,7 +6,8 @@
 >
 > **The table below is read by the game.** The About screen parses it (`src/content/roadmap.ts`), so it is the
 > one place a version's status and date live: mark the row and the game follows. Keep the four columns and
-> the `✅ YYYY-MM-DD` shape on a finished row.
+> the `✅ YYYY-MM-DD` shape on a finished row. What a shipped version *added*, for players, is
+> [`CHANGELOG.md`](../CHANGELOG.md); shipping one follows [`release-doctrine.md`](release-doctrine.md).
 
 ## Principle: validate the core before widening
 
@@ -513,3 +514,6 @@ Kept here so they stop living in chat. Nothing on this list is promised, and non
 | **The global balance pass** | Levels, money, consumables, relics, prices — together, against a whole run. Natural moment: after v0.7.5, when three Regions and two Cities exist to balance; v1.0's pass is the final one | All of §2, §7, `catalogs/economy.md` |
 | **End-of-run ₽ surplus** | What leftover money converts into at a run's end | §8.3 |
 | **Consumables that are spent** | The user's idea: consumables are consumed for real, and found far more often | §7.2 |
+| **The catch, animated** | A catch resolves instantly today. The user's idea (2026-09-23): a bar that lights up to the throw's catch %, and a Poké Ball swinging side to side, slowing little by little before it settles. The outcome is still rolled first (§2.6.4.1) — the animation only shows it | §2.6.4, §9.9 · the combat screen |
+| **The Ring moves out of the Dojo** | The Challenge Ring leaves the Dojo's counters and becomes its own building on the City art, drawn right next to the Dojo (user, 2026-09-23) | §2.9.4.1, §2.11 · Pallet Town and Celadon's art |
+| **Multiplayer — a dual mode** | The user wants a two-player mode. Nothing designed yet: to be talked through with the user before anything is written (2026-09-23) | — |
