@@ -13,7 +13,7 @@ import { mysteryEvent, rollEvent, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, rollRegionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
-import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, type ProgressionConfig } from './xp';
+import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, type ProgressionConfig } from './xp';
 import type { LevelUp, NodeKind, PartyMon, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
 
 
@@ -600,8 +600,12 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const activeIds = new Set(draft.activeUids);
         const xpAwarded: { uid: string; amount: number }[] = [];
         const levelUps: LevelUp[] = [];
+        // §6.2.1 — scaled per Pokémon against the level of what was beaten (the average, for a team).
+        const foes = draft.pendingScenario?.enemies ?? [];
+        const foeLevel = foes.length ? foes.reduce((a, e) => a + e.level, 0) / foes.length : 1;
         for (const mon of draft.box) {
-          const amount = activeIds.has(mon.uid) ? pot : Math.round(pot * share);
+          const scaled = pot * levelXpFactor(foeLevel, mon.level, ctx.progression);
+          const amount = Math.round(activeIds.has(mon.uid) ? scaled : scaled * share);
           const up = grantXp(mon, amount, ctx.content, ctx.progression);
           xpAwarded.push({ uid: mon.uid, amount });
           if (up) {

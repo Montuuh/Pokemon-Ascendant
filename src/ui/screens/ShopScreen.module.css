@@ -105,7 +105,8 @@
 }
 .reroll:hover:not(:disabled),
 .leave:hover { transform: translateY(-1px); background: var(--surface-2); }
-.reroll:disabled { opacity: 0.5; cursor: not-allowed; }
+/* D5 — the re-roll's price is read to plan; a dashed edge marks it shut, not a fade. */
+.reroll:disabled { cursor: not-allowed; border-style: dashed; }
 .reroll:focus-visible,
 .leave:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
 

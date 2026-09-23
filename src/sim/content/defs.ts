@@ -427,6 +427,8 @@ export interface EnemySetup {
   phaseCount: 1 | 2 | 3;
   /** §8.8 Iron Will — scales Max HP before hpPercent is applied. 1 (the default) is the baseline enemy. */
   hpMultiplier?: number;
+  /** §2.2 — the Region's enemy stat tier on Attack. 1 (the default) is the baseline enemy. */
+  attackMultiplier?: number;
   hpPercent?: number;
   status?: StatusCondition;
   moves?: string[];

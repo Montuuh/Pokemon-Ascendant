@@ -52,6 +52,17 @@ export const DEFAULT_RUN_POLICY: RunPolicy = {
   takeRegionModifier: true,
 };
 
+/** One fight as the harness saw it — for balance work that needs to know *where* a run is won or lost. */
+export interface FightTrace {
+  region: number;
+  layer: number;
+  kind: MapNode['kind'];
+  enemies: { species: string; level: number }[];
+  team: { species: string; level: number; hpBefore: number; hpAfter: number; max: number }[];
+  turns: number;
+  outcome: string;
+}
+
 export interface RunSimResult {
   /** 'victory' is "cleared the Regions asked for" — the whole run when `regions` is 3. */
   outcome: 'victory' | 'defeat';
@@ -379,7 +390,7 @@ function visitCity(get: () => RunState, content: CombatCtx['content'], policy: R
  * Play a run. `regions` is how many Gyms to beat before calling it: 1 (the default) measures Region 1's pacing
  * exactly as it was measured before the run continued past it; 3 plays the whole run, Cities included.
  */
-export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy: RunPolicy = DEFAULT_RUN_POLICY, regions = 1): RunSimResult {
+export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy: RunPolicy = DEFAULT_RUN_POLICY, regions = 1, trace?: (fight: FightTrace) => void): RunSimResult {
   const runCtx = defaultRunCtx(ctx.content);
   // §2.11.3 — the offer is weighted, and the harness takes the first of the three exactly as it takes the
   // first Legendary: modelling a preference here would add variance without adding information.
@@ -444,7 +455,24 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
 
     const combat = autoPlay(createCombat(run.pendingScenario, ctx, run.pendingScenario.seed), ctx, policy);
     turns += combat.turns;
+    const scenario = run.pendingScenario;
+    const before = run.activeUids.map((uid) => run.box.find((m) => m.uid === uid)!).map((m) => ({ uid: m.uid, hp: m.hp }));
     step({ type: 'finish-combat', report: buildOutcomeReport(combat.state, run) });
+    if (trace) {
+      const node = run.map.nodes[run.pendingNodeId ?? ''] ?? run.map.nodes[run.position ?? ''];
+      trace({
+        region: run.regionIndex,
+        layer: node?.layer ?? -1,
+        kind: node?.kind ?? 'wild',
+        enemies: scenario.enemies.map((e) => ({ species: e.species, level: e.level })),
+        team: before.map((b) => {
+          const m = run.box.find((x) => x.uid === b.uid);
+          return { species: m?.speciesId ?? '?', level: m?.level ?? 0, hpBefore: b.hp, hpAfter: m?.hp ?? 0, max: m ? maxHpOf(m, ctx.content) : 0 };
+        }),
+        turns: combat.turns,
+        outcome: String(run.outcome),
+      });
+    }
     if (run.outcome !== 'in-progress') break;
 
     // §6.4.1 — a TM that dropped is worth nothing in the bag; teach it to whoever can take it.

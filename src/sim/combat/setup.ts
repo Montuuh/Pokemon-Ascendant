@@ -33,7 +33,8 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
     maxHp,
     hp,
     base: {
-      attack: statAtLevel(species, 'attack', setup.level),
+      // §2.2 — the Region's stat tier reaches an enemy's Attack here, once, like Iron Will reaches its HP.
+      attack: Math.round(statAtLevel(species, 'attack', setup.level) * ((setup as EnemySetup).attackMultiplier ?? 1)),
       defense: statAtLevel(species, 'defense', setup.level),
       speed: statAtLevel(species, 'speed', setup.level),
     },

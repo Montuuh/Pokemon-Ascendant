@@ -92,7 +92,7 @@ export function CityScreen() {
       <header className={styles.topBar}>
         <div className={styles.nameBlock}>
           <h1 className={`${styles.name} display`}>{def.name}</h1>
-          <InfoDot tip={townTip(def.name, next)} />
+          <InfoDot tip={townTip(def.name, next, run.modifiers.includes('greater-threats'))} />
           {/* §5.10 — the Badge case: what the Gyms behind you paid, for the rest of the run. */}
           <span className={styles.badges} data-testid="city-badges">
             {run.badges.map((id) => {

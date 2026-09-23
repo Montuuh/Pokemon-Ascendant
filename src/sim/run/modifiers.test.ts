@@ -42,9 +42,9 @@ describe('Difficulty modifiers — §8.8', () => {
 
   it('AnUnavailableModifier_IsInertEvenIfASaveNamesIt', () => {
     // A save from a later build, or a hand-edited one, must not switch on a rule the sim cannot honour.
-    expect(hasModifier(['greater-threats'], 'greater-threats')).toBe(false);
-    expect(modifierXpMultiplier(['greater-threats'])).toBe(1);
-    expect(modifierValue(['greater-threats'], 'greater-threats', 'anything', 42)).toBe(42);
+    expect(hasModifier(['tight-schedule'], 'tight-schedule')).toBe(false);
+    expect(modifierXpMultiplier(['tight-schedule'])).toBe(1);
+    expect(modifierValue(['tight-schedule'], 'tight-schedule', 'anything', 42)).toBe(42);
   });
 
   it('BoxSqueeze_ShrinksTheBox_§8.8', () => {

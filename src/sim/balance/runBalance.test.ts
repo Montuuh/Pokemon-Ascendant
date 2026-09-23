@@ -139,20 +139,38 @@ describe('Run pacing — §2.1, §3.7', () => {
     },
   );
 
-  it('Run_ContinuesPastTheFirstGym_ThroughBothCities_§2.1.4', { timeout: 120_000 }, () => {
-    // §2.1 — the seam. The whole run, three Regions and two Cities, played by the harness: every City visit
-    // (Center, shop, Dojo, gate) has to be answerable, or autoRun throws on the rejected action. Regions 2
-    // and 3 are placeholders at REGION_LEVEL_OFFSET until v0.7.3, so this asserts the run *continues*, not
-    // how hard the later Regions are.
-    let reachedRegion3 = 0;
+  /**
+   * §2.2.1 — the whole run, three Regions and two Cities, played by the harness. Every City visit (Center,
+   * shop, Dojo, gate) has to be answerable, or autoRun throws on the rejected action; and each later Region has
+   * to *cost* runs, inside the bands the canon sets. Until v0.7.1's difficulty pass a run that beat Gym 1 beat
+   * the other two every time: the team out-levelled its Region and the placeholder rosters stayed basic forms.
+   *
+   * The targets (§2.2.1) were set over 720 runs in six seed blocks. This guard runs one block of 120 to stay
+   * inside the minute `npm run check` has, and one block wanders: Region 3's rate moved 0.50–0.78 between
+   * blocks at a fixed tier. So the bands are the target ±~20 pp — wide enough for a block, narrow enough that
+   * losing an accent or a tier (Region 3 given 2 back at 1.00, a full run at half the runs) fails at once.
+   */
+  it('Run_EachRegionCostsRuns_InsideItsBand_§2.2.1', { timeout: 180_000 }, () => {
+    const cleared = [0, 0, 0, 0];
     for (const starter of STARTER_IDS) {
-      for (let seed = 1; seed <= 6; seed++) {
+      for (let seed = 1; seed <= 40; seed++) {
         const r = autoRun(7000 + seed, starter, ctx, DEFAULT_RUN_POLICY, 3);
-        expect(r.regionsCleared).toBeLessThanOrEqual(3);
-        if (r.regionsCleared >= 2) reachedRegion3++;
+        cleared[r.regionsCleared]! += 1;
       }
     }
-    expect(reachedRegion3, 'no run walked through both Cities').toBeGreaterThan(0);
+    const n = 40 * STARTER_IDS.length;
+    const past1 = cleared[1]! + cleared[2]! + cleared[3]!;
+    const past2 = cleared[2]! + cleared[3]!;
+    const r2 = past2 / past1;
+    const r3 = cleared[3]! / Math.max(1, past2);
+    const full = cleared[3]! / n;
+    console.log(`regions: R1 ${(past1 / n).toFixed(2)} · R2|R1 ${r2.toFixed(2)} · R3|R2 ${r3.toFixed(2)} · full run ${full.toFixed(2)}`);
+    expect(r2, 'Region 2, given Region 1').toBeGreaterThan(0.4);
+    expect(r2, 'Region 2, given Region 1').toBeLessThan(0.8);
+    expect(r3, 'Region 3, given Region 2').toBeGreaterThan(0.3);
+    expect(r3, 'Region 3, given Region 2').toBeLessThan(0.72);
+    expect(full, 'the whole run').toBeGreaterThan(0.06);
+    expect(full, 'the whole run').toBeLessThan(0.32);
   });
 
   it('Run_ThickensTheDeck_SomethingEvolvesEveryRun', () => {

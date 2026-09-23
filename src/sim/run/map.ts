@@ -1,7 +1,7 @@
 import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import {
-  BIOMES, ELITE, GYMS, LANE_THEME, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, TRAINERS, eliteTeamFor, eliteWildTeamFor,
+  BIOMES, ELITE, GYMS, LANE_THEME, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, TRAINERS, eliteTeamFor, eliteWildTeamFor, evolvedAt,
   gymById, gymTeamFor, rostersOf, trainerTeamFor, wildBandFor, type BiomeId, type GymDef, type TrainerRoster,
 } from './region';
 import { AID_HEAL_PCT } from './economy';
@@ -274,16 +274,30 @@ function rolled(rng: GameRng, weights: Partial<Record<NodeKind, number>>, row: r
 }
 
 /**
- * §2.1 placeholder — a preview moved up the level ladder. Every level a fight uses is read off its preview
- * (the wild band, the trainer and Gym rosters), so shifting the preview shifts the fight, and the map and the
- * fight can never disagree. A service node has no levels to move.
+ * §2.1 placeholder — a preview moved up the level ladder, its Pokémon evolved to the forms those levels warrant
+ * (`evolvedAt`). Every species and level a fight uses is read off its preview (the wild band and pool, the
+ * trainer, Elite and Gym rosters), so shifting the preview shifts the fight, and the map and the fight can
+ * never disagree (Pillar 1). A service node has no levels to move.
  */
-function shifted(preview: NodePreview, offset: number): NodePreview {
+function shifted(preview: NodePreview, offset: number, content: ContentRegistry): NodePreview {
   if (!offset || (preview.levelBand[0] === 0 && preview.levelBand[1] === 0)) return preview;
   const levelBand: [number, number] = [preview.levelBand[0] + offset, preview.levelBand[1] + offset];
-  const enemies = preview.enemies?.map((e) => ({ ...e, level: e.level + offset }));
-  const detail = enemies ? preview.detail.replace(/\bL(\d+)\b/g, (_, n: string) => `L${Number(n) + offset}`) : preview.detail;
-  return { ...preview, levelBand, detail, ...(enemies ? { enemies } : {}) };
+  const name = (id: string) => content.species(id).name;
+  if (!preview.enemies) {
+    // A wild pool: the band's floor decides the form, so every level the node can roll shows the species named.
+    const speciesIds = [...new Set(preview.speciesIds.map((id) => evolvedAt(id, levelBand[0], content)))];
+    return { ...preview, levelBand, speciesIds, detail: speciesIds.map(name).join(' · ') };
+  }
+  let detail = preview.detail;
+  let title = preview.title;
+  const enemies = preview.enemies.map((e) => {
+    const level = e.level + offset;
+    const species = evolvedAt(e.species, level, content);
+    detail = detail.replace(`${name(e.species)} L${e.level}`, `${name(species)} L${level}`);
+    if (title === `Wild ${name(e.species)}`) title = `Wild ${name(species)}`;
+    return { ...e, species, level };
+  });
+  return { ...preview, title, levelBand, detail, enemies, speciesIds: enemies.map((e) => e.species) };
 }
 
 /** §2.5 — build a Region. Deterministic in `rng`, which the caller seeds from the run seed. */
@@ -352,6 +366,7 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
         : kind === 'elite-wild' ? eliteWildPreview(content, layer)
         : gymPreview(content, layer === GYM_LAYER ? lanes[col]! : gymA),
         offset,
+        content,
       );
 
       const node: MapNode = { id, layer, col, kind, next: [], preview };

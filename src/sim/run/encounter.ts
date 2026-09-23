@@ -2,8 +2,8 @@ import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { activeMoves } from '../combat/stats';
 import type { BiomeId } from './region';
-import { BIOMES, ELITE, ELITE_WILD, GYM, LANE_THEME, TRAINERS, eliteWildTeamFor, gymById, gymTeamFor } from './region';
-import { modifierValue } from './modifiers';
+import { BIOMES, ELITE, ELITE_WILD, GYM, LANE_THEME, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, TRAINERS, eliteWildTeamFor, gymById, gymTeamFor, statTierFor } from './region';
+import { hasModifier, modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
 import { isThreeStageLine } from '../meta/bond';
 import type { ActiveSetup, MapNode, PartyMon, RunState } from './types';
@@ -219,8 +219,37 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
     // §5.9.3 — the team the *preview* promised, which is the band-derived one, not the catalogue row. The
-    // level is read off the preview too, so a later Region's shift (§2.1 placeholder) reaches the Gym.
-    enemies: gymTeamFor(gym).map((m, i): EnemySetup => ({ species: m.species, level: node.preview.enemies?.[i]?.level ?? m.level, tier: 'boss', phaseCount: m.phaseCount })),
+    // species and level are read off the preview too, so a later Region's shift and evolution reach the Gym.
+    enemies: gymTeamFor(gym).map((m, i): EnemySetup => ({ species: node.preview.enemies?.[i]?.species ?? m.species, level: node.preview.enemies?.[i]?.level ?? m.level, tier: 'boss', phaseCount: m.phaseCount })),
+  };
+}
+
+/**
+ * §2.2 — the Region's escalation, folded into every fight: the enemy stat tier on Max HP and Attack (the next
+ * Region's under §8.8 Greater Threats), and from Region 2 the status accent (each enemy gains its type's status
+ * move unless its own kit already has one).
+ */
+function applyRegion(scenario: ScenarioDef, run: RunState, content: ContentRegistry): ScenarioDef {
+  const tier = statTierFor(run.regionIndex, hasModifier(run.modifiers, 'greater-threats'));
+  const accent = run.regionIndex >= STATUS_ACCENT_FROM;
+  if (tier.hp === 1 && tier.attack === 1 && !accent) return scenario;
+  return {
+    ...scenario,
+    enemies: scenario.enemies.map((e) => {
+      const out: EnemySetup = { ...e };
+      if (tier.hp !== 1) out.hpMultiplier = (e.hpMultiplier ?? 1) * tier.hp;
+      if (tier.attack !== 1) out.attackMultiplier = (e.attackMultiplier ?? 1) * tier.attack;
+      if (accent) {
+        const kit = e.moves ?? activeMoves(content, e.species, e.level);
+        const hasStatus = kit.some((id) => {
+          const m = content.move(id);
+          return m.power === 0 && m.effects.some((fx) => fx.kind === 'status' && !fx.self);
+        });
+        const type = content.species(e.species).types[0]!;
+        if (!hasStatus) out.moves = [...kit, STATUS_ACCENT_MOVES[type] ?? STATUS_ACCENT_FALLBACK];
+      }
+      return out;
+    }),
   };
 }
 
@@ -240,7 +269,7 @@ function applyModifiers(scenario: ScenarioDef, run: RunState): ScenarioDef {
     enemies: scenario.enemies.map((e) => ({
       ...e,
       // Iron Will is a *wild* modifier: a trainer's Pidgey is the same Pidgey.
-      ...(wildHp !== 1 && e.tier === 'wild' ? { hpMultiplier: wildHp } : {}),
+      ...(wildHp !== 1 && e.tier === 'wild' ? { hpMultiplier: (e.hpMultiplier ?? 1) * wildHp } : {}),
       ...(extra > 0 && (e.tier === 'boss' || e.tier === 'elite')
         ? { phaseCount: Math.min(maxPhases, e.phaseCount + extra) as 1 | 2 | 3 }
         : {}),
@@ -268,7 +297,7 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
         return null;
     }
   })();
-  return base ? applyPerks(applyModifiers(base, run), run) : null;
+  return base ? applyPerks(applyModifiers(applyRegion(base, run, content), run), run) : null;
 }
 
 /**

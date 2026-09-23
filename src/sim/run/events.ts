@@ -117,8 +117,8 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     title: 'A trader with one crate left',
     scene: 'Everything else sold at the last town. What is left is the good stuff, and he knows it.',
     choices: [
-      { label: 'Buy the charm', detail: 'A Common relic for 250 ₽.', cost: 250, outcomes: [{ kind: 'relic', rarity: 'common' }] },
-      { label: 'Buy the good one', detail: 'An Uncommon relic for 450 ₽.', cost: 450, outcomes: [{ kind: 'relic', rarity: 'uncommon' }] },
+      { label: 'Buy the charm', detail: 'A Common relic.', cost: 250, outcomes: [{ kind: 'relic', rarity: 'common' }] },
+      { label: 'Buy the good one', detail: 'An Uncommon relic.', cost: 450, outcomes: [{ kind: 'relic', rarity: 'uncommon' }] },
       { label: 'Browse and leave', detail: 'Nothing today.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
@@ -130,7 +130,7 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     choices: [
       {
         label: 'Pay for the bathhouse',
-        detail: '200 ₽. The whole Box heals to full and one Trauma stack comes off your worst-worn Pokémon.',
+        detail: 'The whole Box heals to full and one Trauma stack comes off your worst-worn Pokémon.',
         cost: 200,
         outcomes: [{ kind: 'heal-box', percent: 100 }, { kind: 'clear-trauma' }],
       },

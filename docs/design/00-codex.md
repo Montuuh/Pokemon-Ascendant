@@ -44,7 +44,9 @@ Pokémon.
 - **Victory Road:** Gauntlet (no heal, 1-of-3 Rare), Apex recruit, Training Grounds (a free upgrade), Summit
   (full heal + 1-of-3 Legendary + League preview).
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
-- **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 multi-enemy + field effects.
+- **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 multi-enemy + field effects. The
+  numeric half (§2.2.1): enemies at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×2.3, HP
+  ×1 / ×1 / ×1.15), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 
 **Box & Active Team.** Box capacity 6 (→8). Active Team is 3, locked on node entry; only those 3 contribute
 cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.
@@ -189,7 +191,8 @@ Lv3 on three-stage lines or the Mastery card in every opening hand, and the line
 
 ## 6. Progression *(Topic 6)*
 
-**XP** by tier: wild 30 / trainer 45 / elite 80 / gym 140. **Active 100 %, benched Box 75 %** (`exp-share` → 100).
+**XP** by tier: wild 48 / trainer 72 / elite 110 / gym 200, scaled by the level gap (Gen V's formula, §6.2.1).
+**Active 100 %, benched Box 75 %** (`exp-share` → 100).
 Level-ups between nodes. Curve `12 + (L−1)×4`. Single-stage species get +25 % growth.
 
 **Learnset** — a base form knows **2 moves at level 1** and learns more by level; deck contribution is

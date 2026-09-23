@@ -1,3 +1,4 @@
+import { IconCoinOff } from '@tabler/icons-react';
 import styles from './Money.module.css';
 import { Tip, Tipped } from '@/ui/tooltip';
 
@@ -29,14 +30,17 @@ export function Money({ amount, size = 14, className = '' }: { amount: number; s
 
 /**
  * A price tag. `affordable` is the whole point: per docs/design/ui/01-design-system.md, a light-theme screen
- * may not colour running text with a semantic accent, so "you cannot pay for this" is carried by a border and
- * the icon tint, and the number itself stays ink.
+ * may not colour running text with a semantic accent, so "you cannot pay for this" is carried by the chip, and
+ * the number itself stays ink. Colour is never the only channel (D5): the coin becomes a crossed-out coin and
+ * the edge turns dashed, so it reads in greyscale too — this chip is the one place an offer says "not yet",
+ * since the offer itself no longer fades.
  */
 export function Price({ amount, affordable, size = 14 }: { amount: number; affordable: boolean; size?: number }) {
   return (
     <Tipped tip={affordable ? null : <Tip title="Not enough money" body="Poké Dollars come from fights. Wild fights pay little, trainers more, the Elite and the Gym most." />} className={`${styles.price} ${affordable ? '' : styles.short}`} tabIndex={affordable ? -1 : 0}>
-      <PokeDollar size={size} />
+      {affordable ? <PokeDollar size={size} /> : <IconCoinOff size={size} className={styles.coinOff} aria-hidden="true" />}
       <b className="tabular">{amount.toLocaleString('en-GB')}</b>
+      {!affordable && <span className="sr-only">, not enough money</span>}
     </Tipped>
   );
 }

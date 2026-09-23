@@ -341,6 +341,82 @@ export const LANE_THEME: Record<string, LaneTheme> = {
  */
 export const REGION_LEVEL_OFFSET: readonly number[] = [0, 7, 16];
 
+/**
+ * §2.1 placeholder, §2.7.3 — the form a Pokémon of this line has at this level: it walks `evolvesTo` for as long
+ * as the level has reached each stage's `evolveLevel`, the way a trainer's team is levelled in the games. A
+ * later Region borrows Region 1's rosters, and a Lv 29 Geodude is a Graveler — the player's own team has been
+ * evolving on the same thresholds all run (§6.2.4), and a basic form at a final form's level is not a fight.
+ * A branching line (Eevee) takes its first branch; a stage the content does not have yet stops the walk.
+ */
+export function evolvedAt(speciesId: string, level: number, content: ContentRegistry): string {
+  let id = speciesId;
+  for (let guard = 0; guard < 3; guard++) {
+    const s = content.species(id);
+    const next = s.evolvesTo?.[0];
+    if (!next || !s.evolveLevel || level < s.evolveLevel || !content.hasSpecies(next)) break;
+    id = next;
+  }
+  return id;
+}
+
+/**
+ * §2.2 — Region 2's accent, which Region 3 inherits: **status conditions on enemy intents become routine.**
+ * From `STATUS_ACCENT_FROM` on, every enemy carries its type's status move on top of its own kit, so a
+ * `Status` intent — telegraphed like any other (§5.2), never re-applied to a Pokémon that already has one
+ * (§5.3) — is part of every fight. With every status now carried between fights (§4.2.7.1) that is attrition
+ * the route has to be planned around: the nurse, the cures in the bag, an immune Lead.
+ *
+ * The enemy's first type picks the move. A type the games never gave a status move falls back to Supersonic,
+ * which half the franchise learns.
+ */
+export const STATUS_ACCENT_FROM = 1;
+export const STATUS_ACCENT_MOVES: Partial<Record<PokemonType, string>> = {
+  fire: 'will-o-wisp',
+  electric: 'thunder-wave',
+  poison: 'poison-powder',
+  grass: 'stun-spore',
+  bug: 'powder-spread',
+  psychic: 'hypnosis',
+  ghost: 'confuse-ray',
+};
+export const STATUS_ACCENT_FALLBACK = 'supersonic';
+
+/**
+ * §2.2 — the enemy stat tier: every enemy's Max HP and Attack are multiplied by its Region's entry. Levels alone do not
+ * keep up with a team that has grown to three evolved Pokémon, a case of relics and a Badge or two — the
+ * player's power compounds and a level-derived enemy's does not. This is the numeric half of the escalation;
+ * the accent above is the half the player is meant to notice. Tuned by the whole-run harness against the
+ * clear-rate bands in §2.2.1.
+ *
+ * **Attack-heavy on purpose.** An even split (×1.2/×1.55 on both) bought similar clear rates with Region 3
+ * fights 7.5 turns long; weighting Attack keeps every Region between 4 and 5. More HP makes a fight longer,
+ * more Attack makes it dangerous, and the curve is meant to be tension, not length. Measured over 720 runs.
+ */
+export interface StatTier {
+  hp: number;
+  attack: number;
+}
+export const REGION_STAT_TIER: readonly StatTier[] = [
+  { hp: 1, attack: 1 },
+  { hp: 1, attack: 1.6 },
+  { hp: 1.15, attack: 2.3 },
+];
+
+/**
+ * §2.2, §8.8 Greater Threats — the tier a Region's enemies fight at. The modifier borrows the next Region's
+ * tier; past the last Region it extrapolates one more step of the same size, so Region 3 under Greater Threats
+ * is as far above Region 3 as Region 3 is above Region 2.
+ */
+export function statTierFor(regionIndex: number, greaterThreats: boolean): StatTier {
+  const i = regionIndex + (greaterThreats ? 1 : 0);
+  const last = REGION_STAT_TIER.length - 1;
+  if (i <= last) return REGION_STAT_TIER[Math.max(0, i)]!;
+  const top = REGION_STAT_TIER[last]!;
+  const prev = REGION_STAT_TIER[last - 1]!;
+  const steps = i - last;
+  return { hp: top.hp + (top.hp - prev.hp) * steps, attack: top.attack + (top.attack - prev.attack) * steps };
+}
+
 export const RUN_START = {
   balls: 3,
   /** docs/design/catalogs/economy.md §1 — "start 3, +1 per Region": one more ball as each new Region begins. */

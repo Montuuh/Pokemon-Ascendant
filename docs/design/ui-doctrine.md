@@ -38,7 +38,11 @@ the screen exists for, it should. The test: cover the element with a thumb — d
 only a fact? A fact goes behind a door. Detail panels for the *selected* thing beat detail on *every* thing.
 
 ### D5 — Contrast and colour
-Text meets WCAG AA: ≥ 4.5:1 for body, ≥ 3:1 for large text (≥ 24 px, or ≥ 18.66 px bold). On the light theme
+Text meets WCAG AA: ≥ 4.5:1 for body, ≥ 3:1 for large text (≥ 24 px, or ≥ 18.66 px bold). **That holds on a
+disabled control too when its text is something a player reads to plan** — an unaffordable shop card, a locked
+offer: say "not now" with the price chip, a lock or a label, never with opacity. WCAG exempts disabled controls;
+this game does not, because "what am I saving toward" is read off exactly those. A sold or spent row, which is
+history rather than a plan, may fade. *(Added 2026-09-22, from the v0.7.1 review; the user left the call to design.)* On the light theme
 the semantic accents (`--accent-*`) are fills, borders or icon tints, **never running text**. Colour is never
 the only channel: pair it with a glyph, a label or a shape (§9.6). Type hue comes from the games' own pixel
 label, not from a coloured word.

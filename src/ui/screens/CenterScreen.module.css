@@ -6,7 +6,7 @@
   grid-template-rows: auto 1fr auto;
   gap: var(--sp-4);
   padding: var(--sp-5);
-  background: radial-gradient(130% 90% at 50% 0%, #fff0e6 0%, var(--surface-0) 70%);
+  background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
   color: var(--ink-primary);
   overflow: hidden;
 }
@@ -94,7 +94,8 @@
 }
 .patient:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--border-strong); }
 .patient:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
-.off { opacity: 0.55; cursor: not-allowed; }
+/* D5 — Therapy you cannot afford yet stays readable; the price chip carries "not enough money". */
+.off { cursor: not-allowed; }
 
 .patientBody { display: grid; gap: 4px; min-width: 0; }
 .patientName { font-size: var(--type-body); font-weight: 700; }

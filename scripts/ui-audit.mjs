@@ -179,7 +179,10 @@ function staticChecks(fileList) {
   for (const f of fileList) {
     const abs = resolve(ROOT, f);
     if (!existsSync(abs)) continue;
-    const text = readFileSync(abs, 'utf8');
+    const raw = readFileSync(abs, 'utf8');
+    // Comments blanked to the same length, so a word like `screens.md` in a note is not read as a class and a
+    // hex in a note is not a literal — and line numbers still point at the right line.
+    const text = f.endsWith('.css') ? raw.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' ')) : raw;
     if (f.endsWith('.module.css')) {
       const classes = [...new Set([...text.matchAll(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/g)].map((m) => m[1]))];
       // Every TSX that imports this module, by file name.

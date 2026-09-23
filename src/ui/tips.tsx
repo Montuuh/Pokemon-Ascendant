@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
+import { AID_HEAL_PCT, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
@@ -275,9 +275,29 @@ export function doorTip(door: CityDoor, open: boolean, title: string): ReactNode
   return <Tip title={title} meta={[open ? (door === 'gate' ? 'Ends the visit' : 'Open') : 'Not open yet']} body={CITY_DOOR_HINT[door]} />;
 }
 
-/** §2.11.0 — the town itself: how a lobby works, in the bubble beside its name. */
-export function townTip(name: string, nextRegion: number): ReactNode {
-  return <Tip title={name} body="Every labelled building is a door — walk in as often as you like. The road at the top leaves town." footer={`Region ${nextRegion} is next.`} />;
+/**
+ * §2.2, §2.2.1 — what a Region does to its enemies, in a line: the status accent and the stat tier, read off the
+ * sim so the bubble can never promise a different number from the fight.
+ */
+export function regionAccent(regionIndex: number, greaterThreats: boolean): string {
+  const tier = statTierFor(regionIndex, greaterThreats);
+  const parts: string[] = [];
+  if (regionIndex >= STATUS_ACCENT_FROM) parts.push('every enemy carries a status move');
+  const stats = [...(tier.hp !== 1 ? [`HP ×${tier.hp}`] : []), ...(tier.attack !== 1 ? [`Attack ×${tier.attack}`] : [])];
+  if (stats.length) parts.push(`enemy ${stats.join(' and ')}`);
+  // Uncapitalised, so it reads the same at the start of a bubble and after "Region 3 is next:".
+  return (parts.length ? parts.join('; ') : 'enemies at their base strength') + '.';
+}
+const capitalise = (line: string) => line.charAt(0).toUpperCase() + line.slice(1);
+
+/** §2.2 — the Region you are in, beside its name on the map. */
+export function regionTip(regionIndex: number, greaterThreats: boolean): ReactNode {
+  return <Tip title={`Region ${regionIndex + 1}`} body={capitalise(regionAccent(regionIndex, greaterThreats))} footer={regionIndex >= STATUS_ACCENT_FROM ? 'Enemies here also field the forms their levels warrant.' : undefined} />;
+}
+
+/** §2.11.0 — the town itself: how a lobby works, and what waits past its gate. */
+export function townTip(name: string, nextRegion: number, greaterThreats: boolean): ReactNode {
+  return <Tip title={name} body="Every labelled building is a door — walk in as often as you like. The road at the top leaves town." footer={`Region ${nextRegion} is next: ${regionAccent(nextRegion - 1, greaterThreats)}`} />;
 }
 
 /** §7.2–§7.5 — the bag button, on the map and in town. */

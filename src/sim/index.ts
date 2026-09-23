@@ -24,7 +24,7 @@ export * from './replay/replay';
 // ── the run layer (§2)
 export * from './run/types';
 export { generateRegion, nodesInLayer, laneGymOf, drawGymPair, LAYERS, FORK_LAYER, biomeFor } from './run/map';
-export { BIOMES, TRAINERS, TRAINER_SPRITES, ELITE, ELITE_WILD, GYM, GYMS, LANE_THEME, gymById, rostersOf, eliteWildTeamFor, type GymDef, type LaneTheme, RUN_START, STARTER_IDS, WILD_LEVEL_BAND, ROUTE_LAYERS, gymTeamFor, TM_DROP_CHANCE, RELIC_DROP_CHANCE, HELD_ITEM_DROP_CHANCE, wildBandFor, trainerTeamFor, eliteTeamFor, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, assertRegionContent, type BiomeId, type BiomePool, type TrainerRoster } from './run/region';
+export { BIOMES, TRAINERS, TRAINER_SPRITES, ELITE, ELITE_WILD, GYM, GYMS, LANE_THEME, gymById, rostersOf, eliteWildTeamFor, type GymDef, type LaneTheme, RUN_START, STARTER_IDS, WILD_LEVEL_BAND, ROUTE_LAYERS, gymTeamFor, TM_DROP_CHANCE, RELIC_DROP_CHANCE, HELD_ITEM_DROP_CHANCE, wildBandFor, trainerTeamFor, eliteTeamFor, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, REGION_STAT_TIER, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, STATUS_ACCENT_FALLBACK, statTierFor, evolvedAt, type StatTier, assertRegionContent, type BiomeId, type BiomePool, type TrainerRoster } from './run/region';
 export { createRun, runReducer, validateRunAction, newPartyMon, resetUidCounter, runHelpers, defaultRunCtx, validateKit, shopSlotName, effectiveMax, boxCapacity, abilityLocked, arriveAtCity, dojoPrice, isServiceNode, RUN_SAVE_VERSION, DEFAULT_PERKS, type RunCtx } from './run/run';
 // §2.1.4, §2.11 — the Cities between Regions.
 export { CITIES, REGION_COUNT, cityAfter, isFinalRegion, type CityDef } from './run/cities';
@@ -33,7 +33,7 @@ export { AID_HEAL_PCT, MONEY_REWARD, PRICES, LEGENDARY_CAP, isOfferable, inPool,
 export { MYSTERY_EVENTS, mysteryEvent, rollEvent, allOutcomes, assertEventContent, eventRiskOf, RISK_LABEL, type MysteryEvent, type EventChoice, type EventOutcome, type EventRisk } from './run/events';
 export { MODIFIERS, AVAILABLE_MODIFIERS, modifierById, modifierValue, hasModifier, modifierXpMultiplier, battleConfigFor, type DifficultyModifier } from './run/modifiers';
 export { activeRegionModifier, regionModifierValue, rollRegionModifierOffer, priceFor, traumaZone1Pct, victoryHealPct } from './run/regionModifiers';
-export { DEFAULT_PROGRESSION, encounterXp, grantXp, xpToNext, isEvolutionReady, applyBranch, autoPickMoves, learnMove, previewBranch, type ProgressionConfig, type BranchPreview } from './run/xp';
+export { DEFAULT_PROGRESSION, encounterXp, levelXpFactor, grantXp, xpToNext, isEvolutionReady, applyBranch, autoPickMoves, learnMove, previewBranch, type ProgressionConfig, type BranchPreview } from './run/xp';
 export { buildOutcomeReport } from './run/report';
 export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } from './run/flee';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';

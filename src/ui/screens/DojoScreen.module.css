@@ -120,8 +120,13 @@
   border-color: var(--accent-action);
   background: var(--surface-2);
 }
+/* D5 — what is already yours (a move known, a passive equipped) may fade: it is history. What you cannot
+   afford yet or have not unlocked keeps full contrast, and its price chip or lock says why. */
 .off {
   opacity: 0.55;
+  cursor: not-allowed;
+}
+.short {
   cursor: not-allowed;
 }
 

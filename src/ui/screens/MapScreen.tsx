@@ -15,8 +15,8 @@ import { PauseMenu } from '@/ui/components/PauseMenu';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { RUN_REJECT_TEXT } from '@/ui/strings';
-import { bagTip, ballsTip, moneyTip } from '@/ui/tips';
-import { Tip, Tipped, useTip } from '@/ui/tooltip';
+import { bagTip, ballsTip, moneyTip, regionTip } from '@/ui/tips';
+import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './MapScreen.module.css';
 
 // Per docs/design/ui/screens.md §2.2 — the Region map. The left column is the Active Team and the Box (§2.3,
@@ -164,7 +164,10 @@ export function MapScreen() {
     <main className={`${styles.root} theme-stage`} data-testid="map-screen">
       <header className={styles.topBar}>
         <div>
-          <h1 className={`${styles.regionName} display`}>Region {run.regionIndex + 1}</h1>
+          <div className={styles.regionRow}>
+            <h1 className={`${styles.regionName} display`}>Region {run.regionIndex + 1}</h1>
+            <InfoDot tip={regionTip(run.regionIndex, run.modifiers.includes('greater-threats'))} />
+          </div>
           <p className={styles.progress}>
             Layer <b className="tabular">{Math.min(standingLayer + 2, LAYERS)}</b> of <b className="tabular">{LAYERS}</b>
             {' · seed '}

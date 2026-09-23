@@ -332,9 +332,11 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await page.getByTestId('difficulty-no-refunds').click();
     await expect(page.getByTestId('difficulty-xp')).toContainText('×1.30');
 
-    // §7.7 — a modifier whose system does not exist cannot be taken, and the card names the version.
-    await expect(page.getByTestId('difficulty-greater-threats')).toBeDisabled();
-    await expect(page.getByTestId('difficulty-greater-threats')).toContainText('v0.7');
+    // §7.7 — a modifier whose system does not exist cannot be taken, and the card says why.
+    await expect(page.getByTestId('difficulty-tight-schedule')).toBeDisabled();
+    await expect(page.getByTestId('difficulty-tight-schedule')).toContainText('League');
+    // Greater Threats is live since the Regions have stat tiers (§2.2.1) — locked by level, not by version.
+    await expect(page.getByTestId('difficulty-lock-greater-threats')).toContainText('Lv 10');
     // And a row above your level is locked by level, not by version.
     await expect(page.getByTestId('difficulty-faint-echo')).toBeDisabled();
     await expect(page.getByTestId('difficulty-lock-faint-echo')).toContainText('Lv 9');

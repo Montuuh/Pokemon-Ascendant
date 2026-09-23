@@ -137,6 +137,54 @@ Later Regions must not feel like Region 1 with bigger numbers. Each introduces a
 Enemy levels rise too, of course — but the escalation the player *notices* is the new rule, not the bigger
 number. Region aesthetics and rosters: §2.13.
 
+**Region 2's accent, as built.** From Region 2 on, every enemy carries its type's status move on top of its own
+kit — Will-O-Wisp for Fire, Thunder Wave for Electric, Poison Powder, Stun Spore, Powder Spread (Bug), Hypnosis,
+Confuse Ray; Supersonic for a type the games gave none — unless its kit already has one. It arrives as a
+`Status` intent (§5.2), telegraphed like any other and never re-applied to a Pokémon that already has one
+(§5.3). Because every status now outlives its fight (§4.2.7.1), this is attrition a route has to be planned
+around — the nurse, the cures in the bag, an immune Lead — not a nuisance inside one fight. Region 3 inherits it.
+*(Built 2026-09-22.)*
+
+## §2.2.1 The difficulty curve
+
+A run is meant to be lost more often than won, and **each Region is meant to cost runs** — not only the first.
+Measured with the whole-run harness's autoplayer, which plays every fight and every choice the same way
+(`src/sim/balance/autoRun.ts`); `runBalance.test.ts` guards the curve:
+
+| Measure | Target (720 runs) | Guard (one 120-run block) |
+|---|---|---|
+| Region 2 cleared, given Region 1 | ~60 % | 40–80 % |
+| Region 3 cleared, given Region 2 | ~50 % | 30–72 % |
+| The whole run | ~17 % | 6–32 % |
+
+Region 1's own bands are §3.7's (the pacing table). The curve climbs: every Region is a little less likely to
+fall than the one before it, and the full run is roughly one in six for a player who plays like the harness.
+
+Four things hold it there. Levels alone did not: v0.7.1 first shipped with the later Regions at their canon
+bands (§2.6.5) and nothing else, and every autoplayed run that beat Gym 1 beat the other two, one or two turns a
+fight — a team of evolved Pokémon with relics and Badges out-grows a band that only adds levels.
+
+1. **XP scales with the level gap** (§6.2.1), so a team stops running away from its Region's band.
+2. **Enemies field the forms their levels warrant** from Region 2 on (§2.7.3): a Lv 29 Geodude is a Golem.
+3. **The status accent** above.
+4. **The enemy stat tier** — every enemy's Max HP and Attack, by Region:
+
+| Region | Max HP | Attack |
+|---|---|---|
+| 1 | ×1 | ×1 |
+| 2 | ×1 | ×1.6 |
+| 3 | ×1.15 | ×2.3 |
+
+**Attack-heavy on purpose**: an even split (×1.2 / ×1.55 on both) reached similar clear rates with Region 3
+fights 7.5 turns long; this one keeps every Region between 4 and 5 turns a fight (4.3 / 4.6 / 4.6). More HP
+makes a fight longer, more Attack makes it dangerous, and the curve is meant to be tension, not length.
+
+The tier is the numeric half; the accent is the half the player is meant to notice. **Greater Threats** (§8.8)
+borrows the next Region's tier, and past Region 3 it extrapolates one more step of the same size (HP ×1.3,
+Attack ×3.0).
+The numbers are tuned against the bands, not chosen: change one and read the harness. *(2026-09-22, set by the
+difficulty pass after v0.7.1; the user asked for the later routes to be harder and left the method to design.)*
+
 ---
 
 # §2.3 Box and Active Team
@@ -491,7 +539,10 @@ same list, so a preview can never turn out to have been a guess (Pillar 1).
 
 **Authoring rules.** A trainer's level band is **its layer's** wild band +1 to +2 (§2.6.5) — a step up from a wild fight,
 not a boss. The archetype must be readable from the team at a glance, because the node preview names it and the
-player counter-picks their Active 3 from it. No hidden intents at baseline. And no trainer fields a fully-evolved
+player counter-picks their Active 3 from it. No hidden intents at baseline. **From Region 2 on, every enemy
+fields the form its level warrants** — it walks its line's `evolveLevel`s, the thresholds the player's own team
+evolves on (§6.2.4) — and the map's preview names that form, so the node never promises a Geodude and fields a
+Golem. Region 1 is authored as it stands. And no trainer fields a fully-evolved
 Pokémon before the player could plausibly have one; the Gym ace is the deliberate exception.
 
 ---

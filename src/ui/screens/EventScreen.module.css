@@ -6,7 +6,7 @@
   grid-template-rows: auto auto 1fr auto;
   gap: var(--sp-5);
   padding: var(--sp-6) var(--sp-5);
-  background: radial-gradient(120% 80% at 50% 0%, #f7ecd6 0%, var(--surface-0) 72%);
+  background: radial-gradient(120% 80% at 50% 0%, var(--surface-2) 0%, var(--surface-0) 72%);
   color: var(--ink-primary);
   overflow-y: auto;
 }
@@ -96,7 +96,8 @@
   box-shadow: 0 10px 24px rgba(58, 46, 34, 0.16);
 }
 .choice:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 3px; }
-.choice:disabled { opacity: 0.55; cursor: not-allowed; }
+/* D5 — a choice you cannot pay for is read to plan, so it keeps its contrast; the dashed edge marks it shut. */
+.choice:disabled { cursor: not-allowed; border-style: dashed; }
 
 .choiceLabel {
   font-size: var(--type-h3);

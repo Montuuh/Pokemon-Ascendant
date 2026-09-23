@@ -122,8 +122,7 @@ export const MODIFIERS: DifficultyModifier[] = [
     xpMultiplier: 1.4,
     unlock: 'Trainer Lv 10',
     unlockLevel: 10,
-    available: false,
-    pending: 'there is no Region 2 to borrow a stat tier from until v0.7',
+    available: true,
   },
   {
     id: 'tight-schedule',

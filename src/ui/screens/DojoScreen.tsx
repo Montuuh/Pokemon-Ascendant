@@ -114,7 +114,7 @@ export function DojoScreen() {
                       as="button"
                       type="button"
                       tip={moveDefTip(move)}
-                      className={`${styles.offer} ${known || !canMove ? styles.off : ''}`}
+                      className={`${styles.offer} ${known ? styles.off : !canMove ? styles.short : ''}`}
                       disabled={known || !canMove}
                       onClick={() => act({ type: 'teach-move', uid, moveId: id })}
                       data-testid={`tutor-${id}`}
@@ -148,7 +148,7 @@ export function DojoScreen() {
                       as="button"
                       type="button"
                       tip={<Tip title={def.name} meta={['Ability', 'Passive', ...(locked ? ['Hidden'] : [])]} body={def.description} footer={locked ? RUN_REJECT_TEXT['ability-locked'] : inert ? 'No effect until a later version.' : equipped ? 'Already equipped.' : 'Replaces the current passive. One slot per Pokémon.'} />}
-                      className={`${styles.offer} ${equipped || !canAbility || locked ? styles.off : ''}`}
+                      className={`${styles.offer} ${equipped ? styles.off : !canAbility || locked ? styles.short : ''}`}
                       disabled={equipped || !canAbility || locked}
                       onClick={() => act({ type: 'set-ability', uid, abilityId: id })}
                       data-testid={`ability-${id}`}

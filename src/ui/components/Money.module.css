@@ -17,14 +17,17 @@
   background: var(--surface-1);
 }
 
-/* Cannot afford: the border and the coin carry it, the number stays legible ink. */
+/* Cannot afford: a dashed warning edge and a crossed-out coin carry it (shape, not only hue — D5); the number
+   stays legible ink. */
 .short {
   border-color: var(--accent-warning);
+  border-style: dashed;
   background: color-mix(in srgb, var(--accent-warning) 10%, var(--surface-1));
 }
 
-.short .coin {
-  fill: var(--surface-3);
+.coinOff {
+  flex: none;
+  color: var(--ink-secondary);
 }
 
 .glyph {

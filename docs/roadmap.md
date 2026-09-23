@@ -404,9 +404,15 @@ placed over its building; the Center, the shop (sells held items back) and the D
 Safari, Game Corner and Black Market doors say they are in development. The route has the field nurse and the
 travelling merchant; statuses carry between fights with their clocks; the Trauma Salve Cache is sold. The
 exit is a test: `cities.test` walks one seed through all three Regions and both Cities, and the harness plays
-whole runs (`runBalance`). **Finding for v0.7.3:** at +7 / +16 levels the placeholder Regions are too gentle
-— across 60 autoplayed runs, every run that beat Gym 1 also beat Gyms 2 and 3. Their own content, not the
-offset, is where the difficulty has to come from.
+whole runs (`runBalance`).
+
+**Difficulty pass (2026-09-22/23).** Shipped, the placeholder Regions were too gentle: every autoplayed run that
+beat Gym 1 beat the other two. Four changes, all canon now (§2.2, §2.2.1, §2.7.3, §6.2.1): XP scaled by the
+level gap (Gen V's formula), enemies at the forms their levels warrant from Region 2, Region 2's accent (every
+enemy carries its type's status move), and an Attack-weighted enemy stat tier. Measured over 720 runs: Region 2
+~60 % given Region 1, Region 3 ~50 % given Region 2, the whole run ~17 %, fights 4–5 turns in every Region;
+`runBalance` guards the bands. Greater Threats went live with the tier. The D5 doctrine now keeps full
+contrast on unaffordable offers (the price chip says "not now", not a fade).
 
 ### v0.7.2 — The city  ☐
 **Celadon City**: the Department Store by floors, the wider City Dojo, the Game Corner's two machines — the
@@ -431,7 +437,7 @@ accent (multi-enemy, field effects) is **v0.8** — R3 ships on R2's combat rule
 
 ### v0.7.5 — The leftovers  ☐
 Evolution Items (Eevee's Stone Cache, the Mysterious Stone event), the intent queue (Trainer's Instinct),
-Greater Threats, the six pending hidden abilities, the unwritten Mastery moves, the inert relic rows, the
+the six pending hidden abilities, the unwritten Mastery moves, the inert relic rows, the
 Master Ball Charm criterion.
 **Exit:** nothing in the build is marked "pending v0.7".
 

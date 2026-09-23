@@ -27,6 +27,7 @@ import { nextAction } from '@/sim/balance/autoPlayer';
 //   __ascendant.run.trauma(3)           give the Lead N Trauma stacks — the fast way to see §8.2.4's Therapy
 //   __ascendant.run.pay(2000)           set the wallet, for pricing screens without grinding for the money
 //   __ascendant.run.afflict('burn')     give the Lead a carried status (§4.2.7.1), as a fight would have left it
+//   __ascendant.run.jump('gym')         stand the run right in front of the first node of a kind, skipping the route
 export interface AscendantDevTools {
   version: string;
   dump: () => Record<string, unknown> | null;
@@ -76,6 +77,11 @@ export interface AscendantRunTools {
   pay: (amount: number) => void;
   /** §4.2.7.1 — leave a status on a Box Pokémon, as if its last fight had ended with it. */
   afflict: (kind: sim.PrimaryStatus, uid?: string) => void;
+  /**
+   * Make the first node of a kind the only reachable one, without walking there. For tests about what a node
+   * *does* (the Gym's ending, a Region 3 fight), not about the route that leads to it.
+   */
+  jump: (kind: sim.NodeKind) => boolean;
   /**
    * §2.11 — stand the run in the City after Region `regionIndex` (0 → Pallet Town, 1 → Celadon City), with the
    * lobby rolled the way a Gym win would roll it. The route is skipped; the City is the real one.
@@ -188,6 +194,14 @@ export function installDevTools(): void {
         const run = useRunStore.getState().run;
         if (!run) return;
         useRunStore.setState({ run: { ...run, money: Math.max(0, Math.floor(amount)) } });
+      },
+
+      jump: (kind) => {
+        const run = useRunStore.getState().run;
+        const node = run && Object.values(run.map.nodes).find((n) => n.kind === kind);
+        if (!run || !node || run.phase !== 'map') return false;
+        useRunStore.setState({ run: { ...run, reachable: [node.id] } });
+        return true;
       },
 
       afflict: (kind, uid) => {

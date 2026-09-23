@@ -38,6 +38,12 @@ carry a Lv 5 starter to roughly Lv 14 by the Gym. The first values tried (30/45/
 Lv 11 and made the Gym unwinnable for two of the three starters. `src/sim/balance/runBalance.test.ts` is the
 check — change a number here and read the table, do not reason about it.
 
+**Scaled by the level gap** (Gen V's formula): each Pokémon takes the encounter's XP ×
+`((2·Le + 10) / (Le + Lp + 10))^2.5`, where `Le` is the average level of what was beaten and `Lp` its own
+level (`ProgressionConfig.xpLevelExponent`, 0 turns it off). Level with the foe it is ×1; ten levels above a
+Lv 20 foe, about ×0.63; five below, about ×1.3. Without it a three-Region run ended with a Lv 43 team fighting
+Lv 33 Gyms: flat XP per fight grows a team faster than a Region's band climbs (§2.2.1). *(2026-09-22.)*
+
 **Distribution:** the Active Team earns **100 %**; Pokémon sitting in the Box earn **75 %**. The `exp-share`
 relic lifts the bench to 100 %.
 

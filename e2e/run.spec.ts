@@ -289,7 +289,10 @@ test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ p
   await page.evaluate(() => {
     const e = (window as unknown as { __ascendant: Record<string, never> }).__ascendant;
     (e.run as unknown as { fill: (n: number) => void }).fill(3);
-    (e.run as unknown as { levelTo: (n: number) => void }).levelTo(20);
+    // The whole Box, not only the Lead: XP scales with the level gap (§6.2.1), so a Lv 20 Lead no longer drags
+    // a Lv 6 bench up to the Gym on its own.
+    const run = e.run as unknown as { state: () => { box: { uid: string }[] }; levelTo: (n: number, uid?: string) => void };
+    for (const m of run.state().box) run.levelTo(20, m.uid);
     (e.run as unknown as { goto: (k: string) => string }).goto('gym');
   });
 
@@ -331,9 +334,15 @@ test('the third Gym ends the run with the summary — §2.1', async ({ page }) =
   await page.evaluate(() => {
     const dev = window.__ascendant!;
     dev.run.fill(3);
-    for (const m of dev.run.state()!.box) dev.run.levelTo(45, m.uid);
+    // Levelled well past Region 3 (§2.2.1 makes it the hardest of the three): this test is about the ending.
+    for (const m of dev.run.state()!.box) dev.run.levelTo(50, m.uid);
     dev.run.city(1);
+    // levelTo raises the level, not the HP — the Center fills the new bars, as a player would stop there.
+    dev.run.dispatch({ type: 'enter-building', building: 'center' });
+    dev.run.dispatch({ type: 'leave-center' });
     dev.run.dispatch({ type: 'depart-city', modifierId: dev.run.state()!.city!.reflection[0]! });
+    // Straight to the last Gym: Region 3 is the hardest of the three (§2.2.1), and the route is not under test.
+    dev.run.jump('gym');
     dev.run.goto('gym');
   });
   const phase = await page.evaluate(() => window.__ascendant!.run.state()!.phase);

@@ -305,7 +305,9 @@ describe('XP and levels — §6.2', () => {
     const awarded = after.pendingReward!.xpAwarded;
     const activeAward = awarded.find((a) => a.uid === s.activeUids[0])!.amount;
     const benchAward = awarded.find((a) => a.uid === extra.uid)!.amount;
-    expect(benchAward).toBe(Math.round(activeAward * 0.75));
+    // Both at the same level, so the §6.2.1 level factor is the same for each and only the share differs —
+    // to within the one point of rounding the factor now sits in front of.
+    expect(Math.abs(benchAward - activeAward * 0.75)).toBeLessThanOrEqual(1);
     expect(before.length).toBe(2);
   });
 

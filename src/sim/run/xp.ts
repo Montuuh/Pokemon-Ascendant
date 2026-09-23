@@ -16,6 +16,11 @@ export interface ProgressionConfig {
   levelUpBaseXp: number;
   levelUpSlopeXp: number;
   maxLevel: number;
+  /**
+   * §6.2.1 — the level-scaling exponent (Gen V's formula): a Pokémon above its foe learns less from it, one below
+   * learns more. 0 turns the scaling off, which is how the pre-v0.7.1 curve is reproduced.
+   */
+  xpLevelExponent: number;
 }
 
 // Tuned against the whole-run harness (src/sim/balance/runBalance.test.ts), not a single fight: a seven-node
@@ -29,6 +34,7 @@ export const DEFAULT_PROGRESSION: ProgressionConfig = {
   levelUpBaseXp: 12,
   levelUpSlopeXp: 4,
   maxLevel: 60,
+  xpLevelExponent: 2.5,
 };
 
 /** §6.2.3 — the XP needed to leave level L. */
@@ -43,6 +49,17 @@ export function encounterXp(tier: EnemyTier, enemyCount: number, config = DEFAUL
     : tier === 'trainer' ? config.trainerXp
     : config.wildXp;
   return per * Math.max(1, enemyCount);
+}
+
+/**
+ * §6.2.1 — how much of an encounter's XP a Pokémon of `monLevel` takes from foes of `enemyLevel`: Gen V's
+ * `((2·Le + 10) / (Le + Lp + 10))^2.5`. Level with the foe it is 1; ten levels above a Lv 20 foe it is about
+ * 0.65; five below it, about 1.3. It is what keeps a team from running away from the Region's level band —
+ * without it a three-Region run ended with a Lv 43 team fighting Lv 33 Gyms, one or two turns a fight.
+ */
+export function levelXpFactor(enemyLevel: number, monLevel: number, config = DEFAULT_PROGRESSION): number {
+  if (!config.xpLevelExponent) return 1;
+  return Math.pow((2 * enemyLevel + 10) / (enemyLevel + monLevel + 10), config.xpLevelExponent);
 }
 
 /** §6.7.1 — add a move to the pool if it is not already there. Returns whether it was new. */

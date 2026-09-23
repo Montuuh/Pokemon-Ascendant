@@ -36,15 +36,12 @@
   outline: 3px solid var(--brand-blue);
   outline-offset: 2px;
 }
-/* "Cannot afford" is not "gone": it is the thing you are saving toward, so it stays readable and its price
-   stays at full strength. Only a sold row — the `dim` modifier — fades properly out. */
+/* "Cannot afford" is not "gone": it is the thing you are saving toward, so it keeps full contrast (D5) and
+   the price chip says it — crossed-out coin, dashed edge, "Not enough money" on hover. Opacity would fade the
+   price with the card, since it compounds down the tree. Only a sold row — the `dim` modifier — fades out,
+   because a sold row is history, not a plan. */
 .interactive:disabled {
   cursor: not-allowed;
-  opacity: 0.78;
-}
-.interactive:disabled .footer,
-.interactive:disabled .name {
-  opacity: 1;
 }
 
 .selected {
