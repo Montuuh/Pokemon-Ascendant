@@ -23,9 +23,9 @@ loop layer and re-tests the core inside it.
 | v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
-| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, then Regions 2 and 3 with their own accents, and every City door open. **Eight subversions** | ◐ in progress |
-| v0.8 | The run, revisited | Routes, consumables, Bond, Shiny, the Trainer level and the Poké Mart reworked where playtests hurt, then the whole run balanced | ☐ |
-| v0.9 | The endgame | Multi-enemy fights and field effects, then Victory Road, the League and the Champion | ☐ |
+| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Game Corner's prize counter, the Black Market — every City door open. **Eight subversions** | ◐ in progress |
+| v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ☐ |
+| v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
 | v1.1 | Polish | Audio, accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
 | v1.2 | Map revamp | A horizontal route you scroll, painted from a tileset with the biome on top | ☐ |
@@ -477,9 +477,9 @@ doctrine (every version written down and stamped everywhere), and Karate King Ko
 Kiyo can lead the Fighting Gym. The exit holds: three Regions, three rosters, twelve Gyms.
 
 ### v0.7.5 — The leftovers and the playtest nerfs  ☐
-Evolution Items (Eevee's Stone Cache, the Mysterious Stone event), the intent queue (Trainer's Instinct),
-the six pending hidden abilities, the unwritten Mastery moves (Regions 2 and 3's lines too), the inert relic
-rows, the Master Ball Charm criterion. The two nerfs playtesting found (2026-09-24):
+The short things that close v0.7. Evolution Items (Eevee's Stone Cache, the Mysterious Stone event), the intent
+queue (Trainer's Instinct), the six pending hidden abilities, the unwritten Mastery moves (Regions 2 and 3's lines
+too), the inert relic rows, the Master Ball Charm criterion. The two nerfs playtesting found (2026-09-24):
 - **Sleep** can land on a Pokémon that is already asleep. §4.2.2.4 gives Sleep no type immunity on purpose, but
   nothing stops a second Sleep move re-rolling it; decide between an immunity while asleep and refresh-not-stack
   (§4.2.5), and measure it.
@@ -494,71 +494,82 @@ The door already drawn in the City (§2.11.6): an entry fee, a fixed number of b
 offers — the Gen I lines built ahead of their Regions that no pool places yet. *(Backlog #1.)*
 **Exit:** a City visit can end with a recruit no route could have given.
 
-### v0.7.7 — Under the Game Corner  ☐
-The **Black Market** beneath Celadon's Game Corner (§2.11.6): Legendary relics paid in HP or Trauma, Pokémon
-traded for Pokémon — what a Mart will not sell. The **Challenge Ring leaves the Dojo** for its own building
-beside it, on both Cities' art: the City plates are redrawn for the Market's stairs anyway. *(Backlog #2, #11.)*
-**Exit:** the Market is a real trade — every price on it has a harness case.
+### v0.7.7 — The Game Corner and the Black Market  ☐
+Celadon's casino finished and the market beneath it opened (§2.11.5, §2.11.6). The Game Corner gains its **prize
+counter** — what the machines win buys what Gen I sold there (Porygon, Abra, Dratini, TMs) — beside the Wheel and
+the Slots it has had since v0.7.2. The **Black Market** sells what a Mart will not: Legendary relics paid in HP or
+Trauma, Pokémon traded for Pokémon. And the **Challenge Ring leaves the Dojo** for its own building beside it, on
+both Cities' art, which is redrawn for the Market's stairs anyway. *(Backlog #2, #11.)*
+**Exit:** the Market and the prize counter are real trades — every price on them has a harness case.
 
 ### v0.7.8 — Every door open  ☐
-The last doors still marked in development: the Dojo's extra-moves counter (§2.11.6) and the Center's Daycare
-and PC Box services (§2.11.1). Small, and here so no City door is a promise at the end of v0.7.
+The last doors marked in development, both small: the Dojo's extra-moves counter (§2.11.6) and the Center's
+Daycare and PC Box services (§2.11.1).
 **Exit (v0.7):** three Regions, two Cities, and no door in either that says "in development".
 
-## v0.8 — The run, revisited  ☐
+## v0.8 — Multi-enemy & the route  ☐
 
-The systems playtesting put in question, reworked in the user's order, and the whole run balanced once they
-have settled. Each revamp starts with a design pass with the user — their scope is not decided yet.
+The version that changes how a fight is played. Fights against two or three enemies at once make the game far
+more strategic, so they are **not only the League's or Region 3's** — they appear across the whole run (user,
+2026-09-24; §2.2, §5.6). The route is reworked in the same version, and the balance pass comes last, once both
+have settled. Not content first: it is the combat engine, so a targeting bug cannot hide behind a content bug.
 
-### v0.8.1 — Routes, and consumables that are spent  ☐
-The route's generation, nodes and pacing, reworked (§2.5, §2.9); and consumables that are **consumed for real
-and found far more often** (§7.2). They ship together because both change what a route hands you. *(Backlog #3,
-#8.)*
+### v0.8.1 — Multi-enemy fights  ☐
+1 lead enemy + 1–2 supports (§5.6): slots, targeting, intents, AI, Cleave and Backstrike against several bodies.
+The hand changes with it: a card is **dragged onto its target** as well as clicked, and before it is played it
+shows **its damage against every enemy it can hit**, not against one (§9 — the damage preview goes per target).
 
-### v0.8.2 — Bond and Shiny, revamped  ☐
+### v0.8.2 — Enemies that act twice, and enemies that call for help  ☐
+Some Pokémon and some battles **act twice a turn**, both intents shown; and some carry a move that **calls one or
+two companions into the fight** — a telegraphed intent that turns a single fight into a multi-enemy one. Scope
+decided with the user; both ride v0.8.1's intent and AI machinery. *(Backlog #9, and the user's idea of
+2026-09-24.)*
+
+### v0.8.3 — Multi-enemy across the run  ☐
+Where the groups appear, and how often: which wild nodes are packs, which trainers fight in pairs, which Elites
+and Gyms bring a support, and how Region 3's accent grows from it. Designed with the harness, then placed.
+
+### v0.8.4 — Field effects  ☐
+The biome effects (§4.3) that give each biome its identity (§2.6.1 — its ⚠️ OPEN closes here), and the four
+weather abilities come alive. Region 3's accent keeps them.
+
+### v0.8.5 — Routes, revamped, and consumables that are spent  ☐
+The route's generation, nodes and pacing, reworked (§2.5, §2.9) — with v0.8.3's groups placed on it — and
+consumables that are **consumed for real and found far more often** (§7.2). They ship together because both change
+what a route hands you. Design pass with the user first; the route's *look* is v1.2's. *(Backlog #3, #8.)*
+
+### v0.8.6 — The balance pass  ☐
+Levels, money, consumables, relics and prices together, against whole runs of three Regions and two Cities with
+multi-enemy fights in them — the harness first (720 runs, `CURVE_SEEDS=240`), then a playtest. After multi-enemy
+on purpose (user, 2026-09-24): a pass before it would tune fights that are about to change shape. The first of
+two; v1.0's is the last. *(Backlog #4.)*
+**Exit (v0.8):** fights against groups everywhere in the run, a reworked route, and the whole run balanced.
+
+## v0.9 — The long game  ☐
+
+The account's systems revisited, and the road to the Champion.
+
+### v0.9.1 — Bond and Shiny, revamped  ☐
 Bond (§6.8) and Shiny — today only the Bond-rank sprite reveal, not something you find (§5.13) — reworked
-together, since the one is the other's reward. *(Backlog #5, #6.)*
+together, since the one is the other's reward. Design pass with the user first. *(Backlog #5, #6.)*
 
-### v0.8.3 — Player level and the Poké Mart, revamped  ☐
-The Trainer level and the Mart (§8.3, §8.4), with the scored shop curation §2.11.2.1 still owes and what
-leftover ₽ turns into at a run's end. *(Backlog #7, and the end-of-run surplus.)*
+### v0.9.2 — Player level and the Poké Mart, revamped  ☐
+The Trainer level and the Mart (§8.3, §8.4), with the scored shop curation §2.11.2.1 still owes and what leftover
+₽ turns into at a run's end. Design pass with the user first. *(Backlog #7, and the end-of-run surplus.)*
 
-### v0.8.4 — The balance pass  ☐
-Levels, money, consumables, relics and prices together, against whole runs of three Regions and two Cities —
-the harness first (720 runs, `CURVE_SEEDS=240`), then a playtest. The first of two; v1.0's is the last.
-*(Backlog #4, moved behind the revamps: each of them changes the numbers it would tune.)*
-**Exit:** a run re-thought where playtests hurt, and balanced end to end.
-
-## v0.9 — The endgame  ☐
-
-The combat engine the League assumes, then the road to the Champion. Multi-enemy and field effects were v0.8
-until 2026-09-24; they moved behind the revamps the user ranked first, and they still come before Victory Road
-because the League is built on them.
-
-### v0.9.1 — Multi-enemy fights  ☐
-1 lead + 1–2 supports (§5.6): slots, targeting, intents, AI, the damage preview, Cleave and Backstrike against
-several bodies. Not content — the combat engine, so a targeting bug cannot hide behind a content bug.
-
-### v0.9.2 — Double-attack intents  ☐
-An enemy intent that resolves two hits in one turn, on the same intent and AI machinery as v0.9.1; scope decided
-with the user. *(Backlog #9.)*
-
-### v0.9.3 — Field effects  ☐
-The biome effects (§4.3) that give each biome its identity (§2.6.1 — its ⚠️ OPEN closes here), the four weather
-abilities come alive, and Region 3's accent is finally on (§2.2).
-
-### v0.9.4 — The catch, animated  ☐
+### v0.9.3 — The catch, animated  ☐
 A bar that lights up to the throw's catch %, and a Poké Ball swinging side to side, slowing little by little
 before it settles. The outcome is still rolled first (§2.6.4.1) — the animation only shows it. On the combat
-screen v0.9.1 reshapes, so it is drawn once. *(Backlog #10.)*
+screen v0.8 reshaped, so it is drawn once. *(Backlog #10.)*
 
-### v0.9.5 — Victory Road  ☐
+### v0.9.4 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 
-### v0.9.6 — The League  ☐
-Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons.
-**Exit (v0.9):** a run ends at the Champion.
+### v0.9.5 — The League  ☐
+Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
+multi-enemy fights, which the League is built on.
+**Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
 
 ## v1.0 — Release  ☐
 Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads, the final balance pass with
@@ -600,24 +611,26 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 # Backlog — ideas with no version yet
 
 Empty since 2026-09-24: every idea on it was placed. The user's priority pass of that day, and where each item
-went:
+went after the user's review of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it,
+the balance pass follows both; the account revamps move to v0.9):
 
 | # | Idea | Placed in |
 |---|---|---|
 | — | Playtest nerfs: Sleep, Mega Drain | v0.7.5 |
 | 1 | The Safari Zone | v0.7.6 |
-| 2 | The Black Market | v0.7.7 |
-| 3 | Routes, revamped | v0.8.1 |
-| 4 | The global balance pass | v0.8.4 (after the revamps) and v1.0 |
-| 5 | Bond, revamped | v0.8.2 |
-| 6 | Shiny, revamped | v0.8.2 |
-| 7 | Player level & Poké Mart, revamped | v0.8.3 |
-| 8 | Consumables that are spent | v0.8.1 (with the routes) |
-| 9 | Double-attack enemy intents | v0.9.2 |
-| 10 | The catch, animated | v0.9.4 |
+| 2 | The Black Market (with the Game Corner's prize counter) | v0.7.7 |
+| 3 | Routes, revamped | v0.8.5 |
+| 4 | The global balance pass | v0.8.6 (after multi-enemy, per the user) and v1.0 |
+| 5 | Bond, revamped | v0.9.1 |
+| 6 | Shiny, revamped | v0.9.1 |
+| 7 | Player level & Poké Mart, revamped | v0.9.2 |
+| 8 | Consumables that are spent | v0.8.5 (with the routes) |
+| 9 | Double-attack enemy intents — and enemies that call for help | v0.8.2 |
+| 10 | The catch, animated | v0.9.3 |
 | 11 | The Ring moves out of the Dojo | v0.7.7 (with the City art) |
+| — | Multi-enemy fights, everywhere in the run | v0.8.1, v0.8.3 |
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.8 |
-| — | End-of-run ₽ surplus | v0.8.3 |
-| — | Recovering missed Badges | v0.9.5 |
+| — | End-of-run ₽ surplus | v0.9.2 |
+| — | Recovering missed Badges | v0.9.4 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.3 |
 | — | Multiplayer — a dual mode | v2.0 |

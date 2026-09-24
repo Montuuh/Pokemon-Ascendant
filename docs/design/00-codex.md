@@ -49,7 +49,8 @@ Pokémon.
 - **Victory Road:** Gauntlet (no heal, 1-of-3 Rare), Apex recruit, Training Grounds (a free upgrade), Summit
   (full heal + 1-of-3 Legendary + League preview).
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
-- **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 multi-enemy + field effects. The
+- **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
+  multi-enemy groups (groups appear in every Region from v0.8; cards are dragged onto a target, §5.6). The
   numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×1.95, HP
   ×1 / ×1 / ×1.15), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
@@ -60,7 +61,7 @@ Pokémon.
   Tower; twelve rosters (the Hex Maniac hides each Pokémon's first intent), Giovanni as the Elite Trainer,
   Aerodactyl as the Elite Wild, and the Psychic · Ground · Fighting · Ice Gyms of Sabrina, Giovanni, Kiyo and
   Lorelei with the Marsh, Earth, Knuckle and Glacier Badges (every Badge carries the name of the badge its art is — Koga's is the Soul Badge, as in Gen I; 2026-09-24). Two thirds of what it fields is new. Its accent (multi-enemy,
-  field effects) is v0.9's. *(2026-09-23.)*
+  field effects) is v0.8's. *(2026-09-23.)*
 
 **Box & Active Team.** Box capacity 6 (→8). Active Team is 3, locked on node entry; only those 3 contribute
 cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.

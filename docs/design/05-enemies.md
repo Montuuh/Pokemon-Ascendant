@@ -96,11 +96,18 @@ Gym ace's hidden opener was a Cleave that removed a bench member.)*
 
 # §5.6 Multi-enemy encounters
 
-A Region 3 accent: one lead enemy plus one or two supports.
+One lead enemy plus one or two supports. **Not only a Region 3 accent** (user, 2026-09-24): fighting a group is
+where the game is most strategic, so groups appear across the whole run — which nodes, and how often, is placed
+with the harness (roadmap v0.8.3). Region 3 keeps the largest groups and adds field effects (§2.2).
 
 - All enemies reveal intents simultaneously.
 - Resolution order: **supports first in slot order, lead enemy last.**
-- The player picks a target for each offensive card.
+- The player picks a target for each offensive card: **dragging the card onto the enemy**, or clicking the card
+  and then the enemy. Before it is played, a card shows **its damage against every enemy it can hit** — the
+  preview is per target, never one number for the fight.
+- **Acting twice, and calling for help.** Some Pokémon and some battles act twice a turn, both intents shown; some
+  carry a move that calls one or two companions into the fight — a telegraphed intent like any other (§5.2), which
+  turns a single fight into a group. Their exact rules are designed in roadmap v0.8.2.
 
 | Support role | Behaviour |
 |---|---|
