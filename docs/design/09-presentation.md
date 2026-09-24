@@ -311,9 +311,9 @@ at polish.
 | **Focus management** | v0.2 ✅ | Every modal takes focus on open, cycles Tab inside itself, and hands focus back on close |
 | **Text size** (80 / 100 / 125 / 150 %) | v0.5 | Layouts have to be built at 150 % from the start or they clip |
 | Basic settings — audio, fullscreen, language | v0.1 ✅ | Shipped |
-| Colour-blind palettes and pattern overlays | v0.9 | The shape-not-just-colour rule (§9.1.3.2) is already enforced, which is the hard half |
-| SFX subtitles | v0.9 | Needs the audio pass first |
-| Full key and pad rebinding, two profiles | v0.9 | |
+| Colour-blind palettes and pattern overlays | v1.1 | The shape-not-just-colour rule (§9.1.3.2) is already enforced, which is the hard half |
+| SFX subtitles | v1.1 | Needs the audio pass first |
+| Full key and pad rebinding, two profiles | v1.1 | |
 
 The four brought forward were all cheaper to do now than to retrofit, and three of them are the kind of thing
 that silently decays the moment nobody is checking. `e2e/a11y.spec.ts` is the check.
@@ -377,7 +377,7 @@ clipping; buttons hug their content with a minimum width. Numbers, dates and cur
 | Locale | Status |
 |---|---|
 | English (en-US) | Primary |
-| Spanish (es-ES) | Planned for v0.9 |
+| Spanish (es-ES) | Planned for v1.1 |
 | French, Japanese | Later; Japanese needs a CJK font |
 
 ---
@@ -392,7 +392,7 @@ clipping; buttons hug their content with a minimum width. Numbers, dates and cur
 | Shop, Mystery Event, inventory | v0.4 |
 | Legendary pick, Pokédex, achievements, settings expansion | v0.5–v0.6 |
 | City plaza, Dojo, Grand Dojo, Black Market | v0.7 |
-| Audio, the accessibility tier, localisation, generated backdrops | v0.9 |
+| Audio, the accessibility tier, localisation, generated backdrops | v1.1 |
 
 ---
 

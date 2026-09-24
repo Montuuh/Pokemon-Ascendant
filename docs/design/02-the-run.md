@@ -105,8 +105,8 @@ non-boss content in the game and the last window to prepare. Full design: §2.12
 
 ## §2.1.6 The League
 
-> 🔒 **Deferred.** The League is designed but not built. The build order finishes the Region 1 → Victory Road
-> loop first (roadmap v0.8). The spec stands; do not implement ahead of it.
+> 🔒 **Deferred.** The League is designed but not built: it is roadmap v0.9.6, after multi-enemy fights (v0.9.1),
+> which it is built on. The spec stands; do not implement ahead of it.
 
 Five sequential fights with no map: Elite Four ×4, then the Champion. Between fights, a **micro-rest** restores
 30 % of Effective Max HP. No shop, no recruitment. Defeating the Champion wins the run. Full design: §5.11, §5.12.
@@ -168,7 +168,7 @@ places lines rather than authoring them. Measured the same way (`runBalance.test
 | Enemies of a species the earlier Regions never field | — | **67 %** |
 | Enemies with a Psychic or Ghost type | 1 % | **13 %** |
 
-Its mechanical accent — multi-enemy fights and field effects — is v0.8's (§5.6, §4.3); until then Region 3 plays on
+Its mechanical accent — multi-enemy fights and field effects — is v0.9's (§5.6, §4.3); until then Region 3 plays on
 Region 2's rules, and the Hex Maniac's veil (§2.7.1) is the one new wrinkle a trainer brings.
 
 ## §2.2.1 The difficulty curve
@@ -418,7 +418,7 @@ three Pokémon twice is the failure state to watch for. *(Noted 2026-09-22; wide
 so the ground you fight on is part of what the lane telegraphs (§2.5.0).
 
 > ⚠️ **OPEN (2026-09-22)**: which effect each biome carries, and whether it applies to the whole lane or only
-> near the Gym. Waits on field effects themselves (§4.3, v0.8). Decides: user.
+> near the Gym. Waits on field effects themselves (§4.3, v0.9.3), and is decided there.
 
 ## §2.6.2 What a Wild node offers
 

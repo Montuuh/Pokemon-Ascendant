@@ -73,7 +73,13 @@ state, and any place the build still disagrees with canon.
 
 - Small, reversible change: do it, verify, report.
 - Feature / multi-file: state the plan in a few lines (files, approach, § touched), then build unless the user objects. Ask only when different readings would produce materially different work.
-- **No commits or pushes unless asked.** Conventional commits: `feat(sim): …`, `feat(ui): …`, `content: …`, `design: …`, `docs: …`.
+- **Commit and push every finished unit to `main`** — the user's standing instruction. Conventional commits
+  (`feat(sim): …`, `feat(ui): …`, `content: …`, `design: …`, `docs: …`), no attribution lines, never force.
+  **Other agents work in this folder too**: stage only your own files (`docs/session/standing-facts.md`, *Working in
+  a shared folder*).
+- **Reply to the user in Spanish**; code, docs, commits and game text stay in English (en-GB). How the user works
+  — delegated taste calls, art permissions, playtest findings — is `docs/session/standing-facts.md`, *Working
+  with the user*: read it before your first reply.
 - End of a task: update `docs/session/active.md` (≤ 30 lines) and, if scope moved, `docs/roadmap.md`.
 - **Every version ships with its changelog and is stamped everywhere** — `docs/release-doctrine.md`, walked by
   `.claude/skills/ship-version`: the `CHANGELOG.md` entry (the game's What's new screen reads it; work between

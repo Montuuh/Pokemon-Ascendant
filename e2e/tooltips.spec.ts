@@ -87,9 +87,9 @@ test.describe('About', () => {
     await expect(page.getByTestId('about-screen')).toBeVisible();
 
     await expect(page.getByTestId('about-version')).toHaveText(/^v\d+\.\d+\.\d+/);
-    // One row per version in docs/roadmap.md — twelve since the v0.7 split (2026-09-22), and growing.
+    // One row per version in docs/roadmap.md — fourteen since the backlog was placed (2026-09-24), and growing.
     const rows = page.locator('[data-testid^="roadmap-v"]');
-    await expect(rows).toHaveCount(12);
+    await expect(rows).toHaveCount(14);
     await expect(page.getByTestId('roadmap-v1.2')).toBeVisible();
     await expect(page.getByTestId('roadmap-v0.1')).toHaveAttribute('data-status', 'done');
     await expect(page.getByTestId('roadmap-v1.0')).toHaveAttribute('data-status', 'planned');

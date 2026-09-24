@@ -262,7 +262,7 @@ on the Trainer's Corner from Level 1, the rest on the Hub upgrades shelf from Le
 | Curated Starting Relic +1 | Corner (Lv 1) | 3 | Run start offers 4 Starting Relics instead of 3 |
 | Pokédex Insight | Hub upgrades (Lv 5) | 4 | The first fight each run against a species you have **not yet** made Familiar shows its opening intent free |
 | Trauma Salve Cache | Hub upgrades | 4 | City 1's shop is guaranteed to stock at least one Trauma Salve, in the Uncommon relic's slot *(sold since v0.7.1)* |
-| Apex Pokémon Reveal | Hub upgrades | 4 | The Victory Road Apex species is shown on entering Region 3 *(sold once Victory Road ships, v0.8)* |
+| Apex Pokémon Reveal | Hub upgrades | 4 | The Victory Road Apex species is shown on entering Region 3 *(sold once Victory Road ships, v0.9.5)* |
 | Expanded Box | Hub upgrades | 5 | Box capacity 6 → 8 for all future runs |
 | Difficulty Modifier Slot +1 | Hub upgrades | 6 | Stack 2 difficulty modifiers per run instead of 1 |
 | Second Starter Slot (Twin Run) | Hub upgrades | 8 | Choose two starters; the Box starts +1 larger. Active Team stays 3 |

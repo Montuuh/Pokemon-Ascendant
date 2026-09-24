@@ -152,16 +152,19 @@ describe('Run pacing — §2.1, §3.7', () => {
    */
   // The Region-2-plays-differently measure (§2.2, v0.7.3's exit) rides on the same runs as the curve below.
   const fights: FightTrace[] = [];
+  // One block of 40 seeds per starter in `npm run check`; tune at 240 (`CURVE_SEEDS=240`), which is the 720 runs
+  // the targets were set over.
+  const CURVE_SEEDS = Number(process.env.CURVE_SEEDS ?? 40);
 
-  it('Run_EachRegionCostsRuns_InsideItsBand_§2.2.1', { timeout: 180_000 }, () => {
+  it('Run_EachRegionCostsRuns_InsideItsBand_§2.2.1', { timeout: 180_000 + CURVE_SEEDS * 3_000 }, () => {
     const cleared = [0, 0, 0, 0];
     for (const starter of STARTER_IDS) {
-      for (let seed = 1; seed <= 40; seed++) {
+      for (let seed = 1; seed <= CURVE_SEEDS; seed++) {
         const r = autoRun(7000 + seed, starter, ctx, DEFAULT_RUN_POLICY, 3, (f) => fights.push(f));
         cleared[r.regionsCleared]! += 1;
       }
     }
-    const n = 40 * STARTER_IDS.length;
+    const n = CURVE_SEEDS * STARTER_IDS.length;
     const past1 = cleared[1]! + cleared[2]! + cleared[3]!;
     const past2 = cleared[2]! + cleared[3]!;
     const r2 = past2 / past1;

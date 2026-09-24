@@ -27,3 +27,10 @@ description: >
   Mastery power bands: §5.11.
 
 Numbers you change belong in config/content, never in a rule. Propose, do not silently retune canon values.
+
+## The Region curve (§2.2.1)
+
+`npm run check` guards the curve over one block of 120 runs, which wanders ±~10 pp. To tune it, measure over the
+720 runs the targets were set on: `CURVE_SEEDS=240 npx vitest run src/sim/balance/runBalance.test.ts -t EachRegion`
+(Git Bash, ~50 s) and read the `regions:` line. The knob is `REGION_STAT_TIER` in `src/sim/run/region.ts`; record the
+measurement in §2.2.1 beside the number it justifies.

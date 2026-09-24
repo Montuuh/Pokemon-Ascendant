@@ -1,29 +1,29 @@
 # Session State — Pokémon Ascendant
 
 **Date:** 2026-09-24 · **Version:** v0.7.4 shipped (*Region 3, Volcanic Highlands*).
-**Sprint goal next:** v0.7.5 — *The leftovers*: Evolution Items (Eevee's Stone Cache, the Mysterious Stone), the
-intent queue (Trainer's Instinct), the six pending hidden abilities, the unwritten Mastery moves (Regions 2 and 3
-lines too), the inert relic rows, the Master Ball Charm criterion. Exit: nothing marked "pending v0.7".
+**First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
-**v0.7.4:** Region 3 is a `RegionContent` of its own (`*_R3` in `run/region.ts`): Volcano 5 · Cave 3 (Fighting and
-Ice lanes) · Sky 2 · Tower 1, band 22–30, 12 rosters (Hex Maniacs `veiled`: first intent hidden), Boss Giovanni,
-Aerodactyl, Sabrina/Giovanni/Kiyo/Lorelei (scripted off-type aces). Marsh · Earth · Knuckle · Glacier live (new
-`status-chill` hook). R3 Attack tier ×2.3 → ×1.95 (720 runs: R3|R2 47 %, full 15 %, 4.9 turns). R2 Elite renamed
-Koichi. Plate + Tower backdrop generated; sprites/emblems fetched. Also: **What's new** (CHANGELOG.md, read by the
-game) and the **release doctrine** (`docs/release-doctrine.md`, `ship-version` skill, `check:version`).
+**Sprint goal next:** v0.7.5 — *The leftovers and the playtest nerfs* (`docs/roadmap.md`): Evolution Items, the
+intent queue, six hidden abilities, the Mastery moves (Regions 2–3 too), the inert relics, Master Ball Charm;
+**Sleep** must not land on a sleeping Pokémon, **Mega Drain** needs a numbers pass; the Poké Mart hides unmet starters.
 
-**Findings to act on:**
-- Since v0.7.4 (in `## Next`): Badges renamed as in the games (Soul ↔ Marsh, Plain, Knuckle; save v10 migrates).
-  Ditto's Transform → backlog. The written design is mutable: decide names/items directly (CLAUDE.md, rules).
-- The Poké Mart shows unmet starters by name (§8.9.2 is Pokédex-only).
-- Map caption `font-size: 11px` should be `--type-caption` once 720 has room; the tick's `#2f7d4f` has no token.
-- Not built (§2.11): Daycare/PC Box at the Center, scored shop curation; Safari, Black Market, extra-moves doors.
-- 13 abilities in `abilities.json` still carry 🆕 in the catalogue (stale marks, pre-existing).
-- Backlog (roadmap): animated catch, the Ring as its own building, a dual multiplayer mode (to talk through).
+**The plan (2026-09-24, the backlog placed in versions — the user's priority order, with named deviations):**
+v0.7.6 Safari Zone · v0.7.7 Black Market + the Ring's own building · v0.7.8 every City door open →
+**v0.8 The run, revisited**: routes + spent consumables · Bond & Shiny · Trainer level & Poké Mart · the balance
+pass → **v0.9 The endgame**: multi-enemy · double-attack intents · field effects · animated catch · Victory Road ·
+the League → v1.0 release · v1.1 polish · v1.2 map revamp · v1.3 the world, wider · v2.0 two players.
+Awaiting the user's word on three calls: multi-enemy behind the revamps; the balance pass after them; whether
+"routes, revamped" is the rules (v0.8.1) or the look (v1.2).
 
-**Test status:** `npm run check` green — 493 Vitest, typecheck, lint, §, catalogue and version guards.
-**Shipping:** every version follows `docs/release-doctrine.md` — CHANGELOG entry (or `## Next` between versions),
-`npm version`, roadmap mark, README status, this header. **UI review loop:** `ui-review` skill after any UI change.
+**Since v0.7.4 (in CHANGELOG `## Next`):** the Badges carry the games' names (Soul = Koga's, Marsh = Sabrina's,
+Plain, Knuckle; run save v10 migrates v9). Ditto's Transform → v1.3. The written design is mutable.
+
+**Findings to act on:** map caption token, wild biome emblems and route-line contrast → v1.2 · 13 stale 🆕
+ability marks → v0.7.5 · `AGENTS.md`, `.agents/`, `.codex/` (the Codex setup) are untracked: another session's.
+
+**Test status:** `npm run check` green — 494 Vitest, typecheck, lint, §, catalogue and version guards.
+**Shipping:** `docs/release-doctrine.md` (the `ship-version` skill). **UI changes:** the `ui-review` skill.
+**Tuning the Region curve:** `CURVE_SEEDS=240 npx vitest run src/sim/balance/runBalance.test.ts -t EachRegion`.
 
 ## Standing facts
 

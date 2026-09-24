@@ -7,6 +7,26 @@
 > A fact earns its place here by having been **paid for**: a measurement, a regression, a rule that was
 > implemented wrong first. Anything derivable from the code or the canon belongs in the code or the canon.
 
+## Working with the user (read this first)
+
+- **Reply in Spanish.** The user writes in Spanish; code, docs, commits and every string in the game stay in
+  English (en-GB), because the game's localisation is its own version (v1.1).
+- **Commit and push every finished unit to `main`** — the user's standing instruction, which is the
+  authorisation `CLAUDE.md`'s workflow refers to. Conventional commits, **no attribution lines**, never force.
+- **Taste calls are delegated.** "Lo que mejor quede", "deja las que mejor creas": decide, record the rationale
+  where the rule lives, say what you chose. **The written design is mutable** (2026-09-24): a better name, idea
+  or item is written in directly. Only a change of the game's direction goes to the user; an idea the user likes
+  but wants later goes to the roadmap's backlog.
+- **Art:** permission to download and to generate images is standing. Fetch every real object (Pokémon,
+  items, badges, trainers, battle backdrops); generate only invented scenes. Never generate a Pokémon.
+- **Every version ships by `docs/release-doctrine.md`** (the `ship-version` skill): a `CHANGELOG.md` entry the
+  game shows as What's new, and the version stamped everywhere; `npm run check:version` guards it. Work that
+  reaches `main` between versions goes under `## Next`.
+- **Playtest findings arrive in chat** ("I found that…"); they go to the roadmap — a fix into the next
+  subversion, an idea into the backlog — never only into the reply.
+- **The user runs other agents in this same folder** (other Claude sessions, and Codex: `AGENTS.md`,
+  `.agents/`, `.codex/`). See *Working in a shared folder* below before staging anything.
+
 ## Canon and content
 
 - **Canon is `docs/design/`, ten topics.** 1 Overview · 2 The Run (everything outside a fight, including the
@@ -121,6 +141,13 @@
   a strictly worse player, and then the design gets tuned against that player.
 - **Golden fixtures** are regenerated only with `UPDATE_GOLDEN=1 npm test`, plus a note in the rule that
   changed.
+- **The Region curve (§2.2.1) is tuned over 720 runs, guarded over 120.** `npm run check` runs one block of 40
+  seeds × 3 starters, which wanders ±~10 pp; to *tune*, measure long: `CURVE_SEEDS=240 npx vitest run
+  src/sim/balance/runBalance.test.ts -t EachRegion` (~50 s, Git Bash). The knob is `REGION_STAT_TIER` in
+  `run/region.ts`. Paid for in v0.7.4: Region 3's own roster read 37 % given Region 2 at the placeholder's
+  Attack ×2.3 (the 120-run guard still passed); ×1.95 put it back at 47 %.
+- **A new Region's roster hits harder than its placeholder did.** Real final forms (Alakazam, Gengar, Machamp)
+  outclass Region 1 lines raised by +16 levels; re-measure the curve whenever a Region's tables change.
 
 ## Honesty rules
 
@@ -212,7 +239,29 @@
 - **Pages on a private repo needs a paid plan.** The account is on Free, so the repo is public — which the
   Pages URL makes moot anyway. The deploy source is GitHub Actions; there is no `gh-pages` branch to sync.
 
+## Working in a shared folder (2026-09-23/24)
+
+- **Other agents edit this tree while you work.** `git status` will show files you never touched; they are
+  theirs until they commit them. **Never `git add -A` and commit blind**: stage by path, or `git add -A` then
+  `git reset -- <their files>`, and read `git diff --cached --stat` before committing. Paid for: a
+  `git add -A` swept another session's roadmap edits (the user's backlog priorities) into an unrelated commit.
+- **A file both of you edited** can be committed with only your hunk: build your version from `git show
+  HEAD:<file>` plus your change, `git hash-object -w` it, and `git update-index --cacheinfo
+  100644,<sha>,<path>`. The working tree keeps both edits.
+- **A file changed under you** ("modified since read") means someone else is in it: re-read, merge onto theirs,
+  never overwrite. `docs/session/active.md` is the usual one — keep their lines when you rewrite the header.
+- **Port 5173 may be another session's dev server.** `preview_start` then refuses the name; open the page by
+  URL instead, or start your own once theirs is gone.
+
 ## Environment gotchas
+
+- **Heredocs in the agent's Bash tool halve backslashes**, even quoted (`<<'EOF'`): a regex like `/\d+/` or
+  `/\*\*/` written through `node - <<'EOF'` lands as `/d+/` or `/**/` and breaks silently. Write any script with
+  a backslash, a regex or a template literal to a file with the Write tool and run it with `node`.
+- **`check:catalogs` reads every backticked kebab token in a catalogue as a content id.** A code identifier
+  (a hook name, a field, a stage id) in backticks fails the guard; write it without backticks.
+- **A module imported from page JS through Vite (`import('/src/…')`) is a second instance**, not the app's:
+  setting a store through it changes nothing. Drive the game through `window.__ascendant` hooks.
 
 - **Rewriting a CSS module wholesale leaves Vite serving an empty object**, so every class comes back
   `undefined` and the component renders unstyled. It looks like a layout bug and it is a stale-cache bug.

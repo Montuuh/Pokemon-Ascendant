@@ -121,8 +121,9 @@ Gen I only; a later generation is the scaling lever if Gen I proves too small.
 
 The build order is in [`docs/roadmap.md`](../roadmap.md), and it is the only scope document. Summarised:
 **v0.1** combat slice (shipped) · **v0.2** first route · **v0.3** evolution · **v0.4** economy and relics ·
-**v0.5** Region 1 complete · **v0.6** meta · **v0.7** Regions 2–3 · **v0.8** Victory Road and League ·
-**v0.9** polish · **v1.0** release.
+**v0.5** Region 1 complete · **v0.6** meta · **v0.7** Cities and Regions 2–3 · **v0.8** the run revisited ·
+**v0.9** the endgame (multi-enemy, field effects, Victory Road, the League) · **v1.0** release · **v1.1** polish ·
+**v1.2** map revamp · **v1.3** the world, wider · **v2.0** two players.
 
 > The phrase "vertical slice" in older text means the Unity-era Region-1-end-to-end milestone, which is now
 > **v0.5**. The current first milestone is the **Combat Slice (v0.1)**.
