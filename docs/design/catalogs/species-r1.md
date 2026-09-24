@@ -15,9 +15,9 @@
 > availability exactly as the rows state. Three deviations, all recorded where they live: learnset *levels* are
 > compressed relative to these rows so every entry sits under its stage's threshold (§6.9's own rule, which
 > some rows here break — Bulbasaur cannot learn Sleep Powder at 13 and evolve at 12); ten branch additions ship
-> with their effect clause omitted pending v0.4 effect kinds (`moves.md` section 0); and pools drop the four
-> abilities not yet authored into `abilities.json` (`rain-dish`, `infiltrator`, `weak-armor`, and the reserved
-> `arena-trap-x`). Lines not in the build — Bellsprout, Mankey, Aerodactyl, Lapras, Marowak — keep their
+> with their effect clause omitted pending v0.4 effect kinds (`moves.md` section 0). The four abilities once
+> dropped from the pools (`rain-dish`, `infiltrator`, `weak-armor`, `arena-trap`) are every line's hidden third
+> since v0.7.5 (§6.8.3). Lines not in the build — Bellsprout, Mankey, Aerodactyl, Lapras, Marowak — keep their
 > tables for the version that needs them. *(Krabby and Snorlax joined in v0.5; Eevee in v0.6 as the Level-8
 > meta-starter, with its three branches and the five abilities its line needed.)*
 
@@ -251,13 +251,14 @@
 | `diglett` | 50 | basic | Ground | 10/55/25/45/95 | common | **L12** → `dugtrio` | 1 `scratch` · 1 `sand-attack` · 5 `mud-slap` · 9 `magnitude` · 13 `dig` · 17 `sucker-punch` |
 | `dugtrio` | 51 | stage1 (final) | Ground | 35/80/50/70/120 | — | — | 26 `slash` · 32 `earthquake` · 38 `fissure-d` |
 
-**Growth** 1/3/1/4 · **Abilities** `sand-veil` `arena-trap-x` `hustle` · **Mastery** `tri-attack-d` → `triple-dive`
+**Growth** 1/3/1/4 · **Abilities** `sand-veil` `hustle` `arena-trap` · **Mastery** `tri-attack-d` → `triple-dive`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
 | → `dugtrio` | `dig` → `earthquake` · **+`fissure-d`** | `mud-slap` → `mud-bomb` · **+`slash`** | — |
 
-> `arena-trap-x` is listed for id stability only. Arena Trap was replaced by Sand Veil — there is no flee mechanic to trap. Do not implement.
+> Arena Trap is Diglett's hidden ability since v0.7.5, rewritten for a game with no flee to trap: while the wearer
+> leads, every enemy loses 1/16 of its HP each turn (§6.8.3). The reserved "-x" id is retired.
 
 ### `onix` — Rock/Ground · single stage · 2 archetypes via Training Grounds only · 🆕 · uncommon
 

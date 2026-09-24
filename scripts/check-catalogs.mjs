@@ -29,7 +29,9 @@ const ALLOW = new Set([
   'on-faint-team', 'stab-multiplier', 'crit-on-crit-taken', 'dot-immunity', 'turn-start-ap', 'field-draw',
   'lead-aura', 'post-combat-loot', 'low-hp-damage-reduction', 'ignore-immunity', 'rider-force-plus-damage',
   'on-damaged', 'on-kill', 'swap-discount', 'stage-immunity', 'enemy-cooldown', 'suppress-move-tag', 'redirect',
-  'super-effective-reduction',
+  'super-effective-reduction', 'recoil-immunity', 'conditional-reduction',
+  // v0.7.5 (§6.8.3) — the hidden abilities' hooks
+  'ignore-defence-stages', 'lead-trap-chip', 'on-damaged-stages', 'consumable-heal-bonus', 'type-move-heal', 'block-moves',
   // badge / relic hooks
   'on-damage', 'on-damage-taken', 'on-swap', 'on-reshuffle', 'on-turn-start', 'on-turn-end', 'on-combat-start',
   'on-status-apply', 'on-ap-cost', 'on-card-played', 'on-heal', 'on-reward', 'on-xp', 'on-rider', 'on-kill-credit',
