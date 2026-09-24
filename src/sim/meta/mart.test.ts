@@ -63,8 +63,8 @@ describe('Buying — §8.3.4', () => {
     expect(after.relics).toContain('sages-tome');
     expect(relicPoolFor(after, content)).toContain('sages-tome');
     expect(buy(after, { kind: 'relic', id: 'crown-of-echoes' }, content)).toEqual({ error: 'cannot-afford' });
-    // A row waiting on its system is priced and not sold.
-    expect(buy(at(10, 20), { kind: 'relic', id: 'time-spinner' }, content)).toEqual({ error: 'pending' });
+    // Time Spinner waited on an activated action until v0.7.5; it is a passive now, and sold like the rest.
+    expect(ok(buy(at(10, 20), { kind: 'relic', id: 'time-spinner' }, content)).relics).toContain('time-spinner');
   });
 
   it('TheDiscoveriesShelf_SellsAnUndiscoveredTierTwoForFour_FromLevelEight', () => {

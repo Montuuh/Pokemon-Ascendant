@@ -6,7 +6,7 @@ import type { CombatCtx } from './context';
 import { emit, log } from './context';
 import { breakdownFor } from './damageFlow';
 import { teamRevealsIntents } from './abilities';
-import { relicsQueueIntents, relicsRevealIntents } from './items';
+import { relicsQueueIntents, relicsRevealIntents, relicsSkipFirstTurn } from './items';
 import { bossArchetype, currentPhase } from './boss';
 import { slotOccupant, SLOT_LABEL } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent, QueuedIntent } from './state';
@@ -181,7 +181,9 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
   const locked = cardsLocked(enemy);
   const planned = enemy.next ?? null;
   enemy.next = null;
-  if (locked) {
+  // §7.3.5 Time Spinner — every enemy but a boss is caught flat-footed on turn 1, and the chip says so from the start.
+  const spun = state.turn === 1 && enemy.tier !== 'boss' && relicsSkipFirstTurn(state, ctx.content);
+  if (locked || spun) {
     enemy.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };
   } else {
     // §5.5.1 — the plan you were shown last turn is the plan, unless it can no longer be played.
@@ -263,7 +265,7 @@ export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: C
     case 'stall':
       return move ? `is recovering (${move.name}).` : 'is biding its time.';
     case 'incapacitated':
-      return enemy.status?.kind === 'sleep' ? 'is fast asleep.' : 'is frozen solid.';
+      return enemy.status?.kind === 'sleep' ? 'is fast asleep.' : enemy.status?.kind === 'freeze' ? 'is frozen solid.' : 'is caught off guard (Time Spinner).';
     case 'unknown':
       return 'is planning something…';
   }

@@ -7,7 +7,7 @@ import { declareIntent } from './intents';
 import { aliveTeam, benchIndices, lead } from './slots';
 import type { Combatant, CombatState } from './state';
 import { abilityTurnStartAp, turnEndBenchHeal } from './abilities';
-import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies } from './items';
+import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeIntent } from './enemyTurn';
 
@@ -86,6 +86,15 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
       p.discard.push(card!);
       emit(state, { t: 'confusion-discard', uid: c.uid, cardId: card!.id });
       log(state, 'system', `${c.name} is confused and fumbled a card.`);
+      // §8.6.1 Hand-Off Pouch's discovery counts these; §7.3.3 the Pouch hands the card back from the deck.
+      p.tally.confusionDiscards = (p.tally.confusionDiscards ?? 0) + 1;
+      if (relicsRedrawConfusion(state, ctx.content)) {
+        const back = drawSkillCards(state, 1, ctx.rng);
+        if (back.length) {
+          emit(state, { t: 'draw', cardIds: back.map((x) => x.id), consumableIds: [] });
+          log(state, 'system', 'The Hand-Off Pouch passes you a replacement.');
+        }
+      }
     }
     c.confusionTurns -= 1;
     if (c.confusionTurns === 0) {

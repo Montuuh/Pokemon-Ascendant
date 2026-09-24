@@ -174,7 +174,7 @@ The other ten shape a turn rather than a number:
 | Relic | Category | Effect |
 |---|---|---|
 | **Barrier Charm** | Combat | The first enemy attack of the first combat each Region deals −20 % |
-| **Quick Claw Charm** | Card | Once per combat, replay the last skill card you played, free |
+| **Quick Claw Charm** | Card | The first card you play in each fight costs 1 AP less |
 | **Berry Pouch** | Combat | Healing consumables restore +20 % |
 | **Soothe Bell** | Combat | A Pokémon at full HP at turn start deals +5 % on its next attack |
 | **Coin Pouch** | Meta | Poké Dollar drops ×1.25 |
@@ -199,7 +199,7 @@ The other ten shape a turn rather than a number:
 | **Type Resonance** | Combat | Active members sharing a primary type buff each other's matching moves +10 % per shared member |
 | **Adrenal Surge** | Combat | When a Pokémon faints, the rest of the Active Team gains Attack +1 |
 | **Reactor Core** | Card | Max hand size +1 skill card |
-| **Hand-Off Pouch** | Card | At turn start you may discard 1 to draw 1 |
+| **Hand-Off Pouch** | Card | A card Confusion knocks out of your hand is replaced from the deck |
 | **Cycle Cell** | Card | When the skill deck reshuffles, +1 AP next turn |
 | **Status Lance** | Status | Statuses you apply last +1 turn (Sleep and Freeze unaffected) |
 | **Pressure Plate** | Combat | After a 3+ AP move, the next move that turn costs −1 AP |
@@ -218,11 +218,18 @@ The other ten shape a turn rather than a number:
 |---|---|---|
 | **Master Ball Charm** | Meta | Once per run: a Pokéball use is a guaranteed catch, ignoring the gauge |
 | **Champion's Crest** | Combat | Each enemy a Pokémon defeats grants it +5 % damage this run, capped at +25 % |
-| **Time Spinner** | Combat | Once per combat: skip the entire enemy Resolution |
+| **Time Spinner** | Combat | Every enemy but a boss loses its first turn of the fight |
 | **Phoenix Feather** | Combat | Once per run: prevent a faint and restore to 1 HP. Consumed |
 | **Sage's Tome** | Card | Max hand size +2; max AP per turn +1 |
 | **Crown of Echoes** | Combat | The first move each combat is copied free into your hand on turn 2 |
-| **Soul Link** | Combat | Choose a Pokémon on pickup: it and its Lead partner deal +10 % while both live |
+| **Soul Link** | Combat | The two Pokémon that have travelled longest in your Box each deal +10 % while both stand in a fight |
+
+*Passive, not activated (v0.7.5).* Four relics were authored as buttons — replay a card, discard to draw, skip a
+turn, pick a partner — and waited three versions for a combat UI that never needed one otherwise. Each was
+rewritten as the passive that keeps its fantasy: Quick Claw's first strike, the Pouch as Confusion's answer, the
+Spinner's lost enemy turn (telegraphed, and never a boss's, so no climax is skipped), and Soul Link's bond as the
+pair that started the journey. A relic you have to remember to click is a tax on attention; the hand is where the
+decisions are.
 
 Four further relics fill the Tier-3 Mastery lane to ten (§8.6.1): **Perfect Recall** (once per combat, shuffle
 the discard back at turn start), **Trainer's Instinct** (see each enemy's intent one turn further ahead),

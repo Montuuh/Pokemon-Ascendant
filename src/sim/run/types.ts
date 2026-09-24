@@ -458,6 +458,8 @@ export interface CombatTally {
   peakHandAtTurnEnd: number;
   /** §8.6.1 Master Ball Charm's discovery — throws the target broke out of. */
   catchFails: number;
+  /** §8.6.1 Hand-Off Pouch's discovery — skill cards Confusion knocked out of your hand. */
+  confusionDiscards?: number;
   /** §8.9 — per *your* species, for the Pokédex record: enemy knock-outs landed, faints, damage dealt. */
   koBy: Record<string, number>;
   faintsOf: Record<string, number>;

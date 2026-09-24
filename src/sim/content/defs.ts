@@ -213,6 +213,10 @@ export type ItemHook =
   | 'intent-queue'
   /** Battle Tracker — a species already met this run never hides its first intent again. Run layer. */
   | 'run-scouting'
+  /** Hand-Off Pouch — a card Confusion knocks out of your hand is replaced from the deck. */
+  | 'confusion-redraw'
+  /** Time Spinner — every enemy but a boss loses its first turn of the fight. */
+  | 'skip-first-turn'
   /** Authored, but the system it needs does not exist yet. Inert, and the UI says so. */
   | 'none';
 
@@ -442,6 +446,8 @@ export interface TeamMemberSetup {
   masteryMove?: string;
   /** §6.8.2 rank 5 (two-stage lines) — the Mastery card is dealt into the opening hand. */
   masteryOpener?: boolean;
+  /** §7.3.5 Soul Link — one of the two Pokémon that have travelled longest in this run's Box. */
+  soulLinked?: boolean;
 }
 
 export interface EnemySetup {

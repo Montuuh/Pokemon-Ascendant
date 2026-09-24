@@ -15,7 +15,7 @@
 | id | Name | Cat | Effect | Hook | Status |
 |---|---|---|---|---|---|
 | `barrier-charm` | Barrier Charm | combat | First combat each Region: the first enemy attack deals −20 % | `on-combat-start` | ✅ canon |
-| `quick-claw-charm` | Quick Claw Charm | card | Once per combat: replay the last skill card played, free | `on-card-played` | ✅ |
+| `quick-claw-charm` | Quick Claw Charm | card | The first card of each fight costs 1 AP less (`ap-cost`, v0.7.5 — was an activated replay) | `ap-cost` | ✅ |
 | `berry-pouch` | Berry Pouch | combat | Healing consumables restore +20 % | `on-heal` | ✅ |
 | `soothe-bell` | Soothe Bell | combat | A Pokémon at full HP at turn start deals +5 % on its next attack | `on-turn-start` | ✅ |
 | `coin-pouch` | Coin Pouch | meta | Poké Dollar drops ×1.25 | `on-reward` | ✅ |
@@ -50,7 +50,7 @@
 | `type-resonance` | Type Resonance | combat | Active Team members sharing a primary type buff each other's matching moves +10 % per shared member | T1 | ✅ |
 | `adrenal-surge` | Adrenal Surge | combat | When a Pokémon faints, the rest of the Active Team gains Atk +1 | T1 | ✅ |
 | `reactor-core` | Reactor Core | card | Max hand size +1 skill card | T2 | ✅ |
-| `hand-off-pouch` | Hand-Off Pouch | card | At turn start you may discard 1 to draw 1 | T1 | ✅ |
+| `hand-off-pouch` | Hand-Off Pouch | card | A card Confusion knocks out of your hand is replaced from the deck (v0.7.5 — was an activated discard-to-draw) | T2 | ✅ |
 | `cycle-cell` | Cycle Cell | card | When the skill deck reshuffles, +1 AP next turn | T2 | ✅ |
 | `status-lance` | Status Lance | status | Statuses you apply last +1 turn (Paralysis 4, Confusion 4; Sleep/Freeze unchanged) | T1 | ✅ |
 | `pressure-plate` | Pressure Plate | combat | After a 3+ AP move, the next move that turn costs −1 AP | T1 | ✅ |
@@ -69,11 +69,11 @@
 |---|---|---|---|---|---|
 | `master-ball-charm` | Master Ball Charm | meta | Once per run: a Pokéball throw cannot miss (`guaranteed-catch`, once per run) | T2 | ✅ v0.6.2 |
 | `champions-crest` | Champion's Crest | combat | Each enemy a Pokémon defeats: +5 % damage for it this run (cap +25 %) | T3 | ✅ |
-| `time-spinner` | Time Spinner | combat | Once per combat: skip the whole enemy Resolution | T3 | ✅ |
+| `time-spinner` | Time Spinner | combat | Every enemy but a boss loses its first turn of the fight, shown on its intent (v0.7.5 — was an activated skip) | T3 | ✅ |
 | `phoenix-feather` | Phoenix Feather | combat | Once per run: prevent a faint, restore to 1 HP. Consumed. | T2 | ✅ |
 | `sages-tome` | Sage's Tome | card | Max hand size +2; max AP per turn +1 | T3 | ✅ |
 | `crown-of-echoes` | Crown of Echoes | combat | The first move each combat is copied free into your hand on turn 2 | T3 | ✅ |
-| `soul-link` | Soul Link | combat | Choose a Pokémon on pickup: it and its Lead partner deal +10 % while both live | T3 | ✅ |
+| `soul-link` | Soul Link | combat | The two Pokémon longest in the Box each deal +10 % while both stand in the fight (v0.7.5 — was a pick on pickup) | T3 | ✅ |
 
 ## 4. Legendary (10) — choice-only, max 2 per run (§7.3.7)
 
@@ -110,8 +110,8 @@ Road Summit and the Black Market (~4 pick moments per run).
 | `battle-tracker` | Reach Familiar tier on 5 species |
 | `bond-bracelet` | Finish a combat with all 3 Active Pokémon alive, 10 times |
 | `master-ball-charm` | Have 5 Poké Balls broken out of (the consolation unlock) — reachable again since the catch became a roll (§2.6.4, 2026-09-21) |
-| `phoenix-feather` | Lose a run to a party wipe in Region 3 — the Discoveries shelf only until Region 3 (v0.7) |
-| `hand-off-pouch` | Discard 20 cards to Confusion |
+| `phoenix-feather` | Lose a run in Region 3 (tracked since v0.7.5) |
+| `hand-off-pouch` | Lose 20 cards to Confusion (tracked since v0.7.5) |
 | `type-resonance` | Field an all-one-type Active Team |
 | `adrenal-surge` | Win a combat after losing 2 Pokémon |
 | `pressure-plate` | Play a 4-AP move |
@@ -128,10 +128,10 @@ the lane. Every Tier-3 relic should change *how a run works*, not how much damag
 | id | Name | Cat | Effect | Status |
 |---|---|---|---|---|
 | `champions-crest` | Champion's Crest | combat | Kill credit grants that Pokémon +5 % damage this run, cap +25 % | ✅ |
-| `time-spinner` | Time Spinner | combat | Once per combat: skip the whole enemy Resolution | ✅ |
+| `time-spinner` | Time Spinner | combat | Every enemy but a boss loses turn 1 | ✅ |
 | `sages-tome` | Sage's Tome | card | Max hand +2; max AP +1 | ✅ |
 | `crown-of-echoes` | Crown of Echoes | combat | The first move each combat is copied free into hand on turn 2 | ✅ |
-| `soul-link` | Soul Link | combat | A chosen pair deals +10 % while both live | ✅ |
+| `soul-link` | Soul Link | combat | The two longest-travelling Pokémon deal +10 % while both stand | ✅ |
 | `reactor-core` | Reactor Core | card | Max hand +1 (also reachable as a Tier-2 discovery) | ✅ |
 | `perfect-recall` | Perfect Recall | card | Once per combat, when the deck would run short at turn start, the discard pile is shuffled back in before the draw | ✅ v0.6 |
 | `trainers-instinct` | Trainer's Instinct | combat | See each enemy's intent **one turn further ahead**; it commits to the plan (§5.5.1) | ✅ v0.7.5 |

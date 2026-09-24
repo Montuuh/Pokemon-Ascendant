@@ -101,6 +101,8 @@ export const ItemHookSchema = z.enum([
   'status-chill',
   // v0.7.5 (§5.5.1) — the intent queue, and a run's own scouting.
   'intent-queue', 'run-scouting',
+  // v0.7.5 (§7.3) — the last inert relics, made passive.
+  'confusion-redraw', 'skip-first-turn',
   'none',
 ]);
 const ItemParams = z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]));

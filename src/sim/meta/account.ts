@@ -398,6 +398,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
         if (t.reshuffles >= 3) count(next, 'triple-reshuffle');
         if (t.maxApMove >= 4) count(next, 'four-ap-moves');
         if (t.catchFails) count(next, 'catch-fails', t.catchFails);
+        if (t.confusionDiscards) count(next, 'confusion-discards', t.confusionDiscards);
         if (t.statusesApplied.length >= 4) count(next, 'four-statuses-one-fight');
       }
       if ((e.statusesTakenThisRun ?? 0) >= 10) count(next, 'ten-statuses-one-run', 1, true);
@@ -437,6 +438,8 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
         if (!e.usedSalve) count(next, 'runs-won-no-salve');
       } else {
         next.stats.losses += 1;
+        // §8.6.1 Phoenix Feather — a run lost to a wipe in Region 3, reachable since Region 3 is its own Region.
+        if ((e.regionIndex ?? 0) >= 2) count(next, 'region-three-wipes');
         // §8.3.2 — a failed run still pays: floor(layers × 50), capped. Failure is fuel, made legible.
         bump(delta, next, Math.min(XP.failedRunCap, (e.layersCleared ?? 0) * XP.failedRunPerLayer), ctx);
       }

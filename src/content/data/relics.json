@@ -1,5 +1,5 @@
 {
-  "_note": "Relic catalog — Common (25) + Uncommon (18), the v0.4 half of §7.8's build order. Rare and Legendary are v0.5; `tier`, `discovery` and the four Tier-3 rows are v0.6 (§8.6.1). Rows come from docs/design/catalogs/relics.md; `hook` maps each onto §7.7's named-hook vocabulary, so a new relic is data as long as its hook already exists. The hand is discarded whole each turn (§3.4), so \"max hand size +1\" and \"draw +1\" are the same effect here and the descriptions say the one the player sees. Three rows ship inert because they need an activated action or a system that does not exist; each carries `pending` and the UI shows it rather than selling a no-op.",
+  "_note": "Relic catalog — Common (25) + Uncommon (18), the v0.4 half of §7.8's build order. Rare and Legendary are v0.5; `tier`, `discovery` and the four Tier-3 rows are v0.6 (§8.6.1). Rows come from docs/design/catalogs/relics.md; `hook` maps each onto §7.7's named-hook vocabulary, so a new relic is data as long as its hook already exists. The hand is discarded whole each turn (§3.4), so \"max hand size +1\" and \"draw +1\" are the same effect here and the descriptions say the one the player sees. Every row is live since v0.7.5: the four that waited on an activated action were rewritten as passives (§7.3), which keeps combat free of relic buttons. A row whose system does not exist would carry `pending`, and the UI would show it rather than sell a no-op.",
   "relics": [
     {
       "id": "soft-sand",
@@ -368,9 +368,12 @@
       "categories": [
         "card"
       ],
-      "description": "Replay the last card you played, free, once per combat.",
-      "hook": "none",
-      "pending": "needs an activated \"replay a card\" action the combat UI does not have yet — v0.7"
+      "description": "The first card you play in each fight costs 1 AP less.",
+      "hook": "ap-cost",
+      "params": {
+        "delta": -1,
+        "firstOfCombat": true
+      }
     },
     {
       "id": "choice-specs",
@@ -672,10 +675,14 @@
       "categories": [
         "card"
       ],
-      "description": "Discard a card at turn start to draw a new one.",
-      "hook": "none",
-      "pending": "needs an activated \"discard to draw\" action the combat UI does not have yet — v0.7",
-      "tier": 2
+      "description": "When Confusion knocks a card out of your hand, you draw a replacement.",
+      "hook": "confusion-redraw",
+      "tier": 2,
+      "discovery": {
+        "counter": "confusion-discards",
+        "goal": 20,
+        "text": "Lose 20 cards to Confusion"
+      }
     },
     {
       "id": "battle-tracker",
@@ -721,7 +728,12 @@
         "scope": "team",
         "oncePerRun": true
       },
-      "tier": 2
+      "tier": 2,
+      "discovery": {
+        "counter": "region-three-wipes",
+        "goal": 1,
+        "text": "Lose a run in Region 3"
+      }
     },
     {
       "id": "sages-tome",
@@ -784,9 +796,8 @@
       "categories": [
         "combat"
       ],
-      "description": "Once per combat, skip the enemy’s whole turn.",
-      "hook": "none",
-      "pending": "needs an activated action; nothing in combat has one yet — v0.7",
+      "description": "Every enemy but a boss loses its first turn of the fight.",
+      "hook": "skip-first-turn",
       "tier": 3
     },
     {
@@ -796,10 +807,13 @@
       "categories": [
         "combat"
       ],
-      "description": "Bond two Pokémon on pickup: while both are standing, they each deal 10 % more.",
-      "hook": "none",
-      "pending": "needs a choose-a-Pokémon step when a relic is taken — v0.7",
-      "tier": 3
+      "description": "The two Pokémon that have travelled with you longest each deal 10 % more while both are standing in a fight.",
+      "hook": "damage-dealt",
+      "tier": 3,
+      "params": {
+        "soulLink": true,
+        "multiplier": 1.1
+      }
     },
     {
       "id": "flow-state",

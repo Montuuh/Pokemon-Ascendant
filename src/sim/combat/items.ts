@@ -93,6 +93,11 @@ export function itemAttackMultiplier(
         m *= 1 + grown;
         continue;
       }
+      // §7.3.5 Soul Link — the linked pair hit harder while both of them are standing in this fight.
+      if (p.soulLink) {
+        if (!attacker.soulLinked) continue;
+        if (!state.player.team.some((x) => x.uid !== attacker.uid && x.soulLinked && x.hp > 0)) continue;
+      }
       if (p.sharedType) {
         // §7.3.4 Type Resonance — +10 % for each *other* Active member sharing the attacker's primary type.
         const primary = attacker.types[0];
@@ -285,6 +290,8 @@ export function itemApDelta(state: CombatState, owner: Combatant, move: MoveDef,
       continue;
     }
     if (p.firstEachTurn && played.length > 0) continue;
+    // §7.3.2 Quick Claw Charm — the opening card of the fight, and nothing after it.
+    if (p.firstOfCombat && (state.turn > 1 || played.length > 0)) continue;
     delta += num(p.delta, 0);
   }
 
@@ -476,6 +483,12 @@ export const relicsRevealIntents = (state: CombatState, content: ContentRegistry
   relicsOf(state, content).some(
     (r) => r.hook === 'reveal-intents' && (!r.params?.firstOnly || firstIntent) && (r.params?.untilTurn === undefined || turn <= num(r.params.untilTurn, 0)),
   );
+
+/** §7.3.3 Hand-Off Pouch — Confusion's discard is replaced from the deck. */
+export const relicsRedrawConfusion = (state: CombatState, content: ContentRegistry): boolean => relicsOf(state, content).some((r) => r.hook === 'confusion-redraw');
+
+/** §7.3.5 Time Spinner — the enemies lose turn 1 (a boss keeps its own). */
+export const relicsSkipFirstTurn = (state: CombatState, content: ContentRegistry): boolean => relicsOf(state, content).some((r) => r.hook === 'skip-first-turn');
 
 /** §5.5.1 Trainer's Instinct — enemies plan a turn ahead and the plan is shown. */
 export const relicsQueueIntents = (state: CombatState, content: ContentRegistry): boolean => relicsOf(state, content).some((r) => r.hook === 'intent-queue');

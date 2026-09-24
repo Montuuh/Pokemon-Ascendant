@@ -66,7 +66,7 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
               )}
               {intent.kind === 'buff' && ' — powering up'}
               {intent.kind === 'stall' && move && ' — recovering'}
-              {intent.kind === 'incapacitated' && (enemy.status?.kind === 'sleep' ? ' — fast asleep' : ' — frozen solid')}
+              {intent.kind === 'incapacitated' && (enemy.status?.kind === 'sleep' ? ' — fast asleep' : enemy.status?.kind === 'freeze' ? ' — frozen solid' : ' — caught off guard')}
               {intent.kind === 'backstrike' && <small> Backstrike bypasses the Lead</small>}
             </span>
           </>

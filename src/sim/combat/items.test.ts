@@ -4,6 +4,7 @@ import {
   leadOf, reject, scenario, start, teamWithKit, tweak, withConsumableHand, withHand,
 } from '../testing/harness';
 import { breakdownFor } from './damageFlow';
+import { itemAttackMultiplier } from './items';
 import { isOfferable, rollHeldItem, rollLegendaryOffer, rollRelic } from '../run/economy';
 import { RngStreams } from '../rng/rngStreams';
 
@@ -215,9 +216,10 @@ describe('What the game may hand out — §7.7', () => {
     // The card tells the truth about an inert relic, so *showing* one is honest. Handing one over is not:
     // a labelled blank still takes the slot a working relic would have had, and at the Mart it takes 300 ₽
     // for it. `isOfferable` is the one gate; this test is what keeps every source behind it.
+    // Since v0.7.5 no shipped row is pending, so the gate is proven on a row made pending for the test.
     const pending = [...content.allRelics(), ...content.allHeldItems()].filter((r) => r.pending);
-    expect(pending.length, 'this test is vacuous with no pending rows').toBeGreaterThan(0);
     for (const row of pending) expect(isOfferable(row), row.id).toBe(false);
+    expect(isOfferable({ ...content.relic('coin-pouch'), pending: 'a system that does not exist' })).toBe(false);
     for (const row of [...content.allRelics(), ...content.allHeldItems()].filter((r) => !r.pending)) {
       expect(isOfferable(row), row.id).toBe(true);
     }
@@ -271,5 +273,61 @@ describe('What the game may hand out — §7.7', () => {
       owned.push(id);
     }
     expect(owned.length).toBeGreaterThan(10);
+  });
+});
+
+describe('The last inert relics, made passive — §7.3', () => {
+  it('QuickClawCharm_TheFightsFirstCardCostsOneLess_OnlyTheFirst', () => {
+    let s = withHand(start(scenario({ team: teamWithKit(['water-gun', 'bubble', 'tail-whip', 'withdraw']), enemies: [GEODUDE], relics: ['quick-claw-charm'] })), ['water-gun', 'withdraw']);
+    const ap = s.player.ap;
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'water-gun').id });
+    expect(s.player.ap).toBe(ap - (content.move('water-gun').apCost - 1));
+    const after = s.player.ap;
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'withdraw').id });
+    expect(s.player.ap).toBe(after - content.move('withdraw').apCost);
+  });
+
+  it('TimeSpinner_EnemiesLoseTurnOne_ButNotABoss', () => {
+    const s = start(scenario({ team: STARTERS, enemies: [PIDGEY], relics: ['time-spinner'] }));
+    expect(enemyOf(s).intent!.kind).toBe('incapacitated');
+    const t2 = dispatch(s, { type: 'end-turn' });
+    expect(enemyOf(t2).intent!.kind).not.toBe('incapacitated');
+    const boss = start(scenario({ team: STARTERS, enemies: [{ species: 'onix', level: 12, tier: 'boss', phaseCount: 2 }], relics: ['time-spinner'] }));
+    expect(enemyOf(boss).intent!.kind).not.toBe('incapacitated');
+  });
+
+  it('HandOffPouch_AConfusionDiscardIsReplaced_AndCounted', () => {
+    const confused = (relics: string[]) =>
+      dispatch(
+        tweak(start(scenario({ team: STARTERS, enemies: [PIDGEY], relics })), (d) => {
+          d.player.team[0]!.confusionTurns = 3;
+          d.player.team[0]!.confusionAppliedTurn = 0;
+        }),
+        { type: 'end-turn' },
+      );
+    const without = confused([]);
+    const withPouch = confused(['hand-off-pouch']);
+    expect(withPouch.player.hand.length).toBe(without.player.hand.length + 1);
+    expect(without.player.tally.confusionDiscards).toBe(1);
+  });
+
+  it('SoulLink_TheLinkedPairHitsHarder_WhileBothStand', () => {
+    const team = [{ ...STARTERS[0]!, soulLinked: true }, { ...STARTERS[1]!, soulLinked: true }, STARTERS[2]!];
+    const s = start(scenario({ team, enemies: [PIDGEY], relics: ['soul-link'] }));
+    const plain = start(scenario({ team, enemies: [PIDGEY] }));
+    const move = content.move('scratch');
+    // The multiplier itself: a 10 % step on a small hit can vanish in the one floor at the end (§4.1.1).
+    const mul = (st: typeof s, i: number) => itemAttackMultiplier(st, st.player.team[i]!, move, content);
+    expect(mul(s, 0)).toBeCloseTo(1.1);
+    expect(mul(plain, 0)).toBe(1);
+    expect(mul(s, 2)).toBe(1);
+    const alone = tweak(s, (d) => {
+      d.player.team[1]!.hp = 0;
+    });
+    expect(mul(alone, 0)).toBe(1);
+  });
+
+  it('NoRelicIsInertAnyMore', () => {
+    expect(content.allRelics().filter((r) => r.pending || r.hook === 'none').map((r) => r.id)).toEqual([]);
   });
 });

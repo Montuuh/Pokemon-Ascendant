@@ -62,6 +62,8 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
       if (mon.heldItem) setup.heldItem = mon.heldItem;
       // §7.3.5 — the run's record walks into the fight, so Champion's Crest is worth what it has earned.
       if (mon.defeats) setup.defeats = mon.defeats;
+      // §7.3.5 Soul Link — the Box keeps arrival order, so its first two are the pair that has come furthest.
+      if (run.box.slice(0, 2).some((m) => m.uid === mon.uid) && run.box.length >= 2) setup.soulLinked = true;
       // §5.13.2 — the fifth slot, from the account's Mastery tier for this line (frozen into the run's perks).
       const line = content.lineBase(mon.speciesId);
       const mastery = masteryMoveFor(mon.speciesId, run.perks?.mastery[line] ?? 0, content);

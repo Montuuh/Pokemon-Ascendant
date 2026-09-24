@@ -50,7 +50,7 @@ four, and v0.4 closed all of those. What is left is content waiting on a system,
 | # | Canon says | The build does | Fix in |
 |---|---|---|---|
 | 1 | 28 consumables (§7.2) | 15, and the five Evolution Items as their own class (v0.7.5). Nine utilities wait on the systems they read — fields, the Pokédex | **v0.8** |
-| 2 | 15 relic hooks cover every authored row (§7.7) | 3 of 43 relics and 2 of 10 difficulty modifiers are inert, each carrying a `pending` note, each excluded from every drop, shelf and offer by `isOfferable` | **v0.5 / v0.6** |
+| 2 | 15 relic hooks cover every authored row (§7.7) | Every relic is live since v0.7.5. 2 of 10 difficulty modifiers stay locked, each naming the version that unblocks it | **v0.8** |
 | 3 | A boss ace reaches Phase 4 under Master's Challenge (`catalogs/modifiers.md`) | §5.8.3 defines three phases and no fourth threshold, entry effect or marker, so a three-phase ace keeps three; the picker says so | **v0.6** |
 | 4 | Snorlax's boss script runs `snore` (playable only while asleep), `yawn` (delayed status), `heavy-slam` (conditional power) and `giga-impact-v` (recharge) | Four effect kinds the sim does not have. The shipped profile is the half that has a definition — Amnesia, Rest, Body Slam, Crunch — and the §2.8.2 catch mechanic, which is the reason the node exists, is intact | **v0.6** |
 | 5 | Krabby learns `mud-shot` at 13, `metal-claw` at 17 and `stomp` at 21 (`catalogs/species-r1.md`) | Its evolveLevel is 12, so §6.9 makes all three unreachable — a catalogue slip. They moved onto Kingler at the same levels, so the *line* keeps every move | **catalogue fix** |

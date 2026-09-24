@@ -47,7 +47,7 @@ export type MetaEvent =
   | { t: 'evolution'; uid: string; /** §8.9 — the species it evolved from, for that species' record. */ fromSpeciesId?: string; toSpeciesId: string }
   | { t: 'badge-awarded'; badgeId: string }
   | { t: 'relic-acquired'; relicId: string; heldCount: number }
-  | { t: 'run-end'; won: boolean; catches: number; badges: number; /** §8.3.2 — for the failed-run formula. */ layersCleared?: number; activeSpecies?: string[]; modifierCount?: number; /** §8.6.1 Soothe Bell — a Trauma Salve was taken this run. */ usedSalve?: boolean; /** §8.7 Monotype Master — the Active Team shared one first type. */ monoType?: boolean; /** §8.7 Minimalist — relics held at the end. */ relicCount?: number }
+  | { t: 'run-end'; won: boolean; catches: number; badges: number; /** §8.3.2 — for the failed-run formula. */ layersCleared?: number; activeSpecies?: string[]; modifierCount?: number; /** §8.6.1 Soothe Bell — a Trauma Salve was taken this run. */ usedSalve?: boolean; /** §8.7 Monotype Master — the Active Team shared one first type. */ monoType?: boolean; /** §8.7 Minimalist — relics held at the end. */ relicCount?: number; /** §8.6.1 Phoenix Feather — the Region the run ended in (0-based). */ regionIndex?: number }
   /** §5.13.1 — a species reached Familiar. Raised by the account fold, never by the run diff. */
   | { t: 'dex-tier-up'; speciesId: string; tier: 1 }
   /** §6.8.2 — a line crossed a Bond rank. Raised by the account fold. */
@@ -354,6 +354,7 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
       usedSalve: after.relics.includes('trauma-salve'),
       monoType: activeSpecies.length === 3 && new Set(activeSpecies.map((id) => content.species(id).types[0])).size === 1,
       relicCount: after.relics.length,
+      regionIndex: after.regionIndex,
     });
   }
 
