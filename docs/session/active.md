@@ -7,7 +7,7 @@
 out of the Dojo as buildings, and the Black Market a secret behind a Game Corner poster. Exit: a player never told finds it.
 
 **The plan (2026-09-24, agreed with the user):** v0.7.6 Safari · v0.7.7 the Ring (town) and the Coliseum (city) as
-buildings + Team Rocket's secret Black Market in the Game Corner · v0.7.8 every City door open → **v0.8 Multi-enemy & the route**: groups (drag-to-target
+buildings + Team Rocket's secret Black Market in the Game Corner · v0.7.8 the Game Corner walked · v0.7.9 every City door open → **v0.8 Multi-enemy & the route**: groups (drag-to-target
 cards, per-target damage) · acting twice / calling for help · groups across the run · field effects · routes +
 spent consumables · the balance pass → **v0.9 The long game**: Bond & Shiny (with Mastery Lv2/Lv3 for every line) ·
 level & Mart · animated catch · Victory Road · League → v1.0 · v1.1 polish · v1.2 map · v1.3 world · v2.0 two players.

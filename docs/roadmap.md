@@ -23,7 +23,7 @@ loop layer and re-tests the core inside it.
 | v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
-| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — every City door open. **Eight subversions** | ◐ in progress |
+| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner walked, every City door open. **Nine subversions** | ◐ in progress |
 | v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ☐ |
 | v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
@@ -389,7 +389,7 @@ read 63 / 70 / 80, inside the noise of v0.5's 30-seed table.
 
 ## v0.7 — Cities & Regions 2–3  ◐
 
-Split into five, because the run has to *continue* before it can escalate. Each one ships.
+Split into nine (five at first; the Cities grew four of their own), because the run has to *continue* before it can escalate. Each one ships.
 
 ### v0.7.1 — The seam and the town  ✅ 2026-09-22
 The run no longer ends at the Region 1 Gym: Gym → City → next Region. **Pallet Town** as a lobby (§2.1.4,
@@ -537,22 +537,27 @@ Two buildings of their own and one secret, drawn together because both Cities' a
   *(Backlog #11.)*
 - **The Black Market is a secret** (§2.11.6): no door on the map. Inside the Game Corner, a switch hidden behind a
   poster — Gen I's way into the Rocket Hideout — opens stairs down to **Team Rocket's** back room: Legendary
-  relics paid in HP or Trauma, Pokémon traded for Pokémon. The Game Corner itself stays as it is. *(Backlog #2.)*
+  relics paid in HP or Trauma, Pokémon traded for Pokémon. The poster is a hidden spot on today's Game Corner screen;
+  v0.7.8 redraws the room, and the poster moves into it. *(Backlog #2.)*
 **Exit:** both Rings stand on their own, and a player who has never been told can find the Market.
 
-**Playtest findings (2026-09-24), to fix in this subversion once the design is agreed with the user:**
-- **The intent's number is not the hit.** Measured over the harness's fights: a single-target intent shows the hit
-  that lands only 65 % of the time (the preview leaves out relics, Badges, held items, flat ability reductions and
-  shields); a Cleave's one number matches 21 % of hits, and 8 % on the bench (mean miss 11 HP) — it is the Lead's
-  number printed as everyone's. The chip has to print the sim's own hit, per target.
-- **An area intent prints no damage on its chip** (user, 2026-09-25): one number cannot be right when every target
-  takes its own — type, Defence, ability, held item. The chip says what it is and that it hits everyone ("→ ALL");
-  the damage goes on each target it will land on (the portraits), one number each.
-- **Enemies hit too softly.** The median enemy hit is 12 % of the target's Max HP (Region 1 13 %, 2 9 %, 3 11 %) —
-  about eight hits to faint anyone, so a telegraph rarely forces a swap (Pillar 2). A harder-hitting retune, held
-  to §2.2.1's curve by the harness.
+### v0.7.8 — The Game Corner, walked  ☐
+Celadon's Game Corner becomes a place you walk rather than a panel (user, 2026-09-25). §2.11.5's odds and machines
+do not change; only the room and the Slots' reels do.
+- **The room, in the games' own art**: the Celadon Game Corner as FireRed / LeafGreen drew it — rows of slot
+  machines, the prize counter, the Rocket poster on the back wall — fetched as the Safari's tiles were (§2.11.6), not
+  generated.
+- **Walked with WASD or the arrows, or by clicking where to go**: Red walks the aisles, and a machine is played by
+  stepping up to it. Walking fits — the Game Corner is a room you explored in Gen I, the poster is found by walking
+  up to it, and the Safari's stalk already moves Red with the keys — and a click on a tile walks there, so a mouse
+  player loses nothing. *(The fallback the user left, a clickable map as the towns are, was weighed and not needed.)*
+- **The poster at the back** leads down to the Black Market (v0.7.7's secret, now in the room it was drawn for).
+- **The Slots, animated**: the reels spin fast and slow down, each column at its own speed and stopping in turn,
+  left to right, until the last lands on the result. The outcome is still rolled first and the reels drawn to show it
+  (§2.11.5), and the result line and the wallet wait for the last reel (D8).
+**Exit:** a player walks from the door to a machine, plays it, and finds the poster, with the keys or the mouse.
 
-### v0.7.8 — Every door open  ☐
+### v0.7.9 — Every door open  ☐
 The last doors marked in development, both small: the Dojo's extra-moves counter (§2.11.6) and the Center's
 Daycare and PC Box services (§2.11.1).
 **Exit (v0.7):** three Regions, two Cities, and no door in either that says "in development".
@@ -570,8 +575,17 @@ The hand changes with it: a card is **dragged onto its target** as well as click
 shows **its damage against every enemy it can hit**, not against one (§9 — the damage preview goes per target).
 **No area hit ever shows one number** (user, 2026-09-25): each target takes its own damage, so an area attack —
 the enemies' at your team, and your cards at a group of enemies — prints its damage on every target it lands on,
-never a single "each" figure on the attacker or the card. v0.7.7 sets the rule for the enemy side; this version
-carries it to area cards against several enemies.
+never a single "each" figure on the attacker or the card, on both sides.
+**The intent, reworked here** (user, 2026-09-25: moved from v0.7.7, since multi-enemy rebuilds intents anyway).
+The playtest findings of 2026-09-24, measured over the harness's fights:
+- **The intent's number is not the hit.** A single-target intent shows the hit that lands only 65 % of the time (the
+  preview leaves out relics, Badges, held items, flat ability reductions and shields); a Cleave's one number matches
+  21 % of hits, and 8 % on the bench (mean miss 11 HP) — it is the Lead's number printed as everyone's. The chip has
+  to print the sim's own hit, per target.
+- **An area intent prints no damage on its chip** (user, 2026-09-25): one number cannot be right when every target
+  takes its own — type, Defence, ability, held item. The chip says what it is and that it hits everyone ("→ ALL");
+  the damage goes on each target it will land on (the portraits), one number each.
+- **An intent you can hover** (backlog, user, 2026-09-25) is designed with the user alongside.
 
 ### v0.8.2 — Enemies that act twice, and enemies that call for help  ☐
 Some Pokémon and some battles **act twice a turn**, both intents shown; and some carry a move that **calls one or
@@ -604,6 +618,10 @@ Levels, money, consumables, relics and prices together, against whole runs of th
 multi-enemy fights in them — the harness first (720 runs, `CURVE_SEEDS=240`), then a playtest. After multi-enemy
 on purpose (user, 2026-09-24): a pass before it would tune fights that are about to change shape. The first of
 two; v1.0's is the last. *(Backlog #4.)*
+Also here, from the playtest of 2026-09-24: **enemies hit too softly.** The median enemy hit is 12 % of the target's
+Max HP (Region 1 13 %, 2 9 %, 3 11 %) — about eight hits to faint anyone, so a telegraph rarely forces a swap
+(Pillar 2). A harder-hitting retune (a typical hit nearer a fifth of Max HP, fights kept at 4–5 turns), held to
+§2.2.1's curve by the harness — here rather than earlier because multi-enemy changes how much damage a turn carries.
 **Exit (v0.8):** fights against groups everywhere in the run, a reworked route, and the whole run balanced.
 
 ## v0.9 — The long game  ☐
@@ -668,7 +686,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **An intent you can hover.** Resting on an enemy's intent opens a card with everything it will do: the move and its type, who it is aimed at, how much it will deal to each target, its riders (a status, a stat change) — the enemy side's counterpart to a move card's tooltip. Goes with the per-target numbers of the intent fix, not instead of them: the numbers stay on screen, the card is the full read. | user, 2026-09-25 | v0.7.7's intent fix, or v0.8.1 with multi-enemy intents |
+| **An intent you can hover.** Resting on an enemy's intent opens a card with everything it will do: the move and its type, who it is aimed at, how much it will deal to each target, its riders (a status, a stat change) — the enemy side's counterpart to a move card's tooltip. Goes with the per-target numbers of the intent fix, not instead of them: the numbers stay on screen, the card is the full read. | user, 2026-09-25 | v0.8.1, with the intent rework |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -689,7 +707,8 @@ the account revamps move to v0.9):
 | 10 | The catch, animated | v0.9.3 |
 | 11 | The Ring moves out of the Dojo — a town Ring, and the city's Coliseum | v0.7.7 (with the City art) |
 | — | Multi-enemy fights, everywhere in the run | v0.8.1, v0.8.3 |
-| — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.8 |
+| — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
+| — | The Game Corner walked, in the games' art, with animated Slots | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
 | — | Recovering missed Badges | v0.9.4 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.3 |
