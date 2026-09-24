@@ -540,6 +540,15 @@ Two buildings of their own and one secret, drawn together because both Cities' a
   relics paid in HP or Trauma, Pokémon traded for Pokémon. The Game Corner itself stays as it is. *(Backlog #2.)*
 **Exit:** both Rings stand on their own, and a player who has never been told can find the Market.
 
+**Playtest findings (2026-09-24), to fix in this subversion once the design is agreed with the user:**
+- **The intent's number is not the hit.** Measured over the harness's fights: a single-target intent shows the hit
+  that lands only 65 % of the time (the preview leaves out relics, Badges, held items, flat ability reductions and
+  shields); a Cleave's one number matches 21 % of hits, and 8 % on the bench (mean miss 11 HP) — it is the Lead's
+  number printed as everyone's. The chip has to print the sim's own hit, per target.
+- **Enemies hit too softly.** The median enemy hit is 12 % of the target's Max HP (Region 1 13 %, 2 9 %, 3 11 %) —
+  about eight hits to faint anyone, so a telegraph rarely forces a swap (Pillar 2). A harder-hitting retune, held
+  to §2.2.1's curve by the harness.
+
 ### v0.7.8 — Every door open  ☐
 The last doors marked in development, both small: the Dojo's extra-moves counter (§2.11.6) and the Center's
 Daycare and PC Box services (§2.11.1).
