@@ -172,6 +172,10 @@
   (`goto(kind, true)` stops at the Evolution screen). `run.levelTo(11)`, `run.fill(3)`, `run.grantTm(...)`,
   `run.wear(...)`, `run.trauma(3)`, `run.pay(2000)` set up a state without playing to it. A lone level-5
   starter loses the first wild fight about half the time, so `run.fill(3)` first.
+- **The playtest menu is secret, and in every build.** Typing `rarecandy` on any screen opens it (`src/app/cheats.ts`,
+  `ui/components/CheatMenu.tsx`): travel to a City or the Gym, heal, clear Trauma, levels, evolve, money, balls, a
+  relic, win the fight. It writes the stores directly so the account never folds it (no medals, Bond or Pokédex), and
+  it stays out of the CHANGELOG, which the game shows. The dev hook `__ascendant` stays dev-only.
 - **A Mystery node's phase is `event`, not `mystery`** — the node kind and the phase share a name for the
   other three service nodes and not for this one.
 - **Art comes from scripts, never by hand:** `art:portraits`, `art:sprites`, `art:trainers`, `art:nodes`,
