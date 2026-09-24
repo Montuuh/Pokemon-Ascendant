@@ -1,0 +1,61 @@
+{
+  "_note": "Evolution Items (§6.3.2, §7.2.5, docs/design/catalogs/consumables.md §5). A stone is applied from the Move Manager between nodes, like a TM, and never enters the combat pile. It lets a line evolve before its level threshold — `fromLevel` — and opens the ordinary Evolution screen there; `branch` narrows that screen to the one branch the stone makes (Eevee's three). Single use.",
+  "items": [
+    {
+      "id": "fire-stone",
+      "name": "Fire Stone",
+      "price": 250,
+      "description": "A stone with a heat that never fades. It evolves Vulpix, Growlithe and Eevee — into Flareon — ahead of their time.",
+      "uses": [
+        { "species": "eevee", "fromLevel": 8, "branch": "eevee-vanguard" },
+        { "species": "vulpix", "fromLevel": 8 },
+        { "species": "growlithe", "fromLevel": 8 }
+      ]
+    },
+    {
+      "id": "water-stone",
+      "name": "Water Stone",
+      "price": 250,
+      "description": "A clear blue stone that feels wet to the touch. It evolves Eevee into Vaporeon, and Shellder, Staryu and Poliwhirl early.",
+      "uses": [
+        { "species": "eevee", "fromLevel": 8, "branch": "eevee-support" },
+        { "species": "shellder", "fromLevel": 8 },
+        { "species": "staryu", "fromLevel": 8 },
+        { "species": "poliwhirl", "fromLevel": 18 }
+      ]
+    },
+    {
+      "id": "thunder-stone",
+      "name": "Thunder Stone",
+      "price": 250,
+      "description": "A green stone with a thunderbolt caught inside. It evolves Eevee into Jolteon, and Pikachu early.",
+      "uses": [
+        { "species": "eevee", "fromLevel": 8, "branch": "eevee-specialist" },
+        { "species": "pikachu", "fromLevel": 8 }
+      ]
+    },
+    {
+      "id": "leaf-stone",
+      "name": "Leaf Stone",
+      "price": 250,
+      "description": "A stone with a leaf pattern grown into it. It evolves Exeggcute, Gloom and Weepinbell early.",
+      "uses": [
+        { "species": "exeggcute", "fromLevel": 8 },
+        { "species": "gloom", "fromLevel": 18 },
+        { "species": "weepinbell", "fromLevel": 18 }
+      ]
+    },
+    {
+      "id": "moon-stone",
+      "name": "Moon Stone",
+      "price": 250,
+      "description": "A stone as black as the night it fell from. It evolves Clefairy, Jigglypuff, Nidorina and Nidorino early.",
+      "uses": [
+        { "species": "clefairy", "fromLevel": 8 },
+        { "species": "jigglypuff", "fromLevel": 8 },
+        { "species": "nidorina", "fromLevel": 18 },
+        { "species": "nidorino", "fromLevel": 18 }
+      ]
+    }
+  ]
+}

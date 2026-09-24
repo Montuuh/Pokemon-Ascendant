@@ -1,5 +1,5 @@
-import type { AbilityDef, BadgeDef, ConsumableDef, ContentRegistry, EvolutionBranch, HeldItemDef, MoveDef, RegionModifierDef, RelicDef, ScenarioDef, SpeciesDef, TmDef } from '@/sim/content/defs';
-import { AbilitiesFileSchema, BadgesFileSchema, ConsumablesFileSchema, HeldItemsFileSchema, MasteryFileSchema, MovesFileSchema, RegionModifiersFileSchema, RelicsFileSchema, ScenariosFileSchema, SpeciesFileSchema, TmsFileSchema } from './schemas';
+import type { AbilityDef, BadgeDef, ConsumableDef, ContentRegistry, EvolutionBranch, EvolutionItemDef, HeldItemDef, MoveDef, RegionModifierDef, RelicDef, ScenarioDef, SpeciesDef, TmDef } from '@/sim/content/defs';
+import { AbilitiesFileSchema, BadgesFileSchema, ConsumablesFileSchema, EvolutionItemsFileSchema, HeldItemsFileSchema, MasteryFileSchema, MovesFileSchema, RegionModifiersFileSchema, RelicsFileSchema, ScenariosFileSchema, SpeciesFileSchema, TmsFileSchema } from './schemas';
 import movesJson from './data/moves.json';
 import speciesJson from './data/species.json';
 import abilitiesJson from './data/abilities.json';
@@ -11,6 +11,7 @@ import badgesJson from './data/badges.json';
 import regionModifiersJson from './data/region-modifiers.json';
 import heldItemsJson from './data/held-items.json';
 import masteryJson from './data/mastery.json';
+import evolutionItemsJson from './data/evolution-items.json';
 
 // The single in-memory content index. Parsed once with Zod (throws loudly on drift), then cross-referenced:
 // every move/ability/consumable id a species or scenario mentions must exist. Content is immutable after load.
@@ -36,6 +37,7 @@ class MapRegistry implements ContentRegistry {
     private readonly regionModifiers: ReadonlyMap<string, RegionModifierDef>,
     private readonly heldItems: ReadonlyMap<string, HeldItemDef>,
     private readonly mastery: ReadonlyMap<string, readonly (string | null)[]>,
+    private readonly evolutionItems: ReadonlyMap<string, EvolutionItemDef>,
   ) {
     for (const s of speciesMap.values()) {
       for (const child of s.evolvesTo) this.preEvolution.set(child, s.id);
@@ -113,6 +115,12 @@ class MapRegistry implements ContentRegistry {
   allTms(): readonly TmDef[] {
     return [...this.tms.values()];
   }
+  evolutionItem(id: string): EvolutionItemDef {
+    return must(this.evolutionItems, id, 'evolution item');
+  }
+  allEvolutionItems(): readonly EvolutionItemDef[] {
+    return [...this.evolutionItems.values()];
+  }
   hasMove(id: string): boolean {
     return this.moves.has(id);
   }
@@ -176,6 +184,7 @@ export function buildRegistry(): MapRegistry {
   const regionModifiers: RegionModifierDef[] = RegionModifiersFileSchema.parse(regionModifiersJson).modifiers;
   const heldItems: HeldItemDef[] = HeldItemsFileSchema.parse(heldItemsJson).items;
   const mastery = MasteryFileSchema.parse(masteryJson).lines;
+  const evolutionItems: EvolutionItemDef[] = EvolutionItemsFileSchema.parse(evolutionItemsJson).items;
 
   const reg = new MapRegistry(
     indexById(moves, 'move'),
@@ -189,6 +198,7 @@ export function buildRegistry(): MapRegistry {
     indexById(regionModifiers, 'region modifier'),
     indexById(heldItems, 'held item'),
     new Map(Object.entries(mastery)),
+    indexById(evolutionItems, 'evolution item'),
   );
 
   // Cross-reference integrity (fails fast at boot / in tests).
@@ -224,6 +234,15 @@ export function buildRegistry(): MapRegistry {
     const s = reg.species(line);
     if (s.stage !== 'basic') throw new ContentError(`§5.13.2: Mastery line "${line}" is not a base form`);
     for (const id of tiers) if (id) reg.move(id);
+  }
+  // §6.3.2 — a stone names a line that evolves, a level below its threshold, and (if any) one of its own branches.
+  for (const it of evolutionItems) {
+    for (const u of it.uses) {
+      const s = reg.species(u.species);
+      if (s.evolveLevel === undefined || s.branches.length === 0) throw new ContentError(`§6.3.2: ${it.id} works on ${u.species}, which does not evolve`);
+      if (u.fromLevel >= s.evolveLevel) throw new ContentError(`§6.3.2: ${it.id} evolves ${u.species} from ${u.fromLevel}, not earlier than its level ${s.evolveLevel}`);
+      if (u.branch && !s.branches.some((b) => b.id === u.branch)) throw new ContentError(`§6.3.2: ${it.id} names branch ${u.branch}, which ${u.species} does not offer`);
+    }
   }
   for (const m of moves) {
     if (m.modifier !== 'none' && m.range !== 'melee') throw new ContentError(`§3.3.4: ${m.id} has a positional modifier but is not Melee`);

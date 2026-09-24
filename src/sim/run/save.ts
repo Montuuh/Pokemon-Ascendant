@@ -55,8 +55,17 @@ function migrateBadgesTo10(run: RunState): void {
   if (run.pendingScenario?.player.badges) run.pendingScenario.player.badges = rename(run.pendingScenario.player.badges);
 }
 
+/**
+ * §6.3.2 / §8.5.3 — version 10 → 11: the bag gains its Evolution Items (none yet) and the run remembers its
+ * starter. A version-10 save never recorded one, so the first Pokémon in the Box stands in for it.
+ */
+function migrateStonesTo11(run: RunState): void {
+  run.stones ??= [];
+  run.starter ??= run.box[0]?.speciesId ?? '';
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11 };
 
 export type LoadResult =
   | { ok: true; run: RunState }
@@ -92,6 +101,7 @@ export function deserialiseRun(text: string | null, content: ContentRegistry): L
     }
     for (const c of envelope.run.consumables) content.consumable(c);
     for (const t of envelope.run.tms) content.tm(t);
+    for (const st of envelope.run.stones) content.evolutionItem(st);
     for (const p of envelope.run.pendingEvolutions) p.branchIds.forEach((b) => content.branch(b));
   } catch {
     return { ok: false, reason: 'corrupt' };

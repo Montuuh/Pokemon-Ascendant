@@ -23,6 +23,7 @@ import { nextAction } from '@/sim/balance/autoPlayer';
 //   __ascendant.run.levelTo(11)        put the Lead at a level, learnset and all
 //   __ascendant.run.heal()             refill every Box Pokémon's bars, as a Center would (levelTo does not)
 //   __ascendant.run.grantTm('tm05-surf')
+//   __ascendant.run.grantStone('fire-stone')  put an Evolution Item in the bag (§6.3.2)
 //   __ascendant.run.wear('leftovers')   put a held item in the bag (§7.4)
 //   __ascendant.run.wear()              one of every generic held item, for eyeballing the inventory drawer
 //   __ascendant.run.trauma(3)           give the Lead N Trauma stacks — the fast way to see §8.2.4's Therapy
@@ -72,6 +73,8 @@ export interface AscendantRunTools {
   heal: () => void;
   /** Drop TMs into the bag without waiting on §7.5's loot roll. */
   grantTm: (...tmIds: string[]) => void;
+  /** §6.3.2 — drop Evolution Items into the bag. */
+  grantStone: (...stoneIds: string[]) => void;
   /** §7.4 — drop held items into the bag. No argument means one of every generic item. */
   wear: (...itemIds: string[]) => void;
   /** §8.2 — stack Trauma on one Pokémon, for reaching the Centre's Therapy without playing badly on purpose. */
@@ -180,6 +183,12 @@ export function installDevTools(): void {
         const run = useRunStore.getState().run;
         if (!run) return;
         useRunStore.setState({ run: { ...run, tms: [...run.tms, ...tmIds] } });
+      },
+
+      grantStone: (...stoneIds) => {
+        const run = useRunStore.getState().run;
+        if (!run) return;
+        useRunStore.setState({ run: { ...run, stones: [...run.stones, ...stoneIds] } });
       },
 
       wear: (...itemIds) => {

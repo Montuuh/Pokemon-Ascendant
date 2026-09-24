@@ -67,21 +67,20 @@ combo partner. Both are deliberately the priciest utilities.
 Balls are a **counted run resource**: start 3 (`EconomyConfig.startingPokeballs`), +1 per Region, buyable. A
 throw spends one whether it succeeds or fails. The catch card appears in a wild combat only while the count > 0.
 
-## 5. Evolution Items (5) — **expendable, Map-View only** (§6.3.2) 🆕
+## 5. Evolution Items (5) — **expendable, Move Manager only** (§6.3.2) ✅ v0.7.5
 
-Not combat cards: they never enter the Consumable Pile. Applying one is a Map-View action like a TM.
+Not combat cards: they never enter the Consumable Pile. Applying one is a between-nodes action like a TM.
 
-| id | Effect | Used by | Source | Price ₽ |
-|---|---|---|---|---|
-| `fire-stone` | Eevee → Flareon, from L8 | eevee | Mystery `mysterious-stone`, shops | 250 |
-| `water-stone` | Eevee → Vaporeon from L8; Poliwhirl → Poliwrath from L18 | eevee, poliwag | same | 250 |
-| `thunder-stone` | Eevee → Jolteon, from L8 | eevee | same | 250 |
-| `leaf-stone` | Gloom → Vileplume, Weepinbell → Victreebel, from L18 | oddish, bellsprout | same | 250 |
-| `moon-stone` | reserved for R2 lines (Nidoran, Clefairy, Jigglypuff) | — | same | 250 |
+| id | Effect | Source | Price ₽ |
+|---|---|---|---|
+| `fire-stone` | Eevee → Flareon; Vulpix, Growlithe — from L8 | Mystery `mysterious-stone`, Eevee's Stone Cache, City shops | 250 |
+| `water-stone` | Eevee → Vaporeon; Shellder, Staryu from L8; Poliwhirl from L18 | same | 250 |
+| `thunder-stone` | Eevee → Jolteon; Pikachu — from L8 | same | 250 |
+| `leaf-stone` | Exeggcute from L8; Gloom, Weepinbell from L18 | Mystery, City shops | 250 |
+| `moon-stone` | Clefairy, Jigglypuff from L8; Nidorina, Nidorino from L18 | same | 250 |
 
-> **A stone does two things** (§6.3.2, decided 2026-09-19): it lets the line evolve **earlier** than its level
-> threshold, and it opens the stone-specific branch. The level path always remains — in a roguelike you cannot
-> farm for an item, so a stone must be an opportunity and never a wall.
+> **A stone buys time** (§6.3.2, v0.7.5): the line evolves earlier than its level threshold, on the ordinary
+> Evolution screen; Eevee's stone also picks its Eeveelution. The level path always remains.
 
 ## 6. Inventory & economy rules
 

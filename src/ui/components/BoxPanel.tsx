@@ -1,6 +1,6 @@
 import { IconCrown, IconAlertTriangle, IconCards } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
-import { maxHpOf, xpToNext, type PartyMon } from '@/sim';
+import { maxHpOf, stoneUse, xpToNext, type PartyMon } from '@/sim';
 import { HpBar } from './HpBar';
 import { MonIcon } from './MonIcon';
 import { TypeBadge } from './TypeBadge';
@@ -23,9 +23,11 @@ interface Props {
   /** §6.7.2 — open the Move Manager for this Pokémon. Null hides the affordance entirely. */
   onOpenMoves: ((uid: string) => void) | null;
   capacity: number;
+  /** §6.3.2 — the Evolution Items held, so a stone someone can use now shows on that Pokémon's Move Manager badge. */
+  stones?: readonly string[];
 }
 
-function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenMoves }: { mon: PartyMon; active: boolean; index: number; locked: boolean; onToggleActive: Props['onToggleActive']; onSetLead: Props['onSetLead']; onOpenMoves: Props['onOpenMoves'] }) {
+function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenMoves, stones = [] }: { mon: PartyMon; active: boolean; index: number; locked: boolean; onToggleActive: Props['onToggleActive']; onSetLead: Props['onSetLead']; onOpenMoves: Props['onOpenMoves']; stones?: readonly string[] }) {
   const content = getContent();
   const species = content.species(mon.speciesId);
   const max = maxHpOf(mon, content);
@@ -33,11 +35,17 @@ function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenM
   const isLead = active && index === 0;
   // §6.7.2 — a move sitting in the pool with no slot is the one thing on this row the player can act on,
   // so it gets a count rather than being invisible until they go looking.
-  const waiting = mon.pool.length - mon.moveIds.length;
+  const pooled = mon.pool.length - mon.moveIds.length;
+  // §6.3.2 — a stone that would evolve it right now is the same kind of "something to do here".
+  const ready = [...new Set(stones)].filter((id) => {
+    const use = stoneUse(id, mon.speciesId, content);
+    return !!use && mon.level >= use.fromLevel;
+  }).length;
+  const waiting = pooled + ready;
   const ability = mon.abilityId ? content.ability(mon.abilityId) : null;
   const held = mon.heldItem ? content.heldItem(mon.heldItem) : null;
   // The row's bubble is the Pokémon: ability, item, what clicking does. It replaced three native titles.
-  const movesTip = useTip(<Tip title="Move Manager" meta={[`${mon.pool.length} known`, `${mon.moveIds.length} active`]} body={waiting > 0 ? `${species.name} knows ${waiting} move${waiting === 1 ? '' : 's'} that ${waiting === 1 ? 'is' : 'are'} not in its four cards.` : `Choose which four of ${species.name}'s moves go in the deck.`} footer="A Pokémon's four active moves are its four cards. The pool never shrinks." />);
+  const movesTip = useTip(<Tip title="Move Manager" meta={[`${mon.pool.length} known`, `${mon.moveIds.length} active`]} body={[pooled > 0 ? `${species.name} knows ${pooled} move${pooled === 1 ? '' : 's'} that ${pooled === 1 ? 'is' : 'are'} not in its four cards.` : null, ready > 0 ? `A stone in the bag can evolve it now.` : null].filter(Boolean).join(' ') || `Choose which four of ${species.name}'s moves go in the deck.`} footer="A Pokémon's four active moves are its four cards. The pool never shrinks." />);
   const rowTip = useTip(
     <Tip
       title={species.name}
@@ -120,7 +128,7 @@ function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenM
           onClick={() => onOpenMoves(mon.uid)}
           data-testid={`box-moves-${mon.speciesId}`}
           {...movesTip}
-          aria-label={`Manage ${species.name}'s moves${waiting > 0 ? `, ${waiting} waiting in the pool` : ''}`}
+          aria-label={`Manage ${species.name}'s moves${waiting > 0 ? `, ${waiting} waiting${ready > 0 ? ' — a stone can evolve it' : ''}` : ''}`}
         >
           <IconCards size={15} stroke={2.4} />
           {waiting > 0 && <span className={`${styles.movesCount} tabular`}>{waiting}</span>}
@@ -130,7 +138,7 @@ function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenM
   );
 }
 
-export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMoves, capacity }: Props) {
+export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMoves, capacity, stones = [] }: Props) {
   const locked = !onToggleActive;
 
   const activeMons = activeUids.map((uid) => box.find((m) => m.uid === uid)).filter((m): m is PartyMon => !!m);
@@ -143,7 +151,7 @@ export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMov
       </h2>
       <ul className={styles.list}>
         {activeMons.map((m, i) => (
-          <BoxRow key={m.uid} mon={m} active index={i} locked={locked} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} />
+          <BoxRow key={m.uid} mon={m} active index={i} locked={locked} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} stones={stones} />
         ))}
       </ul>
       {activeMons.length === 0 && <p className={styles.empty}>Pick up to three from the Box.</p>}
@@ -156,7 +164,7 @@ export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMov
       </h2>
       <ul className={styles.list}>
         {benched.map((m) => (
-          <BoxRow key={m.uid} mon={m} active={false} index={-1} locked={locked} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} />
+          <BoxRow key={m.uid} mon={m} active={false} index={-1} locked={locked} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} stones={stones} />
         ))}
       </ul>
       {benched.length === 0 && <p className={styles.empty}>Everyone you have is out front.</p>}

@@ -124,14 +124,28 @@ contributes, and it is the primary creative expression inside a run (Pillar 4).
 
 Five stones exist: Fire, Water, Thunder, Leaf, Moon (§7.2.5).
 
-A stone does **two** things for a line that uses one:
+A stone lets its line evolve **earlier** than its level threshold: a basic **from level 8** (evolving at 12
+otherwise), a middle stage **from level 18** (at 26 otherwise). It is applied from the Move Manager between
+nodes — on the map, in a City lobby or at the Dojo — and opens the ordinary Evolution screen (§6.3.3) there and
+then. Single use.
 
-1. It lets the Pokémon evolve **earlier** than its level threshold — from level 12 for Eevee's branches, level 24
-   for Gloom and Weepinbell, level 26 for Poliwhirl.
-2. It opens the **stone-specific branch**, which level-only evolution does not offer.
+| Stone | Lines |
+|---|---|
+| Fire | Eevee → **Flareon**, Vulpix, Growlithe |
+| Water | Eevee → **Vaporeon**, Shellder, Staryu, Poliwhirl |
+| Thunder | Eevee → **Jolteon**, Pikachu |
+| Leaf | Exeggcute, Gloom, Weepinbell |
+| Moon | Clefairy, Jigglypuff, Nidorina, Nidorino |
 
-The level path always still exists. In a roguelike you cannot farm for an item, so a stone must be an
-opportunity — tempo plus an option — and never a wall. *(Decided 2026-09-19.)*
+For **Eevee** the stone also *is* the branch: the Evolution screen offers only the Eeveelution it makes. Every
+other line keeps all its archetypes on a stone's screen. The level path always still exists.
+
+*Why tempo and not a stone-only branch (v0.7.5, replacing the 2026-09-19 "opens the stone-specific branch"):*
+every stone line's branches are already its whole identity — Gloom's three, Poliwhirl's three. A branch that only
+a stone opens either takes one away from the level path, turning an option into a wall, or needs a fourth branch
+no other line has. What a roguelike cannot otherwise buy is **time**: four levels in Region 1, eight across Region
+2. In a roguelike you cannot farm for an item, so a stone must be an opportunity and never a wall. The lines are
+Gen I's stone evolutions, all of them now that every species is built.
 
 ## §6.3.3 Archetype Selection
 

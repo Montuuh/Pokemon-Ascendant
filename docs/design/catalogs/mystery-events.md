@@ -8,7 +8,7 @@
 
 | id | Risk | Scene | Choices |
 |---|---|---|---|
-| `mysterious-stone` | 🟡 | A mossy stone hums faintly | (a) take it → a random Evolution Item · (b) leave it |
+| `mysterious-stone` | 🟢 | A mossy stone hums faintly | (a) take it → an Evolution Item the Box can use (any, if nobody can) · (b) leave it — ✅ v0.7.5, Safe: nothing is asked in return |
 | `wandering-tutor` | 🟢 | An old trainer offers a forgotten technique | (a) free Dojo move for one Pokémon · (b) decline → +100 ₽ |
 | `berry-bush` | 🟢 | A bush heavy with berries | (a) eat now → +30 % HP to the whole Box · (b) harvest → 3 `potion` |
 | `daycare-recovery` | 🟡 | An old couple offer to rest one Pokémon | (a) clear all Trauma from one Pokémon; it skips the next combat · (b) decline |
@@ -55,5 +55,5 @@ A choice is data, not a script. The authoring surface is this closed list, so a 
 - The risk badge (🟢/🟡/🔴) is visible on the map node **before** entering.
 - 🔴 Gamble events are the only ones allowed an unknown outcome, and even they state the *space* of outcomes.
 - Events that grant a recruit respect the Box cap → Swap-or-Skip (§2.3.1).
-- Two events reference systems that do not exist before v0.3/v0.4 (`mysterious-stone` needs Evolution Items,
-  `wandering-tutor` needs the Dojo). Until then they grant a relic and a consumable respectively (§2.5.3 note).
+- `wandering-tutor` needs a Dojo reachable from a route and is not in the pool yet. `mysterious-stone` joined it in
+  v0.7.5 with the Evolution Items, beside Eevee's Stone Cache (§8.5.3), which is never drawn from the pool.

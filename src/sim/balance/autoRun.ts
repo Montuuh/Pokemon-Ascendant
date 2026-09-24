@@ -3,7 +3,7 @@ import type { CombatCtx } from '../combat/context';
 import { buildOutcomeReport } from '../run/report';
 import { createRun, defaultRunCtx, dojoPrice, runReducer, tutorListFor } from '../run/run';
 import { RUN_START, gymById, gymTeamFor } from '../run/region';
-import { applyBranch, autoPickMoves } from '../run/xp';
+import { applyBranch, autoPickMoves, stoneUse } from '../run/xp';
 import { maxHpOf } from '../run/encounter';
 import { PRICES, therapyPrice } from '../run/economy';
 import { rollRegionModifierOffer } from '../run/regionModifiers';
@@ -273,7 +273,7 @@ function visitDojo(get: () => RunState, content: CombatCtx['content'], policy: R
  * the shelf it is looking at is a *bad* shelf — measuring an agent that gambles on that would measure the
  * gamble, not the shop.
  */
-const SHOP_ORDER: ShopSlot['kind'][] = ['relic', 'held-item', 'tm', 'ball', 'consumable'];
+const SHOP_ORDER: ShopSlot['kind'][] = ['relic', 'held-item', 'tm', 'stone', 'ball', 'consumable'];
 
 function visitShop(get: () => RunState, content: CombatCtx['content'], policy: RunPolicy, step: (a: Parameters<typeof runReducer>[1]) => void): void {
   for (const kind of SHOP_ORDER) {
@@ -295,6 +295,37 @@ function visitShop(get: () => RunState, content: CombatCtx['content'], policy: R
     }
   }
   step({ type: 'leave-shop' });
+}
+
+/**
+ * §6.3.2 — a stone in the bag is an evolution waiting for its level. A player uses it the moment someone can
+ * take it, and picks the branch the same way the harness always does; then re-picks the four from the new pool.
+ */
+function applyStones(get: () => RunState, content: CombatCtx['content'], step: (a: Parameters<typeof runReducer>[1]) => void): number {
+  let evolved = 0;
+  for (let guard = 0; guard < 6; guard++) {
+    const run = get();
+    if (run.phase !== 'map' && run.phase !== 'city') return evolved;
+    let pair: { uid: string; stoneId: string } | null = null;
+    for (const stoneId of run.stones) {
+      const mon = run.box.find((m) => {
+        const use = stoneUse(stoneId, m.speciesId, content);
+        return !!use && m.level >= use.fromLevel;
+      });
+      if (mon) { pair = { uid: mon.uid, stoneId }; break; }
+    }
+    if (!pair) return evolved;
+    step({ type: 'use-stone', ...pair });
+    while (get().phase === 'evolution') {
+      const pending = get().pendingEvolutions[0]!;
+      const mon = get().box.find((m) => m.uid === pending.uid)!;
+      step({ type: 'choose-branch', uid: pending.uid, branchId: chooseBranch(mon, pending.branchIds, content) });
+      evolved += 1;
+    }
+    const after = get().box.find((m) => m.uid === pair!.uid);
+    if (after && after.pool.length > 4) step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, content) });
+  }
+  return evolved;
 }
 
 /**
@@ -449,6 +480,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
         evolutions += 1;
       }
       equipFromBag(() => run, ctx.content, step);
+      evolutions += applyStones(() => run, ctx.content, step);
       continue;
     }
     if (!run.pendingScenario) continue;
@@ -515,6 +547,8 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
 
     // §7.4.6 — a Held Item that dropped goes on someone before the next node, not into a bag nobody reads.
     if (run.outcome === 'in-progress' && phase() === 'map') equipFromBag(() => run, ctx.content, step);
+    // §6.3.2 — and a stone goes on whoever can take it.
+    if (run.outcome === 'in-progress' && phase() === 'map') evolutions += applyStones(() => run, ctx.content, step);
 
     // §2.3.1 — a full Box asks who leaves. Release the weakest thing that is not the newcomer.
     if (phase() === 'swap-or-skip') {

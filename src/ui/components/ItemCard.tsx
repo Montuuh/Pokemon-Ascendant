@@ -8,7 +8,7 @@ import styles from './ItemCard.module.css';
 // The Shop, the inventory drawer, the reward screen and the Mystery Event all draw the same card, because
 // "the thing I was offered" and "the thing I now have" should be visibly the same object.
 
-export type ItemKind = 'consumable' | 'relic' | 'held-item' | 'tm' | 'ball';
+export type ItemKind = 'consumable' | 'relic' | 'held-item' | 'tm' | 'ball' | 'stone';
 
 /** §7.3.1 — rarity is drop weight, and the border says which band this row sits in. */
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'legendary';
@@ -35,7 +35,7 @@ export interface ItemCardProps {
   testId?: string;
 }
 
-const KIND_LABEL: Record<ItemKind, string> = { consumable: 'Item · single use', relic: 'Relic · whole run', 'held-item': 'Held item · one Pokémon', tm: 'TM · teaches a move', ball: 'Poké Ball' };
+const KIND_LABEL: Record<ItemKind, string> = { consumable: 'Item · single use', relic: 'Relic · whole run', 'held-item': 'Held item · one Pokémon', tm: 'TM · teaches a move', ball: 'Poké Ball', stone: 'Evolution Item · evolves early' };
 
 export function ItemCard(props: ItemCardProps) {
   const { id, kind, name, description, rarity, tag, pending, footer, selected, disabled, dim, onClick, testId } = props;
@@ -49,7 +49,7 @@ export function ItemCard(props: ItemCardProps) {
       title={name}
       meta={[rarity ? rarity.charAt(0).toUpperCase() + rarity.slice(1) : null, KIND_LABEL[kind]].filter((m): m is string => !!m)}
       body={description}
-      footer={pending ? `Not working yet: ${pending}` : undefined}
+      footer={pending ? `Not working yet: ${pending}` : kind === 'stone' ? "Used from a Pokémon's Move Manager, between nodes." : undefined}
     />,
   );
 

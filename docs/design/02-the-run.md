@@ -840,7 +840,7 @@ Highlights of the canon twelve:
 
 | Event | Choices |
 |---|---|
-| **Mysterious Stone** | Take it → a random Evolution Item · leave it |
+| **Mysterious Stone** | Take it → an Evolution Item somebody in the Box can use (any, if nobody can) · leave it |
 | **Wandering Tutor** | A free Dojo move for one Pokémon · decline for 100 ₽ |
 | **Berry Bush** | Eat now → +30 % HP to the whole Box · harvest → 3 Potions |
 | **Daycare Recovery** | Clear all Trauma from one Pokémon; it skips the next combat · decline |

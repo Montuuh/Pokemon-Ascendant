@@ -22,6 +22,8 @@ export type EventOutcome =
   | { kind: 'add-trauma'; stacks: number }
   /** A weighted flip between two outcome lists; only a Gamble may use it, and both sides are shown. */
   | { kind: 'gamble'; chance: number; win: EventOutcome[]; lose: EventOutcome[] }
+  /** §6.3.2 — an Evolution Item: the named one, or a random stone the Box can use. */
+  | { kind: 'stone'; id?: string }
   | { kind: 'nothing' };
 
 export interface EventChoice {
@@ -55,7 +57,7 @@ export interface MysteryEvent {
  * asks for four, and nine lands a risk mix of 3 Safe · 4 Tradeoff · 2 Gamble — 33/44/22 against §2.10.3's
  * 30/50/20, which is as close as nine whole events get.
  *
- * The rest arrive with the systems they need: `mysterious-stone` wants Evolution Items, `wandering-tutor`
+ * The rest arrive with the systems they need (`mysterious-stone` joined with the Evolution Items in v0.7.5): `wandering-tutor`
  * wants a Dojo you can reach from anywhere, `fossil-dig` wants Aerodactyl. None of them is cut — they are
  * waiting on content, and a row that would have to fake its effect is a row that stays out of the pool.
  */
@@ -153,6 +155,18 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     ],
   },
   {
+    // §2.10 / §6.3.2 — catalogued as a Tradeoff, but a free stone with nothing asked in return is Safe by §2.10.1's
+    // own definition; the stone it hands over is one the Box can use whenever someone can.
+    id: 'mysterious-stone',
+    risk: 'safe',
+    title: 'A mossy stone hums faintly',
+    scene: 'Half-buried at the edge of the path, warm to the touch, and humming at a pitch only your Pokémon seem to hear.',
+    choices: [
+      { label: 'Take it', detail: 'An Evolution Item — one somebody in your Box can use, if anyone can.', outcomes: [{ kind: 'stone' }] },
+      { label: 'Leave it be', detail: 'Nothing gained, nothing lost.', outcomes: [{ kind: 'nothing' }] },
+    ],
+  },
+  {
     id: 'unmarked-cave',
     risk: 'gamble',
     title: 'A crack in the rock face',
@@ -170,7 +184,24 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
   },
 ];
 
-const BY_ID = new Map(MYSTERY_EVENTS.map((e) => [e.id, e]));
+/**
+ * §8.5.3 — Eevee's flourish: an Eevee run's first Mystery node is this, instead of a draw from the pool. It is
+ * never drawn otherwise, which is why it lives beside the pool rather than in it.
+ */
+export const STONE_CACHE = 'stone-cache';
+const STONE_CACHE_EVENT: MysteryEvent = {
+  id: STONE_CACHE,
+  risk: 'safe',
+  title: 'A cache of evolution stones',
+  scene: 'Three stones sit in a mossy hollow, each humming at a different pitch. Eevee cannot take its eyes off them.',
+  choices: [
+    { label: 'The Fire Stone', detail: 'Take the Fire Stone — Eevee into Flareon, from level 8.', outcomes: [{ kind: 'stone', id: 'fire-stone' }] },
+    { label: 'The Water Stone', detail: 'Take the Water Stone — Eevee into Vaporeon, from level 8.', outcomes: [{ kind: 'stone', id: 'water-stone' }] },
+    { label: 'The Thunder Stone', detail: 'Take the Thunder Stone — Eevee into Jolteon, from level 8.', outcomes: [{ kind: 'stone', id: 'thunder-stone' }] },
+  ],
+};
+
+const BY_ID = new Map([...MYSTERY_EVENTS, STONE_CACHE_EVENT].map((e) => [e.id, e]));
 export const mysteryEvent = (id: string): MysteryEvent => {
   const e = BY_ID.get(id);
   if (!e) throw new Error(`Unknown mystery event "${id}"`);
@@ -191,10 +222,11 @@ export function allOutcomes(choice: EventChoice): EventOutcome[] {
 
 /** Fails loudly at load if an event names a consumable that does not exist. */
 export function assertEventContent(content: ContentRegistry): void {
-  for (const e of MYSTERY_EVENTS) {
+  for (const e of [...MYSTERY_EVENTS, STONE_CACHE_EVENT]) {
     for (const c of e.choices) {
       for (const o of allOutcomes(c)) {
         if (o.kind === 'consumables') o.ids.forEach((id) => content.consumable(id));
+        if (o.kind === 'stone' && o.id) content.evolutionItem(o.id);
       }
     }
   }

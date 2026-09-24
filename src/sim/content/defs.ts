@@ -298,6 +298,22 @@ export interface HeldItemDef {
 }
 
 /** §6.4.1 / §7.5 — a TM. Single use, applied from the Map View, never enters the combat pile. */
+/** §6.3.2 — one line a stone works on: from which level, and (Eevee) which branch it makes. */
+export interface EvolutionItemUse {
+  species: string;
+  fromLevel: number;
+  branch?: string;
+}
+
+/** §6.3.2 / §7.2.5 — an Evolution Item. Map-View only, single use, never a combat card. */
+export interface EvolutionItemDef {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  uses: EvolutionItemUse[];
+}
+
 export interface TmDef {
   id: string;
   name: string;
@@ -508,4 +524,7 @@ export interface ContentRegistry {
   branch(id: string): EvolutionBranch;
   /** §6.4.1 — every TM in the catalogue, for the Move Manager's teach list. */
   allTms(): readonly TmDef[];
+  /** §6.3.2 — an Evolution Item by id, and the whole set. */
+  evolutionItem(id: string): EvolutionItemDef;
+  allEvolutionItems(): readonly EvolutionItemDef[];
 }

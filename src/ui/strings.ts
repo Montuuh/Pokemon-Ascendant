@@ -53,8 +53,8 @@ export const STATUS_HINT: Record<string, string> = {
   burn: '−25% Attack · loses HP each turn',
   poison: '−15% Defense · loses HP each turn',
   paralysis: 'Its cards cost +1 AP (3 turns)',
-  sleep: 'Its cards are offline next turn · cannot be put to sleep again while asleep',
-  freeze: 'Cards offline · position locked · ×1.5 Fire damage · cannot be frozen or slept again while frozen',
+  sleep: 'Its cards are offline next turn · no new Sleep or Freeze while asleep',
+  freeze: 'Cards offline · position locked · ×1.5 Fire damage · no new Sleep or Freeze while frozen',
   confusion: 'Discards 1 random card per turn (3 turns)',
 };
 
@@ -129,6 +129,8 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'empty-kit': 'A Pokémon needs at least one card.',
   'incompatible-tm': 'That TM does not work on this Pokémon.',
   'no-such-tm': 'You are not carrying that TM.',
+  'incompatible-stone': 'That stone does nothing for this Pokémon.',
+  'stone-too-early': 'Not yet — the stone works on this Pokémon from a higher level.',
   'already-known': 'It already knows that.',
   'not-on-tutor-list': 'The tutor does not teach that at this stage.',
   'ability-not-in-pool': 'That ability is not in this species’ pool.',

@@ -149,3 +149,29 @@ test('a move left in the pool is reported, not lost', async ({ page }) => {
   await expect(manager.locator('[data-testid^="move-"][data-in-kit="false"]').first()).toBeDisabled();
   await page.screenshot({ path: 'playtest/run-move-manager.png' });
 });
+
+test('an Evolution Item evolves early from the Move Manager and hands back to the map (§6.3.2)', async ({ page }) => {
+  await newRun(page, 'eevee');
+  await page.evaluate(() => window.__ascendant!.run.levelTo(9));
+  await page.evaluate(() => window.__ascendant!.run.grantStone('fire-stone', 'leaf-stone'));
+  // One move waiting in the pool and one stone it can take now: the badge counts both.
+  await expect(page.getByTestId('box-moves-eevee')).toContainText('2');
+  await page.getByTestId('box-moves-eevee').click();
+
+  // A stone this Pokémon cannot use stays on the list, locked, and answers a click with the reason.
+  const leaf = page.getByTestId('stone-leaf-stone');
+  await expect(leaf).toHaveAttribute('aria-disabled', 'true');
+  await leaf.click({ force: true });
+  await expect(page.getByTestId('move-toast')).toContainText('does nothing');
+  await page.screenshot({ path: 'playtest/run-stones.png' });
+
+  await page.getByTestId('stone-fire-stone').click();
+  await expect(page.getByTestId('evolution-screen')).toBeVisible();
+  // Eevee's stone is its branch: one card, already picked.
+  await expect(page.locator('[data-testid^="branch-"]')).toHaveCount(1);
+  await expect(page.getByTestId('btn-evolve')).toBeEnabled();
+  await page.getByTestId('btn-evolve').click();
+  await expect(page.getByTestId('map-screen')).toBeVisible();
+  const mon = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!);
+  expect(mon.speciesId).toBe('flareon');
+});

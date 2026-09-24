@@ -25,6 +25,7 @@ const KIND_TAG: Record<ShopSlot['kind'], string> = {
   tm: 'TM',
   ball: 'Ball',
   consumable: 'Item',
+  stone: 'Stone',
 };
 
 /** Everything a slot needs to become a card. The Shop is the only place that has to translate all five. */
@@ -52,6 +53,10 @@ function describe(slot: ShopSlot): { name: string; description: string; kind: It
     case 'consumable': {
       const c = content.consumable(slot.id);
       return { name: c.name, description: c.description, kind: 'consumable' };
+    }
+    case 'stone': {
+      const st = content.evolutionItem(slot.id);
+      return { name: st.name, description: st.description, kind: 'stone' };
     }
   }
 }

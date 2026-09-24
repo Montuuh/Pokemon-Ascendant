@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { IconArrowsShuffle, IconLock, IconMinus, IconPlus, IconX } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { autoPickMoves, masteryMoveFor, type PartyMon } from '@/sim';
+import { autoPickMoves, masteryMoveFor, stoneUse, type PartyMon } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { tmIcon } from '@/ui/art';
+import { itemIcon, tmIcon } from '@/ui/art';
 import { ARCHETYPE_LABEL, RUN_REJECT_TEXT } from '@/ui/strings';
 import { masteryCardTip, moveDefTip } from '@/ui/tips';
 import { Tip, Tipped } from '@/ui/tooltip';
@@ -37,6 +37,16 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
     () => run.tms.map((id) => content.tm(id)).filter((tm, i, all) => all.findIndex((t) => t.id === tm.id) === i),
     [run.tms, content],
   );
+
+  // §6.3.2 — one row per stone held, the ones this Pokémon can use now first.
+  const stones = useMemo(() => {
+    const speciesId = run.box.find((m) => m.uid === uid)?.speciesId ?? '';
+    const level = run.box.find((m) => m.uid === uid)?.level ?? 0;
+    return run.stones
+      .filter((id, i, all) => all.indexOf(id) === i)
+      .map((id) => ({ stone: content.evolutionItem(id), use: stoneUse(id, speciesId, content) }))
+      .sort((a, b) => Number(!!b.use && level >= b.use.fromLevel) - Number(!!a.use && level >= a.use.fromLevel));
+  }, [run.stones, run.box, uid, content]);
 
   if (!mon) return null;
   const species = content.species(mon.speciesId);
@@ -186,6 +196,55 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
                     </span>
                     <span className={styles.grab} aria-hidden="true">
                       {compatible && !known ? <IconPlus size={16} /> : <IconLock size={18} />}
+                    </span>
+                  </Tipped>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      {stones.length > 0 && (
+        <section className={styles.column} aria-label="Stones in the bag">
+          <h4 className={styles.colTitle}>Stones in the bag</h4>
+          <ul className={styles.list}>
+            {stones.map(({ stone, use }) => {
+              // §6.3.2 — a stone this Pokémon cannot use is greyed with a lock, never hidden, and still answers a
+              // hover or a click with why (aria-disabled, not disabled, so its tooltip and the reason stay reachable).
+              const early = !!use && mon.level < use.fromLevel;
+              const usable = !!use && !early;
+              const into = use?.branch ? content.species(content.branch(use.branch).to).name : null;
+              const why = !use ? null : early ? `works from Lv ${use.fromLevel}` : into ? `evolves it into ${into}` : 'evolves it now';
+              const takers = run.box.filter((m) => stoneUse(stone.id, m.speciesId, content)).map((m) => content.species(m.speciesId).name);
+              const footer = usable
+                ? 'Single use. Opens the Evolution screen now, before the level would.'
+                : early
+                  ? `${species.name} can take it from level ${use!.fromLevel}${into ? `, into ${into}` : ''}.`
+                  : takers.length
+                    ? `Not for ${species.name}. In your Box it works on ${takers.join(', ')}.`
+                    : `Not for ${species.name}, nor for anyone in your Box yet.`;
+              return (
+                <li key={stone.id}>
+                  <Tipped
+                    as="button"
+                    type="button"
+                    tip={<Tip icon={<img src={itemIcon(stone.id)} alt="" width={22} height={22} />} title={stone.name} body={stone.description} footer={footer} />}
+                    className={`${styles.move} ${styles.tm} ${usable ? '' : styles.blocked}`}
+                    aria-disabled={!usable}
+                    onClick={() => {
+                      if (!dispatch({ type: 'use-stone', uid, stoneId: stone.id })) say(useRunStore.getState().lastRejected?.reason);
+                      else onClose();
+                    }}
+                    data-testid={`stone-${stone.id}`}
+                  >
+                    <img src={itemIcon(stone.id)} alt="" className={styles.itemArt} />
+                    <span className={styles.moveBody}>
+                      <span className={`${styles.moveName} display`}>{stone.name}</span>
+                      {why && <span className={styles.moveMeta}>{why}</span>}
+                    </span>
+                    <span className={styles.grab} aria-hidden="true">
+                      {usable ? <IconPlus size={16} /> : <IconLock size={18} />}
                     </span>
                   </Tipped>
                 </li>

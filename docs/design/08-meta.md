@@ -344,8 +344,8 @@ Small thematic flourishes, balance-neutral by intent:
 
 - **Pikachu:** starts holding a Light Ball (+25 % Electric damage, Pikachu only). A Raichu keeps holding it and
   it stops working, which makes "evolve or keep the ball" a real Pillar-4 choice. *(Built v0.7.3.)*
-- **Eevee:** the first Mystery node visited is guaranteed to be a Stone Cache — a free evolution stone of your
-  choice. *(Waits on Evolution Items, v0.7; Eevee itself ships in v0.6 with its three branches.)*
+- **Eevee:** the first Mystery node visited is guaranteed to be a Stone Cache — the Fire, Water or Thunder Stone,
+  your choice, which evolves Eevee into that Eeveelution from level 8 (§6.3.2). *(Built v0.7.5.)*
 - **Magikarp:** starting relic offers are biased toward Water and toward survivability, because the first two
   Regions are a defensive problem. Implemented as a guarantee: at least one Water or defensive relic is in the
   offer, drawn from the same seed.

@@ -176,6 +176,10 @@ export interface PendingEvolution {
   uid: string;
   from: string;
   branchIds: string[];
+  /** §6.3.2 — the Evolution Item that opened this screen, when a stone did rather than a level. */
+  stone?: string;
+  /** §6.3.2 — where a stone was used (the map, a City lobby, the Dojo), so the screen hands back to it. */
+  returnTo?: RunPhase;
 }
 
 export interface RewardSummary {
@@ -195,7 +199,7 @@ export interface RewardSummary {
 
 /** §2.9.2 — one row of shop stock. Seeded per visit; a sold slot stays sold across a re-roll. */
 export interface ShopSlot {
-  kind: 'consumable' | 'relic' | 'held-item' | 'tm' | 'ball';
+  kind: 'consumable' | 'relic' | 'held-item' | 'tm' | 'ball' | 'stone';
   id: string;
   price: number;
   sold: boolean;
@@ -307,6 +311,10 @@ export interface RunState {
   consumables: string[];
   /** §6.4.1 — TMs held but not yet taught. Each is single use. */
   tms: string[];
+  /** §6.3.2 — Evolution Items held. Each is single use, applied from the Move Manager. */
+  stones: string[];
+  /** §8.5.3 — the species the run started with, for its flourish (Eevee's Stone Cache). */
+  starter: string;
   /** §2.14 / economy — Poké Dollars. The run's only currency; Trainer Tokens are an account thing (§8.3). */
   money: number;
   /** §7.3 — relics held. Run-long, uncapped, never removed once taken. */
@@ -471,6 +479,8 @@ export type RunAction =
   | { type: 'set-moves'; uid: string; moveIds: string[] }
   /** §6.4.1 — teach a held TM. Single use. */
   | { type: 'use-tm'; uid: string; tmId: string }
+  /** §6.3.2 — apply a held Evolution Item. Opens the Evolution screen; single use. */
+  | { type: 'use-stone'; uid: string; stoneId: string }
   /** §6.4.2 — the Dojo's tutor service. */
   | { type: 'teach-move'; uid: string; moveId: string }
   /** §6.4.2 / §6.5.1 — the Dojo's ability service; sets or swaps the one passive slot. */
@@ -530,6 +540,10 @@ export type RunRejectReason =
   | 'empty-kit'
   | 'incompatible-tm'
   | 'no-such-tm'
+  /** §6.3.2 — the stone does nothing for this species. */
+  | 'incompatible-stone'
+  /** §6.3.2 — the stone works on this line, but not below its level. */
+  | 'stone-too-early'
   | 'already-known'
   | 'not-on-tutor-list'
   | 'ability-not-in-pool'

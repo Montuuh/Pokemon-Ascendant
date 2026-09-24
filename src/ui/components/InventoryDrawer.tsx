@@ -15,7 +15,7 @@ import styles from './InventoryDrawer.module.css';
 // Three sections, in the order they matter:
 //   Relics     run-long, uncapped, nothing to decide — they are shown, not managed.
 //   Held Items one slot each, and the *only* thing on this screen you can change. Bag ↔ Pokémon.
-//   Bag        consumables and TMs, counted. Consumables become cards inside a fight (§3.5), not here.
+//   Bag        consumables, TMs and Evolution Items, counted. Consumables become cards inside a fight (§3.5), not here.
 
 type Tab = 'relics' | 'items' | 'bag';
 
@@ -42,7 +42,7 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
   const TABS: { id: Tab; label: string; count: number }[] = [
     { id: 'relics', label: 'Relics', count: run.relics.length },
     { id: 'items', label: 'Held Items', count: run.bag.length + wearers.length },
-    { id: 'bag', label: 'Bag', count: run.consumables.length + run.tms.length },
+    { id: 'bag', label: 'Bag', count: run.consumables.length + run.tms.length + run.stones.length },
   ];
 
   return (
@@ -217,7 +217,12 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
                   <ItemCard key={`${id}-${i}`} id={id} kind="tm" name={t.name} description={t.description} tag="TM" testId={`bag-${id}`} />
                 );
               })}
-              {run.consumables.length + run.tms.length === 0 && <p className={styles.empty}>The bag is empty.</p>}
+              {[...new Set(run.stones)].map((id) => {
+                const st = content.evolutionItem(id);
+                const n = run.stones.filter((x) => x === id).length;
+                return <ItemCard key={id} id={id} kind="stone" name={st.name} description={st.description} tag={`×${n}`} testId={`bag-${id}`} />;
+              })}
+              {run.consumables.length + run.tms.length + run.stones.length === 0 && <p className={styles.empty}>The bag is empty.</p>}
             </div>
           )}
         </div>

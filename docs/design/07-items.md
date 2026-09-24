@@ -113,16 +113,18 @@ Two genuinely expendable classes that never enter the combat pile as ordinary ca
 
 Balls are counted: start 3, +1 per Region, one spent per throw whether it works or not.
 
-| Stone | Unlocks | Price |
+| Stone | Evolves early | Price |
 |---|---|---|
-| **Fire Stone** | Eevee → Flareon, from level 12 | 250 ₽ |
-| **Water Stone** | Eevee → Vaporeon; Poliwhirl → Poliwrath from 26 | 250 ₽ |
-| **Thunder Stone** | Eevee → Jolteon | 250 ₽ |
-| **Leaf Stone** | Gloom → Vileplume, Weepinbell → Victreebel, from 24 | 250 ₽ |
-| **Moon Stone** | Reserved for Region 2 lines | 250 ₽ |
+| **Fire Stone** | Eevee → Flareon, Vulpix, Growlithe | 250 ₽ |
+| **Water Stone** | Eevee → Vaporeon, Shellder, Staryu, Poliwhirl | 250 ₽ |
+| **Thunder Stone** | Eevee → Jolteon, Pikachu | 250 ₽ |
+| **Leaf Stone** | Exeggcute, Gloom, Weepinbell | 250 ₽ |
+| **Moon Stone** | Clefairy, Jigglypuff, Nidorina, Nidorino | 250 ₽ |
 
-A stone lets its line evolve **earlier** and opens the stone-specific branch; the level path always remains
-(§6.3.2). Stones are applied from the Map View.
+A basic evolves from level 8 and a middle stage from 18; the level path always remains (§6.3.2). Stones are
+applied from the Move Manager between nodes. They are sold where the Box can use one — a City Mart's counter and
+the Department Store's top floor, at the City markup (325 ₽) — and handed over by the Mysterious Stone event and
+an Eevee run's Stone Cache (§8.5.3).
 
 ## §7.2.6 Upgrade chains
 

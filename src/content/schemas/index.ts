@@ -253,6 +253,16 @@ export const ScenarioSchema = z.object({
 });
 
 export const TmsFileSchema = z.object({ _note: z.string().optional(), tms: z.array(TmSchema) });
+
+/** §6.3.2 / §7.2.5 — an Evolution Item: which lines it evolves, from what level, and (Eevee) into which branch. */
+export const EvolutionItemSchema = z.object({
+  id: KebabId,
+  name: z.string().min(1),
+  price: z.number().int().positive(),
+  description: z.string().min(1),
+  uses: z.array(z.object({ species: KebabId, fromLevel: z.number().int().positive(), branch: KebabId.optional() })).min(1),
+});
+export const EvolutionItemsFileSchema = z.object({ _note: z.string().optional(), items: z.array(EvolutionItemSchema) });
 export const RelicsFileSchema = z.object({ _note: z.string().optional(), relics: z.array(RelicSchema) });
 export const BadgesFileSchema = z.object({ _note: z.string().optional(), badges: z.array(BadgeSchema) });
 

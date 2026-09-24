@@ -39,7 +39,8 @@ function EvolutionChoice({ uid }: { uid: string }) {
   const pending = run.pendingEvolutions[0];
   const mon = run.box.find((m) => m.uid === uid);
 
-  const [picked, setPicked] = useState<string | null>(null);
+  // §6.3.2 — a stone that makes one branch (Eevee) leaves nothing to pick, so that one is picked already.
+  const [picked, setPicked] = useState<string | null>(pending && pending.branchIds.length === 1 ? pending.branchIds[0]! : null);
   // The morph is a one-shot: it starts a beat after the screen mounts so the "before" is seen first.
   const [morphed, setMorphed] = useState(prefersReducedMotion);
 
@@ -71,8 +72,9 @@ function EvolutionChoice({ uid }: { uid: string }) {
             <IconSparkles size={26} /> {before.name} is evolving
           </h1>
           <p className={styles.sub}>
-            Pick how. The archetype decides what this Pokémon contributes to your deck from here — and you pick
-            again at its next evolution.
+            {previews.length === 1
+              ? `The ${pending.stone ? content.evolutionItem(pending.stone).name : 'evolution'} decides the form. The next evolution asks again.`
+              : 'Pick how. The archetype decides what this Pokémon contributes to your deck from here — and you pick again at its next evolution.'}
           </p>
         </header>
 

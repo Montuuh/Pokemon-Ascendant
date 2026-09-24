@@ -257,6 +257,7 @@ export function MapScreen() {
             onToggleActive={locked ? null : toggleActive}
             onSetLead={locked ? null : (uid) => dispatch({ type: 'set-lead', uid })}
             onOpenMoves={setManaging}
+            stones={run.stones}
           />
         </aside>
 

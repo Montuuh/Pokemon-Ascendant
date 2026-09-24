@@ -1,4 +1,4 @@
-import type { ContentRegistry } from '../content/defs';
+import type { ContentRegistry, EvolutionItemUse } from '../content/defs';
 import type { EnemyTier } from '../content/defs';
 import { knownMoves } from '../combat/stats';
 import type { LevelUp, PartyMon } from './types';
@@ -150,6 +150,16 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
 }
 
 /** §6.2.4 — is this Pokémon standing at its evolution threshold, with a branch to pick? */
+/** §6.3.2 — what a stone does for this species, or null when it does nothing for it. */
+export function stoneUse(stoneId: string, speciesId: string, content: ContentRegistry): EvolutionItemUse | null {
+  return content.evolutionItem(stoneId).uses.find((u) => u.species === speciesId) ?? null;
+}
+
+/** §6.3.2 — the stones that would evolve someone in this Box, now or once they reach the stone's level. */
+export function stonesForBox(box: readonly PartyMon[], content: ContentRegistry): string[] {
+  return content.allEvolutionItems().filter((it) => box.some((m) => stoneUse(it.id, m.speciesId, content))).map((it) => it.id);
+}
+
 export function isEvolutionReady(mon: PartyMon, content: ContentRegistry, early = 0): boolean {
   const species = content.species(mon.speciesId);
   return species.evolveLevel !== undefined && mon.level + early >= species.evolveLevel && species.branches.length > 0;

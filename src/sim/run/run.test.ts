@@ -1025,3 +1025,72 @@ describe('Running from a fight — §3.1.2', () => {
     expect(fleeTierFor('gym')).toBeNull();
   });
 });
+
+describe('Evolution Items — §6.3.2', () => {
+  const holding = (s: RunState, stones: string[], level: number): RunState => ({
+    ...s,
+    stones,
+    box: s.box.map((m, i) => (i === 0 ? { ...m, level } : m)),
+  });
+
+  it('UseStone_EeveeAtEight_OpensOnlyTheStonesBranch_AndHandsBackToTheMap', () => {
+    let s = holding(start(7, 'eevee'), ['fire-stone'], 8);
+    const uid = s.box[0]!.uid;
+    s = apply(s, { type: 'use-stone', uid, stoneId: 'fire-stone' });
+    expect(s.phase).toBe('evolution');
+    expect(s.stones).toEqual([]);
+    expect(s.pendingEvolutions[0]!.branchIds).toEqual(['eevee-vanguard']);
+    s = apply(s, { type: 'choose-branch', uid, branchId: 'eevee-vanguard' });
+    expect(s.box[0]!.speciesId).toBe('flareon');
+    expect(s.phase).toBe('map');
+  });
+
+  it('UseStone_RefusesTooEarly_AndTheWrongSpecies_AndAStoneNotHeld', () => {
+    const s = holding(start(7, 'eevee'), ['fire-stone', 'leaf-stone'], 7);
+    const uid = s.box[0]!.uid;
+    expect(reject(s, { type: 'use-stone', uid, stoneId: 'fire-stone' })).toBe('stone-too-early');
+    expect(reject({ ...s, box: [{ ...s.box[0]!, level: 9 }] }, { type: 'use-stone', uid, stoneId: 'leaf-stone' })).toBe('incompatible-stone');
+    expect(reject(s, { type: 'use-stone', uid, stoneId: 'moon-stone' })).toBe('no-such-item');
+  });
+
+  it('UseStone_OnALineWithBranches_OffersEveryBranch_AndLeavesTheCatalystArmed', () => {
+    let s = holding(start(7, 'squirtle'), ['water-stone'], 8);
+    s = { ...s, relics: ['evolution-catalyst'], box: [{ ...newPartyMon('shellder', 8, content, 7), uid: 'sh' }] };
+    s = apply(s, { type: 'use-stone', uid: 'sh', stoneId: 'water-stone' });
+    expect(s.pendingEvolutions[0]!.branchIds).toEqual(content.species('shellder').branches.map((b) => b.id));
+    s = settle(s);
+    expect(s.box[0]!.speciesId).toBe('cloyster');
+    expect(s.spentRelics).not.toContain('evolution-catalyst');
+  });
+
+  it('StoneCache_IsAnEeveeRunsFirstMystery_AndOnlyAnEeveeRuns_§8.5.3', () => {
+    // Standing in front of any Mystery node on the map: the first one this run walks into.
+    const toMystery = (starter: string) => {
+      let s = start(11, starter);
+      const id = Object.values(s.map.nodes).find((n) => n.kind === 'mystery')!.id;
+      s = apply({ ...s, reachable: [id] }, { type: 'enter-node', nodeId: id });
+      if (s.phase === 'preview') s = apply(s, { type: 'begin-combat' });
+      return s;
+    };
+    expect(toMystery('eevee').pendingEvent).toBe('stone-cache');
+    expect(toMystery('squirtle').pendingEvent).not.toBe('stone-cache');
+  });
+
+  it('Save_MigratesVersionTen_WithAnEmptyBagOfStones_§10.8.3', () => {
+    const run = start(7, 'squirtle') as RunState & { stones?: string[]; starter?: string };
+    const old = { ...run } as Partial<RunState>;
+    delete old.stones;
+    delete old.starter;
+    const body = JSON.stringify(old);
+    const text = serialiseRun(run, 0).replace(/"version":11/, '"version":10');
+    const envelope = JSON.parse(text);
+    envelope.run = JSON.parse(body);
+    envelope.checksum = JSON.parse(serialiseRun(JSON.parse(body) as RunState, 0)).checksum;
+    const loaded = deserialiseRun(JSON.stringify(envelope), content);
+    expect(loaded.ok).toBe(true);
+    if (loaded.ok) {
+      expect(loaded.run.stones).toEqual([]);
+      expect(loaded.run.starter).toBe('squirtle');
+    }
+  });
+});

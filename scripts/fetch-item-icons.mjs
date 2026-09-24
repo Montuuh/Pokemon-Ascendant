@@ -27,6 +27,9 @@ const HELD = [
   'leftovers', 'eviolite', 'focus-sash', 'choice-band', 'choice-scarf', 'thick-club',
 ];
 
+/** Evolution Items (§6.3.2, §7.2.5) — the five Gen I stones, real items under their own names. */
+const STONES = ['fire-stone', 'water-stone', 'thunder-stone', 'leaf-stone', 'moon-stone'];
+
 /**
  * Relics (§7.3) — our id → the PokéAPI item whose icon it wears, or null for "no honest match".
  * A null here is a deliberate decision, not a gap: see the header.
@@ -119,6 +122,7 @@ if (missing.length) {
 
 const jobs = [
   ...HELD.map((id) => ({ id, slug: HELD_SLUG[id] ?? id })),
+  ...STONES.map((id) => ({ id, slug: id })),
   ...Object.entries(RELIC_ICON).filter(([, slug]) => slug).map(([id, slug]) => ({ id, slug })),
 ];
 

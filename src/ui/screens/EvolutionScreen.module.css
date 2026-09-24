@@ -226,7 +226,8 @@
   background: #eaf7ec;
 }
 .old {
-  color: var(--ink-muted);
+  /* D5 — the strike-through already says "replaced"; muted ink on the row tint fell to 4.49:1. */
+  color: var(--ink-secondary);
   text-decoration: line-through;
 }
 .new {

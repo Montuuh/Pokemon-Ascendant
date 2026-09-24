@@ -2,6 +2,7 @@ import type { ContentRegistry, RelicRarity } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import type { PartyMon, RunState, ShopSlot, ShopStock, StoreFloor } from './types';
 import { priceFor } from './regionModifiers';
+import { stonesForBox } from './xp';
 
 // §2.14 / docs/design/catalogs/economy.md — money, prices, drops and shop stock. Every number here names the
 // catalogue row it comes from, because this is the file a balance pass edits.
@@ -31,6 +32,8 @@ export const PRICES = {
   relic: { common: 150, uncommon: 300, rare: 600, legendary: 0 } as Record<RelicRarity, number>,
   heldItem: 300,
   tm: 350,
+  /** §7.2.5 — an Evolution Item, before the City markup (catalogs/economy.md: 250 ₽, 325 in a City). */
+  stone: 250,
   /** §2.9.3 — the re-roll ladder: the merchant stops after the first rung, a City shop after the third. */
   rerolls: [25, 50, 100] as number[],
   /** §8.2.4 — Therapy costs more the worse the Trauma is: 100 × (1 + stacks). */
@@ -164,6 +167,14 @@ function drawDistinct<T>(rng: GameRng, list: T[], n: number): T[] {
   return out;
 }
 
+/** §6.3.2 — one Evolution Item the Box can use, or null: a stone nobody can use is a decoration too. */
+function teamStone(rng: GameRng, content: ContentRegistry, run: RunState): ShopSlot | null {
+  const usable = stonesForBox(run.box, content).filter((id) => !run.stones.includes(id));
+  if (!usable.length) return null;
+  const id = usable[Math.min(usable.length - 1, Math.floor(rng.range01() * usable.length))]!;
+  return { kind: 'stone', id, price: content.evolutionItem(id).price, sold: false };
+}
+
 /** A Held Item or a TM, whichever the team can actually use — a TM nobody can learn is a decoration. */
 function teamSpecial(rng: GameRng, content: ContentRegistry, run: RunState, kind: 'tm' | 'held-item' | 'either'): ShopSlot | null {
   const usableTms = content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
@@ -233,8 +244,11 @@ function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor
     }
     case 'relics':
       return [...relics('common', 2), ...relics('uncommon', 2)];
-    case 'rare':
-      return [...relics('rare', 2), ...consumable(4, 1)];
+    case 'rare': {
+      // §6.3.2 — the top floor keeps the stones, one the Box can use when there is one.
+      const stone = teamStone(rng, content, run);
+      return [...relics('rare', 2), ...consumable(4, 1), ...(stone ? [stone] : [])];
+    }
   }
 }
 
@@ -260,7 +274,7 @@ export function floorRestockable(run: RunState, floor: StoreFloor, content: Cont
       return content.allHeldItems().filter((i) => isOfferable(i) && !i.speciesLock && !owned.includes(i.id)).map((i) => i.id);
     },
     relics: () => relics('common', 'uncommon'),
-    rare: () => [...relics('rare'), ...consumables(4)],
+    rare: () => [...relics('rare'), ...consumables(4), ...stonesForBox(run.box, content).filter((id) => !run.stones.includes(id))],
   };
   return candidates[floor]().some((id) => !shown.has(id));
 }
@@ -326,6 +340,9 @@ export function rollShopStock(
     if (item) slots.push(item);
     const tm = teamSpecial(rng, content, run, 'tm');
     if (tm) slots.push(tm);
+    // §6.3.2 — a stone on the counter when someone in the Box can use one; the Mart is curated to the team.
+    const stone = teamStone(rng, content, run);
+    if (stone) slots.push(stone);
     // §2.11.2.2 — Poké Balls are always on a City counter, outside the eight: a City that cannot sell you a ball
     // after the route's merchant stopped carrying many would be a Mart in name only.
     slots.push({ kind: 'ball', id: 'poke-ball', price: PRICES.ball, sold: false });

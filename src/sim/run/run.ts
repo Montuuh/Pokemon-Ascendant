@@ -9,11 +9,11 @@ import { generateRegion } from './map';
 import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
 import { AID_HEAL_PCT, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
 import { CASINO, CITIES, RING, cityAfter, isFinalRegion } from './cities';
-import { mysteryEvent, rollEvent, type EventOutcome } from './events';
+import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, rollRegionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
-import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, type ProgressionConfig } from './xp';
+import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, type ProgressionConfig } from './xp';
 import type { LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
 
 
@@ -30,12 +30,16 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
       return content.tm(slot.id).name;
     case 'ball':
       return 'a Poké Ball';
+    case 'stone':
+      return content.evolutionItem(slot.id).name;
   }
 }
 
 // §2 — the run reducer. Pure: (state, action) → state, exactly like the combat reducer, so a run is a seed
 // plus an action log and a save is that pair (§10.7.4, §10.8).
 
+// 11 — v0.7.5: Evolution Items (`stones`), the run's `starter` for its flourish, and a stone's Evolution screen
+//      remembering where to hand back to (§6.3.2, §8.5.3). Migrated from 10 in save.ts.
 // 10 — the Badges take the games' names (§5.10.4): the Poison and Psychic ids trade places and two are renamed.
 //      Nothing else changed shape, so a version-9 save is migrated rather than refused (save.ts).
 // 9 — v0.7.2: the City carries its Challenge Ring and the Game Corner's last result; Department Store slots
@@ -44,7 +48,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 10;
+export const RUN_SAVE_VERSION = 11;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -122,6 +126,8 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     balls: RUN_START.balls,
     consumables: [...RUN_START.consumables],
     tms: [],
+    stones: [],
+    starter: starterId,
     money: RUN_START.money,
     relics: [],
     spentRelics: [],
@@ -556,6 +562,16 @@ function resolveEventOutcome(draft: RunState, outcome: EventOutcome, ctx: RunCtx
       for (const o of won ? outcome.win : outcome.lose) resolveEventOutcome(draft, o, ctx, rng);
       break;
     }
+    case 'stone': {
+      // §6.3.2 — a named stone, or a random one the Box can use (any stone if nobody can).
+      const usable = stonesForBox(draft.box, ctx.content);
+      const all = ctx.content.allEvolutionItems().map((it) => it.id);
+      const from = usable.length ? usable : all;
+      const id = outcome.id ?? from[Math.min(from.length - 1, Math.floor(rng.range01() * from.length))]!;
+      draft.stones.push(id);
+      say(draft, `Took the ${ctx.content.evolutionItem(id).name}.`);
+      break;
+    }
     case 'nothing':
       break;
   }
@@ -602,7 +618,9 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         if (node.kind === 'mystery') {
           // §2.10.4 — drawn without replacement, so an event never repeats within a run.
           const rng = encounterRng(draft);
-          draft.pendingEvent = rollEvent(rng, draft.seenEvents);
+          // §8.5.3 — an Eevee run's first Mystery node is the Stone Cache: a free stone, its choice of three.
+          const cache = ctx.content.lineBase(draft.starter) === 'eevee' && !draft.seenEvents.includes(STONE_CACHE);
+          draft.pendingEvent = cache ? STONE_CACHE : rollEvent(rng, draft.seenEvents);
           draft.seenEvents.push(draft.pendingEvent);
           draft.cursors.EncounterRNG = rng.cursor;
           draft.phase = 'event';
@@ -888,8 +906,9 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const pending = draft.pendingEvolutions[0]!;
         const mon = draft.box.find((m) => m.uid === pending.uid)!;
         const from = ctx.content.species(mon.speciesId).name;
-        // §8.6.1 Evolution Catalyst — an evolution below the threshold is the one it paid for.
-        if (!isEvolutionReady(mon, ctx.content) && !draft.spentRelics.includes('evolution-catalyst')) {
+        // §8.6.1 Evolution Catalyst — an evolution below the threshold is the one it paid for. A stone's is the
+        // stone's (§6.3.2), and leaves the Catalyst armed.
+        if (!pending.stone && !isEvolutionReady(mon, ctx.content) && !draft.spentRelics.includes('evolution-catalyst')) {
           draft.spentRelics.push('evolution-catalyst');
           say(draft, 'The Evolution Catalyst is spent.');
         }
@@ -902,6 +921,11 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // A two-stage jump (Caterpie at 8 into Metapod, which evolves at 12) can arrive already ready again.
         queueEvolutions(draft, ctx.content);
         if (draft.pendingEvolutions.length) break;
+        // §6.3.2 — a stone used between nodes hands back to where it was used; a level-up walks off the node.
+        if (pending.returnTo) {
+          draft.phase = pending.returnTo;
+          break;
+        }
         leaveNode(draft, draft.pendingNodeId!, ctx);
         break;
       }
@@ -957,6 +981,25 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         learnMove(mon, tm.move);
         if (mon.moveIds.length < 4) mon.moveIds.push(tm.move);
         say(draft, `${ctx.content.species(mon.speciesId).name} learned ${ctx.content.move(tm.move).name} from ${tm.name}.`);
+        break;
+      }
+
+      // §6.3.2 — an Evolution Item: the stone is spent and the ordinary Evolution screen opens now, below the
+      // level threshold, narrowed to the stone's branch where it makes one (Eevee).
+      case 'use-stone': {
+        const mon = draft.box.find((m) => m.uid === action.uid)!;
+        const use = stoneUse(action.stoneId, mon.speciesId, ctx.content)!;
+        draft.stones.splice(draft.stones.indexOf(action.stoneId), 1);
+        const branches = ctx.content.species(mon.speciesId).branches.map((b) => b.id);
+        draft.pendingEvolutions.unshift({
+          uid: mon.uid,
+          from: mon.speciesId,
+          branchIds: use.branch ? [use.branch] : branches,
+          stone: action.stoneId,
+          returnTo: draft.phase,
+        });
+        draft.phase = 'evolution';
+        say(draft, `The ${ctx.content.evolutionItem(action.stoneId).name} glows beside ${ctx.content.species(mon.speciesId).name}.`);
         break;
       }
 
@@ -1146,6 +1189,9 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           case 'tm':
             draft.tms.push(slot.id);
             break;
+          case 'stone':
+            draft.stones.push(slot.id);
+            break;
         }
         say(draft, `Bought ${shopSlotName(slot, ctx.content)} for ${slot.price} ₽.`);
         break;
@@ -1327,6 +1373,18 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       const tm = ctx.content.tm(action.tmId);
       if (!tm.compatibleSpecies.includes(mon.speciesId)) return 'incompatible-tm';
       if (mon.pool.includes(tm.move)) return 'already-known';
+      return undefined;
+    }
+
+    case 'use-stone': {
+      // §6.3.2 — between nodes only: on the map, in a City's lobby, or at the Dojo's Move Manager.
+      if (state.phase !== 'map' && state.phase !== 'city' && state.phase !== 'dojo') return 'wrong-phase';
+      const mon = state.box.find((m) => m.uid === action.uid);
+      if (!mon) return 'unknown-pokemon';
+      if (!state.stones.includes(action.stoneId)) return 'no-such-item';
+      const use = stoneUse(action.stoneId, mon.speciesId, ctx.content);
+      if (!use) return 'incompatible-stone';
+      if (mon.level < use.fromLevel) return 'stone-too-early';
       return undefined;
     }
 

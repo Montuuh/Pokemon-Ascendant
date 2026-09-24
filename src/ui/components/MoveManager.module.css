@@ -131,8 +131,15 @@
   border-color: var(--border-strong);
 }
 .blocked {
-  opacity: 0.55;
+  background: var(--surface-sunken);
+  border-style: dashed;
   cursor: not-allowed;
+}
+.itemArt {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  image-rendering: pixelated;
 }
 .tm {
   grid-template-columns: auto 1fr auto;
