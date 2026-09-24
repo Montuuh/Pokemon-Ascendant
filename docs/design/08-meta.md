@@ -540,6 +540,11 @@ list of what the world still has to show you. *(User request, 2026-09-23. Before
 hidden and the type label counted as a fact of the species; with the whole of Gen I in the book, a name and
 types on every card gave the surprise away.)*
 
+**The Poké Mart keeps the same secret** (v0.7.5). A starter on the Starters shelf that the account has not met is
+the same silhouette and "???", with no blurb, and the shelf itself names no one. It can still be bought — blind —
+and owning it is meeting it. *(Before, the shelf named Magikarp, Eevee and Pikachu to an account that had met none
+of them, which gave away three of the book's surprises from the Hub.)*
+
 *(Redrawn 2026-09-22, twice. The v0.6.1 grids printed the ladder, the thresholds and every unlock chip on
 every row, and the first reader called it too much; the rule since is the picture on the grid, the paragraph
 one click away. A separate Companions tab — a card per line — lasted the morning: the Bond is per line and a

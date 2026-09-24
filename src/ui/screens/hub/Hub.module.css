@@ -672,6 +672,11 @@
   font-family: var(--font-display);
   font-size: var(--type-body);
 }
+/* §8.9.2 — an unmet starter on the Mart shelf is the Pokédex's silhouette. */
+.starterUnmet img {
+  filter: brightness(0);
+  opacity: 0.28;
+}
 .starterBlank {
   display: grid;
   place-items: center;

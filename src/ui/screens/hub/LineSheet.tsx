@@ -1,6 +1,6 @@
 import { IconArrowRight, IconCheck } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
-import { BOND, BOND_LADDER, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, isMet, isThreeStageLine, type AccountState } from '@/sim';
+import { BOND, BOND_LADDER, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, isThreeStageLine, type AccountState, speciesMet } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { InfoDot, Tip } from '@/ui/tooltip';
 import { BondBar } from './BondBar';
@@ -34,7 +34,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
   const hidden = hiddenAbilityOf(line, content);
   const cols = stagesOf(line);
   // §8.9.2 — a stage you have not met is a silhouette and "???"; a line with no stage met keeps its names to itself.
-  const metStage = (id: string) => isMet(account.dex[id], account.stats.leadTurns[id]);
+  const metStage = (id: string) => speciesMet(account, id);
   const lineKnown = cols.some((col) => col.some(metStage));
 
   const moveName = (id: string | null | undefined) => (id ? content.move(id).name : 'not written yet');

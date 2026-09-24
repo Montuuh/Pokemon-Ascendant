@@ -5,7 +5,7 @@ import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import {
-  HUB_UPGRADE_LABEL, SHELF_ORDER, SHELVES, bondRank, cosmeticById, discoveryProgress, levelFor, martOwned, martPending, martPrice, martShelf, shelfItems, shelfOpen, xpForLevel,
+  HUB_UPGRADE_LABEL, SHELF_ORDER, SHELVES, UNMET_NAME, bondRank, speciesMet, cosmeticById, discoveryProgress, levelFor, martOwned, martPending, martPrice, martShelf, shelfItems, shelfOpen, xpForLevel,
   type AccountState, type HubUpgrade, type MartError, type MartItem, type ShelfId,
 } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
@@ -232,11 +232,14 @@ function MartCard({ item, account, open, onBuy, onWear }: {
     }
     case 'starter': {
       const shipped = content.hasSpecies(item.id);
-      name = shipped ? content.species(item.id).name : item.id.charAt(0).toUpperCase() + item.id.slice(1);
-      desc = STARTER_BLURB[item.id] ?? '';
-      face = shipped ? <MonIcon speciesId={item.id} size={40} /> : <span className={styles.starterBlank} aria-hidden="true">?</span>;
+      // §8.9.2 — the Mart keeps the Pokédex's secret: a starter you have never met is a silhouette and "???" until
+      // it takes the field against you or with you. It can still be bought blind, and owning it is meeting it.
+      const met = shipped && speciesMet(account, item.id);
+      name = !met ? UNMET_NAME : shipped ? content.species(item.id).name : item.id.charAt(0).toUpperCase() + item.id.slice(1);
+      desc = met ? (STARTER_BLURB[item.id] ?? '') : '';
+      face = !shipped ? <span className={styles.starterBlank} aria-hidden="true">?</span> : <span className={met ? undefined : styles.starterUnmet}><MonIcon speciesId={item.id} size={40} alt={met ? undefined : UNMET_NAME} /></span>;
       const soulbound = bondRank(account.bond[item.id] ?? 0) >= 5;
-      tipNode = starterTip(name, STARTER_BLURB[item.id] ?? '', price, soulbound ? 'soulbound' : owned ? 'owned' : pending ? 'pending' : canBuy ? 'buyable' : 'locked', pending ?? (!open ? `The Starters shelf opens at Trainer Level ${shelfLevel}.` : undefined));
+      tipNode = starterTip(name, met ? (STARTER_BLURB[item.id] ?? '') : null, price, soulbound ? 'soulbound' : owned ? 'owned' : pending ? 'pending' : canBuy ? 'buyable' : 'locked', pending ?? (!open ? `The Starters shelf opens at Trainer Level ${shelfLevel}.` : undefined));
       if (soulbound) ownedTag = 'Soulbound';
       break;
     }

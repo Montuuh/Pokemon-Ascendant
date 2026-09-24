@@ -1,6 +1,6 @@
 import type { ContentRegistry } from '../content/defs';
 import { ACHIEVEMENTS, achievementById, applyMetaEvent, emptyProgress, MEDAL_XP, type AchievementDef, type AchievementProgress, type MetaEvent } from './achievements';
-import { dexTierFor, DEX_TIER_XP, emptyDexEntry, type DexEntry, type DexTier } from './pokedex';
+import { dexTierFor, DEX_TIER_XP, emptyDexEntry, type DexEntry, type DexTier, isMet } from './pokedex';
 import { BOND, bondRank } from './bond';
 import { TITLE_ID_BY_NAME, type CosmeticKind } from './cosmetics';
 
@@ -124,7 +124,7 @@ export const SHELF_ORDER: readonly ShelfId[] = ['corner', 'starters', 'hub', 'di
 /** §8.3.5 — what each shelf sells and the level that opens it. The Corner is the floor: open from Level 1. */
 export const SHELVES: Record<ShelfId, { name: string; level: number; sells: string }> = {
   corner: { name: "Trainer's Corner", level: 1, sells: 'Titles, avatars and frames for the card, and a fourth Starting Relic offer.' },
-  starters: { name: 'Starters', level: 3, sells: 'Magikarp, Eevee and Pikachu, to start a run with.' },
+  starters: { name: 'Starters', level: 3, sells: 'Three more Pokémon to start a run with — each one a secret until you meet it.' },
   hub: { name: 'Hub upgrades', level: 5, sells: 'A bigger Box, a second modifier slot, a second starter. Never power.' },
   discoveries: { name: 'Discoveries', level: 8, sells: 'Any Tier-2 relic you have not discovered yet.' },
   mastery: { name: 'Mastery lane', level: 10, sells: 'The Tier-3 relics: they change how a run works, not how hard it hits.' },
@@ -542,3 +542,11 @@ export const hasHubUpgrade = (state: AccountState, upgrade: HubUpgrade): boolean
 
 /** The number of achievements complete, for the card. */
 export const medalCount = (state: AccountState): { done: number; total: number } => ({ done: state.achievements.unlocked.length, total: ACHIEVEMENTS.length });
+
+/**
+ * §8.9.2 — has the account met this species? Any trace in the Pokédex, a turn as Lead, or — since v0.7.5 — owning
+ * it as a bought starter: a Pokémon on your own starter screen is not a secret from you. Every surface that hides
+ * an unmet species asks here, so the Mart and the Pokédex cannot disagree.
+ */
+export const speciesMet = (account: AccountState, id: string): boolean =>
+  isMet(account.dex[id], account.stats.leadTurns[id]) || account.starters.includes(id);

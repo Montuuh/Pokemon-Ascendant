@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { IconArrowsShuffle, IconCrown, IconEye, IconEyeOff, IconFlag, IconHeartBroken, IconLock, IconPokeball, IconSwords, IconTargetArrow, IconTrophy, IconUsers, IconWand } from '@tabler/icons-react';
 import { Tabs } from 'radix-ui';
 import { getContent } from '@/content/registry';
-import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, UNMET_NAME, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, isMet, isThreeStageLine, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef } from '@/sim';
+import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, UNMET_NAME, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, isThreeStageLine, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef, speciesMet } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { spriteOf, portraitOf } from '@/ui/art';
@@ -33,10 +33,10 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
   const s = content.species(speciesId);
   const line = content.lineBase(speciesId);
   const entry = normalizeDexEntry(account.dex[speciesId]);
-  const met = isMet(account.dex[speciesId], account.stats.leadTurns[speciesId]);
+  const met = speciesMet(account, speciesId);
   // §8.9.2 — an unmet species keeps its name, types and kit to itself; so does an unmet line's first form.
   const name = met ? s.name : UNMET_NAME;
-  const lineName = isMet(account.dex[line], account.stats.leadTurns[line]) ? content.species(line).name : UNMET_NAME;
+  const lineName = speciesMet(account, line) ? content.species(line).name : UNMET_NAME;
   const points = account.bond[line] ?? 0;
   const rank = bondRank(points);
   const [spriteOk, setSpriteOk] = useState(true);
@@ -224,10 +224,10 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
           <div className={styles.stages}>
             {s.evolvesTo.map((id) => (
               <button key={id} type="button" className={styles.stage} onClick={() => onSpecies(id)} data-testid={`dex-sheet-evolves-${id}`}>
-                <span className={isMet(account.dex[id], account.stats.leadTurns[id]) ? undefined : styles.stageHidden}>
-                  <MonIcon speciesId={id} size={56} alt={isMet(account.dex[id], account.stats.leadTurns[id]) ? content.species(id).name : UNMET_NAME} />
+                <span className={speciesMet(account, id) ? undefined : styles.stageHidden}>
+                  <MonIcon speciesId={id} size={56} alt={speciesMet(account, id) ? content.species(id).name : UNMET_NAME} />
                 </span>
-                <span className={styles.stageName}>{isMet(account.dex[id], account.stats.leadTurns[id]) ? content.species(id).name : UNMET_NAME}</span>
+                <span className={styles.stageName}>{speciesMet(account, id) ? content.species(id).name : UNMET_NAME}</span>
               </button>
             ))}
           </div>

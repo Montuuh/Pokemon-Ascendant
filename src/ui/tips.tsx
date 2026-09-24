@@ -95,7 +95,7 @@ const INTENT_BODY: Record<string, string> = {
   stall: 'Recovering HP or setting up. A free turn for you.',
   status: 'Trying to inflict a status on your Lead. A swap moves the target.',
   unknown: 'Hidden. You can see what kind of thing is coming, not how hard or where. Some abilities and relics reveal it.',
-  incapacitated: 'Asleep, frozen or flinching. It does nothing this turn.',
+  incapacitated: 'Asleep, frozen, or caught off guard by your Time Spinner. It does nothing this turn.',
 };
 
 /** §5.5 — what an intent means and what to do about it. `hidden` intents show the kind only. */
@@ -228,14 +228,16 @@ export function cosmeticTip(name: string, kind: string, blurb: string, price: nu
 }
 
 /** §8.5.2 — a starter on the Starters shelf. */
-export function starterTip(name: string, blurb: string, price: number, state: 'owned' | 'soulbound' | 'buyable' | 'locked' | 'pending', detail?: string): ReactNode {
+export function starterTip(name: string, blurb: string | null, price: number, state: 'owned' | 'soulbound' | 'buyable' | 'locked' | 'pending', detail?: string): ReactNode {
   const footer =
     state === 'owned' ? 'Yours — on the starter screen.'
     : state === 'soulbound' ? 'Soulbound: the line earned its place by being played (Bond rank 5).'
     : state === 'pending' ? `Not sold yet: ${detail}.`
     : state === 'buyable' ? `${price} Tokens at the Starters shelf.`
     : detail ?? 'Not enough Tokens yet.';
-  return <Tip title={name} meta={[state === 'owned' || state === 'soulbound' ? 'Yours' : `${price} Tokens`, `Poké Mart · Level ${SHELVES.starters.level}`]} body={blurb} footer={footer} />;
+  // §8.9.2 — an unmet starter's blurb would give it away; it says what the silhouette means instead.
+  const body = blurb ?? 'A Pokémon you have not met yet. Its name and kit stay hidden until you meet it on a route — or buy it blind.';
+  return <Tip title={name} meta={[state === 'owned' || state === 'soulbound' ? 'Yours' : `${price} Tokens`, `Poké Mart · Level ${SHELVES.starters.level}`]} body={body} footer={footer} />;
 }
 
 /** §5.13 / §8.9 — a Pokédex card: number, types, met or not, the line's rank. The sheet has the rest. */

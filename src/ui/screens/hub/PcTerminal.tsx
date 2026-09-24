@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, BOND, BOND_RANKS, UNMET_NAME, bondRank, discoveryProgress, isMet, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier } from '@/sim';
+import { ACHIEVEMENTS, BOND, BOND_RANKS, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier, speciesMet } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon } from '@/ui/art';
 import { TypeLabel } from '@/ui/components/TypeBadge';
@@ -47,7 +47,7 @@ export function PcTerminal() {
 
   const species = useMemo(() => [...content.allSpecies()].sort((a, b) => a.dex - b.dex), [content]);
   // §8.9.2 — "met" is any trace of the species on the account (`isMet`). An unmet species is a silhouette.
-  const metOf = (id: string) => isMet(account.dex[id], account.stats.leadTurns[id]);
+  const metOf = (id: string) => speciesMet(account, id);
   const met = species.filter((s) => metOf(s.id)).length;
   // §6.8 — the Bond is per line; "By Bond" puts the lines you have played first, whole, then the rest by number.
   const bondOf = (id: string) => account.bond[content.lineBase(id)] ?? 0;

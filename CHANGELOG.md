@@ -20,6 +20,7 @@
 - **Six hidden abilities.** Rain Dish, Infiltrator, Arena Trap, Weak Armor, Sheer Force and Gluttony unlock at Bond rank 3.
 - **Region Modifiers.** Naturalist's Lens makes Rares three times as common; Mass Mobilization draws a card on every step.
 - **Mastery for every Pokémon.** Every Pokémon you can recruit has its Mastery card, and the starters reach Mastery Lv3.
+- **The Poké Mart keeps secrets.** A starter you have never met is a silhouette on the shelf, like in the Pokédex.
 - **Sleep wears off.** A sleeping or frozen Pokémon cannot be put back under — no more keeping an enemy asleep all fight.
 - **Drain moves drain.** Absorb, Mega Drain, Giga Drain and Leech Life heal half the damage they deal, not a slice of your HP.
 - **Badges named as in the games.** Koga's Gym gives the Soul Badge and Sabrina's the Marsh Badge, and the Normal and Fighting Badges are the Plain and Knuckle Badges — each the badge its picture shows.

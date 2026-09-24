@@ -36,7 +36,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('track-3').getByRole('button').click();
     await expect(page.getByTestId('track-3')).toHaveAttribute('data-opens', 'starters');
     await expect(page.getByTestId('track-detail')).toContainText('Starters shelf opens');
-    await expect(page.getByTestId('track-detail')).toContainText('Magikarp, Eevee and Pikachu');
+    await expect(page.getByTestId('track-detail')).toContainText('Three more Pokémon to start a run with');
 
     // §8.4.1 — three kiosks open from the start; the Daycare Lady needs Level 3 and the Door is post-launch.
     for (const id of ['card', 'pc', 'mart']) await expect(page.getByTestId(`kiosk-${id}`)).toBeEnabled();
@@ -196,6 +196,11 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'locked');
     await expect(page.getByTestId('mart-price-sages-tome')).toHaveAttribute('aria-label', /Opens at Level 10/);
     await page.screenshot({ path: 'playtest/hub-mart-locked.png' });
+    // §8.9.2 — a starter never met is the Pokédex's silhouette on the shelf too: no name, no blurb.
+    await page.getByTestId('mart-tab-starters').click();
+    await expect(page.getByTestId('mart-magikarp')).toContainText('???');
+    await expect(page.getByTestId('mart-magikarp')).not.toContainText('Magikarp');
+    await page.screenshot({ path: 'playtest/hub-mart-starters-unmet.png' });
 
     // §8.4.4 — seven Tokens at Level 1 buy a title, an avatar and a frame at the Corner; the Trainer Card
     // wears each the moment it is bought, and a second title is a Wear button away.
