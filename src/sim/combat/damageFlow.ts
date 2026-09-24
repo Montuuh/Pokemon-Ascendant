@@ -418,6 +418,10 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         } else if (res === 'immune') {
           emit(state, { t: 'status-immune', targetUid: recipient.uid, status: fx.status });
           log(state, 'system', `${recipient.name} is immune to ${fx.status}.`);
+        } else if (res === 'already') {
+          // §4.2.2.4 — reads like an immunity on screen: the play is spent and nothing lands.
+          emit(state, { t: 'status-immune', targetUid: recipient.uid, status: fx.status });
+          log(state, 'system', `${recipient.name} is already ${recipient.status?.kind === 'freeze' ? 'frozen' : 'asleep'} — it cannot be put under again.`);
         }
         break;
       }

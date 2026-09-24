@@ -156,12 +156,22 @@ or out costs nothing extra. **3 turns. Electric-types are immune.**
 ### §4.2.2.4 Sleep 💤
 That Pokémon's cards are **unplayable**. Its position is **not** locked: it can be swapped in or out and can be
 the destination of another Pokémon's Step-Backward. It cannot initiate a Step-Forward, because that needs one of
-its own cards. **1 turn. No immunity.**
+its own cards. **1 turn. No type immunity** — but it **cannot land on a Pokémon that is already Asleep or
+Frozen**: the play shows IMMUNE and is spent, exactly as §4.2.1 treats an immune target.
+
+*Why (playtest, 2026-09-24):* Sleep lasts one turn and the application turn is telegraph (§4.2.1), so a
+Pokémon put to sleep every turn never woke. Sleep Powder costs 1 AP; one card a turn locked any single enemy
+for the whole fight. Two fixes were weighed. **Refresh-not-stack** (a re-application resets the clock) does not
+break the loop — a one-turn clock refreshed every turn is still a permanent lock. **No Sleep on a sleeper** does:
+the enemy wakes at the end of its sleeping turn, acts on the turn Sleep is re-applied, and sleeps the next — at
+best every other turn, for a card a turn. Measured by `nerfs.test`: the enemy under the abuse acted **1 of 10**
+turns before, **5 of 10** after.
 
 ### §4.2.2.5 Freeze 🧊
 Cards unplayable **and position-locked** — it cannot be swapped in or out, cannot be a Step-Backward
 destination, cannot Step-Forward. While frozen it takes **×1.5 from Fire moves** (the thaw window).
-**1 turn. Fire- and Ice-types are immune.**
+**1 turn. Fire- and Ice-types are immune**, and like Sleep it cannot land on a Pokémon already Asleep or
+Frozen (§4.2.2.4) — the two silencing conditions never chain into each other.
 Faint precedence: a Frozen Lead that faints voids the lock (§3.3.5.1).
 
 > Sleep and Freeze are also mirrors: both silence a Pokémon for a turn, but Sleep lets you move it to safety and
@@ -196,8 +206,8 @@ at the moment of application.
 | Burn | Primary | Permanent | `EffMaxHP/16` per turn | Attack −25 % | No |
 | Poison | Primary | Permanent | `EffMaxHP/16` per turn | Defence −15 % | No |
 | Paralysis | Primary | 3 turns | That Pokémon's moves +1 AP | — | No |
-| Sleep | Primary | 1 turn | Its cards unplayable | — | No |
-| Freeze | Primary | 1 turn | Its cards unplayable | ×1.5 Fire damage taken | **Yes** |
+| Sleep | Primary | 1 turn | Its cards unplayable | Cannot land on a sleeper or a frozen one | No |
+| Freeze | Primary | 1 turn | Its cards unplayable | ×1.5 Fire damage taken; cannot land on a sleeper or a frozen one | **Yes** |
 | Confusion | Secondary | 3 turns | −1 skill card per turn, per Confused Pokémon | — | No |
 
 **Every one of them outlives the combat that inflicted it** — the timed ones with what is left of their turns

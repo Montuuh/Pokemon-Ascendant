@@ -158,7 +158,7 @@ combat end:
 | **Burn** | `EffMaxHP/16`/turn, Attack −25 % | permanent | Fire |
 | **Poison** | `EffMaxHP/16`/turn, Defence −15 % | permanent | Poison |
 | **Paralysis** | its moves cost +1 AP | 3 turns | Electric |
-| **Sleep** | its cards unplayable, position free | 1 turn | — |
+| **Sleep** | its cards unplayable, position free; never lands on a sleeper or a frozen one | 1 turn | — |
 | **Freeze** | cards unplayable + **position-locked** + ×1.5 Fire taken | 1 turn | Fire, Ice |
 | **Confusion** | discards 1 skill card/turn per Confused Pokémon | 3 turns | — |
 

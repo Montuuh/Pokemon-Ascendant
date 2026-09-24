@@ -61,6 +61,21 @@ describe('Status conditions — §4.2', () => {
     expect(s.player.team[0]!.status).toBeNull();
   });
 
+  it('Sleep_CannotLandOnASleepingOrFrozenPokemon_OtherStatusesStillReplaceIt', () => {
+    // §4.2.2.4 — the playtest's sleep lock (2026-09-24): a sleeping Pokémon cannot be put back to sleep, and the
+    // two silencing conditions do not chain into each other either.
+    const s = base();
+    const c = structuredClone(s.player.team[1]!);
+    expect(applyStatus(c, 'sleep', 1, ctx.config)).toBe('applied');
+    expect(applyStatus(c, 'sleep', 2, ctx.config)).toBe('already');
+    expect(c.status?.appliedTurn).toBe(1);
+    expect(applyStatus(c, 'freeze', 2, ctx.config)).toBe('already');
+    expect(c.status?.kind).toBe('sleep');
+    // Any other primary still replaces it, as §4.2 says: poisoning a sleeper wakes it into the poison.
+    expect(applyStatus(c, 'poison', 2, ctx.config)).toBe('applied');
+    expect(applyStatus(c, 'sleep', 3, ctx.config)).toBe('applied');
+  });
+
   it('Paralysis_LastsThreeTurns', () => {
     let s = tweak(base(), (d) => {
       d.player.team[0]!.status = { kind: 'paralysis', appliedTurn: 0, turnsLeft: 3 };

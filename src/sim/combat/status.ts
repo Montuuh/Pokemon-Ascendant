@@ -33,7 +33,15 @@ export function statusDuration(status: PrimaryStatus, config: BattleConfig): num
   }
 }
 
-export type ApplyStatusResult = 'applied' | 'immune' | 'fainted';
+export type ApplyStatusResult = 'applied' | 'immune' | 'already' | 'fainted';
+
+/**
+ * §4.2.2.4 — Sleep and Freeze each take a turn away, so neither can land on a Pokémon that is already asleep or
+ * frozen. Without this a 1-AP Sleep card a turn kept an enemy asleep for the whole fight (playtest, 2026-09-24).
+ */
+export function isSilenced(target: Combatant): boolean {
+  return target.status?.kind === 'sleep' || target.status?.kind === 'freeze';
+}
 
 /**
  * §4.2.2 — applying a primary status replaces the existing one; §4.2.3.1 — Confusion coexists and re-application
@@ -42,6 +50,7 @@ export type ApplyStatusResult = 'applied' | 'immune' | 'fainted';
 export function applyStatus(target: Combatant, status: StatusCondition, turn: number, config: BattleConfig, escalating = false): ApplyStatusResult {
   if (target.hp <= 0) return 'fainted';
   if (isImmuneToStatus(target.types, status)) return 'immune';
+  if ((status === 'sleep' || status === 'freeze') && isSilenced(target)) return 'already';
   if (status === 'confusion') {
     target.confusionTurns = config.confusionDuration;
     target.confusionAppliedTurn = turn;

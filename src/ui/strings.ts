@@ -53,8 +53,8 @@ export const STATUS_HINT: Record<string, string> = {
   burn: '−25% Attack · loses HP each turn',
   poison: '−15% Defense · loses HP each turn',
   paralysis: 'Its cards cost +1 AP (3 turns)',
-  sleep: 'Its cards are offline next turn',
-  freeze: 'Cards offline · position locked · ×1.5 Fire damage',
+  sleep: 'Its cards are offline next turn · cannot be put to sleep again while asleep',
+  freeze: 'Cards offline · position locked · ×1.5 Fire damage · cannot be frozen or slept again while frozen',
   confusion: 'Discards 1 random card per turn (3 turns)',
 };
 
