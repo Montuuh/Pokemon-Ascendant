@@ -27,6 +27,7 @@ chrome; canonical Gen I type hues. Concretely:
 | Main-menu vista | Generated **top-down pixel art**, the same overworld register as the map plate | ✅ `public/art/ui/menu-vista.png` |
 | Region map plate | Generated **top-down pixel art**, deliberately a different register from the cel-shaded battle plates, because that is how a Pokémon route map is read. Installed with nearest-neighbour scaling and an indexed palette | ✅ `public/art/map/region-1.png` |
 | Town lobbies (§2.11) | Generated **top-down pixel art**, one landmark per door on its own plot so every building reads at a glance; the menu vista as the style key (`--ref`), best of four. `install-art town` (nearest-neighbour, indexed, 1920×1080). The doors are boxes over the buildings in `src/ui/screens/city/towns.ts`, measured off the installed PNG — redraw the art, re-measure the boxes. A placeholder until v1.2 builds the towns from tilesets | ✅ `public/art/towns/pallet-town.png`, `celadon-city.png` |
+| Safari Zone board (§2.11.6) | **The real FRLG Safari tiles**, cut on the 16-px grid from the Archives' map of the Safari entrance (`npm run art:safari`), shown at a whole-pixel scale (a tile is a multiple of 16 px); bait and rock generated in the same register and brought down to the same grid (`install-art pixel-icon`) | ✅ `public/art/safari` |
 | Fonts | Baloo 2 + Nunito variable (OFL), bundled | ✅ |
 
 **Rule of thumb (revised 2026-09-20).** In order:

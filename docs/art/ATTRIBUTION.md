@@ -34,6 +34,8 @@ If Pokémon Ascendant ever stopped being non-commercial, none of this could ship
 | Held-item, relic and Evolution Item icons (the five stones since v0.7.5, the Safari Ball since v0.7.6) — every one the real item it is, or the real item a relic is named after | [PokeAPI/sprites](https://github.com/PokeAPI/sprites) `sprites/items` (`npm run art:items`) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/items` |
 | TM discs, one per type (Normal, Fire, Water, Ground) | **The real assets** — the Scarlet & Violet bag sprites, same archive | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/items/tm*.png` |
 | Map emblems: the trainer classes (with v0.7.3's Engineer — the `scientist` sprite — and Rocket Grunt, and v0.7.4's Hex Maniac and Ace Trainer), the field nurse and the travelling merchant | The Showdown trainer-class sprites already in the project (`nurse`, and `backpacker` as the merchant), mounted on the same badge disc | as the trainer sprites above | `public/art/icons/map` |
+| The Safari Zone (v0.7.6): the board's tiles — tall grass, short grass, the pond and its rim, the forest — cut on the 16-px grid from the FireRed / LeafGreen Safari Zone entrance map, the FRLG Strength boulder, Red's FRLG overworld sprite, and the entrance map itself as the Safari's backdrop | **The real assets**, via the [Bulbagarden Archives](https://archives.bulbagarden.net) (`npm run art:safari`) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/safari` |
+| The Safari's bait and rock tokens (v0.7.6) — the games never drew either as an item | Generated with Google Gemini image models (`npm run art:gen`; prompts in `docs/art/prompts/safari-*.txt`), installed onto the tiles' 16-px grid (`install-art pixel-icon`) | generated work; SynthID watermark; usable per Google's terms | `public/art/safari/{bait,rock}.png` |
 | Nav / system icons | [Tabler Icons](https://tabler.io/icons) | MIT | `@tabler/icons-react` |
 | Baloo 2 | Ek Type | SIL OFL 1.1 (`src/assets/fonts/OFL-Baloo2.txt`) | `src/assets/fonts` |
 | Nunito | Vernon Adams, Cyreal, Jacques Le Bailly | SIL OFL 1.1 (`src/assets/fonts/OFL-Nunito.txt`) | `src/assets/fonts` |
@@ -42,11 +44,11 @@ Add a row for every third-party asset you bring in (game-icons.net entries need 
 
 ## Trainer sprites
 
-`public/art/trainers` holds twenty-seven Pokémon Showdown trainer sprites — the archetypes (`youngster`,
+`public/art/trainers` holds twenty-six Pokémon Showdown trainer-class sprites — the archetypes (`youngster`,
 `lass`, `bug-catcher`, `hiker`, `swimmer`, `camper`, `picnicker`, `acetrainer`, and v0.7.3's `scientist` as the
 Engineer, `rocketgrunt` and `blackbelt` as the Karate King, and v0.7.4's `hexmaniac` — Showdown's FireRed/LeafGreen
 `hexmaniac-gen3`), the twelve Gym Leaders (`brock`, `misty`, `bugsy`, `whitney`; `blaine`, `erika`, `ltsurge`,
 `koga`; `sabrina`, `giovanni` — also the Region 3 Elite —, `kiyo` — Showdown's `blackbelt-gen4` — and `lorelei` —
 `lorelei-gen3`), and the route's two services (`nurse`, and
-`merchant` — the Showdown `backpacker`), and v0.7.6's `red`, the player on the Safari's board — fetched by `npm run art:trainers`. Same terms as the battle
+`merchant` — the Showdown `backpacker`) — fetched by `npm run art:trainers`. Same terms as the battle
 sprites: © Nintendo / Creatures / GAME FREAK, community sprite work, fan use only.

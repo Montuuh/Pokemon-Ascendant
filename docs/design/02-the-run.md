@@ -1088,7 +1088,8 @@ thing the town's park does not have. No XP and no loot: the Safari pays in Poké
 like any other (Swap-or-Skip on a full Box, its Evolution screen if it stands at its threshold).
 
 **The stalk.** A square board of tall grass with open clearings, boulders and — for a water species — a pond it
-never leaves, ringed by open shore. You enter at the bottom edge; the Pokémon walks a loop.
+never leaves, ringed by open shore. You enter at the bottom edge; the Pokémon walks a loop. The board is drawn
+with the FireRed / LeafGreen Safari Zone's own tiles, and the entrance stands on that game's map of it (§9).
 
 - **Two actions a turn**: a step (1), a bait (1), a rock (1), or a **throw, which is the whole turn** (2). Spending
   the last action ends the turn: then it walks and looks.
@@ -1105,6 +1106,11 @@ never leaves, ringed by open shore. You enter at the bottom edge; the Pokémon w
   `catchRate × 0.5 × (range 1: ×1 · 2: ×0.7) × (never seen you: ×1.5) × (from behind: ×1.25) × (eating: ×1.25)`,
   clamped to 1–90 %, printed on the button with its terms before it is thrown — §2.6.4.3's argument unchanged: the
   number is chosen with the odds in view. `catchRate` is the species' own (§2.6.4.1).
+
+**How to play.** The rules above are taught once, in pictures: a six-page guide — pick one, hide in the grass, read
+its next move, bait and rocks, the throw, the balls and the clock — whose little boards are real stalks read by the
+same functions as the board, so it cannot teach a rule the park does not play. It opens by itself on a first visit
+and from the Safari's How to play button after that (§9.6.1's "explained once, on purpose").
 
 **Rarer means a harder board, never a hidden rule.**
 

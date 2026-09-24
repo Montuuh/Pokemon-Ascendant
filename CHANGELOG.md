@@ -9,6 +9,12 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one line of lede, then
 > `- **Headline.** One sentence.` bullets. `## Next` collects what reached the game since the last version.
 
+## Next
+
+- **The Safari, drawn from FireRed.** The park's own tall grass, ponds, boulders and forest, and Red walking in.
+- **How to play in the Safari.** A six-page picture guide opens on your first visit, and from its button any time.
+- **Bait and rock, drawn.** Pixel-art bait and rocks on the board, on the buttons and on the Pokémon they stopped.
+
 ## v0.7 — Cities & Regions 2–3 · in progress
 
 The run goes on past the first Gym: three Regions, and a City between each.

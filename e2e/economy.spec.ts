@@ -74,6 +74,8 @@ test.describe('The town — §2.11', () => {
     // development — the Dojo's extra moves, the Black Market — are covered in progression.spec.)
     await page.getByTestId('door-safari').click();
     await expect(page.getByTestId('safari-screen')).toBeVisible();
+    // A first visit opens the How to play; skipping it is the way back to the park.
+    await page.getByTestId('btn-guide-back').click();
     await page.getByTestId('btn-leave-safari').click();
     await expect(page.getByTestId('city-screen')).toBeVisible();
 

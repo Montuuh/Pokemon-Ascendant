@@ -11,7 +11,7 @@ import { EventScreen } from '@/ui/screens/EventScreen';
 import { GameCornerScreen } from '@/ui/screens/GameCornerScreen';
 import { RingPrizeScreen } from '@/ui/screens/RingPrizeScreen';
 import { RingScreen } from '@/ui/screens/RingScreen';
-import { SafariScreen } from '@/ui/screens/SafariScreen';
+import { SafariScreen } from '@/ui/screens/safari/SafariScreen';
 import { LegendaryScreen } from '@/ui/screens/LegendaryScreen';
 import { HubScreen } from '@/ui/screens/HubScreen';
 import { SettingsScreen } from '@/ui/screens/SettingsScreen';

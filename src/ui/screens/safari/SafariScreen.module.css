@@ -14,7 +14,6 @@
 .topBar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--sp-4);
   flex-wrap: wrap;
 }
@@ -26,7 +25,20 @@
   font-size: var(--type-h1);
   color: var(--brand-red);
 }
-.purse { display: flex; align-items: center; gap: var(--sp-3); }
+.purse { display: flex; align-items: center; gap: var(--sp-3); margin-left: auto; }
+/* How to play: the one door to the rules, beside the title — quieter than the action it explains. */
+.help {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-weight: 800;
+  cursor: pointer;
+}
 .stat {
   display: inline-flex;
   align-items: center;
@@ -38,11 +50,24 @@
   font-weight: 700;
 }
 .pixel { image-rendering: pixelated; }
+/* The entrance stands on the FRLG map of the Safari's entrance area, and the stalk on its forest floor. */
 .grounds {
   background:
-    linear-gradient(to bottom, var(--surface-0) 0%, color-mix(in srgb, var(--surface-0) 40%, transparent) 16%, transparent 34%),
-    var(--grounds) center / cover no-repeat,
+    linear-gradient(to bottom, var(--surface-0) 0%, color-mix(in srgb, var(--surface-0) 55%, transparent) 12%, transparent 30%),
+    var(--grounds) center / 1632px 1152px no-repeat,
     var(--surface-0);
+  image-rendering: pixelated;
+}
+/* The FRLG map is 816 × 576: shown at a whole ×2, or ×3 once the window outgrows that, cropped at the edges. */
+@media (min-width: 1633px), (min-height: 1153px) {
+  .grounds { background-size: auto, 2448px 1728px, auto; }
+}
+.floor {
+  background:
+    linear-gradient(color-mix(in srgb, var(--surface-0) 72%, transparent), color-mix(in srgb, var(--surface-0) 72%, transparent)),
+    var(--floor) 0 0 / 144px 96px repeat,
+    var(--surface-0);
+  image-rendering: pixelated;
 }
 
 /* ── The entrance ─────────────────────────────────────────────────────────────────────────────────────── */
@@ -177,8 +202,8 @@
 
 .stalkBody {
   display: grid;
-  grid-template-columns: auto 320px;
-  justify-content: center;
+  /* The board's column takes all the room there is: its tile size is measured from it (tiles.ts). */
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: var(--sp-5);
   min-height: 0;
   grid-row: 2 / 4;
@@ -193,142 +218,12 @@
   border-radius: var(--radius-pill);
   background: var(--surface-1);
 }
-.board {
-  display: grid;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  gap: 2px;
-  padding: var(--sp-2);
-  border-radius: var(--radius-md);
-  border: 3px solid var(--border-strong);
-  background: var(--surface-sunken);
-}
-
-/* The four grounds, flat and ours: grass carries its tufts, water its ripples, a rock is a boulder. */
-.tile {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-width: 0;
-  min-height: 0;
-  aspect-ratio: 1;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-xs);
-  font: inherit;
-}
-.tileGrass {
-  background:
-    radial-gradient(circle at 30% 35%, color-mix(in srgb, var(--type-grass) 55%, var(--ink-primary)) 0 9%, transparent 10%),
-    radial-gradient(circle at 70% 65%, color-mix(in srgb, var(--type-grass) 55%, var(--ink-primary)) 0 9%, transparent 10%),
-    var(--type-grass);
-}
-.tileOpen { background: color-mix(in srgb, var(--type-ground) 65%, var(--surface-1)); }
-.tileRock {
-  background:
-    radial-gradient(circle at 50% 55%, var(--type-rock) 0 42%, color-mix(in srgb, var(--type-rock) 60%, var(--ink-primary)) 43% 48%, transparent 49%),
-    color-mix(in srgb, var(--type-ground) 65%, var(--surface-1));
-}
-.tileWater {
-  background:
-    repeating-linear-gradient(170deg, transparent 0 10px, color-mix(in srgb, var(--type-water) 70%, var(--surface-1)) 10px 12px),
-    var(--type-water);
-}
-
-/* When the turn ends: red where it would notice you, pale where it looks but the grass hides you. */
-.danger::after,
-.watched::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: color-mix(in srgb, var(--accent-negative) 45%, transparent);
-  box-shadow: inset 0 0 0 2px var(--brand-red-deep);
-  pointer-events: none;
-}
-.watched::after {
-  background: color-mix(in srgb, var(--accent-negative) 18%, transparent);
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand-red-deep) 45%, transparent);
-}
-/* Where a click does something in the current mode. */
-/* Drawn above the sight overlay: a tile you can act on stays readable inside its cone. */
-.target { cursor: pointer; }
-.target::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 3px var(--accent-action);
-  pointer-events: none;
-}
-.target:hover::before { box-shadow: inset 0 0 0 5px var(--accent-action-deep); }
-.target:focus-visible { outline: 3px solid var(--ink-primary); outline-offset: -3px; }
-.step {
-  width: 22%;
-  aspect-ratio: 1;
-  border-radius: var(--radius-pill);
-  background: var(--surface-1);
-  box-shadow: 0 0 0 2px var(--ink-primary);
-}
-.mon,
-.player {
-  position: absolute;
-  inset: -8%;
-  z-index: 1;
-}
-.mon { display: grid; place-items: center; }
-.mon img { width: 100%; height: 100%; object-fit: contain; }
-.player { width: 116%; height: 116%; object-fit: contain; }
-.exposed { filter: drop-shadow(0 0 4px var(--brand-red)); }
-.facing {
-  position: absolute;
-  top: 2%;
-  right: 2%;
-  padding: 1px;
-  border-radius: var(--radius-pill);
-  background: var(--ink-primary);
-  color: var(--surface-1);
-}
-/* The bait as a flat token of ours, not a drawing competing with the sprites. */
-.bait {
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 55%;
-  aspect-ratio: 1;
-  border-radius: var(--radius-pill);
-  border: 2px solid var(--brand-red-deep);
-  background: var(--surface-1);
-  color: var(--brand-red);
-}
-.monState {
-  position: absolute;
-  bottom: 2%;
-  left: 2%;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  padding: 2px;
-  border-radius: var(--radius-pill);
-  border: 2px solid var(--brand-red-deep);
-  background: var(--surface-1);
-  color: var(--brand-red-deep);
-}
-/* The second channel for the red (D5): an eye where it would notice you. */
-.eye {
-  position: absolute;
-  top: 4%;
-  left: 4%;
-  z-index: 2;
-  padding: 1px;
-  border-radius: var(--radius-pill);
-  background: var(--brand-red-deep);
-  color: var(--surface-1);
-}
+/* The board sits at its own whole-pixel size (Tiles.tsx), centred in the space it has. */
+.boardSlot { position: relative; }
+.toolIcon { width: 32px; height: 32px; image-rendering: pixelated; }
 
 .side {
+  align-self: center;
   display: grid;
   align-content: start;
   gap: var(--sp-3);

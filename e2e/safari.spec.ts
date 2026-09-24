@@ -3,11 +3,13 @@ import { expect, test, type Page } from '@playwright/test';
 // v0.7.6 — the Safari Zone (§2.11.6): the door, the ticket, today's lineup, and the stalk on its board, driven
 // through the UI; the throw's odds and the Pokémon's plan are the sim's, so the screen is checked against them.
 
-async function inTown(page: Page, cityIndex: 0 | 1 = 0, money = 2000): Promise<void> {
+async function inTown(page: Page, cityIndex: 0 | 1 = 0, money = 2000, guide = false): Promise<void> {
   await page.goto('/?screen=menu');
   await page.evaluate(() => window.localStorage.clear());
   await page.reload();
   await page.waitForFunction(() => !!window.__ascendant);
+  // The How to play opens by itself on a first visit; these tests are about the park, so it has been read.
+  if (!guide) await page.evaluate(() => window.localStorage.setItem('ascendant.safari-guide-seen', '1'));
   await page.evaluate(([i, m]) => {
     const dev = window.__ascendant!;
     dev.run.new('squirtle', 7);
@@ -19,6 +21,28 @@ async function inTown(page: Page, cityIndex: 0 | 1 = 0, money = 2000): Promise<v
 }
 
 test.describe('The Safari Zone — §2.11.6', () => {
+  test('How to play opens by itself on the first visit, steps through its pages, and comes back from its button', async ({ page }) => {
+    await inTown(page, 0, 1000, true);
+    await page.getByTestId('door-safari').click();
+    await expect(page.getByTestId('safari-guide')).toBeVisible();
+    await expect(page.getByTestId('safari-guide-page-0')).toBeVisible();
+    for (let i = 1; i < 6; i++) {
+      await page.getByTestId('btn-guide-next').click();
+      await expect(page.getByTestId(`safari-guide-page-${i}`)).toBeVisible();
+      if (i === 4) await page.screenshot({ path: 'playtest/safari-guide.png' });
+    }
+    await page.getByTestId('btn-guide-next').click();
+    await expect(page.getByTestId('safari-guide')).toHaveCount(0);
+    // Read once: leaving and coming back does not open it again, but the button does.
+    await page.getByTestId('btn-leave-safari').click();
+    await page.getByTestId('door-safari').click();
+    await expect(page.getByTestId('safari-guide')).toHaveCount(0);
+    await page.getByTestId('btn-safari-help').click();
+    await expect(page.getByTestId('safari-guide-page-0')).toBeVisible();
+    await page.getByTestId('btn-guide-back').click();
+    await expect(page.getByTestId('safari-guide')).toHaveCount(0);
+  });
+
   test('the lineup is on show before the ticket, and the ticket buys the balls and the clock', async ({ page }) => {
     await inTown(page, 0, 1000);
     await page.getByTestId('door-safari').click();

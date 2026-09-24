@@ -35,6 +35,7 @@
     "art:install": "node scripts/install-art.mjs",
     "art:pokemon": "node scripts/fetch-pokemon-assets.mjs",
     "art:items": "node scripts/fetch-item-icons.mjs",
+    "art:safari": "node scripts/fetch-safari-art.mjs",
     "art:types": "node scripts/fetch-type-icons.mjs",
     "ui:audit": "node scripts/ui-audit.mjs"
   },

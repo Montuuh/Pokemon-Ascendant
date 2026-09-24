@@ -1,23 +1,27 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
-  IconApple, IconAppleFilled, IconArrowBackUp, IconArrowUp, IconCheck, IconClock, IconEye, IconHexagon, IconPlayerPlay, IconShoe, IconTrees,
+  IconArrowBackUp, IconCheck, IconClock, IconEye, IconHelpCircle, IconPlayerPlay, IconShoe, IconTrees,
 } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
+import { markSafariGuideSeen, safariGuideSeen } from '@/app/safariGuideSeen';
 import { getContent } from '@/content/registry';
 import {
   afterTurn, canToss, planOf, playerCanStand, SAFARI, throwOdds, tileAt, traitsOf, walkDistance,
-  type SafariHunt, type SafariSpot, type SafariState, type Tile,
+  type SafariHunt, type SafariSpot, type SafariState,
 } from '@/sim';
-import { itemIcon, spriteOf, stageBackdrop, trainerSprite } from '@/ui/art';
+import { itemIcon, safariArt, spriteOf } from '@/ui/art';
 import { Money } from '@/ui/components/Money';
 import { SwapOrSkip } from '@/ui/components/SwapOrSkip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { RUN_REJECT_TEXT, SAFARI_RESULT_LABEL, SAFARI_TEXT, SAFARI_TIER_LABEL, SAFARI_TRAIT } from '@/ui/strings';
+import { RUN_REJECT_TEXT, SAFARI_GUIDE, SAFARI_RESULT_LABEL, SAFARI_TEXT, SAFARI_TIER_LABEL, SAFARI_TRAIT } from '@/ui/strings';
 import {
   moneyTip, safariAlarmTip, safariApTip, safariBaitTip, safariBallsTip, safariBoardTip, safariClockTip, safariRockTip, safariStateTip,
-  safariThrowTip, safariTicketTip, safariTierTip, safariTip, safariTraitTip,
+  safariThrowTip, safariTicketTip, safariTierTip, safariTraitTip,
 } from '@/ui/tips';
 import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
+import { SafariGuide } from './SafariGuide';
+import { CellArt } from './CellArt';
+import { boardStyle, cellClass, frameClass, sightClass, targetClass, tileClass, useTilePx } from './tiles';
 import styles from './SafariScreen.module.css';
 
 // §2.11.6 — the Safari Zone. Two views of one place: the entrance, where today's lineup stands in full before
@@ -34,6 +38,13 @@ export function SafariScreen() {
   const dispatch = useRunStore((s) => s.dispatch);
   const [toast, setToast] = useState<string | null>(null);
   const safari = run.city?.safari ?? null;
+  // §2.11.6 — the How to play opens by itself on this browser's first walk into the park.
+  const [guide, setGuide] = useState(() => !safariGuideSeen());
+  function closeGuide() {
+    markSafariGuideSeen();
+    setGuide(false);
+  }
+  const help = () => setGuide(true);
 
   function say(line: string) {
     setToast(line);
@@ -47,22 +58,23 @@ export function SafariScreen() {
 
   return (
     <main
-      className={`${styles.root} ${safari?.hunt ? '' : styles.grounds}`}
-      // The entrance stands at the park fence: the real meadow backdrop. The stalk keeps a plain ground so the board reads.
-      style={safari?.hunt ? undefined : ({ '--grounds': `url(${stageBackdrop('meadow')})` } as CSSProperties)}
+      className={`${styles.root} ${safari?.hunt ? styles.floor : styles.grounds}`}
+      // The entrance stands on the FRLG map of the Safari's entrance; the stalk on the park's forest, dimmed.
+      style={{ '--grounds': `url(${safariArt('entrance')})`, '--floor': `url(${safariArt('forest')})` } as CSSProperties}
       data-testid="safari-screen"
     >
-      {safari?.hunt ? <Stalk safari={safari} hunt={safari.hunt} act={act} say={say} /> : <Entrance safari={safari} money={run.money} act={act} />}
+      {safari?.hunt ? <Stalk safari={safari} hunt={safari.hunt} act={act} say={say} onHelp={help} paused={guide} /> : <Entrance safari={safari} money={run.money} act={act} onHelp={help} />}
       {toast && <p className={styles.toast} role="status">{toast}</p>}
       <p className="sr-only" role="status" aria-live="polite">{run.log.slice(-1).join(' ')}</p>
       {run.phase === 'swap-or-skip' && <SwapOrSkip />}
+      {guide && <SafariGuide onClose={closeGuide} balls={safari?.balls ?? null} clock={safari?.clock ?? null} />}
     </main>
   );
 }
 
 // ── The entrance ─────────────────────────────────────────────────────────────────────────────────────────
 
-function Entrance({ safari, money, act }: { safari: SafariState | null; money: number; act: (a: Act) => boolean }) {
+function Entrance({ safari, money, act, onHelp }: { safari: SafariState | null; money: number; act: (a: Act) => boolean; onHelp: () => void }) {
   const lastLine = useRunStore((s) => s.run?.log.at(-1) ?? '');
   const leave = (
     <button type="button" className={styles.secondary} onClick={() => act({ type: 'leave-safari' })} data-testid="btn-leave-safari">
@@ -73,7 +85,7 @@ function Entrance({ safari, money, act }: { safari: SafariState | null; money: n
   if (!safari) {
     return (
       <>
-        <Header money={money} />
+        <Header money={money} onHelp={onHelp} />
         <p className={styles.closed}>{SAFARI_TEXT.closed}</p>
         <footer className={styles.footer}>{leave}</footer>
       </>
@@ -85,7 +97,7 @@ function Entrance({ safari, money, act }: { safari: SafariState | null; money: n
   const stalked = safari.lineup.some((l) => l.result !== null);
   return (
     <>
-      <Header money={money} safari={safari.entered ? safari : null} />
+      <Header money={money} safari={safari.entered ? safari : null} onHelp={onHelp} />
       <ul className={styles.lineup} aria-label="Today's Pokémon" data-testid="safari-lineup">
         {safari.lineup.map((spot, i) => (
           <LineupCard key={spot.species} spot={spot} index={i} canStalk={open && spot.result === null} onStalk={() => act({ type: 'safari-approach', spot: i })} />
@@ -106,13 +118,15 @@ function Entrance({ safari, money, act }: { safari: SafariState | null; money: n
   );
 }
 
-function Header({ money, safari, heading }: { money: number; safari?: SafariState | null; heading?: string }) {
+function Header({ money, safari, heading, onHelp }: { money: number; safari?: SafariState | null; heading?: string; onHelp: () => void }) {
   return (
     <header className={styles.topBar}>
       <h1 className={`${styles.title} display`}>
         <IconTrees size={26} aria-hidden="true" /> {heading ?? 'Safari Zone'}
-        <InfoDot tip={safariTip()} />
       </h1>
+      <button type="button" className={styles.help} onClick={onHelp} data-testid="btn-safari-help">
+        <IconHelpCircle size={18} aria-hidden="true" /> {SAFARI_GUIDE.button}
+      </button>
       <div className={styles.purse}>
         {safari && (
           <>
@@ -190,11 +204,9 @@ function Pips({ filled, total, ap = false }: { filled: number; total: number; ap
 
 // ── The stalk ────────────────────────────────────────────────────────────────────────────────────────────
 
-const ROTATE = { n: 0, e: 90, s: 180, w: 270 } as const;
-const TILE_CLASS: Record<Tile, string | undefined> = { g: styles.tileGrass, o: styles.tileOpen, r: styles.tileRock, w: styles.tileWater };
-const MODES = [['move', IconShoe], ['bait', IconApple], ['rock', IconHexagon]] as const;
+const MODES = ['move', 'bait', 'rock'] as const;
 
-function Stalk({ safari, hunt, act, say }: { safari: SafariState; hunt: SafariHunt; act: (a: Act) => boolean; say: (line: string) => void }) {
+function Stalk({ safari, hunt, act, say, onHelp, paused }: { safari: SafariState; hunt: SafariHunt; act: (a: Act) => boolean; say: (line: string) => void; onHelp: () => void; paused: boolean }) {
   const content = getContent();
   const money = useRunStore((s) => s.run!.money);
   // A chosen mode and an armed "Sure?" belong to the moment they were set: the next action or turn drops them,
@@ -214,6 +226,9 @@ function Stalk({ safari, hunt, act, say }: { safari: SafariState; hunt: SafariHu
   const key = (x: number, y: number) => `${x},${y}`;
   const watched = new Set(end.cone.map((p) => key(p[0], p[1])));
   const path = new Set(plan.steps.map((p) => key(p[0], p[1])));
+  // §9 — the board takes the largest whole-pixel tile that fits the space it has.
+  const wrap = useRef<HTMLDivElement>(null);
+  const tile = useTilePx(wrap, hunt.width, hunt.height);
 
   // Why a mode is off right now, or null when it is on. Asked by the button and by its bubble.
   const offWhy: Record<Mode, string | null> = {
@@ -222,8 +237,10 @@ function Stalk({ safari, hunt, act, say }: { safari: SafariState; hunt: SafariHu
     rock: hunt.ap <= 0 ? RUN_REJECT_TEXT['no-ap']! : hunt.held || hunt.heldLast ? 'Not two turns running.' : null,
   };
 
-  // Arrow keys walk, the same as clicking the tile; Escape takes back an armed "Sure?".
+  // Arrow keys walk, the same as clicking the tile; Escape takes back an armed "Sure?". Not while the How to play
+  // is open over the board: a key pressed there is the guide's.
   useEffect(() => {
+    if (paused) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') return setSureAt(null);
       const d = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] }[e.key];
@@ -233,7 +250,7 @@ function Stalk({ safari, hunt, act, say }: { safari: SafariState; hunt: SafariHu
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [hunt, act]);
+  }, [hunt, act, paused]);
 
   function targetable(x: number, y: number): boolean {
     if (hunt.ap <= 0) return false;
@@ -263,32 +280,16 @@ function Stalk({ safari, hunt, act, say }: { safari: SafariState; hunt: SafariHu
       const isBait = hunt.bait?.[0] === x && hunt.bait?.[1] === y;
       const can = targetable(x, y);
       const seen = seenFrom(x, y);
-      const sight = seen ? styles.danger : watched.has(k) ? styles.watched : '';
-      const cls = [styles.tile, TILE_CLASS[t], sight, can ? styles.target : ''].join(' ');
+      const cls = [tileClass(t, x, y, (a, b) => tileAt(hunt, a, b)), cellClass, sightClass(seen, watched.has(k)), can ? targetClass : ''].join(' ');
       const label = `${SAFARI_TEXT.tile[t]}, column ${x + 1}, row ${y + 1}${seen ? ', it would see you here' : watched.has(k) ? ', in its sight but hidden' : ''}`;
       const inner = (
-        <>
-          {path.has(k) && !isMon && <span className={styles.step} aria-hidden="true" />}
-          {isBait && (
-            <span className={styles.bait} aria-hidden="true">
-              <IconAppleFilled size={18} />
-            </span>
-          )}
-          {isMon && (
-            <span className={styles.mon}>
-              <img src={spriteOf({ speciesId: species.id }, 'front')} alt={species.name} className={styles.pixel} />
-              <IconArrowUp size={16} className={styles.facing} style={{ transform: `rotate(${ROTATE[hunt.facing]}deg)` }} aria-hidden="true" />
-            </span>
-          )}
-          {isMon && monState && (
-            <Tipped tip={safariStateTip(monState)} className={styles.monState} data-testid="safari-mon-state">
-              {hunt.eating > 0 ? <IconAppleFilled size={14} aria-hidden="true" /> : <IconHexagon size={14} aria-hidden="true" />}
-              <span className="sr-only">{monState}</span>
-            </Tipped>
-          )}
-          {isPlayer && <img src={trainerSprite('red')} alt="You" className={`${styles.player} ${styles.pixel} ${end.spots ? styles.exposed : ''}`} />}
-          {seen && !isPlayer && <IconEye size={14} className={styles.eye} aria-hidden="true" />}
-        </>
+        <CellArt
+          step={path.has(k)}
+          bait={isBait}
+          seen={seen}
+          mon={isMon ? { species: species.id, name: species.name, facing: hunt.facing, state: hunt.eating > 0 ? 'eating' : hunt.held ? 'held' : null, stateTip: monState ? safariStateTip(monState) : undefined } : undefined}
+          player={isPlayer ? { exposed: end.spots } : undefined}
+        />
       );
       tiles.push(
         can ? (
@@ -311,15 +312,17 @@ function Stalk({ safari, hunt, act, say }: { safari: SafariState; hunt: SafariHu
 
   return (
     <>
-      <Header money={money} safari={safari} heading={`Stalking ${species.name}`} />
+      <Header money={money} safari={safari} heading={`Stalking ${species.name}`} onHelp={onHelp} />
       <div className={styles.stalkBody}>
-        <div className={styles.boardWrap}>
-          <div className={styles.board} style={{ gridTemplateColumns: `repeat(${hunt.width}, 1fr)`, aspectRatio: `${hunt.width} / ${hunt.height}` }} data-testid="safari-board" data-mode={mode}>
-            {tiles}
+        <div className={styles.boardWrap} ref={wrap}>
+          <div className={styles.boardSlot}>
+            <div className={frameClass} style={boardStyle(hunt.width, hunt.height, tile)} data-testid="safari-board" data-mode={mode}>
+              {tiles}
+            </div>
+            <span className={styles.boardDot}>
+              <InfoDot tip={safariBoardTip()} label="How to read the board" />
+            </span>
           </div>
-          <span className={styles.boardDot}>
-            <InfoDot tip={safariBoardTip()} label="How to read the board" />
-          </span>
         </div>
 
         <aside className={styles.side} aria-label="The stalk">
@@ -347,7 +350,7 @@ function Stalk({ safari, hunt, act, say }: { safari: SafariState; hunt: SafariHu
           </p>
 
           <div className={styles.modes} role="group" aria-label="What a tile click does">
-            {MODES.map(([m, Icon]) => {
+            {MODES.map((m) => {
               const off = offWhy[m];
               return (
                 <button
@@ -360,7 +363,7 @@ function Stalk({ safari, hunt, act, say }: { safari: SafariState; hunt: SafariHu
                   data-testid={`btn-mode-${m}`}
                   {...(modeTips[m] ?? {})}
                 >
-                  <Icon size={18} aria-hidden="true" /> {SAFARI_TEXT.modes[m]}
+                  {m === 'move' ? <IconShoe size={20} aria-hidden="true" /> : <img className={`${styles.toolIcon} ${styles.pixel}`} src={safariArt(m)} alt="" />} {SAFARI_TEXT.modes[m]}
                 </button>
               );
             })}

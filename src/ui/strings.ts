@@ -238,3 +238,39 @@ export const CITY_DOOR_HINT: Record<CityDoor, string> = {
 
 /** §2.11.0 — what a door in development says when you walk in anyway. */
 export const CITY_DOOR_SOON = 'Not open yet — this door is in development.';
+
+/** §2.11.6 — the Safari's How to play: one idea a page, in the order a first stalk meets them. */
+type GuideNumbers = { balls: number; clock: number; ap: number };
+export const SAFARI_GUIDE = {
+  title: 'How to play: the Safari',
+  button: 'How to play',
+  skip: 'Skip',
+  done: 'Let’s go',
+  pages: [
+    {
+      title: 'Pick one to stalk',
+      body: () => 'Today’s Pokémon are on show before you pay. The rings are how many alarms each will take: an Easy one forgives a mistake or two, a Rare bolts at its first — but it is one no route will ever offer you.',
+    },
+    {
+      title: 'Hide in the tall grass',
+      body: () => 'It notices you on open ground, or on the tile right in front of it. Anywhere else in the tall grass you are hidden — even while it looks your way.',
+    },
+    {
+      title: 'Read its next move',
+      body: () => 'The dots are where it walks this turn; the yellow tiles are where you can step. Red with an eye: it would see you there when the turn ends. Pale red: it looks there, but the grass hides you.',
+    },
+    {
+      title: 'Bait and rocks',
+      body: () => 'Bait draws it over to eat for two turns, head down — it looks one tile ahead and hears nothing. A rock stops it for a turn, facing the noise, so you can walk in behind.',
+    },
+    {
+      title: 'One throw, the whole turn',
+      body: () => 'End a turn within two tiles of it, then spend the next one throwing. The odds are on the button: closer, from behind, never seen and while it eats all raise them. A miss is an alarm.',
+    },
+    {
+      title: 'Mind the balls and the clock',
+      body: (n: GuideNumbers) =>
+        `This ticket buys ${n.balls} Safari Balls and ${n.clock} turns for the whole visit, shared by every stalk. You have ${n.ap} actions a turn: a step, a bait or a rock costs one. One or two catches is a good day.`,
+    },
+  ] as { title: string; body: (n: GuideNumbers) => string }[],
+};

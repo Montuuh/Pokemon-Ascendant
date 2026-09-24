@@ -46,8 +46,6 @@ const TRAINERS = {
   sabrina: 'sabrina',
   lorelei: 'lorelei-gen3',
   kiyo: 'blackbelt-gen4',
-  // v0.7.6 — the player on the Safari's board (§2.11.6): Red, the Gen I protagonist.
-  red: 'red',
 };
 
 const url = (id) => `https://play.pokemonshowdown.com/sprites/trainers/${id}.png`;

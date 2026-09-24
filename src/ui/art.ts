@@ -39,3 +39,5 @@ const PLATED_REGIONS = new Set([1, 2, 3]);
 export const regionPlate = (n: number) => asset(`art/map/region-${PLATED_REGIONS.has(n) ? n : 1}.png`);
 /** §2.11 — a City's lobby background (`npm run art:gen`, then `install-art town`). */
 export const townArt = (cityId: string) => asset(`art/towns/${cityId}.png`);
+/** §2.11.6 — the Safari's FRLG tiles, tokens and entrance map (`npm run art:safari`). */
+export const safariArt = (name: string) => asset(`art/safari/${name}.png`);

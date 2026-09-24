@@ -11,6 +11,7 @@
 //   node scripts/install-art.mjs vista <src.png> <name>    → public/art/ui/<name>.jpg       1920×1080 q86
 //   node scripts/install-art.mjs pixel-vista <src> <name>  → public/art/ui/<name>.png       1920×1080 nearest
 //   node scripts/install-art.mjs icon <src.png> <name> [px]→ public/art/items/<name>.png    128×128
+//   node scripts/install-art.mjs pixel-icon <src> <name>   → public/art/safari/<name>.png   16×16 nearest, trimmed
 //
 // Every profile is lossy on purpose except `icon`. Backdrops sit behind a scrim and a blur, so q82 is
 // invisible; an icon sits at 100 % on a card, so it stays PNG.
@@ -32,6 +33,9 @@ const PROFILES = {
   // §2.11 — a City's lobby background: the same generated top-down pixel register as the route plate.
   town: { dir: 'public/art/towns', ext: 'png', w: 1920, h: 1080, fit: 'cover', kernel: 'nearest', palette: true },
   icon: { dir: 'public/art/items', ext: 'png', w: 128, h: 128, fit: 'contain', cut: 42 },
+  // §2.11.6 — a generated pixel-art token (the Safari's bait and rock), brought down to the 16-px tile grid it
+  // stands on so its pixels are the FRLG tiles' pixels: see pixelToken below.
+  'pixel-icon': { dir: 'public/art/safari', ext: 'png', w: 16, h: 16, token: 16 },
   // An official render already carries its own alpha, so cutting a background out of it would only chew
   // into the artwork. Resize and ship.
   item: { dir: 'public/art/items', ext: 'png', w: 128, h: 128, fit: 'contain' },
@@ -86,6 +90,34 @@ async function cutout(image, tolerance) {
 let input = sharp(src);
 const meta = await input.metadata();
 if (profile.cut) input = await cutout(input, profile.cut);
+
+/**
+ * §2.11.6 — a generated sprite onto a tiny tile grid. The model draws on a ~32-cell grid at 1024 px, so nearest-
+ * neighbour at 16 px lands on cell edges and loses the small things (a berry becomes one stray pixel). Instead:
+ * white out hard, crop to the object, average it down (lanczos) to `token` px, snap the alpha back to on/off and the
+ * colours to a small palette, and stand it on the floor of a w×h canvas.
+ */
+async function pixelToken(src, size, w, h) {
+  const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  for (let i = 0; i < data.length; i += 4) if (765 - (data[i] + data[i + 1] + data[i + 2]) < 60) data[i + 3] = 0;
+  const cropped = await sharp(data, { raw: { width: info.width, height: info.height, channels: 4 } }).png().toBuffer();
+  const small = await sharp(await sharp(cropped).trim().png().toBuffer())
+    .resize({ width: size, height: size, fit: 'contain', position: 'bottom', background: { r: 0, g: 0, b: 0, alpha: 0 }, kernel: 'lanczos3' })
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  for (let i = 3; i < small.data.length; i += 4) small.data[i] = small.data[i] >= 110 ? 255 : 0;
+  const token = await sharp(small.data, { raw: { width: size, height: size, channels: 4 } }).png().toBuffer();
+  return sharp({ create: { width: w, height: h, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([{ input: token, left: Math.floor((w - size) / 2), top: Math.max(0, h - size - 1) }])
+    .png({ palette: true, colours: 16, dither: 0 });
+}
+
+if (profile.token) {
+  await mkdir(dirname(resolve(dest)), { recursive: true });
+  await (await pixelToken(src, profile.token, width, height)).toFile(dest);
+  console.log(`${dest}  ${meta.width}×${meta.height} → ${profile.token} px on ${width}×${height}`);
+  process.exit(0);
+}
 
 /**
  * Mount an emblem on the map's cream disc.

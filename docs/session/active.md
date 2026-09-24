@@ -12,8 +12,8 @@ cards, per-target damage) · acting twice / calling for help · groups across th
 spent consumables · the balance pass → **v0.9 The long game**: Bond & Shiny (with Mastery Lv2/Lv3 for every line) ·
 level & Mart · animated catch · Victory Road · League → v1.0 · v1.1 polish · v1.2 map · v1.3 world · v2.0 two players.
 
-**v0.7.6 in one line:** the Safari Zone opens in both Cities as a stalking minigame on a tile board (path and look
-shown, bait, rock, a throw is the whole turn); species no route offers, Dratini in Celadon. Run save v12 (migrates v11).
+**v0.7.6 in one line:** the Safari opens in both Cities as a stalking minigame (species no route offers, Dratini in
+Celadon; run save v12). Since (Next): FRLG's own Safari tiles at a whole-pixel scale, and a six-page How to play.
 
 **Findings to act on:** map caption token, wild biome emblems and route-line contrast → v1.2 · UI review nits left:
 the silhouette filter is copied in three CSS modules; two unmet starters' Buy buttons share an accessible name; TM

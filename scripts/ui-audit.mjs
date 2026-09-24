@@ -62,11 +62,14 @@ const SCREENS = {
   'game-corner': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner', 'btn-spin', 'btn-pull'], match: [/screens\/GameCornerScreen/] },
   store: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(3000)'], clicks: ['door-department-store'], match: [/screens\/ShopScreen/] },
   // v0.7.6 — the Safari Zone (§2.11.6): the entrance with today's lineup, and a stalk on its board.
-  safari: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-safari'], match: [/screens\/SafariScreen/] },
+  safari: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-safari', 'btn-guide-back'], match: [/screens\/safari\//] },
+  // The How to play opens by itself on a fresh browser, which is what the audit is: measure it on its third page.
+  'safari-guide': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)'], clicks: ['door-safari', 'btn-guide-next', 'btn-guide-next'], match: [/screens\/safari\/(SafariGuide|CellArt|tiles|Tiles)/] },
   'safari-stalk': {
     url: '/?screen=menu',
     setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)', 'run.dispatch({ type: "enter-building", building: "safari" })', 'run.dispatch({ type: "enter-safari" })', 'run.dispatch({ type: "safari-approach", spot: 3 })'],
-    match: [/screens\/SafariScreen/],
+    clicks: ['btn-guide-back'],
+    match: [/screens\/safari\//],
   },
   merchant: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("merchant")', 'goTo("map")'], match: [/screens\/ShopScreen/] },
   aid: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("aid")', 'goTo("map")'], match: [/screens\/AidScreen/] },

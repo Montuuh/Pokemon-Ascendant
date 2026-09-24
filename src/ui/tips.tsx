@@ -426,17 +426,6 @@ export function floorTip(label: string, count: number): ReactNode {
 
 // ── The Safari Zone (v0.7.6) ─────────────────────────────────────────────────────────────────────────────
 
-/** §2.11.6 — the Safari's heading bubble: the whole rule set, once. */
-export function safariTip(): ReactNode {
-  return (
-    <Tip
-      title="Safari Zone"
-      body="Pick one of today's Pokémon and stalk it through the grass. Tall grass hides you from everything but the tile in front of it; open ground does not. You always see where it will walk and where it will look. End a turn within two tiles, then spend the next on a throw."
-      footer="Seen is an alarm, and so is a ball that misses. Its last alarm sends it off. Once per visit."
-    />
-  );
-}
-
 /** §2.11.6 — the ticket: what it buys. */
 export function safariTicketTip(fee: number, balls: number, clock: number): ReactNode {
   return <Tip title="Safari ticket" meta={[`${fee} ₽`, `${balls} Safari Balls`, `${clock} turns`]} body="The balls and the turns are shared by every Pokémon you stalk. What is left when you leave stays behind." />;
@@ -477,8 +466,8 @@ export function safariBoardTip(): ReactNode {
   return (
     <Tip
       title="Reading the board"
-      meta={['Red + eye: seen', 'Pale red: hidden', 'Dots: its path', 'Yellow: a click acts', 'Arrow keys walk']}
-      body="The red is where it will be looking once this turn ends. On a tile marked with the eye it would notice you; pale red is its look, but the tall grass hides you. Boulders block a look and a throw; the water is its pond."
+      meta={['Dots: its path', 'Yellow: a click acts', 'Arrow keys walk']}
+      body="Red with an eye: it would see you there when this turn ends. Pale red: it looks there, but the tall grass hides you. Boulders block a look and a throw; the water is its pond."
     />
   );
 }
