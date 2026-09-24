@@ -5,7 +5,7 @@ import { RngStreams } from '../rng/rngStreams';
 import { knownMoves } from '../combat/stats';
 import { isImmuneToStatus } from '../combat/status';
 import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
-import { generateRegion } from './map';
+import { generateRegion, WILD_RARE_CHANCE } from './map';
 import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
 import { AID_HEAL_PCT, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
 import { CASINO, CITIES, RING, cityAfter, isFinalRegion } from './cities';
@@ -106,7 +106,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
   resetUidCounter();
   const streams = new RngStreams(seed);
   const mapRng = streams.get('MapRNG');
-  const map = generateRegion(mapRng, ctx.content, regionIndex, seed, modifiers);
+  const map = generateRegion(mapRng, ctx.content, regionIndex, seed, modifiers, [], wildRareChance(regionModifier ?? null, ctx.content));
   const starter = newPartyMon(starterId, RUN_START.starterLevel, ctx.content, seed);
   // §8.5.3 — the starter's flourish, if it has one (Pikachu's Light Ball).
   const starterItem = RUN_START.starterItems[starterId];
@@ -214,6 +214,13 @@ function catalystLevels(run: RunState, content: ContentRegistry): number {
   if (!run.relics.includes('evolution-catalyst') || run.spentRelics.includes('evolution-catalyst')) return 0;
   const levels = content.relic('evolution-catalyst').params?.levels;
   return typeof levels === 'number' ? levels : 0;
+}
+
+/** §2.11.3 Naturalist's Lens — a Region Modifier that raises the Rare slot's chance is read when the map is drawn. */
+function wildRareChance(modifierId: string | null, content: ContentRegistry): number {
+  if (!modifierId) return WILD_RARE_CHANCE;
+  const m = content.regionModifier(modifierId);
+  return !m.pending && m.hook === 'wild-rare' && typeof m.params?.chance === 'number' ? m.params.chance : WILD_RARE_CHANCE;
 }
 
 /** §4.2.7 — every status off one Pokémon: the nurse, the Center and a faint all do this. */
@@ -1146,7 +1153,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         mapRng.cursor = draft.cursors.MapRNG ?? mapRng.cursor;
         // §2.1 placeholder — a Gym whose Badge you hold is not drawn again (Region 3 still draws Region 1's pool).
         const beaten = ALL_GYMS.filter((g) => draft.badges.includes(g.badgeId)).map((g) => g.id);
-        draft.map = generateRegion(mapRng, ctx.content, draft.regionIndex, draft.seed, draft.modifiers, beaten);
+        draft.map = generateRegion(mapRng, ctx.content, draft.regionIndex, draft.seed, draft.modifiers, beaten, wildRareChance(draft.regionModifier, ctx.content));
         draft.cursors.MapRNG = mapRng.cursor;
         draft.position = null;
         draft.reachable = [...draft.map.entry];

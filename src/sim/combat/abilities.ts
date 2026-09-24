@@ -27,6 +27,8 @@ export function abilityAttackMultiplier(attacker: Combatant, move: MoveDef, cont
     }
     // §6.5.2 Guts — the wearer hits harder while statused, and Burn's −25 % Attack stops applying. The
     // cancellation is a division rather than a branch in effectiveAttack, so the two stay independent.
+    // §6.8.3 Sheer Force — a move that carries a rider for the foe hits harder, and the rider still rolls.
+    if (a.hook === 'rider-force-plus-damage' && hasFoeRider(move)) m *= Number(a.params?.multiplier ?? 1.2);
     if (a.hook === 'while-statused' && attacker.status) {
       m *= Number(a.params?.multiplier ?? 1.3);
       if (attacker.status.kind === 'burn') m /= config.burnAttackMultiplier;
@@ -34,6 +36,46 @@ export function abilityAttackMultiplier(attacker: Combatant, move: MoveDef, cont
   }
   return m;
 }
+
+/** A status or a stage change aimed at the target — what Sheer Force pays for. */
+const hasFoeRider = (move: MoveDef): boolean =>
+  move.power > 0 && move.effects.some((e) => (e.kind === 'status' && !e.self) || (e.kind === 'stage' && e.target === 'foe'));
+
+/** §6.8.3 Infiltrator — the wearer's moves ignore a target's *raised* Defence (a lowered one still counts). */
+export const abilityIgnoresRaisedDefence = (c: Combatant, content: ContentRegistry): boolean => hooks(c, content).some((a) => a.hook === 'ignore-defence-stages');
+
+/** §6.8.3 Arena Trap — while the wearer leads, every enemy loses 1/divisor of its HP at the end of each turn. 0 is none. */
+export function abilityLeadTrapDivisor(c: Combatant, content: ContentRegistry): number {
+  const a = hooks(c, content).find((x) => x.hook === 'lead-trap-chip');
+  return a ? Number(a.params?.divisor ?? 16) : 0;
+}
+
+/** §6.8.3 Weak Armor — the stage changes the wearer takes from being hit. */
+export function abilityHitStages(target: Combatant, move: MoveDef, content: ContentRegistry): { stat: Stat; stages: number }[] {
+  const out: { stat: Stat; stages: number }[] = [];
+  for (const a of hooks(target, content)) {
+    if (a.hook !== 'on-damaged-stages' || move.power <= 0) continue;
+    out.push({ stat: 'defense', stages: Number(a.params?.defense ?? -1) }, { stat: 'attack', stages: Number(a.params?.attack ?? 1) });
+  }
+  return out;
+}
+
+/** §6.8.3 Gluttony — what a healing item is worth on the wearer. */
+export function abilityConsumableHealMultiplier(c: Combatant, content: ContentRegistry): number {
+  let m = 1;
+  for (const a of hooks(c, content)) if (a.hook === 'consumable-heal-bonus') m *= Number(a.params?.multiplier ?? 1.5);
+  return m;
+}
+
+/** §6.8.3 Rain Dish — a move of its type heals the wearer 1/divisor of its HP. 0 is none. */
+export function abilityMoveHealDivisor(c: Combatant, move: MoveDef, content: ContentRegistry): number {
+  const a = hooks(c, content).find((x) => x.hook === 'type-move-heal' && x.params?.type === move.type);
+  return a ? Number(a.params?.divisor ?? 16) : 0;
+}
+
+/** §6.6 Damp — the named moves fail against the wearer. */
+export const abilityBlocksMove = (target: Combatant, move: MoveDef, content: ContentRegistry): boolean =>
+  hooks(target, content).some((a) => a.hook === 'block-moves' && String(a.params?.moves ?? '').split(',').includes(move.id));
 
 /** §6.5.2 Solid Rock — super-effective hits land 25 % softer on the wearer. */
 export function abilityDefenceMultiplier(target: Combatant, typeMultiplier: number, content: ContentRegistry): number {

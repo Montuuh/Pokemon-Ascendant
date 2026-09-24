@@ -139,3 +139,75 @@ describe('Abilities — §6.5.2 (v0.3 hooks)', () => {
     expect(s.enemies[0]!.stages.attack).toBe(-1);
   });
 });
+
+describe('The six hidden abilities, and Damp — §6.8.3, §6.6', () => {
+  const foe = (s: ReturnType<typeof withAbility>) => s.enemies[0]!;
+
+  it('SheerForce_RiderMovesHitHarder_PlainOnesDoNot', () => {
+    const mon = leadOf(withAbility('kingler', 'sheer-force'));
+    expect(abilityAttackMultiplier(mon, ctx.content.move('ember'), ctx.content, ctx.config)).toBeCloseTo(1.2);
+    expect(abilityAttackMultiplier(mon, ctx.content.move('tackle'), ctx.content, ctx.config)).toBe(1);
+  });
+
+  it('Infiltrator_IgnoresARaisedDefence_NotALoweredOne', () => {
+    const s = withAbility('golbat', 'infiltrator');
+    const plain = withAbility('golbat', 'inner-focus');
+    const raise = (st: typeof s, stages: number) => tweak(st, (d) => { d.enemies[0]!.stages.defense = stages; });
+    const hit = (st: typeof s) => breakdownFor(leadOf(st), foe(st), ctx.content.move('wing-attack'), false, ctx, st).final;
+    expect(hit(raise(s, 3))).toBe(hit(raise(s, 0)));
+    expect(hit(raise(plain, 3))).toBeLessThan(hit(raise(plain, 0)));
+    expect(hit(raise(s, -2))).toBeGreaterThan(hit(raise(s, 0)));
+  });
+
+  it('ArenaTrap_ChipsEveryEnemyAtTurnEnd_WhileItLeads', () => {
+    const s = withAbility('dugtrio', 'arena-trap');
+    const before = foe(s).hp;
+    const after = dispatch(s, { type: 'end-turn' });
+    expect(foe(after).hp).toBeLessThanOrEqual(before - Math.max(1, Math.floor(foe(s).maxHp / 16)));
+  });
+
+  it('WeakArmor_AHitLowersDefenceAndRaisesAttack', () => {
+    let s = tweak(withAbility('onix', 'weak-armor'), (d) => {
+      d.enemies[0]!.intent = { kind: 'attack', moveId: 'tackle', targetSlot: 'lead', hidden: false };
+    });
+    s = dispatch(s, { type: 'end-turn' });
+    const lead = leadOf(s);
+    expect(lead.hp).toBeLessThan(lead.maxHp);
+    expect(lead.stages.defense).toBe(-1);
+    expect(lead.stages.attack).toBe(1);
+  });
+
+  it('Gluttony_APotionHealsHalfAgainOnTheWearer', () => {
+    const drink = (ability: string) => {
+      let s = tweak(start(scenario({ team: [{ species: 'snorlax', level: 20, abilityId: ability }], enemies: [PIDGEY], consumables: ['potion'] })), (d) => {
+        d.player.team[0]!.hp = 1;
+      });
+      const card = s.player.consumables.hand.find((c) => c.consumableId === 'potion')!;
+      s = dispatch(s, { type: 'use-consumable', cardId: card.id, targetIndex: 0 });
+      return leadOf(s).hp - 1;
+    };
+    expect(drink('gluttony')).toBe(Math.floor(drink('sturdy') * 1.5));
+  });
+
+  it('RainDish_AWaterMoveHealsTheWearer', () => {
+    let s = withHand(
+      tweak(start(scenario({ team: [{ species: 'wartortle', level: 16, abilityId: 'rain-dish', moves: ['water-gun', 'tackle'] }], enemies: [PIDGEY] })), (d) => {
+        d.player.team[0]!.hp = 10;
+      }),
+      ['water-gun'],
+    );
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'water-gun').id });
+    expect(leadOf(s).hp).toBe(10 + Math.max(1, Math.floor(leadOf(s).maxHp / 16)));
+  });
+
+  it('Damp_SelfDestructFails_AndTheAiNeverFiresIt', () => {
+    let s = start(scenario({ team: [{ species: 'psyduck', level: 12, abilityId: 'damp' }], enemies: [{ species: 'voltorb', level: 12, tier: 'wild', phaseCount: 1, moves: ['self-destruct', 'tackle'] }] }));
+    expect(foe(s).intent?.moveId).not.toBe('self-destruct');
+    s = tweak(s, (d) => { d.enemies[0]!.intent = { kind: 'attack', moveId: 'self-destruct', targetSlot: 'lead', hidden: false }; });
+    const hp = leadOf(s).hp;
+    const foeHp = foe(s).hp;
+    s = dispatch(s, { type: 'end-turn' });
+    expect(leadOf(s).hp).toBe(hp);
+    expect(foe(s).hp).toBe(foeHp);
+  });
+});

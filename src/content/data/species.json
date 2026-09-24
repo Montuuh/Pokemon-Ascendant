@@ -636,7 +636,7 @@
           "abilityId": "shell-armor"
         }
       ],
-      "hiddenAbilityPending": "Rain Dish — arrives with weather in v0.7"
+      "hiddenAbility": "rain-dish"
     },
     {
       "id": "wartortle",
@@ -3230,7 +3230,7 @@
           "abilityId": "snipe"
         }
       ],
-      "hiddenAbilityPending": "Infiltrator — arrives in v0.7"
+      "hiddenAbility": "infiltrator"
     },
     {
       "id": "golbat",
@@ -3928,7 +3928,7 @@
           "abilityId": "sand-veil"
         }
       ],
-      "hiddenAbilityPending": "Arena Trap — arrives with the multi-enemy fights in v0.7"
+      "hiddenAbility": "arena-trap"
     },
     {
       "id": "dugtrio",
@@ -7262,7 +7262,7 @@
         "body-press"
       ],
       "branches": [],
-      "hiddenAbilityPending": "Weak Armor — arrives in v0.7"
+      "hiddenAbility": "weak-armor"
     },
     {
       "dex": 96,
@@ -7500,7 +7500,7 @@
           "abilityId": "shell-armor"
         }
       ],
-      "hiddenAbilityPending": "Sheer Force — arrives in v0.7"
+      "hiddenAbility": "sheer-force"
     },
     {
       "dex": 99,
@@ -10614,8 +10614,8 @@
       "evolvesTo": [],
       "rarity": "rare",
       "archetype": "vanguard",
-      "hiddenAbilityPending": "Gluttony — arrives in v0.7",
-      "catchRate": 0.2
+      "catchRate": 0.2,
+      "hiddenAbility": "gluttony"
     },
     {
       "dex": 144,

@@ -103,6 +103,8 @@ export const ItemHookSchema = z.enum([
   'intent-queue', 'run-scouting',
   // v0.7.5 (§7.3) — the last inert relics, made passive.
   'confusion-redraw', 'skip-first-turn',
+  // v0.7.5 (§2.11.3) — Naturalist's Lens: the Wild Areas' Rare slot comes up more often.
+  'wild-rare',
   'none',
 ]);
 const ItemParams = z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]));
@@ -187,6 +189,9 @@ export const AbilitySchema = z.object({
     'recoil-immunity', 'on-kill', 'conditional-reduction', 'swap-discount',
     // v0.6 (§8.5.2)
     'stab-multiplier', 'turn-start-ap',
+    // v0.7.5 (§6.8.3) — the six hidden abilities, and Damp
+    'rider-force-plus-damage', 'ignore-defence-stages', 'lead-trap-chip', 'on-damaged-stages',
+    'consumable-heal-bonus', 'type-move-heal', 'block-moves',
   ]),
   params: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
   pending: z.string().optional(),

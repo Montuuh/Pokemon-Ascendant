@@ -74,12 +74,12 @@ the macro expression of Pillar 3.
 | `coin-purse` | Coin Purse | Poké Dollar drops ×1.5 | Medium | ✅ |
 | `pokedex-whisper` | Pokédex Whisper | The first Unknown intent of each combat is revealed | Niche | ✅ |
 | `sturdy-lead` | Sturdy Lead | Once per combat the Lead survives a lethal hit at 1 HP | Strong | ✅ |
-| `mass-mobilization` | Mass Mobilization | Step-Forward and Step-Backward also draw 1 card | Niche | ✅ |
+| `mass-mobilization` | Mass Mobilization | Step-Forward and Step-Backward also draw 1 card | Niche | ✅ v0.7.5 |
 | `trauma-resistance` | Trauma Resistance | Each Trauma stack costs 4 % max HP instead of 5 % (cap unchanged) | Strong | ✅ |
 | `glass-cannon` | Glass Cannon | +20 % damage dealt **and** +20 % taken | Medium | ✅ |
 | `quick-study` | Quick Study | All Pokémon gain +15 % combat XP | Medium | ✅ |
 | `bargain-hunter` | Bargain Hunter | Shop and Dojo prices −20 % | Medium | ✅ |
-| `field-surveyor` | Field Surveyor | You choose the neutral Battlefield at the start of each wild/Region combat | Niche | ✅ (needs v0.7 fields) |
+| `field-surveyor` | Field Surveyor | You choose the neutral Battlefield at the start of each wild/Region combat | Niche | 🔒 v0.8.4 (field effects) |
 | `naturalist-lens` | Naturalist's Lens | At Region start, choose one biome from the Region's eligible set; it becomes the Region's primary biome | Medium | ✅ |
 
 **Offer curation** (§2.11.3.1): the 3 offered are seeded and weighted to the current team — `type-affinity`

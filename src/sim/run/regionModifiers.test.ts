@@ -139,3 +139,44 @@ describe('Region Modifiers inside a fight — §7.3.6', () => {
     expect(itemApDelta(state, leadOf(state), combatContent.move('water-gun'), combatCtx.content)).toBe(0);
   });
 });
+
+describe("The v0.7.5 modifiers — §2.11.3", () => {
+  it("NaturalistsLens_WildAreasOfferARareFarMoreOften", () => {
+    const rares = (id: string | undefined) => {
+      let n = 0, wilds = 0;
+      for (let seed = 1; seed <= 40; seed++) {
+        const run = createRun('squirtle', seed, ctx, 0, [], undefined, id);
+        for (const node of Object.values(run.map.nodes)) {
+          if (node.kind !== 'wild') continue;
+          wilds += 1;
+          if (node.preview.speciesIds.some((s) => content.species(s).rarity === 'rare')) n += 1;
+        }
+      }
+      return n / wilds;
+    };
+    const base = rares(undefined);
+    const lens = rares('naturalists-lens');
+    // The Rare slot rises from a tenth to three tenths; lanes also field Rare counters, so the base is not zero.
+    expect(lens).toBeGreaterThan(base + 0.15);
+  });
+
+  it('MassMobilization_AStepForwardDrawsACard', () => {
+    const step = (modifier?: string) => {
+      let s = start(scenario({ team: [STARTERS[1]!, { species: 'charmeleon', level: 16, moves: ['fire-fang', 'ember'] }], enemies: [PIDGEY], ...(modifier ? { regionModifier: modifier } : {}) }));
+      const card = [...s.player.hand, ...s.player.deck].find((c) => combatContent.move(c.moveId).modifier === 'step-forward');
+      if (!card) return null;
+      s = tweak(s, (d) => {
+        const all = [...d.player.hand, ...d.player.deck];
+        const pick = all.find((c) => c.id === card.id)!;
+        d.player.deck = all.filter((c) => c.id !== card.id);
+        d.player.hand = [pick];
+      });
+      s = dispatch(s, { type: 'play-card', cardId: card.id });
+      return s.player.hand.length;
+    };
+    const without = step();
+    const withIt = step('mass-mobilization');
+    expect(without).not.toBeNull();
+    expect(withIt).toBe(without! + 1);
+  });
+});

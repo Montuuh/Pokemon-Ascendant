@@ -404,8 +404,9 @@ The recruitment workhorse.
 
 Each Region has a fixed eligible set and a primary biome that appears most often. **Biome-to-Region binding is
 canon**: biomes always follow the Region's theme, and Region Modifiers never steer them — with one deliberate
-exception, **Naturalist's Lens** (§2.11.3.1), which lets the player promote one *eligible* biome to primary for
-that Region. Dominant, never exclusive, so the three-species offer never starves.
+exception, **Naturalist's Lens** (§2.11.3.1), which triples the Wild Areas' chance of a Rare instead of moving a
+biome. *(v0.7.5: the "promote one biome" version needed a choose-a-biome screen and a map re-roll after it — a
+second map for one modifier. Rarer finds give the same fantasy, a naturalist's eye, without either.)*
 
 **A biome is a species pool and a backdrop, and it must be wide enough to surprise.** Region 1 shipped with
 four to six species per biome, which is thin enough that a lane starts repeating itself by its third node, and a
@@ -999,11 +1000,11 @@ The gate. Three modifiers are offered, seeded and weighted to your team; you pic
 | **Glass Cannon** | +20 % damage dealt **and** +20 % taken | Medium |
 | **Quick Study** | All Pokémon gain +15 % combat XP | Medium |
 | **Bargain Hunter** | Shop and Dojo prices −20 % | Medium |
-| **Naturalist's Lens** | Choose one eligible biome; it becomes this Region's primary | Medium |
+| **Naturalist's Lens** | Wild Areas offer a Rare three times as often (a third slot at 30 % rather than 10 %) | Medium |
 | **Iron Skin** | All your Pokémon take −1 damage from Cleave intents | Niche |
 | **Pokédex Whisper** | The first Unknown intent of each combat is revealed | Niche |
 | **Mass Mobilization** | Step-Forward and Step-Backward also draw 1 card | Niche |
-| **Field Surveyor** | You choose the neutral Battlefield at the start of each wild/Region combat | Niche |
+| **Field Surveyor** | You choose the neutral Battlefield at the start of each wild/Region combat — arrives with field effects (v0.8.4) | Niche |
 
 The three offered are weighted toward the current team — Type Affinity surfaces your most-used move type,
 Trauma Resistance weights up when the Box is carrying stacks — and a modifier whose system is not yet reachable

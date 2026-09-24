@@ -16,6 +16,9 @@
 - **Trainer's Instinct.** The relic shows each enemy's next move a turn early — and the enemy sticks to it.
 - **Battle Tracker.** A Pokémon you have already fought this run never hides its opening move from you again.
 - **Four relics wake up.** Quick Claw Charm, Hand-Off Pouch, Time Spinner and Soul Link work now — no buttons to press.
+- **Berry Pouch fixed.** It now boosts every healing item, Potions included.
+- **Six hidden abilities.** Rain Dish, Infiltrator, Arena Trap, Weak Armor, Sheer Force and Gluttony unlock at Bond rank 3.
+- **Region Modifiers.** Naturalist's Lens makes Rares three times as common; Mass Mobilization draws a card on every step.
 - **Sleep wears off.** A sleeping or frozen Pokémon cannot be put back under — no more keeping an enemy asleep all fight.
 - **Drain moves drain.** Absorb, Mega Drain, Giga Drain and Leech Life heal half the damage they deal, not a slice of your HP.
 - **Badges named as in the games.** Koga's Gym gives the Soul Badge and Sabrina's the Marsh Badge, and the Normal and Fighting Badges are the Plain and Knuckle Badges — each the badge its picture shows.

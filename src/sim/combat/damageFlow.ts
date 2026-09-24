@@ -14,6 +14,11 @@ import {
   abilityOnKill,
   abilityRiposte,
   abilityAbsorbBuff,
+  abilityBlocksMove,
+  abilityConsumableHealMultiplier,
+  abilityHitStages,
+  abilityIgnoresRaisedDefence,
+  abilityMoveHealDivisor,
   abilityTypeAbsorb,
   hasSturdy,
   ridersAlwaysApply,
@@ -47,7 +52,12 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
       power: move.power,
       attack: effectiveAttack(attacker, ctx.config),
       // §7.4 Fissure — a ground-splitter ignores a braced stance, so Defence *stages* do not apply.
-      defense: move.ignoresDefenseStages ? Math.max(1, target.base.defense) : effectiveDefense(target, ctx.config),
+      // §6.8.3 Infiltrator — a raised Defence stage does not count against the wearer; a lowered one still does.
+      defense: move.ignoresDefenseStages
+        ? Math.max(1, target.base.defense)
+        : abilityIgnoresRaisedDefence(attacker, ctx.content) && target.stages.defense > 0
+          ? effectiveDefense({ ...target, stages: { ...target.stages, defense: 0 } }, ctx.config)
+          : effectiveDefense(target, ctx.config),
       range: move.range,
       moveType: move.type,
       attackerTypes: attacker.types,
@@ -92,6 +102,11 @@ export function strike(
   const hits = hitsOf(move);
   const bd = breakdownFor(attacker, target, move, crit, ctx, state);
   emit(state, { t: 'attack', sourceUid: attacker.uid, targetUid: target.uid, moveId: move.id });
+  // §6.6 Damp — the move fails outright against the wearer: no damage, and no recoil for a blast that never went off.
+  if (abilityBlocksMove(target, move, ctx.content)) {
+    log(state, 'system', `${target.name}'s Damp smothers ${move.name} — it fails.`);
+    return { breakdown: { ...bd, final: 0 }, dealt: 0 };
+  }
 
   let dealt = 0;
   if (hits > 1) {
@@ -116,6 +131,14 @@ export function strike(
   applyOnKill(state, ctx, attacker, move, target);
   applyRecoil(state, ctx, attacker, move, dealt);
   applyDrain(state, attacker, move, dealt, ctx);
+  // §6.8.3 Weak Armor — the shell cracks and the body underneath gets angry.
+  if (dealt > 0 && target.hp > 0) for (const st of abilityHitStages(target, move, ctx.content)) changeStage(state, target, st.stat as 'attack' | 'defense' | 'speed', st.stages);
+  // §6.8.3 Rain Dish — a move of the wearer's own water, drunk back.
+  const dish = abilityMoveHealDivisor(attacker, move, ctx.content);
+  if (dish > 0 && attacker.hp > 0) {
+    const back = heal(state, attacker, Math.max(1, Math.floor(attacker.maxHp / dish)), 'ability');
+    if (back > 0) log(state, 'system', `${attacker.name}'s Rain Dish restores ${back} HP.`);
+  }
   return { breakdown: bd, dealt };
 }
 
@@ -347,7 +370,7 @@ export function onFaint(state: CombatState, ctx: RunCtx, c: Combatant): void {
 export function heal(state: CombatState, target: Combatant, amount: number, cause: 'move' | 'consumable' | 'regen' | 'ability', content?: RunCtx['content']): number {
   if (target.hp <= 0) return 0;
   // §7.3.3 Berry Pouch — healing *items* restore more; a move's own heal is the move's business.
-  if (cause === 'consumable' && content) amount *= itemHealMultiplier(state, content);
+  if (cause === 'consumable' && content) amount *= itemHealMultiplier(state, content) * abilityConsumableHealMultiplier(target, content);
   const before = target.hp;
   target.hp = Math.min(target.maxHp, target.hp + Math.max(0, Math.floor(amount)));
   const healed = target.hp - before;

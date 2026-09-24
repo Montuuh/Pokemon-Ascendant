@@ -3,7 +3,7 @@ import type { CombatCtx, RunCtx } from './context';
 import { emit, log } from './context';
 import { absorbedByAbility, applyMoveEffects, breakdownFor, changeStage, heal, onEnterLead, strike } from './damageFlow';
 import { buildSkillDeck, drawSkillCards } from './deck';
-import { echoesFirstCard, itemCureHeal, itemRidersFirst, swapDrawBonus, swapHealAmount, guaranteedCatch } from './items';
+import { echoesFirstCard, itemCureHeal, itemRidersFirst, stepDrawBonus, swapDrawBonus, swapHealAmount, guaranteedCatch } from './items';
 import { catchOdds } from './catch';
 import { declareIntent } from './intents';
 import { cardPlayability, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
@@ -136,6 +136,7 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
     emit(state, { t: 'swap', fromIndex: from, toIndex: ownerIndex, kind: 'step-forward', apCost: 0 });
     log(state, 'player', `${owner.name} steps forward!`);
     onEnterLead(state, ctx, ownerIndex);
+    stepDraw(state, ctx);
   }
 
   const enemy = activeEnemy(state);
@@ -184,6 +185,7 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
       emit(state, { t: 'swap', fromIndex: from, toIndex: dest, kind: 'step-backward', apCost: 0 });
       log(state, 'player', `${owner.name} steps back; ${player.team[dest]!.name} takes the Lead.`);
       onEnterLead(state, ctx, dest);
+      stepDraw(state, ctx);
     }
   }
 
@@ -206,7 +208,7 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
   const fx = def.effect;
   switch (fx.kind) {
     case 'heal-flat': {
-      const amount = ally ? heal(state, ally, fx.amount, 'consumable') : 0;
+      const amount = ally ? heal(state, ally, fx.amount, 'consumable', ctx.content) : 0;
       log(state, 'system', amount > 0 ? `${ally!.name} recovered ${amount} HP.` : 'It had no effect.');
       break;
     }
@@ -320,6 +322,17 @@ function manualSwap(state: CombatState, benchIndex: number, ctx: RunCtx): void {
   }
 
   onEnterLead(state, ctx, benchIndex);
+}
+
+/** §2.11.3 Mass Mobilization — a positional card that moved someone hands a card back. */
+function stepDraw(state: CombatState, ctx: RunCtx): void {
+  const extra = stepDrawBonus(state, ctx.content);
+  if (extra <= 0) return;
+  const drawn = drawSkillCards(state, extra, ctx.rng);
+  if (drawn.length) {
+    emit(state, { t: 'draw', cardIds: drawn.map((c) => c.id), consumableIds: [] });
+    log(state, 'system', 'Mass Mobilization: the move draws you a card.');
+  }
 }
 
 /** §3.3.5 — replacement Lead at no cost; then the next turn begins. */

@@ -75,7 +75,7 @@
       "category": "combat",
       "description": "Draw +1 skill card on turn 1 of Rain Dance combats.",
       "hook": "none",
-      "pending": "field effects (v0.7)",
+      "pending": "arrives with field effects (v0.8.4)",
       "gdd": "§6.6"
     },
     {
@@ -206,7 +206,7 @@
       "category": "Combat",
       "description": "Draws an extra card on turn 1 of Sun combats.",
       "hook": "none",
-      "pending": "needs field effects (v0.7)"
+      "pending": "arrives with field effects (v0.8.4)"
     },
     {
       "id": "inner-focus",
@@ -294,9 +294,11 @@
       "id": "damp",
       "name": "Damp",
       "category": "Combat",
-      "description": "Self-destructing moves fail against this Pokémon.",
-      "hook": "none",
-      "pending": "needs a self-destruct move to suppress; none is authored"
+      "description": "Self-Destruct and Explosion fail against this Pokémon.",
+      "hook": "block-moves",
+      "params": {
+        "moves": "self-destruct,explosion"
+      }
     },
     {
       "id": "cloud-nine",
@@ -304,7 +306,7 @@
       "category": "Combat",
       "description": "Field effects are suppressed while this Pokémon leads.",
       "hook": "none",
-      "pending": "needs field effects (v0.7)"
+      "pending": "arrives with field effects (v0.8.4)"
     },
     {
       "id": "solid-rock",
@@ -487,6 +489,71 @@
       "params": {
         "status": "confusion"
       }
+    },
+    {
+      "id": "rain-dish",
+      "name": "Rain Dish",
+      "category": "Support",
+      "description": "Each Water move it plays restores 1/16 of its HP.",
+      "hook": "type-move-heal",
+      "params": {
+        "type": "water",
+        "divisor": 16
+      },
+      "gdd": "§6.8.3"
+    },
+    {
+      "id": "infiltrator",
+      "name": "Infiltrator",
+      "category": "Positional",
+      "description": "Its moves ignore a target's raised Defence.",
+      "hook": "ignore-defence-stages",
+      "gdd": "§6.8.3"
+    },
+    {
+      "id": "arena-trap",
+      "name": "Arena Trap",
+      "category": "Positional",
+      "description": "While it leads, every enemy loses 1/16 of its HP at the end of each turn.",
+      "hook": "lead-trap-chip",
+      "params": {
+        "divisor": 16
+      },
+      "gdd": "§6.8.3"
+    },
+    {
+      "id": "weak-armor",
+      "name": "Weak Armor",
+      "category": "Survival",
+      "description": "When a hit lands on it: Defence −1, Attack +1.",
+      "hook": "on-damaged-stages",
+      "params": {
+        "defense": -1,
+        "attack": 1
+      },
+      "gdd": "§6.8.3"
+    },
+    {
+      "id": "sheer-force",
+      "name": "Sheer Force",
+      "category": "Combat",
+      "description": "Moves that carry a rider for the foe deal 20 % more; the rider still rolls.",
+      "hook": "rider-force-plus-damage",
+      "params": {
+        "multiplier": 1.2
+      },
+      "gdd": "§6.8.3"
+    },
+    {
+      "id": "gluttony",
+      "name": "Gluttony",
+      "category": "Meta",
+      "description": "Healing items used on it restore 50 % more.",
+      "hook": "consumable-heal-bonus",
+      "params": {
+        "multiplier": 1.5
+      },
+      "gdd": "§6.8.3"
     }
   ]
 }

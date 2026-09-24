@@ -5,7 +5,7 @@ import type { BattleConfig } from './battleConfig';
 import type { CombatCtx } from './context';
 import { emit, log } from './context';
 import { breakdownFor } from './damageFlow';
-import { teamRevealsIntents } from './abilities';
+import { teamRevealsIntents, abilityBlocksMove } from './abilities';
 import { relicsQueueIntents, relicsRevealIntents, relicsSkipFirstTurn } from './items';
 import { bossArchetype, currentPhase } from './boss';
 import { slotOccupant, SLOT_LABEL } from './slots';
@@ -72,6 +72,7 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
 
   const occ = intent.targetSlot ? slotOccupant(state, intent.targetSlot) : null;
   if (intent.targetSlot && !occ) return 0; // never target an empty slot
+  if (occ && abilityBlocksMove(occ, move, ctx.content)) return 0; // §6.6 — nor fire a move Damp will smother
 
   if (occ && (intent.kind === 'attack' || intent.kind === 'backstrike')) {
     const eff = typeMultiplier(move.type, occ.types);

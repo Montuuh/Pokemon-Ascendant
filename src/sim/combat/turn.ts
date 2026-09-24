@@ -6,7 +6,7 @@ import { dealDamage, heal } from './damageFlow';
 import { declareIntent } from './intents';
 import { aliveTeam, benchIndices, lead } from './slots';
 import type { Combatant, CombatState } from './state';
-import { abilityTurnStartAp, turnEndBenchHeal } from './abilities';
+import { abilityTurnStartAp, turnEndBenchHeal, abilityLeadTrapDivisor } from './abilities';
 import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeIntent } from './enemyTurn';
@@ -146,6 +146,17 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
 
   // Status ticks (§4.2), players first then enemies.
   for (const c of [...state.player.team, ...state.enemies]) tickStatuses(state, c, ctx);
+  // §6.8.3 Arena Trap — while the wearer leads, the ground under every enemy gives a little each turn.
+  const trapper = state.player.team[state.player.leadIndex];
+  const trap = trapper && trapper.hp > 0 ? abilityLeadTrapDivisor(trapper, ctx.content) : 0;
+  if (trap > 0) {
+    for (const e of state.enemies) {
+      if (e.hp <= 0) continue;
+      const chip = Math.max(1, Math.floor(e.maxHp / trap));
+      log(state, 'system', `${e.name} is caught in ${trapper!.name}'s Arena Trap (${chip}).`);
+      dealDamage(state, ctx, trapper!.uid, e, chip, { crit: false, effectiveness: 'neutral', cause: 'move' });
+    }
+  }
   if (checkOutcome(state)) return finish(state);
 
   // §5.3 — cooldowns tick down.

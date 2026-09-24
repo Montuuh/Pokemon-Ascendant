@@ -217,6 +217,8 @@ export type ItemHook =
   | 'confusion-redraw'
   /** Time Spinner — every enemy but a boss loses its first turn of the fight. */
   | 'skip-first-turn'
+  /** Naturalist's Lens — the chance a Wild Area's third slot is a Rare. Map generation. */
+  | 'wild-rare'
   /** Authored, but the system it needs does not exist yet. Inert, and the UI says so. */
   | 'none';
 
@@ -368,7 +370,15 @@ export type AbilityHook =
   /** Adaptability — a replacement STAB multiplier for the wearer. */
   | 'stab-multiplier'
   /** Speed Boost — `ap` extra AP at the start of turn `turn`. */
-  | 'turn-start-ap';
+  | 'turn-start-ap'
+  // v0.7.5 (§6.8.3) — the six hidden abilities, and Damp
+  | 'rider-force-plus-damage'
+  | 'ignore-defence-stages'
+  | 'lead-trap-chip'
+  | 'on-damaged-stages'
+  | 'consumable-heal-bonus'
+  | 'type-move-heal'
+  | 'block-moves';
 
 export interface AbilityDef {
   id: string;

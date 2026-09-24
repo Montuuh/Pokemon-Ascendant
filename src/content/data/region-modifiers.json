@@ -144,9 +144,11 @@
       "id": "naturalists-lens",
       "name": "Naturalist's Lens",
       "tier": "medium",
-      "description": "Choose a biome; it becomes the Region's most common one.",
-      "hook": "none",
-      "pending": "needs a choose-a-biome step and a map re-roll after it — v0.7"
+      "description": "Wild Areas offer a Rare three times as often.",
+      "hook": "wild-rare",
+      "params": {
+        "chance": 0.3
+      }
     },
     {
       "id": "pokedex-whisper",
@@ -163,8 +165,11 @@
       "name": "Mass Mobilization",
       "tier": "niche",
       "description": "Step-Forward and Step-Backward also draw you a card.",
-      "hook": "none",
-      "pending": "needs a draw hook on the positional modifiers — v0.7"
+      "hook": "draw",
+      "params": {
+        "onStep": true,
+        "cards": 1
+      }
     },
     {
       "id": "field-surveyor",
@@ -172,7 +177,7 @@
       "tier": "niche",
       "description": "You choose the battlefield for every wild fight.",
       "hook": "none",
-      "pending": "Battlefields are a Region 3 thing — v0.7"
+      "pending": "arrives with field effects (v0.8.4)"
     }
   ]
 }

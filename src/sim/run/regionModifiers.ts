@@ -1,6 +1,7 @@
 import type { ContentRegistry, RegionModifierDef } from '../content/defs';
 import { isOfferable } from './economy';
 import type { PartyMon, RunState } from './types';
+import { fmix32 } from '../rng/rngStreams';
 
 // §2.11.3 — the Region Modifier: one at a time, one Region long, never stacking.
 //
@@ -59,7 +60,9 @@ export function rollRegionModifierOffer(
   const out: string[] = [];
   // A small deterministic LCG rather than a GameRng: the offer is drawn by the new-run screen, which has a
   // seed but no stream, and it has to be stable across re-renders or the cards move under the cursor.
-  let x = (seed || 1) >>> 0;
+  // Mixed first (v0.7.5): raw consecutive seeds made the first roll nearly linear in the seed, so neighbouring
+  // runs saw the same offer and a weighting could not show through.
+  let x = fmix32((seed || 1) >>> 0);
   for (let i = 0; i < count && bag.length; i++) {
     const total = bag.reduce((n, b) => n + b.weight, 0);
     x = (x * 1664525 + 1013904223) >>> 0;

@@ -470,8 +470,23 @@ Every line's catalogue row authors **three** abilities (`catalogs/species-r1.md`
 one**: it sits in the pool, the Dojo lists it greyed and named as hidden, and it opens at Bond rank 3. The first
 entry is still what the first evolution grants (§6.5.1); the second is the Dojo's choice from the start.
 
-Six lines' third abilities are not authored yet (Rain Dish, Infiltrator, Arena Trap, Weak Armor, Sheer Force,
-Gluttony — each waits on a system of v0.7); their rank-3 slot says so, and the rank still grants the rest.
+Every line's third is authored (v0.7.5). The six that had waited were rewritten for the combat the game has,
+rather than for the one they were first imagined against:
+
+| Line | Hidden | What it does |
+|---|---|---|
+| Squirtle | **Rain Dish** | Each Water move it plays restores 1/16 of its HP — the rain it makes, drunk back |
+| Zubat | **Infiltrator** | Its moves ignore a target's *raised* Defence (a lowered one still counts) |
+| Diglett | **Arena Trap** | While it leads, every enemy loses 1/16 of its HP at the end of each turn |
+| Onix | **Weak Armor** | When a hit lands on it: Defence −1, Attack +1 |
+| Krabby | **Sheer Force** | Moves carrying a rider for the foe deal +20 %; the rider still rolls |
+| Snorlax | **Gluttony** | Healing items used on it restore 50 % more |
+
+*Why rewritten:* Rain Dish waited on weather and Infiltrator on Home Fields (both v0.8.4), and Arena Trap
+traps a Pokémon that wants to flee — nothing an enemy here ever does. Each keeps the franchise's picture (a
+Squirtle that feeds on its own water, a Diglett whose ground swallows its foes, a Zubat that slips past a guard)
+in a rule that works today. A hidden ability is a Bond reward; one that does nothing until a later version is a
+reward that lies.
 
 ## §6.8.4 Power targets
 

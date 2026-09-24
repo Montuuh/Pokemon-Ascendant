@@ -78,7 +78,7 @@ cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.
 **re-derived by replay**, never restored from a cursor.
 
 **Wild nodes** offer **3 species up front** — 2 Common + 1 Uncommon, ~10 % upgrading the Uncommon to Rare.
-8 biomes bound to Regions; only **Naturalist's Lens** can steer them.
+8 biomes bound to Regions; **Naturalist's Lens** makes their Rares three times as common.
 **Recruit bands:** R1 5–10 · R2 12–20 · R3 22–30.
 
 **Running (§3.1.2, 2026-09-21)** — any Action-phase turn except a Gym: the enemy's telegraphed action lands, the

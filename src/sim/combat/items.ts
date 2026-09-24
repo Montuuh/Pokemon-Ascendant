@@ -226,6 +226,13 @@ export function swapDrawBonus(state: CombatState, content: ContentRegistry): num
   return cards;
 }
 
+/** §2.11.3 Mass Mobilization — cards drawn when a Step-Forward or Step-Backward actually moves someone. */
+export function stepDrawBonus(state: CombatState, content: ContentRegistry): number {
+  let cards = 0;
+  for (const src of relicsOf(state, content)) if (src.hook === 'draw' && src.params?.onStep) cards += num(src.params.cards, 0);
+  return cards;
+}
+
 /**
  * §5.10.1 Hive Badge — how many free copies a deck cycle is worth, and how often.
  *

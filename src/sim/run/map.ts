@@ -137,7 +137,10 @@ export function drawGymPair(rng: GameRng, onePath = false, exclude: readonly str
  * weighted up inside it. The lane's `counter` — the one species that answers its own Gym — is seeded into the
  * Uncommon slot at a fixed rate, so a lane is a commitment and never a dead end.
  */
-function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, lane: GymDef | null, region: RegionContent): { preview: NodePreview; biome: BiomeId } {
+/** §2.6.2 — the chance a Wild Area's third slot is a Rare rather than an Uncommon. Naturalist's Lens raises it. */
+export const WILD_RARE_CHANCE = 0.1;
+
+function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, lane: GymDef | null, region: RegionContent, rareChance = WILD_RARE_CHANCE): { preview: NodePreview; biome: BiomeId } {
   const theme = lane ? region.laneThemes[lane.type] : undefined;
   const biome = theme ? theme.biome : biomeFor(rng, region.biomeWeights);
   const pool = region.biomes[biome]!;
@@ -150,9 +153,10 @@ function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, lane
     drawn.push(id);
   }
 
-  // The third slot: the lane's counter a third of the time, a Rare a tenth of the time, otherwise Uncommon.
+  // The third slot: the lane's counter a third of the time, a Rare a tenth of the time (§2.11.3 Naturalist's Lens:
+  // more), otherwise Uncommon.
   const roll = rng.range01();
-  const third = theme && roll < 0.33 ? theme.counter : roll < 0.43 ? pickOne(rng, pool.rare) : pickOne(rng, pool.uncommon);
+  const third = theme && roll < 0.33 ? theme.counter : roll < 0.33 + rareChance ? pickOne(rng, pool.rare) : pickOne(rng, pool.uncommon);
 
   const speciesIds = [...new Set([...drawn, third])];
   return {
@@ -311,7 +315,7 @@ function shifted(preview: NodePreview, offset: number, content: ContentRegistry)
 }
 
 /** §2.5 — build a Region. Deterministic in `rng`, which the caller seeds from the run seed. */
-export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0, modifiers: readonly string[] = [], excludeGyms: readonly string[] = []): RegionMap {
+export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0, modifiers: readonly string[] = [], excludeGyms: readonly string[] = [], rareChance = WILD_RARE_CHANCE): RegionMap {
   const nodes: Record<string, MapNode> = {};
   const byLayer: MapNode[][] = [];
   const usedTrainers = new Set<string>();
@@ -369,7 +373,7 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
 
       const id = `n${layer}-${col}`;
       const preview = shifted(
-        kind === 'wild' ? wildPreview(rng, content, layer, lane, region).preview
+        kind === 'wild' ? wildPreview(rng, content, layer, lane, region, rareChance).preview
         : kind === 'trainer' ? trainerPreview(rng, content, usedTrainers, layer, lane, region)
         : kind === 'aid' ? AID_PREVIEW
         : kind === 'merchant' ? MERCHANT_PREVIEW
