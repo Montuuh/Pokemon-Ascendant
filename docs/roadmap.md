@@ -23,7 +23,7 @@ loop layer and re-tests the core inside it.
 | v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
-| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Game Corner's prize counter, the Black Market — every City door open. **Eight subversions** | ◐ in progress |
+| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — every City door open. **Eight subversions** | ◐ in progress |
 | v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ☐ |
 | v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
@@ -484,7 +484,7 @@ too), the inert relic rows, the Master Ball Charm criterion. The two nerfs playt
   nothing stops a second Sleep move re-rolling it; decide between an immunity while asleep and refresh-not-stack
   (§4.2.5), and measure it.
 - **Mega Drain** — 50 power, 2 AP, Ranged, a quarter of the damage back — is the best sustain per AP in the Grass
-  kit; a numbers pass (`catalogs/moves.md`, §4.1).
+  kit; a numbers pass (`catalogs/moves.md`, §4.1). Combined with Leftovers is broken.
 Also: the Poké Mart hides an unmet starter the way the Pokédex does (§8.9.2), and the ability catalogue's stale
 🆕 marks are corrected.
 **Exit:** nothing in the build is marked "pending v0.7", and both nerfs are measured.
@@ -494,13 +494,15 @@ The door already drawn in the City (§2.11.6): an entry fee, a fixed number of b
 offers — the Gen I lines built ahead of their Regions that no pool places yet. *(Backlog #1.)*
 **Exit:** a City visit can end with a recruit no route could have given.
 
-### v0.7.7 — The Game Corner and the Black Market  ☐
-Celadon's casino finished and the market beneath it opened (§2.11.5, §2.11.6). The Game Corner gains its **prize
-counter** — what the machines win buys what Gen I sold there (Porygon, Abra, Dratini, TMs) — beside the Wheel and
-the Slots it has had since v0.7.2. The **Black Market** sells what a Mart will not: Legendary relics paid in HP or
-Trauma, Pokémon traded for Pokémon. And the **Challenge Ring leaves the Dojo** for its own building beside it, on
-both Cities' art, which is redrawn for the Market's stairs anyway. *(Backlog #2, #11.)*
-**Exit:** the Market and the prize counter are real trades — every price on them has a harness case.
+### v0.7.7 — The Ring, the Coliseum, and Team Rocket's Black Market  ☐
+Two buildings of their own and one secret, drawn together because both Cities' art is redrawn for them.
+- **The Rings leave the Dojo** (§2.9.4.1): Pallet Town gets its own **Ring**, a town arena in the square; Celadon
+  City gets the **Pokémon Coliseum**, the big city's big stage. Same ladder as today (two rungs, three rungs).
+  *(Backlog #11.)*
+- **The Black Market is a secret** (§2.11.6): no door on the map. Inside the Game Corner, a switch hidden behind a
+  poster — Gen I's way into the Rocket Hideout — opens stairs down to **Team Rocket's** back room: Legendary
+  relics paid in HP or Trauma, Pokémon traded for Pokémon. The Game Corner itself stays as it is. *(Backlog #2.)*
+**Exit:** both Rings stand on their own, and a player who has never been told can find the Market.
 
 ### v0.7.8 — Every door open  ☐
 The last doors marked in development, both small: the Dojo's extra-moves counter (§2.11.6) and the Center's
@@ -537,6 +539,13 @@ weather abilities come alive. Region 3's accent keeps them.
 The route's generation, nodes and pacing, reworked (§2.5, §2.9) — with v0.8.3's groups placed on it — and
 consumables that are **consumed for real and found far more often** (§7.2). They ship together because both change
 what a route hands you. Design pass with the user first; the route's *look* is v1.2's. *(Backlog #3, #8.)*
+The Region map redrawn: **horizontal**, scrolled left to right the way a route is walked, and painted from a
+**tileset** with the biome laid over it instead of one flat backdrop per lane. Decided as post-release on
+2026-09-22 — it is an art and tooling system (atlas, autotiling, seams) rather than a rule change, and the
+current map works. The horizontal reading is the part that matters: a Pokémon route runs left to right, and
+the vertical map is a roguelike convention borrowed from a game about climbing a tower. It also closes the
+map's standing UI findings: a biome emblem on every Wild node (they fall back to the meadow tuft), route lines
+at 3:1 against their plate (Regions 1 and 2 fall short), and the node caption on the `--type-caption` token.
 
 ### v0.8.6 — The balance pass  ☐
 Levels, money, consumables, relics and prices together, against whole runs of three Regions and two Cities with
@@ -578,16 +587,7 @@ telemetry from playtests, trailer, README/press kit. Fan project: free, non-comm
 ## v1.1 — Polish  ☐
 Audio direction + stems + SFX bible (§9.5), accessibility tier (§9.6), localisation architecture + es-ES/en-US (§9.10), generated backdrop set (`ui/07`), VFX pass, performance pass.
 
-## v1.2 — Map revamp  ☐
-The Region map redrawn: **horizontal**, scrolled left to right the way a route is walked, and painted from a
-**tileset** with the biome laid over it instead of one flat backdrop per lane. Decided as post-release on
-2026-09-22 — it is an art and tooling system (atlas, autotiling, seams) rather than a rule change, and the
-current map works. The horizontal reading is the part that matters: a Pokémon route runs left to right, and
-the vertical map is a roguelike convention borrowed from a game about climbing a tower. It also closes the
-map's standing UI findings: a biome emblem on every Wild node (they fall back to the meadow tuft), route lines
-at 3:1 against their plate (Regions 1 and 2 fall short), and the node caption on the `--type-caption` token.
-
-## v1.3 — The world, wider  ☐
+## v1.2 — The world, wider  ☐
 Content that makes a second hundred runs different: **Fossils and the Laboratory** (revive Omanyte, Kabuto or
 Aerodactyl — Pallet Town's fourth door, §2.11.4), **role events** (the Fan Club, Team Rocket, the Magikarp
 salesman, Silph Co. — written City encounters with a choice, §2.10/§2.11), **Ditto's Transform** (copy the enemy
@@ -618,7 +618,7 @@ the balance pass follows both; the account revamps move to v0.9):
 |---|---|---|
 | — | Playtest nerfs: Sleep, Mega Drain | v0.7.5 |
 | 1 | The Safari Zone | v0.7.6 |
-| 2 | The Black Market (with the Game Corner's prize counter) | v0.7.7 |
+| 2 | The Black Market — a secret inside the Game Corner, run by Team Rocket | v0.7.7 |
 | 3 | Routes, revamped | v0.8.5 |
 | 4 | The global balance pass | v0.8.6 (after multi-enemy, per the user) and v1.0 |
 | 5 | Bond, revamped | v0.9.1 |
@@ -627,7 +627,7 @@ the balance pass follows both; the account revamps move to v0.9):
 | 8 | Consumables that are spent | v0.8.5 (with the routes) |
 | 9 | Double-attack enemy intents — and enemies that call for help | v0.8.2 |
 | 10 | The catch, animated | v0.9.3 |
-| 11 | The Ring moves out of the Dojo | v0.7.7 (with the City art) |
+| 11 | The Ring moves out of the Dojo — a town Ring, and the city's Coliseum | v0.7.7 (with the City art) |
 | — | Multi-enemy fights, everywhere in the run | v0.8.1, v0.8.3 |
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |

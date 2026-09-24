@@ -748,16 +748,19 @@ A third counter — **extra moves** beyond the tutor list — is drawn in the Do
 
 ### §2.9.4.1 The Challenge Ring
 
-Inside the Dojo, a second door: a **ladder of trainer fights you pay to climb**.
+A building of its own in each City: a **ladder of trainer fights you pay to climb**. Pallet Town's is the **Ring**,
+a town arena in the square; Celadon's is the **Pokémon Coliseum**, the big city's big stage. *(They left the Dojo
+on 2026-09-24, the user's call: a ladder of fights is a place to walk to, not a counter; built in v0.7.7 — until
+then the door is inside the Dojo.)*
 
-- **Two rungs in Pallet Town, three in Celadon City** — the big city is the big challenge.
+- **Two rungs at Pallet Town's Ring, three at Celadon's Coliseum** — the big city is the big challenge.
 - Each rung is a trainer stronger than the last, and **you see the next rung's team before you fight it**.
 - **No healing between rungs.** HP, statuses and Trauma carry from rung to rung, as between any two fights.
 - After each rung won, you choose: **cash out** — take everything the ladder has paid so far and leave — or
   **climb**. Losing a rung loses everything earned on this ladder, and the fallen keep their Trauma. It never
   ends the run.
 - Once per City visit (§2.11.0). Every way off the ladder — cashing out, the top prize, a lost rung — walks back
-  into the Dojo the Ring is inside, not out to the town.
+  out to the town.
 
 The decision *is* the design: "two down, my Lead at half HP and asleep, and the third is a Fire team — do I
 stop?" Every rung is chosen with the next opponent in view (Pillar 1), and the ladder reuses the trainer-battle
@@ -889,7 +892,7 @@ the doors, and you walk out through the gate when you are ready (§2.1.4).
 
 - **No visit budget.** Enter what you like. Money, HP and Trauma are the only rations.
 - **Two kinds of door.** The **open** ones — Pokémon Center, shop, Dojo, Game Corner — may be entered and left
-  as often as you like; they take your money, not your turn. The **committing** ones — the Challenge Ring
+  as often as you like; they take your money, not your turn. The **committing** ones — the Ring or the Coliseum
   (§2.9.4.1) and, when it opens, the Black Market (§2.11.6) — resolve **once per visit** and close behind you.
 - **The gate closes the City.** Leaving opens the Reflection (§2.11.3): pick one Region Modifier, and the pick
   *is* the departure. Nothing else can be done after it.
@@ -1017,10 +1020,10 @@ Badges are the run-long systems.
 | **Pokémon Center** (§2.11.1) | ✅ | ✅ | Open — enter and leave freely |
 | **Shop** (§2.11.2) — Mart / Department Store | ✅ | ✅ | Open |
 | **Dojo** (§2.9.4) — tutor and abilities | ✅ | ✅ wider | Open |
-| **Challenge Ring** (§2.9.4.1) — inside the Dojo | ✅ | ✅ | Committing, once per visit |
+| **Ring** (town) · **Pokémon Coliseum** (city) (§2.9.4.1) — their own buildings from v0.7.7 | ✅ | ✅ | Committing, once per visit |
 | **Game Corner** (§2.11.5) | — | ✅ | Open |
 | **Safari Zone** (§2.11.6) | 🚧 | 🚧 | In development — enterable, says so |
-| **Black Market** (§2.11.6) — beneath the Game Corner | — | 🚧 | In development; committing once it opens |
+| **Black Market** (§2.11.6) — **a secret**: no door on the map; found inside the Game Corner | — | 🚧 | In development; committing once it opens |
 | **The gate** (§2.11.3) | ✅ | ✅ | Ends the City |
 
 ## §2.11.5 The Game Corner
@@ -1064,9 +1067,12 @@ that it is in development (§2.11.0). Their designs are backlog (`docs/roadmap.m
 **🦌 Safari Zone** *(town and city)* — a paid catching ground: a flat entry fee, a fixed number of balls, and
 species that the routes never offer. The Box-filling building.
 
-**🖤 Black Market** *(beneath the Game Corner)* — the back room. Legendary relics paid for in **HP or Trauma**
-instead of money, Pokémon traded for other Pokémon, and the rest of the things a Poké Mart will not sell. The
-Rocket hideout was under the Celadon Game Corner in Gen I, and this is that joke made mechanical.
+**🖤 Black Market** *(a secret beneath the Game Corner)* — **Team Rocket's** back room. Legendary relics paid for
+in **HP or Trauma** instead of money, Pokémon traded for other Pokémon, and the rest of the things a Poké Mart will
+not sell. It has **no door on the City map**: inside the Game Corner, a switch hidden behind a poster opens stairs
+down to it, the way the Rocket Hideout opened under the Celadon Game Corner in Gen I. An easter egg on purpose
+(user, 2026-09-24): the player who finds it has earned the back room, and the one who does not has lost nothing
+the town promised. *(Built in v0.7.7; until then a door beside the Game Corner stands for it, in development.)*
 
 **📜 The Dojo's third counter** *(inside both Dojos)* — **extra moves**: a catalogue beyond each species'
 tutor list, sold by the Dojo. Drawn beside the tutor and the ability counters, and in development.

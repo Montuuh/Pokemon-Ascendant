@@ -7,8 +7,8 @@
 intent queue, six hidden abilities, the Mastery moves (Regions 2–3 too), the inert relics, Master Ball Charm;
 **Sleep** must not land on a sleeping Pokémon, **Mega Drain** needs a numbers pass; the Poké Mart hides unmet starters.
 
-**The plan (2026-09-24, agreed with the user):** v0.7.6 Safari · v0.7.7 Game Corner prize counter + Black Market
-+ the Ring's own building · v0.7.8 every City door open → **v0.8 Multi-enemy & the route**: groups (drag-to-target
+**The plan (2026-09-24, agreed with the user):** v0.7.6 Safari · v0.7.7 the Ring (town) and the Coliseum (city) as
+buildings + Team Rocket's secret Black Market in the Game Corner · v0.7.8 every City door open → **v0.8 Multi-enemy & the route**: groups (drag-to-target
 cards, per-target damage) · acting twice / calling for help · groups across the run · field effects · routes +
 spent consumables · the balance pass → **v0.9 The long game**: Bond & Shiny · level & Mart · animated catch ·
 Victory Road · League → v1.0 · v1.1 polish · v1.2 map · v1.3 world · v2.0 two players.
