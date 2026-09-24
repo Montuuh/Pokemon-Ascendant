@@ -171,3 +171,25 @@ describe('Enemy AI — §5', () => {
     expect(s.enemies[0]!.intent!.hidden).toBe(false);
   });
 });
+
+describe('Intent queue — §5.5.1', () => {
+  it('TrainersInstinct_ShowsNextTurnsIntent_AndTheEnemyKeepsIt', () => {
+    let s = start(scenario({ team: STARTERS, enemies: [{ species: 'geodude', level: 9, tier: 'trainer', phaseCount: 1 }], relics: ['trainers-instinct'] }));
+    const planned = s.enemies[0]!.next!;
+    expect(planned).toBeTruthy();
+    s = dispatch(s, { type: 'end-turn' });
+    const now = s.enemies[0]!.intent!;
+    // It commits: next turn's intent is the one shown, unless the plan became illegal (it logs when it does).
+    const changed = s.log.some((l) => l.text.includes('changes its plan'));
+    if (!changed) {
+      expect(now.moveId).toBe(planned.intent.moveId);
+      expect(now.targetSlot).toBe(planned.intent.targetSlot);
+    }
+    expect(s.enemies[0]!.next).toBeTruthy();
+  });
+
+  it('WithoutTheRelic_NoEnemyPlansAhead', () => {
+    const s = start(scenario({ team: STARTERS, enemies: [PIDGEY] }));
+    expect(s.enemies[0]!.next ?? null).toBeNull();
+  });
+});

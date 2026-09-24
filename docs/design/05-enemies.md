@@ -12,7 +12,8 @@
 
 Every enemy action is revealed before the player acts. Within that constraint the AI plays **well** — the player
 is solving a puzzle, not dodging dice. Intent selection is a scoring function evaluated fresh each turn, fully
-deterministic given the run seed.
+deterministic given the run seed — except under Trainer's Instinct, where each turn's intent was planned the turn
+before (§5.5.1).
 
 ---
 
@@ -93,6 +94,23 @@ Gym ace's hidden opener was a Cleave that removed a bench member.)*
 | **Witnessed** | The enemy uses the move | Rest of this combat; permanently logged in the Pokédex |
 | **Scouted** | `foresight` move or `radar-scope` consumable | This combat |
 | **Researched** | The `keen-eye` ability, the Marsh Badge, the `clear-mind` Legendary | This run, from combat start |
+
+## §5.5.1 The intent queue — seeing a turn further ahead
+
+Under **Trainer's Instinct** (Tier-3 relic, §8.6.1) every enemy plans its *next* turn at the moment it declares
+this one, from what it can see now, and the plan is shown under this turn's intent. Next turn it **commits to that
+plan** — the chip you read is what happens — and thinks again only when the plan can no longer be played: its move
+is on cooldown or unaffordable, its target slot is empty or immune, a status it planned is redundant, or a boss
+has changed phase. It says so ("changes its plan") when it does. A plan hides exactly what this turn's intent
+hides (§5.5): seeing further is not seeing through a veil. An incapacitated enemy still plans its waking turn.
+
+*Why commitment (v0.7.5):* a forecast the enemy may ignore is a guess, and Pillar 1 promises that nothing on an
+intent chip is a guess. The price is honest and small: a plan made a turn early is made on older information — a
+Geodude that planned Defense Curl before this turn's Curl fired will curl again — so the relic trades a little of
+the AI's sharpness for a full turn of foresight. Without the relic nothing plans ahead and nothing changes.
+
+**Battle Tracker** (Tier-2) works on the same rule from the other side: a species you have already fought this run
+never hides its first intent again, as if it were Familiar (§5.13.1) for the rest of the run.
 
 # §5.6 Multi-enemy encounters
 

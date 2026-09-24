@@ -6,10 +6,10 @@ import type { CombatCtx } from './context';
 import { emit, log } from './context';
 import { breakdownFor } from './damageFlow';
 import { teamRevealsIntents } from './abilities';
-import { relicsRevealIntents } from './items';
+import { relicsQueueIntents, relicsRevealIntents } from './items';
 import { bossArchetype, currentPhase } from './boss';
 import { slotOccupant, SLOT_LABEL } from './slots';
-import type { Combatant, CombatState, EnemyCombatant, Intent } from './state';
+import type { Combatant, CombatState, EnemyCombatant, Intent, QueuedIntent } from './state';
 import { hpFraction } from './stats';
 import { cardsLocked, isImmuneToStatus, paralysisApBonus } from './status';
 import { typeMultiplier } from './typeChart';
@@ -164,14 +164,30 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
   return pool[top]!.intent;
 }
 
+/**
+ * §5.5.1 — a queued plan is kept only while it is still a move the enemy may play: off cooldown, affordable, into a
+ * legal target, and planned in the boss phase it is in now. Anything else and the enemy thinks again.
+ */
+function plannedStillLegal(state: CombatState, enemy: EnemyCombatant, planned: QueuedIntent, ctx: CombatCtx): boolean {
+  if (!planned.intent.moveId) return false;
+  if (enemy.phaseCount > 1 && planned.phase !== currentPhase(enemy, ctx.config)) return false;
+  const move = ctx.content.move(planned.intent.moveId);
+  return scoreIntent(state, enemy, { intent: planned.intent, move }, ctx) > 0;
+}
+
 /** §3.2.3 — declare the enemy's intent (and apply boss phase transitions first). */
 export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, rng: GameRng): void {
   if (enemy.hp <= 0) return;
   const locked = cardsLocked(enemy);
+  const planned = enemy.next ?? null;
+  enemy.next = null;
   if (locked) {
     enemy.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };
   } else {
-    const intent = chooseIntent(state, enemy, ctx, rng);
+    // §5.5.1 — the plan you were shown last turn is the plan, unless it can no longer be played.
+    const kept = planned && plannedStillLegal(state, enemy, planned, ctx) ? { ...planned.intent } : null;
+    if (planned && !kept) log(state, 'enemy', `${enemy.name} changes its plan.`);
+    const intent = kept ?? chooseIntent(state, enemy, ctx, rng);
     enemy.intent = intent ?? { kind: 'stall', moveId: null, targetSlot: null, hidden: false };
     // §5.5 (CL-011) — Elite/Gym enemies hide their first intent until they have fired a move.
     // §8.8 Dense Fog extends the same one-intent blind to the ordinary enemies, which is the whole modifier:
@@ -185,14 +201,19 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     // §7.3.7 Clear Mind does what §6.5.2's ability does, from the relic case instead of the party.
     enemy.intent.hidden = hides && !known && !teamRevealsIntents(state.player.team, ctx.content, !enemy.witnessed) && !relicsRevealIntents(state, ctx.content, !enemy.witnessed, state.turn);
   }
+  // §5.5.1 Trainer's Instinct — plan the next turn now, from what the enemy can see now, and show it. It hides
+  // exactly as much as this turn's intent does: seeing further ahead is not seeing through a veil.
+  if (relicsQueueIntents(state, ctx.content)) {
+    const plan = chooseIntent(state, enemy, ctx, rng);
+    if (plan) enemy.next = { intent: { ...plan, hidden: enemy.intent.hidden }, phase: currentPhase(enemy, ctx.config) };
+  }
   emit(state, { t: 'intent', enemyUid: enemy.uid, intent: { ...enemy.intent } });
   if (!enemy.intent.hidden) log(state, 'enemy', `${enemy.name} ${describeIntent(state, enemy, ctx)}`);
   else log(state, 'enemy', `${enemy.name} is planning something…`);
 }
 
 /** Predicted damage of an intent against the CURRENT occupant of its slot (recomputed live for the UI). */
-export function predictIntentDamage(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx): number | null {
-  const intent = enemy.intent;
+export function predictIntentDamage(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, intent: Intent | null = enemy.intent): number | null {
   if (!intent || !intent.moveId) return null;
   const move = ctx.content.move(intent.moveId);
   if (move.power <= 0) return null;
@@ -219,14 +240,13 @@ const HIDDEN_TEXT: Partial<Record<IntentKind, string>> = {
   incapacitated: 'cannot act.',
 };
 
-export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx): string {
-  const i = enemy.intent;
+export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, i: Intent | null = enemy.intent): string {
   if (!i) return 'waits.';
   // §5.5 — a hidden intent still shows what KIND of thing is coming, just not how hard.
   if (i.hidden) return HIDDEN_TEXT[i.kind] ?? 'is planning something…';
   const move = i.moveId ? ctx.content.move(i.moveId) : null;
   const slotText = i.targetSlot ? `${SLOT_LABEL[i.targetSlot]} (${slotOccupant(state, i.targetSlot)?.name ?? 'empty'})` : '';
-  const dmg = predictIntentDamage(state, enemy, ctx);
+  const dmg = predictIntentDamage(state, enemy, ctx, i);
   switch (i.kind) {
     case 'attack':
       return `readies ${move?.name} → ${slotText}${dmg !== null ? ` · ${dmg} dmg` : ''}`;

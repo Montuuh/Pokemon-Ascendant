@@ -99,6 +99,8 @@ export const ItemHookSchema = z.enum([
   'recall-discard', 'early-evolution', 'box-capacity', 'guaranteed-catch',
   // v0.7.4 (§5.10.3) — the Glacier Badge: a status on an enemy blunts its next attack.
   'status-chill',
+  // v0.7.5 (§5.5.1) — the intent queue, and a run's own scouting.
+  'intent-queue', 'run-scouting',
   'none',
 ]);
 const ItemParams = z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]));

@@ -318,7 +318,7 @@ export function buildRingScenario(run: RunState, rung: RingRung, index: number, 
     },
     enemies: rung.team.map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: RING.phaseCount })),
   };
-  return applyPerks(applyModifiers(applyRegion(base, run, content), run), run);
+  return applyPerks(applyModifiers(applyRegion(base, run, content), run), run, content);
 }
 
 export function buildScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng, wildChoice?: string): ScenarioDef | null {
@@ -341,7 +341,7 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
         return null;
     }
   })();
-  return base ? applyPerks(applyModifiers(applyRegion(base, run, content), run), run) : null;
+  return base ? applyPerks(applyModifiers(applyRegion(base, run, content), run), run, content) : null;
 }
 
 /**
@@ -349,11 +349,13 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
  * (§5.13.1 Familiar) and, under Pokédex Insight (§8.4.2), which get one intent shown free because this run
  * has not met them yet. Nothing here touches a number.
  */
-function applyPerks(scenario: ScenarioDef, run: RunState): ScenarioDef {
+function applyPerks(scenario: ScenarioDef, run: RunState, content: ContentRegistry): ScenarioDef {
   const perks = run.perks;
   if (!perks) return scenario;
   const species = [...new Set(scenario.enemies.map((e) => e.species))];
-  const familiar = species.filter((id) => perks.familiar.includes(id));
+  // §7.3.4 Battle Tracker — a species met earlier this run is scouted: it hides nothing, like a Familiar one.
+  const scouted = run.relics.some((id) => content.relic(id).hook === 'run-scouting') ? run.seenSpecies : [];
+  const familiar = species.filter((id) => perks.familiar.includes(id) || scouted.includes(id));
   const insight = perks.insight ? species.filter((id) => !perks.familiar.includes(id) && !run.seenSpecies.includes(id)) : [];
   if (!familiar.length && !insight.length) return scenario;
   return { ...scenario, player: { ...scenario.player, ...(familiar.length ? { familiar } : {}), ...(insight.length ? { insight } : {}) } };

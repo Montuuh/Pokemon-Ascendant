@@ -84,6 +84,14 @@ export interface EnemyCombatant extends Combatant {
   witnessed: boolean;
   /** §2.7.1 Hex Maniac — its first intent is hidden, as an Elite's is. */
   veiled?: boolean;
+  /** §5.5.1 — under Trainer's Instinct, what it will do next turn. It commits to it unless it becomes illegal. */
+  next?: QueuedIntent | null;
+}
+
+/** §5.5.1 — the intent queue: an enemy's committed plan for next turn, and the boss phase it was planned in. */
+export interface QueuedIntent {
+  intent: Intent;
+  phase: number;
 }
 
 export interface Intent {

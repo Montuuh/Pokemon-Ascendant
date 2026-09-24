@@ -175,3 +175,25 @@ test('an Evolution Item evolves early from the Move Manager and hands back to th
   const mon = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!);
   expect(mon.speciesId).toBe('flareon');
 });
+
+test("Trainer's Instinct shows the enemy's next intent, and the enemy keeps it (§5.5.1)", async ({ page }) => {
+  await newRun(page, 'squirtle', 9);
+  await page.evaluate(() => {
+    const a = window.__ascendant!;
+    a.run.fill(3);
+    a.run.grantRelic('trainers-instinct');
+    a.run.jump('trainer');
+    a.goTo('map');
+  });
+  const target = await page.evaluate(() => window.__ascendant!.run.state()!.reachable[0]!);
+  await page.getByTestId(`node-${target}`).click();
+  await page.getByTestId('btn-enter-node').click();
+  const next = page.getByTestId('intent-next');
+  await expect(next).toBeVisible();
+  // The chip's second span is the move (and its target); the move name is what next turn's intent must show.
+  const planned = (await next.locator('span').nth(1).innerText()).split('→')[0]!.trim();
+  expect(planned.length).toBeGreaterThan(0);
+  await page.screenshot({ path: 'playtest/combat-next-intent.png' });
+  await page.getByTestId('btn-end-turn').click();
+  await expect(page.getByTestId('intent-chip')).toContainText(planned);
+});

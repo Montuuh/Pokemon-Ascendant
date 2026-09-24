@@ -477,6 +477,9 @@ export const relicsRevealIntents = (state: CombatState, content: ContentRegistry
     (r) => r.hook === 'reveal-intents' && (!r.params?.firstOnly || firstIntent) && (r.params?.untilTurn === undefined || turn <= num(r.params.untilTurn, 0)),
   );
 
+/** §5.5.1 Trainer's Instinct — enemies plan a turn ahead and the plan is shown. */
+export const relicsQueueIntents = (state: CombatState, content: ContentRegistry): boolean => relicsOf(state, content).some((r) => r.hook === 'intent-queue');
+
 /**
  * §5.10.3 Glacier Badge — what an enemy's next attack is multiplied by once a status lands on it: the product of
  * every `status-chill` source the player carries, or 1 when there is none. Only the player's side has Badges.

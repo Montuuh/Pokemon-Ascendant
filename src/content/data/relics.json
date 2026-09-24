@@ -684,9 +684,8 @@
       "categories": [
         "meta"
       ],
-      "description": "Improves Pokédex reveal rates on species you have beaten.",
-      "hook": "none",
-      "pending": "needs the Witnessed reveal rate, which arrives with the intent queue in v0.7",
+      "description": "A species you have already fought this run never hides its first intent from you again.",
+      "hook": "run-scouting",
       "tier": 2,
       "discovery": {
         "counter": "familiar-species",
@@ -971,10 +970,9 @@
       "categories": [
         "combat"
       ],
-      "description": "See each enemy's intent one turn further ahead.",
-      "hook": "none",
-      "tier": 3,
-      "pending": "Enemies plan one turn at a time until the intent queue arrives in v0.7"
+      "description": "See each enemy's next intent a turn ahead. It commits to it unless it can no longer play it.",
+      "hook": "intent-queue",
+      "tier": 3
     },
     {
       "id": "evolution-catalyst",

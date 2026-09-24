@@ -103,6 +103,17 @@ export function intentTip(kind: string, detail?: string, hidden = false): ReactN
   return <Tip title={`Enemy intent: ${INTENT_LABEL[kind] ?? cap(kind)}`} meta={detail && !hidden ? [detail] : undefined} body={INTENT_BODY[hidden ? 'unknown' : kind] ?? INTENT_BODY.unknown} footer="Every enemy move is telegraphed a turn ahead. Nothing here is a guess." />;
 }
 
+/** §5.5.1 Trainer's Instinct — the enemy's plan for next turn, and the one way it can change. */
+export function nextIntentTip(detail: string): ReactNode {
+  return (
+    <Tip
+      title="Next turn (Trainer's Instinct)"
+      body={detail}
+      footer="It commits to this plan. It only thinks again if it can no longer play it — a cooldown, a fainted target, a new boss phase."
+    />
+  );
+}
+
 // ── AP, swaps, the Lead ──────────────────────────────────────────────────────────────────────────────────
 
 /** §3.2.2 — the AP pool. */

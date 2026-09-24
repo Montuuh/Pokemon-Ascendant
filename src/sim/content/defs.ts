@@ -208,6 +208,11 @@ export type ItemHook =
   | 'guaranteed-catch'
   /** §5.10.3 Glacier Badge — a status that lands on an enemy multiplies its next attack by `multiplier`. */
   | 'status-chill'
+  // ── v0.7.5 (§5.5.1)
+  /** Trainer's Instinct — each enemy plans a turn ahead, commits to it, and you see the plan. */
+  | 'intent-queue'
+  /** Battle Tracker — a species already met this run never hides its first intent again. Run layer. */
+  | 'run-scouting'
   /** Authored, but the system it needs does not exist yet. Inert, and the UI says so. */
   | 'none';
 

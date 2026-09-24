@@ -14,7 +14,9 @@ import { STARTER_IDS } from '../run/region';
 // a Ring that turned into a formality (v0.7.2's canon starting values cleared the town ladder 63 % of the time)
 // or into a wall, not a few points of drift.
 
-const SEEDS = 20;
+// 40, not 20 (v0.7.5): at 20 the Celadon ladder saw 11 rung-1 fights, and 9 of 11 against a bound of 0.8 failed on
+// noise when two relics became offerable. Measure long with RING_SEEDS=80 (Celadon then: rung 1 0.68, ladder 0.02).
+const SEEDS = Number(process.env.RING_SEEDS ?? 40);
 
 function climbs(regions: 1 | 2) {
   const won: number[] = [];

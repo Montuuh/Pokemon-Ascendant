@@ -1,11 +1,11 @@
 import { IconQuestionMark } from '@tabler/icons-react';
 import type { CombatCtx, CombatState, EnemyCombatant } from '@/sim';
-import { SLOT_LABEL, catchPercent, catchStatus, currentPhase, phaseMarkers, predictIntentDamage, slotOccupant } from '@/sim';
+import { SLOT_LABEL, catchPercent, catchStatus, currentPhase, describeIntent, phaseMarkers, predictIntentDamage, slotOccupant } from '@/sim';
 import { iconOf, intentGlyph } from '@/ui/art';
 import { INTENT_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
-import { catchTip, intentTip } from '@/ui/tips';
+import { catchTip, intentTip, nextIntentTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EnemyPanel.module.css';
 
@@ -30,6 +30,10 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
   const gauge = catchStatus(state, ctx);
   const intentTipProps = useTip(intent ? intentTip(intent.kind, move ? move.name : undefined, intent.hidden) : null);
   const catchTipProps = useTip(gauge ? catchTip(gauge) : null);
+  // §5.5.1 — under Trainer's Instinct the enemy's committed plan for next turn sits under this turn's.
+  const next = enemy.next?.intent ?? null;
+  const nextMove = next?.moveId ? ctx.content.move(next.moveId) : null;
+  const nextTipProps = useTip(next ? nextIntentTip(`${enemy.name} ${describeIntent(state, enemy, ctx, next)}`) : null);
   const stageChips = (['attack', 'defense'] as const).filter((s) => enemy.stages[s] !== 0);
   // §2.8.2 — an Elite Wild is boss-*tier* and is not a Gym Leader, so the label reads the scenario's kind
   // first. Tier is how hard it hits; kind is what it is, and the chip is telling the player what it is.
@@ -42,7 +46,7 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
 
   return (
     <div className={styles.zone} data-testid="foe-panel">
-      <div className={[styles.intent, intent?.hidden ? styles.intentHidden : '', intent?.kind === 'incapacitated' ? styles.intentIdle : ''].join(' ')} data-testid="intent-chip" {...intentTipProps}>
+      <div className={[styles.intent, intent?.hidden ? styles.intentHidden : '', intent?.kind === 'incapacitated' ? styles.intentIdle : ''].join(' ')} data-testid="intent-chip" tabIndex={0} {...intentTipProps}>
         {intent?.hidden ? (
           <>
             <IconQuestionMark size={18} />
@@ -70,6 +74,22 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
           <span>…</span>
         )}
       </div>
+
+      {next && enemy.hp > 0 && (
+        <div className={styles.next} data-testid="intent-next" tabIndex={0} {...nextTipProps}>
+          <span className={styles.nextLabel}>Then</span>
+          {next.hidden ? (
+            <IconQuestionMark size={14} />
+          ) : (
+            <img src={intentGlyph(next.kind === 'debuff' ? 'status' : next.kind === 'incapacitated' ? 'stall' : next.kind)} alt="" width={16} height={16} className={styles.intentIcon} />
+          )}
+          <span>
+            {next.hidden ? 'Unknown' : nextMove ? nextMove.name : INTENT_LABEL[next.kind]}
+            {!next.hidden && next.targetSlot && <> → <b>{SLOT_LABEL[next.targetSlot]}</b></>}
+            {!next.hidden && next.kind === 'cleave' && <> → <b>All</b></>}
+          </span>
+        </div>
+      )}
 
       <button
         type="button"

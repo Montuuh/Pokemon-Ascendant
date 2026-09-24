@@ -59,7 +59,7 @@
 | `tacticians-coin` | Tactician's Coin | lead | The first manual swap each combat costs 0 AP | T1 | ✅ |
 | `steady-aim` | Steady Aim | combat | Crit multiplier 1.5 → 1.75 | T2 | ✅ |
 | `lure-module` | Lure Module | meta | Wild Areas offer +1 species choice (4 instead of 3) | T2 | ✅ |
-| `battle-tracker` | Battle Tracker | meta | After defeating an enemy, +5 % Witnessed reveal rate on similar species this run | T2 | ✅ |
+| `battle-tracker` | Battle Tracker | meta | A species already fought this run never hides its first intent again (§5.5.1). Was "+5 % Witnessed reveal rate", a rate the Pokédex's single Familiar tier no longer has | T2 | ✅ v0.7.5 |
 | `healers-kit` | Healer's Kit | status | Status cures also restore +15 HP | T1 | ✅ |
 | `bond-bracelet` | Bond Bracelet | combat | The first time the Lead drops below 50 %, the whole bench gains Def +1 | T2 | ✅ |
 
@@ -134,7 +134,7 @@ the lane. Every Tier-3 relic should change *how a run works*, not how much damag
 | `soul-link` | Soul Link | combat | A chosen pair deals +10 % while both live | ✅ |
 | `reactor-core` | Reactor Core | card | Max hand +1 (also reachable as a Tier-2 discovery) | ✅ |
 | `perfect-recall` | Perfect Recall | card | Once per combat, when the deck would run short at turn start, the discard pile is shuffled back in before the draw | ✅ v0.6 |
-| `trainers-instinct` | Trainer's Instinct | combat | See each enemy's intent **one turn further ahead** | ⏳ inert until the intent queue (v0.7) |
+| `trainers-instinct` | Trainer's Instinct | combat | See each enemy's intent **one turn further ahead**; it commits to the plan (§5.5.1) | ✅ v0.7.5 |
 | `evolution-catalyst` | Evolution Catalyst | meta | Once per run, the first Pokémon to come within 4 levels of its threshold evolves there | ✅ v0.6 |
 | `box-expander` | Box Expander | meta | Box capacity +2 for this run (stands down under Box Squeeze) | ✅ v0.6 |
 

@@ -20,6 +20,24 @@
   backdrop-filter: blur(4px);
   max-width: 100%;
 }
+/* §5.5.1 — next turn's plan: quieter than this turn's chip, on the same surface. */
+.next {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-top: calc(var(--sp-1) * -1);
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  font-size: var(--type-caption);
+  color: var(--ink-primary);
+}
+.nextLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
 .intentHidden {
   border-color: var(--ink-muted);
   color: var(--ink-secondary);
@@ -106,31 +124,6 @@
 .badges {
   display: flex;
   gap: 2px;
-}
-.spriteWrap {
-  position: relative;
-  height: 150px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-.sprite {
-  position: relative;
-  z-index: 1;
-  height: 150px;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.45));
-}
-.shadow {
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
-  height: 22px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
 }
 .hpRow {
   display: flex;
