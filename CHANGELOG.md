@@ -13,6 +13,17 @@
 
 The run goes on past the first Gym: three Regions, and a City between each.
 
+### v0.7.6 — The Safari Zone · 2026-09-24
+
+The Safari door opens in both towns: Pokémon no route has, caught by stalking them through the grass.
+
+- **The Safari Zone.** A ticket buys three Safari Balls and a park clock, and today's Pokémon are on show before you pay.
+- **Pokémon no route has.** Chansey, Tauros, Kangaskhan, Pinsir, Exeggcute, Slowpoke and more — and Dratini in Celadon.
+- **The stalk.** Creep through tall grass: you always see where it will walk and where it will look.
+- **Bait and rocks.** Bait draws it in to eat, head down; a rock stops it and turns it to face the noise.
+- **One clean throw.** The odds are printed before you throw; being seen or missing alarms it, and a rare bolts at once.
+- **One or two a visit.** The balls and the clock are the limit — go for the rare, or take the easy ones.
+
 ### v0.7.5 — The leftovers and the playtest nerfs · 2026-09-24
 
 Everything Regions 2 and 3 left waiting now works — and the two tricks that broke fights are fixed.

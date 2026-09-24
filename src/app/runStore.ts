@@ -99,6 +99,8 @@ export const useRunStore = create<RunStore>((set, get) => ({
       'enter-building', 'depart-city',
       // v0.7.2 — the Ring's fee, its cash-out and prize, and every Game Corner result (a reload must show the same).
       'enter-ring', 'ring-cash-out', 'ring-pick', 'spin-wheel', 'pull-slots', 'leave-game-corner',
+      // v0.7.6 — every Safari action: a turn undone by a reload is a turn replanned, and a throw is a roll.
+      'enter-safari', 'safari-approach', 'safari-step', 'safari-bait', 'safari-rock', 'safari-throw', 'safari-wait', 'safari-retreat', 'leave-safari',
     ];
     if (AUTOSAVE.includes(action.type)) get().save();
     return true;

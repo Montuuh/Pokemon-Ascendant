@@ -28,6 +28,7 @@ export { REGIONS, regionContent, regionName, ALL_TRAINERS, ALL_GYMS, ALL_ELITES,
 export { createRun, runReducer, validateRunAction, newPartyMon, resetUidCounter, runHelpers, defaultRunCtx, validateKit, shopSlotName, effectiveMax, boxCapacity, abilityLocked, arriveAtCity, dojoPrice, isServiceNode, tutorListFor, RUN_SAVE_VERSION, DEFAULT_PERKS, type RunCtx } from './run/run';
 // §2.1.4, §2.11 — the Cities between Regions.
 export { CASINO, CITIES, REGION_COUNT, RING, casinoExpectedValue, cityAfter, isFinalRegion, type CityDef } from './run/cities';
+export { SAFARI, afterTurn, canToss, coneOf, lineBlocked, notices, planOf, playerCanStand, rollHunt, rollSafari, throwOdds, tileAt, traitsOf, walkDistance, type MonPlan, type SafariOdds, type SafariTrait, type SafariTraits } from './run/safari';
 export { activeSetups, buildRingScenario, buildScenario, maxHpOf } from './run/encounter';
 export { AID_HEAL_PCT, MONEY_REWARD, PRICES, LEGENDARY_CAP, isOfferable, inPool, rollRelic, rollLegendaryOffer, rollHeldItem, ownedItems, relicMultiplier, benchXpShare, wildChoices, rollShopStock, rollRelicOffer, rarePickOpen, floorRestockable, rerollPrice, therapyPrice, sellPrice } from './run/economy';
 export { MYSTERY_EVENTS, mysteryEvent, rollEvent, allOutcomes, assertEventContent, eventRiskOf, RISK_LABEL, type MysteryEvent, type EventChoice, type EventOutcome, type EventRisk } from './run/events';

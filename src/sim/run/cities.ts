@@ -15,7 +15,7 @@ export interface CityDef {
   name: string;
   /** The Region whose Gym leads here (0-based). */
   afterRegion: number;
-  /** §2.11.4 — the open buildings. The Challenge Ring, the Game Corner and the rest are not open yet. */
+  /** §2.11.4 — the open buildings. The Black Market and the Dojo's extra moves are not open yet. */
   open: readonly CityBuilding[];
   /**
    * §2.11.2 — the shop's size. The Department Store's floors are v0.7.2; until then it stocks what the Mart
@@ -41,11 +41,11 @@ export interface CityDef {
 
 export const CITIES: Record<CityId, CityDef> = {
   'pallet-town': {
-    id: 'pallet-town', name: 'Pallet Town', afterRegion: 0, open: ['center', 'mart', 'dojo'], shop: 'mart', dojoMarkup: 1, dojoWide: false,
+    id: 'pallet-town', name: 'Pallet Town', afterRegion: 0, open: ['center', 'mart', 'dojo', 'safari'], shop: 'mart', dojoMarkup: 1, dojoWide: false,
     ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 7, stepOffset: 3, teamSize: 3 },
   },
   'celadon-city': {
-    id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'game-corner'], shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
+    id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'game-corner', 'safari'], shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
     ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 10, stepOffset: 2, teamSize: 3 },
   },
 };

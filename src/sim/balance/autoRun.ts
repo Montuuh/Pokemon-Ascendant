@@ -8,7 +8,8 @@ import { maxHpOf } from '../run/encounter';
 import { PRICES, therapyPrice } from '../run/economy';
 import { rollRegionModifierOffer } from '../run/regionModifiers';
 import { allOutcomes, mysteryEvent } from '../run/events';
-import type { MapNode, PartyMon, RunState, ShopSlot } from '../run/types';
+import type { MapNode, PartyMon, RunState, SafariSpot, ShopSlot } from '../run/types';
+import { nextSafariMove } from './autoSafari';
 import { typeMultiplier } from '../combat/typeChart';
 import { autoPlay, type AutoPlayerOptions } from './autoPlayer';
 
@@ -37,6 +38,12 @@ export interface RunPolicy extends AutoPlayerOptions {
    * tuned against that player. It can be switched off to A/B the modifier itself.
    */
   takeRegionModifier: boolean;
+  /**
+   * §2.11.6 — buy a Safari ticket when the wallet covers it, and which Pokémon to stalk first: the lineup's
+   * rarest (the tempting one) or its easiest. Absent is on, rarest first.
+   */
+  takeSafari?: boolean;
+  safariOrder?: 'rare-first' | 'easy-first';
 }
 
 export const DEFAULT_RUN_POLICY: RunPolicy = {
@@ -391,6 +398,68 @@ function answerEvent(run: RunState, policy: RunPolicy): number {
   return best;
 }
 
+/** What one Safari visit came to, for the Safari's balance bands. */
+export interface SafariVisit {
+  caught: { species: string; tier: SafariSpot['tier'] }[];
+  /** How each stalk ended, in the order they were tried. */
+  results: NonNullable<SafariSpot['result']>[];
+  ballsLeft: number;
+  clockLeft: number;
+}
+
+/**
+ * §2.11.6 — buy the ticket and stalk the lineup, from inside the Safari. Rarest first by default; a stalk that
+ * goes nowhere (a pond with no way in, a Pokémon that will not come round) is walked away from after
+ * `giveUpAfter` turns. A catch into a full Box releases the weakest if the newcomer is better, and an owed
+ * Evolution is picked the way the harness always picks.
+ */
+export function stalkSafari(get: () => RunState, content: CombatCtx['content'], policy: RunPolicy, step: (a: Parameters<typeof runReducer>[1]) => void, giveUpAfter = 9): SafariVisit {
+  step({ type: 'enter-safari' });
+  const tierRank = { rare: 0, uncommon: 1, common: 2 } as const;
+  const order = get().city!.safari!.lineup
+    .map((s, i) => ({ s, i }))
+    .sort((a, b) => (policy.safariOrder === 'easy-first' ? -1 : 1) * (tierRank[a.s.tier] - tierRank[b.s.tier]))
+    .map((x) => x.i);
+  const visit: SafariVisit = { caught: [], results: [], ballsLeft: 0, clockLeft: 0 };
+  for (const i of order) {
+    const safari = get().city!.safari!;
+    if (safari.done || safari.lineup[i]!.result !== null) continue;
+    step({ type: 'safari-approach', spot: i });
+    for (let guard = 0; guard < 200 && get().city?.safari?.hunt; guard++) {
+      const s = get().city!.safari!;
+      const h = s.hunt!;
+      const spot = s.lineup[h.spot]!;
+      if (h.turn > giveUpAfter) {
+        step({ type: 'safari-retreat' });
+        break;
+      }
+      const move = nextSafariMove(h, spot, content, s.clock);
+      step(move ?? { type: 'safari-wait' });
+    }
+    // §2.3.1 / §6.3.1 — the catch's own screens, the way the route loop answers them.
+    while (get().phase === 'swap-or-skip' || get().phase === 'evolution') {
+      const run = get();
+      if (run.phase === 'swap-or-skip') {
+        const weakest = [...run.box].sort((a, b) => a.level - b.level)[0]!;
+        const better = run.pendingRecruit && run.pendingRecruit.level > weakest.level;
+        step({ type: 'resolve-recruit', releaseUid: better ? weakest.uid : null });
+      } else {
+        const pending = run.pendingEvolutions[0]!;
+        const mon = run.box.find((m) => m.uid === pending.uid)!;
+        step({ type: 'choose-branch', uid: pending.uid, branchId: chooseBranch(mon, pending.branchIds, content) });
+        const after = get().box.find((m) => m.uid === pending.uid)!;
+        if (after.pool.length > 4) step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, content) });
+      }
+    }
+    const result = get().city!.safari!.lineup[i]!.result;
+    if (result) visit.results.push(result);
+    if (result === 'caught') visit.caught.push({ species: get().city!.safari!.lineup[i]!.species, tier: get().city!.safari!.lineup[i]!.tier });
+  }
+  visit.ballsLeft = get().city!.safari!.balls;
+  visit.clockLeft = get().city!.safari!.clock;
+  return visit;
+}
+
 /**
  * §2.11 — spend a City visit the way the route's services used to be spent: heal and treat Trauma at the
  * Center, buy at the shop, sculpt at the Dojo, then leave by the gate with the first modifier on offer (the
@@ -405,6 +474,13 @@ function visitCity(get: () => RunState, content: CombatCtx['content'], policy: R
     step({ type: 'use-therapy', uid: worst.uid });
   }
   step({ type: 'leave-center' });
+  // §2.11.6 — the Safari before the shop: a recruit the routes never give is worth more than a shelf item.
+  const safari = get().city?.safari;
+  if ((policy.takeSafari ?? true) && safari && get().money - safari.fee >= policy.keepReserve) {
+    step({ type: 'enter-building', building: 'safari' });
+    stalkSafari(get, content, policy, step);
+    step({ type: 'leave-safari' });
+  }
   if (policy.takeShop) {
     step({ type: 'enter-building', building: 'mart' });
     visitShop(get, content, policy, step);

@@ -64,8 +64,16 @@ function migrateStonesTo11(run: RunState): void {
   run.starter ??= run.box[0]?.speciesId ?? '';
 }
 
+/**
+ * §2.11.6 — version 11 → 12: the City carries its Safari Zone. A visit already under way rolled none on arrival,
+ * so its park stays shut for that visit (the door says so); the next City rolls one.
+ */
+function migrateSafariTo12(run: RunState): void {
+  if (run.city) run.city.safari ??= null;
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

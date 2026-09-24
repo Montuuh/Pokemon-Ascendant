@@ -130,6 +130,8 @@ export type RunPhase =
   | 'relic-pick'
   /** §2.11.5 — inside Celadon's Game Corner, at the Wheel and the Slots. */
   | 'game-corner'
+  /** §2.11.6 — inside the Safari Zone: the entrance board, or a stalk. */
+  | 'safari'
   /**
    * §7.3.7 — a Gym is beaten and the Legendary 1-of-3 is open. It sits *between* the Gym and the end of the
    * run rather than beside the reward screen, because it is the Gym's own reward and the last decision the
@@ -234,7 +236,7 @@ export interface CarriedStatus {
 export type CityId = 'pallet-town' | 'celadon-city';
 
 /** §2.11.4 — the buildings a player can walk into. Doors still in development are drawn by the UI only. */
-export type CityBuilding = 'center' | 'mart' | 'dojo' | 'game-corner';
+export type CityBuilding = 'center' | 'mart' | 'dojo' | 'game-corner' | 'safari';
 
 /** §2.9.4.1 — one rung of the Challenge Ring: a rival, their team (seen before you fight it), and the prize. */
 export interface RingRung {
@@ -286,6 +288,70 @@ export interface CityState {
   ring: RingState | null;
   /** §2.11.5 — each Game Corner machine's last result, for the screen. */
   casino: { wheel: CasinoResult | null; slots: CasinoResult | null };
+  /** §2.11.6 — the Safari Zone for this visit: its ticket and lineup. Rolled on arrival; resolves once per visit. */
+  safari: SafariState | null;
+}
+
+/** §2.11.6 — the Safari's own difficulty tiers: the board a species is stalked on, not its drop rarity. */
+export type SafariTier = 'common' | 'uncommon' | 'rare';
+/** §2.11.6 — a board tile: tall grass (hides you), open ground (does not), rock (blocks a look and a throw), water. */
+export type Tile = 'g' | 'o' | 'r' | 'w';
+export type Facing = 'n' | 'e' | 's' | 'w';
+
+/** §2.11.6 — one Pokémon on the entrance board, and how its stalk ended. */
+export interface SafariSpot {
+  species: string;
+  tier: SafariTier;
+  level: number;
+  /** Null while it can still be approached. */
+  result: null | 'caught' | 'fled' | 'left' | 'closed';
+}
+
+/** §2.11.6 — one stalk in progress: the board, the player, the Pokémon and its temper. */
+export interface SafariHunt {
+  /** Index into the lineup. */
+  spot: number;
+  width: number;
+  height: number;
+  /** Row-major, one character a tile (`Tile`). */
+  tiles: string;
+  player: [number, number];
+  mon: [number, number];
+  facing: Facing;
+  /** The loop it walks when nothing draws it off. */
+  patrol: [number, number][];
+  /** Where on the loop it stands, or -1 off it. */
+  patrolIndex: number;
+  /** Alarms taken; its temper is how many it will take. */
+  alarms: number;
+  /** It has noticed you at least once: a throw at a Pokémon that never saw you is the better one. */
+  seen: boolean;
+  /** Actions left this turn. */
+  ap: number;
+  bait: [number, number] | null;
+  /** Turns left with its head in the bait. */
+  eating: number;
+  /** A rock holds it this turn. */
+  held: boolean;
+  /** A rock held it last turn — and cannot twice running. */
+  heldLast: boolean;
+  lastThrow: { chance: number; caught: boolean } | null;
+  turn: number;
+}
+
+/** §2.11.6 — the Safari Zone for one City visit. */
+export interface SafariState {
+  fee: number;
+  /** Safari Balls left. Bought with the ticket, lost when you leave. */
+  balls: number;
+  /** Turns until the park closes, shared by every stalk. */
+  clock: number;
+  lineup: SafariSpot[];
+  /** The ticket is paid. */
+  entered: boolean;
+  /** The visit is over: left, out of balls, or closed. */
+  done: boolean;
+  hunt: SafariHunt | null;
 }
 
 export interface PendingRecruit {
@@ -514,6 +580,20 @@ export type RunAction =
   /** §2.11.5 — pull the Slots at their fixed stake. */
   | { type: 'pull-slots' }
   | { type: 'leave-game-corner' }
+  /** §2.11.6 — buy the Safari ticket: the fee for the balls and the clock. */
+  | { type: 'enter-safari' }
+  /** §2.11.6 — walk up to one of the lineup. */
+  | { type: 'safari-approach'; spot: number }
+  /** §2.11.6 — one tile, one action. */
+  | { type: 'safari-step'; x: number; y: number }
+  | { type: 'safari-bait'; x: number; y: number }
+  | { type: 'safari-rock'; x: number; y: number }
+  | { type: 'safari-throw' }
+  /** §2.11.6 — end the turn: the Pokémon moves and looks. */
+  | { type: 'safari-wait' }
+  /** §2.11.6 — back away. The Pokémon is gone for this visit. */
+  | { type: 'safari-retreat' }
+  | { type: 'leave-safari' }
   | { type: 'leave-shop' }
   /** §8.2.4 — a Centre's Therapy service: one Trauma stack off one Pokémon. */
   | { type: 'use-therapy'; uid: string }
@@ -566,7 +646,11 @@ export type RunRejectReason =
   /** §2.9.4.1 — the Ring is not open for this: already run this visit, not entered, or no rung left. */
   | 'ring-closed' | 'nothing-to-restock'
   /** §2.11.5 — a Wheel stake outside the table's range or off its step. */
-  | 'bad-stake';
+  | 'bad-stake'
+  /** §2.11.6 — the Safari is not open for this: no ticket, already over, no stalk, or that one is gone. */
+  | 'safari-closed'
+  /** §2.11.6 — out of reach, blocked, or not an action left this turn. */
+  | 'bad-tile' | 'no-ap';
 
 export interface RunReduceResult {
   state: RunState;

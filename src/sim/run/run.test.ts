@@ -1082,7 +1082,7 @@ describe('Evolution Items — §6.3.2', () => {
     delete old.stones;
     delete old.starter;
     const body = JSON.stringify(old);
-    const text = serialiseRun(run, 0).replace(/"version":11/, '"version":10');
+    const text = serialiseRun(run, 0).replace(/"version":\d+/, '"version":10');
     const envelope = JSON.parse(text);
     envelope.run = JSON.parse(body);
     envelope.checksum = JSON.parse(serialiseRun(JSON.parse(body) as RunState, 0)).checksum;

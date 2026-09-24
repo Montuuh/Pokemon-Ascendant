@@ -508,10 +508,27 @@ and fixed: Berry Pouch never boosted flat Potions; the Region Modifier offer's L
 seeds; the Ring test ran on 11 samples. Measured (120 seeds): Bulbasaur 53 %, Charmander 49 %, Squirtle 68 %;
 the curve over 720 runs: Region 2 given 1 at 55 %, Region 3 given 2 at 43 %, the whole run 13 % — inside §2.2.1's bands.
 
-### v0.7.6 — The Safari Zone  ☐
+### v0.7.6 — The Safari Zone  ✅ 2026-09-24
 The door already drawn in the City (§2.11.6): an entry fee, a fixed number of balls, and species no route
 offers — the Gen I lines built ahead of their Regions that no pool places yet. *(Backlog #1.)*
 **Exit:** a City visit can end with a recruit no route could have given.
+
+**Shipped.** Both Safaris are open, and the Safari is a minigame of its own — the user asked for one that makes it
+unlike the rest of the game, with the classic bait-rock-ball menu as the fallback if it got out of hand; it did not.
+**The stalk** (§2.11.6): a tile board of tall grass, clearings, boulders and ponds; two actions a turn (step, bait,
+rock — a throw is the whole turn); the Pokémon's path and where it will look when the turn ends always on screen;
+being seen or a missed ball is an alarm, and its last alarm sends it off. Rarer is a harder board (bigger, sharper,
+one alarm) with one trait each — keen-eyed Chansey, quick Tauros and Dratini, alert Kangaskhan, sharp-eared Pinsir.
+Ticket 200 / 350 ₽ for 3 Safari Balls and a 10 / 12-turn clock; lineups of 3 / 4 from Gen I's Safari list less
+everything a route offers (Dratini only in Celadon, and the catalogue's Sea keeps Lapras); recruits at the next
+Region's floor; no XP. `run/safari.ts` on its own `SafariRNG` stream, run save v12 (migrates v11), the
+`SafariScreen` on the real meadow backdrop, the Safari Ball and Red fetched. The exit is a test: `safari.test`
+proves no Safari species is on any route. **Measured** (a one-turn-lookahead stalker, 150 visits each): 1.5–1.9
+recruits a visit; the rare, gone for first, lands in 45 % of Pallet visits and 37 % of Celadon's, against about four
+in five for a common stalked first — the first cut (a one-action throw, more balls) handed out two or three a visit.
+The run table is unchanged (Region 1: 53 / 49 / 68 %); the curve over 720 runs moved to Region 2 given 1 at 67 %,
+Region 3 given 2 at 49 %, the whole run 18 % — the last two on §2.2.1's targets, Region 2 seven over, inside its
+guard, left for the v0.8.6 balance pass.
 
 ### v0.7.7 — The Ring, the Coliseum, and Team Rocket's Black Market  ☐
 Two buildings of their own and one secret, drawn together because both Cities' art is redrawn for them.

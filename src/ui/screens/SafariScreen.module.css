@@ -1,0 +1,394 @@
+/* §2.11.6 — the Safari Zone: the entrance (today's lineup) and the stalk (the board and what to do on it). */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow: hidden;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red);
+}
+.purse { display: flex; align-items: center; gap: var(--sp-3); }
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  font-weight: 700;
+}
+.pixel { image-rendering: pixelated; }
+.grounds {
+  background:
+    linear-gradient(to bottom, var(--surface-0) 0%, color-mix(in srgb, var(--surface-0) 40%, transparent) 16%, transparent 34%),
+    var(--grounds) center / cover no-repeat,
+    var(--surface-0);
+}
+
+/* ── The entrance ─────────────────────────────────────────────────────────────────────────────────────── */
+
+.lineup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-height: 0;
+}
+.card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--sp-2);
+  width: 260px;
+  padding: var(--sp-5) var(--sp-4) var(--sp-4);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--ink-primary) 22%, transparent);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+}
+.cardDone { border-style: dashed; border-color: var(--border-subtle); }
+.cardDone .cardSprite { filter: grayscale(1); opacity: 0.55; }
+.cardName { margin: 0; font-size: var(--type-h3); text-align: center; }
+.cardName span { color: var(--ink-secondary); font-size: var(--type-small); }
+.types { display: inline-flex; gap: var(--sp-1); }
+.tier {
+  position: absolute;
+  top: var(--sp-3);
+  left: var(--sp-3);
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--type-caption);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 2px solid var(--border-strong);
+  background: var(--surface-2);
+}
+.tierRare { background: var(--accent-action); border-color: var(--accent-action-deep); color: var(--ink-on-accent); }
+.tierUncommon { background: var(--surface-3); }
+.traits { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-1); min-height: 26px; }
+.trait {
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--brand-cream);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+.temper { display: inline-flex; align-items: center; }
+.pips { display: inline-flex; gap: var(--sp-1); }
+.pip {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--brand-red-deep);
+  background: var(--surface-1);
+}
+.pipOn { background: var(--brand-red); }
+/* Actions left this turn: the action yellow, so they never read as alarms. */
+.apPips .pip { border-color: var(--accent-action-deep); }
+.apPips .pipOn { background: var(--accent-action); }
+.stalk,
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-top: var(--sp-2);
+  padding: var(--sp-2) var(--sp-5);
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+}
+.stalk {
+  border: 2px solid var(--accent-action-deep);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  cursor: pointer;
+}
+.stamp { border: 2px dashed var(--border-strong); color: var(--ink-secondary); }
+.stampCaught { border-style: solid; border-color: var(--accent-positive); color: var(--ink-primary); background: color-mix(in srgb, var(--accent-positive) 25%, var(--surface-1)); }
+.closed { align-self: center; justify-self: center; margin: 0; font-size: var(--type-h3); }
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}
+.lastLine { margin: 0 auto 0 0; color: var(--ink-secondary); font-weight: 700; }
+.ticketWrap { display: inline-flex; }
+.primary,
+.secondary,
+.quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  cursor: pointer;
+}
+.primary { border: 2px solid var(--accent-action-deep); background: var(--accent-action); color: var(--ink-on-accent); }
+.primary:disabled { cursor: default; background: var(--surface-2); border-color: var(--border-strong); color: var(--ink-primary); }
+.secondary { border: 2px solid var(--border-strong); background: var(--surface-1); color: var(--ink-primary); }
+.quiet { border: 2px solid transparent; background: transparent; color: var(--ink-secondary); }
+.quiet:hover { border-color: var(--border-subtle); }
+.armed { border-color: var(--brand-red-deep); background: color-mix(in srgb, var(--accent-negative) 15%, var(--surface-1)); color: var(--ink-primary); }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--sp-8);
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  margin: 0;
+  padding: var(--sp-2) var(--sp-5);
+  border-radius: var(--radius-pill);
+  background: var(--ink-primary);
+  color: var(--surface-1);
+  font-weight: 700;
+}
+
+/* ── The stalk ────────────────────────────────────────────────────────────────────────────────────────── */
+
+.stalkBody {
+  display: grid;
+  grid-template-columns: auto 320px;
+  justify-content: center;
+  gap: var(--sp-5);
+  min-height: 0;
+  grid-row: 2 / 4;
+}
+.boardWrap { position: relative; display: grid; place-items: center; min-height: 0; min-width: 0; }
+/* The board's legend hangs off its top-right corner, where the eye goes looking for one. */
+.boardDot {
+  position: absolute;
+  top: calc(-1 * var(--sp-2));
+  right: calc(-1 * var(--sp-2));
+  z-index: 3;
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+}
+.board {
+  display: grid;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  gap: 2px;
+  padding: var(--sp-2);
+  border-radius: var(--radius-md);
+  border: 3px solid var(--border-strong);
+  background: var(--surface-sunken);
+}
+
+/* The four grounds, flat and ours: grass carries its tufts, water its ripples, a rock is a boulder. */
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  font: inherit;
+}
+.tileGrass {
+  background:
+    radial-gradient(circle at 30% 35%, color-mix(in srgb, var(--type-grass) 55%, var(--ink-primary)) 0 9%, transparent 10%),
+    radial-gradient(circle at 70% 65%, color-mix(in srgb, var(--type-grass) 55%, var(--ink-primary)) 0 9%, transparent 10%),
+    var(--type-grass);
+}
+.tileOpen { background: color-mix(in srgb, var(--type-ground) 65%, var(--surface-1)); }
+.tileRock {
+  background:
+    radial-gradient(circle at 50% 55%, var(--type-rock) 0 42%, color-mix(in srgb, var(--type-rock) 60%, var(--ink-primary)) 43% 48%, transparent 49%),
+    color-mix(in srgb, var(--type-ground) 65%, var(--surface-1));
+}
+.tileWater {
+  background:
+    repeating-linear-gradient(170deg, transparent 0 10px, color-mix(in srgb, var(--type-water) 70%, var(--surface-1)) 10px 12px),
+    var(--type-water);
+}
+
+/* When the turn ends: red where it would notice you, pale where it looks but the grass hides you. */
+.danger::after,
+.watched::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--accent-negative) 45%, transparent);
+  box-shadow: inset 0 0 0 2px var(--brand-red-deep);
+  pointer-events: none;
+}
+.watched::after {
+  background: color-mix(in srgb, var(--accent-negative) 18%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand-red-deep) 45%, transparent);
+}
+/* Where a click does something in the current mode. */
+/* Drawn above the sight overlay: a tile you can act on stays readable inside its cone. */
+.target { cursor: pointer; }
+.target::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 3px var(--accent-action);
+  pointer-events: none;
+}
+.target:hover::before { box-shadow: inset 0 0 0 5px var(--accent-action-deep); }
+.target:focus-visible { outline: 3px solid var(--ink-primary); outline-offset: -3px; }
+.step {
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  box-shadow: 0 0 0 2px var(--ink-primary);
+}
+.mon,
+.player {
+  position: absolute;
+  inset: -8%;
+  z-index: 1;
+}
+.mon { display: grid; place-items: center; }
+.mon img { width: 100%; height: 100%; object-fit: contain; }
+.player { width: 116%; height: 116%; object-fit: contain; }
+.exposed { filter: drop-shadow(0 0 4px var(--brand-red)); }
+.facing {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+  padding: 1px;
+  border-radius: var(--radius-pill);
+  background: var(--ink-primary);
+  color: var(--surface-1);
+}
+/* The bait as a flat token of ours, not a drawing competing with the sprites. */
+.bait {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 55%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--brand-red-deep);
+  background: var(--surface-1);
+  color: var(--brand-red);
+}
+.monState {
+  position: absolute;
+  bottom: 2%;
+  left: 2%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 2px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--brand-red-deep);
+  background: var(--surface-1);
+  color: var(--brand-red-deep);
+}
+/* The second channel for the red (D5): an eye where it would notice you. */
+.eye {
+  position: absolute;
+  top: 4%;
+  left: 4%;
+  z-index: 2;
+  padding: 1px;
+  border-radius: var(--radius-pill);
+  background: var(--brand-red-deep);
+  color: var(--surface-1);
+}
+
+.side {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-3);
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-4);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+}
+.quarry {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.targetBody { display: grid; gap: var(--sp-1); justify-items: start; }
+.turnRow { display: inline-flex; align-items: center; gap: var(--sp-2); justify-self: start; }
+.apLabel { font-weight: 800; }
+.warning {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--brand-red-deep);
+  background: color-mix(in srgb, var(--accent-negative) 20%, var(--surface-1));
+  font-weight: 800;
+}
+.slotEmpty { visibility: hidden; }
+.modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-2); }
+.mode {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-weight: 800;
+  cursor: pointer;
+}
+.mode[aria-disabled="true"] { cursor: not-allowed; border-style: dashed; }
+.modeOn { background: var(--accent-action); border-color: var(--accent-action-deep); color: var(--ink-on-accent); }
+.throw {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--brand-red-deep);
+  background: var(--brand-red);
+  color: var(--surface-1);
+  font-size: var(--type-h3);
+  font-weight: 800;
+  cursor: pointer;
+}
+.throw[aria-disabled="true"] { cursor: not-allowed; background: var(--surface-2); border-color: var(--border-strong); color: var(--ink-primary); }
+.reach { font-size: var(--type-small); font-weight: 700; }

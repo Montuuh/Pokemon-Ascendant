@@ -67,14 +67,15 @@ test.describe('The town — §2.11', () => {
     // §2.9.4.1 — the Challenge Ring's door is inside the Dojo, not on the square.
     await expect(page.getByTestId('door-ring')).toHaveCount(0);
     await expect(page.getByTestId('city-money')).toContainText(/\d/);
-    await expect(page.getByTestId('door-safari')).toHaveAttribute('data-state', 'soon');
+    await expect(page.getByTestId('door-safari')).toHaveAttribute('data-state', 'open');
     await page.screenshot({ path: 'playtest/city-pallet.png' });
 
-    // §2.11.0 — a door in development is still a door: it opens, and it says so.
+    // §2.11.6 — the Safari is open since v0.7.6: in, and back out to the same town. (The doors still in
+    // development — the Dojo's extra moves, the Black Market — are covered in progression.spec.)
     await page.getByTestId('door-safari').click();
-    await expect(page.getByTestId('door-soon')).toBeVisible();
-    await page.getByTestId('btn-door-back').click();
-    await expect(page.getByTestId('door-soon')).toHaveCount(0);
+    await expect(page.getByTestId('safari-screen')).toBeVisible();
+    await page.getByTestId('btn-leave-safari').click();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
 
     // An open door leads in, and back out to the same town.
     await page.getByTestId('door-mart').click();

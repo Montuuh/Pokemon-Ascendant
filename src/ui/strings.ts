@@ -144,7 +144,35 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'ring-closed': 'The Ring is done for this visit.',
   'nothing-to-restock': 'Nothing else to stock on this floor.',
   'bad-stake': 'That stake is not on the table.',
+  'safari-closed': 'The Safari is done for this visit.',
+  'bad-tile': 'Not from here.',
+  'no-ap': 'Nothing left this turn — end it.',
 };
+
+/** §2.11.6 — the Safari tiers and traits, in the words on the lineup cards and the board. */
+export const SAFARI_TIER_LABEL: Record<string, string> = { common: 'Easy', uncommon: 'Tricky', rare: 'Rare' };
+export const SAFARI_TRAIT: Record<string, { label: string; hint: string }> = {
+  'keen-eyed': { label: 'Keen-eyed', hint: 'Looks four tiles ahead, not three.' },
+  quick: { label: 'Quick', hint: 'Walks two tiles a turn.' },
+  alert: { label: 'Alert', hint: 'Hears you on the tiles right beside it, grass or not — unless it is eating.' },
+  'sharp-eared': { label: 'Sharp-eared', hint: 'Hears you within two tiles, grass or not — unless it is eating.' },
+  water: { label: 'In its pond', hint: 'It never leaves the water. Reach it from the open shore.' },
+};
+/** §2.11.6 — the stalk's own words. */
+export const SAFARI_TEXT = {
+  closed: 'The park is closed this visit. It will be open in the next town.',
+  exposed: 'It will see you there',
+  backAway: 'Back away',
+  sure: (name: string) => `Sure? The ${name} is gone for good`,
+  outOfReach: 'out of reach',
+  missed: (pct: number) => `It broke out of a ${pct} % ball.`,
+  eating: (turns: number) => `Eating, ${turns} more turn${turns === 1 ? '' : 's'}`,
+  held: 'Stopped by the rock',
+  modes: { move: 'Move', bait: 'Bait', rock: 'Rock' } as Record<string, string>,
+  tile: { g: 'Tall grass', o: 'Open ground', r: 'Boulder', w: 'Water' } as Record<string, string>,
+};
+/** §2.11.6 — how a stalk ended, on its lineup card. */
+export const SAFARI_RESULT_LABEL: Record<string, string> = { caught: 'Caught', fled: 'Bolted', left: 'Left', closed: 'Missed' };
 
 /** §2.11.2 — the Department Store's floors, in the words on the lift buttons. */
 export const STORE_FLOOR_LABEL: Record<string, string> = {
@@ -202,7 +230,7 @@ export const CITY_DOOR_HINT: Record<CityDoor, string> = {
   dojo: 'Tutor moves off the learnset and passive abilities, as many as you can pay for.',
   ring: 'A ladder of rivals for a fee. See the next one, then fight or cash out — nothing heals between rungs, and a lost rung loses what the ladder paid. Once per visit.',
   'extra-moves': 'A catalogue of moves beyond each species\' tutor list.',
-  safari: 'A park of Pokémon the routes do not have, caught with its own rules.',
+  safari: 'A park of Pokémon the routes never offer. Buy a ticket, stalk one through the grass, and throw when the odds are yours. Once per visit.',
   'game-corner': 'The Wheel and the Slots, every outcome and its odds printed beside each machine.',
   'black-market': 'Beneath the Game Corner. Rare stock, no questions, once per visit.',
   gate: 'Choose one rule for the next Region, then set off. The town stays behind.',

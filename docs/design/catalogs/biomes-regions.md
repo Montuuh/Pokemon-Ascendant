@@ -31,7 +31,7 @@ Each Wild Area node offers **3 species, visible before entering**: 2 Common + 1 
 | `meadow` | `caterpie` `weedle` `pidgey` `rattata` | `oddish` `bellsprout` `mankey` | `eevee` |
 | `cave` | `zubat` `geodude` `diglett` | `onix` `machop` | `aerodactyl` `lapras` |
 | `river` | `magikarp` `poliwag` | `psyduck` `krabby` | `lapras` |
-| `sea` | `tentacool*` `shellder*` `horsea*` | `staryu*` `seel*` | `dratini*` |
+| `sea` | `tentacool*` `shellder*` `horsea*` | `staryu*` `seel*` | `lapras` (Dratini is the Safari's, §6) |
 | `power-plant` | `voltorb*` `magnemite*` | `pikachu*` `electabuzz*` | `zapdos*` 🔒 |
 
 > **As built (v0.7.3).** Region 1 is the rows above without the unbuilt lines: the Meadow drops Mankey, and the
@@ -88,3 +88,27 @@ multi-enemy (1 lead + 1–2 supports) and field effects · the League combines e
 
 > v0.2 ships a **simplified 7-layer** version of this map (roadmap), keeping the fork and the guarantees. The
 > 12-layer generator lands at v0.5.
+
+## 6. The Safari Zone (§2.11.6) ✅ v0.7.6
+
+Gen I's Safari list, less every line a route already offers (`safari.test` holds it), less the fossils (the
+Laboratory's, v1.3), the starters (the Poké Mart's) and Ditto (until its Transform exists). The tiers are the
+Safari's own — the board a species is stalked on — not its drop rarity.
+
+| City | Easy | Tricky | Rare |
+|---|---|---|---|
+| Pallet Town | `nidoran-m` `paras` `venonat` `goldeen` | `exeggcute` `slowpoke` | `chansey` `tauros` `kangaskhan` `pinsir` |
+| Celadon City | the same | the same | the same, and `dratini` |
+
+| Species | Trait on its board |
+|---|---|
+| `goldeen` · `slowpoke` | In its pond — never leaves the water; reached from the open shore |
+| `chansey` | Keen-eyed — looks 4 tiles |
+| `tauros` | Quick — walks 2 a turn |
+| `kangaskhan` | Alert — hears the tiles beside it |
+| `pinsir` | Sharp-eared — hears 2 tiles away |
+| `dratini` | In its pond, and quick |
+
+**Dratini is the Safari's.** §2 above had pencilled it as the Sea's Rare (`dratini*`), stood in for by `lapras`
+until it was built. It goes where Gen I kept it instead — the big city's Safari, the hardest board in the park —
+and the Sea keeps Lapras. *(2026-09-24.)*

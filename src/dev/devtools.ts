@@ -28,6 +28,7 @@ import { nextAction } from '@/sim/balance/autoPlayer';
 //   __ascendant.run.wear('leftovers')   put a held item in the bag (§7.4)
 //   __ascendant.run.wear()              one of every generic held item, for eyeballing the inventory drawer
 //   __ascendant.run.trauma(3)           give the Lead N Trauma stacks — the fast way to see §8.2.4's Therapy
+//   __ascendant.run.patch(d => …)       edit the run through an Immer draft (tests that lay out a Safari board)
 //   __ascendant.run.pay(2000)           set the wallet, for pricing screens without grinding for the money
 //   __ascendant.run.afflict('burn')     give the Lead a carried status (§4.2.7.1), as a fight would have left it
 //   __ascendant.run.jump('gym')         stand the run right in front of the first node of a kind, skipping the route
@@ -96,6 +97,8 @@ export interface AscendantRunTools {
    * lobby rolled the way a Gym win would roll it. The route is skipped; the City is the real one.
    */
   city: (regionIndex?: number) => void;
+  /** Edit the run state in place through an Immer draft — for a test that needs a board laid out just so. */
+  patch: (recipe: (draft: sim.RunState) => void) => void;
   save: () => void;
   load: () => boolean;
 }
@@ -215,6 +218,11 @@ export function installDevTools(): void {
         const target = uid ?? run.activeUids[0] ?? run.box[0]?.uid;
         const box = run.box.map((m) => (m.uid === target ? { ...m, traumaStacks: Math.max(0, Math.min(10, stacks)) } : m));
         useRunStore.setState({ run: { ...run, box } });
+      },
+
+      patch: (recipe) => {
+        const run = useRunStore.getState().run;
+        if (run) useRunStore.setState({ run: produce(run, recipe) });
       },
 
       pay: (amount) => {

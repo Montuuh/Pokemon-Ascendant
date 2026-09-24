@@ -13,6 +13,7 @@ import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './event
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, rollRegionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
+import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, type ProgressionConfig } from './xp';
 import type { LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
 
@@ -38,6 +39,8 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 // §2 — the run reducer. Pure: (state, action) → state, exactly like the combat reducer, so a run is a seed
 // plus an action log and a save is that pair (§10.7.4, §10.8).
 
+// 12 — v0.7.6: the City carries its Safari Zone (`city.safari`) and the SafariRNG cursor (§2.11.6). Migrated
+//      from 11 in save.ts: a City visit already under way has no Safari rolled, and its door says so.
 // 11 — v0.7.5: Evolution Items (`stones`), the run's `starter` for its flourish, and a stone's Evolution screen
 //      remembering where to hand back to (§6.3.2, §8.5.3). Migrated from 10 in save.ts.
 // 10 — the Badges take the games' names (§5.10.4): the Poison and Psychic ids trade places and two are renamed.
@@ -48,7 +51,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 11;
+export const RUN_SAVE_VERSION = 12;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -375,6 +378,71 @@ function resolveRing(draft: RunState, won: boolean, ctx: RunCtx): void {
   else payRing(draft);
 }
 
+/** §2.11.6 — the Safari's own stream: its lineup, its boards and its throws never move a fight's rolls. */
+function safariRngOf(draft: RunState): GameRng {
+  const rng = new RngStreams(draft.seed).get('SafariRNG');
+  rng.cursor = draft.cursors.SafariRNG ?? rng.cursor;
+  return rng;
+}
+
+/**
+ * §2.11.6 — a stalk is over, one way or another. The spot keeps how it ended; a catch goes to the Box (or to
+ * Swap-or-Skip) and owes its Evolution screen like any recruit, both handing back to the Safari. The visit ends
+ * when the balls or the clock do, or when nobody is left to approach.
+ */
+function endHunt(draft: RunState, result: 'caught' | 'fled' | 'left' | 'closed', ctx: RunCtx): void {
+  const safari = draft.city!.safari!;
+  const hunt = safari.hunt!;
+  const spot = safari.lineup[hunt.spot]!;
+  spot.result = result;
+  safari.hunt = null;
+  const name = ctx.content.species(spot.species).name;
+  if (!draft.seenSpecies.includes(spot.species)) draft.seenSpecies.push(spot.species);
+  if (result === 'fled') say(draft, `The ${name} bolted.`);
+  if (result === 'left') say(draft, `You backed away from the ${name}.`);
+  if (result === 'closed') say(draft, `The park closes with the ${name} still out there.`);
+  if (safari.balls <= 0 || safari.clock <= 0 || safari.lineup.every((l) => l.result !== null)) safari.done = true;
+  draft.phase = 'safari';
+  if (result !== 'caught') return;
+  draft.stats.catches += 1;
+  say(draft, `Caught ${name}!`);
+  if (draft.box.length < boxCapacity(draft)) {
+    const recruit = newPartyMon(spot.species, spot.level, ctx.content, draft.seed);
+    draft.box.push(recruit);
+    draft.stats.recruits += 1;
+    if (draft.activeUids.length < 3) draft.activeUids.push(recruit.uid);
+    queueSafariEvolutions(draft, ctx.content);
+  } else {
+    draft.pendingRecruit = { speciesId: spot.species, level: spot.level };
+    draft.phase = 'swap-or-skip';
+  }
+}
+
+/** §6.3.1 — a Safari recruit caught at its threshold picks its branch now, and the screen hands back to the park. */
+function queueSafariEvolutions(draft: RunState, content: ContentRegistry): void {
+  const before = draft.pendingEvolutions.length;
+  queueEvolutions(draft, content);
+  for (const p of draft.pendingEvolutions.slice(before)) p.returnTo = 'safari';
+  if (draft.pendingEvolutions.length) draft.phase = 'evolution';
+}
+
+/** §2.11.6 — the turn ends: it moves and looks, and the park clock ticks. */
+function finishSafariTurn(draft: RunState, ctx: RunCtx): void {
+  const safari = draft.city!.safari!;
+  const hunt = safari.hunt!;
+  const event = endTurn(hunt, safari.lineup[hunt.spot]!);
+  safari.clock -= 1;
+  afterSafariTurn(draft, event, ctx);
+}
+
+/** §2.11.6 — the park clock ticks with every turn of a stalk; when the balls or the clock run out, the stalk ends. */
+function afterSafariTurn(draft: RunState, event: HuntEvent, ctx: RunCtx): void {
+  const safari = draft.city!.safari!;
+  if (event === 'caught' || event === 'fled') return endHunt(draft, event, ctx);
+  if (safari.balls <= 0) return endHunt(draft, 'left', ctx);
+  if (safari.clock <= 0) endHunt(draft, 'closed', ctx);
+}
+
 /** §2.11.5 — the Game Corner's own stream, resumed from the save so a reload shows the same next result. */
 function casinoRng(draft: RunState): GameRng {
   const rng = new RngStreams(draft.seed).get('CasinoRNG');
@@ -401,11 +469,15 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
     if (i >= 0) shop.slots[i] = { ...slot, ...(shop.slots[i]!.floor ? { floor: shop.slots[i]!.floor } : {}) };
     else shop.slots.push(slot);
   }
-  const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null } } }, ctx);
+  const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null }, safari: null } }, ctx);
   draft.cursors.EncounterRNG = rng.cursor;
   // The gate's offer is seeded from the run and the Region, like the pre-run offer is seeded from the run.
   const reflection = rollRegionModifierOffer((draft.seed ^ Math.imul(draft.regionIndex + 1, 0x9e3779b1)) >>> 0, ctx.content, draft.box, draft.money);
-  draft.city = { id, shop, reflection, ring, casino: { wheel: null, slots: null } };
+  // §2.11.6 — the Safari's lineup is on its own stream, and its recruits stand at the next Region's recruit floor.
+  const safariRng = safariRngOf(draft);
+  const safari = rollSafari(safariRng, id, regionContent(draft.regionIndex + 1).wildBand[0]);
+  draft.cursors.SafariRNG = safariRng.cursor;
+  draft.city = { id, shop, reflection, ring, casino: { wheel: null, slots: null }, safari };
   draft.regionModifier = null;
   draft.pendingNodeId = null;
   draft.pendingShop = null;
@@ -955,6 +1027,13 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         }
         draft.pendingRecruit = null;
 
+        // §2.11.6 — a Safari catch into a full Box comes back to the park, by way of any Evolution it owes.
+        if (draft.city?.safari && !draft.pendingNodeId) {
+          draft.phase = 'safari';
+          if (action.releaseUid) queueSafariEvolutions(draft, ctx.content);
+          break;
+        }
+
         const node = draft.map.nodes[draft.pendingNodeId!]!;
         advanceFrom(draft, node.id);
         draft.pendingNodeId = null;
@@ -1061,6 +1140,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           draft.phase = 'shop';
         } else if (action.building === 'game-corner') {
           draft.phase = 'game-corner';
+        } else if (action.building === 'safari') {
+          draft.phase = 'safari';
         } else {
           say(draft, 'The Dojo master looks your team over.');
           draft.phase = 'dojo';
@@ -1139,6 +1220,66 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       }
 
       case 'leave-game-corner': {
+        draft.phase = 'city';
+        break;
+      }
+
+      // §2.11.6 — the Safari Zone. The ticket buys the balls and the clock; the rest is the stalk.
+      case 'enter-safari': {
+        const safari = draft.city!.safari!;
+        draft.money -= safari.fee;
+        safari.entered = true;
+        say(draft, `Paid ${safari.fee} ₽ for a Safari ticket: ${safari.balls} Safari Balls and ${safari.clock} turns.`);
+        break;
+      }
+
+      case 'safari-approach': {
+        const safari = draft.city!.safari!;
+        const rng = safariRngOf(draft);
+        safari.hunt = rollHunt(rng, action.spot, safari.lineup[action.spot]!);
+        draft.cursors.SafariRNG = rng.cursor;
+        break;
+      }
+
+      case 'safari-step':
+      case 'safari-bait':
+      case 'safari-rock': {
+        const hunt = draft.city!.safari!.hunt!;
+        const p: [number, number] = [action.x, action.y];
+        if (action.type === 'safari-step') safariStep(hunt, p);
+        else if (action.type === 'safari-bait') tossBait(hunt, p);
+        else tossRock(hunt, p);
+        // The last action ends the turn: there is nothing left to decide before it moves.
+        if (hunt.ap <= 0) finishSafariTurn(draft, ctx);
+        break;
+      }
+
+      case 'safari-throw': {
+        const safari = draft.city!.safari!;
+        const hunt = safari.hunt!;
+        const rng = safariRngOf(draft);
+        const event = throwBall(hunt, safari.lineup[hunt.spot]!, ctx.content, rng);
+        draft.cursors.SafariRNG = rng.cursor;
+        safari.balls -= 1;
+        if (event === 'broke-free') say(draft, `The ${ctx.content.species(safari.lineup[hunt.spot]!.species).name} broke free!`);
+        if (event === 'broke-free' && safari.balls > 0) finishSafariTurn(draft, ctx);
+        else afterSafariTurn(draft, event, ctx);
+        break;
+      }
+
+      case 'safari-wait': {
+        finishSafariTurn(draft, ctx);
+        break;
+      }
+
+      case 'safari-retreat': {
+        endHunt(draft, 'left', ctx);
+        break;
+      }
+
+      case 'leave-safari': {
+        const safari = draft.city!.safari;
+        if (safari?.entered) safari.done = true;
         draft.phase = 'city';
         break;
       }
@@ -1456,6 +1597,44 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       return state.money < CASINO.slots.stake ? 'cannot-afford' : undefined;
     case 'leave-game-corner':
       return state.phase === 'game-corner' ? undefined : 'wrong-phase';
+
+    // §2.11.6 — the Safari: a ticket, then one stalk at a time, and an action only where the board allows it.
+    case 'enter-safari': {
+      if (state.phase !== 'safari') return 'wrong-phase';
+      const safari = state.city?.safari;
+      if (!safari || safari.entered || safari.done) return 'safari-closed';
+      return state.money < safari.fee ? 'cannot-afford' : undefined;
+    }
+    case 'safari-approach': {
+      const safari = state.city?.safari;
+      if (state.phase !== 'safari' || !safari) return 'wrong-phase';
+      if (!safari.entered || safari.done || safari.hunt) return 'safari-closed';
+      return safari.lineup[action.spot]?.result === null ? undefined : 'safari-closed';
+    }
+    case 'safari-step':
+    case 'safari-bait':
+    case 'safari-rock':
+    case 'safari-throw':
+    case 'safari-wait':
+    case 'safari-retreat': {
+      const safari = state.city?.safari;
+      if (state.phase !== 'safari' || !safari) return 'wrong-phase';
+      const hunt = safari.hunt;
+      if (!hunt || safari.done) return 'safari-closed';
+      if (action.type === 'safari-wait' || action.type === 'safari-retreat') return undefined;
+      const spot = safari.lineup[hunt.spot]!;
+      if (action.type === 'safari-throw') {
+        if (hunt.ap < SAFARI.cost.ball) return 'no-ap';
+        return throwOdds(hunt, spot, ctx.content) ? undefined : 'bad-tile';
+      }
+      if (hunt.ap <= 0) return 'no-ap';
+      const p: [number, number] = [action.x, action.y];
+      if (action.type === 'safari-step') return walkDistance(hunt.player, p) === 1 && playerCanStand(hunt, p[0], p[1]) ? undefined : 'bad-tile';
+      return canToss(hunt, spot, action.type === 'safari-bait' ? 'bait' : 'rock', p) ? undefined : 'bad-tile';
+    }
+    case 'leave-safari':
+      if (state.phase !== 'safari') return 'wrong-phase';
+      return state.city?.safari?.hunt ? 'safari-closed' : undefined;
 
     case 'leave-center':
       return state.phase === 'center' ? undefined : 'wrong-phase';

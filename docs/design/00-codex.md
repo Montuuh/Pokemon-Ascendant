@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -42,6 +42,11 @@ Pokémon.
   EV 0.94), tables printed, outcome rolled first. Both Dojos hold the **Challenge Ring**: 2 rungs / 3 rungs of
   Elite-class rivals, no healing between, cash out or climb; money below, a Rare relic 1-of-3 on top, no XP.
   Meant to be lost (ladder ≈1 in 6 in the town, under 1 in 10 in the city). *(2026-09-23.)*
+  Both Cities hold the **Safari Zone** (§2.11.6): a ticket (200 / 350 ₽) buys 3 Safari Balls and a 10 / 12-turn
+  clock for a lineup of species no route offers (Dratini only in the city), each **stalked** on a tile board — two
+  actions a turn, its path and its look shown, tall grass hides you, bait and rock, a throw is the whole turn at a
+  printed chance, and every alarm (being seen, a missed ball) brings it closer to bolting; a Rare bolts at the first.
+  One or two recruits a visit; the rare, gone for first, lands about a third of the time. *(2026-09-24.)*
   Superseded: a City was a **Choice Plaza** — Shop and Reflection always, plus **2 of** {City Gym,
   Center, Grand Dojo, Black Market}.
 - **Region Modifiers are per-Region**: exactly 1 active, re-picked each Region, expiring with it. Relics and

@@ -80,7 +80,7 @@ Two per run, and they are deliberately different sizes:
 | | **Pallet Town** — after Gym 1 | **Celadon City** — after Gym 2 |
 |---|---|---|
 | Feel | A small town: four doors, cheap, warm | The big city: more doors, dearer, louder |
-| Doors | Pokémon Center · Poké Mart · Dojo · Safari Zone *(closed)* | Pokémon Center · Department Store · Dojo · Game Corner *(Black Market beneath it, closed)* · Safari Zone *(closed)* |
+| Doors | Pokémon Center · Poké Mart · Dojo · Safari Zone | Pokémon Center · Department Store · Dojo · Game Corner *(Black Market beneath it, closed)* · Safari Zone (bigger, with Dratini) |
 | Leaving | The gate → Reflection (§2.11.3) → Region 2 | The gate → Reflection → Region 3 |
 
 **The city is where a team is built.** Routes carry a travelling merchant and a field nurse and nothing else
@@ -894,7 +894,8 @@ the doors, and you walk out through the gate when you are ready (§2.1.4).
 - **No visit budget.** Enter what you like. Money, HP and Trauma are the only rations.
 - **Two kinds of door.** The **open** ones — Pokémon Center, shop, Dojo, Game Corner — may be entered and left
   as often as you like; they take your money, not your turn. The **committing** ones — the Ring or the Coliseum
-  (§2.9.4.1) and, when it opens, the Black Market (§2.11.6) — resolve **once per visit** and close behind you.
+  (§2.9.4.1), the Safari Zone (§2.11.6) and, when it opens, the Black Market (§2.11.6) — resolve **once per visit**
+  and close behind you.
 - **The gate closes the City.** Leaving opens the Reflection (§2.11.3): pick one Region Modifier, and the pick
   *is* the departure. Nothing else can be done after it.
 - **A door in development is still a door.** A building that is coming later is drawn on the map and can be
@@ -1023,7 +1024,7 @@ Badges are the run-long systems.
 | **Dojo** (§2.9.4) — tutor and abilities | ✅ | ✅ wider | Open |
 | **Ring** (town) · **Pokémon Coliseum** (city) (§2.9.4.1) — their own buildings from v0.7.7 | ✅ | ✅ | Committing, once per visit |
 | **Game Corner** (§2.11.5) | — | ✅ | Open |
-| **Safari Zone** (§2.11.6) | 🚧 | 🚧 | In development — enterable, says so |
+| **Safari Zone** (§2.11.6) | ✅ | ✅ bigger | Committing, once per visit |
 | **Black Market** (§2.11.6) — **a secret**: no door on the map; found inside the Game Corner | — | 🚧 | In development; committing once it opens |
 | **The gate** (§2.11.3) | ✅ | ✅ | Ends the City |
 
@@ -1060,13 +1061,79 @@ weight; the machines are the run's only way to turn it into a *chance* at the th
 in expectation. Printing the tables is what keeps it inside Pillar 1: the gamble is chosen with the numbers in
 view, like the catch roll (§2.6.4.3).
 
-## §2.11.6 Doors in development
+## §2.11.6 The Safari Zone, and the doors still in development
 
-On the map from the first build, drawn and enterable, each opening onto a panel that says what it will be and
-that it is in development (§2.11.0). Their designs are backlog (`docs/roadmap.md`).
+**🦌 The Safari Zone** *(town and city, open since v0.7.6)* — a paid catching ground for species no route
+offers, played as a **stalk** rather than a fight. It is the one place in the run with no combat in it, so it has
+its own verb: creep through tall grass and throw when the odds are yours. *(The user asked for a minigame that
+makes the Safari unlike the rest of the game, with the rare find as the harder one to land, 2026-09-24; the
+classic bait-rock-ball menu was the fallback.)*
 
-**🦌 Safari Zone** *(town and city)* — a paid catching ground: a flat entry fee, a fixed number of balls, and
-species that the routes never offer. The Box-filling building.
+**The visit.** The lineup stands at the entrance before anything is paid (Pillar 1): each Pokémon with its level,
+types, its Safari tier and trait, and how many alarms it will take. A ticket buys the Safari Balls and the park
+clock, shared by every stalk; the Safari is **committing** (§2.11.0), once per visit, and what is left of either
+stays behind. Walk up to one Pokémon at a time; a stalk ends caught, bolted, backed away from (gone for the visit)
+or cut off by the clock.
+
+| | **Pallet Town** | **Celadon City** |
+|---|---|---|
+| Ticket | 200 ₽ | 350 ₽ |
+| Safari Balls · clock | 3 · 10 turns | 3 · 12 turns |
+| Lineup | Easy · Tricky · Rare | Easy · Easy · Tricky · Rare |
+| Recruit level | Region 2's recruit floor, +0–2 (Lv 12–14) | Region 3's (Lv 22–24) |
+
+The pools (`catalogs/biomes-regions.md` §6) are Gen I's own Safari list less anything a route offers — a test
+holds that line, so a Safari recruit is always one no route could have given. **Dratini is the city's**: the one
+thing the town's park does not have. No XP and no loot: the Safari pays in Pokémon, and a catch here is a recruit
+like any other (Swap-or-Skip on a full Box, its Evolution screen if it stands at its threshold).
+
+**The stalk.** A square board of tall grass with open clearings, boulders and — for a water species — a pond it
+never leaves, ringed by open shore. You enter at the bottom edge; the Pokémon walks a loop.
+
+- **Two actions a turn**: a step (1), a bait (1), a rock (1), or a **throw, which is the whole turn** (2). Spending
+  the last action ends the turn: then it walks and looks.
+- **Everything it will do is shown**: the tiles it will walk this turn, and where it will be looking when the turn
+  ends. Its look is a cone (one tile wide at 1, three at 2, five at 3), blocked by boulders.
+- **Seen** is standing in that cone on open ground, or on the tile right in front of it (the grass hides you from
+  everything else), or within earshot of a sharp-eared one. Seen is an **alarm**; so is a ball it breaks out of.
+  Its last alarm sends it off.
+- **Bait** (thrown up to 3 tiles) draws it to the spot, where it eats for two turns: head down, it looks only one
+  tile ahead and hears nothing, and a ball thrown then is better. One bait at a time.
+- **A rock** (up to 3 tiles) stops it where it stands this turn and turns it towards the noise — so you can walk in
+  behind. **Never two turns running**: a rock every turn would be a lock, the same argument as Sleep's (§4.2.2.4).
+- **The throw** reaches 2 tiles past no boulder:
+  `catchRate × 0.5 × (range 1: ×1 · 2: ×0.7) × (never seen you: ×1.5) × (from behind: ×1.25) × (eating: ×1.25)`,
+  clamped to 1–90 %, printed on the button with its terms before it is thrown — §2.6.4.3's argument unchanged: the
+  number is chosen with the odds in view. `catchRate` is the species' own (§2.6.4.1).
+
+**Rarer means a harder board, never a hidden rule.**
+
+| Tier | Board | Looks | Walks | Alarms it takes |
+|---|---|---|---|---|
+| Easy | 7 × 7 | 2 tiles | 1 a turn | 3 |
+| Tricky | 8 × 8 | 3 | 1 | 2 |
+| Rare | 9 × 9 | 3 | 1 | **1** — one clean throw |
+
+Each Rare carries one trait on top: Chansey is **keen-eyed** (looks 4), Tauros and Dratini are **quick** (walk 2),
+Kangaskhan is **alert** (hears the tiles beside it), Pinsir is **sharp-eared** (hears 2 tiles away); Goldeen,
+Slowpoke and Dratini live **in their pond**.
+
+**Measured, not asserted** (`src/sim/balance/safari.test.ts`, a stalker that looks one turn ahead): a visit ends
+with **one or two recruits** either way it is played (Pallet 1.5 going for the rare first, 1.6 going easy first;
+Celadon 1.5 and 1.9). Going for the rare lands it in **45 % of Pallet visits and 37 % of Celadon's**; a common
+stalked first is caught about **four times in five**; leaving the rare for last mostly leaves it (17 % / 0 %). The
+ball and clock counts are the cap on the haul, and the throw costing a whole turn is what makes the approach a
+puzzle: a first cut with a one-action throw let the stalker close and throw in the same turn, and it caught two or
+three a visit in two and a half turns a stalk.
+
+**What it did to the run** (720 runs, the harness taking the Safari whenever it can pay): Region 2 given Region 1
+went from 55 % to 67 %, Region 3 given Region 2 from 43 % to 49 %, the whole run from 13 % to 18 %. A Box one
+Pokémon deeper, and a fresh line evolving on the spot, is what the building is for; the whole run and Region 3 now
+sit on §2.2.1's targets, and Region 2 sits seven points over its ~60 %, inside its guard. The tier is left alone:
+v0.8's multi-enemy fights move every Region, and the balance pass after them (v0.8.6) retunes the curve once.
+
+**The doors still in development** are on the map from the first build, drawn and enterable, each opening onto a
+panel that says what it will be and that it is in development (§2.11.0).
 
 **🖤 Black Market** *(a secret beneath the Game Corner)* — **Team Rocket's** back room. Legendary relics paid for
 in **HP or Trauma** instead of money, Pokémon traded for other Pokémon, and the rest of the things a Poké Mart will

@@ -423,3 +423,89 @@ export function machineTip(machine: 'wheel' | 'slots', table: string, ev: number
 export function floorTip(label: string, count: number): ReactNode {
   return <Tip title={label} meta={[`${count} on the shelf`]} body="Each floor sells one kind of thing. A re-roll restocks the floor you are on; the others stay as they are." />;
 }
+
+// ── The Safari Zone (v0.7.6) ─────────────────────────────────────────────────────────────────────────────
+
+/** §2.11.6 — the Safari's heading bubble: the whole rule set, once. */
+export function safariTip(): ReactNode {
+  return (
+    <Tip
+      title="Safari Zone"
+      body="Pick one of today's Pokémon and stalk it through the grass. Tall grass hides you from everything but the tile in front of it; open ground does not. You always see where it will walk and where it will look. End a turn within two tiles, then spend the next on a throw."
+      footer="Seen is an alarm, and so is a ball that misses. Its last alarm sends it off. Once per visit."
+    />
+  );
+}
+
+/** §2.11.6 — the ticket: what it buys. */
+export function safariTicketTip(fee: number, balls: number, clock: number): ReactNode {
+  return <Tip title="Safari ticket" meta={[`${fee} ₽`, `${balls} Safari Balls`, `${clock} turns`]} body="The balls and the turns are shared by every Pokémon you stalk. What is left when you leave stays behind." />;
+}
+
+/** §2.11.6 — the Safari Balls left. */
+export function safariBallsTip(balls: number): ReactNode {
+  return <Tip title="Safari Balls" meta={[`${balls} left`]} body="One per throw, caught or not. Only good in here." />;
+}
+
+/** §2.11.6 — the park clock. */
+export function safariClockTip(turns: number): ReactNode {
+  return <Tip title="Park clock" meta={[`${turns} turns left`]} body="Every turn of every stalk comes off it. When it stops, the park closes — with whatever you were stalking still out there." />;
+}
+
+/** §2.11.6 — the Pokémon's temper: alarms taken of how many it will take. */
+export function safariAlarmTip(alarms: number, temper: number): ReactNode {
+  return <Tip title="Temper" meta={[`${alarms} of ${temper} alarms`]} body={temper === 1 ? 'One alarm and it is gone — so is one missed ball.' : 'Seeing you is an alarm; so is a ball it breaks out of. The last one sends it off.'} />;
+}
+
+/** §2.11.6 — what makes this Pokémon's board the harder one. */
+export function safariTraitTip(label: string, hint: string): ReactNode {
+  return <Tip title={label} body={hint} />;
+}
+
+/** §2.11.6 — the throw, with every term that moved it. */
+export function safariThrowTip(o: { chance: number; range: number; unseen: boolean; behind: boolean; eating: boolean } | null, apShort: boolean): ReactNode {
+  if (!o) return <Tip title="Throw" body="Out of reach. A Safari Ball carries two tiles, and a rock in the way stops it." />;
+  const meta: ReactNode[] = [`${Math.round(o.chance * 100)} %`, o.range === 1 ? 'Close' : 'Two tiles'];
+  if (o.unseen) meta.push('Never saw you');
+  if (o.behind) meta.push('From behind');
+  if (o.eating) meta.push('Eating');
+  return <Tip title="Throw" meta={meta} body={apShort ? 'A throw takes the whole turn — end this one where you stand and throw next turn.' : 'The only roll in the Safari. A miss is an alarm.'} />;
+}
+
+/** §2.11.6 — the board's marks, on the InfoDot beside it. */
+export function safariBoardTip(): ReactNode {
+  return (
+    <Tip
+      title="Reading the board"
+      meta={['Red + eye: seen', 'Pale red: hidden', 'Dots: its path', 'Yellow: a click acts', 'Arrow keys walk']}
+      body="The red is where it will be looking once this turn ends. On a tile marked with the eye it would notice you; pale red is its look, but the tall grass hides you. Boulders block a look and a throw; the water is its pond."
+    />
+  );
+}
+
+/** §2.11.6 — the turn's actions and what each costs. */
+export function safariApTip(ap: number): ReactNode {
+  return <Tip title="This turn" meta={[`${ap} of 2 left`, 'Step 1', 'Bait 1', 'Rock 1', 'Throw 2']} body="A throw needs the whole turn. Spending the last action ends the turn: then it walks, and looks." />;
+}
+
+/** §2.11.6 — the bait, and why it cannot be thrown now. */
+export function safariBaitTip(why: string | null): ReactNode {
+  return <Tip title="Bait" meta={['1 action', 'Up to 3 tiles']} body="It walks to the bait and eats for two turns. Eating, it looks only at the tile in front of it and hears nothing — and a ball thrown then is better." footer={why ?? undefined} />;
+}
+
+/** §2.11.6 — the rock, and why it cannot be thrown now. */
+export function safariRockTip(why: string | null): ReactNode {
+  return <Tip title="Rock" meta={['1 action', 'Up to 3 tiles']} body="It stops where it stands this turn and turns to face the noise — put it at its back and walk in behind. Never two turns running." footer={why ?? undefined} />;
+}
+
+/** §2.11.6 — the lineup's tier badge: how that board behaves. */
+export function safariTierTip(label: string, t: { sight: number; speed: number; temper: number; ears: number }): ReactNode {
+  const meta: ReactNode[] = [`Sees ${t.sight} ahead`, t.speed > 1 ? `Walks ${t.speed} a turn` : 'Walks 1 a turn', `${t.temper} alarm${t.temper === 1 ? '' : 's'}`];
+  if (t.ears) meta.push(`Hears ${t.ears} tile${t.ears === 1 ? '' : 's'} away`);
+  return <Tip title={label} meta={meta} body="Rarer means a bigger board and a harder Pokémon — and a lower chance on every throw." />;
+}
+
+/** §2.11.6 — what the Pokémon is doing right now, on its tile. */
+export function safariStateTip(line: string): ReactNode {
+  return <Tip title={line} body="Its head is down or its feet are still: this is the moment to close in." />;
+}

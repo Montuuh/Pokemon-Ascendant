@@ -11,6 +11,7 @@ import { EventScreen } from '@/ui/screens/EventScreen';
 import { GameCornerScreen } from '@/ui/screens/GameCornerScreen';
 import { RingPrizeScreen } from '@/ui/screens/RingPrizeScreen';
 import { RingScreen } from '@/ui/screens/RingScreen';
+import { SafariScreen } from '@/ui/screens/SafariScreen';
 import { LegendaryScreen } from '@/ui/screens/LegendaryScreen';
 import { HubScreen } from '@/ui/screens/HubScreen';
 import { SettingsScreen } from '@/ui/screens/SettingsScreen';
@@ -75,6 +76,8 @@ function Screens() {
     if (runPhase === 'ring') return <RingScreen />;
     if (runPhase === 'relic-pick') return <RingPrizeScreen />;
     if (runPhase === 'game-corner') return <GameCornerScreen />;
+    // §2.11.6 — the Safari, and a catch into a full Box asked from inside it rather than over the map.
+    if (runPhase === 'safari' || (runPhase === 'swap-or-skip' && useRunStore.getState().run?.city)) return <SafariScreen />;
     // §7.3.7 — the Gym is beaten and the 1-of-3 is open; the run is not over until it is answered.
     if (runPhase === 'legendary') return <LegendaryScreen />;
     return (
