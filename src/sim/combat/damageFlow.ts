@@ -82,9 +82,26 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   // §5.10.3 Glacier Badge — a chilled attacker's next hit is blunted. On the combatant, not the relic list, so the
   // intent's predicted damage (which has no state to read) shows the smaller number too (Pillar 1).
   const chill = attacker.chill ?? 1;
+  // §5.13.2 — a Mastery move's condition is one more multiplier, before the one floor.
+  const bonus = powerBonus(attacker, target, move);
   // Ability and thaw multipliers are applied to the pre-floor value so a single floor remains (§4.1.1).
-  const final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill);
+  let final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill * bonus);
+  // §5.13.2 Super Fang — a share of what the target has left, whatever the formula says. Immunity still wins.
+  const fixed = move.effects.find((e) => e.kind === 'fixed-damage');
+  if (fixed && fixed.kind === 'fixed-damage' && raw.typeMultiplier > 0) final = Math.max(1, Math.floor(target.hp * fixed.percentOfTargetHp));
   return { ...raw, final };
+}
+
+/** §5.13.2 — the product of a move's `power-bonus` conditions that hold right now; 1 when none do. */
+function powerBonus(attacker: Combatant, target: Combatant, move: MoveDef): number {
+  let m = 1;
+  for (const fx of move.effects) {
+    if (fx.kind !== 'power-bonus') continue;
+    if (fx.when === 'target-poisoned' && target.status?.kind === 'poison') m *= fx.multiplier ?? 1;
+    if (fx.when === 'self-below' && attacker.hp < attacker.maxHp * (fx.below ?? 0)) m *= fx.multiplier ?? 1;
+    if (fx.when === 'per-trauma' && move.power > 0) m *= (move.power + (fx.perStack ?? 0) * attacker.traumaStacks) / move.power;
+  }
+  return m;
 }
 
 /**
@@ -498,6 +515,18 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         break;
       }
 
+      case 'self-damage': {
+        // §5.13.2 Belly Drum — paid up front and never lethal: the drum is a gamble on the next hit, not a faint.
+        const cost = Math.min(attacker.hp - 1, Math.floor(attacker.maxHp * fx.percentOfMaxHp));
+        if (cost > 0) {
+          attacker.hp -= cost;
+          emit(state, { t: 'damage', sourceUid: attacker.uid, targetUid: attacker.uid, amount: cost, crit: false, effectiveness: 'neutral', hpAfter: attacker.hp, cause: 'move' });
+          log(state, 'system', `${attacker.name} pays ${cost} HP.`);
+        }
+        break;
+      }
+      case 'power-bonus':
+      case 'fixed-damage':
       case 'recoil':
       case 'drain':
       case 'multi-hit':

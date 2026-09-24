@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PIDGEY, STARTERS, ctx, dispatch, eventsOf, leadOf, scenario, start, teamWithKit, tweak } from '../testing/harness';
+import { PIDGEY, STARTERS, content, ctx, dispatch, eventsOf, handCard, leadOf, scenario, start, teamWithKit, tweak, withHand } from '../testing/harness';
 import { breakdownFor } from './damageFlow';
 import { dotDamage } from './status';
 import type { CombatState } from './state';
@@ -194,5 +194,48 @@ describe('Run Down — §6.5.2, §3.3.1', () => {
     s = dispatch(s, { type: 'swap', benchIndex: 2 });
     expect(s.player.ap).toBe(ap - 1);
     expect(s.player.swapCounter).toBe(1);
+  });
+});
+
+describe('The Mastery moves’ effects — §5.13.2 (v0.7.5)', () => {
+  const s0 = () => start(scenario({ team: STARTERS, enemies: [{ species: 'geodude', level: 12, tier: 'wild', phaseCount: 1 }] }));
+  const hit = (s: ReturnType<typeof s0>, moveId: string, attacker = s.player.team[0]!) => breakdownFor(attacker, s.enemies[0]!, content.move(moveId), false, ctx, s).final;
+
+  it('Venoshock_DoublesIntoAPoisonedTarget', () => {
+    const s = s0();
+    const poisoned = tweak(s, (d) => { d.enemies[0]!.status = { kind: 'poison', appliedTurn: 0, turnsLeft: null }; });
+    expect(hit(poisoned, 'venoshock')).toBeGreaterThanOrEqual(Math.floor(hit(s, 'venoshock') * 2 * 0.85) - 1);
+    expect(hit(poisoned, 'venoshock')).toBeGreaterThan(hit(s, 'venoshock'));
+  });
+
+  it('SuperFang_TakesHalfWhatIsLeft', () => {
+    const s = tweak(s0(), (d) => { d.enemies[0]!.hp = 30; });
+    expect(hit(s, 'super-fang')).toBe(15);
+  });
+
+  it('RageFist_GrowsWithTrauma_Revenge_BelowHalf', () => {
+    const s = s0();
+    const scarred = tweak(s, (d) => { d.player.team[0]!.traumaStacks = 3; });
+    expect(hit(scarred, 'rage-fist')).toBeGreaterThan(hit(s, 'rage-fist'));
+    const low = tweak(s, (d) => { d.player.team[0]!.hp = 1; });
+    expect(hit(low, 'revenge')).toBeGreaterThan(hit(s, 'revenge'));
+  });
+
+  it('BellyDrum_PaysHpUpFront_NeverBelowOne_AndRaisesAttack', () => {
+    let s = start(scenario({ team: [{ species: 'snorlax', level: 20, moves: ['belly-drum-s', 'tackle'] }], enemies: [PIDGEY] }));
+    s = withHand(s, ['belly-drum-s']);
+    const max = s.player.team[0]!.maxHp;
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'belly-drum-s').id });
+    expect(s.player.team[0]!.hp).toBe(max - Math.floor(max * 0.4));
+    expect(s.player.team[0]!.stages.attack).toBe(4);
+    let low = tweak(withHand(start(scenario({ team: [{ species: 'snorlax', level: 20, moves: ['belly-drum-s', 'tackle'] }], enemies: [PIDGEY] })), ['belly-drum-s']), (d) => { d.player.team[0]!.hp = 2; });
+    low = dispatch(low, { type: 'play-card', cardId: handCard(low, 'belly-drum-s').id });
+    expect(low.player.team[0]!.hp).toBe(1);
+  });
+
+  it('EveryRecruitableLine_HasAMasteryLvOne', () => {
+    for (const line of ['bulbasaur', 'charmander', 'squirtle', 'eevee', 'pikachu', 'magikarp', 'tentacool', 'growlithe', 'vulpix', 'gastly', 'mr-mime', 'lapras', 'snorlax', 'aerodactyl', 'cubone']) {
+      expect(content.masteryMoves(line)[0], line).toBeTruthy();
+    }
   });
 });

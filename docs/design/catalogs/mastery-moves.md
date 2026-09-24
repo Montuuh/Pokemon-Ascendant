@@ -1,4 +1,4 @@
-# Mastery Move catalog — 24 lines
+# Mastery Move catalog — 51 lines
 
 > Implements §5.13.2 (the immutable 5th card slot) and §6.8 (the unlock achievements). A Mastery Move is not
 > part of the active-4 configuration: it cannot be replaced by a TM, a tutor or an evolution, and it advances
@@ -13,27 +13,54 @@
 | `bulbasaur` | `seed-bomb` | `seed-barrage` | `bloom-cannon` |
 | `charmander` | `fire-fang-m` | `inferno-fang` | `blast-burn` |
 | `squirtle` | `aqua-tail` | `aqua-tail-plus` | `aqua-tail-max` |
-| `caterpie` | `sticky-web` | `dream-eater` | `quiver-dance` |
-| `weedle` | `venoshock` | `fell-stinger-v` | `toxic-thread` |
-| `pidgey` | `brave-bird` | `brave-bird-plus` | `sky-attack` |
-| `rattata` | `super-fang` | `super-fang-plus` | — |
-| `oddish` | `spore-cloud` | `aromatherapy-m`(Lv2 variant) | `petal-dance` |
-| `bellsprout` | `leaf-tornado` | `leaf-storm-s` | `giga-impact-v` |
-| `mankey` | `rage-fist` | `final-gambit` | — |
-| `eevee` | `last-resort` | `hydro-vortex` / `gigavolt-havoc` / `inferno-overdrive` (per branch) | — |
-| `zubat` | `screech` | `venom-drench` | — |
-| `geodude` | `rock-slide-m` | `rock-wrecker` | `tectonic-rage` |
-| `diglett` | `tri-attack-d` | `triple-dive` | — |
-| `onix` | `dragon-tail` | `double-edge-o` | — |
-| `machop` | `revenge` | `counter` | `all-out-pummeling` |
-| `aerodactyl` | `iron-head-a` | `supersonic-skystrike` | — |
-| `lapras` | `perish-song` | `hydro-vortex` | — |
-| `magikarp` | `splash-m` | `dragon-dance` | — |
-| `poliwag` | `circle-throw` | `mind-reader` | `focus-punch` |
-| `psyduck` | `psyshock` | `shattered-psyche` | — |
-| `krabby` | `slam-k` | `crabhammer-max` | — |
-| `snorlax` | `belly-drum-s` | `pulverizing-pancake` | — |
-| `marowak` | `bonemerang-m` | `bone-rush-max` | — |
+| `caterpie` | `sticky-web` | — | — |
+| `weedle` | `venoshock` | `fell-stinger-v` | — |
+| `pidgey` | `brave-bird` | — | `sky-attack` |
+| `rattata` | `super-fang` | — | — |
+| `oddish` | `spore-cloud` | `aromatherapy-m` | `petal-dance` |
+| `zubat` | `screech` | — | — |
+| `geodude` | `rock-slide-m` | — | — |
+| `diglett` | `tri-attack-d` | — | — |
+| `onix` | `dragon-tail` | — | — |
+| `machop` | `revenge` | — | — |
+| `magikarp` | `splash-m` | — | — |
+| `poliwag` | `circle-throw` | — | — |
+| `psyduck` | `psyshock` | — | — |
+| `krabby` | `slam-k` | — | — |
+| `snorlax` | `belly-drum-s` | — | — |
+| `eevee` | `last-resort` | — | — |
+| `bellsprout` | `leaf-tornado` | — | — |
+| `mankey` | `rage-fist` | — | — |
+| `aerodactyl` | `iron-head-a` | — | — |
+| `lapras` | `glacial-song` | — | — |
+| `cubone` | `bonemerang-m` | — | — |
+| `pikachu` | `nuzzle-m` | — | — |
+| `tentacool` | `acid-spray-m` | — | — |
+| `shellder` | `icicle-crash-m` | — | — |
+| `horsea` | `twister-m` | — | — |
+| `staryu` | `water-pulse-m` | — | — |
+| `seel` | `aqua-jet-m` | — | — |
+| `voltorb` | `spark-m` | — | — |
+| `magnemite` | `magnet-bomb-m` | — | — |
+| `electabuzz` | `thunder-punch-m` | — | — |
+| `koffing` | `clear-smog-m` | — | — |
+| `growlithe` | `flame-charge-m` | — | — |
+| `vulpix` | `fire-spin-m` | — | — |
+| `ponyta` | `blaze-kick-m` | — | — |
+| `sandshrew` | `sand-tomb-m` | — | — |
+| `rhyhorn` | `drill-run-m` | — | — |
+| `magmar` | `fire-punch-m` | — | — |
+| `abra` | `confusion-m` | — | — |
+| `nidoran-f` | `poison-fang-m` | — | — |
+| `jynx` | `powder-snow-m` | — | — |
+| `spearow` | `drill-peck-m` | — | — |
+| `doduo` | `pluck-m` | — | — |
+| `farfetchd` | `leek-slash` | — | — |
+| `scyther` | `fury-cutter-m` | — | — |
+| `gastly` | `night-shade-m` | — | — |
+| `drowzee` | `zen-headbutt-m` | — | — |
+| `grimer` | `poison-jab-m` | — | — |
+| `mr-mime` | `psywave-m` | — | — |
 
 ## Unlocks (§6.8.2) — by Bond rank since 2026-09-21
 
@@ -86,3 +113,12 @@ Zubat, Geodude, Onix, Magikarp, Poliwag, Psyduck, Krabby. Six Lv1 moves wait on 
 cycling status, `last-resort` hand condition, `belly-drum-s` self HP loss). Lv2 and Lv3 wait on §6.8.2–§6.8.3's
 achievements — and since the same day, every tier unlocks by **Bond rank** (§6.8.2): Lv1 at rank 1, Lv2 at
 rank 4, Lv3 at rank 5.
+
+
+**Shipped state (v0.7.5).** Every line a run can recruit — Region 1, 2 and 3's pools, the Elite Wilds, the
+starters and the meta-starters, 51 lines — carries its Lv1, and the three default starters carry Lv2 and
+Lv3. The rest of Lv2 and Lv3 wait for **v0.9.1** on purpose: they are Bond rewards at rank 4 and 5, and v0.9.1 is
+where Bond is revamped — writing ninety cards against a curve about to change would be writing them twice.
+Four catalogue effects were added to the sim for them (power-bonus, fixed-damage, self-damage, and multi-hit on a
+Mastery card); three were rewritten because their system does not exist — Perish Song (a delayed KO) became Glacial
+Song, Last Resort lost its hand condition, and Tri Attack's cycle became three small riders.

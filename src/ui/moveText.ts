@@ -13,6 +13,14 @@ export function describeMoveDef(move: MoveDef): string {
     if (fx.kind === 'drain') parts.push(`Heals ${fx.percentOfDamage === 0.5 ? 'half' : `${Math.round(fx.percentOfDamage * 100)}%`} of the damage it deals.`);
     if (fx.kind === 'recoil') parts.push(`Recoil: ${Math.round(fx.percentOfDamage * 100)}% of the damage it deals.`);
     if (fx.kind === 'draw') parts.push(`Draw ${fx.cards}.`);
+    if (fx.kind === 'power-bonus')
+      parts.push(
+        fx.when === 'target-poisoned' ? `×${fx.multiplier} power into a Poisoned target.`
+        : fx.when === 'self-below' ? `×${fx.multiplier} power below ${Math.round((fx.below ?? 0) * 100)}% HP.`
+        : `+${fx.perStack} power per Trauma stack.`,
+      );
+    if (fx.kind === 'fixed-damage') parts.push(`Takes ${Math.round(fx.percentOfTargetHp * 100)}% of the target's current HP.`);
+    if (fx.kind === 'self-damage') parts.push(`Costs ${Math.round(fx.percentOfMaxHp * 100)}% of its own HP.`);
   }
   if (move.alwaysCrit) parts.push('Always crits.');
   if (move.modifier === 'step-forward') parts.push('Step-Forward.');

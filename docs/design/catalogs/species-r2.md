@@ -14,7 +14,7 @@
 >   where its branch is chosen (§6.3.1 queues it with the recruit).
 > - **Abilities.** The pools use only authored abilities, plus two added for this Region: `static` (Pikachu's
 >   line, Voltorb's, Electabuzz) and `thick-fat` (Seel's).
-> - **Mastery lines are not written** for Region 2 (v0.7.5's leftovers), so these lines have no fifth card yet.
+> - **Mastery lines** carry their Lv1 since v0.7.5 (`mastery-moves.md`); Lv2 and Lv3 arrive with the Bond revamp (v0.9.1).
 >
 > *(Settled while building v0.7.3, 2026-09-23. The pool file gave ids, types and biomes, not kits.)*
 

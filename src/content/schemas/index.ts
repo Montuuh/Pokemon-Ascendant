@@ -18,6 +18,18 @@ export const MoveEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('recoil'), percentOfDamage: z.number().positive().max(1) }),
   // §4.1.6 — the attacker recovers a share of the damage it dealt: recoil's mirror.
   z.object({ kind: z.literal('drain'), percentOfDamage: z.number().positive().max(1) }),
+  // §5.13.2 (v0.7.5) — the Mastery moves' conditions: more power when a named condition holds.
+  z.object({
+    kind: z.literal('power-bonus'),
+    when: z.enum(['target-poisoned', 'self-below', 'per-trauma']),
+    multiplier: z.number().positive().optional(),
+    below: z.number().positive().max(1).optional(),
+    perStack: z.number().positive().optional(),
+  }),
+  // §5.13.2 Super Fang — damage is a share of what the target has left, not a formula.
+  z.object({ kind: z.literal('fixed-damage'), percentOfTargetHp: z.number().positive().max(1) }),
+  // §5.13.2 Belly Drum — the move costs the user HP up front; never below 1.
+  z.object({ kind: z.literal('self-damage'), percentOfMaxHp: z.number().positive().max(1) }),
   z.object({ kind: z.literal('multi-hit'), hits: z.number().int().min(2).max(6) }),
   z.object({ kind: z.literal('on-kill-stage'), stat: StatSchema, stages: z.number().int().min(-6).max(6) }),
   z.object({ kind: z.literal('team-guard'), guard: z.enum(['status', 'cleave']), percent: z.number().int().min(1).max(99).optional() }),

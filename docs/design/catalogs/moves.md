@@ -150,7 +150,6 @@ in section 0.
 | `bite` | Off | Melee | — | 1 | 50 | — | — |
 | `crunch` | Off | Melee | — | 2 | 75 | — | foe Def −1 |
 | `hyper-fang` | Off | Melee | SF | 2 | 80 | — | — |
-| `super-fang` | Off | Melee | — | 2 | — | — | damage = half target current HP (Mastery Lv1, `rattata`) |
 | `super-fang-plus` | Off | Melee | SF | 2 | — | — | half current HP, min 20 (Mastery Lv2) |
 | `sucker-punch` | Off | Melee | SF | 1 | 55 | — | +50 % damage if the target's intent is an Attack (telegraphed, Pillar 1) |
 | `double-edge` | Off | Melee | — | 3 | 110 | — | self takes 25 % of damage dealt |
@@ -189,7 +188,6 @@ in section 0.
 | `solar-beam` | Off | Ranged | — | 4 | 120 | cd1 | — |
 | `leaf-blade` | Off | Melee | SF | 3 | 90 | — | always-crit |
 | `leaf-storm-s` | Off | Ranged | — | 3 | 100 | — | self Atk −2 |
-| `leaf-tornado` | Off | Ranged | — | 2 | 65 | — | foe Def −1 (Mastery Lv1, `bellsprout`) |
 | `growth` | Util | Melee | — | 0 | — | — | self Atk +1 |
 | `synthesis` | Util | Melee | — | 1 | — | — | heal 40 % |
 | `petal-dance` | Off | Melee | SF | 3 | 100 | — | self Confusion after 2 turns (deterministic) |
@@ -224,8 +222,6 @@ in section 0.
 | `crabhammer` | Off | Melee | — | 2 | 80 | — | always-crit |
 | `crabhammer-max` | Off | Melee | SF | 3 | 100 | — | always-crit (Mastery Lv2, `krabby`) |
 | `aqua-tail` | Off | Melee | — | 1 | 65 | — | Mastery Lv1, `squirtle` |
-| `aqua-tail-plus` | Off | Melee | SF | 2 | 95 | — | Mastery Lv2 |
-| `aqua-tail-max` | Off | Melee | SF | 3 | 130 | — | ignores 2 Def stages (Mastery Lv3) |
 | `aqua-tail-g` | Off | Melee | SF | 2 | 85 | — | `gyarados` variant |
 | `aqua-ring-plus` | Def | Melee | — | 1 | — | — | heal 18 %/turn × 3 |
 | `aqua-fortress` | Def | Melee | — | 2 | — | — | self Def +2, team takes −25 % Cleave damage this combat (signature) |
@@ -285,7 +281,6 @@ in section 0.
 | `cross-poison` | Off | Melee | SF | 2 | 75 | — | Poison 20 %, always-crit |
 | `poison-fang` | Off | Melee | — | 2 | 70 | — | Poison 50 % |
 | `poison-jab` | Off | Melee | SF | 2 | 80 | — | Poison 30 % |
-| `venoshock` | Off | Ranged | — | 2 | 65 | — | ×2 power if the target is Poisoned (Mastery Lv1, `weedle`) |
 | `venom-drench` | Util | Ranged | — | 1 | — | — | all enemies Atk −1 and Def −1 if Poisoned (Mastery Lv2, `zubat`) |
 
 ### Bug (7)
@@ -323,7 +318,6 @@ in section 0.
 | `iron-tail` | Off | Melee | SB | 2 | 80 | — | foe Def −1 |
 | `bone-club` | Off | Melee | — | 1 | 50 | — | — |
 | `bonemerang` | Off | Ranged | — | 2 | 70 | — | hits twice for 35 |
-| `bonemerang-m` | Off | Ranged | — | 2 | 85 | — | hits twice (Mastery Lv1, `marowak`) |
 | `bone-rush` | Off | Melee | SF | 3 | 90 | — | hits 3 times for 30 |
 | `bone-rush-max` | Off | Melee | SF | 3 | 120 | — | hits 3 times, ignores 1 Def stage (Mastery Lv2) |
 | `heavy-slam` | Off | Melee | — | 3 | 100 | — | +20 % power per 40 max-HP over the target |
@@ -353,10 +347,8 @@ in section 0.
 | `vital-throw` | Off | Melee | SB | 2 | 70 | — | — |
 | `bulk-up` / `bulk-up-plus` | Util | Melee | — | 1 | — | — | self Atk +1 Def +1 / +2 each |
 | `counter` | Def | Melee | — | 1 | — | — | the next single-target hit on the Lead deals its damage back (Mastery Lv2, `machop`) |
-| `revenge` | Off | Melee | — | 2 | 70 | — | ×1.5 power if the user was damaged last turn (Mastery Lv1) |
 | `all-out-pummeling` | Off | Melee | SF | 3 | 135 | cd2 | Mastery Lv3 (`machamp`) |
 | `final-gambit` | Off | Melee | — | 3 | — | — | damage = the user's current HP; the user faints (Mastery Lv2, `primeape`) |
-| `rage-fist` | Off | Melee | — | 1 | 55 | — | +15 power per faint this combat (Mastery Lv1, `mankey`) |
 | `focus-punch` | Off | Melee | SF | 3 | 120 | — | fails if the Lead was damaged this turn before it resolves (Mastery Lv3, `poliwrath`) |
 | `circle-throw` | Off | Melee | SB | 1 | 55 | — | Mastery Lv1 (`poliwag`) |
 | `knock-off` | Off | Melee | — | 1 | 50 | — | the target's Home Field / held bonus is suppressed this combat |
@@ -424,18 +416,14 @@ in section 0.
 | `vice-grip` | Off | Melee | — | 1 | 50 | — | — |
 | `effect-spore-m` | — | — | — | — | — | — | (reserved id; ability, not a move — do not ship as a move) |
 | `wish` | Util | Ranged | — | 1 | — | — | the chosen ally heals 40 % at the end of next turn |
-| `last-resort` | Off | Melee | — | 2 | 90 | — | playable only if every other card in hand has been played this combat (Mastery Lv1, `eevee`) |
 | `perish-song` | Util | Ranged | — | 2 | — | — | all enemies faint after 3 turns (Mastery Lv1, `lapras`; bosses take 25 % max HP instead) |
-| `belly-drum-s` | Util | Melee | — | 2 | — | — | self loses 40 % max HP, Atk +4 (Mastery Lv1, `snorlax`) |
 | `belly-drum-p` | Util | Melee | — | 2 | — | — | self loses 30 % max HP, Atk +3 (`poliwhirl`) |
 | `pulverizing-pancake` | Off | Melee | SF | 3 | 140 | cd2 | Mastery Lv2 (`snorlax`) |
 | `snore` | Off | Ranged | — | 1 | 60 | — | playable only while asleep |
 | `seed-bomb` / `seed-barrage` / `bloom-cannon` | Grass Off | Ranged | — | 1 / 2 / 3 | 65 / 95 / 130 | — | Mastery line (`bulbasaur`) |
 | `fire-fang-m` / `inferno-fang` / `blast-burn` | Fire Off | Melee | — / SF / SF | 1 / 2 / 3 | 70 / 100 / 135 | — | Mastery line (`charmander`) |
-| `iron-head-a` | Rock Off | Melee | SF | 2 | 85 | — | Mastery Lv1 (`aerodactyl`) |
 | `double-edge-o` | Off | Melee | — | 3 | 115 | — | self takes 25 % (Mastery Lv2, `onix`) |
 | `triple-dive` | Ground Off | Melee | — | 2 | 75 | — | hits 3 times (Mastery Lv2, `dugtrio`) |
-| `tri-attack-d` | Off | Ranged | — | 2 | 70 | — | Burn/Paralysis/Freeze 20 %, cycling deterministically (Mastery Lv1, `diglett`) |
 | `mind-reader` | Util | Ranged | — | 0 | — | — | reveal every Unknown intent this turn (Mastery Lv2, `poliwhirl`) |
 | `toxic-thread` | Util | Ranged | — | 1 | — | — | Poison 100 %, foe Atk −1 (Mastery Lv3, `beedrill`) |
 | `screech-z` | — | — | — | — | — | — | (duplicate of `screech`; do not ship) |
@@ -454,3 +442,56 @@ in section 0.
    that deal no damage; damaging moves carry 20–40 %.
 4. **Deterministic multi-hit**: a multi-hit move states its hit count, never rolls it.
 5. **Cooldowns are enemy-side only.** A player card is limited by AP and the draw, not a timer.
+
+
+## Mastery moves authored in v0.7.5 (§5.13.2, §6.8.4)
+
+Every recruitable line's Lv1, and the three starters' Lv2 and Lv3. A Lv1 is the clean, always-useful card (§6.8.4):
+where the catalogue had asked for an effect the sim does not have, the row says what replaced it.
+
+| id | Type | Role | Rng | Mod | AP | Pwr | Effect |
+|---|---|---|---|---|---|---|---|
+| `venoshock` | Poison | Off | Ranged | — | 2 | 65 | ×2 power into a Poisoned target (Mastery Lv1, `weedle`) |
+| `super-fang` | Normal | Off | Melee | — | 2 | — | takes half the target's current HP (Mastery Lv1, `rattata`) |
+| `leaf-tornado` | Grass | Off | Ranged | — | 2 | 65 | foe Def −1 (Mastery Lv1, `bellsprout`) |
+| `tri-attack-d` | Normal | Off | Ranged | — | 2 | 70 | Burn, Paralysis or Freeze, 7 % each (was a deterministic cycle) (Mastery Lv1, `diglett`) |
+| `revenge` | Fighting | Off | Melee | — | 2 | 70 | ×1.5 power below half HP (was "damaged last turn") (Mastery Lv1, `machop`) |
+| `rage-fist` | Fighting | Off | Melee | — | 1 | 55 | +15 power per Trauma stack on the user (was "per faint this combat") (Mastery Lv1, `mankey`) |
+| `last-resort` | Normal | Off | Melee | — | 1 | 75 | a clean 75 at 1 AP (the hand condition is dropped: a Lv1 is the always-useful card) (Mastery Lv1, `eevee`) |
+| `iron-head-a` | Rock | Off | Melee | SF | 2 | 85 | Rock (Steel is Rock here) (Mastery Lv1, `aerodactyl`) |
+| `glacial-song` | Ice | Off | Ranged | — | 2 | 80 | Freeze 10 % (replaces Perish Song, whose delayed KO has no system) (Mastery Lv1, `lapras`) |
+| `belly-drum-s` | Normal | Util | Melee | — | 2 | — | self loses 40 % max HP (never below 1), Atk +4 (Mastery Lv1, `snorlax`) |
+| `bonemerang-m` | Ground | Off | Ranged | — | 2 | 85 | hits twice (Mastery Lv1, `cubone`) |
+| `nuzzle-m` | Electric | Off | Melee | — | 1 | 60 | Paralysis 30 % (Mastery Lv1, `pikachu`) |
+| `acid-spray-m` | Poison | Off | Ranged | — | 1 | 60 | foe Def −1 (Mastery Lv1, `tentacool`) |
+| `icicle-crash-m` | Ice | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `shellder`) |
+| `twister-m` | Dragon | Off | Ranged | — | 1 | 65 | — (Mastery Lv1, `horsea`) |
+| `water-pulse-m` | Water | Off | Ranged | — | 1 | 65 | Confusion 20 % (Mastery Lv1, `staryu`) |
+| `aqua-jet-m` | Water | Off | Melee | — | 1 | 65 | — (Mastery Lv1, `seel`) |
+| `spark-m` | Electric | Off | Melee | — | 1 | 65 | Paralysis 20 % (Mastery Lv1, `voltorb`) |
+| `magnet-bomb-m` | Rock | Off | Ranged | — | 1 | 65 | Rock (Steel is Rock here) (Mastery Lv1, `magnemite`) |
+| `thunder-punch-m` | Electric | Off | Melee | — | 1 | 75 | — (Mastery Lv1, `electabuzz`) |
+| `clear-smog-m` | Poison | Off | Ranged | — | 1 | 60 | — (Mastery Lv1, `koffing`) |
+| `flame-charge-m` | Fire | Off | Melee | — | 1 | 65 | — (Mastery Lv1, `growlithe`) |
+| `fire-spin-m` | Fire | Off | Ranged | — | 1 | 60 | Burn 20 % (Mastery Lv1, `vulpix`) |
+| `blaze-kick-m` | Fire | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `ponyta`) |
+| `sand-tomb-m` | Ground | Off | Ranged | — | 1 | 60 | — (Mastery Lv1, `sandshrew`) |
+| `drill-run-m` | Ground | Off | Melee | — | 1 | 75 | — (Mastery Lv1, `rhyhorn`) |
+| `fire-punch-m` | Fire | Off | Melee | — | 1 | 75 | — (Mastery Lv1, `magmar`) |
+| `confusion-m` | Psychic | Off | Ranged | — | 1 | 65 | Confusion 10 % (Mastery Lv1, `abra`) |
+| `poison-fang-m` | Poison | Off | Melee | — | 1 | 65 | Poison 20 % (Mastery Lv1, `nidoran-f`) |
+| `powder-snow-m` | Ice | Off | Ranged | — | 1 | 65 | Freeze 10 % (Mastery Lv1, `jynx`) |
+| `drill-peck-m` | Flying | Off | Melee | — | 1 | 75 | — (Mastery Lv1, `spearow`) |
+| `pluck-m` | Flying | Off | Melee | — | 1 | 65 | — (Mastery Lv1, `doduo`) |
+| `leek-slash` | Normal | Off | Melee | — | 1 | 60 | always crits (Mastery Lv1, `farfetchd`) |
+| `fury-cutter-m` | Bug | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `scyther`) |
+| `night-shade-m` | Ghost | Off | Ranged | — | 1 | 65 | — (Mastery Lv1, `gastly`) |
+| `zen-headbutt-m` | Psychic | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `drowzee`) |
+| `poison-jab-m` | Poison | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `grimer`) |
+| `psywave-m` | Psychic | Off | Ranged | — | 1 | 65 | — (Mastery Lv1, `mr-mime`) |
+| `seed-barrage` | Grass | Off | Ranged | — | 2 | 90 | three hits (Mastery Lv2, `bulbasaur`) |
+| `bloom-cannon` | Grass | Off | Ranged | — | 3 | 130 | drains half the damage (Mastery Lv3, `bulbasaur`) |
+| `inferno-fang` | Fire | Off | Melee | SF | 2 | 95 | — (Mastery Lv2, `charmander`) |
+| `blast-burn` | Fire | Off | Ranged | — | 3 | 135 | Burn 30 %, self Atk −1 (Mastery Lv3, `charmander`) |
+| `aqua-tail-plus` | Water | Off | Melee | SF | 2 | 95 | — (Mastery Lv2, `squirtle`) |
+| `aqua-tail-max` | Water | Off | Melee | SF | 3 | 130 | ignores Defence stages (Mastery Lv3, `squirtle`) |

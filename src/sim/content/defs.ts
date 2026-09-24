@@ -33,6 +33,12 @@ export type MoveEffect =
   | { kind: 'recoil'; percentOfDamage: number }
   /** §4.1.6 — heal a share of the damage this move actually dealt (Absorb, Mega Drain, Leech Life). */
   | { kind: 'drain'; percentOfDamage: number }
+  /** §5.13.2 — more power while a condition holds: a Poisoned target, the user below a share of its HP, per Trauma stack. */
+  | { kind: 'power-bonus'; when: 'target-poisoned' | 'self-below' | 'per-trauma'; multiplier?: number; below?: number; perStack?: number }
+  /** §5.13.2 Super Fang — the hit takes a share of the target's current HP. */
+  | { kind: 'fixed-damage'; percentOfTargetHp: number }
+  /** §5.13.2 Belly Drum — the user pays a share of its max HP, never below 1. */
+  | { kind: 'self-damage'; percentOfMaxHp: number }
   /** Pin Missile — N deterministic hits of `power / N` each, so the printed power is the total. */
   | { kind: 'multi-hit'; hits: number }
   /** Fell Stinger — a stage change that only lands if this move fainted the target. */

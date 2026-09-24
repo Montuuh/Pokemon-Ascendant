@@ -3,18 +3,18 @@
   "lines": {
     "bulbasaur": [
       "seed-bomb",
-      null,
-      null
+      "seed-barrage",
+      "bloom-cannon"
     ],
     "charmander": [
       "fire-fang-m",
-      null,
-      null
+      "inferno-fang",
+      "blast-burn"
     ],
     "squirtle": [
       "aqua-tail",
-      null,
-      null
+      "aqua-tail-plus",
+      "aqua-tail-max"
     ],
     "caterpie": [
       "sticky-web",
@@ -22,7 +22,7 @@
       null
     ],
     "weedle": [
-      null,
+      "venoshock",
       "fell-stinger-v",
       null
     ],
@@ -32,7 +32,7 @@
       "sky-attack"
     ],
     "rattata": [
-      null,
+      "super-fang",
       null,
       null
     ],
@@ -52,7 +52,7 @@
       null
     ],
     "diglett": [
-      null,
+      "tri-attack-d",
       null,
       null
     ],
@@ -62,7 +62,7 @@
       null
     ],
     "machop": [
-      null,
+      "revenge",
       null,
       null
     ],
@@ -87,12 +87,172 @@
       null
     ],
     "snorlax": [
-      null,
+      "belly-drum-s",
       null,
       null
     ],
     "eevee": [
+      "last-resort",
       null,
+      null
+    ],
+    "bellsprout": [
+      "leaf-tornado",
+      null,
+      null
+    ],
+    "mankey": [
+      "rage-fist",
+      null,
+      null
+    ],
+    "aerodactyl": [
+      "iron-head-a",
+      null,
+      null
+    ],
+    "lapras": [
+      "glacial-song",
+      null,
+      null
+    ],
+    "cubone": [
+      "bonemerang-m",
+      null,
+      null
+    ],
+    "pikachu": [
+      "nuzzle-m",
+      null,
+      null
+    ],
+    "tentacool": [
+      "acid-spray-m",
+      null,
+      null
+    ],
+    "shellder": [
+      "icicle-crash-m",
+      null,
+      null
+    ],
+    "horsea": [
+      "twister-m",
+      null,
+      null
+    ],
+    "staryu": [
+      "water-pulse-m",
+      null,
+      null
+    ],
+    "seel": [
+      "aqua-jet-m",
+      null,
+      null
+    ],
+    "voltorb": [
+      "spark-m",
+      null,
+      null
+    ],
+    "magnemite": [
+      "magnet-bomb-m",
+      null,
+      null
+    ],
+    "electabuzz": [
+      "thunder-punch-m",
+      null,
+      null
+    ],
+    "koffing": [
+      "clear-smog-m",
+      null,
+      null
+    ],
+    "growlithe": [
+      "flame-charge-m",
+      null,
+      null
+    ],
+    "vulpix": [
+      "fire-spin-m",
+      null,
+      null
+    ],
+    "ponyta": [
+      "blaze-kick-m",
+      null,
+      null
+    ],
+    "sandshrew": [
+      "sand-tomb-m",
+      null,
+      null
+    ],
+    "rhyhorn": [
+      "drill-run-m",
+      null,
+      null
+    ],
+    "magmar": [
+      "fire-punch-m",
+      null,
+      null
+    ],
+    "abra": [
+      "confusion-m",
+      null,
+      null
+    ],
+    "nidoran-f": [
+      "poison-fang-m",
+      null,
+      null
+    ],
+    "jynx": [
+      "powder-snow-m",
+      null,
+      null
+    ],
+    "spearow": [
+      "drill-peck-m",
+      null,
+      null
+    ],
+    "doduo": [
+      "pluck-m",
+      null,
+      null
+    ],
+    "farfetchd": [
+      "leek-slash",
+      null,
+      null
+    ],
+    "scyther": [
+      "fury-cutter-m",
+      null,
+      null
+    ],
+    "gastly": [
+      "night-shade-m",
+      null,
+      null
+    ],
+    "drowzee": [
+      "zen-headbutt-m",
+      null,
+      null
+    ],
+    "grimer": [
+      "poison-jab-m",
+      null,
+      null
+    ],
+    "mr-mime": [
+      "psywave-m",
       null,
       null
     ]
