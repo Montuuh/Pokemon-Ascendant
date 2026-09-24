@@ -545,6 +545,9 @@ Two buildings of their own and one secret, drawn together because both Cities' a
   that lands only 65 % of the time (the preview leaves out relics, Badges, held items, flat ability reductions and
   shields); a Cleave's one number matches 21 % of hits, and 8 % on the bench (mean miss 11 HP) — it is the Lead's
   number printed as everyone's. The chip has to print the sim's own hit, per target.
+- **An area intent prints no damage on its chip** (user, 2026-09-25): one number cannot be right when every target
+  takes its own — type, Defence, ability, held item. The chip says what it is and that it hits everyone ("→ ALL");
+  the damage goes on each target it will land on (the portraits), one number each.
 - **Enemies hit too softly.** The median enemy hit is 12 % of the target's Max HP (Region 1 13 %, 2 9 %, 3 11 %) —
   about eight hits to faint anyone, so a telegraph rarely forces a swap (Pillar 2). A harder-hitting retune, held
   to §2.2.1's curve by the harness.
@@ -565,6 +568,10 @@ have settled. Not content first: it is the combat engine, so a targeting bug can
 1 lead enemy + 1–2 supports (§5.6): slots, targeting, intents, AI, Cleave and Backstrike against several bodies.
 The hand changes with it: a card is **dragged onto its target** as well as clicked, and before it is played it
 shows **its damage against every enemy it can hit**, not against one (§9 — the damage preview goes per target).
+**No area hit ever shows one number** (user, 2026-09-25): each target takes its own damage, so an area attack —
+the enemies' at your team, and your cards at a group of enemies — prints its damage on every target it lands on,
+never a single "each" figure on the attacker or the card. v0.7.7 sets the rule for the enemy side; this version
+carries it to area cards against several enemies.
 
 ### v0.8.2 — Enemies that act twice, and enemies that call for help  ☐
 Some Pokémon and some battles **act twice a turn**, both intents shown; and some carry a move that **calls one or
