@@ -476,7 +476,7 @@ given Region 2 at 47 % over 720 runs and the whole run at 15 %. Also in this ver
 doctrine (every version written down and stamped everywhere), and Karate King Koichi, Region 2's Elite, renamed so
 Kiyo can lead the Fighting Gym. The exit holds: three Regions, three rosters, twelve Gyms.
 
-### v0.7.5 — The leftovers and the playtest nerfs  ☐
+### v0.7.5 — The leftovers and the playtest nerfs  ✅ 2026-09-24
 The short things that close v0.7. Evolution Items (Eevee's Stone Cache, the Mysterious Stone event), the intent
 queue (Trainer's Instinct), the six pending hidden abilities, the unwritten Mastery moves (Regions 2 and 3's lines
 too), the inert relic rows, the Master Ball Charm criterion. The two nerfs playtesting found (2026-09-24):
@@ -488,6 +488,25 @@ too), the inert relic rows, the Master Ball Charm criterion. The two nerfs playt
 Also: the Poké Mart hides an unmet starter the way the Pokédex does (§8.9.2), and the ability catalogue's stale
 🆕 marks are corrected.
 **Exit:** nothing in the build is marked "pending v0.7", and both nerfs are measured.
+
+**Shipped.** Nothing in the build waits on v0.7 any more; the four rows that remain pending name v0.8.4 (Swift Swim,
+Chlorophyll, Cloud Nine, Field Surveyor — all field effects). **Sleep** (§4.2.2.4): Sleep and Freeze cannot land on
+a Pokémon already asleep or frozen — refresh-not-stack was rejected because a one-turn clock refreshed every turn is
+still a lock; `nerfs.test` measures the abuse at 1 of 10 enemy turns before, 5 of 10 after. **Mega Drain** (§4.1.6):
+the port had made every drain move heal a share of *Max HP*; a new `drain` effect heals half the damage dealt, and
+the powers moved into the rider band (Mega Drain 65) — 12.4 % → 5.2 % of Max HP per AP, and an Ivysaur with
+Leftovers under a Raticate goes from −1.3 % to −6 % a turn. **Evolution Items** (§6.3.2, rewritten to *tempo*: basics
+from Lv 8, middle stages from Lv 18, Eevee's stone is its branch) with the Mysterious Stone event, Eevee's Stone Cache
+and a City shop slot; run save v11. **The intent queue** (§5.5.1): under Trainer's Instinct each enemy plans a turn
+ahead and commits to it; Battle Tracker scouts species met this run. **The inert relics** became passives (Quick Claw
+Charm, Hand-Off Pouch, Time Spinner, Soul Link) and Phoenix Feather and the Pouch got their discoveries — "the Master
+Ball Charm criterion" turned out to be tracked since v0.6.2, and the untracked one was Phoenix Feather's. **The six
+hidden abilities** rewritten for the combat that exists (§6.8.3), plus Damp; Naturalist's Lens and Mass Mobilization
+live; **Mastery Lv1 for all 51 recruitable lines** and the starters' Lv2/Lv3 (the rest of Lv2/Lv3 moved to v0.9.1
+with the Bond revamp). The Poké Mart hides unmet starters (§8.9.2) and owning is meeting everywhere. Found on the way
+and fixed: Berry Pouch never boosted flat Potions; the Region Modifier offer's LCG was nearly linear in consecutive
+seeds; the Ring test ran on 11 samples. Measured (120 seeds): Bulbasaur 53 %, Charmander 49 %, Squirtle 68 %;
+the curve over 720 runs: Region 2 given 1 at 55 %, Region 3 given 2 at 43 %, the whole run 13 % — inside §2.2.1's bands.
 
 ### v0.7.6 — The Safari Zone  ☐
 The door already drawn in the City (§2.11.6): an entry fee, a fixed number of balls, and species no route
@@ -561,6 +580,8 @@ The account's systems revisited, and the road to the Champion.
 ### v0.9.1 — Bond and Shiny, revamped  ☐
 Bond (§6.8) and Shiny — today only the Bond-rank sprite reveal, not something you find (§5.13) — reworked
 together, since the one is the other's reward. Design pass with the user first. *(Backlog #5, #6.)*
+It also writes the **Mastery Lv2 and Lv3** of every line but the three starters (§5.13.2): they are Bond rewards at ranks
+4 and 5, so v0.7.5 wrote every line's Lv1 and left the rest for the curve they will be earned on.
 
 ### v0.9.2 — Player level and the Poké Mart, revamped  ☐
 The Trainer level and the Mart (§8.3, §8.4), with the scored shop curation §2.11.2.1 still owes and what leftover

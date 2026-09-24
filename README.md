@@ -49,10 +49,11 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.7.4 — Region 3, Volcanic Highlands.** A run crosses three Regions with two Cities between them, and every
-Region is its own place now: the meadows and caves of the first, the coast and power plant of the second, and the
-volcano, sky cliffs and old tower of the third — twelve Gyms, three drawn per run, from Brock to Lorelei. All 151
-Gen I Pokémon are designed and in the Pokédex, as silhouettes until you meet them. What changed in every version is
+**v0.7.5 — The leftovers and the playtest nerfs.** A run crosses three Regions with two Cities between them —
+twelve Gyms, three drawn per run, from Brock to Lorelei — and nothing in it waits on "v0.7" any more: evolution
+stones, every relic live (Trainer's Instinct shows each enemy's next move), every line's hidden ability and Mastery
+card, and the two tricks playtesting found fixed — Sleep no longer locks an enemy all fight, and drain moves heal
+half the damage they deal. All 151 Gen I Pokémon are in the Pokédex, as silhouettes until you meet them. What changed in every version is
 in the game (What's new) and in [`CHANGELOG.md`](CHANGELOG.md). The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Run it locally

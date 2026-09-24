@@ -132,7 +132,7 @@ export const MODIFIERS: DifficultyModifier[] = [
     unlock: 'Trainer Lv 4',
     unlockLevel: 4,
     available: false,
-    pending: 'the League arrives in v0.8',
+    pending: 'the League arrives in v0.9.5',
   },
 ];
 
