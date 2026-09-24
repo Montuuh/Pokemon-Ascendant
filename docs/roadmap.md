@@ -664,9 +664,15 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 # Backlog — ideas with no version yet
 
-Empty since 2026-09-24: every idea on it was placed. The user's priority pass of that day, and where each item
-went after the user's review of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it,
-the balance pass follows both; the account revamps move to v0.9):
+**Waiting for a version** — ideas the user wants kept in mind, to be designed with the user before they are placed:
+
+| Idea | Noted | Likely home |
+|---|---|---|
+| **An intent you can hover.** Resting on an enemy's intent opens a card with everything it will do: the move and its type, who it is aimed at, how much it will deal to each target, its riders (a status, a stat change) — the enemy side's counterpart to a move card's tooltip. Goes with the per-target numbers of the intent fix, not instead of them: the numbers stay on screen, the card is the full read. | user, 2026-09-25 | v0.7.7's intent fix, or v0.8.1 with multi-enemy intents |
+
+**Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
+of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
+the account revamps move to v0.9):
 
 | # | Idea | Placed in |
 |---|---|---|
