@@ -16,6 +16,8 @@ export const MoveEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('heal'), percentOfMaxHp: z.number().positive().max(1), durationTurns: z.number().int().positive().optional() }),
   z.object({ kind: z.literal('draw'), cards: z.number().int().positive() }),
   z.object({ kind: z.literal('recoil'), percentOfDamage: z.number().positive().max(1) }),
+  // §4.1.6 — the attacker recovers a share of the damage it dealt: recoil's mirror.
+  z.object({ kind: z.literal('drain'), percentOfDamage: z.number().positive().max(1) }),
   z.object({ kind: z.literal('multi-hit'), hits: z.number().int().min(2).max(6) }),
   z.object({ kind: z.literal('on-kill-stage'), stat: StatSchema, stages: z.number().int().min(-6).max(6) }),
   z.object({ kind: z.literal('team-guard'), guard: z.enum(['status', 'cleave']), percent: z.number().int().min(1).max(99).optional() }),

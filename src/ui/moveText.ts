@@ -10,6 +10,8 @@ export function describeMoveDef(move: MoveDef): string {
     if (fx.kind === 'status') parts.push(`${fx.chance >= 1 ? '' : `${Math.round(fx.chance * 100)}% `}${cap(fx.status)}${fx.self ? ' (self)' : ''}.`);
     if (fx.kind === 'stage') parts.push(`${fx.stages > 0 ? '+' : ''}${fx.stages} ${cap(fx.stat)} (${fx.target === 'self' ? 'self' : 'foe'}).`);
     if (fx.kind === 'heal') parts.push(fx.durationTurns ? `Regen ${Math.round(fx.percentOfMaxHp * 100)}% HP for ${fx.durationTurns} turns.` : `Heal ${Math.round(fx.percentOfMaxHp * 100)}% HP.`);
+    if (fx.kind === 'drain') parts.push(`Heals ${fx.percentOfDamage === 0.5 ? 'half' : `${Math.round(fx.percentOfDamage * 100)}%`} of the damage it deals.`);
+    if (fx.kind === 'recoil') parts.push(`Recoil: ${Math.round(fx.percentOfDamage * 100)}% of the damage it deals.`);
     if (fx.kind === 'draw') parts.push(`Draw ${fx.cards}.`);
   }
   if (move.alwaysCrit) parts.push('Always crits.');

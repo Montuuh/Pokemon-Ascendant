@@ -173,11 +173,11 @@
       "range": "ranged",
       "modifier": "none",
       "apCost": 2,
-      "power": 50,
+      "power": 65,
       "effects": [
         {
-          "kind": "heal",
-          "percentOfMaxHp": 0.25
+          "kind": "drain",
+          "percentOfDamage": 0.5
         }
       ]
     },
@@ -1021,11 +1021,11 @@
       "range": "ranged",
       "modifier": "none",
       "apCost": 1,
-      "power": 40,
+      "power": 45,
       "effects": [
         {
-          "kind": "heal",
-          "percentOfMaxHp": 0.15
+          "kind": "drain",
+          "percentOfDamage": 0.5
         }
       ]
     },
@@ -1048,11 +1048,11 @@
       "range": "ranged",
       "modifier": "none",
       "apCost": 3,
-      "power": 85,
+      "power": 90,
       "effects": [
         {
-          "kind": "heal",
-          "percentOfMaxHp": 0.3
+          "kind": "drain",
+          "percentOfDamage": 0.5
         }
       ]
     },
@@ -1427,8 +1427,8 @@
       "power": 45,
       "effects": [
         {
-          "kind": "heal",
-          "percentOfMaxHp": 0.2
+          "kind": "drain",
+          "percentOfDamage": 0.5
         }
       ]
     },
@@ -1440,11 +1440,11 @@
       "range": "melee",
       "modifier": "step-forward",
       "apCost": 2,
-      "power": 75,
+      "power": 65,
       "effects": [
         {
-          "kind": "heal",
-          "percentOfMaxHp": 0.25
+          "kind": "drain",
+          "percentOfDamage": 0.5
         }
       ]
     },

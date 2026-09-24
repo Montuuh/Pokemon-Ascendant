@@ -70,7 +70,7 @@ requires `UPDATE_GOLDEN=1 npm test` and a note in the section that changed.
 | `vine-whip` | Grass | Off | Ranged | — | 1 | 45 | — | — |
 | `vine-lash` | Grass | Off | Ranged | — | 2 | 65 | — | — |
 | `power-whip` | Grass | Off | Ranged | — | 2 | 85 | — | — |
-| `mega-drain` | Grass | Off | Ranged | — | 2 | 50 | — | heal 25 % |
+| `mega-drain` | Grass | Off | Ranged | — | 2 | 65 | — | drain 50 % of damage (§4.1.6; 50 power + 25 % of Max HP until v0.7.5) |
 | `petal-blizzard` | Grass | Off | Melee | SF | 3 | 90 | — | — |
 | `leech-seed` | Grass | Util | Ranged | — | 1 | — | — | Poison 100 % |
 | `ember` | Fire | Off | Ranged | — | 1 | 40 | — | Burn 20 % |
@@ -183,9 +183,9 @@ in section 0.
 
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
-| `absorb` | Off | Ranged | — | 1 | 40 | — | heal 25 % of damage |
+| `absorb` | Off | Ranged | — | 1 | 45 | — | drain 50 % of damage (§4.1.6) |
 | `razor-leaf` | Off | Ranged | — | 2 | 70 | — | — |
-| `giga-drain` | Off | Ranged | — | 3 | 85 | — | heal 50 % of damage |
+| `giga-drain` | Off | Ranged | — | 3 | 90 | — | drain 50 % of damage (§4.1.6) |
 | `solar-beam` | Off | Ranged | — | 4 | 120 | cd1 | — |
 | `leaf-blade` | Off | Melee | SF | 3 | 90 | — | always-crit |
 | `leaf-storm-s` | Off | Ranged | — | 3 | 100 | — | self Atk −2 |
@@ -293,8 +293,8 @@ in section 0.
 | id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|
 | `bug-bite-plus` | Off | Melee | SF | 1 | 50 | — | — |
-| `leech-life` | Off | Melee | — | 1 | 45 | — | heal 50 % of damage |
-| `leech-life-plus` | Off | Melee | SF | 2 | 75 | — | heal 50 % of damage |
+| `leech-life` | Off | Melee | — | 1 | 45 | — | drain 50 % of damage (§4.1.6) |
+| `leech-life-plus` | Off | Melee | SF | 2 | 65 | — | drain 50 % of damage (§4.1.6; a modifier and a rider sit at the bottom of the band) |
 | `twineedle` | Off | Melee | SF | 2 | 70 | — | hits twice for 35 each; Poison 20 % |
 | `pin-missile` | Off | Ranged | — | 2 | 75 | — | hits 5 times for 15 (deterministic) |
 | `fury-attack` | Off | Melee | — | 1 | 45 | — | hits 3 times for 15 |

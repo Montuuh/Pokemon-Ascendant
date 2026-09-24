@@ -115,6 +115,7 @@ export function strike(
   riposte(state, ctx, attacker, target, move);
   applyOnKill(state, ctx, attacker, move, target);
   applyRecoil(state, ctx, attacker, move, dealt);
+  applyDrain(state, attacker, move, dealt, ctx);
   return { breakdown: bd, dealt };
 }
 
@@ -475,6 +476,7 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
       }
 
       case 'recoil':
+      case 'drain':
       case 'multi-hit':
       case 'on-kill-stage':
       case 'draw':
@@ -482,6 +484,17 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         break;
     }
   }
+}
+
+/**
+ * §4.1.6 — drain: the attacker recovers a share of the damage it actually dealt. Before v0.7.5 the drain moves
+ * healed a share of Max HP whatever they hit, which made Mega Drain the best sustain per AP in the Grass kit.
+ */
+export function applyDrain(state: CombatState, attacker: Combatant, move: MoveDef, dealt: number, ctx: RunCtx): void {
+  const fx = move.effects.find((e) => e.kind === 'drain');
+  if (!fx || fx.kind !== 'drain' || dealt <= 0 || attacker.hp <= 0) return;
+  const amount = heal(state, attacker, Math.max(1, Math.floor(dealt * fx.percentOfDamage)), 'move', ctx.content);
+  if (amount > 0) log(state, 'system', `${attacker.name} drained ${amount} HP.`);
 }
 
 /**

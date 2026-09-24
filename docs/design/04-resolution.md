@@ -115,6 +115,25 @@ Special attackers stay threats (Alakazam hits hard) and special walls stay walls
 `attack = Atk` destroys. About ten species need a hand-tune after the conversion; those are marked in
 [`catalogs/species-r1.md`](catalogs/species-r1.md). *(Decided 2026-09-19.)*
 
+## §4.1.6 Drain and recoil
+
+Two riders read the damage a move **actually dealt** — after type, crit, abilities, items and the target's
+remaining HP — and never its printed power:
+
+- **Drain** — the attacker recovers **half** of it (Absorb, Mega Drain, Giga Drain, Leech Life and its Plus).
+- **Recoil** — the attacker loses the share the move prints (Take Down 25 %, Volt Tackle 33 %, Self-Destruct 50 %…).
+  Rock Head cancels it (§6.6).
+
+A drain move that hits a resist heals a little and one that hits a weakness heals a lot, so its sustain tracks
+the matchup — which is the point of the rider. *Why (playtest, 2026-09-24):* the build had ported the drain moves
+as "heal 25 % of Max HP" whatever they hit, so Mega Drain (50 power, 2 AP, Ranged) returned 12.5 % of Max HP per AP
+from the bench, into a resist, every turn — the best sustain per AP in the Grass kit, and with Leftovers a Lead
+that held its HP under a same-level hitter. The catalogue had always said "of damage"; the port had not. Measured by
+`nerfs.test`: 12.4 % → 5.2 % of Max HP per AP, and an Ivysaur with Leftovers playing it every turn under a same-level
+Raticate goes from −1.3 % to −6 % of its Max HP a turn. The powers
+moved to the §6.3.6.4 band for a rider (Absorb 45, Mega Drain 65, Giga Drain 90, Leech Life Plus 65) so the
+cards still earn their slot as attacks.
+
 ---
 
 # §4.2 Status conditions

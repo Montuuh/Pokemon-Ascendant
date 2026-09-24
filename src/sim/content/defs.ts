@@ -31,6 +31,8 @@ export type MoveEffect =
   // ── v0.4. Each one is a simulation change the v0.3 branch payloads were waiting on (§6.10).
   /** Flare Blitz, Brave Bird — the attacker takes a share of the damage it dealt. Rock Head cancels it. */
   | { kind: 'recoil'; percentOfDamage: number }
+  /** §4.1.6 — heal a share of the damage this move actually dealt (Absorb, Mega Drain, Leech Life). */
+  | { kind: 'drain'; percentOfDamage: number }
   /** Pin Missile — N deterministic hits of `power / N` each, so the printed power is the total. */
   | { kind: 'multi-hit'; hits: number }
   /** Fell Stinger — a stage change that only lands if this move fainted the target. */
