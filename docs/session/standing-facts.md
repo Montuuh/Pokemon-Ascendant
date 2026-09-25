@@ -34,7 +34,7 @@
   7 Items · 8 Meta · 9 Presentation · 10 Foundations. Each topic states at the top what it owns.
 - **A rule is stated once, in its place.** No override blocks and no change log — git holds the history, and
   the rationale sits next to the rule. Unresolved points are inline `⚠️ OPEN` flags.
-- **`§` numbers are an API**, ~2,480 citations across docs and code. `npm run check:refs` proves they all
+- **`§` numbers are an API**, cited thousands of times across docs and code. `npm run check:refs` proves they all
   resolve; `npm run check:catalogs` does the same for content ids. Both run inside `npm run check`.
 - **`catalogs/` is the content authoring source** (19 files). Each row carries the roadmap version that needs
   it.
@@ -131,8 +131,8 @@
 - **An A/B needs more samples than a point estimate.** The standard error of a *difference* of two win rates
   is √2 times either one's, so the service-node comparisons run at 80 seeds and the table at 30. At 30 the
   comparison failed on pure noise once.
-- **Balance now (120 seeds):** Bulbasaur 67 %, Charmander 66 %, Squirtle 73 %. v0.3's 61/28/90 spread closed
-  in v0.4 — the economy gave the weak start four places to buy an answer — and v0.5's fork keeps it closed.
+- **The starter spread closed in v0.4** (v0.3 read 61/28/90) — the economy gave the weak start four places to
+  buy an answer. The current figures live in the header of `active.md`, rewritten every version.
 - **The seed-count rule earned its place a second time.** The same table at 30 seeds read 63/67/80 and looked
   like the Region Modifiers had blown a 17-point hole in the spread. At 120 it was 7 points. Before reacting
   to a *difference* moving, re-run it long.
