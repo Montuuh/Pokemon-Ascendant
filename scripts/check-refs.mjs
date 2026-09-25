@@ -4,7 +4,7 @@
 //
 //   node scripts/check-refs.mjs            → report
 //   node scripts/check-refs.mjs --strict   → exit 1 on any dangling reference
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const CANON_DIR = 'docs/design';
@@ -34,8 +34,9 @@ const walk = (dir) => {
     else if (/\.(md|ts|tsx|mjs|json|html|css)$/.test(name)) files.push(p);
   }
 };
-for (const d of ['src', 'docs', 'e2e', 'scripts', '.claude']) walk(d);
-files.push('CLAUDE.md', 'README.md');
+// The agent files (.claude, CLAUDE.md) are local-only and absent in CI; check them when they are there.
+for (const d of ['src', 'docs', 'e2e', 'scripts', '.claude']) if (existsSync(d)) walk(d);
+files.push(...['CLAUDE.md', 'README.md'].filter((f) => existsSync(f)));
 
 const dangling = new Map(); // ref -> Set<file>
 let total = 0;
