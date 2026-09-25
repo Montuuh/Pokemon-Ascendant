@@ -1,20 +1,25 @@
-/* §2.11.6 — the Game Corner's back wall: the real FRLG map at a whole-pixel scale, with its spots over it. */
+/* §2.11.5 / §2.11.6 — the Game Corner room: the real FRLG map at a whole-pixel scale, with its spots over it. */
 
-.room { display: flex; justify-content: center; min-width: 0; }
+.room { display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; min-height: 0; min-width: 0; }
 
-/* The wall's own pixels: ×2, and ×3 where the screen is tall enough to spare the height. */
-.wall {
+/* The map's own pixels: ×2, ×3 where the screen is tall enough, ×4 on a very tall one. */
+.floor {
   --px: 2;
   position: relative;
   width: calc(288px * var(--px));
   max-width: 100%;
   border-radius: var(--radius-md);
   border: 3px solid var(--ink-primary);
-  overflow: visible;
   background: var(--surface-2);
+  image-rendering: pixelated;
 }
-@media (min-height: 900px) {
-  .wall { --px: 3; }
+/* Stepped by height and by width alike, so the room never spills past its box on a tall, narrow window; under ×2's
+   576 px it shrinks with the screen rather than leaving it. */
+@media (min-height: 900px) and (min-width: 960px) {
+  .floor { --px: 3; }
+}
+@media (min-height: 1200px) and (min-width: 1300px) {
+  .floor { --px: 4; }
 }
 .art {
   display: block;
@@ -24,34 +29,41 @@
   image-rendering: pixelated;
   user-select: none;
 }
+.sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  user-select: none;
+  pointer-events: none;
+}
 
-/* A spot on the wall: invisible until you are on it, like looking at something closely in the games. */
+/* A spot in the room: quiet until you are on it, like walking up to something in the games. */
 .spot {
   position: absolute;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   padding: 0;
   border: 0;
   border-radius: var(--radius-xs);
   background: transparent;
   cursor: pointer;
 }
+/* Two tones, so the ring shows on the gold carpet, the brown tiles and the wall alike. */
 .spot:hover,
-.spot:focus-visible { outline: 3px solid var(--accent-action); outline-offset: 1px; }
+.spot:focus-visible { outline: 3px solid var(--ink-primary); box-shadow: 0 0 0 5px var(--surface-1); }
 
-/* The stairs arrive with the switch, and say what they are. */
-.stairs {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  animation: reveal var(--motion-slow) ease-out both;
-}
-.stairs[data-state='locked'] { cursor: not-allowed; }
-.stairsPlate {
+/* A machine's name, hanging under it. */
+.plate {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
-  /* Above the stairs, on the plain wallpaper, inside the wall's right edge. */
-  transform: translateY(calc(-100% - var(--sp-1)));
-  padding: 1px var(--sp-2);
+  transform: translate(-50%, 50%);
+  padding: 0 var(--sp-2);
   border-radius: var(--radius-pill);
   border: 2px solid var(--ink-primary);
   background: var(--surface-1);
@@ -59,8 +71,18 @@
   font-size: var(--type-small);
   font-weight: 700;
   white-space: nowrap;
+  pointer-events: none;
 }
-.stairs[data-state='locked'] .stairsPlate { border-style: dashed; color: var(--ink-secondary); }
+/* The stairs' plate hangs above them, on the plain wallpaper, inside the room's right edge. */
+.stairs { animation: reveal var(--motion-slow) ease-out both; }
+.stairs .plate {
+  top: 0;
+  bottom: auto;
+  left: auto;
+  right: 0;
+  transform: translateY(calc(-100% - var(--sp-1)));
+}
+.hatch { cursor: not-allowed; }
 @keyframes reveal {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: none; }

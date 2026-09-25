@@ -339,22 +339,35 @@ function rollRing(rng: GameRng, draft: RunState, ctx: RunCtx): RingState {
 }
 
 /**
- * §2.9.4.1 — the ladder ends paid: everything banked goes to the wallet, and the Ring is shut for this visit.
- * The Ring is a building of its own, so every way off the ladder walks back out to the town.
+ * §2.9.4.1 — the ladder is over, however it ended: the Ring is shut for this visit, its medics heal the whole Box to
+ * full and cure every status (the fallen stand up again; their Trauma stays), and you walk back out to the town.
+ * Nothing heals *between* rungs — that is the ladder's pressure — but the Ring never sends a team back out broken:
+ * it is a wager on money and a relic, not on the rest of the run (the user's call, 2026-09-25).
  */
-function payRing(draft: RunState): void {
+function closeRing(draft: RunState, ctx: RunCtx): void {
+  const ring = draft.city!.ring!;
+  ring.done = true;
+  for (const mon of draft.box) {
+    mon.hp = effectiveMax(draft, mon, ctx.content);
+    cureAll(mon);
+  }
+  say(draft, `The ${CITIES[draft.city!.id].ringName}'s medics patch up your whole team.`);
+  draft.phase = 'city';
+}
+
+/** §2.9.4.1 — the ladder ends paid: everything banked goes to the wallet, and the Ring closes. */
+function payRing(draft: RunState, ctx: RunCtx): void {
   const ring = draft.city!.ring!;
   if (ring.banked) say(draft, `The ${CITIES[draft.city!.id].ringName} pays out ${ring.banked} ₽.`);
   draft.money += ring.banked;
   ring.banked = 0;
-  ring.done = true;
-  draft.phase = 'city';
+  closeRing(draft, ctx);
 }
 
 /**
  * §2.9.4.1 — a rung's fight is over. Won: its prize is banked (or, at the top, the Rare 1-of-3 opens). Lost —
  * or run from — and the ladder is lost with everything it paid; the fallen already carry their Trauma. It never
- * ends the run. No XP and no drop: the Ring pays its prizes, and a ladder that paid levels would be a second
+ * ends the run, even with the whole team down: the Ring closes and heals them (`closeRing`). No XP and no drop: the Ring pays its prizes, and a ladder that paid levels would be a second
  * route to farm.
  */
 function resolveRing(draft: RunState, won: boolean, ctx: RunCtx): void {
@@ -364,9 +377,8 @@ function resolveRing(draft: RunState, won: boolean, ctx: RunCtx): void {
   if (!won) {
     const lost = ring.banked;
     ring.banked = 0;
-    ring.done = true;
-    draft.phase = 'city';
     say(draft, `The ${CITIES[draft.city!.id].ringName} is lost${lost ? `, and the ${lost} ₽ it had paid with it` : ''}.`);
+    closeRing(draft, ctx);
     return;
   }
   const rung = ring.rungs[ring.cleared]!;
@@ -392,7 +404,7 @@ function resolveRing(draft: RunState, won: boolean, ctx: RunCtx): void {
   draft.cursors.LootRNG = lootRng.cursor;
   say(draft, `${rung.trainer} is beaten — the ladder is yours.`);
   if (ring.pick.length) draft.phase = 'relic-pick';
-  else payRing(draft);
+  else payRing(draft, ctx);
 }
 
 /** §2.11.6 — the Safari's own stream: its lineup, its boards and its throws never move a fight's rolls. */
@@ -1229,7 +1241,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       }
 
       case 'ring-cash-out': {
-        payRing(draft);
+        payRing(draft, ctx);
         break;
       }
 
@@ -1238,7 +1250,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const ring = draft.city!.ring!;
         if (action.relicId) acquireRelic(draft, action.relicId, ctx.content);
         ring.pick = null;
-        payRing(draft);
+        payRing(draft, ctx);
         break;
       }
 

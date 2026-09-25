@@ -578,6 +578,9 @@ do not change; only the room and the Slots' reels do.
   left to right, until the last lands on the result. The outcome is still rolled first and the reels drawn to show it
   (§2.11.5), and the result line and the wallet wait for the last reel (D8).
 **Exit:** a player walks from the door to a machine, plays it, and finds the poster, with the keys or the mouse.
+*Done ahead (2026-09-25, the user's call, under `## Next`):* the whole FRLG room is the Game Corner screen, its slot
+banks and two roulette tables open the machines' panels, the poster stops being pressable once the switch is pushed,
+and a locked hatch covers the stairs after a visit. What v0.7.8 adds is Red walking it and the reels animated.
 
 ### v0.7.9 — Every door open  ☐
 The last doors marked in development, both small: the Dojo's extra-moves counter (§2.11.6) and the Center's

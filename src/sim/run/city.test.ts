@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
-  activeMoves, arriveAtCity, CASINO, CITIES, casinoExpectedValue, createRun, defaultRunCtx, deserialiseRun, evolvedAt, PRICES,
+  activeMoves, arriveAtCity, CASINO, CITIES, casinoExpectedValue, createRun, defaultRunCtx, deserialiseRun, effectiveMax, evolvedAt, PRICES,
   floorRestockable, RING, rarePickOpen, runReducer, serialiseRun, tutorListFor, STORE_FLOORS,
   type CombatOutcomeReport, type RunAction, type RunState,
 } from '@/sim';
@@ -132,6 +132,29 @@ describe('The Challenge Ring — §2.9.4.1', () => {
     expect(s.city!.ring!.done).toBe(true);
     // The fallen keep their Trauma.
     expect(s.box.some((m) => m.traumaStacks > 0)).toBe(true);
+  });
+
+  it('ALostLadder_WithTheWholeTeamDown_NeverEndsTheRun_AndTheRingHealsEveryoneToFull_TraumaStays', () => {
+    let s = onLadder(inCity(0, 1000));
+    s = produce(s, (d) => { d.box[0]!.status = { kind: 'burn', turnsLeft: null }; });
+    s = apply(s, { type: 'ring-fight' });
+    s = apply(s, { type: 'finish-combat', report: report(s, 'defeat') });
+    expect(s.outcome).toBe('in-progress');
+    expect(s.phase).toBe('city');
+    for (const m of s.box) {
+      expect(m.hp, m.speciesId).toBe(effectiveMax(s, m, content));
+      expect(m.status).toBeNull();
+    }
+    expect(s.box.some((m) => m.traumaStacks > 0)).toBe(true);
+  });
+
+  it('CashingOut_AlsoHealsTheWholeBoxToFull', () => {
+    let s = onLadder(inCity(0, 1000));
+    s = apply(s, { type: 'ring-fight' });
+    s = apply(s, { type: 'finish-combat', report: report(s, 'victory', 3) });
+    expect(s.box.find((m) => m.uid === s.activeUids[0])!.hp).toBe(3);
+    s = apply(s, { type: 'ring-cash-out' });
+    for (const m of s.box) expect(m.hp).toBe(effectiveMax(s, m, content));
   });
 
   it('NothingHealsBetweenRungs', () => {

@@ -41,7 +41,10 @@ export const regionPlate = (n: number) => asset(`art/map/region-${PLATED_REGIONS
 export const townArt = (cityId: string) => asset(`art/towns/${cityId}.png`);
 /** §2.11.6 — the Safari's FRLG tiles, tokens and entrance map (`npm run art:safari`). */
 export const safariArt = (name: string) => asset(`art/safari/${name}.png`);
-/** §2.11.6 — the Game Corner's back wall, before and after the switch (`npm run art:rocket`). */
-export const gameCornerArt = (name: 'room' | 'room-open') => asset(`art/game-corner/${name}.png`);
+/**
+ * §2.11.5 / §2.11.6 — the Game Corner room before the switch, with the stairs open, and shut (`npm run art:rocket`),
+ * and the two objects the map never drew: the roulette table and the locked hatch (`install-art pixel-sprite`).
+ */
+export const gameCornerArt = (name: 'room' | 'room-open' | 'room-shut' | 'roulette' | 'hatch') => asset(`art/game-corner/${name}.png`);
 /** §2.11.6 — the Rocket Hideout's wall, floor and stairs, the Black Market's room (`npm run art:rocket`). */
 export const blackMarketArt = (name: 'wall' | 'floor' | 'stairs') => asset(`art/black-market/${name}.png`);

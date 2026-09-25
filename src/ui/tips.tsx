@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, BLACK_MARKET, LEGENDARY_CAP, SHOWCASE_CAP, regionContent, regionName, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
+import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, regionContent, regionName, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { CITY_DOOR_HINT, INTENT_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { CITY_DOOR_HINT, INTENT_LABEL, MARKET_TEXT, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 
 // Every explanation the game offers on hover, in one file.
@@ -380,7 +380,7 @@ export function rungTip(index: number, prize: string, level: number, state: 'won
 
 /** §2.9.4.1 — the Ring's own heading bubble, under the name its City gives it. */
 export function ringTip(name: string): ReactNode {
-  return <Tip title={name} body={CITY_DOOR_HINT.ring} footer="Nothing heals between rungs. Losing one loses the ladder, never the run." />;
+  return <Tip title={name} body={CITY_DOOR_HINT.ring} />;
 }
 
 /** §2.9.4.1 — what the ladder has paid so far. */
@@ -399,13 +399,25 @@ export function gameCornerTip(): ReactNode {
  * §2.11.6 — the Game Corner's back wall. Discovery, not teaching: the poster only says it is not quite right, the
  * Grunt only says to keep away from it, and the stairs say where they go once they are there.
  */
-export function posterTip(found: boolean): ReactNode {
-  return <Tip title="A poster" body={found ? 'Pushed aside. The switch behind it opened the stairs.' : 'It doesn’t sit quite flat against the wall.'} />;
+export function posterTip(): ReactNode {
+  return <Tip title="A poster" body="It doesn’t sit quite flat against the wall." />;
 }
-export function stairsTip(open: boolean): ReactNode {
-  return open
-    ? <Tip title="Stairs down" body="Down to Team Rocket’s back room. It locks behind you when you come back up." />
-    : <Tip title="Stairs down" meta={['Locked']} body="Team Rocket will not open the door twice in one visit." />;
+export function stairsTip(): ReactNode {
+  return <Tip title="Stairs down" body="Down to Team Rocket’s back room. It locks behind you when you come back up." />;
+}
+export function hatchTip(): ReactNode {
+  return <Tip title={MARKET_TEXT.hatchTitle} body="Where the stairs were. Team Rocket will not open it twice in one visit." />;
+}
+
+/** §2.11.5 — the Game Corner's machines, in the room. */
+export function slotsBankTip(): ReactNode {
+  const top = Math.max(...CASINO.slots.table.map((r) => r.multiplier));
+  const face = SLOT_FACE_LABEL[CASINO.slots.faces[top] ?? ''] ?? '';
+  return <Tip title="Slot machines" meta={[`${CASINO.slots.stake} ₽ a pull`]} body={`Three reels, and one dream: three ${face.toLowerCase()}s pay ×${top}. Play one and its odds are on the machine.`} />;
+}
+export function rouletteTableTip(): ReactNode {
+  const pays = [...new Set(CASINO.wheel.segments)].sort((a, b) => a - b).map((m) => `×${m}`);
+  return <Tip title="Roulette" meta={[`Stake ${CASINO.wheel.minStake}–${CASINO.wheel.maxStake} ₽`]} body={`A bet you size: the wheel stops on ${pays.slice(0, -1).join(', ')} or ${pays.at(-1)}, each as likely as its share of the rim. Play and the odds are on the table.`} />;
 }
 
 /** §2.11.6 — the market's heading bubble: four counters, and a door that locks behind you. */
@@ -471,7 +483,7 @@ export function ringPrizeTip(banked: number, allRare: boolean): ReactNode {
 
 /** §2.11.5 — a machine's printed table, as the bubble on its name. */
 export function machineTip(machine: 'wheel' | 'slots', table: string, ev: number): ReactNode {
-  return <Tip title={machine === 'wheel' ? 'The Wheel' : 'The Slots'} meta={[`Returns ${Math.round(ev * 100)} % on average`]} body={table} footer="The outcome is rolled against this table first, then shown. The house edge is real." />;
+  return <Tip title={machine === 'wheel' ? 'The Roulette' : 'The Slots'} meta={[`Returns ${Math.round(ev * 100)} % on average`]} body={table} footer="The outcome is rolled against this table first, then shown. The house edge is real." />;
 }
 
 /** §2.11.2 — a Department Store floor. */

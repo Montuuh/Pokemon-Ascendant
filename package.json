@@ -37,6 +37,7 @@
     "art:items": "node scripts/fetch-item-icons.mjs",
     "art:safari": "node scripts/fetch-safari-art.mjs",
     "art:rocket": "node scripts/fetch-rocket-art.mjs",
+    "art:props": "node scripts/draw-game-corner-props.mjs",
     "art:types": "node scripts/fetch-type-icons.mjs",
     "ui:audit": "node scripts/ui-audit.mjs"
   },

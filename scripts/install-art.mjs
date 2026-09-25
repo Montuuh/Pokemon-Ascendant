@@ -36,6 +36,9 @@ const PROFILES = {
   // §2.11.6 — a generated pixel-art token (the Safari's bait and rock), brought down to the 16-px tile grid it
   // stands on so its pixels are the FRLG tiles' pixels: see pixelToken below.
   'pixel-icon': { dir: 'public/art/safari', ext: 'png', w: 16, h: 16, token: 16 },
+  // §2.11.5 / §2.11.6 — a generated object for the FRLG Game Corner (the roulette table, the locked hatch), brought
+  // down to its size in the map's own pixels. The size is `WxH` (e.g. 48x22): the object fits it, on transparency.
+  'pixel-sprite': { dir: 'public/art/game-corner', ext: 'png', w: 32, h: 32, sprite: true },
   // An official render already carries its own alpha, so cutting a background out of it would only chew
   // into the artwork. Resize and ship.
   item: { dir: 'public/art/items', ext: 'png', w: 128, h: 128, fit: 'contain' },
@@ -50,14 +53,15 @@ const PROFILES = {
 const [kind, src, name, sizeArg] = process.argv.slice(2);
 const profile = PROFILES[kind];
 if (!profile || !src || !name) {
-  console.error('usage: install-art <stage|map|pixel|vista|town|icon|item|node|badge> <src.png> <name> [px]');
+  console.error('usage: install-art <stage|map|pixel|vista|town|icon|item|node|badge|pixel-sprite> <src.png> <name> [px | WxH] [--palette-from <png>]');
   console.error(`profiles: ${Object.keys(PROFILES).join(', ')}`);
   process.exit(2);
 }
 
+const wxh = /^(\d+)x(\d+)$/.exec(sizeArg ?? '');
 const px = Number(sizeArg) || 0;
-const width = px || profile.w;
-const height = px || profile.h;
+const width = wxh ? Number(wxh[1]) : px || profile.w;
+const height = wxh ? Number(wxh[2]) : px || profile.h;
 const dest = `${profile.dir}/${name}.${profile.ext}`;
 
 await mkdir(dirname(resolve(dest)), { recursive: true });
@@ -110,6 +114,67 @@ async function pixelToken(src, size, w, h) {
   return sharp({ create: { width: w, height: h, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
     .composite([{ input: token, left: Math.floor((w - size) / 2), top: Math.max(0, h - size - 1) }])
     .png({ palette: true, colours: 16, dither: 0 });
+}
+
+/**
+ * A generated object onto a map's pixel grid, at any size, drawn in that map's own terms:
+ *   1. white out hard, crop to the object, average it down (lanczos) into a w×h box, snap the alpha to on/off;
+ *   2. drop the strays — an opaque pixel with at most one opaque neighbour is a downscale artefact, not a shape;
+ *   3. snap every colour to the palette of the map it stands on (`--palette-from <png>`), so it shares its colours;
+ *   4. give it the games' 1-px dark outline: every edge pixel takes the palette's nearest match to a darkened self.
+ * Without a palette it falls back to a 16-colour quantise, as pixelToken does.
+ */
+async function pixelSprite(src, w, h, paletteFrom) {
+  const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  for (let i = 0; i < data.length; i += 4) if (765 - (data[i] + data[i + 1] + data[i + 2]) < 45) data[i + 3] = 0;
+  const cropped = await sharp(data, { raw: { width: info.width, height: info.height, channels: 4 } }).png().toBuffer();
+  const small = await sharp(await sharp(cropped).trim().png().toBuffer())
+    .resize({ width: w, height: h, fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 }, kernel: 'lanczos3' })
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const px = small.data;
+  const at = (x, y) => (y * w + x) * 4;
+  const opaque = (x, y) => x >= 0 && y >= 0 && x < w && y < h && px[at(x, y) + 3] === 255;
+  for (let i = 3; i < px.length; i += 4) px[i] = px[i] >= 120 ? 255 : 0;
+  for (let pass = 0; pass < 2; pass++) {
+    const strays = [];
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      if (!opaque(x, y)) continue;
+      const n = [opaque(x - 1, y), opaque(x + 1, y), opaque(x, y - 1), opaque(x, y + 1)].filter(Boolean).length;
+      if (n <= 1) strays.push(at(x, y));
+    }
+    for (const i of strays) px[i + 3] = 0;
+  }
+  if (!paletteFrom) return sharp(px, { raw: { width: w, height: h, channels: 4 } }).png({ palette: true, colours: 16, dither: 0 });
+
+  const map = await sharp(paletteFrom).removeAlpha().raw().toBuffer();
+  const seen = new Map();
+  for (let i = 0; i < map.length; i += 3) seen.set((map[i] << 16) | (map[i + 1] << 8) | map[i + 2], [map[i], map[i + 1], map[i + 2]]);
+  const palette = [...seen.values()];
+  const nearest = (r, g, b) => palette.reduce((best, c) => {
+    const d = (c[0] - r) ** 2 * 0.3 + (c[1] - g) ** 2 * 0.59 + (c[2] - b) ** 2 * 0.11;
+    return d < best.d ? { c, d } : best;
+  }, { c: palette[0], d: Infinity }).c;
+  const edge = (x, y) => !opaque(x - 1, y) || !opaque(x + 1, y) || !opaque(x, y - 1) || !opaque(x, y + 1);
+  const out = Buffer.from(px);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = at(x, y);
+    if (!opaque(x, y)) continue;
+    const k = edge(x, y) ? 0.35 : 1;
+    const c = nearest(px[i] * k, px[i + 1] * k, px[i + 2] * k);
+    out[i] = c[0];
+    out[i + 1] = c[1];
+    out[i + 2] = c[2];
+  }
+  return sharp(out, { raw: { width: w, height: h, channels: 4 } }).png();
+}
+
+if (profile.sprite) {
+  await mkdir(dirname(resolve(dest)), { recursive: true });
+  const from = process.argv.indexOf('--palette-from');
+  await (await pixelSprite(src, width, height, from > 0 ? process.argv[from + 1] : null)).toFile(dest);
+  console.log(`${dest}  ${meta.width}×${meta.height} → ${width}×${height} px sprite`);
+  process.exit(0);
 }
 
 if (profile.token) {

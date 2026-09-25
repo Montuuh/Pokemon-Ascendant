@@ -26,6 +26,22 @@
   font-size: var(--type-h1);
   color: var(--brand-red);
 }
+/* How to play: the one door to the rules, beside the title — quieter than the fight it explains. */
+.help {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-right: auto;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.help:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
 .purse { display: flex; align-items: center; gap: var(--sp-3); }
 .banked,
 .wallet {

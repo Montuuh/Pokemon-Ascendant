@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 // §2.11.6 — Team Rocket's Black Market, cut from the real thing (v0.7.7).
 //
-// The way in is the Celadon Game Corner's back wall as FireRed / LeafGreen drew it: the prize counter, the Rocket
-// poster, the paper poster with the switch behind it and the Grunt guarding it. Two states of that wall: before
-// the switch (the Grunt on guard, no stairs) and after it (the Grunt gone, the stairs open). The market itself is
+// The way in is the Celadon Game Corner as FireRed / LeafGreen drew it — the whole room, the Game Corner screen
+// itself (§2.11.5): the prize counter, the rows of slot machines and their players, the Rocket poster, and the
+// paper poster with the switch behind it and the Grunt guarding it. Three states of the room: before the switch
+// (the Grunt on guard, no stairs), after it (the Grunt gone, the stairs open), and shut (the Grunt gone, no stairs —
+// the screen lays the locked hatch over the spot, `install-art pixel-sprite`). The market itself is
 // the Rocket Hideout's B1F: its wall with the vents, its floor, and the stairs you came down. Everything comes
 // from the Bulbagarden Archives (curl: Node's fetch gets a Cloudflare page there) and is cut on the maps' 16-px
 // grid, so nothing is redrawn — "fetch an object", docs/art/pipeline.md.
@@ -48,8 +50,8 @@ const I = await raw(inside);
 const E = await raw(empty);
 const W = I.info.width;
 
-/** The back of the room — the top four tile rows, the whole width — with a list of [dx, dy, w, h, sx, sy, from] copies. */
-async function wall(patches, out) {
+/** The room, less the map's black last row, with a list of [dx, dy, w, h, sx, sy, from] copies. */
+async function room(patches, out) {
   const band = Buffer.from(I.data);
   for (const [dx, dy, w, h, sx, sy, from] of patches) {
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
@@ -58,15 +60,19 @@ async function wall(patches, out) {
       from.data.copy(band, d, s, s + 4);
     }
   }
-  await sharp(band, { raw: { width: W, height: I.info.height, channels: 4 } }).extract({ left: 0, top: 0, width: 288, height: 64 }).png().toFile(out);
+  await sharp(band, { raw: { width: W, height: I.info.height, channels: 4 } }).extract({ left: 0, top: 0, width: 288, height: 224 }).png().toFile(out);
   console.log(out);
 }
 
 // Before the switch: the Grunt stands under the poster, and the corner where the stairs will be is plain wall and
 // floor (the two tiles to its left, copied across — the wallpaper and the floor repeat every two tiles).
-await wall([[256, 0, 32, 51, 224, 0, I]], resolve(CORNER, 'room.png'));
+const noStairs = [256, 0, 32, 51, 224, 0, I];
+const noGrunt = [176, 16, 16, 32, 176, 16, E];
+await room([noStairs], resolve(CORNER, 'room.png'));
 // After it: the Grunt's two tiles are the empty room's, and the stairs stand where they always were.
-await wall([[176, 16, 16, 32, 176, 16, E]], resolve(CORNER, 'room-open.png'));
+await room([noGrunt], resolve(CORNER, 'room-open.png'));
+// Shut: back up the stairs, the door locked — the Grunt still gone, and the corner under the hatch plain floor.
+await room([noStairs, noGrunt], resolve(CORNER, 'room-shut.png'));
 
 // The Hideout: the entrance room's back wall with a vent, a floor tile, and the stairs up to the Game Corner.
 const cut = (x, y, w, h, name) => sharp(hideout).extract({ left: x, top: y, width: w, height: h }).png().toFile(resolve(MARKET, name)).then(() => console.log(name));

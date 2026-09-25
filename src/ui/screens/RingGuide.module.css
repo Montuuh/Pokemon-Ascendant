@@ -1,0 +1,94 @@
+/* §2.9.4.1 — the Ring's How to play: a picture, a heading, a line or two; pages you step through (the Safari's
+   guide's shape, so the game teaches both the same way). */
+
+.page {
+  display: grid;
+  grid-template-columns: minmax(220px, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-5);
+  min-height: 260px;
+}
+.picture { display: grid; place-items: center; }
+.words { display: grid; gap: var(--sp-2); align-content: center; }
+.heading { margin: 0; font-size: var(--type-h2); color: var(--brand-red-deep); }
+.body { margin: 0; font-size: var(--type-body); line-height: 1.5; }
+
+/* The ladder, top rung first. */
+.ladder { display: grid; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; }
+.rung {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 180px;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  font-weight: 800;
+}
+.rungMark {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+}
+
+.rival { display: grid; justify-items: center; gap: var(--sp-2); }
+.sprite { width: 96px; height: 96px; image-rendering: pixelated; }
+.team { display: flex; gap: var(--sp-2); }
+
+.bars { display: grid; gap: var(--sp-2); min-width: 220px; }
+.barRow { display: flex; align-items: center; gap: var(--sp-2); }
+.bar { flex: 1; }
+.heart { color: var(--accent-positive); }
+
+.chips { display: flex; gap: var(--sp-4); }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  font-size: var(--type-h2);
+  font-weight: 800;
+}
+
+/* Next is first in the DOM (the dialog focuses it); the row reads dots · Skip · Back · Next. */
+.nav { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-5); }
+.nav > .primary { order: 4; }
+.nav > .secondary { order: 3; }
+.nav > .skip { order: 2; }
+.dots { order: 1; display: flex; gap: var(--sp-2); margin: 0 auto 0 0; padding: 0; list-style: none; }
+.dot {
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  cursor: pointer;
+}
+.dotOn { background: var(--accent-action); border-color: var(--accent-action-deep); }
+.primary,
+.secondary,
+.skip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  cursor: pointer;
+}
+.primary { border: 2px solid var(--accent-action-deep); background: var(--accent-action); color: var(--ink-on-accent); }
+.secondary { border: 2px solid var(--border-strong); background: var(--surface-1); color: var(--ink-primary); }
+.skip { border: 2px solid transparent; background: transparent; color: var(--ink-secondary); }
+.skip:hover { border-color: var(--border-subtle); }
+.primary:focus-visible,
+.secondary:focus-visible,
+.skip:focus-visible,
+.dot:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }

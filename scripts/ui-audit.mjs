@@ -48,8 +48,10 @@ const SCREENS = {
   center: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.trauma(2)', 'run.pay(600)'], clicks: ['door-center'], match: [/screens\/CenterScreen/] },
   shop: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.pay(600)', 'run.wear("leftovers")'], clicks: ['door-mart'], match: [/screens\/ShopScreen/, /components\/ItemCard/] },
   // v0.7.2 — the city: the Ring (§2.9.4.1; its own building since v0.7.7), its prize, the Game Corner (§2.11.5), the store's floors (§2.11.2).
-  ring: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring'], match: [/screens\/RingScreen/, /components\/ConfirmLeave/] },
-  'ring-climb': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-enter'], match: [/screens\/RingScreen/] },
+  // A fresh browser: the Ring's How to play opens by itself, so `ring` measures the guide and the others skip it.
+  'ring-guide': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-next'], match: [/screens\/RingGuide/] },
+  ring: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip'], match: [/screens\/RingScreen/, /components\/ConfirmLeave/] },
+  'ring-climb': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip', 'btn-ring-enter'], match: [/screens\/RingScreen/] },
   'ring-prize': {
     url: '/?screen=menu',
     setup: [
@@ -60,7 +62,10 @@ const SCREENS = {
     ],
     match: [/screens\/RingPrizeScreen/, /components\/RelicOffer/, /screens\/LegendaryScreen/],
   },
-  'game-corner': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner', 'btn-spin', 'btn-pull'], match: [/screens\/GameCornerScreen/, /screens\/GameCornerRoom/] },
+  'game-corner': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner'], match: [/screens\/GameCornerScreen/, /screens\/GameCornerRoom/] },
+  'game-corner-roulette': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner', 'gc-roulette-0', 'btn-spin'], match: [/screens\/GameCornerScreen/] },
+  'game-corner-slots': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner', 'gc-slots-1', 'btn-pull'], match: [/screens\/GameCornerScreen/] },
+  'game-corner-shut': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)', 'run.dispatch({ type: "enter-building", building: "game-corner" })', 'run.dispatch({ type: "push-switch" })', 'run.dispatch({ type: "enter-black-market" })', 'run.dispatch({ type: "leave-black-market" })'], match: [/screens\/GameCornerRoom/] },
   // v0.7.7 — Team Rocket's Black Market (§2.11.6): the Game Corner's back wall once the switch is pushed, and the
   // market's counters.
   'game-corner-open': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner', 'gc-poster', 'btn-switch-push'], match: [/screens\/GameCornerRoom/] },

@@ -22,9 +22,11 @@ export const SETTINGS_KEY = `${PREFIX}settings.v1`;
 export const CHANGELOG_SEEN_KEY = `${PREFIX}changelog-seen`;
 /** §2.11.6 — the Safari's How to play has opened by itself once in this browser. */
 export const SAFARI_GUIDE_SEEN_KEY = `${PREFIX}safari-guide-seen`;
+/** §2.9.4.1 — the Ring's How to play has opened by itself once in this browser. */
+export const RING_GUIDE_SEEN_KEY = `${PREFIX}ring-guide-seen`;
 
 /** Every key this app owns, so the test can walk them rather than trusting a hand-kept list. */
-export const ALL_KEYS = [RUN_SAVE_KEY, ACHIEVEMENTS_KEY, ACCOUNT_KEY, SETTINGS_KEY, CHANGELOG_SEEN_KEY, SAFARI_GUIDE_SEEN_KEY] as const;
+export const ALL_KEYS = [RUN_SAVE_KEY, ACHIEVEMENTS_KEY, ACCOUNT_KEY, SETTINGS_KEY, CHANGELOG_SEEN_KEY, SAFARI_GUIDE_SEEN_KEY, RING_GUIDE_SEEN_KEY] as const;
 
 /**
  * The pre-rename name of a key.

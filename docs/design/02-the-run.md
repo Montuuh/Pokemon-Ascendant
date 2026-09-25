@@ -761,9 +761,15 @@ ways off are the ladder's own (below), and walking away asks first (§2.11.0).
 - **No healing between rungs.** HP, statuses and Trauma carry from rung to rung, as between any two fights.
 - After each rung won, you choose: **cash out** — take everything the ladder has paid so far and leave — or
   **climb**. Losing a rung loses everything earned on this ladder, and the fallen keep their Trauma. It never
-  ends the run.
-- Once per City visit (§2.11.0). Every way off the ladder — cashing out, the top prize, a lost rung — walks back
-  out to the town.
+  ends the run — not even with the whole team fainted.
+- **The Ring heals you on the way out.** However the ladder ends — cashed out, the top prize, a lost rung — its
+  medics restore the whole Box to full HP and cure every status; the fallen stand up again, and only their Trauma
+  stays. *(The user's call, 2026-09-25: the Ring is a wager on money and a relic, not on the rest of the run; the
+  pressure is all inside the ladder, where nothing heals.)*
+- Once per City visit (§2.11.0). Every way off the ladder walks back out to the town.
+- **How to play.** Five pages — the ladder, the rival shown first, no healing between rungs, cash out or climb, and
+  the run never ending here — drawn from this visit's own ladder. They open by themselves on a first walk into a
+  Ring, and from its How to play button after that (§9.6.1's "explained once, on purpose", as the Safari's).
 
 The decision *is* the design: "two down, my Lead at half HP and asleep, and the third is a Fire team — do I
 stop?" Every rung is chosen with the next opponent in view (Pillar 1), and the ladder reuses the trainer-battle
@@ -1041,7 +1047,13 @@ with **two machines**, each with its **table printed beside it** — every outco
 Both lose in the long run (expected value below 1): the house edge, not a cap, is what keeps them honest, and
 with an expectation below 1 there is nothing to farm.
 
-| | **The Wheel** | **The Slots** |
+**The room is the screen.** The Game Corner is FireRed / LeafGreen's own map of it, whole, at a whole-pixel scale:
+the prize counter, four banks of slot machines with their players, and two **roulette tables** on the floor either
+side of the door (the one object the games never drew there, generated in the map's register). Walk up to — press —
+a bank of slots and the Slots open in a panel; a roulette table, and the Roulette does. The room also hides the way
+to Team Rocket's Black Market (§2.11.6). *(The user's call, 2026-09-25; v0.7.8 goes on to walk the room.)*
+
+| | **The Roulette** (the wheel) | **The Slots** |
 |---|---|---|
 | Stake | You choose, up to **200 ₽** a spin | Fixed: **50 ₽** a pull |
 | Outcomes | ×0 66 % · ×2 24 % · ×4 8 % · ×8 2 % | nothing 76.6 % · ×2 15 % · ×4 6 % · ×10 2 % · **×50 jackpot 0.4 %** |
@@ -1148,8 +1160,10 @@ v0.8's multi-enemy fights move every Region, and the balance pass after them (v0
 **no door on the City map**: at the back of the Game Corner, drawn from FireRed / LeafGreen's own room, a Rocket
 Grunt stands guard under a paper poster. Walk up to the poster and he says to keep away from it; look closely and it
 does not sit flat; press it and there is a switch behind it. Pushing it sends the Grunt off and opens the stairs in
-the corner, the way the Rocket Hideout opened under the Celadon Game Corner in Gen I. Nothing else in the game
-mentions the market. An easter egg on purpose (user, 2026-09-24): the player who finds it has earned the back room,
+the corner, the way the Rocket Hideout opened under the Celadon Game Corner in Gen I; the poster is only a poster
+after that, and nothing on it can be pressed again. Once you have been down and back up, the stairs are gone under a
+**locked steel hatch** for the rest of the visit — the door you cannot use again, drawn shut rather than hidden.
+Nothing else in the game mentions the market. An easter egg on purpose (user, 2026-09-24): the player who finds it has earned the back room,
 and the one who does not has lost nothing the town promised.
 
 Downstairs is the Rocket Hideout's B1F with four Rocket people at four counters, none of them paid in the usual

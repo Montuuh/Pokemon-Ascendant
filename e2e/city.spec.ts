@@ -3,23 +3,46 @@ import { expect, test, type Page } from '@playwright/test';
 // v0.7.2 — the city: the Challenge Ring (§2.9.4.1; its own building since v0.7.7), its prize, the Game Corner (§2.11.5) and the Department
 // Store's floors (§2.11.2), each driven through the real reducers via the dev hook and then through the UI.
 
-async function inCity(page: Page, cityIndex: 0 | 1, money = 2000): Promise<void> {
+async function inCity(page: Page, cityIndex: 0 | 1, money = 2000, ringGuideSeen = true): Promise<void> {
   await page.goto('/?screen=menu');
   await page.evaluate(() => window.localStorage.clear());
   await page.reload();
   await page.waitForFunction(() => !!window.__ascendant);
-  await page.evaluate(([i, m]) => {
+  await page.evaluate(([i, m, g]) => {
+    // The Ring's How to play opens by itself on a first visit; only the test about it starts without having seen it.
+    if (g) window.localStorage.setItem('ascendant.ring-guide-seen', '1');
     const dev = window.__ascendant!;
     dev.run.new('squirtle', 7);
     dev.run.fill(3);
     for (const mon of dev.run.state()!.box) dev.run.levelTo(30, mon.uid);
     dev.run.city(i as 0 | 1);
     dev.run.pay(m as number);
-  }, [cityIndex, money] as const);
+  }, [cityIndex, money, ringGuideSeen] as const);
   await expect(page.getByTestId('city-screen')).toBeVisible();
 }
 
 test.describe('The Ring and the Coliseum — §2.9.4.1', () => {
+  test('the first walk into a Ring opens its How to play, which ends on the heal and the Trauma', async ({ page }) => {
+    await inCity(page, 0, 1000, false);
+    await page.getByTestId('door-ring').click();
+    await expect(page.getByTestId('ring-guide')).toBeVisible();
+    await expect(page.getByTestId('ring-guide-page-0')).toContainText('2 rungs');
+    for (let i = 0; i < 4; i++) await page.getByTestId('btn-ring-guide-next').click();
+    await expect(page.getByTestId('ring-guide-page-4')).toContainText('heal your whole team to full');
+    await expect(page.getByTestId('ring-guide-page-4')).toContainText('Trauma');
+    await page.screenshot({ path: 'playtest/ring-guide.png' });
+    await page.getByTestId('btn-ring-guide-next').click();
+    await expect(page.getByTestId('ring-guide')).toBeHidden();
+    // Seen once: it does not open by itself again, and the button brings it back.
+    await page.getByTestId('btn-leave-ring').click();
+    await page.getByTestId('door-ring').click();
+    await expect(page.getByTestId('ring-guide')).toBeHidden();
+    await page.getByTestId('btn-ring-help').click();
+    await expect(page.getByTestId('ring-guide')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('ring-guide')).toBeHidden();
+  });
+
   test('the Ring is a building in the square: the ladder on show, the fee on the button, a rung a real fight', async ({ page }) => {
     await inCity(page, 0, 1000);
     await expect(page.getByTestId('door-ring')).toContainText('Challenge Ring');
@@ -129,13 +152,16 @@ test.describe('The Ring and the Coliseum — §2.9.4.1', () => {
 });
 
 test.describe('The Game Corner — §2.11.5', () => {
-  test('the Wheel and the Slots take their stake, show their result, and print their odds', async ({ page }) => {
+  test('the room is the Game Corner: a roulette table and a bank of slots each open their machine, odds printed', async ({ page }) => {
     await inCity(page, 1, 1000);
     await page.getByTestId('door-game-corner').click();
-    await expect(page.getByTestId('game-corner-screen')).toBeVisible();
-    await expect(page.getByTestId('machine-wheel')).toContainText('66 %');
-    await expect(page.getByTestId('machine-slots')).toContainText('0.4 %');
+    await expect(page.getByTestId('game-corner-room')).toBeVisible();
+    await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
+    await page.screenshot({ path: 'playtest/game-corner.png' });
 
+    // A roulette table opens the Roulette.
+    await page.getByTestId('gc-roulette-0').click();
+    await expect(page.getByTestId('machine-wheel')).toContainText('66 %');
     await page.getByTestId('stake-up').click();
     await page.getByTestId('stake-up').click();
     await page.getByTestId('stake-down').click();
@@ -145,16 +171,26 @@ test.describe('The Game Corner — §2.11.5', () => {
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(1000 - 60 + wheel.payout);
     // The result lands with the wheel, and so does the wallet.
     await expect(page.getByTestId('wheel-result')).toContainText(`×${wheel.multiplier}`);
-    await expect(page.getByTestId('casino-money')).toContainText((1000 - 60 + wheel.payout).toLocaleString('en-GB'));
+    await expect(page.getByTestId('machine-money')).toContainText((1000 - 60 + wheel.payout).toLocaleString('en-GB'));
+    await page.screenshot({ path: 'playtest/game-corner-roulette.png' });
+    await page.getByTestId('btn-machine-close').click();
+    await expect(page.getByTestId('machine-wheel')).toBeHidden();
 
+    // A bank of slot machines opens the Slots; Escape steps away from it.
+    await page.getByTestId('gc-slots-1').click();
+    await expect(page.getByTestId('machine-slots')).toContainText('0.4 %');
     await expect(page.getByTestId('slot-reels').getByRole('img')).toHaveCount(3);
     await page.getByTestId('btn-pull').click();
     const slots = await page.evaluate(() => window.__ascendant!.run.state()!.city!.casino.slots!);
     await expect(page.getByTestId('slots-result')).toContainText(slots.multiplier ? `×${slots.multiplier}` : 'Nothing lines up');
-    // The Wheel's result is still on the Wheel after a pull.
+    await page.waitForTimeout(1000);
+    await page.screenshot({ path: 'playtest/game-corner-slots.png' });
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('machine-slots')).toBeHidden();
+    // The Roulette still shows its own last result when it is opened again.
+    await page.getByTestId('gc-roulette-1').click();
     await expect(page.getByTestId('wheel-result')).toContainText(`×${wheel.multiplier}`);
-    await page.waitForTimeout(2600);
-    await page.screenshot({ path: 'playtest/game-corner.png' });
+    await page.getByTestId('btn-machine-close').click();
 
     await page.getByTestId('btn-leave-game-corner').click();
     await expect(page.getByTestId('city-screen')).toBeVisible();

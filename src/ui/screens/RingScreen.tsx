@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { IconCheck, IconDoorExit, IconSparkles, IconSwords, IconTrophy } from '@tabler/icons-react';
+import { IconCheck, IconDoorExit, IconHelpCircle, IconSparkles, IconSwords, IconTrophy } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
+import { markRingGuideSeen, ringGuideSeen } from '@/app/ringGuideSeen';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { boxCapacity, CITIES, rarePickOpen, RING, type RingRung } from '@/sim';
@@ -10,9 +11,10 @@ import { ConfirmLeave } from '@/ui/components/ConfirmLeave';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { LEAVE_WARNING, RING_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
+import { LEAVE_WARNING, RING_GUIDE, RING_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
 import { bankedTip, moneyTip, ringEntryTip, ringTip, rungTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
+import { RingGuide } from './RingGuide';
 import styles from './RingScreen.module.css';
 
 // §2.9.4.1 — the City's Ring (the town's Challenge Ring, the city's Pokémon Coliseum), a building of its own. The
@@ -33,6 +35,12 @@ export function RingScreen() {
   const content = getContent();
   const [toast, setToast] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
+  // §2.9.4.1 — the How to play opens by itself on this browser's first walk into a Ring.
+  const [guide, setGuide] = useState(() => !ringGuideSeen());
+  const closeGuide = () => {
+    markRingGuideSeen();
+    setGuide(false);
+  };
 
   const ring = run.city!.ring!;
   const name = CITIES[run.city!.id].ringName;
@@ -66,6 +74,9 @@ export function RingScreen() {
           <IconTrophy size={26} aria-hidden="true" /> {name}
           <InfoDot tip={ringTip(name)} />
         </h1>
+        <button type="button" className={styles.help} onClick={() => setGuide(true)} data-testid="btn-ring-help">
+          <IconHelpCircle size={18} aria-hidden="true" /> {RING_GUIDE.button}
+        </button>
         <div className={styles.purse}>
           {/* What the ladder has paid only means something once you are on it. */}
           {ring.entered && (
@@ -175,6 +186,8 @@ export function RingScreen() {
           </button>
         )}
       </footer>
+
+      {guide && <RingGuide name={name} ring={ring} rare={rare} team={[...run.activeUids, ...run.box.map((m) => m.uid)].map((u) => run.box.find((m) => m.uid === u)!.speciesId).filter((id, i, all) => all.indexOf(id) === i)} onClose={closeGuide} />}
 
       {leaving && (
         <ConfirmLeave

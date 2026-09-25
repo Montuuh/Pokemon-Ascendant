@@ -38,11 +38,13 @@ Pokémon.
   gate leaves when you say so. **Pallet Town** (5 doors) then **Celadon City** (more, dearer). Routes keep only a
   nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
   Celadon is the bigger City: a five-floor **Department Store**, a Dojo whose tutor list spans every stage the
-  line has reached, and the **Game Corner** — the Wheel (stake ≤200 ₽, EV 0.96) and the Slots (50 ₽, ×50 jackpot,
-  EV 0.94), tables printed, outcome rolled first. Each City has its **Ring** as a building of its own — Pallet's
+  line has reached, and the **Game Corner** — FireRed's own room as the screen, its slot banks and two roulette
+  tables opening the Roulette (stake ≤200 ₽, EV 0.96) and the Slots (50 ₽, ×50 jackpot, EV 0.94), tables printed,
+  outcome rolled first. Each City has its **Ring** as a building of its own — Pallet's
   **Challenge Ring** in the square, Celadon's **Pokémon Coliseum**: the ladder and the first rival on show before
   the fee, then 2 rungs / 3 rungs of Elite-class rivals, no healing between, cash out or climb; money below, a Rare
-  relic 1-of-3 on top, no XP. Meant to be lost (ladder ≈1 in 6 in the town, under 1 in 10 in the city).
+  relic 1-of-3 on top, no XP; however it ends, the whole Box walks out healed to full (Trauma stays), and it never
+  ends the run. A five-page How to play. Meant to be lost (ladder ≈1 in 6 in the town, under 1 in 10 in the city).
   *(2026-09-23; out of the Dojo 2026-09-25.)* Every **committing** door (Ring, Safari, Black Market) asks before
   it closes behind you.
   **Team Rocket's Black Market** (§2.11.6) is a **secret**: no door on the map; a Grunt guards a poster at the back

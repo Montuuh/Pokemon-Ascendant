@@ -163,6 +163,22 @@ export const LEAVE_WARNING = {
   market: 'The door locks behind you for this visit.',
 };
 
+/** §2.11.5 — the Game Corner room and its machines' panels. */
+export const CASINO_TEXT = {
+  room: 'The Game Corner',
+  slots: 'Slots',
+  slotsLabel: 'Slot machines',
+  roulette: 'Roulette',
+  rouletteLabel: 'Roulette table',
+  wheelTitle: 'The Roulette',
+  slotsTitle: 'The Slots',
+  odds: 'The odds',
+  oddsOf: (machine: string) => `${machine}: the odds`,
+  stepAway: 'Step away',
+  landed: (m: number, payout: number) => `It landed on ×${m}: ${payout} ₽.`,
+  lost: 'It landed on ×0. The stake is gone.',
+};
+
 /** §2.9.4.1 — the Ring's buttons. */
 export const RING_TEXT = {
   back: 'Back to town',
@@ -185,7 +201,9 @@ export const MARKET_TEXT = {
   push: 'Push it',
   leaveIt: 'Leave it',
   stairs: 'Stairs down',
-  stairsShut: 'The door at the foot of the stairs is locked.',
+  stairsShut: 'The hatch is locked. Team Rocket will not open it twice in one visit.',
+  hatch: 'A locked steel hatch',
+  hatchTitle: 'A locked steel hatch',
   up: 'Back upstairs',
   counters: 'The counters',
   dealt: 'Dealt this visit',
@@ -300,10 +318,10 @@ export const CITY_DOOR_HINT: Record<CityDoor, string> = {
   mart: 'A shelf picked for your team, and Poké Balls. Dearer than the merchant; buys held items back.',
   'department-store': 'The biggest shelf of the run, and Poké Balls. Dearer than the merchant; buys held items back.',
   dojo: 'Tutor moves off the learnset and passive abilities, as many as you can pay for.',
-  ring: 'A ladder of rivals for a fee. See the next one, then fight or cash out — nothing heals between rungs, and a lost rung loses what the ladder paid. Once per visit.',
+  ring: 'A ladder of rivals for a fee. See the next one, then fight or cash out — nothing heals between rungs, and a lost rung loses what the ladder paid. However it ends, your team walks out healed. Once per visit.',
   'extra-moves': 'A catalogue of moves beyond each species\' tutor list.',
   safari: 'A park of Pokémon the routes never offer. Buy a ticket, stalk one through the grass, and throw when the odds are yours. Once per visit.',
-  'game-corner': 'The Wheel and the Slots, every outcome and its odds printed beside each machine.',
+  'game-corner': 'Slot machines and roulette tables, every outcome and its odds printed on the machine you play.',
   gate: 'Choose one rule for the next Region, then set off. The town stays behind.',
 };
 
@@ -344,6 +362,42 @@ export const SAFARI_GUIDE = {
         `This ticket buys ${n.balls} Safari Balls and ${n.clock} turns for the whole visit, shared by every stalk. You have ${n.ap} actions a turn: a step, a bait or a rock costs one. One or two catches is a good day.`,
     },
   ] as { title: string; body: (n: GuideNumbers) => string }[],
+};
+
+/** §2.9.4.1 — the Ring's How to play: one idea a page, in the order a first climb meets them. */
+type RingNumbers = { name: string; rungs: number; fee: number; top: string };
+export const RING_GUIDE = {
+  title: (name: string) => `How to play: the ${name}`,
+  button: 'How to play',
+  skip: 'Skip',
+  done: 'Got it',
+  next: 'Next',
+  back: 'Back',
+  pagesLabel: 'Pages',
+  relic: (rare: boolean) => (rare ? 'Rare relic' : 'Relic'),
+  top: (rare: boolean) => (rare ? 'a Rare relic, one of three' : 'a relic, one of three'),
+  pages: [
+    {
+      title: 'A ladder of rivals',
+      body: (n: RingNumbers) => `${n.rungs} rungs, each a trainer stronger than the last. Pay ${n.fee} ₽ to step in; every rung below the top pays money, and the top one pays ${n.top}.`,
+    },
+    {
+      title: 'See them before you fight',
+      body: () => 'The next rival and their whole team are always on show — before you pay, and before every rung.',
+    },
+    {
+      title: 'Nothing heals between rungs',
+      body: () => 'Your team walks into each rung as the last one left it: the HP, the statuses, the fainted. Pick who fights next with that in mind.',
+    },
+    {
+      title: 'Cash out, or climb',
+      body: () => 'After every rung you win, take what the ladder has banked and leave — or fight on for more. Lose a rung and the bank is lost with it.',
+    },
+    {
+      title: 'The run never ends here',
+      body: (n: RingNumbers) => `Even if your whole team faints, the run goes on: the fallen only take their Trauma. However the ladder ends — won, lost or cashed out — the ${n.name}'s medics heal your whole team to full.`,
+    },
+  ] as { title: string; body: (n: RingNumbers) => string }[],
 };
 
 /** The secret playtest menu (`rarecandy`). */

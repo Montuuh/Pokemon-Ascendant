@@ -9,6 +9,13 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one line of lede, then
 > `- **Headline.** One sentence.` bullets. `## Next` collects what reached the game since the last version.
 
+## Next
+
+- **The Game Corner, as FireRed drew it.** The whole room is the Game Corner now: walk up to the slots or a roulette table to play.
+- **Roulette tables.** Two tables by the door open the Roulette: size your bet, watch the ball, odds printed.
+- **How to play the Ring.** A five-page guide opens on your first climb, and from its button any time after.
+- **The Ring patches you up.** Win, lose or cash out, your whole team walks out healed. Only Trauma stays.
+
 ## v0.7 — Cities & Regions 2–3 · in progress
 
 The run goes on past the first Gym: three Regions, and a City between each.

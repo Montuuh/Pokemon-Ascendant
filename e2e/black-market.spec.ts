@@ -34,7 +34,7 @@ async function findIt(page: Page): Promise<void> {
   await expect(page.getByTestId('gc-grunt-line')).toContainText('Keep away from that poster');
   await page.getByTestId('gc-poster').click();
   await page.getByTestId('btn-switch-push').click();
-  await expect(page.getByTestId('gc-stairs')).toHaveAttribute('data-state', 'open');
+  await expect(page.getByTestId('gc-stairs')).toBeVisible();
   await page.getByTestId('gc-stairs').click();
   await expect(page.getByTestId('black-market-screen')).toBeVisible();
 }
@@ -62,6 +62,8 @@ test.describe('Finding it — §2.11.6', () => {
     await page.getByTestId('gc-poster').click();
     await page.getByTestId('btn-switch-push').click();
     await expect(page.getByTestId('gc-grunt')).toHaveCount(0);
+    // The switch is pushed: the poster is only a poster now, and nothing on it can be pressed again.
+    await expect(page.getByTestId('gc-poster')).toHaveCount(0);
     await expect(page.getByTestId('gc-stairs')).toBeVisible();
     await page.waitForTimeout(400);
     await page.screenshot({ path: 'playtest/game-corner-stairs.png' });
@@ -82,8 +84,11 @@ test.describe('Finding it — §2.11.6', () => {
     await page.getByTestId('btn-leave-market').click();
     await page.getByTestId('btn-leave-confirm').click();
     await expect(page.getByTestId('game-corner-screen')).toBeVisible();
-    await expect(page.getByTestId('gc-stairs')).toHaveAttribute('data-state', 'locked');
-    await page.getByTestId('gc-stairs').click();
+    // Back up, the stairs are gone under a locked hatch, and it says so.
+    await expect(page.getByTestId('gc-stairs')).toHaveCount(0);
+    await expect(page.getByTestId('gc-hatch')).toBeVisible();
+    await page.screenshot({ path: 'playtest/game-corner-hatch.png' });
+    await page.getByTestId('gc-hatch').click();
     await expect(page.getByTestId('game-corner-screen')).toBeVisible();
   });
 });
@@ -153,7 +158,7 @@ test.describe('The counters — §2.11.6', () => {
     const after = await page.evaluate(() => window.__ascendant!.run.state()!);
     expect(after.relics).toContain(legendary);
     expect(after.box).toHaveLength(2);
-    await expect(page.getByTestId('gc-stairs')).toHaveAttribute('data-state', 'locked');
+    await expect(page.getByTestId('gc-hatch')).toBeVisible();
   });
 });
 
@@ -164,9 +169,11 @@ test.describe('At 1280 × 720 — §9.6', () => {
     await page.getByTestId('door-game-corner').click();
     await expect(page.getByTestId('game-corner-room')).toBeVisible();
     await page.screenshot({ path: 'playtest/game-corner-720.png' });
+    for (const id of ['gc-poster', 'gc-slots-0', 'gc-slots-3', 'gc-roulette-0', 'gc-roulette-1', 'btn-leave-game-corner']) await expect(page.getByTestId(id)).toBeInViewport();
+    await page.getByTestId('gc-roulette-0').click();
     await expect(page.getByTestId('btn-spin')).toBeInViewport();
-    await expect(page.getByTestId('btn-pull')).toBeInViewport();
-    await expect(page.getByTestId('gc-poster')).toBeInViewport();
+    await page.screenshot({ path: 'playtest/game-corner-roulette-720.png' });
+    await page.getByTestId('btn-machine-close').click();
     await page.getByTestId('gc-poster').click();
     await page.getByTestId('btn-switch-push').click();
     await page.getByTestId('gc-stairs').click();
