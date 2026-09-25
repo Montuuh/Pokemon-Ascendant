@@ -8,6 +8,7 @@ import { SlotFace } from '@/ui/components/SlotFace';
 import { RUN_REJECT_TEXT, SLOT_FACE_LABEL } from '@/ui/strings';
 import { gameCornerTip, machineTip, moneyTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
+import { GameCornerRoom } from './GameCornerRoom';
 import styles from './GameCornerScreen.module.css';
 
 // §2.11.5 — Celadon's Game Corner: the Wheel and the Slots, each with its table printed beside it. The sim rolls
@@ -15,6 +16,7 @@ import styles from './GameCornerScreen.module.css';
 // draws that result and nothing else — the odds on screen are the odds, and a reload shows the same next result.
 // An animated outcome is revealed when the animation lands: the result line, the lit odds row and the wallet
 // wait for the wheel to stop and the reels to settle, so the screen never tells you before the machine does.
+// Above the machines, the back of the room (§2.11.6, `GameCornerRoom`): where Team Rocket's poster hangs.
 
 const SEGMENTS = CASINO.wheel.segments;
 const SLICE = 360 / SEGMENTS.length;
@@ -47,12 +49,13 @@ export function GameCornerScreen() {
   const { minStake, maxStake, step } = CASINO.wheel;
   const top = Math.max(minStake, Math.min(maxStake, Math.floor(run.money / step) * step));
 
+  function say(line: string) {
+    setToast(line);
+    window.setTimeout(() => setToast(null), 2600);
+  }
   function act(action: Parameters<typeof dispatch>[0]): boolean {
     const ok = dispatch(action);
-    if (!ok) {
-      setToast(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? 'Not now.');
-      window.setTimeout(() => setToast(null), 2600);
-    }
+    if (!ok) say(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? 'Not now.');
     return ok;
   }
 
@@ -91,6 +94,8 @@ export function GameCornerScreen() {
           <Money amount={shownMoney} size={18} />
         </Tipped>
       </header>
+
+      <GameCornerRoom onSay={say} />
 
       <div className={styles.machines}>
         {/* The Wheel: a bet you size. */}

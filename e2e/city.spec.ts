@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// v0.7.2 — the city: the Challenge Ring (§2.9.4.1), its prize, the Game Corner (§2.11.5) and the Department
+// v0.7.2 — the city: the Challenge Ring (§2.9.4.1; its own building since v0.7.7), its prize, the Game Corner (§2.11.5) and the Department
 // Store's floors (§2.11.2), each driven through the real reducers via the dev hook and then through the UI.
 
 async function inCity(page: Page, cityIndex: 0 | 1, money = 2000): Promise<void> {
@@ -19,43 +19,75 @@ async function inCity(page: Page, cityIndex: 0 | 1, money = 2000): Promise<void>
   await expect(page.getByTestId('city-screen')).toBeVisible();
 }
 
-test.describe('The Challenge Ring — §2.9.4.1', () => {
-  test('the Dojo opens the ladder for its fee, the next rival in full, and a rung is a real fight', async ({ page }) => {
+test.describe('The Ring and the Coliseum — §2.9.4.1', () => {
+  test('the Ring is a building in the square: the ladder on show, the fee on the button, a rung a real fight', async ({ page }) => {
     await inCity(page, 0, 1000);
-    await page.getByTestId('door-dojo').click();
-    await expect(page.getByTestId('door-ring')).toContainText('250');
+    await expect(page.getByTestId('door-ring')).toContainText('Challenge Ring');
+    // The town's art, loaded, with the Ring in the square where the court was.
+    await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
+    await page.screenshot({ path: 'playtest/city-pallet-ring.png' });
     await page.getByTestId('door-ring').click();
     await expect(page.getByTestId('ring-screen')).toBeVisible();
-    expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(750);
+    // Nothing is paid yet: the ladder and the first rival are there to be looked at first.
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(1000);
     await expect(page.getByTestId('ring-ladder').locator('li')).toHaveCount(2);
+    await expect(page.getByTestId('ring-rival').locator('li')).toHaveCount(3);
+    await expect(page.getByTestId('btn-ring-enter')).toContainText('250');
+    await page.screenshot({ path: 'playtest/ring-entry.png' });
+    await page.getByTestId('btn-ring-enter').click();
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(750);
     await expect(page.getByTestId('ring-banked')).toContainText('0');
     await expect(page.getByTestId('ring-rung-0')).toHaveAttribute('data-state', 'next');
-    await expect(page.getByTestId('ring-rival').locator('li')).toHaveCount(3);
     await page.screenshot({ path: 'playtest/ring.png' });
 
     await page.getByTestId('btn-ring-fight').click();
     await expect(page.getByTestId('combat-screen')).toBeVisible();
     await page.evaluate(() => window.__ascendant!.auto(999));
     await page.getByTestId('btn-continue-run').click();
-    // Won: back on the ladder with 300 banked. Lost: back in the Dojo, the ladder gone — never the run.
-    await expect(page.getByTestId('ring-screen').or(page.getByTestId('dojo-screen'))).toBeVisible();
+    // Won: back on the ladder with 300 banked. Lost: back in town, the ladder gone — never the run.
+    await expect(page.getByTestId('ring-screen').or(page.getByTestId('city-screen'))).toBeVisible();
     if (await page.getByTestId('ring-screen').isVisible()) await expect(page.getByTestId('ring-banked')).toContainText('300');
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.outcome)).toBe('in-progress');
   });
 
-  test('walking away before a rung closes the Ring for the visit, back in the Dojo', async ({ page }) => {
+  test('walking back out before paying costs nothing; walking away after asks first and shuts it', async ({ page }) => {
     await inCity(page, 0, 1000);
-    await page.getByTestId('door-dojo').click();
     await page.getByTestId('door-ring').click();
+    await page.getByTestId('btn-leave-ring').click();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
+    await page.getByTestId('door-ring').click();
+    await page.getByTestId('btn-ring-enter').click();
     await page.getByTestId('btn-ring-cash-out').click();
-    await expect(page.getByTestId('dojo-screen')).toBeVisible();
-    await expect(page.getByTestId('door-ring')).toBeDisabled();
+    await expect(page.getByTestId('confirm-leave')).toBeVisible();
+    await page.screenshot({ path: 'playtest/ring-leave-warning.png' });
+    await page.getByTestId('btn-leave-stay').click();
+    await expect(page.getByTestId('confirm-leave')).toBeHidden();
+    await page.getByTestId('btn-ring-cash-out').click();
+    await page.getByTestId('btn-leave-confirm').click();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
+    await page.getByTestId('door-ring').click();
+    await expect(page.getByTestId('ring-closed')).toBeVisible();
+    await expect(page.getByTestId('btn-ring-enter')).toHaveCount(0);
   });
 
-  test('the fee the wallet cannot cover says so on the door', async ({ page }) => {
+  test('the fee the wallet cannot cover says so on the button', async ({ page }) => {
     await inCity(page, 0, 100);
-    await page.getByTestId('door-dojo').click();
-    await expect(page.getByTestId('door-ring')).toContainText('not enough money');
+    await page.getByTestId('door-ring').click();
+    await expect(page.getByTestId('btn-ring-enter')).toHaveAttribute('aria-disabled', 'true');
+    await expect(page.getByTestId('btn-ring-enter')).toHaveAttribute('aria-label', /not enough money/);
+    // Pressing it anyway pays nothing and steps nowhere (Playwright holds back from aria-disabled; a player does not).
+    await page.getByTestId('btn-ring-enter').click({ force: true });
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.city!.ring!.entered)).toBe(false);
+  });
+
+  test('Celadon City has the Pokémon Coliseum, three rungs high', async ({ page }) => {
+    await inCity(page, 1, 1000);
+    await expect(page.getByTestId('door-ring')).toContainText('Pokémon Coliseum');
+    await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
+    await page.screenshot({ path: 'playtest/city-celadon-coliseum.png' });
+    await page.getByTestId('door-ring').click();
+    await expect(page.getByTestId('ring-screen')).toContainText('Pokémon Coliseum');
+    await expect(page.getByTestId('ring-ladder').locator('li')).toHaveCount(3);
   });
 
   async function climbToThePrize(page: Page): Promise<void> {
@@ -63,7 +95,7 @@ test.describe('The Challenge Ring — §2.9.4.1', () => {
     // Win both rungs through the reducer: these tests are about the prize, not the fights.
     await page.evaluate(() => {
       const dev = window.__ascendant!;
-      dev.run.dispatch({ type: 'enter-building', building: 'dojo' });
+      dev.run.dispatch({ type: 'enter-building', building: 'ring' });
       dev.run.dispatch({ type: 'enter-ring' });
       for (let i = 0; i < 2; i++) {
         dev.run.dispatch({ type: 'ring-fight' });
@@ -80,7 +112,7 @@ test.describe('The Challenge Ring — §2.9.4.1', () => {
     await page.screenshot({ path: 'playtest/ring-prize.png' });
     await page.locator('[data-testid^="ring-prize-"]').first().click();
     await page.getByTestId('btn-take-prize').click();
-    await expect(page.getByTestId('dojo-screen')).toBeVisible();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
     const run = await page.evaluate(() => window.__ascendant!.run.state()!);
     expect(run.money).toBe(1000 - 250 + 300);
     expect(run.relics).toHaveLength(1);
@@ -89,7 +121,7 @@ test.describe('The Challenge Ring — §2.9.4.1', () => {
   test('leaving all three is an answer, and the ladder still pays out', async ({ page }) => {
     await climbToThePrize(page);
     await page.getByTestId('btn-decline-prize').click();
-    await expect(page.getByTestId('dojo-screen')).toBeVisible();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
     const run = await page.evaluate(() => window.__ascendant!.run.state()!);
     expect(run.money).toBe(1000 - 250 + 300);
     expect(run.relics).toHaveLength(0);

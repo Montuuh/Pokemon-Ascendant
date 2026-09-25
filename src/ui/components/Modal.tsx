@@ -14,6 +14,7 @@ export function Modal({
   testId,
   tone = 'neutral',
   size = 'default',
+  onDismiss,
 }: {
   title: string;
   children: ReactNode;
@@ -21,8 +22,14 @@ export function Modal({
   tone?: 'neutral' | 'victory' | 'defeat';
   /** `reading` widens the panel, left-aligns it and lets it scroll — for prose rather than a prompt. */
   size?: 'default' | 'reading';
+  /** The safe answer, taken on Escape. A modal that offers one should never need a click to leave. */
+  onDismiss?: () => void;
 }) {
   const panel = useRef<HTMLDivElement>(null);
+  const dismiss = useRef(onDismiss);
+  useEffect(() => {
+    dismiss.current = onDismiss;
+  });
 
   useEffect(() => {
     const returnTo = document.activeElement as HTMLElement | null;
@@ -36,6 +43,12 @@ export function Modal({
     focusable()[0]?.focus();
 
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && dismiss.current) {
+        // Captured, so a screen's own Escape (the pause menu) does not fire behind the modal.
+        e.stopPropagation();
+        dismiss.current();
+        return;
+      }
       if (e.key !== 'Tab') return;
       const items = focusable();
       if (items.length === 0) return;

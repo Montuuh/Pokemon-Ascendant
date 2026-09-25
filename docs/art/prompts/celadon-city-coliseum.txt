@@ -1,0 +1,7 @@
+Edit the attached image. It is a top-down 16-bit pixel-art Pokémon city (FireRed / LeafGreen Celadon City overworld style). Keep EVERYTHING exactly as it is — every building, tree, street, paving stone, fountain, flower bed, the Department Store, the Game Corner, the colours, the pixel size, the framing and the camera — pixel for pixel. Change TWO things only:
+
+1. The sand football-style court with white lines and its eight wooden benches in the centre of the grey paved plaza (left of centre, between the Pokémon Centre block and the fountain garden) becomes a Pokémon Coliseum: a grand oval stadium seen from straight above, in the same pixel-art style and the same pixel size. Several rings of stepped grey stone and red seating tiers around an oval sandy battle field, a big red-and-white Poké Ball emblem painted in the middle of the field, a grand arched entrance gate in the middle of its bottom side with two red banners, small flag poles with pennants around the rim. It fills the same paved block the court and its benches filled, with a band of grey paving left all around it so the street edges are unchanged. It must read at a glance as the big city's big stadium.
+
+2. The dark open stairway going underground to the right of the pink-and-magenta Game Corner building, and the small grey sign beside it, disappear: that spot becomes the same plain grey paving stones as the pavement around it, continuing the pattern seamlessly.
+
+No text, no letters, no numbers, no people, no Pokémon, no creatures, no UI. Same 16:9 framing as the input.

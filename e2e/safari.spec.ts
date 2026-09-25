@@ -138,7 +138,10 @@ test.describe('The Safari Zone — §2.11.6', () => {
     await expect(page.getByTestId('btn-safari-retreat')).toContainText('Sure?');
     await page.getByTestId('btn-safari-retreat').click();
     await expect(page.getByTestId('safari-result-1')).toContainText('Left');
+    // §2.11.0 — with the park still open, walking out asks first: it closes behind you.
     await page.getByTestId('btn-leave-safari').click();
+    await expect(page.getByTestId('confirm-leave')).toBeVisible();
+    await page.getByTestId('btn-leave-confirm').click();
     await expect(page.getByTestId('city-screen')).toBeVisible();
     // Once per visit.
     await page.getByTestId('door-safari').click();

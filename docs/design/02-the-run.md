@@ -749,10 +749,12 @@ A third counter — **extra moves** beyond the tutor list — is drawn in the Do
 
 ### §2.9.4.1 The Challenge Ring
 
-A building of its own in each City: a **ladder of trainer fights you pay to climb**. Pallet Town's is the **Ring**,
-a town arena in the square; Celadon's is the **Pokémon Coliseum**, the big city's big stage. *(They left the Dojo
-on 2026-09-24, the user's call: a ladder of fights is a place to walk to, not a counter; built in v0.7.7 — until
-then the door is inside the Dojo.)*
+A building of its own in each City: a **ladder of trainer fights you pay to climb**. Pallet Town's is the
+**Challenge Ring**, a stone battle ring in the square; Celadon's is the **Pokémon Coliseum**, the big city's big
+stage. *(They left the Dojo on 2026-09-24, the user's call: a ladder of fights is a place to walk to, not a counter.)*
+Walking in costs nothing: the ladder, what each rung pays and the first rival stand on show, and the fee is paid on
+the way onto the ladder — so the fee is always paid with the fight in view (Pillar 1). Once it is paid, the only
+ways off are the ladder's own (below), and walking away asks first (§2.11.0).
 
 - **Two rungs at Pallet Town's Ring, three at Celadon's Coliseum** — the big city is the big challenge.
 - Each rung is a trainer stronger than the last, and **you see the next rung's team before you fight it**.
@@ -894,8 +896,12 @@ the doors, and you walk out through the gate when you are ready (§2.1.4).
 - **No visit budget.** Enter what you like. Money, HP and Trauma are the only rations.
 - **Two kinds of door.** The **open** ones — Pokémon Center, shop, Dojo, Game Corner — may be entered and left
   as often as you like; they take your money, not your turn. The **committing** ones — the Ring or the Coliseum
-  (§2.9.4.1), the Safari Zone (§2.11.6) and, when it opens, the Black Market (§2.11.6) — resolve **once per visit**
-  and close behind you.
+  (§2.9.4.1), the Safari Zone and the Black Market (§2.11.6) — resolve **once per visit** and close behind you.
+- **A committing door asks before it closes.** Walking out of one that would close behind you — cashing out of the
+  Ring, leaving the Safari with a ticket bought, going back up from the Black Market — opens a one-line warning
+  that says what closes, with **Stay** first and focused (Escape stays). Walking out of one that has not committed
+  you yet (the Ring before its fee, the Safari before its ticket) does not ask: nothing closes. *(The user's call,
+  2026-09-25: a door that shuts for good should say so before, not after.)*
 - **The gate closes the City.** Leaving opens the Reflection (§2.11.3): pick one Region Modifier, and the pick
   *is* the departure. Nothing else can be done after it.
 - **A door in development is still a door.** A building that is coming later is drawn on the map and can be
@@ -1022,10 +1028,10 @@ Badges are the run-long systems.
 | **Pokémon Center** (§2.11.1) | ✅ | ✅ | Open — enter and leave freely |
 | **Shop** (§2.11.2) — Mart / Department Store | ✅ | ✅ | Open |
 | **Dojo** (§2.9.4) — tutor and abilities | ✅ | ✅ wider | Open |
-| **Ring** (town) · **Pokémon Coliseum** (city) (§2.9.4.1) — their own buildings from v0.7.7 | ✅ | ✅ | Committing, once per visit |
+| **Challenge Ring** (town) · **Pokémon Coliseum** (city) (§2.9.4.1) | ✅ | ✅ | Committing, once per visit |
 | **Game Corner** (§2.11.5) | — | ✅ | Open |
 | **Safari Zone** (§2.11.6) | ✅ | ✅ bigger | Committing, once per visit |
-| **Black Market** (§2.11.6) — **a secret**: no door on the map; found inside the Game Corner | — | 🚧 | In development; committing once it opens |
+| **Black Market** (§2.11.6) — **a secret**: no door on the map; found behind the Game Corner's poster | — | ✅ | Committing, once per visit |
 | **The gate** (§2.11.3) | ✅ | ✅ | Ends the City |
 
 ## §2.11.5 The Game Corner
@@ -1061,7 +1067,7 @@ weight; the machines are the run's only way to turn it into a *chance* at the th
 in expectation. Printing the tables is what keeps it inside Pillar 1: the gamble is chosen with the numbers in
 view, like the catch roll (§2.6.4.3).
 
-## §2.11.6 The Safari Zone, and the doors still in development
+## §2.11.6 The Safari Zone, the Black Market, and the doors still in development
 
 **🦌 The Safari Zone** *(town and city, open since v0.7.6)* — a paid catching ground for species no route
 offers, played as a **stalk** rather than a fight. It is the one place in the run with no combat in it, so it has
@@ -1138,15 +1144,54 @@ Pokémon deeper, and a fresh line evolving on the spot, is what the building is 
 sit on §2.2.1's targets, and Region 2 sits seven points over its ~60 %, inside its guard. The tier is left alone:
 v0.8's multi-enemy fights move every Region, and the balance pass after them (v0.8.6) retunes the curve once.
 
+**🖤 The Black Market** *(Celadon only, a secret beneath the Game Corner)* — **Team Rocket's** back room. It has
+**no door on the City map**: at the back of the Game Corner, drawn from FireRed / LeafGreen's own room, a Rocket
+Grunt stands guard under a paper poster. Walk up to the poster and he says to keep away from it; look closely and it
+does not sit flat; press it and there is a switch behind it. Pushing it sends the Grunt off and opens the stairs in
+the corner, the way the Rocket Hideout opened under the Celadon Game Corner in Gen I. Nothing else in the game
+mentions the market. An easter egg on purpose (user, 2026-09-24): the player who finds it has earned the back room,
+and the one who does not has lost nothing the town promised.
+
+Downstairs is the Rocket Hideout's B1F with four Rocket people at four counters, none of them paid in the usual
+coin. Everything on offer is rolled on arrival on its own stream (§10.7); the market is **committing** (§2.11.0):
+once per visit, and going back up locks the door.
+
+| Counter | What it offers | The price |
+|---|---|---|
+| **The Trader** | Two stolen Pokémon — the Game Corner's own prizes and Gen I's in-game trades, less every line a route offers | One of yours, once a visit. Theirs arrives at your Pokémon's level, fresh (full HP, no Trauma); your Pokémon's held item comes back to the bag |
+| **The Fence** | **Rare Candy**: one level, now, with every move and evolution it brings — the one item no shop sells. Three a visit | 400 ₽ each (Region Modifiers apply) |
+| | …and it **buys relics**: the only way a relic becomes money again | Pays 40 % of the relic's value |
+| **The Gambler** | Three Rares to aim at (the rarity below for an account that has not opened three, as the Ring's prize) | 1–3 of your relics, staked at a **printed chance** of 80 % × stake ÷ prize, from 5 % to 90 %; the stake is lost either way. Once a visit |
+| **The Executive** (the showcase) | One Legendary the run does not hold | **Three of your Pokémon**, and the Box keeps at least one. **The deal closes the market** |
+
+A relic's value at these counters is its shop price — Common 150, Uncommon 300, Rare 600 — and a Legendary 1 200. A
+relic whose charge is spent, or whose loss would leave the Box over its capacity (the Box Expander), is taken by
+neither the Fence nor the Gambler. The Gambler's expectation is 0.8 in relic value: a way to turn relics you do not
+want into a chance at one you do, never a farm (§2.11.5's argument). Staking a Legendary frees its place under the
+cap, and the showcase is there for it.
+
+**Why Pokémon, not HP or Trauma.** The first sketch priced the Legendary in HP or Trauma; the user rejected it
+(2026-09-25): the Pokémon Center two streets away heals the HP free and its Therapy buys the Trauma back, so neither
+was a price. A Pokémon handed over is the one cost no building in the City refunds — its cards, its levels and its
+Bond progress leave with it — and it is what Team Rocket does. The deal closing the market (rather than an HP cost
+that locks the counters) was the user's other half of the idea: the showcase is the last thing you do down there.
+
+**The showcase is off the books** (§7.3.7): its Legendary may take a run to **three**, one past the hold cap.
+Measured while building it: a run that took both Gyms' Legendaries reaches Celadon already holding two, so a showcase
+bound by the cap was shut to nearly everyone who found it (every harness run that reached Celadon in the first block
+held two). Off the books, the harness buys it in 248 of 266 Celadon visits. The cap is there against a snowball;
+three Pokémon is a harder brake than the cap.
+
+**Measured, not asserted** (`src/sim/balance/market.test.ts`, 720 runs each way, the harness that has found it
+buying three candies for its Lead and the Legendary for its three lowest-levelled whenever the Box holds five):
+Region 3 given Region 2 goes from **49 % to 37 %**, the whole run from 18 % to 14 %. Candies alone read 44 %, inside
+the noise; the showcase is the cost. That is the design working: three Pokémon is a price, and buying it by reflex
+loses more than it wins — it is for the Box with fodder to spare and a Legendary that finishes its build. The
+default harness plays the player who has not found the secret, so the curve (§2.2.1) is untouched. The prices are
+first values for the balance pass (v0.8.6).
+
 **The doors still in development** are on the map from the first build, drawn and enterable, each opening onto a
 panel that says what it will be and that it is in development (§2.11.0).
-
-**🖤 Black Market** *(a secret beneath the Game Corner)* — **Team Rocket's** back room. Legendary relics paid for
-in **HP or Trauma** instead of money, Pokémon traded for other Pokémon, and the rest of the things a Poké Mart will
-not sell. It has **no door on the City map**: inside the Game Corner, a switch hidden behind a poster opens stairs
-down to it, the way the Rocket Hideout opened under the Celadon Game Corner in Gen I. An easter egg on purpose
-(user, 2026-09-24): the player who finds it has earned the back room, and the one who does not has lost nothing
-the town promised. *(Built in v0.7.7; until then a door beside the Game Corner stands for it, in development.)*
 
 **📜 The Dojo's third counter** *(inside both Dojos)* — **extra moves**: a catalogue beyond each species'
 tutor list, sold by the Dojo. Drawn beside the tutor and the ability counters, and in development.
@@ -1250,6 +1295,7 @@ v0.7.4 it was Region 1's tables sixteen levels up and went unnamed on the map.)*
 | City Dojo | No | spend | — | — | Off-learnset moves + abilities |
 | Challenge Ring | Yes | fee → prize | — | Loot on the way out | 2–3 fights, no heal between; a loss is not a run loss |
 | Game Corner | No | bet | — | — | Two machines — the Wheel (EV 0.96) and the Slots (EV 0.94) — tables printed |
+| Black Market | No | candies; relics sold | — | — | A secret: a Pokémon traded, Rare Candies, a relic wager, a Legendary for three Pokémon |
 | City Reflection | No | — | — | — | Region Modifier; it closes the City |
 
 ---

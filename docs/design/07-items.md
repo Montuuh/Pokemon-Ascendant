@@ -145,7 +145,7 @@ Sixty relics: **50 in the drop pool** (Common, Uncommon, Rare) plus **10 choice-
 | Common | 25 | 60 % | Trainer drops, Region Shops, Safe events |
 | Uncommon | 18 | 30 % | Elite drops, City Shops, Tradeoff events |
 | Rare | 7 | 10 % | Gym drops, Victory Road, Gamble events |
-| **Legendary** | 10 | **never drops** | Guaranteed 1-of-3 picks only (§7.3.7) |
+| **Legendary** | 10 | **never drops** | Guaranteed 1-of-3 picks, and the Black Market's showcase (§7.3.7) |
 
 Rarity is **drop weight**. Meta tier (§8.6.1) is **pool membership**. They are orthogonal and conflating them is
 the single easiest mistake to make in this system.
@@ -254,8 +254,8 @@ the relic system and retuned for permanent scope.
 
 | | |
 |---|---|
-| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory, at the Victory Road Summit, and at the Black Market — about four pick-moments per run. Seeded; already-held relics are excluded |
-| **Hold cap** | **Maximum 2 per run.** At the cap, a pick-moment offers a Rare instead, or a skip |
+| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory and at the Victory Road Summit. Seeded; already-held relics are excluded. And one more, off the books: the Black Market's showcase sells **one** Legendary the run does not hold, for three of your Pokémon (§2.11.6) |
+| **Hold cap** | **Maximum 2 per run** from the picks. At the cap, a pick-moment offers a Rare instead, or a skip. The showcase may take a run to **3**: a run that took both Gyms' Legendaries reaches Celadon at the cap, and a showcase bound by it was shut to nearly everyone who found it (measured in v0.7.7). Three Pokémon is the brake instead |
 | **Never** | Not in Starting Relics, not in shop random stock, not in the drop pool |
 | **Meta status** | Available from run 1 — Legendary is a rarity class, not a meta tier |
 | **Power** | The six ported Boons were retuned to about **two-thirds** strength, because they now last a whole run instead of five League fights |
@@ -394,7 +394,8 @@ the hook vocabulary is listed in the catalogues.
 | Relics: Common and Uncommon, drops, Starting Relic | v0.4 |
 | Held Items | v0.4 |
 | TMs and Evolution Items | v0.3 |
-| Rare relics, the Legendary pick, the Black Market | v0.5 |
+| Rare relics, the Legendary pick | v0.5 |
+| The Black Market (§2.11.6) | v0.7.7 ✅ |
 | Tier-2 and Tier-3 unlocks | v0.6 |
 
 ---

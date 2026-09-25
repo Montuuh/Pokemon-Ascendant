@@ -101,6 +101,8 @@ export const useRunStore = create<RunStore>((set, get) => ({
       'enter-ring', 'ring-cash-out', 'ring-pick', 'spin-wheel', 'pull-slots', 'leave-game-corner',
       // v0.7.6 — every Safari action: a turn undone by a reload is a turn replanned, and a throw is a roll.
       'enter-safari', 'safari-approach', 'safari-step', 'safari-bait', 'safari-rock', 'safari-throw', 'safari-wait', 'safari-retreat', 'leave-safari',
+      // v0.7.7 — the Ring's own door, and every Black Market deal: each one is permanent, and a wager is a roll.
+      'leave-ring', 'push-switch', 'enter-black-market', 'market-trade', 'market-candy', 'market-sell-relic', 'market-wager', 'market-legendary', 'leave-black-market',
     ];
     if (AUTOSAVE.includes(action.type)) get().save();
     return true;

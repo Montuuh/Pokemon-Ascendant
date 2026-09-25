@@ -231,28 +231,3 @@
 }
 .soonDoor:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
 .soonIcon { color: var(--accent-warning); }
-
-/* §2.9.4.1 — the Challenge Ring's door, open: the fee on its face. */
-.ringOpen {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-4);
-  border-radius: var(--radius-md);
-  border: 2px solid var(--ink-primary);
-  background: var(--surface-1);
-  color: var(--ink-primary);
-  font-family: var(--font-display);
-  font-weight: 700;
-  cursor: pointer;
-}
-.ringOpen:disabled { cursor: not-allowed; border-style: dashed; color: var(--ink-secondary); }
-.ringOpen:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
-.ringFee {
-  padding: 1px var(--sp-2);
-  border-radius: var(--radius-pill);
-  background: var(--accent-action);
-  color: var(--ink-on-accent);
-  font-size: var(--type-small);
-}
-.ringOpen:disabled .ringFee { background: var(--surface-2); color: var(--ink-secondary); }

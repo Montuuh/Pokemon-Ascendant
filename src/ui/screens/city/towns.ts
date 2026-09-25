@@ -22,27 +22,28 @@ export interface TownLayout {
 
 export const TOWNS: Record<CityId, TownLayout> = {
   // public/art/towns/pallet-town.png — Center top-left, Mart top-right, Dojo bottom-left, the Safari lodge
-  // behind its palisade bottom-right, and the road out at the top. The court in the square is scenery: the
-  // Challenge Ring's door is inside the Dojo (§2.9.4.1, §2.11.4).
+  // behind its palisade bottom-right, the road out at the top, and the Challenge Ring — a stone battle ring with its
+  // benches — in the square (§2.9.4.1).
   'pallet-town': {
     doors: [
       { door: 'center', building: 'center', box: [9.6, 5.5, 13.6, 23.6], plate: 'bottom' },
       { door: 'mart', building: 'mart', box: [77.1, 7.9, 10, 21.3], plate: 'bottom' },
       { door: 'dojo', building: 'dojo', box: [2.9, 41.2, 23.7, 32.4], plate: 'bottom' },
+      { door: 'ring', building: 'ring', box: [36.5, 23.1, 27.1, 27.8], plate: 'top' },
       { door: 'safari', building: 'safari', box: [72, 43, 26, 44], plate: 'top' },
       { door: 'gate', box: [44.5, 0, 11, 13], plate: 'bottom' },
     ],
   },
   // public/art/towns/celadon-city.png — the Center top-left, the Department Store's tower top-right, the Dojo
-  // bottom-left, the Game Corner with the stairs down to the Black Market beside it, the Safari lodge on the
-  // east edge, and the avenue out at the top. The plaza's court is scenery, as in Pallet Town.
+  // bottom-left, the Pokémon Coliseum on the central plaza, the Game Corner (the Black Market is found inside it,
+  // §2.11.6), the Safari lodge on the east edge, and the avenue out at the top.
   'celadon-city': {
     doors: [
       { door: 'center', building: 'center', box: [6.3, 11.6, 11.7, 18.5], plate: 'bottom' },
       { door: 'department-store', building: 'mart', box: [51.6, 3.5, 23.4, 40], plate: 'bottom' },
       { door: 'dojo', building: 'dojo', box: [6.1, 65.6, 13.8, 23.8], plate: 'bottom' },
+      { door: 'ring', building: 'ring', box: [23.2, 33.8, 23.7, 33.8], plate: 'top' },
       { door: 'game-corner', building: 'game-corner', box: [50.8, 66.7, 16.9, 22.3], plate: 'bottom' },
-      { door: 'black-market', box: [70, 75.7, 6, 13.6], plate: 'top' },
       { door: 'safari', building: 'safari', box: [82, 15.7, 17.5, 52.8], plate: 'top' },
       { door: 'gate', box: [31, 0, 8.5, 14], plate: 'bottom' },
     ],

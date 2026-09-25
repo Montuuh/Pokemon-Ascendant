@@ -34,7 +34,7 @@ export function LegendaryScreen() {
       headingTip={
         <Tip
           title="Legendary relics"
-          body={atCap ? `You already hold ${LEGENDARY_CAP}, the most anyone carries, so this offer is the tier below.` : 'Never sold and never dropped — the only way to one is a pick like this, at a Gym victory. You hold at most two per run.'}
+          body={atCap ? `You already hold ${LEGENDARY_CAP}, the most anyone carries, so this offer is the tier below.` : 'Never on a shop shelf and never dropped — a pick like this, at a Gym victory, is the way to one. The picks stop at two a run.'}
           footer="Leaving all three is allowed."
         />
       }

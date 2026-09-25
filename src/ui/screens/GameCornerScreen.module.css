@@ -4,7 +4,7 @@
 .root {
   height: 100%;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto;
   gap: var(--sp-4);
   padding: var(--sp-5);
   background: radial-gradient(130% 90% at 50% 0%, color-mix(in srgb, var(--type-psychic) 16%, var(--surface-0)) 0%, var(--surface-0) 70%);
@@ -175,4 +175,28 @@
 
 @media (max-width: 1000px) {
   .machines { grid-template-columns: 1fr; overflow-y: auto; }
+}
+
+/* A short screen spends its width, not its height: the wheel or the reels on the left, the printed table, the
+   controls and the result beside them — so the back wall of the room above never pushes a machine's button out of
+   sight at 720p. */
+@media (max-height: 860px) and (min-width: 1001px) {
+  .machine {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'name name'
+      'visual table'
+      'visual controls'
+      'visual result';
+    column-gap: var(--sp-5);
+    align-items: center;
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .machineName { grid-area: name; }
+  .wheelWrap,
+  .reels { grid-area: visual; }
+  .wheelWrap { width: min(240px, 30dvh); }
+  .table { grid-area: table; }
+  .controls { grid-area: controls; }
+  .result { grid-area: result; }
 }

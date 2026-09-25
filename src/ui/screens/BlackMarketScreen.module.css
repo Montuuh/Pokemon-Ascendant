@@ -1,0 +1,214 @@
+/* §2.11.6 — Team Rocket's Black Market: the Rocket Hideout's B1F, its wall along the top, its floor underfoot (both
+   the FRLG map's own tiles at a whole ×3), and four counters. Stage chrome — a basement, not a shop. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-5) var(--sp-5);
+  background:
+    linear-gradient(color-mix(in srgb, var(--surface-0) 62%, transparent), color-mix(in srgb, var(--surface-0) 62%, transparent)),
+    var(--floor) 0 0 / 48px 48px repeat,
+    var(--surface-0);
+  color: var(--ink-primary);
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+.root img { image-rendering: pixelated; }
+
+/* The back wall, vents and all: the heading and the wallet hang on it. */
+.wall {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  height: 72px;
+  margin: 0 calc(-1 * var(--sp-5));
+  padding: 0 var(--sp-5);
+  background: var(--wall) 0 0 / 144px 72px repeat-x;
+  border-bottom: 4px solid var(--surface-sunken);
+}
+.title,
+.wallet {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+}
+.title { margin: 0; font-size: var(--type-h2); color: var(--ink-primary); }
+.wallet { font-weight: 700; }
+
+/* The four of them, standing in a row: pick one and their counter opens below. */
+.hall {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.dealers { display: flex; justify-content: center; gap: var(--sp-4); flex-wrap: wrap; }
+.dealer {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  width: 150px;
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface-1) 80%, transparent);
+  color: var(--ink-primary);
+  font: inherit;
+  cursor: pointer;
+}
+.dealer:hover { border-color: var(--border-strong); }
+.dealer[data-state='active'] { border: 3px solid var(--border-strong); background: var(--surface-1); }
+.dealer:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.dealerSprite { width: 96px; height: 96px; }
+.dealerName { font-size: var(--type-body); }
+.dealtMark {
+  position: absolute;
+  display: inline-flex;
+  top: var(--sp-2);
+  right: var(--sp-2);
+  color: var(--accent-positive);
+}
+
+.counter {
+  min-height: 0;
+  overflow-y: auto;
+  width: min(1100px, 100%);
+  max-height: 100%;
+  align-self: start;
+  justify-self: center;
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: var(--radius-lg);
+  border: 3px solid var(--border-strong);
+  background: var(--surface-1);
+}
+.counter:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.line { margin: 0 0 var(--sp-3); font-style: italic; color: var(--ink-secondary); }
+.stack { display: grid; gap: var(--sp-3); }
+.ask { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--type-body); font-weight: 700; }
+.empty { margin: 0; color: var(--ink-secondary); }
+.done {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--border-subtle);
+  font-weight: 700;
+}
+
+/* The Trader's two stolen Pokémon. */
+.offers { display: flex; gap: var(--sp-4); flex-wrap: wrap; }
+.mon {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  min-width: 180px;
+  padding: var(--sp-2) var(--sp-4) var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font: inherit;
+  cursor: pointer;
+}
+.monOn { border: 3px solid var(--border-strong); }
+.mon:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.monSprite { width: 96px; height: 96px; object-fit: contain; }
+.monName { font-size: var(--type-h3); }
+.types { display: inline-flex; gap: var(--sp-1); }
+
+/* Your Pokémon and your relics, as chips to pick. */
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font: inherit;
+  cursor: pointer;
+}
+.chipOn { border-color: var(--border-strong); background: var(--surface-3); }
+/* Not pickable now, still readable: full ink, a dashed edge, and a lock where the dealer will not take it. */
+.chip:disabled { cursor: not-allowed; border-style: dashed; background: transparent; }
+.chipLock { color: var(--ink-secondary); }
+.chip:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.chipName { font-weight: 700; }
+.chipMeta { display: inline-flex; align-items: center; gap: var(--sp-1); color: var(--ink-secondary); font-size: var(--type-small); }
+.relicIcon { width: 30px; height: 30px; }
+
+.candy { display: inline-flex; align-items: center; gap: var(--sp-2); justify-self: start; }
+/* The Rares to aim at, side by side: three cards in a row read as a choice, and keep the counter short. */
+.targets { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sp-3); }
+.priceTag { font-weight: 700; }
+.chance {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  font-size: var(--type-h3);
+}
+
+.actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-3); }
+.primary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.primary:disabled { cursor: not-allowed; border-style: dashed; background: var(--surface-2); color: var(--ink-primary); }
+.primary:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+.footer { display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-3); }
+.toast {
+  margin: 0 auto 0 0;
+  padding: var(--sp-2) var(--sp-4);
+  border-left: 4px solid var(--accent-warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-1);
+  font-size: var(--type-small);
+}
+/* The way out is the stairs you came down. */
+.up {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-5) var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.up:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.stairsArt { width: 36px; height: 52px; }
+
+@media (max-height: 800px) {
+  .dealerSprite { width: 64px; height: 64px; }
+  .mon { padding: var(--sp-1) var(--sp-3) var(--sp-2); }
+  .monSprite { width: 64px; height: 64px; }
+  .counter { padding: var(--sp-3) var(--sp-4); }
+}

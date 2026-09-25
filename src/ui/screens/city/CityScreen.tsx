@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   IconArrowBigUpLines, IconBackpack, IconBarrierBlock, IconBook, IconBuildingStore, IconClover, IconHeartPlus, IconKarate,
-  IconMenu2, IconShoppingBag, IconStairsDown, IconTrees, IconTrophy,
+  IconMenu2, IconShoppingBag, IconTrees, IconTrophy,
 } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
@@ -36,7 +36,6 @@ const DOOR_ICON: Record<CityDoor, typeof IconHeartPlus> = {
   'extra-moves': IconBook,
   safari: IconTrees,
   'game-corner': IconClover,
-  'black-market': IconStairsDown,
   gate: IconArrowBigUpLines,
 };
 
@@ -126,7 +125,7 @@ export function CityScreen() {
         <div className={styles.town}>
           <img className={styles.art} src={townArt(city.id)} alt={`${def.name}, seen from above`} draggable={false} />
           {layout.doors.map((d) => (
-            <Door key={d.door} placement={d} open={isOpen(d)} label={d.door === 'gate' ? gateName : CITY_DOOR_LABEL[d.door]} onKnock={() => knock(d)} />
+            <Door key={d.door} placement={d} open={isOpen(d)} label={d.door === 'gate' ? gateName : d.door === 'ring' ? def.ringName : CITY_DOOR_LABEL[d.door]} onKnock={() => knock(d)} />
           ))}
         </div>
       </div>

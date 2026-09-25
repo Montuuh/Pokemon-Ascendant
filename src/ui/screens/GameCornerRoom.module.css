@@ -1,0 +1,102 @@
+/* §2.11.6 — the Game Corner's back wall: the real FRLG map at a whole-pixel scale, with its spots over it. */
+
+.room { display: flex; justify-content: center; min-width: 0; }
+
+/* The wall's own pixels: ×2, and ×3 where the screen is tall enough to spare the height. */
+.wall {
+  --px: 2;
+  position: relative;
+  width: calc(288px * var(--px));
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  border: 3px solid var(--ink-primary);
+  overflow: visible;
+  background: var(--surface-2);
+}
+@media (min-height: 900px) {
+  .wall { --px: 3; }
+}
+.art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--radius-md) - 3px);
+  image-rendering: pixelated;
+  user-select: none;
+}
+
+/* A spot on the wall: invisible until you are on it, like looking at something closely in the games. */
+.spot {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  cursor: pointer;
+}
+.spot:hover,
+.spot:focus-visible { outline: 3px solid var(--accent-action); outline-offset: 1px; }
+
+/* The stairs arrive with the switch, and say what they are. */
+.stairs {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  animation: reveal var(--motion-slow) ease-out both;
+}
+.stairs[data-state='locked'] { cursor: not-allowed; }
+.stairsPlate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  /* Above the stairs, on the plain wallpaper, inside the wall's right edge. */
+  transform: translateY(calc(-100% - var(--sp-1)));
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--ink-primary);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.stairs[data-state='locked'] .stairsPlate { border-style: dashed; color: var(--ink-secondary); }
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The Grunt's line, in a speech bubble to his left, over the counter. */
+.bubble {
+  position: absolute;
+  margin: 0 var(--sp-2) 0 0;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--ink-primary);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: reveal var(--motion-base) ease-out both;
+}
+
+.lede { margin: 0; color: var(--ink-primary); }
+.actions { display: flex; justify-content: flex-end; gap: var(--sp-3); margin-top: var(--sp-4); }
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.primary { background: var(--accent-action); color: var(--ink-on-accent); }
+.secondary { background: var(--surface-1); color: var(--ink-primary); }
+.primary:focus-visible,
+.secondary:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }

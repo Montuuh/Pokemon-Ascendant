@@ -46,6 +46,11 @@ const TRAINERS = {
   sabrina: 'sabrina',
   lorelei: 'lorelei-gen3',
   kiyo: 'blackbelt-gen4',
+  // v0.7.7 — Team Rocket's Black Market (§2.11.6): the Trader (a female Grunt), the Gambler, and the Executive
+  // behind the showcase (Archer). The Fence is the Grunt already fetched for Region 2.
+  rocketgruntf: 'rocketgruntf',
+  gambler: 'gambler',
+  archer: 'archer',
 };
 
 const url = (id) => `https://play.pokemonshowdown.com/sprites/trainers/${id}.png`;

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, regionContent, regionName, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
+import { AID_HEAL_PCT, BLACK_MARKET, LEGENDARY_CAP, SHOWCASE_CAP, regionContent, regionName, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
@@ -362,9 +362,9 @@ export function badgeTip(name: string, description: string): ReactNode {
 
 // ── The city (v0.7.2) ─────────────────────────────────────────────────────────────────────────────────────
 
-/** §2.9.4.1 — the Ring's door inside the Dojo: the fee, the ladder, and whether it is still open this visit. */
-export function ringDoorTip(fee: number, prizes: string[], open: boolean): ReactNode {
-  return <Tip title="Challenge Ring" meta={open ? [`${fee} ₽ to enter`] : ['Done for this visit']} body={CITY_DOOR_HINT.ring} footer={`Pays ${prizes.join(' → ')}.`} />;
+/** §2.9.4.1 — the Ring's fee, on the button that pays it: what the ladder pays, bottom to top. */
+export function ringEntryTip(name: string, fee: number, prizes: string[]): ReactNode {
+  return <Tip title={name} meta={[`${fee} ₽ to enter`, 'Once per visit']} body={`Pays ${prizes.join(' → ')}.`} footer="Once you pay, the way out is cashing out, the top, or a lost rung." />;
 }
 
 /** §2.9.4.1 — a rung of the ladder, by what it pays and whether it is behind you. */
@@ -378,9 +378,9 @@ export function rungTip(index: number, prize: string, level: number, state: 'won
   return <Tip title={prize} meta={meta} body={body} />;
 }
 
-/** §2.9.4.1 — the Ring's own heading bubble. */
-export function ringTip(): ReactNode {
-  return <Tip title="Challenge Ring" body={CITY_DOOR_HINT.ring} footer="Nothing heals between rungs. Losing one loses the ladder, never the run." />;
+/** §2.9.4.1 — the Ring's own heading bubble, under the name its City gives it. */
+export function ringTip(name: string): ReactNode {
+  return <Tip title={name} body={CITY_DOOR_HINT.ring} footer="Nothing heals between rungs. Losing one loses the ladder, never the run." />;
 }
 
 /** §2.9.4.1 — what the ladder has paid so far. */
@@ -391,6 +391,61 @@ export function bankedTip(banked: number): ReactNode {
 /** §2.11.5 — the Game Corner's heading bubble. */
 export function gameCornerTip(): ReactNode {
   return <Tip title="Game Corner" body="Two machines, the odds printed beside each. Both return a little less than they take, on average — they turn money you cannot use into a chance at something you can." />;
+}
+
+// ── Team Rocket's Black Market (v0.7.7) ──────────────────────────────────────────────────────────────────
+
+/**
+ * §2.11.6 — the Game Corner's back wall. Discovery, not teaching: the poster only says it is not quite right, the
+ * Grunt only says to keep away from it, and the stairs say where they go once they are there.
+ */
+export function posterTip(found: boolean): ReactNode {
+  return <Tip title="A poster" body={found ? 'Pushed aside. The switch behind it opened the stairs.' : 'It doesn’t sit quite flat against the wall.'} />;
+}
+export function stairsTip(open: boolean): ReactNode {
+  return open
+    ? <Tip title="Stairs down" body="Down to Team Rocket’s back room. It locks behind you when you come back up." />
+    : <Tip title="Stairs down" meta={['Locked']} body="Team Rocket will not open the door twice in one visit." />;
+}
+
+/** §2.11.6 — the market's heading bubble: four counters, and a door that locks behind you. */
+export function marketTip(): ReactNode {
+  return <Tip title="Black Market" body="Team Rocket’s back room. Nothing here is paid for in the usual way: a Pokémon for a Pokémon, relics on a wager, and the rarest relic of all for three of your team." footer="Every counter deals once a visit. The door locks when you go back up." />;
+}
+
+/** §2.11.6 — one of the Trader's two stolen Pokémon. */
+export function tradeTip(name: string, types: readonly string[]): ReactNode {
+  return <Tip title={name} meta={[...types.map(typeName), 'No route offers it']} body="Hand over one of yours and this one takes its place — at your Pokémon’s level, fresh, with no Trauma. Its held item comes back to your bag." footer="One trade a visit." />;
+}
+
+/** §2.11.6 — the Fence's Rare Candy. */
+export function candyTip(price: number, left: number): ReactNode {
+  return <Tip title="Rare Candy" meta={[`${price} ₽`, `${left} left`]} body="One level, now, for the Pokémon you pick — with every move and evolution the level brings." footer="No shop sells these." />;
+}
+
+/** §2.11.6 — the Fence buying one of your relics. */
+export function fenceTip(relic: RelicDef, price: number, takes: boolean): ReactNode {
+  return <Tip title={relic.name} meta={[cap(relic.rarity), `Sells for ${price} ₽`]} body={relic.description} footer={takes ? 'Selling is for good.' : 'The Fence won’t take it: its charge is spent, or your Box needs it.'} />;
+}
+
+/** §2.11.6 — one of your relics, as a stake on the Gambler's table. */
+export function stakeTip(relic: RelicDef, value: number, takes: boolean): ReactNode {
+  return <Tip title={relic.name} meta={[cap(relic.rarity), `Worth ${value} ₽ to the Gambler`]} body={relic.description} footer={takes ? 'Staked, it is gone whether you win or lose.' : 'He won’t take it: its charge is spent, or your Box needs it.'} />;
+}
+
+/** §2.11.6 — a counter that has already dealt this visit. */
+export function dealtTip(): ReactNode {
+  return <Tip title="Dealt" body="This counter has done its business for this visit." />;
+}
+
+/** §2.11.6 — the Gambler's printed chance, and what a stake is worth to him. */
+export function wagerTip(chance: number, staked: number, target: number): ReactNode {
+  return <Tip title={`${Math.round(chance * 100)} % to win`} meta={[`Stake worth ${staked} ₽`, `Prize worth ${target} ₽`]} body={`The chance is ${Math.round(BLACK_MARKET.edge * 100)} % of what you stake over what the prize is worth, from ${Math.round(BLACK_MARKET.minChance * 100)} % to ${Math.round(BLACK_MARKET.maxChance * 100)} %. The stake is his either way.`} footer="One wager a visit." />;
+}
+
+/** §2.11.6 / §7.3.7 — the showcase's Legendary and its price in Pokémon. */
+export function showcaseTip(relic: RelicDef, price: number, atCap: boolean): ReactNode {
+  return <Tip title={relic.name} meta={['Legendary', `${price} of your Pokémon`]} body={relic.description} footer={atCap ? `You already carry ${SHOWCASE_CAP} Legendaries — even the Black Market sells no more.` : `Off the books: it can take you past the usual ${LEGENDARY_CAP}, to ${SHOWCASE_CAP}. The deal closes the market — do the other counters first.`} />;
 }
 
 /** §2.11.2 / §2.9.3 — the re-roll button: the ladder, and why it is off when it is. */

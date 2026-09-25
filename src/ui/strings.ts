@@ -141,12 +141,83 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'building-closed': 'That door is not open yet.',
   'not-offered': 'That is not on offer.',
   'no-such-item': 'You are not carrying that.',
-  'ring-closed': 'The Ring is done for this visit.',
+  'ring-closed': 'The ladder is done for this visit.',
   'nothing-to-restock': 'Nothing else to stock on this floor.',
   'bad-stake': 'That stake is not on the table.',
   'safari-closed': 'The Safari is done for this visit.',
   'bad-tile': 'Not from here.',
   'no-ap': 'Nothing left this turn — end it.',
+  'market-closed': 'Nothing more there for you this visit.',
+  'bad-payment': 'They will not take that.',
+  'legendary-cap': 'You already carry as many Legendary relics as a run can hold.',
+};
+
+/** §2.11.0 — the warning before walking out of a building that closes behind you. */
+export const LEAVE_WARNING = {
+  title: 'Leave for good?',
+  stay: 'Stay',
+  leave: 'Leave',
+  cashOut: (name: string, banked: number) =>
+    banked ? `Take the ${banked} ₽ and go. The ${name} closes behind you for this visit.` : `Walk away with nothing. The ${name} closes behind you for this visit.`,
+  safari: 'The park closes behind you; your Safari Balls stay here.',
+  market: 'The door locks behind you for this visit.',
+};
+
+/** §2.9.4.1 — the Ring's buttons. */
+export const RING_TEXT = {
+  back: 'Back to town',
+  stepIn: 'Step in',
+  stepInLabel: (fee: number, afford: boolean) => `Step in, ${fee} Poké Dollars${afford ? '' : ', not enough money'}`,
+  cashOut: 'Cash out',
+  walkAway: 'Walk away',
+  fight: (rung: number) => `Fight rung ${rung}`,
+  banked: 'Banked',
+};
+
+/** §2.11.6 — Team Rocket's Black Market, and the Game Corner's back wall that hides it. */
+export const MARKET_TEXT = {
+  title: 'Black Market',
+  grunt: 'Hey! Keep away from that poster!',
+  gruntName: 'A Rocket Grunt',
+  poster: 'A poster',
+  justPoster: 'Just a poster, this time.',
+  found: 'There’s a switch behind the poster!',
+  push: 'Push it',
+  leaveIt: 'Leave it',
+  stairs: 'Stairs down',
+  stairsShut: 'The door at the foot of the stairs is locked.',
+  up: 'Back upstairs',
+  counters: 'The counters',
+  dealt: 'Dealt this visit',
+  trader: { name: 'The Trader', line: 'Fresh stock, no questions asked.' },
+  fence: { name: 'The Fence', line: 'Candy for the road. And I buy what you don’t need.' },
+  gambler: { name: 'The Gambler', line: 'Put up a few trinkets. Win, and the good one’s yours.' },
+  showcase: { name: 'The Executive', line: 'The rarest thing in Kanto. Three of your Pokémon.' },
+  traded: 'Pleasure doing business.',
+  soldOut: 'Sold out',
+  pickGive: 'Pick one of yours to hand over',
+  trade: 'Trade',
+  tradeFor: (give: string, get: string, level: number) => `Trade ${give} for ${get}, Lv ${level}`,
+  candy: 'Rare Candy',
+  candyFor: (name: string, level: number) => `A Rare Candy for ${name} — Lv ${level}`,
+  pickMon: 'Pick a Pokémon',
+  buys: 'The Fence buys',
+  noRelics: 'You carry no relics.',
+  sellArmed: 'Sell?',
+  stakeUpTo: (n: number) => `Stake up to ${n} of your relics`,
+  noStake: 'You carry no relics to stake.',
+  won: (pct: number, name: string) => `At ${pct} %, you won — the ${name} is yours.`,
+  lost: (pct: number) => `At ${pct} %, the house won. The stake is gone.`,
+  wagerOn: (name: string) => `Wager on the ${name}`,
+  pickTarget: 'Pick the relic to win',
+  priceTag: (n: number) => `${n} Pokémon`,
+  pickThree: (n: number, of: number) => `Pick ${of} to hand over — ${n} of ${of}`,
+  keepOne: 'You must keep at least one Pokémon.',
+  handOver: (names: string) => `Hand over ${names}`,
+  pickN: (n: number) => `Pick ${n}`,
+  dealTitle: 'Hand them over?',
+  dealBody: (names: string, relic: string) => `${names} go to Team Rocket for the ${relic}, and the door locks behind you.`,
+  deal: 'Deal',
 };
 
 /** §2.11.6 — the Safari tiers and traits, in the words on the lineup cards and the board. */
@@ -205,9 +276,10 @@ export const ARCHETYPE_HINT: Record<string, string> = {
 };
 
 // §2.11.4 — a City's doors, in the lobby's words. The door ids are the UI's: the shop is one sim building
-// (`mart`) drawn as the Poké Mart in the town and the Department Store in the city, and the doors that are
-// not open yet have no sim building at all.
-export type CityDoor = 'center' | 'mart' | 'department-store' | 'dojo' | 'ring' | 'extra-moves' | 'safari' | 'game-corner' | 'black-market' | 'gate';
+// (`mart`) drawn as the Poké Mart in the town and the Department Store in the city, the Ring is named by its City
+// (`CITIES[id].ringName`), and the doors that are not open yet have no sim building at all. The Black Market has
+// no door: it is a secret inside the Game Corner (§2.11.6).
+export type CityDoor = 'center' | 'mart' | 'department-store' | 'dojo' | 'ring' | 'extra-moves' | 'safari' | 'game-corner' | 'gate';
 /** Every door but the gate, which is named by where it leads ("To Region 2"), not by a fixed word. */
 export type CityBuildingDoor = Exclude<CityDoor, 'gate'>;
 
@@ -216,11 +288,11 @@ export const CITY_DOOR_LABEL: Record<CityBuildingDoor, string> = {
   mart: 'Poké Mart',
   'department-store': 'Department Store',
   dojo: 'Dojo',
+  // The fallback name only: every City names its own Ring (`CITIES[id].ringName`).
   ring: 'Challenge Ring',
   'extra-moves': 'Extra moves',
   safari: 'Safari Zone',
   'game-corner': 'Game Corner',
-  'black-market': 'Black Market',
 };
 
 export const CITY_DOOR_HINT: Record<CityDoor, string> = {
@@ -232,7 +304,6 @@ export const CITY_DOOR_HINT: Record<CityDoor, string> = {
   'extra-moves': 'A catalogue of moves beyond each species\' tutor list.',
   safari: 'A park of Pokémon the routes never offer. Buy a ticket, stalk one through the grass, and throw when the odds are yours. Once per visit.',
   'game-corner': 'The Wheel and the Slots, every outcome and its odds printed beside each machine.',
-  'black-market': 'Beneath the Game Corner. Rare stock, no questions, once per visit.',
   gate: 'Choose one rule for the next Region, then set off. The town stays behind.',
 };
 

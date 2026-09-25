@@ -530,7 +530,7 @@ The run table is unchanged (Region 1: 53 / 49 / 68 %); the curve over 720 runs m
 Region 3 given 2 at 49 %, the whole run 18 % — the last two on §2.2.1's targets, Region 2 seven over, inside its
 guard, left for the v0.8.6 balance pass.
 
-### v0.7.7 — The Ring, the Coliseum, and Team Rocket's Black Market  ☐
+### v0.7.7 — The Ring, the Coliseum, and Team Rocket's Black Market  ✅ 2026-09-25
 Two buildings of their own and one secret, drawn together because both Cities' art is redrawn for them.
 - **The Rings leave the Dojo** (§2.9.4.1): Pallet Town gets its own **Ring**, a town arena in the square; Celadon
   City gets the **Pokémon Coliseum**, the big city's big stage. Same ladder as today (two rungs, three rungs).
@@ -540,6 +540,28 @@ Two buildings of their own and one secret, drawn together because both Cities' a
   relics paid in HP or Trauma, Pokémon traded for Pokémon. The poster is a hidden spot on today's Game Corner screen;
   v0.7.8 redraws the room, and the poster moves into it. *(Backlog #2.)*
 **Exit:** both Rings stand on their own, and a player who has never been told can find the Market.
+
+**Shipped.** **The Rings are buildings** (§2.9.4.1): Pallet's square court is a stone battle ring and Celadon's plaza
+a Pokémon Coliseum — each generated as an edit and pasted back over only the square it replaces, in the town's own
+palette, so every other pixel of both towns is untouched (a diff against git proves it; `scripts/patch-town.mjs`);
+the stairs beside the Game Corner are gone from Celadon's art. Walking in is free — the ladder and the first rival are
+on show — and the fee is paid on a Step-in button. **Every committing door asks before it closes** (§2.11.0, the
+user's call): cashing out of the Ring, leaving the Safari with a ticket, going back up from the market. **Team
+Rocket's Black Market** (§2.11.6), designed with the user: the FRLG Game Corner's own back wall above the machines, a
+Grunt guarding the poster ("Keep away from that poster!"), a switch behind it, stairs down to the Rocket Hideout's
+B1F; four counters — the **Trader** (one of yours for one of two stolen Pokémon no route offers), the **Fence**
+(Rare Candy, 400 ₽ a level; buys relics at 40 %), the **Gambler** (relics staked on a Rare at a printed 80 % ×
+stake ÷ prize, 5–90 %), and the **Executive's showcase**: one Legendary for **three of your Pokémon**, and the deal
+closes the market (the user rejected HP and Trauma as prices, since the Center refunds both). Run save v13 (migrates
+v12), its own `MarketRNG` stream; `blackMarket.test` holds its rules, `e2e/black-market` finds it by pointer
+alone. **Decided while building:** the showcase is **off the books** — it may take a run to three Legendaries —
+because a run that took both Gyms' Legendaries reaches Celadon at the cap of two, which shut the showcase to nearly
+everyone who found it (§7.3.7). **Measured** (720 runs each way; the harness that has found it buys candies for its
+Lead and the Legendary with its three weakest from a Box of five): Region 3 given Region 2 49 % → 37 %, the whole run
+18 % → 14 %, candies alone 44 % (noise) — the three Pokémon are a real price, and buying by reflex loses. The default
+harness plays the player who has not found the secret, so the curve is unchanged. The market's prices go to the
+v0.8.6 pass. Also: a chained evolution (Dratini traded at 30 into Dragonite) hands back to where its first screen
+opened; the Game Corner's machines sit beside their tables on short screens.
 
 ### v0.7.8 — The Game Corner, walked  ☐
 Celadon's Game Corner becomes a place you walk rather than a panel (user, 2026-09-25). §2.11.5's odds and machines
@@ -618,6 +640,9 @@ Levels, money, consumables, relics and prices together, against whole runs of th
 multi-enemy fights in them — the harness first (720 runs, `CURVE_SEEDS=240`), then a playtest. After multi-enemy
 on purpose (user, 2026-09-24): a pass before it would tune fights that are about to change shape. The first of
 two; v1.0's is the last. *(Backlog #4.)*
+Also here, from v0.7.7: **the Black Market's prices** (`BLACK_MARKET`, §2.11.6) are first values. The showcase at
+three Pokémon costs a reflex buyer twelve points of Region 3 (`MARKET_SEEDS=240 MARKET_SPLIT=1` in
+`balance/market.test`); the Rare Candy's 400 ₽ and the Gambler's 80 % edge were never measured against the Dojo.
 Also here, from the playtest of 2026-09-24: **enemies hit too softly.** The median enemy hit is 12 % of the target's
 Max HP (Region 1 13 %, 2 9 %, 3 11 %) — about eight hits to faint anyone, so a telegraph rarely forces a swap
 (Pillar 2). A harder-hitting retune (a typical hit nearer a fifth of Max HP, fights kept at 4–5 turns), held to

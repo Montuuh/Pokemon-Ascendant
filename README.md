@@ -49,10 +49,11 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.7.6 — The Safari Zone.** A run crosses three Regions with two Cities between them — twelve Gyms, three drawn
-per run, from Brock to Lorelei — and both Cities now open their Safari Zone: a ticket, three Safari Balls and a park
-clock, and a lineup of Pokémon no route offers (Dratini only in Celadon), each caught by stalking it through tall
-grass on a board that shows where it will walk and where it will look — bait, rocks and one well-placed throw.
+**v0.7.7 — The Ring, the Coliseum, and Team Rocket.** A run crosses three Regions with two Cities between them —
+twelve Gyms, three drawn per run, from Brock to Lorelei. Each City has its own ladder of rivals — Pallet Town's
+Challenge Ring in the square, Celadon's Pokémon Coliseum — shown in full before you pay to climb; both Cities open
+a Safari Zone where Pokémon no route offers are stalked through tall grass; and Team Rocket has set up shop somewhere
+in Celadon, for whoever finds it.
 Evolution stones, every relic and every line's hidden ability and Mastery card are live, and all 151 Gen I Pokémon
 are in the Pokédex, as silhouettes until you meet them. What changed in every version is
 in the game (What's new) and in [`CHANGELOG.md`](CHANGELOG.md). The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).

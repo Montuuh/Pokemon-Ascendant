@@ -72,8 +72,17 @@ function migrateSafariTo12(run: RunState): void {
   if (run.city) run.city.safari ??= null;
 }
 
+/**
+ * §2.11.6 / §2.9.4.1 — version 12 → 13: the City carries Team Rocket's Black Market. A Celadon visit already under
+ * way rolled none on arrival, so its poster hides nothing this time; the Ring's state is unchanged — only its door
+ * moved out of the Dojo — so a save standing on the ladder carries on as it was.
+ */
+function migrateMarketTo13(run: RunState): void {
+  if (run.city) run.city.blackMarket ??= null;
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

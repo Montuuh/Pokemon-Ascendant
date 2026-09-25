@@ -10,10 +10,11 @@ import {
   type SafariHunt, type SafariSpot, type SafariState,
 } from '@/sim';
 import { itemIcon, safariArt, spriteOf } from '@/ui/art';
+import { ConfirmLeave } from '@/ui/components/ConfirmLeave';
 import { Money } from '@/ui/components/Money';
 import { SwapOrSkip } from '@/ui/components/SwapOrSkip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { RUN_REJECT_TEXT, SAFARI_GUIDE, SAFARI_RESULT_LABEL, SAFARI_TEXT, SAFARI_TIER_LABEL, SAFARI_TRAIT } from '@/ui/strings';
+import { LEAVE_WARNING, RUN_REJECT_TEXT, SAFARI_GUIDE, SAFARI_RESULT_LABEL, SAFARI_TEXT, SAFARI_TIER_LABEL, SAFARI_TRAIT } from '@/ui/strings';
 import {
   moneyTip, safariAlarmTip, safariApTip, safariBaitTip, safariBallsTip, safariBoardTip, safariClockTip, safariRockTip, safariStateTip,
   safariThrowTip, safariTicketTip, safariTierTip, safariTraitTip,
@@ -76,8 +77,11 @@ export function SafariScreen() {
 
 function Entrance({ safari, money, act, onHelp }: { safari: SafariState | null; money: number; act: (a: Act) => boolean; onHelp: () => void }) {
   const lastLine = useRunStore((s) => s.run?.log.at(-1) ?? '');
+  // §2.11.0 — with a ticket bought and the park still open, walking out closes it: that exit asks first.
+  const [leaving, setLeaving] = useState(false);
+  const committed = !!safari?.entered && !safari.done;
   const leave = (
-    <button type="button" className={styles.secondary} onClick={() => act({ type: 'leave-safari' })} data-testid="btn-leave-safari">
+    <button type="button" className={styles.secondary} onClick={() => (committed ? setLeaving(true) : act({ type: 'leave-safari' }))} data-testid="btn-leave-safari">
       Back to town
     </button>
   );
@@ -114,6 +118,7 @@ function Entrance({ safari, money, act, onHelp }: { safari: SafariState | null; 
           </Tipped>
         )}
       </footer>
+      {leaving && <ConfirmLeave body={LEAVE_WARNING.safari} onStay={() => setLeaving(false)} onLeave={() => act({ type: 'leave-safari' })} />}
     </>
   );
 }

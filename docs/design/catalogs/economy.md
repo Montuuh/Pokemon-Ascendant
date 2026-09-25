@@ -59,6 +59,25 @@ With `coin-pouch` (×1.25) or the `coin-purse` modifier (×1.5) a Region can rea
 The Dojo is the intended main ₽ sink: a Region's income buys roughly 3–5 Dojo services *or* a relic and a TM.
 That is the tension the economy exists to create (Pillar 3 — you sculpt, you cannot buy everything).
 
+### 4.1 Team Rocket's Black Market (§2.11.6) — ✅ v0.7.7
+
+Celadon only, a secret behind the Game Corner's poster. Values in `BLACK_MARKET` (`src/sim/run/blackMarket.ts`),
+first values for the v0.8.6 balance pass.
+
+| Counter | Row | Price / terms |
+|---|---|---|
+| The Trader | 2 of the stolen Pokémon below, one trade a visit | One of your Pokémon; theirs at its level, 0 Trauma, full HP |
+| The Fence | Rare Candy, 3 a visit | 400 ₽ each (Region Modifiers apply) — one level |
+| The Fence | buys a relic | 40 % of its value |
+| The Gambler | 3 Rares to aim at, one wager a visit | 1–3 relics staked; chance `0.8 × stake ÷ prize`, clamped 5–90 %, rounded to a whole percent; stake lost either way |
+| The showcase | 1 Legendary the run does not hold | 3 Pokémon (the Box keeps one); may take the run to 3 Legendaries; closes the market |
+
+**Relic value** at the Fence and the Gambler: Common 150 · Uncommon 300 · Rare 600 · Legendary 1 200.
+
+**The Trader's stock** — the Game Corner's own prize Pokémon and Gen I's in-game trades, less every line a route
+offers (`blackMarket.test` holds it): `clefairy` · `porygon` · `pinsir` · `dratini` · `lickitung` · `tangela`. Pinsir
+and Dratini are the Safari's too: the park's are stalked, the Trader's are stolen.
+
 ## 5. In-run XP (§6.2, `ProgressionConfig`)
 
 | Source | XP | Field |

@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -35,13 +35,22 @@ Pokémon.
 - **A Region:** a seeded 12-layer branching tree ending in a **Gym fork** at L9 — two routes, two Gyms, both
   announced. One guaranteed Elite Trainer ≈L7, one Center per Gym lane, ≈1 Dojo, 2 Mystery, 1 Shop, ≤1 Elite Wild.
 - **A City** (after Gyms 1 and 2) is a **lobby** — a drawn town whose buildings are doors, no visit budget, the
-  gate leaves when you say so. **Pallet Town** (4 doors) then **Celadon City** (more, dearer). Routes keep only a
+  gate leaves when you say so. **Pallet Town** (5 doors) then **Celadon City** (more, dearer). Routes keep only a
   nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
   Celadon is the bigger City: a five-floor **Department Store**, a Dojo whose tutor list spans every stage the
   line has reached, and the **Game Corner** — the Wheel (stake ≤200 ₽, EV 0.96) and the Slots (50 ₽, ×50 jackpot,
-  EV 0.94), tables printed, outcome rolled first. Both Dojos hold the **Challenge Ring**: 2 rungs / 3 rungs of
-  Elite-class rivals, no healing between, cash out or climb; money below, a Rare relic 1-of-3 on top, no XP.
-  Meant to be lost (ladder ≈1 in 6 in the town, under 1 in 10 in the city). *(2026-09-23.)*
+  EV 0.94), tables printed, outcome rolled first. Each City has its **Ring** as a building of its own — Pallet's
+  **Challenge Ring** in the square, Celadon's **Pokémon Coliseum**: the ladder and the first rival on show before
+  the fee, then 2 rungs / 3 rungs of Elite-class rivals, no healing between, cash out or climb; money below, a Rare
+  relic 1-of-3 on top, no XP. Meant to be lost (ladder ≈1 in 6 in the town, under 1 in 10 in the city).
+  *(2026-09-23; out of the Dojo 2026-09-25.)* Every **committing** door (Ring, Safari, Black Market) asks before
+  it closes behind you.
+  **Team Rocket's Black Market** (§2.11.6) is a **secret**: no door on the map; a Grunt guards a poster at the back
+  of Celadon's Game Corner, a switch behind it opens stairs down. Four counters, none paid in the usual coin: the
+  **Trader** (one of yours for one of two stolen Pokémon no route offers), the **Fence** (Rare Candy, 400 ₽ a level;
+  buys relics at 40 %), the **Gambler** (1–3 relics staked on a Rare at a printed 80 % × stake ÷ prize, 5–90 %), and
+  the **Executive's showcase** (one Legendary for **three of your Pokémon**, off the books — it may take a run to 3 —
+  and the deal closes the market). Measured: buying it by reflex costs Region 3 twelve points. *(2026-09-25.)*
   Both Cities hold the **Safari Zone** (§2.11.6): a ticket (200 / 350 ₽) buys 3 Safari Balls and a 10 / 12-turn
   clock for a lineup of species no route offers (Dratini only in the city), each **stalked** on a tile board — two
   actions a turn, its path and its look shown, tall grass hides you, bait and rock, a throw is the whole turn at a
@@ -249,7 +258,8 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
   cures plus a **1-AP** Full Heal. Ether **1 AP for +2**. Radar Scope, Smoke Bomb, Card Pocket, Quick Claw,
   Defog. Balls and five Evolution Stones.
 - **60 relics.** 25 Common (15 of them the +15 % party type charms) / 18 Uncommon / 7 Rare / **10 Legendary**.
-  Legendaries are **choice-only, 1-of-3 at Gym victories, the Summit and the Black Market, max 2 per run**.
+  Legendaries are **choice-only, 1-of-3 at Gym victories and the Summit, max 2 per run** — plus the Black Market's
+  one, off the books, for three Pokémon (to 3).
 - **19 held items.** 8 type boosts (+20 % wearer-only) · 5 Type Plates (Lead Aura) · Leftovers, Eviolite, Focus
   Sash · Choice Band, Choice Scarf · Thick Club.
 - **15 TMs**, gated by `compatibleSpecies`, Mastery-exempt.

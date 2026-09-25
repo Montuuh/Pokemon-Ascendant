@@ -9,15 +9,22 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one line of lede, then
 > `- **Headline.** One sentence.` bullets. `## Next` collects what reached the game since the last version.
 
-## Next
-
-- **The Safari, drawn from FireRed.** The park's own tall grass, ponds, boulders and forest, and Red walking in.
-- **How to play in the Safari.** A six-page picture guide opens on your first visit, and from its button any time.
-- **Bait and rock, drawn.** Pixel-art bait and rocks on the board, on the buttons and on the Pokémon they stopped.
-
 ## v0.7 — Cities & Regions 2–3 · in progress
 
 The run goes on past the first Gym: three Regions, and a City between each.
+
+### v0.7.7 — The Ring, the Coliseum, and Team Rocket · 2026-09-25
+
+The ladder of rivals gets buildings of its own, and something stirs at the back of Celadon's Game Corner.
+
+- **The Challenge Ring.** Pallet Town's square is a battle ring now: walk in, see the ladder, then pay to climb.
+- **The Pokémon Coliseum.** Celadon's plaza holds a stadium, and its three-rung ladder lives there.
+- **See the rival before you pay.** The ladder and the first rival are on show before the fee leaves your wallet.
+- **Doors that close warn you.** Leaving the Ring, the Safari or anywhere else that shuts behind you asks first.
+- **Team Rocket is up to something.** A Grunt at the back of the Game Corner is guarding something. Keep your eyes open.
+- **The Safari, drawn from FireRed.** The park's own tall grass, ponds, boulders and forest, and Red walking in.
+- **How to play in the Safari.** A six-page picture guide opens on your first visit, and from its button any time.
+- **Bait and rock, drawn.** Pixel-art bait and rocks on the board, on the buttons and on the Pokémon they stopped.
 
 ### v0.7.6 — The Safari Zone · 2026-09-24
 

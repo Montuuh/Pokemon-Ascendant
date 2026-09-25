@@ -12,6 +12,7 @@ import { GameCornerScreen } from '@/ui/screens/GameCornerScreen';
 import { RingPrizeScreen } from '@/ui/screens/RingPrizeScreen';
 import { RingScreen } from '@/ui/screens/RingScreen';
 import { SafariScreen } from '@/ui/screens/safari/SafariScreen';
+import { BlackMarketScreen } from '@/ui/screens/BlackMarketScreen';
 import { CheatMenu } from '@/ui/components/CheatMenu';
 import { LegendaryScreen } from '@/ui/screens/LegendaryScreen';
 import { HubScreen } from '@/ui/screens/HubScreen';
@@ -77,6 +78,7 @@ function Screens() {
     if (runPhase === 'ring') return <RingScreen />;
     if (runPhase === 'relic-pick') return <RingPrizeScreen />;
     if (runPhase === 'game-corner') return <GameCornerScreen />;
+    if (runPhase === 'black-market') return <BlackMarketScreen />;
     // §2.11.6 — the Safari, and a catch into a full Box asked from inside it rather than over the map.
     if (runPhase === 'safari' || (runPhase === 'swap-or-skip' && useRunStore.getState().run?.city)) return <SafariScreen />;
     // §7.3.7 — the Gym is beaten and the 1-of-3 is open; the run is not over until it is answered.

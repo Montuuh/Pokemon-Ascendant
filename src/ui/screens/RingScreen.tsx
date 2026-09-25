@@ -1,22 +1,25 @@
 import { useState } from 'react';
-import { IconCheck, IconSparkles, IconSwords, IconTrophy } from '@tabler/icons-react';
+import { IconCheck, IconDoorExit, IconSparkles, IconSwords, IconTrophy } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { boxCapacity, rarePickOpen, RING, type RingRung } from '@/sim';
+import { boxCapacity, CITIES, rarePickOpen, RING, type RingRung } from '@/sim';
 import { trainerSprite } from '@/ui/art';
 import { BoxPanel } from '@/ui/components/BoxPanel';
+import { ConfirmLeave } from '@/ui/components/ConfirmLeave';
 import { MonIcon } from '@/ui/components/MonIcon';
-import { Money } from '@/ui/components/Money';
+import { Money, Price } from '@/ui/components/Money';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { RUN_REJECT_TEXT } from '@/ui/strings';
-import { bankedTip, moneyTip, ringTip, rungTip } from '@/ui/tips';
+import { LEAVE_WARNING, RING_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
+import { bankedTip, moneyTip, ringEntryTip, ringTip, rungTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
 import styles from './RingScreen.module.css';
 
-// §2.9.4.1 — the Challenge Ring, between rungs. The decision is the whole design: the ladder with what each
-// rung pays, the next rival in full (Pillar 1), your Box as the last rung left it — nothing heals here — and two
-// buttons: fight the next rung, or take what the ladder has banked and leave.
+// §2.9.4.1 — the City's Ring (the town's Challenge Ring, the city's Pokémon Coliseum), a building of its own. The
+// decision is the whole design: the ladder with what each rung pays, the next rival in full (Pillar 1),
+// your Box as the last rung left it — nothing heals here — and two buttons: fight the next rung, or take what the
+// ladder has banked and leave. Before the fee the same ladder and the first rival are on show, so the fee is paid
+// with the fight in view; once it is paid, leaving is cashing out, and the Ring asks before it closes (§2.11.0).
 
 const prizeLabel = (rung: RingRung, rare: boolean) => ('money' in rung.prize ? `${rung.prize.money} ₽` : `${rare ? 'Rare relic' : 'Relic'}, 1 of 3`);
 
@@ -29,8 +32,12 @@ export function RingScreen() {
   const goTo = useAppStore((s) => s.goTo);
   const content = getContent();
   const [toast, setToast] = useState<string | null>(null);
+  const [leaving, setLeaving] = useState(false);
 
   const ring = run.city!.ring!;
+  const name = CITIES[run.city!.id].ringName;
+  const open = !ring.entered && !ring.done;
+  const afford = run.money >= ring.fee;
   const rare = rarePickOpen(content, run.relics, run.perks.relicPool, RING.pickCount);
   const next = ring.rungs[ring.cleared] ?? null;
   const healthy = run.activeUids.some((u) => (run.box.find((m) => m.uid === u)?.hp ?? 0) > 0);
@@ -46,6 +53,7 @@ export function RingScreen() {
     if (startRingFight()) goTo('combat');
     else say(useRunStore.getState().lastRejected?.reason);
   }
+  const prizes = ring.rungs.map((r) => prizeLabel(r, rare));
   const toggleActive = (uid: string) => {
     const on = run.activeUids.includes(uid);
     act({ type: 'set-active', uids: on ? run.activeUids.filter((u) => u !== uid) : [...run.activeUids, uid].slice(-3) });
@@ -55,13 +63,16 @@ export function RingScreen() {
     <main className={styles.root} data-testid="ring-screen">
       <header className={styles.topBar}>
         <h1 className={`${styles.title} display`}>
-          <IconTrophy size={26} aria-hidden="true" /> Challenge Ring
-          <InfoDot tip={ringTip()} />
+          <IconTrophy size={26} aria-hidden="true" /> {name}
+          <InfoDot tip={ringTip(name)} />
         </h1>
         <div className={styles.purse}>
-          <Tipped tip={bankedTip(ring.banked)} className={styles.banked} data-testid="ring-banked">
-            Banked <Money amount={ring.banked} size={18} />
-          </Tipped>
+          {/* What the ladder has paid only means something once you are on it. */}
+          {ring.entered && (
+            <Tipped tip={bankedTip(ring.banked)} className={styles.banked} data-testid="ring-banked">
+              {RING_TEXT.banked} <Money amount={ring.banked} size={18} />
+            </Tipped>
+          )}
           <Tipped tip={moneyTip(run.money)} className={styles.wallet}>
             <Money amount={run.money} size={18} />
           </Tipped>
@@ -93,7 +104,7 @@ export function RingScreen() {
         </ol>
 
         {/* The next rival, in full: you always see what you are about to fight. */}
-        {next && (
+        {next && !ring.done && (
           <section className={styles.rival} aria-label="Next rival" data-testid="ring-rival">
             <img className={styles.sprite} src={trainerSprite(next.sprite)} alt="" width={96} height={96} />
             <div className={styles.rivalBody}>
@@ -132,15 +143,50 @@ export function RingScreen() {
       <footer className={styles.footer}>
         {toast && <p className={styles.toast} role="status">{toast}</p>}
         <p className="sr-only" role="status" aria-live="polite">{run.log.slice(-1).join(' ')}</p>
-        <button type="button" className={styles.cashOut} onClick={() => act({ type: 'ring-cash-out' })} data-testid="btn-ring-cash-out">
-          {ring.banked ? <>Cash out <Money amount={ring.banked} size={16} /></> : 'Walk away'}
-        </button>
-        {next && (
+        {ring.done && <p className={styles.closed} data-testid="ring-closed">{RUN_REJECT_TEXT['ring-closed']}</p>}
+        {ring.entered && !ring.done ? (
+          <button type="button" className={styles.cashOut} onClick={() => setLeaving(true)} data-testid="btn-ring-cash-out">
+            <IconDoorExit size={18} aria-hidden="true" />
+            {ring.banked ? <>{RING_TEXT.cashOut} <Money amount={ring.banked} size={16} /></> : RING_TEXT.walkAway}
+          </button>
+        ) : (
+          <button type="button" className={styles.cashOut} onClick={() => act({ type: 'leave-ring' })} data-testid="btn-leave-ring">
+            <IconDoorExit size={18} aria-hidden="true" /> {RING_TEXT.back}
+          </button>
+        )}
+        {open && (
+          // aria-disabled rather than disabled: the fee's bubble still opens for a player saving towards it.
+          <Tipped
+            as="button"
+            type="button"
+            tip={ringEntryTip(name, ring.fee, prizes)}
+            className={styles.fight}
+            onClick={() => (afford ? act({ type: 'enter-ring' }) : say('cannot-afford'))}
+            aria-disabled={!afford || undefined}
+            data-testid="btn-ring-enter"
+            aria-label={RING_TEXT.stepInLabel(ring.fee, afford)}
+          >
+            <IconTrophy size={18} aria-hidden="true" /> {RING_TEXT.stepIn} <Price amount={ring.fee} affordable={afford} />
+          </Tipped>
+        )}
+        {ring.entered && !ring.done && next && (
           <button type="button" className={styles.fight} onClick={fight} disabled={!healthy} data-testid="btn-ring-fight">
-            <IconSwords size={18} aria-hidden="true" /> Fight rung {ring.cleared + 1}
+            <IconSwords size={18} aria-hidden="true" /> {RING_TEXT.fight(ring.cleared + 1)}
           </button>
         )}
       </footer>
+
+      {leaving && (
+        <ConfirmLeave
+          body={LEAVE_WARNING.cashOut(name, ring.banked)}
+          leaveLabel={ring.banked ? RING_TEXT.cashOut : RING_TEXT.walkAway}
+          onStay={() => setLeaving(false)}
+          onLeave={() => {
+            setLeaving(false);
+            act({ type: 'ring-cash-out' });
+          }}
+        />
+      )}
     </main>
   );
 }

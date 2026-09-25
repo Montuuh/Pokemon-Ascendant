@@ -75,10 +75,11 @@
 | `crown-of-echoes` | Crown of Echoes | combat | The first move each combat is copied free into your hand on turn 2 | T3 | ✅ |
 | `soul-link` | Soul Link | combat | The two Pokémon longest in the Box each deal +10 % while both stand in the fight (v0.7.5 — was a pick on pickup) | T3 | ✅ |
 
-## 4. Legendary (10) — choice-only, max 2 per run (§7.3.7)
+## 4. Legendary (10) — choice-only, max 2 per run from the picks (§7.3.7)
 
-Never in the drop pool, never in shops, never a Starting Relic. Offered 1-of-3 at Gym victories, the Victory
-Road Summit and the Black Market (~4 pick moments per run).
+Never in the drop pool, never on a shop shelf, never a Starting Relic. Offered 1-of-3 at Gym victories and the
+Victory Road Summit (~3 pick moments per run); and one, off the books, at the Black Market's showcase for three
+Pokémon, which may take a run to 3 (§2.11.6).
 
 | id | Name | Cat | Effect | Origin | Status |
 |---|---|---|---|---|---|

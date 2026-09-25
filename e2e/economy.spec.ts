@@ -63,15 +63,15 @@ async function inTown(page: Page, opts: { money?: number; cityIndex?: number } =
 test.describe('The town — §2.11', () => {
   test('the buildings are doors: open ones lead in and back, the rest say they are coming', async ({ page }) => {
     await inTown(page);
-    for (const door of ['center', 'mart', 'dojo', 'safari', 'gate']) await expect(page.getByTestId(`door-${door}`)).toBeVisible();
-    // §2.9.4.1 — the Challenge Ring's door is inside the Dojo, not on the square.
-    await expect(page.getByTestId('door-ring')).toHaveCount(0);
+    // §2.9.4.1 — the Challenge Ring stands in the square, a building of its own since v0.7.7.
+    for (const door of ['center', 'mart', 'dojo', 'ring', 'safari', 'gate']) await expect(page.getByTestId(`door-${door}`)).toBeVisible();
     await expect(page.getByTestId('city-money')).toContainText(/\d/);
     await expect(page.getByTestId('door-safari')).toHaveAttribute('data-state', 'open');
+    await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
     await page.screenshot({ path: 'playtest/city-pallet.png' });
 
     // §2.11.6 — the Safari is open since v0.7.6: in, and back out to the same town. (The doors still in
-    // development — the Dojo's extra moves, the Black Market — are covered in progression.spec.)
+    // development — the Dojo's extra moves — are covered in progression.spec; the Black Market is black-market.spec's.)
     await page.getByTestId('door-safari').click();
     await expect(page.getByTestId('safari-screen')).toBeVisible();
     // A first visit opens the How to play; skipping it is the way back to the park.
@@ -108,10 +108,13 @@ test.describe('The town — §2.11', () => {
     expect(run.city).toBeNull();
   });
 
-  test('Celadon City has the Department Store and the Game Corner behind it', async ({ page }) => {
+  test('Celadon City has the Department Store, the Coliseum and the Game Corner — and no door to the Black Market', async ({ page }) => {
     await inTown(page, { cityIndex: 1 });
     await expect(page.getByTestId('city-screen')).toHaveAttribute('data-city', 'celadon-city');
-    for (const door of ['center', 'department-store', 'dojo', 'game-corner', 'black-market', 'safari', 'gate']) await expect(page.getByTestId(`door-${door}`)).toBeVisible();
+    for (const door of ['center', 'department-store', 'dojo', 'ring', 'game-corner', 'safari', 'gate']) await expect(page.getByTestId(`door-${door}`)).toBeVisible();
+    // §2.11.6 — the Black Market is a secret: nothing on the City map leads to it.
+    await expect(page.getByTestId('door-black-market')).toHaveCount(0);
+    await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
     await page.screenshot({ path: 'playtest/city-celadon.png' });
   });
 });

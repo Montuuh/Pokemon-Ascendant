@@ -149,6 +149,13 @@
 - **A new Region's roster hits harder than its placeholder did.** Real final forms (Alakazam, Gengar, Machamp)
   outclass Region 1 lines raised by +16 levels; re-measure the curve whenever a Region's tables change.
 
+- **A cap and a count of pick-moments interact — count where the run stands when it gets there.** The Black
+  Market's Legendary was designed under the 2-per-run cap; the harness showed every run reaching Celadon already
+  holding two (one per Gym), so the showcase was shut. It is off the books now (§7.3.7). Measure who can reach a
+  reward before pricing it.
+- **A secret has to stay out of the What's new screen.** The changelog is in the game: v0.7.7's entry hints at Team
+  Rocket and says nothing of a poster or stairs. The roadmap and the canon can say it; the game's own text cannot.
+
 ## Honesty rules
 
 - **Honest degradation has a gate.** A content row whose system does not exist ships with a `pending` note the
@@ -204,6 +211,11 @@
 - **Image generation runs on Vertex AI with gcloud credentials, no API key.** AI Studio "Prepay" is a
   different, usually empty pot; a 429 about depleted prepayment means "use Vertex". Details in
   `docs/art/pipeline.md` §5.
+- **To change one building, edit — never redraw — and paste back only the patch.** v0.7.7 asked the model to swap
+  Pallet's court for a ring on the whole lobby: all four variants also deleted the house below it and re-rendered
+  every tile slightly differently. Generating from a ×3 crop of the square alone kept the house; pasting back only the
+  changed pixels, snapped to the original palette (`scripts/patch-town.mjs`), kept the rest byte-identical — and a
+  pixel diff against `git show HEAD:` is what proves it.
 - **Generate at least two variants and look at both.** One shot is a coin flip. Generation and installation
   are separate on purpose: a bad variant should not be able to overwrite a shipped asset.
 - **The map plate is pixel art and the whole chain has to respect it:** generate at 1K, install with the
@@ -270,6 +282,11 @@
 - **Rewriting a CSS module wholesale leaves Vite serving an empty object**, so every class comes back
   `undefined` and the component renders unstyled. It looks like a layout bug and it is a stale-cache bug.
   Restart the dev server.
+- **Playwright will not click an `aria-disabled` button** (it treats it as disabled), while a player can. Use
+  `aria-disabled` rather than `disabled` wherever the tooltip must still open (the Ring's Step-in), and `click({ force:
+  true })` in the test that proves pressing it does nothing.
+- **A town screenshot can beat its art**: `playtest/city-pallet.png` once shipped with only the name plates, the
+  background still loading. Wait for every `img` to be complete before `page.screenshot` on an art-heavy screen.
 - Playwright uses system Chrome. Editing sim files while playing in the browser hot-reloads and resets the
   fight.
 - **`node -e` with backticks in the payload breaks under bash.** Use the Write/Edit tools for anything

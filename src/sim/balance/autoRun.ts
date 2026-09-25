@@ -6,6 +6,7 @@ import { RUN_START, gymById, gymTeamFor } from '../run/region';
 import { applyBranch, autoPickMoves, stoneUse } from '../run/xp';
 import { maxHpOf } from '../run/encounter';
 import { PRICES, therapyPrice } from '../run/economy';
+import { atLegendaryCap, BLACK_MARKET, candyPrice } from '../run/blackMarket';
 import { rollRegionModifierOffer } from '../run/regionModifiers';
 import { allOutcomes, mysteryEvent } from '../run/events';
 import type { MapNode, PartyMon, RunState, SafariSpot, ShopSlot } from '../run/types';
@@ -44,6 +45,14 @@ export interface RunPolicy extends AutoPlayerOptions {
    */
   takeSafari?: boolean;
   safariOrder?: 'rare-first' | 'easy-first';
+  /**
+   * §2.11.6 — find Team Rocket's Black Market and use it: Rare Candies for the Lead, then the showcase's Legendary
+   * for the three weakest in the Box when it has five or more. **Absent is off**: the market is a secret, so the
+   * default harness plays the player who has not found it, and this switch measures the one who has.
+   */
+  takeMarket?: boolean;
+  /** §2.11.6 — with `takeMarket`, the smallest Box that pays the showcase's three Pokémon (absent: 5; 99 never buys). */
+  marketLegendaryFrom?: number;
 }
 
 export const DEFAULT_RUN_POLICY: RunPolicy = {
@@ -481,6 +490,7 @@ function visitCity(get: () => RunState, content: CombatCtx['content'], policy: R
     stalkSafari(get, content, policy, step);
     step({ type: 'leave-safari' });
   }
+  if (policy.takeMarket && get().city?.blackMarket) visitMarket(get, content, policy, step);
   if (policy.takeShop) {
     step({ type: 'enter-building', building: 'mart' });
     visitShop(get, content, policy, step);
@@ -491,6 +501,38 @@ function visitCity(get: () => RunState, content: CombatCtx['content'], policy: R
     visitDojo(get, content, policy, step);
   }
   step({ type: 'depart-city', modifierId: get().city!.reflection[0]! });
+}
+
+/**
+ * §2.11.6 — the Black Market, the way a player who found it would use it: the poster, the stairs, Rare Candies for
+ * the Lead while the wallet covers them, and the showcase's Legendary paid with the three lowest-levelled Pokémon
+ * when the Box can spare them (five or more). Every Evolution screen the candies open takes the first archetype.
+ */
+function visitMarket(get: () => RunState, content: CombatCtx['content'], policy: RunPolicy, step: (a: Parameters<typeof runReducer>[1]) => void): void {
+  step({ type: 'enter-building', building: 'game-corner' });
+  step({ type: 'push-switch' });
+  step({ type: 'enter-black-market' });
+  const settle = () => {
+    while (get().phase === 'evolution') {
+      const pending = get().pendingEvolutions[0]!;
+      const mon = get().box.find((m) => m.uid === pending.uid)!;
+      step({ type: 'choose-branch', uid: pending.uid, branchId: chooseBranch(mon, pending.branchIds, content) });
+    }
+  };
+  for (let i = 0; i < BLACK_MARKET.candies; i++) {
+    const run = get();
+    const lead = run.box.find((m) => m.uid === run.activeUids[0]);
+    if (!lead || run.money - candyPrice(run, content) < policy.keepReserve || run.city!.blackMarket!.candies <= 0) break;
+    step({ type: 'market-candy', uid: lead.uid });
+    settle();
+  }
+  const run = get();
+  const market = run.city!.blackMarket!;
+  if (market.legendary && !atLegendaryCap(run, content) && run.box.length >= (policy.marketLegendaryFrom ?? 5)) {
+    const give = [...run.box].sort((a, b) => a.level - b.level).slice(0, BLACK_MARKET.legendaryPrice).map((m) => m.uid);
+    step({ type: 'market-legendary', giveUids: give });
+  } else step({ type: 'leave-black-market' });
+  step({ type: 'leave-game-corner' });
 }
 
 /**
@@ -690,7 +732,7 @@ export function playRing(start: RunState, ctx: CombatCtx, policy: RunPolicy = DE
   step({ type: 'enter-building', building: 'center' });
   step({ type: 'leave-center' });
   step({ type: 'set-active', uids: healthiest() });
-  step({ type: 'enter-building', building: 'dojo' });
+  step({ type: 'enter-building', building: 'ring' });
   run = { ...run, money: Math.max(run.money, run.city!.ring!.fee) };
   step({ type: 'enter-ring' });
   const rungs = run.city!.ring!.rungs.length;

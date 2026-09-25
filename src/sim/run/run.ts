@@ -13,9 +13,10 @@ import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './event
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, rollRegionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
+import { BLACK_MARKET, atLegendaryCap, candyPrice, fencePrice, rollBlackMarket, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
-import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, type ProgressionConfig } from './xp';
-import type { LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
+import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
+import type { BlackMarketState, LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
 
 
 /** A shop row in the player's words, for the log line after a purchase. */
@@ -39,6 +40,9 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 // §2 — the run reducer. Pure: (state, action) → state, exactly like the combat reducer, so a run is a seed
 // plus an action log and a save is that pair (§10.7.4, §10.8).
 
+// 13 — v0.7.7: the City carries Team Rocket's Black Market (`city.blackMarket`) and the MarketRNG cursor (§2.11.6),
+//      and the Ring is a building of its own (§2.9.4.1). Migrated from 12 in save.ts: a Celadon visit already under
+//      way has no market rolled, so its poster hides nothing this time.
 // 12 — v0.7.6: the City carries its Safari Zone (`city.safari`) and the SafariRNG cursor (§2.11.6). Migrated
 //      from 11 in save.ts: a City visit already under way has no Safari rolled, and its door says so.
 // 11 — v0.7.5: Evolution Items (`stones`), the run's `starter` for its flourish, and a stone's Evolution screen
@@ -51,7 +55,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 12;
+export const RUN_SAVE_VERSION = 13;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -209,6 +213,19 @@ export function boxCapacity(run: RunState): number {
   return RUN_START.boxCapacity + (run.perks?.boxBonus ?? 0) + (run.relics.includes('box-expander') ? 2 : 0);
 }
 
+/** §2.3.1 — would the Box still fit its Pokémon with these relics gone? (The Box Expander holds two of the slots.) */
+export function boxFitsWithout(run: RunState, relicIds: readonly string[]): boolean {
+  return boxCapacity({ ...run, relics: run.relics.filter((id) => !relicIds.includes(id)) }) >= run.box.length;
+}
+
+/**
+ * §2.11.6 — will the Fence buy, or the Gambler take, this relic? One the run holds, whose charge is not spent (a
+ * used-up relic is worth nothing to anyone), and without which the Box still fits.
+ */
+export function marketTakesRelic(run: RunState, relicId: string): boolean {
+  return run.relics.includes(relicId) && !run.spentRelics.includes(relicId) && boxFitsWithout(run, [relicId]);
+}
+
 /**
  * §8.6.1 Evolution Catalyst — once per run, the first Pokémon to come within `levels` of its threshold evolves
  * there. The screen it opens is the ordinary one; the relic is spent when that evolution is chosen.
@@ -323,15 +340,15 @@ function rollRing(rng: GameRng, draft: RunState, ctx: RunCtx): RingState {
 
 /**
  * §2.9.4.1 — the ladder ends paid: everything banked goes to the wallet, and the Ring is shut for this visit.
- * The Ring is inside the Dojo, so its door leads back into the Dojo, not out to the town.
+ * The Ring is a building of its own, so every way off the ladder walks back out to the town.
  */
 function payRing(draft: RunState): void {
   const ring = draft.city!.ring!;
-  if (ring.banked) say(draft, `The Ring pays out ${ring.banked} ₽.`);
+  if (ring.banked) say(draft, `The ${CITIES[draft.city!.id].ringName} pays out ${ring.banked} ₽.`);
   draft.money += ring.banked;
   ring.banked = 0;
   ring.done = true;
-  draft.phase = 'dojo';
+  draft.phase = 'city';
 }
 
 /**
@@ -348,8 +365,8 @@ function resolveRing(draft: RunState, won: boolean, ctx: RunCtx): void {
     const lost = ring.banked;
     ring.banked = 0;
     ring.done = true;
-    draft.phase = 'dojo';
-    say(draft, `The Ring is lost${lost ? `, and the ${lost} ₽ it had paid with it` : ''}.`);
+    draft.phase = 'city';
+    say(draft, `The ${CITIES[draft.city!.id].ringName} is lost${lost ? `, and the ${lost} ₽ it had paid with it` : ''}.`);
     return;
   }
   const rung = ring.rungs[ring.cleared]!;
@@ -443,6 +460,30 @@ function afterSafariTurn(draft: RunState, event: HuntEvent, ctx: RunCtx): void {
   if (safari.clock <= 0) endHunt(draft, 'closed', ctx);
 }
 
+/** §2.11.6 — the Black Market's own stream: its counters and the Gambler's roll never move anything else. */
+function marketRngOf(draft: RunState): GameRng {
+  const rng = new RngStreams(draft.seed).get('MarketRNG');
+  rng.cursor = draft.cursors.MarketRNG ?? rng.cursor;
+  return rng;
+}
+
+/**
+ * §2.11.6 — Pokémon leave the Box at the Black Market (traded, or paid for the showcase). The Active Team keeps
+ * whoever is left in it; if nobody is, the first three left in the Box step up, so there is always a team to field.
+ */
+function afterBoxShrinks(draft: RunState): void {
+  draft.activeUids = draft.activeUids.filter((u) => draft.box.some((m) => m.uid === u));
+  if (!draft.activeUids.length) draft.activeUids = draft.box.slice(0, 3).map((m) => m.uid);
+}
+
+/** §6.3.1 — a Pokémon the market leaves at its threshold picks its branch now, and the screen hands back below. */
+function queueMarketEvolutions(draft: RunState, content: ContentRegistry): void {
+  const before = draft.pendingEvolutions.length;
+  queueEvolutions(draft, content);
+  for (const p of draft.pendingEvolutions.slice(before)) p.returnTo = 'black-market';
+  if (draft.pendingEvolutions.length) draft.phase = 'evolution';
+}
+
 /** §2.11.5 — the Game Corner's own stream, resumed from the save so a reload shows the same next result. */
 function casinoRng(draft: RunState): GameRng {
   const rng = new RngStreams(draft.seed).get('CasinoRNG');
@@ -469,7 +510,7 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
     if (i >= 0) shop.slots[i] = { ...slot, ...(shop.slots[i]!.floor ? { floor: shop.slots[i]!.floor } : {}) };
     else shop.slots.push(slot);
   }
-  const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null }, safari: null } }, ctx);
+  const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null }, safari: null, blackMarket: null } }, ctx);
   draft.cursors.EncounterRNG = rng.cursor;
   // The gate's offer is seeded from the run and the Region, like the pre-run offer is seeded from the run.
   const reflection = rollRegionModifierOffer((draft.seed ^ Math.imul(draft.regionIndex + 1, 0x9e3779b1)) >>> 0, ctx.content, draft.box, draft.money);
@@ -477,7 +518,14 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
   const safariRng = safariRngOf(draft);
   const safari = rollSafari(safariRng, id, regionContent(draft.regionIndex + 1).wildBand[0]);
   draft.cursors.SafariRNG = safariRng.cursor;
-  draft.city = { id, shop, reflection, ring, casino: { wheel: null, slots: null }, safari };
+  // §2.11.6 — the Black Market beneath the Game Corner, where there is one, on its own stream as well.
+  let blackMarket: BlackMarketState | null = null;
+  if (CITIES[id].blackMarket) {
+    const marketRng = marketRngOf(draft);
+    blackMarket = rollBlackMarket(marketRng, ctx.content, draft);
+    draft.cursors.MarketRNG = marketRng.cursor;
+  }
+  draft.city = { id, shop, reflection, ring, casino: { wheel: null, slots: null }, safari, blackMarket };
   draft.regionModifier = null;
   draft.pendingNodeId = null;
   draft.pendingShop = null;
@@ -997,8 +1045,11 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const branch = ctx.content.branch(action.branchId);
         say(draft, `${from} evolved into ${ctx.content.species(mon.speciesId).name} — ${branch.label}.`);
         draft.pendingEvolutions.shift();
-        // A two-stage jump (Caterpie at 8 into Metapod, which evolves at 12) can arrive already ready again.
+        // A two-stage jump (Caterpie at 8 into Metapod, which evolves at 12) can arrive already ready again — and
+        // hands back to the same place its first screen would have.
+        const queued = draft.pendingEvolutions.length;
         queueEvolutions(draft, ctx.content);
+        if (pending.returnTo) for (const p of draft.pendingEvolutions.slice(queued)) p.returnTo ??= pending.returnTo;
         if (draft.pendingEvolutions.length) break;
         // §6.3.2 — a stone used between nodes hands back to where it was used; a level-up walks off the node.
         if (pending.returnTo) {
@@ -1142,6 +1193,9 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           draft.phase = 'game-corner';
         } else if (action.building === 'safari') {
           draft.phase = 'safari';
+        } else if (action.building === 'ring') {
+          // §2.9.4.1 — the Ring's own building: the ladder and the first rival are on show before the fee is paid.
+          draft.phase = 'ring';
         } else {
           say(draft, 'The Dojo master looks your team over.');
           draft.phase = 'dojo';
@@ -1149,13 +1203,17 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
-      // §2.9.4.1 — the Challenge Ring, from inside the Dojo: the fee is paid on the way onto the ladder.
+      // §2.9.4.1 — the fee is paid on the way onto the ladder.
       case 'enter-ring': {
         const ring = draft.city!.ring!;
         draft.money -= ring.fee;
         ring.entered = true;
-        draft.phase = 'ring';
-        say(draft, `Paid ${ring.fee} ₽ to step into the Ring.`);
+        say(draft, `Paid ${ring.fee} ₽ to step into the ${CITIES[draft.city!.id].ringName}.`);
+        break;
+      }
+
+      case 'leave-ring': {
+        draft.phase = 'city';
         break;
       }
 
@@ -1221,6 +1279,100 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
       case 'leave-game-corner': {
         draft.phase = 'city';
+        break;
+      }
+
+      // §2.11.6 — the switch behind the poster. The stairs stay open for the rest of the visit.
+      case 'push-switch': {
+        draft.city!.blackMarket!.found = true;
+        say(draft, 'A switch behind the poster! A stairway opens in the back of the Game Corner.');
+        break;
+      }
+
+      case 'enter-black-market': {
+        draft.city!.blackMarket!.entered = true;
+        draft.phase = 'black-market';
+        say(draft, 'Down the stairs: Team Rocket’s Black Market.');
+        break;
+      }
+
+      // §2.11.6 — the Trader: yours for theirs, at your Pokémon's level, fresh (0 Trauma, full HP). Its held item
+      // comes back to the bag, and it takes the given one's place in the Box and the Active Team.
+      case 'market-trade': {
+        const market = draft.city!.blackMarket!;
+        const idx = draft.box.findIndex((m) => m.uid === action.giveUid);
+        const given = draft.box[idx]!;
+        const species = market.trades[action.offer]!;
+        const fresh = newPartyMon(species, given.level, ctx.content, draft.seed);
+        if (given.heldItem) draft.bag.push(given.heldItem);
+        draft.box[idx] = fresh;
+        draft.activeUids = draft.activeUids.map((u) => (u === given.uid ? fresh.uid : u));
+        market.traded = true;
+        draft.stats.recruits += 1;
+        if (!draft.seenSpecies.includes(species)) draft.seenSpecies.push(species);
+        say(draft, `Traded ${ctx.content.species(given.speciesId).name} for ${ctx.content.species(species).name}.`);
+        queueMarketEvolutions(draft, ctx.content);
+        break;
+      }
+
+      // §2.11.6 — the Fence's Rare Candy: exactly one level, with whatever the level brings (moves, an evolution).
+      case 'market-candy': {
+        const market = draft.city!.blackMarket!;
+        const mon = draft.box.find((m) => m.uid === action.uid)!;
+        const price = candyPrice(draft, ctx.content);
+        draft.money -= price;
+        market.candies -= 1;
+        grantXp(mon, xpToNext(mon.level, ctx.progression) - mon.xp, ctx.content, ctx.progression);
+        say(draft, `A Rare Candy for ${price} ₽: ${ctx.content.species(mon.speciesId).name} grew to Lv ${mon.level}.`);
+        queueMarketEvolutions(draft, ctx.content);
+        break;
+      }
+
+      // §2.11.6 — the Fence buys a relic, the one way a relic becomes money again.
+      case 'market-sell-relic': {
+        const price = fencePrice(ctx.content, action.relicId);
+        draft.relics.splice(draft.relics.indexOf(action.relicId), 1);
+        draft.money += price;
+        say(draft, `The Fence paid ${price} ₽ for the ${ctx.content.relic(action.relicId).name}.`);
+        break;
+      }
+
+      // §2.11.6 — the Gambler: the stake goes either way; the Rare comes only on the printed chance.
+      case 'market-wager': {
+        const market = draft.city!.blackMarket!;
+        const chance = wagerChance(ctx.content, action.stake, action.target);
+        const rng = marketRngOf(draft);
+        const won = rng.range01() < chance;
+        draft.cursors.MarketRNG = rng.cursor;
+        draft.relics = draft.relics.filter((id) => !action.stake.includes(id));
+        market.wager = { target: action.target, staked: [...action.stake], chance, won };
+        const name = ctx.content.relic(action.target).name;
+        if (won) {
+          say(draft, `The Gambler loses — the ${name} is yours.`);
+          acquireRelic(draft, action.target, ctx.content);
+        } else say(draft, `The Gambler wins. The stake is gone, and the ${name} stays on the table.`);
+        break;
+      }
+
+      // §2.11.6 / §7.3.7 — the showcase: the Legendary for three of your Pokémon, and the deal closes the market.
+      case 'market-legendary': {
+        const market = draft.city!.blackMarket!;
+        const names = draft.box.filter((m) => action.giveUids.includes(m.uid)).map((m) => ctx.content.species(m.speciesId).name);
+        for (const m of draft.box) if (action.giveUids.includes(m.uid) && m.heldItem) draft.bag.push(m.heldItem);
+        draft.box = draft.box.filter((m) => !action.giveUids.includes(m.uid));
+        afterBoxShrinks(draft);
+        say(draft, `${names.join(', ')} went to Team Rocket.`);
+        acquireRelic(draft, market.legendary!, ctx.content);
+        market.legendary = null;
+        market.done = true;
+        draft.phase = 'game-corner';
+        say(draft, 'The Executive shows you up the stairs, and the door locks behind you.');
+        break;
+      }
+
+      case 'leave-black-market': {
+        draft.city!.blackMarket!.done = true;
+        draft.phase = 'game-corner';
         break;
       }
 
@@ -1564,10 +1716,16 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       return state.phase === 'dojo' ? undefined : 'wrong-phase';
 
     case 'enter-ring': {
-      if (state.phase !== 'dojo') return 'wrong-phase';
+      if (state.phase !== 'ring') return 'wrong-phase';
       const ring = state.city?.ring;
       if (!ring || ring.entered || ring.done) return 'ring-closed';
       return state.money < ring.fee ? 'cannot-afford' : undefined;
+    }
+    case 'leave-ring': {
+      // §2.9.4.1 — once the fee is paid the only ways off the ladder are its own: cash out, the top, or a loss.
+      if (state.phase !== 'ring') return 'wrong-phase';
+      const ring = state.city?.ring;
+      return ring && ring.entered && !ring.done ? 'ring-closed' : undefined;
     }
     case 'ring-fight': {
       const ring = state.city?.ring;
@@ -1597,6 +1755,60 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       return state.money < CASINO.slots.stake ? 'cannot-afford' : undefined;
     case 'leave-game-corner':
       return state.phase === 'game-corner' ? undefined : 'wrong-phase';
+
+    // §2.11.6 — the Black Market: found behind the poster, entered once, every counter once where it says so.
+    case 'push-switch': {
+      if (state.phase !== 'game-corner') return 'wrong-phase';
+      const market = state.city?.blackMarket;
+      return market && !market.found ? undefined : 'market-closed';
+    }
+    case 'enter-black-market': {
+      if (state.phase !== 'game-corner') return 'wrong-phase';
+      const market = state.city?.blackMarket;
+      return market && market.found && !market.entered && !market.done ? undefined : 'market-closed';
+    }
+    case 'market-trade': {
+      const market = state.city?.blackMarket;
+      if (state.phase !== 'black-market' || !market) return 'wrong-phase';
+      if (market.traded || !market.trades[action.offer]) return 'market-closed';
+      return state.box.some((m) => m.uid === action.giveUid) ? undefined : 'unknown-pokemon';
+    }
+    case 'market-candy': {
+      const market = state.city?.blackMarket;
+      if (state.phase !== 'black-market' || !market) return 'wrong-phase';
+      if (market.candies <= 0) return 'market-closed';
+      const mon = state.box.find((m) => m.uid === action.uid);
+      if (!mon) return 'unknown-pokemon';
+      if (mon.level >= ctx.progression.maxLevel) return 'bad-payment';
+      return state.money < candyPrice(state, ctx.content) ? 'cannot-afford' : undefined;
+    }
+    case 'market-sell-relic': {
+      if (state.phase !== 'black-market' || !state.city?.blackMarket) return 'wrong-phase';
+      return marketTakesRelic(state, action.relicId) ? undefined : 'bad-payment';
+    }
+    case 'market-wager': {
+      const market = state.city?.blackMarket;
+      if (state.phase !== 'black-market' || !market) return 'wrong-phase';
+      if (market.wager) return 'market-closed';
+      if (!market.wagerTargets.includes(action.target) || state.relics.includes(action.target)) return 'not-offered';
+      const stake = action.stake;
+      if (!stake.length || stake.length > BLACK_MARKET.maxStake || new Set(stake).size !== stake.length) return 'bad-payment';
+      // Every relic staked has to be one the Gambler takes — and all of them together, not one at a time: two
+      // Box Expander checks passed separately could still leave the Box over capacity.
+      return stake.every((id) => marketTakesRelic(state, id)) && boxFitsWithout(state, stake) ? undefined : 'bad-payment';
+    }
+    case 'market-legendary': {
+      const market = state.city?.blackMarket;
+      if (state.phase !== 'black-market' || !market) return 'wrong-phase';
+      if (!market.legendary) return 'market-closed';
+      if (atLegendaryCap(state, ctx.content)) return 'legendary-cap';
+      const give = action.giveUids;
+      if (give.length !== BLACK_MARKET.legendaryPrice || new Set(give).size !== give.length) return 'bad-payment';
+      if (give.some((u) => !state.box.some((m) => m.uid === u))) return 'unknown-pokemon';
+      return state.box.length - give.length >= 1 ? undefined : 'bad-payment';
+    }
+    case 'leave-black-market':
+      return state.phase === 'black-market' ? undefined : 'wrong-phase';
 
     // §2.11.6 — the Safari: a ticket, then one stalk at a time, and an action only where the board allows it.
     case 'enter-safari': {

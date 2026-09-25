@@ -124,7 +124,7 @@ export type RunPhase =
   | 'shop'
   /** §2.10 — a Mystery Event is on screen, waiting for a choice. */
   | 'event'
-  /** §2.9.4.1 — on the Challenge Ring's ladder, between rungs: fight the next one or cash out. */
+  /** §2.9.4.1 — inside the City's Ring: its ladder before the fee is paid, or between rungs — fight or cash out. */
   | 'ring'
   /** §2.9.4.1 — the Ring's top rung is won and its Rare relic 1-of-3 is open. */
   | 'relic-pick'
@@ -132,6 +132,8 @@ export type RunPhase =
   | 'game-corner'
   /** §2.11.6 — inside the Safari Zone: the entrance board, or a stalk. */
   | 'safari'
+  /** §2.11.6 — down the stairs behind the Game Corner's poster: Team Rocket's Black Market. */
+  | 'black-market'
   /**
    * §7.3.7 — a Gym is beaten and the Legendary 1-of-3 is open. It sits *between* the Gym and the end of the
    * run rather than beside the reward screen, because it is the Gym's own reward and the last decision the
@@ -236,7 +238,7 @@ export interface CarriedStatus {
 export type CityId = 'pallet-town' | 'celadon-city';
 
 /** §2.11.4 — the buildings a player can walk into. Doors still in development are drawn by the UI only. */
-export type CityBuilding = 'center' | 'mart' | 'dojo' | 'game-corner' | 'safari';
+export type CityBuilding = 'center' | 'mart' | 'dojo' | 'ring' | 'game-corner' | 'safari';
 
 /** §2.9.4.1 — one rung of the Challenge Ring: a rival, their team (seen before you fight it), and the prize. */
 export interface RingRung {
@@ -284,12 +286,45 @@ export interface CityState {
   shop: ShopStock;
   /** §2.11.3 — the three Region Modifiers the gate offers. Picking one leaves the City. */
   reflection: string[];
-  /** §2.9.4.1 — the Challenge Ring inside this City's Dojo. */
+  /** §2.9.4.1 — this City's Ring: the Challenge Ring in the town, the Pokémon Coliseum in the city. */
   ring: RingState | null;
   /** §2.11.5 — each Game Corner machine's last result, for the screen. */
   casino: { wheel: CasinoResult | null; slots: CasinoResult | null };
   /** §2.11.6 — the Safari Zone for this visit: its ticket and lineup. Rolled on arrival; resolves once per visit. */
   safari: SafariState | null;
+  /** §2.11.6 — Team Rocket's Black Market beneath the Game Corner, rolled on arrival; null where there is none. */
+  blackMarket: BlackMarketState | null;
+}
+
+/** §2.11.6 — the Gambler's wager: what was aimed at, what was staked, the printed chance and how it fell. */
+export interface MarketWager {
+  target: string;
+  staked: string[];
+  chance: number;
+  won: boolean;
+}
+
+/**
+ * §2.11.6 — the Black Market for one City visit. Everything on offer is rolled on arrival, so a reload never
+ * re-rolls a counter; the market is found by the switch behind the Game Corner's poster, and closes behind you.
+ */
+export interface BlackMarketState {
+  /** The switch behind the poster is pushed: the stairs stand open for the rest of the visit. */
+  found: boolean;
+  /** Walked down the stairs this visit. */
+  entered: boolean;
+  /** Shut for this visit: walked out, or the showcase's deal is done. */
+  done: boolean;
+  /** The Trader — two stolen Pokémon (species ids); one trade a visit. */
+  trades: string[];
+  traded: boolean;
+  /** The Fence — Rare Candies left on the counter this visit. */
+  candies: number;
+  /** The Gambler — the Rare relics a wager can aim at; one wager a visit. */
+  wagerTargets: string[];
+  wager: MarketWager | null;
+  /** The showcase — one Legendary relic, paid for in Pokémon. Null when the pool had none to show. */
+  legendary: string | null;
 }
 
 /** §2.11.6 — the Safari's own difficulty tiers: the board a species is stalked on, not its drop rarity. */
@@ -567,8 +602,10 @@ export type RunAction =
   | { type: 'buy'; index: number }
   /** §2.9.3 — re-roll the unsold slots at 25 → 50 → 100 ₽; in the Department Store, one floor's. */
   | { type: 'reroll-shop'; floor?: StoreFloor }
-  /** §2.9.4.1 — pay the Challenge Ring's fee and step onto the ladder (from inside the Dojo). */
+  /** §2.9.4.1 — pay the Ring's fee and step onto the ladder. */
   | { type: 'enter-ring' }
+  /** §2.9.4.1 — walk back out of the Ring before paying, or once its ladder is over. */
+  | { type: 'leave-ring' }
   /** §2.9.4.1 — fight the next rung. */
   | { type: 'ring-fight' }
   /** §2.9.4.1 — take what the ladder has paid and leave it. */
@@ -580,6 +617,22 @@ export type RunAction =
   /** §2.11.5 — pull the Slots at their fixed stake. */
   | { type: 'pull-slots' }
   | { type: 'leave-game-corner' }
+  /** §2.11.6 — push the switch behind the Game Corner's poster: the stairs down open. */
+  | { type: 'push-switch' }
+  /** §2.11.6 — take the stairs down to the Black Market. */
+  | { type: 'enter-black-market' }
+  /** §2.11.6 — the Trader: one of your Pokémon for one of the two on offer. */
+  | { type: 'market-trade'; offer: number; giveUid: string }
+  /** §2.11.6 — the Fence: a Rare Candy, one level for one Pokémon, on the spot. */
+  | { type: 'market-candy'; uid: string }
+  /** §2.11.6 — the Fence buys a relic for a share of its price. */
+  | { type: 'market-sell-relic'; relicId: string }
+  /** §2.11.6 — the Gambler: stake 1–3 relics on one of the Rares at the printed chance. */
+  | { type: 'market-wager'; target: string; stake: string[] }
+  /** §2.11.6 — the showcase: its Legendary for three Pokémon. The deal closes the market. */
+  | { type: 'market-legendary'; giveUids: string[] }
+  /** §2.11.6 — walk back up the stairs. The market closes for this visit. */
+  | { type: 'leave-black-market' }
   /** §2.11.6 — buy the Safari ticket: the fee for the balls and the clock. */
   | { type: 'enter-safari' }
   /** §2.11.6 — walk up to one of the lineup. */
@@ -650,7 +703,13 @@ export type RunRejectReason =
   /** §2.11.6 — the Safari is not open for this: no ticket, already over, no stalk, or that one is gone. */
   | 'safari-closed'
   /** §2.11.6 — out of reach, blocked, or not an action left this turn. */
-  | 'bad-tile' | 'no-ap';
+  | 'bad-tile' | 'no-ap'
+  /** §2.11.6 — the Black Market is not open for this: not found, already left, or that counter is done. */
+  | 'market-closed'
+  /** §2.11.6 — a price in Pokémon the Box cannot pay and keep one, or a stake the Gambler will not take. */
+  | 'bad-payment'
+  /** §7.3.7 — the run already holds two Legendaries. */
+  | 'legendary-cap';
 
 export interface RunReduceResult {
   state: RunState;

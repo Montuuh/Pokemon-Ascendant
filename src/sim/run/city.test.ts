@@ -32,8 +32,8 @@ const report = (s: RunState, outcome: CombatOutcomeReport['outcome'], hp = 10): 
   turns: 5,
 });
 
-/** Into the Dojo and onto the ladder. */
-const onLadder = (s: RunState) => apply(apply(s, { type: 'enter-building', building: 'dojo' }), { type: 'enter-ring' });
+/** Into the Ring's own building and onto the ladder. */
+const onLadder = (s: RunState) => apply(apply(s, { type: 'enter-building', building: 'ring' }), { type: 'enter-ring' });
 
 describe('The Challenge Ring — §2.9.4.1', () => {
   it('IsRolledOnArrival_TwoRungsInTheTown_ThreeInTheCity', () => {
@@ -56,19 +56,39 @@ describe('The Challenge Ring — §2.9.4.1', () => {
     });
   });
 
-  it('Entering_PaysTheFee_FromInsideTheDojo_OncePerVisit', () => {
+  it('IsABuildingOfItsOwn_InBothCities_NamedForItsCity', () => {
+    expect(CITIES['pallet-town'].open).toContain('ring');
+    expect(CITIES['celadon-city'].open).toContain('ring');
+    expect(CITIES['pallet-town'].ringName).toBe('Challenge Ring');
+    expect(CITIES['celadon-city'].ringName).toBe('Pokémon Coliseum');
+    // The Dojo no longer holds its door.
+    const inDojo = apply(inCity(0), { type: 'enter-building', building: 'dojo' });
+    expect(reject(inDojo, { type: 'enter-ring' })).toBe('wrong-phase');
+  });
+
+  it('Entering_ShowsTheLadderFirst_ThenPaysTheFee_OncePerVisit', () => {
     const s = inCity(0, 1000);
     expect(reject(s, { type: 'enter-ring' })).toBe('wrong-phase');
-    const inDojo = apply(s, { type: 'enter-building', building: 'dojo' });
-    expect(reject({ ...inDojo, money: 10 }, { type: 'enter-ring' })).toBe('cannot-afford');
-    const on = apply(inDojo, { type: 'enter-ring' });
+    const inside = apply(s, { type: 'enter-building', building: 'ring' });
+    expect(inside.phase).toBe('ring');
+    expect(inside.money).toBe(1000);
+    // Walking back out before paying costs nothing and keeps the Ring open.
+    const back = apply(inside, { type: 'leave-ring' });
+    expect(back.phase).toBe('city');
+    expect(back.city!.ring!.done).toBe(false);
+    expect(reject({ ...inside, money: 10 }, { type: 'enter-ring' })).toBe('cannot-afford');
+    const on = apply(inside, { type: 'enter-ring' });
     expect(on.phase).toBe('ring');
     expect(on.money).toBe(1000 - CITIES['pallet-town'].ring.fee);
-    // Once per visit: cashing out shuts it.
-    // …and walks back into the Dojo the Ring is inside.
+    // Once the fee is paid, the ladder's own exits are the only ones.
+    expect(reject(on, { type: 'leave-ring' })).toBe('ring-closed');
+    // Once per visit: cashing out shuts it, and walks back out to the town.
     const out = apply(on, { type: 'ring-cash-out' });
-    expect(out.phase).toBe('dojo');
-    expect(reject(out, { type: 'enter-ring' })).toBe('ring-closed');
+    expect(out.phase).toBe('city');
+    expect(reject(out, { type: 'enter-ring' })).toBe('wrong-phase');
+    const again = apply(out, { type: 'enter-building', building: 'ring' });
+    expect(reject(again, { type: 'enter-ring' })).toBe('ring-closed');
+    expect(apply(again, { type: 'leave-ring' }).phase).toBe('city');
   });
 
   it('ARungIsAnEliteFight_AtTheRegionsTier', () => {
@@ -107,7 +127,7 @@ describe('The Challenge Ring — §2.9.4.1', () => {
     s = apply(s, { type: 'ring-fight' });
     s = apply(s, { type: 'finish-combat', report: report(s, 'defeat') });
     expect(s.outcome).toBe('in-progress');
-    expect(s.phase).toBe('dojo');
+    expect(s.phase).toBe('city');
     expect(s.city!.ring!.banked).toBe(0);
     expect(s.city!.ring!.done).toBe(true);
     // The fallen keep their Trauma.
@@ -136,7 +156,7 @@ describe('The Challenge Ring — §2.9.4.1', () => {
     s = apply(s, { type: 'ring-pick', relicId: pick[0]! });
     expect(s.relics).toContain(pick[0]);
     expect(s.money).toBe(before + 300);
-    expect(s.phase).toBe('dojo');
+    expect(s.phase).toBe('city');
   });
 
   it('TheTopRung_OnAnAccountWithNoRaresOpen_StillHoldsThree_FromTheRarityBelow', () => {

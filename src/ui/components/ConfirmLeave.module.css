@@ -1,0 +1,32 @@
+/* §2.11.0 — the warning before a committing door closes behind you. */
+
+.body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: 0;
+  color: var(--ink-primary);
+}
+.lock { flex: none; margin-top: 2px; color: var(--ink-secondary); }
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+.stay,
+.leave {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.stay { background: var(--accent-action); color: var(--ink-on-accent); }
+.leave { background: var(--surface-1); color: var(--ink-primary); }
+.stay:focus-visible,
+.leave:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }

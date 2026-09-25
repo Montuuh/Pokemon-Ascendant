@@ -136,6 +136,12 @@
   background: var(--surface-1);
   font-size: var(--type-small);
 }
+/* The ladder is over for this visit: said once, beside the way out. */
+.closed {
+  margin: 0 auto 0 0;
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
 .cashOut,
 .fight {
   display: inline-flex;
@@ -150,7 +156,8 @@
 }
 .cashOut { background: var(--surface-2); color: var(--ink-primary); }
 .fight { background: var(--accent-action); color: var(--ink-on-accent); font-size: var(--type-h3); }
-.fight:disabled { cursor: not-allowed; border-style: dashed; }
+.fight:disabled,
+.fight[aria-disabled='true'] { cursor: not-allowed; border-style: dashed; }
 .cashOut:focus-visible,
 .fight:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
 

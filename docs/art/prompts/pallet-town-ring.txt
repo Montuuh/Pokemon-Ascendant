@@ -1,0 +1,7 @@
+Edit the attached image. It is a close-up crop of a top-down 16-bit pixel-art Pokémon town square (FireRed / LeafGreen overworld style): a green grass square bordered by sand paths, with a sand sports court with white lines in the middle, four wooden benches around it, and the top of a small teal-roofed house behind its wooden fence at the very bottom edge.
+
+Keep the framing, the camera, the pixel size, the palette, the sand paths and the wavy grass border around the edges, and the fence and teal roof at the bottom edge exactly as they are. Change ONE thing: the sports court and its four benches become a Pokémon battle ring, drawn in the same pixel-art style and the same chunky pixel size.
+
+The ring, seen from straight above: a raised square stone battle platform with grey stone sides, a warm sandy floor, a thick red-and-white border line, and a large red-and-white Poké Ball emblem painted in the centre of the floor; a short set of stone steps in the middle of its bottom edge; a wooden bench along its left side and one along its right side; four short flag poles at its corners with small red and blue pennants. It fills the area the court and benches filled and stays ABOVE the fence at the bottom — a band of grass remains between the ring's steps and the fence, and a band of grass remains all around it. Cheerful, bright daytime.
+
+No text, no letters, no numbers, no people, no Pokémon, no creatures, no UI.

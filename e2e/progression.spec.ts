@@ -97,8 +97,9 @@ test('the Dojo sells as many services as the money covers — §2.9.4', async ({
   expect(poolAfter).toBe(poolBefore + 2);
   await page.screenshot({ path: 'playtest/run-dojo.png' });
 
-  // §2.11.0 — the extra-moves counter is a door in here that says it is not open yet (the Ring is open: city.spec).
-  await expect(page.getByTestId('door-ring')).toBeVisible();
+  // §2.11.0 — the extra-moves counter is a door in here that says it is not open yet. The Ring is not in here any
+  // more: it is a building of its own since v0.7.7 (city.spec).
+  await expect(page.getByTestId('door-ring')).toHaveCount(0);
   await page.getByTestId('door-extra-moves').click();
   await expect(page.getByTestId('door-soon')).toBeVisible();
   await page.getByTestId('btn-door-back').click();

@@ -6,8 +6,9 @@ import { GameRng } from './gameRng';
 // outputs are strongly correlated for nearby seeds (1001, 1002, …), which made "different fights" open with
 // the same roll. Parity note recorded in docs/migration/from-unity.md §5.
 // CasinoRNG (§2.11.5) is its own stream so a Game Corner pull never moves a fight's or a shelf's rolls; SafariRNG
-// (§2.11.6) likewise for the Safari's boards and throws.
-export const RNG_STREAM_NAMES = ['MapRNG', 'CombatRNG', 'LootRNG', 'MysteryRNG', 'EncounterRNG', 'CasinoRNG', 'SafariRNG'] as const;
+// (§2.11.6) likewise for the Safari's boards and throws, and MarketRNG (§2.11.6) for the Black Market's counters
+// and the Gambler's wager.
+export const RNG_STREAM_NAMES = ['MapRNG', 'CombatRNG', 'LootRNG', 'MysteryRNG', 'EncounterRNG', 'CasinoRNG', 'SafariRNG', 'MarketRNG'] as const;
 export type RngStreamName = (typeof RNG_STREAM_NAMES)[number];
 
 /** §10.8.6 — JSON-safe snapshot of every stream cursor, persisted in the run save. */
@@ -48,6 +49,7 @@ export class RngStreams {
       EncounterRNG: make('EncounterRNG'),
       CasinoRNG: make('CasinoRNG'),
       SafariRNG: make('SafariRNG'),
+      MarketRNG: make('MarketRNG'),
     };
   }
 

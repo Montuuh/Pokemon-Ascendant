@@ -47,19 +47,25 @@ const SCREENS = {
   dojo: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(600)'], clicks: ['door-dojo'], match: [/screens\/DojoScreen/, /components\/MoveManager/] },
   center: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.trauma(2)', 'run.pay(600)'], clicks: ['door-center'], match: [/screens\/CenterScreen/] },
   shop: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.pay(600)', 'run.wear("leftovers")'], clicks: ['door-mart'], match: [/screens\/ShopScreen/, /components\/ItemCard/] },
-  // v0.7.2 — the city: the Ring behind the Dojo (§2.9.4.1), its prize, the Game Corner (§2.11.5), the store's floors (§2.11.2).
-  ring: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-dojo', 'door-ring'], match: [/screens\/RingScreen/] },
+  // v0.7.2 — the city: the Ring (§2.9.4.1; its own building since v0.7.7), its prize, the Game Corner (§2.11.5), the store's floors (§2.11.2).
+  ring: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring'], match: [/screens\/RingScreen/, /components\/ConfirmLeave/] },
+  'ring-climb': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-enter'], match: [/screens\/RingScreen/] },
   'ring-prize': {
     url: '/?screen=menu',
     setup: [
       'run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)',
-      'run.dispatch({ type: "enter-building", building: "dojo" })', 'run.dispatch({ type: "enter-ring" })',
+      'run.dispatch({ type: "enter-building", building: "ring" })', 'run.dispatch({ type: "enter-ring" })',
       ...[0, 1].flatMap(() => ['run.dispatch({ type: "ring-fight" })', 'run.dispatch({ type: "finish-combat", report: { outcome: "victory", team: a.run.state().activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: a.run.state().balls, turns: 5 } })']),
       'goTo("map")',
     ],
     match: [/screens\/RingPrizeScreen/, /components\/RelicOffer/, /screens\/LegendaryScreen/],
   },
-  'game-corner': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner', 'btn-spin', 'btn-pull'], match: [/screens\/GameCornerScreen/] },
+  'game-corner': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner', 'btn-spin', 'btn-pull'], match: [/screens\/GameCornerScreen/, /screens\/GameCornerRoom/] },
+  // v0.7.7 — Team Rocket's Black Market (§2.11.6): the Game Corner's back wall once the switch is pushed, and the
+  // market's counters.
+  'game-corner-open': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-game-corner', 'gc-poster', 'btn-switch-push'], match: [/screens\/GameCornerRoom/] },
+  'black-market': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(5)', 'run.city(1)', 'run.pay(3000)', 'run.dispatch({ type: "enter-building", building: "game-corner" })', 'run.dispatch({ type: "push-switch" })', 'run.dispatch({ type: "enter-black-market" })'], match: [/screens\/BlackMarketScreen/, /components\/ConfirmLeave/] },
+  'black-market-gambler': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(3000)', 'run.grantRelic("coin-pouch")', 'run.grantRelic("brave-charm")', 'run.dispatch({ type: "enter-building", building: "game-corner" })', 'run.dispatch({ type: "push-switch" })', 'run.dispatch({ type: "enter-black-market" })'], clicks: ['market-gambler', 'stake-coin-pouch'], match: [/screens\/BlackMarketScreen/] },
   store: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(3000)'], clicks: ['door-department-store'], match: [/screens\/ShopScreen/] },
   // v0.7.6 — the Safari Zone (§2.11.6): the entrance with today's lineup, and a stalk on its board.
   safari: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-safari', 'btn-guide-back'], match: [/screens\/safari\//] },
