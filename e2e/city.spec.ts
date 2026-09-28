@@ -159,19 +159,33 @@ test.describe('The Game Corner — §2.11.5', () => {
     await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
     await page.screenshot({ path: 'playtest/game-corner.png' });
 
-    // A roulette table opens the Roulette.
+    // A roulette table opens the Roulette: the classic wheel, a bet on a colour, the odds printed on the bets.
     await page.getByTestId('gc-roulette-0').click();
-    await expect(page.getByTestId('machine-wheel')).toContainText('66 %');
+    await expect(page.getByTestId('machine-wheel')).toContainText('48.6 %');
+    await expect(page.getByTestId('bet-green')).toContainText('×36');
+    await expect(page.getByTestId('bet-green')).toContainText('2.7 %');
+    await page.getByTestId('bet-black').click();
+    await expect(page.getByTestId('bet-black')).toHaveAttribute('aria-pressed', 'true');
     await page.getByTestId('stake-up').click();
     await page.getByTestId('stake-up').click();
     await page.getByTestId('stake-down').click();
     await expect(page.getByTestId('wheel-stake')).toContainText('60');
     await page.getByTestId('btn-spin').click();
     const wheel = await page.evaluate(() => window.__ascendant!.run.state()!.city!.casino.wheel!);
+    expect(wheel.bet).toBe('black');
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(1000 - 60 + wheel.payout);
-    // The result lands with the wheel, and so does the wallet.
-    await expect(page.getByTestId('wheel-result')).toContainText(`×${wheel.multiplier}`);
+    // While the ball runs, the bets are shut, the result line is blank and the wallet shows only the stake gone.
+    await page.waitForTimeout(1200);
+    await expect(page.getByTestId('roulette-wheel')).toHaveAttribute('data-spinning', 'true');
+    await expect(page.getByTestId('bet-red')).toBeDisabled();
+    await expect(page.getByTestId('wheel-result')).not.toContainText('—');
+    await expect(page.getByTestId('machine-money')).toContainText((1000 - 60).toLocaleString('en-GB'));
+    await page.screenshot({ path: 'playtest/game-corner-roulette-spin.png' });
+    // The result lands with the ball, and so does the wallet.
+    const pocket = await page.evaluate((face) => [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26][face as number], wheel.face);
+    await expect(page.getByTestId('wheel-result')).toContainText(wheel.multiplier ? `${pocket}Black — ×2` : `${pocket}`, { timeout: 8000 });
     await expect(page.getByTestId('machine-money')).toContainText((1000 - 60 + wheel.payout).toLocaleString('en-GB'));
+    await expect(page.getByTestId('roulette-wheel')).not.toHaveAttribute('data-spinning');
     await page.screenshot({ path: 'playtest/game-corner-roulette.png' });
     await page.getByTestId('btn-machine-close').click();
     await expect(page.getByTestId('machine-wheel')).toBeHidden();
@@ -179,17 +193,23 @@ test.describe('The Game Corner — §2.11.5', () => {
     // A bank of slot machines opens the Slots; Escape steps away from it.
     await page.getByTestId('gc-slots-1').click();
     await expect(page.getByTestId('machine-slots')).toContainText('0.4 %');
-    await expect(page.getByTestId('slot-reels').getByRole('img')).toHaveCount(3);
+    await expect(page.getByTestId('slot-reels')).toHaveAttribute('aria-label', 'Seven, BAR, Cherry');
     await page.getByTestId('btn-pull').click();
     const slots = await page.evaluate(() => window.__ascendant!.run.state()!.city!.casino.slots!);
-    await expect(page.getByTestId('slots-result')).toContainText(slots.multiplier ? `×${slots.multiplier}` : 'Nothing lines up');
-    await page.waitForTimeout(1000);
+    // The reels stop in turn, left to right: partway through, the first has landed and the last still spins.
+    await page.waitForTimeout(1300);
+    await expect(page.getByTestId('slot-reels')).toHaveAttribute('data-rolling', 'true');
+    await expect(page.getByTestId('slots-result')).not.toContainText(/×|Nothing/);
+    await page.screenshot({ path: 'playtest/game-corner-slots-spin.png' });
+    await expect(page.getByTestId('slots-result')).toContainText(slots.multiplier ? `×${slots.multiplier}` : 'Nothing lines up', { timeout: 5000 });
+    await expect(page.getByTestId('slot-reels')).not.toHaveAttribute('data-rolling');
+    await page.waitForTimeout(1200);
     await page.screenshot({ path: 'playtest/game-corner-slots.png' });
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('machine-slots')).toBeHidden();
     // The Roulette still shows its own last result when it is opened again.
     await page.getByTestId('gc-roulette-1').click();
-    await expect(page.getByTestId('wheel-result')).toContainText(`×${wheel.multiplier}`);
+    await expect(page.getByTestId('wheel-result')).toContainText(`${pocket}`);
     await page.getByTestId('btn-machine-close').click();
 
     await page.getByTestId('btn-leave-game-corner').click();

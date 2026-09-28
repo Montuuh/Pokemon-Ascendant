@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5) as of 2026-09-28. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -39,8 +39,9 @@ Pokémon.
   nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
   Celadon is the bigger City: a five-floor **Department Store**, a Dojo whose tutor list spans every stage the
   line has reached, and the **Game Corner** — FireRed's own room as the screen, its slot banks and two roulette
-  tables opening the Roulette (stake ≤200 ₽, EV 0.96) and the Slots (50 ₽, ×50 jackpot, EV 0.94), tables printed,
-  outcome rolled first. Each City has its **Ring** as a building of its own — Pallet's
+  tables opening the classic Roulette (37 pockets: red/black ×2, the one green ×36, EV 0.973, stake ≤200 ₽) and the
+  Slots (50 ₽, ×50 jackpot, EV 0.94, reels stopping left to right), tables printed, outcome rolled first; the room
+  is pointed at, not walked. Each City has its **Ring** as a building of its own — Pallet's
   **Challenge Ring** in the square, Celadon's **Pokémon Coliseum**: the ladder and the first rival on show before
   the fee, then 2 rungs / 3 rungs of Elite-class rivals, no healing between, cash out or climb; money below, a Rare
   relic 1-of-3 on top, no XP; however it ends, the whole Box walks out healed to full (Trauma stays), and it never

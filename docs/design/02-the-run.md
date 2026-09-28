@@ -1049,30 +1049,44 @@ with an expectation below 1 there is nothing to farm.
 
 **The room is the screen.** The Game Corner is FireRed / LeafGreen's own map of it, whole, at a whole-pixel scale:
 the prize counter, four banks of slot machines with their players, and two **roulette tables** on the floor either
-side of the door (the one object the games never drew there, generated in the map's register). Walk up to — press —
-a bank of slots and the Slots open in a panel; a roulette table, and the Roulette does. The room also hides the way
-to Team Rocket's Black Market (§2.11.6). *(The user's call, 2026-09-25; v0.7.8 goes on to walk the room.)*
+side of the door (the one object the games never drew there, generated in the map's register). Press a bank of
+slots and the Slots open in a panel; a roulette table, and the Roulette does. The room also hides the way to Team
+Rocket's Black Market (§2.11.6). **The room is pointed at, not walked** (the user's call, 2026-09-28): it holds three
+things to do, each a click or a Tab away, and walking Red to them would only add a trip between menus — walking
+earns its place in the Safari, where the approach *is* the game (§2.11.6), not here. The poster is found as it
+always was: the Grunt speaks up the moment a pointer or the focus comes near it.
 
 | | **The Roulette** (the wheel) | **The Slots** |
 |---|---|---|
-| Stake | You choose, up to **200 ₽** a spin | Fixed: **50 ₽** a pull |
-| Outcomes | ×0 66 % · ×2 24 % · ×4 8 % · ×8 2 % | nothing 76.6 % · ×2 15 % · ×4 6 % · ×10 2 % · **×50 jackpot 0.4 %** |
-| Expected value | 0.96 | 0.94 |
-| Feels like | Frequent small wins, sized by you | Rare wins, and one dream |
+| Stake | You choose, up to **200 ₽** a spin, on one colour | Fixed: **50 ₽** a pull |
+| Outcomes | **Red ×2** 18/37 (48.6 %) · **Black ×2** 18/37 (48.6 %) · **Green ×36** 1/37 (2.7 %) | nothing 76.6 % · ×2 15 % · ×4 6 % · ×10 2 % · **×50 jackpot 0.4 %** |
+| Expected value | 0.973, whichever colour | 0.94 |
+| Feels like | A coin flip you size, or one long shot | Rare wins, and one dream |
 
 Two machines so the two ways of gambling each have a home: the wheel is a bet you size, the slots a lottery
-ticket at a fixed price — the only place a run can ever see a ×50. The fixed stake is what bounds the jackpot:
-2 500 ₽ is more than a Region pays, but not a shop emptied. *(Both chosen 2026-09-22: the user asked for a
-spinning multiplier wheel and, if its numbers were right and it was easy to play, a slot machine.)*
+ticket at a fixed price. **The Roulette is the classic one** (the user, 2026-09-28): the European wheel's **37
+pockets** in their real order — 18 red, 18 black and a single green zero — and one bet a spin, on a colour. Red or
+black pays double on nearly half the wheel; green pays ×36 on one pocket in 37, the wheel's long shot. Every bet
+carries the same edge, 1/37, the real game's, so no colour is the smart one: the choice is only how much variance
+you want. **Green has no stake cap of its own:** a green hit at 200 ₽ is 7 200 ₽, more than a Region pays, and that
+is allowed on purpose (the user: if it wins a lot, let it) — the expectation is under 1 at every stake, so there is
+still nothing to farm, and a run that empties a shop with it took a 1-in-37 chance to. *(Both machines chosen
+2026-09-22; the wheel was a fifty-segment multiplier wheel — ×0/×2/×4/×8, EV 0.96 — until v0.7.8 made it the
+roulette the tables in the room already drew.)*
 
-**Honest by construction.** The outcome is rolled against the printed table *first*, and the wheel's segment
+**Honest by construction.** The outcome is rolled against the printed table *first*, and the wheel's pocket
 or the reels are then drawn to show it — so the odds on screen are exactly the odds and the machines are pure
 presentation. Every roll comes from the run's seeded RNG with its cursor saved (§10.7), so a reload shows the
 same next result: the casino cannot be save-scummed. The Game Corner has its own RNG stream, so a spin never
-shifts a later fight or drop. The wheel's rim is the table: **fifty segments** (33 × ×0, 12 × ×2, 4 × ×4, 1 × ×8),
-each coloured by what it pays. The reels nod to the Gen I Game Corner machines: **cherry ×2 · bell ×4 · BAR ×10 ·
-7 ×50**, a paying pull shows three of a kind, and a losing one never does. Each machine keeps its own last result
-on screen. Stakes and tables are first values, retuned in the global balance pass (backlog).
+shifts a later fight or drop. The wheel's rim is the table: a uniform stop on one of 37 pockets *is* 18/18/1.
+The reels nod to the Gen I Game Corner machines: **cherry ×2 · bell ×4 · BAR ×10 · 7 ×50**, a paying pull shows
+three of a kind, and a losing one never does. Each machine keeps its own last result on screen. Stakes and tables
+are first values, retuned in the global balance pass (backlog).
+
+**The machines move, and the screen waits for them** (§9, D8). The wheel turns one way and the ball the other
+until the ball drops into the rolled pocket. The three reels spin fast and slow down, each at its own speed, and
+stop in turn, left to right, the last landing on the result. The result line, the lit row of the table and the
+wallet change only when the machine has stopped; with reduced motion the result lands at once.
 
 Its purpose is not income — it is **variance**. A pile of money too small to buy the thing you need is dead
 weight; the machines are the run's only way to turn it into a *chance* at the thing you need, at a known price

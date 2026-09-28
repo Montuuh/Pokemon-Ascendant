@@ -23,7 +23,7 @@ loop layer and re-tests the core inside it.
 | v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
-| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner walked, every City door open. **Nine subversions** | ◐ in progress |
+| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner played, every City door open. **Nine subversions** | ◐ in progress |
 | v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ☐ |
 | v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
@@ -563,24 +563,32 @@ harness plays the player who has not found the secret, so the curve is unchanged
 v0.8.6 pass. Also: a chained evolution (Dratini traded at 30 into Dragonite) hands back to where its first screen
 opened; the Game Corner's machines sit beside their tables on short screens.
 
-### v0.7.8 — The Game Corner, walked  ☐
-Celadon's Game Corner becomes a place you walk rather than a panel (user, 2026-09-25). §2.11.5's odds and machines
-do not change; only the room and the Slots' reels do.
-- **The room, in the games' own art**: the Celadon Game Corner as FireRed / LeafGreen drew it — rows of slot
-  machines, the prize counter, the Rocket poster on the back wall — fetched as the Safari's tiles were (§2.11.6), not
-  generated.
-- **Walked with WASD or the arrows, or by clicking where to go**: Red walks the aisles, and a machine is played by
-  stepping up to it. Walking fits — the Game Corner is a room you explored in Gen I, the poster is found by walking
-  up to it, and the Safari's stalk already moves Red with the keys — and a click on a tile walks there, so a mouse
-  player loses nothing. *(The fallback the user left, a clickable map as the towns are, was weighed and not needed.)*
-- **The poster at the back** leads down to the Black Market (v0.7.7's secret, now in the room it was drawn for).
+### v0.7.8 — The Game Corner, played  ✅ 2026-09-28
+Celadon's Game Corner, already FireRed's whole room (done ahead, 2026-09-25), gets its two machines right
+(user, 2026-09-28). The Slots' odds do not change; the Roulette becomes the classic one.
+- **The classic Roulette** (§2.11.5): the European wheel's 37 pockets in their real order — 18 red, 18 black, one
+  green zero — and one bet a spin on a colour: red or black ×2, green ×36, EV 0.973 for all three. No cap on green
+  (the user's call). The wheel turns one way and the ball the other until it drops into the rolled pocket. Run save v14.
 - **The Slots, animated**: the reels spin fast and slow down, each column at its own speed and stopping in turn,
   left to right, until the last lands on the result. The outcome is still rolled first and the reels drawn to show it
   (§2.11.5), and the result line and the wallet wait for the last reel (D8).
-**Exit:** a player walks from the door to a machine, plays it, and finds the poster, with the keys or the mouse.
-*Done ahead (2026-09-25, the user's call, under `## Next`):* the whole FRLG room is the Game Corner screen, its slot
-banks and two roulette tables open the machines' panels, the poster stops being pressable once the switch is pushed,
-and a locked hatch covers the stairs after a visit. What v0.7.8 adds is Red walking it and the reels animated.
+- **Not walked** (the user's call, 2026-09-28, recorded in §2.11.5): Red walking the room with WASD was weighed and
+  dropped — three things to do, each already one click or one Tab away; walking belongs to the Safari's stalk.
+**Exit:** a player bets on a colour and watches the ball land where the result says, and pulls the Slots and watches
+three reels stop in turn — the wallet moving only when each machine has stopped.
+
+**Shipped.** **The classic Roulette** (§2.11.5): `CASINO.wheel` is the European rim's 37 pockets in their real order
+with `pocketColour` and `betChance`; `spin-wheel` takes a colour (`bad-bet` otherwise) and pays red/black ×2, green
+×36 — EV 36/37 for every bet, and green takes the full 200 ₽ stake (the user: if it wins a lot, let it; the old
+jackpot-bound sentence left the canon). Run save v14 drops a v13 wheel's last result. On screen the printed table is
+the bet selector; the rim and an ivory ball overlay turn on one clock (`--motion-spin`, 4.2 s), aimed so the ball
+rests on the rolled pocket's centre, and the result, the lit row and the wallet wait for the ball. **The Slots' reels**
+are strips in a drum window that shows each payline face's neighbours; they scroll down and stop left to right
+(`--motion-reel` + `--motion-reel-stagger`, a slight overshoot), and a stopped reel keeps the neighbour it landed
+with. **Decided with the user:** the room stays pointed at, not walked — WASD was weighed and dropped (§2.11.5).
+**Decided while building:** the win pulse plays once on landing and never under reduced motion; the green pocket was
+deepened to #107a46 so the ivory 0 on the result chip passes 4.5:1. `city.test` holds the wheel (37 pockets,
+18/18/1, alternating colours, payouts, the migration), `e2e/city` watches the ball and the reels land mid-spin.
 
 ### v0.7.9 — Every door open  ☐
 The last doors marked in development, both small: the Dojo's extra-moves counter (§2.11.6) and the Center's
@@ -741,7 +749,7 @@ the account revamps move to v0.9):
 | 11 | The Ring moves out of the Dojo — a town Ring, and the city's Coliseum | v0.7.7 (with the City art) |
 | — | Multi-enemy fights, everywhere in the run | v0.8.1, v0.8.3 |
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
-| — | The Game Corner walked, in the games' art, with animated Slots | v0.7.8 |
+| — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
 | — | Recovering missed Badges | v0.9.4 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.3 |

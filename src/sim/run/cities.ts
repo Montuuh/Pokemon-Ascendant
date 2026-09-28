@@ -1,4 +1,4 @@
-import type { CityBuilding, CityId } from './types';
+import type { CityBuilding, CityId, WheelBet } from './types';
 
 // §2.1.4, §2.11 — the two Cities of a run, and the seam they sit in.
 //
@@ -69,21 +69,26 @@ export const RING = {
 
 /**
  * §2.11.5 — the Game Corner's two machines, printed beside them on the screen. The outcome is rolled against
- * these tables first and only then drawn (the wheel's segment, the reels), so the odds shown are the odds.
+ * these tables first and only then drawn (the ball's pocket, the reels), so the odds shown are the odds.
  *
- * The Wheel is the table laid out: fifty segments, each ×0, ×2, ×4 or ×8, so a uniform stop *is* the printed
- * 66 / 24 / 8 / 2 %. The Slots weigh their outcomes in thousandths: 766 / 150 / 60 / 20 / 4.
+ * The Roulette is the classic European wheel: 37 pockets in their real order round the rim, 18 red, 18 black and
+ * the one green zero, and a bet on a colour. A uniform stop *is* 18/37 · 18/37 · 1/37, and each colour pays so that
+ * every bet carries the wheel's own edge, 1/37. The Slots weigh their outcomes in thousandths: 766 / 150 / 60 / 20 / 4.
  */
 export const CASINO = {
   wheel: {
     minStake: 10,
     maxStake: 200,
     step: 10,
-    /** Fifty segments, interleaved so the rare ones are spread round the rim. */
-    segments: [
-      0, 2, 0, 0, 4, 0, 2, 0, 0, 0, 2, 0, 0, 0, 8, 0, 0, 2, 0, 4, 0, 0, 2, 0, 0,
-      2, 2, 0, 0, 0, 4, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 0, 4, 0, 0, 2, 0, 2, 0,
+    /** The European wheel's pockets, clockwise from the zero, as the real rim has them. */
+    pockets: [
+      0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10,
+      5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26,
     ] as readonly number[],
+    /** The red numbers; every other number but zero is black. */
+    red: [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36] as readonly number[],
+    /** What a winning bet pays, as a multiple of its stake (the stake included). */
+    pays: { red: 2, black: 2, green: 36 } as Readonly<Record<WheelBet, number>>,
   },
   slots: {
     stake: 50,
@@ -100,9 +105,20 @@ export const CASINO = {
   },
 };
 
-/** §2.11.5 — a machine's expected value per unit staked, straight from its table. Both are under 1. */
-export function casinoExpectedValue(machine: 'wheel' | 'slots'): number {
-  if (machine === 'wheel') return CASINO.wheel.segments.reduce((a, m) => a + m, 0) / CASINO.wheel.segments.length;
+/** §2.11.5 — the colour a Roulette number wears: the zero is green, the rest red or black as on the real wheel. */
+export function pocketColour(n: number): WheelBet {
+  if (n === 0) return 'green';
+  return CASINO.wheel.red.includes(n) ? 'red' : 'black';
+}
+
+/** §2.11.5 — a Roulette bet's chance: the share of the rim's pockets that wear its colour. */
+export function betChance(bet: WheelBet): number {
+  return CASINO.wheel.pockets.filter((n) => pocketColour(n) === bet).length / CASINO.wheel.pockets.length;
+}
+
+/** §2.11.5 — a machine's expected value per unit staked, straight from its table. Every one is under 1. */
+export function casinoExpectedValue(machine: 'wheel' | 'slots', bet: WheelBet = 'red'): number {
+  if (machine === 'wheel') return betChance(bet) * CASINO.wheel.pays[bet];
   const total = CASINO.slots.table.reduce((a, r) => a + r.weight, 0);
   return CASINO.slots.table.reduce((a, r) => a + r.multiplier * r.weight, 0) / total;
 }

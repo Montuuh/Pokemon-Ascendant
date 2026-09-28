@@ -55,6 +55,16 @@
   --brand-cream: #fff1d6;
   --shield: #a8e6f0;
 
+  /* ---- §2.11.5 — the Roulette: the classic wheel's pockets, its wooden rim and the ivory ball ---- */
+  --roulette-red: #c8283a;
+  --roulette-black: #231e28;
+  /* Deep enough for the ivory number on the result chip (5.1:1, D5). */
+  --roulette-green: #107a46;
+  --roulette-wood: #7a4a26;
+  --roulette-wood-deep: #4e2c16;
+  --roulette-gold: #e9c25a;
+  --roulette-ball: #fbf8f1;
+
   /* ---- Pokémon type palette (§9.1.3.2, Gen I 15 — canonical hues, kept verbatim) ---- */
   --type-normal: #a8a878;
   --type-fire: #f08030;
@@ -105,10 +115,13 @@
   --motion-base: 220ms;
   --motion-slow: 350ms;
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* §2.11.5 — the Game Corner: the wheel's long decelerating spin and the reels' shuffle. */
-  --motion-spin: 2400ms;
-  --motion-reel: 700ms;
+  /* §2.11.5 — the Game Corner: the Roulette's long spin (rim, ball and drop share it), and the reels — the first
+     reel's spin, each next one a stagger longer, so they stop left to right. */
+  --motion-spin: 4200ms;
+  --motion-reel: 1100ms;
+  --motion-reel-stagger: 450ms;
   --ease-spin: cubic-bezier(0.15, 0.85, 0.25, 1);
+  --ease-reel: cubic-bezier(0.25, 0.6, 0.35, 1.06);
 
   /* ---- Z-layers (§1.1) ---- */
   --z-hud: 100;
@@ -141,5 +154,6 @@
     --motion-slow: 0ms;
     --motion-spin: 0ms;
     --motion-reel: 0ms;
+    --motion-reel-stagger: 0ms;
   }
 }

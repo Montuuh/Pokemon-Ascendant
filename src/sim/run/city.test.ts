@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
-  activeMoves, arriveAtCity, CASINO, CITIES, casinoExpectedValue, createRun, defaultRunCtx, deserialiseRun, effectiveMax, evolvedAt, PRICES,
+  activeMoves, arriveAtCity, betChance, CASINO, CITIES, casinoExpectedValue, pocketColour, createRun, defaultRunCtx, deserialiseRun, effectiveMax, evolvedAt, PRICES,
   floorRestockable, RING, rarePickOpen, runReducer, serialiseRun, tutorListFor, STORE_FLOORS,
   type CombatOutcomeReport, type RunAction, type RunState,
 } from '@/sim';
@@ -218,24 +218,44 @@ describe('The Game Corner — §2.11.5', () => {
   });
 
   it('BothMachines_LoseInTheLongRun_AtThePrintedValues', () => {
-    expect(casinoExpectedValue('wheel')).toBeCloseTo(0.96);
+    // Every Roulette bet carries the wheel's own edge, 1/37.
+    for (const bet of ['red', 'black', 'green'] as const) expect(casinoExpectedValue('wheel', bet)).toBeCloseTo(36 / 37);
     expect(casinoExpectedValue('slots')).toBeCloseTo(0.94);
-    // The wheel's rim is the table: 66 / 24 / 8 / 2 %.
-    const count = (m: number) => CASINO.wheel.segments.filter((x) => x === m).length / CASINO.wheel.segments.length;
-    expect([count(0), count(2), count(4), count(8)]).toEqual([0.66, 0.24, 0.08, 0.02]);
   });
 
-  it('TheWheel_TakesAStakeOnTheTablesSteps_AndPaysWhatItsSegmentSays', () => {
+  it('TheRoulette_IsTheClassicWheel_ThirtySevenPocketsEighteenEighteenAndOneGreen', () => {
+    const { pockets } = CASINO.wheel;
+    expect(pockets).toHaveLength(37);
+    expect([...pockets].sort((a, b) => a - b)).toEqual(Array.from({ length: 37 }, (_, i) => i));
+    expect([betChance('red'), betChance('black'), betChance('green')]).toEqual([18 / 37, 18 / 37, 1 / 37]);
+    // Round the rim the colours alternate, the zero alone between 26 and 32.
+    for (let i = 1; i < pockets.length - 1; i++) expect(pocketColour(pockets[i]!), `pocket ${pockets[i]}`).not.toBe(pocketColour(pockets[i + 1]!));
+    expect(pocketColour(0)).toBe('green');
+  });
+
+  it('TheRoulette_TakesAStakeOnTheTablesSteps_AndABetOnAColour_AndPaysWhatThePocketSays', () => {
     const s = inCorner(1000);
-    expect(reject(s, { type: 'spin-wheel', stake: 5 })).toBe('bad-stake');
-    expect(reject(s, { type: 'spin-wheel', stake: 15 })).toBe('bad-stake');
-    expect(reject(s, { type: 'spin-wheel', stake: CASINO.wheel.maxStake + 10 })).toBe('bad-stake');
-    expect(reject({ ...s, money: 50 }, { type: 'spin-wheel', stake: 100 })).toBe('cannot-afford');
-    const after = apply(s, { type: 'spin-wheel', stake: 100 });
-    const r = after.city!.casino.wheel!;
-    expect(r.machine).toBe('wheel');
-    expect(r.multiplier).toBe(CASINO.wheel.segments[r.face as number]);
-    expect(after.money).toBe(1000 - 100 + r.payout);
+    expect(reject(s, { type: 'spin-wheel', stake: 5, bet: 'red' })).toBe('bad-stake');
+    expect(reject(s, { type: 'spin-wheel', stake: 15, bet: 'red' })).toBe('bad-stake');
+    expect(reject(s, { type: 'spin-wheel', stake: CASINO.wheel.maxStake + 10, bet: 'red' })).toBe('bad-stake');
+    expect(reject(s, { type: 'spin-wheel', stake: 100, bet: 'blue' as never })).toBe('bad-bet');
+    expect(reject({ ...s, money: 50 }, { type: 'spin-wheel', stake: 100, bet: 'black' })).toBe('cannot-afford');
+    // Green takes the full stake too: there is no cap of its own.
+    expect(reject(s, { type: 'spin-wheel', stake: CASINO.wheel.maxStake, bet: 'green' })).toBeNull();
+    let t = inCorner(100_000);
+    const seen = new Set<string>();
+    for (let i = 0; i < 300; i++) {
+      const bet = (['red', 'black', 'green'] as const)[i % 3]!;
+      const before = t.money;
+      t = apply(t, { type: 'spin-wheel', stake: 100, bet });
+      const r = t.city!.casino.wheel!;
+      const colour = pocketColour(CASINO.wheel.pockets[r.face as number]!);
+      seen.add(colour);
+      expect(r.bet).toBe(bet);
+      expect(r.multiplier).toBe(colour === bet ? CASINO.wheel.pays[bet] : 0);
+      expect(t.money).toBe(before - 100 + r.payout);
+    }
+    expect(seen).toEqual(new Set(['red', 'black', 'green']));
   });
 
   it('TheSlots_ShowThreeOfAKind_ExactlyWhenTheyPay', () => {
@@ -260,9 +280,20 @@ describe('The Game Corner — §2.11.5', () => {
     const reloaded = deserialiseRun(serialiseRun(s), content);
     expect(reloaded.ok).toBe(true);
     if (!reloaded.ok) return;
-    const a = apply(s, { type: 'spin-wheel', stake: 50 }).city!.casino.wheel;
-    const b = apply(reloaded.run, { type: 'spin-wheel', stake: 50 }).city!.casino.wheel;
+    const a = apply(s, { type: 'spin-wheel', stake: 50, bet: 'red' }).city!.casino.wheel;
+    const b = apply(reloaded.run, { type: 'spin-wheel', stake: 50, bet: 'red' }).city!.casino.wheel;
     expect(b).toEqual(a);
+  });
+
+  it('AVersion13Save_DropsTheOldWheelsLastResult_AndKeepsTheSlots', () => {
+    const s = apply(apply(inCorner(1000), { type: 'spin-wheel', stake: 50, bet: 'red' }), { type: 'pull-slots' });
+    const old = JSON.parse(serialiseRun(s, 0));
+    old.run.city.casino.wheel = { machine: 'wheel', stake: 50, multiplier: 2, payout: 100, face: 44 };
+    old.version = 13;
+    old.checksum = JSON.parse(serialiseRun({ ...old.run }, 0)).checksum;
+    const migrated = deserialiseRun(JSON.stringify(old), content);
+    expect(migrated.ok && migrated.run.city!.casino.wheel).toBeNull();
+    expect(migrated.ok && migrated.run.city!.casino.slots).toEqual(s.city!.casino.slots);
   });
 
   it('APullNeverMovesAFightsRolls_ItsOwnStream', () => {

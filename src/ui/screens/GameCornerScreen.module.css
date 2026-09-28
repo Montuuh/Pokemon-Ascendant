@@ -49,35 +49,106 @@
 .oddsHead { grid-area: head; display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--type-h3); }
 .panelFoot { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-top: var(--sp-5); }
 
-/* The Wheel. The rim is the table: fifty segments, each coloured by what it pays. */
+/* The Roulette: the classic European wheel. The rim and the ball turn on the same clock (--motion-spin), the rim
+   one way and the ball the other; the ball rides the track and drops into its pocket as both come to rest. */
 /* The wheel takes the height the card has, so the whole machine fits a 720p screen. */
-.wheelWrap { grid-area: visual; position: relative; width: min(300px, 40dvh); aspect-ratio: 1; }
+.wheelWrap { grid-area: visual; position: relative; width: min(320px, 42dvh); aspect-ratio: 1; }
 .wheel {
   width: 100%;
   height: 100%;
   transition: transform var(--motion-spin) var(--ease-spin);
+  filter: drop-shadow(0 4px 6px color-mix(in srgb, var(--roulette-wood-deep) 45%, transparent));
 }
-.pointer {
-  position: absolute;
-  top: -6px;
-  left: 50%;
-  z-index: 1;
-  width: 0;
-  height: 0;
-  transform: translateX(-50%);
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-top: 22px solid var(--ink-primary);
+.rim { fill: var(--roulette-wood); stroke: var(--roulette-wood-deep); stroke-width: 2; }
+.track { fill: var(--roulette-wood-deep); stroke: var(--roulette-gold); stroke-width: 0.8; }
+.red { fill: var(--roulette-red); background: var(--roulette-red); stroke: var(--roulette-gold); stroke-width: 0.5; }
+.black { fill: var(--roulette-black); background: var(--roulette-black); stroke: var(--roulette-gold); stroke-width: 0.5; }
+.green { fill: var(--roulette-green); background: var(--roulette-green); stroke: var(--roulette-gold); stroke-width: 0.5; }
+.num {
+  fill: var(--roulette-ball);
+  font-family: var(--font-display);
+  font-size: 7.5px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
 }
-.seg0 { fill: var(--surface-3); background: var(--surface-3); stroke: var(--surface-1); stroke-width: 0.6; }
-.seg2 { fill: var(--brand-blue); background: var(--brand-blue); stroke: var(--surface-1); stroke-width: 0.6; }
-.seg4 { fill: var(--type-psychic); background: var(--type-psychic); stroke: var(--surface-1); stroke-width: 0.6; }
-.seg8 { fill: var(--accent-action); background: var(--accent-action); stroke: var(--surface-1); stroke-width: 0.6; }
-.hub { fill: var(--surface-1); stroke: var(--ink-primary); stroke-width: 3; }
+.cone { fill: var(--roulette-wood); stroke: var(--roulette-gold); stroke-width: 1.2; }
+.coneInner { fill: var(--roulette-wood-deep); }
+.turret { fill: var(--roulette-gold); }
+.hub { fill: var(--roulette-gold); stroke: var(--roulette-wood-deep); stroke-width: 1.5; }
 
-/* The Slots: three reels. */
+/* The ball: an overlay the size of the wheel, turned on the same clock; the ball sits at its top and rides out to
+   the track while it spins, then bounces down into the pocket ring. */
+.ballOrbit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: transform var(--motion-spin) var(--ease-spin);
+}
+.ball {
+  position: absolute;
+  left: 50%;
+  top: 19.5%;
+  width: 5.5%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 35% 30%, var(--roulette-ball) 0 45%, color-mix(in srgb, var(--roulette-ball) 70%, var(--roulette-black)) 100%);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--roulette-black) 60%, transparent);
+}
+.ballRolling { animation: ballDrop var(--motion-spin) linear both; }
+@keyframes ballDrop {
+  0% { top: 19.5%; }
+  6% { top: 7.5%; }
+  74% { top: 7.5%; }
+  84% { top: 16%; }
+  89% { top: 12.5%; }
+  94% { top: 18%; }
+  100% { top: 19.5%; }
+}
+
+/* The bets: the printed table is the choice itself — the colour you are on, lit where the ball landed. */
+.bet {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: var(--type-small);
+  text-align: left;
+  cursor: pointer;
+}
+.bet b { min-width: 4.5em; text-align: right; }
+.bet:hover:not(:disabled) { border-color: var(--border-strong); }
+.bet:disabled { cursor: not-allowed; }
+.bet.chosen { border-color: var(--ink-primary); box-shadow: inset 0 0 0 1px var(--ink-primary); font-weight: 700; }
+.bet.hit { background: color-mix(in srgb, var(--accent-action) 30%, var(--surface-1)); }
+.bet:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.pocket {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.9em;
+  height: 1.9em;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-pill);
+  color: var(--roulette-ball);
+  font-family: var(--font-display);
+}
+
+/* The Slots: three reels behind one window. Each reel is a strip of faces ending on the result, scrolled down
+   through its window; each is a stagger longer than the last, so they stop in turn, left to right. */
 .reels {
+  --face-h: var(--sp-10);
+  /* The window shows the payline face and most of each neighbour; at rest the landing face (the strip's second) sits centred. */
+  --reel-view: 2.2;
+  --reel-rest: calc((var(--reel-view) - 1) / 2 - 1);
   grid-area: visual;
+  position: relative;
   display: flex;
   gap: var(--sp-3);
   align-self: center;
@@ -86,17 +157,52 @@
   border: 3px solid var(--ink-primary);
   background: var(--surface-2);
 }
-.reels > .face {
+.reel {
+  position: relative;
   width: 76px;
-  height: 92px;
+  height: calc(var(--face-h) * var(--reel-view));
+  overflow: hidden;
   border-radius: var(--radius-sm);
   background: var(--surface-1);
   border: 2px solid var(--border-strong);
 }
-.rolling > .face { animation: reel var(--motion-reel) steps(7) both; }
-@keyframes reel {
-  from { transform: translateY(-40%); filter: blur(2px); }
-  to { transform: translateY(0); filter: none; }
+/* The drum's curve: the neighbours above and below the payline fade into shadow. */
+.reel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    color-mix(in srgb, var(--ink-primary) 45%, transparent),
+    transparent 32%,
+    transparent 68%,
+    color-mix(in srgb, var(--ink-primary) 45%, transparent)
+  );
+}
+.strip { display: flex; flex-direction: column; transform: translateY(calc(var(--face-h) * var(--reel-rest))); }
+.strip > .face { flex: 0 0 var(--face-h); height: var(--face-h); width: 100%; }
+.rolling .strip {
+  animation: reelSpin calc(var(--motion-reel) + var(--reel) * var(--motion-reel-stagger)) var(--ease-reel) both;
+}
+@keyframes reelSpin {
+  0% { transform: translateY(calc(var(--face-h) * (var(--reel-rest) - var(--pass)))); filter: blur(2px); }
+  80% { filter: blur(1px); }
+  100% { transform: translateY(calc(var(--face-h) * var(--reel-rest))); filter: none; }
+}
+/* The payline, and a win: the window lights once the last reel has landed on three of a kind. */
+.payline {
+  position: absolute;
+  left: var(--sp-2);
+  right: var(--sp-2);
+  top: 50%;
+  height: 2px;
+  background: color-mix(in srgb, var(--brand-red) 55%, transparent);
+  pointer-events: none;
+}
+.won { animation: reelWin var(--motion-slow) ease-out 3; }
+@keyframes reelWin {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 0 6px var(--accent-action); }
 }
 .face { display: inline-grid; place-items: center; }
 
@@ -131,6 +237,9 @@
 .stepper button:disabled { cursor: not-allowed; border-style: dashed; }
 .stake { display: inline-flex; align-items: center; gap: var(--sp-1); min-width: 70px; justify-content: center; font-weight: 700; }
 .play {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
   padding: var(--sp-3) var(--sp-6);
   border-radius: var(--radius-pill);
   border: 2px solid var(--ink-primary);

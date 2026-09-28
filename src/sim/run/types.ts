@@ -275,9 +275,14 @@ export interface CasinoResult {
   multiplier: number;
   /** What paid out: `stake × multiplier`. The stake itself is already gone. */
   payout: number;
-  /** The wheel segment it stopped on, or the three reel faces. Presentation, drawn *after* the outcome. */
+  /** The wheel's pocket (its index on the rim) or the three reel faces. Presentation, drawn *after* the outcome. */
   face: number | string[];
+  /** §2.11.5 — the Roulette's bet: the colour the stake was on. The Slots have none. */
+  bet?: WheelBet;
 }
+
+/** §2.11.5 — the three bets on the classic Roulette: a colour. */
+export type WheelBet = 'red' | 'black' | 'green';
 
 /** §2.11 — the City the run is standing in. Everything here was rolled on arrival, so re-entering never re-rolls. */
 export interface CityState {
@@ -612,8 +617,8 @@ export type RunAction =
   | { type: 'ring-cash-out' }
   /** §2.9.4.1 — the top rung's Rare relic, or null to leave all three. */
   | { type: 'ring-pick'; relicId: string | null }
-  /** §2.11.5 — spin the Wheel for a stake of your choosing. */
-  | { type: 'spin-wheel'; stake: number }
+  /** §2.11.5 — spin the Roulette for a stake of your choosing, on one colour. */
+  | { type: 'spin-wheel'; stake: number; bet: WheelBet }
   /** §2.11.5 — pull the Slots at their fixed stake. */
   | { type: 'pull-slots' }
   | { type: 'leave-game-corner' }
@@ -700,6 +705,7 @@ export type RunRejectReason =
   | 'ring-closed' | 'nothing-to-restock'
   /** §2.11.5 — a Wheel stake outside the table's range or off its step. */
   | 'bad-stake'
+  | 'bad-bet'
   /** §2.11.6 — the Safari is not open for this: no ticket, already over, no stalk, or that one is gone. */
   | 'safari-closed'
   /** §2.11.6 — out of reach, blocked, or not an action left this turn. */

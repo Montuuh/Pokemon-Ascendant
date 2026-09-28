@@ -8,7 +8,7 @@ import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
 import { generateRegion, WILD_RARE_CHANCE } from './map';
 import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
 import { AID_HEAL_PCT, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
-import { CASINO, CITIES, RING, cityAfter, isFinalRegion } from './cities';
+import { CASINO, CITIES, RING, cityAfter, isFinalRegion, pocketColour } from './cities';
 import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, rollRegionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
@@ -55,7 +55,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 13;
+export const RUN_SAVE_VERSION = 14;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -1254,16 +1254,19 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
-      // §2.11.5 — the Wheel: a uniform stop on the printed rim, so the segment *is* the odds.
+      // §2.11.5 — the Roulette: a uniform stop on one of the rim's 37 pockets, so the pocket *is* the odds; the bet
+      // pays its colour's multiple when the pocket wears that colour.
       case 'spin-wheel': {
         const rng = casinoRng(draft);
-        const face = rng.range(0, CASINO.wheel.segments.length);
+        const face = rng.range(0, CASINO.wheel.pockets.length);
         draft.cursors.CasinoRNG = rng.cursor;
-        const multiplier = CASINO.wheel.segments[face]!;
+        const pocket = CASINO.wheel.pockets[face]!;
+        const colour = pocketColour(pocket);
+        const multiplier = colour === action.bet ? CASINO.wheel.pays[action.bet] : 0;
         const payout = action.stake * multiplier;
         draft.money += payout - action.stake;
-        draft.city!.casino.wheel = { machine: 'wheel', stake: action.stake, multiplier, payout, face };
-        say(draft, multiplier ? `The Wheel stops on ×${multiplier}: ${payout} ₽.` : `The Wheel stops on ×0. The ${action.stake} ₽ is gone.`);
+        draft.city!.casino.wheel = { machine: 'wheel', stake: action.stake, multiplier, payout, face, bet: action.bet };
+        say(draft, multiplier ? `The ball drops on ${pocket} ${colour}: ${payout} ₽.` : `The ball drops on ${pocket} ${colour}. The ${action.stake} ₽ is gone.`);
         break;
       }
 
@@ -1760,6 +1763,7 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (state.phase !== 'game-corner') return 'wrong-phase';
       const { minStake, maxStake, step } = CASINO.wheel;
       if (!Number.isInteger(action.stake) || action.stake < minStake || action.stake > maxStake || action.stake % step !== 0) return 'bad-stake';
+      if (!Object.hasOwn(CASINO.wheel.pays, action.bet)) return 'bad-bet';
       return state.money < action.stake ? 'cannot-afford' : undefined;
     }
     case 'pull-slots':

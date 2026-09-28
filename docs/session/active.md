@@ -1,19 +1,18 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-09-25 · **Version:** v0.7.7 shipped (*The Ring, the Coliseum, and Team Rocket's Black Market*).
+**Date:** 2026-09-28 · **Version:** v0.7.8 shipped (*The Game Corner, played*).
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
-**Sprint goal next:** v0.7.8 — *The Game Corner, walked*: the room is already the screen (`GameCornerRoom.tsx`); what is
-left is Red walking it (keys or a click) and the Slots' reels animated. Then v0.7.9 every door open → **v0.8
-Multi-enemy & the route** → **v0.9 The long game** → v1.0 … v2.0 (`docs/roadmap.md`).
+**Sprint goal next:** v0.7.9 — *Every door open*: the Dojo's extra-moves counter and the Center's Daycare and PC Box
+(§2.11.1, §2.11.6). Then **v0.8 Multi-enemy & the route** → **v0.9 The long game** → v1.0 … v2.0 (`docs/roadmap.md`).
 
-**v0.7.7 in one line:** the Challenge Ring (Pallet's square) and the Pokémon Coliseum (Celadon's plaza) are buildings
-drawn into the towns; committing doors warn before they close; Team Rocket's Black Market is a secret behind the Game
-Corner's poster — Trader, Fence (Rare Candy), Gambler, and a Legendary for three Pokémon, off the books to 3. Run save v13.
+**v0.7.8 in one line:** the Game Corner's Roulette is the classic European wheel (37 pockets, bet a colour: red/black
+×2, green ×36, EV 36/37, no cap on green — the user's call) with a ball that drops into the rolled pocket; the Slots'
+reels spin in a drum window and stop left to right; the room stays pointed at, not walked (user). Run save v14.
 
-**Since (Next):** the Game Corner is FireRed's whole room (slot banks and two roulette tables open the machines' panels;
-the hatch shuts the market's stairs after a visit); the Ring heals the Box whenever the ladder ends and has a How to play.
-UI nits left: the Ring and Safari guides copy one nav (make a `Guide` shell; Tab runs right-to-left); guide "Trauma" untipped.
+**v0.7.7:** the Ring and the Coliseum as buildings; Team Rocket's Black Market behind the Game Corner's poster.
+UI nits left: the Ring and Safari guides copy one nav (make a `Guide` shell; Tab runs right-to-left); guide "Trauma"
+untipped; the Slots' InfoDot pattern now carries only the return and the house edge.
 
 **Findings to act on:** the market's prices → the v0.8.6 pass (reflex showcase buying costs R3 twelve points) · map
 caption token, wild biome emblems and route-line contrast → v1.2 · UI nits left: the silhouette filter is copied in
@@ -21,8 +20,8 @@ three CSS modules; two unmet starters' Buy buttons share an accessible name; TM 
 four pending rows wait on v0.8.4 field effects · Safari: a pond near the top edge loses part of its shore.
 `AGENTS.md`, `.agents/`, `.codex/` (Codex) are another session's; `scripts/ui-audit.mjs` is shared with it.
 
-**Test status:** `npm run check` green — 564 Vitest, typecheck, lint, §, catalogue and version guards; `npm run e2e` 90 (`a11y` can time out under a full parallel run; alone it passes).
-**Balance:** curve unchanged (the market is off in the harness) · with it found: R3|R2 49 → 37 %, full run 18 → 14 %.
+**Test status:** `npm run check` green — 566 Vitest, typecheck, lint, §, catalogue and version guards; `npm run e2e` 90 passed, 1 skipped.
+**Balance:** curve unchanged (the casino is not in the harness) · the market, found: R3|R2 49 → 37 %, full run 18 → 14 %.
 **Shipping:** `docs/release-doctrine.md` (the `ship-version` skill). **UI changes:** the `ui-review` skill.
 
 ## Standing facts

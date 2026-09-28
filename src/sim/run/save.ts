@@ -81,8 +81,16 @@ function migrateMarketTo13(run: RunState): void {
   if (run.city) run.city.blackMarket ??= null;
 }
 
+/**
+ * §2.11.5 — version 13 → 14: the Roulette became the classic 37-pocket wheel. A last result from the old
+ * fifty-segment wheel names a segment the new rim does not have, so it is dropped; the next spin shows the new one.
+ */
+function migrateRouletteTo14(run: RunState): void {
+  if (run.city?.casino.wheel && !run.city.casino.wheel.bet) run.city.casino.wheel = null;
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

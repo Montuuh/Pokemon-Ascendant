@@ -416,8 +416,8 @@ export function slotsBankTip(): ReactNode {
   return <Tip title="Slot machines" meta={[`${CASINO.slots.stake} ₽ a pull`]} body={`Three reels, and one dream: three ${face.toLowerCase()}s pay ×${top}. Play one and its odds are on the machine.`} />;
 }
 export function rouletteTableTip(): ReactNode {
-  const pays = [...new Set(CASINO.wheel.segments)].sort((a, b) => a - b).map((m) => `×${m}`);
-  return <Tip title="Roulette" meta={[`Stake ${CASINO.wheel.minStake}–${CASINO.wheel.maxStake} ₽`]} body={`A bet you size: the wheel stops on ${pays.slice(0, -1).join(', ')} or ${pays.at(-1)}, each as likely as its share of the rim. Play and the odds are on the table.`} />;
+  const { pays } = CASINO.wheel;
+  return <Tip title="Roulette" meta={[`Stake ${CASINO.wheel.minStake}–${CASINO.wheel.maxStake} ₽`]} body={`The classic wheel: thirty-seven pockets. Bet on red or black for ×${pays.red}, or on the one green zero for ×${pays.green}. Play and the odds are on the table.`} />;
 }
 
 /** §2.11.6 — the market's heading bubble: four counters, and a door that locks behind you. */
@@ -482,8 +482,8 @@ export function ringPrizeTip(banked: number, allRare: boolean): ReactNode {
 }
 
 /** §2.11.5 — a machine's printed table, as the bubble on its name. */
-export function machineTip(machine: 'wheel' | 'slots', table: string, ev: number): ReactNode {
-  return <Tip title={machine === 'wheel' ? 'The Roulette' : 'The Slots'} meta={[`Returns ${Math.round(ev * 100)} % on average`]} body={table} footer="The outcome is rolled against this table first, then shown. The house edge is real." />;
+export function machineTip(machine: 'wheel' | 'slots', ev: number): ReactNode {
+  return <Tip title={machine === 'wheel' ? 'The Roulette' : 'The Slots'} meta={[`Returns ${Math.round(ev * 100)} % on average`]} body="The outcome is rolled against the table below first, then shown." footer="The house edge is real." />;
 }
 
 /** §2.11.2 — a Department Store floor. */

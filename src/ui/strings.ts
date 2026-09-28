@@ -144,6 +144,7 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'ring-closed': 'The ladder is done for this visit.',
   'nothing-to-restock': 'Nothing else to stock on this floor.',
   'bad-stake': 'That stake is not on the table.',
+  'bad-bet': 'That bet is not on the table.',
   'safari-closed': 'The Safari is done for this visit.',
   'bad-tile': 'Not from here.',
   'no-ap': 'Nothing left this turn — end it.',
@@ -175,9 +176,24 @@ export const CASINO_TEXT = {
   odds: 'The odds',
   oddsOf: (machine: string) => `${machine}: the odds`,
   stepAway: 'Step away',
-  landed: (m: number, payout: number) => `It landed on ×${m}: ${payout} ₽.`,
-  lost: 'It landed on ×0. The stake is gone.',
+  /** The Slots, told in a toast when you step away while the reels still spin. */
+  slotsWon: (m: number, payout: number) => `Three of a kind: ×${m}, ${payout} ₽.`,
+  slotsLost: 'Nothing lines up.',
+  nothingLinesUp: 'Nothing lines up',
+  anythingElse: 'anything else',
+  spin: 'Spin',
+  pull: 'Pull',
+  /** The Roulette: the ball's pocket and what the bet made of it. */
+  ballLanded: (n: number, colour: string, payout: number) =>
+    `The ball dropped on ${n} ${colour}${payout ? `: ${payout} ₽.` : '. The stake is gone.'}`,
+  betHead: 'Your bet',
+  spinOn: (colour: string) => `Spin, on ${colour}`,
+  stakeGone: 'the stake is gone',
+  reelsSpinning: 'The reels are spinning',
 };
+
+/** §2.11.5 — the Roulette's three bets, by the colour they are on. */
+export const BET_NAME: Record<'red' | 'black' | 'green', string> = { red: 'Red', black: 'Black', green: 'Green' };
 
 /** §2.9.4.1 — the Ring's buttons. */
 export const RING_TEXT = {
