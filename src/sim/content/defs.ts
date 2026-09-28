@@ -122,6 +122,8 @@ export interface SpeciesDef {
   catchRate?: number;
   /** §6.4.3 — the Dojo's off-learnset list for *this stage*. Evolving changes the menu. */
   tutorMoves: string[];
+  /** §2.9.4.2 — the line's egg moves, sold by the Dojo to any stage. Set on the base form only; empty elsewhere. */
+  eggMoves: string[];
   /** §6.2.4 — the level this species evolves at. Absent on a final form. */
   evolveLevel?: number;
   evolvesTo: string[];

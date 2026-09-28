@@ -5,10 +5,10 @@ import { Modal } from './Modal';
 import styles from './DoorSoonPanel.module.css';
 
 // §2.11.0 — a door in development is still a door: it opens on a one-line panel that names the place, says in
-// a line what it will be, and says it is not open yet. One panel for every such door, in the town or inside a
-// building, so they all read and close the same way (Escape or the button).
+// a line what it will be, and says it is not open yet. No door is in development since v0.7.9; the panel stays for
+// the next one drawn before it is built, so it reads and closes the same way (Escape or the button).
 
-export function DoorSoonPanel({ door, onClose, backLabel }: { door: CityBuildingDoor; onClose: () => void; backLabel: string }) {
+export function DoorSoonPanel({ door, onClose }: { door: CityBuildingDoor; onClose: () => void }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -25,7 +25,7 @@ export function DoorSoonPanel({ door, onClose, backLabel }: { door: CityBuilding
       </p>
       <div className={styles.actions}>
         <button type="button" className={styles.back} onClick={onClose} data-testid="btn-door-back">
-          {backLabel}
+          Back to town
         </button>
       </div>
     </Modal>

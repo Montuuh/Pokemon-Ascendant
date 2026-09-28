@@ -744,8 +744,8 @@ The Dojo is the game's main Poké Dollar sink and its key deliberate-sculpt stop
 being what it was dealt and becomes what you built (Pillar 3). Region 1 has no Dojo at all, which is the
 teaching Region's own escalation: you play what you find until the first town.
 
-A third counter — **extra moves** beyond the tutor list — is drawn in the Dojo and marked in development
-(§2.11.6). Gen I **HMs** are a separate idea and sit in the backlog, possibly never to ship.
+A third counter sells **egg moves** (§2.9.4.2): each line's own moves from beyond its learnset and tutor list.
+Gen I **HMs** are a separate idea and sit in the backlog, possibly never to ship.
 
 ### §2.9.4.1 The Challenge Ring
 
@@ -831,6 +831,26 @@ Celadon rung 1 0.2–0.8, ladder under 0.25) at the harness's sample size. *(The
 Gym and for the balance to be set to a low win rate, 2026-09-22. Tuned 2026-09-23.)* The fee, the prizes and
 the offsets are retuned with everything else in the global balance pass (backlog).
 
+### §2.9.4.2 Egg moves
+
+The Dojo's third counter, beside the tutor and the ability: the master's scrolls of **egg moves** — the moves a
+line is born knowing in the games when it hatches from the right parents, and never learns any other way. Each
+line has **up to three**, taken from the series' own egg-move lists (any generation), kept to moves this game
+already has and the line does not learn, tutor or gain from a branch — so the counter only ever sells something
+the Pokémon could not otherwise get. The list is the **line's**, not the stage's: a Charizard buys what a
+Charmander would, because an egg move is inherited, not grown into. The rows are in `catalogs/egg-moves.md`.
+
+| | Town Dojo | City Dojo |
+|---|---|---|
+| Egg move | 250 ₽ | +30 % |
+
+An egg move costs more than a tutor move because it is rarer and chosen for the line: the tutor sells breadth, the
+scrolls sell the one move that turns a line into something the route never offered (Pillar 3), and every line's
+three are its own (Pillar 4). A line the games never gave an egg move — Magikarp, Ditto, the legendaries, a few
+others — has none here either: the counter says so rather than inventing some. *(The user's call, 2026-09-28:
+egg moves over a type-coverage catalogue, which would have erased the lines' identity, and over a fifth move
+slot, which would have broken the four-per-Pokémon hand.)*
+
 ---
 
 # §2.10 Mystery Events
@@ -910,10 +930,10 @@ the doors, and you walk out through the gate when you are ready (§2.1.4).
   2026-09-25: a door that shuts for good should say so before, not after.)*
 - **The gate closes the City.** Leaving opens the Reflection (§2.11.3): pick one Region Modifier, and the pick
   *is* the departure. Nothing else can be done after it.
-- **A door in development is still a door.** A building that is coming later is drawn on the map and can be
-  entered; inside, a small panel names it, says in one line what it will be, and says it is **in development**.
-  A door you can see is a goal; one that silently does nothing is furniture (§7.7, the same treatment as the
-  Hub's Mystery Door).
+- **Every door opens.** Since v0.7.9 no door in either City is in development. A building that is ever drawn
+  before it is built follows the Hub's Mystery Door (§7.7): it can be entered, and a small panel names it, says in
+  one line what it will be, and says it is in development — a door you can see is a goal; one that silently does
+  nothing is furniture.
 
 ## §2.11.1 The Pokémon Center
 
@@ -921,12 +941,21 @@ the doors, and you walk out through the gate when you are ready (§2.1.4).
 |---|---|---|
 | **Heal** | Full restore of every Box Pokémon to Effective Max HP, and every status cured | **Free, always, as often as you like** |
 | **Therapy** | Remove **1** Trauma stack from one Pokémon. Repeatable while affordable | `100 × (1 + stacks)` ₽ |
-| **Daycare** | Deposit one Pokémon: +1 level instantly, and it skips the next combat | 200 ₽ |
-| **PC Box** | Inspect and reorder the Box | Free |
+| **Daycare** | Deposit one Pokémon: +1 level instantly, and it skips the next combat. **Once per City visit** | 200 ₽ |
+| **PC Box** | Inspect the Box and choose the team: the three who fight, the Lead, each one's four moves | Free |
 
 Healing is free because healing is free in Pokémon, and a fan game that charges for it is picking a fight with
 the fantasy for a few coins. The squeeze is **Trauma**, which is the only damage a route cannot undo (§2.9.1)
 and the only one that compounds.
+
+**The Daycare** trades a fight for a level. The level is a whole one, with whatever it brings — a move, an
+evolution queued as any other (§6.3.1) — and the Pokémon then **rests through the next fight**: it leaves the
+active team and cannot be put back until one fight has been played (a Ring rung counts), after which it walks
+back into the first free slot. It needs another Pokémon able to fight, so a lone Pokémon cannot be deposited.
+**Once per City visit** (the user's call, 2026-09-28): 200 ₽ a level without a limit would sell levels at half
+the Black Market's Rare Candy (§2.11.6) with nothing but money in the way; once a visit, the price is a level
+for a fight sat out. **The PC Box** is the map's Box panel brought indoors: a City lobby has no map beside it, so
+this is where the team is chosen, the Lead set and the moves sculpted before the next door.
 
 Both Cities have one. *(Confirmed 2026-09-22.)*
 
@@ -1033,7 +1062,7 @@ Badges are the run-long systems.
 |---|---|---|---|
 | **Pokémon Center** (§2.11.1) | ✅ | ✅ | Open — enter and leave freely |
 | **Shop** (§2.11.2) — Mart / Department Store | ✅ | ✅ | Open |
-| **Dojo** (§2.9.4) — tutor and abilities | ✅ | ✅ wider | Open |
+| **Dojo** (§2.9.4) — tutor, abilities and egg moves (§2.9.4.2) | ✅ | ✅ wider | Open |
 | **Challenge Ring** (town) · **Pokémon Coliseum** (city) (§2.9.4.1) | ✅ | ✅ | Committing, once per visit |
 | **Game Corner** (§2.11.5) | — | ✅ | Open |
 | **Safari Zone** (§2.11.6) | ✅ | ✅ bigger | Committing, once per visit |
@@ -1093,7 +1122,7 @@ weight; the machines are the run's only way to turn it into a *chance* at the th
 in expectation. Printing the tables is what keeps it inside Pillar 1: the gamble is chosen with the numbers in
 view, like the catch roll (§2.6.4.3).
 
-## §2.11.6 The Safari Zone, the Black Market, and the doors still in development
+## §2.11.6 The Safari Zone and the Black Market
 
 **🦌 The Safari Zone** *(town and city, open since v0.7.6)* — a paid catching ground for species no route
 offers, played as a **stalk** rather than a fight. It is the one place in the run with no combat in it, so it has
@@ -1217,12 +1246,6 @@ the noise; the showcase is the cost. That is the design working: three Pokémon 
 loses more than it wins — it is for the Box with fodder to spare and a Legendary that finishes its build. The
 default harness plays the player who has not found the secret, so the curve (§2.2.1) is untouched. The prices are
 first values for the balance pass (v0.8.6).
-
-**The doors still in development** are on the map from the first build, drawn and enterable, each opening onto a
-panel that says what it will be and that it is in development (§2.11.0).
-
-**📜 The Dojo's third counter** *(inside both Dojos)* — **extra moves**: a catalogue beyond each species'
-tutor list, sold by the Dojo. Drawn beside the tutor and the ability counters, and in development.
 
 ---
 

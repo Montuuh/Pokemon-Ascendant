@@ -43,6 +43,7 @@
 | `achievements.md` | 50 achievements with trigger events | §8.7 | v0.5 (10) / v0.6 |
 | `biomes-regions.md` | 8 biomes, 3 regions, encounter weights, level bands, palettes | §2.6.1, §2.13 | v0.2 |
 | `field-effects.md` | 4 fields + Home Field per type | §4.3 | v0.7 |
+| `egg-moves.md` | Up to three egg moves per line, sold by the Dojo's third counter | §2.9.4.2 | v0.7.9 |
 | `economy.md` | ₽ sources/sinks, prices, XP tables, level curve, run budget | §2.14, §2.9.2, §2.11.2, §6.2, §8.3 | v0.2+ |
 
 ## Porting a row to JSON

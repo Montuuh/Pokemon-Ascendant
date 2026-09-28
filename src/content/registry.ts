@@ -214,6 +214,7 @@ export function buildRegistry(): MapRegistry {
     if (s.stage === 'basic' && s.learnset.filter((l) => l.level <= 1).length !== 2)
       throw new ContentError(`§6.9: ${s.id} is a base form and must know exactly 2 moves at level 1`);
     for (const t of s.tutorMoves) reg.move(t);
+    for (const e of s.eggMoves) reg.move(e);
     // §6.3 — a species that evolves must offer at least one archetype, or the Evolution screen has nothing
     // to ask. Every branch's moves, target and passive must resolve.
     if (s.evolvesTo.length > 0 && s.branches.length === 0)

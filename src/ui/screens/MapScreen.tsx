@@ -258,6 +258,7 @@ export function MapScreen() {
             onSetLead={locked ? null : (uid) => dispatch({ type: 'set-lead', uid })}
             onOpenMoves={setManaging}
             stones={run.stones}
+            restingUid={run.resting}
           />
         </aside>
 

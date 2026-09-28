@@ -287,6 +287,50 @@ test.describe('The Pokémon Centre — §2.11.1, §8.2.4', () => {
   });
 });
 
+test.describe('The Daycare and the PC Box — §2.11.1', () => {
+  test('the Daycare trades a fight for a level once a visit, and the PC Box picks the team indoors', async ({ page }) => {
+    await freshRun(page);
+    await page.evaluate(() => {
+      window.__ascendant!.run.fill(3);
+      window.__ascendant!.run.city(0);
+      window.__ascendant!.run.pay(1000);
+    });
+    await expect(page.getByTestId('city-screen')).toBeVisible();
+    await page.getByTestId('door-center').click();
+    await expect(page.getByTestId('center-screen')).toBeVisible();
+    await expect(page.getByTestId('center-pc').getByTestId('box-panel')).toBeVisible();
+
+    // The Daycare: the second Pokémon in the Box, a level up, out of the team until a fight is played.
+    const second = await page.evaluate(() => window.__ascendant!.run.state()!.box[1]!);
+    await page.getByTestId(`daycare-${second.speciesId}`).click();
+    // A level that brings an evolution queues it as any other (§6.3.1), and the Evolution screen hands back here.
+    if (await page.getByTestId('evolution-screen').isVisible()) {
+      await page.locator('[data-testid^="branch-"]').first().click();
+      await page.getByTestId('btn-evolve').click();
+      await expect(page.getByTestId('center-screen')).toBeVisible();
+    }
+    const after = await page.evaluate(() => window.__ascendant!.run.state()!);
+    expect(after.box[1]!.level).toBe(second.level + 1);
+    expect(after.resting).toBe(second.uid);
+    expect(after.activeUids).not.toContain(second.uid);
+    await expect(page.getByTestId('daycare-used')).toContainText('resting');
+    // In the PC Box its row is shut and says why.
+    await expect(page.getByTestId(`box-resting-${after.box[1]!.speciesId}`)).toBeVisible();
+    await expect(page.getByTestId(`box-row-${after.box[1]!.speciesId}`)).toBeDisabled();
+
+    // The PC Box: field the third and make it the Lead, without leaving the Center.
+    const third = after.box[2]!;
+    if (!after.activeUids.includes(third.uid)) await page.getByTestId(`box-row-${third.speciesId}`).click();
+    await page.getByTestId(`box-row-${third.speciesId}`).click();
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.activeUids[0])).toBe(third.uid);
+    await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
+    await page.screenshot({ path: 'playtest/run-center-daycare.png' });
+
+    await page.getByTestId('btn-leave-center').click();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
+  });
+});
+
 test.describe('Held Items — §7.4.1', () => {
   test('a bagged item is equipped from the map, and comes off again', async ({ page }) => {
     // Nothing to walk to: the Map View is where a Held Item moves, and a fresh run is already on it.

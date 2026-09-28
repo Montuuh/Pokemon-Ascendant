@@ -151,6 +151,24 @@ describe('content registry', () => {
     }
   });
 
+  it('§2.9.4.2 — egg moves sit on a base form, at most three, and are never what the line learns or tutors anyway', () => {
+    let lines = 0;
+    for (const s of reg.allSpecies()) {
+      if (!s.eggMoves.length) continue;
+      lines++;
+      expect(reg.lineBase(s.id), `${s.id} carries egg moves but is not its line's base`).toBe(s.id);
+      expect(s.eggMoves.length).toBeLessThanOrEqual(3);
+      const stages = reg.allSpecies().filter((x) => reg.lineBase(x.id) === s.id);
+      const learnt = new Set(stages.flatMap((x) => [...reg.lineLearnset(x.id).map((l) => l.move), ...x.tutorMoves]));
+      for (const e of s.eggMoves) {
+        expect(() => reg.move(e)).not.toThrow();
+        expect(learnt.has(e), `${s.id}'s line already gets ${e}`).toBe(false);
+      }
+    }
+    // Most lines have some; the few the games never gave any (Magikarp, Ditto, the legendaries…) have none.
+    expect(lines).toBeGreaterThan(55);
+  });
+
   it('§4.1.5.1 — the two combat stats are derived, never the raw Gen I Attack/Defence', () => {
     // A special attacker must out-hit its physical stat: Butterfree (Atk 45, Spc 90) hits at 90.
     expect(reg.species('butterfree').baseStats.attack).toBe(90);

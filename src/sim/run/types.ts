@@ -299,6 +299,8 @@ export interface CityState {
   safari: SafariState | null;
   /** §2.11.6 — Team Rocket's Black Market beneath the Game Corner, rolled on arrival; null where there is none. */
   blackMarket: BlackMarketState | null;
+  /** §2.11.1 — the Center's Daycare has taken its one Pokémon this visit. */
+  daycareUsed: boolean;
 }
 
 /** §2.11.6 — the Gambler's wager: what was aimed at, what was staked, the printed chance and how it fell. */
@@ -467,6 +469,11 @@ export interface RunState {
   pendingReward: RewardSummary | null;
   /** §7.3.7 — the three Legendaries on offer, while `phase` is 'legendary'. */
   pendingLegendary: string[] | null;
+  /**
+   * §2.11.1 — the Pokémon the Daycare raised a level: it sits out the next fight (out of the active team, and
+   * `set-active` will not take it back), then walks back into the first free slot. Null when nobody is resting.
+   */
+  resting: string | null;
   pendingRecruit: PendingRecruit | null;
   /** §6.3.1 — the Evolution screens still owed, oldest first. */
   pendingEvolutions: PendingEvolution[];
@@ -655,6 +662,10 @@ export type RunAction =
   | { type: 'leave-shop' }
   /** §8.2.4 — a Centre's Therapy service: one Trauma stack off one Pokémon. */
   | { type: 'use-therapy'; uid: string }
+  /** §2.11.1 — the Daycare: one Pokémon, +1 level, and it rests through the next fight. */
+  | { type: 'daycare'; uid: string }
+  /** §2.9.4.2 — the Dojo's scrolls: one of the line's egg moves. */
+  | { type: 'teach-egg-move'; uid: string; moveId: string }
   /** §7.4.1 — equip a bagged held item, or take one off. `itemId` null unequips. */
   | { type: 'equip-item'; uid: string; itemId: string | null }
   /** §2.10 — answer the Mystery Event on screen. */
@@ -694,6 +705,10 @@ export type RunRejectReason =
   | 'no-such-item'
   | 'item-locked-to-species'
   | 'no-trauma'
+  | 'daycare-used'
+  | 'needs-another'
+  | 'resting'
+  | 'not-an-egg-move'
   | 'unknown-option'
   /** §2.11 — a City action outside a City, or a City shop action at the route's merchant. */
   | 'not-in-city'

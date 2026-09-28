@@ -352,7 +352,23 @@ export function heldItemSellTip(itemId: string): ReactNode {
 
 /** §2.9.4 — the Dojo, beside its one-line lede. */
 export function dojoTip(): ReactNode {
-  return <Tip title="The Dojo" body="The master teaches a Pokémon a move it would never learn by levelling, or swaps its passive ability. As many as you can pay for; the price is on every offer." />;
+  return <Tip title="The Dojo" body="The master teaches a Pokémon a move it would never learn by levelling, an egg move from the line's own scrolls, or swaps its passive ability. As many as you can pay for; the price is on every offer." />;
+}
+/** §2.9.4 — a Dojo tab's count: what this Pokémon has not bought there yet. */
+export function counterTabTip(name: string, left: number, price: number): ReactNode {
+  return <Tip title={name} meta={[`${left} still to buy`, `${price} ₽ each`]} body="The count is for the Pokémon picked on the left: what this counter still has to teach it." />;
+}
+/** §6.4.3 — the tutor counter. */
+export function tutorTip(): ReactNode {
+  return <Tip title="Tutor moves" body="Moves off this stage's learnset — the kind it would never learn by levelling. In the city the list holds every stage the line has reached." />;
+}
+/** §6.4.2 — the passive counter. */
+export function passiveTip(): ReactNode {
+  return <Tip title="Passive ability" body="One passive slot per Pokémon; teaching one replaces what is there, and swapping back is allowed. The line's hidden ability opens at Bond rank 3." />;
+}
+/** §2.9.4.2 — the master's scrolls. */
+export function eggMovesTip(): ReactNode {
+  return <Tip title="Egg moves" body="Moves this line is born knowing in the games, and never learns any other way — up to three a line. Every stage of the line is offered the same scrolls." footer="Dearer than a tutor move." />;
 }
 
 /** §5.10 — a Badge: permanent, so what it does is the whole tip. */
@@ -479,6 +495,31 @@ export function ringPrizeTip(banked: number, allRare: boolean): ReactNode {
     ? 'A Rare relic, chosen from three — the one prize the Ring holds back for the top rung.'
     : 'A relic, chosen from three. Rares join this offer as the account opens them; until then the rarity below fills the gap.';
   return <Tip title="The Ring's prize" body={body} footer={banked ? `The ${banked} ₽ the ladder banked is paid out as well.` : 'Leaving all three is allowed.'} />;
+}
+
+/** §2.11.1 — the Center: what is free, and what the three counters are for. */
+export function centerTip(): ReactNode {
+  return <Tip title="The Centre" body="Healing and status cures are free on entry. The counters do what the machine cannot: Therapy takes Trauma off, the Daycare trades a fight for a level, and the PC Box picks the team." />;
+}
+/** §8.2.4 — Therapy's price and why Trauma is worth paying for. */
+export function therapyTip(): ReactNode {
+  return <Tip title="Therapy" meta={['100 ₽ × (1 + stacks)']} body="Each Trauma stack costs 5 % of max HP up to five, then 10 % each. It never heals on its own — Therapy is the only place it comes off, one stack at a time, dearer the worse the count." />;
+}
+/** §2.11.1 — the Daycare: a level for a fight sat out, once a visit. */
+export function daycareTip(price: number): ReactNode {
+  return <Tip title="Daycare" meta={[`${price} ₽`, 'Once a visit']} body="Leave one Pokémon for a whole level, with whatever the level brings. It then sits out the next fight and rejoins the team after it." footer="Someone else has to be able to fight while it rests." />;
+}
+/** §2.11.1 — a Pokémon resting after the Daycare. */
+export function restingTip(): ReactNode {
+  return <Tip title="Resting" meta={['Daycare']} body="It took a level at the Daycare and sits out the next fight. When that fight is over it rejoins the team, in the first free slot." />;
+}
+/** §2.11.1 — one Daycare offer: what the level brings, and why it cannot be taken when it cannot. */
+export function daycareRowTip(name: string, level: number, brings: string[], blocked: string | null): ReactNode {
+  return <Tip title={`${name} → Lv ${level}`} meta={['Daycare']} body={brings.length ? brings.join(' ') : 'A level: more HP and power.'} footer={blocked ?? 'It sits out the next fight.'} />;
+}
+/** §2.11.1 — the PC Box: the map's Box panel, indoors. */
+export function pcBoxTip(): ReactNode {
+  return <Tip title="PC Box" body="The team for the next door: click a Box row to field it, an Active row to make it the Lead, and the cards button to choose its four moves." />;
 }
 
 /** §2.11.5 — a machine's printed table, as the bubble on its name. */

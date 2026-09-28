@@ -9,9 +9,27 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one line of lede, then
 > `- **Headline.** One sentence.` bullets. `## Next` collects what reached the game since the last version.
 
-## v0.7 — Cities & Regions 2–3 · in progress
+## v0.7 — Cities & Regions 2–3 · 2026-09-28
 
 The run goes on past the first Gym: three Regions, and a City between each.
+
+- **Three Regions.** Grasslands, the Coastal Cliffs and the Volcanic Highlands, each with its own Pokémon, trainers and Gyms.
+- **Twelve Gyms.** Brock to Lorelei: two of four on offer per Region, and the one you choose is where the route leads.
+- **Two Cities.** Pallet Town and Celadon City sit between the Regions: walk into any door, as often as you like.
+- **Shops, Dojos and Centers.** A Poké Mart and a five-floor Department Store, two Dojos, and Centers that heal for free.
+- **The Ring and the Coliseum.** A ladder of rivals in each City: see the next one, then fight or cash out.
+- **The Safari Zone.** Pokémon no route offers, caught by stalking them through the tall grass.
+- **The Game Corner.** A classic roulette and three-reel slots, every outcome's odds printed on the machine.
+
+### v0.7.9 — Every door open · 2026-09-28
+
+The last doors in both Cities open: the Daycare, the PC Box, and the Dojo master's scrolls.
+
+- **The Daycare.** Leave one Pokémon at a Center for a whole level; it sits out the next fight. Once a visit.
+- **The PC Box.** Choose the team, the Lead and each Pokémon's four moves from inside the Center.
+- **Egg moves.** The Dojo's third counter sells each line's own egg moves, up to three, to any stage of the line.
+- **The Dojo, in tabs.** Tutor, egg moves and passive sit on three tabs, with the deck always beside them.
+- **Every move explained.** Multi-hit moves, team shields and team cures now say what they do on the card.
 
 ### v0.7.8 — The Game Corner, played · 2026-09-28
 

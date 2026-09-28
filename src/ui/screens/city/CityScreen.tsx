@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  IconArrowBigUpLines, IconBackpack, IconBarrierBlock, IconBook, IconBuildingStore, IconClover, IconHeartPlus, IconKarate,
+  IconArrowBigUpLines, IconBackpack, IconBarrierBlock, IconBuildingStore, IconClover, IconHeartPlus, IconKarate,
   IconMenu2, IconShoppingBag, IconTrees, IconTrophy,
 } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
@@ -33,7 +33,6 @@ const DOOR_ICON: Record<CityDoor, typeof IconHeartPlus> = {
   'department-store': IconBuildingStore,
   dojo: IconKarate,
   ring: IconTrophy,
-  'extra-moves': IconBook,
   safari: IconTrees,
   'game-corner': IconClover,
   gate: IconArrowBigUpLines,
@@ -139,7 +138,7 @@ export function CityScreen() {
         {run.log.slice(-1).join(' ')}
       </p>
 
-      {panel?.kind === 'soon' && <DoorSoonPanel door={panel.door} onClose={() => setPanel(null)} backLabel="Back to town" />}
+      {panel?.kind === 'soon' && <DoorSoonPanel door={panel.door} onClose={() => setPanel(null)} />}
 
       {panel?.kind === 'gate' && (
         <Modal title={gateName} testId="reflection" size="reading">

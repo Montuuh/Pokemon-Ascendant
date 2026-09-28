@@ -88,6 +88,8 @@ export const SpeciesSchema = z.object({
   catchRate: z.number().min(0.01).max(1).optional(),
   /** §6.4.3 — this stage's off-learnset tutor list. */
   tutorMoves: z.array(KebabId).default([]),
+  /** §2.9.4.2 — the line's egg moves, on its base form only: the Dojo master's scrolls. */
+  eggMoves: z.array(KebabId).default([]),
   /** §6.2.4 — absent on a final form. */
   evolveLevel: z.number().int().min(2).optional(),
   evolvesTo: z.array(KebabId),

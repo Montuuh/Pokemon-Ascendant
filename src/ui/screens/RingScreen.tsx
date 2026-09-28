@@ -147,6 +147,7 @@ export function RingScreen() {
             onToggleActive={toggleActive}
             onSetLead={(uid) => act({ type: 'set-lead', uid })}
             onOpenMoves={null}
+            restingUid={run.resting}
           />
         </aside>
       </div>

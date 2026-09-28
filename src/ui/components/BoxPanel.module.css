@@ -122,6 +122,20 @@
   gap: 3px;
   justify-items: center;
 }
+/* The Move Manager button sits in the row's top-right corner: the badges start below it, never under it. */
+.hasMoves .badges { padding-top: var(--sp-5); }
+/* §2.11.1 — resting after the Daycare: a quiet tag, not an alarm. */
+.resting {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  color: var(--ink-primary);
+}
 .trauma {
   display: inline-flex;
   align-items: center;

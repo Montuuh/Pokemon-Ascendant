@@ -145,6 +145,10 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'nothing-to-restock': 'Nothing else to stock on this floor.',
   'bad-stake': 'That stake is not on the table.',
   'bad-bet': 'That bet is not on the table.',
+  'daycare-used': 'The Daycare has already taken a Pokémon this visit.',
+  'needs-another': 'Someone else has to be able to fight while it rests.',
+  resting: 'It is resting at the Daycare until the next fight is over.',
+  'not-an-egg-move': 'That is not one of this line’s egg moves.',
   'safari-closed': 'The Safari is done for this visit.',
   'bad-tile': 'Not from here.',
   'no-ap': 'Nothing left this turn — end it.',
@@ -194,6 +198,33 @@ export const CASINO_TEXT = {
 
 /** §2.11.5 — the Roulette's three bets, by the colour they are on. */
 export const BET_NAME: Record<'red' | 'black' | 'green', string> = { red: 'Red', black: 'Black', green: 'Green' };
+
+/** §2.9.4 — the Dojo's counters. */
+export const DOJO_TEXT = {
+  sub: 'Moves off the learnset, egg moves, and passives.',
+  counters: 'The Dojo’s counters',
+  tab: { tutor: 'Tutor', eggs: 'Egg moves', passive: 'Passive' },
+  tabLabel: (name: string, left: number) => `${name}, ${left} still to buy for this Pokémon`,
+  heading: {
+    tutor: (name: string) => `Tutor move — ${name}`,
+    eggs: (name: string) => `Egg moves — ${name}`,
+    passive: (name: string) => `Passive ability — ${name}`,
+  },
+  noTutor: 'The master has nothing to teach this one.',
+  noEggs: 'The master has no scrolls for this line.',
+};
+
+/** §2.11.1 — the Pokémon Center's three counters. */
+export const CENTER_TEXT = {
+  healed: 'Everyone is healed, free.',
+  therapy: 'Therapy',
+  daycare: 'Daycare',
+  pcBox: 'PC Box',
+  noTrauma: 'Nobody is carrying Trauma. Your Box is in better shape than most that get this far.',
+  resting: (name: string) => `${name} is resting until the next fight is over.`,
+  alone: 'Needs a partner',
+  daycareDone: 'The Daycare has taken its Pokémon this visit.',
+};
 
 /** §2.9.4.1 — the Ring's buttons. */
 export const RING_TEXT = {
@@ -311,9 +342,9 @@ export const ARCHETYPE_HINT: Record<string, string> = {
 
 // §2.11.4 — a City's doors, in the lobby's words. The door ids are the UI's: the shop is one sim building
 // (`mart`) drawn as the Poké Mart in the town and the Department Store in the city, the Ring is named by its City
-// (`CITIES[id].ringName`), and the doors that are not open yet have no sim building at all. The Black Market has
+// (`CITIES[id].ringName`). The Black Market has
 // no door: it is a secret inside the Game Corner (§2.11.6).
-export type CityDoor = 'center' | 'mart' | 'department-store' | 'dojo' | 'ring' | 'extra-moves' | 'safari' | 'game-corner' | 'gate';
+export type CityDoor = 'center' | 'mart' | 'department-store' | 'dojo' | 'ring' | 'safari' | 'game-corner' | 'gate';
 /** Every door but the gate, which is named by where it leads ("To Region 2"), not by a fixed word. */
 export type CityBuildingDoor = Exclude<CityDoor, 'gate'>;
 
@@ -324,18 +355,16 @@ export const CITY_DOOR_LABEL: Record<CityBuildingDoor, string> = {
   dojo: 'Dojo',
   // The fallback name only: every City names its own Ring (`CITIES[id].ringName`).
   ring: 'Challenge Ring',
-  'extra-moves': 'Extra moves',
   safari: 'Safari Zone',
   'game-corner': 'Game Corner',
 };
 
 export const CITY_DOOR_HINT: Record<CityDoor, string> = {
-  center: 'Heals the whole Box and cures every status, free, as often as you like. Therapy takes Trauma off, for a price.',
+  center: 'Heals the whole Box and cures every status, free, as often as you like. Therapy takes Trauma off, the Daycare trades a fight for a level, and the PC Box picks the team.',
   mart: 'A shelf picked for your team, and Poké Balls. Dearer than the merchant; buys held items back.',
   'department-store': 'The biggest shelf of the run, and Poké Balls. Dearer than the merchant; buys held items back.',
-  dojo: 'Tutor moves off the learnset and passive abilities, as many as you can pay for.',
+  dojo: 'Tutor moves off the learnset, the line’s egg moves and passive abilities, as many as you can pay for.',
   ring: 'A ladder of rivals for a fee. See the next one, then fight or cash out — nothing heals between rungs, and a lost rung loses what the ladder paid. However it ends, your team walks out healed. Once per visit.',
-  'extra-moves': 'A catalogue of moves beyond each species\' tutor list.',
   safari: 'A park of Pokémon the routes never offer. Buy a ticket, stalk one through the grass, and throw when the odds are yours. Once per visit.',
   'game-corner': 'Slot machines and roulette tables, every outcome and its odds printed on the machine you play.',
   gate: 'Choose one rule for the next Region, then set off. The town stays behind.',

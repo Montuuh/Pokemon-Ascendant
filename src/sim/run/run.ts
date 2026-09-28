@@ -16,7 +16,7 @@ import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { BLACK_MARKET, atLegendaryCap, candyPrice, fencePrice, rollBlackMarket, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
-import type { BlackMarketState, LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunReduceResult, RunState, ShopSlot } from './types';
+import type { BlackMarketState, LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunPhase, RunReduceResult, RunState, ShopSlot } from './types';
 
 
 /** A shop row in the player's words, for the log line after a purchase. */
@@ -55,7 +55,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 14;
+export const RUN_SAVE_VERSION = 15;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -153,6 +153,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     pendingScenario: null,
     pendingReward: null,
     pendingLegendary: null,
+    resting: null,
     pendingRecruit: null,
     pendingEvolutions: [],
     outcome: 'in-progress',
@@ -250,8 +251,8 @@ function cureAll(mon: PartyMon): void {
 }
 
 /** §2.9.4 — a Dojo service's price here: the City's markup (base in the town, +30 % in the city), then any Region Modifier. */
-export function dojoPrice(run: RunState, content: ContentRegistry, service: 'move' | 'ability'): number {
-  const base = service === 'move' ? PRICES.dojoMove : PRICES.dojoAbility;
+export function dojoPrice(run: RunState, content: ContentRegistry, service: 'move' | 'ability' | 'egg'): number {
+  const base = service === 'move' ? PRICES.dojoMove : service === 'egg' ? PRICES.dojoEgg : PRICES.dojoAbility;
   const markup = run.city ? CITIES[run.city.id].dojoMarkup : 1;
   return priceFor(run, content, Math.round(base * markup));
 }
@@ -294,6 +295,30 @@ export function tutorListFor(run: RunState, mon: PartyMon, content: ContentRegis
   };
   const stages = walk(content.lineBase(mon.speciesId)) ? path : [mon.speciesId];
   return [...new Set(stages.flatMap((id) => content.species(id).tutorMoves))];
+}
+
+/**
+ * §2.9.4.2 — the Dojo's scrolls for this Pokémon: its line's egg moves, whatever stage it has reached (an egg move
+ * is inherited, not grown into), minus none — the catalogue never lists what the line learns or tutors anyway.
+ */
+export function eggMovesFor(mon: PartyMon, content: ContentRegistry): string[] {
+  return [...content.species(content.lineBase(mon.speciesId)).eggMoves];
+}
+
+/** §2.11.1 — the Center's Daycare, priced like everything else a City sells (modifiers included). */
+export function daycarePrice(run: RunState, content: ContentRegistry): number {
+  return priceFor(run, content, PRICES.daycare);
+}
+
+/**
+ * §2.11.1 — after a fight, the Pokémon resting at the Daycare walks back: into the first free slot of the active
+ * team, if there is one; otherwise it waits in the Box like any other.
+ */
+function returnFromDaycare(draft: RunState): void {
+  const uid = draft.resting;
+  if (!uid) return;
+  draft.resting = null;
+  if (draft.box.some((m) => m.uid === uid) && draft.activeUids.length < 3 && !draft.activeUids.includes(uid)) draft.activeUids.push(uid);
 }
 
 /**
@@ -490,9 +515,14 @@ function afterBoxShrinks(draft: RunState): void {
 
 /** §6.3.1 — a Pokémon the market leaves at its threshold picks its branch now, and the screen hands back below. */
 function queueMarketEvolutions(draft: RunState, content: ContentRegistry): void {
+  queueEvolutionsReturning(draft, content, 'black-market');
+}
+
+/** §6.3.1 — a level bought inside a building queues its evolution as any other, and hands back to that building. */
+function queueEvolutionsReturning(draft: RunState, content: ContentRegistry, phase: RunPhase): void {
   const before = draft.pendingEvolutions.length;
   queueEvolutions(draft, content);
-  for (const p of draft.pendingEvolutions.slice(before)) p.returnTo = 'black-market';
+  for (const p of draft.pendingEvolutions.slice(before)) p.returnTo = phase;
   if (draft.pendingEvolutions.length) draft.phase = 'evolution';
 }
 
@@ -522,7 +552,7 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
     if (i >= 0) shop.slots[i] = { ...slot, ...(shop.slots[i]!.floor ? { floor: shop.slots[i]!.floor } : {}) };
     else shop.slots.push(slot);
   }
-  const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null }, safari: null, blackMarket: null } }, ctx);
+  const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null }, safari: null, blackMarket: null, daycareUsed: false } }, ctx);
   draft.cursors.EncounterRNG = rng.cursor;
   // The gate's offer is seeded from the run and the Region, like the pre-run offer is seeded from the run.
   const reflection = rollRegionModifierOffer((draft.seed ^ Math.imul(draft.regionIndex + 1, 0x9e3779b1)) >>> 0, ctx.content, draft.box, draft.money);
@@ -537,7 +567,7 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
     blackMarket = rollBlackMarket(marketRng, ctx.content, draft);
     draft.cursors.MarketRNG = marketRng.cursor;
   }
-  draft.city = { id, shop, reflection, ring, casino: { wheel: null, slots: null }, safari, blackMarket };
+  draft.city = { id, shop, reflection, ring, casino: { wheel: null, slots: null }, safari, blackMarket, daycareUsed: false };
   draft.regionModifier = null;
   draft.pendingNodeId = null;
   draft.pendingShop = null;
@@ -1054,6 +1084,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         applyBranch(mon, action.branchId, ctx.content);
         // §4.2.7.1 — an evolution into a type immune to the status it carries clears it.
         if (mon.status && isImmuneToStatus(ctx.content.species(mon.speciesId).types, mon.status.kind)) mon.status = null;
+        // §2.11.1 — evolved inside the Center (the Daycare's level): everyone there is at full HP, the new max too.
+        if (pending.returnTo === 'center') mon.hp = effectiveMax(draft, mon, ctx.content);
         const branch = ctx.content.branch(action.branchId);
         say(draft, `${from} evolved into ${ctx.content.species(mon.speciesId).name} — ${branch.label}.`);
         draft.pendingEvolutions.shift();
@@ -1159,6 +1191,16 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         learnMove(mon, action.moveId);
         if (mon.moveIds.length < 4) mon.moveIds.push(action.moveId);
         say(draft, `The tutor taught ${ctx.content.species(mon.speciesId).name} ${ctx.content.move(action.moveId).name}.`);
+        break;
+      }
+
+      // §2.9.4.2 — the Dojo's scrolls: an egg move of the line's, the one kind the route never gives.
+      case 'teach-egg-move': {
+        const mon = draft.box.find((m) => m.uid === action.uid)!;
+        draft.money -= dojoPrice(draft, ctx.content, 'egg');
+        learnMove(mon, action.moveId);
+        if (mon.moveIds.length < 4) mon.moveIds.push(action.moveId);
+        say(draft, `The master unrolled a scroll: ${ctx.content.species(mon.speciesId).name} learned ${ctx.content.move(action.moveId).name}.`);
         break;
       }
 
@@ -1550,6 +1592,24 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       }
 
       // §8.2.4 — Therapy. One stack, priced by how bad it already is, so a broken Pokémon is a real decision.
+      // §2.11.1 — the Daycare: a whole level with whatever it brings, then the Pokémon rests through the next
+      // fight. It leaves the active team now; if that empties the team, the healthiest others stand in.
+      case 'daycare': {
+        const mon = draft.box.find((m) => m.uid === action.uid)!;
+        draft.money -= daycarePrice(draft, ctx.content);
+        draft.city!.daycareUsed = true;
+        grantXp(mon, xpToNext(mon.level, ctx.progression) - mon.xp, ctx.content, ctx.progression);
+        // Inside the Center everyone is at full HP: the level's new HP is filled too.
+        mon.hp = effectiveMax(draft, mon, ctx.content);
+        draft.resting = mon.uid;
+        draft.activeUids = draft.activeUids.filter((u) => u !== mon.uid);
+        if (!draft.activeUids.some((u) => (draft.box.find((m) => m.uid === u)?.hp ?? 0) > 0))
+          draft.activeUids = draft.box.filter((m) => m.uid !== mon.uid && m.hp > 0).slice(0, 3).map((m) => m.uid);
+        say(draft, `The Daycare raised ${ctx.content.species(mon.speciesId).name} to Lv ${mon.level}. It will sit out the next fight.`);
+        queueEvolutionsReturning(draft, ctx.content, 'center');
+        break;
+      }
+
       case 'use-therapy': {
         const mon = draft.box.find((m) => m.uid === action.uid)!;
         draft.money -= therapyPrice(mon);
@@ -1615,10 +1675,16 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
     }
+    // §2.11.1 — one fight played, whatever it was (a route node, a Ring rung): the Daycare's Pokémon is back.
+    if (action.type === 'finish-combat') returnFromDaycare(draft);
   });
 
   return { state: next };
 }
+
+/** §2.3 / §2.11.1 — where the active team and the Lead can be changed: between nodes, and at the PC Box. */
+const teamPhase = (state: RunState) =>
+  state.phase === 'map' || state.phase === 'preview' || state.phase === 'city' || state.phase === 'ring' || state.phase === 'center';
 
 /** §6.7.2 — true when the deck is locked: inside a fight, or after the run has ended. */
 const outOfCombat = (state: RunState) => state.phase === 'combat' || state.phase === 'ended';
@@ -1650,15 +1716,18 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (action.releaseUid && !state.box.some((m) => m.uid === action.releaseUid)) return 'unknown-pokemon';
       return undefined;
     case 'set-active': {
-      // §2.3 — the loadout changes on the map, in a preview, in a City's lobby, and between Ring rungs.
-      if (state.phase !== 'map' && state.phase !== 'preview' && state.phase !== 'city' && state.phase !== 'ring') return 'wrong-phase';
+      // §2.3 — the loadout changes on the map, in a preview, in a City's lobby and its Center's PC Box (§2.11.1),
+      // and between Ring rungs.
+      if (!teamPhase(state)) return 'wrong-phase';
       if (action.uids.length > 3) return 'team-too-large';
       if (action.uids.some((u) => !state.box.some((m) => m.uid === u))) return 'unknown-pokemon';
+      // §2.11.1 — the Daycare's Pokémon sits this fight out.
+      if (state.resting && action.uids.includes(state.resting)) return 'resting';
       if (!action.uids.some((u) => (state.box.find((m) => m.uid === u)?.hp ?? 0) > 0)) return 'no-healthy-pokemon';
       return undefined;
     }
     case 'set-lead':
-      if (state.phase !== 'map' && state.phase !== 'preview' && state.phase !== 'city' && state.phase !== 'ring') return 'wrong-phase';
+      if (!teamPhase(state)) return 'wrong-phase';
       if (!state.activeUids.includes(action.uid)) return 'unknown-pokemon';
       return undefined;
 
@@ -1714,6 +1783,15 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (!tutorListFor(state, mon, ctx.content).includes(action.moveId)) return 'not-on-tutor-list';
       if (mon.pool.includes(action.moveId)) return 'already-known';
       return state.money < dojoPrice(state, ctx.content, 'move') ? 'cannot-afford' : undefined;
+    }
+
+    case 'teach-egg-move': {
+      if (state.phase !== 'dojo') return 'wrong-phase';
+      const mon = state.box.find((m) => m.uid === action.uid);
+      if (!mon) return 'unknown-pokemon';
+      if (!eggMovesFor(mon, ctx.content).includes(action.moveId)) return 'not-an-egg-move';
+      if (mon.pool.includes(action.moveId)) return 'already-known';
+      return state.money < dojoPrice(state, ctx.content, 'egg') ? 'cannot-afford' : undefined;
     }
 
     case 'set-ability': {
@@ -1909,6 +1987,17 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
 
     case 'leave-shop':
       return state.phase === 'shop' ? undefined : 'wrong-phase';
+
+    case 'daycare': {
+      if (state.phase !== 'center' || !state.city) return 'wrong-phase';
+      if (state.city.daycareUsed) return 'daycare-used';
+      const mon = state.box.find((m) => m.uid === action.uid);
+      if (!mon) return 'unknown-pokemon';
+      if (mon.level >= ctx.progression.maxLevel) return 'bad-payment';
+      // Someone has to fight the next battle while it rests.
+      if (!state.box.some((m) => m.uid !== mon.uid && m.hp > 0)) return 'needs-another';
+      return state.money < daycarePrice(state, ctx.content) ? 'cannot-afford' : undefined;
+    }
 
     case 'use-therapy': {
       // §8.2.4 — Centres treat Trauma, and only Centres: the whole point of the service is that it is the

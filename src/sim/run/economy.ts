@@ -41,6 +41,10 @@ export const PRICES = {
   /** §2.9.4 — the Dojo, the run's main money sink. */
   dojoMove: 150,
   dojoAbility: 200,
+  /** §2.9.4.2 — an egg move from the master's scrolls: rarer than a tutor move, and chosen for the line. */
+  dojoEgg: 250,
+  /** §2.11.1 — the Center's Daycare: a whole level, and the Pokémon sits out the next fight. Once per visit. */
+  daycare: 200,
 };
 
 /**

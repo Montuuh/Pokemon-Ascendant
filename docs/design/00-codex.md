@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5) as of 2026-09-28. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -37,6 +37,9 @@ Pokémon.
 - **A City** (after Gyms 1 and 2) is a **lobby** — a drawn town whose buildings are doors, no visit budget, the
   gate leaves when you say so. **Pallet Town** (5 doors) then **Celadon City** (more, dearer). Routes keep only a
   nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
+  Every City's Center heals free and has Therapy, a **Daycare** (200 ₽: +1 level, the Pokémon sits out the next
+  fight; once a visit) and a **PC Box** (team, Lead, moves); every Dojo sells tutor moves, passives and each
+  line's **egg moves** (up to three, 250 ₽, §2.9.4.2). No door is in development (v0.7.9).
   Celadon is the bigger City: a five-floor **Department Store**, a Dojo whose tutor list spans every stage the
   line has reached, and the **Game Corner** — FireRed's own room as the screen, its slot banks and two roulette
   tables opening the classic Roulette (37 pockets: red/black ×2, the one green ×36, EV 0.973, stake ≤200 ₽) and the

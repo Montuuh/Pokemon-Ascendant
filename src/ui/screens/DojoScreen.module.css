@@ -74,7 +74,36 @@
 }
 .deck {
   grid-column: 2;
-  grid-row: 1 / span 2;
+  grid-row: 1;
+}
+/* The three counters: tabs over one panel, so the deck beside them never scrolls out of view. */
+.counters { display: grid; gap: var(--sp-3); align-content: start; min-width: 0; }
+.counterTabs { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.counterTab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font: inherit;
+  font-weight: 700;
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.counterTab:hover { border-color: var(--border-strong); }
+.counterTab[data-state='active'] { border-color: var(--ink-primary); background: var(--accent-action); color: var(--ink-on-accent); }
+.counterTab:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.tabCount {
+  min-width: 1.5em;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-caption);
+  text-align: center;
 }
 
 .colTitle {
@@ -196,7 +225,7 @@
   transform: translateY(-2px);
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1100px) {
   .services {
     grid-template-columns: 1fr;
   }
@@ -215,19 +244,3 @@
   color: var(--ink-muted);
 }
 
-/* §2.11.6 — a Dojo door still in development (the extra-moves counter): dashed, and it says so inside. */
-.soonDoor {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-4);
-  border-radius: var(--radius-md);
-  border: 2px dashed var(--border-strong);
-  background: var(--surface-2);
-  color: var(--ink-secondary);
-  font-family: var(--font-display);
-  font-weight: 700;
-  cursor: pointer;
-}
-.soonDoor:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
-.soonIcon { color: var(--accent-warning); }

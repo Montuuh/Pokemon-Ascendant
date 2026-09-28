@@ -23,7 +23,7 @@ loop layer and re-tests the core inside it.
 | v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
-| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner played, every City door open. **Nine subversions** | ◐ in progress |
+| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner played, every City door open. **Nine subversions** | ✅ 2026-09-28 |
 | v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ☐ |
 | v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
@@ -387,7 +387,7 @@ read 63 / 70 / 80, inside the noise of v0.5's 30-seed table.
 
 **Exit:** a lost run still feels like progress; a third run starts with something the first two earned.
 
-## v0.7 — Cities & Regions 2–3  ◐
+## v0.7 — Cities & Regions 2–3  ✅ 2026-09-28
 
 Split into nine (five at first; the Cities grew four of their own), because the run has to *continue* before it can escalate. Each one ships.
 
@@ -590,10 +590,27 @@ with. **Decided with the user:** the room stays pointed at, not walked — WASD 
 deepened to #107a46 so the ivory 0 on the result chip passes 4.5:1. `city.test` holds the wheel (37 pockets,
 18/18/1, alternating colours, payouts, the migration), `e2e/city` watches the ball and the reels land mid-spin.
 
-### v0.7.9 — Every door open  ☐
-The last doors marked in development, both small: the Dojo's extra-moves counter (§2.11.6) and the Center's
-Daycare and PC Box services (§2.11.1).
+### v0.7.9 — Every door open  ✅ 2026-09-28
+The last doors marked in development: the Dojo's third counter (§2.9.4.2) and the Center's Daycare and PC Box
+(§2.11.1). Both designed with the user (2026-09-28): the counter sells **egg moves**, and the Daycare takes one
+Pokémon **once per City visit**.
 **Exit (v0.7):** three Regions, two Cities, and no door in either that says "in development".
+
+**Shipped.** **Egg moves** (§2.9.4.2): up to three per line on its base form (`eggMoves` in `species.json`, 64 lines
+in `catalogs/egg-moves.md`; 15 lines the games gave none, or none this game has, carry none), picked from the series'
+own egg-move lists and kept to moves the game already has and the line never learns, tutors or gains from a branch —
+`content.test` guards all three. 250 ₽ in the town, +30 % in the city (`PRICES.dojoEgg`); the list is the line's, so
+a Charizard buys what a Charmander would. The Dojo's three counters became tabs (Tutor · Egg moves · Passive, each
+with what is left to buy), so the deck stays beside the counter at 720p. **The Daycare** (§2.11.1): 200 ₽, a whole
+level through the normal level-up (a queued evolution hands back to the Center), full HP inside the Center, then the
+Pokémon leaves the team and `set-active` refuses it until one fight — a route node or a Ring rung — is played
+(`RunState.resting`, `returnFromDaycare` after `finish-combat`); it needs another Pokémon able to fight; once a
+visit (`CityState.daycareUsed`). Run save v15. **The PC Box** is the map's `BoxPanel` indoors (team, Lead, Move
+Manager), which learned a Resting tag with its own tip; the Center is three counters side by side. `services.test`
+holds both services; `e2e/economy` and `e2e/progression` play them. **Decided while building:** the Daycare refills
+HP because the Center already healed everyone; move text now covers multi-hit, on-kill, team-cure and team-guard
+effects, which four egg moves brought onto a shop shelf. No door in either City is in development, so §2.11.0's rule
+now covers only a door ever drawn before it is built. **v0.7 closes.**
 
 ## v0.8 — Multi-enemy & the route  ☐
 

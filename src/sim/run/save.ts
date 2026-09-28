@@ -89,8 +89,17 @@ function migrateRouletteTo14(run: RunState): void {
   if (run.city?.casino.wheel && !run.city.casino.wheel.bet) run.city.casino.wheel = null;
 }
 
+/**
+ * §2.11.1 — version 14 → 15: the Center's Daycare. Nobody was resting in an older save, and a City visit already
+ * under way has not used its Daycare yet.
+ */
+function migrateDaycareTo15(run: RunState): void {
+  run.resting ??= null;
+  if (run.city) run.city.daycareUsed ??= false;
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

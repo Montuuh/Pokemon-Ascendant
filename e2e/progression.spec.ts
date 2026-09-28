@@ -85,7 +85,9 @@ test('the Dojo sells as many services as the money covers — §2.9.4', async ({
 
   // Still open for business: 170 ₽ buys another move at 150, but not an ability at 200.
   await expect(page.locator('[data-testid^="tutor-"]:not([disabled])').first()).toBeVisible();
+  await page.getByTestId('dojo-tab-passive').click();
   await expect(page.locator('[data-testid^="ability-"]').first()).toBeDisabled();
+  await page.getByTestId('dojo-tab-tutor').click();
 
   await page.locator('[data-testid^="tutor-"]:not([disabled])').first().click();
   await expect(page.getByTestId('dojo-money')).toContainText('20');
@@ -97,18 +99,22 @@ test('the Dojo sells as many services as the money covers — §2.9.4', async ({
   expect(poolAfter).toBe(poolBefore + 2);
   await page.screenshot({ path: 'playtest/run-dojo.png' });
 
-  // §2.11.0 — the extra-moves counter is a door in here that says it is not open yet. The Ring is not in here any
-  // more: it is a building of its own since v0.7.7 (city.spec).
+  // §2.9.4.2 — the third counter: the line's egg moves, dearer than a tutor move. Broke, they are shut too.
   await expect(page.getByTestId('door-ring')).toHaveCount(0);
-  await page.getByTestId('door-extra-moves').click();
-  await expect(page.getByTestId('door-soon')).toBeVisible();
-  await page.getByTestId('btn-door-back').click();
-  await expect(page.getByTestId('door-soon')).toHaveCount(0);
-  // …and Escape closes it too.
-  await page.getByTestId('door-extra-moves').click();
-  await expect(page.getByTestId('door-soon')).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(page.getByTestId('door-soon')).toHaveCount(0);
+  await expect(page.getByTestId('door-extra-moves')).toHaveCount(0);
+  await expect(page.getByTestId('dojo-tab-eggs')).toContainText('3');
+  await page.getByTestId('dojo-tab-eggs').click();
+  const eggs = page.getByTestId('dojo-eggs').locator('[data-testid^="egg-"]');
+  await expect(eggs).toHaveCount(3);
+  await expect(eggs.first()).toBeDisabled();
+  await page.evaluate(() => window.__ascendant!.run.pay(270));
+  await expect(page.getByTestId('dojo-money')).toContainText('270');
+  await eggs.first().click();
+  await expect(page.getByTestId('dojo-money')).toContainText('20');
+  await expect(eggs.first()).toContainText('already known');
+  await expect(page.getByTestId('dojo-tab-eggs')).toContainText('2');
+  expect(await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.pool.length)).toBe(poolBefore + 3);
+  await page.screenshot({ path: 'playtest/run-dojo-eggs.png' });
 
   await page.getByTestId('btn-leave-dojo').click();
   await expect(page.getByTestId('city-screen')).toBeVisible();

@@ -21,6 +21,11 @@ export function describeMoveDef(move: MoveDef): string {
       );
     if (fx.kind === 'fixed-damage') parts.push(`Takes ${Math.round(fx.percentOfTargetHp * 100)}% of the target's current HP.`);
     if (fx.kind === 'self-damage') parts.push(`Costs ${Math.round(fx.percentOfMaxHp * 100)}% of its own HP.`);
+    if (fx.kind === 'multi-hit') parts.push(`Hits ${fx.hits} times; the power is the total.`);
+    if (fx.kind === 'on-kill-stage') parts.push(`If it knocks the target out: ${fx.stages > 0 ? '+' : ''}${fx.stages} ${cap(fx.stat)} (self).`);
+    if (fx.kind === 'team-cure') parts.push('Cures every status on the team.');
+    if (fx.kind === 'team-guard')
+      parts.push(fx.guard === 'status' ? 'Shields the team: the next status is blocked.' : `Braces the team: the next area hit deals ${100 - (fx.percent ?? 50)}% less.`);
   }
   if (move.alwaysCrit) parts.push('Always crits.');
   if (move.modifier === 'step-forward') parts.push('Step-Forward.');
