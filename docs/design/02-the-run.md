@@ -928,6 +928,9 @@ the doors, and you walk out through the gate when you are ready (§2.1.4).
   that says what closes, with **Stay** first and focused (Escape stays). Walking out of one that has not committed
   you yet (the Ring before its fee, the Safari before its ticket) does not ask: nothing closes. *(The user's call,
   2026-09-25: a door that shuts for good should say so before, not after.)*
+- **One way out, the same everywhere** (the user's call, 2026-09-29). Every building leaves by a quiet round arrow
+  at the top-left of its screen, and a room drawn with a door — the shops, the Game Corner — also by its doormat or
+  stairs. A committing door's arrow asks first, as above.
 - **The gate closes the City.** Leaving opens the Reflection (§2.11.3): pick one Region Modifier, and the pick
   *is* the departure. Nothing else can be done after it.
 - **Every door opens.** Since v0.7.9 no door in either City is in development. A building that is ever drawn

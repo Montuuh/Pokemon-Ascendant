@@ -1,11 +1,11 @@
 import { useState, type CSSProperties } from 'react';
-import { IconStairsDown } from '@tabler/icons-react';
+import { IconArrowLeft, IconStairsDown } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { gameCornerArt } from '@/ui/art';
 import { Modal } from '@/ui/components/Modal';
-import { CASINO_TEXT, MARKET_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
+import { BACK_TO_TOWN, CASINO_TEXT, MARKET_TEXT, RUN_REJECT_TEXT, SHOP_TEXT } from '@/ui/strings';
 import { hatchTip, posterTip, rouletteTableTip, slotsBankTip, stairsTip } from '@/ui/tips';
-import { useTip } from '@/ui/tooltip';
+import { Tip, useTip } from '@/ui/tooltip';
 import styles from './GameCornerRoom.module.css';
 
 // §2.11.5 / §2.11.6 — the Celadon Game Corner, as FireRed / LeafGreen drew it, is the Game Corner screen: the prize
@@ -28,6 +28,8 @@ const SPOT = {
   grunt: [176, 24, 16, 24],
   stairs: [254, 28, 34, 24],
   hatch: [256, 29, 32, 22],
+  /** The doormat at the foot of the room: the way out, as a shop's is. */
+  door: [136, 208, 32, 16],
 } as const;
 /** The four banks of slot machines, left to right, and the two roulette tables either side of the door. */
 const SLOT_BANKS: readonly Box[] = [[0, 80, 16, 96], [80, 80, 32, 96], [176, 80, 32, 96], [272, 80, 16, 96]];
@@ -44,7 +46,7 @@ const place = ([x, y, w, h]: Box): CSSProperties => ({
 /** The Grunt speaks to his left, over the counter, where the room has space for the line at every scale. */
 const BUBBLE: CSSProperties = { right: `${(1 - SPOT.grunt[0] / ROOM.w) * 100}%`, top: `${(SPOT.grunt[1] / ROOM.h) * 100}%` };
 
-export function GameCornerRoom({ onSay, onPlay }: { onSay: (line: string) => void; onPlay: (machine: Machine) => void }) {
+export function GameCornerRoom({ onSay, onPlay, onLeave }: { onSay: (line: string) => void; onPlay: (machine: Machine) => void; onLeave: () => void }) {
   const run = useRunStore((s) => s.run)!;
   const dispatch = useRunStore((s) => s.dispatch);
   const market = run.city?.blackMarket ?? null;
@@ -55,6 +57,7 @@ export function GameCornerRoom({ onSay, onPlay }: { onSay: (line: string) => voi
   const [warned, setWarned] = useState(false);
 
   const posterProps = useTip(posterTip());
+  const doorProps = useTip(<Tip title={BACK_TO_TOWN} />);
   const stairsProps = useTip(stairsTip());
   const hatchProps = useTip(hatchTip());
 
@@ -124,6 +127,12 @@ export function GameCornerRoom({ onSay, onPlay }: { onSay: (line: string) => voi
             <img className={styles.sprite} src={gameCornerArt('hatch')} alt="" draggable={false} />
           </button>
         )}
+        {/* The doormat is the way out too, beside the corner arrow. */}
+        <button type="button" className={styles.spot} style={place(SPOT.door)} onClick={onLeave} aria-label={BACK_TO_TOWN} data-testid="gc-exit" {...doorProps}>
+          <span className={styles.plate}>
+            <IconArrowLeft size={14} aria-hidden="true" /> {SHOP_TEXT.exit}
+          </span>
+        </button>
       </div>
 
       {asking && (

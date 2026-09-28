@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tabs } from 'radix-ui';
-import { IconArrowLeft, IconBackpack, IconBuildingStore, IconCoins, IconDice5, IconShoppingBag } from '@tabler/icons-react';
+import { IconBackpack, IconBuildingStore, IconCoins, IconDice5, IconShoppingBag } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { CITIES, PRICES, STORE_FLOORS, floorRestockable, rerollPrice, sellPrice, type ShopSlot, type StoreFloor } from '@/sim';
@@ -8,6 +8,7 @@ import { itemIcon } from '@/ui/art';
 import { ItemCard, type ItemKind, type Rarity } from '@/ui/components/ItemCard';
 import { Money, Price } from '@/ui/components/Money';
 import { RUN_REJECT_TEXT, SHELF_LABEL, SHOP_TEXT, STORE_FLOOR_LABEL } from '@/ui/strings';
+import { BackButton } from '@/ui/components/BackButton';
 import styles from './ShopScreen.module.css';
 import { InfoDot, Tipped } from '@/ui/tooltip';
 import { floorTip, heldItemSellTip, rerollTip, sellTip, shelfTip, shopExitTip, shopTip } from '@/ui/tips';
@@ -187,9 +188,7 @@ export function ShopScreen() {
       <header className={styles.topBar}>
         {/* The way back sits in the corner, out of the shop's way: an arrow, named on hover. The room's door is the
             same way out (`ShopRoom`'s doormat or stairs). */}
-        <Tipped as="button" type="button" tip={shopExitTip(leaveLabel, !!city)} className={styles.back} onClick={leave} aria-label={leaveLabel} data-testid="btn-leave-shop">
-          <IconArrowLeft size={22} aria-hidden="true" />
-        </Tipped>
+        <BackButton label={leaveLabel} onClick={leave} testId="btn-leave-shop" tip={shopExitTip(leaveLabel, !!city)} />
         <div className={styles.heading}>
           <h1 className={`${styles.title} display`}>
             <TitleIcon size={26} /> {title}

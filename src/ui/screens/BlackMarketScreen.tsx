@@ -16,10 +16,11 @@ import { TypeBadge } from '@/ui/components/TypeBadge';
 import { LEAVE_WARNING, MARKET_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
 import { candyTip, dealtTip, fenceTip, marketTip, moneyTip, showcaseTip, stakeTip, tradeTip, wagerTip } from '@/ui/tips';
 import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
+import { BackButton } from '@/ui/components/BackButton';
 import styles from './BlackMarketScreen.module.css';
 
 // §2.11.6 — Team Rocket's Black Market, down the stairs behind the Game Corner's poster. The room is the Rocket
-// Hideout's B1F (its wall, its floor, the stairs back up), and four Rocket people stand in it, each at a counter:
+// Hideout's B1F (its wall and its floor; the way back up is the corner arrow), and four Rocket people stand in it, each at a counter:
 // pick one and their counter opens below. Nothing here is a rule — every price, chance and limit is the sim's
 // (`BLACK_MARKET`, `candyPrice`, `wagerChance`, `fencePrice`), and every counter the sim has closed says so.
 // Walking back up the stairs locks the door for the visit, so it asks first (§2.11.0); the showcase's deal locks it
@@ -67,6 +68,8 @@ export function BlackMarketScreen() {
       data-testid="black-market-screen"
     >
       <header className={styles.wall}>
+        {/* Back up the stairs to the Game Corner; the door locks behind you, so it asks first (§2.11.0). */}
+        <BackButton label={MARKET_TEXT.up} onClick={() => setLeaving(true)} testId="btn-leave-market" />
         <h1 className={`${styles.title} display`}>
           {MARKET_TEXT.title}
           <InfoDot tip={marketTip()} />
@@ -105,10 +108,6 @@ export function BlackMarketScreen() {
       <footer className={styles.footer}>
         {toast && <p className={styles.toast} role="status">{toast}</p>}
         <p className="sr-only" role="status" aria-live="polite">{run.log.slice(-1).join(' ')}</p>
-        <button type="button" className={styles.up} onClick={() => setLeaving(true)} data-testid="btn-leave-market">
-          <img className={styles.stairsArt} src={blackMarketArt('stairs')} alt="" width={36} height={52} />
-          {MARKET_TEXT.up}
-        </button>
       </footer>
 
       {leaving && <ConfirmLeave body={LEAVE_WARNING.market} onStay={() => setLeaving(false)} onLeave={() => act({ type: 'leave-black-market' })} />}

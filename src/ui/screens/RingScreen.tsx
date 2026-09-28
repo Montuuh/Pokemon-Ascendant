@@ -15,6 +15,7 @@ import { LEAVE_WARNING, RING_GUIDE, RING_TEXT, RUN_REJECT_TEXT } from '@/ui/stri
 import { bankedTip, moneyTip, ringEntryTip, ringTip, rungTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
 import { RingGuide } from './RingGuide';
+import { BackButton } from '@/ui/components/BackButton';
 import styles from './RingScreen.module.css';
 
 // §2.9.4.1 — the City's Ring (the town's Challenge Ring, the city's Pokémon Coliseum), a building of its own. The
@@ -70,6 +71,8 @@ export function RingScreen() {
   return (
     <main className={styles.root} data-testid="ring-screen">
       <header className={styles.topBar}>
+        {/* On the ladder, walking out closes it, so the arrow asks first — as the cash-out does (§2.11.0). */}
+        <BackButton label={ring.entered && !ring.done ? (ring.banked ? RING_TEXT.cashOut : RING_TEXT.walkAway) : RING_TEXT.back} onClick={() => (ring.entered && !ring.done ? setLeaving(true) : act({ type: 'leave-ring' }))} testId="btn-leave-ring" />
         <h1 className={`${styles.title} display`}>
           <IconTrophy size={26} aria-hidden="true" /> {name}
           <InfoDot tip={ringTip(name)} />
@@ -156,14 +159,10 @@ export function RingScreen() {
         {toast && <p className={styles.toast} role="status">{toast}</p>}
         <p className="sr-only" role="status" aria-live="polite">{run.log.slice(-1).join(' ')}</p>
         {ring.done && <p className={styles.closed} data-testid="ring-closed">{RUN_REJECT_TEXT['ring-closed']}</p>}
-        {ring.entered && !ring.done ? (
+        {ring.entered && !ring.done && (
           <button type="button" className={styles.cashOut} onClick={() => setLeaving(true)} data-testid="btn-ring-cash-out">
             <IconDoorExit size={18} aria-hidden="true" />
             {ring.banked ? <>{RING_TEXT.cashOut} <Money amount={ring.banked} size={16} /></> : RING_TEXT.walkAway}
-          </button>
-        ) : (
-          <button type="button" className={styles.cashOut} onClick={() => act({ type: 'leave-ring' })} data-testid="btn-leave-ring">
-            <IconDoorExit size={18} aria-hidden="true" /> {RING_TEXT.back}
           </button>
         )}
         {open && (

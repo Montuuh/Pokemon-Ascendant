@@ -17,8 +17,6 @@ test.describe("What's new — the release doctrine", () => {
     await door.click();
     await expect(page.getByTestId('changelog-screen')).toBeVisible();
     await expect(page.getByTestId('changelog-version')).toHaveText(/^v\d+\.\d+\.\d+$/);
-    // What reached the game since the last version sits apart, in a box of its own, while there is any.
-    if (await page.getByTestId('changelog-next').count()) await expect(page.getByTestId('changelog-next')).toContainText('New since v');
 
     // Every version from the first; the newest minor is open with its newest patch, the rest are closed.
     await expect(page.getByTestId('changelog-v0.1')).toBeVisible();

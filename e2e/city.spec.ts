@@ -212,7 +212,8 @@ test.describe('The Game Corner — §2.11.5', () => {
     await expect(page.getByTestId('wheel-result')).toContainText(`${pocket}`);
     await page.getByTestId('btn-machine-close').click();
 
-    await page.getByTestId('btn-leave-game-corner').click();
+    // The doormat is a way out as well as the corner arrow.
+    await page.getByTestId('gc-exit').click();
     await expect(page.getByTestId('city-screen')).toBeVisible();
   });
 });

@@ -14,7 +14,7 @@ import { ConfirmLeave } from '@/ui/components/ConfirmLeave';
 import { Money } from '@/ui/components/Money';
 import { SwapOrSkip } from '@/ui/components/SwapOrSkip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { LEAVE_WARNING, RUN_REJECT_TEXT, SAFARI_GUIDE, SAFARI_RESULT_LABEL, SAFARI_TEXT, SAFARI_TIER_LABEL, SAFARI_TRAIT } from '@/ui/strings';
+import { BACK_TO_TOWN, LEAVE_WARNING, RUN_REJECT_TEXT, SAFARI_GUIDE, SAFARI_RESULT_LABEL, SAFARI_TEXT, SAFARI_TIER_LABEL, SAFARI_TRAIT } from '@/ui/strings';
 import {
   moneyTip, safariAlarmTip, safariApTip, safariBaitTip, safariBallsTip, safariBoardTip, safariClockTip, safariRockTip, safariStateTip,
   safariThrowTip, safariTicketTip, safariTierTip, safariTraitTip,
@@ -23,6 +23,7 @@ import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
 import { SafariGuide } from './SafariGuide';
 import { CellArt } from './CellArt';
 import { boardStyle, cellClass, frameClass, sightClass, targetClass, tileClass, useTilePx } from './tiles';
+import { BackButton } from '@/ui/components/BackButton';
 import styles from './SafariScreen.module.css';
 
 // §2.11.6 — the Safari Zone. Two views of one place: the entrance, where today's lineup stands in full before
@@ -80,18 +81,14 @@ function Entrance({ safari, money, act, onHelp }: { safari: SafariState | null; 
   // §2.11.0 — with a ticket bought and the park still open, walking out closes it: that exit asks first.
   const [leaving, setLeaving] = useState(false);
   const committed = !!safari?.entered && !safari.done;
-  const leave = (
-    <button type="button" className={styles.secondary} onClick={() => (committed ? setLeaving(true) : act({ type: 'leave-safari' }))} data-testid="btn-leave-safari">
-      Back to town
-    </button>
-  );
+  // With a ticket bought, walking out closes the park: the arrow asks first (§2.11.0).
+  const back = () => (committed ? setLeaving(true) : act({ type: 'leave-safari' }));
   // A City visit that began before the park existed (a v0.7.5 save) rolled none: the gate is shut this time.
   if (!safari) {
     return (
       <>
-        <Header money={money} onHelp={onHelp} />
+        <Header money={money} onHelp={onHelp} onBack={back} />
         <p className={styles.closed}>{SAFARI_TEXT.closed}</p>
-        <footer className={styles.footer}>{leave}</footer>
       </>
     );
   }
@@ -101,7 +98,7 @@ function Entrance({ safari, money, act, onHelp }: { safari: SafariState | null; 
   const stalked = safari.lineup.some((l) => l.result !== null);
   return (
     <>
-      <Header money={money} safari={safari.entered ? safari : null} onHelp={onHelp} />
+      <Header money={money} safari={safari.entered ? safari : null} onHelp={onHelp} onBack={back} />
       <ul className={styles.lineup} aria-label="Today's Pokémon" data-testid="safari-lineup">
         {safari.lineup.map((spot, i) => (
           <LineupCard key={spot.species} spot={spot} index={i} canStalk={open && spot.result === null} onStalk={() => act({ type: 'safari-approach', spot: i })} />
@@ -109,7 +106,6 @@ function Entrance({ safari, money, act, onHelp }: { safari: SafariState | null; 
       </ul>
       <footer className={styles.footer}>
         {stalked && lastLine && <p className={styles.lastLine}>{lastLine}</p>}
-        {leave}
         {!safari.entered && (
           <Tipped tip={safariTicketTip(safari.fee, safari.balls, safari.clock)} as="span" className={styles.ticketWrap}>
             <button type="button" className={styles.primary} disabled={money < safari.fee} onClick={() => act({ type: 'enter-safari' })} data-testid="btn-safari-ticket">
@@ -123,9 +119,10 @@ function Entrance({ safari, money, act, onHelp }: { safari: SafariState | null; 
   );
 }
 
-function Header({ money, safari, heading, onHelp }: { money: number; safari?: SafariState | null; heading?: string; onHelp: () => void }) {
+function Header({ money, safari, heading, onHelp, onBack }: { money: number; safari?: SafariState | null; heading?: string; onHelp: () => void; onBack?: () => void }) {
   return (
     <header className={styles.topBar}>
+      {onBack && <BackButton label={BACK_TO_TOWN} onClick={onBack} testId="btn-leave-safari" />}
       <h1 className={`${styles.title} display`}>
         <IconTrees size={26} aria-hidden="true" /> {heading ?? 'Safari Zone'}
       </h1>

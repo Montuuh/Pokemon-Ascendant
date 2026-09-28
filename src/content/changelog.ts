@@ -4,8 +4,7 @@
 // a second place for "what v0.7.3 added" to be true, which is the drift docs/release-doctrine.md exists to
 // prevent. So the game imports the markdown and reads its headings, like `roadmap.ts` reads the roadmap table.
 //
-// The parser is narrow on purpose: `## vX.Y — Name · date|in progress`, `### vX.Y.Z — Name · date`, `## Next`,
-// a one-line lede, and `- **Headline.** body` bullets. `changelog.test.ts` runs it against the real file, so a
+// The parser is narrow on purpose: `## vX.Y — Name · date|in progress`, `### vX.Y.Z — Name · date`, a one-line lede, and `- **Headline.** body` bullets. `changelog.test.ts` runs it against the real file, so a
 // reformat it cannot read fails a test rather than shipping an empty page.
 
 import changelogMd from '../../CHANGELOG.md?raw';
@@ -36,8 +35,6 @@ export interface Release {
 }
 
 export interface Changelog {
-  /** What reached the game since the last version (`## Next`), or null when nothing has. */
-  next: ChangeItem[] | null;
   /** Minors and majors, newest first; their patches hang off them. */
   releases: Release[];
 }
@@ -62,17 +59,11 @@ export function sameVersion(a: string, b: string): boolean {
 
 export function parseChangelog(markdown: string = changelogMd): Changelog {
   const releases: Release[] = [];
-  let next: ChangeItem[] | null = null;
-  // Where bullets and the lede are going: a release, the Next block, or nowhere (the file's preamble).
-  let into: { items: ChangeItem[]; release: Release | null } | null = null;
+  // Where bullets and the lede are going: a release, or nowhere (the file's preamble).
+  let into: Release | null = null;
 
   for (const raw of markdown.split('\n')) {
     const line = raw.trimEnd();
-    if (line === '## Next') {
-      next = [];
-      into = { items: next, release: null };
-      continue;
-    }
     const h = HEADING.exec(line);
     if (h) {
       const [, hashes, version, name, when] = h as unknown as [string, string, string, string, string];
@@ -88,7 +79,7 @@ export function parseChangelog(markdown: string = changelogMd): Changelog {
       const parent = releases[releases.length - 1];
       if (hashes === '###' && parent) parent.patches.push(release);
       else releases.push(release);
-      into = { items: release.items, release };
+      into = release;
       continue;
     }
     if (line.startsWith('#')) {
@@ -103,11 +94,11 @@ export function parseChangelog(markdown: string = changelogMd): Changelog {
       // A wrapped bullet: the indented line continues the last one.
       const last = into.items[into.items.length - 1]!;
       last.body = `${last.body} ${line.trim()}`.trim();
-    } else if (into.release && into.items.length === 0) {
-      into.release.lede = `${into.release.lede} ${line.trim()}`.trim();
+    } else if (into.items.length === 0) {
+      into.lede = `${into.lede} ${line.trim()}`.trim();
     }
   }
-  return { next: next && next.length ? next : null, releases };
+  return { releases };
 }
 
 /** The parsed changelog, once. */

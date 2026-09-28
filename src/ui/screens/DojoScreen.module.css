@@ -207,23 +207,6 @@
   background: var(--surface-2);
   font-size: var(--type-small);
 }
-.leave {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: var(--sp-3) var(--sp-5);
-  border-radius: var(--radius-md);
-  background: var(--accent-action);
-  color: var(--ink-primary);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--type-h3);
-  box-shadow: 0 6px 0 var(--accent-action-deep);
-}
-.leave:hover {
-  transform: translateY(-2px);
-}
 
 @media (max-width: 1100px) {
   .services {

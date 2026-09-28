@@ -1,6 +1,6 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-09-28 · **Version:** v0.7.10 shipped (*The Poké Mart, walked in*) — v0.7 closed (*Cities & Regions 2–3*).
+**Date:** 2026-09-29 · **Version:** v0.7.11 shipped (*Shop clerks and a quieter way out*) — v0.7 closed (*Cities & Regions 2–3*).
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
 **Sprint goal next:** **v0.8 Multi-enemy & the route**, starting with v0.8.1 *Multi-enemy fights* (1 lead + 1–2
@@ -11,10 +11,9 @@ each shelf as boxes in map pixels and says what it holds; `ShopRoom.tsx` draws t
 shelf, its cards open beside the room; the counter sells Poké Balls and buys back. 5F is "Rare goods" now. No sim change.
 `scripts/ui-audit.mjs` (shared) only photographs the store's 1F — make it walk every floor when that file is ours.
 
-**Next:** a clerk behind every shop counter sells the whole Mart or floor (Buy tab, grouped by shelf, the default
-panel) and buys back (Sell tab); shelf plates lost their counts; a shelf lights as one SVG shape (feMorphology outline
-of its pieces' union); leave by a corner arrow or the room's door/stairs (`room.exit`). UI reviews: all fixes in.
-Follow-up proposed by the reviewer: move Center, Dojo and Game Corner to the same corner back-arrow.
+**v0.7.11:** a clerk sells the whole shop/floor (Buy/Sell tabs); shelves light as one SVG shape; every building
+leaves by `BackButton` (round arrow, header top-left). **Changelog is brief and has no `## Next`**: every change ships
+as the next patch (release doctrine R1/R2, the ship-version skill).
 
 **v0.7.9:** the Center has a Daycare (200 ₽, +1 level, sits out the next fight, once a visit —
 `RunState.resting`) and a PC Box (the map's Box panel indoors); the Dojo's third counter sells each line's egg moves

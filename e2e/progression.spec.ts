@@ -93,7 +93,7 @@ test('the Dojo sells as many services as the money covers — §2.9.4', async ({
   await expect(page.getByTestId('dojo-money')).toContainText('20');
   // Broke: every offer closes.
   await expect(page.locator('[data-testid^="tutor-"]').first()).toBeDisabled();
-  await expect(page.getByTestId('btn-leave-dojo')).toContainText('Back to town');
+  await expect(page.getByTestId('btn-leave-dojo')).toHaveAttribute('aria-label', 'Back to town');
 
   const poolAfter = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.pool.length);
   expect(poolAfter).toBe(poolBefore + 2);

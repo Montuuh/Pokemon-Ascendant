@@ -143,23 +143,6 @@
 
 .footer { display: grid; gap: var(--sp-2); justify-items: center; }
 
-.leave {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-5);
-  border-radius: var(--radius-pill);
-  border: 2px solid var(--border-strong);
-  background: var(--accent-action);
-  color: var(--ink-primary);
-  font: inherit;
-  font-weight: 700;
-  font-size: var(--type-small);
-  cursor: pointer;
-}
-.leave:hover { transform: translateY(-1px); }
-.leave:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
-
 .toast {
   margin: 0;
   padding: var(--sp-2) var(--sp-4);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IconBuildingWarehouse, IconDoorExit, IconHeartPlus, IconLock, IconSparkles, IconZzz } from '@tabler/icons-react';
+import { IconBuildingWarehouse, IconHeartPlus, IconLock, IconSparkles, IconZzz } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { boxCapacity, daycarePrice, runHelpers, therapyPrice, type PartyMon } from '@/sim';
@@ -8,9 +8,10 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { HpBar } from '@/ui/components/HpBar';
 import { Money, Price } from '@/ui/components/Money';
-import { CENTER_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
+import { BACK_TO_TOWN, CENTER_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
 import { centerTip, daycareRowTip, daycareTip, pcBoxTip, therapyTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
+import { BackButton } from '@/ui/components/BackButton';
 import styles from './CenterScreen.module.css';
 
 // Pokémon Center, §2.11.1 + §8.2.4 — "the warmest screen" (docs/design/ui/screens.md 4.6). A City building:
@@ -70,6 +71,7 @@ export function CenterScreen() {
   return (
     <main className={styles.root} data-testid="center-screen">
       <header className={styles.topBar}>
+        <BackButton label={BACK_TO_TOWN} onClick={() => act({ type: 'leave-center' })} testId="btn-leave-center" />
         <div>
           <h1 className={`${styles.title} display`}>
             <IconHeartPlus size={26} /> Pokémon Center
@@ -206,9 +208,6 @@ export function CenterScreen() {
         <p className="sr-only" role="status" aria-live="polite">
           {run.log.slice(-1).join(' ')}
         </p>
-        <button type="button" className={styles.leave} onClick={() => act({ type: 'leave-center' })} data-testid="btn-leave-center">
-          <IconDoorExit size={18} /> Back to town
-        </button>
       </footer>
 
       {managing && <MoveManager uid={managing} onClose={() => setManaging(null)} />}

@@ -52,23 +52,6 @@
   justify-self: center;
 }
 
-/* ---- New since the current version: a dashed "not yet a version" frame ---- */
-.next {
-  display: grid;
-  gap: var(--sp-1);
-  padding: var(--sp-4) var(--sp-5);
-  border: 2px dashed var(--accent-action-deep);
-  border-radius: var(--radius-lg);
-  background: var(--surface-1);
-}
-.nextTitle {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  font-size: var(--type-h3);
-}
-
 .releases {
   display: grid;
   gap: var(--sp-5);

@@ -1,15 +1,16 @@
 import { useState, type AnimationEvent, type CSSProperties, type ReactNode } from 'react';
-import { IconClover, IconDoorExit, IconMinus, IconPlus } from '@tabler/icons-react';
+import { IconClover, IconMinus, IconPlus } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { betChance, CASINO, casinoExpectedValue, pocketColour, type CasinoResult, type WheelBet } from '@/sim';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { Modal } from '@/ui/components/Modal';
 import { Money } from '@/ui/components/Money';
 import { SlotFace } from '@/ui/components/SlotFace';
-import { BET_NAME, CASINO_TEXT, RUN_REJECT_TEXT, SLOT_FACE_LABEL } from '@/ui/strings';
+import { BACK_TO_TOWN, BET_NAME, CASINO_TEXT, RUN_REJECT_TEXT, SLOT_FACE_LABEL } from '@/ui/strings';
 import { gameCornerTip, machineTip, moneyTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
 import { GameCornerRoom, type Machine } from './GameCornerRoom';
+import { BackButton } from '@/ui/components/BackButton';
 import styles from './GameCornerScreen.module.css';
 
 // §2.11.5 — Celadon's Game Corner. The screen is the room (`GameCornerRoom`, FireRed / LeafGreen's own map): walk up
@@ -155,6 +156,7 @@ export function GameCornerScreen() {
   return (
     <main className={styles.root} data-testid="game-corner-screen">
       <header className={styles.topBar}>
+        <BackButton label={BACK_TO_TOWN} onClick={() => act({ type: 'leave-game-corner' })} testId="btn-leave-game-corner" />
         <h1 className={`${styles.title} display`}>
           <IconClover size={26} aria-hidden="true" /> Game Corner
           <InfoDot tip={gameCornerTip()} />
@@ -162,13 +164,10 @@ export function GameCornerScreen() {
         {wallet('casino-money')}
       </header>
 
-      <GameCornerRoom onSay={say} onPlay={setOpen} />
+      <GameCornerRoom onSay={say} onPlay={setOpen} onLeave={() => act({ type: 'leave-game-corner' })} />
 
       <footer className={styles.footer}>
         {toast && <p className={styles.toast} role="status">{toast}</p>}
-        <button type="button" className={styles.leave} onClick={() => act({ type: 'leave-game-corner' })} data-testid="btn-leave-game-corner">
-          <IconDoorExit size={18} /> Back to town
-        </button>
       </footer>
 
       {/* The Roulette: a bet you size. */}

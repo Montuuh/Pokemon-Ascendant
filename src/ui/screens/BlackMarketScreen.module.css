@@ -189,22 +189,6 @@
   background: var(--surface-1);
   font-size: var(--type-small);
 }
-/* The way out is the stairs you came down. */
-.up {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-1) var(--sp-5) var(--sp-1) var(--sp-2);
-  border-radius: var(--radius-pill);
-  border: 2px solid var(--border-strong);
-  background: var(--surface-1);
-  color: var(--ink-primary);
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
-.up:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
-.stairsArt { width: 36px; height: 52px; }
 
 @media (max-height: 800px) {
   .dealerSprite { width: 64px; height: 64px; }

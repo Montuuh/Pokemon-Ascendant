@@ -19,11 +19,11 @@ Versions are numbered `major.minor.patch`, and the number alone says how big the
 from the number (`levelOf` in `src/content/changelog.ts`) and never styled by hand, so the order of importance
 cannot drift from the numbering.
 
-**Between two versions.** Work that reaches `main` without a new number (a pass done ahead of a version, a small
-fix) is written under `## Next` at the top of the changelog as it lands; the game shows it as *new since* the
-current version. Shipping a version turns `Next` into that version's entry. A fix that must reach players at
-once (a broken build, a lost save) takes the next patch number, and the planned sub-versions after it move up
-by one in `docs/roadmap.md` in the same commit.
+**Every change ships as a version** (the user's call, 2026-09-29). There is no "unreleased" block: work that
+reaches `main` outside a planned sub-version — a round of polish, a fix — takes the **next patch number** and its
+own changelog entry, the same day. The numbering stays three parts (npm and the guard read `X.Y.Z`), so the
+patch after v0.7.10 is v0.7.11, never v0.7.10.1; a planned sub-version that was next on the roadmap moves up by
+one in `docs/roadmap.md` in the same commit.
 
 ## R2 — The changelog entry
 
@@ -36,14 +36,17 @@ One line of lede: what the version is for.
 ### v0.7.3 — Region 2, Coastal Cliffs · 2026-09-23   ← a patch, under its own minor
 One line of lede.
 
-- **Headline.** One sentence: what a player can now do, see or choose.
+- **Headline.** A few words: what a player can now do, see or choose.
 ```
 
+- **Brief** (the user's call, 2026-09-29): the most important things only, no explanation and no lore. **2–4
+  bullets** for a patch, **4–6** for a minor. The headline is a noun phrase; the sentence after it is a few words,
+  **under ~60 characters**. The lede is one short line. How and why a thing works belongs in the game's own
+  tooltips and guides, and in the roadmap's "Shipped" paragraph.
 - **Written for players.** English (the game's language), present tense, what changed *for them*. No §
-  numbers, file names, test counts or internal names — those belong in the roadmap's "Shipped" paragraph.
-- **One bullet per thing a player would notice**: 3–8 for a patch, 5–8 for a minor. The headline is a noun
-  phrase; the sentence stays under ~120 characters (D1 — the What's new page is content, but still a page).
+  numbers, file names, test counts or internal names.
 - **Fixes count** when a player could have met the bug: "Readable map captions", not "fix(ui): D5".
+- **A secret stays one.** An entry may hint at a hidden place; it never says where it is or how it opens.
 - A minor still being built carries only its lede; its patches carry the bullets. When the minor ships, its
   heading takes the date and gains the bullets that sum up the whole version.
 
@@ -64,8 +67,7 @@ added to this table and to `scripts/check-version.mjs` in the same change.
 
 ## R4 — The ritual
 
-1. Move `## Next` into the new entry (or write it), newest first, with today's date. A minor that finishes
-   takes its date and a summary.
+1. Write the new entry, newest first, with today's date (R2). A minor that finishes takes its date and a summary.
 2. `npm version X.Y.Z --no-git-tag-version`.
 3. Mark the roadmap (`✅ date`) and write its "Shipped" paragraph.
 4. Rewrite the README's Status line and the header of `docs/session/active.md`.

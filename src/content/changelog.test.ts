@@ -44,6 +44,16 @@ describe('The changelog the game reads — release doctrine', () => {
     }
   });
 
+  it('EveryEntryIsBrief_TheMainPointsOnly', () => {
+    // docs/release-doctrine.md R2 (the user's call, 2026-09-29): up to four bullets a patch, six a minor, and a few
+    // words after each headline — how a thing works belongs in the game's tooltips, not on What's new.
+    for (const r of CHANGELOG.releases.flatMap((m) => [m, ...m.patches])) {
+      expect(r.items.length, r.version).toBeLessThanOrEqual(r.level === 'patch' ? 4 : 6);
+      for (const item of r.items) expect(item.body.length, `${r.version} · ${item.title}`).toBeLessThanOrEqual(70);
+      expect(r.lede.length, `${r.version} lede`).toBeLessThanOrEqual(80);
+    }
+  });
+
   it('TheNewestShippedEntry_IsTheVersionTheBuildSaysItIs', () => {
     const latest = latestShipped();
     expect(latest).not.toBeNull();
@@ -70,15 +80,10 @@ describe('The changelog the game reads — release doctrine', () => {
     expect(sameVersion('v0.7', '0.7.3')).toBe(false);
   });
 
-  it('Parse_NextBlockAndWrappedBullets', () => {
+  it('Parse_WrappedBulletsAndNoNextBlock', () => {
     const log = parseChangelog(`
 # Changelog
 > preamble with - **not a bullet.** here
-
-## Next
-
-- **A fix.** Something that reached the game
-  after the last version.
 
 ## v0.2 — Two · in progress
 
@@ -86,17 +91,17 @@ Lede line.
 
 ### v0.2.1 — Two point one · 2026-01-02
 
-- **Thing.** It works.
+- **Thing.** It works
+  on two lines.
 
 ## v0.1 — One · 2026-01-01
 
 - **First.** The first thing.
 `);
-    expect(log.next).toEqual([{ title: 'A fix', body: 'Something that reached the game after the last version.' }]);
     expect(log.releases.map((r) => r.version)).toEqual(['v0.2', 'v0.1']);
     expect(log.releases[0]!.date).toBeNull();
     expect(log.releases[0]!.lede).toBe('Lede line.');
-    expect(log.releases[0]!.patches[0]!.items[0]).toEqual({ title: 'Thing', body: 'It works.' });
+    expect(log.releases[0]!.patches[0]!.items[0]).toEqual({ title: 'Thing', body: 'It works on two lines.' });
     expect(latestShipped(log)!.version).toBe('v0.2.1');
   });
 });

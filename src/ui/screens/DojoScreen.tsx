@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { Tabs } from 'radix-ui';
-import { IconBook, IconCheck, IconDoorExit, IconEgg, IconSparkles } from '@tabler/icons-react';
+import { IconBook, IconCheck, IconEgg, IconSparkles } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { abilityLocked, dojoPrice, eggMovesFor, tutorListFor, type MoveDef, type PartyMon } from '@/sim';
@@ -8,9 +8,10 @@ import { MoveManager } from '@/ui/components/MoveManager';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { DOJO_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
+import { BACK_TO_TOWN, DOJO_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
 import { counterTabTip, dojoTip, eggMovesTip, moveDefTip, passiveTip, tutorTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
+import { BackButton } from '@/ui/components/BackButton';
 import styles from './DojoScreen.module.css';
 
 // Per docs/design/ui/screens.md (Dojo / Tutor, screen 4.7) and §2.9.4 — the Dojo, a City building since v0.7.1
@@ -74,6 +75,7 @@ export function DojoScreen() {
     // (screen 4.6 of docs/design/ui/screens.md, "the warmest screen").
     <main className={styles.root} data-testid="dojo-screen">
       <header className={styles.topBar}>
+        <BackButton label={BACK_TO_TOWN} onClick={() => act({ type: 'leave-dojo' })} testId="btn-leave-dojo" />
         <div>
           <h1 className={`${styles.title} display`}>The Dojo</h1>
           <p className={styles.sub}>
@@ -218,9 +220,6 @@ export function DojoScreen() {
         <p className="sr-only" role="status" aria-live="polite">
           {run.log.slice(-1).join(' ')}
         </p>
-        <button type="button" className={styles.leave} onClick={() => act({ type: 'leave-dojo' })} data-testid="btn-leave-dojo">
-          <IconDoorExit size={18} /> Back to town
-        </button>
       </footer>
 
     </main>

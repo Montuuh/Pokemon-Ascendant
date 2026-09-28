@@ -74,8 +74,7 @@ await room([noGrunt], resolve(CORNER, 'room-open.png'));
 // Shut: back up the stairs, the door locked — the Grunt still gone, and the corner under the hatch plain floor.
 await room([noStairs, noGrunt], resolve(CORNER, 'room-shut.png'));
 
-// The Hideout: the entrance room's back wall with a vent, a floor tile, and the stairs up to the Game Corner.
+// The Hideout: the entrance room's back wall with a vent, and a floor tile.
 const cut = (x, y, w, h, name) => sharp(hideout).extract({ left: x, top: y, width: w, height: h }).png().toFile(resolve(MARKET, name)).then(() => console.log(name));
 await cut(208, 8, 48, 24, 'wall.png');
 await cut(192, 176, 16, 16, 'floor.png');
-await cut(159, 10, 36, 52, 'stairs.png');

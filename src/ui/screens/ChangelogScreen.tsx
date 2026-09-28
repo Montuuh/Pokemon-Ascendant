@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Accordion } from 'radix-ui';
-import { IconArrowLeft, IconChevronDown, IconCircleCheck, IconCrown, IconPokeball, IconProgress, IconSparkles } from '@tabler/icons-react';
+import { IconArrowLeft, IconChevronDown, IconCircleCheck, IconCrown, IconPokeball, IconProgress } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { markChangelogRead } from '@/app/changelogSeen';
 import { CHANGELOG, sameVersion, type ChangeItem, type Release } from '@/content/changelog';
@@ -111,14 +111,6 @@ export function ChangelogScreen() {
       </header>
 
       <div className={styles.column}>
-        {CHANGELOG.next && (
-          <section className={styles.next} data-testid="changelog-next" aria-labelledby="changelog-next-title">
-            <h2 id="changelog-next-title" className={`${styles.nextTitle} display`}>
-              <IconSparkles size={20} aria-hidden="true" /> New since v{APP_VERSION}
-            </h2>
-            <Items items={CHANGELOG.next} compact />
-          </section>
-        )}
         <Accordion.Root type="multiple" defaultValue={first ? [first.version] : []} className={styles.releases}>
           {CHANGELOG.releases.map((r) => <ReleaseBanner key={r.version} r={r} />)}
         </Accordion.Root>
