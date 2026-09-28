@@ -316,7 +316,40 @@ export const STORE_FLOOR_LABEL: Record<string, string> = {
   tms: 'TMs',
   'held-items': 'Held items',
   relics: 'Relics',
-  rare: 'Rare counter',
+  rare: 'Rare goods',
+};
+
+/** §2.11.2 — a City shop's shelves, by what they hold: the shop is the room. */
+export const SHELF_LABEL: Record<'balls' | 'counter' | 'medicine' | 'rare-medicine' | 'tms' | 'held' | 'stones' | 'relics' | 'relics-common' | 'relics-uncommon' | 'relics-rare', string> = {
+  balls: 'Poké Balls',
+  counter: 'Counter',
+  medicine: 'Medicine',
+  'rare-medicine': 'Rare medicine',
+  tms: 'TMs',
+  held: 'Held items',
+  stones: 'Evolution stones',
+  relics: 'Relics',
+  'relics-common': 'Common relics',
+  'relics-uncommon': 'Uncommon relics',
+  'relics-rare': 'Rare relics',
+};
+/** What each shelf is for, in a line, for its bubble. */
+export const SHELF_HINT: Record<keyof typeof SHELF_LABEL, string> = {
+  balls: 'Poké Balls, always in stock — and the clerk buys held items back.',
+  counter: 'The clerk buys held items back from your bag.',
+  medicine: 'Potions, status cures and battle items for the fights ahead.',
+  'rare-medicine': 'The strongest medicine the store stocks.',
+  tms: 'TMs someone in your Box can learn. Single use.',
+  held: 'Items a Pokémon wears into every fight.',
+  stones: 'A stone someone in your Box can use to evolve — when there is one.',
+  relics: 'Relics for the whole run, from Common to Rare.',
+  'relics-common': 'The cheapest relics: small, steady edges for the whole run.',
+  'relics-uncommon': 'Dearer relics that bend a rule or reward a plan.',
+  'relics-rare': 'Rare relics — the best the store sells.',
+};
+export const SHOP_TEXT = {
+  emptyShelf: 'Nothing on this shelf today.',
+  nothingToSell: 'Nothing in your bag to sell.',
 };
 
 /** §2.11.5 — the Slots' faces, named for screen readers. */

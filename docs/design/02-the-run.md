@@ -963,7 +963,8 @@ Both Cities have one. *(Confirmed 2026-09-22.)*
 
 The run's largest economic surface, and always open. Its size is the difference between the two Cities.
 
-**Pallet Town — the Poké Mart.** One counter, **8 slots**, curated to your team.
+**Pallet Town — the Poké Mart.** One counter, **8 slots**, curated to your team, and a ninth — an Evolution Item the
+Box can use — when there is one.
 
 **Celadon City — the Department Store.** Five floors, each a category, each its own shelf and tab:
 
@@ -973,7 +974,19 @@ The run's largest economic surface, and always open. Its size is the difference 
 | **2F TMs** | four, each learnable by someone in the Box |
 | **3F Held items** | four |
 | **4F Relics** | two Common, two Uncommon |
-| **5F Rare counter** | two Rare relics and a Tier-4 consumable |
+| **5F Rare goods** | two Rare relics and a Tier-4 consumable |
+
+**The shop is the room** (the user's call, 2026-09-28). The Poké Mart is FireRed / LeafGreen's own Mart, and each
+Department Store floor a floor of Celadon's store as those games drew it, at a whole-pixel scale; every piece of
+furniture is a **shelf** with its name plate, and pressing one shows what it holds beside the room. The shelves
+are the categories: at the Mart, **Medicine** on the stocked back shelves, **TMs** in the wall's glass cases,
+**Relics** in the glass table by the door, **Held items** and **Evolution stones** on the two floor shelves, and
+**Poké Balls** at the counter, where the clerk also buys items back (§2.11.2.4). The store's floors split the same
+way — 1F's counter sells the Poké Balls, 4F keeps its Common relics in the top cases and the Uncommon in the
+bottom, 5F its Rare relics, stones and rare medicine apart — and every floor's counter buys back. A shelf with
+nothing on it today says so. FRLG drew shop furniture on three of the store's floors (2F, 4F, 5F), so the five
+floors are built from those three, the repeated two mirrored, each with its own number on the mat under the lift.
+The route's merchant is a cart, not a shop, and keeps a plain row of cards (§2.9.2).
 
 Twenty-one slots against the Mart's eight: far more stock than a Mart, and the only place a run ever sees that
 much at once. Prices carry the City markup (§2.11.2.3). **A re-roll restocks the floor you are standing on**
@@ -1009,6 +1022,7 @@ The Mart's eight, and the shape each Department Store floor follows:
 | 6 | Rare relic — present 50 % of the time, otherwise a second Uncommon |
 | 7 | Held Item, curated to the team |
 | 8 | TM, curated to the team's compatibility |
+| 9 | An Evolution Item someone in the Box can use — only when there is one (§6.3.2) |
 
 **Poké Balls are always on the counter, outside the eight.** The route's merchant sells them three to a slot and
 nobody else on the route sells them at all, so a City that could roll a shelf without one would leave a run

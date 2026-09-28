@@ -131,13 +131,12 @@
   .shelf { grid-template-columns: 1fr; }
 }
 
-/* §2.11.2.4 — the City counter that buys held items back. Only drawn when there is something to sell. */
+/* §2.11.2.4 — the counter that buys held items back, under the counter's own shelf. */
 .sell {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  gap: var(--sp-2);
+  padding-top: var(--sp-3);
+  border-top: 2px solid var(--border-subtle);
 }
 .sellTitle {
   display: inline-flex;
@@ -170,12 +169,44 @@
 .sellBtn:hover { border-color: var(--border-strong); }
 .sellBtn:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
 
-/* §2.11.2 — the Department Store: lift buttons, then the floor's shelf. */
-.store {
-  display: grid;
-  grid-template-rows: auto 1fr;
+/* §2.11.2 — a City shop: the lift (in the store), then the room and the shelf pressed, side by side. */
+.hall {
+  display: flex;
+  flex-direction: column;
   gap: var(--sp-3);
   min-height: 0;
+}
+.aisle {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 1fr);
+  gap: var(--sp-5);
+  min-height: 0;
+}
+.panel {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-3);
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-1) 70%, transparent);
+}
+.panelTitle { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--type-h3); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--sp-3); }
+.empty {
+  margin: 0;
+  padding: var(--sp-4);
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+  text-align: center;
+}
+@media (max-width: 1000px) {
+  .aisle { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(260px, 1fr) auto; overflow-y: auto; }
 }
 .floors {
   display: flex;
@@ -212,6 +243,3 @@
   color: var(--ink-primary);
   font-family: var(--font-display);
 }
-.floorPanel { min-height: 0; display: grid; }
-/* A hidden floor stays hidden: the class above would otherwise override the attribute. */
-.floorPanel[hidden] { display: none; }

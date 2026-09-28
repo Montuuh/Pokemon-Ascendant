@@ -227,6 +227,23 @@ test.describe('The Department Store — §2.11.2', () => {
     await page.getByTestId('floor-consumables').focus();
     await page.keyboard.press('ArrowRight');
     await expect(page.getByTestId('floor-tms')).toHaveAttribute('data-state', 'active');
+    // Each floor is its own room: the relics floor keeps Common relics on the top cases, Uncommon on the bottom.
+    await page.getByTestId('floor-relics').click();
+    await expect(page.getByTestId('shelf-relics-common')).toBeVisible();
+    await expect(page.getByTestId('shelf-relics-uncommon')).toBeVisible();
+    await page.getByTestId('shelf-relics-uncommon').click();
+    await expect(page.getByTestId('shelf-panel')).toHaveAttribute('data-shelf', 'relics-uncommon');
+    // Every slot of every floor sits on a shelf of its room.
+    for (const f of ['consumables', 'tms', 'held-items', 'relics', 'rare']) {
+      await page.getByTestId(`floor-${f}`).click();
+      const onFloor = await page.evaluate((fl) => window.__ascendant!.run.state()!.pendingShop!.slots.filter((s) => s.floor === fl).length, f);
+      let seen = 0;
+      for (const shelf of await page.locator('[data-testid^="shelf-"]:not([data-testid="shelf-panel"])').all()) {
+        await shelf.click();
+        seen += await page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').count();
+      }
+      expect(seen, f).toBe(onFloor);
+    }
     await page.getByTestId('floor-relics').click();
     const others = await page.evaluate(() => window.__ascendant!.run.state()!.pendingShop!.slots.filter((s) => s.floor !== 'relics').map((s) => s.id));
     await page.getByTestId('btn-reroll').click();

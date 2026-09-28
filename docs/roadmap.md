@@ -23,7 +23,7 @@ loop layer and re-tests the core inside it.
 | v0.4 | Economy & Relics | Money, shop, relics, held items, mystery events, elite, difficulty modifiers | ✅ 2026-09-20 · ◐ playtest |
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
-| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner played, every City door open. **Nine subversions** | ✅ 2026-09-28 |
+| v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner played, every City door open. **Ten subversions** | ✅ 2026-09-28 |
 | v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ☐ |
 | v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
@@ -611,6 +611,25 @@ holds both services; `e2e/economy` and `e2e/progression` play them. **Decided wh
 HP because the Center already healed everyone; move text now covers multi-hit, on-kill, team-cure and team-guard
 effects, which four egg moves brought onto a shop shelf. No door in either City is in development, so §2.11.0's rule
 now covers only a door ever drawn before it is built. **v0.7 closes.**
+
+### v0.7.10 — The Poké Mart, walked in  ✅ 2026-09-28
+The user's call (2026-09-28), after v0.7 had closed: the City shops rebuilt as Pokémon shops — the FRLG rooms, their
+shelves labelled by what they hold and pressable. Designed with the user: **both** shops (the Mart and every
+Department Store floor), and the Mart's **stones shelf** stocked. §2.11.2's stock does not change.
+**Exit:** in either City, a player finds each kind of goods on its own labelled shelf, presses it, and buys from it.
+
+**Shipped.** **The shop is the room** (§2.11.2): `npm run art:mart` fetches FRLG's Poké Mart and builds the store's
+five floors from the three FRLG drew with shop furniture (2F, 4F, 5F; the repeated two mirrored, each floor's number
+on the lift's mat copied from the FRLG floor with that number), black surround made transparent. `ui/screens/shop/
+rooms.ts` places every piece of furniture as a box in map pixels and says what each shelf holds; `ShopRoom.tsx` draws
+the map at the largest whole-pixel scale its box allows (×3–×4 at 1080p; below ×2 it shrinks, as the Game Corner's
+room does) with a name plate and a count on each shelf; the pressed shelf opens its cards beside the room, and the
+counter keeps the buy-back. The Mart: Medicine, TMs, Relics, Held items, Evolution stones, Poké Balls at the counter.
+The store: 1F Medicine + Poké Balls, 2F TMs, 3F Held items, 4F Common/Uncommon relics, 5F Rare relics, stones and
+rare medicine; every floor's counter buys back. The Mart already stocked a stone the Box could use since v0.7.5 —
+the canon's slot table now says so (slot 9). **Decided while building:** 5F is **Rare goods**, not "Rare counter",
+because every floor now has a counter that only buys back; decorative furniture no shelf needs (4F's floor shelf and
+wall case) stays scenery. `e2e/economy` and `e2e/city` press every shelf and prove every slot sits on exactly one.
 
 ## v0.8 — Multi-enemy & the route  ☐
 

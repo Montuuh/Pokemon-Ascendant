@@ -136,10 +136,33 @@ test.describe('Statuses between fights — §4.2.7.1', () => {
 });
 
 test.describe('The Poké Mart — §2.11.2', () => {
+  test('the Mart is the room: every shelf is labelled, pressing one shows what it holds', async ({ page }) => {
+    await inTown(page, { money: 3000 });
+    await page.getByTestId('door-mart').click();
+    await expect(page.getByTestId('shop-room')).toBeVisible();
+    for (const shelf of ['medicine', 'balls', 'tms', 'relics', 'held', 'stones']) await expect(page.getByTestId(`shelf-${shelf}`)).toBeVisible();
+    // The first stocked shelf is on show; every slot on the stock sits on exactly one shelf.
+    await expect(page.getByTestId('shelf-panel')).toHaveAttribute('data-shelf', 'medicine');
+    const total = await page.evaluate(() => window.__ascendant!.run.state()!.pendingShop!.slots.length);
+    let seen = 0;
+    for (const shelf of ['medicine', 'balls', 'tms', 'relics', 'held', 'stones']) {
+      await page.getByTestId(`shelf-${shelf}`).click();
+      await expect(page.getByTestId('shelf-panel')).toHaveAttribute('data-shelf', shelf);
+      seen += await page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').count();
+    }
+    expect(seen).toBe(total);
+    // The relics case, pressed: its cards beside the room.
+    await page.getByTestId('shelf-relics').click();
+    await expect(page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').first()).toBeVisible();
+    await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
+    await page.screenshot({ path: 'playtest/run-shop-relics.png' });
+  });
+
   test('buying takes the money, marks the slot sold, and leaves it on the shelf', async ({ page }) => {
     await inTown(page, { money: 400 });
     await page.getByTestId('door-mart').click();
     await expect(page.getByTestId('shop-screen')).toBeVisible();
+    await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
     await page.screenshot({ path: 'playtest/run-shop.png' });
 
     const before = await page.evaluate(() => window.__ascendant!.run.state()!.money);
@@ -179,10 +202,13 @@ test.describe('The Poké Mart — §2.11.2', () => {
     await inTown(page, { money: 0 });
     await page.evaluate(() => window.__ascendant!.run.wear('leftovers'));
     await page.getByTestId('door-mart').click();
+    // The clerk at the counter buys items back, beside the Poké Balls.
+    await page.getByTestId('shelf-balls').click();
     await expect(page.getByTestId('shop-sell')).toBeVisible();
     await page.getByTestId('sell-leftovers').click();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(90);
-    await expect(page.getByTestId('shop-sell')).toHaveCount(0);
+    await expect(page.getByTestId('sell-leftovers')).toHaveCount(0);
+    await expect(page.getByTestId('shop-sell')).toContainText('Nothing in your bag');
   });
 
   test('a shelf you cannot pay for is readable, not hidden', async ({ page }) => {

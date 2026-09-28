@@ -1,7 +1,7 @@
 {
   "name": "pokemon-ascendant",
   "private": true,
-  "version": "0.7.9",
+  "version": "0.7.10",
   "description": "Pokémon Ascendant — roguelike deckbuilder where the party is the deck (web build).",
   "license": "MIT",
   "type": "module",
@@ -38,6 +38,7 @@
     "art:safari": "node scripts/fetch-safari-art.mjs",
     "art:rocket": "node scripts/fetch-rocket-art.mjs",
     "art:props": "node scripts/draw-game-corner-props.mjs",
+    "art:mart": "node scripts/fetch-mart-art.mjs",
     "art:types": "node scripts/fetch-type-icons.mjs",
     "ui:audit": "node scripts/ui-audit.mjs"
   },

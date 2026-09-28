@@ -4,7 +4,7 @@ import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { CITY_DOOR_HINT, INTENT_LABEL, MARKET_TEXT, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { CITY_DOOR_HINT, INTENT_LABEL, MARKET_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 
 // Every explanation the game offers on hover, in one file.
@@ -527,6 +527,14 @@ export function machineTip(machine: 'wheel' | 'slots', ev: number): ReactNode {
   return <Tip title={machine === 'wheel' ? 'The Roulette' : 'The Slots'} meta={[`Returns ${Math.round(ev * 100)} % on average`]} body="The outcome is rolled against the table below first, then shown." footer="The house edge is real." />;
 }
 
+/** §2.11.2 — a shelf's count, in words: stock on a shelf, what you could sell at a buy-back counter. */
+export function shelfCountLine(shelf: keyof typeof SHELF_LABEL, count: number): string {
+  return shelf === 'counter' ? `${count} to sell` : `${count} on the shelf`;
+}
+/** §2.11.2 — a shelf in the room: what it holds, and how much of it is left. */
+export function shelfTip(shelf: keyof typeof SHELF_LABEL, count: number): ReactNode {
+  return <Tip title={SHELF_LABEL[shelf]} meta={[shelfCountLine(shelf, count)]} body={SHELF_HINT[shelf]} />;
+}
 /** §2.11.2 — a Department Store floor. */
 export function floorTip(label: string, count: number): ReactNode {
   return <Tip title={label} meta={[`${count} on the shelf`]} body="Each floor sells one kind of thing. A re-roll restocks the floor you are on; the others stay as they are." />;

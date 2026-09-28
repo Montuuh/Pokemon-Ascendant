@@ -21,6 +21,16 @@ The run goes on past the first Gym: three Regions, and a City between each.
 - **The Safari Zone.** Pokémon no route offers, caught by stalking them through the tall grass.
 - **The Game Corner.** A classic roulette and three-reel slots, every outcome's odds printed on the machine.
 
+### v0.7.10 — The Poké Mart, walked in · 2026-09-28
+
+The shops are the rooms FireRed drew: press a shelf and see what is on it.
+
+- **The Poké Mart, as FireRed drew it.** Medicine, TMs, relics, held items and stones each on their own shelf.
+- **Shelves you press.** Every shelf wears its name and how much is left; press it and its goods open beside the room.
+- **The counter.** Poké Balls are sold at the counter, and the clerk there buys your held items back.
+- **A Department Store you can see.** Each of the five floors is its own room, Common and Uncommon relics in separate cases.
+- **Rare goods.** The top floor keeps its rare relics, evolution stones and rare medicine on shelves of their own.
+
 ### v0.7.9 — Every door open · 2026-09-28
 
 The last doors in both Cities open: the Daycare, the PC Box, and the Dojo master's scrolls.
