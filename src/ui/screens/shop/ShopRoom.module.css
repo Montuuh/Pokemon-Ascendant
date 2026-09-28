@@ -21,6 +21,9 @@
   user-select: none;
 }
 
+/* The clerk behind the counter, drawn in the map's pixels like the room. */
+.sprite { position: absolute; image-rendering: pixelated; user-select: none; pointer-events: none; }
+
 /* A shelf: quiet until you are on it, lit while its stock is the one on show. */
 .spot {
   position: absolute;
@@ -67,14 +70,3 @@
 .plateTop { top: 0; bottom: auto; transform: translate(-50%, -50%); }
 .plateTopRight { top: 0; bottom: auto; left: auto; right: 0; transform: translate(0, -50%); }
 .chosen .plate { background: var(--accent-action); color: var(--ink-on-accent); }
-.count {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  min-width: 1.4em;
-  padding: 0 var(--sp-1);
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  color: var(--ink-primary);
-  text-align: center;
-}

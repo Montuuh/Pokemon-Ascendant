@@ -527,9 +527,9 @@ export function machineTip(machine: 'wheel' | 'slots', ev: number): ReactNode {
   return <Tip title={machine === 'wheel' ? 'The Roulette' : 'The Slots'} meta={[`Returns ${Math.round(ev * 100)} % on average`]} body="The outcome is rolled against the table below first, then shown." footer="The house edge is real." />;
 }
 
-/** §2.11.2 — a shelf's count, in words: stock on a shelf, what you could sell at a buy-back counter. */
+/** §2.11.2 — a shelf's count, in words: stock on a shelf, everything the room sells at the clerk. */
 export function shelfCountLine(shelf: keyof typeof SHELF_LABEL, count: number): string {
-  return shelf === 'counter' ? `${count} to sell` : `${count} on the shelf`;
+  return shelf === 'clerk' ? `${count} for sale here` : `${count} on the shelf`;
 }
 /** §2.11.2 — a shelf in the room: what it holds, and how much of it is left. */
 export function shelfTip(shelf: keyof typeof SHELF_LABEL, count: number): ReactNode {

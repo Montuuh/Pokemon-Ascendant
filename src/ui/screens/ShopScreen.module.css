@@ -194,6 +194,15 @@
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--surface-1) 70%, transparent);
 }
+/* The clerk's list: one titled group per shelf. */
+.group { display: grid; gap: var(--sp-2); }
+.groupTitle {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 .panelTitle { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--type-h3); }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--sp-3); }
 .empty {

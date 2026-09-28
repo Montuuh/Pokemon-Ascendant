@@ -320,9 +320,8 @@ export const STORE_FLOOR_LABEL: Record<string, string> = {
 };
 
 /** §2.11.2 — a City shop's shelves, by what they hold: the shop is the room. */
-export const SHELF_LABEL: Record<'balls' | 'counter' | 'medicine' | 'rare-medicine' | 'tms' | 'held' | 'stones' | 'relics' | 'relics-common' | 'relics-uncommon' | 'relics-rare', string> = {
-  balls: 'Poké Balls',
-  counter: 'Counter',
+export const SHELF_LABEL: Record<'clerk' | 'medicine' | 'rare-medicine' | 'tms' | 'held' | 'stones' | 'relics' | 'relics-common' | 'relics-uncommon' | 'relics-rare', string> = {
+  clerk: 'Clerk',
   medicine: 'Medicine',
   'rare-medicine': 'Rare medicine',
   tms: 'TMs',
@@ -335,8 +334,7 @@ export const SHELF_LABEL: Record<'balls' | 'counter' | 'medicine' | 'rare-medici
 };
 /** What each shelf is for, in a line, for its bubble. */
 export const SHELF_HINT: Record<keyof typeof SHELF_LABEL, string> = {
-  balls: 'Poké Balls, always in stock — and the clerk buys held items back.',
-  counter: 'The clerk buys held items back from your bag.',
+  clerk: 'Everything on sale here in one list, the Poké Balls with it — and the clerk buys held items back.',
   medicine: 'Potions, status cures and battle items for the fights ahead.',
   'rare-medicine': 'The strongest medicine the store stocks.',
   tms: 'TMs someone in your Box can learn. Single use.',
@@ -348,6 +346,8 @@ export const SHELF_HINT: Record<keyof typeof SHELF_LABEL, string> = {
   'relics-rare': 'Rare relics — the best the store sells.',
 };
 export const SHOP_TEXT = {
+  /** The clerk's list: the Poké Balls have no shelf of their own, they are the clerk's. */
+  balls: 'Poké Balls',
   emptyShelf: 'Nothing on this shelf today.',
   nothingToSell: 'Nothing in your bag to sell.',
 };

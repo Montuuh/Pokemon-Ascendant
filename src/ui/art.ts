@@ -47,6 +47,6 @@ export const safariArt = (name: string) => asset(`art/safari/${name}.png`);
  */
 export const gameCornerArt = (name: 'room' | 'room-open' | 'room-shut' | 'roulette' | 'hatch') => asset(`art/game-corner/${name}.png`);
 /** §2.11.2 — the Poké Mart and the Department Store's five floors, the real FRLG maps (`npm run art:mart`). */
-export const martArt = (name: 'mart' | 'floor-1' | 'floor-2' | 'floor-3' | 'floor-4' | 'floor-5') => asset(`art/mart/${name}.png`);
+export const martArt = (name: 'mart' | 'floor-1' | 'floor-2' | 'floor-3' | 'floor-4' | 'floor-5' | 'clerk') => asset(`art/mart/${name}.png`);
 /** §2.11.6 — the Rocket Hideout's wall, floor and stairs, the Black Market's room (`npm run art:rocket`). */
 export const blackMarketArt = (name: 'wall' | 'floor' | 'stairs') => asset(`art/black-market/${name}.png`);

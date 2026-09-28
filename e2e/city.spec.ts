@@ -237,12 +237,9 @@ test.describe('The Department Store — §2.11.2', () => {
     for (const f of ['consumables', 'tms', 'held-items', 'relics', 'rare']) {
       await page.getByTestId(`floor-${f}`).click();
       const onFloor = await page.evaluate((fl) => window.__ascendant!.run.state()!.pendingShop!.slots.filter((s) => s.floor === fl).length, f);
-      let seen = 0;
-      for (const shelf of await page.locator('[data-testid^="shelf-"]:not([data-testid="shelf-panel"])').all()) {
-        await shelf.click();
-        seen += await page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').count();
-      }
-      expect(seen, f).toBe(onFloor);
+      // The floor's clerk lists the whole floor.
+      await page.getByTestId('shelf-clerk').click();
+      expect(await page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').count(), f).toBe(onFloor);
     }
     await page.getByTestId('floor-relics').click();
     const others = await page.evaluate(() => window.__ascendant!.run.state()!.pendingShop!.slots.filter((s) => s.floor !== 'relics').map((s) => s.id));

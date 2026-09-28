@@ -140,17 +140,20 @@ test.describe('The Poké Mart — §2.11.2', () => {
     await inTown(page, { money: 3000 });
     await page.getByTestId('door-mart').click();
     await expect(page.getByTestId('shop-room')).toBeVisible();
-    for (const shelf of ['medicine', 'balls', 'tms', 'relics', 'held', 'stones']) await expect(page.getByTestId(`shelf-${shelf}`)).toBeVisible();
+    for (const shelf of ['medicine', 'tms', 'relics', 'held', 'stones']) await expect(page.getByTestId(`shelf-${shelf}`)).toBeVisible();
     // The first stocked shelf is on show; every slot on the stock sits on exactly one shelf.
-    await expect(page.getByTestId('shelf-panel')).toHaveAttribute('data-shelf', 'medicine');
+    // The room opens on the clerk, who lists everything it sells.
+    await expect(page.getByTestId('shelf-panel')).toHaveAttribute('data-shelf', 'clerk');
+    expect(await page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').count()).toBe(await page.evaluate(() => window.__ascendant!.run.state()!.pendingShop!.slots.length));
     const total = await page.evaluate(() => window.__ascendant!.run.state()!.pendingShop!.slots.length);
     let seen = 0;
-    for (const shelf of ['medicine', 'balls', 'tms', 'relics', 'held', 'stones']) {
+    for (const shelf of ['medicine', 'tms', 'relics', 'held', 'stones']) {
       await page.getByTestId(`shelf-${shelf}`).click();
       await expect(page.getByTestId('shelf-panel')).toHaveAttribute('data-shelf', shelf);
       seen += await page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').count();
     }
-    expect(seen).toBe(total);
+    // Every slot but the Poké Balls (the clerk's own) sits on one shelf.
+    expect(seen).toBe(total - 1);
     // The relics case, pressed: its cards beside the room.
     await page.getByTestId('shelf-relics').click();
     await expect(page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').first()).toBeVisible();
@@ -203,7 +206,7 @@ test.describe('The Poké Mart — §2.11.2', () => {
     await page.evaluate(() => window.__ascendant!.run.wear('leftovers'));
     await page.getByTestId('door-mart').click();
     // The clerk at the counter buys items back, beside the Poké Balls.
-    await page.getByTestId('shelf-balls').click();
+    await page.getByTestId('shelf-clerk').click();
     await expect(page.getByTestId('shop-sell')).toBeVisible();
     await page.getByTestId('sell-leftovers').click();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(90);

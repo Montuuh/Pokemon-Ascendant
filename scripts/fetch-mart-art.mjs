@@ -9,6 +9,9 @@
 //     lift, copied from the FRLG floor with that number. The mat is symmetric about the lift, so a mirrored floor
 //     takes it back at the same place.
 //
+// The maps have nobody in them, so the clerk who stands behind every counter is the games' own Gen III clerk
+// overworld sprite, placed by the screen (`clerk.png`).
+//
 // Usage: npm run art:mart [-- --force]
 
 import { execFileSync } from 'node:child_process';
@@ -31,7 +34,7 @@ function download(title) {
 
 const exists = async (p) => access(p).then(() => true, () => false);
 await mkdir(OUT, { recursive: true });
-if (!force && (await exists(resolve(OUT, 'mart.png'))) && (await exists(resolve(OUT, 'floor-5.png')))) {
+if (!force && (await exists(resolve(OUT, 'mart.png'))) && (await exists(resolve(OUT, 'floor-5.png'))) && (await exists(resolve(OUT, 'clerk.png')))) {
   console.log('skip: the Mart art is installed (--force to redo)');
   process.exit(0);
 }
@@ -75,3 +78,7 @@ await build(f2, 'floor-2.png');
 await build(f4, 'floor-3.png', { mirror: true, mat: f3 });
 await build(f4, 'floor-4.png');
 await build(f2, 'floor-5.png', { mirror: true, mat: f5 });
+
+// The clerk: the games' own sprite, facing you across the counter.
+await sharp(download('File:Clerk III OD.png')).png({ palette: true }).toFile(resolve(OUT, 'clerk.png'));
+console.log('wrote public/art/mart/clerk.png');

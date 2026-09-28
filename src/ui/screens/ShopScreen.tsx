@@ -17,8 +17,9 @@ import { ShopRoom } from './shop/ShopRoom';
 // The shop, two ways (header · shop · Leave): the route's travelling merchant (§2.9.2), a cart with its cards on one
 // shelf, and a City's Poké Mart or Department Store (§2.11.2), which is the room itself — the Mart, or the store's
 // floor on screen, as FireRed / LeafGreen drew them, every piece of furniture a shelf you press (`shop/ShopRoom`).
-// The shelf pressed opens beside the room with its cards, so the room stays in view; the counter sells the Poké
-// Balls and buys items back. What is on sale is the sim's; the screen only places it.
+// The shelf pressed opens beside the room with its cards, so the room stays in view. The clerk behind the counter
+// sells everything — the whole Mart, or the whole floor, shelf by shelf with the Poké Balls — and buys held items
+// back; their list is what the room opens on. What is on sale is the sim's; the screen only places it.
 //
 // A sold slot stays sold through a re-roll, and in a City it stays sold across visits (§2.11.0). Both are rules
 // the screen has to *show*, not just obey — a sold-out row stays on the shelf, greyed, so you can see what your
@@ -103,8 +104,15 @@ export function ShopScreen() {
   const placed = (stock?.slots ?? []).map((slot, index) => ({ slot, index })).filter(({ slot }) => !store || slot.floor === floor);
   const onShelf = (id: ShelfId) => (room ? placed.filter(({ slot }) => shelfOf(room, slot, content) === id) : []);
   const counts: Record<string, number> = {};
-  for (const shelf of room?.shelves ?? []) counts[shelf.id] = shelf.buysBack && !onShelf(shelf.id).length ? heldInBag.length : onShelf(shelf.id).filter(({ slot }) => !slot.sold).length;
-  const shelf = room ? (room.shelves.find((s) => s.id === picked) ?? room.shelves.find((s) => onShelf(s.id).some(({ slot }) => !slot.sold)) ?? room.shelves[0]!) : null;
+  for (const shelf of room?.shelves ?? []) counts[shelf.id] = (shelf.id === 'clerk' ? placed : onShelf(shelf.id)).filter(({ slot }) => !slot.sold).length;
+  // The clerk's list is where a room opens: everything it sells, before any one shelf is pressed.
+  const shelf = room ? (room.shelves.find((s) => s.id === (picked ?? 'clerk')) ?? room.shelves[0]!) : null;
+  // The clerk's list, shelf by shelf in the room's order, the Poké Balls (the clerk's own) last.
+  const clerkGroups = (room?.shelves ?? [])
+    .filter((s) => s.id !== 'clerk')
+    .map((s) => ({ label: SHELF_LABEL[s.id], items: onShelf(s.id) }))
+    .concat([{ label: SHOP_TEXT.balls, items: onShelf('clerk') }])
+    .filter((g) => g.items.length > 0);
 
   /** One slot as a card. Its index is the stock's, so a floor's card buys the right slot. */
   function renderSlot(slot: ShopSlot, index: number) {
@@ -184,15 +192,24 @@ export function ShopScreen() {
                 {SHELF_LABEL[shelf.id]}
                 <InfoDot tip={shelfTip(shelf.id, counts[shelf.id] ?? 0)} />
               </h2>
-              {onShelf(shelf.id).length > 0 ? (
+              {shelf.id === 'clerk' ? (
+                clerkGroups.map((g) => (
+                  <section key={g.label} className={styles.group} aria-label={g.label}>
+                    <h3 className={styles.groupTitle}>{g.label}</h3>
+                    <div className={styles.cards} role="list" aria-label={g.label}>
+                      {g.items.map(({ slot, index }) => renderSlot(slot, index))}
+                    </div>
+                  </section>
+                ))
+              ) : onShelf(shelf.id).length > 0 ? (
                 <div className={styles.cards} role="list" aria-label={SHELF_LABEL[shelf.id]}>
                   {onShelf(shelf.id).map(({ slot, index }) => renderSlot(slot, index))}
                 </div>
               ) : (
-                !shelf.buysBack && <p className={styles.empty}>{SHOP_TEXT.emptyShelf}</p>
+                <p className={styles.empty}>{SHOP_TEXT.emptyShelf}</p>
               )}
 
-              {shelf.buysBack && (
+              {shelf.id === 'clerk' && (
                 <section className={styles.sell} aria-label="Sell held items" data-testid="shop-sell">
                   <h3 className={styles.sellTitle}>
                     <IconCoins size={18} /> Sell

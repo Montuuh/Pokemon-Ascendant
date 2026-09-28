@@ -9,6 +9,11 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one line of lede, then
 > `- **Headline.** One sentence.` bullets. `## Next` collects what reached the game since the last version.
 
+## Next
+
+- **The shop clerk.** A clerk stands behind every counter and sells everything in the shop, or on that floor, in one list.
+- **Cleaner shelves.** Shelf signs show just their name; what is left is on the shelf itself when you press it.
+
 ## v0.7 — Cities & Regions 2–3 · 2026-09-28
 
 The run goes on past the first Gym: three Regions, and a City between each.
