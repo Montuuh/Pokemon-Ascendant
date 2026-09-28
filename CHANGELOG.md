@@ -1,6 +1,6 @@
 # Changelog
 
-> What each version of Pokémon Ascendant added, newest first, written for players. **The game reads this
+> What each version of Pokémon Ascendant added, newest first, as short technical notes. **The game reads this
 > file**: the *What's new* screen (the version pill on the main menu) is built from it, so an entry here is an
 > entry in the game. Versions, where else they are stamped, and how to write an entry:
 > [`docs/release-doctrine.md`](docs/release-doctrine.md). `npm run check:version` proves they all agree.
@@ -11,184 +11,201 @@
 
 ## v0.7 — Cities & Regions 2–3 · 2026-09-28
 
-Three Regions, and a City between each.
+Regions 2–3 and a City between each Region.
 
-- **Three Regions.** Each with its own Pokémon, trainers and Gyms.
-- **Twelve Gyms.** Two of four on offer per Region.
-- **Two Cities.** Pallet Town and Celadon City, doors to walk into.
-- **Shops, Dojos and Centers.** Buy, teach and heal between Regions.
-- **The Ring, the Safari Zone and the Game Corner.** Test your team, catch rarities, gamble.
+- **Regions 2 and 3.** New biomes, wild tables, trainers and 8 Gyms.
+- **Cities.** Pallet Town and Celadon City between Regions.
+- **City services.** Mart, Department Store, Dojos, Centers, Ring, Safari.
+- **Game Corner.** Roulette and slots with printed odds.
+- **Full Gen I roster.** All 151 species implemented.
 
-### v0.7.11 — Shop clerks and a quieter way out · 2026-09-29
+### v0.7.12 — Nurse back button and technical changelog · 2026-09-29
 
-Shops and doors, tidied up.
+Field nurse back button.
 
-- **The shop clerk.** Sells the whole shop, or floor, and buys back.
-- **Cleaner shelves.** Just a name; each shelf lights as one shape.
-- **A quieter way out.** A corner arrow in every building.
-- **Out the door.** Rooms you walk leave by their doormat.
+- **Field nurse.** Leaves by the corner back button.
 
-### v0.7.10 — The Poké Mart, walked in · 2026-09-28
+### v0.7.11 — Shop clerks and back buttons · 2026-09-29
 
-The shops are the rooms FireRed drew.
+Shop clerk panel and one back button for every building.
 
-- **The Poké Mart as FireRed drew it.** Each kind of goods on its own shelf.
-- **Shelves you press.** Its goods open beside the room.
-- **A Department Store you can see.** Five floors, five rooms.
+- **Shop clerk.** Buy/Sell panel with all stock of the shop or floor.
+- **Shelf highlight.** Multi-piece shelves outlined as one shape.
+- **Back button.** One corner arrow in every building's header.
+- **Room exits.** Shop and Game Corner floor exits lead to town.
 
-### v0.7.9 — Every door open · 2026-09-28
+### v0.7.10 — Poké Mart and Department Store rooms · 2026-09-28
 
-The last doors in both Cities open.
+Shops rebuilt on original FRLG maps.
 
-- **The Daycare.** A level for one Pokémon, once a visit.
-- **The PC Box.** Pick the team inside the Center.
-- **Egg moves.** Each line's own, at the Dojo.
+- **Original art imported.** FRLG Poké Mart and Celadon Store maps.
+- **Shelf categories.** Medicine, TMs, relics, held items, stones.
+- **Department Store.** One room per floor, 1F–5F.
 
-### v0.7.8 — The Game Corner, played · 2026-09-28
+### v0.7.9 — Daycare, PC Box and egg moves · 2026-09-28
 
-Both machines move like the real thing.
+Last in-development City services implemented.
 
-- **Classic roulette.** Bet red, black or the green zero.
-- **Slots that spin.** Three reels that stop in turn.
-- **How to play the Ring.** A short guide, and a heal on the way out.
+- **Daycare.** +1 level for 200 ₽; the Pokémon skips the next fight.
+- **PC Box.** Team, Lead and moves editable in the Center.
+- **Egg moves.** New Dojo counter: up to 3 per line, 250 ₽.
 
-### v0.7.7 — The Ring, the Coliseum, and Team Rocket · 2026-09-25
+### v0.7.8 — Game Corner machines · 2026-09-28
 
-The ladders get buildings, and something stirs in Celadon.
+Roulette rules and slot animation reworked.
 
-- **The Challenge Ring and the Coliseum.** Each City's ladder of rivals.
-- **See the rival first.** Before you pay the fee.
-- **Doors that warn you.** Before one closes behind you.
-- **Team Rocket is up to something.** Keep your eyes open.
+- **Roulette.** European wheel: red/black ×2, green ×36.
+- **Slots.** Animated reels that stop left to right.
+- **Ring.** Full heal on exit; how-to-play guide added.
 
-### v0.7.6 — The Safari Zone · 2026-09-24
+### v0.7.7 — Ring, Coliseum and Team Rocket · 2026-09-25
 
-Pokémon no route has, caught by stalking them.
+Ring buildings and a hidden area.
 
-- **The Safari Zone.** Rare Pokémon, a ticket and a clock.
-- **The stalk.** Creep through the grass; bait and rocks help.
-- **How to play.** A picture guide on your first visit.
+- **Ring and Coliseum.** Standalone buildings; ladder shown before the fee.
+- **Leave confirmation.** Ring, Safari and Black Market ask first.
+- **Safari art.** FRLG tiles and new bait and rock sprites.
+- **Team Rocket.** A hidden area in Celadon.
 
-### v0.7.5 — The leftovers and the playtest nerfs · 2026-09-24
+### v0.7.6 — Safari Zone · 2026-09-24
 
-What Regions 2 and 3 left waiting, and two fixes.
+New catching minigame in both Cities.
 
-- **Evolution stones.** Five stones, early evolutions.
-- **Sleep and drain, fixed.** No sleep-lock; drain heals half.
-- **Trainer's Instinct.** See the enemy's next move early.
-- **Mastery for every Pokémon.** Every line has its card.
+- **Safari Zone.** Stealth catching with Safari Balls and a turn clock.
+- **Exclusive species.** Pokémon not found on any route.
+- **Tutorial.** Six-page guide on the first visit.
 
-### v0.7.4 — Region 3, Volcanic Highlands · 2026-09-23
+### v0.7.5 — Pending systems and balance fixes · 2026-09-24
 
-The last Region, its own place.
+Systems left pending by Regions 2–3, and two fixes.
 
-- **Volcanic Highlands.** A volcano, caves and an old tower.
-- **Four new Gyms.** Sabrina, Giovanni, Kiyo and Lorelei.
-- **All 151 Pokémon.** Every Gen I species designed.
-- **What's new.** This page, opened from the menu.
+- **Evolution stones.** Five stones for early evolution.
+- **Fixes.** Sleep can't be reapplied; drain heals 50 % of damage.
+- **Trainer's Instinct.** Shows enemy intents one turn ahead.
+- **Mastery moves.** Added for every recruitable line.
 
-### v0.7.3 — Region 2, Coastal Cliffs · 2026-09-23
+### v0.7.4 — Region 3 · 2026-09-23
 
-Region 2, its own place.
+Region 3 content.
 
-- **Coastal Cliffs.** The sea, a power plant, rivers and caves.
-- **Twenty-six new Pokémon.** With their evolutions.
-- **Four new Gyms.** Blaine, Erika, Surge and Koga.
-- **Pikachu.** A new starter in the Poké Mart.
+- **Region 3.** Volcanic Highlands biomes, wild tables and trainers.
+- **Gyms.** Sabrina, Giovanni, Kiyo and Lorelei.
+- **Species data.** All 151 Gen I species implemented.
+- **What's new screen.** In-game changelog viewer.
 
-### v0.7.2 — The city · 2026-09-23
+### v0.7.3 — Region 2 · 2026-09-23
 
-Celadon City opens.
+Region 2 content.
 
-- **Celadon City.** A bigger City, with more doors.
-- **The Department Store.** Five floors of shelves.
-- **The Game Corner.** Two machines, odds printed.
+- **Region 2.** Coastal Cliffs biomes, wild tables and trainers.
+- **New species.** 26 lines added with evolutions.
+- **Gyms.** Blaine, Erika, Surge and Koga.
+- **Pikachu.** New starter in the Hub Poké Mart.
 
-### v0.7.1 — The seam and the town · 2026-09-22
+### v0.7.2 — Celadon City · 2026-09-23
 
-The run goes on past the first Gym.
+Second City.
 
-- **Three Regions a run.** The third Gym wins it.
-- **Pallet Town.** A Center, a shop, a Dojo and a gate.
-- **Statuses carry over.** Until a nurse cures them.
+- **Celadon City.** Second City, after Region 2.
+- **Department Store.** Five floors; re-roll per floor.
+- **Game Corner.** Roulette and slots with printed odds.
+
+### v0.7.1 — Multi-Region runs · 2026-09-22
+
+Runs continue past the first Gym.
+
+- **Three Regions.** A run ends at the third Gym.
+- **Pallet Town.** City between Regions 1 and 2.
+- **Status persistence.** Statuses carry between fights.
 
 ## v0.6 — Meta · 2026-09-21
 
-Every run leaves something behind.
+Account progression between runs.
 
-- **Trainer level.** An account that outlives the run.
-- **The Trainer Hub.** Home between runs.
-- **The Pokédex.** Knock a species out to learn its moves.
-- **New starters.** Eevee, Magikarp, and Twin Run.
-- **Achievements.** Medals for runs, catches and mastery.
+- **Account level.** Trainer XP earned in every run.
+- **Trainer Hub.** Trainer Card, PC Terminal, Poké Mart, Daycare Lady.
+- **Pokédex.** Knockouts reveal hidden enemy intents.
+- **Starters.** Eevee, Magikarp and Twin Run.
+- **Achievements.** 24 medals with unlock conditions.
 
-### v0.6.5 — One Pokédex · 2026-09-22
+### v0.6.5 — Pokédex merge · 2026-09-22
 
-- **One book.** Companions fold into the Pokédex.
+Companions folded into the Pokédex.
 
-### v0.6.4 — Pictures and sheets · 2026-09-22
+- **Pokédex.** Companions merged into species sheets.
+- **Sort by Bond.** Lines sortable by Bond rank.
 
-- **Cards, not lists.** The PC Terminal as cards and sheets.
-- **A record per species.** The Pokédex remembers each one.
+### v0.6.4 — PC Terminal · 2026-09-22
 
-### v0.6.3 — The Poké Mart · 2026-09-21
+PC Terminal redesign.
 
-- **Tokens every level.** New shelves at 3, 5, 8 and 10.
-- **A shop for the account.** Titles, starters and upgrades.
+- **PC Terminal.** Card grid with detail sheets.
+- **Species records.** Per-species battle stats.
+
+### v0.6.3 — Hub Poké Mart · 2026-09-21
+
+Account shop and Token rewards.
+
+- **Token rewards.** Every level; new shelves at 3, 5, 8 and 10.
+- **Hub Poké Mart.** Cosmetics, starters and Trainer Hub upgrades.
 
 ### v0.6.2 — Bond, catching and running · 2026-09-21
 
-- **Bond.** A line grows by being played.
-- **Catching is a roll.** Its chance shown before you throw.
-- **Running away.** At a price; never from a Gym.
+Line progression and two combat options.
 
-### v0.6.1 — The Hub, redrawn · 2026-09-21
+- **Bond.** Per-line ranks with unlocks.
+- **Catch roll.** Chance shown before the throw.
+- **Run away.** Paid escape; not allowed in Gyms.
 
-- **A level dial.** Your level as a ring that fills.
-- **The road.** Rewards drawn as stops on a road.
+### v0.6.1 — Trainer Hub redesign · 2026-09-21
+
+Trainer Hub layout.
+
+- **Level dial.** Account level shown as a ring.
+- **Reward track.** All level rewards on one track.
 
 ## v0.5 — Region 1 complete · 2026-09-20
 
-The whole first Region.
+Full Region 1 map and Gyms.
 
-- **A real map.** Twelve layers; you choose the path.
-- **The Gym fork.** Two of four Gyms, one road to each.
-- **Four Gyms, four Badges.** Each Badge a bonus.
-- **Legendary relics.** A pick of three after a Gym.
-- **Region modifiers.** One rule that bends the Region.
+- **Map.** 12 layers and branching paths.
+- **Gym fork.** 2 of 4 Gyms per run; lanes never rejoin.
+- **Badges.** 4 Gyms, each Badge a run-long bonus.
+- **Legendary relics.** 1-of-3 pick after a Gym.
+- **Region modifiers.** One optional rule per Region.
 
 ## v0.4 — Economy & Relics · 2026-09-20
 
-Money, and things to spend it on.
+Currency, items and new node types.
 
-- **Poké Dollars.** Every fight pays.
-- **Relics and held items.** Things that change your team.
-- **New stops.** A Mart, Mystery Events, a Center.
-- **Difficulty modifiers.** Harder runs for more reward.
+- **Currency.** Poké Dollars from every fight.
+- **Items.** 43 relics and 19 held items.
+- **Nodes.** Mart, Mystery Event, Elite Trainer, Center.
+- **Difficulty modifiers.** 10 opt-in modifiers.
 
 ## v0.3 — Identity through Evolution · 2026-09-19
 
-Evolution is a choice.
+Branching evolution and move management.
 
-- **Branching evolutions.** Two or three paths each.
-- **A move pool.** Choose the four each Pokémon fights with.
-- **The Dojo and TMs.** New moves and abilities.
-- **Abilities.** Passives that change fights.
+- **Branching evolutions.** 2–3 archetypes per evolution.
+- **Move pool.** Choose 4 active moves per Pokémon.
+- **Dojo and TMs.** Tutor moves and ability swaps.
+- **Abilities.** Passive combat effects.
 
 ## v0.2 — First Route · 2026-09-19
 
-The fight becomes a run.
+Route map and run structure.
 
-- **A route map.** Wild fights, trainers and a Gym.
-- **Catching and the Box.** Keep six, field three.
-- **Levels and evolution.** XP for the team.
-- **Saves.** Continue where you left off.
+- **Route map.** Wild, trainer, Center and Gym nodes.
+- **Catching and Box.** 6 in the Box, 3 active.
+- **XP and evolution.** Team XP with a bench share.
+- **Saves.** Resume mid-run and mid-fight.
 
 ## v0.1 — Combat Slice · 2026-09-19
 
-The first fight.
+Core combat.
 
-- **Your party is your deck.** Three Pokémon, one hand.
-- **Lead and swap.** Every swap costs action points.
-- **Telegraphed enemies.** You see what they will do.
-- **Boss phases.** A boss that changes as it falls.
+- **Shared hand.** 3 Pokémon × 4 moves.
+- **Lead and swap.** Swaps cost AP, rising each time.
+- **Enemy intents.** Telegraphed target and damage.
+- **Boss phases.** A three-phase boss fight.

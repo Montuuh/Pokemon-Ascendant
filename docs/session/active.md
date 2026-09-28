@@ -1,23 +1,15 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-09-29 · **Version:** v0.7.11 shipped (*Shop clerks and a quieter way out*) — v0.7 closed (*Cities & Regions 2–3*).
+**Date:** 2026-09-29 · **Version:** v0.7.12 shipped (*Nurse back button and technical changelog*) — v0.7 closed (*Cities & Regions 2–3*).
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
 **Sprint goal next:** **v0.8 Multi-enemy & the route**, starting with v0.8.1 *Multi-enemy fights* (1 lead + 1–2
 supports, targeting, per-target damage preview, the intent rework). Then **v0.9 The long game** → v1.0 … v2.0.
 
-**v0.7.10 in one line:** both City shops are their FRLG rooms (`npm run art:mart`; `ui/screens/shop/rooms.ts` places
-each shelf as boxes in map pixels and says what it holds; `ShopRoom.tsx` draws the map at a whole-pixel scale); press a
-shelf, its cards open beside the room; the counter sells Poké Balls and buys back. 5F is "Rare goods" now. No sim change.
-`scripts/ui-audit.mjs` (shared) only photographs the store's 1F — make it walk every floor when that file is ours.
-
-**v0.7.11:** a clerk sells the whole shop/floor (Buy/Sell tabs); shelves light as one SVG shape; every building
-leaves by `BackButton` (round arrow, header top-left). **Changelog is brief and has no `## Next`**: every change ships
-as the next patch (release doctrine R1/R2, the ship-version skill).
-
-**v0.7.9:** the Center has a Daycare (200 ₽, +1 level, sits out the next fight, once a visit —
-`RunState.resting`) and a PC Box (the map's Box panel indoors); the Dojo's third counter sells each line's egg moves
-(§2.9.4.2, `catalogs/egg-moves.md`, 64 lines) and its counters are tabs. Run save v15. No door is in development.
+**Since v0.7.9:** the City shops are their FRLG rooms (`npm run art:mart`, `ui/screens/shop/`), a clerk sells the
+whole shop/floor (Buy/Sell), shelves light as one SVG shape; every building and the route nurse leave by `BackButton`
+(v0.7.10–12). **The changelog is brief and technical, with no `## Next`**: every change ships as the next patch
+(release doctrine R1/R2). `scripts/ui-audit.mjs` (shared) photographs only the store's 1F.
 
 **Findings to act on:** the market's prices → the v0.8.6 pass (reflex showcase buying costs R3 twelve points) · map
 caption token, wild biome emblems and route-line contrast → v1.2 · UI nits left: the Ring and Safari guides copy one

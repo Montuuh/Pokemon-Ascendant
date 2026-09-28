@@ -1,16 +1,18 @@
-import { IconDoorExit } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { runHelpers, type PartyMon } from '@/sim';
 import { trainerSprite } from '@/ui/art';
+import { BackButton } from '@/ui/components/BackButton';
 import { HpBar } from '@/ui/components/HpBar';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { SHOP_TEXT } from '@/ui/strings';
 import { nurseTip, partyTip } from '@/ui/tips';
 import { InfoDot, useTip } from '@/ui/tooltip';
 import styles from './AidScreen.module.css';
 
 // §2.9.1 — the field nurse. Not a decision: the heal and the cures land on arrival, so this screen only shows
-// what she did — the Box, with its HP after her — and lets you walk on. Trauma is a Pokémon Center's work.
+// what she did — the Box, with its HP after her — and lets you walk on, by the corner arrow every stop shares.
+// Trauma is a Pokémon Center's work.
 
 export function AidScreen() {
   const run = useRunStore((s) => s.run)!;
@@ -18,6 +20,9 @@ export function AidScreen() {
 
   return (
     <main className={styles.root} data-testid="aid-screen">
+      <div className={styles.corner}>
+        <BackButton label={SHOP_TEXT.backToRoute} onClick={() => dispatch({ type: 'leave-aid' })} testId="btn-leave-aid" />
+      </div>
       <section className={styles.card}>
         <img className={styles.nurse} src={trainerSprite('nurse')} alt="" width={120} height={120} />
         <div className={styles.text}>
@@ -38,9 +43,6 @@ export function AidScreen() {
       <p className="sr-only" role="status" aria-live="polite">
         {run.log.slice(-1).join(' ')}
       </p>
-      <button type="button" className={styles.leave} onClick={() => dispatch({ type: 'leave-aid' })} data-testid="btn-leave-aid">
-        <IconDoorExit size={18} /> Back to the route
-      </button>
     </main>
   );
 }

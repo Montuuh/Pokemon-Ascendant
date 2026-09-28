@@ -36,15 +36,17 @@ One line of lede: what the version is for.
 ### v0.7.3 — Region 2, Coastal Cliffs · 2026-09-23   ← a patch, under its own minor
 One line of lede.
 
-- **Headline.** A few words: what a player can now do, see or choose.
+- **Headline.** A few technical words: what changed.
 ```
 
 - **Brief** (the user's call, 2026-09-29): the most important things only, no explanation and no lore. **2–4
   bullets** for a patch, **4–6** for a minor. The headline is a noun phrase; the sentence after it is a few words,
   **under ~60 characters**. The lede is one short line. How and why a thing works belongs in the game's own
   tooltips and guides, and in the roadmap's "Shipped" paragraph.
-- **Written for players.** English (the game's language), present tense, what changed *for them*. No §
-  numbers, file names, test counts or internal names.
+- **Technical, not roleplay** (the user's call, 2026-09-29). Name what changed in the build plainly — the system,
+  the content, the art's source, the number: "Original FRLG maps imported", "Roulette: red/black ×2, green ×36" —
+  never flavour ("the shops are the rooms FireRed drew", "watch the ball"). Leave out what a player finds without
+  being told (that a button opens its panel). English, present tense; no § numbers, file names, test counts or internal names.
 - **Fixes count** when a player could have met the bug: "Readable map captions", not "fix(ui): D5".
 - **A secret stays one.** An entry may hint at a hidden place; it never says where it is or how it opens.
 - A minor still being built carries only its lede; its patches carry the bullets. When the minor ships, its

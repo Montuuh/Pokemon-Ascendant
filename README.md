@@ -49,7 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.7.11 — Shop clerks and a quieter way out.** A run crosses three Regions with two Cities between them —
+**v0.7.12 — Nurse back button and technical changelog.** A run crosses three Regions with two Cities between them —
 twelve Gyms, three drawn per run, from Brock to Lorelei. Each City has its own ladder of rivals — Pallet Town's
 Challenge Ring in the square, Celadon's Pokémon Coliseum — shown in full before you pay to climb; both Cities open
 a Safari Zone where Pokémon no route offers are stalked through tall grass; Celadon's Game Corner is FireRed's own room, with a
