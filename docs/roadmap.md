@@ -674,6 +674,10 @@ screen v0.8 reshaped, so it is drawn once. *(Backlog #10.)*
 ### v0.9.4 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
+- **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
+  2026-09-28): the showcase offers a Legendary Pokémon, never "sold out" and never shut by a cap. Here because Victory
+  Road's Apex (§2.12.2) is where the canon already brings the run's rarest species, and the two are balanced together.
+  Needs the backlog's "a Legendary takes two team slots" designed with the user first.
 
 ### v0.9.5 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
@@ -714,6 +718,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.4's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.4, designed first |
 | **An intent you can hover.** Resting on an enemy's intent opens a card with everything it will do: the move and its type, who it is aimed at, how much it will deal to each target, its riders (a status, a stat change) — the enemy side's counterpart to a move card's tooltip. Goes with the per-target numbers of the intent fix, not instead of them: the numbers stay on screen, the card is the full read. | user, 2026-09-25 | v0.8.1, with the intent rework |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
@@ -741,3 +746,4 @@ the account revamps move to v0.9):
 | — | Recovering missed Badges | v0.9.4 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.3 |
 | — | Multiplayer — a dual mode | v2.0 |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.4 (with the two-slot balance, designed first) |
