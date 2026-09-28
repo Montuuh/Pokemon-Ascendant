@@ -4,7 +4,7 @@
 //
 //   - the map's black outside the room becomes transparent, so the room sits on the screen's own background;
 //   - the Department Store's five floors are built from the three FRLG floors that have shop furniture (2F, 4F, 5F):
-//     1F Medicine is the drugstore (FRLG 5F), 2F TMs is FRLG's own TM floor, 3F Held items and 5F Rare counter are
+//     1F Medicine is the drugstore (FRLG 5F), 2F TMs is FRLG's own TM floor, 3F Held items and 5F Rare goods are
 //     FRLG 4F and 2F mirrored, so no two floors look alike, and each floor wears its own number on the mat under the
 //     lift, copied from the FRLG floor with that number. The mat is symmetric about the lift, so a mirrored floor
 //     takes it back at the same place.

@@ -16,7 +16,7 @@ import styles from './ShopRoom.module.css';
 // small for ×2 shrinks it freely, as the Game Corner's room does, rather than drop to a postage stamp at ×1.
 
 /** Where a plate hangs when centred under its piece would crowd a neighbour's or leave the room. */
-const PLATE = { top: styles.plateTop, 'top-right': styles.plateTopRight, left: styles.plateLeft, right: styles.plateRight } as const;
+const PLATE = { top: styles.plateTop, 'top-right': styles.plateTopRight } as const;
 
 /** The frame's border, outside the map's pixels. */
 const FRAME = 3;

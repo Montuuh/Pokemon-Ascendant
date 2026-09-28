@@ -343,7 +343,7 @@ export function shopTip(title: string, inCity: boolean): ReactNode {
 
 /** §2.11.2.4 — the sell counter, and each item on it. */
 export function sellTip(): ReactNode {
-  return <Tip title="The counter" body={`Any held item in your bag sells for ${sellPrice()} ₽ — ${Math.round(PRICES.sellShare * 100)} % of its price. The merchant on the route does not buy.`} />;
+  return <Tip title="The clerk" body={`Any held item in your bag sells for ${sellPrice()} ₽ — ${Math.round(PRICES.sellShare * 100)} % of its price. The merchant on the route does not buy.`} />;
 }
 export function heldItemSellTip(itemId: string): ReactNode {
   const item = getContent().heldItem(itemId);

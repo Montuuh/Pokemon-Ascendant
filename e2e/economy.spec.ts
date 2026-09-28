@@ -207,6 +207,7 @@ test.describe('The Poké Mart — §2.11.2', () => {
     await page.getByTestId('door-mart').click();
     // The clerk at the counter buys items back, beside the Poké Balls.
     await page.getByTestId('shelf-clerk').click();
+    await page.getByTestId('clerk-sell').click();
     await expect(page.getByTestId('shop-sell')).toBeVisible();
     await page.getByTestId('sell-leftovers').click();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(90);

@@ -346,6 +346,10 @@ export const SHELF_HINT: Record<keyof typeof SHELF_LABEL, string> = {
   'relics-rare': 'Rare relics — the best the store sells.',
 };
 export const SHOP_TEXT = {
+  clerkTabs: 'Buy or sell',
+  buy: 'Buy',
+  sell: 'Sell',
+  sellLede: 'Held items from your bag',
   /** The clerk's list: the Poké Balls have no shelf of their own, they are the clerk's. */
   balls: 'Poké Balls',
   emptyShelf: 'Nothing on this shelf today.',

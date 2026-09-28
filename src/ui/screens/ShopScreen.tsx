@@ -75,6 +75,8 @@ export function ShopScreen() {
   const [floor, setFloor] = useState<StoreFloor>('consumables');
   /** §2.11.2 — the shelf pressed in the room on screen; null until one is, when the first stocked shelf shows. */
   const [picked, setPicked] = useState<ShelfId | null>(null);
+  /** The clerk's two jobs, on two tabs: selling you everything, and buying held items back. */
+  const [deal, setDeal] = useState<'buy' | 'sell'>('buy');
 
   const stock = run.pendingShop;
   const reroll = stock ? rerollPrice(stock) : null;
@@ -107,12 +109,44 @@ export function ShopScreen() {
   for (const shelf of room?.shelves ?? []) counts[shelf.id] = (shelf.id === 'clerk' ? placed : onShelf(shelf.id)).filter(({ slot }) => !slot.sold).length;
   // The clerk's list is where a room opens: everything it sells, before any one shelf is pressed.
   const shelf = room ? (room.shelves.find((s) => s.id === (picked ?? 'clerk')) ?? room.shelves[0]!) : null;
-  // The clerk's list, shelf by shelf in the room's order, the Poké Balls (the clerk's own) last.
+  // The clerk's list, shelf by shelf in the room's order, the Poké Balls (the clerk's own) last. A slot no shelf
+  // holds falls to the clerk too; only the balls are titled as balls, anything else goes in an untitled group.
   const clerkGroups = (room?.shelves ?? [])
     .filter((s) => s.id !== 'clerk')
-    .map((s) => ({ label: SHELF_LABEL[s.id], items: onShelf(s.id) }))
-    .concat([{ label: SHOP_TEXT.balls, items: onShelf('clerk') }])
+    .map((s) => ({ key: s.id as string, label: SHELF_LABEL[s.id] as string | null, items: onShelf(s.id) }))
+    .concat([
+      { key: 'balls', label: SHOP_TEXT.balls, items: onShelf('clerk').filter(({ slot }) => slot.kind === 'ball') },
+      { key: 'other', label: null, items: onShelf('clerk').filter(({ slot }) => slot.kind !== 'ball') },
+    ])
     .filter((g) => g.items.length > 0);
+
+  /** §2.11.2.4 — the clerk's buy-back: every held item in the bag, at the sell price. */
+  const sellSection = (
+    <section className={styles.sell} aria-label="Sell held items" data-testid="shop-sell">
+      <p className={styles.sellTitle}>
+        {SHOP_TEXT.sellLede}
+        <InfoDot tip={sellTip()} />
+      </p>
+      {heldInBag.length === 0 ? (
+        <p className={styles.empty}>{SHOP_TEXT.nothingToSell}</p>
+      ) : (
+        <ul className={styles.sellList}>
+          {heldInBag.map((id, i) => {
+            const item = content.heldItem(id);
+            return (
+              <li key={`${id}-${i}`}>
+                <Tipped as="button" type="button" tip={heldItemSellTip(id)} className={styles.sellBtn} onClick={() => act({ type: 'sell-item', itemId: id })} data-testid={`sell-${id}`} aria-label={`Sell ${item.name} for ${sellPrice()} Poké Dollars`}>
+                  <img src={itemIcon(id)} alt="" width={24} height={24} />
+                  {item.name}
+                  <Price amount={sellPrice()} affordable />
+                </Tipped>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+  );
 
   /** One slot as a card. Its index is the stock's, so a floor's card buys the right slot. */
   function renderSlot(slot: ShopSlot, index: number) {
@@ -186,21 +220,37 @@ export function ShopScreen() {
           <div className={styles.aisle}>
             <ShopRoom room={room} counts={counts} chosen={shelf.id} onChoose={setPicked} label={store ? `${title}, ${STORE_FLOOR_LABEL[floor]}` : title} />
 
-            {/* The shelf pressed: its cards, and at the counter the buy-back. */}
+            {/* The shelf pressed: its cards; at the clerk, everything in one list, and the buy-back on its own tab. */}
             <section className={styles.panel} aria-label={SHELF_LABEL[shelf.id]} data-testid="shelf-panel" data-shelf={shelf.id}>
               <h2 className={styles.panelTitle}>
                 {SHELF_LABEL[shelf.id]}
                 <InfoDot tip={shelfTip(shelf.id, counts[shelf.id] ?? 0)} />
               </h2>
               {shelf.id === 'clerk' ? (
-                clerkGroups.map((g) => (
-                  <section key={g.label} className={styles.group} aria-label={g.label}>
-                    <h3 className={styles.groupTitle}>{g.label}</h3>
-                    <div className={styles.cards} role="list" aria-label={g.label}>
-                      {g.items.map(({ slot, index }) => renderSlot(slot, index))}
-                    </div>
-                  </section>
-                ))
+                <Tabs.Root value={deal} onValueChange={(v) => setDeal(v as 'buy' | 'sell')} className={styles.deal}>
+                  <Tabs.List className={styles.dealTabs} aria-label={SHOP_TEXT.clerkTabs}>
+                    <Tabs.Trigger value="buy" className={styles.floor} data-testid="clerk-buy">
+                      <IconShoppingBag size={16} aria-hidden="true" /> {SHOP_TEXT.buy}
+                    </Tabs.Trigger>
+                    <Tabs.Trigger value="sell" className={styles.floor} data-testid="clerk-sell">
+                      <IconCoins size={16} aria-hidden="true" /> {SHOP_TEXT.sell}
+                    </Tabs.Trigger>
+                  </Tabs.List>
+                  <Tabs.Content value="buy" className={styles.dealPanel}>
+                    {clerkGroups.length === 0 && <p className={styles.empty}>{SHOP_TEXT.emptyShelf}</p>}
+                    {clerkGroups.map((g) => (
+                      <div key={g.key} className={styles.group}>
+                        {g.label && <h3 className={styles.groupTitle} id={`group-${g.key}`}>{g.label}</h3>}
+                        <div className={styles.cards} role="list" {...(g.label ? { 'aria-labelledby': `group-${g.key}` } : { 'aria-label': SHELF_LABEL.clerk })}>
+                          {g.items.map(({ slot, index }) => renderSlot(slot, index))}
+                        </div>
+                      </div>
+                    ))}
+                  </Tabs.Content>
+                  <Tabs.Content value="sell" className={styles.dealPanel}>
+                    {sellSection}
+                  </Tabs.Content>
+                </Tabs.Root>
               ) : onShelf(shelf.id).length > 0 ? (
                 <div className={styles.cards} role="list" aria-label={SHELF_LABEL[shelf.id]}>
                   {onShelf(shelf.id).map(({ slot, index }) => renderSlot(slot, index))}
@@ -209,32 +259,6 @@ export function ShopScreen() {
                 <p className={styles.empty}>{SHOP_TEXT.emptyShelf}</p>
               )}
 
-              {shelf.id === 'clerk' && (
-                <section className={styles.sell} aria-label="Sell held items" data-testid="shop-sell">
-                  <h3 className={styles.sellTitle}>
-                    <IconCoins size={18} /> Sell
-                    <InfoDot tip={sellTip()} />
-                  </h3>
-                  {heldInBag.length === 0 ? (
-                    <p className={styles.empty}>{SHOP_TEXT.nothingToSell}</p>
-                  ) : (
-                    <ul className={styles.sellList}>
-                      {heldInBag.map((id, i) => {
-                        const item = content.heldItem(id);
-                        return (
-                          <li key={`${id}-${i}`}>
-                            <Tipped as="button" type="button" tip={heldItemSellTip(id)} className={styles.sellBtn} onClick={() => act({ type: 'sell-item', itemId: id })} data-testid={`sell-${id}`} aria-label={`Sell ${item.name} for ${sellPrice()} Poké Dollars`}>
-                              <img src={itemIcon(id)} alt="" width={24} height={24} />
-                              {item.name}
-                              <Price amount={sellPrice()} affordable />
-                            </Tipped>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )}
-                </section>
-              )}
             </section>
           </div>
         </div>

@@ -11,7 +11,8 @@ each shelf as boxes in map pixels and says what it holds; `ShopRoom.tsx` draws t
 shelf, its cards open beside the room; the counter sells Poké Balls and buys back. 5F is "Rare goods" now. No sim change.
 `scripts/ui-audit.mjs` (shared) only photographs the store's 1F — make it walk every floor when that file is ours.
 
-**Next (unreviewed by ui-reviewer):** a clerk behind every shop counter sells the whole Mart or floor in one grouped list (the default panel); shelf plates lost their counts.
+**Next:** a clerk behind every shop counter sells the whole Mart or floor (Buy tab, grouped by shelf, the default
+panel) and buys back (Sell tab); shelf plates lost their counts. UI review: Ship with fixes — all fixed.
 
 **v0.7.9:** the Center has a Daycare (200 ₽, +1 level, sits out the next fight, once a visit —
 `RunState.resting`) and a PC Box (the map's Box panel indoors); the Dojo's third counter sells each line's egg moves

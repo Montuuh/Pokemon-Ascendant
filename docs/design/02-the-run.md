@@ -980,11 +980,16 @@ Box can use — when there is one.
 Department Store floor a floor of Celadon's store as those games drew it, at a whole-pixel scale; every piece of
 furniture is a **shelf** with its name plate, and pressing one shows what it holds beside the room. The shelves
 are the categories: at the Mart, **Medicine** on the stocked back shelves, **TMs** in the wall's glass cases,
-**Relics** in the glass table by the door, **Held items** and **Evolution stones** on the two floor shelves, and
-**Poké Balls** at the counter, where the clerk also buys items back (§2.11.2.4). The store's floors split the same
-way — 1F's counter sells the Poké Balls, 4F keeps its Common relics in the top cases and the Uncommon in the
-bottom, 5F its Rare relics, stones and rare medicine apart — and every floor's counter buys back. A shelf with
-nothing on it today says so. FRLG drew shop furniture on three of the store's floors (2F, 4F, 5F), so the five
+**Relics** in the glass table by the door, **Held items** and **Evolution stones** on the two floor shelves. The
+store's floors split the same way — 4F keeps its Common relics in the top cases and the Uncommon in the bottom, 5F
+its Rare relics, stones and rare medicine apart. A plate names its shelf and nothing more: how much is left is in
+its bubble and its panel, so the room reads as a shop rather than a stock count. A shelf with nothing on it today
+says so.
+
+**The clerk sells everything** (the user's call, 2026-09-28). A clerk stands behind every counter — the games' own
+Gen III clerk, since the maps are drawn empty — and is where a shop opens: the whole Mart, or the whole floor of
+the store, in one list grouped shelf by shelf, with the **Poké Balls** (the clerk's own; they have no shelf) and the
+buy-back (§2.11.2.4) under it. The shelves are the browsing; the clerk is the one place that shows it all at once. FRLG drew shop furniture on three of the store's floors (2F, 4F, 5F), so the five
 floors are built from those three, the repeated two mirrored, each with its own number on the mat under the lift.
 The route's merchant is a cart, not a shop, and keeps a plain row of cards (§2.9.2).
 

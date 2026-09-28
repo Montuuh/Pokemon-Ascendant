@@ -11,7 +11,7 @@
 
 ## Next
 
-- **The shop clerk.** A clerk stands behind every counter and sells everything in the shop, or on that floor, in one list.
+- **The shop clerk.** A clerk behind every counter sells everything in the shop, or on that floor, and buys items back.
 - **Cleaner shelves.** Shelf signs show just their name; what is left is on the shelf itself when you press it.
 
 ## v0.7 — Cities & Regions 2–3 · 2026-09-28

@@ -39,18 +39,16 @@
 .spot:hover,
 .spot:focus-visible { outline: 3px solid var(--ink-primary); box-shadow: 0 0 0 5px var(--surface-1); }
 .chosen { outline: 3px solid var(--accent-action); box-shadow: 0 0 0 5px var(--ink-primary); }
-.chosen:hover,
-.chosen:focus-visible { outline-color: var(--accent-action); }
+.chosen:hover { outline-color: var(--accent-action); }
+/* Focus on the lit shelf still shows: a second ring outside the gold one. */
+.chosen:focus-visible { outline: 3px solid var(--accent-action); outline-offset: 3px; box-shadow: 0 0 0 5px var(--ink-primary), 0 0 0 9px var(--surface-1); }
 
-/* A shelf's name and what is still on it, hanging under its first piece. */
+/* A shelf's name, hanging under its first piece. */
 .plate {
   position: absolute;
   bottom: 0;
   left: 50%;
   z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
   transform: translate(-50%, 50%);
   padding: 0 var(--sp-2);
   border-radius: var(--radius-pill);
@@ -62,10 +60,6 @@
   white-space: nowrap;
   pointer-events: none;
 }
-/* A plate by the right-hand wall, beside another shelf's: over its piece, flush right, inside the room. */
-/* A counter against a wall: its plate flush to the wall side, inside the room. */
-.plateLeft { left: 0; transform: translate(0, 50%); }
-.plateRight { left: auto; right: 0; transform: translate(0, 50%); }
 /* A plate that would crowd the one under the shelf beside it: over its piece instead. */
 .plateTop { top: 0; bottom: auto; transform: translate(-50%, -50%); }
 .plateTopRight { top: 0; bottom: auto; left: auto; right: 0; transform: translate(0, -50%); }

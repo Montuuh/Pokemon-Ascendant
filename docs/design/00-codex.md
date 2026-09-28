@@ -37,8 +37,9 @@ Pokémon.
 - **A City** (after Gyms 1 and 2) is a **lobby** — a drawn town whose buildings are doors, no visit budget, the
   gate leaves when you say so. **Pallet Town** (5 doors) then **Celadon City** (more, dearer). Routes keep only a
   nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
-  A City shop is its FRLG room (v0.7.10): every piece of furniture a labelled shelf — Medicine, Poké Balls at the
-  counter (which buys back), TMs, Relics, Held items, Evolution stones. Every City's Center heals free and has Therapy, a **Daycare** (200 ₽: +1 level, the Pokémon sits out the next
+  A City shop is its FRLG room (v0.7.10): every piece of furniture a labelled shelf — Medicine, TMs, Relics, Held
+  items, Evolution stones — and a clerk behind the counter who lists everything the shop (or the floor) sells, with
+  the Poké Balls, and buys back. Every City's Center heals free and has Therapy, a **Daycare** (200 ₽: +1 level, the Pokémon sits out the next
   fight; once a visit) and a **PC Box** (team, Lead, moves); every Dojo sells tutor moves, passives and each
   line's **egg moves** (up to three, 250 ₽, §2.9.4.2). No door is in development (v0.7.9).
   Celadon is the bigger City: a five-floor **Department Store**, a Dojo whose tutor list spans every stage the

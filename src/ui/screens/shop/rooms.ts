@@ -31,7 +31,7 @@ export interface Shelf {
   /** Whether a slot sits on this shelf. The clerk sells everything, but only the Poké Balls sit with them. */
   holds: (slot: ShopSlot, content: ContentRegistry) => boolean;
   /** Where the name plate hangs: under its piece, centred, unless it would crowd a neighbour's or leave the room. */
-  plate?: 'top' | 'top-right' | 'left' | 'right';
+  plate?: 'top' | 'top-right';
 }
 
 export interface Room {
@@ -43,7 +43,7 @@ export interface Room {
 }
 
 /** The clerk's sprite, in the map's pixels (`public/art/mart/clerk.png`). */
-export const CLERK_SIZE = [14, 20] as const;
+const CLERK_SIZE = [14, 20] as const;
 
 /** The clerk and the counter they stand behind: one shelf, the clerk's box first so their plate hangs there. */
 const clerk = ([x, y]: readonly [number, number], counter: readonly Box[]): Shelf => ({
