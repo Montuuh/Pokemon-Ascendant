@@ -12,7 +12,9 @@ shelf, its cards open beside the room; the counter sells Poké Balls and buys ba
 `scripts/ui-audit.mjs` (shared) only photographs the store's 1F — make it walk every floor when that file is ours.
 
 **Next:** a clerk behind every shop counter sells the whole Mart or floor (Buy tab, grouped by shelf, the default
-panel) and buys back (Sell tab); shelf plates lost their counts. UI review: Ship with fixes — all fixed.
+panel) and buys back (Sell tab); shelf plates lost their counts; a shelf lights as one SVG shape (feMorphology outline
+of its pieces' union); leave by a corner arrow or the room's door/stairs (`room.exit`). UI reviews: all fixes in.
+Follow-up proposed by the reviewer: move Center, Dojo and Game Corner to the same corner back-arrow.
 
 **v0.7.9:** the Center has a Daycare (200 ₽, +1 level, sits out the next fight, once a visit —
 `RunState.resting`) and a PC Box (the map's Box panel indoors); the Dojo's third counter sells each line's egg moves

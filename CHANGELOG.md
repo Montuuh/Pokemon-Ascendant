@@ -12,7 +12,8 @@
 ## Next
 
 - **The shop clerk.** A clerk behind every counter sells everything in the shop, or on that floor, and buys items back.
-- **Cleaner shelves.** Shelf signs show just their name; what is left is on the shelf itself when you press it.
+- **Cleaner shelves.** Shelf signs show just their name, and a shelf of several pieces lights up as one shape.
+- **A quieter way out.** Leave a shop by the arrow in its corner, or by walking out the door or down the stairs.
 
 ## v0.7 — Cities & Regions 2–3 · 2026-09-28
 

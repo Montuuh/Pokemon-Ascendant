@@ -24,7 +24,25 @@
 /* The clerk behind the counter, drawn in the map's pixels like the room. */
 .sprite { position: absolute; image-rendering: pixelated; user-select: none; pointer-events: none; }
 
-/* A shelf: quiet until you are on it, lit while its stock is the one on show. */
+/* The shelves' shapes: every piece of a lit shelf, outlined as one in the map's own pixels (two rings, one and two
+   map pixels wide), so the ring shows on the blue tiles, the orange floor and the walls alike. */
+.shapes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* The ring stops at the map's edge, as the games would draw it, rather than paint over the frame. */
+  overflow: hidden;
+  pointer-events: none;
+  shape-rendering: crispEdges;
+}
+.piece { fill: var(--ink-primary); }
+.nearInner { flood-color: var(--ink-primary); }
+.nearOuter { flood-color: var(--surface-1); }
+.chosenInner { flood-color: var(--accent-action); }
+.chosenOuter { flood-color: var(--ink-primary); }
+
+/* A shelf's piece: the hit area for the pointer and the keyboard; the shape above shows it. */
 .spot {
   position: absolute;
   display: flex;
@@ -32,16 +50,13 @@
   justify-content: center;
   padding: 0;
   border: 0;
-  border-radius: var(--radius-xs);
   background: transparent;
   cursor: pointer;
 }
-.spot:hover,
-.spot:focus-visible { outline: 3px solid var(--ink-primary); box-shadow: 0 0 0 5px var(--surface-1); }
-.chosen { outline: 3px solid var(--accent-action); box-shadow: 0 0 0 5px var(--ink-primary); }
-.chosen:hover { outline-color: var(--accent-action); }
-/* Focus on the lit shelf still shows: a second ring outside the gold one. */
-.chosen:focus-visible { outline: 3px solid var(--accent-action); outline-offset: 3px; box-shadow: 0 0 0 5px var(--ink-primary), 0 0 0 9px var(--surface-1); }
+.spot:focus-visible { outline: none; }
+/* The keyboard's cue, on top of the lit shape: an ink ring with a cream halo round the plate, which shows on the
+   Mart's blue tiles as on the store's floor (a blue ring disappears on blue). */
+.spot:focus-visible .plate { outline: 3px solid var(--ink-primary); outline-offset: 2px; box-shadow: 0 0 0 7px var(--surface-1); }
 
 /* A shelf's name, hanging under its first piece. */
 .plate {
@@ -60,7 +75,10 @@
   white-space: nowrap;
   pointer-events: none;
 }
-/* A plate that would crowd the one under the shelf beside it: over its piece instead. */
-.plateTop { top: 0; bottom: auto; transform: translate(-50%, -50%); }
-.plateTopRight { top: 0; bottom: auto; left: auto; right: 0; transform: translate(0, -50%); }
-.chosen .plate { background: var(--accent-action); color: var(--ink-on-accent); }
+.plateChosen { background: var(--accent-action); color: var(--ink-on-accent); }
+/* A plate that would crowd the one under the shelf beside it: lifted a little, into the bottom of its piece. */
+.plateRaised { transform: translate(-50%, -120%); }
+.plateRaisedRight { left: auto; right: 0; transform: translate(0, -120%); }
+
+/* The way out: the doormat or the stairs down, marked with an arrow. */
+.exit .plate { display: inline-flex; align-items: center; gap: var(--sp-1); }

@@ -14,7 +14,6 @@
 .topBar {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
   gap: var(--sp-4);
   flex-wrap: wrap;
 }
@@ -37,6 +36,24 @@
   color: var(--ink-secondary);
   font-size: var(--type-small);
 }
+
+.heading { flex: 1; min-width: 0; }
+/* The way back: a quiet round arrow in the corner, before the title. */
+.back {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  cursor: pointer;
+  transition: transform var(--motion-fast) ease, background var(--motion-fast) ease;
+}
+.back:hover { transform: translateX(-2px); background: var(--surface-2); }
+.back:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
 
 .wallet {
   display: inline-flex;
@@ -88,8 +105,7 @@
   justify-content: center;
 }
 
-.reroll,
-.leave {
+.reroll {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
@@ -103,18 +119,11 @@
   cursor: pointer;
   transition: transform var(--motion-fast) ease, background var(--motion-fast) ease;
 }
-.reroll:hover:not(:disabled),
-.leave:hover { transform: translateY(-1px); background: var(--surface-2); }
+.reroll:hover:not(:disabled) { transform: translateY(-1px); background: var(--surface-2); }
 /* D5 — the re-roll's price is read to plan; a dashed edge marks it shut, not a fade. */
 .reroll:disabled { cursor: not-allowed; border-style: dashed; }
-.reroll:focus-visible,
-.leave:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.reroll:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
 
-.leave {
-  background: var(--accent-action);
-  border-color: var(--border-strong);
-  font-weight: 700;
-}
 
 .toast {
   margin: 0;

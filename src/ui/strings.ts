@@ -226,9 +226,12 @@ export const CENTER_TEXT = {
   daycareDone: 'The Daycare has taken its Pokémon this visit.',
 };
 
+/** The way out of every town building, one phrase wherever it is written. */
+export const BACK_TO_TOWN = 'Back to town';
+
 /** §2.9.4.1 — the Ring's buttons. */
 export const RING_TEXT = {
-  back: 'Back to town',
+  back: BACK_TO_TOWN,
   stepIn: 'Step in',
   stepInLabel: (fee: number, afford: boolean) => `Step in, ${fee} Poké Dollars${afford ? '' : ', not enough money'}`,
   cashOut: 'Cash out',
@@ -346,6 +349,9 @@ export const SHELF_HINT: Record<keyof typeof SHELF_LABEL, string> = {
   'relics-rare': 'Rare relics — the best the store sells.',
 };
 export const SHOP_TEXT = {
+  backToTown: BACK_TO_TOWN,
+  backToRoute: 'Back to the route',
+  exit: 'Exit',
   clerkTabs: 'Buy or sell',
   buy: 'Buy',
   sell: 'Sell',

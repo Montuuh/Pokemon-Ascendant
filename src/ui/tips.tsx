@@ -527,6 +527,10 @@ export function machineTip(machine: 'wheel' | 'slots', ev: number): ReactNode {
   return <Tip title={machine === 'wheel' ? 'The Roulette' : 'The Slots'} meta={[`Returns ${Math.round(ev * 100)} % on average`]} body="The outcome is rolled against the table below first, then shown." footer="The house edge is real." />;
 }
 
+/** §2.11.0 — the shop's way out: the corner arrow and the room's door. What you leave stays on the shelf. */
+export function shopExitTip(label: string, inCity: boolean): ReactNode {
+  return <Tip title={label} body={inCity ? 'Unsold stock stays on the shelf until you leave town.' : 'Once you walk on, the cart is gone.'} />;
+}
 /** §2.11.2 — a shelf's count, in words: stock on a shelf, everything the room sells at the clerk. */
 export function shelfCountLine(shelf: keyof typeof SHELF_LABEL, count: number): string {
   return shelf === 'clerk' ? `${count} for sale here` : `${count} on the shelf`;

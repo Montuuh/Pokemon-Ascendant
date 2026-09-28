@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tabs } from 'radix-ui';
-import { IconBackpack, IconBuildingStore, IconCoins, IconDice5, IconDoorExit, IconShoppingBag } from '@tabler/icons-react';
+import { IconArrowLeft, IconBackpack, IconBuildingStore, IconCoins, IconDice5, IconShoppingBag } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { CITIES, PRICES, STORE_FLOORS, floorRestockable, rerollPrice, sellPrice, type ShopSlot, type StoreFloor } from '@/sim';
@@ -10,11 +10,11 @@ import { Money, Price } from '@/ui/components/Money';
 import { RUN_REJECT_TEXT, SHELF_LABEL, SHOP_TEXT, STORE_FLOOR_LABEL } from '@/ui/strings';
 import styles from './ShopScreen.module.css';
 import { InfoDot, Tipped } from '@/ui/tooltip';
-import { floorTip, heldItemSellTip, rerollTip, sellTip, shelfTip, shopTip } from '@/ui/tips';
+import { floorTip, heldItemSellTip, rerollTip, sellTip, shelfTip, shopExitTip, shopTip } from '@/ui/tips';
 import { MART, STORE, shelfOf, type Room, type ShelfId } from './shop/rooms';
 import { ShopRoom } from './shop/ShopRoom';
 
-// The shop, two ways (header · shop · Leave): the route's travelling merchant (§2.9.2), a cart with its cards on one
+// The shop, two ways (back · header · shop): the route's travelling merchant (§2.9.2), a cart with its cards on one
 // shelf, and a City's Poké Mart or Department Store (§2.11.2), which is the room itself — the Mart, or the store's
 // floor on screen, as FireRed / LeafGreen drew them, every piece of furniture a shelf you press (`shop/ShopRoom`).
 // The shelf pressed opens beside the room with its cards, so the room stays in view. The clerk behind the counter
@@ -99,6 +99,8 @@ export function ShopScreen() {
   // §2.9.3 — the ladder this shop climbs: one rung for the merchant, all three in a City.
   const ladder = PRICES.rerolls.slice(0, stock?.maxRerolls ?? PRICES.rerolls.length);
   const heldInBag = run.bag;
+  const leaveLabel = city ? SHOP_TEXT.backToTown : SHOP_TEXT.backToRoute;
+  const leave = () => act({ type: 'leave-shop' });
   const content = getContent();
 
   // The room on screen and where every slot of it sits, by index into the stock so a card buys the right slot.
@@ -183,7 +185,12 @@ export function ShopScreen() {
   return (
     <main className={styles.root} data-testid="shop-screen">
       <header className={styles.topBar}>
-        <div>
+        {/* The way back sits in the corner, out of the shop's way: an arrow, named on hover. The room's door is the
+            same way out (`ShopRoom`'s doormat or stairs). */}
+        <Tipped as="button" type="button" tip={shopExitTip(leaveLabel, !!city)} className={styles.back} onClick={leave} aria-label={leaveLabel} data-testid="btn-leave-shop">
+          <IconArrowLeft size={22} aria-hidden="true" />
+        </Tipped>
+        <div className={styles.heading}>
           <h1 className={`${styles.title} display`}>
             <TitleIcon size={26} /> {title}
           </h1>
@@ -218,7 +225,7 @@ export function ShopScreen() {
             </Tabs.Root>
           )}
           <div className={styles.aisle}>
-            <ShopRoom room={room} counts={counts} chosen={shelf.id} onChoose={setPicked} label={store ? `${title}, ${STORE_FLOOR_LABEL[floor]}` : title} />
+            <ShopRoom room={room} counts={counts} chosen={shelf.id} onChoose={setPicked} onExit={leave} exitLabel={leaveLabel} label={store ? `${title}, ${STORE_FLOOR_LABEL[floor]}` : title} />
 
             {/* The shelf pressed: its cards; at the clerk, everything in one list, and the buy-back on its own tab. */}
             <section className={styles.panel} aria-label={SHELF_LABEL[shelf.id]} data-testid="shelf-panel" data-shelf={shelf.id}>
@@ -293,10 +300,6 @@ export function ShopScreen() {
             <IconDice5 size={18} />
             {reroll === null ? 'No re-rolls left' : <>{store ? 'Re-roll this floor' : 'Re-roll the shelf'} <Price amount={reroll} affordable={run.money >= reroll} /></>}
           </Tipped>
-
-          <button type="button" className={styles.leave} onClick={() => act({ type: 'leave-shop' })} data-testid="btn-leave-shop">
-            <IconDoorExit size={18} /> {city ? 'Back to town' : 'Back to the route'}
-          </button>
         </div>
       </footer>
     </main>

@@ -159,6 +159,9 @@ test.describe('The Poké Mart — §2.11.2', () => {
     await expect(page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').first()).toBeVisible();
     await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
     await page.screenshot({ path: 'playtest/run-shop-relics.png' });
+    // The room's door is a way back to town too, beside the corner arrow.
+    await page.getByTestId('shop-exit').click();
+    await expect(page.getByTestId('city-screen')).toBeVisible();
   });
 
   test('buying takes the money, marks the slot sold, and leaves it on the shelf', async ({ page }) => {

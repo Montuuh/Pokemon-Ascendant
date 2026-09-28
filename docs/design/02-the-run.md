@@ -989,7 +989,9 @@ says so.
 **The clerk sells everything** (the user's call, 2026-09-28). A clerk stands behind every counter — the games' own
 Gen III clerk, since the maps are drawn empty — and is where a shop opens: the whole Mart, or the whole floor of
 the store, in one list grouped shelf by shelf, with the **Poké Balls** (the clerk's own; they have no shelf) and the
-buy-back (§2.11.2.4) under it. The shelves are the browsing; the clerk is the one place that shows it all at once. FRLG drew shop furniture on three of the store's floors (2F, 4F, 5F), so the five
+buy-back (§2.11.2.4) under it. The shelves are the browsing; the clerk is the one place that shows it all at once. A
+shelf of several pieces — the clerk and the counter, a floor of cases — lights as one shape. The way out is the
+room's own door (the Mart's doormat, a floor's stairs down) or a quiet arrow in the corner. FRLG drew shop furniture on three of the store's floors (2F, 4F, 5F), so the five
 floors are built from those three, the repeated two mirrored, each with its own number on the mat under the lift.
 The route's merchant is a cart, not a shop, and keeps a plain row of cards (§2.9.2).
 
