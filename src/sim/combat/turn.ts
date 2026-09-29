@@ -10,6 +10,7 @@ import { abilityTurnStartAp, turnEndBenchHeal, abilityLeadTrapDivisor } from './
 import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeTurn } from './enemyTurn';
+import { fieldDrawBonus, fieldsSuppressed, sandstormImmune } from './fields';
 
 // §3.2 — the five-phase loop. `beginTurn` = Draw + Intent (lands in Action); `resolveTurn` = Resolution → next turn.
 
@@ -39,7 +40,8 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   // §8.6.1 Perfect Recall — once per fight, a deck about to run short takes its discard back *before* the
   // draw, so the turn is drawn from a full deck rather than a reshuffle mid-draw. It is not a reshuffle: the
   // relics that pay on one do not fire, which is what keeps it a Tier-3 convenience and not a Cycle Cell engine.
-  const want = ctx.config.baseSkillCardsPerTurn + itemDrawBonus(state, state.turn, ctx.content);
+  // §6.5 Swift Swim, Chlorophyll — the weather's own draw on turn 1.
+  const want = ctx.config.baseSkillCardsPerTurn + itemDrawBonus(state, state.turn, ctx.content) + fieldDrawBonus(state, ctx.content);
   if (recallsDiscard(state, ctx.content) && p.deck.length < want && p.discard.length > 0) {
     p.deck = ctx.rng.shuffle([...p.deck, ...p.discard.filter((c) => c.echoUntilTurn === undefined)]);
     p.discard = p.discard.filter((c) => c.echoUntilTurn !== undefined);
@@ -165,6 +167,15 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
 
   // Status ticks (§4.2), players first then enemies.
   for (const c of [...state.player.team, ...state.enemies]) tickStatuses(state, c, ctx);
+  // §4.3.4 — the Sandstorm wears everyone down at the end of the turn but the Rock-, Ground- and Fighting-types.
+  if (state.fields.hazard === 'sandstorm' && !fieldsSuppressed(state, ctx.content)) {
+    for (const c of [...state.player.team, ...state.enemies]) {
+      if (c.hp <= 0 || sandstormImmune(c)) continue;
+      const chip = Math.max(1, Math.floor(c.maxHp * ctx.config.sandstormPercent));
+      log(state, 'system', `${c.name} is buffeted by the sandstorm (${chip}).`);
+      dealDamage(state, ctx, null, c, chip, { crit: false, effectiveness: 'neutral', cause: 'sandstorm' });
+    }
+  }
   // §6.8.3 Arena Trap — while the wearer leads, the ground under every enemy gives a little each turn.
   const trapper = state.player.team[state.player.leadIndex];
   const trap = trapper && trapper.hp > 0 ? abilityLeadTrapDivisor(trapper, ctx.content) : 0;

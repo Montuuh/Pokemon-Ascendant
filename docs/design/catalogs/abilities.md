@@ -43,7 +43,7 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `crit-on-crit-taken` | the wearer is critted | — | ⏳ not built (Anger Point is reserved) |
 | `dot-immunity` | status tick | — | ⏳ not built (Rock Head ships on `recoil-immunity`) |
 | `turn-start-ap` | Draw phase | `amount`, `turn` | ✅ v0.6 |
-| `field-draw` | Draw phase, field active | `field`, `cards` | 🔒 v0.8.4 (field effects) |
+| `field-draw` | Draw phase, field active | `field`, `cards` | ✅ v0.8.4 |
 | `lead-aura` | while the wearer is Lead | `type`, `percent` | ✅ v0.4 (held items) |
 | `post-combat-loot` | combat end | `chance`, `pool` | ⏳ not built |
 | `low-hp-damage-reduction` | incoming damage | `threshold`, `multiplier` | ⏳ not built (Sand Veil ships on `conditional-reduction`) |
@@ -98,7 +98,7 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `healer` | Healer | Support | At turn end, heal a bench ally 3 HP | `turn-end-bench-heal` (3) | pidgeot, bulbasaur, oddish | ✅ |
 | `friend-guard` | Friend Guard | Support | Bench takes −10 % Cleave damage | `low-hp-damage-reduction` (`cleaveOnly`) | — (reserved) | 🔒 |
 | `rain-dish` | Rain Dish | Support | Each Water move it plays restores 1/16 of its HP (v0.7.5 — was a turn-end heal in Rain) | `type-move-heal` (water, 16) | squirtle (hidden) | ✅ v0.7.5 |
-| `hydration` | Hydration | Support | Status conditions clear at turn end while Rain is active | `field-draw` variant | lapras | 🔒 v0.8.4 (field effects) |
+| `hydration` | Hydration | Support | Status conditions clear at turn end while Rain is active | `field-draw` variant | lapras | 🔒 not in the build — Lapras's pool has no slot for it yet (v0.9.1 with Bond's hidden abilities) |
 | `iron-shell` | Iron Shell | Combat | At combat start Def +1 | `start-stage` (def, 1) | metapod | ✅ |
 | `guts` | Guts | Combat | +30 % Atk while statused (and Burn's −25 % does not apply) | **`while-statused`** (1.3) | machop, mankey, rattata, flareon | ✅ v0.3 |
 | `sand-veil` | Sand Veil | Combat | Incoming Ranged attacks deal −15 % | `low-hp-damage-reduction` (`rangedOnly`) | diglett | ✅ v0.3 (on `conditional-reduction`) |
@@ -108,9 +108,9 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `moxie` | Moxie | Combat | Atk +1 whenever the wearer faints an enemy | new `on-kill` | gyarados | ✅ v0.4 |
 | `adaptability` | Adaptability | Combat | STAB 1.5 → 1.75 | `stab-multiplier` (1.75) | eevee | ✅ v0.6 |
 | `speed-boost` | Speed Boost | Combat | +1 AP on turn 2 of each combat | `turn-start-ap` (1, turn 2) | jolteon | ✅ v0.6 |
-| `swift-swim` | Swift Swim | Combat | Draw +1 on turn 1 of Rain combats | `field-draw` (rain, 1) | magikarp, poliwag, psyduck | 🔒 v0.8.4 (field effects) |
-| `chlorophyll` | Chlorophyll | Combat | Draw +1 on turn 1 of Sun combats | `field-draw` (sun, 1) | oddish, bellsprout, bulbasaur | 🔒 v0.8.4 (field effects) |
-| `cloud-nine` | Cloud Nine | Combat | All field effects are suppressed while the wearer is Lead | `field-draw` variant | psyduck | 🔒 v0.8.4 (field effects) |
+| `swift-swim` | Swift Swim | Combat | Draw +1 on turn 1 of Rain combats | `field-draw` (rain, 1) | magikarp, poliwag, psyduck | ✅ v0.8.4 |
+| `chlorophyll` | Chlorophyll | Combat | Draw +1 on turn 1 of Sun combats | `field-draw` (sun, 1) | oddish, bellsprout, bulbasaur | ✅ v0.8.4 |
+| `cloud-nine` | Cloud Nine | Combat | All field effects are suppressed while the wearer is Lead, on either side | `field-suppress` | psyduck | ✅ v0.8.4 |
 | `damp` | Damp | Combat | Self-Destruct and Explosion fail against the wearer (and the AI never fires them into it) | `block-moves` | psyduck, poliwag | ✅ v0.7.5 |
 | `pickup` | Pickup | Meta | 25 % chance of a random consumable after a combat win | `post-combat-loot` | — (R2 Meowth) | 🔒 |
 | `gluttony` | Gluttony | Meta | Healing items used on the wearer restore +50 % | `consumable-heal-bonus` (1.5) | snorlax (hidden) | ✅ v0.7.5 |

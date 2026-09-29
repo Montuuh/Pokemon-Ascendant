@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { buildScenario } from './encounter';
+import { GameRng } from '../rng/gameRng';
 import { buildRegistry } from '@/content/registry';
 import { createRun, defaultRunCtx, isOfferable, priceFor, rollRegionModifierOffer, traumaZone1Pct } from '@/sim';
 import { PIDGEY, STARTERS, content as combatContent, ctx as combatCtx, dispatch, leadOf, scenario, start, teamWithKit, tweak } from '../testing/harness';
@@ -74,12 +76,13 @@ describe('Region Modifiers — §2.11.3', () => {
     expect(traumaZone1Pct(withModifier('trauma-resistance'), content)).toBe(4);
   });
 
-  it('APendingModifier_ResolvesToNothingRatherThanHalfSomething_§7.7', () => {
-    // Field Surveyor needs Battlefields, which are Region 3. Holding it must be indistinguishable from
-    // holding none — the UI says why, and the sim does not pretend.
+  it('FieldSurveyor_AWildFightOpensUnderTheBattlefieldItsLeadFavours_§4.3', () => {
+    // v0.8.4 — the Battlefields exist, so the modifier does what it says: a Water Lead fights wild Pokémon in Rain.
     const surveyed = withModifier('field-surveyor');
     expect(priceFor(surveyed, content, 150)).toBe(150);
-    expect(traumaZone1Pct(surveyed, content)).toBe(5);
+    const node = Object.values(surveyed.map.nodes).find((n) => n.kind === 'wild')!;
+    const sc = buildScenario(node, surveyed, content, new GameRng(1))!;
+    expect(sc.fields?.weather).toBe('rain-dance');
   });
 });
 

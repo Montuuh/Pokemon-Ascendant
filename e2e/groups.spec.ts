@@ -163,6 +163,31 @@ test.describe('Group fights — §5.6', () => {
     await page.screenshot({ path: 'playtest/run-node-preview-group.png' });
   });
 
+  // §4.3 / §9.2.2.1 — the ground a fight is on: chips on the top bar, the field in the breakdown, Defog clears it.
+  test('a Home Field and a Sandstorm show on the top bar, and a Defog clears them', async ({ page }) => {
+    await page.goto('/?scenario=field-gym-sandstorm');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await expect(page.getByTestId('field-sandstorm')).toBeVisible();
+    await expect(page.getByTestId('field-home')).toContainText('Rock');
+    await page.getByTestId('field-home').hover();
+    await expect(page.getByTestId('tooltip')).toContainText('own turf');
+    await settle(page);
+    await page.screenshot({ path: 'playtest/combat-field-gym.png' });
+    const defog = page.getByTestId('consumable-defog');
+    await expect(defog).toBeVisible();
+    await defog.click();
+    await expect(page.getByTestId('field-chips')).toHaveCount(0);
+  });
+
+  test('Rain shows its chip and moves the Water numbers', async ({ page }) => {
+    await page.goto('/?scenario=field-rain-river');
+    await expect(page.getByTestId('field-rain-dance')).toBeVisible();
+    const water = page.locator('[data-testid="hand"] [data-testid^="card-"][data-state="playable"]').first();
+    await water.hover();
+    await settle(page);
+    await page.screenshot({ path: 'playtest/combat-field-rain.png' });
+  });
+
   for (const id of ['group-hiker-healer', 'group-elite-buffer']) {
     test(`${id} boots with its group and screenshots`, async ({ page }) => {
       await page.goto(`/?scenario=${id}`);

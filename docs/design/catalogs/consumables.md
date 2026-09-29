@@ -51,7 +51,7 @@ tier in the inventory; the City Shop sells the upgrade at the price difference +
 | `smoke-bomb` | 1 | enemy | cancel one enemy's declared intent this turn | 110 | 🆕 |
 | `card-pocket` | 0 | none | keep up to 2 skill cards for next turn | 90 | 🆕 |
 | `quick-claw` | 2 | none | the first card played this turn costs 0 AP | 100 | 🆕 |
-| `defog` | 1 | none | clear the active field, Battlefield or Home Field (§4.3.6) | 80 | 🆕 (Unity-authored) |
+| `defog` | 1 | none | clear every field, Battlefield and Home Field (§4.3.6); icon: the Smoke Ball | tier 1 | ✅ v0.8.4 |
 
 `ether` is the AP-economy release valve and the reason a 4-AP ultimate is playable at all; `quick-claw` is its
 combo partner. Both are deliberately the priciest utilities.

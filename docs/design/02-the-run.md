@@ -415,11 +415,22 @@ real find in every Rare slot (Eevee in the grass, Lapras in the water) — and R
 its own; a species may sit in more than one biome, and in more than one Region. A pool that offers the same
 three Pokémon twice is the failure state to watch for. *(Noted 2026-09-22; widened 2026-09-23.)*
 
-**Biomes will also carry a field effect** — most visibly in the lane that ends at a Gym of that biome's type,
-so the ground you fight on is part of what the lane telegraphs (§2.5.0).
+**Biomes carry a field effect** (v0.8.4, §4.3), so the ground you fight on is part of what a lane telegraphs
+(§2.5.0):
 
-> ⚠️ **OPEN (2026-09-22)**: which effect each biome carries, and whether it applies to the whole lane or only
-> near the Gym. Waits on field effects themselves (§4.3, v0.8.4), and is decided there.
+| Biome | Battlefield |
+|---|---|
+| Volcano Slope | ☀️ Sunny Day |
+| Sea, River / Lake | 🌧️ Rain Dance |
+| Power Plant | ⚡ Electric Terrain |
+| Cave | 🪨 Sandstorm |
+| Meadow, Sky / Cliffs, Abandoned Tower | open ground |
+
+**Past the fork only, in every Region.** Every fight in a lane — wild, trainer, Elite, Gym — stands in the lane's
+biome (a wild node in its own), so its Battlefield is the lane's promise and the Gym's ground; the trunk, where you
+plan, stays open ground. A node's preview card names its field. *(Decided 2026-09-29, closing the OPEN of
+2026-09-22. Measured: the Battlefield across Region 3's trunk too cost it seven points of §2.2.1's curve, 41 → 34 %.
+Region 3's accent is its largest groups (§5.6.3) and its lanes' fields, not a field on every node.)*
 
 ## §2.6.2 What a Wild node offers
 

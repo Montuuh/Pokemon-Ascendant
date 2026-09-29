@@ -718,9 +718,19 @@ tier, accent and modifiers. Measured at 120 seeds a starter: Region 1 60 %, Regi
 Region 3 to 35 % (the support escalates through a long Gym fight) — v0.8.6 decides. Also: the preview card's biome
 badge falls back like the map marker's instead of showing a broken image.
 
-### v0.8.4 — Field effects  ☐
+### v0.8.4 — Field effects  ✅ 2026-09-30
 The biome effects (§4.3) that give each biome its identity (§2.6.1 — its ⚠️ OPEN closes here), and the four
 weather abilities come alive. Region 3's accent keeps them.
+
+**Shipped.** The §4.3 engine (`combat/fields.ts`): Sun and Rain (×1.5 / ×0.5), Electric Terrain (×1.3 into the
+grounded, no Paralysis on them), Sandstorm (end of turn, all but Rock/Ground/Fighting), Home Fields; every term in the
+dry-run forecast and the damage breakdown. §2.6.1's OPEN is closed: Volcano Sun, Sea and River Rain, Power Plant
+Electric Terrain, Cave Sandstorm — **past the fork only, in every Region** (`run/battlefields.ts`), and a node's
+preview card names its field. Swift Swim, Chlorophyll and Cloud Nine are live; Defog ships (the Smoke Ball's icon);
+Field Surveyor sets a wild fight's ground by the Lead's type. Measured and tuned (canon §4.3.4–§4.3.5 carry why):
+Home Field ×1.5 → ×1.2 (Region 3's Gym deaths went 6 % → 27 %), Sandstorm 5 % → 3 %, and no field on Region 3's trunk
+(34 → 41 %). The curve at 120 seeds a starter: Region 3 given 2 41 %, the whole run 14 % — under §2.2.1's ~50 % and
+~1 in 6; v0.8.6 retunes. The harness plays Defog against a hostile field. Hydration waits on Lapras's pool (v0.9.1).
 
 ### v0.8.5 — Routes, revamped, and consumables that are spent  ☐
 The route's generation, nodes and pacing, reworked (§2.5, §2.9) — with v0.8.3's groups placed on it — and

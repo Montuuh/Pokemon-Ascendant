@@ -40,6 +40,8 @@ const SCREENS = {
   combat: { url: '/?scenario=wild-basic&seed=7', match: [/screens\/CombatScreen/, /components\/(EnemyPanel|Portrait|MoveCard|HpBar|ConsumableCard|CombatLog|FloatingNumbers|SwapOrSkip|TypeBadge|OutcomeOverlay)/, /ui\/tooltip/, /ui\/tips/] },
   // §5.6 — a group fight: three enemies, their panels, reach and the per-target numbers.
   'combat-group': { url: '/?scenario=group-wild-flock&seed=7', match: [/screens\/CombatScreen/, /components\/(EnemyPanel|Portrait|MoveCard)/, /hooks\/useCardDrag/] },
+  // §4.3 — a fight on a field: the top bar's field chips and the breakdown's field term.
+  'combat-field': { url: '/?scenario=field-gym-sandstorm&seed=7', match: [/components\/FieldChips/] },
   'combat-boss': { url: '/?scenario=wild-boss-3phase&seed=7', match: [/components\/EnemyPanel/, /combat\/boss/] },
   map: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'goTo("map")'], match: [/screens\/MapScreen/, /components\/(NodeMarker|NodePreviewCard|BoxPanel|InventoryDrawer|Money)/] },
   // §2.11 — the towns. `run.city(n)` stands the run in one (0 Pallet Town, 1 Celadon City); the buildings are clicks.

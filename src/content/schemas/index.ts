@@ -120,6 +120,8 @@ export const ItemHookSchema = z.enum([
   'confusion-redraw', 'skip-first-turn',
   // v0.7.5 (§2.11.3) — Naturalist's Lens: the Wild Areas' Rare slot comes up more often.
   'wild-rare',
+  // v0.8.4 (§2.11.3, §4.3) — Field Surveyor: a wild fight's Battlefield follows your Lead.
+  'battlefield-choice',
   'none',
 ]);
 const ItemParams = z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]));
@@ -207,6 +209,8 @@ export const AbilitySchema = z.object({
     // v0.7.5 (§6.8.3) — the six hidden abilities, and Damp
     'rider-force-plus-damage', 'ignore-defence-stages', 'lead-trap-chip', 'on-damaged-stages',
     'consumable-heal-bonus', 'type-move-heal', 'block-moves',
+    // v0.8.4 (§4.3)
+    'field-draw', 'field-suppress', 'levitate',
   ]),
   params: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
   pending: z.string().optional(),
@@ -221,6 +225,7 @@ export const ConsumableEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('ap'), amount: z.number().int().positive() }),
   z.object({ kind: z.literal('stage'), stat: StatSchema, stages: z.number().int().min(-6).max(6) }),
   z.object({ kind: z.literal('catch'), ballMultiplier: z.number().positive() }),
+  z.object({ kind: z.literal('clear-fields') }),
 ]);
 
 export const ConsumableSchema = z.object({
@@ -279,6 +284,14 @@ export const ScenarioSchema = z.object({
   }),
   enemies: z.array(EnemySetupSchema).min(1),
   onField: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
+  fields: z
+    .object({
+      weather: z.enum(['sunny-day', 'rain-dance']).optional(),
+      terrain: z.literal('electric-terrain').optional(),
+      hazard: z.literal('sandstorm').optional(),
+      home: PokemonTypeSchema.optional(),
+    })
+    .optional(),
 });
 
 export const TmsFileSchema = z.object({ _note: z.string().optional(), tms: z.array(TmSchema) });

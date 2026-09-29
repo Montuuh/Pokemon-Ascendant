@@ -39,6 +39,8 @@ export interface DamageBreakdown {
   final: number;
   isCrit: boolean;
   hasStab: boolean;
+  /** §4.3 — the field's term (Sun, Rain, Electric Terrain, a Home Field); absent when no field touches the hit. */
+  fieldMultiplier?: number;
 }
 
 /** Per §4.1.2 — STAB applies if the move type matches either of the attacker's types. */

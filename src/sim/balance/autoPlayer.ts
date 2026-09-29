@@ -67,6 +67,19 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
     if (pick) return { type: 'use-consumable', cardId: pick.cardId, targetIndex: state.player.leadIndex };
   }
 
+  // §4.3.6 — Defog, the moment a field works against the team: a Home Field, a Sandstorm the Lead is not immune to,
+  // or a weather that lifts the enemy Lead's own type. A player reads the ground; a harness that does not measures
+  // a strictly worse player (standing facts: take the decision the design expects).
+  const f = state.fields;
+  const hostileWeather = (f.weather === 'sunny-day' && enemy.types.includes('fire')) || (f.weather === 'rain-dance' && enemy.types.includes('water'));
+  const hostileSand = f.hazard === 'sandstorm' && !l.types.some((t) => t === 'rock' || t === 'ground' || t === 'fighting');
+  if (f.home || hostileWeather || hostileSand) {
+    const defog = state.player.consumables.hand
+      .map((c) => consumablePlayability(state, c.id, ctx)!)
+      .find((p) => p.playable && p.def.effect.kind === 'clear-fields');
+    if (defog) return { type: 'use-consumable', cardId: defog.cardId };
+  }
+
   // §2.4.3 — a Revive is worth two AP the moment somebody is down, because a body back is four cards back.
   const downIndex = state.player.team.findIndex((m) => m.hp <= 0);
   if (downIndex >= 0) {

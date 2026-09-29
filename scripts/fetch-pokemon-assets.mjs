@@ -34,6 +34,8 @@ const ITEMS = {
   ether: 'ether',
   'x-attack': 'xattack',
   'poke-ball': 'pokeball',
+  // §4.3.6 Defog is not an item in the games; it borrows the Smoke Ball, the one real item made of fog.
+  defog: 'smokeball',
 };
 
 /** Map-marker emblems, by Bulbagarden file title. */

@@ -265,6 +265,14 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
       }
       break;
     }
+    case 'clear-fields': {
+      // §4.3.6 Defog — every field goes, Battlefield and Home Field, for the rest of the fight.
+      const had = Object.keys(state.fields).length > 0;
+      state.fields = {};
+      emit(state, { t: 'field', fields: {} });
+      log(state, 'system', had ? 'The fog lifts — every field is cleared.' : 'It had no effect: no field stands.');
+      break;
+    }
     case 'ap':
       player.ap = Math.min(ctx.config.maxApPerTurn, player.ap + fx.amount);
       log(state, 'system', `+${fx.amount} AP.`);

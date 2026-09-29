@@ -200,6 +200,18 @@
       },
       "description": "Raise one Pokémon’s Defense by one stage for the rest of the combat.",
       "gdd": "§7.2.4"
+    },
+    {
+      "id": "defog",
+      "name": "Defog",
+      "apCost": 1,
+      "tier": 1,
+      "target": "none",
+      "effect": {
+        "kind": "clear-fields"
+      },
+      "description": "Clear every field — Weather, Terrain, Sandstorm and a Home Field — for the rest of the fight.",
+      "gdd": "§4.3.6"
     }
   ]
 }

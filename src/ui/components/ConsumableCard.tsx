@@ -26,13 +26,17 @@ export function ConsumableCard({ play, selected, onClick, onPointerDown }: Props
         ? `+${def.effect.amount} AP`
         : def.effect.kind === 'catch'
           ? 'catch'
-          : def.effect.kind === 'stage'
-            ? `+${def.effect.stages} ${def.effect.stat === 'attack' ? 'Atk' : 'Def'}`
-            : 'cure';
+          : def.effect.kind === 'clear-fields'
+            ? 'clear'
+            : def.effect.kind === 'stage'
+              ? `+${def.effect.stages} ${def.effect.stat === 'attack' ? 'Atk' : 'Def'}`
+              : 'cure';
   return (
     <button
       type="button"
-      className={[styles.card, state === 'playable' ? '' : styles.dim, selected ? styles.selected : ''].join(' ')}
+      className={[styles.card, state === 'playable' ? '' : styles.dim, selected ? styles.selected : ''].join(
+        ' ',
+      )}
       onClick={onClick}
       onPointerDown={onPointerDown}
       data-testid={`consumable-${def.id}`}
@@ -48,7 +52,11 @@ export function ConsumableCard({ play, selected, onClick, onPointerDown }: Props
       <span className={styles.footer}>
         <span className={styles.dots}>
           {state === 'no-ap' && <IconAlertTriangle size={12} className={styles.warn} />}
-          {def.apCost === 0 ? <small>free</small> : Array.from({ length: def.apCost }, (_, i) => <span key={i} className={styles.dot} />)}
+          {def.apCost === 0 ? (
+            <small>free</small>
+          ) : (
+            Array.from({ length: def.apCost }, (_, i) => <span key={i} className={styles.dot} />)
+          )}
         </span>
         <span className="display">{label}</span>
       </span>

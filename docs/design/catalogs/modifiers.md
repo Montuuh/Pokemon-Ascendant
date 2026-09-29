@@ -79,13 +79,13 @@ the macro expression of Pillar 3.
 | `glass-cannon` | Glass Cannon | +20 % damage dealt **and** +20 % taken | Medium | ✅ |
 | `quick-study` | Quick Study | All Pokémon gain +15 % combat XP | Medium | ✅ |
 | `bargain-hunter` | Bargain Hunter | Shop and Dojo prices −20 % | Medium | ✅ |
-| `field-surveyor` | Field Surveyor | You choose the neutral Battlefield at the start of each wild/Region combat | Niche | 🔒 v0.8.4 (field effects) |
+| `field-surveyor` | Field Surveyor | Every wild fight opens under the Battlefield your Lead's type favours (Sun · Rain · Electric Terrain · Sandstorm) | Niche | ✅ v0.8.4 |
 | `naturalist-lens` | Naturalist's Lens | At Region start, choose one biome from the Region's eligible set; it becomes the Region's primary biome | Medium | ✅ |
 
 **Offer curation** (§2.11.3.1): the 3 offered are seeded and weighted to the current team — `type-affinity`
 surfaces the player's most-common move type, `swap-fuel` weights up if the player swaps often, `trauma-resistance`
 weights up when the Box carries stacks. The offer never contains a modifier whose system is not yet reachable
-(`field-surveyor` is excluded before Region 3).
+(since v0.8.4 every row is reachable in every Region).
 
 > The pool is **17**. Canon used to state 12, 16 and 17 in the same section because additions were appended
 > rather than merged; §2.11.3.1 now lists all seventeen in one table.

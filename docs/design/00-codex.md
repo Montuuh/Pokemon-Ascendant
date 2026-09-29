@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -189,8 +189,12 @@ Applied on turn N, effective from N+1. DoT uses **Effective** Max HP. Stage firs
 **On the enemy side:** Paralysis prices intents out of its 3-AP budget, Sleep/Freeze skip its action, Confusion
 makes it pick uniformly among legal intents — still telegraphed, just no longer smart.
 
-**Fields** — 4 launch fields (Sunny, Rain, Electric Terrain, Sandstorm), each either a neutral **Battlefield** or
-an enemy-owned **Home Field** (its type ×1.5, no player boost). Weather and Terrain coexist. `defog` clears any.
+**Fields** (live since v0.8.4) — 4 Battlefields: Sun (Fire ×1.5, Water ×0.5), Rain (the reverse), Electric
+Terrain (Electric ×1.3 into the grounded, who cannot be Paralysed), Sandstorm (3 % a turn to all but Rock/Ground/
+Fighting). A biome carries its Battlefield past the fork (Volcano Sun, Sea/River Rain, Power Plant Terrain, Cave
+Sandstorm); a Gym or Elite brings a **Home Field** (its type ×1.2 for the enemy only). Weather and Terrain coexist.
+`defog` clears every field; Cloud Nine suppresses them while it leads; Field Surveyor sets a wild fight's ground
+by the Lead's type.
 
 ---
 

@@ -9,6 +9,7 @@ import { isThreeStageLine } from '../meta/bond';
 import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
 import { RING } from './cities';
 import { applyGroups } from './groups';
+import { applyFields } from './battlefields';
 
 /** The catch consumable's catalog id (§7.2.5). */
 const BALL_ITEM = 'poke-ball';
@@ -348,7 +349,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
     }
   })();
   // §5.6.3 — the node's group first, so its companions and supports take the Region's tier, accent and modifiers too.
-  return base ? applyPerks(applyModifiers(applyRegion(applyGroups(base, node, run, content), run, content), run), run, content) : null;
+  // §4.3 — and the ground it is fought on: the biome's Battlefield, a Gym's or an Elite's Home Field.
+  return base ? applyPerks(applyModifiers(applyRegion(applyFields(applyGroups(base, node, run, content), node, run, content), run, content), run), run, content) : null;
 }
 
 /**

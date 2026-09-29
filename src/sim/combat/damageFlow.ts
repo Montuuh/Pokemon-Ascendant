@@ -28,6 +28,7 @@ import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { effectiveAttack, effectiveDefense } from './stats';
 import { applyStatus, cureStatus } from './status';
 import { effectivenessLabel } from './typeChart';
+import { fieldBlocksStatus, fieldDamageMultiplier } from './fields';
 
 // Shared damage / effect pipeline used by player cards and enemy intents.
 
@@ -69,6 +70,8 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   );
   let defenceMul = abilityDefenceMultiplier(target, raw.typeMultiplier, ctx.content) * abilityConditionalReduction(target, move, ctx.content);
   let itemMul = 1;
+  // §4.3 — the field is one more independent term (§7.3.6).
+  const fieldMul = state ? fieldDamageMultiplier(state, attacker, target, move, ctx) : 1;
   if (state) {
     // §7.3.6 — relic, item, badge and field terms all multiply independently into the same formula.
     itemMul = itemAttackMultiplier(state, attacker, move, ctx.content, { typeMultiplier: raw.typeMultiplier });
@@ -85,11 +88,11 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   // §5.13.2 — a Mastery move's condition is one more multiplier, before the one floor.
   const bonus = powerBonus(attacker, target, move);
   // Ability and thaw multipliers are applied to the pre-floor value so a single floor remains (§4.1.1).
-  let final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill * bonus);
+  let final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill * bonus * fieldMul);
   // §5.13.2 Super Fang — a share of what the target has left, whatever the formula says. Immunity still wins.
   const fixed = move.effects.find((e) => e.kind === 'fixed-damage');
   if (fixed && fixed.kind === 'fixed-damage' && raw.typeMultiplier > 0) final = Math.max(1, Math.floor(target.hp * fixed.percentOfTargetHp));
-  return { ...raw, final };
+  return { ...raw, final, ...(fieldMul !== 1 ? { fieldMultiplier: fieldMul } : {}) };
 }
 
 /** §5.13.2 — the product of a move's `power-bonus` conditions that hold right now; 1 when none do. */
@@ -191,7 +194,7 @@ export function riposte(state: CombatState, ctx: RunCtx, attacker: Combatant, ta
   if (attacker.hp <= 0 || move.power <= 0) return;
   const back = abilityRiposte(target, move, ctx.content);
   if (!back || !ctx.rng.chance(back.chance)) return;
-  if (abilityBlocksStatus(attacker, back.status, ctx.content)) return;
+  if (abilityBlocksStatus(attacker, back.status, ctx.content) || fieldBlocksStatus(state, attacker, back.status, ctx.content)) return;
   if (applyStatus(attacker, back.status, state.turn, ctx.config) !== 'applied') return;
   emit(state, { t: 'status-applied', targetUid: attacker.uid, status: back.status });
   log(state, 'system', `${attacker.name} was ${statusVerb(back.status)} on contact!`);
@@ -233,7 +236,7 @@ export function dealDamage(
   sourceUid: string | null,
   target: Combatant,
   amount: number,
-  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: 'move' | 'burn' | 'poison'; cleave?: boolean },
+  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: 'move' | 'burn' | 'poison' | 'sandstorm'; cleave?: boolean },
 ): number {
   if (target.hp <= 0) return 0;
   let dmg = Math.max(0, amount);
@@ -439,8 +442,8 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         }
         const roll = fx.chance >= 1 || alwaysRider ? true : ctx.rng.chance(fx.chance);
         if (!roll) break;
-        // §6.5.2 — an ability immunity reads exactly like a type immunity to the player.
-        if (abilityBlocksStatus(recipient, fx.status, ctx.content) || teamGuardBlocksStatus(state, recipient)) {
+        // §6.5.2 — an ability immunity reads exactly like a type immunity to the player; §4.3.3 so does the terrain.
+        if (abilityBlocksStatus(recipient, fx.status, ctx.content) || fieldBlocksStatus(state, recipient, fx.status, ctx.content) || teamGuardBlocksStatus(state, recipient)) {
           emit(state, { t: 'status-immune', targetUid: recipient.uid, status: fx.status });
           log(state, 'system', `${recipient.name} is immune to ${fx.status}.`);
           break;

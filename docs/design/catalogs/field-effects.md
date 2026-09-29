@@ -3,7 +3,7 @@
 > Implements §4.3. One engine, two classes: a neutral **Battlefield** (symmetric, wild/Region
 > encounters) and an enemy-owned **Home Field** (one-sided, Gym/Elite). Every field carries an `owner` flag.
 > Weather and Terrain are independent categories that can coexist; a second field of the same category
-> overwrites the first (§4.3.7). Region 3 accent — 🔒 until v0.7.
+> overwrites the first (§4.3.7). ✅ v0.8.4 — every row below is live (`combat/fields.ts`, `run/battlefields.ts`).
 
 ## 1. The four launch fields
 
@@ -12,12 +12,12 @@
 | `sunny-day` | Weather | Fire ×1.5, Water ×0.5 | |
 | `rain-dance` | Weather | Water ×1.5, Fire ×0.5 | Enables `swift-swim`, `rain-dish`, `hydration` |
 | `electric-terrain` | Terrain | Electric ×1.3 to grounded Pokémon; Paralysis cannot be applied to them | Grounded = not Flying and not `levitate` |
-| `sandstorm` | Hazard | Every non-Rock/Ground Pokémon loses 5 % max HP at the end of its turn | Ties fields to the faint/swap economy |
+| `sandstorm` | Hazard | Every non-Rock/Ground/Fighting Pokémon loses 3 % max HP at the end of each turn | Ties fields to the faint/swap economy |
 
 ## 2. Home Fields (§4.3.5) — one per Gym type
 
 A Gym Leader or Elite sets a Home Field matching its own type at combat start, shown as a persistent
-`🏠 Home Field: [Type]` badge. **Enemy** moves of that type deal ×1.5; **player** moves of that type get nothing.
+`🏠 Home Field: [Type]` badge. **Enemy** moves of that type deal ×1.2; **player** moves of that type get nothing.
 There is no player-side suppression — the threat is amplified enemy offence, not a tax.
 
 | Type | Home Field id | Type | Home Field id |
@@ -34,8 +34,8 @@ This is what closes the old "Gym type field is inert" gap (#33): the field now h
 ## 3. Counterplay (§4.3.6)
 
 - **Don't feed it** — resist or avoid the boss's type; a Home Field only amplifies its own offence.
-- **`defog`** (consumable, 80 ₽) clears the active field, Battlefield or Home Field, for the rest of combat.
-- **`field-surveyor`** (Region Modifier) lets the player choose the neutral Battlefield in wild/Region combats.
+- **`defog`** (consumable, 1 AP, tier 1) clears every field, Battlefield and Home Field, for the rest of combat.
+- **`field-surveyor`** (Region Modifier): a wild fight opens under the Battlefield the Lead's type favours.
 - Post-launch: player field-setting moves that overwrite a Home Field with a neutral Battlefield, and a
   `weather-vane` Rare relic that flips an enemy Home Field to player-owned.
 

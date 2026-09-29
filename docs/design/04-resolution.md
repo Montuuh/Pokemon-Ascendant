@@ -295,38 +295,52 @@ it stops being the smart one. *(Ratified 2026-09-19; previously these translatio
 # §4.3 Field effects
 
 A field is set at encounter start and lasts the whole combat unless overwritten. Every field carries an
-**owner**: `Neutral` (a **Battlefield** — symmetric, wild and Region fights) or `Enemy` (a **Home Field** —
-one-sided, Gym and Elite fights). One engine, two classes.
+**owner**: `Neutral` (a **Battlefield** — symmetric, set by the biome a fight stands in, §2.6.1) or `Enemy` (a
+**Home Field** — one-sided, Gym and Elite fights). One engine, two classes. Every number below is a `BattleConfig`
+value (`weatherBoost`, `weatherDamp`, `electricTerrainBoost`, `sandstormPercent`, `homeFieldBoost`), and the
+active fields show as chips on the combat top bar and on a node's preview card, each with its numbers in a bubble.
+**Cloud Nine** (§6.5) suppresses every field while its holder leads, on either side; the chips go dashed.
 
 Weather and Terrain are independent categories and can coexist; a second field of the same category overwrites
 the first.
 
 ## §4.3.1 ☀️ Sunny Day *(Weather)*
-Fire ×1.5, Water ×0.5.
+Fire ×1.5, Water ×0.5, for both sides. Enables `chlorophyll` (one more card on turn 1).
 
 ## §4.3.2 🌧️ Rain Dance *(Weather)*
-Water ×1.5, Fire ×0.5. Enables `swift-swim`, `rain-dish` and `hydration`.
+Water ×1.5, Fire ×0.5, for both sides. Enables `swift-swim` (one more card on turn 1). `hydration` is not authored yet.
 
 ## §4.3.3 ⚡ Electric Terrain *(Terrain)*
 Electric ×1.3 against grounded Pokémon, and grounded Pokémon cannot be Paralysed.
 Grounded = everything except Flying-types and `levitate` holders.
 
 ## §4.3.4 🪨 Sandstorm *(Hazard)*
-Rock-, Ground- and Fighting-types are immune; everyone else loses **5 % of max HP** at the end of their turn.
-It pressures low-HP and freshly-swapped Pokémon, which ties fields to the faint economy.
+Rock-, Ground- and Fighting-types are immune; everyone else loses **3 % of max HP** at the end of every turn, on both
+sides. It pressures low-HP and freshly-swapped Pokémon, which ties fields to the faint economy.
+*(v0.8.4: 5 % first. Region 3's two cave lanes end at Fighting and Ice Gyms whose Pokémon the storm spares, so at 5 %
+the Sandstorm was a one-sided tax that cost Region 3 six points of its curve, §2.2.1; 3 % keeps it a pressure.)*
 
 ## §4.3.5 Home Fields
 A Gym Leader or Elite sets a field matching **its own type** at combat start, shown as a persistent
 `🏠 Home Field: [Type]` badge.
 
-- **Enemy** moves of that type: **×1.5**.
+- **Enemy** moves of that type: **×1.2** (`homeFieldBoost`).
 - **Player** moves of that type: ×1.0 — no boost. It is the enemy's turf.
 - No player-side suppression: the threat is amplified enemy offence, not a tax on you.
+- An Elite Trainer's Home Field is its lead Pokémon's first type.
+
+*(v0.8.4: ×1.5 first. §5.9.3's level premium was tuned before any Home Field existed, and the two together made a
+Gym a wall — Region 3's Gym deaths went from 6 % to 27 % of Gym fights. ×1.2 keeps the turf a real threat, measured
+at the harness: Region 3 given Region 2 41 %, the whole run 14 %; the v0.8.6 balance pass weighs it against the
+premium.)*
 
 ## §4.3.6 Counterplay
 - **Don't feed it.** A Home Field only amplifies the enemy's own type, so a resist wall blunts the whole phase.
-- **`defog`** (consumable, 80 ₽) clears any field, Battlefield or Home Field, for the rest of combat.
-- **`field-surveyor`** (Region Modifier) lets you choose the Battlefield in wild and Region fights.
+- **`defog`** (consumable, 1 AP, tier 1) clears every field, Battlefield and Home Field, for the rest of combat.
+- **`field-surveyor`** (Region Modifier): every wild fight opens under the Battlefield your **Lead** favours — Sun
+  for Fire, Rain for Water, Electric Terrain for Electric, Sandstorm for Rock, Ground or Fighting. You choose the
+  ground by choosing who leads. *(v0.8.4: "you choose" was a picker screen before every wild fight; the Lead is a
+  choice the player already makes on the map, so the modifier rides on it.)*
 - *Post-launch:* player field-setting moves that overwrite a Home Field with a neutral one, and a `weather-vane`
   relic that flips ownership.
 

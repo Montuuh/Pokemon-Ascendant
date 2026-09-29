@@ -2,6 +2,7 @@ import type { CombatTally } from '../run/types';
 import type { EncounterKind, EnemySetup, EnemyTier, SupportRole } from '../content/defs';
 import type { IntentKind, PokemonType, PrimaryStatus, SlotId, Stat, StatusCondition } from '../types';
 import type { Effectiveness } from './typeChart';
+import type { FieldState } from './fields';
 
 // Plain, JSON-serialisable combat state. Everything the UI shows, the save writes and a replay compares is here.
 // No classes, no functions, no references: `structuredClone`/`JSON` round-trips are identity.
@@ -221,7 +222,7 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'consumable-used'; consumableId: string; targetUid: string | null; apCost: number }
   | { t: 'enemy-action'; enemyUid: string; intent: Intent; fizzled: boolean }
   | { t: 'attack'; sourceUid: string; targetUid: string; moveId: string }
-  | { t: 'damage'; sourceUid: string | null; targetUid: string; amount: number; crit: boolean; effectiveness: Effectiveness; hpAfter: number; cause: 'move' | 'burn' | 'poison' }
+  | { t: 'damage'; sourceUid: string | null; targetUid: string; amount: number; crit: boolean; effectiveness: Effectiveness; hpAfter: number; cause: 'move' | 'burn' | 'poison' | 'sandstorm' }
   | { t: 'heal'; targetUid: string; amount: number; hpAfter: number; cause: 'move' | 'consumable' | 'regen' | 'ability' }
   | { t: 'status-applied'; targetUid: string; status: StatusCondition }
   | { t: 'status-immune'; targetUid: string; status: StatusCondition }
@@ -235,6 +236,8 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'catch'; success: boolean; chance: number; ballsLeft: number }
   | { t: 'lead-pick-required' }
   | { t: 'outcome'; outcome: Outcome }
+  /** §4.3.6 — the fields changed mid-fight (Defog). */
+  | { t: 'field'; fields: FieldState }
 );
 
 export interface CombatState {
@@ -261,6 +264,8 @@ export interface CombatState {
   enemies: EnemyCombatant[];
   /** §5.6 — how many enemies stand on the field at once (1 = one after another). */
   onField: number;
+  /** §4.3 — the Battlefield and any Home Field standing. Empty when the fight has none. */
+  fields: FieldState;
   /** §5.9.3 — enemies still to come, fought sequentially. */
   enemyQueue: EnemyCombatant[];
   /** Fainted/caught enemies, for the summary. */

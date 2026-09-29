@@ -1,0 +1,43 @@
+/* §9.2.2.1 / §4.3 — a field chip: the top bar's pill, its field's colour on the border (never on the text, D5). */
+.row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  background: var(--surface-2);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  padding: 2px var(--sp-3);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+.compact .chip {
+  padding: 0 var(--sp-2);
+}
+.sunnyDay {
+  border-color: var(--type-fire);
+}
+.rainDance {
+  border-color: var(--type-water);
+}
+.electricTerrain {
+  border-color: var(--type-electric);
+}
+.sandstorm {
+  border-color: var(--type-ground);
+}
+.home {
+  border-color: var(--accent-negative);
+}
+/* Cloud Nine — the field still stands, it just does nothing right now. */
+.suppressed {
+  border-style: dashed;
+}
+.suppressed svg {
+  opacity: 0.6;
+}

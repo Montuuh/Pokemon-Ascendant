@@ -175,9 +175,8 @@
       "id": "field-surveyor",
       "name": "Field Surveyor",
       "tier": "niche",
-      "description": "You choose the battlefield for every wild fight.",
-      "hook": "none",
-      "pending": "arrives with field effects (v0.8.4)"
+      "description": "Every wild fight opens under the Battlefield your Lead favours: Sun for Fire, Rain for Water, Electric Terrain for Electric, Sandstorm for Rock, Ground or Fighting.",
+      "hook": "battlefield-choice"
     }
   ]
 }

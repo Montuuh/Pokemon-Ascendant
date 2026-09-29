@@ -619,6 +619,101 @@
           ]
         }
       ]
+    },
+    {
+      "id": "field-gym-sandstorm",
+      "name": "Field — Brock under a Sandstorm",
+      "description": "A Rock Gym on its own turf: a Home Field lifts its Rock moves, and the Sandstorm wears down everyone but Rock, Ground and Fighting. A Defog clears both.",
+      "kind": "boss",
+      "stage": "gym",
+      "seed": 1107,
+      "trainer": {
+        "name": "Leader Brock",
+        "sprite": "brock"
+      },
+      "fields": {
+        "hazard": "sandstorm",
+        "home": "rock"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "squirtle",
+            "level": 14
+          },
+          {
+            "species": "bulbasaur",
+            "level": 14
+          },
+          {
+            "species": "charmander",
+            "level": 13
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "defog",
+          "super-potion",
+          "potion"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "geodude",
+          "level": 13,
+          "tier": "boss",
+          "phaseCount": 1
+        },
+        {
+          "species": "onix",
+          "level": 15,
+          "tier": "boss",
+          "phaseCount": 2
+        }
+      ]
+    },
+    {
+      "id": "field-rain-river",
+      "name": "Field — Rain on the river",
+      "description": "A wild fight under Rain: Water moves hit harder, Fire moves softer, and a Swift Swim Psyduck draws a card more on turn 1.",
+      "kind": "wild",
+      "stage": "river",
+      "seed": 1108,
+      "fields": {
+        "weather": "rain-dance"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "psyduck",
+            "level": 12,
+            "abilityId": "swift-swim"
+          },
+          {
+            "species": "charmander",
+            "level": 12
+          },
+          {
+            "species": "bulbasaur",
+            "level": 12
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "potion",
+          "poke-ball"
+        ],
+        "balls": 2
+      },
+      "enemies": [
+        {
+          "species": "poliwag",
+          "level": 11,
+          "tier": "wild",
+          "phaseCount": 1
+        }
+      ]
     }
   ]
 }

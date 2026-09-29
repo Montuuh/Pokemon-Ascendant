@@ -49,11 +49,12 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.8.3 — Groups across the run.** Fights can put two or three enemies on the field at once — a Lead
+**v0.8.4 — Field effects.** Fights can put two or three enemies on the field at once — a Lead
 in front and supports behind it that heal, buff, debuff or attack; cards are dragged onto their target, a Melee card
 reaches only the enemy Lead, and every number an intent prints is the hit that will land. Some Pokémon act twice a
 turn, and some call a named companion into the fight. Wild packs, callers, trainer pairs and an Elite with a support
-appear on every route, more and larger in each Region. A run crosses three Regions with two Cities between them —
+appear on every route, more and larger in each Region. Past the Gym fork every lane is fought on its biome's
+ground — Sun, Rain, Electric Terrain or a Sandstorm — and Gym Leaders and Elites fight on a Home Field of their type. A run crosses three Regions with two Cities between them —
 twelve Gyms, three drawn per run, from Brock to Lorelei. Each City has its own ladder of rivals — Pallet Town's
 Challenge Ring in the square, Celadon's Pokémon Coliseum — shown in full before you pay to climb; both Cities open
 a Safari Zone where Pokémon no route offers are stalked through tall grass; Celadon's Game Corner is FireRed's own room, with a

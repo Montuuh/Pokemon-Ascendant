@@ -13,6 +13,15 @@
 
 Group fights, field effects and a reworked route.
 
+### v0.8.4 — Field effects · 2026-09-30
+
+Sun, Rain, Electric Terrain, Sandstorm and Home Fields.
+
+- **Battlefields.** Lane biomes set Sun, Rain, Electric Terrain or Sandstorm.
+- **Home Fields.** Gym Leaders and Elites boost their own type ×1.2.
+- **Field abilities.** Swift Swim, Chlorophyll and Cloud Nine work.
+- **Defog.** New consumable that clears every field.
+
 ### v0.8.3 — Groups across the run · 2026-09-29
 
 Group fights placed on every route, more in later Regions.

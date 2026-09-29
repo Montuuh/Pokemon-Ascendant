@@ -73,10 +73,13 @@
       "id": "swift-swim",
       "name": "Swift Swim",
       "category": "combat",
-      "description": "Draw +1 skill card on turn 1 of Rain Dance combats.",
-      "hook": "none",
-      "pending": "arrives with field effects (v0.8.4)",
-      "gdd": "§6.6"
+      "description": "Draw +1 skill card on turn 1 of a fight under Rain.",
+      "hook": "field-draw",
+      "gdd": "§4.3.2",
+      "params": {
+        "field": "rain-dance",
+        "cards": 1
+      }
     },
     {
       "id": "compound-eyes",
@@ -204,9 +207,13 @@
       "id": "chlorophyll",
       "name": "Chlorophyll",
       "category": "Combat",
-      "description": "Draws an extra card on turn 1 of Sun combats.",
-      "hook": "none",
-      "pending": "arrives with field effects (v0.8.4)"
+      "description": "Draw +1 skill card on turn 1 of a fight under Sun.",
+      "hook": "field-draw",
+      "params": {
+        "field": "sunny-day",
+        "cards": 1
+      },
+      "gdd": "§4.3.1"
     },
     {
       "id": "inner-focus",
@@ -304,9 +311,9 @@
       "id": "cloud-nine",
       "name": "Cloud Nine",
       "category": "Combat",
-      "description": "Field effects are suppressed while this Pokémon leads.",
-      "hook": "none",
-      "pending": "arrives with field effects (v0.8.4)"
+      "description": "Every field is suppressed while this Pokémon leads, on either side.",
+      "hook": "field-suppress",
+      "gdd": "§4.3"
     },
     {
       "id": "solid-rock",

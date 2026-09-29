@@ -72,6 +72,15 @@ export interface BattleConfig {
   maxOnField: number;
   /** §5.6.2 — a Call for Help is worth more to a Pokémon standing alone. */
   summonAloneMultiplier: number;
+  /** §4.3.1–§4.3.2 — Sun and Rain: the boosted type's multiplier and the damped one's. */
+  weatherBoost: number;
+  weatherDamp: number;
+  /** §4.3.3 — Electric Terrain on Electric moves into a grounded target. */
+  electricTerrainBoost: number;
+  /** §4.3.4 — Sandstorm: the share of Max HP it takes at the end of each turn. */
+  sandstormPercent: number;
+  /** §4.3.5 — a Home Field on the enemy's own type. */
+  homeFieldBoost: number;
 }
 
 export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
@@ -122,5 +131,10 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   supportRoleMultiplier: 1.5,
   maxOnField: 3,
   summonAloneMultiplier: 2,
+  weatherBoost: 1.5,
+  weatherDamp: 0.5,
+  electricTerrainBoost: 1.3,
+  sandstormPercent: 0.03,
+  homeFieldBoost: 1.2,
 };
 

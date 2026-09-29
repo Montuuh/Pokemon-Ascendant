@@ -218,6 +218,8 @@ export type ItemHook =
   | 'guaranteed-catch'
   /** §5.10.3 Glacier Badge — a status that lands on an enemy multiplies its next attack by `multiplier`. */
   | 'status-chill'
+  /** §2.11.3 / §4.3 Field Surveyor — a wild fight opens under the Battlefield its Lead's type favours. Run layer. */
+  | 'battlefield-choice'
   // ── v0.7.5 (§5.5.1)
   /** Trainer's Instinct — each enemy plans a turn ahead, commits to it, and you see the plan. */
   | 'intent-queue'
@@ -388,7 +390,14 @@ export type AbilityHook =
   | 'on-damaged-stages'
   | 'consumable-heal-bonus'
   | 'type-move-heal'
-  | 'block-moves';
+  | 'block-moves'
+  // v0.8.4 (§4.3) — the field abilities
+  /** Swift Swim, Chlorophyll — `cards` more on turn 1 when `field` stands. */
+  | 'field-draw'
+  /** Cloud Nine — every field is suppressed while the wearer leads. */
+  | 'field-suppress'
+  /** Levitate — not grounded (§4.3.3). */
+  | 'levitate';
 
 export interface AbilityDef {
   id: string;
@@ -420,7 +429,9 @@ export type ConsumableEffect =
   | { kind: 'stage'; stat: Stat; stages: number }
   /** §2.6.4 (CL-014) — deterministic catch gauge. */
   /** §2.6.4 — a ball: its multiplier on the catch chance (Poké Ball 1). */
-  | { kind: 'catch'; ballMultiplier: number };
+  | { kind: 'catch'; ballMultiplier: number }
+  /** §4.3.6 Defog — clears every field standing, Battlefield or Home Field, for the rest of the fight. */
+  | { kind: 'clear-fields' };
 
 export interface ConsumableDef {
   id: string;
@@ -530,6 +541,8 @@ export interface ScenarioDef {
    * a group — the first is the Lead, the rest are supports, and the list's remainder waits to fill a free place.
    */
   onField?: 1 | 2 | 3;
+  /** §4.3 — the Battlefield (by category) and any Home Field the fight opens under. */
+  fields?: { weather?: 'sunny-day' | 'rain-dance'; terrain?: 'electric-terrain'; hazard?: 'sandstorm'; home?: PokemonType };
   /**
    * §8.8 — the run's difficulty modifiers, carried into the fight. The ones that change a *number* are folded
    * into the enemy list and the BattleConfig before we get here; the ones that change a *rule* mid-fight

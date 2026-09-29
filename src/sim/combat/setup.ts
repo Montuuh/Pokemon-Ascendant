@@ -128,6 +128,7 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
     },
     enemies: [],
     onField: scenario.onField ?? 1,
+    fields: { ...(scenario.fields ?? {}) } as CombatState['fields'],
     enemyQueue: [],
     defeatedEnemies: [],
     outcome: 'in-progress',

@@ -12,6 +12,7 @@ import {
   cardPlayability,
   fleeTierFor,
   consumablePlayability,
+  fieldsSuppressed,
   forecastTurn,
   indexToSlot,
   pickLeadOptions,
@@ -30,6 +31,7 @@ import { PauseMenu } from '@/ui/components/PauseMenu';
 import { MoveCard } from '@/ui/components/MoveCard';
 import { OutcomeOverlay } from '@/ui/components/OutcomeOverlay';
 import { Portrait } from '@/ui/components/Portrait';
+import { FieldChips } from '@/ui/components/FieldChips';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
 import { useCombatFx } from '@/ui/hooks/useCombatFx';
@@ -330,6 +332,8 @@ export function CombatScreen() {
           <span className={`${styles.chip} ${styles.chipStrong}`}>{scenarioName(state)}</span>
           <span className={styles.chip}>{ENCOUNTER_LABEL[state.kind] ?? state.kind}</span>
           {state.trainer && <span className={styles.chip}>{state.trainer.name}</span>}
+          {/* §9.2.2.1 — the active field, with the Home Field marker when the enemy owns it. */}
+          <FieldChips fields={state.fields} suppressed={fieldsSuppressed(state, ctx.content)} />
         </div>
         <div className={styles.chips}>
           <span className={styles.chip} data-testid="turn-chip">
@@ -383,6 +387,7 @@ export function CombatScreen() {
                 {previewPlay.move.name}
                 {group ? ` → ${boxEnemy.name}` : ''} · {boxDamage.hasStab ? 'STAB ×1.5 · ' : ''}
                 {boxDamage.typeMultiplier !== 1 ? `type ×${boxDamage.typeMultiplier}` : 'neutral'}
+                {boxDamage.fieldMultiplier ? ` · field ×${boxDamage.fieldMultiplier}` : ''}
                 {boxDamage.isCrit ? ' · crit' : ''}
               </div>
               {boxEnemy.hp <= boxDamage.final && <div className={styles.previewKo}>KO</div>}

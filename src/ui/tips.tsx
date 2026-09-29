@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan } from '@/sim';
+import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { CITY_DOOR_HINT, GROUP_HINT, groupLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 
 // Every explanation the game offers on hover, in one file.
@@ -72,7 +72,8 @@ export function moveTip(play: CardPlayability): ReactNode {
     footer = play.hitsAll ? 'Lands on every enemy — each one\'s number is on its panel.' : 'Pick the enemy — each one\'s number is on its panel.';
   } else if (play.damage) {
     const eff = play.damage.typeMultiplier;
-    footer = `Against this target: ${play.damage.final} damage${eff === 0 ? ' — no effect' : eff > 1 ? ` (super effective ×${eff})` : eff < 1 ? ` (not very effective ×${eff})` : ''}${play.damage.isCrit ? ', critical' : ''}.`;
+    const field = play.damage.fieldMultiplier ? `, field ×${play.damage.fieldMultiplier}` : '';
+    footer = `Against this target: ${play.damage.final} damage${eff === 0 ? ' — no effect' : eff > 1 ? ` (super effective ×${eff}${field})` : eff < 1 ? ` (not very effective ×${eff}${field})` : field ? ` (${field.slice(2)})` : ''}${play.damage.isCrit ? ', critical' : ''}.`;
   }
   if (!play.playable && play.reason) footer = <span>Locked — {REJECT_TEXT[play.reason]}</span>;
   return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
@@ -156,6 +157,31 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
       meta={meta}
       body={lines.map((l, i) => <div key={i}>{l}</div>)}
       footer={INTENT_BODY[intent.kind]}
+    />
+  );
+}
+
+const mult = (m: number) => `×${Math.round(m * 100) / 100}`;
+
+/** §4.3.1–§4.3.4 — a Battlefield, with its numbers read off the config, and what answers it. */
+export function fieldTip(id: FieldId, suppressed = false): ReactNode {
+  const c = DEFAULT_BATTLE_CONFIG;
+  const body: Record<FieldId, string> = {
+    'sunny-day': `Fire moves ${mult(c.weatherBoost)}, Water moves ${mult(c.weatherDamp)} — for both sides. Chlorophyll draws one more card on turn 1.`,
+    'rain-dance': `Water moves ${mult(c.weatherBoost)}, Fire moves ${mult(c.weatherDamp)} — for both sides. Swift Swim draws one more card on turn 1.`,
+    'electric-terrain': `Electric moves ${mult(c.electricTerrainBoost)} into a grounded Pokémon (not Flying), and a grounded Pokémon cannot be Paralysed.`,
+    sandstorm: `Everyone but Rock-, Ground- and Fighting-types loses ${Math.round(c.sandstormPercent * 100)}% of their HP at the end of every turn.`,
+  };
+  return <Tip title={FIELD_LABEL[id]} body={body[id]} footer={suppressed ? 'Suppressed: a Cloud Nine Pokémon is leading.' : 'A Defog clears it for the rest of the fight.'} />;
+}
+
+/** §4.3.5 — a Home Field: the enemy's own type hits harder, yours gets nothing. */
+export function homeFieldTip(type: PokemonType, suppressed = false): ReactNode {
+  return (
+    <Tip
+      title={homeFieldLabel(type)}
+      body={`The enemy's ${typeName(type)} moves deal ${mult(DEFAULT_BATTLE_CONFIG.homeFieldBoost)} on its own turf. Yours of that type get nothing. Resist its type, and it has nothing to amplify.`}
+      footer={suppressed ? 'Suppressed: a Cloud Nine Pokémon is leading.' : 'A Defog clears it for the rest of the fight.'}
     />
   );
 }
