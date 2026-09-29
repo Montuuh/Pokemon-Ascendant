@@ -502,6 +502,11 @@ Charm** (§8.6.1) arms one throw per run that cannot miss; the pill reads SURE w
 
 5. On a catch: combat ends as a **Victory** with **full combat XP** — a catch is never worth less than a kill —
    and the Pokémon enters the Box, or triggers Swap-or-Skip if the Box is full (§2.3.1).
+   **In a wild group (§5.6)** the ball is thrown at one Pokémon of the pack — dragged onto it, or the card and
+   then the Pokémon clicked; each shows its own chance. A catch still ends the fight: **the rest of the pack
+   scatters**, counted as met but not beaten, and the XP is the whole pack's. *(User, 2026-09-29: one recruit a
+   fight keeps the run layer's reward whole, and a pack you have to beat down to the last to catch one of is a
+   chore, not a decision.)*
 6. On a team wipe: the run ends as normal.
 
 **Balls are a counted run resource:** start with 3, +1 per Region, buyable at 50 ₽, and **one is spent per

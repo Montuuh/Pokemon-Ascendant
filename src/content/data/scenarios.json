@@ -1,5 +1,5 @@
 {
-  "_note": "Combat fixtures (docs/roadmap.md v0.1 tooling). Each is a complete CombatSetup: deep-link with /?scenario=<id>, used by Playwright, golden-master replays and playtests. Enemies listed in order are fought SEQUENTIALLY (Gym leaders field 2, §5.9.3); simultaneous multi-enemy is v0.7. `hpPercent`/`status` seed a mid-fight state. Stage keys map to public/art/stages/<stage>.jpg.",
+  "_note": "Combat fixtures (docs/roadmap.md v0.1 tooling). Each is a complete CombatSetup: deep-link with /?scenario=<id>, used by Playwright, golden-master replays and playtests. Enemies listed in order are fought one after another (Gym leaders field 2, §5.9.3) unless `onField` is 2 or 3: then that many stand together as a group — the first is the Lead, the rest supports with a `role` — and the remainder waits to fill a free place (§5.6). `hpPercent`/`status` seed a mid-fight state. Stage keys map to public/art/stages/<stage>.jpg.",
   "scenarios": [
     {
       "id": "wild-basic",
@@ -265,6 +265,243 @@
           "level": 16,
           "tier": "boss",
           "phaseCount": 3
+        }
+      ]
+    },
+    {
+      "id": "group-wild-flock",
+      "name": "Group — A Spearow flock",
+      "description": "Three wild birds at once. Melee reaches only the Lead; Ranged and area moves reach the rest. Catch one and the flock scatters.",
+      "kind": "wild",
+      "stage": "meadow",
+      "seed": 1101,
+      "onField": 3,
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 9
+          },
+          {
+            "species": "squirtle",
+            "level": 9
+          },
+          {
+            "species": "bulbasaur",
+            "level": 9
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "potion",
+          "poke-ball",
+          "poke-ball"
+        ],
+        "balls": 3
+      },
+      "enemies": [
+        {
+          "species": "spearow",
+          "level": 8,
+          "tier": "wild",
+          "phaseCount": 1
+        },
+        {
+          "species": "spearow",
+          "level": 7,
+          "tier": "wild",
+          "phaseCount": 1,
+          "role": "attacker"
+        },
+        {
+          "species": "pidgey",
+          "level": 7,
+          "tier": "wild",
+          "phaseCount": 1,
+          "role": "debuffer",
+          "moves": [
+            "gust",
+            "sand-attack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "group-trainer-pair",
+      "name": "Group — Twins Amy & May",
+      "description": "Two trainers side by side: an Oddish leads while a Bellsprout poisons and paralyses from behind it.",
+      "kind": "trainer",
+      "stage": "forest",
+      "seed": 1102,
+      "onField": 2,
+      "trainer": {
+        "name": "Twins Amy & May",
+        "sprite": "picnicker"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 10
+          },
+          {
+            "species": "squirtle",
+            "level": 10
+          },
+          {
+            "species": "bulbasaur",
+            "level": 10
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "potion",
+          "antidote",
+          "paralyze-heal"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "oddish",
+          "level": 10,
+          "tier": "trainer",
+          "phaseCount": 1
+        },
+        {
+          "species": "bellsprout",
+          "level": 9,
+          "tier": "trainer",
+          "phaseCount": 1,
+          "role": "debuffer",
+          "moves": [
+            "vine-whip",
+            "poison-powder",
+            "stun-spore"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "group-hiker-healer",
+      "name": "Group — Hiker and a Clefairy",
+      "description": "A Geodude holds the front while a Clefairy heals it from behind. A Machop waits to take the first place that falls free.",
+      "kind": "trainer",
+      "stage": "cave",
+      "seed": 1103,
+      "onField": 2,
+      "trainer": {
+        "name": "Hiker Dwayne",
+        "sprite": "hiker"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 11
+          },
+          {
+            "species": "squirtle",
+            "level": 11
+          },
+          {
+            "species": "bulbasaur",
+            "level": 11
+          }
+        ],
+        "leadIndex": 1,
+        "consumables": [
+          "potion",
+          "super-potion",
+          "x-attack"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "geodude",
+          "level": 11,
+          "tier": "trainer",
+          "phaseCount": 1
+        },
+        {
+          "species": "clefairy",
+          "level": 9,
+          "tier": "trainer",
+          "phaseCount": 1,
+          "role": "healer",
+          "moves": [
+            "moonlight",
+            "pound"
+          ]
+        },
+        {
+          "species": "machop",
+          "level": 10,
+          "tier": "trainer",
+          "phaseCount": 1
+        }
+      ]
+    },
+    {
+      "id": "group-elite-buffer",
+      "name": "Group — Ace Trainer and a Clefairy",
+      "description": "An Elite Nidorino in two phases — its Bulldoze hits your whole team — and a Clefairy that powers it up. Its first intent is hidden.",
+      "kind": "trainer",
+      "stage": "meadow",
+      "seed": 1104,
+      "onField": 2,
+      "trainer": {
+        "name": "Ace Trainer Quinn",
+        "sprite": "acetrainer"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 14
+          },
+          {
+            "species": "squirtle",
+            "level": 14
+          },
+          {
+            "species": "bulbasaur",
+            "level": 14
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "super-potion",
+          "potion",
+          "ether"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "nidorino",
+          "level": 12,
+          "tier": "elite",
+          "phaseCount": 2,
+          "moves": [
+            "horn-attack",
+            "bulldoze",
+            "double-kick",
+            "poison-sting"
+          ]
+        },
+        {
+          "species": "clefairy",
+          "level": 10,
+          "tier": "trainer",
+          "phaseCount": 1,
+          "role": "buffer",
+          "moves": [
+            "calm-mind",
+            "double-slap",
+            "growl"
+          ]
         }
       ]
     }

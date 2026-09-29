@@ -73,6 +73,15 @@ describe('Balance envelope (auto-player)', () => {
     expect(b.avgTeamHpLeft).toBeLessThanOrEqual(0.65);
   });
 
+  // §5.6 — a group is a harder read, not a wall: every group fixture is a real fight a decent player wins.
+  it('group fixtures — longer than a duel, still won: 4–16 turns, three in four or better', () => {
+    for (const r of rows.filter((x) => x.scenario.startsWith('group-'))) {
+      expect(r.winRate, r.scenario).toBeGreaterThanOrEqual(0.75);
+      expect(r.avgTurns, r.scenario).toBeGreaterThanOrEqual(4);
+      expect(r.avgTurns, r.scenario).toBeLessThanOrEqual(16);
+    }
+  });
+
   it('no fixture drags past 30 turns on average', () => {
     for (const r of rows) expect(r.avgTurns, r.scenario).toBeLessThan(30);
   });

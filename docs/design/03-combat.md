@@ -105,7 +105,9 @@ The player spends 3 AP on any mix of:
 - **Manual Lead swaps** (1, then 2, then 3 AP within the turn — §3.3.1).
 
 Card effects resolve **immediately** on play. Hand state is fully visible; hovering or dragging a card previews
-its exact calculated damage against the targeted slot, including every multiplier (§4.1.1).
+its exact calculated damage against each enemy it can reach, including every multiplier (§4.1.1). Against a group
+the card is aimed — dragged onto an enemy, or the card then the enemy clicked — and a single-target Melee card
+reaches only the enemy Lead (§5.6).
 
 Two restrictions define positional play:
 
@@ -245,10 +247,10 @@ Lead mechanic, the AI and relic effects.
 | Axis | Values | Effect on play |
 |---|---|---|
 | **Role** | Offensive · Defensive · Utility | Defensive cards are eligible for the manual-swap discount (§3.3.1) |
-| **Range** | Melee · Ranged | Melee is Lead-only unless Step-Forward; Ranged plays from any slot at ×0.75 damage |
+| **Range** | Melee · Ranged | Melee is Lead-only unless Step-Forward, and against a group it reaches only the enemy Lead; Ranged plays from any slot at ×0.75 damage and reaches every enemy (§5.6) |
 | **Modifier** | Step-Forward · Step-Backward · none | Melee-only, mutually exclusive, no swap-counter increment |
 | **Rider** | A status condition with a chance | Shown on the card and in the damage preview (§4.2) |
-| **Targeting** | single · cleave · backstrike | Cleave hits every occupied slot; Backstrike names a bench slot |
+| **Targeting** | single · cleave · backstrike | Cleave hits every occupied slot — an enemy's hits your whole team, yours hits every enemy on the field; Backstrike names a bench slot, and a player's Backstrike card reaches an enemy support |
 
 **Authoring guidelines**
 

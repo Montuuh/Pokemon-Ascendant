@@ -8,7 +8,8 @@ import { breakdownFor } from './damageFlow';
 import { teamRevealsIntents, abilityBlocksMove } from './abilities';
 import { relicsQueueIntents, relicsRevealIntents, relicsSkipFirstTurn } from './items';
 import { bossArchetype, currentPhase } from './boss';
-import { slotOccupant, SLOT_LABEL } from './slots';
+import { forecastOn, forecastTurn } from './forecast';
+import { activeEnemy, slotOccupant, SLOT_LABEL } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent, QueuedIntent } from './state';
 import { hpFraction } from './stats';
 import { cardsLocked, isImmuneToStatus, paralysisApBonus } from './status';
@@ -39,10 +40,47 @@ export function classifyMove(state: CombatState, enemy: EnemyCombatant, move: Mo
   const debuff = move.effects.find((e) => e.kind === 'stage' && e.target === 'foe');
   if (debuff) return { kind: 'debuff', moveId: move.id, targetSlot: 'lead', hidden: false };
   const buff = move.effects.find((e) => e.kind === 'stage' && e.target === 'self');
-  if (buff) return { kind: 'buff', moveId: move.id, targetSlot: null, hidden: false };
+  if (buff) return withAlly(state, enemy, move, { kind: 'buff', moveId: move.id, targetSlot: null, hidden: false });
   const healFx = move.effects.find((e) => e.kind === 'heal');
-  if (healFx) return { kind: 'stall', moveId: move.id, targetSlot: null, hidden: false };
+  if (healFx) return withAlly(state, enemy, move, { kind: 'stall', moveId: move.id, targetSlot: null, hidden: false });
   return null; // draw-only moves mean nothing to an enemy
+}
+
+/**
+ * §5.6 — a Healer's heal and a Buffer's stat raise go to the enemy Lead, not to the support casting them. Only a
+ * move that does nothing but heal or raise can be handed over: Rest would put the Lead to sleep, Belly Drum would
+ * cut it, so a move with a self-status or a self-cost stays on its caster.
+ */
+function withAlly(state: CombatState, enemy: EnemyCombatant, move: MoveDef, intent: Intent): Intent {
+  const role = enemy.role;
+  const fits = (role === 'healer' && intent.kind === 'stall') || (role === 'buffer' && intent.kind === 'buff');
+  if (!fits || !allyGivable(move)) return intent;
+  const leadEnemy = activeEnemy(state);
+  if (!leadEnemy || leadEnemy.uid === enemy.uid) return intent;
+  return { ...intent, targetEnemyUid: leadEnemy.uid };
+}
+
+/** §5.6 — a move whose every effect is a heal or a self-raise, so it means the same on an ally. */
+export function allyGivable(move: MoveDef): boolean {
+  return move.power <= 0 && move.effects.every((e) => e.kind === 'heal' || (e.kind === 'stage' && e.target === 'self'));
+}
+
+/** §5.6 — who a buff or a heal lands on: the ally it names (the enemy Lead now, whoever that is), else itself. */
+export function intentRecipient(state: CombatState, enemy: EnemyCombatant, intent: Intent): EnemyCombatant {
+  if (!intent.targetEnemyUid) return enemy;
+  return activeEnemy(state) ?? enemy;
+}
+
+/**
+ * §5.6 — a status another enemy of the group already declared this turn on the same slot. Intents are cleared at
+ * the top of the Intent phase, so what is set here is this turn's plan: a Debuffer never double-applies.
+ */
+function groupPlansStatus(state: CombatState, enemy: EnemyCombatant, slot: SlotId, confusion: boolean, ctx: CombatCtx): boolean {
+  return state.enemies.some((other) => {
+    if (other.uid === enemy.uid || !other.intent || other.intent.kind !== 'status' || other.intent.targetSlot !== slot || !other.intent.moveId) return false;
+    const fx = ctx.content.move(other.intent.moveId).effects.find((e) => e.kind === 'status' && !e.self);
+    return !!fx && fx.kind === 'status' && (fx.status === 'confusion') === confusion;
+  });
 }
 
 /** §5.4 — Backstrike picks the bench slot whose occupant takes the most damage; null if no bench is alive. */
@@ -92,16 +130,28 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
     if (!status) return 0;
     if (status === 'confusion' ? occ.confusionTurns > 0 : occ.status !== null) return 0; // never redundant
     if (isImmuneToStatus(occ.types, status)) return 0;
+    // §5.6 — nor redundant with what an ally already means to put there this turn.
+    if (intent.targetSlot && groupPlansStatus(state, enemy, intent.targetSlot, status === 'confusion', ctx)) return 0;
   }
   if (intent.kind === 'debuff' && occ) {
     const fx = move.effects.find((e) => e.kind === 'stage' && e.target === 'foe');
     if (fx && fx.kind === 'stage' && occ.stages[fx.stat] <= -6) return 0; // already floored
   }
+  // §5.6 — a Healer's or Buffer's intent is weighed on the ally it lands on, not on the caster.
+  const recipient = intentRecipient(state, enemy, intent);
+  // §5.6 — a support leans on what its role is for; everything else still scores, so it never idles.
+  const role = enemy.role;
+  const onRole =
+    (role === 'debuffer' && (intent.kind === 'status' || intent.kind === 'debuff'))
+    || (role === 'attacker' && OFFENSIVE.includes(intent.kind))
+    || (role === 'healer' && intent.kind === 'stall' && recipient.uid !== enemy.uid)
+    || (role === 'buffer' && intent.kind === 'buff' && recipient.uid !== enemy.uid);
+  if (onRole) score *= cfg.supportRoleMultiplier;
   if (intent.kind === 'buff') {
     const fx = move.effects.find((e) => e.kind === 'stage' && e.target === 'self');
     if (fx && fx.kind === 'stage') {
       // Each stage already banked makes the next one worth less: no Defense Curl loops while losing.
-      const banked = Math.max(0, enemy.stages[fx.stat]);
+      const banked = Math.max(0, recipient.stages[fx.stat]);
       if (banked >= 6) return 0;
       score *= Math.max(0, 1 - banked / 3);
     }
@@ -110,14 +160,15 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
   if (intent.kind === 'stall') {
     // A heal is worth its missing HP: near full it is a wasted turn, at half HP it competes with a hit,
     // when losing it is the urgent play. Never treated as "setup".
-    const missing = 1 - selfHp;
+    const recipientHp = hpFraction(recipient);
+    const missing = 1 - recipientHp;
     if (missing <= 0.15) return 0;
     score *= missing * 2;
-    if (selfHp < cfg.lowSelfHpThreshold) score *= cfg.aggressiveSelfMultiplier;
+    if (recipientHp < cfg.lowSelfHpThreshold) score *= cfg.aggressiveSelfMultiplier;
     return score;
   }
   if (OFFENSIVE.includes(intent.kind) && selfHp < cfg.lowSelfHpThreshold) score *= cfg.aggressiveSelfMultiplier;
-  if (intent.kind === 'buff' && selfHp > cfg.highSelfHpThreshold) score *= cfg.setupSelfMultiplier;
+  if (intent.kind === 'buff' && hpFraction(recipient) > cfg.highSelfHpThreshold) score *= cfg.setupSelfMultiplier;
 
   // §5.8.3 — Phase 2+ bosses press the attack.
   if (enemy.phaseCount > 1 && currentPhase(enemy, cfg) >= 2 && OFFENSIVE.includes(intent.kind)) score *= cfg.bossPhaseAggressionMultiplier;
@@ -215,18 +266,19 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
   else log(state, 'enemy', `${enemy.name} is planning something…`);
 }
 
-/** Predicted damage of an intent against the CURRENT occupant of its slot (recomputed live for the UI). */
+/**
+ * §9.2.5 — the HP this turn's intent takes off the CURRENT occupant of its slot (the Lead's share, for a Cleave),
+ * recomputed live. It is the dry-run Resolution's number (`forecastTurn`), so it is the hit, not an estimate.
+ * A plan for next turn (§5.5.1) has no Resolution to run yet, so it is priced by the formula with every term.
+ */
 export function predictIntentDamage(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, intent: Intent | null = enemy.intent): number | null {
   if (!intent || !intent.moveId) return null;
   const move = ctx.content.move(intent.moveId);
   if (move.power <= 0) return null;
-  if (intent.kind === 'cleave') {
-    const occ = slotOccupant(state, 'lead');
-    return occ ? breakdownFor(enemy, occ, move, !!move.alwaysCrit, ctx).final : null;
-  }
-  const occ = intent.targetSlot ? slotOccupant(state, intent.targetSlot) : null;
-  if (!occ) return 0;
-  return breakdownFor(enemy, occ, move, !!move.alwaysCrit, ctx).final;
+  const occ = slotOccupant(state, intent.kind === 'cleave' ? 'lead' : (intent.targetSlot ?? 'lead'));
+  if (!occ) return intent.kind === 'cleave' ? null : 0;
+  if (intent !== enemy.intent) return breakdownFor(enemy, occ, move, !!move.alwaysCrit, ctx, state).final;
+  return forecastOn(forecastTurn(state, ctx), enemy.uid, occ.uid);
 }
 
 // §5.5 — what a hidden intent still tells you: the KIND, never the magnitude or the target.
@@ -249,21 +301,26 @@ export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: C
   if (i.hidden) return HIDDEN_TEXT[i.kind] ?? 'is planning something…';
   const move = i.moveId ? ctx.content.move(i.moveId) : null;
   const slotText = i.targetSlot ? `${SLOT_LABEL[i.targetSlot]} (${slotOccupant(state, i.targetSlot)?.name ?? 'empty'})` : '';
-  const dmg = predictIntentDamage(state, enemy, ctx, i);
+  // §5.6 — a group declares one by one, so while it declares the later intents are not known yet and a number
+  // here could be off. The chips and the portraits carry the numbers; the log only names the move.
+  const dmg = state.enemies.length > 1 ? null : predictIntentDamage(state, enemy, ctx, i);
+  const ally = i.targetEnemyUid ? intentRecipient(state, enemy, i) : null;
   switch (i.kind) {
     case 'attack':
       return `readies ${move?.name} → ${slotText}${dmg !== null ? ` · ${dmg} dmg` : ''}`;
     case 'backstrike':
       return `aims ${move?.name} at ${slotText}${dmg !== null ? ` · ${dmg} dmg` : ''} (Backstrike)`;
     case 'cleave':
-      return `winds up ${move?.name} → ALL SLOTS${dmg !== null ? ` · ~${dmg} dmg` : ''}`;
+      // §9.2.5 — an area intent prints no single number: every target takes its own.
+      return `winds up ${move?.name} → ALL SLOTS`;
     case 'buff':
-      return `is powering up (${move?.name}).`;
+      return ally && ally.uid !== enemy.uid ? `will power up ${ally.name} (${move?.name}).` : `is powering up (${move?.name}).`;
     case 'debuff':
       return `prepares ${move?.name} → ${slotText}`;
     case 'status':
       return `prepares ${move?.name} → ${slotText}`;
     case 'stall':
+      if (ally && ally.uid !== enemy.uid && move) return `will heal ${ally.name} (${move.name}).`;
       return move ? `is recovering (${move.name}).` : 'is biding its time.';
     case 'incapacitated':
       return enemy.status?.kind === 'sleep' ? 'is fast asleep.' : enemy.status?.kind === 'freeze' ? 'is frozen solid.' : 'is caught off guard (Time Spinner).';

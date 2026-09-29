@@ -10,10 +10,12 @@ interface Props {
   play: ConsumablePlayability;
   selected: boolean;
   onClick: () => void;
+  /** §5.6 — a Poké Ball can be dragged onto the wild Pokémon it is thrown at. */
+  onPointerDown?: (e: React.PointerEvent) => void;
 }
 
 // Per docs/design/ui/09 — consumable cards are pill-soft and share the move-card grammar (AP dots left, label right).
-export function ConsumableCard({ play, selected, onClick }: Props) {
+export function ConsumableCard({ play, selected, onClick, onPointerDown }: Props) {
   const { def } = play;
   const tip = useTip(consumableTip(def, play.playable, play.reason ? REJECT_TEXT[play.reason] : null));
   const state = play.playable ? 'playable' : play.reason === 'not-enough-ap' ? 'no-ap' : 'locked';
@@ -32,6 +34,7 @@ export function ConsumableCard({ play, selected, onClick }: Props) {
       type="button"
       className={[styles.card, state === 'playable' ? '' : styles.dim, selected ? styles.selected : ''].join(' ')}
       onClick={onClick}
+      onPointerDown={onPointerDown}
       data-testid={`consumable-${def.id}`}
       data-card-id={play.cardId}
       data-state={state}

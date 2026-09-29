@@ -6,7 +6,7 @@ import { buildSkillDeck, drawSkillCards } from './deck';
 import { echoesFirstCard, itemCureHeal, itemRidersFirst, stepDrawBonus, swapDrawBonus, swapHealAmount, guaranteedCatch } from './items';
 import { catchOdds } from './catch';
 import { declareIntent } from './intents';
-import { cardPlayability, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
+import { cardPlayability, cardVictims, catchTarget, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
 import { rngFromState } from './setup';
 import { activeEnemy, lead } from './slots';
 import type { CombatAction, CombatState, RejectReason } from './state';
@@ -37,12 +37,12 @@ export function validateAction(state: CombatState, action: CombatAction, ctx: Co
       if (state.player.pendingLeadPick) return 'lead-pick-pending';
       return state.kind === 'boss' ? 'no-fleeing-a-gym' : null;
     case 'play-card': {
-      const p = cardPlayability(state, action.cardId, ctx);
+      const p = cardPlayability(state, action.cardId, ctx, action.targetUid);
       if (!p) return 'card-not-in-hand';
       return p.reason;
     }
     case 'use-consumable': {
-      const p = consumablePlayability(state, action.cardId, ctx);
+      const p = consumablePlayability(state, action.cardId, ctx, action.targetUid);
       if (!p) return 'card-not-in-hand';
       if (p.reason) return p.reason;
       if (p.needsAllyTarget) {
@@ -79,9 +79,9 @@ export function combatReducer(state: CombatState, action: CombatAction, ctx: Com
 function apply(state: CombatState, action: CombatAction, ctx: RunCtx): void {
   switch (action.type) {
     case 'play-card':
-      return playCard(state, action.cardId, action.stepBackTo, ctx);
+      return playCard(state, action.cardId, action.stepBackTo, action.targetUid, ctx);
     case 'use-consumable':
-      return applyConsumable(state, action.cardId, action.targetIndex, ctx);
+      return applyConsumable(state, action.cardId, action.targetIndex, action.targetUid, ctx);
     case 'swap':
       return manualSwap(state, action.benchIndex, ctx);
     case 'pick-lead':
@@ -95,8 +95,8 @@ function apply(state: CombatState, action: CombatAction, ctx: RunCtx): void {
 
 // ---- §3.2.4 Action phase -------------------------------------------------------------------------------
 
-function playCard(state: CombatState, cardId: string, stepBackTo: number | undefined, ctx: RunCtx): void {
-  const p = cardPlayability(state, cardId, ctx)!;
+function playCard(state: CombatState, cardId: string, stepBackTo: number | undefined, targetUid: string | undefined, ctx: RunCtx): void {
+  const p = cardPlayability(state, cardId, ctx, targetUid)!;
   const { card, move, owner } = p;
   const player = state.player;
   const ownerIndex = player.team.indexOf(owner);
@@ -139,29 +139,37 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
     stepDraw(state, ctx);
   }
 
-  const enemy = activeEnemy(state);
+  // §5.6 — the target named, or the enemy Lead; an area card lands on every enemy on the field, in slot order.
+  const enemy = targetUid !== undefined ? (state.enemies.find((e) => e.uid === targetUid) ?? null) : activeEnemy(state);
+  const victims = cardVictims(state, move, enemy);
   emit(state, { t: 'card-played', cardId: card.id, moveId: move.id, ownerUid: owner.uid, targetUid: enemy?.uid ?? null, apCost: p.apCost });
   log(state, 'player', `${owner.name} used ${move.name}!`);
 
-  if (move.power > 0 && enemy && absorbedByAbility(state, ctx, enemy, move)) {
-    // §6.5.2 — the hit was swallowed whole: no damage, no rider, nothing to check.
-  } else if (move.power > 0 && enemy) {
-    const crit = !!move.alwaysCrit || (player.critChance > 0 && ctx.rng.chance(player.critChance));
-    // Commentary first: the hit may faint the target and bring the next enemy in, and those lines must read
-    // after the hit that caused them. The breakdown is computed up front for exactly that reason.
-    const preview = breakdownFor(owner, enemy, move, crit, ctx);
-    if (preview.isCrit) log(state, 'player', 'A critical hit!');
-    if (preview.typeMultiplier > 1) log(state, 'player', "It's super effective!");
-    else if (preview.typeMultiplier > 0 && preview.typeMultiplier < 1) log(state, 'player', "It's not very effective…");
-    else if (preview.typeMultiplier === 0) log(state, 'player', "It doesn't affect the target…");
-    // §7.3 Wide Lens — riders normally land *after* the hit, so a move that faints its target wastes its
-    // status. The relic reverses the order for the player's moves only: the enemy is still standing when the
-    // rider rolls. It is a relic, so it is the player's; an enemy's Poison Sting keeps the ordinary order.
-    const ridersFirst = itemRidersFirst(state, ctx.content);
-    if (ridersFirst) applyMoveEffects(state, ctx, owner, enemy, move);
-    strike(state, ctx, owner, enemy, move, crit);
-    // Riders only land on a target that is still standing.
-    if (!ridersFirst && enemy.hp > 0) applyMoveEffects(state, ctx, owner, enemy, move);
+  if (move.power > 0) {
+    const several = victims.length > 1;
+    for (const victim of victims) {
+      // A victim an earlier hit of this same card already knocked out is skipped.
+      if (victim.hp <= 0) continue;
+      // §6.5.2 — the hit was swallowed whole: no damage, no rider, nothing to check.
+      if (absorbedByAbility(state, ctx, victim, move)) continue;
+      const crit = !!move.alwaysCrit || (player.critChance > 0 && ctx.rng.chance(player.critChance));
+      // Commentary first: the hit may faint the target and bring the next enemy in, and those lines must read
+      // after the hit that caused them. The breakdown is computed up front for exactly that reason.
+      const preview = breakdownFor(owner, victim, move, crit, ctx);
+      const on = several ? ` on ${victim.name}` : '';
+      if (preview.isCrit) log(state, 'player', `A critical hit${on}!`);
+      if (preview.typeMultiplier > 1) log(state, 'player', `It's super effective${on}!`);
+      else if (preview.typeMultiplier > 0 && preview.typeMultiplier < 1) log(state, 'player', `It's not very effective${on}…`);
+      else if (preview.typeMultiplier === 0) log(state, 'player', several ? `It doesn't affect ${victim.name}…` : "It doesn't affect the target…");
+      // §7.3 Wide Lens — riders normally land *after* the hit, so a move that faints its target wastes its
+      // status. The relic reverses the order for the player's moves only: the enemy is still standing when the
+      // rider rolls. It is a relic, so it is the player's; an enemy's Poison Sting keeps the ordinary order.
+      const ridersFirst = itemRidersFirst(state, ctx.content);
+      if (ridersFirst) applyMoveEffects(state, ctx, owner, victim, move);
+      strike(state, ctx, owner, victim, move, crit);
+      // Riders only land on a target that is still standing.
+      if (!ridersFirst && victim.hp > 0) applyMoveEffects(state, ctx, owner, victim, move);
+    }
   } else {
     applyMoveEffects(state, ctx, owner, enemy, move);
   }
@@ -192,8 +200,8 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   if (checkOutcome(state)) finish(state);
 }
 
-function applyConsumable(state: CombatState, cardId: string, targetIndex: number | undefined, ctx: RunCtx): void {
-  const p = consumablePlayability(state, cardId, ctx)!;
+function applyConsumable(state: CombatState, cardId: string, targetIndex: number | undefined, targetUid: string | undefined, ctx: RunCtx): void {
+  const p = consumablePlayability(state, cardId, ctx, targetUid)!;
   const player = state.player;
   const card = player.consumables.hand.find((c) => c.id === cardId)!;
   const def = p.def;
@@ -265,7 +273,7 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
       if (ally) changeStage(state, ally, fx.stat, fx.stages);
       break;
     case 'catch': {
-      const enemy = activeEnemy(state)!;
+      const enemy = catchTarget(state, targetUid)!;
       // §8.6.1 Master Ball Charm — armed until its one throw; the throw spends it whatever else happens.
       const charm = guaranteedCatch(state, ctx.content);
       const odds = catchOdds(enemy, fx, ctx.content, charm !== null);
@@ -278,7 +286,12 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
         log(state, 'player', `Gotcha! ${enemy.name} was caught!`);
         state.outcome = 'caught';
         enemy.intent = null;
-        state.defeatedEnemies.push(enemy);
+        // §2.6.4 / §5.6 — a catch ends the fight: the rest of a pack scatters. They go into the record as met,
+        // never as beaten, and the caught one goes last because that is where the run reads its recruit.
+        const scattered = state.enemies.filter((e) => e.uid !== enemy.uid);
+        for (const e of scattered) e.intent = null;
+        if (scattered.length) log(state, 'enemy', 'The rest of the pack scatters.');
+        state.defeatedEnemies.push(...scattered, enemy);
         state.enemies = [];
         finish(state);
         return;

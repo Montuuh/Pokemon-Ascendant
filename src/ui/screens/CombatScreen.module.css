@@ -416,3 +416,65 @@
   opacity: 0.5;
   cursor: default;
 }
+
+/* §9.2.1 / §5.6 — a group: the squad grammar mirrored. The enemy Lead stands forward (towards your side), its
+   supports behind it, smaller, one high and one low — the way your bench sits behind your Lead. */
+.foeLead {
+  right: 34%;
+  top: 22%;
+}
+.foeSupport1,
+.foeSupport2 {
+  right: 0;
+}
+.foeSupport1 {
+  top: -2%;
+}
+.foeSupport2 {
+  top: 46%;
+}
+.foeSupport1 img,
+.foeSupport2 img {
+  height: var(--sprite-support);
+}
+/* The card being dragged is over this sprite. */
+.foeAimed .platform {
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--accent-action) 70%, transparent), transparent);
+}
+.enemyZoneGroup {
+  gap: var(--sp-3);
+  align-self: stretch;
+  justify-content: center;
+}
+/* The card under the pointer while it is dragged. */
+.dragGhost {
+  position: fixed;
+  z-index: var(--z-toast);
+  /* Up and to the left of the pointer, so it never covers the name of the enemy it is dropped on. */
+  transform: translate(-105%, -140%);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  border: 3px solid var(--card-type);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 1400px) {
+  .foeSupport1 img,
+  .foeSupport2 img {
+    height: var(--sprite-support-small);
+  }
+}
+
+/* A 720 p stage: the three enemy panels need every pixel of the column. */
+@media (max-height: 800px) {
+  .enemyZoneGroup {
+    gap: var(--sp-1);
+  }
+}

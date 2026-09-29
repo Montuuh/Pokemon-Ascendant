@@ -33,6 +33,8 @@ export function scenario(partial: {
   /** §5.13.1 / §8.4.2 — species whose intents the account has earned a look at. */
   familiar?: string[];
   insight?: string[];
+  /** §5.6 — how many enemies stand together. */
+  onField?: 1 | 2 | 3;
 }): ScenarioDef {
   const def: ScenarioDef = {
     id: partial.id ?? 'test',
@@ -56,6 +58,7 @@ export function scenario(partial: {
   };
   if (partial.trainer) def.trainer = partial.trainer;
   if (partial.modifiers) def.modifiers = partial.modifiers;
+  if (partial.onField) def.onField = partial.onField;
   return def;
 }
 

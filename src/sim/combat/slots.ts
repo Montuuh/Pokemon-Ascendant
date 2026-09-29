@@ -1,5 +1,5 @@
 import type { SlotId } from '../types';
-import type { Combatant, CombatState } from './state';
+import type { Combatant, CombatState, EnemyCombatant } from './state';
 
 // §3.3 / §5.2 — slots are positions. `lead` is the Lead; `bench1`/`bench2` are the remaining team members in
 // array order. A manual swap moves Pokémon between slots; the slots themselves never move.
@@ -39,8 +39,31 @@ export function aliveTeam(state: CombatState): Combatant[] {
   return state.player.team.filter((c) => c.hp > 0);
 }
 
+/** §5.6 — the enemy Lead: the first living enemy on the field (index 0 once a faint has promoted a support). */
 export function activeEnemy(state: CombatState) {
   return state.enemies.find((e) => e.hp > 0) ?? null;
+}
+
+/** §5.6 — the living enemies on the field, in slot order (Lead first). */
+export function aliveEnemies(state: CombatState): EnemyCombatant[] {
+  return state.enemies.filter((e) => e.hp > 0);
+}
+
+/** §5.6 — true for the enemy Lead; a support is any other enemy on the field. */
+export function isEnemyLead(state: CombatState, enemy: EnemyCombatant): boolean {
+  return activeEnemy(state)?.uid === enemy.uid;
+}
+
+/** §5.6 / §3.2.5 — the order intents resolve in: supports first in slot order, the enemy Lead last. */
+export function resolutionOrder(state: CombatState): EnemyCombatant[] {
+  const [first, ...rest] = state.enemies;
+  return first ? [...rest, first] : [];
+}
+
+/** §5.6 — what the player reads on an enemy's place: the Lead, or a Support (the sprites show the order). */
+export function enemySlotLabel(state: CombatState, enemy: EnemyCombatant): string {
+  const i = state.enemies.findIndex((e) => e.uid === enemy.uid);
+  return i <= 0 ? 'Lead' : 'Support';
 }
 
 export function findCombatant(state: CombatState, uid: string): Combatant | null {

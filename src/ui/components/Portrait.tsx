@@ -24,11 +24,18 @@ interface Props {
   onClick?: () => void;
   fx: FloatingFx[];
   fxClass?: string;
+  /**
+   * §9.2.5 — every hit coming at this Pokémon this turn, as the dry-run Resolution prints it: one number per
+   * enemy, never one figure for an area hit. `icon` names the source when a group is on the field.
+   */
+  incoming?: { enemyUid: string; amount: number; icon?: string; name: string; move: string }[];
+  /** The hits above add up to a knockout. */
+  incomingKo?: boolean;
 }
 
 // Per docs/design/ui/02 §2.1 — squad-formation portrait: type top-left, status top-right, crown on the Lead,
 // HP bar + text below, swap chip for benches. Intent targets highlight the slot, never the Pokémon (§5.2).
-export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapHint, targeted, selectable, onClick, fx, fxClass }: Props) {
+export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapHint, targeted, selectable, onClick, fx, fxClass, incoming, incomingKo }: Props) {
   const primary = mon.types[0] ?? 'normal';
   const fainted = mon.hp <= 0;
   const classes = [
@@ -44,11 +51,24 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
   const stageChips = (['attack', 'defense'] as const).filter((s) => mon.stages[s] !== 0);
   // 2026-09-21 — the portrait's bubble is the Pokémon's summary: types, ability, held item, status, Trauma,
   // and its role right now (Lead, or what a swap costs). It replaced five native titles on the card's corners.
-  const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost } : {}) }));
+  const hits = !fainted && incoming?.length ? incoming : null;
+  const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}) }));
+  const incomingText = hits ? `; incoming: ${hits.map((h) => `${h.amount} from ${h.name}'s ${h.move}`).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
 
   return (
-    <button type="button" className={classes} onClick={onClick} data-testid={`portrait-${variant}-${mon.speciesId}`} data-slot={slotLabel} aria-label={fainted ? `${mon.name} fainted` : swapHint ?? `${mon.name} · ${slotLabel}`} {...tip}>
+    <button type="button" className={classes} onClick={onClick} data-testid={`portrait-${variant}-${mon.speciesId}`} data-slot={slotLabel} aria-label={fainted ? `${mon.name} fainted` : `${swapHint ?? `${mon.name} · ${slotLabel}`}${incomingText}`} {...tip}>
       <span className={styles.slotTag}>{slotLabel}</span>
+      {hits && (
+        <span className={styles.incoming} data-testid="incoming" aria-hidden="true">
+          {hits.map((h) => (
+            <span key={h.enemyUid} className={styles.incomingHit}>
+              {h.icon && <img className={styles.incomingFace} src={h.icon} alt="" width={20} height={20} />}
+              <span className="display tabular">−{h.amount}</span>
+            </span>
+          ))}
+          {incomingKo && <b className={styles.incomingKo}>KO</b>}
+        </span>
+      )}
       {variant === 'lead' && (
         <span className={styles.crown}>
           <IconCrown size={18} stroke={2.4} />

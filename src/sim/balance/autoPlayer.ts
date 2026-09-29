@@ -1,5 +1,5 @@
 import type { CombatCtx } from '../combat/context';
-import { predictIntentDamage } from '../combat/intents';
+import { forecastTurn } from '../combat/forecast';
 import { cardPlayability, catchStatus, consumablePlayability, pickLeadOptions, swapOptions, type CardPlayability } from '../combat/preview';
 import { combatReducer } from '../combat/reducer';
 import { activeEnemy, lead } from '../combat/slots';
@@ -77,9 +77,10 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   }
 
   // 3. Retreat: if the Lead is low and about to be hit, swap in the bench that takes the least.
-  const incoming = predictIntentDamage(state, enemy, ctx) ?? 0;
+  // §9.2.5 — every hit coming at the Lead this turn, from the whole group, as the dry-run Resolution prints it.
+  const incoming = (forecastTurn(state, ctx).incoming[l.uid] ?? []).reduce((a, h) => a + h.amount, 0);
   const intent = enemy.intent;
-  const threatensLead = !!intent && (intent.kind === 'attack' || intent.kind === 'cleave') && incoming > 0;
+  const threatensLead = !!intent && (intent.kind === 'attack' || intent.kind === 'cleave' || state.enemies.length > 1) && incoming > 0;
   if (threatensLead && intent.moveId && (hpFraction(l) < opts.retreatBelow || incoming >= l.hp)) {
     const options = swapOptions(state).filter((o) => o.allowed);
     if (options.length > 0) {
@@ -127,17 +128,38 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
     );
     if (ether && gain > 0 && unlocks) return { type: 'use-consumable', cardId: ether.cardId };
   }
+  // §5.6 — against a group every card has a best target: a knockout first, then the largest share of a target's
+  // HP (which finishes a support before it escalates). An area card has no choice to make: it hits them all.
+  const aim = (p: CardPlayability): { uid: string | undefined; dmg: number; ko: boolean; share: number } => {
+    if (p.hitsAll || state.enemies.length <= 1) {
+      const dmg = p.targets.reduce((a, t) => a + (t.damage?.final ?? 0), 0);
+      return { uid: undefined, dmg, ko: p.targets.some((t) => (t.damage?.final ?? 0) >= (state.enemies.find((e) => e.uid === t.uid)?.hp ?? Infinity)), share: dmg / Math.max(1, enemy.hp) };
+    }
+    const options = p.targets
+      .filter((t) => t.reachable && t.damage)
+      .map((t) => {
+        const foe = state.enemies.find((e) => e.uid === t.uid)!;
+        // A support that heals or raises the Lead undoes the damage aimed at the Lead: a player takes it out first.
+        const focus = foe.role === 'healer' || foe.role === 'buffer' ? 2 : 1;
+        return { uid: t.uid, dmg: t.damage!.final, ko: t.damage!.final >= foe.hp, share: (focus * t.damage!.final) / Math.max(1, foe.hp) };
+      })
+      .sort((a, b) => Number(b.ko) - Number(a.ko) || b.share - a.share);
+    return options[0] ?? { uid: undefined, dmg: p.damage?.final ?? 0, ko: false, share: 0 };
+  };
   const pick = (p: CardPlayability): CombatAction => {
     const stepBackTo = p.needsStepBackChoice ? healthiest(state, p.stepBackOptions) : undefined;
-    return stepBackTo === undefined ? { type: 'play-card', cardId: p.card.id } : { type: 'play-card', cardId: p.card.id, stepBackTo };
+    const target = aim(p).uid;
+    return {
+      type: 'play-card',
+      cardId: p.card.id,
+      ...(stepBackTo === undefined ? {} : { stepBackTo }),
+      ...(target === undefined ? {} : { targetUid: target }),
+    };
   };
-  const ko = damaging.find((p) => p.damage!.final >= enemy.hp);
+  const ko = damaging.find((p) => aim(p).ko);
   if (ko) return pick(ko);
   if (damaging.length > 0) {
-    damaging.sort(
-      (a, b) =>
-        b.damage!.final / Math.max(1, b.apCost) - a.damage!.final / Math.max(1, a.apCost) || b.damage!.final - a.damage!.final,
-    );
+    damaging.sort((a, b) => aim(b).dmg / Math.max(1, b.apCost) - aim(a).dmg / Math.max(1, a.apCost) || aim(b).dmg - aim(a).dmg);
     return pick(damaging[0]!);
   }
   // 5. Free utility (debuffs/buffs) before ending.

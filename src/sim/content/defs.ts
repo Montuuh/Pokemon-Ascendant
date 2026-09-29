@@ -484,7 +484,15 @@ export interface EnemySetup {
   abilityId?: string;
   /** §2.7.1 Hex Maniac — hides its first intent like an Elite does (§5.5), on an ordinary trainer's Pokémon. */
   veiled?: boolean;
+  /**
+   * §5.6 — a support's role in a group fight. Its presence is what makes the Pokémon a support: it enters with
+   * `supportHpMultiplier` of its HP, and a Healer or Buffer aims its heal or stat raise at the enemy Lead.
+   */
+  role?: SupportRole;
 }
+
+/** §5.6 — the four support roles. */
+export type SupportRole = 'healer' | 'buffer' | 'debuffer' | 'attacker';
 
 export interface ScenarioDef {
   id: string;
@@ -511,6 +519,11 @@ export interface ScenarioDef {
     insight?: string[];
   };
   enemies: EnemySetup[];
+  /**
+   * §5.6 — how many enemies stand on the field at once: 1 (the default) fights them one after another, 2–3 is
+   * a group — the first is the Lead, the rest are supports, and the list's remainder waits to fill a free place.
+   */
+  onField?: 1 | 2 | 3;
   /**
    * §8.8 — the run's difficulty modifiers, carried into the fight. The ones that change a *number* are folded
    * into the enemy list and the BattleConfig before we get here; the ones that change a *rule* mid-fight

@@ -1,35 +1,56 @@
-import { IconQuestionMark } from '@tabler/icons-react';
-import type { CombatCtx, CombatState, EnemyCombatant } from '@/sim';
-import { SLOT_LABEL, catchPercent, catchStatus, currentPhase, describeIntent, phaseMarkers, predictIntentDamage, slotOccupant } from '@/sim';
+import { IconLock, IconQuestionMark } from '@tabler/icons-react';
+import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
+import { SLOT_LABEL, catchPercent, catchStatus, currentPhase, describeIntent, enemySlotLabel, intentRecipient, phaseMarkers, slotOccupant } from '@/sim';
 import { iconOf, intentGlyph } from '@/ui/art';
-import { INTENT_LABEL } from '@/ui/strings';
+import { INTENT_LABEL, ROLE_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
-import { catchTip, intentTip, nextIntentTip } from '@/ui/tips';
+import { catchTip, intentCardTip, nextIntentTip, roleTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EnemyPanel.module.css';
+
+/** §9.2.4 — what the card in hand would do to this enemy: its own number, or that it cannot reach it. */
+export interface TargetPreview {
+  final: number;
+  ko: boolean;
+  reachable: boolean;
+}
 
 interface Props {
   state: CombatState;
   enemy: EnemyCombatant;
   ctx: CombatCtx;
+  forecast: TurnForecast;
+  /** §5.6 — two or three enemies stand together: the panel is drawn compact and names its place. */
+  compact: boolean;
   targetable: boolean;
+  /** The card being dragged or pointed is over this enemy. */
+  aimed: boolean;
+  preview: TargetPreview | null;
   onClick: () => void;
+  onHover: (hovering: boolean) => void;
   fxClass?: string;
 }
 
-// Per §9.2.2.2 / §9.2.5 — enemy zone: intent chip (kind glyph + magnitude + slot with current occupant),
-// HP bar with phase markers for bosses, status/stage chips, and the catch pill for wild fights.
-// The animated sprite lives in the arena; this panel is the readable HUD card.
-export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: Props) {
+// Per §9.2.2.3 / §9.2.5 — one enemy's HUD: the intent chip (kind glyph, the move, its target, and for a single
+// hit the number it lands), the card with HP, phase markers, status and stages, the catch pill in a wild fight,
+// and — while a card is held — the number that card would deal here (§9.2.4). The sprite lives in the arena.
+export function EnemyPanel({ state, enemy, ctx, forecast, compact, targetable, aimed, preview, onClick, onHover, fxClass }: Props) {
   const intent = enemy.intent;
-  const predicted = intent ? predictIntentDamage(state, enemy, ctx) : null;
   const move = intent?.moveId ? ctx.content.move(intent.moveId) : null;
   const slotOcc = intent?.targetSlot ? slotOccupant(state, intent.targetSlot) : null;
+  // §9.2.5 — the forecast's number for a single-target hit: the HP it takes off whoever stands there now.
+  const single = intent && slotOcc && (intent.kind === 'attack' || intent.kind === 'backstrike')
+    ? forecast.byEnemy[enemy.uid]?.hits.find((h) => h.targetUid === slotOcc.uid)?.amount ?? 0
+    : null;
+  const ally = intent?.targetEnemyUid ? intentRecipient(state, enemy, intent) : null;
   const phase = currentPhase(enemy, ctx.config);
-  const gauge = catchStatus(state, ctx);
-  const intentTipProps = useTip(intent ? intentTip(intent.kind, move ? move.name : undefined, intent.hidden) : null);
+  const gauge = catchStatus(state, ctx, enemy.uid);
+  const intentTipProps = useTip(intentCardTip(state, enemy, forecast));
   const catchTipProps = useTip(gauge ? catchTip(gauge) : null);
+  const place = state.enemies.length > 1 ? enemySlotLabel(state, enemy) : null;
+  // §5.6 — in a group the enemy's card is the door to its place and role.
+  const cardTipProps = useTip(place ? roleTip(place, enemy.role ?? null, ctx.config.supportEscalateFromTurn) : null);
   // §5.5.1 — under Trainer's Instinct the enemy's committed plan for next turn sits under this turn's.
   const next = enemy.next?.intent ?? null;
   const nextMove = next?.moveId ? ctx.content.move(next.moveId) : null;
@@ -45,7 +66,7 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
     : 'Wild';
 
   return (
-    <div className={styles.zone} data-testid="foe-panel">
+    <div className={[styles.zone, compact ? styles.compact : ''].join(' ')} data-testid="foe-panel" data-enemy-uid={enemy.uid} onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}>
       <div className={[styles.intent, intent?.hidden ? styles.intentHidden : '', intent?.kind === 'incapacitated' ? styles.intentIdle : ''].join(' ')} data-testid="intent-chip" tabIndex={0} {...intentTipProps}>
         {intent?.hidden ? (
           <>
@@ -57,17 +78,17 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
             <img src={intentGlyph(intent.kind === 'incapacitated' ? 'stall' : intent.kind === 'debuff' ? 'status' : intent.kind)} alt="" width={20} height={20} className={styles.intentIcon} />
             <span className={styles.intentText}>
               <b>{move ? move.name : INTENT_LABEL[intent.kind]}</b>
-              {intent.kind === 'cleave' && <> → <b>ALL SLOTS</b>{predicted !== null ? ` · ~${predicted} each` : ''}</>}
+              {/* §9.2.5 — an area intent prints no number: every target takes its own, on its portrait. */}
+              {intent.kind === 'cleave' && <> → <b>ALL</b></>}
               {intent.targetSlot && (
                 <>
                   {' '}→ <b>{SLOT_LABEL[intent.targetSlot]}</b> ({slotOcc ? slotOcc.name : 'empty'})
-                  {predicted !== null && predicted > 0 ? <> · <b className={styles.dmg}>{predicted} dmg</b></> : null}
+                  {single !== null && single > 0 ? <> · <b className={styles.dmg} data-testid="intent-dmg">{single} dmg</b></> : null}
                 </>
               )}
-              {intent.kind === 'buff' && ' — powering up'}
-              {intent.kind === 'stall' && move && ' — recovering'}
+              {intent.kind === 'buff' && (ally && ally.uid !== enemy.uid ? <> → <b>{ally.name}</b></> : ' — powering up')}
+              {intent.kind === 'stall' && move && (ally && ally.uid !== enemy.uid ? <> → heals <b>{ally.name}</b></> : ' — recovering')}
               {intent.kind === 'incapacitated' && (enemy.status?.kind === 'sleep' ? ' — fast asleep' : enemy.status?.kind === 'freeze' ? ' — frozen solid' : ' — caught off guard')}
-              {intent.kind === 'backstrike' && <small> Backstrike bypasses the Lead</small>}
             </span>
           </>
         ) : (
@@ -93,15 +114,39 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
 
       <button
         type="button"
-        className={[styles.card, targetable ? styles.targetable : '', enemy.hp <= 0 ? styles.fainted : '', fxClass ?? ''].join(' ')}
+        className={[styles.card, targetable ? styles.targetable : '', aimed ? styles.aimed : '', preview && !preview.reachable ? styles.outOfReach : '', enemy.hp <= 0 ? styles.fainted : '', fxClass ?? ''].join(' ')}
         onClick={onClick}
+        {...cardTipProps}
+        onFocus={(e) => {
+          cardTipProps.onFocus?.(e);
+          onHover(true);
+        }}
+        onBlur={(e) => {
+          cardTipProps.onBlur?.(e);
+          onHover(false);
+        }}
         data-testid={`enemy-${enemy.speciesId}`}
+        data-enemy-uid={enemy.uid}
+        aria-label={`${enemy.name}${place ? `, ${place}` : ''}, ${enemy.hp} of ${enemy.maxHp} HP${preview ? (preview.reachable ? `; the card deals ${preview.final}${preview.ko ? ', a knockout' : ''}` : '; out of reach of this card') : ''}`}
       >
+        {/* §9.2.4 / §5.6 — the held card's number on this enemy; blue is position: a Melee card cannot reach it. */}
+        {preview && (
+          preview.reachable ? (
+            <span className={[styles.hitPreview, preview.ko ? styles.hitKo : ''].join(' ')} data-testid="target-preview">
+              <span className="display tabular">{preview.final}</span>
+              {preview.ko && <b>KO</b>}
+            </span>
+          ) : (
+            <span className={styles.reachLock} data-testid="target-out-of-reach">
+              <IconLock size={12} /> Out of reach
+            </span>
+          )
+        )}
         <span className={styles.header}>
           <img className={`${styles.icon} pixel`} src={iconOf(enemy)} alt="" width={48} height={40} />
           <span className={styles.types}>
             {enemy.types.map((t) => (
-              <TypeBadge key={t} type={t} size={18} defenderTypes={enemy.types} />
+              <TypeBadge key={t} type={t} size={compact ? 14 : 18} defenderTypes={enemy.types} />
             ))}
           </span>
           <span className={styles.nameBlock}>
@@ -112,20 +157,22 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
             </span>
           </span>
           <span className={styles.badges}>
-            {enemy.status && (
-              <StatusBadge status={enemy.status.kind} size={28} />
-            )}
-            {enemy.confusionTurns > 0 && (
-              <StatusBadge status="confusion" size={28} />
-            )}
+            {enemy.status && <StatusBadge status={enemy.status.kind} size={compact ? 22 : 28} />}
+            {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={compact ? 22 : 28} />}
           </span>
         </span>
-        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={14} />
+        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={compact ? 10 : 14} />
         <span className={styles.hpRow}>
           <span className={`display tabular ${styles.hpText}`}>
             {enemy.hp} / {enemy.maxHp}
           </span>
           <span className={styles.chips}>
+            {place && (
+              <span className={place === 'Lead' ? styles.chipLead : styles.chipRole} data-testid="foe-place">
+                {place}
+                {enemy.role && place !== 'Lead' ? ` · ${ROLE_LABEL[enemy.role]}` : ''}
+              </span>
+            )}
             {stageChips.map((s) => (
               <span key={s} className={enemy.stages[s] > 0 ? styles.chipUp : styles.chipDown}>
                 {s === 'attack' ? 'Atk' : 'Def'} {enemy.stages[s] > 0 ? '+' : ''}
@@ -141,7 +188,13 @@ export function EnemyPanel({ state, enemy, ctx, targetable, onClick, fxClass }: 
         </span>
       </button>
 
-      {gauge && (
+      {gauge && compact && (
+        <div className={styles.catchInline} data-testid="catch-pill" data-chance={catchPercent(gauge)} {...catchTipProps}>
+          <span className={styles.ball} />
+          <span className="display tabular">{gauge.ballsLeft === 0 ? 'no balls' : gauge.guaranteed ? 'SURE' : `${catchPercent(gauge)}%`}</span>
+        </div>
+      )}
+      {gauge && !compact && (
         <div className={[styles.catch, gauge.chance >= 0.5 ? styles.catchReady : ''].join(' ')} data-testid="catch-pill" data-chance={catchPercent(gauge)} {...catchTipProps}>
           <span className={styles.ball} />
           <span className={styles.catchTrack}>

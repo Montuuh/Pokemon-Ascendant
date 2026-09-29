@@ -1,5 +1,7 @@
 import { createCombat } from '../combat/setup';
 import type { CombatCtx } from '../combat/context';
+import type { CombatAction } from '../combat/state';
+import type { ScenarioDef } from '../content/defs';
 import { buildOutcomeReport } from '../run/report';
 import { createRun, defaultRunCtx, dojoPrice, runReducer, tutorListFor } from '../run/run';
 import { RUN_START, gymById, gymTeamFor } from '../run/region';
@@ -78,6 +80,9 @@ export interface FightTrace {
   team: { species: string; level: number; hpBefore: number; hpAfter: number; max: number; status: string | null }[];
   turns: number;
   outcome: string;
+  /** The fight itself, so a measure can replay it step by step (the intent-accuracy harness, §9.2.5). */
+  scenario: ScenarioDef;
+  actions: CombatAction[];
 }
 
 export interface RunSimResult {
@@ -621,6 +626,8 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
         }),
         turns: combat.turns,
         outcome: String(run.outcome),
+        scenario,
+        actions: combat.actions,
       });
     }
     if (run.outcome !== 'in-progress') break;

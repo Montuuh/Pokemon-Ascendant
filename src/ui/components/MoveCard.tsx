@@ -13,6 +13,8 @@ interface Props {
   selected: boolean;
   onClick: () => void;
   onHover: (hovering: boolean) => void;
+  /** §5.6 — the press that may become a drag onto a target. */
+  onPointerDown?: (e: React.PointerEvent) => void;
   index: number;
   total: number;
 }
@@ -28,7 +30,7 @@ function effectivenessPhrase(multiplier: number): string {
 
 // Per docs/design/ui/09 — locked move-card anatomy: type-flooded body, owner avatar + range icon + name band,
 // art window, effect plate, footer AP dots (left) + power (right). Unplayable cards stay visible (ui rule).
-export function MoveCard({ play, selected, onClick, onHover, index, total }: Props) {
+export function MoveCard({ play, selected, onClick, onHover, onPointerDown, index, total }: Props) {
   const { move, owner } = play;
   const Role = roleIcon[move.role];
   const Range = move.range === 'melee' ? IconHandGrab : IconTargetArrow;
@@ -43,6 +45,10 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
   // do to this target, and why it is locked. It replaced nine native `title`s spread over the card's parts,
   // none of which anyone waited a second for.
   const tip = useTip(moveTip(play));
+  // §5.6 — against a group the card's own corner prints the move's power, not one enemy's number: each enemy's
+  // number is on its panel while the card is held, and a single figure here would be right for one of three.
+  const group = play.targets.length > 1;
+  const shownDamage = group ? null : play.damage;
 
   return (
     <button
@@ -50,6 +56,7 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
       className={`${classes} fx-card-in`}
       style={{ ['--card-type' as string]: `var(--type-${move.type})`, ['--rot' as string]: `${rot}deg`, ['--lift' as string]: `${lift}px`, animationDelay: `${index * 40}ms` }}
       onClick={onClick}
+      onPointerDown={onPointerDown}
       {...tip}
       onMouseEnter={(e) => {
         tip.onMouseEnter(e);
@@ -70,11 +77,11 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
         `${move.name}, ${move.type}`,
         `from ${owner.name}`,
         `${play.apCost} AP`,
-        play.damage ? `${play.damage.final} damage` : null,
+        shownDamage ? `${shownDamage.final} damage` : group && move.power > 0 ? `${move.power} power${play.hitsAll ? ', hits every enemy' : ''}` : null,
         // Without this a Grass card into a Bug reads as "3 damage" with no reason, which is the single most
         // confusing number on the screen — for a screen reader it was the *only* thing on the card that
         // explained itself visually (the ×0.25 chip) and not in text.
-        play.damage && play.damage.typeMultiplier !== 1 ? effectivenessPhrase(play.damage.typeMultiplier) : null,
+        shownDamage && shownDamage.typeMultiplier !== 1 ? effectivenessPhrase(shownDamage.typeMultiplier) : null,
         // `describeMove` ends its own sentences, so it joins without another full stop.
         describeMove(play).replace(/\.$/, ''),
         play.playable ? null : `unplayable: ${reasonText}`,
@@ -102,11 +109,11 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
           </span>
         )}
       </span>
-      {play.damage && play.damage.typeMultiplier !== 1 && (
+      {shownDamage && shownDamage.typeMultiplier !== 1 && (
         <span
-          className={`${styles.eff} ${play.damage.typeMultiplier > 1 ? styles.effUp : styles.effDown} display`}
+          className={`${styles.eff} ${shownDamage.typeMultiplier > 1 ? styles.effUp : styles.effDown} display`}
         >
-          {play.damage.typeMultiplier === 0 ? '×0' : `×${play.damage.typeMultiplier}`}
+          {shownDamage.typeMultiplier === 0 ? '×0' : `×${shownDamage.typeMultiplier}`}
         </span>
       )}
       {/* The owner is the art. A shared hand of twelve cards is unreadable if you cannot tell at a glance
@@ -136,8 +143,8 @@ export function MoveCard({ play, selected, onClick, onHover, index, total }: Pro
             </span>
           )}
         </span>
-        <span className={`${styles.power} display tabular`}>
-          {play.damage ? play.damage.final : move.power > 0 ? move.power : '—'}
+        <span className={`${styles.power} ${group && move.power > 0 ? styles.powerOnly : ''} display tabular`} data-power-only={group || undefined}>
+          {shownDamage ? shownDamage.final : move.power > 0 ? move.power : '—'}
         </span>
       </span>
       {state === 'locked' && (

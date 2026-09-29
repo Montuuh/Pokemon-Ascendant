@@ -24,7 +24,7 @@ loop layer and re-tests the core inside it.
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
 | v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner played, every City door open. **Twelve subversions** | ✅ 2026-09-28 |
-| v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ☐ |
+| v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ◐ |
 | v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
 | v1.1 | Polish | Audio, accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
@@ -648,14 +648,14 @@ every change as the next patch.
 rewritten as short technical notes (the user's call: no roleplay, name what changed — "Original FRLG maps imported"),
 and release doctrine R2 now asks for that tone.
 
-## v0.8 — Multi-enemy & the route  ☐
+## v0.8 — Multi-enemy & the route  ◐
 
 The version that changes how a fight is played. Fights against two or three enemies at once make the game far
 more strategic, so they are **not only the League's or Region 3's** — they appear across the whole run (user,
 2026-09-24; §2.2, §5.6). The route is reworked in the same version, and the balance pass comes last, once both
 have settled. Not content first: it is the combat engine, so a targeting bug cannot hide behind a content bug.
 
-### v0.8.1 — Multi-enemy fights  ☐
+### v0.8.1 — Multi-enemy fights  ✅ 2026-09-29
 1 lead enemy + 1–2 supports (§5.6): slots, targeting, intents, AI, Cleave and Backstrike against several bodies.
 The hand changes with it: a card is **dragged onto its target** as well as clicked, and before it is played it
 shows **its damage against every enemy it can hit**, not against one (§9 — the damage preview goes per target).
@@ -672,6 +672,20 @@ The playtest findings of 2026-09-24, measured over the harness's fights:
   takes its own — type, Defence, ability, held item. The chip says what it is and that it hits everyone ("→ ALL");
   the damage goes on each target it will land on (the portraits), one number each.
 - **An intent you can hover** (backlog, user, 2026-09-25) is designed with the user alongside.
+
+**Shipped.** The combat engine takes groups (§5.6): a scenario's `onField` (1–3) puts that many enemies on the
+field — the first the enemy Lead, the rest supports with a role — and the rest of the list fills a free place.
+Decided with the user on 2026-09-29: **a single-target Melee card reaches only the enemy Lead** (Ranged, Backstrike
+and area cards reach all; the player's Cleave hits every enemy, each its own number); when the Lead falls the
+strongest left steps up and the fight ends only when all are down; a ball in a pack is aimed and a catch scatters
+the rest (§2.6.4.1); supports enter at 60 % HP and gain +1 Attack a turn from their 4th; Healers and Buffers aim
+at the Lead, the group never doubles a status, a role's intents score ×1.5 (all `BattleConfig`, tuned in v0.8.6).
+**The intent is honest**: every number is the Resolution run dry on a copy of the fight (`combat/forecast.ts`) —
+over whole harness runs the old chip matched 63 % of hits (a Cleave 34 %), the forecast 100 %. On screen: one
+compact panel per enemy with a Lead/Support chip, the card's number on every enemy it reaches or a blue *Out of
+reach* lock, drag-and-drop by pointer (click-then-click and the keyboard still work), incoming-hit chips on the
+portraits, "→ ALL" with no number for an area intent, and the **intent card** on hover (§9.2.6). Groups live in
+four fixtures (`group-*`); placing them in the run is v0.8.3. Also: a stale changelog e2e fixed (v0.7.12's rewrite).
 
 ### v0.8.2 — Enemies that act twice, and enemies that call for help  ☐
 Some Pokémon and some battles **act twice a turn**, both intents shown; and some carry a move that **calls one or
@@ -780,7 +794,6 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 | Idea | Noted | Likely home |
 |---|---|---|
 | **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.4's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.4, designed first |
-| **An intent you can hover.** Resting on an enemy's intent opens a card with everything it will do: the move and its type, who it is aimed at, how much it will deal to each target, its riders (a status, a stat change) — the enemy side's counterpart to a move card's tooltip. Goes with the per-target numbers of the intent fix, not instead of them: the numbers stay on screen, the card is the full read. | user, 2026-09-25 | v0.8.1, with the intent rework |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -801,6 +814,7 @@ the account revamps move to v0.9):
 | 10 | The catch, animated | v0.9.3 |
 | 11 | The Ring moves out of the Dojo — a town Ring, and the city's Coliseum | v0.7.7 (with the City art) |
 | — | Multi-enemy fights, everywhere in the run | v0.8.1, v0.8.3 |
+| — | An intent you can hover (the intent card) | v0.8.1 ✅ |
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |

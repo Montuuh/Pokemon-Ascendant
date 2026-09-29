@@ -255,6 +255,7 @@ const EnemySetupSchema = z.object({
   moves: z.array(KebabId).min(1).max(5).optional(),
   abilityId: KebabId.optional(),
   veiled: z.boolean().optional(),
+  role: z.enum(['healer', 'buffer', 'debuffer', 'attacker']).optional(),
 });
 
 export const ScenarioSchema = z.object({
@@ -273,6 +274,7 @@ export const ScenarioSchema = z.object({
     relics: z.array(KebabId).optional(),
   }),
   enemies: z.array(EnemySetupSchema).min(1),
+  onField: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
 });
 
 export const TmsFileSchema = z.object({ _note: z.string().optional(), tms: z.array(TmSchema) });

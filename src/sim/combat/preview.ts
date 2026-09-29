@@ -3,8 +3,8 @@ import type { CombatCtx } from './context';
 import { breakdownFor } from './damageFlow';
 import type { DamageBreakdown } from './damage';
 import { catchOdds, type CatchOdds } from './catch';
-import { activeEnemy, benchIndices, lead } from './slots';
-import type { Combatant, CombatState, RejectReason, SkillCard } from './state';
+import { activeEnemy, aliveEnemies, benchIndices, lead } from './slots';
+import type { Combatant, CombatState, EnemyCombatant, RejectReason, SkillCard } from './state';
 import { choiceLockBlocks, itemApDelta, guaranteedCatch } from './items';
 import { cardsLocked, isPositionLocked, paralysisApBonus } from './status';
 
@@ -24,8 +24,41 @@ export interface CardPlayability {
   /** §3.3.3 — playing it asks for a bench destination. */
   needsStepBackChoice: boolean;
   stepBackOptions: number[];
-  /** Damage against the active enemy (null for non-damaging cards). */
+  /** Damage against the card's target — the one named, or the enemy Lead (null for non-damaging cards). */
   damage: DamageBreakdown | null;
+  /** §5.6 — the card lands on the enemies (a hit, a foe status or a foe stat drop), so it takes an enemy target. */
+  aimsAtFoe: boolean;
+  /** §5.6 — an area card (Cleave) lands on every enemy on the field, each with its own number. */
+  hitsAll: boolean;
+  /** §5.6 / §9.2.4 — every enemy on the field, whether this card can reach it, and what it would deal there. */
+  targets: CardTarget[];
+}
+
+export interface CardTarget {
+  uid: string;
+  reachable: boolean;
+  damage: DamageBreakdown | null;
+}
+
+/** §5.6 — does the move land on the foe side at all (a hit, a status, a stat drop)? */
+export function aimsAtFoe(move: MoveDef): boolean {
+  return move.power > 0 || move.effects.some((e) => (e.kind === 'status' && !e.self) || (e.kind === 'stage' && e.target === 'foe'));
+}
+
+/**
+ * §5.6 — reach, the Lead mechanic mirrored: a single-target Melee card lands only on the enemy Lead, which stands
+ * in front of its supports. Ranged cards, Backstrike cards and area cards reach every enemy.
+ */
+export function canReach(state: CombatState, move: MoveDef, enemy: EnemyCombatant): boolean {
+  if (enemy.hp <= 0) return false;
+  if (move.targeting === 'cleave' || move.targeting === 'backstrike' || move.range === 'ranged') return true;
+  return activeEnemy(state)?.uid === enemy.uid;
+}
+
+/** §5.6 — the enemies a card lands on when aimed at `target`: every one for an area card, else the one. */
+export function cardVictims(state: CombatState, move: MoveDef, target: EnemyCombatant | null): EnemyCombatant[] {
+  if (move.targeting === 'cleave') return aliveEnemies(state);
+  return target ? [target] : [];
 }
 
 export function effectiveApCost(state: CombatState, move: MoveDef, owner: Combatant, ctx: CombatCtx): number {
@@ -44,14 +77,17 @@ export function stepBackOptions(state: CombatState): number[] {
   });
 }
 
-export function cardPlayability(state: CombatState, cardId: string, ctx: CombatCtx): CardPlayability | null {
+export function cardPlayability(state: CombatState, cardId: string, ctx: CombatCtx, targetUid?: string): CardPlayability | null {
   const card = state.player.hand.find((c) => c.id === cardId);
   if (!card) return null;
   const move = ctx.content.move(card.moveId);
   const owner = state.player.team.find((c) => c.uid === card.ownerUid)!;
   const isLead = state.player.leadIndex === state.player.team.indexOf(owner);
   const apCost = effectiveApCost(state, move, owner, ctx);
-  const enemy = activeEnemy(state);
+  // §5.6 — the card's target: the one named, else the enemy Lead.
+  const named = targetUid !== undefined ? state.enemies.find((e) => e.uid === targetUid && e.hp > 0) ?? null : null;
+  const enemy = targetUid !== undefined ? named : activeEnemy(state);
+  const foe = aimsAtFoe(move);
   const stepsForward = move.modifier === 'step-forward' && !isLead;
   const sbOptions = move.modifier === 'step-backward' && isLead ? stepBackOptions(state) : [];
 
@@ -68,8 +104,14 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
   else if (stepsForward && lead(state) && isPositionLocked(lead(state)!)) reason = 'lead-frozen';
   else if (apCost > state.player.ap) reason = 'not-enough-ap';
   else if (move.power > 0 && !enemy) reason = 'no-enemy';
+  else if (targetUid !== undefined && foe && !enemy) reason = 'no-enemy';
+  else if (foe && enemy && !canReach(state, move, enemy)) reason = 'out-of-reach';
 
-  const damage = move.power > 0 && enemy ? breakdownFor(owner, enemy, move, !!move.alwaysCrit || state.player.critChance >= 1, ctx, state) : null;
+  const crit = !!move.alwaysCrit || state.player.critChance >= 1;
+  const damage = move.power > 0 && enemy ? breakdownFor(owner, enemy, move, crit, ctx, state) : null;
+  const targets = state.enemies
+    .filter((e) => e.hp > 0)
+    .map((e) => ({ uid: e.uid, reachable: foe && canReach(state, move, e), damage: move.power > 0 ? breakdownFor(owner, e, move, crit, ctx, state) : null }));
   return {
     card,
     move,
@@ -81,6 +123,9 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
     needsStepBackChoice: sbOptions.length > 0,
     stepBackOptions: sbOptions,
     damage,
+    aimsAtFoe: foe,
+    hitsAll: move.targeting === 'cleave',
+    targets,
   };
 }
 
@@ -115,9 +160,17 @@ export interface ConsumablePlayability {
   playable: boolean;
   reason: RejectReason | null;
   needsAllyTarget: boolean;
+  /** §2.6.4 / §5.6 — a Poké Ball is thrown at one enemy of the pack. */
+  aimsAtFoe: boolean;
 }
 
-export function consumablePlayability(state: CombatState, cardId: string, ctx: CombatCtx): ConsumablePlayability | null {
+/** §2.6.4 — the wild Pokémon a ball is thrown at: the one named, else the enemy Lead. */
+export function catchTarget(state: CombatState, targetUid?: string): EnemyCombatant | null {
+  if (targetUid === undefined) return activeEnemy(state);
+  return state.enemies.find((e) => e.uid === targetUid && e.hp > 0) ?? null;
+}
+
+export function consumablePlayability(state: CombatState, cardId: string, ctx: CombatCtx, targetUid?: string): ConsumablePlayability | null {
   const card = state.player.consumables.hand.find((c) => c.id === cardId);
   if (!card) return null;
   const def = ctx.content.consumable(card.consumableId);
@@ -127,14 +180,14 @@ export function consumablePlayability(state: CombatState, cardId: string, ctx: C
   else if (def.apCost > state.player.ap) reason = 'not-enough-ap';
   else if (def.effect.kind === 'catch' && state.kind !== 'wild') reason = 'not-wild';
   else if (def.effect.kind === 'catch' && state.player.balls <= 0) reason = 'no-balls';
-  else if (def.effect.kind === 'catch' && !activeEnemy(state)) reason = 'no-enemy';
-  return { cardId, def, playable: reason === null, reason, needsAllyTarget: def.target === 'ally' };
+  else if (def.effect.kind === 'catch' && !catchTarget(state, targetUid)) reason = 'no-enemy';
+  return { cardId, def, playable: reason === null, reason, needsAllyTarget: def.target === 'ally', aimsAtFoe: def.effect.kind === 'catch' };
 }
 
 /** §2.6.4 — the live catch odds for the UI pill (null when not a wild fight or no ball available). */
-export function catchStatus(state: CombatState, ctx: CombatCtx): (CatchOdds & { ballsLeft: number }) | null {
+export function catchStatus(state: CombatState, ctx: CombatCtx, targetUid?: string): (CatchOdds & { ballsLeft: number }) | null {
   if (state.kind !== 'wild') return null;
-  const enemy = activeEnemy(state);
+  const enemy = catchTarget(state, targetUid);
   if (!enemy) return null;
   const ballDef = [...state.player.consumables.hand, ...state.player.consumables.pool]
     .map((c) => ctx.content.consumable(c.consumableId))

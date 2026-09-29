@@ -1,5 +1,5 @@
 import type { CombatTally } from '../run/types';
-import type { EncounterKind, EnemyTier } from '../content/defs';
+import type { EncounterKind, EnemyTier, SupportRole } from '../content/defs';
 import type { IntentKind, PokemonType, PrimaryStatus, SlotId, Stat, StatusCondition } from '../types';
 import type { Effectiveness } from './typeChart';
 
@@ -88,6 +88,10 @@ export interface EnemyCombatant extends Combatant {
   veiled?: boolean;
   /** §5.5.1 — under Trainer's Instinct, what it will do next turn. It commits to it unless it becomes illegal. */
   next?: QueuedIntent | null;
+  /** §5.6 — a support's role; absent on a Lead and on every enemy of a one-on-one fight. */
+  role?: SupportRole;
+  /** §5.6 — Intent phases this Pokémon has stood on the field for; a support that lingers escalates. */
+  fieldTurns?: number;
 }
 
 /** §5.5.1 — the intent queue: an enemy's committed plan for next turn, and the boss phase it was planned in. */
@@ -101,6 +105,8 @@ export interface Intent {
   moveId: string | null;
   /** Slot the intent is locked to (null for cleave/buff/stall/incapacitated). */
   targetSlot: SlotId | null;
+  /** §5.6 — a Healer's heal or a Buffer's raise aimed at an ally (the enemy Lead) rather than at itself. */
+  targetEnemyUid?: string;
   /** §5.5 — hidden intents render as ❓ until witnessed. */
   hidden: boolean;
 }
@@ -243,8 +249,13 @@ export interface CombatState {
   turn: number;
   phase: Phase;
   player: PlayerState;
-  /** Active enemies (v0.1: exactly one while in progress). */
+  /**
+   * §5.6 — the enemies on the field, in slot order: index 0 is the enemy Lead, the rest are its supports. Only
+   * the living stand here; a faint removes one and promotes or refills (`onFaint`).
+   */
   enemies: EnemyCombatant[];
+  /** §5.6 — how many enemies stand on the field at once (1 = one after another). */
+  onField: number;
   /** §5.9.3 — enemies still to come, fought sequentially. */
   enemyQueue: EnemyCombatant[];
   /** Fainted/caught enemies, for the summary. */
@@ -259,8 +270,10 @@ export interface CombatState {
 // ---- Player actions = the input log (§10.7.4 replay) ---------------------------------------------------
 
 export type CombatAction =
-  | { type: 'play-card'; cardId: string; stepBackTo?: number }
-  | { type: 'use-consumable'; cardId: string; targetIndex?: number }
+  /** §5.6 — `targetUid` names the enemy the card is aimed at; absent, it is the enemy Lead. */
+  | { type: 'play-card'; cardId: string; stepBackTo?: number; targetUid?: string }
+  /** `targetIndex` is the ally for an ally item; `targetUid` the enemy a Poké Ball is thrown at (§2.6.4). */
+  | { type: 'use-consumable'; cardId: string; targetIndex?: number; targetUid?: string }
   | { type: 'swap'; benchIndex: number }
   | { type: 'pick-lead'; benchIndex: number }
   | { type: 'end-turn' }
@@ -278,6 +291,8 @@ export type RejectReason =
   | 'melee-needs-lead'
   | 'not-enough-ap'
   | 'no-enemy'
+  /** §5.6 — a single-target Melee card reaches only the enemy Lead. */
+  | 'out-of-reach'
   | 'target-fainted'
   | 'target-is-lead'
   | 'target-frozen'

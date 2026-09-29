@@ -206,3 +206,162 @@
   font-size: 12px;
   color: var(--ink-muted);
 }
+
+/* §5.6 — two or three enemies stand together: every panel is drawn smaller so the three fit the column. */
+.compact {
+  gap: var(--sp-1);
+}
+.compact .intent {
+  padding: var(--sp-1) var(--sp-2);
+}
+.compact .card {
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+}
+.compact .icon {
+  width: var(--sp-8);
+  height: var(--sp-6);
+}
+.compact .name {
+  font-size: var(--type-body);
+}
+.compact .hpText {
+  font-size: var(--type-small);
+}
+/* The card being dragged is over this enemy: it is the one the drop will hit. */
+.aimed {
+  border-color: var(--accent-action);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-action) 45%, transparent);
+}
+/* §9.2.3 — blue means position: a Melee card cannot reach a support. Not desaturated: nothing is wrong with it. */
+.outOfReach {
+  border-color: var(--brand-blue);
+  border-style: dashed;
+  animation: none;
+  cursor: not-allowed;
+}
+.outOfReach:hover {
+  transform: none;
+}
+/* §9.2.4 — the held card's number on this enemy, at the card's corner, never over its HP. */
+.hitPreview {
+  position: absolute;
+  top: calc(var(--sp-3) * -1);
+  right: var(--sp-2);
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  border: 2px solid var(--accent-negative);
+  color: var(--accent-negative);
+  font-size: var(--type-h2);
+  line-height: 1.2;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  pointer-events: none;
+}
+.hitPreview b {
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  color: var(--accent-action);
+  letter-spacing: 0.08em;
+}
+.hitKo {
+  border-color: var(--accent-action);
+}
+.reachLock {
+  position: absolute;
+  top: calc(var(--sp-3) * -1);
+  right: var(--sp-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--brand-blue);
+  color: var(--ink-on-accent);
+  font-size: var(--type-caption);
+  font-weight: 800;
+  z-index: 2;
+  pointer-events: none;
+}
+.chipLead,
+.chipRole {
+  font-size: var(--type-caption);
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  padding: 0 var(--sp-1);
+  color: var(--ink-on-accent);
+}
+.chipLead {
+  background: var(--accent-action);
+}
+.chipRole {
+  background: var(--brand-cream);
+}
+
+/* §2.6.4 — in a group the catch chance sits under the card, one line, no ball count (the ball card has it). */
+.catchInline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  align-self: flex-end;
+  margin-top: calc(var(--sp-1) * -1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
+  border: 1px solid var(--brand-red);
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.catchInline .ball {
+  width: var(--sp-3);
+  height: var(--sp-3);
+}
+/* A 720 p stage: three panels have to fit, so each drops its art and its level line (both are in the bubble). */
+@media (max-height: 800px) {
+  .compact {
+    gap: 0;
+  }
+  .compact .icon,
+  .compact .meta {
+    display: none;
+  }
+  .compact .intent {
+    font-size: var(--type-caption);
+    padding: 2px var(--sp-2);
+  }
+  /* The name and the HP number share one line, the bar runs under both. */
+  .compact .card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: var(--sp-2);
+    row-gap: 2px;
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .compact .card > :global(*):not(.header):not(.hpRow):not(.hitPreview):not(.reachLock) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .compact .header {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .compact .hpRow {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .compact {
+    position: relative;
+  }
+  .compact .catchInline {
+    position: absolute;
+    right: var(--sp-2);
+    bottom: calc(var(--sp-2) * -1);
+    margin: 0;
+    z-index: 1;
+  }
+}

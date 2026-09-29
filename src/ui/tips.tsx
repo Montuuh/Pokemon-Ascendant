@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, regionContent, regionName, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type ConsumableDef, type MoveDef, type PokemonType, type RelicDef } from '@/sim';
+import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { CITY_DOOR_HINT, INTENT_LABEL, MARKET_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { CITY_DOOR_HINT, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 
 // Every explanation the game offers on hover, in one file.
@@ -42,9 +42,10 @@ export function statusTip(status: string): ReactNode {
 
 // ── Moves ────────────────────────────────────────────────────────────────────────────────────────────────
 
+// §3.6 / §5.6 — range answers two questions: who can play the card, and which enemy it can reach.
 const RANGE_BODY = {
-  melee: 'Melee: only your Lead can play it.',
-  ranged: 'Ranged: anyone on your team can play it, from the bench too.',
+  melee: 'Melee: only your Lead can play it, and it reaches only the enemy Lead.',
+  ranged: 'Ranged: anyone on your team can play it, from the bench too, and it reaches any enemy.',
 } as const;
 
 const MODIFIER_BODY = {
@@ -58,7 +59,7 @@ export function moveTip(play: CardPlayability): ReactNode {
   const { move, owner } = play;
   const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', `${play.apCost} AP${play.apCost !== move.apCost ? ` (base ${move.apCost})` : ''}`];
   if (move.power > 0) meta.push(`${move.power} power`);
-  if (move.targeting === 'cleave') meta.push('Hits every slot');
+  if (move.targeting === 'cleave') meta.push('Hits every enemy');
   // §5.13.2 — the fifth card says so: it is the one card in the hand no Move Manager can reach.
   if (play.card.mastery) meta.push('★ Mastery');
   const lines: ReactNode[] = [describeMoveDef(move)];
@@ -66,7 +67,10 @@ export function moveTip(play: CardPlayability): ReactNode {
   const mod = MODIFIER_BODY[move.modifier];
   if (mod) lines.push(mod);
   let footer: ReactNode = play.card.mastery ? `${owner.name}'s Mastery Move — a fifth card its line has earned.` : `${owner.name}'s card.`;
-  if (play.damage) {
+  if (play.damage && play.targets.length > 1) {
+    // §5.6 — against a group every enemy has its own number; one "each" figure would be wrong for all but one.
+    footer = play.hitsAll ? 'Lands on every enemy — each one\'s number is on its panel.' : 'Pick the enemy — each one\'s number is on its panel.';
+  } else if (play.damage) {
     const eff = play.damage.typeMultiplier;
     footer = `Against this target: ${play.damage.final} damage${eff === 0 ? ' — no effect' : eff > 1 ? ` (super effective ×${eff})` : eff < 1 ? ` (not very effective ×${eff})` : ''}${play.damage.isCrit ? ', critical' : ''}.`;
   }
@@ -101,6 +105,63 @@ const INTENT_BODY: Record<string, string> = {
 /** §5.5 — what an intent means and what to do about it. `hidden` intents show the kind only. */
 export function intentTip(kind: string, detail?: string, hidden = false): ReactNode {
   return <Tip title={`Enemy intent: ${INTENT_LABEL[kind] ?? cap(kind)}`} meta={detail && !hidden ? [detail] : undefined} body={INTENT_BODY[hidden ? 'unknown' : kind] ?? INTENT_BODY.unknown} footer="Every enemy move is telegraphed a turn ahead. Nothing here is a guess." />;
+}
+
+/**
+ * §9.2.5 — the intent card: everything the intent will do, the enemy side's counterpart to a move card's bubble.
+ * The move and its type, who it is aimed at, the HP it takes off each Pokémon it lands on (the forecast's numbers,
+ * the same ones on the portraits), its riders and its recharge. A hidden intent tells its kind and nothing else.
+ */
+export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecast: TurnForecast): ReactNode {
+  const intent = enemy.intent;
+  if (!intent) return null;
+  const move = intent.moveId ? getContent().move(intent.moveId) : null;
+  if (intent.hidden || !move) return intentTip(intent.kind, undefined, intent.hidden);
+  const meta: ReactNode[] = [typeName(move.type), INTENT_LABEL[intent.kind] ?? cap(intent.kind)];
+  if (move.power > 0) meta.push(`${move.power} power`, move.range === 'melee' ? 'Melee' : 'Ranged');
+  const lines: ReactNode[] = [];
+  const ally = intent.targetEnemyUid ? intentRecipient(state, enemy, intent) : enemy;
+  if (intent.kind === 'cleave') lines.push('Aimed at every Pokémon on your side.');
+  else if (intent.targetSlot) lines.push(`Aimed at your ${SLOT_LABEL[intent.targetSlot]} — ${slotOccupant(state, intent.targetSlot)?.name ?? 'nobody there'}.`);
+  else lines.push(ally.uid === enemy.uid ? 'On itself.' : `On ${ally.name}, its Lead.`);
+  const hits = forecast.byEnemy[enemy.uid]?.hits ?? [];
+  for (const h of hits) {
+    const mon = state.player.team.find((m) => m.uid === h.targetUid);
+    lines.push(<b key={h.targetUid}>{`${mon?.name ?? '?'}: ${h.amount} damage${h.ko ? ' — knocks it out' : ''}`}</b>);
+  }
+  if (move.power > 0 && hits.length === 0) lines.push('No damage lands: the target is immune, or the slot is empty.');
+  for (const fx of move.effects) {
+    if (fx.kind === 'status' && !fx.self) lines.push(`${fx.chance >= 1 ? 'Inflicts' : `${Math.round(fx.chance * 100)}% chance to inflict`} ${fx.status}.`);
+    if (fx.kind === 'stage' && fx.target === 'foe') lines.push(`${fx.stages > 0 ? '+' : ''}${fx.stages} ${cap(fx.stat)} on the target.`);
+    if (fx.kind === 'stage' && fx.target === 'self') lines.push(`${fx.stages > 0 ? '+' : ''}${fx.stages} ${cap(fx.stat)} for ${ally.name}.`);
+    if (fx.kind === 'heal') lines.push(`${ally.name} recovers ${Math.round(fx.percentOfMaxHp * 100)}% of its HP.`);
+    if (fx.kind === 'recoil') lines.push(`It takes ${Math.round(fx.percentOfDamage * 100)}% of the damage back.`);
+    if (fx.kind === 'drain') lines.push(`It heals ${Math.round(fx.percentOfDamage * 100)}% of the damage it deals.`);
+  }
+  if (move.cooldown) lines.push(`Then it cannot use it for ${move.cooldown} turn${move.cooldown === 1 ? '' : 's'}.`);
+  return (
+    <Tip
+      icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />}
+      title={`${enemy.name}: ${move.name}`}
+      meta={meta}
+      body={lines.map((l, i) => <div key={i}>{l}</div>)}
+      footer={INTENT_BODY[intent.kind]}
+    />
+  );
+}
+
+/** §5.6 — an enemy's place in a group: the Lead in front, or a support behind it with its role. */
+export function roleTip(place: string, role: string | null, escalateFrom: number): ReactNode {
+  if (place === 'Lead') {
+    return <Tip title="Enemy Lead" body="It stands in front of its group. Your Melee cards reach only this one; Ranged and area cards reach the rest. If it falls, the strongest of the others steps up." />;
+  }
+  return (
+    <Tip
+      title={role ? `Support · ${ROLE_LABEL[role]}` : 'Support'}
+      body={role ? ROLE_HINT[role] : 'It fights behind the Lead.'}
+      footer={`Supports stand behind the Lead: only Ranged and area cards reach them. They enter weaker, and one still standing on turn ${escalateFrom} grows fiercer every turn.`}
+    />
+  );
 }
 
 /** §5.5.1 Trainer's Instinct — the enemy's plan for next turn, and the one way it can change. */
@@ -176,7 +237,7 @@ export function traumaTip(stacks: number, max: number): ReactNode {
 }
 
 /** The Pokémon itself: species, types, level, ability, item — the summary a portrait owes on hover. */
-export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number }): ReactNode {
+export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number; incoming?: { name: string; move: string; amount: number }[]; incomingKo?: boolean }): ReactNode {
   const content = getContent();
   const meta: ReactNode[] = [`Lv ${c.level}`, ...c.types.map(typeName)];
   const lines: ReactNode[] = [];
@@ -190,6 +251,9 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
   }
   if (c.status) lines.push(<div key="s"><b>{STATUS_LABEL[c.status.kind]}</b> — {STATUS_HINT[c.status.kind]}</div>);
   if (c.traumaStacks > 0) lines.push(<div key="t"><b>Trauma ×{c.traumaStacks}</b> — max HP is lowered until treated.</div>);
+  // §9.2.5 — what lands on it this turn, one line per enemy, the same numbers as the chips beside it.
+  for (const h of extra?.incoming ?? []) lines.push(<div key={`i-${h.name}-${h.move}`}><b>−{h.amount}</b> from {h.name}'s {h.move} this turn.</div>);
+  if (extra?.incomingKo) lines.push(<div key="ko"><b>Together they knock it out</b> unless you act.</div>);
   const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP.` : undefined;
   return <Tip title={c.name} meta={meta} body={lines.length ? lines : undefined} footer={footer} />;
 }

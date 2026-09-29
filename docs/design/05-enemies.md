@@ -31,6 +31,13 @@ Intents target **slots**. The display names the slot and its current occupant.
 | `Status(cond, slot)` | 💢 BURN → Lead | Applies a condition to the slot's occupant |
 | `Unknown` | ❓ + a kind glyph | Hidden magnitude (§5.5) |
 
+**The number is the hit** (v0.8.1). What an intent prints is the Resolution phase run dry on a copy of the fight:
+every term the real hit has — relics, Badges, held items, abilities, flat reductions, guards, shields, faint
+prevention, and what an earlier intent of the same turn does to a later one — is in it, because it *is* that hit.
+The only thing it cannot know is a roll; a rider that lands on a chance is taken not to land. Measured over the
+harness's whole runs: the old chip (the bare formula, the Lead's number printed for a Cleave) matched the hit that
+landed 63 % of the time and 34 % for a Cleave; the forecast matches 100 % (`balance/intentAccuracy.test`).
+
 **Why slots and not Pokémon:** it gives every telegraph a counter-play. A Backstrike aimed at your fragile bench
 member can be answered by moving someone sturdier into that slot — positioning becomes defensive as well as
 offensive.
@@ -118,24 +125,49 @@ One lead enemy plus one or two supports. **Not only a Region 3 accent** (user, 2
 where the game is most strategic, so groups appear across the whole run — which nodes, and how often, is placed
 with the harness (roadmap v0.8.3). Region 3 keeps the largest groups and adds field effects (§2.2).
 
-- All enemies reveal intents simultaneously.
+**The formation.** An encounter says how many enemies stand on the field at once (`onField`, 1–3; 1 is the
+one-after-another fight of §5.9.3). The first on the field is the **enemy Lead**, the others its **supports**;
+what is left of the list waits and **fills the first place that falls free**. The enemy side is the Lead mechanic
+mirrored (§3.3): the Lead stands in front of its group.
+
+- All enemies reveal intents in the same Intent phase, each against a slot of yours (§5.2).
 - Resolution order: **supports first in slot order, lead enemy last.**
-- The player picks a target for each offensive card: **dragging the card onto the enemy**, or clicking the card
-  and then the enemy. Before it is played, a card shows **its damage against every enemy it can hit** — the
-  preview is per target, never one number for the fight.
+- **Reach** (user, 2026-09-29). A **single-target Melee card reaches only the enemy Lead**; Ranged cards, Backstrike
+  cards and **area cards** (Cleave) reach every enemy. So most Melee hits land on the Lead unless they are an area
+  hit, and a support behind it is answered with a Ranged card or an area one. A Melee card aimed at a support is
+  refused and says why ("out of reach") — shown in the position colour, never hidden (§9.2.3).
+- **Area cards** (the player's Cleave moves) hit **every enemy on the field**, each with its own number, riders
+  rolled per target. §6.3.6.4's ×1.6 budget for a `cleave` move is what pays for that.
+- The player picks a target for each card that lands on an enemy (a hit, a foe status, a foe stat drop):
+  **dragging the card onto the enemy**, or clicking the card and then the enemy; clicking the card again, or
+  Enter, aims it at the enemy Lead. Before it is played, a card shows **its damage against every enemy it can
+  hit** — the preview is per target, never one number for the fight (§9.2.4).
+- **The Lead falls, the fight goes on** (user, 2026-09-29). When the enemy Lead faints, the **strongest** of what
+  stands (most HP, then level; a fresh arrival from the queue counts) **steps up to lead**, and the fight ends only
+  when every enemy is down. A newcomer's first intent is declared at once, as §5.1 requires.
+- **Catching in a pack:** §2.6.4.1 — the ball is aimed, and a catch scatters the rest.
 - **Acting twice, and calling for help.** Some Pokémon and some battles act twice a turn, both intents shown; some
   carry a move that calls one or two companions into the fight — a telegraphed intent like any other (§5.2), which
   turns a single fight into a group. Their exact rules are designed in roadmap v0.8.2.
 
 | Support role | Behaviour |
 |---|---|
-| **Healer** | Restores the lead enemy's HP |
-| **Buffer** | Buffs the lead enemy |
-| **Debuffer** | Applies status to the player |
-| **Attacker** | Extra damage |
+| **Healer** | Its heal goes to the enemy Lead, weighed by the Lead's missing HP — it waits until the Lead is hurt |
+| **Buffer** | Its stat raise goes to the enemy Lead, decaying with the stages the Lead has banked |
+| **Debuffer** | Leans on status and stat drops at your team |
+| **Attacker** | Leans on hits: a second threat beside the Lead's |
 
-Supports have reduced HP and are meant to die in 2–3 turns; one that survives longer escalates. Every support
-uses the same scoring function, so a Debuffer never double-applies and a Healer waits until it matters.
+A support's role is authored on the encounter (`role`) and is what makes it a support. The AI is the same §5.3
+scoring function with two additions: the intents a role is for score ×`supportRoleMultiplier` (1.5), and **the
+group never doubles a status** — a status another enemy already declared this turn on the same slot scores 0.
+Only a move that does nothing but heal or raise can be handed to the Lead (Rest would put it to sleep, Belly Drum
+would cut it); anything else stays on its caster.
+
+**Supports are meant to fall in 2–3 turns.** A support enters with `supportHpMultiplier` (0.6) of its HP. **One
+that lingers escalates**: from its `supportEscalateFromTurn`th (4th) Intent phase on the field it gains
+`supportEscalateStages` (+1) Attack at every Intent phase, logged and shown as a stage chip. A Lead never
+escalates — it is the fight. *(All four numbers are `BattleConfig` first values, 2026-09-29; the v0.8.6 balance
+pass tunes them.)*
 
 ---
 

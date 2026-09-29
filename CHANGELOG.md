@@ -9,6 +9,19 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one short line of lede, then 2–4
 > `- **Headline.** A few words.` bullets. Every change ships as a version; there is no unreleased block.
 
+## v0.8 — Multi-enemy & the route · in progress
+
+Group fights, field effects and a reworked route.
+
+### v0.8.1 — Multi-enemy fights · 2026-09-29
+
+Fights against two or three enemies at once.
+
+- **Enemy groups.** A Lead and 1–2 supports: Healer, Buffer, Debuffer, Attacker.
+- **Targeting.** Drag a card onto an enemy; Melee reaches only the enemy Lead.
+- **Per-target damage.** Every enemy shows the card's own number; area moves hit all.
+- **Exact intents.** Intent damage is the real hit; incoming hits shown on each portrait.
+
 ## v0.7 — Cities & Regions 2–3 · 2026-09-28
 
 Regions 2–3 and a City between each Region.

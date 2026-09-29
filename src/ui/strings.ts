@@ -29,6 +29,7 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
   'melee-needs-lead': 'Melee cards play from the Lead slot. Swap it in or use a Step-Forward card.',
   'not-enough-ap': 'Not enough AP.',
   'no-enemy': 'No target.',
+  'out-of-reach': 'A Melee move only reaches the enemy Lead. Ranged and area moves reach its supports.',
   'target-fainted': 'That Pokémon has fainted.',
   'target-is-lead': 'Already the Lead.',
   'target-frozen': 'Frozen Pokémon cannot swap.',
@@ -68,6 +69,22 @@ export const INTENT_LABEL: Record<string, string> = {
   status: 'Status',
   unknown: 'Unknown',
   incapacitated: "Can't act",
+};
+
+/** §5.6 — the four support roles, as the chip names them. */
+export const ROLE_LABEL: Record<string, string> = {
+  healer: 'Healer',
+  buffer: 'Buffer',
+  debuffer: 'Debuffer',
+  attacker: 'Attacker',
+};
+
+/** §5.6 — what each role does, for its bubble. */
+export const ROLE_HINT: Record<string, string> = {
+  healer: 'Heals its Lead when the Lead is hurt. Take it out first, or every hit on the Lead is undone.',
+  buffer: 'Raises its Lead\'s stats. The longer it stands, the harder the Lead hits.',
+  debuffer: 'Puts statuses and stat drops on your team. The group never doubles a status it already plans.',
+  attacker: 'Extra damage. A second threat to read beside the Lead\'s.',
 };
 
 export const EFFECTIVENESS_LABEL: Record<string, string> = {

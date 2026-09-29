@@ -60,6 +60,14 @@ export interface BattleConfig {
   traumaStackCap: number;
   /** §2.6.4 — enemy AI never targets a bench slot that is empty; how many bench slots exist. */
   benchSlots: number;
+  /** §5.6 — a support enters with this share of its HP, so it falls in two or three turns. */
+  supportHpMultiplier: number;
+  /** §5.6 — a support still standing at this many Intent phases starts to escalate… */
+  supportEscalateFromTurn: number;
+  /** …gaining this many Attack stages at each Intent phase from then on. */
+  supportEscalateStages: number;
+  /** §5.6 — a support's AI weights the intents its role is for (Debuffer: status and debuff; Attacker: hits). */
+  supportRoleMultiplier: number;
 }
 
 export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
@@ -104,5 +112,9 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   traumaZone2PenaltyPercent: 10,
   traumaStackCap: 10,
   benchSlots: 2,
+  supportHpMultiplier: 0.6,
+  supportEscalateFromTurn: 4,
+  supportEscalateStages: 1,
+  supportRoleMultiplier: 1.5,
 };
 

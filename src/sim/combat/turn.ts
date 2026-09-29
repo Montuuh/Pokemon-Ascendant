@@ -2,10 +2,10 @@ import type { RunCtx } from './context';
 import { emit, log } from './context';
 import { discardHand, drawConsumables, drawSkillCards, returnConsumableHand, sweepEchoes } from './deck';
 import { applyPhaseTransitions, tempoApTax } from './boss';
-import { dealDamage, heal } from './damageFlow';
+import { changeStage, dealDamage, heal } from './damageFlow';
 import { declareIntent } from './intents';
-import { aliveTeam, benchIndices, lead } from './slots';
-import type { Combatant, CombatState } from './state';
+import { aliveTeam, benchIndices, lead, resolutionOrder } from './slots';
+import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { abilityTurnStartAp, turnEndBenchHeal, abilityLeadTrapDivisor } from './abilities';
 import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
 import { dotDamage, statusActiveThisTurn } from './status';
@@ -105,12 +105,28 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
 
   // §3.2.3 — Intent phase (boss phase transitions first, §5.8.3).
   state.phase = 'intent';
+  // §5.6 — last turn's intents are spent. Cleared before anyone declares, so a support that reads what its group
+  // already plans this turn (a status nobody should double-apply) never reads a stale one.
+  for (const e of state.enemies) e.intent = null;
   for (const e of state.enemies) {
     if (e.hp <= 0) continue;
     applyPhaseTransitions(state, e, ctx);
+    escalateSupport(state, e, ctx);
     declareIntent(state, e, ctx, ctx.rng);
   }
   state.phase = 'action';
+}
+
+/**
+ * §5.6 — a support is meant to fall in two or three turns; one still standing at its fourth Intent phase starts
+ * to escalate, a stage of Attack at every Intent phase from then on. A Lead never does: it is the fight.
+ */
+function escalateSupport(state: CombatState, e: EnemyCombatant, ctx: RunCtx): void {
+  e.fieldTurns = (e.fieldTurns ?? 0) + 1;
+  if (state.enemies[0]?.uid === e.uid) return;
+  if (e.fieldTurns < ctx.config.supportEscalateFromTurn || e.stages.attack >= 6) return;
+  log(state, 'enemy', `${e.name} has lingered too long and grows fierce!`);
+  changeStage(state, e, 'attack', ctx.config.supportEscalateStages);
 }
 
 /** §3.2.5 — Resolution: enemy intents → abilities → status ticks → cooldowns → discard → outcome → next turn. */
@@ -119,8 +135,8 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
   // §8.6.1 Reactor Core's discovery — how many cards you were still holding when you ended the turn.
   state.player.tally.peakHandAtTurnEnd = Math.max(state.player.tally.peakHandAtTurnEnd, state.player.hand.length);
 
-  // Enemies act in slot order (supports first, lead enemy last — §5.6; single enemy in v0.1).
-  for (const e of [...state.enemies]) {
+  // §5.6 / §3.2.5 — supports act first in slot order, the enemy Lead last.
+  for (const e of resolutionOrder(state)) {
     if (e.hp <= 0 || state.outcome !== 'in-progress') continue;
     executeIntent(state, e, ctx);
     if (checkOutcome(state)) return finish(state);
@@ -246,7 +262,7 @@ export function checkOutcome(state: CombatState): boolean {
 export function flee(state: CombatState, ctx: RunCtx): void {
   state.phase = 'resolution';
   log(state, 'player', 'You break for the exit —');
-  for (const e of [...state.enemies]) {
+  for (const e of resolutionOrder(state)) {
     if (e.hp <= 0 || state.outcome !== 'in-progress') continue;
     executeIntent(state, e, ctx);
     if (checkOutcome(state)) return finish(state);

@@ -28,6 +28,12 @@
 | **Unknown intent** | §5.5 | A hidden intent (❓). One per enemy in Elite/Gym fights. |
 | **Witnessed / Scouted / Researched** | §5.5 | The three ways an Unknown intent becomes visible. |
 | **Randomness floor** | §5.3 | The seeded ~12.5 % chance the AI picks a non-top intent. |
+| **Group** | §5.6 | A fight with two or three enemies on the field at once (`onField`). |
+| **Enemy Lead** | §5.6 | The front enemy of a group. The only one a single-target Melee card reaches; the strongest left steps up when it falls. |
+| **Support** | §5.6 | An enemy behind the enemy Lead, with a role (Healer, Buffer, Debuffer, Attacker). Enters weaker, escalates if it lingers. |
+| **Reach** | §5.6 | Which enemies a card can land on: Melee single-target → the enemy Lead only; Ranged, Backstrike and area cards → all. |
+| **Forecast** | §5.2 | The Resolution phase run dry on a copy of the fight; the source of every number an intent prints. |
+| **Intent card** | §9.2.6 | The bubble on an intent chip: move, target, the HP it takes off each Pokémon, riders, recharge. |
 | **Counter-intel** | §5.7 | A fully-scouted boss deprioritises its top intent ×0.7 and loses the randomness floor. |
 | **Faint** | §2.4.1 | `currentHP == 0`. There is no separate flag. |
 | **Phase** | §5.8.3 | A boss behaviour band at 100/50/20 % HP, marked on its HP bar. |

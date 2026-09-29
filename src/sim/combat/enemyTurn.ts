@@ -1,6 +1,7 @@
 import type { RunCtx } from './context';
 import { emit, log } from './context';
 import { absorbedByAbility, applyMoveEffects, strike } from './damageFlow';
+import { intentRecipient } from './intents';
 import { slotOccupant } from './slots';
 import type { Combatant, CombatState, EnemyCombatant } from './state';
 
@@ -40,8 +41,11 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
   }
 
   if (intent.kind === 'buff' || intent.kind === 'stall') {
-    log(state, 'enemy', `${enemy.name} used ${move.name}.`);
-    applyMoveEffects(state, ctx, enemy, null, move);
+    // §5.6 — a Healer's or Buffer's move lands on the enemy Lead; only a heal-or-raise move is ever aimed there
+    // (`allyGivable`), so handing the recipient in as the "user" applies exactly its heal and its raise.
+    const recipient = intentRecipient(state, enemy, intent);
+    log(state, 'enemy', recipient.uid === enemy.uid ? `${enemy.name} used ${move.name}.` : `${enemy.name} used ${move.name} on ${recipient.name}.`);
+    applyMoveEffects(state, ctx, recipient, null, move);
     return;
   }
 

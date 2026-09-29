@@ -369,17 +369,26 @@ export function onFaint(state: CombatState, ctx: RunCtx, c: Combatant): void {
     c.traumaStacks += 1;
   } else {
     const e = c as EnemyCombatant;
+    const wasLead = state.enemies[0]?.uid === e.uid;
     e.intent = null;
     state.enemies = state.enemies.filter((x) => x.uid !== e.uid);
     state.defeatedEnemies.push(e);
-    const next = state.enemyQueue.shift();
+    const next = state.enemies.length < state.onField ? state.enemyQueue.shift() : undefined;
     if (next) {
       state.enemies.push(next);
       emit(state, { t: 'enemy-enter', enemyUid: next.uid });
-      log(state, 'enemy', `${state.trainer?.name ?? 'The enemy'} sent out ${next.name}!`);
-      // Telegraph immediately so the player can still react with remaining AP (§5.1).
-      ctx.declareIntentFor?.(state, next);
+      log(state, 'enemy', state.trainer || state.onField === 1 ? `${state.trainer?.name ?? 'The enemy'} sent out ${next.name}!` : `A wild ${next.name} joins the fight!`);
     }
+    // §5.6 — the Lead fell and others still stand: the strongest of them — a fresh arrival included — steps up to
+    // lead. From now on the Melee cards reach it and the rest of the group sits behind it.
+    if (wasLead && state.enemies.length > 1) {
+      const strongest = [...state.enemies].sort((a, b) => b.hp - a.hp || b.level - a.level)[0]!;
+      state.enemies = [strongest, ...state.enemies.filter((x) => x.uid !== strongest.uid)];
+      log(state, 'enemy', `${strongest.name} steps up to lead!`);
+    }
+    // Telegraph immediately so the player can still react with remaining AP (§5.1). After the promotion, so a
+    // newcomer's intent is chosen knowing whether it leads.
+    if (next) ctx.declareIntentFor?.(state, next);
   }
 }
 

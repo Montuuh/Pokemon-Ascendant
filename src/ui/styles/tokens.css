@@ -16,6 +16,9 @@
   --sp-6: 32px;
   --sp-8: 48px;
   --sp-10: 64px;
+  /* §5.6 — a support's battle sprite stands smaller than its Lead's (170 px, 140 px under 1400 px wide). */
+  --sprite-support: 120px;
+  --sprite-support-small: 100px;
 
   /* ---- Radius scale (§1.1, warm/rounded per Pillar 5) ---- */
   --radius-xs: 3px;

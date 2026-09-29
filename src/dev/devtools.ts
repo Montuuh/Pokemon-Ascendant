@@ -378,6 +378,8 @@ export function installDevTools(): void {
         lead: s.player.team[s.player.leadIndex]?.name,
         team: s.player.team.map(mon),
         enemy: e ? { ...mon(e), phase: e.phase, intent: e.intent ? sim.describeIntent(s, e, ctx) : null } : null,
+        // §5.6 — the whole group, in slot order (the Lead first), with HP as numbers for a test to compare.
+        enemies: s.enemies.map((x) => ({ uid: x.uid, name: x.name, hp: x.hp, maxHp: x.maxHp, place: sim.enemySlotLabel(s, x), role: x.role ?? null, intent: x.intent ? sim.describeIntent(s, x, ctx) : null })),
         queue: s.enemyQueue.map((q) => q.name),
         hand: s.player.hand.map((c) => {
           const p = sim.cardPlayability(s, c.id, ctx)!;

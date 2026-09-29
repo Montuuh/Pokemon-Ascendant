@@ -116,13 +116,20 @@ hue — a requirement that exists for colour-blind players and pays off for ever
   button showing its current AP cost. The **Lead stands forward to their right**, larger, gold-framed, crowned,
   and never overlapping them.
 - **A single enemy is the default**, drawn enlarged and imposing on the right. Two or three use the same squad
-  grammar mirrored.
+  grammar mirrored (§5.6): the enemy Lead forward, towards your side, its supports smaller behind it, one high and
+  one low. The enemy column stacks one compact panel per enemy — its intent chip, its card with a **Lead** or
+  **Support · Role** chip (the card's bubble explains the place and the role), and in a wild group the catch
+  chance as a small pill. On a short screen (720 p) each panel drops its art and level line, and its name and HP
+  share one row, so three always fit.
 - **The enemy's intent is a chip above it** — icon, magnitude, target label — not an arrow crossing the screen.
 - **The catch gauge** (wild only) is a detached pill beside the enemy frame, above its HP bar.
 - **The hand tray runs along the bottom**: 5 skill cards, a divider, 2 consumables, AP pips and counters left,
   End Turn right.
 - **The damage preview appears next to the targeted Pokémon** when a card is dragged or selected onto it —
-  compact, at the point of decision, not in a distant panel.
+  compact, at the point of decision, not in a distant panel. Against a group, **every enemy's panel carries the
+  held card's own number** (and a KO flag), or a blue dashed **Out of reach** lock where a Melee card cannot land.
+- **What is coming at your team is on your portraits**: one red chip per enemy hit this turn — with the enemy's
+  face in a group — and a KO flag when they add up to one. The portrait's bubble lists them by enemy and move.
 
 ## §9.2.2 Zones
 
@@ -178,7 +185,15 @@ Full anatomy: [`ui/design-system.md`](ui/design-system.md).
 
 ## §9.2.4 The damage preview
 
-Triggered by hovering or dragging a card onto a target, appearing beside that target. It always shows:
+Triggered by hovering or dragging a card onto a target, appearing beside that target. **Against a group it is
+per target** (§5.6): while a card is hovered, selected or dragged, each enemy it can reach shows that card's own
+number on its panel, each one it cannot shows the blue out-of-reach lock, and the full breakdown below opens for
+the enemy the card points at (under the drag, or under the pointer once the card is selected). An area card
+shows a number on every enemy — never one "each" figure. In a group the card's own corner prints the move's
+**power**, outlined so it cannot pass for a hit. **Dragging** is by pointer (mouse, pen or finger): a pill with
+the move's type label and name follows the pointer; a drop on an enemy aims the card there, a drop above the
+hand plays a card that takes no enemy (or hits them all, or has only one to hit), anywhere else lets go; Escape
+cancels. It always shows:
 
 - the **final calculated damage**, large,
 - the breakdown — base, STAB, type effectiveness, range, field, relic and item terms,
@@ -205,6 +220,21 @@ that disagrees with the outcome is a bug, never a rounding difference.
 The intent number **recomputes live** when the player swaps, because it is predicted against whoever now
 occupies the slot. The v0.1 playtest identified this as the element that makes the swap decision legible; it is
 not an optimisation, it is the feature.
+
+**The number is the hit** (§5.2): the dry-run Resolution's, so it matches what lands. **An area intent prints no
+number on its chip** (user, 2026-09-25): `Bulldoze → ALL` — every target takes its own damage (type, Defence,
+ability, held item), so the numbers go on the portraits it will land on, one each. **No area hit ever shows one
+number**, on either side. A single-target chip keeps its `· N dmg`, which is the same number as the chip on the
+portrait it is aimed at. A Healer's or Buffer's intent names the ally it lands on (`Soft-Boiled → heals Geodude`).
+
+## §9.2.6 The intent card
+
+Resting on an intent chip (or focusing it) opens the **intent card** — the enemy side's counterpart to a move
+card's bubble (user, 2026-09-25): the move, its type, its power and range; who it is aimed at (a slot and its
+occupant, your whole side, or the ally it heals or raises); **the HP it takes off each Pokémon it lands on** and
+whether that knocks it out (the forecast's numbers, the same as on the portraits); its riders (a status and its
+chance, a stat change, a heal, recoil, drain); and its recharge. The kind's one-line counsel sits at the foot. A
+hidden intent (§5.5) opens the kind and nothing more. The numbers stay on the screen; the card is the full read.
 
 ---
 

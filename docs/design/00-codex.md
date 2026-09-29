@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -206,6 +206,17 @@ slot. **Randomness floor 12.5 %.**
 A hidden intent **still shows its kind glyph**. Reveal tiers: Witnessed → Scouted → Researched.
 **Counter-intel:** a fully-scouted boss deprioritises its top intent ×0.7 and loses the randomness floor.
 Standard enemies always play optimally.
+**The intent's number is the hit** — the Resolution run dry on a copy of the fight (every relic, item, ability,
+reduction and shield, and earlier intents of the same turn); only a chance rider is left out. 63 % → 100 % measured.
+
+**Groups** (§5.6, v0.8.1) — 1–3 enemies on the field (`onField`), the first the **enemy Lead**, the rest supports;
+the list's remainder fills a free place. Supports act first, the Lead last. **Reach:** a single-target Melee card
+reaches only the enemy Lead; Ranged, Backstrike and area cards reach every enemy; the player's Cleave hits them all,
+each its own number. Cards are aimed by dragging onto an enemy or clicking card then enemy. The Lead falls → the
+strongest left (a fresh arrival too) steps up; the fight ends when all are down. Supports carry a **role** —
+Healer (heals the Lead) · Buffer (raises the Lead) · Debuffer · Attacker — score their role's intents ×1.5, never
+double a status the group already plans, enter at 60 % HP, and from their 4th turn gain +1 Attack a turn. A
+catch in a pack ends the fight; the rest scatter.
 
 **Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
 signature uncapped, Sturdy). **Gyms:** 2 Pokémon, ace 3-phase, **no mid-fight evolution** — the threat is a level
@@ -318,7 +329,10 @@ hues, always paired with a glyph so colour is never the only channel. On the lig
 may be fills, tints or borders — **never running text** (they fail AA).
 
 **Combat is a squad formation**: player cluster left with the Lead forward and crowned, a single enlarged enemy
-right, an intent **chip** above it, the hand tray along the bottom, and the **damage preview beside the target**.
+right (a group mirrored: its Lead forward, supports behind, one compact panel each), an intent **chip** above it,
+the hand tray along the bottom, and the **damage preview beside the target** — per target in a group, with a blue
+"out of reach" lock where a Melee card cannot land. Hits coming at you sit on your portraits, one number each; an
+area intent's chip says "→ ALL" and prints no number. Resting on an intent opens the **intent card** (§9.2.6).
 The preview shows the final number, the full breakdown, crit, riders and a KO flag — it calls the same function
 the sim does. Unplayable cards are **desaturated, never hidden**: amber means AP, blue means position.
 

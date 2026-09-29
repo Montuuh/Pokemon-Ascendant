@@ -16,12 +16,14 @@ import {
 // The bridge between the pure sim and React. Holds the current CombatState, the input log (for replay export)
 // and the UI-only selection state. Components read slices and call `dispatch`; nothing here computes rules.
 
-export type SelectionMode = 'none' | 'card' | 'consumable-ally' | 'step-back';
+export type SelectionMode = 'none' | 'card' | 'consumable-ally' | 'consumable-foe' | 'step-back';
 
 export interface Selection {
   mode: SelectionMode;
   /** Selected skill card (mode card / step-back) or consumable card (mode consumable-ally). */
   cardId: string | null;
+  /** §5.6 — the enemy a Step-Backward card was aimed at, kept while the player picks the bench. */
+  targetUid?: string;
 }
 
 interface CombatStore {

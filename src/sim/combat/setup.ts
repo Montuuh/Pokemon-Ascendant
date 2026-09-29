@@ -59,8 +59,10 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
 }
 
 function makeEnemy(uid: string, setup: EnemySetup, ctx: CombatCtx): EnemyCombatant {
+  // §5.6 — a support is meant to fall in two or three turns: it enters with a share of its pool.
+  const scaled = setup.role ? { ...setup, hpMultiplier: (setup.hpMultiplier ?? 1) * ctx.config.supportHpMultiplier } : setup;
   return {
-    ...makeCombatant(uid, setup, ctx),
+    ...makeCombatant(uid, scaled, ctx),
     tier: setup.tier,
     phaseCount: setup.phaseCount,
     phase: 1,
@@ -70,6 +72,8 @@ function makeEnemy(uid: string, setup: EnemySetup, ctx: CombatCtx): EnemyCombata
     cooldowns: {},
     witnessed: false,
     ...(setup.veiled ? { veiled: true } : {}),
+    ...(setup.role ? { role: setup.role } : {}),
+    fieldTurns: 0,
   };
 }
 
@@ -121,6 +125,7 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
       tally: { crits: 0, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0, catchFails: 0, koBy: {}, faintsOf: {}, damageBy: {} },
     },
     enemies: [],
+    onField: scenario.onField ?? 1,
     enemyQueue: [],
     defeatedEnemies: [],
     outcome: 'in-progress',
@@ -140,8 +145,9 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
   // so the fragile one is not handed the same slab of HP as the wall.
   for (const c of state.player.team) c.shield = startShield(state, c, ctx.content);
   const enemies = scenario.enemies.map((e, i) => makeEnemy(`e${i}`, e, ctx));
-  state.enemies = [enemies[0]!];
-  state.enemyQueue = enemies.slice(1);
+  // §5.6 — a group stands together; the rest of the list waits to fill a place that falls free.
+  state.enemies = enemies.slice(0, state.onField);
+  state.enemyQueue = enemies.slice(state.onField);
 
   // Seeded statuses (fixtures) count as applied "before" the fight so they act from turn 1 (§4.2.1 G7).
   // §4.2.7.1 — a status carried from the run's last fight is the same thing with its clock restored: what was
@@ -196,8 +202,8 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
   }
 
   emit(state, { t: 'combat-start' });
-  log(state, 'system', scenario.trainer ? `${scenario.trainer.name} wants to battle!` : `A wild ${state.enemies[0]!.name} appeared!`);
-  emit(state, { t: 'enemy-enter', enemyUid: state.enemies[0]!.uid });
+  log(state, 'system', scenario.trainer ? `${scenario.trainer.name} wants to battle!` : `A wild ${listNames(state.enemies.map((e) => e.name))} appeared!`);
+  for (const e of state.enemies) emit(state, { t: 'enemy-enter', enemyUid: e.uid });
 
   beginTurn(state, { ...ctx, rng });
   state.rngCursor = rng.cursor;
@@ -209,4 +215,9 @@ export function rngFromState(state: CombatState): GameRng {
   const r = new GameRng(1);
   r.cursor = state.rngCursor;
   return r;
+}
+
+/** "Pidgey", "Pidgey and Rattata", "Pidgey, Rattata and Spearow". */
+function listNames(names: string[]): string {
+  return names.length <= 1 ? (names[0] ?? '') : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
 }
