@@ -105,6 +105,40 @@ test.describe('Group fights — §5.6', () => {
     await page.screenshot({ path: 'playtest/combat-group-area.png' });
   });
 
+  // §5.6.1 — a Pokémon that acts twice: two chips, the second marked, each with its own card.
+  test('a Pokémon that acts twice shows both intents', async ({ page }) => {
+    await page.goto('/?scenario=wild-acts-twice');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await expect(page.getByTestId('intent-chip')).toHaveCount(1);
+    await expect(page.getByTestId('intent-chip-second')).toHaveCount(1);
+    await expect(page.getByTestId('intent-chip-second')).toContainText('Also');
+    await page.getByTestId('intent-chip-second').hover();
+    await expect(page.getByTestId('tooltip')).toContainText('second action');
+    await settle(page);
+    await page.screenshot({ path: 'playtest/combat-acts-twice.png' });
+  });
+
+  // §5.6.2 — a call names who will come; at Resolution the companion joins and telegraphs its own intent.
+  test('a call for help is telegraphed by name, and the companion joins the fight', async ({ page }) => {
+    await page.goto('/?scenario=group-call-for-help');
+    const screen = page.getByTestId('combat-screen');
+    await expect(screen).toHaveAttribute('data-enemies', '1');
+    const chip = page.getByTestId('intent-chip').first();
+    for (let i = 0; i < 6 && !/Call for Help/.test((await chip.textContent()) ?? ''); i++) {
+      await page.getByTestId('btn-end-turn').click();
+      await page.waitForTimeout(250);
+    }
+    await expect(chip).toContainText('Call for Help');
+    await expect(chip).toContainText('+Nidoran');
+    await settle(page);
+    await page.screenshot({ path: 'playtest/combat-call-for-help.png' });
+    await page.getByTestId('btn-end-turn').click();
+    await expect(screen).toHaveAttribute('data-enemies', '2');
+    await expect(page.getByTestId('intent-chip')).toHaveCount(2);
+    await settle(page);
+    await page.screenshot({ path: 'playtest/combat-call-answered.png' });
+  });
+
   for (const id of ['group-hiker-healer', 'group-elite-buffer']) {
     test(`${id} boots with its group and screenshots`, async ({ page }) => {
       await page.goto(`/?scenario=${id}`);

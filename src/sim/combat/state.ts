@@ -1,5 +1,5 @@
 import type { CombatTally } from '../run/types';
-import type { EncounterKind, EnemyTier, SupportRole } from '../content/defs';
+import type { EncounterKind, EnemySetup, EnemyTier, SupportRole } from '../content/defs';
 import type { IntentKind, PokemonType, PrimaryStatus, SlotId, Stat, StatusCondition } from '../types';
 import type { Effectiveness } from './typeChart';
 
@@ -92,6 +92,11 @@ export interface EnemyCombatant extends Combatant {
   role?: SupportRole;
   /** §5.6 — Intent phases this Pokémon has stood on the field for; a support that lingers escalates. */
   fieldTurns?: number;
+  /** §5.6.1 — it acts twice a turn; `second` is this turn's second intent, resolved right after the first. */
+  acts?: 2;
+  second?: Intent | null;
+  /** §5.6.2 — the companions its Call for Help can still bring in, in order. */
+  helpers?: EnemySetup[];
 }
 
 /** §5.5.1 — the intent queue: an enemy's committed plan for next turn, and the boss phase it was planned in. */
@@ -225,7 +230,7 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'swap'; fromIndex: number; toIndex: number; kind: 'manual' | 'step-forward' | 'step-backward' | 'replacement'; apCost: number }
   | { t: 'sturdy'; uid: string }
   | { t: 'faint'; uid: string; side: 'player' | 'enemy' }
-  | { t: 'enemy-enter'; enemyUid: string }
+  | { t: 'enemy-enter'; enemyUid: string; called?: boolean }
   | { t: 'phase'; enemyUid: string; phase: 1 | 2 | 3 }
   | { t: 'catch'; success: boolean; chance: number; ballsLeft: number }
   | { t: 'lead-pick-required' }

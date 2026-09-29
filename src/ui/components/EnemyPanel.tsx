@@ -1,11 +1,12 @@
 import { IconLock, IconQuestionMark } from '@tabler/icons-react';
+import { IntentChip } from './IntentChip';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
-import { SLOT_LABEL, catchPercent, catchStatus, currentPhase, describeIntent, enemySlotLabel, intentRecipient, phaseMarkers, slotOccupant } from '@/sim';
+import { SLOT_LABEL, catchPercent, catchStatus, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
 import { iconOf, intentGlyph } from '@/ui/art';
 import { INTENT_LABEL, ROLE_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
-import { catchTip, intentCardTip, nextIntentTip, roleTip } from '@/ui/tips';
+import { catchTip, nextIntentTip, roleTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EnemyPanel.module.css';
 
@@ -36,17 +37,8 @@ interface Props {
 // hit the number it lands), the card with HP, phase markers, status and stages, the catch pill in a wild fight,
 // and — while a card is held — the number that card would deal here (§9.2.4). The sprite lives in the arena.
 export function EnemyPanel({ state, enemy, ctx, forecast, compact, targetable, aimed, preview, onClick, onHover, fxClass }: Props) {
-  const intent = enemy.intent;
-  const move = intent?.moveId ? ctx.content.move(intent.moveId) : null;
-  const slotOcc = intent?.targetSlot ? slotOccupant(state, intent.targetSlot) : null;
-  // §9.2.5 — the forecast's number for a single-target hit: the HP it takes off whoever stands there now.
-  const single = intent && slotOcc && (intent.kind === 'attack' || intent.kind === 'backstrike')
-    ? forecast.byEnemy[enemy.uid]?.hits.find((h) => h.targetUid === slotOcc.uid)?.amount ?? 0
-    : null;
-  const ally = intent?.targetEnemyUid ? intentRecipient(state, enemy, intent) : null;
   const phase = currentPhase(enemy, ctx.config);
   const gauge = catchStatus(state, ctx, enemy.uid);
-  const intentTipProps = useTip(intentCardTip(state, enemy, forecast));
   const catchTipProps = useTip(gauge ? catchTip(gauge) : null);
   const place = state.enemies.length > 1 ? enemySlotLabel(state, enemy) : null;
   // §5.6 — in a group the enemy's card is the door to its place and role.
@@ -67,34 +59,8 @@ export function EnemyPanel({ state, enemy, ctx, forecast, compact, targetable, a
 
   return (
     <div className={[styles.zone, compact ? styles.compact : ''].join(' ')} data-testid="foe-panel" data-enemy-uid={enemy.uid} onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}>
-      <div className={[styles.intent, intent?.hidden ? styles.intentHidden : '', intent?.kind === 'incapacitated' ? styles.intentIdle : ''].join(' ')} data-testid="intent-chip" tabIndex={0} {...intentTipProps}>
-        {intent?.hidden ? (
-          <>
-            <IconQuestionMark size={18} />
-            <span>Unknown intent</span>
-          </>
-        ) : intent ? (
-          <>
-            <img src={intentGlyph(intent.kind === 'incapacitated' ? 'stall' : intent.kind === 'debuff' ? 'status' : intent.kind)} alt="" width={20} height={20} className={styles.intentIcon} />
-            <span className={styles.intentText}>
-              <b>{move ? move.name : INTENT_LABEL[intent.kind]}</b>
-              {/* §9.2.5 — an area intent prints no number: every target takes its own, on its portrait. */}
-              {intent.kind === 'cleave' && <> → <b>ALL</b></>}
-              {intent.targetSlot && (
-                <>
-                  {' '}→ <b>{SLOT_LABEL[intent.targetSlot]}</b> ({slotOcc ? slotOcc.name : 'empty'})
-                  {single !== null && single > 0 ? <> · <b className={styles.dmg} data-testid="intent-dmg">{single} dmg</b></> : null}
-                </>
-              )}
-              {intent.kind === 'buff' && (ally && ally.uid !== enemy.uid ? <> → <b>{ally.name}</b></> : ' — powering up')}
-              {intent.kind === 'stall' && move && (ally && ally.uid !== enemy.uid ? <> → heals <b>{ally.name}</b></> : ' — recovering')}
-              {intent.kind === 'incapacitated' && (enemy.status?.kind === 'sleep' ? ' — fast asleep' : enemy.status?.kind === 'freeze' ? ' — frozen solid' : ' — caught off guard')}
-            </span>
-          </>
-        ) : (
-          <span>…</span>
-        )}
-      </div>
+      <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={0} />
+      {enemy.second && enemy.hp > 0 && <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={1} />}
 
       {next && enemy.hp > 0 && (
         <div className={styles.next} data-testid="intent-next" tabIndex={0} {...nextTipProps}>

@@ -58,7 +58,7 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
   };
 }
 
-function makeEnemy(uid: string, setup: EnemySetup, ctx: CombatCtx): EnemyCombatant {
+export function makeEnemy(uid: string, setup: EnemySetup, ctx: CombatCtx): EnemyCombatant {
   // §5.6 — a support is meant to fall in two or three turns: it enters with a share of its pool.
   const scaled = setup.role ? { ...setup, hpMultiplier: (setup.hpMultiplier ?? 1) * ctx.config.supportHpMultiplier } : setup;
   return {
@@ -73,6 +73,8 @@ function makeEnemy(uid: string, setup: EnemySetup, ctx: CombatCtx): EnemyCombata
     witnessed: false,
     ...(setup.veiled ? { veiled: true } : {}),
     ...(setup.role ? { role: setup.role } : {}),
+    ...(setup.acts === 2 ? { acts: 2 as const, second: null } : {}),
+    ...(setup.helpers?.length ? { helpers: setup.helpers.map((h) => ({ ...h })) } : {}),
     fieldTurns: 0,
   };
 }

@@ -127,8 +127,9 @@ describe('Run pacing — §2.1, §3.7', () => {
   ])(
     'Run_TakingAServiceNode_IsNotATrap_%s',
     // Six whole-run sweeps per case, so the 5 s default cuts it off mid-measurement and that reads as a
-    // balance failure it is not. The budget scales with the sample size instead.
-    { timeout: 2_000 + AB_SEEDS * 400 },
+    // balance failure it is not. The budget scales with the sample size instead. 700 ms a seed since v0.8.2: the
+    // harness reads the dry-run forecast (§9.2.5) on every decision, and 400 ms left no room on a busy machine.
+    { timeout: 2_000 + AB_SEEDS * 700 },
     (_label, skip) => {
       for (const starter of STARTER_IDS) {
         const taking = simulate(starter, DEFAULT_RUN_POLICY, AB_SEEDS);

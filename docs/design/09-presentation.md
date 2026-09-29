@@ -216,6 +216,10 @@ that disagrees with the outcome is a bug, never a rounding difference.
 | 🛡 | Stall | `🛡 Def +1` |
 | 💢 | Status | `💢 BURN → Lead` |
 | ❓ | Unknown | `❓` **plus the kind glyph** — you know a Cleave is coming, not how hard |
+| 👤+ | Call for help | `Call for Help → +Nidoran♀` — who will join, by name (§5.6.2) |
+
+A Pokémon that **acts twice** (§5.6.1) shows its second intent as a second chip under the first, marked *Also*
+with a dashed border; each has its own number and its own intent card.
 
 The intent number **recomputes live** when the player swaps, because it is predicted against whoever now
 occupies the slot. The v0.1 playtest identified this as the element that makes the swap decision legible; it is

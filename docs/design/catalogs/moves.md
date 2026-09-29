@@ -495,3 +495,12 @@ where the catalogue had asked for an effect the sim does not have, the row says 
 | `blast-burn` | Fire | Off | Ranged | — | 3 | 135 | Burn 30 %, self Atk −1 (Mastery Lv3, `charmander`) |
 | `aqua-tail-plus` | Water | Off | Melee | SF | 2 | 95 | — (Mastery Lv2, `squirtle`) |
 | `aqua-tail-max` | Water | Off | Melee | SF | 3 | 130 | ignores Defence stages (Mastery Lv3, `squirtle`) |
+
+## Enemy-only moves (v0.8.2, §5.6.2)
+
+Moves no learnset, TM or tutor offers: an encounter gives them to an enemy in its scripted `moves`. The player
+never draws them. ✅ v0.8.2.
+
+| Id | Type | Role | Rng | Mod | AP | Pow | CD | Effect |
+|---|---|---|---|---|---|---|---|---|
+| `call-for-help` | Normal | Util | Ranged | — | 1 | — | 2 | summon 1: the caller's next waiting companion joins the field as a support (§5.6.2) |

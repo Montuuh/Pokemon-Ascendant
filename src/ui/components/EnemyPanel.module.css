@@ -49,11 +49,6 @@
   filter: invert(1) brightness(1.4);
   flex: 0 0 auto;
 }
-.intentText small {
-  display: block;
-  color: var(--ink-muted);
-  font-size: 11px;
-}
 .dmg {
   color: var(--accent-negative);
 }
@@ -364,4 +359,20 @@
     margin: 0;
     z-index: 1;
   }
+}
+
+/* §5.6.1 — the second action of a Pokémon that acts twice: the same chip, marked, and a step quieter. */
+.intentSecond {
+  margin-top: calc(var(--sp-2) * -1);
+  border-style: dashed;
+}
+/* A compact panel already sits its chips close: the pull-up would lay the second over the first. */
+.compact .intentSecond {
+  margin-top: 0;
+}
+.secondLabel {
+  font-size: var(--type-caption);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
 }

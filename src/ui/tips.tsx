@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast } from '@/sim';
+import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
@@ -100,6 +100,7 @@ const INTENT_BODY: Record<string, string> = {
   status: 'Trying to inflict a status on your Lead. A swap moves the target.',
   unknown: 'Hidden. You can see what kind of thing is coming, not how hard or where. Some abilities and relics reveal it.',
   incapacitated: 'Asleep, frozen, or caught off guard by your Time Spinner. It does nothing this turn.',
+  summon: 'Calling a companion into the fight. It spends its turn on it — a free turn for you, and the last one against fewer enemies.',
 };
 
 /** §5.5 — what an intent means and what to do about it. `hidden` intents show the kind only. */
@@ -112,8 +113,8 @@ export function intentTip(kind: string, detail?: string, hidden = false): ReactN
  * The move and its type, who it is aimed at, the HP it takes off each Pokémon it lands on (the forecast's numbers,
  * the same ones on the portraits), its riders and its recharge. A hidden intent tells its kind and nothing else.
  */
-export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecast: TurnForecast): ReactNode {
-  const intent = enemy.intent;
+export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecast: TurnForecast, action: 0 | 1 = 0): ReactNode {
+  const intent = action === 1 ? enemy.second ?? null : enemy.intent;
   if (!intent) return null;
   const move = intent.moveId ? getContent().move(intent.moveId) : null;
   if (intent.hidden || !move) return intentTip(intent.kind, undefined, intent.hidden);
@@ -123,8 +124,17 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
   const ally = intent.targetEnemyUid ? intentRecipient(state, enemy, intent) : enemy;
   if (intent.kind === 'cleave') lines.push('Aimed at every Pokémon on your side.');
   else if (intent.targetSlot) lines.push(`Aimed at your ${SLOT_LABEL[intent.targetSlot]} — ${slotOccupant(state, intent.targetSlot)?.name ?? 'nobody there'}.`);
-  else lines.push(ally.uid === enemy.uid ? 'On itself.' : `On ${ally.name}, its Lead.`);
-  const hits = forecast.byEnemy[enemy.uid]?.hits ?? [];
+  else if (intent.kind === 'summon') {
+    // §5.6.2 — who answers, by name, and where they stand.
+    const who = summonedBy(state, enemy, move, DEFAULT_BATTLE_CONFIG.maxOnField).map((h) => getContent().species(h.species).name);
+    lines.push(
+      who.length === 0 ? 'Nobody can answer: no companion is left, or the field is full.'
+      : who.length === 1 ? `${who[0]} joins the fight as a support, behind its Lead. It acts from next turn.`
+      : `${who.join(' and ')} join the fight as supports, behind their Lead. They act from next turn.`,
+    );
+  } else lines.push(ally.uid === enemy.uid ? 'On itself.' : `On ${ally.name}, its Lead.`);
+  if (enemy.acts === 2) lines.push(action === 0 ? 'It acts twice: this first, then the Also below.' : 'Its second action this turn, right after the first.');
+  const hits = forecast.byAction[`${enemy.uid}#${action}`]?.hits ?? [];
   for (const h of hits) {
     const mon = state.player.team.find((m) => m.uid === h.targetUid);
     lines.push(<b key={h.targetUid}>{`${mon?.name ?? '?'}: ${h.amount} damage${h.ko ? ' — knocks it out' : ''}`}</b>);

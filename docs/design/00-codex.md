@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) as of 2026-09-29. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -217,6 +217,10 @@ strongest left (a fresh arrival too) steps up; the fight ends when all are down.
 Healer (heals the Lead) · Buffer (raises the Lead) · Debuffer · Attacker — score their role's intents ×1.5, never
 double a status the group already plans, enter at 60 % HP, and from their 4th turn gain +1 Attack a turn. A
 catch in a pack ends the fight; the rest scatter.
+**Acting twice** (§5.6.1): an authored `acts: 2` Pokémon declares two intents (different moves), both shown — the
+second marked *Also* — and resolves them back to back. **Calling for help** (§5.6.2): the enemy-only
+`call-for-help` move brings the caller's next authored companion onto the field as a support (at most 3 on the
+field); its chip names who comes, and the companion telegraphs before it acts. Worth ×2 to a caller standing alone.
 
 **Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
 signature uncapped, Sturdy). **Gyms:** 2 Pokémon, ace 3-phase, **no mid-fight evolution** — the threat is a level

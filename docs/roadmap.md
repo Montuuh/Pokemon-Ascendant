@@ -687,11 +687,22 @@ reach* lock, drag-and-drop by pointer (click-then-click and the keyboard still w
 portraits, "→ ALL" with no number for an area intent, and the **intent card** on hover (§9.2.6). Groups live in
 four fixtures (`group-*`); placing them in the run is v0.8.3. Also: a stale changelog e2e fixed (v0.7.12's rewrite).
 
-### v0.8.2 — Enemies that act twice, and enemies that call for help  ☐
+### v0.8.2 — Enemies that act twice, and enemies that call for help  ✅ 2026-09-29
 Some Pokémon and some battles **act twice a turn**, both intents shown; and some carry a move that **calls one or
 two companions into the fight** — a telegraphed intent that turns a single fight into a multi-enemy one. Scope
 decided with the user; both ride v0.8.1's intent and AI machinery. *(Backlog #9, and the user's idea of
 2026-09-24.)*
+
+**Shipped.** The user delegated the design ("adelante", 2026-09-29: build a large playable v0.8, then iterate), so
+the rules are first versions, written in §5.6.1–§5.6.2. **Acting twice** is authored per encounter (`acts: 2`), not
+a species stat: two intents, different moves, the second marked *Also* and resolved right after the first; each is
+its own hit with its own chip, intent card and portrait chip (the forecast now splits per action, `byAction`).
+**Calling for help** is an enemy-only move (`call-for-help`: Ranged, 1 AP, cooldown 2) that brings the caller's next
+authored companion (`helpers`) onto the field as a support, at most 3 standing; the chip names who comes, the
+newcomer telegraphs before it acts, and it counts in the XP pot (`fielded`). Worth ×2 to a caller alone. Two
+fixtures (`wild-acts-twice`, `group-call-for-help`); v0.8.3 places them in the run. Also: the forecast is cached per
+settled state, the combat log stopped printing intent damage (the chips carry it; computing it per declaration made
+harness runs ~1.5× slower), and two harness timeouts were widened for a slower machine.
 
 ### v0.8.3 — Multi-enemy across the run  ☐
 Where the groups appear, and how often: which wild nodes are packs, which trainers fight in pairs, which Elites

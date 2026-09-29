@@ -487,6 +487,9 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         break;
       }
 
+      case 'summon':
+        // §5.6.2 — resolved by the enemy's turn, which owns the field (`enemyTurn.ts`); a player never calls.
+        break;
       case 'team-cure': {
         // §7.3 Healer's Kit pays per Pokémon actually cured — Aromatherapy on a clean team still heals nobody.
         const bonus = itemCureHeal(state, ctx.content);

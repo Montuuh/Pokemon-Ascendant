@@ -504,6 +504,121 @@
           ]
         }
       ]
+    },
+    {
+      "id": "group-call-for-help",
+      "name": "Group — A Nidoran that calls for help",
+      "description": "A lone wild Nidoran♂ that calls its kin into the fight: two more wait to answer. Read the call, and decide whether to finish it first.",
+      "kind": "wild",
+      "stage": "meadow",
+      "seed": 1105,
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 10
+          },
+          {
+            "species": "squirtle",
+            "level": 10
+          },
+          {
+            "species": "bulbasaur",
+            "level": 10
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "potion",
+          "poke-ball"
+        ],
+        "balls": 3
+      },
+      "enemies": [
+        {
+          "species": "nidoran-m",
+          "level": 10,
+          "tier": "wild",
+          "phaseCount": 1,
+          "moves": [
+            "peck",
+            "horn-attack",
+            "leer",
+            "call-for-help"
+          ],
+          "helpers": [
+            {
+              "species": "nidoran-f",
+              "level": 9,
+              "tier": "wild",
+              "phaseCount": 1,
+              "role": "debuffer",
+              "moves": [
+                "scratch",
+                "tail-whip",
+                "poison-sting"
+              ]
+            },
+            {
+              "species": "nidoran-m",
+              "level": 8,
+              "tier": "wild",
+              "phaseCount": 1,
+              "role": "attacker",
+              "moves": [
+                "peck",
+                "horn-attack"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wild-acts-twice",
+      "name": "Wild — A Raticate that acts twice",
+      "description": "A fast wild Raticate: two intents every turn, both shown, the second right after the first.",
+      "kind": "wild",
+      "stage": "meadow",
+      "seed": 1106,
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 13
+          },
+          {
+            "species": "squirtle",
+            "level": 13
+          },
+          {
+            "species": "bulbasaur",
+            "level": 13
+          }
+        ],
+        "leadIndex": 1,
+        "consumables": [
+          "super-potion",
+          "potion",
+          "poke-ball"
+        ],
+        "balls": 3
+      },
+      "enemies": [
+        {
+          "species": "raticate",
+          "level": 13,
+          "tier": "wild",
+          "phaseCount": 1,
+          "acts": 2,
+          "moves": [
+            "quick-attack",
+            "hyper-fang",
+            "bite",
+            "tail-whip"
+          ]
+        }
+      ]
     }
   ]
 }

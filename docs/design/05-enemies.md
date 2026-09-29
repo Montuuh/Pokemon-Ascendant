@@ -30,6 +30,7 @@ Intents target **slots**. The display names the slot and its current occupant.
 | `Stall(effect)` | 🛡 Def +1 / heal | A defensive or restorative action on itself |
 | `Status(cond, slot)` | 💢 BURN → Lead | Applies a condition to the slot's occupant |
 | `Unknown` | ❓ + a kind glyph | Hidden magnitude (§5.5) |
+| `Summon(helper)` | 👤+ Call for Help → +Nidoran♀ | Brings a named companion onto the field as a support (§5.6.2) |
 
 **The number is the hit** (v0.8.1). What an intent prints is the Resolution phase run dry on a copy of the fight:
 every term the real hit has — relics, Badges, held items, abilities, flat reductions, guards, shields, faint
@@ -146,9 +147,7 @@ mirrored (§3.3): the Lead stands in front of its group.
   stands (most HP, then level; a fresh arrival from the queue counts) **steps up to lead**, and the fight ends only
   when every enemy is down. A newcomer's first intent is declared at once, as §5.1 requires.
 - **Catching in a pack:** §2.6.4.1 — the ball is aimed, and a catch scatters the rest.
-- **Acting twice, and calling for help.** Some Pokémon and some battles act twice a turn, both intents shown; some
-  carry a move that calls one or two companions into the fight — a telegraphed intent like any other (§5.2), which
-  turns a single fight into a group. Their exact rules are designed in roadmap v0.8.2.
+- **Acting twice, and calling for help** — §5.6.1 and §5.6.2.
 
 | Support role | Behaviour |
 |---|---|
@@ -168,6 +167,38 @@ that lingers escalates**: from its `supportEscalateFromTurn`th (4th) Intent phas
 `supportEscalateStages` (+1) Attack at every Intent phase, logged and shown as a stage chip. A Lead never
 escalates — it is the fight. *(All four numbers are `BattleConfig` first values, 2026-09-29; the v0.8.6 balance
 pass tunes them.)*
+
+## §5.6.1 Acting twice
+
+A Pokémon authored with `acts: 2` takes **two actions a turn**. Both are declared in the Intent phase and both are
+shown — the second as a chip under the first, marked *Also* — and at Resolution they land **one right after the
+other**, in its own place in the order (a support's two before the Lead's). The second is chosen knowing the first:
+**a different move**, and never a status the first (or the group, §5.6) already means to put on that slot. Each
+action is its own hit, with its own number on its chip and its own chip on the portrait it lands on (§9.2.5). A
+Pokémon that cannot act (asleep, frozen, caught off guard) loses both; a hidden first intent (§5.5) hides the
+second too. Trainer's Instinct (§5.5.1) plans only the first action of next turn.
+
+*Why authored and not a rule (v0.8.2, delegated):* acting twice is the most dangerous thing an enemy can do under
+Pillar 1 — two telegraphed hits a turn halve the time you have to answer — so it belongs to a few chosen Pokémon
+(the fast, the legendary, a boss's last stand) placed by the encounters in v0.8.3, never to a species by a stat
+threshold. A second action is priced like one: the encounter that grants it gives that Pokémon fewer HP or fewer
+levels than a lone Lead would have.
+
+## §5.6.2 Calling for help
+
+**Call for Help** (`call-for-help`, an enemy-only move: Normal, Ranged, 1 AP, 2-turn recharge) brings the caller's
+next waiting **companion** onto the field as a support. The companions are authored on the caller (`helpers`, in
+order, each with its role); nothing else can answer. The call is a **telegraphed intent** like any other: its chip
+reads *Call for Help → +Nidoran♀*, naming who will come, and its card says where they will stand. At Resolution the
+companion steps in (`maxOnField`, 3, is the most that can stand at once — a call with no room or nobody left to
+answer is a wasted turn); it declares its own intent in the Intent phase that follows at once, so **its first action
+is always read before it lands**. A call turns a single fight into a group: from then on the fight refills a free
+place up to its new size, and a companion counts in the fight's XP like any enemy.
+
+The AI weighs a call like a utility move, **×`summonAloneMultiplier` (2) when the caller stands alone**, and not
+at all when no companion is left, the field is full, or the rest of the group already means to fill it this turn.
+The answer to a call is the one the canon has always given a telegraph: it is a turn the caller does not hit you,
+and the last one against fewer enemies — finish it, or get ready for the support.
 
 ---
 

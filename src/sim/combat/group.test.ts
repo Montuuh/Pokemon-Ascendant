@@ -171,7 +171,7 @@ describe('The group AI — §5.6', () => {
 
 describe('The honest intent — §9.2.5', () => {
   it('Forecast_IsTheHit_EveryIntentOnEveryTarget', () => {
-    for (const id of ['group-wild-flock', 'group-trainer-pair', 'group-hiker-healer', 'group-elite-buffer', 'wild-basic', 'trainer-2enemy', 'status-showcase', 'wild-boss-3phase']) {
+    for (const id of ['group-wild-flock', 'group-trainer-pair', 'group-hiker-healer', 'group-elite-buffer', 'group-call-for-help', 'wild-acts-twice', 'wild-basic', 'trainer-2enemy', 'status-showcase', 'wild-boss-3phase']) {
       for (let seed = 1; seed <= 6; seed++) {
         const s = startFixture(id, seed);
         const f = forecastTurn(s, ctx);
@@ -197,5 +197,85 @@ describe('The honest intent — §9.2.5', () => {
     const f = forecastTurn(s, ctx);
     const lead = s.player.team[s.player.leadIndex]!;
     expect(predictIntentDamage(s, e, ctx)).toBe(f.byEnemy[e.uid]?.hits.find((h) => h.targetUid === lead.uid)?.amount ?? 0);
+  });
+});
+
+describe('Acting twice — §5.6.1', () => {
+  it('Declare_ActsTwice_TwoIntents_TwoDifferentMoves', () => {
+    const s = startFixture('wild-acts-twice');
+    const r = s.enemies[0]!;
+    expect(r.intent).not.toBeNull();
+    expect(r.second).not.toBeNull();
+    expect(r.second!.moveId).not.toBe(r.intent!.moveId);
+  });
+
+  it('Resolve_ActsTwice_BothActionsLand_FirstThenSecond', () => {
+    const s = tweak(startFixture('wild-acts-twice'), (d) => { for (const m of d.player.team) { m.hp = 999; m.maxHp = 999; } });
+    const first = s.enemies[0]!.intent!.moveId;
+    const second = s.enemies[0]!.second!.moveId;
+    const after = dispatch(s, { type: 'end-turn' });
+    const acted = after.events.slice(s.events.length).filter((e) => e.t === 'enemy-action').map((e) => (e.t === 'enemy-action' ? e.intent.moveId : null));
+    expect(acted.slice(0, 2)).toEqual([first, second]);
+  });
+
+  it('Incapacitated_ActsTwice_NeitherAction', () => {
+    let s = startFixture('wild-acts-twice');
+    s = tweak(s, (d) => { d.enemies[0]!.status = { kind: 'sleep', appliedTurn: 0, turnsLeft: 2 }; });
+    s = dispatch(s, { type: 'end-turn' });
+    expect(s.enemies[0]!.intent!.kind).toBe('incapacitated');
+    expect(s.enemies[0]!.second).toBeNull();
+  });
+});
+
+describe('Calling for help — §5.6.2', () => {
+  const callNow = (id = 'group-call-for-help') => {
+    const s = startFixture(id);
+    const caller = s.enemies[0]!;
+    const intent = classifyMove(s, caller, ctx.content.move('call-for-help'), ctx)!;
+    return tweak(s, (d) => { d.enemies[0]!.intent = { ...intent }; for (const m of d.player.team) { m.hp = 999; m.maxHp = 999; } });
+  };
+
+  it('Classify_CallForHelp_IsASummon_ScoredHighestAlone', () => {
+    const s = startFixture('group-call-for-help');
+    const caller = s.enemies[0]!;
+    const move = ctx.content.move('call-for-help');
+    const intent = classifyMove(s, caller, move, ctx)!;
+    expect(intent.kind).toBe('summon');
+    const alone = scoreIntent(s, caller, { intent, move }, ctx);
+    expect(alone).toBe(ctx.config.defaultUtilityWeight * ctx.config.summonAloneMultiplier);
+    // Nobody left to answer: the call is worth nothing.
+    const empty = tweak(s, (d) => { d.enemies[0]!.helpers = []; });
+    expect(scoreIntent(empty, empty.enemies[0]!, { intent, move }, ctx)).toBe(0);
+  });
+
+  it('Resolve_Call_TheNextCompanionJoins_AsASupport_AndDeclaresNextTurn', () => {
+    const s = callNow();
+    expect(s.enemies).toHaveLength(1);
+    const after = dispatch(s, { type: 'end-turn' });
+    expect(after.enemies).toHaveLength(2);
+    const joined = after.enemies[1]!;
+    expect(joined.speciesId).toBe('nidoran-f');
+    expect(joined.role).toBe('debuffer');
+    expect(after.enemies[0]!.helpers).toHaveLength(1);
+    expect(after.onField).toBe(2);
+    expect(eventsOf(after, 'enemy-enter').some((e) => e.t === 'enemy-enter' && e.called)).toBe(true);
+    // The Intent phase after the call telegraphs the newcomer's first action before it acts.
+    expect(joined.intent).not.toBeNull();
+  });
+
+  it('Call_FieldFull_NobodyComes', () => {
+    const s = tweak(callNow('group-wild-flock'), (d) => {
+      d.enemies[0]!.helpers = [{ species: 'pidgey', level: 5, tier: 'wild', phaseCount: 1 }];
+    });
+    const intent = classifyMove(s, s.enemies[0]!, ctx.content.move('call-for-help'), ctx)!;
+    expect(scoreIntent(s, s.enemies[0]!, { intent, move: ctx.content.move('call-for-help') }, ctx)).toBe(0);
+  });
+
+  it('Faint_OfTheCaller_ACalledCompanionStepsUp', () => {
+    let s = dispatch(callNow(), { type: 'end-turn' });
+    s = withHand(tweak(s, (d) => { d.enemies[0]!.hp = 1; d.player.ap = 3; }), ['scratch']);
+    const after = dispatch(s, { type: 'play-card', cardId: handCard(s, 'scratch').id });
+    expect(after.outcome).toBe('in-progress');
+    expect(after.enemies[0]!.speciesId).toBe('nidoran-f');
   });
 });

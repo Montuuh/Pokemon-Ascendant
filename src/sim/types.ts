@@ -51,7 +51,9 @@ export type IntentKind =
   | 'stall'
   | 'status'
   | 'unknown'
-  | 'incapacitated';
+  | 'incapacitated'
+  /** §5.6.2 — calls one or two companions into the fight. */
+  | 'summon';
 
 // Per §3.3 — the three Active Team slots. Slots are positions; occupants change when the Lead swaps.
 export const SLOT_IDS = ['lead', 'bench1', 'bench2'] as const;

@@ -91,7 +91,8 @@ function measure(fight: FightTrace, t: Tally): void {
 }
 
 describe('The honest intent, measured over whole runs — §9.2.5', () => {
-  it('Forecast_PrintsTheHitThatLands_WhereTheOldChipMissed', () => {
+  // Whole runs replayed turn by turn: the 5 s default is not a budget for it.
+  it('Forecast_PrintsTheHitThatLands_WhereTheOldChipMissed', { timeout: 60_000 }, () => {
     const t: Tally = { hits: 0, legacyExact: 0, forecastExact: 0, cleaveHits: 0, cleaveLegacy: 0, cleaveForecast: 0 };
     for (const starter of ['charmander', 'squirtle', 'bulbasaur']) {
       for (let seed = 1; seed <= SEEDS; seed++) autoRun(seed * 7919, starter, ctx, undefined, 3, (f) => measure(f, t));

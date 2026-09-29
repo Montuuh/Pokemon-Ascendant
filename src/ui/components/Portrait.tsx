@@ -28,7 +28,7 @@ interface Props {
    * §9.2.5 — every hit coming at this Pokémon this turn, as the dry-run Resolution prints it: one number per
    * enemy, never one figure for an area hit. `icon` names the source when a group is on the field.
    */
-  incoming?: { enemyUid: string; amount: number; icon?: string; name: string; move: string }[];
+  incoming?: { key: string; enemyUid: string; amount: number; icon?: string; name: string; move: string }[];
   /** The hits above add up to a knockout. */
   incomingKo?: boolean;
 }
@@ -61,7 +61,7 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
       {hits && (
         <span className={styles.incoming} data-testid="incoming" aria-hidden="true">
           {hits.map((h) => (
-            <span key={h.enemyUid} className={styles.incomingHit}>
+            <span key={h.key} className={styles.incomingHit}>
               {h.icon && <img className={styles.incomingFace} src={h.icon} alt="" width={20} height={20} />}
               <span className="display tabular">−{h.amount}</span>
             </span>

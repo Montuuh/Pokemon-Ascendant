@@ -69,6 +69,7 @@ export const INTENT_LABEL: Record<string, string> = {
   status: 'Status',
   unknown: 'Unknown',
   incapacitated: "Can't act",
+  summon: 'Call for Help',
 };
 
 /** §5.6 — the four support roles, as the chip names them. */

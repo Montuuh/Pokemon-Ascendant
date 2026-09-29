@@ -4859,6 +4859,23 @@
       "power": 130,
       "effects": [],
       "ignoresDefenseStages": true
+    },
+    {
+      "id": "call-for-help",
+      "name": "Call for Help",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "summon",
+          "count": 1
+        }
+      ],
+      "cooldown": 2
     }
   ]
 }

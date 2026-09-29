@@ -924,7 +924,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const tier = node.kind === 'gym' ? 'boss'
           : node.kind === 'elite' || node.kind === 'elite-wild' ? 'elite'
           : node.kind === 'trainer' ? 'trainer' : 'wild';
-        const enemyCount = draft.pendingScenario?.enemies.length ?? 1;
+        // §5.6.2 — a companion called for help is one more enemy on the field, and pays like one.
+        const enemyCount = Math.max(draft.pendingScenario?.enemies.length ?? 1, report.fielded ?? 0);
         // §8.8.3 — the difficulty premium multiplies with the relic multiplier; both are run-long terms.
         const pot = Math.round(
           encounterXp(tier, enemyCount, ctx.progression)

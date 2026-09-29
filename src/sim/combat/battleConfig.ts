@@ -68,6 +68,10 @@ export interface BattleConfig {
   supportEscalateStages: number;
   /** §5.6 — a support's AI weights the intents its role is for (Debuffer: status and debuff; Attacker: hits). */
   supportRoleMultiplier: number;
+  /** §5.6 — the most enemies that can stand on the field at once, whatever calls for help. */
+  maxOnField: number;
+  /** §5.6.2 — a Call for Help is worth more to a Pokémon standing alone. */
+  summonAloneMultiplier: number;
 }
 
 export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
@@ -116,5 +120,7 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   supportEscalateFromTurn: 4,
   supportEscalateStages: 1,
   supportRoleMultiplier: 1.5,
+  maxOnField: 3,
+  summonAloneMultiplier: 2,
 };
 

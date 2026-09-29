@@ -9,7 +9,7 @@ import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { abilityTurnStartAp, turnEndBenchHeal, abilityLeadTrapDivisor } from './abilities';
 import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
 import { dotDamage, statusActiveThisTurn } from './status';
-import { executeIntent } from './enemyTurn';
+import { executeTurn } from './enemyTurn';
 
 // §3.2 — the five-phase loop. `beginTurn` = Draw + Intent (lands in Action); `resolveTurn` = Resolution → next turn.
 
@@ -107,7 +107,10 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   state.phase = 'intent';
   // §5.6 — last turn's intents are spent. Cleared before anyone declares, so a support that reads what its group
   // already plans this turn (a status nobody should double-apply) never reads a stale one.
-  for (const e of state.enemies) e.intent = null;
+  for (const e of state.enemies) {
+    e.intent = null;
+    if (e.second) e.second = null;
+  }
   for (const e of state.enemies) {
     if (e.hp <= 0) continue;
     applyPhaseTransitions(state, e, ctx);
@@ -138,7 +141,7 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
   // §5.6 / §3.2.5 — supports act first in slot order, the enemy Lead last.
   for (const e of resolutionOrder(state)) {
     if (e.hp <= 0 || state.outcome !== 'in-progress') continue;
-    executeIntent(state, e, ctx);
+    executeTurn(state, e, ctx);
     if (checkOutcome(state)) return finish(state);
   }
 
@@ -264,7 +267,7 @@ export function flee(state: CombatState, ctx: RunCtx): void {
   log(state, 'player', 'You break for the exit —');
   for (const e of resolutionOrder(state)) {
     if (e.hp <= 0 || state.outcome !== 'in-progress') continue;
-    executeIntent(state, e, ctx);
+    executeTurn(state, e, ctx);
     if (checkOutcome(state)) return finish(state);
   }
   state.outcome = 'escaped';

@@ -1,10 +1,15 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-09-29 · **Version:** v0.8.1 shipped (*Multi-enemy fights*) — v0.8 in progress (*Multi-enemy & the route*).
+**Date:** 2026-09-29 · **Version:** v0.8.2 shipped (*Acting twice and calling for help*) — v0.8 in progress (*Multi-enemy & the route*).
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
-**Sprint goal next:** **v0.8.2** *Enemies that act twice, and enemies that call for help* (design with the user
-first), then v0.8.3 groups placed across the run, v0.8.4 field effects, v0.8.5 routes, v0.8.6 the balance pass.
+**Sprint goal next:** **v0.8.3** groups, two-action Pokémon and callers placed across the run, then v0.8.4 field
+effects, v0.8.5 routes (design with the user), v0.8.6 the balance pass. The user (2026-09-29): build a large playable
+v0.8 first, then iterate on it together — design calls inside v0.8 are delegated and recorded in canon.
+
+**v0.8.2:** `acts: 2` (§5.6.1) — two intents, both shown ("Also" chip), back to back; `call-for-help` (§5.6.2) brings
+the caller's next `helpers` entry in as a support (max 3 on the field), counted in XP via `report.fielded`. The
+forecast splits per action (`byAction`) and is cached per settled state; the log no longer prints intent damage.
 
 **v0.8.1:** `onField` 1–3 puts a group on the field (§5.6): the enemy Lead + supports with a `role`. A single-target
 Melee card reaches only the enemy Lead; the player's Cleave hits every enemy; the strongest steps up when the Lead

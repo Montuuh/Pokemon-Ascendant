@@ -49,7 +49,9 @@ export type MoveEffect =
    */
   | { kind: 'team-guard'; guard: 'status' | 'cleave'; percent?: number }
   /** Aromatherapy — clear every status on the Active Team. */
-  | { kind: 'team-cure' };
+  | { kind: 'team-cure' }
+  /** §5.6.2 — Call for Help: brings `count` of the caller's waiting companions onto the field. Enemy-only. */
+  | { kind: 'summon'; count: number };
 
 export interface MoveDef {
   id: string;
@@ -489,6 +491,10 @@ export interface EnemySetup {
    * `supportHpMultiplier` of its HP, and a Healer or Buffer aims its heal or stat raise at the enemy Lead.
    */
   role?: SupportRole;
+  /** §5.6.1 — a Pokémon that acts twice a turn: two intents, both shown, resolved one after the other. */
+  acts?: 1 | 2;
+  /** §5.6.2 — the companions its Call for Help can bring in, in order. Not on the field until called. */
+  helpers?: EnemySetup[];
 }
 
 /** §5.6 — the four support roles. */

@@ -1,4 +1,4 @@
-import type { MoveDef } from '../content/defs';
+import type { EnemySetup, MoveDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import type { IntentKind, SlotId } from '../types';
 import type { BattleConfig } from './battleConfig';
@@ -35,6 +35,8 @@ export function classifyMove(state: CombatState, enemy: EnemyCombatant, move: Mo
     }
     return { kind: 'attack', moveId: move.id, targetSlot: 'lead', hidden: false };
   }
+  // §5.6.2 — Call for Help: its own kind, aimed at nobody.
+  if (move.effects.some((e) => e.kind === 'summon')) return { kind: 'summon', moveId: move.id, targetSlot: null, hidden: false };
   const status = move.effects.find((e) => e.kind === 'status' && !e.self);
   if (status) return { kind: 'status', moveId: move.id, targetSlot: 'lead', hidden: false };
   const debuff = move.effects.find((e) => e.kind === 'stage' && e.target === 'foe');
@@ -137,6 +139,13 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
     const fx = move.effects.find((e) => e.kind === 'stage' && e.target === 'foe');
     if (fx && fx.kind === 'stage' && occ.stages[fx.stat] <= -6) return 0; // already floored
   }
+  // §5.6.2 — a Call for Help needs a companion left to answer and a free place on the field; it is worth most to a
+  // Pokémon standing alone, and it is never "setup": it waits for a turn the field has room.
+  if (intent.kind === 'summon') {
+    if (!enemy.helpers?.length || state.enemies.filter((e) => e.hp > 0).length >= cfg.maxOnField) return 0;
+    if (plannedSummons(state, enemy) >= cfg.maxOnField - state.enemies.filter((e) => e.hp > 0).length) return 0;
+    return score * (state.enemies.filter((e) => e.hp > 0).length === 1 ? cfg.summonAloneMultiplier : 1);
+  }
   // §5.6 — a Healer's or Buffer's intent is weighed on the ally it lands on, not on the caster.
   const recipient = intentRecipient(state, enemy, intent);
   // §5.6 — a support leans on what its role is for; everything else still scores, so it never idles.
@@ -186,16 +195,18 @@ function applyArchetypeFilter(enemy: EnemyCombatant, cands: Candidate[], config:
 }
 
 /** Build, score and pick this enemy's intent for the turn. Returns null if it has no legal action. */
-export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, rng: GameRng): Intent | null {
+export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, rng: GameRng, exclude?: string): Intent | null {
   const cands: Candidate[] = [];
   for (const moveId of enemy.moveIds) {
+    // §5.6.1 — a second action is a different move from the first.
+    if (moveId === exclude) continue;
     const move = ctx.content.move(moveId);
     const intent = classifyMove(state, enemy, move, ctx);
     if (!intent) continue;
     cands.push({ intent, move, score: scoreIntent(state, enemy, { intent, move }, ctx) });
   }
   // Ties resolve toward pressure: offensive intents are considered before setup/utility with equal scores.
-  const KIND_PRIORITY: Record<IntentKind, number> = { attack: 0, cleave: 0, backstrike: 0, status: 1, debuff: 2, stall: 3, buff: 4, unknown: 5, incapacitated: 5 };
+  const KIND_PRIORITY: Record<IntentKind, number> = { attack: 0, cleave: 0, backstrike: 0, status: 1, debuff: 2, summon: 3, stall: 3, buff: 4, unknown: 5, incapacitated: 5 };
   const pool = applyArchetypeFilter(enemy, cands, ctx.config)
     .filter((c) => c.score > 0)
     .sort((a, b) => KIND_PRIORITY[a.intent.kind] - KIND_PRIORITY[b.intent.kind]);
@@ -235,6 +246,7 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
   enemy.next = null;
   // §7.3.5 Time Spinner — every enemy but a boss is caught flat-footed on turn 1, and the chip says so from the start.
   const spun = state.turn === 1 && enemy.tier !== 'boss' && relicsSkipFirstTurn(state, ctx.content);
+  if (enemy.acts === 2) enemy.second = null;
   if (locked || spun) {
     enemy.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };
   } else {
@@ -254,6 +266,12 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     const known = state.familiar.includes(enemy.speciesId) || (!enemy.witnessed && state.insight.includes(enemy.speciesId));
     // §7.3.7 Clear Mind does what §6.5.2's ability does, from the relic case instead of the party.
     enemy.intent.hidden = hides && !known && !teamRevealsIntents(state.player.team, ctx.content, !enemy.witnessed) && !relicsRevealIntents(state, ctx.content, !enemy.witnessed, state.turn);
+    // §5.6.1 — a Pokémon that acts twice declares its second action now, chosen knowing the first: a different
+    // move, and never a status the first (or the group) already means to put there. It hides what the first hides.
+    if (enemy.acts === 2) {
+      const second = chooseIntent(state, enemy, ctx, rng, enemy.intent.moveId ?? undefined);
+      enemy.second = second ? { ...second, hidden: enemy.intent.hidden } : null;
+    }
   }
   // §5.5.1 Trainer's Instinct — plan the next turn now, from what the enemy can see now, and show it. It hides
   // exactly as much as this turn's intent does: seeing further ahead is not seeing through a veil.
@@ -262,8 +280,12 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     if (plan) enemy.next = { intent: { ...plan, hidden: enemy.intent.hidden }, phase: currentPhase(enemy, ctx.config) };
   }
   emit(state, { t: 'intent', enemyUid: enemy.uid, intent: { ...enemy.intent } });
-  if (!enemy.intent.hidden) log(state, 'enemy', `${enemy.name} ${describeIntent(state, enemy, ctx)}`);
+  if (!enemy.intent.hidden) log(state, 'enemy', `${enemy.name} ${describeIntent(state, enemy, ctx, enemy.intent, false)}`);
   else log(state, 'enemy', `${enemy.name} is planning something…`);
+  if (enemy.second) {
+    emit(state, { t: 'intent', enemyUid: enemy.uid, intent: { ...enemy.second } });
+    log(state, 'enemy', enemy.second.hidden ? `…and something more.` : `…and then ${describeIntent(state, enemy, ctx, enemy.second, false)}`);
+  }
 }
 
 /**
@@ -277,14 +299,16 @@ export function predictIntentDamage(state: CombatState, enemy: EnemyCombatant, c
   if (move.power <= 0) return null;
   const occ = slotOccupant(state, intent.kind === 'cleave' ? 'lead' : (intent.targetSlot ?? 'lead'));
   if (!occ) return intent.kind === 'cleave' ? null : 0;
-  if (intent !== enemy.intent) return breakdownFor(enemy, occ, move, !!move.alwaysCrit, ctx, state).final;
-  return forecastOn(forecastTurn(state, ctx), enemy.uid, occ.uid);
+  if (intent === enemy.intent) return forecastOn(forecastTurn(state, ctx), enemy.uid, occ.uid, 0);
+  if (intent === enemy.second) return forecastOn(forecastTurn(state, ctx), enemy.uid, occ.uid, 1);
+  return breakdownFor(enemy, occ, move, !!move.alwaysCrit, ctx, state).final;
 }
 
 // §5.5 — what a hidden intent still tells you: the KIND, never the magnitude or the target.
 // A completely blind intent reads as an ambush rather than a read you missed, which is the one thing
 // Pillar 1 cannot afford.
 const HIDDEN_TEXT: Partial<Record<IntentKind, string>> = {
+  summon: 'is calling out to someone…',
   attack: 'is winding up an attack…',
   cleave: 'is winding up something that will hit everyone…',
   backstrike: 'is eyeing your bench…',
@@ -295,15 +319,17 @@ const HIDDEN_TEXT: Partial<Record<IntentKind, string>> = {
   incapacitated: 'cannot act.',
 };
 
-export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, i: Intent | null = enemy.intent): string {
+export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, i: Intent | null = enemy.intent, withDamage = true): string {
   if (!i) return 'waits.';
   // §5.5 — a hidden intent still shows what KIND of thing is coming, just not how hard.
   if (i.hidden) return HIDDEN_TEXT[i.kind] ?? 'is planning something…';
   const move = i.moveId ? ctx.content.move(i.moveId) : null;
   const slotText = i.targetSlot ? `${SLOT_LABEL[i.targetSlot]} (${slotOccupant(state, i.targetSlot)?.name ?? 'empty'})` : '';
-  // §5.6 — a group declares one by one, so while it declares the later intents are not known yet and a number
-  // here could be off. The chips and the portraits carry the numbers; the log only names the move.
-  const dmg = state.enemies.length > 1 ? null : predictIntentDamage(state, enemy, ctx, i);
+  // §9.2.5 — the combat log names the move and its target; the numbers live on the chips and the portraits, which
+  // read the settled turn's forecast. While a turn is still being declared the later intents are not known yet (a
+  // group declares one by one), so a number written into the log then could be off — and running a whole dry
+  // Resolution per declaration just to print it made every harness run half again as slow.
+  const dmg = withDamage && state.enemies.length <= 1 ? predictIntentDamage(state, enemy, ctx, i) : null;
   const ally = i.targetEnemyUid ? intentRecipient(state, enemy, i) : null;
   switch (i.kind) {
     case 'attack':
@@ -326,5 +352,34 @@ export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: C
       return enemy.status?.kind === 'sleep' ? 'is fast asleep.' : enemy.status?.kind === 'freeze' ? 'is frozen solid.' : 'is caught off guard (Time Spinner).';
     case 'unknown':
       return 'is planning something…';
+    case 'summon': {
+      const who = summonedBy(state, enemy, move, ctx.config.maxOnField).map((h) => ctx.content.species(h.species).name);
+      return `calls for help (${move?.name}) → ${who.length ? who.join(' and ') : 'nobody left'}`;
+    }
   }
+}
+
+/** §5.6.2 — how many companions a Call for Help move brings in. */
+export function summonCount(move: MoveDef | null): number {
+  const fx = move?.effects.find((e) => e.kind === 'summon');
+  return fx && fx.kind === 'summon' ? fx.count : 0;
+}
+
+/** §5.6.2 — companions the rest of the group already means to call this turn, so two callers do not overfill the field. */
+function plannedSummons(state: CombatState, enemy: EnemyCombatant): number {
+  let n = 0;
+  for (const other of state.enemies) {
+    if (other.uid === enemy.uid) continue;
+    for (const i of [other.intent, other.second]) if (i?.kind === 'summon') n += 1;
+  }
+  return n;
+}
+
+/**
+ * §5.6.2 — who a call will bring in, by setup: the caller's next companions, as many as the move brings and the
+ * field has room for. The chip, the intent card, the log and the resolution all read this one answer.
+ */
+export function summonedBy(state: CombatState, enemy: EnemyCombatant, move: MoveDef | null, maxOnField: number): EnemySetup[] {
+  const room = maxOnField - state.enemies.filter((e) => e.hp > 0).length;
+  return (enemy.helpers ?? []).slice(0, Math.max(0, Math.min(summonCount(move), room)));
 }

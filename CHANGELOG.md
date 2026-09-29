@@ -13,6 +13,14 @@
 
 Group fights, field effects and a reworked route.
 
+### v0.8.2 — Acting twice and calling for help · 2026-09-29
+
+Enemies with two actions a turn, and enemies that call companions.
+
+- **Two actions.** Some Pokémon declare two intents a turn; both are shown.
+- **Call for Help.** A telegraphed intent names the companion who joins as a support.
+- **Called companions.** They telegraph before acting and count for XP.
+
 ### v0.8.1 — Multi-enemy fights · 2026-09-29
 
 Fights against two or three enemies at once.

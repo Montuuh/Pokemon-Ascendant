@@ -544,6 +544,8 @@ export interface CombatOutcomeReport {
   activeSpecies?: string[];
   /** §8.9 — every enemy species that took the field, once each. The Pokédex counts these as met. */
   enemies?: string[];
+  /** §5.6.2 — how many enemies took the field, companions called for help included. The XP pot counts them. */
+  fielded?: number;
   turns: number;
 }
 

@@ -62,7 +62,7 @@ export function CombatScreen() {
   const consumablePlays = useMemo(() => (state ? state.player.consumables.hand.map((c) => consumablePlayability(state, c.id, ctx)!) : []), [state, ctx]);
   const swaps = useMemo(() => (state ? swapOptions(state) : []), [state]);
   // §9.2.5 — this turn's Resolution run dry: the numbers on the chips and on the portraits are its numbers.
-  const forecast = useMemo(() => (state && state.outcome === 'in-progress' ? forecastTurn(state, ctx) : { byEnemy: {}, incoming: {}, hpAfter: {} }), [state, ctx]);
+  const forecast = useMemo(() => (state && state.outcome === 'in-progress' ? forecastTurn(state, ctx) : { byEnemy: {}, byAction: {}, incoming: {}, hpAfter: {} }), [state, ctx]);
 
   /** Dispatch and surface the sim's rejection reason as a toast (the sim never throws on illegal input). */
   const dispatch = useCallback(
@@ -201,9 +201,11 @@ export function CombatScreen() {
   // §5.2 — every slot a visible intent is aimed at glows; a Cleave lights them all.
   const targetSlots = new Set<SlotId>();
   for (const e of enemies) {
-    if (!e.intent || e.intent.hidden) continue;
-    if (e.intent.kind === 'cleave') ['lead', 'bench1', 'bench2'].forEach((s) => targetSlots.add(s as SlotId));
-    else if (e.intent.targetSlot) targetSlots.add(e.intent.targetSlot);
+    for (const i of [e.intent, e.second]) {
+      if (!i || i.hidden) continue;
+      if (i.kind === 'cleave') ['lead', 'bench1', 'bench2'].forEach((s) => targetSlots.add(s as SlotId));
+      else if (i.targetSlot) targetSlots.add(i.targetSlot);
+    }
   }
   const ended = state.outcome !== 'in-progress';
   const interactive = !ended && !state.player.pendingLeadPick;
@@ -213,13 +215,16 @@ export function CombatScreen() {
   function incomingFor(uid: string) {
     const hits = (forecast.incoming[uid] ?? []).filter((h) => {
       const e = enemies.find((x) => x.uid === h.enemyUid);
-      return e?.intent && !e.intent.hidden && h.amount > 0;
+      const i = h.action === 1 ? e?.second : e?.intent;
+      return i && !i.hidden && h.amount > 0;
     });
     const mon = state!.player.team.find((m) => m.uid === uid)!;
     const list = hits.map((h) => {
       const e = enemies.find((x) => x.uid === h.enemyUid)!;
-      const move = e.intent?.moveId ? ctx.content.move(e.intent.moveId).name : 'attack';
-      return { enemyUid: h.enemyUid, amount: h.amount, name: e.name, move, ...(group ? { icon: portraitOf(e) } : {}) };
+      // §5.6.1 — each action is its own hit, so a Pokémon that acts twice puts two chips on the same portrait.
+      const i = h.action === 1 ? e.second : e.intent;
+      const move = i?.moveId ? ctx.content.move(i.moveId).name : 'attack';
+      return { key: `${h.enemyUid}#${h.action}`, enemyUid: h.enemyUid, amount: h.amount, name: e.name, move, ...(group ? { icon: portraitOf(e) } : {}) };
     });
     return { incoming: list, incomingKo: list.length > 0 && list.reduce((a, h) => a + h.amount, 0) >= mon.hp };
   }
