@@ -704,9 +704,19 @@ fixtures (`wild-acts-twice`, `group-call-for-help`); v0.8.3 places them in the r
 settled state, the combat log stopped printing intent damage (the chips carry it; computing it per declaration made
 harness runs ~1.5× slower), and two harness timeouts were widened for a slower machine.
 
-### v0.8.3 — Multi-enemy across the run  ☐
+### v0.8.3 — Multi-enemy across the run  ✅ 2026-09-29
 Where the groups appear, and how often: which wild nodes are packs, which trainers fight in pairs, which Elites
 and Gyms bring a support, and how Region 3's accent grows from it. Designed with the harness, then placed.
+
+**Shipped.** §5.6.3 and `run/groups.ts`: every fight node fixes its shape with the node — a hash of the run's seed,
+the Region and the node id, so no saved map changes — and its preview card names it (a pill with a bubble). Wild
+packs (15 / 25 / 30 %, a third member from Region 2), wild callers (10 / 15 / 20 %), trainers side by side (25 / 35 /
+40 % of multi-Pokémon rosters), an Elite with a support from Region 2, and the Region 3 Elite Wild acting twice at 75 %
+HP. Companions come from the node's biome, supports take the role their kit gives, and all of them take the Region's
+tier, accent and modifiers. Measured at 120 seeds a starter: Region 1 60 %, Region 2 given 1 57 %, Region 3 given 2
+52 %, the whole run 18 % — on §2.2.1's targets. **Gym supports are held back**: a Region 3 Gym with one dropped
+Region 3 to 35 % (the support escalates through a long Gym fight) — v0.8.6 decides. Also: the preview card's biome
+badge falls back like the map marker's instead of showing a broken image.
 
 ### v0.8.4 — Field effects  ☐
 The biome effects (§4.3) that give each biome its identity (§2.6.1 — its ⚠️ OPEN closes here), and the four
@@ -736,6 +746,9 @@ Also here, from the playtest of 2026-09-24: **enemies hit too softly.** The medi
 Max HP (Region 1 13 %, 2 9 %, 3 11 %) — about eight hits to faint anyone, so a telegraph rarely forces a swap
 (Pillar 2). A harder-hitting retune (a typical hit nearer a fifth of Max HP, fights kept at 4–5 turns), held to
 §2.2.1's curve by the harness — here rather than earlier because multi-enemy changes how much damage a turn carries.
+Also here, from v0.8.3: **whether Gyms bring a support, and on what terms.** Region 3's Gym with a support beside it
+cost Region 3 seventeen points (52 → 35 %): Gym fights run long enough for a support to escalate (§5.6) every turn.
+Options to measure: no escalation for a boss's support, a support only beside the non-ace, or a lower support level.
 **Exit (v0.8):** fights against groups everywhere in the run, a reworked route, and the whole run balanced.
 
 ## v0.9 — The long game  ☐

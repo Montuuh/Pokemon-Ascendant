@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) as of 2026-09-29. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -72,7 +72,7 @@ Pokémon.
   (full heal + 1-of-3 Legendary + League preview).
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
-  multi-enemy groups (groups appear in every Region from v0.8; cards are dragged onto a target, §5.6). The
+  multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
   numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×1.95, HP
   ×1 / ×1 / ×1.15), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
@@ -221,6 +221,10 @@ catch in a pack ends the fight; the rest scatter.
 second marked *Also* — and resolves them back to back. **Calling for help** (§5.6.2): the enemy-only
 `call-for-help` move brings the caller's next authored companion onto the field as a support (at most 3 on the
 field); its chip names who comes, and the companion telegraphs before it acts. Worth ×2 to a caller standing alone.
+**Across the run** (§5.6.3): each fight node fixes its shape with the node (a hash, not the map's stream) and its
+preview card names it — wild **packs** (15 / 25 / 30 % of wild nodes, a third Pokémon from Region 2), wild
+**callers** (10 / 15 / 20 %), trainers **side by side** (25 / 35 / 40 % of multi-Pokémon trainers), the Elite
+**brings a support** from Region 2, the Region 3 Elite Wild **acts twice** at 75 % HP. Gyms stand alone until v0.8.6.
 
 **Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
 signature uncapped, Sturdy). **Gyms:** 2 Pokémon, ace 3-phase, **no mid-fight evolution** — the threat is a level

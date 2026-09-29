@@ -140,3 +140,18 @@
   box-shadow: none;
   cursor: not-allowed;
 }
+
+/* §5.6.3 — the fight's shape: a pack, a pair, a caller, a support, a Pokémon that acts twice. */
+.group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  justify-self: start;
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+  font-weight: 700;
+}

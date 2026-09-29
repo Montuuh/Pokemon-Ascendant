@@ -121,6 +121,28 @@ export const NODE_LABEL: Record<string, string> = {
   gym: 'Gym',
 };
 
+/** §5.6.3 — a fight node's shape, as its preview card names it. */
+export const GROUP_LABEL: Record<string, string> = {
+  caller: 'Calls for help',
+  pair: 'Side by side',
+  support: 'Brings a support',
+  'acts-twice': 'Acts twice',
+};
+
+/** §5.6.3 — the shape's name, the one place a pack's size is put into words. */
+export function groupLabel(plan: { kind: string; size?: number }): string {
+  return plan.kind === 'pack' ? `A pack of ${plan.size ?? 2}` : GROUP_LABEL[plan.kind] ?? '';
+}
+
+/** §5.6.3 — what that shape means, for its bubble. */
+export const GROUP_HINT: Record<string, string> = {
+  pack: 'The wild Pokémon comes with company from its biome: it leads, the rest stand behind it as supports. Melee reaches only the one in front; a catch scatters the rest.',
+  caller: 'The wild Pokémon can Call for Help: a companion is waiting to join it. The call is telegraphed a turn ahead, with the name of who comes.',
+  pair: 'The trainer sends out two Pokémon at once. The first leads, the second supports it from behind.',
+  support: 'A support stands beside the team, healing or powering up whoever leads. Take it out with Ranged or area moves.',
+  'acts-twice': 'It takes two actions a turn, both shown. It has less HP to make up for it.',
+};
+
 export const NODE_HINT: Record<string, string> = {
   wild: 'A wild Pokémon. Beat it for XP, or throw a ball and take it with you.',
   trainer: 'A trainer with a full team. More XP than a wild fight, and no catching.',

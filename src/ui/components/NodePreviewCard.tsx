@@ -1,8 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { getContent } from '@/content/registry';
-import { ALL_TRAINERS, type MapNode, type PartyMon } from '@/sim';
-import { nodeBadge, trainerSprite } from '@/ui/art';
-import { NODE_HINT, NODE_LABEL } from '@/ui/strings';
+import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
+import { useRunStore } from '@/app/runStore';
+import { ALL_TRAINERS, groupPlanFor, type MapNode, type PartyMon } from '@/sim';
+import { groupTip } from '@/ui/tips';
+import { Tipped } from '@/ui/tooltip';
+import { fallbackBadge, nodeBadge, trainerSprite } from '@/ui/art';
+import { groupLabel, NODE_HINT, NODE_LABEL } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import styles from './NodePreviewCard.module.css';
 
@@ -21,6 +25,10 @@ interface Props {
 export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter, onCancel }: Props) {
   const content = getContent();
   const enterRef = useRef<HTMLButtonElement>(null);
+  // §5.6.3 — the fight's shape is fixed with the node, so the card can promise it (Pillar 1).
+  const run = useRunStore((s) => s.run);
+  const plan = run ? groupPlanFor(node, run) : { kind: 'single' as const };
+  const GroupIcon = plan.kind === 'acts-twice' ? IconRepeat : plan.kind === 'caller' ? IconUserPlus : plan.kind === 'pack' ? IconUsersGroup : IconUsers;
   const roster = node.kind === 'trainer' ? (ALL_TRAINERS.find((t) => t.id === node.preview.rosterId) ?? ALL_TRAINERS.find((t) => t.name === node.preview.title)) : undefined;
 
   useEffect(() => {
@@ -43,7 +51,18 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         data-testid="node-preview"
       >
         <header className={styles.head}>
-          <img className={styles.kindIcon} src={nodeBadge(node.preview.icon ?? node.kind)} alt="" width={44} height={44} />
+          <img
+            className={styles.kindIcon}
+            src={nodeBadge(node.preview.icon ?? node.kind)}
+            // A biome with no emblem of its own yet (roadmap v1.2) falls back the way the map marker does.
+            onError={(e) => {
+              const fb = fallbackBadge(node.kind);
+              if (!e.currentTarget.src.endsWith(fb)) e.currentTarget.src = fb;
+            }}
+            alt=""
+            width={44}
+            height={44}
+          />
           <div>
             {NODE_LABEL[node.kind] !== node.preview.title && <p className={styles.kind}>{NODE_LABEL[node.kind]}</p>}
             <h2 className={`${styles.title} display`}>{node.preview.title}</h2>
@@ -53,6 +72,12 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
 
         <p className={styles.detail}>{node.preview.detail}</p>
         <p className={styles.hint}>{NODE_HINT[node.kind]}</p>
+        {plan.kind !== 'single' && (
+          <Tipped tip={groupTip(plan)} className={styles.group} data-testid="preview-group">
+            <GroupIcon size={16} aria-hidden="true" />
+            {groupLabel(plan)}
+          </Tipped>
+        )}
 
         {node.preview.speciesIds.length > 0 && (
           <>

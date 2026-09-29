@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast } from '@/sim';
+import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { CITY_DOOR_HINT, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { CITY_DOOR_HINT, GROUP_HINT, groupLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 
 // Every explanation the game offers on hover, in one file.
@@ -158,6 +158,12 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
       footer={INTENT_BODY[intent.kind]}
     />
   );
+}
+
+/** §5.6.3 — a fight node's shape on the map: a pack, a pair, a caller, a support, a Pokémon that acts twice. */
+export function groupTip(plan: GroupPlan): ReactNode {
+  if (plan.kind === 'single') return null;
+  return <Tip title={groupLabel(plan)} body={GROUP_HINT[plan.kind]} />;
 }
 
 /** §5.6 — an enemy's place in a group: the Lead in front, or a support behind it with its role. */

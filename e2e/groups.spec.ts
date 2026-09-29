@@ -139,6 +139,30 @@ test.describe('Group fights — §5.6', () => {
     await page.screenshot({ path: 'playtest/combat-call-answered.png' });
   });
 
+  // §5.6.3 — a node's preview card promises its shape before you commit.
+  test('a node that is a pack or a caller says so on its preview card', async ({ page }) => {
+    await page.goto('/?screen=menu');
+    const found = await page.evaluate(() => {
+      type Dev = { run: { new: (s: string, seed: number) => void; state: () => { reachable: string[]; map: { nodes: Record<string, unknown> } } }; goTo: (s: string) => void; sim: { groupPlanFor: (n: unknown, r: unknown) => { kind: string } } };
+      const a = (window as unknown as { __ascendant: Dev }).__ascendant;
+      for (let seed = 1; seed < 400; seed++) {
+        a.run.new('squirtle', seed);
+        const run = a.run.state();
+        const id = run.reachable.find((n) => a.sim.groupPlanFor(run.map.nodes[n], run).kind !== 'single');
+        if (id) {
+          a.goTo('map');
+          return id;
+        }
+      }
+      return null;
+    });
+    expect(found).not.toBeNull();
+    await page.getByTestId(`node-${found}`).click();
+    await expect(page.getByTestId('preview-group')).toBeVisible();
+    await settle(page);
+    await page.screenshot({ path: 'playtest/run-node-preview-group.png' });
+  });
+
   for (const id of ['group-hiker-healer', 'group-elite-buffer']) {
     test(`${id} boots with its group and screenshots`, async ({ page }) => {
       await page.goto(`/?scenario=${id}`);

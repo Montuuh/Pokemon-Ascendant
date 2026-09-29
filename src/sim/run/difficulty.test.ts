@@ -73,7 +73,11 @@ describe('Enemies at the forms their levels warrant — §2.7.3', () => {
 
 describe('The status accent — §2.2', () => {
   it('RegionOne_EnemiesKeepTheirOwnKits', () => {
-    for (const e of firstFight(0).enemies) expect(e.moves).toBeUndefined();
+    // Its own kit — a caller's Call for Help (§5.6.3) is its group's, not the Region's accent.
+    for (const e of firstFight(0).enemies) {
+      const own = activeMoves(content, e.species, e.level);
+      expect((e.moves ?? own).filter((id) => id !== 'call-for-help').every((id) => own.includes(id))).toBe(true);
+    }
   });
 
   it('FromRegionTwo_EveryEnemyCarriesAStatusMove', () => {

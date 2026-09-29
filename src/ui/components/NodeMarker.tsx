@@ -1,5 +1,5 @@
 import type { MapNode } from '@/sim';
-import { nodeBadge } from '@/ui/art';
+import { fallbackBadge, nodeBadge } from '@/ui/art';
 import { NODE_HINT, NODE_LABEL } from '@/ui/strings';
 import { Tip, useTip } from '@/ui/tooltip';
 import styles from './NodeMarker.module.css';
@@ -10,12 +10,9 @@ export type NodeStatus = 'reachable' | 'locked' | 'visited' | 'current';
  * A badge id → its file. The preview names one where the node kind alone is not specific enough — a trainer
  * archetype, a Gym type, a Wild's biome — and otherwise the kind is the id.
  *
- * `fallbackBadge` is what a badge degrades to when its specific file does not exist yet: a biome-tinted Wild
- * falls back to the generic tall grass rather than to a broken-image glyph, so adding a biome or a Gym type
- * to the map is never blocked on adding a PNG first.
+ * A badge with no file of its own yet degrades through `fallbackBadge` (`ui/art.ts`).
  */
 const badge = (id: string) => nodeBadge(id);
-const fallbackBadge = (kind: string) => nodeBadge(kind === 'elite-wild' ? 'wild' : kind);
 
 /** What the marker means, said in words, because colour and size alone are not a label (§9.6). */
 const STATUS_TEXT: Record<NodeStatus, string> = {

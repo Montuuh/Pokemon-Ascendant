@@ -200,6 +200,30 @@ at all when no companion is left, the field is full, or the rest of the group al
 The answer to a call is the one the canon has always given a telegraph: it is a turn the caller does not hit you,
 and the last one against fewer enemies — finish it, or get ready for the support.
 
+## §5.6.3 Groups across the run
+
+Every fight node decides its shape **once, with the node**: a hash of the run's seed, the Region and the node's id
+(never a draw from the map's stream, so every map ever saved stays the same map). The **node's preview card names
+the shape** before you commit — *A pack of 3*, *Calls for help*, *Side by side*, *Brings a support*, *Acts twice* —
+with a bubble that says what it means (Pillar 1).
+
+| Shape | What it is | R1 | R2 | R3 |
+|---|---|---|---|---|
+| **Pack** | A wild node's Pokémon leads companions from its biome's common list (another species first), a level lower, each a support with the role its kit gives | 15 % of wild nodes, 2 | 25 %, a quarter of them 3 | 30 %, 30 % of them 3 |
+| **Caller** | A lone wild Pokémon carries Call for Help (§5.6.2) with one companion waiting, a level lower | 10 % | 15 % | 20 % |
+| **Side by side** | A trainer with two or more Pokémon sends two out at once (`onField` 2); the second takes the role its kit gives | 25 % of such trainers | 35 % | 40 % |
+| **Brings a support** | The Elite Trainer's first Pokémon leads with a support beside it (from the Region's main biome, two levels under the team, a Healer or Buffer where it can be); the rest of the team fills the place that falls | — | ✓ | ✓ |
+| **Acts twice** | The Elite Wild acts twice (§5.6.1) at 75 % of its HP | — | — | ✓ |
+
+A support's role comes from its kit: a heal it can hand over makes a Healer, a raise a Buffer, a status or stat drop
+a Debuffer, anything else an Attacker. Every companion, helper and support is folded through the Region's stat tier,
+status accent and the run's modifiers like any enemy. The numbers live in `GROUP_RATES` (`run/groups.ts`).
+
+*Measured (v0.8.3, 120 seeds a starter): the curve holds — Region 1 60 %, Region 2 given Region 1 57 %, Region 3 given
+Region 2 52 %, the whole run 18 % (§2.2.1's targets: ~60, ~50, ~1 in 6). **The Gym's support is not placed yet**: a
+Region 3 Gym with a support beside it dropped Region 3 to 35 %, because a Gym fight runs long enough for its support
+to escalate (§5.6) turn after turn. Whether Gyms bring one — and on what terms — is the v0.8.6 balance pass's call.*
+
 ---
 
 # §5.7 Counter-intel

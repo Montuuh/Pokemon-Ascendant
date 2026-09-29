@@ -38,6 +38,7 @@ export { MODIFIERS, AVAILABLE_MODIFIERS, modifierById, modifierValue, hasModifie
 export { activeRegionModifier, regionModifierValue, rollRegionModifierOffer, priceFor, traumaZone1Pct, victoryHealPct } from './run/regionModifiers';
 export { DEFAULT_PROGRESSION, encounterXp, levelXpFactor, grantXp, xpToNext, isEvolutionReady, applyBranch, autoPickMoves, learnMove, previewBranch, stoneUse, stonesForBox, type ProgressionConfig, type BranchPreview } from './run/xp';
 export { buildOutcomeReport } from './run/report';
+export { GROUP_RATES, groupPlanFor, applyGroups, roleFromKit, type GroupPlan, type GroupRates } from './run/groups';
 export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } from './run/flee';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';
 

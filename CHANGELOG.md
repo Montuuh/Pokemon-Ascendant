@@ -13,6 +13,15 @@
 
 Group fights, field effects and a reworked route.
 
+### v0.8.3 — Groups across the run · 2026-09-29
+
+Group fights placed on every route, more in later Regions.
+
+- **Wild packs and callers.** Wild nodes can be packs or Pokémon that call for help.
+- **Trainer pairs.** Trainers with two or more Pokémon can send two at once.
+- **Elite support.** From Region 2 the Elite Trainer fights with a support.
+- **Preview.** A node's preview card names its fight's shape.
+
 ### v0.8.2 — Acting twice and calling for help · 2026-09-29
 
 Enemies with two actions a turn, and enemies that call companions.

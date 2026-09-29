@@ -33,6 +33,12 @@ export const statusGlyph = (status: string) => asset(`art/icons/status/icon-stat
 export const intentGlyph = (kind: string) => asset(`art/icons/intent/icon-intent-${kind}.svg`);
 /** §9 — a map node's badge, by the preview's icon id (`wild-cave`, `trainer-hiker`, `gym-rock`) or its kind. */
 export const nodeBadge = (id: string) => asset(`art/icons/map/node-${id}.png`);
+/**
+ * What a node badge degrades to when its specific file does not exist yet: a biome-tinted Wild (and the Elite
+ * Wild) falls back to the generic tall grass rather than to a broken-image glyph, so adding a biome or a Gym type
+ * to the map is never blocked on adding a PNG first.
+ */
+export const fallbackBadge = (kind: string) => nodeBadge(kind === 'elite-wild' ? 'wild' : kind);
 export const menuVista = () => asset('art/ui/menu-vista.png');
 /** §2.13 — each Region's route plate (Region 3's since v0.7.4). A Region without one borrows Region 1's. */
 const PLATED_REGIONS = new Set([1, 2, 3]);

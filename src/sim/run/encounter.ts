@@ -8,6 +8,7 @@ import { masteryMoveFor } from '../meta/mastery';
 import { isThreeStageLine } from '../meta/bond';
 import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
 import { RING } from './cities';
+import { applyGroups } from './groups';
 
 /** The catch consumable's catalog id (§7.2.5). */
 const BALL_ITEM = 'poke-ball';
@@ -251,24 +252,24 @@ function applyRegion(scenario: ScenarioDef, run: RunState, content: ContentRegis
   const tier = statTierFor(run.regionIndex, hasModifier(run.modifiers, 'greater-threats'));
   const accent = run.regionIndex >= STATUS_ACCENT_FROM;
   if (tier.hp === 1 && tier.attack === 1 && !accent) return scenario;
-  return {
-    ...scenario,
-    enemies: scenario.enemies.map((e) => {
-      const out: EnemySetup = { ...e };
-      if (tier.hp !== 1) out.hpMultiplier = (e.hpMultiplier ?? 1) * tier.hp;
-      if (tier.attack !== 1) out.attackMultiplier = (e.attackMultiplier ?? 1) * tier.attack;
-      if (accent) {
-        const kit = e.moves ?? activeMoves(content, e.species, e.level);
-        const hasStatus = kit.some((id) => {
-          const m = content.move(id);
-          return m.power === 0 && m.effects.some((fx) => fx.kind === 'status' && !fx.self);
-        });
-        const type = content.species(e.species).types[0]!;
-        if (!hasStatus) out.moves = [...kit, STATUS_ACCENT_MOVES[type] ?? STATUS_ACCENT_FALLBACK];
-      }
-      return out;
-    }),
+  const fold = (e: EnemySetup): EnemySetup => {
+    const out: EnemySetup = { ...e };
+    // §5.6.2 — a caller's companions are this Region's Pokémon too, whenever they come.
+    if (e.helpers) out.helpers = e.helpers.map(fold);
+    if (tier.hp !== 1) out.hpMultiplier = (e.hpMultiplier ?? 1) * tier.hp;
+    if (tier.attack !== 1) out.attackMultiplier = (e.attackMultiplier ?? 1) * tier.attack;
+    if (accent) {
+      const kit = e.moves ?? activeMoves(content, e.species, e.level);
+      const hasStatus = kit.some((id) => {
+        const m = content.move(id);
+        return m.power === 0 && m.effects.some((fx) => fx.kind === 'status' && !fx.self);
+      });
+      const type = content.species(e.species).types[0]!;
+      if (!hasStatus) out.moves = [...kit, STATUS_ACCENT_MOVES[type] ?? STATUS_ACCENT_FALLBACK].slice(-5);
+    }
+    return out;
   };
+  return { ...scenario, enemies: scenario.enemies.map(fold) };
 }
 
 /**
@@ -284,14 +285,17 @@ function applyModifiers(scenario: ScenarioDef, run: RunState): ScenarioDef {
   return {
     ...scenario,
     modifiers: [...run.modifiers],
-    enemies: scenario.enemies.map((e) => ({
-      ...e,
-      // Iron Will is a *wild* modifier: a trainer's Pidgey is the same Pidgey.
-      ...(wildHp !== 1 && e.tier === 'wild' ? { hpMultiplier: (e.hpMultiplier ?? 1) * wildHp } : {}),
-      ...(extra > 0 && (e.tier === 'boss' || e.tier === 'elite')
-        ? { phaseCount: Math.min(maxPhases, e.phaseCount + extra) as 1 | 2 | 3 }
-        : {}),
-    })),
+    enemies: scenario.enemies.map(function fold(e: EnemySetup): EnemySetup {
+      return {
+        ...e,
+        ...(e.helpers ? { helpers: e.helpers.map(fold) } : {}),
+        // Iron Will is a *wild* modifier: a trainer's Pidgey is the same Pidgey.
+        ...(wildHp !== 1 && e.tier === 'wild' ? { hpMultiplier: (e.hpMultiplier ?? 1) * wildHp } : {}),
+        ...(extra > 0 && (e.tier === 'boss' || e.tier === 'elite')
+          ? { phaseCount: Math.min(maxPhases, e.phaseCount + extra) as 1 | 2 | 3 }
+          : {}),
+      };
+    }),
   };
 }
 
@@ -343,7 +347,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
         return null;
     }
   })();
-  return base ? applyPerks(applyModifiers(applyRegion(base, run, content), run), run, content) : null;
+  // §5.6.3 — the node's group first, so its companions and supports take the Region's tier, accent and modifiers too.
+  return base ? applyPerks(applyModifiers(applyRegion(applyGroups(base, node, run, content), run, content), run), run, content) : null;
 }
 
 /**
