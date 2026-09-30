@@ -48,7 +48,7 @@ Pokémon.
   Slots (50 ₽, ×50 jackpot, EV 0.94, reels stopping left to right), tables printed, outcome rolled first; the room
   is pointed at, not walked. Each City has its **Ring** as a building of its own — Pallet's
   **Challenge Ring** in the square, Celadon's **Pokémon Coliseum**: the ladder and the first rival on show before
-  the fee, then 2 rungs / 3 rungs of Elite-class rivals, no healing between, cash out or climb; money below, a Rare
+  the fee, then 2 rungs / 3 rungs of Elite-class rivals fighting two at a time, no healing between, cash out or climb; money below, a Rare
   relic 1-of-3 on top, no XP; however it ends, the whole Box walks out healed to full (Trauma stays), and it never
   ends the run. A five-page How to play. Meant to be lost (ladder ≈1 in 6 in the town, under 1 in 10 in the city).
   *(2026-09-23; out of the Dojo 2026-09-25.)* Every **committing** door (Ring, Safari, Black Market) asks before
@@ -73,7 +73,7 @@ Pokémon.
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
-  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×1.55, HP
+  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×1.45, HP
   ×1 / ×1 / ×1.15), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
   Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
@@ -114,7 +114,8 @@ basic, 49 % at half, 69 % at a quarter. The card plays at any odds; a miss spend
 from the fight's stream. Master Ball Charm arms one sure throw per run. 0 HP loses the recruit. A catch is a
 **Victory with full XP**. Balls are bag entries (Poké ×1, Great ×1.5, Ultra ×2): start 3, +1 per Region, one per attempt either way; the catch pill opens a picker with each ball's chance (v0.8.6).
 
-**Trainers** — 9 archetypes, **three Pokémon** (the roster's own + its archetype's, 4 levels under), one at a time,
+**Trainers** — 9 archetypes, **three Pokémon** (the roster's own + its archetype's, 4 levels under) — **which, and
+their levels, are a surprise** (v0.8.6: the map shows one Poké Ball per Pokémon, the fight "N to come") — one at a time,
 two at a time (50/60/70 %) or three (a quarter/40 %/half of those), band = wild +1/+2, no hidden intents.
 **Elite Trainer** — guaranteed, **four Pokémon two at a time** (its own two 2-phase, two lent between), **a relic pick: two Uncommons and a Rare**. Roster by Region: Rival 80/60/40 %,
 Giovanni 30 % in R3, otherwise a Specialist. The **Rival counter-picks your starter** and scales by Region band.
@@ -259,7 +260,7 @@ Lv3 on three-stage lines or the Mastery card in every opening hand, and the line
 
 ## 6. Progression *(Topic 6)*
 
-**XP** by tier: wild 48 / trainer 72 / elite 110 / gym 200, scaled by the level gap (Gen V's formula, §6.2.1).
+**XP** by tier: wild 48 / trainer 72 / elite 110 / gym 200 for the first enemy, **75 % for each one after** (v0.8.6), scaled by the level gap (Gen V's formula, §6.2.1).
 **Active 100 %, benched Box 75 %** (`exp-share` → 100).
 Level-ups between nodes. Curve `12 + (L−1)×4`. Single-stage species get +25 % growth.
 

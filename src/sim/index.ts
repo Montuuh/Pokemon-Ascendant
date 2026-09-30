@@ -12,7 +12,7 @@ export { combatReducer, validateAction, type ReduceResult } from './combat/reduc
 export { cardPlayability, consumablePlayability, swapOptions, catchStatus, catchOptions, catchTarget, canReach, aimsAtFoe, pickLeadOptions, stepBackOptions, effectiveApCost, type CardPlayability, type CardTarget, type SwapOption, type ConsumablePlayability } from './combat/preview';
 export { CATCH, catchOdds, catchRateOf, catchPercent, type CatchOdds } from './combat/catch';
 export { predictIntentDamage, describeIntent, intentRecipient, summonCount, summonedBy } from './combat/intents';
-export { forecastTurn, forecastOn, type TurnForecast, type IntentForecast, type ForecastHit } from './combat/forecast';
+export { forecastTurn, forecastOn, forecastIfLead, asLeadDamage, type TurnForecast, type IntentForecast, type ForecastHit } from './combat/forecast';
 export { currentPhase, phaseMarkers, bossArchetype } from './combat/boss';
 export { slotOccupant, slotToIndex, indexToSlot, lead, benchIndices, aliveTeam, activeEnemy, aliveEnemies, isEnemyLead, resolutionOrder, enemySlotLabel, findCombatant, SLOT_LABEL } from './combat/slots';
 export { effectiveAttack, effectiveDefense, statAtLevel, effectiveMaxHp, hpFraction, isFainted, knownMoves, activeMoves } from './combat/stats';

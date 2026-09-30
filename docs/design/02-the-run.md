@@ -201,7 +201,7 @@ fight — a team of evolved Pokémon with relics and Badges out-grows a band tha
 |---|---|---|
 | 1 | ×1 | ×1 |
 | 2 | ×1 | ×1.6 |
-| 3 | ×1.1 | ×1.55 |
+| 3 | ×1.1 | ×1.45 |
 
 **Attack-heavy on purpose**: an even split (×1.2 / ×1.55 on both) reached similar clear rates with Region 3
 fights 7.5 turns long; this one keeps every Region between 4 and 5 turns a fight (4.3 / 4.6 / 4.6). More HP
@@ -219,7 +219,9 @@ Region 3 given Region 2 fell to **37 %**. Its Attack came down to **×1.95**: **
 **15 %**, fights 4.9 turns long. **v0.8.5 (groups everywhere, §5.6.3):** trainers of three, packs on up to half the
 wild nodes and the Elite and the Gym two at a time put far more enemies in Region 3's way, and at ×1.15 / ×1.95 it
 fell to 7 %. Its tier came down to **HP ×1.1, Attack ×1.55** — Region 3 given Region 2 **42 %**, the whole run
-**15 %** over 360 runs; the balance pass takes it back to ~50 %.
+**15 %** over 360 runs. **v0.8.6:** XP was cut (a group's extra enemies pay 75 %, §6.2.1) so teams stop arriving
+seven to ten levels over their Region; Region 3's Attack came down to **×1.45** to hold the curve — measured over
+120 runs: R1 63 % · R2|R1 57 % · R3|R2 44 % · run 16 %. The balance pass takes Region 3 back to ~50 %.
 
 ---
 
@@ -617,12 +619,18 @@ Region so a Region with four trainer nodes never repeats a team.
 The seed picks an archetype from the Region's eligible list, without replacement within a Region. Eligibility
 expands by Region: Bug Catcher is Region 1 only, Rocket Grunt is Regions 2–3, Ace Trainer is Region 3.
 
-**A node fixes its roster when the map is generated**, not when you walk in. The preview and the fight read the
-same list, so a preview can never turn out to have been a guess (Pillar 1).
+**A node fixes its roster when the map is generated**, not when you walk in, so the fight is never a guess.
+**But the player does not see it** (v0.8.6, the user's call): a trainer's, the Elite Trainer's and a Gym's node
+says **how many** Pokémon they carry — one Poké Ball each, the way the games show a trainer's party — never which
+or at what level, and in the fight whoever waits behind the field is shown as Poké Balls too ("2 to come"). The
+archetype (the sprite and its name), the lane's theme and a Gym's type and telegraph still say what kind of team it
+is; which Pokémon is the surprise, as it is in the games. Pillar 1 is about the enemy's *actions* — every intent
+is still telegraphed a turn ahead — not about a trainer's party. A wild node keeps its species on show: which one
+to catch is the choice.
 
 **Authoring rules.** A trainer's level band is **its layer's** wild band +1 to +2 (§2.6.5) — a step up from a wild fight,
-not a boss. The archetype must be readable from the team at a glance, because the node preview names it and the
-player counter-picks their Active 3 from it. No hidden intents at baseline. **From Region 2 on, every trainer's Pokémon
+not a boss. The archetype must be readable from the trainer's sprite and name, because the player counter-picks their Active 3
+from it. No hidden intents at baseline. **From Region 2 on, every trainer's Pokémon
 fields the form its level warrants** — it walks its line's `evolveLevel`s, the thresholds the player's own team
 evolves on (§6.2.4) — and the map's preview names that form, so the node never promises a Geodude and fields a
 Golem. Region 1 is authored as it stands. And no trainer fields a fully-evolved
@@ -853,15 +861,20 @@ Targets, measured by the balance harness with the team a run actually brings to 
 Rung 1 is winnable on purpose: a ladder whose first step is a wall is a toll, not a gamble — the cash-out only
 means something if the first prize is reachable. It is every rung after it that is brutal.
 
-**The rivals.** Every rung is an **Elite-class trainer** — two phases (§2.8.1), the Region's stat tier (§2.2.1)
-— drawn from the trainer rosters with distinct archetypes where they allow it, filled to a full team from the
+**The rivals.** Every rung is an **Elite-class trainer** — two phases (§2.8.1), the Region's stat tier (§2.2.1),
+and since v0.8.6 **two of its Pokémon on the field at a time**, like the Elite — drawn from the trainer rosters with distinct archetypes where they allow it, filled to a full team from the
 Elite and trainer pools, every Pokémon **evolved to its level** (§2.2.1) and the last one the ace, a level above
 the rest. The ladder is rolled on arrival, so the next rival is always on screen before you pay to fight it.
 
 | | Rung 1 | Each later rung | Team | Measured: rung 1 · rung 2 · ladder (runs) |
 |---|---|---|---|---|
-| **Pallet Town** | Gym ace **+7** (Lv 26) | **+3** | 3 | 0.64 · — · **0.17** (70) |
-| **Celadon City** | Gym ace **+10** (Lv 36) | **+2** | 3 | 0.60 · 0.22 · **0.03** (89) |
+| **Pallet Town** | Gym ace **+7** | **+2** | 4, two at a time | 0.75 · — · **0.18** (76) |
+| **Celadon City** | Gym ace **+5** | **+0** | 3, two at a time | 0.71 · 0.21 · **0.03** (38) |
+
+*(v0.8.6, the user's call: the route ran over-levelled and the Ring then far under-levelled — its offsets had
+climbed to +18 and +21 to hold its win rate against teams seven to ten levels over their Region. With XP cut
+(§6.2.1) the rivals stand a few levels over the team, and the ladder's difficulty comes from its shape: two at a
+time, no healing between rungs.)*
 
 The offsets are per City because the teams that reach Celadon are not the teams that reach Pallet, and they
 were set by the balance harness (`playRing`: a Center heal, the healthiest three, every rung climbed), not by

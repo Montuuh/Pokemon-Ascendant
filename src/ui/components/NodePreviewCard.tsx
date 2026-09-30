@@ -6,7 +6,7 @@ import { ALL_TRAINERS, fieldsFor, groupPlanFor, type MapNode, type PartyMon } fr
 import { FieldChips } from './FieldChips';
 import { groupTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
-import { fallbackBadge, nodeBadge, trainerSprite } from '@/ui/art';
+import { fallbackBadge, nodeBadge, trainerSprite, itemIcon } from '@/ui/art';
 import { groupLabel, NODE_HINT, NODE_LABEL } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import styles from './NodePreviewCard.module.css';
@@ -42,6 +42,9 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
     return () => window.removeEventListener('keydown', onKey);
   }, [onCancel]);
 
+  const hiddenTeam = node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym';
+  // The Poké Balls below say how many; the line keeps only what they do not (a Gym's telegraph, the Elite's prize).
+  const detail = hiddenTeam ? node.preview.detail.replace(/^A team of \d+ Pokémon( · )?/, '') : node.preview.detail;
   return (
     <div className={styles.scrim} onClick={onCancel} role="presentation">
       <div
@@ -72,7 +75,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           {roster && <img className={styles.trainer} src={trainerSprite(roster.sprite)} alt="" />}
         </header>
 
-        <p className={styles.detail}>{node.preview.detail}</p>
+        {detail && <p className={styles.detail}>{detail}</p>}
         <p className={styles.hint}>{NODE_HINT[node.kind]}</p>
         {/* §2.6.1 / §4.3 — the ground it is fought on, promised like the rest. */}
         <FieldChips fields={fields} compact />
@@ -83,7 +86,21 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           </Tipped>
         )}
 
-        {node.preview.speciesIds.length > 0 && (
+        {/* §2.7 — a trainer's, an Elite's or a Gym's team is a surprise (v0.8.6): one Poké Ball per Pokémon, the way
+            the games show a trainer's party. A wild node still shows who could be waiting — that is the choice. */}
+        {hiddenTeam && (
+          <>
+            <h3 className={styles.sectionTitle}>Their team</h3>
+            <ul className={styles.balls} data-testid="preview-team-size" aria-label={`${node.preview.enemies?.length ?? 0} Pokémon`}>
+              {(node.preview.enemies ?? []).map((_, i) => (
+                <li key={i}>
+                  <img src={itemIcon('poke-ball')} alt="" width={28} height={28} className={styles.ball} />
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        {!hiddenTeam && node.preview.speciesIds.length > 0 && (
           <>
             <h3 className={styles.sectionTitle}>
               {node.kind === 'wild' ? 'Could be waiting' : 'Their team'}

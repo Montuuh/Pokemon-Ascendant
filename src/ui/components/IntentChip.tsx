@@ -1,6 +1,6 @@
 import { IconQuestionMark } from '@tabler/icons-react';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
-import { SLOT_LABEL, intentRecipient, slotOccupant, summonedBy } from '@/sim';
+import { SLOT_LABEL, asLeadDamage, intentRecipient, slotOccupant, summonedBy } from '@/sim';
 import { intentGlyph } from '@/ui/art';
 import { INTENT_LABEL } from '@/ui/strings';
 import { intentCardTip } from '@/ui/tips';
@@ -28,7 +28,14 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
     : null;
   const ally = intent?.targetEnemyUid ? intentRecipient(state, enemy, intent) : null;
   const called = intent?.kind === 'summon' ? summonedBy(state, enemy, move, ctx.config.maxOnField).map((h) => ctx.content.species(h.species).name) : [];
-  const tip = useTip(intentCardTip(state, enemy, forecast, action));
+  // §9.2.5 — a hit on your Lead, shown on everyone who could take the Lead instead (v0.8.6).
+  const ifLead = intent && !intent.hidden && intent.targetSlot === 'lead' && move && move.power > 0
+    ? state.player.team
+        .map((m, i) => ({ m, i }))
+        .filter(({ m, i }) => i !== state.player.leadIndex && m.hp > 0)
+        .map(({ m, i }) => ({ name: m.name, ...(asLeadDamage(state, ctx, i, { enemyUid: enemy.uid, action }) ?? { amount: 0, ko: false }) }))
+    : [];
+  const tip = useTip(intentCardTip(state, enemy, forecast, action, ifLead));
 
   return (
     <div

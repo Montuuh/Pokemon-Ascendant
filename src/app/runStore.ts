@@ -79,7 +79,15 @@ export const useRunStore = create<RunStore>((set, get) => ({
   dispatch: (action) => {
     const { run } = get();
     if (!run) return false;
-    const result = runReducer(run, action, ctx());
+    // A reducer that throws must not leave a button silently dead: it becomes a rejection the screen can say.
+    let result: ReturnType<typeof runReducer>;
+    try {
+      result = runReducer(run, action, ctx());
+    } catch (error) {
+      console.error(`run action ${action.type} threw`, error);
+      set({ lastRejected: { reason: 'internal-error', at: Date.now() } });
+      return false;
+    }
     if (result.rejected) {
       set({ lastRejected: { reason: result.rejected, at: Date.now() } });
       return false;

@@ -417,6 +417,24 @@ describe('Catching and the Box — §2.6.4, §2.3.1', () => {
     expect(s.phase).toBe('map');
   });
 
+  it('Catch_AtFullBox_ASwappedInRecruitAtItsThreshold_EvolvesNow_ThenTheNodeCloses_§6.3.1', () => {
+    let s = start();
+    s = { ...s, box: [s.box[0]!, ...['pidgey', 'rattata', 'oddish', 'zubat', 'geodude'].map((id) => newPartyMon(id, 6, content, s.seed))] };
+    s = enter(s, s.map.nodes[s.reachable[0]!]!.kind);
+    s = apply(s, { type: 'begin-combat' });
+    if (s.phase !== 'combat') return;
+    s = apply(s, { type: 'finish-combat', report: { ...caughtReport(s), caught: { speciesId: 'shellder', level: 14 } } });
+    s = apply(s, { type: 'claim-reward' });
+    expect(s.phase).toBe('swap-or-skip');
+    s = apply(s, { type: 'resolve-recruit', releaseUid: s.box[5]!.uid });
+    expect(s.phase).toBe('evolution');
+    const p = s.pendingEvolutions.find((e) => e.from === 'shellder')!;
+    while (s.phase === 'evolution') s = apply(s, { type: 'choose-branch', uid: s.pendingEvolutions[0]!.uid, branchId: s.pendingEvolutions[0]!.branchIds[0]! });
+    expect(s.box.find((m) => m.uid === p.uid)!.speciesId).toBe('cloyster');
+    expect(s.phase).toBe('map');
+    expect(s.pendingNodeId).toBeNull();
+  });
+
   it('Catch_AtFullBox_SwapReleasesPermanently', () => {
     let s = start();
     s = { ...s, box: [s.box[0]!, ...['pidgey', 'rattata', 'oddish', 'zubat', 'geodude'].map((id) => newPartyMon(id, 6, content, s.seed))] };

@@ -170,6 +170,7 @@ export const NODE_HINT: Record<string, string> = {
 };
 
 export const RUN_REJECT_TEXT: Record<string, string> = {
+  'internal-error': 'Something went wrong. Reload the page — the run is saved.',
   'ability-locked': 'This is the line\'s hidden ability — it opens at Bond rank 3 (Veteran).',
   'not-on-map': 'Finish what you are doing first.',
   'node-unreachable': 'You cannot get there from here.',

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { EnemySetup } from '../content/defs';
 import { ctx, dispatch, eventsOf, handCard, reject, scenario, start, startFixture, tweak, withConsumableHand, withHand, consumableCard } from '../testing/harness';
-import { forecastTurn } from './forecast';
+import { forecastIfLead, forecastOn, forecastTurn } from './forecast';
 import { classifyMove, predictIntentDamage, scoreIntent } from './intents';
 import { cardPlayability } from './preview';
 import { resolutionOrder } from './slots';
@@ -309,5 +309,29 @@ describe('The Defender covers its Lead — §5.6 (v0.8.6)', () => {
     expect(s.enemies[0]!.uid).toBe(defenderUid);
     expect(s.enemies[0]!.stages.defense).toBe(ctx.config.coverDefenseStages);
     expect(eventsOf(s, 'enemy-cover')).toHaveLength(1);
+  });
+});
+
+describe('What if another led — §9.2.5 (v0.8.6)', () => {
+  it('ForecastIfLead_IsTheForecastAfterThatSwap_ToTheHP', () => {
+    for (const id of ['wild-basic', 'group-wild-flock', 'group-trainer-pair']) {
+      const s = startFixture(id, 7);
+      const benchIndex = s.player.team.findIndex((m, i) => i !== s.player.leadIndex && m.hp > 0);
+      if (benchIndex < 0) continue;
+      const mon = s.player.team[benchIndex]!;
+      const ifLead = forecastIfLead(s, ctx, benchIndex)!;
+      const swapped = dispatch(s, { type: 'swap', benchIndex });
+      const after = forecastTurn(swapped, ctx);
+      for (const e of s.enemies) expect(forecastOn(ifLead, e.uid, mon.uid), `${id} ${e.name}`).toBe(forecastOn(after, e.uid, mon.uid));
+    }
+  });
+
+  it('ForecastIfLead_OfTheLead_IsTheForecast_AndOfAFaintedOne_IsNothing', () => {
+    const s = startFixture('wild-basic', 7);
+    expect(forecastIfLead(s, ctx, s.player.leadIndex)).toBe(forecastTurn(s, ctx));
+    const down = tweak(s, (d) => {
+      d.player.team[1]!.hp = 0;
+    });
+    expect(forecastIfLead(down, ctx, 1)).toBeNull();
   });
 });

@@ -44,7 +44,8 @@ export function NodeMarker({
       meta={[
         // The kind only when the title does not already say it, and a level band only where there is a fight.
         ...(NODE_LABEL[node.kind] && NODE_LABEL[node.kind] !== node.preview.title ? [NODE_LABEL[node.kind]!] : []),
-        ...(node.preview.levelBand[1] > 0 ? [`Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`] : []),
+        // §2.7 — a trainer's levels are part of the surprise (v0.8.6); a wild node keeps its band.
+        ...(node.preview.levelBand[1] > 0 && (node.kind === 'wild' || node.kind === 'elite-wild') ? [`Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`] : []),
         STATUS_TEXT[status],
       ]}
       body={node.preview.detail}

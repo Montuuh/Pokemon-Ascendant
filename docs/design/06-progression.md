@@ -33,7 +33,10 @@ XP is awarded at combat end and scales with the enemy tier.
 | Elite | 110 | `eliteXp` |
 | Gym Leader | 200 | `gymXp` |
 
-These are per enemy, and they are set by the arc in §6.2.4, not chosen for feel: a seven-node Region has to
+These are for the first enemy; **every enemy past the first pays 75 %** (`extraEnemyXpShare`, v0.8.6). Groups are the
+rule since v0.8.5, and paying every Pokémon of a trio in full carried teams seven to ten levels over their Region
+and then left them far under the Ring's rivals (measured, the user's playtest). 50 % closed the gap and broke the
+curve (Region 1 33 %); 75 % takes about two levels off and holds it. The values are set by the arc in §6.2.4, not chosen for feel: a seven-node Region has to
 carry a Lv 5 starter to roughly Lv 14 by the Gym. The first values tried (30/45/80/140) landed the team at
 Lv 11 and made the Gym unwinnable for two of the three starters. `src/sim/balance/runBalance.test.ts` is the
 check — change a number here and read the table, do not reason about it.

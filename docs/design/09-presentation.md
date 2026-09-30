@@ -120,7 +120,8 @@ hue — a requirement that exists for colour-blind players and pays off for ever
   opens only when the card is aimed at it. A move card's corner is always the move's power, its ×N chip how the type
   lands on the enemy Lead. A single enemy's *sprite* still stands enlarged on the right; two or three use the squad
   grammar mirrored (§5.6): the enemy Lead forward, towards your side, its supports smaller behind it, one high and
-  one low. **The enemy panels mirror your squad** (v0.8.6, the user's call): the Lead's panel forward, towards the
+  one low — and **two on the field stand as if three did**: the Lead centred and forward, the support in the upper
+  place behind, the lower one empty. **The enemy panels mirror your squad** (v0.8.6, the user's call): the Lead's panel forward, towards the
   arena, centred between the supports and wearing the player Lead's red frame; the supports' panels stacked behind
   it, one high and one low, the way your bench stacks behind your Lead. Each panel is its intent chip and its card
   with a **Lead** chip or the support's **role** (Attacker, Defender, Buffer; the bubble explains the place and the
@@ -229,6 +230,11 @@ with a dashed border; each has its own number and its own intent card.
 The intent number **recomputes live** when the player swaps, because it is predicted against whoever now
 occupies the slot. The v0.1 playtest identified this as the element that makes the swap decision legible; it is
 not an optimisation, it is the feature.
+
+**As Lead** (v0.8.6, the user's idea): every living bench Pokémon carries a small **−N** badge in its corner (its bubble says "as your Lead") whenever the
+visible intents would land something on it at the Lead — the same dry run with it leading, so it is the number its
+portrait would show after the swap (red, with KO, when it would faint). The intent card of a hit aimed at your Lead
+lists the same hit on each of them ("If Squirtle led: 10"). Pillar 2: the swap is priced in HP before it is made.
 
 **The number is the hit** (§5.2): the dry-run Resolution's, so it matches what lands. **An area intent prints no
 number on its chip** (user, 2026-09-25): `Bulldoze → ALL` — every target takes its own damage (type, Defence,

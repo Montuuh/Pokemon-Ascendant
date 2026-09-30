@@ -13,17 +13,17 @@ Common, the Elite a pick of 2U+1R on the reward screen (`claim-reward { relicId 
 relic events weight 0.35, the **collector's premium** +25 % per relic bought (`slotPrice`, `relicsBought`). No
 Refunds → **Lean Pack**. Second pass (same version, the user's call): balls are bag entries + Great/Ultra (save v17),
 the combat **Bag** (whole bag, 2 items a turn), eased catch curve + ball picker, roles Attacker/Defender (Cover)/Buffer,
-mirrored enemy panels. Full run ends with ~10 relics (was 16.5).
+mirrored enemy panels; third pass: hidden trainer rosters, "As Lead" (`forecastIfLead`), XP cut, Ring two at a time.
 
 **Findings to act on:** v0.8.8 — the harness never plays cures or X items (a full run ends with ~37 unused), the Ring's
-rung 1 ~75–78 % (levels barely move it), the market's prices. v1.2 — map caption token, wild biome emblems, route-line contrast. UI nits left:
+rung 1 ~71–75 %, the market's prices. v1.2 — map caption token, wild biome emblems, route-line contrast. UI nits left:
 group breakdown box mid-arena; tiny enemy icons; Bench 2 clipped at 720 p; Ring/Safari guides share a nav; silhouette
 filter ×3; blurry TM sprites; `.trauma` px; the reward and Gym-pick
 screens are not mapped in `scripts/ui-audit.mjs` (shared with another session — map them when it is free).
 `AGENTS.md`, `.agents/`, `.codex/` (Codex) are another session's; `scripts/ui-audit.mjs` is shared with it.
 
 **Test status:** `npm run check` green — 655 Vitest, typecheck, lint, §, catalogue and version guards; `e2e/supplies`,
-`economy`, `run` green. **Balance** (120 runs): R1 65 % · R2|R1 67 % · R3|R2 42 % · full run 18 %.
+`economy`, `run` green. **Balance** (120 runs): R1 63 % · R2|R1 57 % · R3|R2 44 % · full run 16 %.
 **Shipping:** `docs/release-doctrine.md` (the `ship-version` skill). **UI changes:** the `ui-review` skill.
 
 ## Standing facts

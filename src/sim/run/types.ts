@@ -746,7 +746,9 @@ export type RunRejectReason =
   /** §2.11.6 — a price in Pokémon the Box cannot pay and keep one, or a stake the Gambler will not take. */
   | 'bad-payment'
   /** §7.3.7 — the run already holds two Legendaries. */
-  | 'legendary-cap';
+  | 'legendary-cap'
+  /** The reducer threw: the store turns a crash into a refusal the screen can say. */
+  | 'internal-error';
 
 export interface RunReduceResult {
   state: RunState;

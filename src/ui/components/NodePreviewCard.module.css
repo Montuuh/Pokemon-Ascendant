@@ -155,3 +155,15 @@
   font-size: var(--type-small);
   font-weight: 700;
 }
+
+/* §2.7 — a trainer's team as one Poké Ball per Pokémon. */
+.balls {
+  display: flex;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ball {
+  image-rendering: pixelated;
+}

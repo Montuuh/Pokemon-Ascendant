@@ -13,6 +13,7 @@ import {
   fleeTierFor,
   consumablePlayability,
   fieldsSuppressed,
+  asLeadDamage,
   forecastTurn,
   indexToSlot,
   pickLeadOptions,
@@ -36,7 +37,7 @@ import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
 import { useCombatFx } from '@/ui/hooks/useCombatFx';
 import { ENCOUNTER_LABEL, REJECT_TEXT } from '@/ui/strings';
-import { iconOf } from '@/ui/art';
+import { iconOf, itemIcon } from '@/ui/art';
 import { apTip, fleeTip, swapTip } from '@/ui/tips';
 import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './CombatScreen.module.css';
@@ -222,6 +223,15 @@ export function CombatScreen() {
     return { incoming: list, incomingKo: list.length > 0 && list.reduce((a, h) => a + h.amount, 0) >= mon.hp };
   }
 
+  /**
+   * §9.2.5 / §3.3 — what this bench Pokémon would take this turn if it took the Lead now (v0.8.6): the dry run with
+   * it leading, counting only the intents you can see. Null when nothing visible would land on it there.
+   */
+  function asLeadFor(bi: number): { amount: number; ko: boolean } | null {
+    const hit = asLeadDamage(state!, ctx, bi);
+    return hit && hit.amount > 0 ? hit : null;
+  }
+
   /** §9.2.4 — the held card's number on one enemy (or that it cannot reach it). */
   function previewOn(uid: string): TargetPreview | null {
     // §9.2.4 — one grammar for one enemy or three (user, 2026-09-30): the held card's number sits on every panel.
@@ -299,7 +309,7 @@ export function CombatScreen() {
     const opt = swaps.find((o) => o.benchIndex === bi);
     return (
       <div className={cls}>
-        <Portrait mon={mon} variant="bench" slotLabel={SLOT_LABEL[indexToSlot(state!, bi)]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} targeted={targetSlots.has(indexToSlot(state!, bi))} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi)} onClick={() => onTeamClick(bi)} fx={fx.floats} fxClass={fx.classes[mon.uid]} {...incomingFor(mon.uid)} />
+        <Portrait mon={mon} variant="bench" slotLabel={SLOT_LABEL[indexToSlot(state!, bi)]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(indexToSlot(state!, bi))} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi)} onClick={() => onTeamClick(bi)} fx={fx.floats} fxClass={fx.classes[mon.uid]} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -394,7 +404,7 @@ export function CombatScreen() {
 
         {/* §9.2.1 — a group's panels mirror the player's squad (v0.8.6): the Lead's panel forward and centred, the
             supports stacked behind it, the way the bench stacks behind your Lead. */}
-        <div className={[styles.enemyZone, group ? styles.enemyZoneGroup : ''].join(' ')} data-count={enemies.length}>
+        <div className={[styles.enemyZone, group ? styles.enemyZoneGroup : ''].join(' ')}>
           {enemies.length > 0 ? (
             enemies.map((enemy, i) => (
               <div key={enemy.uid} className={group ? (i === 0 ? styles.foeLeadPanel : i === 1 ? styles.foePanel1 : styles.foePanel2) : styles.foeOnly}>
@@ -418,11 +428,12 @@ export function CombatScreen() {
             <div className={styles.chip}>No enemies remain</div>
           )}
           {state.enemyQueue.length > 0 && (
-            <Tipped as="div" tip={<Tip title="Still to come" body={group ? 'These wait behind the group and step in the moment a place falls free.' : 'This trainer sends out the next Pokémon when this one falls. You fight them one at a time.'} />} className={styles.queue}>
+            <Tipped as="div" tip={<Tip title="Still to come" body={group ? 'These wait behind the group and step in the moment a place falls free.' : 'This trainer sends out the next Pokémon when this one falls. You fight them one at a time.'} />} className={styles.queue} role="group" aria-label={`${state.enemyQueue.length} Pokémon still to come`} data-testid="enemy-queue">
+              {/* §2.7 — who comes next is a surprise (v0.8.6): one Poké Ball per Pokémon still to come. */}
               {state.enemyQueue.map((e) => (
-                <img key={e.uid} className="pixel" src={iconOf(e)} alt={e.name} width={34} height={28} />
+                <img key={e.uid} className="pixel" src={itemIcon('poke-ball')} alt="" width={22} height={22} />
               ))}
-              <span>next</span>
+              <span>to come</span>
             </Tipped>
           )}
         </div>

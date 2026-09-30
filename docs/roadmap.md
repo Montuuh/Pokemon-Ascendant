@@ -785,8 +785,19 @@ with each ball's chance (§2.6.4.1); **support roles** reworked to Attacker / De
 supports escalate; **the enemy panels mirror the squad** (the Lead's panel forward and framed, the supports behind,
 §9.2.1). Measured over 120 runs: R1 65 % · R2|R1 67 % · R3|R2 42 % · run 18 %; Cover at a 50 % trigger and a
 quarter of supports cost Region 3 twenty points, so it fires at 35 % on a fifth. The Ring's Celadon offset +7.
+**Third pass** (the user's playtest, the same version): **a pair stands as a trio would** (the Lead centred and
+forward, the support above behind it); **a trainer's team is a surprise** (§2.7.3 — the map shows one Poké Ball per
+Pokémon, never who or at what level, and the fight's queue reads "N to come"); **As Lead** — every bench Pokémon
+shows what this turn's visible intents would do to it at the Lead, and a hit on the Lead lists it for each
+(`forecastIfLead`, the same dry run with another leading; §9.2.5); **less XP** — a group's extra enemies pay 75 %
+(§6.2.1), which took about two levels off a team that ran seven to ten over its Region, with Region 3's Attack
+×1.55 → ×1.45 to hold the curve (120 runs: R1 63 % · R2|R1 57 % · R3|R2 44 % · run 16 %); **the Ring's rivals
+fight two at a time** and stand a few levels over the team instead of +18/+21 (Pallet four Pokémon +7 +2 a rung,
+Celadon three +5; §2.9.4.1). Also a bug the user met: an evolution button that did nothing — not reproducible in
+the sim or the UI (most likely a stale module while the dev server was being rewritten), but now a reducer error
+is caught by the store and said beside the button, and a recruit swapped in at its threshold evolves at once.
 **For v0.8.8:** the harness never plays cures or X items, so a full run ends with ~37 unused consumables — tune the
-supply tables against a player who does; the Ring's rung 1 is ~75–78 % (levels barely move it).
+supply tables against a player who does; Region 3 back to ~50 %.
 
 ### v0.8.7 — Routes, revamped  ☐
 The route's generation, nodes and pacing, reworked (§2.5, §2.9) — with v0.8.3's groups placed on it. Design pass

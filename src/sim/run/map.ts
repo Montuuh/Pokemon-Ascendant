@@ -195,12 +195,16 @@ function trainerPreview(rng: GameRng, content: ContentRegistry, used: Set<string
     title: roster.name,
     rosterId: roster.id,
     icon: `trainer-${roster.archetype}`,
-    detail: team.map((m) => `${content.species(m.species).name} L${m.level}`).join(' · '),
+    // §2.7 — a trainer's team is a surprise, as it is in the games (v0.8.6, the user's call): the map says how many.
+    detail: teamSizeLine(team.length),
     speciesIds: team.map((m) => m.species),
     levelBand: [Math.min(...levels), Math.max(...levels)],
     enemies: team,
   };
 }
+
+/** §2.7 — what the map says of a trainer's, an Elite's or a Gym's team: how many, never who (v0.8.6). */
+const teamSizeLine = (n: number) => `A team of ${n} Pokémon`;
 
 /** §2.9.1 — the field nurse. */
 const AID_PREVIEW: NodePreview = {
@@ -232,7 +236,7 @@ function elitePreview(content: ContentRegistry, layer: number, region: RegionCon
   return {
     title: region.elite.name,
     icon: 'elite',
-    detail: `${team.map((m) => `${content.species(m.species).name} L${m.level}`).join(' · ')} · reward: a relic`,
+    detail: `${teamSizeLine(team.length)} · reward: a relic pick`,
     speciesIds: team.map((m) => m.species),
     levelBand: [Math.min(...levels), Math.max(...levels)],
     enemies: team,
@@ -262,7 +266,7 @@ function gymPreview(content: ContentRegistry, gym: GymDef): NodePreview {
   return {
     title: `${gym.name} — ${typeName(gym.type)} Gym`,
     icon: `gym-${gym.type}`,
-    detail: `${team.map((m) => `${content.species(m.species).name} L${m.level}`).join(' · ')} · ${gym.telegraph}`,
+    detail: `${teamSizeLine(team.length)} · ${gym.telegraph}`,
     speciesIds: team.map((m) => m.species),
     levelBand: [Math.min(...levels), Math.max(...levels)],
     enemies: team.map((m) => ({ species: m.species, level: m.level })),

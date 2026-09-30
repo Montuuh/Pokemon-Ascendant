@@ -314,3 +314,9 @@
     transition: none;
   }
 }
+/* The run refused the choice: said beside the button, never a dead click. */
+.refused {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--type-small);
+  color: var(--ink-primary);
+}

@@ -5,7 +5,7 @@ import { getContent } from '@/content/registry';
 import { portraitUrl } from '@/content/schemas/species';
 import { previewBranch, type BranchPreview } from '@/sim';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { ARCHETYPE_HINT, ARCHETYPE_LABEL } from '@/ui/strings';
+import { ARCHETYPE_HINT, ARCHETYPE_LABEL, RUN_REJECT_TEXT } from '@/ui/strings';
 import styles from './EvolutionScreen.module.css';
 
 // Per docs/design/ui/screens.md §3.6 and §6.3.3 — the Evolution screen. This is the one place the game goes
@@ -43,6 +43,8 @@ function EvolutionChoice({ uid }: { uid: string }) {
   const [picked, setPicked] = useState<string | null>(pending && pending.branchIds.length === 1 ? pending.branchIds[0]! : null);
   // The morph is a one-shot: it starts a beat after the screen mounts so the "before" is seen first.
   const [morphed, setMorphed] = useState(prefersReducedMotion);
+  // What the run said when it did not take the choice: a button never fails silently.
+  const [refused, setRefused] = useState<string | null>(null);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -129,7 +131,10 @@ function EvolutionChoice({ uid }: { uid: string }) {
                 key={p.branchId}
                 type="button"
                 className={`${styles.branch} ${on ? styles.on : ''}`}
-                onClick={() => setPicked(p.branchId)}
+                onClick={() => {
+                  setPicked(p.branchId);
+                  setRefused(null);
+                }}
                 aria-pressed={on}
                 data-testid={`branch-${p.branchId}`}
                 data-archetype={branch.archetype}
@@ -198,11 +203,21 @@ function EvolutionChoice({ uid }: { uid: string }) {
             type="button"
             className={styles.confirm}
             disabled={!picked}
-            onClick={() => picked && dispatch({ type: 'choose-branch', uid: mon.uid, branchId: picked })}
+            onClick={() => {
+              if (!picked) return;
+              if (!dispatch({ type: 'choose-branch', uid: mon.uid, branchId: picked })) {
+                setRefused(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? RUN_REJECT_TEXT['internal-error']!);
+              }
+            }}
             data-testid="btn-evolve"
           >
             {picked ? `Evolve into ${content.branch(picked).label}` : 'Evolve'}
           </button>
+          {refused && (
+            <p className={styles.refused} role="status">
+              {refused}
+            </p>
+          )}
         </footer>
       </div>
     </main>

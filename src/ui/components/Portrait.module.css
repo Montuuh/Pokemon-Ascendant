@@ -246,3 +246,35 @@
   object-fit: cover;
   background: var(--surface-2);
 }
+
+/* §9.2.5 — what it would take as the Lead this turn: the swap, priced in HP. Quiet, not an alarm; red only at KO. */
+.asLead,
+.asLeadKo {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+  z-index: 1;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.asLeadKo {
+  border-color: var(--accent-negative);
+  background: var(--accent-negative);
+  color: var(--ink-on-accent);
+}
+
+/* A short stage (720 p): the bench's art gives up height so both bench portraits fit above the tray. */
+@media (max-height: 800px) {
+  .bench .art {
+    aspect-ratio: 2 / 1;
+  }
+  .bench {
+    padding-bottom: var(--sp-2);
+  }
+}

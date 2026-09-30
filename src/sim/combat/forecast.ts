@@ -122,3 +122,48 @@ export function forecastOn(forecast: TurnForecast, enemyUid: string, targetUid: 
   const f = action === undefined ? forecast.byEnemy[enemyUid] : forecast.byAction[`${enemyUid}#${action}`];
   return f?.hits.find((h) => h.targetUid === targetUid)?.amount ?? 0;
 }
+
+const ifLeadCache = new WeakMap<CombatState, Map<number, TurnForecast>>();
+
+/**
+ * §9.2.5 / §3.3 — the same honest dry run with another of your Pokémon at the Lead (v0.8.6, the user's idea): what
+ * this turn's intents would do if `index` took the Lead now. It is the forecast of the fight after that swap, so the
+ * number a bench Pokémon shows "as Lead" is the number its portrait would show once it got there — the swap
+ * decision, priced. Null for a fainted Pokémon; the Lead's own is the ordinary forecast.
+ */
+export function forecastIfLead(state: CombatState, ctx: CombatCtx, index: number): TurnForecast | null {
+  const mon = state.player.team[index];
+  if (!mon || mon.hp <= 0) return null;
+  if (index === state.player.leadIndex) return forecastTurn(state, ctx);
+  const draft = isDraft(state);
+  const cached = draft ? undefined : ifLeadCache.get(state)?.get(index);
+  if (cached) return cached;
+  const base = draft ? current(state) : state;
+  const forecast = computeForecast({ ...base, player: { ...base.player, leadIndex: index } } as CombatState, ctx);
+  if (!draft) {
+    const byIndex = ifLeadCache.get(state) ?? new Map<number, TurnForecast>();
+    byIndex.set(index, forecast);
+    ifLeadCache.set(state, byIndex);
+  }
+  return forecast;
+}
+
+/**
+ * §9.2.5 — what Pokémon `index` would take this turn at the Lead, from the intents you can see (a hidden intent's
+ * number stays hidden). `only` narrows it to one enemy action — the intent card's "If X led" line. The one place
+ * both the bench chip and the intent card read, so the two can never disagree.
+ */
+export function asLeadDamage(state: CombatState, ctx: CombatCtx, index: number, only?: { enemyUid: string; action: 0 | 1 }): { amount: number; ko: boolean } | null {
+  const f = forecastIfLead(state, ctx, index);
+  const mon = state.player.team[index];
+  if (!f || !mon) return null;
+  let amount = 0;
+  for (const e of state.enemies) {
+    for (const [action, intent] of [[0, e.intent], [1, e.second]] as const) {
+      if (!intent || intent.hidden) continue;
+      if (only && (only.enemyUid !== e.uid || only.action !== action)) continue;
+      amount += forecastOn(f, e.uid, mon.uid, action);
+    }
+  }
+  return { amount, ko: amount >= mon.hp };
+}

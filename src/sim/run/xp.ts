@@ -21,11 +21,17 @@ export interface ProgressionConfig {
    * learns more. 0 turns the scaling off, which is how the pre-v0.7.1 curve is reproduced.
    */
   xpLevelExponent: number;
+  /**
+   * §6.2.1 — the share of a foe's XP that each enemy past the first pays (v0.8.6). Groups are the rule since v0.8.5,
+   * and paying every Pokémon of a trio in full left teams seven to ten levels over their Region (measured).
+   */
+  extraEnemyXpShare: number;
 }
 
 // Tuned against the whole-run harness (src/sim/balance/runBalance.test.ts), not a single fight: a seven-node
 // route has to carry a Lv 5 starter to roughly Lv 14, which is the level the Gym in §5.9 is written for.
 export const DEFAULT_PROGRESSION: ProgressionConfig = {
+  // v0.8.6: ×0.8 with extra enemies at extraEnemyXpShare (were 48 / 72 / 110 / 200, every enemy in full).
   wildXp: 48,
   trainerXp: 72,
   eliteXp: 110,
@@ -35,6 +41,7 @@ export const DEFAULT_PROGRESSION: ProgressionConfig = {
   levelUpSlopeXp: 4,
   maxLevel: 60,
   xpLevelExponent: 2.5,
+  extraEnemyXpShare: 0.75,
 };
 
 /** §6.2.3 — the XP needed to leave level L. */
@@ -48,7 +55,7 @@ export function encounterXp(tier: EnemyTier, enemyCount: number, config = DEFAUL
     : tier === 'elite' ? config.eliteXp
     : tier === 'trainer' ? config.trainerXp
     : config.wildXp;
-  return per * Math.max(1, enemyCount);
+  return per * (1 + Math.max(0, enemyCount - 1) * config.extraEnemyXpShare);
 }
 
 /**

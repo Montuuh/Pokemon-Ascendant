@@ -15,12 +15,12 @@ Group fights, field effects and a reworked route.
 
 ### v0.8.6 — Consumables that are spent, scarcer relics · 2026-09-30
 
-Consumables are used up; relics are rarer and dearer; group roles reworked.
+Consumables used up, rarer relics, group roles, hidden rosters, less XP.
 
 - **Consumables are spent.** A Bag with every item, 2 a turn; drops, gifts and bundles.
 - **Catching.** Great and Ultra Balls, higher odds, a ball picker on the catch %.
 - **Scarcer relics.** Trainers 15 % Common; Elite pick of 3; each relic bought costs +25 %.
-- **Group roles.** Attackers, Defenders that Cover the Lead, Buffers; new layout.
+- **Groups.** Defenders Cover the Lead; hidden rosters; "As Lead" damage; less XP.
 
 ### v0.8.5 — More group fights, one combat grammar · 2026-09-30
 

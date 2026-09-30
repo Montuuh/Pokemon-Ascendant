@@ -31,11 +31,13 @@ interface Props {
   incoming?: { key: string; enemyUid: string; amount: number; icon?: string; name: string; move: string }[];
   /** The hits above add up to a knockout. */
   incomingKo?: boolean;
+  /** §9.2.5 — a bench Pokémon: what it would take this turn as the Lead (v0.8.6). */
+  asLead?: { amount: number; ko: boolean } | null;
 }
 
 // Per docs/design/ui/02 §2.1 — squad-formation portrait: type top-left, status top-right, crown on the Lead,
 // HP bar + text below, swap chip for benches. Intent targets highlight the slot, never the Pokémon (§5.2).
-export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapHint, targeted, selectable, onClick, fx, fxClass, incoming, incomingKo }: Props) {
+export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapHint, targeted, selectable, onClick, fx, fxClass, incoming, incomingKo, asLead }: Props) {
   const primary = mon.types[0] ?? 'normal';
   const fainted = mon.hp <= 0;
   const classes = [
@@ -52,11 +54,11 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
   // 2026-09-21 — the portrait's bubble is the Pokémon's summary: types, ability, held item, status, Trauma,
   // and its role right now (Lead, or what a swap costs). It replaced five native titles on the card's corners.
   const hits = !fainted && incoming?.length ? incoming : null;
-  const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}) }));
+  const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}), ...(asLead && !fainted ? { asLead } : {}) }));
   const incomingText = hits ? `; incoming: ${hits.map((h) => `${h.amount} from ${h.name}'s ${h.move}`).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
 
   return (
-    <button type="button" className={classes} onClick={onClick} data-testid={`portrait-${variant}-${mon.speciesId}`} data-slot={slotLabel} aria-label={fainted ? `${mon.name} fainted` : `${swapHint ?? `${mon.name} · ${slotLabel}`}${incomingText}`} {...tip}>
+    <button type="button" className={classes} onClick={onClick} data-testid={`portrait-${variant}-${mon.speciesId}`} data-slot={slotLabel} aria-label={fainted ? `${mon.name} fainted` : `${swapHint ?? `${mon.name} · ${slotLabel}`}${incomingText}${asLead ? `; as Lead it would take ${asLead.amount}${asLead.ko ? ', a knockout' : ''}` : ''}`} {...tip}>
       <span className={styles.slotTag}>{slotLabel}</span>
       {hits && (
         <span className={styles.incoming} data-testid="incoming" aria-hidden="true">
@@ -115,6 +117,13 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
       )}
       {variant === 'bench' && !fainted && swapCost !== undefined && (
         <span className={swapAllowed ? styles.swapChip : styles.swapChipOff}>Swap: {swapCost} AP</span>
+      )}
+      {/* §9.2.5 — the swap, priced in HP: what this turn's intents would do to it at the Lead (v0.8.6). */}
+      {variant === 'bench' && !fainted && asLead && (
+        <span className={asLead.ko ? styles.asLeadKo : styles.asLead} data-testid={`as-lead-${mon.speciesId}`}>
+          −{asLead.amount}
+          {asLead.ko ? ' KO' : ''}
+        </span>
       )}
       <FloatingNumbers uid={mon.uid} fx={fx} />
     </button>

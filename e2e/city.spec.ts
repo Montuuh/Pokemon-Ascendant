@@ -54,7 +54,8 @@ test.describe('The Ring and the Coliseum — §2.9.4.1', () => {
     // Nothing is paid yet: the ladder and the first rival are there to be looked at first.
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(1000);
     await expect(page.getByTestId('ring-ladder').locator('li')).toHaveCount(2);
-    await expect(page.getByTestId('ring-rival').locator('li')).toHaveCount(3);
+    // v0.8.6 — Pallet's rivals carry four, two at a time (CITIES['pallet-town'].ring.teamSize).
+    await expect(page.getByTestId('ring-rival').locator('li')).toHaveCount(4);
     await expect(page.getByTestId('btn-ring-enter')).toContainText('250');
     await page.screenshot({ path: 'playtest/ring-entry.png' });
     await page.getByTestId('btn-ring-enter').click();

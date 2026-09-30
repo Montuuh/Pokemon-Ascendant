@@ -115,7 +115,7 @@ export function intentTip(kind: string, detail?: string, hidden = false): ReactN
  * The move and its type, who it is aimed at, the HP it takes off each Pokémon it lands on (the forecast's numbers,
  * the same ones on the portraits), its riders and its recharge. A hidden intent tells its kind and nothing else.
  */
-export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecast: TurnForecast, action: 0 | 1 = 0): ReactNode {
+export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecast: TurnForecast, action: 0 | 1 = 0, ifLead: { name: string; amount: number; ko: boolean }[] = []): ReactNode {
   const intent = action === 1 ? enemy.second ?? null : enemy.intent;
   if (!intent) return null;
   const move = intent.moveId ? getContent().move(intent.moveId) : null;
@@ -143,6 +143,8 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
     lines.push(<b key={h.targetUid}>{`${mon?.name ?? '?'}: ${h.amount} damage${h.ko ? ' — knocks it out' : ''}`}</b>);
   }
   if (move.power > 0 && hits.length === 0) lines.push('No damage lands: the target is immune, or the slot is empty.');
+  // §9.2.5 — aimed at your Lead: the same hit on whoever else could stand there (v0.8.6).
+  for (const w of ifLead) lines.push(`If ${w.name} led: ${w.amount} damage${w.ko ? ' — knocks it out' : ''}`);
   for (const fx of move.effects) {
     if (fx.kind === 'status' && !fx.self) lines.push(`${fx.chance >= 1 ? 'Inflicts' : `${Math.round(fx.chance * 100)}% chance to inflict`} ${fx.status}.`);
     if (fx.kind === 'stage' && fx.target === 'foe') lines.push(`${fx.stages > 0 ? '+' : ''}${fx.stages} ${cap(fx.stat)} on the target.`);
@@ -265,7 +267,7 @@ export function traumaTip(stacks: number, max: number): ReactNode {
 }
 
 /** The Pokémon itself: species, types, level, ability, item — the summary a portrait owes on hover. */
-export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number; incoming?: { name: string; move: string; amount: number }[]; incomingKo?: boolean }): ReactNode {
+export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number; incoming?: { name: string; move: string; amount: number }[]; incomingKo?: boolean; asLead?: { amount: number; ko: boolean } }): ReactNode {
   const content = getContent();
   const meta: ReactNode[] = [`Lv ${c.level}`, ...c.types.map(typeName)];
   const lines: ReactNode[] = [];
@@ -282,6 +284,8 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
   // §9.2.5 — what lands on it this turn, one line per enemy, the same numbers as the chips beside it.
   for (const h of extra?.incoming ?? []) lines.push(<div key={`i-${h.name}-${h.move}`}><b>−{h.amount}</b> from {h.name}'s {h.move} this turn.</div>);
   if (extra?.incomingKo) lines.push(<div key="ko"><b>Together they knock it out</b> unless you act.</div>);
+  // §9.2.5 — the swap, priced in HP (v0.8.6).
+  if (extra?.asLead) lines.push(<div key="al">As your Lead this turn it would take <b>{extra.asLead.amount}</b>{extra.asLead.ko ? ' — a knockout' : ''}.</div>);
   const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP.` : undefined;
   return <Tip title={c.name} meta={meta} body={lines.length ? lines : undefined} footer={footer} />;
 }

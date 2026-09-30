@@ -43,10 +43,10 @@ export interface CityDef {
    * Celadon's rivals are Region 2's rosters since v0.7.3 — final forms, where Region 1's had been evolved up —
    * so its ladder was retuned then: rivals of 3 rather than 4, which moved rung 1 far more than any level did.
    * v0.8.5: both offsets +4, the levels the Gym's premium dropped (§5.6.3), so the Ring stands where it stood.
-   * v0.8.6: Pallet +7 (11 → 18), Celadon +7 (14 → 21). Supplies are found far more often now (§2.7.2) and the whole
-   * bag is open every turn (§3.5), so a team reaches the Ring well stocked, and the bag — not the level — carries
-   * rung 1 (+2 levels moved it one point). Measured: Pallet rung 1 0.75, ladder 0.14; Celadon rung 1 0.78, ladder
-   * 0.08. Rung 1 sits well over its "about half"; the v0.8.8 pass retunes it with something other than levels.
+   * v0.8.6 (the user's call: the route ran over-levelled and the Ring then under-levelled): XP was cut (groups pay
+   * extra enemies at 75 %), and a rival now fights like an Elite — **two at a time** (`RING.onField`) — so the
+   * ladder's difficulty is its shape, not a wall of levels. Pallet: four Pokémon, +7, +2 a rung; Celadon: three,
+   * +5, no step. Measured: Pallet rung 1 0.75, ladder 0.18; Celadon rung 1 0.71, rung 2 0.21, ladder 0.03.
    */
   ring: { fee: number; prizes: ({ money: number } | { relicPick: true })[]; firstOffset: number; stepOffset: number; teamSize: number };
 }
@@ -54,11 +54,11 @@ export interface CityDef {
 export const CITIES: Record<CityId, CityDef> = {
   'pallet-town': {
     id: 'pallet-town', name: 'Pallet Town', afterRegion: 0, open: ['center', 'mart', 'dojo', 'ring', 'safari'], ringName: 'Challenge Ring', blackMarket: false, shop: 'mart', dojoMarkup: 1, dojoWide: false,
-    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 18, stepOffset: 3, teamSize: 3 },
+    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 7, stepOffset: 2, teamSize: 4 },
   },
   'celadon-city': {
     id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'ring', 'game-corner', 'safari'], ringName: 'Pokémon Coliseum', blackMarket: true, shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
-    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 21, stepOffset: 2, teamSize: 3 },
+    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 5, stepOffset: 0, teamSize: 3 },
   },
 };
 
@@ -70,6 +70,8 @@ export const RING = {
   phaseCount: 2 as const,
   /** §2.9.4.1 — the top prize is a Rare relic, one of three. */
   pickCount: 3,
+  /** §2.9.4.1 — how many of a rival's Pokémon stand at once: two, like an Elite (v0.8.6). */
+  onField: 2 as const,
 };
 
 /**

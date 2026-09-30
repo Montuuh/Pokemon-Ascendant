@@ -199,3 +199,45 @@ test.describe('Group fights — §5.6', () => {
     });
   }
 });
+
+test.describe('What a fight tells you, and what it keeps — v0.8.6', () => {
+  test("a trainer's team is a count of Poké Balls, never who or at what level — §2.7.3", async ({ page }) => {
+    await page.goto('/?screen=menu');
+    await page.waitForFunction(() => !!window.__ascendant);
+    await page.evaluate(() => {
+      const d = window.__ascendant!;
+      d.run.new('squirtle', 7);
+      d.run.jump('trainer');
+      d.goTo('map');
+    });
+    const node = await page.evaluate(() => {
+      const r = window.__ascendant!.run.state()!;
+      const n = r.map.nodes[r.reachable[0]!]!;
+      return { id: n.id, size: n.preview.enemies!.length, names: n.preview.speciesIds };
+    });
+    await page.getByTestId(`node-${node.id}`).click();
+    await expect(page.getByTestId('preview-team-size').locator('li')).toHaveCount(node.size);
+    // The card names none of them.
+    const card = await page.locator('div', { has: page.getByTestId('btn-enter-node') }).last().innerText();
+    const names = await page.evaluate((ids) => ids.map((id) => window.__ascendant!.run.state() && id), node.names);
+    for (const id of names) expect(card.toLowerCase()).not.toContain(String(id).toLowerCase());
+  });
+
+  test('every bench Pokémon shows what it would take as Lead — §9.2.5', async ({ page }) => {
+    await page.goto('/?scenario=group-trainer-pair&seed=7');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    const chip = page.locator('[data-testid^="as-lead-"]').first();
+    await expect(chip).toContainText(/−\d+/);
+    // The number is the dry run with that Pokémon leading: the same as after the swap.
+    const [species, shown] = [await chip.getAttribute('data-testid'), Number((await chip.innerText()).match(/\d+/)![0])];
+    const after = await page.evaluate((sp) => {
+      const d = window.__ascendant!;
+      const s = d.state()!;
+      const i = s.player.team.findIndex((m) => `as-lead-${m.speciesId}` === sp);
+      d.dispatch({ type: 'swap', benchIndex: i });
+      return d.state()!.player.team[i]!.uid;
+    }, species);
+    await expect(page.locator(`[data-testid^="portrait-lead-"]`)).toContainText(String(shown));
+    expect(after).toBeTruthy();
+  });
+});

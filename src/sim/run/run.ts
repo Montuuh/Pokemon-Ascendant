@@ -1163,6 +1163,13 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           break;
         }
 
+        // §6.3.1 — a recruit swapped in at its threshold picks its branch now, as one that found room does; the
+        // Evolution screen walks off the node when it is done (leaveNode), so the node is left open until then.
+        if (action.releaseUid) queueEvolutions(draft, ctx.content);
+        if (draft.pendingEvolutions.length) {
+          draft.phase = 'evolution';
+          break;
+        }
         const node = draft.map.nodes[draft.pendingNodeId!]!;
         advanceFrom(draft, node.id);
         draft.pendingNodeId = null;

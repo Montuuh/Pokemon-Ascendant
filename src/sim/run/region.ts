@@ -886,7 +886,7 @@ export interface StatTier {
 export const REGION_STAT_TIER: readonly StatTier[] = [
   { hp: 1, attack: 1 },
   { hp: 1, attack: 1.6 },
-  { hp: 1.1, attack: 1.55 },
+  { hp: 1.1, attack: 1.45 },
 ];
 
 /**
