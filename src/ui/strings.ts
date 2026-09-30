@@ -37,6 +37,7 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
   'invalid-index': 'Invalid target.',
   'not-wild': 'You can only catch wild Pokémon.',
   'no-balls': 'No Poké Balls left.',
+  'item-limit': 'No more items this turn; the next turn allows more.',
   'nothing-to-cure': 'Nothing to cure.',
   'choice-locked': 'Its held item will not let it play that.',
 };
@@ -70,22 +71,21 @@ export const INTENT_LABEL: Record<string, string> = {
   unknown: 'Unknown',
   incapacitated: "Can't act",
   summon: 'Call for Help',
+  guard: 'Cover',
 };
 
-/** §5.6 — the four support roles, as the chip names them. */
+/** §5.6 — the three support roles, as the chip names them (v0.8.6). */
 export const ROLE_LABEL: Record<string, string> = {
-  healer: 'Healer',
-  buffer: 'Buffer',
-  debuffer: 'Debuffer',
   attacker: 'Attacker',
+  defender: 'Defender',
+  buffer: 'Buffer',
 };
 
-/** §5.6 — what each role does, for its bubble. */
+/** §5.6 — what each support role does, in the player's words (v0.8.6). */
 export const ROLE_HINT: Record<string, string> = {
-  healer: 'Heals its Lead when the Lead is hurt. Take it out first, or every hit on the Lead is undone.',
-  buffer: 'Raises its Lead\'s stats. The longer it stands, the harder the Lead hits.',
-  debuffer: 'Puts statuses and stat drops on your team. The group never doubles a status it already plans.',
-  attacker: 'Extra damage. A second threat to read beside the Lead\'s.',
+  attacker: 'Leans on hits: a second threat beside the Lead. Most of the back row is this.',
+  defender: 'Shields its Lead: heals it, and when the Lead is hurt it telegraphs Cover and steps in front — then your Melee cards reach only it, braced with +1 Defence.',
+  buffer: 'Raises its allies, lowers your team and puts statuses on it. The group never doubles a status it already plans.',
 };
 
 export const EFFECTIVENESS_LABEL: Record<string, string> = {

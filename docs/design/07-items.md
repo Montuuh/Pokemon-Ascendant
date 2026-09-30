@@ -36,8 +36,8 @@
 
 ## §7.2.1 Rules
 
-A consumable is **spent when it is played** (§3.5, v0.8.6): the pile is built at combat start from the inventory,
-2 cards are drawn per turn, and whatever was played leaves the bag when the fight ends. In exchange they are found
+A consumable is **spent when it is played** (§3.5, v0.8.6): the whole bag is open every turn, two items a turn,
+and whatever was played leaves the bag when the fight ends. In exchange they are found
 everywhere — a trainer always drops some (§2.7.2), a wild node leaves the odd Poké Ball (§2.6.2), the nurse and the
 Center hand a pair over (§2.9.1, §2.11.1), shops sell them in bundles (§2.9.2, §2.11.2.2), and several Mystery
 Events are supplies (§2.10.2). The drop tables by Region live in `src/sim/run/rewards.ts` and
@@ -82,8 +82,9 @@ and AP.
 | **Ice Heal** | 0 | Freeze | 25 ₽ |
 | **Full Heal** | **1** | Any primary status **and** Confusion | 90 ₽ |
 
-Single cures are free to play because the cost is *carrying* them — inventory space is not scarce, but the
-2-card consumable draw is. Full Heal costs 1 AP precisely so the five specific cures keep a reason to exist.
+Single cures are free to play because the cost is *carrying* them — each one spent is one fewer in the bag, and
+it takes one of the turn's two item uses. Full Heal costs 1 AP precisely so the five specific cures keep a reason
+to exist.
 
 ## §7.2.4 Combat utility
 
@@ -106,15 +107,16 @@ and **Quick Claw** is its combo partner.
 
 ## §7.2.5 Pokéballs and Evolution Items
 
-Two genuinely expendable classes that never enter the combat pile as ordinary cards.
+Balls are bag entries like any consumable (v0.8.6) and are thrown from the catch pill's picker (§2.6.4.1).
+Evolution Items never enter a fight.
 
 | Item | AP | Effect | Price |
 |---|---|---|---|
 | **Pokéball** | 1 | A catch attempt (§2.6.4) | 50 ₽ |
-| Great Ball 🔒 | 1 | +15 points to the catch threshold | 120 ₽ |
-| Ultra Ball 🔒 | 1 | +30 points | 250 ₽ |
+| **Great Ball** | 1 | A catch attempt at ×1.5 | 120 ₽ |
+| **Ultra Ball** | 1 | A catch attempt at ×2 | 250 ₽ |
 
-Balls are counted: start 3, +1 per Region, one spent per throw whether it works or not. Found in wild nodes
+Balls live in the bag (v0.8.6) and are counted: start 3, +1 per Region, one spent per throw whether it works or not. Found in wild nodes
 (§2.6.2), dropped now and then by trainers, and sold three to a slot on the route and five in a City.
 
 | Stone | Evolves early | Price |

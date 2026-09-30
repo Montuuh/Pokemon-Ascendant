@@ -12,7 +12,6 @@ import { applyGroups } from './groups';
 import { applyFields } from './battlefields';
 
 /** The catch consumable's catalog id (§7.2.5). */
-const BALL_ITEM = 'poke-ball';
 
 /**
  * §2.5 — where a fight happens. Past the fork a node belongs to a lane, and the lane's whole job is to look
@@ -111,8 +110,9 @@ export function buildWildScenario(node: MapNode, run: RunState, content: Content
       team: activeSetups(run, content),
       leadIndex: 0,
       // One Poké Ball card per ball held: the pile is the only way a ball reaches the hand (§3.5, §2.6.4).
-      consumables: [...run.consumables, ...Array.from({ length: run.balls }, () => BALL_ITEM)],
-      balls: run.balls,
+      // §7.2.5 — the balls are in the bag (v0.8.6); `balls` is only the fixtures' extra stock.
+      consumables: [...run.consumables],
+      balls: 0,
       relics: [...run.relics],
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
@@ -200,8 +200,9 @@ export function buildEliteWildScenario(node: MapNode, run: RunState, content: Co
     player: {
       team: activeSetups(run, content),
       leadIndex: 0,
-      consumables: [...run.consumables, ...Array.from({ length: run.balls }, () => BALL_ITEM)],
-      balls: run.balls,
+      // §7.2.5 — the balls are in the bag (v0.8.6); `balls` is only the fixtures' extra stock.
+      consumables: [...run.consumables],
+      balls: 0,
       relics: [...run.relics],
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),

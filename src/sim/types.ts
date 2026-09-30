@@ -53,7 +53,9 @@ export type IntentKind =
   | 'unknown'
   | 'incapacitated'
   /** §5.6.2 — calls one or two companions into the fight. */
-  | 'summon';
+  | 'summon'
+  /** §5.6 — a Defender steps in front of its Lead and takes the Lead's place (v0.8.6). */
+  | 'guard';
 
 // Per §3.3 — the three Active Team slots. Slots are positions; occupants change when the Lead swaps.
 export const SLOT_IDS = ['lead', 'bench1', 'bench2'] as const;

@@ -32,7 +32,7 @@ function winAs(kind: NodeKind, seed = 7): RunState {
   s = apply(apply(s, { type: 'enter-node', nodeId: id }), { type: 'begin-combat' });
   return apply(s, {
     type: 'finish-combat',
-    report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 3 },
+    report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 3 },
   });
 }
 

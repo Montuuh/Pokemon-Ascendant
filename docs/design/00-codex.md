@@ -107,12 +107,12 @@ cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.
 fight ends as Escaped (no XP/drop/catch), and the toll comes off: wild −20 % ₽ + Trauma on the Lead · trainer
 −30 % + Trauma on all + a consumable · Elite −50 % + Trauma on all + a relic (never Legendary).
 
-**Catching — a roll at a shown number** (2026-09-21). `p = catchRate × (1 − 0.9·HP%)^1.7 × status × ball`,
+**Catching — a roll at a shown number** (2026-09-21; curve eased v0.8.6). `p = catchRate × (1 − 0.8·HP%)^1.2 × status × ball`,
 clamped 1–90 %: the species' ceiling (common 0.9 · uncommon 0.7 · rare 0.5, ×0.65 middle stage, ×0.4 final;
-Snorlax 0.2), a steep HP curve, ×1.5 asleep/frozen or ×1.2 any other status. ~2 % at full HP for a common
-basic, 33 % at half, 58 % at a quarter. The card plays at any odds; a miss spends the ball and the turn. Seeded
+Snorlax 0.2), a steep HP curve, ×1.5 asleep/frozen or ×1.2 any other status. ~13 % at full HP for a common
+basic, 49 % at half, 69 % at a quarter. The card plays at any odds; a miss spends the ball and the turn. Seeded
 from the fight's stream. Master Ball Charm arms one sure throw per run. 0 HP loses the recruit. A catch is a
-**Victory with full XP**. Balls are counted: start 3, +1 per Region, one per attempt either way.
+**Victory with full XP**. Balls are bag entries (Poké ×1, Great ×1.5, Ultra ×2): start 3, +1 per Region, one per attempt either way; the catch pill opens a picker with each ball's chance (v0.8.6).
 
 **Trainers** — 9 archetypes, **three Pokémon** (the roster's own + its archetype's, 4 levels under), one at a time,
 two at a time (50/60/70 %) or three (a quarter/40 %/half of those), band = wild +1/+2, no hidden intents.
@@ -155,9 +155,9 @@ unless the card has Step-Forward; **Ranged plays anywhere** at ×0.75.
   (+Mastery) are **purged from deck and discard**. A Frozen Lead that faints voids the lock.
 
 **Deck** 12 (→15 with Mastery), hand always 5, discard reshuffles when empty.
-**Consumables are spent** (v0.8.6): the pile is one card per item carried, 2 drawn per turn, and a played one
-leaves the bag when the fight ends. Found far more often to match — see §7 below. Balls, TMs and stones are
-spent too, outside the pile.
+**Consumables are spent** (v0.8.6): the whole bag is open every turn behind a **Bag** button (one card per kind,
+×N), **two items a turn**, and a played one leaves the bag when the fight ends. Found far more often to match — see
+§7 below. Poké Balls are bag entries too; TMs and stones are spent outside a fight.
 
 ---
 
@@ -220,9 +220,10 @@ reduction and shield, and earlier intents of the same turn); only a chance rider
 the list's remainder fills a free place. Supports act first, the Lead last. **Reach:** a single-target Melee card
 reaches only the enemy Lead; Ranged, Backstrike and area cards reach every enemy; the player's Cleave hits them all,
 each its own number. Cards are aimed by dragging onto an enemy or clicking card then enemy. The Lead falls → the
-strongest left (a fresh arrival too) steps up; the fight ends when all are down. Supports carry a **role** —
-Healer (heals the Lead) · Buffer (raises the Lead) · Debuffer · Attacker — score their role's intents ×1.5, never
-double a status the group already plans, enter at 60 % HP, and from their 4th turn gain +1 Attack a turn. A
+strongest left (a fresh arrival too) steps up; the fight ends when all are down. Supports carry a **role** (v0.8.6) —
+Attacker (most) · Defender (a fifth: heals the Lead, and telegraphs **Cover** when the Lead is hurt, taking its
+place with +1 Defence) · Buffer (a fifth: raises allies, lowers and afflicts you) — score their role's intents ×1.5,
+never double a status the group already plans, enter at 60 % HP, and from their 4th turn gain +1 Attack a turn. A
 catch in a pack ends the fight; the rest scatter.
 **Acting twice** (§5.6.1): an authored `acts: 2` Pokémon declares two intents (different moves), both shown — the
 second marked *Also* — and resolves them back to back. **Calling for help** (§5.6.2): the enemy-only

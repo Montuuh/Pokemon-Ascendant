@@ -6,6 +6,11 @@
   width: 100%;
   max-width: 360px;
 }
+/* §9.2.1 — a group's Lead wears the player Lead's frame, so who stands in front reads at a glance (v0.8.6). */
+.leadZone .card {
+  border: 3px solid var(--brand-red);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-red) 30%, transparent), 0 10px 24px rgba(0, 0, 0, 0.35);
+}
 .intent {
   display: inline-flex;
   align-items: center;
@@ -154,15 +159,6 @@
 .chipInfo {
   background: var(--brand-cream);
 }
-.ball {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, var(--brand-red) 48%, #2a2230 48% 56%, #fff 56%);
-  border: 2px solid #2a2230;
-  flex: 0 0 auto;
-}
-
 /* §5.6 — one look for one enemy or three (v0.8.5): every panel drawn small enough that three fit the column. */
 .compact {
   gap: var(--sp-1);
@@ -258,23 +254,11 @@
   background: var(--brand-cream);
 }
 
-/* §2.6.4 — in a group the catch chance sits under the card, one line, no ball count (the ball card has it). */
+/* §2.6.4 — where the catch pill (CatchPicker) sits on the panel. */
 .catchInline {
   display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
   align-self: flex-end;
   margin-top: calc(var(--sp-1) * -1);
-  padding: 0 var(--sp-2);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
-  border: 1px solid var(--brand-red);
-  font-size: var(--type-caption);
-  color: var(--ink-secondary);
-}
-.catchInline .ball {
-  width: var(--sp-3);
-  height: var(--sp-3);
 }
 /* A 720 p stage: three panels have to fit, so each drops its art and its level line (both are in the bubble). */
 @media (max-height: 800px) {
@@ -313,6 +297,15 @@
   .compact {
     position: relative;
   }
+  /* In the mirrored formation every panel is part of a column: HP goes back under the name, and the chips wrap. */
+  .supportZone .card,
+  .leadZone .card {
+    display: flex;
+  }
+  .supportZone .chips,
+  .leadZone .chips {
+    flex-wrap: wrap;
+  }
   .compact .catchInline {
     position: absolute;
     right: var(--sp-2);
@@ -336,4 +329,9 @@
   font-weight: 800;
   text-transform: uppercase;
   color: var(--ink-secondary);
+}
+
+/* A chip that wraps breaks at the arrow, never inside "Lead (Charmander)" or between a number and "dmg". */
+.nowrap {
+  white-space: nowrap;
 }

@@ -23,6 +23,8 @@ export const AID_HEAL_PCT = 50;
 export const PRICES = {
   consumableTier: [0, 40, 110, 200, 320] as number[],
   ball: 50,
+  /** §7.2.5 / §2.6.4.2 — each ball's unit price (catalogs/consumables.md): the Poké Ball, Great ×1.5, Ultra ×2. */
+  balls: { 'poke-ball': 50, 'great-ball': 120, 'ultra-ball': 250 } as Record<string, number>,
   /** §2.9.2 — the merchant's Poké Balls come three to a slot. */
   merchantBalls: { qty: 3, price: 120 },
   /** §2.11.2.3 — a City shop's markup over the merchant: you pay for selection. */
@@ -38,7 +40,7 @@ export const PRICES = {
    * §2.9.2 / §2.11.2.2 — consumables are sold in bundles now that a played one is gone (§3.5): how many a slot
    * holds by the item's tier, the Potion's larger City bundle, and the bulk discount on the unit price.
    */
-  bundle: { byTier: [0, 3, 2, 1, 1] as number[], potionCity: 5, ballsCity: 5, discount: 0.9 },
+  bundle: { byTier: [0, 3, 2, 1, 1] as number[], potionCity: 5, ballsCity: 5, greatCity: 3, ultraStore: 3, discount: 0.9 },
   heldItem: 300,
   tm: 350,
   /** §7.2.5 — an Evolution Item, before the City markup (catalogs/economy.md: 250 ₽, 325 in a City). */
@@ -245,7 +247,7 @@ function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor
   };
   switch (floor) {
     case 'consumables':
-      return [potionBundle(content), ...consumable(1, 2), ...consumable(2, 2), ...consumable(3, 1), cityBalls()];
+      return [potionBundle(content), ...consumable(1, 2), ...consumable(2, 2), ...consumable(3, 1), ...cityBalls()];
     case 'tms': {
       const usable = content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
       return drawDistinct(rng, usable, 4).map((tm) => ({ kind: 'tm', id: tm.id, price: PRICES.tm, sold: false }));
@@ -260,7 +262,7 @@ function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor
     case 'rare': {
       // §6.3.2 — the top floor keeps the stones, one the Box can use when there is one.
       const stone = teamStone(rng, content, run);
-      return [...relics('rare', 1), ...consumable(4, 1), ...(stone ? [stone] : [])];
+      return [...relics('rare', 1), ...consumable(4, 1), ballSlot('ultra-ball', PRICES.bundle.ultraStore), ...(stone ? [stone] : [])];
     }
   }
 }
@@ -366,7 +368,7 @@ export function rollShopStock(
     if (stone) slots.push(stone);
     // §2.11.2.2 — Poké Balls are always on a City counter, outside the eight: a City that cannot sell you a ball
     // after the route's merchant stopped carrying many would be a Mart in name only.
-    slots.push(cityBalls());
+    slots.push(...cityBalls());
     for (const slot of slots) slot.price = Math.round(slot.price * PRICES.cityMarkup);
   }
 
@@ -408,11 +410,14 @@ const bundleOf = (def: { id: string; tier: number }): ShopSlot => bundleSlot(def
 /** §2.11.2.2 — every City counter keeps Potions, five to a slot: the one item nobody should have to fish for. */
 const potionBundle = (content: ContentRegistry): ShopSlot => bundleSlot(content.consumable('potion'), PRICES.bundle.potionCity);
 
-/** §2.11.2.2 — a City counter's Poké Balls, five to a slot at the bulk discount. */
-const cityBalls = (): ShopSlot => ({
-  kind: 'ball', id: 'poke-ball', qty: PRICES.bundle.ballsCity, sold: false,
-  price: Math.round((PRICES.ball * PRICES.bundle.ballsCity * PRICES.bundle.discount) / 5) * 5,
+/** §2.11.2.2 / §2.6.4.2 — a bundle of one kind of ball at the bulk discount. */
+const ballSlot = (id: string, qty: number): ShopSlot => ({
+  kind: 'ball', id, qty, sold: false,
+  price: Math.round(((PRICES.balls[id] ?? PRICES.ball) * qty * PRICES.bundle.discount) / 5) * 5,
 });
+
+/** §2.11.2.2 — a City counter's balls: Poké Balls ×5 and Great Balls ×3 (v0.8.6). */
+const cityBalls = (): ShopSlot[] => [ballSlot('poke-ball', PRICES.bundle.ballsCity), ballSlot('great-ball', PRICES.bundle.greatCity)];
 
 /** §2.9.3 — what the next re-roll costs, or null when the visit is out of them. */
 export const rerollPrice = (stock: ShopStock): number | null =>

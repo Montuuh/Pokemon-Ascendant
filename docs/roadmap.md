@@ -776,8 +776,17 @@ over 120 runs: a full run ends with 9.4 relics (v0.8.5: 16.5; ~6 of them the Gym
 R2|R1 61 % · R3|R2 43 % · run 17 % (v0.8.5 at the same seeds 57 / 59 / 35 / 12). The Ring's offsets went up (Pallet
 +7, Celadon +5) because a full bag, not the level, carried rung 1. UI: the reward screen's supplies strip and the
 Elite's pick as a second step, bundles and the premium chip in the shops, the nurse's and the Center's gift.
-**For v0.8.8:** the harness never plays cures or X items, so a full run ends with ~27 unused consumables — tune the
-supply tables against a player who does; the Ring's rung 1 is still ~72 %.
+**Second pass, the same day** (the user's playtest; no new sub-version, their call): **balls in the bag** — Poké
+Balls are consumables, with **Great (×1.5) and Ultra (×2) Balls** in City shops and Region 2–3 loot (run save v17);
+**the bag in a fight** — no random two, a Bag button opens everything carried, **two items a turn** (§3.5); **the
+catch curve eased** (0.9/1.7 → 0.8/1.2: 13 % at full HP, 49 % at half) and **the catch pill opens a ball picker**
+with each ball's chance (§2.6.4.1); **support roles** reworked to Attacker / Defender / Buffer by share (60 / 20 / 20,
+§5.6) — the Defender telegraphs **Cover** and takes its hurt Lead's place with +1 Defence — and only role-bearing
+supports escalate; **the enemy panels mirror the squad** (the Lead's panel forward and framed, the supports behind,
+§9.2.1). Measured over 120 runs: R1 65 % · R2|R1 67 % · R3|R2 42 % · run 18 %; Cover at a 50 % trigger and a
+quarter of supports cost Region 3 twenty points, so it fires at 35 % on a fifth. The Ring's Celadon offset +7.
+**For v0.8.8:** the harness never plays cures or X items, so a full run ends with ~37 unused consumables — tune the
+supply tables against a player who does; the Ring's rung 1 is ~75–78 % (levels barely move it).
 
 ### v0.8.7 — Routes, revamped  ☐
 The route's generation, nodes and pacing, reworked (§2.5, §2.9) — with v0.8.3's groups placed on it. Design pass

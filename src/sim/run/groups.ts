@@ -112,12 +112,33 @@ export function groupPlanFor(node: MapNode, run: RunState): GroupPlan {
  * §5.6 — a support's role, read off what its kit can do: a heal it can hand over makes a Healer, a raise it can
  * hand over a Buffer, a status or a stat drop a Debuffer, anything else an Attacker.
  */
-export function roleFromKit(moves: string[], content: ContentRegistry): SupportRole {
-  const defs = moves.map((id) => content.move(id));
-  if (defs.some((m) => allyGivable(m) && m.effects.some((e) => e.kind === 'heal'))) return 'healer';
-  if (defs.some((m) => allyGivable(m) && m.effects.some((e) => e.kind === 'stage'))) return 'buffer';
-  if (defs.some((m) => m.power <= 0 && m.effects.some((e) => (e.kind === 'status' && !e.self) || (e.kind === 'stage' && e.target === 'foe')))) return 'debuffer';
+/**
+ * §5.6 — the share of supports each role gets (v0.8.6, the user's call: most of the back row should hit, not
+ * support). Attackers take what is left. A Buffer needs a kit that can buff, lower or afflict; a Pokémon without
+ * one is an Attacker instead. Any Pokémon can be a Defender: the role brings its own move, Cover.
+ */
+export const ROLE_SHARE = { defender: 0.2, buffer: 0.2 };
+
+/** §5.6 — can this kit do a Buffer's job: raise an ally, lower a foe, or put a status on one? */
+function canBuff(moves: string[], content: ContentRegistry): boolean {
+  return moves.map((id) => content.move(id)).some(
+    (m) => (allyGivable(m) && m.effects.some((e) => e.kind === 'stage')) || (m.power <= 0 && m.effects.some((e) => (e.kind === 'status' && !e.self) || (e.kind === 'stage' && e.target === 'foe'))),
+  );
+}
+
+/** §5.6 — a support's role: a seeded roll by `ROLE_SHARE`, checked against its kit. */
+export function roleFor(moves: string[], rng: GameRng, content: ContentRegistry): SupportRole {
+  const roll = rng.range01();
+  if (roll < ROLE_SHARE.defender) return 'defender';
+  if (roll < ROLE_SHARE.defender + ROLE_SHARE.buffer && canBuff(moves, content)) return 'buffer';
   return 'attacker';
+}
+
+/** §5.6 — a support in its role: a Defender's kit is its first three moves and Cover. */
+function asSupport(setup: EnemySetup, rng: GameRng, content: ContentRegistry): EnemySetup {
+  const kit = setup.moves ?? activeMoves(content, setup.species, setup.level);
+  const role = roleFor(kit, rng, content);
+  return role === 'defender' ? { ...setup, role, moves: [...kit.filter((m) => m !== 'call-for-help').slice(0, 3), 'cover'] } : { ...setup, role };
 }
 
 /** A companion from the biome: one of its common species (another species first, if it has one), a little lower. */
@@ -126,7 +147,7 @@ function companion(pool: string[], lead: string, level: number, tier: EnemySetup
   const from = others.length ? others : pool.length ? pool : [lead];
   const species = from[rng.range(0, from.length)]!;
   const lv = Math.max(2, level - COMPANION_LEVEL_GAP);
-  return { species, level: lv, tier, phaseCount: 1, role: roleFromKit(activeMoves(content, species, lv), content) };
+  return asSupport({ species, level: lv, tier, phaseCount: 1 }, rng, content);
 }
 
 /** §5.6.3 — turn a node's fight into its group, as `groupPlanFor` decided. A single fight comes back unchanged. */
@@ -153,7 +174,7 @@ export function applyGroups(scenario: ScenarioDef, node: MapNode, run: RunState,
     case 'pair':
     case 'trio': {
       // The roster's Pokémon fight side by side; every one past the Lead takes the role its kit gives.
-      const enemies = scenario.enemies.map((e, i) => (i === 0 ? e : { ...e, role: roleFromKit(e.moves ?? activeMoves(content, e.species, e.level), content) }));
+      const enemies = scenario.enemies.map((e, i) => (i === 0 ? e : asSupport(e, rng, content)));
       return { ...scenario, onField: plan.kind === 'trio' ? 3 : 2, enemies };
     }
     case 'double':

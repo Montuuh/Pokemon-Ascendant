@@ -1,4 +1,5 @@
 .card {
+  position: relative;
   width: 118px;
   background: linear-gradient(180deg, #fffaf0 0%, #fff1d6 100%);
   border: 2px solid #e7d5b5;
@@ -24,10 +25,27 @@
   outline: 3px solid var(--accent-action);
   outline-offset: 2px;
 }
+/* A card that cannot be used now keeps its words at full ink (D5): only its art fades, its edge turns dashed and a
+   lock sits on its cost — the name, the effect and the count are what you plan the next turn with. */
 .dim {
+  cursor: not-allowed;
+  border-style: dashed;
+}
+.dim .iconWrap {
   filter: grayscale(0.7);
   opacity: 0.6;
-  cursor: not-allowed;
+}
+/* §3.5 — how many of it the bag holds. */
+.count {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-size: var(--type-caption);
+  font-weight: 700;
 }
 .iconWrap {
   width: 56px;

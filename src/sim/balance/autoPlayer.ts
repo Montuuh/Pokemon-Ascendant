@@ -153,7 +153,7 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
       .map((t) => {
         const foe = state.enemies.find((e) => e.uid === t.uid)!;
         // A support that heals or raises the Lead undoes the damage aimed at the Lead: a player takes it out first.
-        const focus = foe.role === 'healer' || foe.role === 'buffer' ? 2 : 1;
+        const focus = foe.role === 'defender' || foe.role === 'buffer' ? 2 : 1;
         return { uid: t.uid, dmg: t.damage!.final, ko: t.damage!.final >= foe.hp, share: (focus * t.damage!.final) / Math.max(1, foe.hp) };
       })
       .sort((a, b) => Number(b.ko) - Number(a.ko) || b.share - a.share);

@@ -104,12 +104,14 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
       leadIndex: Math.min(scenario.player.leadIndex, scenario.player.team.length - 1),
       ap: 0,
       swapCounter: 0,
+      itemsUsed: 0,
+      itemCap: 0,
       defensiveDiscount: false,
       deck: [],
       discard: [],
       hand: [],
       consumables: { pool: [], hand: [], used: [] },
-      balls: scenario.kind === 'wild' ? scenario.player.balls : 0,
+      balls: 0,
       critChance: 0,
       pendingLeadPick: false,
       guards: { status: 0, cleave: { charges: 0, percent: 0 } },
@@ -191,12 +193,12 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
     if (at >= 0) state.player.deck.push(...state.player.deck.splice(at, 1));
   });
 
-  // §3.5 / §2.6.4 — the Consumable Pile; Poké Ball cards only exist in wild encounters with balls in stock.
-  const consumables = scenario.player.consumables.filter((id) => {
-    const isBall = ctx.content.consumable(id).effect.kind === 'catch';
-    return !isBall || (scenario.kind === 'wild' && scenario.player.balls > 0);
-  });
+  // §3.5 / §2.6.4 — the Consumable Pile. Balls ride in the bag with everything else (v0.8.6) and are only
+  // carried into a fight that can be caught; a fixture's `balls` adds that many Poké Balls on top.
+  const carried = [...scenario.player.consumables, ...Array.from({ length: scenario.player.balls ?? 0 }, () => 'poke-ball')];
+  const consumables = carried.filter((id) => ctx.content.consumable(id).effect.kind !== 'catch' || scenario.kind === 'wild');
   state.player.consumables.pool = buildConsumablePool(state, consumables);
+  state.player.balls = consumables.filter((id) => ctx.content.consumable(id).effect.kind === 'catch').length;
 
   // §6.5.1 — start-of-combat ability stages (Iron Shell).
   for (const c of [...state.player.team, ...state.enemies]) {

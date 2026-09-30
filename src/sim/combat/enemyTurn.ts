@@ -34,6 +34,12 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
     return;
   }
 
+  if (intent.kind === 'guard') {
+    emit(state, { t: 'enemy-action', enemyUid: enemy.uid, intent: { ...intent }, fizzled: false });
+    cover(state, enemy, ctx);
+    return;
+  }
+
   const targets: Combatant[] = [];
   let fizzled = false;
   if (intent.kind === 'cleave') {
@@ -71,6 +77,29 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
     if (move.power > 0) strike(state, ctx, enemy, target, move, !!move.alwaysCrit);
     if (target.hp > 0 || move.power === 0) applyMoveEffects(state, ctx, enemy, target, move);
   }
+}
+
+/**
+ * §5.6 — Cover (v0.8.6). A Defender steps in front of its Lead: it takes the Lead's place at the head of the group —
+ * from now on the player's single-target Melee cards reach only it — and braces, +`coverDefenseStages` Defence. The
+ * old Lead drops back to the Defender's place and keeps its declared intent. Telegraphed a turn ahead like everything
+ * else, so a player who wanted the Lead can still finish it with this turn's Melee before the Defender arrives.
+ */
+function cover(state: CombatState, enemy: EnemyCombatant, ctx: RunCtx): void {
+  const leadAt = state.enemies.findIndex((e) => e.hp > 0);
+  const at = state.enemies.findIndex((e) => e.uid === enemy.uid);
+  const leadEnemy = state.enemies[leadAt];
+  if (!leadEnemy || leadAt < 0 || at <= leadAt || enemy.hp <= 0) {
+    log(state, 'enemy', `${enemy.name} tried to cover, but there was nobody to shield.`);
+    return;
+  }
+  state.enemies[leadAt] = enemy;
+  state.enemies[at] = leadEnemy;
+  const before = enemy.stages.defense;
+  enemy.stages.defense = Math.min(6, enemy.stages.defense + ctx.config.coverDefenseStages);
+  emit(state, { t: 'enemy-cover', enemyUid: enemy.uid, coveredUid: leadEnemy.uid });
+  if (enemy.stages.defense !== before) emit(state, { t: 'stage', targetUid: enemy.uid, stat: 'defense', delta: enemy.stages.defense - before, total: enemy.stages.defense });
+  log(state, 'enemy', `${enemy.name} steps in front of ${leadEnemy.name} and leads the group!`);
 }
 
 /**

@@ -23,7 +23,7 @@ import {
 } from '@/sim';
 import { portraitOf, stageBackdrop, spriteOf, trainerSprite } from '@/ui/art';
 import { CombatLog } from '@/ui/components/CombatLog';
-import { ConsumableCard } from '@/ui/components/ConsumableCard';
+import { BagButton } from '@/ui/components/BagButton';
 import { EnemyPanel, type TargetPreview } from '@/ui/components/EnemyPanel';
 import { FloatingNumbers } from '@/ui/components/FloatingNumbers';
 import { Modal } from '@/ui/components/Modal';
@@ -110,21 +110,13 @@ export function CombatScreen() {
       const live = useCombatStore.getState().state;
       if (!live || live.outcome !== 'in-progress' || live.player.pendingLeadPick) return;
       const aboveHand = d.y < (trayRef.current?.getBoundingClientRect().top ?? Infinity);
-      if (d.kind === 'card') {
-        const play = cardPlayability(live, d.id, ctx);
-        if (!play) return;
-        if (!play.playable) return fail(play.reason ? REJECT_TEXT[play.reason] : 'Cannot play that.');
-        if (d.overUid && play.aimsAtFoe) return playCard(play, d.overUid);
-        if (aboveHand && (!play.aimsAtFoe || play.hitsAll || live.enemies.length <= 1)) return playCard(play);
-        return;
-      }
-      const cp = consumablePlayability(live, d.id, ctx);
-      if (!cp) return;
-      if (!cp.playable) return fail(cp.reason ? REJECT_TEXT[cp.reason] : 'Cannot use that.');
-      if (cp.aimsAtFoe && d.overUid) return void dispatch({ type: 'use-consumable', cardId: d.id, targetUid: d.overUid });
-      if (!cp.needsAllyTarget && aboveHand && (!cp.aimsAtFoe || live.enemies.length <= 1)) dispatch({ type: 'use-consumable', cardId: d.id });
+      const play = cardPlayability(live, d.id, ctx);
+      if (!play) return;
+      if (!play.playable) return fail(play.reason ? REJECT_TEXT[play.reason] : 'Cannot play that.');
+      if (d.overUid && play.aimsAtFoe) return playCard(play, d.overUid);
+      if (aboveHand && (!play.aimsAtFoe || play.hitsAll || live.enemies.length <= 1)) return playCard(play);
     },
-    [ctx, dispatch, fail, playCard],
+    [ctx, fail, playCard],
   );
   const { drag, begin, clickWasDrag } = useCardDrag(onDrop);
 
@@ -195,7 +187,7 @@ export function CombatScreen() {
   const shiny = bondRank(bond[getContent().lineBase(lead.speciesId)] ?? 0) >= 2;
   const benches = state.player.team.map((_, i) => i).filter((i) => i !== leadIdx);
   const selectedPlay = selection.mode === 'card' || selection.mode === 'step-back' ? plays.find((p) => p.card.id === selection.cardId) ?? null : null;
-  const draggedPlay = drag?.kind === 'card' ? plays.find((p) => p.card.id === drag.id) ?? null : null;
+  const draggedPlay = drag ? plays.find((p) => p.card.id === drag.id) ?? null : null;
   const previewPlay = draggedPlay ?? plays.find((p) => p.card.id === hoverCardId) ?? selectedPlay;
   // The enemy the held card points at: under the drag, or under the mouse while a card is selected.
   const aimUid = drag ? drag.overUid : selectedPlay && selection.mode === 'card' ? hoverEnemyUid : null;
@@ -211,7 +203,6 @@ export function CombatScreen() {
   }
   const ended = state.outcome !== 'in-progress';
   const interactive = !ended && !state.player.pendingLeadPick;
-  const ballDrag = drag?.kind === 'consumable' ? consumablePlays.find((c) => c.cardId === drag.id)?.aimsAtFoe ?? false : false;
 
   /** §9.2.5 — the hits coming at one of your Pokémon, from the enemies whose intent is not hidden. */
   function incomingFor(uid: string) {
@@ -296,7 +287,7 @@ export function CombatScreen() {
 
   const allySelectable = selection.mode === 'consumable-ally';
   const stepBackSelectable = selection.mode === 'step-back' && selectedPlay ? new Set(selectedPlay.stepBackOptions) : new Set<number>();
-  const enemyTargetable = interactive && ((!!selectedPlay && selection.mode === 'card' && selectedPlay.aimsAtFoe) || selection.mode === 'consumable-foe' || ballDrag || (!!draggedPlay && draggedPlay.aimsAtFoe));
+  const enemyTargetable = interactive && ((!!selectedPlay && selection.mode === 'card' && selectedPlay.aimsAtFoe) || selection.mode === 'consumable-foe' || (!!draggedPlay && draggedPlay.aimsAtFoe));
   // The full breakdown opens only for the enemy the card points at (under the drag, or the pointer once selected);
   // the numbers themselves are on the panels. The same with one enemy as with three (user, 2026-09-30).
   const boxDamage = aimedTarget?.reachable ? aimedTarget.damage : null;
@@ -346,7 +337,7 @@ export function CombatScreen() {
         </div>
       </header>
 
-      <section className={styles.stage} style={{ backgroundImage: `url(${stageBackdrop(state.stage)})` }}>
+      <section className={[styles.stage, group ? styles.stageGroup : ''].join(' ')} style={{ backgroundImage: `url(${stageBackdrop(state.stage)})` }}>
         <div className={styles.stageTint} aria-hidden="true" />
 
         <div className={styles.squad} data-testid="squad">
@@ -401,22 +392,27 @@ export function CombatScreen() {
           )}
         </div>
 
-        <div className={[styles.enemyZone, group ? styles.enemyZoneGroup : ''].join(' ')}>
+        {/* §9.2.1 — a group's panels mirror the player's squad (v0.8.6): the Lead's panel forward and centred, the
+            supports stacked behind it, the way the bench stacks behind your Lead. */}
+        <div className={[styles.enemyZone, group ? styles.enemyZoneGroup : ''].join(' ')} data-count={enemies.length}>
           {enemies.length > 0 ? (
-            enemies.map((enemy) => (
-              <EnemyPanel
-                key={enemy.uid}
-                state={state}
-                enemy={enemy}
-                ctx={ctx}
-                forecast={forecast}
-                targetable={enemyTargetable}
-                aimed={aimUid === enemy.uid}
-                preview={previewOn(enemy.uid)}
-                onClick={() => onEnemyClick(enemy.uid)}
-                onHover={(h) => setHoverEnemyUid((cur) => (h ? enemy.uid : cur === enemy.uid ? null : cur))}
-                fxClass={fx.classes[enemy.uid]}
-              />
+            enemies.map((enemy, i) => (
+              <div key={enemy.uid} className={group ? (i === 0 ? styles.foeLeadPanel : i === 1 ? styles.foePanel1 : styles.foePanel2) : styles.foeOnly}>
+                <EnemyPanel
+                  state={state}
+                  enemy={enemy}
+                  ctx={ctx}
+                  forecast={forecast}
+                  targetable={enemyTargetable}
+                  aimed={aimUid === enemy.uid}
+                  preview={previewOn(enemy.uid)}
+                  onClick={() => onEnemyClick(enemy.uid)}
+                  onHover={(h) => setHoverEnemyUid((cur) => (h ? enemy.uid : cur === enemy.uid ? null : cur))}
+                  fxClass={fx.classes[enemy.uid]}
+                  interactive={interactive}
+                  onThrow={(cardId, targetUid) => dispatch({ type: 'use-consumable', cardId, targetUid })}
+                />
+              </div>
             ))
           ) : (
             <div className={styles.chip}>No enemies remain</div>
@@ -497,22 +493,22 @@ export function CombatScreen() {
               selected={selection.cardId === p.card.id && selection.mode !== 'consumable-ally' && selection.mode !== 'consumable-foe'}
               onClick={() => onCardClick(p)}
               onHover={(h) => setHoverCardId(h ? p.card.id : null)}
-              onPointerDown={(e) => interactive && p.playable && begin(e, 'card', p.card.id)}
+              onPointerDown={(e) => interactive && p.playable && begin(e, p.card.id)}
               index={i}
               total={plays.length}
             />
           ))}
           {plays.length === 0 && <div className={styles.emptyHand}>No cards in hand</div>}
           <div className={styles.divider} />
-          {consumablePlays.map((cp) => (
-            <ConsumableCard
-              key={cp.cardId}
-              play={cp}
-              selected={(selection.mode === 'consumable-ally' || selection.mode === 'consumable-foe') && selection.cardId === cp.cardId}
-              onClick={() => onConsumableClick(cp)}
-              onPointerDown={(e) => interactive && cp.playable && !cp.needsAllyTarget && begin(e, 'consumable', cp.cardId)}
-            />
-          ))}
+          {/* §3.5 — the whole bag, one button (v0.8.6): consumables are spent, so nothing is dealt at random. */}
+          <BagButton
+            plays={consumablePlays}
+            itemsUsed={state.player.itemsUsed}
+            itemCap={state.player.itemCap}
+            disabled={!interactive}
+            selectedCardId={selection.mode === 'consumable-ally' || selection.mode === 'consumable-foe' ? selection.cardId ?? null : null}
+            onUse={onConsumableClick}
+          />
         </div>
       </footer>
 
@@ -520,7 +516,7 @@ export function CombatScreen() {
       {drag && (
         <div className={styles.dragGhost} style={{ left: drag.x, top: drag.y, ['--card-type' as string]: draggedPlay ? `var(--type-${draggedPlay.move.type})` : 'var(--brand-red)' }} aria-hidden="true" data-testid="drag-ghost">
           {draggedPlay && <TypeLabel type={draggedPlay.move.type} size={16} />}
-          <span className="display">{draggedPlay ? draggedPlay.move.name : consumablePlays.find((c) => c.cardId === drag.id)?.def.name}</span>
+          <span className="display">{draggedPlay?.move.name}</span>
         </div>
       )}
 

@@ -4,7 +4,7 @@ import { breakdownFor } from './damageFlow';
 import type { DamageBreakdown } from './damage';
 import { catchOdds, type CatchOdds } from './catch';
 import { activeEnemy, aliveEnemies, benchIndices, lead } from './slots';
-import type { Combatant, CombatState, EnemyCombatant, RejectReason, SkillCard } from './state';
+import type { Combatant, CombatState, ConsumableCard, EnemyCombatant, RejectReason, SkillCard } from './state';
 import { choiceLockBlocks, itemApDelta, guaranteedCatch } from './items';
 import { cardsLocked, isPositionLocked, paralysisApBonus } from './status';
 
@@ -177,11 +177,35 @@ export function consumablePlayability(state: CombatState, cardId: string, ctx: C
   let reason: RejectReason | null = null;
   if (state.player.pendingLeadPick) reason = 'lead-pick-pending';
   else if (state.phase !== 'action' || state.outcome !== 'in-progress') reason = 'not-action-phase';
+  else if (state.player.itemsUsed >= state.player.itemCap) reason = 'item-limit';
   else if (def.apCost > state.player.ap) reason = 'not-enough-ap';
   else if (def.effect.kind === 'catch' && state.kind !== 'wild') reason = 'not-wild';
   else if (def.effect.kind === 'catch' && state.player.balls <= 0) reason = 'no-balls';
   else if (def.effect.kind === 'catch' && !catchTarget(state, targetUid)) reason = 'no-enemy';
   return { cardId, def, playable: reason === null, reason, needsAllyTarget: def.target === 'ally', aimsAtFoe: def.effect.kind === 'catch' };
+}
+
+/**
+ * §2.6.4 / §2.6.4.2 — every kind of ball in the bag, its count, and the chance it would have on this target: the
+ * catch picker's rows (v0.8.6). Best ball first. Empty when this is not a catch.
+ */
+export function catchOptions(state: CombatState, ctx: CombatCtx, targetUid?: string): { consumableId: string; cardId: string; count: number; odds: CatchOdds; playable: ConsumablePlayability }[] {
+  if (state.kind !== 'wild') return [];
+  const enemy = catchTarget(state, targetUid);
+  if (!enemy) return [];
+  const guaranteed = guaranteedCatch(state, ctx.content) !== null;
+  const byKind = new Map<string, ConsumableCard[]>();
+  for (const card of state.player.consumables.hand) {
+    if (ctx.content.consumable(card.consumableId).effect.kind !== 'catch') continue;
+    byKind.set(card.consumableId, [...(byKind.get(card.consumableId) ?? []), card]);
+  }
+  return [...byKind]
+    .map(([consumableId, cards]) => {
+      const def = ctx.content.consumable(consumableId);
+      const effect = def.effect as Extract<typeof def.effect, { kind: 'catch' }>;
+      return { consumableId, cardId: cards[0]!.id, count: cards.length, odds: catchOdds(enemy, effect, ctx.content, guaranteed), playable: consumablePlayability(state, cards[0]!.id, ctx, enemy.uid)! };
+    })
+    .sort((a, b) => b.odds.ballMult - a.odds.ballMult);
 }
 
 /** §2.6.4 — the live catch odds for the UI pill (null when not a wild fight or no ball available). */

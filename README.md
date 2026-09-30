@@ -51,7 +51,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 **v0.8.6 — Consumables that are spent, scarcer relics.** A played Potion is gone now, and supplies come
 far more often — every trainer drops some, wild nodes leave Poké Balls, the nurse and the Center hand a pair over,
-and shops sell bundles. Relics are scarce: a trainer rarely drops a Common, the Elite Trainer offers a pick of three,
+and shops sell bundles; in a fight a Bag opens everything you carry, two items a turn, and the catch chance opens
+a picker with every ball you hold — Poké, Great and Ultra. A group's supports are Attackers, Defenders that step in
+front of a hurt Lead, and Buffers, laid out like your own squad. Relics are scarce: a trainer rarely drops a Common, the Elite Trainer offers a pick of three,
 the first Gym pays in Rares and the later ones in Legendaries, and every relic bought makes the next one dearer. Fights can put two or three enemies on the field at once — a Lead
 in front and supports behind it that heal, buff, debuff or attack; cards are dragged onto their target, a Melee card
 reaches only the enemy Lead, and every number an intent prints is the hit that will land. Some Pokémon act twice a

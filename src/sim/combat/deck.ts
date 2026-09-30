@@ -78,17 +78,13 @@ export function buildConsumablePool(state: CombatState, consumableIds: readonly 
   return consumableIds.map((consumableId) => ({ id: `k${state.nextCardSerial++}`, consumableId }));
 }
 
-/** §3.5 — draw `count` distinct consumables from the pool into the consumable hand. */
-export function drawConsumables(state: CombatState, count: number, rng: GameRng): ConsumableCard[] {
+/** §3.5 — open the bag: every consumable not yet used this fight is usable this turn (v0.8.6). */
+export function openBag(state: CombatState): ConsumableCard[] {
   const c = state.player.consumables;
-  const drawn: ConsumableCard[] = [];
-  for (let i = 0; i < count && c.pool.length > 0; i++) {
-    const idx = rng.range(0, c.pool.length);
-    const [card] = c.pool.splice(idx, 1);
-    c.hand.push(card!);
-    drawn.push(card!);
-  }
-  return drawn;
+  const opened = [...c.pool];
+  c.hand.push(...opened);
+  c.pool = [];
+  return opened;
 }
 
 /** Unused consumable cards return to the pool at turn end; used ones stay set aside (§3.5). */

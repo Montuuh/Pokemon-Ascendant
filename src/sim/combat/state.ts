@@ -149,7 +149,14 @@ export interface PlayerState {
   deck: SkillCard[];
   discard: SkillCard[];
   hand: SkillCard[];
+  /**
+   * §3.5 — the bag. `hand` is everything usable this turn (the whole bag since v0.8.6), `used` what was played
+   * this fight and will leave the inventory; `pool` holds the rest between turns.
+   */
   consumables: { pool: ConsumableCard[]; hand: ConsumableCard[]; used: ConsumableCard[] };
+  /** §3.5 — items used this turn, and how many the turn allows (BattleConfig + Lucky Draw and relic bonuses). */
+  itemsUsed: number;
+  itemCap: number;
   /** §2.6.4 — Poké Balls left in the run inventory (each throw costs one). */
   balls: number;
   /** §4.1.3 — stackable crit chance from consumables/passives (0 at slice launch). */
@@ -234,6 +241,8 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'enemy-enter'; enemyUid: string; called?: boolean }
   | { t: 'phase'; enemyUid: string; phase: 1 | 2 | 3 }
   | { t: 'catch'; success: boolean; chance: number; ballsLeft: number }
+  /** §5.6 — a Defender took its Lead's place (Cover). */
+  | { t: 'enemy-cover'; enemyUid: string; coveredUid: string }
   | { t: 'lead-pick-required' }
   | { t: 'outcome'; outcome: Outcome }
   /** §4.3.6 — the fields changed mid-fight (Defog). */
@@ -310,6 +319,7 @@ export type RejectReason =
   | 'invalid-index'
   | 'not-wild'
   | 'no-balls'
+  | 'item-limit'
   /** §3.1.2 — there is no running from a Gym. */
   | 'no-fleeing-a-gym'
   | 'nothing-to-cure'

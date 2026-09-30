@@ -23,7 +23,7 @@ test.describe('Group fights — §5.6', () => {
     await expect(page.getByTestId('foe-panel')).toHaveCount(3);
     await expect(page.getByTestId('intent-chip')).toHaveCount(3);
     await expect(page.getByTestId('foe-place').first()).toHaveText('Lead');
-    await expect(page.getByTestId('foe-place').nth(2)).toContainText('Debuffer');
+    await expect(page.getByTestId('foe-place').nth(2)).toContainText('Buffer');
     await expect(page.getByTestId('arena-enemy')).toHaveCount(3);
     await settle(page);
     await page.screenshot({ path: 'playtest/combat-group-flock.png' });
@@ -173,6 +173,8 @@ test.describe('Group fights — §5.6', () => {
     await expect(page.getByTestId('tooltip')).toContainText('own turf');
     await settle(page);
     await page.screenshot({ path: 'playtest/combat-field-gym.png' });
+    // §3.5 — the item is in the bag (v0.8.6), one press away.
+    await page.getByTestId('btn-bag').click();
     const defog = page.getByTestId('consumable-defog');
     await expect(defog).toBeVisible();
     await defog.click();

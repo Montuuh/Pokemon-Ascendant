@@ -36,22 +36,24 @@ test.describe('Tooltips', () => {
     await expect(page.getByTestId('tooltip')).toHaveCount(0);
   });
 
-  test('the catch pill is the chance, the ball is always throwable, and the tooltip says what moves the odds', async ({ page }) => {
+  test('the catch pill is the chance, and pressing it lists every ball with its own chance — §2.6.4.2', async ({ page }) => {
     await page.goto('/?scenario=wild-basic&seed=3');
     await expect(page.getByTestId('combat-screen')).toBeVisible();
     // §2.6.4 (2026-09-21) — the pill prints the real chance: a low one at full HP.
     await expect(page.getByTestId('catch-pill')).toContainText(/\d+%/);
     const chance = Number(await page.getByTestId('catch-pill').getAttribute('data-chance'));
     expect(chance).toBeGreaterThanOrEqual(1);
-    expect(chance).toBeLessThan(20);
-    // The ball is a real card at any odds; the throw is the player's call.
-    const ball = page.getByTestId('consumable-poke-ball');
-    await expect(ball).toBeVisible();
-    await expect(ball).toHaveAttribute('data-state', 'playable');
-    await page.getByTestId('catch-pill').hover();
-    await page.waitForTimeout(700);
-    await expect(page.getByTestId('tooltip')).toContainText('to catch');
+    expect(chance).toBeLessThan(25);
+    // v0.8.6 — the pill is the door: the picker names each ball in the bag, its count and its chance.
+    await page.getByTestId('catch-pill').click();
+    await expect(page.getByTestId('catch-picker')).toBeVisible();
+    const row = page.getByTestId('catch-with-poke-ball');
+    await expect(row).toContainText(`${chance}%`);
+    await expect(row).toBeEnabled();
+    // What moves the odds is one door away: the InfoDot on the picker's header.
+    await page.getByTestId('catch-picker').locator('button').first().focus();
     await expect(page.getByTestId('tooltip')).toContainText('Sleep and Freeze');
+    await expect(page.getByTestId('tooltip')).toContainText('recruit is lost');
   });
 
   test('an enemy type badge tells you what it is weak to', async ({ page }) => {

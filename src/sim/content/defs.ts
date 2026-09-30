@@ -51,7 +51,9 @@ export type MoveEffect =
   /** Aromatherapy — clear every status on the Active Team. */
   | { kind: 'team-cure' }
   /** §5.6.2 — Call for Help: brings `count` of the caller's waiting companions onto the field. Enemy-only. */
-  | { kind: 'summon'; count: number };
+  | { kind: 'summon'; count: number }
+  /** §5.6 — Cover: the user steps in front of its Lead and becomes the enemy Lead (enemy-only, v0.8.6). */
+  | { kind: 'cover' };
 
 export interface MoveDef {
   id: string;
@@ -509,7 +511,8 @@ export interface EnemySetup {
 }
 
 /** §5.6 — the four support roles. */
-export type SupportRole = 'healer' | 'buffer' | 'debuffer' | 'attacker';
+/** §5.6 — a support's job (v0.8.6: Attacker, Defender, Buffer — the old Healer is part of the Defender's, the old Debuffer the Buffer's). */
+export type SupportRole = 'attacker' | 'defender' | 'buffer';
 
 export interface ScenarioDef {
   id: string;

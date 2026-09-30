@@ -255,7 +255,7 @@ describe('Calling for help — §5.6.2', () => {
     expect(after.enemies).toHaveLength(2);
     const joined = after.enemies[1]!;
     expect(joined.speciesId).toBe('nidoran-f');
-    expect(joined.role).toBe('debuffer');
+    expect(joined.role).toBe('buffer');
     expect(after.enemies[0]!.helpers).toHaveLength(1);
     expect(after.onField).toBe(2);
     expect(eventsOf(after, 'enemy-enter').some((e) => e.t === 'enemy-enter' && e.called)).toBe(true);
@@ -277,5 +277,37 @@ describe('Calling for help — §5.6.2', () => {
     const after = dispatch(s, { type: 'play-card', cardId: handCard(s, 'scratch').id });
     expect(after.outcome).toBe('in-progress');
     expect(after.enemies[0]!.speciesId).toBe('nidoran-f');
+  });
+});
+
+describe('The Defender covers its Lead — §5.6 (v0.8.6)', () => {
+  const DEFENDER: EnemySetup = { species: 'geodude', level: 8, tier: 'wild', phaseCount: 1, role: 'defender', moves: ['tackle', 'cover'] };
+  const pair = () => start(scenario({ team: TEAM, enemies: [RATTATA, DEFENDER], onField: 2 }));
+
+  it('Cover_IsWorthNothing_WhileTheLeadIsHealthy_AndUrgentOnceItIsHurt', () => {
+    const s = pair();
+    const cover = ctx.content.move('cover');
+    const defender = s.enemies[1]!;
+    const intent = classifyMove(s, defender, cover, ctx)!;
+    expect(intent.kind).toBe('guard');
+    expect(scoreIntent(s, defender, { intent, move: cover }, ctx)).toBe(0);
+    const hurt = tweak(s, (d) => {
+      d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.3);
+    });
+    expect(scoreIntent(hurt, hurt.enemies[1]!, { intent, move: cover }, ctx)).toBeGreaterThan(0);
+  });
+
+  it('Cover_TakesTheLeadsPlace_AndBraces', () => {
+    let s = tweak(pair(), (d) => {
+      d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.3);
+    });
+    // The next Intent phase sees the hurt Lead; the Defender declares Cover, and the Resolution after lands it.
+    s = dispatch(s, { type: 'end-turn' });
+    expect(s.enemies[1]!.intent?.kind).toBe('guard');
+    const defenderUid = s.enemies[1]!.uid;
+    s = dispatch(s, { type: 'end-turn' });
+    expect(s.enemies[0]!.uid).toBe(defenderUid);
+    expect(s.enemies[0]!.stages.defense).toBe(ctx.config.coverDefenseStages);
+    expect(eventsOf(s, 'enemy-cover')).toHaveLength(1);
   });
 });

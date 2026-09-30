@@ -224,14 +224,19 @@ a Potion a permanent card rather than a supply — and a supply you never lose i
 Consumables are found far more often to match: §2.7.2, §2.6.2, §2.9, §2.10, §2.11.)*
 
 - Built at combat start from the persistent inventory — one card per item carried.
-- **2 consumable cards drawn per turn**, alongside the 5 skill cards.
+- **The whole bag is open every turn** (v0.8.6, the user's call): a **Bag** button on the tray opens every item
+  carried, one card per kind with its count. A random two of a finite bag was a lottery on your own supplies
+  (Pillar 1).
+- **Two items a turn** (`baseConsumableCardsPerTurn`; Lucky Draw and the draw relics raise it). The cap is what
+  keeps a stack of Ethers from being a stack of AP, and it is shown on the button (2/2, 1/2, 0/2).
 - A played consumable is **spent**: set aside for the fight and taken out of the inventory when the fight ends,
-  whatever the outcome (a win, a loss, a run, a Ring rung). What was drawn and not played goes back to the bag.
-- Duplicates stack as a count; the pile offers distinct entries first, so three Potions never flood the hand.
+  whatever the outcome (a win, a loss, a run, a Ring rung).
+- Duplicates stack as a count: three Potions are one card marked ×3.
 
 Two classes are genuinely expendable and sit outside the pile:
 
-- **Pokéballs** — a counted run resource, one spent per throw whether it succeeds or fails (§2.6.4).
+- **Poké Balls** — in the bag like any consumable since v0.8.6, one spent per throw whether it succeeds or fails,
+  and thrown from the catch pill's picker (§2.6.4).
 - **TMs and Evolution Items** — applied from the Map View, never drawn as cards (§6.4.1, §6.3.2).
 
 The **Lean Pack** difficulty modifier (§8.8.2) takes away the fights' supplies instead: no consumable and no Poké

@@ -35,6 +35,7 @@ export const MoveEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('team-guard'), guard: z.enum(['status', 'cleave']), percent: z.number().int().min(1).max(99).optional() }),
   z.object({ kind: z.literal('team-cure') }),
   z.object({ kind: z.literal('summon'), count: z.number().int().min(1).max(2) }),
+  z.object({ kind: z.literal('cover') }),
 ]);
 
 export const MoveSchema = z.object({
@@ -261,7 +262,7 @@ const EnemySetupBase = z.object({
   moves: z.array(KebabId).min(1).max(5).optional(),
   abilityId: KebabId.optional(),
   veiled: z.boolean().optional(),
-  role: z.enum(['healer', 'buffer', 'debuffer', 'attacker']).optional(),
+  role: z.enum(['attacker', 'defender', 'buffer']).optional(),
   acts: z.union([z.literal(1), z.literal(2)]).optional(),
 });
 /** §5.6.2 — a caller's companions are enemy setups of their own; they call nobody in turn. */

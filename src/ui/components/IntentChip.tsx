@@ -52,14 +52,16 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
             {intent.kind === 'cleave' && <> → <b>ALL</b></>}
             {intent.targetSlot && (
               <>
-                {' '}→ <b>{SLOT_LABEL[intent.targetSlot]}</b> ({slotOcc ? slotOcc.name : 'empty'})
-                {single !== null && single > 0 ? <> · <b className={styles.dmg} data-testid="intent-dmg">{single} dmg</b></> : null}
+                {' '}→ <span className={styles.nowrap}><b>{SLOT_LABEL[intent.targetSlot]}</b> ({slotOcc ? slotOcc.name : 'empty'})</span>
+                {single !== null && single > 0 ? <> <span className={styles.nowrap}>· <b className={styles.dmg} data-testid="intent-dmg">{single} dmg</b></span></> : null}
               </>
             )}
             {intent.kind === 'buff' && (ally && ally.uid !== enemy.uid ? <> → <b>{ally.name}</b></> : ' — powering up')}
             {intent.kind === 'stall' && move && (ally && ally.uid !== enemy.uid ? <> → heals <b>{ally.name}</b></> : ' — recovering')}
             {/* §5.6.2 — a call names who will answer it. */}
             {intent.kind === 'summon' && <> → <b>{called.length ? `+${called.join(', +')}` : 'nobody left'}</b></>}
+            {/* §5.6 — Cover names the Lead it steps in front of. */}
+            {intent.kind === 'guard' && ally && <> → <b>{ally.name}</b></>}
             {intent.kind === 'incapacitated' && (enemy.status?.kind === 'sleep' ? ' — fast asleep' : enemy.status?.kind === 'freeze' ? ' — frozen solid' : ' — caught off guard')}
           </span>
         </>

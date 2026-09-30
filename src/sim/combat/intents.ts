@@ -37,6 +37,11 @@ export function classifyMove(state: CombatState, enemy: EnemyCombatant, move: Mo
   }
   // §5.6.2 — Call for Help: its own kind, aimed at nobody.
   if (move.effects.some((e) => e.kind === 'summon')) return { kind: 'summon', moveId: move.id, targetSlot: null, hidden: false };
+  // §5.6 — Cover: a Defender stepping in front of its Lead, aimed at the Lead it covers.
+  if (move.effects.some((e) => e.kind === 'cover')) {
+    const leadEnemy = activeEnemy(state);
+    return leadEnemy && leadEnemy.uid !== enemy.uid ? { kind: 'guard', moveId: move.id, targetSlot: null, hidden: false, targetEnemyUid: leadEnemy.uid } : null;
+  }
   const status = move.effects.find((e) => e.kind === 'status' && !e.self);
   if (status) return { kind: 'status', moveId: move.id, targetSlot: 'lead', hidden: false };
   const debuff = move.effects.find((e) => e.kind === 'stage' && e.target === 'foe');
@@ -55,7 +60,7 @@ export function classifyMove(state: CombatState, enemy: EnemyCombatant, move: Mo
  */
 function withAlly(state: CombatState, enemy: EnemyCombatant, move: MoveDef, intent: Intent): Intent {
   const role = enemy.role;
-  const fits = (role === 'healer' && intent.kind === 'stall') || (role === 'buffer' && intent.kind === 'buff');
+  const fits = (role === 'defender' && intent.kind === 'stall') || (role === 'buffer' && intent.kind === 'buff');
   if (!fits || !allyGivable(move)) return intent;
   const leadEnemy = activeEnemy(state);
   if (!leadEnemy || leadEnemy.uid === enemy.uid) return intent;
@@ -146,15 +151,23 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
     if (plannedSummons(state, enemy) >= cfg.maxOnField - state.enemies.filter((e) => e.hp > 0).length) return 0;
     return score * (state.enemies.filter((e) => e.hp > 0).length === 1 ? cfg.summonAloneMultiplier : 1);
   }
-  // §5.6 — a Healer's or Buffer's intent is weighed on the ally it lands on, not on the caster.
+  // §5.6 — Cover is worth it only for a Defender behind a Lead that is hurt, and only while it is the sturdier of the
+  // two: then it is urgent. Otherwise it is never chosen, so a Defender at the front goes back to its other moves.
+  if (intent.kind === 'guard') {
+    const leadEnemy = activeEnemy(state);
+    if (!leadEnemy || leadEnemy.uid === enemy.uid || enemy.role !== 'defender') return 0;
+    if (hpFraction(leadEnemy) > cfg.coverLeadHp || hpFraction(enemy) <= hpFraction(leadEnemy)) return 0;
+    // Weighted to beat the Defender's own heal on the Lead: under the threshold, stepping in front is the play.
+    return score * cfg.supportRoleMultiplier * (1 + 2 * (1 - hpFraction(leadEnemy)));
+  }
+  // §5.6 — a Defender's heal or a Buffer's raise is weighed on the ally it lands on, not on the caster.
   const recipient = intentRecipient(state, enemy, intent);
   // §5.6 — a support leans on what its role is for; everything else still scores, so it never idles.
   const role = enemy.role;
   const onRole =
-    (role === 'debuffer' && (intent.kind === 'status' || intent.kind === 'debuff'))
+    (role === 'buffer' && (intent.kind === 'status' || intent.kind === 'debuff' || (intent.kind === 'buff' && recipient.uid !== enemy.uid)))
     || (role === 'attacker' && OFFENSIVE.includes(intent.kind))
-    || (role === 'healer' && intent.kind === 'stall' && recipient.uid !== enemy.uid)
-    || (role === 'buffer' && intent.kind === 'buff' && recipient.uid !== enemy.uid);
+    || (role === 'defender' && (intent.kind === 'stall' || intent.kind === 'buff'));
   if (onRole) score *= cfg.supportRoleMultiplier;
   if (intent.kind === 'buff') {
     const fx = move.effects.find((e) => e.kind === 'stage' && e.target === 'self');
@@ -206,7 +219,7 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
     cands.push({ intent, move, score: scoreIntent(state, enemy, { intent, move }, ctx) });
   }
   // Ties resolve toward pressure: offensive intents are considered before setup/utility with equal scores.
-  const KIND_PRIORITY: Record<IntentKind, number> = { attack: 0, cleave: 0, backstrike: 0, status: 1, debuff: 2, summon: 3, stall: 3, buff: 4, unknown: 5, incapacitated: 5 };
+  const KIND_PRIORITY: Record<IntentKind, number> = { attack: 0, cleave: 0, backstrike: 0, status: 1, debuff: 2, summon: 3, guard: 3, stall: 3, buff: 4, unknown: 5, incapacitated: 5 };
   const pool = applyArchetypeFilter(enemy, cands, ctx.config)
     .filter((c) => c.score > 0)
     .sort((a, b) => KIND_PRIORITY[a.intent.kind] - KIND_PRIORITY[b.intent.kind]);
@@ -309,6 +322,7 @@ export function predictIntentDamage(state: CombatState, enemy: EnemyCombatant, c
 // Pillar 1 cannot afford.
 const HIDDEN_TEXT: Partial<Record<IntentKind, string>> = {
   summon: 'is calling out to someone…',
+  guard: 'is moving to protect someone…',
   attack: 'is winding up an attack…',
   cleave: 'is winding up something that will hit everyone…',
   backstrike: 'is eyeing your bench…',
@@ -356,6 +370,8 @@ export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: C
       const who = summonedBy(state, enemy, move, ctx.config.maxOnField).map((h) => ctx.content.species(h.species).name);
       return `calls for help (${move?.name}) → ${who.length ? who.join(' and ') : 'nobody left'}`;
     }
+    case 'guard':
+      return `will step in front of ${ally?.name ?? 'its Lead'} (${move?.name}) and lead the group.`;
   }
 }
 

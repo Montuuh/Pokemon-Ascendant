@@ -123,7 +123,7 @@ test.describe('The Ring and the Coliseum — §2.9.4.1', () => {
       for (let i = 0; i < 2; i++) {
         dev.run.dispatch({ type: 'ring-fight' });
         const s = dev.run.state()!;
-        dev.run.dispatch({ type: 'finish-combat', report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 5 } });
+        dev.run.dispatch({ type: 'finish-combat', report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 5 } });
       }
       dev.goTo('map');
     });

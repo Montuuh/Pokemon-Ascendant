@@ -73,10 +73,10 @@ describe('Enemies at the forms their levels warrant — §2.7.3', () => {
 
 describe('The status accent — §2.2', () => {
   it('RegionOne_EnemiesKeepTheirOwnKits', () => {
-    // Its own kit — a caller's Call for Help (§5.6.3) is its group's, not the Region's accent.
+    // Its own kit — a caller's Call for Help (§5.6.3) and a Defender's Cover (§5.6) are its group's, not the Region's accent.
     for (const e of firstFight(0).enemies) {
       const own = activeMoves(content, e.species, e.level);
-      expect((e.moves ?? own).filter((id) => id !== 'call-for-help').every((id) => own.includes(id))).toBe(true);
+      expect((e.moves ?? own).filter((id) => id !== 'call-for-help' && id !== 'cover').every((id) => own.includes(id))).toBe(true);
     }
   });
 
@@ -142,7 +142,7 @@ describe('XP scales with the level gap — §6.2.1', () => {
       let s = createRun('squirtle', 7, ctx, 0);
       s = { ...s, box: s.box.map((m) => ({ ...m, level })) };
       s = apply(apply(s, { type: 'enter-node', nodeId: s.reachable.find((n) => s.map.nodes[n]!.kind === 'wild')! }), { type: 'begin-combat' });
-      s = apply(s, { type: 'finish-combat', report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 3 } });
+      s = apply(s, { type: 'finish-combat', report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 3 } });
       return s.pendingReward!.xpAwarded[0]!.amount;
     };
     expect(fight(20)).toBeLessThan(fight(6));

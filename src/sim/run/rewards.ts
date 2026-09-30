@@ -38,15 +38,15 @@ export const FIGHT_SUPPLIES: Readonly<Record<FightKind, SupplyRule>> = {
  */
 export const SUPPLY_TABLE: readonly (readonly [string, number])[][] = [
   [['potion', 40], ['antidote', 10], ['paralyze-heal', 10], ['burn-heal', 6], ['awakening', 5], ['ice-heal', 3], ['full-heal', 5], ['ether', 8], ['x-attack', 7], ['x-defense', 3], ['defog', 3]],
-  [['potion', 15], ['super-potion', 32], ['antidote', 5], ['paralyze-heal', 7], ['burn-heal', 5], ['awakening', 4], ['ice-heal', 4], ['full-heal', 8], ['ether', 9], ['x-attack', 5], ['x-defense', 5], ['defog', 5]],
-  [['super-potion', 22], ['hyper-potion', 28], ['paralyze-heal', 5], ['burn-heal', 5], ['awakening', 4], ['ice-heal', 4], ['full-heal', 10], ['ether', 10], ['x-attack', 5], ['x-defense', 5], ['max-potion', 2], ['revive', 2], ['defog', 4]],
+  [['potion', 15], ['super-potion', 32], ['antidote', 5], ['paralyze-heal', 7], ['burn-heal', 5], ['awakening', 4], ['ice-heal', 4], ['full-heal', 8], ['ether', 9], ['x-attack', 5], ['x-defense', 5], ['defog', 5], ['great-ball', 3]],
+  [['super-potion', 22], ['hyper-potion', 28], ['paralyze-heal', 5], ['burn-heal', 5], ['awakening', 4], ['ice-heal', 4], ['full-heal', 10], ['ether', 10], ['x-attack', 5], ['x-defense', 5], ['max-potion', 2], ['revive', 2], ['defog', 4], ['great-ball', 3], ['ultra-ball', 2]],
 ];
 
 /** §2.8 / §5.9 — the Region's prize table: one of these, evenly, on top of an Elite's or a Gym's supplies. */
 export const PRIZE_TABLE: readonly (readonly string[])[] = [
   ['super-potion', 'ether', 'full-heal'],
-  ['hyper-potion', 'ether', 'full-heal'],
-  ['max-potion', 'revive', 'hyper-potion'],
+  ['hyper-potion', 'ether', 'full-heal', 'great-ball'],
+  ['max-potion', 'revive', 'hyper-potion', 'ultra-ball'],
 ];
 
 /** A table row names a consumable the content has — a missing one is left out rather than thrown on mid-run. */
@@ -144,6 +144,17 @@ export function gymRelicOffer(rng: GameRng, content: ContentRegistry, held: read
   }
   return offer;
 }
+
+/** §2.6.4 / §7.2.5 — the Poké Ball's id: the one ball every source hands out by count. */
+export const POKE_BALL = 'poke-ball';
+
+/** §7.2.5 — balls live in the bag with every other consumable since v0.8.6; this is how many of any kind. */
+export function ballsIn(bag: readonly string[], content: ContentRegistry): number {
+  return bag.filter((id) => content.consumable(id).effect.kind === 'catch').length;
+}
+
+/** `n` Poké Balls, as bag entries. */
+export const pokeBalls = (n: number): string[] => Array.from({ length: Math.max(0, n) }, () => POKE_BALL);
 
 /** A list of ids as counted pairs, in first-seen order: `['potion', 'potion', 'ether']` → potion ×2, ether ×1. */
 export function countSupplies(ids: readonly string[]): [string, number][] {

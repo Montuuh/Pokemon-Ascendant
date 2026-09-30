@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
+import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
@@ -102,6 +102,7 @@ const INTENT_BODY: Record<string, string> = {
   unknown: 'Hidden. You can see what kind of thing is coming, not how hard or where. Some abilities and relics reveal it.',
   incapacitated: 'Asleep, frozen, or caught off guard by your Time Spinner. It does nothing this turn.',
   summon: 'Calling a companion into the fight. It spends its turn on it — a free turn for you, and the last one against fewer enemies.',
+  guard: 'Finish the Lead now, or switch to Ranged.',
 };
 
 /** §5.5 — what an intent means and what to do about it. `hidden` intents show the kind only. */
@@ -133,7 +134,8 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
       : who.length === 1 ? `${who[0]} joins the fight as a support, behind its Lead. It acts from next turn.`
       : `${who.join(' and ')} join the fight as supports, behind their Lead. They act from next turn.`,
     );
-  } else lines.push(ally.uid === enemy.uid ? 'On itself.' : `On ${ally.name}, its Lead.`);
+  } else if (intent.kind === 'guard') lines.push(`Steps in front of ${ally.name}: after this turn it leads, braced with +1 Defence, and your Melee cards reach only it.`);
+  else lines.push(ally.uid === enemy.uid ? 'On itself.' : `On ${ally.name}, its Lead.`);
   if (enemy.acts === 2) lines.push(action === 0 ? 'It acts twice: this first, then the Also below.' : 'Its second action this turn, right after the first.');
   const hits = forecast.byAction[`${enemy.uid}#${action}`]?.hits ?? [];
   for (const h of hits) {
@@ -246,23 +248,6 @@ export function consumableTip(c: ConsumableDef, playable = true, reason: string 
 
 // ── Catching, money, balls ───────────────────────────────────────────────────────────────────────────────
 
-/** §2.6.4 — the odds. The number is the chance, and this says what moves it. */
-export function catchTip(odds: CatchOdds & { ballsLeft: number }): ReactNode {
-  const pct = Math.max(1, Math.round(odds.chance * 100));
-  const ceiling = Math.round(odds.catchRate * 100);
-  return (
-    <Tip
-      title={odds.guaranteed ? 'Master Ball Charm — this throw cannot miss' : `${pct}% to catch`}
-      meta={[`${odds.ballsLeft} ball${odds.ballsLeft === 1 ? '' : 's'}`, odds.hasStatus ? (odds.statusMult >= 1.5 ? 'Asleep or frozen ×1.5' : 'Status ×1.2') : 'No status yet', `Species ceiling ${ceiling}%`]}
-      body={
-        odds.guaranteed
-          ? 'Play the Poké Ball card. The charm is spent on this run whatever happens.'
-          : `Each throw is one roll at this chance and spends a ball either way. The chance climbs as its HP falls — steeply in the last quarter — and a status multiplies it; Sleep and Freeze most.`
-      }
-      footer="Knock it out and the recruit is lost."
-    />
-  );
-}
 
 /** §2.14 — Poké Dollars. */
 export function moneyTip(amount: number): ReactNode {
@@ -756,6 +741,41 @@ export function gymRelicTip(legendary: boolean, atCap: boolean): ReactNode {
             : 'The first Gym pays in Rares. From the second Gym on, the pick is Legendary.'
       }
       footer={`Legendary picks stop at ${LEGENDARY_CAP} a run. Leaving all three is allowed.`}
+    />
+  );
+}
+
+/** §3.5 — the bag in a fight (v0.8.6). */
+export function combatBagTip(total: number, left: number, cap: number): ReactNode {
+  return (
+    <Tip
+      title="Bag"
+      meta={[`${total} item${total === 1 ? '' : 's'}`, `${left} of ${cap} left this turn`]}
+      body={total === 0 ? 'Empty. Buy supplies at a merchant or a Poké Mart; trainers drop them too.' : 'Everything you carry, open every turn: potions, cures, Ethers, Poké Balls. A used item is gone for good.'}
+    />
+  );
+}
+
+/** §2.6.4.2 — every ball above the Poké Ball and its multiplier, from the content rows: "A Great Ball is ×1.5, …". */
+function ballMultipliers(): string {
+  const balls = getContent().allConsumables().filter((c) => c.effect.kind === 'catch' && c.effect.ballMultiplier > 1);
+  const parts = balls.map((c) => `${c.name} ×${c.effect.kind === 'catch' ? c.effect.ballMultiplier : 1}`);
+  return parts.length ? `${parts.join(', ')}.` : '';
+}
+
+/** §2.6.4 / §2.6.4.2 — the catch picker's InfoDot: what the chances are and what moves them (v0.8.6). */
+export function catchPickerTip(odds: CatchOdds): ReactNode {
+  const ceiling = Math.round(odds.catchRate * 100);
+  return (
+    <Tip
+      title={odds.guaranteed ? 'Master Ball Charm — this throw cannot miss' : 'Catching'}
+      meta={[odds.hasStatus ? (odds.statusMult >= 1.5 ? 'Asleep or frozen ×1.5' : 'Status ×1.2') : 'No status yet', `Species ceiling ${ceiling}%`]}
+      body={
+        odds.guaranteed
+          ? 'Throw any ball: the charm is spent on this run whatever happens.'
+          : `Each throw is one roll at the chance on its row and spends the ball either way. ${ballMultipliers()} The chance climbs as its HP falls — steeply in the last quarter — and a status multiplies it; Sleep and Freeze most.`
+      }
+      footer="Knock it out and the recruit is lost."
     />
   );
 }

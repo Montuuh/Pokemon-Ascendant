@@ -486,15 +486,17 @@ when the odds are worth a ball. *(Redesigned 2026-09-21 — the deterministic ga
 ### §2.6.4.1 The encounter
 
 1. The wild Pokémon appears at full HP. Your Active Team enters at its current HP. **It never flees.**
-2. If the run holds at least one Pokéball, a **Pokéball card** joins the consumable pile for this combat. With
-   zero balls, no catch card appears and the map HUD shows why (`◓ 0`).
+2. The balls are in the bag with every other consumable (v0.8.6): Poké, Great and Ultra Balls, each its own
+   entry, all usable in a wild fight and none in a trainer's. With none in the bag the pill reads *no balls*.
 3. Combat proceeds normally.
-4. To catch it, play the Pokéball. The card is playable at **any** odds; the throw is the player's call.
+4. To catch it, **press the catch pill**: it opens a picker listing every kind of ball in the bag, its count, and
+   the chance *that* ball has on this Pokémon right now; pressing a row throws it (the Bag works too). Playable at
+   **any** odds; the throw is the player's call. *(The picker is the user's idea, v0.8.6.)*
 
 **The chance**
 
 ```
-p = catchRate(species) × (1 − 0.9 × HP%)^1.7 × status × ball        clamped to [1 %, 90 %]
+p = catchRate(species) × (1 − 0.8 × HP%)^1.2 × status × ball        clamped to [1 %, 90 %]
 ```
 
 | Term | Value |
@@ -502,10 +504,12 @@ p = catchRate(species) × (1 − 0.9 × HP%)^1.7 × status × ball        clampe
 | **catchRate** | The species' ceiling, at ~0 HP with a Poké Ball. By default rarity × stage: common 0.90 · uncommon 0.70 · rare 0.50 · legendary-class 0.20; ×0.65 for a middle stage, ×0.40 for a final. A species row may set its own (`catchRate`; Snorlax is 0.20) |
 | **HP** | The steep part: the last quarter of the bar is worth more than the first three |
 | **status** | ×1.5 if the target is Asleep or Frozen · ×1.2 for any other condition or Confusion |
-| **ball** | Poké Ball ×1 (§2.6.4.2 for the others) |
+| **ball** | Poké Ball ×1 · Great Ball ×1.5 · Ultra Ball ×2 (§2.6.4.2) |
 
-Anchors, Poké Ball on a common basic species: **full HP ≈ 2 %** · half HP 33 % · a quarter 58 % · a tenth
-77 % · asleep at a quarter 87 % · the cap is 90 %. A Snorlax at full HP sits on the 1 % floor.
+Anchors, Poké Ball on a common basic species: **full HP ≈ 13 %** · half HP 49 % · a quarter 69 % · a tenth
+81 % · asleep at a quarter the 90 % cap. A Snorlax at full HP is about 3 %. *(v0.8.6, the user's call: the old
+curve — 0.9 and 1.7, 2 % at full HP and 33 % at half — was too stingy once balls became spent supplies. Measured:
+the harness now catches about seven Pokémon a run.)*
 
 | The throw | Result |
 |---|---|
@@ -513,7 +517,7 @@ Anchors, Poké Ball on a common basic species: **full HP ≈ 2 %** · half HP 33
 | Roll > p | **Broke free.** The ball is spent, the fight goes on, the enemy's turn comes |
 | Target at 0 HP | The recruit is lost |
 
-The chance is printed on the pill beside the enemy and on the ball card, and the tooltip says what moves it.
+The chance is printed on the pill beside the enemy (the best ball in the bag) and on every row of its picker.
 The roll comes from the fight's own RNG stream, so a replay throws the same ball (§10.7). **Master Ball
 Charm** (§8.6.1) arms one throw per run that cannot miss; the pill reads SURE while it is armed.
 
@@ -526,13 +530,16 @@ Charm** (§8.6.1) arms one throw per run that cannot miss; the pill reads SURE w
    chore, not a decision.)*
 6. On a team wipe: the run ends as normal.
 
-**Balls are a counted run resource:** start with 3, +1 per Region, buyable at 50 ₽, and **one is spent per
-attempt whether it succeeds or fails**.
+**Balls are consumables in the bag:** start with 3 Poké Balls, +1 per Region, found in wild nodes and dropped by
+trainers (§2.7.2), sold in bundles (§2.9.2, §2.11.2.2), and **one is spent per attempt whether it succeeds or
+fails**.
 
 ### §2.6.4.2 Higher-tier balls
 
-Post-launch. A Great Ball multiplies the chance ×1.5, an Ultra Ball ×2, both under the same 90 % cap. The
-architecture already carries a `ballMultiplier` per ball.
+Live since v0.8.6. A **Great Ball** multiplies the chance ×1.5 (120 ₽), an **Ultra Ball** ×2 (250 ₽), both under
+the same 90 % cap. Great Balls are on every City counter (×3) and in Region 2–3 supply tables; Ultra Balls on the
+Department Store's top floor (×3), in Region 3's tables and its Elite and Gym prizes. The picker lists the best
+ball first.
 
 ### §2.6.4.3 Why a roll, and why a shown one
 

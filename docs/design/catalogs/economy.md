@@ -53,7 +53,9 @@ Hyper Potions (Celadon) on the first visit. Measured over 120 runs: a full run e
 |---|---|---|---|
 | Consumable T1 | 40 ₽ a unit · ×3 bundle 110 ₽ | ×3 bundle 143 ₽ · Potion ×5 234 ₽ | bundles at 10 % off (v0.8.6) |
 | Consumable T2 | — | ×2 bundle 260 ₽ | City slot 4 |
-| Pokéball | ×3 120 ₽ | ×5 293 ₽ | always stocked |
+| Poké Ball | ×3 120 ₽ | ×5 293 ₽ | always stocked |
+| Great Ball | — | ×3 423 ₽ | every City counter (v0.8.6) |
+| Ultra Ball | — | ×3 878 ₽ | the Department Store's top floor |
 | Common relic | 175 ₽ | 228 ₽ | + the collector's premium, 25 % per relic bought (§2.11.2.3) |
 | Uncommon relic | — | 455 ₽ | + premium |
 | Rare relic | — | 845 ₽ | City slot 6, a quarter of visits; + premium |

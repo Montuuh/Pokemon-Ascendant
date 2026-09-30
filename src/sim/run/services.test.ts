@@ -32,7 +32,7 @@ const report = (s: RunState): CombatOutcomeReport => ({
   outcome: 'victory',
   team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })),
   caught: null,
-  ballsLeft: s.balls,
+  ballsLeft: 0,
   turns: 5,
 });
 

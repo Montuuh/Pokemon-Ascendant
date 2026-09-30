@@ -4,7 +4,7 @@ import { createCombat } from '../combat/setup';
 import { DEFAULT_BATTLE_CONFIG } from '../combat/battleConfig';
 import { GameRng } from '../rng/gameRng';
 import { buildScenario } from './encounter';
-import { GROUP_RATES, SOCIAL_CALLERS, groupPlanFor, roleFromKit } from './groups';
+import { GROUP_RATES, ROLE_SHARE, SOCIAL_CALLERS, groupPlanFor, roleFor } from './groups';
 import { TEAM_SIZE } from './region';
 import { createRun, defaultRunCtx } from './run';
 import type { MapNode, RunState } from './types';
@@ -122,10 +122,16 @@ describe('Groups across the run — §5.6.3', () => {
     for (const n of nodesOf(run, 'trainer')) expect(n.preview.enemies!.length).toBeGreaterThanOrEqual(TEAM_SIZE.trainer[0]);
   });
 
-  it('RoleFromKit_HealMakesAHealer_StatusADebuffer_ElseAttacker', () => {
-    expect(roleFromKit(['softboiled', 'pound'], content)).toBe('healer');
-    expect(roleFromKit(['calm-mind', 'pound'], content)).toBe('buffer');
-    expect(roleFromKit(['poison-powder', 'vine-whip'], content)).toBe('debuffer');
-    expect(roleFromKit(['tackle', 'peck'], content)).toBe('attacker');
+  it('RoleFor_MostSupportsAttack_AQuarterDefend_AFifthBuff_§5.6', () => {
+    // §5.6 (v0.8.6) — most supports hit; a quarter defend; a fifth buff, if their kit can.
+    const rng = new GameRng(7);
+    const n = 4000;
+    const tally = { attacker: 0, defender: 0, buffer: 0 };
+    for (let i = 0; i < n; i++) tally[roleFor(['calm-mind', 'pound'], rng, content)] += 1;
+    expect(Math.abs(tally.defender / n - ROLE_SHARE.defender)).toBeLessThan(0.03);
+    expect(Math.abs(tally.buffer / n - ROLE_SHARE.buffer)).toBeLessThan(0.03);
+    expect(tally.attacker / n).toBeGreaterThan(0.5);
+    // A kit with nothing to buff, lower or afflict never Buffs.
+    for (let i = 0; i < 500; i++) expect(roleFor(['tackle', 'peck'], rng, content)).not.toBe('buffer');
   });
 });

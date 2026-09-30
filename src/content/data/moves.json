@@ -4876,6 +4876,22 @@
         }
       ],
       "cooldown": 2
+    },
+    {
+      "id": "cover",
+      "name": "Cover",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "cover"
+        }
+      ],
+      "cooldown": 2
     }
   ]
 }

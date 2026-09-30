@@ -144,8 +144,34 @@
         "kind": "catch",
         "ballMultiplier": 1
       },
-      "description": "Catch a wild Pokémon once the Catchability gauge reads READY (HP ≤ 30%, or ≤ 50% with a status). Costs a ball whether it works or not.",
+      "description": "A catch attempt at the chance shown on the wild Pokémon. Costs the ball whether it works or not.",
       "gdd": "§2.6.4 (CL-014)"
+    },
+    {
+      "id": "great-ball",
+      "name": "Great Ball",
+      "apCost": 1,
+      "tier": 2,
+      "target": "enemy",
+      "effect": {
+        "kind": "catch",
+        "ballMultiplier": 1.5
+      },
+      "description": "A catch attempt at 1.5× the Poké Ball's chance. Costs the ball whether it works or not.",
+      "gdd": "§2.6.4.2 (v0.8.6)"
+    },
+    {
+      "id": "ultra-ball",
+      "name": "Ultra Ball",
+      "apCost": 1,
+      "tier": 3,
+      "target": "enemy",
+      "effect": {
+        "kind": "catch",
+        "ballMultiplier": 2
+      },
+      "description": "A catch attempt at twice the Poké Ball's chance. Costs the ball whether it works or not.",
+      "gdd": "§2.6.4.2 (v0.8.6)"
     },
     {
       "id": "hyper-potion",

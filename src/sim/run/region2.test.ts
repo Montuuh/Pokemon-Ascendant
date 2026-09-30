@@ -122,7 +122,7 @@ describe('Catching in Region 2 — §2.6.5, §6.3.1', () => {
       outcome: 'caught',
       team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })),
       caught: { speciesId: 'tentacool', level: 14 },
-      ballsLeft: s.balls - 1,
+      ballsLeft: 0 - 1,
       turns: 4,
     };
     s = apply(s, { type: 'finish-combat', report });

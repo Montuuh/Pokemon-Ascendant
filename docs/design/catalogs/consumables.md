@@ -4,8 +4,8 @@
 > as counted scarcity), §7.2.6 (upgrade chains), §6.3.2 (Evolution Items). Status legend in `README.md`.
 >
 > **The consumable contract (§3.5, v0.8.6).** The Consumable Pile is built at combat start from the inventory,
-> one card per item; 2 cards are drawn per turn; a played consumable is **spent** and leaves the inventory when the
-> fight ends. They are ammunition, and found far more often to match: trainers always drop some, wild nodes leave
+> one card per item; the whole bag is open every turn, two items a turn; a played consumable is **spent** and leaves
+> the inventory when the fight ends. Poké, Great and Ultra Balls are bag entries too. They are ammunition, and found far more often to match: trainers always drop some, wild nodes leave
 > Poké Balls, the nurse and the Center hand a pair over, shops sell bundles (§2.7.2, §2.6.2, §2.9, §2.11.2.2).
 
 ## 1. Healing (5)
@@ -61,8 +61,8 @@ combo partner. Both are deliberately the priciest utilities.
 | id | AP | Effect | Threshold | Price ₽ | Status |
 |---|---|---|---|---|---|
 | `poke-ball` | 1 | catch attempt | `ballMultiplier` 1 on the §2.6.4.1 chance | 50 | ✅ v0.1 · roll since 2026-09-21 |
-| `great-ball` | 1 | catch attempt | ×1.5 | 120 | 🔒 post-launch (§2.6.4.2) |
-| `ultra-ball` | 1 | catch attempt | ×2 | 250 | 🔒 post-launch |
+| `great-ball` | 1 | catch attempt | ×1.5 | 120 | ✅ v0.8.6 (§2.6.4.2) |
+| `ultra-ball` | 1 | catch attempt | ×2 | 250 | ✅ v0.8.6 (§2.6.4.2) |
 
 Balls are a **counted run resource**: start 3 (`EconomyConfig.startingPokeballs`), +1 per Region, buyable. A
 throw spends one whether it succeeds or fails. The catch card appears in a wild combat only while the count > 0.

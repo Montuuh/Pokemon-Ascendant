@@ -421,17 +421,17 @@
    supports behind it, smaller, one high and one low — the way your bench sits behind your Lead. */
 .foeLead {
   right: 34%;
-  top: 22%;
+  top: 26%;
 }
 .foeSupport1,
 .foeSupport2 {
   right: 0;
 }
 .foeSupport1 {
-  top: -2%;
+  top: 0;
 }
 .foeSupport2 {
-  top: 46%;
+  top: 52%;
 }
 .foeSupport1 img,
 .foeSupport2 img {
@@ -441,10 +441,52 @@
 .foeAimed .platform {
   background: radial-gradient(ellipse, color-mix(in srgb, var(--accent-action) 70%, transparent), transparent);
 }
+/* §9.2.1 — a group mirrors the squad (v0.8.6): the Lead's panel forward (toward the arena) and centred, the
+   supports stacked behind it. The column widens to hold two panels side by side. */
+.stageGroup {
+  grid-template-columns: minmax(300px, 400px) 1fr minmax(440px, 560px);
+}
 .enemyZoneGroup {
-  gap: var(--sp-3);
-  align-self: stretch;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(260px, 1.15fr) minmax(0, 1fr);
+  grid-template-rows: 1fr 1fr auto;
+  grid-template-areas:
+    'lead s1'
+    'lead s2'
+    'queue queue';
+  column-gap: var(--sp-3);
+  row-gap: var(--sp-4);
+  align-items: center;
+  align-self: center;
+}
+.enemyZoneGroup[data-count='2'] {
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    'lead s1'
+    'queue queue';
+}
+/* §5.6 — what waits behind the group: its own row, centred under the formation. */
+.enemyZoneGroup > .queue {
+  grid-area: queue;
+  justify-self: center;
+}
+.foeOnly {
+  display: contents;
+}
+.foeLeadPanel {
+  grid-area: lead;
+  z-index: 2;
+}
+.foePanel1 {
+  grid-area: s1;
+  align-self: end;
+}
+.foePanel2 {
+  grid-area: s2;
+  align-self: start;
+}
+.enemyZoneGroup[data-count='2'] .foePanel1 {
+  align-self: center;
 }
 /* The card under the pointer while it is dragged. */
 .dragGhost {
@@ -469,6 +511,9 @@
   .foeSupport1 img,
   .foeSupport2 img {
     height: var(--sprite-support-small);
+  }
+  .stageGroup {
+    grid-template-columns: minmax(260px, 330px) 1fr minmax(400px, 460px);
   }
 }
 

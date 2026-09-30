@@ -112,8 +112,19 @@ function migrateSuppliesTo16(run: RunState): void {
   }
 }
 
+/**
+ * §7.2.5 — version 16 → 17: Poké Balls are bag entries (v0.8.6's second pass). The old counter becomes that many
+ * Poké Balls in the consumables.
+ */
+function migrateBallsTo17(run: RunState): void {
+  const legacy = run as RunState & { balls?: number };
+  const n = legacy.balls ?? 0;
+  for (let i = 0; i < n; i++) run.consumables.push('poke-ball');
+  delete legacy.balls;
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

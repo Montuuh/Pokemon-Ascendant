@@ -56,6 +56,10 @@
       "type": "end-turn"
     },
     {
+      "type": "play-card",
+      "cardId": "c10"
+    },
+    {
       "type": "swap",
       "benchIndex": 2
     },
@@ -64,7 +68,7 @@
       "cardId": "c8"
     }
   ],
-  "fingerprint": "t4 victory lead=2 ap=1 team=[charmander:45/53,squirtle:62/62,bulbasaur:53/63] enemies=[pidgey:0/52] events=55 rng=2839372223",
+  "fingerprint": "t4 victory lead=2 ap=0 team=[charmander:46/53,squirtle:62/62,bulbasaur:53/63] enemies=[pidgey:0/52] events=59 rng=1179029878",
   "turns": 4,
   "outcome": "victory"
 }

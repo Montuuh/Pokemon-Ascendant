@@ -66,20 +66,23 @@ describe('createCombat — §3.2.1 Combat Start', () => {
     expect(s.player.team[0]!.maxHp).toBe(Math.floor(53 * 0.9));
   });
 
-  it('Start_ConsumablePile_DrawsTwoAndKeepsRestInPool', () => {
+  it('Start_TheWholeBagIsOpen_TwoItemsATurn_§3.5', () => {
     const s = start(scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['potion', 'potion', 'antidote', 'ether'] }));
-    expect(s.player.consumables.hand).toHaveLength(2);
-    expect(s.player.consumables.pool).toHaveLength(2);
+    expect(s.player.consumables.hand).toHaveLength(4);
+    expect(s.player.consumables.pool).toHaveLength(0);
+    expect(s.player.itemCap).toBe(ctx.config.baseConsumableCardsPerTurn);
   });
 
-  it('Start_PokeBall_OnlyInWildFightsWithBalls', () => {
+  it('Start_PokeBall_OnlyInWildFights_TheBagsAndTheFixturesExtra_§7.2.5', () => {
     const wild = start(scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 2 }));
     const trainer = start(scenario({ kind: 'trainer', team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 2 }));
     const noBalls = start(scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 0 }));
     const all = (s: typeof wild) => [...s.player.consumables.hand, ...s.player.consumables.pool];
-    expect(all(wild)).toHaveLength(1);
+    // The bag's ball plus the fixture's two; a trainer fight carries none; a bag ball alone is still a ball.
+    expect(all(wild)).toHaveLength(3);
+    expect(wild.player.balls).toBe(3);
     expect(all(trainer)).toHaveLength(0);
-    expect(all(noBalls)).toHaveLength(0);
+    expect(all(noBalls)).toHaveLength(1);
   });
 
   it('Start_IronShell_RaisesDefenseOneStage', () => {

@@ -1,0 +1,110 @@
+/* §2.6.4 — the catch pill: the best ball's chance, and a button that opens the picker. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  align-self: flex-end;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
+  border: 1px solid var(--brand-red);
+  font-size: var(--type-caption);
+  color: var(--ink-primary);
+  cursor: pointer;
+}
+.pill:hover:not(:disabled),
+.pill[data-state='open'] {
+  background: var(--surface-1);
+  box-shadow: 0 0 0 2px var(--brand-red);
+}
+.pill:disabled {
+  cursor: not-allowed;
+  color: var(--ink-secondary);
+}
+.ball {
+  width: var(--sp-3);
+  height: var(--sp-3);
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--brand-red) 0 48%, var(--ink-primary) 48% 56%, var(--surface-1) 56%);
+}
+
+.panel {
+  z-index: 40;
+  width: 300px;
+  padding: var(--sp-3);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0 0 var(--sp-2);
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.head b {
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+}
+.rows {
+  display: grid;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  text-align: left;
+  cursor: pointer;
+}
+.row:hover:not(:disabled) {
+  background: var(--surface-3);
+}
+/* A row that cannot be thrown now keeps its text at full contrast (D5); the lock on its chance says "not now". */
+.row:disabled {
+  cursor: not-allowed;
+  background: var(--surface-1);
+  border-style: dashed;
+}
+.blocked {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0 0 var(--sp-2);
+  font-size: var(--type-caption);
+  color: var(--ink-primary);
+}
+.icon {
+  image-rendering: pixelated;
+}
+.name {
+  font-size: var(--type-small);
+}
+.count {
+  color: var(--ink-secondary);
+}
+.chance {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-h3);
+}
+.why {
+  grid-column: 1 / -1;
+  font-size: var(--type-caption);
+  color: var(--ink-primary);
+}

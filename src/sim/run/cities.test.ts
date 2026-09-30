@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { ballsIn } from './rewards';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
@@ -42,7 +43,7 @@ function clearRegion(s: RunState): RunState {
     if (s.phase === 'combat') {
       s = apply(s, {
         type: 'finish-combat',
-        report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 3 },
+        report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 3 },
       });
       s = apply(s, { type: 'claim-reward' });
     }
@@ -70,7 +71,7 @@ describe('The seam — §2.1.4', () => {
   it('TheGate_StartsRegionTwo_ShiftedUp_WithoutTheBeatenGym_§2.1', () => {
     let s = clearRegion(start());
     const firstMap = s.map;
-    const balls = s.balls;
+    const balls = ballsIn(s.consumables, content);
     const pick = s.city!.reflection[1]!;
     s = apply(s, { type: 'depart-city', modifierId: pick });
 
@@ -82,7 +83,7 @@ describe('The seam — §2.1.4', () => {
     expect(s.visited).toEqual([]);
     expect(s.reachable).toEqual(s.map.entry);
     // economy.md §1 — one more Poké Ball as each Region begins.
-    expect(s.balls).toBe(balls + 1);
+    expect(ballsIn(s.consumables, content)).toBe(balls + 1);
     // §2.1 placeholder — the Gym whose Badge the run holds is not drawn again.
     const beaten = GYMS.filter((g) => s.badges.includes(g.badgeId)).map((g) => g.id);
     for (const id of beaten) expect(s.map.gyms).not.toContain(id);
@@ -227,9 +228,9 @@ describe('The route services — §2.9', () => {
     let s = start();
     const stock = rollShopStock(new RngStreams(7).get('EncounterRNG'), content, s, 'merchant');
     s = { ...s, money: 10_000, phase: 'shop', pendingShop: stock };
-    const before = s.balls;
+    const before = ballsIn(s.consumables, content);
     s = apply(s, { type: 'buy', index: stock.slots.findIndex((x) => x.kind === 'ball') });
-    expect(s.balls).toBe(before + PRICES.merchantBalls.qty);
+    expect(ballsIn(s.consumables, content)).toBe(before + PRICES.merchantBalls.qty);
   });
 
   it('EveryRoute_HasOneMerchant_AndThreeMysteries_§2.5.1', () => {
@@ -253,7 +254,7 @@ describe('Statuses carry between fights — §4.2.7.1', () => {
     const uid = s.activeUids[0]!;
     s = apply(s, {
       type: 'finish-combat',
-      report: { outcome: 'victory', team: [{ uid, hp: 10, status: { kind: 'sleep', turnsLeft: 1 }, confusionTurns: 2, fainted: false }], caught: null, ballsLeft: s.balls, turns: 3 },
+      report: { outcome: 'victory', team: [{ uid, hp: 10, status: { kind: 'sleep', turnsLeft: 1 }, confusionTurns: 2, fainted: false }], caught: null, ballsLeft: 0, turns: 3 },
     });
     s = drain(apply(s, { type: 'claim-reward' }));
     const mon = s.box.find((m) => m.uid === uid)!;
@@ -271,7 +272,7 @@ describe('Statuses carry between fights — §4.2.7.1', () => {
     const uid = s.activeUids[0]!;
     s = apply(s, {
       type: 'finish-combat',
-      report: { outcome: 'victory', team: [{ uid, hp: 0, status: { kind: 'burn', turnsLeft: null }, fainted: true }], caught: null, ballsLeft: s.balls, turns: 3 },
+      report: { outcome: 'victory', team: [{ uid, hp: 0, status: { kind: 'burn', turnsLeft: null }, fainted: true }], caught: null, ballsLeft: 0, turns: 3 },
     });
     expect(s.box.find((m) => m.uid === uid)!.status).toBeNull();
   });
@@ -285,7 +286,7 @@ describe('Statuses carry between fights — §4.2.7.1', () => {
     const uid = s.activeUids[0]!;
     s = apply(s, {
       type: 'finish-combat',
-      report: { outcome: 'victory', team: [{ uid, hp: 10, status: { kind: 'burn', turnsLeft: null }, fainted: false }], caught: null, ballsLeft: s.balls, turns: 3 },
+      report: { outcome: 'victory', team: [{ uid, hp: 10, status: { kind: 'burn', turnsLeft: null }, fainted: false }], caught: null, ballsLeft: 0, turns: 3 },
     });
     s = apply(s, { type: 'claim-reward' });
     expect(s.phase).toBe('evolution');

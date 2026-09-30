@@ -9,7 +9,7 @@ export * from './combat/state';
 export type { CombatCtx } from './combat/context';
 export { createCombat } from './combat/setup';
 export { combatReducer, validateAction, type ReduceResult } from './combat/reducer';
-export { cardPlayability, consumablePlayability, swapOptions, catchStatus, catchTarget, canReach, aimsAtFoe, pickLeadOptions, stepBackOptions, effectiveApCost, type CardPlayability, type CardTarget, type SwapOption, type ConsumablePlayability } from './combat/preview';
+export { cardPlayability, consumablePlayability, swapOptions, catchStatus, catchOptions, catchTarget, canReach, aimsAtFoe, pickLeadOptions, stepBackOptions, effectiveApCost, type CardPlayability, type CardTarget, type SwapOption, type ConsumablePlayability } from './combat/preview';
 export { CATCH, catchOdds, catchRateOf, catchPercent, type CatchOdds } from './combat/catch';
 export { predictIntentDamage, describeIntent, intentRecipient, summonCount, summonedBy } from './combat/intents';
 export { forecastTurn, forecastOn, type TurnForecast, type IntentForecast, type ForecastHit } from './combat/forecast';
@@ -33,7 +33,7 @@ export { SAFARI, afterTurn, canToss, coneOf, lineBlocked, notices, planOf, playe
 export { BLACK_MARKET, SHOWCASE_CAP, atLegendaryCap, candyPrice, fencePrice, relicValue, rollBlackMarket, wagerChance } from './run/blackMarket';
 export { activeSetups, buildRingScenario, buildScenario, maxHpOf } from './run/encounter';
 export { AID_HEAL_PCT, MONEY_REWARD, PRICES, LEGENDARY_CAP, isOfferable, inPool, rollRelic, rollLegendaryOffer, rollHeldItem, ownedItems, relicMultiplier, benchXpShare, wildChoices, rollShopStock, slotPrice, RELIC_PREMIUM, rollRelicOffer, rarePickOpen, floorRestockable, rerollPrice, therapyPrice, sellPrice } from './run/economy';
-export { FIGHT_SUPPLIES, SUPPLY_TABLE, PRIZE_TABLE, RELIC_REWARD, rollFightSupplies, rollMixedOffer, gymRelicOffer, drawSupplies, SERVICE_GIFTS, serviceGift, countSupplies, supplyLabel } from './run/rewards';
+export { FIGHT_SUPPLIES, SUPPLY_TABLE, PRIZE_TABLE, RELIC_REWARD, rollFightSupplies, rollMixedOffer, gymRelicOffer, drawSupplies, SERVICE_GIFTS, serviceGift, countSupplies, supplyLabel, ballsIn, pokeBalls, POKE_BALL } from './run/rewards';
 export { MYSTERY_EVENTS, mysteryEvent, rollEvent, allOutcomes, assertEventContent, eventRiskOf, RISK_LABEL, type MysteryEvent, type EventChoice, type EventOutcome, type EventRisk } from './run/events';
 export { MODIFIERS, AVAILABLE_MODIFIERS, modifierById, modifierValue, hasModifier, modifierXpMultiplier, battleConfigFor, type DifficultyModifier } from './run/modifiers';
 export { activeRegionModifier, regionModifierValue, rollRegionModifierOffer, priceFor, traumaZone1Pct, victoryHealPct } from './run/regionModifiers';
@@ -41,7 +41,7 @@ export { DEFAULT_PROGRESSION, encounterXp, levelXpFactor, grantXp, xpToNext, isE
 export { buildOutcomeReport } from './run/report';
 export { BIOME_FIELD, fieldsFor, applyFields } from './run/battlefields';
 export { FIELD_CATEGORY, battlefields, fieldsSuppressed, isGrounded, type FieldId, type FieldState } from './combat/fields';
-export { GROUP_RATES, groupPlanFor, applyGroups, roleFromKit, type GroupPlan, type GroupRates } from './run/groups';
+export { GROUP_RATES, groupPlanFor, applyGroups, roleFor, ROLE_SHARE, type GroupPlan, type GroupRates } from './run/groups';
 export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } from './run/flee';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';
 

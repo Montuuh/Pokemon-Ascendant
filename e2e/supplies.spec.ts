@@ -106,4 +106,53 @@ test.describe('Supplies and scarce relics — v0.8.6', () => {
     test.skip(phase !== 'aid', `the walk ended on ${phase}`);
     await expect(page.getByTestId('aid-gift')).toBeVisible();
   });
+
+  test('the Bag opens everything carried, two items a turn — §3.5', async ({ page }) => {
+    await page.goto('/?scenario=wild-basic&seed=3');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await expect(page.getByTestId('bag-uses')).toHaveText('2/2');
+    await page.getByTestId('btn-bag').click();
+    await expect(page.getByTestId('bag-panel')).toBeVisible();
+    // One card per kind, with its count: the fixture's two Potions are one card.
+    await expect(page.getByTestId('consumable-potion')).toHaveCount(1);
+    await expect(page.getByTestId('consumable-potion')).toContainText('×2');
+    await page.screenshot({ path: 'playtest/combat-bag.png' });
+    // Two items used this turn: the bag says so, and what is left is locked until the next.
+    await page.keyboard.press('Escape');
+    await page.evaluate(() => {
+      const dev = window.__ascendant!;
+      for (const id of ['potion', 'antidote']) {
+        const card = dev.state()!.player.consumables.hand.find((c) => c.consumableId === id)!;
+        dev.dispatch({ type: 'use-consumable', cardId: card.id, targetIndex: 0 });
+      }
+    });
+    await expect(page.getByTestId('bag-uses')).toHaveText('0/2');
+    await page.getByTestId('btn-bag').click();
+    await expect(page.getByTestId('consumable-potion')).toHaveAttribute('data-state', 'locked');
+  });
+
+  test('the catch pill lists every ball in the bag with its own chance — §2.6.4.2', async ({ page }) => {
+    await freshRun(page);
+    await page.evaluate(() => {
+      const dev = window.__ascendant!;
+      dev.run.patch((d) => {
+        d.consumables.push('great-ball', 'ultra-ball');
+      });
+      dev.run.jump('wild');
+      dev.goTo('map');
+    });
+    const target = await page.evaluate(() => window.__ascendant!.run.state()!.reachable[0]!);
+    await page.getByTestId(`node-${target}`).click();
+    await page.getByTestId('btn-enter-node').click();
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await page.getByTestId('catch-pill').first().click();
+    await expect(page.getByTestId('catch-picker')).toBeVisible();
+    const pct = async (id: string) => Number((await page.getByTestId(`catch-with-${id}`).locator('.display').innerText()).replace('%', ''));
+    const [ultra, great, poke] = [await pct('ultra-ball'), await pct('great-ball'), await pct('poke-ball')];
+    expect(ultra).toBeGreaterThan(great);
+    expect(great).toBeGreaterThan(poke);
+    await page.screenshot({ path: 'playtest/combat-catch-picker.png' });
+    await page.getByTestId('catch-with-great-ball').click();
+    expect(await page.evaluate(() => window.__ascendant!.state()!.player.consumables.used.map((c) => c.consumableId))).toContain('great-ball');
+  });
 });

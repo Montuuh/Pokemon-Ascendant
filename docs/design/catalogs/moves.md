@@ -504,3 +504,4 @@ never draws them. ✅ v0.8.2.
 | Id | Type | Role | Rng | Mod | AP | Pow | CD | Effect |
 |---|---|---|---|---|---|---|---|---|
 | `call-for-help` | Normal | Util | Ranged | — | 1 | — | 2 | summon 1: the caller's next waiting companion joins the field as a support (§5.6.2) |
+| `cover` | Normal | Util | Ranged | — | 1 | — | 2 | cover: a Defender steps in front of its hurt Lead and leads the group, +1 Defence (§5.6, v0.8.6) |

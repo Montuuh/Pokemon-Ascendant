@@ -318,7 +318,7 @@
           "level": 7,
           "tier": "wild",
           "phaseCount": 1,
-          "role": "debuffer",
+          "role": "buffer",
           "moves": [
             "gust",
             "sand-attack"
@@ -373,7 +373,7 @@
           "level": 9,
           "tier": "trainer",
           "phaseCount": 1,
-          "role": "debuffer",
+          "role": "buffer",
           "moves": [
             "vine-whip",
             "poison-powder",
@@ -429,10 +429,11 @@
           "level": 9,
           "tier": "trainer",
           "phaseCount": 1,
-          "role": "healer",
+          "role": "defender",
           "moves": [
             "moonlight",
-            "pound"
+            "pound",
+            "cover"
           ]
         },
         {
@@ -552,7 +553,7 @@
               "level": 9,
               "tier": "wild",
               "phaseCount": 1,
-              "role": "debuffer",
+              "role": "buffer",
               "moves": [
                 "scratch",
                 "tail-whip",

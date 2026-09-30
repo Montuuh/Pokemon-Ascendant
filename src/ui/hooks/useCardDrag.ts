@@ -6,7 +6,6 @@ import type { PointerEvent as ReactPointerEvent } from 'react';
 // what lets the damage preview follow the drag. A press that never travels is left alone: it stays a click.
 
 export interface CardDrag {
-  kind: 'card' | 'consumable';
   id: string;
   /** Pointer position, for the ghost. */
   x: number;
@@ -29,7 +28,7 @@ export function useCardDrag(onDrop: (drag: CardDrag) => void) {
   const cleanup = useRef<(() => void) | null>(null);
   useEffect(() => () => cleanup.current?.(), []);
 
-  const begin = useCallback((e: ReactPointerEvent, kind: CardDrag['kind'], id: string) => {
+  const begin = useCallback((e: ReactPointerEvent, id: string) => {
     if (e.button !== 0) return;
     const sx = e.clientX;
     const sy = e.clientY;
@@ -37,7 +36,7 @@ export function useCardDrag(onDrop: (drag: CardDrag) => void) {
     const move = (ev: PointerEvent) => {
       if (!current && Math.hypot(ev.clientX - sx, ev.clientY - sy) < DRAG_THRESHOLD_PX) return;
       const over = document.elementFromPoint(ev.clientX, ev.clientY)?.closest('[data-enemy-uid]')?.getAttribute('data-enemy-uid') ?? null;
-      current = { kind, id, x: ev.clientX, y: ev.clientY, overUid: over };
+      current = { id, x: ev.clientX, y: ev.clientY, overUid: over };
       setDrag(current);
     };
     const stop = (drop: boolean) => {

@@ -19,6 +19,10 @@ export interface BattleConfig {
   maxApPerTurn: number;
   /** §3.2.2 — hand composition at Draw phase. */
   baseSkillCardsPerTurn: number;
+  /**
+   * §3.5 — how many items the bag gives up in one turn. Since v0.8.6 the whole bag is open every turn (no draw);
+   * this cap is what keeps a stack of Ethers from being a stack of AP. The name predates the bag.
+   */
   baseConsumableCardsPerTurn: number;
   /** §4.2 — status conditions (deterministic redesigns of Gen I RNG). */
   burnDotDivisor: number;
@@ -76,6 +80,9 @@ export interface BattleConfig {
   maxOnField: number;
   /** §5.6.2 — a Call for Help is worth more to a Pokémon standing alone. */
   summonAloneMultiplier: number;
+  /** §5.6 — a Defender covers its Lead once the Lead is at or under this share of its HP, and gains this Defence. */
+  coverLeadHp: number;
+  coverDefenseStages: number;
   /** §4.3.1–§4.3.2 — Sun and Rain: the boosted type's multiplier and the damped one's. */
   weatherBoost: number;
   weatherDamp: number;
@@ -137,6 +144,8 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   supportRoleMultiplier: 1.5,
   maxOnField: 3,
   summonAloneMultiplier: 2,
+  coverLeadHp: 0.35,
+  coverDefenseStages: 1,
   weatherBoost: 1.5,
   weatherDamp: 0.5,
   electricTerrainBoost: 1.3,

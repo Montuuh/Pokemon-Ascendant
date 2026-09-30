@@ -30,8 +30,8 @@ const HELD = [
 /** Evolution Items (§6.3.2, §7.2.5) — the five Gen I stones, real items under their own names. */
 const STONES = ['fire-stone', 'water-stone', 'thunder-stone', 'leaf-stone', 'moon-stone'];
 
-/** §2.11.6 — the Safari Zone's own ball, and the Black Market Fence's Rare Candy: real items both. */
-const SAFARI = ['safari-ball', 'rare-candy'];
+/** §2.11.6 — the Safari Zone's own ball, the Black Market Fence's Rare Candy, and the Great and Ultra Balls (§7.2.5): real items all. */
+const SAFARI = ['safari-ball', 'rare-candy', 'great-ball', 'ultra-ball'];
 
 /**
  * Relics (§7.3) — our id → the PokéAPI item whose icon it wears, or null for "no honest match".

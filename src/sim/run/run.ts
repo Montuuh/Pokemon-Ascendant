@@ -9,7 +9,7 @@ import { generateRegion, WILD_RARE_CHANCE } from './map';
 import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
 import { AID_HEAL_PCT, slotPrice, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
 import { GROUP_BREATHER } from './groups';
-import { gymRelicOffer, RELIC_REWARD, rollFightSupplies, rollMixedOffer, serviceGift, drawSupplies, supplyLabel } from './rewards';
+import { gymRelicOffer, RELIC_REWARD, rollFightSupplies, rollMixedOffer, serviceGift, drawSupplies, supplyLabel, pokeBalls } from './rewards';
 import { CASINO, CITIES, RING, cityAfter, isFinalRegion, pocketColour } from './cities';
 import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
@@ -57,7 +57,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 16;
+export const RUN_SAVE_VERSION = 17;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -132,8 +132,8 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     visited: [],
     box: second ? [starter, second] : [starter],
     activeUids: second ? [starter.uid, second.uid] : [starter.uid],
-    balls: RUN_START.balls,
-    consumables: [...RUN_START.consumables],
+    // §7.2.5 — the starting balls go in the bag with the rest of the kit (v0.8.6).
+    consumables: [...RUN_START.consumables, ...pokeBalls(RUN_START.balls)],
     tms: [],
     stones: [],
     starter: starterId,
@@ -669,7 +669,7 @@ function resolveEventOutcome(draft: RunState, outcome: EventOutcome, ctx: RunCtx
       say(draft, `+${outcome.amount} ₽.`);
       break;
     case 'balls':
-      draft.balls += outcome.amount;
+      draft.consumables.push(...pokeBalls(outcome.amount));
       say(draft, `+${outcome.amount} Poké Balls.`);
       break;
     case 'consumables':
@@ -1045,10 +1045,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         if (supplies.consumables.length) say(draft, `Found ${supplyLabel(supplies.consumables, (id) => ctx.content.consumable(id).name)}.`);
         draft.cursors.LootRNG = lootRng.cursor;
 
-        // 3. Balls are spent on the throw, not on the catch, so a wild fight returns its own count — and then
-        // adds any it found in the grass.
-        if (node.kind === 'wild' || node.kind === 'elite-wild') draft.balls = Math.max(0, Math.min(draft.balls, report.ballsLeft));
-        draft.balls += supplies.balls;
+        // 3. A thrown ball is a spent consumable and already left the bag above; add any found in the grass.
+        draft.consumables.push(...pokeBalls(supplies.balls));
         if (supplies.balls) say(draft, `Found ${supplies.balls} Poké Ball${supplies.balls > 1 ? 's' : ''}.`);
 
         // 4. A catch is a Victory that also hands you a Pokémon (§2.6.4).
@@ -1556,7 +1554,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         draft.visited = [];
         draft.pendingNodeId = null;
         // docs/design/catalogs/economy.md §1 — one more Poké Ball as each Region begins.
-        draft.balls += RUN_START.ballsPerRegion;
+        draft.consumables.push(...pokeBalls(RUN_START.ballsPerRegion));
         draft.phase = 'map';
         say(draft, `Region ${draft.regionIndex + 1} begins — ${ctx.content.regionModifier(action.modifierId).name}.`);
         break;
@@ -1583,7 +1581,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             for (let i = 0; i < (slot.qty ?? 1); i++) draft.consumables.push(slot.id);
             break;
           case 'ball':
-            draft.balls += slot.qty ?? 1;
+            // §7.2.5 — a ball slot is a bundle of its ball, into the bag like any consumable.
+            for (let i = 0; i < (slot.qty ?? 1); i++) draft.consumables.push(slot.id);
             break;
           case 'relic':
             acquireRelic(draft, slot.id, ctx.content);

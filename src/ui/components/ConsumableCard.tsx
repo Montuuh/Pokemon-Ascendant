@@ -1,4 +1,4 @@
-import { IconAlertTriangle } from '@tabler/icons-react';
+import { IconAlertTriangle, IconLock } from '@tabler/icons-react';
 import type { ConsumablePlayability } from '@/sim';
 import { itemIcon } from '@/ui/art';
 import { REJECT_TEXT } from '@/ui/strings';
@@ -10,12 +10,12 @@ interface Props {
   play: ConsumablePlayability;
   selected: boolean;
   onClick: () => void;
-  /** §5.6 — a Poké Ball can be dragged onto the wild Pokémon it is thrown at. */
-  onPointerDown?: (e: React.PointerEvent) => void;
+  /** §3.5 — how many of this item the bag holds (v0.8.6: one card per kind in the bag). */
+  count?: number;
 }
 
 // Per docs/design/ui/09 — consumable cards are pill-soft and share the move-card grammar (AP dots left, label right).
-export function ConsumableCard({ play, selected, onClick, onPointerDown }: Props) {
+export function ConsumableCard({ play, selected, onClick, count = 1 }: Props) {
   const { def } = play;
   const tip = useTip(consumableTip(def, play.playable, play.reason ? REJECT_TEXT[play.reason] : null));
   const state = play.playable ? 'playable' : play.reason === 'not-enough-ap' ? 'no-ap' : 'locked';
@@ -38,13 +38,13 @@ export function ConsumableCard({ play, selected, onClick, onPointerDown }: Props
         ' ',
       )}
       onClick={onClick}
-      onPointerDown={onPointerDown}
       data-testid={`consumable-${def.id}`}
       data-card-id={play.cardId}
       data-state={state}
       aria-pressed={selected}
       {...tip}
     >
+      {count > 1 && <span className={`${styles.count} tabular`}>×{count}</span>}
       <span className={styles.iconWrap}>
         <img className={`${styles.icon} pixel`} src={itemIcon(def.id)} alt="" width={40} height={40} />
       </span>
@@ -52,6 +52,7 @@ export function ConsumableCard({ play, selected, onClick, onPointerDown }: Props
       <span className={styles.footer}>
         <span className={styles.dots}>
           {state === 'no-ap' && <IconAlertTriangle size={12} className={styles.warn} />}
+          {state === 'locked' && <IconLock size={12} aria-label="Not now" />}
           {def.apCost === 0 ? (
             <small>free</small>
           ) : (

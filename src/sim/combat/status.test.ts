@@ -95,7 +95,8 @@ describe('Status conditions — §4.2', () => {
     });
     s = dispatch(s, { type: 'end-turn' });
     expect(s.player.hand).toHaveLength(2);
-    expect(s.player.consumables.hand).toHaveLength(2);
+    // Consumables are immune: the whole bag is still open (§3.5, v0.8.6).
+    expect(s.player.consumables.hand.length + s.player.consumables.used.length).toBeGreaterThan(0);
     expect(eventsOf(s, 'confusion-discard')).toHaveLength(3);
     expect(s.player.team[0]!.confusionTurns).toBe(2);
   });

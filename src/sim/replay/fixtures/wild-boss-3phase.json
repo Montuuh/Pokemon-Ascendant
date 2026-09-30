@@ -34,18 +34,15 @@
     },
     {
       "type": "play-card",
-      "cardId": "c10"
-    },
-    {
-      "type": "play-card",
       "cardId": "c8"
     },
     {
       "type": "end-turn"
     },
     {
-      "type": "swap",
-      "benchIndex": 1
+      "type": "use-consumable",
+      "cardId": "k12",
+      "targetIndex": 2
     },
     {
       "type": "play-card",
@@ -53,10 +50,30 @@
     },
     {
       "type": "play-card",
-      "cardId": "c6"
+      "cardId": "c5"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c11"
     },
     {
       "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c10"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c9"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "use-consumable",
+      "cardId": "k13",
+      "targetIndex": 2
     },
     {
       "type": "play-card",
@@ -64,12 +81,41 @@
     },
     {
       "type": "play-card",
-      "cardId": "c9"
+      "cardId": "c8"
     },
     {
-      "type": "use-consumable",
-      "cardId": "k13",
-      "targetIndex": 2
+      "type": "play-card",
+      "cardId": "c11"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c0"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c2"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c5"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c10"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c7"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c8"
     },
     {
       "type": "play-card",
@@ -88,37 +134,6 @@
     },
     {
       "type": "play-card",
-      "cardId": "c7"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "use-consumable",
-      "cardId": "k12",
-      "targetIndex": 2
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c2"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c5"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c10"
-    },
-    {
-      "type": "play-card",
       "cardId": "c8"
     },
     {
@@ -126,7 +141,37 @@
     },
     {
       "type": "play-card",
+      "cardId": "c0"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c9"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c8"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c11"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c0"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c2"
+    },
+    {
+      "type": "play-card",
       "cardId": "c10"
+    },
+    {
+      "type": "end-turn"
     },
     {
       "type": "swap",
@@ -134,44 +179,22 @@
     },
     {
       "type": "play-card",
-      "cardId": "c3"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c1"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
       "cardId": "c2"
     },
     {
       "type": "play-card",
-      "cardId": "c5"
+      "cardId": "c9"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c11"
     },
     {
       "type": "end-turn"
     },
     {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c2"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c3"
-    },
-    {
-      "type": "end-turn"
+      "type": "pick-lead",
+      "benchIndex": 0
     },
     {
       "type": "play-card",
@@ -186,7 +209,7 @@
       "cardId": "c3"
     }
   ],
-  "fingerprint": "t12 victory lead=0 ap=0 team=[wartortle:90/98,butterfree:0/84,rattata:0/54] enemies=[geodude:0/79,golem:0/125] events=192 rng=1340888151",
-  "turns": 12,
+  "fingerprint": "t13 victory lead=0 ap=0 team=[wartortle:72/98,butterfree:0/84,rattata:0/54] enemies=[geodude:0/79,golem:0/125] events=214 rng=458907589",
+  "turns": 13,
   "outcome": "victory"
 }

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { ballsIn } from './rewards';
 import { buildRegistry } from '@/content/registry';
 import { PAD_LEVEL_GAP } from './region';
 import {
@@ -82,7 +83,7 @@ const win = (s: RunState, over: Partial<CombatOutcomeReport> = {}): RunState => 
     outcome: 'victory',
     team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })),
     caught: null,
-    ballsLeft: s.balls,
+    ballsLeft: 0,
     turns: 4,
     ...over,
   };
@@ -229,7 +230,7 @@ describe('Run start — §2.1.1', () => {
 
   it('Start_CarriesBallsAndConsumables', () => {
     const s = start();
-    expect(s.balls).toBe(3);
+    expect(ballsIn(s.consumables, content)).toBe(3);
     expect(s.consumables.length).toBeGreaterThan(0);
   });
 
@@ -302,7 +303,7 @@ describe('XP and levels — §6.2', () => {
     s = apply(s, { type: 'begin-combat' });
     if (s.phase !== 'combat') return; // landed on a Centre; the ratio is covered by the unit below
     const before = s.box.map((m) => ({ uid: m.uid, xp: m.xp, level: m.level }));
-    const after = apply(s, { type: 'finish-combat', report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 3 } });
+    const after = apply(s, { type: 'finish-combat', report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 3 } });
     const awarded = after.pendingReward!.xpAwarded;
     const activeAward = awarded.find((a) => a.uid === s.activeUids[0])!.amount;
     const benchAward = awarded.find((a) => a.uid === extra.uid)!.amount;
@@ -362,7 +363,7 @@ describe('HP, Trauma and defeat — §2.4, §8.2', () => {
     s = enter(s, s.map.nodes[s.reachable[0]!]!.kind);
     s = apply(s, { type: 'begin-combat' });
     if (s.phase !== 'combat') return;
-    s = apply(s, { type: 'finish-combat', report: { outcome: 'defeat', team: s.activeUids.map((uid) => ({ uid, hp: 0, status: null, fainted: true })), caught: null, ballsLeft: s.balls, turns: 6 } });
+    s = apply(s, { type: 'finish-combat', report: { outcome: 'defeat', team: s.activeUids.map((uid) => ({ uid, hp: 0, status: null, fainted: true })), caught: null, ballsLeft: 0, turns: 6 } });
     expect(s.outcome).toBe('defeat');
     expect(s.phase).toBe('ended');
   });
@@ -381,7 +382,7 @@ describe('Catching and the Box — §2.6.4, §2.3.1', () => {
     team: s.activeUids.map((uid) => ({ uid, hp: 8, status: null, fainted: false })),
     caught: { speciesId: 'pidgey', level: 6 },
     // The throw already cost a ball inside the fight, so the report hands back what is left.
-    ballsLeft: s.balls - 1,
+    ballsLeft: 0,
     turns: 3,
   });
 
@@ -390,14 +391,14 @@ describe('Catching and the Box — §2.6.4, §2.3.1', () => {
     s = enter(s, s.map.nodes[s.reachable[0]!]!.kind);
     s = apply(s, { type: 'begin-combat' });
     if (s.phase !== 'combat') return;
-    const balls = s.balls;
-    s = apply(s, { type: 'finish-combat', report: caughtReport(s) });
+    const balls = ballsIn(s.consumables, content);
+    s = apply(s, { type: 'finish-combat', report: { ...caughtReport(s), spentConsumables: ['poke-ball'] } });
     // §2.6.2 — a wild node may leave a ball or two in the grass as well (v0.8.6).
     const found = s.pendingReward!.balls;
     s = apply(s, { type: 'claim-reward' });
     expect(s.box).toHaveLength(2);
     expect(s.box[1]!.speciesId).toBe('pidgey');
-    expect(s.balls).toBe(balls - 1 + found);
+    expect(ballsIn(s.consumables, content)).toBe(balls - 1 + found);
     expect(s.stats.catches).toBe(1);
   });
 
@@ -483,7 +484,7 @@ describe('Save and resume — §10.8', () => {
 
   it('Save_RejectsCorruption_RatherThanCrashing', () => {
     const text = serialiseRun(start());
-    const tampered = text.replace('"balls":3', '"balls":99');
+    const tampered = text.replace('"money":150', '"money":99999');
     expect(deserialiseRun(tampered, content)).toEqual({ ok: false, reason: 'corrupt' });
     expect(deserialiseRun('not json', content).ok).toBe(false);
     expect(deserialiseRun(null, content)).toEqual({ ok: false, reason: 'empty' });
@@ -609,7 +610,7 @@ describe('Evolution — §6.2.4, §6.3', () => {
     s = apply(s, { type: 'begin-combat' });
     s = apply(s, {
       type: 'finish-combat',
-      report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 3 },
+      report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 3 },
     });
     s = apply(s, { type: 'claim-reward' });
     expect(s.phase).toBe('evolution');
@@ -632,7 +633,7 @@ describe('Evolution — §6.2.4, §6.3', () => {
       s = apply(s, { type: 'begin-combat' });
       s = apply(s, {
         type: 'finish-combat',
-        report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 3 },
+        report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 3 },
       });
       s = apply(s, { type: 'claim-reward' });
       expect(s.phase).toBe('evolution');
@@ -839,15 +840,14 @@ describe('The Dojo — §2.9.4', () => {
 });
 
 describe('Poké Balls reach the fight — §2.6.4', () => {
-  it('WildScenario_OffersOneBallCardPerBallHeld', () => {
+  it('WildScenario_CarriesEveryBallInTheBag_§7.2.5', () => {
     let s = start();
     const wild = s.reachable.find((n) => s.map.nodes[n]!.kind === 'wild');
     if (!wild) return;
     s = apply(s, { type: 'enter-node', nodeId: wild });
     s = apply(s, { type: 'begin-combat' });
     const balls = s.pendingScenario!.player.consumables.filter((c) => c === 'poke-ball');
-    expect(balls).toHaveLength(s.balls);
-    expect(s.pendingScenario!.player.balls).toBe(s.balls);
+    expect(balls).toHaveLength(ballsIn(s.consumables, content));
   });
 
   it('TrainerScenario_HasNoBalls_YouCannotCatchSomeonesPokemon', () => {
@@ -856,8 +856,9 @@ describe('Poké Balls reach the fight — §2.6.4', () => {
     if (!trainer) return;
     s = apply(s, { type: 'enter-node', nodeId: trainer });
     s = apply(s, { type: 'begin-combat' });
+    // §7.2.5 — the bag rides along, but the combat pile leaves the balls out (combat/setup.ts).
     expect(s.pendingScenario!.player.balls).toBe(0);
-    expect(s.pendingScenario!.player.consumables).not.toContain('poke-ball');
+    expect(s.pendingScenario!.kind).not.toBe('wild');
   });
 
   it('Balls_AreSpentOnTheThrow_NotOnTheCatch', () => {
@@ -866,18 +867,20 @@ describe('Poké Balls reach the fight — §2.6.4', () => {
     if (!wild) return;
     s = apply(s, { type: 'enter-node', nodeId: wild });
     s = apply(s, { type: 'begin-combat' });
-    // Two misses and no catch still cost two balls.
+    // Two misses and no catch still cost two balls: both are spent consumables.
+    const before = ballsIn(s.consumables, content);
     s = apply(s, {
       type: 'finish-combat',
       report: {
         outcome: 'victory',
         team: s.activeUids.map((uid) => ({ uid, hp: 5, status: null, fainted: false })),
         caught: null,
-        ballsLeft: 1,
+        ballsLeft: 0,
+        spentConsumables: ['poke-ball', 'poke-ball'],
         turns: 5,
       },
     });
-    expect(s.balls).toBe(1 + s.pendingReward!.balls);
+    expect(ballsIn(s.consumables, content)).toBe(before - 2 + s.pendingReward!.balls);
   });
 });
 
@@ -987,7 +990,7 @@ describe('Running from a fight — §3.1.2', () => {
   const escape = (s: RunState): RunState =>
     apply(s, {
       type: 'finish-combat',
-      report: { outcome: 'escaped', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: s.balls, turns: 2 },
+      report: { outcome: 'escaped', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 2 },
     });
 
   it('AWildEscape_CostsMoneyAndTheLeadsNerve_AndPaysNothing', () => {

@@ -43,9 +43,10 @@ export interface CityDef {
    * Celadon's rivals are Region 2's rosters since v0.7.3 — final forms, where Region 1's had been evolved up —
    * so its ladder was retuned then: rivals of 3 rather than 4, which moved rung 1 far more than any level did.
    * v0.8.5: both offsets +4, the levels the Gym's premium dropped (§5.6.3), so the Ring stands where it stood.
-   * v0.8.6: Pallet +7 (11 → 18), Celadon +5 (14 → 19). Supplies are found far more often now (§2.7.2), so a team
-   * reaches the Ring with a full bag, and the bag — not the level — was what carried rung 1 (+2 levels moved it one
-   * point). Measured: Pallet rung 1 0.72, ladder 0.18; Celadon rung 1 0.72, ladder 0.15. The v0.8.8 pass retunes it.
+   * v0.8.6: Pallet +7 (11 → 18), Celadon +7 (14 → 21). Supplies are found far more often now (§2.7.2) and the whole
+   * bag is open every turn (§3.5), so a team reaches the Ring well stocked, and the bag — not the level — carries
+   * rung 1 (+2 levels moved it one point). Measured: Pallet rung 1 0.75, ladder 0.14; Celadon rung 1 0.78, ladder
+   * 0.08. Rung 1 sits well over its "about half"; the v0.8.8 pass retunes it with something other than levels.
    */
   ring: { fee: number; prizes: ({ money: number } | { relicPick: true })[]; firstOffset: number; stepOffset: number; teamSize: number };
 }
@@ -57,7 +58,7 @@ export const CITIES: Record<CityId, CityDef> = {
   },
   'celadon-city': {
     id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'ring', 'game-corner', 'safari'], ringName: 'Pokémon Coliseum', blackMarket: true, shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
-    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 19, stepOffset: 2, teamSize: 3 },
+    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 21, stepOffset: 2, teamSize: 3 },
   },
 };
 

@@ -206,6 +206,7 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
   const card = player.consumables.hand.find((c) => c.id === cardId)!;
   const def = p.def;
   player.ap -= def.apCost;
+  player.itemsUsed += 1;
   player.consumables.hand = player.consumables.hand.filter((c) => c.id !== card.id);
   player.consumables.used.push(card);
 

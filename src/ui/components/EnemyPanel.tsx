@@ -1,12 +1,13 @@
 import { IconLock, IconQuestionMark } from '@tabler/icons-react';
 import { IntentChip } from './IntentChip';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
-import { SLOT_LABEL, catchPercent, catchStatus, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
+import { SLOT_LABEL, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
+import { CatchPicker } from './CatchPicker';
 import { iconOf, intentGlyph } from '@/ui/art';
 import { INTENT_LABEL, ROLE_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
-import { catchTip, nextIntentTip, roleTip } from '@/ui/tips';
+import { nextIntentTip, roleTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EnemyPanel.module.css';
 
@@ -29,15 +30,16 @@ interface Props {
   onClick: () => void;
   onHover: (hovering: boolean) => void;
   fxClass?: string;
+  /** §2.6.4 — throw a ball from the catch picker (v0.8.6). */
+  interactive: boolean;
+  onThrow: (cardId: string, targetUid: string) => void;
 }
 
 // Per §9.2.2.3 / §9.2.5 — one enemy's HUD: the intent chip (kind glyph, the move, its target, and for a single
 // hit the number it lands), the card with HP, phase markers, status and stages, the catch pill in a wild fight,
 // and — while a card is held — the number that card would deal here (§9.2.4). The sprite lives in the arena.
-export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass }: Props) {
+export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow }: Props) {
   const phase = currentPhase(enemy, ctx.config);
-  const gauge = catchStatus(state, ctx, enemy.uid);
-  const catchTipProps = useTip(gauge ? catchTip(gauge) : null);
   // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
   const place = enemySlotLabel(state, enemy);
   // §5.6 — in a group the enemy's card is the door to its place and role.
@@ -57,7 +59,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
     : 'Wild';
 
   return (
-    <div className={[styles.zone, styles.compact].join(' ')} data-testid="foe-panel" data-enemy-uid={enemy.uid} onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}>
+    <div className={[styles.zone, styles.compact, state.enemies.length > 1 ? (place === 'Lead' ? styles.leadZone : styles.supportZone) : ''].join(' ')} data-testid="foe-panel" data-enemy-uid={enemy.uid} onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}>
       <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={0} />
       {enemy.second && enemy.hp > 0 && <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={1} />}
 
@@ -134,8 +136,8 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
           <span className={styles.chips}>
             {place && (
               <span className={place === 'Lead' ? styles.chipLead : styles.chipRole} data-testid="foe-place">
-                {place}
-                {enemy.role && place !== 'Lead' ? ` · ${ROLE_LABEL[enemy.role]}` : ''}
+                {/* §9.2.1 — behind the Lead, the place is the formation's to say; the chip names the role (v0.8.6). */}
+                {enemy.role && place !== 'Lead' ? ROLE_LABEL[enemy.role] : place}
               </span>
             )}
             {stageChips.map((s) => (
@@ -153,10 +155,9 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
         </span>
       </button>
 
-      {gauge && (
-        <div className={styles.catchInline} data-testid="catch-pill" data-chance={catchPercent(gauge)} {...catchTipProps}>
-          <span className={styles.ball} />
-          <span className="display tabular">{gauge.ballsLeft === 0 ? 'no balls' : gauge.guaranteed ? 'SURE' : `${catchPercent(gauge)}%`}</span>
+      {state.kind === 'wild' && (
+        <div className={styles.catchInline}>
+          <CatchPicker state={state} enemy={enemy} ctx={ctx} interactive={interactive} onThrow={onThrow} />
         </div>
       )}
     </div>

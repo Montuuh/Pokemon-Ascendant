@@ -149,12 +149,19 @@ mirrored (§3.3): the Lead stands in front of its group.
 - **Catching in a pack:** §2.6.4.1 — the ball is aimed, and a catch scatters the rest.
 - **Acting twice, and calling for help** — §5.6.1 and §5.6.2.
 
-| Support role | Behaviour |
-|---|---|
-| **Healer** | Its heal goes to the enemy Lead, weighed by the Lead's missing HP — it waits until the Lead is hurt |
-| **Buffer** | Its stat raise goes to the enemy Lead, decaying with the stages the Lead has banked |
-| **Debuffer** | Leans on status and stat drops at your team |
-| **Attacker** | Leans on hits: a second threat beside the Lead's |
+| Support role | Share | Behaviour |
+|---|---|---|
+| **Attacker** | the rest (~60 %) | Leans on hits: a second threat beside the Lead's |
+| **Defender** | 20 % | Shields its Lead. Its heal goes to the Lead, weighed by the Lead's missing HP; it raises its own guard. When the Lead is at or under `coverLeadHp` (35 %) and the Defender is the sturdier of the two, it telegraphs **Cover** (an enemy-only move it brings; under the threshold it outranks its own heal): at Resolution it **takes the Lead's place** — your single-target Melee cards now reach only it — with +`coverDefenseStages` (1) Defence, and the old Lead drops behind, keeping its declared intent |
+| **Buffer** | 20 % | Raises its allies (a raise goes to the Lead, decaying with the stages it has banked), lowers your team's stats and puts statuses on it |
+
+*(Rewritten 2026-09-30, the user's call: "not all, or most, of the ones behind should be supporters" — they want
+attackers, defenders with a swap, and buffers. The old four roles came from each Pokémon's kit, and because most
+basics carry Growl, Tail Whip or Sand Attack most of the back row was a Debuffer. Now a seeded roll gives the
+share above, checked against the kit: a Buffer needs a move that can raise, lower or afflict, otherwise it
+attacks; any Pokémon can defend, since the role brings Cover. The old Healer is the Defender's heal; the old
+Debuffer is the Buffer's second half. Measured: Cover at a 50 % trigger and a quarter of supports cost Region 3
+twenty points; at 35 % and a fifth it stands where v0.8.5 left it.)*
 
 A support's role is authored on the encounter (`role`) and is what makes it a support. The AI is the same §5.3
 scoring function with two additions: the intents a role is for score ×`supportRoleMultiplier` (1.5), and **the
@@ -167,7 +174,9 @@ with `supportAttackMultiplier` (0.7) of its Attack — a group widens a fight mo
 (v0.8.5: with trainers of three fighting as trios, full-Attack supports left Region 3 teams at a third of their HP
 after every trainer). **One that lingers escalates**: from its `supportEscalateFromTurn`th (4th) Intent phase on the
 field it gains `supportEscalateStages` (+1) Attack at every Intent phase, up to `supportEscalateCap` (+2) in all,
-logged and shown as a stage chip. A Lead never escalates — it is the fight. The Elite's and the Gym's second
+logged and shown as a stage chip. A Lead never escalates — it is the fight — and **only a Pokémon with a role
+escalates**: a Lead a Defender covered, now standing behind, and an Elite's or a Gym's second Pokémon are not
+supports and do not grow fierce (v0.8.6: a covered Lead escalating at full Attack was most of Cover's cost). The Elite's and the Gym's second
 Pokémon are the team, not supports: no role, full HP and Attack, no escalation. *(All four numbers are `BattleConfig` first values, 2026-09-29; the v0.8.7 balance
 pass tunes them.)*
 
@@ -224,8 +233,7 @@ pack, and their companions are **more of their own kind**: Rattata, Spearow, Zub
 Magnemite and Doduo lines — the ones the games show in swarms and colonies. *(User, 2026-09-30: "some Pokémon
 start with Call for Help".)*
 
-A support's role comes from its kit: a heal it can hand over makes a Healer, a raise a Buffer, a status or stat drop
-a Debuffer, anything else an Attacker. Every companion, helper and support is folded through the Region's stat tier,
+A support's role is rolled by its share and checked against its kit (§5.6's table). Every companion, helper and support is folded through the Region's stat tier,
 status accent and the run's modifiers like any enemy. The numbers live in `GROUP_RATES` (`run/groups.ts`).
 
 *Why so many (user, 2026-09-30): group fights are where the game is most strategic, so they are the rule, not the

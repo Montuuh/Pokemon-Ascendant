@@ -4,7 +4,7 @@ import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { regionPlate } from '@/ui/art';
 import { getContent } from '@/content/registry';
-import { LAYERS, boxCapacity, gymById, isServiceNode, nodesInLayer, regionName, type MapNode, type PartyMon } from '@/sim';
+import { LAYERS, ballsIn, boxCapacity, gymById, isServiceNode, nodesInLayer, regionName, type MapNode, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { InventoryDrawer } from '@/ui/components/InventoryDrawer';
 import { Money } from '@/ui/components/Money';
@@ -206,9 +206,9 @@ export function MapScreen() {
           <Tipped tip={moneyTip(run.money)} className={styles.stat} data-testid="map-money">
             <Money amount={run.money} size={20} />
           </Tipped>
-          <Tipped tip={ballsTip(run.balls)} className={styles.stat}>
+          <Tipped tip={ballsTip(ballsIn(run.consumables, getContent()))} className={styles.stat}>
             <img src={itemIcon('poke-ball')} alt="" width={22} height={22} />
-            <b className="tabular">{run.balls}</b>
+            <b className="tabular">{ballsIn(run.consumables, getContent())}</b>
           </Tipped>
           {run.relics.length > 0 && (
             <Tipped

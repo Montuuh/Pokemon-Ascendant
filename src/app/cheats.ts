@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import { getContent } from '@/content/registry';
-import { arriveAtCity, defaultRunCtx, isEvolutionReady, knownMoves, maxHpOf, newPartyMon, type PartyMon, type RunState } from '@/sim';
+import { arriveAtCity, pokeBalls, defaultRunCtx, isEvolutionReady, knownMoves, maxHpOf, newPartyMon, type PartyMon, type RunState } from '@/sim';
 import { useAppStore } from './store';
 import { useCombatStore } from './combatStore';
 import { useRunStore } from './runStore';
@@ -121,7 +121,7 @@ export const CHEATS = {
   },
 
   balls(n: number): CheatResult {
-    return edit((d) => { d.balls += n; }) ? { say: 'balls', n } : null;
+    return edit((d) => { d.consumables.push(...pokeBalls(n)); }) ? { say: 'balls', n } : null;
   },
 
   relic(): CheatResult {

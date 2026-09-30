@@ -1,6 +1,6 @@
 import type { RunCtx } from './context';
 import { emit, log } from './context';
-import { discardHand, drawConsumables, drawSkillCards, returnConsumableHand, sweepEchoes } from './deck';
+import { discardHand, openBag, drawSkillCards, returnConsumableHand, sweepEchoes } from './deck';
 import { applyPhaseTransitions, tempoApTax } from './boss';
 import { changeStage, dealDamage, heal } from './damageFlow';
 import { declareIntent } from './intents';
@@ -25,6 +25,7 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   p.ap = Math.max(0, ctx.config.baseApPerTurn - tempoApTax(state, ctx.config)) + p.bankedAp + abilityTurnStartAp(p.team, state.turn, ctx.content);
   p.bankedAp = 0;
   p.swapCounter = 0;
+  p.itemsUsed = 0;
   p.defensiveDiscount = false;
   p.playedThisTurn = [];
   // §8.4.3 — whoever starts the turn as Lead gets the turn on their record.
@@ -74,8 +75,10 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
     }
   }
   p.reshuffled = false;
-  // §2.11.3 Lucky Draw — one more item card on the turn it names, from the pile rather than the deck.
-  const cons = drawConsumables(state, ctx.config.baseConsumableCardsPerTurn + itemConsumableDrawBonus(state, state.turn, ctx.content), ctx.rng);
+  // §3.5 — the whole bag is open every turn (v0.8.6: a random two of a finite bag was a lottery on your own
+  // supplies, Pillar 1). What limits a turn is the item cap; §2.11.3 Lucky Draw and the draw relics raise it.
+  p.itemCap = ctx.config.baseConsumableCardsPerTurn + itemConsumableDrawBonus(state, state.turn, ctx.content);
+  const cons = openBag(state);
   emit(state, { t: 'draw', cardIds: drawn.map((c) => c.id), consumableIds: cons.map((c) => c.id) });
 
   // §4.2.3.1 — Confusion: each Confused Pokémon discards 1 random skill card; consumables are immune.
@@ -129,6 +132,9 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
 function escalateSupport(state: CombatState, e: EnemyCombatant, ctx: RunCtx): void {
   e.fieldTurns = (e.fieldTurns ?? 0) + 1;
   if (state.enemies[0]?.uid === e.uid) return;
+  // §5.6 — only a support escalates: one with a role. A Lead a Defender covered (v0.8.6), or an Elite's or a Gym's
+  // second Pokémon, stands behind without being a support, and does not grow fierce for it.
+  if (!e.role) return;
   // …up to supportEscalateCap stages of its own making (v0.8.5: uncapped, a trio fight's supports snowballed).
   const grown = (e.fieldTurns - ctx.config.supportEscalateFromTurn) * ctx.config.supportEscalateStages;
   if (e.fieldTurns < ctx.config.supportEscalateFromTurn || grown >= ctx.config.supportEscalateCap || e.stages.attack >= 6) return;

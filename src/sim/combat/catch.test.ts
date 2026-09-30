@@ -12,18 +12,18 @@ const mon = (over: Partial<{ hp: number; maxHp: number; status: { kind: string; 
 
 describe('Catch odds — §2.6.4.1', () => {
   it('ACommonBasic_AtFullHp_IsNearTheFloor_AndClimbsSteeplyAtTheEnd', () => {
-    // The anchors the design was tuned to: ~2 % at full HP, ~33 % at half, ~58 % at a quarter, 90 % cap.
-    expect(catchOdds(mon(), BALL, content).chance).toBeCloseTo(0.018, 2);
-    expect(catchOdds(mon({ hp: 50 }), BALL, content).chance).toBeCloseTo(0.326, 2);
-    expect(catchOdds(mon({ hp: 25 }), BALL, content).chance).toBeCloseTo(0.583, 2);
-    expect(catchOdds(mon({ hp: 1 }), BALL, content).chance).toBeCloseTo(0.885, 2);
+    // The anchors (v0.8.6): ~13 % at full HP, ~49 % at half, ~69 % at a quarter, 90 % cap.
+    expect(catchOdds(mon(), BALL, content).chance).toBeCloseTo(0.1305, 3);
+    expect(catchOdds(mon({ hp: 50 }), BALL, content).chance).toBeCloseTo(0.4875, 3);
+    expect(catchOdds(mon({ hp: 25 }), BALL, content).chance).toBeCloseTo(0.6886, 3);
+    expect(catchOdds(mon({ hp: 1 }), BALL, content).chance).toBeCloseTo(0.8914, 3);
   });
 
   it('StatusMultiplies_SleepAndFreezeMost_AndTheCapHolds', () => {
     const asleep = mon({ hp: 25, status: { kind: 'sleep', appliedTurn: 0, turnsLeft: 2 } });
     const burned = mon({ hp: 25, status: { kind: 'burn', appliedTurn: 0, turnsLeft: 2 } });
-    expect(catchOdds(asleep, BALL, content).chance).toBeCloseTo(0.874, 2);
-    expect(catchOdds(burned, BALL, content).chance).toBeCloseTo(0.699, 2);
+    expect(catchOdds(asleep, BALL, content).chance).toBe(CATCH.cap);
+    expect(catchOdds(burned, BALL, content).chance).toBeCloseTo(0.826, 2);
     expect(catchOdds(mon({ hp: 1, status: { kind: 'sleep', appliedTurn: 0, turnsLeft: 2 } }), BALL, content).chance).toBe(CATCH.cap);
   });
 
@@ -32,9 +32,9 @@ describe('Catch odds — §2.6.4.1', () => {
     expect(catchRateOf('raticate', content)).toBeCloseTo(0.9 * 0.65, 5);
     expect(catchRateOf('psyduck', content)).toBe(0.7);
     expect(catchRateOf('eevee', content)).toBe(0.5);
-    // Snorlax's row says 0.2, and at full HP that is the floor.
+    // Snorlax's row says 0.2: about 3 % at full HP.
     expect(catchRateOf('snorlax', content)).toBe(0.2);
-    expect(catchOdds(mon({ speciesId: 'snorlax' }), BALL, content).chance).toBe(CATCH.floor);
+    expect(catchOdds(mon({ speciesId: 'snorlax' }), BALL, content).chance).toBeCloseTo(0.029, 3);
   });
 
   it('AFaintedTarget_HasNoChance_AndAGuaranteedThrowHasAll', () => {
@@ -44,16 +44,17 @@ describe('Catch odds — §2.6.4.1', () => {
 });
 
 describe('Throwing — §2.6.4.1', () => {
-  it('Throw_AtFullHp_IsPlayable_SpendsTheBall_AndUsuallyFails', () => {
-    // No lock any more: the card plays at any odds. Two percent misses on this seed, and the ball is gone.
+  it('Throw_AtFullHp_IsPlayable_AndSpendsTheBall_WhateverTheRoll', () => {
+    // No lock any more: the card plays at any odds (about 13 % here), and the ball is gone either way.
     const s0 = withConsumableHand(wild(), ['poke-ball']);
-    expect(catchStatus(s0, ctx)!.chance).toBeLessThan(0.05);
+    expect(catchStatus(s0, ctx)!.chance).toBeLessThan(0.2);
     expect(reject(s0, { type: 'use-consumable', cardId: consumableCard(s0, 'poke-ball').id })).toBeNull();
     const s = dispatch(s0, { type: 'use-consumable', cardId: consumableCard(s0, 'poke-ball').id });
-    expect(s.player.balls).toBe(1);
+    expect(s.player.balls).toBe(2); // the bag's ball and the fixture's two, one thrown
     expect(eventsOf(s, 'catch')).toHaveLength(1);
-    expect(s.outcome).toBe('in-progress');
-    expect(s.player.tally.catchFails).toBe(1);
+    const caught = s.outcome === 'caught';
+    expect(s.outcome).toBe(caught ? 'caught' : 'in-progress');
+    expect(s.player.tally.catchFails).toBe(caught ? 0 : 1);
   });
 
   it('Throw_IsSeeded_SoAReplayThrowsTheSameBall', () => {

@@ -5,7 +5,7 @@ import {
 } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { CITIES, runHelpers, type PartyMon } from '@/sim';
+import { CITIES, ballsIn, runHelpers, type PartyMon } from '@/sim';
 import { itemIcon, nodeBadge, statusGlyph, townArt } from '@/ui/art';
 import { DoorSoonPanel } from '@/ui/components/DoorSoonPanel';
 import { HpBar } from '@/ui/components/HpBar';
@@ -108,11 +108,11 @@ export function CityScreen() {
           <Tipped tip={moneyTip(run.money)} className={styles.stat} data-testid="city-money">
             <Money amount={run.money} size={20} />
           </Tipped>
-          <Tipped tip={ballsTip(run.balls)} className={styles.stat}>
+          <Tipped tip={ballsTip(ballsIn(run.consumables, getContent()))} className={styles.stat}>
             <img src={itemIcon('poke-ball')} alt="" width={22} height={22} />
-            <b className="tabular">{run.balls}</b>
+            <b className="tabular">{ballsIn(run.consumables, getContent())}</b>
           </Tipped>
-          <BagButton count={bagCount} onOpen={() => setInventory(true)} />
+          <CityBagButton count={bagCount} onOpen={() => setInventory(true)} />
         </div>
         <Party box={run.box} />
         <button type="button" className={styles.menuBtn} onClick={() => setPaused(true)} data-testid="btn-pause">
@@ -210,7 +210,7 @@ function Door({ placement, open, label, onKnock }: { placement: DoorPlacement; o
   );
 }
 
-function BagButton({ count, onOpen }: { count: number; onOpen: () => void }) {
+function CityBagButton({ count, onOpen }: { count: number; onOpen: () => void }) {
   const tip = useTip(bagTip());
   return (
     <button type="button" className={styles.bagBtn} onClick={onOpen} data-testid="btn-inventory" aria-label="Bag: relics, held items and consumables" {...tip}>

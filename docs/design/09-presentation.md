@@ -108,7 +108,7 @@ hue — a requirement that exists for colour-blind players and pays off for ever
 │   player squad, left                            enemy, right          │
 ├──────────────────────────────────────────────────────────────────────┤
 │ ●●● AP   Deck 8   Discard 3                            [ End Turn ]  │
-│ [Card][Card][Card][Card][Card] │ [Cons][Cons]                        │
+│ [Card][Card][Card][Card][Card] │ [Bag 2/2]                           │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -120,14 +120,16 @@ hue — a requirement that exists for colour-blind players and pays off for ever
   opens only when the card is aimed at it. A move card's corner is always the move's power, its ×N chip how the type
   lands on the enemy Lead. A single enemy's *sprite* still stands enlarged on the right; two or three use the squad
   grammar mirrored (§5.6): the enemy Lead forward, towards your side, its supports smaller behind it, one high and
-  one low. The enemy column stacks one compact panel per enemy — its intent chip, its card with a **Lead** or
-  **Support · Role** chip (the card's bubble explains the place and the role), and in a wild group the catch
-  chance as a small pill. On a short screen (720 p) each panel drops its art and level line, and its name and HP
-  share one row, so three always fit.
+  one low. **The enemy panels mirror your squad** (v0.8.6, the user's call): the Lead's panel forward, towards the
+  arena, centred between the supports and wearing the player Lead's red frame; the supports' panels stacked behind
+  it, one high and one low, the way your bench stacks behind your Lead. Each panel is its intent chip and its card
+  with a **Lead** chip or the support's **role** (Attacker, Defender, Buffer; the bubble explains the place and the
+  role), and in a wild fight the catch pill. On a short screen (720 p) each panel drops its art and level line.
 - **The enemy's intent is a chip above it** — icon, magnitude, target label — not an arrow crossing the screen.
-- **The catch gauge** (wild only) is a detached pill beside the enemy frame, above its HP bar.
-- **The hand tray runs along the bottom**: 5 skill cards, a divider, 2 consumables, AP pips and counters left,
-  End Turn right.
+- **The catch pill** (wild only) sits under the enemy's card with the best ball's chance; pressing it opens the
+  **ball picker** — every ball in the bag with its count and its own chance, a row to throw (§2.6.4.1).
+- **The hand tray runs along the bottom**: 5 skill cards, a divider, the **Bag** (its item count and the turn's
+  uses left, 2/2; it opens every item carried, one card per kind with ×N), AP pips and counters left, End Turn right.
 - **The damage preview appears next to the targeted Pokémon** when a card is dragged or selected onto it —
   compact, at the point of decision, not in a distant panel. Against a group, **every enemy's panel carries the
   held card's own number** (and a KO flag), or a blue dashed **Out of reach** lock where a Melee card cannot land.

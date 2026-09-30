@@ -152,8 +152,10 @@ test.describe('The Poké Mart — §2.11.2', () => {
       await expect(page.getByTestId('shelf-panel')).toHaveAttribute('data-shelf', shelf);
       seen += await page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').count();
     }
-    // Every slot but the Poké Balls (the clerk's own) sits on one shelf.
-    expect(seen).toBe(total - 1);
+    // Every slot but the balls (the clerk's own: Poké Balls ×5 and Great Balls ×3 since v0.8.6) sits on one shelf.
+    const balls = await page.evaluate(() => window.__ascendant!.run.state()!.pendingShop!.slots.filter((x) => x.kind === 'ball').length);
+    expect(balls).toBe(2);
+    expect(seen).toBe(total - balls);
     // The relics case, pressed: its cards beside the room.
     await page.getByTestId('shelf-relics').click();
     await expect(page.getByTestId('shelf-panel').locator('[data-testid^="shop-slot-"]').first()).toBeVisible();

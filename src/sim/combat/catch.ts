@@ -7,17 +7,19 @@ import { hpFraction } from './stats';
 // you are risking is hidden. What the player decides is whether to throw now or weaken it first; what the dice
 // decide is only whether this throw was the one.
 //
-//   p = catchRate(species) × (1 − 0.9·HP%)^1.7 × status × ball,  clamped to [1 %, 90 %]
+//   p = catchRate(species) × (1 − 0.8·HP%)^1.2 × status × ball,  clamped to [1 %, 90 %]
 //
-// A Rattata at full HP with a Poké Ball is ~2 %; at half HP 33 %; at a quarter 58 %; asleep at a quarter 87 %.
+// A Rattata at full HP with a Poké Ball is ~13 %; at half HP 49 %; at a quarter 69 %; asleep at a quarter the cap.
+// (v0.8.6: was 0.9 and 1.7 — 2 % / 33 % / 58 % — which the user found too stingy once balls became spent supplies;
+// a Great Ball ×1.5 and an Ultra Ball ×2 now sit on top.)
 // A Snorlax at full HP is the floor. Numbers live in BattleConfig-style constants below so a tuning pass edits
 // one place; the per-species rate is content (§2.6.4.1).
 
 export const CATCH = {
-  /** The share of HP that matters: at full HP the base is (1 − 0.9) = 0.1 before the exponent. */
-  hpWeight: 0.9,
+  /** The share of HP that matters: at full HP the base is (1 − 0.8) = 0.2 before the exponent. */
+  hpWeight: 0.8,
   /** Curve steepness. Higher = the early damage counts for less, the last quarter for more. */
-  exponent: 1.7,
+  exponent: 1.2,
   /** Multipliers for a target that cannot act: Sleep or Freeze. */
   hardStatus: 1.5,
   /** Any other condition, or Confusion. */

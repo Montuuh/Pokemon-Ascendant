@@ -127,7 +127,7 @@ describe('Difficulty modifiers — §8.8', () => {
       s = apply(s, { type: 'finish-combat', report: { ...report(['potion']), team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })) } });
 
       // v0.8.6 — the Potion is gone either way; whatever the fight dropped comes on top.
-      const found = s.pendingReward!.consumables.length;
+      const found = s.pendingReward!.consumables.length + s.pendingReward!.balls;
       expect(s.consumables, `lean-pack=${!!modifiers.length}`).toHaveLength(before.length - 1 + found);
     }
   });
@@ -139,7 +139,7 @@ describe('Difficulty modifiers — §8.8', () => {
       if (!node) continue;
       s = apply(apply(s, { type: 'enter-node', nodeId: node }), { type: 'begin-combat' });
       if (s.phase !== 'combat') continue;
-      s = apply(s, { type: 'finish-combat', report: { outcome: 'victory' as const, caught: null, ballsLeft: s.balls, spentConsumables: [], turns: 4, team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })) } });
+      s = apply(s, { type: 'finish-combat', report: { outcome: 'victory' as const, caught: null, ballsLeft: 0, spentConsumables: [], turns: 4, team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })) } });
       expect(s.pendingReward!.consumables).toEqual([]);
       expect(s.pendingReward!.balls).toBe(0);
     }

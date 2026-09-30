@@ -346,7 +346,7 @@ export function installDevTools(): void {
           layer: here ? here.layer + 1 : 0,
           at: here ? `${here.kind} ${here.id}` : 'start',
           reachable: r.reachable.map((id) => `${r.map.nodes[id]!.kind} ${id}`),
-          balls: r.balls,
+          balls: sim.ballsIn(r.consumables, combat().ctx.content),
           consumables: r.consumables,
           active: r.activeUids,
           tms: r.tms,

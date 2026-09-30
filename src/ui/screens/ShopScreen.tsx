@@ -51,12 +51,12 @@ function describe(slot: ShopSlot): { name: string; description: string; kind: It
       const t = content.tm(slot.id);
       return { name: t.name, description: t.description, kind: 'tm' };
     }
-    case 'ball':
-      return {
-        name: slot.qty && slot.qty > 1 ? `Poké Ball ×${slot.qty}` : 'Poké Ball',
-        description: slot.qty && slot.qty > 1 ? `${slot.qty} more throws at wild Pokémon.` : 'One more throw at a wild Pokémon.',
-        kind: 'ball',
-      };
+    case 'ball': {
+      // §7.2.5 — a ball slot is a bundle of one kind of ball (Poké, Great, Ultra).
+      const b = content.consumable(slot.id);
+      const qty = slot.qty ?? 1;
+      return { name: qty > 1 ? `${b.name} ×${qty}` : b.name, description: b.description, kind: 'ball' };
+    }
     case 'consumable': {
       // §2.9.2 — a bundle says how many it holds in its name.
       const c = content.consumable(slot.id);

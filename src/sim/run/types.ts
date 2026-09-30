@@ -423,7 +423,6 @@ export interface RunState {
   box: PartyMon[];
   /** Up to 3 uids from the Box (§2.3). The first is the Lead. */
   activeUids: string[];
-  balls: number;
   consumables: string[];
   /** §6.4.1 — TMs held but not yet taught. Each is single use. */
   tms: string[];

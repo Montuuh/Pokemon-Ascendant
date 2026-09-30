@@ -11,6 +11,14 @@
       "cardId": "c10"
     },
     {
+      "type": "use-consumable",
+      "cardId": "k14"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c11"
+    },
+    {
       "type": "end-turn"
     },
     {
@@ -30,11 +38,11 @@
     },
     {
       "type": "play-card",
-      "cardId": "c4"
+      "cardId": "c2"
     },
     {
       "type": "play-card",
-      "cardId": "c2"
+      "cardId": "c10"
     },
     {
       "type": "play-card",
@@ -42,9 +50,22 @@
     },
     {
       "type": "end-turn"
+    },
+    {
+      "type": "use-consumable",
+      "cardId": "k12",
+      "targetIndex": 2
+    },
+    {
+      "type": "play-card",
+      "cardId": "c4"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c0"
     }
   ],
-  "fingerprint": "t3 victory lead=2 ap=1 team=[wartortle:95/95,ivysaur:96/96,charmeleon:33/82] enemies=[graveler:0/91] events=51 rng=1751726669",
-  "turns": 3,
+  "fingerprint": "t4 victory lead=2 ap=0 team=[wartortle:95/95,ivysaur:96/96,charmeleon:82/82] enemies=[graveler:0/91] events=65 rng=4096228666",
+  "turns": 4,
   "outcome": "victory"
 }
