@@ -412,7 +412,7 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await expect(page.getByTestId('difficulty-xp')).toContainText('×1.15');
 
     // §8.8.2 — one slot: a second pick replaces the first rather than stacking.
-    await page.getByTestId('difficulty-no-refunds').click();
+    await page.getByTestId('difficulty-lean-pack').click();
     await expect(page.getByTestId('difficulty-xp')).toContainText('×1.30');
 
     // §7.7 — a modifier whose system does not exist cannot be taken, and the card says why.

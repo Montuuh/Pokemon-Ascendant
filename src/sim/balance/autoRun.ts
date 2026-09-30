@@ -7,7 +7,7 @@ import { createRun, defaultRunCtx, dojoPrice, runReducer, tutorListFor } from '.
 import { RUN_START, gymById, gymTeamFor } from '../run/region';
 import { applyBranch, autoPickMoves, stoneUse } from '../run/xp';
 import { maxHpOf } from '../run/encounter';
-import { PRICES, therapyPrice } from '../run/economy';
+import { PRICES, slotPrice, therapyPrice } from '../run/economy';
 import { atLegendaryCap, BLACK_MARKET, candyPrice } from '../run/blackMarket';
 import { rollRegionModifierOffer } from '../run/regionModifiers';
 import { allOutcomes, mysteryEvent } from '../run/events';
@@ -296,14 +296,29 @@ function visitDojo(get: () => RunState, content: CombatCtx['content'], policy: R
  */
 const SHOP_ORDER: ShopSlot['kind'][] = ['relic', 'held-item', 'tm', 'stone', 'ball', 'consumable'];
 
+/**
+ * v0.8.6 — consumables are spent (§3.5), so a player who is short of healing restocks it before anything else:
+ * a bag with fewer than this many heals buys a healing bundle first.
+ */
+const HEAL_RESERVE = 4;
+
+const isHeal = (content: CombatCtx['content'], id: string): boolean => {
+  const kind = content.consumable(id).effect.kind;
+  return kind === 'heal-flat' || kind === 'heal-percent';
+};
+
 function visitShop(get: () => RunState, content: CombatCtx['content'], policy: RunPolicy, step: (a: Parameters<typeof runReducer>[1]) => void): void {
-  for (const kind of SHOP_ORDER) {
+  const passes: { kind: ShopSlot['kind']; only?: (s: ShopSlot) => boolean }[] = [
+    { kind: 'consumable', only: (s) => isHeal(content, s.id) && get().consumables.filter((id) => isHeal(content, id)).length < HEAL_RESERVE },
+    ...SHOP_ORDER.map((kind) => ({ kind })),
+  ];
+  for (const { kind, only } of passes) {
     // Re-read every pass: buying changes both the wallet and the sold flags.
     for (let guard = 0; guard < 10; guard++) {
       const run = get();
       const stock = run.pendingShop;
       if (!stock) break;
-      const index = stock.slots.findIndex((s) => !s.sold && s.kind === kind && run.money - s.price >= policy.keepReserve);
+      const index = stock.slots.findIndex((s) => !s.sold && s.kind === kind && (!only || only(s)) && run.money - slotPrice(run, s) >= policy.keepReserve);
       if (index < 0) break;
       // A Held Item nobody can wear, or a TM nobody can learn, is a decoration. The Shop curates the TM slot
       // already (§2.9.2); the Held Item slot does not, so check it here.
@@ -390,7 +405,8 @@ function answerEvent(run: RunState, policy: RunPolicy): number {
         case 'balls': n += o.amount * 0.4; break;
         case 'consumables': n += o.ids.length * 0.5; break;
         // A relic is run-long, so it beats its own cash price by a wide margin.
-        case 'relic': n += o.rarity === 'uncommon' ? 6 : 4; break;
+        case 'relic': n += o.rarity === 'rare' ? 8 : o.rarity === 'uncommon' ? 6 : 4; break;
+        case 'supplies': n += o.count * 0.5; break;
         case 'held-item': n += 4; break;
         case 'heal-box': n += (o.percent / 100) * (2 + hurt * 6); break;
         case 'hurt-box': n -= (o.percent / 100) * 4; break;
@@ -634,7 +650,10 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
 
     // §6.4.1 — a TM that dropped is worth nothing in the bag; teach it to whoever can take it.
     const tm = run.pendingReward?.tm ?? null;
-    step({ type: 'claim-reward' });
+    // §2.8.1 — the Elite Trainer's pick: the harness takes the Rare when there is one, else the first.
+    const pick = run.pendingReward?.relicPick ?? null;
+    const relicId = pick ? (pick.find((id) => ctx.content.relic(id).rarity === 'rare') ?? pick[0] ?? null) : null;
+    step({ type: 'claim-reward', ...(relicId ? { relicId } : {}) });
 
     // §6.3.3 — work the evolution queue, one branch pick per screen, then re-pick the active 4 from the
     // widened pool the way a player would with the Move Manager's Auto button.

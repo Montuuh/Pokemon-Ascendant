@@ -445,6 +445,9 @@ Region 3's accent is its largest groups (§5.6.3) and its lanes' fields, not a f
 
 The `lure-module` relic makes it four. Pick one, and you enter a catching encounter with that species.
 
+**What the grass leaves** (v0.8.6): about a third of won wild fights turn up **1–2 Poké Balls**, and about one in
+seven a supply from the Region's table (§2.7.2) — a catching route should pay for its own throws.
+
 ## §2.6.3 Species pools
 
 Full Region 1 pools with dex numbers, stats, learnsets and archetypes:
@@ -596,7 +599,8 @@ Region so a Region with four trainer nodes never repeats a team.
 |---|---|
 | Trainer XP (meta) | 5 |
 | Poké Dollars | 50–150 (R1) · 120–260 (R2) · 200–400 (R3) |
-| Loot | 50 % Common item / 30 % Common relic / 20 % Uncommon item, seeded |
+| Supplies | **1–2 consumables, always**, from the Region's supply table (Potions and cures in Region 1, Super Potions in Region 2, Hyper Potions in Region 3), and a Poké Ball one time in five |
+| Relic | **15 %**, and only a **Common** (v0.8.6: relics are scarce, §7.3.1) |
 | Held Item | 20 % chance |
 | TM | 5 % chance |
 | Pokédex | Each defeated Pokémon counts toward its species' kill thresholds (§5.13) |
@@ -633,7 +637,11 @@ double lost Region 1 runs at the Elite nine times in ten).
 Guaranteed once per Region in the late trunk. **No type lock** — that identity belongs to Gyms, which makes the
 Elite a different kind of test from the Gym ahead of it.
 
-**Reward:** a **Rare relic, choice of 1 of 3**, plus ~300–500 ₽ and 25 Trainer XP.
+**Reward:** a **relic, choice of 1 of 3 — two Uncommons and a Rare** — plus ~300–500 ₽, two Poké Balls, two
+supplies and one prize from the Region's better table (Super Potion, Ether, Full Heal in Region 1; up to Max Potion
+and Revive in Region 3), and 25 Trainer XP. The pick is taken on the reward screen, and leaving all three is
+allowed. *(v0.8.6: the Elite used to drop a single Uncommon; one guaranteed pick, slightly better, is what the user
+asked for.)*
 
 **Who shows up** is seeded per Region:
 
@@ -711,6 +719,7 @@ One per Gym lane, just before the Gym. No combat, no building: a nurse with a fo
 | Service | Effect | Cost |
 |---|---|---|
 | **First aid** | Restores **50 %** of Effective Max HP to every Pokémon in the Box, and cures **every status** — they all outlive the fight that inflicted them (§4.2.7.1) | Free |
+| **For the road** | Two Potions (Region 1) or two Super Potions (Regions 2–3) into the bag (v0.8.6) | Free |
 
 That is the whole list. She does not treat **Trauma** — that is a Pokémon Center's job and Centers are in
 Cities now (§2.11.1). Half a heal before a Gym is enough to make the fight winnable and not enough to make it
@@ -720,13 +729,15 @@ comfortable, which is the point of the last stop before a boss.
 
 ## §2.9.2 The travelling merchant
 
-One per Region, mid-trunk, at L3. A cart, four slots, basics only.
+One per Region, mid-trunk, at L3. A cart, four slots, basics only — sold **in bundles** since consumables are
+spent (§3.5, v0.8.6), at 10 % off the unit price.
 
 | Slot | Content | Price |
 |---|---|---|
-| 1–2 | Tier-1 consumables — potions, status cures | 25–150 ₽ |
+| 1 | **Potion ×3** | 110 ₽ |
+| 2 | Another Tier-1 consumable ×3 — a status cure, an Ether, an X Attack | 110 ₽ |
 | 3 | Poké Balls ×3 | 120 ₽ |
-| 4 | Wildcard — a Common relic **or** a Held Item | 150–250 ₽ |
+| 4 | Wildcard — a Common relic one visit in three, otherwise a Held Item | 175 ₽ + premium / 300 ₽ |
 
 Stock is seeded per visit. The merchant does **not** buy anything: selling exists only in a City (§2.11.2.4).
 
@@ -926,12 +937,16 @@ what *kind* of uncertainty you are walking into.
 
 ## §2.10.4 Repeatability
 
-An event fires at most once per run — it leaves the seeded pool as soon as it is used.
+An event fires at most once per run — it leaves the seeded pool as soon as it is used. Each is drawn by a
+**weight**, 1 for most; the events that hand over a relic (the roadside trader, the Cursed Trinket) are drawn at
+**0.35**, so a relic from a Mystery node is a surprise rather than a habit (v0.8.6: relics are scarce, §7.3.1). Three
+supplies events joined them in v0.8.6 — a Ranger's medkit, a fallen Mart crate, a closing apothecary — because
+consumables are spent now (§3.5).
 
 ## §2.10.5 Effect vocabulary
 
 A choice is data, not a script. The closed list of effects a choice may apply is in the catalogue, so a new
-event needs no new code: grant item / relic / money / balls, heal the Box, clear or add Trauma, recruit, start a
+event needs no new code: grant item / supplies from the Region's table / relic / money / balls, heal the Box, clear or add Trauma, recruit, start a
 combat, reveal the map, boost or swap stats, upgrade a consumable, reroll an ability or relic, change the next
 node's type, adjust hand size or swap cost, multiply XP.
 
@@ -971,6 +986,7 @@ the doors, and you walk out through the gate when you are ready (§2.1.4).
 | **Therapy** | Remove **1** Trauma stack from one Pokémon. Repeatable while affordable | `100 × (1 + stacks)` ₽ |
 | **Daycare** | Deposit one Pokémon: +1 level instantly, and it skips the next combat. **Once per City visit** | 200 ₽ |
 | **PC Box** | Inspect the Box and choose the team: the three who fight, the Lead, each one's four moves | Free |
+| **Supplies** | On the first visit: two Super Potions in Pallet Town, two Hyper Potions in Celadon (v0.8.6) | Free |
 
 Healing is free because healing is free in Pokémon, and a fan game that charges for it is picking a fight with
 the fantasy for a few coins. The squeeze is **Trauma**, which is the only damage a route cannot undo (§2.9.1)
@@ -998,11 +1014,14 @@ Box can use — when there is one.
 
 | Floor | Stock |
 |---|---|
-| **1F Medicine** | two Tier-1 consumables, two Tier-2, one Tier-3, and Poké Balls |
+| **1F Medicine** | Potions ×5, two Tier-1 bundles (×3), two Tier-2 bundles (×2), one Tier-3, and Poké Balls ×5 |
 | **2F TMs** | four, each learnable by someone in the Box |
 | **3F Held items** | four |
-| **4F Relics** | two Common, two Uncommon |
-| **5F Rare goods** | two Rare relics and a Tier-4 consumable |
+| **4F Relics** | a Common and an Uncommon |
+| **5F Rare goods** | a Rare relic and a Tier-4 consumable |
+
+*(v0.8.6 halved the relic floors — two and four were how a City turned a wallet into a shelf of relics — and put
+the medicine into bundles.)*
 
 **The shop is the room** (the user's call, 2026-09-28). The Poké Mart is FireRed / LeafGreen's own Mart, and each
 Department Store floor a floor of Celadon's store as those games drew it, at a whole-pixel scale; every piece of
@@ -1050,21 +1069,31 @@ The Mart's eight, and the shape each Department Store floor follows:
 
 | Slot | Content |
 |---|---|
-| 1–2 | Tier-1 consumables — potions, status cures |
-| 3 | A tier-2 consumable — Super Potion, Radar Scope |
-| 4 | Common relic |
-| 5 | Uncommon relic |
-| 6 | Rare relic — present 50 % of the time, otherwise a second Uncommon |
+| 1 | **Potion ×5** — the one item nobody should have to fish for |
+| 2–3 | Tier-1 bundles (×3) — status cures, Ether, X Attack |
+| 4 | A Tier-2 bundle (×2) — Super Potion, X Defense |
+| 5 | Common relic |
+| 6 | Uncommon relic — a **Rare** one visit in four |
 | 7 | Held Item, curated to the team |
 | 8 | TM, curated to the team's compatibility |
 | 9 | An Evolution Item someone in the Box can use — only when there is one (§6.3.2) |
 
-**Poké Balls are always on the counter, outside the eight.** The route's merchant sells them three to a slot and
+**Bundles** (v0.8.6): consumables are spent now (§3.5), so a shop sells them the way a player buys them — a Tier-1
+item three to a slot, a Tier-2 two, a Tier-3 or 4 alone, at 10 % off the unit price. **Relics** went from three
+slots to two, and the Rare from half the visits to a quarter.
+
+**Poké Balls are always on the counter, outside the eight** — five to a slot at the bulk price. The route's merchant sells them three to a slot and
 nobody else on the route sells them at all, so a City that could roll a shelf without one would leave a run
 unable to catch for a whole Region on the luck of a draw. *(Settled while building v0.7.1, 2026-09-22.)*
 
 ### §2.11.2.3 Pricing
 About 30 % above the travelling merchant's prices. You are paying for selection quality.
+
+**The collector's premium** (v0.8.6): every relic bought in a shop this run makes every relic on every shelf dearer
+by **25 % of its list price** — the first at list (175 / 350 / 650 ₽ for Common / Uncommon / Rare before the City
+markup), the fifth at double. A flat price let a full wallet become a shelf of relics (the harness's reflex buyer
+took five a run); a rising one keeps the first purchase easy and makes each later one a real decision. The tag
+shows the premium beside the price. Gifts, drops, picks and events do not count and do not pay it.
 
 ### §2.11.2.4 Selling
 Any held item sells for **30 % of its listed price**. This is the run's only Poké Dollar exit valve; the

@@ -98,8 +98,22 @@ function migrateDaycareTo15(run: RunState): void {
   if (run.city) run.city.daycareUsed ??= false;
 }
 
+/**
+ * §3.5 / §2.11.2.3 — version 15 → 16: consumables are spent and relics carry a premium (v0.8.6). An older run has
+ * bought nothing under the premium, and its No Refunds modifier is the row that became Lean Pack (§8.8).
+ */
+function migrateSuppliesTo16(run: RunState): void {
+  run.relicsBought ??= 0;
+  run.modifiers = run.modifiers.map((id) => (id === 'no-refunds' ? 'lean-pack' : id));
+  if (run.pendingReward) {
+    run.pendingReward.relicPick ??= null;
+    run.pendingReward.consumables ??= [];
+    run.pendingReward.balls ??= 0;
+  }
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

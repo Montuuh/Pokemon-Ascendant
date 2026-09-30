@@ -3,8 +3,8 @@ import { getContent } from '@/content/registry';
 import { LEGENDARY_CAP } from '@/sim';
 import { RelicOffer } from '@/ui/components/RelicOffer';
 import { nodeBadge } from '@/ui/art';
-import { badgeTip } from '@/ui/tips';
-import { Tip, Tipped } from '@/ui/tooltip';
+import { badgeTip, gymRelicTip } from '@/ui/tips';
+import { Tipped } from '@/ui/tooltip';
 import styles from './LegendaryScreen.module.css';
 
 // §7.3.7 — the guaranteed 1-of-3 that closes a Gym victory.
@@ -23,6 +23,9 @@ export function LegendaryScreen() {
 
   const held = run.relics.filter((id) => content.relic(id).rarity === 'legendary').length;
   const atCap = held >= LEGENDARY_CAP;
+  // §7.3.7 — the first Gym offers Rares by design (v0.8.6); from the second on, Legendaries until the cap. The
+  // tooltip names the tier; each card carries its own rarity, since a short pool can top an offer up with Rares.
+  const legendary = offer.some((id) => content.relic(id).rarity === 'legendary');
   // §5.10 — the Badge this Gym just paid. The run-end summary used to be where it was shown; since v0.7.1 a Gym
   // leads to a City, so this screen is the one moment between the win and the town.
   const won = run.badges.length ? content.badge(run.badges[run.badges.length - 1]!) : null;
@@ -30,15 +33,9 @@ export function LegendaryScreen() {
   return (
     <RelicOffer
       testId="legendary-screen"
-      heading={atCap ? 'One more, from the Gym' : 'The Gym owes you something'}
-      headingTip={
-        <Tip
-          title="Legendary relics"
-          body={atCap ? `You already hold ${LEGENDARY_CAP}, the most anyone carries, so this offer is the tier below.` : 'Never on a shop shelf and never dropped — a pick like this, at a Gym victory, is the way to one. The picks stop at two a run.'}
-          footer="Leaving all three is allowed."
-        />
-      }
-      lede={atCap ? 'Three Rare relics. Take one, or none.' : 'Three Legendary relics. Take one, or none.'}
+      heading="The Gym owes you something"
+      headingTip={gymRelicTip(legendary, atCap)}
+      lede="Three relics. Take one, or none."
       header={
         won && (
           <Tipped tip={badgeTip(won.name, won.description)} className={styles.badge} data-testid="badge-award">

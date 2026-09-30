@@ -749,10 +749,39 @@ three times in four even at the lower premium. **UI:** one grammar — a lone en
 group's; the breakdown box opens only when a card is aimed; a card's corner is its power, its ×N chip measured
 against the enemy Lead.
 
-### v0.8.6 — Routes, revamped, and consumables that are spent  ☐
-The route's generation, nodes and pacing, reworked (§2.5, §2.9) — with v0.8.3's groups placed on it — and
-consumables that are **consumed for real and found far more often** (§7.2). They ship together because both change
-what a route hands you. Design pass with the user first; the route's *look* is v1.2's. *(Backlog #3, #8.)*
+### v0.8.6 — Consumables that are spent, and scarcer relics  ✅ 2026-09-30
+The user's call (2026-09-30), split from the route revamp: a version for **what a fight and a shop hand you**.
+Consumables are **consumed for real** (§3.5, §7.2.1) and found far more often — a trainer always drops some, a wild
+node sometimes leaves Poké Balls, shops sell them **in bundles** (§2.9.2, §2.11.2.2), events and the nurse hand them
+out. Relics become **scarce**: a trainer drops only a Common, and only sometimes; the Elite Trainer a guaranteed pick;
+the Gym keeps its 1-of-3; a rare event or two; and every relic bought makes the next one dearer (§2.11.2.3).
+*(Backlog #8.)*
+**Exit:** a used Potion is gone; a whole run ends holding about half the relics it did, with the §2.2.1 curve where
+v0.8.5 left it.
+
+**Shipped.** Designed with the user (2026-09-30). **Spent** (§3.5): the pile is one card per item and what is played
+leaves the bag at the fight's end, whatever the outcome. **Found** (`run/rewards.ts`, §2.7.2): every trainer drops 1–2
+from its Region's supply table (Potions and cures → Super → Hyper), 20 % a Poké Ball; wild nodes 30 % 1–2 Poké Balls
+and 15 % a supply (§2.6.2); the Elite and the Gym add a prize; the nurse hands over two Potions or Super Potions and a
+City's Center two Super or Hyper Potions on the first visit; three supplies events (Ranger's medkit, fallen Mart crate,
+closing apothecary) and a `supplies` outcome. **Bundles** (§2.9.2, §2.11.2.2): the merchant sells Potion ×3, a Tier-1
+×3 and Balls ×3; a City Potion ×5, Tier-1 ×3, Tier-2 ×2, Balls ×5, 10 % off. **Relics scarce** (§7.3.1): a trainer
+drops a Common 15 % of the time (was 35 %, any rarity); the Elite Trainer offers a pick of two Uncommons and a Rare on
+the reward screen (an Uncommon in the Rare's place until the account has discovered one); the Elite Wild beaten, one
+Rare; the **first Gym's pick is Rares**, Legendaries from the second (§7.3.7); no extra drop on top of a pick; the relic
+events (the trader, the new Cursed Trinket) drawn at weight 0.35; City shelves two relic slots (Rare a quarter of
+visits), the store's relic floors halved; list prices 175 / 350 / 650 and the **collector's premium**, +25 % of list per
+relic bought (§2.11.2.3). **No Refunds became Lean Pack** (§8.8: fights drop no supplies, ×1.30). Run save v16. Measured
+over 120 runs: a full run ends with 9.4 relics (v0.8.5: 16.5; ~6 of them the Gym and Elite picks), the curve R1 63 % ·
+R2|R1 61 % · R3|R2 43 % · run 17 % (v0.8.5 at the same seeds 57 / 59 / 35 / 12). The Ring's offsets went up (Pallet
++7, Celadon +5) because a full bag, not the level, carried rung 1. UI: the reward screen's supplies strip and the
+Elite's pick as a second step, bundles and the premium chip in the shops, the nurse's and the Center's gift.
+**For v0.8.8:** the harness never plays cures or X items, so a full run ends with ~27 unused consumables — tune the
+supply tables against a player who does; the Ring's rung 1 is still ~72 %.
+
+### v0.8.7 — Routes, revamped  ☐
+The route's generation, nodes and pacing, reworked (§2.5, §2.9) — with v0.8.3's groups placed on it. Design pass
+with the user first; the route's *look* is v1.2's. *(Backlog #3.)* Moved from v0.8.6 (user, 2026-09-30).
 The Region map redrawn: **horizontal**, scrolled left to right the way a route is walked, and painted from a
 **tileset** with the biome laid over it instead of one flat backdrop per lane. Decided as post-release on
 2026-09-22 — it is an art and tooling system (atlas, autotiling, seams) rather than a rule change, and the
@@ -761,7 +790,7 @@ the vertical map is a roguelike convention borrowed from a game about climbing a
 map's standing UI findings: a biome emblem on every Wild node (they fall back to the meadow tuft), route lines
 at 3:1 against their plate (Regions 1 and 2 fall short), and the node caption on the `--type-caption` token.
 
-### v0.8.7 — The balance pass  ☐
+### v0.8.8 — The balance pass  ☐
 Levels, money, consumables, relics and prices together, against whole runs of three Regions and two Cities with
 multi-enemy fights in them — the harness first (720 runs, `CURVE_SEEDS=240`), then a playtest. After multi-enemy
 on purpose (user, 2026-09-24): a pass before it would tune fights that are about to change shape. The first of
@@ -858,12 +887,12 @@ the account revamps move to v0.9):
 | — | Playtest nerfs: Sleep, Mega Drain | v0.7.5 |
 | 1 | The Safari Zone | v0.7.6 |
 | 2 | The Black Market — a secret inside the Game Corner, run by Team Rocket | v0.7.7 |
-| 3 | Routes, revamped | v0.8.6 |
-| 4 | The global balance pass | v0.8.7 (after multi-enemy, per the user) and v1.0 |
+| 3 | Routes, revamped | v0.8.7 |
+| 4 | The global balance pass | v0.8.8 (after multi-enemy, per the user) and v1.0 |
 | 5 | Bond, revamped | v0.9.1 |
 | 6 | Shiny, revamped | v0.9.1 |
 | 7 | Player level & Poké Mart, revamped | v0.9.2 |
-| 8 | Consumables that are spent | v0.8.6 (with the routes) |
+| 8 | Consumables that are spent | v0.8.6 (with scarcer relics) |
 | 9 | Double-attack enemy intents — and enemies that call for help | v0.8.2 |
 | 10 | The catch, animated | v0.9.3 |
 | 11 | The Ring moves out of the Dojo — a town Ring, and the city's Coliseum | v0.7.7 (with the City art) |

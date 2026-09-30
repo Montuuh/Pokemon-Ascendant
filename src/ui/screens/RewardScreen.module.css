@@ -150,7 +150,11 @@
   border-radius: var(--radius-sm);
   font-size: var(--type-small);
 }
+/* The way on stays on screen however many rows the fight paid: sticky to the bottom of the scrolling page. */
 .continue {
+  position: sticky;
+  bottom: var(--sp-3);
+  z-index: 1;
   margin-top: var(--sp-5);
   justify-self: center;
   min-width: 240px;
@@ -163,6 +167,15 @@
   font-size: var(--type-h3);
   box-shadow: 0 6px 0 #d9a51d;
 }
+/* A short screen gives the card's air back to its rows. */
+@media (max-height: 760px) {
+  .root {
+    padding: var(--sp-3);
+  }
+  .card {
+    padding: var(--sp-4) var(--sp-5);
+  }
+}
 .continue:hover {
   transform: translateY(-2px);
 }
@@ -174,6 +187,10 @@
   color: var(--ink-secondary);
   border-left: 4px dashed var(--border-strong);
   padding-left: var(--sp-2);
+}
+/* §2.7.2 — the supplies strip sits bare in the loot list: its pills are the frame. */
+.supplies {
+  margin-top: var(--sp-2);
 }
 /* §7.5 — the TM drop line. */
 .drop {

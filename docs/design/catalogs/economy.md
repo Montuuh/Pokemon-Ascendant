@@ -26,6 +26,23 @@
 
 With `coin-pouch` (×1.25) or the `coin-purse` modifier (×1.5) a Region can reach ~2 500 ₽.
 
+## 2.1 What a fight hands over besides ₽ (v0.8.6)
+
+Consumables are spent (§3.5) and relics are scarce (§7.3.1). The tables and rates live in `src/sim/run/rewards.ts`.
+
+| Fight | Supplies | Poké Balls | Relic |
+|---|---|---|---|
+| Wild | 15 %: one | 30 %: 1–2 | — |
+| Trainer | always 1–2 | 20 %: one | 15 %: a Common |
+| Elite Trainer | 2 + a prize | 2 | a pick: two Uncommons and a Rare |
+| Elite Wild | 2 | — | beaten: a Rare |
+| Gym | 2 + a prize | — | the Gym's 1-of-3: Rares at the first, Legendaries after (§7.3.7) |
+
+Supply tables by Region: Potions and cures (R1), Super Potions (R2), Hyper Potions with the odd Max Potion and Revive
+(R3). Prize tables: Super Potion / Ether / Full Heal (R1), Hyper Potion / Ether / Full Heal (R2), Max Potion / Revive
+/ Hyper Potion (R3). The nurse hands over two Potions (R1) or Super Potions; a City's Center two Super (Pallet) or
+Hyper Potions (Celadon) on the first visit. Measured over 120 runs: a full run ends with ~9 relics (v0.8.5: 16.5).
+
 ## 3. Prices
 
 > Since 2026-09-22 a route has no Shop: its travelling merchant stocks basics only (§2.9.2), and the Region
@@ -34,12 +51,12 @@ With `coin-pouch` (×1.25) or the `coin-purse` modifier (×1.5) a Region can rea
 
 | Item class | Region Shop | City Shop (+30 %) | Notes |
 |---|---|---|---|
-| Consumable T1 | 25–50 ₽ | 35–65 ₽ | 3 randomised slots |
-| Consumable T2 | 70–150 ₽ | 90–195 ₽ | City slot 3 |
-| Pokéball | 50 ₽ | 65 ₽ | always stocked |
-| Common relic | 150 ₽ | 195 ₽ | |
-| Uncommon relic | 300 ₽ | 390 ₽ | |
-| Rare relic | — | 600 ₽ | City slot 6, 50 % present |
+| Consumable T1 | 40 ₽ a unit · ×3 bundle 110 ₽ | ×3 bundle 143 ₽ · Potion ×5 234 ₽ | bundles at 10 % off (v0.8.6) |
+| Consumable T2 | — | ×2 bundle 260 ₽ | City slot 4 |
+| Pokéball | ×3 120 ₽ | ×5 293 ₽ | always stocked |
+| Common relic | 175 ₽ | 228 ₽ | + the collector's premium, 25 % per relic bought (§2.11.2.3) |
+| Uncommon relic | — | 455 ₽ | + premium |
+| Rare relic | — | 845 ₽ | City slot 6, a quarter of visits; + premium |
 | Held Item | 250–400 ₽ | 325–520 ₽ | curated to the team |
 | TM | 250–500 ₽ | 325–650 ₽ | curated to `compatibleSpecies` |
 | Evolution stone | 250 ₽ | 325 ₽ | |

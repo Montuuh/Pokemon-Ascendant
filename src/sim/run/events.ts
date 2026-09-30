@@ -14,7 +14,9 @@ export type EventOutcome =
   | { kind: 'money'; amount: number }
   | { kind: 'balls'; amount: number }
   | { kind: 'consumables'; ids: string[] }
-  | { kind: 'relic'; rarity: 'common' | 'uncommon' }
+  | { kind: 'relic'; rarity: 'common' | 'uncommon' | 'rare' }
+  /** §2.10.5 — `count` supplies drawn from the Region's supply table (§7.2, `rewards.ts`). */
+  | { kind: 'supplies'; count: number }
   | { kind: 'held-item' }
   | { kind: 'heal-box'; percent: number }
   | { kind: 'hurt-box'; percent: number }
@@ -47,6 +49,11 @@ export interface EventChoice {
 export interface MysteryEvent {
   id: string;
   risk: EventRisk;
+  /**
+   * §2.10.4 — how often the event is drawn, against 1 for the rest. The events that hand over a relic are drawn
+   * rarely (v0.8.6: relics are scarce), so a relic from a Mystery node is a surprise rather than a habit.
+   */
+  weight?: number;
   title: string;
   scene: string;
   choices: EventChoice[];
@@ -61,6 +68,9 @@ export interface MysteryEvent {
  * wants a Dojo you can reach from anywhere, `fossil-dig` wants Aerodactyl. None of them is cut — they are
  * waiting on content, and a row that would have to fake its effect is a row that stays out of the pool.
  */
+/** §2.10.4 — the draw weight of an event that hands over a relic (v0.8.6: relics are scarce). */
+export const RELIC_EVENT_WEIGHT = 0.35;
+
 export const MYSTERY_EVENTS: MysteryEvent[] = [
   {
     id: 'berry-bush',
@@ -116,6 +126,7 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
   {
     id: 'roadside-trader',
     risk: 'tradeoff',
+    weight: RELIC_EVENT_WEIGHT,
     title: 'A trader with one crate left',
     scene: 'Everything else sold at the last town. What is left is the good stuff, and he knows it.',
     choices: [
@@ -137,6 +148,56 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
         outcomes: [{ kind: 'heal-box', percent: 100 }, { kind: 'clear-trauma' }],
       },
       { label: 'A quick dip', detail: 'Free. Every Pokémon recovers 40 % of its HP.', outcomes: [{ kind: 'heal-box', percent: 40 }] },
+    ],
+  },
+  {
+    // v0.8.6 — consumables are spent now, so the route hands more of them out.
+    id: 'field-medic',
+    risk: 'safe',
+    title: 'A Ranger with a full medkit',
+    scene: 'She has just finished a patrol and is carrying far more than she needs. She would rather it went to use.',
+    choices: [
+      { label: 'Take the kit', detail: 'Two Super Potions and a Full Heal.', outcomes: [{ kind: 'consumables', ids: ['super-potion', 'super-potion', 'full-heal'] }] },
+      { label: 'Let her patch the team', detail: 'Every Pokémon in the Box recovers 25 % of its HP.', outcomes: [{ kind: 'heal-box', percent: 25 }] },
+    ],
+  },
+  {
+    id: 'fallen-crate',
+    risk: 'safe',
+    title: 'A crate off the back of a truck',
+    scene: 'Stamped with a Poké Mart logo and split along one side. The truck is long gone.',
+    choices: [
+      { label: 'Go through it', detail: 'Four supplies from the crate: potions, cures, the odd Ether.', outcomes: [{ kind: 'supplies', count: 4 }] },
+      { label: 'Take the balls on top', detail: 'Three Poké Balls.', outcomes: [{ kind: 'balls', amount: 3 }] },
+    ],
+  },
+  {
+    id: 'traveling-apothecary',
+    risk: 'tradeoff',
+    title: 'An apothecary closing up shop',
+    scene: 'Everything must go before the next town. The prices are good; the stock is not getting any fresher.',
+    choices: [
+      { label: 'Buy the lot', detail: 'Six supplies from the shelves.', cost: 150, outcomes: [{ kind: 'supplies', count: 6 }] },
+      { label: 'Just the Ethers', detail: 'Two Ethers.', cost: 100, outcomes: [{ kind: 'consumables', ids: ['ether', 'ether'] }] },
+      { label: 'Walk on', detail: 'Nothing today.', outcomes: [{ kind: 'nothing' }] },
+    ],
+  },
+  {
+    id: 'cursed-trinket',
+    risk: 'gamble',
+    weight: RELIC_EVENT_WEIGHT,
+    title: 'A trinket on a shrine',
+    scene: 'Old, heavy, and very obviously valuable. The shrine around it has not been tended in years.',
+    choices: [
+      {
+        label: 'Take it',
+        detail: 'A Rare relic. Seven times in ten that is all; three times in ten the team is shaken, 2 Trauma stacks on your worst-worn.',
+        outcomes: [
+          { kind: 'relic', rarity: 'rare' },
+          { kind: 'gamble', chance: 0.7, win: [{ kind: 'nothing' }], lose: [{ kind: 'add-trauma', stacks: 2 }] },
+        ],
+      },
+      { label: 'Leave it be', detail: 'Nothing gained, nothing lost.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
   {
@@ -208,11 +269,20 @@ export const mysteryEvent = (id: string): MysteryEvent => {
   return e;
 };
 
-/** §2.10.4 — events never repeat within a run, so the pool is drawn from without replacement. */
+/**
+ * §2.10.4 — events never repeat within a run, so the pool is drawn from without replacement, each by its weight
+ * (one roll, like before).
+ */
 export function rollEvent(rng: GameRng, seen: readonly string[]): string {
   const pool = MYSTERY_EVENTS.filter((e) => !seen.includes(e.id));
   const from = pool.length ? pool : MYSTERY_EVENTS;
-  return from[Math.min(from.length - 1, Math.floor(rng.range01() * from.length))]!.id;
+  const total = from.reduce((n, e) => n + (e.weight ?? 1), 0);
+  let roll = rng.range01() * total;
+  for (const e of from) {
+    roll -= e.weight ?? 1;
+    if (roll <= 0) return e.id;
+  }
+  return from[from.length - 1]!.id;
 }
 
 /** Every outcome a choice can produce, gamble branches included — what a validator has to walk. */

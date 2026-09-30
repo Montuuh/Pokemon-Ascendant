@@ -197,6 +197,12 @@ export interface RewardSummary {
   money: number;
   /** §7.3 — the relic this fight dropped, if any. */
   relic: string | null;
+  /** §2.8.1 — the Elite Trainer's relic pick, taken on the reward screen with `claim-reward`. Null elsewhere. */
+  relicPick: string[] | null;
+  /** §2.7.2 — the consumables this fight dropped, already in the bag (v0.8.6). */
+  consumables: string[];
+  /** §2.6.2 — Poké Balls found, already counted. */
+  balls: number;
   /** §7.4.6 — the held item this fight dropped, if any. */
   heldItem: string | null;
 }
@@ -301,6 +307,8 @@ export interface CityState {
   blackMarket: BlackMarketState | null;
   /** §2.11.1 — the Center's Daycare has taken its one Pokémon this visit. */
   daycareUsed: boolean;
+  /** §2.11.1 — the Center's supplies are handed over on the first visit only (v0.8.6). Absent in older saves. */
+  giftTaken?: boolean;
 }
 
 /** §2.11.6 — the Gambler's wager: what was aimed at, what was staked, the printed chance and how it fell. */
@@ -428,6 +436,13 @@ export interface RunState {
   /** §7.3 — relics held. Run-long, uncapped, never removed once taken. */
   relics: string[];
   /**
+   * §2.9.1 / §2.11.1 — the supplies the nurse or the Center just handed over, for the screen to show while the
+   * player is still there; cleared on the way out. Absent in older saves.
+   */
+  lastGift?: string[] | null;
+  /** §2.11.2.3 — relics bought in a shop this run; each makes the next one dearer (the collector's premium). */
+  relicsBought: number;
+  /**
    * §7.3.7 — relic ids whose **once-per-run** charge is gone (Phoenix Feather). Distinct from combat's
    * `player.spent`, which is per-combat and starts empty every fight.
    */
@@ -525,7 +540,7 @@ export interface CombatOutcomeReport {
   caught: { speciesId: string; level: number } | null;
   /** Poké Balls still in stock. A miss costs a ball too, so the run takes the fight's own count (§2.6.4). */
   ballsLeft: number;
-  /** §8.8 No Refunds — consumable ids actually played, so the run can take them off the shelf. */
+  /** §3.5 — consumable ids actually played; the run takes them out of the bag (v0.8.6: consumables are spent). */
   spentConsumables?: string[];
   /** §7.3.7 — relic charges the fight spent; the run keeps the ones whose row says `oncePerRun`. */
   spentRelics?: string[];
@@ -586,7 +601,7 @@ export type RunAction =
   | { type: 'cancel-preview' }
   | { type: 'begin-combat' }
   | { type: 'finish-combat'; report: CombatOutcomeReport }
-  | { type: 'claim-reward' }
+  | { type: 'claim-reward'; relicId?: string | null }
   | { type: 'set-active'; uids: string[] }
   | { type: 'set-lead'; uid: string }
   | { type: 'resolve-recruit'; releaseUid: string | null }

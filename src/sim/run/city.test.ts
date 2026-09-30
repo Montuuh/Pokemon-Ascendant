@@ -312,7 +312,7 @@ describe('The Department Store — §2.11.2', () => {
     // Far more stock than a Mart.
     expect(shop.slots.length).toBeGreaterThan(inCity(0).city!.shop.slots.length + 6);
     const ball = shop.slots.find((x) => x.kind === 'ball')!;
-    expect(ball.price).toBe(Math.round(PRICES.ball * PRICES.cityMarkup));
+    expect(ball.price).toBe(Math.round(Math.round((PRICES.ball * PRICES.bundle.ballsCity * PRICES.bundle.discount) / 5) * 5 * PRICES.cityMarkup));
   });
 
   it('AReRoll_RestocksOneFloor_AndLeavesTheOthers', () => {

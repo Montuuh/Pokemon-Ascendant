@@ -166,9 +166,10 @@ describe('The City lobby — §2.11.0', () => {
     s = apply(s, { type: 'enter-building', building: 'mart' });
     for (let i = 0; i < 3; i++) s = apply(s, { type: 'reroll-shop' });
     expect(reject(s, { type: 'reroll-shop' })).not.toBeNull();
-    // Still a City shelf: Poké Balls on the counter at the City price.
+    // Still a City shelf: Poké Balls on the counter, five to a slot at the bulk discount and the City price.
     const ball = s.pendingShop!.slots.find((x) => x.kind === 'ball');
-    expect(ball?.price).toBe(Math.round(PRICES.ball * PRICES.cityMarkup));
+    expect(ball?.qty).toBe(PRICES.bundle.ballsCity);
+    expect(ball?.price).toBe(Math.round(Math.round((PRICES.ball * PRICES.bundle.ballsCity * PRICES.bundle.discount) / 5) * 5 * PRICES.cityMarkup));
   });
 
   it('Sell_TradesAHeldItemFor30Percent_OnlyAtACityShop_§2.11.2.4', () => {

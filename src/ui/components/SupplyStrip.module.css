@@ -1,0 +1,28 @@
+/* §2.7.2 — the supplies strip: icons in a row, each with its count. */
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+}
+.icon {
+  image-rendering: pixelated;
+}
+.count {
+  color: var(--ink-primary);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}

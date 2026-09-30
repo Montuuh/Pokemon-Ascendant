@@ -3,7 +3,7 @@ import { Tabs } from 'radix-ui';
 import { IconBackpack, IconBuildingStore, IconCoins, IconDice5, IconShoppingBag } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { CITIES, PRICES, STORE_FLOORS, floorRestockable, rerollPrice, sellPrice, type ShopSlot, type StoreFloor } from '@/sim';
+import { CITIES, PRICES, RELIC_PREMIUM, STORE_FLOORS, floorRestockable, rerollPrice, sellPrice, slotPrice, type ShopSlot, type StoreFloor } from '@/sim';
 import { itemIcon } from '@/ui/art';
 import { ItemCard, type ItemKind, type Rarity } from '@/ui/components/ItemCard';
 import { Money, Price } from '@/ui/components/Money';
@@ -11,7 +11,7 @@ import { RUN_REJECT_TEXT, SHELF_LABEL, SHOP_TEXT, STORE_FLOOR_LABEL } from '@/ui
 import { BackButton } from '@/ui/components/BackButton';
 import styles from './ShopScreen.module.css';
 import { InfoDot, Tipped } from '@/ui/tooltip';
-import { floorTip, heldItemSellTip, rerollTip, sellTip, shelfTip, shopExitTip, shopTip } from '@/ui/tips';
+import { floorTip, heldItemSellTip, relicPremiumLine, rerollTip, sellTip, shelfTip, shopExitTip, shopTip } from '@/ui/tips';
 import { MART, STORE, shelfOf, type Room, type ShelfId } from './shop/rooms';
 import { ShopRoom } from './shop/ShopRoom';
 
@@ -58,8 +58,10 @@ function describe(slot: ShopSlot): { name: string; description: string; kind: It
         kind: 'ball',
       };
     case 'consumable': {
+      // §2.9.2 — a bundle says how many it holds in its name.
       const c = content.consumable(slot.id);
-      return { name: c.name, description: c.description, kind: 'consumable' };
+      const qty = slot.qty ?? 1;
+      return { name: qty > 1 ? `${c.name} ×${qty}` : c.name, description: c.description, kind: 'consumable' };
     }
     case 'stone': {
       const st = content.evolutionItem(slot.id);
@@ -154,7 +156,10 @@ export function ShopScreen() {
   /** One slot as a card. Its index is the stock's, so a floor's card buys the right slot. */
   function renderSlot(slot: ShopSlot, index: number) {
     const d = describe(slot);
-    const affordable = run.money >= slot.price;
+    // §2.11.2.3 — a relic's tag carries the collector's premium for every relic bought this run.
+    const price = slotPrice(run, slot);
+    const affordable = run.money >= price;
+    const premium = slot.kind === 'relic' && run.relicsBought > 0;
     return (
       <div role="listitem" key={`${slot.kind}-${slot.id}-${index}`}>
         <ItemCard
@@ -169,13 +174,22 @@ export function ShopScreen() {
           disabled={slot.sold || !affordable}
           onClick={() => act({ type: 'buy', index })}
           testId={`shop-slot-${index}`}
+          {...(premium ? { tipNote: relicPremiumLine(run.relicsBought, slot.price) } : {})}
           footer={
             slot.sold ? (
               <span className={styles.sold} data-testid={`shop-sold-${index}`}>
                 Sold
               </span>
             ) : (
-              <Price amount={slot.price} affordable={affordable} />
+              <span className={styles.priceRow}>
+                <Price amount={price} affordable={affordable} />
+                {/* §2.11.2.3 — the premium, marked on the tag; the card's tooltip says what it is. */}
+                {premium && (
+                  <span className={styles.premium} data-testid={`shop-premium-${index}`}>
+                    +{Math.round(RELIC_PREMIUM * 100 * run.relicsBought)} %
+                  </span>
+                )}
+              </span>
             )
           }
         />

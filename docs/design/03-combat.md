@@ -218,12 +218,15 @@ thickens as you recruit and level (§6.2). Draw what exists; there is no filler 
 
 # §3.5 Consumables
 
-The consumable pile is a **per-combat roster, not ammunition**.
+The consumable pile is **ammunition**: every card in it is one item out of the bag, and a played one is gone.
+*(The user's call, 2026-09-30, v0.8.6. It used to be a per-combat roster that came back at combat end, which made
+a Potion a permanent card rather than a supply — and a supply you never lose is a relic by §7.1's own test.
+Consumables are found far more often to match: §2.7.2, §2.6.2, §2.9, §2.10, §2.11.)*
 
-- Built at combat start from the persistent inventory.
+- Built at combat start from the persistent inventory — one card per item carried.
 - **2 consumable cards drawn per turn**, alongside the 5 skill cards.
-- Each consumable can be used **once per combat**; after use it is set aside and not redrawn.
-- **At combat end everything returns to the inventory.** Consumables are not expended.
+- A played consumable is **spent**: set aside for the fight and taken out of the inventory when the fight ends,
+  whatever the outcome (a win, a loss, a run, a Ring rung). What was drawn and not played goes back to the bag.
 - Duplicates stack as a count; the pile offers distinct entries first, so three Potions never flood the hand.
 
 Two classes are genuinely expendable and sit outside the pile:
@@ -231,8 +234,9 @@ Two classes are genuinely expendable and sit outside the pile:
 - **Pokéballs** — a counted run resource, one spent per throw whether it succeeds or fails (§2.6.4).
 - **TMs and Evolution Items** — applied from the Map View, never drawn as cards (§6.4.1, §6.3.2).
 
-The **No Refunds** difficulty modifier (§8.8.2) removes the return-at-combat-end rule, which is precisely why it
-is worth ×1.30 Trainer XP.
+The **Lean Pack** difficulty modifier (§8.8.2) takes away the fights' supplies instead: no consumable and no Poké
+Ball is dropped by a fight, so everything in the bag was bought, gifted or found at an event. It was No Refunds
+until consumables became spent for everyone, and keeps its ×1.30.
 
 Consumables upgrade in chains — Potion → Super → Hyper → Max. Full catalogue, AP costs and prices: §7.2 and
 [`catalogs/consumables.md`](catalogs/consumables.md).

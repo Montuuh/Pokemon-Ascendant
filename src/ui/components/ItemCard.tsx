@@ -33,12 +33,14 @@ export interface ItemCardProps {
   dim?: boolean;
   onClick?: () => void;
   testId?: string;
+  /** One more line for the card's tooltip — a shop's collector's premium (§2.11.2.3). */
+  tipNote?: string;
 }
 
 const KIND_LABEL: Record<ItemKind, string> = { consumable: 'Item · single use', relic: 'Relic · whole run', 'held-item': 'Held item · one Pokémon', tm: 'TM · teaches a move', ball: 'Poké Ball', stone: 'Evolution Item · evolves early' };
 
 export function ItemCard(props: ItemCardProps) {
-  const { id, kind, name, description, rarity, tag, pending, footer, selected, disabled, dim, onClick, testId } = props;
+  const { id, kind, name, description, rarity, tag, pending, footer, selected, disabled, dim, onClick, testId, tipNote } = props;
   const interactive = !!onClick;
   const Tag = interactive ? 'button' : 'div';
   // Every card explains itself the same way: what it is, how rare, what it does, and whether it works yet.
@@ -49,7 +51,7 @@ export function ItemCard(props: ItemCardProps) {
       title={name}
       meta={[rarity ? rarity.charAt(0).toUpperCase() + rarity.slice(1) : null, KIND_LABEL[kind]].filter((m): m is string => !!m)}
       body={description}
-      footer={pending ? `Not working yet: ${pending}` : kind === 'stone' ? "Used from a Pokémon's Move Manager, between nodes." : undefined}
+      footer={pending ? `Not working yet: ${pending}` : tipNote ?? (kind === 'stone' ? "Used from a Pokémon's Move Manager, between nodes." : undefined)}
     />,
   );
 

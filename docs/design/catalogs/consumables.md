@@ -1,12 +1,12 @@
 # Consumable catalog — 28 entries (24 canon + balls + Evolution Items)
 
-> Implements §7.2 (24 launch consumables), §3.5 (per-combat roster, returned at combat end), §2.6.4 (Pokéballs
+> Implements §7.2 (24 launch consumables), §3.5 (spent when played), §2.6.4 (Pokéballs
 > as counted scarcity), §7.2.6 (upgrade chains), §6.3.2 (Evolution Items). Status legend in `README.md`.
 >
-> **The consumable contract (§3.5).** The Consumable Pile is built at combat start from the inventory; 2 cards
-> are drawn per turn; each consumable may be used **once per combat**; at combat end everything returns to the
-> inventory. They are a *per-combat roster*, not ammunition — except under the No Refunds difficulty modifier
-> and for the two genuinely expendable classes below (Pokéballs, Evolution Items).
+> **The consumable contract (§3.5, v0.8.6).** The Consumable Pile is built at combat start from the inventory,
+> one card per item; 2 cards are drawn per turn; a played consumable is **spent** and leaves the inventory when the
+> fight ends. They are ammunition, and found far more often to match: trainers always drop some, wild nodes leave
+> Poké Balls, the nurse and the Center hand a pair over, shops sell bundles (§2.7.2, §2.6.2, §2.9, §2.11.2.2).
 
 ## 1. Healing (5)
 

@@ -7,6 +7,9 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { PokeDollar } from '@/ui/components/Money';
+import { RelicOffer } from '@/ui/components/RelicOffer';
+import { SupplyStrip } from '@/ui/components/SupplyStrip';
+import { elitePrizeTip } from '@/ui/tips';
 import styles from './RewardScreen.module.css';
 
 // Per docs/design/ui/screens.md §3.5 — the post-combat result. XP bars fill, level-ups flag, a catch gets its
@@ -18,6 +21,8 @@ export function RewardScreen() {
   const content = getContent();
   const reward = run.pendingReward;
   const [filled, setFilled] = useState(false);
+  // §2.8.1 — the Elite Trainer's relic pick is the screen's second step: the summary first, then the choice.
+  const [picking, setPicking] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setFilled(true), 60);
@@ -37,6 +42,21 @@ export function RewardScreen() {
   }, [reward, run.box]);
 
   if (!reward) return null;
+
+  const pick = reward.relicPick ?? null;
+  if (picking && pick) {
+    return (
+      <RelicOffer
+        testId="elite-relic-pick"
+        heading="The Elite's prize"
+        headingTip={elitePrizeTip()}
+        lede="Three relics. Take one, or none."
+        offer={pick}
+        onPick={(relicId) => dispatch({ type: 'claim-reward', ...(relicId ? { relicId } : {}) })}
+        ids={{ offer: 'elite-offer-', take: 'btn-take-elite-relic', decline: 'btn-decline-elite-relic' }}
+      />
+    );
+  }
 
   const caught = reward.caught;
   const caughtSpecies = caught ? content.species(caught.speciesId) : null;
@@ -145,6 +165,13 @@ export function RewardScreen() {
           </p>
         )}
 
+        {/* §2.7.2 — supplies and Poké Balls as one strip; each icon's tooltip names it and says it is spent. */}
+        {((reward.consumables ?? []).length > 0 || (reward.balls ?? 0) > 0) && (
+          <div className={styles.supplies}>
+            <SupplyStrip ids={reward.consumables ?? []} balls={reward.balls ?? 0} testId="reward-supplies" />
+          </div>
+        )}
+
         {reward.relic && (
           <p className={styles.drop} data-testid="reward-relic">
             <img src={itemIcon(reward.relic)} alt="" width={32} height={32} className={styles.dropIcon} />
@@ -183,8 +210,13 @@ export function RewardScreen() {
           </p>
         )}
 
-        <button type="button" className={styles.continue} onClick={() => dispatch({ type: 'claim-reward' })} data-testid="btn-claim">
-          Continue
+        <button
+          type="button"
+          className={styles.continue}
+          onClick={() => (pick ? setPicking(true) : dispatch({ type: 'claim-reward' }))}
+          data-testid="btn-claim"
+        >
+          {pick ? 'Choose a relic' : 'Continue'}
         </button>
       </div>
     </main>

@@ -391,10 +391,13 @@ describe('Catching and the Box — §2.6.4, §2.3.1', () => {
     s = apply(s, { type: 'begin-combat' });
     if (s.phase !== 'combat') return;
     const balls = s.balls;
-    s = apply(apply(s, { type: 'finish-combat', report: caughtReport(s) }), { type: 'claim-reward' });
+    s = apply(s, { type: 'finish-combat', report: caughtReport(s) });
+    // §2.6.2 — a wild node may leave a ball or two in the grass as well (v0.8.6).
+    const found = s.pendingReward!.balls;
+    s = apply(s, { type: 'claim-reward' });
     expect(s.box).toHaveLength(2);
     expect(s.box[1]!.speciesId).toBe('pidgey');
-    expect(s.balls).toBe(balls - 1);
+    expect(s.balls).toBe(balls - 1 + found);
     expect(s.stats.catches).toBe(1);
   });
 
@@ -874,7 +877,7 @@ describe('Poké Balls reach the fight — §2.6.4', () => {
         turns: 5,
       },
     });
-    expect(s.balls).toBe(1);
+    expect(s.balls).toBe(1 + s.pendingReward!.balls);
   });
 });
 

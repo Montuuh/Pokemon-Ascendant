@@ -8,6 +8,7 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { HpBar } from '@/ui/components/HpBar';
 import { Money, Price } from '@/ui/components/Money';
+import { SupplyStrip } from '@/ui/components/SupplyStrip';
 import { BACK_TO_TOWN, CENTER_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
 import { centerTip, daycareRowTip, daycareTip, pcBoxTip, therapyTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
@@ -80,6 +81,8 @@ export function CenterScreen() {
             {CENTER_TEXT.healed}
             <InfoDot tip={centerTip()} />
           </p>
+          {/* §2.11.1 — the first visit's supplies (v0.8.6), shown for this visit only. */}
+          <SupplyStrip ids={run.lastGift ?? []} testId="center-gift" />
         </div>
         <span className={styles.wallet} data-testid="center-money">
           <Money amount={run.money} size={18} />

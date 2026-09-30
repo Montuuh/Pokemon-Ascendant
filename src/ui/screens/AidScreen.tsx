@@ -5,6 +5,7 @@ import { trainerSprite } from '@/ui/art';
 import { BackButton } from '@/ui/components/BackButton';
 import { HpBar } from '@/ui/components/HpBar';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { SupplyStrip } from '@/ui/components/SupplyStrip';
 import { SHOP_TEXT } from '@/ui/strings';
 import { nurseTip, partyTip } from '@/ui/tips';
 import { InfoDot, useTip } from '@/ui/tooltip';
@@ -31,6 +32,8 @@ export function AidScreen() {
             <InfoDot tip={nurseTip()} />
           </h1>
           <p className={styles.sub}>Everyone is patched up.</p>
+          {/* §2.9.1 — and what she handed over for the road (v0.8.6). */}
+          <SupplyStrip ids={run.lastGift ?? []} testId="aid-gift" />
         </div>
       </section>
 

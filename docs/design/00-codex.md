@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -116,15 +116,16 @@ from the fight's stream. Master Ball Charm arms one sure throw per run. 0 HP los
 
 **Trainers** — 9 archetypes, **three Pokémon** (the roster's own + its archetype's, 4 levels under), one at a time,
 two at a time (50/60/70 %) or three (a quarter/40 %/half of those), band = wild +1/+2, no hidden intents.
-**Elite Trainer** — guaranteed, **four Pokémon two at a time** (its own two 2-phase, two lent between), **Rare relic 1 of 3**. Roster by Region: Rival 80/60/40 %,
+**Elite Trainer** — guaranteed, **four Pokémon two at a time** (its own two 2-phase, two lent between), **a relic pick: two Uncommons and a Rare**. Roster by Region: Rival 80/60/40 %,
 Giovanni 30 % in R3, otherwise a Specialist. The **Rival counter-picks your starter** and scales by Region band.
 **Elite Wild** — a catchable boss-wild, ≤1 per Region, not on every route: **catch it** for the rare recruit or
 **defeat it** for one Rare relic. Phase 2 makes it *easier* to catch.
 **Mystery Events** — 22, tagged 🟢 Safe 30 % / 🟡 Tradeoff 50 % / 🔴 Gamble 20 %, badge visible before entering,
 never repeating in a run.
-**Shops** — Region: 3 consumables + 2 relics + ball + 1 special, re-roll 25/50/100 ₽. City: 8 **team-curated**
-slots, +30 % prices, sells at 30 % (the only money exit). Celadon's Department Store: five floors, 21 slots, a
-re-roll restocks one floor.
+**Shops** — the route's merchant: Potion ×3, a Tier-1 bundle, Balls ×3, a wildcard (a Common relic one visit in
+three). City: 8 **team-curated** slots — Potion ×5, bundles, a Common and an Uncommon relic (Rare a quarter of the
+time), Balls ×5 — +30 % prices, sells at 30 % (the only money exit). Celadon's Department Store: five floors, a
+re-roll restocks one floor. Relics carry the collector's premium (+25 % per relic bought).
 
 ---
 
@@ -154,8 +155,9 @@ unless the card has Step-Forward; **Ranged plays anywhere** at ×0.75.
   (+Mastery) are **purged from deck and discard**. A Frozen Lead that faints voids the lock.
 
 **Deck** 12 (→15 with Mastery), hand always 5, discard reshuffles when empty.
-**Consumables** are a per-combat roster: 2 drawn per turn, once each, **all returned at combat end** (except
-under No Refunds). Balls and TMs are the genuinely expendable classes.
+**Consumables are spent** (v0.8.6): the pile is one card per item carried, 2 drawn per turn, and a played one
+leaves the bag when the fight ends. Found far more often to match — see §7 below. Balls, TMs and stones are
+spent too, outside the pile.
 
 ---
 
@@ -289,12 +291,18 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
 **Consumables** in-combat and returned · **Relics** persistent run-state · **Held Items** one per Pokémon ·
 **TMs** a Map-View consumable class.
 
-- **28 consumables.** Healing is a **percentage** of Effective Max HP: 25 / 45 / 70 / 100 %. Five 0-AP single
-  cures plus a **1-AP** Full Heal. Ether **1 AP for +2**. Radar Scope, Smoke Bomb, Card Pocket, Quick Claw,
-  Defog. Balls and five Evolution Stones.
-- **60 relics.** 25 Common (15 of them the +15 % party type charms) / 18 Uncommon / 7 Rare / **10 Legendary**.
-  Legendaries are **choice-only, 1-of-3 at Gym victories and the Summit, max 2 per run** — plus the Black Market's
-  one, off the books, for three Pokémon (to 3).
+- **28 consumables**, **spent when played** (v0.8.6). Healing is flat, as in the games: 20 / 60 / 120 HP / full.
+  Five 0-AP single cures plus a **1-AP** Full Heal. Ether **1 AP for +2**. Radar Scope, Smoke Bomb, Card Pocket,
+  Quick Claw, Defog. Balls and five Evolution Stones. **Where they come from:** every trainer drops 1–2 (by Region:
+  Potions → Super → Hyper), a wild node ~30 % leaves 1–2 Poké Balls, the Elite and the Gym add a prize, the nurse
+  and a City's Center hand over a pair, shops sell **bundles** (Potion ×3 / ×5, Balls ×3 / ×5, 10 % off), and three
+  Mystery Events are supplies.
+- **60 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 25 Common (15 of them the +15 % party type
+  charms) / 18 Uncommon / 7 Rare / **10 Legendary**. A trainer drops a Common 15 % of the time; the Elite Trainer
+  offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym a Rare 1-of-3**,
+  later Gyms and the Summit a **Legendary 1-of-3, max 2 per run** — plus the Black Market's one, off the books, for
+  three Pokémon (to 3). Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
+  of list per relic bought this run.
 - **19 held items.** 8 type boosts (+20 % wearer-only) · 5 Type Plates (Lead Aura) · Leftovers, Eviolite, Focus
   Sash · Choice Band, Choice Scarf · Thick Club.
 - **15 TMs**, gated by `compatibleSpecies`, Mastery-exempt.

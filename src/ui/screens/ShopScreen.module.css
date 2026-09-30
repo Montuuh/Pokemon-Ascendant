@@ -65,6 +65,21 @@
   padding-right: var(--sp-2);
 }
 
+/* §2.11.2.3 — the price, and beside it a relic's collector's premium. */
+.priceRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.premium {
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-3);
+  color: var(--ink-primary);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
 .sold {
   padding: 2px var(--sp-2);
   border-radius: var(--radius-pill);

@@ -54,9 +54,11 @@ export const MODIFIERS: DifficultyModifier[] = [
     available: true,
   },
   {
-    id: 'no-refunds',
-    name: 'No Refunds',
-    effect: 'A consumable you play is gone. It does not come back at the end of the fight.',
+    // §8.8 — was No Refunds until v0.8.6 made every consumable spent; the row kept its slot and its premium and
+    // now takes away the fights' supplies instead. Old saves migrate the id (save v16).
+    id: 'lean-pack',
+    name: 'Lean Pack',
+    effect: 'Fights drop no consumables and no Poké Balls. Supplies come only from shops, events and gifts.',
     xpMultiplier: 1.3,
     unlock: 'Trainer Lv 6',
     unlockLevel: 6,

@@ -29,7 +29,16 @@ export const PRICES = {
   cityMarkup: 1.3,
   /** §2.11.2.4 — a held item sells for this share of its listed price. City shops only. */
   sellShare: 0.3,
-  relic: { common: 150, uncommon: 300, rare: 600, legendary: 0 } as Record<RelicRarity, number>,
+  /**
+   * §2.11.2.3 — a relic's list price, before the collector's premium (`RELIC_PREMIUM`). Raised in v0.8.6 with
+   * the premium: relics are meant to be scarce, and a shelf of them for 150 ₽ apiece was the main leak.
+   */
+  relic: { common: 175, uncommon: 350, rare: 650, legendary: 0 } as Record<RelicRarity, number>,
+  /**
+   * §2.9.2 / §2.11.2.2 — consumables are sold in bundles now that a played one is gone (§3.5): how many a slot
+   * holds by the item's tier, the Potion's larger City bundle, and the bulk discount on the unit price.
+   */
+  bundle: { byTier: [0, 3, 2, 1, 1] as number[], potionCity: 5, ballsCity: 5, discount: 0.9 },
   heldItem: 300,
   tm: 350,
   /** §7.2.5 — an Evolution Item, before the City markup (catalogs/economy.md: 250 ₽, 325 in a City). */
@@ -211,19 +220,19 @@ export function rarePickOpen(content: ContentRegistry, held: readonly string[], 
  * follows the Mart's slot table for its category, only more of it — "far more stock than a Mart, and the only
  * place a run ever sees that much at once":
  *
- *   consumables  two Tier-1, two Tier-2, a Tier-3, and Poké Balls on the counter
+ *   consumables  Potions ×5, two Tier-1 bundles, two Tier-2 bundles, a Tier-3, and Poké Balls ×5 on the counter
  *   TMs          four the team can learn
  *   held items   four
- *   relics       two Common, two Uncommon
- *   rare         two Rare relics and a Tier-4 consumable
+ *   relics       a Common and an Uncommon
+ *   rare         one Rare relic and a Tier-4 consumable
  *
- * *(Settled while building v0.7.2: canon names the floors, not their size. Recorded in §2.11.2.)*
+ * *(Settled while building v0.7.2: canon names the floors, not their size. Recorded in §2.11.2. v0.8.6 sells the
+ * consumables in bundles and halves the relic floors — relics are scarce, consumables are spent.)*
  */
 function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor: StoreFloor, held: string[]): ShopSlot[] {
   const pool = run.perks?.relicPool ?? null;
-  const tier = (t: number) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && c.tier === t);
-  const consumable = (t: number, n: number): ShopSlot[] =>
-    drawDistinct(rng, tier(t), n).map((def) => ({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 50, sold: false }));
+  const tier = (t: number) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && c.tier === t && c.id !== 'potion');
+  const consumable = (t: number, n: number): ShopSlot[] => drawDistinct(rng, tier(t), n).map(bundleOf);
   const relics = (rarity: RelicRarity, n: number): ShopSlot[] => {
     const out: ShopSlot[] = [];
     for (let i = 0; i < n; i++) {
@@ -236,7 +245,7 @@ function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor
   };
   switch (floor) {
     case 'consumables':
-      return [...consumable(1, 2), ...consumable(2, 2), ...consumable(3, 1), { kind: 'ball', id: 'poke-ball', price: PRICES.ball, sold: false }];
+      return [potionBundle(content), ...consumable(1, 2), ...consumable(2, 2), ...consumable(3, 1), cityBalls()];
     case 'tms': {
       const usable = content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
       return drawDistinct(rng, usable, 4).map((tm) => ({ kind: 'tm', id: tm.id, price: PRICES.tm, sold: false }));
@@ -247,11 +256,11 @@ function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor
       return drawDistinct(rng, items, 4).map((i) => ({ kind: 'held-item', id: i.id, price: PRICES.heldItem, sold: false }));
     }
     case 'relics':
-      return [...relics('common', 2), ...relics('uncommon', 2)];
+      return [...relics('common', 1), ...relics('uncommon', 1)];
     case 'rare': {
       // §6.3.2 — the top floor keeps the stones, one the Box can use when there is one.
       const stone = teamStone(rng, content, run);
-      return [...relics('rare', 2), ...consumable(4, 1), ...(stone ? [stone] : [])];
+      return [...relics('rare', 1), ...consumable(4, 1), ...(stone ? [stone] : [])];
     }
   }
 }
@@ -315,11 +324,16 @@ export function rollShopStock(
   const pool = run.perks?.relicPool ?? null;
   const tier = (t: number) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && c.tier === t);
 
+  // v0.8.6 — Potions have their own slot, so the other consumable slots draw from everything else.
+  const others = (t: number) => tier(t).filter((c) => c.id !== 'potion');
+
   if (kind === 'merchant') {
-    for (const def of drawDistinct(rng, tier(1), 2)) slots.push({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 50, sold: false });
+    // §2.9.2 — bundles: Potions ×3 and one other Tier-1 item ×3, then the balls and the wildcard.
+    slots.push(bundleSlot(content.consumable('potion'), PRICES.bundle.byTier[1] ?? 3));
+    for (const def of drawDistinct(rng, others(1), 1)) slots.push(bundleOf(def));
     slots.push({ kind: 'ball', id: 'poke-ball', price: PRICES.merchantBalls.price, qty: PRICES.merchantBalls.qty, sold: false });
-    // The wildcard: a Common relic or a Held Item, a coin flip between them.
-    const relic = rng.range01() < 0.5 ? rollRelic(rng, content, run.relics, 'common', pool) : null;
+    // The wildcard: a Common relic one time in three, otherwise a Held Item (relics are scarce, §7.3.1).
+    const relic = rng.range01() < MERCHANT_RELIC_CHANCE ? rollRelic(rng, content, run.relics, 'common', pool) : null;
     if (relic) slots.push({ kind: 'relic', id: relic, price: PRICES.relic.common, sold: false });
     else {
       const item = teamSpecial(rng, content, run, 'held-item');
@@ -329,10 +343,13 @@ export function rollShopStock(
     slots.push(...rollStore(rng, content, run, floors));
     for (const slot of slots) slot.price = Math.round(slot.price * PRICES.cityMarkup);
   } else {
-    for (const def of drawDistinct(rng, tier(1), 2)) slots.push({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 50, sold: false });
-    for (const def of drawDistinct(rng, tier(2), 1)) slots.push({ kind: 'consumable', id: def.id, price: PRICES.consumableTier[def.tier] ?? 110, sold: false });
+    // §2.11.2.2 — Potions ×5, two Tier-1 bundles and a Tier-2 bundle; a Common and an Uncommon relic, the second a
+    // Rare one visit in four (v0.8.6: two relic slots where there were three).
+    slots.push(potionBundle(content));
+    for (const def of drawDistinct(rng, others(1), 2)) slots.push(bundleOf(def));
+    for (const def of drawDistinct(rng, others(2), 1)) slots.push(bundleOf(def));
     const held: string[] = [...run.relics];
-    const rarities: ('common' | 'uncommon' | 'rare')[] = ['common', 'uncommon', rng.range01() < 0.5 ? 'rare' : 'uncommon'];
+    const rarities: ('common' | 'uncommon' | 'rare')[] = ['common', rng.range01() < CITY_RARE_CHANCE ? 'rare' : 'uncommon'];
     for (const rarity of rarities) {
       const id = rollRelic(rng, content, held, rarity, pool);
       if (id) {
@@ -349,7 +366,7 @@ export function rollShopStock(
     if (stone) slots.push(stone);
     // §2.11.2.2 — Poké Balls are always on a City counter, outside the eight: a City that cannot sell you a ball
     // after the route's merchant stopped carrying many would be a Mart in name only.
-    slots.push({ kind: 'ball', id: 'poke-ball', price: PRICES.ball, sold: false });
+    slots.push(cityBalls());
     for (const slot of slots) slot.price = Math.round(slot.price * PRICES.cityMarkup);
   }
 
@@ -360,6 +377,42 @@ export function rollShopStock(
 
   return { slots, rerolls: 0, maxRerolls: kind === 'merchant' ? 1 : PRICES.rerolls.length };
 }
+
+/**
+ * §2.11.2.3 — the collector's premium: every relic bought this run makes every relic on every shelf dearer by
+ * this share of its list price (v0.8.6). A flat price let a full wallet turn into a shelf of relics; a rising
+ * one lets the first purchase stay easy and makes the fourth a real decision.
+ */
+export const RELIC_PREMIUM = 0.25;
+
+/** §2.9.2 — the merchant's wildcard is a Common relic this often, otherwise a Held Item. */
+export const MERCHANT_RELIC_CHANCE = 1 / 3;
+/** §2.11.2.2 — a City Mart's second relic slot is a Rare this often, otherwise an Uncommon. */
+export const CITY_RARE_CHANCE = 0.25;
+
+/** §2.11.2.3 — what a slot costs right now. A relic carries the premium for every relic bought before it. */
+export function slotPrice(run: Pick<RunState, 'relicsBought'>, slot: Pick<ShopSlot, 'kind' | 'price'>): number {
+  if (slot.kind !== 'relic') return slot.price;
+  return Math.round((slot.price * (1 + RELIC_PREMIUM * (run.relicsBought ?? 0))) / 5) * 5;
+}
+
+/** §2.9.2 / §2.11.2.2 — a consumable slot sold as a bundle: `qty` of the item at the bulk discount. */
+function bundleSlot(def: { id: string; tier: number }, qty: number): ShopSlot {
+  const unit = PRICES.consumableTier[def.tier] ?? 50;
+  const price = qty > 1 ? Math.round((unit * qty * PRICES.bundle.discount) / 5) * 5 : unit;
+  return { kind: 'consumable', id: def.id, price, sold: false, ...(qty > 1 ? { qty } : {}) };
+}
+
+const bundleOf = (def: { id: string; tier: number }): ShopSlot => bundleSlot(def, PRICES.bundle.byTier[def.tier] ?? 1);
+
+/** §2.11.2.2 — every City counter keeps Potions, five to a slot: the one item nobody should have to fish for. */
+const potionBundle = (content: ContentRegistry): ShopSlot => bundleSlot(content.consumable('potion'), PRICES.bundle.potionCity);
+
+/** §2.11.2.2 — a City counter's Poké Balls, five to a slot at the bulk discount. */
+const cityBalls = (): ShopSlot => ({
+  kind: 'ball', id: 'poke-ball', qty: PRICES.bundle.ballsCity, sold: false,
+  price: Math.round((PRICES.ball * PRICES.bundle.ballsCity * PRICES.bundle.discount) / 5) * 5,
+});
 
 /** §2.9.3 — what the next re-roll costs, or null when the visit is out of them. */
 export const rerollPrice = (stock: ShopStock): number | null =>

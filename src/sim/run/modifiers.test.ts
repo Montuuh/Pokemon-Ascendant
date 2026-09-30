@@ -109,7 +109,7 @@ describe('Difficulty modifiers — §8.8', () => {
     expect(fogged.enemies[0]!.intent?.hidden).toBe(true);
   });
 
-  it('NoRefunds_TakesAPlayedConsumableOffTheShelf_§8.8', () => {
+  it('APlayedConsumable_LeavesTheBag_WithOrWithoutModifiers_§3.5', () => {
     const report = (spent: string[]) => ({
       outcome: 'victory' as const,
       team: [] as never[],
@@ -118,7 +118,7 @@ describe('Difficulty modifiers — §8.8', () => {
       spentConsumables: spent,
       turns: 4,
     });
-    for (const modifiers of [[], ['no-refunds']]) {
+    for (const modifiers of [[], ['lean-pack']]) {
       let s = start(modifiers, 7);
       const before = [...s.consumables];
       const node = s.reachable.find((id) => s.map.nodes[id]!.kind !== 'aid')!;
@@ -126,8 +126,22 @@ describe('Difficulty modifiers — §8.8', () => {
       if (s.phase !== 'combat') continue;
       s = apply(s, { type: 'finish-combat', report: { ...report(['potion']), team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })) } });
 
-      const expected = modifiers.length ? before.length - 1 : before.length;
-      expect(s.consumables, `no-refunds=${!!modifiers.length}`).toHaveLength(expected);
+      // v0.8.6 — the Potion is gone either way; whatever the fight dropped comes on top.
+      const found = s.pendingReward!.consumables.length;
+      expect(s.consumables, `lean-pack=${!!modifiers.length}`).toHaveLength(before.length - 1 + found);
+    }
+  });
+
+  it('LeanPack_FightsDropNoSupplies_§8.8', () => {
+    for (const seed of [1, 7, 42, 999]) {
+      let s = start(['lean-pack'], seed);
+      const node = s.reachable.find((id) => s.map.nodes[id]!.kind === 'trainer' || s.map.nodes[id]!.kind === 'wild');
+      if (!node) continue;
+      s = apply(apply(s, { type: 'enter-node', nodeId: node }), { type: 'begin-combat' });
+      if (s.phase !== 'combat') continue;
+      s = apply(s, { type: 'finish-combat', report: { outcome: 'victory' as const, caught: null, ballsLeft: s.balls, spentConsumables: [], turns: 4, team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })) } });
+      expect(s.pendingReward!.consumables).toEqual([]);
+      expect(s.pendingReward!.balls).toBe(0);
     }
   });
 });

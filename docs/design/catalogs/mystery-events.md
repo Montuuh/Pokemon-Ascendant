@@ -1,4 +1,4 @@
-# Mystery Event catalog — 22 (12 canon + 10 new)
+# Mystery Event catalog — 25 (12 canon + 10 new + 3 supplies)
 
 > Implements §7.9. Each event is a flavour scene plus 2–3 choices; each choice states its outcome up front
 > unless the event is tagged 🔴 Gamble (Pillar 1 holds even inside "Mystery"). Events never repeat within a run.
@@ -15,7 +15,7 @@
 | `slot-booth` | 🔴 | A carny offers a coin flip | (a) wager 100 ₽ → 50 % win 250 ₽ / 50 % lose it · (b) decline |
 | `wounded-pokemon` | 🟡 | A wild Pokémon, badly hurt | (a) heal it → free recruit with 2 Trauma stacks · (b) battle it at full HP (normal catch) · (c) leave |
 | `trainers-dare` | 🟡 | A rival challenges you | (a) accept → an Elite-tier fight with doubled rewards · (b) decline, no penalty |
-| `cursed-trinket` | 🔴 | A glittering trinket on a pedestal | (a) take it → a random Rare relic, 30 % chance of 2 Trauma stacks on a random Pokémon · (b) leave |
+| `cursed-trinket` | 🔴 | A glittering trinket on a pedestal | (a) take it → a random Rare relic, 30 % chance of 2 Trauma stacks on the worst-worn Pokémon · (b) leave — ✅ v0.8.6, drawn at weight 0.35: relics are scarce (§7.3.1) |
 | `old-map` | 🟢 | A torn map fragment | (a) read it → reveal every node 2 layers ahead · (b) sell at the next shop → +200 ₽ |
 | `lost-backpack` | 🟢 | An unattended pack | (a) 3 random consumables · (b) 200 ₽ · (c) leave it |
 | `bond-ceremony` | 🟢 | A shrine to bonding | (a) one Pokémon gains +1 to a chosen stat permanently · (b) leave |
@@ -57,3 +57,15 @@ A choice is data, not a script. The authoring surface is this closed list, so a 
 - Events that grant a recruit respect the Box cap → Swap-or-Skip (§2.3.1).
 - `wandering-tutor` needs a Dojo reachable from a route and is not in the pool yet. `mysterious-stone` joined it in
   v0.7.5 with the Evolution Items, beside Eevee's Stone Cache (§8.5.3), which is never drawn from the pool.
+
+## 3. Supplies 🆕 (v0.8.6)
+
+Consumables are spent since v0.8.6 (§3.5), so the route hands out more of them. Built with the supplies outcome,
+which draws from the Region's supply table (§2.7.2). The events that hand over a relic — `cursed-trinket` and the
+roadside trader — are drawn at weight 0.35 against 1 for the rest (§2.10.4).
+
+| id | Risk | Scene | Choices |
+|---|---|---|---|
+| `field-medic` | 🟢 | A Ranger with a full medkit | (a) 2 `super-potion` and a `full-heal` · (b) +25 % HP to the whole Box — ✅ v0.8.6 |
+| `fallen-crate` | 🟢 | A crate off the back of a truck | (a) 4 supplies from the Region's table · (b) 3 Poké Balls — ✅ v0.8.6 |
+| `traveling-apothecary` | 🟡 | An apothecary closing up shop | (a) 150 ₽ → 6 supplies · (b) 100 ₽ → 2 `ether` · (c) walk on — ✅ v0.8.6 |

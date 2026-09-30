@@ -6,9 +6,10 @@ import { knownMoves } from '../combat/stats';
 import { isImmuneToStatus } from '../combat/status';
 import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
 import { generateRegion, WILD_RARE_CHANCE } from './map';
-import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
-import { AID_HEAL_PCT, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
+import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
+import { AID_HEAL_PCT, slotPrice, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
 import { GROUP_BREATHER } from './groups';
+import { gymRelicOffer, RELIC_REWARD, rollFightSupplies, rollMixedOffer, serviceGift, drawSupplies, supplyLabel } from './rewards';
 import { CASINO, CITIES, RING, cityAfter, isFinalRegion, pocketColour } from './cities';
 import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
@@ -56,7 +57,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 15;
+export const RUN_SAVE_VERSION = 16;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -138,6 +139,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     starter: starterId,
     money: RUN_START.money,
     relics: [],
+    relicsBought: 0,
     spentRelics: [],
     badges: [],
     bag: [],
@@ -606,12 +608,12 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
     if (!draft.badges.includes(gym.badgeId)) draft.badges.push(gym.badgeId);
     draft.log.push(`${gym.name} is beaten. Region ${draft.regionIndex + 1} is cleared.`);
 
-    // §7.3.7 — a Gym victory is a Legendary pick-moment. It stands between the Gym and the summary rather
+    // §7.3.7 — a Gym victory is a relic pick-moment: Rares at the first Gym, Legendaries from the second (v0.8.6). It stands between the Gym and the summary rather
     // than after it, because a choice offered on the results screen is a choice nobody makes.
     // Its own cursor on the loot stream, so a reload offers the same three (§10.8.6).
     const pickRng = new RngStreams(draft.seed).get('LootRNG');
     pickRng.cursor = draft.cursors.LootRNG ?? pickRng.cursor;
-    const offer = rollLegendaryOffer(pickRng, ctx.content, draft.relics, 3, draft.perks.relicPool);
+    const offer = gymRelicOffer(pickRng, ctx.content, draft.relics, draft.regionIndex, draft.perks.relicPool);
     draft.cursors.LootRNG = pickRng.cursor;
     if (offer.length) {
       draft.pendingLegendary = offer;
@@ -674,6 +676,13 @@ function resolveEventOutcome(draft: RunState, outcome: EventOutcome, ctx: RunCtx
       draft.consumables.push(...outcome.ids);
       say(draft, `Picked up ${outcome.ids.map((id) => ctx.content.consumable(id).name).join(', ')}.`);
       break;
+    case 'supplies': {
+      // §2.10.5 — drawn from the Region's supply table, the same one a trainer's drop draws from (§2.7.2).
+      const ids = drawSupplies(rng, ctx.content, draft.regionIndex, outcome.count);
+      draft.consumables.push(...ids);
+      if (ids.length) say(draft, `Picked up ${supplyLabel(ids, (id) => ctx.content.consumable(id).name)}.`);
+      break;
+    }
     case 'relic': {
       const id = rollRelic(rng, ctx.content, draft.relics, outcome.rarity, draft.perks.relicPool);
       if (id) acquireRelic(draft, id, ctx.content);
@@ -806,6 +815,11 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             cureAll(mon);
           }
           say(draft, 'The nurse patched everyone up.');
+          // §2.9.1 — and sends you off with a pair for the road (v0.8.6).
+          const gift = serviceGift('nurse', draft.regionIndex);
+          draft.consumables.push(...gift);
+          draft.lastGift = gift;
+          if (gift.length) say(draft, `The nurse hands you ${supplyLabel(gift, (id) => ctx.content.consumable(id).name)}.`);
           draft.phase = 'aid';
           break;
         }
@@ -867,6 +881,13 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             draft.stats.faints += 1;
             say(draft, `${ctx.content.species(mon.speciesId).name} fainted — Trauma ${mon.traumaStacks}.`);
           }
+        }
+
+        // §3.5 — a consumable played is gone, whatever the fight's outcome (v0.8.6: consumables are spent, the user's
+        // call of 2026-09-30). The pile was built from the bag; what was played comes out of it, what was not stays.
+        for (const id of report.spentConsumables ?? []) {
+          const at = draft.consumables.indexOf(id);
+          if (at >= 0) draft.consumables.splice(at, 1);
         }
 
         // §2.9.4.1 — a Ring rung is not a map node: its prize or the ladder, and a lost rung costs the ladder,
@@ -988,20 +1009,25 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           }
         }
 
-        // §7.3.1 — a relic from a Trainer, guaranteed from an Elite or the Gym. Duplicates are excluded.
+        // §7.3.1 — relics are scarce (v0.8.6). A Trainer drops a Common, and only sometimes; the Elite Trainer
+        // offers a pick on the reward screen (§2.8.1); the Gym's is its own 1-of-3 after the fight (§7.3.7).
+        // Duplicates are excluded.
         //
         // §2.8.2 — the Elite Wild is the catch-**or**-kill node, and this is where that word is enforced:
         // beat it and you take the relic, catch it and you take the Pokémon. Never both. Handing over both
         // would make the dilemma a formality, and the dilemma is the only reason the node exists.
         const beatTheEliteWild = node.kind === 'elite-wild' && report.outcome !== 'caught';
         let relicDrop: string | null = null;
-        if (node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym' || beatTheEliteWild) {
-          const chance = node.kind === 'trainer' ? RELIC_DROP_CHANCE : 1;
-          if (lootRng.chance(chance)) {
-            relicDrop = rollRelic(lootRng, ctx.content, draft.relics, node.kind === 'trainer' ? undefined : 'uncommon', draft.perks.relicPool);
-            if (relicDrop) acquireRelic(draft, relicDrop, ctx.content);
-          }
+        let relicPick: string[] | null = null;
+        if (node.kind === 'trainer' && lootRng.chance(RELIC_REWARD.trainerChance)) {
+          relicDrop = rollRelic(lootRng, ctx.content, draft.relics, RELIC_REWARD.trainerRarity, draft.perks.relicPool);
+        } else if (beatTheEliteWild) {
+          relicDrop = rollRelic(lootRng, ctx.content, draft.relics, RELIC_REWARD.eliteWild, draft.perks.relicPool);
+        } else if (node.kind === 'elite') {
+          relicPick = rollMixedOffer(lootRng, ctx.content, draft.relics, RELIC_REWARD.elitePick, draft.perks.relicPool);
+          if (!relicPick.length) relicPick = null;
         }
+        if (relicDrop) acquireRelic(draft, relicDrop, ctx.content);
 
         // §7.4.6 — a Trainer drops a Held Item one time in five. Wild loot never contains one.
         let itemDrop: string | null = null;
@@ -1012,19 +1038,18 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             say(draft, `Found a ${ctx.content.heldItem(itemDrop).name}.`);
           }
         }
+        // §2.7.2 / §2.6.2 — the supplies: consumables from every trainer, now and then from the grass, and a few
+        // Poké Balls (v0.8.6). Lean Pack (§8.8) drops none. Rolled last so the rolls above keep their places.
+        const supplies = rollFightSupplies(lootRng, ctx.content, node.kind, draft.regionIndex, hasModifier(draft.modifiers, 'lean-pack'));
+        draft.consumables.push(...supplies.consumables);
+        if (supplies.consumables.length) say(draft, `Found ${supplyLabel(supplies.consumables, (id) => ctx.content.consumable(id).name)}.`);
         draft.cursors.LootRNG = lootRng.cursor;
 
-        // 3. Balls are spent on the throw, not on the catch, so a wild fight returns its own count.
+        // 3. Balls are spent on the throw, not on the catch, so a wild fight returns its own count — and then
+        // adds any it found in the grass.
         if (node.kind === 'wild' || node.kind === 'elite-wild') draft.balls = Math.max(0, Math.min(draft.balls, report.ballsLeft));
-
-        // §8.8 No Refunds — the shelf is normally restocked between fights (§7.2.1: a consumable is a card,
-        // not a stock item). This modifier turns it into one, so a played Potion comes off the run's list.
-        if (hasModifier(draft.modifiers, 'no-refunds')) {
-          for (const id of report.spentConsumables ?? []) {
-            const at = draft.consumables.indexOf(id);
-            if (at >= 0) draft.consumables.splice(at, 1);
-          }
-        }
+        draft.balls += supplies.balls;
+        if (supplies.balls) say(draft, `Found ${supplies.balls} Poké Ball${supplies.balls > 1 ? 's' : ''}.`);
 
         // 4. A catch is a Victory that also hands you a Pokémon (§2.6.4).
         let caught: { speciesId: string; level: number } | null = null;
@@ -1057,6 +1082,9 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           tm: tmDrop,
           money: moneyEarned,
           relic: relicDrop,
+          relicPick,
+          consumables: supplies.consumables,
+          balls: supplies.balls,
           heldItem: itemDrop,
         };
         draft.phase = 'reward';
@@ -1065,6 +1093,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
       case 'claim-reward': {
         const node = draft.map.nodes[draft.pendingNodeId!]!;
+        // §2.8.1 — the Elite Trainer's pick is taken here, on the reward screen; leaving all three is allowed.
+        if (action.relicId && draft.pendingReward?.relicPick?.includes(action.relicId)) acquireRelic(draft, action.relicId, ctx.content);
         draft.pendingReward = null;
         draft.pendingScenario = null;
 
@@ -1221,6 +1251,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
       case 'leave-dojo':
       case 'leave-center': {
+        draft.lastGift = null;
         // §2.11.0 — a City building's door leads back to the lobby, not onward.
         if (draft.city) {
           draft.phase = 'city';
@@ -1231,6 +1262,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       }
 
       case 'leave-aid': {
+        draft.lastGift = null;
         leaveNode(draft, draft.pendingNodeId!, ctx);
         break;
       }
@@ -1245,6 +1277,14 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             cureAll(mon);
           }
           say(draft, 'The Pokémon Center restored your whole Box.');
+          // §2.11.1 — the first visit sends you off with a pair sized for the Region ahead (v0.8.6).
+          if (!city.giftTaken) {
+            city.giftTaken = true;
+            const gift = serviceGift('center', draft.regionIndex);
+            draft.consumables.push(...gift);
+            draft.lastGift = gift;
+            if (gift.length) say(draft, `Nurse Joy hands you ${supplyLabel(gift, (id) => ctx.content.consumable(id).name)}.`);
+          }
           draft.phase = 'center';
         } else if (action.building === 'mart') {
           draft.pendingShop = city.shop;
@@ -1534,17 +1574,21 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       // §2.9.2 — buy a slot. The price is on the slot so a re-roll cannot change what you already agreed to.
       case 'buy': {
         const slot = draft.pendingShop!.slots[action.index]!;
-        draft.money -= slot.price;
+        const paid = slotPrice(draft, slot);
+        draft.money -= paid;
         slot.sold = true;
         switch (slot.kind) {
           case 'consumable':
-            draft.consumables.push(slot.id);
+            // §2.9.2 — a bundle hands over its whole count.
+            for (let i = 0; i < (slot.qty ?? 1); i++) draft.consumables.push(slot.id);
             break;
           case 'ball':
             draft.balls += slot.qty ?? 1;
             break;
           case 'relic':
             acquireRelic(draft, slot.id, ctx.content);
+            // §2.11.2.3 — the collector's premium: every relic on every shelf is dearer from now on.
+            draft.relicsBought += 1;
             break;
           case 'held-item':
             draft.bag.push(slot.id);
@@ -1556,7 +1600,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             draft.stones.push(slot.id);
             break;
         }
-        say(draft, `Bought ${shopSlotName(slot, ctx.content)} for ${slot.price} ₽.`);
+        say(draft, `Bought ${shopSlotName(slot, ctx.content)} for ${paid} ₽.`);
         break;
       }
 
@@ -1716,7 +1760,10 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
     case 'finish-combat':
       return state.phase === 'combat' ? undefined : 'wrong-phase';
     case 'claim-reward':
-      return state.phase === 'reward' ? undefined : 'wrong-phase';
+      if (state.phase !== 'reward') return 'wrong-phase';
+      // §2.8.1 — only a relic the Elite put on the table can be taken from it.
+      if (action.relicId && !state.pendingReward?.relicPick?.includes(action.relicId)) return 'not-offered';
+      return undefined;
     case 'resolve-recruit':
       if (state.phase !== 'swap-or-skip' || !state.pendingRecruit) return 'wrong-phase';
       if (action.releaseUid && !state.box.some((m) => m.uid === action.releaseUid)) return 'unknown-pokemon';
@@ -1975,7 +2022,7 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       const slot = state.pendingShop.slots[action.index];
       if (!slot) return 'invalid-slot';
       if (slot.sold) return 'already-sold';
-      if (state.money < slot.price) return 'cannot-afford';
+      if (state.money < slotPrice(state, slot)) return 'cannot-afford';
       // §7.3 — a relic you already hold never appears again; buying a duplicate would be money for nothing.
       if (slot.kind === 'relic' && state.relics.includes(slot.id)) return 'already-known';
       return undefined;

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { AID_HEAL_PCT, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
+import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
@@ -724,4 +724,38 @@ export function safariTierTip(label: string, t: { sight: number; speed: number; 
 /** §2.11.6 — what the Pokémon is doing right now, on its tile. */
 export function safariStateTip(line: string): ReactNode {
   return <Tip title={line} body="Its head is down or its feet are still: this is the moment to close in." />;
+}
+
+// ── Supplies and scarce relics (v0.8.6) ──────────────────────────────────────────────────────────────────
+
+/** §2.6.2 / §2.7.2 — Poké Balls a fight turned up. */
+export function ballsFoundTip(n: number): ReactNode {
+  return <Tip icon={<img src={itemIcon('poke-ball')} alt="" width={22} height={22} />} title={`Poké Ball ×${n}`} meta={['Counted']} body="One throw at a wild Pokémon each, spent whether it catches or not." footer="Wild nodes leave some in the grass now and then; trainers and the Elite drop a few." />;
+}
+
+/** §2.8.1 — the Elite Trainer's relic pick. */
+export function elitePrizeTip(): ReactNode {
+  return <Tip title="Relics are scarce" body="An Elite Trainer is one of the few places a relic is guaranteed: two Uncommons and a Rare on the table." footer="Until your account has discovered a Rare, an Uncommon takes its place. Leaving all three is allowed." />;
+}
+
+/** §2.11.2.3 — the collector's premium, as the line a relic card's tooltip adds. */
+export function relicPremiumLine(bought: number, listPrice: number): string {
+  return `Collector's premium: +${Math.round(RELIC_PREMIUM * 100)} % of the list price (${listPrice.toLocaleString('en-GB')} ₽) for each relic bought this run — ${bought} so far.`;
+}
+
+/** §7.3.7 — the Gym's pick: Rares at the first Gym, Legendaries from the second until the cap. */
+export function gymRelicTip(legendary: boolean, atCap: boolean): ReactNode {
+  return (
+    <Tip
+      title={legendary ? 'Legendary relics' : 'Rare relics'}
+      body={
+        legendary
+          ? 'Never on a shop shelf and never dropped — a pick like this, at a Gym victory, is the way to one.'
+          : atCap
+            ? `You already hold ${LEGENDARY_CAP} Legendaries, the most anyone carries, so this pick is the tier below.`
+            : 'The first Gym pays in Rares. From the second Gym on, the pick is Legendary.'
+      }
+      footer={`Legendary picks stop at ${LEGENDARY_CAP} a run. Leaving all three is allowed.`}
+    />
+  );
 }

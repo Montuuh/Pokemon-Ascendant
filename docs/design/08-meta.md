@@ -463,7 +463,7 @@ unlock criterion.
 | **Tight Schedule** | League micro-rest heals 20 % instead of 30 % | 1.15 | Level 4 |
 | **One Path** | **Both Gym fork routes show the same type** — no counter-pick | 1.10 | Level 4 |
 | **Dense Fog** | Every non-boss enemy starts with one Unknown intent | 1.15 | Level 5 |
-| **No Refunds** | Consumables are expended on use and do not return at combat end | 1.30 | Level 6 |
+| **Lean Pack** | Fights drop no consumables and no Poké Balls — supplies come only from shops, events and gifts | 1.30 | Level 6 |
 | **Box Squeeze** | Box capacity 4, not expandable | 1.20 | Level 7 |
 | **Trauma Surge** | Trauma costs 2 pp more per stack in each zone (−7 % / −12 %; cap unchanged) | 1.20 | Level 8 |
 | **Faint Echo** | A fainted Pokémon's discarded cards stay in the discard pile until the end of next turn | 1.20 | Level 9 |

@@ -102,7 +102,7 @@ weights up when the Box carries stacks. The offer never contains a modifier whos
 |---|---|---|---|---|---|
 | `iron-will` | Iron Will | All wild encounters have +20 % HP | 1.15 | Trainer Lv 3 | ✅ |
 | `tight-schedule` | Tight Schedule | League micro-rest heals 20 % instead of 30 % | 1.15 | Trainer Lv 4 | ✅ (inert until v0.8) |
-| `no-refunds` | No Refunds | Consumables are **expended** after use — they do not return at combat end | 1.30 | Trainer Lv 6 | ✅ |
+| `lean-pack` | Lean Pack | Fights drop no consumables and no Poké Balls — supplies come only from shops, events and gifts. *(Was No Refunds until v0.8.6 made every consumable spent; save v16 migrates the id.)* | 1.30 | Trainer Lv 6 | ✅ |
 | `dense-fog` | Dense Fog | Every non-boss enemy starts with one Unknown intent | 1.15 | Trainer Lv 5 | ✅ |
 | `box-squeeze` | Box Squeeze | Box capacity 4 instead of 6; cannot be expanded | 1.20 | Trainer Lv 7 | ✅ |
 | `trauma-surge` | Trauma Surge | Trauma costs 2 pp more per stack in each zone (−7 % / −12 %; cap unchanged) | 1.20 | Trainer Lv 8 | ✅ |

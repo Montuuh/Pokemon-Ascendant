@@ -16,7 +16,7 @@
 
 | System | Scope | Lifespan | Slot |
 |---|---|---|---|
-| **Consumables** | In-combat tools, drawn as cards | Returned at combat end | Inventory, uncapped |
+| **Consumables** | In-combat tools, drawn as cards | Spent when played (§3.5) | Inventory, uncapped |
 | **Relics** | Persistent run-state modifiers | Until run end | Inventory, uncapped (6–8 typical) |
 | **Held Items** | Per-Pokémon equipment, always on | Until re-equipped or run end | **One per Pokémon** |
 | **TMs** | A consumable class applied from the Map View | Single use | Never in the combat pile |
@@ -36,9 +36,12 @@
 
 ## §7.2.1 Rules
 
-The consumable pile is a **per-combat roster, not ammunition** (§3.5): built at combat start from the inventory,
-2 cards drawn per turn, each usable once per combat, everything returned at combat end. The **No Refunds**
-difficulty modifier is the only thing that changes that, and it is worth ×1.30 XP because of it.
+A consumable is **spent when it is played** (§3.5, v0.8.6): the pile is built at combat start from the inventory,
+2 cards are drawn per turn, and whatever was played leaves the bag when the fight ends. In exchange they are found
+everywhere — a trainer always drops some (§2.7.2), a wild node leaves the odd Poké Ball (§2.6.2), the nurse and the
+Center hand a pair over (§2.9.1, §2.11.1), shops sell them in bundles (§2.9.2, §2.11.2.2), and several Mystery
+Events are supplies (§2.10.2). The drop tables by Region live in `src/sim/run/rewards.ts` and
+[`catalogs/economy.md`](catalogs/economy.md).
 
 Duplicates stack as a count, and the pile offers distinct entries first so three Potions never flood a hand.
 
@@ -111,7 +114,8 @@ Two genuinely expendable classes that never enter the combat pile as ordinary ca
 | Great Ball 🔒 | 1 | +15 points to the catch threshold | 120 ₽ |
 | Ultra Ball 🔒 | 1 | +30 points | 250 ₽ |
 
-Balls are counted: start 3, +1 per Region, one spent per throw whether it works or not.
+Balls are counted: start 3, +1 per Region, one spent per throw whether it works or not. Found in wild nodes
+(§2.6.2), dropped now and then by trainers, and sold three to a slot on the route and five in a City.
 
 | Stone | Evolves early | Price |
 |---|---|---|
@@ -142,10 +146,16 @@ Sixty relics: **50 in the drop pool** (Common, Uncommon, Rare) plus **10 choice-
 
 | Rarity | Count | Drop weight | Typical source |
 |---|---|---|---|
-| Common | 25 | 60 % | Trainer drops, Region Shops, Safe events |
-| Uncommon | 18 | 30 % | Elite drops, City Shops, Tradeoff events |
-| Rare | 7 | 10 % | Gym drops, Victory Road, Gamble events |
-| **Legendary** | 10 | **never drops** | Guaranteed 1-of-3 picks, and the Black Market's showcase (§7.3.7) |
+| Common | 25 | 60 % | A trainer now and then (15 %), the merchant's wildcard, City Shops, a rare event |
+| Uncommon | 18 | 30 % | The Elite Trainer's pick, City Shops, a rare event |
+| Rare | 7 | 10 % | The Elite Trainer's pick, the first Gym's pick, the beaten Elite Wild, the Ring, a rare Gamble event |
+| **Legendary** | 10 | **never drops** | The Gym's 1-of-3 from the second Gym on, the Summit, and the Black Market's showcase (§7.3.7) |
+
+**Relics are scarce** (the user's call, 2026-09-30, v0.8.6). Before it a whole run ended holding about sixteen:
+a trainer dropped one a third of the time, the Elite, the Elite Wild and the Gym each dropped one outright on top
+of their picks, and every shop shelf sold two or three at a flat price. Now an ordinary fight rarely hands one
+over, the big fights hand over a *choice*, and shop relics carry the collector's premium (§2.11.2.3). Measured over
+120 harness runs: a full run ends with about nine, of which three are Gym picks and three the Elites'.
 
 Rarity is **drop weight**. Meta tier (§8.6.1) is **pool membership**. They are orthogonal and conflating them is
 the single easiest mistake to make in this system.
@@ -254,7 +264,7 @@ the relic system and retuned for permanent scope.
 
 | | |
 |---|---|
-| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory and at the Victory Road Summit. Seeded; already-held relics are excluded. And one more, off the books: the Black Market's showcase sells **one** Legendary the run does not hold, for three of your Pokémon (§2.11.6) |
+| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory from the **second** on, and at the Victory Road Summit. The first Gym's pick is three Rares (v0.8.6: the apex tier arrives mid-run, not after the first boss). Seeded; already-held relics are excluded. And one more, off the books: the Black Market's showcase sells **one** Legendary the run does not hold, for three of your Pokémon (§2.11.6) |
 | **Hold cap** | **Maximum 2 per run** from the picks. At the cap, a pick-moment offers a Rare instead, or a skip. The showcase may take a run to **3**: a run that took both Gyms' Legendaries reaches Celadon at the cap, and a showcase bound by it was shut to nearly everyone who found it (measured in v0.7.7). Three Pokémon is the brake instead |
 | **Never** | Not in Starting Relics, not in shop random stock, not in the drop pool |
 | **Meta status** | Available from run 1 — Legendary is a rarity class, not a meta tier |

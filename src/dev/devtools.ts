@@ -274,6 +274,8 @@ export function installDevTools(): void {
             store().dispatch({ type: 'choose-branch', uid: p.uid, branchId: p.branchIds[0]! });
             continue;
           }
+          // §2.8.1 — a walk to the Elite stops on its reward, where the relic pick is (the walk's arrival).
+          if (run.phase === 'reward' && kind === 'elite' && run.pendingReward?.relicPick) break;
           if (run.phase === 'reward') { store().dispatch({ type: 'claim-reward' }); continue; }
           if (run.phase === 'swap-or-skip') { store().dispatch({ type: 'resolve-recruit', releaseUid: null }); continue; }
 

@@ -909,10 +909,10 @@ export const RUN_START = {
   /** docs/design/catalogs/economy.md §1 — "start 3, +1 per Region": one more ball as each new Region begins. */
   ballsPerRegion: 1,
   /**
-   * Canon does not fix the starting kit, so this is ours to tune against the harness. A consumable is a
-   * per-combat roster, not ammunition (§3.5), so this is three Potions *per fight*, not three per run.
+   * Canon does not fix the starting kit, so this is ours to tune against the harness. Consumables are spent
+   * since v0.8.6 (§3.5), so this is three Potions for the whole opening, not three per fight.
    */
-  consumables: ['potion', 'potion', 'antidote', 'paralyze-heal'],
+  consumables: ['potion', 'potion', 'potion', 'antidote', 'paralyze-heal'],
   starterLevel: 5,
   /** §8.5.3 — a starter's run flourish: Pikachu walks in holding a Light Ball. */
   starterItems: { pikachu: 'light-ball' } as Readonly<Record<string, string>>,
@@ -927,9 +927,6 @@ export const RUN_START = {
 
 /** §7.5 — a TM drops from a Trainer battle at canon's 5 %, now that the Shop is its other source. */
 export const TM_DROP_CHANCE = 0.05;
-
-/** §7.3.1 — a relic from an ordinary Trainer. Elites and the Gym drop one outright. */
-export const RELIC_DROP_CHANCE = 0.35;
 
 /** §7.4.6 — "Trainer battles drop one 20 % of the time". Wild loot never contains a Held Item. */
 export const HELD_ITEM_DROP_CHANCE = 0.2;
