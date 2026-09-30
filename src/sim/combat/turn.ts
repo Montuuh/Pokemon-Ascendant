@@ -129,7 +129,9 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
 function escalateSupport(state: CombatState, e: EnemyCombatant, ctx: RunCtx): void {
   e.fieldTurns = (e.fieldTurns ?? 0) + 1;
   if (state.enemies[0]?.uid === e.uid) return;
-  if (e.fieldTurns < ctx.config.supportEscalateFromTurn || e.stages.attack >= 6) return;
+  // …up to supportEscalateCap stages of its own making (v0.8.5: uncapped, a trio fight's supports snowballed).
+  const grown = (e.fieldTurns - ctx.config.supportEscalateFromTurn) * ctx.config.supportEscalateStages;
+  if (e.fieldTurns < ctx.config.supportEscalateFromTurn || grown >= ctx.config.supportEscalateCap || e.stages.attack >= 6) return;
   log(state, 'enemy', `${e.name} has lingered too long and grows fierce!`);
   changeStage(state, e, 'attack', ctx.config.supportEscalateStages);
 }

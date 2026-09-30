@@ -19,14 +19,14 @@ interface Props {
   total: number;
 }
 
-const roleIcon = { offensive: IconSword, defensive: IconShieldHalf, utility: IconSparkles } as const;
-
-/** §4.1.2 — the ×N chip said in words, for the label and the tooltip. */
+/** §4.1.2 — the ×N chip said in words, for the label. */
 function effectivenessPhrase(multiplier: number): string {
-  if (multiplier === 0) return 'no effect on this target';
+  if (multiplier === 0) return 'no effect';
   if (multiplier >= 2) return `super effective, ×${multiplier}`;
   return `not very effective, ×${multiplier}`;
 }
+
+const roleIcon = { offensive: IconSword, defensive: IconShieldHalf, utility: IconSparkles } as const;
 
 // Per docs/design/ui/09 — locked move-card anatomy: type-flooded body, owner avatar + range icon + name band,
 // art window, effect plate, footer AP dots (left) + power (right). Unplayable cards stay visible (ui rule).
@@ -45,10 +45,10 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
   // do to this target, and why it is locked. It replaced nine native `title`s spread over the card's parts,
   // none of which anyone waited a second for.
   const tip = useTip(moveTip(play));
-  // §5.6 — against a group the card's own corner prints the move's power, not one enemy's number: each enemy's
-  // number is on its panel while the card is held, and a single figure here would be right for one of three.
-  const group = play.targets.length > 1;
-  const shownDamage = group ? null : play.damage;
+  // §9.2.3 / §5.6 — the corner prints the move's power, never one enemy's number: each enemy's number is on its
+  // panel while the card is held. One grammar for one enemy or three (user, 2026-09-30). The ×N chip keeps the hand
+  // comparable at a glance: it is measured against the enemy Lead, the card's default target.
+  const lead = play.damage;
 
   return (
     <button
@@ -77,11 +77,9 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         `${move.name}, ${move.type}`,
         `from ${owner.name}`,
         `${play.apCost} AP`,
-        shownDamage ? `${shownDamage.final} damage` : group && move.power > 0 ? `${move.power} power${play.hitsAll ? ', hits every enemy' : ''}` : null,
-        // Without this a Grass card into a Bug reads as "3 damage" with no reason, which is the single most
-        // confusing number on the screen — for a screen reader it was the *only* thing on the card that
-        // explained itself visually (the ×0.25 chip) and not in text.
-        shownDamage && shownDamage.typeMultiplier !== 1 ? effectivenessPhrase(shownDamage.typeMultiplier) : null,
+        move.power > 0 ? `${move.power} power${play.hitsAll ? ', hits every enemy' : ''}` : null,
+        // The chip's meaning in words: how the type lands on the enemy Lead, the card's default target.
+        lead && lead.typeMultiplier !== 1 ? `${effectivenessPhrase(lead.typeMultiplier)} on the enemy Lead` : null,
         // `describeMove` ends its own sentences, so it joins without another full stop.
         describeMove(play).replace(/\.$/, ''),
         play.playable ? null : `unplayable: ${reasonText}`,
@@ -109,11 +107,9 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
           </span>
         )}
       </span>
-      {shownDamage && shownDamage.typeMultiplier !== 1 && (
-        <span
-          className={`${styles.eff} ${shownDamage.typeMultiplier > 1 ? styles.effUp : styles.effDown} display`}
-        >
-          {shownDamage.typeMultiplier === 0 ? '×0' : `×${shownDamage.typeMultiplier}`}
+      {lead && lead.typeMultiplier !== 1 && (
+        <span className={`${styles.eff} ${lead.typeMultiplier > 1 ? styles.effUp : styles.effDown} display`}>
+          {lead.typeMultiplier === 0 ? '×0' : `×${lead.typeMultiplier}`}
         </span>
       )}
       {/* The owner is the art. A shared hand of twelve cards is unreadable if you cannot tell at a glance
@@ -143,8 +139,8 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
             </span>
           )}
         </span>
-        <span className={`${styles.power} ${group && move.power > 0 ? styles.powerOnly : ''} display tabular`} data-power-only={group || undefined}>
-          {shownDamage ? shownDamage.final : move.power > 0 ? move.power : '—'}
+        <span className={`${move.power > 0 ? styles.power : styles.noPower} display tabular`}>
+          {move.power > 0 ? move.power : '—'}
         </span>
       </span>
       {state === 'locked' && (

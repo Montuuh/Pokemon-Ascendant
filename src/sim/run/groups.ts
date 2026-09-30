@@ -22,37 +22,52 @@ export interface GroupRates {
   /** A lone wild Pokémon (not a pack) that can Call for Help: one companion waits (two in `callerHelpers`). */
   wildCaller: number;
   callerHelpers: 1 | 2;
-  /** A trainer node with two or more Pokémon fights them side by side. */
+  /** A trainer node with two or more Pokémon fights them side by side… */
   trainerPair: number;
-  /** The Elite Trainer brings a support beside its team. */
-  eliteSupport: boolean;
-  /** The Gym Leader brings a support beside its team. */
-  gymSupport: boolean;
+  /** …and, this share of those with three or more, three at once. */
+  trainerTrio: number;
+  /** The Elite Trainer and the Gym Leader send out two at a time (their teams are four and five, §5.6.3). */
+  bossDouble: boolean;
   /** The Elite Wild acts twice (§5.6.1), at this share of its HP — a second action is priced like one. */
   eliteWildActsTwice: number | null;
 }
 
 /**
- * First values (2026-09-29), held to §2.2.1's curve by the run harness; the v0.8.6 balance pass tunes them.
- * Region 1 teaches the shapes, Region 2 makes them common and gives the Elite a support, Region 3 is the accent:
- * the largest packs, pairs by default, a support at every boss's side and an Elite Wild that acts twice.
+ * The user's call (2026-09-30): many more group fights. Packs on a third of Region 1's wild nodes and half of Region
+ * 3's; trainers two at a time most of the time and three at once often; the Elite and the Gym always two at a time.
+ * Held to §2.2.1's curve by the run harness; the balance pass tunes them.
  */
 export const GROUP_RATES: readonly GroupRates[] = [
-  { wildPack: 0.15, packOfThree: 0, wildCaller: 0.1, callerHelpers: 1, trainerPair: 0.25, eliteSupport: false, gymSupport: false, eliteWildActsTwice: null },
-  { wildPack: 0.25, packOfThree: 0.25, wildCaller: 0.15, callerHelpers: 1, trainerPair: 0.35, eliteSupport: true, gymSupport: false, eliteWildActsTwice: null },
-  { wildPack: 0.3, packOfThree: 0.3, wildCaller: 0.2, callerHelpers: 1, trainerPair: 0.4, eliteSupport: true, gymSupport: false, eliteWildActsTwice: 0.75 },
+  { wildPack: 0.3, packOfThree: 0.15, wildCaller: 0.1, callerHelpers: 1, trainerPair: 0.5, trainerTrio: 0.25, bossDouble: true, eliteWildActsTwice: null },
+  { wildPack: 0.4, packOfThree: 0.35, wildCaller: 0.15, callerHelpers: 1, trainerPair: 0.6, trainerTrio: 0.4, bossDouble: true, eliteWildActsTwice: null },
+  { wildPack: 0.5, packOfThree: 0.5, wildCaller: 0.2, callerHelpers: 2, trainerPair: 0.7, trainerTrio: 0.5, bossDouble: true, eliteWildActsTwice: 0.75 },
 ];
+
+/**
+ * §5.6.2 — the species that always come ready to Call for Help, wild, whatever the node's shape: the ones the games
+ * show in swarms and colonies. Their companions are more of their own kind.
+ */
+export const SOCIAL_CALLERS: readonly string[] = [
+  'rattata', 'raticate', 'spearow', 'fearow', 'zubat', 'golbat', 'nidoran-f', 'nidorina', 'nidoran-m', 'nidorino',
+  'mankey', 'primeape', 'diglett', 'dugtrio', 'magnemite', 'magneton', 'doduo', 'dodrio',
+];
+
+/**
+ * §5.6.4 — the breather after a won group fight: this share of max HP back to every standing member of the Box's
+ * Active Team for each enemy past the first that took the field, up to `cap`.
+ */
+export const GROUP_BREATHER = { perEnemy: 8, cap: 30 } as const;
 
 /** Levels a pack's companions, a caller's helpers and a boss's support stand below the Pokémon they serve. */
 export const COMPANION_LEVEL_GAP = 1;
-export const SUPPORT_LEVEL_GAP = 2;
 
 export type GroupPlan =
   | { kind: 'single' }
   | { kind: 'pack'; size: 2 | 3 }
   | { kind: 'caller'; helpers: number }
   | { kind: 'pair' }
-  | { kind: 'support' }
+  | { kind: 'trio' }
+  | { kind: 'double' }
   | { kind: 'acts-twice' };
 
 function rngFor(node: MapNode, run: RunState): GameRng {
@@ -70,18 +85,22 @@ export function groupPlanFor(node: MapNode, run: RunState): GroupPlan {
   switch (node.kind) {
     case 'wild': {
       const roll = rng.range01();
-      if (roll < r.wildPack) return { kind: 'pack', size: rng.range01() < r.packOfThree ? 3 : 2 };
-      if (roll < r.wildPack + r.wildCaller) return { kind: 'caller', helpers: r.callerHelpers };
+      const three = rng.range01() < r.packOfThree;
+      if (roll < r.wildPack) return { kind: 'pack', size: three ? 3 : 2 };
+      // A social species calls whatever the roll says (§5.6.2); anyone else does on the table's share.
+      if (SOCIAL_CALLERS.includes(node.preview.speciesIds[0] ?? '') || roll < r.wildPack + r.wildCaller) return { kind: 'caller', helpers: r.callerHelpers };
       return { kind: 'single' };
     }
     case 'trainer': {
       const team = node.preview.enemies ?? [];
-      return team.length >= 2 && rng.range01() < r.trainerPair ? { kind: 'pair' } : { kind: 'single' };
+      const pair = rng.range01() < r.trainerPair;
+      const trio = rng.range01() < r.trainerTrio;
+      if (team.length >= 3 && pair && trio) return { kind: 'trio' };
+      return team.length >= 2 && pair ? { kind: 'pair' } : { kind: 'single' };
     }
     case 'elite':
-      return r.eliteSupport ? { kind: 'support' } : { kind: 'single' };
     case 'gym':
-      return r.gymSupport ? { kind: 'support' } : { kind: 'single' };
+      return r.bossDouble ? { kind: 'double' } : { kind: 'single' };
     case 'elite-wild':
       return r.eliteWildActsTwice !== null ? { kind: 'acts-twice' } : { kind: 'single' };
     default:
@@ -110,18 +129,6 @@ function companion(pool: string[], lead: string, level: number, tier: EnemySetup
   return { species, level: lv, tier, phaseCount: 1, role: roleFromKit(activeMoves(content, species, lv), content) };
 }
 
-/** A boss's support: from the Region's main biome, preferring one whose kit makes it a Healer or a Buffer. */
-function bossSupport(run: RunState, level: number, rng: GameRng, content: ContentRegistry): EnemySetup {
-  const region = regionContent(run.regionIndex);
-  const biome = region.biomes[region.biomeWeights[0]!.biome as BiomeId];
-  const pool = [...(biome?.common ?? []), ...(biome?.uncommon ?? [])];
-  const lv = Math.max(2, level - SUPPORT_LEVEL_GAP);
-  const helpful = pool.filter((id) => ['healer', 'buffer'].includes(roleFromKit(activeMoves(content, id, lv), content)));
-  const from = helpful.length ? helpful : pool;
-  const species = from[rng.range(0, from.length)] ?? 'pidgey';
-  return { species, level: lv, tier: 'trainer', phaseCount: 1, role: roleFromKit(activeMoves(content, species, lv), content) };
-}
-
 /** §5.6.3 — turn a node's fight into its group, as `groupPlanFor` decided. A single fight comes back unchanged. */
 export function applyGroups(scenario: ScenarioDef, node: MapNode, run: RunState, content: ContentRegistry): ScenarioDef {
   const plan = groupPlanFor(node, run);
@@ -135,27 +142,36 @@ export function applyGroups(scenario: ScenarioDef, node: MapNode, run: RunState,
   switch (plan.kind) {
     case 'pack': {
       const rest = Array.from({ length: plan.size - 1 }, () => companion(pool, lead.species, lead.level, 'wild', rng, content));
-      return { ...scenario, name: `${scenario.name} and its pack`, onField: plan.size, enemies: [lead, ...rest] };
+      const packed = { ...scenario, name: `${scenario.name} and its pack`, onField: plan.size, enemies: [lead, ...rest] };
+      return SOCIAL_CALLERS.includes(lead.species) ? withCall(packed, [lead.species], ratesFor(run).callerHelpers, rng, content) : packed;
     }
     case 'caller': {
-      const kit = (lead.moves ?? activeMoves(content, lead.species, lead.level)).slice(0, 3);
-      const helpers = Array.from({ length: plan.helpers }, () => companion(pool, '', lead.level, 'wild', rng, content));
-      return { ...scenario, enemies: [{ ...lead, moves: [...kit, 'call-for-help'], helpers }, ...scenario.enemies.slice(1)] };
+      // A social species calls its own kind; anyone else calls from its biome.
+      const kin = SOCIAL_CALLERS.includes(lead.species) ? [lead.species] : pool;
+      return withCall(scenario, kin, plan.helpers, rng, content);
     }
-    case 'pair': {
-      // The roster's Pokémon fight side by side; the second (and a third, when it enters) takes the role its kit gives.
+    case 'pair':
+    case 'trio': {
+      // The roster's Pokémon fight side by side; every one past the Lead takes the role its kit gives.
       const enemies = scenario.enemies.map((e, i) => (i === 0 ? e : { ...e, role: roleFromKit(e.moves ?? activeMoves(content, e.species, e.level), content) }));
-      return { ...scenario, onField: 2, enemies };
+      return { ...scenario, onField: plan.kind === 'trio' ? 3 : 2, enemies };
     }
-    case 'support': {
-      const top = Math.max(...scenario.enemies.map((e) => e.level));
-      const support = bossSupport(run, top, rng, content);
-      // The first of the team leads with the support beside it; the rest wait to fill the place that falls free.
-      return { ...scenario, onField: 2, enemies: [scenario.enemies[0]!, support, ...scenario.enemies.slice(1)] };
-    }
+    case 'double':
+      // §5.6.3 — the Elite and the Gym Leader send out two at a time. Their Pokémon are the team, not supports: full
+      // HP and no escalation, which through a five-Pokémon Gym would snowball (§5.6.3's measure).
+      return { ...scenario, onField: 2 };
     case 'acts-twice': {
       const share = ratesFor(run).eliteWildActsTwice ?? 1;
       return { ...scenario, enemies: scenario.enemies.map((e, i) => (i === 0 ? { ...e, acts: 2 as const, hpMultiplier: (e.hpMultiplier ?? 1) * share } : e)) };
     }
   }
+}
+
+/** §5.6.2 — give a wild Lead Call for Help and `n` companions from `kin`, a level under it. */
+function withCall(scenario: ScenarioDef, kin: string[], n: number, rng: GameRng, content: ContentRegistry): ScenarioDef {
+  const [lead, ...rest] = scenario.enemies;
+  if (!lead || (lead.moves ?? []).includes('call-for-help')) return scenario;
+  const kit = (lead.moves ?? activeMoves(content, lead.species, lead.level)).slice(0, 3);
+  const helpers = Array.from({ length: n }, () => companion(kin, '', lead.level, 'wild', rng, content));
+  return { ...scenario, enemies: [{ ...lead, moves: [...kit, 'call-for-help'], helpers }, ...rest] };
 }

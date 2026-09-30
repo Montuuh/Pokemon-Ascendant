@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
+import { PAD_LEVEL_GAP } from './region';
 import {
   activeSetups, applyBranch, autoPickMoves, createRun, defaultRunCtx, deserialiseRun, generateRegion,
   isEvolutionReady, LAYERS, maxHpOf, nodesInLayer, runReducer, serialiseRun, xpToNext, assertRegionContent,
@@ -889,11 +890,14 @@ describe('Layer-scaled difficulty — §2.6.3, §2.7.3', () => {
   });
 
   it('Trainer_SitsAboveTheWildBandOfItsLayer', () => {
+    // §2.7.3 — the roster's own Pokémon sit above the band; since v0.8.5 the padding to TEAM_SIZE stands
+    // PAD_LEVEL_GAP.trainer under the roster's floor (§5.6.3).
     const s = start(33);
     for (const node of Object.values(s.map.nodes)) {
       if (node.kind !== 'trainer') continue;
       const wildHi = wildBandFor(node.layer)[1];
-      expect(node.preview.levelBand[0], `${node.id}`).toBeGreaterThan(wildHi);
+      expect(node.preview.levelBand[1], `${node.id}`).toBeGreaterThan(wildHi);
+      expect(node.preview.levelBand[0], `${node.id}`).toBeGreaterThanOrEqual(wildHi + 1 - PAD_LEVEL_GAP.trainer);
     }
   });
 

@@ -162,10 +162,13 @@ group never doubles a status** — a status another enemy already declared this 
 Only a move that does nothing but heal or raise can be handed to the Lead (Rest would put it to sleep, Belly Drum
 would cut it); anything else stays on its caster.
 
-**Supports are meant to fall in 2–3 turns.** A support enters with `supportHpMultiplier` (0.6) of its HP. **One
-that lingers escalates**: from its `supportEscalateFromTurn`th (4th) Intent phase on the field it gains
-`supportEscalateStages` (+1) Attack at every Intent phase, logged and shown as a stage chip. A Lead never
-escalates — it is the fight. *(All four numbers are `BattleConfig` first values, 2026-09-29; the v0.8.6 balance
+**Supports are meant to fall in 2–3 turns.** A support enters with `supportHpMultiplier` (0.6) of its HP and hits
+with `supportAttackMultiplier` (0.7) of its Attack — a group widens a fight more than it multiplies its damage
+(v0.8.5: with trainers of three fighting as trios, full-Attack supports left Region 3 teams at a third of their HP
+after every trainer). **One that lingers escalates**: from its `supportEscalateFromTurn`th (4th) Intent phase on the
+field it gains `supportEscalateStages` (+1) Attack at every Intent phase, up to `supportEscalateCap` (+2) in all,
+logged and shown as a stage chip. A Lead never escalates — it is the fight. The Elite's and the Gym's second
+Pokémon are the team, not supports: no role, full HP and Attack, no escalation. *(All four numbers are `BattleConfig` first values, 2026-09-29; the v0.8.7 balance
 pass tunes them.)*
 
 ## §5.6.1 Acting twice
@@ -209,20 +212,35 @@ with a bubble that says what it means (Pillar 1).
 
 | Shape | What it is | R1 | R2 | R3 |
 |---|---|---|---|---|
-| **Pack** | A wild node's Pokémon leads companions from its biome's common list (another species first), a level lower, each a support with the role its kit gives | 15 % of wild nodes, 2 | 25 %, a quarter of them 3 | 30 %, 30 % of them 3 |
-| **Caller** | A lone wild Pokémon carries Call for Help (§5.6.2) with one companion waiting, a level lower | 10 % | 15 % | 20 % |
-| **Side by side** | A trainer with two or more Pokémon sends two out at once (`onField` 2); the second takes the role its kit gives | 25 % of such trainers | 35 % | 40 % |
-| **Brings a support** | The Elite Trainer's first Pokémon leads with a support beside it (from the Region's main biome, two levels under the team, a Healer or Buffer where it can be); the rest of the team fills the place that falls | — | ✓ | ✓ |
+| **Pack** | A wild node's Pokémon leads companions from its biome's common list (another species first), a level lower, each a support with the role its kit gives | 30 % of wild nodes; 15 % of packs are 3 | 40 %; 35 % of 3 | 50 %; half of 3 |
+| **Caller** | A lone wild Pokémon carries Call for Help (§5.6.2) with companions waiting, a level lower. **A social species always does** (below) | 10 % + social | 15 % + social | 20 % + social, 2 waiting |
+| **Two at a time** | A trainer (three Pokémon, §2.7) sends two out at once; the others take the role their kit gives | 50 % of trainers | 60 % | 70 % |
+| **Three at a time** | …or three at once, when it has three | a quarter of those | 40 % | half |
+| **Two at a time (boss)** | The Elite (four Pokémon, §2.8.1) and the Gym (four, §5.9.3) always fight two at a time, their whole team at full strength | ✓ | ✓ | ✓ |
 | **Acts twice** | The Elite Wild acts twice (§5.6.1) at 75 % of its HP | — | — | ✓ |
+
+**Social species** (`SOCIAL_CALLERS`) come ready to Call for Help whenever they are met wild, alone or leading a
+pack, and their companions are **more of their own kind**: Rattata, Spearow, Zubat, both Nidoran, Mankey, Diglett,
+Magnemite and Doduo lines — the ones the games show in swarms and colonies. *(User, 2026-09-30: "some Pokémon
+start with Call for Help".)*
 
 A support's role comes from its kit: a heal it can hand over makes a Healer, a raise a Buffer, a status or stat drop
 a Debuffer, anything else an Attacker. Every companion, helper and support is folded through the Region's stat tier,
 status accent and the run's modifiers like any enemy. The numbers live in `GROUP_RATES` (`run/groups.ts`).
 
-*Measured (v0.8.3, 120 seeds a starter): the curve holds — Region 1 60 %, Region 2 given Region 1 57 %, Region 3 given
-Region 2 52 %, the whole run 18 % (§2.2.1's targets: ~60, ~50, ~1 in 6). **The Gym's support is not placed yet**: a
-Region 3 Gym with a support beside it dropped Region 3 to 35 %, because a Gym fight runs long enough for its support
-to escalate (§5.6) turn after turn. Whether Gyms bring one — and on what terms — is the v0.8.6 balance pass's call.*
+*Why so many (user, 2026-09-30): group fights are where the game is most strategic, so they are the rule, not the
+exception. What it cost and what paid for it, measured over 360 runs: the padding stands under its team (trainer −4,
+Elite −6, Gym −6 levels), the Elite and the Gym came down to the band (§2.8.1, §5.9.3), supports hit at 70 % and
+escalate at most twice, the breather (§5.6.4) gives back what the extra enemies take, and Region 3's tier came down
+(§2.2.1). Region 1 59 %, Region 2 given 1 58 %, Region 3 given 2 42 %, the whole run 15 %.*
+
+## §5.6.4 The breather
+
+A fight **won against a group** gives back **8 % of max HP for every enemy past the first that took the field**
+(called companions included), up to **30 %**, to every standing Pokémon of the Active Team (GROUP_BREATHER), on top of
+any Pocket Healer. HP persists between fights (§2.4) and a group takes more of it than a single enemy; the breather
+gives back what the *extra* enemies took, so more group fights does not mean more attrition. A lost or escaped fight
+gives nothing.
 
 ---
 
@@ -312,11 +330,14 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
 
 ## §5.9.3 Leader design rules
 
-- **Two Pokémon, sequential.** The second is the ace, with three phases and Sturdy in Phase 3.
+- **Four Pokémon, two at a time** (§5.6.3; user, 2026-09-30: "at least four, if not five" — four is where the
+  harness keeps Region 3 winnable). The Leader's own non-ace opens; its lane's favourites pad the team (§2.5), six
+  levels under it; **the ace always comes out last**, with three phases and Sturdy in Phase 3.
 - **No mid-fight evolution.** That belongs to the Rival and the Champion. A Gym's threat is a **power premium**:
-  the non-ace sits 4 levels above the Region's wild band, the ace 6.
-- **Single-type identity.** Every Pokémon on the team is the Gym's type, which is what makes the counter-pick
-  meaningful.
+  the non-ace sits **at** the Region's wild band top, the ace **2** above (GYM_LEVEL_PREMIUM; +4 / +6 while a Gym
+  fought two Pokémon one at a time).
+- **Single-type identity.** The Leader's own Pokémon are the Gym's type and its padding comes from the lane that
+  telegraphs it, which is what makes the counter-pick meaningful.
 - **But never a free win.** Each team carries at least one answer to a full-resist party — usually an
   off-type coverage move, like the Rock Gym's Fighting-typed `body-press`.
 - **A Home Field** of its type is set at combat start (§4.3.5).

@@ -73,7 +73,7 @@ Pokémon.
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
-  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×1.95, HP
+  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×1.55, HP
   ×1 / ×1 / ×1.15), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
   Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
@@ -114,8 +114,9 @@ basic, 33 % at half, 58 % at a quarter. The card plays at any odds; a miss spend
 from the fight's stream. Master Ball Charm arms one sure throw per run. 0 HP loses the recruit. A catch is a
 **Victory with full XP**. Balls are counted: start 3, +1 per Region, one per attempt either way.
 
-**Trainers** — 9 archetypes, 1–2 Pokémon sequential, band = wild +1/+2, no hidden intents.
-**Elite Trainer** — guaranteed, 2 Pokémon 2 phases, **Rare relic 1 of 3**. Roster by Region: Rival 80/60/40 %,
+**Trainers** — 9 archetypes, **three Pokémon** (the roster's own + its archetype's, 4 levels under), one at a time,
+two at a time (50/60/70 %) or three (a quarter/40 %/half of those), band = wild +1/+2, no hidden intents.
+**Elite Trainer** — guaranteed, **four Pokémon two at a time** (its own two 2-phase, two lent between), **Rare relic 1 of 3**. Roster by Region: Rival 80/60/40 %,
 Giovanni 30 % in R3, otherwise a Specialist. The **Rival counter-picks your starter** and scales by Region band.
 **Elite Wild** — a catchable boss-wild, ≤1 per Region, not on every route: **catch it** for the rare recruit or
 **defeat it** for one Rare relic. Phase 2 makes it *easier* to catch.
@@ -225,14 +226,17 @@ catch in a pack ends the fight; the rest scatter.
 second marked *Also* — and resolves them back to back. **Calling for help** (§5.6.2): the enemy-only
 `call-for-help` move brings the caller's next authored companion onto the field as a support (at most 3 on the
 field); its chip names who comes, and the companion telegraphs before it acts. Worth ×2 to a caller standing alone.
+**Social species** (Rattata, Spearow, Zubat, the Nidoran, Mankey, Diglett, Magnemite, Doduo lines) always come
+ready to call their own kind. **The breather** (§5.6.4): a won group fight gives back 8 % max HP per extra enemy, up
+to 30 %. Supports hit at 70 % and escalate at most +2.
 **Across the run** (§5.6.3): each fight node fixes its shape with the node (a hash, not the map's stream) and its
-preview card names it — wild **packs** (15 / 25 / 30 % of wild nodes, a third Pokémon from Region 2), wild
-**callers** (10 / 15 / 20 %), trainers **side by side** (25 / 35 / 40 % of multi-Pokémon trainers), the Elite
-**brings a support** from Region 2, the Region 3 Elite Wild **acts twice** at 75 % HP. Gyms stand alone until v0.8.6.
+preview card names it — wild **packs** (30 / 40 / 50 % of wild nodes, some of three), wild **callers** (10 / 15 /
+20 % + every social species), trainers **two at a time** (50 / 60 / 70 %) or **three**, the Elite (four Pokémon) and
+the Gym (four) **always two at a time**, the Region 3 Elite Wild **acts twice** at 75 % HP (v0.8.5).
 
 **Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
 signature uncapped, Sturdy). **Gyms:** 2 Pokémon, ace 3-phase, **no mid-fight evolution** — the threat is a level
-premium (+4 non-ace, +6 ace) plus a Home Field. Mid-fight evolution belongs to the **Rival and the Champion**.
+premium (band +0 non-ace, +2 ace) plus a Home Field; **four Pokémon, two at a time, the ace last** (v0.8.5). Mid-fight evolution belongs to the **Rival and the Champion**.
 **Per-type Phase 2:** Entrenchment (Rock, Ground) · Status Siege (Poison, Grass, Bug) · Onslaught (Fire,
 Fighting, Normal) · Tempo Control (Electric, Psychic, Ice, Water).
 **Gym pool:** 4 types per Region, seed picks 2. R1 Rock/Water/Bug/Normal · R2 Fire/Grass/Electric/Poison ·

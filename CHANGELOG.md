@@ -13,6 +13,15 @@
 
 Group fights, field effects and a reworked route.
 
+### v0.8.5 — More group fights, one combat grammar · 2026-09-30
+
+Many more group fights, and one combat view for one enemy or three.
+
+- **Bigger teams.** Trainers carry 3 Pokémon; Elites and Gyms 4, two at a time.
+- **More groups.** Packs up to 50 % of wild nodes; trainers two or three at once.
+- **Social species.** Rattata, Zubat, Nidoran and others always call for help.
+- **One combat view.** A single enemy shows like a group; numbers on the panels.
+
 ### v0.8.4 — Field effects · 2026-09-30
 
 Sun, Rain, Electric Terrain, Sandstorm and Home Fields.

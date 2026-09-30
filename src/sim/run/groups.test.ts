@@ -4,7 +4,8 @@ import { createCombat } from '../combat/setup';
 import { DEFAULT_BATTLE_CONFIG } from '../combat/battleConfig';
 import { GameRng } from '../rng/gameRng';
 import { buildScenario } from './encounter';
-import { GROUP_RATES, groupPlanFor, roleFromKit } from './groups';
+import { GROUP_RATES, SOCIAL_CALLERS, groupPlanFor, roleFromKit } from './groups';
+import { TEAM_SIZE } from './region';
 import { createRun, defaultRunCtx } from './run';
 import type { MapNode, RunState } from './types';
 
@@ -34,12 +35,14 @@ describe('Groups across the run — §5.6.3', () => {
       for (const n of nodesOf(run, 'trainer')) {
         if ((n.preview.enemies ?? []).length < 2) continue;
         trainers += 1;
-        if (groupPlanFor(n, run).kind === 'pair') pairs += 1;
+        const k = groupPlanFor(n, run).kind;
+        if (k === 'pair' || k === 'trio') pairs += 1;
       }
     }
     const r1 = GROUP_RATES[0]!;
     expect(packs / wild).toBeCloseTo(r1.wildPack, 1);
-    expect(callers / wild).toBeCloseTo(r1.wildCaller, 1);
+    // Callers: the table's share of the rest, plus every social species (§5.6.2) that did not roll a pack.
+    expect(callers / wild).toBeGreaterThanOrEqual(r1.wildCaller - 0.05);
     if (trainers > 20) expect(pairs / trainers).toBeCloseTo(r1.trainerPair, 1);
   });
 
@@ -73,15 +76,32 @@ describe('Groups across the run — §5.6.3', () => {
     throw new Error('no caller in 80 runs');
   });
 
-  it('Build_Region2Elite_BringsASupport_OnFieldTwo', () => {
-    const run = createRun('squirtle', 5, ctx, 1);
-    const node = nodesOf(run, 'elite')[0]!;
-    expect(groupPlanFor(node, run).kind).toBe('support');
-    const sc = buildScenario(node, run, content, new GameRng(5))!;
-    expect(sc.onField).toBe(2);
-    expect(sc.enemies[1]!.role).toBeDefined();
-    // The support takes the Region's stat tier like everyone else (§2.2).
-    expect(sc.enemies[1]!.attackMultiplier).toBeGreaterThan(1);
+  it('Build_EliteAndGym_FightTwoAtATime_WithTheirWholeTeam', () => {
+    for (const regionIndex of [0, 1, 2]) {
+      const run = createRun('squirtle', 5, ctx, regionIndex);
+      for (const kind of ['elite', 'gym'] as const) {
+        const node = nodesOf(run, kind)[0]!;
+        expect(groupPlanFor(node, run).kind).toBe('double');
+        const sc = buildScenario(node, run, content, new GameRng(5))!;
+        expect(sc.onField).toBe(2);
+        expect(sc.enemies.length).toBeGreaterThanOrEqual(4);
+        // Their Pokémon are the team, not supports: full HP, no role.
+        expect(sc.enemies.every((e) => !e.role)).toBe(true);
+      }
+    }
+  });
+
+  it('SocialSpecies_AlwaysComesReadyToCall', () => {
+    for (let seed = 1; seed <= 120; seed++) {
+      const run = createRun('squirtle', seed, ctx);
+      const node = nodesOf(run, 'wild').find((n) => SOCIAL_CALLERS.includes(n.preview.speciesIds[0]!));
+      if (!node) continue;
+      const lead = buildScenario(node, run, content, new GameRng(seed))!.enemies[0]!;
+      expect(lead.moves).toContain('call-for-help');
+      expect(lead.helpers!.every((h) => h.species === lead.species)).toBe(true);
+      return;
+    }
+    throw new Error('no social species led a wild node in 120 runs');
   });
 
   it('Build_Region3EliteWild_ActsTwice_AtLessHp', () => {
@@ -97,9 +117,9 @@ describe('Groups across the run — §5.6.3', () => {
     throw new Error('no Elite Wild in 40 Region 3 runs');
   });
 
-  it('Region1Gym_And_Elite_StaySingle', () => {
+  it('Trainers_CarryTheirRegionsTeamSize', () => {
     const run = createRun('squirtle', 3, ctx);
-    for (const n of [...nodesOf(run, 'gym'), ...nodesOf(run, 'elite')]) expect(groupPlanFor(n, run).kind).toBe('single');
+    for (const n of nodesOf(run, 'trainer')) expect(n.preview.enemies!.length).toBeGreaterThanOrEqual(TEAM_SIZE.trainer[0]);
   });
 
   it('RoleFromKit_HealMakesAHealer_StatusADebuffer_ElseAttacker', () => {

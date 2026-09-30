@@ -137,8 +137,9 @@ export function homeFieldLabel(type: string): string {
 /** §5.6.3 — a fight node's shape, as its preview card names it. */
 export const GROUP_LABEL: Record<string, string> = {
   caller: 'Calls for help',
-  pair: 'Side by side',
-  support: 'Brings a support',
+  pair: 'Two at a time',
+  trio: 'Three at a time',
+  double: 'Two at a time',
   'acts-twice': 'Acts twice',
 };
 
@@ -152,7 +153,8 @@ export const GROUP_HINT: Record<string, string> = {
   pack: 'The wild Pokémon comes with company from its biome: it leads, the rest stand behind it as supports. Melee reaches only the one in front; a catch scatters the rest.',
   caller: 'The wild Pokémon can Call for Help: a companion is waiting to join it. The call is telegraphed a turn ahead, with the name of who comes.',
   pair: 'The trainer sends out two Pokémon at once. The first leads, the second supports it from behind.',
-  support: 'A support stands beside the team, healing or powering up whoever leads. Take it out with Ranged or area moves.',
+  trio: 'The trainer sends out three Pokémon at once: one leads, two support it from behind. The rest wait to fill a place that falls.',
+  double: 'Two of the team fight at once, the rest waiting to step in. Melee reaches only the one in front.',
   'acts-twice': 'It takes two actions a turn, both shown. It has less HP to make up for it.',
 };
 

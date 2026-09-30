@@ -226,15 +226,15 @@ export function CombatScreen() {
       // §5.6.1 — each action is its own hit, so a Pokémon that acts twice puts two chips on the same portrait.
       const i = h.action === 1 ? e.second : e.intent;
       const move = i?.moveId ? ctx.content.move(i.moveId).name : 'attack';
-      return { key: `${h.enemyUid}#${h.action}`, enemyUid: h.enemyUid, amount: h.amount, name: e.name, move, ...(group ? { icon: portraitOf(e) } : {}) };
+      return { key: `${h.enemyUid}#${h.action}`, enemyUid: h.enemyUid, amount: h.amount, name: e.name, move, icon: portraitOf(e) };
     });
     return { incoming: list, incomingKo: list.length > 0 && list.reduce((a, h) => a + h.amount, 0) >= mon.hp };
   }
 
   /** §9.2.4 — the held card's number on one enemy (or that it cannot reach it). */
   function previewOn(uid: string): TargetPreview | null {
-    // One enemy: the breakdown box beside it already carries the number; a second copy on the panel is noise.
-    if (!group || !previewPlay || !previewPlay.aimsAtFoe) return null;
+    // §9.2.4 — one grammar for one enemy or three (user, 2026-09-30): the held card's number sits on every panel.
+    if (!previewPlay || !previewPlay.aimsAtFoe) return null;
     const t = previewPlay.targets.find((x) => x.uid === uid);
     if (!t) return null;
     const hp = enemies.find((e) => e.uid === uid)?.hp ?? 0;
@@ -297,9 +297,10 @@ export function CombatScreen() {
   const allySelectable = selection.mode === 'consumable-ally';
   const stepBackSelectable = selection.mode === 'step-back' && selectedPlay ? new Set(selectedPlay.stepBackOptions) : new Set<number>();
   const enemyTargetable = interactive && ((!!selectedPlay && selection.mode === 'card' && selectedPlay.aimsAtFoe) || selection.mode === 'consumable-foe' || ballDrag || (!!draggedPlay && draggedPlay.aimsAtFoe));
-  // The big breakdown box: for one enemy, whenever a damaging card is held; in a group, for the enemy it points at.
-  const boxDamage = group ? (aimedTarget?.reachable ? aimedTarget.damage : null) : previewPlay?.damage ?? null;
-  const boxEnemy = group ? enemies.find((e) => e.uid === aimUid) ?? null : enemies[0] ?? null;
+  // The full breakdown opens only for the enemy the card points at (under the drag, or the pointer once selected);
+  // the numbers themselves are on the panels. The same with one enemy as with three (user, 2026-09-30).
+  const boxDamage = aimedTarget?.reachable ? aimedTarget.damage : null;
+  const boxEnemy = enemies.find((e) => e.uid === aimUid) ?? null;
 
   function benchPortrait(bi: number | undefined, cls: string | undefined) {
     if (bi === undefined) return null;
@@ -385,7 +386,7 @@ export function CombatScreen() {
               <div className={`${styles.previewValue} display tabular`}>{boxDamage.final}</div>
               <div className={styles.previewSub}>
                 {previewPlay.move.name}
-                {group ? ` → ${boxEnemy.name}` : ''} · {boxDamage.hasStab ? 'STAB ×1.5 · ' : ''}
+                {` → ${boxEnemy.name}`} · {boxDamage.hasStab ? 'STAB ×1.5 · ' : ''}
                 {boxDamage.typeMultiplier !== 1 ? `type ×${boxDamage.typeMultiplier}` : 'neutral'}
                 {boxDamage.fieldMultiplier ? ` · field ×${boxDamage.fieldMultiplier}` : ''}
                 {boxDamage.isCrit ? ' · crit' : ''}
@@ -409,7 +410,6 @@ export function CombatScreen() {
                 enemy={enemy}
                 ctx={ctx}
                 forecast={forecast}
-                compact={group}
                 targetable={enemyTargetable}
                 aimed={aimUid === enemy.uid}
                 preview={previewOn(enemy.uid)}
@@ -437,7 +437,7 @@ export function CombatScreen() {
 
         {selection.mode !== 'none' && !drag && (
           <div className={styles.hint} data-testid="selection-hint">
-            {selection.mode === 'card' && (group ? 'Click an enemy to aim it — or the card again for the Lead. Esc to cancel.' : 'Click the enemy (or the card again) to play it. Esc to cancel.')}
+            {selection.mode === 'card' && 'Click an enemy to aim it — or the card again for the Lead. Esc to cancel.'}
             {selection.mode === 'step-back' && 'Choose the bench Pokémon that takes the Lead after the hit.'}
             {selection.mode === 'consumable-ally' && 'Choose the Pokémon to use it on.'}
             {selection.mode === 'consumable-foe' && 'Choose the wild Pokémon to throw it at.'}

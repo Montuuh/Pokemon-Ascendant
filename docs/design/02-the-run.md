@@ -201,7 +201,7 @@ fight — a team of evolved Pokémon with relics and Badges out-grows a band tha
 |---|---|---|
 | 1 | ×1 | ×1 |
 | 2 | ×1 | ×1.6 |
-| 3 | ×1.15 | ×1.95 |
+| 3 | ×1.1 | ×1.55 |
 
 **Attack-heavy on purpose**: an even split (×1.2 / ×1.55 on both) reached similar clear rates with Region 3
 fights 7.5 turns long; this one keeps every Region between 4 and 5 turns a fight (4.3 / 4.6 / 4.6). More HP
@@ -216,7 +216,10 @@ difficulty pass after v0.7.1; the user asked for the later routes to be harder a
 for on Region 1's species evolved up — 59 % given Region 1 — so its tier stayed. Region 3's did not (v0.7.4):
 Alakazam, Gengar and Machamp hit harder by themselves than Region 1's lines raised sixteen levels, and at ×2.3
 Region 3 given Region 2 fell to **37 %**. Its Attack came down to **×1.95**: **47 %** over 720 runs, the whole run
-**15 %**, fights 4.9 turns long.
+**15 %**, fights 4.9 turns long. **v0.8.5 (groups everywhere, §5.6.3):** trainers of three, packs on up to half the
+wild nodes and the Elite and the Gym two at a time put far more enemies in Region 3's way, and at ×1.15 / ×1.95 it
+fell to 7 %. Its tier came down to **HP ×1.1, Attack ×1.55** — Region 3 given Region 2 **42 %**, the whole run
+**15 %** over 360 runs; the balance pass takes it back to ~50 %.
 
 ---
 
@@ -565,8 +568,10 @@ A late-Region recruit spawns near the top of its layer's band and derives its kn
 
 # §2.7 Trainer Battles
 
-A human trainer fielding **1–2 Pokémon sequentially** — the second enters when the first faints. Distinct from
-Elites (§2.8) and Gyms (§5.8).
+A human trainer fielding **three Pokémon** (TEAM_SIZE; user, 2026-09-30: trainers carry more): its roster's own,
+then more of its archetype's from the same Region, **four levels under** the roster's floor so the padding widens a
+fight rather than doubling it. It fields them one after another, **two at a time** (50 / 60 / 70 % of trainers by
+Region) or **three at once** (a quarter / 40 % / half of those), §5.6.3. Distinct from Elites (§2.8) and Gyms (§5.8).
 
 ## §2.7.1 Archetypes
 
@@ -620,7 +625,11 @@ Two node types sit above Trainer Battles and below the Gym.
 
 ## §2.8.1 The Elite Trainer
 
-A human mini-boss: **2 Pokémon, 2 phases each** (the Rival's Region 3 ace gets 3 and evolves mid-fight).
+A human mini-boss: **four Pokémon, two at a time** (§5.6.3; user, 2026-09-30: an Elite carries at least four). Its
+own two keep **2 phases each** (the Rival's Region 3 ace gets 3 and evolves mid-fight): the first opens, the second
+closes; the Region's trainers lend the two between them, six levels under the Elite's floor, one phase each. The
+Elite sits **at** the wild band's top (ELITE_LEVEL_PREMIUM 0; +2 while it fought one Pokémon at a time, which in a
+double lost Region 1 runs at the Elite nine times in ten).
 Guaranteed once per Region in the late trunk. **No type lock** — that identity belongs to Gyms, which makes the
 Elite a different kind of test from the Gym ahead of it.
 
@@ -1237,7 +1246,7 @@ three a visit in two and a half turns a stalk.
 went from 55 % to 67 %, Region 3 given Region 2 from 43 % to 49 %, the whole run from 13 % to 18 %. A Box one
 Pokémon deeper, and a fresh line evolving on the spot, is what the building is for; the whole run and Region 3 now
 sit on §2.2.1's targets, and Region 2 sits seven points over its ~60 %, inside its guard. The tier is left alone:
-v0.8's multi-enemy fights move every Region, and the balance pass after them (v0.8.6) retunes the curve once.
+v0.8's multi-enemy fights move every Region, and the balance pass after them (v0.8.7) retunes the curve once.
 
 **🖤 The Black Market** *(Celadon only, a secret beneath the Game Corner)* — **Team Rocket's** back room. It has
 **no door on the City map**: at the back of the Game Corner, drawn from FireRed / LeafGreen's own room, a Rocket
@@ -1285,7 +1294,7 @@ Region 3 given Region 2 goes from **49 % to 37 %**, the whole run from 18 % to 1
 the noise; the showcase is the cost. That is the design working: three Pokémon is a price, and buying it by reflex
 loses more than it wins — it is for the Box with fodder to spare and a Legendary that finishes its build. The
 default harness plays the player who has not found the secret, so the curve (§2.2.1) is untouched. The prices are
-first values for the balance pass (v0.8.6).
+first values for the balance pass (v0.8.7).
 
 ---
 

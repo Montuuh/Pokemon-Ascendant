@@ -22,8 +22,6 @@ interface Props {
   enemy: EnemyCombatant;
   ctx: CombatCtx;
   forecast: TurnForecast;
-  /** §5.6 — two or three enemies stand together: the panel is drawn compact and names its place. */
-  compact: boolean;
   targetable: boolean;
   /** The card being dragged or pointed is over this enemy. */
   aimed: boolean;
@@ -36,13 +34,14 @@ interface Props {
 // Per §9.2.2.3 / §9.2.5 — one enemy's HUD: the intent chip (kind glyph, the move, its target, and for a single
 // hit the number it lands), the card with HP, phase markers, status and stages, the catch pill in a wild fight,
 // and — while a card is held — the number that card would deal here (§9.2.4). The sprite lives in the arena.
-export function EnemyPanel({ state, enemy, ctx, forecast, compact, targetable, aimed, preview, onClick, onHover, fxClass }: Props) {
+export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass }: Props) {
   const phase = currentPhase(enemy, ctx.config);
   const gauge = catchStatus(state, ctx, enemy.uid);
   const catchTipProps = useTip(gauge ? catchTip(gauge) : null);
-  const place = state.enemies.length > 1 ? enemySlotLabel(state, enemy) : null;
+  // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
+  const place = enemySlotLabel(state, enemy);
   // §5.6 — in a group the enemy's card is the door to its place and role.
-  const cardTipProps = useTip(place ? roleTip(place, enemy.role ?? null, ctx.config.supportEscalateFromTurn) : null);
+  const cardTipProps = useTip(roleTip(place, enemy.role ?? null, ctx.config.supportEscalateFromTurn, state.enemies.length + state.enemyQueue.length <= 1));
   // §5.5.1 — under Trainer's Instinct the enemy's committed plan for next turn sits under this turn's.
   const next = enemy.next?.intent ?? null;
   const nextMove = next?.moveId ? ctx.content.move(next.moveId) : null;
@@ -58,7 +57,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, compact, targetable, a
     : 'Wild';
 
   return (
-    <div className={[styles.zone, compact ? styles.compact : ''].join(' ')} data-testid="foe-panel" data-enemy-uid={enemy.uid} onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}>
+    <div className={[styles.zone, styles.compact].join(' ')} data-testid="foe-panel" data-enemy-uid={enemy.uid} onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}>
       <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={0} />
       {enemy.second && enemy.hp > 0 && <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={1} />}
 
@@ -112,7 +111,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, compact, targetable, a
           <img className={`${styles.icon} pixel`} src={iconOf(enemy)} alt="" width={48} height={40} />
           <span className={styles.types}>
             {enemy.types.map((t) => (
-              <TypeBadge key={t} type={t} size={compact ? 14 : 18} defenderTypes={enemy.types} />
+              <TypeBadge key={t} type={t} size={14} defenderTypes={enemy.types} />
             ))}
           </span>
           <span className={styles.nameBlock}>
@@ -123,11 +122,11 @@ export function EnemyPanel({ state, enemy, ctx, forecast, compact, targetable, a
             </span>
           </span>
           <span className={styles.badges}>
-            {enemy.status && <StatusBadge status={enemy.status.kind} size={compact ? 22 : 28} />}
-            {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={compact ? 22 : 28} />}
+            {enemy.status && <StatusBadge status={enemy.status.kind} size={22} />}
+            {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={22} />}
           </span>
         </span>
-        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={compact ? 10 : 14} />
+        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={10} />
         <span className={styles.hpRow}>
           <span className={`display tabular ${styles.hpText}`}>
             {enemy.hp} / {enemy.maxHp}
@@ -154,22 +153,10 @@ export function EnemyPanel({ state, enemy, ctx, forecast, compact, targetable, a
         </span>
       </button>
 
-      {gauge && compact && (
+      {gauge && (
         <div className={styles.catchInline} data-testid="catch-pill" data-chance={catchPercent(gauge)} {...catchTipProps}>
           <span className={styles.ball} />
           <span className="display tabular">{gauge.ballsLeft === 0 ? 'no balls' : gauge.guaranteed ? 'SURE' : `${catchPercent(gauge)}%`}</span>
-        </div>
-      )}
-      {gauge && !compact && (
-        <div className={[styles.catch, gauge.chance >= 0.5 ? styles.catchReady : ''].join(' ')} data-testid="catch-pill" data-chance={catchPercent(gauge)} {...catchTipProps}>
-          <span className={styles.ball} />
-          <span className={styles.catchTrack}>
-            <span className={styles.catchFill} style={{ width: `${catchPercent(gauge)}%` }} />
-          </span>
-          {/* §2.6.4 (2026-09-21) — the number *is* the chance now, so it is printed as one. Weaken or status
-              the target and watch it climb; the bar is the same number as a length. */}
-          <span className={`${styles.catchLabel} display`}>{gauge.ballsLeft === 0 ? 'no balls' : gauge.guaranteed ? 'SURE' : `${catchPercent(gauge)}%`}</span>
-          <span className={styles.catchBalls}>×{gauge.ballsLeft}</span>
         </div>
       )}
     </div>

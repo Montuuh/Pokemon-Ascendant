@@ -154,20 +154,6 @@
 .chipInfo {
   background: var(--brand-cream);
 }
-.catch {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
-  border: 1px solid var(--brand-red);
-  border-radius: var(--radius-pill);
-  padding: 5px 12px 5px 8px;
-  backdrop-filter: blur(4px);
-}
-.catchReady {
-  border-width: 2px;
-  box-shadow: 0 0 18px rgba(84, 217, 138, 0.55);
-}
 .ball {
   width: 18px;
   height: 18px;
@@ -176,33 +162,8 @@
   border: 2px solid #2a2230;
   flex: 0 0 auto;
 }
-.catchTrack {
-  width: 120px;
-  height: 9px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-sunken);
-  overflow: hidden;
-}
-.catchFill {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent-warning), var(--accent-positive));
-  transition: width var(--motion-slow) ease-out;
-}
-.catchLabel {
-  font-size: 12px;
-  color: var(--ink-secondary);
-  min-width: 62px;
-}
-.catchReady .catchLabel {
-  color: var(--accent-positive);
-}
-.catchBalls {
-  font-size: 12px;
-  color: var(--ink-muted);
-}
 
-/* §5.6 — two or three enemies stand together: every panel is drawn smaller so the three fit the column. */
+/* §5.6 — one look for one enemy or three (v0.8.5): every panel drawn small enough that three fit the column. */
 .compact {
   gap: var(--sp-1);
 }
@@ -242,7 +203,7 @@
 .hitPreview {
   position: absolute;
   top: calc(var(--sp-3) * -1);
-  right: var(--sp-2);
+  left: var(--sp-2);
   display: inline-flex;
   align-items: baseline;
   gap: var(--sp-1);
@@ -269,7 +230,7 @@
 .reachLock {
   position: absolute;
   top: calc(var(--sp-3) * -1);
-  right: var(--sp-2);
+  left: var(--sp-2);
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);

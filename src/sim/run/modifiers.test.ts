@@ -86,8 +86,11 @@ describe('Difficulty modifiers — §8.8', () => {
     const gym = nodesInLayer(harsh.map, harsh.map.layers - 1)[0]!;
     const rng = { range01: () => 0.5, chance: () => false, cursor: 1 } as never;
     const scenario = buildScenario(gym, harsh, content, rng)!;
-    // Geodude 2 → 3; Graveler is already a three-phase ace and stays there, which is what the card says.
-    expect(scenario.enemies.map((e) => e.phaseCount)).toEqual([3, 3]);
+    // Every Gym Pokémon gains a phase, never past three: Geodude 2 → 3, the padding 1 → 2, and Graveler is already a
+    // three-phase ace and stays there, which is what the card says.
+    const plain = buildScenario(gym, start([]), content, rng)!;
+    expect(scenario.enemies.map((e) => e.phaseCount)).toEqual(plain.enemies.map((e) => Math.min(3, e.phaseCount + 1)));
+    expect(scenario.enemies.at(-1)!.phaseCount).toBe(3);
   });
 
   it('DenseFog_HidesTheFirstIntentOfAnOrdinaryEnemy_§5.5', () => {

@@ -37,6 +37,8 @@
 | **Call for Help** | §5.6.2 | The enemy-only intent that brings a named companion onto the field as a support. |
 | **Battlefield** | §4.3, §2.6.1 | A neutral field (Sun, Rain, Electric Terrain, Sandstorm) a biome carries past the fork. |
 | **Home Field** | §4.3.5 | A Gym Leader's or Elite's own type, ×1.2 for its moves only. |
+| **Breather** | §5.6.4 | After a won group fight, 8 % max HP back per enemy past the first, up to 30 %. |
+| **Social species** | §5.6.2–§5.6.3 | A species that always comes ready to Call for Help, and calls its own kind. |
 | **Group plan** | §5.6.3 | A fight node's fixed shape — single, pack, caller, side by side, support, acts twice — named on its preview card. |
 | **Intent card** | §9.2.6 | The bubble on an intent chip: move, target, the HP it takes off each Pokémon, riders, recharge. |
 | **Counter-intel** | §5.7 | A fully-scouted boss deprioritises its top intent ×0.7 and loses the randomness floor. |

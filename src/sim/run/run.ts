@@ -8,6 +8,7 @@ import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
 import { generateRegion, WILD_RARE_CHANCE } from './map';
 import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RELIC_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
 import { AID_HEAL_PCT, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollLegendaryOffer, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
+import { GROUP_BREATHER } from './groups';
 import { CASINO, CITIES, RING, cityAfter, isFinalRegion, pocketColour } from './cities';
 import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
@@ -836,7 +837,11 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
         // §2.11.3 Pocket Healer — a share of max HP back for winning, applied *after* the fight's HP is
         // carried across so it heals the damage that was actually taken rather than the damage predicted.
-        const healPct = report.outcome === 'victory' || report.outcome === 'caught' ? victoryHealPct(draft, ctx.content) : 0;
+        // §5.6.4 — the breather: a fight won against a group gives back a share of max HP for every enemy past the
+        // first that took the field, so a group widens a fight without multiplying the attrition it leaves behind.
+        const won = report.outcome === 'victory' || report.outcome === 'caught';
+        const extra = Math.max(0, (report.fielded ?? 1) - 1);
+        const healPct = won ? victoryHealPct(draft, ctx.content) + Math.min(GROUP_BREATHER.cap, extra * GROUP_BREATHER.perEnemy) : 0;
 
         // §8.6.1 Cleanse Tag's discovery counts statuses taken across the whole run.
         draft.stats.statusesTaken += report.tally?.statusesTaken ?? 0;

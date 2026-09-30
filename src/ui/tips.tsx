@@ -193,7 +193,8 @@ export function groupTip(plan: GroupPlan): ReactNode {
 }
 
 /** §5.6 — an enemy's place in a group: the Lead in front, or a support behind it with its role. */
-export function roleTip(place: string, role: string | null, escalateFrom: number): ReactNode {
+export function roleTip(place: string, role: string | null, escalateFrom: number, alone = false): ReactNode {
+  if (place === 'Lead' && alone) return <Tip title="Enemy Lead" body="It stands alone. Every card reaches it; Melee cards reach only the enemy that leads." />;
   if (place === 'Lead') {
     return <Tip title="Enemy Lead" body="It stands in front of its group. Your Melee cards reach only this one; Ranged and area cards reach the rest. If it falls, the strongest of the others steps up." />;
   }

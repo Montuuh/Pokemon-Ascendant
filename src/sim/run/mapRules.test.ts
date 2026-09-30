@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
+import { GYM_LEVEL_PREMIUM, PAD_LEVEL_GAP, TEAM_SIZE } from './region';
 import {
   FORK_LAYER, LANE_THEME, LAYERS, ROUTE_LAYERS, drawGymPair, generateRegion, gymById, gymTeamFor,
   nodesInLayer, wildBandFor,
@@ -33,15 +34,20 @@ describe('Map generation rules — §2.5', () => {
   });
 
   it('TheGymScalesWithTheRoute_§5.9.3', () => {
-    // The power premium is band + 4 for the non-ace and band + 6 for the ace, *derived*, so a route change
-    // cannot leave the climax behind. That is exactly what pinning the levels did on the jump to twelve.
+    // The power premium is derived from the band (GYM_LEVEL_PREMIUM), so a route change cannot leave the climax
+    // behind — which is exactly what pinning the levels did on the jump to twelve. Since v0.8.5 the Leader fields
+    // TEAM_SIZE.gym Pokémon: its own non-ace at the premium, the padding under it, the ace last.
     const top = wildBandFor(ROUTE_LAYERS - 2)[1];
     for (const id of ['rock-gym-r1', 'water-gym-r1', 'bug-gym-r1', 'normal-gym-r1']) {
-      const team = gymTeamFor(gymById(id));
-      expect(team[0]!.level, `${id} slot 1`).toBe(top + 4);
-      expect(team[team.length - 1]!.level, `${id} ace`).toBe(top + 6);
-      // §5.9.3 — the ace is a three-phase Pokémon and the other is not.
+      const gym = gymById(id);
+      const team = gymTeamFor(gym);
+      expect(team).toHaveLength(TEAM_SIZE.gym[0]);
+      expect(team[0]!.level, `${id} slot 1`).toBe(top + GYM_LEVEL_PREMIUM.other);
+      expect(team[team.length - 1]!.level, `${id} ace`).toBe(top + GYM_LEVEL_PREMIUM.ace);
+      expect(team[team.length - 1]!.species).toBe(gym.team[gym.team.length - 1]!.species);
+      // §5.9.3 — the ace is a three-phase Pokémon and the rest are not.
       expect(team[team.length - 1]!.phaseCount).toBe(3);
+      for (const m of team.slice(gym.team.length - 1, -1)) expect(m.level).toBe(top + GYM_LEVEL_PREMIUM.other - PAD_LEVEL_GAP.gym);
     }
   });
 

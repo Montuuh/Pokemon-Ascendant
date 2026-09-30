@@ -331,7 +331,7 @@ A Gym Leader or Elite sets a field matching **its own type** at combat start, sh
 
 *(v0.8.4: ×1.5 first. §5.9.3's level premium was tuned before any Home Field existed, and the two together made a
 Gym a wall — Region 3's Gym deaths went from 6 % to 27 % of Gym fights. ×1.2 keeps the turf a real threat, measured
-at the harness: Region 3 given Region 2 41 %, the whole run 14 %; the v0.8.6 balance pass weighs it against the
+at the harness: Region 3 given Region 2 41 %, the whole run 14 %; the v0.8.7 balance pass weighs it against the
 premium.)*
 
 ## §4.3.6 Counterplay

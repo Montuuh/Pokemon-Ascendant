@@ -1,5 +1,6 @@
 import type { ContentRegistry } from '../content/defs';
 import type { PokemonType } from '../types';
+import { fnv1a } from '../rng/rngStreams';
 
 // The Regions' content tables: biomes, wild pools, trainer rosters, the Elites and the Gyms (§2.6.1, §2.6.3,
 // §2.7.1, §2.8, §5.9), one `RegionContent` per Region. Rows mirror docs/design/catalogs/{biomes-regions,trainers,
@@ -91,7 +92,47 @@ export function wildBandFor(layer: number, band: readonly [number, number] = WIL
 export function trainerTeamFor(roster: TrainerRoster, layer: number, band: readonly [number, number] = WILD_LEVEL_BAND): { species: string; level: number }[] {
   const base = wildBandFor(layer, band)[1] + 1;
   const floor = Math.min(...roster.team.map((m) => m.level));
-  return roster.team.map((m) => ({ species: m.species, level: base + (m.level - floor) }));
+  const team = roster.team.map((m) => ({ species: m.species, level: base + (m.level - floor) }));
+  // §2.7.1 / §5.6.3 — a trainer carries the Region's team size (TEAM_SIZE): the roster's own Pokémon first, then
+  // more of its archetype's, at its lowest level. Pure, so the map's preview and the fight always agree.
+  const regionIndex = Math.max(0, REGIONS.findIndex((r) => r.trainers.some((t) => t.id === roster.id)));
+  const pool = [...new Set(REGIONS[regionIndex]!.trainers.filter((t) => t.archetype === roster.archetype).flatMap((t) => t.team.map((m) => m.species)))];
+  return padTeam(team, pool, TEAM_SIZE.trainer[regionIndex] ?? team.length, base - PAD_LEVEL_GAP.trainer, roster.id);
+}
+
+/**
+ * §5.6.3 — how many Pokémon a trainer, an Elite and a Gym Leader carry, per Region. The user's call (2026-09-30):
+ * trainers carry more and fight two or three at once; an Elite at least four, a Gym Leader five.
+ */
+export const TEAM_SIZE = { trainer: [3, 3, 3], elite: [4, 4, 4], gym: [4, 4, 4] } as const;
+
+/**
+ * §5.6.3 — how many levels under the team's own Pokémon the ones padding it stand. The padding widens a fight; the
+ * Leader's and the Elite's own Pokémon stay the threat. Tuned with the run harness (§2.2.1).
+ */
+export const PAD_LEVEL_GAP = { trainer: 4, elite: 6, gym: 8 } as const;
+
+/**
+ * §2.8.1 / §5.9.3 — the Elite's and the Gym's level premium over the band. +2 and +4/+6 before v0.8.5, when a boss
+ * fought one Pokémon at a time with two of them; two at a time with four or five, the same premium lost R1 runs at
+ * the Elite nine times in ten (harness, 2026-09-30).
+ */
+export const ELITE_LEVEL_PREMIUM = 0;
+export const GYM_LEVEL_PREMIUM = { other: 0, ace: 2 } as const;
+
+/**
+ * Pad a team to `size` from `pool` (another species first), deterministically: the pick is a hash of `key` and
+ * the slot, never a draw, so no stream moves and a saved map rebuilds the same teams.
+ */
+function padTeam<T extends { species: string; level: number }>(team: T[], pool: string[], size: number, level: number, key: string, extra?: Omit<T, 'species' | 'level'>): T[] {
+  const out = [...team];
+  for (let i = 0; out.length < size && pool.length; i++) {
+    const fresh = pool.filter((s) => !out.some((m) => m.species === s));
+    const from = fresh.length ? fresh : pool;
+    const species = from[fnv1a(`${key}:${i}`) % from.length]!;
+    out.push({ ...(extra as object), species, level } as T);
+  }
+  return out;
 }
 
 export interface TrainerRoster {
@@ -172,10 +213,18 @@ export const ELITE: EliteDef = {
 };
 
 /** §2.8.1 — the Elite sits two levels above the wild band of its layer. It is the run's hardest fight but one. */
-export function eliteTeamFor(layer: number, elite: EliteDef = ELITE, band: readonly [number, number] = WILD_LEVEL_BAND): { species: string; level: number }[] {
-  const base = wildBandFor(layer, band)[1] + 2;
+export function eliteTeamFor(layer: number, elite: EliteDef = ELITE, band: readonly [number, number] = WILD_LEVEL_BAND): { species: string; level: number; phaseCount: 1 | 2 | 3 }[] {
+  // §2.8.1 — band + ELITE_LEVEL_PREMIUM. Two before v0.8.5; the Elite fights two at a time with four Pokémon now.
+  const base = wildBandFor(layer, band)[1] + ELITE_LEVEL_PREMIUM;
   const floor = Math.min(...elite.team.map((m) => m.level));
-  return elite.team.map((m) => ({ species: m.species, level: base + (m.level - floor) }));
+  const own = elite.team.map((m) => ({ species: m.species, level: base + (m.level - floor), phaseCount: m.phaseCount }));
+  // §5.6.3 — four at least (TEAM_SIZE.elite): the Region's trainers lend the rest, a level under the Elite's floor,
+  // one phase each. Its first Pokémon opens, its last closes; the loaned ones stand between.
+  const regionIndex = Math.max(0, REGIONS.findIndex((r) => r.elite.id === elite.id));
+  const pool = [...new Set(REGIONS[regionIndex]!.trainers.flatMap((t) => t.team.map((m) => m.species)))];
+  const size = TEAM_SIZE.elite[regionIndex] ?? own.length;
+  const filled = padTeam(own.slice(0, 1), pool, size - (own.length - 1), base - PAD_LEVEL_GAP.elite, elite.id, { phaseCount: 1 as const });
+  return [...filled, ...own.slice(1)];
 }
 
 /**
@@ -327,7 +376,15 @@ export const GYMS: GymDef[] = [
  */
 export function gymTeamFor(gym: GymDef): { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[] }[] {
   const top = wildBandFor(ROUTE_LAYERS - 2, regionContent(gym.region - 1).wildBand)[1];
-  return gym.team.map((m, i) => ({ ...m, level: top + (i === gym.team.length - 1 ? 6 : 4) }));
+  const own = gym.team.map((m, i) => ({ ...m, level: top + (i === gym.team.length - 1 ? GYM_LEVEL_PREMIUM.ace : GYM_LEVEL_PREMIUM.other) }));
+  // §5.6.3 / §5.9.3 — five (TEAM_SIZE.gym): the Leader's own, and its type's Pokémon from its lane (the lane theme's
+  // favourites) two levels under the premium, one phase each. The ace is always the last to come out.
+  const region = regionContent(gym.region - 1);
+  const theme = region.laneThemes[gym.type];
+  const pool = [...new Set([...(theme?.favours ?? []), ...gym.team.slice(0, -1).map((m) => m.species)])];
+  const size = TEAM_SIZE.gym[gym.region - 1] ?? own.length;
+  const opening = padTeam(own.slice(0, -1), pool, size - 1, top + GYM_LEVEL_PREMIUM.other - PAD_LEVEL_GAP.gym, gym.id, { phaseCount: 1 as const });
+  return [...opening, own[own.length - 1]!];
 }
 
 const GYM_BY_ID = new Map<string, GymDef>();
@@ -829,7 +886,7 @@ export interface StatTier {
 export const REGION_STAT_TIER: readonly StatTier[] = [
   { hp: 1, attack: 1 },
   { hp: 1, attack: 1.6 },
-  { hp: 1.15, attack: 1.95 },
+  { hp: 1.1, attack: 1.55 },
 ];
 
 /**

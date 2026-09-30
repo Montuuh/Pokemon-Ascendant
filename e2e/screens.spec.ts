@@ -45,8 +45,12 @@ test('hovering a damaging card shows the sim-computed preview; melee bench cards
   await expect(page.getByTestId('combat-screen')).toBeVisible();
   const damaging = page.locator('[data-testid^="card-"][data-state="playable"]').first();
   await damaging.hover();
-  const preview = page.getByTestId('damage-preview');
-  if (await preview.isVisible()) await expect(preview.locator('div').first()).toHaveText(/\d+/);
+  // §9.2.4 — one grammar for one enemy or three: the card's number sits on the enemy's panel…
+  await expect(page.getByTestId('target-preview')).toContainText(/\d+/);
+  // …and the full breakdown opens when the card is aimed at it.
+  await damaging.click();
+  await page.locator('[data-testid="foe-panel"] [data-testid^="enemy-"]').first().hover();
+  await expect(page.getByTestId('damage-preview').locator('div').first()).toHaveText(/\d+/);
   const locked = page.locator('[data-testid^="card-"][data-state="melee-needs-lead"]');
   if ((await locked.count()) > 0) await expect(locked.first()).toBeVisible();
   await page.screenshot({ path: 'playtest/combat-hover.png' });

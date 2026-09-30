@@ -30,7 +30,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   const run = useRunStore((s) => s.run);
   const plan = run ? groupPlanFor(node, run) : { kind: 'single' as const };
   const fields = run ? fieldsFor(node, run, content) : {};
-  const GroupIcon = plan.kind === 'acts-twice' ? IconRepeat : plan.kind === 'caller' ? IconUserPlus : plan.kind === 'pack' ? IconUsersGroup : IconUsers;
+  const GroupIcon = plan.kind === 'acts-twice' ? IconRepeat : plan.kind === 'caller' ? IconUserPlus : plan.kind === 'pack' || plan.kind === 'trio' ? IconUsersGroup : IconUsers;
   const roster = node.kind === 'trainer' ? (ALL_TRAINERS.find((t) => t.id === node.preview.rosterId) ?? ALL_TRAINERS.find((t) => t.name === node.preview.title)) : undefined;
 
   useEffect(() => {

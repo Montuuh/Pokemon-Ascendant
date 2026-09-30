@@ -2,7 +2,7 @@ import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { activeMoves } from '../combat/stats';
 import type { BiomeId } from './region';
-import { ALL_TRAINERS, GYM, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
+import { ALL_TRAINERS, GYM, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
 import { hasModifier, modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
 import { isThreeStageLine } from '../meta/bond';
@@ -175,7 +175,7 @@ export function buildEliteScenario(node: MapNode, run: RunState, content: Conten
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
     // By slot, not by species: a later Region's preview may have evolved the species the row names.
-    enemies: team.map((m, i): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: elite.team[i]?.phaseCount ?? 2 })),
+    enemies: team.map((m, i): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: eliteTeamFor(node.layer, elite, regionContent(run.regionIndex).wildBand)[i]?.phaseCount ?? 1 })),
   };
 }
 

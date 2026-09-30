@@ -42,6 +42,7 @@ export interface CityDef {
    * `teamSize` Pokémon. Per City, because the teams that reach Celadon are not the teams that reach Pallet.
    * Celadon's rivals are Region 2's rosters since v0.7.3 — final forms, where Region 1's had been evolved up —
    * so its ladder was retuned then: rivals of 3 rather than 4, which moved rung 1 far more than any level did.
+   * v0.8.5: both offsets +4, the levels the Gym's premium dropped (§5.6.3), so the Ring stands where it stood.
    */
   ring: { fee: number; prizes: ({ money: number } | { relicPick: true })[]; firstOffset: number; stepOffset: number; teamSize: number };
 }
@@ -49,11 +50,11 @@ export interface CityDef {
 export const CITIES: Record<CityId, CityDef> = {
   'pallet-town': {
     id: 'pallet-town', name: 'Pallet Town', afterRegion: 0, open: ['center', 'mart', 'dojo', 'ring', 'safari'], ringName: 'Challenge Ring', blackMarket: false, shop: 'mart', dojoMarkup: 1, dojoWide: false,
-    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 7, stepOffset: 3, teamSize: 3 },
+    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 11, stepOffset: 3, teamSize: 3 },
   },
   'celadon-city': {
     id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'ring', 'game-corner', 'safari'], ringName: 'Pokémon Coliseum', blackMarket: true, shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
-    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 10, stepOffset: 2, teamSize: 3 },
+    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 14, stepOffset: 2, teamSize: 3 },
   },
 };
 

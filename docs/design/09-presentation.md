@@ -115,7 +115,10 @@ hue — a requirement that exists for colour-blind players and pays off for ever
 - **The player squad sits left**: Bench 1 top-left, Bench 2 bottom-left, both the same size, each with a swap
   button showing its current AP cost. The **Lead stands forward to their right**, larger, gold-framed, crowned,
   and never overlapping them.
-- **A single enemy is the default**, drawn enlarged and imposing on the right. Two or three use the same squad
+- **One grammar for one enemy or three** (user, 2026-09-30): a lone enemy's panel, chip and numbers are exactly a
+  group's — its compact panel names it the Lead, the held card's number sits on the panel, and the full breakdown
+  opens only when the card is aimed at it. A move card's corner is always the move's power, its ×N chip how the type
+  lands on the enemy Lead. A single enemy's *sprite* still stands enlarged on the right; two or three use the squad
   grammar mirrored (§5.6): the enemy Lead forward, towards your side, its supports smaller behind it, one high and
   one low. The enemy column stacks one compact panel per enemy — its intent chip, its card with a **Lead** or
   **Support · Role** chip (the card's bubble explains the place and the role), and in a wild group the catch

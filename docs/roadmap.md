@@ -732,7 +732,24 @@ Home Field ×1.5 → ×1.2 (Region 3's Gym deaths went 6 % → 27 %), Sandstorm 
 (34 → 41 %). The curve at 120 seeds a starter: Region 3 given 2 41 %, the whole run 14 % — under §2.2.1's ~50 % and
 ~1 in 6; v0.8.6 retunes. The harness plays Defog against a hostile field. Hydration waits on Lapras's pool (v0.9.1).
 
-### v0.8.5 — Routes, revamped, and consumables that are spent  ☐
+### v0.8.5 — More group fights, one combat grammar  ✅ 2026-09-30
+The user's first iteration on v0.8 (2026-09-30), before the route revamp: many more group fights, social species that
+come ready to Call for Help, trainers with more Pokémon fighting two or three at once, an Elite and a Gym of at least
+four fighting two at a time, and one combat grammar whether one enemy stands or three.
+
+**Shipped.** §5.6.3 rewritten: packs on 30 / 40 / 50 % of wild nodes (some of three), every **social species**
+(Rattata, Spearow, Zubat, the Nidoran, Mankey, Diglett, Magnemite, Doduo lines) comes ready to call its own kind,
+trainers carry **three** (their archetype's Pokémon pad the roster, 4 levels under) and fight two at a time 50 / 60 /
+70 % or three at once, the **Elite (four) and the Gym (four, the ace last) always two at a time** at full strength.
+To keep the run winnable, measured over 360 runs: the Elite at the band (premium +2 → 0) and the Gym at band +0 / ace
++2 (was +4 / +6), supports hit at 70 % and escalate at most +2, **the breather** (§5.6.4: 8 % max HP per extra enemy
+after a won group fight, up to 30 %), Region 3's tier HP ×1.1 / Attack ×1.55, the Ring's offsets +4 to stand where
+it stood. Curve: R1 59 % · R2|R1 58 % · R3|R2 42 % · run 15 %. The Gym stays at four: five lost Region 3 at its Gym
+three times in four even at the lower premium. **UI:** one grammar — a lone enemy's panel, chip and numbers are a
+group's; the breakdown box opens only when a card is aimed; a card's corner is its power, its ×N chip measured
+against the enemy Lead.
+
+### v0.8.6 — Routes, revamped, and consumables that are spent  ☐
 The route's generation, nodes and pacing, reworked (§2.5, §2.9) — with v0.8.3's groups placed on it — and
 consumables that are **consumed for real and found far more often** (§7.2). They ship together because both change
 what a route hands you. Design pass with the user first; the route's *look* is v1.2's. *(Backlog #3, #8.)*
@@ -744,7 +761,7 @@ the vertical map is a roguelike convention borrowed from a game about climbing a
 map's standing UI findings: a biome emblem on every Wild node (they fall back to the meadow tuft), route lines
 at 3:1 against their plate (Regions 1 and 2 fall short), and the node caption on the `--type-caption` token.
 
-### v0.8.6 — The balance pass  ☐
+### v0.8.7 — The balance pass  ☐
 Levels, money, consumables, relics and prices together, against whole runs of three Regions and two Cities with
 multi-enemy fights in them — the harness first (720 runs, `CURVE_SEEDS=240`), then a playtest. After multi-enemy
 on purpose (user, 2026-09-24): a pass before it would tune fights that are about to change shape. The first of
@@ -759,6 +776,9 @@ Max HP (Region 1 13 %, 2 9 %, 3 11 %) — about eight hits to faint anyone, so a
 Also here, from v0.8.3: **whether Gyms bring a support, and on what terms.** Region 3's Gym with a support beside it
 cost Region 3 seventeen points (52 → 35 %): Gym fights run long enough for a support to escalate (§5.6) every turn.
 Options to measure: no escalation for a boss's support, a support only beside the non-ace, or a lower support level.
+Also here, from v0.8.5: **the Gym at five** (the user's "if not five") and Region 3 back to ~50 % (42 % now); the
+Challenge Ring now reads rung 1 ~75 % (its target is about half) because teams arrive stronger; the breather's 8 %
+and 30 % are first values.
 **Exit (v0.8):** fights against groups everywhere in the run, a reworked route, and the whole run balanced.
 
 ## v0.9 — The long game  ☐
@@ -838,12 +858,12 @@ the account revamps move to v0.9):
 | — | Playtest nerfs: Sleep, Mega Drain | v0.7.5 |
 | 1 | The Safari Zone | v0.7.6 |
 | 2 | The Black Market — a secret inside the Game Corner, run by Team Rocket | v0.7.7 |
-| 3 | Routes, revamped | v0.8.5 |
-| 4 | The global balance pass | v0.8.6 (after multi-enemy, per the user) and v1.0 |
+| 3 | Routes, revamped | v0.8.6 |
+| 4 | The global balance pass | v0.8.7 (after multi-enemy, per the user) and v1.0 |
 | 5 | Bond, revamped | v0.9.1 |
 | 6 | Shiny, revamped | v0.9.1 |
 | 7 | Player level & Poké Mart, revamped | v0.9.2 |
-| 8 | Consumables that are spent | v0.8.5 (with the routes) |
+| 8 | Consumables that are spent | v0.8.6 (with the routes) |
 | 9 | Double-attack enemy intents — and enemies that call for help | v0.8.2 |
 | 10 | The catch, animated | v0.9.3 |
 | 11 | The Ring moves out of the Dojo — a town Ring, and the city's Coliseum | v0.7.7 (with the City art) |
