@@ -73,8 +73,8 @@ Pokémon.
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
-  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×1 / ×1.6 / ×1.45, HP
-  ×1 / ×1 / ×1.15), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
+  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×0.8 / ×1 / ×0.8, HP
+  ×0.9 / ×0.9 / ×0.85), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
   Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
   Elite, the Lapras Elite Wild and the Fire · Grass · Electric · Poison Gyms with their Badges. 76 % of what it
@@ -240,7 +240,7 @@ the Gym (four) **always two at a time**, the Region 3 Elite Wild **acts twice** 
 
 **Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
 signature uncapped, Sturdy). **Gyms:** 2 Pokémon, ace 3-phase, **no mid-fight evolution** — the threat is a level
-premium (band +0 non-ace, +2 ace) plus a Home Field; **four Pokémon, two at a time, the ace last** (v0.8.5). Mid-fight evolution belongs to the **Rival and the Champion**.
+premium (band −2 non-ace, +0 ace, v0.8.6) plus a Home Field; **four Pokémon, two at a time, the ace last** (v0.8.5). Mid-fight evolution belongs to the **Rival and the Champion**.
 **Per-type Phase 2:** Entrenchment (Rock, Ground) · Status Siege (Poison, Grass, Bug) · Onslaught (Fire,
 Fighting, Normal) · Tempo Control (Electric, Psychic, Ice, Water).
 **Gym pool:** 4 types per Region, seed picks 2. R1 Rock/Water/Bug/Normal · R2 Fire/Grass/Electric/Poison ·
@@ -260,7 +260,7 @@ Lv3 on three-stage lines or the Mastery card in every opening hand, and the line
 
 ## 6. Progression *(Topic 6)*
 
-**XP** by tier: wild 48 / trainer 72 / elite 110 / gym 200 for the first enemy, **75 % for each one after** (v0.8.6), scaled by the level gap (Gen V's formula, §6.2.1).
+**XP** by tier: wild 29 / trainer 43 / elite 66 / gym 120 for the first enemy, **50 % for each one after** (v0.8.6), scaled by the level gap (Gen V's formula, §6.2.1).
 **Active 100 %, benched Box 75 %** (`exp-share` → 100).
 Level-ups between nodes. Curve `12 + (L−1)×4`. Single-stage species get +25 % growth.
 

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { REGION_STAT_TIER } from './region';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
@@ -101,7 +102,7 @@ describe('The Challenge Ring — §2.9.4.1', () => {
       expect(e.tier).toBe('elite');
       expect(e.phaseCount).toBe(RING.phaseCount);
       // Celadon is Region 2's City: its Ring fights at Region 2's tier and carries Region 2's accent.
-      expect(e.attackMultiplier).toBeGreaterThan(1);
+      expect(e.attackMultiplier ?? 1).toBeCloseTo(RING.attackMultiplier * REGION_STAT_TIER[1]!.attack);
       const kit = e.moves ?? activeMoves(content, e.species, e.level);
       expect(kit.some((id) => content.move(id).power === 0 && content.move(id).effects.some((fx) => fx.kind === 'status' && !fx.self)), e.species).toBe(true);
     }

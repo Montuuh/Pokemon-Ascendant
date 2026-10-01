@@ -799,6 +799,13 @@ is caught by the store and said beside the button, and a recruit swapped in at i
 **Fourth pass:** the Bag's heals, cures and Revive are usable between nodes and in town (§7.2.1, `run/fieldItems.ts`,
 the `use-item` action, the inventory's target list); a hidden team names the types its archetype usually brings
 (§2.7.3, `NodePreview.usualTypes`).
+**Fifth pass** (the user's playtest: Lv 14–15 after four nodes): **XP ×0.6 with a group's extras at 50 %** (§6.2.1)
+— the team now walks a level or two over the wild band at every layer — and the enemy side retuned to the level-matched
+team: tiers ×0.9/×0.8, ×0.9/×1, ×0.85/×0.8 (HP/Attack, §2.2.1), the Elite two under the band, the Gym −2 / ace 0
+(§5.9.3), the Ring at Gym ace +5/+4 with ×1.35 Attack instead of a wall of levels. 120 runs: R1 68 % · R2|R1 56 %
+· R3|R2 40 % · run 15 %. Also: the type chart checked cell by cell against Gen I (all 225 match, now a test); the
+"Ground resists Normal" the user saw was a dual-typed Pokémon's tooltip naming the pair's answer as one type's —
+the badge now speaks for its own type and gives the pair's on a line of its own.
 **For v0.8.8:** the harness never plays cures or X items, so a full run ends with ~37 unused consumables — tune the
 supply tables against a player who does; Region 3 back to ~50 %.
 

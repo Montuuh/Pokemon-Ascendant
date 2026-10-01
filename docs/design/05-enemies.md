@@ -342,7 +342,8 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
   harness keeps Region 3 winnable). The Leader's own non-ace opens; its lane's favourites pad the team (§2.5), six
   levels under it; **the ace always comes out last**, with three phases and Sturdy in Phase 3.
 - **No mid-fight evolution.** That belongs to the Rival and the Champion. A Gym's threat is a **power premium**:
-  the non-ace sits **at** the Region's wild band top, the ace **2** above (GYM_LEVEL_PREMIUM; +4 / +6 while a Gym
+  the non-ace sits **two under** the Region's wild band top, the ace **at** it (GYM_LEVEL_PREMIUM −2 / 0 since v0.8.6,
+when XP stopped carrying teams seven levels over their Region; 0 / +2 before; +4 / +6 while a Gym
   fought two Pokémon one at a time).
 - **Single-type identity.** The Leader's own Pokémon are the Gym's type and its padding comes from the lane that
   telegraphs it, which is what makes the counter-pick meaningful.

@@ -54,11 +54,11 @@ export interface CityDef {
 export const CITIES: Record<CityId, CityDef> = {
   'pallet-town': {
     id: 'pallet-town', name: 'Pallet Town', afterRegion: 0, open: ['center', 'mart', 'dojo', 'ring', 'safari'], ringName: 'Challenge Ring', blackMarket: false, shop: 'mart', dojoMarkup: 1, dojoWide: false,
-    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 7, stepOffset: 2, teamSize: 4 },
+    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 5, stepOffset: 2, teamSize: 4 },
   },
   'celadon-city': {
     id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'ring', 'game-corner', 'safari'], ringName: 'Pokémon Coliseum', blackMarket: true, shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
-    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 5, stepOffset: 0, teamSize: 3 },
+    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 4, stepOffset: 2, teamSize: 3 },
   },
 };
 
@@ -72,6 +72,11 @@ export const RING = {
   pickCount: 3,
   /** §2.9.4.1 — how many of a rival's Pokémon stand at once: two, like an Elite (v0.8.6). */
   onField: 2 as const,
+  /**
+   * §2.9.4.1 — a Ring rival hits harder than the route, not higher (v0.8.6): its Attack is ×this on top of the
+   * Region's tier, so the ladder stays hard while its levels stand a few over the team instead of a wall above it.
+   */
+  attackMultiplier: 1.35,
 };
 
 /**

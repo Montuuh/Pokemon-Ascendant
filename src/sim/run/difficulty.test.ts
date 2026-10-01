@@ -100,17 +100,15 @@ describe('The status accent — §2.2', () => {
 });
 
 describe('The enemy stat tier — §2.2.1', () => {
-  it('RegionOne_IsTheBaseline_LaterRegionsScaleHpAndAttack', () => {
-    for (const e of firstFight(0).enemies) {
-      expect(e.hpMultiplier).toBeUndefined();
-      expect(e.attackMultiplier).toBeUndefined();
-    }
+  it('EveryRegion_FoldsItsTierOntoItsEnemies', () => {
+    // v0.8.6: the tiers were retuned for teams at the route's level (XP cut, §6.2.1) — Region 1 sits under 1 now.
     // A multiplier of exactly 1 is not written onto the enemy at all, hence the `?? 1`.
-    for (const e of firstFight(1).enemies) {
-      expect(e.hpMultiplier ?? 1).toBeCloseTo(REGION_STAT_TIER[1]!.hp);
-      expect(e.attackMultiplier ?? 1).toBeCloseTo(REGION_STAT_TIER[1]!.attack);
+    for (const r of [0, 1, 2]) {
+      for (const e of firstFight(r).enemies) {
+        expect(e.hpMultiplier ?? 1, `R${r + 1} hp`).toBeCloseTo(REGION_STAT_TIER[r]!.hp);
+        expect(e.attackMultiplier ?? 1, `R${r + 1} attack`).toBeCloseTo(REGION_STAT_TIER[r]!.attack);
+      }
     }
-    expect(REGION_STAT_TIER[1]!.attack).toBeGreaterThan(1);
   });
 
   it('GreaterThreats_BorrowsTheNextRegionsTier_AndExtrapolatesPastTheLast_§8.8', () => {

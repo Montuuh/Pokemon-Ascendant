@@ -324,7 +324,7 @@ export function buildRingScenario(run: RunState, rung: RingRung, index: number, 
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
-    enemies: rung.team.map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: RING.phaseCount })),
+    enemies: rung.team.map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: RING.phaseCount, attackMultiplier: RING.attackMultiplier })),
     // §2.9.4.1 — a Ring rival fights the way an Elite does, two at a time (v0.8.6): the ladder's difficulty is its
     // shape, not a wall of levels the team cannot have reached.
     onField: RING.onField,

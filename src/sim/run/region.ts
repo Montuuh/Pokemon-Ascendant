@@ -117,8 +117,8 @@ export const PAD_LEVEL_GAP = { trainer: 4, elite: 6, gym: 8 } as const;
  * fought one Pokémon at a time with two of them; two at a time with four or five, the same premium lost R1 runs at
  * the Elite nine times in ten (harness, 2026-09-30).
  */
-export const ELITE_LEVEL_PREMIUM = 0;
-export const GYM_LEVEL_PREMIUM = { other: 0, ace: 2 } as const;
+export const ELITE_LEVEL_PREMIUM = -2;
+export const GYM_LEVEL_PREMIUM = { other: -2, ace: 0 } as const;
 
 /**
  * Pad a team to `size` from `pool` (another species first), deterministically: the pick is a hash of `key` and
@@ -884,9 +884,9 @@ export interface StatTier {
   attack: number;
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { hp: 1, attack: 1 },
-  { hp: 1, attack: 1.6 },
-  { hp: 1.1, attack: 1.45 },
+  { hp: 0.9, attack: 0.8 },
+  { hp: 0.9, attack: 1.0 },
+  { hp: 0.85, attack: 0.8 },
 ];
 
 /**

@@ -54,3 +54,37 @@ describe('TypeChart', () => {
     expect(effectivenessLabel(4)).toBe('quad');
   });
 });
+
+// The whole Gen I matrix, written out independently of TYPE_CHART (attacker rows, defender columns), so every one of
+// the 225 cells is checked against the source rather than against the table it would be copied from. Gen I's own
+// quirks are in it: Ghost does nothing to Psychic, Bug and Poison hit each other ×2, Ice is neutral on Fire.
+describe('The Gen I type chart, cell by cell — §4.1.2', () => {
+  const ORDER = ['normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon'] as const;
+  const GEN1: Record<(typeof ORDER)[number], string> = {
+    normal:   '1 1 1 1 1 1 1 1 1 1 1 1 .5 0 1',
+    fire:     '1 .5 .5 1 2 2 1 1 1 1 1 2 .5 1 .5',
+    water:    '1 2 .5 1 .5 1 1 1 2 1 1 1 2 1 .5',
+    electric: '1 1 2 .5 .5 1 1 1 0 2 1 1 1 1 .5',
+    grass:    '1 .5 2 1 .5 1 1 .5 2 .5 1 .5 2 1 .5',
+    ice:      '1 1 .5 1 2 .5 1 1 2 2 1 1 1 1 2',
+    fighting: '2 1 1 1 1 2 1 .5 1 .5 .5 .5 2 0 1',
+    poison:   '1 1 1 1 2 1 1 .5 .5 1 1 2 .5 .5 1',
+    ground:   '1 2 1 2 .5 1 1 2 1 0 1 .5 2 1 1',
+    flying:   '1 1 1 .5 2 1 2 1 1 1 1 2 .5 1 1',
+    psychic:  '1 1 1 1 1 1 2 2 1 1 .5 1 1 1 1',
+    bug:      '1 .5 1 1 2 1 .5 2 1 .5 2 1 1 .5 1',
+    rock:     '1 2 1 1 1 2 .5 1 .5 2 1 2 1 1 1',
+    ghost:    '0 1 1 1 1 1 1 1 1 1 0 1 1 2 1',
+    dragon:   '1 1 1 1 1 1 1 1 1 1 1 1 1 1 2',
+  };
+  it('EveryAttackerAgainstEveryDefender_MatchesGenI', () => {
+    for (const atk of ORDER) {
+      const row = GEN1[atk].split(' ').map(Number);
+      ORDER.forEach((def, i) => expect(typeMultiplierSingle(atk, def), `${atk} → ${def}`).toBe(row[i]));
+    }
+  });
+  it('NormalHitsGroundNeutrally_ItIsRockThatResistsIt', () => {
+    expect(typeMultiplier('normal', ['ground'])).toBe(1);
+    expect(typeMultiplier('normal', ['rock', 'ground'])).toBe(0.5);
+  });
+});

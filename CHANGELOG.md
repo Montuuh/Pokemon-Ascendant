@@ -20,7 +20,7 @@ Consumables used up, rarer relics, group roles, hidden rosters, less XP.
 - **Consumables are spent.** A Bag, 2 a turn; heals and cures usable between fights.
 - **Catching.** Great and Ultra Balls, higher odds, a ball picker on the catch %.
 - **Scarcer relics.** Trainers 15 % Common; Elite pick of 3; each relic bought costs +25 %.
-- **Groups.** Cover; hidden rosters with a type hint; "As Lead" damage; less XP.
+- **Groups.** Cover; hidden rosters; "As Lead" damage; far less XP; type tips fixed.
 
 ### v0.8.5 — More group fights, one combat grammar · 2026-09-30
 

@@ -32,16 +32,16 @@ export interface ProgressionConfig {
 // route has to carry a Lv 5 starter to roughly Lv 14, which is the level the Gym in §5.9 is written for.
 export const DEFAULT_PROGRESSION: ProgressionConfig = {
   // v0.8.6: ×0.8 with extra enemies at extraEnemyXpShare (were 48 / 72 / 110 / 200, every enemy in full).
-  wildXp: 48,
-  trainerXp: 72,
-  eliteXp: 110,
-  gymXp: 200,
+  wildXp: 29,
+  trainerXp: 43,
+  eliteXp: 66,
+  gymXp: 120,
   benchXpShare: 0.75,
   levelUpBaseXp: 12,
   levelUpSlopeXp: 4,
   maxLevel: 60,
   xpLevelExponent: 2.5,
-  extraEnemyXpShare: 0.75,
+  extraEnemyXpShare: 0.5,
 };
 
 /** §6.2.3 — the XP needed to leave level L. */

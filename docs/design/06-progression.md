@@ -28,15 +28,17 @@ XP is awarded at combat end and scales with the enemy tier.
 
 | Enemy | XP | Config field |
 |---|---|---|
-| Wild | 48 | `ProgressionConfig.wildXp` |
-| Trainer | 72 | `trainerXp` |
-| Elite | 110 | `eliteXp` |
-| Gym Leader | 200 | `gymXp` |
+| Wild | 29 | `ProgressionConfig.wildXp` |
+| Trainer | 43 | `trainerXp` |
+| Elite | 66 | `eliteXp` |
+| Gym Leader | 120 | `gymXp` |
 
-These are for the first enemy; **every enemy past the first pays 75 %** (`extraEnemyXpShare`, v0.8.6). Groups are the
-rule since v0.8.5, and paying every Pokémon of a trio in full carried teams seven to ten levels over their Region
-and then left them far under the Ring's rivals (measured, the user's playtest). 50 % closed the gap and broke the
-curve (Region 1 33 %); 75 % takes about two levels off and holds it. The values are set by the arc in §6.2.4, not chosen for feel: a seven-node Region has to
+These are for the first enemy; **every enemy past the first pays 50 %** (`extraEnemyXpShare`). **v0.8.6, the user's
+call ("a mega nerf"):** groups are the rule since v0.8.5, and with every Pokémon of a trio paid in full (48 / 72 /
+110 / 200) a team stood at Lv 14–15 after four nodes and seven levels over its Gym. The values are now ×0.6 with the
+extras at half, which puts the team at the route's level — about Lv 9 after four nodes, a level or two over the
+wild band at every layer (measured, the harness's per-layer trace) — and the enemy side was retuned to match
+(§2.2.1's tiers, the Elite's and the Gym's premiums), so the curve holds where it was. The values are set by the arc in §6.2.4, not chosen for feel: a seven-node Region has to
 carry a Lv 5 starter to roughly Lv 14 by the Gym. The first values tried (30/45/80/140) landed the team at
 Lv 11 and made the Gym unwinnable for two of the three starters. `src/sim/balance/runBalance.test.ts` is the
 check — change a number here and read the table, do not reason about it.

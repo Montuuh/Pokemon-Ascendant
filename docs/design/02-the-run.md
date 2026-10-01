@@ -199,9 +199,15 @@ fight — a team of evolved Pokémon with relics and Badges out-grows a band tha
 
 | Region | Max HP | Attack |
 |---|---|---|
-| 1 | ×1 | ×1 |
-| 2 | ×1 | ×1.6 |
-| 3 | ×1.1 | ×1.45 |
+| 1 | ×0.9 | ×0.8 |
+| 2 | ×0.9 | ×1 |
+| 3 | ×0.85 | ×0.8 |
+
+*(v0.8.6: retuned for teams at the route's level. The old tiers — ×1 / ×1.6 / ×1.45 Attack — were set against teams
+seven to ten levels over their Region; with XP cut (§6.2.1) the same enemies took Region 1 to 25 % and Region 2 to
+13 %. Region 3's numbers sit under Region 2's because its Pokémon are evolved, final forms at higher levels — the
+tier is a correction on top of the levels, not the escalation itself. Measured over 120 runs: R1 68 % · R2|R1 56 %
+· R3|R2 40 % · run 15 %.)*
 
 **Attack-heavy on purpose**: an even split (×1.2 / ×1.55 on both) reached similar clear rates with Region 3
 fights 7.5 turns long; this one keeps every Region between 4 and 5 turns a fight (4.3 / 4.6 / 4.6). More HP
@@ -649,8 +655,9 @@ Two node types sit above Trainer Battles and below the Gym.
 A human mini-boss: **four Pokémon, two at a time** (§5.6.3; user, 2026-09-30: an Elite carries at least four). Its
 own two keep **2 phases each** (the Rival's Region 3 ace gets 3 and evolves mid-fight): the first opens, the second
 closes; the Region's trainers lend the two between them, six levels under the Elite's floor, one phase each. The
-Elite sits **at** the wild band's top (ELITE_LEVEL_PREMIUM 0; +2 while it fought one Pokémon at a time, which in a
-double lost Region 1 runs at the Elite nine times in ten).
+Elite sits **two under** the wild band's top (ELITE_LEVEL_PREMIUM −2 since v0.8.6, when teams stopped arriving
+over-levelled; 0 in v0.8.5; +2 while it fought one Pokémon at a time, which in a double lost Region 1 runs at the
+Elite nine times in ten).
 Guaranteed once per Region in the late trunk. **No type lock** — that identity belongs to Gyms, which makes the
 Elite a different kind of test from the Gym ahead of it.
 
@@ -870,8 +877,11 @@ the rest. The ladder is rolled on arrival, so the next rival is always on screen
 
 | | Rung 1 | Each later rung | Team | Measured: rung 1 · rung 2 · ladder (runs) |
 |---|---|---|---|---|
-| **Pallet Town** | Gym ace **+7** | **+2** | 4, two at a time | 0.75 · — · **0.18** (76) |
-| **Celadon City** | Gym ace **+5** | **+0** | 3, two at a time | 0.71 · 0.21 · **0.03** (38) |
+| **Pallet Town** | Gym ace **+5** | **+2** | 4, two at a time | 0.75 · — · **0.19** (75) |
+| **Celadon City** | Gym ace **+4** | **+2** | 3, two at a time | 0.69 · 0.31 · **0.11** (35) |
+
+Every Ring rival hits at **×1.35 Attack** on top of the Region's tier (`RING.attackMultiplier`): the ladder is
+hard by how it hits and how it fights, not by standing a wall of levels over the team.
 
 *(v0.8.6, the user's call: the route ran over-levelled and the Ring then far under-levelled — its offsets had
 climbed to +18 and +21 to hold its win rate against teams seven to ten levels over their Region. With XP cut

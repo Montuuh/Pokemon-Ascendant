@@ -20,19 +20,25 @@ export const typeName = (t: string) => cap(t);
 
 // ── Types and statuses ───────────────────────────────────────────────────────────────────────────────────
 
-/** §4.1.2 — the type, and what it is weak to. Weakness is the fact a player actually wants at a glance. */
+/** §4.1.2 — a type badge: its own type's weaknesses, resistances and immunities; on a dual type, also the pair's combined line. */
 export function typeTip(type: PokemonType, defenderTypes?: readonly PokemonType[]): ReactNode {
-  const weakTo = POKEMON_TYPES.filter((atk) => typeMultiplier(atk, defenderTypes ?? [type]) > 1).map(typeName);
-  const resists = POKEMON_TYPES.filter((atk) => {
-    const m = typeMultiplier(atk, defenderTypes ?? [type]);
-    return m > 0 && m < 1;
-  }).map(typeName);
-  const immune = POKEMON_TYPES.filter((atk) => typeMultiplier(atk, defenderTypes ?? [type]) === 0).map(typeName);
-  const meta: ReactNode[] = [];
-  if (weakTo.length) meta.push(`Weak to ${weakTo.join(', ')}`);
-  if (resists.length) meta.push(`Resists ${resists.join(', ')}`);
-  if (immune.length) meta.push(`Immune to ${immune.join(', ')}`);
-  return <Tip icon={<img src={typeGlyph(type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={`${typeName(type)} type`} meta={meta} />;
+  // §4.1.2 — what one typing takes from each attacking type: weak, resists, immune.
+  const relations = (def: readonly PokemonType[]) => {
+    const m = (atk: PokemonType) => typeMultiplier(atk, def);
+    const parts: string[] = [];
+    const weak = POKEMON_TYPES.filter((atk) => m(atk) > 1).map(typeName);
+    const resists = POKEMON_TYPES.filter((atk) => m(atk) > 0 && m(atk) < 1).map(typeName);
+    const immune = POKEMON_TYPES.filter((atk) => m(atk) === 0).map(typeName);
+    if (weak.length) parts.push(`Weak to ${weak.join(', ')}`);
+    if (resists.length) parts.push(`Resists ${resists.join(', ')}`);
+    if (immune.length) parts.push(`Immune to ${immune.join(', ')}`);
+    return parts;
+  };
+  // The badge's own type, alone — a Ground badge never claims Rock's resistances. On a dual-typed Pokémon the pair's
+  // combined answer is a line of its own, named as the pair (it is what the hit will actually do).
+  const pair = defenderTypes && defenderTypes.length > 1 ? defenderTypes : null;
+  const body = pair ? <div><b>As {pair.map(typeName).join(' · ')}:</b> {relations(pair).join('. ')}.</div> : undefined;
+  return <Tip icon={<img src={typeGlyph(type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={`${typeName(type)} type`} meta={relations([type])} body={body} />;
 }
 
 /** §4.2 — a status condition, what it does, and how long it lasts. */

@@ -11,8 +11,8 @@ import styles from './TypeBadge.module.css';
 // as colour-blind-safe as a badge gets. `size` is the label's height; its width follows the sprite.
 //
 // Both badges carry their own tooltip, so every place one appears explains itself without the caller doing
-// anything. `defenderTypes` lets a badge on a dual-typed Pokémon answer "weak to what?" for the pair rather
-// than for its own type alone — the question a player is actually asking when they hover an enemy's types.
+// anything. `defenderTypes` adds, on a dual-typed Pokémon, the pair's combined answer as a line of its own — the badge
+// itself always speaks for its own type, so a Ground badge never claims Rock's resistances.
 
 /** The label alone, for callers that already own a tooltip (a move card, a Tip's icon slot). */
 export function TypeLabel({ type, size = 18, className }: { type: PokemonType | string; size?: number; className?: string }) {

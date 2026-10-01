@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { REGION_STAT_TIER } from './region';
 import { buildRegistry } from '@/content/registry';
 import {
   AVAILABLE_MODIFIERS, DEFAULT_BATTLE_CONFIG, MODIFIERS, battleConfigFor, boxCapacity, buildScenario,
@@ -75,10 +76,12 @@ describe('Difficulty modifiers — §8.8', () => {
     const rng = { range01: () => 0.5, chance: () => false, cursor: 1 } as never;
 
     const wildScenario = buildScenario(wild, harsh, content, rng)!;
-    expect(wildScenario.enemies[0]!.hpMultiplier).toBe(1.2);
+    // Iron Will's ×1.2 on top of the Region's own tier (§2.2.1).
+    const tierHp = REGION_STAT_TIER[0]!.hp;
+    expect(wildScenario.enemies[0]!.hpMultiplier).toBeCloseTo(1.2 * tierHp);
     // A trainer's Pidgey is the same Pidgey: Iron Will is a *wild* modifier.
     const trainerScenario = buildScenario(trainer, harsh, content, rng)!;
-    for (const e of trainerScenario.enemies) expect(e.hpMultiplier).toBeUndefined();
+    for (const e of trainerScenario.enemies) expect(e.hpMultiplier ?? 1).toBeCloseTo(tierHp);
   });
 
   it('MastersChallenge_PromotesBossPhases_ButNeverPastThree', () => {

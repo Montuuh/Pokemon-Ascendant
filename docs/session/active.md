@@ -23,7 +23,7 @@ screens are not mapped in `scripts/ui-audit.mjs` (shared with another session �
 `AGENTS.md`, `.agents/`, `.codex/` (Codex) are another session's; `scripts/ui-audit.mjs` is shared with it.
 
 **Test status:** `npm run check` green — 655 Vitest, typecheck, lint, §, catalogue and version guards; `e2e/supplies`,
-`economy`, `run` green. **Balance** (120 runs): R1 63 % · R2|R1 57 % · R3|R2 44 % · full run 16 %.
+`economy`, `run` green. **Balance** (120 runs, XP ×0.6, level-matched tiers): R1 68 % · R2|R1 56 % · R3|R2 40 % · full run 15 %.
 **Shipping:** `docs/release-doctrine.md` (the `ship-version` skill). **UI changes:** the `ui-review` skill.
 
 ## Standing facts
