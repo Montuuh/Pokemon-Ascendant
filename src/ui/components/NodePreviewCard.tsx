@@ -9,6 +9,7 @@ import { Tipped } from '@/ui/tooltip';
 import { fallbackBadge, nodeBadge, trainerSprite, itemIcon } from '@/ui/art';
 import { groupLabel, NODE_HINT, NODE_LABEL } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
+import { TypeBadge } from './TypeBadge';
 import styles from './NodePreviewCard.module.css';
 
 // Per docs/design/ui/screens.md §3.4 — the popover that says what is inside before you commit (Pillar 1).
@@ -98,6 +99,15 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
                 </li>
               ))}
             </ul>
+            {/* §2.7.3 — the hint the hidden team leaves: what this kind of trainer usually brings. */}
+            {node.preview.usualTypes && node.preview.usualTypes.length > 0 && (
+              <p className={styles.usual} data-testid="preview-usual-types">
+                Usually brings
+                {node.preview.usualTypes.map((t) => (
+                  <TypeBadge key={t} type={t} size={16} />
+                ))}
+              </p>
+            )}
           </>
         )}
         {!hiddenTeam && node.preview.speciesIds.length > 0 && (

@@ -35,12 +35,14 @@ export interface ItemCardProps {
   testId?: string;
   /** One more line for the card's tooltip — a shop's collector's premium (§2.11.2.3). */
   tipNote?: string;
+  /** The card opens a list below it (the bag's target list): announced as expanded or collapsed. */
+  expanded?: boolean;
 }
 
 const KIND_LABEL: Record<ItemKind, string> = { consumable: 'Item · single use', relic: 'Relic · whole run', 'held-item': 'Held item · one Pokémon', tm: 'TM · teaches a move', ball: 'Poké Ball', stone: 'Evolution Item · evolves early' };
 
 export function ItemCard(props: ItemCardProps) {
-  const { id, kind, name, description, rarity, tag, pending, footer, selected, disabled, dim, onClick, testId, tipNote } = props;
+  const { id, kind, name, description, rarity, tag, pending, footer, selected, disabled, dim, onClick, testId, tipNote, expanded } = props;
   const interactive = !!onClick;
   const Tag = interactive ? 'button' : 'div';
   // Every card explains itself the same way: what it is, how rare, what it does, and whether it works yet.
@@ -66,6 +68,7 @@ export function ItemCard(props: ItemCardProps) {
       disabled={interactive ? disabled : undefined}
       onClick={onClick}
       data-testid={testId}
+      aria-expanded={expanded}
       {...tip}
     >
       <span className={styles.art}>

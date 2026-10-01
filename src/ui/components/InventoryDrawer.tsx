@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { IconBackpack, IconCircleCheck, IconX } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { itemIcon } from '@/ui/art';
+import { effectiveMax, fieldUseRefusal, usableInField } from '@/sim';
+import { HpBar } from '@/ui/components/HpBar';
+import { itemIcon, statusGlyph } from '@/ui/art';
 import { ItemCard } from '@/ui/components/ItemCard';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Modal } from '@/ui/components/Modal';
-import { RUN_REJECT_TEXT } from '@/ui/strings';
+import { RUN_REJECT_TEXT, STATUS_LABEL } from '@/ui/strings';
 import styles from './InventoryDrawer.module.css';
 
 // Everything the run is carrying, in one drawer (§7.2–§7.5). Reachable from the Map View, because that is
@@ -15,7 +17,8 @@ import styles from './InventoryDrawer.module.css';
 // Three sections, in the order they matter:
 //   Relics     run-long, uncapped, nothing to decide — they are shown, not managed.
 //   Held Items one slot each, and the *only* thing on this screen you can change. Bag ↔ Pokémon.
-//   Bag        consumables, TMs and Evolution Items, counted. Consumables become cards inside a fight (§3.5), not here.
+//   Bag        consumables, TMs and Evolution Items, counted. Heals, cures and Revive can be used from here on a Box
+//              Pokémon (§7.2.1); everything else waits for a fight.
 
 type Tab = 'relics' | 'items' | 'bag';
 
@@ -25,6 +28,8 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
   const content = getContent();
   const [tab, setTab] = useState<Tab>(run.relics.length ? 'relics' : 'items');
   const [equipping, setEquipping] = useState<string | null>(null);
+  // §7.2.1 — the consumable whose target list is open.
+  const [using, setUsing] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   function act(action: Parameters<typeof dispatch>[0]) {
@@ -51,8 +56,7 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
         {/* §7.4.1 in the player's words. A section number is how *we* find the rule; it tells a player
             nothing, and this is the only string in the UI that was leaking one. */}
         <p className={styles.lede}>
-          <IconBackpack size={16} /> Held Items move here and nowhere else — the loadout locks with your team
-          the moment you step into a node.
+          <IconBackpack size={16} /> Move Held Items and use heals between nodes — the loadout locks when you step in.
         </p>
 
         <div className={styles.tabs} role="tablist" aria-label="Inventory sections">
@@ -199,16 +203,56 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
             <div className={styles.grid}>
               {Object.entries(counts).map(([id, n]) => {
                 const c = content.consumable(id);
+                const field = usableInField(id, content);
+                const open = using === id;
                 return (
-                  <ItemCard
-                    key={id}
-                    id={id}
-                    kind="consumable"
-                    name={c.name}
-                    description={c.description}
-                    tag={`×${n}`}
-                    testId={`bag-${id}`}
-                  />
+                  <div key={id} className={styles.baggedWrap}>
+                    <ItemCard
+                      id={id}
+                      kind="consumable"
+                      name={c.name}
+                      description={c.description}
+                      tag={`×${n}`}
+                      testId={`bag-${id}`}
+                      {...(field ? { onClick: () => setUsing(open ? null : id), selected: open, expanded: open } : {})}
+                      footer={<span className={styles.hint}>{field ? (open ? 'Pick a Pokémon ↓' : 'Use…') : 'In a fight'}</span>}
+                    />
+                    {open && (
+                      <ul className={styles.wearers} ref={(el) => el?.scrollIntoView({ block: 'nearest' })}>
+                        {run.box.map((mon) => {
+                          const max = effectiveMax(run, mon, content);
+                          const refusal = fieldUseRefusal(id, mon, max, content);
+                          const name = content.species(mon.speciesId).name;
+                          return (
+                            <li key={mon.uid}>
+                              <button
+                                type="button"
+                                className={`${styles.wearer} ${styles.useRow}`}
+                                disabled={!!refusal}
+                                onClick={() => {
+                                  if (act({ type: 'use-item', consumableId: id, uid: mon.uid }) && n <= 1) setUsing(null);
+                                }}
+                                data-testid={`use-${id}-${mon.speciesId}`}
+                                aria-label={`${refusal ? '' : `Use ${c.name} on `}${name}${mon.status ? `, ${STATUS_LABEL[mon.status.kind] ?? mon.status.kind}` : ''}${refusal ? `: ${RUN_REJECT_TEXT[refusal]}` : ''}`}
+                              >
+                                <MonIcon speciesId={mon.speciesId} size={28} />
+                                <span className={styles.useBody}>
+                                  <span>
+                                    {name} {mon.status && <img src={statusGlyph(mon.status.kind)} alt="" width={16} height={16} className={styles.useStatus} />}
+                                  </span>
+                                  <HpBar hp={mon.hp} maxHp={max} height={6} />
+                                  <span className={`${styles.useHp} tabular`}>
+                                    {mon.hp} / {max}
+                                    {refusal ? ` · ${RUN_REJECT_TEXT[refusal]}` : ''}
+                                  </span>
+                                </span>
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  </div>
                 );
               })}
               {run.tms.map((id, i) => {

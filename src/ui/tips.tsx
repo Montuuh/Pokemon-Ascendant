@@ -16,7 +16,7 @@ import { Tip } from '@/ui/tooltip';
 // words, and the § it comes from is named in a comment rather than in the text (players do not read §).
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const typeName = (t: string) => cap(t);
+export const typeName = (t: string) => cap(t);
 
 // ── Types and statuses ───────────────────────────────────────────────────────────────────────────────────
 

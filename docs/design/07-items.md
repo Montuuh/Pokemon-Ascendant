@@ -82,6 +82,12 @@ and AP.
 | **Ice Heal** | 0 | Freeze | 25 ₽ |
 | **Full Heal** | **1** | Any primary status **and** Confusion | 90 ₽ |
 
+**Out of a fight, too** (v0.8.6, the user's call): the heals, the cures and Revive can be used from the Bag between
+nodes and in town — pick the item, pick a Box Pokémon; it costs only the item. The run refuses a use that would do
+nothing (full HP, nothing to cure, fainted for a heal, standing for a Revive), and the Bag says why on each Pokémon.
+Ether, the X items, Defog and the balls act on a fight and wait for one. Not between Ring rungs, where nothing
+heals by design (§2.9.4.1). (`run/fieldItems.ts`.)
+
 Single cures are free to play because the cost is *carrying* them — each one spent is one fewer in the bag, and
 it takes one of the turn's two item uses. Full Heal costs 1 AP precisely so the five specific cures keep a reason
 to exist.

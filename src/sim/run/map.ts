@@ -7,6 +7,7 @@ import {
 import { AID_HEAL_PCT } from './economy';
 import { hasModifier } from './modifiers';
 import type { MapNode, NodeKind, NodePreview, RegionMap } from './types';
+import type { PokemonType } from '../types';
 
 // §2.5 — the Region map, v2: a twelve-layer branching tree that forks near the end into two Gym lanes.
 //
@@ -180,6 +181,16 @@ function evolveTeam<T extends { species: string; level: number }>(team: T[], reg
   return region.evolveRosters ? team.map((m) => ({ ...m, species: evolvedAt(m.species, m.level, content) })) : team;
 }
 
+/**
+ * §2.7.3 — the two types a set of Pokémon fields most (counting each Pokémon's every type), commonest first: what a
+ * trainer "usually brings". Ties go to the type met first, so the hint is stable for a given Region.
+ */
+function usualTypes(species: readonly string[], content: ContentRegistry): PokemonType[] {
+  const tally = new Map<PokemonType, number>();
+  for (const id of species) for (const t of content.species(id).types) tally.set(t, (tally.get(t) ?? 0) + 1);
+  return [...tally].sort((a, b) => b[1] - a[1]).slice(0, 2).map(([t]) => t);
+}
+
 /** A trainer node. In a lane, the archetype is the Gym's; in the trunk, anything the Region fields. */
 function trainerPreview(rng: GameRng, content: ContentRegistry, used: Set<string>, layer: number, lane: GymDef | null, region: RegionContent): NodePreview {
   const themed = lane ? region.laneThemes[lane.type]!.trainers.flatMap((a) => region.trainers.filter((t) => t.archetype === a)) : region.trainers;
@@ -195,6 +206,8 @@ function trainerPreview(rng: GameRng, content: ContentRegistry, used: Set<string
     title: roster.name,
     rosterId: roster.id,
     icon: `trainer-${roster.archetype}`,
+    // §2.7.3 — across every roster of the archetype in the Region, not this one: a hint, not a reveal.
+    usualTypes: usualTypes(region.trainers.filter((t) => t.archetype === roster.archetype).flatMap((t) => t.team.map((m) => m.species)), content),
     // §2.7 — a trainer's team is a surprise, as it is in the games (v0.8.6, the user's call): the map says how many.
     detail: teamSizeLine(team.length),
     speciesIds: team.map((m) => m.species),
@@ -236,6 +249,7 @@ function elitePreview(content: ContentRegistry, layer: number, region: RegionCon
   return {
     title: region.elite.name,
     icon: 'elite',
+    usualTypes: usualTypes(team.map((m) => m.species), content),
     detail: `${teamSizeLine(team.length)} · reward: a relic pick`,
     speciesIds: team.map((m) => m.species),
     levelBand: [Math.min(...levels), Math.max(...levels)],

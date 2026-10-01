@@ -171,6 +171,11 @@ export const NODE_HINT: Record<string, string> = {
 
 export const RUN_REJECT_TEXT: Record<string, string> = {
   'internal-error': 'Something went wrong. Reload the page — the run is saved.',
+  'not-a-field-item': 'That one only works in a fight.',
+  fainted: 'It has fainted — a Revive first.',
+  'not-fainted': 'It has not fainted.',
+  'full-hp': 'Already at full HP.',
+  'nothing-to-cure': 'Nothing for this to cure.',
   'ability-locked': 'This is the line\'s hidden ability — it opens at Bond rank 3 (Veteran).',
   'not-on-map': 'Finish what you are doing first.',
   'node-unreachable': 'You cannot get there from here.',

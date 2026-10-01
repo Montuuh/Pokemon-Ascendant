@@ -624,7 +624,9 @@ expands by Region: Bug Catcher is Region 1 only, Rocket Grunt is Regions 2–3, 
 says **how many** Pokémon they carry — one Poké Ball each, the way the games show a trainer's party — never which
 or at what level, and in the fight whoever waits behind the field is shown as Poké Balls too ("2 to come"). The
 archetype (the sprite and its name), the lane's theme and a Gym's type and telegraph still say what kind of team it
-is; which Pokémon is the surprise, as it is in the games. Pillar 1 is about the enemy's *actions* — every intent
+is, and the node names **the types it usually brings** — the two commonest across every roster of its archetype in
+the Region (the Elite: across its pool), a hint and never a reveal (the user's call, the same day); which Pokémon
+is the surprise, as it is in the games. Pillar 1 is about the enemy's *actions* — every intent
 is still telegraphed a turn ahead — not about a trainer's party. A wild node keeps its species on show: which one
 to catch is the choice.
 

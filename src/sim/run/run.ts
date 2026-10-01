@@ -9,6 +9,7 @@ import { generateRegion, WILD_RARE_CHANCE } from './map';
 import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
 import { AID_HEAL_PCT, slotPrice, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
 import { GROUP_BREATHER } from './groups';
+import { applyFieldItem, fieldUseRefusal } from './fieldItems';
 import { gymRelicOffer, RELIC_REWARD, rollFightSupplies, rollMixedOffer, serviceGift, drawSupplies, supplyLabel, pokeBalls } from './rewards';
 import { CASINO, CITIES, RING, cityAfter, isFinalRegion, pocketColour } from './cities';
 import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './events';
@@ -1676,6 +1677,15 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       }
 
       // §7.4.1 — equipping swaps with the bag rather than destroying anything. Nothing is ever lost.
+      // §7.2.1 — a heal, a cure or a Revive from the bag, between nodes: the item is spent, nothing else is.
+      case 'use-item': {
+        const mon = draft.box.find((m) => m.uid === action.uid)!;
+        const at = draft.consumables.indexOf(action.consumableId);
+        draft.consumables.splice(at, 1);
+        say(draft, applyFieldItem(draft, action.consumableId, mon, effectiveMax(draft, mon, ctx.content), ctx.content));
+        break;
+      }
+
       case 'equip-item': {
         const mon = draft.box.find((m) => m.uid === action.uid)!;
         if (mon.heldItem) draft.bag.push(mon.heldItem);
@@ -2066,6 +2076,16 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (!mon) return 'unknown-pokemon';
       if (mon.traumaStacks <= 0) return 'no-trauma';
       return state.money < therapyPrice(mon) ? 'cannot-afford' : undefined;
+    }
+
+    case 'use-item': {
+      // Between nodes and in town; never inside a fight (the fight has its own bag), nor between Ring rungs, where
+      // nothing heals by design (§2.9.4.1).
+      if (state.phase !== 'map' && state.phase !== 'preview' && state.phase !== 'city' && state.phase !== 'center') return 'wrong-phase';
+      if (!state.consumables.includes(action.consumableId)) return 'no-such-item';
+      const mon = state.box.find((m) => m.uid === action.uid);
+      if (!mon) return 'unknown-pokemon';
+      return fieldUseRefusal(action.consumableId, mon, effectiveMax(state, mon, ctx.content), ctx.content) ?? undefined;
     }
 
     case 'equip-item': {

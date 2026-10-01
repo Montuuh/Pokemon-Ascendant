@@ -2,6 +2,7 @@ import type { MapNode } from '@/sim';
 import { fallbackBadge, nodeBadge } from '@/ui/art';
 import { NODE_HINT, NODE_LABEL } from '@/ui/strings';
 import { Tip, useTip } from '@/ui/tooltip';
+import { typeName } from '@/ui/tips';
 import styles from './NodeMarker.module.css';
 
 export type NodeStatus = 'reachable' | 'locked' | 'visited' | 'current';
@@ -46,6 +47,8 @@ export function NodeMarker({
         ...(NODE_LABEL[node.kind] && NODE_LABEL[node.kind] !== node.preview.title ? [NODE_LABEL[node.kind]!] : []),
         // §2.7 — a trainer's levels are part of the surprise (v0.8.6); a wild node keeps its band.
         ...(node.preview.levelBand[1] > 0 && (node.kind === 'wild' || node.kind === 'elite-wild') ? [`Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`] : []),
+        // §2.7.3 — a hidden team's hint.
+        ...(node.preview.usualTypes?.length ? [`Usually ${node.preview.usualTypes.map(typeName).join(' · ')}`] : []),
         STATUS_TEXT[status],
       ]}
       body={node.preview.detail}

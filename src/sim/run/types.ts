@@ -1,5 +1,5 @@
 import type { ScenarioDef, TeamMemberSetup } from '../content/defs';
-import type { BranchArchetype, PrimaryStatus } from '../types';
+import type { BranchArchetype, PrimaryStatus, PokemonType } from '../types';
 
 // The run layer: everything outside a fight (§2). Pure and deterministic like the combat sim — the same seed
 // and the same action log rebuild the same run, which is what makes the save a seed plus a list (§10.7.4).
@@ -32,6 +32,13 @@ export interface MapNode {
 export interface NodePreview {
   title: string;
   detail: string;
+  /**
+   * §2.7.3 — the hint a hidden team leaves (v0.8.6, the user's call): the types this kind of trainer usually
+   * fields — the two commonest across every roster of its archetype in the Region (the Elite: across its pool), so
+   * it says what to expect without saying who. Absent on wild nodes, which show their species, and on Gyms, whose
+   * type is their name.
+   */
+  usualTypes?: PokemonType[];
   /** Wild nodes name the species on offer; trainer nodes name the archetype's team. */
   speciesIds: string[];
   levelBand: [number, number];
@@ -684,6 +691,8 @@ export type RunAction =
   | { type: 'teach-egg-move'; uid: string; moveId: string }
   /** §7.4.1 — equip a bagged held item, or take one off. `itemId` null unequips. */
   | { type: 'equip-item'; uid: string; itemId: string | null }
+  /** §7.2.1 — use a heal, a cure or a Revive from the bag on a Box Pokémon, between nodes (v0.8.6). */
+  | { type: 'use-item'; consumableId: string; uid: string }
   /** §2.10 — answer the Mystery Event on screen. */
   | { type: 'choose-event'; option: number }
   /** §2.10 — acknowledge the result and walk on. */
@@ -748,7 +757,13 @@ export type RunRejectReason =
   /** §7.3.7 — the run already holds two Legendaries. */
   | 'legendary-cap'
   /** The reducer threw: the store turns a crash into a refusal the screen can say. */
-  | 'internal-error';
+  | 'internal-error'
+  /** §7.2.1 — a bag item used out of a fight: why it would do nothing (fieldItems.ts). */
+  | 'not-a-field-item'
+  | 'fainted'
+  | 'not-fainted'
+  | 'full-hp'
+  | 'nothing-to-cure';
 
 export interface RunReduceResult {
   state: RunState;

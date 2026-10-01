@@ -115,7 +115,7 @@
 
 .baggedWrap { display: grid; gap: var(--sp-2); align-content: start; }
 
-.hint { color: var(--ink-muted); font-size: var(--type-caption); }
+.hint { color: var(--ink-secondary); font-size: var(--type-caption); }
 
 .wearers {
   display: grid;
@@ -194,4 +194,27 @@
 
 @media (max-width: 720px) {
   .grid { grid-template-columns: 1fr; }
+}
+
+/* §7.2.1 — a Box Pokémon in a bag item's target list: its name and status, its HP under it. */
+.useBody {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+.useHp {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+/* A Pokémon the item would do nothing for stays readable (D5): the reason is written on it, so it does not take the
+   wearer list's fade (opacity 1 overrides .wearer:disabled on purpose); a solid quiet edge marks it. */
+.useRow:disabled {
+  opacity: 1;
+  outline: 1px solid var(--border-subtle);
+  outline-offset: -1px;
+}
+.useStatus {
+  vertical-align: middle;
 }

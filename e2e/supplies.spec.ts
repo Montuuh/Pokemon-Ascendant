@@ -155,4 +155,20 @@ test.describe('Supplies and scarce relics — v0.8.6', () => {
     await page.getByTestId('catch-with-great-ball').click();
     expect(await page.evaluate(() => window.__ascendant!.state()!.player.consumables.used.map((c) => c.consumableId))).toContain('great-ball');
   });
+
+  test('a Potion from the bag heals a Box Pokémon between nodes — §7.2.1', async ({ page }) => {
+    await freshRun(page);
+    await page.evaluate(() => window.__ascendant!.run.patch((r) => {
+      r.box[0]!.hp = 10;
+    }));
+    await page.getByTestId('btn-inventory').click();
+    await page.getByTestId('inv-tab-bag').click();
+    await page.getByTestId('bag-potion').click();
+    const before = await page.evaluate(() => window.__ascendant!.run.state()!.consumables.filter((id) => id === 'potion').length);
+    await page.getByTestId('use-potion-squirtle').click();
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.hp)).toBe(30);
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.consumables.filter((id) => id === 'potion').length)).toBe(before - 1);
+    // A Pokémon at full HP is offered, readable, and refused with the reason.
+    await expect(page.locator('[data-testid^="use-potion-"]:disabled').first()).toContainText('full HP');
+  });
 });

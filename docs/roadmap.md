@@ -796,6 +796,9 @@ fight two at a time** and stand a few levels over the team instead of +18/+21 (P
 Celadon three +5; §2.9.4.1). Also a bug the user met: an evolution button that did nothing — not reproducible in
 the sim or the UI (most likely a stale module while the dev server was being rewritten), but now a reducer error
 is caught by the store and said beside the button, and a recruit swapped in at its threshold evolves at once.
+**Fourth pass:** the Bag's heals, cures and Revive are usable between nodes and in town (§7.2.1, `run/fieldItems.ts`,
+the `use-item` action, the inventory's target list); a hidden team names the types its archetype usually brings
+(§2.7.3, `NodePreview.usualTypes`).
 **For v0.8.8:** the harness never plays cures or X items, so a full run ends with ~37 unused consumables — tune the
 supply tables against a player who does; Region 3 back to ~50 %.
 
