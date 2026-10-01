@@ -1,7 +1,7 @@
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { ALL_GYMS, LAYERS, REGION_COUNT, maxHpOf } from '@/sim';
+import { ALL_GYMS, REGION_COUNT, maxHpOf } from '@/sim';
 import { nodeBadge } from '@/ui/art';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { badgeTip } from '@/ui/tips';
@@ -47,7 +47,7 @@ export function RunEndScreen({ outcome }: { outcome: 'victory' | 'defeat' }) {
     { label: 'Pokémon caught', value: String(run.stats.catches) },
     { label: 'Faints', value: String(run.stats.faints) },
     // Where it ended, on a loss only: a won run ended at the last Gym, and "Regions cleared" already says so.
-    ...(won ? [] : [{ label: 'Depth reached', value: `Layer ${depth} / ${LAYERS}` }]),
+    ...(won ? [] : [{ label: 'Depth reached', value: `Column ${depth} / ${run.map.layers}` }]),
   ];
 
   return (

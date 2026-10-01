@@ -51,7 +51,7 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
     for (const n of Object.values(map.nodes)) if (n.kind === 'wild') expect(n.preview.levelBand, n.id).toEqual(wildBandFor(n.layer, REGIONS[2]!.wildBand));
     // catalogs/biomes-regions.md §3 — Region 3 recruits at 22–30.
     expect(wildBandFor(0, REGIONS[2]!.wildBand)[0]).toBe(22);
-    expect(wildBandFor(10, REGIONS[2]!.wildBand)[1]).toBe(30);
+    expect(wildBandFor(18, REGIONS[2]!.wildBand)[1]).toBe(30);
   });
 
   it('RegionThree_LanesLookLikeTheirGyms_§2.5', () => {
@@ -89,7 +89,7 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
     // A seed whose first lane ends at Sabrina's Gym, so the scripted ace is the one fought.
     const seed = Array.from({ length: 200 }, (_, i) => i + 1).find((n) => createRun('squirtle', n, ctx, 2).map.gyms[0] === 'psychic-gym-r3')!;
     expect(seed).toBeDefined();
-    const s = fightAt({ id: 'g', layer: 11, col: 0, lane: 0, kind: 'gym', next: [], preview: { title: 'Sabrina', detail: '', speciesIds: [], levelBand: [34, 36] } }, seed);
+    const s = fightAt({ id: 'g', layer: 11, col: 0, row: 0, lane: 0, kind: 'gym', next: [], preview: { title: 'Sabrina', detail: '', speciesIds: [], levelBand: [34, 36] } }, seed);
     const scripted = GYMS_R3.find((g) => g.id === 'psychic-gym-r3')!.team.at(-1)!.moves!;
     // The accent may add its type's status move after the kit (§2.2); the kit itself arrives whole.
     expect(s.pendingScenario!.enemies.at(-1)!.moves!.slice(0, scripted.length)).toEqual(scripted);
@@ -99,7 +99,7 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
 describe('The Region 3 trainers — §2.7.1', () => {
   it('AHexManiacsPokemon_AreVeiled_AndNoOtherTrainersAre', () => {
     for (const roster of TRAINERS_R3) {
-      const s = fightAt({ id: 'tr', layer: 3, col: 0, kind: 'trainer', next: [], preview: { title: roster.name, rosterId: roster.id, detail: '', speciesIds: roster.team.map((m) => m.species), levelBand: [26, 27], enemies: roster.team } });
+      const s = fightAt({ id: 'tr', layer: 3, col: 0, row: 0, kind: 'trainer', next: [], preview: { title: roster.name, rosterId: roster.id, detail: '', speciesIds: roster.team.map((m) => m.species), levelBand: [26, 27], enemies: roster.team } });
       for (const e of s.pendingScenario!.enemies) expect(!!e.veiled, roster.id).toBe(roster.archetype === 'hex-maniac');
     }
   });
@@ -112,7 +112,7 @@ describe('The Region 3 Elites — §2.8', () => {
   });
 
   it('Aerodactyl_FightsWithItsCataloguedScript_§2.8.2', () => {
-    const s = fightAt({ id: 'ew', layer: 9, col: 0, kind: 'elite-wild', next: [], preview: { title: 'Wild Aerodactyl', detail: '', speciesIds: ['aerodactyl'], levelBand: [32, 32], enemies: [{ species: 'aerodactyl', level: 32 }] } });
+    const s = fightAt({ id: 'ew', layer: 9, col: 0, row: 0, kind: 'elite-wild', next: [], preview: { title: 'Wild Aerodactyl', detail: '', speciesIds: ['aerodactyl'], levelBand: [32, 32], enemies: [{ species: 'aerodactyl', level: 32 }] } });
     const e = s.pendingScenario!.enemies[0]!;
     expect(e.tier).toBe('boss');
     expect(e.moves!.slice(0, 4)).toEqual(['agility', 'ancient-power', 'sky-drop', 'rock-slide-m']);

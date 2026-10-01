@@ -32,8 +32,10 @@ export interface ProgressionConfig {
 // route has to carry a Lv 5 starter to roughly Lv 14, which is the level the Gym in §5.9 is written for.
 export const DEFAULT_PROGRESSION: ProgressionConfig = {
   // v0.8.6: ×0.8 with extra enemies at extraEnemyXpShare (were 48 / 72 / 110 / 200, every enemy in full).
-  wildXp: 29,
-  trainerXp: 43,
+  // v0.8.7: wild and trainer ×0.9 again (29 / 43) — the 20-column route walks ~12 fights where the old one walked
+  // ~9.5 (§2.5.1). ×0.8 overshot (360 runs: R3|R2 30 %); ×0.9 reads R1 64 % · R2 61 % · R3 58 %.
+  wildXp: 26,
+  trainerXp: 39,
   eliteXp: 66,
   gymXp: 120,
   benchXpShare: 0.75,

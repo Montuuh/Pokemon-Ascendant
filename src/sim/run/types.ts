@@ -7,16 +7,22 @@ import type { BranchArchetype, PrimaryStatus, PokemonType } from '../types';
 /**
  * §2.5 — the node types a route offers. Since 2026-09-22 a route's services are small (§2.9): the field nurse
  * (`aid`) and the travelling merchant. The Pokémon Center, the Mart and the Dojo are City buildings (§2.11),
- * reached through `RunState.city`, not map nodes.
+ * reached through `RunState.city`, not map nodes. `cache` is something on the ground (§2.9.5, v0.8.7).
  */
-export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'gym'] as const;
+export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'cache', 'gym'] as const;
 export type NodeKind = (typeof NODE_KINDS)[number];
 
 export interface MapNode {
   id: string;
+  /** §2.5 — the column, left to right: 0 is the route's first step, the last is the Gyms'. */
   layer: number;
-  /** Position within the layer, left to right. Used for drawing and for keeping edges from crossing. */
+  /** Position within the column, top to bottom. Ids are `n{layer}-{col}`. */
   col: number;
+  /**
+   * §2.5 — where the node sits on the map's row grid (`RegionMap.rows`), top to bottom. Rows are ordered like
+   * `col` within a column, with a clear row between two tracks; the terrain and the screen both draw from it.
+   */
+  row: number;
   kind: NodeKind;
   /** Ids in the next layer this node leads to. Empty on the final layer. */
   next: string[];
@@ -25,6 +31,12 @@ export interface MapNode {
    * An edge may never change lane, which is what stops the fork being a detour.
    */
   lane?: number;
+  /**
+   * §2.5 — on the Y, before the point of no return: the Gym lane this track leans toward. Its wilds and trainers
+   * already wear that Gym's theme, but it has not committed, so `lane` is still undefined and its fights are on
+   * neutral ground (§2.5.4). Undefined on the middle track and everywhere else.
+   */
+  lean?: number;
   /** What the Node Preview shows before you commit (§2.5, Pillar 1). */
   preview: NodePreview;
 }
@@ -55,6 +67,8 @@ export interface NodePreview {
    * "Rocket Grunt"), so the fight and the preview card find the roster by this and never by its title.
    */
   rosterId?: string;
+  /** §2.9.5 — what lies on the ground at a `cache` node: rolled with the map and named before you choose it. */
+  find?: { items: string[]; money: number };
 }
 
 export interface RegionMap {
@@ -69,8 +83,12 @@ export interface RegionMap {
    * never a surprise (Pillar 1), and fixed at generation so the map and the fight can never disagree.
    */
   gyms: string[];
-  /** The first layer at which the lanes separate. Below it every node is shared. */
+  /** The first column at which the lanes separate: the one after the point of no return. Below it every node is shared. */
   forkLayer: number;
+  /** §2.5 — the height of the row grid the nodes sit on (`MapNode.row`). */
+  rows: number;
+  /** §2.5 — the column the Y opens at (the crossroads); the outer tracks lean from here. Absent on a pre-v0.8.7 map. */
+  yLayer?: number;
 }
 
 /** A Pokémon in the Box. HP and Trauma persist between fights (§2.4); this is the run's real state. */
@@ -446,6 +464,11 @@ export interface RunState {
    * player is still there; cleared on the way out. Absent in older saves.
    */
   lastGift?: string[] | null;
+  /**
+   * §2.9.5 — what the last find on the ground held, for the map to say as you walk on; cleared when the next node
+   * is entered. Absent in older saves.
+   */
+  lastFind?: { items: string[]; money: number } | null;
   /** §2.11.2.3 — relics bought in a shop this run; each makes the next one dearer (the collector's premium). */
   relicsBought: number;
   /**

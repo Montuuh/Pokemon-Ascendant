@@ -262,9 +262,9 @@ export function installDevTools(): void {
        */
       goto: (kind, stopAtEvolution = false) => {
         const store = () => useRunStore.getState();
-        // One iteration per phase transition, not per node: a ten-layer route with fights, rewards,
-        // evolutions and service screens in between spends three or four of these per layer.
-        for (let step = 0; step < 90; step++) {
+        // One iteration per phase transition, not per node: a twenty-column route with fights, rewards,
+        // evolutions and service screens in between spends three or four of these per column.
+        for (let step = 0; step < 160; step++) {
           const run = store().run;
           if (!run || run.outcome !== 'in-progress') break;
 
@@ -282,6 +282,8 @@ export function installDevTools(): void {
           // Arrived: stop and hand the screen over. A node's phase is not always its kind's name: a Mystery
           // opens `event` and the merchant opens `shop`.
           if (run.phase === (kind === 'mystery' ? 'event' : kind === 'merchant' ? 'shop' : kind)) break;
+          // §2.9.5 — a find has no screen: picking it up leaves you standing on it, back on the map.
+          if (kind === 'cache' && run.phase === 'map' && run.position && run.map.nodes[run.position]?.kind === 'cache') break;
           // §7.3.7 / §2.11 — a Gym's win stops on the Legendary pick (the walk's arrival for `goto('gym')`), and
           // after it the City; neither is walked through.
           if (run.phase === 'legendary' || run.phase === 'city') break;

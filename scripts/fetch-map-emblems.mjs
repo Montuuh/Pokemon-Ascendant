@@ -16,6 +16,8 @@ const force = process.argv.includes('--force');
 // map rather than a collage: the ? matches the HGSS era of the rest of the map's emblems.
 const EMBLEMS = {
   'emblem-mystery': 'HGSS Question Mark Sprite.png',
+  // §2.9.5 — something on the ground: the overworld item ball, in FireRed's own generation (v0.8.7).
+  'emblem-cache': 'Gen III Item Ball.png',
   // §5.10 — the four Region 1 badges, one per Gym type, so the two ends of the fork are told apart by the
   // thing the player is actually choosing between rather than by a caption.
   'emblem-gym-rock': 'Boulder Badge.png',

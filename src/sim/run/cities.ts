@@ -47,6 +47,9 @@ export interface CityDef {
    * extra enemies at 75 %), and a rival now fights like an Elite — **two at a time** (`RING.onField`) — so the
    * ladder's difficulty is its shape, not a wall of levels. Pallet: four Pokémon, +7, +2 a rung; Celadon: three,
    * +5, no step. Measured: Pallet rung 1 0.75, ladder 0.18; Celadon rung 1 0.71, rung 2 0.21, ladder 0.03.
+   * v0.8.7: the 20-column route sends stronger teams into both Cities, so Pallet's step is +4 and Celadon's first rung
+   * +5. Measured: Pallet rung 1 0.80, ladder 0.23; Celadon rung 1 0.72, rung 2 0.30, ladder 0.14. The Ring's real
+   * retune is v0.8.8's.
    */
   ring: { fee: number; prizes: ({ money: number } | { relicPick: true })[]; firstOffset: number; stepOffset: number; teamSize: number };
 }
@@ -54,11 +57,11 @@ export interface CityDef {
 export const CITIES: Record<CityId, CityDef> = {
   'pallet-town': {
     id: 'pallet-town', name: 'Pallet Town', afterRegion: 0, open: ['center', 'mart', 'dojo', 'ring', 'safari'], ringName: 'Challenge Ring', blackMarket: false, shop: 'mart', dojoMarkup: 1, dojoWide: false,
-    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 5, stepOffset: 2, teamSize: 4 },
+    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 5, stepOffset: 4, teamSize: 4 },
   },
   'celadon-city': {
     id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'ring', 'game-corner', 'safari'], ringName: 'Pokémon Coliseum', blackMarket: true, shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
-    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 4, stepOffset: 2, teamSize: 3 },
+    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 5, stepOffset: 2, teamSize: 3 },
   },
 };
 

@@ -68,7 +68,7 @@ export const WILD_LEVEL_BAND: [number, number] = [5, 13];
  * The layer count the band is spread across. It is a constant here rather than an import from `map.ts`
  * because `map.ts` imports *this* file; the map test asserts they agree.
  */
-export const ROUTE_LAYERS = 12;
+export const ROUTE_LAYERS = 20;
 
 /**
  * The wild band at a given layer, spread across the whole route.

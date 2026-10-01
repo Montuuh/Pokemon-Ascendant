@@ -233,12 +233,15 @@ describe('The route services — §2.9', () => {
     expect(ballsIn(s.consumables, content)).toBe(before + PRICES.merchantBalls.qty);
   });
 
-  it('EveryRoute_HasOneMerchant_AndThreeMysteries_§2.5.1', () => {
+  it('EveryRoute_HasAMerchantInTheTrunk_AndMysteriesInItsStops_§2.5.1', () => {
+    // v0.8.7: one to three merchants (at least one in the trunk's stops) and a Mystery in most stop columns.
     for (const seed of [1, 7, 42, 999, 20260919]) {
       const s = start(seed);
       const nodes = Object.values(s.map.nodes);
-      expect(nodes.filter((n) => n.kind === 'merchant'), `seed ${seed}`).toHaveLength(1);
-      expect(nodes.filter((n) => n.kind === 'mystery'), `seed ${seed}`).toHaveLength(3);
+      const merchants = nodes.filter((n) => n.kind === 'merchant');
+      expect(merchants.length, `seed ${seed}`).toBeGreaterThanOrEqual(1);
+      expect(merchants.some((n) => n.layer <= 6), `seed ${seed}`).toBe(true);
+      expect(nodes.filter((n) => n.kind === 'mystery').length, `seed ${seed}`).toBeGreaterThanOrEqual(3);
     }
   });
 });

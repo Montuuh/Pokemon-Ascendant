@@ -55,8 +55,8 @@ const RULES = [
 const ROUTE_RULES = [
   {
     icon: IconMap2,
-    title: 'A stop costs a fight',
-    body: 'You clear exactly one node per layer, so walking into the Poké Mart, the Dojo or a Mystery means not fighting the node beside it — and not getting its XP. That is the trade the whole route is built on. The map shows every node from the start, so you can plan the run before you take the first step.',
+    title: 'The route forks once',
+    body: 'You take one node per column, left to right. Some columns are all stops — a nurse, a merchant, a Mystery, something on the ground — so there you choose which rest, not whether to fight. Halfway along, the tracks lean toward the two Gyms at the end; the river is the point of no return. The map shows every node from the start, so you can plan the run before you take the first step.',
   },
   {
     icon: IconCoins,

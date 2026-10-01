@@ -25,7 +25,7 @@ test('the gate out of Celadon opens onto the Volcanic Highlands, and its Gym is 
   await expect(page.getByTestId('map-screen')).toContainText('Volcanic Highlands');
   const gyms = await page.evaluate(() => window.__ascendant!.run.state()!.map.gyms);
   for (const id of gyms) expect(['psychic-gym-r3', 'ground-gym-r3', 'fighting-gym-r3', 'ice-gym-r3']).toContain(id);
-  await expect(page.locator('img[src$="region-3.png"]')).toHaveCount(1);
+  await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
   await page.screenshot({ path: 'playtest/run-region3.png' });
 
   // The Gym at the end of a lane, fought: its Leader is one of Region 3's.

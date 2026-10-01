@@ -101,65 +101,11 @@
   display: grid;
 }
 
+/* §9.3 — the route board lives in map/RouteView; this is only its frame. */
 .graph {
   position: relative;
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--border-subtle);
-  overflow: hidden;
   min-height: 0;
-}
-.backdrop {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* No blur here: the plate is pixel art and softening it would undo the point of it. Nearest-neighbour
-     keeps the tiles crisp at any window size. */
-  image-rendering: pixelated;
-  filter: saturate(0.9) brightness(1.04);
-}
-/* Per the art note: keep the plate atmospheric, not busy, so markers and edges read on top. */
-.veil {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(26, 18, 28, 0.3) 0%, rgba(26, 18, 28, 0.16) 42%, rgba(26, 18, 28, 0.34) 100%);
-}
-.edgeLayer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.edge,
-.edgeLive,
-.edgeWalked {
-  stroke-linecap: round;
-}
-.edge {
-  stroke: rgba(255, 253, 248, 0.6);
-  stroke-width: 2;
-  stroke-dasharray: 5 6;
-}
-.edgeLive {
-  stroke: var(--accent-action);
-  stroke-width: 3;
-}
-.edgeWalked {
-  stroke: rgba(255, 253, 248, 0.9);
-  stroke-width: 3;
-}
-/* Top-left, not bottom-centre: the bottom row of node captions lives there. */
-.legend {
-  position: absolute;
-  left: var(--sp-3);
-  top: var(--sp-3);
-  margin: 0;
-  padding: 4px var(--sp-4);
-  border-radius: var(--radius-pill);
-  background: rgba(26, 18, 28, 0.6);
-  color: var(--ink-primary);
-  font-size: var(--type-caption);
+  display: grid;
 }
 
 .toast {
@@ -176,6 +122,24 @@
   border: 2px solid var(--accent-warning);
   box-shadow: 0 10px 24px rgba(26, 18, 28, 0.4);
   font-size: var(--type-small);
+}
+
+/* §2.9.5 — what a find on the ground held, said as you walk on: top-centre of the board, clear of the strip. */
+.found {
+  position: absolute;
+  left: 50%;
+  top: var(--sp-3);
+  transform: translateX(-50%);
+  z-index: 2;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-5);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  border: 2px solid var(--accent-positive);
+  box-shadow: 0 10px 24px rgba(26, 18, 28, 0.4);
+  font-size: var(--type-small);
+  pointer-events: none;
 }
 
 /* The bag button sits in the purse row and opens the inventory drawer (§7.2–§7.5). */

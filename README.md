@@ -49,26 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.8.6 — Consumables that are spent, scarcer relics.** A played Potion is gone now, and supplies come
-far more often — every trainer drops some, wild nodes leave Poké Balls, the nurse and the Center hand a pair over,
-and shops sell bundles; in a fight a Bag opens everything you carry, two items a turn, and the catch chance opens
-a picker with every ball you hold — Poké, Great and Ultra. A group's supports are Attackers, Defenders that step in
-front of a hurt Lead, and Buffers, laid out like your own squad. Relics are scarce: a trainer rarely drops a Common, the Elite Trainer offers a pick of three,
-the first Gym pays in Rares and the later ones in Legendaries, and every relic bought makes the next one dearer. Fights can put two or three enemies on the field at once — a Lead
-in front and supports behind it that heal, buff, debuff or attack; cards are dragged onto their target, a Melee card
-reaches only the enemy Lead, and every number an intent prints is the hit that will land. Some Pokémon act twice a
-turn, and some call a named companion into the fight. Wild packs, callers, trainer pairs and an Elite with a support
-appear on every route, more and larger in each Region. Past the Gym fork every lane is fought on its biome's
-ground — Sun, Rain, Electric Terrain or a Sandstorm — and Gym Leaders and Elites fight on a Home Field of their type. Trainers carry three Pokémon and often fight two or
-three at once; Elites and Gyms bring four, two at a time. A run crosses three Regions with two Cities between them —
-twelve Gyms, three drawn per run, from Brock to Lorelei. Each City has its own ladder of rivals — Pallet Town's
-Challenge Ring in the square, Celadon's Pokémon Coliseum — shown in full before you pay to climb; both Cities open
-a Safari Zone where Pokémon no route offers are stalked through tall grass; Celadon's Game Corner is FireRed's own room, with a
-classic roulette and slot reels that spin and stop in turn; every Center has a Daycare and a PC Box, every Dojo sells
-each line's egg moves, and both shops are FireRed's own rooms with shelves you press and a clerk who sells it all; and Team Rocket has set up shop somewhere in Celadon, for whoever finds it.
-Evolution stones, every relic and every line's hidden ability and Mastery card are live, and all 151 Gen I Pokémon
-are in the Pokédex, as silhouettes until you meet them. What changed in every version is
-in the game (What's new) and in [`CHANGELOG.md`](CHANGELOG.md). The full plan with exit criteria is in [`docs/roadmap.md`](docs/roadmap.md).
+**v0.8.7 — Routes, revamped.** The Region map is a twenty-column route walked left to right and scrolled,
+painted from FireRed / LeafGreen tiles: tracks that cross, split and merge, a Y where each side turns into its Gym's
+terrain — water, cave, forest, power plant — with its weather drawn over it, a river as the point of no return, and
+six stop columns where a nurse, a merchant, a Mystery or a find on the ground waits.
 
 ## Run it locally
 

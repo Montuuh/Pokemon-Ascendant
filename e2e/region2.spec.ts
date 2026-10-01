@@ -23,7 +23,8 @@ test('the gate out of Pallet Town opens onto the Coastal Cliffs', async ({ page 
   await expect(page.getByTestId('map-screen')).toContainText('Coastal Cliffs');
   const gyms = await page.evaluate(() => window.__ascendant!.run.state()!.map.gyms);
   for (const id of gyms) expect(['fire-gym-r2', 'grass-gym-r2', 'electric-gym-r2', 'poison-gym-r2']).toContain(id);
-  // Its own route plate, not Region 1's meadow.
-  await expect(page.locator('img[src$="region-2.png"]')).toHaveCount(1);
+
+  // §2.5.4 — its own road painted from tiles (the coast), not Region 1's meadow.
+  await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
   await page.screenshot({ path: 'playtest/run-region2.png' });
 });

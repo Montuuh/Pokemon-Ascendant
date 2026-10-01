@@ -123,8 +123,33 @@ function migrateBallsTo17(run: RunState): void {
   delete legacy.balls;
 }
 
+/**
+ * §2.5 — version 17 → 18: the route is drawn left to right on a row grid (v0.8.7). A run saved on the old
+ * twelve-layer map keeps its map; its nodes take rows from their columns — the trunk spread across the middle,
+ * each lane in its own half — so the new screen can draw it.
+ */
+function migrateRowsTo18(run: RunState): void {
+  const map = run.map as RunState['map'] & { rows?: number };
+  map.rows ??= 11;
+  const byLayer = new Map<number, typeof run.map.nodes[string][]>();
+  for (const n of Object.values(map.nodes)) byLayer.set(n.layer, [...(byLayer.get(n.layer) ?? []), n]);
+  for (const row of byLayer.values()) {
+    for (const n of row) {
+      if (typeof n.row === 'number') continue;
+      if (n.kind === 'gym') n.row = n.lane === 1 ? 8 : 2;
+      else if (n.lane !== undefined) {
+        const mine = row.filter((x) => x.lane === n.lane).sort((a, b) => a.col - b.col);
+        n.row = (n.lane === 1 ? 6 : 0) + Math.round((mine.indexOf(n) / Math.max(1, mine.length - 1)) * 4);
+      } else {
+        const sorted = [...row].sort((a, b) => a.col - b.col);
+        n.row = 1 + Math.round((sorted.indexOf(n) / Math.max(1, sorted.length - 1)) * 8);
+      }
+    }
+  }
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18 };
 
 export type LoadResult =
   | { ok: true; run: RunState }
@@ -172,9 +197,9 @@ export function deserialiseRun(text: string | null, content: ContentRegistry): L
 /** A short line for the Continue button on the main menu. */
 export function describeSave(run: RunState, content: ContentRegistry): string {
   const lead = run.box.find((m) => m.uid === run.activeUids[0]);
-  // Standing at the start is layer 1, not layer 0 — the map header counts the same way, and "layer 0/8" on
+  // Standing at the start is column 1, not column 0 — the map header counts the same way, and "column 0/20" on
   // the Continue button read like a save that had gone wrong.
   const layer = run.position ? (run.map.nodes[run.position]?.layer ?? 0) + 2 : 1;
   const name = lead ? content.species(lead.speciesId).name : 'a new team';
-  return `Region ${run.regionIndex + 1} · layer ${Math.min(layer, run.map.layers)}/${run.map.layers} · ${name} L${lead?.level ?? '?'} · ${run.box.length} in the Box`;
+  return `Region ${run.regionIndex + 1} · column ${Math.min(layer, run.map.layers)}/${run.map.layers} · ${name} L${lead?.level ?? '?'} · ${run.box.length} in the Box`;
 }

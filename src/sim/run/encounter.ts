@@ -349,6 +349,7 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
       case 'aid':
       case 'merchant':
       case 'mystery':
+      case 'cache':
         return null;
     }
   })();

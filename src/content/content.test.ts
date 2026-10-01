@@ -39,8 +39,9 @@ describe('content registry', () => {
     for (const stage of [GYM.stage, ...GYMS.map((g) => g.stage), ...Object.values(BIOMES).map((b) => b!.stage), ELITE_WILD.stage, ...everyRegion]) {
       expect(existsSync(`public/art/stages/${stage}.jpg`), `stage ${stage}`).toBe(true);
     }
-    expect(existsSync('public/art/map/region-1.png'), 'region 1 route plate').toBe(true);
-    expect(existsSync('public/art/map/region-2.png'), 'region 2 route plate').toBe(true);
+    // §9.4.1 — every Wild biome wears its own emblem, and a find on the ground its item ball (v0.8.7).
+    for (const biome of new Set(REGIONS.flatMap((r) => Object.keys(r.biomes)))) expect(existsSync(`public/art/icons/map/node-wild-${biome}.png`), `wild emblem ${biome}`).toBe(true);
+    expect(existsSync('public/art/icons/map/node-cache.png'), 'find badge').toBe(true);
     expect(existsSync('public/art/ui/menu-vista.png'), 'main menu vista').toBe(true);
     // Every archetype a Region fields and every Gym type it can draw has its own badge on the map (§2.5).
     const archetypes = REGIONS.flatMap((r) => r.trainers.map((t) => `node-trainer-${t.archetype}`));

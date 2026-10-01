@@ -43,7 +43,7 @@ describe('Region 2 — its own content — §2.2, §2.6.1', () => {
       expect(n.preview.levelBand, n.id).toEqual(wildBandFor(n.layer, REGIONS[1]!.wildBand));
     }
     expect(wildBandFor(0, REGIONS[1]!.wildBand)[0]).toBe(12);
-    expect(wildBandFor(10, REGIONS[1]!.wildBand)[1]).toBe(20);
+    expect(wildBandFor(18, REGIONS[1]!.wildBand)[1]).toBe(20);
   });
 
   it('RegionTwo_LanesLookLikeTheirGyms_§2.5', () => {
@@ -80,7 +80,7 @@ describe('Region 2 — its own content — §2.2, §2.6.1', () => {
     for (const id of ['rocket-grunt-r2-a', 'rocket-grunt-r2-b']) {
       const roster = TRAINERS_R2.find((t) => t.id === id)!;
       let s = createRun('squirtle', 7, ctx, 1);
-      const node = { id: 'tr', layer: 3, col: 0, kind: 'trainer' as const, next: [], preview: { title: roster.name, rosterId: roster.id, detail: '', speciesIds: roster.team.map((m) => m.species), levelBand: [18, 19] as [number, number], enemies: roster.team } };
+      const node = { id: 'tr', layer: 3, col: 0, row: 0, kind: 'trainer' as const, next: [], preview: { title: roster.name, rosterId: roster.id, detail: '', speciesIds: roster.team.map((m) => m.species), levelBand: [18, 19] as [number, number], enemies: roster.team } };
       s = { ...s, map: { ...s.map, nodes: { ...s.map.nodes, tr: node } }, reachable: ['tr'] };
       s = apply(apply(s, { type: 'enter-node', nodeId: 'tr' }), { type: 'begin-combat' });
       expect(s.pendingScenario!.description).toBe(roster.line);
@@ -92,7 +92,7 @@ describe('Region 2 — its own content — §2.2, §2.6.1', () => {
 describe('The Region 2 Elites — §2.8', () => {
   it('Lapras_FightsWithItsCataloguedScript_NotItsLevelsKit_§2.8.2', () => {
     let s = createRun('squirtle', 7, ctx, 1);
-    const node = { id: 'ew', layer: 9, col: 0, kind: 'elite-wild' as const, next: [], preview: { title: 'Wild Lapras', detail: '', speciesIds: ['lapras'], levelBand: [23, 23] as [number, number], enemies: [{ species: 'lapras', level: 23 }] } };
+    const node = { id: 'ew', layer: 9, col: 0, row: 0, kind: 'elite-wild' as const, next: [], preview: { title: 'Wild Lapras', detail: '', speciesIds: ['lapras'], levelBand: [23, 23] as [number, number], enemies: [{ species: 'lapras', level: 23 }] } };
     s = { ...s, map: { ...s.map, nodes: { ...s.map.nodes, ew: node } }, reachable: ['ew'] };
     s = apply(apply(s, { type: 'enter-node', nodeId: 'ew' }), { type: 'begin-combat' });
     const e = s.pendingScenario!.enemies[0]!;

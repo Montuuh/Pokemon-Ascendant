@@ -58,7 +58,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 17;
+export const RUN_SAVE_VERSION = 18;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -580,7 +580,7 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
 }
 
 /** §2.9 — the nodes that are not a fight: nobody needs to be standing to walk into one. */
-export const isServiceNode = (kind: NodeKind): boolean => kind === 'aid' || kind === 'merchant' || kind === 'mystery';
+export const isServiceNode = (kind: NodeKind): boolean => kind === 'aid' || kind === 'merchant' || kind === 'mystery' || kind === 'cache';
 
 /** After a node is cleared, the next layer's linked nodes open up. */
 function advanceFrom(draft: RunState, nodeId: string): void {
@@ -773,6 +773,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
   const next = produce(state, (draft) => {
     switch (action.type) {
       case 'enter-node': {
+        draft.lastFind = null;
         draft.pendingNodeId = action.nodeId;
         draft.phase = 'preview';
         break;
@@ -804,6 +805,18 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           draft.seenEvents.push(draft.pendingEvent);
           draft.cursors.EncounterRNG = rng.cursor;
           draft.phase = 'event';
+          break;
+        }
+        if (node.kind === 'cache') {
+          // §2.9.5 — something on the ground: picked up and walked on, no screen. What it was is on the map's
+          // preview, and the map says it once more as you leave.
+          const find = node.preview.find ?? { items: [], money: 0 };
+          draft.consumables.push(...find.items);
+          draft.money += find.money;
+          draft.lastFind = { items: [...find.items], money: find.money };
+          const parts = [...(find.items.length ? [supplyLabel(find.items, (id) => ctx.content.consumable(id).name)] : []), ...(find.money ? [`${find.money} ₽`] : [])];
+          say(draft, `You pick up ${parts.join(' and ') || 'nothing'}.`);
+          leaveNode(draft, node.id, ctx);
           break;
         }
         if (node.kind === 'aid') {

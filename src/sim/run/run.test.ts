@@ -91,10 +91,12 @@ const win = (s: RunState, over: Partial<CombatOutcomeReport> = {}): RunState => 
 };
 
 describe('Region map — §2.5', () => {
-  it('Map_IsTwelveLayers_WithFourEntryChoices', () => {
+  it('Map_IsTwentyColumns_WithThreeOrFourEntryChoices', () => {
     const s = start();
     expect(s.map.layers).toBe(LAYERS);
-    expect(s.map.entry).toHaveLength(4);
+    expect(s.map.layers).toBe(20);
+    expect(s.map.entry.length).toBeGreaterThanOrEqual(3);
+    expect(s.map.entry.length).toBeLessThanOrEqual(4);
     expect(s.reachable).toEqual(s.map.entry);
   });
 
@@ -113,11 +115,16 @@ describe('Region map — §2.5', () => {
     expect(wild / total, 'the opening should be mostly Wild').toBeGreaterThan(0.6);
   });
 
-  it('Map_HasNoNurseBeforeTheFork_ARestYouDidNotNeedCostsAFightYouDid', () => {
+  it('Map_PutsANurseOnlyInAStopColumn_NeverBesideAFight_§2.9.1', () => {
+    // v0.8.7: a nurse no longer costs a fight — she stands in a stop column, where every node is a stop, so a
+    // rest costs the other stops beside it. She is never in the opening and never beside a fight.
+    const stops = new Set(['aid', 'merchant', 'mystery', 'cache']);
     for (let seed = 1; seed <= 40; seed++) {
       const m = generateRegion(new RngStreams(seed).get('MapRNG'), content, 0, seed);
       for (const n of Object.values(m.nodes)) {
-        if (n.layer < m.forkLayer) expect(n.kind, `seed ${seed} ${n.id}`).not.toBe('aid');
+        if (n.kind !== 'aid') continue;
+        expect(n.layer, `seed ${seed} ${n.id}`).toBeGreaterThanOrEqual(4);
+        expect(nodesInLayer(m, n.layer).every((x) => stops.has(x.kind)), `seed ${seed} ${n.id}`).toBe(true);
       }
     }
   });
@@ -908,7 +915,7 @@ describe('Layer-scaled difficulty — §2.6.3, §2.7.3', () => {
     const bandAt = (layer: number) =>
       nodesInLayer(s.map, layer).filter((n) => n.kind === 'wild' || n.kind === 'trainer').map((n) => n.preview.levelBand[1]);
     const early = bandAt(0);
-    const late = bandAt(4);
+    const late = bandAt(9);
     if (!early.length || !late.length) return;
     expect(Math.max(...late)).toBeGreaterThan(Math.max(...early));
   });
@@ -951,7 +958,7 @@ describe('Node badges — §2.5, Pillar 1', () => {
     // A badge is only overridden when the node kind alone does not say who is waiting: a Trainer node names
     // its archetype, and the Elite names itself because "trainer" would undersell the hardest fight but one.
     for (const n of Object.values(s.map.nodes)) {
-      if (['trainer', 'elite', 'elite-wild', 'wild', 'gym'].includes(n.kind)) continue;
+      if (['trainer', 'elite', 'elite-wild', 'wild', 'gym', 'cache'].includes(n.kind)) continue;
       expect(n.preview.icon, n.id).toBeUndefined();
     }
     expect(Object.values(s.map.nodes).find((n) => n.kind === 'elite')!.preview.icon).toBe('elite');

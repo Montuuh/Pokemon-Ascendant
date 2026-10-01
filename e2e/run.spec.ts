@@ -1,13 +1,13 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// A whole Region 1 driven through the real UI: new-run flow, twelve layers of node choices, fights, rewards,
+// A whole Region 1 driven through the real UI: new-run flow, twenty columns of node choices, fights, rewards,
 // evolutions with their branch pick, the field nurse, the Gym, the Legendary pick and the walk into Pallet
 // Town — then out of its gate into Region 2. Nothing here reaches into a store — if this passes, a player can
 // get from the first node to the next Region with a mouse. Also covers the §10.8 save: quit mid-route and
 // come back.
 
 /** Kept in step with src/sim/run/map.ts by hand; the spec runs in Node, outside the Vite alias. */
-const LAYERS = 12;
+const LAYERS = 20;
 
 /** Play every playable card at the enemy, then end the turn. Returns once the fight has an outcome. */
 async function playOneTurn(page: Page): Promise<void> {
@@ -106,19 +106,26 @@ async function startRun(page: Page, starter = 'squirtle'): Promise<void> {
   await expect(page.getByTestId('map-screen')).toBeVisible();
 }
 
-test('the new-run flow reaches a twelve-layer forked map with four first choices', async ({ page }) => {
+test('the new-run flow reaches a twenty-column route with three or four first choices', async ({ page }) => {
   await startRun(page, 'bulbasaur');
   await expect(page.getByTestId('map-graph')).toBeVisible();
-  await expect(page.getByText(`Layer 1 of ${LAYERS}`)).toBeVisible();
+  await expect(page.getByText(`Column 1 of ${LAYERS}`)).toBeVisible();
   const reachable = page.locator('[data-testid^="node-"][data-status="reachable"]');
-  await expect(reachable).toHaveCount(4);
+  const first = await reachable.count();
+  expect(first).toBeGreaterThanOrEqual(3);
+  expect(first).toBeLessThanOrEqual(4);
+  // §9.3 — the route is wider than the screen and scrolls; its terrain is painted from tiles (§2.5.4).
+  await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
+  const [board, scroller] = await Promise.all([page.getByTestId('route-board').boundingBox(), page.getByTestId('route-scroller').boundingBox()]);
+  expect(board!.width).toBeGreaterThan(scroller!.width);
+  await expect(page.getByTestId('no-return')).toBeAttached();
   // §2.5 — BOTH Gyms are on the board from the start and both are named in the header, because the fork is
   // the largest thing the map can telegraph and it decides what you recruit for ten nodes before you arrive.
   await expect(page.locator('[data-kind="gym"]')).toHaveCount(2);
   await expect(page.getByTestId('fork-banner')).toBeVisible();
-  // §2.9.2 / §2.8.1 — and so are the landmarks, so they can be planned for: one travelling merchant, and no
+  // §2.9.2 / §2.8.1 — and so are the landmarks, so they can be planned for: a travelling merchant or more, and no
   // Dojo or Poké Mart on the route — those are in the towns now (§2.11.4).
-  await expect(page.locator('[data-kind="merchant"]')).toHaveCount(1);
+  expect(await page.locator('[data-kind="merchant"]').count()).toBeGreaterThanOrEqual(1);
   await expect(page.locator('[data-kind="dojo"]')).toHaveCount(0);
   await expect(page.locator('[data-kind="shop"]')).toHaveCount(0);
   // §2.5.1 — one Elite Trainer is guaranteed and a second appears in a lane about a fifth of the time, so
@@ -128,9 +135,10 @@ test('the new-run flow reaches a twelve-layer forked map with four first choices
   expect(elites).toBeLessThanOrEqual(2);
   // §2.8.2 — the Elite Wild is the other rolled special, at most one, and not on every map.
   expect(await page.locator('[data-kind="elite-wild"]').count()).toBeLessThanOrEqual(1);
-  // §2.5.1 — three Mystery nodes, spread across the trunk; one field nurse per lane, none before the fork.
-  await expect(page.locator('[data-kind="mystery"]')).toHaveCount(3);
-  await expect(page.locator('[data-kind="aid"]')).toHaveCount(2);
+  // §2.5.1 — the stop columns: Mysteries across the route, finds on the ground, a field nurse in each lane at least.
+  expect(await page.locator('[data-kind="mystery"]').count()).toBeGreaterThanOrEqual(3);
+  expect(await page.locator('[data-kind="aid"]').count()).toBeGreaterThanOrEqual(2);
+  expect(await page.locator('[data-kind="cache"]').count()).toBeGreaterThanOrEqual(1);
   await expect(page.getByTestId('box-panel')).toContainText('Bulbasaur');
   await page.screenshot({ path: 'playtest/run-map.png' });
 });
@@ -160,6 +168,7 @@ test('the Move Manager moves a card between the pool and the active 4', async ({
 
 test('a node preview names what is inside and can be backed out of', async ({ page }) => {
   await startRun(page);
+  const choices = await page.locator('[data-testid^="node-"][data-status="reachable"]').count();
   await page.locator('[data-testid^="node-"][data-status="reachable"]').first().click();
   const preview = page.getByTestId('node-preview');
   await expect(preview).toBeVisible();
@@ -167,7 +176,7 @@ test('a node preview names what is inside and can be backed out of', async ({ pa
   await page.screenshot({ path: 'playtest/run-node-preview.png' });
   await page.getByTestId('btn-cancel-node').click();
   await expect(preview).toBeHidden();
-  await expect(page.locator('[data-testid^="node-"][data-status="reachable"]')).toHaveCount(4);
+  await expect(page.locator('[data-testid^="node-"][data-status="reachable"]')).toHaveCount(choices);
 });
 
 test('quitting mid-route and continuing resumes the same map', async ({ page }) => {
@@ -198,10 +207,12 @@ test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', asy
 
     // Take the field nurse when she is next, and a wild fight over a trainer when there is one: the walker
     // plays like a mouse, not a strategist, and a Lv 5 starter alone loses a trainer often enough to matter.
+    // In a stop column (§2.5.1) it picks up what is on the ground when it can.
     const nurse = page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="aid"]');
     const wild = page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="wild"]');
+    const find = page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="cache"]');
     const any = page.locator('[data-testid^="node-"][data-status="reachable"]');
-    const target = (await nurse.count()) > 0 ? nurse.first() : (await wild.count()) > 0 ? wild.first() : any.first();
+    const target = (await nurse.count()) > 0 ? nurse.first() : (await wild.count()) > 0 ? wild.first() : (await find.count()) > 0 ? find.first() : any.first();
     await target.click();
 
     await expect(page.getByTestId('node-preview')).toBeVisible();
@@ -212,6 +223,22 @@ test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', asy
     if ((await page.getByTestId('aid-screen').count()) > 0) {
       await page.getByTestId('btn-leave-aid').click();
       await page.waitForTimeout(150);
+      continue;
+    }
+    // §2.9.5 — a find is picked up on the spot: the map says what it was, and the route goes on.
+    if ((await page.getByTestId('map-found').count()) > 0) continue;
+    // §2.9.2 — the merchant's cart: walk past it.
+    if ((await page.getByTestId('btn-leave-shop').count()) > 0) {
+      await page.getByTestId('btn-leave-shop').click();
+      await page.waitForTimeout(150);
+      continue;
+    }
+    // §2.10 — a Mystery: take the first choice that can be taken, and walk on.
+    if ((await page.locator('[data-testid^="event-choice-"]').count()) > 0) {
+      await page.locator('[data-testid^="event-choice-"]:not([disabled])').first().click();
+      await page.getByTestId('btn-leave-event').click();
+      await page.waitForTimeout(150);
+      await clearPostCombat(page);
       continue;
     }
 
@@ -257,7 +284,7 @@ test('the map is usable at 1280x720', async ({ page }) => {
   await startRun(page);
   await expect(page.getByTestId('map-graph')).toBeVisible();
 
-  // Nothing may overflow the viewport: a map you have to scroll is a map you cannot read.
+  // Nothing may overflow the viewport: the route scrolls inside its own board (§9.3), never the page.
   const overflow = await page.evaluate(() => ({
     x: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     y: document.documentElement.scrollHeight - document.documentElement.clientHeight,
@@ -265,21 +292,50 @@ test('the map is usable at 1280x720', async ({ page }) => {
   expect(overflow.x).toBeLessThanOrEqual(1);
   expect(overflow.y).toBeLessThanOrEqual(1);
 
-  // Every node marker has to sit inside the graph panel, captions included.
-  const graph = (await page.getByTestId('map-graph').boundingBox())!;
+  // Every node marker sits inside the board's height, captions included: the route scrolls sideways, never up.
+  const board = (await page.getByTestId('route-scroller').boundingBox())!;
   for (const node of await page.locator('[data-testid^="node-"]').all()) {
     const box = await node.boundingBox();
     if (!box) continue;
-    expect(box.x).toBeGreaterThanOrEqual(graph.x - 1);
-    expect(box.x + box.width).toBeLessThanOrEqual(graph.x + graph.width + 1);
-    expect(box.y).toBeGreaterThanOrEqual(graph.y - 1);
-    expect(box.y + box.height).toBeLessThanOrEqual(graph.y + graph.height + 1);
+    expect(box.y).toBeGreaterThanOrEqual(board.y - 1);
+    expect(box.y + box.height).toBeLessThanOrEqual(board.y + board.height + 1);
   }
   await page.screenshot({ path: 'playtest/run-map-720.png' });
+
+  // §9.3 — the strip under the board is the whole route: a click near its end jumps the board there.
+  const scroller = page.getByTestId('route-scroller');
+  expect(await scroller.evaluate((el) => el.scrollLeft)).toBe(0);
+  const strip = (await page.getByTestId('route-strip').boundingBox())!;
+  await page.mouse.click(strip.x + strip.width * 0.9, strip.y + strip.height / 2);
+  await expect.poll(() => scroller.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
 
   // The preview still fits and is still actionable at this height.
   await page.locator('[data-testid^="node-"][data-status="reachable"]').first().click();
   await expect(page.getByTestId('btn-enter-node')).toBeInViewport();
+});
+
+test('a find on the ground is named, picked up in one click, and said once — §2.9.5', async ({ page }) => {
+  await startRun(page);
+  // Stand the run beside the map's first find, the way the dev hook stands it anywhere.
+  await page.evaluate(() => {
+    const a = (window as unknown as { __ascendant: { run: { patch: (r: (d: { reachable: string[]; map: { nodes: Record<string, { kind: string; id: string }> } }) => void) => void } } }).__ascendant;
+    a.run.patch((d) => {
+      const find = Object.values(d.map.nodes).find((n) => n.kind === 'cache')!;
+      d.reachable = [find.id];
+    });
+  });
+  await page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="cache"]').click();
+  const preview = page.getByTestId('node-preview');
+  await expect(preview.getByTestId('preview-find')).toBeVisible();
+  // No team to bring and nothing to fight: the card is the find and one button.
+  await expect(preview.getByTestId('preview-team')).toHaveCount(0);
+  await expect(page.getByTestId('btn-enter-node')).toHaveText('Pick it up');
+  await page.getByTestId('btn-enter-node').click();
+  await expect(page.getByTestId('map-screen')).toBeVisible();
+  await expect(page.getByTestId('map-found')).toContainText('You picked up');
+  await page.screenshot({ path: 'playtest/run-map-found.png' });
+  // Said once, then gone.
+  await expect(page.getByTestId('map-found')).toBeHidden({ timeout: 6000 });
 });
 
 test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ page }) => {

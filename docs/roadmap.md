@@ -808,7 +808,7 @@ the badge now speaks for its own type and gives the pair's on a line of its own.
 **For v0.8.8:** the harness never plays cures or X items, so a full run ends with ~37 unused consumables — tune the
 supply tables against a player who does; Region 3 back to ~50 %.
 
-### v0.8.7 — Routes, revamped  ☐
+### v0.8.7 — Routes, revamped  ✅ 2026-10-02
 The Region map rebuilt — its shape, its pacing and its look (§2.5, §2.9, §9.3). *(Backlog #3.)* Designed with the
 user on 2026-10-02, who also moved the map's look forward from its own post-release row: **20 columns walked left
 to right** in a scrolled view; **tracks, not a lattice** (a node mostly has one child; crossings to an adjacent track,
@@ -819,6 +819,14 @@ ground), so every route walks ~12 fights; and the map **painted from FRLG tiles*
 lane in its Gym's terrain (water, cave, forest, plant…) with its field drawn as weather. It also closes the map's
 standing UI findings: a biome emblem on every Wild node, route lines at 3:1 against their terrain, and the node
 caption on the `--type-caption` token.
+**Shipped.** `run/map.ts` rewritten as tracks (`nextColumn`, `carry`, `addCrossings`, `placeNurse`, `stopColumns`);
+`MapNode.row`/`lean`, `RegionMap.rows`/`yLayer`, the `cache` node (`GROUND_FINDS`, `RunState.lastFind`), save v18 keeps
+old twelve-layer maps. The terrain is `ui/screens/map/` (`terrain.ts` → `tileset.ts` → `RouteView.tsx`) over FRLG tiles
+(`npm run art:route`), with biome emblems on every Wild node. Wild and trainer XP ×0.9 for the longer route; 360 runs:
+R1 64 % · R2|R1 61 % · R3|R2 58 % · run 23 %. The Ring: Pallet's step +4, Celadon's first rung +5. UI review: ship with
+fixes, all Blockers and Shoulds fixed.
+**For v0.8.8:** R3 now reads ~58 % (target ~50 %) and R1 64 % (was 68 %) — the curve moved with the route; the Ring
+is at the edge of its bands again.
 
 ### v0.8.8 — The balance pass  ☐
 Levels, money, consumables, relics and prices together, against whole runs of three Regions and two Cities with

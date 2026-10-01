@@ -176,3 +176,11 @@
   font-size: var(--type-small);
   color: var(--ink-secondary);
 }
+
+/* §2.9.5 — the find on the ground, as the bag will show it. */
+.find {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}

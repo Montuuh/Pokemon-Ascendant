@@ -1,29 +1,25 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-09-30 · **Version:** v0.8.6 shipped (*Consumables that are spent, scarcer relics*) — v0.8 in progress.
+**Date:** 2026-10-02 · **Version:** v0.8.7 shipped (*Routes, revamped*) — v0.8 in progress.
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
-**Sprint goal next:** **v0.8.7** routes revamped (§2.5, §2.9 — design pass with the user first), then **v0.8.8** the
-balance pass (Gym at five, R3 → ~50 %, the Ring, the supply tables). Renumbered by the user on 2026-09-30.
+**Sprint goal next:** **v0.8.8** the balance pass (Gym at five, R3 → ~50 %, the Ring, the supply tables).
 
-**v0.8.1–5:** groups, honest intent, acting twice, Call for Help, fields, TEAM_SIZE, one grammar. **v0.8.6** (`run/rewards.ts`): consumables are **spent** (§3.5) and found
-often — trainers 1–2 from a Region supply table, wild nodes Poké Balls, Elite/Gym prizes, nurse and Center gifts
-(`run.lastGift`), three supplies events, shop **bundles** (§2.9.2, §2.11.2.2). Relics **scarce** (§7.3.1): trainer 15 %
-Common, the Elite a pick of 2U+1R on the reward screen (`claim-reward { relicId }`), first Gym Rares then Legendaries,
-relic events weight 0.35, the **collector's premium** +25 % per relic bought (`slotPrice`, `relicsBought`). No
-Refunds → **Lean Pack**. Second pass (same version, the user's call): balls are bag entries + Great/Ultra (save v17),
-the combat **Bag** (whole bag, 2 items a turn), eased catch curve + ball picker, roles Attacker/Defender (Cover)/Buffer,
-mirrored enemy panels; third pass: hidden trainer rosters, "As Lead" (`forecastIfLead`), XP cut, Ring two at a time.
+**v0.8.7** (§2.5, §2.5.4, §2.9.5, §9.3): the map is 20 columns left to right on an 11-row grid — tracks that drift,
+split, merge and cross (pivoting takes two steps), the **Y** from column 8 (leaning tracks themed like their Gym, the
+Elite on the middle track), the river at 11–13 as the point of no return, two lanes of two tracks, six **stop
+columns**, the new `cache` node (a find on the ground). Terrain: `ui/screens/map/terrain.ts` → `tileset.ts` →
+`RouteView.tsx`, FRLG tiles by `npm run art:route` (scorched grassland and the dank cave are tints). Save v18.
 
-**Findings to act on:** v0.8.8 — the harness never plays cures or X items (a full run ends with ~37 unused), the Ring's
-rung 1 ~71–75 %, the market's prices. v1.2 — map caption token, wild biome emblems, route-line contrast. UI nits left:
-group breakdown box mid-arena; tiny enemy icons; Bench 2 clipped at 720 p; Ring/Safari guides share a nav; silhouette
-filter ×3; blurry TM sprites; `.trauma` px; the reward and Gym-pick
-screens are not mapped in `scripts/ui-audit.mjs` (shared with another session — map them when it is free).
-`AGENTS.md`, `.agents/`, `.codex/` (Codex) are another session's; `scripts/ui-audit.mjs` is shared with it.
+**Findings to act on:** v0.8.8 — R3|R2 ~58 % and R1 64 % after the longer route (XP ×0.9); the Ring sits at the edge
+of its bands (Pallet ladder 0.23, Celadon rung 1 0.72); the harness never plays cures or X items; the market's
+prices. UI nits left: locked Wild emblems hard to tell apart in grey; Region 3's tower ground has hard edges; Escape
+on a preview drops focus to the body; the seed in the map header; group breakdown box mid-arena; tiny enemy icons;
+Bench 2 clipped at 720 p. `AGENTS.md`, `.agents/`, `.codex/` (Codex) are another session's; `scripts/ui-audit.mjs`
+is shared with it (the reward and Gym-pick screens are still unmapped there).
 
-**Test status:** `npm run check` green — 655 Vitest, typecheck, lint, §, catalogue and version guards; `e2e/supplies`,
-`economy`, `run` green. **Balance** (120 runs, XP ×0.6, level-matched tiers): R1 68 % · R2|R1 56 % · R3|R2 40 % · full run 15 %.
+**Test status:** `npm run check` green — 686 Vitest, typecheck, lint, §, catalogue and version guards; `e2e/run` green.
+**Balance** (360 runs): R1 64 % · R2|R1 61 % · R3|R2 58 % · full run 23 %.
 **Shipping:** `docs/release-doctrine.md` (the `ship-version` skill). **UI changes:** the `ui-review` skill.
 
 ## Standing facts

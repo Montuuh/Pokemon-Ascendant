@@ -13,6 +13,15 @@
 
 Group fights, field effects and a reworked route.
 
+### v0.8.7 — Routes, revamped · 2026-10-02
+
+A wider route, walked left to right, painted from FireRed tiles.
+
+- **Horizontal map.** 20 columns that scroll; a strip shows the whole route.
+- **Tracks and a Y.** Paths cross, split and merge; a river is the point of no return.
+- **Gym terrains.** Each lane looks like its Gym, its weather drawn over it.
+- **Stops.** Six stop columns a route; finds on the ground, one click.
+
 ### v0.8.6 — Consumables that are spent, scarcer relics · 2026-09-30
 
 Consumables used up, rarer relics, group roles, hidden rosters, less XP.

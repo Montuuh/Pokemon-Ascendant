@@ -40,13 +40,12 @@ export const nodeBadge = (id: string) => asset(`art/icons/map/node-${id}.png`);
  */
 export const fallbackBadge = (kind: string) => nodeBadge(kind === 'elite-wild' ? 'wild' : kind);
 export const menuVista = () => asset('art/ui/menu-vista.png');
-/** §2.13 — each Region's route plate (Region 3's since v0.7.4). A Region without one borrows Region 1's. */
-const PLATED_REGIONS = new Set([1, 2, 3]);
-export const regionPlate = (n: number) => asset(`art/map/region-${PLATED_REGIONS.has(n) ? n : 1}.png`);
 /** §2.11 — a City's lobby background (`npm run art:gen`, then `install-art town`). */
 export const townArt = (cityId: string) => asset(`art/towns/${cityId}.png`);
 /** §2.11.6 — the Safari's FRLG tiles, tokens and entrance map (`npm run art:safari`). */
 export const safariArt = (name: string) => asset(`art/safari/${name}.png`);
+/** §2.5.4 — the route's FRLG tiles, one folder per terrain (`npm run art:route`). */
+export const routeArt = (terrain: string, piece: string) => asset(`art/route/${terrain}/${piece}.png`);
 /**
  * §2.11.5 / §2.11.6 — the Game Corner room before the switch, with the stairs open, and shut (`npm run art:rocket`),
  * and the two objects the map never drew: the roulette table and the locked hatch (`install-art pixel-sprite`).

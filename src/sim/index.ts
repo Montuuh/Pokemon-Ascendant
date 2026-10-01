@@ -24,7 +24,7 @@ export * from './replay/replay';
 
 // ── the run layer (§2)
 export * from './run/types';
-export { generateRegion, nodesInLayer, laneGymOf, drawGymPair, LAYERS, FORK_LAYER, biomeFor } from './run/map';
+export { generateRegion, nodesInLayer, laneGymOf, drawGymPair, noReturnLayer, LAYERS, Y_LAYER, MAP_ROWS, TRACK_GAP, biomeFor } from './run/map';
 export { REGIONS, regionContent, regionName, ALL_TRAINERS, ALL_GYMS, ALL_ELITES, BIOMES_R2, TRAINERS_R2, GYMS_R2, ELITE_R2, ELITE_WILD_R2, LANE_THEME_R2, REGION2_BIOME_WEIGHTS, BIOMES_R3, TRAINERS_R3, GYMS_R3, ELITE_R3, ELITE_WILD_R3, LANE_THEME_R3, REGION3_BIOME_WEIGHTS, type RegionContent, type EliteDef, type EliteWildDef, BIOMES, TRAINERS, TRAINER_SPRITES, ELITE, ELITE_WILD, GYM, GYMS, LANE_THEME, gymById, rostersOf, eliteWildTeamFor, type GymDef, type LaneTheme, RUN_START, STARTER_IDS, WILD_LEVEL_BAND, ROUTE_LAYERS, gymTeamFor, TM_DROP_CHANCE, HELD_ITEM_DROP_CHANCE, wildBandFor, trainerTeamFor, eliteTeamFor, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, REGION_STAT_TIER, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, STATUS_ACCENT_FALLBACK, statTierFor, evolvedAt, type StatTier, assertRegionContent, type BiomeId, type BiomePool, type TrainerRoster } from './run/region';
 export { createRun, runReducer, validateRunAction, newPartyMon, resetUidCounter, runHelpers, defaultRunCtx, validateKit, shopSlotName, effectiveMax, boxCapacity, boxFitsWithout, marketTakesRelic, abilityLocked, arriveAtCity, dojoPrice, daycarePrice, eggMovesFor, isServiceNode, tutorListFor, RUN_SAVE_VERSION, DEFAULT_PERKS, type RunCtx } from './run/run';
 // §2.1.4, §2.11 — the Cities between Regions.
@@ -34,7 +34,7 @@ export { BLACK_MARKET, SHOWCASE_CAP, atLegendaryCap, candyPrice, fencePrice, rel
 export { activeSetups, buildRingScenario, buildScenario, maxHpOf } from './run/encounter';
 export { AID_HEAL_PCT, MONEY_REWARD, PRICES, LEGENDARY_CAP, isOfferable, inPool, rollRelic, rollLegendaryOffer, rollHeldItem, ownedItems, relicMultiplier, benchXpShare, wildChoices, rollShopStock, slotPrice, RELIC_PREMIUM, rollRelicOffer, rarePickOpen, floorRestockable, rerollPrice, therapyPrice, sellPrice } from './run/economy';
 export { usableInField, fieldUseRefusal, applyFieldItem, type FieldUseRefusal } from './run/fieldItems';
-export { FIGHT_SUPPLIES, SUPPLY_TABLE, PRIZE_TABLE, RELIC_REWARD, rollFightSupplies, rollMixedOffer, gymRelicOffer, drawSupplies, SERVICE_GIFTS, serviceGift, countSupplies, supplyLabel, ballsIn, pokeBalls, POKE_BALL } from './run/rewards';
+export { FIGHT_SUPPLIES, SUPPLY_TABLE, PRIZE_TABLE, RELIC_REWARD, rollFightSupplies, rollMixedOffer, gymRelicOffer, drawSupplies, SERVICE_GIFTS, serviceGift, GROUND_FINDS, rollGroundFind, type GroundFind, countSupplies, supplyLabel, ballsIn, pokeBalls, POKE_BALL } from './run/rewards';
 export { MYSTERY_EVENTS, mysteryEvent, rollEvent, allOutcomes, assertEventContent, eventRiskOf, RISK_LABEL, type MysteryEvent, type EventChoice, type EventOutcome, type EventRisk } from './run/events';
 export { MODIFIERS, AVAILABLE_MODIFIERS, modifierById, modifierValue, hasModifier, modifierXpMultiplier, battleConfigFor, type DifficultyModifier } from './run/modifiers';
 export { activeRegionModifier, regionModifierValue, rollRegionModifierOffer, priceFor, traumaZone1Pct, victoryHealPct } from './run/regionModifiers';

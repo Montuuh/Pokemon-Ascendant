@@ -1,0 +1,192 @@
+/* §9.3 — the route board: a horizontal scroller over the painted terrain, and the strip that shows all of it. */
+.root {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--sp-2);
+  min-height: 0;
+  height: 100%;
+}
+
+.scroller {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-height: 0;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-subtle);
+  background: var(--route-backdrop);
+  cursor: grab;
+  overscroll-behavior-x: contain;
+  /* The strip below is the scroll position, drawn as the route itself; a scrollbar would say it twice. */
+  scrollbar-width: none;
+}
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+.scroller:active {
+  cursor: grabbing;
+}
+.scroller:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+
+.board {
+  position: relative;
+}
+
+/* FRLG's pixel, kept a block at every size: the canvas is drawn at 16 px a tile and scaled here. */
+.terrain {
+  position: absolute;
+  inset: 0;
+  image-rendering: pixelated;
+}
+
+.edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+/* The route lines ride the painted paths. Each has a dark casing under it, so it holds 3:1 against grass, sand,
+   rock and water alike. */
+.edge,
+.edgeLive,
+.edgeWalked {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.edge {
+  stroke: rgba(255, 253, 248, 0.92);
+  stroke-width: 2.5;
+  stroke-dasharray: 5 7;
+  filter: drop-shadow(0 0 1.5px rgba(26, 18, 28, 0.95));
+}
+.edgeLive {
+  stroke: var(--accent-action);
+  stroke-width: 4;
+  filter: drop-shadow(0 0 2px rgba(26, 18, 28, 0.95));
+}
+.edgeWalked {
+  stroke: var(--surface-1);
+  stroke-width: 4;
+  filter: drop-shadow(0 0 2px rgba(26, 18, 28, 0.95));
+}
+
+.noReturn {
+  position: absolute;
+  transform: translateX(-50%);
+  cursor: help;
+  padding: 2px var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-0);
+  color: var(--ink-primary);
+  border: 2px solid var(--accent-warning);
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+/* §2.5.4 — a lane's Battlefield as weather: drawn, not written, with its name tagged at the lane's mouth. */
+.weather {
+  position: absolute;
+  pointer-events: none;
+  overflow: hidden;
+}
+.weatherTag {
+  position: absolute;
+  pointer-events: auto;
+  cursor: help;
+  padding: 2px var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-0);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(26, 18, 28, 0.4);
+}
+.rain {
+  background-image: repeating-linear-gradient(105deg, rgba(190, 220, 255, 0.0) 0 14px, rgba(190, 220, 255, 0.45) 14px 16px);
+  background-size: 64px 64px;
+  animation: rain var(--motion-weather-rain) linear infinite;
+}
+.rain .weatherTag { border: 2px solid var(--type-water); }
+@keyframes rain {
+  to { background-position: -18px 64px; }
+}
+.sun {
+  background: radial-gradient(ellipse at 70% 0%, rgba(255, 214, 120, 0.42), rgba(255, 170, 60, 0.12) 55%, transparent 80%);
+}
+.sun .weatherTag { border: 2px solid var(--type-fire); }
+.sand {
+  background-image: repeating-linear-gradient(170deg, rgba(214, 180, 120, 0.0) 0 22px, rgba(214, 180, 120, 0.4) 22px 25px);
+  background-size: 96px 48px;
+  animation: sand var(--motion-weather-sand) linear infinite;
+}
+.sand .weatherTag { border: 2px solid var(--type-rock); }
+@keyframes sand {
+  to { background-position: 96px 8px; }
+}
+.spark {
+  background: linear-gradient(180deg, rgba(255, 236, 110, 0.12), rgba(255, 236, 110, 0.04));
+  animation: spark var(--motion-weather-spark) steps(1) infinite;
+}
+.spark .weatherTag { border: 2px solid var(--type-electric); }
+@keyframes spark {
+  0%, 100% { background-color: transparent; }
+  48% { background-color: rgba(255, 245, 160, 0.16); }
+  52% { background-color: transparent; }
+}
+
+.strip {
+  position: relative;
+  height: 56px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--route-backdrop);
+}
+/* One pixel a tile, blown up crisp: the same map in miniature, not a shrunk photo of it. */
+.stripArt {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+}
+.window {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border: 2px solid var(--surface-1);
+  border-radius: var(--radius-xs);
+  box-shadow: 0 0 0 1px rgba(26, 18, 28, 0.8), inset 0 0 0 1px rgba(26, 18, 28, 0.8);
+  pointer-events: none;
+}
+.stripYou,
+.stripGym {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+/* You: a ring. A Gym: a diamond in its type's colour (set inline). Told apart by shape, not by tint alone. */
+.stripYou {
+  background: transparent;
+  border: 3px solid var(--accent-action);
+  box-shadow: 0 0 0 1px rgba(26, 18, 28, 0.9);
+}
+.stripGym {
+  border-radius: var(--radius-xs);
+  transform: rotate(45deg);
+  box-shadow: 0 0 0 2px var(--surface-1);
+}

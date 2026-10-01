@@ -65,8 +65,20 @@
   **always one Ranged card** — all three clauses were paid for by a harness regression.
 - **Immer freezes state**, so a test that sets up a run builds new objects rather than pushing onto it.
 
-## The map (v0.5)
+## The map (v0.5, rebuilt in v0.8.7)
 
+- **v0.8.7 replaced the lattice with tracks** (§2.5): 20 columns left to right, a Y and a river as the point of no
+  return. The lattice facts below are kept for why; the locality and contiguity rules live on as "monotone edges".
+- **A constant layer width is a constant silhouette.** The user saw "only one layout" across many runs because
+  `LAYER_WIDTH` was a table: the seed moved kinds and edges, never the shape. Every shape choice is a roll now, and
+  `NoTwoRoutesShareAShape` guards it.
+- **Three children per node reads as chaos.** Every step a fork means no route to follow. Tracks with one child and
+  occasional crossings to the adjacent track (never the same pair two columns running) read as routes.
+- **More columns means more fights unless the extra columns are stops.** Twenty columns of mixed nodes is twelve-plus
+  fights; the harness read R3 78 % before XP came down ×0.9. Stop columns keep the fight count path-independent.
+- **A guaranteed service has to be reachable from every track**, not just present in the column (`placeNurse`).
+- **Paint ground in its own pass.** A 2 × 2 tree drawn in the same pass as ground is painted over by its right and
+  lower neighbours' ground; the first render showed scattered stubs instead of woods.
 - **A lattice, not a ladder.** 12 layers, 4–5 columns, ~47 nodes of which you walk 12. "Highly connected" and
   "clear paths" pull against each other; what reconciles them is a **locality rule** — a node links only to
   columns within one of its own, and its children are a *contiguous* window. The contiguity is what actually

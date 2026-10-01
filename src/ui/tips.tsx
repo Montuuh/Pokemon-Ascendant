@@ -414,6 +414,21 @@ export function regionTip(regionIndex: number, greaterThreats: boolean): ReactNo
   return <Tip title={name ? `Region ${regionIndex + 1} — ${name}` : `Region ${regionIndex + 1}`} meta={biomes} body={capitalise(regionAccent(regionIndex, greaterThreats))} footer={regionIndex >= STATUS_ACCENT_FROM ? 'Enemies here also field the forms their levels warrant.' : undefined} />;
 }
 
+/** §2.5 — the footer of a Gym's tooltip in the map header: where the route leans toward it, and where it commits. */
+export function forkFooter(yColumn: number, noReturnColumn: number): string {
+  return `Two of the four Gyms are drawn each run. The tracks lean toward them from column ${yColumn}; the river at column ${noReturnColumn} is the point of no return.`;
+}
+
+/** §2.5 — the river at the point of no return. */
+export function noReturnTip(gyms: readonly string[]): ReactNode {
+  return <Tip title="Point of no return" body={`Past the river the two lanes never meet again: the top one ends at ${gyms[0]}, the bottom one at ${gyms[1]}. The middle track's last stop offers both.`} />;
+}
+
+/** §9.3 — the strip under the route. */
+export function routeStripTip(): ReactNode {
+  return <Tip title="The whole route" body="Where you stand, the two Gyms at the end, and the stretch the board is showing. Click to jump there." />;
+}
+
 /** §2.11.0 — the town itself: how a lobby works, and what waits past its gate. */
 export function townTip(name: string, nextRegion: number, greaterThreats: boolean): ReactNode {
   return <Tip title={name} body="Every labelled building is a door — walk in as often as you like. The road at the top leaves town." footer={`Region ${nextRegion} is next: ${regionAccent(nextRegion - 1, greaterThreats)}`} />;

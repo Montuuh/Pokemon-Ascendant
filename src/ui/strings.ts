@@ -118,7 +118,15 @@ export const NODE_LABEL: Record<string, string> = {
   aid: 'Field nurse',
   merchant: 'Merchant',
   mystery: 'Mystery',
+  cache: 'Find',
   gym: 'Gym',
+};
+
+/** §9.3 — the route board's own words. */
+export const ROUTE_TEXT = {
+  noReturn: 'Point of no return',
+  scroller: 'The route. Arrow keys, Home and End scroll it.',
+  found: (what: string) => `You picked up ${what}.`,
 };
 
 /** §4.3 — each Battlefield, as its chip names it. */
@@ -166,6 +174,7 @@ export const NODE_HINT: Record<string, string> = {
   aid: 'No fight, so you can walk in with nobody standing.',
   merchant: 'No fight. Once you walk on, the cart is gone.',
   mystery: 'No fight. A scene and a choice, with every outcome written on the button before you press it.',
+  cache: 'No fight.',
   gym: 'The Gym Leader. Beat it and the next town is yours to rest in.',
 };
 

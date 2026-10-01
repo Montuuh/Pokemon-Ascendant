@@ -168,3 +168,17 @@
   filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brand-red) 55%, transparent))
     drop-shadow(0 3px 6px rgba(26, 18, 28, 0.5));
 }
+
+/* §9.3 — with the whole route on the board, a caption on every node is a wall of words. A caption names the nodes
+   you can take and the one you stand on; any other shows its caption under the pointer or the focus, and its
+   bubble names it either way. */
+.locked .caption,
+.visited .caption {
+  display: none;
+}
+.locked:hover .caption,
+.locked:focus-visible .caption,
+.visited:hover .caption,
+.visited:focus-visible .caption {
+  display: block;
+}

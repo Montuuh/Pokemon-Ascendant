@@ -9,6 +9,8 @@ import { Tipped } from '@/ui/tooltip';
 import { fallbackBadge, nodeBadge, trainerSprite, itemIcon } from '@/ui/art';
 import { groupLabel, NODE_HINT, NODE_LABEL } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
+import { Money } from './Money';
+import { SupplyStrip } from './SupplyStrip';
 import { TypeBadge } from './TypeBadge';
 import styles from './NodePreviewCard.module.css';
 
@@ -31,8 +33,19 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   const run = useRunStore((s) => s.run);
   const plan = run ? groupPlanFor(node, run) : { kind: 'single' as const };
   const fields = run ? fieldsFor(node, run, content) : {};
-  const GroupIcon = plan.kind === 'acts-twice' ? IconRepeat : plan.kind === 'caller' ? IconUserPlus : plan.kind === 'pack' || plan.kind === 'trio' ? IconUsersGroup : IconUsers;
-  const roster = node.kind === 'trainer' ? (ALL_TRAINERS.find((t) => t.id === node.preview.rosterId) ?? ALL_TRAINERS.find((t) => t.name === node.preview.title)) : undefined;
+  const GroupIcon =
+    plan.kind === 'acts-twice'
+      ? IconRepeat
+      : plan.kind === 'caller'
+        ? IconUserPlus
+        : plan.kind === 'pack' || plan.kind === 'trio'
+          ? IconUsersGroup
+          : IconUsers;
+  const roster =
+    node.kind === 'trainer'
+      ? (ALL_TRAINERS.find((t) => t.id === node.preview.rosterId) ??
+        ALL_TRAINERS.find((t) => t.name === node.preview.title))
+      : undefined;
 
   useEffect(() => {
     enterRef.current?.focus();
@@ -45,7 +58,9 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
 
   const hiddenTeam = node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym';
   // The Poké Balls below say how many; the line keeps only what they do not (a Gym's telegraph, the Elite's prize).
-  const detail = hiddenTeam ? node.preview.detail.replace(/^A team of \d+ Pokémon( · )?/, '') : node.preview.detail;
+  const detail = hiddenTeam
+    ? node.preview.detail.replace(/^A team of \d+ Pokémon( · )?/, '')
+    : node.preview.detail;
   return (
     <div className={styles.scrim} onClick={onCancel} role="presentation">
       <div
@@ -70,13 +85,15 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
             height={44}
           />
           <div>
-            {NODE_LABEL[node.kind] !== node.preview.title && <p className={styles.kind}>{NODE_LABEL[node.kind]}</p>}
+            {NODE_LABEL[node.kind] !== node.preview.title && (
+              <p className={styles.kind}>{NODE_LABEL[node.kind]}</p>
+            )}
             <h2 className={`${styles.title} display`}>{node.preview.title}</h2>
           </div>
           {roster && <img className={styles.trainer} src={trainerSprite(roster.sprite)} alt="" />}
         </header>
 
-        {detail && <p className={styles.detail}>{detail}</p>}
+        {detail && !node.preview.find && <p className={styles.detail}>{detail}</p>}
         <p className={styles.hint}>{NODE_HINT[node.kind]}</p>
         {/* §2.6.1 / §4.3 — the ground it is fought on, promised like the rest. */}
         <FieldChips fields={fields} compact />
@@ -92,7 +109,11 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         {hiddenTeam && (
           <>
             <h3 className={styles.sectionTitle}>Their team</h3>
-            <ul className={styles.balls} data-testid="preview-team-size" aria-label={`${node.preview.enemies?.length ?? 0} Pokémon`}>
+            <ul
+              className={styles.balls}
+              data-testid="preview-team-size"
+              aria-label={`${node.preview.enemies?.length ?? 0} Pokémon`}
+            >
               {(node.preview.enemies ?? []).map((_, i) => (
                 <li key={i}>
                   <img src={itemIcon('poke-ball')} alt="" width={28} height={28} className={styles.ball} />
@@ -132,22 +153,38 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           </>
         )}
 
-        <h3 className={styles.sectionTitle}>{node.kind === 'aid' || node.kind === 'merchant' ? 'Bringing along' : 'Going in with'}</h3>
-        <ul className={styles.team} data-testid="preview-team">
-          {active.map((m, i) => {
-            const s = content.species(m.speciesId);
-            return (
-              <li key={m.uid} className={i === 0 ? styles.leadSlot : ''}>
-                <MonIcon speciesId={s.id} size={30} />
-                <span>
-                  {s.name} <b className="tabular">Lv {m.level}</b>
-                </span>
-                {i === 0 && <span className={styles.leadTag}>Lead</span>}
-              </li>
-            );
-          })}
-        </ul>
-        <p className={styles.lockNote}>The team locks when you enter. Change it on the map first.</p>
+        {/* §2.9.5 — something on the ground: what it is, named before you choose it. */}
+        {node.preview.find && (
+          <div className={styles.find} data-testid="preview-find">
+            {node.preview.find.items.length > 0 && (
+              <SupplyStrip ids={node.preview.find.items} testId="preview-find-items" />
+            )}
+            {node.preview.find.money > 0 && <Money amount={node.preview.find.money} size={20} />}
+          </div>
+        )}
+
+        {node.kind !== 'cache' && (
+          <>
+            <h3 className={styles.sectionTitle}>
+              {node.kind === 'aid' || node.kind === 'merchant' ? 'Bringing along' : 'Going in with'}
+            </h3>
+            <ul className={styles.team} data-testid="preview-team">
+              {active.map((m, i) => {
+                const s = content.species(m.speciesId);
+                return (
+                  <li key={m.uid} className={i === 0 ? styles.leadSlot : ''}>
+                    <MonIcon speciesId={s.id} size={30} />
+                    <span>
+                      {s.name} <b className="tabular">Lv {m.level}</b>
+                    </span>
+                    {i === 0 && <span className={styles.leadTag}>Lead</span>}
+                  </li>
+                );
+              })}
+            </ul>
+            <p className={styles.lockNote}>The team locks when you enter. Change it on the map first.</p>
+          </>
+        )}
 
         {blockedReason && <p className={styles.blocked}>{blockedReason}</p>}
 
@@ -155,8 +192,21 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           <button type="button" className={styles.cancel} onClick={onCancel} data-testid="btn-cancel-node">
             Not yet
           </button>
-          <button ref={enterRef} type="button" className={styles.enter} onClick={onEnter} disabled={!canEnter} data-testid="btn-enter-node">
-            {node.kind === 'aid' ? 'Rest here' : node.kind === 'merchant' ? 'Browse' : 'Enter'}
+          <button
+            ref={enterRef}
+            type="button"
+            className={styles.enter}
+            onClick={onEnter}
+            disabled={!canEnter}
+            data-testid="btn-enter-node"
+          >
+            {node.kind === 'aid'
+              ? 'Rest here'
+              : node.kind === 'merchant'
+                ? 'Browse'
+                : node.kind === 'cache'
+                  ? 'Pick it up'
+                  : 'Enter'}
           </button>
         </div>
       </div>

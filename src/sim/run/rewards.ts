@@ -180,3 +180,42 @@ export const serviceGift = (kind: keyof typeof SERVICE_GIFTS, regionIndex: numbe
   const table = SERVICE_GIFTS[kind];
   return [...(table[Math.min(regionIndex, table.length - 1)] ?? [])];
 };
+
+/** §2.9.5 — something on the ground: what one find can be, by Region, at equal odds. */
+export interface GroundFind {
+  items: readonly string[];
+  money: number;
+}
+export const GROUND_FINDS: readonly (readonly GroundFind[])[] = [
+  [
+    { items: ['potion'], money: 0 },
+    { items: ['poke-ball', 'poke-ball'], money: 0 },
+    { items: ['antidote', 'paralyze-heal'], money: 0 },
+    { items: ['x-attack'], money: 0 },
+    { items: ['ether'], money: 0 },
+    { items: [], money: 80 },
+  ],
+  [
+    { items: ['super-potion'], money: 0 },
+    { items: ['great-ball'], money: 0 },
+    { items: ['full-heal'], money: 0 },
+    { items: ['x-defense'], money: 0 },
+    { items: ['poke-ball', 'poke-ball', 'poke-ball'], money: 0 },
+    { items: [], money: 150 },
+  ],
+  [
+    { items: ['hyper-potion'], money: 0 },
+    { items: ['ultra-ball'], money: 0 },
+    { items: ['revive'], money: 0 },
+    { items: ['full-heal', 'x-attack'], money: 0 },
+    { items: ['great-ball', 'great-ball'], money: 0 },
+    { items: [], money: 250 },
+  ],
+];
+
+/** §2.9.5 — roll a find for a Region. Rolled with the map, so a reload shows the same one. */
+export function rollGroundFind(rng: GameRng, regionIndex: number): GroundFind {
+  const table = GROUND_FINDS[Math.min(regionIndex, GROUND_FINDS.length - 1)]!;
+  const pick = table[Math.min(table.length - 1, Math.floor(rng.range01() * table.length))]!;
+  return { items: [...pick.items], money: pick.money };
+}

@@ -131,21 +131,46 @@ function chooseNode(run: RunState, content: CombatCtx['content'], policy: RunPol
   const options = run.reachable.map((id) => run.map.nodes[id]!);
   const gym = options.find((n) => n.kind === 'gym');
   if (gym) return gym;
-  // §2.8.1 — the Elite takes its whole layer, so there is nothing to weigh it against.
-  const elite = options.find((n) => n.kind === 'elite' && n.lane === undefined);
-  if (elite) return elite;
-
-  // §2.5 — THE FORK. Whichever lane the next step commits to is the Gym you will fight, and the lanes never
-  // rejoin, so this is the one routing decision in the run that cannot be walked back. Take the lane whose
-  // Gym the Box answers best; only if that is a tie does anything else about the node matter.
-  const lanes = new Set(options.map((n) => n.lane).filter((l): l is number => l !== undefined));
-  if (lanes.size > 1) {
-    const best = [...lanes].sort((a, b) => gymMatchup(run, content, run.map.gyms[b]!) - gymMatchup(run, content, run.map.gyms[a]!))[0]!;
-    const inLane = options.filter((n) => n.lane === best);
-    if (inLane.length) return chooseAmong(run, content, policy, inLane);
+  // §2.5 — THE Y. From the crossroads on, every step either keeps both Gyms open or leans toward one, and the point
+  // of no return commits to the Gym you will fight. Pick the Gym the Box answers best as soon as the Y opens and
+  // walk toward it — a node that can no longer reach that Gym is off the table; only among the ones that can does
+  // anything else about the node matter.
+  const standing = run.position ? run.map.nodes[run.position]! : null;
+  if (standing && standing.layer + 1 >= (run.map.yLayer ?? run.map.forkLayer)) {
+    const best = [0, 1].sort((a, b) => gymMatchup(run, content, run.map.gyms[b]!) - gymMatchup(run, content, run.map.gyms[a]!))[0]!;
+    const toward = options.filter((n) => reachesLane(run.map, n, best));
+    if (toward.length && toward.length < options.length) return chooseAmong(run, content, policy, preferLean(toward, best));
+    if (toward.length) options.splice(0, options.length, ...preferLean(toward, best));
   }
 
-  return chooseAmong(run, content, policy, options);
+  // §2.8.1 — the Elite is the hardest fight before the Gym and a relic pick: taken when the team can afford it.
+  const elite = options.find((n) => n.kind === 'elite' && n.lane === undefined);
+  if (elite && healthShare(run, content) > 0.6) return elite;
+
+  return chooseAmong(run, content, policy, options.filter((n) => n !== elite).length ? options.filter((n) => n !== elite) : options);
+}
+
+/** §2.5 — whether a node can still walk to the Gym at the end of a lane. */
+function reachesLane(map: RunState['map'], node: MapNode, lane: number): boolean {
+  if (node.lane !== undefined) return node.lane === lane;
+  const seen = new Set<string>([node.id]);
+  const queue = [node.id];
+  while (queue.length) {
+    const n = map.nodes[queue.shift()!]!;
+    if (n.lane === lane) return true;
+    for (const id of n.next) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+      queue.push(id);
+    }
+  }
+  return false;
+}
+
+/** On the Y, the track that already leans toward the chosen Gym is where its species are: walk it when it is offered. */
+function preferLean(options: MapNode[], lane: number): MapNode[] {
+  const leaning = options.filter((n) => n.lean === lane || n.lane === lane);
+  return leaning.length ? leaning : options;
 }
 
 /** The ordinary "which of these" preference, once the lane question is settled. */
@@ -177,7 +202,9 @@ function chooseAmong(run: RunState, content: CombatCtx['content'], policy: RunPo
 
   // Otherwise take the trainer: more XP, and the route is short.
   const trainer = options.find((n) => n.kind === 'trainer');
-  return trainer ?? wild ?? options.find((n) => n.kind !== 'aid') ?? options[0]!;
+  // §2.9.5 — in a stop column with nothing above worth it, pick up what is on the ground.
+  const cache = options.find((n) => n.kind === 'cache');
+  return trainer ?? wild ?? cache ?? options.find((n) => n.kind !== 'aid') ?? options[0]!;
 }
 
 /**
