@@ -256,36 +256,44 @@ hidden intent (§5.5) opens the kind and nothing more. The numbers stay on the s
 # §9.3 The map screen
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│ Region 1 — Verdant Route      💰 350₽   ⭐ 240   ◓ 3   🎒      │
-├──────────────────────┬─────────────────────────────────────────┤
-│  Active Team         │              Map graph                  │
-│  [Lead ★] [B] [B]    │      L0  ●                              │
-│                      │      L1   ● ● ●                         │
-│  Box (drag to swap)  │      L2   ●─●─●                         │
-│  ⚪ ⚪ ⚠2 ⚪ …        │      …                                  │
-│                      │      L9   ╱────╲   fork                 │
-│                      │      L11  👑    👑                      │
-├──────────────────────┴─────────────────────────────────────────┤
-│ [Inventory] [Pokédex] [Settings]                 [Save & Quit] │
-└────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│ Region 1 · column 6 of 20      Brock (Rock) · Misty (Water)     ₽ ◓ 🎒  │
+├──────────────────┬─────────────────────────────────────────────────────┤
+│  Active Team     │ ◀ scroll ▶                                          │
+│  [Lead ★] [B][B] │  ══●═══⛺═══●══╱══●══●══⛺══════ (cave) ══════ 👑    │
+│                  │  ══●═══⛺═══◉══⛺══●⚔══●══⛺┤                        │
+│  Box             │  ══●═══⛺═══●══╲══●══●══⛺══════ (water, rain) ═ 👑   │
+│  ⚪ ⚪ ⚠2 ⚪ …    │  [ the whole route in a strip, your view outlined ] │
+└──────────────────┴─────────────────────────────────────────────────────┘
 ```
 
-The graph must read as a **navigable tree, not a tangle**: recessive 2px edges, 40px node circles, the current
-position at 1.35× with a pulsing gold ring, reachable nodes in full colour with a white border, locked nodes
-desaturated with a dashed border, visited nodes with a checkmark, and the Gym layer scaled up with a gold aura.
-Beyond about fifteen visible nodes, distant layers fade to 70 % so the next two or three decisions pop forward.
+The route runs **left to right**, the way a Pokémon route is walked, and it is wider than the screen: the graph
+is a horizontal scroller over the painted terrain (§2.5.4), dragged, wheeled or keyed (arrows, Home/End), and the
+view follows the player — it centres on where you stand after every node and on a node when you open its
+preview. A strip under the graph shows the whole route at a glance with the visible window outlined; clicking it
+jumps there. The vertical map was a roguelike convention borrowed from a game about climbing a tower; a route is
+a road.
+
+The terrain is drawn from tiles at whole-pixel scale, so the FRLG pixel stays crisp: the tracks as paths, the
+scenery between them, each lane in its Gym's terrain, the point of no return as a landmark, and a lane's
+Battlefield drawn over it as weather (§2.5.4). The edges are drawn over the paths at 3:1 against the terrain
+under them.
+
+The graph must read as **routes, not a tangle**: 44px node badges, the current position at 1.35× with a pulsing
+gold ring, reachable nodes in full colour with a white border, locked nodes desaturated, visited nodes with a
+check, the walked path drawn solid, and the two Gyms scaled up at the far right with a gold aura. A Wild node
+wears its biome's emblem; a trainer its archetype; a stop its service.
 
 The left column is the Active Team (three tiles, the Lead crowned) above a scrollable Box. Trauma badges overlay
-any portrait; fainted Pokémon are dimmed but still draggable, so you can prepare a post-Center line-up.
+any portrait; fainted Pokémon are dimmed but still draggable, so you can prepare a post-nurse line-up.
 
 ---
 
 # §9.4 Iconography
 
 ## §9.4.1 Node icons
-Wild 🌿 (tinted per biome) · Trainer 👤 · Elite Trainer 👤⭐ · Elite Wild 🦕 · Pokémon Center ❤️ · Shop 🛒 ·
-Dojo 📜 · Mystery ❓ · Gym 👑 · City 🏙️.
+Wild 🌿 (its biome's emblem) · Trainer 👤 (its archetype) · Elite Trainer 👤⭐ · Elite Wild 🦕 · Field nurse ❤️ ·
+Merchant 🛒 · Mystery ❓ · Something on the ground ◓ (the item ball) · Gym 👑 · City 🏙️.
 
 ## §9.4.2 Resource icons
 AP ● · Poké Dollar ₽ · Pokéball ◓ · Trainer XP ⭐ · Token 🪙 · Trauma ⚠ · Mastery 🏆.

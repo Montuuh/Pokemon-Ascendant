@@ -28,8 +28,7 @@ loop layer and re-tests the core inside it.
 | v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
 | v1.1 | Polish | Audio, accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
-| v1.2 | Map revamp | A horizontal route you scroll, painted from a tileset with the biome on top | ☐ |
-| v1.3 | The world, wider | Fossils and the Laboratory, role events, Ditto's Transform, HMs | ☐ |
+| v1.2 | The world, wider | Fossils and the Laboratory, role events, Ditto's Transform, HMs | ☐ |
 | v2.0 | Two players | A dual mode, designed with the user first | ☐ |
 
 ---
@@ -810,15 +809,16 @@ the badge now speaks for its own type and gives the pair's on a line of its own.
 supply tables against a player who does; Region 3 back to ~50 %.
 
 ### v0.8.7 — Routes, revamped  ☐
-The route's generation, nodes and pacing, reworked (§2.5, §2.9) — with v0.8.3's groups placed on it. Design pass
-with the user first; the route's *look* is v1.2's. *(Backlog #3.)* Moved from v0.8.6 (user, 2026-09-30).
-The Region map redrawn: **horizontal**, scrolled left to right the way a route is walked, and painted from a
-**tileset** with the biome laid over it instead of one flat backdrop per lane. Decided as post-release on
-2026-09-22 — it is an art and tooling system (atlas, autotiling, seams) rather than a rule change, and the
-current map works. The horizontal reading is the part that matters: a Pokémon route runs left to right, and
-the vertical map is a roguelike convention borrowed from a game about climbing a tower. It also closes the
-map's standing UI findings: a biome emblem on every Wild node (they fall back to the meadow tuft), route lines
-at 3:1 against their plate (Regions 1 and 2 fall short), and the node caption on the `--type-caption` token.
+The Region map rebuilt — its shape, its pacing and its look (§2.5, §2.9, §9.3). *(Backlog #3.)* Designed with the
+user on 2026-10-02, who also moved the map's look forward from its own post-release row: **20 columns walked left
+to right** in a scrolled view; **tracks, not a lattice** (a node mostly has one child; crossings to an adjacent track,
+so pivoting across the map takes two steps; splits and merges so no two routes share a shape); the one-layer fork
+replaced by a **Y** — the outer tracks lean toward their Gyms, the middle one stays neutral with the Elite on it, and
+a **point of no return** at column 11–13; **six stop columns** (nurse, merchant, Mystery, and a new find on the
+ground), so every route walks ~12 fights; and the map **painted from FRLG tiles** by a pure terrain function — each
+lane in its Gym's terrain (water, cave, forest, plant…) with its field drawn as weather. It also closes the map's
+standing UI findings: a biome emblem on every Wild node, route lines at 3:1 against their terrain, and the node
+caption on the `--type-caption` token.
 
 ### v0.8.8 — The balance pass  ☐
 Levels, money, consumables, relics and prices together, against whole runs of three Regions and two Cities with
@@ -932,6 +932,6 @@ the account revamps move to v0.9):
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
 | — | Recovering missed Badges | v0.9.4 |
-| — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.3 |
+| — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
 | — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.4 (with the two-slot balance, designed first) |

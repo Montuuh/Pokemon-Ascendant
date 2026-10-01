@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -32,8 +32,9 @@ Pokémon.
 
 - **Pre-run:** difficulty → starter → 1 of 3 Starting Relics → 1 of 3 Region Modifiers. Confirming the modifier
   **locks the seed and generates the map**. The Box holds only the starter.
-- **A Region:** a seeded 12-layer branching tree ending in a **Gym fork** at L9 — two routes, two Gyms, both
-  announced. One guaranteed Elite Trainer ≈L7, one Center per Gym lane, ≈1 Dojo, 2 Mystery, 1 Shop, ≤1 Elite Wild.
+- **A Region:** a seeded **20-column route walked left to right**, scrolled, on tracks that split, merge and cross
+  — the trunk (0–7), a **Y** whose outer tracks lean toward the two Gyms (8 to the point of no return at 11–13),
+  two themed lanes, two Gyms at 19, both announced. Six **stop columns**; ~12 fights a route. *(v0.8.7.)*
 - **A City** (after Gyms 1 and 2) is a **lobby** — a drawn town whose buildings are doors, no visit budget, the
   gate leaves when you say so. **Pallet Town** (5 doors) then **Celadon City** (more, dearer). Routes keep only a
   nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
@@ -95,9 +96,16 @@ cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.
 
 ## 2. The map and its nodes *(Topic 2, continued)*
 
-**12 layers.** L0 choose 1 of 3 (no forced Wild) · a Wild reachable by L1–2 · trunk L1–8 · **Elite ≈L7** ·
-**fork at L9** · a Center in each lane · **two Gyms at L11**. Seed-deterministic; on resume the map is
-**re-derived by replay**, never restored from a cursor.
+**20 columns, left to right** (§2.5, v0.8.7). Tracks, not a lattice: a node usually has one child on its own track;
+the choices are **crossings** to an adjacent track (one per pair per column, never two columns running), splits and
+merges — so pivoting from the top track to the bottom takes at least two steps, and no edge crosses another. Trunk
+0–7 (wild-heavy at 0–1) · the crossroads at 8 · **the Y** to the **point of no return** (col 11–13, seeded, a
+landmark): the top track leans to Gym A, the bottom to Gym B (their species and trainers), the middle stays neutral
+and carries the **Elite** (col 9–10) · two lanes of two tracks, each **in its Gym's terrain** with its biome's
+**field** drawn as weather · **two Gyms at 19**. **Stop columns** at 2|3, 5|6, 8, p, p+2|p+3 and 18: every node a
+stop — the field nurse (one per lane at 18, guaranteed), the merchant (≥1 in the trunk), a Mystery, or **something
+on the ground** (a find named on the map, one click). So every route walks ~12 fights and ~7 stops. ~65 nodes. The
+map is **painted from a tileset** by a pure function of the map (§2.5.4) and saved whole in the run.
 
 **Wild nodes** offer **3 species up front** — 2 Common + 1 Uncommon, ~10 % upgrading the Uncommon to Rare.
 8 biomes bound to Regions; **Naturalist's Lens** makes their Rares three times as common.

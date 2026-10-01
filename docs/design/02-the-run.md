@@ -36,15 +36,16 @@ only the starter; the Active Team is that one Pokémon until you recruit more.
 
 ## §2.1.2 Region traversal (×3)
 
-Each Region is a seeded branching map of 12 layers that ends in a **Gym fork** — two routes leading to two
-different Gym Leaders, both announced when you choose. Full layout, node types and generation rules: §7.2.
+Each Region is a seeded route of 20 columns, walked left to right, that splits in a **Y** into two lanes leading
+to two different Gym Leaders, both announced from the first column. Full layout, node types and generation rules:
+§2.5.
 
 Node categories:
 
 | Category | Nodes |
 |---|---|
 | Combat | Wild Pokémon Area · Trainer Battle · Elite Trainer · Elite Wild |
-| Utility | Pokémon Center · Shop · Dojo · Mystery Event |
+| Stops | Field nurse · Travelling merchant · Mystery Event · Something on the ground (§2.9) |
 | Climax | Gym Leader (the Region's final layer) |
 
 Between nodes the player has the **Map View** (§2.1.2.1); on entering a node, the Active Team locks.
@@ -296,103 +297,171 @@ rest of the run. Full system, including the three ways to clear stacks: §6.2.
 
 # §2.5 The Region map
 
-A Region is a **seeded branching tree of 12 layers** that forks near the end into two Gym routes. The same
-`(runSeed, regionIndex)` always produces the same topology, node types and Gym pair — the map is stable across a
-save and reload.
+A Region is a **seeded route of 20 columns, walked left to right**, that splits in a Y into two Gym lanes. The
+same `(runSeed, regionIndex)` always produces the same topology, node types, terrain and Gym pair — the map is
+stable across a save and reload. It is wider than the screen and scrolls (§9.3); the route you did not take
+stays visible beside the one you did.
 
 ```
-L0    ● ● ● ●               entry — 4 nodes, wild-heavy; which wild is still a choice
-L1–2  ● ● ● ● ●             a Wild Area is guaranteed reachable; one Mystery at L2
-L3–6  ● ● ● ● ●             trunk: Trainer / Wild / Shop (L3) / Mystery (L5) / Dojo (L6)
-L7    ● ●⚔ ●                the Elite Trainer — guaranteed on the map, beside two ordinary fights
-L8    ╱─────╲               THE GYM FORK — both destinations telegraphed from L0
-L8–10 ●● ❤   ●● ❤          two lanes, each themed after its Gym; one Centre each
-L11   👑      👑            two Gyms; you fight the one your lane reaches
+col  0 ─────────── 7 │ 8 ───────── p │ p+1 ──────────── 18 │ 19
+     THE TRUNK         THE Y            THE LANES              GYMS
+     ═══●═══●═══⛺══   ╱══●══●══⛺       ══●══⛺══●══❤       👑 Gym A
+     ═══●═══●═══⛺══ ⛺═══●⚔═●══⛺──┤     (Gym A's terrain)
+     ═══●═══●═══⛺══   ╲══●══●══⛺       ══●══⛺══●══❤       👑 Gym B
+     the Region's road  each side tints   (Gym B's terrain)
+                        toward its Gym     p = the point of no return (col 11–13)
 ```
 
-| Layer | Content |
-|---|---|
-| **L0** | Four entry nodes, **wild-weighted**. Not a forced Wild — which wild, and its three species, is the choice |
-| **L1–L2** | A Wild Pokémon Area is **reachable** here, so early recruitment always stays viable |
-| **L0–L7** | The trunk: a lattice 4–5 columns wide, 1–3 children per node, weighted by layer |
-| **L7** | One **Elite Trainer**, guaranteed *on the map* — the middle of three, so walking past it is legal |
-| **L8** | The **Gym fork**: the trunk splits into two independent lanes that never rejoin |
-| **L8–L10** | Each lane is **themed after its own Gym** — its biome, its species, its trainer archetype. One guaranteed **Pokémon Center** per lane |
-| **L11** | Two terminal Gym nodes. The unchosen one is abandoned for the run |
+| Columns | What it is | Terrain |
+|---|---|---|
+| **0–7 — the trunk** | Three or four **tracks** that drift, split, merge and cross. Wild-heavy at 0–1; you recruit and build the counter here | The Region's own road (§2.13): a grass route, a cliff coast, a volcanic highland |
+| **8 — the crossroads** | A stop column (below) at the mouth of the Y: the last look at both Gyms before the tracks lean | The road still |
+| **8–p — the Y** | Exactly three tracks. The top one **leans** toward the first Gym and the bottom one toward the second: their wilds and trainers already wear that Gym's theme. The middle track stays neutral and carries the **Elite Trainer** (col 9 or 10). Crossing between tracks is still allowed | The top and bottom tracks blend into their Gym's terrain; the middle stays the road |
+| **p — the point of no return** | Column 11, 12 or 13 (seeded), drawn as a landmark — a bridge, a cave mouth, a gate. A stop column. Every edge leaving it enters one lane or the other; the middle track's last node offers both | — |
+| **p+1–18 — the lanes** | Two independent lanes of two tracks each, **themed after their own Gym** (§2.5.0). Edges never leave a lane. Column 18 is a stop with the lane's **field nurse** on one track | Fully the Gym's terrain, and the Gym's field (§2.5.4) |
+| **19** | Two terminal Gym nodes, one per lane. The unchosen one is abandoned for the run | The Gym's |
 
-**Connection rules.** Every node links to 1–3 nodes in the next layer, always within one column of its own —
-a **locality rule**, and it is what reconciles "densely connected" with "clear paths". No node has more than
-**3** parents (branchy, not a convergent mesh); children are a *contiguous* run of candidates, which is what
-guarantees edges do not cross; no three adjacent nodes in a layer share a type; **no edge crosses lanes past
-the fork**; every route reaches the fork; nothing is unreachable and nothing before a Gym is a dead end.
+**Why a Y and not a split.** Until v0.8.7 the trunk forked in one layer (L8) into two corridors two nodes wide:
+one step you were neutral, the next you were committed for good, and what followed had no decisions in it. The Y
+spreads the commitment over four or five columns. The outer tracks *lean* — their nodes already offer the Gym's
+species and trainers — so committing early is rewarded with three columns of on-theme recruits, and the middle
+track lets you defer the choice at the price of meeting the Elite and of recruiting off-theme. The irreversible
+moment is still one place on the map, and the map draws it as one.
 
-**No two in a row, or no three?** Canon said "no two adjacent nodes share a type" until v0.5, and it turned
-out to *override* the layer weighting rather than season it: at layer 0's 9:2 Wild bias it fired on almost
-every roll and dragged a deliberately wild-heavy opening down to half Wild. A row of four cannot be both
-mostly-one-kind and never-twice-in-a-row. The rule is **no three in a row**, which still breaks up a wall of
-identical badges and leaves a weighting alone.
+**Tracks, not a lattice.** The map is a set of tracks that run left to right, the way a Pokémon route runs; a
+route is a line you follow, and changing line is a decision rather than the default. A node usually has **one**
+child, on its own track. The choices are the **crossings**: in a column, an adjacent pair of tracks may carry one
+diagonal edge (either way), never two (an X), and the same pair never crosses two columns running. Tracks also
+**split** (one node, two children) and **merge** (two nodes, one child), which is what makes no two routes look
+alike. Rules:
+
+- An edge connects consecutive columns and moves at most to the **adjacent track** — so pivoting from the top
+  track to the bottom one takes **at least two** steps (three on four tracks). The v0.5 lattice let a node reach
+  any of three columns at every step, and the result read as a tangle: every step was a fork.
+- A node has 1–2 children (the middle track's last node before the lanes has exactly two: one per lane) and at
+  most 3 parents.
+- **No edge crosses another.** Edges are monotone top to bottom, which the generator guarantees by construction.
+- **No edge crosses lanes** past the point of no return; every track reaches the Gyms; nothing is unreachable
+  and nothing before a Gym is a dead end.
+- Tracks keep a clear row between them on the 11-row grid the map is drawn on, so the terrain has room for a
+  path, a verge and the scenery between two routes.
+
+**No three in a row.** In a fight column, no three vertically adjacent nodes share a type. Canon said "no two"
+until v0.5, and it *overrode* the weighting rather than seasoning it: at column 0's 9:2 Wild bias it fired on
+almost every roll and dragged a deliberately wild-heavy opening down to half Wild.
 
 ## §2.5.0 Why the lanes are themed
 
-Once the trunk forks, each lane looks like the Gym at the end of it: the Rock lane is caves and Hikers, the
-Water lane is rivers and Swimmers. Pillar 1 says the game telegraphs, and a lane that *looks* like its
-destination telegraphs it for four layers rather than on one signpost.
+Once the tracks lean, each side looks like the Gym at the end of it: the Rock side is caves and Hikers, the
+Water side is water and Swimmers. Pillar 1 says the game telegraphs, and a lane that *looks* like its
+destination — its terrain, its species, its trainers, and the field its fights are fought on — telegraphs it for
+ten columns rather than on one signpost.
 
 It also decides the shape of the decision. A lane's wilds are thematically **adjacent** to its Gym, not
 counter to it — walk the Rock lane and you will be offered Geodudes, which do not beat Brock. The counter is
-built in the **trunk**, out of a mixed pool, *before* you commit. So the run reads: plan in the trunk, commit
-at the fork.
+built in the **trunk**, out of a mixed pool, *before* you commit. So the run reads: plan in the trunk, lean in
+the Y, commit at the point of no return.
 
 Each lane carries one **counter species** — the single entry in its pool that answers its own Gym — so a
 player who committed late is behind rather than dead. `machop` in the Rock lane, `oddish` in the Water lane.
 
 **Gym selection.** Each Region defines a pool of **4 Gym types** (§5.9.2). At generation the map RNG picks
-**2 distinct** types and assigns one to each terminal node, and both are named on the map from layer 0.
-
-**Gym selection.** Each Region defines a pool of **4 Gym types** (§5.9.2). At generation the map RNG picks
-**2 distinct** types and assigns one to each terminal node. No two routes in a Region share a type — except
-under the **One Path** difficulty modifier, which deliberately makes both the same (§8.8.2).
+**2 distinct** types and assigns one to each lane, and both are named on the map from column 0. No two lanes in a
+Region share a type — except under the **One Path** difficulty modifier, which deliberately makes both the same
+(§8.8.2).
 
 ## §2.5.1 Node distribution
 
-Per Region, across both lanes:
+A map holds about **65 nodes**, of which a run walks twenty (nineteen and a Gym). The route you did not take is
+visible the whole way, which is what makes the one you did feel chosen.
 
-A map holds about **47 nodes**, of which a run walks twelve. That ratio is the point: the route you did not
-take is visible the whole way up, which is what makes the one you did feel chosen.
+**Stop columns.** Six columns are **stops**: every node in them is a non-fight stop — a nurse, a merchant, a
+Mystery or something on the ground (§2.9). They sit at column 2 or 3, 5 or 6, the crossroads (8), the point of
+no return (p), p+2 or p+3, and 18. The other thirteen columns are **fight columns**, mostly Wild and Trainer, with
+an occasional Mystery or find. So every route walks about **twelve fights** before the Gym and about seven stops:
+the stops are the route's breathing, and which stop is the choice — you cannot skip them to fight more, and you
+cannot rest more by walking past fights.
+
+*Why stops are columns (v0.8.7).* A single service node beside two fights made every service cost a fight, and a
+route with more services than fights would have been a route a fight-hungry player skips. A whole column of stops
+keeps the number of fights on every route the same — the level curve (§2.2.1) does not depend on the path — and
+turns "rest or fight" into "which rest".
 
 | Node | Count | Notes |
 |---|---|---|
-| Wild Pokémon Area | ≈19 | Weighted heavily at L0–L1, and again inside the lanes |
-| Trainer Battle | ≈18 | Archetype is free in the trunk and **the Gym's own** inside a lane |
-| Elite Trainer | **1 guaranteed**, +1 at **22 %** | The guaranteed one is the middle of three at L7; the rolled one is in a lane |
-| Elite Wild | **≤1, at 45 %** | Seeded special (§2.8.2) — genuinely not on every map, and never more than one |
-| Field Aid | 1 per Gym lane | The nurse: half a heal before the Gym (§2.9.1). **Never before the fork** — a rest you did not need costs a fight you did |
-| Travelling merchant | 1 | L3, basics only (§2.9.2). The real shop is the City's |
-| Mystery Event | 3 | L2, L5 and L6 — L6 was the Dojo's node until the Dojo moved to the City (§2.9.4) |
+| Wild Pokémon Area | ≈24 | Weighted heavily at columns 0–1, and again inside the lanes |
+| Trainer Battle | ≈20 | Archetype is free in the trunk and the middle track, **the Gym's own** on a leaning track and in a lane |
+| Elite Trainer | **1 guaranteed**, +1 at **22 %** | The guaranteed one is on the Y's middle track at col 9 or 10, with a fight on each side; the rolled one is in a lane |
+| Elite Wild | **≤1, at 45 %** | In a lane (§2.8.2) — genuinely not on every map, and never more than one |
+| Field nurse | 2–4 | One per lane at column 18, guaranteed; maybe one at the trunk's second stop and one at the point of no return (§2.9.1) |
+| Travelling merchant | 1–3 | At least one in the trunk's stops; maybe one at the crossroads and one in a lane (§2.9.2) |
+| Mystery Event | ≈8 | In every stop column's mix, rarely in a fight column (§2.10) |
+| Something on the ground | ≈8 | In the stops' mix, rarely in a fight column (§2.9.5) |
 | Gym | 2 | The terminal node of each lane |
 
-**Why two of these are percentages.** The Elite Trainer at L7 is the landmark — guaranteed, the thing you
-level for. The extra Elite and the Elite Wild are the opposite: they are why two runs on the same seed-shape
-feel different. An extra Elite in a lane is a spike you route around or level into; an Elite Wild is a
-catch-or-kill dilemma you may never meet.
+**Why two of these are percentages.** The Elite Trainer in the Y is the landmark — guaranteed, the thing you
+level for, and the price of keeping both Gyms open. The extra Elite and the Elite Wild are the opposite: they are
+why two runs on the same seed-shape feel different. An extra Elite in a lane is a spike you route around or level
+into; an Elite Wild is a catch-or-kill dilemma you may never meet.
 
 ## §2.5.2 Generation
 
-The map is built from the run seed via the map RNG stream (§10.7.2). Constraints are applied iteratively with
-re-rolls, capped at eight retries; in practice it converges in about five.
+The map is built from the run seed via the map RNG stream (§10.7.2), column by column: the tracks of a column
+are placed (drift, split, merge, within their row band), their edges to the previous column laid monotone, the
+crossings added, then the node kinds rolled. Every random draw is the map stream's, so the shape — how many
+tracks, where they cross, where the point of no return falls, where each stop and special lands — differs from
+seed to seed, and the same seed always draws the same map. There is no retry loop: the rules hold by
+construction, and `mapRules.test.ts` asserts them over two hundred seeds.
 
-On resume, the map is **re-derived by replaying the map RNG from the Region's entry state**, never restored from
-a saved cursor — restoring mid-Region state would generate a different map (§10.8.6).
+The map is saved whole in the run (§10.8). A save from before v0.8.7 keeps its twelve-layer map and is drawn on
+the new screen with rows derived from its columns.
 
 ---
 
-## §2.5.3 Historical: the pre-v2 map
+## §2.5.3 Historical: the earlier maps
 
 > The first design used an 8-layer fixed-lane ladder with a forced Wild at layer 0, the Elite pinned to layer 3,
 > the Center pinned to layer 6 and the branch point at layer 4. It was replaced by the 12-layer branching tree
 > of §2.5 because fixed lanes made every run's shape identical, the forced opening Wild wasted the first
 > decision, and a single branch point made the Gym choice feel arbitrary rather than earned. Recorded here so the
 > change is legible; do not implement it.
+>
+> The second design (v0.5 to v0.8.6) was a 12-layer lattice 4–5 columns wide, drawn bottom to top, that forked
+> in one layer (L8) into two lanes two nodes wide. Every node linked to one to three of the columns around it, the
+> layer widths were fixed, and every service node sat beside a fight. It was replaced in v0.8.7 by the horizontal
+> track map above: the fixed widths made every route the same shape, three children per node made every step a
+> fork, and the one-layer fork left three layers of corridor with no decisions in them.
+
+## §2.5.4 The terrain
+
+The map is painted from a **tileset**, not a backdrop: a pure function of the map (`mapTerrain`) lays a tile
+grid under the nodes — the tracks as paths, the scenery between them, and the terrain of each stretch. The trunk
+is the Region's road. On a leaning track the road **blends** into its Gym's terrain over the Y, and past the point
+of no return each lane is its Gym's terrain outright: water for Water, a cave for Rock, a forest for Bug, a power
+plant for Electric. The point of no return is drawn as a landmark across the whole map.
+
+The terrain is a telegraph, not decoration (Pillar 1). Where a lane's fights carry a **Battlefield** (§4.3,
+§2.6.1 — rain on the water, a sandstorm in the cave, Electric Terrain in the plant, sun on the volcano), the lane
+shows it: weather drawn over the lane's tiles and the field named on its nodes, so you know which ground you
+are choosing before you choose it. A field starts where the commitment starts: a leaning track wears the Gym's
+species and terrain, but its fights are on neutral ground until the point of no return.
+
+| Gym type | Lane terrain | Field (from the lane's biome, §2.6.1) |
+|---|---|---|
+| Rock, Fighting | A cave — rock floor, boulders, walls | Sandstorm |
+| Poison | A dank cave, its pools gone purple | Sandstorm |
+| Ice | An ice cave | Sandstorm |
+| Water | Water — a lake and its shore, the route on sandbars and bridges | Rain |
+| Electric | A power plant | Electric Terrain |
+| Ground | A volcanic slope | Sun |
+| Bug | A forest | — |
+| Normal, Grass | A meadow of flowers and tall grass | — |
+| Fire | Scorched grassland | — |
+| Psychic | A tower's grounds | — |
+
+The terrain is chosen per **type** and the field per **biome**: the biome is what the Region's tables can field,
+and several types share one where the Region has few, but every type gets its own look. A lane whose biome has no
+Battlefield is fought on neutral ground, and its terrain shows no weather.
 
 ---
 
@@ -727,9 +796,10 @@ Road Apex node. It carries its own map marker.
 
 # §2.9 Service nodes
 
-Two non-combat stops, and both of them are small. A route sells you what you need *today*; the City sells you
-what you are building (§2.11). Every service node still costs something, even the free one — a node you spend
-on healing is a node you did not spend on a fight.
+The route's non-combat stops, and all of them are small: the nurse, the merchant, a Mystery (§2.10) and something
+on the ground. A route sells you what you need *today*; the City sells you what you are building (§2.11). Since
+v0.8.7 most of them stand in **stop columns** (§2.5.1), where every node is a stop: a stop no longer costs a
+fight, it costs the other stops beside it — rest, or shop, or gamble, or pick up what is lying there.
 
 *(Rewritten 2026-09-22. Until then a route carried a full Pokémon Center, a Shop and a Dojo, and the City
 carried premium copies of all three, which made a City "the route again, dearer". The economy moved wholesale:
@@ -738,7 +808,9 @@ across a Region and spend it all at once.)*
 
 ## §2.9.1 Field Aid — the nurse
 
-One per Gym lane, just before the Gym. No combat, no building: a nurse with a folding table.
+One per Gym lane in its last column before the Gym, guaranteed; one more may stand at the trunk's second stop
+(column 5 or 6) and one at the point of no return. Never in the opening stops — a rest at column 2 is a rest
+nobody needs. At most one per column. No combat, no building: a nurse with a folding table.
 
 | Service | Effect | Cost |
 |---|---|---|
@@ -753,7 +825,8 @@ comfortable, which is the point of the last stop before a boss.
 
 ## §2.9.2 The travelling merchant
 
-One per Region, mid-trunk, at L3. A cart, four slots, basics only — sold **in bundles** since consumables are
+At least one per Region in the trunk's stops (columns 2–6), so what it sells has the route to pay back; one more
+may stand at the crossroads or in a lane's middle stop. At most one per column. A cart, four slots, basics only — sold **in bundles** since consumables are
 spent (§3.5, v0.8.6), at 10 % off the unit price.
 
 | Slot | Content | Price |
@@ -918,6 +991,21 @@ three are its own (Pillar 4). A line the games never gave an egg move — Magika
 others — has none here either: the counter says so rather than inventing some. *(The user's call, 2026-09-28:
 egg moves over a type-coverage catalogue, which would have erased the lines' identity, and over a fifth move
 slot, which would have broken the four-per-Pokémon hand.)*
+
+## §2.9.5 Something on the ground
+
+The overworld's item ball: a find on the path, named on the map before you choose it (Pillar 1) — you see that it
+is a Great Ball, not that it is "an item". Choosing it picks it up and walks on: one click, no screen. It is the
+commonest stop, and the smallest: the route's breathing between fights, not a reward that competes with them.
+
+| Region | What lies there (equal odds) |
+|---|---|
+| 1 | a Potion · two Poké Balls · an Antidote and a Paralyze Heal · an X Attack · an Ether · 80 ₽ |
+| 2 | a Super Potion · a Great Ball · a Full Heal · an X Defense · three Poké Balls · 150 ₽ |
+| 3 | a Hyper Potion · an Ultra Ball · a Revive · a Full Heal and an X Attack · two Great Balls · 250 ₽ |
+
+The find is rolled with the map, so a reload shows the same one. Money is in the table because the bag already
+fills faster than a careful player empties it (v0.8.6), and the City is where a stop's worth is spent.
 
 ---
 

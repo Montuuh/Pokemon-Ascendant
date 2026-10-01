@@ -60,7 +60,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           <img
             className={styles.kindIcon}
             src={nodeBadge(node.preview.icon ?? node.kind)}
-            // A biome with no emblem of its own yet (roadmap v1.2) falls back the way the map marker does.
+            // A biome with no emblem of its own yet (v0.8.7 draws one for every biome) falls back the way the map marker does.
             onError={(e) => {
               const fb = fallbackBadge(node.kind);
               if (!e.currentTarget.src.endsWith(fb)) e.currentTarget.src = fb;

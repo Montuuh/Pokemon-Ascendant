@@ -10,7 +10,7 @@ describe('The roadmap the game reads', () => {
     const versions = ROADMAP.map((v) => v.version);
     expect(versions).toEqual([...versions].sort((a, b) => parseFloat(a.slice(1)) - parseFloat(b.slice(1))));
     expect(versions[0]).toBe('v0.1');
-    // v1.0 is the release, not the last row: v1.1 polish and v1.2 the map revamp come after it (2026-09-22).
+    // v1.0 is the release, not the last row: v1.1 polish and v1.2 the wider world come after it.
     expect(versions).toContain('v1.0');
     for (const v of ROADMAP) {
       expect(v.name.length, v.version).toBeGreaterThan(2);

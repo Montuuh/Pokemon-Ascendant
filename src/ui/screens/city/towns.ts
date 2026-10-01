@@ -4,7 +4,7 @@ import type { CityDoor } from '@/ui/strings';
 // §2.11 — where each door sits on a City's background. The sim owns which doors are open (`CITIES[id].open`);
 // this file owns only the drawing: a box over each building, as percentages of the 16:9 art, so the doors stay
 // on their buildings at every window size. Measured off the installed 1920×1080 PNG — when the art is redrawn
-// (v1.2 builds the towns from tilesets), these boxes are redrawn with it.
+// (if the towns are ever built from tilesets), these boxes are redrawn with it.
 
 export interface DoorPlacement {
   door: CityDoor;
