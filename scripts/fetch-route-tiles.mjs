@@ -46,7 +46,7 @@ const SOURCES = {
  * (scenery one tile at a time — rocks, graves) or `water-*` (scenery that is water, with its rim).
  */
 const SAND_ROUTE1 = {
-  'path-c': ['route1', 11, 1], 'path-n': ['route1', 5, 29], 'path-s': ['route1', 15, 4], 'path-w': ['route1', 2, 30],
+  'path-c': ['route1', 11, 1], 'path-n': ['route1', 5, 29], 'path-s': ['route1', 15, 4], 'path-w': ['route1', 10, 1],
   'path-e': ['route1', 13, 1], 'path-nw': ['route1', 2, 29], 'path-ne': ['route1', 21, 3], 'path-se': ['route1', 21, 5],
   'path-sw': ['route1', 10, 4], 'path-ine': ['route1', 13, 3], 'path-isw': ['route1', 18, 4],
   'path-inw': ['route1', 13, 3, 1, 1, 'flop'], 'path-ise': ['route1', 18, 4, 1, 1, 'flop'],
@@ -59,7 +59,7 @@ const WATER_ROUTE24 = {
 const GRASS_ROUTE1 = { ground: ['route1', 7, 23], 'ground-2': ['route1', 3, 2], deco: ['route1', 3, 6] };
 
 const TERRAINS = {
-  route: { ...GRASS_ROUTE1, ...SAND_ROUTE1, 'fill-block': ['route1', 0, 26, 2, 2], tall: ['route1', 10, 6] },
+  route: { ...GRASS_ROUTE1, ...SAND_ROUTE1, tree: ['route1', 2, 24, 2, 3, 'key', ['route1', [[7, 23], [3, 2]]]], tall: ['route1', 10, 6] },
   meadow: { ...GRASS_ROUTE1, ...SAND_ROUTE1, fill: ['route1', 3, 6], 'fill-2': ['route24', 3, 19], 'fill-3': ['route1', 3, 7], tall: ['route24', 3, 19] },
   lake: { ...GRASS_ROUTE1, ...SAND_ROUTE1, ...WATER_ROUTE24, tall: ['route24', 3, 19] },
   forest: {
@@ -68,7 +68,7 @@ const TERRAINS = {
     'path-e': ['forest', 22, 8], 'path-nw': ['forest', 12, 6], 'path-ne': ['forest', 22, 6], 'path-se': ['forest', 14, 10],
     'path-sw': ['forest', 12, 10], 'path-ise': ['forest', 14, 8], 'path-isw': ['forest', 20, 8],
     'path-ine': ['forest', 20, 8, 1, 1, 'flip'], 'path-inw': ['forest', 14, 8, 1, 1, 'flip'],
-    'fill-block': ['forest', 12, 1, 3, 2],
+    tree: ['forest', 28, 54, 3, 4, 'key', ['forest', [[19, 5], [4, 12], [28, 52], [29, 53], [31, 57]]]],
   },
   cave: { ground: ['moon', 8, 7], 'ground-2': ['moon', 6, 8], path: ['moon', 3, 3], fill: ['moon', 11, 2], 'fill-2': ['moon', 12, 2], 'fill-3': ['moon', 12, 3] },
   // Seafoam's ice: the cave floor, a white snow road through it, and its ice boulders.
@@ -79,16 +79,14 @@ const TERRAINS = {
   volcano: { ground: ['ruby', 8, 8], 'ground-2': ['ruby', 7, 0], path: ['ruby', 10, 3], fill: ['ruby', 7, 4], 'fill-2': ['ruby', 10, 5], 'fill-3': ['ruby', 9, 3] },
   // A tower's grounds: grass, the tower's own floor as the walkways, and its graves.
   tower: { ...GRASS_ROUTE1, path: ['tower', 6, 7], fill: ['tower', 4, 6], 'fill-2': ['tower', 8, 9], 'fill-3': ['tower', 14, 9] },
-  // Region 2's cliff coast: grass, a sand road, and the sea with Kindle Road's beach for a rim, rocks in it.
+  // Region 2's cliff coast: grass, a sand road, and water with Route 24's rim, Kindle Road's sea rocks in it.
   coast: {
     ...GRASS_ROUTE1, ...SAND_ROUTE1, tall: ['route24', 3, 19],
-    'water-c': ['kindle', 6, 21], 'water-n': ['kindle', 6, 20], 'water-e': ['kindle', 1, 15], 'water-ne': ['kindle', 1, 13],
-    'water-w': ['kindle', 1, 15, 1, 1, 'flop'], 'water-nw': ['kindle', 1, 13, 1, 1, 'flop'],
-    'water-s': ['kindle', 6, 20, 1, 1, 'flip'], 'water-sw': ['kindle', 1, 13, 1, 1, 'flipflop'], 'water-se': ['kindle', 1, 13, 1, 1, 'flip'],
+    ...WATER_ROUTE24,
     'water-rock': ['kindle', 3, 19],
   },
   // Region 3's highland: Mt. Ember's slopes — its grass, a sand road, its boulders and its tall grass.
-  highland: { ground: ['ember', 13, 37], 'ground-2': ['ember', 12, 38], deco: ['route1', 3, 6], ...SAND_ROUTE1, tall: ['ember', 10, 40], fill: ['ember', 7, 32], 'fill-2': ['ember', 11, 39], 'fill-3': ['ember', 10, 40] },
+  highland: { ground: ['ember', 13, 37], 'ground-2': ['ember', 10, 40], deco: ['route1', 3, 6], ...SAND_ROUTE1, tall: ['ember', 7, 40], fill: ['ember', 7, 32], 'fill-2': ['ember', 11, 39], 'fill-3': ['ember', 6, 35] },
 };
 
 /** §2.5.4 — the point of no return: Route 24's water, and Nugget Bridge turned to run east–west. */
@@ -119,7 +117,26 @@ for (const key of need) {
   console.log(`fetched ${SOURCES[key]}`);
 }
 
-async function cut([src, x, y, w = 1, h = 1, how]) {
+/**
+ * A sprite with its ground keyed out: every pixel whose colour appears in the given ground tiles turns transparent.
+ * The FRLG tree is drawn on grass; keyed, it can stand on any ground and overlap the tree above it, as trees do in
+ * the games' woods. The tree's own shadow and outline are colours the grass never uses, so they stay.
+ */
+async function keyed(src, x, y, w, h, [groundSrc, grounds]) {
+  const palette = new Set();
+  for (const [gx, gy] of grounds) {
+    const { data } = await sharp(maps[groundSrc]).extract({ left: gx * T, top: gy * T, width: T, height: T }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    for (let i = 0; i < data.length; i += 4) palette.add((data[i] << 16) | (data[i + 1] << 8) | data[i + 2]);
+  }
+  const { data, info } = await sharp(maps[src]).extract({ left: x * T, top: y * T, width: w * T, height: h * T }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  for (let i = 0; i < data.length; i += 4) if (palette.has((data[i] << 16) | (data[i + 1] << 8) | data[i + 2])) data[i + 3] = 0;
+  // Viridian's lone tree has a Bug Catcher's hat poking into its last rows: anything warm and bright down there goes.
+  for (let i = (info.height - 6) * info.width * 4; i < data.length; i += 4) if (data[i] > 180 && data[i] > data[i + 1]) data[i + 3] = 0;
+  return sharp(data, { raw: { width: info.width, height: info.height, channels: 4 } }).png();
+}
+
+async function cut([src, x, y, w = 1, h = 1, how, extra]) {
+  if (how === 'key') return keyed(src, x, y, w, h, extra);
   let img = sharp(maps[src]).extract({ left: x * T, top: y * T, width: w * T, height: h * T });
   if (how === 'flip') img = sharp(await img.png().toBuffer()).flip();
   if (how === 'flop') img = sharp(await img.png().toBuffer()).flop();

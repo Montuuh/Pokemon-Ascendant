@@ -825,6 +825,10 @@ old twelve-layer maps. The terrain is `ui/screens/map/` (`terrain.ts` → `tiles
 (`npm run art:route`), with biome emblems on every Wild node. Wild and trainer XP ×0.9 for the longer route; 360 runs:
 R1 64 % · R2|R1 61 % · R3|R2 58 % · run 23 %. The Ring: Pallet's step +4, Celadon's first rung +5. UI review: ship with
 fixes, all Blockers and Shoulds fixed.
+Art pass (same day, the user's notes): trees are the real FRLG sprites keyed to transparency and planted with their
+crowns over the row above; every join between two terrains — and every plain floor road — is cut with Route 1's
+sand fringe used as a mask; the Y changes along one wandering frontier per side; the west road edge is a straight
+edge; water only in bodies of 2 × 2 and up, the coast on Route 24's rim; the highland's cliff tile out of its ground.
 **For v0.8.8:** R3 now reads ~58 % (target ~50 %) and R1 64 % (was 68 %) — the curve moved with the route; the Ring
 is at the edge of its bands again.
 

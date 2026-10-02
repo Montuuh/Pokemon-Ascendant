@@ -48,7 +48,7 @@ export const TERRAIN_BY_TYPE: Readonly<Record<string, TerrainId>> = {
  */
 const FILL_DENSITY: Readonly<Record<TerrainId, number>> = {
   route: 0.5, coast: 0.55, highland: 0.5,
-  meadow: 0.35, forest: 0.8, cave: 0.6, 'dank-cave': 0.6, 'ice-cave': 0.6, lake: 0.75, plant: 0.5, volcano: 0.55, scorched: 0.45, tower: 0.4,
+  meadow: 0.35, forest: 0.8, cave: 0.4, 'dank-cave': 0.4, 'ice-cave': 0.4, lake: 0.75, plant: 0.4, volcano: 0.4, scorched: 0.45, tower: 0.4,
 };
 
 /**
@@ -201,18 +201,26 @@ export function mapTerrain(map: RegionMap): MapTerrain {
     if (!up.length || !down.length) return null;
     return (tileY(up[up.length - 1]!.row) + tileY(down[0]!.row)) / 2;
   };
-  const sideOf = (x: number, y: number): { lane: number; blend: number } | null => {
+  /**
+   * Which lane's terrain a tile wears, or null for the road. On the Y each outer third turns into its Gym's terrain
+   * along one **frontier** — a line that wanders up and down the Y, so the change reads as a coast or a cave mouth you
+   * walk into, not as a scatter of patches. Past the river each lane's half is its Gym's. `wobble` lets the line
+   * between two stretches meander by a tile on open ground; a path keeps the straight line, so a road never changes
+   * material under your feet halfway across.
+   */
+  const sideOf = (x: number, y: number, wobble: boolean): number | null => {
     if (x < xY) return null;
     const layer = colOf(x);
+    const bend = wobble ? (blob(seed, x, 0, 5, 17) - 0.5) * 2.5 : 0;
     if (x >= xFork || layer > noReturn) {
       const line = split(Math.max(layer, noReturn + 1), (n) => n.lane === 0, (n) => n.lane === 1) ?? h / 2;
-      return { lane: y < line ? 0 : 1, blend: 1 };
+      return y < line + bend ? 0 : 1;
     }
     const top = split(layer, (n) => n.lean === 0, (n) => n.lean === undefined && n.lane === undefined);
     const bottom = split(layer, (n) => n.lean === undefined && n.lane === undefined, (n) => n.lean === 1);
-    const t = Math.min(1, Math.max(0, (x - xY) / Math.max(1, xFork - xY)));
-    if (top !== null && y < top) return { lane: 0, blend: 0.25 + 0.75 * t };
-    if (bottom !== null && y >= bottom) return { lane: 1, blend: 0.25 + 0.75 * t };
+    const frontier = (lane: number) => xY + (xFork - xY) * (0.1 + 0.55 * blob(seed, lane * 97, y, 4, 23));
+    if (top !== null && y < top + bend) return x >= frontier(0) ? 0 : null;
+    if (bottom !== null && y >= bottom + bend) return x >= frontier(1) ? 1 : null;
     return null;
   };
 
@@ -235,8 +243,8 @@ export function mapTerrain(map: RegionMap): MapTerrain {
   for (let y = 0; y < h; y++) {
     const row: TerrainCell[] = [];
     for (let x = 0; x < w; x++) {
-      const side = sideOf(x, y);
-      const t = side && blob(seed, x, y, 4, 3) < side.blend ? laneTerrain[side.lane]! : road;
+      const side = sideOf(x, y, !path[y]![x]);
+      const t = side === null ? road : laneTerrain[side]!;
       const n = cellHash(seed, x, y);
       const inRiver = river !== null && x >= river.x0 && x < river.x1;
       let k: CellKind;
@@ -247,7 +255,9 @@ export function mapTerrain(map: RegionMap): MapTerrain {
         // Scenery two tiles off any path, in clumps; the margins are walled in, as a route's edges are.
         const edge = y < MARGIN_Y - 1 || y >= h - MARGIN_Y + 1 || x < 2 || x >= w - 2;
         const far = dist[y]![x]! >= 2;
-        k = edge || (far && blob(seed, x, y, 3, 11) < FILL_DENSITY[t]) ? 'fill' : 'ground';
+        // Water comes in bodies, not puddles: its noise is coarser than a wood's or a rockfall's.
+        const scale = t === 'lake' || t === 'coast' ? 5 : 3;
+        k = edge || (far && blob(seed, x, y, scale, 11) < FILL_DENSITY[t]) ? 'fill' : 'ground';
       }
       row.push({ t, k, n });
     }
