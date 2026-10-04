@@ -72,9 +72,12 @@ const TERRAINS = {
   },
   cave: { ground: ['moon', 8, 7], 'ground-2': ['moon', 6, 8], path: ['moon', 3, 3], fill: ['moon', 11, 2], 'fill-2': ['moon', 12, 2], 'fill-3': ['moon', 12, 3] },
   // Seafoam's ice: the cave floor, a white snow road through it, and its ice boulders.
-  'ice-cave': { ground: ['seafoam', 8, 17], 'ground-2': ['seafoam', 9, 18], path: ['seafoam', 5, 22], fill: ['seafoam', 13, 18], 'fill-2': ['seafoam', 7, 17], 'fill-3': ['seafoam', 7, 19] },
-  // The Power Plant: its floor, the grey walkway on top of its walls, and the rubble piled in its rooms.
-  plant: { ground: ['plant', 15, 5], 'ground-2': ['plant', 15, 4], path: ['plant', 10, 7], fill: ['plant', 36, 3], 'fill-2': ['plant', 37, 4], 'fill-3': ['plant', 44, 3] },
+  // (9,18) is one of Seafoam's holes, not floor: the second floor is (10,16).
+  'ice-cave': { ground: ['seafoam', 8, 17], 'ground-2': ['seafoam', 10, 16], path: ['seafoam', 5, 22], fill: ['seafoam', 13, 18], 'fill-2': ['seafoam', 7, 17], 'fill-3': ['seafoam', 11, 16] },
+  // The Poison lane's cave is Rock Tunnel: its cobbled floor, its darker worn track for the road, its grey boulders.
+  'dank-cave': { ground: ['rocktunnel', 10, 16], 'ground-2': ['rocktunnel', 19, 13], path: ['rocktunnel', 14, 20], fill: ['rocktunnel', 24, 14], 'fill-2': ['rocktunnel', 25, 15], 'fill-3': ['rocktunnel', 27, 15] },
+  // The Power Plant: its floor, the steel grating by its doors for the road, and the rubble piled in its rooms.
+  plant: { ground: ['plant', 15, 5], 'ground-2': ['plant', 15, 4], path: ['plant', 3, 37], fill: ['plant', 36, 3], 'fill-2': ['plant', 37, 4], 'fill-3': ['plant', 44, 3] },
   // Ruby Path, inside Mt. Ember: red rock, the moss floor between it, its boulders, and ash.
   volcano: { ground: ['ruby', 8, 8], 'ground-2': ['ruby', 7, 0], path: ['ruby', 10, 3], fill: ['ruby', 7, 4], 'fill-2': ['ruby', 10, 5], 'fill-3': ['ruby', 9, 3] },
   // A tower's grounds: grass, the tower's own floor as the walkways, and its graves.

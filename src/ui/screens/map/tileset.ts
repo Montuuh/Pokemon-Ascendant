@@ -52,10 +52,9 @@ const ART: Record<TerrainId, TerrainArt> = {
   plant: { art: 'plant', grounds: ['ground', 'ground-2'], path: 'plain', fill: ROCKS },
   volcano: { art: 'volcano', grounds: ['ground', 'ground-2'], path: 'plain', fill: ROCKS },
   tower: { art: 'tower', filter: 'saturate(0.8) brightness(0.96)', ...GRASS, path: 'plain', fill: ROCKS },
-  // Two terrains wear a neighbour's tiles under a tint: a scorched grassland is a route burnt brown, and a dank cave
-  // is a cave gone purple — §2.5.4's "pools gone purple".
+  // One terrain wears a neighbour's tiles under a tint: a scorched grassland is a route burnt brown. FRLG never drew one.
   scorched: { art: 'route', filter: 'sepia(0.75) saturate(1.7) hue-rotate(-28deg)', ...GRASS, tall: 'tall', path: 'edged', fill: { kind: 'trees', w: 2 } },
-  'dank-cave': { art: 'cave', filter: 'hue-rotate(235deg) saturate(1.4)', grounds: ['ground', 'ground-2'], path: 'plain', fill: ROCKS },
+  'dank-cave': { art: 'dank-cave', grounds: ['ground', 'ground-2'], path: 'plain', fill: ROCKS },
 };
 
 /** The river at the point of no return, and its bridges. */
@@ -228,11 +227,14 @@ class Painter {
   }
 }
 
-/** A terrain's ground for a tile, by its hash. */
+/** A tile's open ground, by its hash: under a road, the ground the road crosses (`g`), not the road's own. */
 const groundOf = (P: Painter, c: TerrainCell) => {
-  const a = ART[c.t];
-  return P.piece(c.t, a.grounds[c.n < 0.86 ? 0 : 1]!) ?? P.piece(c.t, a.grounds[0]!);
+  const t = c.g ?? c.t;
+  const a = ART[t];
+  return P.piece(t, a.grounds[c.n < 0.86 ? 0 : 1]!) ?? P.piece(t, a.grounds[0]!);
 };
+/** The terrain a tile's open ground belongs to. */
+const groundTerrain = (c: TerrainCell): TerrainId => c.g ?? c.t;
 
 /** §2.5.4 — paint the whole terrain onto a canvas (w × h tiles at 16 px). */
 export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pieces: Map<string, HTMLImageElement>): void {
@@ -254,18 +256,19 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
   // Which terrain rounds over which where two meet: the road is underneath, the first lane over it, the second over
   // both — a lane's ground is the one that reaches into its neighbour.
   const rank = new Map<TerrainId, number>();
-  for (let y = 0; y < terrain.h; y++) for (let x = 0; x < terrain.w; x++) if (!rank.has(terrain.cells[y]![x]!.t)) rank.set(terrain.cells[y]![x]!.t, rank.size);
+  for (let y = 0; y < terrain.h; y++) for (let x = 0; x < terrain.w; x++) if (!rank.has(groundTerrain(terrain.cells[y]![x]!))) rank.set(groundTerrain(terrain.cells[y]![x]!), rank.size);
+  for (const t of Object.keys(ART) as TerrainId[]) if (!rank.has(t)) rank.set(t, rank.size);
 
   // 1 — ground, with a fringe wherever this terrain meets one beneath it.
   for (let y = 0; y < terrain.h; y++) {
     for (let x = 0; x < terrain.w; x++) {
       const c = at(x, y)!;
       if (c.k === 'river' || c.k === 'bridge') continue;
-      const mine = rank.get(c.t)!;
+      const mine = rank.get(groundTerrain(c))!;
       let under: TerrainCell | undefined;
       for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
         const o = at(x + dx, y + dy);
-        if (o && o.k !== 'river' && o.k !== 'bridge' && rank.get(o.t)! < mine && (!under || rank.get(o.t)! < rank.get(under.t)!)) under = o;
+        if (o && o.k !== 'river' && o.k !== 'bridge' && rank.get(groundTerrain(o))! < mine && (!under || rank.get(groundTerrain(o))! < rank.get(groundTerrain(under))!)) under = o;
       }
       if (!under) {
         draw(groundOf(P, c), x, y);
@@ -275,9 +278,9 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
       const below = groundOf(P, { ...under, n: c.n });
       const inside: Mask = (mx, my) => {
         const o = at(mx, my);
-        return !o || o.k === 'river' || o.k === 'bridge' || rank.get(o.t)! >= mine;
+        return !o || o.k === 'river' || o.k === 'bridge' || rank.get(groundTerrain(o))! >= mine;
       };
-      drawAuto(ctx, (s) => P.joined(ground, below, s, `${c.t}/${under.t}/${c.n < 0.86 ? 0 : 1}`), inside, x, y);
+      drawAuto(ctx, (s) => P.joined(ground, below, s, `${groundTerrain(c)}/${groundTerrain(under)}/${c.n < 0.86 ? 0 : 1}`), inside, x, y);
     }
   }
 
@@ -287,10 +290,23 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
       const c = at(x, y)!;
       if (c.k !== 'path') continue;
       const a = ART[c.t];
-      if (a.path === 'edged') drawAuto(ctx, (s) => P.piece(c.t, `path-${s}`), isPath, x, y);
-      else drawAuto(ctx, (s) => P.joined(P.piece(c.t, 'path'), groundOf(P, c), s, `${c.t}/path/${c.n < 0.86 ? 0 : 1}`), isPath, x, y);
+      const floor = P.piece(c.t, a.path === 'plain' ? 'path' : 'path-c');
+      if (a.path === 'edged' && !c.g) drawAuto(ctx, (s) => P.piece(c.t, `path-${s}`), isPath, x, y);
+      else drawAuto(ctx, (s) => P.joined(floor, groundOf(P, c), s, `${c.t}/path/${groundTerrain(c)}/${c.n < 0.86 ? 0 : 1}`), isPath, x, y);
     }
   }
+
+  // Water is a body or nothing: a tile that no 2 × 2 of water contains is a puddle or a one-tile strip — drawn as rim
+  // on rim — so it stays ground, and the bodies' rims are drawn against what is left.
+  const wet = (x: number, y: number) => {
+    const o = at(x, y);
+    return !!o && o.k === 'fill' && ART[o.t].fill.kind === 'water';
+  };
+  const body = Array.from({ length: terrain.h }, () => new Uint8Array(terrain.w));
+  for (let y = 0; y + 1 < terrain.h; y++)
+    for (let x = 0; x + 1 < terrain.w; x++)
+      if (wet(x, y) && wet(x + 1, y) && wet(x, y + 1) && wet(x + 1, y + 1)) body[y]![x] = body[y]![x + 1] = body[y + 1]![x] = body[y + 1]![x + 1] = 1;
+  const isWater = (x: number, y: number) => !!body[y]?.[x];
 
   // 3 — tall grass, the odd flower by the road, single-tile scenery and water.
   for (let y = 0; y < terrain.h; y++) {
@@ -299,17 +315,13 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
       const a = ART[c.t];
       if (c.k === 'tall' && a.tall) draw(P.piece(c.t, a.tall), x, y);
       else if (c.k === 'ground' && a.deco && c.n > 0.95 && (isPath(x + 1, y) || isPath(x - 1, y) || isPath(x, y + 1) || isPath(x, y - 1))) draw(P.piece(c.t, a.deco), x, y);
-      else if (c.k === 'fill' && a.fill.kind === 'tiles') draw(P.piece(c.t, a.fill.pieces[Math.floor(c.n * a.fill.pieces.length)]!), x, y);
+      else if (c.k === 'fill' && a.fill.kind === 'tiles') draw(P.piece(c.t, a.fill.pieces[Math.min(a.fill.pieces.length - 1, Math.floor(c.m * a.fill.pieces.length))]!), x, y);
       else if (c.k === 'fill' && a.fill.kind === 'water') {
         const fill = a.fill;
-        const water: Mask = (mx, my) => {
-          const o = at(mx, my);
-          return !o || (o.k === 'fill' && o.t === c.t);
-        };
-        // Water is a body or nothing: a tile that no 2 × 2 of water contains is a puddle or a one-tile strip, drawn
-        // as rim on rim — leave it as ground.
-        const inBody = [[-1, -1], [0, -1], [-1, 0], [0, 0]].some(([ox, oy]) => [[0, 0], [1, 0], [0, 1], [1, 1]].every(([dx, dy]) => { const o = at(x + ox! + dx!, y + oy! + dy!); return !!o && o.k === 'fill' && o.t === c.t; }));
-        if (!inBody) continue;
+        if (!isWater(x, y)) continue;
+        // The rim reads the same mask the bodies were found with, so a body that ends where a puddle was dropped
+        // still gets its edge.
+        const water: Mask = (mx, my) => !at(mx, my) || (isWater(mx, my) && at(mx, my)!.t === c.t);
         drawAuto(ctx, (s) => P.piece(c.t, `water-${s}`), water, x, y);
         // A rock in open water now and then, where the terrain has one (the coast's).
         if (fill.rock && c.n > 0.93 && water(x - 1, y) && water(x + 1, y) && water(x, y - 1) && water(x, y + 1)) draw(P.piece(c.t, 'water-rock'), x, y);

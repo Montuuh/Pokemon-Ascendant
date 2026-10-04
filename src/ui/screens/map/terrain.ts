@@ -48,7 +48,7 @@ export const TERRAIN_BY_TYPE: Readonly<Record<string, TerrainId>> = {
  */
 const FILL_DENSITY: Readonly<Record<TerrainId, number>> = {
   route: 0.5, coast: 0.55, highland: 0.5,
-  meadow: 0.35, forest: 0.8, cave: 0.4, 'dank-cave': 0.4, 'ice-cave': 0.4, lake: 0.75, plant: 0.4, volcano: 0.4, scorched: 0.45, tower: 0.4,
+  meadow: 0.4, forest: 0.8, cave: 0.5, 'dank-cave': 0.5, 'ice-cave': 0.5, lake: 0.75, plant: 0.5, volcano: 0.5, scorched: 0.45, tower: 0.45,
 };
 
 /**
@@ -64,6 +64,13 @@ export interface TerrainCell {
   k: CellKind;
   /** A stable hash in [0, 1), for picking among a terrain's variants without a pattern showing. */
   n: number;
+  /** Coarse noise in [0, 1): neighbours share it, so a clump of scenery is one kind (a flower bed, a rockfall). */
+  m: number;
+  /**
+   * On a road tile: the terrain of the open ground under and beside it, where it differs from the road's own — a cave
+   * road crossing a meadow is cut against the meadow, not against a cave floor that is not there.
+   */
+  g?: TerrainId;
 }
 
 /** §2.5.4 — a lane's stretch, for the weather drawn over it: tiles, inclusive-exclusive. */
@@ -228,6 +235,14 @@ export function mapTerrain(map: RegionMap): MapTerrain {
   // column and the lanes, bridged wherever a path crosses it.
   const river = map.yLayer === undefined ? null : { x0: MARGIN_X + noReturn * COL_TILES + TURN + 1, x1: MARGIN_X + noReturn * COL_TILES + TURN + 3 };
 
+  /** The terrain of the nearest node to a road tile: its column's, the row nearest it. */
+  const roadTerrain = (x: number, y: number): TerrainId => {
+    const col = byLayer.get(colOf(x)) ?? [];
+    if (!col.length) return road;
+    const near = col.reduce((best, n) => (Math.abs(tileY(n.row) - y) < Math.abs(tileY(best.row) - y) ? n : best), col[0]!);
+    return terrainOfNode(map, near);
+  };
+
   // Tall grass round every Wild node — the overworld's own telegraph for "Pokémon live here".
   const tall = Array.from({ length: h }, () => new Uint8Array(w));
   for (const n of nodes) {
@@ -235,7 +250,7 @@ export function mapTerrain(map: RegionMap): MapTerrain {
     const c = at[n.id]!;
     for (let dy = -3; dy <= 2; dy++) for (let dx = -2; dx <= 1; dx++) {
       const [x, y] = [c.x + dx, c.y + dy];
-      if (x >= 0 && y >= 0 && x < w && y < h && !path[y]![x] && cellHash(seed, x, y, 7) < 0.7) tall[y]![x] = 1;
+      if (x >= 0 && y >= 0 && x < w && y < h && !path[y]![x]) tall[y]![x] = 1;
     }
   }
 
@@ -243,8 +258,11 @@ export function mapTerrain(map: RegionMap): MapTerrain {
   for (let y = 0; y < h; y++) {
     const row: TerrainCell[] = [];
     for (let x = 0; x < w; x++) {
-      const side = sideOf(x, y, !path[y]![x]);
-      const t = side === null ? road : laneTerrain[side]!;
+      // A road wears the terrain of the node it runs from or to — whichever column is nearer — so its material changes
+      // once, halfway between two nodes, never under your feet mid-stretch. Open ground follows the frontier.
+      const side = sideOf(x, y, true);
+      const open = side === null ? road : laneTerrain[side]!;
+      const t = path[y]![x] ? roadTerrain(x, y) : open;
       const n = cellHash(seed, x, y);
       const inRiver = river !== null && x >= river.x0 && x < river.x1;
       let k: CellKind;
@@ -259,9 +277,20 @@ export function mapTerrain(map: RegionMap): MapTerrain {
         const scale = t === 'lake' || t === 'coast' ? 5 : 3;
         k = edge || (far && blob(seed, x, y, scale, 11) < FILL_DENSITY[t]) ? 'fill' : 'ground';
       }
-      row.push({ t, k, n });
+      row.push({ t, k, n, m: blob(seed, x, y, 3, 29), ...(k === 'path' && open !== t ? { g: open } : {}) });
     }
     cells.push(row);
+  }
+
+  // Scenery is a clump or nothing: a lone tree, rock or flower with no scenery beside it is noise, so it goes back to
+  // open ground (the walled margins excepted).
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const c = cells[y]![x]!;
+      if (c.k !== 'fill' || y < MARGIN_Y - 1 || y >= h - MARGIN_Y + 1) continue;
+      const near = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([dx, dy]) => cells[y + dy!]![x + dx!]!.k === 'fill' && cells[y + dy!]![x + dx!]!.t === c.t).length;
+      if (near < 2) c.k = 'ground';
+    }
   }
 
   const lanes: LaneZone[] = [];

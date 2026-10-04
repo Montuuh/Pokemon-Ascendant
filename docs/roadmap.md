@@ -832,6 +832,10 @@ edge; water only in bodies of 2 × 2 and up, the coast on Route 24's rim; the hi
 Fields (2026-10-04, the user's call): every Gym lays its own Battlefield over its lane (§4.3.14) — six new ones, Hail,
 Grassy, Psychic and Misty Terrain, Toxic Spikes and Sticky Web; none shared within a Region. 360 runs: R1 69 % ·
 R2|R1 61 % · R3|R2 55 % · run 23 %.
+Art review (2026-10-04, many generated maps read at native size): solid tall grass and one-kind clumps of scenery,
+no lone scenery tiles, water rims drawn against whole bodies, roads that change material once between nodes and are
+cut against the ground they cross, the Poison lane on Rock Tunnel's tiles, Seafoam's hole tile out of the ice floor,
+the Power Plant's grating for its road.
 **For v0.8.8:** R3 now reads ~58 % (target ~50 %) and R1 64 % (was 68 %) — the curve moved with the route; the Ring
 is at the edge of its bands again.
 
