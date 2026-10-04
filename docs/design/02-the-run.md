@@ -450,7 +450,7 @@ species and terrain, but its fights are on neutral ground until the point of no 
 |---|---|---|
 | Rock | A cave — rock floor, boulders | Sandstorm |
 | Fighting | A cave | Sandstorm |
-| Poison | A dark cave — Rock Tunnel's cobbles and worn track | Toxic Spikes |
+| Poison | A dark cave — Rock Tunnel's cobbles and boulders | Toxic Spikes |
 | Ice | An ice cave | Hail |
 | Water | Water — a lake and its shore | Rain |
 | Electric | A power plant | Electric Terrain |
