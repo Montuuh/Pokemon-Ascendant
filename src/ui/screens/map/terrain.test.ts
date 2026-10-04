@@ -74,3 +74,27 @@ describe('The route terrain — §2.5.4', () => {
     expect(t.cells.length).toBe(t.h);
   });
 });
+
+describe('The route tiles on disk — §2.5.4', () => {
+  // A wrong cut is the kind of bug no screenshot of one map catches (a sea rock cut a quarter-tile off its grid read as
+  // a smudge on every coast): every piece is checked for its size and for where it may and may not be see-through.
+  it('EveryPieceHasItsSize_GroundIsOpaque_ObjectsAreCutOut', async () => {
+    const { default: sharp } = await import('sharp');
+    const { readdirSync } = await import('node:fs');
+    const objects = new Set(['tree', 'water-rock']);
+    for (const terrain of readdirSync('public/art/route')) {
+      for (const file of readdirSync(`public/art/route/${terrain}`)) {
+        const name = file.replace('.png', '');
+        const { data, info } = await sharp(`public/art/route/${terrain}/${file}`).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+        let clear = 0;
+        for (let i = 3; i < data.length; i += 4) if (data[i]! < 255) clear++;
+        if (objects.has(name)) {
+          expect(clear, `${terrain}/${name} should be cut out`).toBeGreaterThan(0);
+          continue;
+        }
+        expect([info.width, info.height], `${terrain}/${name}`).toEqual([16, 16]);
+        expect(clear, `${terrain}/${name} should be opaque`).toBe(0);
+      }
+    }
+  });
+});

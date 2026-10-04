@@ -292,6 +292,16 @@ export function mapTerrain(map: RegionMap): MapTerrain {
       if (near < 2) c.k = 'ground';
     }
   }
+  // …and a hole is not a clearing: open ground with scenery on three sides or four — a one-tile island in a lake, a
+  // notch in a wood — closes up.
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const c = cells[y]![x]!;
+      if (c.k !== 'ground') continue;
+      const around = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([dx, dy]) => cells[y + dy!]![x + dx!]!.k === 'fill' && cells[y + dy!]![x + dx!]!.t === c.t).length;
+      if (around >= 3) c.k = 'fill';
+    }
+  }
 
   const lanes: LaneZone[] = [];
   if (map.forkLayer < map.layers) {

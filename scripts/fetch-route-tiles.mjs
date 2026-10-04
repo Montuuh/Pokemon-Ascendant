@@ -60,7 +60,7 @@ const GRASS_ROUTE1 = { ground: ['route1', 7, 23], 'ground-2': ['route1', 3, 2], 
 
 const TERRAINS = {
   route: { ...GRASS_ROUTE1, ...SAND_ROUTE1, tree: ['route1', 2, 24, 2, 3, 'key', ['route1', [[7, 23], [3, 2]]]], tall: ['route1', 10, 6] },
-  meadow: { ...GRASS_ROUTE1, ...SAND_ROUTE1, fill: ['route1', 3, 6], 'fill-2': ['route24', 3, 19], 'fill-3': ['route1', 3, 7], tall: ['route24', 3, 19] },
+  meadow: { ...GRASS_ROUTE1, ...SAND_ROUTE1, fill: ['route1', 3, 6], 'fill-2': ['route24', 3, 19], 'fill-3': ['route1', 2, 7], tall: ['route24', 3, 19] },
   lake: { ...GRASS_ROUTE1, ...SAND_ROUTE1, ...WATER_ROUTE24, tall: ['route24', 3, 19] },
   forest: {
     ground: ['forest', 19, 5], 'ground-2': ['forest', 4, 12], tall: ['forest', 4, 14],
@@ -87,7 +87,7 @@ const TERRAINS = {
   coast: {
     ...GRASS_ROUTE1, ...SAND_ROUTE1, tall: ['route24', 3, 19],
     ...WATER_ROUTE24,
-    'water-rock': ['kindle', 3, 19],
+    'water-rock': ['route19', 88, 152, 16, 16, 'keypx', ['route19', [[2, 12], [1, 11], [3, 14], [7, 10], [0, 9]]]],
   },
   // Region 3's highland: Mt. Ember's slopes — its grass, a sand road, its boulders and its tall grass.
   highland: { ground: ['ember', 13, 37], 'ground-2': ['ember', 10, 40], deco: ['route1', 3, 6], ...SAND_ROUTE1, tall: ['ember', 7, 40], fill: ['ember', 7, 32], 'fill-2': ['ember', 11, 39], 'fill-3': ['ember', 6, 35] },
@@ -98,7 +98,7 @@ const RIVER = {
   ...WATER_ROUTE24,
   bridge: ['route24', 11, 30, 1, 1, 'rot'],
   'bridge-n': ['route24', 10, 30, 1, 1, 'rot'],
-  'bridge-s': ['route24', 13, 30, 1, 1, 'rot'],
+  'bridge-s': ['route24', 10, 30, 1, 1, 'rotflip'],
 };
 
 function download(title) {
@@ -126,13 +126,14 @@ for (const key of need) {
  * The FRLG tree is drawn on grass; keyed, it can stand on any ground and overlap the tree above it, as trees do in
  * the games' woods. The tree's own shadow and outline are colours the grass never uses, so they stay.
  */
-async function keyed(src, x, y, w, h, [groundSrc, grounds]) {
+async function keyed(src, x, y, w, h, [groundSrc, grounds], px = false) {
   const palette = new Set();
   for (const [gx, gy] of grounds) {
     const { data } = await sharp(maps[groundSrc]).extract({ left: gx * T, top: gy * T, width: T, height: T }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
     for (let i = 0; i < data.length; i += 4) palette.add((data[i] << 16) | (data[i + 1] << 8) | data[i + 2]);
   }
-  const { data, info } = await sharp(maps[src]).extract({ left: x * T, top: y * T, width: w * T, height: h * T }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const box = px ? { left: x, top: y, width: w, height: h } : { left: x * T, top: y * T, width: w * T, height: h * T };
+  const { data, info } = await sharp(maps[src]).extract(box).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   for (let i = 0; i < data.length; i += 4) if (palette.has((data[i] << 16) | (data[i + 1] << 8) | data[i + 2])) data[i + 3] = 0;
   // Viridian's lone tree has a Bug Catcher's hat poking into its last rows: anything warm and bright down there goes.
   for (let i = (info.height - 6) * info.width * 4; i < data.length; i += 4) if (data[i] > 180 && data[i] > data[i + 1]) data[i + 3] = 0;
@@ -141,11 +142,13 @@ async function keyed(src, x, y, w, h, [groundSrc, grounds]) {
 
 async function cut([src, x, y, w = 1, h = 1, how, extra]) {
   if (how === 'key') return keyed(src, x, y, w, h, extra);
+  if (how === 'keypx') return keyed(src, x, y, w, h, extra, true);
   let img = sharp(maps[src]).extract({ left: x * T, top: y * T, width: w * T, height: h * T });
   if (how === 'flip') img = sharp(await img.png().toBuffer()).flip();
   if (how === 'flop') img = sharp(await img.png().toBuffer()).flop();
   if (how === 'rot') img = sharp(await img.png().toBuffer()).rotate(90);
   if (how === 'flipflop') img = sharp(await img.png().toBuffer()).flip().flop();
+  if (how === 'rotflip') img = sharp(await sharp(await img.png().toBuffer()).rotate(90).png().toBuffer()).flip();
   return img.png();
 }
 

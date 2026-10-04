@@ -31,6 +31,8 @@ interface TerrainArt {
   tall?: string;
   /** The path: one floor tile cut to the fringe mask, or a road with its own fringe (`path-*` autotile). */
   path: 'plain' | 'edged';
+  /** An edged road whose art has no usable inner corners: those four are cut from its own floor with the fringe mask. */
+  maskedInnerCorners?: boolean;
   /**
    * The scenery: trees (a sprite `w` tiles wide planted every `w` columns and two rows), single tiles (rocks, graves,
    * flowers), or water.
@@ -44,7 +46,7 @@ const ART: Record<TerrainId, TerrainArt> = {
   route: { art: 'route', ...GRASS, tall: 'tall', path: 'edged', fill: { kind: 'trees', w: 2 } },
   meadow: { art: 'meadow', ...GRASS, tall: 'tall', path: 'edged', fill: { kind: 'tiles', pieces: ['fill', 'fill-2', 'fill-3'] } },
   lake: { art: 'lake', ...GRASS, tall: 'tall', path: 'edged', fill: { kind: 'water' } },
-  forest: { art: 'forest', grounds: ['ground', 'ground-2'], tall: 'tall', path: 'edged', fill: { kind: 'trees', w: 3 } },
+  forest: { art: 'forest', grounds: ['ground', 'ground-2'], tall: 'tall', path: 'edged', maskedInnerCorners: true, fill: { kind: 'trees', w: 3 } },
   cave: { art: 'cave', grounds: ['ground', 'ground-2'], path: 'plain', fill: ROCKS },
   coast: { art: 'coast', ...GRASS, tall: 'tall', path: 'edged', fill: { kind: 'water', rock: true } },
   highland: { art: 'highland', ...GRASS, tall: 'tall', path: 'edged', fill: ROCKS },
@@ -291,7 +293,7 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
       if (c.k !== 'path') continue;
       const a = ART[c.t];
       const floor = P.piece(c.t, a.path === 'plain' ? 'path' : 'path-c');
-      if (a.path === 'edged' && !c.g) drawAuto(ctx, (s) => P.piece(c.t, `path-${s}`), isPath, x, y);
+      if (a.path === 'edged' && !c.g) drawAuto(ctx, (s) => (a.maskedInnerCorners && s.startsWith('i') ? P.joined(floor, groundOf(P, c), s, `${c.t}/inner`) : P.piece(c.t, `path-${s}`)), isPath, x, y);
       else drawAuto(ctx, (s) => P.joined(floor, groundOf(P, c), s, `${c.t}/path/${groundTerrain(c)}/${c.n < 0.86 ? 0 : 1}`), isPath, x, y);
     }
   }
