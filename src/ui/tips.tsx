@@ -181,6 +181,12 @@ export function fieldTip(id: FieldId, suppressed = false): ReactNode {
     'rain-dance': `Water moves ${mult(c.weatherBoost)}, Fire moves ${mult(c.weatherDamp)} — for both sides. Swift Swim draws one more card on turn 1.`,
     'electric-terrain': `Electric moves ${mult(c.electricTerrainBoost)} into a grounded Pokémon (not Flying), and a grounded Pokémon cannot be Paralysed.`,
     sandstorm: `Everyone but Rock-, Ground- and Fighting-types loses ${Math.round(c.sandstormPercent * 100)}% of their HP at the end of every turn.`,
+    hail: `Everyone but Ice-types loses ${Math.round(c.hailPercent * 100)}% of their HP at the end of every turn.`,
+    'grassy-terrain': `Grass moves ${mult(c.typeTerrainBoost)} from a grounded Pokémon, and every grounded Pokémon gets ${Math.round(c.grassyHealPercent * 100)}% of its HP back at the end of every turn — on both sides.`,
+    'psychic-terrain': `Psychic moves ${mult(c.typeTerrainBoost)} from a grounded Pokémon, and a grounded Pokémon cannot be put to Sleep.`,
+    'misty-terrain': 'A grounded Pokémon cannot be given any status — no Burn, Poison, Paralysis, Sleep, Freeze or Confusion. On both sides.',
+    'toxic-spikes': 'Whoever steps into the Lead mid-fight — a swap, a step, a replacement, on either side — is Poisoned, unless it is a Poison-type or not on the ground.',
+    'sticky-web': `Whoever steps into the Lead mid-fight, on either side, loses ${c.stickyWebStages} Speed stage — unless it is not on the ground.`,
   };
   return <Tip title={FIELD_LABEL[id]} body={body[id]} footer={suppressed ? 'Suppressed: a Cloud Nine Pokémon is leading.' : 'A Defog clears it for the rest of the fight.'} />;
 }

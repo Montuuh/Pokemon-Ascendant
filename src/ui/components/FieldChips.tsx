@@ -1,4 +1,4 @@
-import { IconBolt, IconCloudRain, IconHome, IconSun, IconWind } from '@tabler/icons-react';
+import { IconBolt, IconBrain, IconCloudFog, IconCloudRain, IconHome, IconLeaf, IconSnowflake, IconSpider, IconSun, IconVaccineBottle, IconWind } from '@tabler/icons-react';
 import { battlefields, type FieldId, type FieldState, type PokemonType } from '@/sim';
 import { FIELD_LABEL, homeFieldLabel } from '@/ui/strings';
 import { fieldTip, homeFieldTip } from '@/ui/tips';
@@ -10,6 +10,12 @@ const ICON: Record<FieldId, typeof IconSun> = {
   'rain-dance': IconCloudRain,
   'electric-terrain': IconBolt,
   sandstorm: IconWind,
+  hail: IconSnowflake,
+  'grassy-terrain': IconLeaf,
+  'psychic-terrain': IconBrain,
+  'misty-terrain': IconCloudFog,
+  'toxic-spikes': IconVaccineBottle,
+  'sticky-web': IconSpider,
 };
 
 /** Each field's own border colour, by class. */
@@ -18,6 +24,12 @@ const TONE: Record<FieldId, string | undefined> = {
   'rain-dance': styles.rainDance,
   'electric-terrain': styles.electricTerrain,
   sandstorm: styles.sandstorm,
+  hail: styles.hail,
+  'grassy-terrain': styles.grassyTerrain,
+  'psychic-terrain': styles.psychicTerrain,
+  'misty-terrain': styles.mistyTerrain,
+  'toxic-spikes': styles.toxicSpikes,
+  'sticky-web': styles.stickyWeb,
 };
 
 interface Props {

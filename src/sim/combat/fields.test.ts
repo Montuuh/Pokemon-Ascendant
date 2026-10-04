@@ -97,4 +97,62 @@ describe('Field effects — §4.3', () => {
     const hitAfter = forecastTurn(after, ctx).incoming['p0']?.[0]?.amount ?? 0;
     if (s.enemies[0]!.intent?.moveId === 'rock-throw') expect(hitAfter).toBeLessThan(hitBefore);
   });
+
+  // §4.3.8–§4.3.13 — the six fields v0.8.7 added, so every Gym has ground of its own (§4.3.14).
+  const quiet = (d: { enemies: { intent: unknown }[] }) => {
+    for (const e of d.enemies) e.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };
+  };
+
+  it('Hail_ChipsAllButTheIceTypes', () => {
+    const s = tweak(start(withFields(scenario({ team: [CHARMANDER, { species: 'dewgong', level: 22 }], enemies: [RATTATA] }), { weather: 'hail' })), quiet);
+    const after = dispatch(s, { type: 'end-turn' });
+    const hit = eventsOf(after, 'damage').filter((e) => e.t === 'damage' && e.cause === 'hail').map((e) => (e.t === 'damage' ? e.targetUid : ''));
+    expect(hit).toContain('p0');
+    expect(hit).toContain('e0');
+    expect(hit).not.toContain('p1');
+  });
+
+  it('GrassyTerrain_LiftsGrassFromTheGround_AndMendsTheGrounded', () => {
+    const bulba = { species: 'bulbasaur', level: 12, moves: ['vine-whip', 'tackle', 'growl', 'leech-seed'] };
+    let s = start(withFields(scenario({ team: [bulba], enemies: [RATTATA] }), { terrain: 'grassy-terrain' }));
+    expect(breakdownFor(s.player.team[0]!, s.enemies[0]!, ctx.content.move('vine-whip'), false, ctx, s).fieldMultiplier).toBe(ctx.config.typeTerrainBoost);
+    s = tweak(s, (d) => {
+      quiet(d);
+      d.player.team[0]!.hp = 5;
+    });
+    const after = dispatch(s, { type: 'end-turn' });
+    expect(after.player.team[0]!.hp).toBe(5 + Math.max(1, Math.floor(s.player.team[0]!.maxHp * ctx.config.grassyHealPercent)));
+  });
+
+  it('PsychicTerrain_LiftsPsychic_AndGuardsTheGroundedFromSleep', () => {
+    const abra = { species: 'drowzee', level: 12, moves: ['confusion', 'hypnosis', 'pound', 'disable'] };
+    let s = start(withFields(scenario({ team: [abra], enemies: [RATTATA] }), { terrain: 'psychic-terrain' }));
+    expect(breakdownFor(s.player.team[0]!, s.enemies[0]!, ctx.content.move('confusion'), false, ctx, s).fieldMultiplier).toBe(ctx.config.typeTerrainBoost);
+    s = withHand(tweak(s, (d) => { d.player.ap = 3; }), ['hypnosis']);
+    const after = dispatch(s, { type: 'play-card', cardId: handCard(s, 'hypnosis').id });
+    expect(after.enemies[0]!.status).toBeNull();
+  });
+
+  it('MistyTerrain_GuardsTheGroundedFromEveryStatus', () => {
+    const ekans = { species: 'ekans', level: 12, moves: ['glare', 'wrap', 'leer', 'poison-sting'] };
+    let s = start(withFields(scenario({ team: [ekans], enemies: [RATTATA] }), { terrain: 'misty-terrain' }));
+    s = withHand(tweak(s, (d) => { d.player.ap = 3; }), ['glare']);
+    const after = dispatch(s, { type: 'play-card', cardId: handCard(s, 'glare').id });
+    expect(after.enemies[0]!.status).toBeNull();
+  });
+
+  it('ToxicSpikes_PoisonWhoeverStepsIntoTheLead_ButNotTheOpeningLead', () => {
+    let s = start(withFields(scenario({ team: [CHARMANDER, SQUIRTLE], enemies: [RATTATA] }), { hazard: 'toxic-spikes' }));
+    expect(s.player.team[0]!.status).toBeNull();
+    s = tweak(s, (d) => { d.player.ap = 3; });
+    const after = dispatch(s, { type: 'swap', benchIndex: 1 });
+    expect(after.player.team[1]!.status?.kind).toBe('poison');
+  });
+
+  it('StickyWeb_TakesASpeedStageFromWhoeverStepsIntoTheLead', () => {
+    let s = start(withFields(scenario({ team: [CHARMANDER, SQUIRTLE], enemies: [RATTATA] }), { hazard: 'sticky-web' }));
+    s = tweak(s, (d) => { d.player.ap = 3; });
+    const after = dispatch(s, { type: 'swap', benchIndex: 1 });
+    expect(after.player.team[1]!.stages.speed).toBe(-ctx.config.stickyWebStages);
+  });
 });

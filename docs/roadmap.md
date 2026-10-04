@@ -808,7 +808,7 @@ the badge now speaks for its own type and gives the pair's on a line of its own.
 **For v0.8.8:** the harness never plays cures or X items, so a full run ends with ~37 unused consumables — tune the
 supply tables against a player who does; Region 3 back to ~50 %.
 
-### v0.8.7 — Routes, revamped  ✅ 2026-10-02
+### v0.8.7 — Routes, revamped  ✅ 2026-10-04
 The Region map rebuilt — its shape, its pacing and its look (§2.5, §2.9, §9.3). *(Backlog #3.)* Designed with the
 user on 2026-10-02, who also moved the map's look forward from its own post-release row: **20 columns walked left
 to right** in a scrolled view; **tracks, not a lattice** (a node mostly has one child; crossings to an adjacent track,
@@ -829,6 +829,9 @@ Art pass (same day, the user's notes): trees are the real FRLG sprites keyed to 
 crowns over the row above; every join between two terrains — and every plain floor road — is cut with Route 1's
 sand fringe used as a mask; the Y changes along one wandering frontier per side; the west road edge is a straight
 edge; water only in bodies of 2 × 2 and up, the coast on Route 24's rim; the highland's cliff tile out of its ground.
+Fields (2026-10-04, the user's call): every Gym lays its own Battlefield over its lane (§4.3.14) — six new ones, Hail,
+Grassy, Psychic and Misty Terrain, Toxic Spikes and Sticky Web; none shared within a Region. 360 runs: R1 69 % ·
+R2|R1 61 % · R3|R2 55 % · run 23 %.
 **For v0.8.8:** R3 now reads ~58 % (target ~50 %) and R1 64 % (was 68 %) — the curve moved with the route; the Ring
 is at the edge of its bands again.
 

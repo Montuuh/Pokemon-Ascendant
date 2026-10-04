@@ -349,8 +349,51 @@ Damage previews always account for the active field and its owner.
 ## §4.3.7 Category stacking
 
 Weather and Terrain are independent; one of each may be active. A second field of the same category overwrites
-the first. Multipliers stack multiplicatively across categories. The launch set is four: two Weather, one
-Terrain, one Hazard (§4.3).
+the first. Multipliers stack multiplicatively across categories. The set is ten: three Weather (Sun, Rain, Hail),
+four Terrain (Electric, Grassy, Psychic, Misty), three Hazard (Sandstorm, Toxic Spikes, Sticky Web).
+
+## §4.3.8 🌨️ Hail *(Weather)*
+Everyone but Ice-types loses **3 % of max HP** at the end of every turn, on both sides (`hailPercent`). The
+Sandstorm's twin for the Ice Gym: the storm the Gym's own Pokémon stand in.
+
+## §4.3.9 🌿 Grassy Terrain *(Terrain)*
+Grass moves ×1.3 from a **grounded** attacker (`typeTerrainBoost`), and every grounded Pokémon gets **3 %** of its
+max HP back at the end of every turn, on both sides (`grassyHealPercent`). A slow field: fights run longer, and the
+Grass Gym is the one that wants them long.
+
+## §4.3.10 🔮 Psychic Terrain *(Terrain)*
+Psychic moves ×1.3 from a grounded attacker, and a grounded Pokémon cannot be put to **Sleep**.
+
+## §4.3.11 🌫️ Misty Terrain *(Terrain)*
+A grounded Pokémon cannot be given **any** status — Burn, Poison, Paralysis, Sleep, Freeze or Confusion — on either
+side. The Normal Gym's ground: no tricks, a straight fight.
+
+## §4.3.12 ☠️ Toxic Spikes *(Hazard)*
+Whoever steps into the Lead mid-fight — a swap, a Step-Forward or Step-Backward, a replacement, an enemy stepping
+up — is **Poisoned**, unless it is a Poison-type, not grounded, or already has a status. The Leads that open the fight
+stand there before the spikes are laid. It makes every swap a cost (Pillar 2): the lane rewards a team that can stay.
+
+## §4.3.13 🕸️ Sticky Web *(Hazard)*
+Whoever steps into the Lead mid-fight, and is grounded, loses **1 Speed stage** (`stickyWebStages`). The Bug Gym's
+ground: lighter than the spikes, and it stacks with every swap you make.
+
+## §4.3.14 Each Gym's ground
+
+Every Gym lays its own Battlefield over its whole lane and its own fight (on top of its Home Field, §4.3.5), and no two
+Gyms of one Region share one — so the fork is also a choice of ground.
+
+| Gym type | Field | | Gym type | Field |
+|---|---|---|---|---|
+| Rock | Sandstorm | | Fire | Sun |
+| Water | Rain | | Grass | Grassy Terrain |
+| Bug | Sticky Web | | Electric | Electric Terrain |
+| Normal | Misty Terrain | | Poison | Toxic Spikes |
+| Psychic | Psychic Terrain | | Ground | Sun |
+| Fighting | Sandstorm | | Ice | Hail |
+
+*(The user's call, 2026-10-04: every Gym with a field of its own. Ground takes Sun — Groudon's drought — rather than a
+second Sandstorm; Fighting keeps the storm its own types shrug off, which makes it a one-sided pressure to plan
+against. Measured on 360 runs: R1 69 % · R2|R1 61 % · R3|R2 55 % · run 23 %.)*
 
 ---
 

@@ -1,6 +1,6 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-02 · **Version:** v0.8.7 shipped (*Routes, revamped*) — v0.8 in progress.
+**Date:** 2026-10-04 · **Version:** v0.8.7 shipped (*Routes, revamped*) — v0.8 in progress.
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
 **Sprint goal next:** **v0.8.8** the balance pass (Gym at five, R3 → ~50 %, the Ring, the supply tables).

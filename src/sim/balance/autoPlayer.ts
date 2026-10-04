@@ -73,7 +73,13 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   const f = state.fields;
   const hostileWeather = (f.weather === 'sunny-day' && enemy.types.includes('fire')) || (f.weather === 'rain-dance' && enemy.types.includes('water'));
   const hostileSand = f.hazard === 'sandstorm' && !l.types.some((t) => t === 'rock' || t === 'ground' || t === 'fighting');
-  if (f.home || hostileWeather || hostileSand) {
+  // §4.3.8–§4.3.13 — and the v0.8.7 fields: Hail on a Lead that is not Ice, a terrain that lifts the enemy Lead's own
+  // type, a hazard that charges every swap.
+  const hostileNew = (f.weather === 'hail' && !l.types.includes('ice'))
+    || (f.terrain === 'grassy-terrain' && enemy.types.includes('grass'))
+    || (f.terrain === 'psychic-terrain' && enemy.types.includes('psychic'))
+    || f.hazard === 'toxic-spikes' || f.hazard === 'sticky-web';
+  if (f.home || hostileWeather || hostileSand || hostileNew) {
     const defog = state.player.consumables.hand
       .map((c) => consumablePlayability(state, c.id, ctx)!)
       .find((p) => p.playable && p.def.effect.kind === 'clear-fields');

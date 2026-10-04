@@ -440,28 +440,29 @@ is the Region's road. On a leaning track the road **blends** into its Gym's terr
 of no return each lane is its Gym's terrain outright: water for Water, a cave for Rock, a forest for Bug, a power
 plant for Electric. The point of no return is drawn as a landmark across the whole map.
 
-The terrain is a telegraph, not decoration (Pillar 1). Where a lane's fights carry a **Battlefield** (§4.3,
-§2.6.1 — rain on the water, a sandstorm in the cave, Electric Terrain in the plant, sun on the volcano), the lane
-shows it: weather drawn over the lane's tiles and the field named on its nodes, so you know which ground you
-are choosing before you choose it. A field starts where the commitment starts: a leaning track wears the Gym's
+The terrain is a telegraph, not decoration (Pillar 1). Every lane carries its **Gym's own Battlefield** (§4.3.14) —
+rain on the water, a sandstorm in the cave, a Sticky Web in the forest, hail in the ice cave — and the lane shows it:
+weather drawn over the lane's tiles, named at the lane's mouth and on its nodes, so you know which ground you are
+choosing before you choose it. A field starts where the commitment starts: a leaning track wears the Gym's
 species and terrain, but its fights are on neutral ground until the point of no return.
 
-| Gym type | Lane terrain | Field (from the lane's biome, §2.6.1) |
+| Gym type | Lane terrain | Field (§4.3.14) |
 |---|---|---|
-| Rock, Fighting | A cave — rock floor, boulders, walls | Sandstorm |
-| Poison | A dank cave, its pools gone purple | Sandstorm |
-| Ice | An ice cave | Sandstorm |
-| Water | Water — a lake and its shore, the route on sandbars and bridges | Rain |
+| Rock | A cave — rock floor, boulders | Sandstorm |
+| Fighting | A cave | Sandstorm |
+| Poison | A dank cave, its pools gone purple | Toxic Spikes |
+| Ice | An ice cave | Hail |
+| Water | Water — a lake and its shore | Rain |
 | Electric | A power plant | Electric Terrain |
 | Ground | A volcanic slope | Sun |
-| Bug | A forest | — |
-| Normal, Grass | A meadow of flowers and tall grass | — |
-| Fire | Scorched grassland | — |
-| Psychic | A tower's grounds | — |
+| Bug | A forest | Sticky Web |
+| Normal | A meadow of flowers and tall grass | Misty Terrain |
+| Grass | A meadow of flowers and tall grass | Grassy Terrain |
+| Fire | Scorched grassland | Sun |
+| Psychic | A tower's grounds | Psychic Terrain |
 
-The terrain is chosen per **type** and the field per **biome**: the biome is what the Region's tables can field,
-and several types share one where the Region has few, but every type gets its own look. A lane whose biome has no
-Battlefield is fought on neutral ground, and its terrain shows no weather.
+Both the terrain and the field are chosen per **type**: the lane's wild biome (§2.6.1) is what the Region's tables
+can field, and several types share one where the Region has few, but every Gym gets its own look and its own ground.
 
 ---
 
@@ -495,20 +496,12 @@ real find in every Rare slot (Eevee in the grass, Lapras in the water) — and R
 its own; a species may sit in more than one biome, and in more than one Region. A pool that offers the same
 three Pokémon twice is the failure state to watch for. *(Noted 2026-09-22; widened 2026-09-23.)*
 
-**Biomes carry a field effect** (v0.8.4, §4.3), so the ground you fight on is part of what a lane telegraphs
-(§2.5.0):
+**A lane carries its Gym's field** (§4.3.14 — until v0.8.7 it was its biome's, and five Gyms stood on open ground),
+so the ground you fight on is part of what a lane telegraphs (§2.5.0).
 
-| Biome | Battlefield |
-|---|---|
-| Volcano Slope | ☀️ Sunny Day |
-| Sea, River / Lake | 🌧️ Rain Dance |
-| Power Plant | ⚡ Electric Terrain |
-| Cave | 🪨 Sandstorm |
-| Meadow, Sky / Cliffs, Abandoned Tower | open ground |
-
-**Past the fork only, in every Region.** Every fight in a lane — wild, trainer, Elite, Gym — stands in the lane's
-biome (a wild node in its own), so its Battlefield is the lane's promise and the Gym's ground; the trunk, where you
-plan, stays open ground. A node's preview card names its field. *(Decided 2026-09-29, closing the OPEN of
+**Past the fork only, in every Region.** Every fight in a lane — wild, trainer, Elite, Gym — stands on the Gym's
+field, so its Battlefield is the lane's promise and the Gym's ground; the trunk and the Y, where you plan, stay open
+ground. A node's preview card names its field. *(Decided 2026-09-29, closing the OPEN of
 2026-09-22. Measured: the Battlefield across Region 3's trunk too cost it seven points of §2.2.1's curve, 41 → 34 %.
 Region 3's accent is its largest groups (§5.6.3) and its lanes' fields, not a field on every node.)*
 

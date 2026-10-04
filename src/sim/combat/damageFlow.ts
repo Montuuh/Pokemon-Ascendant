@@ -28,7 +28,7 @@ import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { effectiveAttack, effectiveDefense } from './stats';
 import { applyStatus, cureStatus } from './status';
 import { effectivenessLabel } from './typeChart';
-import { fieldBlocksStatus, fieldDamageMultiplier } from './fields';
+import { fieldBlocksStatus, fieldDamageMultiplier, fieldsSuppressed, isGrounded, toxicSpikesSpare } from './fields';
 
 // Shared damage / effect pipeline used by player cards and enemy intents.
 
@@ -224,6 +224,26 @@ export function onEnterLead(state: CombatState, ctx: RunCtx, index: number): voi
     if (fx.target === 'self') changeStage(state, entering, fx.stat, fx.stages);
     else for (const e of state.enemies) changeStage(state, e, fx.stat, fx.stages);
   }
+  enterHazards(state, ctx, entering);
+}
+
+/**
+ * §4.3.12 / §4.3.13 — the hazards a Pokémon steps on when it takes the Lead mid-fight (a swap, a step, a replacement
+ * — on either side): Toxic Spikes Poison it, a Sticky Web takes a Speed stage. The Leads that open the fight stand on
+ * the ground before it is laid, so they are spared. Every swap is a decision (Pillar 2); on these lanes it costs.
+ */
+export function enterHazards(state: CombatState, ctx: RunCtx, entering: Combatant): void {
+  const hazard = state.fields?.hazard;
+  if (!hazard || entering.hp <= 0 || fieldsSuppressed(state, ctx.content)) return;
+  if (hazard === 'toxic-spikes' && !toxicSpikesSpare(entering, ctx.content) && !entering.status) {
+    if (fieldBlocksStatus(state, entering, 'poison', ctx.content) || applyStatus(entering, 'poison', state.turn, ctx.config) !== 'applied') return;
+    emit(state, { t: 'status-applied', targetUid: entering.uid, status: 'poison' });
+    log(state, 'system', `${entering.name} steps on the Toxic Spikes and is Poisoned.`);
+  }
+  if (hazard === 'sticky-web' && isGrounded(entering, ctx.content)) {
+    changeStage(state, entering, 'speed', -ctx.config.stickyWebStages);
+    log(state, 'system', `${entering.name} is caught in the Sticky Web.`);
+  }
 }
 
 /**
@@ -236,7 +256,7 @@ export function dealDamage(
   sourceUid: string | null,
   target: Combatant,
   amount: number,
-  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: 'move' | 'burn' | 'poison' | 'sandstorm'; cleave?: boolean },
+  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail'; cleave?: boolean },
 ): number {
   if (target.hp <= 0) return 0;
   let dmg = Math.max(0, amount);
@@ -388,6 +408,10 @@ export function onFaint(state: CombatState, ctx: RunCtx, c: Combatant): void {
       const strongest = [...state.enemies].sort((a, b) => b.hp - a.hp || b.level - a.level)[0]!;
       state.enemies = [strongest, ...state.enemies.filter((x) => x.uid !== strongest.uid)];
       log(state, 'enemy', `${strongest.name} steps up to lead!`);
+      enterHazards(state, ctx, strongest);
+    } else if (wasLead && state.enemies[0]) {
+      // A lone replacement takes the Lead too, and steps on what lies there.
+      enterHazards(state, ctx, state.enemies[0]);
     }
     // Telegraph immediately so the player can still react with remaining AP (§5.1). After the promotion, so a
     // newcomer's intent is chosen knowing whether it leads.

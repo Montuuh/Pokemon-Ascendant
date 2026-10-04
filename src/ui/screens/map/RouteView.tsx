@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { BIOME_FIELD, battlefields, gymById, regionContent, type FieldId, type MapNode, type RunState } from '@/sim';
+import { battlefields, gymById, laneField as laneBattlefield, type FieldId, type MapNode, type RunState } from '@/sim';
 import { NodeMarker, type NodeStatus } from '@/ui/components/NodeMarker';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { FIELD_LABEL, ROUTE_TEXT } from '@/ui/strings';
@@ -19,12 +19,9 @@ interface Props {
   onEnter: (nodeId: string) => void;
 }
 
-/** §2.5.4 — the field a lane's fights stand on, from its biome (§2.6.1), for the weather drawn over it. */
+/** §2.5.4 / §4.3.14 — the field a lane's fights stand on (its Gym's own), for the weather drawn over it. */
 function laneField(run: RunState, lane: number): FieldId | null {
-  const gym = gymById(run.map.gyms[lane]!);
-  const biome = regionContent(run.regionIndex).laneThemes[gym.type]?.biome;
-  const field = biome ? BIOME_FIELD[biome] : undefined;
-  return field ? (battlefields(field)[0] ?? null) : null;
+  return battlefields(laneBattlefield(run, lane))[0] ?? null;
 }
 
 const WEATHER_CLASS: Record<FieldId, string | undefined> = {
@@ -32,6 +29,12 @@ const WEATHER_CLASS: Record<FieldId, string | undefined> = {
   'sunny-day': styles.sun,
   'electric-terrain': styles.spark,
   sandstorm: styles.sand,
+  hail: styles.hail,
+  'grassy-terrain': styles.grassy,
+  'psychic-terrain': styles.psychic,
+  'misty-terrain': styles.misty,
+  'toxic-spikes': styles.toxic,
+  'sticky-web': styles.web,
 };
 
 export function RouteView({ run, statusOf, onEnter }: Props) {

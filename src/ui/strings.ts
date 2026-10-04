@@ -135,6 +135,12 @@ export const FIELD_LABEL: Record<string, string> = {
   'rain-dance': 'Rain',
   'electric-terrain': 'Electric Terrain',
   sandstorm: 'Sandstorm',
+  hail: 'Hail',
+  'grassy-terrain': 'Grassy Terrain',
+  'psychic-terrain': 'Psychic Terrain',
+  'misty-terrain': 'Misty Terrain',
+  'toxic-spikes': 'Toxic Spikes',
+  'sticky-web': 'Sticky Web',
 };
 
 /** §4.3.5 — a Home Field's name, on its chip and at the top of its bubble. */

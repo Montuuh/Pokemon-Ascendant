@@ -145,6 +145,41 @@
   52% { background-color: transparent; }
 }
 
+.hail {
+  background-image: radial-gradient(circle, rgba(240, 250, 255, 0.85) 0 1.5px, transparent 2px);
+  background-size: 22px 26px;
+  animation: hail var(--motion-weather-sand) linear infinite;
+}
+.hail .weatherTag { border: 2px solid var(--type-ice); }
+@keyframes hail {
+  to { background-position: -10px 26px; }
+}
+.grassy {
+  background: linear-gradient(0deg, rgba(120, 200, 80, 0.18), transparent 70%);
+}
+.grassy .weatherTag { border: 2px solid var(--type-grass); }
+.psychic {
+  background: radial-gradient(ellipse at 50% 50%, rgba(248, 88, 136, 0.16), transparent 75%);
+  animation: pulse var(--motion-weather-spark) ease-in-out infinite;
+}
+.psychic .weatherTag { border: 2px solid var(--type-psychic); }
+@keyframes pulse {
+  50% { opacity: 0.55; }
+}
+.misty {
+  background: linear-gradient(180deg, rgba(255, 220, 240, 0.28), rgba(255, 220, 240, 0.1));
+}
+.misty .weatherTag { border: 2px solid var(--status-confusion); }
+.toxic {
+  background-image: radial-gradient(circle, rgba(160, 64, 160, 0.4) 0 2px, transparent 2.5px);
+  background-size: 34px 30px;
+}
+.toxic .weatherTag { border: 2px solid var(--type-poison); }
+.web {
+  background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16) 0 1px, transparent 1px 18px), repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.16) 0 1px, transparent 1px 18px);
+}
+.web .weatherTag { border: 2px solid var(--type-bug); }
+
 .strip {
   position: relative;
   height: 56px;

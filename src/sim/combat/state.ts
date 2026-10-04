@@ -229,7 +229,7 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'consumable-used'; consumableId: string; targetUid: string | null; apCost: number }
   | { t: 'enemy-action'; enemyUid: string; intent: Intent; fizzled: boolean }
   | { t: 'attack'; sourceUid: string; targetUid: string; moveId: string }
-  | { t: 'damage'; sourceUid: string | null; targetUid: string; amount: number; crit: boolean; effectiveness: Effectiveness; hpAfter: number; cause: 'move' | 'burn' | 'poison' | 'sandstorm' }
+  | { t: 'damage'; sourceUid: string | null; targetUid: string; amount: number; crit: boolean; effectiveness: Effectiveness; hpAfter: number; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail' }
   | { t: 'heal'; targetUid: string; amount: number; hpAfter: number; cause: 'move' | 'consumable' | 'regen' | 'ability' }
   | { t: 'status-applied'; targetUid: string; status: StatusCondition }
   | { t: 'status-immune'; targetUid: string; status: StatusCondition }

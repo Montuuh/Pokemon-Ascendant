@@ -545,7 +545,7 @@ export interface ScenarioDef {
    */
   onField?: 1 | 2 | 3;
   /** §4.3 — the Battlefield (by category) and any Home Field the fight opens under. */
-  fields?: { weather?: 'sunny-day' | 'rain-dance'; terrain?: 'electric-terrain'; hazard?: 'sandstorm'; home?: PokemonType };
+  fields?: { weather?: 'sunny-day' | 'rain-dance' | 'hail'; terrain?: 'electric-terrain' | 'grassy-terrain' | 'psychic-terrain' | 'misty-terrain'; hazard?: 'sandstorm' | 'toxic-spikes' | 'sticky-web'; home?: PokemonType };
   /**
    * §8.8 — the run's difficulty modifiers, carried into the fight. The ones that change a *number* are folded
    * into the enemy list and the BattleConfig before we get here; the ones that change a *rule* mid-fight

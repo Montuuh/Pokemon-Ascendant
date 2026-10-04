@@ -92,6 +92,14 @@ export interface BattleConfig {
   sandstormPercent: number;
   /** §4.3.5 — a Home Field on the enemy's own type. */
   homeFieldBoost: number;
+  /** §4.3.8 — Hail: the share of Max HP it takes at the end of each turn from everyone but the Ice-types. */
+  hailPercent: number;
+  /** §4.3.9 / §4.3.10 — Grassy and Psychic Terrain on their own type from a grounded attacker. */
+  typeTerrainBoost: number;
+  /** §4.3.9 — Grassy Terrain: the share of Max HP a grounded Pokémon gets back at the end of each turn. */
+  grassyHealPercent: number;
+  /** §4.3.13 — Sticky Web: the Speed stages a Pokémon loses stepping into the Lead. */
+  stickyWebStages: number;
 }
 
 export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
@@ -151,5 +159,9 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   electricTerrainBoost: 1.3,
   sandstormPercent: 0.03,
   homeFieldBoost: 1.2,
+  hailPercent: 0.03,
+  typeTerrainBoost: 1.3,
+  grassyHealPercent: 0.03,
+  stickyWebStages: 1,
 };
 

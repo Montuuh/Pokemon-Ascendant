@@ -201,10 +201,12 @@ Applied on turn N, effective from N+1. DoT uses **Effective** Max HP. Stage firs
 **On the enemy side:** Paralysis prices intents out of its 3-AP budget, Sleep/Freeze skip its action, Confusion
 makes it pick uniformly among legal intents — still telegraphed, just no longer smart.
 
-**Fields** (live since v0.8.4) — 4 Battlefields: Sun (Fire ×1.5, Water ×0.5), Rain (the reverse), Electric
-Terrain (Electric ×1.3 into the grounded, who cannot be Paralysed), Sandstorm (3 % a turn to all but Rock/Ground/
-Fighting). A biome carries its Battlefield past the fork (Volcano Sun, Sea/River Rain, Power Plant Terrain, Cave
-Sandstorm); a Gym or Elite brings a **Home Field** (its type ×1.2 for the enemy only). Weather and Terrain coexist.
+**Fields** (live since v0.8.4) — 10 Battlefields: Sun (Fire ×1.5, Water ×0.5), Rain (the reverse), Hail (3 % a turn
+to all but Ice), Electric Terrain (Electric ×1.3 into the grounded, who cannot be Paralysed), Grassy Terrain (Grass
+×1.3 from the grounded, 3 % back a turn), Psychic Terrain (Psychic ×1.3 from the grounded, no Sleep), Misty Terrain
+(no status on the grounded), Sandstorm (3 % a turn to all but Rock/Ground/Fighting), Toxic Spikes (Poison on whoever
+steps into the Lead), Sticky Web (−1 Speed on whoever steps in). **Every Gym lays its own** over its lane (§4.3.14,
+v0.8.7; none shared within a Region); a Gym or Elite also brings a **Home Field** (its type ×1.2 for the enemy only). Weather and Terrain coexist.
 `defog` clears every field; Cloud Nine suppresses them while it leads; Field Surveyor sets a wild fight's ground
 by the Lead's type.
 

@@ -1,29 +1,40 @@
 import { describe, expect, it } from 'vitest';
 import { content } from '../testing/harness';
 import { GameRng } from '../rng/gameRng';
-import { BIOME_FIELD, fieldsFor } from './battlefields';
+import { GYM_FIELD, fieldsFor, laneField } from './battlefields';
 import { buildScenario } from './encounter';
-import { gymById } from './region';
+import { REGIONS, gymById } from './region';
 import { createRun, defaultRunCtx } from './run';
 
-// §2.6.1 / §4.3 — the ground a node's fight is fought on: a biome's Battlefield past the fork, a Home Field at the
-// Gym and the Elite, nothing in the trunk.
+// §4.3.14 / §4.3 — the ground a node's fight is fought on: its Gym's own Battlefield past the river, a Home Field at
+// the Gym and the Elite, nothing in the trunk or on the Y.
 
 const ctx = defaultRunCtx(content);
 
 describe('Battlefields across the run — §2.6.1, §4.3', () => {
-  it('Trunk_IsOpenGround_TheLaneCarriesItsBiome', () => {
-    let laneWithField = 0;
+  it('Trunk_IsOpenGround_EveryLaneCarriesItsGymsField', () => {
     for (let seed = 1; seed <= 30; seed++) {
       const run = createRun('squirtle', seed, ctx);
       for (const node of Object.values(run.map.nodes)) {
-        if (!['wild', 'trainer'].includes(node.kind)) continue;
+        if (!['wild', 'trainer', 'gym'].includes(node.kind)) continue;
         const f = fieldsFor(node, run, content);
         if (node.lane === undefined) expect(f, `${node.id} in the trunk`).toEqual({});
-        else if (Object.keys(f).length) laneWithField += 1;
+        else {
+          const ground = { ...f };
+          delete ground.home;
+          expect(ground, `${node.id} in lane ${node.lane}`).toEqual(laneField(run, node.lane));
+          expect(Object.keys(ground).length, `${node.id} has no field`).toBe(1);
+        }
       }
     }
-    expect(laneWithField).toBeGreaterThan(0);
+  });
+
+  it('EveryGymHasAField_AndNoTwoGymsOfARegionShareOne_§4.3.14', () => {
+    for (const region of REGIONS) {
+      const fields = region.gyms.map((g) => JSON.stringify(GYM_FIELD[g.type]));
+      for (const f of fields) expect(f).toBeDefined();
+      expect(new Set(fields).size, region.name).toBe(region.gyms.length);
+    }
   });
 
   it('Gym_BringsAHomeFieldOfItsType_IntoTheFight', () => {
@@ -41,7 +52,7 @@ describe('Battlefields across the run — §2.6.1, §4.3', () => {
     expect(fieldsFor(elite, run, content).home).toBe(content.species(lead).types[0]);
   });
 
-  it('BiomeTable_OnlyNamesLaunchFields', () => {
-    for (const f of Object.values(BIOME_FIELD)) expect(Object.keys(f!).every((k) => ['weather', 'terrain', 'hazard'].includes(k))).toBe(true);
+  it('GymTable_NamesOneCategoryEach', () => {
+    for (const f of Object.values(GYM_FIELD)) expect(Object.keys(f).length).toBe(1);
   });
 });

@@ -10,7 +10,7 @@ import { abilityTurnStartAp, turnEndBenchHeal, abilityLeadTrapDivisor } from './
 import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeTurn } from './enemyTurn';
-import { fieldDrawBonus, fieldsSuppressed, sandstormImmune } from './fields';
+import { fieldDrawBonus, fieldsSuppressed, hailImmune, isGrounded, sandstormImmune } from './fields';
 
 // §3.2 — the five-phase loop. `beginTurn` = Draw + Intent (lands in Action); `resolveTurn` = Resolution → next turn.
 
@@ -182,6 +182,22 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
       const chip = Math.max(1, Math.floor(c.maxHp * ctx.config.sandstormPercent));
       log(state, 'system', `${c.name} is buffeted by the sandstorm (${chip}).`);
       dealDamage(state, ctx, null, c, chip, { crit: false, effectiveness: 'neutral', cause: 'sandstorm' });
+    }
+  }
+  // §4.3.8 — Hail chips everyone but the Ice-types, the same way.
+  if (state.fields.weather === 'hail' && !fieldsSuppressed(state, ctx.content)) {
+    for (const c of [...state.player.team, ...state.enemies]) {
+      if (c.hp <= 0 || hailImmune(c)) continue;
+      const chip = Math.max(1, Math.floor(c.maxHp * ctx.config.hailPercent));
+      log(state, 'system', `${c.name} is pelted by the hail (${chip}).`);
+      dealDamage(state, ctx, null, c, chip, { crit: false, effectiveness: 'neutral', cause: 'hail' });
+    }
+  }
+  // §4.3.9 — Grassy Terrain gives every grounded Pokémon a little back, on both sides.
+  if (state.fields.terrain === 'grassy-terrain' && !fieldsSuppressed(state, ctx.content)) {
+    for (const c of [...state.player.team, ...state.enemies]) {
+      if (c.hp <= 0 || c.hp >= c.maxHp || !isGrounded(c, ctx.content)) continue;
+      heal(state, c, Math.max(1, Math.floor(c.maxHp * ctx.config.grassyHealPercent)), 'regen');
     }
   }
   // §6.8.3 Arena Trap — while the wearer leads, the ground under every enemy gives a little each turn.

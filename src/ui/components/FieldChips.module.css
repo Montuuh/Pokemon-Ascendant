@@ -31,6 +31,24 @@
 .sandstorm {
   border-color: var(--type-ground);
 }
+.hail {
+  border-color: var(--type-ice);
+}
+.grassyTerrain {
+  border-color: var(--type-grass);
+}
+.psychicTerrain {
+  border-color: var(--type-psychic);
+}
+.mistyTerrain {
+  border-color: var(--status-confusion);
+}
+.toxicSpikes {
+  border-color: var(--type-poison);
+}
+.stickyWeb {
+  border-color: var(--type-bug);
+}
 .home {
   border-color: var(--accent-negative);
 }
