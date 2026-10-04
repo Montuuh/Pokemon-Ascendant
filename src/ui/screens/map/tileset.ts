@@ -60,7 +60,7 @@ const ART: Record<TerrainId, TerrainArt> = {
 };
 
 /** The river at the point of no return, and its bridges. */
-const RIVER_PIECES = ['water-c', 'water-n', 'water-s', 'water-w', 'water-e', 'water-nw', 'water-ne', 'water-sw', 'water-se', 'bridge', 'bridge-n', 'bridge-s'];
+const RIVER_PIECES = ['water-c', 'water-n', 'water-s', 'water-w', 'water-e', 'water-nw', 'water-ne', 'water-sw', 'water-se', 'water-inw', 'water-ine', 'water-isw', 'water-ise', 'bridge', 'bridge-n', 'bridge-s'];
 const EDGE_SUFFIX = ['c', 'n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se', 'inw', 'ine', 'isw', 'ise'];
 /** The fringe every masked join is cut with: Route 1's own sand road. */
 const MASK_ART = 'route';
@@ -79,7 +79,7 @@ export function piecesFor(terrain: MapTerrain): string[] {
     else for (const s of EDGE_SUFFIX) out.add(`${a.art}/path-${s}`);
     if (a.fill.kind === 'trees') out.add(`${a.art}/tree`);
     if (a.fill.kind === 'tiles') for (const p of a.fill.pieces) out.add(`${a.art}/${p}`);
-    if (a.fill.kind === 'water') for (const s of [...EDGE_SUFFIX.slice(0, 9), ...(a.fill.rock ? ['rock'] : [])]) out.add(`${a.art}/water-${s}`);
+    if (a.fill.kind === 'water') for (const s of [...EDGE_SUFFIX, ...(a.fill.rock ? ['rock'] : [])]) out.add(`${a.art}/water-${s}`);
   }
   if (terrain.river) for (const p of RIVER_PIECES) out.add(`river/${p}`);
   return [...out];

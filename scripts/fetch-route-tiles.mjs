@@ -55,6 +55,10 @@ const WATER_ROUTE24 = {
   'water-c': ['route24', 7, 18], 'water-n': ['route24', 7, 16], 'water-w': ['route24', 6, 17], 'water-e': ['route24', 8, 17],
   'water-nw': ['route24', 6, 16], 'water-ne': ['route24', 8, 16],
   'water-s': ['route24', 7, 16, 1, 1, 'flip'], 'water-sw': ['route24', 6, 16, 1, 1, 'flip'], 'water-se': ['route24', 8, 16, 1, 1, 'flip'],
+  // The inner corners — land only on the diagonal — are where the shore turns back on itself. Route 24 draws one at
+  // (6,32), under the tall grass; the other three are it turned over.
+  'water-inw': ['route24', 6, 32], 'water-ine': ['route24', 6, 32, 1, 1, 'flop'],
+  'water-isw': ['route24', 6, 32, 1, 1, 'flip'], 'water-ise': ['route24', 6, 32, 1, 1, 'flipflop'],
 };
 const GRASS_ROUTE1 = { ground: ['route1', 7, 23], 'ground-2': ['route1', 3, 2], deco: ['route1', 3, 6] };
 
