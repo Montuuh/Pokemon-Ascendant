@@ -200,9 +200,16 @@ fight — a team of evolved Pokémon with relics and Badges out-grows a band tha
 
 | Region | Max HP | Attack |
 |---|---|---|
-| 1 | ×0.9 | ×0.8 |
-| 2 | ×0.9 | ×1 |
-| 3 | ×0.85 | ×0.8 |
+| 1 | ×0.6 | ×1.45 |
+| 2 | ×0.55 | ×1.75 |
+| 3 | ×0.38 | ×2.25 |
+
+*(v0.8.8, the balance pass: **enemies hit harder and fall faster.** The playtest of 2026-09-24 found the median enemy
+hit at 12 % of the target's Max HP — eight hits to faint anyone, so a telegraph rarely forced a swap (Pillar 2). The
+tier now trades HP for Attack: the median landed hit is 18 % in Region 1, 16 % in Region 2, 17 % in Region 3, fights
+run 3.6 / 4.5 / 4.0 turns, and the curve holds — measured over 720 runs with the harness playing its cures, X items
+and between-node heals: **R1 59 % · R2|R1 56 % · R3|R2 53 % · the whole run 17 %**. Region 3's HP is lowest because
+its Pokémon are final forms with the largest bases; its Attack is highest for the same reason.)*
 
 *(v0.8.6: retuned for teams at the route's level. The old tiers — ×1 / ×1.6 / ×1.45 Attack — were set against teams
 seven to ten levels over their Region; with XP cut (§6.2.1) the same enemies took Region 1 to 25 % and Region 2 to
@@ -943,11 +950,13 @@ the rest. The ladder is rolled on arrival, so the next rival is always on screen
 
 | | Rung 1 | Each later rung | Team | Measured: rung 1 · rung 2 · ladder (runs) |
 |---|---|---|---|---|
-| **Pallet Town** | Gym ace **+5** | **+2** | 4, two at a time | 0.75 · — · **0.19** (75) |
-| **Celadon City** | Gym ace **+4** | **+2** | 3, two at a time | 0.69 · 0.31 · **0.11** (35) |
+| **Pallet Town** | Gym ace **+5** | **+4** | 4, two at a time | 0.54 · — · **0.17** (70) |
+| **Celadon City** | Gym ace **+6** | **+2** | 3, two at a time | 0.40 · 0.21 · **0.10** (48) |
 
-Every Ring rival hits at **×1.35 Attack** on top of the Region's tier (`RING.attackMultiplier`): the ladder is
-hard by how it hits and how it fights, not by standing a wall of levels over the team.
+Every Ring rival hits at **×1.7 Attack** on top of the Region's tier (`RING.attackMultiplier`): the ladder is
+hard by how it hits and how it fights, not by standing a wall of levels over the team. *(v0.8.8: ×1.35 and Celadon at
++5 read rung 1 at 0.69 / 0.71 once teams arrived stronger; ×1.7, with Celadon's first rung at +6, reads Pallet 0.54
+and Celadon 0.40 — about half, as the Ring is meant to be.)*
 
 *(v0.8.6, the user's call: the route ran over-levelled and the Ring then far under-levelled — its offsets had
 climbed to +18 and +21 to hold its win rate against teams seven to ten levels over their Region. With XP cut

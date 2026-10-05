@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -74,8 +74,8 @@ Pokémon.
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
-  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier (Attack ×0.8 / ×1 / ×0.8, HP
-  ×0.9 / ×0.9 / ×0.85), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
+  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier that hits hard and falls fast (Attack ×1.45 / ×1.75 / ×2.25,
+  HP ×0.6 / ×0.55 / ×0.38 — the median hit ~17 % of Max HP, v0.8.8), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
   Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
   Elite, the Lapras Elite Wild and the Fire · Grass · Electric · Poison Gyms with their Badges. 76 % of what it
@@ -246,11 +246,11 @@ to 30 %. Supports hit at 70 % and escalate at most +2.
 **Across the run** (§5.6.3): each fight node fixes its shape with the node (a hash, not the map's stream) and its
 preview card names it — wild **packs** (30 / 40 / 50 % of wild nodes, some of three), wild **callers** (10 / 15 /
 20 % + every social species), trainers **two at a time** (50 / 60 / 70 %) or **three**, the Elite (four Pokémon) and
-the Gym (four) **always two at a time**, the Region 3 Elite Wild **acts twice** at 75 % HP (v0.8.5).
+the Gym (five, v0.8.8) **always two at a time**, the Region 3 Elite Wild **acts twice** at 75 % HP (v0.8.5).
 
 **Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
 signature uncapped, Sturdy). **Gyms:** 2 Pokémon, ace 3-phase, **no mid-fight evolution** — the threat is a level
-premium (band −2 non-ace, +0 ace, v0.8.6) plus a Home Field; **four Pokémon, two at a time, the ace last** (v0.8.5). Mid-fight evolution belongs to the **Rival and the Champion**.
+premium (band −2 non-ace, +0 ace, v0.8.6) plus a Home Field and its own Attack (×1.3 / ×1.5 / ×1.15, v0.8.8); **five Pokémon, two at a time, the ace last** (v0.8.8), no support beyond the two on the field. Mid-fight evolution belongs to the **Rival and the Champion**.
 **Per-type Phase 2:** Entrenchment (Rock, Ground) · Status Siege (Poison, Grass, Bug) · Onslaught (Fire,
 Fighting, Normal) · Tempo Control (Electric, Psychic, Ice, Water).
 **Gym pool:** 4 types per Region, seed picks 2. R1 Rock/Water/Bug/Normal · R2 Fire/Grass/Electric/Poison ·

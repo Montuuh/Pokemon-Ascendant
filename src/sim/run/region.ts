@@ -104,7 +104,7 @@ export function trainerTeamFor(roster: TrainerRoster, layer: number, band: reado
  * §5.6.3 — how many Pokémon a trainer, an Elite and a Gym Leader carry, per Region. The user's call (2026-09-30):
  * trainers carry more and fight two or three at once; an Elite at least four, a Gym Leader five.
  */
-export const TEAM_SIZE = { trainer: [3, 3, 3], elite: [4, 4, 4], gym: [4, 4, 4] } as const;
+export const TEAM_SIZE = { trainer: [3, 3, 3], elite: [4, 4, 4], gym: [5, 5, 5] } as const;
 
 /**
  * §5.6.3 — how many levels under the team's own Pokémon the ones padding it stand. The padding widens a fight; the
@@ -119,6 +119,11 @@ export const PAD_LEVEL_GAP = { trainer: 4, elite: 6, gym: 8 } as const;
  */
 export const ELITE_LEVEL_PREMIUM = -2;
 export const GYM_LEVEL_PREMIUM = { other: -2, ace: 0 } as const;
+/**
+ * §5.9.3 — a Gym's own Attack, on top of the Region's tier (v0.8.8): the climax is a threat by how hard it hits, not
+ * by levels — a higher premium made the run easier, because a Gym above the team pays it more XP (§6.2.1).
+ */
+export const GYM_ATTACK_MULTIPLIER: readonly number[] = [1.3, 1.5, 1.15];
 
 /**
  * Pad a team to `size` from `pool` (another species first), deterministically: the pick is a hash of `key` and
@@ -884,9 +889,9 @@ export interface StatTier {
   attack: number;
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { hp: 0.9, attack: 0.8 },
-  { hp: 0.9, attack: 1.0 },
-  { hp: 0.85, attack: 0.8 },
+  { hp: 0.6, attack: 1.45 },
+  { hp: 0.55, attack: 1.75 },
+  { hp: 0.38, attack: 2.25 },
 ];
 
 /**

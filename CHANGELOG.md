@@ -9,9 +9,25 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one short line of lede, then 2–4
 > `- **Headline.** A few words.` bullets. Every change ships as a version; there is no unreleased block.
 
-## v0.8 — Multi-enemy & the route · in progress
+## v0.8 — Multi-enemy & the route · 2026-10-05
 
-Group fights, field effects and a reworked route.
+Group fights, field effects, a reworked route and a balanced run.
+
+- **Group fights.** Up to three enemies; cards dragged onto a target.
+- **Enemy turns.** Honest intents, acting twice, calling for help.
+- **Fields.** Ten Battlefields; every Gym lays its own.
+- **The route.** 20 columns left to right, painted from FRLG tiles.
+- **Supplies.** Consumables are spent; relics are rarer.
+- **Balance.** Harder hits, Gyms at five, tuned over 720 runs.
+
+### v0.8.8 — The balance pass · 2026-10-05
+
+Enemies hit harder and fall faster; the run tuned over 720 runs.
+
+- **Harder hits.** Enemies deal ~1/6 of Max HP a hit; fights last 4–5 turns.
+- **Gyms at five.** Five Pokémon, two at a time, hitting harder than their Region.
+- **The Ring.** Rivals hit harder; the first rung is won about half the time.
+- **Curve.** Region 2 ~56 %, Region 3 ~53 %, the whole run ~17 %.
 
 ### v0.8.7 — Routes, revamped · 2026-10-04
 

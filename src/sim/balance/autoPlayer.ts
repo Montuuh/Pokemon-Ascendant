@@ -86,6 +86,32 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
     if (defog) return { type: 'use-consumable', cardId: defog.cardId };
   }
 
+  // §4.2 / §7.2 — a cure for a Lead that cannot act or is bleeding: Sleep and Freeze lock its cards, Paralysis taxes
+  // every card, Burn and Poison take a share a turn. The matching cure costs no AP; a Full Heal is the fallback.
+  const status = l.status?.kind;
+  if (status) {
+    const cures = state.player.consumables.hand
+      .map((c) => consumablePlayability(state, c.id, ctx)!)
+      .filter((p) => p.playable && p.def.effect.kind === 'cure');
+    const exact = cures.find((p) => p.def.effect.kind === 'cure' && p.def.effect.status === status);
+    const any = cures.find((p) => p.def.effect.kind === 'cure' && p.def.effect.status === 'all');
+    const cure = exact ?? any;
+    if (cure) return { type: 'use-consumable', cardId: cure.cardId, targetIndex: state.player.leadIndex };
+  }
+
+  // §7.2.3 — an X item at the top of a fight that is worth one (a trainer, an Elite, a Gym), while the stage is
+  // still low: X Attack on a Lead with damage to deal, X Defense when the hit coming in is a large one.
+  if (state.kind !== 'wild') {
+    const xs = state.player.consumables.hand
+      .map((c) => consumablePlayability(state, c.id, ctx)!)
+      .filter((p) => p.playable && p.def.effect.kind === 'stage');
+    const xAtk = xs.find((p) => p.def.effect.kind === 'stage' && p.def.effect.stat === 'attack');
+    if (xAtk && (l.stages.attack ?? 0) < 2 && state.player.ap >= xAtk.def.apCost + 1) return { type: 'use-consumable', cardId: xAtk.cardId, targetIndex: state.player.leadIndex };
+    const xDef = xs.find((p) => p.def.effect.kind === 'stage' && p.def.effect.stat === 'defense');
+    const coming = (forecastTurn(state, ctx).incoming[l.uid] ?? []).reduce((a, h) => a + h.amount, 0);
+    if (xDef && (l.stages.defense ?? 0) < 2 && coming >= l.maxHp * 0.25) return { type: 'use-consumable', cardId: xDef.cardId, targetIndex: state.player.leadIndex };
+  }
+
   // §2.4.3 — a Revive is worth two AP the moment somebody is down, because a body back is four cards back.
   const downIndex = state.player.team.findIndex((m) => m.hp <= 0);
   if (downIndex >= 0) {

@@ -2,7 +2,7 @@ import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { activeMoves } from '../combat/stats';
 import type { BiomeId } from './region';
-import { ALL_TRAINERS, GYM, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
+import { ALL_TRAINERS, GYM, GYM_ATTACK_MULTIPLIER, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
 import { hasModifier, modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
 import { isThreeStageLine } from '../meta/bond';
@@ -240,6 +240,8 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
       level: node.preview.enemies?.[i]?.level ?? m.level,
       tier: 'boss',
       phaseCount: m.phaseCount,
+      // §5.9.3 — the climax hits harder than its Region: a Gym that more levels made easier (they pay more XP).
+      attackMultiplier: GYM_ATTACK_MULTIPLIER[gym.region - 1] ?? 1,
       ...(m.moves ? { moves: [...m.moves] } : {}),
     })),
   };

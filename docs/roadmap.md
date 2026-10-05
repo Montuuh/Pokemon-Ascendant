@@ -24,7 +24,7 @@ loop layer and re-tests the core inside it.
 | v0.5 | Region 1 complete | 12-layer map with the Gym fork, badges, region modifiers, achievements, hub stub — a 60-min run | ✅ 2026-09-20 · ◐ playtest |
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
 | v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner played, every City door open. **Twelve subversions** | ✅ 2026-09-28 |
-| v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ◐ |
+| v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ✅ 2026-10-05 |
 | v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
 | v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
 | v1.1 | Polish | Audio, accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
@@ -647,7 +647,7 @@ every change as the next patch.
 rewritten as short technical notes (the user's call: no roleplay, name what changed — "Original FRLG maps imported"),
 and release doctrine R2 now asks for that tone.
 
-## v0.8 — Multi-enemy & the route  ◐
+## v0.8 — Multi-enemy & the route  ✅ 2026-10-05
 
 The version that changes how a fight is played. Fights against two or three enemies at once make the game far
 more strategic, so they are **not only the League's or Region 3's** — they appear across the whole run (user,
@@ -839,7 +839,7 @@ the Power Plant's grating for its road.
 **For v0.8.8:** R3 now reads ~58 % (target ~50 %) and R1 64 % (was 68 %) — the curve moved with the route; the Ring
 is at the edge of its bands again.
 
-### v0.8.8 — The balance pass  ☐
+### v0.8.8 — The balance pass  ✅ 2026-10-05
 Levels, money, consumables, relics and prices together, against whole runs of three Regions and two Cities with
 multi-enemy fights in them — the harness first (720 runs, `CURVE_SEEDS=240`), then a playtest. After multi-enemy
 on purpose (user, 2026-09-24): a pass before it would tune fights that are about to change shape. The first of
@@ -857,6 +857,17 @@ Options to measure: no escalation for a boss's support, a support only beside th
 Also here, from v0.8.5: **the Gym at five** (the user's "if not five") and Region 3 back to ~50 % (42 % now); the
 Challenge Ring now reads rung 1 ~75 % (its target is about half) because teams arrive stronger; the breather's 8 %
 and 30 % are first values.
+**Shipped.** The harness first: it now plays cures, X items and between-node heals (`tendBox`; a run used to end
+with ~27 items unspent, now ~14), and `balance/report.test.ts` (`BALANCE_REPORT=1`) prints per Region the clear rate,
+turns a fight, the median enemy hit and the Gym's loss rate. The enemy stat tier trades HP for Attack (§2.2.1):
+×0.6/×1.45 · ×0.55/×1.75 · ×0.38/×2.25, the median hit 18 / 16 / 17 % of Max HP, fights 3.6 / 4.5 / 4.0 turns. The Gym
+at five Pokémon, two at a time, no support beyond them, and its own Attack (`GYM_ATTACK_MULTIPLIER` ×1.3/×1.5/×1.15 —
+a higher level premium made runs easier, because the Gym then paid more XP). 720 runs: **R1 59 % · R2|R1 56 % ·
+R3|R2 53 % · run 17 %**. The Ring at ×1.7 Attack, Celadon's first rung +6: rung 1 0.54 / 0.40. The Black Market,
+measured: finding it is worth +4 points of Region 3 (0.45 → 0.49), its prices stay. The breather (8 % / 30 %) and the
+supply tables were left: the bag ends a run at ~14 items with the harness spending it.
+**Findings for v1.0's pass:** Region 2's Gyms are lost 2 % of the time at any multiplier tried — the counter-pick
+makes them easy, not their numbers; the Rare Candy alone is worth 8 points of Region 3.
 **Exit (v0.8):** fights against groups everywhere in the run, a reworked route, and the whole run balanced.
 
 ## v0.9 — The long game  ☐

@@ -83,6 +83,10 @@ export interface FightTrace {
   /** The fight itself, so a measure can replay it step by step (the intent-accuracy harness, §9.2.5). */
   scenario: ScenarioDef;
   actions: CombatAction[];
+  /** Every enemy move that landed on the team, as a share of the target's Max HP — how hard the Region hits. */
+  enemyHits: number[];
+  /** The consumables played in the fight, by id. */
+  used: string[];
 }
 
 export interface RunSimResult {
@@ -100,6 +104,8 @@ export interface RunSimResult {
   topLevel: number;
   /** How many times something in the Box evolved (§6.2.4) — the run's reward loop, measured. */
   evolutions: number;
+  /** §3.5 — what was still in the bag when the run ended, Poké Balls aside: the supply the run never spent. */
+  bagLeft: string[];
   state: RunState;
 }
 
@@ -171,6 +177,38 @@ function reachesLane(map: RunState['map'], node: MapNode, lane: number): boolean
 function preferLean(options: MapNode[], lane: number): MapNode[] {
   const leaning = options.filter((n) => n.lean === lane || n.lane === lane);
   return leaning.length ? leaning : options;
+}
+
+/**
+ * §7.2.1 — between nodes, tend the Box from the bag the way a player does: cure whatever a fight left behind (the
+ * matching cure first, a Full Heal if there is none), bring anyone under half back with the smallest heal that does
+ * it, and a Revive for whoever is down. A harness that never touches its bag measures a player who hoards — and the
+ * supply tables then get tuned against that player (standing facts: take the decision the design expects).
+ */
+function tendBox(get: () => RunState, content: CombatCtx['content'], act: (a: Parameters<typeof runReducer>[1]) => void): void {
+  for (const mon of get().box) {
+    const run = get();
+    const me = run.box.find((m) => m.uid === mon.uid)!;
+    const max = maxHpOf(me, content);
+    const bag = run.consumables;
+    if (me.hp <= 0) {
+      if (bag.some((id) => content.consumable(id).effect.kind === 'revive')) act({ type: 'use-item', uid: me.uid, consumableId: bag.find((id) => content.consumable(id).effect.kind === 'revive')! });
+      continue;
+    }
+    const status = me.status?.kind;
+    if (status) {
+      const cure = bag.find((id) => { const fx = content.consumable(id).effect; return fx.kind === 'cure' && fx.status === status; })
+        ?? bag.find((id) => { const fx = content.consumable(id).effect; return fx.kind === 'cure' && fx.status === 'all'; });
+      if (cure) act({ type: 'use-item', uid: me.uid, consumableId: cure });
+    }
+    const after = get().box.find((m) => m.uid === mon.uid)!;
+    if (after.hp > 0 && after.hp < max * 0.5) {
+      const heal = (id: string) => { const fx = content.consumable(id).effect; return fx.kind === 'heal-flat' ? fx.amount : fx.kind === 'heal-percent' ? Math.floor((max * fx.percent) / 100) : 0; };
+      const heals = get().consumables.filter((id) => heal(id) > 0).sort((a, b) => heal(a) - heal(b));
+      const pick = heals.find((id) => after.hp + heal(id) >= max * 0.7) ?? heals[heals.length - 1];
+      if (pick) act({ type: 'use-item', uid: after.uid, consumableId: pick });
+    }
+  }
 }
 
 /** The ordinary "which of these" preference, once the lane question is settled. */
@@ -617,6 +655,10 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
     }
     if (phase() !== 'map') break;
 
+    tendBox(() => run, ctx.content, (a) => {
+      const r = runReducer(run, a, runCtx);
+      if (!r.rejected) run = r.state;
+    });
     const target = chooseNode(run, ctx.content, policy);
     const team = bestTeam(run, ctx.content, target);
     if (team.length === 0) break;
@@ -671,6 +713,13 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
         outcome: String(run.outcome),
         scenario,
         actions: combat.actions,
+        enemyHits: combat.state.events.flatMap((e) => {
+          if (e.t !== 'damage' || e.cause !== 'move' || !e.sourceUid) return [];
+          const target = combat.state.player.team.find((m) => m.uid === e.targetUid);
+          const fromEnemy = !combat.state.player.team.some((m) => m.uid === e.sourceUid);
+          return target && fromEnemy ? [e.amount / target.maxHp] : [];
+        }),
+        used: combat.state.player.consumables.used.map((c) => c.consumableId),
       });
     }
     if (run.outcome !== 'in-progress') break;
@@ -752,6 +801,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
     boxSize: run.box.length,
     evolutions,
     topLevel: Math.max(...run.box.map((m) => m.level), 0),
+    bagLeft: run.consumables.filter((id) => ctx.content.consumable(id).effect.kind !== 'catch'),
     state: run,
   };
 }

@@ -225,7 +225,7 @@ with a bubble that says what it means (Pillar 1).
 | **Caller** | A lone wild Pokémon carries Call for Help (§5.6.2) with companions waiting, a level lower. **A social species always does** (below) | 10 % + social | 15 % + social | 20 % + social, 2 waiting |
 | **Two at a time** | A trainer (three Pokémon, §2.7) sends two out at once; the others take the role their kit gives | 50 % of trainers | 60 % | 70 % |
 | **Three at a time** | …or three at once, when it has three | a quarter of those | 40 % | half |
-| **Two at a time (boss)** | The Elite (four Pokémon, §2.8.1) and the Gym (four, §5.9.3) always fight two at a time, their whole team at full strength | ✓ | ✓ | ✓ |
+| **Two at a time (boss)** | The Elite (four Pokémon, §2.8.1) and the Gym (five, §5.9.3) always fight two at a time, their whole team at full strength | ✓ | ✓ | ✓ |
 | **Acts twice** | The Elite Wild acts twice (§5.6.1) at 75 % of its HP | — | — | ✓ |
 
 **Social species** (`SOCIAL_CALLERS`) come ready to Call for Help whenever they are met wild, alone or leading a
@@ -338,8 +338,10 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
 
 ## §5.9.3 Leader design rules
 
-- **Four Pokémon, two at a time** (§5.6.3; user, 2026-09-30: "at least four, if not five" — four is where the
-  harness keeps Region 3 winnable). The Leader's own non-ace opens; its lane's favourites pad the team (§2.5), six
+- **Five Pokémon, two at a time** (§5.6.3; user, 2026-09-30: "at least four, if not five" — five since v0.8.8, once
+  the balance pass made it affordable). **No support beyond the two on the field**: the second Pokémon out *is* the
+  Gym's support, at full strength, and nothing escalates beside it — the v0.8.3 option of a support that grows every
+  turn cost Region 3 seventeen points in fights this long, and two at a time already gives the Gym a back row. The Leader's own non-ace opens; its lane's favourites pad the team (§2.5), six
   levels under it; **the ace always comes out last**, with three phases and Sturdy in Phase 3.
 - **No mid-fight evolution.** That belongs to the Rival and the Champion. A Gym's threat is a **power premium**:
   the non-ace sits **two under** the Region's wild band top, the ace **at** it (GYM_LEVEL_PREMIUM −2 / 0 since v0.8.6,
@@ -349,7 +351,12 @@ when XP stopped carrying teams seven levels over their Region; 0 / +2 before; +4
   telegraphs it, which is what makes the counter-pick meaningful.
 - **But never a free win.** Each team carries at least one answer to a full-resist party — usually an
   off-type coverage move, like the Rock Gym's Fighting-typed `body-press`.
-- **A Home Field** of its type is set at combat start (§4.3.5).
+- **A Home Field** of its type is set at combat start (§4.3.5), over the Gym's own Battlefield (§4.3.14).
+- **The Gym hits harder than its Region** (`GYM_ATTACK_MULTIPLIER`, ×1.3 / ×1.5 / ×1.15 by Region, v0.8.8). A higher
+  level premium was tried first and made the run *easier*: a Gym above the team pays it more XP (§6.2.1), so the team
+  left stronger. Attack makes the climax a threat without that refund — Gym fights are lost 8 % / 2 % / 10 % of the
+  time by Region, against 1–4 % before. Region 2's Gyms stay soft at any multiplier the harness tried (to ×1.85):
+  what makes them easy is the matchup the harness counter-picks, not their numbers — a finding for the next pass.
 - **Giovanni is both** a Gym Leader (Viridian, Ground, Region 3) and an Elite Trainer (§2.8.1). A run can face
   both; both are canon.
 

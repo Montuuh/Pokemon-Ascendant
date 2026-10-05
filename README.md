@@ -49,10 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.8.7 — Routes, revamped.** The Region map is a twenty-column route walked left to right and scrolled,
-painted from FireRed / LeafGreen tiles: tracks that cross, split and merge, a Y where each side turns into its Gym's
-terrain — water, cave, forest, power plant — with its weather drawn over it, a river as the point of no return, and
-six stop columns where a nurse, a merchant, a Mystery or a find on the ground waits.
+**v0.8.8 — The balance pass.** Enemies hit harder and fall faster — about a sixth of your Max HP a hit, fights of
+four or five turns — Gyms field five Pokémon two at a time and hit harder than their Region, the Ring is won about half
+the time, and the whole run is tuned over 720 runs to a curve of roughly 60 % / 50 % / one run in six.
 
 ## Run it locally
 

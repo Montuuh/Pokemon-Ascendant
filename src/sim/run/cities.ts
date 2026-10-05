@@ -61,7 +61,7 @@ export const CITIES: Record<CityId, CityDef> = {
   },
   'celadon-city': {
     id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'ring', 'game-corner', 'safari'], ringName: 'Pokémon Coliseum', blackMarket: true, shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
-    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 5, stepOffset: 2, teamSize: 3 },
+    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 6, stepOffset: 2, teamSize: 3 },
   },
 };
 
@@ -79,7 +79,7 @@ export const RING = {
    * §2.9.4.1 — a Ring rival hits harder than the route, not higher (v0.8.6): its Attack is ×this on top of the
    * Region's tier, so the ladder stays hard while its levels stand a few over the team instead of a wall above it.
    */
-  attackMultiplier: 1.35,
+  attackMultiplier: 1.7,
 };
 
 /**

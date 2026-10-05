@@ -1,25 +1,24 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-04 · **Version:** v0.8.7 shipped (*Routes, revamped*) — v0.8 in progress.
+**Date:** 2026-10-05 · **Version:** v0.8.8 shipped (*The balance pass*) — v0.8 complete.
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
-**Sprint goal next:** **v0.8.8** the balance pass (Gym at five, R3 → ~50 %, the Ring, the supply tables).
+**Sprint goal next:** **v0.9.1** Bond and Shiny, revamped (see `docs/roadmap.md`).
 
-**v0.8.7** (§2.5, §2.5.4, §2.9.5, §9.3): the map is 20 columns left to right on an 11-row grid — tracks that drift,
-split, merge and cross (pivoting takes two steps), the **Y** from column 8 (leaning tracks themed like their Gym, the
-Elite on the middle track), the river at 11–13 as the point of no return, two lanes of two tracks, six **stop
-columns**, the new `cache` node (a find on the ground). Terrain: `ui/screens/map/terrain.ts` → `tileset.ts` →
-`RouteView.tsx`, FRLG tiles by `npm run art:route` (scorched grassland and the dank cave are tints). Save v18.
+**v0.8.7** — the route: 20 columns left to right, tracks, the Y and the river, stop columns, finds on the ground, a
+terrain painted from FRLG tiles (`ui/screens/map/`), every Gym its own field (§4.3.14, six new fields). **v0.8.8** —
+the balance pass: the enemy tier trades HP for Attack (§2.2.1), the Gym at five with its own Attack
+(`GYM_ATTACK_MULTIPLIER`), the Ring ×1.7, the harness spends its bag (`tendBox`, cures, X items), and
+`balance/report.test.ts` (`BALANCE_REPORT=1 REPORT_SEEDS=240`) is the instrument.
 
-**Findings to act on:** v0.8.8 — R3|R2 ~58 % and R1 64 % after the longer route (XP ×0.9); the Ring sits at the edge
-of its bands (Pallet ladder 0.23, Celadon rung 1 0.72); the harness never plays cures or X items; the market's
-prices. UI nits left: locked Wild emblems hard to tell apart in grey; Region 3's tower ground has hard edges; Escape
-on a preview drops focus to the body; the seed in the map header; group breakdown box mid-arena; tiny enemy icons;
-Bench 2 clipped at 720 p. `AGENTS.md`, `.agents/`, `.codex/` (Codex) are another session's; `scripts/ui-audit.mjs`
-is shared with it (the reward and Gym-pick screens are still unmapped there).
+**Findings to act on:** Region 2's Gyms lost 2 % of the time (matchup, not numbers); the Rare Candy is worth 8 points
+of Region 3; the breather's 8 % / 30 % unmeasured. UI nits left: locked Wild emblems hard to tell apart in grey;
+Escape on a preview drops focus to the body; a combat card's "×0.5" multiplier at 1.66:1 contrast; group breakdown box
+mid-arena; tiny enemy icons; Bench 2 clipped at 720 p. `AGENTS.md`, `.agents/`, `.codex/` (Codex) are another
+session's; `scripts/ui-audit.mjs` is shared with it.
 
-**Test status:** `npm run check` green — 686 Vitest, typecheck, lint, §, catalogue and version guards; `e2e/run` green.
-**Balance** (360 runs): R1 64 % · R2|R1 61 % · R3|R2 58 % · full run 23 %.
+**Test status:** `npm run check` green — 694 Vitest, typecheck, lint, §, catalogue and version guards.
+**Balance** (720 runs): R1 59 % · R2|R1 56 % · R3|R2 53 % · full run 17 %.
 **Shipping:** `docs/release-doctrine.md` (the `ship-version` skill). **UI changes:** the `ui-review` skill.
 
 ## Standing facts
