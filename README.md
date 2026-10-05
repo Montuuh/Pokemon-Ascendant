@@ -49,9 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.8.10 — Growth curves.** The balance report now measures how many relics a run gathers (about two or three a
-Region) and whether XP keeps the team in step with what it fights; Regions 2 and 3 moved up two levels so the team
-stays a level or two over all run, and the curve holds at roughly 60 % / 58 % / 48 %.
+**v0.9.1 — Bond and Shiny, revamped.** Shinies are found in the wild — any wild Pokémon may be one, by surprise —
+and a caught shiny keeps its colours and joins your collection. Bond is a long road now (about eighteen runs to
+Soulbound a line), its rank 2 is the line's Shiny Charm, and every line's Mastery cards are complete.
 
 ## Run it locally
 

@@ -162,6 +162,9 @@
 - **Read the level gap before the clear rate.** v0.8.10's report found Region 2 easy because its band began below
   where Region 1's ended — no tier multiplier could see that. `balance/report.test.ts` prints the team's level over
   what it fights, column by column; a Region that is soft or hard by levels is fixed in its band, not its tier.
+- **A meta curve is measured as a career, not a run.** v0.9.1's Bond pace came from `balance/bondCareer.test.ts`: one
+  account folding many harness runs in a row, its own perks fed back into each. A single run's points said "one rank a
+  run"; the career, with Mastery and the Charm unlocking along the way, said where the long tail actually lands.
 - **Golden fixtures** are regenerated only with `UPDATE_GOLDEN=1 npm test`, plus a note in the rule that
   changed.
 - **The Region curve (§2.2.1) is tuned over 720 runs, guarded over 120.** `npm run check` runs one block of 40

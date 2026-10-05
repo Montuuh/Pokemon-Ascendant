@@ -9,6 +9,19 @@
 > `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one short line of lede, then 2–4
 > `- **Headline.** A few words.` bullets. Every change ships as a version; there is no unreleased block.
 
+## v0.9 — The long game · in progress
+
+The account's systems revisited, and the road to the Champion.
+
+### v0.9.1 — Bond and Shiny, revamped · 2026-10-06
+
+Shinies found in the wild; Bond a long road; every line's Mastery whole.
+
+- **Shiny.** Any wild Pokémon may be shiny, by surprise; catch it to keep it.
+- **Bond.** Trainer, Elite and Gym wins count; Soulbound takes about 18 runs.
+- **Shiny Charm.** Bond rank 2 makes a line's shinies three times as common.
+- **Mastery.** 45 new Lv2 and Lv3 cards: every recruitable line complete.
+
 ## v0.8 — Multi-enemy & the route · 2026-10-05
 
 Group fights, field effects, a reworked route and a balanced run.

@@ -900,11 +900,29 @@ R2|R1 60 % · R3|R2 50 % · run 18 %**. The Ring, re-read (160 seeds): rung 1 Pa
 
 The account's systems revisited, and the road to the Champion.
 
-### v0.9.1 — Bond and Shiny, revamped  ☐
+### v0.9.1 — Bond and Shiny, revamped  ✅ 2026-10-06
 Bond (§6.8) and Shiny — today only the Bond-rank sprite reveal, not something you find (§5.13) — reworked
 together, since the one is the other's reward. Design pass with the user first. *(Backlog #5, #6.)*
 It also writes the **Mastery Lv2 and Lv3** of every line but the three starters (§5.13.2): they are Bond rewards at ranks
 4 and 5, so v0.7.5 wrote every line's Lv1 and left the rest for the curve they will be earned on.
+
+**Shipped.** The design pass measured first: since the route became twenty columns a run fought ~25 fights, the old +1
+a fight made every played line Trusted (Shiny) inside its first run and Soulbound in three. The user's calls
+(2026-10-06): Shiny **wild, by surprise, tied to the Bond**; a shiny gives **Bond and a collection**, no stat; Bond
+**very slow — more than fifteen runs to complete**; rank 2 becomes the line's **Shiny Charm**. Built:
+- **Bond (§6.8.1–§6.8.2):** trainer and Elite wins +1 (+1 leading), a Gym +4, a wild fight nothing, a shiny recruit
+  +10; ranks at 10 · 40 · 110 · 200 · 360. Measured as a **career** (`balance/bondCareer.test.ts`: one account, many
+  runs in a row, its perks playing into each): a line played every run reaches the ranks after **1 / 2 / 6 / 11 / 18
+  runs**; after 24 runs an account holds about two Soulbound lines.
+- **Shiny (§5.14):** every wild Pokémon rolls 1 in 40, a hash of seed and node so no stream moves; the Charm ×3 at
+  rank 2, ×2 again at Soulbound. About one met every three runs; a 24-run career catches six or seven, mostly of the
+  lines it keeps recruiting. A caught shiny keeps its palette, pays +10 Bond, fills the Pokédex's collection (shinies
+  met and caught per species) and opens the hidden medal Shiny Hunter. The harness throws at a shiny from 25 % odds.
+- **On screen:** the shiny sprite and a sparkle entrance in a fight, a mark beside its name wherever it is listed,
+  "A shiny!" on the reward card, the collection in the Pokédex; and each line's **+N Bond** on the reward screen after
+  every fight (`e2e/shiny`).
+- **Mastery:** 36 Lv2 and 9 Lv3 cards, every recruitable line whole, the §6.8.4 bands guarded by a content test.
+  Eevee carries one Lv2 instead of the three per-branch cards once planned (a line has one Mastery track).
 
 ### v0.9.2 — Player level and the Poké Mart, revamped  ☐
 The Trainer level and the Mart (§8.3, §8.4), with the scored shop curation §2.11.2.1 still owes and what leftover
