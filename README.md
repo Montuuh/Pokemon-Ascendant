@@ -49,9 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.8.8 — The balance pass.** Enemies hit harder and fall faster — about a sixth of your Max HP a hit, fights of
-four or five turns — Gyms field five Pokémon two at a time and hit harder than their Region, the Ring is won about half
-the time, and the whole run is tuned over 720 runs to a curve of roughly 60 % / 50 % / one run in six.
+**v0.8.9 — The harness, honest.** The balance harness now plays like a player — it reads the intents and swaps,
+puts the dangerous foe to sleep, raises its Lead in long fights and reads the Reflection cards — and the curve is
+re-tuned on it: roughly 60 % / 60 % / 50 % by Region, the whole run about one in five.
 
 ## Run it locally
 

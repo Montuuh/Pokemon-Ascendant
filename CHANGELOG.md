@@ -20,6 +20,15 @@ Group fights, field effects, a reworked route and a balanced run.
 - **Supplies.** Consumables are spent; relics are rarer.
 - **Balance.** Harder hits, Gyms at five, tuned over 720 runs.
 
+### v0.8.9 — The harness, honest · 2026-10-05
+
+The balance harness plays like a player; the curve re-read, Region 1 retuned.
+
+- **Reads the intents.** Swaps in whoever takes half of a big telegraphed hit.
+- **Control and raises.** Sleeps or paralyses the foe that will last; raises in long fights.
+- **Reads the cards.** Takes the strongest Reflection, not the first.
+- **Curve.** The old harness read 4 points low; now 60 / 60 / 50 %, run 18 %.
+
 ### v0.8.8 — The balance pass · 2026-10-05
 
 Enemies hit harder and fall faster; the run tuned over 720 runs.

@@ -156,6 +156,9 @@
   for the next Region. Make a boss dangerous by how it hits (an Attack multiplier), not by standing over the team.
 - **A harness that never opens its bag tunes the game for a hoarder.** Until v0.8.8 it played no cures, no X items
   and no between-node heals, and ended runs with ~27 items; the supply tables had been read against that player.
+- **A harness that ignores the telegraph measures someone else's game.** Until v0.8.9 the autoplayer never played a
+  status card that cost AP and swapped only a Lead about to fall; it under-read the whole run by four points (17 vs
+  21 %). When a number looks low against play, read what the harness *declines* to do before touching a tier.
 - **Golden fixtures** are regenerated only with `UPDATE_GOLDEN=1 npm test`, plus a note in the rule that
   changed.
 - **The Region curve (§2.2.1) is tuned over 720 runs, guarded over 120.** `npm run check` runs one block of 40

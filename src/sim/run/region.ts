@@ -883,13 +883,16 @@ export const STATUS_ACCENT_FALLBACK = 'supersonic';
  * Region 3's Attack came down from ×2.3 to ×1.95 in v0.7.4: ×2.3 was tuned on the placeholder (Region 1's lines
  * evolved up), and Region 3's own roster — Alakazam, Gengar, Machamp — hits harder by itself, which took Region 3
  * given Region 2 from ~45 % to 37 %. At ×1.95 it reads 47 % over 720 runs, fights 4.9 turns long.
+ *
+ * Region 1's Attack ×1.45 → ×1.55 in v0.8.9, once the harness played status cards and pre-emptive swaps and read the
+ * run four points easier than v0.8.8 had (§2.2.1): R1 60 % · R2|R1 60 % · R3|R2 50 % · run 18 % over 720 runs.
  */
 export interface StatTier {
   hp: number;
   attack: number;
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { hp: 0.6, attack: 1.45 },
+  { hp: 0.6, attack: 1.55 },
   { hp: 0.55, attack: 1.75 },
   { hp: 0.38, attack: 2.25 },
 ];

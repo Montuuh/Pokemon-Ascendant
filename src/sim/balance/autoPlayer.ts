@@ -6,6 +6,8 @@ import { activeEnemy, lead } from '../combat/slots';
 import type { CombatAction, CombatState } from '../combat/state';
 import { hpFraction } from '../combat/stats';
 import { typeMultiplier } from '../combat/typeChart';
+import { isImmuneToStatus } from '../combat/status';
+import type { StatusCondition } from '../types';
 
 // A deterministic, reasonably competent policy used for balance simulation and golden-master recording.
 // It is NOT the game's AI (enemies use §5); it stands in for a decent human player.
@@ -26,6 +28,11 @@ function healValue(def: { effect: { kind: string; amount?: number; percent?: num
   if (def.effect.kind === 'heal-flat') return def.effect.amount ?? 0;
   if (def.effect.kind === 'heal-percent') return Math.floor((maxHp * (def.effect.percent ?? 0)) / 100);
   return 0;
+}
+
+/** A self-raise is worth playing on the Pokémon that will take or deal the next hits: the Lead. */
+function ownerIsLead(p: CardPlayability, state: CombatState): boolean {
+  return state.player.team[state.player.leadIndex]?.uid === p.owner.uid;
 }
 
 function healthiest(state: CombatState, indices: number[]): number | undefined {
@@ -137,6 +144,24 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
     }
   }
 
+  // 3b. §3.3.1 / Pillar 2 — the swap the telegraph asks for. A hit coming at the Lead that will take a large bite
+  // (a third of what it has left) is answered by bringing in someone who takes half of it or less, while the swap is
+  // still cheap and leaves AP to act. Measured: the stricter reading (only a super-effective hit, only into a resist)
+  // almost never fired.
+  // v0.8.8's harness only swapped a Lead that was nearly down, and played a player who ignores the intents.
+  if (threatensLead && intent.moveId && incoming >= l.hp * 0.35) {
+    const moveType = ctx.content.move(intent.moveId).type;
+    const leadMult = typeMultiplier(moveType, l.types);
+    if (leadMult >= 1) {
+      const options = swapOptions(state).filter((o) => o.allowed && o.cost <= 2 && state.player.ap - o.cost >= 1);
+      const best = options
+        .map((o) => ({ o, mon: state.player.team[o.benchIndex]! }))
+        .filter(({ mon }) => typeMultiplier(moveType, mon.types) * 2 <= leadMult && hpFraction(mon) >= 0.5)
+        .sort((a, b) => a.o.cost - b.o.cost || hpFraction(b.mon) - hpFraction(a.mon))[0];
+      if (best) return { type: 'swap', benchIndex: best.o.benchIndex };
+    }
+  }
+
   // 4. Best damage per AP that is playable; take a KO when available.
   const all = state.player.hand.map((c) => cardPlayability(state, c.id, ctx)!);
   const plays = all.filter((p) => p.playable);
@@ -203,6 +228,41 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   };
   const ko = damaging.find((p) => aim(p).ko);
   if (ko) return pick(ko);
+
+  // 4c. §4.2 — control before damage, the way a player meets a fight that will last: put the most dangerous foe that
+  // will outlive this turn to Sleep (or freeze it), else Paralyse it, else Burn or Poison it — a status card is worth
+  // more than a hit against anything with three of our best hits left in it (two cost more than it saved in Region 3).
+  // Only a card that lands at even odds or better; in a wild fight only against a foe that will last.
+  const bestHit = (uid: string) => Math.max(0, ...damaging.map((p) => p.targets.find((t) => t.uid === uid)?.damage?.final ?? 0));
+  const STATUS_WORTH: Partial<Record<StatusCondition, number>> = { sleep: 5, freeze: 5, paralysis: 4, burn: 2.5, poison: 2, confusion: 2 };
+  const control = plays
+    .filter((p) => p.move.power === 0)
+    .flatMap((p) => p.move.effects
+      .filter((e) => e.kind === 'status' && !e.self && e.chance >= 0.5)
+      .flatMap((e) => (e.kind === 'status' ? p.targets.filter((t) => t.reachable).map((t) => ({ p, t, status: e.status, chance: e.chance })) : [])))
+    .map(({ p, t, status, chance }) => {
+      const foe = state.enemies.find((x) => x.uid === t.uid)!;
+      const taken = status === 'confusion' ? foe.confusionTurns > 0 : !!foe.status;
+      const lasting = foe.hp > 3 * Math.max(1, bestHit(foe.uid));
+      const worth = taken || isImmuneToStatus(foe.types, status) || !lasting ? 0 : (STATUS_WORTH[status] ?? 1) * chance * (foe.uid === enemy.uid ? 1.2 : 1);
+      return { p, uid: t.uid, worth };
+    })
+    .filter((x) => x.worth > 0)
+    .sort((a, b) => b.worth - a.worth)[0];
+  if (control && (state.kind !== 'wild' || enemy.hp > 3 * Math.max(1, bestHit(enemy.uid)))) {
+    return { type: 'play-card', cardId: control.p.card.id, ...(state.enemies.length > 1 ? { targetUid: control.uid } : {}) };
+  }
+
+  // 4d. §4.2.6 — a self-raise at the top of a fight worth it (a trainer, an Elite, a Gym) while the stage is low and
+  // the enemy side has more than two turns of HP in it: an Attack raise, or a Defence raise when the hit coming in is
+  // a large one.
+  if (state.kind !== 'wild') {
+    const enemyHp = state.enemies.reduce((a, e) => a + e.hp, 0) + state.enemyQueue.reduce((a, e) => a + e.hp, 0);
+    const perTurn = damaging.reduce((a, p) => Math.max(a, aim(p).dmg), 0) * 2;
+    const raise = plays.find((p) => p.move.power === 0 && p.move.effects.some((e) => e.kind === 'stage' && e.target === 'self' && e.stages > 0
+      && ((e.stat === 'attack' && (p.owner.stages.attack ?? 0) < 2) || (e.stat === 'defense' && (p.owner.stages.defense ?? 0) < 2 && incoming >= l.maxHp * 0.25))));
+    if (raise && enemyHp > 2 * Math.max(1, perTurn) && ownerIsLead(raise, state)) return pick(raise);
+  }
   if (damaging.length > 0) {
     damaging.sort((a, b) => aim(b).dmg / Math.max(1, b.apCost) - aim(a).dmg / Math.max(1, a.apCost) || aim(b).dmg - aim(a).dmg);
     return pick(damaging[0]!);

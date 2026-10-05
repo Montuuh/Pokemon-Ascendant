@@ -586,7 +586,16 @@ function visitCity(get: () => RunState, content: CombatCtx['content'], policy: R
     step({ type: 'enter-building', building: 'dojo' });
     visitDojo(get, content, policy, step);
   }
-  step({ type: 'depart-city', modifierId: get().city!.reflection[0]! });
+  step({ type: 'depart-city', modifierId: bestModifier(get().city!.reflection, content)! });
+}
+
+/**
+ * §2.10 — a player reads the three cards and takes the strongest, not the leftmost: strong before medium before
+ * niche, the offer's order breaking ties. v0.8.8's harness took the first card and so measured a player who never reads.
+ */
+function bestModifier(offer: readonly string[], content: CombatCtx['content']): string | undefined {
+  const rank = { strong: 0, medium: 1, niche: 2 } as const;
+  return [...offer].sort((a, b) => rank[content.regionModifier(a).tier] - rank[content.regionModifier(b).tier])[0];
 }
 
 /**
@@ -629,7 +638,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
   const runCtx = defaultRunCtx(ctx.content);
   // §2.11.3 — the offer is weighted, and the harness takes the first of the three exactly as it takes the
   // first Legendary: modelling a preference here would add variance without adding information.
-  const regionPick = policy.takeRegionModifier ? rollRegionModifierOffer(seed, ctx.content)[0] : undefined;
+  const regionPick = policy.takeRegionModifier ? bestModifier(rollRegionModifierOffer(seed, ctx.content), ctx.content) : undefined;
   let run = createRun(starterId, seed, runCtx, 0, [], undefined, regionPick);
   let turns = 0;
   let evolutions = 0;

@@ -870,6 +870,18 @@ supply tables were left: the bag ends a run at ~14 items with the harness spendi
 makes them easy, not their numbers; the Rare Candy alone is worth 8 points of Region 3.
 **Exit (v0.8):** fights against groups everywhere in the run, a reworked route, and the whole run balanced.
 
+### v0.8.9 — The harness, honest  ✅ 2026-10-05
+
+The user read v0.8.8's rates as lower than the game plays. They were: the combat autoplayer never played a status or
+stat card that cost AP, swapped only a Lead that was nearly down, and took the first Reflection card. Now it puts the
+foe that will last to Sleep or Paralysis (§4.2), raises its Lead in a fight worth it (§4.2.6), swaps in whoever takes
+half or less of a telegraphed hit that would take a third of the Lead (§3.3.1), and takes the strongest Reflection
+(§2.10). Same game, 720 runs: **R1 59 → 66 % · R2|R1 56 → 60 % · R3|R2 53 → 53 % · run 17 → 21 %** — v0.8.8
+under-read the run by four points, nearly all of them in Region 1. Ablation: the status play is most of it, the
+Reflection pick nothing. Region 1's Attack ×1.45 → **×1.55** puts the curve back on §2.2.1's targets: **R1 60 % ·
+R2|R1 60 % · R3|R2 50 % · run 18 %**. The Ring, re-read (160 seeds): rung 1 Pallet 0.45, Celadon 0.53; the ladders
+0.08 / 0.04.
+
 ## v0.9 — The long game  ☐
 
 The account's systems revisited, and the road to the Champion.
