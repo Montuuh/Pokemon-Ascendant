@@ -1,5 +1,5 @@
 {
-  "_note": "Mastery Moves per line (§5.13.2, §6.8; catalogs/mastery-moves.md). Index 0 is Lv1 on the base form, 1 is Lv2 on the middle stage or a two-stage line's final form, 2 is Lv3 on a three-stage final. A tier is null until its move has a row in moves.json — the slot then simply keeps the tier below. Lv2 and Lv3 wait on the achievements of §6.8.2–§6.8.3; Lv1 moves whose row needs an effect kind the sim lacks (Venoshock, Super Fang, Revenge, Tri Attack, Last Resort, Belly Drum) are null too.",
+  "_note": "Mastery Moves per line (§5.13.2, §6.8; catalogs/mastery-moves.md). Index 0 is Lv1 on the base form, 1 is Lv2 on the middle stage or a two-stage line's final form, 2 is Lv3 on a three-stage final. A tier is null until its move has a row in moves.json — the slot then simply keeps the tier below. Every recruitable line carries its Lv2 and, on a three-stage line, its Lv3 since v0.9.1 (Bond ranks 4 and 5, §6.8.2); Lv1 moves whose row needs an effect kind the sim lacks (Venoshock, Super Fang, Revenge, Tri Attack, Last Resort, Belly Drum) are null too.",
   "lines": {
     "bulbasaur": [
       "seed-bomb",
@@ -18,22 +18,22 @@
     ],
     "caterpie": [
       "sticky-web",
-      null,
-      null
+      "dream-eater",
+      "quiver-dance"
     ],
     "weedle": [
       "venoshock",
       "fell-stinger-v",
-      null
+      "toxic-thread"
     ],
     "pidgey": [
       "brave-bird",
-      null,
+      "brave-bird-plus",
       "sky-attack"
     ],
     "rattata": [
       "super-fang",
-      null,
+      "super-fang-plus",
       null
     ],
     "oddish": [
@@ -43,17 +43,17 @@
     ],
     "zubat": [
       "screech",
-      null,
+      "venom-drench",
       null
     ],
     "geodude": [
       "rock-slide-m",
-      null,
-      null
+      "rock-wrecker",
+      "tectonic-rage"
     ],
     "diglett": [
       "tri-attack-d",
-      null,
+      "triple-dive",
       null
     ],
     "onix": [
@@ -63,27 +63,27 @@
     ],
     "machop": [
       "revenge",
-      null,
-      null
+      "counter",
+      "all-out-pummeling"
     ],
     "magikarp": [
       "splash-m",
-      null,
+      "dragon-dance",
       null
     ],
     "poliwag": [
       "circle-throw",
-      null,
-      null
+      "mind-reader",
+      "focus-punch"
     ],
     "psyduck": [
       "psyshock",
-      null,
+      "shattered-psyche",
       null
     ],
     "krabby": [
       "slam-k",
-      null,
+      "crabhammer-max",
       null
     ],
     "snorlax": [
@@ -93,17 +93,17 @@
     ],
     "eevee": [
       "last-resort",
-      null,
+      "adaptive-burst",
       null
     ],
     "bellsprout": [
       "leaf-tornado",
-      null,
-      null
+      "leaf-storm-m",
+      "pitfall-maw"
     ],
     "mankey": [
       "rage-fist",
-      null,
+      "final-gambit",
       null
     ],
     "aerodactyl": [
@@ -118,47 +118,47 @@
     ],
     "cubone": [
       "bonemerang-m",
-      null,
+      "bone-rush-max",
       null
     ],
     "pikachu": [
       "nuzzle-m",
-      null,
+      "volt-tackle-m",
       null
     ],
     "tentacool": [
       "acid-spray-m",
-      null,
+      "hydro-tentacles",
       null
     ],
     "shellder": [
       "icicle-crash-m",
-      null,
+      "icicle-spear-m",
       null
     ],
     "horsea": [
       "twister-m",
-      null,
+      "ink-barrage",
       null
     ],
     "staryu": [
       "water-pulse-m",
-      null,
+      "starlight-pulse",
       null
     ],
     "seel": [
       "aqua-jet-m",
-      null,
+      "aurora-beam-m",
       null
     ],
     "voltorb": [
       "spark-m",
-      null,
+      "discharge-m",
       null
     ],
     "magnemite": [
       "magnet-bomb-m",
-      null,
+      "zap-cannon-m",
       null
     ],
     "electabuzz": [
@@ -168,32 +168,32 @@
     ],
     "koffing": [
       "clear-smog-m",
-      null,
+      "sludge-bomb-w",
       null
     ],
     "growlithe": [
       "flame-charge-m",
-      null,
+      "extreme-speed-m",
       null
     ],
     "vulpix": [
       "fire-spin-m",
-      null,
+      "nine-tail-flare",
       null
     ],
     "ponyta": [
       "blaze-kick-m",
-      null,
+      "flare-blitz-m",
       null
     ],
     "sandshrew": [
       "sand-tomb-m",
-      null,
+      "crush-claw-m",
       null
     ],
     "rhyhorn": [
       "drill-run-m",
-      null,
+      "horn-drill-r",
       null
     ],
     "magmar": [
@@ -203,13 +203,13 @@
     ],
     "abra": [
       "confusion-m",
-      null,
-      null
+      "psybeam-m",
+      "mind-shatter"
     ],
     "nidoran-f": [
       "poison-fang-m",
-      null,
-      null
+      "double-kick-m",
+      "queens-quake"
     ],
     "jynx": [
       "powder-snow-m",
@@ -218,12 +218,12 @@
     ],
     "spearow": [
       "drill-peck-m",
-      null,
+      "drill-dive",
       null
     ],
     "doduo": [
       "pluck-m",
-      null,
+      "tri-peck",
       null
     ],
     "farfetchd": [
@@ -238,17 +238,17 @@
     ],
     "gastly": [
       "night-shade-m",
-      null,
-      null
+      "shadow-ball-h",
+      "nightmare-feast"
     ],
     "drowzee": [
       "zen-headbutt-m",
-      null,
+      "hypnotic-pulse",
       null
     ],
     "grimer": [
       "poison-jab-m",
-      null,
+      "gunk-shot-m",
       null
     ],
     "mr-mime": [

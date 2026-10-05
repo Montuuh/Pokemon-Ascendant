@@ -4892,6 +4892,770 @@
         }
       ],
       "cooldown": 2
+    },
+    {
+      "id": "dream-eater",
+      "name": "Dream Eater",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "drain",
+          "percentOfDamage": 0.5
+        }
+      ]
+    },
+    {
+      "id": "quiver-dance",
+      "name": "Quiver Dance",
+      "type": "bug",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 115,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        },
+        {
+          "kind": "status",
+          "status": "sleep",
+          "chance": 0.25
+        }
+      ],
+      "targeting": "cleave"
+    },
+    {
+      "id": "toxic-thread",
+      "name": "Toxic Thread",
+      "type": "poison",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.5,
+          "escalating": true
+        },
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "speed",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "brave-bird-plus",
+      "name": "Brave Bird Plus",
+      "type": "flying",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 2,
+      "power": 105,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.25
+        }
+      ]
+    },
+    {
+      "id": "super-fang-plus",
+      "name": "Super Fang Plus",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 1,
+      "effects": [
+        {
+          "kind": "fixed-damage",
+          "percentOfTargetHp": 0.5
+        }
+      ]
+    },
+    {
+      "id": "venom-drench",
+      "name": "Venom Drench",
+      "type": "poison",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "target-poisoned",
+          "multiplier": 1.4
+        }
+      ]
+    },
+    {
+      "id": "rock-wrecker",
+      "name": "Rock Wrecker",
+      "type": "rock",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 2,
+      "power": 110,
+      "effects": []
+    },
+    {
+      "id": "tectonic-rage",
+      "name": "Tectonic Rage",
+      "type": "ground",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 125,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -1
+        }
+      ],
+      "targeting": "cleave"
+    },
+    {
+      "id": "triple-dive",
+      "name": "Triple Dive",
+      "type": "ground",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 100,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "counter",
+      "name": "Counter",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "self-below",
+          "below": 0.6,
+          "multiplier": 1.4
+        }
+      ]
+    },
+    {
+      "id": "all-out-pummeling",
+      "name": "All-Out Pummeling",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 3,
+      "power": 130,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 4
+        },
+        {
+          "kind": "status",
+          "status": "confusion",
+          "chance": 0.2
+        }
+      ]
+    },
+    {
+      "id": "dragon-dance",
+      "name": "Dragon Dance",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 100,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "mind-reader",
+      "name": "Mind Reader",
+      "type": "normal",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 85,
+      "effects": [
+        {
+          "kind": "draw",
+          "cards": 1
+        }
+      ]
+    },
+    {
+      "id": "focus-punch",
+      "name": "Focus Punch",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 3,
+      "power": 140,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": -1
+        }
+      ],
+      "ignoresDefenseStages": true
+    },
+    {
+      "id": "shattered-psyche",
+      "name": "Shattered Psyche",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 100,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "confusion",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "crabhammer-max",
+      "name": "Crabhammer Max",
+      "type": "water",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 105,
+      "effects": [],
+      "alwaysCrit": true
+    },
+    {
+      "id": "adaptive-burst",
+      "name": "Adaptive Burst",
+      "type": "normal",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "speed",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "leaf-storm-m",
+      "name": "Leaf Storm",
+      "type": "grass",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 110,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "pitfall-maw",
+      "name": "Pitfall Maw",
+      "type": "grass",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 3,
+      "power": 130,
+      "effects": [
+        {
+          "kind": "drain",
+          "percentOfDamage": 0.35
+        },
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.4
+        }
+      ]
+    },
+    {
+      "id": "final-gambit",
+      "name": "Final Gambit",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 100,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "self-below",
+          "below": 0.5,
+          "multiplier": 1.5
+        }
+      ]
+    },
+    {
+      "id": "bone-rush-max",
+      "name": "Bone Rush Max",
+      "type": "ground",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 100,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 4
+        }
+      ]
+    },
+    {
+      "id": "volt-tackle-m",
+      "name": "Volt Tackle",
+      "type": "electric",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 110,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.25
+        }
+      ]
+    },
+    {
+      "id": "hydro-tentacles",
+      "name": "Hydro Tentacles",
+      "type": "water",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "icicle-spear-m",
+      "name": "Icicle Spear",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 100,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 4
+        }
+      ]
+    },
+    {
+      "id": "ink-barrage",
+      "name": "Ink Barrage",
+      "type": "water",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "starlight-pulse",
+      "name": "Starlight Pulse",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.1
+        }
+      ]
+    },
+    {
+      "id": "aurora-beam-m",
+      "name": "Aurora Beam",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "discharge-m",
+      "name": "Discharge",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 90,
+      "effects": [],
+      "targeting": "cleave"
+    },
+    {
+      "id": "zap-cannon-m",
+      "name": "Zap Cannon",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 105,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.5
+        }
+      ]
+    },
+    {
+      "id": "sludge-bomb-w",
+      "name": "Sludge Bomb",
+      "type": "poison",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "extreme-speed-m",
+      "name": "Extreme Speed",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 1,
+      "power": 85,
+      "effects": []
+    },
+    {
+      "id": "nine-tail-flare",
+      "name": "Nine-Tail Flare",
+      "type": "fire",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 0.4
+        }
+      ]
+    },
+    {
+      "id": "flare-blitz-m",
+      "name": "Flare Blitz",
+      "type": "fire",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 110,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.25
+        }
+      ]
+    },
+    {
+      "id": "crush-claw-m",
+      "name": "Crush Claw",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "horn-drill-r",
+      "name": "Horn Drill",
+      "type": "ground",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 105,
+      "effects": [],
+      "ignoresDefenseStages": true
+    },
+    {
+      "id": "psybeam-m",
+      "name": "Psybeam",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "confusion",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "mind-shatter",
+      "name": "Mind Shatter",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 130,
+      "effects": [
+        {
+          "kind": "draw",
+          "cards": 1
+        }
+      ],
+      "ignoresDefenseStages": true
+    },
+    {
+      "id": "double-kick-m",
+      "name": "Double Kick",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 2
+        }
+      ]
+    },
+    {
+      "id": "queens-quake",
+      "name": "Queen's Quake",
+      "type": "ground",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 125,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "target-poisoned",
+          "multiplier": 1.3
+        },
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "drill-dive",
+      "name": "Drill Dive",
+      "type": "flying",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 2,
+      "power": 105,
+      "effects": []
+    },
+    {
+      "id": "tri-peck",
+      "name": "Tri Peck",
+      "type": "flying",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "shadow-ball-h",
+      "name": "Shadow Ball",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 95,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "nightmare-feast",
+      "name": "Nightmare Feast",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 130,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "sleep",
+          "chance": 0.3
+        },
+        {
+          "kind": "drain",
+          "percentOfDamage": 0.25
+        }
+      ]
+    },
+    {
+      "id": "hypnotic-pulse",
+      "name": "Hypnotic Pulse",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "sleep",
+          "chance": 0.25
+        }
+      ]
+    },
+    {
+      "id": "gunk-shot-m",
+      "name": "Gunk Shot",
+      "type": "poison",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 110,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.3
+        }
+      ]
     }
   ]
 }

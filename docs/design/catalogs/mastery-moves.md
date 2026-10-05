@@ -13,53 +13,53 @@
 | `bulbasaur` | `seed-bomb` | `seed-barrage` | `bloom-cannon` |
 | `charmander` | `fire-fang-m` | `inferno-fang` | `blast-burn` |
 | `squirtle` | `aqua-tail` | `aqua-tail-plus` | `aqua-tail-max` |
-| `caterpie` | `sticky-web` | — | — |
-| `weedle` | `venoshock` | `fell-stinger-v` | — |
-| `pidgey` | `brave-bird` | — | `sky-attack` |
-| `rattata` | `super-fang` | — | — |
+| `caterpie` | `sticky-web` | `dream-eater` | `quiver-dance` |
+| `weedle` | `venoshock` | `fell-stinger-v` | `toxic-thread` |
+| `pidgey` | `brave-bird` | `brave-bird-plus` | `sky-attack` |
+| `rattata` | `super-fang` | `super-fang-plus` | — |
 | `oddish` | `spore-cloud` | `aromatherapy-m` | `petal-dance` |
-| `zubat` | `screech` | — | — |
-| `geodude` | `rock-slide-m` | — | — |
-| `diglett` | `tri-attack-d` | — | — |
+| `zubat` | `screech` | `venom-drench` | — |
+| `geodude` | `rock-slide-m` | `rock-wrecker` | `tectonic-rage` |
+| `diglett` | `tri-attack-d` | `triple-dive` | — |
 | `onix` | `dragon-tail` | — | — |
-| `machop` | `revenge` | — | — |
-| `magikarp` | `splash-m` | — | — |
-| `poliwag` | `circle-throw` | — | — |
-| `psyduck` | `psyshock` | — | — |
-| `krabby` | `slam-k` | — | — |
+| `machop` | `revenge` | `counter` | `all-out-pummeling` |
+| `magikarp` | `splash-m` | `dragon-dance` | — |
+| `poliwag` | `circle-throw` | `mind-reader` | `focus-punch` |
+| `psyduck` | `psyshock` | `shattered-psyche` | — |
+| `krabby` | `slam-k` | `crabhammer-max` | — |
 | `snorlax` | `belly-drum-s` | — | — |
-| `eevee` | `last-resort` | — | — |
-| `bellsprout` | `leaf-tornado` | — | — |
-| `mankey` | `rage-fist` | — | — |
+| `eevee` | `last-resort` | `adaptive-burst` | — |
+| `bellsprout` | `leaf-tornado` | `leaf-storm-m` | `pitfall-maw` |
+| `mankey` | `rage-fist` | `final-gambit` | — |
 | `aerodactyl` | `iron-head-a` | — | — |
 | `lapras` | `glacial-song` | — | — |
-| `cubone` | `bonemerang-m` | — | — |
-| `pikachu` | `nuzzle-m` | — | — |
-| `tentacool` | `acid-spray-m` | — | — |
-| `shellder` | `icicle-crash-m` | — | — |
-| `horsea` | `twister-m` | — | — |
-| `staryu` | `water-pulse-m` | — | — |
-| `seel` | `aqua-jet-m` | — | — |
-| `voltorb` | `spark-m` | — | — |
-| `magnemite` | `magnet-bomb-m` | — | — |
+| `cubone` | `bonemerang-m` | `bone-rush-max` | — |
+| `pikachu` | `nuzzle-m` | `volt-tackle-m` | — |
+| `tentacool` | `acid-spray-m` | `hydro-tentacles` | — |
+| `shellder` | `icicle-crash-m` | `icicle-spear-m` | — |
+| `horsea` | `twister-m` | `ink-barrage` | — |
+| `staryu` | `water-pulse-m` | `starlight-pulse` | — |
+| `seel` | `aqua-jet-m` | `aurora-beam-m` | — |
+| `voltorb` | `spark-m` | `discharge-m` | — |
+| `magnemite` | `magnet-bomb-m` | `zap-cannon-m` | — |
 | `electabuzz` | `thunder-punch-m` | — | — |
-| `koffing` | `clear-smog-m` | — | — |
-| `growlithe` | `flame-charge-m` | — | — |
-| `vulpix` | `fire-spin-m` | — | — |
-| `ponyta` | `blaze-kick-m` | — | — |
-| `sandshrew` | `sand-tomb-m` | — | — |
-| `rhyhorn` | `drill-run-m` | — | — |
+| `koffing` | `clear-smog-m` | `sludge-bomb-w` | — |
+| `growlithe` | `flame-charge-m` | `extreme-speed-m` | — |
+| `vulpix` | `fire-spin-m` | `nine-tail-flare` | — |
+| `ponyta` | `blaze-kick-m` | `flare-blitz-m` | — |
+| `sandshrew` | `sand-tomb-m` | `crush-claw-m` | — |
+| `rhyhorn` | `drill-run-m` | `horn-drill-r` | — |
 | `magmar` | `fire-punch-m` | — | — |
-| `abra` | `confusion-m` | — | — |
-| `nidoran-f` | `poison-fang-m` | — | — |
+| `abra` | `confusion-m` | `psybeam-m` | `mind-shatter` |
+| `nidoran-f` | `poison-fang-m` | `double-kick-m` | `queens-quake` |
 | `jynx` | `powder-snow-m` | — | — |
-| `spearow` | `drill-peck-m` | — | — |
-| `doduo` | `pluck-m` | — | — |
+| `spearow` | `drill-peck-m` | `drill-dive` | — |
+| `doduo` | `pluck-m` | `tri-peck` | — |
 | `farfetchd` | `leek-slash` | — | — |
 | `scyther` | `fury-cutter-m` | — | — |
-| `gastly` | `night-shade-m` | — | — |
-| `drowzee` | `zen-headbutt-m` | — | — |
-| `grimer` | `poison-jab-m` | — | — |
+| `gastly` | `night-shade-m` | `shadow-ball-h` | `nightmare-feast` |
+| `drowzee` | `zen-headbutt-m` | `hypnotic-pulse` | — |
+| `grimer` | `poison-jab-m` | `gunk-shot-m` | — |
 | `mr-mime` | `psywave-m` | — | — |
 
 ## Unlocks (§6.8.2) — by Bond rank since 2026-09-21
@@ -114,6 +114,13 @@ cycling status, `last-resort` hand condition, `belly-drum-s` self HP loss). Lv2 
 achievements — and since the same day, every tier unlocks by **Bond rank** (§6.8.2): Lv1 at rank 1, Lv2 at
 rank 4, Lv3 at rank 5.
 
+
+**Shipped state (v0.9.1).** Every recruitable line carries its whole Mastery: the 36 Lv2 cards and 9 Lv3 cards the
+v0.7.5 pass left for the Bond revamp are written, all on effects the sim already has. Region 1's lines keep the ids
+`species-r1.md` planned, re-read for the combat that exists (Final Gambit is a hit that grows when the user is low,
+not a self-KO; Bellsprout's two are new ids, Leaf Storm and Giga Impact being its branches' upgrades already). **Eevee** takes one card, Adaptive Burst,
+instead of the three per-branch cards once planned: a line carries one Mastery track, and three would need the slot to
+read the branch — kept for later if the branches want their own.
 
 **Shipped state (v0.7.5).** Every line a run can recruit — Region 1, 2 and 3's pools, the Elite Wilds, the
 starters and the meta-starters, 51 lines — carries its Lv1, and the three default starters carry Lv2 and

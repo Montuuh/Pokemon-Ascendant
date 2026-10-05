@@ -495,6 +495,51 @@ where the catalogue had asked for an effect the sim does not have, the row says 
 | `blast-burn` | Fire | Off | Ranged | — | 3 | 135 | Burn 30 %, self Atk −1 (Mastery Lv3, `charmander`) |
 | `aqua-tail-plus` | Water | Off | Melee | SF | 2 | 95 | — (Mastery Lv2, `squirtle`) |
 | `aqua-tail-max` | Water | Off | Melee | SF | 3 | 130 | ignores Defence stages (Mastery Lv3, `squirtle`) |
+| `dream-eater` | Psychic | Off | Ranged | — | 2 | 90 | drains half the damage (Mastery Lv2, `caterpie`, v0.9.1) |
+| `quiver-dance` | Bug | Off | Ranged | — | 3 | 115 | hits every enemy · self Atk +1 · Sleep 25 % (Mastery Lv3, `caterpie`, v0.9.1) |
+| `toxic-thread` | Poison | Off | Ranged | — | 3 | 120 | Toxic 50 % · foe Spe −1 (Mastery Lv3, `weedle`, v0.9.1) |
+| `brave-bird-plus` | Flying | Off | Melee | SF | 2 | 105 | recoil 25 % (Mastery Lv2, `pidgey`, v0.9.1) |
+| `super-fang-plus` | Normal | Off | Melee | — | 1 | — | half the target's current HP, for 1 AP (Mastery Lv2, `rattata`, v0.9.1) |
+| `venom-drench` | Poison | Off | Ranged | — | 2 | 95 | ×1.4 against a Poisoned target (Mastery Lv2, `zubat`, v0.9.1) |
+| `rock-wrecker` | Rock | Off | Melee | SF | 2 | 110 | — (Mastery Lv2, `geodude`, v0.9.1) |
+| `tectonic-rage` | Ground | Off | Ranged | — | 3 | 125 | hits every enemy · foe Def −1 (Mastery Lv3, `geodude`, v0.9.1) |
+| `triple-dive` | Ground | Off | Melee | — | 2 | 100 | three hits (Mastery Lv2, `diglett`, v0.9.1) |
+| `counter` | Fighting | Off | Melee | — | 2 | 95 | ×1.4 while below 60 % HP (Mastery Lv2, `machop`, v0.9.1) |
+| `all-out-pummeling` | Fighting | Off | Melee | SF | 3 | 130 | four hits · Confusion 20 % (Mastery Lv3, `machop`, v0.9.1) |
+| `dragon-dance` | Dragon | Off | Melee | — | 2 | 100 | self Atk +1 (Mastery Lv2, `magikarp`, v0.9.1) |
+| `mind-reader` | Normal | Off | Ranged | — | 1 | 85 | draw a card (Mastery Lv2, `poliwag`, v0.9.1) |
+| `focus-punch` | Fighting | Off | Melee | SF | 3 | 140 | ignores Defence stages · self Def −1 (Mastery Lv3, `poliwag`, v0.9.1) |
+| `shattered-psyche` | Psychic | Off | Ranged | — | 2 | 100 | Confusion 30 % (Mastery Lv2, `psyduck`, v0.9.1) |
+| `crabhammer-max` | Water | Off | Melee | — | 2 | 105 | always crits (Mastery Lv2, `krabby`, v0.9.1) |
+| `adaptive-burst` | Normal | Off | Ranged | — | 2 | 95 | self Spe +1 (Mastery Lv2, `eevee`, v0.9.1) |
+| `leaf-storm-m` | Grass | Off | Ranged | — | 2 | 110 | self Atk −1 (Mastery Lv2, `bellsprout`, v0.9.1) |
+| `pitfall-maw` | Grass | Off | Melee | SF | 3 | 130 | drains 35 % · Poison 40 % (Mastery Lv3, `bellsprout`, v0.9.1) |
+| `final-gambit` | Fighting | Off | Melee | — | 2 | 100 | ×1.5 while below half HP (Mastery Lv2, `mankey`, v0.9.1) |
+| `bone-rush-max` | Ground | Off | Melee | — | 2 | 100 | four hits (Mastery Lv2, `cubone`, v0.9.1) |
+| `volt-tackle-m` | Electric | Off | Melee | — | 2 | 110 | recoil 25 % (Mastery Lv2, `pikachu`, v0.9.1) |
+| `hydro-tentacles` | Water | Off | Ranged | — | 2 | 90 | Poison 30 % (Mastery Lv2, `tentacool`, v0.9.1) |
+| `icicle-spear-m` | Ice | Off | Ranged | — | 2 | 100 | four hits (Mastery Lv2, `shellder`, v0.9.1) |
+| `ink-barrage` | Water | Off | Ranged | — | 2 | 90 | foe Atk −1 (Mastery Lv2, `horsea`, v0.9.1) |
+| `starlight-pulse` | Psychic | Off | Ranged | — | 2 | 95 | heals 10 % of Max HP (Mastery Lv2, `staryu`, v0.9.1) |
+| `aurora-beam-m` | Ice | Off | Ranged | — | 2 | 95 | foe Atk −1 (Mastery Lv2, `seel`, v0.9.1) |
+| `discharge-m` | Electric | Off | Ranged | — | 2 | 90 | hits every enemy (Mastery Lv2, `voltorb`, v0.9.1) |
+| `zap-cannon-m` | Electric | Off | Ranged | — | 2 | 105 | Paralysis 50 % (Mastery Lv2, `magnemite`, v0.9.1) |
+| `sludge-bomb-w` | Poison | Off | Ranged | — | 2 | 95 | Poison 30 % (Mastery Lv2, `koffing`, v0.9.1) |
+| `extreme-speed-m` | Normal | Off | Melee | SF | 1 | 85 | — (1 AP) (Mastery Lv2, `growlithe`, v0.9.1) |
+| `nine-tail-flare` | Fire | Off | Ranged | — | 2 | 90 | Burn 40 % (Mastery Lv2, `vulpix`, v0.9.1) |
+| `flare-blitz-m` | Fire | Off | Melee | — | 2 | 110 | recoil 25 % (Mastery Lv2, `ponyta`, v0.9.1) |
+| `crush-claw-m` | Normal | Off | Melee | — | 2 | 95 | foe Def −1 (Mastery Lv2, `sandshrew`, v0.9.1) |
+| `horn-drill-r` | Ground | Off | Melee | — | 2 | 105 | ignores Defence stages (Mastery Lv2, `rhyhorn`, v0.9.1) |
+| `psybeam-m` | Psychic | Off | Ranged | — | 2 | 90 | Confusion 30 % (Mastery Lv2, `abra`, v0.9.1) |
+| `mind-shatter` | Psychic | Off | Ranged | — | 3 | 130 | ignores Defence stages · draw a card (Mastery Lv3, `abra`, v0.9.1) |
+| `double-kick-m` | Fighting | Off | Melee | — | 1 | 90 | two hits (Mastery Lv2, `nidoran-f`, v0.9.1) |
+| `queens-quake` | Ground | Off | Ranged | — | 3 | 125 | ×1.3 against a Poisoned target · Poison 30 % (Mastery Lv3, `nidoran-f`, v0.9.1) |
+| `drill-dive` | Flying | Off | Melee | SF | 2 | 105 | — (Mastery Lv2, `spearow`, v0.9.1) |
+| `tri-peck` | Flying | Off | Melee | — | 2 | 95 | three hits (Mastery Lv2, `doduo`, v0.9.1) |
+| `shadow-ball-h` | Ghost | Off | Ranged | — | 2 | 95 | foe Def −1 (Mastery Lv2, `gastly`, v0.9.1) |
+| `nightmare-feast` | Ghost | Off | Ranged | — | 3 | 130 | Sleep 30 % · drains 25 % (Mastery Lv3, `gastly`, v0.9.1) |
+| `hypnotic-pulse` | Psychic | Off | Ranged | — | 2 | 90 | Sleep 25 % (Mastery Lv2, `drowzee`, v0.9.1) |
+| `gunk-shot-m` | Poison | Off | Melee | — | 2 | 110 | Poison 30 % (Mastery Lv2, `grimer`, v0.9.1) |
 
 ## Enemy-only moves (v0.8.2, §5.6.2)
 

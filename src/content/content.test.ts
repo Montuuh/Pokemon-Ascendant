@@ -177,3 +177,45 @@ describe('content registry', () => {
     expect(reg.species('oddish').baseStats.defense).toBe(65);
   });
 });
+
+// §6.8.4 / §5.13.2 — every recruitable line's Mastery is whole (v0.9.1), and each tier sits in its power band.
+describe('Mastery Moves — §6.8.4', () => {
+  /** On purpose outside the band: a rider that pays for the power, a support card, a move the learnsets share. */
+  const EXCEPTIONS = new Set(['fell-stinger-v', 'aromatherapy-m', 'petal-dance']);
+  const stagesOf = (line: string): number => {
+    let n = 1;
+    let s = reg.species(line);
+    while (s.evolvesTo.length) {
+      n++;
+      s = reg.species(s.evolvesTo[0]!);
+    }
+    return n;
+  };
+
+  it('EveryRecruitableLine_CarriesEveryTierItsStagesReach', () => {
+    for (const s of reg.allSpecies().filter((x) => x.stage === 'basic')) {
+      const tiers = reg.masteryMoves(s.id);
+      if (!tiers[0]) continue;
+      const stages = stagesOf(s.id);
+      if (stages >= 2) expect(tiers[1], `${s.id} Lv2`).toBeTruthy();
+      if (stages >= 3) expect(tiers[2], `${s.id} Lv3`).toBeTruthy();
+    }
+  });
+
+  it('Lv2AndLv3_SitInTheirPowerAndApBands', () => {
+    const bands = [null, { power: [85, 110], ap: [1, 2] }, { power: [110, 140], ap: [2, 3] }] as const;
+    for (const s of reg.allSpecies().filter((x) => x.stage === 'basic')) {
+      reg.masteryMoves(s.id).forEach((id, tier) => {
+        const band = bands[tier];
+        if (!id || !band || EXCEPTIONS.has(id)) return;
+        const m = reg.move(id);
+        expect(m.apCost, `${id} AP`).toBeGreaterThanOrEqual(band.ap[0]);
+        expect(m.apCost, `${id} AP`).toBeLessThanOrEqual(band.ap[1]);
+        // Super Fang's family takes a share of HP; its printed power is a placeholder.
+        if (m.effects.some((e) => e.kind === 'fixed-damage')) return;
+        expect(m.power, `${id} power`).toBeGreaterThanOrEqual(band.power[0]);
+        expect(m.power, `${id} power`).toBeLessThanOrEqual(band.power[1]);
+      });
+    }
+  });
+});

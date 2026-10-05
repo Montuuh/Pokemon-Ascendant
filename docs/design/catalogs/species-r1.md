@@ -174,7 +174,7 @@
 | `weepinbell` | 70 | stage1 | Grass/Poison | 65/90/50/85/55 | — | **L26** → `victreebel` (Leaf Stone from L18) | 18 `razor-leaf` · 22 `stun-spore` · 26 `sludge` · 30 `slam` |
 | `victreebel` | 71 | stage2 | Grass/Poison | 80/105/65/100/70 | — | — | 34 `power-whip` · 40 `leaf-blade` · 46 `sludge-bomb` |
 
-**Growth** 2/3/2/2 · **Abilities** `chlorophyll` `gluttony` `snipe` · **Mastery** `leaf-tornado` → `leaf-storm-s` → `giga-impact-v`
+**Growth** 2/3/2/2 · **Abilities** `chlorophyll` `gluttony` `snipe` · **Mastery** `leaf-tornado` → `leaf-storm-m` → `pitfall-maw` (v0.9.1: the branches' Leaf Storm and Giga Impact keep their ids)
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -203,7 +203,7 @@
 | `jolteon` | 135 | stage1 (final) | Electric ★ | 65/65/60/110/130 | — | — | 22 `thunder-shock` · 26 `agility` · 32 `thunderbolt` · 38 `thunder` |
 | `flareon` | 136 | stage1 (final) | Fire | 65/130/60/110/65 | — | — | 22 `ember` · 26 `fire-fang` · 32 `flamethrower` · 38 `flare-blitz` |
 
-**Growth** 3/2/2/3 · **Abilities** `adaptability` `run-down` `anticipation` (Vaporeon adds `water-absorb`; Jolteon `volt-absorb`, `speed-boost`; Flareon `flash-fire`, `guts`) · **Mastery** `last-resort` → (`hydro-vortex` / `gigavolt-havoc` / `inferno-overdrive` per branch)
+**Growth** 3/2/2/3 · **Abilities** `adaptability` `run-down` `anticipation` (Vaporeon adds `water-absorb`; Jolteon `volt-absorb`, `speed-boost`; Flareon `flash-fire`, `guts`) · **Mastery** `last-resort` → `adaptive-burst` (one card for every branch, v0.9.1 — see `mastery-moves.md`)
 
 | Evolution | Vanguard (→ Flareon) | Specialist (→ Jolteon) | Support (→ Vaporeon) |
 |---|---|---|---|
