@@ -4,13 +4,14 @@ import { motion } from 'motion/react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, BOND, BOND_RANKS, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier, speciesMet } from '@/sim';
+import { ACHIEVEMENTS, BOND_RANKS, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier, speciesMet } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon } from '@/ui/art';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { dexCardTip, relicTierTip } from '@/ui/tips';
+import { bondRulesText, dexCardTip, relicTierTip } from '@/ui/tips';
+import { ShinyMark } from '@/ui/components/ShinyMark';
 import { PcSheet } from './PcSheet';
 import { usePcSheet } from './usePcSheet';
 import styles from './Hub.module.css';
@@ -58,6 +59,8 @@ export function PcTerminal() {
     [order, species, account.bond],
   );
   const linesPlayed = species.filter((s) => s.stage === 'basic' && (account.bond[s.id] ?? 0) > 0).length;
+  // §5.14 — the species caught shiny at least once: the collection.
+  const shinies = species.filter((s) => normalizeDexEntry(account.dex[s.id]).shinyCaught > 0).length;
   const linesTotal = species.filter((s) => s.stage === 'basic').length;
 
   const byCategory = useMemo(() => {
@@ -93,8 +96,8 @@ export function PcTerminal() {
       <Tabs.Content value="dex" className={styles.tabPanel}>
         <div className={styles.dexHead}>
           <p className={styles.lede} data-testid="dex-legend">
-            {met} of {species.length} met · {linesPlayed} of {linesTotal} lines played.
-            <InfoDot tip={<Tip title="The Pokédex" body={`Every species there is. A silhouette is one you have not met yet — its name, types and kit stay unknown until it takes the field against you or with you; the five pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A line gets better by being played: +${BOND.win} per fight won with it (+${BOND.lead} leading), +${BOND.evolution} per evolution, +${BOND.recruit} for a first recruit, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one — ranks at ${BOND_RANKS.join(' · ')}.`} />} />
+            {met} of {species.length} met · {linesPlayed} of {linesTotal} lines played{shinies > 0 ? ` · ${shinies} shin${shinies === 1 ? 'y' : 'ies'}` : ''}.
+            <InfoDot tip={<Tip title="The Pokédex" body={`Every species there is. A silhouette is one you have not met yet — its name, types and kit stay unknown until it takes the field against you or with you; the five pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A sparkle marks a species you have caught shiny. ${bondRulesText()} Ranks at ${BOND_RANKS.join(' · ')}.`} />} />
           </p>
           <div className={styles.order} role="group" aria-label="Order">
             <button type="button" className={`${styles.orderBtn} ${order === 'dex' ? styles.orderOn : ''}`} onClick={() => setOrder('dex')} aria-pressed={order === 'dex'} data-testid="dex-order-dex">By number</button>
@@ -119,7 +122,7 @@ export function PcTerminal() {
                 <Tipped
                   as="button"
                   type="button"
-                  tip={dexCardTip(known ? sp.name : UNMET_NAME, sp.dex, known ? sp.types : [], known, entry.encounters, metOf(lineBase) ? content.species(lineBase).name : UNMET_NAME, rank)}
+                  tip={dexCardTip(known ? sp.name : UNMET_NAME, sp.dex, known ? sp.types : [], known, entry.encounters, metOf(lineBase) ? content.species(lineBase).name : UNMET_NAME, rank, entry.shinyCaught)}
                   className={styles.dexCard}
                   style={known ? { ['--card-type' as string]: `var(--type-${sp.types[0]})` } : undefined}
                   onClick={() => sheet.open({ id: sp.id })}
@@ -131,7 +134,7 @@ export function PcTerminal() {
                   <span className={`${styles.dexNo} tabular`}>#{String(sp.dex).padStart(3, '0')}</span>
                   <span className={styles.cardBall} aria-hidden="true"><IconPokeball size={72} stroke={1.4} /></span>
                   <span className={styles.dexArt}><MonIcon speciesId={sp.id} size={64} alt={known ? sp.name : UNMET_NAME} /></span>
-                  <span className={`${styles.dexName} display`}>{known ? sp.name : UNMET_NAME}</span>
+                  <span className={`${styles.dexName} display`}>{known ? sp.name : UNMET_NAME}{entry.shinyCaught > 0 && <> <ShinyMark name={sp.name} size={12} plain /></>}</span>
                   <span className={styles.dexTypes} aria-hidden="true">
                     {known && sp.types.map((t) => <TypeLabel key={t} type={t} size={12} />)}
                   </span>

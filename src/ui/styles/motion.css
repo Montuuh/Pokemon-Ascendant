@@ -122,6 +122,22 @@
   }
 }
 
+/* §5.14 — a shiny takes the field: two bright flashes of its own palette. */
+@keyframes shinySparkle {
+  0%,
+  100% {
+    filter: none;
+  }
+  20%,
+  60% {
+    filter: brightness(1.8) drop-shadow(0 0 var(--sp-2) var(--accent-action));
+  }
+  40%,
+  80% {
+    filter: brightness(1.1) drop-shadow(0 0 2px var(--accent-action));
+  }
+}
+
 @keyframes glowPulse {
   0%,
   100% {
@@ -132,6 +148,9 @@
   }
 }
 
+.fx-shiny {
+  animation: shinySparkle calc(var(--motion-slow) * 4) ease-out 1 both;
+}
 .fx-shake {
   animation: shake 420ms ease-in-out, hitFlash 420ms ease-in-out;
 }
@@ -156,7 +175,8 @@
   .fx-lunge-right,
   .fx-lunge-left,
   .fx-card-in,
-  .fx-pop {
+  .fx-pop,
+  .fx-shiny {
     animation: none;
   }
 }
@@ -190,7 +210,8 @@ html[data-motion='reduced'] .fx-shake,
 html[data-motion='reduced'] .fx-lunge-right,
 html[data-motion='reduced'] .fx-lunge-left,
 html[data-motion='reduced'] .fx-card-in,
-html[data-motion='reduced'] .fx-pop {
+html[data-motion='reduced'] .fx-pop,
+html[data-motion='reduced'] .fx-shiny {
   animation: none;
 }
 html[data-motion='reduced'] *,

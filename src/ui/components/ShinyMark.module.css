@@ -1,0 +1,24 @@
+/* §5.14 — the sparkle: the action accent as an icon tint, never as running text (WCAG on the light theme). On the
+   light theme the deep gold carries a hairline of ink so it holds 3:1 against cream; the stage theme glows. */
+.mark {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  color: var(--accent-action-deep);
+  filter: drop-shadow(0 0 0.6px var(--ink-on-accent)) drop-shadow(0 0 0.6px var(--ink-on-accent));
+}
+
+:global(.theme-stage) .mark {
+  color: var(--accent-action);
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--accent-action) 60%, transparent));
+}
+
+.stage {
+  display: none;
+}
+:global(.theme-stage) .light {
+  display: none;
+}
+:global(.theme-stage) .stage {
+  display: inline;
+}

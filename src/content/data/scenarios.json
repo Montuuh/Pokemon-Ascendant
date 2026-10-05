@@ -82,6 +82,48 @@
       ]
     },
     {
+      "id": "wild-shiny",
+      "name": "Wild — A shiny Caterpie",
+      "description": "A shiny wild Caterpie, already weakened: it sparkles as it takes the field. Catch it and it stays shiny.",
+      "kind": "wild",
+      "stage": "forest",
+      "seed": 1014,
+      "player": {
+        "team": [
+          {
+            "species": "squirtle",
+            "level": 8,
+            "shiny": true
+          },
+          {
+            "species": "charmander",
+            "level": 8
+          },
+          {
+            "species": "pidgey",
+            "level": 6
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "potion",
+          "poke-ball",
+          "great-ball"
+        ],
+        "balls": 2
+      },
+      "enemies": [
+        {
+          "species": "caterpie",
+          "level": 8,
+          "tier": "wild",
+          "phaseCount": 1,
+          "hpPercent": 25,
+          "shiny": true
+        }
+      ]
+    },
+    {
       "id": "trainer-2enemy",
       "name": "Trainer — Youngster Joey",
       "description": "A trainer with two Pokémon fought back to back. No catching; the second one comes in fresh.",

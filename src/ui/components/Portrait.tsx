@@ -4,6 +4,7 @@ import { portraitOf } from '@/ui/art';
 import { FloatingNumbers, type FloatingFx } from './FloatingNumbers';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
+import { ShinyMark } from './ShinyMark';
 import { combatantTip, traumaTip } from '@/ui/tips';
 import { Tipped, useTip } from '@/ui/tooltip';
 import styles from './Portrait.module.css';
@@ -58,7 +59,7 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
   const incomingText = hits ? `; incoming: ${hits.map((h) => `${h.amount} from ${h.name}'s ${h.move}`).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
 
   return (
-    <button type="button" className={classes} onClick={onClick} data-testid={`portrait-${variant}-${mon.speciesId}`} data-slot={slotLabel} aria-label={fainted ? `${mon.name} fainted` : `${swapHint ?? `${mon.name} · ${slotLabel}`}${incomingText}${asLead ? `; as Lead it would take ${asLead.amount}${asLead.ko ? ', a knockout' : ''}` : ''}`} {...tip}>
+    <button type="button" className={classes} onClick={onClick} data-testid={`portrait-${variant}-${mon.speciesId}`} data-slot={slotLabel} aria-label={fainted ? `${mon.name} fainted` : `${swapHint ?? `${mon.name}${mon.shiny ? ', shiny' : ''} · ${slotLabel}`}${incomingText}${asLead ? `; as Lead it would take ${asLead.amount}${asLead.ko ? ', a knockout' : ''}` : ''}`} {...tip}>
       <span className={styles.slotTag}>{slotLabel}</span>
       {hits && (
         <span className={styles.incoming} data-testid="incoming" aria-hidden="true">
@@ -94,6 +95,7 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
       </span>
       <span className={styles.name}>
         <span className="display">{mon.name}</span>
+        {mon.shiny && <ShinyMark name={mon.name} size={variant === 'bench' ? 12 : 14} plain />}
         <span className={styles.level}>Lv {mon.level}</span>
       </span>
       <HpBar hp={mon.hp} maxHp={mon.maxHp} height={variant === 'bench' ? 8 : 11} />

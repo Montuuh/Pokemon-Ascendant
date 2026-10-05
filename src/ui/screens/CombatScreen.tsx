@@ -3,12 +3,9 @@ import { IconCards, IconMenu2 } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
-import { useAccountStore } from '@/app/accountStore';
-import { getContent } from '@/content/registry';
 import {
   FLEE_TOLL,
   SLOT_LABEL,
-  bondRank,
   cardPlayability,
   fleeTierFor,
   consumablePlayability,
@@ -160,7 +157,6 @@ export function CombatScreen() {
     return () => window.removeEventListener('keydown', onKey);
   }, [clearSelection, playCard]);
 
-  const bond = useAccountStore((s) => s.account.bond);
   // §3.1.2 — the toll this fight would cost to run from, from the node the run is standing on.
   const nodeKind = useRunStore((s) => (s.run?.pendingNodeId ? s.run.map.nodes[s.run.pendingNodeId]?.kind ?? null : null));
   const fleeTier = nodeKind ? fleeTierFor(nodeKind) : null;
@@ -183,9 +179,8 @@ export function CombatScreen() {
   const group = enemies.length > 1;
   const leadIdx = state.player.leadIndex;
   const lead = state.player.team[leadIdx]!;
-  // §6.8.2 Trusted — a line at Bond rank 2 or more wears the shiny palette. Read from the account, not the
-  // fight: it is a fact about the player, and the sim never sees it.
-  const shiny = bondRank(bond[getContent().lineBase(lead.speciesId)] ?? 0) >= 2;
+  // §5.14 — a caught shiny wears its palette; the fight carries the flag.
+  const shiny = !!lead.shiny;
   const benches = state.player.team.map((_, i) => i).filter((i) => i !== leadIdx);
   const selectedPlay = selection.mode === 'card' || selection.mode === 'step-back' ? plays.find((p) => p.card.id === selection.cardId) ?? null : null;
   const draggedPlay = drag ? plays.find((p) => p.card.id === drag.id) ?? null : null;
@@ -377,7 +372,7 @@ export function CombatScreen() {
               data-testid="arena-enemy"
               data-enemy-uid={enemy.uid}
             >
-              <img className="pixel" src={spriteOf(enemy, 'front')} alt="" draggable={false} style={enemy.hp <= 0 ? { opacity: 0 } : undefined} />
+              <img className={`pixel ${enemy.shiny ? 'fx-shiny' : ''}`} src={spriteOf(enemy, 'front', !!enemy.shiny)} alt="" draggable={false} data-shiny={enemy.shiny || undefined} style={enemy.hp <= 0 ? { opacity: 0 } : undefined} />
               <span className={styles.platform} />
               <FloatingNumbers uid={enemy.uid} fx={fx.floats} />
             </div>

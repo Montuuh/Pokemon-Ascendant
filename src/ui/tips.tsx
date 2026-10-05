@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND_RANK_NAME, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
+import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
@@ -209,15 +209,16 @@ export function groupTip(plan: GroupPlan): ReactNode {
 }
 
 /** §5.6 — an enemy's place in a group: the Lead in front, or a support behind it with its role. */
-export function roleTip(place: string, role: string | null, escalateFrom: number, alone = false): ReactNode {
-  if (place === 'Lead' && alone) return <Tip title="Enemy Lead" body="It stands alone. Every card reaches it; Melee cards reach only the enemy that leads." />;
+export function roleTip(place: string, role: string | null, escalateFrom: number, alone = false, shiny = false): ReactNode {
+  const withShiny = (text: string): ReactNode => (shiny ? [<div key="r">{text}</div>, shinyLine(false)] : text);
+  if (place === 'Lead' && alone) return <Tip title="Enemy Lead" body={withShiny('It stands alone. Every card reaches it; Melee cards reach only the enemy that leads.')} />;
   if (place === 'Lead') {
-    return <Tip title="Enemy Lead" body="It stands in front of its group. Your Melee cards reach only this one; Ranged and area cards reach the rest. If it falls, the strongest of the others steps up." />;
+    return <Tip title="Enemy Lead" body={withShiny('It stands in front of its group. Your Melee cards reach only this one; Ranged and area cards reach the rest. If it falls, the strongest of the others steps up.')} />;
   }
   return (
     <Tip
       title={role ? `Support · ${ROLE_LABEL[role]}` : 'Support'}
-      body={role ? ROLE_HINT[role] : 'It fights behind the Lead.'}
+      body={withShiny(role ? ROLE_HINT[role]! : 'It fights behind the Lead.')}
       footer={`Supports stand behind the Lead: only Ranged and area cards reach them. They enter weaker, and one still standing on turn ${escalateFrom} grows fiercer every turn.`}
     />
   );
@@ -293,6 +294,7 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
   }
   if (c.status) lines.push(<div key="s"><b>{STATUS_LABEL[c.status.kind]}</b> — {STATUS_HINT[c.status.kind]}</div>);
   if (c.traumaStacks > 0) lines.push(<div key="t"><b>Trauma ×{c.traumaStacks}</b> — max HP is lowered until treated.</div>);
+  if (c.shiny) lines.push(shinyLine(true));
   // §9.2.5 — what lands on it this turn, one line per enemy, the same numbers as the chips beside it.
   for (const h of extra?.incoming ?? []) lines.push(<div key={`i-${h.name}-${h.move}`}><b>−{h.amount}</b> from {h.name}'s {h.move} this turn.</div>);
   if (extra?.incomingKo) lines.push(<div key="ko"><b>Together they knock it out</b> unless you act.</div>);
@@ -349,12 +351,44 @@ export function starterTip(name: string, blurb: string | null, price: number, st
 }
 
 /** §5.13 / §8.9 — a Pokédex card: number, types, met or not, the line's rank. The sheet has the rest. */
-export function dexCardTip(name: string, dex: number, types: readonly string[], met: boolean, encounters: number, lineName: string, rank: number): ReactNode {
+export function dexCardTip(name: string, dex: number, types: readonly string[], met: boolean, encounters: number, lineName: string, rank: number, shiniesCaught = 0): ReactNode {
   const lines: ReactNode[] = [
+    ...(shiniesCaught > 0 ? [<div key="sh"><b>Shiny</b> — caught {shiniesCaught === 1 ? 'once' : `${shiniesCaught} times`}: it is in your collection.</div>] : []),
     <div key="m">{met ? `Faced ${encounters} time${encounters === 1 ? '' : 's'}.` : 'Not met yet — its name, types and kit are unknown until it takes the field.'}</div>,
     <div key="b">{rank > 0 ? `${lineName} line: ${BOND_RANK_NAME[rank]} (rank ${rank}).` : `${lineName} line: not yet played.`}</div>,
   ];
   return <Tip title={`#${String(dex).padStart(3, '0')} ${name}`} meta={types.map(cap)} body={lines} footer="Open for its record, its kit and its line." />;
+}
+
+/** §5.14 — one line on a shiny, for a host's own bubble (a portrait, an enemy card, a Box row, a Pokédex card). */
+export function shinyLine(owned: boolean): ReactNode {
+  return <div key="shiny"><b>Shiny</b> — {owned ? 'yours keeps its alternate colours all run.' : `a rare find: catch it and its line gains +${BOND.shiny} Bond.`}</div>;
+}
+
+/** §5.14 — a shiny, wherever it shows on its own. `owned`: one of yours, rather than one in the wild. */
+export function shinyTip(name: string, owned = false): ReactNode {
+  return (
+    <Tip
+      title={`Shiny ${name}`}
+      body={owned
+        ? `Caught in its alternate colours, and it keeps them for the rest of the run. Its line gained +${BOND.shiny} Bond.`
+        : `A rare wild Pokémon in its alternate colours. Catch it and it stays shiny for the rest of the run — and its line gains +${BOND.shiny} Bond.`}
+      footer={`No battle effect. A line's Shiny Charm (Bond rank ${SHINY.charmRank}) makes its shinies ${SHINY.charmMultiplier} times as common.`}
+    />
+  );
+}
+
+/** §6.8.1 — how a line's Bond grows, in one voice for the PC Terminal and the line sheet. */
+export function bondRulesText(): string {
+  return `Play the line. +${BOND.win} per trainer or Elite fight won with it on the Active Team (+${BOND.lead} if it led), +${BOND.gym} for a Gym, +${BOND.evolution} per evolution, +${BOND.recruit} the first time you recruit it in a run, +${BOND.shiny} for a shiny of it, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one. Wild fights pay no Bond.`;
+}
+
+/** §6.8.1 — what the last fight paid a line, on the reward screen. */
+export function bondGainTip(lineName: string, points: number, total: number, rankUps: readonly number[]): ReactNode {
+  const top = rankUps.length ? rankUps[rankUps.length - 1]! : null;
+  const p = bondProgress(total);
+  const next = p.next === null ? 'Every rank open.' : `${p.next - total} more to ${BOND_RANK_NAME[p.rank + 1]}.`;
+  return <Tip title={`${lineName} line — +${points} Bond`} meta={[`${total} Bond`]} body={top ? `Now ${BOND_RANK_NAME[top]} (rank ${top}). ${next}` : next} />;
 }
 
 /** §5.13.2 — the fifth card, on a card face. */

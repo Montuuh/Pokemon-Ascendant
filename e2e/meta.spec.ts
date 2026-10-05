@@ -10,9 +10,9 @@ async function menu(page: Page): Promise<void> {
   await page.waitForFunction(() => !!window.__ascendant);
 }
 
-/** A fight the account can count: a clean win with a Pidgey knocked out (by Squirtle, for 12) and Squirtle leading. */
+/** A fight the account can count: a clean trainer win (a wild one pays no Bond, §6.8.1) with a Pidgey knocked out (by Squirtle, for 12) and Squirtle leading. */
 const win = () => ({
-  t: 'combat-end', outcome: 'victory', kind: 'wild', damageTaken: 4, manualSwaps: 0, faints: 0,
+  t: 'combat-end', outcome: 'victory', kind: 'trainer', damageTaken: 4, manualSwaps: 0, faints: 0,
   defeated: ['pidgey'], enemies: ['pidgey'], activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 },
   tally: { crits: 0, reshuffles: 0, statusesApplied: [], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 2, peakHandAtTurnEnd: 5, catchFails: 0, koBy: { squirtle: 1 }, faintsOf: {}, damageBy: { squirtle: 12 } },
   leadHpFraction: 0.8,
@@ -100,8 +100,8 @@ test.describe('The Trainer Hub — §8.4', () => {
 
     // §8.7 — the medal case: twenty-four rows, all visible, none earned; a hidden row keeps its description.
     await page.getByTestId('pc-tab-medals').click();
-    await expect(page.locator('[data-testid^="achievement-"]')).toHaveCount(24);
-    await expect(page.getByTestId('pc-tab-medals')).toContainText('0 / 24');
+    await expect(page.locator('[data-testid^="achievement-"]')).toHaveCount(25);
+    await expect(page.getByTestId('pc-tab-medals')).toContainText('0 / 25');
     await expect(page.getByTestId('achievement-full-house')).toContainText('???');
     await expect(page.getByTestId('achievement-full-house')).toContainText('hidden');
 

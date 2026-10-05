@@ -42,6 +42,7 @@ export { DEFAULT_PROGRESSION, encounterXp, levelXpFactor, grantXp, xpToNext, isE
 export { buildOutcomeReport } from './run/report';
 export { GYM_FIELD, laneField, fieldsFor, applyFields } from './run/battlefields';
 export { FIELD_CATEGORY, battlefields, fieldsSuppressed, isGrounded, type FieldId, type FieldState } from './combat/fields';
+export { SHINY, shinyChance, applyShiny } from './run/shiny';
 export { GROUP_RATES, groupPlanFor, applyGroups, roleFor, ROLE_SHARE, type GroupPlan, type GroupRates } from './run/groups';
 export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } from './run/flee';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';

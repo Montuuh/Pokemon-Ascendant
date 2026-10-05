@@ -1,6 +1,7 @@
 import { IconArrowRight, IconCheck } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
-import { BOND, BOND_LADDER, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, isThreeStageLine, type AccountState, speciesMet } from '@/sim';
+import { SHINY, BOND_LADDER, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, isThreeStageLine, type AccountState, speciesMet } from '@/sim';
+import { bondRulesText } from '@/ui/tips';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { InfoDot, Tip } from '@/ui/tooltip';
 import { BondBar } from './BondBar';
@@ -43,7 +44,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
   // §6.8.2 — the ladder, with this line's own names on it once you have met the line.
   const rungs: { rank: 1 | 2 | 3 | 4 | 5; on: boolean; unlock: string }[] = [
     { rank: 1, on: u.mastery >= 1, unlock: `${named('Mastery Move Lv1', moveName(masteryMoves[0]))}, a fifth card` },
-    { rank: 2, on: u.shinyCharm, unlock: 'Shiny Charm — its wild Pokémon are shiny three times as often' },
+    { rank: 2, on: u.shinyCharm, unlock: `Shiny Charm — its wild Pokémon are shiny ${SHINY.charmMultiplier} times as often` },
     { rank: 3, on: u.hiddenAbility, unlock: `${named('Hidden ability', hiddenName)}, open at the Dojo` },
     { rank: 4, on: u.mastery >= 2, unlock: named('Mastery Move Lv2', moveName(masteryMoves[1])) },
     three
@@ -84,7 +85,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>
             Bond
-            <InfoDot tip={<Tip title="How Bond grows" body={`Play the line. +${BOND.win} per fight won with it on the Active Team (+${BOND.lead} more if it led), +${BOND.evolution} per evolution, +${BOND.recruit} the first time you recruit it in a run, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one.`} footer={`Ranks at ${BOND_RANKS.join(' · ')} Bond.`} />} />
+            <InfoDot tip={<Tip title="How Bond grows" body={bondRulesText()} footer={`Ranks at ${BOND_RANKS.join(' · ')} Bond.`} />} />
           </h3>
           <div className={styles.bondBlock} data-testid="line-sheet-bond">
             <BondBar points={points} />

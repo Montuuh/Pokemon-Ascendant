@@ -7,6 +7,7 @@ import { iconOf, intentGlyph } from '@/ui/art';
 import { INTENT_LABEL, ROLE_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
+import { ShinyMark } from './ShinyMark';
 import { nextIntentTip, roleTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EnemyPanel.module.css';
@@ -43,7 +44,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
   // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
   const place = enemySlotLabel(state, enemy);
   // §5.6 — in a group the enemy's card is the door to its place and role.
-  const cardTipProps = useTip(roleTip(place, enemy.role ?? null, ctx.config.supportEscalateFromTurn, state.enemies.length + state.enemyQueue.length <= 1));
+  const cardTipProps = useTip(roleTip(place, enemy.role ?? null, ctx.config.supportEscalateFromTurn, state.enemies.length + state.enemyQueue.length <= 1, !!enemy.shiny));
   // §5.5.1 — under Trainer's Instinct the enemy's committed plan for next turn sits under this turn's.
   const next = enemy.next?.intent ?? null;
   const nextMove = next?.moveId ? ctx.content.move(next.moveId) : null;
@@ -94,7 +95,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
         }}
         data-testid={`enemy-${enemy.speciesId}`}
         data-enemy-uid={enemy.uid}
-        aria-label={`${enemy.name}${place ? `, ${place}` : ''}, ${enemy.hp} of ${enemy.maxHp} HP${preview ? (preview.reachable ? `; the card deals ${preview.final}${preview.ko ? ', a knockout' : ''}` : '; out of reach of this card') : ''}`}
+        aria-label={`${enemy.name}${enemy.shiny ? ', shiny' : ''}${place ? `, ${place}` : ''}, ${enemy.hp} of ${enemy.maxHp} HP${preview ? (preview.reachable ? `; the card deals ${preview.final}${preview.ko ? ', a knockout' : ''}` : '; out of reach of this card') : ''}`}
       >
         {/* §9.2.4 / §5.6 — the held card's number on this enemy; blue is position: a Melee card cannot reach it. */}
         {preview && (
@@ -117,7 +118,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
             ))}
           </span>
           <span className={styles.nameBlock}>
-            <span className={`${styles.name} display`}>{enemy.name}</span>
+            <span className={`${styles.name} display`}>{enemy.name}{enemy.shiny && <> <ShinyMark name={enemy.name} size={14} plain /></>}</span>
             <span className={styles.meta}>
               Lv {enemy.level} · {tierLabel}
               {enemy.phaseCount > 1 && <> · <b className={styles.phase}>Phase {phase}/{enemy.phaseCount}</b></>}

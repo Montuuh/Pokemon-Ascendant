@@ -142,6 +142,8 @@ interface AccountStore {
   ledger: Ledger;
   /** Rows completed since the player last looked, so the UI can announce them once. */
   fresh: AchievementDef[];
+  /** §6.8.1 — what the last fight paid each line, for the reward screen. Not persisted: it is the moment's. */
+  lastBond: { line: string; points: number; rankUps: number[] }[];
   /** Fold whatever the run just did into the account. Safe to call on every dispatch. */
   observe: (before: RunState | null, after: RunState | null, report?: CombatOutcomeReport) => void;
   /** Fold events directly — used by the dev hook and the tests. `xpMultiplier` defaults to 1. */
@@ -162,6 +164,7 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
   account: initial.account,
   ledger: initial.ledger,
   fresh: [],
+  lastBond: [],
 
   observe: (before, after, report) => {
     if (!before || !after) return;
@@ -175,7 +178,17 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
     const { state, delta } = applyAccountEvents(get().account, events, accountContextFor(getContent(), xpMultiplier));
     const ledger = addTo(get().ledger, delta);
     persist({ account: state, ledger });
-    set({ account: state, ledger, fresh: delta.unlockedAchievements.length ? [...get().fresh, ...delta.unlockedAchievements] : get().fresh });
+    // §6.8.1 — a fight's Bond is the reward screen's to show; any other fold that paid none leaves it standing.
+    const byLine = new Map<string, { line: string; points: number; rankUps: number[] }>();
+    for (const g of delta.bondGains) byLine.set(g.line, { line: g.line, points: (byLine.get(g.line)?.points ?? 0) + g.points, rankUps: byLine.get(g.line)?.rankUps ?? [] });
+    for (const r of delta.bondRankUps) byLine.get(r.line)?.rankUps.push(r.rank);
+    const fight = events.some((e) => e.t === 'combat-end');
+    set({
+      account: state,
+      ledger,
+      fresh: delta.unlockedAchievements.length ? [...get().fresh, ...delta.unlockedAchievements] : get().fresh,
+      ...(fight ? { lastBond: [...byLine.values()] } : {}),
+    });
     return delta;
   },
 

@@ -250,6 +250,8 @@ const TeamMemberSetupSchema = z.object({
   moves: z.array(KebabId).min(1).max(5).optional(),
   abilityId: KebabId.optional(),
   heldItem: KebabId.optional(),
+  /** §5.14 — a caught shiny on the player's side. */
+  shiny: z.boolean().optional(),
 });
 
 const EnemySetupBase = z.object({
@@ -262,6 +264,8 @@ const EnemySetupBase = z.object({
   moves: z.array(KebabId).min(1).max(5).optional(),
   abilityId: KebabId.optional(),
   veiled: z.boolean().optional(),
+  /** §5.14 — a wild Pokémon in its shiny palette. */
+  shiny: z.boolean().optional(),
   role: z.enum(['attacker', 'defender', 'buffer']).optional(),
   acts: z.union([z.literal(1), z.literal(2)]).optional(),
 });

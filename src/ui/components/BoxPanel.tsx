@@ -3,10 +3,11 @@ import { getContent } from '@/content/registry';
 import { maxHpOf, stoneUse, xpToNext, type PartyMon } from '@/sim';
 import { HpBar } from './HpBar';
 import { MonIcon } from './MonIcon';
+import { ShinyMark } from './ShinyMark';
 import { TypeBadge } from './TypeBadge';
 import { statusGlyph } from '@/ui/art';
 import { STATUS_LABEL } from '@/ui/strings';
-import { statusTip, traumaTip, restingTip } from '@/ui/tips';
+import { statusTip, traumaTip, restingTip, shinyLine } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './BoxPanel.module.css';
 
@@ -57,6 +58,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
           {ability && <div><b>{ability.name}</b> — {ability.description}</div>}
           {held && <div><b>{held.name}</b> — {held.description}</div>}
           {mon.archetype && <div>Evolved as a <b>{mon.archetype}</b>.</div>}
+          {mon.shiny && shinyLine(true)}
         </>
       }
       footer={locked ? 'The team is locked once you enter a node.' : active ? (index > 0 ? 'Click to make it the Lead.' : 'Click a Box row to swap it out.') : 'Click to put it on the Active Team.'}
@@ -72,7 +74,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
         data-testid={`box-row-${mon.speciesId}`}
         data-active={active}
         aria-label={[
-          species.name,
+          mon.shiny ? `${species.name}, shiny` : species.name,
           `level ${mon.level}`,
           fainted ? 'fainted' : `${mon.hp} of ${max} HP`,
           mon.traumaStacks ? `Trauma ${mon.traumaStacks}` : null,
@@ -93,6 +95,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
         <span className={styles.body}>
           <span className={styles.nameRow}>
             <span className={`${styles.name} display`}>{species.name}</span>
+            {mon.shiny && <ShinyMark name={species.name} size={14} plain />}
             <span className={`${styles.level} display tabular`}>Lv {mon.level}</span>
           </span>
           <HpBar hp={mon.hp} maxHp={max} height={7} />

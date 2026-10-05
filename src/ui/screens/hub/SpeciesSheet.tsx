@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { IconArrowsShuffle, IconCrown, IconEye, IconEyeOff, IconFlag, IconHeartBroken, IconLock, IconPokeball, IconSwords, IconTargetArrow, IconTrophy, IconUsers, IconWand } from '@tabler/icons-react';
+import { IconArrowsShuffle, IconCrown, IconEye, IconEyeOff, IconFlag, IconHeartBroken, IconLock, IconPokeball, IconSwords, IconTargetArrow, IconTrophy, IconUsers, IconWand, IconSparkles } from '@tabler/icons-react';
 import { Tabs } from 'radix-ui';
 import { getContent } from '@/content/registry';
 import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, UNMET_NAME, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, isThreeStageLine, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef, speciesMet } from '@/sim';
@@ -49,8 +49,8 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
         <span className={styles.heroBall} aria-hidden="true"><IconPokeball size={220} stroke={1.2} /></span>
         <span className={styles.heroArt}>
           {spriteOk ? (
-            // §5.13.2 / §6.8.2 — your copies are Shiny from Bond rank 2, so the sheet shows the palette you play.
-            <img src={spriteOf({ speciesId }, 'front', rank >= 2)} alt={name} className={`${styles.heroSprite} ${met ? '' : styles.heroSilhouette}`} onError={() => setSpriteOk(false)} />
+            // §5.14 — a species you have caught shiny shows the palette you caught: the collection, on the cover.
+            <img src={spriteOf({ speciesId }, 'front', entry.shinyCaught > 0)} alt={name} className={`${styles.heroSprite} ${met ? '' : styles.heroSilhouette}`} onError={() => setSpriteOk(false)} />
           ) : (
             <img src={portraitOf({ speciesId })} alt={name} className={`${styles.heroSprite} ${met ? '' : styles.heroSilhouette}`} />
           )}
@@ -139,6 +139,7 @@ function Record({ entry, leadTurns }: { entry: ReturnType<typeof normalizeDexEnt
     { key: 'faints', icon: <IconHeartBroken size={18} />, label: 'Fainted', value: entry.faints, tip: 'Times a copy of yours went down.' },
     { key: 'lead', icon: <IconCrown size={18} />, label: 'Turns as Lead', value: leadTurns, tip: 'Turns a copy of yours spent in the Lead slot.' },
     { key: 'evo', icon: <IconArrowsShuffle size={18} />, label: 'Evolved', value: entry.evolutions, tip: 'Times a copy of yours evolved from this form.' },
+    { key: 'shiny', icon: <IconSparkles size={18} />, label: 'Shinies caught', value: entry.shinyCaught, tip: `Shinies of it that joined your Box — your collection; one is enough to show its palette here. Met ${entry.shinySeen} time${entry.shinySeen === 1 ? '' : 's'}: they are rare, and the line's Shiny Charm makes them less so.` },
   ];
   return (
     <dl className={styles.record}>

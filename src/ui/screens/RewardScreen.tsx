@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRunStore } from '@/app/runStore';
+import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { portraitUrl } from '@/content/schemas/species';
+import { battleSpriteUrl, portraitUrl } from '@/content/schemas/species';
 import { boxCapacity, maxHpOf, xpToNext, type PartyMon } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
@@ -9,7 +10,10 @@ import { itemIcon, tmIcon } from '@/ui/art';
 import { PokeDollar } from '@/ui/components/Money';
 import { RelicOffer } from '@/ui/components/RelicOffer';
 import { SupplyStrip } from '@/ui/components/SupplyStrip';
-import { elitePrizeTip } from '@/ui/tips';
+import { bondGainTip, elitePrizeTip } from '@/ui/tips';
+import { BOND, BOND_RANK_NAME } from '@/sim';
+import { Tipped } from '@/ui/tooltip';
+import { ShinyMark } from '@/ui/components/ShinyMark';
 import styles from './RewardScreen.module.css';
 
 // Per docs/design/ui/screens.md §3.5 — the post-combat result. XP bars fill, level-ups flag, a catch gets its
@@ -20,6 +24,8 @@ export function RewardScreen() {
   const dispatch = useRunStore((s) => s.dispatch);
   const content = getContent();
   const reward = run.pendingReward;
+  const lastBond = useAccountStore((s) => s.lastBond);
+  const bondTotal = useAccountStore((s) => s.account.bond);
   const [filled, setFilled] = useState(false);
   // §2.8.1 — the Elite Trainer's relic pick is the screen's second step: the summary first, then the choice.
   const [picking, setPicking] = useState(false);
@@ -65,7 +71,7 @@ export function RewardScreen() {
   return (
     <main className={styles.root} data-testid="reward-screen">
       <div className={`${styles.card} fx-pop`}>
-        <h1 className={`${styles.title} display`}>{caught ? 'Gotcha!' : 'Victory!'}</h1>
+        <h1 className={`${styles.title} display`}>{caught?.shiny ? 'A shiny!' : caught ? 'Gotcha!' : 'Victory!'}</h1>
         <p className={styles.sub}>
           {caught
             ? `${caughtSpecies!.name} was caught. A catch counts as a clean win.`
@@ -76,10 +82,16 @@ export function RewardScreen() {
 
         {caught && caughtSpecies && (
           <section className={styles.catch} data-testid="reward-catch">
-            <img src={portraitUrl(caughtSpecies.dex, caughtSpecies.id)} alt="" width={110} height={110} />
+            {/* §5.14 — a shiny shows the palette it was caught in: the official shiny sprite, not the artwork. */}
+            {caught.shiny ? (
+              <span className={styles.catchShinyBox}><img className={`${styles.catchShiny} pixel fx-shiny`} src={battleSpriteUrl(caughtSpecies.id, 'front', true)} alt="" data-testid="reward-catch-shiny" /></span>
+            ) : (
+              <img src={portraitUrl(caughtSpecies.dex, caughtSpecies.id)} alt="" width={110} height={110} />
+            )}
             <div>
               <h2 className={`${styles.catchName} display`}>
-                {caughtSpecies.name} <span className="tabular">Lv {caught.level}</span>
+                {caughtSpecies.name} {caught.shiny && <ShinyMark name={caughtSpecies.name} size={18} owned />} <span className="tabular">Lv {caught.level}</span>
+                {caught.shiny && !boxFull && <span className={`${styles.bond} tabular`} data-testid="reward-catch-bond"> +{BOND.shiny} Bond</span>}
               </h2>
               <span className={styles.types}>
                 {caughtSpecies.types.map((t) => (
@@ -88,6 +100,7 @@ export function RewardScreen() {
               </span>
               <p className={styles.catchNote}>
                 {boxFull ? 'Your Box is full — you will choose who to release next.' : 'Joins the Box.'}
+
               </p>
             </div>
           </section>
@@ -100,12 +113,17 @@ export function RewardScreen() {
             const need = xpToNext(mon.level);
             const pct = Math.min(100, (mon.xp / need) * 100);
             const isActive = run.activeUids.includes(mon.uid);
+            // §6.8.1 — the line's Bond from this fight, once per line (two copies of a line share one track).
+            const line = content.lineBase(mon.speciesId);
+            const firstActive = rows.find((r) => run.activeUids.includes(r.mon.uid) && content.lineBase(r.mon.speciesId) === line);
+            const bond = isActive && firstActive?.mon.uid === mon.uid ? lastBond.find((b) => b.line === line) : undefined;
             return (
               <li key={mon.uid} className={styles.xpRow} data-testid={`xp-${mon.speciesId}`}>
                 <MonIcon speciesId={species.id} size={46} />
                 <div className={styles.xpBody}>
                   <div className={styles.xpHead}>
                     <span className={`${styles.xpName} display`}>{species.name}</span>
+                    {mon.shiny && <ShinyMark name={species.name} size={14} owned />}
                     {up ? (
                       <span className={styles.levelUp} data-testid={`levelup-${mon.speciesId}`}>
                         Lv {up.from} → {up.to}
@@ -114,6 +132,11 @@ export function RewardScreen() {
                       <span className={`${styles.level} tabular`}>Lv {mon.level}</span>
                     )}
                     <span className={`${styles.gain} tabular`}>+{amount} XP</span>
+                    {bond && (
+                      <Tipped tip={bondGainTip(content.species(line).name, bond.points, bondTotal[line] ?? 0, bond.rankUps)} className={`${styles.bond} tabular`} data-testid={`bond-${mon.speciesId}`}>
+                        +{bond.points} Bond{bond.rankUps.length > 0 && <b className={styles.rankUp}> · {BOND_RANK_NAME[bond.rankUps[bond.rankUps.length - 1]!]}</b>}
+                      </Tipped>
+                    )}
                     {!isActive && <span className={styles.bench}>bench ×0.75</span>}
                   </div>
                   <span className={styles.track}>

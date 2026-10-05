@@ -104,6 +104,26 @@
   font-weight: 700;
   color: var(--ink-primary);
 }
+/* §6.8.1 — the line's Bond beside its XP: quieter than the XP, louder on a rank-up. */
+.bond {
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+.rankUp {
+  color: var(--ink-primary);
+}
+/* §5.14 — the shiny's own battle sprite at twice its pixels: an integer scale keeps it crisp (D9). */
+.catchShinyBox {
+  display: grid;
+  place-items: center;
+  width: 110px;
+  height: 110px;
+  flex: none;
+}
+.catchShiny {
+  scale: 2;
+}
 .bench {
   font-size: 11px;
   color: var(--ink-muted);
