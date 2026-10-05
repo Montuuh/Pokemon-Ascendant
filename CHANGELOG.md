@@ -20,6 +20,15 @@ Group fights, field effects, a reworked route and a balanced run.
 - **Supplies.** Consumables are spent; relics are rarer.
 - **Balance.** Harder hits, Gyms at five, tuned over 720 runs.
 
+### v0.8.10 — Growth curves · 2026-10-05
+
+The balance report measures relics and XP; the level bands fixed to match.
+
+- **Relics.** ~2.5 a Region, ~11 at a won run's end; by source and rarity.
+- **Levels.** What each fight pays, and the team's level gap column by column.
+- **Bands.** Regions 2 and 3 two levels up; the team stays one or two over.
+- **Curve.** Enemy HP pays for it: 60 / 58 / 48 %, run 17 %.
+
 ### v0.8.9 — The harness, honest · 2026-10-05
 
 The balance harness plays like a player; the curve re-read, Region 1 retuned.

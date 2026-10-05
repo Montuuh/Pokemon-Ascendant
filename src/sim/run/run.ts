@@ -1075,7 +1075,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             if (draft.activeUids.length < 3) draft.activeUids.push(recruit.uid);
             say(draft, `Caught ${ctx.content.species(caught.speciesId).name}!`);
             // §6.3.1 — a recruit caught past its threshold owes its Evolution screen now, like anyone else: a
-            // Region 2 basic arrives at Lv 12–20 and every basic evolves at 12, so the catch is where its branch is chosen.
+            // Region 2 basic arrives at Lv 14–22 and every basic evolves at 12, so the catch is where its branch is chosen.
             queueEvolutions(draft, ctx.content);
           } else {
             // §2.3.1 — the Box is full: Swap or Skip, and releasing is permanent.

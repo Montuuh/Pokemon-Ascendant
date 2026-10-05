@@ -49,9 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.8.9 — The harness, honest.** The balance harness now plays like a player — it reads the intents and swaps,
-puts the dangerous foe to sleep, raises its Lead in long fights and reads the Reflection cards — and the curve is
-re-tuned on it: roughly 60 % / 60 % / 50 % by Region, the whole run about one in five.
+**v0.8.10 — Growth curves.** The balance report now measures how many relics a run gathers (about two or three a
+Region) and whether XP keeps the team in step with what it fights; Regions 2 and 3 moved up two levels so the team
+stays a level or two over all run, and the curve holds at roughly 60 % / 58 % / 48 %.
 
 ## Run it locally
 

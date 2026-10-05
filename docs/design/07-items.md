@@ -17,7 +17,7 @@
 | System | Scope | Lifespan | Slot |
 |---|---|---|---|
 | **Consumables** | In-combat tools, drawn as cards | Spent when played (§3.5) | Inventory, uncapped |
-| **Relics** | Persistent run-state modifiers | Until run end | Inventory, uncapped (6–8 typical) |
+| **Relics** | Persistent run-state modifiers | Until run end | Inventory, uncapped (~2–3 a Region, ~11 at a won run's end) |
 | **Held Items** | Per-Pokémon equipment, always on | Until re-equipped or run end | **One per Pokémon** |
 | **TMs** | A consumable class applied from the Map View | Single use | Never in the combat pile |
 
@@ -164,6 +164,11 @@ a trainer dropped one a third of the time, the Elite, the Elite Wild and the Gym
 of their picks, and every shop shelf sold two or three at a flat price. Now an ordinary fight rarely hands one
 over, the big fights hand over a *choice*, and shop relics carry the collector's premium (§2.11.2.3). Measured over
 120 harness runs: a full run ends with about nine, of which three are Gym picks and three the Elites'.
+**Re-measured (v0.8.10, 720 runs, `balance/report.test.ts`):** a run takes **2.5 / 2.6 / 2.0** relics in Regions 1 /
+2 / 3 and holds **1.6 / 5.7 / 10.0** walking into each Gym; a won run ends with **~11**, the average run with ~4.7.
+By source: shops 30 %, trainers 29 %, the Legendary pick 24 %, the Elite 11 %, mysteries 4 %, the Elite Wild 2 %.
+The pace is even — no Region floods the team — and a doubled collector's premium (0.5) moved it by under half a
+relic, so the premium stays at 0.25: money is not what limits a buyer.
 
 Rarity is **drop weight**. Meta tier (§8.6.1) is **pool membership**. They are orthogonal and conflating them is
 the single easiest mistake to make in this system.

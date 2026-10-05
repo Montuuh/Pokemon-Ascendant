@@ -201,8 +201,8 @@ fight — a team of evolved Pokémon with relics and Badges out-grows a band tha
 | Region | Max HP | Attack |
 |---|---|---|
 | 1 | ×0.6 | ×1.55 |
-| 2 | ×0.55 | ×1.75 |
-| 3 | ×0.38 | ×2.25 |
+| 2 | ×0.45 | ×1.75 |
+| 3 | ×0.27 | ×2.25 |
 
 *(v0.8.8, the balance pass: **enemies hit harder and fall faster.** The playtest of 2026-09-24 found the median enemy
 hit at 12 % of the target's Max HP — eight hits to faint anyone, so a telegraph rarely forced a swap (Pillar 2). The
@@ -217,6 +217,12 @@ Sleep or Paralysis, raises its Lead in a fight worth it, and takes the strongest
 **R1 66 % · R2|R1 60 % · R3|R2 53 % · run 21 %** — v0.8.8's 17 % had under-read the run by four points, nearly all in
 Region 1. Region 1's Attack went ×1.45 → **×1.55**: **R1 60 % · R2|R1 60 % · R3|R2 50 % · the whole run 18 %** over
 720 runs, the median hit 18 / 15 / 16 %, fights 3.7 / 4.6 / 4.2 turns.)*
+
+*(v0.8.10, the growth curves: Region 2's and Region 3's bands moved up two levels so the team stays a level or two
+over what it fights (§2.6.5), and the tier paid it back in **Max HP** — ×0.55 → ×0.45, ×0.38 → ×0.27. Attack was
+tried first (×1.55 / ×2.0) and moved the curve by four points while softening the hit to 13 %; HP keeps the hit
+where the balance pass put it. 720 runs: **R1 60 % · R2|R1 58 % · R3|R2 48 % · the whole run 17 %**, the median
+hit 18 / 15 / 16 %, fights 3.7 / 4.2 / 3.4 turns.)*
 
 *(v0.8.6: retuned for teams at the route's level. The old tiers — ×1 / ×1.6 / ×1.45 Attack — were set against teams
 seven to ten levels over their Region; with XP cut (§6.2.1) the same enemies took Region 1 to 25 % and Region 2 to
@@ -643,8 +649,8 @@ at a percentage they read. Balancing of ball counts and prices waits on the cons
 | Region | Recruit level |
 |---|---|
 | 1 | 5–11 |
-| 2 | 12–20 |
-| 3 | 22–30 |
+| 2 | 14–22 |
+| 3 | 24–32 |
 
 **The band walks with the route.** A Region's span is not applied flat to every node: layer 0 draws from the
 bottom of the band and the layer before the Gym from the top, two levels wide at any point. Region 1 therefore
@@ -657,6 +663,13 @@ coin flip on whether the route opened kindly.
 
 A late-Region recruit spawns near the top of its layer's band and derives its known moves from that level
 (§6.9), so recruiting late is a real option rather than a wasted node.
+
+**The bands climb with the team** (v0.8.10). Region 2 was 12–20 and Region 3 22–30; the balance report's level-gap
+trace (`balance/report.test.ts`, the active team's mean level against what it fights, by column) found a team
+leaving Region 1 at Lv 15–16 and walking into Region 2 **+3.9** over its wild fights — Region 2 began *below* where
+Region 1 ended (13) — and Region 3 at +2.4. Two levels up each: over 720 runs the team now stands **+0 → +2 across
+Region 1, +2 across Region 2, +1 across Region 3**, which is §6.2.1's "a level or two over" at every column. The
+enemy tier paid for it in Max HP, not Attack (§2.2.1).
 
 ---
 
@@ -958,13 +971,14 @@ the rest. The ladder is rolled on arrival, so the next rival is always on screen
 | | Rung 1 | Each later rung | Team | Measured: rung 1 · rung 2 · ladder (runs) |
 |---|---|---|---|---|
 | **Pallet Town** | Gym ace **+5** | **+4** | 4, two at a time | 0.45 · — · **0.08** (271) |
-| **Celadon City** | Gym ace **+6** | **+2** | 3, two at a time | 0.53 · 0.17 · **0.04** (179) |
+| **Celadon City** | Gym ace **+8** | **+2** | 3, two at a time | 0.54 · 0.23 · **0.14** (167) |
 
 Every Ring rival hits at **×1.7 Attack** on top of the Region's tier (`RING.attackMultiplier`): the ladder is
 hard by how it hits and how it fights, not by standing a wall of levels over the team. *(v0.8.8: ×1.35 and Celadon at
 +5 read rung 1 at 0.69 / 0.71 once teams arrived stronger; ×1.7, with Celadon's first rung at +6, reads Pallet 0.54
 and Celadon 0.40 — about half, as the Ring is meant to be. v0.8.9, re-read with the honest harness and Region 1 at
-×1.55 over 160 seeds: rung 1 Pallet 0.45, Celadon 0.53 — still about half; the whole ladder is rarer.)*
+×1.55 over 160 seeds: rung 1 Pallet 0.45, Celadon 0.53 — still about half; the whole ladder is rarer. v0.8.10:
+Region 2's thinner tier took Celadon's rung 1 to 0.64; its first rung went +6 → +8 and reads 0.54.)*
 
 *(v0.8.6, the user's call: the route ran over-levelled and the Ring then far under-levelled — its offsets had
 climbed to +18 and +21 to hold its win rate against teams seven to ten levels over their Region. With XP cut
@@ -1349,7 +1363,7 @@ or cut off by the clock.
 | Ticket | 200 ₽ | 350 ₽ |
 | Safari Balls · clock | 3 · 10 turns | 3 · 12 turns |
 | Lineup | Easy · Tricky · Rare | Easy · Easy · Tricky · Rare |
-| Recruit level | Region 2's recruit floor, +0–2 (Lv 12–14) | Region 3's (Lv 22–24) |
+| Recruit level | Region 2's recruit floor, +0–2 (Lv 14–16) | Region 3's (Lv 24–26) |
 
 The pools (`catalogs/biomes-regions.md` §6) are Gen I's own Safari list less anything a route offers — a test
 holds that line, so a Safari recruit is always one no route could have given. **Dratini is the city's**: the one

@@ -49,9 +49,9 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
   it('RegionThree_RampsAcrossItsOwnBand_§2.6.5', () => {
     const map = createRun('squirtle', 3, ctx, 2).map;
     for (const n of Object.values(map.nodes)) if (n.kind === 'wild') expect(n.preview.levelBand, n.id).toEqual(wildBandFor(n.layer, REGIONS[2]!.wildBand));
-    // catalogs/biomes-regions.md §3 — Region 3 recruits at 22–30.
-    expect(wildBandFor(0, REGIONS[2]!.wildBand)[0]).toBe(22);
-    expect(wildBandFor(18, REGIONS[2]!.wildBand)[1]).toBe(30);
+    // catalogs/biomes-regions.md §3 — Region 3 recruits at 24–32 (v0.8.10).
+    expect(wildBandFor(0, REGIONS[2]!.wildBand)[0]).toBe(24);
+    expect(wildBandFor(18, REGIONS[2]!.wildBand)[1]).toBe(32);
   });
 
   it('RegionThree_LanesLookLikeTheirGyms_§2.5', () => {

@@ -870,6 +870,20 @@ supply tables were left: the bag ends a run at ~14 items with the harness spendi
 makes them easy, not their numbers; the Rare Candy alone is worth 8 points of Region 3.
 **Exit (v0.8):** fights against groups everywhere in the run, a reworked route, and the whole run balanced.
 
+### v0.8.10 — Growth curves  ✅ 2026-10-05
+
+The user asked the balance pass to measure how many relics a run gathers and whether XP keeps the team in step with
+its enemies. `balance/report.test.ts` now prints both: relics held at each Gym, gained per Region, at the run's end,
+by source and rarity (`RunSimResult.relicsGained`); XP per active Pokémon per fight kind, levels gained per Region,
+and the level gap — the active team's mean level against what it fights — by column and at the Elite and the Gym
+(`FightTrace` `levelBefore` / `xpGained` / `boxLevel` / `relics`). **Found:** Region 2's band (12–20) began
+below where Region 1's ended (13), so a team entered Region 2 **+3.9** over its fights — the reason its Gym was lost
+2 % of the time. Regions 2 and 3 moved up two levels (14–22, 24–32): the gap is now +0 → +2 / +2 / +1, §6.2.1's
+"a level or two over". The tier paid for it in HP (R2 ×0.45, R3 ×0.27; Attack tried first, it softened the hit to
+13 %). 720 runs: **R1 60 % · R2|R1 58 % · R3|R2 48 % · run 17 %**. Relics: 2.5 / 2.6 / 2.0 a Region, ~11 at a won
+run's end — even, so left; a doubled collector's premium moved it by under half a relic. Celadon's Ring +6 → +8
+(rung 1 0.54). **Still open for v1.0:** every Gym's ace sits one or two levels under the team.
+
 ### v0.8.9 — The harness, honest  ✅ 2026-10-05
 
 The user read v0.8.8's rates as lower than the game plays. They were: the combat autoplayer never played a status or

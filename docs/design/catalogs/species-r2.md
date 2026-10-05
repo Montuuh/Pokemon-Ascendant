@@ -10,7 +10,7 @@
 > **Shipped state (2026-09-23).** Every table below is generated from `species.json`, so it is the build.
 >
 > - **Every basic evolves at 12, the uniform rule** (`species-r1.md` §0). Region 2's recruits arrive at Lv
->   12–20, so a Region 2 catch is already past its threshold. It evolves after the catch fight, and the catch is
+>   14–22, so a Region 2 catch is already past its threshold. It evolves after the catch fight, and the catch is
 >   where its branch is chosen (§6.3.1 queues it with the recruit).
 > - **Abilities.** The pools use only authored abilities, plus two added for this Region: `static` (Pikachu's
 >   line, Voltorb's, Electabuzz) and `thick-fat` (Seel's).

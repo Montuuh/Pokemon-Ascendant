@@ -5,7 +5,7 @@ import type { ScenarioDef } from '../content/defs';
 import { buildOutcomeReport } from '../run/report';
 import { createRun, defaultRunCtx, dojoPrice, runReducer, tutorListFor } from '../run/run';
 import { RUN_START, gymById, gymTeamFor } from '../run/region';
-import { applyBranch, autoPickMoves, stoneUse } from '../run/xp';
+import { applyBranch, autoPickMoves, stoneUse, xpToNext } from '../run/xp';
 import { maxHpOf } from '../run/encounter';
 import { PRICES, slotPrice, therapyPrice } from '../run/economy';
 import { atLegendaryCap, BLACK_MARKET, candyPrice } from '../run/blackMarket';
@@ -77,7 +77,11 @@ export interface FightTrace {
   kind: MapNode['kind'];
   enemies: { species: string; level: number }[];
   /** `status` is what the Pokémon walked out of the fight carrying (§4.2.7.1), for the accent measure (§2.2). */
-  team: { species: string; level: number; hpBefore: number; hpAfter: number; max: number; status: string | null }[];
+  team: { species: string; level: number; levelBefore: number; xpGained: number; hpBefore: number; hpAfter: number; max: number; status: string | null }[];
+  /** §6.2.1 — the mean level of the whole Box going in, the bench included: what the 75 % share keeps up. */
+  boxLevel: number;
+  /** §7.3 — relics held going in. */
+  relics: number;
   turns: number;
   outcome: string;
   /** The fight itself, so a measure can replay it step by step (the intent-accuracy harness, §9.2.5). */
@@ -106,7 +110,23 @@ export interface RunSimResult {
   evolutions: number;
   /** §3.5 — what was still in the bag when the run ended, Poké Balls aside: the supply the run never spent. */
   bagLeft: string[];
+  /** §7.3 — every relic the run took, where and from what (`node:<kind>` for a fight's drop or pick, else the action). */
+  relicsGained: RelicGain[];
   state: RunState;
+}
+
+export interface RelicGain {
+  id: string;
+  region: number;
+  layer: number;
+  source: string;
+}
+
+/** §6.2.1 — XP banked since Lv 1: every level's bar below this one, plus the part of this one already filled. */
+export function totalXp(mon: Pick<PartyMon, 'level' | 'xp'>): number {
+  let sum = mon.xp;
+  for (let l = 1; l < mon.level; l++) sum += xpToNext(l);
+  return sum;
 }
 
 const healthShare = (run: RunState, content: CombatCtx['content']): number => {
@@ -636,17 +656,24 @@ function visitMarket(get: () => RunState, content: CombatCtx['content'], policy:
  */
 export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy: RunPolicy = DEFAULT_RUN_POLICY, regions = 1, trace?: (fight: FightTrace) => void): RunSimResult {
   const runCtx = defaultRunCtx(ctx.content);
-  // §2.11.3 — the offer is weighted, and the harness takes the first of the three exactly as it takes the
-  // first Legendary: modelling a preference here would add variance without adding information.
+  // §2.11.3 — the offer is weighted; the harness takes its strongest card (`bestModifier`, v0.8.9).
   const regionPick = policy.takeRegionModifier ? bestModifier(rollRegionModifierOffer(seed, ctx.content), ctx.content) : undefined;
   let run = createRun(starterId, seed, runCtx, 0, [], undefined, regionPick);
   let turns = 0;
   let evolutions = 0;
 
+  const relicsGained: RelicGain[] = [];
   const step = (action: Parameters<typeof runReducer>[1]) => {
+    const held = new Set(run.relics);
+    const node = run.map.nodes[run.pendingNodeId ?? ''] ?? run.map.nodes[run.position ?? ''];
     const r = runReducer(run, action, runCtx);
     if (r.rejected) throw new Error(`auto-run rejected ${action.type}: ${r.rejected}`);
     run = r.state;
+    for (const id of run.relics) {
+      if (held.has(id)) continue;
+      const fromNode = (action.type === 'finish-combat' || action.type === 'claim-reward' || action.type === 'begin-combat' || action.type === 'leave-event' || action.type === 'choose-event') && node;
+      relicsGained.push({ id, region: run.regionIndex, layer: node?.layer ?? -1, source: fromNode ? `node:${node.kind}` : action.type });
+    }
   };
 
   // The phase is read through a function so TypeScript does not narrow it across the reducer's mutations.
@@ -705,7 +732,9 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
     const combat = autoPlay(createCombat(run.pendingScenario, ctx, run.pendingScenario.seed), ctx, policy);
     turns += combat.turns;
     const scenario = run.pendingScenario;
-    const before = run.activeUids.map((uid) => run.box.find((m) => m.uid === uid)!).map((m) => ({ uid: m.uid, hp: m.hp }));
+    const before = run.activeUids.map((uid) => run.box.find((m) => m.uid === uid)!).map((m) => ({ uid: m.uid, hp: m.hp, level: m.level, xp: totalXp(m) }));
+    const boxLevel = run.box.reduce((a, m) => a + m.level, 0) / Math.max(1, run.box.length);
+    const relicsHeld = run.relics.length;
     step({ type: 'finish-combat', report: buildOutcomeReport(combat.state, run) });
     if (trace) {
       const node = run.map.nodes[run.pendingNodeId ?? ''] ?? run.map.nodes[run.position ?? ''];
@@ -716,8 +745,10 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
         enemies: scenario.enemies.map((e) => ({ species: e.species, level: e.level })),
         team: before.map((b) => {
           const m = run.box.find((x) => x.uid === b.uid);
-          return { species: m?.speciesId ?? '?', level: m?.level ?? 0, hpBefore: b.hp, hpAfter: m?.hp ?? 0, max: m ? maxHpOf(m, ctx.content) : 0, status: m?.status?.kind ?? null };
+          return { species: m?.speciesId ?? '?', level: m?.level ?? 0, levelBefore: b.level, xpGained: m ? totalXp(m) - b.xp : 0, hpBefore: b.hp, hpAfter: m?.hp ?? 0, max: m ? maxHpOf(m, ctx.content) : 0, status: m?.status?.kind ?? null };
         }),
+        boxLevel,
+        relics: relicsHeld,
         turns: combat.turns,
         outcome: String(run.outcome),
         scenario,
@@ -811,6 +842,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
     evolutions,
     topLevel: Math.max(...run.box.map((m) => m.level), 0),
     bagLeft: run.consumables.filter((id) => ctx.content.consumable(id).effect.kind !== 'catch'),
+    relicsGained,
     state: run,
   };
 }

@@ -795,11 +795,12 @@ export const REGIONS: readonly RegionContent[] = [
     trainers: TRAINERS, elite: ELITE, eliteWild: ELITE_WILD, gyms: GYMS, laneThemes: LANE_THEME, levelOffset: 0, evolveRosters: false,
   },
   {
-    index: 1, name: 'Coastal Cliffs', biomes: BIOMES_R2, biomeWeights: REGION2_BIOME_WEIGHTS, wildBand: [12, 20], trunkStage: 'river',
+    // §2.6.5 — 14–22 and 24–32 since v0.8.10 (were 12–20, 22–30): the team entered Region 2 four levels over.
+    index: 1, name: 'Coastal Cliffs', biomes: BIOMES_R2, biomeWeights: REGION2_BIOME_WEIGHTS, wildBand: [14, 22], trunkStage: 'river',
     trainers: TRAINERS_R2, elite: ELITE_R2, eliteWild: ELITE_WILD_R2, gyms: GYMS_R2, laneThemes: LANE_THEME_R2, levelOffset: 0, evolveRosters: true,
   },
   {
-    index: 2, name: 'Volcanic Highlands', biomes: BIOMES_R3, biomeWeights: REGION3_BIOME_WEIGHTS, wildBand: [22, 30], trunkStage: 'volcano',
+    index: 2, name: 'Volcanic Highlands', biomes: BIOMES_R3, biomeWeights: REGION3_BIOME_WEIGHTS, wildBand: [24, 32], trunkStage: 'volcano',
     trainers: TRAINERS_R3, elite: ELITE_R3, eliteWild: ELITE_WILD_R3, gyms: GYMS_R3, laneThemes: LANE_THEME_R3, levelOffset: 0, evolveRosters: true,
   },
 ];
@@ -886,6 +887,9 @@ export const STATUS_ACCENT_FALLBACK = 'supersonic';
  *
  * Region 1's Attack ×1.45 → ×1.55 in v0.8.9, once the harness played status cards and pre-emptive swaps and read the
  * run four points easier than v0.8.8 had (§2.2.1): R1 60 % · R2|R1 60 % · R3|R2 50 % · run 18 % over 720 runs.
+ *
+ * Region 2's and Region 3's HP ×0.55 → ×0.45 and ×0.38 → ×0.27 in v0.8.10, paying for their bands moving up two
+ * levels (§2.6.5): R1 60 % · R2|R1 58 % · R3|R2 48 % · run 17 %.
  */
 export interface StatTier {
   hp: number;
@@ -893,8 +897,8 @@ export interface StatTier {
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
   { hp: 0.6, attack: 1.55 },
-  { hp: 0.55, attack: 1.75 },
-  { hp: 0.38, attack: 2.25 },
+  { hp: 0.45, attack: 1.75 },
+  { hp: 0.27, attack: 2.25 },
 ];
 
 /**

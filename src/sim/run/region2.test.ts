@@ -42,8 +42,8 @@ describe('Region 2 — its own content — §2.2, §2.6.1', () => {
       if (n.kind !== 'wild') continue;
       expect(n.preview.levelBand, n.id).toEqual(wildBandFor(n.layer, REGIONS[1]!.wildBand));
     }
-    expect(wildBandFor(0, REGIONS[1]!.wildBand)[0]).toBe(12);
-    expect(wildBandFor(18, REGIONS[1]!.wildBand)[1]).toBe(20);
+    expect(wildBandFor(0, REGIONS[1]!.wildBand)[0]).toBe(14);
+    expect(wildBandFor(18, REGIONS[1]!.wildBand)[1]).toBe(22);
   });
 
   it('RegionTwo_LanesLookLikeTheirGyms_§2.5', () => {

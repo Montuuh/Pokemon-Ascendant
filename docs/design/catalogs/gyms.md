@@ -41,8 +41,8 @@
 
 ## 2. Region 2 pool — Fire · Grass · Electric · Poison ✅ v0.7.3
 
-> The levels below are the catalogue's; the fight's come from the band (§5.9.3's +4 / +6 on Region 2's 12–20
-> route), so every Region 2 Gym fields slot 1 at Lv 24 and its ace at Lv 26. Slot 1 is the line's young one on
+> The levels below are the catalogue's; the fight's come from the band (`GYM_LEVEL_PREMIUM`, −2 / +0 on the top of
+> Region 2's 14–22 route), so every Region 2 Gym fields its others at Lv 20 and its ace at Lv 22. Slot 1 is the line's young one on
 > purpose — Growlithe, Weepinbell, Voltorb, Koffing — which is why a Gym, alone of Region 2's rosters, is not
 > walked through its evolutions (§2.7.3). Stages: volcano, forest, power-plant, dark-city.
 
@@ -55,7 +55,7 @@
 
 ## 3. Region 3 pool — Psychic · Ground · Fighting · Ice ✅ v0.7.4
 
-> As built: levels from the band (22–30, so slot 1 at 34 and the ace at 36). Stages: library, desert, gym,
+> As built: levels from the band (24–32, so the others at 30 and the ace at 32). Stages: library, desert, gym,
 > ice-cave. Two aces carry a scripted kit for the off-type answer their learnset lacks at 36 (§5.9.3):
 > Alakazam `psychic` `psyshock` `calm-mind` **`shadow-ball`**, Machamp `cross-chop` `dynamic-punch`
 > `close-combat` **`thunder-punch`**; Rhydon's Megahorn and Dewgong's Surf are their own. Kiyo wears the

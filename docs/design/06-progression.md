@@ -43,6 +43,17 @@ carry a Lv 5 starter to roughly Lv 14 by the Gym. The first values tried (30/45/
 Lv 11 and made the Gym unwinnable for two of the three starters. `src/sim/balance/runBalance.test.ts` is the
 check — change a number here and read the table, do not reason about it.
 
+**Measured (v0.8.10, 720 runs, `balance/report.test.ts`).** A won fight pays each active Pokémon about **29 / 73 /
+94 / 166** XP in Region 1 (wild / trainer / Elite / Gym), **31 / 72 / 120 / 236** in Region 2 and **37 / 82 / 149 /
+307** in Region 3 — the level-gap scaling keeps a wild fight worth about the same all run, and the big fights grow.
+The active team goes **Lv 5 → 15** across Region 1, **17 → 24** across Region 2 and **26 → 32** across Region 3, and
+stands over what it fights by **+0 → +2** in Region 1 (it starts level with the route and pulls ahead), **+2** all
+through Region 2 and **+1** through Region 3; the Box stays within half a level of the team. Region 2's and Region
+3's bands moved up two levels to get there (§2.6.5): before, the team entered Region 2 four levels over. **Still
+open:** every Gym's ace sits one or two levels *under* the team (+2.2 / +1.7 / +0.2) and its others well under — the
+Gym is a threat by its Attack (§5.9.3), not its levels, on purpose: a higher level premium paid the team more XP and
+made the run easier (v0.8.8).
+
 **Scaled by the level gap** (Gen V's formula): each Pokémon takes the encounter's XP ×
 `((2·Le + 10) / (Le + Lp + 10))^2.5`, where `Le` is the average level of what was beaten and `Lp` its own
 level (`ProgressionConfig.xpLevelExponent`, 0 turns it off). Level with the foe it is ×1; ten levels above a
@@ -116,7 +127,7 @@ contributes, and it is the primary creative expression inside a run (Pillar 4).
   player-initiated is the **branch** — and that choice is permanent, so the screen confirms it.
 - The Victory Road Training Grounds can force an early evolution (§2.12.3).
 - **A recruit caught past its threshold owes its screen straight away**, queued with the catch. Region 2's
-  recruits arrive at Lv 12–20 and every basic evolves at 12, so the catch is where a Region 2 Pokémon chooses its
+  recruits arrive at Lv 14–22 and every basic evolves at 12, so the catch is where a Region 2 Pokémon chooses its
   branch — the same beat as levelling into it, one fight earlier. *(v0.7.3.)*
 
 > *Changed 2026-09-19 (v0.3).* This section used to say evolution was player-initiated and that delaying it was

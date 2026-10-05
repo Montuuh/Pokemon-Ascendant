@@ -159,6 +159,9 @@
 - **A harness that ignores the telegraph measures someone else's game.** Until v0.8.9 the autoplayer never played a
   status card that cost AP and swapped only a Lead about to fall; it under-read the whole run by four points (17 vs
   21 %). When a number looks low against play, read what the harness *declines* to do before touching a tier.
+- **Read the level gap before the clear rate.** v0.8.10's report found Region 2 easy because its band began below
+  where Region 1's ended — no tier multiplier could see that. `balance/report.test.ts` prints the team's level over
+  what it fights, column by column; a Region that is soft or hard by levels is fixed in its band, not its tier.
 - **Golden fixtures** are regenerated only with `UPDATE_GOLDEN=1 npm test`, plus a note in the rule that
   changed.
 - **The Region curve (§2.2.1) is tuned over 720 runs, guarded over 120.** `npm run check` runs one block of 40

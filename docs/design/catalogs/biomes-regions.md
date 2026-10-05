@@ -55,10 +55,14 @@ Each Wild Area node offers **3 species, visible before entering**: 2 Common + 1 
 | Region | Wild recruits | Trainers | Elite | Gym non-ace / ace | Elite Wild |
 |---|---|---|---|---|---|
 | R1 | 5–10 | 6–12 | 12–15 | 12–13 / 14–16 | 14–16 |
-| R2 | 12–20 | 15–22 | 22–26 | 20–21 / 22–24 | 24–26 |
-| R3 | 22–30 | 26–34 | 32–36 | 33–35 / 35–37 | 34–36 |
+| R2 | 14–22 | 17–24 | 24–28 | 20–22 / 22–24 | 26–28 |
+| R3 | 24–32 | 28–36 | 34–38 | 30–32 / 32–34 | 36–38 |
 
 A late-Region recruit spawns at the top of the band so it catches up rather than being dead weight.
+
+*(v0.8.10: Region 2 and Region 3 moved up two levels — 12–20 → 14–22, 22–30 → 24–32. Region 1's band ends at 13 and
+Region 2's began at 12, so a team that left Region 1 at Lv 15–16 walked into Region 2 four levels over everything;
+measured, see §2.6.5. The Gym's two columns follow `GYM_LEVEL_PREMIUM`: the band's top −2 and +0.)*
 
 ## 4. Regions (3)
 
