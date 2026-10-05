@@ -472,6 +472,8 @@ export interface TeamMemberSetup {
   heldItem?: string;
   /** §7.3.5 Champion's Crest — enemies this Pokémon has defeated so far this run. */
   defeats?: number;
+  /** §5.14 — a shiny the run caught: it wears the official shiny palette. */
+  shiny?: boolean;
   /**
    * §5.13.2 — the Mastery Move in the immutable fifth slot, if this line has unlocked one. It is dealt into
    * the deck beside the active four and no Move Manager, TM or tutor can reach it.
@@ -489,6 +491,8 @@ export interface EnemySetup {
   tier: EnemyTier;
   /** §5.8.3 — 1 = ordinary, 2 = two-phase, 3 = ace. */
   phaseCount: 1 | 2 | 3;
+  /** §5.14 — a wild Pokémon that rolled shiny. Catch it and the copy keeps the palette. */
+  shiny?: boolean;
   /** §8.8 Iron Will — scales Max HP before hpPercent is applied. 1 (the default) is the baseline enemy. */
   hpMultiplier?: number;
   /** §2.2 — the Region's enemy stat tier on Attack. 1 (the default) is the baseline enemy. */

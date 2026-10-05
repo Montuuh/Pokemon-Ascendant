@@ -53,6 +53,8 @@ export interface Combatant {
   defeats: number;
   /** §7.3.5 Soul Link — one of the run's two longest-travelling Pokémon. Read only while the relic is held. */
   soulLinked?: boolean;
+  /** §5.14 — wears the official shiny palette: a wild one that rolled it, or a caught shiny on the player's side. */
+  shiny?: boolean;
   /**
    * §7.3.7 Battle Hardened — damage absorbed before HP, granted at combat start and never regenerated.
    * A separate pool rather than extra max HP, so a heal cannot quietly top it back up.

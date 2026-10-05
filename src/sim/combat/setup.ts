@@ -53,6 +53,7 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
     // §7.3.5 — the run carries the record in; a fixture fight starts everyone at zero.
     defeats: (setup as TeamMemberSetup).defeats ?? 0,
     ...((setup as TeamMemberSetup).soulLinked ? { soulLinked: true } : {}),
+    ...(setup.shiny ? { shiny: true } : {}),
     // §7.3.7 — granted below, once the player's relics are known. A Combatant is built before they are.
     shield: 0,
   };

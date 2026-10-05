@@ -519,10 +519,35 @@ size stays 5. When a Mastery-unlocked Pokémon faints, **5** cards leave the dec
 
 Full line-by-line catalogue: [`catalogs/mastery-moves.md`](catalogs/mastery-moves.md).
 
-**Shiny implementation:** no second sprite set is *authored*. The build fetches the official shiny palette of
-each battle sprite beside the normal one (the same source as the rest of the sprites), because a real shiny
-palette is available and a hue-shift over a real sprite would be the one invented thing on screen. A
-hue-shift remains the fallback for any species whose shiny is missing.
+---
+
+# §5.14 Shiny — something you find
+
+A Shiny is a wild Pokémon in its official alternate palette, met by surprise. It was a Bond reward until v0.9.1 —
+rank 2 put every copy of a played line in the palette, and since a line reached rank 2 inside its first run, a shiny
+was a formality on four or five lines a run. The user's call (2026-10-06): **wild, by surprise, and tied to the
+Bond.**
+
+- **Every wild Pokémon that takes the field rolls**, the lone wild and every member of a wild pack; a trainer's,
+  an Elite's, a Gym's and the Ring's never do. The chance is **1 in 40** (`SHINY.chance`): about one shiny met
+  every three runs.
+- **Unannounced.** The map never shows it — the node's preview is the same — and the fight's entrance does: the
+  sparkle as it takes the field. Pillar 1 is about the fight's tactics, and a shiny is not one: it is a find.
+- **Tied to the Bond** (§6.8.2). A line at **Trusted** (rank 2) carries its **Shiny Charm**: its wild Pokémon are
+  shiny **×3** as often. At **Soulbound** (rank 5) **×2 again**. The lines a player recruits every run are the ones
+  it meets in the wild every run, so the charm is where a collection grows: a career of 24 runs catches about
+  six or seven (`balance/bondCareer.test.ts`).
+- **Catch it and it stays shiny** — in the Box, in every fight after, through its evolutions. It is cosmetic, as in
+  the series: no stat, no price. What it gives is the **line's Bond, +10** (§6.8.1), an entry in the **shiny
+  collection** (the Pokédex counts the shinies met and caught per species, §8.9) and, the first time, the hidden
+  medal **Shiny Hunter** (§8.7).
+- **The roll is a hash** of the run's seed, the Region and the node, never a stream draw: like the group plan
+  (§5.6.3), a run that meets no shiny replays exactly as before.
+
+**The sprite:** no second sprite set is *authored*. The build fetches the official shiny palette of each battle
+sprite beside the normal one (the same source as the rest of the sprites), because a real shiny palette is
+available and a hue-shift over a real sprite would be the one invented thing on screen. A hue-shift remains the
+fallback for any species whose shiny is missing.
 
 ---
 

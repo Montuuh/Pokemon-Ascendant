@@ -26,7 +26,7 @@ export function buildOutcomeReport(combat: CombatState, run: RunState): CombatOu
     combat.outcome === 'caught'
       ? (() => {
           const mon = combat.defeatedEnemies[combat.defeatedEnemies.length - 1] ?? combat.enemies[0];
-          return mon ? { speciesId: mon.speciesId, level: mon.level } : null;
+          return mon ? { speciesId: mon.speciesId, level: mon.level, ...(mon.shiny ? { shiny: true } : {}) } : null;
         })()
       : null;
 
@@ -53,6 +53,11 @@ export function buildOutcomeReport(combat: CombatState, run: RunState): CombatOu
     // §8.9 — every enemy species that took the field, once each: the ones still standing, the queue never
     // reached is not counted, and the ones already down.
     enemies: [...new Set([...combat.defeatedEnemies, ...combat.enemies].map((e) => e.speciesId))],
+    // §5.14 — the shinies met, for the Pokédex's collection. Absent when there were none.
+    ...((): { shinies?: string[] } => {
+      const shinies = [...new Set([...combat.defeatedEnemies, ...combat.enemies].filter((e) => e.shiny).map((e) => e.speciesId))];
+      return shinies.length ? { shinies } : {};
+    })(),
     fielded: combat.defeatedEnemies.length + combat.enemies.length,
     // §5.13.1 — a caught Pokémon is in `defeatedEnemies` too (the fight ends with it there), and catching is
     // explicitly not a kill, so it is left out.

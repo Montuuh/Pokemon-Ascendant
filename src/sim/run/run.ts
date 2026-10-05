@@ -1064,16 +1064,17 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         if (supplies.balls) say(draft, `Found ${supplies.balls} Poké Ball${supplies.balls > 1 ? 's' : ''}.`);
 
         // 4. A catch is a Victory that also hands you a Pokémon (§2.6.4).
-        let caught: { speciesId: string; level: number } | null = null;
+        let caught: { speciesId: string; level: number; shiny?: boolean } | null = null;
         if (report.outcome === 'caught' && report.caught) {
           caught = report.caught;
           draft.stats.catches += 1;
           if (draft.box.length < boxCapacity(draft)) {
             const recruit = newPartyMon(caught.speciesId, caught.level, ctx.content, draft.seed);
+            if (caught.shiny) recruit.shiny = true;
             draft.box.push(recruit);
             draft.stats.recruits += 1;
             if (draft.activeUids.length < 3) draft.activeUids.push(recruit.uid);
-            say(draft, `Caught ${ctx.content.species(caught.speciesId).name}!`);
+            say(draft, `Caught ${caught.shiny ? 'a shiny ' : ''}${ctx.content.species(caught.speciesId).name}!`);
             // §6.3.1 — a recruit caught past its threshold owes its Evolution screen now, like anyone else: a
             // Region 2 basic arrives at Lv 14–22 and every basic evolves at 12, so the catch is where its branch is chosen.
             queueEvolutions(draft, ctx.content);
@@ -1160,6 +1161,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             const [released] = draft.box.splice(idx, 1);
             draft.activeUids = draft.activeUids.filter((u) => u !== action.releaseUid);
             const fresh = newPartyMon(recruit.speciesId, recruit.level, ctx.content, draft.seed);
+            if (recruit.shiny) fresh.shiny = true;
             draft.box.push(fresh);
             draft.stats.recruits += 1;
             if (draft.activeUids.length < 3) draft.activeUids.push(fresh.uid);

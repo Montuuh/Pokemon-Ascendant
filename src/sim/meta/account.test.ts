@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import { accountFromProgress, applyAccountEvent, applyAccountEvents, emptyAccount, levelFor, levelProgress, REWARD_TRACK, SHELVES, trackTokensBetween, upgradeAccount, XP, xpForLevel, type AccountContext } from './account';
 import { dexTierFor, DEX_FAMILIAR, emptyDexEntry, normalizeDexEntry } from './pokedex';
-import { BOND, bondRank } from './bond';
+import { BOND, BOND_RANKS, bondRank } from './bond';
 import { accountContextFor, modifierUnlocked, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
 import { shelfOpen } from './mart';
 import { emptyProgress, type MetaEvent } from './achievements';
@@ -218,8 +218,8 @@ describe('The Pokédex — §5.13', () => {
 
 describe('Bond — §6.8', () => {
   it('PlayingWithALine_EarnsBond_AndTheLeadEarnsOneMore', () => {
-    // A won fight with Charmander leading and Pidgey on the bench: 2 for the line that led, 1 for the other.
-    const { state, delta } = applyAccountEvent(seasoned(), win({ activeSpecies: ['charmander', 'pidgey'], leadTurns: { charmander: 4, pidgey: 1 } }), ctx);
+    // A won trainer fight with Charmander leading and Pidgey on the bench: 2 for the line that led, 1 for the other.
+    const { state, delta } = applyAccountEvent(seasoned(), win({ kind: 'trainer', activeSpecies: ['charmander', 'pidgey'], leadTurns: { charmander: 4, pidgey: 1 } }), ctx);
     expect(state.bond.charmander).toBe(BOND.win + BOND.lead);
     expect(state.bond.pidgey).toBe(BOND.win);
     expect(delta.bondGains).toEqual([{ line: 'charmander', points: 2 }, { line: 'pidgey', points: 1 }]);
@@ -238,16 +238,38 @@ describe('Bond — §6.8', () => {
   });
 
   it('CrossingARank_IsReportedOnce_AndPaysTheMedal', () => {
-    // Five clean wins leading: 10 points, ranks 1 (5) and 2 (10 < 15? no) — rank 1 only.
-    const wins: MetaEvent[] = Array.from({ length: 5 }, () => win({ activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 } }));
+    // Clean trainer wins leading, two points each, until the first rank: reported once.
+    const n = BOND_RANKS[0] / (BOND.win + BOND.lead);
+    const wins: MetaEvent[] = Array.from({ length: n }, () => win({ kind: 'trainer', activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 } }));
     const { state, delta } = applyAccountEvents(seasoned(), wins, ctx);
-    expect(state.bond.squirtle).toBe(10);
+    expect(state.bond.squirtle).toBe(BOND_RANKS[0]);
     expect(bondRank(state.bond.squirtle!)).toBe(1);
     expect(delta.bondRankUps).toEqual([{ line: 'squirtle', rank: 1 }]);
-    // A big single step crosses several ranks in order.
-    const big = applyAccountEvent({ ...seasoned(), bond: { squirtle: 34 } }, { t: 'run-end', won: true, catches: 0, badges: 1, activeSpecies: ['squirtle'] }, ctx);
+    // A big single step crosses the next rank.
+    const from = BOND_RANKS[2] - 1;
+    const big = applyAccountEvent({ ...seasoned(), bond: { squirtle: from } }, { t: 'run-end', won: true, catches: 0, badges: 1, activeSpecies: ['squirtle'] }, ctx);
     expect(big.delta.bondRankUps).toEqual([{ line: 'squirtle', rank: 3 }]);
-    expect(big.state.bond.squirtle).toBe(49);
+    expect(big.state.bond.squirtle).toBe(from + BOND.runWon);
+  });
+
+  it('AWildWin_PaysNoBond_AGymWinPaysTheRegion_§6.8.1', () => {
+    // v0.9.1 — the fights that mean something: a wild one pays nothing, a Gym is a Region cleared together.
+    const wild = applyAccountEvent(seasoned(), win({ kind: 'wild', activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 } }), ctx);
+    expect(wild.state.bond.squirtle ?? 0).toBe(0);
+    const gym = applyAccountEvent(seasoned(), win({ kind: 'boss', activeSpecies: ['squirtle', 'pidgey'], leadTurns: { squirtle: 3 } }), ctx);
+    expect(gym.state.bond.squirtle).toBe(BOND.gym + BOND.lead);
+    expect(gym.state.bond.pidgey).toBe(BOND.gym);
+  });
+
+  it('AShinyRecruit_FeedsTheLine_TheCollection_AndTheMedal_§5.14', () => {
+    const { state, delta } = applyAccountEvent(seasoned(), { t: 'recruit', speciesId: 'pidgey', boxFull: false, firstThisRun: true, shiny: true }, ctx);
+    expect(state.bond.pidgey).toBe(BOND.recruit + BOND.shiny);
+    expect(state.dex.pidgey!.shinyCaught).toBe(1);
+    expect(delta.unlockedAchievements.map((a) => a.id)).toContain('shiny-hunter');
+    // Met, not caught: the record notes it; the line earns nothing for a shiny that got away.
+    const seen = applyAccountEvent(seasoned(), win({ kind: 'wild', enemies: ['rattata'], shinies: ['rattata'] }), ctx);
+    expect(seen.state.dex.rattata!.shinySeen).toBe(1);
+    expect(seen.state.bond.rattata ?? 0).toBe(0);
   });
 });
 
@@ -275,8 +297,8 @@ describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
   });
 
   it('RunPerks_AreTheAccountsWidenings_AndNothingElse', () => {
-    // Squirtle at 60 Bond is rank 4: Mastery Lv2. Rattata at 100 is rank 5 on a two-stage line: still Lv2.
-    const a = { ...emptyAccount(), hub: ['expanded-box', 'pokedex-insight'], bond: { squirtle: 60, rattata: 100, pidgey: 3 }, dex: { pidgey: { ...emptyDexEntry(), defeats: 10, tier: 1 as const } } };
+    // Squirtle at rank 4: Mastery Lv2. Rattata at rank 5 on a two-stage line: still Lv2. Pidgey short of rank 1.
+    const a = { ...emptyAccount(), hub: ['expanded-box', 'pokedex-insight'], bond: { squirtle: BOND_RANKS[3], rattata: BOND_RANKS[4], pidgey: BOND_RANKS[0] - 1 }, dex: { pidgey: { ...emptyDexEntry(), defeats: 10, tier: 1 as const } } };
     const perks = runPerksFor(a, content);
     expect(perks.boxBonus).toBe(2);
     expect(perks.insight).toBe(true);
@@ -287,7 +309,7 @@ describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
   });
 
   it('ASoulboundLine_CanStartARun_§6.8.2', () => {
-    const a = { ...emptyAccount(), bond: { geodude: 100, pidgey: 99 } };
+    const a = { ...emptyAccount(), bond: { geodude: BOND_RANKS[4], pidgey: BOND_RANKS[4] - 1 } };
     const starters = unlockedStarters(a, content);
     expect(starters).toContain('geodude');
     expect(starters).not.toContain('pidgey');

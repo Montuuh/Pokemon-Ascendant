@@ -9,12 +9,20 @@ import type { ContentRegistry } from '../content/defs';
 // player who met it, and because progress that comes from playing a Pokémon is the progress that feels like
 // the Pokémon's. The Pokédex keeps what it is good at: knowledge about the species you fight (§5.13).
 
-/** §6.8.1 — Bond points, per line, for what you do with it in the Active Team. */
+/**
+ * §6.8.1 — Bond points, per line, for what you do with it in the Active Team. v0.9.1 counts the fights that mean
+ * something — a trainer, an Elite, a Gym — and not the wild ones: since the route became twenty columns (v0.8.7) a run
+ * fought ~25 fights and the old +1 a fight made every played line Trusted inside one run.
+ */
 export const BOND = {
-  /** A won fight (a catch counts). */
+  /** A won trainer, Elite or Gym fight. A wild fight pays no Bond. */
   win: 1,
   /** …and one more for the member that led the most turns of that fight. */
   lead: 1,
+  /** A Gym won with the line in the Active Team: a Region cleared together. Replaces `win`, the lead's +1 still adds. */
+  gym: 4,
+  /** §5.14 — a shiny of the line joins the Box. */
+  shiny: 10,
   /** An evolution. */
   evolution: 5,
   /** The first recruit of the line in a run. */
@@ -25,8 +33,12 @@ export const BOND = {
   runWon: 15,
 } as const;
 
-/** §6.8.2 — cumulative points to reach ranks 1–5. */
-export const BOND_RANKS = [5, 15, 35, 60, 100] as const;
+/**
+ * §6.8.2 — cumulative points to reach ranks 1–5. v0.9.1 (the user: "to complete it whole, more than fifteen runs"):
+ * a line played every run reaches them after about 1 / 2 / 6 / 9 / 16 runs — measured as a career by
+ * `balance/bondCareer.test.ts`. Quick at the bottom so the first evening shows something, long at the top.
+ */
+export const BOND_RANKS = [10, 40, 110, 200, 360] as const;
 export const MAX_BOND_RANK = 5;
 
 export const BOND_RANK_NAME: Record<number, string> = { 0: '—', 1: 'Companion', 2: 'Trusted', 3: 'Veteran', 4: 'Deep Bond', 5: 'Soulbound' };
@@ -53,7 +65,8 @@ export function bondProgress(points: number): { rank: number; into: number; span
  */
 export interface BondUnlocks {
   mastery: 0 | 1 | 2 | 3;
-  shiny: boolean;
+  /** §5.14 — the line's Shiny Charm: its wild Pokémon are shiny more often (`SHINY` in run/shiny.ts). */
+  shinyCharm: boolean;
   hiddenAbility: boolean;
   /** Rank 5 on a line whose Mastery caps at Lv2: the Mastery card opens every fight in hand. */
   opener: boolean;
@@ -64,7 +77,7 @@ export interface BondUnlocks {
 export function bondUnlocks(rank: number, threeStageLine: boolean): BondUnlocks {
   return {
     mastery: rank >= 5 && threeStageLine ? 3 : rank >= 4 ? 2 : rank >= 1 ? 1 : 0,
-    shiny: rank >= 2,
+    shinyCharm: rank >= 2,
     hiddenAbility: rank >= 3,
     opener: rank >= 5 && !threeStageLine,
     starter: rank >= 5,
@@ -74,10 +87,10 @@ export function bondUnlocks(rank: number, threeStageLine: boolean): BondUnlocks 
 /** §6.8.2 — the ladder, in the player's words, for the Pokédex sheet's Line tab and the tooltips. */
 export const BOND_LADDER: { rank: 1 | 2 | 3 | 4 | 5; name: string; unlock: string }[] = [
   { rank: 1, name: 'Companion', unlock: 'Mastery Move Lv1 — a fifth card' },
-  { rank: 2, name: 'Trusted', unlock: 'Shiny' },
+  { rank: 2, name: 'Trusted', unlock: 'Shiny Charm — its wild Pokémon are shiny three times as often' },
   { rank: 3, name: 'Veteran', unlock: 'Hidden ability' },
   { rank: 4, name: 'Deep Bond', unlock: 'Mastery Move Lv2' },
-  { rank: 5, name: 'Soulbound', unlock: 'Mastery Move Lv3 (three-stage lines) or the Mastery card in every opening hand · the line can start a run' },
+  { rank: 5, name: 'Soulbound', unlock: 'Mastery Move Lv3 (three-stage lines) or the Mastery card in every opening hand · the line can start a run · its shinies twice as often again' },
 ];
 
 /** Does the line reach a third stage? Decides whether rank 5 is Lv3 or the opener. */

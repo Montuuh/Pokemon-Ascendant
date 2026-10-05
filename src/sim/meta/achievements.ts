@@ -42,8 +42,10 @@ export type MetaEvent =
       /** §8.9 — every enemy species that took the field, once each; and the one that went into the ball. */
       enemies?: string[];
       caughtSpecies?: string;
+      /** §5.14 — enemy species that took the field shiny. */
+      shinies?: string[];
     }
-  | { t: 'recruit'; speciesId: string; boxFull: boolean; /** §8.3.2 — the first of this species this run. */ firstThisRun?: boolean; /** §8.6.1 Lure Module — recruits so far this Region. */ recruitsThisRun?: number }
+  | { t: 'recruit'; speciesId: string; boxFull: boolean; /** §5.14 — the recruit is a shiny. */ shiny?: boolean; /** §8.3.2 — the first of this species this run. */ firstThisRun?: boolean; /** §8.6.1 Lure Module — recruits so far this Region. */ recruitsThisRun?: number }
   | { t: 'evolution'; uid: string; /** §8.9 — the species it evolved from, for that species' record. */ fromSpeciesId?: string; toSpeciesId: string }
   | { t: 'badge-awarded'; badgeId: string }
   | { t: 'relic-acquired'; relicId: string; heldCount: number }
@@ -161,6 +163,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'living-pokedex', category: 'mastery', name: 'Living Pokédex', tier: 'platinum', goal: 10,
     description: 'Reach Soulbound with ten lines.',
     count: (e) => (e.t === 'bond-rank-up' && e.rank === 5 ? 1 : 0),
+  },
+  {
+    // #22 — a shiny joins the Box (§5.14). Hidden: a find, not a goal printed on the wall.
+    id: 'shiny-hunter', category: 'mastery', name: 'Shiny Hunter', tier: 'gold', goal: 1, hidden: true,
+    description: 'Recruit a shiny Pokémon.',
+    count: (e) => (e.t === 'recruit' && e.shiny ? 1 : 0),
   },
   // ── Combat
   {
@@ -315,6 +323,7 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
       statusesTakenThisRun: after.stats.statusesTaken,
       enemies: report.enemies ?? [],
       ...(report.caught ? { caughtSpecies: report.caught.speciesId } : {}),
+      ...(report.shinies?.length ? { shinies: report.shinies } : {}),
     });
   }
 
@@ -326,7 +335,7 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
     // which §8.8's Box Squeeze can lower from six to four.
     // §8.3.2 — the XP is for the *first* of a species in a run; a second Pidgey is a body, not a discovery.
     const firstThisRun = !before.box.some((m) => m.speciesId === mon.speciesId);
-    events.push({ t: 'recruit', speciesId: mon.speciesId, boxFull: before.box.length >= boxCapacity(before), firstThisRun, recruitsThisRun: after.stats.recruits });
+    events.push({ t: 'recruit', speciesId: mon.speciesId, boxFull: before.box.length >= boxCapacity(before), firstThisRun, recruitsThisRun: after.stats.recruits, ...(mon.shiny ? { shiny: true } : {}) });
   }
 
   // An evolution is a Pokémon whose species changed under the same uid.

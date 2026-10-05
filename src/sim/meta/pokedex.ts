@@ -47,11 +47,15 @@ export interface DexEntry {
   damageDealt: number;
   /** Times a copy of yours evolved *from* this species. */
   evolutions: number;
+  /** §5.14 — fights a shiny of the species took the field against you. */
+  shinySeen: number;
+  /** §5.14 — shinies of the species that joined your Box: the collection. */
+  shinyCaught: number;
 }
 
 export const emptyDexEntry = (): DexEntry => ({
   defeats: 0, recruited: false, winsWith: 0, runsFinishedWith: 0, tier: 0,
-  encounters: 0, caught: 0, recruits: 0, knockouts: 0, faints: 0, damageDealt: 0, evolutions: 0,
+  encounters: 0, caught: 0, recruits: 0, knockouts: 0, faints: 0, damageDealt: 0, evolutions: 0, shinySeen: 0, shinyCaught: 0,
 });
 
 /** A saved entry from before a field existed, made whole. `recruits` is inferred from the old boolean. */

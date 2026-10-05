@@ -11,9 +11,10 @@ import { PRICES, slotPrice, therapyPrice } from '../run/economy';
 import { atLegendaryCap, BLACK_MARKET, candyPrice } from '../run/blackMarket';
 import { rollRegionModifierOffer } from '../run/regionModifiers';
 import { allOutcomes, mysteryEvent } from '../run/events';
-import type { MapNode, PartyMon, RunState, SafariSpot, ShopSlot } from '../run/types';
+import type { MapNode, PartyMon, RunPerks, RunState, SafariSpot, ShopSlot } from '../run/types';
 import { nextSafariMove } from './autoSafari';
 import { typeMultiplier } from '../combat/typeChart';
+import { metaEventsFor, type MetaEvent } from '../meta/achievements';
 import { autoPlay, type AutoPlayerOptions } from './autoPlayer';
 
 // A whole-run stand-in for a decent player, used to answer the only question that matters for v0.2: can the
@@ -112,6 +113,8 @@ export interface RunSimResult {
   bagLeft: string[];
   /** §7.3 — every relic the run took, where and from what (`node:<kind>` for a fight's drop or pick, else the action). */
   relicsGained: RelicGain[];
+  /** §8.7 — the account events the run raised, derived step by step as the app's store derives them (`metaEventsFor`). */
+  metaEvents: MetaEvent[];
   state: RunState;
 }
 
@@ -654,20 +657,23 @@ function visitMarket(get: () => RunState, content: CombatCtx['content'], policy:
  * Play a run. `regions` is how many Gyms to beat before calling it: 1 (the default) measures Region 1's pacing
  * exactly as it was measured before the run continued past it; 3 plays the whole run, Cities included.
  */
-export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy: RunPolicy = DEFAULT_RUN_POLICY, regions = 1, trace?: (fight: FightTrace) => void): RunSimResult {
+export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy: RunPolicy = DEFAULT_RUN_POLICY, regions = 1, trace?: (fight: FightTrace) => void, perks?: RunPerks): RunSimResult {
   const runCtx = defaultRunCtx(ctx.content);
   // §2.11.3 — the offer is weighted; the harness takes its strongest card (`bestModifier`, v0.8.9).
   const regionPick = policy.takeRegionModifier ? bestModifier(rollRegionModifierOffer(seed, ctx.content), ctx.content) : undefined;
-  let run = createRun(starterId, seed, runCtx, 0, [], undefined, regionPick);
+  // §8.10 — an account's perks when the measure is a career (`bondCareer.test.ts`); none for a single run.
+  let run = createRun(starterId, seed, runCtx, 0, [], undefined, regionPick, perks);
   let turns = 0;
   let evolutions = 0;
 
   const relicsGained: RelicGain[] = [];
+  const metaEvents: MetaEvent[] = [];
   const step = (action: Parameters<typeof runReducer>[1]) => {
     const held = new Set(run.relics);
     const node = run.map.nodes[run.pendingNodeId ?? ''] ?? run.map.nodes[run.position ?? ''];
     const r = runReducer(run, action, runCtx);
     if (r.rejected) throw new Error(`auto-run rejected ${action.type}: ${r.rejected}`);
+    metaEvents.push(...metaEventsFor(run, r.state, ctx.content, action.type === 'finish-combat' ? action.report : undefined));
     run = r.state;
     for (const id of run.relics) {
       if (held.has(id)) continue;
@@ -843,6 +849,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
     topLevel: Math.max(...run.box.map((m) => m.level), 0),
     bagLeft: run.consumables.filter((id) => ctx.content.consumable(id).effect.kind !== 'catch'),
     relicsGained,
+    metaEvents,
     state: run,
   };
 }

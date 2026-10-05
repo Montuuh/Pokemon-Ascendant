@@ -17,8 +17,8 @@ const combatEnd = (over: Partial<Extract<MetaEvent, { t: 'combat-end' }>> = {}):
 
 describe('Achievements — §8.7', () => {
   it('EveryRowHasAGoalAndATrigger_AndNoDescriptionLeaksASectionNumber', () => {
-    expect(ACHIEVEMENTS).toHaveLength(24);
-    expect(new Set(ACHIEVEMENTS.map((a) => a.id)).size).toBe(24);
+    expect(ACHIEVEMENTS).toHaveLength(25);
+    expect(new Set(ACHIEVEMENTS.map((a) => a.id)).size).toBe(25);
     for (const a of ACHIEVEMENTS) {
       expect(a.goal, a.id).toBeGreaterThan(0);
       expect(a.description, a.id).not.toMatch(/§\d/);
@@ -27,7 +27,7 @@ describe('Achievements — §8.7', () => {
       const fires = [
         combatEnd({ damageTaken: 0, manualSwaps: 5, kind: 'boss', tally }),
         combatEnd({ faints: 2, activeSpecies: ['a', 'b', 'c'] }),
-        { t: 'recruit', speciesId: 'pidgey', boxFull: true },
+        { t: 'recruit', speciesId: 'pidgey', boxFull: true, shiny: true },
         { t: 'evolution', uid: 'u', toSpeciesId: 'wartortle' },
         { t: 'badge-awarded', badgeId: 'boulder-badge' },
         { t: 'relic-acquired', relicId: 'coin-pouch', heldCount: 8 },

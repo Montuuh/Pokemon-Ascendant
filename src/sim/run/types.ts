@@ -95,6 +95,8 @@ export interface RegionMap {
 export interface PartyMon {
   uid: string;
   speciesId: string;
+  /** §5.14 — a shiny caught in the wild. Optional on purpose: every save from before v0.9.1 reads as not shiny. */
+  shiny?: boolean;
   level: number;
   xp: number;
   /** Current HP. 0 is fainted (§2.4.1) — there is no separate flag. */
@@ -214,7 +216,7 @@ export interface PendingEvolution {
 export interface RewardSummary {
   xpAwarded: { uid: string; amount: number }[];
   levelUps: LevelUp[];
-  caught: { speciesId: string; level: number } | null;
+  caught: { speciesId: string; level: number; shiny?: boolean } | null;
   faintedUids: string[];
   /** §7.5 — the TM this fight dropped, if any. */
   tm: string | null;
@@ -432,6 +434,8 @@ export interface SafariState {
 export interface PendingRecruit {
   speciesId: string;
   level: number;
+  /** §5.14 — a shiny caught with the Box full keeps its palette through the swap. */
+  shiny?: boolean;
 }
 
 export interface RunState {
@@ -566,7 +570,7 @@ export interface CombatOutcomeReport {
   /** Final HP and status for each Active Pokémon, keyed by uid. §4.2.7.1 — the status leaves with its clock. */
   team: { uid: string; hp: number; status: CarriedStatus | null; confusionTurns?: number; fainted: boolean; defeats?: number }[];
   /** The wild Pokémon that was caught, if any. */
-  caught: { speciesId: string; level: number } | null;
+  caught: { speciesId: string; level: number; shiny?: boolean } | null;
   /** Poké Balls still in stock. A miss costs a ball too, so the run takes the fight's own count (§2.6.4). */
   ballsLeft: number;
   /** §3.5 — consumable ids actually played; the run takes them out of the bag (v0.8.6: consumables are spent). */
@@ -587,6 +591,8 @@ export interface CombatOutcomeReport {
   /** §8.6.1 Type Resonance's discovery — the Active Team's species at the end, in slot order. */
   activeSpecies?: string[];
   /** §8.9 — every enemy species that took the field, once each. The Pokédex counts these as met. */
+  /** §5.14 — the species met shiny in this fight, once each. */
+  shinies?: string[];
   enemies?: string[];
   /** §5.6.2 — how many enemies took the field, companions called for help included. The XP pot counts them. */
   fielded?: number;

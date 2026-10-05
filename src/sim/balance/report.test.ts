@@ -35,6 +35,8 @@ describe.skipIf(!ON)('Balance report — §2.2.1', () => {
     const bagLeft: number[] = [];
     const relics: RelicGain[][] = [];
     const reachedRegion: number[] = [];
+    let shiniesMet = 0;
+    let shiniesCaught = 0;
     for (const starter of STARTER_IDS) {
       for (let seed = 1; seed <= SEEDS; seed++) {
         const r = autoRun(9000 + seed, starter, ctx, DEFAULT_RUN_POLICY, 3, (f) => fights.push(f));
@@ -42,6 +44,8 @@ describe.skipIf(!ON)('Balance report — §2.2.1', () => {
         bagLeft.push(r.bagLeft.length);
         relics.push(r.relicsGained);
         reachedRegion.push(r.regionsCleared);
+        shiniesMet += r.metaEvents.reduce((a, e) => a + (e.t === 'combat-end' ? e.shinies?.length ?? 0 : 0), 0);
+        shiniesCaught += r.metaEvents.filter((e) => e.t === 'recruit' && e.shiny).length;
       }
     }
     const n = SEEDS * STARTER_IDS.length;
@@ -59,6 +63,7 @@ describe.skipIf(!ON)('Balance report — §2.2.1', () => {
           ` · items used per fight ${(used.length / Math.max(1, here.length)).toFixed(2)}`,
       );
     }
+    console.log(`shinies (§5.14): met ${(shiniesMet / n).toFixed(2)} a run · caught ${(shiniesCaught / n).toFixed(2)} a run`);
     console.log(`bag left at the run's end: mean ${(bagLeft.reduce((a, b) => a + b, 0) / bagLeft.length).toFixed(1)} · median ${median(bagLeft)}`);
 
     // §7.3 — how many relics a run holds and where they came from.

@@ -358,11 +358,13 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
         bump(delta, next, XP.combat, ctx);
         next.stats.combatsWon += 1;
         if (e.outcome === 'caught') next.stats.catches += 1;
-        // §6.8.1 — a won fight is Bond for every line in the Active Team, and one more for the one that led.
+        // §6.8.1 — a won trainer, Elite or Gym fight is Bond for every line in the Active Team, one more for the one
+        // that led, and a Gym is a Region cleared together. A wild fight pays none (v0.9.1).
         const lead = Object.entries(e.leadTurns ?? {}).sort((a, b) => b[1] - a[1])[0]?.[0];
+        const worth = e.kind === 'boss' ? BOND.gym : e.kind === 'wild' ? 0 : BOND.win;
         for (const sid of e.activeSpecies ?? []) {
           dexEntry(next, sid).winsWith += 1;
-          bond(next, sid, BOND.win + (sid === lead ? BOND.lead : 0), ctx, delta);
+          if (worth > 0) bond(next, sid, worth + (sid === lead ? BOND.lead : 0), ctx, delta);
         }
       }
       // §5.13.1 — kill credit for every species defeated, whoever landed the blow. Catching is not a kill.
@@ -373,6 +375,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
       // §8.9 — the record: met, caught, and what your own copies did out there.
       for (const sid of e.enemies ?? []) dexEntry(next, sid).encounters += 1;
       if (e.caughtSpecies) dexEntry(next, e.caughtSpecies).caught += 1;
+      for (const sid of e.shinies ?? []) dexEntry(next, sid).shinySeen += 1;
       for (const [sid, n] of Object.entries(e.tally?.koBy ?? {})) dexEntry(next, sid).knockouts += n;
       for (const [sid, n] of Object.entries(e.tally?.faintsOf ?? {})) dexEntry(next, sid).faints += n;
       for (const [sid, n] of Object.entries(e.tally?.damageBy ?? {})) dexEntry(next, sid).damageDealt += n;
@@ -411,6 +414,11 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
       entry.recruited = true;
       entry.recruits += 1;
       if (e.firstThisRun) bond(next, e.speciesId, BOND.recruit, ctx, delta);
+      // §5.14 — a shiny is the collection's and the line's: +10 Bond, whatever else the recruit paid.
+      if (e.shiny) {
+        entry.shinyCaught += 1;
+        bond(next, e.speciesId, BOND.shiny, ctx, delta);
+      }
       // §8.6.1 Lure Module — three in one Region. Region 1 is the run until v0.7, so "this run" is the measure.
       if ((e.recruitsThisRun ?? 0) >= 3) count(next, 'region-recruits-three', 1, true);
       break;

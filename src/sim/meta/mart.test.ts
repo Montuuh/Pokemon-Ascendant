@@ -4,6 +4,7 @@ import { emptyAccount, SHELVES, xpForLevel, type AccountState } from './account'
 import { MART_PRICE, buy, discoveryShelf, martOwned, martPrice, martShelf, shelfItems, shelfOpen, shopTotal, wear } from './mart';
 import { COSMETIC_PRICE, COSMETICS } from './cosmetics';
 import { relicPoolFor, unlockedStarters } from './unlocks';
+import { BOND_RANKS } from './bond';
 
 // §8.3.4, §8.4.1, §8.4.4 — the Poké Mart: shelves open by level, Tokens buy, nothing is granted twice.
 
@@ -90,7 +91,7 @@ describe('Buying — §8.3.4', () => {
   });
 
   it('ASoulboundLine_CountsAsAnOwnedStarter_§6.8.2', () => {
-    const soul = at(3, 20, { bond: { eevee: 100 } });
+    const soul = at(3, 20, { bond: { eevee: BOND_RANKS[4] } });
     expect(martOwned(soul, { kind: 'starter', id: 'eevee' }, content)).toBe(true);
     expect(buy(soul, { kind: 'starter', id: 'eevee' }, content)).toEqual({ error: 'owned' });
   });

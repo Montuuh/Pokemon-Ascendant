@@ -43,7 +43,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
   // §6.8.2 — the ladder, with this line's own names on it once you have met the line.
   const rungs: { rank: 1 | 2 | 3 | 4 | 5; on: boolean; unlock: string }[] = [
     { rank: 1, on: u.mastery >= 1, unlock: `${named('Mastery Move Lv1', moveName(masteryMoves[0]))}, a fifth card` },
-    { rank: 2, on: u.shiny, unlock: 'Shiny — your copies wear the official shiny palette' },
+    { rank: 2, on: u.shinyCharm, unlock: 'Shiny Charm — its wild Pokémon are shiny three times as often' },
     { rank: 3, on: u.hiddenAbility, unlock: `${named('Hidden ability', hiddenName)}, open at the Dojo` },
     { rank: 4, on: u.mastery >= 2, unlock: named('Mastery Move Lv2', moveName(masteryMoves[1])) },
     three

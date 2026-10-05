@@ -442,7 +442,7 @@ the player made it. That is "synergy is sculpted, not drafted" expressed as an i
 # §6.8 Bond — a line gets better by being played
 
 Each evolution line has a **Bond**, tracked per account (§8.9), that grows with what you do *with* it and opens
-one concrete thing on the line at each of five ranks: its Mastery Move tiers, its Shiny palette, its hidden
+one concrete thing on the line at each of five ranks: its Mastery Move tiers, its Shiny Charm, its hidden
 ability, and at the top the right to start a run. Charmander, Charmeleon and Charizard share one Bond.
 
 Bond replaced two overlapping systems on 2026-09-21 — Pokédex tiers earned by *knocking out* the species, and
@@ -457,25 +457,34 @@ Earned by a line while it is in the **Active Team**:
 
 | What you did with the line | Bond |
 |---|---|
-| Won a fight | +1 — and +1 more for the member that led the most turns of that fight |
+| Won a trainer or Elite fight | +1 — and +1 more for the member that led the most turns of that fight |
+| Won a Gym — a Region cleared together | +4 (and the lead's +1) |
+| Won a wild fight | **nothing** |
 | Evolved | +5 |
 | Recruited it (first of the line this run) | +2 |
+| Recruited a **shiny** of it (§5.14) | +10 |
 | Finished a run with it | +8 |
 | Won a run with it | +15 (replaces the +8) |
 
-A first run with a starter leaves it at roughly 30: rank 2 on the first evening, rank 3 on the second, rank 5
-around the fifth. The numbers are tunable; the anchor is **one run ≈ one rank early on, and Soulbound is a
-commitment of several runs, not one lucky one.**
+**The pace (v0.9.1, the user's call: "to complete it whole, more than fifteen runs").** A line in the Active Team
+earns about 20 a run; the ranks sit at **10 · 40 · 110 · 200 · 360**, so a line played every run reaches them
+after about **1 / 2 / 6 / 11 / 18 runs** — measured as a career, one account and many runs in a row with the
+account's own perks playing into each (`balance/bondCareer.test.ts`). Quick at the bottom, so the first evening
+shows something; long at the top, so Soulbound is a commitment. After 24 runs an account holds about two Soulbound
+lines and three at Deep Bond. *Why the rewrite:* the route became twenty columns in v0.8.7 and a run fought ~25
+fights, so the old +1 a fight (ranks at 5 · 15 · 35 · 60 · 100) made every played line Trusted inside its first
+run and Soulbound in three. A wild fight pays nothing now because it is the filler between the fights that mean
+something; the Gym pays a Region.
 
 ## §6.8.2 Ranks and unlocks
 
 | Rank | Bond | Name | Opens on the line |
 |---|---|---|---|
-| 1 | 5 | Companion | **Mastery Move Lv1** — the fifth card (§5.13.2) |
-| 2 | 15 | Trusted | **Shiny** — your copies wear the official shiny palette |
-| 3 | 35 | Veteran | **Hidden ability** (§6.8.3) |
-| 4 | 60 | Deep Bond | **Mastery Move Lv2** (the stage still caps it: middle stage or a two-stage final) |
-| 5 | 100 | Soulbound | **Mastery Move Lv3** on a three-stage line; on a two-stage or single-stage line the Mastery card is dealt into **every opening hand**. Either way the line **may start a run** (§8.5.2) |
+| 1 | 10 | Companion | **Mastery Move Lv1** — the fifth card (§5.13.2) |
+| 2 | 40 | Trusted | **Shiny Charm** — the line's wild Pokémon are shiny ×3 as often (§5.14) |
+| 3 | 110 | Veteran | **Hidden ability** (§6.8.3) |
+| 4 | 200 | Deep Bond | **Mastery Move Lv2** (the stage still caps it: middle stage or a two-stage final) |
+| 5 | 360 | Soulbound | **Mastery Move Lv3** on a three-stage line; on a two-stage or single-stage line the Mastery card is dealt into **every opening hand**. Either way the line **may start a run** (§8.5.2), and its Shiny Charm doubles |
 
 Rank-ups are folded by the account the moment the event lands (§8.10), so a rank crossed mid-run applies from
 the next fight. Crossing a rank pays no Trainer XP — Bond is the line's, XP is the trainer's.

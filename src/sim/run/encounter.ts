@@ -9,6 +9,7 @@ import { isThreeStageLine } from '../meta/bond';
 import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
 import { RING } from './cities';
 import { applyGroups } from './groups';
+import { applyShiny } from './shiny';
 import { applyFields } from './battlefields';
 
 /** The catch consumable's catalog id (§7.2.5). */
@@ -63,6 +64,8 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
       if (mon.heldItem) setup.heldItem = mon.heldItem;
       // §7.3.5 — the run's record walks into the fight, so Champion's Crest is worth what it has earned.
       if (mon.defeats) setup.defeats = mon.defeats;
+      // §5.14 — a caught shiny wears its palette in every fight after.
+      if (mon.shiny) setup.shiny = true;
       // §7.3.5 Soul Link — the Box keeps arrival order, so its first two are the pair that has come furthest.
       if (run.box.slice(0, 2).some((m) => m.uid === mon.uid) && run.box.length >= 2) setup.soulLinked = true;
       // §5.13.2 — the fifth slot, from the account's Mastery tier for this line (frozen into the run's perks).
@@ -357,7 +360,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
   })();
   // §5.6.3 — the node's group first, so its companions and supports take the Region's tier, accent and modifiers too.
   // §4.3 — and the ground it is fought on: the biome's Battlefield, a Gym's or an Elite's Home Field.
-  return base ? applyPerks(applyModifiers(applyRegion(applyFields(applyGroups(base, node, run, content), node, run, content), run, content), run), run, content) : null;
+  // §5.14 — and, once the group is in, whether any wild Pokémon in it is shiny.
+  return base ? applyPerks(applyModifiers(applyRegion(applyFields(applyShiny(applyGroups(base, node, run, content), node, run, content), node, run, content), run, content), run), run, content) : null;
 }
 
 /**

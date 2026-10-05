@@ -260,11 +260,17 @@ R3 Psychic/Ground/Fighting/Ice. **12 Badges, 3 per run, max 4.**
 **Pokédex** — cross-run knowledge about the species you fight. **Familiar** (10/5/2 knock-outs by rarity)
 reveals Unknown intents from turn one, and is the only tier. Catching awards no kill credit.
 
-**Bond** (§6.8, 2026-09-21) — per *line*, filled by playing it: +1 per won fight in the Active Team (+1 leading),
-+5 per evolution, +2 a first recruit, +8 finishing a run, +15 winning one. Five ranks at 5/15/35/60/100:
-**Companion** Mastery Lv1 (the immutable 5th card) · **Trusted** Shiny · **Veteran** the hidden ability (the
-line's third authored one, greyed at the Dojo until then) · **Deep Bond** Mastery Lv2 · **Soulbound** Mastery
-Lv3 on three-stage lines or the Mastery card in every opening hand, and the line may start a run.
+**Bond** (§6.8, 2026-09-21, re-paced v0.9.1) — per *line*, filled by playing it: +1 per won trainer or Elite
+fight in the Active Team (+1 leading), +4 a Gym, nothing for a wild fight, +5 per evolution, +2 a first recruit,
++10 a shiny recruit, +8 finishing a run, +15 winning one. Five ranks at 10/40/110/200/360 — about 1 / 2 / 6 / 11 / 18
+runs for a line played every run (the user: more than fifteen to complete): **Companion** Mastery Lv1 (the immutable
+5th card) · **Trusted** the line's Shiny Charm (×3) · **Veteran** the hidden ability (the line's third authored one,
+greyed at the Dojo until then) · **Deep Bond** Mastery Lv2 · **Soulbound** Mastery Lv3 on three-stage lines or the
+Mastery card in every opening hand, the line may start a run, and its Shiny Charm doubles.
+
+**Shiny** (§5.14, v0.9.1) — found, not earned: every wild Pokémon rolls 1 in 40, unannounced until the fight's
+entrance; the Bond's Shiny Charm raises it. A caught shiny keeps its palette all run, pays its line +10 Bond and fills
+the Pokédex's shiny collection. Cosmetic, as in the series.
 
 ---
 
@@ -354,7 +360,7 @@ opens at a Trainer Level (§8.8.2) and only there — the track pays Tokens and 
 *(Section reflects canon as of 2026-09-21 evening: the track pays and opens, the Mart sells (§8.3.4–§8.3.5,
 §8.4.4 cosmetics); the track settles idempotently, the account is written after every fold in the browser,
 Pokédex Insight is a first-meeting peek at species not yet Familiar (§8.4.2), and Shiny is the official palette
-fetched rather than a hue-shift — §5.13.2.)*
+fetched rather than a hue-shift — §5.14.)*
 
 ---
 
