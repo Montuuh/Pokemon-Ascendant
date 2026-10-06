@@ -34,14 +34,23 @@ export const BOND = {
 } as const;
 
 /**
- * §6.8.2 — cumulative points to reach ranks 1–5. v0.9.1 (the user: "to complete it whole, more than fifteen runs"):
- * a line played every run reaches them after about 1 / 2 / 6 / 9 / 16 runs — measured as a career by
- * `balance/bondCareer.test.ts`. Quick at the bottom so the first evening shows something, long at the top.
+ * §6.8.2 — the four tiers and what each opens, one thing a tier (the user, 2026-10-06): the Shiny Charm, the hidden
+ * ability, the line's whole Mastery, and the right to start a run. The order is the order a player wants them: a
+ * look first, a choice at the Dojo second, the line's full kit third, the line as your partner last.
  */
-export const BOND_RANKS = [10, 40, 110, 200, 360] as const;
-export const MAX_BOND_RANK = 5;
+export const BOND_TIER = { shinyCharm: 1, hiddenAbility: 2, mastery: 3, soulbound: 4 } as const;
 
-export const BOND_RANK_NAME: Record<number, string> = { 0: '—', 1: 'Companion', 2: 'Trusted', 3: 'Veteran', 4: 'Deep Bond', 5: 'Soulbound' };
+/**
+ * §6.8.2 — cumulative points to reach tiers 1–4. **Linear** (the user, 2026-10-06): every tier costs the same 100, so
+ * a line played every run reaches them after about 5 / 10 / 15 / 20 runs, and a line recruited every other run after
+ * about twice that — measured as a career by `balance/bondCareer.test.ts`. v0.9.1's five ranks at 10 · 40 · 110 ·
+ * 200 · 360 front-loaded the rewards and handed a line its first Mastery card inside its first run.
+ */
+export const BOND_TIER_COST = 100;
+export const MAX_BOND_RANK = 4;
+export const BOND_RANKS = [BOND_TIER_COST, 2 * BOND_TIER_COST, 3 * BOND_TIER_COST, 4 * BOND_TIER_COST] as const;
+
+export const BOND_RANK_NAME: Record<number, string> = { 0: '—', 1: 'Companion', 2: 'Trusted', 3: 'Deep Bond', 4: 'Soulbound' };
 
 export function bondRank(points: number): number {
   let rank = 0;
@@ -49,7 +58,7 @@ export function bondRank(points: number): number {
   return rank;
 }
 
-/** Progress inside the current rank, for the bar. At rank 5, 1. */
+/** Progress inside the current tier, for the bar. At the top tier, 1. */
 export function bondProgress(points: number): { rank: number; into: number; span: number; fraction: number; next: number | null } {
   const rank = bondRank(points);
   if (rank >= MAX_BOND_RANK) return { rank, into: 0, span: 0, fraction: 1, next: null };
@@ -59,46 +68,37 @@ export function bondProgress(points: number): { rank: number; into: number; span
   return { rank, into: points - floor, span, fraction: span > 0 ? (points - floor) / span : 1, next };
 }
 
-/**
- * §6.8.2 — what each rank opens on the line. `mastery` is the Mastery Move tier the line may carry (the stage
- * still caps it, §5.13.2); the rest are flags the run and the UI read.
- */
+/** §6.8.2 — what the line's tier opens. Flags the run and the UI read. */
 export interface BondUnlocks {
-  mastery: 0 | 1 | 2 | 3;
-  /** §5.14 — the line's Shiny Charm: its wild Pokémon are shiny more often (`SHINY` in run/shiny.ts). */
+  /** Tier 1 — §5.14: every new copy of the line rolls for shiny, three times as often in the wild. */
   shinyCharm: boolean;
+  /** Tier 2 — §6.8.3: the third authored ability, at the Dojo. */
   hiddenAbility: boolean;
-  /** Rank 5 on a line whose Mastery caps at Lv2: the Mastery card opens every fight in hand. */
-  opener: boolean;
-  /** Rank 5: the line may be picked on the starter screen (§8.5.2). */
+  /**
+   * Tier 3 — §5.13.2: the whole Mastery at once, every tier on every stage (the stage still decides which card the
+   * slot holds). It was three unlocks across three ranks until v0.9.2; one unlock is the line's full potential.
+   */
+  mastery: 0 | 3;
+  /** Tier 4 — §8.5.2: the line may start a run, and starts it shiny. */
   starter: boolean;
 }
 
-export function bondUnlocks(rank: number, threeStageLine: boolean): BondUnlocks {
+export function bondUnlocks(rank: number): BondUnlocks {
   return {
-    mastery: rank >= 5 && threeStageLine ? 3 : rank >= 4 ? 2 : rank >= 1 ? 1 : 0,
-    shinyCharm: rank >= 2,
-    hiddenAbility: rank >= 3,
-    opener: rank >= 5 && !threeStageLine,
-    starter: rank >= 5,
+    shinyCharm: rank >= BOND_TIER.shinyCharm,
+    hiddenAbility: rank >= BOND_TIER.hiddenAbility,
+    mastery: rank >= BOND_TIER.mastery ? 3 : 0,
+    starter: rank >= BOND_TIER.soulbound,
   };
 }
 
 /** §6.8.2 — the ladder, in the player's words, for the Pokédex sheet's Line tab and the tooltips. */
-export const BOND_LADDER: { rank: 1 | 2 | 3 | 4 | 5; name: string; unlock: string }[] = [
-  { rank: 1, name: 'Companion', unlock: 'Mastery Move Lv1 — a fifth card' },
-  { rank: 2, name: 'Trusted', unlock: 'Shiny Charm — its wild Pokémon are shiny three times as often' },
-  { rank: 3, name: 'Veteran', unlock: 'Hidden ability' },
-  { rank: 4, name: 'Deep Bond', unlock: 'Mastery Move Lv2' },
-  { rank: 5, name: 'Soulbound', unlock: 'Mastery Move Lv3 (three-stage lines) or the Mastery card in every opening hand · the line can start a run · its shinies twice as often again' },
+export const BOND_LADDER: { rank: 1 | 2 | 3 | 4; name: string; unlock: string }[] = [
+  { rank: 1, name: 'Companion', unlock: 'Shiny Charm — every new one of the line may be shiny; three times as often in the wild' },
+  { rank: 2, name: 'Trusted', unlock: 'Hidden ability — open at the Dojo' },
+  { rank: 3, name: 'Deep Bond', unlock: 'Mastery Move — the fifth card, at every stage of the line' },
+  { rank: 4, name: 'Soulbound', unlock: 'The line can start a run — and starts it shiny' },
 ];
-
-/** Does the line reach a third stage? Decides whether rank 5 is Lv3 or the opener. */
-export function isThreeStageLine(lineId: string, content: ContentRegistry): boolean {
-  const base = content.species(lineId);
-  const mid = base.evolvesTo[0];
-  return !!mid && content.species(mid).evolvesTo.length > 0;
-}
 
 /** §6.8.3 — the line's hidden ability: the last of its three authored abilities, or null while unauthored. */
 export function hiddenAbilityOf(lineId: string, content: ContentRegistry): string | null {

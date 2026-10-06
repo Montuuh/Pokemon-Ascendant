@@ -186,13 +186,6 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
     state.player.team.map((c) => [c.uid, c.moveIds, c.masteryMoveId] as [string, string[], string | null]),
   );
   state.player.deck = rng.shuffle(deck);
-  // §6.8.2 — a Soulbound two-stage line's Mastery card is drawn first: moved to the top *after* the shuffle,
-  // so the rest of the order (and the RNG) is exactly what it would have been.
-  scenario.player.team.forEach((m, i) => {
-    if (!m.masteryOpener) return;
-    const at = state.player.deck.findIndex((c) => c.ownerUid === `p${i}` && c.mastery);
-    if (at >= 0) state.player.deck.push(...state.player.deck.splice(at, 1));
-  });
 
   // §3.5 / §2.6.4 — the Consumable Pile. Balls ride in the bag with everything else (v0.8.6) and are only
   // carried into a fight that can be caught; a fixture's `balls` adds that many Poké Balls on top.

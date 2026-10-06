@@ -19,6 +19,8 @@ import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { BLACK_MARKET, atLegendaryCap, candyPrice, fencePrice, rollBlackMarket, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
+import { BOND_TIER } from '../meta/bond';
+import { copyIsShiny } from './shiny';
 import type { BlackMarketState, LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunPhase, RunReduceResult, RunState, ShopSlot } from './types';
 
 
@@ -118,10 +120,13 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
   const mapRng = streams.get('MapRNG');
   const map = generateRegion(mapRng, ctx.content, regionIndex, seed, modifiers, [], wildRareChance(regionModifier ?? null, ctx.content));
   const starter = newPartyMon(starterId, RUN_START.starterLevel, ctx.content, seed);
+  // §5.14 / §6.8.2 — a Soulbound line starts the run shiny; under the Shiny Charm any other starter may be.
+  if (copyIsShiny({ seed, perks }, starterId, 'starter', ctx.content)) starter.shiny = true;
   // §8.5.3 — the starter's flourish, if it has one (Pikachu's Light Ball).
   const starterItem = RUN_START.starterItems[starterId];
   if (starterItem && ctx.content.allHeldItems().some((i) => i.id === starterItem)) starter.heldItem = starterItem;
   const second = twin ? newPartyMon(twin, RUN_START.starterLevel, ctx.content, seed + 1) : null;
+  if (second && copyIsShiny({ seed, perks }, twin!, 'twin', ctx.content)) second.shiny = true;
 
   return {
     version: RUN_SAVE_VERSION,
@@ -206,7 +211,7 @@ export function effectiveMax(run: RunState, mon: PartyMon, content: ContentRegis
 export function abilityLocked(run: RunState, speciesId: string, abilityId: string, content: ContentRegistry): boolean {
   const line = content.lineBase(speciesId);
   const hidden = content.species(line).hiddenAbility;
-  return hidden === abilityId && (run.perks?.bond?.[line] ?? 0) < 3;
+  return hidden === abilityId && (run.perks?.bond?.[line] ?? 0) < BOND_TIER.hiddenAbility;
 }
 
 /**
@@ -466,12 +471,15 @@ function endHunt(draft: RunState, result: 'caught' | 'fled' | 'left' | 'closed',
   say(draft, `Caught ${name}!`);
   if (draft.box.length < boxCapacity(draft)) {
     const recruit = newPartyMon(spot.species, spot.level, ctx.content, draft.seed);
+    // §5.14 — a Safari catch is a new copy: the line's Shiny Charm rolls for it.
+    const shiny = copyIsShiny(draft, spot.species, `safari:${draft.regionIndex}:${spot.species}:${draft.stats.catches}`, ctx.content);
+    if (shiny) recruit.shiny = true;
     draft.box.push(recruit);
     draft.stats.recruits += 1;
     if (draft.activeUids.length < 3) draft.activeUids.push(recruit.uid);
     queueSafariEvolutions(draft, ctx.content);
   } else {
-    draft.pendingRecruit = { speciesId: spot.species, level: spot.level };
+    draft.pendingRecruit = { speciesId: spot.species, level: spot.level, ...(copyIsShiny(draft, spot.species, `safari:${draft.regionIndex}:${spot.species}:${draft.stats.catches}`, ctx.content) ? { shiny: true } : {}) };
     draft.phase = 'swap-or-skip';
   }
 }
@@ -1428,6 +1436,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const given = draft.box[idx]!;
         const species = market.trades[action.offer]!;
         const fresh = newPartyMon(species, given.level, ctx.content, draft.seed);
+        // §5.14 — a traded Pokémon is a new copy too.
+        if (copyIsShiny(draft, species, `trade:${draft.regionIndex}:${species}`, ctx.content)) fresh.shiny = true;
         if (given.heldItem) draft.bag.push(given.heldItem);
         draft.box[idx] = fresh;
         draft.activeUids = draft.activeUids.map((u) => (u === given.uid ? fresh.uid : u));

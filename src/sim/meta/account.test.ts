@@ -297,19 +297,19 @@ describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
   });
 
   it('RunPerks_AreTheAccountsWidenings_AndNothingElse', () => {
-    // Squirtle at rank 4: Mastery Lv2. Rattata at rank 5 on a two-stage line: still Lv2. Pidgey short of rank 1.
-    const a = { ...emptyAccount(), hub: ['expanded-box', 'pokedex-insight'], bond: { squirtle: BOND_RANKS[3], rattata: BOND_RANKS[4], pidgey: BOND_RANKS[0] - 1 }, dex: { pidgey: { ...emptyDexEntry(), defeats: 10, tier: 1 as const } } };
+    // Squirtle at tier 3: its whole Mastery. Rattata at tier 2: the hidden ability, no Mastery yet. Pidgey short of tier 1.
+    const a = { ...emptyAccount(), hub: ['expanded-box', 'pokedex-insight'], bond: { squirtle: BOND_RANKS[2], rattata: BOND_RANKS[1], pidgey: BOND_RANKS[0] - 1 }, dex: { pidgey: { ...emptyDexEntry(), defeats: 10, tier: 1 as const } } };
     const perks = runPerksFor(a, content);
     expect(perks.boxBonus).toBe(2);
     expect(perks.insight).toBe(true);
     expect(perks.familiar).toEqual(['pidgey']);
-    expect(perks.mastery).toEqual({ squirtle: 2, rattata: 2 });
-    expect(perks.bond).toEqual({ squirtle: 4, rattata: 5 });
+    expect(perks.mastery).toEqual({ squirtle: 3 });
+    expect(perks.bond).toEqual({ squirtle: 3, rattata: 2 });
     expect(runPerksFor(a, content, true).boxBonus).toBe(3);
   });
 
   it('ASoulboundLine_CanStartARun_§6.8.2', () => {
-    const a = { ...emptyAccount(), bond: { geodude: BOND_RANKS[4], pidgey: BOND_RANKS[4] - 1 } };
+    const a = { ...emptyAccount(), bond: { geodude: BOND_RANKS[3], pidgey: BOND_RANKS[3] - 1 } };
     const starters = unlockedStarters(a, content);
     expect(starters).toContain('geodude');
     expect(starters).not.toContain('pidgey');

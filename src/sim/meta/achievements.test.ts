@@ -34,7 +34,7 @@ describe('Achievements — §8.7', () => {
         { t: 'run-end', won: true, catches: 0, badges: 1, monoType: true, relicCount: 1, modifierCount: 2 },
         { t: 'dex-tier-up', speciesId: 'pidgey', tier: 1 },
         { t: 'bond-rank-up', line: 'pidgey', rank: 3 },
-        { t: 'bond-rank-up', line: 'pidgey', rank: 5 },
+        { t: 'bond-rank-up', line: 'pidgey', rank: 4 },
       ] satisfies MetaEvent[];
       // The streak rows read a streak already in progress.
       const streak = { ...emptyProgress(), winStreak: 4 };

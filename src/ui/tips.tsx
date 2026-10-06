@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
+import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
@@ -341,7 +341,7 @@ export function cosmeticTip(name: string, kind: string, blurb: string, price: nu
 export function starterTip(name: string, blurb: string | null, price: number, state: 'owned' | 'soulbound' | 'buyable' | 'locked' | 'pending', detail?: string): ReactNode {
   const footer =
     state === 'owned' ? 'Yours — on the starter screen.'
-    : state === 'soulbound' ? 'Soulbound: the line earned its place by being played (Bond rank 5).'
+    : state === 'soulbound' ? `Soulbound: the line earned its place by being played (Bond rank ${BOND_TIER.soulbound}).`
     : state === 'pending' ? `Not sold yet: ${detail}.`
     : state === 'buyable' ? `${price} Tokens at the Starters shelf.`
     : detail ?? 'Not enough Tokens yet.';
@@ -521,7 +521,7 @@ export function tutorTip(): ReactNode {
 }
 /** §6.4.2 — the passive counter. */
 export function passiveTip(): ReactNode {
-  return <Tip title="Passive ability" body="One passive slot per Pokémon; teaching one replaces what is there, and swapping back is allowed. The line's hidden ability opens at Bond rank 3." />;
+  return <Tip title="Passive ability" body={`One passive slot per Pokémon; teaching one replaces what is there, and swapping back is allowed. The line's hidden ability opens at Bond rank ${BOND_TIER.hiddenAbility}.`} />;
 }
 /** §2.9.4.2 — the master's scrolls. */
 export function eggMovesTip(): ReactNode {

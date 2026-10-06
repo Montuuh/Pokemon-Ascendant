@@ -1,4 +1,5 @@
 import type { ContentRegistry } from '../content/defs';
+import { MAX_BOND_RANK } from './bond';
 import type { CombatOutcomeReport, RunState, CombatTally } from '../run/types';
 import { boxCapacity } from '../run/run';
 
@@ -156,13 +157,13 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     // #20 — Bond rank 5 with one line.
     id: 'specialist', category: 'mastery', name: 'Specialist', tier: 'gold', goal: 1,
     description: 'Reach Soulbound with one line.',
-    count: (e) => (e.t === 'bond-rank-up' && e.rank === 5 ? 1 : 0),
+    count: (e) => (e.t === 'bond-rank-up' && e.rank === MAX_BOND_RANK ? 1 : 0),
   },
   {
     // #21 — Bond rank 5 with ten lines.
     id: 'living-pokedex', category: 'mastery', name: 'Living Pokédex', tier: 'platinum', goal: 10,
     description: 'Reach Soulbound with ten lines.',
-    count: (e) => (e.t === 'bond-rank-up' && e.rank === 5 ? 1 : 0),
+    count: (e) => (e.t === 'bond-rank-up' && e.rank === MAX_BOND_RANK ? 1 : 0),
   },
   {
     // #22 — a shiny joins the Box (§5.14). Hidden: a find, not a goal printed on the wall.

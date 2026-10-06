@@ -62,7 +62,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('dex-squirtle').click();
     await page.getByTestId('dex-sheet-tab-line').click();
     await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-line', 'squirtle');
-    await expect(page.getByTestId('line-sheet-ladder')).toContainText('Mastery Move Lv1, a fifth card');
+    await expect(page.getByTestId('line-sheet-ladder')).toContainText('Shiny Charm');
     await expect(page.getByTestId('line-sheet-ladder')).not.toContainText('Aqua Tail');
     await expect(page.getByTestId('line-sheet-ladder')).toContainText('Shiny');
     // How Bond grows is a door, not a paragraph: the InfoDot by the Bond heading carries it.
@@ -124,11 +124,11 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'claimed');
     await expect(page.getByTestId('track-3')).toHaveAttribute('data-state', 'next');
 
-    // §6.8 — 303 wins leading with Squirtle is 606 Bond: five pips on every card of the line, "By Bond" puts
+    // §6.8 — 303 wins leading with Squirtle is 606 Bond: all four pips on every card of the line, "By Bond" puts
     // the line first, and every rung is lit on the sheet.
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '5');
-    await expect(page.getByTestId('dex-blastoise')).toHaveAttribute('data-rank', '5');
+    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '4');
+    await expect(page.getByTestId('dex-blastoise')).toHaveAttribute('data-rank', '4');
     await expect(page.getByTestId('dex-legend')).toContainText('1 of 79 lines played');
     await page.getByTestId('dex-order-bond').click();
     await expect(page.locator('[data-testid="dex-grid"] li').first()).toContainText('Squirtle');
@@ -136,9 +136,9 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.screenshot({ path: 'playtest/hub-pokedex-by-bond.png' });
     await page.getByTestId('dex-squirtle').click();
     await page.getByTestId('dex-sheet-tab-line').click();
-    await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-rank', '5');
+    await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-rank', '4');
     await expect(page.getByTestId('line-sheet')).toContainText('Can start a run');
-    await expect(page.locator('[data-testid="line-sheet-ladder"] li[data-on="true"]')).toHaveCount(5);
+    await expect(page.locator('[data-testid="line-sheet-ladder"] li[data-on="true"]')).toHaveCount(4);
     await page.screenshot({ path: 'playtest/hub-line-sheet.png' });
     await page.keyboard.press('Escape');
     await page.getByTestId('dex-order-dex').click();
@@ -172,7 +172,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.goto('/?screen=hub');
     await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '2');
     await page.getByTestId('kiosk-pc').click();
-    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '5');
+    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '4');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
     await page.getByTestId('dex-squirtle').click();
     await expect(page.getByTestId('dex-stat-kos')).toContainText('303');

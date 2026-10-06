@@ -510,9 +510,8 @@ active-4 configuration.
   (110–140, 2–3 AP, a composite species-unique effect).
 - **It advances with evolution**, but only if that tier has been unlocked in your account. Otherwise the
   Pokémon keeps the tier it has.
-- **Unlocks are per line, across runs**, by Bond rank (§6.8.2): Lv1 at Companion, Lv2 at Deep Bond, Lv3 at
-  Soulbound on a three-stage line. A Soulbound two-stage line instead opens every fight with its Mastery card
-  in hand.
+- **One unlock per line, across runs** (§6.8.2, v0.9.2): at **Deep Bond** (rank 3) the whole Mastery opens —
+  every tier on every stage, so the slot holds whatever card the Pokémon's stage reaches. Before it, no fifth card.
 
 **Deck integration.** Deck size = 12 + 1 per Active member with an unlocked Mastery, to a maximum of 15. Hand
 size stays 5. When a Mastery-unlocked Pokémon faints, **5** cards leave the deck and discard, not 4.
@@ -533,10 +532,12 @@ Bond.**
   every three runs.
 - **Unannounced.** The map never shows it — the node's preview is the same — and the fight's entrance does: the
   sparkle as it takes the field. Pillar 1 is about the fight's tactics, and a shiny is not one: it is a find.
-- **Tied to the Bond** (§6.8.2). A line at **Trusted** (rank 2) carries its **Shiny Charm**: its wild Pokémon are
-  shiny **×3** as often. At **Soulbound** (rank 5) **×2 again**. The lines a player recruits every run are the ones
-  it meets in the wild every run, so the charm is where a collection grows: a career of 24 runs catches about
-  six or seven (`balance/bondCareer.test.ts`).
+- **Tied to the Bond** (§6.8.2). The Bond's first rank is the line's **Shiny Charm**: its wild Pokémon are shiny
+  **×3** as often, and **every other new copy of the line rolls too** at that charmed chance — the starter at the
+  run's start, a Safari catch, a Black Market trade (`copyIsShiny`); without the Charm those never roll. A
+  **Soulbound** line (rank 4) that starts the run starts it shiny. The lines a player recruits every run are the ones
+  it meets in the wild every run, so the charm is where a collection grows: a career of 30 runs catches about
+  seven (`balance/bondCareer.test.ts`).
 - **Catch it and it stays shiny** — in the Box, in every fight after, through its evolutions. It is cosmetic, as in
   the series: no stat, no price. What it gives is the **line's Bond, +10** (§6.8.1), an entry in the **shiny
   collection** (the Pokédex counts the shinies met and caught per species, §8.9) and, the first time, the hidden

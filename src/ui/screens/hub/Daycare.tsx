@@ -1,7 +1,7 @@
 import { useAccountStore } from '@/app/accountStore';
 import { useAppStore } from '@/app/store';
 import { getContent } from '@/content/registry';
-import { MART_PRICE, META_STARTERS, MODIFIERS, SHELVES, STARTER_IDS, bondRank, levelFor, modifierSlots, modifierUnlocked, shelfOpen, startingRelicOffers, twinRun } from '@/sim';
+import { MART_PRICE, META_STARTERS, MODIFIERS, SHELVES, STARTER_IDS, bondRank, levelFor, modifierSlots, modifierUnlocked, shelfOpen, startingRelicOffers, twinRun, BOND_TIER } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { TokenIcon } from './TokenIcon';
@@ -37,13 +37,13 @@ export function Daycare() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>
           Starters
-          <InfoDot tip={<Tip title="Who can start a run" body={`The three defaults, the three the Poké Mart sells on its Starters shelf from Level ${SHELVES.starters.level} — and any line you have taken to Soulbound (Bond rank 5) — see its page in the Pokédex.`} />} />
+          <InfoDot tip={<Tip title="Who can start a run" body={`The three defaults, the three the Poké Mart sells on its Starters shelf from Level ${SHELVES.starters.level} — and any line you have taken to Soulbound (Bond rank ${BOND_TIER.soulbound}), which starts it shiny — see its page in the Pokédex.`} />} />
         </h2>
         <ul className={styles.starters}>
-          {[...STARTER_IDS, ...META_STARTERS, ...Object.keys(account.bond).filter((line) => bondRank(account.bond[line]!) >= 5 && !(STARTER_IDS as readonly string[]).includes(line) && !META_STARTERS.includes(line))].map((id) => {
+          {[...STARTER_IDS, ...META_STARTERS, ...Object.keys(account.bond).filter((line) => bondRank(account.bond[line]!) >= BOND_TIER.soulbound && !(STARTER_IDS as readonly string[]).includes(line) && !META_STARTERS.includes(line))].map((id) => {
             const shipped = content.hasSpecies(id);
             const isDefault = (STARTER_IDS as readonly string[]).includes(id);
-            const soulbound = bondRank(account.bond[id] ?? 0) >= 5;
+            const soulbound = bondRank(account.bond[id] ?? 0) >= BOND_TIER.soulbound;
             const unlocked = isDefault || soulbound || account.starters.includes(id);
             const price = MART_PRICE.starter[id];
             const name = shipped ? content.species(id).name : id.charAt(0).toUpperCase() + id.slice(1);

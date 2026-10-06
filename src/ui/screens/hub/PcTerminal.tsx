@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, BOND_RANKS, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier, speciesMet } from '@/sim';
+import { ACHIEVEMENTS, BOND_RANKS, MAX_BOND_RANK, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier, speciesMet } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon } from '@/ui/art';
 import { TypeLabel } from '@/ui/components/TypeBadge';
@@ -21,7 +21,7 @@ import styles from './Hub.module.css';
 // (§8.6.1).
 //
 // The Pokédex is a *picture*: a card per species with number, sprite, name, type label and the line's rank as
-// five pips — nothing else. Every card is a button that opens a sheet (PcSheet) where the reading is: the
+// four pips — nothing else. Every card is a button that opens a sheet (PcSheet) where the reading is: the
 // species' record and kit, and the line's stages, Bond bar and ladder (docs/design/ui-doctrine.md — the picture
 // on the grid, the paragraph one click away). The Bond is per line and a line is a page of the Pokédex, so it
 // lives here; "By Bond" orders the book by the lines you have played.
@@ -97,7 +97,7 @@ export function PcTerminal() {
         <div className={styles.dexHead}>
           <p className={styles.lede} data-testid="dex-legend">
             {met} of {species.length} met · {linesPlayed} of {linesTotal} lines played{shinies > 0 ? ` · ${shinies} shin${shinies === 1 ? 'y' : 'ies'}` : ''}.
-            <InfoDot tip={<Tip title="The Pokédex" body={`Every species there is. A silhouette is one you have not met yet — its name, types and kit stay unknown until it takes the field against you or with you; the five pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A sparkle marks a species you have caught shiny. ${bondRulesText()} Ranks at ${BOND_RANKS.join(' · ')}.`} />} />
+            <InfoDot tip={<Tip title="The Pokédex" body={`Every species there is. A silhouette is one you have not met yet — its name, types and kit stay unknown until it takes the field against you or with you; the four pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A sparkle marks a species you have caught shiny. ${bondRulesText()} Ranks at ${BOND_RANKS.join(' · ')}.`} />} />
           </p>
           <div className={styles.order} role="group" aria-label="Order">
             <button type="button" className={`${styles.orderBtn} ${order === 'dex' ? styles.orderOn : ''}`} onClick={() => setOrder('dex')} aria-pressed={order === 'dex'} data-testid="dex-order-dex">By number</button>
@@ -139,7 +139,7 @@ export function PcTerminal() {
                     {known && sp.types.map((t) => <TypeLabel key={t} type={t} size={12} />)}
                   </span>
                   <span className={styles.pips} aria-hidden="true">
-                    {[1, 2, 3, 4, 5].map((r) => <i key={r} className={`${styles.pip} ${rank >= r ? styles.pipOn : ''}`} />)}
+                    {Array.from({ length: MAX_BOND_RANK }, (_, i) => i + 1).map((r) => <i key={r} className={`${styles.pip} ${rank >= r ? styles.pipOn : ''}`} />)}
                   </span>
                 </Tipped>
               </motion.li>

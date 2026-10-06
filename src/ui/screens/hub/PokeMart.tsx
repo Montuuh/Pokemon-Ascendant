@@ -6,8 +6,7 @@ import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import {
   HUB_UPGRADE_LABEL, SHELF_ORDER, SHELVES, UNMET_NAME, bondRank, speciesMet, cosmeticById, discoveryProgress, levelFor, martOwned, martPending, martPrice, martShelf, shelfItems, shelfOpen, xpForLevel,
-  type AccountState, type HubUpgrade, type MartError, type MartItem, type ShelfId,
-} from '@/sim';
+  type AccountState, type HubUpgrade, type MartError, type MartItem, type ShelfId, BOND_TIER } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon, trainerSprite } from '@/ui/art';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
@@ -238,7 +237,7 @@ function MartCard({ item, account, open, onBuy, onWear }: {
       name = !met ? UNMET_NAME : shipped ? content.species(item.id).name : item.id.charAt(0).toUpperCase() + item.id.slice(1);
       desc = met ? (STARTER_BLURB[item.id] ?? '') : '';
       face = !shipped ? <span className={styles.starterBlank} aria-hidden="true">?</span> : <span className={met ? undefined : styles.starterUnmet}><MonIcon speciesId={item.id} size={40} alt={met ? undefined : UNMET_NAME} /></span>;
-      const soulbound = bondRank(account.bond[item.id] ?? 0) >= 5;
+      const soulbound = bondRank(account.bond[item.id] ?? 0) >= BOND_TIER.soulbound;
       tipNode = starterTip(name, met ? (STARTER_BLURB[item.id] ?? '') : null, price, soulbound ? 'soulbound' : owned ? 'owned' : pending ? 'pending' : canBuy ? 'buyable' : 'locked', pending ?? (!open ? `The Starters shelf opens at Trainer Level ${shelfLevel}.` : undefined));
       if (soulbound) ownedTag = 'Soulbound';
       break;

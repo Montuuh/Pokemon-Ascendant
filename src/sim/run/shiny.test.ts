@@ -3,7 +3,8 @@ import { buildRegistry } from '@/content/registry';
 import type { ScenarioDef } from '../content/defs';
 import { createRun, newPartyMon, runReducer, defaultRunCtx } from './run';
 import { activeSetups } from './encounter';
-import { applyShiny, SHINY, shinyChance } from './shiny';
+import { applyShiny, copyIsShiny, SHINY, shinyChance } from './shiny';
+import { BOND_TIER } from '../meta/bond';
 import type { CombatOutcomeReport, MapNode, RunAction, RunState } from './types';
 
 const content = buildRegistry();
@@ -22,13 +23,28 @@ const wildFight = (species: string[]): ScenarioDef => ({
 const node = (id: string): MapNode => ({ id } as MapNode);
 
 describe('Shiny — §5.14', () => {
-  it('ShinyChance_TheCharmAndSoulbound_Multiply_§6.8.2', () => {
+  it('ShinyChance_TheCharm_TriplesTheWildOdds_FromTierOne_§6.8.2', () => {
     const base = createRun('squirtle', 11, ctx);
     const at = (rank: number) => shinyChance({ perks: { ...base.perks, bond: { pidgey: rank } } }, 'pidgeotto', content);
     expect(at(0)).toBeCloseTo(SHINY.chance);
-    expect(at(1)).toBeCloseTo(SHINY.chance);
-    expect(at(2)).toBeCloseTo(SHINY.chance * SHINY.charmMultiplier);
-    expect(at(5)).toBeCloseTo(SHINY.chance * SHINY.charmMultiplier * SHINY.soulboundMultiplier);
+    expect(at(BOND_TIER.shinyCharm)).toBeCloseTo(SHINY.chance * SHINY.charmMultiplier);
+    expect(at(BOND_TIER.soulbound)).toBeCloseTo(SHINY.chance * SHINY.charmMultiplier);
+  });
+
+  it('CopyIsShiny_OnlyUnderTheCharm_AndASoulboundStarterAlways_§6.8.2', () => {
+    const base = createRun('squirtle', 11, ctx);
+    const run = (rank: number, seed = 11) => ({ seed, perks: { ...base.perks, bond: { squirtle: rank } } });
+    // No Charm: a starter, a Safari catch or a trade never rolls.
+    for (let seed = 1; seed <= 300; seed++) expect(copyIsShiny(run(0, seed), 'squirtle', 'starter', content)).toBe(false);
+    // The Charm: about the charmed chance, over many seeds.
+    let hits = 0;
+    for (let seed = 1; seed <= 2000; seed++) if (copyIsShiny(run(BOND_TIER.shinyCharm, seed), 'squirtle', 'starter', content)) hits++;
+    expect(hits).toBeGreaterThan(2000 * SHINY.chance * SHINY.charmMultiplier * 0.6);
+    expect(hits).toBeLessThan(2000 * SHINY.chance * SHINY.charmMultiplier * 1.4);
+    // Soulbound: the starter is shiny every time, and createRun reads it from the perks.
+    expect(copyIsShiny(run(BOND_TIER.soulbound), 'squirtle', 'starter', content)).toBe(true);
+    const soul = createRun('squirtle', 11, ctx, 0, [], undefined, undefined, { ...base.perks, bond: { squirtle: BOND_TIER.soulbound } });
+    expect(soul.box[0]!.shiny).toBe(true);
   });
 
   it('ApplyShiny_IsAHashOfTheNode_SameNodeSameAnswer_AndAboutTheChance', () => {

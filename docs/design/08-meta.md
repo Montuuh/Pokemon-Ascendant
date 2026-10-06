@@ -330,8 +330,9 @@ diversity rather than raising power. In any order; the track has paid for all th
 **Eevee has three branches, not four.** Gen I has exactly three Eeveelutions, and the Gen I constraint (§1.6.2)
 outranks a promise of a fourth.
 
-**Any line at Bond rank 5 may also start a run** (§6.8.2) — a fourth road to the starter screen, earned by
-playing the line across several runs rather than by Trainer Level. *(Added 2026-09-21.)*
+**Any line at Bond rank 4 (Soulbound) may also start a run** (§6.8.2), and starts it shiny — a fourth road to the
+starter screen, earned by playing the line across some twenty runs rather than by Trainer Level. *(Added 2026-09-21;
+rank 4 since v0.9.2.)*
 
 **Magikarp replaces Riolu** as the third meta-starter. Riolu is a Gen IV Pokémon in a Gen I project, and the
 "weak early, devastating later" fantasy it was chosen for is exactly what the Magikarp line already delivers —

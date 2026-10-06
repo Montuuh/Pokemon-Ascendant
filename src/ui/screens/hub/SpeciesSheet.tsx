@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { IconArrowsShuffle, IconCrown, IconEye, IconEyeOff, IconFlag, IconHeartBroken, IconLock, IconPokeball, IconSwords, IconTargetArrow, IconTrophy, IconUsers, IconWand, IconSparkles } from '@tabler/icons-react';
 import { Tabs } from 'radix-ui';
 import { getContent } from '@/content/registry';
-import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, UNMET_NAME, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, isThreeStageLine, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef, speciesMet } from '@/sim';
+import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, UNMET_NAME, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef, speciesMet, BOND_TIER } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { spriteOf, portraitOf } from '@/ui/art';
@@ -160,7 +160,6 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
   const line = content.lineBase(s.id);
   const rank = bondRank(account.bond[line] ?? 0);
   const masteryTier = masteryTierFor(account, line, content);
-  const three = isThreeStageLine(line, content);
   const hidden = hiddenAbilityOf(line, content);
   const masteryMoves = content.masteryMoves(line);
   const abilities = s.availableAbilities.filter((a) => a !== hidden);
@@ -191,20 +190,14 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
       )}
 
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Mastery Moves <InfoDot tip={<Tip title="Mastery Moves" body={`A fifth card the line earns through its Bond: Lv1 at ${BOND_RANK_NAME[1]}, Lv2 at ${BOND_RANK_NAME[4]}, Lv3 at ${BOND_RANK_NAME[5]} for a three-stage line. No TM or Move Manager can touch it.`} />} /></h3>
+        <h3 className={styles.sectionTitle}>Mastery Moves <InfoDot tip={<Tip title="Mastery Moves" body={`A fifth card the line earns through its Bond: every one opens at once at ${BOND_RANK_NAME[BOND_TIER.mastery]} (rank ${BOND_TIER.mastery}), and the Pokémon's stage decides which it holds. No TM or Move Manager can touch it.`} />} /></h3>
         <ul className={styles.moves}>
-          {masteryMoves.slice(0, three ? 3 : 2).map((id, i) => {
-            const tier = i + 1;
-            const open = masteryTier >= tier;
-            if (!id) return <li key={`m${tier}`} className={`${styles.move} ${styles.moveLocked}`}><span className={styles.moveLv}>Lv{tier}</span><span className={styles.moveWide}>Not written yet</span></li>;
-            return moveRow(id, null, !open, `m${tier}`);
-          })}
+          {masteryMoves.map((id, i) => (id ? moveRow(id, null, masteryTier === 0, `m${i + 1}`) : null))}
         </ul>
-        {!three && <p className={styles.muted}>A two-stage line: at Soulbound its Mastery card is in every opening hand instead of a third tier.</p>}
       </section>
 
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Abilities <InfoDot tip={<Tip title="Abilities" body={`The pool this form can carry. The first is granted at the first evolution; the Dojo swaps among the rest. The hidden one opens at Bond rank 3 (${BOND_RANK_NAME[3]}).`} />} /></h3>
+        <h3 className={styles.sectionTitle}>Abilities <InfoDot tip={<Tip title="Abilities" body={`The pool this form can carry. The first is granted at the first evolution; the Dojo swaps among the rest. The hidden one opens at Bond rank ${BOND_TIER.hiddenAbility} (${BOND_RANK_NAME[BOND_TIER.hiddenAbility]}).`} />} /></h3>
         <div className={styles.chips}>
           {abilities.map((id) => (
             <Tipped key={id} tip={abilityTip(id)} className={styles.chip}>{content.ability(id).name}</Tipped>

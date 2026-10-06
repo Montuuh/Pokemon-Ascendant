@@ -5,7 +5,6 @@ import type { BiomeId } from './region';
 import { ALL_TRAINERS, GYM, GYM_ATTACK_MULTIPLIER, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
 import { hasModifier, modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
-import { isThreeStageLine } from '../meta/bond';
 import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
 import { RING } from './cities';
 import { applyGroups } from './groups';
@@ -72,8 +71,6 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
       const line = content.lineBase(mon.speciesId);
       const mastery = masteryMoveFor(mon.speciesId, run.perks?.mastery[line] ?? 0, content);
       if (mastery) setup.masteryMove = mastery;
-      // §6.8.2 rank 5 on a line that caps at Lv2 — the Mastery card opens every fight in hand.
-      if (mastery && (run.perks?.bond?.[line] ?? 0) >= 5 && !isThreeStageLine(line, content)) setup.masteryOpener = true;
       return setup;
     });
 }

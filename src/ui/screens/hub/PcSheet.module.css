@@ -420,10 +420,8 @@ button.heroChip:hover {
   border: 2px solid var(--border-subtle);
   border-radius: var(--radius-md);
   background: var(--surface-1);
-  opacity: 0.6;
 }
 .rungOn {
-  opacity: 1;
   border-color: var(--accent-positive);
 }
 .rungIcon {

@@ -3,8 +3,8 @@ import { BOND_RANKS, MAX_BOND_RANK, bondProgress } from '@/sim';
 import { RANK_ICON } from './rankIcons';
 import styles from './BondBar.module.css';
 
-// §6.8.2 — one line's Bond as a bar with five marks, each mark the thing that rank opens. The bar is the
-// whole road to Soulbound (0–100); the lit marks are what the line already has.
+// §6.8.2 — one line's Bond as a bar with four evenly spaced marks (the tiers cost the same), each the thing that
+// tier opens. The bar is the whole road to Soulbound; the lit marks are what the line already has.
 
 export function BondBar({ points, compact = false }: { points: number; compact?: boolean }) {
   const p = bondProgress(points);
@@ -15,7 +15,7 @@ export function BondBar({ points, compact = false }: { points: number; compact?:
       <Progress.Root className={styles.track} value={pct} aria-label={`Bond ${points} of ${max}`}>
         <Progress.Indicator className={styles.fill} style={{ width: `${pct}%` }} />
         {BOND_RANKS.map((at, i) => {
-          const rank = (i + 1) as 1 | 2 | 3 | 4 | 5;
+          const rank = (i + 1) as 1 | 2 | 3 | 4;
           const lit = p.rank >= rank;
           return (
             <span key={rank} className={`${styles.mark} ${lit ? styles.markOn : ''}`} style={{ left: `${(at / max) * 100}%` }} data-rank={rank} aria-hidden="true">

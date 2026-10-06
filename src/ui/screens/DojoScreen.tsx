@@ -3,7 +3,7 @@ import { Tabs } from 'radix-ui';
 import { IconBook, IconCheck, IconEgg, IconSparkles } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { abilityLocked, dojoPrice, eggMovesFor, tutorListFor, type MoveDef, type PartyMon } from '@/sim';
+import { abilityLocked, dojoPrice, eggMovesFor, tutorListFor, type MoveDef, type PartyMon, BOND_TIER } from '@/sim';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
@@ -190,7 +190,7 @@ export function DojoScreen() {
                             {/* Honesty over polish: a Region-1 passive that waits on a system this build does not
                                 have yet says so rather than selling a no-op. */}
                             {inert && ' · no effect until a later version'}
-                            {locked && ' · hidden ability — opens at Bond rank 3'}
+                            {locked && ` · hidden ability — opens at Bond rank ${BOND_TIER.hiddenAbility}`}
                           </span>
                         </span>
                         {equipped ? <span className={styles.tag}>equipped</span> : locked ? <span className={styles.tag}>locked</span> : <Price amount={abilityPrice} affordable={canAbility} />}

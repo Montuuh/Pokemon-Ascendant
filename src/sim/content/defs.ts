@@ -479,8 +479,6 @@ export interface TeamMemberSetup {
    * the deck beside the active four and no Move Manager, TM or tutor can reach it.
    */
   masteryMove?: string;
-  /** §6.8.2 rank 5 (two-stage lines) — the Mastery card is dealt into the opening hand. */
-  masteryOpener?: boolean;
   /** §7.3.5 Soul Link — one of the two Pokémon that have travelled longest in this run's Box. */
   soulLinked?: boolean;
 }

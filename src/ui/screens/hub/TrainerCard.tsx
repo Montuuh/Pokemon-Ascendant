@@ -3,7 +3,7 @@ import { IconBook2, IconBolt, IconCheck, IconEgg, IconMedal, IconSwords, IconTro
 import NumberFlow from '@number-flow/react';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, HUB_UPGRADE_LABEL, MART_PRICE, MAX_LEVEL, SHELVES, XP, bondRank, cosmeticById, martShelf, trackTokensBetween, type HubUpgrade } from '@/sim';
+import { ACHIEVEMENTS, HUB_UPGRADE_LABEL, MART_PRICE, MAX_LEVEL, SHELVES, XP, bondRank, cosmeticById, martShelf, trackTokensBetween, type HubUpgrade, BOND_TIER } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { trainerSprite } from '@/ui/art';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
@@ -34,7 +34,7 @@ export function TrainerCard() {
   const dexKnown = Object.values(account.dex).filter((e) => e.tier >= 1).length;
   const dexTotal = content.allSpecies().length;
   // §6.8.2 — "mastered" is a line at Soulbound, now that the Pokédex has one tier.
-  const mastered = Object.values(account.bond).filter((pts) => bondRank(pts) >= 5).length;
+  const mastered = Object.values(account.bond).filter((pts) => bondRank(pts) >= BOND_TIER.soulbound).length;
   const title = account.wearing.title ? cosmeticById(account.wearing.title) : undefined;
   const avatar = account.wearing.avatar ? cosmeticById(account.wearing.avatar) : undefined;
   const frame = account.wearing.frame ? FRAME_CLASS[account.wearing.frame] : undefined;
@@ -47,7 +47,7 @@ export function TrainerCard() {
     { icon: <IconUsers size={18} />, label: 'Recruited · evolved', value: `${stats.recruits} · ${stats.evolutions}`, tip: 'Pokémon that joined a Box of yours, and evolutions you chose.' },
     { icon: <IconBook2 size={18} />, label: 'Pokédex', value: `${dexKnown} / ${dexTotal}`, tip: 'Species you know: their hidden intents show from turn one.' },
     { icon: <IconMedal size={18} />, label: 'Medals', value: `${medals} / ${ACHIEVEMENTS.length}`, tip: 'The medal case in the PC Terminal.' },
-    { icon: <IconEgg size={18} />, label: 'Soulbound lines', value: String(mastered), tip: 'Lines at Bond rank 5 — every unlock open, and the line can start a run.' },
+    { icon: <IconEgg size={18} />, label: 'Soulbound lines', value: String(mastered), tip: `Lines at Bond rank ${BOND_TIER.soulbound} — every unlock open, and the line can start a run.` },
     { icon: <IconBolt size={18} />, label: 'Hardest win', value: stats.hardestWin > 0 ? `${stats.hardestWin} modifier${stats.hardestWin === 1 ? '' : 's'}` : stats.wins > 0 ? 'Baseline' : '—', tip: 'The most difficulty modifiers a won run carried.' },
   ];
 

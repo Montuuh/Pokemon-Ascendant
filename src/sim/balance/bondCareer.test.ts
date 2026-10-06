@@ -46,13 +46,13 @@ describe.skipIf(!ON)('Bond career — §6.8.2', () => {
     }
     const median = (xs: number[]) => (xs.length ? [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]! : NaN);
     console.log(`careers ${starterReach.length} × ${RUNS} runs · ranks at ${BOND_RANKS.join(' · ')}`);
-    console.log(`the starter's line reaches rank 1–5 after runs: ${[0, 1, 2, 3, 4].map((k) => {
+    console.log(`the starter's line reaches tier 1–${MAX_BOND_RANK} after runs: ${Array.from({ length: MAX_BOND_RANK }, (_, k) => k).map((k) => {
       const got = starterReach.map((r) => r[k]).filter((x): x is number => x !== null);
       return `${median(got)}${got.length < starterReach.length ? ` (${got.length}/${starterReach.length})` : ''}`;
     }).join(' / ')}`);
     console.log(`Bond a line earns in a run it played: median ${median(perRunWith)} · mean ${(perRunWith.reduce((a, b) => a + b, 0) / perRunWith.length).toFixed(1)}`);
-    const dist = [0, 1, 2, 3, 4, 5].map((k) => finals.reduce((a, acc) => a + Object.values(acc.bond).filter((p) => bondRank(p) === k).length, 0) / finals.length);
-    console.log(`after ${RUNS} runs, lines at rank 0–5: ${dist.map((x) => x.toFixed(1)).join(' / ')}`);
+    const dist = Array.from({ length: MAX_BOND_RANK + 1 }, (_, k) => k).map((k) => finals.reduce((a, acc) => a + Object.values(acc.bond).filter((p) => bondRank(p) === k).length, 0) / finals.length);
+    console.log(`after ${RUNS} runs, lines at tier 0–${MAX_BOND_RANK}: ${dist.map((x) => x.toFixed(1)).join(' / ')}`);
     console.log(`shinies caught per career of ${RUNS} runs: ${(shinies.reduce((a, b) => a + b, 0) / shinies.length).toFixed(2)}`);
     expect(starterReach.length).toBeGreaterThan(0);
   });

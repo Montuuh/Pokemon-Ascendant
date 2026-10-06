@@ -326,7 +326,7 @@ Ability pools never contain two entries with the same hook (no "which +15 % is b
 pool contains at least one defensive or utility option so the Dojo is a fork rather than a damage upgrade.
 
 The pool's **third** entry is the line's hidden ability: listed, greyed, and locked until the line's Bond reaches
-rank 3 (§6.8.3).
+rank 2 (§6.8.3).
 
 ## §6.5.2 Categories
 
@@ -442,8 +442,8 @@ the player made it. That is "synergy is sculpted, not drafted" expressed as an i
 # §6.8 Bond — a line gets better by being played
 
 Each evolution line has a **Bond**, tracked per account (§8.9), that grows with what you do *with* it and opens
-one concrete thing on the line at each of five ranks: its Mastery Move tiers, its Shiny Charm, its hidden
-ability, and at the top the right to start a run. Charmander, Charmeleon and Charizard share one Bond.
+one concrete thing on the line at each of four ranks: its Shiny Charm, its hidden ability, its whole Mastery
+Move, and at the top the right to start a run. Charmander, Charmeleon and Charizard share one Bond.
 
 Bond replaced two overlapping systems on 2026-09-21 — Pokédex tiers earned by *knocking out* the species, and
 Mastery levels earned by species-specific achievements. The first read backwards to the first player who met it
@@ -466,25 +466,34 @@ Earned by a line while it is in the **Active Team**:
 | Finished a run with it | +8 |
 | Won a run with it | +15 (replaces the +8) |
 
-**The pace (v0.9.1, the user's call: "to complete it whole, more than fifteen runs").** A line in the Active Team
-earns about 20 a run; the ranks sit at **10 · 40 · 110 · 200 · 360**, so a line played every run reaches them
-after about **1 / 2 / 6 / 11 / 18 runs** — measured as a career, one account and many runs in a row with the
-account's own perks playing into each (`balance/bondCareer.test.ts`). Quick at the bottom, so the first evening
-shows something; long at the top, so Soulbound is a commitment. After 24 runs an account holds about two Soulbound
-lines and three at Deep Bond. *Why the rewrite:* the route became twenty columns in v0.8.7 and a run fought ~25
-fights, so the old +1 a fight (ranks at 5 · 15 · 35 · 60 · 100) made every played line Trusted inside its first
-run and Soulbound in three. A wild fight pays nothing now because it is the filler between the fights that mean
-something; the Gym pays a Region.
+**The pace — linear (v0.9.2, the user's call: "every rank costs the same").** A line in the Active Team earns about
+20 a run; every rank costs **100** (`BOND_TIER_COST`), so the ranks sit at **100 · 200 · 300 · 400** and a line
+played every run reaches them after about **5 / 11 / 16 / 21 runs** — measured as a career, one account and many
+runs in a row with the account's own perks playing into each (`balance/bondCareer.test.ts`). A line recruited
+every other run takes about twice that, and the lines that are hard to find never get there by accident: that is
+the point of the top rank. After 30 runs an account holds about two Soulbound lines. The first reward arrives after
+about five runs; until then the bar and the **+N Bond** on every reward screen carry the progress. *History:* v0.9.1
+had five ranks at 10 · 40 · 110 · 200 · 360, quick at the bottom; before it, +1 a fight with ranks at 5 · 15 · 35 ·
+60 · 100 made every played line Trusted inside its first run. A wild fight pays nothing because it is the filler
+between the fights that mean something; the Gym pays a Region.
 
 ## §6.8.2 Ranks and unlocks
 
 | Rank | Bond | Name | Opens on the line |
 |---|---|---|---|
-| 1 | 10 | Companion | **Mastery Move Lv1** — the fifth card (§5.13.2) |
-| 2 | 40 | Trusted | **Shiny Charm** — the line's wild Pokémon are shiny ×3 as often (§5.14) |
-| 3 | 110 | Veteran | **Hidden ability** (§6.8.3) |
-| 4 | 200 | Deep Bond | **Mastery Move Lv2** (the stage still caps it: middle stage or a two-stage final) |
-| 5 | 360 | Soulbound | **Mastery Move Lv3** on a three-stage line; on a two-stage or single-stage line the Mastery card is dealt into **every opening hand**. Either way the line **may start a run** (§8.5.2), and its Shiny Charm doubles |
+| 1 | 100 | Companion | **Shiny Charm** — every new copy of the line may be shiny: its wild ones ×3 as often, and its starter, Safari catch or trade at that charmed chance (§5.14) |
+| 2 | 200 | Trusted | **Hidden ability** (§6.8.3) |
+| 3 | 300 | Deep Bond | **Mastery Move** — the whole of it at once: the fifth card at every stage of the line, Lv1 on the base form to Lv3 on a three-stage final (§5.13.2) |
+| 4 | 400 | Soulbound | **The line may start a run** (§8.5.2) — **and starts it shiny** |
+
+**Four ranks, one thing each (v0.9.2, the user's design).** A look first, a choice at the Dojo second, the line's full
+kit third, the line as your partner last. **The Mastery is one unlock**, not three: "unlock the Pokémon's whole
+potential, in all its evolutions" — the stage decides which card the slot holds, the Bond only whether it holds one.
+The v0.9.1 ladder handed out the first Mastery card in a line's first run and split the rest across two more ranks,
+with a "Mastery card in every opening hand" rule for two-stage lines at the top; both are gone. **Soulbound starts the
+run shiny** so that the three default starters, which can already start a run, get a top rank too — written for
+every line that starts one. **The Poké Mart still sells Magikarp, Eevee and Pikachu** (§8.3.4): buy the starter now, or
+earn it — the player's choice, and Soulbound still pays them their shiny start.
 
 Rank-ups are folded by the account the moment the event lands (§8.10), so a rank crossed mid-run applies from
 the next fight. Crossing a rank pays no Trainer XP — Bond is the line's, XP is the trainer's.
@@ -492,7 +501,7 @@ the next fight. Crossing a rank pays no Trainer XP — Bond is the line's, XP is
 ## §6.8.3 Hidden abilities
 
 Every line's catalogue row authors **three** abilities (`catalogs/species-r1.md`). The **third is the hidden
-one**: it sits in the pool, the Dojo lists it greyed and named as hidden, and it opens at Bond rank 3. The first
+one**: it sits in the pool, the Dojo lists it greyed and named as hidden, and it opens at Bond rank 2. The first
 entry is still what the first evolution grants (§6.5.1); the second is the Dojo's choice from the start.
 
 Every line's third is authored (v0.7.5). The six that had waited were rewritten for the combat the game has,

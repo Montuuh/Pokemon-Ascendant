@@ -1,6 +1,6 @@
 import { IconArrowRight, IconCheck } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
-import { SHINY, BOND_LADDER, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, isThreeStageLine, type AccountState, speciesMet } from '@/sim';
+import { SHINY, BOND_LADDER, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, type AccountState, speciesMet } from '@/sim';
 import { bondRulesText } from '@/ui/tips';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { InfoDot, Tip } from '@/ui/tooltip';
@@ -29,8 +29,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
   const points = account.bond[line] ?? 0;
   const p = bondProgress(points);
   const rank = bondRank(points);
-  const three = isThreeStageLine(line, content);
-  const u = bondUnlocks(rank, three);
+  const u = bondUnlocks(rank);
   const masteryMoves = content.masteryMoves(line);
   const hidden = hiddenAbilityOf(line, content);
   const cols = stagesOf(line);
@@ -41,15 +40,14 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
   const moveName = (id: string | null | undefined) => (id ? content.move(id).name : 'not written yet');
   const hiddenName = hidden ? content.ability(hidden).name : `${(base.hiddenAbilityPending ?? 'Hidden ability').split(' — ')[0]} (not yet)`;
   const named = (label: string, name: string) => (lineKnown ? `${label} — ${name}` : label);
-  // §6.8.2 — the ladder, with this line's own names on it once you have met the line.
-  const rungs: { rank: 1 | 2 | 3 | 4 | 5; on: boolean; unlock: string }[] = [
-    { rank: 1, on: u.mastery >= 1, unlock: `${named('Mastery Move Lv1', moveName(masteryMoves[0]))}, a fifth card` },
-    { rank: 2, on: u.shinyCharm, unlock: `Shiny Charm — its wild Pokémon are shiny ${SHINY.charmMultiplier} times as often` },
-    { rank: 3, on: u.hiddenAbility, unlock: `${named('Hidden ability', hiddenName)}, open at the Dojo` },
-    { rank: 4, on: u.mastery >= 2, unlock: named('Mastery Move Lv2', moveName(masteryMoves[1])) },
-    three
-      ? { rank: 5, on: u.mastery >= 3, unlock: `${named('Mastery Move Lv3', moveName(masteryMoves[2]))} · the line can start a run` }
-      : { rank: 5, on: u.opener, unlock: 'The Mastery card in every opening hand · the line can start a run' },
+  // §6.8.2 — the ladder, with this line's own names on it once you have met the line. Rank 3 opens every Mastery card
+  // of the line at once; the stage decides which one the slot holds.
+  const masteryNames = masteryMoves.filter((id): id is string => !!id).map((id) => moveName(id)).join(' → ');
+  const rungs: { rank: 1 | 2 | 3 | 4; on: boolean; unlock: string }[] = [
+    { rank: 1, on: u.shinyCharm, unlock: `Shiny Charm — any new one of the line may be shiny; ${SHINY.charmMultiplier} times as often in the wild` },
+    { rank: 2, on: u.hiddenAbility, unlock: `${named('Hidden ability', hiddenName)}, open at the Dojo` },
+    { rank: 3, on: u.mastery > 0, unlock: named('Mastery Move', masteryNames || 'not written yet') },
+    { rank: 4, on: u.starter, unlock: 'The line can start a run — and starts it shiny' },
   ];
 
   return (

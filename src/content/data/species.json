@@ -6527,7 +6527,8 @@
         "revenge",
         "feather-dance",
         "quick-attack"
-      ]
+      ],
+      "hiddenAbility": "moxie"
     },
     {
       "dex": 84,
@@ -8474,7 +8475,8 @@
       "eggMoves": [
         "psybeam",
         "psywave"
-      ]
+      ],
+      "hiddenAbility": "sheer-force"
     },
     {
       "dex": 110,
@@ -8620,7 +8622,8 @@
         "crunch",
         "fire-fang",
         "skull-bash"
-      ]
+      ],
+      "hiddenAbility": "sturdy"
     },
     {
       "dex": 112,
@@ -9418,7 +9421,8 @@
         "icy-wind",
         "confuse-ray",
         "charm"
-      ]
+      ],
+      "hiddenAbility": "shell-armor"
     },
     {
       "dex": 123,
@@ -9494,7 +9498,8 @@
       "eggMoves": [
         "bug-buzz",
         "silver-wind"
-      ]
+      ],
+      "hiddenAbility": "tough-claws"
     },
     {
       "dex": 124,
@@ -9569,7 +9574,8 @@
       "archetype": "specialist",
       "eggMoves": [
         "wish"
-      ]
+      ],
+      "hiddenAbility": "sheer-force"
     },
     {
       "dex": 125,
@@ -9641,7 +9647,8 @@
         "cross-chop",
         "dynamic-punch",
         "karate-chop"
-      ]
+      ],
+      "hiddenAbility": "vital-spirit"
     },
     {
       "dex": 126,
@@ -9713,7 +9720,8 @@
         "mach-punch",
         "cross-chop",
         "flare-blitz"
-      ]
+      ],
+      "hiddenAbility": "flash-fire"
     },
     {
       "dex": 127,
@@ -10080,7 +10088,8 @@
         "dragon-pulse",
         "ancient-power",
         "horn-drill"
-      ]
+      ],
+      "hiddenAbility": "rain-dish"
     },
     {
       "dex": 132,

@@ -3,7 +3,7 @@ import type { DifficultyModifier } from '../run/modifiers';
 import { STARTER_IDS } from '../run/region';
 import type { RunPerks } from '../run/types';
 import { hasHubUpgrade, levelFor, type AccountContext, type AccountState } from './account';
-import { bondRank, bondUnlocks, isThreeStageLine } from './bond';
+import { BOND_TIER, bondRank, bondUnlocks } from './bond';
 
 // §8.4–§8.6, §8.8 — what an account has opened, answered from the account and the content tables.
 //
@@ -56,16 +56,16 @@ export const modifierSlots = (account: AccountState): number => 1 + (hasHubUpgra
  */
 export function unlockedStarters(account: AccountState, content: ContentRegistry): string[] {
   const extra = account.starters.filter((id) => content.hasSpecies(id));
-  // §6.8.2 rank 5 — a Soulbound line may start a run, whatever it is.
+  // §6.8.2 tier 4 — a Soulbound line may start a run, whatever it is.
   const bonded = Object.entries(account.bond)
-    .filter(([line, pts]) => bondRank(pts) >= 5 && content.hasSpecies(line))
+    .filter(([line, pts]) => bondRank(pts) >= BOND_TIER.soulbound && content.hasSpecies(line))
     .map(([line]) => line);
   return [...new Set([...STARTER_IDS, ...extra, ...bonded])];
 }
 
-/** §6.8.2 — the Mastery tier a line may carry, from its Bond rank and whether it has a third stage. */
-export function masteryTierFor(account: AccountState, line: string, content: ContentRegistry): number {
-  return bondUnlocks(bondRank(account.bond[line] ?? 0), isThreeStageLine(line, content)).mastery;
+/** §6.8.2 — the Mastery tier a line may carry: all of it from tier 3, none before (the stage picks the card). */
+export function masteryTierFor(account: AccountState, line: string, _content?: ContentRegistry): number {
+  return bondUnlocks(bondRank(account.bond[line] ?? 0)).mastery;
 }
 
 /** §8.4.2 Twin Run — two starters, and the Box one larger. */

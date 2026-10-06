@@ -91,7 +91,7 @@ describe('Buying — §8.3.4', () => {
   });
 
   it('ASoulboundLine_CountsAsAnOwnedStarter_§6.8.2', () => {
-    const soul = at(3, 20, { bond: { eevee: BOND_RANKS[4] } });
+    const soul = at(3, 20, { bond: { eevee: BOND_RANKS[3] } });
     expect(martOwned(soul, { kind: 'starter', id: 'eevee' }, content)).toBe(true);
     expect(buy(soul, { kind: 'starter', id: 'eevee' }, content)).toEqual({ error: 'owned' });
   });

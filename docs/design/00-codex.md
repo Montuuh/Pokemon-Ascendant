@@ -262,11 +262,10 @@ reveals Unknown intents from turn one, and is the only tier. Catching awards no 
 
 **Bond** (§6.8, 2026-09-21, re-paced v0.9.1) — per *line*, filled by playing it: +1 per won trainer or Elite
 fight in the Active Team (+1 leading), +4 a Gym, nothing for a wild fight, +5 per evolution, +2 a first recruit,
-+10 a shiny recruit, +8 finishing a run, +15 winning one. Five ranks at 10/40/110/200/360 — about 1 / 2 / 6 / 11 / 18
-runs for a line played every run (the user: more than fifteen to complete): **Companion** Mastery Lv1 (the immutable
-5th card) · **Trusted** the line's Shiny Charm (×3) · **Veteran** the hidden ability (the line's third authored one,
-greyed at the Dojo until then) · **Deep Bond** Mastery Lv2 · **Soulbound** Mastery Lv3 on three-stage lines or the
-Mastery card in every opening hand, the line may start a run, and its Shiny Charm doubles.
++10 a shiny recruit, +8 finishing a run, +15 winning one. **Four ranks, linear, 100 each (v0.9.2)** — about 5 / 11 / 16 / 21
+runs for a line played every run: **Companion** the Shiny Charm (every new copy may be shiny, ×3 in the wild) ·
+**Trusted** the hidden ability (the line's third authored one, greyed at the Dojo until then) · **Deep Bond** the whole
+Mastery Move at once (the fifth card at every stage) · **Soulbound** the line may start a run, and starts it shiny.
 
 **Shiny** (§5.14, v0.9.1) — found, not earned: every wild Pokémon rolls 1 in 40, unannounced until the fight's
 entrance; the Bond's Shiny Charm raises it. A caught shiny keeps its palette all run, pays its line +10 Bond and fills
@@ -350,7 +349,7 @@ start), Daycare Lady (Lv 3), Mystery Door (post-launch).
 **Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·
 Starters Lv 3 (Magikarp 4, Eevee 6, Pikachu 6 — sold since v0.7.3, holding a Light Ball) · Hub upgrades Lv 5 (4–8) · Discoveries Lv 8 (any undiscovered
 Tier-2, 4) · Mastery lane Lv 10 (Tier-3, 5). 7 Hub upgrades, all QoL, all sold.
-**Starters** — 3 default + 3 meta bought at the Mart; any Soulbound line (Bond 5) for free.
+**Starters** — 3 default + 3 meta bought at the Mart; any Soulbound line (Bond rank 4) for free, and it starts shiny.
 **Relics** — 60 = 50 drop-pool + 10 Legendary. Meta tiers T1 20 / T2 20 event-unlocked or bought / T3 10
 Token-bought; tier ≠ rarity. Drop weight 60/30/10.
 **Achievements** — 50, four medal tiers, ~20 % hidden, 20 grant Tokens, every one with a named trigger event.
