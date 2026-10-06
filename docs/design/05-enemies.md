@@ -510,7 +510,7 @@ active-4 configuration.
   (110–140, 2–3 AP, a composite species-unique effect).
 - **It advances with evolution**, but only if that tier has been unlocked in your account. Otherwise the
   Pokémon keeps the tier it has.
-- **One unlock per line, across runs** (§6.8.2, v0.9.2): at **Deep Bond** (rank 3) the whole Mastery opens —
+- **One unlock per line, across runs** (§6.8.2, v0.9.1): at **Deep Bond** (rank 3) the whole Mastery opens —
   every tier on every stage, so the slot holds whatever card the Pokémon's stage reaches. Before it, no fifth card.
 
 **Deck integration.** Deck size = 12 + 1 per Active member with an unlocked Mastery, to a maximum of 15. Hand

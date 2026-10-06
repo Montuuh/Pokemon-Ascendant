@@ -466,13 +466,13 @@ Earned by a line while it is in the **Active Team**:
 | Finished a run with it | +8 |
 | Won a run with it | +15 (replaces the +8) |
 
-**The pace — linear (v0.9.2, the user's call: "every rank costs the same").** A line in the Active Team earns about
+**The pace — linear (v0.9.1, the user's call: "every rank costs the same").** A line in the Active Team earns about
 20 a run; every rank costs **100** (`BOND_TIER_COST`), so the ranks sit at **100 · 200 · 300 · 400** and a line
 played every run reaches them after about **5 / 11 / 16 / 21 runs** — measured as a career, one account and many
 runs in a row with the account's own perks playing into each (`balance/bondCareer.test.ts`). A line recruited
 every other run takes about twice that, and the lines that are hard to find never get there by accident: that is
 the point of the top rank. After 30 runs an account holds about two Soulbound lines. The first reward arrives after
-about five runs; until then the bar and the **+N Bond** on every reward screen carry the progress. *History:* v0.9.1
+about five runs; until then the bar and the **+N Bond** on every reward screen carry the progress. *History:* a first cut of v0.9.1
 had five ranks at 10 · 40 · 110 · 200 · 360, quick at the bottom; before it, +1 a fight with ranks at 5 · 15 · 35 ·
 60 · 100 made every played line Trusted inside its first run. A wild fight pays nothing because it is the filler
 between the fights that mean something; the Gym pays a Region.
@@ -486,10 +486,10 @@ between the fights that mean something; the Gym pays a Region.
 | 3 | 300 | Deep Bond | **Mastery Move** — the whole of it at once: the fifth card at every stage of the line, Lv1 on the base form to Lv3 on a three-stage final (§5.13.2) |
 | 4 | 400 | Soulbound | **The line may start a run** (§8.5.2). A line that could already — a default starter or a Poké Mart one — gets **its starter always shiny** instead |
 
-**Four ranks, one thing each (v0.9.2, the user's design).** A look first, a choice at the Dojo second, the line's full
+**Four ranks, one thing each (v0.9.1, the user's design).** A look first, a choice at the Dojo second, the line's full
 kit third, the line as your partner last. **The Mastery is one unlock**, not three: "unlock the Pokémon's whole
 potential, in all its evolutions" — the stage decides which card the slot holds, the Bond only whether it holds one.
-The v0.9.1 ladder handed out the first Mastery card in a line's first run and split the rest across two more ranks,
+That first cut handed out the first Mastery card in a line's first run and split the rest across two more ranks,
 with a "Mastery card in every opening hand" rule for two-stage lines at the top; both are gone. **A starter line's
 Soulbound is a shiny start** (the user, 2026-10-06): Bulbasaur, Charmander, Squirtle and the Mart's Magikarp, Eevee and
 Pikachu can start a run without any Bond, so their rank 4 strikes "can start a run" and makes the starter always shiny;

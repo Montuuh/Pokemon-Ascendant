@@ -64,8 +64,8 @@
 
 ## Unlocks (§6.8.2) — by Bond rank since 2026-09-21
 
-Since v0.9.2 the whole Mastery is **one unlock, at Deep Bond (rank 3, 300 Bond)**: every tier on every stage, the slot
-holding whatever card the Pokémon's stage reaches. (v0.9.1 opened Lv1 at rank 1, Lv2 at rank 4, Lv3 at rank 5, and a
+Since v0.9.1 the whole Mastery is **one unlock, at Deep Bond (rank 3, 300 Bond)**: every tier on every stage, the slot
+holding whatever card the Pokémon's stage reaches. (A first cut of v0.9.1 opened Lv1 at rank 1, Lv2 at rank 4, Lv3 at rank 5, and a
 Soulbound two-stage line opened every fight with its card in hand.) The species-specific achievements
 below are the superseded design, kept for the flavour they may lend future medals — none of them gates a tier.
 

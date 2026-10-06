@@ -262,7 +262,7 @@ reveals Unknown intents from turn one, and is the only tier. Catching awards no 
 
 **Bond** (§6.8, 2026-09-21, re-paced v0.9.1) — per *line*, filled by playing it: +1 per won trainer or Elite
 fight in the Active Team (+1 leading), +4 a Gym, nothing for a wild fight, +5 per evolution, +2 a first recruit,
-+10 a shiny recruit, +8 finishing a run, +15 winning one. **Four ranks, linear, 100 each (v0.9.2)** — about 5 / 11 / 16 / 21
++10 a shiny recruit, +8 finishing a run, +15 winning one. **Four ranks, linear, 100 each (v0.9.1)** — about 5 / 11 / 16 / 21
 runs for a line played every run: **Companion** the Shiny Charm (every new copy may be shiny, ×3 in the wild) ·
 **Trusted** the hidden ability (the line's third authored one, greyed at the Dojo until then) · **Deep Bond** the whole
 Mastery Move at once (the fifth card at every stage) · **Soulbound** the line may start a run (a line that already

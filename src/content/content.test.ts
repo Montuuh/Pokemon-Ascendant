@@ -203,7 +203,7 @@ describe('Mastery Moves — §6.8.4', () => {
   });
 
   it('EveryRecruitableLine_HasItsHiddenAbility_SoNoBondRankIsEmpty_§6.8.3', () => {
-    // §6.8.2 rank 2 opens the hidden ability; a line without one would cross that rank for nothing (v0.9.2).
+    // §6.8.2 rank 2 opens the hidden ability; a line without one would cross that rank for nothing (v0.9.1).
     for (const s of reg.allSpecies().filter((x) => x.stage === 'basic' && reg.masteryMoves(x.id)[0])) {
       expect(s.hiddenAbility, `${s.id} hidden ability`).toBeTruthy();
       reg.ability(s.hiddenAbility!);

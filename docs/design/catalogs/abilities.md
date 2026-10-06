@@ -9,7 +9,7 @@
 > any entry in the pool. Pure auto-grant makes the Dojo pointless; pure Dojo-only means most Pokémon have no
 > passive at all. The hybrid gives every evolved Pokémon an identity and makes the Dojo the place you *change*
 > it. **The third entry of each line is its hidden ability** (§6.8.3, 2026-09-21): listed at the Dojo, locked
-> until the line's Bond reaches rank 2 (Trusted, v0.9.2). `species.json` carries it as `hiddenAbility`.
+> until the line's Bond reaches rank 2 (Trusted, v0.9.1). `species.json` carries it as `hiddenAbility`.
 
 ## 1. Hook vocabulary (the sim contract)
 
@@ -98,7 +98,7 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `healer` | Healer | Support | At turn end, heal a bench ally 3 HP | `turn-end-bench-heal` (3) | pidgeot, bulbasaur, oddish | ✅ |
 | `friend-guard` | Friend Guard | Support | Bench takes −10 % Cleave damage | `low-hp-damage-reduction` (`cleaveOnly`) | — (reserved) | 🔒 |
 | `rain-dish` | Rain Dish | Support | Each Water move it plays restores 1/16 of its HP (v0.7.5 — was a turn-end heal in Rain) | `type-move-heal` (water, 16) | squirtle (hidden), lapras (hidden) | ✅ v0.7.5 |
-| `hydration` | Hydration | Support | Status conditions clear at turn end while Rain is active | `field-draw` variant | lapras | 🔒 not in the build — Lapras's hidden ability is Rain Dish since v0.9.2, which works today; Hydration waits for a line that needs it |
+| `hydration` | Hydration | Support | Status conditions clear at turn end while Rain is active | `field-draw` variant | lapras | 🔒 not in the build — Lapras's hidden ability is Rain Dish since v0.9.1, which works today; Hydration waits for a line that needs it |
 | `iron-shell` | Iron Shell | Combat | At combat start Def +1 | `start-stage` (def, 1) | metapod | ✅ |
 | `guts` | Guts | Combat | +30 % Atk while statused (and Burn's −25 % does not apply) | **`while-statused`** (1.3) | machop, mankey, rattata, flareon | ✅ v0.3 |
 | `sand-veil` | Sand Veil | Combat | Incoming Ranged attacks deal −15 % | `low-hp-damage-reduction` (`rangedOnly`) | diglett | ✅ v0.3 (on `conditional-reduction`) |

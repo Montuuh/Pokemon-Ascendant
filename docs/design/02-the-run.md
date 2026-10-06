@@ -106,7 +106,7 @@ non-boss content in the game and the last window to prepare. Full design: §2.12
 
 ## §2.1.6 The League
 
-> 🔒 **Deferred.** The League is designed but not built: it is roadmap v0.9.6, on the multi-enemy fights of v0.8,
+> 🔒 **Deferred.** The League is designed but not built: it is roadmap v0.9.5, on the multi-enemy fights of v0.8,
 > which it is built on. The spec stands; do not implement ahead of it.
 
 Five sequential fights with no map: Elite Four ×4, then the Champion. Between fights, a **micro-rest** restores

@@ -13,22 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
-### v0.9.2 — Bond, reworked · 2026-10-06
-
-Four ranks, linear, one reward each; the starter rank last and longest.
-
-- **Four ranks.** 100 Bond each: about 5 / 11 / 16 / 21 runs for your main line.
-- **Shiny Charm.** Rank 1: every new copy may be shiny, your starter too.
-- **Mastery whole.** Rank 3 opens every Mastery card of the line at once.
-- **Soulbound.** Rank 4: the line can start a run; a starter line, always shiny.
-
 ### v0.9.1 — Bond and Shiny, revamped · 2026-10-06
 
-Shinies found in the wild; Bond a long road; every line's Mastery whole.
+Shinies found in the wild; Bond in four equal ranks; every Mastery whole.
 
 - **Shiny.** Any wild Pokémon may be shiny, by surprise; catch it to keep it.
-- **Bond.** Trainer, Elite and Gym wins count; Soulbound takes about 18 runs.
-- **Shiny Charm.** Bond rank 2 makes a line's shinies three times as common.
+- **Bond.** Four ranks of 100: Charm, hidden ability, Mastery, start a run.
+- **Starters.** A starter line's top rank makes its starter always shiny.
 - **Mastery.** 45 new Lv2 and Lv3 cards: every recruitable line complete.
 
 ## v0.8 — Multi-enemy & the route · 2026-10-05

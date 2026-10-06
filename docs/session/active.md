@@ -1,18 +1,16 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-06 · **Version:** v0.9.2 shipped (*Bond, reworked*).
+**Date:** 2026-10-06 · **Version:** v0.9.1 shipped (*Bond and Shiny, revamped*).
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
-**Sprint goal next:** **v0.9.3** Player level and the Poké Mart, revamped — a design pass with the user first (see
+**Sprint goal next:** **v0.9.2** Player level and the Poké Mart, revamped — a design pass with the user first (see
 `docs/roadmap.md`).
 
 **v0.8.7–v0.8.10** — the route, the balance pass, the honest harness, the growth curves (`balance/report.test.ts`,
-`BALANCE_REPORT=1 REPORT_SEEDS=240`). **v0.9.1** — Bond re-paced (wins that mean something; ranks 10 · 40 · 110 · 200 ·
-360, about 18 runs to Soulbound — `balance/bondCareer.test.ts`, `BOND_REPORT=1`), Shiny found in the wild (§5.14,
-`run/shiny.ts`, 1 in 40, the Bond's Shiny Charm), its collection in the Pokédex, +N Bond on the reward screen, and
-every line's Mastery Lv2/Lv3. Fixture `?scenario=wild-shiny`. **v0.9.2** — the Bond reworked by the user: four linear ranks
-of 100 (Shiny Charm for every new copy · hidden ability · the whole Mastery · start a run, or a starter line always shiny), ~5 / 11 / 16 / 21
-runs; the nine missing hidden abilities written.
+`BALANCE_REPORT=1 REPORT_SEEDS=240`). **v0.9.1** — Shiny found in the wild (§5.14, `run/shiny.ts`, 1 in 40, `copyIsShiny`), its collection in the
+Pokédex, +N Bond on the reward screen; the Bond in four linear ranks of 100 (Shiny Charm · hidden ability · the whole
+Mastery · start a run, or a starter line always shiny), ~5 / 11 / 16 / 21 runs (`balance/bondCareer.test.ts`,
+`BOND_REPORT=1`); every line's Mastery Lv2/Lv3 and hidden ability. Fixture `?scenario=wild-shiny`.
 
 **Findings to act on:** every Gym's ace sits 1–2 levels under the team; Region 2's Gyms lost 2 % of the time; the Rare Candy is worth 8 points
 of Region 3; the breather's 8 % / 30 % unmeasured. UI nits left: locked Wild emblems hard to tell apart in grey;

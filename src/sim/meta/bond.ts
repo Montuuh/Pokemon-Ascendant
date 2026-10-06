@@ -43,7 +43,7 @@ export const BOND_TIER = { shinyCharm: 1, hiddenAbility: 2, mastery: 3, soulboun
 /**
  * §6.8.2 — cumulative points to reach tiers 1–4. **Linear** (the user, 2026-10-06): every tier costs the same 100, so
  * a line played every run reaches them after about 5 / 10 / 15 / 20 runs, and a line recruited every other run after
- * about twice that — measured as a career by `balance/bondCareer.test.ts`. v0.9.1's five ranks at 10 · 40 · 110 ·
+ * about twice that — measured as a career by `balance/bondCareer.test.ts`. v0.9.1's first cut, five ranks at 10 · 40 · 110 ·
  * 200 · 360 front-loaded the rewards and handed a line its first Mastery card inside its first run.
  */
 export const BOND_TIER_COST = 100;
@@ -76,7 +76,7 @@ export interface BondUnlocks {
   hiddenAbility: boolean;
   /**
    * Tier 3 — §5.13.2: the whole Mastery at once, every tier on every stage (the stage still decides which card the
-   * slot holds). It was three unlocks across three ranks until v0.9.2; one unlock is the line's full potential.
+   * slot holds). It was three unlocks across three ranks in v0.9.1's first cut; one unlock is the line's full potential.
    */
   mastery: 0 | 3;
   /** Tier 4 — §8.5.2: the line may start a run; a line that already could starts it shiny (`copyIsShiny`). */
