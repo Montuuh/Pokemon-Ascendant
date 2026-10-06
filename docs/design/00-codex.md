@@ -346,7 +346,8 @@ for sale; Tokens decide what you take home. The shop (~210) outruns the income (
 
 **Hub** — PC Terminal (Pokédex · Medals · Discoveries; the Pokédex is the one book: cards that open a sheet with
 Record · Kit · the line's Bond, §8.9.2, and a per-species record, §8.9.1; all 151 species are in the book, and an unmet one is a silhouette, "???" and no types until any trace of it lands on the account — 2026-09-23), Trainer Card, Poké Mart (from the
-start), Daycare Lady (Lv 3), Mystery Door (post-launch).
+start), and the door to the Elite Four that starts a run — all as the Indigo Plateau Pokémon Center lobby, a FRLG room
+(v0.9.2, §8.4); the Daycare Lady and the Mystery Door are gone.
 **Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·
 Starters Lv 3 (Magikarp 4, Eevee 6, Pikachu 6 — sold since v0.7.3, holding a Light Ball) · Hub upgrades Lv 5 (4–8) · Discoveries Lv 8 (any undiscovered
 Tier-2, 4) · Mastery lane Lv 10 (Tier-3, 5). 7 Hub upgrades, all QoL, all sold.

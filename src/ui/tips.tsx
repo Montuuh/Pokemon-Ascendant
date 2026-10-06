@@ -360,6 +360,25 @@ export function dexCardTip(name: string, dex: number, types: readonly string[], 
   return <Tip title={`#${String(dex).padStart(3, '0')} ${name}`} meta={types.map(cap)} body={lines} footer="Open for its record, its kit and its line." />;
 }
 
+/** §8.4 — the Trainer Hub's doors, in the lobby. */
+export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'run', tokens: number): ReactNode {
+  switch (spot) {
+    case 'mart':
+      return <Tip title="Poké Mart" meta={[`${tokens} Tokens`]} body="Spend Tokens on starters, Hub upgrades, relics for your pool and cosmetics. Trainer Level opens its shelves." />;
+    case 'card':
+      return <Tip title="Trainer Card" body="The nurse keeps the League's register: your level, the road ahead and your record." />;
+    case 'pc':
+      return <Tip title="PC Terminal" body="The Pokédex and every line's Bond, the medals, and the relics you have discovered." />;
+    case 'run':
+      return <Tip title="New run" body="Through the door to the Elite Four: choose a starter, a Starting Relic and the run's options, and set out." />;
+  }
+}
+
+/** §8.4 — the lobby's doormat. */
+export function hubExitTip(): ReactNode {
+  return <Tip title="Menu" body="Back to the title menu. Everything here is kept." />;
+}
+
 /** §5.14 — one line on a shiny, for a host's own bubble (a portrait, an enemy card, a Box row, a Pokédex card). */
 export function shinyLine(owned: boolean): ReactNode {
   return <div key="shiny"><b>Shiny</b> — {owned ? 'yours keeps its alternate colours all run.' : `a rare find: catch it and its line gains +${BOND.shiny} Bond.`}</div>;

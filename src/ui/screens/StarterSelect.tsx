@@ -157,7 +157,7 @@ export function StarterSelect() {
           <div className={styles.diffIntro}>
             <h2 className={`${styles.stepTitle} display`}>
               Make it harder, if you want to
-              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting — the baseline is the floor. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={`Each opens at a Trainer Level; you are ${trainerLevel}. The Daycare Lady in the Hub lists them.`} />} />
+              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting — the baseline is the floor. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={`Each opens at a Trainer Level; you are ${trainerLevel}.`} />} />
             </h2>
             <p className={styles.stepLede}>Optional. The baseline is the floor.</p>
             <p className={styles.xpTally} data-testid="difficulty-xp">

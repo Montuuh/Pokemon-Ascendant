@@ -53,5 +53,7 @@ export const routeArt = (terrain: string, piece: string) => asset(`art/route/${t
 export const gameCornerArt = (name: 'room' | 'room-open' | 'room-shut' | 'roulette' | 'hatch') => asset(`art/game-corner/${name}.png`);
 /** §2.11.2 — the Poké Mart and the Department Store's five floors, the real FRLG maps (`npm run art:mart`). */
 export const martArt = (name: 'mart' | 'floor-1' | 'floor-2' | 'floor-3' | 'floor-4' | 'floor-5' | 'clerk') => asset(`art/mart/${name}.png`);
+/** §8.4 — the Trainer Hub: the Indigo Plateau's Pokémon Center lobby and the people in it (`npm run art:hub`). */
+export const hubArt = (name: 'lobby' | 'nurse' | 'player') => asset(`art/hub/${name}.png`);
 /** §2.11.6 — the Rocket Hideout's wall and floor, the Black Market's room (`npm run art:rocket`). */
 export const blackMarketArt = (name: 'wall' | 'floor') => asset(`art/black-market/${name}.png`);

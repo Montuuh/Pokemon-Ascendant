@@ -1,5 +1,5 @@
-/* §8.4 — the four open kiosks share one sheet: the same cards, chips, bars and rows, so the Hub reads as one
-   room rather than four screens. Light theme: semantic accents are fills and borders, never running text. */
+/* §8.4 — the lobby's three kiosks share one sheet: the same cards, chips, bars and rows, so the Hub reads as one
+   room rather than three screens. Light theme: semantic accents are fills and borders, never running text. */
 
 .muted {
   color: var(--ink-secondary);
@@ -25,16 +25,6 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-secondary);
-}
-.primary {
-  padding: var(--sp-2) var(--sp-5);
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: var(--brand-red-deep);
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: var(--type-body);
-  cursor: pointer;
 }
 .notice {
   margin: 0;
@@ -285,8 +275,7 @@
 }
 
 /* ── Poké Mart ────────────────────────────────────────────────────────────────────────────────────────── */
-.mart,
-.daycare {
+.mart {
   display: grid;
   gap: var(--sp-4);
 }
@@ -647,31 +636,7 @@
   font-size: var(--type-caption);
 }
 
-/* ── Daycare ──────────────────────────────────────────────────────────────────────────────────────────── */
-.starters {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: var(--sp-2);
-}
-.starter {
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--surface-1);
-}
-.starterInner {
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-  padding: var(--sp-2);
-  text-align: center;
-}
-.starterName {
-  font-family: var(--font-display);
-  font-size: var(--type-body);
-}
+/* ── Poké Mart: a starter on its shelf ─────────────────────────────────────────────────────────────── */
 /* §8.9.2 — an unmet starter on the Mart shelf is the Pokédex's silhouette. */
 .starterUnmet img {
   filter: brightness(0);
@@ -686,55 +651,6 @@
   background: var(--surface-3);
   font-family: var(--font-display);
   color: var(--ink-secondary);
-}
-.starter_ready {
-  border-color: var(--accent-positive);
-}
-.starter_waiting {
-  border-style: dashed;
-  border-color: var(--accent-warning);
-}
-.starter_locked img {
-  filter: grayscale(1);
-  opacity: 0.55;
-}
-/* Ten modifiers as tiles, name + state; the effect is in the bubble (D3/D4). */
-.modList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: var(--sp-2);
-}
-.modRow {
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--surface-1);
-}
-.modInner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3);
-  font-size: var(--type-small);
-}
-.modState {
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
-  white-space: nowrap;
-}
-.modName {
-  font-family: var(--font-display);
-  font-size: var(--type-body);
-}
-.mod_open {
-  border-color: var(--accent-positive);
-}
-.mod_locked,
-.mod_pending {
-  opacity: 0.7;
 }
 
 .factWide {

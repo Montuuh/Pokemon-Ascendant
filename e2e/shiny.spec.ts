@@ -81,6 +81,7 @@ test.describe('Shiny and Bond — §5.14, §6.8.1', () => {
     });
     await page.goto('/?screen=hub');
     await page.getByTestId('kiosk-pc').click();
+    await expect(page.getByTestId('hub-panel-pc')).toBeVisible();
     await expect(page.getByTestId('dex-legend')).toContainText('1 shiny');
     await expect(page.getByTestId('dex-pidgey').getByTestId('shiny-mark')).toBeVisible();
     await settle(page);

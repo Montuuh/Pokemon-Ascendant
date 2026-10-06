@@ -10,7 +10,8 @@ import type { ContentRegistry, ShopSlot, StoreFloor } from '@/sim';
 // own; they are the clerk's.
 
 /** A box in a map's pixels: left, top, width, height. */
-export type Box = readonly [number, number, number, number];
+export type { Box } from '@/ui/components/PixelRoom';
+import type { Box } from '@/ui/components/PixelRoom';
 
 export type ShelfId =
   | 'clerk'

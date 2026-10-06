@@ -10,6 +10,14 @@ async function menu(page: Page): Promise<void> {
   await page.waitForFunction(() => !!window.__ascendant);
 }
 
+/** §8.4 — a door in the Hub's lobby: back to the lobby first if a kiosk is open over it. */
+async function openKiosk(page: Page, id: 'pc' | 'mart' | 'card'): Promise<void> {
+  const lobby = page.getByTestId('btn-hub-lobby');
+  if (await lobby.isVisible()) await lobby.click();
+  await page.getByTestId(`kiosk-${id}`).click();
+  await expect(page.getByTestId(`hub-panel-${id}`)).toBeVisible();
+}
+
 /** A fight the account can count: a clean trainer win (a wild one pays no Bond, §6.8.1) with a Pidgey knocked out (by Squirtle, for 12) and Squirtle leading. */
 const win = () => ({
   t: 'combat-end', outcome: 'victory', kind: 'trainer', damageTaken: 4, manualSwaps: 0, faints: 0,
@@ -19,11 +27,13 @@ const win = () => ({
 });
 
 test.describe('The Trainer Hub — §8.4', () => {
-  test('a fresh account opens on the Trainer Card at Level 1, and the locked kiosks say what opens them', async ({ page }) => {
+  test('a fresh account opens on the lobby at Level 1, and the nurse keeps the Trainer Card', async ({ page }) => {
     await menu(page);
     await page.getByTestId('btn-hub').click();
     await expect(page.getByTestId('hub-screen')).toBeVisible();
     await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '1');
+    await expect(page.getByTestId('hub-lobby')).toBeVisible();
+    await openKiosk(page, 'card');
     await expect(page.getByTestId('trainer-card')).toBeVisible();
     await expect(page.getByTestId('level-ring-caption').first()).toHaveAttribute('data-span', '1515');
 
@@ -38,15 +48,15 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('track-detail')).toContainText('Starters shelf opens');
     await expect(page.getByTestId('track-detail')).toContainText('Three more Pokémon to start a run with');
 
-    // §8.4.1 — three kiosks open from the start; the Daycare Lady needs Level 3 and the Door is post-launch.
-    for (const id of ['card', 'pc', 'mart']) await expect(page.getByTestId(`kiosk-${id}`)).toBeEnabled();
-    await expect(page.getByTestId('kiosk-daycare')).toBeDisabled();
-    await expect(page.getByTestId('kiosk-daycare')).toContainText('Level 3');
-    await expect(page.getByTestId('kiosk-door')).toBeDisabled();
+    // §8.4.1 — the lobby: the Mart's counter, the nurse (the Trainer Card), the PC, the door to a run, the doormat out.
+    await page.getByTestId('btn-hub-lobby').click();
+    for (const id of ['card', 'pc', 'mart', 'run']) await expect(page.getByTestId(`kiosk-${id}`)).toBeVisible();
+    await expect(page.getByTestId('hub-exit')).toBeVisible();
+    await page.screenshot({ path: 'playtest/hub-lobby.png' });
 
     // §5.13 / §8.9 — the PC Terminal opens on the Pokédex: number, silhouette, name, the line's pips; every
     // species listed, none met, no line played.
-    await page.getByTestId('kiosk-pc').click();
+    await openKiosk(page, 'pc');
     await expect(page.getByTestId('dex-legend')).toContainText('0 of 151 met');
     await expect(page.getByTestId('dex-legend')).toContainText('0 of 79 lines played');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-met', 'false');
@@ -106,7 +116,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('achievement-full-house')).toContainText('hidden');
 
     await page.getByTestId('pc-tab-dex').click();
-    await page.getByTestId('kiosk-card').click();
+    await openKiosk(page, 'card');
     // The road staggers its stops in over ~0.6 s; the screenshot is of the finished picture.
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'playtest/hub.png' });
@@ -121,12 +131,13 @@ test.describe('The Trainer Hub — §8.4', () => {
     }, win());
     await page.getByTestId('btn-hub').click();
     await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '2');
+    await openKiosk(page, 'card');
     await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'claimed');
     await expect(page.getByTestId('track-3')).toHaveAttribute('data-state', 'next');
 
     // §6.8 — 303 wins leading with Squirtle is 606 Bond: all four pips on every card of the line, "By Bond" puts
     // the line first, and every rung is lit on the sheet.
-    await page.getByTestId('kiosk-pc').click();
+    await openKiosk(page, 'pc');
     await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '4');
     await expect(page.getByTestId('dex-blastoise')).toHaveAttribute('data-rank', '4');
     await expect(page.getByTestId('dex-legend')).toContainText('1 of 79 lines played');
@@ -174,7 +185,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.reload();
     await page.goto('/?screen=hub');
     await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '2');
-    await page.getByTestId('kiosk-pc').click();
+    await openKiosk(page, 'pc');
     await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '4');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
     await page.getByTestId('dex-squirtle').click();
@@ -184,7 +195,7 @@ test.describe('The Trainer Hub — §8.4', () => {
   test('the Poké Mart opens a shelf per level and sells for Tokens — cosmetics from Level 1, the Mastery lane from 10', async ({ page }) => {
     await menu(page);
     await page.getByTestId('btn-hub').click();
-    await page.getByTestId('kiosk-mart').click();
+    await openKiosk(page, 'mart');
     // Level 1: the Trainer's Corner is open, the other four shelves are tabs that say their level, and a
     // closed shelf is still readable — priced, with a banner that says what opens it.
     await expect(page.getByTestId('mart-tab-corner')).toHaveAttribute('data-open', 'true');
@@ -209,7 +220,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     // wears each the moment it is bought, and a second title is a Wear button away.
     await page.evaluate(() => window.__ascendant!.meta.tokens(9));
     await page.goto('/?screen=hub');
-    await page.getByTestId('kiosk-mart').click();
+    await openKiosk(page, 'mart');
     await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '9');
     await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'buyable');
     await page.getByTestId('mart-price-title-veteran').click();
@@ -225,7 +236,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.screenshot({ path: 'playtest/hub-mart-corner.png' });
     await page.getByTestId('mart-wear-title-veteran').click();
     await expect(page.getByTestId('mart-title-veteran')).toContainText('Wearing');
-    await page.getByTestId('kiosk-card').click();
+    await openKiosk(page, 'card');
     await expect(page.getByTestId('card-title')).toHaveText('Veteran');
     await expect(page.getByTestId('card-avatar')).toBeVisible();
     await expect(page.getByTestId('card-head')).toHaveAttribute('data-frame', 'frame-great');
@@ -239,7 +250,7 @@ test.describe('The Trainer Hub — §8.4', () => {
       window.__ascendant!.meta.tokens(13);
     });
     await page.goto('/?screen=hub');
-    await page.getByTestId('kiosk-mart').click();
+    await openKiosk(page, 'mart');
     await expect(page.getByTestId('mart-tab-mastery')).toHaveAttribute('data-open', 'true');
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
     await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '13');
@@ -261,13 +272,25 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('mart-price-pikachu')).toHaveAttribute('aria-label', /Not enough Tokens/);
     await page.screenshot({ path: 'playtest/hub-mart-starters.png' });
 
-    // §8.4.1 — and the Daycare Lady lists what was bought as ready, and prices what was not.
-    await page.getByTestId('kiosk-daycare').click();
-    await expect(page.getByTestId('daycare-starter-eevee')).toHaveAttribute('data-state', 'ready');
-    await expect(page.getByTestId('daycare-starter-magikarp')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('daycare-starter-magikarp')).toContainText('4');
-    await expect(page.getByTestId('daycare-starter-pikachu')).toHaveAttribute('data-state', 'locked');
-    await page.screenshot({ path: 'playtest/hub-daycare.png' });
+    // §8.4.1 — and the door to the Elite Four is the way into a run, where the starters wait.
+    await page.getByTestId('btn-hub-lobby').click();
+    await page.getByTestId('kiosk-run').click();
+    await expect(page.getByTestId('starter-select')).toBeVisible();
+  });
+});
+
+test.describe('The lobby — §8.4', () => {
+  test('a door opens its kiosk with the keyboard, Escape closes it, and focus comes back to the door', async ({ page }) => {
+    await menu(page);
+    await page.getByTestId('btn-hub').click();
+    await page.getByTestId('kiosk-card').focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByTestId('hub-panel-card')).toBeVisible();
+    await expect(page.getByTestId('btn-hub-lobby')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('hub-lobby')).toBeVisible();
+    await expect(page.getByTestId('kiosk-card')).toBeFocused();
+    await page.screenshot({ path: 'playtest/hub-lobby-focus.png' });
   });
 });
 
@@ -324,7 +347,7 @@ test('a medal case from before the rename becomes the first account, paid what i
   await page.goto('/?screen=hub');
 
   // The medal survived, the account holds it, and the pre-account keys are gone.
-  await page.getByTestId('kiosk-pc').click();
+  await openKiosk(page, 'pc');
   await page.getByTestId('pc-tab-medals').click();
   await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
   const keys = await page.evaluate(() => ({

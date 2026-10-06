@@ -40,6 +40,7 @@
     "art:rocket": "node scripts/fetch-rocket-art.mjs",
     "art:props": "node scripts/draw-game-corner-props.mjs",
     "art:mart": "node scripts/fetch-mart-art.mjs",
+    "art:hub": "node scripts/fetch-hub-art.mjs",
     "art:types": "node scripts/fetch-type-icons.mjs",
     "ui:audit": "node scripts/ui-audit.mjs"
   },

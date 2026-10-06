@@ -231,7 +231,7 @@ is paid on the next XP, not only the levels this event crossed. An account from 
 that missed a level, collects it rather than never (v0.6). A v0.6.0–v0.6.2 save keeps everything the old track
 granted and is back-paid the two Tokens each of its claimed levels now pays (`upgradeAccount`).
 
-**Difficulty modifiers are not on the track.** They open by Trainer Level (§8.8.2), which the Daycare Lady
+**Difficulty modifiers are not on the track.** They open by Trainer Level (§8.8.2), which the run's start screen
 shows as one ladder; a second path to the same rows would make that ladder lie. **Tier-2 relics are not on
 the track either** — the nine "Relic pool +1" rows of 2026-09-21 morning became the Discoveries shelf the same
 evening: a relic you never met the criterion for is bought, at a price, instead of arriving unasked.
@@ -240,17 +240,25 @@ evening: a relic you never met the criterion for is bought, at a price, instead 
 
 # §8.4 The Trainer Hub
 
-The pre-run and post-run menu. Not a 3D space: a clean 2D hub styled as a Pokémon Center interior, with kiosks.
+The pre-run and post-run place. **A room, not a menu** (v0.9.2, the user's call): the **Indigo Plateau's Pokémon
+Center lobby** as FireRed / LeafGreen drew it — the League's front room, where a run is meant to end — shown at a
+whole-pixel scale with its people in it, every door of the Hub a piece of its furniture (`ui/screens/hub/lobby.ts`,
+drawn by the same `PixelRoom` as the shops, §2.11.2). The level dial and the Token count sit above the room.
 
 ## §8.4.1 Kiosks
 
-| Kiosk | Function | Available |
+| In the lobby | Opens | Available |
 |---|---|---|
-| **PC Terminal** | The Pokédex — every species, its record, its kit and its line's Bond (§5.13, §6.8, §8.9) — the medal case (§8.7), the relic discoveries (§8.6.1) | From the start |
-| **Trainer Card** | Level, total XP, Tokens, profile stats | From the start |
-| **Poké Mart** | Five shelves — Trainer's Corner, Starters, Hub upgrades, Discoveries, Mastery lane — opened by Trainer Level (1/3/5/8/10), paid in Tokens (§8.3.5) | From the start (the Corner); every shelf by Level 10 |
-| **Daycare Lady** | Configure the starting roster, difficulty modifiers, run options | Trainer Level 3 |
-| **Mystery Door** | Daily Seed runs, leaderboards, prestige Ascension | Post-launch (previewable at 15) |
+| **The door to the Elite Four**, between the statues | **New run** — the starter, the Starting Relic, the Region Modifier and the difficulty modifiers (the run's start screen) | Always |
+| **The Poké Mart counter** and its clerk | **Poké Mart** — five shelves opened by Trainer Level, paid in Tokens (§8.3.5) | From the start (the Corner); every shelf by Level 10 |
+| **The nurse** and her counter — she keeps the League's register | **Trainer Card** — level, the road ahead, the profile (§8.4.3) | Always |
+| **The PC** | **PC Terminal** — the Pokédex and every line's Bond (§5.13, §6.8, §8.9), the medal case (§8.7), the relic discoveries (§8.6.1) | Always |
+| **The doormat** | Back to the title menu | Always |
+
+A door opens its kiosk in place of the room; **Lobby** (or Escape) closes it and puts the keyboard back on the door.
+*(Until v0.9.2 the Hub was a row of five kiosk buttons over one panel. The Daycare Lady's board only repeated what
+the run's start screen chooses, so the door to the Elite Four replaced her; the Mystery Door — daily seeds,
+leaderboards, Ascension — opened nothing and is hidden until it does.)*
 
 ## §8.4.2 Hub upgrades
 

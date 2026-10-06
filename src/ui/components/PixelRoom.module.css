@@ -1,4 +1,4 @@
-/* §2.11.2 — the shop room: the real FRLG map at a whole-pixel scale, with its shelves over it. */
+/* A FRLG room (PixelRoom): the real map at a whole-pixel scale, with its spots over it — the shops (§2.11.2), the Hub (§8.4). */
 
 /* The room's box: the map is sized to it in whole pixels by the component, which measures it. */
 .room { display: grid; place-items: center; min-height: 0; min-width: 0; height: 100%; overflow: hidden; }
@@ -21,7 +21,16 @@
   user-select: none;
 }
 
-/* The clerk behind the counter, drawn in the map's pixels like the room. */
+/* A room that is not a rectangle: no box, no fill — an ink line one map pixel wide round the map's own shape. */
+.silhouette {
+  border-color: transparent;
+  background: transparent;
+}
+.silhouette .art {
+  filter: drop-shadow(1px 0 0 var(--ink-primary)) drop-shadow(-1px 0 0 var(--ink-primary)) drop-shadow(0 1px 0 var(--ink-primary)) drop-shadow(0 -1px 0 var(--ink-primary));
+}
+
+/* The people the map has no room for, drawn in its pixels like the room. */
 .sprite { position: absolute; image-rendering: pixelated; user-select: none; pointer-events: none; }
 
 /* The shelves' shapes: every piece of a lit shelf, outlined as one in the map's own pixels (two rings, one and two

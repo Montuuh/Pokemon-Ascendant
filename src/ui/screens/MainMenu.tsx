@@ -55,8 +55,7 @@ export function MainMenu() {
           >
             New run
           </button>
-          {/* §8.4 — the Hub. Four of its five kiosks open in v0.6; the PC Terminal and §8.7's medals are
-              what v0.5 has to show, and they are the reason to start a second run. */}
+          {/* §8.4 — the Hub: the Indigo Plateau lobby, its Mart, its PC and the nurse who keeps your Trainer Card. */}
           <button type="button" className={styles.secondary} onClick={() => goTo('hub')} data-testid="btn-hub">
             Trainer Hub
           </button>
