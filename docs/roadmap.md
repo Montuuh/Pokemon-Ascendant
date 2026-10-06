@@ -924,16 +924,29 @@ a fight made every played line Trusted (Shiny) inside its first run and Soulboun
 - **Mastery:** 36 Lv2 and 9 Lv3 cards, every recruitable line whole, the §6.8.4 bands guarded by a content test.
   Eevee carries one Lv2 instead of the three per-branch cards once planned (a line has one Mastery track).
 
-### v0.9.2 — Player level and the Poké Mart, revamped  ☐
+### v0.9.2 — Bond, reworked  ✅ 2026-10-06
+The user's rework of the Bond, after a map of what v0.9.1 shipped (sources, pace, what each rank gave each line).
+**Four ranks, linear, 100 Bond each** (§6.8.2): **1 Companion** the Shiny Charm — every new copy of the line may be
+shiny, its wild ones ×3, and now its starter, Safari catch and trade roll too (`copyIsShiny`); **2 Trusted** the
+hidden ability; **3 Deep Bond** the whole Mastery Move at once, every stage (one unlock, the user's call — "the
+Pokémon's whole potential"); **4 Soulbound** the line may start a run, and starts it shiny (so the three default
+starters get a top rank too). Measured as a career: a line played every run reaches them after **5 / 11 / 16 / 21
+runs**; a line recruited every other run, about twice that. The "Mastery card in every opening hand" rule is gone.
+The nine recruitable lines with no hidden ability got one the sim already runs (Lapras Rain Dish, Electabuzz Vital
+Spirit, Koffing and Jynx Sheer Force, Rhyhorn Sturdy, Magmar Flash Fire, Farfetch'd Moxie, Scyther Tough Claws,
+Mr. Mime Shell Armor), guarded by a content test so no rank is empty. The Poké Mart keeps selling Magikarp, Eevee and
+Pikachu: buy now or earn it. The versions after this one moved up a number.
+
+### v0.9.3 — Player level and the Poké Mart, revamped  ☐
 The Trainer level and the Mart (§8.3, §8.4), with the scored shop curation §2.11.2.1 still owes and what leftover
 ₽ turns into at a run's end. Design pass with the user first. *(Backlog #7, and the end-of-run surplus.)*
 
-### v0.9.3 — The catch, animated  ☐
+### v0.9.4 — The catch, animated  ☐
 A bar that lights up to the throw's catch %, and a Poké Ball swinging side to side, slowing little by little
 before it settles. The outcome is still rolled first (§2.6.4.1) — the animation only shows it. On the combat
 screen v0.8 reshaped, so it is drawn once. *(Backlog #10.)*
 
-### v0.9.4 — Victory Road  ☐
+### v0.9.5 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 - **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
@@ -941,7 +954,7 @@ Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
   Road's Apex (§2.12.2) is where the canon already brings the run's rarest species, and the two are balanced together.
   Needs the backlog's "a Legendary takes two team slots" designed with the user first.
 
-### v0.9.5 — The League  ☐
+### v0.9.6 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
@@ -980,7 +993,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.4's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.4, designed first |
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.5's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.5, designed first |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -995,17 +1008,17 @@ the account revamps move to v0.9):
 | 4 | The global balance pass | v0.8.8 (after multi-enemy, per the user) and v1.0 |
 | 5 | Bond, revamped | v0.9.1 |
 | 6 | Shiny, revamped | v0.9.1 |
-| 7 | Player level & Poké Mart, revamped | v0.9.2 |
+| 7 | Player level & Poké Mart, revamped | v0.9.3 |
 | 8 | Consumables that are spent | v0.8.6 (with scarcer relics) |
 | 9 | Double-attack enemy intents — and enemies that call for help | v0.8.2 |
-| 10 | The catch, animated | v0.9.3 |
+| 10 | The catch, animated | v0.9.4 |
 | 11 | The Ring moves out of the Dojo — a town Ring, and the city's Coliseum | v0.7.7 (with the City art) |
 | — | Multi-enemy fights, everywhere in the run | v0.8.1, v0.8.3 |
 | — | An intent you can hover (the intent card) | v0.8.1 ✅ |
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
-| — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.4 |
+| — | End-of-run ₽ surplus | v0.9.3 |
+| — | Recovering missed Badges | v0.9.5 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.4 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.5 (with the two-slot balance, designed first) |

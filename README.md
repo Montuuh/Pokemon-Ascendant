@@ -49,9 +49,8 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.1 — Bond and Shiny, revamped.** Shinies are found in the wild — any wild Pokémon may be one, by surprise —
-and a caught shiny keeps its colours and joins your collection. Bond is a long road now (about eighteen runs to
-Soulbound a line), its rank 2 is the line's Shiny Charm, and every line's Mastery cards are complete.
+**v0.9.2 — Bond, reworked.** Every line's Bond is four ranks of equal cost: its Shiny Charm, its hidden ability,
+its whole Mastery Move, and — about twenty runs in — the right to start a run with it, shiny.
 
 ## Run it locally
 

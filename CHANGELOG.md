@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.2 — Bond, reworked · 2026-10-06
+
+Four ranks, linear, one reward each; the starter rank last and longest.
+
+- **Four ranks.** 100 Bond each: about 5 / 11 / 16 / 21 runs for your main line.
+- **Shiny Charm.** Rank 1: every new copy may be shiny, your starter too.
+- **Mastery whole.** Rank 3 opens every Mastery card of the line at once.
+- **Soulbound.** Rank 4: the line can start a run, and starts it shiny.
+
 ### v0.9.1 — Bond and Shiny, revamped · 2026-10-06
 
 Shinies found in the wild; Bond a long road; every line's Mastery whole.
