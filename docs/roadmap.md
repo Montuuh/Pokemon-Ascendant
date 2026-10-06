@@ -938,9 +938,24 @@ Spirit, Koffing and Jynx Sheer Force, Rhyhorn Sturdy, Magmar Flash Fire, Farfetc
 Mr. Mime Shell Armor), guarded by a content test so no rank is empty. The Poké Mart keeps selling Magikarp, Eevee and
 Pikachu: buy now or earn it.
 
-### v0.9.2 — Player level and the Poké Mart, revamped  ☐
+### v0.9.2 — Player level and the Poké Mart, revamped  ✅ 2026-10-07
 The Trainer level and the Mart (§8.3, §8.4), with the scored shop curation §2.11.2.1 still owes and what leftover
 ₽ turns into at a run's end. Design pass with the user first. *(Backlog #7, and the end-of-run surplus.)*
+
+**Shipped.** The design pass measured the account as a career first (`balance/accountCareer.test.ts`, new): the last
+shelf opened after ~37 runs, forty runs earned ~29 Tokens against a ~220 shop, and a run threw ~460 ₽ away. The user
+chose three moves:
+- **The Hub as a place (§8.4):** the Indigo Plateau's Pokémon Center lobby from FireRed / LeafGreen — the Mart counter
+  and its clerk, the nurse who keeps the Trainer Card, the PC, the door to the Elite Four that starts a run, the doormat
+  out — drawn by `PixelRoom`, now shared with the shops. The Daycare Lady (a board that repeated the run's start screen)
+  and the Mystery Door (which opened nothing) are gone.
+- **₽ becomes Tokens (§8.3.4):** 200 ₽ a Token at a run's end, won or lost, at most 5 — poor on purpose, so ₽ spent in
+  the run is worth more than ₽ carried out.
+- **The account re-paced (§8.3.3–§8.3.5):** the curve `330 × N^1.6` (was 500), three Tokens a level (more at the
+  fifths), four shelves at 1 / 2 / 4 / 6 — every shelf open by about the ninth run, the whole ~134-Token shop paid off
+  at a career's run 62. The Discoveries shelf is closed: a Tier-2 relic is only discovered (§8.6.1). The Apex Reveal is
+  off the shelf until Victory Road.
+**Not done:** §2.11.2.1's scored shop curation, which this row carried over, waits for v1.0's balance pass.
 
 ### v0.9.3 — The catch, animated  ☐
 A bar that lights up to the throw's catch %, and a Poké Ball swinging side to side, slowing little by little

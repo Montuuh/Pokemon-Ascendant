@@ -3,12 +3,12 @@ import { IconBook2, IconBolt, IconCheck, IconEgg, IconMedal, IconSwords, IconTro
 import NumberFlow from '@number-flow/react';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, HUB_UPGRADE_LABEL, MART_PRICE, MAX_LEVEL, SHELVES, XP, bondRank, cosmeticById, martShelf, trackTokensBetween, type HubUpgrade, BOND_TIER } from '@/sim';
+import { ACHIEVEMENTS, HUB_UPGRADE_LABEL, MART_PRICE, MAX_LEVEL, SHELVES, bondRank, cosmeticById, martShelf, trackTokensBetween, type HubUpgrade, BOND_TIER, TRACK_TOKENS, shelfItems } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { trainerSprite } from '@/ui/art';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { hubUpgradeTip } from '@/ui/tips';
+import { hubUpgradeTip, trainerXpTip, hubUpgradesTip } from '@/ui/tips';
 import { FRAME_CLASS } from './frames';
 import { LevelRing } from './LevelRing';
 import { RewardTrack } from './RewardTrack';
@@ -61,7 +61,7 @@ export function TrainerCard() {
               {avatar?.sprite && <img src={trainerSprite(avatar.sprite)} alt={avatar.name} className={styles.avatar} data-testid="card-avatar" />}
               Trainer
               {title && <span className={styles.titleRibbon} data-testid="card-title">{title.name}</span>}
-              <InfoDot tip={<Tip title="Trainer XP and Tokens" body={`XP is never spent: it moves the level, and every level pays Tokens and, four times, opens a shelf at the Poké Mart. A fight pays ${XP.combat}, a first recruit ${XP.recruit}, an evolution ${XP.evolution}, a Badge ${XP.gym}; a lost run pays by how far it got. Tokens also come from Gold and Platinum medals, and buy everything the Mart sells.`} footer={`${account.xp} lifetime XP · ${account.tokensEarned} Tokens earned`} />} />
+              <InfoDot tip={trainerXpTip(`${account.xp} lifetime XP · ${account.tokensEarned} Tokens earned`)} />
             </h2>
           </div>
           <dl className={styles.facts}>
@@ -88,7 +88,7 @@ export function TrainerCard() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>
           The road ahead
-          <InfoDot tip={<Tip title="The reward track" body={`Every Trainer Level pays Tokens the moment it is reached — two, more at every fifth — and the storefront stops open a shelf at the Poké Mart: Starters at ${SHELVES.starters.level}, Hub upgrades at ${SHELVES.hub.level}, Discoveries at ${SHELVES.discoveries.level}, the Mastery lane at ${SHELVES.mastery.level}. Click a stop to read it.`} footer={`${trackTokensBetween(1, MAX_LEVEL)} Tokens by Level ${MAX_LEVEL}.`} />} />
+          <InfoDot tip={<Tip title="The reward track" body={`Every Trainer Level pays Tokens the moment it is reached — ${TRACK_TOKENS.level}, more at every fifth — and the storefront stops open a shelf at the Poké Mart: Starters at ${SHELVES.starters.level}, Hub upgrades at ${SHELVES.hub.level}, the Mastery lane at ${SHELVES.mastery.level}. Click a stop to read it.`} footer={`${trackTokensBetween(1, MAX_LEVEL)} Tokens by Level ${MAX_LEVEL}.`} />} />
         </h2>
         <RewardTrack account={account} />
       </section>
@@ -96,7 +96,7 @@ export function TrainerCard() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>
           Hub upgrades
-          <InfoDot tip={<Tip title="Hub upgrades" body="Seven conveniences sold at the Poké Mart — the fourth Starting Relic at the Trainer's Corner, the rest on the Hub upgrades shelf from Level 5. Each widens an option — a bigger Box, two starters, a second modifier slot — and none adds a point of damage." />} />
+          <InfoDot tip={hubUpgradesTip(1 + shelfItems('hub', getContent()).length)} />
         </h2>
         <ul className={styles.chips}>
           {(Object.keys(HUB_UPGRADE_LABEL) as HubUpgrade[]).map((u) => {

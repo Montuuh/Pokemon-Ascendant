@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.2 — The Hub and the Poké Mart, revamped · 2026-10-07
+
+The Hub is a place, leftover ₽ becomes Tokens, and every shelf opens early.
+
+- **The Hub.** The Indigo Plateau lobby: Mart, nurse, PC and the League door.
+- **₽ to Tokens.** A run's leftover ₽ becomes Tokens: 200 ₽ each, up to 5.
+- **Shelves.** All open by about the tenth run; the whole shop in about sixty.
+- **Discovered, not sold.** Tier-2 relics are only found by playing.
+
 ### v0.9.1 — Bond and Shiny, revamped · 2026-10-06
 
 Shinies found in the wild; Bond in four equal ranks; every Mastery whole.

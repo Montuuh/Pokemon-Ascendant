@@ -11,12 +11,12 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon, trainerSprite } from '@/ui/art';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
-import { cosmeticTip, hubUpgradeTip, relicTierTip, starterTip, tokenTip } from '@/ui/tips';
+import { cosmeticTip, hubUpgradeTip, relicTierTip, starterTip, tokenTip, martShelvesTip } from '@/ui/tips';
 import { FRAME_CLASS } from './frames';
 import { TokenIcon } from './TokenIcon';
 import styles from './Hub.module.css';
 
-// §8.3.4 / §8.4.1 — the Poké Mart: five shelves, one currency, one button per thing. Trainer Level opens a
+// §8.3.4 / §8.4.1 — the Poké Mart: four shelves, one currency, one button per thing. Trainer Level opens a
 // shelf; Tokens buy from it. A closed shelf is still a tab you can open and read — priced, with a banner that
 // says what opens it and how far away that is — because a door you can see is a goal (§7.7). The Corner is
 // open from Level 1 so the first Tokens have somewhere to go the day they arrive.
@@ -25,7 +25,6 @@ const SHELF_ICON: Record<ShelfId, ReactNode> = {
   corner: <IconAward size={18} />,
   starters: <IconUsers size={18} />,
   hub: <IconBox size={18} />,
-  discoveries: <IconEye size={18} />,
   mastery: <IconDiamond size={18} />,
 };
 
@@ -94,8 +93,8 @@ export function PokeMart() {
     <div className={styles.mart} data-testid="poke-mart">
       <div className={styles.martHead}>
         <span className={styles.lede}>
-          Five shelves. Trainer Level opens them; Tokens buy from them.
-          <InfoDot tip={<Tip title="The shop of the pass" body="Every Trainer Level pays Tokens and four of them open a shelf: Starters at 3, Hub upgrades at 5, Discoveries at 8, the Mastery lane at 10. The Trainer's Corner is open from the start. Nothing here is power — starters, conveniences, relics for your pool, and things to wear on the card." footer="The whole shop costs more than the track pays: you choose, and medals top the wallet up." />} />
+          Trainer Level opens the shelves; Tokens buy from them.
+          <InfoDot tip={martShelvesTip()} />
         </span>
         <Tipped tip={tokenTip(account.tokens, account.tokensEarned)}>
           <span className={styles.wallet} data-testid="mart-tokens" data-tokens={account.tokens}>

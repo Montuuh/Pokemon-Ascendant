@@ -165,6 +165,9 @@
 - **A meta curve is measured as a career, not a run.** v0.9.1's Bond pace came from `balance/bondCareer.test.ts`: one
   account folding many harness runs in a row, its own perks fed back into each. A single run's points said "one rank a
   run"; the career, with Mastery and the Charm unlocking along the way, said where the long tail actually lands.
+- **The account is measured as a career too.** `balance/accountCareer.test.ts` (`ACCOUNT_REPORT=1`) plays many runs into
+  one account: levels, shelves, Tokens by source, the run that pays off the shop. v0.9.2 found the last shelf at run 37
+  and a wallet that never caught up — numbers that had been set by reasoning, not by playing.
 - **Golden fixtures** are regenerated only with `UPDATE_GOLDEN=1 npm test`, plus a note in the rule that
   changed.
 - **The Region curve (§2.2.1) is tuned over 720 runs, guarded over 120.** `npm run check` runs one block of 40

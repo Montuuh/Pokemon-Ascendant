@@ -56,13 +56,13 @@ export {
 // §8.3–§8.6, §8.9, §8.10 — the account: Trainer XP, the track, Tokens, the Pokédex, Mastery, what is unlocked.
 // Pure state and a pure fold; persistence is the app layer's (accountStore).
 export {
-  ACCOUNT_VERSION, MAX_LEVEL, REWARD_TRACK, TRACK_TOKENS, SHELVES, SHELF_ORDER, HUB_UPGRADE_LABEL, XP,
+  ACCOUNT_VERSION, MAX_LEVEL, REWARD_TRACK, TRACK_TOKENS, MONEY_TO_TOKENS, tokensForMoney, LEVEL_CURVE, SHELVES, SHELF_ORDER, HUB_UPGRADE_LABEL, XP,
   emptyAccount, emptyDelta, xpForLevel, levelFor, levelProgress, trackTokensBetween, applyAccountEvent, applyAccountEvents, accountFromProgress,
   upgradeAccount, hasHubUpgrade, medalCount, lineOf,
   type AccountState, type AccountDelta, type AccountContext, type TrackReward, type ShelfId, type HubUpgrade, type LifetimeStats, type LegacyAccountFields, speciesMet } from './meta/account';
 // §8.3.4, §8.4.1, §8.4.4 — the Poké Mart: shelves by level, prices in Tokens, cosmetics.
 export {
-  MART_PRICE, META_STARTERS, shelfOpen, discoveryShelf, martShelf, martPrice, martOwned, martPending, shelfItems, shopTotal, buy, wear,
+  MART_PRICE, META_STARTERS, shelfOpen, martShelf, martPrice, martOwned, martPending, shelfItems, shopTotal, buy, wear,
   type MartItem, type MartError,
 } from './meta/mart';
 export { COSMETICS, COSMETIC_PRICE, cosmeticById, TITLE_ID_BY_NAME, type CosmeticDef, type CosmeticKind } from './meta/cosmetics';

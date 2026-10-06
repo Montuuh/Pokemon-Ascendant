@@ -12,7 +12,7 @@
 Three guarantees hold the meta layer together.
 
 1. **Failure is fuel.** Every run, won or lost, materially improves the next one through Trainer XP and Pokédex
-   mastery. A wipe in Region 1 is worth 80–150 XP; a wipe in Region 3 is worth 400–600.
+   mastery. A wipe in Region 1 is worth ~350 XP; a wipe in Region 3 ~770, and the ₽ a run ends with becomes Tokens.
 2. **Unlocks expand the option space, never the power floor.** Meta-unlocks add Pokémon, relics, starters and
    modifiers. They never add damage, HP or any baseline number. A first-run player and a hundred-hour player face
    **the same maths**; the veteran simply has more choices.
@@ -150,81 +150,85 @@ Hub conveniences, and never a single point of damage or HP.
 | Pokédex tier promotion | 25 / 75 / 200 |
 | Achievement | 50–500 by medal tier |
 
-| Run outcome | Typical total |
+| Run outcome | Typical total (measured, v0.9.2) |
 |---|---|
-| Wipe in Region 1 | 80–150 |
-| Wipe in Region 3 | 400–600 |
-| Win | 900–1 200 |
-| Win, achievement-heavy | up to 2 000 |
+| Wipe in Region 1 | ~350 |
+| Wipe in Region 2 | ~520 |
+| Wipe in Region 3 | ~770 |
+| Win | ~790 |
+
+*(Measured as a career by `balance/accountCareer.test.ts`: one account, many runs in a row, the account's perks
+playing into each. The Victory Road, Elite Four and Champion rows wait on those fights (v0.9.4–v0.9.5); the Pokédex
+pays only Familiar's 25 since its other tiers moved to the Bond.)*
 
 Difficulty modifiers multiply the run's total (§8.8.3).
 
 ## §8.3.3 The level curve
 
 ```
-cumulative XP to reach Level N = floor(500 × N^1.6)
+cumulative XP to reach Level N = floor(330 × N^1.6)
 ```
 
-| Level | Cumulative | Meaning |
+| Level | Cumulative | Reached after (a career's median run) |
 |---|---|---|
-| 2 | 1 515 | After the first won run, or the second lost one |
-| 5 | 6 566 | End of a first weekend |
-| 10 | 19 905 | Every shelf at the Poké Mart is open; the track has paid 26 Tokens |
-| 15 | 38 081 | |
-| 20 | 60 341 | Completionist tier — all run content visible |
-| 30 | 115 442 | Prestige cap; future Ascension entry |
+| 2 | 1 000 | the first run — the Starters shelf |
+| 4 | 3 030 | ~4 — the Hub upgrades shelf |
+| 6 | 5 801 | ~9 — the Mastery lane, the last shelf |
+| 10 | 13 137 | ~23 |
+| 15 | 25 146 | ~50 |
+| 20 | 39 828 | ~80 |
+| 30 | 76 191 | prestige cap; future Ascension entry |
 
-Soft-logarithmic: levels 2–10 are a few runs apart, 20–30 are dozens. *(The table was recomputed from the
-formula on 2026-09-21 — the earlier one had drifted from it by up to 45 %; the formula is the rule.)*
+Soft-logarithmic: the shelves arrive inside the first ten runs, levels 15–30 are a long tail that keeps paying
+Tokens. *(v0.9.2: the constant came down from 500 — a run pays ~350–800 XP, and at 500 the last shelf opened after
+~37 runs. Measured by `balance/accountCareer.test.ts`; the formula is the rule.)*
 
 ## §8.3.4 Two currencies
 
 | | Trainer XP | Trainer Tokens |
 |---|---|---|
-| **Earned** | Everything in §8.3.2 | **Every Trainer Level** (2; 5/5/8/8/10/10 at the milestones) + Gold (+2) and Platinum (+5) achievements |
+| **Earned** | Everything in §8.3.2 | **Every Trainer Level** (3; more at every fifth) + Gold (+2) and Platinum (+5) achievements + **the ₽ a run ends with** |
 | **Spent** | Never — it drives the track | Manually, at the Poké Mart |
-| **Opens / buys** | The Poké Mart's **shelves**, one per stop that opens one | **Everything on an open shelf** — starters, Hub upgrades, relics for the pool, cosmetics |
+| **Opens / buys** | The Poké Mart's **shelves**, one per stop that opens one | **Everything on an open shelf** — starters, Hub upgrades, Tier-3 relics, cosmetics |
 
 **XP decides what is for sale; Tokens decide what you take home.** The track's only job is to pay Tokens and
-open the next shelf (§8.3.5); the Mart's only job is to sell. Nothing meta is granted outright any more, and
-nothing meta is unbuyable. *(Decided 2026-09-21. Until then the track handed out starters, Hub upgrades and
-titles itself and Tokens bought Tier-3 relics only — which meant earning Tokens from Level 5 with nothing to
-spend them on until Level 10, and a road of gifts nobody chose.)*
+open the next shelf (§8.3.5); the Mart's only job is to sell. Nothing meta is granted outright, and nothing on a
+shelf is unbuyable — a Tier-2 relic is not on a shelf at all: it is discovered (§8.6.1). *(Decided 2026-09-21.
+Until then the track handed out starters, Hub upgrades and titles itself.)*
+
+**The run's leftover ₽ becomes Tokens** (v0.9.2, the user's call): when a run ends, won or lost, every **200 ₽**
+left is **one Token**, at most **5** a run (`MONEY_TO_TOKENS`). The ₽ was thrown away before — a run ended with
+~460 ₽ on average. The rate is poor on purpose: ₽ spent in the run (a Potion, a Therapy, a TM) is worth more than
+₽ carried out, and the cap keeps a run from being played for the bank. The run's summary says what it became.
 
 **Why two.** A single bar where every unlock competes is the "XP funnel" trap: progress feels slow and no choice
 feels meaningful. The track guarantees something visible every level — failure is fuel, made legible — while
-Tokens preserve **agency**: the shop costs ~210 Tokens (§8.4.1) against ~92 from the track and ~64 from medals,
-so a player is always choosing and never finished.
+Tokens preserve **agency**: the shop costs **~134 Tokens** against an income of ~2.3 a run (the track ~1, the ₽ ~1.2,
+the medals the rest), so the whole shop is about **sixty runs** of choosing what comes first (measured: a career's
+median pays it off at run 62).
 
 ## §8.3.5 The reward track
 
-Every Trainer Level **pays Tokens** the moment it is reached, and four levels also **open a shelf** at the Poké
+Every Trainer Level **pays Tokens** the moment it is reached, and three levels also **open a shelf** at the Poké
 Mart. Nothing else is on the track: the pass pays, the shop sells (§8.3.4).
 
 | Level | Pays | Opens |
 |---|---|---|
 | 1 | — | **Trainer's Corner** (the floor: titles, avatars, frames, Curated Starting Relic +1) |
-| 2 | 🎟 2 | |
-| 3 | 🎟 2 | **Starters** — Magikarp 4 · Eevee 6 · Pikachu 6 |
-| 4 | 🎟 2 | |
-| 5 | 🎟 5 | **Hub upgrades** — Expanded Box 5 · Pokédex Insight 4 · Modifier Slot +1 6 · Twin Run 8 · Trauma Salve Cache 4 · Apex Reveal 4 |
-| 6–7 | 🎟 2 each | |
-| 8 | 🎟 2 | **Discoveries** — any undiscovered Tier-2 relic, 4 each |
-| 9 | 🎟 2 | |
-| 10 | 🎟 5 | **Mastery lane** — the Tier-3 relics, 5 each |
-| 11–14 | 🎟 2 each | |
-| 15 | 🎟 8 | |
-| 16–19 | 🎟 2 each | |
-| 20 | 🎟 8 | |
-| 21–24 | 🎟 2 each | |
-| 25 | 🎟 10 | |
-| 26–29 | 🎟 2 each | |
-| 30 | 🎟 10 | prestige cap |
+| 2 | 🎟 3 | **Starters** — Magikarp 4 · Eevee 6 · Pikachu 6 |
+| 3 | 🎟 3 | |
+| 4 | 🎟 3 | **Hub upgrades** — Expanded Box 5 · Pokédex Insight 4 · Modifier Slot +1 6 · Twin Run 8 · Trauma Salve Cache 4 |
+| 5 | 🎟 6 | |
+| 6 | 🎟 3 | **Mastery lane** — the Tier-3 relics, 5 each |
+| 7–9, 11–14, 16–19, 21–24, 26–29 | 🎟 3 each | |
+| 10 · 15 · 20 · 25 · 30 | 🎟 6 · 10 · 10 · 12 · 12 | the last a prestige cap |
 
-**92 Tokens by Level 30**, 26 of them by Level 10 when the last shelf opens. The anchors: the Corner open from
-the first Token so nothing is earned with nowhere to go; the three starters affordable by Level 8 on the track
-alone (17 Tokens paid, 16 asked); every shelf open by Level 10; the shop as a whole (~210) out of reach of the
-track alone, so medals matter and choice never runs out. Amounts and prices are tunable; the shape is not.
+**125 Tokens by Level 30.** The anchors: the Corner open from the first Token so nothing is earned with nowhere to
+go; every shelf open inside the first ten runs; the three starters affordable on the track alone by Level 6 (18 paid,
+16 asked); the shop as a whole out of reach of the track alone, so the ₽ and the medals matter and choice never runs
+out. *(v0.9.2: shelves at 2 / 4 / 6, three Tokens a level. They were at 3 / 5 / 8 / 10 with two a level, and with the
+old curve the last shelf took ~37 runs. The Discoveries shelf at 8 is gone: a Tier-2 relic is discovered, §8.6.1.)*
+Amounts and prices are tunable; the shape is not.
 
 The track is settled **idempotently**: every level at or below the current one whose Tokens have not been paid
 is paid on the next XP, not only the levels this event crossed. An account from before a row existed, or a save
@@ -233,7 +237,7 @@ granted and is back-paid the two Tokens each of its claimed levels now pays (`up
 
 **Difficulty modifiers are not on the track.** They open by Trainer Level (§8.8.2), which the run's start screen
 shows as one ladder; a second path to the same rows would make that ladder lie. **Tier-2 relics are not on
-the track either** — the nine "Relic pool +1" rows of 2026-09-21 morning became the Discoveries shelf the same
+the track either** — the nine "Relic pool +1" rows of 2026-09-21 morning became a Discoveries shelf the same
 evening: a relic you never met the criterion for is bought, at a price, instead of arriving unasked.
 
 ---
@@ -250,7 +254,7 @@ drawn by the same `PixelRoom` as the shops, §2.11.2). The level dial and the To
 | In the lobby | Opens | Available |
 |---|---|---|
 | **The door to the Elite Four**, between the statues | **New run** — the starter, the Starting Relic, the Region Modifier and the difficulty modifiers (the run's start screen) | Always |
-| **The Poké Mart counter** and its clerk | **Poké Mart** — five shelves opened by Trainer Level, paid in Tokens (§8.3.5) | From the start (the Corner); every shelf by Level 10 |
+| **The Poké Mart counter** and its clerk | **Poké Mart** — four shelves opened by Trainer Level, paid in Tokens (§8.3.5) | From the start (the Corner); every shelf by Level 10 |
 | **The nurse** and her counter — she keeps the League's register | **Trainer Card** — level, the road ahead, the profile (§8.4.3) | Always |
 | **The PC** | **PC Terminal** — the Pokédex and every line's Bond (§5.13, §6.8, §8.9), the medal case (§8.7), the relic discoveries (§8.6.1) | Always |
 | **The doormat** | Back to the title menu | Always |
@@ -263,14 +267,14 @@ leaderboards, Ascension — opened nothing and is hidden until it does.)*
 ## §8.4.2 Hub upgrades
 
 Each is quality-of-life or option-expanding, never power, and each is **sold at the Poké Mart** — the first
-on the Trainer's Corner from Level 1, the rest on the Hub upgrades shelf from Level 5 — in any order.
+on the Trainer's Corner from Level 1, the rest on the Hub upgrades shelf from Level 4 — in any order.
 
 | Upgrade | Shelf | 🎟 | Effect |
 |---|---|---|---|
 | Curated Starting Relic +1 | Corner (Lv 1) | 3 | Run start offers 4 Starting Relics instead of 3 |
-| Pokédex Insight | Hub upgrades (Lv 5) | 4 | The first fight each run against a species you have **not yet** made Familiar shows its opening intent free |
+| Pokédex Insight | Hub upgrades (Lv 4) | 4 | The first fight each run against a species you have **not yet** made Familiar shows its opening intent free |
 | Trauma Salve Cache | Hub upgrades | 4 | City 1's shop is guaranteed to stock at least one Trauma Salve, in the Uncommon relic's slot *(sold since v0.7.1)* |
-| Apex Pokémon Reveal | Hub upgrades | 4 | The Victory Road Apex species is shown on entering Region 3 *(sold once Victory Road ships, v0.9.4)* |
+| Apex Pokémon Reveal | Hub upgrades | 4 | The Victory Road Apex species is shown on entering Region 3 *(off the shelf until Victory Road ships, v0.9.4: a priced row that can never be bought is a promise, not a shelf)* |
 | Expanded Box | Hub upgrades | 5 | Box capacity 6 → 8 for all future runs |
 | Difficulty Modifier Slot +1 | Hub upgrades | 6 | Stack 2 difficulty modifiers per run instead of 1 |
 | Second Starter Slot (Twin Run) | Hub upgrades | 8 | Choose two starters; the Box starts +1 larger. Active Team stays 3 |
@@ -324,8 +328,8 @@ Starters get three archetypes per evolution; most species get two (§6.3.3).
 
 ## §8.5.2 Meta-unlocked
 
-Three more, **sold on the Poké Mart's Starters shelf from Trainer Level 3** (§8.3.5), each widening build
-diversity rather than raising power. In any order; the track has paid for all three by Level 8.
+Three more, **sold on the Poké Mart's Starters shelf from Trainer Level 2** (§8.3.5), each widening build
+diversity rather than raising power. In any order; the track has paid for all three by Level 6.
 
 | Starter | 🎟 | Type | Design slot |
 |---|---|---|---|
@@ -370,18 +374,17 @@ Small thematic flourishes, balance-neutral by intent:
 | Tier | Count | Available | Unlocked by |
 |---|---|---|---|
 | **Tier 1 — Foundation** | 20 | Run 1 | Always in the pool |
-| **Tier 2 — Discovered** | 20 | Progressive | Triggering a specific run event, once, across any runs — **or 4 Tokens on the Discoveries shelf, from Trainer Level 8** |
-| **Tier 3 — Mastery** | 10 | Trainer Level 10+ | 5 Tokens each on the Mastery lane, in any order |
+| **Tier 2 — Discovered** | 20 | Progressive | Triggering a specific run event, once, across any runs |
+| **Tier 3 — Mastery** | 10 | Trainer Level 6+ | 5 Tokens each on the Mastery lane, in any order |
 
 **Tier is not rarity.** Tier decides whether a relic is in your account's pool at all; rarity decides how often
 it drops once it is (§7.3.1).
 
 Tier 2 creates ongoing discovery: even at Trainer Level 20 there are relics you have not met because you have
-not done the thing that unlocks them. All twenty criteria: [`catalogs/relics.md`](catalogs/relics.md). The
-Discoveries shelf is the way past a criterion you keep missing — dearer than discovering (which is free) and
-cheaper than a Tier-3, so the criterion stays the natural road and the shelf the paid one. Reactor Core is Tier
-2 with a criterion *and* on the Mastery lane; it is not on the Discoveries shelf twice. *(Shelf added
-2026-09-21.)*
+not done the thing that unlocks them. All twenty criteria: [`catalogs/relics.md`](catalogs/relics.md). **A Tier-2
+relic is never sold** (v0.9.2, the user's call): from 2026-09-21 a Discoveries shelf sold any of them for four
+Tokens, and paying to skip a discovery undid the one thing the tier is for. Reactor Core is Tier 2 with a criterion
+*and* on the Mastery lane, which sells it.
 
 All ten Tier-3 entries change *how a run works* rather than how hard it hits — which is why they are the
 dearest shelf and the last to open.
@@ -608,7 +611,7 @@ two-zone curve of §6.2.1.
 **Trainer XP** — persistent account XP; never spent; drives Trainer Level.
 **Trainer Level** — the account metric that advances the reward track and opens the Poké Mart's shelves.
 **Trainer Token** — the agency currency; every level and the hard achievements; spent on any open shelf.
-**Shelf** — one of the Poké Mart's five counters (Corner, Starters, Hub upgrades, Discoveries, Mastery lane), opened by Trainer Level.
+**Shelf** — one of the Poké Mart's four counters (Corner, Starters, Hub upgrades, Mastery lane), opened by Trainer Level.
 **Hub upgrade** — a permanent quality-of-life or option-expanding unlock, bought at the Poké Mart.
 **Cosmetic** — a title, avatar or frame the Trainer Card wears; bought at the Trainer's Corner; no effect (§8.4.4).
 **Tier 1 / 2 / 3** — a relic's meta-unlock status. Not its rarity.

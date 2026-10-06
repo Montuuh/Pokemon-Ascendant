@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import { emptyAccount, SHELVES, xpForLevel, type AccountState } from './account';
-import { MART_PRICE, buy, discoveryShelf, martOwned, martPrice, martShelf, shelfItems, shelfOpen, shopTotal, wear } from './mart';
+import { MART_PRICE, buy, martOwned, martPrice, martShelf, shelfItems, shelfOpen, shopTotal, wear } from './mart';
 import { COSMETIC_PRICE, COSMETICS } from './cosmetics';
 import { relicPoolFor, unlockedStarters } from './unlocks';
 import { BOND_RANKS } from './bond';
@@ -20,9 +20,9 @@ describe('Shelves — §8.3.5', () => {
     const fresh = emptyAccount();
     expect(shelfOpen(fresh, 'corner')).toBe(true);
     expect(shelfOpen(fresh, 'starters')).toBe(false);
-    expect(shelfOpen(at(3, 0), 'starters')).toBe(true);
-    expect(shelfOpen(at(9, 0), 'mastery')).toBe(false);
-    expect(shelfOpen(at(10, 0), 'mastery')).toBe(true);
+    expect(shelfOpen(at(SHELVES.starters.level, 0), 'starters')).toBe(true);
+    expect(shelfOpen(at(SHELVES.mastery.level - 1, 0), 'mastery')).toBe(false);
+    expect(shelfOpen(at(SHELVES.mastery.level, 0), 'mastery')).toBe(true);
   });
 
   it('EveryItemSitsOnOneShelf_AndTheShopCostsMoreThanTheTrackPays', () => {
@@ -30,64 +30,63 @@ describe('Shelves — §8.3.5', () => {
     expect(martShelf({ kind: 'hub', id: 'starting-relic-plus-one' }, content)).toBe('corner');
     expect(martShelf({ kind: 'hub', id: 'twin-run' }, content)).toBe('hub');
     expect(martShelf({ kind: 'starter', id: 'eevee' }, content)).toBe('starters');
-    expect(martShelf({ kind: 'relic', id: 'steady-aim' }, content)).toBe('discoveries');
+    // §8.6.1 — a Tier-2 relic is discovered, never bought (v0.9.2): no shelf sells Steady Aim.
+    expect(martShelf({ kind: 'relic', id: 'steady-aim' }, content)).toBeNull();
     expect(martShelf({ kind: 'relic', id: 'sages-tome' }, content)).toBe('mastery');
-    // Reactor Core is Tier 2 but sold on the Mastery lane, so the Discoveries shelf does not list it twice.
+    // Reactor Core is Tier 2 with a criterion and also on the Mastery lane: that lane sells it.
     expect(martShelf({ kind: 'relic', id: 'reactor-core' }, content)).toBe('mastery');
-    expect(discoveryShelf(content).map((r) => r.id)).not.toContain('reactor-core');
     // Not for sale: a Tier-1 relic, a Legendary, a species that is not a meta-starter.
     expect(martShelf({ kind: 'relic', id: 'coin-pouch' }, content)).toBeNull();
     expect(martShelf({ kind: 'starter', id: 'pidgey' }, content)).toBeNull();
     expect(shelfItems('corner', content)).toHaveLength(1 + COSMETICS.length);
     expect(shelfItems('starters', content).map((i) => i.id)).toEqual(['magikarp', 'eevee', 'pikachu']);
-    // §8.3.4 — ~210 against 92 from the track: the wallet chooses.
-    expect(shopTotal(content)).toBeGreaterThan(200);
-    expect(shopTotal(content)).toBeLessThan(230);
+    // §8.3.4 — ~134 (v0.9.2): about sixty runs of the track, the medals and the ₽ left over.
+    expect(shopTotal(content)).toBeGreaterThan(120);
+    expect(shopTotal(content)).toBeLessThan(150);
+    // The Apex Reveal waits on Victory Road and is not on the shelf until it can work.
+    expect(shelfItems('hub', content).map((i) => i.id)).not.toContain('apex-reveal');
   });
 });
 
 describe('Buying — §8.3.4', () => {
   it('AClosedShelfRefuses_AnOpenOneSells_AndTheTokensComeOff', () => {
-    expect(buy(at(2, 20), { kind: 'starter', id: 'magikarp' }, content)).toEqual({ error: 'locked' });
-    const after = ok(buy(at(3, 20), { kind: 'starter', id: 'magikarp' }, content));
+    expect(buy(at(SHELVES.starters.level - 1, 20), { kind: 'starter', id: 'magikarp' }, content)).toEqual({ error: 'locked' });
+    const after = ok(buy(at(SHELVES.starters.level, 20), { kind: 'starter', id: 'magikarp' }, content));
     expect(after.tokens).toBe(20 - MART_PRICE.starter.magikarp!);
     expect(after.starters).toEqual(['magikarp']);
     expect(unlockedStarters(after, content)).toContain('magikarp');
     expect(buy(after, { kind: 'starter', id: 'magikarp' }, content)).toEqual({ error: 'owned' });
-    expect(buy(at(3, 3), { kind: 'starter', id: 'magikarp' }, content)).toEqual({ error: 'cannot-afford' });
+    expect(buy(at(SHELVES.starters.level, 3), { kind: 'starter', id: 'magikarp' }, content)).toEqual({ error: 'cannot-afford' });
   });
 
-  it('TheMasteryLane_SellsTierThreeForFive_FromLevelTen', () => {
-    expect(buy(at(9, 20), { kind: 'relic', id: 'sages-tome' }, content)).toEqual({ error: 'locked' });
-    const after = ok(buy(at(10, 7), { kind: 'relic', id: 'sages-tome' }, content));
+  it('TheMasteryLane_SellsTierThreeForFive_FromItsLevel', () => {
+    const L = SHELVES.mastery.level;
+    expect(buy(at(L - 1, 20), { kind: 'relic', id: 'sages-tome' }, content)).toEqual({ error: 'locked' });
+    const after = ok(buy(at(L, 7), { kind: 'relic', id: 'sages-tome' }, content));
     expect(after.tokens).toBe(2);
     expect(after.relics).toContain('sages-tome');
     expect(relicPoolFor(after, content)).toContain('sages-tome');
     expect(buy(after, { kind: 'relic', id: 'crown-of-echoes' }, content)).toEqual({ error: 'cannot-afford' });
     // Time Spinner waited on an activated action until v0.7.5; it is a passive now, and sold like the rest.
-    expect(ok(buy(at(10, 20), { kind: 'relic', id: 'time-spinner' }, content)).relics).toContain('time-spinner');
+    expect(ok(buy(at(L, 20), { kind: 'relic', id: 'time-spinner' }, content)).relics).toContain('time-spinner');
   });
 
-  it('TheDiscoveriesShelf_SellsAnUndiscoveredTierTwoForFour_FromLevelEight', () => {
-    expect(martPrice({ kind: 'relic', id: 'steady-aim' }, content)).toBe(MART_PRICE.discovery);
-    expect(buy(at(7, 20), { kind: 'relic', id: 'steady-aim' }, content)).toEqual({ error: 'locked' });
-    const after = ok(buy(at(8, 4), { kind: 'relic', id: 'steady-aim' }, content));
-    expect(after.tokens).toBe(0);
-    expect(after.relics).toEqual(['steady-aim']);
-    // One already discovered is owned, whatever the wallet says.
-    expect(buy(at(8, 20, { relics: ['steady-aim'] }), { kind: 'relic', id: 'steady-aim' }, content)).toEqual({ error: 'owned' });
+  it('ATierTwoRelic_IsDiscovered_NeverBought_§8.6.1', () => {
+    expect(martPrice({ kind: 'relic', id: 'steady-aim' }, content)).toBeNull();
+    expect(buy(at(30, 99), { kind: 'relic', id: 'steady-aim' }, content)).toEqual({ error: 'unknown' });
   });
 
   it('HubUpgrades_AreSoldNotGranted_AndThePendingOnesWait', () => {
-    expect(buy(at(4, 20), { kind: 'hub', id: 'expanded-box' }, content)).toEqual({ error: 'locked' });
-    const after = ok(buy(at(5, 20), { kind: 'hub', id: 'expanded-box' }, content));
+    const H = SHELVES.hub.level;
+    expect(buy(at(H - 1, 20), { kind: 'hub', id: 'expanded-box' }, content)).toEqual({ error: 'locked' });
+    const after = ok(buy(at(H, 20), { kind: 'hub', id: 'expanded-box' }, content));
     expect(after.hub).toEqual(['expanded-box']);
     expect(after.tokens).toBe(20 - MART_PRICE.hub['expanded-box']);
     // The Corner sells the fourth Starting Relic from Level 1.
     expect(ok(buy(at(1, 3), { kind: 'hub', id: 'starting-relic-plus-one' }, content)).hub).toEqual(['starting-relic-plus-one']);
     // v0.7.1 — the Cities opened, so the Salve Cache is sold now; the Apex Reveal still waits on Victory Road.
-    expect(ok(buy(at(5, 20), { kind: 'hub', id: 'trauma-salve-cache' }, content)).hub).toEqual(['trauma-salve-cache']);
-    expect(buy(at(5, 20), { kind: 'hub', id: 'apex-reveal' }, content)).toEqual({ error: 'pending' });
+    expect(ok(buy(at(H, 20), { kind: 'hub', id: 'trauma-salve-cache' }, content)).hub).toEqual(['trauma-salve-cache']);
+    expect(buy(at(H, 20), { kind: 'hub', id: 'apex-reveal' }, content)).toEqual({ error: 'pending' });
   });
 
   it('ASoulboundLine_CountsAsAnOwnedStarter_§6.8.2', () => {

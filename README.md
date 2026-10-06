@@ -49,10 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.1 — Bond and Shiny, revamped.** Shinies are found in the wild — any wild Pokémon may be one, by surprise —
-and a caught shiny keeps its colours and joins your collection. Every line's Bond is four ranks of equal cost: its
-Shiny Charm, its hidden ability, its whole Mastery Move, and — about twenty runs in — the right to start a run with it
-(a starter line: always shiny). Every line's Mastery cards are complete.
+**v0.9.2 — The Hub and the Poké Mart, revamped.** The Trainer Hub is the Indigo Plateau's Pokémon Center lobby —
+the Mart counter, the nurse, the PC and the door to the Elite Four. The ₽ a run ends with becomes Tokens, every shelf
+opens within about ten runs, and Tier-2 relics are only found by playing.
 
 ## Run it locally
 

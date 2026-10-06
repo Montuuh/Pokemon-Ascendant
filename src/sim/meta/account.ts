@@ -92,8 +92,12 @@ export const emptyAccount = (): AccountState => ({
 
 // ── The level curve (§8.3.3) ─────────────────────────────────────────────────────────────────────────────
 
-/** Cumulative XP to *reach* level N: floor(500 × N^1.6). Level 1 is the floor and costs nothing. */
-export const xpForLevel = (n: number): number => (n <= 1 ? 0 : Math.floor(500 * Math.pow(n, 1.6)));
+/**
+ * Cumulative XP to *reach* level N: floor(330 × N^1.6). Level 1 is the floor and costs nothing. v0.9.2 lowered the
+ * constant from 500: a run pays ~350–800 XP, and at 500 the last shelf opened after ~37 runs (§8.3.3).
+ */
+export const LEVEL_CURVE = { scale: 330, power: 1.6 } as const;
+export const xpForLevel = (n: number): number => (n <= 1 ? 0 : Math.floor(LEVEL_CURVE.scale * Math.pow(n, LEVEL_CURVE.power)));
 
 export const MAX_LEVEL = 30;
 
@@ -116,18 +120,23 @@ export function levelProgress(xp: number): { level: number; into: number; span: 
 
 // ── The shelves and the reward track (§8.3.5, §8.4.1) ───────────────────────────────────────────────────
 
-/** §8.4.1 — the Poké Mart's five shelves. Trainer Level opens them; Tokens buy from them. */
-export type ShelfId = 'corner' | 'starters' | 'hub' | 'discoveries' | 'mastery';
+/**
+ * §8.4.1 — the Poké Mart's four shelves. Trainer Level opens them; Tokens buy from them. v0.9.2 closed the
+ * Discoveries shelf: a Tier-2 relic is discovered by doing its thing, never bought (§8.6.1).
+ */
+export type ShelfId = 'corner' | 'starters' | 'hub' | 'mastery';
 
-export const SHELF_ORDER: readonly ShelfId[] = ['corner', 'starters', 'hub', 'discoveries', 'mastery'];
+export const SHELF_ORDER: readonly ShelfId[] = ['corner', 'starters', 'hub', 'mastery'];
 
-/** §8.3.5 — what each shelf sells and the level that opens it. The Corner is the floor: open from Level 1. */
+/**
+ * §8.3.5 — what each shelf sells and the level that opens it. The Corner is the floor: open from Level 1. v0.9.2:
+ * 1 / 2 / 4 / 6, so every shelf is open by about the tenth run (it was 1 / 3 / 5 / 10 — the thirty-seventh).
+ */
 export const SHELVES: Record<ShelfId, { name: string; level: number; sells: string }> = {
   corner: { name: "Trainer's Corner", level: 1, sells: 'Titles, avatars and frames for the card, and a fourth Starting Relic offer.' },
-  starters: { name: 'Starters', level: 3, sells: 'Three more Pokémon to start a run with — each one a secret until you meet it.' },
-  hub: { name: 'Hub upgrades', level: 5, sells: 'A bigger Box, a second modifier slot, a second starter. Never power.' },
-  discoveries: { name: 'Discoveries', level: 8, sells: 'Any Tier-2 relic you have not discovered yet.' },
-  mastery: { name: 'Mastery lane', level: 10, sells: 'The Tier-3 relics: they change how a run works, not how hard it hits.' },
+  starters: { name: 'Starters', level: 2, sells: 'Three more Pokémon to start a run with — each one a secret until you meet it.' },
+  hub: { name: 'Hub upgrades', level: 4, sells: 'A bigger Box, a second modifier slot, a second starter. Never power.' },
+  mastery: { name: 'Mastery lane', level: 6, sells: 'The Tier-3 relics: they change how a run works, not how hard it hits.' },
 };
 
 /** §8.3.5 — what a level pays. Every level pays; the milestones pay more and are where a shelf tends to open. */
@@ -139,9 +148,9 @@ export interface TrackReward {
 
 export const TRACK_TOKENS = {
   /** Every level from 2 to 30 that is not a milestone. */
-  level: 2,
+  level: 3,
   /** Every fifth level. */
-  milestone: { 5: 5, 10: 5, 15: 8, 20: 8, 25: 10, 30: 10 } as Record<number, number>,
+  milestone: { 5: 6, 10: 6, 15: 10, 20: 10, 25: 12, 30: 12 } as Record<number, number>,
 } as const;
 
 /** §8.4.2 — the seven Hub upgrades. Each is quality-of-life or option-expanding, never power. */
@@ -188,6 +197,16 @@ export const trackTokensBetween = (from: number, to: number): number => {
 
 // ── XP sources (§8.3.2) ──────────────────────────────────────────────────────────────────────────────────
 
+/**
+ * §8.3.4 — the ₽ a run ends with becomes Tokens (v0.9.2, the user's call): one Token for every `per` ₽ left, won run
+ * or lost, at most `cap` a run. The rate is poor on purpose — ₽ spent in the run is worth more than ₽ carried out —
+ * and the cap stops a run from being played for the bank.
+ */
+export const MONEY_TO_TOKENS = { per: 200, cap: 5 } as const;
+
+/** §8.3.4 — the Tokens a run's leftover ₽ is worth. */
+export const tokensForMoney = (money: number): number => Math.min(MONEY_TO_TOKENS.cap, Math.floor(Math.max(0, money) / MONEY_TO_TOKENS.per));
+
 export const XP = {
   combat: 5,
   recruit: 10,
@@ -213,9 +232,11 @@ export interface AccountDelta {
   bondRankUps: { line: string; rank: number }[];
   /** §8.6.1 — Tier-2 relics discovered by a criterion. */
   discoveredRelics: string[];
+  /** §8.3.4 — the run's leftover ₽ and the Tokens it became, at the run's end. */
+  moneyTokens: { money: number; tokens: number }[];
 }
 
-export const emptyDelta = (): AccountDelta => ({ xp: 0, tokens: 0, levelsGained: [], rewards: [], unlockedAchievements: [], dexPromotions: [], bondGains: [], bondRankUps: [], discoveredRelics: [] });
+export const emptyDelta = (): AccountDelta => ({ xp: 0, tokens: 0, levelsGained: [], rewards: [], unlockedAchievements: [], dexPromotions: [], bondGains: [], bondRankUps: [], discoveredRelics: [], moneyTokens: [] });
 
 export interface AccountContext {
   content: ContentRegistry;
@@ -451,6 +472,16 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
         // §8.3.2 — a failed run still pays: floor(layers × 50), capped. Failure is fuel, made legible.
         bump(delta, next, Math.min(XP.failedRunCap, (e.layersCleared ?? 0) * XP.failedRunPerLayer), ctx);
       }
+      // §8.3.4 — the ₽ left becomes Tokens, a few at most.
+      if (e.moneyLeft !== undefined) {
+        const t = tokensForMoney(e.moneyLeft);
+        if (t > 0) {
+          next.tokens += t;
+          next.tokensEarned += t;
+          delta.tokens += t;
+        }
+        delta.moneyTokens.push({ money: e.moneyLeft, tokens: t });
+      }
       // §6.8.1 — finishing a run with a line in the Active Team, and more for winning it.
       for (const sid of e.activeSpecies ?? []) {
         dexEntry(next, sid).runsFinishedWith += 1;
@@ -504,6 +535,7 @@ export function applyAccountEvents(state: AccountState, events: readonly MetaEve
     total.bondGains.push(...step.delta.bondGains);
     total.bondRankUps.push(...step.delta.bondRankUps);
     total.discoveredRelics.push(...step.delta.discoveredRelics);
+    total.moneyTokens.push(...step.delta.moneyTokens);
   }
   return { state: cur, delta: total };
 }

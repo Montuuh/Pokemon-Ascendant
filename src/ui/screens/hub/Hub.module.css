@@ -468,7 +468,7 @@
   font-family: var(--font-display);
   font-size: var(--type-small);
 }
-/* The five shelves as tabs; a closed one keeps its tab, dimmed, with the level on it. */
+/* The shelves as tabs; a closed one keeps its tab, dimmed, with the level on it. */
 .shelfTabs {
   flex-wrap: wrap;
 }

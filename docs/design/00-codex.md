@@ -339,20 +339,21 @@ the Trauma Salve relic (all), Therapy at `100×(1+stacks)` ₽ (one), or the Day
 Stand prevent the faint, so they prevent the stack.
 
 **Two currencies.** **Trainer XP** is earned every run and never spent; it drives **Trainer Level**
-(`floor(500 × N^1.6)`), which advances a **reward track** that **pays Tokens at every level** (2; 5/5/8/8/10/10
-at the milestones; 92 by Level 30) and **opens the Poké Mart's shelves** at 3/5/8/10. **Trainer Tokens** also
-come from Gold (+2) and Platinum (+5) achievements, and buy **everything on an open shelf**. XP decides what is
-for sale; Tokens decide what you take home. The shop (~210) outruns the income (~156) on purpose.
+(`floor(330 × N^1.6)`, v0.9.2), which advances a **reward track** that **pays Tokens at every level** (3; 6/6/10/10/12/12
+at the milestones; 125 by Level 30) and **opens the Poké Mart's shelves** at 2/4/6 — every shelf inside the first ten
+runs. **Trainer Tokens** also come from Gold (+2) and Platinum (+5) achievements and from **the ₽ a run ends with**
+(200 ₽ a Token, at most 5 a run, v0.9.2), and buy **everything on an open shelf**. XP decides what is for sale; Tokens
+decide what you take home. The whole shop (~134) is about sixty runs of income (`balance/accountCareer.test.ts`).
 
-**Hub** — PC Terminal (Pokédex · Medals · Discoveries; the Pokédex is the one book: cards that open a sheet with
+**Hub** — PC Terminal (Pokédex · Medals · relic discoveries; the Pokédex is the one book: cards that open a sheet with
 Record · Kit · the line's Bond, §8.9.2, and a per-species record, §8.9.1; all 151 species are in the book, and an unmet one is a silhouette, "???" and no types until any trace of it lands on the account — 2026-09-23), Trainer Card, Poké Mart (from the
 start), and the door to the Elite Four that starts a run — all as the Indigo Plateau Pokémon Center lobby, a FRLG room
 (v0.9.2, §8.4); the Daycare Lady and the Mystery Door are gone.
 **Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·
-Starters Lv 3 (Magikarp 4, Eevee 6, Pikachu 6 — sold since v0.7.3, holding a Light Ball) · Hub upgrades Lv 5 (4–8) · Discoveries Lv 8 (any undiscovered
-Tier-2, 4) · Mastery lane Lv 10 (Tier-3, 5). 7 Hub upgrades, all QoL, all sold.
+Starters Lv 2 (Magikarp 4, Eevee 6, Pikachu 6 — sold since v0.7.3, holding a Light Ball) · Hub upgrades Lv 4 (4–8) · Mastery
+lane Lv 6 (Tier-3, 5). 7 Hub upgrades, all QoL; the Apex Reveal waits off the shelf for Victory Road.
 **Starters** — 3 default + 3 meta bought at the Mart; any Soulbound line (Bond rank 4) for free; a Soulbound starter line always starts shiny.
-**Relics** — 60 = 50 drop-pool + 10 Legendary. Meta tiers T1 20 / T2 20 event-unlocked or bought / T3 10
+**Relics** — 60 = 50 drop-pool + 10 Legendary. Meta tiers T1 20 / T2 20 event-unlocked, never sold / T3 10
 Token-bought; tier ≠ rarity. Drop weight 60/30/10.
 **Achievements** — 50, four medal tiers, ~20 % hidden, 20 grant Tokens, every one with a named trigger event.
 **Difficulty** — 10 stackable modifiers multiplying run XP; **no easier mode**; baseline is the floor. Each

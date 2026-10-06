@@ -133,6 +133,7 @@ function addTo(ledger: Ledger, d: AccountDelta): Ledger {
     bondGains: [...ledger.bondGains, ...d.bondGains],
     bondRankUps: [...ledger.bondRankUps, ...d.bondRankUps],
     discoveredRelics: [...ledger.discoveredRelics, ...d.discoveredRelics],
+    moneyTokens: [...(ledger.moneyTokens ?? []), ...d.moneyTokens],
   };
 }
 

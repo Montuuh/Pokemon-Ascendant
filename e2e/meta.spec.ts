@@ -35,16 +35,15 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('hub-lobby')).toBeVisible();
     await openKiosk(page, 'card');
     await expect(page.getByTestId('trainer-card')).toBeVisible();
-    await expect(page.getByTestId('level-ring-caption').first()).toHaveAttribute('data-span', '1515');
+    await expect(page.getByTestId('level-ring-caption').first()).toHaveAttribute('data-span', '1000');
 
     // §8.3.5 — the whole road is there: 29 stops, level 2 is next and is the one explained, nothing claimed.
     await expect(page.locator('li[data-testid^="track-"]')).toHaveCount(29);
     await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'next');
     await expect(page.getByTestId('track-detail')).toContainText('Level 2');
-    await expect(page.getByTestId('track-detail')).toContainText('+2 Tokens');
-    // Clicking a stop explains it; the storefront stops say which shelf they open.
-    await page.getByTestId('track-3').getByRole('button').click();
-    await expect(page.getByTestId('track-3')).toHaveAttribute('data-opens', 'starters');
+    await expect(page.getByTestId('track-detail')).toContainText('+3 Tokens');
+    // The storefront stops say which shelf they open: level 2 opens the Starters (v0.9.2).
+    await expect(page.getByTestId('track-2')).toHaveAttribute('data-opens', 'starters');
     await expect(page.getByTestId('track-detail')).toContainText('Starters shelf opens');
     await expect(page.getByTestId('track-detail')).toContainText('Three more Pokémon to start a run with');
 
@@ -124,16 +123,16 @@ test.describe('The Trainer Hub — §8.4', () => {
 
   test('fights pay XP, cross levels, discover relics and fill the Pokédex — and it all survives a reload', async ({ page }) => {
     await menu(page);
-    // §8.3.2 — 303 clean wins is 1 515 XP (level 2) plus the first-win medal's 75; §8.6.1 discovers Barrier
+    // §8.3.2 — 303 clean wins is 1 515 XP plus the medals' — level 3 on the v0.9.2 curve; §8.6.1 discovers Barrier
     // Charm on the first no-faint win and Lucky Egg at fifty; §5.13.1 takes Pidgey all the way to Master (50).
     await page.evaluate((w) => {
       window.__ascendant!.meta.record(Array.from({ length: 303 }, () => w) as never[]);
     }, win());
     await page.getByTestId('btn-hub').click();
-    await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '2');
+    await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '3');
     await openKiosk(page, 'card');
-    await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'claimed');
-    await expect(page.getByTestId('track-3')).toHaveAttribute('data-state', 'next');
+    await expect(page.getByTestId('track-3')).toHaveAttribute('data-state', 'claimed');
+    await expect(page.getByTestId('track-4')).toHaveAttribute('data-state', 'next');
 
     // §6.8 — 303 wins leading with Squirtle is 606 Bond: all four pips on every card of the line, "By Bond" puts
     // the line first, and every rung is lit on the sheet.
@@ -184,7 +183,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     // A reload is the real test: the account lives in its own key, beside the run save and not inside it.
     await page.reload();
     await page.goto('/?screen=hub');
-    await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '2');
+    await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '3');
     await openKiosk(page, 'pc');
     await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '4');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
@@ -192,23 +191,23 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('dex-stat-kos')).toContainText('303');
   });
 
-  test('the Poké Mart opens a shelf per level and sells for Tokens — cosmetics from Level 1, the Mastery lane from 10', async ({ page }) => {
+  test('the Poké Mart opens a shelf per level and sells for Tokens — cosmetics from Level 1, the Mastery lane from 6', async ({ page }) => {
     await menu(page);
     await page.getByTestId('btn-hub').click();
     await openKiosk(page, 'mart');
-    // Level 1: the Trainer's Corner is open, the other four shelves are tabs that say their level, and a
+    // Level 1: the Trainer's Corner is open, the other three shelves are tabs that say their level, and a
     // closed shelf is still readable — priced, with a banner that says what opens it.
     await expect(page.getByTestId('mart-tab-corner')).toHaveAttribute('data-open', 'true');
     await expect(page.getByTestId('mart-tab-mastery')).toHaveAttribute('data-open', 'false');
-    await expect(page.getByTestId('mart-tab-mastery')).toContainText('Lv 10');
+    await expect(page.getByTestId('mart-tab-mastery')).toContainText('Lv 6');
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
     await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'locked');
     await expect(page.getByTestId('mart-price-title-veteran')).toHaveAttribute('aria-disabled', 'true');
     await page.getByTestId('mart-tab-mastery').click();
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-banner')).toContainText('opens at Trainer Level 10');
+    await expect(page.getByTestId('mart-banner')).toContainText('opens at Trainer Level 6');
     await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-price-sages-tome')).toHaveAttribute('aria-label', /Opens at Level 10/);
+    await expect(page.getByTestId('mart-price-sages-tome')).toHaveAttribute('aria-label', /Opens at Level 6/);
     await page.screenshot({ path: 'playtest/hub-mart-locked.png' });
     // §8.9.2 — a starter never met is the Pokédex's silhouette on the shelf too: no name, no blurb.
     await page.getByTestId('mart-tab-starters').click();
@@ -276,6 +275,21 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('btn-hub-lobby').click();
     await page.getByTestId('kiosk-run').click();
     await expect(page.getByTestId('starter-select')).toBeVisible();
+  });
+});
+
+test.describe('Leftover money — §8.3.4', () => {
+  test('the ₽ a run ends with becomes Tokens, and the summary says so', async ({ page }) => {
+    await menu(page);
+    await page.evaluate(() => {
+      const A = window.__ascendant as unknown as { run: { new: (s: string, seed?: number) => void }; meta: { record: (e: unknown[]) => void }; goTo: (s: string) => void };
+      A.run.new('squirtle', 7);
+      A.meta.record([{ t: 'run-end', won: false, catches: 0, badges: 0, layersCleared: 4, moneyLeft: 540 }]);
+      A.goTo('defeat');
+    });
+    await expect(page.getByTestId('account-summary')).toContainText('540 left → 2 Tokens');
+    await page.waitForTimeout(600);
+    await page.screenshot({ path: 'playtest/run-end-money.png' });
   });
 });
 

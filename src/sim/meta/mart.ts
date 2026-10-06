@@ -2,7 +2,7 @@ import type { ContentRegistry, RelicDef } from '../content/defs';
 import { META_STARTERS as STARTER_SHELF } from '../run/region';
 import { HUB_UPGRADE_LABEL, SHELVES, levelFor, type AccountState, type HubUpgrade, type ShelfId } from './account';
 import { COSMETICS, COSMETIC_PRICE, cosmeticById, type CosmeticKind } from './cosmetics';
-import { discoverableRelics, masteryRelics, relicTier, unlockedStarters } from './unlocks';
+import { masteryRelics, relicTier, unlockedStarters } from './unlocks';
 
 // §8.3.4, §8.4.1 — the Poké Mart: the shop of the pass.
 //
@@ -21,7 +21,7 @@ export type MartItem =
 /** §8.5.2 — the three meta-starters; the list lives beside the default three in run/region.ts. */
 export { META_STARTERS } from '../run/region';
 
-/** §8.3.4 — the prices. The whole shop comes to ~210 Tokens against ~92 from the track and ~64 from medals: you choose. */
+/** §8.3.4 — the prices. The whole shop comes to ~134 Tokens, a career of about sixty runs (§8.3.4). */
 export const MART_PRICE = {
   starter: { magikarp: 4, eevee: 6, pikachu: 6 } as Record<string, number>,
   hub: {
@@ -33,8 +33,6 @@ export const MART_PRICE = {
     'trauma-salve-cache': 4,
     'apex-reveal': 4,
   } as Record<HubUpgrade, number>,
-  /** A Tier-2 relic bought instead of discovered (§8.6.1). */
-  discovery: 4,
   /** A Tier-3 relic (§8.6.1). */
   mastery: 5,
 } as const;
@@ -43,10 +41,6 @@ export type MartError = 'locked' | 'owned' | 'cannot-afford' | 'pending' | 'unkn
 
 /** Is a shelf open to this account? Level only — Tokens never open a shelf (§8.3.5). */
 export const shelfOpen = (account: AccountState, shelf: ShelfId): boolean => levelFor(account.xp) >= SHELVES[shelf].level;
-
-/** §8.6.1 — the Tier-2 rows the Discoveries shelf sells: every discoverable row that is not on the Mastery lane. */
-export const discoveryShelf = (content: ContentRegistry): RelicDef[] =>
-  discoverableRelics(content).map((id) => content.relic(id)).filter((r) => r.mastery !== true);
 
 /** The registry throws on an unknown relic id; the shop answers 'unknown' instead. */
 const relicRow = (id: string, content: ContentRegistry): RelicDef | undefined => content.allRelics().find((r) => r.id === id);
@@ -64,8 +58,8 @@ export function martShelf(item: MartItem, content: ContentRegistry): ShelfId | n
     case 'relic': {
       const r = relicRow(item.id, content);
       if (!r) return null;
-      if (relicTier(r) === 3 || r.mastery === true) return 'mastery';
-      return relicTier(r) === 2 ? 'discoveries' : null;
+      // §8.6.1 — a Tier-2 relic is discovered, never bought (v0.9.2); only the Mastery lane sells relics.
+      return relicTier(r) === 3 || r.mastery === true ? 'mastery' : null;
     }
   }
 }
@@ -82,7 +76,7 @@ export function martPrice(item: MartItem, content: ContentRegistry): number | nu
     case 'starter':
       return MART_PRICE.starter[item.id] ?? null;
     case 'relic':
-      return martShelf(item, content) === 'mastery' ? MART_PRICE.mastery : martShelf(item, content) === 'discoveries' ? MART_PRICE.discovery : null;
+      return martShelf(item, content) === 'mastery' ? MART_PRICE.mastery : null;
   }
 }
 
@@ -117,9 +111,9 @@ export function shelfItems(shelf: ShelfId, content: ContentRegistry): MartItem[]
     case 'starters':
       return STARTER_SHELF.map((id) => ({ kind: 'starter', id }));
     case 'hub':
-      return (Object.keys(MART_PRICE.hub) as HubUpgrade[]).filter((id) => id !== 'starting-relic-plus-one').map((id) => ({ kind: 'hub', id }));
-    case 'discoveries':
-      return discoveryShelf(content).map((r) => ({ kind: 'relic', id: r.id }));
+      // An upgrade waiting on a system the build does not have (the Apex Reveal, Victory Road) is not on the shelf
+      // at all until it can work (v0.9.2): a priced row that can never be bought is a promise, not a shelf.
+      return (Object.keys(MART_PRICE.hub) as HubUpgrade[]).filter((id) => id !== 'starting-relic-plus-one' && !HUB_UPGRADE_LABEL[id].pending).map((id) => ({ kind: 'hub', id }));
     case 'mastery':
       return masteryRelics(content).map((r) => ({ kind: 'relic', id: r.id }));
   }

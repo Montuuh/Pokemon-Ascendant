@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId } from '@/sim';
+import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
@@ -266,7 +266,7 @@ export function consumableTip(c: ConsumableDef, playable = true, reason: string 
 
 /** §2.14 — Poké Dollars. */
 export function moneyTip(amount: number): ReactNode {
-  return <Tip title={`${amount} ₽`} body="Poké Dollars. Earned from fights, spent at the Poké Mart, the Dojo and the Centre's Therapy. What you do not spend carries into the next Region." />;
+  return <Tip title={`${amount} ₽`} body="Poké Dollars. Earned from fights, spent at the Poké Mart, the Dojo and the Centre's Therapy. What you do not spend carries into the next Region." footer={`When the run ends, every ${MONEY_TO_TOKENS.per} ₽ left becomes a Token, up to ${MONEY_TO_TOKENS.cap}.`} />;
 }
 
 /** §2.6.4 — balls as a counted resource. */
@@ -316,7 +316,40 @@ export function trainerLevelTip(level: number, into: number, span: number, max: 
 
 /** §8.3.4 — Tokens. */
 export function tokenTip(tokens: number, earned: number): ReactNode {
-  return <Tip title={`${tokens} Token${tokens === 1 ? '' : 's'}`} meta={[`${earned} earned`]} body="Every Trainer Level pays Tokens — two, more at every fifth — and so does every Gold or Platinum medal. They are spent at the Poké Mart: starters, Hub upgrades, relics and cosmetics, on five shelves that Trainer Level opens." />;
+  return <Tip title={`${tokens} Token${tokens === 1 ? '' : 's'}`} meta={[`${earned} earned`]} body={`Every Trainer Level pays Tokens — ${TRACK_TOKENS.level}, more at every fifth — and so does every Gold or Platinum medal, and a run's leftover ₽ (${MONEY_TO_TOKENS.per} ₽ a Token, up to ${MONEY_TO_TOKENS.cap}). They are spent at the Poké Mart: starters, Hub upgrades, relics and cosmetics.`} />;
+}
+
+/** §8.3.4 / §8.3.5 — the Poké Mart's shelves, as one sentence: what opens each, and where the Tokens come from. */
+export function martShelvesTip(): ReactNode {
+  return (
+    <Tip
+      title="The shop of the pass"
+      body={`Trainer Level opens the shelves: Starters at ${SHELVES.starters.level}, Hub upgrades at ${SHELVES.hub.level}, the Mastery lane at ${SHELVES.mastery.level}; the Trainer's Corner is open from the start. Nothing here is power — starters, conveniences, relics for your pool, and things to wear on the card.`}
+      footer="Tokens come from every level, the Gold and Platinum medals, and the ₽ a run ends with."
+    />
+  );
+}
+
+/** §8.3.1 / §8.3.4 — Trainer XP and Tokens, for the Trainer Card and the run's summary. */
+export function trainerXpTip(footer?: string): ReactNode {
+  const shelves = SHELF_ORDER.filter((s) => SHELVES[s].level > 1).length;
+  return (
+    <Tip
+      title="Trainer XP and Tokens"
+      body={`XP is never spent: it moves the level, every level pays Tokens, and ${shelves} levels open a shelf at the Poké Mart. A fight pays ${XP.combat} XP, a first recruit ${XP.recruit}, an evolution ${XP.evolution}, a Badge ${XP.gym}; a lost run pays by how far it got. Tokens also come from Gold and Platinum medals and from the ₽ a run ends with.`}
+      footer={footer}
+    />
+  );
+}
+
+/** §8.4.2 — the Hub upgrades, as many as the Mart sells today. */
+export function hubUpgradesTip(onSale: number): ReactNode {
+  return <Tip title="Hub upgrades" body={`${onSale} conveniences sold at the Poké Mart — the fourth Starting Relic at the Trainer's Corner, the rest on the Hub upgrades shelf from Level ${SHELVES.hub.level}. Each widens an option — a bigger Box, two starters, a second modifier slot — and none adds a point of damage.`} />;
+}
+
+/** §8.3.4 — the run's leftover ₽ and what it became, on the run's summary. */
+export function moneyTokensTip(money: number, tokens: number): ReactNode {
+  return <Tip title={`${money} ₽ → ${tokens} Token${tokens === 1 ? '' : 's'}`} body={`The ₽ a run ends with, won or lost, becomes Tokens: one for every ${MONEY_TO_TOKENS.per} ₽, up to ${MONEY_TO_TOKENS.cap} a run.`} footer="₽ spent in the run is worth more than ₽ carried out." />;
 }
 
 /** §8.3.5 — one row of the reward track. */
@@ -422,9 +455,9 @@ export function relicTierTip(r: RelicDef, state: 'pool' | 'discoverable' | 'buya
   const footer =
     state === 'pool' ? 'Always in your pool.'
     : state === 'owned' ? 'In your pool.'
-    : state === 'buyable' ? [`${sale?.price ?? 5} Tokens at the Poké Mart.`, discover].filter(Boolean).join(' ')
-    : state === 'locked' ? [`The Poké Mart sells it from Trainer Level ${sale?.level ?? 10}.`, discover].filter(Boolean).join(' ')
-    : discover ?? `Sold at the Poké Mart's Discoveries shelf from Level ${SHELVES.discoveries.level}.`;
+    : state === 'buyable' ? [`${sale?.price ?? MART_PRICE.mastery} Tokens at the Poké Mart.`, discover].filter(Boolean).join(' ')
+    : state === 'locked' ? [`The Poké Mart sells it from Trainer Level ${sale?.level ?? SHELVES.mastery.level}.`, discover].filter(Boolean).join(' ')
+    : discover ?? 'Discovered by doing its thing in a run — the Poké Mart does not sell it.';
   return <Tip icon={<img src={itemIcon(r.id)} alt="" width={22} height={22} />} title={r.name} meta={[cap(r.rarity), tierName]} body={r.description} footer={r.pending ? `Not working yet: ${r.pending}` : footer} />;
 }
 

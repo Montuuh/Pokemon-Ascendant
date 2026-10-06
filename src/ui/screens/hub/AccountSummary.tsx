@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import { BOND_LADDER, BOND_RANK_NAME, DEX_TIER_NAME, MAX_LEVEL, levelFor, levelProgress } from '@/sim';
-import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { tokenTip, trainerLevelTip } from '@/ui/tips';
+import { InfoDot, Tipped } from '@/ui/tooltip';
+import { tokenTip, trainerLevelTip, trainerXpTip, moneyTokensTip } from '@/ui/tips';
 import { trackRewardLabel } from './trackText';
 import { TokenIcon } from './TokenIcon';
 import styles from './AccountSummary.module.css';
@@ -21,7 +22,7 @@ export function AccountSummary() {
   const from = ledger.levelAtStart;
   const to = levelFor(account.xp);
 
-  const lines: { key: string; glyph: string; text: string }[] = [];
+  const lines: { key: string; glyph: string; text: string; tip?: ReactNode }[] = [];
   for (const r of ledger.rewards) lines.push({ key: `r${r.level}`, glyph: '★', text: `Level ${r.level}: ${trackRewardLabel(r.reward)}` });
   for (const a of ledger.unlockedAchievements) lines.push({ key: `a${a.id}`, glyph: MEDAL_GLYPH[a.tier] ?? '🏅', text: `${a.name} — ${a.description}` });
   for (const d of ledger.dexPromotions) lines.push({ key: `d${d.speciesId}${d.tier}`, glyph: '📖', text: `${content.species(d.speciesId).name} is now ${DEX_TIER_NAME[d.tier]}` });
@@ -34,13 +35,17 @@ export function AccountSummary() {
     lines.push({ key: `b${line}`, glyph: '✦', text: `${content.species(line).name} line: +${pts} Bond${top ? ` → ${BOND_RANK_NAME[top]} (${BOND_LADDER[top - 1]!.unlock})` : ''}` });
   }
   for (const id of ledger.discoveredRelics) lines.push({ key: `x${id}`, glyph: '◆', text: `Discovered ${content.relic(id).name}` });
+  // §8.3.4 — the ₽ the run ended with, and the Tokens it became.
+  for (const [i, m] of (ledger.moneyTokens ?? []).entries()) {
+    if (m.money > 0) lines.push({ key: `m${i}`, glyph: '₽', text: `${m.money} left → ${m.tokens} Token${m.tokens === 1 ? '' : 's'}`, tip: moneyTokensTip(m.money, m.tokens) });
+  }
 
   return (
     <section className={styles.root} data-testid="account-summary">
       <div className={styles.head}>
         <h2 className={styles.title}>
           Trainer
-          <InfoDot tip={<Tip title="Trainer XP" body="Every fight, recruit, evolution and Badge paid into your account, and a lost run pays by how far it got. XP is never spent: each level pays Tokens, and four of them open a shelf at the Poké Mart." footer="The Trainer Card in the Hub has the whole track." />} />
+          <InfoDot tip={trainerXpTip('The Trainer Card in the Hub has the whole track.')} />
         </h2>
         <Tipped tip={trainerLevelTip(p.level, p.into, p.span, MAX_LEVEL)}>
           <span className={styles.level}>
@@ -71,7 +76,7 @@ export function AccountSummary() {
           {lines.map((l) => (
             <li key={l.key}>
               <span className={styles.glyph} aria-hidden="true">{l.glyph}</span>
-              <span>{l.text}</span>
+              {l.tip ? <Tipped tip={l.tip} data-testid="summary-money">{l.text}</Tipped> : <span>{l.text}</span>}
             </li>
           ))}
         </ul>
