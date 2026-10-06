@@ -1,6 +1,6 @@
 import { IconArrowRight, IconCheck } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
-import { SHINY, BOND_LADDER, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, type AccountState, speciesMet } from '@/sim';
+import { SHINY, BOND_LADDER, isStarterLine, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, type AccountState, speciesMet } from '@/sim';
 import { bondRulesText } from '@/ui/tips';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { InfoDot, Tip } from '@/ui/tooltip';
@@ -30,24 +30,25 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
   const p = bondProgress(points);
   const rank = bondRank(points);
   const u = bondUnlocks(rank);
-  const masteryMoves = content.masteryMoves(line);
   const hidden = hiddenAbilityOf(line, content);
   const cols = stagesOf(line);
   // §8.9.2 — a stage you have not met is a silhouette and "???"; a line with no stage met keeps its names to itself.
   const metStage = (id: string) => speciesMet(account, id);
   const lineKnown = cols.some((col) => col.some(metStage));
 
-  const moveName = (id: string | null | undefined) => (id ? content.move(id).name : 'not written yet');
   const hiddenName = hidden ? content.ability(hidden).name : `${(base.hiddenAbilityPending ?? 'Hidden ability').split(' — ')[0]} (not yet)`;
   const named = (label: string, name: string) => (lineKnown ? `${label} — ${name}` : label);
-  // §6.8.2 — the ladder, with this line's own names on it once you have met the line. Rank 3 opens every Mastery card
-  // of the line at once; the stage decides which one the slot holds.
-  const masteryNames = masteryMoves.filter((id): id is string => !!id).map((id) => moveName(id)).join(' → ');
-  const rungs: { rank: 1 | 2 | 3 | 4; on: boolean; unlock: string }[] = [
-    { rank: 1, on: u.shinyCharm, unlock: `Shiny Charm — any new one of the line may be shiny; ${SHINY.charmMultiplier} times as often in the wild` },
-    { rank: 2, on: u.hiddenAbility, unlock: `${named('Hidden ability', hiddenName)}, open at the Dojo` },
-    { rank: 3, on: u.mastery > 0, unlock: named('Mastery Move', masteryNames || 'not written yet') },
-    { rank: 4, on: u.starter, unlock: 'The line can start a run — and starts it shiny' },
+  // §6.8.2 — the ladder, with the line's hidden ability named once you have met the line. A line that is a starter
+  // already (a default one or a Poké Mart one) has nothing to gain from "can start a run": its rank 4 strikes that and
+  // promises the palette instead.
+  const starterLine = isStarterLine(line);
+  const rungs: { rank: 1 | 2 | 3 | 4; on: boolean; unlock: string; struck?: string }[] = [
+    { rank: 1, on: u.shinyCharm, unlock: `Shiny Charm — its shinies turn up ${SHINY.charmMultiplier} times as often` },
+    { rank: 2, on: u.hiddenAbility, unlock: `${named('Hidden ability', hiddenName)}, assignable at the Dojo` },
+    { rank: 3, on: u.mastery > 0, unlock: 'Mastery Move — a fifth card unique to the line, in every evolution' },
+    starterLine
+      ? { rank: 4, on: u.starter, struck: 'The line can start a run', unlock: 'Your starter will always be shiny' }
+      : { rank: 4, on: u.starter, unlock: 'The line can start a run' },
   ];
 
   return (
@@ -89,7 +90,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
             <BondBar points={points} />
             <span className={styles.bondMeta}>
               <span className={styles.bondRankName}>{p.next === null ? 'Every rank open' : `Next: ${BOND_RANK_NAME[rank + 1]}`}</span>
-              {u.starter && <span className={`${styles.heroChip} ${styles.chipOn}`}><IconCheck size={13} stroke={3} /> Can start a run</span>}
+              {u.starter && <span className={`${styles.heroChip} ${styles.chipOn}`}><IconCheck size={13} stroke={3} /> {starterLine ? 'Always shiny' : 'Can start a run'}</span>}
             </span>
           </div>
         </section>
@@ -102,7 +103,10 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
                 <span className={styles.rungIcon} aria-hidden="true">{RANK_ICON[r.rank](18)}</span>
                 <span className={styles.rungBody}>
                   <span className={styles.rungName}>{r.rank} · {BOND_LADDER[r.rank - 1]!.name}</span>
-                  <span className={styles.rungUnlock}>{r.unlock}</span>
+                  <span className={styles.rungUnlock}>
+                    {r.struck && <><s className={styles.rungStruck} data-testid="rung-struck"><span className="sr-only">Already a starter: </span>{r.struck}</s><span className="sr-only">; </span> </>}
+                    {r.unlock}
+                  </span>
                 </span>
                 <span className={`${styles.rungAt} tabular`}>{r.on ? <IconCheck size={16} stroke={3} /> : `${BOND_RANKS[r.rank - 1]} Bond`}</span>
               </li>

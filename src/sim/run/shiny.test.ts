@@ -31,7 +31,7 @@ describe('Shiny — §5.14', () => {
     expect(at(BOND_TIER.soulbound)).toBeCloseTo(SHINY.chance * SHINY.charmMultiplier);
   });
 
-  it('CopyIsShiny_OnlyUnderTheCharm_AndASoulboundStarterAlways_§6.8.2', () => {
+  it('CopyIsShiny_OnlyUnderTheCharm_AndASoulboundStarterLineAlways_§6.8.2', () => {
     const base = createRun('squirtle', 11, ctx);
     const run = (rank: number, seed = 11) => ({ seed, perks: { ...base.perks, bond: { squirtle: rank } } });
     // No Charm: a starter, a Safari catch or a trade never rolls.
@@ -45,6 +45,12 @@ describe('Shiny — §5.14', () => {
     expect(copyIsShiny(run(BOND_TIER.soulbound), 'squirtle', 'starter', content)).toBe(true);
     const soul = createRun('squirtle', 11, ctx, 0, [], undefined, undefined, { ...base.perks, bond: { squirtle: BOND_TIER.soulbound } });
     expect(soul.box[0]!.shiny).toBe(true);
+    // Only a line that was a starter already gets the palette at Soulbound: Pidgey earns the right to start, and its
+    // starter rolls the Charm like any other copy.
+    let pidgeyAlways = true;
+    for (let seed = 1; seed <= 50; seed++) if (!copyIsShiny({ seed, perks: { ...base.perks, bond: { pidgey: BOND_TIER.soulbound } } }, 'pidgey', 'starter', content)) pidgeyAlways = false;
+    expect(pidgeyAlways).toBe(false);
+    expect(copyIsShiny({ seed: 3, perks: { ...base.perks, bond: { magikarp: BOND_TIER.soulbound } } }, 'magikarp', 'starter', content)).toBe(true);
   });
 
   it('ApplyShiny_IsAHashOfTheNode_SameNodeSameAnswer_AndAboutTheChance', () => {

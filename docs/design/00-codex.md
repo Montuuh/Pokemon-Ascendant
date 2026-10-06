@@ -265,7 +265,8 @@ fight in the Active Team (+1 leading), +4 a Gym, nothing for a wild fight, +5 pe
 +10 a shiny recruit, +8 finishing a run, +15 winning one. **Four ranks, linear, 100 each (v0.9.2)** — about 5 / 11 / 16 / 21
 runs for a line played every run: **Companion** the Shiny Charm (every new copy may be shiny, ×3 in the wild) ·
 **Trusted** the hidden ability (the line's third authored one, greyed at the Dojo until then) · **Deep Bond** the whole
-Mastery Move at once (the fifth card at every stage) · **Soulbound** the line may start a run, and starts it shiny.
+Mastery Move at once (the fifth card at every stage) · **Soulbound** the line may start a run (a line that already
+could — a default or Mart starter — has its starter always shiny instead).
 
 **Shiny** (§5.14, v0.9.1) — found, not earned: every wild Pokémon rolls 1 in 40, unannounced until the fight's
 entrance; the Bond's Shiny Charm raises it. A caught shiny keeps its palette all run, pays its line +10 Bond and fills
@@ -349,7 +350,7 @@ start), Daycare Lady (Lv 3), Mystery Door (post-launch).
 **Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·
 Starters Lv 3 (Magikarp 4, Eevee 6, Pikachu 6 — sold since v0.7.3, holding a Light Ball) · Hub upgrades Lv 5 (4–8) · Discoveries Lv 8 (any undiscovered
 Tier-2, 4) · Mastery lane Lv 10 (Tier-3, 5). 7 Hub upgrades, all QoL, all sold.
-**Starters** — 3 default + 3 meta bought at the Mart; any Soulbound line (Bond rank 4) for free, and it starts shiny.
+**Starters** — 3 default + 3 meta bought at the Mart; any Soulbound line (Bond rank 4) for free; a Soulbound starter line always starts shiny.
 **Relics** — 60 = 50 drop-pool + 10 Legendary. Meta tiers T1 20 / T2 20 event-unlocked or bought / T3 10
 Token-bought; tier ≠ rarity. Drop weight 60/30/10.
 **Achievements** — 50, four medal tiers, ~20 % hidden, 20 grant Tokens, every one with a named trigger event.

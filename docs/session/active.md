@@ -11,7 +11,7 @@
 360, about 18 runs to Soulbound — `balance/bondCareer.test.ts`, `BOND_REPORT=1`), Shiny found in the wild (§5.14,
 `run/shiny.ts`, 1 in 40, the Bond's Shiny Charm), its collection in the Pokédex, +N Bond on the reward screen, and
 every line's Mastery Lv2/Lv3. Fixture `?scenario=wild-shiny`. **v0.9.2** — the Bond reworked by the user: four linear ranks
-of 100 (Shiny Charm for every new copy · hidden ability · the whole Mastery · start a run, shiny), ~5 / 11 / 16 / 21
+of 100 (Shiny Charm for every new copy · hidden ability · the whole Mastery · start a run, or a starter line always shiny), ~5 / 11 / 16 / 21
 runs; the nine missing hidden abilities written.
 
 **Findings to act on:** every Gym's ace sits 1–2 levels under the team; Region 2's Gyms lost 2 % of the time; the Rare Candy is worth 8 points

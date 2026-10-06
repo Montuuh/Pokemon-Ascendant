@@ -929,8 +929,10 @@ The user's rework of the Bond, after a map of what v0.9.1 shipped (sources, pace
 **Four ranks, linear, 100 Bond each** (§6.8.2): **1 Companion** the Shiny Charm — every new copy of the line may be
 shiny, its wild ones ×3, and now its starter, Safari catch and trade roll too (`copyIsShiny`); **2 Trusted** the
 hidden ability; **3 Deep Bond** the whole Mastery Move at once, every stage (one unlock, the user's call — "the
-Pokémon's whole potential"); **4 Soulbound** the line may start a run, and starts it shiny (so the three default
-starters get a top rank too). Measured as a career: a line played every run reaches them after **5 / 11 / 16 / 21
+Pokémon's whole potential"); **4 Soulbound** the line may start a run — and a line that could already (the three
+default starters and the Mart's three) has its starter always shiny instead, the line struck through on its sheet.
+The ladder reads as the user wrote it: the Charm's odds, the hidden ability "assignable at the Dojo", the Mastery
+explained rather than named. Measured as a career: a line played every run reaches them after **5 / 11 / 16 / 21
 runs**; a line recruited every other run, about twice that. The "Mastery card in every opening hand" rule is gone.
 The nine recruitable lines with no hidden ability got one the sim already runs (Lapras Rain Dish, Electabuzz Vital
 Spirit, Koffing and Jynx Sheer Force, Rhyhorn Sturdy, Magmar Flash Fire, Farfetch'd Moxie, Scyther Tough Claws,

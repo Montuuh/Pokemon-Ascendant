@@ -1,4 +1,5 @@
 import type { ContentRegistry, RelicDef } from '../content/defs';
+import { META_STARTERS as STARTER_SHELF } from '../run/region';
 import { HUB_UPGRADE_LABEL, SHELVES, levelFor, type AccountState, type HubUpgrade, type ShelfId } from './account';
 import { COSMETICS, COSMETIC_PRICE, cosmeticById, type CosmeticKind } from './cosmetics';
 import { discoverableRelics, masteryRelics, relicTier, unlockedStarters } from './unlocks';
@@ -17,8 +18,8 @@ export type MartItem =
   /** A Tier-2 row on the Discoveries shelf, or a Tier-3 (and Reactor Core) on the Mastery lane — by tier. */
   | { kind: 'relic'; id: string };
 
-/** §8.5.2 — the three meta-starters, in shelf order: cheapest first. */
-export const META_STARTERS: readonly string[] = ['magikarp', 'eevee', 'pikachu'];
+/** §8.5.2 — the three meta-starters; the list lives beside the default three in run/region.ts. */
+export { META_STARTERS } from '../run/region';
 
 /** §8.3.4 — the prices. The whole shop comes to ~210 Tokens against ~92 from the track and ~64 from medals: you choose. */
 export const MART_PRICE = {
@@ -114,7 +115,7 @@ export function shelfItems(shelf: ShelfId, content: ContentRegistry): MartItem[]
     case 'corner':
       return [{ kind: 'hub', id: 'starting-relic-plus-one' }, ...COSMETICS.map((c) => ({ kind: 'cosmetic', id: c.id }) as MartItem)];
     case 'starters':
-      return META_STARTERS.map((id) => ({ kind: 'starter', id }));
+      return STARTER_SHELF.map((id) => ({ kind: 'starter', id }));
     case 'hub':
       return (Object.keys(MART_PRICE.hub) as HubUpgrade[]).filter((id) => id !== 'starting-relic-plus-one').map((id) => ({ kind: 'hub', id }));
     case 'discoveries':

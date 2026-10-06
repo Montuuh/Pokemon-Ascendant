@@ -424,6 +424,10 @@ button.heroChip:hover {
 .rungOn {
   border-color: var(--accent-positive);
 }
+/* §6.8.2 — a starter line's rank 4: what it already had, struck through, before what it gets. */
+.rungStruck {
+  color: var(--ink-secondary);
+}
 .rungIcon {
   display: grid;
   place-items: center;

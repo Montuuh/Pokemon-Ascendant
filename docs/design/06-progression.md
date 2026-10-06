@@ -484,16 +484,17 @@ between the fights that mean something; the Gym pays a Region.
 | 1 | 100 | Companion | **Shiny Charm** — every new copy of the line may be shiny: its wild ones ×3 as often, and its starter, Safari catch or trade at that charmed chance (§5.14) |
 | 2 | 200 | Trusted | **Hidden ability** (§6.8.3) |
 | 3 | 300 | Deep Bond | **Mastery Move** — the whole of it at once: the fifth card at every stage of the line, Lv1 on the base form to Lv3 on a three-stage final (§5.13.2) |
-| 4 | 400 | Soulbound | **The line may start a run** (§8.5.2) — **and starts it shiny** |
+| 4 | 400 | Soulbound | **The line may start a run** (§8.5.2). A line that could already — a default starter or a Poké Mart one — gets **its starter always shiny** instead |
 
 **Four ranks, one thing each (v0.9.2, the user's design).** A look first, a choice at the Dojo second, the line's full
 kit third, the line as your partner last. **The Mastery is one unlock**, not three: "unlock the Pokémon's whole
 potential, in all its evolutions" — the stage decides which card the slot holds, the Bond only whether it holds one.
 The v0.9.1 ladder handed out the first Mastery card in a line's first run and split the rest across two more ranks,
-with a "Mastery card in every opening hand" rule for two-stage lines at the top; both are gone. **Soulbound starts the
-run shiny** so that the three default starters, which can already start a run, get a top rank too — written for
-every line that starts one. **The Poké Mart still sells Magikarp, Eevee and Pikachu** (§8.3.4): buy the starter now, or
-earn it — the player's choice, and Soulbound still pays them their shiny start.
+with a "Mastery card in every opening hand" rule for two-stage lines at the top; both are gone. **A starter line's
+Soulbound is a shiny start** (the user, 2026-10-06): Bulbasaur, Charmander, Squirtle and the Mart's Magikarp, Eevee and
+Pikachu can start a run without any Bond, so their rank 4 strikes "can start a run" and makes the starter always shiny;
+every other line's rank 4 is the right to start one, and nothing more. **The Poké Mart still sells Magikarp, Eevee and
+Pikachu** (§8.3.4): buy the starter now, or earn it — the player's choice.
 
 Rank-ups are folded by the account the moment the event lands (§8.10), so a rank crossed mid-run applies from
 the next fight. Crossing a rank pays no Trainer XP — Bond is the line's, XP is the trainer's.

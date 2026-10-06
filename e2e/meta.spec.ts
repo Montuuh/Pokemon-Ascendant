@@ -91,7 +91,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('dex-sheet')).not.toContainText('Gust');
     await page.getByTestId('dex-sheet-tab-line').click();
     await expect(page.getByTestId('line-sheet')).not.toContainText('Lv 12');
-    await expect(page.getByTestId('line-sheet')).toContainText('Hidden ability, open at the Dojo');
+    await expect(page.getByTestId('line-sheet')).toContainText('Hidden ability, assignable at the Dojo');
     await page.getByTestId('line-stage-pidgeotto').click();
     await expect(page.getByTestId('dex-sheet')).toHaveAttribute('data-species', 'pidgeotto');
     await page.screenshot({ path: 'playtest/hub-pokedex-sheet.png' });
@@ -137,7 +137,10 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('dex-squirtle').click();
     await page.getByTestId('dex-sheet-tab-line').click();
     await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-rank', '4');
-    await expect(page.getByTestId('line-sheet')).toContainText('Can start a run');
+    // Squirtle was a starter already: its rank 4 strikes the run and promises the palette.
+    await expect(page.getByTestId('line-sheet')).toContainText('Always shiny');
+    await expect(page.getByTestId('rung-struck')).toContainText('The line can start a run');
+    await expect(page.getByTestId('line-sheet-ladder')).toContainText('Your starter will always be shiny');
     await expect(page.locator('[data-testid="line-sheet-ladder"] li[data-on="true"]')).toHaveCount(4);
     await page.screenshot({ path: 'playtest/hub-line-sheet.png' });
     await page.keyboard.press('Escape');

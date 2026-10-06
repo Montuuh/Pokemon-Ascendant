@@ -79,7 +79,7 @@ export interface BondUnlocks {
    * slot holds). It was three unlocks across three ranks until v0.9.2; one unlock is the line's full potential.
    */
   mastery: 0 | 3;
-  /** Tier 4 — §8.5.2: the line may start a run, and starts it shiny. */
+  /** Tier 4 — §8.5.2: the line may start a run; a line that already could starts it shiny (`copyIsShiny`). */
   starter: boolean;
 }
 
@@ -94,10 +94,10 @@ export function bondUnlocks(rank: number): BondUnlocks {
 
 /** §6.8.2 — the ladder, in the player's words, for the Pokédex sheet's Line tab and the tooltips. */
 export const BOND_LADDER: { rank: 1 | 2 | 3 | 4; name: string; unlock: string }[] = [
-  { rank: 1, name: 'Companion', unlock: 'Shiny Charm — every new one of the line may be shiny; three times as often in the wild' },
-  { rank: 2, name: 'Trusted', unlock: 'Hidden ability — open at the Dojo' },
-  { rank: 3, name: 'Deep Bond', unlock: 'Mastery Move — the fifth card, at every stage of the line' },
-  { rank: 4, name: 'Soulbound', unlock: 'The line can start a run — and starts it shiny' },
+  { rank: 1, name: 'Companion', unlock: 'Shiny Charm — its shinies turn up three times as often' },
+  { rank: 2, name: 'Trusted', unlock: 'Hidden ability — assignable at the Dojo' },
+  { rank: 3, name: 'Deep Bond', unlock: 'Mastery Move — a fifth card unique to the line, in every evolution' },
+  { rank: 4, name: 'Soulbound', unlock: 'The line can start a run' },
 ];
 
 /** §6.8.3 — the line's hidden ability: the last of its three authored abilities, or null while unauthored. */

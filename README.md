@@ -50,7 +50,7 @@ A roguelike deckbuilder where **your party is your deck**.
 ## Status
 
 **v0.9.2 — Bond, reworked.** Every line's Bond is four ranks of equal cost: its Shiny Charm, its hidden ability,
-its whole Mastery Move, and — about twenty runs in — the right to start a run with it, shiny.
+its whole Mastery Move, and — about twenty runs in — the right to start a run with it (a starter line: always shiny).
 
 ## Run it locally
 

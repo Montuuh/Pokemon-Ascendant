@@ -3,6 +3,7 @@ import { GameRng } from '../rng/gameRng';
 import { fmix32, fnv1a } from '../rng/rngStreams';
 import type { MapNode, RunState } from './types';
 import { BOND_TIER } from '../meta/bond';
+import { isStarterLine } from './region';
 
 // §5.14 — a Shiny is something you find. Every wild Pokémon that takes the field rolls for it, unannounced: the map
 // never shows one, the fight's entrance does (the user, 2026-10-06: "wild, by surprise, and tied to the Bond"). The
@@ -27,13 +28,14 @@ export function shinyChance(run: Pick<RunState, 'perks'>, speciesId: string, con
 
 /**
  * §5.14 / §6.8.2 — a copy of a line that did not come out of the grass: the starter, a twin, a Safari catch, a trade.
- * Only the Shiny Charm makes it roll (at the charmed chance), and a Soulbound line's starter is always shiny — the
- * user's call for the lines that are starters already, written as one rule for every line that starts a run.
+ * Only the Shiny Charm makes it roll (at the charmed chance). A Soulbound line that was a starter already — a default
+ * one or a Poké Mart one — is always shiny when it starts the run: the top rank's reward for lines that need no Bond to
+ * be picked (the user, 2026-10-06). Every other Soulbound line earns the right to start a run, not the palette.
  * Hashed on the run's seed and `salt`, like the wild roll, so it moves no stream.
  */
 export function copyIsShiny(run: Pick<RunState, 'seed' | 'perks'>, speciesId: string, salt: string, content: ContentRegistry): boolean {
   const rank = run.perks?.bond?.[content.lineBase(speciesId)] ?? 0;
-  if (salt === 'starter' && rank >= BOND_TIER.soulbound) return true;
+  if (salt === 'starter' && rank >= BOND_TIER.soulbound && isStarterLine(content.lineBase(speciesId))) return true;
   if (rank < SHINY.charmRank) return false;
   const rng = new GameRng(fmix32((run.seed ^ fnv1a(`shiny-copy:${salt}`)) >>> 0) || 1);
   return rng.range01() < shinyChance(run, speciesId, content);

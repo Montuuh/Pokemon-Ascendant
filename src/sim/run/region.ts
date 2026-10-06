@@ -946,6 +946,12 @@ export const HELD_ITEM_DROP_CHANCE = 0.2;
 /** The three default starters (§8.5.1). */
 export const STARTER_IDS = ['bulbasaur', 'charmander', 'squirtle'];
 
+/** §8.5.2 — the three meta-starters the Poké Mart sells, in shelf order: cheapest first. */
+export const META_STARTERS: readonly string[] = ['magikarp', 'eevee', 'pikachu'];
+
+/** §6.8.2 — a line that can start a run without its Bond: a default starter or one the Poké Mart sells. */
+export const isStarterLine = (line: string): boolean => STARTER_IDS.includes(line) || META_STARTERS.includes(line);
+
 /** Every sprite a roster or the Gym names, so a missing file is caught by a test and not by a player. */
 export const TRAINER_SPRITES = [...new Set([...ALL_TRAINERS.map((t) => t.sprite), ...ALL_GYMS.map((g) => g.sprite), ...ALL_ELITES.map((e) => e.sprite)])];
 
