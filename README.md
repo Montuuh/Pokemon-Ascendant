@@ -49,9 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.2 — The Hub and the Poké Mart, revamped.** The Trainer Hub is the Indigo Plateau's Pokémon Center lobby —
-the Mart counter, the nurse, the PC and the door to the Elite Four. The ₽ a run ends with becomes Tokens, every shelf
-opens within about ten runs, and Tier-2 relics are only found by playing.
+**v0.9.3 — The arena, animated.** The catch is played out — the throw, the wobbles, the click or the burst, the
+odds lighting up — and Pokémon come out of their balls, go back into them when recalled or fallen, and step in
+from the grass.
 
 ## Run it locally
 

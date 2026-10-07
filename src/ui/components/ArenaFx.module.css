@@ -1,0 +1,214 @@
+/* §9.9 — the arena's lasting beats: ghosts of the fallen, and the catch. Timings come from the hook's table as custom
+   properties (`fxTimings`), so the keyframes and the timers can never disagree. */
+
+.ghost {
+  pointer-events: none;
+}
+
+/* ── The catch ─────────────────────────────────────────────────────────────────────────────────────────── */
+.catch {
+  pointer-events: none;
+}
+/* The Pokémon, drawn into the ball: it whitens and shrinks into it. Its size is the arena's own sprite rule (so it
+   matches the live sprite at every width); scoped under .catch so its breathing does not win. */
+.catch .mon {
+  animation: catchAbsorb var(--fx-absorb) ease-in var(--at-absorb) both;
+}
+/* The ball: thrown in an arc from your side, it lands where the Pokémon stood and rocks. */
+.catch .ball {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  width: 40px;
+  height: 40px;
+  margin-left: -20px;
+  filter: none;
+  transform-origin: 50% 90%;
+  animation:
+    catchThrow var(--fx-throw) var(--ease-throw) 0ms both,
+    catchWobble var(--fx-wobble) ease-in-out var(--at-wobble) var(--wobbles);
+}
+/* Caught: the click — the ball darkens and settles, and three sparks rise. */
+.catch .caught {
+  animation:
+    catchThrow var(--fx-throw) var(--ease-throw) 0ms both,
+    catchWobble var(--fx-wobble) ease-in-out var(--at-wobble) var(--wobbles),
+    catchClick var(--fx-result) ease-out var(--at-result) both;
+}
+/* Broke free: the ball bursts open. */
+.catch .broke {
+  animation:
+    catchThrow var(--fx-throw) var(--ease-throw) 0ms both,
+    catchWobble var(--fx-wobble) ease-in-out var(--at-wobble) var(--wobbles),
+    catchBurst var(--fx-result) ease-out var(--at-result) both;
+}
+/* The flash: once as the Pokémon goes in, once more on a burst. */
+.flash {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  width: 160px;
+  height: 160px;
+  margin-left: -80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--surface-1) 0%, color-mix(in srgb, var(--surface-1) 40%, transparent) 40%, transparent 70%);
+  opacity: 0;
+  animation: catchFlash var(--fx-absorb) ease-out var(--at-absorb) both;
+}
+.broke ~ .flash {
+  animation:
+    catchFlash var(--fx-absorb) ease-out var(--at-absorb) both,
+    catchFlash var(--fx-result) ease-out var(--at-result) both;
+}
+.stars {
+  position: absolute;
+  left: 50%;
+  bottom: 30%;
+  display: flex;
+  gap: var(--sp-3);
+  transform: translateX(-50%);
+}
+.stars i {
+  display: block;
+  width: 10px;
+  height: 10px;
+  background: var(--accent-action);
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  opacity: 0;
+  animation: catchStar var(--fx-result) ease-out var(--at-result) both;
+}
+.stars i:nth-child(2) {
+  animation-delay: calc(var(--at-result) + 80ms);
+}
+.stars i:nth-child(3) {
+  animation-delay: calc(var(--at-result) + 160ms);
+}
+/* The odds, lighting up to what the throw had: the number the player read before throwing. */
+.bar {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 170px;
+  height: 14px;
+  margin-left: -85px;
+  border: 2px solid var(--ink-primary);
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  animation: popIn var(--motion-base) var(--ease-spring) var(--at-land) both;
+}
+.fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  animation: catchFill calc(var(--fx-wobble) * 1.2) ease-out var(--at-wobble) both;
+}
+.pct {
+  position: absolute;
+  right: -46px;
+  font-size: var(--type-small);
+  color: var(--ink-primary);
+}
+
+@keyframes catchThrow {
+  0% {
+    transform: translate(-340px, 180px) rotate(-540deg) scale(0.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  55% {
+    transform: translate(-120px, -90px) rotate(-180deg) scale(1);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes catchAbsorb {
+  0% {
+    transform: scale(1);
+    filter: none;
+    opacity: 1;
+  }
+  40% {
+    filter: brightness(3);
+  }
+  100% {
+    transform: translateY(40%) scale(0.04);
+    filter: brightness(4);
+    opacity: 0;
+  }
+}
+@keyframes catchFlash {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  30% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+@keyframes catchWobble {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-22deg);
+  }
+  65% {
+    transform: rotate(16deg);
+  }
+}
+@keyframes catchClick {
+  0% {
+    filter: none;
+  }
+  20% {
+    filter: brightness(0.55);
+  }
+  100% {
+    filter: brightness(0.8);
+  }
+}
+@keyframes catchBurst {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.8) translateY(-10px);
+    opacity: 0;
+  }
+}
+@keyframes catchStar {
+  0% {
+    transform: translateY(0) scale(0.4);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-40px) scale(1);
+    opacity: 0;
+  }
+}
+@keyframes catchFill {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--catch-pct);
+  }
+}

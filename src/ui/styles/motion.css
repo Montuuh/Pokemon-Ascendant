@@ -228,3 +228,139 @@ html[data-motion='reduced'] *::after {
     animation-iteration-count: revert !important;
   }
 }
+
+/*
+ * §9.9 — the series' beats in the arena (v0.9.3), applied to a sprite's container by `useCombatFx`; their lengths are
+ * the custom properties `fxTimings` sets on the arena. A Pokémon out of its ball whitens and grows from a point with
+ * a ring of light; a wild one steps in from the grass; a fallen one drops and fades; one going back into its ball
+ * turns red and shrinks into it. Each rule animates the sprite's <img> and leaves its breathing to resume after.
+ */
+.fx-hidden img {
+  visibility: hidden;
+}
+.fx-sendout img,
+.fx-burst img {
+  animation: sendOut var(--fx-sendout) var(--ease-spring) both;
+}
+.fx-sendout::before,
+.fx-burst::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 30%;
+  width: 80%;
+  aspect-ratio: 1;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ink-primary) 0%, color-mix(in srgb, var(--ink-primary) 35%, transparent) 45%, transparent 70%);
+  pointer-events: none;
+  animation: sendOutRing var(--fx-sendout) ease-out both;
+}
+.fx-wild-enter img {
+  animation: wildEnter var(--fx-wild-enter) var(--ease-step) both;
+}
+.fx-ghost-faint img {
+  animation: faintDrop var(--fx-faint) ease-in both;
+}
+/* A fallen Pokémon going back into its ball: the drop on the ghost's frame, the beam on its sprite, so neither
+   animation's transform overrides the other's. */
+.fx-ghost-faint-recall .fx-ghost-body {
+  display: block;
+  animation: faintDrop var(--fx-faint) ease-in both;
+}
+.fx-ghost-faint-recall img {
+  animation: recallBeam var(--fx-recall) ease-in var(--fx-faint) both;
+}
+.fx-ghost-recall img {
+  animation: recallBeam var(--fx-recall) ease-in both;
+}
+
+@keyframes sendOut {
+  0% {
+    transform: scale(0.05);
+    filter: brightness(4);
+    opacity: 0;
+  }
+  45% {
+    transform: scale(1.08);
+    filter: brightness(2.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    filter: none;
+    opacity: 1;
+  }
+}
+@keyframes sendOutRing {
+  0% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+@keyframes wildEnter {
+  0% {
+    transform: translateX(80px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes faintDrop {
+  0% {
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(45%);
+    clip-path: inset(0 0 45% 0);
+    opacity: 0.15;
+  }
+}
+@keyframes recallBeam {
+  0% {
+    transform: scale(1);
+    filter: sepia(1) saturate(8) hue-rotate(-30deg) brightness(0.9);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(30%) scale(0.04);
+    filter: sepia(1) saturate(8) hue-rotate(-30deg) brightness(1.6);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-sendout img,
+  .fx-burst img,
+  .fx-wild-enter img,
+  .fx-ghost-faint img,
+  .fx-ghost-faint-recall img,
+  .fx-ghost-faint-recall .fx-ghost-body,
+  .fx-ghost-recall img,
+  .fx-sendout::before,
+  .fx-burst::before {
+    animation: none;
+  }
+}
+html[data-motion='reduced'] .fx-sendout img,
+html[data-motion='reduced'] .fx-burst img,
+html[data-motion='reduced'] .fx-wild-enter img,
+html[data-motion='reduced'] .fx-ghost-faint img,
+html[data-motion='reduced'] .fx-ghost-faint-recall img,
+html[data-motion='reduced'] .fx-ghost-faint-recall .fx-ghost-body,
+html[data-motion='reduced'] .fx-ghost-recall img,
+html[data-motion='reduced'] .fx-sendout::before,
+html[data-motion='reduced'] .fx-burst::before {
+  animation: none;
+}

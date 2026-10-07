@@ -32,7 +32,9 @@ import { Portrait } from '@/ui/components/Portrait';
 import { FieldChips } from '@/ui/components/FieldChips';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
-import { useCombatFx } from '@/ui/hooks/useCombatFx';
+import { fxTimings, useCombatFx, type SpriteSlot } from '@/ui/hooks/useCombatFx';
+import { useMotionPref } from '@/ui/hooks/useMotionPref';
+import { ArenaFx } from '@/ui/components/ArenaFx';
 import { ENCOUNTER_LABEL, REJECT_TEXT } from '@/ui/strings';
 import { iconOf, itemIcon } from '@/ui/art';
 import { apTip, fleeTip, swapTip } from '@/ui/tips';
@@ -52,7 +54,12 @@ export function CombatScreen() {
   const hasRun = useRunStore((s) => s.run !== null);
   const finishCombat = useRunStore((s) => s.finishCombat);
   const rawDispatch = useCombatStore((s) => s.dispatch);
-  const fx = useCombatFx(state, combatKey);
+  const animate = useMotionPref();
+  const fx = useCombatFx(state, combatKey, animate);
+  const busyRef = useRef(fx.busy);
+  useEffect(() => {
+    busyRef.current = fx.busy;
+  }, [fx.busy]);
   const [hoverCardId, setHoverCardId] = useState<string | null>(null);
   const [hoverEnemyUid, setHoverEnemyUid] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -130,7 +137,8 @@ export function CombatScreen() {
       }
       const live = useCombatStore.getState();
       const s = live.state;
-      if (!s || s.outcome !== 'in-progress' || s.phase !== 'action') return;
+      // §9.9 — while a beat holds the hand (the catch, a faint), the keys wait with it.
+      if (!s || s.outcome !== 'in-progress' || s.phase !== 'action' || busyRef.current) return;
 
       if (/^[1-9]$/.test(e.key)) {
         const card = s.player.hand[Number(e.key) - 1];
@@ -198,7 +206,13 @@ export function CombatScreen() {
     }
   }
   const ended = state.outcome !== 'in-progress';
-  const interactive = !ended && !state.player.pendingLeadPick;
+  /** §9.9 — where a ghost or the catch stands: the slot's own sprite box, as the live sprite uses it. */
+  const slotClass = (slot: SpriteSlot): string =>
+    slot === 'player' ? styles.leadSprite ?? '' : slot === 'single' ? styles.enemySprite ?? '' : `${styles.enemySprite} ${slot === 'lead' ? styles.foeLead : slot === 'support1' ? styles.foeSupport1 : styles.foeSupport2}`;
+  // §9.9 — a beat the screen should not talk over (the catch, a faint) holds the hand and the outcome until it has
+  // played; a Pokémon coming out never does. While a ball rocks, the log keeps its result back too.
+  const interactive = !ended && !state.player.pendingLeadPick && !fx.busy;
+  const shownLog = fx.logHold === null ? state.log : state.log.slice(0, fx.logHold);
 
   /** §9.2.5 — the hits coming at one of your Pokémon, from the enemies whose intent is not hidden. */
   function incomingFor(uid: string) {
@@ -314,7 +328,7 @@ export function CombatScreen() {
       {/* §9.6 — the fight narrates itself. Without this a screen-reader player gets a silent board: the log
           is the only place a hit, a status or a faint is ever stated in words. */}
       <p className="sr-only" role="status" aria-live="polite" data-testid="combat-announcer">
-        {state.log.slice(-1).map((l) => l.text).join(' ')}
+        {shownLog.slice(-1).map((l) => l.text).join(' ')}
       </p>
       <p className="sr-only">
         Turn {state.turn}, {state.player.ap} action points. Press 1 to 9 to pick a card, Enter to play it at the
@@ -353,9 +367,9 @@ export function CombatScreen() {
           </div>
         </div>
 
-        <div className={styles.arena} aria-hidden="true">
+        <div className={styles.arena} aria-hidden="true" style={fxTimings()}>
           {lead.hp > 0 && (
-            <div className={`${styles.leadSprite} ${fx.classes[lead.uid] === 'fx-lunge-right' ? 'fx-lunge-right' : ''}`}>
+            <div className={`${styles.leadSprite} ${fx.classes[lead.uid] === 'fx-lunge-right' ? 'fx-lunge-right' : ''} ${fx.sprites[lead.uid] ?? ''}`}>
               <img className="pixel" src={spriteOf(lead, 'back', shiny)} alt="" draggable={false} data-shiny={shiny || undefined} />
               <span className={styles.platform} />
             </div>
@@ -368,7 +382,7 @@ export function CombatScreen() {
           {enemies.map((enemy, i) => (
             <div
               key={enemy.uid}
-              className={[styles.enemySprite, group ? (i === 0 ? styles.foeLead : i === 1 ? styles.foeSupport1 : styles.foeSupport2) : '', aimUid === enemy.uid ? styles.foeAimed : '', fx.classes[enemy.uid] ?? ''].join(' ')}
+              className={[styles.enemySprite, group ? (i === 0 ? styles.foeLead : i === 1 ? styles.foeSupport1 : styles.foeSupport2) : '', aimUid === enemy.uid ? styles.foeAimed : '', fx.classes[enemy.uid] ?? '', fx.sprites[enemy.uid] ?? ''].join(' ')}
               data-testid="arena-enemy"
               data-enemy-uid={enemy.uid}
             >
@@ -390,6 +404,7 @@ export function CombatScreen() {
               {boxEnemy.hp <= boxDamage.final && <div className={styles.previewKo}>KO</div>}
             </div>
           )}
+          <ArenaFx ghosts={fx.ghosts} catching={fx.catching} slotClass={slotClass} />
           {fx.banner && (
             <div className={`${styles.banner} display`} key={fx.banner + state.nextSeq}>
               {fx.banner}
@@ -420,7 +435,7 @@ export function CombatScreen() {
               </div>
             ))
           ) : (
-            <div className={styles.chip}>No enemies remain</div>
+            !fx.catching && <div className={styles.chip}>No enemies remain</div>
           )}
           {state.enemyQueue.length > 0 && (
             <Tipped as="div" tip={<Tip title="Still to come" body={group ? 'These wait behind the group and step in the moment a place falls free.' : 'This trainer sends out the next Pokémon when this one falls. You fight them one at a time.'} />} className={styles.queue} role="group" aria-label={`${state.enemyQueue.length} Pokémon still to come`} data-testid="enemy-queue">
@@ -434,7 +449,7 @@ export function CombatScreen() {
         </div>
 
         <div className={styles.logWrap}>
-          <CombatLog log={state.log} />
+          <CombatLog log={shownLog} />
         </div>
 
         {selection.mode !== 'none' && !drag && (
@@ -546,7 +561,7 @@ export function CombatScreen() {
         </Modal>
       )}
       {paused && <PauseMenu onResume={() => setPaused(false)} />}
-      {ended && (
+      {ended && !fx.busy && (
         <OutcomeOverlay
           state={state}
           runMode={inRun}

@@ -419,6 +419,23 @@ preview, a catch gauge — appears **instantly and persistently**. Flourish anim
 Under reduced motion: bars jump, arrows and previews appear instantly, no parallax, no shake, no particles.
 Damage numbers keep a 1.2 s hold and a fade, because persistence is what makes them readable.
 
+## §9.9.1 The arena's beats
+
+The series' own beats, drawn in the arena on top of a result the sim has already decided (v0.9.3):
+
+| Beat | What the player sees |
+|---|---|
+| **Sent out** | A trainer's Pokémon — and yours — whitens and grows out of a ring of light, the foes first and staggered, then your Lead. A wild one steps in from the grass instead. A trainer's next Pokémon, and a swap's new Lead, come out the same way. |
+| **Recalled** | A swapped-out Lead turns red and shrinks back into its ball. |
+| **Fainted** | A fallen Pokémon is drawn once more where it stood and drops out of sight; a trainer's, or yours, is then recalled into its ball. A wild one simply goes. |
+| **The catch** | The ball is thrown in an arc, the Pokémon is drawn into it, the ball lands and rocks — three times for a catch, fewer the worse the odds were for one that breaks free — then clicks with three sparks or bursts open. A bar under it lights up to the catch % the player read before throwing. "Gotcha!" or "It broke free!" lands with the click. |
+
+The beats are presentation only: the catch's result is rolled first (§2.6.4.1) and the ball only shows it. A beat
+the player should not talk over — the catch and a faint — holds the hand, the keys and the outcome until it has played,
+and the combat log keeps the catch's result back until the ball tells it; a Pokémon coming out never holds the hand, so
+a fight can start at once. Their lengths are one table (`FX_MS`) that the timers and the keyframes both read. Under
+reduced motion every beat is instant.
+
 ---
 
 # §9.10 Localisation

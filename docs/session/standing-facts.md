@@ -208,6 +208,9 @@
   (`goto(kind, true)` stops at the Evolution screen). `run.levelTo(11)`, `run.fill(3)`, `run.grantTm(...)`,
   `run.wear(...)`, `run.trauma(3)`, `run.pay(2000)` set up a state without playing to it. A lone level-5
   starter loses the first wild fight about half the time, so `run.fill(3)` first.
+- **The e2e suite runs with reduced motion** (`playwright.config.ts`, v0.9.3), so the arena's beats never hide a sprite
+  or hold the hand mid-test. A spec that asserts an animation mid-flight opts in with
+  `test.use({ reducedMotion: 'no-preference' })` — `e2e/animations.spec.ts`, the Game Corner's spin.
 - **The playtest menu is secret, and in every build.** Typing `rarecandy` on any screen opens it (`src/app/cheats.ts`,
   `ui/components/CheatMenu.tsx`): travel to a City or the Gym, heal, clear Trauma, levels, evolve, money, balls, a
   relic, win the fight. It writes the stores directly so the account never folds it (no medals, Bond or Pokédex), and

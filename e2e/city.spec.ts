@@ -153,6 +153,8 @@ test.describe('The Ring and the Coliseum — §2.9.4.1', () => {
 });
 
 test.describe('The Game Corner — §2.11.5', () => {
+  // The wheel's spin is asserted mid-flight: motion on here (the suite runs reduced — playwright.config.ts).
+  test.use({ reducedMotion: 'no-preference' });
   test('the room is the Game Corner: a roulette table and a bank of slots each open their machine, odds printed', async ({ page }) => {
     await inCity(page, 1, 1000);
     await page.getByTestId('door-game-corner').click();

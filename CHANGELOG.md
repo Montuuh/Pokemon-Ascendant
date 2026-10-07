@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.3 — The arena, animated · 2026-10-07
+
+The catch, the send-out, the recall and the faint, played out in the arena.
+
+- **The catch.** Throw, wobbles by the odds, then the click or the burst.
+- **Send-out.** Pokémon come out of their ball; wild ones step in.
+- **Faint and recall.** The fallen drop; a trainer's go back to the ball.
+- **Waits for it.** The outcome, hand and log wait for the beat to end.
+
 ### v0.9.2 — The Hub and the Poké Mart, revamped · 2026-10-07
 
 The Hub is a place, leftover ₽ becomes Tokens, and every shelf opens early.

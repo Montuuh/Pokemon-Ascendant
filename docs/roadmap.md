@@ -957,10 +957,19 @@ chose three moves:
   off the shelf until Victory Road.
 **Not done:** §2.11.2.1's scored shop curation, which this row carried over, waits for v1.0's balance pass.
 
-### v0.9.3 — The catch, animated  ☐
+### v0.9.3 — The arena, animated  ✅ 2026-10-07
 A bar that lights up to the throw's catch %, and a Poké Ball swinging side to side, slowing little by little
 before it settles. The outcome is still rolled first (§2.6.4.1) — the animation only shows it. On the combat
 screen v0.8 reshaped, so it is drawn once. *(Backlog #10.)*
+
+**Shipped.** Broadened at the user's request from the catch to the arena's beats (§9.9.1): the catch (the throw, the
+Pokémon drawn in, zero to three wobbles by the odds, the click and sparks or the burst, the catch % bar, the outcome
+and the log waiting for it); Pokémon sent out of a ball (a trainer's, yours, a swap's new Lead, a trainer's next one)
+or stepping in from the grass; a swapped-out Lead recalled; a fallen Pokémon drawn once more as a ghost that drops and,
+for a trainer's or yours, goes back into its ball. `useCombatFx` drives them from the sim's events, `ArenaFx` draws
+the ghosts and the catch; reduced motion makes them instant. The e2e suite runs reduced by default
+(`playwright.config.ts`); `e2e/animations.spec.ts` and the Game Corner's spin turn motion on.
+**Not done:** the evolution sequence and the boss-intro zoom of §9.9's table.
 
 ### v0.9.4 — Pokemon moves & kit revamped  ☐
 To be determined.

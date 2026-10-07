@@ -17,6 +17,9 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'retain-on-failure',
+    // §9.9 — the screens are asserted still: the arena's beats (a Pokémon sent out, fainting, the catch) hold a sprite
+    // hidden or the outcome back for a moment, and a test acts at once. `e2e/animations.spec.ts` turns motion on.
+    reducedMotion: 'reduce',
   },
   webServer: {
     command: 'npm run dev',
