@@ -1,29 +1,43 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { CombatEvent, CombatState } from '@/sim';
+import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
-import { EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/strings';
+import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/strings';
 
 // Turns new sim events into transient visual effects (§9.9): floating numbers, hit shakes, lunges, a turn banner —
-// and, since v0.9.3, the series' own beats: a Pokémon sent out of its ball, recalled into it, fainting, and the
-// catch. The sim state is already final when this runs; every effect is a beat of feedback layered on top, and the
-// outcome is never decided here — the catch's ball wobbles to a result the sim rolled before the first frame.
+// and, since v0.9.3, the series' own beats (§9.9.1): a Poké Ball thrown from a trainer's hand and a Pokémon coming out
+// of it, a Pokémon recalled into its ball and the ball going back to the hand, a faint, and the catch. The sim state is
+// already final when this runs; every effect is a beat of feedback layered on top, and the outcome is never decided
+// here — the catch's ball rocks to the shake checks the sim rolled before the first frame (§2.6.4.4).
 //
 // A Pokémon that faints or is caught has already left `state.enemies` when its event arrives, so its last moment
 // is drawn as a **ghost**: what stood in that slot a render ago (`seen`), playing out where it stood.
 
 export type SpriteSlot = 'single' | 'lead' | 'support1' | 'support2' | 'player';
 
-/** Someone who has left the field, drawn for one more beat: falling, or going back into the ball. */
+/** Someone who has left the field, drawn for one more beat where it stood. */
 export interface Ghost {
   id: number;
   slot: SpriteSlot;
   speciesId: string;
   shiny: boolean;
-  /** `faint`: drops and fades (a wild Pokémon). `faint-recall`: drops, then the red beam (a trainer's, or yours). `recall`: the beam alone (a swap). */
-  kind: 'faint' | 'faint-recall' | 'recall';
+  /** `faint`: sinks out of sight. `recall`: the red light takes it back into its ball. */
+  kind: 'faint' | 'recall';
+  /** When its beat starts, from the batch: until then it stands as it was, so the fallen never blink out early. */
+  at: number;
 }
 
-/** The catch, beat by beat: the ball, the Pokémon drawn into it, the wobbles, and the result the sim rolled. */
+/** A Poké Ball between a trainer's hand and a slot: thrown in (`in`, it opens there) or going back (`out`). */
+export interface BallFlight {
+  id: number;
+  slot: SpriteSlot;
+  dir: 'in' | 'out';
+  /** Whose hand: the foe's trainer, or yours. */
+  hand: 'trainer' | 'player';
+  ball: string;
+}
+
+/** The catch, beat by beat: the ball, the Pokémon drawn into it, the wobbles, and the checks the sim rolled. */
 export interface CatchFx {
   id: number;
   slot: SpriteSlot;
@@ -32,6 +46,8 @@ export interface CatchFx {
   ball: string;
   chance: number;
   success: boolean;
+  /** §2.6.4.4 — how many of the four shake checks passed (4 is the catch). */
+  checks: number;
   wobbles: number;
 }
 
@@ -42,6 +58,7 @@ export interface CombatFxState {
   /** uid → css class for that combatant's sprite in the arena only: sent out, waiting to be, entering. */
   sprites: Record<string, string>;
   ghosts: Ghost[];
+  balls: BallFlight[];
   catching: CatchFx | null;
   banner: string | null;
   /** A beat is playing that the screen should not talk over — the catch, a faint: the outcome waits, the hand waits. */
@@ -53,21 +70,30 @@ export interface CombatFxState {
 const FLOAT_MS = 1150;
 const CLASS_MS = 450;
 const BANNER_MS = 1300;
+const FAINT_CARD_MS = 650;
 
-/** §9.9 — the beats' lengths. Presentation only: what the sim decided is already decided. */
+/**
+ * §9.9.1 — the beats' lengths. Presentation only: what the sim decided is already decided. The one place they live:
+ * the timers read this table and the keyframes read it as custom properties (`fxTimings`), so they cannot disagree.
+ */
 export const FX_MS = {
-  sendOut: 520,
-  wildEnter: 480,
-  faint: 650,
-  recall: 420,
-  /** The catch: the throw, the Pokémon drawn in, the ball landing, one wobble, the click or the burst. */
-  throw: 480,
-  absorb: 360,
-  land: 240,
-  wobble: 520,
-  result: 650,
+  /** A Pokémon out of its opened ball. */
+  sendOut: 560,
+  wildEnter: 520,
+  /** A ball between a hand and a slot. */
+  ballFly: 650,
+  faint: 800,
+  recall: 520,
+  /** The catch: the throw, the Pokémon drawn in, the ball dropping to the ground, then each wobble — a still
+   *  moment and a rock — and after the last a still moment more before the click or the burst. */
+  throw: 750,
+  absorb: 600,
+  drop: 550,
+  pause: 450,
+  wobble: 600,
+  result: 1000,
   /** Between two Pokémon sent out together at a fight's start. */
-  stagger: 160,
+  stagger: 220,
 } as const;
 
 /** The beats' lengths as CSS custom properties on the arena, so the keyframes and the timers read one table. */
@@ -75,23 +101,27 @@ export const fxTimings = (): CSSProperties =>
   ({
     '--fx-sendout': `${FX_MS.sendOut}ms`,
     '--fx-wild-enter': `${FX_MS.wildEnter}ms`,
+    '--fx-ball-fly': `${FX_MS.ballFly}ms`,
     '--fx-faint': `${FX_MS.faint}ms`,
     '--fx-recall': `${FX_MS.recall}ms`,
     '--fx-throw': `${FX_MS.throw}ms`,
     '--fx-absorb': `${FX_MS.absorb}ms`,
-    '--fx-land': `${FX_MS.land}ms`,
-    '--fx-wobble': `${FX_MS.wobble}ms`,
+    '--fx-drop': `${FX_MS.drop}ms`,
+    '--fx-wobble-cycle': `${FX_MS.pause + FX_MS.wobble}ms`,
     '--fx-result': `${FX_MS.result}ms`,
   }) as CSSProperties;
 
-/** How many times the ball rocks before it breaks open: more suspense the better the odds were. Presentation only. */
-export function catchWobbles(chance: number, success: boolean): number {
-  if (success) return 3;
-  return chance < 0.2 ? 0 : chance < 0.45 ? 1 : 2;
+/** §2.6.4.4 — when each beat of a catch starts, from the throw. */
+export function catchTimeline(wobbles: number) {
+  const absorbAt = FX_MS.throw;
+  const dropAt = absorbAt + FX_MS.absorb;
+  const wobbleAt = dropAt + FX_MS.drop;
+  const cycle = FX_MS.pause + FX_MS.wobble;
+  /** The end of wobble `i` (1-based): where its shake check lands. */
+  const checkAt = (i: number) => wobbleAt + i * cycle;
+  const resultAt = wobbleAt + wobbles * cycle + FX_MS.pause;
+  return { absorbAt, dropAt, wobbleAt, cycle, checkAt, resultAt, total: resultAt + FX_MS.result };
 }
-
-/** How long a catch plays, from the throw to the click or the burst. */
-export const catchMs = (wobbles: number): number => FX_MS.throw + FX_MS.absorb + FX_MS.land + wobbles * FX_MS.wobble + FX_MS.result;
 
 interface Seen {
   enemies: Map<string, { speciesId: string; shiny: boolean; slot: SpriteSlot }>;
@@ -115,6 +145,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   const [classes, setClasses] = useState<Record<string, string>>({});
   const [sprites, setSprites] = useState<Record<string, string>>({});
   const [ghosts, setGhosts] = useState<Ghost[]>([]);
+  const [balls, setBalls] = useState<BallFlight[]>([]);
   const [catching, setCatching] = useState<CatchFx | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -156,8 +187,21 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         setBusy(false);
       }, until);
     };
+    const flyBall = (b: Omit<BallFlight, 'id'>, at: number) => {
+      const id = nextId.current++;
+      schedule(() => setBalls((bs) => [...bs, { ...b, id }]), at);
+      schedule(() => setBalls((bs) => bs.filter((x) => x.id !== id)), at + FX_MS.ballFly);
+    };
+    /** A ball thrown from a hand to the slot, and the Pokémon out of it when it opens. Returns when it is out. */
+    const sendOut = (uid: string, slot: SpriteSlot, hand: BallFlight['hand'], at: number) => {
+      flyBall({ slot, dir: 'in', hand, ball: 'poke-ball' }, at);
+      setSprite(uid, 'fx-hidden', 0, at + FX_MS.ballFly);
+      setSprite(uid, 'fx-sendout', at + FX_MS.ballFly, FX_MS.sendOut);
+      return at + FX_MS.ballFly + FX_MS.sendOut;
+    };
 
-    // A new fight: nothing old replays, and its Pokémon come out — the foe from its ball or the grass, then yours.
+    // A new fight: nothing old replays, and its Pokémon come out — the foe from its trainer's ball or the grass,
+    // then yours from your hand.
     if (seenCombat.current !== combatKey) {
       seenCombat.current = combatKey;
       seenSeq.current = state.nextSeq;
@@ -167,6 +211,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       setFloats([]);
       setClasses({});
       setGhosts([]);
+      setBalls([]);
       setCatching(null);
       setSprites({});
       setLogHold(null);
@@ -178,16 +223,17 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       if (!animate) return;
       const ball = fromABall(state);
       let at = 0;
-      for (const e of state.enemies) {
-        setSprite(e.uid, 'fx-hidden', 0, at);
-        setSprite(e.uid, ball ? 'fx-sendout' : 'fx-wild-enter', at, ball ? FX_MS.sendOut : FX_MS.wildEnter);
+      state.enemies.forEach((e, i) => {
+        const slot = slotOf(i, state.enemies.length);
+        if (ball) sendOut(e.uid, slot, 'trainer', at);
+        else {
+          setSprite(e.uid, 'fx-hidden', 0, at);
+          setSprite(e.uid, 'fx-wild-enter', at, FX_MS.wildEnter);
+        }
         at += FX_MS.stagger;
-      }
+      });
       const lead = state.player.team[state.player.leadIndex];
-      if (lead) {
-        setSprite(lead.uid, 'fx-hidden', 0, at);
-        setSprite(lead.uid, 'fx-sendout', at, FX_MS.sendOut);
-      }
+      if (lead) sendOut(lead.uid, 'player', 'player', at + (ball ? FX_MS.ballFly : FX_MS.wildEnter) - FX_MS.stagger);
       // The fight may start at once: Pokémon coming out never hold the hand.
       return;
     }
@@ -206,14 +252,15 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       schedule(() => setFloats((fs) => [...fs, { ...f, id }]), at);
       schedule(() => setFloats((fs) => fs.filter((x) => x.id !== id)), at + FLOAT_MS);
     };
-    const addClass = (uid: string, cls: string, at: number) => {
+    const addClass = (uid: string, cls: string, at: number, ms = CLASS_MS) => {
       schedule(() => setClasses((c) => ({ ...c, [uid]: cls })), at);
-      schedule(() => setClasses((c) => (c[uid] === cls ? { ...c, [uid]: '' } : c)), at + CLASS_MS);
+      schedule(() => setClasses((c) => (c[uid] === cls ? { ...c, [uid]: '' } : c)), at + ms);
     };
-    const addGhost = (g: Omit<Ghost, 'id'>, at: number, dur: number) => {
+    // A ghost stands in at once — the sprite it replaces is already gone — and plays its beat at `at`.
+    const addGhost = (g: Omit<Ghost, 'id'>, dur: number) => {
       const id = nextId.current++;
-      schedule(() => setGhosts((gs) => [...gs, { ...g, id }]), at);
-      schedule(() => setGhosts((gs) => gs.filter((x) => x.id !== id)), at + dur);
+      schedule(() => setGhosts((gs) => [...gs, { ...g, id }]), 0);
+      schedule(() => setGhosts((gs) => gs.filter((x) => x.id !== id)), g.at + dur);
     };
     const showBanner = (text: string, at: number, ms = BANNER_MS) => {
       schedule(() => setBanner(text), at);
@@ -262,49 +309,65 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           delay += 150;
           break;
         case 'faint': {
-          addClass(e.uid, 'fx-faint', delay);
-          if (animate) {
-            // §9.9 — the fallen Pokémon's last beat, where it stood: a wild one drops and is gone; a trainer's, or
-            // yours, drops and goes back into its ball.
-            if (e.side === 'enemy') {
-              const was = before.enemies.get(e.uid);
-              if (was) {
-                const kind = fromABall(state) ? 'faint-recall' : 'faint';
-                const ms = kind === 'faint' ? FX_MS.faint : FX_MS.faint + FX_MS.recall;
-                addGhost({ slot: was.slot, speciesId: was.speciesId, shiny: was.shiny, kind }, delay, ms);
-                busyMs = Math.max(busyMs, delay + ms);
-                delay += ms - 120;
-              }
-            } else if (before.lead?.uid === e.uid) {
-              const ms = FX_MS.faint + FX_MS.recall;
-              addGhost({ slot: 'player', speciesId: before.lead.speciesId, shiny: before.lead.shiny, kind: 'faint-recall' }, delay, ms);
-              busyMs = Math.max(busyMs, delay + ms);
-              delay += ms - 120;
-            } else delay += 300;
-          } else delay += 300;
+          // The card's own fade (motion.css faintOut) runs to its end before the class goes.
+          addClass(e.uid, 'fx-faint', delay, FAINT_CARD_MS);
+          if (!animate) {
+            delay += 300;
+            break;
+          }
+          // §9.9.1 — the fallen Pokémon sinks out of sight where it stood; a trainer's, or yours, then goes back
+          // into its ball and the ball back to the hand that threw it. A wild one is simply gone.
+          const enemy = e.side === 'enemy' ? before.enemies.get(e.uid) : undefined;
+          const mine = e.side !== 'enemy' && before.lead?.uid === e.uid ? before.lead : undefined;
+          const who = enemy ?? mine;
+          if (!who) {
+            delay += 300;
+            break;
+          }
+          const slot: SpriteSlot = enemy ? enemy.slot : 'player';
+          addGhost({ slot, speciesId: who.speciesId, shiny: who.shiny, kind: 'faint', at: delay }, FX_MS.faint);
+          let end = delay + FX_MS.faint;
+          if (mine || fromABall(state)) {
+            flyBall({ slot, dir: 'out', hand: mine ? 'player' : 'trainer', ball: 'poke-ball' }, end);
+            end += FX_MS.ballFly;
+          }
+          busyMs = Math.max(busyMs, end);
+          delay = end;
           break;
         }
         case 'swap': {
           if (!animate) break;
-          // §3.3.1 — the Lead goes back into its ball and the new one comes out. A replacement follows a faint,
-          // whose ghost already took the old Lead away.
+          // §3.3.1 — the Lead goes back into its ball, the ball back to your hand, and the new one is thrown out. A
+          // replacement follows a faint, whose ball already went back.
           const now = state.player.team[state.player.leadIndex];
           if (!now) break;
           if (e.kind !== 'replacement' && before.lead && before.lead.uid !== now.uid) {
-            addGhost({ slot: 'player', speciesId: before.lead.speciesId, shiny: before.lead.shiny, kind: 'recall' }, delay, FX_MS.recall);
-            delay += FX_MS.recall - 80;
+            addGhost({ slot: 'player', speciesId: before.lead.speciesId, shiny: before.lead.shiny, kind: 'recall', at: delay }, FX_MS.recall);
+            flyBall({ slot: 'player', dir: 'out', hand: 'player', ball: 'poke-ball' }, delay + FX_MS.recall - 80);
+            delay += FX_MS.recall - 80 + FX_MS.ballFly - 120;
           }
-          setSprite(now.uid, 'fx-hidden', 0, delay);
-          setSprite(now.uid, 'fx-sendout', delay, FX_MS.sendOut);
+          sendOut(now.uid, 'player', 'player', delay);
           delay += 200;
           break;
         }
         case 'enemy-enter': {
           if (!animate) break;
-          // §5.6.2 / §5.9.3 — the next Pokémon out of the trainer's ball, or a wild one answering a call.
-          const ball = fromABall(state) && !e.called;
-          setSprite(e.enemyUid, 'fx-hidden', 0, delay);
-          setSprite(e.enemyUid, ball ? 'fx-sendout' : 'fx-wild-enter', delay, ball ? FX_MS.sendOut : FX_MS.wildEnter);
+          // §5.6.2 / §5.9.3 — the trainer's next Pokémon, thrown from the trainer's hand; or a wild one answering a call.
+          const idx = state.enemies.findIndex((x) => x.uid === e.enemyUid);
+          const slot = slotOf(Math.max(0, idx), state.enemies.length);
+          if (fromABall(state) && !e.called) {
+            sendOut(e.enemyUid, slot, 'trainer', delay);
+            // The log names it as it comes out of the ball, not while the last one is still falling.
+            const cut = state.log.findLastIndex((l) => l.text.includes(' sent out '));
+            if (cut >= 0) {
+              schedule(() => setLogHold(cut), 0);
+              schedule(() => setLogHold((h) => (h === cut ? null : h)), delay + FX_MS.ballFly);
+            }
+          }
+          else {
+            setSprite(e.enemyUid, 'fx-hidden', 0, delay);
+            setSprite(e.enemyUid, 'fx-wild-enter', delay, FX_MS.wildEnter);
+          }
           delay += 260;
           break;
         }
@@ -316,34 +379,34 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           lastBall = e.consumableId;
           break;
         case 'catch': {
-          // §2.6.4 — the throw. The sim rolled the result already; the ball only shows it.
+          // §2.6.4.4 — the throw. The sim rolled the four shake checks already; the ball only shows them.
           const target = [...before.enemies.entries()].find(([, v]) => v.slot === 'single' || v.slot === 'lead');
           if (!animate || !target) {
-            showBanner(e.success ? 'Gotcha!' : 'It broke free!', delay);
+            showBanner(e.success ? 'Gotcha!' : CATCH_BREAK_LINE[Math.min(e.checks, 3)]!, delay);
             delay += 300;
             break;
           }
           const [uid, was] = target;
-          const wobbles = catchWobbles(e.chance, e.success);
-          const ms = catchMs(wobbles);
+          const wobbles = e.success ? SHAKE_CHECKS - 1 : wobblesShown(e.checks);
+          const t = catchTimeline(wobbles);
           const id = nextId.current++;
-          const fx: CatchFx = { id, slot: was.slot, speciesId: was.speciesId, shiny: was.shiny, ball: lastBall, chance: e.chance, success: e.success, wobbles };
+          const fx: CatchFx = { id, slot: was.slot, speciesId: was.speciesId, shiny: was.shiny, ball: lastBall, chance: e.chance, success: e.success, checks: e.checks, wobbles };
           schedule(() => setCatching(fx), delay);
           // The log already holds the result: it shows the throw, and the rest when the ball clicks or bursts.
           const cut = state.log.findLastIndex((l) => l.text.startsWith('Used ')) + 1;
           if (cut > 0) {
             schedule(() => setLogHold(cut), 0);
-            schedule(() => setLogHold((h) => (h === cut ? null : h)), delay + ms - FX_MS.result);
+            schedule(() => setLogHold((h) => (h === cut ? null : h)), delay + t.resultAt);
           }
           // A Pokémon that broke free is still on the field: hidden while it is in the ball, then out again.
           if (!e.success) {
-            setSprite(uid, 'fx-hidden', 0, delay + ms - FX_MS.result);
-            setSprite(uid, 'fx-burst', delay + ms - FX_MS.result, FX_MS.result);
+            setSprite(uid, 'fx-hidden', 0, delay + t.resultAt);
+            setSprite(uid, 'fx-burst', delay + t.resultAt, FX_MS.sendOut);
           }
-          schedule(() => setCatching((c) => (c?.id === id ? null : c)), delay + ms);
-          showBanner(e.success ? 'Gotcha!' : 'It broke free!', delay + ms - FX_MS.result);
-          busyMs = Math.max(busyMs, delay + ms);
-          delay += ms;
+          schedule(() => setCatching((c) => (c?.id === id ? null : c)), delay + t.total);
+          showBanner(e.success ? 'Gotcha!' : CATCH_BREAK_LINE[Math.min(e.checks, 3)]!, delay + t.resultAt);
+          busyMs = Math.max(busyMs, delay + t.total);
+          delay += t.total;
           break;
         }
         case 'turn-start':
@@ -357,7 +420,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, catching, banner, busy, logHold };
+  return { floats, classes, sprites, ghosts, balls, catching, banner, busy, logHold };
 }
 
 export type { CombatEvent };

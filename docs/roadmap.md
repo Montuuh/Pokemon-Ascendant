@@ -971,10 +971,21 @@ the ghosts and the catch; reduced motion makes them instant. The e2e suite runs 
 (`playwright.config.ts`); `e2e/animations.spec.ts` and the Game Corner's spin turn motion on.
 **Not done:** the evolution sequence and the boss-intro zoom of §9.9's table.
 
-### v0.9.4 — Pokemon moves & kit revamped  ☐
+### v0.9.4 — The catch, faithful  ✅ 2026-10-08
+The user's playtest of v0.9.3: the catch too fast, its bar unused, a break decided too early; the faint blinking
+back before it went; a trainer's ball that never went back to the trainer.
+
+**Shipped.** The catch is the series' four shake checks at p^¼ each (§2.6.4.4, `shakeChecks`): rolled by the sim,
+a wobble before each of the first three and the click as the fourth, the ball always rocking once; four lights under
+the ball, one per passed check; the Gen III lines for how close a break came; the whole beat about 6.5 s. The faint
+(§9.9.1) slides down through the ground line from where the Pokémon stood — the ghost stands in at once, so nothing
+blinks — and a trainer's ball, or yours, flies back to the hand; the next Pokémon comes out of a ball thrown from the
+trainer's hand (`data-fx-hand` marks in the arena); its panel and the log line that names it wait until it is out. The Black Market's R3 bound now needs a sample of ten runs.
+
+### v0.9.5 — Pokemon moves & kit revamped  ☐
 To be determined.
 
-### v0.9.5 — Victory Road  ☐
+### v0.9.6 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 - **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
@@ -982,7 +993,7 @@ Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
   Road's Apex (§2.12.2) is where the canon already brings the run's rarest species, and the two are balanced together.
   Needs the backlog's "a Legendary takes two team slots" designed with the user first.
 
-### v0.9.6 — The League  ☐
+### v0.9.7 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
@@ -1021,7 +1032,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.4's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.4, designed first |
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.5's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.5, designed first |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -1046,7 +1057,7 @@ the account revamps move to v0.9):
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.4 |
+| — | Recovering missed Badges | v0.9.5 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.4 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.5 (with the two-slot balance, designed first) |

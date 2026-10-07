@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { PIDGEY, STARTERS, consumableCard, content, ctx, dispatch, eventsOf, reject, scenario, start, tweak, withConsumableHand } from '../testing/harness';
-import { CATCH, catchOdds, catchRateOf } from './catch';
+import { CATCH, catchOdds, catchRateOf, SHAKE_CHECKS, shakeChecks, wobblesShown } from './catch';
+import { GameRng } from '../rng/gameRng';
 import { catchStatus } from './preview';
 
 // §2.6.4 — the catch chance (2026-09-21): a roll at a shown number, never a hidden one.
@@ -94,5 +95,35 @@ describe('Throwing — §2.6.4.1', () => {
   it('CatchStatus_NullOutsideWildFights', () => {
     const s = start(scenario({ kind: 'trainer', team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 3 }));
     expect(catchStatus(s, ctx)).toBeNull();
+  });
+});
+
+// §2.6.4.4 — the shake checks: four at chance^¼ each, so all four pass at the shown chance.
+describe('shakeChecks — §2.6.4.4', () => {
+  it('ShakeChecks_ManyThrows_CatchRateIsTheShownChance', () => {
+    const rng = new GameRng(1234);
+    for (const chance of [0.13, 0.42, 0.81]) {
+      let caught = 0;
+      const n = 20_000;
+      for (let i = 0; i < n; i++) if (shakeChecks(chance, (p) => rng.chance(p)) === SHAKE_CHECKS) caught++;
+      expect(caught / n).toBeCloseTo(chance, 1);
+    }
+  });
+
+  it('ShakeChecks_Guaranteed_PassesAllFourWithoutRolling', () => {
+    expect(shakeChecks(1, () => { throw new Error('rolled'); })).toBe(SHAKE_CHECKS);
+  });
+
+  it('WobblesShown_ByChecksPassed_AlwaysOneToThree', () => {
+    expect([0, 1, 2, 3, 4].map(wobblesShown)).toEqual([1, 2, 3, 3, 3]);
+  });
+
+  it('Catch_Throw_EmitsTheChecksPassed', () => {
+    const s = withConsumableHand(wild(), ['poke-ball']);
+    const card = s.player.consumables.hand.find((c) => c.consumableId === 'poke-ball')!;
+    const after = dispatch(s, { type: 'use-consumable', cardId: card.id });
+    const ev = eventsOf(after, 'catch')[0] as unknown as { checks: number; success: boolean };
+    expect(ev.checks).toBeGreaterThanOrEqual(0);
+    expect(ev.checks === SHAKE_CHECKS).toBe(ev.success);
   });
 });

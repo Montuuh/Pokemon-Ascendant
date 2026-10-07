@@ -425,10 +425,10 @@ The series' own beats, drawn in the arena on top of a result the sim has already
 
 | Beat | What the player sees |
 |---|---|
-| **Sent out** | A trainer's Pokémon — and yours — whitens and grows out of a ring of light, the foes first and staggered, then your Lead. A wild one steps in from the grass instead. A trainer's next Pokémon, and a swap's new Lead, come out the same way. |
-| **Recalled** | A swapped-out Lead turns red and shrinks back into its ball. |
-| **Fainted** | A fallen Pokémon is drawn once more where it stood and drops out of sight; a trainer's, or yours, is then recalled into its ball. A wild one simply goes. |
-| **The catch** | The ball is thrown in an arc, the Pokémon is drawn into it, the ball lands and rocks — three times for a catch, fewer the worse the odds were for one that breaks free — then clicks with three sparks or bursts open. A bar under it lights up to the catch % the player read before throwing. "Gotcha!" or "It broke free!" lands with the click. |
+| **Sent out** | A Poké Ball flies in an arc from the trainer's hand — the foe's trainer, or yours from off the left edge — lands, and pops open; the Pokémon whitens and grows out of a ring of light. The foes first, staggered, then your Lead. A wild one steps in from the grass instead. A trainer's next Pokémon, and a swap's new Lead, come out the same way. |
+| **Recalled** | A swapped-out Lead turns red and shrinks into its ball, and the ball flies back to your hand. |
+| **Fainted** | A fallen Pokémon holds a beat, then slides down through the ground line and is gone — it never fades back. A trainer's, or yours, then goes back into its ball, which flies back to the trainer's hand before the next one is thrown. A wild one simply goes. |
+| **The catch** | The ball is thrown in an arc, opens on the Pokémon and draws it in, falls to the ground with a bounce, and rocks: a still moment, then a rock, once per shake check (§2.6.4.4) — three wobbles and the click with three sparks on a catch; on a break, the ball bursts open after the wobble its check followed. Four lights under the ball light up one per passed check, the one it broke on in red, beside the chance the player read before throwing. "Gotcha!" or the series' line for how close it came lands with the click or the burst. About six and a half seconds, the series' pace. |
 
 The beats are presentation only: the catch's result is rolled first (§2.6.4.1) and the ball only shows it. A beat
 the player should not talk over — the catch and a faint — holds the hand, the keys and the outcome until it has played,

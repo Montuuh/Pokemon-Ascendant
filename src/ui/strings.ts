@@ -88,6 +88,9 @@ export const ROLE_HINT: Record<string, string> = {
   buffer: 'Raises its allies, lowers your team and puts statuses on it. The group never doubles a status it already plans.',
 };
 
+/** §2.6.4.4 — the series' lines for a ball that breaks open, by how many shake checks passed first (Gen III). */
+export const CATCH_BREAK_LINE = ['Oh no! The Pokémon broke free!', 'Aww! It appeared to be caught!', 'Aargh! Almost had it!', 'Shoot! It was so close, too!'] as const;
+
 export const EFFECTIVENESS_LABEL: Record<string, string> = {
   immune: 'no effect',
   quarter: '×¼',

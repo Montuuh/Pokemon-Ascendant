@@ -49,9 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.3 — The arena, animated.** The catch is played out — the throw, the wobbles, the click or the burst, the
-odds lighting up — and Pokémon come out of their balls, go back into them when recalled or fallen, and step in
-from the grass.
+**v0.9.4 — The catch, faithful.** The catch is the series' four shake checks — three wobbles and the click, a
+light for each — and Pokémon come out of balls thrown from their trainer's hand, sink from view when they fall, and
+go back to the hand that threw them.
 
 ## Run it locally
 

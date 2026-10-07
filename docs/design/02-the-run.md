@@ -106,7 +106,7 @@ non-boss content in the game and the last window to prepare. Full design: §2.12
 
 ## §2.1.6 The League
 
-> 🔒 **Deferred.** The League is designed but not built: it is roadmap v0.9.5, on the multi-enemy fights of v0.8,
+> 🔒 **Deferred.** The League is designed but not built: it is roadmap v0.9.7, on the multi-enemy fights of v0.8,
 > which it is built on. The spec stands; do not implement ahead of it.
 
 Five sequential fights with no map: Elite Four ×4, then the Champion. Between fights, a **micro-rest** restores
@@ -603,8 +603,8 @@ the harness now catches about seven Pokémon a run.)*
 
 | The throw | Result |
 |---|---|
-| Roll ≤ p | **Caught.** Combat ends |
-| Roll > p | **Broke free.** The ball is spent, the fight goes on, the enemy's turn comes |
+| All four shake checks pass (§2.6.4.4) — exactly *p* | **Caught.** Combat ends |
+| A check fails | **Broke free.** The ball is spent, the fight goes on, the enemy's turn comes |
 | Target at 0 HP | The recruit is lost |
 
 The chance is printed on the pill beside the enemy (the best ball in the bag) and on every row of its picker.
@@ -630,6 +630,17 @@ Live since v0.8.6. A **Great Ball** multiplies the chance ×1.5 (120 ₽), an **
 the same 90 % cap. Great Balls are on every City counter (×3) and in Region 2–3 supply tables; Ultra Balls on the
 Department Store's top floor (×3), in Region 3's tables and its Elite and Gym prizes. The picker lists the best
 ball first.
+
+### §2.6.4.4 The shake checks
+
+The roll is the series' own (Gen III–IV): **four shake checks**, each passed at **p^¼**, so all four pass at exactly
+the chance on the pill — the number shown is still the whole truth. They are rolled in order and stop at the first
+that fails. Each of the first three checks follows a **wobble** of the ball and the fourth is the **click**: a
+Pokémon breaks free after the first, second or third wobble, or right as the ball should have clicked. The ball
+always rocks at least once *(the user, 2026-10-07: a break is never decided before the first wobble)*, and how far
+it got is the series' line for it — "Oh no! The Pokémon broke free!", "Aww! It appeared to be caught!", "Aargh!
+Almost had it!", "Shoot! It was so close, too!". A Master Ball Charm throw passes all four without rolling. The
+checks come from the fight's stream like every roll (§10.7); the arena only shows them (§9.9.1).
 
 ### §2.6.4.3 Why a roll, and why a shown one
 

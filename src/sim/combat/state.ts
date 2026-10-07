@@ -242,7 +242,8 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'faint'; uid: string; side: 'player' | 'enemy' }
   | { t: 'enemy-enter'; enemyUid: string; called?: boolean }
   | { t: 'phase'; enemyUid: string; phase: 1 | 2 | 3 }
-  | { t: 'catch'; success: boolean; chance: number; ballsLeft: number }
+  /** §2.6.4.4 — `checks`: how many of the four shake checks passed (4 is the catch). */
+  | { t: 'catch'; success: boolean; chance: number; checks: number; ballsLeft: number }
   /** §5.6 — a Defender took its Lead's place (Cover). */
   | { t: 'enemy-cover'; enemyUid: string; coveredUid: string }
   | { t: 'lead-pick-required' }

@@ -374,9 +374,13 @@ export function CombatScreen() {
               <span className={styles.platform} />
             </div>
           )}
-          {state.trainer && enemies.length === 1 && (
+          {/* The trainer stays to the last faint: its ball comes back to it. */}
+          {state.trainer && enemies.length <= 1 && (
             <img className={`${styles.trainer} pixel`} src={trainerSprite(state.trainer.sprite)} alt={state.trainer.name} draggable={false} />
           )}
+          {/* §9.9.1 — the hands the Poké Balls fly from and back to: the foe's trainer, and yours off the left edge. */}
+          <span className={state.trainer && enemies.length <= 1 ? styles.handTrainer : styles.handOffRight} data-fx-hand="trainer" />
+          <span className={styles.handPlayer} data-fx-hand="player" />
           {/* §9.2.1 — one enemy stands large; a group uses the squad grammar mirrored: the Lead forward, the
               supports behind it. Every sprite is a drop target too. */}
           {enemies.map((enemy, i) => (
@@ -404,7 +408,7 @@ export function CombatScreen() {
               {boxEnemy.hp <= boxDamage.final && <div className={styles.previewKo}>KO</div>}
             </div>
           )}
-          <ArenaFx ghosts={fx.ghosts} catching={fx.catching} slotClass={slotClass} />
+          <ArenaFx ghosts={fx.ghosts} balls={fx.balls} catching={fx.catching} slotClass={slotClass} />
           {fx.banner && (
             <div className={`${styles.banner} display`} key={fx.banner + state.nextSeq}>
               {fx.banner}
@@ -417,7 +421,8 @@ export function CombatScreen() {
         <div className={[styles.enemyZone, group ? styles.enemyZoneGroup : ''].join(' ')}>
           {enemies.length > 0 ? (
             enemies.map((enemy, i) => (
-              <div key={enemy.uid} className={group ? (i === 0 ? styles.foeLeadPanel : i === 1 ? styles.foePanel1 : styles.foePanel2) : styles.foeOnly}>
+              // §9.9.1 — a Pokémon still in its ball has no panel yet: it is named when it comes out.
+              <div key={enemy.uid} className={group ? (i === 0 ? styles.foeLeadPanel : i === 1 ? styles.foePanel1 : styles.foePanel2) : styles.foeOnly} style={fx.sprites[enemy.uid] === 'fx-hidden' ? { visibility: 'hidden' } : undefined}>
                 <EnemyPanel
                   state={state}
                   enemy={enemy}

@@ -157,6 +157,27 @@
   opacity: 0.95;
   filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.45));
 }
+/* §9.9.1 — where a thrown Poké Ball starts and a recalled one ends. */
+.handTrainer,
+.handOffRight,
+.handPlayer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+.handTrainer {
+  right: 3%;
+  top: 40%;
+}
+.handOffRight {
+  right: -4%;
+  top: 30%;
+}
+.handPlayer {
+  left: -4%;
+  bottom: 12%;
+}
 .preview {
   position: absolute;
   left: 50%;

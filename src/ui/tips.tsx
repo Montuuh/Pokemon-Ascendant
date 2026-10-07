@@ -890,7 +890,7 @@ export function catchPickerTip(odds: CatchOdds): ReactNode {
       body={
         odds.guaranteed
           ? 'Throw any ball: the charm is spent on this run whatever happens.'
-          : `Each throw is one roll at the chance on its row and spends the ball either way. ${ballMultipliers()} The chance climbs as its HP falls — steeply in the last quarter — and a status multiplies it; Sleep and Freeze most.`
+          : `Each throw spends the ball and is the series' four shake checks — three wobbles, then the click — which all pass at exactly the chance on its row; the lights under the ball show each one. ${ballMultipliers()} The chance climbs as its HP falls — steeply in the last quarter — and a status multiplies it; Sleep and Freeze most.`
       }
       footer="Knock it out and the recruit is lost."
     />

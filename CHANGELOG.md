@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.4 — The catch, faithful · 2026-10-08
+
+The catch and the faint, played the way the series plays them.
+
+- **Shake checks.** Four checks: three wobbles, then the click.
+- **Slower catch.** Each check lights up; a break can come at any wobble.
+- **The faint.** The fallen sink from view and never blink back.
+- **Trainer's balls.** Back to the trainer's hand, and thrown from it.
+
 ### v0.9.3 — The arena, animated · 2026-10-07
 
 The catch, the send-out, the recall and the faint, played out in the arena.

@@ -132,10 +132,12 @@
   --motion-weather-spark: 2400ms;
   --ease-spin: cubic-bezier(0.15, 0.85, 0.25, 1);
   --ease-reel: cubic-bezier(0.25, 0.6, 0.35, 1.06);
-  /* §9.9 — the arena's beats (v0.9.3): a ball's throw and a wild Pokémon's step in. Their lengths are not here but in
+  /* §9.9 — the arena's beats (v0.9.3): a wild Pokémon's step in. Their lengths are not here but in
      `FX_MS` (useCombatFx.ts), the one table the JS timers and the keyframes both read — set on the arena by `fxTimings`. */
-  --ease-throw: cubic-bezier(0.2, 0.7, 0.4, 1);
   --ease-step: cubic-bezier(0.2, 0.8, 0.3, 1);
+  /* A Poké Ball in the arena, and the light it opens with. */
+  --fx-ball: 40px;
+  --fx-flash: 170px;
 
   /* ---- Z-layers (§1.1) ---- */
   --z-hud: 100;

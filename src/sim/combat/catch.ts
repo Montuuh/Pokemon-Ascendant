@@ -63,5 +63,23 @@ export function catchOdds(wild: Combatant, effect: Extract<ConsumableEffect, { k
   return { chance, catchRate, hpFactor, statusMult, ballMult, hasStatus, guaranteed };
 }
 
+/**
+ * §2.6.4.4 — the shake checks, as the series rolls them (Gen III–IV): four checks, each passed at p = chance^¼, so
+ * all four pass at exactly the shown chance. Here each of the first three checks follows a wobble and the fourth is
+ * the click — the ball always rocks once, and a Pokémon breaks free after the first, second or third wobble, or as
+ * the ball should have clicked. Returns how many checks passed: 4 is a catch.
+ */
+export const SHAKE_CHECKS = 4;
+export function shakeChecks(chance: number, roll: (p: number) => boolean): number {
+  if (chance >= 1) return SHAKE_CHECKS;
+  const p = Math.pow(chance, 1 / SHAKE_CHECKS);
+  let passed = 0;
+  while (passed < SHAKE_CHECKS && roll(p)) passed++;
+  return passed;
+}
+
+/** §2.6.4.4 — the wobbles a throw shows: three on a catch; on a break, the wobble the failed check followed. */
+export const wobblesShown = (checksPassed: number): number => Math.min(checksPassed + 1, SHAKE_CHECKS - 1);
+
 /** The number the UI prints: whole percent, never 0 for a live target. */
 export const catchPercent = (odds: CatchOdds): number => Math.max(odds.chance > 0 ? 1 : 0, Math.round(odds.chance * 100));

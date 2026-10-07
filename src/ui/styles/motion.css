@@ -232,8 +232,9 @@ html[data-motion='reduced'] *::after {
 /*
  * §9.9 — the series' beats in the arena (v0.9.3), applied to a sprite's container by `useCombatFx`; their lengths are
  * the custom properties `fxTimings` sets on the arena. A Pokémon out of its ball whitens and grows from a point with
- * a ring of light; a wild one steps in from the grass; a fallen one drops and fades; one going back into its ball
- * turns red and shrinks into it. Each rule animates the sprite's <img> and leaves its breathing to resume after.
+ * a ring of light; a wild one steps in from the grass; a fallen one sinks below the ground line, never fading back;
+ * one going back into its ball turns red and shrinks into it. Each rule animates the sprite's <img> and leaves its
+ * breathing to resume after. A ghost's beat waits for `--ghost-at`, standing as it was until then.
  */
 .fx-hidden img {
   visibility: hidden;
@@ -260,19 +261,11 @@ html[data-motion='reduced'] *::after {
   animation: wildEnter var(--fx-wild-enter) var(--ease-step) both;
 }
 .fx-ghost-faint img {
-  animation: faintDrop var(--fx-faint) ease-in both;
-}
-/* A fallen Pokémon going back into its ball: the drop on the ghost's frame, the beam on its sprite, so neither
-   animation's transform overrides the other's. */
-.fx-ghost-faint-recall .fx-ghost-body {
-  display: block;
-  animation: faintDrop var(--fx-faint) ease-in both;
-}
-.fx-ghost-faint-recall img {
-  animation: recallBeam var(--fx-recall) ease-in var(--fx-faint) both;
+  animation: faintDrop var(--fx-faint) linear var(--ghost-at) both;
 }
 .fx-ghost-recall img {
-  animation: recallBeam var(--fx-recall) ease-in both;
+  transform-origin: 50% 85%;
+  animation: recallBeam var(--fx-recall) ease-in var(--ghost-at) both;
 }
 
 @keyframes sendOut {
@@ -315,16 +308,17 @@ html[data-motion='reduced'] *::after {
     opacity: 1;
   }
 }
+/* The series' faint: a beat of stillness, then the Pokémon slides down through the ground line and is gone. */
 @keyframes faintDrop {
-  0% {
+  0%,
+  20% {
     transform: translateY(0);
     clip-path: inset(0 0 0 0);
-    opacity: 1;
+    animation-timing-function: ease-in;
   }
   100% {
-    transform: translateY(45%);
-    clip-path: inset(0 0 45% 0);
-    opacity: 0.15;
+    transform: translateY(100%);
+    clip-path: inset(0 0 100% 0);
   }
 }
 @keyframes recallBeam {
@@ -345,8 +339,6 @@ html[data-motion='reduced'] *::after {
   .fx-burst img,
   .fx-wild-enter img,
   .fx-ghost-faint img,
-  .fx-ghost-faint-recall img,
-  .fx-ghost-faint-recall .fx-ghost-body,
   .fx-ghost-recall img,
   .fx-sendout::before,
   .fx-burst::before {
@@ -357,8 +349,6 @@ html[data-motion='reduced'] .fx-sendout img,
 html[data-motion='reduced'] .fx-burst img,
 html[data-motion='reduced'] .fx-wild-enter img,
 html[data-motion='reduced'] .fx-ghost-faint img,
-html[data-motion='reduced'] .fx-ghost-faint-recall img,
-html[data-motion='reduced'] .fx-ghost-faint-recall .fx-ghost-body,
 html[data-motion='reduced'] .fx-ghost-recall img,
 html[data-motion='reduced'] .fx-sendout::before,
 html[data-motion='reduced'] .fx-burst::before {
