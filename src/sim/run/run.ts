@@ -60,7 +60,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 18;
+export const RUN_SAVE_VERSION = 19;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -69,24 +69,37 @@ export interface RunCtx {
 
 export const defaultRunCtx = (content: ContentRegistry): RunCtx => ({ content, progression: DEFAULT_PROGRESSION });
 
-let uidCounter = 0;
-/** Deterministic within a run: uids are derived from the seed and an incrementing index, never from a clock. */
-function makeUid(seed: number): string {
-  uidCounter += 1;
-  return `m${seed.toString(36)}-${uidCounter.toString(36)}`;
+/** §10.7.4 — a uid: the seed and an index, never a clock. */
+export const uidFor = (seed: number, index: number): string => `m${seed.toString(36)}-${index.toString(36)}`;
+
+/** §10.7.4 — the next uid a run hands out, from the counter it carries (`RunState.uidSeq`). */
+export function mintUid(run: Pick<RunState, 'seed' | 'uidSeq' | 'box'>): string {
+  // A run from before the counter (or a fixture) starts it past every uid it already holds.
+  run.uidSeq = Math.max(run.uidSeq ?? 0, ...run.box.map((m) => uidIndex(m.uid))) + 1;
+  return uidFor(run.seed, run.uidSeq);
 }
 
+/** The index a run minted a uid with (its base-36 tail), or 0 for one it did not mint (a fixture's `x…`). */
+export function uidIndex(uid: string): number {
+  if (!uid.startsWith('m')) return 0;
+  const n = parseInt(uid.slice(uid.lastIndexOf('-') + 1), 36);
+  return Number.isFinite(n) ? n : 0;
+}
+
+// Test fixtures and dev tools build Pokémon outside any run; they draw from this counter, under their own prefix so they
+// can never take a run's uid. A run never does (it passes `uid`).
+let fixtureCounter = 0;
 export function resetUidCounter(): void {
-  uidCounter = 0;
+  fixtureCounter = 0;
 }
 
-export function newPartyMon(speciesId: string, level: number, content: ContentRegistry, seed: number): PartyMon {
+export function newPartyMon(speciesId: string, level: number, content: ContentRegistry, seed: number, uid?: string): PartyMon {
   // §6.9 — a recruit derives its pool from its spawn level, so a mid-route catch arrives with a full kit;
   // §6.5.1 — an already-evolved recruit arrives with the pool's first passive, the one its evolution granted.
   const pool = knownMoves(content, speciesId, level);
   const species = content.species(speciesId);
   const mon: PartyMon = {
-    uid: makeUid(seed),
+    uid: uid ?? `x${seed.toString(36)}-${(++fixtureCounter).toString(36)}`,
     speciesId,
     level,
     xp: 0,
@@ -119,13 +132,13 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
   const streams = new RngStreams(seed);
   const mapRng = streams.get('MapRNG');
   const map = generateRegion(mapRng, ctx.content, regionIndex, seed, modifiers, [], wildRareChance(regionModifier ?? null, ctx.content));
-  const starter = newPartyMon(starterId, RUN_START.starterLevel, ctx.content, seed);
+  const starter = newPartyMon(starterId, RUN_START.starterLevel, ctx.content, seed, uidFor(seed, 1));
   // §5.14 / §6.8.2 — a Soulbound line starts the run shiny; under the Shiny Charm any other starter may be.
   if (copyIsShiny({ seed, perks }, starterId, 'starter', ctx.content)) starter.shiny = true;
   // §8.5.3 — the starter's flourish, if it has one (Pikachu's Light Ball).
   const starterItem = RUN_START.starterItems[starterId];
   if (starterItem && ctx.content.allHeldItems().some((i) => i.id === starterItem)) starter.heldItem = starterItem;
-  const second = twin ? newPartyMon(twin, RUN_START.starterLevel, ctx.content, seed + 1) : null;
+  const second = twin ? newPartyMon(twin, RUN_START.starterLevel, ctx.content, seed + 1, uidFor(seed + 1, 2)) : null;
   if (second && copyIsShiny({ seed, perks }, twin!, 'twin', ctx.content)) second.shiny = true;
 
   return {
@@ -137,6 +150,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     reachable: [...map.entry],
     visited: [],
     box: second ? [starter, second] : [starter],
+    uidSeq: second ? 2 : 1,
     activeUids: second ? [starter.uid, second.uid] : [starter.uid],
     // §7.2.5 — the starting balls go in the bag with the rest of the kit (v0.8.6).
     consumables: [...RUN_START.consumables, ...pokeBalls(RUN_START.balls)],
@@ -470,7 +484,7 @@ function endHunt(draft: RunState, result: 'caught' | 'fled' | 'left' | 'closed',
   draft.stats.catches += 1;
   say(draft, `Caught ${name}!`);
   if (draft.box.length < boxCapacity(draft)) {
-    const recruit = newPartyMon(spot.species, spot.level, ctx.content, draft.seed);
+    const recruit = newPartyMon(spot.species, spot.level, ctx.content, draft.seed, mintUid(draft));
     // §5.14 — a Safari catch is a new copy: the line's Shiny Charm rolls for it.
     const shiny = copyIsShiny(draft, spot.species, `safari:${draft.regionIndex}:${spot.species}:${draft.stats.catches}`, ctx.content);
     if (shiny) recruit.shiny = true;
@@ -1077,7 +1091,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           caught = report.caught;
           draft.stats.catches += 1;
           if (draft.box.length < boxCapacity(draft)) {
-            const recruit = newPartyMon(caught.speciesId, caught.level, ctx.content, draft.seed);
+            const recruit = newPartyMon(caught.speciesId, caught.level, ctx.content, draft.seed, mintUid(draft));
             if (caught.shiny) recruit.shiny = true;
             draft.box.push(recruit);
             draft.stats.recruits += 1;
@@ -1168,7 +1182,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           if (idx >= 0) {
             const [released] = draft.box.splice(idx, 1);
             draft.activeUids = draft.activeUids.filter((u) => u !== action.releaseUid);
-            const fresh = newPartyMon(recruit.speciesId, recruit.level, ctx.content, draft.seed);
+            const fresh = newPartyMon(recruit.speciesId, recruit.level, ctx.content, draft.seed, mintUid(draft));
             if (recruit.shiny) fresh.shiny = true;
             draft.box.push(fresh);
             draft.stats.recruits += 1;
@@ -1435,7 +1449,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const idx = draft.box.findIndex((m) => m.uid === action.giveUid);
         const given = draft.box[idx]!;
         const species = market.trades[action.offer]!;
-        const fresh = newPartyMon(species, given.level, ctx.content, draft.seed);
+        const fresh = newPartyMon(species, given.level, ctx.content, draft.seed, mintUid(draft));
         // §5.14 — a traded Pokémon is a new copy too.
         if (copyIsShiny(draft, species, `trade:${draft.regionIndex}:${species}`, ctx.content)) fresh.shiny = true;
         if (given.heldItem) draft.bag.push(given.heldItem);

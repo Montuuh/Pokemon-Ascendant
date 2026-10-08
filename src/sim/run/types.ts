@@ -461,6 +461,12 @@ export interface RunState {
   reachable: string[];
   visited: string[];
   box: PartyMon[];
+  /**
+   * §10.7.4 — how many Pokémon the run has minted a uid for. It lives in the run, not in module state: a counter that a
+   * page reload reset handed the next recruit the starter's uid (v0.9.8's bug — the Box and the evolution queue then
+   * mixed the two up).
+   */
+  uidSeq: number;
   /** Up to 3 uids from the Box (§2.3). The first is the Lead. */
   activeUids: string[];
   consumables: string[];

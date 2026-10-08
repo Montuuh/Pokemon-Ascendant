@@ -168,6 +168,12 @@ Three consequences fall out of it for free — replay debugging, a player-facing
 **golden-master suite**, where a recorded fight's fingerprint guards against accidental rule changes. A
 fingerprint that changes without a deliberate note in the change log is a regression.
 
+**Identity lives in the run, never in module state.** A Pokémon's uid is the seed and an index the run itself counts
+(`RunState.uidSeq`, `mintUid`); anything a reload can reset — a module variable, a store — cannot hand out ids, because
+the run outlives it. *(v0.9.8, a bug the user hit: the counter was module state, a reload restarted it, and the next
+recruit took the starter's uid — the Active Team, the Box and the evolution queue then confused the two, and a second
+evolution in a row stuck. Save v19 carries the counter and repairs a save with a duplicate.)*
+
 ---
 
 # §10.8 Saving

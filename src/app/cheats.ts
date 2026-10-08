@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import { getContent } from '@/content/registry';
-import { arriveAtCity, pokeBalls, defaultRunCtx, isEvolutionReady, knownMoves, maxHpOf, newPartyMon, type PartyMon, type RunState } from '@/sim';
+import { arriveAtCity, pokeBalls, defaultRunCtx, isEvolutionReady, knownMoves, maxHpOf, mintUid, newPartyMon, type PartyMon, type RunState } from '@/sim';
 import { useAppStore } from './store';
 import { useCombatStore } from './combatStore';
 import { useRunStore } from './runStore';
@@ -111,7 +111,7 @@ export const CHEATS = {
       for (const id of pool) {
         if (d.box.length >= 6) break;
         if (d.box.some((m) => m.speciesId === id)) continue;
-        d.box.push(newPartyMon(id, level, getContent(), d.seed + d.box.length));
+        d.box.push(newPartyMon(id, level, getContent(), d.seed, mintUid(d)));
       }
     }) ? { say: 'full' } : null;
   },

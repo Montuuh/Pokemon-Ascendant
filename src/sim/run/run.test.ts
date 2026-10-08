@@ -3,7 +3,7 @@ import { ballsIn } from './rewards';
 import { buildRegistry } from '@/content/registry';
 import { PAD_LEVEL_GAP } from './region';
 import {
-  activeSetups, applyBranch, previewBranch, autoPickMoves, createRun, defaultRunCtx, deserialiseRun, generateRegion,
+  activeSetups, applyBranch, resetUidCounter, previewBranch, autoPickMoves, createRun, defaultRunCtx, deserialiseRun, generateRegion,
   isEvolutionReady, LAYERS, maxHpOf, nodesInLayer, runReducer, serialiseRun, xpToNext, assertRegionContent,
   grantXp, newPartyMon, wildBandFor, PRICES, gymById, FLEE_TOLL, fleeTierFor,
   type CombatOutcomeReport, type RunAction, type RunState,
@@ -407,6 +407,45 @@ describe('Catching and the Box — §2.6.4, §2.3.1', () => {
     expect(s.box[1]!.speciesId).toBe('pidgey');
     expect(ballsIn(s.consumables, content)).toBe(balls - 1 + found);
     expect(s.stats.catches).toBe(1);
+  });
+
+  it('Catch_AfterAReload_NeverReusesAUid_§10.7.4', () => {
+    // The bug the user hit: a page reload restarted the uid counter, so the next recruit took the starter's uid —
+    // the Active Team, the Box and the evolution queue then mixed the two up. The counter lives in the run now.
+    const catchOne = (s0: RunState, speciesId: string, level: number): RunState => {
+      let s: RunState = s0;
+      s = enter(s, 'wild');
+      s = apply(s, { type: 'begin-combat' });
+      s = apply(s, { type: 'finish-combat', report: { ...caughtReport(s), caught: { speciesId, level } } });
+      s = apply(s, { type: 'claim-reward' });
+      while (s.phase === 'evolution') s = apply(s, { type: 'choose-branch', uid: s.pendingEvolutions[0]!.uid, branchId: s.pendingEvolutions[0]!.branchIds[0]! });
+      return s;
+    };
+    let s = catchOne(start(), 'pidgey', 6);
+    expect(s.box).toHaveLength(2);
+    resetUidCounter(); // what a page reload does to module state
+    const loaded = deserialiseRun(serialiseRun(s), content);
+    if (!loaded.ok) throw new Error('load');
+    s = catchOne(loaded.run, 'rattata', 6);
+    expect(s.box).toHaveLength(3);
+    expect(new Set(s.box.map((m) => m.uid)).size).toBe(3);
+  });
+
+  it('ASaveWithADuplicateUid_IsRepairedOnLoad_TheEvolutionFollowsItsPokemon_§10.8.3', () => {
+    // A v18 save the reload bug wrote: the recruit took the starter's uid, and its evolution waits on that uid.
+    const s0 = start();
+    const recruit = { ...newPartyMon('shellder', 14, content, s0.seed), uid: s0.box[0]!.uid };
+    const run = { ...s0, box: [s0.box[0]!, recruit], phase: 'evolution' as const, pendingEvolutions: [{ uid: recruit.uid, from: 'shellder', branchIds: content.species('shellder').branches.map((b) => b.id) }] } as RunState;
+    const old = JSON.parse(serialiseRun(run, 0));
+    delete old.run.uidSeq;
+    old.version = 18;
+    old.checksum = JSON.parse(serialiseRun({ ...old.run }, 0)).checksum;
+    const loaded = deserialiseRun(JSON.stringify(old), content);
+    if (!loaded.ok) throw new Error(loaded.reason);
+    const box = loaded.run.box;
+    expect(new Set(box.map((m) => m.uid)).size).toBe(2);
+    expect(box.find((m) => m.uid === loaded.run.pendingEvolutions[0]!.uid)!.speciesId).toBe('shellder');
+    expect(loaded.run.uidSeq).toBeGreaterThanOrEqual(2);
   });
 
   it('Catch_AtFullBox_PromptsSwapOrSkip_AndSkipKeepsTheBox', () => {

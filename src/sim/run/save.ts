@@ -1,5 +1,5 @@
 import type { ContentRegistry } from '../content/defs';
-import { RUN_SAVE_VERSION } from './run';
+import { RUN_SAVE_VERSION, mintUid, uidIndex } from './run';
 import type { RunState } from './types';
 
 // §10.8 — the save model. The simulation only knows how to turn a run into text and back; *where* that text
@@ -148,8 +148,29 @@ function migrateRowsTo18(run: RunState): void {
   }
 }
 
+/**
+ * §10.7.4 — version 18 → 19: the run carries its uid counter (`uidSeq`). Until now it was module state that a page
+ * reload reset, so a run continued after a reload could mint a recruit with a uid already in the Box (v0.9.8's bug).
+ * The counter starts past every uid the save holds, and a Pokémon that shares a uid with an earlier one is given a new
+ * one — the pending evolution that named its species follows it; the Active Team keeps the first.
+ */
+function migrateUidsTo19(run: RunState): void {
+  run.uidSeq = Math.max(0, ...run.box.map((m) => uidIndex(m.uid)));
+  const seen = new Set<string>();
+  for (const mon of run.box) {
+    if (!seen.has(mon.uid)) {
+      seen.add(mon.uid);
+      continue;
+    }
+    const old = mon.uid;
+    mon.uid = mintUid(run);
+    seen.add(mon.uid);
+    for (const p of run.pendingEvolutions) if (p.uid === old && p.from === mon.speciesId) p.uid = mon.uid;
+  }
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

@@ -156,13 +156,14 @@ export function installDevTools(): void {
         if (!run) return 0;
         const pool = ['pidgey', 'rattata', 'oddish', 'zubat', 'geodude', 'poliwag'];
         const box = [...run.box];
+        const uids = { seed: run.seed, uidSeq: run.uidSeq, box };
         let added = 0;
         for (const id of pool) {
           if (box.length >= to) break;
-          box.push(sim.newPartyMon(id, 8, combat().ctx.content, run.seed + box.length));
+          box.push(sim.newPartyMon(id, 8, combat().ctx.content, run.seed, sim.mintUid(uids)));
           added++;
         }
-        useRunStore.setState({ run: { ...run, box } });
+        useRunStore.setState({ run: { ...run, box, uidSeq: uids.uidSeq } });
         return added;
       },
       heal: () => {
