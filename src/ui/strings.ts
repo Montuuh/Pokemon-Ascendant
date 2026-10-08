@@ -459,6 +459,21 @@ export const EVOLUTION_TEXT = {
   evolve: (label: string | null) => (label ? `Evolve · ${label}` : 'Evolve'),
 };
 
+/** §3.5 — the reward screen's labels (v0.9.6). */
+export const STAT_SHORT = { hp: 'HP', attack: 'Atk', defense: 'Def', speed: 'Spd' } as const;
+export const STAT_LONG: Record<string, string> = { hp: 'HP', attack: 'Attack', defense: 'Defense', speed: 'Speed' };
+export const REWARD_TEXT = {
+  inPool: 'in the pool',
+  readyToEvolve: 'Ready to evolve',
+  /** §6.8.2 — what a Bond rank opened, by rank (the hidden ability names itself). */
+  bondUnlock: { 1: 'Shiny Charm', 3: 'Mastery', 4: 'Starts a run' } as Record<number, string>,
+};
+
+/** §8.7 / §8.6.1 — the progress panel and the reward screen's progress line (v0.9.6). */
+export const PROGRESS_TEXT = {
+  heading: (kind: 'achievement' | 'discovery', done: boolean) => (kind === 'achievement' ? (done ? 'Medal earned' : 'Medal progress') : done ? 'Relic discovered' : 'Discovery progress'),
+};
+
 export const ARCHETYPE_LABEL: Record<string, string> = {
   vanguard: 'Vanguard',
   specialist: 'Specialist',

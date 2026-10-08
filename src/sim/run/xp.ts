@@ -1,6 +1,7 @@
 import type { ContentRegistry, EvolutionItemUse } from '../content/defs';
 import type { EnemyTier } from '../content/defs';
 import { slotIndex, upgradeParents } from '../combat/kit';
+import { statAtLevel } from '../combat/stats';
 import type { LevelUp, PartyMon } from './types';
 
 // §6.2 — XP, levels and what a level-up gives you. Numbers are the ProgressionConfig values from
@@ -112,7 +113,19 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
     }
   }
 
-  const up: LevelUp = { uid: mon.uid, from, to: mon.level, learned, activated };
+  const sp = content.species(mon.speciesId);
+  const g = sp.growth;
+  const n = mon.level - from;
+  const at = (k: 'hp' | 'attack' | 'defense' | 'speed') => statAtLevel(sp, k, mon.level);
+  const up: LevelUp = {
+    uid: mon.uid,
+    from,
+    to: mon.level,
+    learned,
+    activated,
+    gains: { hp: g.hp * n, attack: g.attack * n, defense: g.defense * n, speed: g.speed * n },
+    statsAt: { hp: at('hp'), attack: at('attack'), defense: at('defense'), speed: at('speed') },
+  };
   if (isEvolutionReady(mon, content)) up.evolutionReady = true;
   return up;
 }

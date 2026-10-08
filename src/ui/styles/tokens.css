@@ -60,6 +60,12 @@
   --arch-vanguard: #f6b9a3;
   --arch-specialist: #a9cdf5;
   --arch-support: #b6e3bd;
+  /* §8.7 — the medal tiers, as fills under dark ink (the progress panel). */
+  --medal-bronze: #d9a06b;
+  --medal-silver: #c9ccd6;
+  --medal-platinum: #b9e3ea;
+  /* The dark bubble every tooltip and the progress panel sit on, whatever the theme. */
+  --tip-surface: #2a2230;
   --shield: #a8e6f0;
 
   /* ---- §2.11.5 — the Roulette: the classic wheel's pockets, its wooden rim and the ivory ball ---- */

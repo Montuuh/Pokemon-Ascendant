@@ -184,52 +184,6 @@
   gap: var(--sp-1);
 }
 
-/* ---- a move as a chip ---------------------------------------------------------------------------------- */
-.chip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px var(--sp-2);
-  border: 1.5px solid var(--border-strong);
-  border-radius: var(--radius-pill);
-  background: var(--surface-1);
-  font-size: var(--type-small);
-  font-weight: 700;
-  white-space: nowrap;
-  cursor: help;
-  transition: transform var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
-}
-.chip:hover,
-.chip:focus-visible {
-  transform: translateY(-1px);
-  box-shadow: 0 3px 8px color-mix(in srgb, var(--ink-primary) 18%, transparent);
-}
-/* In the active four. */
-.active {
-  background: var(--accent-action);
-  color: var(--ink-on-accent);
-  border-color: var(--accent-action-deep);
-}
-/* The card it replaces: still readable, plainly on its way out. */
-.struck {
-  border-style: dashed;
-  border-color: var(--border-subtle);
-  background: transparent;
-  font-weight: 600;
-  color: var(--ink-secondary);
-}
-.struck .chipName {
-  text-decoration: line-through;
-}
-.fresh {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--brand-red);
-  box-shadow: 0 0 0 2px var(--surface-1);
-}
-
 /* ---- the paths ----------------------------------------------------------------------------------------- */
 .branches {
   grid-area: branches;

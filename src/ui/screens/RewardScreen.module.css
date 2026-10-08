@@ -1,21 +1,24 @@
+/* §3.5 — the reward screen (v0.9.6): a card per Pokémon, what its levels gave as pills and chips, the account's
+   progress as small bars, the loot as one strip. The words live in the tooltips. */
+
 .root {
   height: 100%;
   display: grid;
   place-items: center;
   padding: var(--sp-5);
-  background: radial-gradient(120% 90% at 50% 0%, #fff8e8 0%, var(--surface-0) 65%);
+  background: radial-gradient(120% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 65%);
   color: var(--ink-primary);
   overflow: auto;
 }
 .card {
-  width: min(660px, 100%);
+  width: min(680px, 100%);
   background: var(--surface-1);
   border: 2px solid var(--border-strong);
   border-radius: var(--radius-xl);
-  padding: var(--sp-6);
-  box-shadow: 0 24px 60px rgba(58, 46, 34, 0.25);
+  padding: var(--sp-5) var(--sp-6);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--ink-primary) 22%, transparent);
   display: grid;
-  gap: var(--sp-2);
+  gap: var(--sp-3);
   align-content: start;
 }
 .title {
@@ -24,11 +27,8 @@
   font-size: var(--type-display);
   color: var(--brand-red);
 }
-.sub {
-  margin: 0 0 var(--sp-3);
-  text-align: center;
-  color: var(--ink-secondary);
-}
+
+/* ---- the catch -------------------------------------------------------------------------------------- */
 .catch {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -53,25 +53,39 @@
   font-size: var(--type-small);
   color: var(--ink-secondary);
 }
-.sectionTitle {
-  margin: var(--sp-4) 0 0;
-  font-size: var(--type-caption);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
+/* §5.14 — the shiny's own battle sprite at twice its pixels: an integer scale keeps it crisp (D9). */
+.catchShinyBox {
+  display: grid;
+  place-items: center;
+  width: 110px;
+  height: 110px;
+  flex: none;
 }
+.catchShiny {
+  scale: 2;
+}
+
+/* ---- one row per Pokémon ---------------------------------------------------------------------------- */
 .xpList {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
 }
 .xpRow {
   display: grid;
   grid-template-columns: 50px 1fr;
   gap: var(--sp-3);
-  align-items: center;
+  align-items: start;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-lg);
+  border: 2px solid transparent;
+}
+/* A Pokémon that levelled gets a card of its own: this is its news. */
+.levelled {
+  background: var(--surface-2);
+  border-color: var(--border-subtle);
 }
 .xpBody {
   display: grid;
@@ -97,36 +111,16 @@
   padding: 1px 8px;
   border-radius: var(--radius-pill);
   background: var(--accent-action);
-  color: #5a4406;
+  color: var(--ink-on-accent);
+  animation: popIn var(--motion-base) var(--ease-spring) both;
 }
 .gain {
   margin-left: auto;
   font-weight: 700;
-  color: var(--ink-primary);
-}
-/* §6.8.1 — the line's Bond beside its XP: quieter than the XP, louder on a rank-up. */
-.bond {
-  font-size: var(--type-caption);
-  font-weight: 700;
-  color: var(--ink-secondary);
-}
-.rankUp {
-  color: var(--ink-primary);
-}
-/* §5.14 — the shiny's own battle sprite at twice its pixels: an integer scale keeps it crisp (D9). */
-.catchShinyBox {
-  display: grid;
-  place-items: center;
-  width: 110px;
-  height: 110px;
-  flex: none;
-}
-.catchShiny {
-  scale: 2;
 }
 .bench {
-  font-size: 11px;
-  color: var(--ink-muted);
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
 }
 .track {
   height: 10px;
@@ -137,8 +131,8 @@
 .fill {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--brand-blue), #7fc9ff);
-  transition: width 400ms ease-out;
+  background: linear-gradient(90deg, var(--brand-blue), color-mix(in srgb, var(--brand-blue) 55%, var(--brand-cream)));
+  transition: width var(--motion-slow) ease-out;
 }
 .xpMeta {
   display: flex;
@@ -146,46 +140,187 @@
   font-size: var(--type-caption);
   color: var(--ink-secondary);
 }
-.evolved {
-  margin: 2px 0 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--type-small);
-  color: var(--ink-primary);
-  border-left: 4px solid var(--accent-action);
-  padding-left: var(--sp-2);
+
+/* What the levels gave, in one wrapping line of pills and chips. */
+.extras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  margin-top: 2px;
+}
+.gains {
+  display: inline-flex;
+  gap: 4px;
+  cursor: help;
+}
+.statPill {
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-positive);
+  color: var(--ink-on-accent);
+  font-size: var(--type-caption);
 }
 .learned {
-  margin: 2px 0 0;
-  font-size: var(--type-small);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.poolNote {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+  text-decoration: underline dotted;
+  cursor: help;
+}
+.ready,
+.unlock {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-caption);
+}
+.ready {
+  background: var(--brand-red-deep);
+  color: var(--brand-cream);
+}
+/* §6.8.2 — what a Bond rank opened. */
+.unlock {
+  background: var(--arch-specialist);
+  color: var(--ink-on-accent);
+  cursor: help;
+}
+/* §6.8.1 — the line's Bond: quieter than the XP, louder on a rank-up. */
+.bond {
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--ink-secondary);
+  cursor: help;
+}
+.rankUp {
   color: var(--ink-primary);
-  border-left: 4px solid var(--accent-positive);
-  padding-left: var(--sp-2);
+}
+
+/* ---- the account's progress ------------------------------------------------------------------------- */
+.progress {
+  list-style: none;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  display: grid;
+  gap: var(--sp-1);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+.note {
+  display: grid;
+  grid-template-columns: auto 1fr 90px auto;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+  cursor: help;
+}
+.noteDone .noteName {
+  font-weight: 700;
+}
+.noteIcon {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-3);
+}
+.noteIcon img {
+  image-rendering: pixelated;
+}
+.noteName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.noteBar {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.noteBar span {
+  display: block;
+  height: 100%;
+  background: var(--accent-action-deep);
+}
+.noteCount {
+  font-weight: 800;
+  text-align: right;
+}
+.noteEarned {
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-size: var(--type-caption);
+}
+
+/* ---- the loot --------------------------------------------------------------------------------------- */
+.loot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.lootChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 3px var(--sp-3) 3px var(--sp-1);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+  font-weight: 700;
+  cursor: help;
+}
+/* A relic is a permanent change to the run: it gets the gold edge, not a coin's. */
+.lootRare {
+  border-color: var(--accent-action-deep);
+  background: var(--brand-cream);
+}
+.dropIcon {
+  flex: none;
+  image-rendering: pixelated;
 }
 .trauma {
-  margin: var(--sp-3) 0 0;
+  margin: 0;
   padding: var(--sp-2) var(--sp-3);
   border-left: 4px solid var(--accent-warning);
   background: var(--surface-2);
   border-radius: var(--radius-sm);
   font-size: var(--type-small);
 }
+
 /* The way on stays on screen however many rows the fight paid: sticky to the bottom of the scrolling page. */
 .continue {
   position: sticky;
   bottom: var(--sp-3);
   z-index: 1;
-  margin-top: var(--sp-5);
+  margin-top: var(--sp-2);
   justify-self: center;
   min-width: 240px;
   border-radius: var(--radius-md);
   padding: var(--sp-3) var(--sp-6);
   background: var(--accent-action);
-  color: var(--ink-primary);
+  color: var(--ink-on-accent);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--type-h3);
-  box-shadow: 0 6px 0 #d9a51d;
+  box-shadow: 0 6px 0 var(--accent-action-deep);
+}
+.continue:hover {
+  transform: translateY(-2px);
 }
 /* A short screen gives the card's air back to its rows. */
 @media (max-height: 760px) {
@@ -194,45 +329,6 @@
   }
   .card {
     padding: var(--sp-4) var(--sp-5);
+    gap: var(--sp-2);
   }
-}
-.continue:hover {
-  transform: translateY(-2px);
-}
-/* §6.7.2 — a move that arrived past the four-slot budget. Visually quieter than `.learned`: it is news,
-   not a reward, and the player has something to do about it. */
-.pooled {
-  margin: 2px 0 0;
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
-  border-left: 4px dashed var(--border-strong);
-  padding-left: var(--sp-2);
-}
-/* §2.7.2 — the supplies strip sits bare in the loot list: its pills are the frame. */
-.supplies {
-  margin-top: var(--sp-2);
-}
-/* §7.5 — the TM drop line. */
-.drop {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  margin: var(--sp-4) 0 0;
-  padding: var(--sp-2) var(--sp-3);
-  border: 2px solid var(--border-strong);
-  background: var(--surface-2);
-  border-radius: var(--radius-md);
-  font-size: var(--type-small);
-}
-
-/* Loot rows after the first sit tighter together: they are one list, not four separate announcements. */
-.drop + .drop {
-  margin-top: var(--sp-2);
-}
-.drop b {
-  color: var(--ink-primary);
-}
-.dropIcon {
-  flex: none;
-  image-rendering: pixelated;
 }

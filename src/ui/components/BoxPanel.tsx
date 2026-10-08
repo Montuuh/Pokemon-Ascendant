@@ -110,7 +110,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
         </span>
         <span className={styles.badges}>
           {species.types.map((t) => (
-            <TypeBadge key={t} type={t} size={12} />
+            <TypeBadge key={t} type={t} size={12} defenderTypes={species.types} />
           ))}
           {/* §4.2.7.1 — a status outlives its fight, so the Box shows who is walking into the next one with it. */}
           {mon.status && (

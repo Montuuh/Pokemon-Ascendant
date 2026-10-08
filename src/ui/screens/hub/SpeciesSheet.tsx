@@ -168,7 +168,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
     return (
       <Tipped key={key} as="li" tip={moveDefTip(m)} className={`${styles.move} ${locked ? styles.moveLocked : ''}`}>
         <span className={`${styles.moveLv} tabular`}>{lv === null ? '—' : `Lv ${lv}`}</span>
-        <TypeBadge type={m.type} size={18} />
+        <TypeBadge type={m.type} size={18} mode="attack" />
         <span className={styles.moveName}>{m.name}</span>
         <span className={`${styles.moveStat} tabular`}>{m.apCost} AP{m.power > 0 ? ` · ${m.power}` : ''}</span>
       </Tipped>

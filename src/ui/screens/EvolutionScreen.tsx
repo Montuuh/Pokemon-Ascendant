@@ -5,10 +5,11 @@ import { getContent } from '@/content/registry';
 import { boxIconUrl, portraitUrl } from '@/content/schemas/species';
 import { previewBranch, type BranchPreview } from '@/sim';
 import { EvolutionCutscene } from '@/ui/components/EvolutionCutscene';
-import { TypeBadge, TypeLabel } from '@/ui/components/TypeBadge';
+import { MoveChip } from '@/ui/components/MoveChip';
+import { TypeBadge } from '@/ui/components/TypeBadge';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { ARCHETYPE_LABEL, EVOLUTION_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
-import { abilityTip, archetypeTip, branchTip, evoKitTip, evoStatTip, evolveTip, moveDefTip } from '@/ui/tips';
+import { abilityTip, archetypeTip, branchTip, evoKitTip, evoStatTip, evolveTip } from '@/ui/tips';
 import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EvolutionScreen.module.css';
 
@@ -32,18 +33,6 @@ export function EvolutionScreen() {
   const pending = useRunStore((s) => s.run?.pendingEvolutions[0]);
   // Keyed by uid so a queue of two evolutions is two mounts, not one component reset from inside an effect.
   return pending ? <EvolutionChoice key={pending.uid} uid={pending.uid} /> : null;
-}
-
-/** A move as a chip, with its card on hover. Inside a path card it takes no tab stop: the card's label reads it out. */
-function MoveChip({ id, active, fresh, struck, inCard }: { id: string; active?: boolean; fresh?: boolean; struck?: boolean; inCard?: boolean }) {
-  const m = getContent().move(id);
-  return (
-    <Tipped as="span" tip={moveDefTip(m)} tabIndex={inCard ? -1 : 0} className={[styles.chip, active ? styles.active : '', struck ? styles.struck : ''].join(' ')} data-move={id}>
-      <TypeLabel type={m.type} size={12} />
-      <span className={styles.chipName}>{m.name}</span>
-      {fresh && <span className={styles.fresh} role="img" aria-label="new" />}
-    </Tipped>
-  );
 }
 
 function EvolutionChoice({ uid }: { uid: string }) {
@@ -130,7 +119,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
           <p className={`${styles.heroName} display`}>{after.name}</p>
           <span className={styles.types}>
             {after.types.map((t) => (
-              <TypeBadge key={t} type={t} size={18} />
+              <TypeBadge key={t} type={t} size={18} defenderTypes={after.types} />
             ))}
           </span>
 

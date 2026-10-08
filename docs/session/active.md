@@ -1,6 +1,6 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-08 · **Version:** v0.9.6 shipped (*The evolution, animated*).
+**Date:** 2026-10-08 · **Version:** v0.9.6 shipped (*Evolution, rewards and types, polished*).
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
 **Sprint goal next:** **v0.9.7** Victory Road (see `docs/roadmap.md`).
@@ -13,7 +13,7 @@ Plateau lobby (`PixelRoom`, `hub/lobby.ts`, `npm run art:hub`); leftover ₽ →
 3 Tokens a level, shelves 1/2/4/6, no Discoveries shelf — `balance/accountCareer.test.ts` (`ACCOUNT_REPORT=1`).
 **v0.9.3** — the arena's beats (§9.9.1): the catch, send-out, recall, faint ghosts (`useCombatFx`, `ArenaFx`); e2e runs
 reduced motion by default, `e2e/animations.spec.ts` turns it on. **v0.9.4** — the catch as four shake checks (§2.6.4.4, `shakeChecks`). **v0.9.5** — every move Gen I (`moves.md`,
-`gen1-moves.json`), kits 2 → 4 → 5 → 5 by slots (`sim/combat/kit.ts`, §6.3.5), `scripts/v095-moves/`; stat tier re-tuned. **v0.9.6** — `EvolutionCutscene`, the Evolution screen reworked.
+`gen1-moves.json`), kits 2 → 4 → 5 → 5 by slots (`sim/combat/kit.ts`, §6.3.5), `scripts/v095-moves/`; stat tier re-tuned. **v0.9.6** — `EvolutionCutscene`, Evolution and Reward screens reworked, `ProgressToasts`, `TypeChart` (§9.4.4–5).
 
 **Findings to act on:** every Gym's ace sits 1–2 levels under the team; Region 2's Gyms lost 2 % of the time; the Rare Candy is worth 8 points
 of Region 3; the breather's 8 % / 30 % unmeasured. UI nits left: locked Wild emblems hard to tell apart in grey;

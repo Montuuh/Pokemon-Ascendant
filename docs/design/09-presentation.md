@@ -311,6 +311,30 @@ AP ● · Poké Dollar ₽ · Pokéball ◓ · Trainer XP ⭐ · Token 🪙 · T
 
 Every one carries a distinct glyph shape, so the row reads in grayscale.
 
+## §9.4.4 Type charts
+
+A type badge explains its matchups on hover, as a chart of the games' own type labels — one row per multiplier, its
+value a coloured pill (v0.9.6). **Attacking and defending never read alike**, because the same ×2 is good news on your
+move and bad news on your Pokémon:
+
+| Where | Reads | Rows | Colours |
+|---|---|---|---|
+| A move's type (a card, the Move Manager, the Dojo) | ⚔ *When it hits* | ×2 · ×½ · ×0 | gold for ×2, a muted pill for ×½ |
+| A Pokémon's types (a portrait, a panel, the Box) | 🛡 *When it is hit*, both types together | ×4 · ×2 · ×½ · ×¼ · ×0 | the reds for ×4 and ×2, the greens for ×½ and ×¼ |
+
+×0 is grey on both. A damaging card's own tooltip carries its type's attacking chart, since hovering the card is how a
+player reaches its type in a fight.
+
+## §9.4.5 Progress after a fight
+
+The reward screen (§3.5 in `ui/screens.md`) says what the fight gave as pills and chips, the words on hover: per
+Pokémon, its XP and, on a level-up, the stats gained (old → new on hover), the moves learned (an outlined chip
+"in the pool" past four), *Ready to evolve*, the Bond and what a Bond rank opened (the hidden ability as its own chip);
+then what the fight moved on the account — each medal and Tier-2 discovery with its bar, *Done* when it completed —
+and the loot as one strip. Progress made **outside** a fight (an evolution, a recruit, a run's end) shows in the
+**progress panel**: a dark note in the bottom-left corner, one at a time for a few seconds, never taking a click, held
+while a fight or its reward screen is up — a fight's own news is its reward screen's (v0.9.6).
+
 ---
 
 # §9.5 Audio

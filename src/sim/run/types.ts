@@ -200,6 +200,11 @@ export interface LevelUp {
   activated: string[];
   /** §6.2.4 — the Pokémon stands at its threshold; the branch is picked on the Evolution screen (§3.6). */
   evolutionReady?: boolean;
+  /** §6.2.3 — what the levels added to each stat (growth × levels), for the reward screen (v0.9.6). Optional: a save
+   *  from before reads as none. */
+  gains?: { hp: number; attack: number; defense: number; speed: number };
+  /** The four stats at the new level (before Trauma), so the gain reads as old → new. */
+  statsAt?: { hp: number; attack: number; defense: number; speed: number };
 }
 
 /** §6.3.3 — one queued Evolution screen: who, from what, and which archetypes are on offer. */

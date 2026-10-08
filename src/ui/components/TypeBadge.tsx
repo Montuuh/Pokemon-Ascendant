@@ -1,6 +1,6 @@
 import type { PokemonType } from '@/sim';
 import { statusGlyph, typeGlyph } from '@/ui/art';
-import { statusTip, typeTip } from '@/ui/tips';
+import { statusTip, typeAttackTip, typeDefenseTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
 import styles from './TypeBadge.module.css';
 
@@ -11,16 +11,19 @@ import styles from './TypeBadge.module.css';
 // as colour-blind-safe as a badge gets. `size` is the label's height; its width follows the sprite.
 //
 // Both badges carry their own tooltip, so every place one appears explains itself without the caller doing
-// anything. `defenderTypes` adds, on a dual-typed Pokémon, the pair's combined answer as a line of its own — the badge
-// itself always speaks for its own type, so a Ground badge never claims Rock's resistances.
+// anything. A move's type reads attacking, a Pokémon's defending (v0.9.6), each as a chart of type labels.
 
 /** The label alone, for callers that already own a tooltip (a move card, a Tip's icon slot). */
 export function TypeLabel({ type, size = 18, className }: { type: PokemonType | string; size?: number; className?: string }) {
   return <img src={typeGlyph(type)} alt={type} height={size} className={`${styles.label} ${className ?? ''}`} draggable={false} />;
 }
 
-export function TypeBadge({ type, size = 18, defenderTypes }: { type: PokemonType; size?: number; defenderTypes?: readonly PokemonType[] }) {
-  const tip = useTip(typeTip(type, defenderTypes));
+/**
+ * `mode` says what the badge is the type *of*: a move's (`attack` — what it hits hard, softly, not at all) or a
+ * Pokémon's (`defense`, the default — what hits it ×4 to ×0, `defenderTypes` being the whole Pokémon's typing).
+ */
+export function TypeBadge({ type, size = 18, defenderTypes, mode = 'defense' }: { type: PokemonType; size?: number; defenderTypes?: readonly PokemonType[]; mode?: 'attack' | 'defense' }) {
+  const tip = useTip(mode === 'attack' ? typeAttackTip(type) : typeDefenseTip(defenderTypes ?? [type]));
   return (
     <span className={styles.badge} aria-label={type} tabIndex={0} {...tip}>
       <TypeLabel type={type} size={size} />

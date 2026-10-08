@@ -1,0 +1,78 @@
+/* §4.1.2 — the type chart inside a tooltip bubble (always the dark bubble, Tooltip.module.css). */
+
+.chart {
+  display: grid;
+  gap: var(--sp-2);
+}
+.row {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  grid-template-areas:
+    'value caption'
+    'value types';
+  column-gap: var(--sp-2);
+  align-items: center;
+}
+.value {
+  grid-area: value;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: calc(14px * var(--text-scale));
+  color: var(--ink-on-accent);
+}
+/* Defending — a hit on you: the reds hurt, the greens shrug it off, grey is nothing. */
+.x4 {
+  background: var(--brand-red-deep);
+  color: var(--brand-cream);
+}
+.x2 {
+  background: var(--accent-negative);
+}
+.half {
+  background: var(--accent-positive);
+}
+.quarter {
+  background: color-mix(in srgb, var(--accent-positive) 65%, var(--ink-on-accent));
+  color: var(--brand-cream);
+}
+.zero {
+  background: var(--ink-muted);
+}
+/* Attacking — your hit: gold lands hard, the muted pill glances off. Never red and green, which mean "on you". */
+.hit {
+  background: var(--accent-action);
+}
+.glance {
+  background: color-mix(in srgb, var(--brand-cream) 30%, transparent);
+  color: var(--brand-cream);
+}
+.mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: calc(12px * var(--text-scale));
+  opacity: 0.85;
+}
+.caption {
+  grid-area: caption;
+  font-size: calc(12px * var(--text-scale));
+  opacity: 0.8;
+}
+.types {
+  grid-area: types;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.glyph {
+  image-rendering: pixelated;
+}
+.empty {
+  margin: 0;
+  font-size: calc(13px * var(--text-scale));
+  opacity: 0.85;
+}

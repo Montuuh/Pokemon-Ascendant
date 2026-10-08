@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE } from '@/sim';
+import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { ARCHETYPE_HINT, ARCHETYPE_LABEL, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
+import { TypeChart } from '@/ui/components/TypeChart';
 
 // Every explanation the game offers on hover, in one file.
 //
@@ -20,25 +21,58 @@ export const typeName = (t: string) => cap(t);
 
 // ── Types and statuses ───────────────────────────────────────────────────────────────────────────────────
 
-/** §4.1.2 — a type badge: its own type's weaknesses, resistances and immunities; on a dual type, also the pair's combined line. */
-export function typeTip(type: PokemonType, defenderTypes?: readonly PokemonType[]): ReactNode {
-  // §4.1.2 — what one typing takes from each attacking type: weak, resists, immune.
-  const relations = (def: readonly PokemonType[]) => {
-    const m = (atk: PokemonType) => typeMultiplier(atk, def);
-    const parts: string[] = [];
-    const weak = POKEMON_TYPES.filter((atk) => m(atk) > 1).map(typeName);
-    const resists = POKEMON_TYPES.filter((atk) => m(atk) > 0 && m(atk) < 1).map(typeName);
-    const immune = POKEMON_TYPES.filter((atk) => m(atk) === 0).map(typeName);
-    if (weak.length) parts.push(`Weak to ${weak.join(', ')}`);
-    if (resists.length) parts.push(`Resists ${resists.join(', ')}`);
-    if (immune.length) parts.push(`Immune to ${immune.join(', ')}`);
-    return parts;
-  };
-  // The badge's own type, alone — a Ground badge never claims Rock's resistances. On a dual-typed Pokémon the pair's
-  // combined answer is a line of its own, named as the pair (it is what the hit will actually do).
-  const pair = defenderTypes && defenderTypes.length > 1 ? defenderTypes : null;
-  const body = pair ? <div><b>As {pair.map(typeName).join(' · ')}:</b> {relations(pair).join('. ')}.</div> : undefined;
-  return <Tip icon={<img src={typeGlyph(type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={`${typeName(type)} type`} meta={relations([type])} body={body} />;
+const glyphIcon = (type: string) => <img src={typeGlyph(type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />;
+
+/**
+ * §4.1.2 — a move's type, attacking: what it hits twice as hard, half as hard, and not at all (v0.9.6). The rows are
+ * the type labels themselves, so the answer reads at a glance.
+ */
+function attackChart(type: PokemonType): ReactNode {
+  const by = (pred: (m: number) => boolean) => POKEMON_TYPES.filter((def) => pred(typeMultiplier(type, [def])));
+  return (
+    <TypeChart
+      mode="attack"
+      rows={[
+        { tone: 'hit', value: '×2', label: 'Super effective against', types: by((m) => m > 1) },
+        { tone: 'glance', value: '×½', label: 'Not very effective against', types: by((m) => m > 0 && m < 1) },
+        { tone: 'zero', value: '×0', label: 'No effect on', types: by((m) => m === 0) },
+      ]}
+      empty="Neutral against every type."
+    />
+  );
+}
+
+export function typeAttackTip(type: PokemonType): ReactNode {
+  return <Tip icon={glyphIcon(type)} title={`${typeName(type)} moves`} meta={['Attacking']} body={attackChart(type)} footer="Every other type takes it ×1. On a Pokémon of two types the multipliers stack." />;
+}
+
+/**
+ * §4.1.2 — a Pokémon's types, defending: what hits it ×4, ×2, ×½, ×¼ and ×0, its types taken together — the badge is
+ * the whole Pokémon, since that is what a hit lands on (v0.9.6).
+ */
+export function typeDefenseTip(types: readonly PokemonType[]): ReactNode {
+  const by = (pred: (m: number) => boolean) => POKEMON_TYPES.filter((atk) => pred(typeMultiplier(atk, types)));
+  return (
+    <Tip
+      icon={<>{types.map((t) => <span key={t}>{glyphIcon(t)}</span>)}</>}
+      title={types.map(typeName).join(' · ')}
+      meta={['Defending']}
+      body={
+        <TypeChart
+          mode="defense"
+          rows={[
+            { tone: 'x4', value: '×4', label: 'Takes four times from', types: by((m) => m >= 4) },
+            { tone: 'x2', value: '×2', label: 'Weak to', types: by((m) => m > 1 && m < 4) },
+            { tone: 'half', value: '×½', label: 'Resists', types: by((m) => m < 1 && m > 0.25) },
+            { tone: 'quarter', value: '×¼', label: 'Resists strongly', types: by((m) => m > 0 && m <= 0.25) },
+            { tone: 'zero', value: '×0', label: 'Immune to', types: by((m) => m === 0) },
+          ]}
+          empty="Takes every type ×1."
+        />
+      }
+      footer={types.length > 1 ? 'Both types counted together: what a hit actually does.' : 'Every other type hits it ×1.'}
+    />
+  );
 }
 
 /** §4.2 — a status condition, what it does, and how long it lasts. */
@@ -82,6 +116,7 @@ export function moveTip(play: CardPlayability): ReactNode {
     footer = `Against this target: ${play.damage.final} damage${eff === 0 ? ' — no effect' : eff > 1 ? ` (super effective ×${eff}${field})` : eff < 1 ? ` (not very effective ×${eff}${field})` : field ? ` (${field.slice(2)})` : ''}${play.damage.isCrit ? ', critical' : ''}.`;
   }
   if (!play.playable && play.reason) footer = <span>Locked — {REJECT_TEXT[play.reason]}</span>;
+  if (move.power > 0) lines.push(attackChart(move.type));
   return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
 }
 
@@ -92,6 +127,7 @@ export function moveDefTip(move: MoveDef): ReactNode {
   const lines: ReactNode[] = [describeMoveDef(move), RANGE_BODY[move.range]];
   const mod = MODIFIER_BODY[move.modifier];
   if (mod) lines.push(mod);
+  if (move.power > 0) lines.push(attackChart(move.type));
   return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} />;
 }
 
@@ -930,4 +966,44 @@ export function evoKitTip(): ReactNode {
 /** The Evolve button: what pressing it settles. */
 export function evolveTip(label: string): ReactNode {
   return <Tip title={label} body="Evolves now with this path's moves and passive." footer="Final for this stage — the next evolution asks again." />;
+}
+
+// ── The reward screen (§3.5, v0.9.6) ────────────────────────────────────────────────────────────────────
+
+/** What a level-up added: each stat from its old value to its new one. */
+export function levelGainTip(name: string, from: number, to: number, gains: Record<string, number>, statsAt?: Record<string, number>): ReactNode {
+  const body = statsAt ? Object.entries(gains).map(([k, v]) => <div key={k}>{STAT_LONG[k] ?? k} {statsAt[k]! - v} → <b>{statsAt[k]}</b></div>) : "Every level adds the line's growth to each stat.";
+  return <Tip title={`${name} — Lv ${from} → ${to}`} body={body} footer="Every level adds the line's growth to each stat. Trauma still takes its share of HP." />;
+}
+
+/** A move that arrived past four: where it is, and how to play it. */
+export function poolTip(moveName: string): ReactNode {
+  return <Tip title={moveName} meta={['In the pool']} body="The active four are full, so it waits in the pool." footer="Swap it in from the Move Manager, on the map." />;
+}
+
+/** §6.8.2 — what a Bond rank opened. */
+export function bondUnlockTip(rank: number, lineName: string): ReactNode {
+  const body: Record<number, string> = {
+    1: `The Shiny Charm: every new ${lineName} may be shiny, and wild ones are three times as likely to be.`,
+    3: `The whole Mastery: ${lineName}'s fifth card, at every stage it reaches.`,
+    4: `${lineName} can start a run from the Hub.`,
+  };
+  return <Tip title={`${BOND_RANK_NAME[rank]} — rank ${rank}`} meta={['Bond']} body={body[rank] ?? ''} />;
+}
+
+/** The money a fight paid, and the wallet it went into. */
+export function rewardMoneyTip(gain: number, total: number): ReactNode {
+  return <Tip title={`+${gain} ₽`} meta={[`${total.toLocaleString('en-GB')} ₽ in the wallet`]} body="Spend it at the Poké Mart, the Dojo and the Centre's Therapy." footer={`When the run ends, every ${MONEY_TO_TOKENS.per} ₽ left becomes a Token, up to ${MONEY_TO_TOKENS.cap}.`} />;
+}
+
+/** A medal's or a discovery's progress line: what it is for. */
+export function progressNoteTip(kind: 'achievement' | 'discovery', id: string, name: string, to: number, goal: number, done: boolean): ReactNode {
+  const body = kind === 'achievement' ? (achievementById(id)?.description ?? '') : (getContent().relic(id).discovery?.text ?? '');
+  const foot = done ? (kind === 'achievement' ? 'Earned. Its Trainer XP is on the account.' : 'Discovered: it can turn up in every run from now on.') : `${goal - to} to go.`;
+  return <Tip title={name} meta={[kind === 'achievement' ? 'Medal' : 'Discovery', `${to}/${goal}`]} body={body} footer={foot} />;
+}
+
+/** A piece of loot: a relic, a held item or a TM, said once on hover rather than in a paragraph. */
+export function lootTip(title: string, kind: string, body: string, footer: string): ReactNode {
+  return <Tip title={title} meta={[kind]} body={body} footer={footer} />;
 }

@@ -113,7 +113,7 @@ export function DojoScreen() {
                       </span>
                     </span>
                     {s.types.map((t) => (
-                      <TypeBadge key={t} type={t} size={12} />
+                      <TypeBadge key={t} type={t} size={12} defenderTypes={s.types} />
                     ))}
                   </button>
                 </li>
@@ -251,7 +251,7 @@ function MoveOffer({ move, known, price, affordable, testId, onBuy }: { move: Mo
         onClick={onBuy}
         data-testid={testId}
       >
-        <TypeBadge type={move.type} size={18} />
+        <TypeBadge type={move.type} size={18} mode="attack" />
         <span className={styles.offerBody}>
           <span className={`${styles.offerName} display`}>{move.name}</span>
           <span className={styles.offerMeta}>

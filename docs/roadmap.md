@@ -1006,9 +1006,10 @@ and cost rebalanced — with a "+" where a line runs out of moves.
 **Not done:** hidden abilities for the lines without one, so they could carry a Mastery too; the Gen I moves no rule
 can express (Transform's copy, Metronome's lottery, Counter's return) stay stand-ins or absent.
 
-### v0.9.6 — The evolution, animated  ✅ 2026-10-08
-The user's patch to v0.9.5: the classic evolution animation before the choice, and the Evolution screen's art and UX —
-hovers, the stats in view, a pretty screen with far less text.
+### v0.9.6 — Evolution, rewards and types, polished  ✅ 2026-10-08
+The user's visual patch to v0.9.5, grown into a version of its own at their suggestion: the classic evolution
+animation and the Evolution screen's art and UX; then the reward after a fight, a panel for achievements and
+discoveries, and type matchups that read at a glance, attacking and defending apart.
 
 **Shipped.** `EvolutionCutscene` (§9.9.1): "What? Bulbasaur is evolving!", the sprite turned to light, the two shapes
 trading faster and faster (never under 100 ms, no full-screen flash), a bloom and the reveal — skippable by a click or a
@@ -1017,7 +1018,12 @@ differ (Eevee by level). The screen (§6.3.3): the evolved Pokémon with its sta
 the kit the path leaves as move chips, one compact card per path whose changes are chips too; pointing at a path
 previews it, and every chip, bar, pill and the Evolve button explain themselves on hover. `previewBranch` returns the
 stats before and after and the resulting kit, computed by `applyBranch` on a copy. A radiogroup with arrow keys; it
-fits 720p.
+fits 720p. **Rewards** (§9.4.5): a level-up names its stat gains (`LevelUp.gains`/`statsAt`), its moves as chips, a Bond
+rank's unlock; the fight's medals and discoveries are listed with their bars (`sim/meta/progress.ts` `progressNotes`);
+the loot is a strip of chips. **The progress panel** (`ProgressToasts`) carries progress made outside a fight, in the
+bottom-left corner, never taking a click. **Type charts** (§9.4.4, `TypeChart`): a move's type reads attacking (×2/×½/×0,
+gold, a sword), a Pokémon's defending (×4 to ×0 for both its types, red and green, a shield); a card's tooltip carries
+its attacking chart.
 
 ### v0.9.7 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the

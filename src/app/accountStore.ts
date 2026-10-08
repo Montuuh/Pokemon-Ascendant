@@ -10,6 +10,8 @@ import {
   metaEventsFor,
   modifierXpMultiplier,
   normalizeDexEntry,
+  progressNotes,
+  type ProgressNote,
   upgradeAccount,
   wear as wearItem,
   type AccountDelta,
@@ -145,6 +147,11 @@ interface AccountStore {
   fresh: AchievementDef[];
   /** §6.8.1 — what the last fight paid each line, for the reward screen. Not persisted: it is the moment's. */
   lastBond: { line: string; points: number; rankUps: number[] }[];
+  /** §8.7 / §8.6.1 — what the last fight moved on the account's medals and discoveries, for the reward screen. */
+  lastProgress: ProgressNote[];
+  /** The same notes from every fold, waiting for the progress panel (v0.9.6). Not persisted: they are the moment's. */
+  toasts: (ProgressNote & { key: number })[];
+  dismissToast: (key: number) => void;
   /** Fold whatever the run just did into the account. Safe to call on every dispatch. */
   observe: (before: RunState | null, after: RunState | null, report?: CombatOutcomeReport) => void;
   /** Fold events directly — used by the dev hook and the tests. `xpMultiplier` defaults to 1. */
@@ -160,12 +167,15 @@ interface AccountStore {
 }
 
 const initial = load();
+let toastSerial = 0;
 
 export const useAccountStore = create<AccountStore>((set, get) => ({
   account: initial.account,
   ledger: initial.ledger,
   fresh: [],
   lastBond: [],
+  lastProgress: [],
+  toasts: [],
 
   observe: (before, after, report) => {
     if (!before || !after) return;
@@ -176,7 +186,9 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
   },
 
   record: (events, xpMultiplier = 1) => {
-    const { state, delta } = applyAccountEvents(get().account, events, accountContextFor(getContent(), xpMultiplier));
+    const before = get().account;
+    const { state, delta } = applyAccountEvents(before, events, accountContextFor(getContent(), xpMultiplier));
+    const notes = progressNotes(before, state, getContent());
     const ledger = addTo(get().ledger, delta);
     persist({ account: state, ledger });
     // §6.8.1 — a fight's Bond is the reward screen's to show; any other fold that paid none leaves it standing.
@@ -188,7 +200,9 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
       account: state,
       ledger,
       fresh: delta.unlockedAchievements.length ? [...get().fresh, ...delta.unlockedAchievements] : get().fresh,
-      ...(fight ? { lastBond: [...byLine.values()] } : {}),
+      ...(fight ? { lastBond: [...byLine.values()], lastProgress: notes } : {}),
+      // A fight's notes are listed on its reward screen; the panel carries what moved anywhere else.
+      toasts: notes.length && !fight ? [...get().toasts, ...notes.map((n) => ({ ...n, key: ++toastSerial }))] : get().toasts,
     });
     return delta;
   },
@@ -215,6 +229,8 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
   },
 
   acknowledge: () => set({ fresh: [] }),
+
+  dismissToast: (key) => set({ toasts: get().toasts.filter((t) => t.key !== key) }),
 
   reset: () => {
     const account = emptyAccount();

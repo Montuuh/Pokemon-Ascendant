@@ -49,9 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.6 — The evolution, animated.** The series' evolution plays out — the sprite in light, the shapes trading, the
-reveal — and the path is chosen on a cleaner screen: stats as bars, the resulting kit as move chips, the details on hover.
-Every move is a real Gen I move, and a line's evolutions rewrite its kit rather than grow it.
+**v0.9.6 — Evolution, rewards and types, polished.** The series' evolution plays out, and the path is chosen on a
+cleaner screen; a fight's reward names the stats, moves and unlocks it gave and the medals it moved; and a type badge
+reads its matchups at a glance — attacking on a move, defending on a Pokémon.
 
 ## Run it locally
 

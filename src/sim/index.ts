@@ -74,3 +74,4 @@ export {
   defaultPerks, runPerksFor, accountContextFor,
 } from './meta/unlocks';
 export { masteryMoveFor, stageTierCap, MASTERY_DECK_CAP } from './meta/mastery';
+export { progressNotes, type ProgressNote } from './meta/progress';

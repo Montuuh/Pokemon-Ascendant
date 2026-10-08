@@ -196,7 +196,7 @@ function Trader({ run, market, act }: CounterProps) {
             >
               <img className={styles.monSprite} src={spriteOf({ speciesId: id }, 'front')} alt="" width={96} height={96} />
               <span className={`${styles.monName} display`}>{s.name}</span>
-              <span className={styles.types}>{s.types.map((t) => <TypeBadge key={t} type={t} size={14} />)}</span>
+              <span className={styles.types}>{s.types.map((t) => <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />)}</span>
             </Tipped>
           );
         })}

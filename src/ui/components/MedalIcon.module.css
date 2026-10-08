@@ -1,0 +1,21 @@
+/* §8.7 — the medal tiers, as fills under dark ink. */
+.medal {
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--ink-on-accent);
+}
+.bronze {
+  background: var(--medal-bronze);
+}
+.silver {
+  background: var(--medal-silver);
+}
+.gold {
+  background: var(--accent-action);
+}
+.platinum {
+  background: var(--medal-platinum);
+}

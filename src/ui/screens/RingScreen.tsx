@@ -132,7 +132,7 @@ export function RingScreen() {
                       <span className={styles.memberName}>{s.name}</span>
                       <b className="tabular">Lv {m.level}</b>
                       <span className={styles.types}>
-                        {s.types.map((t) => <TypeBadge key={t} type={t} size={12} />)}
+                        {s.types.map((t) => <TypeBadge key={t} type={t} size={12} defenderTypes={s.types} />)}
                       </span>
                     </li>
                   );

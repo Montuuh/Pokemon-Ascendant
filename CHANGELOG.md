@@ -13,14 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
-### v0.9.6 — The evolution, animated · 2026-10-08
+### v0.9.6 — Evolution, rewards and types, polished · 2026-10-08
 
-The series' evolution plays out, then a cleaner screen to choose the path.
+The evolution animated, clearer rewards, and type charts at a glance.
 
-- **The animation.** The shapes trade in light, then the reveal.
-- **Stats in view.** Bars with the old value and the new, on hover too.
-- **The kit.** The moves a path leaves, as chips you can inspect.
-- **Less text.** Each path is its changes; the rest is on hover.
+- **Evolution.** The series' animation, then a cleaner path screen.
+- **Rewards.** Stat gains, new moves and Bond unlocks, as chips.
+- **Progress.** Medals and discoveries listed, and a panel for the rest.
+- **Type charts.** Attacking and defending apart, ×4 down to ×0.
 
 ### v0.9.5 — Moves and kits, revamped · 2026-10-08
 

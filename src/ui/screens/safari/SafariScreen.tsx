@@ -162,7 +162,7 @@ function LineupCard({ spot, index, canStalk, onStalk }: { spot: SafariSpot; inde
       <h2 className={`${styles.cardName} display`}>
         {s.name} <span className="tabular">Lv {spot.level}</span>
       </h2>
-      <span className={styles.types}>{s.types.map((t) => <TypeBadge key={t} type={t} size={14} />)}</span>
+      <span className={styles.types}>{s.types.map((t) => <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />)}</span>
       <Traits spot={spot} />
       <Tipped tip={safariAlarmTip(0, tr.temper)} className={styles.temper}>
         <Pips filled={0} total={tr.temper} />
