@@ -263,6 +263,10 @@ Lead mechanic, the AI and relic effects.
 
 **Authoring guidelines**
 
+- **Every move is a Gen I move** (v0.9.5, the user's call): its Gen I name, its modern type where the game has the
+  type (Gust Flying, Karate Chop Fighting, Sand Attack Ground; Bite stays Normal, there is no Dark), and its Gen I
+  accuracy as the rider's chance, since nothing here misses. A line whose type runs out of stronger Gen I moves climbs
+  by **+** — Lick → Lick+ — and its Mastery is a Gen I move's + and ++ (§6.8.4). `catalogs/moves.md` is the list.
 - No mandatory-Ranged rule. Kits are built from species identity and tactical role.
 - Ranged moves sit at ~70–80 % of the damage of a Melee move at the same AP, which the ×0.75 range modifier
   delivers automatically.

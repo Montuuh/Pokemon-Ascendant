@@ -48,7 +48,7 @@ describe('Faint resolution — §3.3.5', () => {
       d.player.team[1]!.hp = 1;
       d.player.team[1]!.status = { kind: 'poison', appliedTurn: 0, turnsLeft: null };
       d.enemies[0]!.hp = 1000;
-      d.enemies[0]!.intent = { kind: 'buff', moveId: 'rock-polish', targetSlot: null, hidden: false };
+      d.enemies[0]!.intent = { kind: 'buff', moveId: 'sharpen', targetSlot: null, hidden: false };
     });
     s = dispatch(s, { type: 'end-turn' });
     expect(s.player.team[1]!.hp).toBe(0);

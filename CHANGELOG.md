@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.5 — Moves and kits, revamped · 2026-10-08
+
+Every move is a Gen I move, and an evolution rewrites the kit, not grows it.
+
+- **Gen I moves.** Real names and types; power and cost re-cut.
+- **Leaner kits.** Four moves by level, five after evolving.
+- **Branches swap.** A final evolution trades cards for its signature.
+- **Mastery.** A Gen I move, then its + and its ++.
+
 ### v0.9.4 — The catch, faithful · 2026-10-08
 
 The catch and the faint, played the way the series plays them.

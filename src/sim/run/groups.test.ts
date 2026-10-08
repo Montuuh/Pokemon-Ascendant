@@ -127,7 +127,7 @@ describe('Groups across the run — §5.6.3', () => {
     const rng = new GameRng(7);
     const n = 4000;
     const tally = { attacker: 0, defender: 0, buffer: 0 };
-    for (let i = 0; i < n; i++) tally[roleFor(['calm-mind', 'pound'], rng, content)] += 1;
+    for (let i = 0; i < n; i++) tally[roleFor(['growth', 'pound'], rng, content)] += 1;
     expect(Math.abs(tally.defender / n - ROLE_SHARE.defender)).toBeLessThan(0.03);
     expect(Math.abs(tally.buffer / n - ROLE_SHARE.buffer)).toBeLessThan(0.03);
     expect(tally.attacker / n).toBeGreaterThan(0.5);

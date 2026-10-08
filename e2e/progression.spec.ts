@@ -141,12 +141,17 @@ test('a TM is greyed out on an incompatible Pokémon, never hidden', async ({ pa
 });
 
 test('a move left in the pool is reported, not lost', async ({ page }) => {
-  await newRun(page, 'bulbasaur');
-  // Five known at level 10 against four slots — §6.7.2's pressure, stated on the row.
+  await newRun(page, 'squirtle');
+  // Four learned by level 10 and a fifth from a TM, against four slots — §6.7.2's pressure, stated on the row.
   await page.evaluate(() => window.__ascendant!.run.levelTo(10));
+  await page.evaluate(() => {
+    const a = window.__ascendant!;
+    a.run.grantTm('tm05-surf');
+    a.run.dispatch({ type: 'use-tm', uid: a.run.state()!.box[0]!.uid, tmId: 'tm05-surf' });
+  });
   await page.evaluate(() => window.__ascendant!.run.dispatch({ type: 'set-moves', uid: window.__ascendant!.run.state()!.box[0]!.uid, moveIds: window.__ascendant!.run.state()!.box[0]!.pool.slice(0, 4) }));
 
-  const handle = page.getByTestId('box-moves-bulbasaur');
+  const handle = page.getByTestId('box-moves-squirtle');
   await expect(handle).toContainText('1');
   await handle.click();
   const manager = page.getByTestId('move-manager');
@@ -161,8 +166,8 @@ test('an Evolution Item evolves early from the Move Manager and hands back to th
   await newRun(page, 'eevee');
   await page.evaluate(() => window.__ascendant!.run.levelTo(9));
   await page.evaluate(() => window.__ascendant!.run.grantStone('fire-stone', 'leaf-stone'));
-  // One move waiting in the pool and one stone it can take now: the badge counts both.
-  await expect(page.getByTestId('box-moves-eevee')).toContainText('2');
+  // One stone it can take now: the badge counts it (its four learned moves all fit the kit).
+  await expect(page.getByTestId('box-moves-eevee')).toContainText('1');
   await page.getByTestId('box-moves-eevee').click();
 
   // A stone this Pokémon cannot use stays on the list, locked, and answers a click with the reason.

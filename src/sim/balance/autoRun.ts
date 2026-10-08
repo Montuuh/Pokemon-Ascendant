@@ -282,7 +282,7 @@ function chooseBranch(mon: PartyMon, branchIds: readonly string[], content: Comb
   const value = (id: string): number => {
     const clone: PartyMon = { ...mon, pool: [...mon.pool], moveIds: [...mon.moveIds] };
     applyBranch(clone, id, content);
-    const kit = autoPickMoves(clone.pool, content).map((m) => content.move(m));
+    const kit = autoPickMoves(clone.pool, content, 4, content.species(clone.speciesId).types).map((m) => content.move(m));
     let score = 0;
     for (const move of kit) {
       score += move.power > 0 ? move.power * (move.range === 'ranged' ? 0.75 : 1) : 22;
@@ -368,7 +368,7 @@ function visitDojo(get: () => RunState, content: CombatCtx['content'], policy: R
     if (!best) break;
     step({ type: 'teach-move', uid: best.mon.uid, moveId: best.moveId });
     const after = get().box.find((m) => m.uid === best.mon.uid)!;
-    if (after.pool.length > 4) step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, content) });
+    if (after.pool.length > 4) step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, content, 4, content.species(after.speciesId).types) });
   }
   step({ type: 'leave-dojo' });
 }
@@ -447,7 +447,7 @@ function applyStones(get: () => RunState, content: CombatCtx['content'], step: (
       evolved += 1;
     }
     const after = get().box.find((m) => m.uid === pair!.uid);
-    if (after && after.pool.length > 4) step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, content) });
+    if (after && after.pool.length > 4) step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, content, 4, content.species(after.speciesId).types) });
   }
   return evolved;
 }
@@ -566,7 +566,7 @@ export function stalkSafari(get: () => RunState, content: CombatCtx['content'], 
         const mon = run.box.find((m) => m.uid === pending.uid)!;
         step({ type: 'choose-branch', uid: pending.uid, branchId: chooseBranch(mon, pending.branchIds, content) });
         const after = get().box.find((m) => m.uid === pending.uid)!;
-        if (after.pool.length > 4) step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, content) });
+        if (after.pool.length > 4) step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, content, 4, content.species(after.speciesId).types) });
       }
     }
     const result = get().city!.safari!.lineup[i]!.result;
@@ -787,7 +787,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
       const after = run.box.find((m) => m.uid === pending.uid)!;
       // A Gym win can evolve something and end the run in the same breath; there is nothing left to sculpt.
       if (run.outcome === 'in-progress' && after.pool.length > 4) {
-        step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, ctx.content) });
+        step({ type: 'set-moves', uid: after.uid, moveIds: autoPickMoves(after.pool, ctx.content, 4, ctx.content.species(after.speciesId).types) });
       }
     }
 
@@ -806,7 +806,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
     if (run.outcome === 'in-progress') {
       for (const mon of run.box) {
         if (mon.pool.length <= 4) continue;
-        const want = autoPickMoves(mon.pool, ctx.content);
+        const want = autoPickMoves(mon.pool, ctx.content, 4, ctx.content.species(mon.speciesId).types);
         if (want.join() !== mon.moveIds.join()) step({ type: 'set-moves', uid: mon.uid, moveIds: want });
       }
     }
@@ -828,7 +828,7 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
       const taker = run.box.find((m) => def.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(def.move));
       if (taker) {
         step({ type: 'use-tm', uid: taker.uid, tmId: tm });
-        step({ type: 'set-moves', uid: taker.uid, moveIds: autoPickMoves(taker.pool.concat(def.move), ctx.content) });
+        step({ type: 'set-moves', uid: taker.uid, moveIds: autoPickMoves(taker.pool.concat(def.move), ctx.content, 4, ctx.content.species(taker.speciesId).types) });
       }
     }
   }

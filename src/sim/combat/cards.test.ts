@@ -74,17 +74,17 @@ describe('Card play — §3.2.4 / §3.3.1 Melee-Ranged', () => {
   });
 
   it('Play_DrawEffect_DrawsExtraCards', () => {
-    let s = start(scenario({ team: [{ species: 'pidgeotto', level: 16, moves: ['tailwind', 'gust', 'quick-attack', 'roost'] }, ...STARTERS.slice(0, 2)], enemies: [PIDGEY] }));
-    s = withHand(s, ['tailwind']);
+    let s = start(scenario({ team: [{ species: 'pidgeotto', level: 16, moves: ['whirlwind', 'gust', 'quick-attack', 'agility'] }, ...STARTERS.slice(0, 2)], enemies: [PIDGEY] }));
+    s = withHand(s, ['whirlwind']);
     const before = s.player.hand.length;
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'tailwind').id });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'whirlwind').id });
     expect(s.player.hand.length).toBe(before - 1 + 1);
   });
 
   it('Play_HealMove_CappedAtMaxHp', () => {
-    let s = start(scenario({ team: [{ species: 'pidgey', level: 10, hpPercent: 90, moves: ['roost', 'gust', 'tackle', 'sand-attack'] }], enemies: [PIDGEY] }));
-    s = withHand(s, ['roost']);
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'roost').id });
+    let s = start(scenario({ team: [{ species: 'pidgey', level: 10, hpPercent: 90, moves: ['recover', 'gust', 'tackle', 'sand-attack'] }], enemies: [PIDGEY] }));
+    s = withHand(s, ['recover']);
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'recover').id });
     expect(s.player.team[0]!.hp).toBe(s.player.team[0]!.maxHp);
   });
 
@@ -97,11 +97,11 @@ describe('Card play — §3.2.4 / §3.3.1 Melee-Ranged', () => {
   });
 
   it('Play_ImmuneType_DealsZero', () => {
-    // Geodude's Magnitude (ground) into Pidgey (flying) — ×0.
-    let s = start(scenario({ team: [{ species: 'geodude', level: 10 }], enemies: [PIDGEY] }));
-    s = withHand(s, ['magnitude']);
+    // Geodude's Earthquake (ground) into Pidgey (flying) — ×0.
+    let s = start(scenario({ team: [{ species: 'geodude', level: 10, moves: ['earthquake', 'tackle'] }], enemies: [PIDGEY] }));
+    s = withHand(s, ['earthquake']);
     const hp = s.enemies[0]!.hp;
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'magnitude').id });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'earthquake').id });
     expect(s.enemies[0]!.hp).toBe(hp);
   });
 

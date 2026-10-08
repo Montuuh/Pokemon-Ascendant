@@ -133,7 +133,7 @@ describe('The group AI — §5.6', () => {
     let s = startFixture('group-hiker-healer');
     s = tweak(s, (d) => { d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.3); });
     const healer = s.enemies[1]!;
-    const move = ctx.content.move('moonlight');
+    const move = ctx.content.move('recover');
     const intent = classifyMove(s, healer, move, ctx)!;
     expect(intent.kind).toBe('stall');
     expect(intent.targetEnemyUid).toBe(s.enemies[0]!.uid);
@@ -150,7 +150,7 @@ describe('The group AI — §5.6', () => {
   it('Buffer_RaisesTheLead_NotItself', () => {
     const s = startFixture('group-elite-buffer');
     const clefairy = s.enemies[1]!;
-    const intent = classifyMove(s, clefairy, ctx.content.move('calm-mind'), ctx)!;
+    const intent = classifyMove(s, clefairy, ctx.content.move('growth'), ctx)!;
     const forced = tweak(s, (d) => { d.enemies[1]!.intent = { ...intent }; d.enemies[0]!.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false }; });
     const after = dispatch(forced, { type: 'end-turn' });
     expect(after.enemies.find((e) => e.uid === 'e0')!.stages.attack).toBeGreaterThan(0);
@@ -192,7 +192,8 @@ describe('The honest intent — §9.2.5', () => {
 
   it('PredictIntentDamage_ReadsTheForecast_NotTheBareFormula', () => {
     // A Barrier-style flat reduction lives after the formula; the old predictor left it out.
-    const s = startFixture('wild-basic');
+    // The Pidgey is made to open with Gust: the question is the number, not which card it drew.
+    const s = tweak(startFixture('wild-basic'), (d) => { d.enemies[0]!.intent = { kind: 'attack', moveId: 'gust', targetSlot: 'lead', hidden: false }; });
     const e = s.enemies[0]!;
     const f = forecastTurn(s, ctx);
     const lead = s.player.team[s.player.leadIndex]!;

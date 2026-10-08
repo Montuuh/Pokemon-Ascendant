@@ -165,7 +165,7 @@ describe("The v0.7.5 modifiers — §2.11.3", () => {
 
   it('MassMobilization_AStepForwardDrawsACard', () => {
     const step = (modifier?: string) => {
-      let s = start(scenario({ team: [STARTERS[1]!, { species: 'charmeleon', level: 16, moves: ['fire-fang', 'ember'] }], enemies: [PIDGEY], ...(modifier ? { regionModifier: modifier } : {}) }));
+      let s = start(scenario({ team: [STARTERS[1]!, { species: 'charmeleon', level: 16, moves: ['quick-attack', 'ember'] }], enemies: [PIDGEY], ...(modifier ? { regionModifier: modifier } : {}) }));
       const card = [...s.player.hand, ...s.player.deck].find((c) => combatContent.move(c.moveId).modifier === 'step-forward');
       if (!card) return null;
       s = tweak(s, (d) => {

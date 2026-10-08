@@ -1,6 +1,6 @@
 import type { ContentRegistry, EvolutionItemUse } from '../content/defs';
 import type { EnemyTier } from '../content/defs';
-import { knownMoves } from '../combat/stats';
+import { slotIndex, upgradeParents } from '../combat/kit';
 import type { LevelUp, PartyMon } from './types';
 
 // §6.2 — XP, levels and what a level-up gives you. Numbers are the ProgressionConfig values from
@@ -78,50 +78,7 @@ export function learnMove(mon: PartyMon, moveId: string): boolean {
   return true;
 }
 
-/**
- * §6.7.2 — the Move Manager's "Auto" button, and the fallback for a player who never opens it.
- *
- * Two kit rules from §6.3.6 are enforced here, and both were learned the hard way from the whole-run harness:
- *
- *  1. **Two ways to deal damage.** "The four most recently learned" alone produced kits with one damaging
- *     card, or none — Oddish learns Absorb at 1 and Acid at 7, so by level 10 its only card that hurts a Rock
- *     was gone.
- *  2. **At least one Ranged card** (§6.3.6.5), whenever the pool has one. A four-Melee kit is a dead hand
- *     every turn that Pokémon is benched. Evolution branches made this reachable: a Vanguard Charmeleon's
- *     pool is mostly Melee, and picking purely by power dropped Ember — the only card it could play from the
- *     bench — which cost the Charmander line two thirds of its win rate before the harness caught it.
- *
- * Otherwise: keep the two strongest attacks, fill with the newest of the rest, and return them in learn order
- * so the kit still reads as a history.
- */
-export function autoPickMoves(pool: readonly string[], content: ContentRegistry, cap = 4): string[] {
-  if (pool.length <= cap) return [...pool];
-  const power = (id: string) => content.move(id).power ?? 0;
-  const ranged = (id: string) => content.move(id).range === 'ranged';
-
-  const attacks = pool.filter((m) => power(m) > 0);
-  const keep = [...attacks].sort((a, b) => power(b) - power(a)).slice(0, Math.min(2, attacks.length));
-  const rest = pool.filter((m) => !keep.includes(m));
-  const picked = new Set([...keep, ...rest.slice(rest.length - (cap - keep.length))]);
-
-  // §6.3.6.5 — buy a Ranged card with the least useful slot we hold: a zero-power card first, then the
-  // weakest attack, and never the last attack we have.
-  if (!Array.from(picked).some(ranged)) {
-    const candidate = pool.filter(ranged).sort((a, b) => power(b) - power(a))[0];
-    if (candidate) {
-      const held = Array.from(picked);
-      const attacksHeld = held.filter((m) => power(m) > 0);
-      const drop =
-        held.filter((m) => power(m) === 0).sort((a, b) => held.indexOf(a) - held.indexOf(b))[0] ??
-        (attacksHeld.length > 1 ? [...attacksHeld].sort((a, b) => power(a) - power(b))[0] : undefined);
-      if (drop) {
-        picked.delete(drop);
-        picked.add(candidate);
-      }
-    }
-  }
-  return pool.filter((m) => picked.has(m));
-}
+export { autoPickMoves } from '../combat/kit';
 
 /**
  * Apply XP to one Pokémon and level it up as far as the XP goes.
@@ -144,7 +101,9 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
 
   const learned: string[] = [];
   const activated: string[] = [];
-  for (const id of knownMoves(content, mon.speciesId, mon.level)) {
+  // §6.9 — only what the new levels teach: a move an evolution has since rewritten is not learned again.
+  const reached = content.lineLearnset(mon.speciesId).filter((l) => l.level > from && l.level <= mon.level).map((l) => l.move);
+  for (const id of reached) {
     if (!learnMove(mon, id)) continue;
     learned.push(id);
     if (mon.moveIds.length < 4) {
@@ -199,9 +158,13 @@ export function previewBranch(mon: PartyMon, branchId: string, content: ContentR
 
   const upgrades: BranchPreview['upgrades'] = [];
   const adds = [...branch.adds];
+  const parents = upgradeParents(content, mon.speciesId);
   for (const u of branch.upgrades) {
-    if (mon.pool.includes(u.from)) upgrades.push({ from: u.from, to: u.to, inKit: mon.moveIds.includes(u.from) });
-    else if (!mon.pool.includes(u.to)) adds.push(u.to);
+    // A slot is named by the move that first held it; it shows as whatever that slot holds now.
+    const i = slotIndex(mon.pool, u.from, parents);
+    const held = i >= 0 ? mon.pool[i]! : null;
+    if (held && held !== u.to) upgrades.push({ from: held, to: u.to, inKit: mon.moveIds.includes(held) });
+    else if (!held && !mon.pool.includes(u.to)) adds.push(u.to);
   }
 
   const granted = branch.abilityId ?? after.availableAbilities[0] ?? null;
@@ -221,20 +184,23 @@ export function previewBranch(mon: PartyMon, branchId: string, content: ContentR
 }
 
 /**
- * §6.3.5 — apply one branch's payload. Purely additive: an upgrade replaces its pool entry **in place** (and
- * takes the same slot in the active 4 if it had one, §6.7.3), an addition appends, and nothing is ever
- * removed. An upgrade whose `from` the Pokémon never learned simply arrives as an addition.
+ * §6.3.5 — apply one branch's payload. An upgrade or a swap replaces its slot **in place** (and takes the same place
+ * in the active 4 if it had one, §6.7.3); an addition appends. A slot is named by the move that first held it, so a
+ * final evolution's swap lands on whatever the first evolution made of it. One whose slot the Pokémon never
+ * learned arrives as an addition.
  */
 export function applyBranch(mon: PartyMon, branchId: string, content: ContentRegistry): void {
   const branch = content.branch(branchId);
   mon.speciesId = branch.to;
   mon.archetype = branch.archetype;
 
+  const parents = upgradeParents(content, mon.speciesId);
   for (const u of branch.upgrades) {
-    const inPool = mon.pool.indexOf(u.from);
-    if (inPool >= 0) mon.pool[inPool] = u.to;
+    const inPool = slotIndex(mon.pool, u.from, parents);
+    const held = inPool >= 0 ? mon.pool[inPool]! : null;
+    if (held) mon.pool[inPool] = u.to;
     else if (!mon.pool.includes(u.to)) mon.pool.push(u.to);
-    const inKit = mon.moveIds.indexOf(u.from);
+    const inKit = held ? mon.moveIds.indexOf(held) : -1;
     if (inKit >= 0) mon.moveIds[inKit] = u.to;
   }
   for (const add of branch.adds) {

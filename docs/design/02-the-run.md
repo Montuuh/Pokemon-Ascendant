@@ -139,8 +139,9 @@ Enemy levels rise too, of course — but the escalation the player *notices* is 
 number. Region aesthetics and rosters: §2.13.
 
 **Region 2's accent, as built.** From Region 2 on, every enemy carries its type's status move on top of its own
-kit — Will-O-Wisp for Fire, Thunder Wave for Electric, Poison Powder, Stun Spore, Powder Spread (Bug), Hypnosis,
-Confuse Ray; Supersonic for a type the games gave none — unless its kit already has one. It arrives as a
+kit — Thunder Wave for Electric, Poison Powder, Stun Spore, Sleep Powder for Bug (its lines' powders), Hypnosis,
+Confuse Ray; Glare, a Paralysis that carries, for a type Gen I gave none, Fire among them since v0.9.5 — unless its kit
+already has one. It arrives as a
 `Status` intent (§5.2), telegraphed like any other and never re-applied to a Pokémon that already has one
 (§5.3). Because every status now outlives its fight (§4.2.7.1), this is attrition a route has to be planned
 around — the nurse, the cures in the bag, an immune Lead — not a nuisance inside one fight. Region 3 inherits it.

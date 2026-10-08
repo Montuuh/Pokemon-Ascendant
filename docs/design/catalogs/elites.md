@@ -51,10 +51,10 @@ design, because the Elite Trainer already owns the "pick 1 of 3" beat.
 
 | id | Region | Species | Level | Profile |
 |---|---|---|---|---|
-| `elite-wild-snorlax` | R1 | `snorlax` | 14–16 | Boss HP ≈ 2× an Elite Pokémon. P1 stall (`rest-s` heals 50 % max HP + self-Sleep 2t, P1 only; `snore`; `amnesia`) → P2 offence (`body-slam` 30 % Paralysis, `crunch`) and +15 pp catch threshold. Thick Fat + Immunity. Catch → recruit Snorlax. |
-| `elite-wild-marowak-spirit` | R1 | `marowak-spirit` | 14–16 | `curse-ms` (user loses 25 % max HP → 3-turn DoT), `confuse-ray`, `shadow-bone`, `lick`. Levitate + Cursed Body. **Catch → recruit a living Ground `marowak`** carrying `thick-club`. |
+| `elite-wild-snorlax` | R1 | `snorlax` | 14–16 | Boss HP ≈ 2× an Elite Pokémon. P1 stall (`rest` heals every HP + self-Sleep, P1 only; `amnesia`) → P2 offence (`body-slam` 30 % Paralysis, `headbutt`) and +15 pp catch threshold. Thick Fat + Immunity. Catch → recruit Snorlax. |
+| `elite-wild-marowak-spirit` | R1 | `marowak-spirit` | 14–16 | Curse (user loses 25 % max HP → 3-turn DoT — a Gen II move, to be rebuilt on Gen I cards when the boss is, v0.9.5), `confuse-ray`, Shadow Bone, `lick`. Levitate + Cursed Body. **Catch → recruit a living Ground `marowak`** carrying `thick-club`. |
 | `elite-wild-lapras` | R2 | `lapras` | 24–26 | ✅ v0.7.3. P1 control (`sing`, `mist`, `ice-shard`) → P2 `ice-beam` + `surf`. Catch → recruit Lapras. Its learnset only reaches Ice Beam at 30, so the fight carries the script as its kit: `sing` `ice-shard` `ice-beam` `surf` |
-| `elite-wild-aerodactyl` | R3 | `aerodactyl` | 34–36 | ✅ v0.7.4 (the script is its kit; stage sky-pillar). P1 `agility`/`ancient-power` setup → P2 `sky-drop` + `rock-slide-m`. Catch → recruit Aerodactyl. |
+| `elite-wild-aerodactyl` | R3 | `aerodactyl` | 34–36 | ✅ v0.7.4 (the script is its kit; stage sky-pillar). P1 `agility`/`bite` setup → P2 `fly` + `rock-slide` (Gen I since v0.9.5). Catch → recruit Aerodactyl. |
 
 One boss-wild per Region is drawn per encounter (never both). No mid-fight evolution — it is a wild, not a
 trainer ace. Two phases; Phase 2 raises the catch threshold rather than the defence; everything telegraphed.

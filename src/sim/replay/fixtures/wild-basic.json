@@ -4,7 +4,7 @@
   "actions": [
     {
       "type": "play-card",
-      "cardId": "c6"
+      "cardId": "c9"
     },
     {
       "type": "swap",
@@ -12,34 +12,19 @@
     },
     {
       "type": "play-card",
-      "cardId": "c8"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c9"
+      "cardId": "c7"
     },
     {
       "type": "play-card",
       "cardId": "c3"
     },
     {
-      "type": "end-turn"
+      "type": "play-card",
+      "cardId": "c8"
     },
     {
       "type": "play-card",
-      "cardId": "c10"
-    },
-    {
-      "type": "swap",
-      "benchIndex": 0
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c1"
+      "cardId": "c5"
     },
     {
       "type": "end-turn"
@@ -53,22 +38,41 @@
       "cardId": "c6"
     },
     {
+      "type": "play-card",
+      "cardId": "c1"
+    },
+    {
       "type": "end-turn"
     },
     {
       "type": "play-card",
-      "cardId": "c10"
+      "cardId": "c9"
     },
     {
       "type": "swap",
-      "benchIndex": 2
+      "benchIndex": 0
+    },
+    {
+      "type": "play-card",
+      "cardId": "c0"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c5"
     },
     {
       "type": "play-card",
       "cardId": "c8"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c2"
     }
   ],
-  "fingerprint": "t4 victory lead=2 ap=0 team=[charmander:46/53,squirtle:62/62,bulbasaur:53/63] enemies=[pidgey:0/52] events=59 rng=1179029878",
+  "fingerprint": "t4 victory lead=0 ap=2 team=[charmander:50/53,squirtle:62/62,bulbasaur:56/63] enemies=[pidgey:0/52] events=60 rng=663891820",
   "turns": 4,
   "outcome": "victory"
 }

@@ -97,7 +97,7 @@ describe('The Region 2 Elites — §2.8', () => {
     s = apply(apply(s, { type: 'enter-node', nodeId: 'ew' }), { type: 'begin-combat' });
     const e = s.pendingScenario!.enemies[0]!;
     expect(e.tier).toBe('boss');
-    expect(e.moves).toEqual(['sing', 'ice-shard', 'ice-beam', 'surf']);
+    expect(e.moves).toEqual(['sing', 'body-slam', 'ice-beam', 'surf']);
   });
 });
 

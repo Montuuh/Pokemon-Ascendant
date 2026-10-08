@@ -94,7 +94,7 @@ export function newPartyMon(speciesId: string, level: number, content: ContentRe
     hp: 1,
     traumaStacks: 0,
     pool: [...pool],
-    moveIds: autoPickMoves(pool, content),
+    moveIds: autoPickMoves(pool, content, 4, species.types),
     abilityId: species.stage === 'basic' ? null : (species.availableAbilities[0] ?? null),
     archetype: species.archetype ?? null,
     status: null,

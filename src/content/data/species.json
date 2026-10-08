@@ -35,12 +35,8 @@
           "move": "vine-whip"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "leech-seed"
-        },
-        {
-          "level": 10,
-          "move": "sleep-powder"
         }
       ],
       "availableAbilities": [
@@ -54,8 +50,6 @@
       "rarity": "common",
       "evolveLevel": 12,
       "tutorMoves": [
-        "headbutt",
-        "poison-powder",
         "harden"
       ],
       "branches": [
@@ -69,9 +63,15 @@
             {
               "from": "tackle",
               "to": "headbutt"
+            },
+            {
+              "from": "vine-whip",
+              "to": "razor-leaf"
             }
           ],
-          "adds": []
+          "adds": [
+            "take-down"
+          ]
         },
         {
           "id": "ivysaur-specialist",
@@ -82,10 +82,16 @@
           "upgrades": [
             {
               "from": "vine-whip",
-              "to": "vine-lash"
+              "to": "razor-leaf"
+            },
+            {
+              "from": "growl",
+              "to": "poison-powder"
             }
           ],
-          "adds": []
+          "adds": [
+            "sleep-powder"
+          ]
         },
         {
           "id": "ivysaur-support",
@@ -95,18 +101,22 @@
           "to": "ivysaur",
           "upgrades": [
             {
+              "from": "leech-seed",
+              "to": "mega-drain"
+            },
+            {
               "from": "growl",
-              "to": "sweet-scent"
+              "to": "growth"
             }
           ],
-          "adds": [],
+          "adds": [
+            "stun-spore"
+          ],
           "abilityId": "healer"
         }
       ],
       "hiddenAbility": "healer",
       "eggMoves": [
-        "petal-dance",
-        "ingrain",
         "amnesia"
       ]
     },
@@ -131,24 +141,7 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "razor-leaf"
-        },
-        {
-          "level": 16,
-          "move": "mega-drain"
-        },
-        {
-          "level": 20,
-          "move": "sweet-scent"
-        },
-        {
-          "level": 23,
-          "move": "vine-lash"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "overgrow",
         "chlorophyll",
@@ -161,8 +154,7 @@
       "evolveLevel": 26,
       "tutorMoves": [
         "sludge",
-        "moonlight",
-        "body-slam"
+        "recover"
       ],
       "branches": [
         {
@@ -173,13 +165,15 @@
           "to": "venusaur",
           "upgrades": [
             {
-              "from": "headbutt",
+              "from": "tackle",
               "to": "body-slam"
+            },
+            {
+              "from": "vine-whip",
+              "to": "petal-dance"
             }
           ],
-          "adds": [
-            "petal-blizzard"
-          ],
+          "adds": [],
           "abilityId": "tough-claws"
         },
         {
@@ -190,13 +184,15 @@
           "to": "venusaur",
           "upgrades": [
             {
-              "from": "vine-lash",
-              "to": "power-whip"
+              "from": "vine-whip",
+              "to": "razor-leaf-plus"
+            },
+            {
+              "from": "growl",
+              "to": "toxic"
             }
           ],
-          "adds": [
-            "solar-beam"
-          ]
+          "adds": []
         },
         {
           "id": "venusaur-support",
@@ -207,12 +203,14 @@
           "upgrades": [
             {
               "from": "leech-seed",
-              "to": "giga-drain"
+              "to": "mega-drain-plus"
+            },
+            {
+              "from": "growl",
+              "to": "growth-plus"
             }
           ],
-          "adds": [
-            "synthesis"
-          ],
+          "adds": [],
           "abilityId": "healer"
         }
       ]
@@ -238,20 +236,7 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "power-whip"
-        },
-        {
-          "level": 32,
-          "move": "petal-blizzard"
-        },
-        {
-          "level": 38,
-          "move": "solar-beam"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "overgrow",
         "chlorophyll",
@@ -261,9 +246,7 @@
       "evolvesTo": [],
       "rarity": "rare",
       "tutorMoves": [
-        "earthquake",
-        "body-slam",
-        "giga-drain"
+        "earthquake"
       ],
       "branches": []
     },
@@ -301,12 +284,8 @@
           "move": "ember"
         },
         {
-          "level": 7,
-          "move": "smokescreen"
-        },
-        {
-          "level": 10,
-          "move": "fire-fang"
+          "level": 8,
+          "move": "leer"
         }
       ],
       "availableAbilities": [
@@ -321,8 +300,7 @@
       "evolveLevel": 12,
       "tutorMoves": [
         "low-kick",
-        "bite",
-        "swift"
+        "bite"
       ],
       "branches": [
         {
@@ -335,9 +313,15 @@
             {
               "from": "scratch",
               "to": "slash"
+            },
+            {
+              "from": "growl",
+              "to": "rage"
             }
           ],
-          "adds": [],
+          "adds": [
+            "fire-punch"
+          ],
           "abilityId": "tough-claws"
         },
         {
@@ -349,10 +333,16 @@
           "upgrades": [
             {
               "from": "ember",
-              "to": "flame-wheel-r"
+              "to": "ember-plus"
+            },
+            {
+              "from": "leer",
+              "to": "smokescreen"
             }
           ],
-          "adds": [],
+          "adds": [
+            "fire-spin"
+          ],
           "abilityId": "snipe"
         },
         {
@@ -363,18 +353,24 @@
           "to": "charmeleon",
           "upgrades": [
             {
-              "from": "smokescreen",
-              "to": "will-o-wisp"
+              "from": "growl",
+              "to": "smokescreen"
+            },
+            {
+              "from": "leer",
+              "to": "focus-energy"
             }
           ],
-          "adds": []
+          "adds": [
+            "rest"
+          ]
         }
       ],
       "hiddenAbility": "snipe",
       "eggMoves": [
-        "dragon-pulse",
-        "outrage",
-        "ancient-power"
+        "dragon-rage",
+        "thrash",
+        "rock-slide"
       ]
     },
     {
@@ -397,24 +393,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "slash"
-        },
-        {
-          "level": 16,
-          "move": "flame-wheel"
-        },
-        {
-          "level": 20,
-          "move": "dragon-claw"
-        },
-        {
-          "level": 23,
-          "move": "fire-spin"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "blaze",
         "tough-claws",
@@ -426,9 +405,8 @@
       "rarity": "common",
       "evolveLevel": 26,
       "tutorMoves": [
-        "brick-break",
-        "crunch",
-        "swift"
+        "karate-chop",
+        "hyper-fang"
       ],
       "branches": [
         {
@@ -439,13 +417,15 @@
           "to": "charizard",
           "upgrades": [
             {
-              "from": "dragon-claw",
-              "to": "dragon-claw-plus"
+              "from": "scratch",
+              "to": "slash-plus"
+            },
+            {
+              "from": "growl",
+              "to": "wing-attack"
             }
           ],
-          "adds": [
-            "flare-blitz"
-          ],
+          "adds": [],
           "abilityId": "tough-claws"
         },
         {
@@ -456,13 +436,15 @@
           "to": "charizard",
           "upgrades": [
             {
-              "from": "flamethrower",
-              "to": "fire-blast"
+              "from": "ember",
+              "to": "flamethrower"
+            },
+            {
+              "from": "scratch",
+              "to": "swift"
             }
           ],
-          "adds": [
-            "heat-wave"
-          ],
+          "adds": [],
           "abilityId": "snipe"
         },
         {
@@ -473,13 +455,15 @@
           "to": "charizard",
           "upgrades": [
             {
-              "from": "will-o-wisp",
-              "to": "will-o-wisp-plus"
+              "from": "ember",
+              "to": "fire-spin-plus"
+            },
+            {
+              "from": "leer",
+              "to": "agility"
             }
           ],
-          "adds": [
-            "roost"
-          ]
+          "adds": []
         }
       ]
     },
@@ -504,20 +488,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "wing-attack"
-        },
-        {
-          "level": 31,
-          "move": "flamethrower"
-        },
-        {
-          "level": 36,
-          "move": "heat-wave"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "blaze",
         "tough-claws",
@@ -526,9 +497,7 @@
       "evolvesTo": [],
       "rarity": "rare",
       "tutorMoves": [
-        "dragon-claw-plus",
-        "air-slash",
-        "crunch"
+        "hyper-fang"
       ],
       "branches": []
     },
@@ -563,15 +532,11 @@
         },
         {
           "level": 4,
-          "move": "water-gun"
-        },
-        {
-          "level": 7,
-          "move": "withdraw"
-        },
-        {
-          "level": 10,
           "move": "bubble"
+        },
+        {
+          "level": 8,
+          "move": "water-gun"
         }
       ],
       "availableAbilities": [
@@ -602,10 +567,12 @@
             },
             {
               "from": "tail-whip",
-              "to": "aqua-jet"
+              "to": "withdraw"
             }
           ],
-          "adds": [],
+          "adds": [
+            "bite"
+          ],
           "abilityId": "shell-armor"
         },
         {
@@ -617,14 +584,16 @@
           "upgrades": [
             {
               "from": "water-gun",
-              "to": "water-pulse"
+              "to": "bubble-beam"
             },
             {
-              "from": "tail-whip",
-              "to": "charm"
+              "from": "bubble",
+              "to": "bubble-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "surf"
+          ]
         },
         {
           "id": "wartortle-support",
@@ -634,15 +603,17 @@
           "to": "wartortle",
           "upgrades": [
             {
-              "from": "withdraw",
-              "to": "iron-defense"
+              "from": "tail-whip",
+              "to": "withdraw"
             },
             {
-              "from": "tail-whip",
-              "to": "aqua-ring"
+              "from": "bubble",
+              "to": "bubble-plus"
             }
           ],
-          "adds": [],
+          "adds": [
+            "rest"
+          ],
           "abilityId": "shell-armor"
         }
       ],
@@ -650,7 +621,7 @@
       "eggMoves": [
         "haze",
         "mist",
-        "flail"
+        "rage"
       ]
     },
     {
@@ -673,24 +644,7 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "bite"
-        },
-        {
-          "level": 16,
-          "move": "water-pulse"
-        },
-        {
-          "level": 20,
-          "move": "rapid-spin"
-        },
-        {
-          "level": 23,
-          "move": "aqua-jet"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "torrent",
         "shell-armor"
@@ -701,9 +655,7 @@
       "rarity": "common",
       "evolveLevel": 26,
       "tutorMoves": [
-        "brine",
-        "body-slam",
-        "iron-tail"
+        "slam"
       ],
       "branches": [
         {
@@ -714,13 +666,15 @@
           "to": "blastoise",
           "upgrades": [
             {
-              "from": "skull-bash",
+              "from": "tackle",
               "to": "skull-bash-plus"
+            },
+            {
+              "from": "tail-whip",
+              "to": "body-slam"
             }
           ],
-          "adds": [
-            "hydro-crash"
-          ]
+          "adds": []
         },
         {
           "id": "blastoise-specialist",
@@ -730,13 +684,15 @@
           "to": "blastoise",
           "upgrades": [
             {
-              "from": "water-pulse",
-              "to": "surf"
+              "from": "water-gun",
+              "to": "hydro-pump"
+            },
+            {
+              "from": "bubble",
+              "to": "ice-beam"
             }
           ],
-          "adds": [
-            "hydro-pump"
-          ]
+          "adds": []
         },
         {
           "id": "blastoise-support",
@@ -746,13 +702,15 @@
           "to": "blastoise",
           "upgrades": [
             {
-              "from": "aqua-ring",
-              "to": "aqua-ring-plus"
+              "from": "tail-whip",
+              "to": "barrier"
+            },
+            {
+              "from": "water-gun",
+              "to": "bubble-beam-plus"
             }
           ],
-          "adds": [
-            "aqua-fortress"
-          ],
+          "adds": [],
           "abilityId": "shell-armor"
         }
       ]
@@ -777,20 +735,7 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "surf"
-        },
-        {
-          "level": 32,
-          "move": "hydro-pump"
-        },
-        {
-          "level": 38,
-          "move": "skull-bash"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "torrent",
         "shell-armor"
@@ -799,8 +744,7 @@
       "rarity": "rare",
       "tutorMoves": [
         "earthquake",
-        "body-slam",
-        "crunch"
+        "hyper-fang"
       ],
       "branches": []
     },
@@ -834,12 +778,12 @@
           "move": "string-shot"
         },
         {
-          "level": 4,
-          "move": "bug-bite"
+          "level": 3,
+          "move": "harden"
         },
         {
           "level": 6,
-          "move": "harden"
+          "move": "leech-life"
         }
       ],
       "availableAbilities": [
@@ -853,7 +797,6 @@
       "rarity": "common",
       "evolveLevel": 8,
       "tutorMoves": [
-        "leech-life",
         "sand-attack"
       ],
       "branches": [
@@ -866,10 +809,16 @@
           "upgrades": [
             {
               "from": "tackle",
-              "to": "bug-bite-plus"
+              "to": "headbutt"
+            },
+            {
+              "from": "leech-life",
+              "to": "twineedle"
             }
           ],
-          "adds": []
+          "adds": [
+            "harden-plus"
+          ]
         },
         {
           "id": "metapod-specialist",
@@ -879,11 +828,17 @@
           "to": "metapod",
           "upgrades": [
             {
+              "from": "leech-life",
+              "to": "leech-life-plus"
+            },
+            {
               "from": "string-shot",
-              "to": "silk-bind"
+              "to": "string-shot-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "pin-missile"
+          ]
         },
         {
           "id": "metapod-support",
@@ -895,9 +850,15 @@
             {
               "from": "harden",
               "to": "harden-plus"
+            },
+            {
+              "from": "string-shot",
+              "to": "string-shot-plus"
             }
           ],
-          "adds": [],
+          "adds": [
+            "withdraw"
+          ],
           "abilityId": "iron-shell"
         }
       ],
@@ -923,20 +884,7 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 9,
-          "move": "silk-bind"
-        },
-        {
-          "level": 10,
-          "move": "pin-shot"
-        },
-        {
-          "level": 11,
-          "move": "harden-plus"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "iron-shell",
         "compound-eyes",
@@ -947,10 +895,7 @@
       ],
       "rarity": "common",
       "evolveLevel": 12,
-      "tutorMoves": [
-        "leech-life",
-        "withdraw"
-      ],
+      "tutorMoves": [],
       "branches": [
         {
           "id": "butterfree-vanguard",
@@ -960,13 +905,15 @@
           "to": "butterfree",
           "upgrades": [
             {
-              "from": "bug-bite-plus",
-              "to": "silver-wind"
+              "from": "tackle",
+              "to": "gust-plus"
+            },
+            {
+              "from": "string-shot",
+              "to": "supersonic"
             }
           ],
-          "adds": [
-            "aerial-ace"
-          ]
+          "adds": []
         },
         {
           "id": "butterfree-specialist",
@@ -976,13 +923,19 @@
           "to": "butterfree",
           "upgrades": [
             {
-              "from": "pin-shot",
-              "to": "psybeam"
+              "from": "leech-life",
+              "to": "confusion-plus"
+            },
+            {
+              "from": "string-shot",
+              "to": "sleep-powder"
+            },
+            {
+              "from": "harden",
+              "to": "stun-spore"
             }
           ],
-          "adds": [
-            "bug-buzz"
-          ],
+          "adds": [],
           "abilityId": "compound-eyes"
         },
         {
@@ -993,13 +946,19 @@
           "to": "butterfree",
           "upgrades": [
             {
-              "from": "harden-plus",
-              "to": "safeguard"
+              "from": "harden",
+              "to": "poison-powder"
+            },
+            {
+              "from": "string-shot",
+              "to": "sleep-powder"
+            },
+            {
+              "from": "tackle",
+              "to": "gust"
             }
           ],
-          "adds": [
-            "powder-spread"
-          ]
+          "adds": []
         }
       ]
     },
@@ -1024,24 +983,7 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "gust"
-        },
-        {
-          "level": 16,
-          "move": "powder-spread"
-        },
-        {
-          "level": 20,
-          "move": "psybeam"
-        },
-        {
-          "level": 25,
-          "move": "silver-wind"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "compound-eyes",
         "iron-shell",
@@ -1050,9 +992,7 @@
       "evolvesTo": [],
       "rarity": "uncommon",
       "tutorMoves": [
-        "supersonic",
-        "sleep-powder",
-        "air-slash"
+        "wing-attack"
       ],
       "branches": []
     },
@@ -1087,12 +1027,12 @@
           "move": "string-shot"
         },
         {
-          "level": 4,
-          "move": "bug-bite"
+          "level": 3,
+          "move": "harden"
         },
         {
           "level": 6,
-          "move": "harden"
+          "move": "leech-life"
         }
       ],
       "availableAbilities": [
@@ -1106,7 +1046,6 @@
       "rarity": "common",
       "evolveLevel": 8,
       "tutorMoves": [
-        "leech-life",
         "sand-attack"
       ],
       "branches": [
@@ -1120,9 +1059,15 @@
             {
               "from": "poison-sting",
               "to": "poison-sting-plus"
+            },
+            {
+              "from": "leech-life",
+              "to": "twineedle"
             }
           ],
-          "adds": []
+          "adds": [
+            "harden-plus"
+          ]
         },
         {
           "id": "kakuna-specialist",
@@ -1133,10 +1078,16 @@
           "upgrades": [
             {
               "from": "string-shot",
-              "to": "silk-bind"
+              "to": "string-shot-plus"
+            },
+            {
+              "from": "leech-life",
+              "to": "pin-missile"
             }
           ],
-          "adds": []
+          "adds": [
+            "poison-powder"
+          ]
         }
       ],
       "hiddenAbility": "snipe"
@@ -1162,16 +1113,7 @@
         "defense": 1,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 9,
-          "move": "harden-plus"
-        },
-        {
-          "level": 10,
-          "move": "pin-shot"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "iron-shell",
         "swarm",
@@ -1183,7 +1125,6 @@
       "rarity": "common",
       "evolveLevel": 12,
       "tutorMoves": [
-        "leech-life",
         "withdraw"
       ],
       "branches": [
@@ -1195,13 +1136,19 @@
           "to": "beedrill",
           "upgrades": [
             {
-              "from": "bug-bite",
-              "to": "twineedle"
+              "from": "leech-life",
+              "to": "twineedle-plus"
+            },
+            {
+              "from": "harden",
+              "to": "focus-energy"
+            },
+            {
+              "from": "string-shot",
+              "to": "agility"
             }
           ],
-          "adds": [
-            "fell-stinger-v"
-          ]
+          "adds": []
         },
         {
           "id": "beedrill-specialist",
@@ -1211,13 +1158,19 @@
           "to": "beedrill",
           "upgrades": [
             {
-              "from": "pin-shot",
-              "to": "pin-missile"
+              "from": "poison-sting",
+              "to": "toxic"
+            },
+            {
+              "from": "leech-life",
+              "to": "pin-missile-plus"
+            },
+            {
+              "from": "harden",
+              "to": "agility"
             }
           ],
-          "adds": [
-            "toxic"
-          ],
+          "adds": [],
           "abilityId": "snipe"
         }
       ]
@@ -1243,24 +1196,7 @@
         "defense": 1,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "fury-attack"
-        },
-        {
-          "level": 17,
-          "move": "twineedle"
-        },
-        {
-          "level": 22,
-          "move": "focus-energy"
-        },
-        {
-          "level": 27,
-          "move": "poison-jab"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "swarm",
         "poison-point",
@@ -1270,8 +1206,8 @@
       "rarity": "uncommon",
       "tutorMoves": [
         "sludge",
-        "aerial-ace",
-        "brick-break"
+        "wing-attack",
+        "karate-chop"
       ],
       "branches": []
     },
@@ -1310,12 +1246,8 @@
           "move": "gust"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "quick-attack"
-        },
-        {
-          "level": 10,
-          "move": "roost"
         }
       ],
       "availableAbilities": [
@@ -1329,8 +1261,6 @@
       "rarity": "common",
       "evolveLevel": 12,
       "tutorMoves": [
-        "swift",
-        "growl",
         "bite"
       ],
       "branches": [
@@ -1344,9 +1274,15 @@
             {
               "from": "tackle",
               "to": "wing-attack"
+            },
+            {
+              "from": "quick-attack",
+              "to": "quick-attack-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "whirlwind"
+          ]
         },
         {
           "id": "pidgeotto-specialist",
@@ -1357,10 +1293,16 @@
           "upgrades": [
             {
               "from": "gust",
-              "to": "aerial-ace"
+              "to": "gust-plus"
+            },
+            {
+              "from": "sand-attack",
+              "to": "sand-attack-plus"
             }
           ],
-          "adds": [],
+          "adds": [
+            "swift"
+          ],
           "abilityId": "keen-eye"
         },
         {
@@ -1372,16 +1314,20 @@
           "upgrades": [
             {
               "from": "sand-attack",
-              "to": "feather-dance"
+              "to": "sand-attack-plus"
+            },
+            {
+              "from": "tackle",
+              "to": "growl"
             }
           ],
-          "adds": []
+          "adds": [
+            "agility"
+          ]
         }
       ],
       "hiddenAbility": "healer",
-      "eggMoves": [
-        "air-cutter"
-      ]
+      "eggMoves": []
     },
     {
       "id": "pidgeotto",
@@ -1404,24 +1350,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "wing-attack"
-        },
-        {
-          "level": 16,
-          "move": "tailwind"
-        },
-        {
-          "level": 20,
-          "move": "feather-dance"
-        },
-        {
-          "level": 23,
-          "move": "aerial-ace"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "keen-eye",
         "tangled-feet",
@@ -1433,8 +1362,7 @@
       "rarity": "common",
       "evolveLevel": 26,
       "tutorMoves": [
-        "swift",
-        "crunch",
+        "hyper-fang",
         "disable"
       ],
       "branches": [
@@ -1446,13 +1374,15 @@
           "to": "pidgeot",
           "upgrades": [
             {
-              "from": "wing-attack",
-              "to": "brave-bird"
+              "from": "tackle",
+              "to": "drill-peck"
+            },
+            {
+              "from": "quick-attack",
+              "to": "fly"
             }
           ],
-          "adds": [
-            "sky-attack"
-          ]
+          "adds": []
         },
         {
           "id": "pidgeot-specialist",
@@ -1462,13 +1392,15 @@
           "to": "pidgeot",
           "upgrades": [
             {
-              "from": "aerial-ace",
-              "to": "air-slash"
+              "from": "gust",
+              "to": "wing-attack-plus"
+            },
+            {
+              "from": "tackle",
+              "to": "swift-plus"
             }
           ],
-          "adds": [
-            "hurricane"
-          ],
+          "adds": [],
           "abilityId": "keen-eye"
         },
         {
@@ -1479,13 +1411,19 @@
           "to": "pidgeot",
           "upgrades": [
             {
-              "from": "tailwind",
-              "to": "tailwind-plus"
+              "from": "tackle",
+              "to": "mirror-move"
+            },
+            {
+              "from": "gust",
+              "to": "gust-plus"
+            },
+            {
+              "from": "quick-attack",
+              "to": "roar"
             }
           ],
-          "adds": [
-            "roost-plus"
-          ],
+          "adds": [],
           "abilityId": "healer"
         }
       ]
@@ -1511,20 +1449,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "air-slash"
-        },
-        {
-          "level": 32,
-          "move": "roost-plus"
-        },
-        {
-          "level": 38,
-          "move": "hurricane"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "keen-eye",
         "tangled-feet",
@@ -1533,9 +1458,8 @@
       "evolvesTo": [],
       "rarity": "uncommon",
       "tutorMoves": [
-        "crunch",
-        "heat-wave",
-        "swift"
+        "hyper-fang",
+        "flamethrower"
       ],
       "branches": []
     },
@@ -1573,12 +1497,8 @@
           "move": "quick-attack"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "bite"
-        },
-        {
-          "level": 10,
-          "move": "focus-energy"
         }
       ],
       "availableAbilities": [
@@ -1592,7 +1512,6 @@
       "rarity": "common",
       "evolveLevel": 12,
       "tutorMoves": [
-        "swift",
         "sand-attack",
         "low-kick"
       ],
@@ -1607,10 +1526,14 @@
             {
               "from": "bite",
               "to": "hyper-fang"
+            },
+            {
+              "from": "quick-attack",
+              "to": "quick-attack-plus"
             }
           ],
           "adds": [
-            "double-edge"
+            "focus-energy"
           ],
           "abilityId": "guts"
         },
@@ -1622,21 +1545,25 @@
           "to": "raticate",
           "upgrades": [
             {
-              "from": "quick-attack",
-              "to": "sucker-punch"
+              "from": "tackle",
+              "to": "swift"
+            },
+            {
+              "from": "tail-whip",
+              "to": "leer-plus"
             }
           ],
           "adds": [
-            "crunch"
+            "body-slam"
           ],
           "abilityId": "hustle"
         }
       ],
       "hiddenAbility": "run-down",
       "eggMoves": [
-        "flame-wheel",
-        "last-resort",
-        "revenge"
+        "fire-punch",
+        "take-down",
+        "counter"
       ]
     },
     {
@@ -1659,24 +1586,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "hyper-fang"
-        },
-        {
-          "level": 18,
-          "move": "crunch"
-        },
-        {
-          "level": 24,
-          "move": "sucker-punch"
-        },
-        {
-          "level": 30,
-          "move": "double-edge"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "guts",
         "hustle",
@@ -1685,9 +1595,7 @@
       "evolvesTo": [],
       "rarity": "common",
       "tutorMoves": [
-        "swift",
-        "body-slam",
-        "iron-tail"
+        "slam"
       ],
       "branches": []
     },
@@ -1726,12 +1634,8 @@
           "move": "leer"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "fury-attack"
-        },
-        {
-          "level": 10,
-          "move": "aerial-ace"
         }
       ],
       "availableAbilities": [
@@ -1759,10 +1663,14 @@
             {
               "from": "peck",
               "to": "drill-peck"
+            },
+            {
+              "from": "fury-attack",
+              "to": "double-edge"
             }
           ],
           "adds": [
-            "drill-run"
+            "mirror-move"
           ]
         },
         {
@@ -1773,16 +1681,21 @@
           "to": "fearow",
           "upgrades": [
             {
-              "from": "aerial-ace",
-              "to": "air-slash"
+              "from": "peck",
+              "to": "gust-plus"
+            },
+            {
+              "from": "leer",
+              "to": "leer-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "agility"
+          ]
         }
       ],
       "eggMoves": [
-        "tri-attack",
-        "feather-dance"
+        "tri-attack"
       ]
     },
     {
@@ -1806,36 +1719,12 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "drill-peck"
-        },
-        {
-          "level": 18,
-          "move": "agility"
-        },
-        {
-          "level": 22,
-          "move": "drill-run"
-        },
-        {
-          "level": 28,
-          "move": "air-slash"
-        },
-        {
-          "level": 34,
-          "move": "brave-bird"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "keen-eye",
         "tangled-feet"
       ],
-      "tutorMoves": [
-        "sky-attack",
-        "double-edge"
-      ],
+      "tutorMoves": [],
       "evolvesTo": [],
       "rarity": "common",
       "branches": []
@@ -1874,12 +1763,8 @@
           "move": "poison-sting"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "bite"
-        },
-        {
-          "level": 10,
-          "move": "glare"
         }
       ],
       "availableAbilities": [
@@ -1906,11 +1791,15 @@
           "upgrades": [
             {
               "from": "bite",
-              "to": "crunch"
+              "to": "bite-plus"
+            },
+            {
+              "from": "wrap",
+              "to": "wrap-plus"
             }
           ],
           "adds": [
-            "poison-fang"
+            "glare"
           ]
         },
         {
@@ -1923,6 +1812,10 @@
             {
               "from": "leer",
               "to": "screech"
+            },
+            {
+              "from": "poison-sting",
+              "to": "acid"
             }
           ],
           "adds": [
@@ -1932,9 +1825,8 @@
         }
       ],
       "eggMoves": [
-        "sucker-punch",
-        "disable",
-        "slam"
+        "quick-attack",
+        "disable"
       ]
     },
     {
@@ -1957,35 +1849,14 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "acid"
-        },
-        {
-          "level": 18,
-          "move": "poison-fang"
-        },
-        {
-          "level": 22,
-          "move": "crunch"
-        },
-        {
-          "level": 28,
-          "move": "sludge-bomb"
-        },
-        {
-          "level": 34,
-          "move": "gunk-shot"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "intimidate",
         "poison-point"
       ],
       "tutorMoves": [
         "earthquake",
-        "iron-tail"
+        "slam"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -2025,12 +1896,8 @@
           "move": "quick-attack"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "thunder-wave"
-        },
-        {
-          "level": 10,
-          "move": "agility"
         }
       ],
       "availableAbilities": [
@@ -2039,7 +1906,6 @@
       ],
       "hiddenAbility": "volt-absorb",
       "tutorMoves": [
-        "swift",
         "surf"
       ],
       "evolveLevel": 12,
@@ -2057,10 +1923,16 @@
           "upgrades": [
             {
               "from": "quick-attack",
-              "to": "volt-tackle"
+              "to": "quick-attack-plus"
+            },
+            {
+              "from": "thunder-shock",
+              "to": "thunder-punch"
             }
           ],
-          "adds": []
+          "adds": [
+            "slam"
+          ]
         },
         {
           "id": "raichu-specialist",
@@ -2072,10 +1944,14 @@
             {
               "from": "thunder-shock",
               "to": "thunderbolt"
+            },
+            {
+              "from": "growl",
+              "to": "agility"
             }
           ],
           "adds": [
-            "thunder"
+            "swift"
           ]
         },
         {
@@ -2087,18 +1963,22 @@
           "upgrades": [
             {
               "from": "growl",
-              "to": "charm"
+              "to": "double-team"
+            },
+            {
+              "from": "thunder-shock",
+              "to": "thunder-shock-plus"
             }
           ],
           "adds": [
-            "discharge"
+            "light-screen"
           ],
           "abilityId": "static"
         }
       ],
       "eggMoves": [
-        "wish",
-        "flail"
+        "recover",
+        "rage"
       ]
     },
     {
@@ -2121,34 +2001,12 @@
         "defense": 2,
         "speed": 4
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "slam"
-        },
-        {
-          "level": 18,
-          "move": "thunderbolt"
-        },
-        {
-          "level": 22,
-          "move": "iron-tail"
-        },
-        {
-          "level": 28,
-          "move": "thunder"
-        },
-        {
-          "level": 34,
-          "move": "volt-tackle"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "static",
         "run-down"
       ],
       "tutorMoves": [
-        "thunder-punch",
         "body-slam"
       ],
       "evolvesTo": [],
@@ -2189,12 +2047,8 @@
           "move": "sand-attack"
         },
         {
-          "level": 7,
-          "move": "rollout"
-        },
-        {
-          "level": 10,
-          "move": "fury-swipes"
+          "level": 8,
+          "move": "poison-sting"
         }
       ],
       "availableAbilities": [
@@ -2202,10 +2056,7 @@
         "iron-shell"
       ],
       "hiddenAbility": "tough-claws",
-      "tutorMoves": [
-        "mud-shot",
-        "bulldoze"
-      ],
+      "tutorMoves": [],
       "evolveLevel": 12,
       "evolvesTo": [
         "sandslash"
@@ -2222,10 +2073,14 @@
             {
               "from": "scratch",
               "to": "slash"
+            },
+            {
+              "from": "poison-sting",
+              "to": "fury-swipes"
             }
           ],
           "adds": [
-            "drill-run"
+            "swords-dance"
           ]
         },
         {
@@ -2237,17 +2092,21 @@
           "upgrades": [
             {
               "from": "defense-curl",
-              "to": "iron-defense"
+              "to": "defense-curl-plus"
+            },
+            {
+              "from": "sand-attack",
+              "to": "sand-attack-plus"
             }
           ],
-          "adds": [],
+          "adds": [
+            "dig"
+          ],
           "abilityId": "iron-shell"
         }
       ],
       "eggMoves": [
-        "rapid-spin",
-        "swords-dance",
-        "metal-claw"
+        "withdraw"
       ]
     },
     {
@@ -2270,31 +2129,13 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "slash"
-        },
-        {
-          "level": 18,
-          "move": "dig"
-        },
-        {
-          "level": 24,
-          "move": "drill-run"
-        },
-        {
-          "level": 30,
-          "move": "earthquake"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "sand-veil",
         "iron-shell"
       ],
       "tutorMoves": [
-        "stone-edge",
-        "x-scissor"
+        "rock-slide"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -2334,12 +2175,8 @@
           "move": "tail-whip"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "poison-sting"
-        },
-        {
-          "level": 10,
-          "move": "double-kick"
         }
       ],
       "availableAbilities": [
@@ -2348,8 +2185,7 @@
       ],
       "hiddenAbility": "guts",
       "tutorMoves": [
-        "quick-attack",
-        "poison-fang"
+        "quick-attack"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -2367,9 +2203,15 @@
             {
               "from": "scratch",
               "to": "fury-swipes"
+            },
+            {
+              "from": "poison-sting",
+              "to": "poison-sting-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "bite"
+          ]
         },
         {
           "id": "nidorina-support",
@@ -2379,17 +2221,23 @@
           "to": "nidorina",
           "upgrades": [
             {
-              "from": "growl",
-              "to": "charm"
+              "from": "poison-sting",
+              "to": "acid"
+            },
+            {
+              "from": "tail-whip",
+              "to": "tail-whip-plus"
             }
           ],
-          "adds": [],
+          "adds": [
+            "toxic"
+          ],
           "abilityId": "poison-point"
         }
       ],
       "eggMoves": [
         "skull-bash",
-        "iron-tail",
+        "slam",
         "supersonic"
       ]
     },
@@ -2413,30 +2261,12 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "bite"
-        },
-        {
-          "level": 16,
-          "move": "fury-swipes"
-        },
-        {
-          "level": 20,
-          "move": "toxic"
-        },
-        {
-          "level": 23,
-          "move": "crunch"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "poison-point",
         "hustle"
       ],
       "tutorMoves": [
-        "sludge",
         "take-down"
       ],
       "evolveLevel": 26,
@@ -2453,13 +2283,15 @@
           "to": "nidoqueen",
           "upgrades": [
             {
-              "from": "double-kick",
+              "from": "scratch",
               "to": "body-slam"
+            },
+            {
+              "from": "tail-whip",
+              "to": "earthquake"
             }
           ],
-          "adds": [
-            "earthquake"
-          ]
+          "adds": []
         },
         {
           "id": "nidoqueen-specialist",
@@ -2470,12 +2302,14 @@
           "upgrades": [
             {
               "from": "poison-sting",
-              "to": "sludge-bomb"
+              "to": "sludge"
+            },
+            {
+              "from": "growl",
+              "to": "thunderbolt"
             }
           ],
-          "adds": [
-            "earth-power"
-          ]
+          "adds": []
         }
       ]
     },
@@ -2500,24 +2334,7 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "body-slam"
-        },
-        {
-          "level": 32,
-          "move": "earth-power"
-        },
-        {
-          "level": 38,
-          "move": "sludge-wave"
-        },
-        {
-          "level": 44,
-          "move": "earthquake"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "poison-point",
         "hustle"
@@ -2557,19 +2374,15 @@
         },
         {
           "level": 1,
-          "move": "peck"
+          "move": "tackle"
         },
         {
           "level": 4,
-          "move": "focus-energy"
+          "move": "horn-attack"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "poison-sting"
-        },
-        {
-          "level": 10,
-          "move": "double-kick"
         }
       ],
       "availableAbilities": [
@@ -2578,8 +2391,7 @@
       ],
       "hiddenAbility": "guts",
       "tutorMoves": [
-        "quick-attack",
-        "poison-fang"
+        "quick-attack"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -2595,11 +2407,17 @@
           "to": "nidorino",
           "upgrades": [
             {
-              "from": "peck",
-              "to": "horn-attack"
+              "from": "horn-attack",
+              "to": "horn-attack-plus"
+            },
+            {
+              "from": "tackle",
+              "to": "double-kick"
             }
           ],
-          "adds": []
+          "adds": [
+            "focus-energy"
+          ]
         },
         {
           "id": "nidorino-specialist",
@@ -2610,14 +2428,19 @@
           "upgrades": [
             {
               "from": "poison-sting",
-              "to": "poison-jab"
+              "to": "poison-sting-plus"
+            },
+            {
+              "from": "leer",
+              "to": "leer-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "toxic"
+          ]
         }
       ],
       "eggMoves": [
-        "sucker-punch",
         "amnesia",
         "confusion"
       ]
@@ -2642,30 +2465,12 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "horn-attack"
-        },
-        {
-          "level": 16,
-          "move": "fury-attack"
-        },
-        {
-          "level": 20,
-          "move": "poison-jab"
-        },
-        {
-          "level": 23,
-          "move": "thrash"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "poison-point",
         "hustle"
       ],
       "tutorMoves": [
-        "sludge",
         "take-down"
       ],
       "evolveLevel": 26,
@@ -2683,12 +2488,14 @@
           "upgrades": [
             {
               "from": "horn-attack",
-              "to": "megahorn"
+              "to": "horn-drill"
+            },
+            {
+              "from": "tackle",
+              "to": "earthquake"
             }
           ],
-          "adds": [
-            "earthquake"
-          ]
+          "adds": []
         },
         {
           "id": "nidoking-specialist",
@@ -2698,13 +2505,15 @@
           "to": "nidoking",
           "upgrades": [
             {
-              "from": "poison-jab",
-              "to": "sludge-wave"
+              "from": "poison-sting",
+              "to": "sludge"
+            },
+            {
+              "from": "leer",
+              "to": "thunderbolt"
             }
           ],
-          "adds": [
-            "earth-power"
-          ]
+          "adds": []
         }
       ]
     },
@@ -2729,30 +2538,12 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "earth-power"
-        },
-        {
-          "level": 32,
-          "move": "megahorn"
-        },
-        {
-          "level": 38,
-          "move": "earthquake"
-        },
-        {
-          "level": 44,
-          "move": "horn-drill"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "poison-point",
         "hustle"
       ],
       "tutorMoves": [
-        "thunderbolt",
         "ice-beam"
       ],
       "evolvesTo": [],
@@ -2793,12 +2584,8 @@
           "move": "sing"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "double-slap"
-        },
-        {
-          "level": 10,
-          "move": "minimize"
         }
       ],
       "availableAbilities": [
@@ -2806,10 +2593,7 @@
         "solid-rock"
       ],
       "hiddenAbility": "healer",
-      "tutorMoves": [
-        "charm",
-        "swift"
-      ],
+      "tutorMoves": [],
       "evolveLevel": 12,
       "evolvesTo": [
         "clefable"
@@ -2824,12 +2608,16 @@
           "to": "clefable",
           "upgrades": [
             {
-              "from": "minimize",
-              "to": "moonlight"
+              "from": "growl",
+              "to": "minimize"
+            },
+            {
+              "from": "double-slap",
+              "to": "double-slap-plus"
             }
           ],
           "adds": [
-            "wish"
+            "metronome"
           ],
           "abilityId": "cute-charm"
         },
@@ -2842,7 +2630,11 @@
           "upgrades": [
             {
               "from": "double-slap",
-              "to": "hyper-voice"
+              "to": "swift"
+            },
+            {
+              "from": "sing",
+              "to": "sing-plus"
             }
           ],
           "adds": [
@@ -2875,24 +2667,7 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "body-slam"
-        },
-        {
-          "level": 18,
-          "move": "moonlight"
-        },
-        {
-          "level": 22,
-          "move": "light-screen"
-        },
-        {
-          "level": 28,
-          "move": "double-edge"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "cute-charm",
         "solid-rock"
@@ -2939,12 +2714,8 @@
           "move": "quick-attack"
         },
         {
-          "level": 7,
-          "move": "confuse-ray"
-        },
-        {
-          "level": 10,
-          "move": "fire-spin"
+          "level": 8,
+          "move": "roar"
         }
       ],
       "availableAbilities": [
@@ -2972,10 +2743,14 @@
             {
               "from": "ember",
               "to": "flamethrower"
+            },
+            {
+              "from": "tail-whip",
+              "to": "tail-whip-plus"
             }
           ],
           "adds": [
-            "heat-wave"
+            "fire-spin"
           ]
         },
         {
@@ -2986,19 +2761,22 @@
           "to": "ninetales",
           "upgrades": [
             {
-              "from": "confuse-ray",
-              "to": "will-o-wisp"
+              "from": "roar",
+              "to": "confuse-ray"
+            },
+            {
+              "from": "ember",
+              "to": "ember-plus"
             }
           ],
           "adds": [
-            "calm-mind"
+            "dig"
           ],
           "abilityId": "flash-fire"
         }
       ],
       "eggMoves": [
         "hypnosis",
-        "flare-blitz",
         "disable"
       ]
     },
@@ -3022,35 +2800,14 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "flamethrower"
-        },
-        {
-          "level": 18,
-          "move": "will-o-wisp"
-        },
-        {
-          "level": 22,
-          "move": "extrasensory"
-        },
-        {
-          "level": 28,
-          "move": "heat-wave"
-        },
-        {
-          "level": 34,
-          "move": "fire-blast"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "flash-fire",
         "flame-body"
       ],
       "tutorMoves": [
         "solar-beam",
-        "psyshock"
+        "psychic"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -3090,12 +2847,8 @@
           "move": "defense-curl"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "double-slap"
-        },
-        {
-          "level": 10,
-          "move": "rest-s"
         }
       ],
       "availableAbilities": [
@@ -3104,8 +2857,7 @@
       ],
       "hiddenAbility": "healer",
       "tutorMoves": [
-        "charm",
-        "disable"
+        "growl"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -3123,10 +2875,14 @@
             {
               "from": "pound",
               "to": "body-slam"
+            },
+            {
+              "from": "double-slap",
+              "to": "double-slap-plus"
             }
           ],
           "adds": [
-            "double-edge"
+            "rest"
           ]
         },
         {
@@ -3138,17 +2894,21 @@
           "upgrades": [
             {
               "from": "defense-curl",
-              "to": "minimize"
+              "to": "defense-curl-plus"
+            },
+            {
+              "from": "sing",
+              "to": "sing-plus"
             }
           ],
           "adds": [
-            "wish"
+            "disable"
           ],
           "abilityId": "cute-charm"
         }
       ],
       "eggMoves": [
-        "last-resort"
+        "take-down"
       ]
     },
     {
@@ -3171,24 +2931,7 @@
         "defense": 1,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "body-slam"
-        },
-        {
-          "level": 18,
-          "move": "wish"
-        },
-        {
-          "level": 22,
-          "move": "hyper-voice"
-        },
-        {
-          "level": 28,
-          "move": "double-edge"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "cute-charm",
         "iron-shell"
@@ -3236,12 +2979,8 @@
           "move": "bite"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "wing-attack"
-        },
-        {
-          "level": 10,
-          "move": "confuse-ray"
         }
       ],
       "availableAbilities": [
@@ -3268,11 +3007,15 @@
           "upgrades": [
             {
               "from": "bite",
-              "to": "poison-fang"
+              "to": "bite-plus"
+            },
+            {
+              "from": "leech-life",
+              "to": "leech-life-plus"
             }
           ],
           "adds": [
-            "cross-poison"
+            "haze"
           ]
         },
         {
@@ -3284,19 +3027,22 @@
           "upgrades": [
             {
               "from": "wing-attack",
-              "to": "air-slash"
+              "to": "wing-attack-plus"
+            },
+            {
+              "from": "supersonic",
+              "to": "supersonic-plus"
             }
           ],
           "adds": [
-            "leech-life-plus"
+            "confuse-ray"
           ],
           "abilityId": "snipe"
         }
       ],
       "hiddenAbility": "infiltrator",
       "eggMoves": [
-        "brave-bird",
-        "zen-headbutt",
+        "headbutt",
         "hypnosis"
       ]
     },
@@ -3321,24 +3067,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "poison-fang"
-        },
-        {
-          "level": 19,
-          "move": "air-slash"
-        },
-        {
-          "level": 25,
-          "move": "leech-life-plus"
-        },
-        {
-          "level": 31,
-          "move": "cross-poison"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "inner-focus",
         "snipe"
@@ -3348,7 +3077,7 @@
       "tutorMoves": [
         "sludge",
         "psybeam",
-        "crunch"
+        "hyper-fang"
       ],
       "branches": []
     },
@@ -3380,19 +3109,15 @@
         },
         {
           "level": 1,
-          "move": "sweet-scent"
-        },
-        {
-          "level": 4,
           "move": "poison-powder"
         },
         {
-          "level": 7,
-          "move": "acid"
+          "level": 4,
+          "move": "stun-spore"
         },
         {
-          "level": 10,
-          "move": "sleep-powder"
+          "level": 8,
+          "move": "acid"
         }
       ],
       "availableAbilities": [
@@ -3420,9 +3145,15 @@
             {
               "from": "absorb",
               "to": "mega-drain"
+            },
+            {
+              "from": "acid",
+              "to": "acid-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "petal-dance"
+          ]
         },
         {
           "id": "gloom-specialist",
@@ -3433,10 +3164,16 @@
           "upgrades": [
             {
               "from": "acid",
-              "to": "sludge"
+              "to": "acid-plus"
+            },
+            {
+              "from": "poison-powder",
+              "to": "toxic"
             }
           ],
-          "adds": [],
+          "adds": [
+            "sleep-powder"
+          ],
           "abilityId": "effect-spore"
         },
         {
@@ -3447,18 +3184,23 @@
           "to": "gloom",
           "upgrades": [
             {
-              "from": "sweet-scent",
-              "to": "aromatic-mist"
+              "from": "stun-spore",
+              "to": "stun-spore-plus"
+            },
+            {
+              "from": "absorb",
+              "to": "mega-drain"
             }
           ],
-          "adds": []
+          "adds": [
+            "growth"
+          ]
         }
       ],
       "hiddenAbility": "healer",
       "eggMoves": [
         "swords-dance",
-        "synthesis",
-        "ingrain"
+        "recover"
       ]
     },
     {
@@ -3482,24 +3224,7 @@
         "defense": 3,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "mega-drain"
-        },
-        {
-          "level": 16,
-          "move": "stun-spore"
-        },
-        {
-          "level": 20,
-          "move": "moonlight"
-        },
-        {
-          "level": 23,
-          "move": "sludge"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "chlorophyll",
         "effect-spore",
@@ -3524,13 +3249,15 @@
           "to": "vileplume",
           "upgrades": [
             {
-              "from": "sludge",
-              "to": "sludge-bomb"
+              "from": "acid",
+              "to": "sludge"
+            },
+            {
+              "from": "poison-powder",
+              "to": "toxic-plus"
             }
           ],
-          "adds": [
-            "toxic"
-          ],
+          "adds": [],
           "abilityId": "effect-spore"
         },
         {
@@ -3541,13 +3268,15 @@
           "to": "vileplume",
           "upgrades": [
             {
-              "from": "mega-drain",
-              "to": "giga-drain"
+              "from": "absorb",
+              "to": "mega-drain-plus"
+            },
+            {
+              "from": "acid",
+              "to": "petal-dance-plus"
             }
           ],
-          "adds": [
-            "petal-dance"
-          ]
+          "adds": []
         },
         {
           "id": "vileplume-support",
@@ -3557,13 +3286,19 @@
           "to": "vileplume",
           "upgrades": [
             {
-              "from": "moonlight",
-              "to": "moonlight-plus"
+              "from": "stun-spore",
+              "to": "stun-spore-plus"
+            },
+            {
+              "from": "poison-powder",
+              "to": "haze"
+            },
+            {
+              "from": "absorb",
+              "to": "mega-drain-plus"
             }
           ],
-          "adds": [
-            "aromatherapy-m"
-          ],
+          "adds": [],
           "abilityId": "healer"
         }
       ]
@@ -3589,20 +3324,7 @@
         "defense": 3,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "giga-drain"
-        },
-        {
-          "level": 32,
-          "move": "petal-dance"
-        },
-        {
-          "level": 38,
-          "move": "sludge-bomb"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "chlorophyll",
         "effect-spore",
@@ -3611,7 +3333,6 @@
       "evolvesTo": [],
       "rarity": "rare",
       "tutorMoves": [
-        "solar-beam",
         "leech-seed",
         "psybeam"
       ],
@@ -3649,15 +3370,11 @@
         },
         {
           "level": 4,
-          "move": "absorb"
-        },
-        {
-          "level": 7,
           "move": "leech-life"
         },
         {
-          "level": 10,
-          "move": "spore-cloud"
+          "level": 8,
+          "move": "absorb"
         }
       ],
       "availableAbilities": [
@@ -3666,7 +3383,6 @@
       ],
       "hiddenAbility": "damp",
       "tutorMoves": [
-        "growth",
         "fury-swipes"
       ],
       "evolveLevel": 12,
@@ -3685,10 +3401,14 @@
             {
               "from": "scratch",
               "to": "slash"
+            },
+            {
+              "from": "leech-life",
+              "to": "leech-life-plus"
             }
           ],
           "adds": [
-            "x-scissor"
+            "swords-dance"
           ]
         },
         {
@@ -3701,16 +3421,20 @@
             {
               "from": "absorb",
               "to": "mega-drain"
+            },
+            {
+              "from": "stun-spore",
+              "to": "spore"
             }
           ],
           "adds": [
-            "sleep-powder"
+            "growth"
           ],
           "abilityId": "effect-spore"
         }
       ],
       "eggMoves": [
-        "cross-poison",
+        "sludge",
         "leech-seed",
         "agility"
       ]
@@ -3736,32 +3460,12 @@
         "defense": 3,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "slash"
-        },
-        {
-          "level": 18,
-          "move": "mega-drain"
-        },
-        {
-          "level": 22,
-          "move": "x-scissor"
-        },
-        {
-          "level": 28,
-          "move": "giga-drain"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "effect-spore",
         "swarm"
       ],
-      "tutorMoves": [
-        "solar-beam",
-        "swords-dance"
-      ],
+      "tutorMoves": [],
       "evolvesTo": [],
       "rarity": "common",
       "branches": []
@@ -3801,12 +3505,8 @@
           "move": "supersonic"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "confusion"
-        },
-        {
-          "level": 10,
-          "move": "poison-powder"
         }
       ],
       "availableAbilities": [
@@ -3814,10 +3514,7 @@
         "snipe"
       ],
       "hiddenAbility": "run-down",
-      "tutorMoves": [
-        "leech-life",
-        "stun-spore"
-      ],
+      "tutorMoves": [],
       "evolveLevel": 12,
       "evolvesTo": [
         "venomoth"
@@ -3834,10 +3531,14 @@
             {
               "from": "confusion",
               "to": "psybeam"
+            },
+            {
+              "from": "tackle",
+              "to": "leech-life"
             }
           ],
           "adds": [
-            "bug-buzz"
+            "swift"
           ]
         },
         {
@@ -3848,12 +3549,16 @@
           "to": "venomoth",
           "upgrades": [
             {
-              "from": "poison-powder",
+              "from": "supersonic",
+              "to": "poison-powder"
+            },
+            {
+              "from": "disable",
               "to": "sleep-powder"
             }
           ],
           "adds": [
-            "silver-wind"
+            "stun-spore"
           ],
           "abilityId": "compound-eyes"
         }
@@ -3884,35 +3589,13 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "psybeam"
-        },
-        {
-          "level": 18,
-          "move": "silver-wind"
-        },
-        {
-          "level": 22,
-          "move": "sleep-powder"
-        },
-        {
-          "level": 28,
-          "move": "psychic"
-        },
-        {
-          "level": 34,
-          "move": "bug-buzz"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "compound-eyes",
         "snipe"
       ],
       "tutorMoves": [
-        "signal-beam",
-        "giga-drain"
+        "mega-drain"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -3949,14 +3632,10 @@
         },
         {
           "level": 4,
-          "move": "mud-slap"
+          "move": "growl"
         },
         {
-          "level": 7,
-          "move": "magnitude"
-        },
-        {
-          "level": 10,
+          "level": 8,
           "move": "dig"
         }
       ],
@@ -3970,7 +3649,6 @@
       "rarity": "common",
       "evolveLevel": 12,
       "tutorMoves": [
-        "rock-throw",
         "bind",
         "harden"
       ],
@@ -3985,10 +3663,14 @@
             {
               "from": "dig",
               "to": "earthquake"
+            },
+            {
+              "from": "scratch",
+              "to": "slash"
             }
           ],
           "adds": [
-            "fissure-d"
+            "fissure"
           ],
           "abilityId": "hustle"
         },
@@ -4000,19 +3682,22 @@
           "to": "dugtrio",
           "upgrades": [
             {
-              "from": "mud-slap",
-              "to": "mud-bomb"
+              "from": "sand-attack",
+              "to": "sand-attack-plus"
+            },
+            {
+              "from": "scratch",
+              "to": "rock-slide"
             }
           ],
           "adds": [
-            "slash"
+            "rock-throw"
           ],
           "abilityId": "sand-veil"
         }
       ],
       "hiddenAbility": "arena-trap",
       "eggMoves": [
-        "ancient-power",
         "headbutt"
       ]
     },
@@ -4036,20 +3721,7 @@
         "defense": 1,
         "speed": 4
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "slash"
-        },
-        {
-          "level": 20,
-          "move": "earthquake"
-        },
-        {
-          "level": 26,
-          "move": "mud-bomb"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "sand-veil",
         "hustle"
@@ -4057,9 +3729,7 @@
       "evolvesTo": [],
       "rarity": "common",
       "tutorMoves": [
-        "rock-slide-m",
-        "crunch",
-        "stone-edge"
+        "hyper-fang"
       ],
       "branches": []
     },
@@ -4097,12 +3767,8 @@
           "move": "bite"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "pay-day"
-        },
-        {
-          "level": 10,
-          "move": "fury-swipes"
         }
       ],
       "availableAbilities": [
@@ -4111,8 +3777,7 @@
       ],
       "hiddenAbility": "moxie",
       "tutorMoves": [
-        "quick-attack",
-        "charm"
+        "quick-attack"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -4130,10 +3795,14 @@
             {
               "from": "scratch",
               "to": "slash"
+            },
+            {
+              "from": "bite",
+              "to": "bite-plus"
             }
           ],
           "adds": [
-            "sucker-punch"
+            "screech"
           ]
         },
         {
@@ -4145,17 +3814,21 @@
           "upgrades": [
             {
               "from": "pay-day",
-              "to": "power-gem"
+              "to": "pay-day-plus"
+            },
+            {
+              "from": "growl",
+              "to": "swift"
             }
           ],
           "adds": [
-            "swift"
+            "bubble-beam"
           ]
         }
       ],
       "eggMoves": [
         "hypnosis",
-        "last-resort",
+        "take-down",
         "amnesia"
       ]
     },
@@ -4179,35 +3852,14 @@
         "defense": 2,
         "speed": 4
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "slash"
-        },
-        {
-          "level": 18,
-          "move": "screech"
-        },
-        {
-          "level": 22,
-          "move": "power-gem"
-        },
-        {
-          "level": 28,
-          "move": "agility"
-        },
-        {
-          "level": 34,
-          "move": "hyper-voice"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "run-down",
         "tough-claws"
       ],
       "tutorMoves": [
         "thunderbolt",
-        "iron-tail"
+        "slam"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -4236,7 +3888,7 @@
       "learnset": [
         {
           "level": 1,
-          "move": "water-gun"
+          "move": "scratch"
         },
         {
           "level": 1,
@@ -4244,15 +3896,11 @@
         },
         {
           "level": 4,
-          "move": "confusion"
+          "move": "water-gun"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "disable"
-        },
-        {
-          "level": 10,
-          "move": "water-pulse"
         }
       ],
       "availableAbilities": [
@@ -4279,12 +3927,16 @@
           "to": "golduck",
           "upgrades": [
             {
-              "from": "confusion",
-              "to": "psychic"
+              "from": "water-gun",
+              "to": "hydro-pump"
+            },
+            {
+              "from": "scratch",
+              "to": "confusion"
             }
           ],
           "adds": [
-            "hydro-pump"
+            "psychic"
           ]
         },
         {
@@ -4296,17 +3948,20 @@
           "upgrades": [
             {
               "from": "disable",
-              "to": "amnesia-plus"
+              "to": "amnesia"
+            },
+            {
+              "from": "tail-whip",
+              "to": "tail-whip-plus"
             }
           ],
           "adds": [
-            "psych-up"
+            "bubble-beam"
           ]
         }
       ],
       "hiddenAbility": "swift-swim",
       "eggMoves": [
-        "cross-chop",
         "hypnosis",
         "confuse-ray"
       ]
@@ -4331,24 +3986,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "zen-headbutt"
-        },
-        {
-          "level": 19,
-          "move": "psych-up"
-        },
-        {
-          "level": 25,
-          "move": "psychic"
-        },
-        {
-          "level": 31,
-          "move": "hydro-pump"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "cloud-nine",
         "damp",
@@ -4358,8 +3996,8 @@
       "rarity": "uncommon",
       "tutorMoves": [
         "surf",
-        "aerial-ace",
-        "brick-break"
+        "wing-attack",
+        "karate-chop"
       ],
       "branches": []
     },
@@ -4397,12 +4035,8 @@
           "move": "low-kick"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "karate-chop"
-        },
-        {
-          "level": 10,
-          "move": "focus-energy"
         }
       ],
       "availableAbilities": [
@@ -4410,7 +4044,7 @@
       ],
       "hiddenAbility": "guts",
       "tutorMoves": [
-        "bulk-up",
+        "meditate",
         "rolling-kick"
       ],
       "evolveLevel": 12,
@@ -4428,11 +4062,15 @@
           "upgrades": [
             {
               "from": "karate-chop",
-              "to": "cross-chop"
+              "to": "karate-chop-plus"
+            },
+            {
+              "from": "low-kick",
+              "to": "submission"
             }
           ],
           "adds": [
-            "close-combat"
+            "thrash"
           ]
         },
         {
@@ -4445,15 +4083,19 @@
             {
               "from": "low-kick",
               "to": "seismic-toss"
+            },
+            {
+              "from": "scratch",
+              "to": "fury-swipes"
             }
           ],
           "adds": [
-            "fury-swipes"
+            "rock-slide"
           ]
         }
       ],
       "eggMoves": [
-        "revenge"
+        "counter"
       ]
     },
     {
@@ -4476,35 +4118,11 @@
         "defense": 1,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "seismic-toss"
-        },
-        {
-          "level": 18,
-          "move": "fury-swipes"
-        },
-        {
-          "level": 22,
-          "move": "cross-chop"
-        },
-        {
-          "level": 28,
-          "move": "thrash"
-        },
-        {
-          "level": 34,
-          "move": "close-combat"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "vital-spirit"
       ],
-      "tutorMoves": [
-        "brick-break",
-        "stone-edge"
-      ],
+      "tutorMoves": [],
       "evolvesTo": [],
       "rarity": "uncommon",
       "branches": []
@@ -4536,19 +4154,15 @@
         },
         {
           "level": 1,
-          "move": "leer"
+          "move": "roar"
         },
         {
           "level": 4,
           "move": "ember"
         },
         {
-          "level": 7,
-          "move": "fire-fang"
-        },
-        {
-          "level": 10,
-          "move": "take-down"
+          "level": 8,
+          "move": "leer"
         }
       ],
       "availableAbilities": [
@@ -4557,7 +4171,7 @@
       ],
       "hiddenAbility": "steadfast",
       "tutorMoves": [
-        "will-o-wisp",
+        "confuse-ray",
         "agility"
       ],
       "evolveLevel": 12,
@@ -4575,11 +4189,15 @@
           "upgrades": [
             {
               "from": "bite",
-              "to": "crunch"
+              "to": "bite-plus"
+            },
+            {
+              "from": "leer",
+              "to": "take-down"
             }
           ],
           "adds": [
-            "extreme-speed"
+            "quick-attack-plus"
           ],
           "abilityId": "intimidate"
         },
@@ -4593,15 +4211,19 @@
             {
               "from": "ember",
               "to": "flamethrower"
+            },
+            {
+              "from": "roar",
+              "to": "roar-plus"
             }
           ],
           "adds": [
-            "heat-wave"
+            "fire-spin"
           ]
         }
       ],
       "eggMoves": [
-        "close-combat",
+        "submission",
         "double-kick",
         "body-slam"
       ]
@@ -4626,35 +4248,13 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "flame-wheel"
-        },
-        {
-          "level": 18,
-          "move": "crunch"
-        },
-        {
-          "level": 22,
-          "move": "extreme-speed"
-        },
-        {
-          "level": 26,
-          "move": "flamethrower"
-        },
-        {
-          "level": 32,
-          "move": "flare-blitz"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "intimidate",
         "flash-fire"
       ],
       "tutorMoves": [
-        "fire-blast",
-        "iron-tail"
+        "slam"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
@@ -4694,12 +4294,8 @@
           "move": "water-gun"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "double-slap"
-        },
-        {
-          "level": 10,
-          "move": "body-slam"
         }
       ],
       "availableAbilities": [
@@ -4727,9 +4323,15 @@
             {
               "from": "double-slap",
               "to": "body-slam"
+            },
+            {
+              "from": "bubble",
+              "to": "bubble-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "submission"
+          ]
         },
         {
           "id": "poliwhirl-specialist",
@@ -4741,9 +4343,15 @@
             {
               "from": "bubble",
               "to": "bubble-beam"
+            },
+            {
+              "from": "water-gun",
+              "to": "water-gun-plus"
             }
           ],
-          "adds": [],
+          "adds": [
+            "hydro-pump"
+          ],
           "abilityId": "water-absorb"
         },
         {
@@ -4756,14 +4364,19 @@
             {
               "from": "hypnosis",
               "to": "hypnosis-plus"
+            },
+            {
+              "from": "double-slap",
+              "to": "amnesia"
             }
           ],
-          "adds": []
+          "adds": [
+            "rest"
+          ]
         }
       ],
       "hiddenAbility": "swift-swim",
       "eggMoves": [
-        "water-pulse",
         "haze",
         "mist"
       ]
@@ -4788,24 +4401,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "bubble-beam"
-        },
-        {
-          "level": 17,
-          "move": "belly-drum-p"
-        },
-        {
-          "level": 21,
-          "move": "mud-shot"
-        },
-        {
-          "level": 24,
-          "move": "brick-break"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "water-absorb",
         "damp",
@@ -4816,9 +4412,7 @@
       ],
       "rarity": "common",
       "tutorMoves": [
-        "surf",
-        "psybeam",
-        "body-press"
+        "psybeam"
       ],
       "branches": [
         {
@@ -4829,13 +4423,15 @@
           "to": "poliwrath",
           "upgrades": [
             {
-              "from": "body-slam",
-              "to": "submission"
+              "from": "double-slap",
+              "to": "submission-plus"
+            },
+            {
+              "from": "water-gun",
+              "to": "ice-punch"
             }
           ],
-          "adds": [
-            "dynamic-punch"
-          ]
+          "adds": []
         },
         {
           "id": "poliwrath-specialist",
@@ -4845,8 +4441,12 @@
           "to": "poliwrath",
           "upgrades": [
             {
-              "from": "bubble-beam",
-              "to": "hydro-pump"
+              "from": "bubble",
+              "to": "surf"
+            },
+            {
+              "from": "water-gun",
+              "to": "ice-beam"
             }
           ],
           "adds": []
@@ -4859,13 +4459,19 @@
           "to": "poliwrath",
           "upgrades": [
             {
-              "from": "hypnosis-plus",
-              "to": "rest-s"
+              "from": "hypnosis",
+              "to": "hypnosis-plus"
+            },
+            {
+              "from": "double-slap",
+              "to": "psychic"
+            },
+            {
+              "from": "water-gun",
+              "to": "bubble-beam"
             }
           ],
-          "adds": [
-            "wide-guard"
-          ]
+          "adds": []
         }
       ],
       "evolveLevel": 26
@@ -4891,27 +4497,13 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "submission"
-        },
-        {
-          "level": 32,
-          "move": "hydro-pump"
-        },
-        {
-          "level": 38,
-          "move": "dynamic-punch"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "water-absorb",
         "damp"
       ],
       "hiddenAbility": "swift-swim",
       "tutorMoves": [
-        "ice-punch",
         "earthquake"
       ],
       "evolvesTo": [],
@@ -4941,23 +4533,19 @@
       "learnset": [
         {
           "level": 1,
-          "move": "psywave"
+          "move": "teleport"
         },
         {
           "level": 1,
-          "move": "kinesis"
-        },
-        {
-          "level": 4,
           "move": "confusion"
         },
         {
-          "level": 7,
+          "level": 4,
           "move": "disable"
         },
         {
-          "level": 10,
-          "move": "barrier"
+          "level": 8,
+          "move": "kinesis"
         }
       ],
       "availableAbilities": [
@@ -4966,8 +4554,7 @@
       ],
       "hiddenAbility": "adaptability",
       "tutorMoves": [
-        "swift",
-        "thunder-wave"
+        "swift"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -4983,11 +4570,17 @@
           "to": "kadabra",
           "upgrades": [
             {
-              "from": "psywave",
+              "from": "confusion",
               "to": "psybeam"
+            },
+            {
+              "from": "disable",
+              "to": "disable-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "psychic"
+          ]
         },
         {
           "id": "kadabra-support",
@@ -4999,9 +4592,15 @@
             {
               "from": "kinesis",
               "to": "reflect"
+            },
+            {
+              "from": "teleport",
+              "to": "recover"
             }
           ],
-          "adds": [],
+          "adds": [
+            "barrier"
+          ],
           "abilityId": "inner-focus"
         }
       ]
@@ -5026,30 +4625,13 @@
         "defense": 1,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "psybeam"
-        },
-        {
-          "level": 16,
-          "move": "recover"
-        },
-        {
-          "level": 20,
-          "move": "reflect"
-        },
-        {
-          "level": 23,
-          "move": "psychic"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "inner-focus",
         "anticipation"
       ],
       "tutorMoves": [
-        "zen-headbutt",
+        "headbutt",
         "thunder-punch"
       ],
       "evolveLevel": 26,
@@ -5066,13 +4648,15 @@
           "to": "alakazam",
           "upgrades": [
             {
-              "from": "psybeam",
-              "to": "psychic"
+              "from": "confusion",
+              "to": "psychic-plus"
+            },
+            {
+              "from": "teleport",
+              "to": "thunder-wave"
             }
           ],
-          "adds": [
-            "psyshock"
-          ]
+          "adds": []
         },
         {
           "id": "alakazam-support",
@@ -5082,13 +4666,15 @@
           "to": "alakazam",
           "upgrades": [
             {
-              "from": "recover",
-              "to": "calm-mind"
+              "from": "kinesis",
+              "to": "light-screen"
+            },
+            {
+              "from": "disable",
+              "to": "thunder-wave"
             }
           ],
-          "adds": [
-            "light-screen"
-          ]
+          "adds": []
         }
       ]
     },
@@ -5112,20 +4698,7 @@
         "defense": 1,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "calm-mind"
-        },
-        {
-          "level": 32,
-          "move": "psyshock"
-        },
-        {
-          "level": 38,
-          "move": "shadow-ball"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "inner-focus",
         "anticipation"
@@ -5172,12 +4745,8 @@
           "move": "karate-chop"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "focus-energy"
-        },
-        {
-          "level": 10,
-          "move": "seismic-toss"
         }
       ],
       "availableAbilities": [
@@ -5205,10 +4774,16 @@
           "upgrades": [
             {
               "from": "karate-chop",
-              "to": "cross-chop"
+              "to": "karate-chop-plus"
+            },
+            {
+              "from": "low-kick",
+              "to": "low-kick-plus"
             }
           ],
-          "adds": [],
+          "adds": [
+            "submission"
+          ],
           "abilityId": "guts"
         },
         {
@@ -5220,10 +4795,16 @@
           "upgrades": [
             {
               "from": "leer",
-              "to": "bulk-up"
+              "to": "leer-plus"
+            },
+            {
+              "from": "focus-energy",
+              "to": "meditate"
             }
           ],
-          "adds": [],
+          "adds": [
+            "counter"
+          ],
           "abilityId": "steadfast"
         }
       ],
@@ -5254,24 +4835,7 @@
         "defense": 2,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "vital-throw"
-        },
-        {
-          "level": 18,
-          "move": "bulk-up"
-        },
-        {
-          "level": 22,
-          "move": "submission"
-        },
-        {
-          "level": 25,
-          "move": "cross-chop"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "guts",
         "no-guard",
@@ -5283,9 +4847,8 @@
       "rarity": "uncommon",
       "evolveLevel": 26,
       "tutorMoves": [
-        "rock-slide-m",
         "body-slam",
-        "crunch"
+        "hyper-fang"
       ],
       "branches": [
         {
@@ -5296,13 +4859,15 @@
           "to": "machamp",
           "upgrades": [
             {
-              "from": "cross-chop",
-              "to": "dynamic-punch"
+              "from": "low-kick",
+              "to": "mega-kick"
+            },
+            {
+              "from": "karate-chop",
+              "to": "mega-punch"
             }
           ],
-          "adds": [
-            "close-combat"
-          ],
+          "adds": [],
           "abilityId": "no-guard"
         },
         {
@@ -5313,13 +4878,15 @@
           "to": "machamp",
           "upgrades": [
             {
-              "from": "bulk-up",
-              "to": "bulk-up-plus"
+              "from": "focus-energy",
+              "to": "meditate-plus"
+            },
+            {
+              "from": "leer",
+              "to": "rock-slide"
             }
           ],
-          "adds": [
-            "wide-guard"
-          ],
+          "adds": [],
           "abilityId": "guts"
         }
       ]
@@ -5344,16 +4911,7 @@
         "defense": 2,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "dynamic-punch"
-        },
-        {
-          "level": 33,
-          "move": "close-combat"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "guts",
         "no-guard",
@@ -5362,7 +4920,6 @@
       "evolvesTo": [],
       "rarity": "rare",
       "tutorMoves": [
-        "stone-edge",
         "earthquake",
         "body-slam"
       ],
@@ -5403,12 +4960,8 @@
           "move": "wrap"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "poison-powder"
-        },
-        {
-          "level": 10,
-          "move": "acid"
         }
       ],
       "availableAbilities": [
@@ -5435,9 +4988,15 @@
             {
               "from": "wrap",
               "to": "slam"
+            },
+            {
+              "from": "vine-whip",
+              "to": "vine-whip-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "razor-leaf"
+          ]
         },
         {
           "id": "weepinbell-specialist",
@@ -5449,14 +5008,19 @@
             {
               "from": "vine-whip",
               "to": "razor-leaf"
+            },
+            {
+              "from": "poison-powder",
+              "to": "acid"
             }
           ],
-          "adds": []
+          "adds": [
+            "sleep-powder"
+          ]
         }
       ],
       "eggMoves": [
-        "synthesis",
-        "ingrain",
+        "recover",
         "leech-life"
       ]
     },
@@ -5481,29 +5045,12 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "razor-leaf"
-        },
-        {
-          "level": 16,
-          "move": "stun-spore"
-        },
-        {
-          "level": 20,
-          "move": "sludge"
-        },
-        {
-          "level": 23,
-          "move": "slam"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "chlorophyll"
       ],
       "tutorMoves": [
-        "giga-drain",
+        "mega-drain",
         "toxic"
       ],
       "evolveLevel": 26,
@@ -5520,13 +5067,15 @@
           "to": "victreebel",
           "upgrades": [
             {
-              "from": "slam",
-              "to": "power-whip"
+              "from": "wrap",
+              "to": "slam-plus"
+            },
+            {
+              "from": "growth",
+              "to": "swords-dance"
             }
           ],
-          "adds": [
-            "leaf-blade"
-          ]
+          "adds": []
         },
         {
           "id": "victreebel-specialist",
@@ -5536,13 +5085,19 @@
           "to": "victreebel",
           "upgrades": [
             {
-              "from": "acid",
-              "to": "sludge-bomb"
+              "from": "vine-whip",
+              "to": "razor-leaf-plus"
+            },
+            {
+              "from": "poison-powder",
+              "to": "acid-plus"
+            },
+            {
+              "from": "growth",
+              "to": "stun-spore"
             }
           ],
-          "adds": [
-            "leaf-storm-s"
-          ]
+          "adds": []
         }
       ]
     },
@@ -5567,25 +5122,11 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "power-whip"
-        },
-        {
-          "level": 32,
-          "move": "leaf-blade"
-        },
-        {
-          "level": 38,
-          "move": "sludge-bomb"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "chlorophyll"
       ],
       "tutorMoves": [
-        "solar-beam",
         "double-edge"
       ],
       "evolvesTo": [],
@@ -5616,7 +5157,7 @@
       "learnset": [
         {
           "level": 1,
-          "move": "poison-sting"
+          "move": "acid"
         },
         {
           "level": 1,
@@ -5624,15 +5165,11 @@
         },
         {
           "level": 4,
-          "move": "water-gun"
+          "move": "wrap"
         },
         {
-          "level": 7,
-          "move": "acid"
-        },
-        {
-          "level": 10,
-          "move": "bubble-beam"
+          "level": 8,
+          "move": "poison-sting"
         }
       ],
       "availableAbilities": [
@@ -5641,8 +5178,7 @@
       ],
       "hiddenAbility": "swift-swim",
       "tutorMoves": [
-        "aqua-ring",
-        "screech"
+        "rest"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -5659,14 +5195,16 @@
           "upgrades": [
             {
               "from": "acid",
-              "to": "sludge-bomb"
+              "to": "acid-plus"
             },
             {
-              "from": "water-gun",
-              "to": "water-pulse"
+              "from": "poison-sting",
+              "to": "bubble-beam"
             }
           ],
-          "adds": []
+          "adds": [
+            "hydro-pump"
+          ]
         },
         {
           "id": "tentacruel-support",
@@ -5677,17 +5215,21 @@
           "upgrades": [
             {
               "from": "supersonic",
-              "to": "toxic"
+              "to": "supersonic-plus"
+            },
+            {
+              "from": "wrap",
+              "to": "barrier"
             }
           ],
           "adds": [
-            "acid-armor"
+            "screech"
           ],
           "abilityId": "poison-point"
         }
       ],
       "eggMoves": [
-        "rapid-spin",
+        "withdraw",
         "aurora-beam",
         "confuse-ray"
       ]
@@ -5713,32 +5255,12 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "poison-jab"
-        },
-        {
-          "level": 18,
-          "move": "toxic"
-        },
-        {
-          "level": 22,
-          "move": "sludge-wave"
-        },
-        {
-          "level": 28,
-          "move": "hydro-pump"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "poison-point",
         "water-absorb"
       ],
-      "tutorMoves": [
-        "surf",
-        "brine"
-      ],
+      "tutorMoves": [],
       "evolvesTo": [],
       "rarity": "common",
       "branches": []
@@ -5778,12 +5300,8 @@
           "move": "rock-throw"
         },
         {
-          "level": 7,
-          "move": "magnitude"
-        },
-        {
-          "level": 10,
-          "move": "rollout"
+          "level": 8,
+          "move": "self-destruct"
         }
       ],
       "availableAbilities": [
@@ -5797,9 +5315,8 @@
       "rarity": "common",
       "evolveLevel": 12,
       "tutorMoves": [
-        "harden",
         "bind",
-        "mud-slap"
+        "sand-attack"
       ],
       "branches": [
         {
@@ -5811,10 +5328,16 @@
           "upgrades": [
             {
               "from": "tackle",
-              "to": "rollout"
+              "to": "rock-slide"
+            },
+            {
+              "from": "self-destruct",
+              "to": "self-destruct-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "harden"
+          ]
         },
         {
           "id": "graveler-specialist",
@@ -5825,10 +5348,16 @@
           "upgrades": [
             {
               "from": "rock-throw",
-              "to": "rock-blast"
+              "to": "rock-throw-plus"
+            },
+            {
+              "from": "tackle",
+              "to": "rock-slide"
             }
           ],
-          "adds": []
+          "adds": [
+            "harden"
+          ]
         },
         {
           "id": "graveler-support",
@@ -5839,17 +5368,22 @@
           "upgrades": [
             {
               "from": "defense-curl",
-              "to": "harden-plus"
+              "to": "defense-curl-plus"
+            },
+            {
+              "from": "rock-throw",
+              "to": "rock-slide"
             }
           ],
-          "adds": [],
+          "adds": [
+            "harden-plus"
+          ],
           "abilityId": "solid-rock"
         }
       ],
       "hiddenAbility": "solid-rock",
       "eggMoves": [
-        "mega-punch",
-        "flail"
+        "rage"
       ]
     },
     {
@@ -5873,24 +5407,7 @@
         "defense": 4,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "rock-blast"
-        },
-        {
-          "level": 16,
-          "move": "stealth-rock"
-        },
-        {
-          "level": 20,
-          "move": "bulldoze"
-        },
-        {
-          "level": 23,
-          "move": "earthquake"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "sturdy",
         "rock-head",
@@ -5902,9 +5419,8 @@
       "rarity": "common",
       "evolveLevel": 26,
       "tutorMoves": [
-        "iron-tail",
-        "body-slam",
-        "mud-bomb"
+        "slam",
+        "dig"
       ],
       "branches": [
         {
@@ -5915,13 +5431,15 @@
           "to": "golem",
           "upgrades": [
             {
-              "from": "rollout",
-              "to": "body-press"
+              "from": "tackle",
+              "to": "rock-slide-plus"
+            },
+            {
+              "from": "self-destruct",
+              "to": "explosion"
             }
           ],
-          "adds": [
-            "stone-edge"
-          ],
+          "adds": [],
           "abilityId": "tough-claws"
         },
         {
@@ -5932,13 +5450,15 @@
           "to": "golem",
           "upgrades": [
             {
-              "from": "rock-blast",
+              "from": "tackle",
               "to": "earthquake"
+            },
+            {
+              "from": "rock-throw",
+              "to": "rock-slide-plus"
             }
           ],
-          "adds": [
-            "rock-slide-m"
-          ]
+          "adds": []
         },
         {
           "id": "golem-support",
@@ -5948,13 +5468,19 @@
           "to": "golem",
           "upgrades": [
             {
-              "from": "harden-plus",
-              "to": "iron-defense"
+              "from": "defense-curl",
+              "to": "defense-curl-plus"
+            },
+            {
+              "from": "tackle",
+              "to": "body-slam"
+            },
+            {
+              "from": "rock-throw",
+              "to": "rock-slide-plus"
             }
           ],
-          "adds": [
-            "wide-guard"
-          ]
+          "adds": []
         }
       ]
     },
@@ -5979,20 +5505,7 @@
         "defense": 4,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "rock-polish"
-        },
-        {
-          "level": 31,
-          "move": "body-press"
-        },
-        {
-          "level": 36,
-          "move": "stone-edge"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "sturdy",
         "rock-head",
@@ -6003,8 +5516,8 @@
       "rarity": "uncommon",
       "tutorMoves": [
         "double-edge",
-        "brick-break",
-        "iron-tail"
+        "karate-chop",
+        "slam"
       ],
       "branches": []
     },
@@ -6031,23 +5544,19 @@
       "learnset": [
         {
           "level": 1,
-          "move": "tackle"
-        },
-        {
-          "level": 1,
-          "move": "growl"
-        },
-        {
-          "level": 4,
           "move": "ember"
         },
         {
-          "level": 7,
+          "level": 1,
+          "move": "tail-whip"
+        },
+        {
+          "level": 4,
           "move": "stomp"
         },
         {
-          "level": 10,
-          "move": "fire-spin"
+          "level": 8,
+          "move": "growl"
         }
       ],
       "availableAbilities": [
@@ -6073,12 +5582,16 @@
           "to": "rapidash",
           "upgrades": [
             {
-              "from": "tackle",
+              "from": "stomp",
+              "to": "stomp-plus"
+            },
+            {
+              "from": "tail-whip",
               "to": "take-down"
             }
           ],
           "adds": [
-            "flare-blitz"
+            "agility"
           ]
         },
         {
@@ -6091,10 +5604,14 @@
             {
               "from": "ember",
               "to": "flamethrower"
+            },
+            {
+              "from": "growl",
+              "to": "fire-spin"
             }
           ],
           "adds": [
-            "heat-wave"
+            "swift"
           ]
         }
       ],
@@ -6124,30 +5641,13 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "flame-wheel"
-        },
-        {
-          "level": 18,
-          "move": "agility"
-        },
-        {
-          "level": 24,
-          "move": "flare-blitz"
-        },
-        {
-          "level": 30,
-          "move": "megahorn"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "flash-fire",
         "flame-body"
       ],
       "tutorMoves": [
-        "drill-run",
+        "dig",
         "solar-beam"
       ],
       "evolvesTo": [],
@@ -6178,23 +5678,19 @@
       "learnset": [
         {
           "level": 1,
-          "move": "tackle"
-        },
-        {
-          "level": 1,
-          "move": "growl"
-        },
-        {
-          "level": 4,
-          "move": "water-gun"
-        },
-        {
-          "level": 7,
           "move": "confusion"
         },
         {
-          "level": 10,
+          "level": 1,
           "move": "disable"
+        },
+        {
+          "level": 4,
+          "move": "headbutt"
+        },
+        {
+          "level": 8,
+          "move": "growl"
         }
       ],
       "availableAbilities": [
@@ -6222,10 +5718,14 @@
             {
               "from": "confusion",
               "to": "psychic"
+            },
+            {
+              "from": "headbutt",
+              "to": "water-gun"
             }
           ],
           "adds": [
-            "calm-mind"
+            "surf"
           ]
         },
         {
@@ -6238,16 +5738,19 @@
             {
               "from": "growl",
               "to": "amnesia"
+            },
+            {
+              "from": "disable",
+              "to": "disable-plus"
             }
           ],
           "adds": [
-            "recover"
+            "rest"
           ],
           "abilityId": "own-tempo"
         }
       ],
       "eggMoves": [
-        "zen-headbutt",
         "stomp"
       ]
     },
@@ -6272,28 +5775,7 @@
         "defense": 2,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "withdraw"
-        },
-        {
-          "level": 18,
-          "move": "headbutt"
-        },
-        {
-          "level": 22,
-          "move": "amnesia"
-        },
-        {
-          "level": 28,
-          "move": "psychic"
-        },
-        {
-          "level": 34,
-          "move": "surf"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "own-tempo",
         "healer"
@@ -6333,19 +5815,15 @@
         },
         {
           "level": 1,
-          "move": "supersonic"
+          "move": "sonic-boom"
         },
         {
           "level": 4,
           "move": "thunder-shock"
         },
         {
-          "level": 7,
-          "move": "thunder-wave"
-        },
-        {
-          "level": 10,
-          "move": "charge-beam"
+          "level": 8,
+          "move": "supersonic"
         }
       ],
       "availableAbilities": [
@@ -6354,8 +5832,8 @@
       ],
       "hiddenAbility": "solid-rock",
       "tutorMoves": [
-        "rollout",
-        "metal-claw"
+        "defense-curl",
+        "slash"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -6373,10 +5851,14 @@
             {
               "from": "thunder-shock",
               "to": "thunderbolt"
+            },
+            {
+              "from": "sonic-boom",
+              "to": "sonic-boom-plus"
             }
           ],
           "adds": [
-            "tri-attack"
+            "swift"
           ]
         },
         {
@@ -6388,11 +5870,15 @@
           "upgrades": [
             {
               "from": "supersonic",
+              "to": "thunder-wave"
+            },
+            {
+              "from": "tackle",
               "to": "screech"
             }
           ],
           "adds": [
-            "iron-defense"
+            "light-screen"
           ],
           "abilityId": "sturdy"
         }
@@ -6418,34 +5904,12 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "swift"
-        },
-        {
-          "level": 18,
-          "move": "screech"
-        },
-        {
-          "level": 22,
-          "move": "tri-attack"
-        },
-        {
-          "level": 26,
-          "move": "thunderbolt"
-        },
-        {
-          "level": 34,
-          "move": "zap-cannon"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "sturdy",
         "static"
       ],
       "tutorMoves": [
-        "thunder",
         "double-edge"
       ],
       "evolvesTo": [],
@@ -6483,32 +5947,16 @@
           "move": "sand-attack"
         },
         {
-          "level": 5,
+          "level": 8,
           "move": "leer"
         },
         {
-          "level": 9,
+          "level": 16,
           "move": "fury-attack"
         },
         {
-          "level": 13,
-          "move": "aerial-ace"
-        },
-        {
-          "level": 18,
-          "move": "swords-dance"
-        },
-        {
           "level": 24,
-          "move": "slash"
-        },
-        {
-          "level": 30,
-          "move": "leaf-blade"
-        },
-        {
-          "level": 36,
-          "move": "brave-bird"
+          "move": "swords-dance"
         }
       ],
       "availableAbilities": [
@@ -6516,16 +5964,16 @@
         "inner-focus"
       ],
       "tutorMoves": [
-        "air-cutter",
-        "x-scissor"
+        "gust",
+        "slash"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "revenge",
-        "feather-dance",
+        "counter",
+        "growl",
         "quick-attack"
       ],
       "hiddenAbility": "moxie"
@@ -6562,15 +6010,11 @@
         },
         {
           "level": 4,
-          "move": "quick-attack"
-        },
-        {
-          "level": 7,
           "move": "fury-attack"
         },
         {
-          "level": 10,
-          "move": "rage"
+          "level": 8,
+          "move": "quick-attack"
         }
       ],
       "availableAbilities": [
@@ -6579,8 +6023,7 @@
       ],
       "hiddenAbility": "run-down",
       "tutorMoves": [
-        "double-kick",
-        "swift"
+        "double-kick"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -6598,10 +6041,14 @@
             {
               "from": "peck",
               "to": "drill-peck"
+            },
+            {
+              "from": "fury-attack",
+              "to": "thrash"
             }
           ],
           "adds": [
-            "brave-bird"
+            "agility"
           ]
         },
         {
@@ -6612,17 +6059,22 @@
           "to": "dodrio",
           "upgrades": [
             {
-              "from": "rage",
+              "from": "growl",
               "to": "tri-attack"
+            },
+            {
+              "from": "quick-attack",
+              "to": "swift"
             }
           ],
-          "adds": []
+          "adds": [
+            "rage"
+          ]
         }
       ],
       "eggMoves": [
         "supersonic",
-        "haze",
-        "flail"
+        "haze"
       ]
     },
     {
@@ -6646,34 +6098,12 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "drill-peck"
-        },
-        {
-          "level": 18,
-          "move": "agility"
-        },
-        {
-          "level": 22,
-          "move": "tri-attack"
-        },
-        {
-          "level": 28,
-          "move": "thrash"
-        },
-        {
-          "level": 34,
-          "move": "brave-bird"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "keen-eye",
         "tangled-feet"
       ],
       "tutorMoves": [
-        "sky-attack",
         "double-edge"
       ],
       "evolvesTo": [],
@@ -6703,7 +6133,7 @@
       "learnset": [
         {
           "level": 1,
-          "move": "tackle"
+          "move": "headbutt"
         },
         {
           "level": 1,
@@ -6711,15 +6141,11 @@
         },
         {
           "level": 4,
-          "move": "powder-snow"
+          "move": "aurora-beam"
         },
         {
-          "level": 7,
-          "move": "aqua-jet"
-        },
-        {
-          "level": 10,
-          "move": "icy-wind"
+          "level": 8,
+          "move": "water-gun"
         }
       ],
       "availableAbilities": [
@@ -6727,10 +6153,7 @@
         "iron-shell"
       ],
       "hiddenAbility": "healer",
-      "tutorMoves": [
-        "water-gun",
-        "headbutt"
-      ],
+      "tutorMoves": [],
       "evolveLevel": 12,
       "evolvesTo": [
         "dewgong"
@@ -6745,15 +6168,17 @@
           "to": "dewgong",
           "upgrades": [
             {
-              "from": "tackle",
+              "from": "headbutt",
               "to": "take-down"
             },
             {
-              "from": "aqua-jet",
-              "to": "aqua-tail"
+              "from": "water-gun",
+              "to": "waterfall"
             }
           ],
-          "adds": []
+          "adds": [
+            "rest"
+          ]
         },
         {
           "id": "dewgong-support",
@@ -6764,18 +6189,22 @@
           "upgrades": [
             {
               "from": "growl",
-              "to": "sing"
+              "to": "growl-plus"
+            },
+            {
+              "from": "aurora-beam",
+              "to": "aurora-beam-plus"
             }
           ],
           "adds": [
-            "rest-s"
+            "blizzard"
           ],
           "abilityId": "thick-fat"
         }
       ],
       "eggMoves": [
-        "icicle-spear",
-        "signal-beam",
+        "ice-punch",
+        "psybeam",
         "horn-drill"
       ]
     },
@@ -6800,35 +6229,13 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "aurora-beam"
-        },
-        {
-          "level": 18,
-          "move": "rest-s"
-        },
-        {
-          "level": 22,
-          "move": "take-down"
-        },
-        {
-          "level": 26,
-          "move": "ice-beam"
-        },
-        {
-          "level": 32,
-          "move": "surf"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "thick-fat",
         "iron-shell"
       ],
       "tutorMoves": [
-        "hydro-pump",
-        "blizzard"
+        "hydro-pump"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
@@ -6861,19 +6268,15 @@
         },
         {
           "level": 1,
-          "move": "smog"
+          "move": "poison-gas"
         },
         {
           "level": 4,
-          "move": "harden"
+          "move": "disable"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "sludge"
-        },
-        {
-          "level": 10,
-          "move": "minimize"
         }
       ],
       "availableAbilities": [
@@ -6882,8 +6285,7 @@
       ],
       "hiddenAbility": "iron-shell",
       "tutorMoves": [
-        "mud-slap",
-        "disable"
+        "sand-attack"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -6900,11 +6302,15 @@
           "upgrades": [
             {
               "from": "pound",
-              "to": "body-slam"
+              "to": "pound-plus"
+            },
+            {
+              "from": "sludge",
+              "to": "acid-plus"
             }
           ],
           "adds": [
-            "gunk-shot"
+            "minimize"
           ]
         },
         {
@@ -6915,20 +6321,23 @@
           "to": "muk",
           "upgrades": [
             {
-              "from": "harden",
+              "from": "poison-gas",
               "to": "acid-armor"
+            },
+            {
+              "from": "disable",
+              "to": "disable-plus"
             }
           ],
           "adds": [
-            "haze"
+            "screech"
           ],
           "abilityId": "poison-point"
         }
       ],
       "eggMoves": [
-        "shadow-punch",
-        "explosion",
-        "lick"
+        "lick",
+        "explosion"
       ]
     },
     {
@@ -6951,24 +6360,7 @@
         "defense": 2,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "acid-armor"
-        },
-        {
-          "level": 18,
-          "move": "sludge-bomb"
-        },
-        {
-          "level": 22,
-          "move": "screech"
-        },
-        {
-          "level": 28,
-          "move": "gunk-shot"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "poison-point",
         "guts"
@@ -7012,15 +6404,11 @@
         },
         {
           "level": 4,
-          "move": "clamp"
-        },
-        {
-          "level": 7,
           "move": "supersonic"
         },
         {
-          "level": 10,
-          "move": "ice-shard"
+          "level": 8,
+          "move": "clamp"
         }
       ],
       "availableAbilities": [
@@ -7046,15 +6434,17 @@
           "to": "cloyster",
           "upgrades": [
             {
-              "from": "tackle",
-              "to": "icicle-spear"
+              "from": "clamp",
+              "to": "clamp-plus"
             },
             {
-              "from": "ice-shard",
+              "from": "tackle",
               "to": "ice-punch"
             }
           ],
-          "adds": []
+          "adds": [
+            "spike-cannon"
+          ]
         },
         {
           "id": "cloyster-support",
@@ -7065,18 +6455,21 @@
           "upgrades": [
             {
               "from": "withdraw",
-              "to": "iron-defense"
+              "to": "withdraw-plus"
+            },
+            {
+              "from": "supersonic",
+              "to": "aurora-beam"
             }
           ],
           "adds": [
-            "aurora-beam"
+            "barrier"
           ],
           "abilityId": "shell-armor"
         }
       ],
       "eggMoves": [
-        "rock-blast",
-        "rapid-spin",
+        "rock-throw",
         "twineedle"
       ]
     },
@@ -7101,28 +6494,7 @@
         "defense": 4,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "aurora-beam"
-        },
-        {
-          "level": 18,
-          "move": "icicle-spear"
-        },
-        {
-          "level": 22,
-          "move": "iron-defense"
-        },
-        {
-          "level": 28,
-          "move": "ice-beam"
-        },
-        {
-          "level": 34,
-          "move": "blizzard"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "shell-armor",
         "iron-shell"
@@ -7163,19 +6535,15 @@
         },
         {
           "level": 1,
-          "move": "hypnosis"
-        },
-        {
-          "level": 4,
           "move": "confuse-ray"
         },
         {
-          "level": 7,
+          "level": 4,
           "move": "night-shade"
         },
         {
-          "level": 10,
-          "move": "smog"
+          "level": 8,
+          "move": "hypnosis"
         }
       ],
       "availableAbilities": [
@@ -7184,7 +6552,6 @@
       ],
       "hiddenAbility": "adaptability",
       "tutorMoves": [
-        "psywave",
         "screech"
       ],
       "evolveLevel": 12,
@@ -7202,10 +6569,16 @@
           "upgrades": [
             {
               "from": "night-shade",
-              "to": "shadow-ball"
+              "to": "night-shade-plus"
+            },
+            {
+              "from": "lick",
+              "to": "lick-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "psywave"
+          ]
         },
         {
           "id": "haunter-support",
@@ -7217,15 +6590,20 @@
             {
               "from": "hypnosis",
               "to": "hypnosis-plus"
+            },
+            {
+              "from": "confuse-ray",
+              "to": "confuse-ray-plus"
             }
           ],
-          "adds": [],
+          "adds": [
+            "haze"
+          ],
           "abilityId": "anticipation"
         }
       ],
       "eggMoves": [
-        "thunder-punch",
-        "haze"
+        "thunder-punch"
       ]
     },
     {
@@ -7249,31 +6627,14 @@
         "defense": 1,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "shadow-punch"
-        },
-        {
-          "level": 16,
-          "move": "disable"
-        },
-        {
-          "level": 20,
-          "move": "shadow-ball"
-        },
-        {
-          "level": 23,
-          "move": "toxic"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "anticipation",
         "snipe"
       ],
       "tutorMoves": [
         "thunderbolt",
-        "sludge-wave"
+        "sludge"
       ],
       "evolveLevel": 26,
       "evolvesTo": [
@@ -7290,12 +6651,14 @@
           "upgrades": [
             {
               "from": "lick",
-              "to": "shadow-punch"
+              "to": "mega-punch"
+            },
+            {
+              "from": "confuse-ray",
+              "to": "lick-plus"
             }
           ],
-          "adds": [
-            "sucker-punch"
-          ]
+          "adds": []
         },
         {
           "id": "gengar-specialist",
@@ -7305,13 +6668,15 @@
           "to": "gengar",
           "upgrades": [
             {
-              "from": "smog",
-              "to": "sludge-bomb"
+              "from": "night-shade",
+              "to": "psychic"
+            },
+            {
+              "from": "hypnosis",
+              "to": "hypnosis-plus"
             }
           ],
-          "adds": [
-            "psychic"
-          ]
+          "adds": []
         }
       ]
     },
@@ -7336,20 +6701,7 @@
         "defense": 1,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "sludge-bomb"
-        },
-        {
-          "level": 33,
-          "move": "psychic"
-        },
-        {
-          "level": 40,
-          "move": "hyper-beam"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "anticipation",
         "snipe"
@@ -7390,31 +6742,19 @@
         },
         {
           "level": 1,
-          "move": "harden"
+          "move": "screech"
         },
         {
-          "level": 4,
+          "level": 8,
           "move": "bind"
         },
         {
-          "level": 7,
+          "level": 16,
           "move": "rock-throw"
         },
         {
-          "level": 11,
-          "move": "rock-slide-m"
-        },
-        {
-          "level": 16,
-          "move": "slam"
-        },
-        {
-          "level": 22,
-          "move": "iron-tail"
-        },
-        {
-          "level": 28,
-          "move": "stone-edge"
+          "level": 24,
+          "move": "harden"
         }
       ],
       "availableAbilities": [
@@ -7425,15 +6765,13 @@
       "rarity": "uncommon",
       "tutorMoves": [
         "dig",
-        "bulldoze",
-        "body-press"
+        "earthquake",
+        "body-slam"
       ],
       "branches": [],
       "hiddenAbility": "weak-armor",
       "eggMoves": [
-        "heavy-slam",
-        "rock-blast",
-        "stealth-rock"
+        "leer"
       ]
     },
     {
@@ -7470,12 +6808,8 @@
           "move": "disable"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "confusion"
-        },
-        {
-          "level": 10,
-          "move": "headbutt"
         }
       ],
       "availableAbilities": [
@@ -7502,11 +6836,15 @@
           "upgrades": [
             {
               "from": "confusion",
-              "to": "psybeam"
+              "to": "psychic"
+            },
+            {
+              "from": "pound",
+              "to": "headbutt"
             }
           ],
           "adds": [
-            "psyshock"
+            "psybeam"
           ]
         },
         {
@@ -7519,10 +6857,14 @@
             {
               "from": "hypnosis",
               "to": "hypnosis-plus"
+            },
+            {
+              "from": "disable",
+              "to": "meditate"
             }
           ],
           "adds": [
-            "calm-mind"
+            "psywave"
           ],
           "abilityId": "insomnia"
         }
@@ -7552,28 +6894,7 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "psybeam"
-        },
-        {
-          "level": 18,
-          "move": "zen-headbutt"
-        },
-        {
-          "level": 22,
-          "move": "psychic"
-        },
-        {
-          "level": 28,
-          "move": "calm-mind"
-        },
-        {
-          "level": 34,
-          "move": "psyshock"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "insomnia",
         "inner-focus"
@@ -7616,16 +6937,12 @@
           "move": "leer"
         },
         {
-          "level": 5,
+          "level": 4,
           "move": "vice-grip"
         },
         {
-          "level": 9,
+          "level": 8,
           "move": "harden"
-        },
-        {
-          "level": 11,
-          "move": "mud-shot"
         }
       ],
       "availableAbilities": [
@@ -7633,8 +6950,7 @@
         "sturdy"
       ],
       "tutorMoves": [
-        "brine",
-        "iron-defense"
+        "barrier"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -7651,11 +6967,15 @@
           "upgrades": [
             {
               "from": "vice-grip",
-              "to": "crabhammer"
+              "to": "vice-grip-plus"
+            },
+            {
+              "from": "leer",
+              "to": "stomp"
             }
           ],
           "adds": [
-            "guillotine-k"
+            "guillotine"
           ]
         },
         {
@@ -7667,18 +6987,22 @@
           "upgrades": [
             {
               "from": "harden",
-              "to": "iron-defense"
+              "to": "harden-plus"
+            },
+            {
+              "from": "bubble",
+              "to": "bubble-beam"
             }
           ],
           "adds": [
-            "wide-guard"
+            "withdraw"
           ],
           "abilityId": "shell-armor"
         }
       ],
       "hiddenAbility": "sheer-force",
       "eggMoves": [
-        "ancient-power",
+        "rock-slide",
         "agility",
         "slam"
       ]
@@ -7703,28 +7027,7 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "metal-claw"
-        },
-        {
-          "level": 17,
-          "move": "stomp"
-        },
-        {
-          "level": 26,
-          "move": "crabhammer"
-        },
-        {
-          "level": 32,
-          "move": "guillotine-k"
-        },
-        {
-          "level": 38,
-          "move": "brine"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "shell-armor",
         "sturdy"
@@ -7767,15 +7070,11 @@
         },
         {
           "level": 4,
+          "move": "sonic-boom"
+        },
+        {
+          "level": 8,
           "move": "thunder-shock"
-        },
-        {
-          "level": 7,
-          "move": "spark"
-        },
-        {
-          "level": 10,
-          "move": "self-destruct"
         }
       ],
       "availableAbilities": [
@@ -7785,7 +7084,7 @@
       "hiddenAbility": "speed-boost",
       "tutorMoves": [
         "thunder-wave",
-        "rollout"
+        "defense-curl"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -7801,15 +7100,17 @@
           "to": "electrode",
           "upgrades": [
             {
-              "from": "self-destruct",
-              "to": "explosion"
+              "from": "tackle",
+              "to": "self-destruct"
             },
             {
-              "from": "tackle",
-              "to": "take-down"
+              "from": "thunder-shock",
+              "to": "thunder-shock-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "swift"
+          ]
         },
         {
           "id": "electrode-specialist",
@@ -7820,11 +7121,15 @@
           "upgrades": [
             {
               "from": "thunder-shock",
-              "to": "charge-beam"
+              "to": "thunderbolt"
+            },
+            {
+              "from": "sonic-boom",
+              "to": "sonic-boom-plus"
             }
           ],
           "adds": [
-            "discharge"
+            "light-screen"
           ],
           "abilityId": "static"
         }
@@ -7850,28 +7155,7 @@
         "defense": 2,
         "speed": 4
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "charge-beam"
-        },
-        {
-          "level": 18,
-          "move": "swift"
-        },
-        {
-          "level": 22,
-          "move": "discharge"
-        },
-        {
-          "level": 26,
-          "move": "thunderbolt"
-        },
-        {
-          "level": 32,
-          "move": "explosion"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "static",
         "run-down"
@@ -7916,15 +7200,11 @@
         },
         {
           "level": 4,
+          "move": "reflect"
+        },
+        {
+          "level": 8,
           "move": "leech-seed"
-        },
-        {
-          "level": 7,
-          "move": "confusion"
-        },
-        {
-          "level": 10,
-          "move": "stun-spore"
         }
       ],
       "availableAbilities": [
@@ -7951,10 +7231,14 @@
             {
               "from": "barrage",
               "to": "egg-bomb"
+            },
+            {
+              "from": "reflect",
+              "to": "psychic"
             }
           ],
           "adds": [
-            "psychic"
+            "stomp"
           ]
         },
         {
@@ -7966,19 +7250,22 @@
           "upgrades": [
             {
               "from": "leech-seed",
+              "to": "leech-seed-plus"
+            },
+            {
+              "from": "hypnosis",
               "to": "sleep-powder"
             }
           ],
           "adds": [
-            "reflect"
+            "stun-spore"
           ],
           "abilityId": "healer"
         }
       ],
       "eggMoves": [
-        "ancient-power",
-        "synthesis",
-        "moonlight"
+        "rock-slide",
+        "recover"
       ]
     },
     {
@@ -8002,31 +7289,14 @@
         "defense": 3,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "stomp"
-        },
-        {
-          "level": 18,
-          "move": "egg-bomb"
-        },
-        {
-          "level": 24,
-          "move": "psychic"
-        },
-        {
-          "level": 30,
-          "move": "solar-beam"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "chlorophyll",
         "healer"
       ],
       "tutorMoves": [
-        "giga-drain",
-        "extrasensory"
+        "mega-drain",
+        "psybeam"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
@@ -8055,23 +7325,19 @@
       "learnset": [
         {
           "level": 1,
-          "move": "growl"
+          "move": "bone-club"
         },
         {
           "level": 1,
-          "move": "bone-club"
+          "move": "growl"
         },
         {
           "level": 4,
           "move": "tail-whip"
         },
         {
-          "level": 7,
-          "move": "headbutt"
-        },
-        {
-          "level": 10,
-          "move": "focus-energy"
+          "level": 8,
+          "move": "leer"
         }
       ],
       "availableAbilities": [
@@ -8079,8 +7345,7 @@
       ],
       "hiddenAbility": "battle-armor",
       "tutorMoves": [
-        "mud-slap",
-        "dig"
+        "sand-attack"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -8096,8 +7361,12 @@
           "to": "marowak",
           "upgrades": [
             {
-              "from": "headbutt",
-              "to": "bone-rush"
+              "from": "bone-club",
+              "to": "bone-club-plus"
+            },
+            {
+              "from": "tail-whip",
+              "to": "focus-energy"
             }
           ],
           "adds": [
@@ -8113,15 +7382,20 @@
           "upgrades": [
             {
               "from": "bone-club",
-              "to": "bonemerang"
+              "to": "dig"
+            },
+            {
+              "from": "leer",
+              "to": "leer-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "rock-slide"
+          ]
         }
       ],
       "eggMoves": [
         "double-kick",
-        "ancient-power",
         "skull-bash"
       ]
     },
@@ -8145,30 +7419,12 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "bonemerang"
-        },
-        {
-          "level": 20,
-          "move": "thrash"
-        },
-        {
-          "level": 26,
-          "move": "bone-rush"
-        },
-        {
-          "level": 32,
-          "move": "earthquake"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "rock-head"
       ],
       "tutorMoves": [
-        "swords-dance",
-        "rock-slide-m"
+        "swords-dance"
       ],
       "evolvesTo": [],
       "rarity": "rare",
@@ -8201,27 +7457,19 @@
         },
         {
           "level": 1,
-          "move": "focus-energy"
+          "move": "meditate"
         },
         {
-          "level": 6,
+          "level": 8,
+          "move": "swift"
+        },
+        {
+          "level": 16,
           "move": "rolling-kick"
         },
         {
-          "level": 12,
-          "move": "jump-kick"
-        },
-        {
-          "level": 18,
-          "move": "mega-kick"
-        },
-        {
           "level": 24,
-          "move": "hi-jump-kick"
-        },
-        {
-          "level": 30,
-          "move": "close-combat"
+          "move": "high-jump-kick"
         }
       ],
       "availableAbilities": [
@@ -8229,7 +7477,6 @@
         "rock-head"
       ],
       "tutorMoves": [
-        "bulk-up",
         "low-kick"
       ],
       "evolvesTo": [],
@@ -8237,8 +7484,8 @@
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "mach-punch",
-        "rapid-spin"
+        "comet-punch",
+        "withdraw"
       ]
     },
     {
@@ -8264,31 +7511,23 @@
       "learnset": [
         {
           "level": 1,
-          "move": "mach-punch"
+          "move": "comet-punch"
         },
         {
           "level": 1,
-          "move": "bulk-up"
+          "move": "agility"
         },
         {
-          "level": 6,
+          "level": 8,
+          "move": "swift"
+        },
+        {
+          "level": 16,
           "move": "fire-punch"
         },
         {
-          "level": 12,
-          "move": "ice-punch"
-        },
-        {
-          "level": 18,
-          "move": "thunder-punch"
-        },
-        {
           "level": 24,
-          "move": "sky-uppercut"
-        },
-        {
-          "level": 30,
-          "move": "close-combat"
+          "move": "ice-punch"
         }
       ],
       "availableAbilities": [
@@ -8296,7 +7535,6 @@
         "steadfast"
       ],
       "tutorMoves": [
-        "agility",
         "body-slam"
       ],
       "evolvesTo": [],
@@ -8304,8 +7542,8 @@
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "rapid-spin",
-        "hi-jump-kick"
+        "withdraw",
+        "high-jump-kick"
       ]
     },
     {
@@ -8331,35 +7569,23 @@
       "learnset": [
         {
           "level": 1,
-          "move": "lick"
+          "move": "wrap"
         },
         {
           "level": 1,
           "move": "supersonic"
         },
         {
-          "level": 5,
-          "move": "wrap"
-        },
-        {
-          "level": 10,
+          "level": 8,
           "move": "stomp"
         },
         {
-          "level": 15,
+          "level": 16,
           "move": "disable"
         },
         {
-          "level": 20,
+          "level": 24,
           "move": "slam"
-        },
-        {
-          "level": 26,
-          "move": "screech"
-        },
-        {
-          "level": 32,
-          "move": "power-whip"
         }
       ],
       "availableAbilities": [
@@ -8376,7 +7602,7 @@
       "archetype": "support",
       "eggMoves": [
         "body-slam",
-        "zen-headbutt",
+        "headbutt",
         "amnesia"
       ]
     },
@@ -8414,11 +7640,7 @@
           "move": "smokescreen"
         },
         {
-          "level": 7,
-          "move": "sludge"
-        },
-        {
-          "level": 10,
+          "level": 8,
           "move": "self-destruct"
         }
       ],
@@ -8445,11 +7667,15 @@
           "upgrades": [
             {
               "from": "smokescreen",
-              "to": "poison-powder"
+              "to": "smokescreen-plus"
+            },
+            {
+              "from": "tackle",
+              "to": "poison-gas"
             }
           ],
           "adds": [
-            "will-o-wisp"
+            "haze"
           ],
           "abilityId": "poison-point"
         },
@@ -8462,14 +7688,16 @@
           "upgrades": [
             {
               "from": "self-destruct",
-              "to": "explosion"
+              "to": "self-destruct-plus"
             },
             {
-              "from": "tackle",
-              "to": "take-down"
+              "from": "smog",
+              "to": "smog-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "explosion"
+          ]
         }
       ],
       "eggMoves": [
@@ -8498,24 +7726,7 @@
         "defense": 4,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "toxic"
-        },
-        {
-          "level": 18,
-          "move": "sludge-bomb"
-        },
-        {
-          "level": 24,
-          "move": "sludge-wave"
-        },
-        {
-          "level": 30,
-          "move": "explosion"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "poison-point",
         "cloud-nine"
@@ -8563,11 +7774,7 @@
           "move": "stomp"
         },
         {
-          "level": 7,
-          "move": "fury-attack"
-        },
-        {
-          "level": 10,
+          "level": 8,
           "move": "rock-throw"
         }
       ],
@@ -8576,8 +7783,7 @@
         "solid-rock"
       ],
       "tutorMoves": [
-        "bulldoze",
-        "iron-tail"
+        "slam"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -8594,11 +7800,15 @@
           "upgrades": [
             {
               "from": "horn-attack",
-              "to": "drill-run"
+              "to": "horn-drill"
+            },
+            {
+              "from": "stomp",
+              "to": "stomp-plus"
             }
           ],
           "adds": [
-            "megahorn"
+            "take-down"
           ]
         },
         {
@@ -8609,18 +7819,22 @@
           "to": "rhydon",
           "upgrades": [
             {
+              "from": "tail-whip",
+              "to": "rock-slide"
+            },
+            {
               "from": "rock-throw",
-              "to": "rock-slide-m"
+              "to": "rock-throw-plus"
             }
           ],
           "adds": [
-            "earthquake"
+            "dig"
           ]
         }
       ],
       "eggMoves": [
-        "crunch",
-        "fire-fang",
+        "hyper-fang",
+        "fire-punch",
         "skull-bash"
       ],
       "hiddenAbility": "sturdy"
@@ -8646,28 +7860,7 @@
         "defense": 3,
         "speed": 1
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "rock-slide-m"
-        },
-        {
-          "level": 18,
-          "move": "horn-drill"
-        },
-        {
-          "level": 22,
-          "move": "earthquake"
-        },
-        {
-          "level": 28,
-          "move": "stone-edge"
-        },
-        {
-          "level": 34,
-          "move": "megahorn"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "rock-head",
         "solid-rock"
@@ -8707,35 +7900,19 @@
         },
         {
           "level": 1,
-          "move": "growl"
-        },
-        {
-          "level": 5,
           "move": "double-slap"
         },
         {
-          "level": 10,
+          "level": 8,
           "move": "sing"
         },
         {
-          "level": 15,
-          "move": "softboiled"
+          "level": 16,
+          "move": "growl"
         },
         {
-          "level": 20,
-          "move": "minimize"
-        },
-        {
-          "level": 26,
-          "move": "egg-bomb"
-        },
-        {
-          "level": 32,
-          "move": "light-screen"
-        },
-        {
-          "level": 38,
-          "move": "double-edge"
+          "level": 24,
+          "move": "soft-boiled"
         }
       ],
       "availableAbilities": [
@@ -8750,7 +7927,7 @@
       "branches": [],
       "archetype": "support",
       "eggMoves": [
-        "mud-bomb"
+        "dig"
       ]
     },
     {
@@ -8776,39 +7953,23 @@
       "learnset": [
         {
           "level": 1,
-          "move": "vine-whip"
+          "move": "constrict"
         },
         {
           "level": 1,
-          "move": "wrap"
+          "move": "bind"
         },
         {
-          "level": 5,
+          "level": 8,
           "move": "absorb"
         },
         {
-          "level": 10,
+          "level": 16,
           "move": "poison-powder"
         },
         {
-          "level": 15,
+          "level": 24,
           "move": "stun-spore"
-        },
-        {
-          "level": 20,
-          "move": "mega-drain"
-        },
-        {
-          "level": 26,
-          "move": "ingrain"
-        },
-        {
-          "level": 32,
-          "move": "giga-drain"
-        },
-        {
-          "level": 38,
-          "move": "power-whip"
         }
       ],
       "availableAbilities": [
@@ -8817,7 +7978,7 @@
       ],
       "tutorMoves": [
         "sleep-powder",
-        "ancient-power"
+        "rock-slide"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
@@ -8856,35 +8017,19 @@
         },
         {
           "level": 1,
-          "move": "leer"
-        },
-        {
-          "level": 5,
-          "move": "bite"
-        },
-        {
-          "level": 10,
           "move": "rage"
         },
         {
-          "level": 15,
+          "level": 8,
+          "move": "bite"
+        },
+        {
+          "level": 16,
+          "move": "tail-whip"
+        },
+        {
+          "level": 24,
           "move": "mega-punch"
-        },
-        {
-          "level": 20,
-          "move": "dizzy-punch"
-        },
-        {
-          "level": 26,
-          "move": "crunch"
-        },
-        {
-          "level": 32,
-          "move": "body-slam"
-        },
-        {
-          "level": 38,
-          "move": "giga-impact-v"
         }
       ],
       "availableAbilities": [
@@ -8900,7 +8045,7 @@
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "circle-throw",
+        "seismic-toss",
         "double-edge",
         "stomp"
       ]
@@ -8936,15 +8081,11 @@
         },
         {
           "level": 4,
+          "move": "leer"
+        },
+        {
+          "level": 8,
           "move": "water-gun"
-        },
-        {
-          "level": 7,
-          "move": "focus-energy"
-        },
-        {
-          "level": 10,
-          "move": "dragon-rage"
         }
       ],
       "availableAbilities": [
@@ -8953,7 +8094,6 @@
       ],
       "hiddenAbility": "swift-swim",
       "tutorMoves": [
-        "aqua-jet",
         "swift"
       ],
       "evolveLevel": 12,
@@ -8971,11 +8111,15 @@
           "upgrades": [
             {
               "from": "water-gun",
-              "to": "water-pulse"
+              "to": "hydro-pump"
+            },
+            {
+              "from": "bubble",
+              "to": "bubble-beam"
             }
           ],
           "adds": [
-            "dragon-pulse"
+            "ice-beam"
           ],
           "abilityId": "snipe"
         },
@@ -8988,18 +8132,22 @@
           "upgrades": [
             {
               "from": "smokescreen",
-              "to": "screech"
+              "to": "smokescreen-plus"
+            },
+            {
+              "from": "leer",
+              "to": "agility"
             }
           ],
           "adds": [
-            "agility"
+            "haze"
           ]
         }
       ],
       "eggMoves": [
-        "outrage",
+        "thrash",
         "aurora-beam",
-        "signal-beam"
+        "psybeam"
       ]
     },
     {
@@ -9022,31 +8170,13 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "bubble-beam"
-        },
-        {
-          "level": 18,
-          "move": "agility"
-        },
-        {
-          "level": 22,
-          "move": "dragon-pulse"
-        },
-        {
-          "level": 28,
-          "move": "hydro-pump"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "snipe",
         "damp"
       ],
       "tutorMoves": [
-        "surf",
-        "ice-beam"
+        "surf"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -9083,14 +8213,10 @@
         },
         {
           "level": 4,
-          "move": "water-gun"
-        },
-        {
-          "level": 7,
           "move": "supersonic"
         },
         {
-          "level": 10,
+          "level": 8,
           "move": "horn-attack"
         }
       ],
@@ -9100,8 +8226,8 @@
       ],
       "hiddenAbility": "snipe",
       "tutorMoves": [
-        "aqua-jet",
-        "flail"
+        "bubble",
+        "rage"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -9118,10 +8244,16 @@
           "upgrades": [
             {
               "from": "horn-attack",
-              "to": "megahorn"
+              "to": "horn-attack-plus"
+            },
+            {
+              "from": "peck",
+              "to": "fury-attack"
             }
           ],
-          "adds": []
+          "adds": [
+            "horn-drill"
+          ]
         },
         {
           "id": "seaking-specialist",
@@ -9131,17 +8263,20 @@
           "to": "seaking",
           "upgrades": [
             {
-              "from": "water-gun",
+              "from": "supersonic",
               "to": "waterfall"
+            },
+            {
+              "from": "tail-whip",
+              "to": "agility"
             }
           ],
           "adds": [
-            "aqua-ring"
+            "bubble-beam"
           ]
         }
       ],
       "eggMoves": [
-        "aqua-tail",
         "hydro-pump",
         "body-slam"
       ]
@@ -9166,28 +8301,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "waterfall"
-        },
-        {
-          "level": 18,
-          "move": "agility"
-        },
-        {
-          "level": 22,
-          "move": "aqua-ring"
-        },
-        {
-          "level": 28,
-          "move": "megahorn"
-        },
-        {
-          "level": 34,
-          "move": "horn-drill"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "water-veil",
         "swift-swim"
@@ -9234,11 +8348,7 @@
           "move": "water-gun"
         },
         {
-          "level": 7,
-          "move": "rapid-spin"
-        },
-        {
-          "level": 10,
+          "level": 8,
           "move": "swift"
         }
       ],
@@ -9248,7 +8358,6 @@
       ],
       "hiddenAbility": "adaptability",
       "tutorMoves": [
-        "bubble-beam",
         "agility"
       ],
       "evolveLevel": 12,
@@ -9266,11 +8375,15 @@
           "upgrades": [
             {
               "from": "swift",
-              "to": "psybeam"
+              "to": "psychic"
+            },
+            {
+              "from": "water-gun",
+              "to": "bubble-beam"
             }
           ],
           "adds": [
-            "psychic"
+            "thunderbolt"
           ]
         },
         {
@@ -9283,10 +8396,14 @@
             {
               "from": "harden",
               "to": "recover"
+            },
+            {
+              "from": "tackle",
+              "to": "light-screen"
             }
           ],
           "adds": [
-            "confuse-ray"
+            "minimize"
           ],
           "abilityId": "healer"
         }
@@ -9313,35 +8430,13 @@
         "defense": 2,
         "speed": 4
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "psybeam"
-        },
-        {
-          "level": 18,
-          "move": "recover"
-        },
-        {
-          "level": 22,
-          "move": "confuse-ray"
-        },
-        {
-          "level": 26,
-          "move": "psychic"
-        },
-        {
-          "level": 32,
-          "move": "hydro-pump"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "healer",
         "anticipation"
       ],
       "tutorMoves": [
-        "surf",
-        "thunderbolt"
+        "surf"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
@@ -9377,32 +8472,16 @@
           "move": "barrier"
         },
         {
-          "level": 5,
-          "move": "double-slap"
-        },
-        {
-          "level": 10,
+          "level": 8,
           "move": "light-screen"
         },
         {
-          "level": 15,
+          "level": 16,
+          "move": "double-slap"
+        },
+        {
+          "level": 24,
           "move": "reflect"
-        },
-        {
-          "level": 20,
-          "move": "psybeam"
-        },
-        {
-          "level": 26,
-          "move": "psychic"
-        },
-        {
-          "level": 32,
-          "move": "calm-mind"
-        },
-        {
-          "level": 38,
-          "move": "psyshock"
         }
       ],
       "availableAbilities": [
@@ -9418,9 +8497,9 @@
       "branches": [],
       "archetype": "support",
       "eggMoves": [
-        "icy-wind",
+        "aurora-beam",
         "confuse-ray",
-        "charm"
+        "growl"
       ],
       "hiddenAbility": "shell-armor"
     },
@@ -9455,32 +8534,16 @@
           "move": "leer"
         },
         {
-          "level": 5,
+          "level": 8,
           "move": "focus-energy"
         },
         {
-          "level": 10,
+          "level": 16,
+          "move": "swift"
+        },
+        {
+          "level": 24,
           "move": "wing-attack"
-        },
-        {
-          "level": 15,
-          "move": "slash"
-        },
-        {
-          "level": 20,
-          "move": "swords-dance"
-        },
-        {
-          "level": 26,
-          "move": "x-scissor"
-        },
-        {
-          "level": 32,
-          "move": "air-slash"
-        },
-        {
-          "level": 38,
-          "move": "fly"
         }
       ],
       "availableAbilities": [
@@ -9488,7 +8551,6 @@
         "steadfast"
       ],
       "tutorMoves": [
-        "aerial-ace",
         "double-edge"
       ],
       "evolvesTo": [],
@@ -9496,8 +8558,8 @@
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "bug-buzz",
-        "silver-wind"
+        "pin-missile",
+        "gust"
       ],
       "hiddenAbility": "tough-claws"
     },
@@ -9532,32 +8594,16 @@
           "move": "lovely-kiss"
         },
         {
-          "level": 5,
+          "level": 8,
           "move": "lick"
         },
         {
-          "level": 10,
-          "move": "powder-snow"
-        },
-        {
-          "level": 15,
+          "level": 16,
           "move": "double-slap"
         },
         {
-          "level": 20,
+          "level": 24,
           "move": "ice-punch"
-        },
-        {
-          "level": 26,
-          "move": "ice-beam"
-        },
-        {
-          "level": 32,
-          "move": "psychic"
-        },
-        {
-          "level": 38,
-          "move": "blizzard"
         }
       ],
       "availableAbilities": [
@@ -9565,15 +8611,15 @@
         "own-tempo"
       ],
       "tutorMoves": [
-        "psyshock",
-        "calm-mind"
+        "psychic",
+        "amnesia"
       ],
       "evolvesTo": [],
       "rarity": "rare",
       "branches": [],
       "archetype": "specialist",
       "eggMoves": [
-        "wish"
+        "recover"
       ],
       "hiddenAbility": "sheer-force"
     },
@@ -9607,28 +8653,16 @@
           "move": "leer"
         },
         {
-          "level": 5,
+          "level": 8,
           "move": "thunder-shock"
         },
         {
-          "level": 9,
-          "move": "low-kick"
-        },
-        {
-          "level": 13,
-          "move": "thunder-punch"
-        },
-        {
-          "level": 18,
+          "level": 16,
           "move": "screech"
         },
         {
           "level": 24,
-          "move": "thunderbolt"
-        },
-        {
-          "level": 30,
-          "move": "thunder"
+          "move": "thunder-punch"
         }
       ],
       "availableAbilities": [
@@ -9644,9 +8678,8 @@
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "cross-chop",
-        "dynamic-punch",
-        "karate-chop"
+        "karate-chop",
+        "submission"
       ],
       "hiddenAbility": "vital-spirit"
     },
@@ -9680,28 +8713,16 @@
           "move": "leer"
         },
         {
-          "level": 5,
-          "move": "smog"
-        },
-        {
-          "level": 10,
+          "level": 8,
           "move": "confuse-ray"
         },
         {
-          "level": 15,
+          "level": 16,
           "move": "fire-punch"
         },
         {
-          "level": 20,
-          "move": "lava-plume"
-        },
-        {
-          "level": 26,
-          "move": "flamethrower"
-        },
-        {
-          "level": 32,
-          "move": "fire-blast"
+          "level": 24,
+          "move": "smokescreen"
         }
       ],
       "availableAbilities": [
@@ -9717,9 +8738,9 @@
       "branches": [],
       "archetype": "specialist",
       "eggMoves": [
-        "mach-punch",
-        "cross-chop",
-        "flare-blitz"
+        "comet-punch",
+        "karate-chop",
+        "fire-blast"
       ],
       "hiddenAbility": "flash-fire"
     },
@@ -9753,32 +8774,16 @@
           "move": "focus-energy"
         },
         {
-          "level": 5,
-          "move": "harden"
-        },
-        {
-          "level": 10,
+          "level": 8,
           "move": "seismic-toss"
         },
         {
-          "level": 15,
-          "move": "x-scissor"
+          "level": 16,
+          "move": "harden"
         },
         {
-          "level": 20,
-          "move": "swords-dance"
-        },
-        {
-          "level": 26,
-          "move": "submission"
-        },
-        {
-          "level": 32,
+          "level": 24,
           "move": "guillotine"
-        },
-        {
-          "level": 38,
-          "move": "megahorn"
         }
       ],
       "availableAbilities": [
@@ -9787,16 +8792,16 @@
       ],
       "tutorMoves": [
         "earthquake",
-        "stone-edge"
+        "rock-slide"
       ],
       "evolvesTo": [],
       "rarity": "rare",
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "close-combat",
+        "submission",
         "quick-attack",
-        "bug-bite"
+        "leech-life"
       ]
     },
     {
@@ -9829,32 +8834,16 @@
           "move": "tail-whip"
         },
         {
-          "level": 5,
-          "move": "rage"
-        },
-        {
-          "level": 10,
-          "move": "horn-attack"
-        },
-        {
-          "level": 15,
+          "level": 8,
           "move": "stomp"
         },
         {
-          "level": 20,
+          "level": 16,
+          "move": "leer"
+        },
+        {
+          "level": 24,
           "move": "take-down"
-        },
-        {
-          "level": 26,
-          "move": "zen-headbutt"
-        },
-        {
-          "level": 32,
-          "move": "thrash"
-        },
-        {
-          "level": 38,
-          "move": "giga-impact-v"
         }
       ],
       "availableAbilities": [
@@ -9898,10 +8887,6 @@
         {
           "level": 1,
           "move": "tackle"
-        },
-        {
-          "level": 12,
-          "move": "flail"
         }
       ],
       "availableAbilities": [
@@ -9927,12 +8912,16 @@
           "to": "gyarados",
           "upgrades": [
             {
-              "from": "flail",
-              "to": "aqua-tail-g"
+              "from": "tackle",
+              "to": "bite-plus"
+            },
+            {
+              "from": "splash",
+              "to": "leer"
             }
           ],
           "adds": [
-            "crunch"
+            "thrash"
           ],
           "abilityId": "intimidate"
         },
@@ -9944,8 +8933,12 @@
           "to": "gyarados",
           "upgrades": [
             {
-              "from": "tackle",
+              "from": "splash",
               "to": "dragon-rage"
+            },
+            {
+              "from": "tackle",
+              "to": "bubble-beam"
             }
           ],
           "adds": [
@@ -9977,28 +8970,7 @@
         "defense": 2,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 19,
-          "move": "bite"
-        },
-        {
-          "level": 22,
-          "move": "dragon-rage"
-        },
-        {
-          "level": 26,
-          "move": "aqua-tail-g"
-        },
-        {
-          "level": 30,
-          "move": "crunch"
-        },
-        {
-          "level": 36,
-          "move": "hydro-pump"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "swift-swim",
         "intimidate",
@@ -10007,7 +8979,7 @@
       "evolvesTo": [],
       "rarity": "rare",
       "tutorMoves": [
-        "iron-tail",
+        "slam",
         "body-slam",
         "surf"
       ],
@@ -10041,35 +9013,19 @@
         },
         {
           "level": 1,
+          "move": "growl"
+        },
+        {
+          "level": 8,
           "move": "sing"
         },
         {
-          "level": 6,
+          "level": 16,
           "move": "mist"
         },
         {
-          "level": 12,
-          "move": "ice-shard"
-        },
-        {
-          "level": 18,
-          "move": "body-slam"
-        },
-        {
           "level": 24,
-          "move": "confuse-ray"
-        },
-        {
-          "level": 30,
-          "move": "ice-beam"
-        },
-        {
-          "level": 36,
-          "move": "surf"
-        },
-        {
-          "level": 42,
-          "move": "sheer-cold-l"
+          "move": "body-slam"
         }
       ],
       "availableAbilities": [
@@ -10085,8 +9041,8 @@
       "branches": [],
       "archetype": "support",
       "eggMoves": [
-        "dragon-pulse",
-        "ancient-power",
+        "dragon-rage",
+        "rock-slide",
         "horn-drill"
       ],
       "hiddenAbility": "rain-dish"
@@ -10114,7 +9070,7 @@
       "learnset": [
         {
           "level": 1,
-          "move": "transform-d"
+          "move": "transform"
         },
         {
           "level": 1,
@@ -10164,16 +9120,8 @@
           "move": "sand-attack"
         },
         {
-          "level": 7,
+          "level": 8,
           "move": "quick-attack"
-        },
-        {
-          "level": 9,
-          "move": "bite"
-        },
-        {
-          "level": 11,
-          "move": "swift"
         }
       ],
       "availableAbilities": [
@@ -10191,7 +9139,7 @@
       "tutorMoves": [
         "dig",
         "body-slam",
-        "charm"
+        "growl"
       ],
       "branches": [
         {
@@ -10202,12 +9150,16 @@
           "to": "flareon",
           "upgrades": [
             {
-              "from": "bite",
-              "to": "fire-fang"
+              "from": "tackle",
+              "to": "ember"
+            },
+            {
+              "from": "quick-attack",
+              "to": "fire-spin"
             }
           ],
           "adds": [
-            "flare-blitz"
+            "flamethrower"
           ],
           "abilityId": "flash-fire"
         },
@@ -10219,12 +9171,16 @@
           "to": "jolteon",
           "upgrades": [
             {
-              "from": "swift",
-              "to": "thunderbolt"
+              "from": "tackle",
+              "to": "thunder-shock"
+            },
+            {
+              "from": "quick-attack",
+              "to": "pin-missile"
             }
           ],
           "adds": [
-            "thunder-wave"
+            "thunderbolt"
           ],
           "abilityId": "volt-absorb"
         },
@@ -10236,19 +9192,23 @@
           "to": "vaporeon",
           "upgrades": [
             {
+              "from": "tackle",
+              "to": "water-gun"
+            },
+            {
               "from": "tail-whip",
-              "to": "aqua-ring"
+              "to": "acid-armor"
             }
           ],
           "adds": [
-            "wish"
+            "aurora-beam"
           ],
           "abilityId": "water-absorb"
         }
       ],
       "hiddenAbility": "anticipation",
       "eggMoves": [
-        "flail"
+        "rage"
       ]
     },
     {
@@ -10271,24 +9231,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 22,
-          "move": "water-gun"
-        },
-        {
-          "level": 26,
-          "move": "aqua-ring"
-        },
-        {
-          "level": 32,
-          "move": "hydro-pump"
-        },
-        {
-          "level": 38,
-          "move": "acid-armor"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "adaptability",
         "run-down",
@@ -10299,7 +9242,7 @@
       "rarity": "rare",
       "tutorMoves": [
         "surf",
-        "water-pulse",
+        "bubble-beam",
         "toxic"
       ],
       "branches": []
@@ -10324,24 +9267,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 22,
-          "move": "thunder-shock"
-        },
-        {
-          "level": 26,
-          "move": "agility"
-        },
-        {
-          "level": 32,
-          "move": "thunderbolt"
-        },
-        {
-          "level": 38,
-          "move": "thunder"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "adaptability",
         "run-down",
@@ -10353,8 +9279,8 @@
       "rarity": "rare",
       "tutorMoves": [
         "double-edge",
-        "iron-tail",
-        "zen-headbutt"
+        "slam",
+        "headbutt"
       ],
       "branches": []
     },
@@ -10378,24 +9304,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 22,
-          "move": "ember"
-        },
-        {
-          "level": 26,
-          "move": "fire-fang"
-        },
-        {
-          "level": 32,
-          "move": "flamethrower"
-        },
-        {
-          "level": 38,
-          "move": "flare-blitz"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "adaptability",
         "run-down",
@@ -10406,9 +9315,8 @@
       "evolvesTo": [],
       "rarity": "rare",
       "tutorMoves": [
-        "heat-wave",
-        "will-o-wisp",
-        "iron-tail"
+        "confuse-ray",
+        "slam"
       ],
       "branches": []
     },
@@ -10439,35 +9347,19 @@
         },
         {
           "level": 1,
-          "move": "focus-energy"
+          "move": "sharpen"
         },
         {
-          "level": 5,
+          "level": 8,
+          "move": "conversion"
+        },
+        {
+          "level": 16,
           "move": "psybeam"
         },
         {
-          "level": 10,
+          "level": 24,
           "move": "agility"
-        },
-        {
-          "level": 15,
-          "move": "recover"
-        },
-        {
-          "level": 20,
-          "move": "tri-attack"
-        },
-        {
-          "level": 26,
-          "move": "discharge"
-        },
-        {
-          "level": 32,
-          "move": "zap-cannon"
-        },
-        {
-          "level": 38,
-          "move": "hyper-beam"
         }
       ],
       "availableAbilities": [
@@ -10515,15 +9407,11 @@
         },
         {
           "level": 4,
-          "move": "bite"
+          "move": "horn-attack"
         },
         {
-          "level": 7,
-          "move": "ancient-power"
-        },
-        {
-          "level": 10,
-          "move": "spike-cannon"
+          "level": 8,
+          "move": "leer"
         }
       ],
       "availableAbilities": [
@@ -10531,7 +9419,7 @@
         "swift-swim"
       ],
       "tutorMoves": [
-        "mud-shot",
+        "sand-attack",
         "aurora-beam"
       ],
       "evolveLevel": 12,
@@ -10550,10 +9438,14 @@
             {
               "from": "water-gun",
               "to": "hydro-pump"
+            },
+            {
+              "from": "leer",
+              "to": "rock-slide"
             }
           ],
           "adds": [
-            "power-gem"
+            "ice-beam"
           ]
         },
         {
@@ -10564,17 +9456,22 @@
           "to": "omastar",
           "upgrades": [
             {
-              "from": "spike-cannon",
-              "to": "rock-blast"
+              "from": "horn-attack",
+              "to": "horn-attack-plus"
+            },
+            {
+              "from": "withdraw",
+              "to": "withdraw-plus"
             }
           ],
-          "adds": [],
+          "adds": [
+            "rock-throw"
+          ],
           "abilityId": "shell-armor"
         }
       ],
       "eggMoves": [
         "bubble-beam",
-        "water-pulse",
         "supersonic"
       ]
     },
@@ -10599,31 +9496,13 @@
         "defense": 3,
         "speed": 2
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "brine"
-        },
-        {
-          "level": 18,
-          "move": "rock-blast"
-        },
-        {
-          "level": 22,
-          "move": "power-gem"
-        },
-        {
-          "level": 28,
-          "move": "hydro-pump"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "shell-armor",
         "swift-swim"
       ],
       "tutorMoves": [
-        "ice-beam",
-        "earth-power"
+        "earthquake"
       ],
       "evolvesTo": [],
       "rarity": "rare",
@@ -10664,12 +9543,8 @@
           "move": "absorb"
         },
         {
-          "level": 7,
-          "move": "aqua-jet"
-        },
-        {
-          "level": 10,
-          "move": "ancient-power"
+          "level": 8,
+          "move": "leer"
         }
       ],
       "availableAbilities": [
@@ -10677,7 +9552,7 @@
         "swift-swim"
       ],
       "tutorMoves": [
-        "mud-shot",
+        "sand-attack",
         "rock-throw"
       ],
       "evolveLevel": 12,
@@ -10695,11 +9570,15 @@
           "upgrades": [
             {
               "from": "scratch",
-              "to": "slash"
+              "to": "scratch-plus"
+            },
+            {
+              "from": "leer",
+              "to": "swords-dance"
             }
           ],
           "adds": [
-            "x-scissor"
+            "rock-slide"
           ]
         },
         {
@@ -10712,16 +9591,19 @@
             {
               "from": "absorb",
               "to": "mega-drain"
+            },
+            {
+              "from": "harden",
+              "to": "harden-plus"
             }
           ],
           "adds": [
-            "rock-slide-m"
+            "surf"
           ]
         }
       ],
       "eggMoves": [
-        "rapid-spin",
-        "giga-drain",
+        "withdraw",
         "aurora-beam"
       ]
     },
@@ -10746,34 +9628,12 @@
         "defense": 3,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 14,
-          "move": "slash"
-        },
-        {
-          "level": 18,
-          "move": "mega-drain"
-        },
-        {
-          "level": 22,
-          "move": "rock-slide-m"
-        },
-        {
-          "level": 28,
-          "move": "x-scissor"
-        },
-        {
-          "level": 34,
-          "move": "stone-edge"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "battle-armor",
         "swift-swim"
       ],
       "tutorMoves": [
-        "swords-dance",
         "waterfall"
       ],
       "evolvesTo": [],
@@ -10808,35 +9668,19 @@
         },
         {
           "level": 1,
-          "move": "supersonic"
-        },
-        {
-          "level": 6,
-          "move": "bite"
-        },
-        {
-          "level": 12,
-          "move": "ancient-power"
-        },
-        {
-          "level": 18,
           "move": "agility"
         },
         {
+          "level": 8,
+          "move": "supersonic"
+        },
+        {
+          "level": 16,
+          "move": "bite"
+        },
+        {
           "level": 24,
-          "move": "crunch"
-        },
-        {
-          "level": 30,
-          "move": "rock-slide-m"
-        },
-        {
-          "level": 36,
-          "move": "sky-drop"
-        },
-        {
-          "level": 42,
-          "move": "giga-impact-v"
+          "move": "take-down"
         }
       ],
       "availableAbilities": [
@@ -10845,16 +9689,15 @@
       "hiddenAbility": "tough-claws",
       "tutorMoves": [
         "earthquake",
-        "fire-fang"
+        "fire-punch"
       ],
       "evolvesTo": [],
       "rarity": "rare",
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "roost",
-        "tailwind",
-        "wide-guard"
+        "recover",
+        "light-screen"
       ]
     },
     {
@@ -10880,40 +9723,37 @@
       "learnset": [
         {
           "level": 1,
-          "move": "tackle"
+          "move": "headbutt"
         },
         {
           "level": 1,
           "move": "amnesia"
         },
         {
-          "level": 6,
-          "move": "rest-s"
+          "level": 8,
+          "move": "rest"
         },
         {
-          "level": 10,
+          "level": 16,
           "move": "body-slam"
         },
         {
-          "level": 14,
-          "move": "crunch"
+          "level": 24,
+          "move": "harden"
         }
       ],
       "availableAbilities": [
         "sturdy"
       ],
-      "tutorMoves": [
-        "double-edge"
-      ],
+      "tutorMoves": [],
       "evolvesTo": [],
       "rarity": "rare",
       "archetype": "vanguard",
       "catchRate": 0.2,
       "hiddenAbility": "gluttony",
       "eggMoves": [
-        "zen-headbutt",
         "self-destruct",
-        "charm"
+        "growl"
       ]
     },
     {
@@ -10940,39 +9780,23 @@
       "learnset": [
         {
           "level": 1,
-          "move": "gust"
+          "move": "peck"
         },
         {
           "level": 1,
-          "move": "powder-snow"
-        },
-        {
-          "level": 8,
-          "move": "mist"
-        },
-        {
-          "level": 16,
-          "move": "ice-shard"
-        },
-        {
-          "level": 24,
-          "move": "agility"
-        },
-        {
-          "level": 32,
           "move": "ice-beam"
         },
         {
-          "level": 40,
-          "move": "hurricane"
-        },
-        {
-          "level": 48,
+          "level": 10,
           "move": "blizzard"
         },
         {
-          "level": 56,
-          "move": "sheer-cold-l"
+          "level": 20,
+          "move": "agility"
+        },
+        {
+          "level": 40,
+          "move": "mist"
         }
       ],
       "availableAbilities": [
@@ -10980,7 +9804,7 @@
         "inner-focus"
       ],
       "tutorMoves": [
-        "roost",
+        "recover",
         "haze"
       ],
       "evolvesTo": [],
@@ -11012,39 +9836,23 @@
       "learnset": [
         {
           "level": 1,
-          "move": "peck"
-        },
-        {
-          "level": 1,
           "move": "thunder-shock"
         },
         {
-          "level": 8,
-          "move": "thunder-wave"
-        },
-        {
-          "level": 16,
-          "move": "agility"
-        },
-        {
-          "level": 24,
+          "level": 1,
           "move": "drill-peck"
         },
         {
-          "level": 32,
-          "move": "discharge"
+          "level": 10,
+          "move": "thunder"
+        },
+        {
+          "level": 20,
+          "move": "agility"
         },
         {
           "level": 40,
-          "move": "thunderbolt"
-        },
-        {
-          "level": 48,
-          "move": "zap-cannon"
-        },
-        {
-          "level": 56,
-          "move": "thunder"
+          "move": "light-screen"
         }
       ],
       "availableAbilities": [
@@ -11052,8 +9860,7 @@
         "volt-absorb"
       ],
       "tutorMoves": [
-        "roost",
-        "charge-beam"
+        "recover"
       ],
       "evolvesTo": [],
       "rarity": "legendary",
@@ -11084,39 +9891,23 @@
       "learnset": [
         {
           "level": 1,
-          "move": "wing-attack"
+          "move": "peck"
         },
         {
           "level": 1,
-          "move": "ember"
-        },
-        {
-          "level": 8,
           "move": "fire-spin"
         },
         {
-          "level": 16,
+          "level": 10,
+          "move": "leer"
+        },
+        {
+          "level": 20,
           "move": "agility"
         },
         {
-          "level": 24,
-          "move": "flamethrower"
-        },
-        {
-          "level": 32,
-          "move": "air-slash"
-        },
-        {
           "level": 40,
-          "move": "heat-wave"
-        },
-        {
-          "level": 48,
           "move": "sky-attack"
-        },
-        {
-          "level": 56,
-          "move": "fire-blast"
         }
       ],
       "availableAbilities": [
@@ -11124,8 +9915,8 @@
         "flash-fire"
       ],
       "tutorMoves": [
-        "roost",
-        "will-o-wisp"
+        "recover",
+        "confuse-ray"
       ],
       "evolvesTo": [],
       "rarity": "legendary",
@@ -11166,12 +9957,8 @@
           "move": "thunder-wave"
         },
         {
-          "level": 7,
-          "move": "twister"
-        },
-        {
-          "level": 10,
-          "move": "dragon-rage"
+          "level": 8,
+          "move": "agility"
         }
       ],
       "availableAbilities": [
@@ -11180,8 +9967,7 @@
       ],
       "hiddenAbility": "solid-rock",
       "tutorMoves": [
-        "aqua-jet",
-        "body-slam"
+        "bubble"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -11199,9 +9985,15 @@
             {
               "from": "wrap",
               "to": "slam"
+            },
+            {
+              "from": "leer",
+              "to": "leer-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "dragon-rage"
+          ]
         },
         {
           "id": "dragonair-specialist",
@@ -11211,11 +10003,17 @@
           "to": "dragonair",
           "upgrades": [
             {
-              "from": "twister",
-              "to": "dragon-pulse"
+              "from": "wrap",
+              "to": "dragon-rage"
+            },
+            {
+              "from": "thunder-wave",
+              "to": "thunder-wave-plus"
             }
           ],
-          "adds": []
+          "adds": [
+            "bubble-beam"
+          ]
         },
         {
           "id": "dragonair-support",
@@ -11225,21 +10023,21 @@
           "to": "dragonair",
           "upgrades": [
             {
-              "from": "thunder-wave",
-              "to": "safeguard"
+              "from": "agility",
+              "to": "agility-plus"
+            },
+            {
+              "from": "leer",
+              "to": "barrier"
             }
           ],
           "adds": [
-            "aqua-ring"
+            "haze"
           ],
           "abilityId": "inner-focus"
         }
       ],
-      "eggMoves": [
-        "iron-tail",
-        "water-pulse",
-        "haze"
-      ]
+      "eggMoves": []
     },
     {
       "dex": 148,
@@ -11261,32 +10059,12 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 13,
-          "move": "slam"
-        },
-        {
-          "level": 16,
-          "move": "agility"
-        },
-        {
-          "level": 20,
-          "move": "aqua-tail"
-        },
-        {
-          "level": 23,
-          "move": "dragon-pulse"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "inner-focus",
         "iron-shell"
       ],
-      "tutorMoves": [
-        "ice-beam",
-        "thunderbolt"
-      ],
+      "tutorMoves": [],
       "evolveLevel": 26,
       "evolvesTo": [
         "dragonite"
@@ -11301,13 +10079,15 @@
           "to": "dragonite",
           "upgrades": [
             {
-              "from": "slam",
-              "to": "outrage"
+              "from": "wrap",
+              "to": "slam-plus"
+            },
+            {
+              "from": "agility",
+              "to": "body-slam"
             }
           ],
-          "adds": [
-            "extreme-speed"
-          ]
+          "adds": []
         },
         {
           "id": "dragonite-specialist",
@@ -11317,13 +10097,19 @@
           "to": "dragonite",
           "upgrades": [
             {
-              "from": "dragon-pulse",
-              "to": "hurricane"
+              "from": "wrap",
+              "to": "dragon-rage-plus"
+            },
+            {
+              "from": "thunder-wave",
+              "to": "thunderbolt"
+            },
+            {
+              "from": "leer",
+              "to": "ice-beam"
             }
           ],
-          "adds": [
-            "hyper-beam"
-          ]
+          "adds": []
         },
         {
           "id": "dragonite-support",
@@ -11333,13 +10119,19 @@
           "to": "dragonite",
           "upgrades": [
             {
+              "from": "leer",
+              "to": "barrier-plus"
+            },
+            {
+              "from": "thunder-wave",
+              "to": "thunder-wave-plus"
+            },
+            {
               "from": "agility",
-              "to": "roost"
+              "to": "recover"
             }
           ],
-          "adds": [
-            "safeguard"
-          ]
+          "adds": []
         }
       ]
     },
@@ -11364,24 +10156,7 @@
         "defense": 2,
         "speed": 3
       },
-      "learnset": [
-        {
-          "level": 27,
-          "move": "wing-attack"
-        },
-        {
-          "level": 32,
-          "move": "outrage"
-        },
-        {
-          "level": 38,
-          "move": "hurricane"
-        },
-        {
-          "level": 44,
-          "move": "hyper-beam"
-        }
-      ],
+      "learnset": [],
       "availableAbilities": [
         "inner-focus",
         "iron-shell"
@@ -11424,32 +10199,16 @@
           "move": "disable"
         },
         {
-          "level": 8,
+          "level": 10,
           "move": "swift"
         },
         {
-          "level": 16,
-          "move": "barrier"
-        },
-        {
-          "level": 24,
+          "level": 20,
           "move": "psychic"
         },
         {
-          "level": 32,
-          "move": "recover"
-        },
-        {
           "level": 40,
-          "move": "aura-sphere"
-        },
-        {
-          "level": 48,
-          "move": "calm-mind"
-        },
-        {
-          "level": 56,
-          "move": "psystrike"
+          "move": "barrier"
         }
       ],
       "availableAbilities": [
@@ -11492,7 +10251,7 @@
         },
         {
           "level": 1,
-          "move": "reflect"
+          "move": "transform"
         },
         {
           "level": 10,
@@ -11500,23 +10259,11 @@
         },
         {
           "level": 20,
-          "move": "barrier"
-        },
-        {
-          "level": 30,
-          "move": "ancient-power"
+          "move": "metronome"
         },
         {
           "level": 40,
           "move": "psychic"
-        },
-        {
-          "level": 50,
-          "move": "aura-sphere"
-        },
-        {
-          "level": 60,
-          "move": "amnesia"
         }
       ],
       "availableAbilities": [
@@ -11526,8 +10273,7 @@
       "tutorMoves": [
         "flamethrower",
         "thunderbolt",
-        "ice-beam",
-        "earthquake"
+        "ice-beam"
       ],
       "evolvesTo": [],
       "rarity": "legendary",

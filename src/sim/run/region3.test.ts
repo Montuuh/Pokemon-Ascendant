@@ -78,7 +78,7 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
       expect(content.badge(gym.badgeId).region).toBe(3);
     }
     // The two scripted kits are there for the off-type answer their learnsets lack.
-    for (const [gymId, move] of [['psychic-gym-r3', 'shadow-ball'], ['fighting-gym-r3', 'thunder-punch']] as const) {
+    for (const [gymId, move] of [['psychic-gym-r3', 'seismic-toss'], ['fighting-gym-r3', 'thunder-punch']] as const) {
       const ace = GYMS_R3.find((g) => g.id === gymId)!.team.at(-1)!;
       expect(ace.moves, gymId).toContain(move);
       expect(content.move(move).type).not.toBe(GYMS_R3.find((g) => g.id === gymId)!.type);
@@ -115,6 +115,6 @@ describe('The Region 3 Elites — §2.8', () => {
     const s = fightAt({ id: 'ew', layer: 9, col: 0, row: 0, kind: 'elite-wild', next: [], preview: { title: 'Wild Aerodactyl', detail: '', speciesIds: ['aerodactyl'], levelBand: [32, 32], enemies: [{ species: 'aerodactyl', level: 32 }] } });
     const e = s.pendingScenario!.enemies[0]!;
     expect(e.tier).toBe('boss');
-    expect(e.moves!.slice(0, 4)).toEqual(['agility', 'ancient-power', 'sky-drop', 'rock-slide-m']);
+    expect(e.moves!.slice(0, 4)).toEqual(['agility', 'bite', 'fly', 'rock-slide']);
   });
 });

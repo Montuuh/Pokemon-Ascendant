@@ -982,8 +982,29 @@ the ball, one per passed check; the Gen III lines for how close a break came; th
 blinks — and a trainer's ball, or yours, flies back to the hand; the next Pokémon comes out of a ball thrown from the
 trainer's hand (`data-fx-hand` marks in the arena); its panel and the log line that names it wait until it is out. The Black Market's R3 bound now needs a sample of ten runs.
 
-### v0.9.5 — Pokemon moves & kit revamped  ☐
-To be determined.
+### v0.9.5 — Pokémon moves & kits, revamped  ✅ 2026-10-08
+The user's review: lines learned too many moves; evolutions should rewrite the kit rather than grow it, a branch may
+trade a move for another, every move must be a real Gen I move with its right type, and every move's effect, power
+and cost rebalanced — with a "+" where a line runs out of moves.
+
+**Shipped.** The user chose: the modern type where the game has it, **2 → 4 → 5 → 5**, and the Mastery rewritten too.
+- **Every move is Gen I** (§3.6, `catalogs/moves.md`): 169 rows from the 165 of Generation I, 62 "+" rows, 38 Mastery
+  tiers, re-cut into §6.3.6.4's bands — now a content test, as is the Gen I list (`gen1-moves.json`). Accuracy
+  became the rider's chance (Sing 55 %, the powders 75 %); the high-critical four crit every time at the foot of
+  their band; Razor Wind carries Backstrike. Every move that was not Gen I is retired, its name mapped to the Gen I move
+  that took its place (`moves.md` §5).
+- **Kits** (§6.3.5, §6.9): four moves by level, then the first evolution upgrades two slots and adds one, the last
+  swaps up to three for the signature — five cards at every stage, walked over every branch path by a test. A payload
+  names a slot, so a final swap lands on whatever the first branch made of it (`sim/combat/kit.ts`); a Pokémon met
+  evolved took its first branches; a level-up teaches only its new levels.
+- **Mastery** (§6.8.4): the 51 lines that had one keep one, now a Gen I move and its + and ++ (2 AP 100, 3 AP 130).
+- **Balance**: evolved foes hold five cards where they held up to nine, and Regions 2–3 got easier; the stat tier
+  re-tuned to Attack ×1.45/×1.9/×2.6, the status accent's fallback became Glare (a Paralysis that carries, where
+  Supersonic's Confusion never outlasted a fight), and the Gym aces' kits scripted from their lines' Gen I moves so the
+  telegraph is the card fought (an Auto pick left Kingler without a Water move) — R1 59 % · R2|R1 60 % · R3|R2 48 % ·
+  run 17 % over 720 runs. The Auto pick keeps one attack of the Pokémon's own type, and never a move beside its +.
+**Not done:** hidden abilities for the lines without one, so they could carry a Mastery too; the Gen I moves no rule
+can express (Transform's copy, Metronome's lottery, Counter's return) stay stand-ins or absent.
 
 ### v0.9.6 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
@@ -1032,7 +1053,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.5's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.5, designed first |
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.6's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.6, designed first |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -1057,7 +1078,7 @@ the account revamps move to v0.9):
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.5 |
+| — | Recovering missed Badges | v0.9.6 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.5 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.6 (with the two-slot balance, designed first) |

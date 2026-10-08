@@ -1,258 +1,258 @@
 {
-  "_note": "Mastery Moves per line (§5.13.2, §6.8; catalogs/mastery-moves.md). Index 0 is Lv1 on the base form, 1 is Lv2 on the middle stage or a two-stage line's final form, 2 is Lv3 on a three-stage final. A tier is null until its move has a row in moves.json — the slot then simply keeps the tier below. Every recruitable line carries its Lv2 and, on a three-stage line, its Lv3 since v0.9.1 (Bond ranks 4 and 5, §6.8.2); Lv1 moves whose row needs an effect kind the sim lacks (Venoshock, Super Fang, Revenge, Tri Attack, Last Resort, Belly Drum) are null too.",
+  "_note": "Mastery Moves per line (§5.13.2, §6.8; catalogs/mastery-moves.md). v0.9.5: every tier is a Gen I move — Lv1 the move itself on the base form, Lv2 its + on the middle stage or a two-stage line's final form, Lv3 its ++ on a three-stage final — and never a card the line can otherwise hold. Lv2 sits at 2 AP and 100, Lv3 at 3 AP and 130 (a Super Fang tier takes 65 % and 80 % of HP instead). Single-stage species carry Lv1 only; the legendaries and Ditto none.",
   "lines": {
     "bulbasaur": [
-      "seed-bomb",
-      "seed-barrage",
-      "bloom-cannon"
+      "solar-beam",
+      "solar-beam-plus",
+      "solar-beam-plus-plus"
     ],
     "charmander": [
-      "fire-fang-m",
-      "inferno-fang",
-      "blast-burn"
+      "fire-blast",
+      "fire-blast-plus",
+      "fire-blast-plus-plus"
     ],
     "squirtle": [
-      "aqua-tail",
-      "aqua-tail-plus",
-      "aqua-tail-max"
+      "waterfall",
+      "waterfall-plus",
+      "waterfall-plus-plus"
     ],
     "caterpie": [
-      "sticky-web",
-      "dream-eater",
-      "quiver-dance"
+      "psybeam",
+      "psybeam-plus",
+      "psybeam-plus-plus"
     ],
     "weedle": [
-      "venoshock",
-      "fell-stinger-v",
-      "toxic-thread"
+      "fury-attack",
+      "fury-attack-plus",
+      "fury-attack-plus-plus"
     ],
     "pidgey": [
-      "brave-bird",
-      "brave-bird-plus",
-      "sky-attack"
+      "sky-attack",
+      "sky-attack-plus",
+      "sky-attack-plus-plus"
     ],
     "rattata": [
       "super-fang",
       "super-fang-plus",
       null
     ],
-    "oddish": [
-      "spore-cloud",
-      "aromatherapy-m",
-      "petal-dance"
-    ],
-    "zubat": [
-      "screech",
-      "venom-drench",
-      null
-    ],
-    "geodude": [
-      "rock-slide-m",
-      "rock-wrecker",
-      "tectonic-rage"
-    ],
-    "diglett": [
-      "tri-attack-d",
-      "triple-dive",
-      null
-    ],
-    "onix": [
-      "dragon-tail",
-      null,
-      null
-    ],
-    "machop": [
-      "revenge",
-      "counter",
-      "all-out-pummeling"
-    ],
-    "magikarp": [
-      "splash-m",
-      "dragon-dance",
-      null
-    ],
-    "poliwag": [
-      "circle-throw",
-      "mind-reader",
-      "focus-punch"
-    ],
-    "psyduck": [
-      "psyshock",
-      "shattered-psyche",
-      null
-    ],
-    "krabby": [
-      "slam-k",
-      "crabhammer-max",
-      null
-    ],
-    "snorlax": [
-      "belly-drum-s",
-      null,
-      null
-    ],
-    "eevee": [
-      "last-resort",
-      "adaptive-burst",
-      null
-    ],
-    "bellsprout": [
-      "leaf-tornado",
-      "leaf-storm-m",
-      "pitfall-maw"
-    ],
-    "mankey": [
-      "rage-fist",
-      "final-gambit",
-      null
-    ],
-    "aerodactyl": [
-      "iron-head-a",
-      null,
-      null
-    ],
-    "lapras": [
-      "glacial-song",
-      null,
-      null
-    ],
-    "cubone": [
-      "bonemerang-m",
-      "bone-rush-max",
+    "spearow": [
+      "sky-attack",
+      "sky-attack-plus",
       null
     ],
     "pikachu": [
-      "nuzzle-m",
-      "volt-tackle-m",
-      null
-    ],
-    "tentacool": [
-      "acid-spray-m",
-      "hydro-tentacles",
-      null
-    ],
-    "shellder": [
-      "icicle-crash-m",
-      "icicle-spear-m",
-      null
-    ],
-    "horsea": [
-      "twister-m",
-      "ink-barrage",
-      null
-    ],
-    "staryu": [
-      "water-pulse-m",
-      "starlight-pulse",
-      null
-    ],
-    "seel": [
-      "aqua-jet-m",
-      "aurora-beam-m",
-      null
-    ],
-    "voltorb": [
-      "spark-m",
-      "discharge-m",
-      null
-    ],
-    "magnemite": [
-      "magnet-bomb-m",
-      "zap-cannon-m",
-      null
-    ],
-    "electabuzz": [
-      "thunder-punch-m",
-      null,
-      null
-    ],
-    "koffing": [
-      "clear-smog-m",
-      "sludge-bomb-w",
-      null
-    ],
-    "growlithe": [
-      "flame-charge-m",
-      "extreme-speed-m",
-      null
-    ],
-    "vulpix": [
-      "fire-spin-m",
-      "nine-tail-flare",
-      null
-    ],
-    "ponyta": [
-      "blaze-kick-m",
-      "flare-blitz-m",
+      "thunder",
+      "thunder-plus",
       null
     ],
     "sandshrew": [
-      "sand-tomb-m",
-      "crush-claw-m",
+      "earthquake",
+      "earthquake-plus",
       null
-    ],
-    "rhyhorn": [
-      "drill-run-m",
-      "horn-drill-r",
-      null
-    ],
-    "magmar": [
-      "fire-punch-m",
-      null,
-      null
-    ],
-    "abra": [
-      "confusion-m",
-      "psybeam-m",
-      "mind-shatter"
     ],
     "nidoran-f": [
-      "poison-fang-m",
-      "double-kick-m",
-      "queens-quake"
+      "double-kick",
+      "double-kick-plus",
+      "double-kick-plus-plus"
     ],
-    "jynx": [
-      "powder-snow-m",
-      null,
+    "vulpix": [
+      "fire-blast",
+      "fire-blast-plus",
       null
     ],
-    "spearow": [
-      "drill-peck-m",
-      "drill-dive",
+    "zubat": [
+      "sky-attack",
+      "sky-attack-plus",
+      null
+    ],
+    "diglett": [
+      "tri-attack",
+      "tri-attack-plus",
+      null
+    ],
+    "psyduck": [
+      "psybeam",
+      "psybeam-plus",
+      null
+    ],
+    "mankey": [
+      "rage",
+      "rage-plus",
+      null
+    ],
+    "growlithe": [
+      "fire-blast",
+      "fire-blast-plus",
+      null
+    ],
+    "tentacool": [
+      "surf",
+      "surf-plus",
+      null
+    ],
+    "ponyta": [
+      "fire-blast",
+      "fire-blast-plus",
+      null
+    ],
+    "magnemite": [
+      "thunder",
+      "thunder-plus",
       null
     ],
     "doduo": [
-      "pluck-m",
-      "tri-peck",
+      "sky-attack",
+      "sky-attack-plus",
       null
     ],
+    "seel": [
+      "ice-beam",
+      "ice-beam-plus",
+      null
+    ],
+    "grimer": [
+      "body-slam",
+      "body-slam-plus",
+      null
+    ],
+    "shellder": [
+      "blizzard",
+      "blizzard-plus",
+      null
+    ],
+    "drowzee": [
+      "dream-eater",
+      "dream-eater-plus",
+      null
+    ],
+    "krabby": [
+      "crabhammer",
+      "crabhammer-plus",
+      null
+    ],
+    "voltorb": [
+      "explosion",
+      "explosion-plus",
+      null
+    ],
+    "cubone": [
+      "bonemerang",
+      "bonemerang-plus",
+      null
+    ],
+    "koffing": [
+      "sludge",
+      "sludge-plus",
+      null
+    ],
+    "rhyhorn": [
+      "earthquake",
+      "earthquake-plus",
+      null
+    ],
+    "horsea": [
+      "blizzard",
+      "blizzard-plus",
+      null
+    ],
+    "staryu": [
+      "hydro-pump",
+      "hydro-pump-plus",
+      null
+    ],
+    "magikarp": [
+      "hyper-beam",
+      "hyper-beam-plus",
+      null
+    ],
+    "eevee": [
+      "take-down",
+      "take-down-plus",
+      null
+    ],
+    "oddish": [
+      "solar-beam",
+      "solar-beam-plus",
+      "solar-beam-plus-plus"
+    ],
+    "poliwag": [
+      "mega-punch",
+      "mega-punch-plus",
+      "mega-punch-plus-plus"
+    ],
+    "abra": [
+      "psywave",
+      "psywave-plus",
+      "psywave-plus-plus"
+    ],
+    "machop": [
+      "seismic-toss",
+      "seismic-toss-plus",
+      "seismic-toss-plus-plus"
+    ],
+    "bellsprout": [
+      "solar-beam",
+      "solar-beam-plus",
+      "solar-beam-plus-plus"
+    ],
+    "geodude": [
+      "mega-punch",
+      "mega-punch-plus",
+      "mega-punch-plus-plus"
+    ],
+    "gastly": [
+      "dream-eater",
+      "dream-eater-plus",
+      "dream-eater-plus-plus"
+    ],
     "farfetchd": [
-      "leek-slash",
+      "cut",
+      null,
+      null
+    ],
+    "onix": [
+      "rock-slide",
+      null,
+      null
+    ],
+    "mr-mime": [
+      "psybeam",
       null,
       null
     ],
     "scyther": [
-      "fury-cutter-m",
+      "slash",
       null,
       null
     ],
-    "gastly": [
-      "night-shade-m",
-      "shadow-ball-h",
-      "nightmare-feast"
-    ],
-    "drowzee": [
-      "zen-headbutt-m",
-      "hypnotic-pulse",
+    "jynx": [
+      "blizzard",
+      null,
       null
     ],
-    "grimer": [
-      "poison-jab-m",
-      "gunk-shot-m",
+    "electabuzz": [
+      "thunder",
+      null,
       null
     ],
-    "mr-mime": [
-      "psywave-m",
+    "magmar": [
+      "flamethrower",
+      null,
+      null
+    ],
+    "lapras": [
+      "ice-beam",
+      null,
+      null
+    ],
+    "aerodactyl": [
+      "rock-slide",
+      null,
+      null
+    ],
+    "snorlax": [
+      "double-edge",
       null,
       null
     ]

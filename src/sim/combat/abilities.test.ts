@@ -81,12 +81,12 @@ describe('Abilities — §6.5.2 (v0.3 hooks)', () => {
   });
 
   it('InnerFocus_ReadsLikeATypeImmunityToThePlayer', () => {
-    let s = start(scenario({ team: teamWithKit(['supersonic', 'water-gun']), enemies: [PIDGEY] }));
+    let s = start(scenario({ team: teamWithKit(['confuse-ray', 'water-gun']), enemies: [PIDGEY] }));
     s = tweak(s, (d) => {
       d.enemies[0]!.abilityIds = ['inner-focus'];
     });
-    s = withHand(s, ['supersonic']);
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'supersonic').id });
+    s = withHand(s, ['confuse-ray']);
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'confuse-ray').id });
     expect(s.enemies[0]!.confusionTurns).toBe(0);
     expect(eventsOf(s, 'status-immune')).toHaveLength(1);
   });

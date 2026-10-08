@@ -301,8 +301,9 @@ export interface GymDef {
  * was a wall that ended 52 of 90 simulated runs — and the other three are built to the same shape.
  *
  * Every team carries one off-type answer (§5.9.3): a Gym you can hard-counter with a single type is not a
- * fight, it is a type check. Brock's `body-press` is Fighting, Misty's `metal-claw` is Rock, Aster's
- * `confusion` is Psychic, Wren's `dig` is Ground.
+ * fight, it is a type check. Since v0.9.5 the aces' kits are scripted from their lines' Gen I moves, so the answer and
+ * the telegraph are the cards fought rather than whatever a five-card pool's Auto pick lands on: Brock's Graveler
+ * carries Dig, Misty's Kingler Stomp, Aster's Butterfree Confusion beside Sleep Powder, Wren's Raticate Dig.
  */
 export const GYMS: GymDef[] = [
   {
@@ -321,7 +322,7 @@ export const GYMS: GymDef[] = [
     // climax is the line's mid-stage at a level premium, not its final form. Golem is a Region 3 problem.
     team: [
       { species: 'geodude', level: 14, phaseCount: 2 },
-      { species: 'graveler', level: 16, phaseCount: 3 },
+      { species: 'graveler', level: 16, phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'] },
     ],
   },
   {
@@ -338,7 +339,7 @@ export const GYMS: GymDef[] = [
     // That is why the Water Gym is Krabby and Kingler rather than Squirtle and Wartortle.
     team: [
       { species: 'krabby', level: 14, phaseCount: 2 },
-      { species: 'kingler', level: 16, phaseCount: 3 },
+      { species: 'kingler', level: 16, phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'] },
     ],
   },
   {
@@ -353,7 +354,7 @@ export const GYMS: GymDef[] = [
     telegraph: 'Floods you with Sleep and Confusion. Bring cures, Fire or Flying.',
     team: [
       { species: 'metapod', level: 14, phaseCount: 2 },
-      { species: 'butterfree', level: 16, phaseCount: 3 },
+      { species: 'butterfree', level: 16, phaseCount: 3, moves: ['sleep-powder', 'confusion', 'gust', 'harden'] },
     ],
   },
   {
@@ -368,7 +369,7 @@ export const GYMS: GymDef[] = [
     telegraph: 'No weakness to exploit and a Home Field that makes every hit land harder. Bring Fighting, or bring more HP.',
     team: [
       { species: 'pidgeotto', level: 14, phaseCount: 2 },
-      { species: 'raticate', level: 16, phaseCount: 3 },
+      { species: 'raticate', level: 16, phaseCount: 3, moves: ['hyper-fang', 'quick-attack-plus', 'dig', 'tail-whip'] },
     ],
   },
 ];
@@ -549,7 +550,7 @@ export const ELITE_WILD_R2: EliteWildDef = {
   level: 24,
   phaseCount: 2,
   stage: 'sea',
-  moves: ['sing', 'ice-shard', 'ice-beam', 'surf'],
+  moves: ['sing', 'body-slam', 'ice-beam', 'surf'],
   line: 'A song carries over the water. Something large is riding the swell toward you.',
 };
 
@@ -563,7 +564,7 @@ export const GYMS_R2: GymDef[] = [
     stage: 'volcano',
     line: 'Hah! I hope you brought Burn Heal. My Pokémon burn hotter than this whole coast.',
     telegraph: 'A burst race on a Home Field that makes every Fire hit land harder. Bring Water or Rock, or bring more HP.',
-    team: [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3 }],
+    team: [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'] }],
   },
   {
     id: 'grass-gym-r2', region: 2, name: 'Leader Erika', sprite: 'erika', type: 'grass', badgeId: 'rainbow-badge',
@@ -577,7 +578,7 @@ export const GYMS_R2: GymDef[] = [
     stage: 'power-plant',
     line: 'Hey, kid! Electric Pokémon saved me in the war. They will shock you just the same!',
     telegraph: 'Taxes your AP and locks your Lead with Paralysis. Bring Ground, and cards you can afford.',
-    team: [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3 }],
+    team: [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'] }],
   },
   {
     id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'soul-badge',
@@ -704,7 +705,7 @@ export const ELITE_WILD_R3: EliteWildDef = {
   level: 34,
   phaseCount: 2,
   stage: 'sky-pillar',
-  moves: ['agility', 'ancient-power', 'sky-drop', 'rock-slide-m'],
+  moves: ['agility', 'bite', 'fly', 'rock-slide'],
   line: 'A shriek from the crags. Something ancient is circling overhead, and it has seen you.',
 };
 
@@ -721,7 +722,7 @@ export const GYMS_R3: GymDef[] = [
     telegraph: 'Taxes your AP and locks your hand. Bring Bug or Ghost, and cards you can afford.',
     team: [
       { species: 'kadabra', level: 33, phaseCount: 2 },
-      { species: 'alakazam', level: 35, phaseCount: 3, moves: ['psychic', 'psyshock', 'calm-mind', 'shadow-ball'] },
+      { species: 'alakazam', level: 35, phaseCount: 3, moves: ['psychic', 'psybeam', 'recover', 'seismic-toss'] },
     ],
   },
   {
@@ -738,7 +739,7 @@ export const GYMS_R3: GymDef[] = [
     telegraph: 'A burst race on a Home Field that makes every Fighting hit land harder. Bring Psychic or Flying, or more HP.',
     team: [
       { species: 'machoke', level: 34, phaseCount: 2 },
-      { species: 'machamp', level: 36, phaseCount: 3, moves: ['cross-chop', 'dynamic-punch', 'close-combat', 'thunder-punch'] },
+      { species: 'machamp', level: 36, phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'] },
     ],
   },
   {
@@ -746,7 +747,7 @@ export const GYMS_R3: GymDef[] = [
     stage: 'ice-cave',
     line: 'Your Pokémon will freeze before they reach me. Let us see how long you last.',
     telegraph: 'Freezes your Lead and taxes your AP. Bring Fighting, Electric or Rock.',
-    team: [{ species: 'dewgong', level: 34, phaseCount: 2 }, { species: 'cloyster', level: 36, phaseCount: 3 }],
+    team: [{ species: 'dewgong', level: 34, phaseCount: 2 }, { species: 'cloyster', level: 36, phaseCount: 3, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'] }],
   },
 ];
 
@@ -855,20 +856,21 @@ export function evolvedAt(speciesId: string, level: number, content: ContentRegi
  * (§5.3) — is part of every fight. With every status now carried between fights (§4.2.7.1) that is attrition
  * the route has to be planned around: the nurse, the cures in the bag, an immune Lead.
  *
- * The enemy's first type picks the move. A type the games never gave a status move falls back to Supersonic,
- * which half the franchise learns.
+ * The enemy's first type picks the move. A type Gen I never gave a status move falls back to Glare, a Normal move that
+ * leaves a Paralysis to carry — since v0.9.5, when Will-O-Wisp left with every move the first generation did not have
+ * and Supersonic's Confusion, which never outlasts a fight, stopped being enough of an accent. Bug borrows its lines'
+ * powders.
  */
 export const STATUS_ACCENT_FROM = 1;
 export const STATUS_ACCENT_MOVES: Partial<Record<PokemonType, string>> = {
-  fire: 'will-o-wisp',
   electric: 'thunder-wave',
   poison: 'poison-powder',
   grass: 'stun-spore',
-  bug: 'powder-spread',
+  bug: 'sleep-powder',
   psychic: 'hypnosis',
   ghost: 'confuse-ray',
 };
-export const STATUS_ACCENT_FALLBACK = 'supersonic';
+export const STATUS_ACCENT_FALLBACK = 'glare';
 
 /**
  * §2.2 — the enemy stat tier: every enemy's Max HP and Attack are multiplied by its Region's entry. Levels alone do not
@@ -890,15 +892,20 @@ export const STATUS_ACCENT_FALLBACK = 'supersonic';
  *
  * Region 2's and Region 3's HP ×0.55 → ×0.45 and ×0.38 → ×0.27 in v0.8.10, paying for their bands moving up two
  * levels (§2.6.5): R1 60 % · R2|R1 58 % · R3|R2 48 % · run 17 %.
+ *
+ * v0.9.5 rewrote every kit to Gen I moves, four learned and the rest by evolution: an evolved foe holds five cards
+ * where it once held up to nine, and Regions 2 and 3 got easier (R2|R1 65 %, R3|R2 57 %). Attack ×1.55/×1.75/×2.25 →
+ * ×1.45/×1.9/×2.6 put them back, with the Gym aces' kits scripted and the accent's fallback Glare: R1 59 % · R2|R1 60 % ·
+ * R3|R2 48 % · run 17 % (720 runs).
  */
 export interface StatTier {
   hp: number;
   attack: number;
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { hp: 0.6, attack: 1.55 },
-  { hp: 0.45, attack: 1.75 },
-  { hp: 0.27, attack: 2.25 },
+  { hp: 0.6, attack: 1.45 },
+  { hp: 0.45, attack: 1.9 },
+  { hp: 0.27, attack: 2.6 },
 ];
 
 /**

@@ -61,14 +61,14 @@ export const StatBlockSchema = z.object({
   speed: z.number().int().nonnegative(),
 });
 
-/** §6.3.5 — one archetype's evolution payload: upgrade in place, add at most one, grant a passive. */
+/** §6.3.5 — one archetype's evolution payload: rewrite slots in place (two at a first evolution, up to three at the last), add at most one, grant a passive. */
 export const EvolutionBranchSchema = z.object({
   id: KebabId,
   archetype: z.enum(['vanguard', 'specialist', 'support']),
   label: z.string().min(1),
   description: z.string().min(1),
   to: KebabId,
-  upgrades: z.array(z.object({ from: KebabId, to: KebabId })).max(2),
+  upgrades: z.array(z.object({ from: KebabId, to: KebabId })).max(3),
   adds: z.array(KebabId).max(1),
   abilityId: KebabId.optional(),
 });
@@ -81,8 +81,9 @@ export const SpeciesSchema = z.object({
   stage: z.enum(['basic', 'stage1', 'stage2']),
   baseStats: StatBlockSchema,
   growth: StatBlockSchema,
-  /** §6.9 — ordered (level, move); a Pokémon knows every entry at or below its level. */
-  learnset: z.array(z.object({ level: z.number().int().min(1), move: KebabId })).min(1),
+  /** §6.9 — ordered (level, move); a Pokémon knows every entry at or below its level. An evolved form has none of its
+   *  own since v0.9.5: its kit is its base form's, rewritten by the evolutions (§6.3.5). */
+  learnset: z.array(z.object({ level: z.number().int().min(1), move: KebabId })),
   /** §6.5.1 — the Dojo pool. The first entry is granted at the first evolution. */
   availableAbilities: z.array(KebabId),
   hiddenAbility: KebabId.optional(),

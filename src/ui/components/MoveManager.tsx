@@ -131,7 +131,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
           type="button"
           tip={<Tip title="Auto-pick" body="Keeps the two strongest attacks, always one Ranged card, and fills the rest with the newest moves. The same rule the game uses when you do not choose." />}
           className={styles.auto}
-          onClick={() => setMoves(autoPickMoves(mon.pool, content))}
+          onClick={() => setMoves(autoPickMoves(mon.pool, content, 4, content.species(mon.speciesId).types))}
           data-testid="btn-auto-pick"
         >
           <IconArrowsShuffle size={16} /> Auto

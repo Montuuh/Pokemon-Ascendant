@@ -3,38 +3,32 @@
   "seed": 1006,
   "actions": [
     {
+      "type": "use-consumable",
+      "cardId": "k16",
+      "targetIndex": 0
+    },
+    {
+      "type": "play-card",
+      "cardId": "c1"
+    },
+    {
       "type": "play-card",
       "cardId": "c2"
     },
     {
-      "type": "play-card",
-      "cardId": "c7"
-    },
-    {
       "type": "end-turn"
     },
     {
       "type": "play-card",
-      "cardId": "c5"
+      "cardId": "c6"
     },
     {
       "type": "play-card",
-      "cardId": "c3"
+      "cardId": "c10"
     },
     {
       "type": "play-card",
       "cardId": "c9"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c8"
     },
     {
       "type": "end-turn"
@@ -46,22 +40,11 @@
     },
     {
       "type": "play-card",
-      "cardId": "c2"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c5"
+      "cardId": "c8"
     },
     {
       "type": "play-card",
       "cardId": "c11"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c10"
     },
     {
       "type": "play-card",
@@ -77,101 +60,41 @@
     },
     {
       "type": "play-card",
-      "cardId": "c5"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c8"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c11"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
       "cardId": "c2"
     },
     {
+      "type": "use-consumable",
+      "cardId": "k15"
+    },
+    {
       "type": "play-card",
-      "cardId": "c5"
+      "cardId": "c6"
     },
     {
       "type": "end-turn"
+    },
+    {
+      "type": "swap",
+      "benchIndex": 0
+    },
+    {
+      "type": "play-card",
+      "cardId": "c1"
     },
     {
       "type": "play-card",
       "cardId": "c10"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c7"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c8"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c11"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c2"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c10"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c8"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
     },
     {
       "type": "play-card",
       "cardId": "c9"
     },
     {
-      "type": "play-card",
-      "cardId": "c8"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c11"
-    },
-    {
       "type": "end-turn"
     },
     {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c2"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c10"
-    },
-    {
-      "type": "end-turn"
+      "type": "pick-lead",
+      "benchIndex": 1
     },
     {
       "type": "swap",
@@ -183,22 +106,10 @@
     },
     {
       "type": "play-card",
-      "cardId": "c9"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c11"
+      "cardId": "c4"
     },
     {
       "type": "end-turn"
-    },
-    {
-      "type": "pick-lead",
-      "benchIndex": 0
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
     },
     {
       "type": "play-card",
@@ -206,10 +117,14 @@
     },
     {
       "type": "play-card",
-      "cardId": "c3"
+      "cardId": "c1"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c4"
     }
   ],
-  "fingerprint": "t13 victory lead=0 ap=0 team=[wartortle:72/98,butterfree:0/84,rattata:0/54] enemies=[geodude:0/79,golem:0/125] events=214 rng=458907589",
-  "turns": 13,
+  "fingerprint": "t7 victory lead=0 ap=0 team=[wartortle:68/98,butterfree:84/84,rattata:0/54] enemies=[geodude:0/79,golem:0/125] events=127 rng=1032628102",
+  "turns": 7,
   "outcome": "victory"
 }

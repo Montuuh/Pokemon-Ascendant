@@ -5,62 +5,63 @@
 > Lv1 → Lv2 → Lv3 with the Pokémon's evolutions **if** the tier is unlocked in `MetaProgression`.
 > Two-stage lines cap at Lv2. Move stats live in `moves.md`.
 >
-> **Power targets (§6.8.4):** Lv1 60–80 power / 1 AP / no modifier · Lv2 85–110 / 1–2 AP / one modifier or
-> rider · Lv3 110–140 / 2–3 AP / a composite species-unique effect.
+> **Every tier is a Gen I move (v0.9.5).** Lv1 is the move itself, at its own numbers; Lv2 is its **+** at 2 AP and
+> 100 power, Lv3 its **++** at 3 AP and 130, the riders kept (a Super Fang tier takes 65 % and 80 % of HP). A line's
+> Mastery is never a card its kit can otherwise hold — a content test walks every branch path.
 
 | Line | Lv1 (base) | Lv2 (stage 1 / final of 2-stage) | Lv3 (3-stage final) |
 |---|---|---|---|
-| `bulbasaur` | `seed-bomb` | `seed-barrage` | `bloom-cannon` |
-| `charmander` | `fire-fang-m` | `inferno-fang` | `blast-burn` |
-| `squirtle` | `aqua-tail` | `aqua-tail-plus` | `aqua-tail-max` |
-| `caterpie` | `sticky-web` | `dream-eater` | `quiver-dance` |
-| `weedle` | `venoshock` | `fell-stinger-v` | `toxic-thread` |
-| `pidgey` | `brave-bird` | `brave-bird-plus` | `sky-attack` |
+| `bulbasaur` | `solar-beam` | `solar-beam-plus` | `solar-beam-plus-plus` |
+| `charmander` | `fire-blast` | `fire-blast-plus` | `fire-blast-plus-plus` |
+| `squirtle` | `waterfall` | `waterfall-plus` | `waterfall-plus-plus` |
+| `caterpie` | `psybeam` | `psybeam-plus` | `psybeam-plus-plus` |
+| `weedle` | `fury-attack` | `fury-attack-plus` | `fury-attack-plus-plus` |
+| `pidgey` | `sky-attack` | `sky-attack-plus` | `sky-attack-plus-plus` |
 | `rattata` | `super-fang` | `super-fang-plus` | — |
-| `oddish` | `spore-cloud` | `aromatherapy-m` | `petal-dance` |
-| `zubat` | `screech` | `venom-drench` | — |
-| `geodude` | `rock-slide-m` | `rock-wrecker` | `tectonic-rage` |
-| `diglett` | `tri-attack-d` | `triple-dive` | — |
-| `onix` | `dragon-tail` | — | — |
-| `machop` | `revenge` | `counter` | `all-out-pummeling` |
-| `magikarp` | `splash-m` | `dragon-dance` | — |
-| `poliwag` | `circle-throw` | `mind-reader` | `focus-punch` |
-| `psyduck` | `psyshock` | `shattered-psyche` | — |
-| `krabby` | `slam-k` | `crabhammer-max` | — |
-| `snorlax` | `belly-drum-s` | — | — |
-| `eevee` | `last-resort` | `adaptive-burst` | — |
-| `bellsprout` | `leaf-tornado` | `leaf-storm-m` | `pitfall-maw` |
-| `mankey` | `rage-fist` | `final-gambit` | — |
-| `aerodactyl` | `iron-head-a` | — | — |
-| `lapras` | `glacial-song` | — | — |
-| `cubone` | `bonemerang-m` | `bone-rush-max` | — |
-| `pikachu` | `nuzzle-m` | `volt-tackle-m` | — |
-| `tentacool` | `acid-spray-m` | `hydro-tentacles` | — |
-| `shellder` | `icicle-crash-m` | `icicle-spear-m` | — |
-| `horsea` | `twister-m` | `ink-barrage` | — |
-| `staryu` | `water-pulse-m` | `starlight-pulse` | — |
-| `seel` | `aqua-jet-m` | `aurora-beam-m` | — |
-| `voltorb` | `spark-m` | `discharge-m` | — |
-| `magnemite` | `magnet-bomb-m` | `zap-cannon-m` | — |
-| `electabuzz` | `thunder-punch-m` | — | — |
-| `koffing` | `clear-smog-m` | `sludge-bomb-w` | — |
-| `growlithe` | `flame-charge-m` | `extreme-speed-m` | — |
-| `vulpix` | `fire-spin-m` | `nine-tail-flare` | — |
-| `ponyta` | `blaze-kick-m` | `flare-blitz-m` | — |
-| `sandshrew` | `sand-tomb-m` | `crush-claw-m` | — |
-| `rhyhorn` | `drill-run-m` | `horn-drill-r` | — |
-| `magmar` | `fire-punch-m` | — | — |
-| `abra` | `confusion-m` | `psybeam-m` | `mind-shatter` |
-| `nidoran-f` | `poison-fang-m` | `double-kick-m` | `queens-quake` |
-| `jynx` | `powder-snow-m` | — | — |
-| `spearow` | `drill-peck-m` | `drill-dive` | — |
-| `doduo` | `pluck-m` | `tri-peck` | — |
-| `farfetchd` | `leek-slash` | — | — |
-| `scyther` | `fury-cutter-m` | — | — |
-| `gastly` | `night-shade-m` | `shadow-ball-h` | `nightmare-feast` |
-| `drowzee` | `zen-headbutt-m` | `hypnotic-pulse` | — |
-| `grimer` | `poison-jab-m` | `gunk-shot-m` | — |
-| `mr-mime` | `psywave-m` | — | — |
+| `spearow` | `sky-attack` | `sky-attack-plus` | — |
+| `pikachu` | `thunder` | `thunder-plus` | — |
+| `sandshrew` | `earthquake` | `earthquake-plus` | — |
+| `nidoran-f` | `double-kick` | `double-kick-plus` | `double-kick-plus-plus` |
+| `vulpix` | `fire-blast` | `fire-blast-plus` | — |
+| `zubat` | `sky-attack` | `sky-attack-plus` | — |
+| `diglett` | `tri-attack` | `tri-attack-plus` | — |
+| `psyduck` | `psybeam` | `psybeam-plus` | — |
+| `mankey` | `rage` | `rage-plus` | — |
+| `growlithe` | `fire-blast` | `fire-blast-plus` | — |
+| `tentacool` | `surf` | `surf-plus` | — |
+| `ponyta` | `fire-blast` | `fire-blast-plus` | — |
+| `magnemite` | `thunder` | `thunder-plus` | — |
+| `doduo` | `sky-attack` | `sky-attack-plus` | — |
+| `seel` | `ice-beam` | `ice-beam-plus` | — |
+| `grimer` | `body-slam` | `body-slam-plus` | — |
+| `shellder` | `blizzard` | `blizzard-plus` | — |
+| `drowzee` | `dream-eater` | `dream-eater-plus` | — |
+| `krabby` | `crabhammer` | `crabhammer-plus` | — |
+| `voltorb` | `explosion` | `explosion-plus` | — |
+| `cubone` | `bonemerang` | `bonemerang-plus` | — |
+| `koffing` | `sludge` | `sludge-plus` | — |
+| `rhyhorn` | `earthquake` | `earthquake-plus` | — |
+| `horsea` | `blizzard` | `blizzard-plus` | — |
+| `staryu` | `hydro-pump` | `hydro-pump-plus` | — |
+| `magikarp` | `hyper-beam` | `hyper-beam-plus` | — |
+| `eevee` | `take-down` | `take-down-plus` | — |
+| `oddish` | `solar-beam` | `solar-beam-plus` | `solar-beam-plus-plus` |
+| `poliwag` | `mega-punch` | `mega-punch-plus` | `mega-punch-plus-plus` |
+| `abra` | `psywave` | `psywave-plus` | `psywave-plus-plus` |
+| `machop` | `seismic-toss` | `seismic-toss-plus` | `seismic-toss-plus-plus` |
+| `bellsprout` | `solar-beam` | `solar-beam-plus` | `solar-beam-plus-plus` |
+| `geodude` | `mega-punch` | `mega-punch-plus` | `mega-punch-plus-plus` |
+| `gastly` | `dream-eater` | `dream-eater-plus` | `dream-eater-plus-plus` |
+| `farfetchd` | `cut` | — | — |
+| `onix` | `rock-slide` | — | — |
+| `mr-mime` | `psybeam` | — | — |
+| `scyther` | `slash` | — | — |
+| `jynx` | `blizzard` | — | — |
+| `electabuzz` | `thunder` | — | — |
+| `magmar` | `flamethrower` | — | — |
+| `lapras` | `ice-beam` | — | — |
+| `aerodactyl` | `rock-slide` | — | — |
+| `snorlax` | `double-edge` | — | — |
 
 ## Unlocks (§6.8.2) — by Bond rank since 2026-09-21
 
@@ -96,7 +97,7 @@ below are the superseded design, kept for the flavour they may lend future medal
 | `pidgey` | Win a run with Pidgeot in the Active Team on the highest difficulty |
 | `geodude` | Win a Gym fight where Golem takes a Water or Grass hit and survives |
 | `machop` | Win a combat using only Melee moves from Machamp |
-| `poliwag` | Land `focus-punch` on a boss in Phase 3 |
+| `poliwag` | Land `mega-punch-plus-plus` on a boss in Phase 3 |
 
 ## Deck-size integration (§5.13.2)
 

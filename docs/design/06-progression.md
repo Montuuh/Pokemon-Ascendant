@@ -192,32 +192,40 @@ a naturally supportive one may skip Vanguard entirely. The archetype should feel
 
 ## §6.3.5 What an evolution actually does
 
-Evolution operates on the **Learned Move Pool** (§6.7) and is purely additive — nothing is ever removed.
+Evolution operates on the **Learned Move Pool** (§6.7) and **rewrites it rather than piling onto it** (v0.9.5, the
+user's call: lines learned too many moves, and an evolution should keep the count, not raise it).
 
 **The payload, per evolution:**
 
 1. **Stat upscale** — the new species' base stats and growth take over.
-2. **1–2 in-place upgrades** — a pool move is replaced by its evolved version. If it was in the active 4, the
+2. **The first evolution upgrades up to two slots and adds one card** — a pool move is replaced in place by a
+   better one (Vine Whip → Razor Leaf), and one new move arrives. If an upgraded move was in the active 4, the
    upgrade takes that slot automatically.
-3. **At most one addition** — a new move enters the pool. At the **final** evolution this addition is the
-   species' **signature move**, the strongest thing in its kit.
+3. **The final evolution swaps one to three slots and adds none** — this is where the archetype's **signature**
+   arrives, in the place of a card the line has outgrown (a Vanguard Venusaur's Vine Whip slot becomes Petal Dance).
+   A two-stage line's single evolution is a first one: two upgrades and an addition, the signature among them.
 
-That is the whole payload, deliberately. An evolution that rewrote six moves at once made the choice
-unreadable — the player could not tell what they were choosing. Two upgrades and a signature is something you can
-evaluate in the preview.
+That is the whole payload, deliberately: an evolution that rewrote six moves at once was unreadable in the preview.
 
-**Pool size over a run**
+**Slots, not names.** A payload names a slot by the move that first held it, so a final evolution's swap lands on
+whatever the first evolution made of that slot — a Specialist Ivysaur's Razor Leaf and a Support Ivysaur's Vine
+Whip both become a Specialist Venusaur's Razor Leaf+. A swap may change the card's kind outright: that is how a branch
+deletes a move for another (the user's idea, 2026-10-08). A swap whose slot the Pokémon never learned arrives as a gift.
+
+**Pool size over a run — a contract, walked over every branch path by a content test**
 
 | Point | Pool |
 |---|---|
 | Base form at recruitment | 2 moves |
-| Base form, fully levelled | 4–5 |
-| After first evolution | 5–6 |
-| After final evolution | 6–7 |
-| Plus TMs and Dojo visits | 7–9 |
+| Base form, fully levelled | 4 |
+| After first evolution | 5 |
+| After final evolution | 5 |
+| Plus TMs, the Dojo and egg moves | 6–8 |
 
-The **active 4 never grows**. That fixed budget against a growing pool is the recurring decision the whole
-progression system exists to produce.
+The **active 4 never grows**, and with five cards from the line there is always one choice to make in the Move
+Manager — the TMs and the Dojo add the rest. *(Before v0.9.5 a line learned some twelve moves by level and its
+branches added more; a final form sat on eight or nine, most of them never played.)* Magikarp is the one exception:
+Splash and Tackle, all it ever learned in Gen I, until Gyarados.
 
 ## §6.3.6 Move-kit construction rules
 
@@ -226,23 +234,21 @@ species follows the *final*-stage template, not the base-form one — it is alre
 is the same reason it gets +25 % growth (§6.2.3).
 
 ### §6.3.6.1 Base form
-- 1–2 Offensive moves, mixing Melee and Ranged by species.
-- 1 Defensive or Utility move.
-- 0 positional modifiers — rarely 1 where the species demands it.
-- AP range 0–2. **Exactly 2 moves known at level 1** (§6.9).
+- **Four moves**: 2 at level 1 (§6.9) and two more by the evolution level — the species' own Gen I moves where they
+  fit the kit.
+- 1–2 Offensive moves, mixing Melee and Ranged by species; 1–2 Defensive or Utility.
+- 0 positional modifiers — rarely 1 where the species demands it. AP range 0–3.
 
-### §6.3.6.2 Middle stage
-- 1–2 Offensive, at least one upgraded.
-- 1 Defensive or Utility, possibly upgraded.
-- 0–1 positional modifiers — Vanguard introduces its first here.
+### §6.3.6.2 Middle stage — five cards
+- Two upgrades and one addition per archetype: a Vanguard reaches for heavier Melee, a Specialist for Ranged power
+  and riders, a Support for status, stages and heals.
 - AP range 1–3.
 
-### §6.3.6.3 Final stage
-- 2 Offensive, at least one high-power, one possibly a 4-AP ultimate.
-- 1 Defensive or Utility.
-- 1 signature move, unique to that archetype and stage.
-- 1–2 positional modifiers — Vanguard typically 2.
+### §6.3.6.3 Final stage — five cards
+- One to three swaps per archetype, the signature among them; at least one high-power card, possibly a 4-AP ultimate.
 - AP range 1–4.
+
+A **single-stage** species learns its five by level — two at level 1, three more by level 24 (a legendary by 40).
 
 ### §6.3.6.4 The power budget *(a contract, not a guideline)*
 
@@ -254,9 +260,11 @@ is the same reason it gets +25 % growth (§6.2.3).
 | 3 | 85–100 | 90–100 |
 | 4 | 110–130 | 115–130 |
 
-A move carrying **both** a modifier and a rider sits at the bottom of its band. A `cleave` move counts as ~1.6×
-its printed power for budgeting. A content test enforces the bands, because 150 moves authored across many
-sessions will not stay coherent on good intentions. *(Decided 2026-09-19.)*
+A move carrying **both** a modifier and a rider sits at the bottom of its band, and so do Gen I's high-critical moves
+(Karate Chop, Razor Leaf, Crabhammer, Slash), which crit every time here. A `cleave` move counts as ~1.6× its printed
+power; recoil, a rampage's self-Confusion and a sacrifice are budgeted apart, and so are Mastery tiers (§6.8.4). A
+content test enforces the bands — decided 2026-09-19, and made real in v0.9.5, when every move was re-cut from its
+Gen I numbers.
 
 ### §6.3.6.5 Two rules that keep hands playable
 
@@ -412,11 +420,12 @@ Each Pokémon accumulates a pool of moves and contributes **4** of them as cards
 | **TMs** | Add one move |
 | **The Dojo** | Adds one off-learnset move |
 
-**Moves are never removed.** An upgrade replaces its entry in place — same slot, better version — and the pool
-deduplicates, so learning Surf from a TM and then gaining Surf from an evolution leaves one Surf.
+**An evolution rewrites, it does not pile on** (§6.3.5): an upgrade or a swap replaces its entry in place — same
+slot, the new card — and the pool deduplicates, so learning Surf from a TM and then gaining Surf from an evolution
+leaves one Surf. A level-up teaches only what its new levels reach, so a move an evolution has rewritten is never
+learned again.
 
-Nothing forgets. A late-run pool of eight or nine entries is the *reward*, and the fixed active-4 budget is
-where the pressure lives.
+The line gives five cards against the four slots; the TMs, the Dojo and egg moves are what grow a pool past it.
 
 ## §6.7.2 Configuring the active 4
 
@@ -433,9 +442,9 @@ it upgrades quietly. Either way the player sees the diff and may reconfigure bef
 
 ## §6.7.4 Why it works this way
 
-Every addition is a **net gain** — no source ever forces a replacement. The trade-off lives entirely in the
-active-4 budget, so a TM feels like a gift rather than a dilemma, while the deck stays exactly as intentional as
-the player made it. That is "synergy is sculpted, not drafted" expressed as an inventory rule.
+A TM, the Dojo or an egg move is a **net gain** — none forces a replacement — so it feels like a gift rather than a
+dilemma, and the trade-off lives in the active-4 budget. The line itself stays at five, so each of those gifts is
+the card that sharpens the choice: "synergy is sculpted, not drafted" expressed as an inventory rule.
 
 ---
 
@@ -525,25 +534,28 @@ reward that lies.
 
 ## §6.8.4 Power targets
 
-| Tier | Power | AP | Modifiers |
+| Tier | Power | AP | What it is |
 |---|---|---|---|
-| **Lv1** | 60–80 | 1 | None — the clean, always-useful fallback |
-| **Lv2** | 85–110 | 1–2 | One positional modifier or one rider |
-| **Lv3** | 110–140 | 2–3 | A composite, species-unique effect no other card can replicate |
+| **Lv1** | the move's own | the move's own | A Gen I move the line's kit never holds — the species' iconic finisher (Charmander's Fire Blast, Squirtle's Waterfall) |
+| **Lv2** | 100 | 2 | Its **+**: the riders kept, the charge-up gone |
+| **Lv3** | 130 | 3 | Its **++** |
 
-A Mastery Move must beat the base learnset at equal AP and feel species-defining. The full 24-line catalogue:
+Since v0.9.5 every tier is a Gen I move and its + and ++ (the user's call): a Mastery is the line's own move made
+great, not an invented one, and a content test keeps it out of every path the kit can take. The bands are 85–110 at
+1–2 AP for Lv2 and 110–140 at 2–3 AP for Lv3, enforced. A Super Fang tier takes 65 % and 80 % of the foe's HP instead. The full 24-line catalogue:
 [`catalogs/mastery-moves.md`](catalogs/mastery-moves.md).
 
 ---
 
 # §6.9 The level-gated learnset
 
-- A base form **knows 2 moves at level 1**.
+- A base form **knows 2 moves at level 1** and **4 by its evolution level**. An evolved form has no learnset of its
+  own: its kit is its base form's, rewritten by the evolutions (§6.3.5).
 - Each species has an ordered learnset of `(level, move)` entries; a Pokémon knows every entry at or below its
   current level.
 - **Deck contribution = `min(known, 4)`.** The active-4 cap never changes, and Mastery remains the 5th.
-- Known moves are read from the **whole evolution line**, base form first. An evolved form's own learnset
-  starts above its pre-evolution's threshold, so without this a freshly-evolved Pokémon would know nothing.
+- **One met already evolved** — a wild Ivysaur, a Gym's Venusaur, a recruit caught above its threshold — took its
+  stage's first branch at every step, so it holds the same five cards a player's would.
 - **A level-up adds to the pool and fills a free slot; it never evicts a card the player chose.** Past four,
   a newly learned move waits in the pool until the Move Manager swaps it in (§6.7.2) — which is the fixed
   budget doing its job. The Reward screen names what is waiting so nothing looks lost.
@@ -555,11 +567,13 @@ A Mastery Move must beat the base learnset at equal AP and feel species-defining
 - Learnset levels are **clamped below the stage's evolution level**, so evolving early never loses a move. A
   content test enforces it.
 - A recruited wild derives its known moves from its spawn level, so a Region 2 catch arrives with a full kit.
+- A level-up teaches only the learnset entries its new levels reach (v0.9.5): before, it re-taught every move at or
+  below the level, and a move an evolution had upgraded came back.
 
 **What this produces.** A run opens with one Pokémon and a **two-card deck**. It thickens as you recruit — about
 six cards with a full base-form team — and reaches twelve by Gym 1 as those Pokémon level into their four-move
 kits. The deck growing *is* the early game's sense of progress, and it is why the natural learnset is
-deliberately lean: scarcity is what makes the Dojo, TMs and evolution matter.
+deliberately lean — four by level, one more by evolution: scarcity is what makes the Dojo, TMs and evolution matter.
 
 > **Legacy field.** `PrimaryAbility` was the pre-pool auto-grant field, retained only for save compatibility.
 > New and updated species populate `availableAbilities` (§6.5.1).

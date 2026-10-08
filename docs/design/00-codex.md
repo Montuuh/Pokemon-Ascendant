@@ -280,20 +280,22 @@ the Pokédex's shiny collection. Cosmetic, as in the series.
 **Active 100 %, benched Box 75 %** (`exp-share` → 100).
 Level-ups between nodes. Curve `12 + (L−1)×4`. Single-stage species get +25 % growth.
 
-**Learnset** — a base form knows **2 moves at level 1** and learns more by level; deck contribution is
-`min(known, 4)`. A run opens with a **two-card deck** and thickens as you recruit and level. Learnset levels are
-clamped below the evolution level so nothing is lost.
+**Learnset** — a base form knows **2 moves at level 1** and **4 by its evolution level**; an evolved form has no
+learnset of its own. Deck contribution is `min(known, 4)`. A run opens with a **two-card deck** and thickens as you
+recruit and level. **Every move is a Gen I move** at its modern type (v0.9.5), or one made better (**+**) where its type
+has nowhere stronger to climb.
 
 **Evolution** — player-initiated between nodes, permanent. **12 and 26** are the uniform thresholds (a few
 bespoke exceptions, e.g. Magikarp at 18). At **each** evolution you freely choose an archetype —
-**Vanguard / Specialist / Support** — and stage 1 does not lock stage 2. Payload: **stat upscale + 1–2 in-place
-upgrades + at most one addition**, the final one being the species **signature**. Most lines have 2 archetypes;
+**Vanguard / Specialist / Support** — and stage 1 does not lock stage 2. Payload: **stat upscale**, then the first
+evolution **upgrades two slots and adds one** card, and the last **swaps up to three slots** for the archetype's
+signature and adds none — a line holds **2 → 4 → 5 → 5** cards (v0.9.5). Most lines have 2 archetypes;
 starters and high-rarity have 3.
 
 **Evolution Items** let a line evolve **earlier** and open the stone branch; the level path always remains.
 
-**Learned Move Pool** — grows from levelling, evolution, TMs and the Dojo; **nothing is ever removed**; the pool
-deduplicates. The **active 4** is the fixed budget, reconfigurable free between nodes. Mastery is the 5th.
+**Learned Move Pool** — levelling fills it to four, the first evolution's addition makes five, TMs and the Dojo
+add more; an evolution **rewrites a slot in place** rather than piling a card on, and the pool deduplicates. The **active 4** is the fixed budget, reconfigurable free between nodes. Mastery is the 5th.
 
 **Abilities** — one slot, from the species' `availableAbilities` pool. The **first pool entry is granted at the
 first evolution**; the **Dojo sets or swaps** it thereafter. 38 authored across 8 categories.

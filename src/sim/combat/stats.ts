@@ -2,6 +2,7 @@ import type { ContentRegistry, SpeciesDef } from '../content/defs';
 import type { PokemonType, Stat } from '../types';
 import type { BattleConfig } from './battleConfig';
 import type { Combatant } from './state';
+import { applyPayload, autoPickMoves, lineChain, upgradeParents } from './kit';
 import { stageMultiplier } from './statStages';
 
 // §6.2.3 — level-scaled base stats: base + growth × (level − 1). Flat growth per line (Unity StatGrowthCurve).
@@ -27,33 +28,31 @@ export function effectiveMaxHp(baseMaxHp: number, traumaStacks: number, config: 
 }
 
 /**
- * §6.9 — every move a Pokémon of this species knows at this level, oldest first.
- * The whole evolution line counts: evolving adds moves, it never forgets them.
+ * §6.9 / §6.3.5 — every move a Pokémon of this species knows at this level, oldest first: the base form's learnset,
+ * then each evolution's payload along the way. One met already evolved — a wild Ivysaur, a Gym's Venusaur — took
+ * its stage's first branch at every step, so it holds the same five cards a player's would (v0.9.5).
  */
 export function knownMoves(content: ContentRegistry, speciesId: string, level: number): string[] {
   const lv = Math.max(1, Math.trunc(level));
-  return content.lineLearnset(speciesId).filter((l) => l.level <= lv).map((l) => l.move);
+  const chain = lineChain(content, speciesId);
+  const parents = upgradeParents(content, speciesId);
+  let pool: string[] = [];
+  chain.forEach((s, i) => {
+    for (const l of [...s.learnset].sort((a, b) => a.level - b.level)) if (l.level <= lv && !pool.includes(l.move)) pool.push(l.move);
+    const next = chain[i + 1];
+    const branch = next && s.branches.find((b) => b.to === next.id);
+    if (branch) pool = applyPayload(pool, branch, parents);
+  });
+  return pool;
 }
 
 /**
- * §6.9 — deck contribution is min(known, 4). "The four most recently learned" alone produced kits with a
- * single damaging card, or none: Oddish learns Absorb at 1 and Acid at 7, so by level 10 its only card that
- * hurts a Rock is gone. The auto-pick therefore keeps the two strongest attacks first, then fills with the
- * newest remaining moves. Since v0.3 this is the *default*, not the rule: the Move Manager lets a player
- * re-pick any four from the pool, and the Auto button is this function.
+ * §6.9 — deck contribution is min(known, 4), picked as the Move Manager's Auto picks (`autoPickMoves`): the two
+ * strongest attacks, one of its own type, then the newest of the rest, with one Ranged card. Every enemy kit that is
+ * not scripted is this pick.
  */
 export function activeMoves(content: ContentRegistry, speciesId: string, level: number, cap = 4): string[] {
-  const known = knownMoves(content, speciesId, level);
-  if (known.length <= cap) return known;
-
-  const power = (id: string) => content.move(id).power ?? 0;
-  const attacks = known.filter((m) => power(m) > 0);
-  // Two attacks is the floor from the basic-kit rule (§6.3.6); more than that is up to recency.
-  const keep = [...attacks].sort((a, b) => power(b) - power(a)).slice(0, Math.min(2, attacks.length));
-  const rest = known.filter((m) => !keep.includes(m));
-  const filled = [...keep, ...rest.slice(rest.length - (cap - keep.length))];
-  // Return them in learn order so the kit still reads as a history.
-  return known.filter((m) => filled.includes(m));
+  return autoPickMoves(knownMoves(content, speciesId, level), content, cap, content.species(speciesId).types);
 }
 
 export function hpFraction(c: Pick<Combatant, 'hp' | 'maxHp'>): number {

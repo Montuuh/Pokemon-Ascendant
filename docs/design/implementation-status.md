@@ -100,7 +100,7 @@ applies — two strongest attacks, fill by recency, and always one Ranged card (
 
 | Class | Catalogued | In JSON |
 |---|---|---|
-| Species | 24 R1 lines + 17 reserved + the rest of Gen I | **All 151** (79 base forms), with learnsets, ability pools, stage tutor lists and 160 evolution branches — the 78 of the Gen I pass (2026-09-23, `catalogs/species-gen1.md`, `scripts/add-gen1-content.mjs`) sit in no pool until a Region or an event places them; the legendaries are rarity `legendary`; Ditto's Transform is a stand-in (the real one is in the backlog); `mastery.json` holds every recruitable line's Mastery Lv1 (v0.7.5) |
+| Species | 24 R1 lines + 17 reserved + the rest of Gen I | **All 151** (79 base forms), with learnsets, ability pools, stage tutor lists and 160 evolution branches — the 78 of the Gen I pass (2026-09-23, `catalogs/species-gen1.md`, `scripts/add-gen1-content.mjs`) sit in no pool until a Region or an event places them; the legendaries are rarity `legendary`; Ditto's Transform is a stand-in (the real one is in the backlog); `mastery.json` holds every recruitable line's Mastery Lv1 (v0.7.5). **v0.9.5**: every move is Gen I (`moves.md`, 269 rows incl. + and Mastery tiers, `gen1-moves.json` guards it); kits 2 → 4 → 5 → 5 — four by level, then evolution payloads rewrite slots (`sim/combat/kit.ts`); a met-evolved Pokémon takes its first branches; the §6.3.6.4 bands are a test |
 | Moves | ~150 | 181, all with their full effect (11 Mastery Lv1 moves and the Eevee line's 7 joined in v0.6) |
 | Abilities | 38 + the hidden six | 53 · 50 live, 3 waiting on field effects (v0.8.4) |
 | Consumables | 28 | 15, including the whole §7.2.6 healing chain and §2.4.3 Revive |

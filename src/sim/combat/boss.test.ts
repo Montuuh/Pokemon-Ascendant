@@ -43,24 +43,24 @@ describe('Boss phases — §5.8.3 / §5.9.4', () => {
   it('Phase3_ResetsCooldowns', () => {
     let s = tweak(start(scenario({ kind: 'boss', team: TEAM, enemies: [ACE] })), (d) => {
       d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.15);
-      d.enemies[0]!.cooldowns['stone-edge'] = 2;
+      d.enemies[0]!.cooldowns['earthquake'] = 2;
     });
     s = dispatch(s, { type: 'end-turn' });
     expect(s.enemies[0]!.phase).toBe(3);
-    expect(s.enemies[0]!.cooldowns['stone-edge']).toBeUndefined();
+    expect(s.enemies[0]!.cooldowns['earthquake']).toBeUndefined();
   });
 
   it('Sturdy_SurvivesOneLethalHitAtOneHP_ThenConsumed', () => {
-    let s = tweak(start(scenario({ team: [{ species: 'blastoise', level: 40, moves: ['surf', 'hydro-crash', 'water-gun', 'withdraw'] }], enemies: [ACE] })), (d) => {
+    let s = tweak(start(scenario({ team: [{ species: 'blastoise', level: 40, moves: ['surf', 'hydro-pump', 'water-gun', 'withdraw'] }], enemies: [ACE] })), (d) => {
       d.enemies[0]!.hp = 5;
       d.player.ap = 6;
     });
-    s = withHand(s, ['surf', 'hydro-crash']);
+    s = withHand(s, ['surf', 'hydro-pump']);
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'surf').id });
     expect(s.enemies[0]!.hp).toBe(1);
     expect(s.enemies[0]!.sturdyAvailable).toBe(false);
     expect(eventsOf(s, 'sturdy')).toHaveLength(1);
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'hydro-crash').id });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'hydro-pump').id });
     expect(s.outcome).toBe('victory');
   });
 

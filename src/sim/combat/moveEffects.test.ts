@@ -23,7 +23,7 @@ const damageTo = (s: CombatState, side: 'e' | 'p') =>
 
 describe('Recoil and the ability that answers it — §7.4', () => {
   it('Recoil_CostsTheAttackerAQuarterOfWhatItDealt', () => {
-    const s = playOnly(vs(['brave-bird', 'water-gun']), 'brave-bird');
+    const s = playOnly(vs(['take-down', 'water-gun']), 'take-down');
     const dealt = damageTo(s, 'e')[0]!;
     const amount = dealt.t === 'damage' ? dealt.amount : 0;
     expect(amount).toBeGreaterThan(0);
@@ -33,11 +33,11 @@ describe('Recoil and the ability that answers it — §7.4', () => {
 
   it('RockHead_CancelsItEntirely_SoRecoilCanBeAnIdentityNotAClock_§6.5.2', () => {
     const team = [
-      { species: 'onix', level: 20, moves: ['brave-bird', 'rock-throw'], abilityId: 'rock-head' },
+      { species: 'onix', level: 20, moves: ['take-down', 'rock-throw'], abilityId: 'rock-head' },
       STARTERS[1]!,
       STARTERS[2]!,
     ];
-    const s = playOnly(start(scenario({ team, enemies: [PIDGEY] })), 'brave-bird');
+    const s = playOnly(start(scenario({ team, enemies: [PIDGEY] })), 'take-down');
     expect(damageTo(s, 'p')).toHaveLength(0);
   });
 });
@@ -46,8 +46,8 @@ describe('Multi-hit — §7.4', () => {
   it('LandsItsHitsSeparately_AndEveryHitIsTheSameSize', () => {
     const s = playOnly(vs(['pin-missile', 'water-gun']), 'pin-missile');
     const hits = damageTo(s, 'e');
-    expect(hits).toHaveLength(5);
-    // Deterministic, never rolled: the catalogue says "hits 5 times for 15", not "5 × 15 ± something".
+    expect(hits).toHaveLength(3);
+    // Deterministic, never rolled: the catalogue says "hits 3 times for 25", not "3 × 25 ± something".
     expect(new Set(hits.map((e) => (e.t === 'damage' ? e.amount : 0))).size).toBe(1);
   });
 });
@@ -73,7 +73,8 @@ describe('Toxic — §7.5', () => {
   });
 
   it('OrdinaryPoison_StaysFlat', () => {
-    const s = playOnly(vs(['poison-powder', 'water-gun']), 'poison-powder');
+    // A sure poison (probe), so the test is about the tick, not the roll.
+    const s = playOnly(vs(['probe-poison', 'water-gun']), 'probe-poison');
     const enemy = structuredClone(s.enemies[0]!);
     expect(enemy.status?.escalatingTicks).toBeUndefined();
     const base = dotDamage(enemy, ctx.config);
@@ -84,13 +85,13 @@ describe('Toxic — §7.5', () => {
 
 describe('On-kill — §7.4', () => {
   it('FellStinger_OnlyPaysOutWhenTheMoveActuallyTookTheTargetDown', () => {
-    const healthy = playOnly(vs(['fell-stinger-v', 'water-gun']), 'fell-stinger-v');
+    const healthy = playOnly(vs(['probe-on-kill', 'water-gun']), 'probe-on-kill');
     expect(leadOf(healthy).stages.attack).toBe(0);
 
-    const dying = tweak(vs(['fell-stinger-v', 'water-gun']), (d) => {
+    const dying = tweak(vs(['probe-on-kill', 'water-gun']), (d) => {
       d.enemies[0]!.hp = 1;
     });
-    expect(leadOf(playOnly(dying, 'fell-stinger-v')).stages.attack).toBe(3);
+    expect(leadOf(playOnly(dying, 'probe-on-kill')).stages.attack).toBe(3);
   });
 
   it('Moxie_DoesTheSameFromTheAbilitySide_§6.5.2', () => {
@@ -108,14 +109,14 @@ describe('On-kill — §7.4', () => {
 
 describe('Team guards — §7.4', () => {
   it('Safeguard_EatsTheNextStatusTheEnemyLands_ThenIsSpent', () => {
-    const armed = playOnly(vs(['safeguard', 'water-gun']), 'safeguard');
+    const armed = playOnly(vs(['mist', 'water-gun']), 'mist');
     expect(armed.player.guards.status).toBe(1);
 
     // The charge is spent by an enemy status landing on the team, which is the only way one gets there.
     // A 100 % rider so the test is about the guard, not about a roll.
     const incoming = tweak(armed, (d) => {
-      d.enemies[0]!.moveIds = ['hypnosis'];
-      d.enemies[0]!.intent = { kind: 'status', moveId: 'hypnosis', targetSlot: 'lead', hidden: false };
+      d.enemies[0]!.moveIds = ['thunder-wave'];
+      d.enemies[0]!.intent = { kind: 'status', moveId: 'thunder-wave', targetSlot: 'lead', hidden: false };
     });
     const after = dispatch(incoming, { type: 'end-turn' });
     expect(after.player.guards.status).toBe(0);
@@ -123,12 +124,12 @@ describe('Team guards — §7.4', () => {
   });
 
   it('WideGuard_SoftensOneCleave_ThenTheNextOneLandsInFull', () => {
-    const s = playOnly(vs(['wide-guard', 'water-gun']), 'wide-guard');
+    const s = playOnly(vs(['light-screen', 'water-gun']), 'light-screen');
     expect(s.player.guards.cleave).toEqual({ charges: 1, percent: 50 });
   });
 
   it('AquaFortress_BracesTheCasterAndTheTeamAtOnce', () => {
-    const s = playOnly(vs(['aqua-fortress', 'water-gun']), 'aqua-fortress');
+    const s = playOnly(vs(['probe-brace', 'water-gun']), 'probe-brace');
     expect(leadOf(s).stages.defense).toBe(2);
     expect(s.player.guards.cleave.charges).toBe(1);
     expect(s.player.guards.cleave.percent).toBe(25);
@@ -137,18 +138,18 @@ describe('Team guards — §7.4', () => {
 
 describe('Support reach — §7.4', () => {
   it('AromaticMist_BuffsTheBenchAndNotTheCaster_WhichIsWhatMakesItSupport', () => {
-    const s = playOnly(vs(['aromatic-mist', 'water-gun']), 'aromatic-mist');
+    const s = playOnly(vs(['probe-bench-buff', 'water-gun']), 'probe-bench-buff');
     expect(leadOf(s).stages.defense).toBe(0);
     expect(s.player.team[1]!.stages.defense).toBe(1);
     expect(s.player.team[2]!.stages.defense).toBe(1);
   });
 
   it('Aromatherapy_ClearsTheWholeTeam', () => {
-    const sick = tweak(vs(['aromatherapy-m', 'water-gun']), (d) => {
+    const sick = tweak(vs(['haze', 'water-gun']), (d) => {
       d.player.team[0]!.status = { kind: 'burn', appliedTurn: 0, turnsLeft: null };
       d.player.team[1]!.status = { kind: 'paralysis', appliedTurn: 0, turnsLeft: 3 };
     });
-    const s = playOnly(sick, 'aromatherapy-m');
+    const s = playOnly(sick, 'haze');
     expect(s.player.team[0]!.status).toBeNull();
     expect(s.player.team[1]!.status).toBeNull();
   });
@@ -156,11 +157,11 @@ describe('Support reach — §7.4', () => {
   it('Fissure_IgnoresTheTargetsDefenceStages_WhereAnOrdinaryGroundMoveDoesNot', () => {
     // Not Pidgey: Ground does ×0 into Flying, so both numbers would be zero and the test would prove nothing.
     const GEODUDE = { species: 'geodude', level: 10, tier: 'wild' as const, phaseCount: 1 as const };
-    const s = start(scenario({ team: teamWithKit(['fissure-d', 'water-gun']), enemies: [GEODUDE] }));
+    const s = start(scenario({ team: teamWithKit(['fissure', 'water-gun']), enemies: [GEODUDE] }));
     const braced = tweak(s, (d) => {
       d.enemies[0]!.stages.defense = 4;
     });
-    const fissure = ctx.content.move('fissure-d');
+    const fissure = ctx.content.move('fissure');
     const earthquake = ctx.content.move('earthquake');
     expect(breakdownFor(leadOf(braced), braced.enemies[0]!, fissure, false, ctx).final).toBe(
       breakdownFor(leadOf(s), s.enemies[0]!, fissure, false, ctx).final,
@@ -204,8 +205,8 @@ describe('The Mastery moves’ effects — §5.13.2 (v0.7.5)', () => {
   it('Venoshock_DoublesIntoAPoisonedTarget', () => {
     const s = s0();
     const poisoned = tweak(s, (d) => { d.enemies[0]!.status = { kind: 'poison', appliedTurn: 0, turnsLeft: null }; });
-    expect(hit(poisoned, 'venoshock')).toBeGreaterThanOrEqual(Math.floor(hit(s, 'venoshock') * 2 * 0.85) - 1);
-    expect(hit(poisoned, 'venoshock')).toBeGreaterThan(hit(s, 'venoshock'));
+    expect(hit(poisoned, 'probe-poison-bonus')).toBeGreaterThanOrEqual(Math.floor(hit(s, 'probe-poison-bonus') * 2 * 0.85) - 1);
+    expect(hit(poisoned, 'probe-poison-bonus')).toBeGreaterThan(hit(s, 'probe-poison-bonus'));
   });
 
   it('SuperFang_TakesHalfWhatIsLeft', () => {
@@ -216,20 +217,20 @@ describe('The Mastery moves’ effects — §5.13.2 (v0.7.5)', () => {
   it('RageFist_GrowsWithTrauma_Revenge_BelowHalf', () => {
     const s = s0();
     const scarred = tweak(s, (d) => { d.player.team[0]!.traumaStacks = 3; });
-    expect(hit(scarred, 'rage-fist')).toBeGreaterThan(hit(s, 'rage-fist'));
+    expect(hit(scarred, 'probe-trauma-bonus')).toBeGreaterThan(hit(s, 'probe-trauma-bonus'));
     const low = tweak(s, (d) => { d.player.team[0]!.hp = 1; });
-    expect(hit(low, 'revenge')).toBeGreaterThan(hit(s, 'revenge'));
+    expect(hit(low, 'counter')).toBeGreaterThan(hit(s, 'counter'));
   });
 
   it('BellyDrum_PaysHpUpFront_NeverBelowOne_AndRaisesAttack', () => {
-    let s = start(scenario({ team: [{ species: 'snorlax', level: 20, moves: ['belly-drum-s', 'tackle'] }], enemies: [PIDGEY] }));
-    s = withHand(s, ['belly-drum-s']);
+    let s = start(scenario({ team: [{ species: 'snorlax', level: 20, moves: ['probe-belly-drum', 'tackle'] }], enemies: [PIDGEY] }));
+    s = withHand(s, ['probe-belly-drum']);
     const max = s.player.team[0]!.maxHp;
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'belly-drum-s').id });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'probe-belly-drum').id });
     expect(s.player.team[0]!.hp).toBe(max - Math.floor(max * 0.4));
     expect(s.player.team[0]!.stages.attack).toBe(4);
-    let low = tweak(withHand(start(scenario({ team: [{ species: 'snorlax', level: 20, moves: ['belly-drum-s', 'tackle'] }], enemies: [PIDGEY] })), ['belly-drum-s']), (d) => { d.player.team[0]!.hp = 2; });
-    low = dispatch(low, { type: 'play-card', cardId: handCard(low, 'belly-drum-s').id });
+    let low = tweak(withHand(start(scenario({ team: [{ species: 'snorlax', level: 20, moves: ['probe-belly-drum', 'tackle'] }], enemies: [PIDGEY] })), ['probe-belly-drum']), (d) => { d.player.team[0]!.hp = 2; });
+    low = dispatch(low, { type: 'play-card', cardId: handCard(low, 'probe-belly-drum').id });
     expect(low.player.team[0]!.hp).toBe(1);
   });
 

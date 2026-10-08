@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { activeMoves, knownMoves, BIOMES, ELITE_WILD, GYMS, REGIONS, TRAINER_SPRITES, GYM } from '@/sim';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { applyPayload, upgradeParents } from '@/sim/combat/kit';
 import { buildRegistry } from './registry';
 import { boxIconUrl, portraitUrl, battleSpriteUrl } from './schemas/species';
 
@@ -96,9 +97,9 @@ describe('content registry', () => {
     for (const s of reg.allSpecies()) {
       if (s.stage !== 'basic') continue;
       expect(knownMoves(reg, s.id, 1).length, s.id).toBe(2);
-      // Two deliberate exceptions: Magikarp's three-card deck until it evolves is the whole joke, and Ditto is a
-      // Transform and a spare (species-gen1.md — the Transform mechanic is an open question).
-      const floor = s.id === 'magikarp' ? 3 : s.id === 'ditto' ? 2 : 4;
+      // Two deliberate exceptions: Magikarp's two-card deck until it evolves is the whole joke — Splash and Tackle,
+      // which is all it ever learned in Gen I — and Ditto is a Transform and a spare (species-gen1.md).
+      const floor = s.id === 'magikarp' || s.id === 'ditto' ? 2 : 4;
       expect(activeMoves(reg, s.id, s.evolveLevel ?? 20).length, s.id).toBeGreaterThanOrEqual(floor);
     }
   });
@@ -126,19 +127,71 @@ describe('content registry', () => {
     }
   });
 
-  it('§6.3.5 — a branch upgrades at most two moves and adds at most one, and always does something', () => {
+  it('§6.3.5 — a first evolution upgrades up to two slots and adds one; a final evolution swaps one to three and adds none', () => {
     for (const s of reg.allSpecies()) {
+      const final = s.evolvesTo.length > 0 && s.stage !== 'basic';
       for (const b of s.branches) {
-        expect(b.upgrades.length, b.id).toBeLessThanOrEqual(2);
-        expect(b.adds.length, b.id).toBeLessThanOrEqual(1);
-        expect(b.upgrades.length + b.adds.length, `${b.id} has an empty payload`).toBeGreaterThan(0);
-        // An upgrade has to be one: same or better AP-for-power, and never a downgrade in role.
-        for (const u of b.upgrades) {
-          const from = reg.move(u.from);
-          const to = reg.move(u.to);
-          expect(to.power >= from.power || to.effects.length > from.effects.length, `${b.id}: ${u.from} → ${u.to} is not an upgrade`).toBe(true);
+        if (final) {
+          expect(b.upgrades.length, b.id).toBeGreaterThanOrEqual(1);
+          expect(b.upgrades.length, b.id).toBeLessThanOrEqual(3);
+          expect(b.adds.length, b.id).toBe(0);
+        } else {
+          expect(b.upgrades.length, b.id).toBeLessThanOrEqual(2);
+          expect(b.adds.length, b.id).toBe(1);
+        }
+        for (const u of b.upgrades) expect(u.to, b.id).not.toBe(u.from);
+      }
+    }
+  });
+
+  it('§6.3.5 — every path through a line holds 2 → 4 → 5 → 5 different cards, at least one of them Ranged', () => {
+    // §6.3.6.5's Lead anchors keep a Melee-only kit on purpose.
+    const anchors = new Set(['pinsir', 'snorlax', 'machop']);
+    for (const base of reg.allSpecies().filter((s) => s.stage === 'basic' && s.evolvesTo.length)) {
+      const parents = upgradeParents(reg, base.id);
+      const pool0 = knownMoves(reg, base.id, base.evolveLevel! - 1);
+      expect(pool0.length, base.id).toBe(base.id === 'magikarp' ? 2 : 4);
+      for (const b1 of base.branches) {
+        const mid = applyPayload(pool0, b1, parents);
+        expect(mid.length, b1.id).toBe(base.id === 'magikarp' ? 3 : 5);
+        const next = reg.species(b1.to);
+        const finals = next.branches.length ? next.branches.map((b2) => [b2.id, applyPayload(mid, b2, parents)] as const) : [[b1.id, mid] as const];
+        for (const [id, pool] of finals) {
+          expect(pool.length, `${b1.id} → ${id}`).toBe(mid.length);
+          if (!anchors.has(base.id)) expect(pool.some((m) => reg.move(m).range === 'ranged'), `${b1.id} → ${id}: [${pool.join(' ')}]`).toBe(true);
+          for (const t of reg.masteryMoves(base.id)) if (t) expect(pool, `${id} holds its Mastery ${t}`).not.toContain(t);
         }
       }
+    }
+  });
+
+  it('§3.6 — every move is a Gen I move at its Gen I name and its modern type, or one made better (+, ++)', () => {
+    const gen1 = new Map((JSON.parse(readFileSync('src/content/data/gen1-moves.json', 'utf8')) as { moves: { id: string; name: string; type: string }[] }).moves.map((m) => [m.id, m]));
+    const enemyOnly = new Set(['call-for-help', 'cover']);
+    for (const m of reg.allMoves()) {
+      if (enemyOnly.has(m.id)) continue;
+      const tier = m.id.endsWith('-plus-plus') ? '++' : m.id.endsWith('-plus') ? '+' : '';
+      const g = gen1.get(m.id.replace(/(-plus)+$/, ''));
+      expect(g, `${m.id} is not a Gen I move`).toBeDefined();
+      expect(m.name, m.id).toBe(`${g!.name}${tier}`);
+      expect(m.type, m.id).toBe(g!.type);
+    }
+  });
+
+  it('§6.3.6.4 — every damaging card sits in its AP band; Cleave, recoil, sacrifice and Mastery tiers are budgeted apart', () => {
+    const band: Record<number, { melee: [number, number]; ranged: [number, number] }> = {
+      1: { melee: [40, 50], ranged: [45, 55] },
+      2: { melee: [60, 75], ranged: [65, 90] },
+      3: { melee: [85, 100], ranged: [90, 100] },
+      4: { melee: [110, 130], ranged: [115, 130] },
+    };
+    const mastery = new Set(reg.allSpecies().flatMap((s) => reg.masteryMoves(s.id).slice(1)).filter(Boolean));
+    for (const m of reg.allMoves()) {
+      if (m.power <= 1 || mastery.has(m.id) || m.targeting === 'cleave') continue;
+      if (m.effects.some((e) => e.kind === 'recoil' || (e.kind === 'status' && e.self))) continue;
+      const [lo, hi] = band[m.apCost]![m.range];
+      expect(m.power, `${m.id} (${m.apCost} AP ${m.range})`).toBeGreaterThanOrEqual(lo);
+      expect(m.power, `${m.id} (${m.apCost} AP ${m.range})`).toBeLessThanOrEqual(hi);
     }
   });
 
@@ -180,8 +233,8 @@ describe('content registry', () => {
 
 // §6.8.4 / §5.13.2 — every recruitable line's Mastery is whole (v0.9.1), and each tier sits in its power band.
 describe('Mastery Moves — §6.8.4', () => {
-  /** On purpose outside the band: a rider that pays for the power, a support card, a move the learnsets share. */
-  const EXCEPTIONS = new Set(['fell-stinger-v', 'aromatherapy-m', 'petal-dance']);
+  /** On purpose outside the band: none since v0.9.5, when every tier became a Gen I move's + and ++. */
+  const EXCEPTIONS = new Set<string>();
   const stagesOf = (line: string): number => {
     let n = 1;
     let s = reg.species(line);

@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { PIDGEY, STARTERS, dispatch, eventsOf, handCard, reject, scenario, start, tweak, withHand } from '../testing/harness';
 import { swapOptions } from './preview';
 
-const base = () => start(scenario({ team: STARTERS, enemies: [PIDGEY] }));
+// Squirtle carries Rest here: a defensive card at 1 AP, which is what the discount is about (§3.3.1).
+const base = () => start(scenario({ team: [STARTERS[0]!, { species: 'squirtle', level: 8, moves: ['tackle', 'water-gun', 'rest', 'tail-whip'] }, STARTERS[2]!], enemies: [PIDGEY] }));
 
 describe('Manual swap — §3.3.1', () => {
   it('ManualSwap_Ladder_1_2_3_AP', () => {
@@ -68,18 +69,18 @@ describe('Manual swap — §3.3.1', () => {
   });
 
   it('ManualSwap_ArmsDefensiveDiscount_ConsumedByFirstDefensiveCard', () => {
-    // Squirtle owns Withdraw (defensive, 1 AP). Swap Squirtle in, then Withdraw costs 0.
-    let s = withHand(base(), ['withdraw', 'tackle']);
+    // Squirtle owns Rest (defensive, 1 AP). Swap Squirtle in, then Rest costs 0.
+    let s = withHand(base(), ['rest', 'tackle']);
     s = dispatch(s, { type: 'swap', benchIndex: 1 });
     expect(s.player.defensiveDiscount).toBe(true);
     const ap = s.player.ap;
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'withdraw').id });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'rest').id });
     expect(s.player.ap).toBe(ap);
     expect(s.player.defensiveDiscount).toBe(false);
   });
 
   it('DefensiveDiscount_NotConsumedByOffensiveCard', () => {
-    let s = withHand(base(), ['water-gun', 'withdraw']);
+    let s = withHand(base(), ['water-gun', 'rest']);
     s = dispatch(s, { type: 'swap', benchIndex: 1 });
     const ap = s.player.ap;
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'water-gun').id });
@@ -88,7 +89,7 @@ describe('Manual swap — §3.3.1', () => {
   });
 
   it('DefensiveDiscount_DoesNotStackAcrossSwaps', () => {
-    let s = withHand(base(), ['withdraw']);
+    let s = withHand(base(), ['rest']);
     s = tweak(s, (d) => {
       d.player.ap = 6;
     });
@@ -96,18 +97,18 @@ describe('Manual swap — §3.3.1', () => {
     s = dispatch(s, { type: 'swap', benchIndex: 2 });
     s = dispatch(s, { type: 'swap', benchIndex: 1 });
     const ap = s.player.ap;
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'withdraw').id });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'rest').id });
     expect(s.player.ap).toBe(ap); // −1 once, floored at 0 for a 1-AP card
   });
 });
 
 describe('Step-Forward / Step-Backward — §3.3.2–§3.3.4', () => {
   it('StepForward_FromBench_BecomesLeadBeforeEffect_NoCounter_NoDiscount', () => {
-    // Wartortle (Aqua Jet, SF) on the bench.
-    let s = start(scenario({ team: [{ species: 'charmander', level: 8 }, { species: 'wartortle', level: 23, moves: ['aqua-jet', 'water-gun', 'bite', 'withdraw'] }], enemies: [PIDGEY] }));
-    s = withHand(s, ['aqua-jet']);
+    // Wartortle (Quick Attack, SF) on the bench.
+    let s = start(scenario({ team: [{ species: 'charmander', level: 8 }, { species: 'wartortle', level: 23, moves: ['quick-attack', 'water-gun', 'bite', 'withdraw'] }], enemies: [PIDGEY] }));
+    s = withHand(s, ['quick-attack']);
     const enemyHp = s.enemies[0]!.hp;
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'aqua-jet').id });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'quick-attack').id });
     expect(s.player.leadIndex).toBe(1);
     expect(s.player.swapCounter).toBe(0);
     expect(s.player.defensiveDiscount).toBe(false);
@@ -116,28 +117,28 @@ describe('Step-Forward / Step-Backward — §3.3.2–§3.3.4', () => {
   });
 
   it('StepBackward_FromLead_EffectThenSwapToChosenBench', () => {
-    let s = start(scenario({ team: [{ species: 'wartortle', level: 20, moves: ['skull-bash', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 8 }, { species: 'bulbasaur', level: 8 }], enemies: [PIDGEY] }));
-    s = withHand(s, ['skull-bash']);
+    let s = start(scenario({ team: [{ species: 'wartortle', level: 20, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 8 }, { species: 'bulbasaur', level: 8 }], enemies: [PIDGEY] }));
+    s = withHand(s, ['rolling-kick']);
     const enemyHp = s.enemies[0]!.hp;
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'skull-bash').id, stepBackTo: 2 });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'rolling-kick').id, stepBackTo: 2 });
     expect(s.enemies[0]!.hp).toBeLessThan(enemyHp);
     expect(s.player.leadIndex).toBe(2);
     expect(s.player.swapCounter).toBe(0);
   });
 
   it('StepBackward_NoLegalBench_LeadStays', () => {
-    let s = start(scenario({ team: [{ species: 'wartortle', level: 20, moves: ['skull-bash', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 8 }], enemies: [PIDGEY] }));
-    s = withHand(s, ['skull-bash']);
+    let s = start(scenario({ team: [{ species: 'wartortle', level: 20, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 8 }], enemies: [PIDGEY] }));
+    s = withHand(s, ['rolling-kick']);
     s = tweak(s, (d) => {
       d.player.team[1]!.status = { kind: 'freeze', appliedTurn: 0, turnsLeft: 1 };
     });
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'skull-bash').id, stepBackTo: 1 });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'rolling-kick').id, stepBackTo: 1 });
     expect(s.player.leadIndex).toBe(0);
   });
 
   it('StepBackward_FromBench_IsIneligible_MeleeNeedsLead', () => {
-    let s = start(scenario({ team: [{ species: 'charmander', level: 8 }, { species: 'wartortle', level: 20, moves: ['skull-bash', 'water-gun', 'bite', 'withdraw'] }], enemies: [PIDGEY] }));
-    s = withHand(s, ['skull-bash']);
-    expect(reject(s, { type: 'play-card', cardId: handCard(s, 'skull-bash').id })).toBe('melee-needs-lead');
+    let s = start(scenario({ team: [{ species: 'charmander', level: 8 }, { species: 'wartortle', level: 20, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }], enemies: [PIDGEY] }));
+    s = withHand(s, ['rolling-kick']);
+    expect(reject(s, { type: 'play-card', cardId: handCard(s, 'rolling-kick').id })).toBe('melee-needs-lead');
   });
 });

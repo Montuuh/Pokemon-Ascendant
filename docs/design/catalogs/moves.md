@@ -1,552 +1,591 @@
 # Move catalog
 
-> Implements §3.6 (tag taxonomy), §4.1.1 (power/range), §6.3.6 (kit templates), §4.2 (status riders).
-> Columns map 1:1 to `MoveDef` (`src/sim/content/defs.ts`). Status legend in `README.md`.
+> Implements §3.6 (taxonomy), §4.1.1 (power and range), §6.3.6 (kit rules), §4.2 (status riders). Columns map 1:1 to
+> `MoveDef` (`src/sim/content/defs.ts`); every table below is generated from `moves.json`, so it is the build.
 >
-> **Reading the columns.** `Role` = Offensive/Defensive/Utility (drives the §3.3.1 defensive-swap discount).
-> `Rng` = Melee (Lead-only unless Step-Forward) / Ranged (any slot, ×0.75 damage). `Mod` = positional modifier
-> (SF = Step-Forward, SB = Step-Backward; Melee-only, mutually exclusive, no swap-counter increment).
-> `Tgt` = single / cleave (all slots, never fizzles) / backstrike (a bench slot, fizzles if empty).
-> `CD` = enemy-side cooldown in turns (§5.3 CooldownGate). Effects use the `MoveEffect` union.
+> **Every move is a Gen I move (v0.9.5, the user's call, 2026-10-08).** Its name is the Gen I name; its type is the
+> modern one where the game has that type — Gust is Flying, Karate Chop Fighting, Sand Attack Ground — and Bite stays
+> Normal, as there is no Dark. A **+** is that move made better, the card an evolution upgrades into when its type has
+> no stronger Gen I move to climb to (Lick → Lick+); a Mastery tier is the line's Lv1 move's **+** and **++**
+> (§6.8.4). A content test holds every row to the 165 moves of Generation I (`gen1-moves.json`). The enemy-only
+> `call-for-help` and `cover` are actions, not moves anyone learns.
 >
-> **Power budget — a contract, enforced by a content test (§6.3.6.4).** At divisor 8 a move's expected damage is
-> `power × (atk/def) × range × stab × type / 8`. The bands below keep a 1-AP move at ~1 "beat" of a health bar:
+> **Reading the columns.** `Role` Off/Def/Util (Def drives the §3.3.1 defensive-swap discount). `Rng` Melee
+> (Lead-only unless Step-Forward) / Ranged (any slot, ×0.75). `Mod` SF/SB (Melee only). `Tgt` cleave (every
+> slot, never fizzles) / backstrike (a declared bench slot, fizzles if empty). `cd` an enemy-side cooldown (§5.3).
+>
+> **Power budget — a contract, enforced by a content test (§6.3.6.4).**
 >
 > | AP | Melee power | Ranged power | Notes |
 > |---|---|---|---|
-> | 0 | — | — | utility only (no damage) |
-> | 1 | 40–50 | 45–55 | the workhorse; every Pokémon has one |
-> | 2 | 60–75 | 65–90 | +rider or +modifier costs ~10 power |
-> | 3 | 85–100 | 90–100 | one per final-stage kit; often a cooldown or a drawback |
-> | 4 | 110–130 | 115–130 | "ultimate", needs setup to afford (§3.2.4) |
+> | 0 | — | — | utility only |
+> | 1 | 40–50 | 45–55 | the workhorse |
+> | 2 | 60–75 | 65–90 | a rider or a modifier costs ~10 power |
+> | 3 | 85–100 | 90–100 | |
+> | 4 | 110–130 | 115–130 | the ultimate |
 >
-> A move that carries **both** a modifier and a rider sits at the bottom of its band. A `cleave` move counts as
-> ~1.6× its single-target power for budget purposes, so `earthquake` (90, 3 AP, cd1) is at the ceiling.
+> A move with both a modifier and a rider sits at the foot of its band; Gen I's high-critical moves (Karate Chop,
+> Razor Leaf, Crabhammer, Slash) crit every time and pay for it there. Cleave (×~1.6), recoil, a rampage's
+> self-Confusion and a sacrifice are budgeted apart; Mastery tiers have their own bands (`mastery-moves.md`).
+>
+> **Accuracy is a rider.** The sim never misses, so a Gen I status move's accuracy is its chance: Sing and
+> Supersonic 55 %, Hypnosis 60 %, the powders and Glare 75 %, Toxic 85 %, Thunder Wave and Confuse Ray certain.
+> Sand Attack, Smokescreen, Kinesis and Flash, which lowered accuracy, lower Attack.
 
 ## 0. What is in the build
 
-| Version | Moves | Note |
-|---|---|---|
-| v0.1 | 56 | section 1 below |
-| v0.2 | +72 | the level-gated learnsets of `species-r1.md` |
-| v0.3 | +28 | the evolution-branch payloads: every upgrade target and addition the branch tables name |
-| v0.4–v0.7.2 | +25 | the Krabby line, Snorlax, Eevee and the Eeveelutions, the Mastery moves that shipped |
-| v0.7.3 | +34 | Region 2's kits: the rows marked v0.7.3 in section 2, plus `mist`, `sheer-cold-l`, `leaf-storm-s` (Lapras, Victreebel) |
-| Gen I (2026-09-23) | +64 | the rest of the 151 (`species-gen1.md`): the catalogue rows those kits name, shipped as written, and the rows marked Gen I below |
-| **Total in `moves.json`** | **279** | the rest of section 2 lands with the content its version needs |
+| Set | Moves |
+|---|---|
+| Gen I moves | 161 of the 165 |
+| Made better (+) | 70 |
+| Mastery tiers (+, ++) | 38 |
+| Enemy actions | 2 |
+| **Total in `moves.json`** | **271** |
 
-**Ten v0.3 moves ship with their effect clause omitted**, because it needs a `MoveEffect` kind the sim does not
-have. They carry their catalogued type, role, range, modifier, AP and power, so the budget and the kit rules
-still hold; only the rider is missing. They are `flare-blitz` and `brave-bird` (recoil), `pin-missile`
-(deterministic multi-hit), `fell-stinger-v` (on-kill), `fissure-d` (ignore Def stages), `toxic` (escalating
-DoT — ships as flat Poison), `aromatic-mist` (ally-target stage — ships as self), `aromatherapy-m` (team cure —
-ships as a self-heal), and `safeguard` / `wide-guard` / `aqua-fortress` (team-wide guards — ship as self Def).
-Every one of those effect kinds is v0.4 work; until then the catalogue row is the spec and the JSON is the
-subset. 🆕 marks a row with no JSON entry at all.
+Not in the game: the Gen I moves no rule here can express — Whirlwind and Roar's escape, Bide, Counter's exact
+return, Mimic, Metronome's lottery, Mirror Move's copy, Substitute, Conversion's retype, Teleport, Struggle — keep
+their names on simpler cards where one fits the line (Metronome draws two, Mirror Move raises Attack and draws,
+Conversion raises both stats, Whirlwind and Teleport draw), and the rest are absent.
 
-## 1. Shipped in v0.1 (56) ✅
+## 1. Gen I moves
 
-These are live in `src/content/data/moves.json` and covered by golden-master replays. Changing any number here
-requires `UPDATE_GOLDEN=1 npm test` and a note in the section that changed.
+### Normal
 
-| id | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|---|
-| `tackle` | Normal | Off | Melee | — | 1 | 40 | — | — |
-| `scratch` | Normal | Off | Melee | — | 1 | 40 | — | — |
-| `quick-attack` | Normal | Off | Melee | SF | 1 | 40 | — | — |
-| `headbutt` | Normal | Off | Melee | SF | 2 | 65 | — | — |
-| `slash` | Normal | Off | Melee | — | 2 | 70 | — | always-crit |
-| `growl` | Normal | Util | Melee | — | 0 | — | — | foe Atk −1 |
-| `tail-whip` | Normal | Util | Melee | — | 0 | — | — | foe Def −1 |
-| `sand-attack` | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
-| `smokescreen` | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
-| `sweet-scent` | Normal | Util | Ranged | — | 0 | — | — | foe Def −2 |
-| `harden` | Normal | Util | Melee | — | 0 | — | — | self Def +1 |
-| `harden-plus` | Normal | Util | Melee | — | 0 | — | — | self Def +2 |
-| `defense-curl` | Normal | Util | Melee | — | 0 | — | — | self Def +1 |
-| `withdraw` | Normal | Def | Melee | — | 1 | — | — | self Def +1 |
-| `roost` | Normal | Util | Melee | — | 1 | — | — | heal 25 % |
-| `roost-plus` | Normal | Util | Melee | — | 1 | — | — | heal 35 % |
-| `vine-whip` | Grass | Off | Ranged | — | 1 | 45 | — | — |
-| `vine-lash` | Grass | Off | Ranged | — | 2 | 65 | — | — |
-| `power-whip` | Grass | Off | Ranged | — | 2 | 85 | — | — |
-| `mega-drain` | Grass | Off | Ranged | — | 2 | 65 | — | drain 50 % of damage (§4.1.6; 50 power + 25 % of Max HP until v0.7.5) |
-| `petal-blizzard` | Grass | Off | Melee | SF | 3 | 90 | — | — |
-| `leech-seed` | Grass | Util | Ranged | — | 1 | — | — | Poison 100 % |
-| `ember` | Fire | Off | Ranged | — | 1 | 40 | — | Burn 20 % |
-| `flame-wheel` | Fire | Off | Melee | SB | 2 | 60 | — | Burn 30 % |
-| `flamethrower` | Fire | Off | Ranged | — | 2 | 90 | — | Burn 20 % |
-| `dragon-claw` | Dragon | Off | Melee | SF | 2 | 65 | — | — |
-| `dragon-claw-plus` | Dragon | Off | Melee | SB | 3 | 100 | — | — |
-| `water-gun` | Water | Off | Ranged | — | 1 | 45 | — | — |
-| `aqua-jet` | Water | Off | Melee | SF | 1 | 45 | — | — |
-| `skull-bash` | Normal | Off | Melee | SB | 2 | 60 | — | — |
-| `hydro-crash` | Water | Off | Melee | SF | 3 | 95 | — | — |
-| `surf` | Water | Off | Ranged | — | 2 | 70 | cleave | — |
-| `aqua-ring` | Water | Def | Melee | — | 1 | — | — | heal 12.5 %/turn × 3 |
-| `string-shot` | Bug | Util | Ranged | — | 0 | — | — | foe Def −1 |
-| `silk-bind` | Bug | Util | Ranged | — | 1 | — | — | foe Atk −1 |
-| `bug-bite` | Bug | Off | Melee | — | 1 | 40 | — | — |
-| `pin-shot` | Bug | Off | Ranged | — | 1 | 50 | — | — |
-| `silver-wind` | Bug | Off | Ranged | — | 2 | 65 | — | self Atk +1 |
-| `powder-spread` | Bug | Util | Ranged | — | 1 | — | — | Sleep 60 % |
-| `psybeam` | Psychic | Off | Ranged | — | 2 | 70 | — | Confusion 20 % |
-| `gust` | Flying | Off | Ranged | — | 1 | 50 | — | — |
-| `wing-attack` | Flying | Off | Melee | SF | 2 | 70 | — | — |
-| `aerial-ace` | Flying | Off | Ranged | — | 2 | 70 | — | — |
-| `hurricane` | Flying | Off | Ranged | — | 3 | 95 | — | — |
-| `tailwind` | Flying | Util | Ranged | — | 0 | — | — | draw 1 |
-| `tailwind-plus` | Flying | Util | Ranged | — | 0 | — | — | draw 2 |
-| `feather-dance` | Flying | Util | Ranged | — | 0 | — | — | foe Atk −2 |
-| `rock-throw` | Rock | Off | Ranged | — | 1 | 45 | — | — |
-| `rock-blast` | Rock | Off | Melee | SB | 2 | 65 | backstrike | — |
-| `rollout` | Rock | Off | Melee | SF | 1 | 50 | — | — |
-| `stone-edge` | Rock | Off | Melee | SB | 3 | 95 | cd2 | always-crit |
-| `stealth-rock` | Rock | Util | Ranged | — | 0 | — | — | foe Def −1 |
-| `rock-polish` | Rock | Util | Melee | — | 0 | — | — | self Atk +2 |
-| `magnitude` | Ground | Off | Melee | — | 1 | 50 | — | — |
-| `earthquake` | Ground | Off | Melee | — | 3 | 90 | cleave cd1 | — |
-| `body-press` | Fighting | Off | Melee | SF | 2 | 80 | — | — |
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `pound` | Pound | Normal | Off | Melee | — | 1 | 40 | — | — |
+| `double-slap` | Double Slap | Normal | Off | Melee | — | 1 | 45 | — | 3 hits |
+| `comet-punch` | Comet Punch | Normal | Off | Melee | — | 1 | 45 | — | 3 hits |
+| `mega-punch` | Mega Punch | Normal | Off | Melee | — | 2 | 75 | — | — |
+| `pay-day` | Pay Day | Normal | Off | Ranged | — | 1 | 50 | — | — |
+| `scratch` | Scratch | Normal | Off | Melee | — | 1 | 40 | — | — |
+| `vice-grip` | Vice Grip | Normal | Off | Melee | — | 1 | 50 | — | — |
+| `guillotine` | Guillotine | Normal | Off | Melee | — | 4 | 130 | cd 2 | ignores Def stages |
+| `razor-wind` | Razor Wind | Normal | Off | Ranged | — | 3 | 95 | backstrike | — |
+| `swords-dance` | Swords Dance | Normal | Util | Melee | — | 1 | — | — | self Atk +2 |
+| `cut` | Cut | Normal | Off | Melee | — | 1 | 50 | — | — |
+| `whirlwind` | Whirlwind | Normal | Util | Melee | — | 0 | — | — | draw 1 |
+| `bind` | Bind | Normal | Off | Melee | — | 1 | 40 | — | foe Def −1 |
+| `slam` | Slam | Normal | Off | Melee | — | 2 | 75 | — | — |
+| `stomp` | Stomp | Normal | Off | Melee | — | 2 | 70 | — | — |
+| `mega-kick` | Mega Kick | Normal | Off | Melee | — | 4 | 120 | — | — |
+| `headbutt` | Headbutt | Normal | Off | Melee | — | 2 | 70 | — | — |
+| `horn-attack` | Horn Attack | Normal | Off | Melee | — | 2 | 65 | — | — |
+| `fury-attack` | Fury Attack | Normal | Off | Melee | — | 1 | 45 | — | 3 hits |
+| `horn-drill` | Horn Drill | Normal | Off | Melee | — | 4 | 130 | cd 2 | ignores Def stages |
+| `tackle` | Tackle | Normal | Off | Melee | — | 1 | 40 | — | — |
+| `body-slam` | Body Slam | Normal | Off | Melee | — | 3 | 85 | — | Paralysis 30 % |
+| `wrap` | Wrap | Normal | Off | Melee | — | 1 | 40 | — | foe Def −1 |
+| `take-down` | Take Down | Normal | Off | Melee | — | 2 | 75 | — | recoil 25 % |
+| `thrash` | Thrash | Normal | Off | Melee | — | 3 | 100 | — | self Confusion |
+| `double-edge` | Double-Edge | Normal | Off | Melee | — | 4 | 120 | — | recoil 33 % |
+| `tail-whip` | Tail Whip | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
+| `leer` | Leer | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
+| `bite` | Bite | Normal | Off | Melee | — | 1 | 50 | — | — |
+| `growl` | Growl | Normal | Util | Ranged | — | 0 | — | — | foe Atk −1 |
+| `roar` | Roar | Normal | Util | Ranged | — | 1 | — | — | foe Atk −1 · foe Def −1 |
+| `sing` | Sing | Normal | Util | Ranged | — | 1 | — | — | Sleep 55 % |
+| `supersonic` | Supersonic | Normal | Util | Ranged | — | 1 | — | — | Confusion 55 % |
+| `sonic-boom` | Sonic Boom | Normal | Off | Ranged | — | 1 | 50 | — | — |
+| `disable` | Disable | Normal | Util | Ranged | — | 1 | — | — | foe Atk −2 |
+| `hyper-beam` | Hyper Beam | Normal | Off | Ranged | — | 4 | 130 | cd 2 | — |
+| `strength` | Strength | Normal | Off | Melee | — | 2 | 75 | — | — |
+| `growth` | Growth | Normal | Util | Melee | — | 0 | — | — | self Atk +1 |
+| `quick-attack` | Quick Attack | Normal | Off | Melee | SF | 1 | 40 | — | — |
+| `rage` | Rage | Normal | Off | Melee | — | 1 | 40 | — | self Atk +1 |
+| `screech` | Screech | Normal | Util | Ranged | — | 1 | — | — | foe Def −2 |
+| `double-team` | Double Team | Normal | Def | Melee | — | 0 | — | — | self Def +1 |
+| `recover` | Recover | Normal | Def | Melee | — | 1 | — | cd 2 | heal 40 % |
+| `harden` | Harden | Normal | Def | Melee | — | 0 | — | — | self Def +1 |
+| `minimize` | Minimize | Normal | Def | Melee | — | 1 | — | — | self Def +2 |
+| `smokescreen` | Smokescreen | Normal | Util | Ranged | — | 0 | — | — | foe Atk −1 |
+| `defense-curl` | Defense Curl | Normal | Def | Melee | — | 0 | — | — | self Def +1 |
+| `focus-energy` | Focus Energy | Normal | Util | Melee | — | 0 | — | — | self Atk +1 |
+| `metronome` | Metronome | Normal | Util | Melee | — | 1 | — | — | draw 2 |
+| `self-destruct` | Self-Destruct | Normal | Off | Melee | — | 3 | 130 | — | recoil 50 % |
+| `egg-bomb` | Egg Bomb | Normal | Off | Ranged | — | 3 | 95 | — | — |
+| `swift` | Swift | Normal | Off | Ranged | — | 1 | 55 | — | — |
+| `skull-bash` | Skull Bash | Normal | Off | Melee | — | 3 | 95 | — | — |
+| `spike-cannon` | Spike Cannon | Normal | Off | Ranged | — | 1 | 50 | — | 3 hits |
+| `constrict` | Constrict | Normal | Off | Melee | — | 1 | 40 | — | foe Def −1 |
+| `soft-boiled` | Soft-Boiled | Normal | Def | Melee | — | 1 | — | cd 2 | heal 50 % |
+| `glare` | Glare | Normal | Util | Ranged | — | 1 | — | — | Paralysis 75 % |
+| `barrage` | Barrage | Normal | Off | Ranged | — | 1 | 50 | — | 3 hits |
+| `lovely-kiss` | Lovely Kiss | Normal | Util | Ranged | — | 1 | — | — | Sleep 75 % |
+| `transform` | Transform | Normal | Def | Melee | — | 1 | — | — | self Atk +1 · self Def +1 |
+| `dizzy-punch` | Dizzy Punch | Normal | Off | Melee | — | 2 | 65 | — | Confusion 20 % |
+| `flash` | Flash | Normal | Util | Ranged | — | 0 | — | — | foe Atk −1 |
+| `splash` | Splash | Normal | Util | Melee | — | 0 | — | — | draw 1 |
+| `explosion` | Explosion | Normal | Off | Melee | — | 4 | 170 | cd 2 | recoil 75 % |
+| `fury-swipes` | Fury Swipes | Normal | Off | Melee | — | 1 | 45 | — | 3 hits |
+| `hyper-fang` | Hyper Fang | Normal | Off | Melee | — | 2 | 75 | — | — |
+| `sharpen` | Sharpen | Normal | Util | Melee | — | 0 | — | — | self Atk +1 |
+| `conversion` | Conversion | Normal | Def | Melee | — | 1 | — | — | self Atk +1 · self Def +1 |
+| `tri-attack` | Tri Attack | Normal | Off | Ranged | — | 3 | 90 | — | Burn 7 % · Paralysis 7 % · Freeze 7 % |
+| `super-fang` | Super Fang | Normal | Off | Melee | — | 2 | — | — | 50 % of current HP |
+| `slash` | Slash | Normal | Off | Melee | — | 2 | 60 | — | always crit |
 
-## 2. Needed by the R1 species catalog (~95, most now shipped)
+### Fighting
 
-Grouped by type. `+` in the Mod column means the move is an upgrade target of an evolution archetype.
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `karate-chop` | Karate Chop | Fighting | Off | Melee | — | 1 | 40 | — | always crit |
+| `double-kick` | Double Kick | Fighting | Off | Melee | — | 1 | 50 | — | 2 hits |
+| `jump-kick` | Jump Kick | Fighting | Off | Melee | SF | 2 | 65 | — | recoil 20 % |
+| `rolling-kick` | Rolling Kick | Fighting | Off | Melee | SB | 2 | 65 | — | — |
+| `submission` | Submission | Fighting | Off | Melee | — | 3 | 90 | — | recoil 25 % |
+| `low-kick` | Low Kick | Fighting | Off | Melee | — | 1 | 50 | — | — |
+| `counter` | Counter | Fighting | Off | Melee | — | 2 | 65 | — | ×1.5 below 50 % HP |
+| `seismic-toss` | Seismic Toss | Fighting | Off | Melee | — | 2 | 70 | — | — |
+| `high-jump-kick` | High Jump Kick | Fighting | Off | Melee | SF | 3 | 100 | — | recoil 25 % |
 
-Rows here are **not** all pending any more: v0.2 shipped the learnset moves and v0.3 shipped the branch
-payloads, so 100 of these are live. Rather than mark a hundred rows, section 0 carries the count and
-`src/content/data/moves.json` is the answer to "is this one in?". What remains unshipped is the content whose
-version has not come up — Mastery (v0.6), the Region 2 and 3 pools (v0.7), and the ten effect clauses listed
-in section 0.
+### Fire
 
-### Normal (32)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `fire-punch` | Fire Punch | Fire | Off | Melee | — | 2 | 70 | — | Burn 10 % |
+| `ember` | Ember | Fire | Off | Ranged | — | 1 | 45 | — | Burn 10 % |
+| `flamethrower` | Flamethrower | Fire | Off | Ranged | — | 3 | 95 | — | Burn 10 % |
+| `fire-spin` | Fire Spin | Fire | Off | Ranged | — | 2 | 65 | — | Burn 30 % |
+| `fire-blast` | Fire Blast | Fire | Off | Ranged | — | 4 | 120 | — | Burn 30 % |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `pound` | Off | Melee | — | 1 | 40 | — | — (Gen I, 2026-09-23) |
-| `pay-day` | Off | Ranged | — | 1 | 45 | — | — (Gen I, 2026-09-23) |
-| `horn-attack` | Off | Melee | — | 2 | 65 | — | — (Gen I, 2026-09-23) |
-| `horn-drill` | Off | Melee | — | 4 | 130 | cd2 | ignores Def stages (Gen I, 2026-09-23) |
-| `guillotine` | Off | Melee | — | 4 | 130 | cd2 | ignores Def stages (`pinsir`) (Gen I, 2026-09-23) |
-| `glare` | Util | Ranged | — | 1 | — | — | Paralysis 100 % (Gen I, 2026-09-23) |
-| `lovely-kiss` | Util | Ranged | — | 1 | — | — | Sleep 100 % (Gen I, 2026-09-23) |
-| `egg-bomb` | Off | Ranged | — | 3 | 100 | — | — (Gen I, 2026-09-23) |
-| `softboiled` | Def | Melee | — | 1 | — | cd2 | heal 50 % (Gen I, 2026-09-23) |
-| `dizzy-punch` | Off | Melee | — | 2 | 70 | — | Confusion 20 % (Gen I, 2026-09-23) |
-| `mega-kick` | Off | Melee | — | 3 | 100 | — | — (Gen I, 2026-09-23) |
-| `barrage` | Off | Ranged | — | 1 | 18 | — | 3 hits (Gen I, 2026-09-23) |
-| `comet-punch` | Off | Melee | — | 1 | 18 | — | 3 hits (Gen I, 2026-09-23) |
-| `spike-cannon` | Off | Ranged | — | 1 | 18 | — | 3 hits (Gen I, 2026-09-23) |
-| `minimize` | Def | Melee | — | 1 | — | — | self Def +2 (Gen I, 2026-09-23) |
-| `swords-dance` | Util | Melee | — | 1 | — | — | self Atk +2 (Gen I, 2026-09-23) |
-| `hyper-voice` | Off | Ranged | — | 3 | 80 | cleave | — (Gen I, 2026-09-23) |
-| `transform-d` | Util | Melee | — | 1 | — | — | stand-in: self Atk +1, Def +1 — the real Transform is in the backlog (`species-gen1.md`) (Gen I, 2026-09-23) |
-| `take-down` | Off | Melee | — | 2 | 90 | — | recoil 25 % (v0.7.3) |
-| `extreme-speed` | Off | Melee | SF | 2 | 80 | — | — (`arcanine`, v0.7.3) |
-| `self-destruct` | Off | Melee | — | 3 | 130 | — | recoil 50 % (`voltorb`, `koffing`, v0.7.3) |
-| `explosion` | Off | Melee | — | 4 | 170 | cd2 | recoil 75 % (v0.7.3) |
-| `recover` | Def | Melee | — | 1 | — | cd2 | heal 40 % (`starmie`, v0.7.3) |
-| `tri-attack` | Off | Ranged | — | 3 | 80 | — | Burn · Paralysis · Freeze 7 % each (`magneton`, v0.7.3) |
-| `leer` | Util | Ranged | — | 0 | — | — | foe Def −1 |
-| `bite` | Off | Melee | — | 1 | 50 | — | — |
-| `crunch` | Off | Melee | — | 2 | 75 | — | foe Def −1 |
-| `hyper-fang` | Off | Melee | SF | 2 | 80 | — | — |
-| `super-fang-plus` | Off | Melee | SF | 2 | — | — | half current HP, min 20 (Mastery Lv2) |
-| `sucker-punch` | Off | Melee | SF | 1 | 55 | — | +50 % damage if the target's intent is an Attack (telegraphed, Pillar 1) |
-| `double-edge` | Off | Melee | — | 3 | 110 | — | self takes 25 % of damage dealt |
-| `body-slam` | Off | Melee | — | 2 | 75 | — | Paralysis 30 % |
-| `swift` | Off | Ranged | — | 1 | 50 | — | ignores Def stages |
-| `focus-energy` | Util | Melee | — | 0 | — | — | self crit +25 % this combat |
-| `rage` | Off | Melee | — | 1 | 45 | — | self Atk +1 when this Pokémon is damaged next turn |
-| `slam` | Off | Melee | — | 2 | 75 | — | — |
-| `stomp` | Off | Melee | SF | 2 | 70 | — | — |
-| `double-slap` | Off | Melee | — | 1 | 45 | — | hits twice for 22 each (deterministic rule) |
-| `screech` | Util | Ranged | — | 1 | — | — | foe Def −2 |
-| `charm` | Util | Ranged | — | 0 | — | — | foe Atk −2 |
-| `rapid-spin` | Off | Melee | SB | 1 | 45 | — | clears trap DoT on the user |
-| `mega-punch` | Off | Melee | SF | 2 | 80 | — | TM01 |
-| `foresight` | Util | Ranged | — | 0 | — | — | reveal every Unknown intent this turn (TM15) |
-| `slam-k` | Off | Melee | — | 1 | 60 | — | Mastery Lv1 (`krabby`) |
-| `splash-m` | Util | Melee | — | 0 | — | — | draw 2 (Mastery Lv1, `magikarp` — the joke, upgraded) |
-| `disable` | Util | Ranged | — | 1 | — | — | the target's declared intent is cancelled this turn |
-| `amnesia` | Util | Melee | — | 1 | — | — | self Def +2 |
-| `amnesia-plus` | Util | Melee | — | 1 | — | — | self Def +2, heal 10 % |
-| `psych-up` | Util | Ranged | — | 1 | — | — | copy the target's positive stat stages |
-| `safeguard` | Def | Melee | — | 1 | — | — | team is immune to the next status application |
-| `wide-guard` | Def | Melee | — | 2 | — | — | the next Cleave this combat deals 50 % damage |
-| `giga-impact-v` | Off | Melee | — | 4 | 130 | cd2 | user cannot play a card next turn |
-| `hyper-beam` | Off | Ranged | — | 4 | 130 | cd2 | user cannot play a card next turn |
-| `splash` | Util | Melee | — | 0 | — | — | draw 1 (the joke that is never a dead card) |
-| `flail` | Off | Melee | — | 1 | — | — | power = 20 + 100 × (1 − hp%) |
+### Ice
 
-### Grass (10)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `ice-punch` | Ice Punch | Ice | Off | Melee | — | 2 | 70 | — | Freeze 10 % |
+| `mist` | Mist | Ice | Def | Melee | — | 1 | — | — | team guard: next status |
+| `ice-beam` | Ice Beam | Ice | Off | Ranged | — | 3 | 95 | — | Freeze 10 % |
+| `blizzard` | Blizzard | Ice | Off | Ranged | — | 4 | 120 | — | Freeze 10 % |
+| `aurora-beam` | Aurora Beam | Ice | Off | Ranged | — | 2 | 65 | — | foe Atk −1 |
+| `haze` | Haze | Ice | Util | Ranged | — | 1 | — | — | cure the team |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `absorb` | Off | Ranged | — | 1 | 45 | — | drain 50 % of damage (§4.1.6) |
-| `razor-leaf` | Off | Ranged | — | 2 | 70 | — | — |
-| `giga-drain` | Off | Ranged | — | 3 | 90 | — | drain 50 % of damage (§4.1.6) |
-| `solar-beam` | Off | Ranged | — | 4 | 120 | cd1 | — |
-| `leaf-blade` | Off | Melee | SF | 3 | 90 | — | always-crit |
-| `leaf-storm-s` | Off | Ranged | — | 3 | 100 | — | self Atk −2 |
-| `growth` | Util | Melee | — | 0 | — | — | self Atk +1 |
-| `synthesis` | Util | Melee | — | 1 | — | — | heal 40 % |
-| `petal-dance` | Off | Melee | SF | 3 | 100 | — | self Confusion after 2 turns (deterministic) |
+### Electric
 
-### Fire (10)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `thunder-punch` | Thunder Punch | Electric | Off | Melee | — | 2 | 70 | — | Paralysis 10 % |
+| `thunder-shock` | Thunder Shock | Electric | Off | Ranged | — | 1 | 45 | — | Paralysis 10 % |
+| `thunderbolt` | Thunderbolt | Electric | Off | Ranged | — | 3 | 95 | — | Paralysis 10 % |
+| `thunder-wave` | Thunder Wave | Electric | Util | Ranged | — | 1 | — | — | Paralysis |
+| `thunder` | Thunder | Electric | Off | Ranged | — | 4 | 120 | — | Paralysis 10 % |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `lava-plume` | Off | Ranged | — | 2 | 60 | cleave | Burn 30 % (Gen I, 2026-09-23) |
-| `fire-punch` | Off | Melee | — | 2 | 75 | — | Burn 10 % (v0.7.3) |
-| `fire-fang` | Off | Melee | SF | 1 | 50 | — | Burn 20 % |
-| `flame-wheel-r` | Off | Ranged | — | 2 | 70 | — | Burn 30 % |
-| `fire-spin` | Off | Ranged | — | 2 | 55 | — | 15 dmg/turn × 3 (trap DoT) |
-| `heat-wave` | Off | Ranged | — | 3 | 85 | cleave | Burn 20 % |
-| `fire-blast` | Off | Ranged | — | 4 | 120 | cd1 | Burn 40 % |
-| `flare-blitz` | Off | Melee | SF | 3 | 110 | — | self takes 25 % of damage dealt |
-| `will-o-wisp` | Util | Ranged | — | 1 | — | — | Burn 100 % |
-| `will-o-wisp-plus` | Util | Ranged | — | 1 | — | — | Burn 100 %, foe Atk −1 |
-| `flash-fire-m` | Off | Ranged | — | 2 | 80 | — | +50 % power if the user is Burned (never: Fire is immune — flavour only; do not ship) |
+### Flying
 
-### Water (15)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `gust` | Gust | Flying | Off | Ranged | — | 1 | 45 | — | — |
+| `wing-attack` | Wing Attack | Flying | Off | Melee | — | 2 | 65 | — | — |
+| `fly` | Fly | Flying | Off | Melee | SF | 3 | 90 | — | — |
+| `peck` | Peck | Flying | Off | Melee | — | 1 | 45 | — | — |
+| `drill-peck` | Drill Peck | Flying | Off | Melee | — | 2 | 75 | — | — |
+| `mirror-move` | Mirror Move | Flying | Util | Melee | — | 1 | — | — | self Atk +1 · draw 1 |
+| `sky-attack` | Sky Attack | Flying | Off | Melee | SF | 4 | 110 | cd 1 | always crit |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `waterfall` | Off | Melee | — | 2 | 75 | — | — (Gen I, 2026-09-23) |
-| `clamp` | Off | Melee | — | 1 | 45 | — | foe Spd −1 (`shellder`, v0.7.3) |
-| `bubble` | Off | Ranged | — | 1 | 40 | — | foe Atk −1 |
-| `bubble-beam` | Off | Ranged | — | 2 | 65 | — | foe Atk −1 |
-| `water-pulse` | Off | Ranged | — | 2 | 70 | — | Confusion 25 % |
-| `hydro-pump` | Off | Ranged | — | 3 | 100 | — | — |
-| `brine` | Off | Ranged | — | 2 | 65 | — | ×2 power if the target is below 50 % HP |
-| `crabhammer` | Off | Melee | — | 2 | 80 | — | always-crit |
-| `crabhammer-max` | Off | Melee | SF | 3 | 100 | — | always-crit (Mastery Lv2, `krabby`) |
-| `aqua-tail` | Off | Melee | — | 1 | 65 | — | Mastery Lv1, `squirtle` |
-| `aqua-tail-g` | Off | Melee | SF | 2 | 85 | — | `gyarados` variant |
-| `aqua-ring-plus` | Def | Melee | — | 1 | — | — | heal 18 %/turn × 3 |
-| `aqua-fortress` | Def | Melee | — | 2 | — | — | self Def +2, team takes −25 % Cleave damage this combat (signature) |
-| `rain-dance` / `rain-dance-plus` | Util | Ranged | — | 1 | — | — | set the Rain Dance field (v0.7, §4.3); until then: self Water moves +20 % |
-| `skull-bash-plus` | Off | Melee | SB | 2 | 75 | — | foe Def −1 |
-| `mist` | Def | Melee | — | 1 | — | — | team is immune to stat-lowering for 2 turns |
-| `sheer-cold-l` | Off | Ranged | — | 4 | 120 | cd2 | Freeze **40 %** (`lapras`). A guaranteed Freeze at 4 AP is a hard lock, since Freeze also prevents swapping |
-| `acid-armor` | Util | Melee | — | 1 | — | — | self Def +3 |
-| `iron-defense` | Def | Melee | SB | 1 | — | — | self Def +2 |
-| `hydro-vortex` | Off | Ranged | — | 3 | 125 | — | Mastery Lv2/3 (`vaporeon`, `lapras`) |
+### Grass
 
-### Ice (8)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `vine-whip` | Vine Whip | Grass | Off | Ranged | — | 1 | 45 | — | — |
+| `absorb` | Absorb | Grass | Off | Ranged | — | 1 | 45 | — | drain 50 % |
+| `mega-drain` | Mega Drain | Grass | Off | Ranged | — | 2 | 70 | — | drain 50 % |
+| `leech-seed` | Leech Seed | Grass | Util | Ranged | — | 1 | — | — | Poison 90 % |
+| `razor-leaf` | Razor Leaf | Grass | Off | Ranged | — | 2 | 65 | — | always crit |
+| `solar-beam` | Solar Beam | Grass | Off | Ranged | — | 4 | 120 | cd 1 | — |
+| `stun-spore` | Stun Spore | Grass | Util | Ranged | — | 1 | — | — | Paralysis 75 % |
+| `sleep-powder` | Sleep Powder | Grass | Util | Ranged | — | 1 | — | — | Sleep 75 % |
+| `petal-dance` | Petal Dance | Grass | Off | Melee | SF | 3 | 100 | — | self Confusion |
+| `spore` | Spore | Grass | Util | Ranged | — | 2 | — | — | Sleep |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `haze` | Util | Ranged | — | 1 | — | — | cures the whole team's statuses (Gen I, 2026-09-23) |
-| `powder-snow` | Off | Ranged | — | 1 | 40 | — | Freeze 10 % (v0.7.3) |
-| `aurora-beam` | Off | Ranged | — | 2 | 65 | — | foe Atk −1 (v0.7.3) |
-| `icicle-spear` | Off | Melee | — | 2 | 25 | — | 3 hits (`cloyster`, v0.7.3) |
-| `ice-punch` | Off | Melee | — | 2 | 75 | — | Freeze 10 % (v0.7.3) |
-| `blizzard` | Off | Ranged | — | 4 | 120 | cleave · cd1 | Freeze 20 % (v0.7.3) |
-| `ice-shard` | Off | Ranged | — | 1 | 45 | — | — |
-| `ice-beam` | Off | Ranged | — | 3 | 95 | — | Freeze 20 % |
-| `icy-wind` | Off | Ranged | — | 2 | 60 | cleave | foe Atk −1 |
+### Ground
 
-### Electric (12)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `sand-attack` | Sand Attack | Ground | Util | Ranged | — | 0 | — | — | foe Atk −1 |
+| `earthquake` | Earthquake | Ground | Off | Melee | — | 3 | 90 | cleave cd 1 | — |
+| `fissure` | Fissure | Ground | Off | Melee | — | 4 | 130 | cd 2 | ignores Def stages |
+| `dig` | Dig | Ground | Off | Melee | SB | 2 | 75 | — | — |
+| `bone-club` | Bone Club | Ground | Off | Melee | — | 2 | 65 | — | — |
+| `bonemerang` | Bonemerang | Ground | Off | Ranged | — | 2 | 70 | — | 2 hits |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `spark` | Off | Melee | SF | 1 | 50 | — | Paralysis 20 % (v0.7.3) |
-| `charge-beam` | Off | Ranged | — | 2 | 50 | — | self Atk +1 (v0.7.3) |
-| `thunder-punch` | Off | Melee | — | 2 | 75 | — | Paralysis 10 % (v0.7.3) |
-| `discharge` | Off | Ranged | — | 3 | 80 | cleave | Paralysis 30 % (v0.7.3) |
-| `volt-tackle` | Off | Melee | SF | 3 | 110 | — | recoil 33 % (`raichu`, v0.7.3) |
-| `zap-cannon` | Off | Ranged | — | 4 | 120 | cd1 | Paralysis 100 % (`magneton`, v0.7.3) |
-| `thunder-shock` | Off | Ranged | — | 1 | 45 | — | Paralysis 20 % |
-| `thunderbolt` | Off | Ranged | — | 3 | 95 | — | Paralysis 20 % |
-| `thunder` | Off | Ranged | — | 4 | 120 | cd1 | Paralysis 40 % |
-| `thunder-wave` | Util | Ranged | — | 1 | — | — | Paralysis 100 % |
-| `agility` | Util | Melee | — | 0 | — | — | self Atk +1, draw 1 |
-| `gigavolt-havoc` | Off | Ranged | — | 3 | 125 | — | Mastery (`jolteon`) |
+### Poison
 
-### Poison (11)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `poison-sting` | Poison Sting | Poison | Off | Ranged | — | 1 | 45 | — | Poison 30 % |
+| `acid` | Acid | Poison | Off | Ranged | — | 1 | 45 | — | foe Def −1 |
+| `poison-powder` | Poison Powder | Poison | Util | Ranged | — | 1 | — | — | Poison 75 % |
+| `toxic` | Toxic | Poison | Util | Ranged | — | 1 | — | — | Poison 85 % (escalating) |
+| `smog` | Smog | Poison | Off | Ranged | — | 1 | 45 | — | Poison 40 % |
+| `sludge` | Sludge | Poison | Off | Ranged | — | 2 | 70 | — | Poison 30 % |
+| `poison-gas` | Poison Gas | Poison | Util | Ranged | — | 1 | — | — | Poison 55 % |
+| `acid-armor` | Acid Armor | Poison | Def | Melee | — | 1 | — | — | self Def +3 |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `gunk-shot` | Off | Ranged | — | 4 | 120 | cd1 | Poison 30 % (Gen I, 2026-09-23) |
-| `smog` | Off | Ranged | — | 1 | 30 | — | Poison 40 % (`koffing`, v0.7.3) |
-| `sludge-wave` | Off | Ranged | — | 3 | 90 | cleave | Poison 10 % (v0.7.3) |
-| `poison-sting` | Off | Melee | — | 1 | 40 | — | Poison 20 % |
-| `poison-sting-plus` | Off | Melee | SF | 1 | 50 | — | Poison 35 % |
-| `poison-powder` | Util | Ranged | — | 1 | — | — | Poison 100 % |
-| `acid` | Off | Ranged | — | 1 | 45 | — | foe Def −1 |
-| `sludge` | Off | Ranged | — | 2 | 70 | — | Poison 25 % |
-| `sludge-bomb` | Off | Ranged | — | 3 | 95 | — | Poison 30 % |
-| `toxic` | Util | Ranged | — | 1 | — | — | Poison 100 %, DoT doubles each turn (cap MaxHP/8) |
-| `cross-poison` | Off | Melee | SF | 2 | 75 | — | Poison 20 %, always-crit |
-| `poison-fang` | Off | Melee | — | 2 | 70 | — | Poison 50 % |
-| `poison-jab` | Off | Melee | SF | 2 | 80 | — | Poison 30 % |
-| `venom-drench` | Util | Ranged | — | 1 | — | — | all enemies Atk −1 and Def −1 if Poisoned (Mastery Lv2, `zubat`) |
+### Bug
 
-### Bug (7)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `twineedle` | Twineedle | Bug | Off | Ranged | — | 2 | 70 | — | 2 hits · Poison 20 % |
+| `pin-missile` | Pin Missile | Bug | Off | Ranged | — | 2 | 75 | — | 3 hits |
+| `string-shot` | String Shot | Bug | Util | Ranged | — | 0 | — | — | foe Def −1 |
+| `leech-life` | Leech Life | Bug | Off | Melee | — | 1 | 45 | — | drain 50 % |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `bug-bite-plus` | Off | Melee | SF | 1 | 50 | — | — |
-| `leech-life` | Off | Melee | — | 1 | 45 | — | drain 50 % of damage (§4.1.6) |
-| `leech-life-plus` | Off | Melee | SF | 2 | 65 | — | drain 50 % of damage (§4.1.6; a modifier and a rider sit at the bottom of the band) |
-| `twineedle` | Off | Melee | SF | 2 | 70 | — | hits twice for 35 each; Poison 20 % |
-| `pin-missile` | Off | Ranged | — | 2 | 75 | — | hits 5 times for 15 (deterministic) |
-| `fury-attack` | Off | Melee | — | 1 | 45 | — | hits 3 times for 15 |
-| `bug-buzz` | Off | Ranged | — | 3 | 95 | — | foe Def −1 |
-| `fell-stinger-v` | Off | Melee | SF | 2 | 65 | — | self Atk +3 if this move faints the target |
-| `sticky-web` | Util | Ranged | — | 1 | — | — | all enemies Atk −1 (Mastery Lv1, `caterpie`) |
-| `quiver-dance` | Util | Melee | — | 1 | — | — | self Atk +1 Def +1, draw 1 (Mastery Lv3, `butterfree`) |
-| `signal-beam` | Off | Ranged | — | 2 | 70 | — | Confusion 20 % |
+### Water
 
-### Rock / Ground (11)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `water-gun` | Water Gun | Water | Off | Ranged | — | 1 | 45 | — | — |
+| `hydro-pump` | Hydro Pump | Water | Off | Ranged | — | 4 | 120 | — | — |
+| `surf` | Surf | Water | Off | Ranged | — | 2 | 70 | cleave | — |
+| `bubble-beam` | Bubble Beam | Water | Off | Ranged | — | 2 | 65 | — | foe Atk −1 |
+| `withdraw` | Withdraw | Water | Def | Melee | — | 0 | — | — | self Def +1 |
+| `waterfall` | Waterfall | Water | Off | Melee | — | 2 | 75 | — | — |
+| `clamp` | Clamp | Water | Off | Melee | — | 1 | 45 | — | foe Def −1 |
+| `bubble` | Bubble | Water | Off | Ranged | — | 1 | 45 | — | foe Atk −1 |
+| `crabhammer` | Crabhammer | Water | Off | Melee | — | 3 | 85 | — | always crit |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `mud-slap` | Off | Ranged | — | 1 | 40 | — | foe Atk −1 |
-| `mud-shot` | Off | Ranged | — | 1 | 50 | — | foe Atk −1 |
-| `mud-bomb` | Off | Ranged | — | 2 | 70 | — | foe Def −1 |
-| `dig` | Off | Melee | SB | 2 | 75 | — | the user takes no damage from the next single-target intent |
-| `bulldoze` | Off | Melee | — | 2 | 60 | cleave | foe Atk −1 |
-| `ancient-power` | Off | Ranged | — | 2 | 65 | — | self Atk +1 Def +1 |
-| `rock-slide-m` | Off | Ranged | — | 3 | 85 | cleave | — |
-| `rock-wrecker` | Off | Melee | — | 3 | 120 | cd2 | Mastery Lv2 (`geodude`) |
-| `tectonic-rage` | Off | Melee | SF | 3 | 135 | cd2 | ignores Def stages (Mastery Lv3, `golem`) |
-| `fissure-d` | Off | Melee | — | 4 | 125 | cd2 | ignores Def stages (`dugtrio`) |
-| `self-destruct-g` | Off | Melee | — | 2 | 120 | cleave | the user faints (and takes a Trauma stack) |
-| `bind` | Off | Melee | — | 1 | 40 | — | 10 dmg/turn × 2 |
-| `iron-tail` | Off | Melee | SB | 2 | 80 | — | foe Def −1 |
-| `bone-club` | Off | Melee | — | 1 | 50 | — | — |
-| `bonemerang` | Off | Ranged | — | 2 | 70 | — | hits twice for 35 |
-| `bone-rush` | Off | Melee | SF | 3 | 90 | — | hits 3 times for 30 |
-| `bone-rush-max` | Off | Melee | SF | 3 | 120 | — | hits 3 times, ignores 1 Def stage (Mastery Lv2) |
-| `heavy-slam` | Off | Melee | — | 3 | 100 | — | +20 % power per 40 max-HP over the target |
+### Psychic
 
-### Fighting (14)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `psybeam` | Psybeam | Psychic | Off | Ranged | — | 2 | 70 | — | Confusion 10 % |
+| `confusion` | Confusion | Psychic | Off | Ranged | — | 1 | 50 | — | Confusion 10 % |
+| `psychic` | Psychic | Psychic | Off | Ranged | — | 3 | 95 | — | — |
+| `hypnosis` | Hypnosis | Psychic | Util | Ranged | — | 1 | — | — | Sleep 60 % |
+| `meditate` | Meditate | Psychic | Util | Melee | — | 0 | — | — | self Atk +1 |
+| `agility` | Agility | Psychic | Util | Melee | — | 0 | — | — | self Atk +1 · draw 1 |
+| `teleport` | Teleport | Psychic | Util | Melee | — | 0 | — | — | draw 1 |
+| `barrier` | Barrier | Psychic | Def | Melee | — | 1 | — | — | self Def +2 |
+| `light-screen` | Light Screen | Psychic | Def | Melee | — | 1 | — | — | team guard: next Cleave −50 % |
+| `reflect` | Reflect | Psychic | Def | Melee | — | 1 | — | — | self Def +1 · bench Def +1 |
+| `amnesia` | Amnesia | Psychic | Def | Melee | — | 1 | — | — | self Def +2 |
+| `kinesis` | Kinesis | Psychic | Util | Ranged | — | 0 | — | — | foe Atk −1 |
+| `dream-eater` | Dream Eater | Psychic | Off | Ranged | — | 2 | 90 | — | drain 50 % |
+| `psywave` | Psywave | Psychic | Off | Ranged | — | 1 | 50 | — | — |
+| `rest` | Rest | Psychic | Def | Melee | — | 1 | — | — | heal 100 % · self Sleep |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `double-kick` | Off | Melee | — | 1 | 25 | — | 2 hits (Gen I, 2026-09-23) |
-| `rolling-kick` | Off | Melee | — | 1 | 50 | — | — (Gen I, 2026-09-23) |
-| `jump-kick` | Off | Melee | SF | 2 | 80 | — | self takes 20 % of damage dealt (Gen I, 2026-09-23) |
-| `hi-jump-kick` | Off | Melee | SF | 3 | 110 | — | self takes 25 % of damage dealt (Gen I, 2026-09-23) |
-| `aura-sphere` | Off | Ranged | — | 3 | 90 | — | — (Gen I, 2026-09-23) |
-| `mach-punch` | Off | Melee | SF | 1 | 40 | — | — (`hitmonchan`, v0.7.3) |
-| `sky-uppercut` | Off | Melee | — | 2 | 85 | — | — (`hitmonchan`, v0.7.3) |
-| `low-kick` | Off | Melee | — | 1 | 45 | — | — |
-| `karate-chop` | Off | Melee | SF | 1 | 50 | — | always-crit |
-| `seismic-toss` | Off | Melee | — | 2 | — | — | damage = the user's level × 2 (level-scaling, ignores stats) |
-| `seismic-toss-plus` | Off | Melee | SB | 2 | — | — | damage = level × 3 |
-| `cross-chop` | Off | Melee | SF | 2 | 80 | — | always-crit |
-| `brick-break` | Off | Melee | — | 2 | 75 | — | removes the target's positive Def stages before damage |
-| `submission` | Off | Melee | SF | 3 | 100 | — | self takes 25 % of damage dealt |
-| `close-combat` | Off | Melee | SF | 3 | 110 | — | self Def −2 |
-| `dynamic-punch` | Off | Melee | SF | 3 | 100 | — | Confusion 100 % |
-| `fury-swipes` | Normal Off | Melee | — | 2 | 60 | — | hits 3 times for 20 |
-| `thrash` | Normal Off | Melee | — | 2 | 85 | — | must be replayed next turn if drawn (fixed 2 turns) — ships without the repeat |
-| `vital-throw` | Off | Melee | SB | 2 | 70 | — | — |
-| `bulk-up` / `bulk-up-plus` | Util | Melee | — | 1 | — | — | self Atk +1 Def +1 / +2 each |
-| `counter` | Def | Melee | — | 1 | — | — | the next single-target hit on the Lead deals its damage back (Mastery Lv2, `machop`) |
-| `all-out-pummeling` | Off | Melee | SF | 3 | 135 | cd2 | Mastery Lv3 (`machamp`) |
-| `final-gambit` | Off | Melee | — | 3 | — | — | damage = the user's current HP; the user faints (Mastery Lv2, `primeape`) |
-| `focus-punch` | Off | Melee | SF | 3 | 120 | — | fails if the Lead was damaged this turn before it resolves (Mastery Lv3, `poliwrath`) |
-| `circle-throw` | Off | Melee | SB | 1 | 55 | — | Mastery Lv1 (`poliwag`) |
-| `knock-off` | Off | Melee | — | 1 | 50 | — | the target's Home Field / held bonus is suppressed this combat |
+### Dragon
 
-### Psychic / Ghost / Flying / misc (14)
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `dragon-rage` | Dragon Rage | Dragon | Off | Ranged | — | 1 | 50 | — | — |
 
-| id | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
-|---|---|---|---|---|---|---|---|
-| `confusion` | Psychic Off | Ranged | — | 1 | 50 | — | Confusion 15 % |
-| `psychic` | Psychic Off | Ranged | — | 3 | 95 | — | foe Def −1 |
-| `psyshock` | Psychic Off | Ranged | — | 2 | 75 | — | ignores Def stages (Mastery Lv1, `psyduck`) |
-| `shattered-psyche` | Psychic Off | Ranged | — | 3 | 125 | — | Mastery Lv2 |
-| `zen-headbutt` | Psychic Off | Melee | SF | 2 | 75 | — | Confusion 20 % |
-| `hypnosis` / `hypnosis-plus` | Util | Ranged | — | 1 | — | — | Sleep 100 % / Sleep 100 % + foe Def −1 |
-| `dream-eater` | Psychic Off | Ranged | — | 2 | 80 | — | only playable on a Sleeping target; heal 100 % of damage (Mastery Lv2, `metapod`) |
-| `sing` | Util | Ranged | — | 1 | — | — | Sleep 100 % |
-| `supersonic` | Util | Ranged | — | 1 | — | — | Confusion 100 % |
-| `confuse-ray` | Util | Ranged | — | 1 | — | — | Confusion 100 % |
-| `curse-ms` | Util | Melee | — | 1 | — | — | the user loses 25 % max HP; the target takes 3-turn DoT |
-| `shadow-bone` | Ghost Off | Melee | — | 2 | 85 | — | foe Def −1 (20 %) |
-| `lick` | Ghost Off | Melee | — | 1 | 40 | — | Paralysis 30 % |
-| `air-cutter` | Flying Off | Ranged | — | 2 | 60 | cleave | — |
-| `air-slash` | Flying Off | Ranged | — | 3 | 90 | — | — |
-| `sky-attack` / `sky-attack-v` | Flying Off | Melee | SF | 3 | 110 | cd1 | always-crit |
-| `brave-bird` / `brave-bird-plus` | Flying Off | Melee | SF | 2 / 3 | 85 / 110 | — | self takes 25 % of damage dealt |
-| `sky-drop` | Flying Off | Melee | SB | 3 | 95 | — | the target's next intent is cancelled |
-| `supersonic-skystrike` | Flying Off | Melee | SF | 3 | 130 | cd2 | Mastery (`aerodactyl`) |
-| `dragon-rage` | Dragon Off | Ranged | — | 1 | — | — | fixed 40 damage, ignores type and stats |
-| `dragon-pulse` | Dragon Off | Ranged | — | 3 | 90 | — | — (`seadra`, v0.7.3) |
-| `twister` | Dragon Off | Ranged | — | 1 | 40 | cleave | — (Gen I, 2026-09-23) |
-| `outrage` | Dragon Off | Melee | — | 3 | 110 | — | self Confusion 100 % (Gen I, 2026-09-23) |
-| `night-shade` | Ghost Off | Ranged | — | 2 | 70 | — | — (Gen I, 2026-09-23) |
-| `shadow-punch` | Ghost Off | Melee | SF | 2 | 70 | — | — (Gen I, 2026-09-23) |
-| `shadow-ball` | Ghost Off | Ranged | — | 3 | 95 | — | — (Gen I, 2026-09-23) |
-| `kinesis` | Psychic Util | Ranged | — | 0 | — | — | foe Atk −1 (Gen I, 2026-09-23) |
-| `psywave` | Psychic Off | Ranged | — | 1 | 50 | — | — (Gen I, 2026-09-23) |
-| `extrasensory` | Psychic Off | Ranged | — | 2 | 80 | — | — (Gen I, 2026-09-23) |
-| `barrier` | Psychic Def | Melee | — | 1 | — | — | self Def +2 (Gen I, 2026-09-23) |
-| `reflect` | Psychic Def | Melee | — | 1 | — | — | self Def +1, bench Def +1 (Gen I, 2026-09-23) |
-| `light-screen` | Psychic Def | Melee | — | 1 | — | — | the next Cleave on the team deals 50 % less (Gen I, 2026-09-23) |
-| `calm-mind` | Psychic Util | Melee | — | 1 | — | — | self Atk +1, Def +1 (Gen I, 2026-09-23) |
-| `psystrike` | Psychic Off | Ranged | — | 4 | 130 | cd2 | ignores Def stages (`mewtwo`) (Gen I, 2026-09-23) |
-| `peck` | Flying Off | Melee | — | 1 | 40 | — | — (Gen I, 2026-09-23) |
-| `drill-peck` | Flying Off | Melee | — | 2 | 75 | — | — (Gen I, 2026-09-23) |
-| `fly` | Flying Off | Melee | SF | 3 | 90 | — | — (Gen I, 2026-09-23) |
-| `earth-power` | Ground Off | Ranged | — | 3 | 90 | — | foe Def −1 (Gen I, 2026-09-23) |
-| `drill-run` | Ground Off | Melee | — | 2 | 70 | — | always-crit (Gen I, 2026-09-23) |
-| `power-gem` | Rock Off | Ranged | — | 2 | 80 | — | — (Gen I, 2026-09-23) |
-| `x-scissor` | Bug Off | Melee | — | 2 | 75 | — | — (Gen I, 2026-09-23) |
-| `megahorn` | Bug Off | Melee | — | 3 | 100 | — | — (Gen I, 2026-09-23) |
-| `ingrain` | Grass Def | Melee | — | 1 | — | — | heal 12.5 % a turn for 3 turns (Gen I, 2026-09-23) |
-| `dragon-dance` | Util | Melee | — | 1 | — | — | self Atk +1, draw 1 (Mastery Lv2, `gyarados`) |
-| `dragon-tail` | Dragon Off | Melee | SB | 2 | 75 | — | Mastery Lv1 (`onix`) |
-| `metal-claw` | Rock Off | Melee | SF | 1 | 50 | — | self Atk +1 (Steel is not a type in the 15-type chart, so it is typed Rock) |
-| `guillotine-k` | Water Off | Melee | — | 4 | 130 | cd2 | ignores Def stages (`kingler`) |
-| `rest-s` / `rest-p` | Util | Melee | — | 1 | — | — | heal 50 % max HP, self Sleep 2 turns |
-| `yawn` | Util | Ranged | — | 1 | — | — | the target falls asleep at the end of next turn (telegraphed) |
-| `moonlight` / `moonlight-plus` | Util | Melee | — | 1 | — | — | heal 30 % / 45 % |
-| `aromatic-mist` | Util | Ranged | — | 0 | — | — | an ally's Def +1 |
-| `aromatherapy-m` | Util | Melee | — | 1 | — | — | cure all statuses on the team (Mastery Lv3, `vileplume`) |
-| `stun-spore` | Util | Ranged | — | 1 | — | — | Paralysis 100 % |
-| `sleep-powder` | Util | Ranged | — | 1 | — | — | Sleep 100 % |
-| `spore-cloud` | Util | Ranged | — | 1 | — | — | Sleep 100 % and Poison 100 % (Mastery Lv1, `oddish`) |
-| `wrap` | Off | Melee | — | 1 | 40 | — | 10 dmg/turn × 2 |
-| `vice-grip` | Off | Melee | — | 1 | 50 | — | — |
-| `effect-spore-m` | — | — | — | — | — | — | (reserved id; ability, not a move — do not ship as a move) |
-| `wish` | Util | Ranged | — | 1 | — | — | the chosen ally heals 40 % at the end of next turn |
-| `perish-song` | Util | Ranged | — | 2 | — | — | all enemies faint after 3 turns (Mastery Lv1, `lapras`; bosses take 25 % max HP instead) |
-| `belly-drum-p` | Util | Melee | — | 2 | — | — | self loses 30 % max HP, Atk +3 (`poliwhirl`) |
-| `pulverizing-pancake` | Off | Melee | SF | 3 | 140 | cd2 | Mastery Lv2 (`snorlax`) |
-| `snore` | Off | Ranged | — | 1 | 60 | — | playable only while asleep |
-| `seed-bomb` / `seed-barrage` / `bloom-cannon` | Grass Off | Ranged | — | 1 / 2 / 3 | 65 / 95 / 130 | — | Mastery line (`bulbasaur`) |
-| `fire-fang-m` / `inferno-fang` / `blast-burn` | Fire Off | Melee | — / SF / SF | 1 / 2 / 3 | 70 / 100 / 135 | — | Mastery line (`charmander`) |
-| `double-edge-o` | Off | Melee | — | 3 | 115 | — | self takes 25 % (Mastery Lv2, `onix`) |
-| `triple-dive` | Ground Off | Melee | — | 2 | 75 | — | hits 3 times (Mastery Lv2, `dugtrio`) |
-| `mind-reader` | Util | Ranged | — | 0 | — | — | reveal every Unknown intent this turn (Mastery Lv2, `poliwhirl`) |
-| `toxic-thread` | Util | Ranged | — | 1 | — | — | Poison 100 %, foe Atk −1 (Mastery Lv3, `beedrill`) |
-| `screech-z` | — | — | — | — | — | — | (duplicate of `screech`; do not ship) |
-| `inferno-overdrive` | Fire Off | Ranged | — | 3 | 125 | — | Mastery (`flareon`) |
-| `giga-impact-o` | — | — | — | — | — | — | (use `giga-impact-v`) |
+### Rock
 
-## 3. Design rules for authoring a new move
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `rock-throw` | Rock Throw | Rock | Off | Ranged | — | 1 | 50 | — | — |
+| `rock-slide` | Rock Slide | Rock | Off | Ranged | — | 2 | 75 | — | — |
 
-1. **Every move a Pokémon owns must be playable from its likely position.** A kit of four Melee moves on a
-   support Pokémon is a dead hand whenever it is benched (§3.3.1). Kits mix at least one Ranged move unless the
-   species is explicitly a Lead-anchor (`golem`, `machamp`, `snorlax`).
-2. **A 0-AP move must never be strictly better than doing nothing on every turn** — otherwise it is just free
-   value and the AP economy stops mattering. 0-AP utilities either have a decaying effect (stat stages, which the
-   AI and the player both see diminish) or a cost elsewhere (`splash` draws but does nothing).
-3. **A rider chance is a number the player sees** (§9.2.3 card anatomy). 100 % riders belong on Utility moves
-   that deal no damage; damaging moves carry 20–40 %.
-4. **Deterministic multi-hit**: a multi-hit move states its hit count, never rolls it.
-5. **Cooldowns are enemy-side only.** A player card is limited by AP and the draw, not a timer.
+### Ghost
 
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `night-shade` | Night Shade | Ghost | Off | Ranged | — | 2 | 70 | — | — |
+| `confuse-ray` | Confuse Ray | Ghost | Util | Ranged | — | 1 | — | — | Confusion |
+| `lick` | Lick | Ghost | Off | Melee | — | 1 | 40 | — | Paralysis 30 % |
 
-## Mastery moves authored in v0.7.5 (§5.13.2, §6.8.4)
+## 2. Made better (+)
 
-Every recruitable line's Lv1, and the three starters' Lv2 and Lv3. A Lv1 is the clean, always-useful card (§6.8.4):
-where the catalogue had asked for an effect the sim does not have, the row says what replaced it.
+What a first or final evolution upgrades a card into, derived from its move: more power within its band, or a
+stronger rider when the band is full; a utility's stage, chance, heal or draw one step further.
 
-| id | Type | Role | Rng | Mod | AP | Pwr | Effect |
-|---|---|---|---|---|---|---|---|
-| `venoshock` | Poison | Off | Ranged | — | 2 | 65 | ×2 power into a Poisoned target (Mastery Lv1, `weedle`) |
-| `super-fang` | Normal | Off | Melee | — | 2 | — | takes half the target's current HP (Mastery Lv1, `rattata`) |
-| `leaf-tornado` | Grass | Off | Ranged | — | 2 | 65 | foe Def −1 (Mastery Lv1, `bellsprout`) |
-| `tri-attack-d` | Normal | Off | Ranged | — | 2 | 70 | Burn, Paralysis or Freeze, 7 % each (was a deterministic cycle) (Mastery Lv1, `diglett`) |
-| `revenge` | Fighting | Off | Melee | — | 2 | 70 | ×1.5 power below half HP (was "damaged last turn") (Mastery Lv1, `machop`) |
-| `rage-fist` | Fighting | Off | Melee | — | 1 | 55 | +15 power per Trauma stack on the user (was "per faint this combat") (Mastery Lv1, `mankey`) |
-| `last-resort` | Normal | Off | Melee | — | 1 | 75 | a clean 75 at 1 AP (the hand condition is dropped: a Lv1 is the always-useful card) (Mastery Lv1, `eevee`) |
-| `iron-head-a` | Rock | Off | Melee | SF | 2 | 85 | Rock (Steel is Rock here) (Mastery Lv1, `aerodactyl`) |
-| `glacial-song` | Ice | Off | Ranged | — | 2 | 80 | Freeze 10 % (replaces Perish Song, whose delayed KO has no system) (Mastery Lv1, `lapras`) |
-| `belly-drum-s` | Normal | Util | Melee | — | 2 | — | self loses 40 % max HP (never below 1), Atk +4 (Mastery Lv1, `snorlax`) |
-| `bonemerang-m` | Ground | Off | Ranged | — | 2 | 85 | hits twice (Mastery Lv1, `cubone`) |
-| `nuzzle-m` | Electric | Off | Melee | — | 1 | 60 | Paralysis 30 % (Mastery Lv1, `pikachu`) |
-| `acid-spray-m` | Poison | Off | Ranged | — | 1 | 60 | foe Def −1 (Mastery Lv1, `tentacool`) |
-| `icicle-crash-m` | Ice | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `shellder`) |
-| `twister-m` | Dragon | Off | Ranged | — | 1 | 65 | — (Mastery Lv1, `horsea`) |
-| `water-pulse-m` | Water | Off | Ranged | — | 1 | 65 | Confusion 20 % (Mastery Lv1, `staryu`) |
-| `aqua-jet-m` | Water | Off | Melee | — | 1 | 65 | — (Mastery Lv1, `seel`) |
-| `spark-m` | Electric | Off | Melee | — | 1 | 65 | Paralysis 20 % (Mastery Lv1, `voltorb`) |
-| `magnet-bomb-m` | Rock | Off | Ranged | — | 1 | 65 | Rock (Steel is Rock here) (Mastery Lv1, `magnemite`) |
-| `thunder-punch-m` | Electric | Off | Melee | — | 1 | 75 | — (Mastery Lv1, `electabuzz`) |
-| `clear-smog-m` | Poison | Off | Ranged | — | 1 | 60 | — (Mastery Lv1, `koffing`) |
-| `flame-charge-m` | Fire | Off | Melee | — | 1 | 65 | — (Mastery Lv1, `growlithe`) |
-| `fire-spin-m` | Fire | Off | Ranged | — | 1 | 60 | Burn 20 % (Mastery Lv1, `vulpix`) |
-| `blaze-kick-m` | Fire | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `ponyta`) |
-| `sand-tomb-m` | Ground | Off | Ranged | — | 1 | 60 | — (Mastery Lv1, `sandshrew`) |
-| `drill-run-m` | Ground | Off | Melee | — | 1 | 75 | — (Mastery Lv1, `rhyhorn`) |
-| `fire-punch-m` | Fire | Off | Melee | — | 1 | 75 | — (Mastery Lv1, `magmar`) |
-| `confusion-m` | Psychic | Off | Ranged | — | 1 | 65 | Confusion 10 % (Mastery Lv1, `abra`) |
-| `poison-fang-m` | Poison | Off | Melee | — | 1 | 65 | Poison 20 % (Mastery Lv1, `nidoran-f`) |
-| `powder-snow-m` | Ice | Off | Ranged | — | 1 | 65 | Freeze 10 % (Mastery Lv1, `jynx`) |
-| `drill-peck-m` | Flying | Off | Melee | — | 1 | 75 | — (Mastery Lv1, `spearow`) |
-| `pluck-m` | Flying | Off | Melee | — | 1 | 65 | — (Mastery Lv1, `doduo`) |
-| `leek-slash` | Normal | Off | Melee | — | 1 | 60 | always crits (Mastery Lv1, `farfetchd`) |
-| `fury-cutter-m` | Bug | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `scyther`) |
-| `night-shade-m` | Ghost | Off | Ranged | — | 1 | 65 | — (Mastery Lv1, `gastly`) |
-| `zen-headbutt-m` | Psychic | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `drowzee`) |
-| `poison-jab-m` | Poison | Off | Melee | — | 1 | 70 | — (Mastery Lv1, `grimer`) |
-| `psywave-m` | Psychic | Off | Ranged | — | 1 | 65 | — (Mastery Lv1, `mr-mime`) |
-| `seed-barrage` | Grass | Off | Ranged | — | 2 | 90 | three hits (Mastery Lv2, `bulbasaur`) |
-| `bloom-cannon` | Grass | Off | Ranged | — | 3 | 130 | drains half the damage (Mastery Lv3, `bulbasaur`) |
-| `inferno-fang` | Fire | Off | Melee | SF | 2 | 95 | — (Mastery Lv2, `charmander`) |
-| `blast-burn` | Fire | Off | Ranged | — | 3 | 135 | Burn 30 %, self Atk −1 (Mastery Lv3, `charmander`) |
-| `aqua-tail-plus` | Water | Off | Melee | SF | 2 | 95 | — (Mastery Lv2, `squirtle`) |
-| `aqua-tail-max` | Water | Off | Melee | SF | 3 | 130 | ignores Defence stages (Mastery Lv3, `squirtle`) |
-| `dream-eater` | Psychic | Off | Ranged | — | 2 | 90 | drains half the damage (Mastery Lv2, `caterpie`, v0.9.1) |
-| `quiver-dance` | Bug | Off | Ranged | — | 3 | 115 | hits every enemy · self Atk +1 · Sleep 25 % (Mastery Lv3, `caterpie`, v0.9.1) |
-| `toxic-thread` | Poison | Off | Ranged | — | 3 | 120 | Toxic 50 % · foe Spe −1 (Mastery Lv3, `weedle`, v0.9.1) |
-| `brave-bird-plus` | Flying | Off | Melee | SF | 2 | 105 | recoil 25 % (Mastery Lv2, `pidgey`, v0.9.1) |
-| `super-fang-plus` | Normal | Off | Melee | — | 1 | — | half the target's current HP, for 1 AP (Mastery Lv2, `rattata`, v0.9.1) |
-| `venom-drench` | Poison | Off | Ranged | — | 2 | 95 | ×1.4 against a Poisoned target (Mastery Lv2, `zubat`, v0.9.1) |
-| `rock-wrecker` | Rock | Off | Melee | SF | 2 | 110 | — (Mastery Lv2, `geodude`, v0.9.1) |
-| `tectonic-rage` | Ground | Off | Ranged | — | 3 | 125 | hits every enemy · foe Def −1 (Mastery Lv3, `geodude`, v0.9.1) |
-| `triple-dive` | Ground | Off | Melee | — | 2 | 100 | three hits (Mastery Lv2, `diglett`, v0.9.1) |
-| `counter` | Fighting | Off | Melee | — | 2 | 95 | ×1.4 while below 60 % HP (Mastery Lv2, `machop`, v0.9.1) |
-| `all-out-pummeling` | Fighting | Off | Melee | SF | 3 | 130 | four hits · Confusion 20 % (Mastery Lv3, `machop`, v0.9.1) |
-| `dragon-dance` | Dragon | Off | Melee | — | 2 | 100 | self Atk +1 (Mastery Lv2, `magikarp`, v0.9.1) |
-| `mind-reader` | Normal | Off | Ranged | — | 1 | 85 | draw a card (Mastery Lv2, `poliwag`, v0.9.1) |
-| `focus-punch` | Fighting | Off | Melee | SF | 3 | 140 | ignores Defence stages · self Def −1 (Mastery Lv3, `poliwag`, v0.9.1) |
-| `shattered-psyche` | Psychic | Off | Ranged | — | 2 | 100 | Confusion 30 % (Mastery Lv2, `psyduck`, v0.9.1) |
-| `crabhammer-max` | Water | Off | Melee | — | 2 | 105 | always crits (Mastery Lv2, `krabby`, v0.9.1) |
-| `adaptive-burst` | Normal | Off | Ranged | — | 2 | 95 | self Spe +1 (Mastery Lv2, `eevee`, v0.9.1) |
-| `leaf-storm-m` | Grass | Off | Ranged | — | 2 | 110 | self Atk −1 (Mastery Lv2, `bellsprout`, v0.9.1) |
-| `pitfall-maw` | Grass | Off | Melee | SF | 3 | 130 | drains 35 % · Poison 40 % (Mastery Lv3, `bellsprout`, v0.9.1) |
-| `final-gambit` | Fighting | Off | Melee | — | 2 | 100 | ×1.5 while below half HP (Mastery Lv2, `mankey`, v0.9.1) |
-| `bone-rush-max` | Ground | Off | Melee | — | 2 | 100 | four hits (Mastery Lv2, `cubone`, v0.9.1) |
-| `volt-tackle-m` | Electric | Off | Melee | — | 2 | 110 | recoil 25 % (Mastery Lv2, `pikachu`, v0.9.1) |
-| `hydro-tentacles` | Water | Off | Ranged | — | 2 | 90 | Poison 30 % (Mastery Lv2, `tentacool`, v0.9.1) |
-| `icicle-spear-m` | Ice | Off | Ranged | — | 2 | 100 | four hits (Mastery Lv2, `shellder`, v0.9.1) |
-| `ink-barrage` | Water | Off | Ranged | — | 2 | 90 | foe Atk −1 (Mastery Lv2, `horsea`, v0.9.1) |
-| `starlight-pulse` | Psychic | Off | Ranged | — | 2 | 95 | heals 10 % of Max HP (Mastery Lv2, `staryu`, v0.9.1) |
-| `aurora-beam-m` | Ice | Off | Ranged | — | 2 | 95 | foe Atk −1 (Mastery Lv2, `seel`, v0.9.1) |
-| `discharge-m` | Electric | Off | Ranged | — | 2 | 90 | hits every enemy (Mastery Lv2, `voltorb`, v0.9.1) |
-| `zap-cannon-m` | Electric | Off | Ranged | — | 2 | 105 | Paralysis 50 % (Mastery Lv2, `magnemite`, v0.9.1) |
-| `sludge-bomb-w` | Poison | Off | Ranged | — | 2 | 95 | Poison 30 % (Mastery Lv2, `koffing`, v0.9.1) |
-| `extreme-speed-m` | Normal | Off | Melee | SF | 1 | 85 | — (1 AP) (Mastery Lv2, `growlithe`, v0.9.1) |
-| `nine-tail-flare` | Fire | Off | Ranged | — | 2 | 90 | Burn 40 % (Mastery Lv2, `vulpix`, v0.9.1) |
-| `flare-blitz-m` | Fire | Off | Melee | — | 2 | 110 | recoil 25 % (Mastery Lv2, `ponyta`, v0.9.1) |
-| `crush-claw-m` | Normal | Off | Melee | — | 2 | 95 | foe Def −1 (Mastery Lv2, `sandshrew`, v0.9.1) |
-| `horn-drill-r` | Ground | Off | Melee | — | 2 | 105 | ignores Defence stages (Mastery Lv2, `rhyhorn`, v0.9.1) |
-| `psybeam-m` | Psychic | Off | Ranged | — | 2 | 90 | Confusion 30 % (Mastery Lv2, `abra`, v0.9.1) |
-| `mind-shatter` | Psychic | Off | Ranged | — | 3 | 130 | ignores Defence stages · draw a card (Mastery Lv3, `abra`, v0.9.1) |
-| `double-kick-m` | Fighting | Off | Melee | — | 1 | 90 | two hits (Mastery Lv2, `nidoran-f`, v0.9.1) |
-| `queens-quake` | Ground | Off | Ranged | — | 3 | 125 | ×1.3 against a Poisoned target · Poison 30 % (Mastery Lv3, `nidoran-f`, v0.9.1) |
-| `drill-dive` | Flying | Off | Melee | SF | 2 | 105 | — (Mastery Lv2, `spearow`, v0.9.1) |
-| `tri-peck` | Flying | Off | Melee | — | 2 | 95 | three hits (Mastery Lv2, `doduo`, v0.9.1) |
-| `shadow-ball-h` | Ghost | Off | Ranged | — | 2 | 95 | foe Def −1 (Mastery Lv2, `gastly`, v0.9.1) |
-| `nightmare-feast` | Ghost | Off | Ranged | — | 3 | 130 | Sleep 30 % · drains 25 % (Mastery Lv3, `gastly`, v0.9.1) |
-| `hypnotic-pulse` | Psychic | Off | Ranged | — | 2 | 90 | Sleep 25 % (Mastery Lv2, `drowzee`, v0.9.1) |
-| `gunk-shot-m` | Poison | Off | Melee | — | 2 | 110 | Poison 30 % (Mastery Lv2, `grimer`, v0.9.1) |
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `razor-leaf-plus` | Razor Leaf+ | Grass | Off | Ranged | — | 2 | 80 | — | always crit |
+| `mega-drain-plus` | Mega Drain+ | Grass | Off | Ranged | — | 2 | 85 | — | drain 50 % |
+| `growth-plus` | Growth+ | Normal | Util | Melee | — | 0 | — | — | self Atk +2 |
+| `ember-plus` | Ember+ | Fire | Off | Ranged | — | 1 | 55 | — | Burn 10 % |
+| `slash-plus` | Slash+ | Normal | Off | Melee | — | 2 | 75 | — | always crit |
+| `fire-spin-plus` | Fire Spin+ | Fire | Off | Ranged | — | 2 | 80 | — | Burn 30 % |
+| `bubble-plus` | Bubble+ | Water | Off | Ranged | — | 1 | 55 | — | foe Atk −1 |
+| `skull-bash-plus` | Skull Bash+ | Normal | Off | Melee | — | 3 | 100 | — | foe Def −1 |
+| `bubble-beam-plus` | Bubble Beam+ | Water | Off | Ranged | — | 2 | 80 | — | foe Atk −1 |
+| `harden-plus` | Harden+ | Normal | Def | Melee | — | 0 | — | — | self Def +2 |
+| `leech-life-plus` | Leech Life+ | Bug | Off | Melee | — | 1 | 50 | — | drain 50 % · foe Def −1 |
+| `string-shot-plus` | String Shot+ | Bug | Util | Ranged | — | 0 | — | — | foe Def −2 |
+| `gust-plus` | Gust+ | Flying | Off | Ranged | — | 1 | 55 | — | — |
+| `confusion-plus` | Confusion+ | Psychic | Off | Ranged | — | 1 | 55 | — | Confusion 30 % |
+| `poison-sting-plus` | Poison Sting+ | Poison | Off | Ranged | — | 1 | 55 | — | Poison 30 % |
+| `twineedle-plus` | Twineedle+ | Bug | Off | Ranged | — | 2 | 85 | — | 2 hits · Poison 20 % |
+| `pin-missile-plus` | Pin Missile+ | Bug | Off | Ranged | — | 2 | 90 | — | 3 hits |
+| `quick-attack-plus` | Quick Attack+ | Normal | Off | Melee | SF | 1 | 50 | — | — |
+| `sand-attack-plus` | Sand Attack+ | Ground | Util | Ranged | — | 0 | — | — | foe Atk −2 |
+| `wing-attack-plus` | Wing Attack+ | Flying | Off | Melee | — | 2 | 75 | — | — |
+| `swift-plus` | Swift+ | Normal | Off | Ranged | — | 1 | 55 | — | foe Def −1 |
+| `leer-plus` | Leer+ | Normal | Util | Ranged | — | 0 | — | — | foe Def −2 |
+| `bite-plus` | Bite+ | Normal | Off | Melee | — | 1 | 50 | — | foe Def −1 |
+| `wrap-plus` | Wrap+ | Normal | Off | Melee | — | 1 | 50 | — | foe Def −1 |
+| `thunder-shock-plus` | Thunder Shock+ | Electric | Off | Ranged | — | 1 | 55 | — | Paralysis 10 % |
+| `defense-curl-plus` | Defense Curl+ | Normal | Def | Melee | — | 0 | — | — | self Def +2 |
+| `tail-whip-plus` | Tail Whip+ | Normal | Util | Ranged | — | 0 | — | — | foe Def −2 |
+| `horn-attack-plus` | Horn Attack+ | Normal | Off | Melee | — | 2 | 75 | — | — |
+| `double-slap-plus` | Double Slap+ | Normal | Off | Melee | — | 1 | 50 | — | 4 hits |
+| `sing-plus` | Sing+ | Normal | Util | Ranged | — | 1 | — | — | Sleep 80 % |
+| `supersonic-plus` | Supersonic+ | Normal | Util | Ranged | — | 1 | — | — | Confusion 80 % |
+| `pay-day-plus` | Pay Day+ | Normal | Off | Ranged | — | 1 | 55 | — | foe Def −1 |
+| `karate-chop-plus` | Karate Chop+ | Fighting | Off | Melee | — | 1 | 50 | — | always crit |
+| `roar-plus` | Roar+ | Normal | Util | Ranged | — | 1 | — | — | foe Atk −2 · foe Def −2 |
+| `acid-plus` | Acid+ | Poison | Off | Ranged | — | 1 | 55 | — | foe Def −1 |
+| `stomp-plus` | Stomp+ | Normal | Off | Melee | — | 2 | 75 | — | foe Def −1 |
+| `disable-plus` | Disable+ | Normal | Util | Ranged | — | 1 | — | — | foe Atk −3 |
+| `sonic-boom-plus` | Sonic Boom+ | Normal | Off | Ranged | — | 1 | 55 | — | foe Def −1 |
+| `growl-plus` | Growl+ | Normal | Util | Ranged | — | 0 | — | — | foe Atk −2 |
+| `aurora-beam-plus` | Aurora Beam+ | Ice | Off | Ranged | — | 2 | 80 | — | foe Atk −1 |
+| `pound-plus` | Pound+ | Normal | Off | Melee | — | 1 | 50 | — | — |
+| `clamp-plus` | Clamp+ | Water | Off | Melee | — | 1 | 50 | — | foe Def −2 |
+| `withdraw-plus` | Withdraw+ | Water | Def | Melee | — | 0 | — | — | self Def +2 |
+| `hypnosis-plus` | Hypnosis+ | Psychic | Util | Ranged | — | 1 | — | — | Sleep 85 % |
+| `vice-grip-plus` | Vice Grip+ | Normal | Off | Melee | — | 1 | 50 | — | foe Def −1 |
+| `leech-seed-plus` | Leech Seed+ | Grass | Util | Ranged | — | 1 | — | — | Poison |
+| `bone-club-plus` | Bone Club+ | Ground | Off | Melee | — | 2 | 75 | — | — |
+| `smokescreen-plus` | Smokescreen+ | Normal | Util | Ranged | — | 0 | — | — | foe Atk −2 |
+| `self-destruct-plus` | Self-Destruct+ | Normal | Off | Melee | — | 3 | 100 | — | recoil 50 % · foe Def −1 |
+| `smog-plus` | Smog+ | Poison | Off | Ranged | — | 1 | 55 | — | Poison 40 % |
+| `rock-throw-plus` | Rock Throw+ | Rock | Off | Ranged | — | 1 | 55 | — | foe Def −1 |
+| `scratch-plus` | Scratch+ | Normal | Off | Melee | — | 1 | 50 | — | — |
+| `stun-spore-plus` | Stun Spore+ | Grass | Util | Ranged | — | 1 | — | — | Paralysis |
+| `toxic-plus` | Toxic+ | Poison | Util | Ranged | — | 1 | — | — | Poison  (escalating) |
+| `petal-dance-plus` | Petal Dance+ | Grass | Off | Melee | SF | 3 | 100 | — | self Confusion · foe Def −1 |
+| `water-gun-plus` | Water Gun+ | Water | Off | Ranged | — | 1 | 55 | — | — |
+| `submission-plus` | Submission+ | Fighting | Off | Melee | — | 3 | 100 | — | recoil 25 % |
+| `psychic-plus` | Psychic+ | Psychic | Off | Ranged | — | 3 | 100 | — | foe Def −1 |
+| `low-kick-plus` | Low Kick+ | Fighting | Off | Melee | — | 1 | 50 | — | foe Def −1 |
+| `meditate-plus` | Meditate+ | Psychic | Util | Melee | — | 0 | — | — | self Atk +2 |
+| `vine-whip-plus` | Vine Whip+ | Grass | Off | Ranged | — | 1 | 55 | — | — |
+| `slam-plus` | Slam+ | Normal | Off | Melee | — | 2 | 75 | — | foe Def −1 |
+| `rock-slide-plus` | Rock Slide+ | Rock | Off | Ranged | — | 2 | 90 | — | — |
+| `night-shade-plus` | Night Shade+ | Ghost | Off | Ranged | — | 2 | 85 | — | — |
+| `lick-plus` | Lick+ | Ghost | Off | Melee | — | 1 | 50 | — | Paralysis 30 % |
+| `confuse-ray-plus` | Confuse Ray+ | Ghost | Util | Ranged | — | 0 | — | — | Confusion |
+| `thunder-wave-plus` | Thunder Wave+ | Electric | Util | Ranged | — | 0 | — | — | Paralysis |
+| `agility-plus` | Agility+ | Psychic | Util | Melee | — | 0 | — | — | self Atk +2 · draw 2 |
+| `dragon-rage-plus` | Dragon Rage+ | Dragon | Off | Ranged | — | 1 | 55 | — | foe Def −1 |
+| `barrier-plus` | Barrier+ | Psychic | Def | Melee | — | 1 | — | — | self Def +3 |
 
-## Enemy-only moves (v0.8.2, §5.6.2)
+## 3. Mastery tiers
 
-Moves no learnset, TM or tutor offers: an encounter gives them to an enemy in its scripted `moves`. The player
-never draws them. ✅ v0.8.2.
+The Lv2 (+) and Lv3 (++) of each line's Mastery (`mastery-moves.md`): 2 AP and 100, 3 AP and 130, the Lv1 move's
+riders kept.
 
-| Id | Type | Role | Rng | Mod | AP | Pow | CD | Effect |
-|---|---|---|---|---|---|---|---|---|
-| `call-for-help` | Normal | Util | Ranged | — | 1 | — | 2 | summon 1: the caller's next waiting companion joins the field as a support (§5.6.2) |
-| `cover` | Normal | Util | Ranged | — | 1 | — | 2 | cover: a Defender steps in front of its hurt Lead and leads the group, +1 Defence (§5.6, v0.8.6) |
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `solar-beam-plus` | Solar Beam+ | Grass | Off | Ranged | — | 2 | 100 | — | — |
+| `solar-beam-plus-plus` | Solar Beam++ | Grass | Off | Ranged | — | 3 | 130 | — | — |
+| `fire-blast-plus` | Fire Blast+ | Fire | Off | Ranged | — | 2 | 100 | — | Burn 30 % |
+| `fire-blast-plus-plus` | Fire Blast++ | Fire | Off | Ranged | — | 3 | 130 | — | Burn 30 % |
+| `waterfall-plus` | Waterfall+ | Water | Off | Melee | — | 2 | 100 | — | — |
+| `waterfall-plus-plus` | Waterfall++ | Water | Off | Melee | — | 3 | 130 | — | — |
+| `psybeam-plus` | Psybeam+ | Psychic | Off | Ranged | — | 2 | 100 | — | Confusion 10 % |
+| `psybeam-plus-plus` | Psybeam++ | Psychic | Off | Ranged | — | 3 | 130 | — | Confusion 10 % |
+| `fury-attack-plus` | Fury Attack+ | Normal | Off | Melee | — | 2 | 100 | — | 3 hits |
+| `fury-attack-plus-plus` | Fury Attack++ | Normal | Off | Melee | — | 3 | 130 | — | 3 hits |
+| `sky-attack-plus` | Sky Attack+ | Flying | Off | Melee | SF | 2 | 100 | — | always crit |
+| `sky-attack-plus-plus` | Sky Attack++ | Flying | Off | Melee | SF | 3 | 130 | — | always crit |
+| `super-fang-plus` | Super Fang+ | Normal | Off | Melee | — | 2 | — | — | 65 % of current HP |
+| `thunder-plus` | Thunder+ | Electric | Off | Ranged | — | 2 | 100 | — | Paralysis 10 % |
+| `earthquake-plus` | Earthquake+ | Ground | Off | Melee | — | 2 | 100 | cleave | — |
+| `double-kick-plus` | Double Kick+ | Fighting | Off | Melee | — | 2 | 100 | — | 2 hits |
+| `double-kick-plus-plus` | Double Kick++ | Fighting | Off | Melee | — | 3 | 130 | — | 2 hits |
+| `tri-attack-plus` | Tri Attack+ | Normal | Off | Ranged | — | 2 | 100 | — | Burn 7 % · Paralysis 7 % · Freeze 7 % |
+| `rage-plus` | Rage+ | Normal | Off | Melee | — | 2 | 100 | — | self Atk +1 |
+| `surf-plus` | Surf+ | Water | Off | Ranged | — | 2 | 100 | cleave | — |
+| `ice-beam-plus` | Ice Beam+ | Ice | Off | Ranged | — | 2 | 100 | — | Freeze 10 % |
+| `body-slam-plus` | Body Slam+ | Normal | Off | Melee | — | 2 | 100 | — | Paralysis 30 % |
+| `blizzard-plus` | Blizzard+ | Ice | Off | Ranged | — | 2 | 100 | — | Freeze 10 % |
+| `dream-eater-plus` | Dream Eater+ | Psychic | Off | Ranged | — | 2 | 100 | — | drain 50 % |
+| `crabhammer-plus` | Crabhammer+ | Water | Off | Melee | — | 2 | 100 | — | always crit |
+| `explosion-plus` | Explosion+ | Normal | Off | Melee | — | 2 | 100 | — | recoil 75 % |
+| `bonemerang-plus` | Bonemerang+ | Ground | Off | Ranged | — | 2 | 100 | — | 2 hits |
+| `sludge-plus` | Sludge+ | Poison | Off | Ranged | — | 2 | 100 | — | Poison 30 % |
+| `hydro-pump-plus` | Hydro Pump+ | Water | Off | Ranged | — | 2 | 100 | — | — |
+| `hyper-beam-plus` | Hyper Beam+ | Normal | Off | Ranged | — | 2 | 100 | — | — |
+| `take-down-plus` | Take Down+ | Normal | Off | Melee | — | 2 | 100 | — | recoil 25 % |
+| `mega-punch-plus` | Mega Punch+ | Normal | Off | Melee | — | 2 | 100 | — | — |
+| `mega-punch-plus-plus` | Mega Punch++ | Normal | Off | Melee | — | 3 | 130 | — | — |
+| `psywave-plus` | Psywave+ | Psychic | Off | Ranged | — | 2 | 100 | — | — |
+| `psywave-plus-plus` | Psywave++ | Psychic | Off | Ranged | — | 3 | 130 | — | — |
+| `seismic-toss-plus` | Seismic Toss+ | Fighting | Off | Melee | — | 2 | 100 | — | — |
+| `seismic-toss-plus-plus` | Seismic Toss++ | Fighting | Off | Melee | — | 3 | 130 | — | — |
+| `dream-eater-plus-plus` | Dream Eater++ | Psychic | Off | Ranged | — | 3 | 130 | — | drain 50 % |
+
+## 4. Enemy-only actions (v0.8.2, §5.6.2)
+
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `call-for-help` | Call for Help | Normal | Util | Ranged | — | 1 | — | cd 2 | summon |
+| `cover` | Cover | Normal | Util | Ranged | — | 1 | — | cd 2 | cover |
+
+## 5. Retired in v0.9.5
+
+Every move that was not Gen I, and what took its place wherever it was named — a tutor list, an egg move, a trainer's
+kit. The kits themselves were rewritten line by line (`species-r1.md`, `species-r2.md`, `species-gen1.md`).
+
+| id | Became |
+|---|---|
+| `roost` | `recover` |
+| `roost-plus` | `recover` |
+| `vine-lash` | `razor-leaf` |
+| `petal-blizzard` | `petal-dance` |
+| `power-whip` | `razor-leaf` |
+| `sweet-scent` | `stun-spore` |
+| `dragon-claw` | `slash` |
+| `flame-wheel` | `fire-punch` |
+| `flame-wheel-r` | `fire-punch` |
+| `dragon-claw-plus` | `slash` |
+| `aqua-jet` | `bubble` |
+| `hydro-crash` | `waterfall` |
+| `aqua-ring` | `rest` |
+| `aqua-ring-plus` | `rest` |
+| `aqua-fortress` | `light-screen` |
+| `bug-bite` | `leech-life` |
+| `bug-bite-plus` | `twineedle` |
+| `silk-bind` | `string-shot` |
+| `pin-shot` | `pin-missile` |
+| `harden-plus` | `harden` |
+| `powder-spread` | `sleep-powder` |
+| `silver-wind` | `gust` |
+| `tailwind` | `agility` |
+| `tailwind-plus` | `agility` |
+| `feather-dance` | `growl` |
+| `aerial-ace` | `wing-attack` |
+| `hurricane` | `sky-attack` |
+| `magnitude` | `earthquake` |
+| `rock-blast` | `rock-throw` |
+| `rollout` | `defense-curl` |
+| `stealth-rock` | `leer` |
+| `stone-edge` | `rock-slide` |
+| `rock-polish` | `sharpen` |
+| `body-press` | `body-slam` |
+| `crunch` | `hyper-fang` |
+| `sucker-punch` | `quick-attack` |
+| `psych-up` | `meditate` |
+| `flail` | `rage` |
+| `giga-drain` | `mega-drain` |
+| `moonlight` | `recover` |
+| `moonlight-plus` | `recover` |
+| `fire-fang` | `fire-punch` |
+| `heat-wave` | `flamethrower` |
+| `water-pulse` | `bubble-beam` |
+| `rapid-spin` | `withdraw` |
+| `aqua-tail-g` | `waterfall` |
+| `brine` | `bubble-beam` |
+| `sludge-bomb` | `sludge` |
+| `poison-fang` | `poison-sting` |
+| `poison-jab` | `sludge` |
+| `cross-poison` | `sludge` |
+| `leech-life-plus` | `leech-life` |
+| `mud-slap` | `sand-attack` |
+| `mud-shot` | `sand-attack` |
+| `mud-bomb` | `dig` |
+| `bulldoze` | `earthquake` |
+| `iron-tail` | `slam` |
+| `vital-throw` | `seismic-toss` |
+| `cross-chop` | `karate-chop` |
+| `close-combat` | `submission` |
+| `dynamic-punch` | `submission` |
+| `bulk-up` | `meditate` |
+| `bulk-up-plus` | `meditate` |
+| `brick-break` | `karate-chop` |
+| `belly-drum-p` | `meditate` |
+| `zen-headbutt` | `headbutt` |
+| `air-slash` | `wing-attack` |
+| `will-o-wisp` | `confuse-ray` |
+| `will-o-wisp-plus` | `confuse-ray` |
+| `synthesis` | `recover` |
+| `charm` | `growl` |
+| `iron-defense` | `barrier` |
+| `skull-bash-plus` | `skull-bash` |
+| `bug-buzz` | `pin-missile` |
+| `poison-sting-plus` | `poison-sting` |
+| `hypnosis-plus` | `hypnosis` |
+| `amnesia-plus` | `amnesia` |
+| `flare-blitz` | `fire-blast` |
+| `brave-bird` | `sky-attack` |
+| `fell-stinger-v` | `twineedle` |
+| `aromatic-mist` | `growth` |
+| `aromatherapy-m` | `haze` |
+| `aromatherapy` | `haze` |
+| `safeguard` | `mist` |
+| `wide-guard` | `light-screen` |
+| `metal-claw` | `slash` |
+| `wish` | `recover` |
+| `powder-snow` | `aurora-beam` |
+| `ice-shard` | `ice-punch` |
+| `icy-wind` | `aurora-beam` |
+| `icicle-spear` | `ice-punch` |
+| `spark` | `thunder-shock` |
+| `charge-beam` | `thunder-shock` |
+| `discharge` | `thunderbolt` |
+| `volt-tackle` | `thunder-punch` |
+| `zap-cannon` | `thunder` |
+| `extreme-speed` | `quick-attack` |
+| `sludge-wave` | `sludge` |
+| `dragon-pulse` | `dragon-rage` |
+| `mach-punch` | `comet-punch` |
+| `sky-uppercut` | `high-jump-kick` |
+| `leaf-blade` | `razor-leaf` |
+| `signal-beam` | `psybeam` |
+| `ancient-power` | `rock-slide` |
+| `heavy-slam` | `body-slam` |
+| `bone-rush` | `bonemerang` |
+| `air-cutter` | `gust` |
+| `sky-drop` | `fly` |
+| `shadow-punch` | `lick` |
+| `shadow-ball` | `night-shade` |
+| `extrasensory` | `psybeam` |
+| `calm-mind` | `amnesia` |
+| `psystrike` | `psychic` |
+| `hyper-voice` | `swift` |
+| `aura-sphere` | `psychic` |
+| `earth-power` | `earthquake` |
+| `drill-run` | `dig` |
+| `power-gem` | `rock-slide` |
+| `twister` | `dragon-rage` |
+| `outrage` | `thrash` |
+| `lava-plume` | `flamethrower` |
+| `x-scissor` | `slash` |
+| `megahorn` | `horn-attack` |
+| `gunk-shot` | `sludge` |
+| `ingrain` | `leech-seed` |
+| `venoshock` | `acid` |
+| `revenge` | `counter` |
+| `rage-fist` | `rage` |
+| `last-resort` | `take-down` |
+| `iron-head-a` | `headbutt` |
+| `glacial-song` | `ice-beam` |
+| `belly-drum-s` | `meditate` |
+| `leaf-tornado` | `razor-leaf` |
+| `seed-bomb` | `razor-leaf` |
+| `aqua-tail` | `waterfall` |
+| `spore-cloud` | `spore` |
+| `dragon-tail` | `slam` |
+| `circle-throw` | `seismic-toss` |
+| `psyshock` | `psychic` |
+| `leek-slash` | `cut` |
+| `sticky-web` | `string-shot` |
+| `giga-impact-v` | `hyper-beam` |
+| `sheer-cold-l` | `blizzard` |
+| `leaf-storm-s` | `razor-leaf` |
+| `hi-jump-kick` | `high-jump-kick` |
+| `softboiled` | `soft-boiled` |
+| `transform-d` | `transform` |
+| `rest-s` | `rest` |
+| `fissure-d` | `fissure` |
+| `guillotine-k` | `guillotine` |
+| `slam-k` | `slam` |
+| `splash-m` | `splash` |
+| `tri-attack-d` | `tri-attack` |
+| `sludge-bomb-w` | `sludge` |
+| `horn-drill-r` | `horn-drill` |
+| `shadow-ball-h` | `night-shade` |
+
+## 6. Design rules for authoring a new move
+
+1. **It is a Gen I move, or one of them made better.** A line whose type runs out of Gen I moves climbs by **+**.
+2. **Every kit is playable from its likely position.** At least one Ranged card unless the species is a Lead
+   anchor (`machop`'s line, `pinsir`, `snorlax`) — a content test walks every branch path.
+3. **A 0-AP move is never strictly better than doing nothing**: stat stages decay, a draw costs the card it is.
+4. **A rider chance is a number the player sees** (§9.2.3); a Gen I accuracy becomes that number.
+5. **Multi-hit is deterministic**: it states its hit count, never rolls it.
+6. **Cooldowns are enemy-side only.**

@@ -24,66 +24,66 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `tentacool` | 72 | basic | Water/Poison | 40/40/35/100/70 | 100/68 | common | **L12** → `tentacruel` | 1 `poison-sting` · 1 `supersonic` · 4 `water-gun` · 7 `acid` · 10 `bubble-beam` |
-| `tentacruel` | 73 | stage1 | Water/Poison | 80/70/65/120/100 | 120/93 | — | — | 14 `poison-jab` · 18 `toxic` · 22 `sludge-wave` · 28 `hydro-pump` |
+| `tentacool` | 72 | basic | Water/Poison | 40/40/35/100/70 | 100/68 | common | **L12** → `tentacruel` | 1 `acid` · 1 `supersonic` · 4 `wrap` · 8 `poison-sting` |
+| `tentacruel` | 73 | stage1 | Water/Poison | 80/70/65/120/100 | 120/93 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `poison-point` `water-absorb` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Tentacool: `aqua-ring` `screech` · Tentacruel: `surf` `brine`
+**Growth** 2/3/2/3 · **Abilities** `poison-point` `water-absorb` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Tentacool: `rest` · Tentacruel: —
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `tentacruel` | — | **Man-o'-War** — `acid` → `sludge-bomb` · `water-gun` → `water-pulse` | **Stinging Veil** — `supersonic` → `toxic` · **+`acid-armor`** · grants `poison-point` |
+| → `tentacruel` | — | **Man-o'-War** — `acid` → `acid-plus` · `poison-sting` → `bubble-beam` · **+`hydro-pump`** | **Stinging Veil** — `supersonic` → `supersonic-plus` · `wrap` → `barrier` · **+`screech`** · grants `poison-point` |
 
 ### `shellder` line — Water → Water/Ice · common
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `shellder` | 90 | basic | Water | 30/65/100/45/40 | 65/73 | common | **L12** → `cloyster` | 1 `tackle` · 1 `withdraw` · 4 `clamp` · 7 `supersonic` · 10 `ice-shard` |
-| `cloyster` | 91 | stage1 | Water/Ice | 50/95/180/85/70 | 95/133 | — | — | 14 `aurora-beam` · 18 `icicle-spear` · 22 `iron-defense` · 28 `ice-beam` · 34 `blizzard` |
+| `shellder` | 90 | basic | Water | 30/65/100/45/40 | 65/73 | common | **L12** → `cloyster` | 1 `tackle` · 1 `withdraw` · 4 `supersonic` · 8 `clamp` |
+| `cloyster` | 91 | stage1 | Water/Ice | 50/95/180/85/70 | 95/133 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
 **Growth** 2/3/4/2 · **Abilities** `shell-armor` `iron-shell` `sturdy` (the third is hidden, §6.8.3) · **Tutor** Shellder: `water-gun` `harden` · Cloyster: `hydro-pump` `surf`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `cloyster` | **Spike Shell** — `tackle` → `icicle-spear` · `ice-shard` → `ice-punch` | — | **Pearl Fortress** — `withdraw` → `iron-defense` · **+`aurora-beam`** · grants `shell-armor` |
+| → `cloyster` | **Spike Shell** — `clamp` → `clamp-plus` · `tackle` → `ice-punch` · **+`spike-cannon`** | — | **Pearl Fortress** — `withdraw` → `withdraw-plus` · `supersonic` → `aurora-beam` · **+`barrier`** · grants `shell-armor` |
 
 ### `horsea` line — Water · common
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `horsea` | 116 | basic | Water | 30/40/70/70/60 | 70/70 | common | **L12** → `seadra` | 1 `bubble` · 1 `smokescreen` · 4 `water-gun` · 7 `focus-energy` · 10 `dragon-rage` |
-| `seadra` | 117 | stage1 | Water | 55/65/95/95/85 | 95/95 | — | — | 14 `bubble-beam` · 18 `agility` · 22 `dragon-pulse` · 28 `hydro-pump` |
+| `horsea` | 116 | basic | Water | 30/40/70/70/60 | 70/70 | common | **L12** → `seadra` | 1 `bubble` · 1 `smokescreen` · 4 `leer` · 8 `water-gun` |
+| `seadra` | 117 | stage1 | Water | 55/65/95/95/85 | 95/95 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `snipe` `damp` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Horsea: `aqua-jet` `swift` · Seadra: `surf` `ice-beam`
+**Growth** 2/3/2/3 · **Abilities** `snipe` `damp` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Horsea: `swift` · Seadra: `surf`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `seadra` | — | **Riptide** — `water-gun` → `water-pulse` · **+`dragon-pulse`** · grants `snipe` | **Ink Cloud** — `smokescreen` → `screech` · **+`agility`** |
+| → `seadra` | — | **Riptide** — `water-gun` → `hydro-pump` · `bubble` → `bubble-beam` · **+`ice-beam`** · grants `snipe` | **Ink Cloud** — `smokescreen` → `smokescreen-plus` · `leer` → `agility` · **+`haze`** |
 
 ### `staryu` line — Water → Water/Psychic · uncommon
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `staryu` | 120 | basic | Water | 30/45/55/70/85 | 70/63 | uncommon | **L12** → `starmie` | 1 `tackle` · 1 `harden` · 4 `water-gun` · 7 `rapid-spin` · 10 `swift` |
-| `starmie` | 121 | stage1 | Water/Psychic | 60/75/85/100/115 | 100/93 | — | — | 14 `psybeam` · 18 `recover` · 22 `confuse-ray` · 26 `psychic` · 32 `hydro-pump` |
+| `staryu` | 120 | basic | Water | 30/45/55/70/85 | 70/63 | uncommon | **L12** → `starmie` | 1 `tackle` · 1 `harden` · 4 `water-gun` · 8 `swift` |
+| `starmie` | 121 | stage1 | Water/Psychic | 60/75/85/100/115 | 100/93 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/4 · **Abilities** `healer` `anticipation` `adaptability` (the third is hidden, §6.8.3) · **Tutor** Staryu: `bubble-beam` `agility` · Starmie: `surf` `thunderbolt`
+**Growth** 2/3/2/4 · **Abilities** `healer` `anticipation` `adaptability` (the third is hidden, §6.8.3) · **Tutor** Staryu: `agility` · Starmie: `surf`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `starmie` | — | **Prism Core** — `swift` → `psybeam` · **+`psychic`** | **Mender** — `harden` → `recover` · **+`confuse-ray`** · grants `healer` |
+| → `starmie` | — | **Prism Core** — `swift` → `psychic` · `water-gun` → `bubble-beam` · **+`thunderbolt`** | **Mender** — `harden` → `recover` · `tackle` → `light-screen` · **+`minimize`** · grants `healer` |
 
 ### `seel` line — Water → Water/Ice · uncommon
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `seel` | 86 | basic | Water | 65/45/55/70/45 | 70/63 | uncommon | **L12** → `dewgong` | 1 `tackle` · 1 `growl` · 4 `powder-snow` · 7 `aqua-jet` · 10 `icy-wind` |
-| `dewgong` | 87 | stage1 | Water/Ice | 90/70/80/95/70 | 95/88 | — | — | 14 `aurora-beam` · 18 `rest-s` · 22 `take-down` · 26 `ice-beam` · 32 `surf` |
+| `seel` | 86 | basic | Water | 65/45/55/70/45 | 70/63 | uncommon | **L12** → `dewgong` | 1 `headbutt` · 1 `growl` · 4 `aurora-beam` · 8 `water-gun` |
+| `dewgong` | 87 | stage1 | Water/Ice | 90/70/80/95/70 | 95/88 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/3/2 · **Abilities** `thick-fat` `iron-shell` `healer` (the third is hidden, §6.8.3) · **Tutor** Seel: `water-gun` `headbutt` · Dewgong: `hydro-pump` `blizzard`
+**Growth** 3/2/3/2 · **Abilities** `thick-fat` `iron-shell` `healer` (the third is hidden, §6.8.3) · **Tutor** Seel: — · Dewgong: `hydro-pump`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `dewgong` | **Tusk** — `tackle` → `take-down` · `aqua-jet` → `aqua-tail` | — | **Floe** — `growl` → `sing` · **+`rest-s`** · grants `thick-fat` |
+| → `dewgong` | **Tusk** — `headbutt` → `take-down` · `water-gun` → `waterfall` · **+`rest`** | — | **Floe** — `growl` → `growl-plus` · `aurora-beam` → `aurora-beam-plus` · **+`blizzard`** · grants `thick-fat` |
 
 ## 2. Power Plant — 3 lines and a single stage
 
@@ -91,46 +91,46 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `voltorb` | 100 | basic | Electric | 40/30/50/55/100 | 55/53 | common | **L12** → `electrode` | 1 `tackle` · 1 `screech` · 4 `thunder-shock` · 7 `spark` · 10 `self-destruct` |
-| `electrode` | 101 | stage1 | Electric | 60/50/70/80/140 | 80/75 | — | — | 14 `charge-beam` · 18 `swift` · 22 `discharge` · 26 `thunderbolt` · 32 `explosion` |
+| `voltorb` | 100 | basic | Electric | 40/30/50/55/100 | 55/53 | common | **L12** → `electrode` | 1 `tackle` · 1 `screech` · 4 `sonic-boom` · 8 `thunder-shock` |
+| `electrode` | 101 | stage1 | Electric | 60/50/70/80/140 | 80/75 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/2/2/4 · **Abilities** `static` `run-down` `speed-boost` (the third is hidden, §6.8.3) · **Tutor** Voltorb: `thunder-wave` `rollout` · Electrode: `thunder` `tri-attack`
+**Growth** 2/2/2/4 · **Abilities** `static` `run-down` `speed-boost` (the third is hidden, §6.8.3) · **Tutor** Voltorb: `thunder-wave` `defense-curl` · Electrode: `thunder` `tri-attack`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `electrode` | **Ball Lightning** — `self-destruct` → `explosion` · `tackle` → `take-down` | **Capacitor** — `thunder-shock` → `charge-beam` · **+`discharge`** · grants `static` | — |
+| → `electrode` | **Ball Lightning** — `tackle` → `self-destruct` · `thunder-shock` → `thunder-shock-plus` · **+`swift`** | **Capacitor** — `thunder-shock` → `thunderbolt` · `sonic-boom` → `sonic-boom-plus` · **+`light-screen`** · grants `static` | — |
 
 ### `magnemite` line — Electric · common
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `magnemite` | 81 | basic | Electric | 25/35/70/95/45 | 95/83 | common | **L12** → `magneton` | 1 `tackle` · 1 `supersonic` · 4 `thunder-shock` · 7 `thunder-wave` · 10 `charge-beam` |
-| `magneton` | 82 | stage1 | Electric | 50/60/95/120/70 | 120/108 | — | — | 14 `swift` · 18 `screech` · 22 `tri-attack` · 26 `thunderbolt` · 34 `zap-cannon` |
+| `magnemite` | 81 | basic | Electric | 25/35/70/95/45 | 95/83 | common | **L12** → `magneton` | 1 `tackle` · 1 `sonic-boom` · 4 `thunder-shock` · 8 `supersonic` |
+| `magneton` | 82 | stage1 | Electric | 50/60/95/120/70 | 120/108 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/3/2 · **Abilities** `sturdy` `static` `solid-rock` (the third is hidden, §6.8.3) · **Tutor** Magnemite: `rollout` `metal-claw` · Magneton: `thunder` `double-edge`
+**Growth** 2/3/3/2 · **Abilities** `sturdy` `static` `solid-rock` (the third is hidden, §6.8.3) · **Tutor** Magnemite: `defense-curl` `slash` · Magneton: `double-edge`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `magneton` | — | **Tri-Coil** — `thunder-shock` → `thunderbolt` · **+`tri-attack`** | **Field Lock** — `supersonic` → `screech` · **+`iron-defense`** · grants `sturdy` |
+| → `magneton` | — | **Tri-Coil** — `thunder-shock` → `thunderbolt` · `sonic-boom` → `sonic-boom-plus` · **+`swift`** | **Field Lock** — `supersonic` → `thunder-wave` · `tackle` → `screech` · **+`light-screen`** · grants `sturdy` |
 
 ### `pikachu` line — Electric · uncommon · the third meta-starter (§8.5.2)
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `pikachu` | 25 | basic | Electric | 35/55/30/50/90 | 55/40 | uncommon | **L12** → `raichu` | 1 `thunder-shock` · 1 `growl` · 4 `quick-attack` · 7 `thunder-wave` · 10 `agility` |
-| `raichu` | 26 | stage1 | Electric | 60/90/55/90/100 | 90/73 | — | — | 14 `slam` · 18 `thunderbolt` · 22 `iron-tail` · 28 `thunder` · 34 `volt-tackle` |
+| `pikachu` | 25 | basic | Electric | 35/55/30/50/90 | 55/40 | uncommon | **L12** → `raichu` | 1 `thunder-shock` · 1 `growl` · 4 `quick-attack` · 8 `thunder-wave` |
+| `raichu` | 26 | stage1 | Electric | 60/90/55/90/100 | 90/73 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/4 · **Abilities** `static` `run-down` `volt-absorb` (the third is hidden, §6.8.3) · **Tutor** Pikachu: `swift` `surf` · Raichu: `thunder-punch` `body-slam`
+**Growth** 2/3/2/4 · **Abilities** `static` `run-down` `volt-absorb` (the third is hidden, §6.8.3) · **Tutor** Pikachu: `surf` · Raichu: `body-slam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `raichu` | **Volt Tackle** — `quick-attack` → `volt-tackle` | **Storm Cheeks** — `thunder-shock` → `thunderbolt` · **+`thunder`** | **Static Field** — `growl` → `charm` · **+`discharge`** · grants `static` |
+| → `raichu` | **Volt Tackle** — `quick-attack` → `quick-attack-plus` · `thunder-shock` → `thunder-punch` · **+`slam`** | **Storm Cheeks** — `thunder-shock` → `thunderbolt` · `growl` → `agility` · **+`swift`** | **Static Field** — `growl` → `double-team` · `thunder-shock` → `thunder-shock-plus` · **+`light-screen`** · grants `static` |
 
 ### `electabuzz` line — Electric · single stage · the Power Plant's rare
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `electabuzz` | 125 | basic | Electric | 65/83/57/85/105 | 85/71 | rare | — | 1 `quick-attack` · 1 `leer` · 5 `thunder-shock` · 9 `low-kick` · 13 `thunder-punch` · 18 `screech` · 24 `thunderbolt` · 30 `thunder` |
+| `electabuzz` | 125 | basic | Electric | 65/83/57/85/105 | 85/71 | rare | — | 1 `quick-attack` · 1 `leer` · 8 `thunder-shock` · 16 `screech` · 24 `thunder-punch` |
 
 **Growth** 3/4/3/4 · **Abilities** `static` `hustle` · **Tutor** Electabuzz: `fire-punch` `ice-punch`
 
@@ -140,27 +140,27 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `growlithe` | 58 | basic | Fire | 55/70/45/50/60 | 70/48 | uncommon | **L12** → `arcanine` | 1 `bite` · 1 `leer` · 4 `ember` · 7 `fire-fang` · 10 `take-down` |
-| `arcanine` | 59 | stage1 | Fire | 90/110/80/80/95 | 110/80 | — | — | 14 `flame-wheel` · 18 `crunch` · 22 `extreme-speed` · 26 `flamethrower` · 32 `flare-blitz` |
+| `growlithe` | 58 | basic | Fire | 55/70/45/50/60 | 70/48 | uncommon | **L12** → `arcanine` | 1 `bite` · 1 `roar` · 4 `ember` · 8 `leer` |
+| `arcanine` | 59 | stage1 | Fire | 90/110/80/80/95 | 110/80 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/3/2/3 · **Abilities** `intimidate` `flash-fire` `steadfast` (the third is hidden, §6.8.3) · **Tutor** Growlithe: `will-o-wisp` `agility` · Arcanine: `fire-blast` `iron-tail`
+**Growth** 3/3/2/3 · **Abilities** `intimidate` `flash-fire` `steadfast` (the third is hidden, §6.8.3) · **Tutor** Growlithe: `confuse-ray` `agility` · Arcanine: `slam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `arcanine` | **Legend Hound** — `bite` → `crunch` · **+`extreme-speed`** · grants `intimidate` | **Firestorm** — `ember` → `flamethrower` · **+`heat-wave`** | — |
+| → `arcanine` | **Legend Hound** — `bite` → `bite-plus` · `leer` → `take-down` · **+`quick-attack-plus`** · grants `intimidate` | **Firestorm** — `ember` → `flamethrower` · `roar` → `roar-plus` · **+`fire-spin`** | — |
 
 ### `koffing` line — Poison · common (Cave) · the Poison Gym
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `koffing` | 109 | basic | Poison | 40/65/95/60/35 | 65/78 | common | **L12** → `weezing` | 1 `tackle` · 1 `smog` · 4 `smokescreen` · 7 `sludge` · 10 `self-destruct` |
-| `weezing` | 110 | stage1 | Poison | 65/90/120/85/60 | 90/103 | — | — | 14 `toxic` · 18 `sludge-bomb` · 24 `sludge-wave` · 30 `explosion` |
+| `koffing` | 109 | basic | Poison | 40/65/95/60/35 | 65/78 | common | **L12** → `weezing` | 1 `tackle` · 1 `smog` · 4 `smokescreen` · 8 `self-destruct` |
+| `weezing` | 110 | stage1 | Poison | 65/90/120/85/60 | 90/103 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
 **Growth** 2/2/4/1 · **Abilities** `poison-point` `cloud-nine` · **Tutor** Koffing: `acid-armor` `screech` · Weezing: `flamethrower` `thunderbolt`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `weezing` | **Detonator** — `self-destruct` → `explosion` · `tackle` → `take-down` | — | **Miasma** — `smokescreen` → `poison-powder` · **+`will-o-wisp`** · grants `poison-point` |
+| → `weezing` | **Detonator** — `self-destruct` → `self-destruct-plus` · `smog` → `smog-plus` · **+`explosion`** | — | **Miasma** — `smokescreen` → `smokescreen-plus` · `tackle` → `poison-gas` · **+`haze`** · grants `poison-point` |
 
 ## 4. Trainer-only
 
@@ -168,9 +168,9 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `hitmonchan` | 107 | basic | Fighting | 50/105/79/35/76 | 105/57 | rare | — | 1 `mach-punch` · 1 `bulk-up` · 6 `fire-punch` · 12 `ice-punch` · 18 `thunder-punch` · 24 `sky-uppercut` · 30 `close-combat` |
+| `hitmonchan` | 107 | basic | Fighting | 50/105/79/35/76 | 105/57 | rare | — | 1 `comet-punch` · 1 `agility` · 8 `swift` · 16 `fire-punch` · 24 `ice-punch` |
 
-**Growth** 3/4/3/3 · **Abilities** `inner-focus` `steadfast` · **Tutor** Hitmonchan: `agility` `body-slam`
+**Growth** 3/4/3/3 · **Abilities** `inner-focus` `steadfast` · **Tutor** Hitmonchan: `body-slam`
 
 ## 5. What Region 2 shipped without
 

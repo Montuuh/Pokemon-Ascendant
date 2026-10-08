@@ -176,8 +176,8 @@ describe('Badges — §5.10.2', () => {
 
   it('Soul_DrawsACardWhenYourStatusLands_§5.10.2', () => {
     const play = (badges: string[]) => {
-      let s = withHand(bare({ team: teamWithKit(['poison-powder', 'tackle']), enemies: [PIDGEY], badges }), ['poison-powder']);
-      s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'poison-powder').id });
+      let s = withHand(bare({ team: teamWithKit(['probe-poison', 'tackle']), enemies: [PIDGEY], badges }), ['probe-poison']);
+      s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'probe-poison').id });
       return s;
     };
     const withBadge = play(['soul-badge']);
@@ -232,10 +232,10 @@ describe('Badges — §5.10.3', () => {
   });
 
   it('Earth_MakesThePositionalCardsCheaper_AndNothingElse_§5.10.3', () => {
-    const state = bare({ team: teamWithKit(['wing-attack', 'flame-wheel', 'tackle']), enemies: [PIDGEY], badges: ['earth-badge'] });
+    const state = bare({ team: teamWithKit(['fly', 'quick-attack', 'tackle']), enemies: [PIDGEY], badges: ['earth-badge'] });
     const owner = leadOf(state);
-    expect(itemApDelta(state, owner, content.move('wing-attack'), content)).toBe(-1);
-    expect(itemApDelta(state, owner, content.move('flame-wheel'), content)).toBe(-1);
+    expect(itemApDelta(state, owner, content.move('fly'), content)).toBe(-1);
+    expect(itemApDelta(state, owner, content.move('quick-attack'), content)).toBe(-1);
     expect(itemApDelta(state, owner, content.move('tackle'), content)).toBe(0);
   });
 
@@ -250,8 +250,8 @@ describe('Badges — §5.10.3', () => {
     // An enemy whose only card is an attack, so its next action is the hit the chill is meant for.
     const brute = { species: 'pidgey', level: 20, tier: 'wild' as const, phaseCount: 1 as const, moves: ['tackle'] };
     const play = (badges: string[]) => {
-      const s = withHand(bare({ team: teamWithKit(['poison-powder', 'tackle']), enemies: [brute], badges }), ['poison-powder']);
-      return dispatch(s, { type: 'play-card', cardId: handCard(s, 'poison-powder').id });
+      const s = withHand(bare({ team: teamWithKit(['probe-poison', 'tackle']), enemies: [brute], badges }), ['probe-poison']);
+      return dispatch(s, { type: 'play-card', cardId: handCard(s, 'probe-poison').id });
     };
     const withBadge = play(['glacier-badge']);
     const without = play([]);

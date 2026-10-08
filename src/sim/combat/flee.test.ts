@@ -7,7 +7,8 @@ const ONIX_BOSS = { species: 'onix', level: 12, tier: 'boss' as const, phaseCoun
 
 describe('Fleeing — §3.1.2', () => {
   it('Flee_TakesThePartingShot_ThenEndsAsEscaped', () => {
-    const s0 = start(scenario({ team: STARTERS, enemies: [PIDGEY] }));
+    // The Pidgey means to Gust: the parting shot is a hit, whatever card it drew.
+    const s0 = tweak(start(scenario({ team: STARTERS, enemies: [PIDGEY] })), (d) => { d.enemies[0]!.intent = { kind: 'attack', moveId: 'gust', targetSlot: 'lead', hidden: false }; });
     const hpBefore = s0.player.team[s0.player.leadIndex]!.hp;
     expect(reject(s0, { type: 'flee' })).toBeNull();
     const s = dispatch(s0, { type: 'flee' });

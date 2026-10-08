@@ -180,7 +180,7 @@ export function installDevTools(): void {
           if (m.uid !== target) return m;
           // Re-derive the pool from the new level so the Pokémon is exactly what it would have been.
           const pool = sim.knownMoves(content, m.speciesId, level);
-          return { ...m, level, xp: 0, pool: [...pool], moveIds: sim.autoPickMoves(pool, content) };
+          return { ...m, level, xp: 0, pool: [...pool], moveIds: sim.autoPickMoves(pool, content, 4, content.species(m.speciesId).types) };
         });
         useRunStore.setState({ run: { ...run, box } });
       },

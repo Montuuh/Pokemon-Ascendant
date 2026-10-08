@@ -49,9 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.4 — The catch, faithful.** The catch is the series' four shake checks — three wobbles and the click, a
-light for each — and Pokémon come out of balls thrown from their trainer's hand, sink from view when they fall, and
-go back to the hand that threw them.
+**v0.9.5 — Moves and kits, revamped.** Every move is a real Gen I move at its right type, its power and cost re-cut
+into one budget. A line learns four moves and its evolutions rewrite them — five cards at every stage, the final
+branch trading cards for its signature — and a Mastery is a Gen I move made great.
 
 ## Run it locally
 

@@ -3,12 +3,23 @@
   "seed": 1005,
   "actions": [
     {
+      "type": "swap",
+      "benchIndex": 0
+    },
+    {
       "type": "play-card",
-      "cardId": "c2"
+      "cardId": "c5"
     },
     {
       "type": "play-card",
       "cardId": "c10"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c3"
     },
     {
       "type": "use-consumable",
@@ -16,56 +27,21 @@
     },
     {
       "type": "play-card",
-      "cardId": "c11"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c4"
-    },
-    {
-      "type": "play-card",
       "cardId": "c0"
     },
     {
-      "type": "play-card",
-      "cardId": "c8"
-    },
-    {
       "type": "end-turn"
     },
     {
       "type": "play-card",
-      "cardId": "c2"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c10"
+      "cardId": "c5"
     },
     {
       "type": "play-card",
       "cardId": "c9"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "use-consumable",
-      "cardId": "k12",
-      "targetIndex": 2
-    },
-    {
-      "type": "play-card",
-      "cardId": "c4"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
     }
   ],
-  "fingerprint": "t4 victory lead=2 ap=0 team=[wartortle:95/95,ivysaur:96/96,charmeleon:82/82] enemies=[graveler:0/91] events=65 rng=4096228666",
-  "turns": 4,
+  "fingerprint": "t3 victory lead=0 ap=0 team=[wartortle:68/95,ivysaur:96/96,charmeleon:82/82] enemies=[graveler:0/91] events=41 rng=3795274202",
+  "turns": 3,
   "outcome": "victory"
 }

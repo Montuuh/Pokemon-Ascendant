@@ -13,18 +13,18 @@ describe('Enemy AI — §5', () => {
     const e = s.enemies[0]!;
     expect(classifyMove(s, e, ctx.content.move('gust'), ctx)!.kind).toBe('attack');
     expect(classifyMove(s, e, ctx.content.move('sand-attack'), ctx)!.kind).toBe('debuff');
-    expect(classifyMove(s, e, ctx.content.move('roost'), ctx)!.kind).toBe('stall');
+    expect(classifyMove(s, e, ctx.content.move('recover'), ctx)!.kind).toBe('stall');
     expect(classifyMove(s, e, ctx.content.move('defense-curl'), ctx)!.kind).toBe('buff');
-    expect(classifyMove(s, e, ctx.content.move('powder-spread'), ctx)!.kind).toBe('status');
+    expect(classifyMove(s, e, ctx.content.move('sleep-powder'), ctx)!.kind).toBe('status');
     expect(classifyMove(s, e, ctx.content.move('earthquake'), ctx)!.kind).toBe('cleave');
-    expect(classifyMove(s, e, ctx.content.move('tailwind'), ctx)).toBeNull();
+    expect(classifyMove(s, e, ctx.content.move('whirlwind'), ctx)).toBeNull();
   });
 
   it('Score_NeverAttacksIntoImmunity', () => {
-    // Geodude's Magnitude (ground) vs a Pidgey lead (flying) → 0.
+    // Geodude's Bone Club (ground) vs a Pidgey lead (flying) → 0.
     const s = start(scenario({ team: [{ species: 'pidgey', level: 8 }, { species: 'squirtle', level: 8 }], enemies: [GEODUDE] }));
     const e = s.enemies[0]!;
-    const move = ctx.content.move('magnitude');
+    const move = ctx.content.move('bone-club');
     const intent = classifyMove(s, e, move, ctx)!;
     expect(scoreIntent(s, e, { intent, move }, ctx)).toBe(0);
   });
@@ -35,17 +35,17 @@ describe('Enemy AI — §5', () => {
     const move = ctx.content.move('rock-throw');
     const intent = classifyMove(s, e, move, ctx)!;
     const base = scoreIntent(s, e, { intent, move }, ctx);
-    expect(base).toBe(45 * 2); // rock vs fire ×2
+    expect(base).toBe(50 * 2); // rock vs fire ×2
     const low = tweak(s, (d) => {
       d.player.team[0]!.hp = 1;
     });
-    expect(scoreIntent(low, low.enemies[0]!, { intent, move }, ctx)).toBe(45 * 2 * 2);
+    expect(scoreIntent(low, low.enemies[0]!, { intent, move }, ctx)).toBe(50 * 2 * 2);
   });
 
   it('Score_StatusOnAlreadyStatusedOrImmune_Zero', () => {
     const s = start(scenario({ team: [{ species: 'charmander', level: 8 }], enemies: [{ species: 'butterfree', level: 12, tier: 'wild', phaseCount: 1 }] }));
     const e = s.enemies[0]!;
-    const move = ctx.content.move('powder-spread');
+    const move = ctx.content.move('sleep-powder');
     const intent = classifyMove(s, e, move, ctx)!;
     expect(scoreIntent(s, e, { intent, move }, ctx)).toBeGreaterThan(0);
     const asleep = tweak(s, (d) => {
@@ -57,11 +57,11 @@ describe('Enemy AI — §5', () => {
   it('Score_CooldownGate_ZeroWhileCooling', () => {
     const s = start(scenario({ team: STARTERS, enemies: [{ species: 'golem', level: 15, tier: 'wild', phaseCount: 1 }] }));
     const e = s.enemies[0]!;
-    const move = ctx.content.move('stone-edge');
+    const move = ctx.content.move('earthquake');
     const intent = classifyMove(s, e, move, ctx)!;
     expect(scoreIntent(s, e, { intent, move }, ctx)).toBeGreaterThan(0);
     const cooling = tweak(s, (d) => {
-      d.enemies[0]!.cooldowns['stone-edge'] = 2;
+      d.enemies[0]!.cooldowns['earthquake'] = 2;
     });
     expect(scoreIntent(cooling, cooling.enemies[0]!, { intent, move }, ctx)).toBe(0);
   });
@@ -73,21 +73,21 @@ describe('Enemy AI — §5', () => {
     const e = s.enemies[0]!;
     const eq = ctx.content.move('earthquake');
     expect(scoreIntent(s, e, { intent: classifyMove(s, e, eq, ctx)!, move: eq }, ctx)).toBe(0);
-    const bp = ctx.content.move('body-press');
+    const bp = ctx.content.move('rock-slide');
     expect(scoreIntent(s, e, { intent: classifyMove(s, e, bp, ctx)!, move: bp }, ctx)).toBeGreaterThan(0);
   });
 
   it('Choose_PicksTopScore_WhenFloorDisabled_FloorPicksOnlyLegalAlternatives', () => {
-    const s = start(scenario({ team: [{ species: 'charmander', level: 8 }], enemies: [{ ...GEODUDE, moves: ['magnitude', 'rock-throw', 'tackle', 'defense-curl'] }] }));
+    const s = start(scenario({ team: [{ species: 'charmander', level: 8 }], enemies: [{ ...GEODUDE, moves: ['rock-slide', 'rock-throw', 'tackle', 'defense-curl'] }] }));
     // Scores vs a Fire lead: Magnitude 50×2 = 100 (top), Rock Throw 45×2 = 90, Tackle 40, Defense Curl 50×1.5 = 75.
     const noFloor = { ...ctx, config: { ...ctx.config, randomnessFloorChance: 0 } };
-    expect(chooseIntent(s, s.enemies[0]!, noFloor, new GameRng(3))!.moveId).toBe('magnitude');
+    expect(chooseIntent(s, s.enemies[0]!, noFloor, new GameRng(3))!.moveId).toBe('rock-slide');
     const picks = new Set<string>();
     // Raw small seeds give xorshift32 tiny first outputs; real combats seed through RngStreams (FNV-mixed).
     for (let seed = 1; seed <= 80; seed++) picks.add(chooseIntent(s, s.enemies[0]!, ctx, new RngStreams(seed).get('CombatRNG'))!.moveId!);
-    expect(picks.has('magnitude')).toBe(true);
+    expect(picks.has('rock-slide')).toBe(true);
     expect(picks.size).toBeGreaterThan(1); // the 12.5 % floor fires sometimes
-    for (const p of picks) expect(['magnitude', 'rock-throw', 'tackle', 'defense-curl']).toContain(p);
+    for (const p of picks) expect(['rock-slide', 'rock-throw', 'tackle', 'defense-curl']).toContain(p);
   });
 
   it('Intent_TargetsSlotNotPokemon_SwapChangesWhoIsHit', () => {
@@ -119,7 +119,7 @@ describe('Enemy AI — §5', () => {
     const GRAVELER = { species: 'graveler', level: 12, tier: 'wild' as const, phaseCount: 1 as const };
     let s = start(scenario({ team: [{ species: 'squirtle', level: 10 }, { species: 'charmander', level: 10 }], enemies: [GRAVELER] }));
     s = tweak(s, (d) => {
-      d.enemies[0]!.intent = { kind: 'backstrike', moveId: 'rock-blast', targetSlot: 'bench1', hidden: false };
+      d.enemies[0]!.intent = { kind: 'backstrike', moveId: 'razor-wind', targetSlot: 'bench1', hidden: false };
     });
     const occupant = slotOccupant(s, 'bench1')!;
     expect(occupant.speciesId).toBe('charmander');

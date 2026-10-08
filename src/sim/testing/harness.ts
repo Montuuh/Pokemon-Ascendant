@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
-import type { ScenarioDef, TeamMemberSetup, EnemySetup } from '../content/defs';
+import type { MoveDef, ScenarioDef, TeamMemberSetup, EnemySetup } from '../content/defs';
 import { DEFAULT_BATTLE_CONFIG } from '../combat/battleConfig';
 import type { CombatCtx } from '../combat/context';
 import { combatReducer } from '../combat/reducer';
@@ -9,7 +9,31 @@ import type { CombatAction, CombatState } from '../combat/state';
 
 // Shared test scaffolding. Content is the real registry; config is the canon default unless overridden.
 
-export const content = buildRegistry();
+const probe = (id: string, m: Partial<MoveDef>): MoveDef => ({ id, name: id, type: 'normal', role: 'utility', range: 'melee', modifier: 'none', apCost: 1, power: 0, effects: [], ...m });
+/**
+ * v0.9.5 — rules the sim keeps that no Gen I move carries any more (Fell Stinger's on-kill, Venoshock's bonus, Belly
+ * Drum's price, Aqua Ring's regen…), and a sure status for tests that need one to land. They are still tested, on
+ * probe moves that exist only here; the game's content never names them.
+ */
+export const PROBE_MOVES: Record<string, MoveDef> = Object.fromEntries(
+  [
+    probe('probe-on-kill', { type: 'bug', role: 'offensive', modifier: 'step-forward', apCost: 2, power: 65, effects: [{ kind: 'on-kill-stage', stat: 'attack', stages: 3 }] }),
+    probe('probe-brace', { type: 'water', role: 'defensive', apCost: 2, effects: [{ kind: 'stage', target: 'self', stat: 'defense', stages: 2 }, { kind: 'team-guard', guard: 'cleave', percent: 25 }] }),
+    probe('probe-bench-buff', { type: 'grass', range: 'ranged', apCost: 0, effects: [{ kind: 'stage', target: 'bench', stat: 'defense', stages: 1 }] }),
+    probe('probe-poison-bonus', { type: 'poison', role: 'offensive', range: 'ranged', apCost: 2, power: 65, effects: [{ kind: 'power-bonus', when: 'target-poisoned', multiplier: 2 }] }),
+    probe('probe-trauma-bonus', { type: 'fighting', role: 'offensive', power: 55, effects: [{ kind: 'power-bonus', when: 'per-trauma', perStack: 15 }] }),
+    probe('probe-belly-drum', { apCost: 2, effects: [{ kind: 'self-damage', percentOfMaxHp: 0.4 }, { kind: 'stage', target: 'self', stat: 'attack', stages: 4 }] }),
+    probe('probe-regen', { type: 'water', role: 'defensive', effects: [{ kind: 'heal', percentOfMaxHp: 0.125, durationTurns: 3 }] }),
+    probe('probe-poison', { type: 'poison', range: 'ranged', effects: [{ kind: 'status', status: 'poison', chance: 1 }] }),
+    probe('probe-sleep', { type: 'grass', range: 'ranged', effects: [{ kind: 'status', status: 'sleep', chance: 1 }] }),
+  ].map((m) => [m.id, m]),
+);
+
+const real = buildRegistry();
+export const content: typeof real = Object.assign(Object.create(real) as typeof real, {
+  move: (id: string) => PROBE_MOVES[id] ?? real.move(id),
+  hasMove: (id: string) => id in PROBE_MOVES || real.hasMove(id),
+});
 export const ctx: CombatCtx = { content, config: DEFAULT_BATTLE_CONFIG };
 
 export function scenario(partial: {

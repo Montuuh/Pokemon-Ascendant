@@ -187,9 +187,9 @@ describe('Status conditions — §4.2', () => {
   });
 
   it('Regen_AquaRing_HealsForThreeTurns', () => {
-    let s = start(scenario({ team: [{ species: 'blastoise', level: 30, hpPercent: 40, moves: ['aqua-ring', 'surf', 'water-gun', 'withdraw'] }], enemies: [{ species: 'caterpie', level: 3, tier: 'wild', phaseCount: 1 }] }));
-    s = withHand(s, ['aqua-ring']);
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'aqua-ring').id });
+    let s = start(scenario({ team: [{ species: 'blastoise', level: 30, hpPercent: 40, moves: ['probe-regen', 'surf', 'water-gun', 'withdraw'] }], enemies: [{ species: 'caterpie', level: 3, tier: 'wild', phaseCount: 1 }] }));
+    s = withHand(s, ['probe-regen']);
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'probe-regen').id });
     expect(s.player.team[0]!.regen?.turnsLeft).toBe(3);
     const before = s.player.team[0]!.hp;
     s = dispatch(s, { type: 'end-turn' });

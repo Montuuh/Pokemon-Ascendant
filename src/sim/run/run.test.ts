@@ -582,10 +582,10 @@ describe('Evolution — §6.2.4, §6.3', () => {
     applyBranch(mon, 'ivysaur-vanguard', content);
     expect(mon.speciesId).toBe('ivysaur');
     expect(mon.archetype).toBe('vanguard');
-    // tackle → headbutt happens *in place*: the pool does not grow, the entry changes.
+    // tackle → headbutt happens *in place*: the entry changes, and the pool grows only by the branch's one addition.
     expect(mon.pool).not.toContain('tackle');
     expect(mon.pool).toContain('headbutt');
-    expect(mon.pool).toHaveLength(poolSize);
+    expect(mon.pool).toHaveLength(poolSize + 1);
     // §6.7.3 — the upgrade takes the same slot in the active 4.
     expect(mon.moveIds).toContain('headbutt');
     expect(mon.moveIds).not.toContain('tackle');
@@ -604,8 +604,11 @@ describe('Evolution — §6.2.4, §6.3', () => {
     applyBranch(mon, 'venusaur-vanguard', content);
     // A Support Ivysaur becomes a Vanguard Venusaur: nothing about the first pick locks the second.
     expect(mon.archetype).toBe('vanguard');
-    // §6.3.5 — the final evolution's addition is the archetype's signature.
-    expect(mon.pool).toContain('petal-blizzard');
+    // §6.3.5 — the final evolution swaps slots for the archetype's signature, whatever the first branch made of them:
+    // Vine Whip's slot becomes Petal Dance, and the pool stays at five.
+    expect(mon.pool).toContain('petal-dance');
+    expect(mon.pool).not.toContain('vine-whip');
+    expect(mon.pool).toHaveLength(5);
     expect(mon.abilityId).toBe('tough-claws');
   });
 
@@ -614,7 +617,7 @@ describe('Evolution — §6.2.4, §6.3', () => {
     for (const s of content.allSpecies()) {
       for (const b of s.branches) {
         branches++;
-        expect(b.upgrades.length, b.id).toBeLessThanOrEqual(2);
+        expect(b.upgrades.length, b.id).toBeLessThanOrEqual(3);
         expect(b.adds.length, b.id).toBeLessThanOrEqual(1);
         expect(b.upgrades.length + b.adds.length, `${b.id} has no payload`).toBeGreaterThan(0);
         expect(content.species(b.to).id).toBe(b.to);
@@ -686,16 +689,19 @@ describe('The Learned Move Pool — §6.7', () => {
     const mon = newPartyMon('bulbasaur', 1, content, 1);
     expect(mon.pool).toHaveLength(2);
     expect(mon.moveIds).toHaveLength(2);
+    // Two cards from elsewhere (a TM, the Dojo) fill the four slots before the learnset's own arrive.
+    mon.pool.push('swords-dance', 'cut');
+    mon.moveIds.push('swords-dance', 'cut');
 
     let total = 0;
     for (let l = 1; l < 11; l++) total += xpToNext(l);
     const up = grantXp(mon, total, content);
 
-    // Five known by L10, four slots: the fifth waits in the pool rather than pushing one out.
-    expect(mon.pool).toHaveLength(5);
-    expect(mon.moveIds).toHaveLength(4);
-    expect(up!.learned.length).toBeGreaterThan(up!.activated.length);
-    expect(mon.pool).toEqual(expect.arrayContaining(mon.moveIds));
+    // Vine Whip and Leech Seed are learned, and wait in the pool rather than pushing a chosen card out.
+    expect(up!.learned).toEqual(['vine-whip', 'leech-seed']);
+    expect(up!.activated).toEqual([]);
+    expect(mon.pool).toHaveLength(6);
+    expect(mon.moveIds).toEqual(['tackle', 'growl', 'swords-dance', 'cut']);
   });
 
   it('SetMoves_AcceptsAnySubsetOfThePool_AndRefusesEverythingElse', () => {
@@ -712,7 +718,7 @@ describe('The Learned Move Pool — §6.7', () => {
   });
 
   it('AutoPick_KeepsTwoWaysToDealDamage_§6.3.6', () => {
-    const pool = ['absorb', 'sweet-scent', 'poison-powder', 'acid', 'sleep-powder'];
+    const pool = ['absorb', 'stun-spore', 'poison-powder', 'acid', 'sleep-powder'];
     const picked = autoPickMoves(pool, content);
     expect(picked).toHaveLength(4);
     expect(picked.filter((m) => content.move(m).power > 0).length).toBeGreaterThanOrEqual(2);

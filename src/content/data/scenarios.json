@@ -473,7 +473,7 @@
           "phaseCount": 1,
           "role": "defender",
           "moves": [
-            "moonlight",
+            "recover",
             "pound",
             "cover"
           ]
@@ -529,7 +529,7 @@
           "phaseCount": 2,
           "moves": [
             "horn-attack",
-            "bulldoze",
+            "earthquake",
             "double-kick",
             "poison-sting"
           ]
@@ -541,7 +541,7 @@
           "phaseCount": 1,
           "role": "buffer",
           "moves": [
-            "calm-mind",
+            "growth",
             "double-slap",
             "growl"
           ]
