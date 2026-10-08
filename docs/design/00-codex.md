@@ -122,7 +122,7 @@ fight ends as Escaped (no XP/drop/catch), and the toll comes off: wild −20 % �
 clamped 1–90 %: the species' ceiling (common 0.9 · uncommon 0.7 · rare 0.5, ×0.65 middle stage, ×0.4 final;
 Snorlax 0.2), a steep HP curve, ×1.5 asleep/frozen or ×1.2 any other status. ~13 % at full HP for a common
 basic, 49 % at half, 69 % at a quarter. The card plays at any odds; a miss spends the ball and the turn. Seeded
-from the fight's stream. Master Ball Charm arms one sure throw per run. 0 HP loses the recruit. A catch is a
+from the fight's stream. A Master Ball (never sold; a Region 2–3 Elite or Gym prize) is a sure throw. 0 HP loses the recruit. A catch is a
 **Victory with full XP**. Balls are bag entries (Poké ×1, Great ×1.5, Ultra ×2): start 3, +1 per Region, one per attempt either way; the catch pill opens a picker with each ball's chance (v0.8.6).
 
 **Trainers** — 9 archetypes, **three Pokémon** (the roster's own + its archetype's, 4 levels under) — **which, and

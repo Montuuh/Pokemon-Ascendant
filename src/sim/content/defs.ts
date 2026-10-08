@@ -216,8 +216,6 @@ export type ItemHook =
   | 'early-evolution'
   /** Box Expander — `bonus` more Box slots for the run. Run layer. */
   | 'box-capacity'
-  /** Master Ball Charm — once per run, a throw cannot miss. */
-  | 'guaranteed-catch'
   /** §5.10.3 Glacier Badge — a status that lands on an enemy multiplies its next attack by `multiplier`. */
   | 'status-chill'
   /** §2.11.3 / §4.3 Field Surveyor — a wild fight opens under the Battlefield its Lead's type favours. Run layer. */
@@ -431,7 +429,8 @@ export type ConsumableEffect =
   | { kind: 'stage'; stat: Stat; stages: number }
   /** §2.6.4 (CL-014) — deterministic catch gauge. */
   /** §2.6.4 — a ball: its multiplier on the catch chance (Poké Ball 1). */
-  | { kind: 'catch'; ballMultiplier: number }
+  /** §2.6.4.2 — `sure`: the Master Ball, a throw that cannot fail. */
+  | { kind: 'catch'; ballMultiplier: number; sure?: boolean }
   /** §4.3.6 Defog — clears every field standing, Battlefield or Home Field, for the rest of the fight. */
   | { kind: 'clear-fields' };
 

@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.9 — The Hub's books, and the Master Ball · 2026-10-09
+
+A Pokédex with every evolution path, an Item Guide, and leaner run options.
+
+- **Pokédex.** Each path's stats, moves learned and forgotten.
+- **Item Guide.** Every relic and item, on the lobby's table.
+- **Master Ball.** An item now, never sold; the charm is gone.
+- **Run start.** Region Modifiers off; two starters, two places.
+
 ### v0.9.8 — Regions that scale, rarity announced · 2026-10-08
 
 Each Region grows with the player; a wild fight says how rare it is.

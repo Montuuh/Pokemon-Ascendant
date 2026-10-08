@@ -1,4 +1,4 @@
-import type { ContentRegistry, EvolutionItemUse } from '../content/defs';
+import type { ContentRegistry, EvolutionBranch, EvolutionItemUse } from '../content/defs';
 import type { EnemyTier } from '../content/defs';
 import { slotIndex, upgradeParents } from '../combat/kit';
 import { statAtLevel } from '../combat/stats';
@@ -235,4 +235,48 @@ export function applyBranch(mon: PartyMon, branchId: string, content: ContentReg
   // names its own, which is how an archetype expresses itself beyond its moves.
   const granted = branch.abilityId ?? content.species(branch.to).availableAbilities[0] ?? null;
   if (branch.abilityId || mon.abilityId === null) mon.abilityId = granted;
+}
+
+/** §6.3 — what one branch does, read off the content alone (v0.9.9, for the Pokédex): no Pokémon needed. */
+export interface BranchPayload {
+  branchId: string;
+  from: string;
+  to: string;
+  /** The level it opens at, or null for a stone-only evolution. */
+  level: number | null;
+  /** §6.3.2 — the Evolution Items that make this branch (Eevee's stones). */
+  stones: string[];
+  archetype: EvolutionBranch['archetype'];
+  label: string;
+  /** Upgrades as the branch names them: the slot's first move → the new one. The old card is forgotten. */
+  upgrades: { from: string; to: string }[];
+  adds: string[];
+  abilityId: string | null;
+  /** §6.3.4 — the stats at the threshold, before (the form as it stands) and after (the new form on this path's lean). */
+  statsBefore: Record<'hp' | 'attack' | 'defense' | 'speed', number>;
+  statsAfter: Record<'hp' | 'attack' | 'defense' | 'speed', number>;
+}
+
+export function branchPayload(content: ContentRegistry, branchId: string): BranchPayload {
+  const branch = content.branch(branchId);
+  const from = content.allSpecies().find((s) => s.branches.some((b) => b.id === branchId))!;
+  const to = content.species(branch.to);
+  const stones = content.allEvolutionItems().filter((i) => i.uses.some((u) => u.species === from.id && (!u.branch || u.branch === branchId))).map((i) => i.id);
+  const level = from.evolveLevel ?? null;
+  const at = level ?? Math.min(...content.allEvolutionItems().flatMap((i) => i.uses.filter((u) => u.species === from.id).map((u) => u.fromLevel)), 30);
+  const stats = (sp: typeof from, arch: EvolutionBranch['archetype'] | null) => ({ hp: statAtLevel(sp, 'hp', at, arch), attack: statAtLevel(sp, 'attack', at, arch), defense: statAtLevel(sp, 'defense', at, arch), speed: statAtLevel(sp, 'speed', at, arch) });
+  return {
+    branchId,
+    from: from.id,
+    to: to.id,
+    level,
+    stones,
+    archetype: branch.archetype,
+    label: branch.label,
+    upgrades: branch.upgrades.map((u) => ({ from: u.from, to: u.to })),
+    adds: [...branch.adds],
+    abilityId: branch.abilityId ?? to.availableAbilities[0] ?? null,
+    statsBefore: stats(from, from.archetype ?? null),
+    statsAfter: stats(to, branch.archetype),
+  };
 }

@@ -113,7 +113,7 @@ export const ItemHookSchema = z.enum([
   // v0.5 (§2.11.3) — the Region Modifier pool.
   'swap-heal', 'trauma-relief', 'victory-heal', 'price-multiplier',
   // v0.6 (§8.6.1) — the Tier-3 Mastery lane.
-  'recall-discard', 'early-evolution', 'box-capacity', 'guaranteed-catch',
+  'recall-discard', 'early-evolution', 'box-capacity',
   // v0.7.4 (§5.10.3) — the Glacier Badge: a status on an enemy blunts its next attack.
   'status-chill',
   // v0.7.5 (§5.5.1) — the intent queue, and a run's own scouting.
@@ -226,7 +226,7 @@ export const ConsumableEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('cure'), status: z.union([StatusSchema, z.literal('all')]) }),
   z.object({ kind: z.literal('ap'), amount: z.number().int().positive() }),
   z.object({ kind: z.literal('stage'), stat: StatSchema, stages: z.number().int().min(-6).max(6) }),
-  z.object({ kind: z.literal('catch'), ballMultiplier: z.number().positive() }),
+  z.object({ kind: z.literal('catch'), ballMultiplier: z.number().positive(), sure: z.boolean().optional() }),
   z.object({ kind: z.literal('clear-fields') }),
 ]);
 

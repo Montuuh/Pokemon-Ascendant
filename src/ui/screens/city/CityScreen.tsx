@@ -14,7 +14,7 @@ import { Modal } from '@/ui/components/Modal';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money } from '@/ui/components/Money';
 import { PauseMenu } from '@/ui/components/PauseMenu';
-import { CITY_DOOR_LABEL, RUN_REJECT_TEXT, STATUS_LABEL, type CityBuildingDoor, type CityDoor } from '@/ui/strings';
+import { CITY_DOOR_HINT, CITY_DOOR_LABEL, RUN_REJECT_TEXT, STATUS_LABEL, type CityBuildingDoor, type CityDoor } from '@/ui/strings';
 import { badgeTip, bagTip, ballsTip, doorTip, moneyTip, partyTip, townTip } from '@/ui/tips';
 import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
 import { TOWNS, type DoorPlacement } from './towns';
@@ -142,8 +142,9 @@ export function CityScreen() {
 
       {panel?.kind === 'gate' && (
         <Modal title={gateName} testId="reflection" size="reading">
-          <p className={styles.lede}>One rule for Region {next}, from its first node to its Gym. Pick one, then set off.</p>
-          <div className={styles.offer} role="group" aria-label="Region Modifier">
+          {/* §2.11.3 — while Region Modifiers are off (v0.9.9) the gate offers none, and only asks before you leave. */}
+          <p className={styles.lede}>{city.reflection.length ? `One rule for Region ${next}, from its first node to its Gym. Pick one, then set off.` : CITY_DOOR_HINT.gatePlain}</p>
+          {city.reflection.length > 0 && <div className={styles.offer} role="group" aria-label="Region Modifier">
             {city.reflection.map((id) => {
               const m = content.regionModifier(id);
               return (
@@ -160,7 +161,7 @@ export function CityScreen() {
                 </button>
               );
             })}
-          </div>
+          </div>}
           <div className={styles.actions}>
             <button type="button" className={styles.secondary} onClick={() => setPanel(null)} data-testid="btn-stay">
               Stay in town
@@ -168,8 +169,8 @@ export function CityScreen() {
             <button
               type="button"
               className={styles.primary}
-              disabled={!pick}
-              onClick={() => pick && act({ type: 'depart-city', modifierId: pick })}
+              disabled={city.reflection.length > 0 && !pick}
+              onClick={() => (pick || !city.reflection.length) && act({ type: 'depart-city', modifierId: pick })}
               data-testid="btn-depart"
             >
               <IconArrowBigUpLines size={18} /> Set off

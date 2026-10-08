@@ -158,7 +158,7 @@ Hub conveniences, and never a single point of damage or HP.
 | Win | ~790 |
 
 *(Measured as a career by `balance/accountCareer.test.ts`: one account, many runs in a row, the account's perks
-playing into each. The Victory Road, Elite Four and Champion rows wait on those fights (v0.9.9–v0.9.10); the Pokédex
+playing into each. The Victory Road, Elite Four and Champion rows wait on those fights (v0.9.10–v0.9.11); the Pokédex
 pays only Familiar's 25 since its other tiers moved to the Bond.)*
 
 Difficulty modifiers multiply the run's total (§8.8.3).
@@ -253,10 +253,11 @@ drawn by the same `PixelRoom` as the shops, §2.11.2). The level dial and the To
 
 | In the lobby | Opens | Available |
 |---|---|---|
-| **The door to the Elite Four**, between the statues | **New run** — the starter, the Starting Relic, the Region Modifier and the difficulty modifiers (the run's start screen) | Always |
+| **The door to the Elite Four**, between the statues | **New run** — the difficulty modifiers, the starter and the Starting Relic (the run's start screen; the Region Modifier step is off with them, §2.11.3) | Always |
 | **The Poké Mart counter** and its clerk | **Poké Mart** — four shelves opened by Trainer Level, paid in Tokens (§8.3.5) | From the start (the Corner); every shelf by Level 10 |
 | **The nurse** and her counter — she keeps the League's register | **Trainer Card** — level, the road ahead, the profile (§8.4.3) | Always |
 | **The PC** | **PC Terminal** — the Pokédex and every line's Bond (§5.13, §6.8, §8.9), the medal case (§8.7), the relic discoveries (§8.6.1) | Always |
+| **The table** in the left-hand corner | **Item Guide** — every relic, item, held item, Evolution Item and TM: what it does, how rare, its price, where it turns up, and where your account stands with a relic (v0.9.9, the user's call) | Always |
 | **The doormat** | Back to the title menu | Always |
 
 A door opens its kiosk in place of the room; **Lobby** (or Escape) closes it and puts the keyboard back on the door.
@@ -274,10 +275,10 @@ on the Trainer's Corner from Level 1, the rest on the Hub upgrades shelf from Le
 | Curated Starting Relic +1 | Corner (Lv 1) | 3 | Run start offers 4 Starting Relics instead of 3 |
 | Pokédex Insight | Hub upgrades (Lv 4) | 4 | The first fight each run against a species you have **not yet** made Familiar shows its opening intent free |
 | Trauma Salve Cache | Hub upgrades | 4 | City 1's shop is guaranteed to stock at least one Trauma Salve, in the Uncommon relic's slot *(sold since v0.7.1)* |
-| Apex Pokémon Reveal | Hub upgrades | 4 | The Victory Road Apex species is shown on entering Region 3 *(off the shelf until Victory Road ships, v0.9.9: a priced row that can never be bought is a promise, not a shelf)* |
+| Apex Pokémon Reveal | Hub upgrades | 4 | The Victory Road Apex species is shown on entering Region 3 *(off the shelf until Victory Road ships, v0.9.10: a priced row that can never be bought is a promise, not a shelf)* |
 | Expanded Box | Hub upgrades | 5 | Box capacity 6 → 8 for all future runs |
 | Difficulty Modifier Slot +1 | Hub upgrades | 6 | Stack 2 difficulty modifiers per run instead of 1 |
-| Second Starter Slot (Twin Run) | Hub upgrades | 8 | Choose two starters; the Box starts +1 larger. Active Team stays 3 |
+| Second Starter Slot (Twin Run) | Hub upgrades | 8 | Choose two starters; the Box starts +1 larger. Active Team stays 3. The start screen shows two places, **Lead** and **Partner**: a tile fills the place in focus, the focus moves to the partner once the Lead is chosen, a tile already in the other place trades places, and the partner comes off with its own button (v0.9.9) |
 
 Priced by how much of a run they reshape: a fourth relic offer is a nudge, Twin Run is a different opening.
 A pending upgrade is on the shelf, priced, and not sold — nothing is bought that does nothing. *(Prices set
@@ -535,10 +536,14 @@ the fight's end, like every other account fact; a saved entry from before a numb
 The PC Terminal is the Pokédex's home, and the Pokédex is **the one book**: every species, and through it every
 line. It is a **picture first**: a card per species with its number, its sprite, its name, its type glyphs and
 five pips for its line's Bond rank, and nothing else on the grid. Two orders: by number, and **by Bond**, which puts the lines you have played first, whole. A card opens
-the species' **sheet**, three tabs: **Record** (the numbers above and the Familiar standing), **Kit** (the
-line's learnset, the Dojo tutor list, the abilities with the hidden one marked, the Mastery Moves by rank,
-what it evolves into — each evolution a door to its own sheet) and **the line** (its stages as doors, its
-Bond bar, the ladder of what each rank opens for that line by name, and how Bond grows at the foot).
+the species' **sheet**, three tabs: **Record** (the numbers above and the Familiar standing), **Kit** (a base form's
+own learnset by level, or — for an evolved form — **the kit each path leaves it with**, one row per chain of branches
+(§6.3.5: an evolved form learns nothing by level), the Dojo tutor list, the abilities with the hidden one marked, the
+Mastery Moves by rank, what it evolves into — each evolution a door to its own sheet) and **the line** (its stages as
+doors, **every evolution path** — the archetype, the level or stone, the stats at the threshold on that path's lean,
+each card it upgrades with the old one struck out, the card it adds, the ability — its Bond bar, the ladder of what
+each rank opens for that line by name, and how Bond grows at the foot). *(v0.9.9, the user's call: the Kit tab had
+listed the whole line's learnset, which read as Primeape knowing Mankey's every move.)*
 
 **An unmet species keeps everything to itself.** A species is **met** once the account holds any trace of it —
 faced, knocked out, caught, recruited, fought or finished a run with, or a turn as Lead (a starter is met the

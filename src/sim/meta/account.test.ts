@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
-import { accountFromProgress, applyAccountEvent, applyAccountEvents, emptyAccount, LEVEL_CURVE, levelFor, levelProgress, MONEY_TO_TOKENS, REWARD_TRACK, SHELF_ORDER, SHELVES, TRACK_TOKENS, tokensForMoney, trackTokensBetween, upgradeAccount, XP, xpForLevel, type AccountContext } from './account';
+import { ACCOUNT_VERSION, accountFromProgress, applyAccountEvent, applyAccountEvents, emptyAccount, LEVEL_CURVE, levelFor, levelProgress, MONEY_TO_TOKENS, REWARD_TRACK, SHELF_ORDER, SHELVES, TRACK_TOKENS, tokensForMoney, trackTokensBetween, upgradeAccount, XP, xpForLevel, type AccountContext } from './account';
 import { dexTierFor, DEX_FAMILIAR, emptyDexEntry, normalizeDexEntry } from './pokedex';
 import { BOND, BOND_RANKS, bondRank } from './bond';
 import { accountContextFor, modifierUnlocked, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
@@ -172,7 +172,7 @@ describe('The reward track — §8.3.5', () => {
       starters: ['pikachu', 'eevee'], hub: ['starting-relic-plus-one', 'expanded-box', 'pokedex-insight'], titles: ['Ace Trainer'],
     };
     const now = upgradeAccount(old);
-    expect(now.version).toBe(2);
+    expect(now.version).toBe(ACCOUNT_VERSION);
     expect(now.tokens).toBe(5 + 7 * TRACK_TOKENS.level);
     expect(now.tokensEarned).toBe(5 + 7 * TRACK_TOKENS.level);
     expect(now.starters).toEqual(['pikachu', 'eevee']);

@@ -1,8 +1,10 @@
 import { IconArrowRight, IconCheck } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
-import { SHINY, BOND_LADDER, isStarterLine, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, type AccountState, speciesMet } from '@/sim';
-import { bondRulesText } from '@/ui/tips';
+import { branchPayload, SHINY, BOND_LADDER, isStarterLine, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, type AccountState, speciesMet } from '@/sim';
+import { bondRulesText, evoPathsTip } from '@/ui/tips';
+import { BranchCard } from '@/ui/components/BranchCard';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { DEX_EVO_TEXT } from '@/ui/strings';
 import { InfoDot, Tip } from '@/ui/tooltip';
 import { BondBar } from './BondBar';
 import { RANK_ICON } from './rankIcons';
@@ -80,6 +82,28 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
             ))}
           </div>
         </section>
+
+        {/* §6.3 — every path of the line (v0.9.9): where it goes, when, how the stats move and what the kit gains and
+            forgets. A stage you have met shows its paths; §8.9.2 — an unmet one keeps them to itself. */}
+        {cols.slice(0, -1).some((col) => col.some((id) => content.species(id).branches.length && metStage(id))) && (
+          <section className={styles.section} data-testid="line-sheet-evolutions">
+            <h3 className={styles.sectionTitle}>
+              {DEX_EVO_TEXT.evolutions}
+              <InfoDot tip={evoPathsTip()} />
+            </h3>
+            {/* One group per stage that evolves: its name and level once, then a card per path. */}
+            {cols.flat().filter((id) => metStage(id) && content.species(id).branches.length).map((id) => (
+              <div key={id} className={styles.branchGroup}>
+                <p className={styles.branchFrom}>{DEX_EVO_TEXT.from(content.species(id).name, content.species(id).evolveLevel ?? null)}</p>
+                <div className={styles.branches}>
+                  {content.species(id).branches.map((b) => (
+                    <BranchCard key={b.id} p={branchPayload(content, b.id)} toMet={metStage(b.to)} onSpecies={onSpecies} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
 
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>

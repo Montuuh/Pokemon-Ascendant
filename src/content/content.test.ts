@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { activeMoves, knownMoves, BIOMES, ELITE_WILD, GYMS, REGIONS, TRAINER_SPRITES, GYM } from '@/sim';
 import { existsSync, readFileSync } from 'node:fs';
-import { applyPayload, upgradeParents } from '@/sim/combat/kit';
+import { MOVE_CAP, applyPayload, upgradeParents } from '@/sim/combat/kit';
 import { buildRegistry } from './registry';
 import { boxIconUrl, portraitUrl, battleSpriteUrl } from './schemas/species';
 
@@ -163,6 +163,36 @@ describe('content registry', () => {
         }
       }
     }
+  });
+
+  it('§6.3.5 — MoveCount_EverySpecies_StaysUnderItsCaps_OnEveryPath (all 151)', () => {
+    // Every form's kit on every path: a base form's own pool, then each branch's payload, then the next stage's.
+    const kits = new Map<string, number>();
+    const note = (id: string, n: number) => kits.set(id, Math.max(kits.get(id) ?? 0, n));
+    for (const s of reg.allSpecies()) {
+      if (s.stage !== 'basic') continue;
+      const parents = upgradeParents(reg, s.id);
+      const pool0 = knownMoves(reg, s.id, s.evolveLevel ? s.evolveLevel - 1 : 100);
+      note(s.id, pool0.length);
+      for (const b1 of s.branches) {
+        const mid = applyPayload(pool0, b1, parents);
+        note(b1.to, mid.length);
+        for (const b2 of reg.species(b1.to).branches) note(b2.to, applyPayload(mid, b2, parents).length);
+      }
+    }
+    let checked = 0;
+    for (const s of reg.allSpecies()) {
+      checked++;
+      const kit = kits.get(s.id) ?? knownMoves(reg, s.id, 100).length;
+      expect(kit, `${s.id} kit`).toBeLessThanOrEqual(MOVE_CAP.kit);
+      expect(s.learnset.length, `${s.id} learnset`).toBeLessThanOrEqual(MOVE_CAP.learnset);
+      expect(s.tutorMoves.length, `${s.id} tutor list`).toBeLessThanOrEqual(MOVE_CAP.tutor);
+      expect(s.eggMoves.length, `${s.id} egg moves`).toBeLessThanOrEqual(MOVE_CAP.egg);
+      const egg = reg.species(reg.lineBase(s.id)).eggMoves.length;
+      const offered = kit + s.tutorMoves.length + egg + 1;
+      expect(offered, `${s.id} offered: kit ${kit} + tutor ${s.tutorMoves.length} + egg ${egg} + Mastery`).toBeLessThanOrEqual(MOVE_CAP.offered);
+    }
+    expect(checked).toBe(151);
   });
 
   it('§3.6 — every move is a Gen I move at its Gen I name and its modern type, or one made better (+, ++)', () => {

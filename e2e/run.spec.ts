@@ -99,12 +99,47 @@ async function startRun(page: Page, starter = 'squirtle'): Promise<void> {
   await page.getByTestId('btn-continue').click();
   // §8.6.3 — the Starting Relic step. Taking one is optional, and this path skips it.
   await expect(page.getByTestId('step-relic')).toBeVisible();
-  await page.getByTestId('btn-continue').click();
-  // §2.11.3 — the Region Modifier step, optional for the same reason.
-  await expect(page.getByTestId('step-region')).toBeVisible();
+  // §2.11.3 — Region Modifiers are off (v0.9.9), so the relic step is the last one.
   await page.getByTestId('btn-continue').click();
   await expect(page.getByTestId('map-screen')).toBeVisible();
 }
+
+test('Twin Run picks a Lead and a partner in two clear places — §8.4.2', async ({ page }) => {
+  await page.goto('/?screen=menu');
+  await page.evaluate(() => window.localStorage.clear());
+  await page.reload();
+  await page.waitForFunction(() => !!window.__ascendant);
+  await page.evaluate(() => window.__ascendant!.meta.grantHub('twin-run'));
+  await page.getByTestId('btn-new-run').click();
+  await page.getByTestId('btn-continue').click();
+  const slots = page.getByTestId('twin-slots');
+  await expect(slots).toBeVisible();
+  // The Lead is in focus first; a tile fills it, and the focus moves on to the partner.
+  await expect(page.getByTestId('twin-slot-lead')).toHaveAttribute('aria-pressed', 'true');
+  await page.getByTestId('starter-squirtle').click();
+  await expect(page.getByTestId('twin-slot-lead')).toContainText('Squirtle');
+  await expect(page.getByTestId('twin-slot-partner')).toHaveAttribute('aria-pressed', 'true');
+  await page.getByTestId('starter-bulbasaur').click();
+  await expect(page.getByTestId('twin-slot-partner')).toContainText('Bulbasaur');
+  // The detail panel shows the place in focus: the partner.
+  await expect(page.getByTestId('starter-detail')).toContainText('Bulbasaur');
+  await page.screenshot({ path: 'playtest/new-run-twin.png' });
+  // A tile already in the other place trades places with it.
+  await page.getByTestId('twin-slot-lead').click();
+  await page.getByTestId('starter-bulbasaur').click();
+  await expect(page.getByTestId('twin-slot-lead')).toContainText('Bulbasaur');
+  await expect(page.getByTestId('twin-slot-partner')).toContainText('Squirtle');
+  // The partner is optional, and comes off with its own button.
+  await page.getByTestId('twin-slot-clear').click();
+  await expect(page.getByTestId('twin-slot-partner')).toContainText('Pick a partner');
+  await page.getByTestId('starter-charmander').click();
+  await expect(page.getByTestId('btn-continue')).toContainText('Bulbasaur and Charmander');
+  await page.getByTestId('btn-continue').click();
+  await page.getByTestId('btn-continue').click();
+  await expect(page.getByTestId('map-screen')).toBeVisible();
+  const box = await page.evaluate(() => window.__ascendant!.run.state()!.box.map((m) => m.speciesId));
+  expect(box).toEqual(['bulbasaur', 'charmander']);
+});
 
 test('the new-run flow reaches a twenty-column route with three or four first choices', async ({ page }) => {
   await startRun(page, 'bulbasaur');
@@ -284,7 +319,8 @@ test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', asy
   if ((await town.count()) > 0) {
     await page.screenshot({ path: 'playtest/run-town.png' });
     await page.getByTestId('door-gate').click();
-    await page.locator('[data-testid^="reflection-"]').first().click();
+    // §2.11.3 — Region Modifiers are off (v0.9.9): the gate only asks before you leave.
+    await expect(page.getByTestId('btn-depart')).toBeEnabled();
     await page.getByTestId('btn-depart').click();
     await expect(page.getByTestId('map-screen')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Region 2' })).toBeVisible();
@@ -427,7 +463,7 @@ test('the third Gym ends the run with the summary — §2.1', async ({ page }) =
     // levelTo raises the level, not the HP — the Center fills the new bars, as a player would stop there.
     dev.run.dispatch({ type: 'enter-building', building: 'center' });
     dev.run.dispatch({ type: 'leave-center' });
-    dev.run.dispatch({ type: 'depart-city', modifierId: dev.run.state()!.city!.reflection[0]! });
+    dev.run.dispatch({ type: 'depart-city', modifierId: dev.run.state()!.city!.reflection[0] ?? null });
     // Straight to the last Gym: Region 3 is the hardest of the three (§2.2.1), and the route is not under test.
     dev.run.jump('gym');
     dev.run.goto('gym');

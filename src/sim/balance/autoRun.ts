@@ -9,7 +9,7 @@ import { applyBranch, autoPickMoves, stoneUse, xpToNext } from '../run/xp';
 import { maxHpOf } from '../run/encounter';
 import { PRICES, slotPrice, therapyPrice } from '../run/economy';
 import { atLegendaryCap, BLACK_MARKET, candyPrice } from '../run/blackMarket';
-import { rollRegionModifierOffer } from '../run/regionModifiers';
+import { regionModifierOffer } from '../run/regionModifiers';
 import { allOutcomes, mysteryEvent } from '../run/events';
 import type { MapNode, PartyMon, RunPerks, RunState, SafariSpot, ShopSlot } from '../run/types';
 import { nextSafariMove } from './autoSafari';
@@ -609,7 +609,7 @@ function visitCity(get: () => RunState, content: CombatCtx['content'], policy: R
     step({ type: 'enter-building', building: 'dojo' });
     visitDojo(get, content, policy, step);
   }
-  step({ type: 'depart-city', modifierId: bestModifier(get().city!.reflection, content)! });
+  step({ type: 'depart-city', modifierId: bestModifier(get().city!.reflection, content) ?? null });
 }
 
 /**
@@ -660,7 +660,7 @@ function visitMarket(get: () => RunState, content: CombatCtx['content'], policy:
 export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy: RunPolicy = DEFAULT_RUN_POLICY, regions = 1, trace?: (fight: FightTrace) => void, perks?: RunPerks): RunSimResult {
   const runCtx = defaultRunCtx(ctx.content);
   // §2.11.3 — the offer is weighted; the harness takes its strongest card (`bestModifier`, v0.8.9).
-  const regionPick = policy.takeRegionModifier ? bestModifier(rollRegionModifierOffer(seed, ctx.content), ctx.content) : undefined;
+  const regionPick = policy.takeRegionModifier ? bestModifier(regionModifierOffer(seed, ctx.content), ctx.content) : undefined;
   // §8.10 — an account's perks when the measure is a career (`bondCareer.test.ts`); none for a single run.
   let run = createRun(starterId, seed, runCtx, 0, [], undefined, regionPick, perks);
   let turns = 0;

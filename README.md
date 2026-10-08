@@ -49,10 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.8 — Regions that scale, rarity announced.** Every Pokémon but the Legendaries lives on a route, and each
-Region fields stronger forms than the last — first forms on Route 1, trainers and Gyms evolved by their level; a Wild
-Area shows its grass by rarity with the odds, and the fight opens by saying whether it rolled a Common, an Uncommon or
-a Rare.
+**v0.9.9 — The Hub's books, and the Master Ball.** The Pokédex shows every evolution path — the stats it moves, the
+moves it learns and forgets — and an Item Guide on the lobby's table holds every item in the game; the Master Ball is
+an item you win, not a relic; Region Modifiers are off for now, and picking two starters is two clear places.
 
 ## Run it locally
 

@@ -31,8 +31,6 @@ async function startRun(page: Page) {
   await page.getByTestId('btn-continue').click();
   await expect(page.getByTestId('step-relic')).toBeVisible();
   await page.getByTestId('btn-continue').click();
-  await expect(page.getByTestId('step-region')).toBeVisible();
-  await page.getByTestId('btn-continue').click();
   await expect(page.getByTestId('map-screen')).toBeVisible();
 }
 

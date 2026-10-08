@@ -33,6 +33,19 @@ export function regionModifierValue(run: RunState, content: ContentRegistry, hoo
 }
 
 /**
+ * §2.11.3 — whether a Region Modifier is offered at all (v0.9.9, the user's call: "remove them for now, we will see
+ * what to do with them later"). Off, neither the new-run stepper nor a City's gate offers one, and a City is left
+ * without a pick; the seventeen rows, their hooks and a run that already holds one keep working, so turning this back
+ * on is the whole of bringing them back.
+ */
+export const REGION_MODIFIERS_ON = false;
+
+/** §2.11.3 — the offer a run sees: three of them, or none while Region Modifiers are off. */
+export function regionModifierOffer(seed: number, content: ContentRegistry, team: readonly PartyMon[] = [], money = 0): string[] {
+  return REGION_MODIFIERS_ON ? rollRegionModifierOffer(seed, content, team, money) : [];
+}
+
+/**
  * §2.11.3 — three modifiers to choose between, weighted by tier and by the team in front of you.
  *
  * The weighting is what stops the offer being a random draw from seventeen: Trauma Resistance climbs when

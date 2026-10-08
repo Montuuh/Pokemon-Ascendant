@@ -1,0 +1,143 @@
+/* §6.3 — one evolution path in the Pokédex. The left edge is the archetype's colour, as on the Evolution screen. */
+.card {
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.card[data-archetype='vanguard'] {
+  border-left-color: var(--arch-vanguard);
+}
+.card[data-archetype='specialist'] {
+  border-left-color: var(--arch-specialist);
+}
+.card[data-archetype='support'] {
+  border-left-color: var(--arch-support);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.to {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  cursor: pointer;
+}
+.to:disabled {
+  cursor: default;
+}
+.hidden {
+  filter: brightness(0) opacity(0.45);
+}
+.titles {
+  display: grid;
+  gap: 2px;
+}
+.line {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.pill {
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-on-accent);
+  cursor: help;
+}
+.card[data-archetype='vanguard'] .pill {
+  background: var(--arch-vanguard);
+}
+.card[data-archetype='specialist'] .pill {
+  background: var(--arch-specialist);
+}
+.card[data-archetype='support'] .pill {
+  background: var(--arch-support);
+}
+.label {
+  font-size: var(--type-body);
+  cursor: help;
+}
+.when {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.stone {
+  display: inline-grid;
+  cursor: help;
+}
+.stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+  cursor: help;
+}
+.statName {
+  color: var(--ink-secondary);
+}
+/* Accents are fills on the light theme (D5), never text colour. */
+.up b,
+.down b {
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  color: var(--ink-on-accent);
+}
+.up b {
+  background: var(--accent-positive);
+}
+.down b {
+  background: var(--accent-negative);
+}
+.moves {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+}
+.change {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.arrow {
+  color: var(--ink-secondary);
+}
+.ability {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+  cursor: help;
+}

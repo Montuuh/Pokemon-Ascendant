@@ -86,11 +86,12 @@ test.describe('The town — §2.11', () => {
     await expect(page.getByTestId('city-screen')).toBeVisible();
   });
 
-  test('the gate is the Reflection: one modifier for the next Region, and the pick leaves town', async ({ page }) => {
+  test('the gate asks before you leave town, and setting off starts the next Region — §2.11.3 (modifiers off, v0.9.9)', async ({ page }) => {
     await inTown(page);
     await page.getByTestId('door-gate').click();
     await expect(page.getByTestId('reflection')).toBeVisible();
-    await expect(page.getByTestId('btn-depart')).toBeDisabled();
+    await expect(page.getByTestId('reflection')).toContainText('The town stays behind');
+    await expect(page.getByTestId('btn-depart')).toBeEnabled();
     await page.screenshot({ path: 'playtest/city-reflection.png' });
 
     // Staying is allowed — the town is still there.
@@ -98,13 +99,14 @@ test.describe('The town — §2.11', () => {
     await expect(page.getByTestId('reflection')).toHaveCount(0);
 
     await page.getByTestId('door-gate').click();
-    await page.locator('[data-testid^="reflection-"]').first().click();
+    // §2.11.3 — Region Modifiers are off (v0.9.9): the gate only asks before you leave.
+    await expect(page.getByTestId('btn-depart')).toBeEnabled();
     await page.getByTestId('btn-depart').click();
     await expect(page.getByTestId('map-screen')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Region 2' })).toBeVisible();
     const run = await page.evaluate(() => window.__ascendant!.run.state()!);
     expect(run.regionIndex).toBe(1);
-    expect(run.regionModifier).toBeTruthy();
+    expect(run.regionModifier).toBeNull();
     expect(run.city).toBeNull();
   });
 
@@ -443,12 +445,8 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await offers.first().click();
     await page.getByTestId('btn-continue').click();
 
-    // §2.11.3 — and the Region Modifier step behind it: three weighted rows, and skipping is allowed.
-    await expect(page.getByTestId('step-region')).toBeVisible();
-    const regions = page.locator('[data-testid^="region-offer-"]');
-    await expect(regions).toHaveCount(3);
-    await page.screenshot({ path: 'playtest/new-run-region.png' });
-    await page.getByTestId('btn-continue').click();
+    // §2.11.3 — Region Modifiers are off (v0.9.9): the relic is the last step, and it sets out.
+    await expect(page.getByTestId('step-region')).toHaveCount(0);
     await expect(page.getByTestId('map-screen')).toBeVisible();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.relics.length)).toBe(1);
   });

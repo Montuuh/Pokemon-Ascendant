@@ -676,7 +676,7 @@ export type RunAction =
   /** §2.11.0 — walk into one of the City's open buildings. Leaving it returns to the lobby. */
   | { type: 'enter-building'; building: CityBuilding }
   /** §2.11.3 — the gate: pick one of the three Region Modifiers, which *is* leaving the City for the next Region. */
-  | { type: 'depart-city'; modifierId: string }
+  | { type: 'depart-city'; modifierId: string | null }
   /** §2.11.2.4 — sell a bagged held item for 30 % of its listed price. City shops only. */
   | { type: 'sell-item'; itemId: string }
   /** §2.9.2 — buy the stock in slot `index`. */

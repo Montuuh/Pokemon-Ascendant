@@ -67,7 +67,6 @@
 
 | id | Name | Cat | Effect | Meta tier | Status |
 |---|---|---|---|---|---|
-| `master-ball-charm` | Master Ball Charm | meta | Once per run: a Pokéball throw cannot miss (`guaranteed-catch`, once per run) | T2 | ✅ v0.6.2 |
 | `champions-crest` | Champion's Crest | combat | Each enemy a Pokémon defeats: +5 % damage for it this run (cap +25 %) | T3 | ✅ |
 | `time-spinner` | Time Spinner | combat | Every enemy but a boss loses its first turn of the fight, shown on its intent (v0.7.5 — was an activated skip) | T3 | ✅ |
 | `phoenix-feather` | Phoenix Feather | combat | Once per run: prevent a faint, restore to 1 HP. Consumed. | T2 | ✅ |
@@ -110,7 +109,6 @@ Pokémon, which may take a run to 3 (§2.11.6).
 | `lure-module` | Recruit 3 Pokémon in one Region |
 | `battle-tracker` | Reach Familiar tier on 5 species |
 | `bond-bracelet` | Finish a combat with all 3 Active Pokémon alive, 10 times |
-| `master-ball-charm` | Have 5 Poké Balls broken out of (the consolation unlock) — reachable again since the catch became a roll (§2.6.4, 2026-09-21) |
 | `phoenix-feather` | Lose a run in Region 3 (tracked since v0.7.5) |
 | `hand-off-pouch` | Lose 20 cards to Confusion (tracked since v0.7.5) |
 | `type-resonance` | Field an all-one-type Active Team |

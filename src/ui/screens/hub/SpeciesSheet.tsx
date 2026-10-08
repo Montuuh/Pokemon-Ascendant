@@ -2,12 +2,14 @@ import { useState, type ReactNode } from 'react';
 import { IconArrowsShuffle, IconCrown, IconEye, IconEyeOff, IconFlag, IconHeartBroken, IconLock, IconPokeball, IconSwords, IconTargetArrow, IconTrophy, IconUsers, IconWand, IconSparkles } from '@tabler/icons-react';
 import { Tabs } from 'radix-ui';
 import { getContent } from '@/content/registry';
-import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, UNMET_NAME, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef, speciesMet, BOND_TIER } from '@/sim';
+import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, UNMET_NAME, kitPaths, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef, speciesMet, BOND_TIER } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { MoveChip } from '@/ui/components/MoveChip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
+import { ARCHETYPE_LABEL, DEX_EVO_TEXT } from '@/ui/strings';
 import { spriteOf, portraitOf } from '@/ui/art';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { abilityTip, moveDefTip } from '@/ui/tips';
+import { abilityTip, branchTip, kitPathsTip, learnsetTip, moveDefTip } from '@/ui/tips';
 import { BondBar } from './BondBar';
 import { LineSheet } from './LineSheet';
 import type { SheetTab } from './usePcSheet';
@@ -15,8 +17,9 @@ import styles from './PcSheet.module.css';
 
 // §5.13 / §8.9 — one species' Pokédex sheet: the hero (number, sprite, name, types), then three tabs. *Record*
 // is the numbers the account kept about this species — faced, knocked out, caught, what your own copies did.
-// *Kit* is what it fights with: the learnset, the tutor list, the abilities, the Mastery Moves of its line,
-// what it evolves into. *Line* is the evolution line and its Bond (§6.8): the stages, the bar, the ladder.
+// *Kit* is what it fights with: a base form's own learnset, or — for an evolved form — the kit each path leaves it
+// with (v0.9.9: the whole line's learnset listed here once read as a Pokémon knowing every move its line ever had),
+// the tutor list, the abilities, the Mastery Moves of its line, what it evolves into. *Line* is the evolution line and its Bond (§6.8): the stages, the bar, the ladder.
 // The Pokédex is the one book; the grid behind shows only number, sprite, name and the line's rank pips,
 // and everything else lives here.
 
@@ -177,10 +180,37 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
 
   return (
     <>
-      <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Learnset <InfoDot tip={<Tip title="Learnset" body="The whole line's, base form first: known moves are every entry at or below the Pokémon's level, and evolving never forgets." />} /></h3>
-        <ul className={styles.moves}>{content.lineLearnset(s.id).map((e, i) => moveRow(e.move, e.level, false, `${e.move}-${i}`))}</ul>
-      </section>
+      {s.stage === 'basic' ? (
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>{DEX_EVO_TEXT.learnset} <InfoDot tip={learnsetTip(s.evolveLevel, s.evolvesTo.length > 0)} /></h3>
+          <ul className={styles.moves}>{s.learnset.map((e, i) => moveRow(e.move, e.level, false, `${e.move}-${i}`))}</ul>
+        </section>
+      ) : (
+        // §6.3.5 — an evolved form learns nothing by level: its kit is what the path it took left it with.
+        <section className={styles.section} data-testid="dex-sheet-kit-paths">
+          <h3 className={styles.sectionTitle}>{DEX_EVO_TEXT.kitByPath} <InfoDot tip={kitPathsTip()} /></h3>
+          <ul className={styles.kitPaths}>
+            {kitPaths(content, s.id).map((p) => (
+              <li key={p.branches.join('>')} className={styles.kitPath}>
+                {/* The path as the line tab names it: each branch's archetype and label, explained on hover. */}
+                <span className={styles.kitPathName}>
+                  {p.branches.map((b) => {
+                    const br = content.branch(b);
+                    return (
+                      <Tipped key={b} as="span" tip={branchTip(br.label, br.description, br.archetype)} className={styles.kitPathStep} data-archetype={br.archetype}>
+                        {ARCHETYPE_LABEL[br.archetype]} · {br.label}
+                      </Tipped>
+                    );
+                  })}
+                </span>
+                <span className={styles.kitPathMoves}>
+                  {p.pool.map((m) => <MoveChip key={m} id={m} />)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {s.tutorMoves.length > 0 && (
         <section className={styles.section}>

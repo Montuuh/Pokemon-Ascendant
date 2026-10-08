@@ -37,13 +37,17 @@ export { usableInField, fieldUseRefusal, applyFieldItem, type FieldUseRefusal } 
 export { FIGHT_SUPPLIES, SUPPLY_TABLE, PRIZE_TABLE, RELIC_REWARD, rollFightSupplies, rollMixedOffer, gymRelicOffer, drawSupplies, SERVICE_GIFTS, serviceGift, GROUND_FINDS, rollGroundFind, type GroundFind, countSupplies, supplyLabel, ballsIn, pokeBalls, POKE_BALL } from './run/rewards';
 export { MYSTERY_EVENTS, mysteryEvent, rollEvent, allOutcomes, assertEventContent, eventRiskOf, RISK_LABEL, type MysteryEvent, type EventChoice, type EventOutcome, type EventRisk } from './run/events';
 export { MODIFIERS, AVAILABLE_MODIFIERS, modifierById, modifierValue, hasModifier, modifierXpMultiplier, battleConfigFor, type DifficultyModifier } from './run/modifiers';
-export { activeRegionModifier, regionModifierValue, rollRegionModifierOffer, priceFor, traumaZone1Pct, victoryHealPct } from './run/regionModifiers';
+export { activeRegionModifier, regionModifierValue, rollRegionModifierOffer, regionModifierOffer, REGION_MODIFIERS_ON, priceFor, traumaZone1Pct, victoryHealPct } from './run/regionModifiers';
 export { DEFAULT_PROGRESSION, encounterXp, levelXpFactor, grantXp, xpToNext, isEvolutionReady, applyBranch, autoPickMoves, learnMove, previewBranch, stoneUse, stonesForBox, type ProgressionConfig, type BranchPreview } from './run/xp';
 export { buildOutcomeReport } from './run/report';
 export { GYM_FIELD, laneField, fieldsFor, applyFields } from './run/battlefields';
 export { FIELD_CATEGORY, battlefields, fieldsSuppressed, isGrounded, type FieldId, type FieldState } from './combat/fields';
 export { SHINY, shinyChance, applyShiny } from './run/shiny';
 export { rollWild, wildChances, wildChancesFor, type WildRoll } from './run/wild';
+export { kitPaths, MOVE_CAP } from './combat/kit';
+export { branchPayload, type BranchPayload } from './run/xp';
+export { listPrice, type PricedKind } from './run/economy';
+export { itemSources, type ItemSources } from './run/rewards';
 export { GROUP_RATES, groupPlanFor, applyGroups, roleFor, ROLE_SHARE, type GroupPlan, type GroupRates } from './run/groups';
 export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } from './run/flee';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';

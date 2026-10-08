@@ -169,8 +169,20 @@ function migrateUidsTo19(run: RunState): void {
   }
 }
 
+/**
+ * §2.6.4.2 — version 19 → 20: the Master Ball Charm is gone (v0.9.9, the user's call); the Master Ball is an item. A run
+ * that held the charm unspent gets the ball it would have thrown; a spent one is simply dropped.
+ */
+function migrateMasterBallTo20(run: RunState): void {
+  const id = 'master-ball-charm';
+  if (run.relics.includes(id) && !run.spentRelics.includes(id)) run.consumables.push('master-ball');
+  run.relics = run.relics.filter((r) => r !== id);
+  run.spentRelics = run.spentRelics.filter((r) => r !== id);
+  if (run.bag) run.bag = run.bag.filter((r) => r !== id);
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

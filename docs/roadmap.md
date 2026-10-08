@@ -1066,7 +1066,24 @@ at their own size) and its name carries the shiny mark; the sim always kept the 
 not take: the uid counter was module state, so after a reload the next recruit took the starter's uid. It lives in the
 run now (`uidSeq`, `mintUid`, §10.7.4); save v18 → v19 repairs a save that already has a duplicate.
 
-### v0.9.9 — Victory Road  ☐
+### v0.9.9 — The Hub's books, and the Master Ball  ✅ 2026-10-09
+Seven notes from the user: Region Modifiers out for now; a better way to pick two starters; "to spawn" on a Wild
+Area's odds; the Master Ball Charm replaced by Master Balls; an item dictionary in the Hub; a Pokédex that shows the
+evolutions and their branches; and a validator for how many moves a Pokémon has.
+
+**Shipped.** **Region Modifiers off** (`REGION_MODIFIERS_ON`, §2.11.3): no step on the new-run screen, no pick at a
+City's gate (`depart-city` takes `null`), the system kept whole for later. **Twin Run** (§8.4.2): two places, Lead
+and Partner, on the starter step. **The Master Ball** (§2.6.4.2): a `sure` catch item, never sold, a Region 2–3 Elite
+or Gym prize; the Master Ball Charm relic, its hook and its discovery are gone (run save v19 → v20 hands an unspent
+charm back as a ball; account v3 drops it). **The Pokédex** (§8.9.2): an evolved form's Kit tab is its kit by path
+(`kitPaths`), and the line tab lists every evolution path (`branchPayload`, `BranchCard`) — the stats at the threshold,
+each card upgraded with the old one struck out, the card added, the ability. **The Item Guide** (§8.4.1, the lobby's
+table): relics, items, held items, Evolution Items and TMs, grouped, searchable across kinds, each with its price
+(`listPrice`), where it turns up (`itemSources`) and, for a relic, where the account stands. **The move validator**
+(`MOVE_CAP`, §6.3.5): all 151 checked on every path — none over its caps; what read as "too many moves" was the old
+Kit tab listing the whole line's learnset. Region 2 re-tuned for the harness's lost modifier pick: Attack ×2.5 → ×2.4, R1 61 % · R2|R1 60 % · R3|R2 49 % · run 18 % (720 runs).
+
+### v0.9.10 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 - **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
@@ -1074,7 +1091,7 @@ Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
   Road's Apex (§2.12.2) is where the canon already brings the run's rarest species, and the two are balanced together.
   Needs the backlog's "a Legendary takes two team slots" designed with the user first.
 
-### v0.9.10 — The League  ☐
+### v0.9.11 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
@@ -1113,7 +1130,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.9's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.9, designed first |
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.10's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.10, designed first |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -1138,7 +1155,7 @@ the account revamps move to v0.9):
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.9 |
+| — | Recovering missed Badges | v0.9.10 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.9 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.10 (with the two-slot balance, designed first) |

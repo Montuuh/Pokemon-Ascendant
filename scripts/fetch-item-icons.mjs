@@ -31,7 +31,7 @@ const HELD = [
 const STONES = ['fire-stone', 'water-stone', 'thunder-stone', 'leaf-stone', 'moon-stone'];
 
 /** §2.11.6 — the Safari Zone's own ball, the Black Market Fence's Rare Candy, and the Great and Ultra Balls (§7.2.5): real items all. */
-const SAFARI = ['safari-ball', 'rare-candy', 'great-ball', 'ultra-ball'];
+const SAFARI = ['safari-ball', 'rare-candy', 'great-ball', 'ultra-ball', 'master-ball'];
 
 /**
  * Relics (§7.3) — our id → the PokéAPI item whose icon it wears, or null for "no honest match".
@@ -90,7 +90,6 @@ const RELIC_ICON = {
   'phoenix-feather': 'sacred-ash',
   'sages-tome': 'wise-glasses',
   'crown-of-echoes': 'kings-rock',
-  'master-ball-charm': 'master-ball',
   'time-spinner': 'adamant-orb',
   'soul-link': 'soul-dew',
   'flow-state': 'float-stone',

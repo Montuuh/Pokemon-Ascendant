@@ -505,15 +505,17 @@ export const CITY_DOOR_LABEL: Record<CityBuildingDoor, string> = {
   'game-corner': 'Game Corner',
 };
 
-export const CITY_DOOR_HINT: Record<CityDoor, string> = {
+export const CITY_DOOR_HINT: Record<CityDoor, string> & { gatePlain: string } = {
   center: 'Heals the whole Box and cures every status, free, as often as you like. Therapy takes Trauma off, the Daycare trades a fight for a level, and the PC Box picks the team.',
   mart: 'A shelf picked for your team, and Poké Balls. Dearer than the merchant; buys held items back.',
   'department-store': 'The biggest shelf of the run, and Poké Balls. Dearer than the merchant; buys held items back.',
   dojo: 'Tutor moves off the learnset, the line’s egg moves and passive abilities, as many as you can pay for.',
   ring: 'A ladder of rivals for a fee. See the next one, then fight or cash out — nothing heals between rungs, and a lost rung loses what the ladder paid. However it ends, your team walks out healed. Once per visit.',
-  safari: 'A park of Pokémon the routes never offer. Buy a ticket, stalk one through the grass, and throw when the odds are yours. Once per visit.',
+  safari: 'A park of Pokémon the routes rarely show. Buy a ticket, stalk one through the grass, and throw when the odds are yours. Once per visit.',
   'game-corner': 'Slot machines and roulette tables, every outcome and its odds printed on the machine you play.',
   gate: 'Choose one rule for the next Region, then set off. The town stays behind.',
+  /** §2.11.3 — the gate while Region Modifiers are off (v0.9.9). */
+  gatePlain: 'The road to the next Region. The town stays behind once you set off.',
 };
 
 /** §2.11.0 — what a door in development says when you walk in anyway. */
@@ -643,12 +645,73 @@ export const WILD_TIER_HINT: Record<string, string> = {
 };
 export const WILD_TEXT = {
   pool: 'Who lives here',
-  roll: 'Walking in rolls the rarity by these odds, then who leads from its row, each as likely as the next.',
+  roll: 'Walking in rolls the rarity by these odds, then which Pokémon spawns from its row, each as likely as the next.',
   lure: 'The Lure Module rolls the rarity twice and keeps the rarer, so the rare rows come up more often.',
-  lead: (pct: string) => `${pct} to lead`,
+  spawn: (pct: string) => `${pct} to spawn`,
   /** §2.6.2 — the word the fight opens with (v0.9.8). */
   banner: (tier: 'common' | 'uncommon' | 'rare') => (tier === 'rare' ? `${WILD_TIER_LABEL.rare}!` : WILD_TIER_LABEL[tier]!),
   bannerSub: 'wild Pokémon',
   /** A chance as the card shows it: whole percents, one decimal under ten. */
   pct: (p: number) => `${p * 100 >= 10 ? Math.round(p * 100) : (Math.round(p * 1000) / 10).toString()} %`,
+};
+
+// §8.4.2 Twin Run — the new-run screen's two places (v0.9.9).
+export const STARTER_TEXT = {
+  lead: 'Lead',
+  partner: 'Partner',
+  pickPartner: 'Pick a partner',
+  clearPartner: 'Remove the partner',
+};
+
+// §6.3 — the Pokédex's evolutions and kit (v0.9.9).
+export const DEX_EVO_TEXT = {
+  atLevel: (lv: number) => `Lv ${lv}`,
+  stats: 'Stats at the threshold',
+  moves: 'What it does to the kit',
+  becomes: 'becomes',
+  learns: 'learns',
+  evolutions: 'Evolutions',
+  from: (name: string, lv: number | null) => (lv ? `From ${name} · Lv ${lv}` : `From ${name}`),
+  learnset: 'Learnset',
+  kitByPath: 'Kit by path',
+};
+
+// §8.4 — the Item Guide on the lobby's table (v0.9.9).
+const regionList = (rs: number[]) => (rs.length === 1 ? `Region ${rs[0]}` : `Regions ${rs.join(', ')}`);
+export const GUIDE_TEXT = {
+  kinds: 'Item kinds',
+  kind: { relic: 'Relics', consumable: 'Items', 'held-item': 'Held items', stone: 'Evolution Items', tm: 'TMs' } as Record<string, string>,
+  kindOne: { relic: 'Relic · whole run', consumable: 'Item · single use', 'held-item': 'Held item · one Pokémon', stone: 'Evolution Item', tm: 'TM · teaches a move' } as Record<string, string>,
+  search: 'Find an item',
+  none: 'Nothing by that name.',
+  tier: (t: number) => `Tier ${t}`,
+  relicTier: (t: number) => (t === 3 ? 'Tier 3 · Mastery' : t === 2 ? 'Tier 2 · Discovered' : 'Tier 1 · Foundation'),
+  signature: 'Signature',
+  held: 'Held',
+  stone: 'Stone',
+  categories: 'Kind',
+  yours: 'Your account',
+  inPool: 'In your pool: it can turn up in a run.',
+  mastery: (tokens: number) => `Not in your pool — the Poké Mart's Mastery shelf sells it for ${tokens} Tokens.`,
+  discover: (text: string, have: number, goal: number) => `Not in your pool — discover it: ${text} (${have} / ${goal}).`,
+  locked: 'Not in your pool.',
+  cost: 'Cost',
+  ap: (n: number) => (n === 0 ? 'Free to play' : `${n} AP`),
+  target: 'Used on',
+  targetOf: { ally: 'One of your Pokémon', 'self-lead': 'Your Lead', none: 'The fight', enemy: 'The enemy' } as Record<string, string>,
+  upgrade: 'Upgrades into',
+  found: 'Found',
+  supplies: (rs: number[]) => `a won fight's supplies in ${regionList(rs)}`,
+  prizes: (rs: number[]) => `an Elite's or a Gym's prize in ${regionList(rs)}`,
+  ground: (rs: number[]) => `on the ground in ${regionList(rs)}`,
+  shopsOnly: 'Only in shops.',
+  aura: 'Lead aura',
+  evolves: 'Evolves',
+  fromLv: (lv: number) => `from Lv ${lv}`,
+  teaches: 'Teaches',
+  compatible: 'Learnable by',
+  price: 'Price',
+  notSold: 'Never sold.',
+  prices: (route: number, city: number) => `${route} ₽ from the merchant, ${city} ₽ in a City`,
+  pending: (why: string) => `Not working yet: ${why}`,
 };

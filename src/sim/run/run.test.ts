@@ -51,7 +51,7 @@ const clearNode = (s: RunState): RunState => {
     case 'shop': return apply(s, { type: 'leave-shop' });
     case 'center': return apply(s, { type: 'leave-center' });
     case 'aid': return apply(s, { type: 'leave-aid' });
-    case 'city': return apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0]! });
+    case 'city': return apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0] ?? null });
     case 'event': return settle(apply(apply(s, { type: 'choose-event', option: 0 }), { type: 'leave-event' }));
     // §7.3.7 — a Gym victory opens the Legendary 1-of-3 before the run ends. A walker that does not answer
     // it stops one action short of the victory it was testing for.

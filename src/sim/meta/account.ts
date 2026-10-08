@@ -16,7 +16,7 @@ import { TITLE_ID_BY_NAME, type CosmeticKind } from './cosmetics';
 // spending side — the shelves, the prices, `buy` — is mart.ts.
 
 /** 2 since 2026-09-21: the track pays Tokens at every level and the Mart sells what it used to grant (`upgradeAccount`). */
-export const ACCOUNT_VERSION = 2;
+export const ACCOUNT_VERSION = 3;
 
 export interface LifetimeStats {
   runs: number;
@@ -573,6 +573,8 @@ export function upgradeAccount(state: AccountState & LegacyAccountFields): Accou
     }
     delete next.titles;
   }
+  // v3 (v0.9.9) — the Master Ball Charm is no longer a relic: an account that had opened it holds it no more.
+  if (next.version < 3) next.relics = next.relics.filter((r) => r !== 'master-ball-charm');
   next.version = ACCOUNT_VERSION;
   return next;
 }

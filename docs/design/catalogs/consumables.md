@@ -63,6 +63,7 @@ combo partner. Both are deliberately the priciest utilities.
 | `poke-ball` | 1 | catch attempt | `ballMultiplier` 1 on the §2.6.4.1 chance | 50 | ✅ v0.1 · roll since 2026-09-21 |
 | `great-ball` | 1 | catch attempt | ×1.5 | 120 | ✅ v0.8.6 (§2.6.4.2) |
 | `ultra-ball` | 1 | catch attempt | ×2 | 250 | ✅ v0.8.6 (§2.6.4.2) |
+| `master-ball` | 1 | catch attempt that cannot fail | sure | never sold — a Region 2–3 Elite or Gym prize | ✅ v0.9.9 (§2.6.4.2) |
 
 Balls are a **counted run resource**: start 3 (`EconomyConfig.startingPokeballs`), +1 per Region, buyable. A
 throw spends one whether it succeeds or fails. The catch card appears in a wild combat only while the count > 0.

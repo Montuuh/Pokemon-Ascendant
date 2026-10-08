@@ -16,7 +16,8 @@ test('the gate out of Pallet Town opens onto the Coastal Cliffs', async ({ page 
   });
   await expect(page.getByTestId('city-screen')).toBeVisible();
   await page.getByTestId('door-gate').click();
-  await page.locator('[data-testid^="reflection-"]').first().click();
+  // §2.11.3 — Region Modifiers are off (v0.9.9): the gate only asks before you leave.
+  await expect(page.getByTestId('btn-depart')).toBeEnabled();
   await page.getByTestId('btn-depart').click();
 
   await expect(page.getByRole('heading', { name: 'Region 2' })).toBeVisible();

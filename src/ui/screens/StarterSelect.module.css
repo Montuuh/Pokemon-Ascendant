@@ -86,25 +86,9 @@
   font-size: var(--type-h3);
   padding-right: 64px;
 }
-.rec {
-  justify-self: start;
-  font-size: var(--type-caption);
-  font-weight: 700;
-  padding: 2px var(--sp-2);
-  border-radius: var(--radius-pill);
-  background: var(--accent-action);
-  color: var(--ink-primary);
-}
 .diffEffect {
   color: var(--ink-secondary);
   font-size: var(--type-small);
-}
-.diffReward {
-  font-size: var(--type-small);
-  font-weight: 700;
-  color: var(--ink-primary);
-  border-left: 4px solid var(--accent-positive);
-  padding-left: var(--sp-2);
 }
 /* A locked or partial row explains itself in place, under the effect — an asterisk with no footnote is
    exactly the kind of thing §7.7 exists to stop. */
@@ -384,13 +368,6 @@
   color: var(--ink-muted);
   font-size: var(--type-caption);
 }
-.skipNote {
-  grid-column: 1 / -1;
-  margin: var(--sp-4) 0 0;
-  text-align: center;
-  color: var(--ink-muted);
-  font-size: var(--type-caption);
-}
 
 /* §8.4.2 Twin Run — the partner tile is marked in blue so the two picks read as first and second. The roster
    wraps once the meta-starters arrive (§8.5.2): three columns was the default trio, not a rule. */
@@ -401,23 +378,78 @@
   border-color: var(--brand-blue);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-blue) 22%, transparent);
 }
-.twinTag {
-  position: absolute;
-  top: var(--sp-2);
-  right: var(--sp-2);
-  padding: 2px var(--sp-2);
-  border-radius: var(--radius-pill);
-  background: var(--brand-blue);
-  color: #fff;
-  font-size: var(--type-caption);
-  font-family: var(--font-display);
-}
-.twinNote {
+
+/* §8.4.2 Twin Run — the two places above the roster; the one in focus is the one a tile fills. */
+.slots {
   grid-column: 1 / -1;
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-1);
-  margin: 0;
-  font-size: var(--type-small);
+  gap: var(--sp-3);
+}
+.slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--border-strong);
+  background: var(--surface-1);
+}
+.slot[data-place='lead'] {
+  border-style: solid;
+}
+.slotOn[data-place='lead'] {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-red) 22%, transparent);
+}
+.slotOn[data-place='partner'] {
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-blue) 22%, transparent);
+}
+.slotPick {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 200px;
+  padding: var(--sp-2) var(--sp-4) var(--sp-2) var(--sp-2);
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.slotEmpty {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px dashed var(--border-strong);
+}
+.slotText {
+  display: grid;
+}
+.slotLabel {
+  font-size: var(--type-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--ink-secondary);
+}
+.slotName {
+  font-size: var(--type-body);
+}
+.slotClear {
+  display: grid;
+  place-items: center;
+  margin-right: var(--sp-2);
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+  cursor: pointer;
+}
+.slotClear:hover,
+.slotClear:focus-visible {
+  color: var(--ink-primary);
 }

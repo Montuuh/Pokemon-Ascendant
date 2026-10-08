@@ -1,18 +1,20 @@
 import { useMemo, useState } from 'react';
-import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconLock } from '@tabler/icons-react';
+import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconLock, IconX } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { GYM, MODIFIERS, RUN_START, activeMoves, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, rollRegionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState } from '@/sim';
+import { GYM, MODIFIERS, RUN_START, activeMoves, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState } from '@/sim';
 import { portraitUrl } from '@/content/schemas/species';
 import { ItemCard } from '@/ui/components/ItemCard';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { InfoDot, Tip } from '@/ui/tooltip';
+import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
+import { clearPartnerTip, twinRunTip } from '@/ui/tips';
+import { STARTER_TEXT } from '@/ui/strings';
 import styles from './StarterSelect.module.css';
 
-// Per docs/design/ui/screens.md §3.3 — the new-run stepper, all four steps as of v0.5: difficulty (§8.8),
-// the Starter (§3.3b), the Starting Relic (§8.6.3) and the Region Modifier (§2.11.3).
+// Per docs/design/ui/screens.md §3.3 — the new-run stepper: difficulty (§8.8), the Starter (§3.3b), the Starting Relic
+// (§8.6.3) and the Region Modifier (§2.11.3) — the last only while Region Modifiers are on (off since v0.9.9).
 //
 // §2.11.3 puts the Reflection in a City, after Gyms 1 and 2, applying to the *next* Region. v0.5 has one
 // Region and no Cities, so it is offered here instead — which is where §3.3's own stepper always had it.
@@ -23,7 +25,6 @@ import styles from './StarterSelect.module.css';
 // §8.4.2 Twin Run adds a second starter. All of it is read off the account here and frozen into the run.
 
 type Step = 0 | 1 | 2 | 3;
-const LAST_STEP: Step = 3;
 
 const STAT_MAX = { hp: 120, attack: 120, defense: 120, speed: 120 };
 
@@ -72,6 +73,8 @@ export function StarterSelect() {
   // §8.4.2 Twin Run — the second starter, when the upgrade is held. Null is "just the one".
   const twin = twinRun(account);
   const [second, setSecond] = useState<string | null>(null);
+  // §8.4.2 — which of the two places a click on a tile fills: the Lead first, then the partner (v0.9.9).
+  const [slot, setSlot] = useState<'lead' | 'partner'>('lead');
   const MODIFIER_SLOTS = modifierSlots(account);
   const trainerLevel = levelFor(account.xp);
   // The seed is drawn once, when the screen opens, so the relic offer does not reshuffle under the cursor.
@@ -82,9 +85,12 @@ export function StarterSelect() {
   const offer = useMemo(() => relicOffer(seed, startingRelicOffers(account), account, pick === 'magikarp' ? MAGIKARP_LEAN : []), [seed, account, pick]);
   // §2.11.3 — three of the seventeen, weighted. At run start there is no team to weight against yet, which
   // is the honest shape of the choice here: it is a direction, not a response.
-  const regionOffer = useMemo(() => rollRegionModifierOffer(seed ^ 0x5f3a, content, [], RUN_START.money), [seed, content]);
+  const regionOffer = useMemo(() => regionModifierOffer(seed ^ 0x5f3a, content, [], RUN_START.money), [seed, content]);
+  // Region Modifiers off (v0.9.9): the stepper ends at the relic.
+  const LAST_STEP: Step = regionOffer.length ? 3 : 2;
   const starters = useMemo(() => starterIds.map((id) => content.species(id)), [starterIds, content]);
-  const chosen = content.species(pick);
+  // The detail panel shows the place being filled: the partner, once there is one and it is the place in focus.
+  const chosen = content.species(twin && slot === 'partner' && second ? second : pick);
 
   /** How this starter's own type fares against the Gym ace it will have to get through. */
   const gymMatch = useMemo(() => {
@@ -117,14 +123,27 @@ export function StarterSelect() {
     goTo('map');
   }
 
-  /** Clicking a tile picks the starter; with Twin Run, a second click on another tile picks the partner. */
+  /**
+   * §8.4.2 Twin Run — a tile fills the place in focus. The Lead first; once it is chosen the focus moves to the
+   * partner. A tile already in the other place trades places with it, so the two are never the same Pokémon.
+   */
   function choose(id: string) {
     if (!twin) return setPick(id);
-    if (id === pick) return setSecond(null);
-    if (id === second) return setSecond(null);
-    if (second === null && pick !== id) return setSecond(id);
-    setPick(id);
-    setSecond(null);
+    if (slot === 'lead') {
+      if (id === second) setSecond(pick);
+      setPick(id);
+      // The partner is next only when there is none yet; a swap keeps the focus on the place just filled.
+      if (!second) setSlot('partner');
+      return;
+    }
+    if (id === pick) {
+      // The Lead's own tile, with no partner to trade with: the click moves the focus back to the Lead.
+      if (!second) return setSlot('lead');
+      setPick(second);
+      setSecond(id);
+      return;
+    }
+    setSecond(id);
   }
 
   function toggleModifier(id: string) {
@@ -137,7 +156,7 @@ export function StarterSelect() {
   }
 
   const xpBonus = modifierXpMultiplier(modifiers);
-  const STEPS = ['Difficulty', 'Starter', 'Relic', 'Region'];
+  const STEPS = ['Difficulty', 'Starter', 'Relic', 'Region'].slice(0, LAST_STEP + 1);
 
   return (
     <main className={styles.root} data-testid="starter-select">
@@ -271,6 +290,32 @@ export function StarterSelect() {
       ) : (
         <section className={styles.body} data-testid="step-starter">
           <div className={styles.roster}>
+            {/* §8.4.2 Twin Run — the two places, Lead and partner: a click on a place puts it in focus. */}
+            {twin && (
+              <div className={styles.slots} role="group" aria-label="Your two starters" data-testid="twin-slots">
+                {(['lead', 'partner'] as const).map((place) => {
+                  const id = place === 'lead' ? pick : second;
+                  const s = id ? content.species(id) : null;
+                  return (
+                    <div key={place} className={`${styles.slot} ${slot === place ? styles.slotOn : ''}`} data-place={place}>
+                      <button type="button" className={styles.slotPick} aria-pressed={slot === place} onClick={() => setSlot(place)} data-testid={`twin-slot-${place}`}>
+                        {s ? <img src={portraitUrl(s.dex, s.id)} alt="" width={40} height={40} /> : <span className={styles.slotEmpty} aria-hidden="true" />}
+                        <span className={styles.slotText}>
+                          <span className={styles.slotLabel}>{place === 'lead' ? STARTER_TEXT.lead : STARTER_TEXT.partner}</span>
+                          <span className={`${styles.slotName} display`}>{s ? s.name : STARTER_TEXT.pickPartner}</span>
+                        </span>
+                      </button>
+                      {place === 'partner' && second && (
+                        <Tipped as="button" type="button" tip={clearPartnerTip()} className={styles.slotClear} aria-label={STARTER_TEXT.clearPartner} onClick={() => { setSecond(null); setSlot('partner'); }} data-testid="twin-slot-clear">
+                          <IconX size={16} />
+                        </Tipped>
+                      )}
+                    </div>
+                  );
+                })}
+                <InfoDot tip={twinRunTip()} />
+              </div>
+            )}
             {starters.map((s) => (
               <button
                 key={s.id}
@@ -285,15 +330,8 @@ export function StarterSelect() {
                 </span>
                 <img src={portraitUrl(s.dex, s.id)} alt={s.name} width={132} height={132} />
                 <span className={`${styles.tileName} display`}>{s.name}</span>
-                {second === s.id && <span className={styles.twinTag}>Partner</span>}
               </button>
             ))}
-            {twin && (
-              <p className={styles.twinNote} data-testid="twin-note">
-                Twin Run: pick a second tile for a partner{second ? ` — ${content.species(second).name} joins ${chosen.name}.` : '.'}
-                <InfoDot tip={<Tip title="Twin Run" body="The Second Starter Slot from the reward track. Two starters, both at the starting level, and the Box starts one larger. The Active Team is still three." footer="Optional — one starter is still a run." />} />
-              </p>
-            )}
           </div>
 
           <aside className={styles.detail} data-testid="starter-detail">
@@ -379,9 +417,9 @@ export function StarterSelect() {
           data-testid="btn-continue"
         >
           {step === LAST_STEP
-            ? `Set out with ${chosen.name}${second ? ` and ${content.species(second).name}` : ''}`
+            ? `Set out with ${content.species(pick).name}${second ? ` and ${content.species(second).name}` : ''}`
             : step === 1
-              ? `Continue as ${chosen.name}${second ? ` and ${content.species(second).name}` : ''}`
+              ? `Continue as ${content.species(pick).name}${second ? ` and ${content.species(second).name}` : ''}`
               : 'Continue'}{' '}
           <IconArrowRight size={18} />
         </button>

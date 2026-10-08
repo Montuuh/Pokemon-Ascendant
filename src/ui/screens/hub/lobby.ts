@@ -5,7 +5,7 @@ import type { Box } from '@/ui/components/PixelRoom';
 // the map's own pixels, and where the people the map has no room for stand. The art carries two transparent columns
 // on its left, where the Archives' map is cut, so the Mart counter's outline is drawn whole.
 
-export type HubSpot = 'mart' | 'card' | 'pc' | 'run';
+export type HubSpot = 'mart' | 'card' | 'pc' | 'guide' | 'run';
 
 export const LOBBY = { w: 402, h: 276 } as const;
 
@@ -22,6 +22,8 @@ export const LOBBY_SPOTS: Record<HubSpot, readonly Box[]> = {
   card: [[162, 140, 112, 50]],
   // The PC beside her counter.
   pc: [[274, 135, 17, 32]],
+  // The table in the left-hand corner, with its stools: the Item Guide lies open on it (v0.9.9).
+  guide: [[17, 157, 33, 33]],
 };
 
 /** The doormat: the way back out to the title menu. */

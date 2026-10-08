@@ -526,7 +526,7 @@ user's call). The preview card shows everyone the biome holds in three rows, and
 | **Uncommon** | 30 % | one of the row, evenly |
 | **Rare** | 10 % | one of the row, evenly |
 
-Walking in rolls the rarity, then who leads from its row — and the fight opens by saying which row it was, a word
+Walking in rolls the rarity, then which Pokémon spawns from its row — and the fight opens by saying which row it was, a word
 over the arena that fades as the fight begins ("Common", "Uncommon", "Rare!", v0.9.8); a row's share is split evenly between its Pokémon, and
 each one's own chance is on its portrait. The roll is a hash of the run's seed, the Region and the node, like the
 group plan (§5.6.3), so a reload or a replay meets the same Pokémon. The node's shape — a single, a pack, a caller —
@@ -632,8 +632,8 @@ the harness now catches about seven Pokémon a run.)*
 | Target at 0 HP | The recruit is lost |
 
 The chance is printed on the pill beside the enemy (the best ball in the bag) and on every row of its picker.
-The roll comes from the fight's own RNG stream, so a replay throws the same ball (§10.7). **Master Ball
-Charm** (§8.6.1) arms one throw per run that cannot miss; the pill reads SURE while it is armed.
+The roll comes from the fight's own RNG stream, so a replay throws the same ball (§10.7). A **Master Ball**
+(§2.6.4.2) cannot miss; its row in the picker reads SURE.
 
 5. On a catch: combat ends as a **Victory** with **full combat XP** — a catch is never worth less than a kill —
    and the Pokémon enters the Box, or triggers Swap-or-Skip if the Box is full (§2.3.1).
@@ -655,6 +655,12 @@ the same 90 % cap. Great Balls are on every City counter (×3) and in Region 2�
 Department Store's top floor (×3), in Region 3's tables and its Elite and Gym prizes. The picker lists the best
 ball first.
 
+**The Master Ball** (v0.9.9, the user's call — in place of the Master Ball Charm relic) is an item: a throw that
+cannot fail, its four checks passed without a roll and its pill reading SURE. It is **never sold**: an Elite or a Gym
+of Region 2 or 3 hands one over as its prize a fifth of the time (`PRIZE_TABLE`). *(The charm was a relic armed once
+per run, a rule hidden on the relic bar; a ball in the bag is the series' own way to say "this one is sure", and
+the player chooses the Pokémon it is worth spending on.)*
+
 ### §2.6.4.4 The shake checks
 
 The roll is the series' own (Gen III–IV): **four shake checks**, each passed at **p^¼**, so all four pass at exactly
@@ -663,7 +669,7 @@ that fails. Each of the first three checks follows a **wobble** of the ball and 
 Pokémon breaks free after the first, second or third wobble, or right as the ball should have clicked. The ball
 always rocks at least once *(the user, 2026-10-07: a break is never decided before the first wobble)*, and how far
 it got is the series' line for it — "Oh no! The Pokémon broke free!", "Aww! It appeared to be caught!", "Aargh!
-Almost had it!", "Shoot! It was so close, too!". A Master Ball Charm throw passes all four without rolling. The
+Almost had it!", "Shoot! It was so close, too!". A Master Ball passes all four without rolling. The
 checks come from the fight's stream like every roll (§10.7); the arena only shows them (§9.9.1).
 
 ### §2.6.4.3 Why a roll, and why a shown one
@@ -1282,6 +1288,11 @@ Any held item sells for **30 % of its listed price**. This is the run's only Pok
 merchant on the route does not buy (§2.9.2).
 
 ## §2.11.3 Reflection — the Region Modifier
+
+> **Off since v0.9.9** (the user's call, 2026-10-09: "remove them for now; we will see what to do with them later").
+> `REGION_MODIFIERS_ON` is false: neither the new-run screen nor a City's gate offers one, and the gate only asks
+> before you set off. The rules below, the seventeen rows and their hooks are kept whole, so turning the switch back
+> on is the whole of bringing them back. What the gate becomes instead is the user's to decide.
 
 The gate. Three modifiers are offered, seeded and weighted to your team; you pick one; it applies to the
 **next Region only** (§2.1.4.1), and the pick is what leaves the City.

@@ -923,6 +923,9 @@ export const STATUS_ACCENT_FALLBACK = 'glare';
  *
  * v0.9.8 evolved every roster by its level, Region 1's and the Gyms' too (§2.7.3): R1 50 % · R2|R1 40 %. Attack
  * ×1.4 / ×2.5 / ×3.6 with the Gyms' own multiplier eased: R1 64 % · R2|R1 57 % · R3|R2 50 % · run 18 % (720 runs).
+ *
+ * v0.9.9 turned Region Modifiers off (§2.11.3), and the harness lost the pick it took at each gate: R2|R1 51 %. Region
+ * 2's Attack ×2.5 → ×2.4: R1 61 % · R2|R1 60 % · R3|R2 49 % · run 18 % (720 runs).
  */
 export interface StatTier {
   hp: number;
@@ -930,7 +933,7 @@ export interface StatTier {
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
   { hp: 0.6, attack: 1.4 },
-  { hp: 0.45, attack: 2.5 },
+  { hp: 0.45, attack: 2.4 },
   { hp: 0.35, attack: 3.6 },
 ];
 

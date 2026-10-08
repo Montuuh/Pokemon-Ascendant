@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById } from '@/sim';
+import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -249,7 +249,7 @@ export function wildMonTip(speciesId: string, tier: string, chance: number): Rea
   return (
     <Tip
       title={s.name}
-      meta={[WILD_TIER_LABEL[tier] ?? tier, WILD_TEXT.lead(WILD_TEXT.pct(chance))]}
+      meta={[WILD_TIER_LABEL[tier] ?? tier, WILD_TEXT.spawn(WILD_TEXT.pct(chance))]}
       body={
         <span style={{ display: 'inline-flex', gap: 4 }}>
           {s.types.map((t) => (
@@ -259,6 +259,47 @@ export function wildMonTip(speciesId: string, tier: string, chance: number): Rea
       }
     />
   );
+}
+
+/** §8.4.2 Twin Run — the two places on the new-run screen. */
+export function twinRunTip(): ReactNode {
+  return <Tip title="Twin Run" body="The Second Starter Slot from the reward track. Two starters, both at the starting level, and the Box starts one larger. The Active Team is still three." footer="Pick a place, then a Pokémon for it. The partner is optional — one starter is still a run." />;
+}
+
+/** §8.4.2 — the partner's ×. */
+export function clearPartnerTip(): ReactNode {
+  return <Tip title={STARTER_TEXT.clearPartner} body="Set out with one starter. You can pick another partner until you continue." />;
+}
+
+/** §6.3 — the Pokédex's evolution paths. */
+export function evoPathsTip(): ReactNode {
+  return <Tip title="Evolution paths" body="Each path an evolution can take: the stats at the threshold on that path's lean, every card it turns into a better one (the old one is forgotten), the card it adds, and the ability it grants." footer="Chosen on the Evolution screen when the Pokémon gets there." />;
+}
+
+/** §6.9 — a base form's learnset in the Pokédex. */
+export function learnsetTip(evolveLevel: number | undefined, evolves: boolean): ReactNode {
+  return <Tip title={DEX_EVO_TEXT.learnset} body={`Its own moves, by the level it learns them. A Pokémon knows every entry at or below its level${evolveLevel ? `, until it evolves at Lv ${evolveLevel}` : ''}.`} footer={evolves ? 'Evolving rewrites the kit: the line tab shows each path.' : undefined} />;
+}
+
+/** §6.3.5 — an evolved form's kit by path in the Pokédex. */
+export function kitPathsTip(): ReactNode {
+  return <Tip title={DEX_EVO_TEXT.kitByPath} body="An evolved Pokémon learns nothing by level: each evolution rewrites its kit. One row per way to get here, with the cards it holds." footer="Up to five cards; the active four are picked in the Move Manager." />;
+}
+
+/** §8.6.1 — a relic's availability tier, in the Item Guide. */
+export function relicTierNoteTip(tier: number): ReactNode {
+  return <Tip title={GUIDE_TEXT.relicTier(tier)} body={tier === 3 ? 'Bought with Tokens on the Poké Mart\'s Mastery shelf, then in your pool for good.' : tier === 2 ? 'Discovered once by doing its thing in a run, then in your pool for good.' : 'Always in your pool.'} />;
+}
+
+/** §2.11.2.3 — an item's price, in the Item Guide. */
+export function guidePriceTip(relic: boolean): ReactNode {
+  return <Tip title={GUIDE_TEXT.price} body="The merchant on the route sells at this; a City's shops add 30 %." footer={relic ? 'A relic costs a quarter more for every relic the run has already bought (the collector premium).' : undefined} />;
+}
+
+/** §6.3.2 — an Evolution Item beside the path it makes. */
+export function stoneUseTip(stoneId: string): ReactNode {
+  const s = getContent().evolutionItem(stoneId);
+  return <Tip icon={<img src={itemIcon(s.id)} alt="" width={22} height={22} />} title={s.name} meta={['Evolution Item']} body={s.description} footer="Used from a Pokémon's Move Manager, between nodes." />;
 }
 
 /** §5.6.3 — a fight node's shape on the map: a pack, a pair, a caller, a support, a Pokémon that acts twice. */
@@ -453,7 +494,7 @@ export function dexCardTip(name: string, dex: number, types: readonly string[], 
 }
 
 /** §8.4 — the Trainer Hub's doors, in the lobby. */
-export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'run', tokens: number): ReactNode {
+export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'guide' | 'run', tokens: number): ReactNode {
   switch (spot) {
     case 'mart':
       return <Tip title="Poké Mart" meta={[`${tokens} Tokens`]} body="Spend Tokens on starters, Hub upgrades, relics for your pool and cosmetics. Trainer Level opens its shelves." />;
@@ -461,6 +502,8 @@ export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'run', tokens: number)
       return <Tip title="Trainer Card" body="The nurse keeps the League's register: your level, the road ahead and your record." />;
     case 'pc':
       return <Tip title="PC Terminal" body="The Pokédex and every line's Bond, the medals, and the relics you have discovered." />;
+    case 'guide':
+      return <Tip title="Item Guide" body="Every relic, item, held item, Evolution Item and TM in the game: what it does, what it costs and where it turns up." />;
     case 'run':
       return <Tip title="New run" body="Through the door to the Elite Four: choose a starter, a Starting Relic and the run's options, and set out." />;
   }
@@ -538,7 +581,9 @@ export function fleeTip(tier: FleeTier | null, toll: FleeToll | null): ReactNode
 
 /** §2.11.4 — a City's door: what is behind it, and whether it is open, under the name the screen gives it. */
 export function doorTip(door: CityDoor, open: boolean, title: string): ReactNode {
-  return <Tip title={title} meta={[open ? (door === 'gate' ? 'Ends the visit' : 'Open') : 'Not open yet']} body={CITY_DOOR_HINT[door]} />;
+  // §2.11.3 — while Region Modifiers are off (v0.9.9) the gate is only the road on.
+  const body = door === 'gate' && !REGION_MODIFIERS_ON ? CITY_DOOR_HINT.gatePlain : CITY_DOOR_HINT[door];
+  return <Tip title={title} meta={[open ? (door === 'gate' ? 'Ends the visit' : 'Open') : 'Not open yet']} body={body} />;
 }
 
 /**

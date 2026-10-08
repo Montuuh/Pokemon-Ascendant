@@ -6,6 +6,14 @@ import type { PokemonType } from '../types';
 // payload names a slot by the move that first held it, so a Venusaur branch that swaps "Vine Whip" lands on Razor
 // Leaf if an Ivysaur branch had already turned Vine Whip into Razor Leaf — whichever branch was taken before.
 
+/**
+ * §6.3.5 / §6.9 — how many moves a species may carry or be offered, as data (v0.9.9, the user's call: a validator over
+ * every species). `kit` — the cards a form holds on any path through its line; `learnset` — level-up entries;
+ * `tutor` / `egg` — its Dojo lists; `offered` — everything a form can be shown with: its kit, its tutor list, its
+ * line's egg moves and its Mastery Move. `content.test` walks all 151 against it.
+ */
+export const MOVE_CAP = { kit: 5, learnset: 5, tutor: 3, egg: 3, offered: 12 } as const;
+
 /** Every upgrade in the line, read backwards: an evolved card → the cards it can have come from. */
 export function upgradeParents(content: ContentRegistry, speciesId: string): Map<string, Set<string>> {
   const base = content.lineBase(speciesId);
@@ -125,4 +133,29 @@ export function autoPickMoves(pool: readonly string[], content: ContentRegistry,
     }
   }
   return pool.filter((m) => picked.has(m));
+}
+
+/**
+ * §6.3.5 — the kit a form holds on each path that reaches it (v0.9.9, for the Pokédex): a base form's own pool at its
+ * last level before evolving (or its whole learnset if it never does); an evolved form's, one row per chain of
+ * branches from the base — Ivysaur three, Venusaur nine. The same payload arithmetic the run applies.
+ */
+export function kitPaths(content: ContentRegistry, speciesId: string): { branches: string[]; pool: string[] }[] {
+  const base = content.species(content.lineBase(speciesId));
+  const parents = upgradeParents(content, base.id);
+  const own = (s: SpeciesDef) => {
+    const known = new Set<string>();
+    for (const e of s.learnset) if (e.level <= (s.evolveLevel ? s.evolveLevel - 1 : 100)) known.add(e.move);
+    return [...known];
+  };
+  const out: { branches: string[]; pool: string[] }[] = [];
+  const walk = (s: SpeciesDef, branches: string[], pool: string[]) => {
+    if (s.id === speciesId) {
+      out.push({ branches, pool });
+      return;
+    }
+    for (const b of s.branches) walk(content.species(b.to), [...branches, b.id], applyPayload(pool, b, parents));
+  };
+  walk(base, [], own(base));
+  return out;
 }

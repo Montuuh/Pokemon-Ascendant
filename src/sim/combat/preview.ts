@@ -5,7 +5,7 @@ import type { DamageBreakdown } from './damage';
 import { catchOdds, type CatchOdds } from './catch';
 import { activeEnemy, aliveEnemies, benchIndices, lead } from './slots';
 import type { Combatant, CombatState, ConsumableCard, EnemyCombatant, RejectReason, SkillCard } from './state';
-import { choiceLockBlocks, itemApDelta, guaranteedCatch } from './items';
+import { choiceLockBlocks, itemApDelta } from './items';
 import { cardsLocked, isPositionLocked, paralysisApBonus } from './status';
 
 // Read-only selectors the UI (and the auto-player) use to know what is legal and what it would do.
@@ -193,7 +193,6 @@ export function catchOptions(state: CombatState, ctx: CombatCtx, targetUid?: str
   if (state.kind !== 'wild') return [];
   const enemy = catchTarget(state, targetUid);
   if (!enemy) return [];
-  const guaranteed = guaranteedCatch(state, ctx.content) !== null;
   const byKind = new Map<string, ConsumableCard[]>();
   for (const card of state.player.consumables.hand) {
     if (ctx.content.consumable(card.consumableId).effect.kind !== 'catch') continue;
@@ -203,7 +202,7 @@ export function catchOptions(state: CombatState, ctx: CombatCtx, targetUid?: str
     .map(([consumableId, cards]) => {
       const def = ctx.content.consumable(consumableId);
       const effect = def.effect as Extract<typeof def.effect, { kind: 'catch' }>;
-      return { consumableId, cardId: cards[0]!.id, count: cards.length, odds: catchOdds(enemy, effect, ctx.content, guaranteed), playable: consumablePlayability(state, cards[0]!.id, ctx, enemy.uid)! };
+      return { consumableId, cardId: cards[0]!.id, count: cards.length, odds: catchOdds(enemy, effect, ctx.content), playable: consumablePlayability(state, cards[0]!.id, ctx, enemy.uid)! };
     })
     .sort((a, b) => b.odds.ballMult - a.odds.ballMult);
 }
@@ -217,7 +216,7 @@ export function catchStatus(state: CombatState, ctx: CombatCtx, targetUid?: stri
     .map((c) => ctx.content.consumable(c.consumableId))
     .find((d) => d.effect.kind === 'catch');
   const effect = ballDef?.effect.kind === 'catch' ? ballDef.effect : { kind: 'catch' as const, ballMultiplier: 1 };
-  return { ...catchOdds(enemy, effect, ctx.content, guaranteedCatch(state, ctx.content) !== null), ballsLeft: state.player.balls };
+  return { ...catchOdds(enemy, effect, ctx.content), ballsLeft: state.player.balls };
 }
 
 export function pickLeadOptions(state: CombatState): number[] {

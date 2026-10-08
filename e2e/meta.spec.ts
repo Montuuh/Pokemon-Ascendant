@@ -11,7 +11,7 @@ async function menu(page: Page): Promise<void> {
 }
 
 /** §8.4 — a door in the Hub's lobby: back to the lobby first if a kiosk is open over it. */
-async function openKiosk(page: Page, id: 'pc' | 'mart' | 'card'): Promise<void> {
+async function openKiosk(page: Page, id: 'pc' | 'mart' | 'card' | 'guide'): Promise<void> {
   const lobby = page.getByTestId('btn-hub-lobby');
   if (await lobby.isVisible()) await lobby.click();
   await page.getByTestId(`kiosk-${id}`).click();
@@ -49,7 +49,7 @@ test.describe('The Trainer Hub — §8.4', () => {
 
     // §8.4.1 — the lobby: the Mart's counter, the nurse (the Trainer Card), the PC, the door to a run, the doormat out.
     await page.getByTestId('btn-hub-lobby').click();
-    for (const id of ['card', 'pc', 'mart', 'run']) await expect(page.getByTestId(`kiosk-${id}`)).toBeVisible();
+    for (const id of ['card', 'pc', 'mart', 'guide', 'run']) await expect(page.getByTestId(`kiosk-${id}`)).toBeVisible();
     await expect(page.getByTestId('hub-exit')).toBeVisible();
     await page.screenshot({ path: 'playtest/hub-lobby.png' });
 
@@ -119,6 +119,55 @@ test.describe('The Trainer Hub — §8.4', () => {
     // The road staggers its stops in over ~0.6 s; the screenshot is of the finished picture.
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'playtest/hub.png' });
+  });
+
+  test('the Item Guide on the lobby table opens every item, whole — §8.4, v0.9.9', async ({ page }) => {
+    await menu(page);
+    await page.getByTestId('btn-hub').click();
+    await openKiosk(page, 'guide');
+    const guide = page.getByTestId('item-guide');
+    // Relics first; the first one is open beside the list.
+    await expect(guide.locator('[data-testid^="guide-item-"]').first()).toBeVisible();
+    await expect(page.getByTestId('guide-detail')).toBeVisible();
+    // Items: the Master Ball, never sold, and where it turns up.
+    await page.getByTestId('guide-tab-consumable').click();
+    await page.getByTestId('guide-search').fill('master');
+    await page.getByTestId('guide-item-master-ball').click();
+    const detail = page.getByTestId('guide-detail');
+    await expect(detail).toHaveAttribute('data-item', 'master-ball');
+    await expect(detail).toContainText('Never sold');
+    await expect(detail).toContainText('Regions 2, 3');
+    await page.screenshot({ path: 'playtest/hub-item-guide.png' });
+    // Held items, Evolution Items and TMs are there too.
+    for (const k of ['held-item', 'stone', 'tm']) {
+      await page.getByTestId(`guide-tab-${k}`).click();
+      await page.getByTestId('guide-search').fill('');
+      await expect(guide.locator('[data-testid^="guide-item-"]').first()).toBeVisible();
+    }
+    await page.getByTestId('guide-tab-relic').click();
+    await page.screenshot({ path: 'playtest/hub-item-guide-relics.png' });
+  });
+
+  test('the Pokédex shows every evolution path and the kit each one leaves — §6.3, v0.9.9', async ({ page }) => {
+    await menu(page);
+    await page.evaluate(() => window.__ascendant!.meta.meet('mankey', 'primeape'));
+    await page.getByTestId('btn-hub').click();
+    await openKiosk(page, 'pc');
+    // An evolved form learns nothing by level: its Kit tab is one row per path that reaches it.
+    await page.getByTestId('dex-primeape').click();
+    await page.getByTestId('dex-sheet-tab-kit').click();
+    const paths = page.getByTestId('dex-sheet-kit-paths');
+    await expect(paths.locator('li')).toHaveCount(2);
+    await expect(paths).toContainText('Submission');
+    await expect(page.getByTestId('dex-sheet')).not.toContainText('Low Kick');
+    await page.screenshot({ path: 'playtest/hub-pokedex-kit-paths.png' });
+    // The line tab carries the paths themselves: what each changes, learns and forgets.
+    await page.getByTestId('dex-sheet-tab-line').click();
+    const evo = page.getByTestId('line-sheet-evolutions');
+    await expect(evo.locator('[data-testid^="dex-branch-"]')).toHaveCount(2);
+    await expect(page.getByTestId('dex-branch-primeape-vanguard')).toContainText('Submission');
+    await expect(page.getByTestId('dex-branch-primeape-vanguard')).toContainText('Low Kick');
+    await page.screenshot({ path: 'playtest/hub-pokedex-evolutions.png' });
   });
 
   test('fights pay XP, cross levels, discover relics and fill the Pokédex — and it all survives a reload', async ({ page }) => {

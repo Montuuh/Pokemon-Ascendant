@@ -283,11 +283,6 @@ button.heroChip:hover {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.moveWide {
-  grid-column: 2 / -1;
-  font-style: italic;
-  color: var(--ink-secondary);
-}
 .moveStat {
   font-size: var(--type-caption);
   color: var(--ink-secondary);
@@ -456,4 +451,66 @@ button.heroChip:hover {
   font-size: var(--type-small);
   color: var(--ink-secondary);
   white-space: nowrap;
+}
+
+/* §6.3 — the line's evolution paths (v0.9.9). */
+.branches {
+  display: grid;
+  gap: var(--sp-2);
+}
+/* §6.3.5 — an evolved form's kit, one row per path that reaches it. */
+.kitPaths {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-1);
+}
+.kitPath {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.kitPathName {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.kitPathMoves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.kitPathName {
+  display: grid;
+  gap: 2px;
+}
+.kitPathStep {
+  padding-left: var(--sp-2);
+  border-left: 3px solid var(--border-strong);
+  cursor: help;
+}
+.kitPathStep[data-archetype='vanguard'] {
+  border-left-color: var(--arch-vanguard);
+}
+.kitPathStep[data-archetype='specialist'] {
+  border-left-color: var(--arch-specialist);
+}
+.kitPathStep[data-archetype='support'] {
+  border-left-color: var(--arch-support);
+}
+.branchGroup {
+  display: grid;
+  gap: var(--sp-1);
+}
+.branchGroup + .branchGroup {
+  margin-top: var(--sp-3);
+}
+.branchFrom {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
 }

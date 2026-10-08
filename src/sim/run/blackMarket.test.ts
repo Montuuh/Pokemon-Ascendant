@@ -172,14 +172,14 @@ describe('The Fence — §2.11.6', () => {
 
   it('BuysARelic_ForItsShare_ButNotASpentOne_NorOneTheBoxNeeds', () => {
     const [common] = ofRarity('common');
-    let s = downstairs(inCity(1, { relics: [common!, 'box-expander', 'master-ball-charm'] }));
+    let s = downstairs(inCity(1, { relics: [common!, 'box-expander', 'phoenix-feather'] }));
     const after = apply(s, { type: 'market-sell-relic', relicId: common! });
     expect(after.money).toBe(s.money + fencePrice(content, common!));
     expect(fencePrice(content, common!)).toBe(Math.floor(relicValue(content, common!) * BLACK_MARKET.fenceShare));
     expect(after.relics).not.toContain(common);
     expect(reject(s, { type: 'market-sell-relic', relicId: 'lucky-egg-charm-not-held' })).toBe('bad-payment');
-    s = produce(s, (d) => { d.spentRelics.push('master-ball-charm'); });
-    expect(reject(s, { type: 'market-sell-relic', relicId: 'master-ball-charm' })).toBe('bad-payment');
+    s = produce(s, (d) => { d.spentRelics.push('phoenix-feather'); });
+    expect(reject(s, { type: 'market-sell-relic', relicId: 'phoenix-feather' })).toBe('bad-payment');
     // A Box filled past its base capacity cannot sell the Expander holding it.
     s = produce(s, (d) => {
       while (d.box.length < boxCapacity(d)) d.box.push(newPartyMon('pidgey', 20, content, d.box.length + 50));

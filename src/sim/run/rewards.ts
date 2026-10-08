@@ -42,11 +42,14 @@ export const SUPPLY_TABLE: readonly (readonly [string, number])[][] = [
   [['super-potion', 22], ['hyper-potion', 28], ['paralyze-heal', 5], ['burn-heal', 5], ['awakening', 4], ['ice-heal', 4], ['full-heal', 10], ['ether', 10], ['x-attack', 5], ['x-defense', 5], ['max-potion', 2], ['revive', 2], ['defog', 4], ['great-ball', 3], ['ultra-ball', 2]],
 ];
 
-/** §2.8 / §5.9 — the Region's prize table: one of these, evenly, on top of an Elite's or a Gym's supplies. */
+/**
+ * §2.8 / §5.9 — the Region's prize table: one of these, evenly, on top of an Elite's or a Gym's supplies. The Master
+ * Ball (§2.6.4.2, v0.9.9) is never sold: an Elite or a Gym of Region 2 or 3 hands one over a fifth of the time.
+ */
 export const PRIZE_TABLE: readonly (readonly string[])[] = [
   ['super-potion', 'ether', 'full-heal'],
-  ['hyper-potion', 'ether', 'full-heal', 'great-ball'],
-  ['max-potion', 'revive', 'hyper-potion', 'ultra-ball'],
+  ['hyper-potion', 'ether', 'full-heal', 'great-ball', 'master-ball'],
+  ['max-potion', 'revive', 'hyper-potion', 'ultra-ball', 'master-ball'],
 ];
 
 /** A table row names a consumable the content has — a missing one is left out rather than thrown on mid-run. */
@@ -218,4 +221,23 @@ export function rollGroundFind(rng: GameRng, regionIndex: number): GroundFind {
   const table = GROUND_FINDS[Math.min(regionIndex, GROUND_FINDS.length - 1)]!;
   const pick = table[Math.min(table.length - 1, Math.floor(rng.range01() * table.length))]!;
   return { items: [...pick.items], money: pick.money };
+}
+
+/** §2.7.2 / §2.8 / §2.9.5 — where a consumable turns up, by Region (1-based), for the Item Guide (v0.9.9). */
+export interface ItemSources {
+  /** A won fight's supplies. */
+  supplies: number[];
+  /** An Elite's or a Gym's prize. */
+  prizes: number[];
+  /** Something on the ground. */
+  ground: number[];
+}
+
+export function itemSources(id: string): ItemSources {
+  const regions = (rows: readonly (readonly unknown[])[], has: (row: readonly unknown[]) => boolean) => rows.flatMap((row, i) => (has(row) ? [i + 1] : []));
+  return {
+    supplies: regions(SUPPLY_TABLE, (row) => (row as readonly (readonly [string, number])[]).some(([c]) => c === id)),
+    prizes: regions(PRIZE_TABLE, (row) => (row as readonly string[]).includes(id)),
+    ground: regions(GROUND_FINDS, (row) => (row as readonly { items: string[] }[]).some((f) => f.items.includes(id))),
+  };
 }

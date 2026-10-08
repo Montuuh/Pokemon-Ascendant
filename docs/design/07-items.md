@@ -239,7 +239,6 @@ The other ten shape a turn rather than a number:
 
 | Relic | Category | Effect |
 |---|---|---|
-| **Master Ball Charm** | Meta | Once per run: a Pokéball use is a guaranteed catch, ignoring the gauge |
 | **Champion's Crest** | Combat | Each enemy a Pokémon defeats grants it +5 % damage this run, capped at +25 % |
 | **Time Spinner** | Combat | Every enemy but a boss loses its first turn of the fight |
 | **Phoenix Feather** | Combat | Once per run: prevent a faint and restore to 1 HP. Consumed |

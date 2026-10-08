@@ -17,7 +17,8 @@ test('the gate out of Celadon opens onto the Volcanic Highlands, and its Gym is 
   });
   await expect(page.getByTestId('city-screen')).toBeVisible();
   await page.getByTestId('door-gate').click();
-  await page.locator('[data-testid^="reflection-"]').first().click();
+  // §2.11.3 — Region Modifiers are off (v0.9.9): the gate only asks before you leave.
+  await expect(page.getByTestId('btn-depart')).toBeEnabled();
   await page.getByTestId('btn-depart').click();
 
   await expect(page.getByRole('heading', { name: 'Region 3' })).toBeVisible();

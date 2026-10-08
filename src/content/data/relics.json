@@ -771,25 +771,6 @@
       "tier": 3
     },
     {
-      "id": "master-ball-charm",
-      "name": "Master Ball Charm",
-      "rarity": "rare",
-      "categories": [
-        "meta"
-      ],
-      "description": "Once per run, a Poké Ball catches whatever it is thrown at, whatever the odds say.",
-      "hook": "guaranteed-catch",
-      "tier": 2,
-      "params": {
-        "oncePerRun": true
-      },
-      "discovery": {
-        "counter": "catch-fails",
-        "goal": 5,
-        "text": "Have 5 Poké Balls broken out of"
-      }
-    },
-    {
       "id": "time-spinner",
       "name": "Time Spinner",
       "rarity": "rare",

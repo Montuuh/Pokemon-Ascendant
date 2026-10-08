@@ -14,7 +14,7 @@ import { gymRelicOffer, RELIC_REWARD, rollFightSupplies, rollMixedOffer, service
 import { CASINO, CITIES, RING, cityAfter, isFinalRegion, pocketColour } from './cities';
 import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './events';
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
-import { priceFor, rollRegionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
+import { priceFor, regionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { BLACK_MARKET, atLegendaryCap, candyPrice, fencePrice, rollBlackMarket, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
@@ -60,7 +60,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 19;
+export const RUN_SAVE_VERSION = 20;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -581,7 +581,7 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
   const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null }, safari: null, blackMarket: null, daycareUsed: false } }, ctx);
   draft.cursors.EncounterRNG = rng.cursor;
   // The gate's offer is seeded from the run and the Region, like the pre-run offer is seeded from the run.
-  const reflection = rollRegionModifierOffer((draft.seed ^ Math.imul(draft.regionIndex + 1, 0x9e3779b1)) >>> 0, ctx.content, draft.box, draft.money);
+  const reflection = regionModifierOffer((draft.seed ^ Math.imul(draft.regionIndex + 1, 0x9e3779b1)) >>> 0, ctx.content, draft.box, draft.money);
   // §2.11.6 — the Safari's lineup is on its own stream, and its recruits stand at the next Region's recruit floor.
   const safariRng = safariRngOf(draft);
   const safari = rollSafari(safariRng, id, regionContent(draft.regionIndex + 1).wildBand[0]);
@@ -1587,7 +1587,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       // §2.11.3 — the gate. The pick *is* the departure: the modifier is set for the Region about to begin,
       // the next map is drawn, and the City is behind you.
       case 'depart-city': {
-        draft.regionModifier = action.modifierId;
+        draft.regionModifier = action.modifierId ?? null;
         draft.city = null;
         draft.regionIndex += 1;
         const mapRng = new RngStreams(draft.seed).get('MapRNG');
@@ -1603,7 +1603,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // docs/design/catalogs/economy.md §1 — one more Poké Ball as each Region begins.
         draft.consumables.push(...pokeBalls(RUN_START.ballsPerRegion));
         draft.phase = 'map';
-        say(draft, `Region ${draft.regionIndex + 1} begins — ${ctx.content.regionModifier(action.modifierId).name}.`);
+        say(draft, action.modifierId ? `Region ${draft.regionIndex + 1} begins — ${ctx.content.regionModifier(action.modifierId).name}.` : `Region ${draft.regionIndex + 1} begins.`);
         break;
       }
 
@@ -2063,6 +2063,8 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
 
     case 'depart-city': {
       if (state.phase !== 'city' || !state.city) return 'not-in-city';
+      // §2.11.3 — a pick from the gate's offer; none when it offers none (Region Modifiers off, v0.9.9).
+      if (action.modifierId === null) return state.city.reflection.length ? 'not-offered' : undefined;
       return state.city.reflection.includes(action.modifierId) ? undefined : 'not-offered';
     }
 

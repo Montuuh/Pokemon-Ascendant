@@ -209,6 +209,10 @@ each path's result as it is pointed at.
 Evolution operates on the **Learned Move Pool** (§6.7) and **rewrites it rather than piling onto it** (v0.9.5, the
 user's call: lines learned too many moves, and an evolution should keep the count, not raise it).
 
+**The caps are data and every species is checked against them** (`MOVE_CAP`, v0.9.9): a form holds at most **5**
+cards on any path through its line, learns at most 5 by level, and offers at most 3 tutor and 3 egg moves — at most
+**12** cards in all with its Mastery Move. `content.test` walks all 151, every path, on every check.
+
 **The payload, per evolution:**
 
 1. **Stat upscale** — the new species' base stats and growth take over.

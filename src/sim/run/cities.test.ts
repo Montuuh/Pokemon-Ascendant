@@ -4,7 +4,7 @@ import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
   activeSetups, arriveAtCity, createRun, defaultRunCtx, dojoPrice, GYMS, LAYERS, nodesInLayer, PRICES,
-  REGIONS, rerollPrice, wildBandFor, rollShopStock, runReducer, sellPrice, xpToNext,
+  REGIONS, REGION_MODIFIERS_ON, rerollPrice, wildBandFor, rollShopStock, runReducer, sellPrice, xpToNext,
   type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
@@ -61,10 +61,9 @@ describe('The seam — §2.1.4', () => {
     const s = clearRegion(start());
     expect(s.phase).toBe('city');
     expect(s.city?.id).toBe('pallet-town');
-    // §2.1.4.1 — Region 1's modifier expired with Region 1; the gate offers the next one.
+    // §2.1.4.1 — Region 1's modifier expired with Region 1; §2.11.3 — and the gate offers none while they are off (v0.9.9).
     expect(s.regionModifier).toBeNull();
-    expect(s.city!.reflection).toHaveLength(3);
-    expect(new Set(s.city!.reflection).size).toBe(3);
+    expect(s.city!.reflection).toEqual(REGION_MODIFIERS_ON ? expect.arrayContaining([expect.any(String)]) : []);
     expect(s.city!.shop.slots.length).toBeGreaterThan(0);
   });
 
@@ -72,7 +71,7 @@ describe('The seam — §2.1.4', () => {
     let s = clearRegion(start());
     const firstMap = s.map;
     const balls = ballsIn(s.consumables, content);
-    const pick = s.city!.reflection[1]!;
+    const pick = s.city!.reflection[1] ?? null;
     s = apply(s, { type: 'depart-city', modifierId: pick });
 
     expect(s.phase).toBe('map');
@@ -96,7 +95,7 @@ describe('The seam — §2.1.4', () => {
 
   it('TheGym_FightsAtTheShiftedLevels_TheMapPromised_§5.9.3', () => {
     let s = clearRegion(start());
-    s = apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0]! });
+    s = apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0] ?? null });
     const gym = nodesInLayer(s.map, LAYERS - 1)[0]!;
     // Stand next to the Gym and walk in: the scenario's levels are the preview's, offset and all.
     s = { ...s, reachable: [gym.id] };
@@ -106,15 +105,17 @@ describe('The seam — §2.1.4', () => {
 
   it('TheGate_OnlyTakesAModifierItOffered', () => {
     const s = clearRegion(start());
+    // Off (v0.9.9): no pick is the only way out; any modifier is one the gate did not offer.
+    if (!REGION_MODIFIERS_ON) expect(reject(s, { type: 'depart-city', modifierId: null })).toBeNull();
     const other = content.allRegionModifiers().find((m) => !s.city!.reflection.includes(m.id))!;
     expect(reject(s, { type: 'depart-city', modifierId: other.id })).toBe('not-offered');
   });
 
   it('SecondGym_ArrivesInCeladon_ThirdGym_WinsTheRun_§2.1', () => {
     let s = clearRegion(start());
-    s = clearRegion(apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0]! }));
+    s = clearRegion(apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0] ?? null }));
     expect(s.city?.id).toBe('celadon-city');
-    s = clearRegion(apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0]! }));
+    s = clearRegion(apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0] ?? null }));
     expect(s.outcome).toBe('victory');
     expect(s.phase).toBe('ended');
     expect(new Set(s.badges).size).toBe(3);

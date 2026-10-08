@@ -50,6 +50,10 @@ export interface AscendantDevTools {
     /** Set lifetime XP outright (levels settle on the next fold) — the fast way to see a track reward. */
     xp: (xp: number) => void;
     tokens: (n: number) => void;
+    /** Hand the account a Hub upgrade outright (the Twin Run, say) without buying it. */
+    grantHub: (...ids: sim.HubUpgrade[]) => void;
+    /** §8.9.2 — mark species as met (faced once), so their Pokédex sheets open. */
+    meet: (...speciesIds: string[]) => void;
     reset: () => void;
   };
   sim: typeof sim;
@@ -124,6 +128,18 @@ export function installDevTools(): void {
       tokens: (n) => {
         useAccountStore.setState({ account: { ...useAccountStore.getState().account, tokens: n } });
         // An empty fold writes the account, so the number survives the reload the next test step does.
+        useAccountStore.getState().record([]);
+      },
+      grantHub: (...ids) => {
+        const account = useAccountStore.getState().account;
+        useAccountStore.setState({ account: { ...account, hub: [...new Set([...account.hub, ...ids])] } });
+        useAccountStore.getState().record([]);
+      },
+      meet: (...ids) => {
+        const account = useAccountStore.getState().account;
+        const dex = { ...account.dex };
+        for (const id of ids) dex[id] = { ...sim.normalizeDexEntry(dex[id]), encounters: Math.max(1, sim.normalizeDexEntry(dex[id]).encounters) };
+        useAccountStore.setState({ account: { ...account, dex } });
         useAccountStore.getState().record([]);
       },
       reset: () => useAccountStore.getState().reset(),

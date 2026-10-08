@@ -428,3 +428,30 @@ export const sellPrice = (): number => Math.floor(PRICES.heldItem * PRICES.sellS
 
 /** §8.2.4 — Therapy: one stack off, priced by how bad it already is. */
 export const therapyPrice = (mon: PartyMon): number => PRICES.therapy(mon.traumaStacks);
+
+export type PricedKind = 'consumable' | 'relic' | 'held-item' | 'stone' | 'tm';
+
+/**
+ * §3 / §2.11.2 — an item's price at the route's merchant (a City adds `PRICES.cityMarkup`), or null for one never
+ * sold: the Master Ball, a Legendary relic, a signature held item. For the Item Guide (v0.9.9); a relic's price is
+ * before the collector's premium (`RELIC_PREMIUM`), which climbs with every relic bought.
+ */
+export function listPrice(kind: PricedKind, id: string, content: ContentRegistry): number | null {
+  switch (kind) {
+    case 'consumable': {
+      const c = content.consumable(id);
+      if (c.effect.kind === 'catch' && c.effect.sure) return null;
+      return PRICES.balls[id] ?? PRICES.consumableTier[c.tier] ?? null;
+    }
+    case 'relic': {
+      const r = content.relic(id);
+      return r.rarity === 'legendary' ? null : PRICES.relic[r.rarity];
+    }
+    case 'held-item':
+      return content.allHeldItems().find((h) => h.id === id)?.speciesLock ? null : PRICES.heldItem;
+    case 'stone':
+      return content.evolutionItem(id).price;
+    case 'tm':
+      return PRICES.tm;
+  }
+}

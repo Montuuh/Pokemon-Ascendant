@@ -40,7 +40,7 @@ export interface CatchOdds {
   statusMult: number;
   ballMult: number;
   hasStatus: boolean;
-  /** §8.6.1 Master Ball Charm — this throw cannot miss. */
+  /** §2.6.4.2 — a Master Ball: this throw cannot miss. */
   guaranteed: boolean;
 }
 
@@ -51,7 +51,8 @@ export function catchRateOf(speciesId: string, content: ContentRegistry): number
   return (CATCH.byRarity[s.rarity] ?? 0.5) * (CATCH.byStage[s.stage] ?? 1);
 }
 
-export function catchOdds(wild: Combatant, effect: Extract<ConsumableEffect, { kind: 'catch' }>, content: ContentRegistry, guaranteed = false): CatchOdds {
+export function catchOdds(wild: Combatant, effect: Extract<ConsumableEffect, { kind: 'catch' }>, content: ContentRegistry): CatchOdds {
+  const guaranteed = !!effect.sure;
   const hard = wild.status?.kind === 'sleep' || wild.status?.kind === 'freeze';
   const hasStatus = wild.status !== null || wild.confusionTurns > 0;
   const statusMult = hard ? CATCH.hardStatus : hasStatus ? CATCH.softStatus : 1;

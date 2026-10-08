@@ -1,0 +1,180 @@
+/* §8.4 — the Item Guide: the tabs and a search on top; the list on the left, the picked item on the right. */
+.root {
+  display: grid;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  cursor: pointer;
+}
+.tab[data-state='active'] {
+  border-color: var(--accent-action);
+  background: color-mix(in srgb, var(--accent-action) 22%, var(--surface-1));
+}
+.count {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.search {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-secondary);
+}
+.search input {
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink-primary);
+  outline: none;
+  width: 180px;
+}
+.body {
+  display: grid;
+  grid-template-columns: minmax(240px, 340px) 1fr;
+  gap: var(--sp-4);
+  align-items: start;
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  max-height: 62vh;
+  overflow: auto;
+}
+.row {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-1) var(--sp-2);
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
+  font: inherit;
+  color: var(--ink-primary);
+  text-align: left;
+  cursor: pointer;
+}
+.row:hover {
+  background: var(--surface-2);
+}
+.rowOn {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+}
+.rowName {
+  font-size: var(--type-small);
+}
+/* The rarity or tier, once above its rows. */
+.group {
+  margin: var(--sp-2) 0 2px var(--sp-2);
+  font-size: var(--type-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.metaTip {
+  cursor: help;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.mons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.empty {
+  padding: var(--sp-3);
+  color: var(--ink-secondary);
+}
+.detail {
+  max-width: 720px;
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+.detailHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.pixel {
+  image-rendering: pixelated;
+}
+.detailName {
+  margin: 0;
+  font-size: var(--type-h2);
+}
+.meta {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.description {
+  margin: 0;
+}
+.pending {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-left: 4px solid var(--accent-warning);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+}
+.facts {
+  margin: 0;
+  display: grid;
+  gap: var(--sp-2);
+}
+.fact {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: var(--sp-2);
+}
+.fact dt {
+  font-size: var(--type-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.fact dd {
+  margin: 0;
+  font-size: var(--type-small);
+}
+@media (max-width: 760px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+}

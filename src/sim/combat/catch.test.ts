@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { PIDGEY, STARTERS, consumableCard, content, ctx, dispatch, eventsOf, reject, scenario, start, tweak, withConsumableHand } from '../testing/harness';
 import { CATCH, catchOdds, catchRateOf, SHAKE_CHECKS, shakeChecks, wobblesShown } from './catch';
 import { GameRng } from '../rng/gameRng';
-import { catchStatus } from './preview';
+import { catchOptions, catchStatus } from './preview';
 
 // §2.6.4 — the catch chance (2026-09-21): a roll at a shown number, never a hidden one.
 
@@ -38,9 +38,9 @@ describe('Catch odds — §2.6.4.1', () => {
     expect(catchOdds(mon({ speciesId: 'snorlax' }), BALL, content).chance).toBeCloseTo(0.029, 3);
   });
 
-  it('AFaintedTarget_HasNoChance_AndAGuaranteedThrowHasAll', () => {
+  it('AFaintedTarget_HasNoChance_AndAMasterBallHasAll', () => {
     expect(catchOdds(mon({ hp: 0 }), BALL, content).chance).toBe(0);
-    expect(catchOdds(mon(), BALL, content, true)).toMatchObject({ chance: 1, guaranteed: true });
+    expect(catchOdds(mon({ speciesId: 'snorlax' }), { kind: 'catch', ballMultiplier: 1, sure: true }, content)).toMatchObject({ chance: 1, guaranteed: true });
   });
 });
 
@@ -73,12 +73,11 @@ describe('Throwing — §2.6.4.1', () => {
     expect(outcomes).toContain('in-progress');
   });
 
-  it('Throw_WithTheMasterBallCharm_CannotMiss_AndSpendsIt', () => {
-    let s = withConsumableHand(start(scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 2, relics: ['master-ball-charm'] })), ['poke-ball']);
-    expect(catchStatus(s, ctx)!.guaranteed).toBe(true);
-    s = dispatch(s, { type: 'use-consumable', cardId: consumableCard(s, 'poke-ball').id });
+  it('Throw_AMasterBall_CannotMiss_§2.6.4.2', () => {
+    const s0 = withConsumableHand(start(scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['master-ball'], balls: 1 })), ['master-ball']);
+    expect(catchOptions(s0, ctx)[0]!.odds).toMatchObject({ chance: 1, guaranteed: true });
+    const s = dispatch(s0, { type: 'use-consumable', cardId: consumableCard(s0, 'master-ball').id });
     expect(s.outcome).toBe('caught');
-    expect(s.player.spent).toContain('master-ball-charm');
   });
 
   it('Throw_NoBallsLeft_Rejected', () => {

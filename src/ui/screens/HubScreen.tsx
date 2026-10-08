@@ -13,6 +13,7 @@ import { LevelRing } from './hub/LevelRing';
 import { TrainerCard } from './hub/TrainerCard';
 import { PcTerminal } from './hub/PcTerminal';
 import { PokeMart } from './hub/PokeMart';
+import { ItemGuide } from './hub/ItemGuide';
 import { TokenIcon } from './hub/TokenIcon';
 import { LOBBY, LOBBY_EXIT, LOBBY_PEOPLE, LOBBY_SPOTS, type HubSpot } from './hub/lobby';
 import styles from './HubScreen.module.css';
@@ -23,8 +24,8 @@ import styles from './HubScreen.module.css';
 // "Lobby" closes it. The level dial and the Token count sit in the header above both, because they are the two
 // numbers the whole room is about.
 
-const SPOT_LABEL: Record<HubSpot, string> = { mart: 'Poké Mart', card: 'Trainer Card', pc: 'PC Terminal', run: 'New run' };
-const KIOSK_LABEL: Record<Exclude<HubSpot, 'run'>, string> = { mart: 'Poké Mart', card: 'Trainer Card', pc: 'PC Terminal' };
+const SPOT_LABEL: Record<HubSpot, string> = { mart: 'Poké Mart', card: 'Trainer Card', pc: 'PC Terminal', guide: 'Item Guide', run: 'New run' };
+const KIOSK_LABEL: Record<Exclude<HubSpot, 'run'>, string> = { mart: 'Poké Mart', card: 'Trainer Card', pc: 'PC Terminal', guide: 'Item Guide' };
 
 export function HubScreen() {
   const goTo = useAppStore((s) => s.goTo);
@@ -97,6 +98,7 @@ export function HubScreen() {
           {kiosk === 'card' && <TrainerCard />}
           {kiosk === 'pc' && <PcTerminal />}
           {kiosk === 'mart' && <PokeMart />}
+          {kiosk === 'guide' && <ItemGuide />}
         </section>
       ) : (
         <PixelRoom<HubSpot>
