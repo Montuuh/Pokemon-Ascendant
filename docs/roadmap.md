@@ -1060,7 +1060,9 @@ rarity (`ScenarioDef.wildTier` → `CombatState.wildTier`) and `WildTierBanner` 
 opens, fading as it begins (a star and a glow for a Rare; still and brief under reduced motion); fixture
 `?scenario=wild-rare`. Region 2's Gyms, now Arcanine and Electrode where Growlithe and Voltorb stood, lost 34 %:
 `GYM_ATTACK_MULTIPLIER` ×1.15 / ×1.1 / ×1.15 and Attack ×1.4 / ×2.5 / ×3.6 — R1 64 % · R2|R1 57 % · R3|R2 50 % · run 18 %
-(720 runs). The quick band's Region 3 floor is 0.2 now: its 40-seed block reads 0.25 where 240 seeds read 0.44.
+(720 runs). The quick band's Region 3 floor is 0.2 now: its 40-seed block reads 0.25 where 240 seeds read 0.44. **After the user's look at it:** a shiny looked plain on the Evolution screen — the official artwork has no shiny
+version — so a shiny is drawn there with its battle sprite in the shiny palette (whole-number scale, the paths' icons
+at their own size) and its name carries the shiny mark; the sim always kept the flag.
 
 ### v0.9.9 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the

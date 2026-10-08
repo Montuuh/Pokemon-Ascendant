@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useMemo, useRef, useState, type KeyboardEvent, type SyntheticEvent } from 'react';
 import { IconArrowNarrowRight, IconPlus, IconSparkles } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
@@ -6,6 +6,8 @@ import { boxIconUrl, portraitUrl } from '@/content/schemas/species';
 import { previewBranch, type BranchPreview } from '@/sim';
 import { EvolutionCutscene } from '@/ui/components/EvolutionCutscene';
 import { MoveChip } from '@/ui/components/MoveChip';
+import { ShinyMark } from '@/ui/components/ShinyMark';
+import { spriteOf } from '@/ui/art';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { ARCHETYPE_LABEL, EVOLUTION_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
@@ -118,9 +120,18 @@ function EvolutionChoice({ uid }: { uid: string }) {
 
         <aside className={styles.hero} aria-label={focus ? `${after.name} on this path` : `${before.name} now`}>
           <div className={styles.portraitWrap}>
-            <img key={after.id} className={styles.portrait} src={portraitUrl(after.dex, after.id)} alt={after.name} width={200} height={200} data-testid="evolution-after" />
+            {/* §5.14 — a shiny keeps its palette through the evolution. The official artwork has no shiny version, so a
+                shiny is drawn with its battle sprite in the shiny palette, at a whole-number scale as the cutscene draws it. */}
+            {mon.shiny ? (
+              <ShinySprite key={after.id} speciesId={after.id} name={after.name} />
+            ) : (
+              <img key={after.id} className={styles.portrait} src={portraitUrl(after.dex, after.id)} alt={after.name} width={200} height={200} data-testid="evolution-after" />
+            )}
           </div>
-          <p className={`${styles.heroName} display`}>{after.name}</p>
+          <p className={`${styles.heroName} display`}>
+            {after.name}
+            {mon.shiny && <ShinyMark name={after.name} size={16} owned />}
+          </p>
           <span className={styles.types}>
             {after.types.map((t) => (
               <TypeBadge key={t} type={t} size={18} defenderTypes={after.types} />
@@ -200,7 +211,13 @@ function EvolutionChoice({ uid }: { uid: string }) {
                   <Tipped as="span" tabIndex={-1} tip={branchTip(branch.label, branch.description, branch.archetype)} className={`${styles.branchName} display`}>
                     {branch.label}
                   </Tipped>
-                  {!oneSpecies && <img className={`pixel ${styles.branchIcon}`} src={boxIconUrl(to.dex, to.id)} alt={to.name} width={40} height={40} />}
+                  {!oneSpecies &&
+                    (mon.shiny ? (
+                      // At its own size: a pixel sprite shrunk to the box icon's 40 px loses its pixels.
+                      <img className={`pixel ${styles.branchSprite}`} src={spriteOf({ speciesId: to.id }, 'front', true)} alt={`Shiny ${to.name}`} />
+                    ) : (
+                      <img className={`pixel ${styles.branchIcon}`} src={boxIconUrl(to.dex, to.id)} alt={to.name} width={40} height={40} />
+                    ))}
                 </span>
 
                 <ul className={styles.diff}>
@@ -244,5 +261,30 @@ function EvolutionChoice({ uid }: { uid: string }) {
         </footer>
       </div>
     </main>
+  );
+}
+
+/**
+ * §5.14 — a shiny's battle sprite in the hero's box, at the largest whole-number scale that fits it (the cutscene's
+ * rule), so the pixels stay square at every size the box takes.
+ */
+function ShinySprite({ speciesId, name }: { speciesId: string; name: string }) {
+  const [size, setSize] = useState<[number, number] | null>(null);
+  const onLoad = (e: SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    const box = img.parentElement?.clientWidth ?? 200;
+    const scale = Math.max(1, Math.floor(box / Math.max(1, img.naturalWidth, img.naturalHeight)));
+    setSize([img.naturalWidth * scale, img.naturalHeight * scale]);
+  };
+  return (
+    <img
+      className={`pixel ${styles.portrait}`}
+      style={size ? { width: size[0], height: size[1] } : { visibility: 'hidden' }}
+      src={spriteOf({ speciesId }, 'front', true)}
+      alt={`Shiny ${name}`}
+      onLoad={onLoad}
+      data-testid="evolution-after"
+      data-shiny="true"
+    />
   );
 }

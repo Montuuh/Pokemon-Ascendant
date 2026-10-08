@@ -16,6 +16,25 @@ async function newRun(page: Page, starter = 'bulbasaur', seed = 7): Promise<void
   await expect(page.getByTestId('map-screen')).toBeVisible();
 }
 
+test('a shiny stays shiny on the Evolution screen, and after it — §5.14', async ({ page }) => {
+  await newRun(page);
+  await page.evaluate(() => window.__ascendant!.run.fill(3));
+  await page.evaluate(() => window.__ascendant!.run.patch((d) => { d.box[0]!.shiny = true; }));
+  await page.evaluate(() => window.__ascendant!.run.levelTo(11));
+  await page.evaluate(() => window.__ascendant!.run.goto('wild', true));
+  await expect(page.getByTestId('evolution-screen')).toBeVisible();
+  const hero = page.getByTestId('evolution-after');
+  await expect(hero).toHaveAttribute('data-shiny', 'true');
+  await expect(hero).toHaveAttribute('src', /bulbasaur-shiny/);
+  await expect(page.getByTestId('evolution-screen').getByTestId('shiny-mark')).toBeVisible();
+  await page.locator('[data-archetype="specialist"]').click();
+  await expect(hero).toHaveAttribute('src', /ivysaur-shiny/);
+  await page.mouse.move(0, 0);
+  await page.screenshot({ path: 'playtest/run-evolution-shiny.png' });
+  await page.getByTestId('btn-evolve').click();
+  await expect.poll(() => page.evaluate(() => window.__ascendant!.run.state()!.box[0]!)).toMatchObject({ speciesId: 'ivysaur', shiny: true });
+});
+
 test('the Evolution screen offers the archetypes and applies the one you pick', async ({ page }) => {
   await newRun(page);
   // §6.2.4 — Bulbasaur's threshold is 12. Standing it at 11 means the next node's XP crosses it.
