@@ -145,8 +145,12 @@ export interface BranchPreview {
   adds: string[];
   /** The passive this branch ends up granting, or null when it leaves a chosen one alone. */
   abilityId: string | null;
-  /** Level-scaled stat change from the species swap, at the Pokémon's current level. */
-  statDelta: { hp: number; attack: number; defense: number; speed: number };
+  /** The four stats before and after the species swap, at the Pokémon's current level (the Evolution screen's bars). */
+  statsBefore: { hp: number; attack: number; defense: number; speed: number };
+  statsAfter: { hp: number; attack: number; defense: number; speed: number };
+  /** The pool and the active 4 this branch leaves — what `applyBranch` would make of them, computed by it. */
+  pool: string[];
+  kit: string[];
 }
 
 export function previewBranch(mon: PartyMon, branchId: string, content: ContentRegistry): BranchPreview {
@@ -168,18 +172,22 @@ export function previewBranch(mon: PartyMon, branchId: string, content: ContentR
   }
 
   const granted = branch.abilityId ?? after.availableAbilities[0] ?? null;
+  const stats = (sp: typeof before) => ({ hp: at(sp, 'hp'), attack: at(sp, 'attack'), defense: at(sp, 'defense'), speed: at(sp, 'speed') });
+  const statsBefore = stats(before);
+  const statsAfter = stats(after);
+  // The resulting kit, by the very function that will apply it, on a copy: the preview cannot disagree with the payload.
+  const trial: PartyMon = { ...mon, pool: [...mon.pool], moveIds: [...mon.moveIds] };
+  applyBranch(trial, branchId, content);
   return {
     branchId,
     to: branch.to,
     upgrades,
     adds,
     abilityId: branch.abilityId || mon.abilityId === null ? granted : null,
-    statDelta: {
-      hp: at(after, 'hp') - at(before, 'hp'),
-      attack: at(after, 'attack') - at(before, 'attack'),
-      defense: at(after, 'defense') - at(before, 'defense'),
-      speed: at(after, 'speed') - at(before, 'speed'),
-    },
+    statsBefore,
+    statsAfter,
+    pool: trial.pool,
+    kit: trial.moveIds,
   };
 }
 

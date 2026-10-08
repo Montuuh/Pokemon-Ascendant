@@ -3,7 +3,7 @@ import { ballsIn } from './rewards';
 import { buildRegistry } from '@/content/registry';
 import { PAD_LEVEL_GAP } from './region';
 import {
-  activeSetups, applyBranch, autoPickMoves, createRun, defaultRunCtx, deserialiseRun, generateRegion,
+  activeSetups, applyBranch, previewBranch, autoPickMoves, createRun, defaultRunCtx, deserialiseRun, generateRegion,
   isEvolutionReady, LAYERS, maxHpOf, nodesInLayer, runReducer, serialiseRun, xpToNext, assertRegionContent,
   grantXp, newPartyMon, wildBandFor, PRICES, gymById, FLEE_TOLL, fleeTierFor,
   type CombatOutcomeReport, type RunAction, type RunState,
@@ -591,6 +591,22 @@ describe('Evolution — §6.2.4, §6.3', () => {
     expect(mon.moveIds).not.toContain('tackle');
     // §6.5.1 — the first evolution grants the pool's first passive.
     expect(mon.abilityId).toBe('overgrow');
+  });
+
+  it('Preview_ShowsTheKitAndStatsTheBranchWillLeave_§6.3.3', () => {
+    const mon = newPartyMon('bulbasaur', 5, content, 1);
+    grantXp(mon, xpTo(13), content);
+    for (const b of ['ivysaur-vanguard', 'ivysaur-specialist', 'ivysaur-support']) {
+      const p = previewBranch(mon, b, content);
+      const copy = structuredClone(mon);
+      applyBranch(copy, b, content);
+      expect(p.pool, b).toEqual(copy.pool);
+      expect(p.kit, b).toEqual(copy.moveIds);
+      expect(p.statsAfter.hp).toBeGreaterThan(p.statsBefore.hp);
+    }
+    // The preview never touches the Pokémon it reads.
+    expect(mon.speciesId).toBe('bulbasaur');
+    expect(mon.pool).toHaveLength(4);
   });
 
   it('Branch_IsPickedFreshEachTime_AndCanCarryItsOwnPassive_§6.3.3', () => {

@@ -56,6 +56,10 @@
   --brand-red-deep: #c93a3a;
   --brand-blue: #4fa3e3;
   --brand-cream: #fff1d6;
+  /* §6.3.4 — the three archetypes, as fills under dark ink (the Evolution screen). */
+  --arch-vanguard: #f6b9a3;
+  --arch-specialist: #a9cdf5;
+  --arch-support: #b6e3bd;
   --shield: #a8e6f0;
 
   /* ---- §2.11.5 — the Roulette: the classic wheel's pockets, its wooden rim and the ivory ball ---- */

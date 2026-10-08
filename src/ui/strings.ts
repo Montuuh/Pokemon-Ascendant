@@ -450,6 +450,15 @@ export const SLOT_FACE_LABEL: Record<string, string> = {
 };
 
 // §6.3.4 — the three archetypes, in the words the Evolution screen uses.
+/** §6.3.3 / §9.9.1 — the Evolution screen and its cutscene (v0.9.5). */
+export const EVOLUTION_TEXT = {
+  evolving: (name: string) => `What? ${name} is evolving!`,
+  evolved: (from: string, to: string) => `Congratulations! Your ${from} evolved into ${to}!`,
+  choose: (name: string) => `Choose ${name}'s path`,
+  pick: 'Pick a path.',
+  evolve: (label: string | null) => (label ? `Evolve · ${label}` : 'Evolve'),
+};
+
 export const ARCHETYPE_LABEL: Record<string, string> = {
   vanguard: 'Vanguard',
   specialist: 'Specialist',

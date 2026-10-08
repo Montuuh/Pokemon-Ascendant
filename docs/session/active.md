@@ -1,9 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-08 · **Version:** v0.9.5 shipped (*Moves and kits, revamped*).
+**Date:** 2026-10-08 · **Version:** v0.9.6 shipped (*The evolution, animated*).
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
-**Sprint goal next:** **v0.9.6** Victory Road (see `docs/roadmap.md`).
+**Sprint goal next:** **v0.9.7** Victory Road (see `docs/roadmap.md`).
 
 **v0.8.7–v0.8.10** — the route, balance, harness, growth curves (`BALANCE_REPORT=1 REPORT_SEEDS=240`). **v0.9.1** — Shiny found in the wild (§5.14, `run/shiny.ts`, 1 in 40, `copyIsShiny`), its collection in the
 Pokédex, +N Bond on the reward screen; the Bond in four linear ranks of 100 (Shiny Charm · hidden ability · the whole
@@ -13,7 +13,7 @@ Plateau lobby (`PixelRoom`, `hub/lobby.ts`, `npm run art:hub`); leftover ₽ →
 3 Tokens a level, shelves 1/2/4/6, no Discoveries shelf — `balance/accountCareer.test.ts` (`ACCOUNT_REPORT=1`).
 **v0.9.3** — the arena's beats (§9.9.1): the catch, send-out, recall, faint ghosts (`useCombatFx`, `ArenaFx`); e2e runs
 reduced motion by default, `e2e/animations.spec.ts` turns it on. **v0.9.4** — the catch as four shake checks (§2.6.4.4, `shakeChecks`). **v0.9.5** — every move Gen I (`moves.md`,
-`gen1-moves.json`), kits 2 → 4 → 5 → 5 by slots (`sim/combat/kit.ts`, §6.3.5), `scripts/v095-moves/`; stat tier re-tuned.
+`gen1-moves.json`), kits 2 → 4 → 5 → 5 by slots (`sim/combat/kit.ts`, §6.3.5), `scripts/v095-moves/`; stat tier re-tuned. **v0.9.6** — `EvolutionCutscene`, the Evolution screen reworked.
 
 **Findings to act on:** every Gym's ace sits 1–2 levels under the team; Region 2's Gyms lost 2 % of the time; the Rare Candy is worth 8 points
 of Region 3; the breather's 8 % / 30 % unmeasured. UI nits left: locked Wild emblems hard to tell apart in grey;

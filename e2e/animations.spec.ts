@@ -91,4 +91,32 @@ test.describe('Arena animations — §9.9', () => {
     await page.screenshot({ path: 'playtest/anim-return.png' });
     await expect(ghost).toHaveCount(0, { timeout: 4_000 });
   });
+
+  test('the evolution plays as the series plays it, then the choice; a click skips it (§9.9.1)', async ({ page }) => {
+    await page.goto('/?screen=menu');
+    await page.evaluate(() => window.localStorage.clear());
+    await page.reload();
+    await page.waitForFunction(() => !!(window as unknown as { __ascendant?: unknown }).__ascendant);
+    await page.evaluate(() => {
+      const a = (window as unknown as { __ascendant: { run: { new: (s: string, n: number) => void; fill: (n: number) => void; levelTo: (l: number) => void; goto: (k: string, stop?: boolean) => void }; goTo: (s: string) => void } }).__ascendant;
+      a.run.new('bulbasaur', 7);
+      a.goTo('map');
+      a.run.fill(3);
+      a.run.levelTo(11);
+      a.run.goto('wild', true);
+    });
+    const cut = page.getByTestId('evolution-cutscene');
+    await expect(cut).toBeVisible();
+    await expect(page.getByTestId('evolution-line')).toContainText('is evolving');
+    // Into the trade: the two shapes of light swap places.
+    await expect(cut).toHaveAttribute('data-phase', 'trade', { timeout: 4_000 });
+    await page.waitForTimeout(900);
+    await page.screenshot({ path: 'playtest/anim-evolution.png' });
+    await expect(cut).toHaveAttribute('data-phase', 'reveal', { timeout: 6_000 });
+    await expect(page.getByTestId('evolution-line')).toContainText('evolved into Ivysaur');
+    await page.screenshot({ path: 'playtest/anim-evolution-reveal.png' });
+    await page.getByTestId('evo-skip').click();
+    await expect(page.getByTestId('evolution-screen')).toBeVisible();
+    await expect(page.locator('[data-testid^="branch-"]')).toHaveCount(3);
+  });
 });

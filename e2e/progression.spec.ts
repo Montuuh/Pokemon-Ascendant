@@ -27,10 +27,17 @@ test('the Evolution screen offers the archetypes and applies the one you pick', 
 
   await expect(page.getByTestId('evolution-screen')).toBeVisible();
 
-  // §6.3.3 — a starter offers three, and every card names its payload rather than just its archetype.
+  // §6.3.3 — a starter offers three, and every card names its payload as move chips rather than just its archetype.
   const branches = page.locator('[data-testid^="branch-"]');
   await expect(branches).toHaveCount(3);
-  await expect(branches.first()).toContainText(/AP/);
+  await expect(branches.first().locator('[data-move]').first()).toBeVisible();
+  // The stats are bars with their numbers, and pointing at a path previews the kit it leaves.
+  await expect(page.getByTestId('stat-attack')).toContainText('+');
+  await page.locator('[data-archetype="specialist"]').hover();
+  await expect(page.getByTestId('evolution-kit')).toContainText('Sleep Powder', { timeout: 10_000 });
+  await page.locator('[data-archetype="specialist"] [data-move="sleep-powder"]').hover();
+  await expect(page.getByTestId('tooltip')).toContainText('Sleep Powder', { timeout: 10_000 });
+  await page.screenshot({ path: 'playtest/run-evolution-hover.png' });
   for (const archetype of ['vanguard', 'specialist', 'support']) {
     await expect(page.locator(`[data-archetype="${archetype}"]`)).toHaveCount(1);
   }
@@ -40,7 +47,8 @@ test('the Evolution screen offers the archetypes and applies the one you pick', 
   await page.locator('[data-archetype="specialist"]').click();
   await expect(page.getByTestId('btn-evolve')).toBeEnabled();
   await expect(page.getByTestId('evolution-after')).toBeVisible();
-  await page.waitForTimeout(1200); // let the morph finish, so the screenshot shows the "after"
+  await page.mouse.move(0, 0);
+  await page.waitForTimeout(400);
   await page.screenshot({ path: 'playtest/run-evolution.png' });
 
   const before = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.speciesId);

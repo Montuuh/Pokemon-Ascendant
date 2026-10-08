@@ -1,0 +1,186 @@
+/* §9.9.1 — the evolution cutscene: a dark stage, a sprite of light, a bloom behind it, the line in a dialogue box. */
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  background: radial-gradient(60% 55% at 50% 45%, var(--surface-2) 0%, var(--surface-sunken) 75%);
+  color: var(--ink-primary);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.skip {
+  position: absolute;
+  top: var(--sp-4);
+  right: var(--sp-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface-1) 80%, transparent);
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
+}
+.skip:hover,
+.skip:focus-visible {
+  color: var(--ink-primary);
+  border-color: var(--border-strong);
+}
+
+/* The light behind the sprite: a slow pulse while it changes, a bloom at the turn, a warm halo once it is done. */
+.glow {
+  position: absolute;
+  width: 520px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--ink-primary) 55%, transparent) 0%, color-mix(in srgb, var(--accent-action) 18%, transparent) 40%, transparent 70%);
+  opacity: 0.35;
+  animation: evoPulse var(--evo-pulse) ease-in-out infinite;
+}
+.bloom {
+  animation: evoBloom var(--evo-bloom) ease-out both;
+}
+.settled {
+  opacity: 0.55;
+  animation: none;
+  transform: scale(1.1);
+  transition: opacity var(--evo-reveal) ease, transform var(--evo-reveal) ease;
+}
+
+/* Both sprites stand on one baseline, centred, each at its own size times the shared scale. */
+.stage {
+  position: relative;
+  width: 400px;
+  height: 400px;
+}
+.loading {
+  visibility: hidden;
+}
+.sprite {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10%;
+  margin: 0 auto;
+  max-width: none;
+  transition: filter var(--evo-whiten) ease;
+}
+/* A shape of light: every pixel the same warm white, which is why trading two of them is not a flash. */
+.silhouette {
+  filter: brightness(0) invert(1) drop-shadow(0 0 12px color-mix(in srgb, var(--accent-action) 70%, transparent));
+}
+.hidden {
+  visibility: hidden;
+}
+.popIn {
+  animation: evoPop var(--evo-reveal) var(--ease-spring) both;
+}
+
+.sparks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--evo-fade) ease;
+}
+.sparksOn {
+  opacity: 1;
+}
+.sparks i {
+  position: absolute;
+  bottom: 30%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: var(--accent-action);
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  animation: evoRise var(--evo-rise) linear infinite;
+}
+.sparks i:nth-child(odd) {
+  background: var(--ink-primary);
+}
+.sparks i:nth-child(1) { --x: -150px; animation-delay: 0s; }
+.sparks i:nth-child(2) { --x: 120px; animation-delay: 0.3s; }
+.sparks i:nth-child(3) { --x: -90px; animation-delay: 0.6s; }
+.sparks i:nth-child(4) { --x: 170px; animation-delay: 0.9s; }
+.sparks i:nth-child(5) { --x: -40px; animation-delay: 1.2s; }
+.sparks i:nth-child(6) { --x: 60px; animation-delay: 1.5s; }
+.sparks i:nth-child(7) { --x: -180px; animation-delay: 1.8s; }
+.sparks i:nth-child(8) { --x: 20px; animation-delay: 2.1s; }
+.sparks i:nth-child(9) { --x: 140px; animation-delay: 0.45s; }
+.sparks i:nth-child(10) { --x: -120px; animation-delay: 0.75s; }
+.sparks i:nth-child(11) { --x: 95px; animation-delay: 1.05s; }
+.sparks i:nth-child(12) { --x: -10px; animation-delay: 1.35s; }
+.sparks i:nth-child(13) { --x: 200px; animation-delay: 1.65s; }
+.sparks i:nth-child(14) { --x: -200px; animation-delay: 1.95s; }
+
+/* The series' dialogue box, along the bottom. */
+.box {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  width: min(760px, calc(100% - 2 * var(--sp-4)));
+  transform: translateX(-50%);
+  margin: 0;
+  padding: var(--sp-4) var(--sp-5);
+  border: 3px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  font-size: var(--type-h3);
+  text-align: center;
+}
+
+@keyframes evoPulse {
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+@keyframes evoBloom {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.9);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0.55;
+  }
+}
+@keyframes evoPop {
+  0% {
+    transform: scale(0.85);
+    filter: brightness(2.2);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    filter: none;
+  }
+}
+@keyframes evoRise {
+  0% {
+    transform: translate(var(--x), 0) scale(0.4);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(var(--x) * 0.6), -320px) scale(1);
+    opacity: 0;
+  }
+}

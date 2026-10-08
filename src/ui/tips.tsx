@@ -4,7 +4,7 @@ import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWC
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { ARCHETYPE_HINT, ARCHETYPE_LABEL, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 
 // Every explanation the game offers on hover, in one file.
@@ -895,4 +895,39 @@ export function catchPickerTip(odds: CatchOdds): ReactNode {
       footer="Knock it out and the recruit is lost."
     />
   );
+}
+
+// ── The Evolution screen (§6.3.3, v0.9.5) ───────────────────────────────────────────────────────────────
+
+const STAT_BODY: Record<string, string> = {
+  hp: 'How much it takes before fainting.',
+  attack: 'Every move it plays hits this much harder.',
+  defense: 'Every hit it takes lands this much softer.',
+  speed: 'Breaks ties: who acts first when both could.',
+};
+
+/** One stat bar: what it does, and the number before and after, at the Pokémon's level. */
+export function evoStatTip(stat: string, label: string, from: { name: string; value: number }, to: { name: string; value: number }, level: number): ReactNode {
+  const d = to.value - from.value;
+  return <Tip title={label} meta={[`Lv ${level}`, `${d >= 0 ? '+' : ''}${d}`]} body={STAT_BODY[stat] ?? ''} footer={`${from.name} ${from.value} → ${to.name} ${to.value}`} />;
+}
+
+/** An archetype's pill: what that path plays like. */
+export function archetypeTip(archetype: string): ReactNode {
+  return <Tip title={ARCHETYPE_LABEL[archetype] ?? archetype} meta={['Archetype']} body={ARCHETYPE_HINT[archetype] ?? ''} footer="Chosen fresh at every evolution: this pick does not lock the next." />;
+}
+
+/** A branch's name: its identity line. */
+export function branchTip(label: string, description: string, archetype: string): ReactNode {
+  return <Tip title={label} meta={[ARCHETYPE_LABEL[archetype] ?? archetype]} body={description} />;
+}
+
+/** The kit a branch leaves: what the filled and the new chips mean. */
+export function evoKitTip(): ReactNode {
+  return <Tip title="The kit after" body="Every card this path leaves in the pool. Filled ones are in your active four; a dot marks a card the evolution brings." footer="Swap them freely in the Move Manager." />;
+}
+
+/** The Evolve button: what pressing it settles. */
+export function evolveTip(label: string): ReactNode {
+  return <Tip title={label} body="Evolves now with this path's moves and passive." footer="Final for this stage — the next evolution asks again." />;
 }

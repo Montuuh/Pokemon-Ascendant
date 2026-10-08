@@ -1,20 +1,25 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { IconArrowNarrowRight, IconPlus, IconSparkles } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { portraitUrl } from '@/content/schemas/species';
+import { boxIconUrl, portraitUrl } from '@/content/schemas/species';
 import { previewBranch, type BranchPreview } from '@/sim';
-import { TypeBadge } from '@/ui/components/TypeBadge';
-import { ARCHETYPE_HINT, ARCHETYPE_LABEL, RUN_REJECT_TEXT } from '@/ui/strings';
+import { EvolutionCutscene } from '@/ui/components/EvolutionCutscene';
+import { TypeBadge, TypeLabel } from '@/ui/components/TypeBadge';
+import { useMotionPref } from '@/ui/hooks/useMotionPref';
+import { ARCHETYPE_LABEL, EVOLUTION_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
+import { abilityTip, archetypeTip, branchTip, evoKitTip, evoStatTip, evolveTip, moveDefTip } from '@/ui/tips';
+import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EvolutionScreen.module.css';
 
-// Per docs/design/ui/screens.md §3.6 and §6.3.3 — the Evolution screen. This is the one place the game goes
-// fully celebratory (§9.9), and it is also the run's biggest decision (Pillar 4), so the two have to share a
-// screen without the confetti burying the choice: the animation plays once on the left, the branch cards sit
-// on the right and stay readable the whole time.
-//
-// Reduced motion cuts straight to the "after" portrait. There is no white flash at any setting — the §9.9
-// camera-flash is the one effect we have not built, and a missing flourish is better than an unsafe one.
+// Per docs/design/ui/screens.md §3.6 and §6.3.3 — the Evolution screen (reworked in v0.9.5). The series' evolution
+// plays first (`EvolutionCutscene`); then the run's biggest decision, said in pictures rather than paragraphs: on the
+// left the Pokémon this path makes — its stats as bars, the kit it leaves — and on the right one compact card per
+// path, its changes as move chips. Pointing at a path previews it on the left; every chip, bar and pill explains itself
+// on hover. When the paths lead to different species (Eevee by level) the cutscene waits for the choice instead.
+
+// An archetype → its colour stripe and pill.
+const ARCH_CLASS: Record<string, string | undefined> = { vanguard: styles.vanguard, specialist: styles.specialist, support: styles.support };
 
 const STATS = [
   ['hp', 'HP'],
@@ -23,125 +28,174 @@ const STATS = [
   ['speed', 'Speed'],
 ] as const;
 
-/** §9.6 — reduced motion gets the "after" immediately: no morph, no hold, nothing to sit through. */
-const prefersReducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-
 export function EvolutionScreen() {
   const pending = useRunStore((s) => s.run?.pendingEvolutions[0]);
   // Keyed by uid so a queue of two evolutions is two mounts, not one component reset from inside an effect.
   return pending ? <EvolutionChoice key={pending.uid} uid={pending.uid} /> : null;
 }
 
+/** A move as a chip, with its card on hover. Inside a path card it takes no tab stop: the card's label reads it out. */
+function MoveChip({ id, active, fresh, struck, inCard }: { id: string; active?: boolean; fresh?: boolean; struck?: boolean; inCard?: boolean }) {
+  const m = getContent().move(id);
+  return (
+    <Tipped as="span" tip={moveDefTip(m)} tabIndex={inCard ? -1 : 0} className={[styles.chip, active ? styles.active : '', struck ? styles.struck : ''].join(' ')} data-move={id}>
+      <TypeLabel type={m.type} size={12} />
+      <span className={styles.chipName}>{m.name}</span>
+      {fresh && <span className={styles.fresh} role="img" aria-label="new" />}
+    </Tipped>
+  );
+}
+
 function EvolutionChoice({ uid }: { uid: string }) {
   const run = useRunStore((s) => s.run)!;
   const dispatch = useRunStore((s) => s.dispatch);
   const content = getContent();
+  const animate = useMotionPref();
   const pending = run.pendingEvolutions[0];
   const mon = run.box.find((m) => m.uid === uid);
 
   // §6.3.2 — a stone that makes one branch (Eevee) leaves nothing to pick, so that one is picked already.
   const [picked, setPicked] = useState<string | null>(pending && pending.branchIds.length === 1 ? pending.branchIds[0]! : null);
-  // The morph is a one-shot: it starts a beat after the screen mounts so the "before" is seen first.
-  const [morphed, setMorphed] = useState(prefersReducedMotion);
-  // What the run said when it did not take the choice: a button never fails silently.
+  const [hovered, setHovered] = useState<string | null>(null);
   const [refused, setRefused] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (prefersReducedMotion()) return;
-    const t = window.setTimeout(() => setMorphed(true), 900);
-    return () => window.clearTimeout(t);
-  }, []);
+  const cards = useRef<(HTMLDivElement | null)[]>([]);
+  const evolveTipProps = useTip(picked ? evolveTip(content.branch(picked).label) : null);
 
   const previews = useMemo<BranchPreview[]>(
     () => (mon && pending ? pending.branchIds.map((id) => previewBranch(mon, id, content)) : []),
     [mon, pending, content],
   );
+  const oneSpecies = new Set(previews.map((p) => p.to)).size <= 1;
+  // The cutscene: before the choice when every path makes the same Pokémon, after it when they do not.
+  const [cut, setCut] = useState<'intro' | 'choose' | 'outro'>(animate && oneSpecies ? 'intro' : 'choose');
 
   if (!pending || !mon) return null;
 
   const before = content.species(pending.from);
-  const chosen = picked ? previews.find((p) => p.branchId === picked)! : null;
-  // Before a choice, the "after" portrait is whatever the branches agree on — for every line in Region 1
-  // that is one species, so the reveal is honest even while the archetype is still open.
-  const afterId = chosen?.to ?? previews[0]?.to ?? before.id;
-  const after = content.species(afterId);
+  const focusId = hovered ?? picked ?? previews[0]?.branchId ?? null;
+  const focus = previews.find((p) => p.branchId === focusId) ?? previews[0];
+  const after = content.species(focus?.to ?? before.id);
+  const top = Math.max(1, ...previews.flatMap((p) => STATS.map(([k]) => Math.max(p.statsAfter[k], p.statsBefore[k])))) * 1.1;
+
+  const evolve = () => {
+    if (!picked) return;
+    if (!dispatch({ type: 'choose-branch', uid: mon.uid, branchId: picked })) {
+      setRefused(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? RUN_REJECT_TEXT['internal-error']!);
+    }
+  };
+  const confirm = () => {
+    if (!picked) return;
+    if (animate && !oneSpecies) setCut('outro');
+    else evolve();
+  };
+
+  if (cut === 'intro') return <EvolutionCutscene fromId={before.id} toId={after.id} shiny={!!mon.shiny} onDone={() => setCut('choose')} />;
+  if (cut === 'outro' && picked) return <EvolutionCutscene fromId={before.id} toId={previews.find((p) => p.branchId === picked)!.to} shiny={!!mon.shiny} onDone={evolve} />;
+
+  const choose = (id: string) => {
+    setPicked(id);
+    setRefused(null);
+  };
+  // A radiogroup: one tab stop, the arrows move between paths and pick (WAI-ARIA), Enter and Space pick.
+  const onCardKey = (e: KeyboardEvent, i: number) => {
+    const step = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+    if (step) {
+      e.preventDefault();
+      const j = (i + step + previews.length) % previews.length;
+      choose(previews[j]!.branchId);
+      cards.current[j]?.focus();
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      choose(previews[i]!.branchId);
+    }
+  };
+  const tabStop = picked ?? previews[0]?.branchId;
 
   return (
     <main className={styles.root} data-testid="evolution-screen">
       <div className={styles.card}>
         <header className={styles.head}>
-          <h1 className={`${styles.title} display`}>
-            <IconSparkles size={26} /> {before.name} is evolving
-          </h1>
-          <p className={styles.sub}>
-            {previews.length === 1
-              ? `The ${pending.stone ? content.evolutionItem(pending.stone).name : 'evolution'} decides the form. The next evolution asks again.`
-              : 'Pick how. The archetype decides what this Pokémon contributes to your deck from here — and you pick again at its next evolution.'}
+          <p className={styles.eyebrow}>
+            {before.name} · Lv {mon.level}
           </p>
+          <h1 className={`${styles.title} display`}>
+            <IconSparkles size={24} /> {EVOLUTION_TEXT.choose(oneSpecies ? after.name : before.name)}
+          </h1>
         </header>
 
-        <section className={styles.stage} aria-label={`${before.name} evolving into ${after.name}`}>
-          <figure className={styles.portraits}>
-            <img
-              className={`${styles.portrait} ${morphed ? styles.gone : ''}`}
-              src={portraitUrl(before.dex, before.id)}
-              alt={before.name}
-              width={190}
-              height={190}
-            />
-            <img
-              className={`${styles.portrait} ${styles.after} ${morphed ? styles.here : ''}`}
-              src={portraitUrl(after.dex, after.id)}
-              alt={after.name}
-              width={190}
-              height={190}
-              data-testid="evolution-after"
-            />
-          </figure>
-          <p className={`${styles.names} display`} aria-hidden="true">
-            {before.name} <IconArrowNarrowRight size={22} /> {after.name}
-          </p>
+        <aside className={styles.hero} aria-label={`${after.name} on this path`}>
+          <div className={styles.portraitWrap}>
+            <img key={after.id} className={styles.portrait} src={portraitUrl(after.dex, after.id)} alt={after.name} width={200} height={200} data-testid="evolution-after" />
+          </div>
+          <p className={`${styles.heroName} display`}>{after.name}</p>
           <span className={styles.types}>
             {after.types.map((t) => (
               <TypeBadge key={t} type={t} size={18} />
             ))}
           </span>
-          <dl className={styles.stats}>
-            {STATS.map(([key, label]) => {
-              const delta = chosen?.statDelta[key] ?? previews[0]?.statDelta[key] ?? 0;
-              return (
-                <div key={key} className={styles.statRow}>
-                  <dt>{label}</dt>
-                  <dd className={`${styles.delta} ${delta > 0 ? styles.up : delta < 0 ? styles.down : ''} tabular`}>
-                    {delta > 0 ? '+' : ''}
-                    {delta}
-                  </dd>
-                </div>
-              );
-            })}
-          </dl>
-        </section>
 
-        <section className={styles.branches} aria-label="Archetypes">
-          {previews.map((p) => {
+          <ul className={styles.stats} aria-label="Stats">
+            {focus &&
+              STATS.map(([key, label]) => {
+                const a = focus.statsAfter[key];
+                const b = focus.statsBefore[key];
+                const d = a - b;
+                return (
+                  <Tipped as="li" key={key} tabIndex={0} className={styles.statRow} tip={evoStatTip(key, label, { name: before.name, value: b }, { name: after.name, value: a }, mon.level)} data-testid={`stat-${key}`}>
+                    <span className={styles.statLabel}>{label}</span>
+                    <span className={styles.bar} aria-hidden="true">
+                      <span className={styles.barBefore} style={{ width: `${(b / top) * 100}%` }} />
+                      <span className={styles.barAfter} style={{ width: `${(a / top) * 100}%` }} />
+                    </span>
+                    <span className={`${styles.statValue} tabular`}>{a}</span>
+                    <span className={`${styles.delta} ${d > 0 ? styles.up : d < 0 ? styles.down : ''} tabular`}>
+                      {d > 0 ? '+' : ''}
+                      {d}
+                    </span>
+                  </Tipped>
+                );
+              })}
+          </ul>
+
+          {focus && (
+            <section className={styles.kit} aria-label="The kit after">
+              <h2 className={styles.kitHead}>
+                Kit <InfoDot tip={evoKitTip()} label="About the kit after" />
+              </h2>
+              <div className={styles.kitChips} data-testid="evolution-kit">
+                {focus.pool.map((m) => (
+                  <MoveChip key={m} id={m} active={focus.kit.includes(m)} fresh={!mon.pool.includes(m)} />
+                ))}
+              </div>
+            </section>
+          )}
+        </aside>
+
+        <section className={styles.branches} role="radiogroup" aria-label="Paths">
+          {previews.map((p, i) => {
             const branch = content.branch(p.branchId);
             const on = picked === p.branchId;
+            const to = content.species(p.to);
             return (
-              <button
+              <div
                 key={p.branchId}
-                type="button"
-                className={`${styles.branch} ${on ? styles.on : ''}`}
-                onClick={() => {
-                  setPicked(p.branchId);
-                  setRefused(null);
+                ref={(el) => {
+                  cards.current[i] = el;
                 }}
-                aria-pressed={on}
+                role="radio"
+                tabIndex={p.branchId === tabStop ? 0 : -1}
+                aria-checked={on}
+                className={`${styles.branch} ${ARCH_CLASS[branch.archetype] ?? ''} ${on ? styles.on : ''} ${hovered === p.branchId && !on ? styles.previewing : ''}`}
+                onClick={() => choose(p.branchId)}
+                onKeyDown={(e) => onCardKey(e, i)}
+                onMouseEnter={() => setHovered(p.branchId)}
+                onMouseLeave={() => setHovered((h) => (h === p.branchId ? null : h))}
+                onFocus={() => setHovered(p.branchId)}
+                onBlur={() => setHovered((h) => (h === p.branchId ? null : h))}
                 data-testid={`branch-${p.branchId}`}
                 data-archetype={branch.archetype}
-                // §9.6 — the whole payload spelled out, because the visual diff is chips and arrows.
                 aria-label={[
                   `${branch.label}, ${ARCHETYPE_LABEL[branch.archetype]}`,
-                  branch.description,
                   ...p.upgrades.map((u) => `${content.move(u.from).name} becomes ${content.move(u.to).name}`),
                   ...p.adds.map((a) => `gains ${content.move(a).name}`),
                   p.abilityId ? `passive: ${content.ability(p.abilityId).name}` : null,
@@ -150,68 +204,47 @@ function EvolutionChoice({ uid }: { uid: string }) {
                   .join('. ')}
               >
                 <span className={styles.branchHead}>
-                  <span className={`${styles.archetype} ${styles[branch.archetype]}`}>{ARCHETYPE_LABEL[branch.archetype]}</span>
-                  <span className={`${styles.branchName} display`}>{branch.label}</span>
+                  <Tipped as="span" tabIndex={-1} tip={archetypeTip(branch.archetype)} className={styles.pill}>
+                    {ARCHETYPE_LABEL[branch.archetype]}
+                  </Tipped>
+                  <Tipped as="span" tabIndex={-1} tip={branchTip(branch.label, branch.description, branch.archetype)} className={`${styles.branchName} display`}>
+                    {branch.label}
+                  </Tipped>
+                  {!oneSpecies && <img className={`pixel ${styles.branchIcon}`} src={boxIconUrl(to.dex, to.id)} alt={to.name} width={40} height={40} />}
                 </span>
-                <p className={styles.branchText}>{branch.description}</p>
 
                 <ul className={styles.diff}>
                   {p.upgrades.map((u) => (
-                    <li key={u.from} className={styles.upgrade}>
-                      <span className={styles.old}>{content.move(u.from).name}</span>
-                      <IconArrowNarrowRight size={18} />
-                      <span className={styles.new}>
-                        <TypeBadge type={content.move(u.to).type} size={12} />
-                        {content.move(u.to).name}
-                      </span>
-                      <span className={styles.power}>
-                        {content.move(u.to).power > 0 ? `${content.move(u.to).power} pw` : 'utility'} · {content.move(u.to).apCost} AP
-                      </span>
-                      {u.inKit && <span className={styles.inKit}>in your 4</span>}
+                    <li key={u.from} className={styles.change}>
+                      <MoveChip id={u.from} struck inCard />
+                      <IconArrowNarrowRight size={16} className={styles.arrow} />
+                      <MoveChip id={u.to} active={p.kit.includes(u.to)} fresh={!mon.pool.includes(u.to)} inCard />
                     </li>
                   ))}
                   {p.adds.map((a) => (
-                    <li key={a} className={styles.add}>
-                      <IconPlus size={14} />
-                      <span className={styles.new}>
-                        <TypeBadge type={content.move(a).type} size={12} />
-                        {content.move(a).name}
-                      </span>
-                      <span className={styles.power}>
-                        {content.move(a).power > 0 ? `${content.move(a).power} pw` : 'utility'} · {content.move(a).apCost} AP
-                      </span>
+                    <li key={a} className={styles.change}>
+                      <IconPlus size={16} className={styles.arrow} />
+                      <MoveChip id={a} active={p.kit.includes(a)} fresh inCard />
                     </li>
                   ))}
                 </ul>
 
                 {p.abilityId && (
-                  <p className={styles.ability}>
-                    <b>{content.ability(p.abilityId).name}</b> — {content.ability(p.abilityId).description}
-                  </p>
+                  <Tipped as="span" tabIndex={-1} tip={abilityTip(p.abilityId)} className={styles.ability}>
+                    <IconSparkles size={14} /> {content.ability(p.abilityId).name}
+                  </Tipped>
                 )}
-                <p className={styles.archetypeHint}>{ARCHETYPE_HINT[branch.archetype]}</p>
-              </button>
+              </div>
             );
           })}
         </section>
 
         <footer className={styles.footer}>
-          <p className={styles.warn} role="status">
-            {picked ? 'This cannot be undone — but the next evolution asks again.' : 'Choose an archetype to continue.'}
+          <p className={styles.status} role="status">
+            {picked ? '' : EVOLUTION_TEXT.pick}
           </p>
-          <button
-            type="button"
-            className={styles.confirm}
-            disabled={!picked}
-            onClick={() => {
-              if (!picked) return;
-              if (!dispatch({ type: 'choose-branch', uid: mon.uid, branchId: picked })) {
-                setRefused(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? RUN_REJECT_TEXT['internal-error']!);
-              }
-            }}
-            data-testid="btn-evolve"
-          >
-            {picked ? `Evolve into ${content.branch(picked).label}` : 'Evolve'}
+          <button type="button" className={styles.confirm} disabled={!picked} onClick={confirm} data-testid="btn-evolve" {...evolveTipProps}>
+            {EVOLUTION_TEXT.evolve(picked ? content.branch(picked).label : null)}
           </button>
           {refused && (
             <p className={styles.refused} role="status">

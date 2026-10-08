@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.6 — The evolution, animated · 2026-10-08
+
+The series' evolution plays out, then a cleaner screen to choose the path.
+
+- **The animation.** The shapes trade in light, then the reveal.
+- **Stats in view.** Bars with the old value and the new, on hover too.
+- **The kit.** The moves a path leaves, as chips you can inspect.
+- **Less text.** Each path is its changes; the rest is on hover.
+
 ### v0.9.5 — Moves and kits, revamped · 2026-10-08
 
 Every move is a Gen I move, and an evolution rewrites the kit, not grows it.

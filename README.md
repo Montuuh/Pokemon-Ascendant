@@ -49,9 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.5 — Moves and kits, revamped.** Every move is a real Gen I move at its right type, its power and cost re-cut
-into one budget. A line learns four moves and its evolutions rewrite them — five cards at every stage, the final
-branch trading cards for its signature — and a Mastery is a Gen I move made great.
+**v0.9.6 — The evolution, animated.** The series' evolution plays out — the sprite in light, the shapes trading, the
+reveal — and the path is chosen on a cleaner screen: stats as bars, the resulting kit as move chips, the details on hover.
+Every move is a real Gen I move, and a line's evolutions rewrite its kit rather than grow it.
 
 ## Run it locally
 

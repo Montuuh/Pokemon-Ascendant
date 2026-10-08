@@ -1,54 +1,57 @@
-/* §3.6 / §9.9 — the Evolution screen. Warm gold, JRPG level-up energy, and a diff the player can read
-   while the celebration is still going. No white flash at any setting (see the component note). */
+/* §3.6 / §9.9 — the Evolution screen (v0.9.5): the Pokémon this path makes on the left, one compact card per path
+   on the right, chips and bars instead of paragraphs. Every number explains itself on hover. */
 
 .root {
   height: 100%;
   display: grid;
   place-items: center;
   padding: var(--sp-5);
-  background: radial-gradient(120% 90% at 50% 0%, #fff6dd 0%, var(--surface-0) 70%);
+  background: radial-gradient(120% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
   color: var(--ink-primary);
   overflow: auto;
 }
 
 .card {
-  width: min(1080px, 100%);
+  width: min(1040px, 100%);
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 320px 1fr;
   grid-template-areas:
     'head head'
-    'stage branches'
+    'hero branches'
     'foot foot';
-  gap: var(--sp-5);
-  padding: var(--sp-6);
+  gap: var(--sp-4) var(--sp-5);
+  padding: var(--sp-5) var(--sp-6);
   background: var(--surface-1);
   border: 2px solid var(--border-strong);
   border-radius: var(--radius-xl);
-  box-shadow: 0 24px 60px rgba(58, 46, 34, 0.25);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--ink-primary) 22%, transparent);
 }
 
+/* ---- head --------------------------------------------------------------------------------------------- */
 .head {
   grid-area: head;
   text-align: center;
 }
-.title {
+.eyebrow {
   margin: 0;
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-2);
-  font-size: var(--type-display);
-  color: var(--brand-red);
-}
-.sub {
-  margin: var(--sp-1) auto 0;
-  max-width: 62ch;
+  gap: var(--sp-1);
+  font-size: var(--type-small);
   color: var(--ink-secondary);
 }
+.title {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-h2);
+}
 
-/* ---- the morph ---------------------------------------------------------------------------------------- */
-
-.stage {
-  grid-area: stage;
+/* ---- hero: the Pokémon this path makes ----------------------------------------------------------------- */
+.hero {
+  grid-area: hero;
   display: grid;
   justify-items: center;
   align-content: start;
@@ -58,127 +61,230 @@
   background: var(--surface-2);
   border: 2px solid var(--border-subtle);
 }
-.portraits {
+.portraitWrap {
   position: relative;
-  width: 190px;
-  height: 190px;
-  margin: 0;
+  width: 200px;
+  height: 200px;
+  display: grid;
+  place-items: center;
+}
+.portraitWrap::before {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-action) 45%, transparent) 0%, transparent 70%);
+  animation: heroGlow 3s ease-in-out infinite;
 }
 .portrait {
-  position: absolute;
-  inset: 0;
-  image-rendering: auto;
-  transition:
-    opacity 700ms ease,
-    transform 700ms ease,
-    filter 700ms ease;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: heroIn var(--motion-slow) var(--ease-spring) both;
 }
-/* The "before" bleaches out as it goes, which reads as the classic evolution whiteout without a flash. */
-.gone {
-  opacity: 0;
-  transform: scale(1.12);
-  filter: brightness(2.4) saturate(0.15);
-}
-.after {
-  opacity: 0;
-  transform: scale(0.88);
-}
-.here {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.names {
+.heroName {
   margin: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
   font-size: var(--type-h3);
 }
 .types {
   display: inline-flex;
-  gap: 6px;
+  gap: var(--sp-1);
 }
 
 .stats {
+  list-style: none;
   margin: var(--sp-2) 0 0;
+  padding: 0;
   width: 100%;
   display: grid;
-  gap: 2px;
+  gap: var(--sp-1);
 }
 .statRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  display: grid;
+  grid-template-columns: 58px 1fr 34px 38px;
+  align-items: center;
+  gap: var(--sp-2);
   padding: 3px var(--sp-2);
   border-radius: var(--radius-sm);
-  background: var(--surface-1);
   font-size: var(--type-small);
+  cursor: help;
 }
-.statRow dt {
+.statRow:hover,
+.statRow:focus-visible {
+  background: var(--surface-1);
+}
+.statLabel {
   color: var(--ink-secondary);
 }
-.statRow dd {
-  margin: 0;
+.bar {
+  position: relative;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.barBefore,
+.barAfter {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--radius-pill);
+}
+/* The gain is the bright part past the old value; the old value stays visible underneath. */
+.barAfter {
+  background: var(--accent-positive);
+  transition: width var(--motion-slow) var(--ease-spring);
+}
+.barBefore {
+  z-index: 1;
+  background: var(--accent-action-deep);
+}
+.statValue {
+  text-align: right;
   font-weight: 700;
 }
+.delta {
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+/* D5 — on the light theme an accent never colours text; a gain is a filled pill. */
 .up {
-  color: #1f7a45;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-positive);
+  color: var(--ink-on-accent);
+  text-align: center;
 }
 .down {
-  color: #a33;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-negative);
+  color: var(--ink-on-accent);
+  text-align: center;
 }
 
-/* ---- the choice --------------------------------------------------------------------------------------- */
+.kit {
+  width: 100%;
+  margin-top: var(--sp-2);
+}
+.kitHead {
+  margin: 0 0 var(--sp-1);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.kitChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
 
+/* ---- a move as a chip ---------------------------------------------------------------------------------- */
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px var(--sp-2);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: help;
+  transition: transform var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
+}
+.chip:hover,
+.chip:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px color-mix(in srgb, var(--ink-primary) 18%, transparent);
+}
+/* In the active four. */
+.active {
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  border-color: var(--accent-action-deep);
+}
+/* The card it replaces: still readable, plainly on its way out. */
+.struck {
+  border-style: dashed;
+  border-color: var(--border-subtle);
+  background: transparent;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+.struck .chipName {
+  text-decoration: line-through;
+}
+.fresh {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-red);
+  box-shadow: 0 0 0 2px var(--surface-1);
+}
+
+/* ---- the paths ----------------------------------------------------------------------------------------- */
 .branches {
   grid-area: branches;
   display: grid;
   gap: var(--sp-3);
   align-content: start;
 }
-
 .branch {
   display: grid;
   gap: var(--sp-2);
-  text-align: left;
   padding: var(--sp-3) var(--sp-4);
   border: 2px solid var(--border-subtle);
+  border-left-width: 6px;
   border-radius: var(--radius-lg);
   background: var(--surface-1);
-  color: inherit;
   cursor: pointer;
   transition:
-    border-color 140ms ease,
-    transform 140ms ease,
-    box-shadow 140ms ease;
+    border-color var(--motion-fast) ease,
+    transform var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
 }
-.branch:hover {
-  border-color: var(--border-strong);
+.vanguard {
+  border-left-color: var(--arch-vanguard);
+}
+.specialist {
+  border-left-color: var(--arch-specialist);
+}
+.support {
+  border-left-color: var(--arch-support);
+}
+.branch:hover,
+.previewing {
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--ink-primary) 12%, transparent);
 }
-/* The pick is permanent, so it has to be unmistakable at a glance — a ring, a lift and a warmer field, not
-   just a border a hair darker than the other two. */
+.branch:focus-visible {
+  outline: 3px solid var(--accent-action-deep);
+  outline-offset: 2px;
+}
+/* The pick is permanent, so it is unmistakable at a glance: a ring, a lift and a warmer field. */
 .branch.on {
-  border-color: var(--accent-action);
-  background: #fffaec;
+  border-color: var(--accent-action-deep);
+  background: var(--brand-cream);
   box-shadow:
-    0 0 0 4px rgba(255, 203, 61, 0.45),
-    0 8px 20px rgba(58, 46, 34, 0.14);
+    0 0 0 4px color-mix(in srgb, var(--accent-action) 45%, transparent),
+    0 8px 20px color-mix(in srgb, var(--ink-primary) 14%, transparent);
   transform: translateY(-2px);
 }
 
 .branchHead {
   display: flex;
-  align-items: baseline;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
 }
-.branchName {
-  font-size: var(--type-h3);
-}
-/* Archetype colour is a fill with dark text on it, never coloured running text (ui.md WCAG rule). */
-.archetype {
+.pill {
   padding: 2px 10px;
   border-radius: var(--radius-pill);
   font-family: var(--font-display);
@@ -186,137 +292,163 @@
   font-size: var(--type-caption);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-primary);
+  color: var(--ink-on-accent);
+  cursor: help;
 }
-.vanguard {
-  background: #f6b9a3;
+.vanguard .pill {
+  background: var(--arch-vanguard);
 }
-.specialist {
-  background: #a9cdf5;
+.specialist .pill {
+  background: var(--arch-specialist);
 }
-.support {
-  background: #b6e3bd;
+.support .pill {
+  background: var(--arch-support);
 }
-
-.branchText {
-  margin: 0;
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
+.branchName {
+  font-size: var(--type-h3);
+  cursor: help;
+}
+.branchIcon {
+  margin-left: auto;
+  object-fit: contain;
 }
 
 .diff {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 4px;
-}
-.upgrade,
-.add {
   display: flex;
-  align-items: center;
-  gap: 6px;
   flex-wrap: wrap;
-  padding: 4px var(--sp-2);
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  font-size: var(--type-small);
+  gap: var(--sp-1) var(--sp-3);
 }
-.add {
-  background: #eaf7ec;
-}
-.old {
-  /* D5 — the strike-through already says "replaced"; muted ink on the row tint fell to 4.49:1. */
-  color: var(--ink-secondary);
-  text-decoration: line-through;
-}
-.new {
+.change {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-weight: 700;
+  gap: var(--sp-1);
 }
-.power {
+.arrow {
   color: var(--ink-secondary);
-  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
-.inKit {
-  margin-left: auto;
-  padding: 1px 8px;
-  border-radius: var(--radius-pill);
-  background: var(--accent-action);
-  font-size: var(--type-caption);
-  font-weight: 700;
-}
-
 .ability {
-  margin: 0;
-  padding: 4px var(--sp-2);
-  border-left: 4px solid var(--border-strong);
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
   font-size: var(--type-small);
-}
-.archetypeHint {
-  margin: 0;
-  font-size: var(--type-caption);
-  color: var(--ink-muted);
+  font-weight: 700;
+  cursor: help;
 }
 
 /* ---- footer ------------------------------------------------------------------------------------------- */
-
 .footer {
   grid-area: foot;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: var(--sp-4);
   flex-wrap: wrap;
 }
-.warn {
-  margin: 0;
+.status {
+  margin: 0 auto 0 0;
   font-size: var(--type-small);
   color: var(--ink-secondary);
 }
 .confirm {
-  min-width: 260px;
+  min-width: 240px;
   padding: var(--sp-3) var(--sp-6);
   border-radius: var(--radius-md);
   background: var(--accent-action);
-  color: var(--ink-primary);
+  color: var(--ink-on-accent);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--type-h3);
-  box-shadow: 0 6px 0 #d9a51d;
+  box-shadow: 0 6px 0 var(--accent-action-deep);
 }
 .confirm:hover:not(:disabled) {
   transform: translateY(-2px);
 }
 .confirm:disabled {
   background: var(--surface-3);
-  color: var(--ink-muted);
+  color: var(--ink-secondary);
   box-shadow: none;
   cursor: not-allowed;
 }
+.refused {
+  flex-basis: 100%;
+  margin: 0;
+  text-align: right;
+  font-size: var(--type-small);
+}
 
-@media (max-width: 1100px) {
+@keyframes heroGlow {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+@keyframes heroIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* A 720p window: the whole choice and its button on one screen, the portrait and the gaps a step smaller. */
+@media (max-height: 820px) {
+  .root {
+    padding: var(--sp-3);
+  }
+  .card {
+    gap: var(--sp-3) var(--sp-4);
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .hero {
+    padding: var(--sp-3);
+    gap: var(--sp-1);
+  }
+  .portraitWrap {
+    width: 130px;
+    height: 130px;
+  }
+  .branches {
+    gap: var(--sp-2);
+  }
+  .branch {
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-1);
+  }
+}
+
+@media (max-width: 900px) {
   .card {
     grid-template-columns: 1fr;
     grid-template-areas:
       'head'
-      'stage'
+      'hero'
       'branches'
       'foot';
   }
 }
-
-/* §9.6 — no morph at all under reduced motion: the "after" is simply already there. */
 @media (prefers-reduced-motion: reduce) {
+  .portraitWrap::before,
   .portrait {
-    transition: none;
+    animation: none;
   }
 }
-/* The run refused the choice: said beside the button, never a dead click. */
-.refused {
-  margin: var(--sp-2) 0 0;
-  font-size: var(--type-small);
-  color: var(--ink-primary);
+html[data-motion='reduced'] .portraitWrap::before,
+html[data-motion='reduced'] .portrait {
+  animation: none;
 }
