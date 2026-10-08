@@ -1046,7 +1046,23 @@ and 3 far easier (R2|R1 85 %, R3|R2 75 % in the quick table): enemy Attack ×1.6
 **Not done:** the biomes stay as they are (the user will revisit the specialised nodes); fossils now turn up as route
 Rares, so v1.2's Laboratory needs a reason other than exclusivity.
 
-### v0.9.8 — Victory Road  ☐
+### v0.9.8 — Regions that scale, rarity announced  ✅ 2026-10-08
+The user's look at v0.9.7: there is no type identity per Region — Routes 1, 2 and 3 escalate with the player's power
+and level, so no last evolution on Route 1; trainers, the Elite and the Gyms may field higher forms, and must when their
+level is past the threshold; and a wild fight should say whether it rolled a Common, an Uncommon or a Rare.
+
+**Shipped.** Region 1's wilds are first forms with a form ahead (Onix, Farfetch'd, Metapod and Kakuna moved to Region 2).
+Every trainer's, Elite Trainer's and Gym's Pokémon walks `evolvedAt` at its level, in every Region (§2.7.3 — the
+`evolveRosters` flag is gone, and a Gym's young first slot with it). §2.2 rewritten: a Region escalates by the forms it
+fields, not by type — `runBalance` now measures the final-form share climbing (R1 0.16 · R2 0.78 · R3 0.99) and no Region 1
+wild fight led by a last evolution, in place of the Electric/Ice and Psychic/Ghost shares. The fight carries the rolled
+rarity (`ScenarioDef.wildTier` → `CombatState.wildTier`) and `WildTierBanner` says it over the open ground as the fight
+opens, fading as it begins (a star and a glow for a Rare; still and brief under reduced motion); fixture
+`?scenario=wild-rare`. Region 2's Gyms, now Arcanine and Electrode where Growlithe and Voltorb stood, lost 34 %:
+`GYM_ATTACK_MULTIPLIER` ×1.15 / ×1.1 / ×1.15 and Attack ×1.4 / ×2.5 / ×3.6 — R1 64 % · R2|R1 57 % · R3|R2 50 % · run 18 %
+(720 runs). The quick band's Region 3 floor is 0.2 now: its 40-seed block reads 0.25 where 240 seeds read 0.44.
+
+### v0.9.9 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 - **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
@@ -1054,7 +1070,7 @@ Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
   Road's Apex (§2.12.2) is where the canon already brings the run's rarest species, and the two are balanced together.
   Needs the backlog's "a Legendary takes two team slots" designed with the user first.
 
-### v0.9.9 — The League  ☐
+### v0.9.10 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
@@ -1093,7 +1109,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.8's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.8, designed first |
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.9's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.9, designed first |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -1118,7 +1134,7 @@ the account revamps move to v0.9):
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.8 |
+| — | Recovering missed Badges | v0.9.9 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.8 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.9 (with the two-slot balance, designed first) |

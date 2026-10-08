@@ -646,6 +646,9 @@ export const WILD_TEXT = {
   roll: 'Walking in rolls the rarity by these odds, then who leads from its row, each as likely as the next.',
   lure: 'The Lure Module rolls the rarity twice and keeps the rarer, so the rare rows come up more often.',
   lead: (pct: string) => `${pct} to lead`,
+  /** §2.6.2 — the word the fight opens with (v0.9.8). */
+  banner: (tier: 'common' | 'uncommon' | 'rare') => (tier === 'rare' ? `${WILD_TIER_LABEL.rare}!` : WILD_TIER_LABEL[tier]!),
+  bannerSub: 'wild Pokémon',
   /** A chance as the card shows it: whole percents, one decimal under ten. */
   pct: (p: number) => `${p * 100 >= 10 ? Math.round(p * 100) : (Math.round(p * 1000) / 10).toString()} %`,
 };

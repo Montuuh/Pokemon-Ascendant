@@ -14,6 +14,17 @@ type Dev = {
 const dev = (page: Page) => page.evaluate.bind(page);
 
 test.describe('Arena animations — §9.9', () => {
+  test('a Wild Area fight opens by saying the rarity it rolled, then lets it go — §2.6.2', async ({ page }) => {
+    await page.goto('/?scenario=wild-rare');
+    const banner = page.getByTestId('wild-tier-banner');
+    await expect(banner).toBeVisible();
+    await expect(banner).toHaveAttribute('data-tier', 'rare');
+    await expect(banner).toContainText('Rare!');
+    await page.waitForTimeout(500);
+    await page.getByTestId('combat-screen').screenshot({ path: 'playtest/anim-wild-rare.png' });
+    await expect(banner).toBeHidden({ timeout: 5_000 });
+  });
+
   test('a trainer sends its Pokémon out of the ball, and yours comes out after', async ({ page }) => {
     // A beat lasts well under a second and a loaded machine polls slowly: record what the arena did as it happens.
     await page.addInitScript(() => {

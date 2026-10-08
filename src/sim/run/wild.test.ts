@@ -23,7 +23,11 @@ describe('The pools — §2.6.3', () => {
   });
 
   it('EachRegion_FieldsItsStrength_NoPreEvolutionsLate_NoFinalsEarly', () => {
-    for (const id of idsOf(BIOMES)) expect(content.species(id).stage, `R1 ${id}`).not.toBe('stage2');
+    // Region 1: first forms with a form still ahead — no last evolution, not even one that never evolves (v0.9.8).
+    for (const id of idsOf(BIOMES)) {
+      const s = content.species(id);
+      expect(s.stage === 'basic' && s.evolvesTo.length > 0, `R1 ${id}`).toBe(true);
+    }
     for (const id of idsOf(BIOMES_R2)) {
       const s = content.species(id);
       expect(s.stage === 'basic' && s.evolvesTo.length > 0, `R2 ${id}`).toBe(false);

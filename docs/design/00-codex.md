@@ -78,8 +78,9 @@ Pokémon.
   HP ×0.6 / ×0.45 / ×0.27 — the median hit ~16 % of Max HP, v0.8.8–v0.8.10), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
   Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
-  Elite, the Lapras Elite Wild and the Fire · Grass · Electric · Poison Gyms with their Badges. 76 % of what it
-  fields is new, a quarter Electric or Ice. Since v0.9.7 its wilds are first evolutions, not basics (§2.6.3). *(2026-09-23.)*
+  Elite, the Lapras Elite Wild and the Fire · Grass · Electric · Poison Gyms with their Badges. Since v0.9.7 its
+  wilds are first evolutions, not basics (§2.6.3); since v0.9.8 a Region escalates by the forms it fields, not by type
+  (§2.2), and every roster — Region 1's and the Gyms' too — stands in the form its level warrants (§2.7.3). *(2026-09-23.)*
 - **Region 3 (Volcanic Highlands) is its own content** since v0.7.4: Volcano primary, Cave, Sky, rare Abandoned
   Tower; twelve rosters (the Hex Maniac hides each Pokémon's first intent), Giovanni as the Elite Trainer,
   Aerodactyl as the Elite Wild, and the Psychic · Ground · Fighting · Ice Gyms of Sabrina, Giovanni, Kiyo and
@@ -252,7 +253,7 @@ the Gym (five, v0.8.8) **always two at a time**, the Region 3 Elite Wild **acts 
 
 **Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
 signature uncapped, Sturdy). **Gyms:** 2 Pokémon, ace 3-phase, **no mid-fight evolution** — the threat is a level
-premium (band −2 non-ace, +0 ace, v0.8.6) plus a Home Field and its own Attack (×1.3 / ×1.5 / ×1.15, v0.8.8); **five Pokémon, two at a time, the ace last** (v0.8.8), no support beyond the two on the field. Mid-fight evolution belongs to the **Rival and the Champion**.
+premium (band −2 non-ace, +0 ace, v0.8.6) plus a Home Field and its own Attack (×1.15 / ×1.1 / ×1.15, v0.9.8); **five Pokémon, two at a time, the ace last** (v0.8.8), no support beyond the two on the field. Mid-fight evolution belongs to the **Rival and the Champion**.
 **Per-type Phase 2:** Entrenchment (Rock, Ground) · Status Siege (Poison, Grass, Bug) · Onslaught (Fire,
 Fighting, Normal) · Tempo Control (Electric, Psychic, Ice, Water).
 **Gym pool:** 4 types per Region, seed picks 2. R1 Rock/Water/Bug/Normal · R2 Fire/Grass/Electric/Poison ·

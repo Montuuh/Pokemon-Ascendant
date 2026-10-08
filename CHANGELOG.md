@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.8 — Regions that scale, rarity announced · 2026-10-08
+
+Each Region grows with the player; a wild fight says how rare it is.
+
+- **Route 1, first forms.** No last evolution in its grass.
+- **Evolved by level.** Every trainer and Gym, Region 1's too.
+- **Rarity banner.** Common, Uncommon or Rare! as the fight opens.
+- **Re-tuned.** Gyms' Attack eased for their evolved teams.
+
 ### v0.9.7 — Wild Areas, the whole Pokédex · 2026-10-08
 
 Every Pokémon lives on a route; a Wild Area rolls who waits.

@@ -289,6 +289,7 @@ export const ScenarioSchema = z.object({
     relics: z.array(KebabId).optional(),
   }),
   enemies: z.array(EnemySetupSchema).min(1),
+  wildTier: z.enum(['common', 'uncommon', 'rare']).optional(),
   onField: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
   fields: z
     .object({

@@ -255,6 +255,8 @@ export type CombatEvent = { seq: number; turn: number } & (
 export interface CombatState {
   scenarioId: string;
   kind: EncounterKind;
+  /** §2.6.2 — the rarity a Wild Area rolled for this fight; absent anywhere else. */
+  wildTier?: 'common' | 'uncommon' | 'rare';
   /** §8.8 — the run's difficulty modifiers. Only the two that change a mid-fight rule read this. */
   modifiers: string[];
   /** §5.13.1 Familiar — enemy species whose intents are never hidden from this account. */

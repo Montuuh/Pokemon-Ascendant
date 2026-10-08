@@ -203,12 +203,13 @@ function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, lane
 }
 
 /**
- * A Region from v0.7.3 on writes its rosters in the forms its band warrants and walks them through `evolvedAt`
- * as well (§2.7.3), so a band-derived level past a threshold still fields the right form. Region 1 does not: its
- * rosters are the teaching Region's, and its Caterpie stays a Caterpie.
+ * §2.7.3 — a trainer's, an Elite's or a Gym's Pokémon stands in the form its level warrants: one sent out at or past
+ * its evolution threshold is evolved (`evolvedAt`), in every Region (v0.9.8, the user's call — until then Region 1's
+ * rosters kept their first forms, and a Lv 13 Geodude stood in Brock's Gym). The wild is the exception: a Wild Area
+ * shows its pool as it is, and a catch past its threshold evolves after the catch (§2.6.5).
  */
-function evolveTeam<T extends { species: string; level: number }>(team: T[], region: RegionContent, content: ContentRegistry): T[] {
-  return region.evolveRosters ? team.map((m) => ({ ...m, species: evolvedAt(m.species, m.level, content) })) : team;
+function evolveTeam<T extends { species: string; level: number }>(team: T[], content: ContentRegistry): T[] {
+  return team.map((m) => ({ ...m, species: evolvedAt(m.species, m.level, content) }));
 }
 
 /**
@@ -230,7 +231,7 @@ function trainerPreview(rng: GameRng, content: ContentRegistry, used: Set<string
   const roster: TrainerRoster = pickOne(rng, unused.length ? unused : themed.length ? themed : region.trainers);
   used.add(roster.id);
 
-  const team = evolveTeam(trainerTeamFor(roster, layer, region.wildBand), region, content);
+  const team = evolveTeam(trainerTeamFor(roster, layer, region.wildBand), content);
   const levels = team.map((m) => m.level);
   return {
     title: roster.name,
@@ -274,7 +275,7 @@ const MYSTERY_PREVIEW: NodePreview = {
 
 /** §2.8.1 — the Elite Trainer: two Pokémon, both two-phase, a guaranteed relic. */
 function elitePreview(content: ContentRegistry, layer: number, region: RegionContent): NodePreview {
-  const team = evolveTeam(eliteTeamFor(layer, region.elite, region.wildBand), region, content);
+  const team = evolveTeam(eliteTeamFor(layer, region.elite, region.wildBand), content);
   const levels = team.map((m) => m.level);
   return {
     title: region.elite.name,
@@ -305,7 +306,7 @@ function eliteWildPreview(content: ContentRegistry, layer: number, region: Regio
 const typeName = (t: string) => t[0]!.toUpperCase() + t.slice(1);
 
 function gymPreview(content: ContentRegistry, gym: GymDef): NodePreview {
-  const team = gymTeamFor(gym);
+  const team = evolveTeam(gymTeamFor(gym), content);
   const levels = team.map((m) => m.level);
   return {
     title: `${gym.name} — ${typeName(gym.type)} Gym`,

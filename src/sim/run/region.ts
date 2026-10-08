@@ -36,21 +36,22 @@ export const WILD_TIER_ODDS: Record<WildTier, number> = { common: 0.6, uncommon:
 
 /**
  * §2.6.3 — the Region 1 wild pools (v0.9.7: the whole Pokédex placed — every one of the 146 non-Legendary species
- * lives somewhere across the three Regions). Region 1 is basics, plus the cocoons a basic becomes at once (Metapod,
- * Kakuna); its Rares are the starters' basics and the finds — Pikachu and Eevee in the grass, the fossils in the
- * Cave, Dratini in the water. Nothing here outclasses the route it stands on.
+ * lives somewhere across the three Regions). Region 1 is first forms only — every one with an evolution ahead of it
+ * (v0.9.8, the user's call: no last evolution on Route 1, so not even Onix or Farfetch'd, which never evolve). Its
+ * Rares are the starters' basics and the finds — Pikachu and Eevee in the grass, the fossils in the Cave, Dratini in
+ * the water. Nothing here outclasses the route it stands on.
  */
 export const BIOMES: Partial<Record<BiomeId, BiomePool>> & Record<'meadow' | 'cave' | 'river', BiomePool> = {
   meadow: {
     id: 'meadow', name: 'Meadow', stage: 'meadow',
     common: ['caterpie', 'weedle', 'pidgey', 'rattata', 'spearow', 'oddish', 'bellsprout', 'nidoran-f', 'nidoran-m'],
-    uncommon: ['metapod', 'kakuna', 'paras', 'venonat', 'meowth', 'ekans', 'doduo', 'exeggcute', 'jigglypuff', 'growlithe', 'ponyta', 'vulpix'],
-    rare: ['bulbasaur', 'pikachu', 'eevee', 'farfetchd'],
+    uncommon: ['paras', 'venonat', 'meowth', 'ekans', 'doduo', 'exeggcute', 'jigglypuff', 'growlithe', 'ponyta', 'vulpix'],
+    rare: ['bulbasaur', 'pikachu', 'eevee'],
   },
   cave: {
     id: 'cave', name: 'Cave', stage: 'cave',
     common: ['zubat', 'geodude', 'diglett', 'sandshrew', 'machop', 'mankey'],
-    uncommon: ['onix', 'cubone', 'clefairy', 'rhyhorn', 'grimer', 'koffing', 'gastly', 'abra', 'drowzee', 'magnemite', 'voltorb'],
+    uncommon: ['cubone', 'clefairy', 'rhyhorn', 'grimer', 'koffing', 'gastly', 'abra', 'drowzee', 'magnemite', 'voltorb'],
     rare: ['charmander', 'omanyte', 'kabuto'],
   },
   river: {
@@ -131,9 +132,11 @@ export const ELITE_LEVEL_PREMIUM = -2;
 export const GYM_LEVEL_PREMIUM = { other: -2, ace: 0 } as const;
 /**
  * §5.9.3 — a Gym's own Attack, on top of the Region's tier (v0.8.8): the climax is a threat by how hard it hits, not
- * by levels — a higher premium made the run easier, because a Gym above the team pays it more XP (§6.2.1).
+ * by levels — a higher premium made the run easier, because a Gym above the team pays it more XP (§6.2.1). v0.9.8 walked
+ * every Gym through its evolutions (§2.7.3) — Region 2's fielded Arcanine and Electrode where they had held a Growlithe
+ * and a Voltorb, and lost 34 % of the time — so ×1.3 / ×1.5 / ×1.15 became ×1.15 / ×1.1 / ×1.15.
  */
-export const GYM_ATTACK_MULTIPLIER: readonly number[] = [1.3, 1.5, 1.15];
+export const GYM_ATTACK_MULTIPLIER: readonly number[] = [1.15, 1.1, 1.15];
 
 /**
  * Pad a team to `size` from `pool` (another species first), deterministically: the pick is a hash of `key` and
@@ -492,7 +495,7 @@ export const BIOMES_R2: Partial<Record<BiomeId, BiomePool>> = {
   meadow: {
     id: 'meadow', name: 'Meadow', stage: 'meadow',
     common: ['raticate', 'pidgeotto', 'arbok', 'butterfree', 'beedrill', 'parasect', 'venomoth'],
-    uncommon: ['gloom', 'weepinbell', 'nidorina', 'nidorino', 'persian', 'wigglytuff', 'clefable', 'tangela', 'lickitung'],
+    uncommon: ['metapod', 'kakuna', 'gloom', 'weepinbell', 'nidorina', 'nidorino', 'persian', 'wigglytuff', 'clefable', 'tangela', 'lickitung'],
     rare: ['ivysaur', 'scyther', 'pinsir', 'farfetchd'],
   },
 };
@@ -801,23 +804,21 @@ export interface RegionContent {
    * mechanism stays for a Region that ships before its content does.
    */
   levelOffset: number;
-  /** A roster's species are walked through `evolvedAt` at its band-derived level (Regions 2 on). */
-  evolveRosters: boolean;
 }
 
 export const REGIONS: readonly RegionContent[] = [
   {
     index: 0, name: 'Verdant Route', biomes: BIOMES, biomeWeights: REGION1_BIOME_WEIGHTS, wildBand: WILD_LEVEL_BAND, trunkStage: 'meadow',
-    trainers: TRAINERS, elite: ELITE, eliteWild: ELITE_WILD, gyms: GYMS, laneThemes: LANE_THEME, levelOffset: 0, evolveRosters: false,
+    trainers: TRAINERS, elite: ELITE, eliteWild: ELITE_WILD, gyms: GYMS, laneThemes: LANE_THEME, levelOffset: 0,
   },
   {
     // §2.6.5 — 14–22 and 24–32 since v0.8.10 (were 12–20, 22–30): the team entered Region 2 four levels over.
     index: 1, name: 'Coastal Cliffs', biomes: BIOMES_R2, biomeWeights: REGION2_BIOME_WEIGHTS, wildBand: [14, 22], trunkStage: 'river',
-    trainers: TRAINERS_R2, elite: ELITE_R2, eliteWild: ELITE_WILD_R2, gyms: GYMS_R2, laneThemes: LANE_THEME_R2, levelOffset: 0, evolveRosters: true,
+    trainers: TRAINERS_R2, elite: ELITE_R2, eliteWild: ELITE_WILD_R2, gyms: GYMS_R2, laneThemes: LANE_THEME_R2, levelOffset: 0,
   },
   {
     index: 2, name: 'Volcanic Highlands', biomes: BIOMES_R3, biomeWeights: REGION3_BIOME_WEIGHTS, wildBand: [24, 32], trunkStage: 'volcano',
-    trainers: TRAINERS_R3, elite: ELITE_R3, eliteWild: ELITE_WILD_R3, gyms: GYMS_R3, laneThemes: LANE_THEME_R3, levelOffset: 0, evolveRosters: true,
+    trainers: TRAINERS_R3, elite: ELITE_R3, eliteWild: ELITE_WILD_R3, gyms: GYMS_R3, laneThemes: LANE_THEME_R3, levelOffset: 0,
   },
 ];
 
@@ -919,15 +920,18 @@ export const STATUS_ACCENT_FALLBACK = 'glare';
  * v0.9.7's Wild Areas (§2.6.3) recruit each Region's strength — middle forms in Region 2, final forms in Region 3 —
  * and the team arrived far stronger (R2|R1 85 %, R3|R2 75 % in the quick table). Attack ×1.6/×2.65/×3.9 and Region 3's
  * HP ×0.35: R1 62 % · R2|R1 60 % · R3|R2 55 % · run 20 % (720 runs; ×4.0 reads 52 %, but the quick band test then dips under its floor).
+ *
+ * v0.9.8 evolved every roster by its level, Region 1's and the Gyms' too (§2.7.3): R1 50 % · R2|R1 40 %. Attack
+ * ×1.4 / ×2.5 / ×3.6 with the Gyms' own multiplier eased: R1 64 % · R2|R1 57 % · R3|R2 50 % · run 18 % (720 runs).
  */
 export interface StatTier {
   hp: number;
   attack: number;
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { hp: 0.6, attack: 1.6 },
-  { hp: 0.45, attack: 2.65 },
-  { hp: 0.35, attack: 3.9 },
+  { hp: 0.6, attack: 1.4 },
+  { hp: 0.45, attack: 2.5 },
+  { hp: 0.35, attack: 3.6 },
 ];
 
 /**

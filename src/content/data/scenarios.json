@@ -42,6 +42,47 @@
       ]
     },
     {
+      "id": "wild-rare",
+      "name": "Wild — A rare Eevee",
+      "description": "A Wild Area rolled its Rare row: the fight opens by saying so, then an Eevee to catch.",
+      "kind": "wild",
+      "stage": "meadow",
+      "seed": 1015,
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 8
+          },
+          {
+            "species": "squirtle",
+            "level": 7
+          },
+          {
+            "species": "bulbasaur",
+            "level": 7
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "potion",
+          "potion",
+          "antidote",
+          "poke-ball"
+        ],
+        "balls": 3
+      },
+      "enemies": [
+        {
+          "species": "eevee",
+          "level": 8,
+          "tier": "wild",
+          "phaseCount": 1
+        }
+      ],
+      "wildTier": "rare"
+    },
+    {
       "id": "wild-catch-ready",
       "name": "Wild — Catch a Caterpie",
       "description": "A weakened wild Caterpie: read the Catchability gauge, weaken or status it, throw when READY.",

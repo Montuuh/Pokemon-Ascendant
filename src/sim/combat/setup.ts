@@ -97,6 +97,7 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
     insight: [...(scenario.player.insight ?? [])],
     stage: scenario.stage,
     trainer: scenario.trainer ? { ...scenario.trainer } : null,
+    ...(scenario.wildTier ? { wildTier: scenario.wildTier } : {}),
     seed,
     rngCursor: rng.cursor,
     turn: 0,

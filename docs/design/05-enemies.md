@@ -352,7 +352,7 @@ when XP stopped carrying teams seven levels over their Region; 0 / +2 before; +4
 - **But never a free win.** Each team carries at least one answer to a full-resist party — usually an
   off-type coverage move, like the Rock Gym's Fighting-typed `body-press`.
 - **A Home Field** of its type is set at combat start (§4.3.5), over the Gym's own Battlefield (§4.3.14).
-- **The Gym hits harder than its Region** (`GYM_ATTACK_MULTIPLIER`, ×1.3 / ×1.5 / ×1.15 by Region, v0.8.8). A higher
+- **The Gym hits harder than its Region** (`GYM_ATTACK_MULTIPLIER`, ×1.15 / ×1.1 / ×1.15 by Region; ×1.3 / ×1.5 / ×1.15 until v0.9.8 evolved the Gyms' teams by their level). A higher
   level premium was tried first and made the run *easier*: a Gym above the team pays it more XP (§6.2.1), so the team
   left stronger. Attack makes the climax a threat without that refund — Gym fights are lost 8 % / 2 % / 10 % of the
   time by Region, against 1–4 % before. Region 2's Gyms stay soft at any multiplier the harness tried (to ×1.85):

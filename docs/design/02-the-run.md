@@ -147,31 +147,19 @@ already has one. It arrives as a
 around — the nurse, the cures in the bag, an immune Lead — not a nuisance inside one fight. Region 3 inherits it.
 *(Built 2026-09-22.)*
 
-**Region 2 is its own Region, not Region 1 raised** (v0.7.3). It draws its own biomes (§2.6.3), rosters (§2.7),
-Elites (§2.8) and Gyms (§5.9.2), with ten new lines and three single stages (`catalogs/species-r2.md`), and it
-brings types Region 1 has none of. Measured over the harness's runs (`runBalance.test.ts` guards all three):
+**A Region escalates with the player, not by type** (v0.9.8, the user's call: "there is no type identity per
+Region"). Each Region has its own biomes (§2.6.3), rosters (§2.7), Elites (§2.8) and Gyms (§5.9.2) — Region 3 with
+Giovanni as its Elite Trainer, Aerodactyl as its Elite Wild and the Psychic · Ground · Fighting · Ice Gyms — but what
+sets one apart from the last is **the strength of what it fields**: Region 1's wilds are first forms with a form
+ahead of them, Region 2's the middle of the lines, Region 3's final forms only (§2.6.3), and every trainer's Pokémon
+stands in the form its level warrants (§2.7.3). The share of enemies in their final form climbs Region by Region, and
+no Region 1 wild fight is led by a last evolution (`runBalance.test.ts` guards both). Region 2's mechanical accent —
+the statuses above — still sets it apart, and the harness checks it is felt: far more of its fights send a status
+home with the team. *(Until v0.9.8 the exits of v0.7.3 and v0.7.4 also measured each Region's types — Electric and
+Ice for Region 2, Psychic and Ghost for Region 3; dropped with the type identity.)*
 
-| Measure | Region 1 | Region 2 |
-|---|---|---|
-| Enemies of a species Region 1 never fields | — | **76 %** |
-| Enemies with an Electric or Ice type | 0 % | **26 %** |
-| Fights that send a status home with the team (§4.2.7.1) | 8 % | **19 %** |
-
-That is the exit v0.7.3 was built to: Region 2 plays differently, not just harder.
-
-**Region 3 is its own Region too** (v0.7.4): its own biomes — the Volcano primary, the Cave, the Sky and the rare
-Abandoned Tower — twelve rosters, Giovanni as its Elite Trainer and Aerodactyl as its Elite Wild, and the Psychic
-· Ground · Fighting · Ice Gyms of Sabrina, Giovanni, Kiyo and Lorelei (`catalogs/biomes-regions.md`,
-`trainers.md`, `elites.md`, `gyms.md`). Its species were all built ahead of it (`species-gen1.md`), so the Region
-places lines rather than authoring them. Measured the same way (`runBalance.test.ts` guards both):
-
-| Measure | Regions 1–2 | Region 3 |
-|---|---|---|
-| Enemies of a species the earlier Regions never field | — | **67 %** |
-| Enemies with a Psychic or Ghost type | 1 % | **13 %** |
-
-Its mechanical accent — field effects and the largest groups — is v0.8's (§5.6, §4.3); until then Region 3 plays on
-Region 2's rules, and the Hex Maniac's veil (§2.7.1) is the one new wrinkle a trainer brings.
+Region 3's mechanical accent — field effects and the largest groups — is v0.8's (§5.6, §4.3), and the Hex Maniac's
+veil (§2.7.1) is the one new wrinkle a trainer brings.
 
 ## §2.2.1 The difficulty curve
 
@@ -538,7 +526,8 @@ user's call). The preview card shows everyone the biome holds in three rows, and
 | **Uncommon** | 30 % | one of the row, evenly |
 | **Rare** | 10 % | one of the row, evenly |
 
-Walking in rolls the rarity, then who leads from its row; a row's share is split evenly between its Pokémon, and
+Walking in rolls the rarity, then who leads from its row — and the fight opens by saying which row it was, a word
+over the arena that fades as the fight begins ("Common", "Uncommon", "Rare!", v0.9.8); a row's share is split evenly between its Pokémon, and
 each one's own chance is on its portrait. The roll is a hash of the run's seed, the Region and the node, like the
 group plan (§5.6.3), so a reload or a replay meets the same Pokémon. The node's shape — a single, a pack, a caller —
 is fixed with the node and shown on the card, as before; a pack's companions come from the biome's Common row.
@@ -558,8 +547,9 @@ seven a supply from the Region's table (§2.7.2) — a catching route should pay
 
 ## §2.6.3 Species pools
 
-**Each Region fields its strength** (v0.9.7). Region 1 is basics, with the cocoons a basic becomes at once (Metapod,
-Kakuna). Region 2 is the middle of the lines — first evolutions and the Pokémon that never evolve; no basic that still
+**Each Region fields its strength** (v0.9.7). Region 1 is first forms only, every one with a form still ahead of it — no
+last evolution on Route 1, not even one that never evolves (Onix and Farfetch'd wait for Region 2; the cocoons too,
+v0.9.8). Region 2 is the middle of the lines — first evolutions and the Pokémon that never evolve; no basic that still
 has a form ahead of it. Region 3 is final forms only: nothing there has an evolution left, so no Lapras on the first
 node of Route 1 and no pre-evolution on Route 3. **The starters are Rares** in their biome, at their Region's form
 (Bulbasaur, Ivysaur, Venusaur…). **The Legendaries are in no pool.** The rows live in `src/sim/run/region.ts` and [`catalogs/biomes-regions.md`](catalogs/biomes-regions.md).
@@ -772,11 +762,14 @@ to catch is the choice.
 
 **Authoring rules.** A trainer's level band is **its layer's** wild band +1 to +2 (§2.6.5) — a step up from a wild fight,
 not a boss. The archetype must be readable from the trainer's sprite and name, because the player counter-picks their Active 3
-from it. No hidden intents at baseline. **From Region 2 on, every trainer's Pokémon
-fields the form its level warrants** — it walks its line's `evolveLevel`s, the thresholds the player's own team
-evolves on (§6.2.4) — and the map's preview names that form, so the node never promises a Geodude and fields a
-Golem. Region 1 is authored as it stands. And no trainer fields a fully-evolved
-Pokémon before the player could plausibly have one; the Gym ace is the deliberate exception.
+from it. No hidden intents at baseline. **Every trainer's, Elite Trainer's
+and Gym's Pokémon fields the form its level warrants**, in every Region — it walks its line's `evolveLevel`s, the
+thresholds the player's own team evolves on (§6.2.4): a Pokémon sent out at or past its threshold is evolved, and
+the map keeps that form, so the node never holds a Geodude and fields a Golem. *(v0.9.8, the user's call: until then
+Region 1's rosters stood as authored and a Lv 13 Geodude fought in Brock's Gym, and a Gym's first slot was its line's
+young one on purpose.)* The wild is the exception: a Wild Area's pool shows its forms as they are (§2.6.3), and a catch
+past its threshold evolves after the catch. A late Region 1 trainer can so field a last evolution — a Raticate at
+Lv 12 — because the player's own Rattata is one at that level too.
 
 ---
 
@@ -1592,8 +1585,8 @@ buildings the City is built around.)*
 
 ## §2.13.3 Region 3 — Volcanic Highlands 🔥
 Volcano primary; Cave, Sky and Abandoned Tower secondary. Reds, oranges, blacks, purples — saturated and
-intense, but never grim (Pillar 5). Heavy percussion, brass, tremolo strings. Enemies are Fire, Rock, Psychic
-and Ghost. Gym pool: Psychic, Ground, Fighting, Ice. No City — Region 3 ends in Victory Road. Its route plate is a
+intense, but never grim (Pillar 5). Heavy percussion, brass, tremolo strings. Its enemies are final forms, whatever
+their type (§2.2). Gym pool: Psychic, Ground, Fighting, Ice. No City — Region 3 ends in Victory Road. Its route plate is a
 volcanic plateau between a lava field and the cliffs of an old tower (`public/art/map/region-3.png`). *(Until
 v0.7.4 it was Region 1's tables sixteen levels up and went unnamed on the map.)*
 

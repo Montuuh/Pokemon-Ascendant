@@ -340,8 +340,12 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
   const base = ((): ScenarioDef | null => {
     switch (node.kind) {
       case 'wild':
-        // §2.6.2 — the rarity and the species are rolled as you walk in (v0.9.7).
-        return buildWildScenario(node, run, content, rng, wildChoice ?? rollWild(node, run, content).species);
+      {
+        // §2.6.2 — the rarity and the species are rolled as you walk in (v0.9.7), and the fight announces the rarity.
+        if (wildChoice) return buildWildScenario(node, run, content, rng, wildChoice);
+        const roll = rollWild(node, run, content);
+        return { ...buildWildScenario(node, run, content, rng, roll.species), ...(node.preview.wild ? { wildTier: roll.tier } : {}) };
+      }
       case 'trainer':
         return buildTrainerScenario(node, run, content, rng);
       case 'gym':

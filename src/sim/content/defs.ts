@@ -543,6 +543,8 @@ export interface ScenarioDef {
     insight?: string[];
   };
   enemies: EnemySetup[];
+  /** §2.6.2 — a Wild Area's fight: the rarity row its Pokémon was rolled from, announced as the fight opens. */
+  wildTier?: 'common' | 'uncommon' | 'rare';
   /**
    * §5.6 — how many enemies stand on the field at once: 1 (the default) fights them one after another, 2–3 is
    * a group — the first is the Lead, the rest are supports, and the list's remainder waits to fill a free place.

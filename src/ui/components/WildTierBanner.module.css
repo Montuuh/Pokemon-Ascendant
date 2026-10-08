@@ -1,0 +1,78 @@
+/* §2.6.2 — the rolled rarity over the arena. The edge colour is the pool card's (WildPool): common, uncommon, rare. */
+.banner {
+  position: absolute;
+  /* On the open ground between the two sides, clear of the Pokémon it names and of the turn banner, at every size. */
+  left: 42%;
+  top: 55%;
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  pointer-events: none;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-5);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: color-mix(in srgb, var(--surface-0) 85%, black);
+  color: var(--ink-primary);
+  white-space: nowrap;
+}
+.banner[data-tier='uncommon'] {
+  border-color: var(--brand-blue);
+}
+.banner[data-tier='rare'] {
+  border-color: var(--type-psychic);
+  box-shadow: 0 0 var(--sp-5) color-mix(in srgb, var(--type-psychic) 55%, transparent);
+}
+.word {
+  font-size: var(--type-h1);
+  letter-spacing: 0.04em;
+}
+.sub {
+  font-size: var(--type-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.star {
+  color: var(--type-psychic);
+}
+
+/* In, a beat to read it, then up and away as the fight begins. */
+.moving {
+  animation: rarityIn var(--rarity-hold) ease-out forwards;
+}
+.moving[data-tier='rare'] .star {
+  animation: twinkle calc(var(--rarity-hold) / 4) ease-in-out 3;
+}
+@keyframes rarityIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, var(--sp-3)) scale(0.85);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.06);
+  }
+  20% {
+    transform: translate(-50%, 0) scale(1);
+  }
+  72% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-1 * var(--sp-4))) scale(1);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(18deg) scale(1.25);
+  }
+}

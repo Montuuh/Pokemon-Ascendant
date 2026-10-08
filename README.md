@@ -49,8 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.7 — Wild Areas, the whole Pokédex.** Every Pokémon but the Legendaries lives on a route, placed by each
-Region's strength; a Wild Area shows everyone in its grass by rarity with the odds, and rolls who waits as you walk in.
+**v0.9.8 — Regions that scale, rarity announced.** Every Pokémon but the Legendaries lives on a route, and each
+Region fields stronger forms than the last — first forms on Route 1, trainers and Gyms evolved by their level; a Wild
+Area shows its grass by rarity with the odds, and the fight opens by saying whether it rolled a Common, an Uncommon or
+a Rare.
 
 ## Run it locally
 

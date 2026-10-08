@@ -34,6 +34,7 @@ import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
 import { fxTimings, useCombatFx, type SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
+import { WildTierBanner } from '@/ui/components/WildTierBanner';
 import { ArenaFx } from '@/ui/components/ArenaFx';
 import { ENCOUNTER_LABEL, REJECT_TEXT } from '@/ui/strings';
 import { iconOf, itemIcon } from '@/ui/art';
@@ -409,6 +410,8 @@ export function CombatScreen() {
             </div>
           )}
           <ArenaFx ghosts={fx.ghosts} balls={fx.balls} catching={fx.catching} slotClass={slotClass} />
+          {/* §2.6.2 — the rarity the Wild Area rolled, once, as the fight opens. */}
+          {state.wildTier && <WildTierBanner key={combatKey} tier={state.wildTier} animate={animate} />}
           {fx.banner && (
             <div className={`${styles.banner} display`} key={fx.banner + state.nextSeq}>
               {fx.banner}

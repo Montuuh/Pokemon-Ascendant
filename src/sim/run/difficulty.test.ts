@@ -43,17 +43,20 @@ describe('Enemies at the forms their levels warrant — §2.7.3', () => {
     expect(evolvedAt('magikarp', 18, content)).toBe('gyarados');
   });
 
-  it('RegionOne_KeepsItsRosters_TheLaterRegionsEvolveThem', () => {
+  it('EveryRoster_StandsInTheFormItsLevelWarrants_TheWildShowsFirstForms', () => {
     const r1 = createRun('squirtle', 7, ctx, 0);
     const r2 = createRun('squirtle', 7, ctx, 1);
-    // Region 1 is tuned as it stands: a Geodude in its trunk is still a Geodude, whatever its level.
-    const r1Species = Object.values(r1.map.nodes).flatMap((n) => n.preview.speciesIds);
-    expect(r1Species.some((id) => evolvedAt(id, 30, content) !== id), 'Region 1 fields basic forms').toBe(true);
+    // §2.7.3 (v0.9.8) — Region 1's rosters too: a Pokémon sent out past its threshold is evolved, Gyms included.
+    for (const n of Object.values(r1.map.nodes)) {
+      for (const e of n.preview.enemies ?? []) {
+        if (n.kind === 'elite-wild') continue;
+        expect(evolvedAt(e.species, e.level, content), `R1 ${n.id} ${e.species}@${e.level}`).toBe(e.species);
+      }
+    }
     // Region 2's rosters are already at their forms, and the preview names what the fight will field.
     for (const n of Object.values(r2.map.nodes)) {
       for (const e of n.preview.enemies ?? []) {
-        // A Gym's slot 1 is the line's young one on purpose (catalogs/gyms.md §2); every other roster is walked.
-        if (n.kind === 'gym') continue;
+        if (n.kind === 'elite-wild') continue;
         expect(evolvedAt(e.species, e.level, content), `${n.id} ${e.species}@${e.level}`).toBe(e.species);
       }
       // …and its Wild nodes the middle of the lines (§2.6.3, v0.9.7): no basic that still has a form ahead of it.
