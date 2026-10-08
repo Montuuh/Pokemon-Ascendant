@@ -164,12 +164,12 @@ export function benchXpShare(run: RunState, content: ContentRegistry, base: numb
   return share;
 }
 
-/** §7.3.4 Lure Module — how many species a Wild node offers. */
-export function wildChoices(run: RunState, content: ContentRegistry, base: number): number {
-  let n = base;
+/** §7.3.4 Lure Module — how many times a Wild Area rolls its rarity on entry; the rarest roll is kept. */
+export function wildRolls(run: RunState, content: ContentRegistry): number {
+  let n = 1;
   for (const id of run.relics) {
     const r = content.relic(id);
-    if (r.hook === 'wild-choices' && typeof r.params?.extra === 'number') n += r.params.extra;
+    if (r.hook === 'wild-lure' && typeof r.params?.extra === 'number') n += r.params.extra;
   }
   return n;
 }

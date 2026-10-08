@@ -4,6 +4,7 @@ import { createCombat } from '../combat/setup';
 import { DEFAULT_BATTLE_CONFIG } from '../combat/battleConfig';
 import { GameRng } from '../rng/gameRng';
 import { buildScenario } from './encounter';
+import { rollWild } from './wild';
 import { GROUP_RATES, ROLE_SHARE, SOCIAL_CALLERS, groupPlanFor, roleFor } from './groups';
 import { TEAM_SIZE } from './region';
 import { createRun, defaultRunCtx } from './run';
@@ -54,7 +55,7 @@ describe('Groups across the run — §5.6.3', () => {
       const plan = groupPlanFor(node, run);
       const sc = buildScenario(node, run, content, new GameRng(seed))!;
       expect(sc.onField).toBe(plan.kind === 'pack' ? plan.size : 0);
-      expect(sc.enemies[0]!.species).toBe(node.preview.speciesIds[0]);
+      expect(sc.enemies[0]!.species).toBe(rollWild(node, run, content).species);
       expect(sc.enemies.slice(1).every((e) => e.role && e.level < sc.enemies[0]!.level)).toBe(true);
       // And it is a fight the combat sim can open.
       expect(createCombat(sc, { content, config: DEFAULT_BATTLE_CONFIG }).enemies).toHaveLength(sc.onField!);
@@ -91,10 +92,12 @@ describe('Groups across the run — §5.6.3', () => {
     }
   });
 
-  it('SocialSpecies_AlwaysComesReadyToCall', () => {
+  it('SocialSpecies_CallsItsOwnKind', () => {
+    // §5.6.2 — who waits is rolled on entry (§2.6.2), so the node's shape is the table's; a social species that
+    // leads a caller calls more of itself.
     for (let seed = 1; seed <= 120; seed++) {
       const run = createRun('squirtle', seed, ctx);
-      const node = nodesOf(run, 'wild').find((n) => SOCIAL_CALLERS.includes(n.preview.speciesIds[0]!));
+      const node = nodesOf(run, 'wild').find((n) => groupPlanFor(n, run).kind === 'caller' && SOCIAL_CALLERS.includes(rollWild(n, run, content).species));
       if (!node) continue;
       const lead = buildScenario(node, run, content, new GameRng(seed))!.enemies[0]!;
       expect(lead.moves).toContain('call-for-help');

@@ -24,15 +24,15 @@ export * from './replay/replay';
 
 // ── the run layer (§2)
 export * from './run/types';
-export { generateRegion, nodesInLayer, laneGymOf, drawGymPair, noReturnLayer, LAYERS, Y_LAYER, MAP_ROWS, TRACK_GAP, biomeFor } from './run/map';
-export { REGIONS, regionContent, regionName, ALL_TRAINERS, ALL_GYMS, ALL_ELITES, BIOMES_R2, TRAINERS_R2, GYMS_R2, ELITE_R2, ELITE_WILD_R2, LANE_THEME_R2, REGION2_BIOME_WEIGHTS, BIOMES_R3, TRAINERS_R3, GYMS_R3, ELITE_R3, ELITE_WILD_R3, LANE_THEME_R3, REGION3_BIOME_WEIGHTS, type RegionContent, type EliteDef, type EliteWildDef, BIOMES, TRAINERS, TRAINER_SPRITES, ELITE, ELITE_WILD, GYM, GYMS, LANE_THEME, gymById, rostersOf, eliteWildTeamFor, type GymDef, type LaneTheme, RUN_START, STARTER_IDS, isStarterLine, WILD_LEVEL_BAND, ROUTE_LAYERS, gymTeamFor, TM_DROP_CHANCE, HELD_ITEM_DROP_CHANCE, wildBandFor, trainerTeamFor, eliteTeamFor, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, REGION_STAT_TIER, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, STATUS_ACCENT_FALLBACK, statTierFor, evolvedAt, type StatTier, assertRegionContent, type BiomeId, type BiomePool, type TrainerRoster } from './run/region';
+export { generateRegion, wildOdds, WILD_RARE_CHANCE, nodesInLayer, laneGymOf, drawGymPair, noReturnLayer, LAYERS, Y_LAYER, MAP_ROWS, TRACK_GAP, biomeFor } from './run/map';
+export { REGIONS, regionContent, regionName, ALL_TRAINERS, ALL_GYMS, ALL_ELITES, BIOMES_R2, TRAINERS_R2, GYMS_R2, ELITE_R2, ELITE_WILD_R2, LANE_THEME_R2, REGION2_BIOME_WEIGHTS, BIOMES_R3, TRAINERS_R3, GYMS_R3, ELITE_R3, ELITE_WILD_R3, LANE_THEME_R3, REGION3_BIOME_WEIGHTS, type RegionContent, type EliteDef, type EliteWildDef, BIOMES, TRAINERS, TRAINER_SPRITES, ELITE, ELITE_WILD, GYM, GYMS, LANE_THEME, gymById, rostersOf, eliteWildTeamFor, type GymDef, type LaneTheme, RUN_START, STARTER_IDS, isStarterLine, WILD_LEVEL_BAND, ROUTE_LAYERS, gymTeamFor, TM_DROP_CHANCE, HELD_ITEM_DROP_CHANCE, wildBandFor, trainerTeamFor, eliteTeamFor, REGION1_BIOME_WEIGHTS, REGION_LEVEL_OFFSET, REGION_STAT_TIER, WILD_TIER_ODDS, WILD_TIERS, type WildTier, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, STATUS_ACCENT_FALLBACK, statTierFor, evolvedAt, type StatTier, assertRegionContent, type BiomeId, type BiomePool, type TrainerRoster } from './run/region';
 export { createRun, runReducer, validateRunAction, newPartyMon, resetUidCounter, runHelpers, defaultRunCtx, validateKit, shopSlotName, effectiveMax, boxCapacity, boxFitsWithout, marketTakesRelic, abilityLocked, arriveAtCity, dojoPrice, daycarePrice, eggMovesFor, isServiceNode, tutorListFor, RUN_SAVE_VERSION, DEFAULT_PERKS, type RunCtx } from './run/run';
 // §2.1.4, §2.11 — the Cities between Regions.
 export { CASINO, CITIES, REGION_COUNT, RING, betChance, casinoExpectedValue, cityAfter, pocketColour, isFinalRegion, type CityDef } from './run/cities';
 export { SAFARI, afterTurn, canToss, coneOf, lineBlocked, notices, planOf, playerCanStand, rollHunt, rollSafari, throwOdds, tileAt, traitsOf, walkDistance, type MonPlan, type SafariOdds, type SafariTrait, type SafariTraits } from './run/safari';
 export { BLACK_MARKET, SHOWCASE_CAP, atLegendaryCap, candyPrice, fencePrice, relicValue, rollBlackMarket, wagerChance } from './run/blackMarket';
 export { activeSetups, buildRingScenario, buildScenario, maxHpOf } from './run/encounter';
-export { AID_HEAL_PCT, MONEY_REWARD, PRICES, LEGENDARY_CAP, isOfferable, inPool, rollRelic, rollLegendaryOffer, rollHeldItem, ownedItems, relicMultiplier, benchXpShare, wildChoices, rollShopStock, slotPrice, RELIC_PREMIUM, rollRelicOffer, rarePickOpen, floorRestockable, rerollPrice, therapyPrice, sellPrice } from './run/economy';
+export { AID_HEAL_PCT, MONEY_REWARD, PRICES, LEGENDARY_CAP, isOfferable, inPool, rollRelic, rollLegendaryOffer, rollHeldItem, ownedItems, relicMultiplier, benchXpShare, wildRolls, rollShopStock, slotPrice, RELIC_PREMIUM, rollRelicOffer, rarePickOpen, floorRestockable, rerollPrice, therapyPrice, sellPrice } from './run/economy';
 export { usableInField, fieldUseRefusal, applyFieldItem, type FieldUseRefusal } from './run/fieldItems';
 export { FIGHT_SUPPLIES, SUPPLY_TABLE, PRIZE_TABLE, RELIC_REWARD, rollFightSupplies, rollMixedOffer, gymRelicOffer, drawSupplies, SERVICE_GIFTS, serviceGift, GROUND_FINDS, rollGroundFind, type GroundFind, countSupplies, supplyLabel, ballsIn, pokeBalls, POKE_BALL } from './run/rewards';
 export { MYSTERY_EVENTS, mysteryEvent, rollEvent, allOutcomes, assertEventContent, eventRiskOf, RISK_LABEL, type MysteryEvent, type EventChoice, type EventOutcome, type EventRisk } from './run/events';
@@ -43,6 +43,7 @@ export { buildOutcomeReport } from './run/report';
 export { GYM_FIELD, laneField, fieldsFor, applyFields } from './run/battlefields';
 export { FIELD_CATEGORY, battlefields, fieldsSuppressed, isGrounded, type FieldId, type FieldState } from './combat/fields';
 export { SHINY, shinyChance, applyShiny } from './run/shiny';
+export { rollWild, wildChances, wildChancesFor, type WildRoll } from './run/wild';
 export { GROUP_RATES, groupPlanFor, applyGroups, roleFor, ROLE_SHARE, type GroupPlan, type GroupRates } from './run/groups';
 export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } from './run/flee';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';

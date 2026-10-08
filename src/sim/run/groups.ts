@@ -87,8 +87,9 @@ export function groupPlanFor(node: MapNode, run: RunState): GroupPlan {
       const roll = rng.range01();
       const three = rng.range01() < r.packOfThree;
       if (roll < r.wildPack) return { kind: 'pack', size: three ? 3 : 2 };
-      // A social species calls whatever the roll says (§5.6.2); anyone else does on the table's share.
-      if (SOCIAL_CALLERS.includes(node.preview.speciesIds[0] ?? '') || roll < r.wildPack + r.wildCaller) return { kind: 'caller', helpers: r.callerHelpers };
+      // Who waits is rolled on entry (§2.6.2), so the shape cannot hang on the species: a social one calls its own
+      // kind when the shape is a pack or a caller (§5.6.2).
+      if (roll < r.wildPack + r.wildCaller) return { kind: 'caller', helpers: r.callerHelpers };
       return { kind: 'single' };
     }
     case 'trainer': {
@@ -159,7 +160,7 @@ export function applyGroups(scenario: ScenarioDef, node: MapNode, run: RunState,
   const region = regionContent(run.regionIndex);
   const lead = scenario.enemies[0]!;
   const biome = region.biomes[(node.preview.icon ?? '').replace('wild-', '') as BiomeId];
-  const pool = biome?.common ?? [lead.species];
+  const pool = node.preview.wild?.pool.common ?? biome?.common ?? [lead.species];
   switch (plan.kind) {
     case 'pack': {
       const rest = Array.from({ length: plan.size - 1 }, () => companion(pool, lead.species, lead.level, 'wild', rng, content));

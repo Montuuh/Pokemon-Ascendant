@@ -177,7 +177,7 @@ export type ItemHook =
   | 'money-multiplier'
   | 'bench-xp-share'
   /** Wild nodes offer one more species to choose from. */
-  | 'wild-choices'
+  | 'wild-lure'
   /** Riders resolve before damage, so a faint never eats one. */
   | 'rider-first'
   /** Keep `cards` in hand past the end-of-turn discard, if the condition held. */

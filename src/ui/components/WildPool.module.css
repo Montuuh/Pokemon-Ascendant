@@ -1,0 +1,59 @@
+/* §2.6.2 — a Wild Area's pool: a row per rarity. The left edge is the rarity band, the same colours a relic card
+   uses (ItemCard: common, uncommon, rare). */
+.root {
+  display: grid;
+  gap: var(--sp-1);
+}
+.tier {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2) var(--sp-1) 0;
+  border-left: 4px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.tier[data-tier='uncommon'] {
+  border-left-color: var(--brand-blue);
+}
+.tier[data-tier='rare'] {
+  border-left-color: var(--type-psychic);
+}
+.head {
+  display: grid;
+  justify-items: start;
+  padding-left: var(--sp-2);
+  line-height: 1.15;
+}
+.label {
+  font-size: var(--type-caption);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.odds {
+  font-size: var(--type-body);
+  color: var(--ink-primary);
+}
+.mons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.mon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+}
+.mon:hover,
+.mon:focus-visible {
+  background: var(--surface-1);
+  outline: 2px solid var(--accent-action);
+  outline-offset: -2px;
+}

@@ -510,12 +510,13 @@ exception, **Naturalist's Lens** (§2.11.3.1), which triples the Wild Areas' cha
 biome. *(v0.7.5: the "promote one biome" version needed a choose-a-biome screen and a map re-roll after it — a
 second map for one modifier. Rarer finds give the same fantasy, a naturalist's eye, without either.)*
 
-**A biome is a species pool and a backdrop, and it must be wide enough to surprise.** Region 1 shipped with
-four to six species per biome, which is thin enough that a lane starts repeating itself by its third node, and a
-Rare slot that repeated an Uncommon. v0.7.3 widened it — Bellsprout in the Meadow, Krabby in the River, and a
-real find in every Rare slot (Eevee in the grass, Lapras in the water) — and Region 2 brought five pools of
-its own; a species may sit in more than one biome, and in more than one Region. A pool that offers the same
-three Pokémon twice is the failure state to watch for. *(Noted 2026-09-22; widened 2026-09-23.)*
+**A biome is a species pool and a backdrop, and it must be wide enough to surprise.** Since v0.9.7 the whole
+Pokédex lives somewhere: every one of the 146 non-Legendary species is in a pool, eight to twenty-five to a biome,
+so a lane does not repeat itself and a Wild Area is a question rather than a list. *(The user's call, 2026-10-08:
+"a big pool of varied Pokémon" in place of three names. Region 1 had shipped with four to six per biome; v0.7.3
+widened it to eight, still thin enough to see the same three twice in a lane.)* A species may sit in more than one
+biome; across Regions only four repeat — Onix and Farfetch'd (Regions 1 and 2), Hypno and Scyther (2 and 3) — so
+Region 3 fields species the first two never do.
 
 **A lane carries its Gym's field** (§4.3.14 — until v0.8.7 it was its biome's, and five Gyms stood on open ground),
 so the ground you fight on is part of what a lane telegraphs (§2.5.0).
@@ -528,43 +529,75 @@ Region 3's accent is its largest groups (§5.6.3) and its lanes' fields, not a f
 
 ## §2.6.2 What a Wild node offers
 
-**Three species, visible before you enter** (Pillar 1 applies to the map too):
+**The whole pool, by rarity, with each rarity's odds — and the Pokémon is rolled as you walk in** (v0.9.7, the
+user's call). The preview card shows everyone the biome holds in three rows, and the chance of each:
 
-- 2 Common from the biome's pool,
-- 1 Uncommon,
-- and about 10 % of nodes per Region upgrade that Uncommon slot to a **Rare**.
+| Rarity | Chance | Then |
+|---|---|---|
+| **Common** | 60 % | one of the row, evenly |
+| **Uncommon** | 30 % | one of the row, evenly |
+| **Rare** | 10 % | one of the row, evenly |
 
-The `lure-module` relic makes it four. Pick one, and you enter a catching encounter with that species.
+Walking in rolls the rarity, then who leads from its row; a row's share is split evenly between its Pokémon, and
+each one's own chance is on its portrait. The roll is a hash of the run's seed, the Region and the node, like the
+group plan (§5.6.3), so a reload or a replay meets the same Pokémon. The node's shape — a single, a pack, a caller —
+is fixed with the node and shown on the card, as before; a pack's companions come from the biome's Common row.
+
+*Why a roll and not a pick.* Three named species made a Wild Area a shop with one shelf: you saw the one you
+wanted and took it, and a pool of eight read like a pool of three. A visible pool with visible odds keeps the
+promise of Pillar 1 — nothing in the grass is hidden, and the odds are the real ones — while the find stays a find.
+Choosing *where* to look is the decision: the biome, the lane, the Lens.
+
+**What moves the odds.** The **Naturalist's Lens** (§2.11.3.1) makes the Rare 30 % and takes it from the other two
+in their 2 : 1 proportion. The **Lure Module** (§7.3.4) rolls the rarity twice and keeps the rarer (36 / 45 / 19 %).
+The card shows the odds as they will be rolled, both counted in. **A lane always carries its counter** (§2.5): the
+species that answers its own Gym is in its Wild Areas' pool, as an Uncommon when the biome lacks it.
 
 **What the grass leaves** (v0.8.6): about a third of won wild fights turn up **1–2 Poké Balls**, and about one in
 seven a supply from the Region's table (§2.7.2) — a catching route should pay for its own throws.
 
 ## §2.6.3 Species pools
 
-Full Region 1 pools with dex numbers, stats, learnsets and archetypes:
-[`catalogs/species-r1.md`](catalogs/species-r1.md). Regions 2 and 3:
-[`catalogs/species-pool-r2-r3.md`](catalogs/species-pool-r2-r3.md). Summary for Region 1:
+**Each Region fields its strength** (v0.9.7). Region 1 is basics, with the cocoons a basic becomes at once (Metapod,
+Kakuna). Region 2 is the middle of the lines — first evolutions and the Pokémon that never evolve; no basic that still
+has a form ahead of it. Region 3 is final forms only: nothing there has an evolution left, so no Lapras on the first
+node of Route 1 and no pre-evolution on Route 3. **The starters are Rares** in their biome, at their Region's form
+(Bulbasaur, Ivysaur, Venusaur…). **The Legendaries are in no pool.** The rows live in `src/sim/run/region.ts` and [`catalogs/biomes-regions.md`](catalogs/biomes-regions.md).
 
-| Biome | Common | Uncommon | Rare |
+Region 1 — Meadow (primary), Cave, River:
+
+| Biome | Common · 60 % | Uncommon · 30 % | Rare · 10 % |
 |---|---|---|---|
-| Meadow | Caterpie · Weedle · Pidgey · Rattata | Oddish · Bellsprout · Mankey | Eevee |
-| Cave | Zubat · Geodude · Diglett | Onix · Machop | Aerodactyl · Lapras |
-| River | Magikarp · Poliwag | Psyduck · Krabby | Lapras |
+| Meadow | Caterpie · Weedle · Pidgey · Rattata · Spearow · Oddish · Bellsprout · Nidoran♀ · Nidoran♂ | Metapod · Kakuna · Paras · Venonat · Meowth · Ekans · Doduo · Exeggcute · Jigglypuff · Growlithe · Ponyta · Vulpix | Bulbasaur · Pikachu · Eevee · Farfetch'd |
+| Cave | Zubat · Geodude · Diglett · Sandshrew · Machop · Mankey | Onix · Cubone · Clefairy · Rhyhorn · Grimer · Koffing · Gastly · Abra · Drowzee · Magnemite · Voltorb | Charmander · Omanyte · Kabuto |
+| River | Magikarp · Poliwag · Psyduck · Goldeen · Tentacool · Krabby | Slowpoke · Horsea · Shellder · Seel · Staryu | Squirtle · Dratini |
 
-Region 2 (v0.7.3). A Region 1 species found here arrives at Region 2's band and evolves after the catch, like
-any Region 2 basic:
+Region 2 — Sea (primary), River, Power Plant, Cave, Meadow (rare):
 
-| Biome | Common | Uncommon | Rare |
+| Biome | Common · 60 % | Uncommon · 30 % | Rare · 10 % |
 |---|---|---|---|
-| **Sea** (primary) | Tentacool · Shellder · Horsea | Staryu · Seel | Lapras |
-| Power Plant | Voltorb · Magnemite | Pikachu | Electabuzz |
-| River | Poliwag · Horsea · Magikarp | Psyduck · Krabby | Lapras |
-| Cave | Koffing · Zubat · Geodude | Machop · Onix | Lapras |
-| Meadow (rare) | Bellsprout · Pidgey · Rattata | Growlithe · Oddish | Eevee |
+| Sea | Tentacruel · Seadra · Seaking · Golduck | Starmie · Dewgong · Slowbro | Wartortle · Jynx · Dragonair |
+| River | Poliwhirl · Kingler · Golduck · Seaking | Slowbro · Seadra · Dewgong | Wartortle · Dragonair · Ditto |
+| Power Plant | Magneton · Electrode · Raichu | Electabuzz · Kadabra · Hypno | Porygon · Ditto |
+| Cave | Golbat · Graveler · Machoke · Dugtrio · Sandslash · Primeape | Haunter · Muk · Weezing · Kadabra · Onix | Charmeleon · Hitmonlee · Hitmonchan |
+| Meadow | Raticate · Pidgeotto · Arbok · Butterfree · Beedrill · Parasect · Venomoth | Gloom · Weepinbell · Nidorina · Nidorino · Persian · Wigglytuff · Clefable · Tangela · Lickitung | Ivysaur · Scyther · Pinsir · Farfetch'd |
 
-The Sea is drawn five times in thirteen, the Power Plant three, the River and the Cave two each, the Meadow once.
-The Gym lanes (§2.5) walk their own: the Fire and Grass lanes the Meadow, the Electric lane the Power Plant, the
-Poison lane the Cave.
+Region 3 — Volcano (primary), Cave, Sky, Abandoned Tower (rare):
+
+| Biome | Common · 60 % | Uncommon · 30 % | Rare · 10 % |
+|---|---|---|---|
+| Volcano | Arcanine · Ninetales · Rapidash · Rhydon | Magmar · Flareon · Nidoking · Nidoqueen · Golem | Charizard · Tauros |
+| Cave | Machamp · Poliwrath · Golem · Cloyster | Omastar · Kabutops · Vaporeon · Marowak | Blastoise · Aerodactyl · Lapras · Snorlax · Kangaskhan |
+| Sky | Pidgeot · Fearow · Dodrio | Gyarados · Jolteon · Scyther | Dragonite · Aerodactyl |
+| Abandoned Tower | Gengar · Hypno | Alakazam · Exeggutor · Vileplume · Victreebel | Venusaur · Chansey · Mr. Mime |
+
+The Sea is drawn five times in thirteen in Region 2, the Power Plant three, the River and the Cave two each, the
+Meadow once. The Gym lanes (§2.5) walk their own biome in every Region.
+
+**Evolved forms caught in the wild arrive on their species' own path.** A Graveler caught in Region 2 comes with its
+species' archetype and chooses its next path at its next threshold (§6.3); the choice a basic offers is the Region 1
+catch's, and the starter's. *(The trade-off of the Region-strength rule, accepted with it: a Region 2 catch skips
+one branching choice, and arrives stronger for it.)*
 
 A species that appears in two biomes is the same species with different flavour text, not a variant.
 
@@ -1276,7 +1309,7 @@ The gate. Three modifiers are offered, seeded and weighted to your team; you pic
 | **Glass Cannon** | +20 % damage dealt **and** +20 % taken | Medium |
 | **Quick Study** | All Pokémon gain +15 % combat XP | Medium |
 | **Bargain Hunter** | Shop and Dojo prices −20 % | Medium |
-| **Naturalist's Lens** | Wild Areas offer a Rare three times as often (a third slot at 30 % rather than 10 %) | Medium |
+| **Naturalist's Lens** | Wild Areas roll a Rare three times as often (the Rare row at 30 % rather than 10 %, §2.6.2) | Medium |
 | **Iron Skin** | All your Pokémon take −1 damage from Cleave intents | Niche |
 | **Pokédex Whisper** | The first Unknown intent of each combat is revealed | Niche |
 | **Mass Mobilization** | Step-Forward and Step-Backward also draw 1 card | Niche |
@@ -1358,8 +1391,8 @@ view, like the catch roll (§2.6.4.3).
 
 ## §2.11.6 The Safari Zone and the Black Market
 
-**🦌 The Safari Zone** *(town and city, open since v0.7.6)* — a paid catching ground for species no route
-offers, played as a **stalk** rather than a fight. It is the one place in the run with no combat in it, so it has
+**🦌 The Safari Zone** *(town and city, open since v0.7.6)* — a paid catching ground for the species a route
+only rolls as a rarity, played as a **stalk** rather than a fight. It is the one place in the run with no combat in it, so it has
 its own verb: creep through tall grass and throw when the odds are yours. *(The user asked for a minigame that
 makes the Safari unlike the rest of the game, with the rare find as the harder one to land, 2026-09-24; the
 classic bait-rock-ball menu was the fallback.)*
@@ -1377,8 +1410,11 @@ or cut off by the clock.
 | Lineup | Easy · Tricky · Rare | Easy · Easy · Tricky · Rare |
 | Recruit level | Region 2's recruit floor, +0–2 (Lv 14–16) | Region 3's (Lv 24–26) |
 
-The pools (`catalogs/biomes-regions.md` §6) are Gen I's own Safari list less anything a route offers — a test
-holds that line, so a Safari recruit is always one no route could have given. **Dratini is the city's**: the one
+The pools (`catalogs/biomes-regions.md` §6) are Gen I's own Safari list. Since v0.9.7 every species lives on some
+route (§2.6.3), so the park's draw is **certainty**: its Rares are never a route's Common — a test holds that line —
+and where a route rolls them one time in ten or less, the park shows them at the gate, as basics, before you pay.
+*(Until v0.9.7 the line was "nothing a route offers"; the user's call to place the whole Pokédex on the routes
+traded that exclusivity for a sure sighting.)* **Dratini is the city's**: the one
 thing the town's park does not have. No XP and no loot: the Safari pays in Pokémon, and a catch here is a recruit
 like any other (Swap-or-Skip on a full Box, its Evolution screen if it stands at its threshold).
 
@@ -1449,7 +1485,7 @@ once per visit, and going back up locks the door.
 
 | Counter | What it offers | The price |
 |---|---|---|
-| **The Trader** | Two stolen Pokémon — the Game Corner's own prizes and Gen I's in-game trades, less every line a route offers | One of yours, once a visit. Theirs arrives at your Pokémon's level, fresh (full HP, no Trauma); your Pokémon's held item comes back to the bag |
+| **The Trader** | Two stolen Pokémon — the Game Corner's own prizes and Gen I's in-game trades, never a route's Common (since v0.9.7, as the Safari's) | One of yours, once a visit. Theirs arrives at your Pokémon's level, fresh (full HP, no Trauma); your Pokémon's held item comes back to the bag |
 | **The Fence** | **Rare Candy**: one level, now, with every move and evolution it brings — the one item no shop sells. Three a visit | 400 ₽ each (Region Modifiers apply) |
 | | …and it **buys relics**: the only way a relic becomes money again | Pays 40 % of the relic's value |
 | **The Gambler** | Three Rares to aim at (the rarity below for an account that has not opened three, as the Ring's prize) | 1–3 of your relics, staked at a **printed chance** of 80 % × stake ÷ prize, from 5 % to 90 %; the stake is lost either way. Once a visit |

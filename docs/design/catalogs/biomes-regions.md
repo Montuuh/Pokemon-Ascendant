@@ -17,38 +17,43 @@
 | `sky` | Sky / Cliffs 🦅 | R3 | — | Flying, Bug-Flying, Psychic | ✅ `sky-pillar.jpg` |
 | `tower` | Abandoned Tower 👻 | R3 (rare) | — | Ghost, Poison, Psychic | ✅ `tower.jpg` (generated, v0.7.4) |
 
-**Binding is canon**: the eligible set and the primary weighting are fixed per Region. The only thing
-that changes them is the opt-in `naturalist-lens` Region Modifier, which promotes one **eligible** biome to
-primary — dominant, never exclusive, so the 3-species offer never starves.
+**Binding is canon**: the eligible set and the primary weighting are fixed per Region. The opt-in
+`naturalist-lens` Region Modifier raises the Rare row's odds instead of moving a biome (§2.11.3.1).
 
-## 2. Encounter composition (§2.6.2)
+## 2. Encounter composition (§2.6.2, §2.6.3) — v0.9.7
 
-Each Wild Area node offers **3 species, visible before entering**: 2 Common + 1 Uncommon from the node's biome.
-~10 % of nodes per Region upgrade the Uncommon slot to a Rare. The `lure-module` relic makes it 4 offers.
+Each Wild Area node shows **its biome's whole pool by rarity** and rolls who leads on entry: Common 60 % ·
+Uncommon 30 % · Rare 10 %, then one of the row evenly. `naturalist-lens` makes the Rare 30 %; `lure-module`
+keeps the better of two rarity rolls. A lane's counter (§2.5) joins its pool as an Uncommon when the biome lacks it.
+Every non-Legendary species is placed (146 ✅); each Region fields its strength: R1 basics (and the cocoons), R2
+middle forms and the never-evolving, R3 final forms only. Starters are Rares at their Region's form. ✅ v0.9.7
 
-| Biome | Common | Uncommon | Rare |
+Region 1 (weights: Meadow 5 · Cave 3 · River 2):
+
+| Biome | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
 |---|---|---|---|
-| `meadow` | `caterpie` `weedle` `pidgey` `rattata` | `oddish` `bellsprout` `mankey` | `eevee` |
-| `cave` | `zubat` `geodude` `diglett` | `onix` `machop` | `aerodactyl` `lapras` |
-| `river` | `magikarp` `poliwag` | `psyduck` `krabby` | `lapras` |
-| `sea` | `tentacool*` `shellder*` `horsea*` | `staryu*` `seel*` | `lapras` (Dratini is the Safari's, §6) |
-| `power-plant` | `voltorb*` `magnemite*` | `pikachu*` `electabuzz*` | `zapdos*` 🔒 |
+| `meadow` | `caterpie` `weedle` `pidgey` `rattata` `spearow` `oddish` `bellsprout` `nidoran-f` `nidoran-m` | `metapod` `kakuna` `paras` `venonat` `meowth` `ekans` `doduo` `exeggcute` `jigglypuff` `growlithe` `ponyta` `vulpix` | `bulbasaur` `pikachu` `eevee` `farfetchd` |
+| `cave` | `zubat` `geodude` `diglett` `sandshrew` `machop` `mankey` | `onix` `cubone` `clefairy` `rhyhorn` `grimer` `koffing` `gastly` `abra` `drowzee` `magnemite` `voltorb` | `charmander` `omanyte` `kabuto` |
+| `river` | `magikarp` `poliwag` `psyduck` `goldeen` `tentacool` `krabby` | `slowpoke` `horsea` `shellder` `seel` `staryu` | `squirtle` `dratini` |
 
-> **As built (v0.7.3).** Region 1 is the rows above without the unbuilt lines: the Meadow drops Mankey, and the
-> Cave's Rare is `lapras` alone until Aerodactyl ships. Region 2's five pools
-> are §2.6.3's table: the Sea as above with `lapras` for the unbuilt `dratini`; the Power Plant with
-> `electabuzz` as its Rare while Zapdos is locked; and Region 2's own River, Cave and Meadow, which reuse Region 1
-> species at Region 2's band. Weights: Sea 5 · Power Plant 3 · River 2 · Cave 2 · Meadow 1.
-| `volcano` | `vulpix*` `growlithe*` | `magmar*` `ponyta*` | `moltres*` 🔒 |
-| `sky` | `spearow*` `pidgey` | `doduo*` `farfetchd*` | `articuno*` 🔒 |
-| `tower` | `gastly*` | `haunter*` `drowzee*` | `cubone*` `mr-mime*` |
+Region 2 (weights: Sea 5 · Power Plant 3 · River 2 · Cave 2 · Meadow 1):
 
-> **As built (v0.7.4).** A Wild node offers base forms (§2.2.1), so Region 3's pools are the rows above in their
-> first forms, without the Legendaries: the Volcano `vulpix` `ponyta` `sandshrew` · `rhyhorn` `growlithe` ·
-> `magmar`; the Cave `zubat` `geodude` `machop` `mankey` `seel` `shellder` · `abra` `nidoran-f` `jynx` ·
-> `aerodactyl` (two lanes share it, the Fighting lane's and the Ice lane's); the Sky `spearow` `pidgey` ·
-> `doduo` `farfetchd` · `scyther` (for the locked Articuno); the Tower `gastly` `drowzee` · `cubone`
-> `grimer` · `mr-mime`. Weights: Volcano 5 · Cave 3 · Sky 2 · Tower 1.
+| Biome | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
+|---|---|---|---|
+| `sea` | `tentacruel` `seadra` `seaking` `golduck` | `starmie` `dewgong` `slowbro` | `wartortle` `jynx` `dragonair` |
+| `river` | `poliwhirl` `kingler` `golduck` `seaking` | `slowbro` `seadra` `dewgong` | `wartortle` `dragonair` `ditto` |
+| `power-plant` | `magneton` `electrode` `raichu` | `electabuzz` `kadabra` `hypno` | `porygon` `ditto` |
+| `cave` | `golbat` `graveler` `machoke` `dugtrio` `sandslash` `primeape` | `haunter` `muk` `weezing` `kadabra` `onix` | `charmeleon` `hitmonlee` `hitmonchan` |
+| `meadow` | `raticate` `pidgeotto` `arbok` `butterfree` `beedrill` `parasect` `venomoth` | `gloom` `weepinbell` `nidorina` `nidorino` `persian` `wigglytuff` `clefable` `tangela` `lickitung` | `ivysaur` `scyther` `pinsir` `farfetchd` |
+
+Region 3 (weights: Volcano 5 · Cave 3 · Sky 2 · Tower 1):
+
+| Biome | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
+|---|---|---|---|
+| `volcano` | `arcanine` `ninetales` `rapidash` `rhydon` | `magmar` `flareon` `nidoking` `nidoqueen` `golem` | `charizard` `tauros` |
+| `cave` | `machamp` `poliwrath` `golem` `cloyster` | `omastar` `kabutops` `vaporeon` `marowak` | `blastoise` `aerodactyl` `lapras` `snorlax` `kangaskhan` |
+| `sky` | `pidgeot` `fearow` `dodrio` | `gyarados` `jolteon` `scyther` | `dragonite` `aerodactyl` |
+| `tower` | `gengar` `hypno` | `alakazam` `exeggutor` `vileplume` `victreebel` | `venusaur` `chansey` `mr-mime` |
 
 ## 3. Level bands (§2.6.5)
 
@@ -95,8 +100,11 @@ multi-enemy (1 lead + 1–2 supports) and field effects · the League combines e
 
 ## 6. The Safari Zone (§2.11.6) ✅ v0.7.6
 
-Gen I's Safari list, less every line a route already offers (`safari.test` holds it), less the fossils (the
-Laboratory's, v1.3), the starters (the Poké Mart's) and Ditto (until its Transform exists). The tiers are the
+Gen I's Safari list. Since v0.9.7 every species lives on a route too (§2.6.3); the park's Rares are never a route's
+Common (`safari.test` holds it), so the Safari is the sure sighting of what a route rolls one time in ten. *(Until
+v0.9.7 the list was "less every line a route offers"; the fossils, the starters and Ditto, once kept off the routes
+for the Laboratory, the Poké Mart and Transform, are route Rares now — the Laboratory (v1.2) will have to sell them on
+something other than exclusivity.)* The tiers are the
 Safari's own — the board a species is stalked on — not its drop rarity.
 
 | City | Easy | Tricky | Rare |

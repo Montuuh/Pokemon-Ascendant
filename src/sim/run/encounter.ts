@@ -8,6 +8,7 @@ import { masteryMoveFor } from '../meta/mastery';
 import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
 import { RING } from './cities';
 import { applyGroups } from './groups';
+import { rollWild } from './wild';
 import { applyShiny } from './shiny';
 import { applyFields } from './battlefields';
 
@@ -103,7 +104,7 @@ export function buildWildScenario(node: MapNode, run: RunState, content: Content
   return {
     id: `run-${node.id}`,
     name: `Wild ${content.species(speciesId).name}`,
-    description: node.preview.detail,
+    description: `Wild ${content.species(speciesId).name}`,
     kind: 'wild',
     stage: biome?.stage ?? 'meadow',
     seed: rng.cursor,
@@ -339,7 +340,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
   const base = ((): ScenarioDef | null => {
     switch (node.kind) {
       case 'wild':
-        return buildWildScenario(node, run, content, rng, wildChoice ?? node.preview.speciesIds[0]!);
+        // §2.6.2 — the rarity and the species are rolled as you walk in (v0.9.7).
+        return buildWildScenario(node, run, content, rng, wildChoice ?? rollWild(node, run, content).species);
       case 'trainer':
         return buildTrainerScenario(node, run, content, rng);
       case 'gym':

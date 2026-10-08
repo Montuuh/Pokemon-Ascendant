@@ -4,7 +4,7 @@ import { AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWC
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -234,6 +234,29 @@ export function homeFieldTip(type: PokemonType, suppressed = false): ReactNode {
       title={homeFieldLabel(type)}
       body={`The enemy's ${typeName(type)} moves deal ${mult(DEFAULT_BATTLE_CONFIG.homeFieldBoost)} on its own turf. Yours of that type get nothing. Resist its type, and it has nothing to amplify.`}
       footer={suppressed ? 'Suppressed: a Cloud Nine Pokémon is leading.' : 'A Defog clears it for the rest of the fight.'}
+    />
+  );
+}
+
+/** §2.6.2 — a rarity row in a Wild Area's pool: its chance, split evenly between its Pokémon. */
+export function wildTierTip(tier: string, odds: number, count: number, lured: boolean): ReactNode {
+  return <Tip title={WILD_TIER_LABEL[tier]} meta={[WILD_TEXT.pct(odds), `${count} Pokémon`]} body={WILD_TIER_HINT[tier]} footer={lured ? `${WILD_TEXT.roll} ${WILD_TEXT.lure}` : WILD_TEXT.roll} />;
+}
+
+/** §2.6.2 — one Pokémon in a Wild Area's pool: who it is, and the chance it is the one waiting. */
+export function wildMonTip(speciesId: string, tier: string, chance: number): ReactNode {
+  const s = getContent().species(speciesId);
+  return (
+    <Tip
+      title={s.name}
+      meta={[WILD_TIER_LABEL[tier] ?? tier, WILD_TEXT.lead(WILD_TEXT.pct(chance))]}
+      body={
+        <span style={{ display: 'inline-flex', gap: 4 }}>
+          {s.types.map((t) => (
+            <img key={t} src={typeGlyph(t)} alt={typeName(t)} height={18} style={{ imageRendering: 'pixelated' }} />
+          ))}
+        </span>
+      }
     />
   );
 }

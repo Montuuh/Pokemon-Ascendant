@@ -1,5 +1,6 @@
 import type { ScenarioDef, TeamMemberSetup } from '../content/defs';
 import type { BranchArchetype, PrimaryStatus, PokemonType } from '../types';
+import type { WildTier } from './region';
 
 // The run layer: everything outside a fight (§2). Pure and deterministic like the combat sim — the same seed
 // and the same action log rebuild the same run, which is what makes the save a seed plus a list (§10.7.4).
@@ -51,8 +52,13 @@ export interface NodePreview {
    * type is their name.
    */
   usualTypes?: PokemonType[];
-  /** Wild nodes name the species on offer; trainer nodes name the archetype's team. */
+  /** Wild nodes name every species they can hold; trainer nodes name the archetype's team. */
   speciesIds: string[];
+  /**
+   * §2.6.2 — a Wild Area's whole pool by rarity and each rarity's chance (v0.9.7). Which one waits is rolled when
+   * you walk in (`rollWild`). A save from before v0.9.7 has none, and its `speciesIds` stand in as the Commons.
+   */
+  wild?: { pool: Record<WildTier, string[]>; odds: Record<WildTier, number> };
   levelBand: [number, number];
   /** Trainer and Gym nodes fix their roster at generation, so what the preview promised is what you fight. */
   enemies?: { species: string; level: number }[];

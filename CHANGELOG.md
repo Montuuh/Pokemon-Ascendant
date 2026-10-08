@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.7 — Wild Areas, the whole Pokédex · 2026-10-08
+
+Every Pokémon lives on a route; a Wild Area rolls who waits.
+
+- **The whole Pokédex.** 146 species placed, by Region strength.
+- **Rarity rows.** Common 60 %, Uncommon 30 %, Rare 10 %.
+- **Rolled on entry.** The Lens and the Lure move the shown odds.
+- **Re-tuned.** Enemy Attack per Region, for stronger recruits.
+
 ### v0.9.6 — Evolution, rewards and types, polished · 2026-10-08
 
 The evolution animated, clearer rewards, and type charts at a glance.

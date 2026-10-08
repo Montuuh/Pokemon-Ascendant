@@ -609,8 +609,8 @@
       "categories": [
         "meta"
       ],
-      "description": "Wild Areas offer four species to choose from instead of three.",
-      "hook": "wild-choices",
+      "description": "Wild Areas roll their rarity twice and keep the rarer.",
+      "hook": "wild-lure",
       "params": {
         "extra": 1
       },

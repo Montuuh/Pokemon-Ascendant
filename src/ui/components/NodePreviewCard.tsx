@@ -2,13 +2,14 @@ import { useEffect, useRef } from 'react';
 import { getContent } from '@/content/registry';
 import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
-import { ALL_TRAINERS, fieldsFor, groupPlanFor, type MapNode, type PartyMon } from '@/sim';
+import { ALL_TRAINERS, fieldsFor, groupPlanFor, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
 import { FieldChips } from './FieldChips';
 import { groupTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { fallbackBadge, nodeBadge, trainerSprite, itemIcon } from '@/ui/art';
-import { groupLabel, NODE_HINT, NODE_LABEL } from '@/ui/strings';
+import { groupLabel, NODE_HINT, NODE_LABEL, WILD_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
+import { WildPool } from './WildPool';
 import { Money } from './Money';
 import { SupplyStrip } from './SupplyStrip';
 import { TypeBadge } from './TypeBadge';
@@ -93,7 +94,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           {roster && <img className={styles.trainer} src={trainerSprite(roster.sprite)} alt="" />}
         </header>
 
-        {detail && !node.preview.find && <p className={styles.detail}>{detail}</p>}
+        {detail && !node.preview.find && !node.preview.wild && <p className={styles.detail}>{detail}</p>}
         <p className={styles.hint}>{NODE_HINT[node.kind]}</p>
         {/* §2.6.1 / §4.3 — the ground it is fought on, promised like the rest. */}
         <FieldChips fields={fields} compact />
@@ -105,7 +106,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         )}
 
         {/* §2.7 — a trainer's, an Elite's or a Gym's team is a surprise (v0.8.6): one Poké Ball per Pokémon, the way
-            the games show a trainer's party. A wild node still shows who could be waiting — that is the choice. */}
+            the games show a trainer's party. A wild node shows who lives there instead — that is the choice. */}
         {hiddenTeam && (
           <>
             <h3 className={styles.sectionTitle}>Their team</h3>
@@ -131,7 +132,20 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
             )}
           </>
         )}
-        {!hiddenTeam && node.preview.speciesIds.length > 0 && (
+        {/* §2.6.2 — a Wild Area shows everyone who lives there, by rarity, with each rarity's odds (v0.9.7). */}
+        {node.preview.wild && (
+          <>
+            <h3 className={styles.sectionTitle}>
+              {WILD_TEXT.pool}
+              <span className={styles.band}>
+                Lv {node.preview.levelBand[0]}–{node.preview.levelBand[1]}
+              </span>
+            </h3>
+            <WildPool wild={node.preview.wild} odds={(run && wildChancesFor(node, run, content)) || { chances: node.preview.wild.odds, rolls: 1 }} />
+          </>
+        )}
+        {/* A save from before v0.9.7: its Wild Area names the species it offered. */}
+        {!hiddenTeam && !node.preview.wild && node.preview.speciesIds.length > 0 && (
           <>
             <h3 className={styles.sectionTitle}>
               {node.kind === 'wild' ? 'Could be waiting' : 'Their team'}

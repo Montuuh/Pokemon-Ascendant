@@ -217,7 +217,9 @@ describe('Run pacing — §2.1, §3.7', () => {
     const identity = ['psychic', 'ghost'];
     const earlierEnemies = earlier.flatMap((f) => f.enemies);
     console.log(`region 3: new species ${fresh.toFixed(2)} · psychic/ghost ${typed(r3Enemies, identity).toFixed(2)} (R1+R2 ${typed(earlierEnemies, identity).toFixed(2)}) · fire/rock/ground ${typed(r3Enemies, ['fire', 'rock', 'ground']).toFixed(2)}`);
-    expect(fresh, 'Region 3 enemies the first two Regions never field').toBeGreaterThan(0.5);
+    // v0.9.7: Region 2's wilds are the middle of the lines (§2.6.3), the forms Region 3's trainers field too, so the
+    // share of never-seen species fell from ~0.6 to just under half; the identity check below is the one that bites.
+    expect(fresh, 'Region 3 enemies the first two Regions never field').toBeGreaterThan(0.45);
     expect(typed(r3Enemies, identity)).toBeGreaterThan(typed(earlierEnemies, identity) * 2);
   });
 

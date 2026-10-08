@@ -846,7 +846,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           break;
         }
         const rng = encounterRng(draft);
-        const scenario = buildScenario(node, draft, ctx.content, rng, node.preview.speciesIds[0]);
+        const scenario = buildScenario(node, draft, ctx.content, rng);
         draft.cursors.EncounterRNG = rng.cursor;
         draft.pendingScenario = scenario;
         draft.phase = 'combat';

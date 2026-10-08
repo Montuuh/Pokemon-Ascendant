@@ -106,7 +106,7 @@ export const SpeciesSchema = z.object({
 export const ItemHookSchema = z.enum([
   'damage-dealt', 'damage-taken', 'ap-cost', 'draw', 'hand-size', 'free-swap', 'crit-multiplier', 'heal-bonus',
   'status-shield', 'reactive-stage', 'pinch-heal', 'status-duration', 'xp-multiplier', 'money-multiplier',
-  'bench-xp-share', 'wild-choices', 'rider-first', 'retain-card', 'banked-ap', 'on-acquire',
+  'bench-xp-share', 'wild-lure', 'rider-first', 'retain-card', 'banked-ap', 'on-acquire',
   'lead-aura', 'turn-end-heal', 'endure', 'choice-lock',
   // v0.5 (§7.3.7) — the Legendary tier.
   'reveal-intents', 'start-shield',

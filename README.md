@@ -49,9 +49,8 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.6 — Evolution, rewards and types, polished.** The series' evolution plays out, and the path is chosen on a
-cleaner screen; a fight's reward names the stats, moves and unlocks it gave and the medals it moved; and a type badge
-reads its matchups at a glance — attacking on a move, defending on a Pokémon.
+**v0.9.7 — Wild Areas, the whole Pokédex.** Every Pokémon but the Legendaries lives on a route, placed by each
+Region's strength; a Wild Area shows everyone in its grass by rarity with the odds, and rolls who waits as you walk in.
 
 ## Run it locally
 

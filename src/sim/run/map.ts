@@ -2,7 +2,7 @@ import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import {
   GYMS, REGION1_BIOME_WEIGHTS, eliteTeamFor, eliteWildTeamFor, evolvedAt, gymById, gymTeamFor, regionContent, trainerTeamFor,
-  wildBandFor, type BiomeId, type GymDef, type RegionContent, type TrainerRoster,
+  WILD_TIER_ODDS, WILD_TIERS, wildBandFor, type BiomeId, type GymDef, type RegionContent, type TrainerRoster, type WildTier,
 } from './region';
 import { AID_HEAL_PCT } from './economy';
 import { hasModifier } from './modifiers';
@@ -157,41 +157,45 @@ export function drawGymPair(rng: GameRng, onePath = false, exclude: readonly str
   return [a, onePath ? a : b];
 }
 
-/**
- * §2.6.2 — a Wild node shows its three species before you commit.
- *
- * `theme` is the lane's, once the trunk has forked: the biome is the Gym's biome and its favoured species are
- * weighted up inside it. The lane's `counter` — the one species that answers its own Gym — is seeded into the
- * Uncommon slot at a fixed rate, so a lane is a commitment and never a dead end.
- */
-/** §2.6.2 — the chance a Wild Area's third slot is a Rare rather than an Uncommon. Naturalist's Lens raises it. */
-export const WILD_RARE_CHANCE = 0.1;
+/** §2.6.2 — the Rare share a Wild Area rolls. Naturalist's Lens raises it (§2.11.3). */
+export const WILD_RARE_CHANCE = WILD_TIER_ODDS.rare;
 
+/**
+ * §2.6.2 — the rarity odds for a Rare share: the Rare takes `rareChance`, and the rest keeps the Common and the
+ * Uncommon in their usual proportion (60 : 30), so the Lens buys Rares out of both.
+ */
+export function wildOdds(rareChance = WILD_RARE_CHANCE): Record<WildTier, number> {
+  const rest = WILD_TIER_ODDS.common + WILD_TIER_ODDS.uncommon;
+  const left = 1 - rareChance;
+  return { common: (WILD_TIER_ODDS.common / rest) * left, uncommon: (WILD_TIER_ODDS.uncommon / rest) * left, rare: rareChance };
+}
+
+/** §2.6.2 — the species a Wild preview names: every tier, the Commons first. */
+const wildSpecies = (pool: Record<WildTier, string[]>): string[] => [...new Set(WILD_TIERS.flatMap((t) => pool[t]))];
+
+/**
+ * §2.6.2 — a Wild node shows its whole pool before you commit: every species its biome can hold, by rarity, with
+ * each rarity's chance (v0.9.7, the user's call — a big, varied pool rather than three names). Which one is waiting
+ * is rolled when you walk in (`rollWild`).
+ *
+ * `theme` is the lane's, once the trunk has forked: the biome is the Gym's biome. The lane's `counter` — the one
+ * species that answers its own Gym — is always in the pool (an Uncommon if the biome lacks it), so a lane is a
+ * commitment and never a dead end.
+ */
 function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, lane: GymDef | null, region: RegionContent, rareChance = WILD_RARE_CHANCE): { preview: NodePreview; biome: BiomeId } {
   const theme = lane ? region.laneThemes[lane.type] : undefined;
   const biome = theme ? theme.biome : biomeFor(rng, region.biomeWeights);
-  const pool = region.biomes[biome]!;
-
-  // Inside the biome, the lane's favoured species are three times as likely to fill a Common slot.
-  const weighted = pool.common.map((id) => ({ value: id, weight: theme?.favours.includes(id) ? 3 : 1 }));
-  const drawn: string[] = [];
-  for (let i = 0; i < 2 && weighted.length; i++) {
-    const id = pickWeighted(rng, weighted.filter((w) => !drawn.includes(w.value)));
-    drawn.push(id);
-  }
-
-  // The third slot: the lane's counter a third of the time, a Rare a tenth of the time (§2.11.3 Naturalist's Lens:
-  // more), otherwise Uncommon.
-  const roll = rng.range01();
-  const third = theme && roll < 0.33 ? theme.counter : roll < 0.33 + rareChance ? pickOne(rng, pool.rare) : pickOne(rng, pool.uncommon);
-
-  const speciesIds = [...new Set([...drawn, third])];
+  const source = region.biomes[biome]!;
+  const pool: Record<WildTier, string[]> = { common: [...source.common], uncommon: [...source.uncommon], rare: [...source.rare] };
+  if (theme && !WILD_TIERS.some((t) => pool[t].includes(theme.counter))) pool.uncommon.push(theme.counter);
+  const speciesIds = wildSpecies(pool);
   return {
     biome,
     preview: {
-      title: `Wild — ${pool.name}`,
-      detail: speciesIds.map((id) => content.species(id).name).join(' · '),
+      title: `Wild — ${source.name}`,
+      detail: `${speciesIds.length} species`,
       speciesIds,
+      wild: { pool, odds: wildOdds(rareChance) },
       levelBand: wildBandFor(layer, region.wildBand),
       icon: `wild-${biome}`,
     },
@@ -564,7 +568,16 @@ function shifted(preview: NodePreview, offset: number, content: ContentRegistry)
   const levelBand: [number, number] = [preview.levelBand[0] + offset, preview.levelBand[1] + offset];
   const name = (id: string) => content.species(id).name;
   if (!preview.enemies) {
-    // A wild pool: the band's floor decides the form, so every level the node can roll shows the species named.
+    // A wild pool: the band's floor decides the form, so every level the node can roll shows the species named. A
+    // form two tiers share stays in the commoner one.
+    if (preview.wild) {
+      const seen = new Set<string>();
+      const pool = Object.fromEntries(
+        WILD_TIERS.map((t) => [t, [...new Set(preview.wild!.pool[t].map((id) => evolvedAt(id, levelBand[0], content)))].filter((id) => !seen.has(id) && !!seen.add(id))]),
+      ) as Record<WildTier, string[]>;
+      const speciesIds = wildSpecies(pool);
+      return { ...preview, levelBand, speciesIds, detail: `${speciesIds.length} species`, wild: { ...preview.wild, pool } };
+    }
     const speciesIds = [...new Set(preview.speciesIds.map((id) => evolvedAt(id, levelBand[0], content)))];
     return { ...preview, levelBand, speciesIds, detail: speciesIds.map(name).join(' · ') };
   }

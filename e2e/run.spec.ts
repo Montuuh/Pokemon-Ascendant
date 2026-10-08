@@ -179,6 +179,32 @@ test('a node preview names what is inside and can be backed out of', async ({ pa
   await expect(page.locator('[data-testid^="node-"][data-status="reachable"]')).toHaveCount(choices);
 });
 
+test('a Wild Area shows its whole pool by rarity, with the odds — §2.6.2', async ({ page }) => {
+  await startRun(page);
+  await page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="wild"]').first().click();
+  const pool = page.getByTestId('wild-pool');
+  await expect(pool).toBeVisible();
+  await expect(page.getByTestId('wild-odds-common')).toHaveText('60 %');
+  await expect(page.getByTestId('wild-odds-uncommon')).toHaveText('30 %');
+  await expect(page.getByTestId('wild-odds-rare')).toHaveText('10 %');
+  expect(await pool.locator('[data-testid^="wild-mon-"]').count()).toBeGreaterThanOrEqual(8);
+  await page.getByTestId('node-preview').screenshot({ path: 'playtest/run-wild-pool.png' });
+  // A Pokémon's name and its own chance are one hover away.
+  await pool.getByTestId('wild-tier-rare').locator('[data-testid^="wild-mon-"]').first().hover();
+  await expect(page.getByRole('tooltip')).toContainText('Rare');
+  await page.screenshot({ path: 'playtest/run-wild-pool-tip.png' });
+});
+
+test('the Lure Module moves the odds the Wild Area shows — §7.3.4', async ({ page }) => {
+  await startRun(page);
+  await page.evaluate(() => window.__ascendant!.run.grantRelic('lure-module'));
+  await page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="wild"]').first().click();
+  // The better of two rolls: 0.6² Common, 0.9² − 0.6² Uncommon, the rest Rare.
+  await expect(page.getByTestId('wild-odds-common')).toHaveText('36 %');
+  await expect(page.getByTestId('wild-odds-uncommon')).toHaveText('45 %');
+  await expect(page.getByTestId('wild-odds-rare')).toHaveText('19 %');
+});
+
 test('quitting mid-route and continuing resumes the same map', async ({ page }) => {
   await startRun(page);
   const seedLine = await page.locator('header').first().textContent();

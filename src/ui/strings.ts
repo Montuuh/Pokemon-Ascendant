@@ -176,7 +176,7 @@ export const GROUP_HINT: Record<string, string> = {
 };
 
 export const NODE_HINT: Record<string, string> = {
-  wild: 'A wild Pokémon. Beat it for XP, or throw a ball and take it with you.',
+  wild: 'Beat them for XP, or throw a ball and take one with you.',
   trainer: 'A trainer with a full team. More XP than a wild fight, and no catching.',
   elite: 'Two Pokémon, both with a second phase. The hardest fight before the Gym — and a relic for winning it.',
   'elite-wild': 'A boss-sized wild Pokémon. Catch it and it joins you; beat it and you take a relic. Never both.',
@@ -632,4 +632,20 @@ export const CHEAT_MENU = {
     allRelics: () => 'You hold every relic already.',
     won: () => 'The fight is won.',
   },
+};
+
+// §2.6.2 — a Wild Area's pool by rarity (v0.9.7).
+export const WILD_TIER_LABEL: Record<string, string> = { common: 'Common', uncommon: 'Uncommon', rare: 'Rare' };
+export const WILD_TIER_HINT: Record<string, string> = {
+  common: 'What lives here. Most walks in meet one of these.',
+  uncommon: 'Here, but harder to find.',
+  rare: 'A real find. The starters, the fossils and the giants hide in this row.',
+};
+export const WILD_TEXT = {
+  pool: 'Who lives here',
+  roll: 'Walking in rolls the rarity by these odds, then who leads from its row, each as likely as the next.',
+  lure: 'The Lure Module rolls the rarity twice and keeps the rarer, so the rare rows come up more often.',
+  lead: (pct: string) => `${pct} to lead`,
+  /** A chance as the card shows it: whole percents, one decimal under ten. */
+  pct: (p: number) => `${p * 100 >= 10 ? Math.round(p * 100) : (Math.round(p * 1000) / 10).toString()} %`,
 };

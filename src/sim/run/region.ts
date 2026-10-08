@@ -23,31 +23,41 @@ export interface BiomePool {
   rare: string[];
 }
 
+/** §2.6.2 — the three rarities a Wild Area rolls between on entry. */
+export type WildTier = 'common' | 'uncommon' | 'rare';
+export const WILD_TIERS: readonly WildTier[] = ['common', 'uncommon', 'rare'];
+
 /**
- * §2.6.3 — the Region 1 wild pools. A Wild node offers 2 Common + 1 Uncommon (§2.6.2).
- *
- * v0.7.3 widened them (§2.6.1: "a pool that offers the same three Pokémon twice is the failure state"): the
- * Meadow gains Bellsprout, the River Krabby, and the Rares are the catalogue's finds now — an Eevee in the grass
- * and Lapras in the water — instead of an Uncommon repeated in the Rare slot.
+ * §2.6.2 — the chance each rarity is rolled when you walk into a Wild Area (v0.9.7, the user's call): a Common
+ * most of the time, a Rare one time in ten. The species is then drawn evenly inside the rolled tier, so a tier's
+ * share is split between its members. The Naturalist's Lens raises the Rare share (§2.11.3).
+ */
+export const WILD_TIER_ODDS: Record<WildTier, number> = { common: 0.6, uncommon: 0.3, rare: 0.1 };
+
+/**
+ * §2.6.3 — the Region 1 wild pools (v0.9.7: the whole Pokédex placed — every one of the 146 non-Legendary species
+ * lives somewhere across the three Regions). Region 1 is basics, plus the cocoons a basic becomes at once (Metapod,
+ * Kakuna); its Rares are the starters' basics and the finds — Pikachu and Eevee in the grass, the fossils in the
+ * Cave, Dratini in the water. Nothing here outclasses the route it stands on.
  */
 export const BIOMES: Partial<Record<BiomeId, BiomePool>> & Record<'meadow' | 'cave' | 'river', BiomePool> = {
   meadow: {
     id: 'meadow', name: 'Meadow', stage: 'meadow',
-    common: ['caterpie', 'weedle', 'pidgey', 'rattata'],
-    uncommon: ['oddish', 'bellsprout'],
-    rare: ['eevee'],
+    common: ['caterpie', 'weedle', 'pidgey', 'rattata', 'spearow', 'oddish', 'bellsprout', 'nidoran-f', 'nidoran-m'],
+    uncommon: ['metapod', 'kakuna', 'paras', 'venonat', 'meowth', 'ekans', 'doduo', 'exeggcute', 'jigglypuff', 'growlithe', 'ponyta', 'vulpix'],
+    rare: ['bulbasaur', 'pikachu', 'eevee', 'farfetchd'],
   },
   cave: {
     id: 'cave', name: 'Cave', stage: 'cave',
-    common: ['zubat', 'geodude', 'diglett'],
-    uncommon: ['machop', 'onix'],
-    rare: ['lapras'],
+    common: ['zubat', 'geodude', 'diglett', 'sandshrew', 'machop', 'mankey'],
+    uncommon: ['onix', 'cubone', 'clefairy', 'rhyhorn', 'grimer', 'koffing', 'gastly', 'abra', 'drowzee', 'magnemite', 'voltorb'],
+    rare: ['charmander', 'omanyte', 'kabuto'],
   },
   river: {
     id: 'river', name: 'River', stage: 'river',
-    common: ['magikarp', 'poliwag'],
-    uncommon: ['psyduck', 'krabby'],
-    rare: ['lapras'],
+    common: ['magikarp', 'poliwag', 'psyduck', 'goldeen', 'tentacool', 'krabby'],
+    uncommon: ['slowpoke', 'horsea', 'shellder', 'seel', 'staryu'],
+    rare: ['squirtle', 'dratini'],
   },
 };
 
@@ -428,9 +438,12 @@ export const GYM = GYMS[0]!;
  */
 export interface LaneTheme {
   biome: BiomeId;
-  /** Weighted up inside the biome's pool; not exclusive, so the three-species offer never starves. */
+  /** The lane's own-type Pokémon: the Gym pads its team from them (§5.9.3). */
   favours: string[];
-  /** The one species in the lane that beats its own Gym. A late commit is a handicap, not a loss. */
+  /**
+   * The one species in the lane that beats its own Gym, in a form the Region shows: a lane's Wild Areas always carry
+   * it (as an Uncommon when the biome's pool lacks it). A late commit is a handicap, not a loss.
+   */
   counter: string;
   trainers: string[];
 }
@@ -446,39 +459,41 @@ export const LANE_THEME: Record<string, LaneTheme> = {
 
 /**
  * §2.6.1 / §2.6.3 — Region 2's pools. The Sea is primary; the River, the Power Plant and the Cave are its
- * secondaries and the Meadow is rare. Region 1 species that appear here arrive at Region 2's band and evolve
- * after the catch, the same as a Region 2 basic (every basic evolves at 12, `catalogs/species-r1.md` §0).
+ * secondaries and the Meadow is rare. Region 2 is the middle of the lines (v0.9.7): first evolutions, and the
+ * basics that never evolve (Electabuzz, Scyther, Porygon). No basic that still has a form ahead of it — every basic
+ * evolves at 12 (`catalogs/species-r1.md` §0), so one at Region 2's band would be a form the wild never shows.
+ * The Rares are the starters' middle forms, Dragonair, and the Pokémon the Region has no other home for.
  */
 export const BIOMES_R2: Partial<Record<BiomeId, BiomePool>> = {
   sea: {
     id: 'sea', name: 'Sea', stage: 'sea',
-    common: ['tentacool', 'shellder', 'horsea'],
-    uncommon: ['staryu', 'seel'],
-    rare: ['lapras'],
+    common: ['tentacruel', 'seadra', 'seaking', 'golduck'],
+    uncommon: ['starmie', 'dewgong', 'slowbro'],
+    rare: ['wartortle', 'jynx', 'dragonair'],
   },
   river: {
     id: 'river', name: 'River', stage: 'river',
-    common: ['poliwag', 'horsea', 'magikarp'],
-    uncommon: ['psyduck', 'krabby'],
-    rare: ['lapras'],
+    common: ['poliwhirl', 'kingler', 'golduck', 'seaking'],
+    uncommon: ['slowbro', 'seadra', 'dewgong'],
+    rare: ['wartortle', 'dragonair', 'ditto'],
   },
   'power-plant': {
     id: 'power-plant', name: 'Power Plant', stage: 'power-plant',
-    common: ['voltorb', 'magnemite'],
-    uncommon: ['pikachu'],
-    rare: ['electabuzz'],
+    common: ['magneton', 'electrode', 'raichu'],
+    uncommon: ['electabuzz', 'kadabra', 'hypno'],
+    rare: ['porygon', 'ditto'],
   },
   cave: {
     id: 'cave', name: 'Cave', stage: 'cave',
-    common: ['koffing', 'zubat', 'geodude'],
-    uncommon: ['machop', 'onix'],
-    rare: ['lapras'],
+    common: ['golbat', 'graveler', 'machoke', 'dugtrio', 'sandslash', 'primeape'],
+    uncommon: ['haunter', 'muk', 'weezing', 'kadabra', 'onix'],
+    rare: ['charmeleon', 'hitmonlee', 'hitmonchan'],
   },
   meadow: {
     id: 'meadow', name: 'Meadow', stage: 'meadow',
-    common: ['bellsprout', 'pidgey', 'rattata'],
-    uncommon: ['growlithe', 'oddish'],
-    rare: ['eevee'],
+    common: ['raticate', 'pidgeotto', 'arbok', 'butterfree', 'beedrill', 'parasect', 'venomoth'],
+    uncommon: ['gloom', 'weepinbell', 'nidorina', 'nidorino', 'persian', 'wigglytuff', 'clefable', 'tangela', 'lickitung'],
+    rare: ['ivysaur', 'scyther', 'pinsir', 'farfetchd'],
   },
 };
 
@@ -595,47 +610,47 @@ export const GYMS_R2: GymDef[] = [
  * (Rocket Grunts). Each carries one counter to its own Gym, as in Region 1.
  */
 export const LANE_THEME_R2: Record<string, LaneTheme> = {
-  fire: { biome: 'meadow', favours: ['growlithe', 'rattata', 'pidgey'], counter: 'horsea', trainers: ['youngster'] },
-  grass: { biome: 'meadow', favours: ['bellsprout', 'oddish'], counter: 'growlithe', trainers: ['lass'] },
-  electric: { biome: 'power-plant', favours: ['voltorb', 'magnemite', 'pikachu'], counter: 'geodude', trainers: ['engineer'] },
-  poison: { biome: 'cave', favours: ['koffing', 'zubat'], counter: 'staryu', trainers: ['rocket-grunt'] },
+  fire: { biome: 'meadow', favours: ['growlithe', 'rattata', 'pidgey'], counter: 'golduck', trainers: ['youngster'] },
+  grass: { biome: 'meadow', favours: ['bellsprout', 'oddish'], counter: 'rapidash', trainers: ['lass'] },
+  electric: { biome: 'power-plant', favours: ['voltorb', 'magnemite', 'pikachu'], counter: 'graveler', trainers: ['engineer'] },
+  poison: { biome: 'cave', favours: ['koffing', 'zubat'], counter: 'kadabra', trainers: ['rocket-grunt'] },
 };
 
 // ── Region 3 — Volcanic Highlands (v0.7.4) ──────────────────────────────────────────────────────────────────
 
 /**
- * §2.6.1 / §2.6.3 — Region 3's pools (`catalogs/biomes-regions.md` §2, `species-pool-r2-r3.md`). The Volcano
- * is primary; the Cave, the Sky and the rare Abandoned Tower are its secondaries. Every species here exists since
- * the Gen I pass, so the Region *places* lines rather than authoring them. The Legendaries the catalogue names as
- * Rares (Moltres, Articuno) stay out of every pool; a Pokémon the Region has no other home for takes the slot.
+ * §2.6.1 / §2.6.3 — Region 3's pools (`catalogs/biomes-regions.md` §2). The Volcano is primary; the Cave, the Sky
+ * and the rare Abandoned Tower are its secondaries. Region 3 is final forms only (v0.9.7): no Pokémon here has an
+ * evolution left. The Rares are the starters' final forms and the giants — Lapras, Snorlax, Dragonite, Aerodactyl.
+ * The Legendaries stay out of every pool.
  *
- * The Cave is shared by two lanes — the Fighting lane's Machop and Mankey, the Ice lane's Seel and Shellder (the
+ * The Cave is shared by two lanes — the Fighting lane's Machamp and Poliwrath, the Ice lane's Cloyster (the
  * Seafoam register) — the way Region 1's Meadow carries both its Bug and its Normal lane.
  */
 export const BIOMES_R3: Partial<Record<BiomeId, BiomePool>> = {
   volcano: {
     id: 'volcano', name: 'Volcano Slope', stage: 'volcano',
-    common: ['vulpix', 'ponyta', 'sandshrew'],
-    uncommon: ['rhyhorn', 'growlithe'],
-    rare: ['magmar'],
+    common: ['arcanine', 'ninetales', 'rapidash', 'rhydon'],
+    uncommon: ['magmar', 'flareon', 'nidoking', 'nidoqueen', 'golem'],
+    rare: ['charizard', 'tauros'],
   },
   cave: {
     id: 'cave', name: 'Cave', stage: 'cave',
-    common: ['zubat', 'geodude', 'machop', 'mankey', 'seel', 'shellder'],
-    uncommon: ['abra', 'nidoran-f', 'jynx'],
-    rare: ['aerodactyl'],
+    common: ['machamp', 'poliwrath', 'golem', 'cloyster'],
+    uncommon: ['omastar', 'kabutops', 'vaporeon', 'marowak'],
+    rare: ['blastoise', 'aerodactyl', 'lapras', 'snorlax', 'kangaskhan'],
   },
   sky: {
     id: 'sky', name: 'Sky Cliffs', stage: 'sky-pillar',
-    common: ['spearow', 'pidgey'],
-    uncommon: ['doduo', 'farfetchd'],
-    rare: ['scyther'],
+    common: ['pidgeot', 'fearow', 'dodrio'],
+    uncommon: ['gyarados', 'jolteon', 'scyther'],
+    rare: ['dragonite', 'aerodactyl'],
   },
   tower: {
     id: 'tower', name: 'Abandoned Tower', stage: 'tower',
-    common: ['gastly', 'drowzee'],
-    uncommon: ['cubone', 'grimer'],
-    rare: ['mr-mime'],
+    common: ['gengar', 'hypno'],
+    uncommon: ['alakazam', 'exeggutor', 'vileplume', 'victreebel'],
+    rare: ['venusaur', 'chansey', 'mr-mime'],
   },
 };
 
@@ -757,9 +772,9 @@ export const GYMS_R3: GymDef[] = [
  */
 export const LANE_THEME_R3: Record<string, LaneTheme> = {
   psychic: { biome: 'tower', favours: ['drowzee', 'gastly'], counter: 'scyther', trainers: ['hex-maniac'] },
-  ground: { biome: 'volcano', favours: ['sandshrew', 'vulpix'], counter: 'exeggcute', trainers: ['rocket-grunt'] },
-  fighting: { biome: 'cave', favours: ['machop', 'mankey'], counter: 'abra', trainers: ['hiker'] },
-  ice: { biome: 'cave', favours: ['seel', 'shellder'], counter: 'machop', trainers: ['swimmer'] },
+  ground: { biome: 'volcano', favours: ['sandshrew', 'vulpix'], counter: 'exeggutor', trainers: ['rocket-grunt'] },
+  fighting: { biome: 'cave', favours: ['machop', 'mankey'], counter: 'alakazam', trainers: ['hiker'] },
+  ice: { biome: 'cave', favours: ['seel', 'shellder'], counter: 'machamp', trainers: ['swimmer'] },
 };
 
 // ── The Regions ─────────────────────────────────────────────────────────────────────────────────────────────
@@ -900,15 +915,19 @@ export const STATUS_ACCENT_FALLBACK = 'glare';
  *
  * v0.9.6's archetype lean (§6.3.4) made the evolved team a touch stronger: Region 3 ×2.6 → ×2.7 Attack and ×0.27 → ×0.3
  * HP, R1 59 % · R2|R1 60 % · R3|R2 47 % · run 17 % (720 runs).
+ *
+ * v0.9.7's Wild Areas (§2.6.3) recruit each Region's strength — middle forms in Region 2, final forms in Region 3 —
+ * and the team arrived far stronger (R2|R1 85 %, R3|R2 75 % in the quick table). Attack ×1.6/×2.65/×3.9 and Region 3's
+ * HP ×0.35: R1 62 % · R2|R1 60 % · R3|R2 55 % · run 20 % (720 runs; ×4.0 reads 52 %, but the quick band test then dips under its floor).
  */
 export interface StatTier {
   hp: number;
   attack: number;
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { hp: 0.6, attack: 1.45 },
-  { hp: 0.45, attack: 1.9 },
-  { hp: 0.3, attack: 2.7 },
+  { hp: 0.6, attack: 1.6 },
+  { hp: 0.45, attack: 2.65 },
+  { hp: 0.35, attack: 3.9 },
 ];
 
 /**

@@ -54,21 +54,18 @@ describe('The Safari Zone — §2.11.6', () => {
     expect(new Set(city.lineup.map((l) => l.species)).size).toBe(city.lineup.length);
   });
 
-  it('NoSafariSpecies_IsOfferedByAnyRoute', () => {
-    // The exit criterion: a recruit no route could have given. Every line in any biome of any Region is out.
+  it('TheSafarisFinds_AreNeverARouteCommon', () => {
+    // §2.11.6 (v0.9.7) — every species lives on some route now, so the park's draw is reliability: its Rares are ones
+    // a route only rolls as an Uncommon or a Rare, and it offers them as basics, at the next Region's floor.
     const lineOf = (id: string): string[] => {
       const out = [id];
       for (let i = 0; i < out.length; i++) out.push(...(content.species(out[i]!).evolvesTo ?? []));
       return out;
     };
-    const routed = new Set(
-      [BIOMES, BIOMES_R2, BIOMES_R3].flatMap((b) => Object.values(b).flatMap((p) => [...p!.common, ...p!.uncommon, ...p!.rare])).flatMap(lineOf),
-    );
+    const routed = new Set([BIOMES, BIOMES_R2, BIOMES_R3].flatMap((b) => Object.values(b).flatMap((p) => p!.common)).flatMap(lineOf));
     for (const pools of Object.values(SAFARI.pools)) {
-      for (const id of Object.values(pools).flat()) {
-        expect(content.species(id).stage, id).toBe('basic');
-        expect(routed.has(id), id).toBe(false);
-      }
+      for (const id of Object.values(pools).flat()) expect(content.species(id).stage, id).toBe('basic');
+      for (const id of pools.rare) expect(routed.has(id), id).toBe(false);
     }
     // Dratini is the big city's.
     expect(Object.values(SAFARI.pools['pallet-town']).flat()).not.toContain('dratini');

@@ -82,15 +82,15 @@ describe('What is on offer — §2.11.6', () => {
     expect(s.cursors.MarketRNG).toBeDefined();
   });
 
-  it('TheTradersPokemon_AreLinesNoRouteOffers', () => {
+  it('TheTradersPokemon_AreNeverARouteCommon', () => {
+    // §2.11.6 (v0.9.7) — every species lives on some route now; the Trader's are ones a route only rolls as an
+    // Uncommon or a Rare, so a trade is a sure thing where a route is a roll.
     const lineOf = (id: string): string[] => {
       const out = [id];
       for (let i = 0; i < out.length; i++) out.push(...(content.species(out[i]!).evolvesTo ?? []));
       return out;
     };
-    const routed = new Set(
-      [BIOMES, BIOMES_R2, BIOMES_R3].flatMap((b) => Object.values(b).flatMap((p) => [...p!.common, ...p!.uncommon, ...p!.rare])).flatMap(lineOf),
-    );
+    const routed = new Set([BIOMES, BIOMES_R2, BIOMES_R3].flatMap((b) => Object.values(b).flatMap((p) => p!.common)).flatMap(lineOf));
     for (const id of BLACK_MARKET.tradePool) {
       expect(content.species(id).stage, id).toBe('basic');
       expect(routed.has(id), id).toBe(false);

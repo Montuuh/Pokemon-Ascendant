@@ -108,8 +108,8 @@ describe('Region 1 widened — §2.6.1', () => {
       // A Rare slot that repeats a Common or an Uncommon is not a find.
       for (const id of b!.rare) expect([...b!.common, ...b!.uncommon], `${b!.id} rare ${id}`).not.toContain(id);
     }
-    expect(BIOMES.meadow.uncommon).toContain('bellsprout');
-    expect(BIOMES.river.uncommon).toContain('krabby');
+    expect(BIOMES.meadow.common).toContain('bellsprout');
+    expect(BIOMES.river.common).toContain('krabby');
   });
 });
 

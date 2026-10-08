@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildScenario } from './encounter';
+import { rollWild } from './wild';
 import { GameRng } from '../rng/gameRng';
 import { buildRegistry } from '@/content/registry';
 import { createRun, defaultRunCtx, isOfferable, priceFor, rollRegionModifierOffer, traumaZone1Pct } from '@/sim';
@@ -144,23 +145,26 @@ describe('Region Modifiers inside a fight — §7.3.6', () => {
 });
 
 describe("The v0.7.5 modifiers — §2.11.3", () => {
-  it("NaturalistsLens_WildAreasOfferARareFarMoreOften", () => {
+  it("NaturalistsLens_WildAreasRollARareThreeTimesAsOften", () => {
+    // §2.6.2 — a Wild Area's odds are on its preview and the roll on entry follows them.
     const rares = (id: string | undefined) => {
-      let n = 0, wilds = 0;
+      let n = 0, wilds = 0, shown = 0;
       for (let seed = 1; seed <= 40; seed++) {
         const run = createRun('squirtle', seed, ctx, 0, [], undefined, id);
         for (const node of Object.values(run.map.nodes)) {
           if (node.kind !== 'wild') continue;
           wilds += 1;
-          if (node.preview.speciesIds.some((s) => content.species(s).rarity === 'rare')) n += 1;
+          shown = node.preview.wild!.odds.rare;
+          if (rollWild(node, run, ctx.content).tier === 'rare') n += 1;
         }
       }
-      return n / wilds;
+      return { rolled: n / wilds, shown };
     };
     const base = rares(undefined);
     const lens = rares('naturalists-lens');
-    // The Rare slot rises from a tenth to three tenths; lanes also field Rare counters, so the base is not zero.
-    expect(lens).toBeGreaterThan(base + 0.15);
+    expect(base.shown).toBeCloseTo(0.1);
+    expect(lens.shown).toBeCloseTo(0.3);
+    expect(lens.rolled).toBeGreaterThan(base.rolled + 0.12);
   });
 
   it('MassMobilization_AStepForwardDrawsACard', () => {

@@ -56,9 +56,11 @@ describe('Enemies at the forms their levels warrant — §2.7.3', () => {
         if (n.kind === 'gym') continue;
         expect(evolvedAt(e.species, e.level, content), `${n.id} ${e.species}@${e.level}`).toBe(e.species);
       }
-      // …while its Wild nodes offer the base forms, which evolve after the catch (species-r1.md §0: "where the
-      // base form spawns").
-      if (n.kind === 'wild') for (const id of n.preview.speciesIds) expect(content.species(id).stage, `${n.id} ${id}`).toBe('basic');
+      // …and its Wild nodes the middle of the lines (§2.6.3, v0.9.7): no basic that still has a form ahead of it.
+      if (n.kind === 'wild') for (const id of n.preview.speciesIds) {
+        const s = content.species(id);
+        expect(s.stage === 'basic' && s.evolvesTo.length > 0, `${n.id} ${id}`).toBe(false);
+      }
     }
   });
 

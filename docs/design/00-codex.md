@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -79,7 +79,7 @@ Pokémon.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
   Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
   Elite, the Lapras Elite Wild and the Fire · Grass · Electric · Poison Gyms with their Badges. 76 % of what it
-  fields is new, a quarter Electric or Ice. A Region 2 basic evolves after its catch. *(2026-09-23.)*
+  fields is new, a quarter Electric or Ice. Since v0.9.7 its wilds are first evolutions, not basics (§2.6.3). *(2026-09-23.)*
 - **Region 3 (Volcanic Highlands) is its own content** since v0.7.4: Volcano primary, Cave, Sky, rare Abandoned
   Tower; twelve rosters (the Hex Maniac hides each Pokémon's first intent), Giovanni as the Elite Trainer,
   Aerodactyl as the Elite Wild, and the Psychic · Ground · Fighting · Ice Gyms of Sabrina, Giovanni, Kiyo and
@@ -107,8 +107,10 @@ stop — the field nurse (one per lane at 18, guaranteed), the merchant (≥1 in
 on the ground** (a find named on the map, one click). So every route walks ~12 fights and ~7 stops. ~65 nodes. The
 map is **painted from a tileset** by a pure function of the map (§2.5.4) and saved whole in the run.
 
-**Wild nodes** offer **3 species up front** — 2 Common + 1 Uncommon, ~10 % upgrading the Uncommon to Rare.
-8 biomes bound to Regions; **Naturalist's Lens** makes their Rares three times as common.
+**Wild nodes** show **their whole pool by rarity** — Common 60 % · Uncommon 30 % · Rare 10 %, split evenly inside a
+row — and **roll who leads on entry** (v0.9.7, §2.6.2). All 146 non-Legendary species placed by Region strength:
+R1 basics, R2 middle forms, R3 final forms only; the starters are Rares at their Region's form (§2.6.3). 8 biomes
+bound to Regions; **Naturalist's Lens** makes the Rare 30 %, the **Lure Module** keeps the better of two rolls.
 **Recruit bands:** R1 5–13 · R2 14–22 · R3 24–32 (v0.8.10: R2 and R3 up two, so the team stays a level or two over).
 
 **Running (§3.1.2, 2026-09-21)** — any Action-phase turn except a Gym: the enemy's telegraphed action lands, the
