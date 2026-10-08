@@ -60,7 +60,7 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `swarm` | Swarm | Combat | Bug moves +20 % below 30 % HP | `low-hp-type-boost` (bug) | caterpie, weedle | ✅ v0.3 |
 | `tough-claws` | Tough Claws | Combat | Melee +15 % | `range-boost` (melee) | charizard, venusaur, golem, aerodactyl, scyther (hidden) | ✅ |
 | `snipe` | Snipe | Combat | Ranged +15 % | `range-boost` (ranged) | beedrill, zubat, bellsprout, charmander | ✅ |
-| `shell-armor` | Shell Armor | Combat | Lead takes −2 per hit | `lead-flat-reduction` (2) | squirtle, krabby, mr-mime (hidden) | ✅ |
+| `shell-armor` | Shell Armor | Combat | Lead takes 15 % less per hit (v0.9.10: was −2 per hit, which on a high-Defence Lead cut small hits by 40 %) | `lead-percent-reduction` (15 %) | squirtle, krabby, mr-mime (hidden) | ✅ |
 | `solid-rock` | Solid Rock | Combat | Super-effective hits deal −25 % | **`super-effective-reduction`** (0.75) | geodude | ✅ v0.3 |
 | `compound-eyes` | Compound Eyes | Combat | Status riders always apply | `riders-always-apply` | caterpie | ✅ |
 | `sheer-force` | Sheer Force | Combat | Moves carrying a rider for the foe deal +20 %; the rider still rolls | `rider-force-plus-damage` (1.2) | krabby (hidden), koffing (hidden), jynx (hidden) | ✅ v0.7.5 |
@@ -70,7 +70,7 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `rock-head` | Rock Head | Survival | The wearer takes no self-damage from recoil moves | `dot-immunity` (`recoilOnly`) | geodude, onix, marowak, aerodactyl | ✅ v0.4 (on `recoil-immunity`) |
 | `magic-guard` | Magic Guard | Survival | Immune to Burn/Poison DoT (the status still applies) | `dot-immunity` | — (reserved, §6.6) | 🔒 reserved |
 | `multiscale` | Multiscale | Survival | At full HP the wearer takes −50 % from the first hit each combat | `low-hp-damage-reduction` (inverted) | — (reserved) | 🔒 |
-| `battle-armor` | Battle Armor | Survival | While Lead, incoming hits deal 2 less | **`lead-flat-reduction`** (2) | cubone, kabuto lines | ✅ Gen I — ships as a Lead flat reduction: the no-crit variant (`critOnly`) has no hook yet, and the shell reads as armour either way |
+| `battle-armor` | Battle Armor | Survival | While Lead, incoming hits deal 15 % less (v0.9.10; was 2 less) | **`lead-percent-reduction`** (15 %) | cubone, kabuto lines | ✅ Gen I — ships as a Lead flat reduction: the no-crit variant (`critOnly`) has no hook yet, and the shell reads as armour either way |
 | `weak-armor` | Weak Armor | Survival | When a hit lands: Def −1, Atk +1 | `on-damaged-stages` | onix (hidden) | ✅ v0.7.5 |
 | `levitate` | Levitate | Type | Immune to Ground moves | `type-immunity` (ground) | marowak-spirit | 🔒 reserved |
 | `water-absorb` | Water Absorb | Type | Water moves heal instead of damaging | `type-absorb` (water) | vaporeon, poliwag, lapras | ✅ v0.3 |

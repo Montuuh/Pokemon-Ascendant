@@ -190,12 +190,16 @@ export function abilityOnEnterLead(
   return out;
 }
 
-/** Shell Armor — flat reduction on incoming hits while the holder is the Lead. */
-export function abilityFlatReduction(target: Combatant, isLead: boolean, content: ContentRegistry): number {
+/**
+ * §6.5.2 Shell Armor, Battle Armor — a share off every hit while the holder is the Lead (v0.9.10: was a flat 2 per
+ * hit, which on a high-Defence Lead took 40 % off a 5-damage hit and left small hits barely landing; a share scales
+ * with the hit). Returns the percent.
+ */
+export function abilityLeadReduction(target: Combatant, isLead: boolean, content: ContentRegistry): number {
   if (!isLead) return 0;
-  let r = 0;
-  for (const a of hooks(target, content)) if (a.hook === 'lead-flat-reduction') r += Number(a.params?.amount ?? 0);
-  return r;
+  let pct = 0;
+  for (const a of hooks(target, content)) if (a.hook === 'lead-percent-reduction') pct += Number(a.params?.percent ?? 0);
+  return Math.min(100, pct);
 }
 
 /** Compound Eyes — status riders always apply (§6.6). */

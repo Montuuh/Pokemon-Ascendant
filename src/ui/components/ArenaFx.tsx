@@ -78,7 +78,7 @@ function CatchBeat({ c, slotClass }: { c: CatchFx; slotClass: SlotClass }) {
     return { k, state, at };
   });
   return (
-    <div className={`${slotClass(c.slot)} ${styles.catch}`} style={vars} data-testid="catch-fx" data-success={c.success} data-wobbles={c.wobbles} data-checks={c.checks} aria-hidden="true">
+    <div className={`${slotClass(c.slot)} ${styles.catch}`} style={vars} data-testid="catch-fx" data-slot={c.slot} data-success={c.success} data-wobbles={c.wobbles} data-checks={c.checks} aria-hidden="true">
       <img className={`pixel ${styles.mon}`} src={spriteOf({ speciesId: c.speciesId }, 'front', c.shiny)} alt="" draggable={false} />
       <span ref={spot} className={styles.spot}>
         <span className={styles.arc}>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PIDGEY, ctx, dispatch, eventsOf, handCard, leadOf, scenario, start, teamWithKit, tweak, withHand } from '../testing/harness';
-import { abilityAttackMultiplier, abilityBlocksStatus, abilityDefenceMultiplier, abilityOnEnterLead, abilityRiposte, abilityTypeAbsorb } from './abilities';
+import { abilityLeadReduction, abilityAttackMultiplier, abilityBlocksStatus, abilityDefenceMultiplier, abilityOnEnterLead, abilityRiposte, abilityTypeAbsorb } from './abilities';
 import { breakdownFor } from './damageFlow';
 
 // §6.5 — the six hooks v0.3 added. Each one is a simulation change rather than a content row, so each gets a
@@ -19,6 +19,14 @@ const withAbility = (species: string, abilityId: string, level = 16) =>
   );
 
 describe('Abilities — §6.5.2 (v0.3 hooks)', () => {
+  it('ShellArmor_TakesAShareOffEveryHit_OnlyWhileLead', () => {
+    // v0.9.10 — a share, not a flat 2: a 5-damage hit is no longer cut by 40 %.
+    const s = start(scenario({ team: [{ species: 'blastoise', level: 32, abilityId: 'shell-armor' }, { species: 'wartortle', level: 20, abilityId: 'shell-armor' }, { species: 'bulbasaur', level: 20 }], enemies: [PIDGEY] }));
+    const [lead, bench] = [s.player.team[0]!, s.player.team[1]!];
+    expect(abilityLeadReduction(lead, true, ctx.content)).toBe(15);
+    expect(abilityLeadReduction(bench, false, ctx.content)).toBe(0);
+  });
+
   it('Guts_BoostsAttackWhileStatused_AndCancelsBurnsPenalty_§6.5.2', () => {
     const s = withAbility('raticate', 'guts');
     const mon = structuredClone(leadOf(s));

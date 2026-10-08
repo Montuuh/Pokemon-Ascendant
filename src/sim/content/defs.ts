@@ -350,7 +350,7 @@ export type AbilityHook =
   | 'none'
   | 'low-hp-type-boost'
   | 'range-boost'
-  | 'lead-flat-reduction'
+  | 'lead-percent-reduction'
   | 'riders-always-apply'
   | 'reveal-intents'
   | 'sturdy'

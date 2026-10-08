@@ -84,6 +84,41 @@ test.describe('Arena animations — §9.9', () => {
     else await expect(page.getByTestId('arena-enemy').first()).not.toHaveClass(/fx-hidden/);
   });
 
+  test('a ball thrown at a Pokémon behind the Lead flies at that one — §5.6, §2.6.4', async ({ page }) => {
+    await page.goto('/?scenario=group-wild-flock&seed=2');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await page.waitForTimeout(1500);
+    const target = await page.evaluate(() => {
+      const a = (window as unknown as { __ascendant: { state: () => { enemies: { uid: string }[]; player: { consumables: { hand: { id: string; consumableId: string }[] } } }; dispatch: (x: unknown) => boolean } }).__ascendant;
+      const s = a.state();
+      const ball = s.player.consumables.hand.find((c) => c.consumableId === 'poke-ball');
+      const back = s.enemies[1]!.uid;
+      if (ball) a.dispatch({ type: 'use-consumable', cardId: ball.id, targetUid: back });
+      return ball ? back : null;
+    });
+    test.skip(!target, 'no ball in the opening hand on this seed');
+    const beat = page.getByTestId('catch-fx');
+    await expect(beat).toBeAttached();
+    await expect(beat).not.toHaveAttribute('data-slot', /lead|single/);
+  });
+
+  test('your fallen Lead sinks and its ball comes home before you pick who steps up — §9.9.1', async ({ page }) => {
+    await page.goto('/?scenario=wild-boss-3phase&seed=3');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await page.waitForTimeout(1200);
+    const ghost = page.locator('[data-testid="arena-ghost"][data-kind="faint"][data-slot="player"]');
+    const pick = page.getByTestId('lead-pick-modal');
+    for (let i = 0; i < 40 && (await ghost.count()) === 0 && (await pick.count()) === 0; i++) {
+      await page.evaluate(() => (window as unknown as { __ascendant: { dispatch: (a: unknown) => boolean } }).__ascendant.dispatch({ type: 'end-turn' }));
+      await page.waitForTimeout(200);
+    }
+    // The beat plays with nothing over it; the pick comes after.
+    await expect(ghost.first()).toBeAttached();
+    await expect(pick).toHaveCount(0);
+    await expect(pick).toBeVisible({ timeout: 6_000 });
+    await expect(ghost).toHaveCount(0);
+  });
+
   test('a trainer\'s fallen Pokémon sinks, and its ball goes back to the trainer', async ({ page }) => {
     await page.goto('/?scenario=trainer-2enemy&seed=5');
     await expect(page.getByTestId('combat-screen')).toBeVisible();

@@ -1,22 +1,36 @@
 import type { SlotId } from '../types';
 import type { Combatant, CombatState, EnemyCombatant } from './state';
 
-// §3.3 / §5.2 — slots are positions. `lead` is the Lead; `bench1`/`bench2` are the remaining team members in
-// array order. A manual swap moves Pokémon between slots; the slots themselves never move.
+// §3.3 / §5.2 — slots are positions. `lead` is the Lead; `bench1`/`bench2` are the other two, in the order the
+// fight keeps (`player.order`). A swap trades two Pokémon's places and nothing else: the Lead stepping down takes
+// the very place of the Pokémon stepping up, and the third never moves (v0.9.10 — slots read off array order had the
+// old Lead land on bench 1 whichever bench came up, and the other bench slide down to make room).
+
+/** The team's indices by place: the Lead, bench 1, bench 2. */
+export function slotOrder(state: Pick<CombatState, 'player'>): number[] {
+  const { team, leadIndex, order } = state.player;
+  if (order && order[0] === leadIndex && order.length === team.length) return order;
+  return [leadIndex, ...team.map((_, i) => i).filter((i) => i !== leadIndex)];
+}
+
+/** §3.3 — put `index` in the Lead, trading places with the Lead it replaces. */
+export function setLead(state: Pick<CombatState, 'player'>, index: number): void {
+  const order = [...slotOrder(state)];
+  const at = order.indexOf(index);
+  if (at > 0) [order[0], order[at]] = [order[at]!, order[0]!];
+  state.player.order = order;
+  state.player.leadIndex = index;
+}
 
 export function slotToIndex(state: CombatState, slot: SlotId): number | null {
-  const { team, leadIndex } = state.player;
-  if (slot === 'lead') return leadIndex < team.length ? leadIndex : null;
-  const benches = team.map((_, i) => i).filter((i) => i !== leadIndex);
-  const idx = slot === 'bench1' ? benches[0] : benches[1];
-  return idx ?? null;
+  const order = slotOrder(state);
+  const idx = slot === 'lead' ? order[0] : slot === 'bench1' ? order[1] : order[2];
+  return idx !== undefined && idx < state.player.team.length ? idx : null;
 }
 
 export function indexToSlot(state: CombatState, index: number): SlotId {
-  const { leadIndex, team } = state.player;
-  if (index === leadIndex) return 'lead';
-  const benches = team.map((_, i) => i).filter((i) => i !== leadIndex);
-  return benches[0] === index ? 'bench1' : 'bench2';
+  const at = slotOrder(state).indexOf(index);
+  return at === 0 ? 'lead' : at === 1 ? 'bench1' : 'bench2';
 }
 
 /** Occupant of a slot, or null if the slot is empty or its occupant has fainted (§5.4.1). */
@@ -32,7 +46,7 @@ export function lead(state: CombatState): Combatant | null {
 }
 
 export function benchIndices(state: CombatState): number[] {
-  return state.player.team.map((_, i) => i).filter((i) => i !== state.player.leadIndex);
+  return slotOrder(state).slice(1);
 }
 
 export function aliveTeam(state: CombatState): Combatant[] {

@@ -4,6 +4,7 @@ import {
   leadOf, reject, scenario, start, teamWithKit, tweak, withConsumableHand, withHand,
 } from '../testing/harness';
 import { breakdownFor } from './damageFlow';
+import { effectiveApCost } from './preview';
 import { itemAttackMultiplier } from './items';
 import { isOfferable, rollHeldItem, rollLegendaryOffer, rollRelic } from '../run/economy';
 import { RngStreams } from '../rng/rngStreams';
@@ -15,6 +16,16 @@ import { RngStreams } from '../rng/rngStreams';
 const plain = (over: Parameters<typeof scenario>[0]) => scenario(over);
 
 describe('Relics — §7.3', () => {
+  it('PressurePlate_DiscountsTheNextMoveThisTurn_NeverOneNextTurn', () => {
+    let s = withHand(start(scenario({ team: teamWithKit(['flamethrower', 'ember', 'scratch'], 'charmander', 20), enemies: [{ ...PIDGEY, level: 30 }], relics: ['pressure-plate'] })), ['flamethrower', 'ember', 'scratch']);
+    const cost = (id: string) => effectiveApCost(s, ctx.content.move(id), leadOf(s), ctx);
+    expect(cost('ember')).toBe(1);
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'flamethrower').id });
+    expect(cost('ember')).toBe(0);
+    s = withHand(dispatch(s, { type: 'end-turn' }), ['flamethrower', 'ember', 'scratch']);
+    expect(cost('ember')).toBe(1);
+  });
+
   it('TypeBoost_MultipliesOnlyItsOwnType_§7.3.6', () => {
     const team = teamWithKit(['water-gun', 'tackle']);
     const base = start(plain({ team, enemies: [PIDGEY] }));

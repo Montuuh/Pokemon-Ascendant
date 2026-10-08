@@ -63,6 +63,12 @@ export interface CombatFxState {
   banner: string | null;
   /** A beat is playing that the screen should not talk over — the catch, a faint: the outcome waits, the hand waits. */
   busy: boolean;
+  /**
+   * §9.9.1 — your Pokémon already at 0 HP in the sim whose faint has not played yet: their card stays standing through
+   * the hits still on screen and dims when the beat comes (v0.9.10 — the card went grey at once, then every hit's flash
+   * lit it up again, and the faint looked like it played twice).
+   */
+  faintPending: Record<string, true>;
   /** While a ball rocks, the log shows only this many lines: the result is not read before the ball tells it. */
   logHold: number | null;
 }
@@ -149,6 +155,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   const [catching, setCatching] = useState<CatchFx | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [faintPending, setFaintPending] = useState<Record<string, true>>({});
   const [logHold, setLogHold] = useState<number | null>(null);
   // Every timer this hook has set, kept across batches: a batch arriving mid-beat must not cancel the end of the
   // last one (a sprite left hidden, the hand left locked). They are cleared only on a new fight and on unmount.
@@ -309,7 +316,12 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           delay += 150;
           break;
         case 'faint': {
-          // The card's own fade (motion.css faintOut) runs to its end before the class goes.
+          // The card stands until its beat, then dims into its fainted look (motion.css faintOut).
+          if (e.side !== 'enemy' && delay > 0) {
+            const uid = e.uid;
+            schedule(() => setFaintPending((p) => ({ ...p, [uid]: true })), 0);
+            schedule(() => setFaintPending((p) => Object.fromEntries(Object.entries(p).filter(([k]) => k !== uid)) as Record<string, true>), delay);
+          }
           addClass(e.uid, 'fx-faint', delay, FAINT_CARD_MS);
           if (!animate) {
             delay += 300;
@@ -380,7 +392,9 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           break;
         case 'catch': {
           // §2.6.4.4 — the throw. The sim rolled the four shake checks already; the ball only shows them.
-          const target = [...before.enemies.entries()].find(([, v]) => v.slot === 'single' || v.slot === 'lead');
+          // The ball flies at the Pokémon it was thrown at — a support behind the Lead too (§5.6).
+          const aimed = before.enemies.get(e.targetUid);
+          const target = aimed ? ([e.targetUid, aimed] as const) : [...before.enemies.entries()].find(([, v]) => v.slot === 'single' || v.slot === 'lead');
           if (!animate || !target) {
             showBanner(e.success ? 'Gotcha!' : CATCH_BREAK_LINE[Math.min(e.checks, 3)]!, delay);
             delay += 300;
@@ -420,7 +434,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, balls, catching, banner, busy, logHold };
+  return { floats, classes, sprites, ghosts, balls, catching, banner, busy, logHold, faintPending };
 }
 
 export type { CombatEvent };

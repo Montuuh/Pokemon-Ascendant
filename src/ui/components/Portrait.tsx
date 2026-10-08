@@ -12,6 +12,8 @@ import styles from './Portrait.module.css';
 type Variant = 'lead' | 'bench';
 
 interface Props {
+  /** §9.9.1 — its faint has not played yet (`useCombatFx`): drawn standing until the beat. */
+  faintPending?: boolean;
   mon: Combatant;
   variant: Variant;
   slotLabel: string;
@@ -38,9 +40,10 @@ interface Props {
 
 // Per docs/design/ui/02 §2.1 — squad-formation portrait: type top-left, status top-right, crown on the Lead,
 // HP bar + text below, swap chip for benches. Intent targets highlight the slot, never the Pokémon (§5.2).
-export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapHint, targeted, selectable, onClick, fx, fxClass, incoming, incomingKo, asLead }: Props) {
+export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapHint, targeted, selectable, onClick, fx, fxClass, incoming, incomingKo, asLead, faintPending }: Props) {
   const primary = mon.types[0] ?? 'normal';
-  const fainted = mon.hp <= 0;
+  // §9.9.1 — at 0 HP but its faint still to play: it stands through the hits on screen first.
+  const fainted = mon.hp <= 0 && !faintPending;
   const classes = [
     styles.portrait,
     styles[variant],

@@ -64,11 +64,16 @@
   }
 }
 
+/* §9.9.1 — a fallen Pokémon's card dims into its fainted look (Portrait .fainted) and stays: it never vanishes and
+   comes back, which read as the faint playing twice (v0.9.10). The sprite's own sink is the ghost's (fx-ghost-faint). */
 @keyframes faintOut {
+  from {
+    filter: none;
+    opacity: 1;
+  }
   to {
-    transform: translateY(24px);
-    opacity: 0;
-    filter: grayscale(1);
+    filter: saturate(0.2) brightness(0.8);
+    opacity: 0.8;
   }
 }
 

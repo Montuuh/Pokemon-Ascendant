@@ -17,8 +17,7 @@ import {
   swapOptions,
   type CardPlayability,
   type CombatState,
-  type SlotId,
-} from '@/sim';
+  type SlotId, benchIndices } from '@/sim';
 import { portraitOf, stageBackdrop, spriteOf, trainerSprite } from '@/ui/art';
 import { CombatLog } from '@/ui/components/CombatLog';
 import { BagButton } from '@/ui/components/BagButton';
@@ -190,7 +189,7 @@ export function CombatScreen() {
   const lead = state.player.team[leadIdx]!;
   // §5.14 — a caught shiny wears its palette; the fight carries the flag.
   const shiny = !!lead.shiny;
-  const benches = state.player.team.map((_, i) => i).filter((i) => i !== leadIdx);
+  const benches = benchIndices(state);
   const selectedPlay = selection.mode === 'card' || selection.mode === 'step-back' ? plays.find((p) => p.card.id === selection.cardId) ?? null : null;
   const draggedPlay = drag ? plays.find((p) => p.card.id === drag.id) ?? null : null;
   const previewPlay = draggedPlay ?? plays.find((p) => p.card.id === hoverCardId) ?? selectedPlay;
@@ -319,7 +318,7 @@ export function CombatScreen() {
     const opt = swaps.find((o) => o.benchIndex === bi);
     return (
       <div className={cls}>
-        <Portrait mon={mon} variant="bench" slotLabel={SLOT_LABEL[indexToSlot(state!, bi)]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(indexToSlot(state!, bi))} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi)} onClick={() => onTeamClick(bi)} fx={fx.floats} fxClass={fx.classes[mon.uid]} {...incomingFor(mon.uid)} />
+        <Portrait mon={mon} variant="bench" slotLabel={SLOT_LABEL[indexToSlot(state!, bi)]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(indexToSlot(state!, bi))} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi)} onClick={() => onTeamClick(bi)} fx={fx.floats} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -364,14 +363,14 @@ export function CombatScreen() {
           {benchPortrait(benches[0], styles.benchTop)}
           {benchPortrait(benches[1], styles.benchBottom)}
           <div className={styles.leadSlot}>
-            <Portrait mon={lead} variant="lead" slotLabel="Lead" targeted={targetSlots.has('lead')} selectable={allySelectable && lead.hp > 0} onClick={() => onTeamClick(leadIdx)} fx={fx.floats} fxClass={fx.classes[lead.uid]} {...incomingFor(lead.uid)} />
+            <Portrait mon={lead} variant="lead" slotLabel="Lead" targeted={targetSlots.has('lead')} selectable={allySelectable && lead.hp > 0} onClick={() => onTeamClick(leadIdx)} fx={fx.floats} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} {...incomingFor(lead.uid)} />
           </div>
         </div>
 
         <div className={styles.arena} aria-hidden="true" style={fxTimings()}>
           {lead.hp > 0 && (
             <div className={`${styles.leadSprite} ${fx.classes[lead.uid] === 'fx-lunge-right' ? 'fx-lunge-right' : ''} ${fx.sprites[lead.uid] ?? ''}`}>
-              <img className="pixel" src={spriteOf(lead, 'back', shiny)} alt="" draggable={false} data-shiny={shiny || undefined} />
+              <img className="pixel" src={spriteOf(lead, 'back', shiny)} alt="" draggable={false} data-shiny={shiny || undefined} style={lead.hp <= 0 ? { opacity: 0 } : undefined} />
               <span className={styles.platform} />
             </div>
           )}
@@ -549,7 +548,8 @@ export function CombatScreen() {
         </div>
       )}
 
-      {state.player.pendingLeadPick && !ended && (
+      {/* §9.9.1 — the fallen Lead sinks and its ball comes home first; the pick waits for the beat, as the outcome does. */}
+      {state.player.pendingLeadPick && !ended && !fx.busy && (
         <Modal title="Your Lead fainted" testId="lead-pick-modal">
           <p className={styles.modalSub}>Choose who steps up. No AP cost. Its melee cards come online.</p>
           <div className={styles.pickRow}>

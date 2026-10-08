@@ -186,6 +186,8 @@ export interface PlayerState {
   regionModifier: string | null;
   /** Per-turn bookkeeping the card-economy relics need: what was played, and in what order. */
   playedThisTurn: { ownerUid: string; moveId: string; apCost: number }[];
+  /** §3.3 — the team's indices by place (Lead, bench 1, bench 2); a swap trades two places. Absent: array order. */
+  order?: number[];
   /** §7.3 — AP banked by a relic for the next turn (Cycle Cell, Move Echo). */
   bankedAp: number;
   /** Set when the deck reshuffled this turn, so a reshuffle relic can pay out next turn. */
@@ -243,7 +245,8 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'enemy-enter'; enemyUid: string; called?: boolean }
   | { t: 'phase'; enemyUid: string; phase: 1 | 2 | 3 }
   /** §2.6.4.4 — `checks`: how many of the four shake checks passed (4 is the catch). */
-  | { t: 'catch'; success: boolean; chance: number; checks: number; ballsLeft: number }
+  /** §2.6.4 — `targetUid`: the Pokémon the ball was thrown at, the Lead or one standing behind it (§5.6). */
+  | { t: 'catch'; targetUid: string; success: boolean; chance: number; checks: number; ballsLeft: number }
   /** §5.6 — a Defender took its Lead's place (Cover). */
   | { t: 'enemy-cover'; enemyUid: string; coveredUid: string }
   | { t: 'lead-pick-required' }

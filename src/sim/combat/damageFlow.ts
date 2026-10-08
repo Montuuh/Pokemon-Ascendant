@@ -8,7 +8,7 @@ import {
   abilityBlocksStatus,
   abilityConditionalReduction,
   abilityDefenceMultiplier,
-  abilityFlatReduction,
+  abilityLeadReduction,
   abilityIgnoresRecoil,
   abilityOnEnterLead,
   abilityOnKill,
@@ -264,7 +264,10 @@ export function dealDamage(
     const isLead = isLeadOf(state, target);
     // §6.6 abilities first, then §5.10.1's Boulder Badge. Both are flat and both floor at zero, so the order
     // between them cannot matter; what matters is that they land *after* the multipliers and not before.
-    dmg = Math.max(0, dmg - abilityFlatReduction(target, isLead, ctx.content) - itemFlatReduction(state, target, ctx.content, isLead, !!meta.cleave));
+    // §6.5.2 Shell Armor's share first, then the flat ones (§5.10.1 Boulder Badge and the items), floored at zero.
+    const share = abilityLeadReduction(target, isLead, ctx.content);
+    if (share > 0) dmg = Math.floor((dmg * (100 - share)) / 100);
+    dmg = Math.max(0, dmg - itemFlatReduction(state, target, ctx.content, isLead, !!meta.cleave));
   }
   // §7.4 Wide Guard — one charge, spent on the first Cleave that lands on the team.
   const guard = state.player.guards.cleave;

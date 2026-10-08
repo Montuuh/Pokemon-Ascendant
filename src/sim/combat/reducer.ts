@@ -8,7 +8,7 @@ import { catchOdds, SHAKE_CHECKS, shakeChecks } from './catch';
 import { declareIntent } from './intents';
 import { cardPlayability, cardVictims, catchTarget, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
 import { rngFromState } from './setup';
-import { activeEnemy, lead } from './slots';
+import { activeEnemy, lead, setLead } from './slots';
 import type { CombatAction, CombatState, RejectReason } from './state';
 import { cureStatus } from './status';
 import { beginTurn, checkOutcome, finish, flee, resolveTurn } from './turn';
@@ -132,7 +132,7 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   // §3.3.2 — Step-Forward: the owner becomes Lead before the effect. No swap-counter increment, no discount.
   if (p.stepsForward) {
     const from = player.leadIndex;
-    player.leadIndex = ownerIndex;
+    setLead(state, ownerIndex);
     emit(state, { t: 'swap', fromIndex: from, toIndex: ownerIndex, kind: 'step-forward', apCost: 0 });
     log(state, 'player', `${owner.name} steps forward!`);
     onEnterLead(state, ctx, ownerIndex);
@@ -189,7 +189,7 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
     const dest = stepBackTo !== undefined && options.includes(stepBackTo) ? stepBackTo : options[0];
     if (dest !== undefined && !isPositionLocked(player.team[dest]!)) {
       const from = player.leadIndex;
-      player.leadIndex = dest;
+      setLead(state, dest);
       emit(state, { t: 'swap', fromIndex: from, toIndex: dest, kind: 'step-backward', apCost: 0 });
       log(state, 'player', `${owner.name} steps back; ${player.team[dest]!.name} takes the Lead.`);
       onEnterLead(state, ctx, dest);
@@ -290,7 +290,7 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
       // throws the same ball.
       const checks = odds.guaranteed ? SHAKE_CHECKS : shakeChecks(odds.chance, (p) => ctx.rng.chance(p));
       const success = checks === SHAKE_CHECKS;
-      emit(state, { t: 'catch', success, chance: odds.chance, checks, ballsLeft: player.balls });
+      emit(state, { t: 'catch', targetUid: enemy.uid, success, chance: odds.chance, checks, ballsLeft: player.balls });
       if (success) {
         log(state, 'player', `Gotcha! ${enemy.name} was caught!`);
         state.outcome = 'caught';
@@ -325,7 +325,7 @@ function manualSwap(state: CombatState, benchIndex: number, ctx: RunCtx): void {
   else player.swapCounter += 1;
   player.totalManualSwaps += 1;
   player.defensiveDiscount = true;
-  player.leadIndex = benchIndex;
+  setLead(state, benchIndex);
   emit(state, { t: 'swap', fromIndex: from, toIndex: benchIndex, kind: 'manual', apCost: cost });
   log(state, 'player', `${player.team[benchIndex]!.name} takes the Lead (${cost} AP).`);
 
@@ -360,7 +360,7 @@ function stepDraw(state: CombatState, ctx: RunCtx): void {
 /** §3.3.5 — replacement Lead at no cost; then the next turn begins. */
 function pickLead(state: CombatState, benchIndex: number, ctx: RunCtx): void {
   const from = state.player.leadIndex;
-  state.player.leadIndex = benchIndex;
+  setLead(state, benchIndex);
   state.player.pendingLeadPick = false;
   emit(state, { t: 'swap', fromIndex: from, toIndex: benchIndex, kind: 'replacement', apCost: 0 });
   log(state, 'player', `${state.player.team[benchIndex]!.name} steps up as the new Lead.`);

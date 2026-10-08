@@ -62,10 +62,10 @@
       "id": "shell-armor",
       "name": "Shell Armor",
       "category": "combat",
-      "description": "While Lead, incoming hits deal 2 less damage.",
-      "hook": "lead-flat-reduction",
+      "description": "While Lead, incoming hits deal 15 % less damage.",
+      "hook": "lead-percent-reduction",
       "params": {
-        "amount": 2
+        "percent": 15
       },
       "gdd": "§6.3"
     },
@@ -431,10 +431,10 @@
       "id": "battle-armor",
       "name": "Battle Armor",
       "category": "Positional",
-      "description": "While Lead, incoming hits deal 2 less damage.",
-      "hook": "lead-flat-reduction",
+      "description": "While Lead, incoming hits deal 15 % less damage.",
+      "hook": "lead-percent-reduction",
       "params": {
-        "amount": 2
+        "percent": 15
       }
     },
     {

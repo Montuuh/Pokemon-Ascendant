@@ -200,7 +200,7 @@ export const AbilitySchema = z.object({
   category: z.string(),
   description: z.string(),
   hook: z.enum([
-    'none', 'low-hp-type-boost', 'range-boost', 'lead-flat-reduction', 'riders-always-apply', 'reveal-intents',
+    'none', 'low-hp-type-boost', 'range-boost', 'lead-percent-reduction', 'riders-always-apply', 'reveal-intents',
     'sturdy', 'turn-end-bench-heal', 'start-stage',
     // v0.3 (§6.5.2)
     'while-statused', 'on-damaged', 'status-immunity', 'on-enter-lead', 'type-absorb', 'super-effective-reduction',

@@ -1,11 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import { PIDGEY, STARTERS, dispatch, eventsOf, handCard, reject, scenario, start, tweak, withHand } from '../testing/harness';
 import { swapOptions } from './preview';
+import { indexToSlot } from './slots';
 
 // Squirtle carries Rest here: a defensive card at 1 AP, which is what the discount is about (§3.3.1).
 const base = () => start(scenario({ team: [STARTERS[0]!, { species: 'squirtle', level: 8, moves: ['tackle', 'water-gun', 'rest', 'tail-whip'] }, STARTERS[2]!], enemies: [PIDGEY] }));
 
 describe('Manual swap — §3.3.1', () => {
+  it('Swap_TheOldLeadTakesThePlaceOfTheOneSteppingUp_TheOtherBenchStays', () => {
+    // The user's bug (v0.9.10): bringing up bench 2 sent the old Lead to bench 1 and slid bench 1 down to bench 2.
+    let s = start(scenario({ team: STARTERS, enemies: [PIDGEY] }));
+    const name = (slot: string) => s.player.team.findIndex((_, i) => indexToSlot(s, i) === slot);
+    const [lead0, b1, b2] = [name('lead'), name('bench1'), name('bench2')];
+    s = dispatch(s, { type: 'swap', benchIndex: b2 });
+    expect([name('lead'), name('bench1'), name('bench2')]).toEqual([b2, b1, lead0]);
+    // And again from the other bench: the Lead goes to bench 1, bench 2 does not move.
+    s = tweak(s, (d) => { d.player.ap = 3; });
+    s = dispatch(s, { type: 'swap', benchIndex: b1 });
+    expect([name('lead'), name('bench1'), name('bench2')]).toEqual([b1, b2, lead0]);
+  });
+
   it('ManualSwap_Ladder_1_2_3_AP', () => {
     let s = tweak(base(), (d) => {
       d.player.ap = 6;
