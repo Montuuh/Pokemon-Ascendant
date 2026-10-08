@@ -1023,7 +1023,11 @@ rank's unlock; the fight's medals and discoveries are listed with their bars (`s
 the loot is a strip of chips. **The progress panel** (`ProgressToasts`) carries progress made outside a fight, in the
 bottom-left corner, never taking a click. **Type charts** (§9.4.4, `TypeChart`): a move's type reads attacking (×2/×½/×0,
 gold, a sword), a Pokémon's defending (×4 to ×0 for both its types, red and green, a shield); a card's tooltip carries
-its attacking chart.
+its attacking chart. **After the user's look at it:** a Pokémon past both thresholds (a Weedle caught at 13) now gets two screens, each
+with its own cutscene — the one screen had kept the first pick and looped; with no path pointed at, the panel shows the
+Pokémon as it stands, its own kit and stats; and each archetype leans the stats (§6.3.4: Vanguard HP and Attack,
+Specialist Attack and Speed, Support HP and Defence, each for a cost), Region 3 re-tuned to ×2.7 Attack and ×0.3 HP —
+R1 59 % · R2|R1 60 % · R3|R2 47 % · run 17 %.
 
 ### v0.9.7 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the

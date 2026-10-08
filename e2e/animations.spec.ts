@@ -119,4 +119,25 @@ test.describe('Arena animations — §9.9', () => {
     await expect(page.getByTestId('evolution-screen')).toBeVisible();
     await expect(page.locator('[data-testid^="branch-"]')).toHaveCount(3);
   });
+  test('a Pokémon evolving twice plays the evolution twice, one screen each (§9.9.1)', async ({ page }) => {
+    await page.goto('/?screen=menu');
+    await page.evaluate(() => window.localStorage.clear());
+    await page.reload();
+    await page.waitForFunction(() => !!(window as unknown as { __ascendant?: unknown }).__ascendant);
+    await page.evaluate(() => {
+      const a = (window as unknown as { __ascendant: { run: { new: (s: string, n: number) => void; fill: (n: number) => void; levelTo: (l: number) => void; goto: (k: string, stop?: boolean) => void }; goTo: (s: string) => void } }).__ascendant;
+      a.run.new('bulbasaur', 7);
+      a.goTo('map');
+      a.run.fill(3);
+      a.run.levelTo(27);
+      a.run.goto('wild', true);
+    });
+    await expect(page.getByTestId('evolution-line')).toContainText('Bulbasaur is evolving');
+    await page.getByTestId('evo-skip').click();
+    await page.locator('[data-archetype="vanguard"]').click();
+    await page.getByTestId('btn-evolve').click();
+    await expect(page.getByTestId('evolution-line')).toContainText('Ivysaur is evolving');
+    await page.getByTestId('evo-skip').click();
+    await expect(page.locator('[data-testid^="branch-venusaur-"]').first()).toBeVisible();
+  });
 });

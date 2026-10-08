@@ -1,14 +1,28 @@
 import type { ContentRegistry, SpeciesDef } from '../content/defs';
-import type { PokemonType, Stat } from '../types';
+import type { BranchArchetype, PokemonType, Stat } from '../types';
 import type { BattleConfig } from './battleConfig';
 import type { Combatant } from './state';
 import { applyPayload, autoPickMoves, lineChain, upgradeParents } from './kit';
 import { stageMultiplier } from './statStages';
 
-// §6.2.3 — level-scaled base stats: base + growth × (level − 1). Flat growth per line (Unity StatGrowthCurve).
-export function statAtLevel(species: SpeciesDef, stat: 'hp' | Stat, level: number): number {
+/**
+ * §6.3.4 — the archetype's lean (v0.9.6, the user's call: two paths of one evolution should not make the same
+ * Pokémon). The species gives the stats; the path an evolved Pokémon took tilts them a few points, and every tilt is a
+ * trade, never a free gain: a Vanguard hits and lasts a little more for less Defence, a Specialist hits harder and is
+ * faster for less bulk, a Support lasts longer for less Attack. The latest evolution's archetype is the one that counts.
+ */
+export const ARCHETYPE_STAT_BIAS: Record<BranchArchetype, Record<'hp' | Stat, number>> = {
+  vanguard: { hp: 1.05, attack: 1.03, defense: 0.97, speed: 1 },
+  specialist: { hp: 0.96, attack: 1.05, defense: 0.96, speed: 1.05 },
+  support: { hp: 1.05, attack: 0.95, defense: 1.05, speed: 1 },
+};
+
+// §6.2.3 — level-scaled base stats: base + growth × (level − 1). Flat growth per line (Unity StatGrowthCurve), then
+// the archetype's lean (§6.3.4) for a Pokémon that has taken a path.
+export function statAtLevel(species: SpeciesDef, stat: 'hp' | Stat, level: number, archetype?: BranchArchetype | null): number {
   const lv = Math.max(1, Math.trunc(level));
-  return species.baseStats[stat] + species.growth[stat] * (lv - 1);
+  const raw = species.baseStats[stat] + species.growth[stat] * (lv - 1);
+  return archetype ? Math.round(raw * ARCHETYPE_STAT_BIAS[archetype][stat]) : raw;
 }
 
 /**

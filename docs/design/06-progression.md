@@ -190,6 +190,20 @@ the second. A Wartortle raised as a Specialist can become a Vanguard Blastoise.
 These are **guidelines, not a rigid grid**. A naturally physical species may only offer Vanguard and Specialist;
 a naturally supportive one may skip Vanguard entirely. The archetype should feel true to the species first.
 
+**The archetype's lean** (v0.9.6, the user's call: two paths of one evolution should not make the same Pokémon). The
+species gives the stats; the path tilts them a few points, and every tilt is a trade rather than a free gain:
+
+| Archetype | HP | Attack | Defence | Speed |
+|---|---|---|---|---|
+| Vanguard | +5 % | +3 % | −3 % | — |
+| Specialist | −4 % | +5 % | −4 % | +5 % |
+| Support | +5 % | −5 % | +5 % | — |
+
+Only the latest evolution's archetype counts. Attack carries the smallest share on purpose: fights here are races, so a
+point of Attack is worth more than a point of Defence — measured, a net-zero lean of ±5 % Attack doubled the Challenge
+Ring's ladder (§2.9.4.1). The numbers are `ARCHETYPE_STAT_BIAS` (`sim/combat/stats.ts`), and the Evolution screen shows
+each path's result as it is pointed at.
+
 ## §6.3.5 What an evolution actually does
 
 Evolution operates on the **Learned Move Pool** (§6.7) and **rewrites it rather than piling onto it** (v0.9.5, the

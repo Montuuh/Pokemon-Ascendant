@@ -17,7 +17,7 @@ The account's systems revisited, and the road to the Champion.
 
 The evolution animated, clearer rewards, and type charts at a glance.
 
-- **Evolution.** The series' animation, then a cleaner path screen.
+- **Evolution.** The series' animation; each path leans the stats.
 - **Rewards.** Stat gains, new moves and Bond unlocks, as chips.
 - **Progress.** Medals and discoveries listed, and a panel for the rest.
 - **Type charts.** Attacking and defending apart, ×4 down to ×0.

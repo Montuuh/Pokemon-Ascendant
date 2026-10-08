@@ -31,9 +31,10 @@ test('the Evolution screen offers the archetypes and applies the one you pick', 
   const branches = page.locator('[data-testid^="branch-"]');
   await expect(branches).toHaveCount(3);
   await expect(branches.first().locator('[data-move]').first()).toBeVisible();
-  // The stats are bars with their numbers, and pointing at a path previews the kit it leaves.
-  await expect(page.getByTestId('stat-attack')).toContainText('+');
+  // The stats are bars with their numbers — the Pokémon as it stands until a path is pointed at, which previews it.
+  await expect(page.getByTestId('stat-attack')).not.toContainText('+');
   await page.locator('[data-archetype="specialist"]').hover();
+  await expect(page.getByTestId('stat-attack')).toContainText('+');
   await expect(page.getByTestId('evolution-kit')).toContainText('Sleep Powder', { timeout: 10_000 });
   await page.locator('[data-archetype="specialist"] [data-move="sleep-powder"]').hover();
   await expect(page.getByTestId('tooltip')).toContainText('Sleep Powder', { timeout: 10_000 });
@@ -216,4 +217,27 @@ test("Trainer's Instinct shows the enemy's next intent, and the enemy keeps it (
   await page.screenshot({ path: 'playtest/combat-next-intent.png' });
   await page.getByTestId('btn-end-turn').click();
   await expect(page.getByTestId('intent-chip')).toContainText(planned);
+});
+
+test('a Pokémon past two thresholds evolves twice, each screen its own, then hands back to the route (§6.3.1)', async ({ page }) => {
+  await newRun(page, 'bulbasaur');
+  await page.evaluate(() => window.__ascendant!.run.fill(3));
+  // Past both thresholds (12 and 26) in one go: two evolutions owed, in a row.
+  await page.evaluate(() => window.__ascendant!.run.levelTo(27));
+  await page.evaluate(() => window.__ascendant!.run.goto('wild', true));
+  await expect(page.getByTestId('evolution-screen')).toBeVisible();
+  // Before a path is pointed at, the panel shows the Pokémon as it stands: its own kit, no deltas.
+  const kitNow = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.pool);
+  for (const m of kitNow) await expect(page.getByTestId("evolution-kit").locator("[data-move=\"" + m + "\"]")).toHaveCount(1);
+  await page.locator('[data-archetype="vanguard"]').click();
+  await page.getByTestId('btn-evolve').click();
+  // The second screen is Ivysaur's own: its paths lead to Venusaur, nothing picked yet.
+  await expect(page.locator('[data-testid^="branch-venusaur-"]').first()).toBeVisible();
+  await expect(page.getByTestId('btn-evolve')).toBeDisabled();
+  await page.locator('[data-archetype="specialist"]').click();
+  await page.getByTestId('btn-evolve').click();
+  await expect(page.getByTestId('evolution-screen')).toHaveCount(0);
+  const mon = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!);
+  expect(mon.speciesId).toBe('venusaur');
+  expect(mon.archetype).toBe('specialist');
 });

@@ -31,8 +31,9 @@ const STATS = [
 
 export function EvolutionScreen() {
   const pending = useRunStore((s) => s.run?.pendingEvolutions[0]);
-  // Keyed by uid so a queue of two evolutions is two mounts, not one component reset from inside an effect.
-  return pending ? <EvolutionChoice key={pending.uid} uid={pending.uid} /> : null;
+  // Keyed by uid and species, so a queue of two — two Pokémon, or one evolving twice (a Weedle caught past both
+  // thresholds) — is two mounts with their own cutscene and choice, never one screen holding the first's pick.
+  return pending ? <EvolutionChoice key={pending.uid + '/' + pending.from} uid={pending.uid} /> : null;
 }
 
 function EvolutionChoice({ uid }: { uid: string }) {
@@ -61,9 +62,12 @@ function EvolutionChoice({ uid }: { uid: string }) {
   if (!pending || !mon) return null;
 
   const before = content.species(pending.from);
-  const focusId = hovered ?? picked ?? previews[0]?.branchId ?? null;
-  const focus = previews.find((p) => p.branchId === focusId) ?? previews[0];
-  const after = content.species(focus?.to ?? before.id);
+  // What the left panel shows: the path pointed at or picked — or, before either, the Pokémon as it stands now.
+  const focusId = hovered ?? picked;
+  const focus = previews.find((p) => p.branchId === focusId) ?? null;
+  const target = content.species(previews[0]?.to ?? before.id);
+  const after = focus ? content.species(focus.to) : before;
+  const now = previews[0]?.statsBefore;
   const top = Math.max(1, ...previews.flatMap((p) => STATS.map(([k]) => Math.max(p.statsAfter[k], p.statsBefore[k])))) * 1.1;
 
   const evolve = () => {
@@ -78,7 +82,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
     else evolve();
   };
 
-  if (cut === 'intro') return <EvolutionCutscene fromId={before.id} toId={after.id} shiny={!!mon.shiny} onDone={() => setCut('choose')} />;
+  if (cut === 'intro') return <EvolutionCutscene fromId={before.id} toId={target.id} shiny={!!mon.shiny} onDone={() => setCut('choose')} />;
   if (cut === 'outro' && picked) return <EvolutionCutscene fromId={before.id} toId={previews.find((p) => p.branchId === picked)!.to} shiny={!!mon.shiny} onDone={evolve} />;
 
   const choose = (id: string) => {
@@ -108,11 +112,11 @@ function EvolutionChoice({ uid }: { uid: string }) {
             {before.name} · Lv {mon.level}
           </p>
           <h1 className={`${styles.title} display`}>
-            <IconSparkles size={24} /> {EVOLUTION_TEXT.choose(oneSpecies ? after.name : before.name)}
+            <IconSparkles size={24} /> {EVOLUTION_TEXT.choose(oneSpecies ? target.name : before.name)}
           </h1>
         </header>
 
-        <aside className={styles.hero} aria-label={`${after.name} on this path`}>
+        <aside className={styles.hero} aria-label={focus ? `${after.name} on this path` : `${before.name} now`}>
           <div className={styles.portraitWrap}>
             <img key={after.id} className={styles.portrait} src={portraitUrl(after.dex, after.id)} alt={after.name} width={200} height={200} data-testid="evolution-after" />
           </div>
@@ -124,40 +128,37 @@ function EvolutionChoice({ uid }: { uid: string }) {
           </span>
 
           <ul className={styles.stats} aria-label="Stats">
-            {focus &&
+            {now &&
               STATS.map(([key, label]) => {
-                const a = focus.statsAfter[key];
-                const b = focus.statsBefore[key];
+                const b = now[key];
+                const a = focus ? focus.statsAfter[key] : b;
                 const d = a - b;
                 return (
-                  <Tipped as="li" key={key} tabIndex={0} className={styles.statRow} tip={evoStatTip(key, label, { name: before.name, value: b }, { name: after.name, value: a }, mon.level)} data-testid={`stat-${key}`}>
+                  <Tipped as="li" key={key} tabIndex={0} className={styles.statRow} tip={evoStatTip(key, label, { name: before.name, value: b }, focus ? { name: after.name, value: a } : null, mon.level)} data-testid={`stat-${key}`}>
                     <span className={styles.statLabel}>{label}</span>
                     <span className={styles.bar} aria-hidden="true">
                       <span className={styles.barBefore} style={{ width: `${(b / top) * 100}%` }} />
                       <span className={styles.barAfter} style={{ width: `${(a / top) * 100}%` }} />
                     </span>
                     <span className={`${styles.statValue} tabular`}>{a}</span>
-                    <span className={`${styles.delta} ${d > 0 ? styles.up : d < 0 ? styles.down : ''} tabular`}>
-                      {d > 0 ? '+' : ''}
-                      {d}
+                    <span className={`${styles.delta} ${focus && d > 0 ? styles.up : focus && d < 0 ? styles.down : ''} tabular`}>
+                      {focus ? `${d > 0 ? '+' : ''}${d}` : ''}
                     </span>
                   </Tipped>
                 );
               })}
           </ul>
 
-          {focus && (
-            <section className={styles.kit} aria-label="The kit after">
-              <h2 className={styles.kitHead}>
-                Kit <InfoDot tip={evoKitTip()} label="About the kit after" />
-              </h2>
-              <div className={styles.kitChips} data-testid="evolution-kit">
-                {focus.pool.map((m) => (
-                  <MoveChip key={m} id={m} active={focus.kit.includes(m)} fresh={!mon.pool.includes(m)} />
-                ))}
-              </div>
-            </section>
-          )}
+          <section className={styles.kit} aria-label={focus ? 'The kit after' : 'The kit now'}>
+            <h2 className={styles.kitHead}>
+              Kit <InfoDot tip={evoKitTip(!!focus)} label="About the kit" />
+            </h2>
+            <div className={styles.kitChips} data-testid="evolution-kit">
+              {(focus?.pool ?? mon.pool).map((m) => (
+                <MoveChip key={m} id={m} active={(focus?.kit ?? mon.moveIds).includes(m)} fresh={!mon.pool.includes(m)} />
+              ))}
+            </div>
+          </section>
         </aside>
 
         <section className={styles.branches} role="radiogroup" aria-label="Paths">

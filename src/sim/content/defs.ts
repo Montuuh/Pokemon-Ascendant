@@ -466,6 +466,8 @@ export interface TeamMemberSetup {
   traumaStacks?: number;
   /** Override the active moves (§6.7); defaults to the level-derived kit (§6.9). */
   moves?: string[];
+  /** §6.3.4 — the path the Pokémon took at its latest evolution, which tilts its stats. */
+  archetype?: BranchArchetype;
   /** Pin the passive (§6.5.1); defaults to the pool's first entry on an evolved form. */
   abilityId?: string;
   /** §7.4 — the one held-item slot. Locked with the Active Team on node entry. */

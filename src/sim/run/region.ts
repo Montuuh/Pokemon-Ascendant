@@ -897,6 +897,9 @@ export const STATUS_ACCENT_FALLBACK = 'glare';
  * where it once held up to nine, and Regions 2 and 3 got easier (R2|R1 65 %, R3|R2 57 %). Attack ×1.55/×1.75/×2.25 →
  * ×1.45/×1.9/×2.6 put them back, with the Gym aces' kits scripted and the accent's fallback Glare: R1 59 % · R2|R1 60 % ·
  * R3|R2 48 % · run 17 % (720 runs).
+ *
+ * v0.9.6's archetype lean (§6.3.4) made the evolved team a touch stronger: Region 3 ×2.6 → ×2.7 Attack and ×0.27 → ×0.3
+ * HP, R1 59 % · R2|R1 60 % · R3|R2 47 % · run 17 % (720 runs).
  */
 export interface StatTier {
   hp: number;
@@ -905,7 +908,7 @@ export interface StatTier {
 export const REGION_STAT_TIER: readonly StatTier[] = [
   { hp: 0.6, attack: 1.45 },
   { hp: 0.45, attack: 1.9 },
-  { hp: 0.27, attack: 2.6 },
+  { hp: 0.3, attack: 2.7 },
 ];
 
 /**

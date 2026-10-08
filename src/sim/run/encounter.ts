@@ -1,6 +1,6 @@
 import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
-import { activeMoves } from '../combat/stats';
+import { activeMoves, statAtLevel } from '../combat/stats';
 import type { BiomeId } from './region';
 import { ALL_TRAINERS, GYM, GYM_ATTACK_MULTIPLIER, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
 import { hasModifier, modifierValue } from './modifiers';
@@ -45,6 +45,7 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
         moves: mon.moveIds.length ? mon.moveIds : activeMoves(content, mon.speciesId, mon.level),
         traumaStacks: mon.traumaStacks,
       };
+      if (mon.archetype) setup.archetype = mon.archetype;
       // hpPercent is how the sim seeds mid-run HP; 100 % is the default so we only send it when it matters.
       const maxAtFull = maxHpOf(mon, content);
       const pct = Math.max(1, Math.min(100, Math.round((mon.hp / maxAtFull) * 100)));
@@ -78,7 +79,7 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
 /** Effective Max HP for a Box Pokémon, Trauma included (§8.2.1). */
 export function maxHpOf(mon: PartyMon, content: ContentRegistry, traumaZone1 = 5, zone1Pct = 5, zone2Pct = 10, cap = 10): number {
   const species = content.species(mon.speciesId);
-  const base = species.baseStats.hp + species.growth.hp * (Math.max(1, mon.level) - 1);
+  const base = statAtLevel(species, 'hp', mon.level, mon.archetype);
   const s = Math.min(Math.max(0, mon.traumaStacks), cap);
   const penalty = Math.min(s, traumaZone1) * zone1Pct + Math.max(0, s - traumaZone1) * zone2Pct;
   const floor = 100 - (traumaZone1 * zone1Pct + (cap - traumaZone1) * zone2Pct);

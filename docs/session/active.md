@@ -22,7 +22,7 @@ mid-arena; tiny enemy icons; Bench 2 clipped at 720 p. `AGENTS.md`, `.agents/`, 
 session's; `scripts/ui-audit.mjs` is shared with it.
 
 **Test status:** `npm run check` green — 713 Vitest, typecheck, lint, §, catalogue and version guards; e2e 123.
-**Balance** (720 runs): R1 59 % · R2|R1 60 % · R3|R2 48 % · full run 17 % · relics ~11 at a won run's end · team +0–2 levels over.
+**Balance** (720 runs): R1 59 % · R2|R1 60 % · R3|R2 47 % · full run 17 % · relics ~11 at a won run's end · team +0–2 levels over.
 **Shipping:** `docs/release-doctrine.md` (the `ship-version` skill). **UI changes:** the `ui-review` skill.
 
 ## Standing facts

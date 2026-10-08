@@ -116,7 +116,7 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
   const sp = content.species(mon.speciesId);
   const g = sp.growth;
   const n = mon.level - from;
-  const at = (k: 'hp' | 'attack' | 'defense' | 'speed') => statAtLevel(sp, k, mon.level);
+  const at = (k: 'hp' | 'attack' | 'defense' | 'speed') => statAtLevel(sp, k, mon.level, mon.archetype);
   const up: LevelUp = {
     uid: mon.uid,
     from,
@@ -170,8 +170,6 @@ export function previewBranch(mon: PartyMon, branchId: string, content: ContentR
   const branch = content.branch(branchId);
   const before = content.species(mon.speciesId);
   const after = content.species(branch.to);
-  const lv = Math.max(1, mon.level) - 1;
-  const at = (s: typeof before, k: 'hp' | 'attack' | 'defense' | 'speed') => s.baseStats[k] + s.growth[k] * lv;
 
   const upgrades: BranchPreview['upgrades'] = [];
   const adds = [...branch.adds];
@@ -185,9 +183,10 @@ export function previewBranch(mon: PartyMon, branchId: string, content: ContentR
   }
 
   const granted = branch.abilityId ?? after.availableAbilities[0] ?? null;
-  const stats = (sp: typeof before) => ({ hp: at(sp, 'hp'), attack: at(sp, 'attack'), defense: at(sp, 'defense'), speed: at(sp, 'speed') });
-  const statsBefore = stats(before);
-  const statsAfter = stats(after);
+  // §6.3.4 — before, as the Pokémon stands (its last path's lean); after, the new species on this branch's path.
+  const stats = (sp: typeof before, arch: PartyMon['archetype']) => ({ hp: statAtLevel(sp, 'hp', mon.level, arch), attack: statAtLevel(sp, 'attack', mon.level, arch), defense: statAtLevel(sp, 'defense', mon.level, arch), speed: statAtLevel(sp, 'speed', mon.level, arch) });
+  const statsBefore = stats(before, mon.archetype);
+  const statsAfter = stats(after, branch.archetype);
   // The resulting kit, by the very function that will apply it, on a copy: the preview cannot disagree with the payload.
   const trial: PartyMon = { ...mon, pool: [...mon.pool], moveIds: [...mon.moveIds] };
   applyBranch(trial, branchId, content);

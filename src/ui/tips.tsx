@@ -943,7 +943,9 @@ const STAT_BODY: Record<string, string> = {
 };
 
 /** One stat bar: what it does, and the number before and after, at the Pokémon's level. */
-export function evoStatTip(stat: string, label: string, from: { name: string; value: number }, to: { name: string; value: number }, level: number): ReactNode {
+export function evoStatTip(stat: string, label: string, from: { name: string; value: number }, to: { name: string; value: number } | null, level: number): ReactNode {
+  // No path pointed at: the stat as it stands, nothing to compare it with.
+  if (!to) return <Tip title={label} meta={[`Lv ${level}`, `${from.value}`]} body={STAT_BODY[stat] ?? ''} footer={`${from.name} now. Each path's number shows when it is chosen or pointed at.`} />;
   const d = to.value - from.value;
   return <Tip title={label} meta={[`Lv ${level}`, `${d >= 0 ? '+' : ''}${d}`]} body={STAT_BODY[stat] ?? ''} footer={`${from.name} ${from.value} → ${to.name} ${to.value}`} />;
 }
@@ -959,8 +961,12 @@ export function branchTip(label: string, description: string, archetype: string)
 }
 
 /** The kit a branch leaves: what the filled and the new chips mean. */
-export function evoKitTip(): ReactNode {
-  return <Tip title="The kit after" body="Every card this path leaves in the pool. Filled ones are in your active four; a dot marks a card the evolution brings." footer="Swap them freely in the Move Manager." />;
+export function evoKitTip(after: boolean): ReactNode {
+  return after ? (
+    <Tip title="The kit after" body="Every card this path leaves in the pool. Filled ones are in your active four; a dot marks a card the evolution brings." footer="Swap them freely in the Move Manager." />
+  ) : (
+    <Tip title="The kit now" body="Every card in the pool today. Filled ones are in your active four." footer="Choose or point at a path to see what it makes of them." />
+  );
 }
 
 /** The Evolve button: what pressing it settles. */
