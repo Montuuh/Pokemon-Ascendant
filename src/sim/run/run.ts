@@ -305,8 +305,9 @@ function shopKindFor(run: RunState): 'merchant' | 'city' | 'department-store' {
  * an evolution back to buy a pre-form move there.
  */
 export function tutorListFor(run: RunState, mon: PartyMon, content: ContentRegistry): string[] {
-  const own = content.species(mon.speciesId).tutorMoves;
-  if (!run.city || !CITIES[run.city.id].dojoWide) return [...own];
+  // §2.9.4 (v0.9.10) — every Dojo also remembers: the moves the line learned on its way here and no longer holds.
+  const own = [...new Set([...content.species(mon.speciesId).tutorMoves, ...rememberedMoves(mon, content)])];
+  if (!run.city || !CITIES[run.city.id].dojoWide) return own;
   // The path from the line's base to this species, along evolvesTo (a branching line takes the branch it took).
   const path: string[] = [];
   const walk = (id: string): boolean => {
@@ -317,7 +318,32 @@ export function tutorListFor(run: RunState, mon: PartyMon, content: ContentRegis
     return false;
   };
   const stages = walk(content.lineBase(mon.speciesId)) ? path : [mon.speciesId];
-  return [...new Set(stages.flatMap((id) => content.species(id).tutorMoves))];
+  return [...new Set([...stages.flatMap((id) => content.species(id).tutorMoves), ...own])];
+}
+
+/**
+ * §2.9.4 — the Dojo's memory (v0.9.10, the user's call: evolutions forgot too many of a line's signature moves): every
+ * move the line learns by level up to this Pokémon's level, and every move an evolution on its way here turned into
+ * another, that its pool no longer holds. Taught at the tutor's price.
+ */
+export function rememberedMoves(mon: PartyMon, content: ContentRegistry): string[] {
+  const path: string[] = [];
+  const walk = (id: string): boolean => {
+    path.push(id);
+    if (id === mon.speciesId) return true;
+    for (const next of content.species(id).evolvesTo ?? []) if (content.hasSpecies(next) && walk(next)) return true;
+    path.pop();
+    return false;
+  };
+  const stages = walk(content.lineBase(mon.speciesId)) ? path : [mon.speciesId];
+  const out: string[] = [];
+  for (const [i, id] of stages.entries()) {
+    const sp = content.species(id);
+    for (const e of sp.learnset) if (e.level <= mon.level) out.push(e.move);
+    const next = stages[i + 1];
+    if (next) for (const b of sp.branches.filter((x) => x.to === next)) for (const u of b.upgrades) out.push(u.from);
+  }
+  return [...new Set(out)].filter((m) => !mon.pool.includes(m) && content.hasMove(m));
 }
 
 /**

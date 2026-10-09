@@ -8525,19 +8525,19 @@
         },
         {
           "level": 1,
-          "move": "sharpen"
-        },
-        {
-          "level": 8,
           "move": "conversion"
         },
         {
-          "level": 16,
+          "level": 8,
           "move": "psybeam"
         },
         {
-          "level": 24,
-          "move": "agility"
+          "level": 14,
+          "move": "recover"
+        },
+        {
+          "level": 20,
+          "move": "tri-attack"
         }
       ],
       "availableAbilities": [
@@ -8546,7 +8546,8 @@
       ],
       "tutorMoves": [
         "ice-beam",
-        "thunderbolt"
+        "thunderbolt",
+        "agility"
       ],
       "evolvesTo": [],
       "rarity": "rare",

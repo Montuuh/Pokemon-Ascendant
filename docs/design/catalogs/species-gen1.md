@@ -506,9 +506,11 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `porygon` | 137 | basic | Normal | 65/60/70/75/40 | 75/73 | rare | — | 1 `tackle` · 1 `sharpen` · 8 `conversion` · 16 `psybeam` · 24 `agility` |
+| `porygon` | 137 | basic | Normal | 65/60/70/75/40 | 75/73 | rare | — | 1 `tackle` · 1 `conversion` · 8 `psybeam` · 14 `recover` · 20 `tri-attack` |
 
-**Abilities** `adaptability` `anticipation` · **Tutor** Porygon: `ice-beam` `thunderbolt` · **Archetype** specialist
+**Abilities** `adaptability` `anticipation` · **Tutor** Porygon: `ice-beam` `thunderbolt` `agility` · **Archetype** specialist
+
+*(v0.9.10, the user's call — "Porygon is badly nerfed": its kit was Tackle, Sharpen, Conversion, a Psybeam at 16 and Agility at 24 — one real attack. It learns its own two now, Recover and Tri Attack, earlier; Sharpen goes and Agility becomes a tutor move.)*
 
 ## 8. Legendary
 

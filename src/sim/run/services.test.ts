@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
-  arriveAtCity, createRun, daycarePrice, effectiveMax, defaultRunCtx, deserialiseRun, dojoPrice, eggMovesFor, newPartyMon, PRICES, runReducer, serialiseRun,
+  applyBranch, rememberedMoves, arriveAtCity, createRun, daycarePrice, effectiveMax, defaultRunCtx, deserialiseRun, dojoPrice, eggMovesFor, newPartyMon, PRICES, runReducer, serialiseRun,
   type CombatOutcomeReport, type RunAction, type RunState,
 } from '@/sim';
 
@@ -127,6 +127,16 @@ describe('The PC Box — §2.11.1', () => {
     s = apply(s, { type: 'set-active', uids: [a, b] });
     s = apply(s, { type: 'set-lead', uid: b });
     expect(s.activeUids).toEqual([b, a]);
+  });
+});
+
+describe('The Dojo remembers — §2.9.4 (v0.9.10)', () => {
+  it('RememberedMoves_TheLinesOldMoves_ThatThePoolLost', () => {
+    const mon = newPartyMon('mankey', 12, content, 1);
+    applyBranch(mon, 'primeape-vanguard', content);
+    // The vanguard path turned Low Kick into Submission and Karate Chop into its +: the Dojo can teach both back.
+    expect(rememberedMoves(mon, content)).toEqual(expect.arrayContaining(['low-kick', 'karate-chop']));
+    for (const m of rememberedMoves(mon, content)) expect(mon.pool).not.toContain(m);
   });
 });
 

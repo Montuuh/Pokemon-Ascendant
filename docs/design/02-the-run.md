@@ -915,6 +915,10 @@ up to three per visit — because that is where the stock is worth fishing for.
 because this section is where the rules live and thirty citations point at it; only its *location* changed on
 2026-09-22.
 
+**The Dojo remembers** (v0.9.10, the user's call: evolutions forgot too many of a line's signature moves): its tutor
+list also offers every move the line learned by level up to the Pokémon's level, and every move an evolution on its
+way here turned into another, that its pool no longer holds (`rememberedMoves`), at the tutor's price.
+
 A non-combat utility screen. Pick one of your Pokémon and pay Poké Dollars to teach it:
 
 - **An off-learnset move** — the full tutor list for that Pokémon's **current evolution stage**, minus what it

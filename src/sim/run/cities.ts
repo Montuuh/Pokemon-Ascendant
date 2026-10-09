@@ -61,8 +61,8 @@ export const CITIES: Record<CityId, CityDef> = {
   },
   'celadon-city': {
     id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'ring', 'game-corner', 'safari'], ringName: 'Pokémon Coliseum', blackMarket: true, shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,
-    // §2.9.4.1 — +8 since v0.8.10 (Region 2's thinner tier read rung 1 at 0.64 at +6); +9 since v0.9.10 (Shell Armor as a share: 0.81 at +8).
-    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 9, stepOffset: 2, teamSize: 3 },
+    // §2.9.4.1 — +8 since v0.8.10 (Region 2's thinner tier read rung 1 at 0.64 at +6); +10 since v0.9.10 (Shell Armor as a share, stats in proportion to their base: 0.83 at +9).
+    ring: { fee: 400, prizes: [{ money: 400 }, { money: 600 }, { relicPick: true }], firstOffset: 10, stepOffset: 2, teamSize: 3 },
   },
 };
 

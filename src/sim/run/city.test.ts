@@ -342,7 +342,10 @@ describe('The city Dojo — §2.9.4', () => {
     const town = evolved(inCity(0));
     const city = evolved(inCity(1));
     const mon = (s: RunState) => s.box[0]!;
-    expect(tutorListFor(town, mon(town), content)).toEqual(content.species('wartortle').tutorMoves);
+    // The town's list is this stage's tutors and what the line remembers (v0.9.10), never another stage's tutors.
+    const narrow = tutorListFor(town, mon(town), content);
+    expect(narrow).toEqual(expect.arrayContaining(content.species('wartortle').tutorMoves));
+    for (const m of content.species('squirtle').tutorMoves) if (!content.species('wartortle').tutorMoves.includes(m)) expect(narrow).not.toContain(m);
     const wide = tutorListFor(city, mon(city), content);
     for (const m of content.species('squirtle').tutorMoves) expect(wide).toContain(m);
     for (const m of content.species('wartortle').tutorMoves) expect(wide).toContain(m);

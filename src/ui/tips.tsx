@@ -668,7 +668,7 @@ export function counterTabTip(name: string, left: number, price: number): ReactN
 }
 /** §6.4.3 — the tutor counter. */
 export function tutorTip(): ReactNode {
-  return <Tip title="Tutor moves" body="Moves off this stage's learnset — the kind it would never learn by levelling. In the city the list holds every stage the line has reached." />;
+  return <Tip title="Tutor moves" body="Moves off this stage's learnset — the kind it would never learn by levelling — and every move its line learned on the way here and no longer holds: the Dojo remembers. In the city the list holds every stage the line has reached." />;
 }
 /** §6.4.2 — the passive counter. */
 export function passiveTip(): ReactNode {

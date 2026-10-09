@@ -894,8 +894,9 @@ describe('The Dojo — §2.9.4', () => {
     const otherStage = content.species(species.id === 'bulbasaur' ? 'ivysaur' : 'bulbasaur').tutorMoves
       .find((m) => !species.tutorMoves.includes(m))!;
     expect(reject(s, { type: 'teach-move', uid: mon.uid, moveId: otherStage })).toBe('not-on-tutor-list');
-    // And never something the line learns by itself — the Dojo sells what nature will not.
-    expect(reject(s, { type: 'teach-move', uid: mon.uid, moveId: 'vine-whip' })).toBe('not-on-tutor-list');
+    // And never a move it still holds; one an evolution turned into another, the Dojo remembers (v0.9.10).
+    const held = mon.pool[0]!;
+    expect(reject(s, { type: 'teach-move', uid: mon.uid, moveId: held })).not.toBeNull();
   });
 
   it('Ability_SetsThePassive_AndOnlyFromTheSpeciesPool_§6.5.1', () => {
