@@ -96,6 +96,8 @@ export interface EnemyCombatant extends Combatant {
   /** §5.6.1 — it acts twice a turn; `second` is this turn's second intent, resolved right after the first. */
   acts?: 2;
   second?: Intent | null;
+  /** §5.6.1 — the damage it has taken in your current turn, toward breaking its second action. */
+  stagger?: number;
   /** §5.6.2 — the companions its Call for Help can still bring in, in order. */
   helpers?: EnemySetup[];
 }
@@ -115,6 +117,8 @@ export interface Intent {
   targetEnemyUid?: string;
   /** §5.5 — hidden intents render as ❓ until witnessed. */
   hidden: boolean;
+  /** §5.6.1 — a second action you broke this turn: shown struck out, and it does not happen. */
+  broken?: boolean;
 }
 
 export interface SkillCard {
@@ -227,6 +231,7 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'draw'; cardIds: string[]; consumableIds: string[] }
   | { t: 'confusion-discard'; uid: string; cardId: string }
   | { t: 'intent'; enemyUid: string; intent: Intent }
+  | { t: 'combo-break'; enemyUid: string }
   | { t: 'card-played'; cardId: string; moveId: string; ownerUid: string; targetUid: string | null; apCost: number }
   | { t: 'consumable-used'; consumableId: string; targetUid: string | null; apCost: number }
   | { t: 'enemy-action'; enemyUid: string; intent: Intent; fizzled: boolean }

@@ -185,13 +185,21 @@ fight — a team of evolved Pokémon with relics and Badges out-grows a band tha
    Geodude is a Golem. Wild Areas offer base forms — a biome is where the base form spawns — and a Region 2
    catch evolves after the catch fight (§6.3.1).
 3. **The status accent** above.
-4. **The enemy stat tier** — every enemy's Max HP and Attack, by Region:
+4. **The enemy stat tier** — every enemy's Attack, by Region. **Never its HP** (v0.9.12, the user's call: an enemy is
+   the Pokémon its species and level say, with the HP that gives — the same as yours):
 
-| Region | Max HP | Attack |
+| Region | Attack | Gym on top |
 |---|---|---|
-| 1 | ×0.6 | ×1.55 |
-| 2 | ×0.45 | ×1.75 |
-| 3 | ×0.27 | ×2.25 |
+| 1 | ×0.62 | ×1.15 |
+| 2 | ×0.78 | ×1.0 |
+| 3 | ×0.82 | ×1.0 |
+
+*(v0.9.12: until then the tier cut every enemy's Max HP — ×0.6 / ×0.45 / ×0.35 — and raised its Attack to match. With
+the whole HP back the fights doubled, and tuned by Attack alone Region 3 could not get past 37 % — Gyms of 46 turns,
+every hit 3 % of a Pokémon's HP: attrition, not threat. So the damage divisor came down for both sides (§4.1.1, 8 → 5,
+the user's pick), and the escalation leans on Acting Twice (§5.6.1) from Region 2 rather than on Attack alone:
+**R1 60 % · R2|R1 61 % · R3|R2 46 % · the whole run 17 %** over 720 runs, fights 5.0 / 7.8 / 9.7 turns, Gyms 7.6 /
+13.4 / 19.5, the median hit 9 / 9 / 6 % of Max HP. The paragraphs below are the tier's history.)*
 
 *(v0.8.8, the balance pass: **enemies hit harder and fall faster.** The playtest of 2026-09-24 found the median enemy
 hit at 12 % of the target's Max HP — eight hits to faint anyone, so a telegraph rarely forced a swap (Pillar 2). The

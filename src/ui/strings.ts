@@ -158,8 +158,15 @@ export const GROUP_HINT: Record<string, string> = {
   pair: 'The trainer sends out two Pokémon at once. The first leads, the second supports it from behind.',
   trio: 'The trainer sends out three Pokémon at once: one leads, two support it from behind. The rest wait to fill a place that falls.',
   double: 'Two of the team fight at once, the rest waiting to step in. Melee reaches only the one in front.',
-  'acts-twice': 'It takes two actions a turn, both shown. It has less HP to make up for it.',
 };
+
+/** §5.6.1 — who in a fight acts twice, as the node's preview card promises it (v0.9.12). */
+export const DOUBLE_ACTOR_LABEL: Record<'lead' | 'ace', string> = {
+  lead: 'Its Lead acts twice',
+  ace: 'Its ace acts twice',
+};
+export const DOUBLE_ACTOR_HINT =
+  'Two actions a turn, both shown. Hurt it by a quarter of its Max HP in your turn, or hit it super-effectively, and the second is broken.';
 
 export const NODE_HINT: Record<string, string> = {
   wild: 'Beat them for XP, or throw a ball and take one with you.',
@@ -627,7 +634,7 @@ export const WILD_TIER_LABEL: Record<string, string> = { common: 'Common', uncom
 export const WILD_TIER_HINT: Record<string, string> = {
   common: 'What lives here. Most walks in meet one of these.',
   uncommon: 'Here, but harder to find.',
-  rare: 'A real find. The starters, the fossils and the giants hide in this row.',
+  rare: 'A real find. The starters, the fossils and the giants hide in this row. From Region 2, a Rare acts twice.',
 };
 export const WILD_TEXT = {
   pool: 'Who lives here',

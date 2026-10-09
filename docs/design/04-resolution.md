@@ -35,7 +35,10 @@ damage = floor( Power × (Attack / Defence) × Range × Crit × STAB × TypeEff 
 - **Level is not in the formula.** Levels raise stats; stats feed the formula.
 - **No Physical/Special split.** One Attack, one Defence (§4.1.5).
 
-Divisor 8 is the tuned value: it lands wild fights at 4–5 turns and Gym fights at 8–9, inside the 5–8 target.
+Divisor 5 is the tuned value (v0.9.12). Divisor 8 landed wild fights at 4–5 turns while every enemy fought on a
+fraction of its HP (§2.2.1); with its whole HP back — the user's call: an enemy is the Pokémon its species and level
+say — the fights doubled, and tuning the enemies' Attack alone could not hold Region 3 (37 %, Gyms of 46 turns, every
+hit 3 % of a Pokémon's HP). At 5, for both sides, fights run 5 / 8 / 10 turns by Region and Gyms 8 / 13 / 19.
 *(Ratified 2026-09-19 after the v0.1 balance pass. Earlier drafts said "TBD via playtesting" and an old document
 said 50; 8 is correct.)*
 

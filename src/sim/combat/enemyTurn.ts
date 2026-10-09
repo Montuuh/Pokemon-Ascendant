@@ -14,7 +14,7 @@ import type { Combatant, CombatState, EnemyCombatant, Intent } from './state';
  */
 export function executeTurn(state: CombatState, enemy: EnemyCombatant, ctx: RunCtx): void {
   executeIntent(state, enemy, ctx, enemy.intent);
-  if (enemy.second && enemy.hp > 0 && state.outcome === 'in-progress') executeIntent(state, enemy, ctx, enemy.second);
+  if (enemy.second && !enemy.second.broken && enemy.hp > 0 && state.outcome === 'in-progress') executeIntent(state, enemy, ctx, enemy.second);
 }
 
 export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: RunCtx, intent: Intent | null = enemy.intent): void {

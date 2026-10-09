@@ -36,43 +36,9 @@
     {
       "type": "play-card",
       "cardId": "c6"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c1"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c9"
-    },
-    {
-      "type": "swap",
-      "benchIndex": 0
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c5"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c8"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c2"
     }
   ],
-  "fingerprint": "t4 victory lead=0 ap=2 team=[charmander:54/57,squirtle:60/60,bulbasaur:55/61] enemies=[pidgey:0/55] events=60 rng=663891820",
-  "turns": 4,
+  "fingerprint": "t2 victory lead=2 ap=1 team=[charmander:57/57,squirtle:60/60,bulbasaur:61/61] enemies=[pidgey:0/55] events=31 rng=700174648",
+  "turns": 2,
   "outcome": "victory"
 }

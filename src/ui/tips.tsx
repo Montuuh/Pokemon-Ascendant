@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById } from '@/sim';
+import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, type CombatCtx } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -157,10 +157,12 @@ export function intentTip(kind: string, detail?: string, hidden = false): ReactN
  * The move and its type, who it is aimed at, the HP it takes off each Pokémon it lands on (the forecast's numbers,
  * the same ones on the portraits), its riders and its recharge. A hidden intent tells its kind and nothing else.
  */
-export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecast: TurnForecast, action: 0 | 1 = 0, ifLead: { name: string; amount: number; ko: boolean }[] = []): ReactNode {
+export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecast: TurnForecast, action: 0 | 1 = 0, ifLead: { name: string; amount: number; ko: boolean }[], ctx: CombatCtx): ReactNode {
   const intent = action === 1 ? enemy.second ?? null : enemy.intent;
   if (!intent) return null;
   const move = intent.moveId ? getContent().move(intent.moveId) : null;
+  // §5.6.1 — a broken second action is not going to happen: its card says that and nothing else.
+  if (intent.broken && move) return <Tip title={`${enemy.name}: ${move.name}`} meta={['Broken']} body="It will not happen this turn." />;
   if (intent.hidden || !move) return intentTip(intent.kind, undefined, intent.hidden);
   const meta: ReactNode[] = [typeName(move.type), INTENT_LABEL[intent.kind] ?? cap(intent.kind)];
   if (move.power > 0) meta.push(`${move.power} power`, move.range === 'melee' ? 'Melee' : 'Ranged');
@@ -178,7 +180,12 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
     );
   } else if (intent.kind === 'guard') lines.push(`Steps in front of ${ally.name}: after this turn it leads, braced with +1 Defence, and your Melee cards reach only it.`);
   else lines.push(ally.uid === enemy.uid ? 'On itself.' : `On ${ally.name}, its Lead.`);
-  if (enemy.acts === 2) lines.push(action === 0 ? 'It acts twice: this first, then the Also below.' : 'Its second action this turn, right after the first.');
+  if (enemy.acts === 2 && action === 0) lines.push('It acts twice: this first, then the Also below.');
+  if (action === 1) {
+    // §5.6.1 — the break: what is left to deal, the sim's own number, the one the meter fills with.
+    const left = comboBreakLeft(enemy, ctx);
+    lines.push(`Its second action, right after the first. Break it: deal ${enemy.name} ${left} more damage this turn, or hit it super-effectively.`);
+  }
   const hits = forecast.byAction[`${enemy.uid}#${action}`]?.hits ?? [];
   for (const h of hits) {
     const mon = state.player.team.find((m) => m.uid === h.targetUid);
@@ -302,10 +309,15 @@ export function stoneUseTip(stoneId: string): ReactNode {
   return <Tip icon={<img src={itemIcon(s.id)} alt="" width={22} height={22} />} title={s.name} meta={['Evolution Item']} body={s.description} footer="Used from a Pokémon's Move Manager, between nodes." />;
 }
 
+/** §5.6.1 — the node's Pokémon that acts twice, on its preview card. */
+export function doubleActorTip(who: 'lead' | 'ace'): ReactNode {
+  return <Tip title={DOUBLE_ACTOR_LABEL[who]} body={DOUBLE_ACTOR_HINT} />;
+}
+
 /** §5.6.3 — a fight node's shape on the map: a pack, a pair, a caller, a support, a Pokémon that acts twice. */
 export function groupTip(plan: GroupPlan): ReactNode {
   if (plan.kind === 'single') return null;
-  return <Tip title={groupLabel(plan)} body={GROUP_HINT[plan.kind]} />;
+  return <Tip title={groupLabel(plan)} body={plan.kind === 'acts-twice' ? DOUBLE_ACTOR_HINT : GROUP_HINT[plan.kind]} />;
 }
 
 /** §5.6 — an enemy's place in a group: the Lead in front, or one behind it. */
@@ -589,8 +601,7 @@ export function regionAccent(regionIndex: number, greaterThreats: boolean): stri
   const tier = statTierFor(regionIndex, greaterThreats);
   const parts: string[] = [];
   if (regionIndex >= STATUS_ACCENT_FROM) parts.push('every enemy carries a status move');
-  const stats = [...(tier.hp !== 1 ? [`HP ×${tier.hp}`] : []), ...(tier.attack !== 1 ? [`Attack ×${tier.attack}`] : [])];
-  if (stats.length) parts.push(`enemy ${stats.join(' and ')}`);
+  if (tier.attack !== 1) parts.push(`enemy Attack ×${tier.attack}`);
   // Uncapitalised, so it reads the same at the start of a bubble and after "Region 3 is next:".
   return (parts.length ? parts.join('; ') : 'enemies at their base strength') + '.';
 }

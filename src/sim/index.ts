@@ -80,3 +80,5 @@ export {
 } from './meta/unlocks';
 export { masteryMoveFor, stageTierCap, MASTERY_DECK_CAP } from './meta/mastery';
 export { progressNotes, type ProgressNote } from './meta/progress';
+export { DOUBLE_ACTION, doubleActorFor, applyDoubleAction, type DoubleActionRules } from './run/doubleAction';
+export { comboBreakAt, comboBreakLeft, doubleActionBudget } from './combat/combo';

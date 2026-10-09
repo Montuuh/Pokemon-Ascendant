@@ -171,11 +171,29 @@ action is its own hit, with its own number on its chip and its own chip on the p
 Pokémon that cannot act (asleep, frozen, caught off guard) loses both; a hidden first intent (§5.5) hides the
 second too. Trainer's Instinct (§5.5.1) plans only the first action of next turn.
 
-*Why authored and not a rule (v0.8.2, delegated):* acting twice is the most dangerous thing an enemy can do under
-Pillar 1 — two telegraphed hits a turn halve the time you have to answer — so it belongs to a few chosen Pokémon
-(the fast, the legendary, a boss's last stand) placed by the encounters in v0.8.3, never to a species by a stat
-threshold. A second action is priced like one: the encounter that grants it gives that Pokémon fewer HP or fewer
-levels than a lone Lead would have.
+**One budget for both** (v0.9.12, the user's call: Pokémon and trainers with a double intent, and an enemy's HP is
+never scaled). The two actions share **3 AP** (`doubleActionApBudget`; **4** for a Gym Leader's ace,
+`doubleActionApBudgetBoss`), counted in the moves' own AP: two light moves, a set-up and a hit, a status and a hit —
+never two heavy ones. The first is chosen leaving room for the cheapest other; the second fits what is left. The
+damage it deals in a turn is close to one heavy move's; what doubles is the pressure — two slots, or a status and then
+the hit.
+
+**Breaking the combo.** Deal it **a quarter of its Max HP** in your turn (`comboBreakShare`), or hit it
+**super-effectively**, and its second action is broken: struck out on its chip, and it does not happen. Only your
+moves count, only in your turn — a status tick or a Counter in the enemies' turn never breaks it. The second chip
+carries a meter that fills with what you deal it, and its card says what is left: the answer to a double intent is a
+telegraphed decision, where you aim this turn (Pillar 1).
+
+**Who acts twice** (`run/doubleAction.ts`, `DOUBLE_ACTION`): the Elite Wild in every Region (its shape, §5.6.3);
+from Region 2 a wild Pokémon rolled Rare (§2.6.2 — the banner's promise), an Ace Trainer's Lead (§2.7.1) and the Gym
+Leader's ace, the last of its team; in Region 3 the Elite Trainer's Lead too. **At most one Pokémon in a fight**, so a
+turn never shows more than one double intent to read. The node's preview card says so — *Its Lead acts twice*, *Its
+ace acts twice*, *A Rare acts twice* — before you commit.
+
+*Why placed and not a rule (v0.8.2, delegated):* acting twice is the most dangerous thing an enemy can do under
+Pillar 1 — two telegraphed hits a turn halve the time you have to answer — so it belongs to a few chosen Pokémon,
+never to a species by a stat threshold. Until v0.9.12 it was priced in HP (the Elite Wild fought on 75 % of its own);
+it is priced in AP now, and answered by the break.
 
 ## §5.6.2 Calling for help
 
@@ -207,7 +225,7 @@ with a bubble that says what it means (Pillar 1).
 | **Two at a time** | A trainer (three Pokémon, §2.7) sends two out at once, each whole | 50 % of trainers | 60 % | 70 % |
 | **Three at a time** | …or three at once, when it has three | a quarter of those | 40 % | half |
 | **Two at a time (boss)** | The Elite (four Pokémon, §2.8.1) and the Gym (five, §5.9.3) always fight two at a time, their whole team at full strength | ✓ | ✓ | ✓ |
-| **Acts twice** | The Elite Wild acts twice (§5.6.1) at 75 % of its HP | — | — | ✓ |
+| **Acts twice** | One Pokémon in the fight acts twice (§5.6.1), on its whole HP: the Elite Wild; from R2 a Rare wild Pokémon, an Ace Trainer's Lead and the Gym Leader's ace; in R3 the Elite's Lead too | Elite Wild | + Rare, Ace, Gym ace | + Elite's Lead |
 
 **Social species** (`SOCIAL_CALLERS`) come ready to Call for Help whenever they are met wild, alone or leading a
 pack, and their companions are **more of their own kind**: Rattata, Spearow, Zubat, both Nidoran, Mankey, Diglett,

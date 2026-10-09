@@ -1,4 +1,5 @@
 import type { EnemySetup, MoveDef } from '../content/defs';
+import { doubleActionBudget } from './combo';
 import type { GameRng } from '../rng/gameRng';
 import type { IntentKind, SlotId } from '../types';
 import type { BattleConfig } from './battleConfig';
@@ -199,12 +200,13 @@ function applyArchetypeFilter(enemy: EnemyCombatant, cands: Candidate[], config:
 }
 
 /** Build, score and pick this enemy's intent for the turn. Returns null if it has no legal action. */
-export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, rng: GameRng, exclude?: string): Intent | null {
+export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, rng: GameRng, exclude?: string, maxAp = Infinity): Intent | null {
   const cands: Candidate[] = [];
   for (const moveId of enemy.moveIds) {
-    // §5.6.1 — a second action is a different move from the first.
+    // §5.6.1 — a second action is a different move from the first, and both fit the turn's AP budget.
     if (moveId === exclude) continue;
     const move = ctx.content.move(moveId);
+    if (move.apCost > maxAp) continue;
     const intent = classifyMove(state, enemy, move, ctx);
     if (!intent) continue;
     cands.push({ intent, move, score: scoreIntent(state, enemy, { intent, move }, ctx) });
@@ -250,14 +252,21 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
   enemy.next = null;
   // §7.3.5 Time Spinner — every enemy but a boss is caught flat-footed on turn 1, and the chip says so from the start.
   const spun = state.turn === 1 && enemy.tier !== 'boss' && relicsSkipFirstTurn(state, ctx.content);
-  if (enemy.acts === 2) enemy.second = null;
+  if (enemy.acts === 2) {
+    enemy.second = null;
+    enemy.stagger = 0;
+  }
+  // §5.6.1 — a Pokémon that acts twice spends one budget on both actions: the first leaves room for the cheapest other.
+  const budget = enemy.acts === 2 ? doubleActionBudget(enemy, ctx) : Infinity;
+  const roomFor = (except: string | null) => Math.min(...enemy.moveIds.filter((m) => m !== except).map((m) => ctx.content.move(m).apCost), Infinity);
   if (locked || spun) {
     enemy.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };
   } else {
     // §5.5.1 — the plan you were shown last turn is the plan, unless it can no longer be played.
     const kept = planned && plannedStillLegal(state, enemy, planned, ctx) ? { ...planned.intent } : null;
     if (planned && !kept) log(state, 'enemy', `${enemy.name} changes its plan.`);
-    const intent = kept ?? chooseIntent(state, enemy, ctx, rng);
+    const firstCap = enemy.acts === 2 ? Math.max(...enemy.moveIds.map((m) => ctx.content.move(m).apCost).filter((ap) => ap + roomFor(null) <= budget), 0) : Infinity;
+    const intent = kept ?? chooseIntent(state, enemy, ctx, rng, undefined, firstCap) ?? chooseIntent(state, enemy, ctx, rng);
     enemy.intent = intent ?? { kind: 'stall', moveId: null, targetSlot: null, hidden: false };
     // §5.5 (CL-011) — Elite/Gym enemies hide their first intent until they have fired a move.
     // §8.8 Dense Fog extends the same one-intent blind to the ordinary enemies, which is the whole modifier:
@@ -273,7 +282,8 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     // §5.6.1 — a Pokémon that acts twice declares its second action now, chosen knowing the first: a different
     // move, and never a status the first (or the group) already means to put there. It hides what the first hides.
     if (enemy.acts === 2) {
-      const second = chooseIntent(state, enemy, ctx, rng, enemy.intent.moveId ?? undefined);
+      const spent = enemy.intent.moveId ? ctx.content.move(enemy.intent.moveId).apCost : 0;
+      const second = chooseIntent(state, enemy, ctx, rng, enemy.intent.moveId ?? undefined, budget - spent);
       enemy.second = second ? { ...second, hidden: enemy.intent.hidden } : null;
     }
   }

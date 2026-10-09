@@ -58,16 +58,18 @@ describe('Balance envelope (auto-player)', () => {
     expect(row('wild-basic').avgTurns).toBeLessThanOrEqual(6);
   });
 
-  it('full-hand-3mon — a real fight: 3–10 turns, mostly won', () => {
+  it('full-hand-3mon — a real fight: 2–10 turns, mostly won', () => {
     expect(row('full-hand-3mon').winRate).toBeGreaterThanOrEqual(0.7);
-    expect(row('full-hand-3mon').avgTurns).toBeGreaterThanOrEqual(3);
+    // 2 since v0.9.12: at divisor 5 (§4.1.1) a full hand of three ends a lone Graveler in two or three turns.
+    expect(row('full-hand-3mon').avgTurns).toBeGreaterThanOrEqual(2);
     expect(row('full-hand-3mon').avgTurns).toBeLessThanOrEqual(10);
   });
 
   it('wild-boss-3phase — the climax: long, dangerous, but beatable', () => {
     const b = row('wild-boss-3phase');
     // A team that walked the route, not a best case: long, and it costs Pokémon.
-    expect(b.avgTurns).toBeGreaterThanOrEqual(8);
+    // 6 since v0.9.12: every hit lands harder at divisor 5 (§4.1.1); it still costs Pokémon.
+    expect(b.avgTurns).toBeGreaterThanOrEqual(6);
     expect(b.avgTurns).toBeLessThanOrEqual(18);
     expect(b.avgFaints).toBeGreaterThanOrEqual(0.5);
     expect(b.avgTeamHpLeft).toBeLessThanOrEqual(0.65);

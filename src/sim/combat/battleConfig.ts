@@ -3,7 +3,7 @@
 // Content overlays (difficulty modifiers, badges, region modifiers) derive a per-run BattleConfig; the sim
 // only ever reads the instance it is given.
 export interface BattleConfig {
-  /** §4.1.1 — damage formula divisor. Unity shipped 8 after tuning (asset value); §4.1.1 keeps it a knob. */
+  /** §4.1.1 — damage formula divisor. Unity shipped 8; v0.9.12 took it to 5 when enemies got their whole HP back. */
   divisor: number;
   /** §4.1.2 — same-type attack bonus. */
   stabMultiplier: number;
@@ -66,6 +66,12 @@ export interface BattleConfig {
   benchSlots: number;
   /** §5.6 — the most enemies that can stand on the field at once, whatever calls for help. */
   maxOnField: number;
+  /** §5.6.1 — the AP a Pokémon that acts twice spends on its two actions together (v0.9.12): two light moves, never two heavy ones. */
+  doubleActionApBudget: number;
+  /** §5.6.1 — the same budget for a Gym Leader's ace, which may pair a heavy move with a light one. */
+  doubleActionApBudgetBoss: number;
+  /** §5.6.1 — the share of its Max HP that, dealt to it in one of your turns, breaks its second action. */
+  comboBreakShare: number;
   /** §5.6.2 — a Call for Help is worth more to a Pokémon standing alone. */
   summonAloneMultiplier: number;
   /** §5.6 — a Defender covers its Lead once the Lead is at or under this share of its HP, and gains this Defence. */
@@ -91,7 +97,11 @@ export interface BattleConfig {
 }
 
 export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
-  divisor: 8,
+  // §4.1.1 — 5 since v0.9.12: every enemy fights on its whole HP, so every hit, yours and theirs, lands harder.
+  divisor: 5,
+  doubleActionApBudget: 3,
+  doubleActionApBudgetBoss: 4,
+  comboBreakShare: 0.25,
   stabMultiplier: 1.5,
   critMultiplier: 1.5,
   rangedModifier: 0.75,

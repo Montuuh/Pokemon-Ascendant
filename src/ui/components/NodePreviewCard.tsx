@@ -2,12 +2,12 @@ import { useEffect, useRef } from 'react';
 import { getContent } from '@/content/registry';
 import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
-import { ALL_TRAINERS, fieldsFor, groupPlanFor, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
+import { ALL_TRAINERS, fieldsFor, doubleActorFor, groupPlanFor, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
 import { FieldChips } from './FieldChips';
-import { groupTip } from '@/ui/tips';
+import { doubleActorTip, groupTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { fallbackBadge, nodeBadge, trainerSprite, itemIcon } from '@/ui/art';
-import { groupLabel, NODE_HINT, NODE_LABEL, WILD_TEXT } from '@/ui/strings';
+import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_HINT, NODE_LABEL, WILD_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import { WildPool } from './WildPool';
 import { Money } from './Money';
@@ -33,6 +33,10 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   // §5.6.3 — the fight's shape is fixed with the node, so the card can promise it (Pillar 1).
   const run = useRunStore((s) => s.run);
   const plan = run ? groupPlanFor(node, run) : { kind: 'single' as const };
+  // §5.6.1 — who acts twice is fixed with the node too. A Rare is said on the pool's Rare row: it is true of every
+  // wild node from Region 2, so a chip would never tell one node from another.
+  const actor = run ? doubleActorFor(node, run) : null;
+  const doubled = actor === 'lead' || actor === 'ace' ? actor : null;
   const fields = run ? fieldsFor(node, run, content) : {};
   const GroupIcon =
     plan.kind === 'acts-twice'
@@ -102,6 +106,12 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           <Tipped tip={groupTip(plan)} className={styles.group} data-testid="preview-group">
             <GroupIcon size={16} aria-hidden="true" />
             {groupLabel(plan)}
+          </Tipped>
+        )}
+        {doubled && (
+          <Tipped tip={doubleActorTip(doubled)} className={styles.group}>
+            <IconRepeat size={16} aria-hidden="true" />
+            {DOUBLE_ACTOR_LABEL[doubled]}
           </Tipped>
         )}
 

@@ -105,17 +105,21 @@ describe('Groups across the run — §5.6.3', () => {
     throw new Error('no social species led a wild node in 120 runs');
   });
 
-  it('Build_Region3EliteWild_ActsTwice_AtLessHp', () => {
-    for (let seed = 1; seed <= 40; seed++) {
-      const run = createRun('squirtle', seed, ctx, 2);
-      const node = nodesOf(run, 'elite-wild')[0];
-      if (!node) continue;
-      const e = buildScenario(node, run, content, new GameRng(seed))!.enemies[0]!;
-      expect(e.acts).toBe(2);
-      expect(e.hpMultiplier).toBeLessThan(1.2);
-      return;
+  it('Build_EliteWild_ActsTwice_InEveryRegion_OnItsWholeHp_§5.6.1', () => {
+    // v0.9.12 — acting twice is priced in AP, never in HP (the user: an enemy's HP is never scaled).
+    for (const region of [0, 1, 2]) {
+      let found = false;
+      for (let seed = 1; seed <= 40 && !found; seed++) {
+        const run = createRun('squirtle', seed, ctx, region);
+        const node = nodesOf(run, 'elite-wild')[0];
+        if (!node) continue;
+        const e = buildScenario(node, run, content, new GameRng(seed))!.enemies[0]!;
+        expect(e.acts).toBe(2);
+        expect(e.hpMultiplier).toBeUndefined();
+        found = true;
+      }
+      expect(found, `an Elite Wild in Region ${region + 1}`).toBe(true);
     }
-    throw new Error('no Elite Wild in 40 Region 3 runs');
   });
 
   it('Trainers_CarryTheirRegionsTeamSize', () => {

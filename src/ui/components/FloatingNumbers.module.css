@@ -50,3 +50,8 @@
   font-size: 22px;
   color: #c9c1d6;
 }
+
+/* A word said on top of a hit's numbers (§5.6.1 Broken!): a row higher, clear of them. */
+.lifted {
+  margin-top: calc(var(--sp-6) * -1);
+}

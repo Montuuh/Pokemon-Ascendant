@@ -1,6 +1,6 @@
 import { IconQuestionMark } from '@tabler/icons-react';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
-import { SLOT_LABEL, asLeadDamage, intentRecipient, slotOccupant, summonedBy } from '@/sim';
+import { SLOT_LABEL, asLeadDamage, comboBreakAt, intentRecipient, slotOccupant, summonedBy } from '@/sim';
 import { intentGlyph } from '@/ui/art';
 import { INTENT_LABEL } from '@/ui/strings';
 import { intentCardTip } from '@/ui/tips';
@@ -35,11 +35,11 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
         .filter(({ m, i }) => i !== state.player.leadIndex && m.hp > 0)
         .map(({ m, i }) => ({ name: m.name, ...(asLeadDamage(state, ctx, i, { enemyUid: enemy.uid, action }) ?? { amount: 0, ko: false }) }))
     : [];
-  const tip = useTip(intentCardTip(state, enemy, forecast, action, ifLead));
+  const tip = useTip(intentCardTip(state, enemy, forecast, action, ifLead, ctx));
 
   return (
     <div
-      className={[styles.intent, intent?.hidden ? styles.intentHidden : '', intent?.kind === 'incapacitated' ? styles.intentIdle : '', action === 1 ? styles.intentSecond : ''].join(' ')}
+      className={[styles.intent, intent?.hidden ? styles.intentHidden : '', intent?.kind === 'incapacitated' ? styles.intentIdle : '', action === 1 ? styles.intentSecond : '', intent?.broken ? styles.intentBroken : ''].join(' ')}
       data-testid={action === 0 ? 'intent-chip' : 'intent-chip-second'}
       tabIndex={0}
       {...tip}
@@ -74,6 +74,16 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
         </>
       ) : (
         <span>…</span>
+      )}
+      {/* §5.6.1 — how close you are to breaking it: a quarter of its Max HP in your turn, or a super-effective hit. */}
+      {action === 1 && intent && (
+        intent.broken ? (
+          <span className={styles.brokenTag} data-testid="combo-broken">Broken</span>
+        ) : (
+          <span className={styles.breakMeter} data-testid="combo-meter" aria-hidden="true">
+            <i style={{ width: `${Math.min(100, Math.round(((enemy.stagger ?? 0) / comboBreakAt(enemy, ctx)) * 100))}%` }} />
+          </span>
+        )
       )}
     </div>
   );

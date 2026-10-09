@@ -49,6 +49,8 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.12 — Whole enemies, and the double intent.** Enemies fight on the HP their species and level give, every hit
+lands harder, and Ace Trainers, Rare wild Pokémon and Gym aces act twice — a combo you can break. Before it,
 **v0.9.11 — Moves for every path, and the faint that fades.** Every evolved Pokémon learns its line's signature
 moves as it levels, so no evolution path ends with a weak kit; a fainted foe fades out in its place. Before it,
 **v0.9.10 — Combat, stats and moves, revisited.** The Pokémon behind an enemy Lead fights whole, stats grow in the

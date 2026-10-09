@@ -114,8 +114,33 @@ test.describe('Group fights — §5.6', () => {
     await expect(page.getByTestId('intent-chip-second')).toContainText('Also');
     await page.getByTestId('intent-chip-second').hover();
     await expect(page.getByTestId('tooltip')).toContainText('second action');
+    // v0.9.12 — the break: a meter on the second chip, and its card says what is left to deal.
+    await expect(page.getByTestId('combo-meter')).toHaveCount(1);
+    await expect(page.getByTestId('tooltip')).toContainText('Break it');
     await settle(page);
     await page.screenshot({ path: 'playtest/combat-acts-twice.png' });
+  });
+
+  // §5.6.1 — hurt it enough in your turn and its second action is broken: struck out, and its card says so.
+  test('a second action breaks when you hurt it enough in your turn', async ({ page }) => {
+    await page.goto('/?scenario=wild-acts-twice&seed=1');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    const broken = page.getByTestId('combo-broken');
+    for (let turn = 0; turn < 3 && (await broken.count()) === 0; turn++) {
+      for (let i = 0; i < 5 && (await broken.count()) === 0; i++) {
+        await page.evaluate(() => {
+          const A = (window as unknown as { __ascendant: { state: () => { enemies: { uid: string }[]; player: { hand: { id: string }[] } }; dispatch: (a: unknown) => boolean } }).__ascendant;
+          const s = A.state();
+          for (const c of s.player.hand) if (A.dispatch({ type: 'play-card', cardId: c.id, targetUid: s.enemies[0]!.uid })) return;
+        });
+        await page.waitForTimeout(150);
+      }
+      if ((await broken.count()) === 0) await page.getByTestId('btn-end-turn').click();
+      await page.waitForTimeout(300);
+    }
+    await expect(broken).toHaveCount(1);
+    await page.getByTestId('intent-chip-second').hover();
+    await expect(page.getByTestId('tooltip')).toContainText('will not happen this turn');
   });
 
   // §5.6.2 — a call names who will come; at Resolution the companion joins and telegraphs its own intent.

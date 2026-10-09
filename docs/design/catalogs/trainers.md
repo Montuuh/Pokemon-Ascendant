@@ -18,7 +18,7 @@
 | `swimmer` | Swimmer | Water, status-heavy (Confusion, Burn-shred) | R1 (river), R2, R3 ✅ (the Ice lane's cave) | `swimmer` |
 | `engineer` | Engineer | Buff-stall: sets up before striking | R2 ✅, R3 | `scientist` |
 | `hex-maniac` | Hex Maniac | Vision disruption — each of its Pokémon hides its first intent, as an Elite's does (a veiled roster) | R3 ✅ | `hexmaniac` (FRLG sprite) |
-| `ace-trainer` | Ace Trainer | Two high-stat Pokémon, multi-type | R3 ✅ (+ R1 Elite specialist) | `acetrainer` |
+| `ace-trainer` | Ace Trainer | Two high-stat Pokémon, multi-type; **its Lead acts twice** from R2 (§5.6.1, v0.9.12) | R2 ✅ R3 ✅ (+ R1 Elite specialist) | `acetrainer` |
 | `rocket-grunt` | Rocket Grunt | Aggressive Cleave/Backstrike kits, Poison | R2 ✅, R3 | `rocketgrunt` |
 
 > §2.7.1 lists 8; `youngster` and `lass` were one row ("Lass / Youngster") and `sailor`/`swimmer` another. They
@@ -62,9 +62,11 @@ line's thresholds at the level the layer gives them (§2.7.3). Species rows: `sp
 | `engineer-r2-b` | Engineer | `electrode` + `electabuzz` | 17, 18 |
 | `rocket-grunt-r2-a` | Rocket Grunt | `weezing` + `golbat` | 18, 18 |
 | `rocket-grunt-r2-b` | Rocket Grunt | `raticate` + `weezing` | 17, 18 |
+| `ace-trainer-r2-a` | Ace Trainer | `pidgeotto` + `wartortle` | 17, 18 |
+| `ace-trainer-r2-b` | Ace Trainer | `kadabra` + `charmeleon` | 17, 18 |
 
 **The Gym lanes** (§2.5): Youngsters walk the Fire lane, Lasses the Grass lane, Engineers the Electric lane and
-Rocket Grunts the Poison lane; Hikers and Swimmers are the trunk's. **Three substitutions**, because their lines
+Rocket Grunts the Poison lane; Hikers, Swimmers and the Ace Trainers (v0.9.12, whose Lead acts twice) are the trunk's. **Three substitutions**, because their lines
 are not in the build: the Lass's Jigglypuff became a Starmie (and, in the second roster, a Raichu), the Rocket
 Grunt's Ekans became a Golbat or a Raticate — the Gen I Rocket's other two — and the **Hex Maniac moved to Region 3**
 with the Ghosts its identity needs. *(Settled while building v0.7.3, 2026-09-23.)*

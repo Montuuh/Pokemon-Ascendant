@@ -6,6 +6,8 @@ export interface FloatingFx {
   kind: 'damage' | 'heal' | 'status' | 'text';
   text: string;
   emphasis?: 'crit' | 'super' | 'weak' | 'immune';
+  /** Drawn a row higher than the rest, so a word said on top of a hit's own numbers never prints over them. */
+  lifted?: boolean;
 }
 
 /** Transient combat numbers anchored to a combatant card (spawned from sim events by useCombatFx). */
@@ -17,7 +19,7 @@ export function FloatingNumbers({ uid, fx }: { uid: string; fx: FloatingFx[] }) 
       {mine.map((f, i) => (
         <span
           key={f.id}
-          className={[styles.num, styles[f.kind], f.emphasis ? styles[f.emphasis] : ''].join(' ')}
+          className={[styles.num, styles[f.kind], f.emphasis ? styles[f.emphasis] : '', f.lifted ? styles.lifted : ''].join(' ')}
           style={{ animationDelay: `${i * 90}ms`, left: `${50 + ((i % 3) - 1) * 14}%` }}
         >
           {f.text}

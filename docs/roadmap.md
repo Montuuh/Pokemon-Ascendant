@@ -1120,7 +1120,21 @@ its place, and the line holds its order and names until the beat ends. **Art**: 
 for every Gen I type. Enemies learn too, so Attack ×1.15 / ×1.75 / ×2.6: R1 60 % · R2|R1 60 % · R3|R2 51 % · run 18 %
 (720 runs).
 
-### v0.9.12 — Victory Road  ☐
+### v0.9.12 — Whole enemies, and the double intent  ✅ 2026-10-09
+The user's notes on v0.9.11: an enemy's HP should not be modified; and Pokémon and trainers with a double intent,
+designed first and built if it held up.
+
+**Shipped.** **Whole HP** (§2.2, §4.1.1): the Region's tier no longer cuts an enemy's Max HP (it was ×0.6 / ×0.45 /
+×0.35), nor does acting twice (the Elite Wild's ×0.75). Tuned by Attack alone the fights doubled and Region 3 stalled
+at 37 % (Gyms of 46 turns, every hit 3 % of a Pokémon's HP); the user picked the remedy: the damage divisor 8 → 5 for
+both sides, the tier Attack only (×0.62 / ×0.78 / ×0.82, Gyms ×1.15 / ×1.0 / ×1.0). **Acting Twice** (§5.6.1): two
+intents on one 3-AP budget (4 for a Gym's ace), the first chosen to leave room for the second; broken by a quarter of
+its Max HP in your turn or a super-effective hit — a meter on the second chip, struck out with *Broken*; placed, at most
+one a fight — the Elite Wild everywhere, from Region 2 a Rare, an Ace Trainer's Lead (two new Region 2 rosters) and the
+Gym Leader's ace, in Region 3 the Elite's Lead; the map promises it. R1 60 % · R2|R1 61 % · R3|R2 46 % · run 17 %
+(720 runs), fights 5.0 / 7.8 / 9.7 turns, Gyms 7.6 / 13.4 / 19.5.
+
+### v0.9.13 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 - **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
@@ -1128,7 +1142,7 @@ Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
   Road's Apex (§2.12.2) is where the canon already brings the run's rarest species, and the two are balanced together.
   Needs the backlog's "a Legendary takes two team slots" designed with the user first.
 
-### v0.9.13 — The League  ☐
+### v0.9.14 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
@@ -1167,7 +1181,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.12's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.12, designed first |
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.13's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.13, designed first |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -1192,7 +1206,7 @@ the account revamps move to v0.9):
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.12 |
+| — | Recovering missed Badges | v0.9.13 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.12 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.13 (with the two-slot balance, designed first) |

@@ -8,6 +8,7 @@ import { masteryMoveFor } from '../meta/mastery';
 import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
 import { RING } from './cities';
 import { applyGroups } from './groups';
+import { applyDoubleAction } from './doubleAction';
 import { rollWild } from './wild';
 import { applyShiny } from './shiny';
 import { applyFields } from './battlefields';
@@ -250,19 +251,18 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
 }
 
 /**
- * §2.2 — the Region's escalation, folded into every fight: the enemy stat tier on Max HP and Attack (the next
+ * §2.2 — the Region's escalation, folded into every fight: the enemy stat tier on Attack (the next
  * Region's under §8.8 Greater Threats), and from Region 2 the status accent (each enemy gains its type's status
  * move unless its own kit already has one).
  */
 function applyRegion(scenario: ScenarioDef, run: RunState, content: ContentRegistry): ScenarioDef {
   const tier = statTierFor(run.regionIndex, hasModifier(run.modifiers, 'greater-threats'));
   const accent = run.regionIndex >= STATUS_ACCENT_FROM;
-  if (tier.hp === 1 && tier.attack === 1 && !accent) return scenario;
+  if (tier.attack === 1 && !accent) return scenario;
   const fold = (e: EnemySetup): EnemySetup => {
     const out: EnemySetup = { ...e };
     // §5.6.2 — a caller's companions are this Region's Pokémon too, whenever they come.
     if (e.helpers) out.helpers = e.helpers.map(fold);
-    if (tier.hp !== 1) out.hpMultiplier = (e.hpMultiplier ?? 1) * tier.hp;
     if (tier.attack !== 1) out.attackMultiplier = (e.attackMultiplier ?? 1) * tier.attack;
     if (accent) {
       const kit = e.moves ?? activeMoves(content, e.species, e.level);
@@ -364,8 +364,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
   })();
   // §5.6.3 — the node's group first, so its companions and supports take the Region's tier, accent and modifiers too.
   // §4.3 — and the ground it is fought on: the biome's Battlefield, a Gym's or an Elite's Home Field.
-  // §5.14 — and, once the group is in, whether any wild Pokémon in it is shiny.
-  return base ? applyPerks(applyModifiers(applyRegion(applyFields(applyShiny(applyGroups(base, node, run, content), node, run, content), node, run, content), run, content), run), run, content) : null;
+  // §5.6.1 — and who in it acts twice. §5.14 — and, once the group is in, whether any wild Pokémon in it is shiny.
+  return base ? applyPerks(applyModifiers(applyRegion(applyFields(applyShiny(applyDoubleAction(applyGroups(base, node, run, content), node, run), node, run, content), node, run, content), run, content), run), run, content) : null;
 }
 
 /**

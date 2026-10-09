@@ -134,9 +134,10 @@ export const GYM_LEVEL_PREMIUM = { other: -2, ace: 0 } as const;
  * §5.9.3 — a Gym's own Attack, on top of the Region's tier (v0.8.8): the climax is a threat by how hard it hits, not
  * by levels — a higher premium made the run easier, because a Gym above the team pays it more XP (§6.2.1). v0.9.8 walked
  * every Gym through its evolutions (§2.7.3) — Region 2's fielded Arcanine and Electrode where they had held a Growlithe
- * and a Voltorb, and lost 34 % of the time — so ×1.3 / ×1.5 / ×1.15 became ×1.15 / ×1.1 / ×1.15.
+ * and a Voltorb, and lost 34 % of the time — so ×1.3 / ×1.5 / ×1.15 became ×1.15 / ×1.1 / ×1.15. v0.9.12 (whole HP,
+ * divisor 5, the Gym's ace acting twice): ×1.15 / ×1.0 / ×1.0.
  */
-export const GYM_ATTACK_MULTIPLIER: readonly number[] = [1.15, 1.1, 1.15];
+export const GYM_ATTACK_MULTIPLIER: readonly number[] = [1.15, 1.0, 1.0];
 
 /**
  * Pad a team to `size` from `pool` (another species first), deterministically: the pick is a hash of `key` and
@@ -515,6 +516,11 @@ export const REGION2_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
  * lifts past a threshold still fields the right form. The Hex Maniac waits for Region 3, where its Ghosts are.
  */
 export const TRAINERS_R2: TrainerRoster[] = [
+  // §5.6.1 — an Ace Trainer's Lead acts twice from Region 2 (v0.9.12): two Pokémon at their best, one of them fast.
+  { id: 'ace-trainer-r2-a', archetype: 'ace-trainer', name: 'Ace Trainer Iris', sprite: 'acetrainer', line: 'I train for the turn nobody sees coming.',
+    team: [{ species: 'pidgeotto', level: 17 }, { species: 'wartortle', level: 18 }] },
+  { id: 'ace-trainer-r2-b', archetype: 'ace-trainer', name: 'Ace Trainer Marco', sprite: 'acetrainer', line: 'Two moves a turn. Keep up.',
+    team: [{ species: 'kadabra', level: 17 }, { species: 'charmeleon', level: 18 }] },
   { id: 'youngster-r2-a', archetype: 'youngster', name: 'Youngster Calvin', sprite: 'youngster', line: 'I have been training since Pallet. Look how big they got!',
     team: [{ species: 'raticate', level: 15 }, { species: 'pidgeotto', level: 16 }] },
   { id: 'youngster-r2-b', archetype: 'youngster', name: 'Youngster Otis', sprite: 'youngster', line: 'Only one Pokémon. It is the only one I need.',
@@ -938,13 +944,20 @@ export const STATUS_ACCENT_FALLBACK = 'glare';
  * ×1.75 / ×2.6: R1 60 % · R2|R1 60 % · R3|R2 51 % · run 18 % (720 runs).
  */
 export interface StatTier {
-  hp: number;
   attack: number;
 }
+/**
+ * v0.9.12 — the tier is Attack only (the user: an enemy's HP should not be modified). Until then every enemy fought on
+ * a fraction of its Max HP — ×0.6 / ×0.45 / ×0.35 — so a Region's foe was not the Pokémon its species and level say;
+ * now it is, the HP its level gives, the same as yours. Whole HP alone doubled the fights and, tuned by Attack alone,
+ * left Region 3 at 37 % with 46-turn Gyms and 3 % hits — attrition, not threat. So the damage divisor came down for
+ * everyone (§4.1.1: 8 → 5, the user's pick) and the tier with it, with Acting Twice placed from Region 2 (§5.6.1):
+ * Attack ×0.62 / ×0.78 / ×0.82 — R1 60 % · R2|R1 61 % · R3|R2 46 % · run 17 % (720 runs), fights 5.0 / 7.8 / 9.7 turns.
+ */
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { hp: 0.6, attack: 1.15 },
-  { hp: 0.45, attack: 1.75 },
-  { hp: 0.35, attack: 2.6 },
+  { attack: 0.62 },
+  { attack: 0.78 },
+  { attack: 0.82 },
 ];
 
 /**
@@ -959,7 +972,7 @@ export function statTierFor(regionIndex: number, greaterThreats: boolean): StatT
   const top = REGION_STAT_TIER[last]!;
   const prev = REGION_STAT_TIER[last - 1]!;
   const steps = i - last;
-  return { hp: top.hp + (top.hp - prev.hp) * steps, attack: top.attack + (top.attack - prev.attack) * steps };
+  return { attack: top.attack + (top.attack - prev.attack) * steps };
 }
 
 export const RUN_START = {

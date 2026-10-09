@@ -74,8 +74,10 @@ Pokémon.
 - **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
-  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier that hits hard and falls fast (Attack ×1.55 / ×1.75 / ×2.25,
-  HP ×0.6 / ×0.45 / ×0.27 — the median hit ~16 % of Max HP, v0.8.8–v0.8.10), and a curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
+  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier on Attack only — an enemy's HP is
+  never scaled (v0.9.12; ×0.62 / ×0.78 / ×0.82, divisor 5) — **Acting Twice** from R2 (§5.6.1: two intents on one 3-AP
+  budget, broken by a quarter of its HP or a super-effective hit; a Rare, an Ace Trainer, a Gym's ace, R3's Elite), and a
+  curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
   Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
   Elite, the Lapras Elite Wild and the Fire · Grass · Electric · Poison Gyms with their Badges. Since v0.9.7 its
@@ -177,7 +179,7 @@ unless the card has Step-Forward; **Ranged plays anywhere** at ×0.75.
 
 **Damage** = `floor( Power × (Atk/Def) × Range × Crit × STAB × TypeEff / 8 )`. One floor at the end. No minimum
 clamp — only immunity deals 0. Level is not in the formula.
-**Divisor 8** · STAB 1.5 · Crit 1.5 · Ranged 0.75.
+**Divisor 5** (v0.9.12; 8 until enemies got their whole HP back) · STAB 1.5 · Crit 1.5 · Ranged 0.75.
 **Stats:** one Attack, one Defence, derived from Gen I as `attack = max(Atk, Spc)`,
 `defence = round((Def+Spc)/2)`. Effective = `base + growth×(level−1)`, then stage, then status.
 

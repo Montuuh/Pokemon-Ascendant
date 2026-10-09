@@ -27,8 +27,8 @@ export interface GroupRates {
   trainerTrio: number;
   /** The Elite Trainer and the Gym Leader send out two at a time (their teams are four and five, §5.6.3). */
   bossDouble: boolean;
-  /** The Elite Wild acts twice (§5.6.1), at this share of its HP — a second action is priced like one. */
-  eliteWildActsTwice: number | null;
+  /** The Elite Wild acts twice (§5.6.1), on its whole HP (v0.9.12: an enemy's HP is never scaled). */
+  eliteWildActsTwice: boolean;
 }
 
 /**
@@ -37,9 +37,9 @@ export interface GroupRates {
  * Held to §2.2.1's curve by the run harness; the balance pass tunes them.
  */
 export const GROUP_RATES: readonly GroupRates[] = [
-  { wildPack: 0.3, packOfThree: 0.15, wildCaller: 0.1, callerHelpers: 1, trainerPair: 0.5, trainerTrio: 0.25, bossDouble: true, eliteWildActsTwice: null },
-  { wildPack: 0.4, packOfThree: 0.35, wildCaller: 0.15, callerHelpers: 1, trainerPair: 0.6, trainerTrio: 0.4, bossDouble: true, eliteWildActsTwice: null },
-  { wildPack: 0.5, packOfThree: 0.5, wildCaller: 0.2, callerHelpers: 2, trainerPair: 0.7, trainerTrio: 0.5, bossDouble: true, eliteWildActsTwice: 0.75 },
+  { wildPack: 0.3, packOfThree: 0.15, wildCaller: 0.1, callerHelpers: 1, trainerPair: 0.5, trainerTrio: 0.25, bossDouble: true, eliteWildActsTwice: true },
+  { wildPack: 0.4, packOfThree: 0.35, wildCaller: 0.15, callerHelpers: 1, trainerPair: 0.6, trainerTrio: 0.4, bossDouble: true, eliteWildActsTwice: true },
+  { wildPack: 0.5, packOfThree: 0.5, wildCaller: 0.2, callerHelpers: 2, trainerPair: 0.7, trainerTrio: 0.5, bossDouble: true, eliteWildActsTwice: true },
 ];
 
 /**
@@ -102,7 +102,7 @@ export function groupPlanFor(node: MapNode, run: RunState): GroupPlan {
     case 'gym':
       return r.bossDouble ? { kind: 'double' } : { kind: 'single' };
     case 'elite-wild':
-      return r.eliteWildActsTwice !== null ? { kind: 'acts-twice' } : { kind: 'single' };
+      return r.eliteWildActsTwice ? { kind: 'acts-twice' } : { kind: 'single' };
     default:
       return { kind: 'single' };
   }
@@ -153,10 +153,8 @@ export function applyGroups(scenario: ScenarioDef, node: MapNode, run: RunState,
       // §5.6.3 — the Elite and the Gym Leader send out two at a time. Their Pokémon are the team, not supports: full
       // HP and no escalation, which through a five-Pokémon Gym would snowball (§5.6.3's measure).
       return { ...scenario, onField: 2 };
-    case 'acts-twice': {
-      const share = ratesFor(run).eliteWildActsTwice ?? 1;
-      return { ...scenario, enemies: scenario.enemies.map((e, i) => (i === 0 ? { ...e, acts: 2 as const, hpMultiplier: (e.hpMultiplier ?? 1) * share } : e)) };
-    }
+    case 'acts-twice':
+      return { ...scenario, enemies: scenario.enemies.map((e, i) => (i === 0 ? { ...e, acts: 2 as const } : e)) };
   }
 }
 

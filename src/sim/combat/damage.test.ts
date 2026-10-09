@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { DEFAULT_BATTLE_CONFIG } from './battleConfig';
 import { computeDamage, type DamageInputs } from './damage';
 
-// Per §4.1.1 — floor( Power × (Atk/Def) × Range × Crit × STAB × TypeEff / Divisor ), divisor 8 (Unity-tuned).
+// Per §4.1.1 — floor( Power × (Atk/Def) × Range × Crit × STAB × TypeEff / Divisor ), divisor 5 (v0.9.12; Unity shipped 8).
 const base: DamageInputs = {
   power: 40,
   attack: 50,
@@ -16,15 +16,15 @@ const base: DamageInputs = {
 
 describe('computeDamage', () => {
   it('computeDamage_NeutralMeleeStab_MatchesFormula', () => {
-    // 40 × 1 × 1 / 8 = 5 → ×1.5 STAB = 7.5 → floor 7
+    // 40 × 1 × 1 / 5 = 8 → ×1.5 STAB = 12
     const r = computeDamage(base, DEFAULT_BATTLE_CONFIG);
-    expect(r.final).toBe(7);
+    expect(r.final).toBe(12);
     expect(r.hasStab).toBe(true);
     expect(r.isCrit).toBe(false);
   });
 
   it('computeDamage_HighPowerRanged_AppliesRangeModifier', () => {
-    // 90 × (80/40) × 0.75 / 8 = 16.875 → no STAB (grass move, fire attacker) → ×2 vs water = 33.75 → 33
+    // 90 × (80/40) × 0.75 / 5 = 27 → no STAB (grass move, fire attacker) → ×2 vs water = 54
     const r = computeDamage(
       {
         ...base,
@@ -40,7 +40,7 @@ describe('computeDamage', () => {
     );
     expect(r.rangeMultiplier).toBe(0.75);
     expect(r.typeMultiplier).toBe(2);
-    expect(r.final).toBe(33);
+    expect(r.final).toBe(54);
   });
 
   it('computeDamage_Immunity_ReturnsZero', () => {
@@ -49,15 +49,15 @@ describe('computeDamage', () => {
   });
 
   it('computeDamage_CritAndAlwaysCrit_ApplyMultiplierOnce', () => {
-    const inputs = { ...base, power: 100, attack: 100, defense: 50 }; // 100×2/8 = 25 → STAB 37.5 → 37
+    const inputs = { ...base, power: 100, attack: 100, defense: 50 }; // 100×2/5 = 40 → STAB 60
     const plain = computeDamage(inputs, DEFAULT_BATTLE_CONFIG);
     const crit = computeDamage({ ...inputs, crit: true }, DEFAULT_BATTLE_CONFIG);
     const forced = computeDamage({ ...inputs, alwaysCrit: true }, DEFAULT_BATTLE_CONFIG);
     const both = computeDamage({ ...inputs, crit: true, alwaysCrit: true }, DEFAULT_BATTLE_CONFIG);
-    expect(plain.final).toBe(37);
-    expect(crit.final).toBe(56);
-    expect(forced.final).toBe(56);
-    expect(both.final).toBe(56);
+    expect(plain.final).toBe(60);
+    expect(crit.final).toBe(90);
+    expect(forced.final).toBe(90);
+    expect(both.final).toBe(90);
   });
 
   it('computeDamage_ZeroDefense_ClampsToOne', () => {
@@ -66,7 +66,7 @@ describe('computeDamage', () => {
       DEFAULT_BATTLE_CONFIG,
     );
     expect(r.defense).toBe(1);
-    expect(r.final).toBe(12); // 10×10/1/8 = 12.5 → 12
+    expect(r.final).toBe(20); // 10×10/1/5 = 20
   });
 
   it('computeDamage_FloorOnlyAtEnd_IsOrderIndependent', () => {

@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.12 — Whole enemies, and the double intent · 2026-10-09
+
+Enemies fight on their whole HP; some act twice, and you can break it.
+
+- **Whole HP.** No enemy's HP is scaled; every hit lands harder.
+- **Acts twice.** Two intents on one budget: Ace Trainers, Rares, Gym aces.
+- **Break it.** A quarter of its HP in your turn, or a super-effective hit.
+
 ### v0.9.11 — Moves for every path, and the faint that fades · 2026-10-09
 
 Every evolved Pokémon learns its line's best moves as it levels.

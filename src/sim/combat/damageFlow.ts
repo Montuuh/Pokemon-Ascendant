@@ -1,4 +1,5 @@
 import type { MoveDef } from '../content/defs';
+import { comboBreakAt } from './combo';
 import type { RunCtx } from './context';
 import { emit, log } from './context';
 import { computeDamage, type DamageBreakdown } from './damage';
@@ -324,6 +325,7 @@ export function dealDamage(
   // damage taken, and "win without taking any" would be a lie if it were not counted.
   if (isPlayers(state, target)) state.player.totalDamageTaken += dmg;
   emit(state, { t: 'damage', sourceUid, targetUid: target.uid, amount: dmg, crit: meta.crit, effectiveness: meta.effectiveness, hpAfter: target.hp, cause: meta.cause });
+  staggerCombo(state, ctx, sourceUid, target, dmg, meta.effectiveness, meta.cause);
 
   if (target.hp === 0) {
     // §7.3.5 Champion's Crest — credit the Pokémon that actually landed the blow, and only for an enemy.
@@ -337,6 +339,23 @@ export function dealDamage(
 }
 
 const isPlayers = (state: CombatState, c: Combatant) => state.player.team.some((m) => m.uid === c.uid);
+
+/**
+ * §5.6.1 — breaking a second action: a Pokémon that acts twice loses its second action if, in your turn, your moves deal it a
+ * quarter of its Max HP (`comboBreakShare`) or hit it super-effectively. Only your moves, only in your turn: a
+ * status tick or a Counter in the enemies' turn never breaks it. The chip shows how close you are.
+ */
+function staggerCombo(state: CombatState, ctx: RunCtx, sourceUid: string | null, target: Combatant, dmg: number, effectiveness: string, cause: string): void {
+  if (cause !== 'move' || state.phase !== 'action' || !sourceUid || !state.player.team.some((m) => m.uid === sourceUid)) return;
+  const enemy = state.enemies.find((e) => e.uid === target.uid);
+  if (!enemy?.second || enemy.second.broken || enemy.hp <= 0) return;
+  enemy.stagger = (enemy.stagger ?? 0) + dmg;
+  const superEffective = effectiveness === 'double' || effectiveness === 'quad';
+  if (!superEffective && enemy.stagger < comboBreakAt(enemy, ctx)) return;
+  enemy.second = { ...enemy.second, broken: true };
+  emit(state, { t: 'combo-break', enemyUid: enemy.uid });
+  log(state, 'system', `${enemy.name}'s second action is broken — it will act only once.`);
+}
 
 /**
  * §7.3.4 — the relics that answer *being hurt*: Vital Pendant pulls a Pokémon back from the brink, Bond

@@ -105,12 +105,12 @@ describe('The status accent — §2.2', () => {
 });
 
 describe('The enemy stat tier — §2.2.1', () => {
-  it('EveryRegion_FoldsItsTierOntoItsEnemies', () => {
-    // v0.8.6: the tiers were retuned for teams at the route's level (XP cut, §6.2.1) — Region 1 sits under 1 now.
-    // A multiplier of exactly 1 is not written onto the enemy at all, hence the `?? 1`.
+  it('EveryRegion_FoldsItsAttackTierOntoItsEnemies_AndNeverTheirHp', () => {
+    // v0.9.12 (the user's call): an enemy's HP is the HP its species and level give, in every Region — the tier is
+    // Attack only. A multiplier of exactly 1 is not written onto the enemy at all, hence the `?? 1`.
     for (const r of [0, 1, 2]) {
       for (const e of firstFight(r).enemies) {
-        expect(e.hpMultiplier ?? 1, `R${r + 1} hp`).toBeCloseTo(REGION_STAT_TIER[r]!.hp);
+        expect(e.hpMultiplier, `R${r + 1} hp`).toBeUndefined();
         expect(e.attackMultiplier ?? 1, `R${r + 1} attack`).toBeCloseTo(REGION_STAT_TIER[r]!.attack);
       }
     }
@@ -120,7 +120,6 @@ describe('The enemy stat tier — §2.2.1', () => {
     for (const e of firstFight(0, ['greater-threats']).enemies) expect(e.attackMultiplier ?? 1).toBeCloseTo(REGION_STAT_TIER[1]!.attack);
     const top = REGION_STAT_TIER[2]!;
     const prev = REGION_STAT_TIER[1]!;
-    expect(statTierFor(2, true).hp).toBeCloseTo(top.hp + (top.hp - prev.hp));
     expect(statTierFor(2, true).attack).toBeCloseTo(top.attack + (top.attack - prev.attack));
     expect(statTierFor(2, false)).toEqual(top);
   });

@@ -80,6 +80,8 @@ const FLOAT_MS = 1150;
 const CLASS_MS = 450;
 const BANNER_MS = 1300;
 const FAINT_CARD_MS = 650;
+/** §5.6.1 — "Broken!" waits this long after the hit, clear of the hit's own float. */
+const BREAK_FLOAT_LAG_MS = 200;
 /** A ghost outlives its beat by this much: the keyframes end invisible and hold there, so a late timer never cuts a
  *  faint short (the sprite used to vanish with a third of it still showing). */
 const GHOST_TAIL_MS = 150;
@@ -317,6 +319,12 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         case 'stage':
           addFloat({ uid: e.targetUid, kind: 'status', text: `${e.stat === 'attack' ? 'Atk' : e.stat === 'defense' ? 'Def' : 'Spd'} ${e.delta > 0 ? '+' : ''}${e.delta}` }, delay);
           delay += 120;
+          break;
+        case 'combo-break':
+          // §5.6.1 — its second action is struck: said over the Pokémon, where the hit that broke it landed — a beat after
+          // that hit's own numbers and a row above them (a stage or a status from the same move), so the two never print over each other.
+          addFloat({ uid: e.enemyUid, kind: 'text', text: 'Broken!', lifted: true }, delay + BREAK_FLOAT_LAG_MS);
+          delay += 150;
           break;
         case 'sturdy':
           addFloat({ uid: e.uid, kind: 'text', text: 'Sturdy!' }, delay);

@@ -101,7 +101,7 @@ function computeForecast(state: CombatState, ctx: CombatCtx): TurnForecast {
     if (enemy.hp <= 0 || !enemy.intent) continue;
     // §3.2.5 / §5.6.1 — the same order `executeTurn` keeps: its intent, then its second if it still stands.
     const hits = act(enemy, enemy.intent, 0).map((h) => ({ ...h }));
-    if (enemy.second && enemy.hp > 0 && sim.outcome === 'in-progress') {
+    if (enemy.second && !enemy.second.broken && enemy.hp > 0 && sim.outcome === 'in-progress') {
       for (const h of act(enemy, enemy.second, 1)) {
         const same = hits.find((x) => x.targetUid === h.targetUid);
         if (same) Object.assign(same, { amount: same.amount + h.amount, hpAfter: h.hpAfter, ko: h.ko });
