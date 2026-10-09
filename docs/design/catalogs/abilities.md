@@ -20,7 +20,7 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | **`none`** | never (flavour / reserved) | — | ✅ |
 | **`low-hp-type-boost`** | damage calc | `type`, `threshold` (0.3), `multiplier` (1.2) | ✅ |
 | **`range-boost`** | damage calc | `range` (melee/ranged), `multiplier` | ✅ |
-| **`lead-flat-reduction`** | incoming damage, wearer is Lead | `amount` | ✅ |
+| **`lead-percent-reduction`** | incoming damage, wearer is Lead | `percent` (v0.9.10; was `lead-flat-reduction`, `amount`) | ✅ |
 | **`riders-always-apply`** | status rider roll | — | ✅ |
 | **`reveal-intents`** | combat start | — | ✅ |
 | **`sturdy`** | lethal damage, once per combat | — | ✅ |

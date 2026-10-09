@@ -24,7 +24,7 @@ const ALLOW = new Set([
   'melee', 'ranged', 'offensive', 'defensive', 'utility', 'basic', 'stage1', 'stage2',
   'common', 'uncommon', 'rare', 'legendary', 'starter', 'wild', 'trainer', 'elite', 'boss',
   // ability hooks
-  'low-hp-type-boost', 'range-boost', 'lead-percent-reduction', 'riders-always-apply', 'reveal-intents', 'sturdy-hook',
+  'low-hp-type-boost', 'range-boost', 'lead-percent-reduction', 'lead-flat-reduction', 'riders-always-apply', 'reveal-intents', 'sturdy-hook',
   'turn-end-bench-heal', 'start-stage', 'status-immunity', 'type-immunity', 'type-absorb', 'on-enter-lead',
   'on-faint-team', 'stab-multiplier', 'crit-on-crit-taken', 'dot-immunity', 'turn-start-ap', 'field-draw',
   'lead-aura', 'post-combat-loot', 'low-hp-damage-reduction', 'ignore-immunity', 'rider-force-plus-damage',
