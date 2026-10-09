@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import type { CombatEvent, CombatState } from '@/sim';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import type { CombatEvent, CombatState, EnemyCombatant } from '@/sim';
 import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
 import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/strings';
@@ -25,6 +25,9 @@ export interface Ghost {
   kind: 'faint' | 'recall';
   /** When its beat starts, from the batch: until then it stands as it was, so the fallen never blink out early. */
   at: number;
+  /** A fallen foe: who it was, and the line as it stood before it fell (uids in order), so its panel fades in its
+   *  place and the others hold theirs — and their places' names — until the beat has played (v0.9.11). */
+  foe?: { enemy: EnemyCombatant; line: string[] };
 }
 
 /** A Poké Ball between a trainer's hand and a slot: thrown in (`in`, it opens there) or going back (`out`). */
@@ -77,6 +80,9 @@ const FLOAT_MS = 1150;
 const CLASS_MS = 450;
 const BANNER_MS = 1300;
 const FAINT_CARD_MS = 650;
+/** A ghost outlives its beat by this much: the keyframes end invisible and hold there, so a late timer never cuts a
+ *  faint short (the sprite used to vanish with a third of it still showing). */
+const GHOST_TAIL_MS = 150;
 
 /**
  * §9.9.1 — the beats' lengths. Presentation only: what the sim decided is already decided. The one place they live:
@@ -88,7 +94,7 @@ export const FX_MS = {
   wildEnter: 520,
   /** A ball between a hand and a slot. */
   ballFly: 650,
-  faint: 800,
+  faint: 900,
   recall: 520,
   /** The catch: the throw, the Pokémon drawn in, the ball dropping to the ground, then each wobble — a still
    *  moment and a rock — and after the last a still moment more before the click or the burst. */
@@ -130,15 +136,15 @@ export function catchTimeline(wobbles: number) {
 }
 
 interface Seen {
-  enemies: Map<string, { speciesId: string; shiny: boolean; slot: SpriteSlot }>;
+  enemies: Map<string, { speciesId: string; shiny: boolean; slot: SpriteSlot; enemy: EnemyCombatant }>;
   lead: { uid: string; speciesId: string; shiny: boolean } | null;
 }
 
 const slotOf = (index: number, count: number): SpriteSlot => (count <= 1 ? 'single' : index === 0 ? 'lead' : index === 1 ? 'support1' : 'support2');
 
 function look(state: CombatState): Seen {
-  const enemies = new Map<string, { speciesId: string; shiny: boolean; slot: SpriteSlot }>();
-  state.enemies.forEach((e, i) => enemies.set(e.uid, { speciesId: e.speciesId, shiny: !!e.shiny, slot: slotOf(i, state.enemies.length) }));
+  const enemies: Seen['enemies'] = new Map();
+  state.enemies.forEach((e, i) => enemies.set(e.uid, { speciesId: e.speciesId, shiny: !!e.shiny, slot: slotOf(i, state.enemies.length), enemy: e }));
   const l = state.player.team[state.player.leadIndex];
   return { enemies, lead: l && l.hp > 0 ? { uid: l.uid, speciesId: l.speciesId, shiny: !!l.shiny } : null };
 }
@@ -174,7 +180,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   const seen = useRef<Seen | null>(null);
   const nextId = useRef(1);
 
-  useEffect(() => {
+  // Before paint: a ghost stands in for the sprite it replaces in the same frame, never a blank one between.
+  useLayoutEffect(() => {
     if (!state) return;
     const schedule = (fn: () => void, ms: number) => {
       pending.current.push(window.setTimeout(fn, ms));
@@ -266,8 +273,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // A ghost stands in at once — the sprite it replaces is already gone — and plays its beat at `at`.
     const addGhost = (g: Omit<Ghost, 'id'>, dur: number) => {
       const id = nextId.current++;
-      schedule(() => setGhosts((gs) => [...gs, { ...g, id }]), 0);
-      schedule(() => setGhosts((gs) => gs.filter((x) => x.id !== id)), g.at + dur);
+      setGhosts((gs) => [...gs, { ...g, id }]);
+      schedule(() => setGhosts((gs) => gs.filter((x) => x.id !== id)), g.at + dur + GHOST_TAIL_MS);
     };
     const showBanner = (text: string, at: number, ms = BANNER_MS) => {
       schedule(() => setBanner(text), at);
@@ -337,7 +344,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
             break;
           }
           const slot: SpriteSlot = enemy ? enemy.slot : 'player';
-          addGhost({ slot, speciesId: who.speciesId, shiny: who.shiny, kind: 'faint', at: delay }, FX_MS.faint);
+          addGhost({ slot, speciesId: who.speciesId, shiny: who.shiny, kind: 'faint', at: delay, ...(enemy ? { foe: { enemy: enemy.enemy, line: [...before.enemies.keys()] } } : {}) }, FX_MS.faint);
           let end = delay + FX_MS.faint;
           if (mine || fromABall(state)) {
             flyBall({ slot, dir: 'out', hand: mine ? 'player' : 'trainer', ball: 'poke-ball' }, end);

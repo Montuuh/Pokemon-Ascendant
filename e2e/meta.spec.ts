@@ -153,12 +153,14 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.evaluate(() => window.__ascendant!.meta.meet('mankey', 'primeape'));
     await page.getByTestId('btn-hub').click();
     await openKiosk(page, 'pc');
-    // An evolved form learns nothing by level: its Kit tab is one row per path that reaches it.
+    // An evolved form's Kit tab: its own learnset once (v0.9.11), then one row per path with what that path leaves it.
     await page.getByTestId('dex-primeape').click();
     await page.getByTestId('dex-sheet-tab-kit').click();
     const paths = page.getByTestId('dex-sheet-kit-paths');
     await expect(paths.locator('li')).toHaveCount(2);
-    await expect(paths).toContainText('Submission');
+    await expect(paths).toContainText('Karate Chop+');
+    await expect(paths).not.toContainText('Submission');
+    await expect(page.getByTestId('dex-sheet')).toContainText('Submission');
     await expect(page.getByTestId('dex-sheet')).not.toContainText('Low Kick');
     await page.screenshot({ path: 'playtest/hub-pokedex-kit-paths.png' });
     // The line tab carries the paths themselves: what each changes, learns and forgets.

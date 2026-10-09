@@ -2,7 +2,7 @@
 // Fetch relic and held-item icons from the PokéAPI sprite set into public/art/items.
 // Usage: npm run art:items [-- --force]
 //
-// Every held item in §7.4 is a real Pokémon item, so all nineteen come straight off the shelf. Relics are
+// Every held item in §7.4 is a real Pokémon item, so all twenty come straight off the shelf. Relics are
 // ours, so most of them borrow the real item they are named after — Coin Pouch takes the Amulet Coin, Lucky
 // Egg Token takes the Lucky Egg. Where nothing fits, the row maps to null and the UI draws a rarity glyph
 // instead, which is honest: a made-up icon that looks official is worse than no icon at all.
@@ -17,14 +17,14 @@ const ROOT = resolve(import.meta.dirname, '..');
 const OUT = resolve(ROOT, 'public/art/items');
 const force = process.argv.includes('--force');
 
-/** Held items (§7.4.4) — all nineteen are real items and keep their own names. */
+/** Held items (§7.4.4) — all twenty are real items and keep their own names. */
 // A few PokéAPI slugs differ from our ids; the map is only for those.
 const HELD_SLUG = { nevermeltice: 'never-melt-ice' };
 
 const HELD = [
   'charcoal', 'mystic-water', 'magnet', 'miracle-seed', 'nevermeltice', 'black-belt', 'sharp-beak',
   'twisted-spoon', 'splash-plate', 'flame-plate', 'zap-plate', 'meadow-plate', 'mind-plate',
-  'leftovers', 'eviolite', 'focus-sash', 'choice-band', 'choice-scarf', 'thick-club',
+  'leftovers', 'eviolite', 'focus-sash', 'choice-band', 'choice-scarf', 'thick-club', 'light-ball',
 ];
 
 /** Evolution Items (§6.3.2, §7.2.5) — the five Gen I stones, real items under their own names. */

@@ -276,14 +276,14 @@ export function evoPathsTip(): ReactNode {
   return <Tip title="Evolution paths" body="Each path an evolution can take: the stats at the threshold on that path's lean, every card it turns into a better one (the old one is forgotten), the card it adds, and the ability it grants." footer="Chosen on the Evolution screen when the Pokémon gets there." />;
 }
 
-/** §6.9 — a base form's learnset in the Pokédex. */
+/** §6.9 — a form's own learnset in the Pokédex: a base form's four, an evolved form's signature moves (v0.9.11). */
 export function learnsetTip(evolveLevel: number | undefined, evolves: boolean): ReactNode {
-  return <Tip title={DEX_EVO_TEXT.learnset} body={`Its own moves, by the level it learns them. A Pokémon knows every entry at or below its level${evolveLevel ? `, until it evolves at Lv ${evolveLevel}` : ''}.`} footer={evolves ? 'Evolving rewrites the kit: the line tab shows each path.' : undefined} />;
+  return <Tip title={DEX_EVO_TEXT.learnset} body={`Its own moves, by the level it learns them. A Pokémon knows every entry at or below its level${evolveLevel ? `, until it evolves at Lv ${evolveLevel}` : ''}.`} footer={evolves ? 'Evolving rewrites part of the kit and teaches the new form its own moves: the line tab shows each path.' : undefined} />;
 }
 
-/** §6.3.5 — an evolved form's kit by path in the Pokédex. */
-export function kitPathsTip(): ReactNode {
-  return <Tip title={DEX_EVO_TEXT.kitByPath} body="An evolved Pokémon learns nothing by level: each evolution rewrites its kit. One row per way to get here, with the cards it holds." footer="Up to five cards; the active four are picked in the Move Manager." />;
+/** §6.3.5 — an evolved form's kit by path in the Pokédex: what each chain of branches leaves it with. */
+export function kitPathsTip(learns: boolean): ReactNode {
+  return <Tip title={DEX_EVO_TEXT.kitByPath} body={`Each evolution rewrites part of the kit. One row per way to get here, with the cards that path leaves it${learns ? ' — and every path also knows its Learnset above' : ''}.`} footer="The active four are picked in the Move Manager." />;
 }
 
 /** §8.6.1 — a relic's availability tier, in the Item Guide. */

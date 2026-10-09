@@ -35,7 +35,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `spearow` | 21 | basic | Normal/Flying | 40/60/30/31/70 | 60/31 | common | **L12** → `fearow` | 1 `peck` · 1 `growl` · 4 `leer` · 8 `fury-attack` |
-| `fearow` | 22 | stage1 | Normal/Flying | 65/90/65/61/100 | 90/63 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `fearow` | 22 | stage1 | Normal/Flying | 65/90/65/61/100 | 90/63 | — | — | 18 `drill-peck` · 24 `swift` · 36 `double-edge` |
 
 **Abilities** `keen-eye` `tangled-feet` `snipe` (the last is hidden, §6.8.3) · **Tutor** Spearow: `quick-attack` `swift` · Fearow: —
 
@@ -48,7 +48,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `ekans` | 23 | basic | Poison | 35/60/44/40/55 | 60/42 | common | **L12** → `arbok` | 1 `wrap` · 1 `leer` · 4 `poison-sting` · 8 `bite` |
-| `arbok` | 24 | stage1 | Poison | 60/85/69/65/80 | 85/67 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `arbok` | 24 | stage1 | Poison | 60/85/69/65/80 | 85/67 | — | — | 20 `sludge` · 26 `dig` · 32 `body-slam` |
 
 **Abilities** `intimidate` `poison-point` `guts` (the last is hidden, §6.8.3) · **Tutor** Ekans: `acid-armor` `dig` · Arbok: `earthquake` `slam`
 
@@ -60,22 +60,22 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `sandshrew` | 27 | basic | Ground | 50/75/85/30/40 | 75/58 | common | **L12** → `sandslash` | 1 `scratch` · 1 `defense-curl` · 4 `sand-attack` · 8 `poison-sting` |
-| `sandslash` | 28 | stage1 | Ground | 75/100/110/55/65 | 100/83 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `sandshrew` | 27 | basic | Ground | 50/75/85/30/40 | 75/58 | common | **L12** → `sandslash` | 1 `scratch` · 1 `defense-curl` · 4 `sand-attack` · 8 `poison-sting` · 10 `dig` |
+| `sandslash` | 28 | stage1 | Ground | 75/100/110/55/65 | 100/83 | — | — | 16 `dig` · 22 `slash` · 28 `swift` |
 
 **Abilities** `sand-veil` `iron-shell` `tough-claws` (the last is hidden, §6.8.3) · **Tutor** Sandshrew: — · Sandslash: `rock-slide`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `sandslash` | **Claw** — `scratch` → `slash` · `poison-sting` → `fury-swipes` · **+`swords-dance`** | — | **Spined Ball** — `defense-curl` → `defense-curl-plus` · `sand-attack` → `sand-attack-plus` · **+`dig`** · grants `iron-shell` |
+| → `sandslash` | **Claw** — `scratch` → `slash` · `poison-sting` → `fury-swipes` · **+`swords-dance`** | — | **Spined Ball** — `defense-curl` → `defense-curl-plus` · `sand-attack` → `sand-attack-plus` · **+`swift`** · grants `iron-shell` |
 
 ### `nidoran-f` line — Poison · uncommon
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `nidoran-f` | 29 | basic | Poison | 55/47/52/40/41 | 47/46 | uncommon | **L12** → `nidorina` | 1 `growl` · 1 `scratch` · 4 `tail-whip` · 8 `poison-sting` |
-| `nidorina` | 30 | stage1 | Poison | 70/62/67/55/56 | 62/61 | — | **L26** → `nidoqueen` | — *(its base form's kit, rewritten by evolution)* |
-| `nidoqueen` | 31 | stage2 | Poison/Ground | 90/82/87/75/76 | 82/81 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `nidorina` | 30 | stage1 | Poison | 70/62/67/55/56 | 62/61 | — | **L26** → `nidoqueen` | 16 `bite` · 20 `sludge` |
+| `nidoqueen` | 31 | stage2 | Poison/Ground | 90/82/87/75/76 | 82/81 | — | — | 28 `body-slam` · 32 `earthquake` · 36 `sludge` |
 
 **Abilities** `poison-point` `hustle` `guts` (the last is hidden, §6.8.3) · **Tutor** Nidoran♀: `quick-attack` · Nidorina: `take-down` · Nidoqueen: `surf` `ice-beam`
 
@@ -89,8 +89,8 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `nidoran-m` | 32 | basic | Poison | 46/57/40/40/50 | 57/40 | uncommon | **L12** → `nidorino` | 1 `leer` · 1 `tackle` · 4 `horn-attack` · 8 `poison-sting` |
-| `nidorino` | 33 | stage1 | Poison | 61/72/57/55/65 | 72/56 | — | **L26** → `nidoking` | — *(its base form's kit, rewritten by evolution)* |
-| `nidoking` | 34 | stage2 | Poison/Ground | 81/92/77/75/85 | 92/76 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `nidorino` | 33 | stage1 | Poison | 61/72/57/55/65 | 72/56 | — | **L26** → `nidoking` | 16 `horn-attack` · 20 `sludge` · 24 `double-kick` |
+| `nidoking` | 34 | stage2 | Poison/Ground | 81/92/77/75/85 | 92/76 | — | — | 28 `thrash` · 32 `earthquake` · 36 `sludge` |
 
 **Abilities** `poison-point` `hustle` `guts` (the last is hidden, §6.8.3) · **Tutor** Nidoran♂: `quick-attack` · Nidorino: `take-down` · Nidoking: `ice-beam`
 
@@ -104,7 +104,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `meowth` | 52 | basic | Normal | 40/45/35/40/90 | 45/38 | common | **L12** → `persian` | 1 `scratch` · 1 `growl` · 4 `bite` · 8 `pay-day` |
-| `persian` | 53 | stage1 | Normal | 65/70/60/65/115 | 70/63 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `persian` | 53 | stage1 | Normal | 65/70/60/65/115 | 70/63 | — | — | 16 `fury-swipes` · 20 `slash` · 26 `swift` · 32 `body-slam` |
 
 **Abilities** `run-down` `tough-claws` `moxie` (the last is hidden, §6.8.3) · **Tutor** Meowth: `quick-attack` · Persian: `thunderbolt` `slam`
 
@@ -117,7 +117,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `mankey` | 56 | basic | Fighting | 40/80/35/35/70 | 80/35 | uncommon | **L12** → `primeape` | 1 `scratch` · 1 `leer` · 4 `low-kick` · 8 `karate-chop` |
-| `primeape` | 57 | stage1 | Fighting | 65/105/60/60/95 | 105/60 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `primeape` | 57 | stage1 | Fighting | 65/105/60/60/95 | 105/60 | — | — | 16 `seismic-toss` · 22 `rock-slide` · 28 `submission` · 34 `thrash` |
 
 **Abilities** `vital-spirit` `guts` (the last is hidden, §6.8.3) · **Tutor** Mankey: `meditate` `rolling-kick` · Primeape: —
 
@@ -130,7 +130,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `doduo` | 84 | basic | Normal/Flying | 35/85/45/35/75 | 85/40 | uncommon | **L12** → `dodrio` | 1 `peck` · 1 `growl` · 4 `fury-attack` · 8 `quick-attack` |
-| `dodrio` | 85 | stage1 | Normal/Flying | 60/110/70/60/100 | 110/65 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `dodrio` | 85 | stage1 | Normal/Flying | 60/110/70/60/100 | 110/65 | — | — | 20 `swift` · 26 `drill-peck` · 32 `tri-attack` |
 
 **Abilities** `keen-eye` `tangled-feet` `run-down` (the last is hidden, §6.8.3) · **Tutor** Doduo: `double-kick` · Dodrio: `double-edge`
 
@@ -142,31 +142,31 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `farfetchd` | 83 | basic | Normal/Flying | 52/65/55/58/60 | 65/57 | uncommon | — | 1 `peck` · 1 `sand-attack` · 8 `leer` · 16 `fury-attack` · 24 `swords-dance` |
+| `farfetchd` | 83 | basic | Normal/Flying | 52/65/55/58/60 | 65/57 | uncommon | — | 1 `peck` · 1 `sand-attack` · 8 `leer` · 10 `gust` · 16 `fury-attack` · 22 `wing-attack` · 24 `swords-dance` · 28 `slash` · 34 `drill-peck` |
 
-**Abilities** `keen-eye` `inner-focus` · **Tutor** Farfetch'd: `gust` `slash` · **Archetype** vanguard
+**Abilities** `keen-eye` `inner-focus` · **Tutor** Farfetch'd: `fly` `razor-wind` · **Archetype** vanguard
 
 ### `tauros` — Normal · rare · single stage
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `tauros` | 128 | basic | Normal | 75/100/95/70/110 | 100/83 | rare | — | 1 `tackle` · 1 `tail-whip` · 8 `stomp` · 16 `leer` · 24 `take-down` |
+| `tauros` | 128 | basic | Normal | 75/100/95/70/110 | 100/83 | rare | — | 1 `tackle` · 1 `tail-whip` · 8 `stomp` · 12 `horn-attack` · 16 `leer` · 18 `swift` · 20 `body-slam` · 24 `take-down` · 28 `earthquake` · 34 `thrash` |
 
-**Abilities** `intimidate` `guts` · **Tutor** Tauros: `earthquake` `body-slam` · **Archetype** vanguard
+**Abilities** `intimidate` `guts` · **Tutor** Tauros: `thunderbolt` `fire-blast` · **Archetype** vanguard
 
 ### `kangaskhan` — Normal · rare · single stage
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `kangaskhan` | 115 | basic | Normal | 105/95/80/40/90 | 95/60 | rare | — | 1 `comet-punch` · 1 `rage` · 8 `bite` · 16 `tail-whip` · 24 `mega-punch` |
+| `kangaskhan` | 115 | basic | Normal | 105/95/80/40/90 | 95/60 | rare | — | 1 `comet-punch` · 1 `rage` · 8 `bite` · 12 `swift` · 16 `tail-whip` · 20 `body-slam` · 24 `mega-punch` · 28 `earthquake` · 34 `dizzy-punch` |
 
-**Abilities** `inner-focus` `guts` · **Tutor** Kangaskhan: `earthquake` `fire-punch` · **Archetype** vanguard
+**Abilities** `inner-focus` `guts` · **Tutor** Kangaskhan: `thunderbolt` `fire-punch` · **Archetype** vanguard
 
 ### `lickitung` — Normal · rare · single stage
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `lickitung` | 108 | basic | Normal | 90/55/75/60/30 | 60/68 | rare | — | 1 `wrap` · 1 `supersonic` · 8 `stomp` · 16 `disable` · 24 `slam` |
+| `lickitung` | 108 | basic | Normal | 90/55/75/60/30 | 60/68 | rare | — | 1 `wrap` · 1 `supersonic` · 8 `stomp` · 12 `lick` · 16 `disable` · 20 `body-slam` · 24 `slam` · 28 `swift` · 34 `earthquake` |
 
 **Abilities** `own-tempo` `cloud-nine` · **Tutor** Lickitung: `ice-beam` `thunderbolt` · **Archetype** support
 
@@ -177,7 +177,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `clefairy` | 35 | basic | Normal | 70/45/48/60/35 | 60/54 | uncommon | **L12** → `clefable` | 1 `pound` · 1 `growl` · 4 `sing` · 8 `double-slap` |
-| `clefable` | 36 | stage1 | Normal | 95/70/73/85/60 | 85/79 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `clefable` | 36 | stage1 | Normal | 95/70/73/85/60 | 85/79 | — | — | 16 `swift` · 22 `body-slam` · 30 `psychic` · 36 `double-edge` |
 
 **Abilities** `cute-charm` `solid-rock` `healer` (the last is hidden, §6.8.3) · **Tutor** Clefairy: — · Clefable: `ice-beam` `thunderbolt`
 
@@ -190,7 +190,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `jigglypuff` | 39 | basic | Normal | 115/45/20/25/20 | 45/23 | common | **L12** → `wigglytuff` | 1 `sing` · 1 `pound` · 4 `defense-curl` · 8 `double-slap` |
-| `wigglytuff` | 40 | stage1 | Normal | 140/70/45/50/45 | 70/48 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `wigglytuff` | 40 | stage1 | Normal | 140/70/45/50/45 | 70/48 | — | — | 16 `swift` · 22 `body-slam` · 30 `double-edge` |
 
 **Abilities** `cute-charm` `iron-shell` `healer` (the last is hidden, §6.8.3) · **Tutor** Jigglypuff: `growl` · Wigglytuff: `ice-beam` `psychic`
 
@@ -203,7 +203,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `paras` | 46 | basic | Bug/Grass | 35/70/55/55/25 | 70/55 | common | **L12** → `parasect` | 1 `scratch` · 1 `stun-spore` · 4 `leech-life` · 8 `absorb` |
-| `parasect` | 47 | stage1 | Bug/Grass | 60/95/80/80/30 | 95/80 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `parasect` | 47 | stage1 | Bug/Grass | 60/95/80/80/30 | 95/80 | — | — | 18 `mega-drain` · 24 `pin-missile` · 30 `razor-leaf` · 36 `solar-beam` |
 
 **Abilities** `effect-spore` `swarm` `damp` (the last is hidden, §6.8.3) · **Tutor** Paras: `fury-swipes` · Parasect: —
 
@@ -215,8 +215,8 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `venonat` | 48 | basic | Bug/Poison | 60/55/50/40/45 | 55/45 | common | **L12** → `venomoth` | 1 `tackle` · 1 `disable` · 4 `supersonic` · 8 `confusion` |
-| `venomoth` | 49 | stage1 | Bug/Poison | 70/65/60/90/90 | 90/75 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `venonat` | 48 | basic | Bug/Poison | 60/55/50/40/45 | 55/45 | common | **L12** → `venomoth` | 1 `tackle` · 1 `disable` · 4 `supersonic` · 6 `poison-sting` · 8 `confusion` |
+| `venomoth` | 49 | stage1 | Bug/Poison | 70/65/60/90/90 | 90/75 | — | — | 16 `psybeam` · 20 `leech-life` · 26 `sludge` · 32 `pin-missile` · 38 `psychic` |
 
 **Abilities** `compound-eyes` `snipe` `run-down` (the last is hidden, §6.8.3) · **Tutor** Venonat: — · Venomoth: `mega-drain`
 
@@ -228,8 +228,8 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `exeggcute` | 102 | basic | Grass/Psychic | 60/40/80/60/40 | 60/70 | uncommon | **L12** → `exeggutor` | 1 `barrage` · 1 `hypnosis` · 4 `reflect` · 8 `leech-seed` |
-| `exeggutor` | 103 | stage1 | Grass/Psychic | 95/95/85/125/55 | 125/105 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `exeggcute` | 102 | basic | Grass/Psychic | 60/40/80/60/40 | 60/70 | uncommon | **L12** → `exeggutor` | 1 `barrage` · 1 `hypnosis` · 4 `reflect` · 8 `leech-seed` · 10 `confusion` |
+| `exeggutor` | 103 | stage1 | Grass/Psychic | 95/95/85/125/55 | 125/105 | — | — | 16 `confusion` · 20 `razor-leaf` · 26 `psychic` · 32 `solar-beam` |
 
 **Abilities** `chlorophyll` `healer` · **Tutor** Exeggcute: `absorb` `mega-drain` · Exeggutor: `mega-drain` `psybeam`
 
@@ -241,7 +241,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `tangela` | 114 | basic | Grass | 65/55/115/100/60 | 100/108 | uncommon | — | 1 `constrict` · 1 `bind` · 8 `absorb` · 16 `poison-powder` · 24 `stun-spore` |
+| `tangela` | 114 | basic | Grass | 65/55/115/100/60 | 100/108 | uncommon | — | 1 `constrict` · 1 `bind` · 8 `absorb` · 12 `vine-whip` · 16 `poison-powder` · 20 `mega-drain` · 24 `stun-spore` · 28 `slam` · 34 `solar-beam` |
 
 **Abilities** `chlorophyll` `healer` · **Tutor** Tangela: `sleep-powder` `rock-slide` · **Archetype** support
 
@@ -249,7 +249,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `pinsir` | 127 | basic | Bug | 65/125/100/55/85 | 125/78 | rare | — | 1 `vice-grip` · 1 `focus-energy` · 8 `seismic-toss` · 16 `harden` · 24 `guillotine` |
+| `pinsir` | 127 | basic | Bug | 65/125/100/55/85 | 125/78 | rare | — | 1 `vice-grip` · 1 `focus-energy` · 8 `seismic-toss` · 12 `slash` · 16 `harden` · 20 `pin-missile` · 24 `guillotine` · 28 `submission` |
 
 **Abilities** `moxie` `guts` · **Tutor** Pinsir: `earthquake` `rock-slide` · **Archetype** vanguard
 
@@ -257,7 +257,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `scyther` | 123 | basic | Bug/Flying | 70/110/80/55/105 | 110/68 | rare | — | 1 `quick-attack` · 1 `leer` · 8 `focus-energy` · 16 `swift` · 24 `wing-attack` |
+| `scyther` | 123 | basic | Bug/Flying | 70/110/80/55/105 | 110/68 | rare | — | 1 `quick-attack` · 1 `leer` · 8 `focus-energy` · 12 `cut` · 16 `swift` · 24 `wing-attack` · 28 `pin-missile` |
 
 **Abilities** `swarm` `steadfast` · **Tutor** Scyther: `double-edge` · **Archetype** vanguard
 
@@ -268,7 +268,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `vulpix` | 37 | basic | Fire | 38/41/40/65/65 | 65/53 | common | **L12** → `ninetales` | 1 `ember` · 1 `tail-whip` · 4 `quick-attack` · 8 `roar` |
-| `ninetales` | 38 | stage1 | Fire | 73/76/75/100/100 | 100/88 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `ninetales` | 38 | stage1 | Fire | 73/76/75/100/100 | 100/88 | — | — | 16 `fire-spin` · 22 `flamethrower` |
 
 **Abilities** `flash-fire` `flame-body` `anticipation` (the last is hidden, §6.8.3) · **Tutor** Vulpix: `agility` `swift` · Ninetales: `solar-beam` `psychic`
 
@@ -281,7 +281,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `ponyta` | 77 | basic | Fire | 50/85/55/65/90 | 85/60 | common | **L12** → `rapidash` | 1 `ember` · 1 `tail-whip` · 4 `stomp` · 8 `growl` |
-| `rapidash` | 78 | stage1 | Fire | 65/100/70/80/105 | 100/75 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `rapidash` | 78 | stage1 | Fire | 65/100/70/80/105 | 100/75 | — | — | 16 `stomp` · 20 `fire-spin` · 26 `flamethrower` |
 
 **Abilities** `flash-fire` `flame-body` `run-down` (the last is hidden, §6.8.3) · **Tutor** Ponyta: `double-kick` `quick-attack` · Rapidash: `dig` `solar-beam`
 
@@ -293,7 +293,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `magmar` | 126 | basic | Fire | 65/95/57/85/93 | 95/71 | uncommon | — | 1 `ember` · 1 `leer` · 8 `confuse-ray` · 16 `fire-punch` · 24 `smokescreen` |
+| `magmar` | 126 | basic | Fire | 65/95/57/85/93 | 95/71 | uncommon | — | 1 `ember` · 1 `leer` · 8 `confuse-ray` · 12 `fire-spin` · 16 `fire-punch` · 24 `smokescreen` · 30 `fire-blast` |
 
 **Abilities** `flame-body` `vital-spirit` · **Tutor** Magmar: `thunder-punch` `psychic` · **Archetype** specialist
 
@@ -302,7 +302,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `slowpoke` | 79 | basic | Water/Psychic | 90/65/65/40/15 | 65/53 | common | **L12** → `slowbro` | 1 `confusion` · 1 `disable` · 4 `headbutt` · 8 `growl` |
-| `slowbro` | 80 | stage1 | Water/Psychic | 95/75/110/80/30 | 80/95 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `slowbro` | 80 | stage1 | Water/Psychic | 95/75/110/80/30 | 80/95 | — | — | 16 `water-gun` · 20 `surf` · 26 `psychic` · 32 `hydro-pump` |
 
 **Abilities** `own-tempo` `healer` `solid-rock` (the last is hidden, §6.8.3) · **Tutor** Slowpoke: `bubble-beam` `body-slam` · Slowbro: `ice-beam` `flamethrower`
 
@@ -314,10 +314,10 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `goldeen` | 118 | basic | Water | 45/67/60/50/63 | 67/55 | common | **L12** → `seaking` | 1 `peck` · 1 `tail-whip` · 4 `supersonic` · 8 `horn-attack` |
-| `seaking` | 119 | stage1 | Water | 80/92/65/80/68 | 92/73 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `goldeen` | 118 | basic | Water | 45/67/60/50/63 | 67/55 | common | **L12** → `seaking` | 1 `peck` · 1 `tail-whip` · 4 `supersonic` · 6 `water-gun` · 8 `horn-attack` |
+| `seaking` | 119 | stage1 | Water | 80/92/65/80/68 | 92/73 | — | — | 16 `waterfall` · 22 `bubble-beam` · 28 `surf` |
 
-**Abilities** `water-veil` `swift-swim` `snipe` (the last is hidden, §6.8.3) · **Tutor** Goldeen: `bubble` `rage` · Seaking: `ice-beam` `surf`
+**Abilities** `water-veil` `swift-swim` `snipe` (the last is hidden, §6.8.3) · **Tutor** Goldeen: `bubble` `rage` · Seaking: `ice-beam` `blizzard`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -328,7 +328,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `omanyte` | 138 | basic | Rock/Water | 35/40/100/90/35 | 90/95 | rare | **L12** → `omastar` | 1 `water-gun` · 1 `withdraw` · 4 `horn-attack` · 8 `leer` |
-| `omastar` | 139 | stage1 | Rock/Water | 70/60/125/115/55 | 115/120 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `omastar` | 139 | stage1 | Rock/Water | 70/60/125/115/55 | 115/120 | — | — | 16 `bubble-beam` · 22 `rock-slide` · 28 `hydro-pump` |
 
 **Abilities** `shell-armor` `swift-swim` · **Tutor** Omanyte: `sand-attack` `aurora-beam` · Omastar: `earthquake`
 
@@ -340,10 +340,10 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `kabuto` | 140 | basic | Rock/Water | 30/80/90/45/55 | 80/68 | rare | **L12** → `kabutops` | 1 `scratch` · 1 `harden` · 4 `absorb` · 8 `leer` |
-| `kabutops` | 141 | stage1 | Rock/Water | 60/115/105/70/80 | 115/88 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `kabuto` | 140 | basic | Rock/Water | 30/80/90/45/55 | 80/68 | rare | **L12** → `kabutops` | 1 `scratch` · 1 `harden` · 4 `absorb` · 6 `water-gun` · 8 `leer` · 10 `rock-throw` |
+| `kabutops` | 141 | stage1 | Rock/Water | 60/115/105/70/80 | 115/88 | — | — | 16 `slash` · 22 `rock-slide` · 28 `surf` · 34 `hydro-pump` |
 
-**Abilities** `battle-armor` `swift-swim` · **Tutor** Kabuto: `sand-attack` `rock-throw` · Kabutops: `waterfall`
+**Abilities** `battle-armor` `swift-swim` · **Tutor** Kabuto: `sand-attack` `bubble-beam` · Kabutops: `waterfall`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -353,15 +353,15 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `dratini` | 147 | basic | Dragon | 41/64/45/50/50 | 64/48 | rare | **L12** → `dragonair` | 1 `wrap` · 1 `leer` · 4 `thunder-wave` · 8 `agility` |
-| `dragonair` | 148 | stage1 | Dragon | 61/84/65/70/70 | 84/68 | — | **L26** → `dragonite` | — *(its base form's kit, rewritten by evolution)* |
-| `dragonite` | 149 | stage2 | Dragon/Flying | 91/134/95/100/80 | 134/98 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `dratini` | 147 | basic | Dragon | 41/64/45/50/50 | 64/48 | rare | **L12** → `dragonair` | 1 `wrap` · 1 `leer` · 4 `thunder-wave` · 6 `dragon-rage` · 8 `agility` |
+| `dragonair` | 148 | stage1 | Dragon | 61/84/65/70/70 | 84/68 | — | **L26** → `dragonite` | 14 `dragon-rage` · 18 `slam` · 22 `bubble-beam` |
+| `dragonite` | 149 | stage2 | Dragon/Flying | 91/134/95/100/80 | 134/98 | — | — | 28 `dragon-rage` · 30 `wing-attack` · 34 `fly` · 38 `hyper-beam` |
 
 **Abilities** `inner-focus` `iron-shell` `solid-rock` (the last is hidden, §6.8.3) · **Tutor** Dratini: `bubble` · Dragonair: — · Dragonite: `fire-punch` `thunder-punch`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `dragonair` | **Coil** — `wrap` → `slam` · `leer` → `leer-plus` · **+`dragon-rage`** | **Serpent** — `wrap` → `dragon-rage` · `thunder-wave` → `thunder-wave-plus` · **+`bubble-beam`** | **Aura** — `agility` → `agility-plus` · `leer` → `barrier` · **+`haze`** · grants `inner-focus` |
+| → `dragonair` | **Coil** — `wrap` → `slam` · `leer` → `leer-plus` · **+`body-slam`** | **Serpent** — `dragon-rage` → `dragon-rage-plus` · `thunder-wave` → `thunder-wave-plus` · **+`bubble-beam`** | **Aura** — `agility` → `agility-plus` · `leer` → `barrier` · **+`haze`** · grants `inner-focus` |
 | → `dragonite` | **Dragon Rush** — `wrap` → `slam-plus` · `agility` → `body-slam` | **Storm Dragon** — `wrap` → `dragon-rage-plus` · `thunder-wave` → `thunderbolt` · `leer` → `ice-beam` | **Guardian** — `leer` → `barrier-plus` · `thunder-wave` → `thunder-wave-plus` · `agility` → `recover` |
 
 ## 4. Psychic, ghost and poison
@@ -371,8 +371,8 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `abra` | 63 | basic | Psychic | 25/20/15/105/90 | 105/60 | uncommon | **L12** → `kadabra` | 1 `teleport` · 1 `confusion` · 4 `disable` · 8 `kinesis` |
-| `kadabra` | 64 | stage1 | Psychic | 40/35/30/120/105 | 120/75 | — | **L26** → `alakazam` | — *(its base form's kit, rewritten by evolution)* |
-| `alakazam` | 65 | stage2 | Psychic | 55/50/45/135/120 | 135/90 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `kadabra` | 64 | stage1 | Psychic | 40/35/30/120/105 | 120/75 | — | **L26** → `alakazam` | 16 `psybeam` · 20 `recover` · 22 `swift` · 24 `psychic` |
+| `alakazam` | 65 | stage2 | Psychic | 55/50/45/135/120 | 135/90 | — | — | 28 `psybeam` · 32 `psychic` · 36 `seismic-toss` |
 
 **Abilities** `inner-focus` `anticipation` `adaptability` (the last is hidden, §6.8.3) · **Tutor** Abra: `swift` · Kadabra: `headbutt` `thunder-punch` · Alakazam: `fire-punch` `ice-punch`
 
@@ -386,7 +386,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `drowzee` | 96 | basic | Psychic | 60/48/45/90/42 | 90/68 | uncommon | **L12** → `hypno` | 1 `pound` · 1 `hypnosis` · 4 `disable` · 8 `confusion` |
-| `hypno` | 97 | stage1 | Psychic | 85/73/70/115/67 | 115/93 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `hypno` | 97 | stage1 | Psychic | 85/73/70/115/67 | 115/93 | — | — | 16 `psybeam` · 24 `psychic` · 30 `headbutt` |
 
 **Abilities** `insomnia` `inner-focus` `anticipation` (the last is hidden, §6.8.3) · **Tutor** Drowzee: `kinesis` `swift` · Hypno: `ice-punch` `thunder-punch`
 
@@ -398,7 +398,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `mr-mime` | 122 | basic | Psychic | 40/45/65/100/90 | 100/83 | rare | — | 1 `confusion` · 1 `barrier` · 8 `light-screen` · 16 `double-slap` · 24 `reflect` |
+| `mr-mime` | 122 | basic | Psychic | 40/45/65/100/90 | 100/83 | rare | — | 1 `confusion` · 1 `barrier` · 8 `light-screen` · 12 `psywave` · 16 `double-slap` · 20 `psychic` · 24 `reflect` · 28 `seismic-toss` |
 
 **Abilities** `solid-rock` `inner-focus` · **Tutor** Mr. Mime: `thunder-wave` `hypnosis` · **Archetype** support
 
@@ -406,19 +406,19 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `jynx` | 124 | basic | Ice/Psychic | 65/50/35/95/95 | 95/65 | rare | — | 1 `pound` · 1 `lovely-kiss` · 8 `lick` · 16 `double-slap` · 24 `ice-punch` |
+| `jynx` | 124 | basic | Ice/Psychic | 65/50/35/95/95 | 95/65 | rare | — | 1 `pound` · 1 `lovely-kiss` · 8 `lick` · 12 `confusion` · 16 `double-slap` · 20 `ice-beam` · 24 `ice-punch` · 28 `psychic` |
 
-**Abilities** `anticipation` `own-tempo` · **Tutor** Jynx: `psychic` `amnesia` · **Archetype** specialist
+**Abilities** `anticipation` `own-tempo` · **Tutor** Jynx: `mega-punch` `amnesia` · **Archetype** specialist
 
 ### `gastly` line — Ghost/Poison · common
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `gastly` | 92 | basic | Ghost/Poison | 30/35/30/100/80 | 100/65 | common | **L12** → `haunter` | 1 `lick` · 1 `confuse-ray` · 4 `night-shade` · 8 `hypnosis` |
-| `haunter` | 93 | stage1 | Ghost/Poison | 45/50/45/115/95 | 115/80 | — | **L26** → `gengar` | — *(its base form's kit, rewritten by evolution)* |
-| `gengar` | 94 | stage2 | Ghost/Poison | 60/65/60/130/110 | 130/95 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `haunter` | 93 | stage1 | Ghost/Poison | 45/50/45/115/95 | 115/80 | — | **L26** → `gengar` | 16 `night-shade` · 20 `sludge` |
+| `gengar` | 94 | stage2 | Ghost/Poison | 60/65/60/130/110 | 130/95 | — | — | 28 `night-shade` · 32 `psychic` |
 
-**Abilities** `anticipation` `snipe` `adaptability` (the last is hidden, §6.8.3) · **Tutor** Gastly: `screech` · Haunter: `thunderbolt` `sludge` · Gengar: `ice-punch` `fire-punch`
+**Abilities** `anticipation` `snipe` `adaptability` (the last is hidden, §6.8.3) · **Tutor** Gastly: `screech` · Haunter: `thunderbolt` `mega-punch` · Gengar: `ice-punch` `fire-punch`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -430,13 +430,13 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `grimer` | 88 | basic | Poison | 80/80/50/40/25 | 80/45 | common | **L12** → `muk` | 1 `pound` · 1 `poison-gas` · 4 `disable` · 8 `sludge` |
-| `muk` | 89 | stage1 | Poison | 105/105/75/65/50 | 105/70 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `muk` | 89 | stage1 | Poison | 105/105/75/65/50 | 105/70 | — | — | 16 `sludge` · 34 `thunderbolt` |
 
 **Abilities** `poison-point` `guts` `iron-shell` (the last is hidden, §6.8.3) · **Tutor** Grimer: `sand-attack` · Muk: `fire-punch` `thunder-punch`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
-| → `muk` | **Sludge Slam** — `pound` → `pound-plus` · `sludge` → `acid-plus` · **+`minimize`** | — | **Toxic Sludge** — `poison-gas` → `acid-armor` · `disable` → `disable-plus` · **+`screech`** · grants `poison-point` |
+| → `muk` | **Sludge Slam** — `pound` → `pound-plus` · `poison-gas` → `acid-plus` · **+`minimize`** | — | **Toxic Sludge** — `poison-gas` → `acid-armor` · `disable` → `disable-plus` · **+`screech`** · grants `poison-point` |
 
 ## 5. Rock and ground
 
@@ -445,7 +445,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `cubone` | 104 | basic | Ground | 50/50/95/40/35 | 50/68 | rare | **L12** → `marowak` | 1 `bone-club` · 1 `growl` · 4 `tail-whip` · 8 `leer` |
-| `marowak` | 105 | stage1 | Ground | 60/80/110/50/45 | 80/80 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `marowak` | 105 | stage1 | Ground | 60/80/110/50/45 | 80/80 | — | — | 22 `headbutt` · 28 `earthquake` · 34 `rock-slide` |
 
 **Abilities** `rock-head` `battle-armor` (the last is hidden, §6.8.3) · **Tutor** Cubone: `sand-attack` · Marowak: `swords-dance`
 
@@ -458,7 +458,7 @@
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
 | `rhyhorn` | 111 | basic | Ground/Rock | 80/85/95/30/25 | 85/63 | uncommon | **L12** → `rhydon` | 1 `horn-attack` · 1 `tail-whip` · 4 `stomp` · 8 `rock-throw` |
-| `rhydon` | 112 | stage1 | Ground/Rock | 105/130/120/45/40 | 130/83 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `rhydon` | 112 | stage1 | Ground/Rock | 105/130/120/45/40 | 130/83 | — | — | 16 `rock-slide` · 22 `stomp` · 28 `dig` |
 
 **Abilities** `rock-head` `solid-rock` · **Tutor** Rhyhorn: `slam` · Rhydon: `surf` `thunderbolt`
 
@@ -470,7 +470,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `aerodactyl` | 142 | basic | Rock/Flying | 80/105/65/60/130 | 105/63 | rare | — | 1 `wing-attack` · 1 `agility` · 8 `supersonic` · 16 `bite` · 24 `take-down` |
+| `aerodactyl` | 142 | basic | Rock/Flying | 80/105/65/60/130 | 105/63 | rare | — | 1 `wing-attack` · 1 `agility` · 8 `supersonic` · 12 `rock-throw` · 16 `bite` · 24 `take-down` · 28 `fly` · 34 `hyper-beam` |
 
 **Abilities** `rock-head` `tough-claws` (the last is hidden, §6.8.3) · **Tutor** Aerodactyl: `earthquake` `fire-punch` · **Archetype** vanguard
 
@@ -490,7 +490,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `chansey` | 113 | basic | Normal | 250/5/5/105/50 | 105/55 | rare | — | 1 `pound` · 1 `double-slap` · 8 `sing` · 16 `growl` · 24 `soft-boiled` |
+| `chansey` | 113 | basic | Normal | 250/5/5/105/50 | 105/55 | rare | — | 1 `pound` · 1 `double-slap` · 8 `sing` · 12 `body-slam` · 16 `growl` · 20 `egg-bomb` · 24 `soft-boiled` · 28 `seismic-toss` · 34 `psychic` |
 
 **Abilities** `healer` · **Tutor** Chansey: `ice-beam` `thunderbolt` · **Archetype** support
 

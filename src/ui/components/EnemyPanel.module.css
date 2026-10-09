@@ -83,6 +83,35 @@
 .targetable:hover {
   transform: scale(1.02);
 }
+/* §9.9.1 — a foe that has just fainted: its card greys and fades in its place on the sprite's beat (v0.9.11). */
+.fallen {
+  pointer-events: none;
+  animation: fallenOut var(--fx-faint) ease-in var(--ghost-at, 0ms) both;
+}
+.chipRoom {
+  visibility: hidden;
+}
+@keyframes fallenOut {
+  0%,
+  22% {
+    opacity: 1;
+    filter: none;
+  }
+  100% {
+    opacity: 0;
+    filter: saturate(0) brightness(0.7);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fallen {
+    animation: none;
+    opacity: 0;
+  }
+}
+:global(html[data-motion='reduced']) .fallen {
+  animation: none;
+  opacity: 0;
+}
 .fainted {
   filter: saturate(0.2);
   opacity: 0.7;

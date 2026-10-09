@@ -212,12 +212,22 @@ each path's result as it is pointed at.
 
 ## §6.3.5 What an evolution actually does
 
-Evolution operates on the **Learned Move Pool** (§6.7) and **rewrites it rather than piling onto it** (v0.9.5, the
-user's call: lines learned too many moves, and an evolution should keep the count, not raise it).
+Evolution operates on the **Learned Move Pool** (§6.7): its payload **rewrites slots rather than piling onto them**
+(v0.9.5), and since v0.9.11 the evolved form then **learns its line's signature moves by level** (§6.9) — the user's
+review: "rather too many moves than a Pokémon with bad ones". Payloads alone left some paths with no attack of the
+Pokémon's own type worth playing (a Charizard on Scratch and Ember, a Butterfree with no Bug or Flying attack, a
+Beedrill with one attack); the learnset fills every path, whatever the branches chose. The pool is the choice; the
+deck is still each Pokémon's active four.
 
-**The caps are data and every species is checked against them** (`MOVE_CAP`, v0.9.9): a form holds at most **5**
-cards on any path through its line, learns at most 5 by level, and offers at most 3 tutor and 3 egg moves — at most
-**12** cards in all with its Mastery Move. `content.test` walks all 151, every path, on every check.
+**Every path ends with a real kit** — a content test walks all 151, every path, at the last level the form is held: a
+move of its own type worth playing for its stage (a base form 45, a middle form 65, a final or single form 75 — Gen
+I's ceiling where the type has none higher: Poison and Ghost 70, Dragon 50), at least three attacks once evolved, and
+one Ranged attack so it plays from the bench. Magikarp and Ditto are the jokes the series makes of them; a cocoon is a
+wall for four levels; Weezing's only 70-power Poison move is its Mastery, so Smog+ carries its type.
+
+**The caps are data and every species is checked against them** (`MOVE_CAP`, v0.9.9, raised in v0.9.11): a form holds
+at most **12** cards on any path through its line, learns at most 10 by level, and offers at most 3 tutor and 3 egg
+moves — at most **18** cards in all with its Mastery Move. They guard against a runaway list; they are not a budget.
 
 **The payload, per evolution:**
 
@@ -241,15 +251,15 @@ deletes a move for another (the user's idea, 2026-10-08). A swap whose slot the 
 | Point | Pool |
 |---|---|
 | Base form at recruitment | 2 moves |
-| Base form, fully levelled | 4 |
-| After first evolution | 5 |
-| After final evolution | 5 |
-| Plus TMs, the Dojo and egg moves | 6–8 |
+| Base form, fully levelled | 4–5 |
+| After first evolution | 5, then 6–8 as it levels |
+| After final evolution | 8–11 by the end of a run |
+| Plus TMs, the Dojo and egg moves | as many as the player buys |
 
-The **active 4 never grows**, and with five cards from the line there is always one choice to make in the Move
-Manager — the TMs and the Dojo add the rest. *(Before v0.9.5 a line learned some twelve moves by level and its
-branches added more; a final form sat on eight or nine, most of them never played.)* Magikarp is the one exception:
-Splash and Tackle, all it ever learned in Gen I, until Gyarados.
+The **active 4 never grows**: the Move Manager picks from the pool, and a bigger pool is a better choice, not a
+bigger hand. *(v0.9.5 cut a line to five cards; v0.9.11 gave the evolved forms their level-ups back, one by one,
+after a review of every path.)* Magikarp is the one exception: Splash and Tackle, all it ever learned in Gen I, until
+Gyarados.
 
 ## §6.3.6 Move-kit construction rules
 
@@ -263,16 +273,18 @@ is the same reason it gets +25 % growth (§6.2.3).
 - 1–2 Offensive moves, mixing Melee and Ranged by species; 1–2 Defensive or Utility.
 - 0 positional modifiers — rarely 1 where the species demands it. AP range 0–3.
 
-### §6.3.6.2 Middle stage — five cards
+### §6.3.6.2 Middle stage — five cards, then its level-ups
 - Two upgrades and one addition per archetype: a Vanguard reaches for heavier Melee, a Specialist for Ranged power
   and riders, a Support for status, stages and heals.
+- Then two or three of the line's own moves by level (§6.9), the ones every path should have.
 - AP range 1–3.
 
-### §6.3.6.3 Final stage — five cards
+### §6.3.6.3 Final stage — the signature, then its level-ups
 - One to three swaps per archetype, the signature among them; at least one high-power card, possibly a 4-AP ultimate.
+- Then three or four by level from 28: the line's best attack of its type where no payload gave it.
 - AP range 1–4.
 
-A **single-stage** species learns its five by level — two at level 1, three more by level 24 (a legendary by 40).
+A **single-stage** species learns its kit by level — two at level 1, the rest by level 34 (a legendary by 40).
 
 ### §6.3.6.4 The power budget *(a contract, not a guideline)*
 
@@ -449,7 +461,8 @@ slot, the new card — and the pool deduplicates, so learning Surf from a TM and
 leaves one Surf. A level-up teaches only what its new levels reach, so a move an evolution has rewritten is never
 learned again.
 
-The line gives five cards against the four slots; the TMs, the Dojo and egg moves are what grow a pool past it.
+The line gives five cards against the four slots by its first evolution and more as it levels (§6.9); the TMs, the
+Dojo and egg moves grow it further.
 
 ## §6.7.2 Configuring the active 4
 
@@ -573,13 +586,16 @@ great, not an invented one, and a content test keeps it out of every path the ki
 
 # §6.9 The level-gated learnset
 
-- A base form **knows 2 moves at level 1** and **4 by its evolution level**. An evolved form has no learnset of its
-  own: its kit is its base form's, rewritten by the evolutions (§6.3.5).
+- A base form **knows 2 moves at level 1** and **4 by its evolution level**. An evolved form's kit is its base
+  form's, rewritten by the evolutions (§6.3.5), and then **its own learnset** (v0.9.11): the line's signature moves,
+  learned as it levels. A level-up never teaches back a card a branch has rewritten (a Venusaur with Razor Leaf+ does
+  not learn Razor Leaf), and **a late evolution catches up**: a form evolving past one of its own entries — a stone
+  used at Lv 30 — learns it on the spot.
 - Each species has an ordered learnset of `(level, move)` entries; a Pokémon knows every entry at or below its
   current level.
 - **Deck contribution = `min(known, 4)`.** The active-4 cap never changes, and Mastery remains the 5th.
 - **One met already evolved** — a wild Ivysaur, a Gym's Venusaur, a recruit caught above its threshold — took its
-  stage's first branch at every step, so it holds the same five cards a player's would.
+  stage's first branch at every step, and its forms' learnsets up to its level, so it holds the kit a player's would.
 - **A level-up adds to the pool and fills a free slot; it never evicts a card the player chose.** Past four,
   a newly learned move waits in the pool until the Move Manager swaps it in (§6.7.2) — which is the fixed
   budget doing its job. The Reward screen names what is waiting so nothing looks lost.

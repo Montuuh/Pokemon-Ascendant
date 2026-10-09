@@ -2,7 +2,7 @@ import type { ContentRegistry, SpeciesDef } from '../content/defs';
 import type { BranchArchetype, PokemonType, Stat } from '../types';
 import type { BattleConfig } from './battleConfig';
 import type { Combatant } from './state';
-import { applyPayload, autoPickMoves, lineChain, upgradeParents } from './kit';
+import { applyPayload, autoPickMoves, holdsSlot, lineChain, upgradeParents } from './kit';
 import { stageMultiplier } from './statStages';
 
 /**
@@ -65,7 +65,7 @@ export function knownMoves(content: ContentRegistry, speciesId: string, level: n
   const parents = upgradeParents(content, speciesId);
   let pool: string[] = [];
   chain.forEach((s, i) => {
-    for (const l of [...s.learnset].sort((a, b) => a.level - b.level)) if (l.level <= lv && !pool.includes(l.move)) pool.push(l.move);
+    for (const l of [...s.learnset].sort((a, b) => a.level - b.level)) if (l.level <= lv && !holdsSlot(pool, l.move, parents)) pool.push(l.move);
     const next = chain[i + 1];
     const branch = next && s.branches.find((b) => b.to === next.id);
     if (branch) pool = applyPayload(pool, branch, parents);

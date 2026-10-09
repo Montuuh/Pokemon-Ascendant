@@ -933,6 +933,9 @@ export const STATUS_ACCENT_FALLBACK = 'glare';
  *
  * Stats then grew in proportion to their base (§6.2.3): R1 55 % · R3|R2 43 %. Attack ×1.15 / ×1.9 / ×2.55: R1 60 % ·
  * R2|R1 59 % · R3|R2 51 % · run 18 % (720 runs).
+ *
+ * v0.9.11 gave evolved forms their learnsets (§6.9): the enemies' kits grew too — R2|R1 53 % · R3|R2 56 %. Attack ×1.15 /
+ * ×1.75 / ×2.6: R1 60 % · R2|R1 60 % · R3|R2 51 % · run 18 % (720 runs).
  */
 export interface StatTier {
   hp: number;
@@ -940,8 +943,8 @@ export interface StatTier {
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
   { hp: 0.6, attack: 1.15 },
-  { hp: 0.45, attack: 1.9 },
-  { hp: 0.35, attack: 2.55 },
+  { hp: 0.45, attack: 1.75 },
+  { hp: 0.35, attack: 2.6 },
 ];
 
 /**

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { activeMoves, knownMoves, BIOMES, ELITE_WILD, GYMS, REGIONS, TRAINER_SPRITES, GYM } from '@/sim';
 import { existsSync, readFileSync } from 'node:fs';
-import { MOVE_CAP, applyPayload, upgradeParents } from '@/sim/combat/kit';
+import { MOVE_CAP, applyPayload, kitPaths, upgradeParents } from '@/sim/combat/kit';
 import { buildRegistry } from './registry';
 import { boxIconUrl, portraitUrl, battleSpriteUrl } from './schemas/species';
 
@@ -144,46 +144,54 @@ describe('content registry', () => {
     }
   });
 
-  it('§6.3.5 — every path through a line holds 2 → 4 → 5 → 5 different cards, at least one of them Ranged', () => {
-    // §6.3.6.5's Lead anchors keep a Melee-only kit on purpose.
-    const anchors = new Set(['pinsir', 'snorlax', 'machop']);
+  it('§6.3.5 — every base form holds four cards before it evolves, and every evolution a fifth', () => {
     for (const base of reg.allSpecies().filter((s) => s.stage === 'basic' && s.evolvesTo.length)) {
       const parents = upgradeParents(reg, base.id);
       const pool0 = knownMoves(reg, base.id, base.evolveLevel! - 1);
-      expect(pool0.length, base.id).toBe(base.id === 'magikarp' ? 2 : 4);
-      for (const b1 of base.branches) {
-        const mid = applyPayload(pool0, b1, parents);
-        expect(mid.length, b1.id).toBe(base.id === 'magikarp' ? 3 : 5);
-        const next = reg.species(b1.to);
-        const finals = next.branches.length ? next.branches.map((b2) => [b2.id, applyPayload(mid, b2, parents)] as const) : [[b1.id, mid] as const];
-        for (const [id, pool] of finals) {
-          expect(pool.length, `${b1.id} → ${id}`).toBe(mid.length);
-          if (!anchors.has(base.id)) expect(pool.some((m) => reg.move(m).range === 'ranged'), `${b1.id} → ${id}: [${pool.join(' ')}]`).toBe(true);
-          for (const t of reg.masteryMoves(base.id)) if (t) expect(pool, `${id} holds its Mastery ${t}`).not.toContain(t);
+      // Magikarp's Splash and Tackle are the joke the series makes of it.
+      expect(pool0.length, base.id).toBeGreaterThanOrEqual(base.id === 'magikarp' ? 2 : 4);
+      for (const b1 of base.branches) expect(applyPayload(pool0, b1, parents).length, b1.id).toBeGreaterThan(pool0.length);
+    }
+  });
+
+  it('§6.3.5 / §6.9 — EveryPath_EndsWithARealKit: an attack of its type, three attacks, one that reaches from the bench (v0.9.11)', () => {
+    // The user's review (v0.9.11): rather too many moves than a Pokémon with bad ones. Every form, on every path its
+    // line can take, at the last level it holds that form: a move of its own type worth playing for its stage (a base
+    // 45, a middle form 65, a final or single form 75 — Gen I's ceiling where the type has none higher: Poison and
+    // Ghost 70, Dragon's only attack 50), at least three attacks once it has evolved, and one Ranged attack, so it
+    // plays from the bench. No path ever holds the line's Mastery Move.
+    const jokes = new Set(['magikarp', 'ditto']);
+    // A cocoon lasts four levels and is meant to be a wall: a base form's bar, and no more.
+    const cocoons = new Set(['metapod', 'kakuna']);
+    const ceiling: Partial<Record<string, number>> = { poison: 70, ghost: 70, dragon: 50 };
+    // Koffing's line: Sludge, the only Poison attack at 70, is its Mastery — Smog+ carries the type, Thunderbolt and
+    // Fire Blast the damage.
+    const own: Partial<Record<string, number>> = { weezing: 55 };
+    for (const s of reg.allSpecies()) {
+      if (jokes.has(s.id)) continue;
+      const need0 = (s.stage === 'basic' && s.evolvesTo.length) || cocoons.has(s.id) ? 45 : s.evolvesTo.length ? 65 : 75;
+      const need = Math.min(need0, own[s.id] ?? need0, Math.max(...s.types.map((t) => ceiling[t] ?? need0)));
+      const evolved = s.stage !== 'basic' || !s.evolvesTo.length;
+      for (const p of kitPaths(reg, s.id)) {
+        const at = `${s.id} [${p.branches.join(' > ') || 'base'}]: ${p.pool.join(' ')}`;
+        const attacks = p.pool.map((m) => reg.move(m)).filter((m) => m.role === 'offensive');
+        expect(Math.max(0, ...attacks.filter((m) => s.types.includes(m.type)).map((m) => m.power)), `${at} — its type's best`).toBeGreaterThanOrEqual(need);
+        if (evolved && !cocoons.has(s.id)) {
+          expect(attacks.length, `${at} — attacks`).toBeGreaterThanOrEqual(3);
+          expect(attacks.some((m) => m.range !== 'melee'), `${at} — a Ranged attack`).toBe(true);
         }
+        for (const t of reg.masteryMoves(reg.lineBase(s.id))) if (t) expect(p.pool, `${at} holds its Mastery ${t}`).not.toContain(t);
       }
     }
   });
 
   it('§6.3.5 — MoveCount_EverySpecies_StaysUnderItsCaps_OnEveryPath (all 151)', () => {
-    // Every form's kit on every path: a base form's own pool, then each branch's payload, then the next stage's.
-    const kits = new Map<string, number>();
-    const note = (id: string, n: number) => kits.set(id, Math.max(kits.get(id) ?? 0, n));
-    for (const s of reg.allSpecies()) {
-      if (s.stage !== 'basic') continue;
-      const parents = upgradeParents(reg, s.id);
-      const pool0 = knownMoves(reg, s.id, s.evolveLevel ? s.evolveLevel - 1 : 100);
-      note(s.id, pool0.length);
-      for (const b1 of s.branches) {
-        const mid = applyPayload(pool0, b1, parents);
-        note(b1.to, mid.length);
-        for (const b2 of reg.species(b1.to).branches) note(b2.to, applyPayload(mid, b2, parents).length);
-      }
-    }
+    // Every form's kit on every path through its line, what it learns by level included (kitPaths, the Pokédex's own).
+    const kits = new Map(reg.allSpecies().map((s) => [s.id, Math.max(...kitPaths(reg, s.id).map((p) => p.pool.length))]));
     let checked = 0;
     for (const s of reg.allSpecies()) {
       checked++;
-      const kit = kits.get(s.id) ?? knownMoves(reg, s.id, 100).length;
+      const kit = kits.get(s.id)!;
       expect(kit, `${s.id} kit`).toBeLessThanOrEqual(MOVE_CAP.kit);
       expect(s.learnset.length, `${s.id} learnset`).toBeLessThanOrEqual(MOVE_CAP.learnset);
       expect(s.tutorMoves.length, `${s.id} tutor list`).toBeLessThanOrEqual(MOVE_CAP.tutor);

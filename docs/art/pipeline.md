@@ -178,13 +178,13 @@ red-roofed Centre, Potion bottles with the classic cap, route signposts, tall-gr
 | Battle backdrops in use | 16:9 | `gemini-3-pro-image` | 4 |
 | Main-menu vista, Region map plate, town lobbies | 16:9 | `gemini-3-pro-image` | 4 |
 | Consumable item icons | 1:1 | **real** — Serebii S&V renders | 11 |
-| TM discs, one per type | 1:1 | **real** — S&V bag sprites, Bulbagarden | 4 |
+| TM discs, one per type | 1:1 | **real** — S&V bag sprites, Bulbagarden | 15 |
 | Map node markers | 1:1 | **real** — badge / building / tile / trainer sprites on a shared disc | 10 |
 
 The item and marker rows moved from generated to real when the doctrine settled (§6 above): a model
 approximates an object and cannot reproduce a specific one, and the player already knows exactly what a Potion
 and a Boulder Badge look like. `npm run art:pokemon` fetches them; `install-art item|badge` mounts them.
-v0.3 added the Dojo marker (the FRLG Fighting Dojo building) and the four TM discs.
+v0.3 added the Dojo marker (the FRLG Fighting Dojo building) and the four TM discs; v0.9.11 the other eleven types, for the 46 TMs.
 
 Generate two variants of anything that ships and look at both. The install step
 (`node scripts/install-art.mjs`) resizes and converts; never drop a 5 MB PNG into `public/` directly.

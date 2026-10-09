@@ -180,15 +180,18 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
 
   return (
     <>
-      {s.stage === 'basic' ? (
+      {/* §6.9 — what this form learns as it levels: a base form its four, an evolved form its line's signature
+          moves (v0.9.11) — the same on every path, so the rows below leave them out. */}
+      {s.learnset.length > 0 && (
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>{DEX_EVO_TEXT.learnset} <InfoDot tip={learnsetTip(s.evolveLevel, s.evolvesTo.length > 0)} /></h3>
           <ul className={styles.moves}>{s.learnset.map((e, i) => moveRow(e.move, e.level, false, `${e.move}-${i}`))}</ul>
         </section>
-      ) : (
-        // §6.3.5 — an evolved form learns nothing by level: its kit is what the path it took left it with.
+      )}
+      {s.stage !== 'basic' && (
+        // §6.3.5 — what each path leaves it with on top of its own learnset.
         <section className={styles.section} data-testid="dex-sheet-kit-paths">
-          <h3 className={styles.sectionTitle}>{DEX_EVO_TEXT.kitByPath} <InfoDot tip={kitPathsTip()} /></h3>
+          <h3 className={styles.sectionTitle}>{DEX_EVO_TEXT.kitByPath} <InfoDot tip={kitPathsTip(s.learnset.length > 0)} /></h3>
           <ul className={styles.kitPaths}>
             {kitPaths(content, s.id).map((p) => (
               <li key={p.branches.join('>')} className={styles.kitPath}>
@@ -204,7 +207,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
                   })}
                 </span>
                 <span className={styles.kitPathMoves}>
-                  {p.pool.map((m) => <MoveChip key={m} id={m} />)}
+                  {p.pool.filter((m) => !s.learnset.some((e) => e.move === m)).map((m) => <MoveChip key={m} id={m} />)}
                 </span>
               </li>
             ))}

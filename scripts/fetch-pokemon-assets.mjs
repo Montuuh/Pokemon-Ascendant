@@ -48,14 +48,25 @@ const EMBLEMS = {
 };
 
 /**
- * §6.4.1 — TM discs. A TM's colour is its move's type in the real games, so each of our three gets its own
- * disc rather than one generic icon, plus a Normal disc for the bag badge.
+ * §6.4.1 — TM discs. A TM's colour is its move's type in the real games, so each of Gen I's fifteen types gets its
+ * own disc (v0.9.11: the 46 TMs cover them all), and the Normal disc doubles as the bag badge.
  */
 const TMS = {
   'item-tm': 'File:Bag TM Normal SV Sprite.png',
   'item-tm-fire': 'File:Bag TM Fire SV Sprite.png',
   'item-tm-water': 'File:Bag TM Water SV Sprite.png',
+  'item-tm-grass': 'File:Bag TM Grass SV Sprite.png',
+  'item-tm-electric': 'File:Bag TM Electric SV Sprite.png',
+  'item-tm-ice': 'File:Bag TM Ice SV Sprite.png',
+  'item-tm-fighting': 'File:Bag TM Fighting SV Sprite.png',
+  'item-tm-poison': 'File:Bag TM Poison SV Sprite.png',
   'item-tm-ground': 'File:Bag TM Ground SV Sprite.png',
+  'item-tm-flying': 'File:Bag TM Flying SV Sprite.png',
+  'item-tm-psychic': 'File:Bag TM Psychic SV Sprite.png',
+  'item-tm-bug': 'File:Bag TM Bug SV Sprite.png',
+  'item-tm-rock': 'File:Bag TM Rock SV Sprite.png',
+  'item-tm-ghost': 'File:Bag TM Ghost SV Sprite.png',
+  'item-tm-dragon': 'File:Bag TM Dragon SV Sprite.png',
 };
 
 const exists = async (p) => access(p).then(() => true, () => false);

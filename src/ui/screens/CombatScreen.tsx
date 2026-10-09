@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { IconCards, IconMenu2 } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
@@ -17,7 +17,7 @@ import {
   swapOptions,
   type CardPlayability,
   type CombatState,
-  type SlotId, benchIndices } from '@/sim';
+  type SlotId, type EnemyCombatant, benchIndices } from '@/sim';
 import { portraitOf, stageBackdrop, spriteOf, trainerSprite } from '@/ui/art';
 import { CombatLog } from '@/ui/components/CombatLog';
 import { BagButton } from '@/ui/components/BagButton';
@@ -185,6 +185,22 @@ export function CombatScreen() {
 
   const enemies = state.enemies;
   const group = enemies.length > 1;
+  // §9.9.1 — the line as drawn: while a foe that has just fainted plays its beat — its sprite a ghost, its card
+  // fading — the field keeps the line as it stood before the faint: the others hold their places and their places'
+  // names, the layout keeps its shape, and a Pokémon still to come waits in its ball. The promotion the sim already
+  // made plays out when the beat ends (v0.9.11).
+  const fallen = fx.ghosts.filter((g) => g.kind === 'faint' && g.foe && !enemies.some((e) => e.uid === g.foe!.enemy.uid));
+  const heldLine = fallen[0]?.foe?.line ?? null;
+  const field: { enemy: EnemyCombatant; fallenAt?: number }[] = heldLine
+    ? heldLine.flatMap((uid) => {
+        const live = enemies.find((e) => e.uid === uid);
+        if (live) return [{ enemy: live }];
+        const g = fallen.find((x) => x.foe!.enemy.uid === uid);
+        return g ? [{ enemy: { ...g.foe!.enemy, hp: 0 }, fallenAt: g.at }] : [];
+      })
+    : enemies.map((enemy) => ({ enemy }));
+  const groupShown = (heldLine ?? enemies).length > 1;
+  const heldPlace = (i: number) => (heldLine ? { place: groupShown && i > 0 ? 'Support' : 'Lead', group: groupShown } : undefined);
   const leadIdx = state.player.leadIndex;
   const lead = state.player.team[leadIdx]!;
   // §5.14 — a caught shiny wears its palette; the fight carries the flag.
@@ -356,7 +372,7 @@ export function CombatScreen() {
         </div>
       </header>
 
-      <section className={[styles.stage, group ? styles.stageGroup : ''].join(' ')} style={{ backgroundImage: `url(${stageBackdrop(state.stage)})` }}>
+      <section className={[styles.stage, groupShown ? styles.stageGroup : ''].join(' ')} style={{ backgroundImage: `url(${stageBackdrop(state.stage)})` }}>
         <div className={styles.stageTint} aria-hidden="true" />
 
         <div className={styles.squad} data-testid="squad">
@@ -383,10 +399,10 @@ export function CombatScreen() {
           <span className={styles.handPlayer} data-fx-hand="player" />
           {/* §9.2.1 — one enemy stands large; a group uses the squad grammar mirrored: the Lead forward, the
               supports behind it. Every sprite is a drop target too. */}
-          {enemies.map((enemy, i) => (
+          {field.map(({ enemy, fallenAt }, i) => fallenAt === undefined && (
             <div
               key={enemy.uid}
-              className={[styles.enemySprite, group ? (i === 0 ? styles.foeLead : i === 1 ? styles.foeSupport1 : styles.foeSupport2) : '', aimUid === enemy.uid ? styles.foeAimed : '', fx.classes[enemy.uid] ?? '', fx.sprites[enemy.uid] ?? ''].join(' ')}
+              className={[styles.enemySprite, groupShown ? (i === 0 ? styles.foeLead : i === 1 ? styles.foeSupport1 : styles.foeSupport2) : '', aimUid === enemy.uid ? styles.foeAimed : '', fx.classes[enemy.uid] ?? '', fx.sprites[enemy.uid] ?? ''].join(' ')}
               data-testid="arena-enemy"
               data-enemy-uid={enemy.uid}
             >
@@ -420,12 +436,18 @@ export function CombatScreen() {
 
         {/* §9.2.1 — a group's panels mirror the player's squad (v0.8.6): the Lead's panel forward and centred, the
             supports stacked behind it, the way the bench stacks behind your Lead. */}
-        <div className={[styles.enemyZone, group ? styles.enemyZoneGroup : ''].join(' ')}>
-          {enemies.length > 0 ? (
-            enemies.map((enemy, i) => (
+        <div className={[styles.enemyZone, groupShown ? styles.enemyZoneGroup : ''].join(' ')}>
+          {field.length > 0 ? (
+            field.map(({ enemy, fallenAt }, i) => (
               // §9.9.1 — a Pokémon still in its ball has no panel yet: it is named when it comes out.
-              <div key={enemy.uid} className={group ? (i === 0 ? styles.foeLeadPanel : i === 1 ? styles.foePanel1 : styles.foePanel2) : styles.foeOnly} style={fx.sprites[enemy.uid] === 'fx-hidden' ? { visibility: 'hidden' } : undefined}>
+              <div
+                key={enemy.uid}
+                className={groupShown ? (i === 0 ? styles.foeLeadPanel : i === 1 ? styles.foePanel1 : styles.foePanel2) : styles.foeOnly}
+                style={fallenAt !== undefined ? ({ ...fxTimings(), '--ghost-at': `${fallenAt}ms` } as CSSProperties) : fx.sprites[enemy.uid] === 'fx-hidden' ? { visibility: 'hidden' } : undefined}
+              >
                 <EnemyPanel
+                  fallen={fallenAt !== undefined}
+                  held={heldPlace(i)}
                   state={state}
                   enemy={enemy}
                   ctx={ctx}
@@ -445,7 +467,7 @@ export function CombatScreen() {
             !fx.catching && <div className={styles.chip}>No enemies remain</div>
           )}
           {state.enemyQueue.length > 0 && (
-            <Tipped as="div" tip={<Tip title="Still to come" body={group ? 'These wait behind the group and step in the moment a place falls free.' : 'This trainer sends out the next Pokémon when this one falls. You fight them one at a time.'} />} className={styles.queue} role="group" aria-label={`${state.enemyQueue.length} Pokémon still to come`} data-testid="enemy-queue">
+            <Tipped as="div" tip={<Tip title="Still to come" body={groupShown ? 'These wait behind the group and step in the moment a place falls free.' : 'This trainer sends out the next Pokémon when this one falls. You fight them one at a time.'} />} className={styles.queue} role="group" aria-label={`${state.enemyQueue.length} Pokémon still to come`} data-testid="enemy-queue">
               {/* §2.7 — who comes next is a surprise (v0.8.6): one Poké Ball per Pokémon still to come. */}
               {state.enemyQueue.map((e) => (
                 <img key={e.uid} className="pixel" src={itemIcon('poke-ball')} alt="" width={22} height={22} />

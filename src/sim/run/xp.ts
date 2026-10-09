@@ -1,6 +1,6 @@
 import type { ContentRegistry, EvolutionBranch, EvolutionItemUse } from '../content/defs';
 import type { EnemyTier } from '../content/defs';
-import { slotIndex, upgradeParents } from '../combat/kit';
+import { holdsSlot, slotIndex, upgradeParents } from '../combat/kit';
 import { statAtLevel } from '../combat/stats';
 import type { LevelUp, PartyMon } from './types';
 
@@ -104,8 +104,9 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
   const activated: string[] = [];
   // §6.9 — only what the new levels teach: a move an evolution has since rewritten is not learned again.
   const reached = content.lineLearnset(mon.speciesId).filter((l) => l.level > from && l.level <= mon.level).map((l) => l.move);
+  const parents = upgradeParents(content, mon.speciesId);
   for (const id of reached) {
-    if (!learnMove(mon, id)) continue;
+    if (holdsSlot(mon.pool, id, parents) || !learnMove(mon, id)) continue;
     learned.push(id);
     if (mon.moveIds.length < 4) {
       mon.moveIds.push(id);
@@ -224,6 +225,11 @@ export function applyBranch(mon: PartyMon, branchId: string, content: ContentReg
   }
   for (const add of branch.adds) {
     if (learnMove(mon, add) && mon.moveIds.length < 4) mon.moveIds.push(add);
+  }
+  // §6.9 — the new form's own learnset up to the level it evolved at (v0.9.11): a late evolution — a stone used at
+  // Lv 30, an evolution put off — learns what that form would already know, rather than nothing until its next level.
+  for (const l of content.species(branch.to).learnset) {
+    if (l.level <= mon.level && !holdsSlot(mon.pool, l.move, parents) && learnMove(mon, l.move) && mon.moveIds.length < 4) mon.moveIds.push(l.move);
   }
 
   // §6.7.1 — the pool deduplicates: an upgrade can land on a move a TM already gave you.

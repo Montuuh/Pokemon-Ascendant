@@ -129,7 +129,12 @@
         "defense": 72,
         "speed": 60
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 20,
+          "move": "sludge"
+        }
+      ],
       "availableAbilities": [
         "overgrow",
         "chlorophyll",
@@ -141,7 +146,7 @@
       "rarity": "common",
       "evolveLevel": 26,
       "tutorMoves": [
-        "sludge",
+        "body-slam",
         "recover"
       ],
       "branches": [
@@ -218,7 +223,20 @@
         "defense": 92,
         "speed": 80
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 30,
+          "move": "razor-leaf"
+        },
+        {
+          "level": 34,
+          "move": "petal-dance"
+        },
+        {
+          "level": 38,
+          "move": "body-slam"
+        }
+      ],
       "availableAbilities": [
         "overgrow",
         "chlorophyll",
@@ -363,7 +381,16 @@
         "defense": 69,
         "speed": 80
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "fire-spin"
+        },
+        {
+          "level": 22,
+          "move": "slash"
+        }
+      ],
       "availableAbilities": [
         "blaze",
         "tough-claws",
@@ -452,7 +479,20 @@
         "defense": 94,
         "speed": 100
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "wing-attack"
+        },
+        {
+          "level": 33,
+          "move": "flamethrower"
+        },
+        {
+          "level": 38,
+          "move": "fly"
+        }
+      ],
       "availableAbilities": [
         "blaze",
         "tough-claws",
@@ -596,7 +636,16 @@
         "defense": 73,
         "speed": 58
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 18,
+          "move": "bubble-beam"
+        },
+        {
+          "level": 22,
+          "move": "bite"
+        }
+      ],
       "availableAbilities": [
         "torrent",
         "shell-armor"
@@ -681,7 +730,20 @@
         "defense": 93,
         "speed": 78
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "surf"
+        },
+        {
+          "level": 32,
+          "move": "skull-bash"
+        },
+        {
+          "level": 36,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "torrent",
         "shell-armor"
@@ -911,7 +973,20 @@
         "defense": 70,
         "speed": 70
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 14,
+          "move": "confusion"
+        },
+        {
+          "level": 24,
+          "move": "wing-attack"
+        },
+        {
+          "level": 30,
+          "move": "pin-missile"
+        }
+      ],
       "availableAbilities": [
         "compound-eyes",
         "iron-shell",
@@ -920,7 +995,7 @@
       "evolvesTo": [],
       "rarity": "uncommon",
       "tutorMoves": [
-        "wing-attack"
+        "psychic"
       ],
       "branches": []
     },
@@ -1106,7 +1181,20 @@
         "defense": 43,
         "speed": 75
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 18,
+          "move": "twineedle"
+        },
+        {
+          "level": 30,
+          "move": "pin-missile"
+        },
+        {
+          "level": 34,
+          "move": "sludge"
+        }
+      ],
       "availableAbilities": [
         "swarm",
         "poison-point",
@@ -1115,7 +1203,7 @@
       "evolvesTo": [],
       "rarity": "uncommon",
       "tutorMoves": [
-        "sludge",
+        "swords-dance",
         "wing-attack",
         "karate-chop"
       ],
@@ -1248,7 +1336,16 @@
         "defense": 53,
         "speed": 71
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "wing-attack"
+        },
+        {
+          "level": 20,
+          "move": "swift"
+        }
+      ],
       "availableAbilities": [
         "keen-eye",
         "tangled-feet",
@@ -1341,7 +1438,16 @@
         "defense": 73,
         "speed": 101
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 30,
+          "move": "fly"
+        },
+        {
+          "level": 36,
+          "move": "drill-peck"
+        }
+      ],
       "availableAbilities": [
         "keen-eye",
         "tangled-feet",
@@ -1466,7 +1572,20 @@
         "defense": 55,
         "speed": 97
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 18,
+          "move": "hyper-fang"
+        },
+        {
+          "level": 30,
+          "move": "swift"
+        },
+        {
+          "level": 36,
+          "move": "double-edge"
+        }
+      ],
       "availableAbilities": [
         "guts",
         "hustle",
@@ -1587,7 +1706,20 @@
         "defense": 63,
         "speed": 100
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 18,
+          "move": "drill-peck"
+        },
+        {
+          "level": 24,
+          "move": "swift"
+        },
+        {
+          "level": 36,
+          "move": "double-edge"
+        }
+      ],
       "availableAbilities": [
         "keen-eye",
         "tangled-feet"
@@ -1705,7 +1837,20 @@
         "defense": 67,
         "speed": 80
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 20,
+          "move": "sludge"
+        },
+        {
+          "level": 26,
+          "move": "dig"
+        },
+        {
+          "level": 32,
+          "move": "body-slam"
+        }
+      ],
       "availableAbilities": [
         "intimidate",
         "poison-point"
@@ -1845,7 +1990,20 @@
         "defense": 73,
         "speed": 100
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 14,
+          "move": "thunder-punch"
+        },
+        {
+          "level": 20,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 30,
+          "move": "swift"
+        }
+      ],
       "availableAbilities": [
         "static",
         "run-down"
@@ -1887,6 +2045,10 @@
         {
           "level": 8,
           "move": "poison-sting"
+        },
+        {
+          "level": 10,
+          "move": "dig"
         }
       ],
       "availableAbilities": [
@@ -1938,7 +2100,7 @@
             }
           ],
           "adds": [
-            "dig"
+            "swift"
           ],
           "abilityId": "iron-shell"
         }
@@ -1961,7 +2123,20 @@
         "defense": 83,
         "speed": 65
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "dig"
+        },
+        {
+          "level": 22,
+          "move": "slash"
+        },
+        {
+          "level": 28,
+          "move": "swift"
+        }
+      ],
       "availableAbilities": [
         "sand-veil",
         "iron-shell"
@@ -2081,7 +2256,16 @@
         "defense": 61,
         "speed": 56
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "bite"
+        },
+        {
+          "level": 20,
+          "move": "sludge"
+        }
+      ],
       "availableAbilities": [
         "poison-point",
         "hustle"
@@ -2148,7 +2332,20 @@
         "defense": 81,
         "speed": 76
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "body-slam"
+        },
+        {
+          "level": 32,
+          "move": "earthquake"
+        },
+        {
+          "level": 36,
+          "move": "sludge"
+        }
+      ],
       "availableAbilities": [
         "poison-point",
         "hustle"
@@ -2267,7 +2464,20 @@
         "defense": 56,
         "speed": 65
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "horn-attack"
+        },
+        {
+          "level": 20,
+          "move": "sludge"
+        },
+        {
+          "level": 24,
+          "move": "double-kick"
+        }
+      ],
       "availableAbilities": [
         "poison-point",
         "hustle"
@@ -2334,7 +2544,20 @@
         "defense": 76,
         "speed": 85
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "thrash"
+        },
+        {
+          "level": 32,
+          "move": "earthquake"
+        },
+        {
+          "level": 36,
+          "move": "sludge"
+        }
+      ],
       "availableAbilities": [
         "poison-point",
         "hustle"
@@ -2451,7 +2674,24 @@
         "defense": 79,
         "speed": 60
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "swift"
+        },
+        {
+          "level": 22,
+          "move": "body-slam"
+        },
+        {
+          "level": 30,
+          "move": "psychic"
+        },
+        {
+          "level": 36,
+          "move": "double-edge"
+        }
+      ],
       "availableAbilities": [
         "cute-charm",
         "solid-rock"
@@ -2572,7 +2812,16 @@
         "defense": 88,
         "speed": 100
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "fire-spin"
+        },
+        {
+          "level": 22,
+          "move": "flamethrower"
+        }
+      ],
       "availableAbilities": [
         "flash-fire",
         "flame-body"
@@ -2691,7 +2940,20 @@
         "defense": 48,
         "speed": 45
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "swift"
+        },
+        {
+          "level": 22,
+          "move": "body-slam"
+        },
+        {
+          "level": 30,
+          "move": "double-edge"
+        }
+      ],
       "availableAbilities": [
         "cute-charm",
         "iron-shell"
@@ -2815,7 +3077,24 @@
         "defense": 73,
         "speed": 90
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "wing-attack"
+        },
+        {
+          "level": 20,
+          "move": "swift"
+        },
+        {
+          "level": 24,
+          "move": "sludge"
+        },
+        {
+          "level": 30,
+          "move": "fly"
+        }
+      ],
       "availableAbilities": [
         "inner-focus",
         "snipe"
@@ -2823,7 +3102,7 @@
       "evolvesTo": [],
       "rarity": "common",
       "tutorMoves": [
-        "sludge",
+        "double-edge",
         "psybeam",
         "hyper-fang"
       ],
@@ -2960,7 +3239,16 @@
         "defense": 78,
         "speed": 40
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "mega-drain"
+        },
+        {
+          "level": 22,
+          "move": "sludge"
+        }
+      ],
       "availableAbilities": [
         "chlorophyll",
         "effect-spore",
@@ -3054,7 +3342,20 @@
         "defense": 93,
         "speed": 50
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "petal-dance"
+        },
+        {
+          "level": 32,
+          "move": "razor-leaf"
+        },
+        {
+          "level": 36,
+          "move": "sludge"
+        }
+      ],
       "availableAbilities": [
         "chlorophyll",
         "effect-spore",
@@ -3178,7 +3479,24 @@
         "defense": 80,
         "speed": 30
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 18,
+          "move": "mega-drain"
+        },
+        {
+          "level": 24,
+          "move": "pin-missile"
+        },
+        {
+          "level": 30,
+          "move": "razor-leaf"
+        },
+        {
+          "level": 36,
+          "move": "solar-beam"
+        }
+      ],
       "availableAbilities": [
         "effect-spore",
         "swarm"
@@ -3215,6 +3533,10 @@
         {
           "level": 4,
           "move": "supersonic"
+        },
+        {
+          "level": 6,
+          "move": "poison-sting"
         },
         {
           "level": 8,
@@ -3295,7 +3617,28 @@
         "defense": 75,
         "speed": 90
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "psybeam"
+        },
+        {
+          "level": 20,
+          "move": "leech-life"
+        },
+        {
+          "level": 26,
+          "move": "sludge"
+        },
+        {
+          "level": 32,
+          "move": "pin-missile"
+        },
+        {
+          "level": 38,
+          "move": "psychic"
+        }
+      ],
       "availableAbilities": [
         "compound-eyes",
         "snipe"
@@ -3415,7 +3758,24 @@
         "defense": 60,
         "speed": 120
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "dig"
+        },
+        {
+          "level": 22,
+          "move": "slash"
+        },
+        {
+          "level": 28,
+          "move": "earthquake"
+        },
+        {
+          "level": 32,
+          "move": "rock-slide"
+        }
+      ],
       "availableAbilities": [
         "sand-veil",
         "hustle"
@@ -3534,7 +3894,24 @@
         "defense": 63,
         "speed": 115
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "fury-swipes"
+        },
+        {
+          "level": 20,
+          "move": "slash"
+        },
+        {
+          "level": 26,
+          "move": "swift"
+        },
+        {
+          "level": 32,
+          "move": "body-slam"
+        }
+      ],
       "availableAbilities": [
         "run-down",
         "tough-claws"
@@ -3656,7 +4033,20 @@
         "defense": 87,
         "speed": 85
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "confusion"
+        },
+        {
+          "level": 20,
+          "move": "surf"
+        },
+        {
+          "level": 30,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "cloud-nine",
         "damp",
@@ -3665,7 +4055,7 @@
       "evolvesTo": [],
       "rarity": "uncommon",
       "tutorMoves": [
-        "surf",
+        "ice-beam",
         "wing-attack",
         "karate-chop"
       ],
@@ -3776,7 +4166,24 @@
         "defense": 60,
         "speed": 95
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "seismic-toss"
+        },
+        {
+          "level": 22,
+          "move": "rock-slide"
+        },
+        {
+          "level": 28,
+          "move": "submission"
+        },
+        {
+          "level": 34,
+          "move": "thrash"
+        }
+      ],
       "availableAbilities": [
         "vital-spirit"
       ],
@@ -3894,7 +4301,20 @@
         "defense": 80,
         "speed": 95
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "take-down"
+        },
+        {
+          "level": 22,
+          "move": "fire-spin"
+        },
+        {
+          "level": 30,
+          "move": "flamethrower"
+        }
+      ],
       "availableAbilities": [
         "intimidate",
         "flash-fire"
@@ -4035,7 +4455,16 @@
         "defense": 58,
         "speed": 90
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "bubble-beam"
+        },
+        {
+          "level": 22,
+          "move": "body-slam"
+        }
+      ],
       "availableAbilities": [
         "water-absorb",
         "damp",
@@ -4125,7 +4554,20 @@
         "defense": 83,
         "speed": 70
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "submission"
+        },
+        {
+          "level": 32,
+          "move": "surf"
+        },
+        {
+          "level": 36,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "water-absorb",
         "damp"
@@ -4241,7 +4683,24 @@
         "defense": 75,
         "speed": 105
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "psybeam"
+        },
+        {
+          "level": 20,
+          "move": "recover"
+        },
+        {
+          "level": 22,
+          "move": "swift"
+        },
+        {
+          "level": 24,
+          "move": "psychic"
+        }
+      ],
       "availableAbilities": [
         "inner-focus",
         "anticipation"
@@ -4308,7 +4767,20 @@
         "defense": 90,
         "speed": 120
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "psybeam"
+        },
+        {
+          "level": 32,
+          "move": "psychic"
+        },
+        {
+          "level": 36,
+          "move": "seismic-toss"
+        }
+      ],
       "availableAbilities": [
         "inner-focus",
         "anticipation"
@@ -4433,7 +4905,16 @@
         "defense": 60,
         "speed": 45
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 20,
+          "move": "rock-throw"
+        },
+        {
+          "level": 24,
+          "move": "submission"
+        }
+      ],
       "availableAbilities": [
         "guts",
         "no-guard",
@@ -4503,7 +4984,20 @@
         "defense": 73,
         "speed": 55
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "submission"
+        },
+        {
+          "level": 32,
+          "move": "rock-slide"
+        },
+        {
+          "level": 36,
+          "move": "earthquake"
+        }
+      ],
       "availableAbilities": [
         "guts",
         "no-guard",
@@ -4512,7 +5006,7 @@
       "evolvesTo": [],
       "rarity": "rare",
       "tutorMoves": [
-        "earthquake",
+        "strength",
         "body-slam"
       ],
       "branches": []
@@ -4696,7 +5190,20 @@
         "defense": 83,
         "speed": 70
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "razor-leaf"
+        },
+        {
+          "level": 32,
+          "move": "sludge"
+        },
+        {
+          "level": 36,
+          "move": "petal-dance"
+        }
+      ],
       "availableAbilities": [
         "chlorophyll"
       ],
@@ -4817,7 +5324,20 @@
         "defense": 93,
         "speed": 100
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "bubble-beam"
+        },
+        {
+          "level": 22,
+          "move": "sludge"
+        },
+        {
+          "level": 34,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "poison-point",
         "water-absorb"
@@ -5049,7 +5569,16 @@
         "defense": 93,
         "speed": 45
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "earthquake"
+        },
+        {
+          "level": 32,
+          "move": "rock-slide"
+        }
+      ],
       "availableAbilities": [
         "sturdy",
         "rock-head",
@@ -5173,7 +5702,20 @@
         "defense": 75,
         "speed": 105
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "stomp"
+        },
+        {
+          "level": 20,
+          "move": "fire-spin"
+        },
+        {
+          "level": 26,
+          "move": "flamethrower"
+        }
+      ],
       "availableAbilities": [
         "flash-fire",
         "flame-body"
@@ -5295,7 +5837,24 @@
         "defense": 95,
         "speed": 30
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "water-gun"
+        },
+        {
+          "level": 20,
+          "move": "surf"
+        },
+        {
+          "level": 26,
+          "move": "psychic"
+        },
+        {
+          "level": 32,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "own-tempo",
         "healer"
@@ -5412,7 +5971,16 @@
         "defense": 108,
         "speed": 70
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 22,
+          "move": "swift"
+        }
+      ],
       "availableAbilities": [
         "sturdy",
         "static"
@@ -5453,12 +6021,28 @@
           "move": "leer"
         },
         {
+          "level": 10,
+          "move": "gust"
+        },
+        {
           "level": 16,
           "move": "fury-attack"
         },
         {
+          "level": 22,
+          "move": "wing-attack"
+        },
+        {
           "level": 24,
           "move": "swords-dance"
+        },
+        {
+          "level": 28,
+          "move": "slash"
+        },
+        {
+          "level": 34,
+          "move": "drill-peck"
         }
       ],
       "availableAbilities": [
@@ -5466,8 +6050,8 @@
         "inner-focus"
       ],
       "tutorMoves": [
-        "gust",
-        "slash"
+        "fly",
+        "razor-wind"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
@@ -5588,7 +6172,20 @@
         "defense": 65,
         "speed": 100
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 20,
+          "move": "swift"
+        },
+        {
+          "level": 26,
+          "move": "drill-peck"
+        },
+        {
+          "level": 32,
+          "move": "tri-attack"
+        }
+      ],
       "availableAbilities": [
         "keen-eye",
         "tangled-feet"
@@ -5707,7 +6304,20 @@
         "defense": 88,
         "speed": 70
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "aurora-beam"
+        },
+        {
+          "level": 24,
+          "move": "surf"
+        },
+        {
+          "level": 30,
+          "move": "blizzard"
+        }
+      ],
       "availableAbilities": [
         "thick-fat",
         "iron-shell"
@@ -5777,7 +6387,7 @@
               "to": "pound-plus"
             },
             {
-              "from": "sludge",
+              "from": "poison-gas",
               "to": "acid-plus"
             }
           ],
@@ -5826,7 +6436,16 @@
         "defense": 70,
         "speed": 50
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "sludge"
+        },
+        {
+          "level": 34,
+          "move": "thunderbolt"
+        }
+      ],
       "availableAbilities": [
         "poison-point",
         "guts"
@@ -5869,6 +6488,10 @@
         {
           "level": 8,
           "move": "clamp"
+        },
+        {
+          "level": 10,
+          "move": "water-gun"
         }
       ],
       "availableAbilities": [
@@ -5877,7 +6500,7 @@
       ],
       "hiddenAbility": "sturdy",
       "tutorMoves": [
-        "water-gun",
+        "bubble-beam",
         "harden"
       ],
       "evolveLevel": 12,
@@ -5948,14 +6571,31 @@
         "defense": 133,
         "speed": 70
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "aurora-beam"
+        },
+        {
+          "level": 22,
+          "move": "clamp"
+        },
+        {
+          "level": 28,
+          "move": "ice-beam"
+        },
+        {
+          "level": 34,
+          "move": "surf"
+        }
+      ],
       "availableAbilities": [
         "shell-armor",
         "iron-shell"
       ],
       "tutorMoves": [
         "hydro-pump",
-        "surf"
+        "blizzard"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -6069,14 +6709,23 @@
         "defense": 80,
         "speed": 95
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "night-shade"
+        },
+        {
+          "level": 20,
+          "move": "sludge"
+        }
+      ],
       "availableAbilities": [
         "anticipation",
         "snipe"
       ],
       "tutorMoves": [
         "thunderbolt",
-        "sludge"
+        "mega-punch"
       ],
       "evolveLevel": 26,
       "evolvesTo": [
@@ -6137,7 +6786,16 @@
         "defense": 95,
         "speed": 110
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "night-shade"
+        },
+        {
+          "level": 32,
+          "move": "psychic"
+        }
+      ],
       "availableAbilities": [
         "anticipation",
         "snipe"
@@ -6183,8 +6841,16 @@
           "move": "rock-throw"
         },
         {
+          "level": 20,
+          "move": "dig"
+        },
+        {
           "level": 24,
           "move": "harden"
+        },
+        {
+          "level": 34,
+          "move": "earthquake"
         }
       ],
       "availableAbilities": [
@@ -6194,8 +6860,8 @@
       "evolvesTo": [],
       "rarity": "uncommon",
       "tutorMoves": [
-        "dig",
-        "earthquake",
+        "strength",
+        "explosion",
         "body-slam"
       ],
       "branches": [],
@@ -6312,7 +6978,20 @@
         "defense": 93,
         "speed": 67
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "psybeam"
+        },
+        {
+          "level": 24,
+          "move": "psychic"
+        },
+        {
+          "level": 30,
+          "move": "headbutt"
+        }
+      ],
       "availableAbilities": [
         "insomnia",
         "inner-focus"
@@ -6433,7 +7112,24 @@
         "defense": 83,
         "speed": 75
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "waterfall"
+        },
+        {
+          "level": 22,
+          "move": "bubble-beam"
+        },
+        {
+          "level": 28,
+          "move": "stomp"
+        },
+        {
+          "level": 34,
+          "move": "surf"
+        }
+      ],
       "availableAbilities": [
         "shell-armor",
         "sturdy"
@@ -6549,7 +7245,16 @@
         "defense": 75,
         "speed": 140
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 24,
+          "move": "swift"
+        }
+      ],
       "availableAbilities": [
         "static",
         "run-down"
@@ -6593,6 +7298,10 @@
         {
           "level": 8,
           "move": "leech-seed"
+        },
+        {
+          "level": 10,
+          "move": "confusion"
         }
       ],
       "availableAbilities": [
@@ -6671,7 +7380,24 @@
         "defense": 105,
         "speed": 55
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "confusion"
+        },
+        {
+          "level": 20,
+          "move": "razor-leaf"
+        },
+        {
+          "level": 26,
+          "move": "psychic"
+        },
+        {
+          "level": 32,
+          "move": "solar-beam"
+        }
+      ],
       "availableAbilities": [
         "chlorophyll",
         "healer"
@@ -6789,7 +7515,20 @@
         "defense": 80,
         "speed": 45
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 22,
+          "move": "headbutt"
+        },
+        {
+          "level": 28,
+          "move": "earthquake"
+        },
+        {
+          "level": 34,
+          "move": "rock-slide"
+        }
+      ],
       "availableAbilities": [
         "rock-head"
       ],
@@ -6880,12 +7619,24 @@
           "move": "swift"
         },
         {
+          "level": 12,
+          "move": "thunder-punch"
+        },
+        {
           "level": 16,
           "move": "fire-punch"
         },
         {
+          "level": 20,
+          "move": "mega-punch"
+        },
+        {
           "level": 24,
           "move": "ice-punch"
+        },
+        {
+          "level": 28,
+          "move": "submission"
         }
       ],
       "availableAbilities": [
@@ -6932,12 +7683,28 @@
           "move": "stomp"
         },
         {
+          "level": 12,
+          "move": "lick"
+        },
+        {
           "level": 16,
           "move": "disable"
         },
         {
+          "level": 20,
+          "move": "body-slam"
+        },
+        {
           "level": 24,
           "move": "slam"
+        },
+        {
+          "level": 28,
+          "move": "swift"
+        },
+        {
+          "level": 34,
+          "move": "earthquake"
         }
       ],
       "availableAbilities": [
@@ -6953,7 +7720,7 @@
       "branches": [],
       "archetype": "support",
       "eggMoves": [
-        "body-slam",
+        "double-edge",
         "headbutt",
         "amnesia"
       ]
@@ -7066,14 +7833,27 @@
         "defense": 103,
         "speed": 60
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "smog-plus"
+        },
+        {
+          "level": 28,
+          "move": "thunderbolt"
+        },
+        {
+          "level": 34,
+          "move": "fire-blast"
+        }
+      ],
       "availableAbilities": [
         "poison-point",
         "cloud-nine"
       ],
       "tutorMoves": [
         "flamethrower",
-        "thunderbolt"
+        "thunder"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -7188,7 +7968,20 @@
         "defense": 83,
         "speed": 40
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "rock-slide"
+        },
+        {
+          "level": 22,
+          "move": "stomp"
+        },
+        {
+          "level": 28,
+          "move": "dig"
+        }
+      ],
       "availableAbilities": [
         "rock-head",
         "solid-rock"
@@ -7229,12 +8022,28 @@
           "move": "sing"
         },
         {
+          "level": 12,
+          "move": "body-slam"
+        },
+        {
           "level": 16,
           "move": "growl"
         },
         {
+          "level": 20,
+          "move": "egg-bomb"
+        },
+        {
           "level": 24,
           "move": "soft-boiled"
+        },
+        {
+          "level": 28,
+          "move": "seismic-toss"
+        },
+        {
+          "level": 34,
+          "move": "psychic"
         }
       ],
       "availableAbilities": [
@@ -7280,12 +8089,28 @@
           "move": "absorb"
         },
         {
+          "level": 12,
+          "move": "vine-whip"
+        },
+        {
           "level": 16,
           "move": "poison-powder"
         },
         {
+          "level": 20,
+          "move": "mega-drain"
+        },
+        {
           "level": 24,
           "move": "stun-spore"
+        },
+        {
+          "level": 28,
+          "move": "slam"
+        },
+        {
+          "level": 34,
+          "move": "solar-beam"
         }
       ],
       "availableAbilities": [
@@ -7334,12 +8159,28 @@
           "move": "bite"
         },
         {
+          "level": 12,
+          "move": "swift"
+        },
+        {
           "level": 16,
           "move": "tail-whip"
         },
         {
+          "level": 20,
+          "move": "body-slam"
+        },
+        {
           "level": 24,
           "move": "mega-punch"
+        },
+        {
+          "level": 28,
+          "move": "earthquake"
+        },
+        {
+          "level": 34,
+          "move": "dizzy-punch"
         }
       ],
       "availableAbilities": [
@@ -7347,7 +8188,7 @@
         "guts"
       ],
       "tutorMoves": [
-        "earthquake",
+        "thunderbolt",
         "fire-punch"
       ],
       "evolvesTo": [],
@@ -7468,13 +8309,26 @@
         "defense": 95,
         "speed": 85
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "bubble-beam"
+        },
+        {
+          "level": 22,
+          "move": "surf"
+        },
+        {
+          "level": 30,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "snipe",
         "damp"
       ],
       "tutorMoves": [
-        "surf"
+        "blizzard"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -7506,6 +8360,10 @@
         {
           "level": 4,
           "move": "supersonic"
+        },
+        {
+          "level": 6,
+          "move": "water-gun"
         },
         {
           "level": 8,
@@ -7587,14 +8445,27 @@
         "defense": 73,
         "speed": 68
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "waterfall"
+        },
+        {
+          "level": 22,
+          "move": "bubble-beam"
+        },
+        {
+          "level": 28,
+          "move": "surf"
+        }
+      ],
       "availableAbilities": [
         "water-veil",
         "swift-swim"
       ],
       "tutorMoves": [
         "ice-beam",
-        "surf"
+        "blizzard"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -7704,13 +8575,30 @@
         "defense": 93,
         "speed": 115
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "swift"
+        },
+        {
+          "level": 20,
+          "move": "surf"
+        },
+        {
+          "level": 26,
+          "move": "psychic"
+        },
+        {
+          "level": 32,
+          "move": "bubble-beam-plus"
+        }
+      ],
       "availableAbilities": [
         "healer",
         "anticipation"
       ],
       "tutorMoves": [
-        "surf"
+        "ice-beam"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
@@ -7744,12 +8632,24 @@
           "move": "light-screen"
         },
         {
+          "level": 12,
+          "move": "psywave"
+        },
+        {
           "level": 16,
           "move": "double-slap"
         },
         {
+          "level": 20,
+          "move": "psychic"
+        },
+        {
           "level": 24,
           "move": "reflect"
+        },
+        {
+          "level": 28,
+          "move": "seismic-toss"
         }
       ],
       "availableAbilities": [
@@ -7800,12 +8700,20 @@
           "move": "focus-energy"
         },
         {
+          "level": 12,
+          "move": "cut"
+        },
+        {
           "level": 16,
           "move": "swift"
         },
         {
           "level": 24,
           "move": "wing-attack"
+        },
+        {
+          "level": 28,
+          "move": "pin-missile"
         }
       ],
       "availableAbilities": [
@@ -7820,7 +8728,7 @@
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "pin-missile",
+        "counter",
         "gust"
       ],
       "hiddenAbility": "tough-claws"
@@ -7854,12 +8762,24 @@
           "move": "lick"
         },
         {
+          "level": 12,
+          "move": "confusion"
+        },
+        {
           "level": 16,
           "move": "double-slap"
         },
         {
+          "level": 20,
+          "move": "ice-beam"
+        },
+        {
           "level": 24,
           "move": "ice-punch"
+        },
+        {
+          "level": 28,
+          "move": "psychic"
         }
       ],
       "availableAbilities": [
@@ -7867,7 +8787,7 @@
         "own-tempo"
       ],
       "tutorMoves": [
-        "psychic",
+        "mega-punch",
         "amnesia"
       ],
       "evolvesTo": [],
@@ -7909,6 +8829,10 @@
         {
           "level": 16,
           "move": "screech"
+        },
+        {
+          "level": 20,
+          "move": "thunderbolt"
         },
         {
           "level": 24,
@@ -7961,12 +8885,20 @@
           "move": "confuse-ray"
         },
         {
+          "level": 12,
+          "move": "fire-spin"
+        },
+        {
           "level": 16,
           "move": "fire-punch"
         },
         {
           "level": 24,
           "move": "smokescreen"
+        },
+        {
+          "level": 30,
+          "move": "fire-blast"
         }
       ],
       "availableAbilities": [
@@ -7984,7 +8916,7 @@
       "eggMoves": [
         "comet-punch",
         "karate-chop",
-        "fire-blast"
+        "mega-punch"
       ],
       "hiddenAbility": "flash-fire"
     },
@@ -8016,12 +8948,24 @@
           "move": "seismic-toss"
         },
         {
+          "level": 12,
+          "move": "slash"
+        },
+        {
           "level": 16,
           "move": "harden"
         },
         {
+          "level": 20,
+          "move": "pin-missile"
+        },
+        {
           "level": 24,
           "move": "guillotine"
+        },
+        {
+          "level": 28,
+          "move": "submission"
         }
       ],
       "availableAbilities": [
@@ -8037,7 +8981,7 @@
       "branches": [],
       "archetype": "vanguard",
       "eggMoves": [
-        "submission",
+        "fury-attack",
         "quick-attack",
         "leech-life"
       ]
@@ -8070,12 +9014,32 @@
           "move": "stomp"
         },
         {
+          "level": 12,
+          "move": "horn-attack"
+        },
+        {
           "level": 16,
           "move": "leer"
         },
         {
+          "level": 18,
+          "move": "swift"
+        },
+        {
+          "level": 20,
+          "move": "body-slam"
+        },
+        {
           "level": 24,
           "move": "take-down"
+        },
+        {
+          "level": 28,
+          "move": "earthquake"
+        },
+        {
+          "level": 34,
+          "move": "thrash"
         }
       ],
       "availableAbilities": [
@@ -8083,8 +9047,8 @@
         "guts"
       ],
       "tutorMoves": [
-        "earthquake",
-        "body-slam"
+        "thunderbolt",
+        "fire-blast"
       ],
       "evolvesTo": [],
       "rarity": "rare",
@@ -8190,7 +9154,24 @@
         "defense": 90,
         "speed": 81
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 20,
+          "move": "bite"
+        },
+        {
+          "level": 24,
+          "move": "dragon-rage"
+        },
+        {
+          "level": 28,
+          "move": "surf"
+        },
+        {
+          "level": 32,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "swift-swim",
         "intimidate",
@@ -8201,7 +9182,7 @@
       "tutorMoves": [
         "slam",
         "body-slam",
-        "surf"
+        "ice-beam"
       ],
       "branches": []
     },
@@ -8234,12 +9215,28 @@
           "move": "sing"
         },
         {
+          "level": 12,
+          "move": "aurora-beam"
+        },
+        {
           "level": 16,
           "move": "mist"
         },
         {
+          "level": 20,
+          "move": "surf"
+        },
+        {
           "level": 24,
           "move": "body-slam"
+        },
+        {
+          "level": 28,
+          "move": "blizzard"
+        },
+        {
+          "level": 34,
+          "move": "hydro-pump"
         }
       ],
       "availableAbilities": [
@@ -8247,7 +9244,7 @@
         "shell-armor"
       ],
       "tutorMoves": [
-        "hydro-pump",
+        "psychic",
         "thunderbolt"
       ],
       "evolvesTo": [],
@@ -8324,6 +9321,10 @@
         {
           "level": 8,
           "move": "quick-attack"
+        },
+        {
+          "level": 10,
+          "move": "swift"
         }
       ],
       "availableAbilities": [
@@ -8427,7 +9428,24 @@
         "defense": 85,
         "speed": 65
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "bite"
+        },
+        {
+          "level": 20,
+          "move": "bubble-beam"
+        },
+        {
+          "level": 26,
+          "move": "surf"
+        },
+        {
+          "level": 32,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "adaptability",
         "run-down",
@@ -8437,8 +9455,8 @@
       "evolvesTo": [],
       "rarity": "rare",
       "tutorMoves": [
-        "surf",
-        "bubble-beam",
+        "ice-beam",
+        "blizzard",
         "toxic"
       ],
       "branches": []
@@ -8644,7 +9662,7 @@
         }
       ],
       "eggMoves": [
-        "bubble-beam",
+        "haze",
         "supersonic"
       ]
     },
@@ -8663,7 +9681,20 @@
         "defense": 120,
         "speed": 55
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "bubble-beam"
+        },
+        {
+          "level": 22,
+          "move": "rock-slide"
+        },
+        {
+          "level": 28,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "shell-armor",
         "swift-swim"
@@ -8704,8 +9735,16 @@
           "move": "absorb"
         },
         {
+          "level": 6,
+          "move": "water-gun"
+        },
+        {
           "level": 8,
           "move": "leer"
+        },
+        {
+          "level": 10,
+          "move": "rock-throw"
         }
       ],
       "availableAbilities": [
@@ -8714,7 +9753,7 @@
       ],
       "tutorMoves": [
         "sand-attack",
-        "rock-throw"
+        "bubble-beam"
       ],
       "evolveLevel": 12,
       "evolvesTo": [
@@ -8783,7 +9822,24 @@
         "defense": 88,
         "speed": 80
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 16,
+          "move": "slash"
+        },
+        {
+          "level": 22,
+          "move": "rock-slide"
+        },
+        {
+          "level": 28,
+          "move": "surf"
+        },
+        {
+          "level": 34,
+          "move": "hydro-pump"
+        }
+      ],
       "availableAbilities": [
         "battle-armor",
         "swift-swim"
@@ -8824,12 +9880,24 @@
           "move": "supersonic"
         },
         {
+          "level": 12,
+          "move": "rock-throw"
+        },
+        {
           "level": 16,
           "move": "bite"
         },
         {
           "level": 24,
           "move": "take-down"
+        },
+        {
+          "level": 28,
+          "move": "fly"
+        },
+        {
+          "level": 34,
+          "move": "hyper-beam"
         }
       ],
       "availableAbilities": [
@@ -8881,8 +9949,20 @@
           "move": "body-slam"
         },
         {
+          "level": 20,
+          "move": "earthquake"
+        },
+        {
           "level": 24,
           "move": "harden"
+        },
+        {
+          "level": 24,
+          "move": "ice-beam"
+        },
+        {
+          "level": 30,
+          "move": "hyper-beam"
         }
       ],
       "availableAbilities": [
@@ -9076,6 +10156,10 @@
           "move": "thunder-wave"
         },
         {
+          "level": 6,
+          "move": "dragon-rage"
+        },
+        {
           "level": 8,
           "move": "agility"
         }
@@ -9111,7 +10195,7 @@
             }
           ],
           "adds": [
-            "dragon-rage"
+            "body-slam"
           ]
         },
         {
@@ -9122,8 +10206,8 @@
           "to": "dragonair",
           "upgrades": [
             {
-              "from": "wrap",
-              "to": "dragon-rage"
+              "from": "dragon-rage",
+              "to": "dragon-rage-plus"
             },
             {
               "from": "thunder-wave",
@@ -9172,7 +10256,20 @@
         "defense": 68,
         "speed": 70
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 14,
+          "move": "dragon-rage"
+        },
+        {
+          "level": 18,
+          "move": "slam"
+        },
+        {
+          "level": 22,
+          "move": "bubble-beam"
+        }
+      ],
       "availableAbilities": [
         "inner-focus",
         "iron-shell"
@@ -9263,7 +10360,24 @@
         "defense": 98,
         "speed": 80
       },
-      "learnset": [],
+      "learnset": [
+        {
+          "level": 28,
+          "move": "dragon-rage"
+        },
+        {
+          "level": 30,
+          "move": "wing-attack"
+        },
+        {
+          "level": 34,
+          "move": "fly"
+        },
+        {
+          "level": 38,
+          "move": "hyper-beam"
+        }
+      ],
       "availableAbilities": [
         "inner-focus",
         "iron-shell"

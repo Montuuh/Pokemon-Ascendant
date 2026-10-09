@@ -130,6 +130,8 @@ test.describe('Arena animations — §9.9', () => {
       await page.waitForTimeout(60);
     }
     await expect(ghost.first()).toHaveAttribute('data-kind', 'faint');
+    // Its card stays where it stood, fading with the sprite (v0.9.11).
+    await expect(page.getByTestId('foe-panel-fallen')).toBeAttached();
     await page.waitForTimeout(300);
     await page.screenshot({ path: 'playtest/anim-faint.png' });
     await expect(page.locator('[data-testid="ball-flight"][data-hand="trainer"][data-dir="out"]')).toBeAttached({ timeout: 3_000 });

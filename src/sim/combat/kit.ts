@@ -2,17 +2,21 @@ import type { ContentRegistry, EvolutionBranch, SpeciesDef } from '../content/de
 import type { PokemonType } from '../types';
 
 // §6.3.5 / §6.9 — a line's kit as slots (v0.9.5). A base form learns four moves; every evolution after that rewrites
-// slots rather than piling cards on: the first evolution upgrades two and adds one, the last swaps up to three. A
-// payload names a slot by the move that first held it, so a Venusaur branch that swaps "Vine Whip" lands on Razor
-// Leaf if an Ivysaur branch had already turned Vine Whip into Razor Leaf — whichever branch was taken before.
+// slots: the first evolution upgrades two and adds one, the last swaps up to three. A payload names a slot by the move
+// that first held it, so a Venusaur branch that swaps "Vine Whip" lands on Razor Leaf if an Ivysaur branch had already
+// turned Vine Whip into Razor Leaf — whichever branch was taken before. Since v0.9.11 an evolved form also learns its
+// line's signature moves by level, so no path ends without a real attack of its type (the user: rather too many moves
+// than a Pokémon with bad ones) — the pool is the choice, the active four are the deck.
 
 /**
  * §6.3.5 / §6.9 — how many moves a species may carry or be offered, as data (v0.9.9, the user's call: a validator over
- * every species). `kit` — the cards a form holds on any path through its line; `learnset` — level-up entries;
- * `tutor` / `egg` — its Dojo lists; `offered` — everything a form can be shown with: its kit, its tutor list, its
- * line's egg moves and its Mastery Move. `content.test` walks all 151 against it.
+ * every species). `kit` — the cards a form holds on any path through its line, what it learns by level included;
+ * `learnset` — level-up entries; `tutor` / `egg` — its Dojo lists; `offered` — everything a form can be shown with: its
+ * kit, its tutor list, its line's egg moves and its Mastery Move. `content.test` walks all 151 against it. Raised in
+ * v0.9.11 with the evolved forms' learnsets (a final form's kit is now 8–11 cards): a guard against runaway lists, not a
+ * budget — the deck is still each Pokémon's active four.
  */
-export const MOVE_CAP = { kit: 5, learnset: 5, tutor: 3, egg: 3, offered: 12 } as const;
+export const MOVE_CAP = { kit: 12, learnset: 10, tutor: 3, egg: 3, offered: 18 } as const;
 
 /** Every upgrade in the line, read backwards: an evolved card → the cards it can have come from. */
 export function upgradeParents(content: ContentRegistry, speciesId: string): Map<string, Set<string>> {
@@ -45,6 +49,12 @@ export function slotIndex(pool: readonly string[], from: string, parents: Map<st
     }
     return false;
   });
+}
+
+/** §6.9 — the pool already holds this move, or the card an evolution made of it (v0.9.11): a level-up never teaches back
+ *  the weaker card a branch has rewritten — a Venusaur with Razor Leaf+ does not learn Razor Leaf at 30. */
+export function holdsSlot(pool: readonly string[], move: string, parents: Map<string, Set<string>>): boolean {
+  return slotIndex(pool, move, parents) >= 0;
 }
 
 /** §6.3.5 — a branch's payload on a pool: each upgrade replaces its slot in place (or arrives as a gift when the slot
@@ -136,26 +146,29 @@ export function autoPickMoves(pool: readonly string[], content: ContentRegistry,
 }
 
 /**
- * §6.3.5 — the kit a form holds on each path that reaches it (v0.9.9, for the Pokédex): a base form's own pool at its
- * last level before evolving (or its whole learnset if it never does); an evolved form's, one row per chain of
- * branches from the base — Ivysaur three, Venusaur nine. The same payload arithmetic the run applies.
+ * §6.3.5 / §6.9 — the kit a form holds on each path that reaches it (v0.9.9, for the Pokédex): one row per chain of
+ * branches from the base — Ivysaur three, Venusaur nine — each form adding what it learns by level before it evolves
+ * (a form that never evolves: its whole learnset), and each branch its payload. The same arithmetic the run applies:
+ * a level-up never teaches back a card a branch has rewritten (v0.9.11: evolved forms learn by level too).
  */
 export function kitPaths(content: ContentRegistry, speciesId: string): { branches: string[]; pool: string[] }[] {
   const base = content.species(content.lineBase(speciesId));
   const parents = upgradeParents(content, base.id);
-  const own = (s: SpeciesDef) => {
-    const known = new Set<string>();
-    for (const e of s.learnset) if (e.level <= (s.evolveLevel ? s.evolveLevel - 1 : 100)) known.add(e.move);
-    return [...known];
+  const learn = (s: SpeciesDef, pool: string[]) => {
+    const out = [...pool];
+    const top = s.evolveLevel ? s.evolveLevel - 1 : 100;
+    for (const e of [...s.learnset].sort((x, y) => x.level - y.level)) if (e.level <= top && !holdsSlot(out, e.move, parents)) out.push(e.move);
+    return out;
   };
   const out: { branches: string[]; pool: string[] }[] = [];
-  const walk = (s: SpeciesDef, branches: string[], pool: string[]) => {
+  const walk = (s: SpeciesDef, branches: string[], before: string[]) => {
+    const pool = learn(s, before);
     if (s.id === speciesId) {
       out.push({ branches, pool });
       return;
     }
     for (const b of s.branches) walk(content.species(b.to), [...branches, b.id], applyPayload(pool, b, parents));
   };
-  walk(base, [], own(base));
+  walk(base, [], []);
   return out;
 }

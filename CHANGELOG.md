@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.11 — Moves for every path, and the faint that fades · 2026-10-09
+
+Every evolved Pokémon learns its line's best moves as it levels.
+
+- **Moves.** 93 species learn signature moves by level: no weak paths.
+- **Faint.** A fallen foe fades out where it stood; the others hold their places.
+- **Art.** A Light Ball icon, and a TM disc for every type.
+
 ### v0.9.10 — Combat, stats and moves, revisited · 2026-10-09
 
 Whole Pokémon in groups, stats in the series' proportions, many more moves.

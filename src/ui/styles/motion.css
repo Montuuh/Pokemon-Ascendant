@@ -313,17 +313,31 @@ html[data-motion='reduced'] *::after {
     opacity: 1;
   }
 }
-/* The series' faint: a beat of stillness, then the Pokémon slides down through the ground line and is gone. */
+/* The series' faint: a beat of stillness, a flash of the hit, then the Pokémon sinks through the ground line as it
+   fades and greys out — gone by the last frame, never cut while it still shows (v0.9.11: it used to drop at full
+   opacity and blink out). */
 @keyframes faintDrop {
-  0%,
-  20% {
+  0% {
     transform: translateY(0);
     clip-path: inset(0 0 0 0);
-    animation-timing-function: ease-in;
+    opacity: 1;
+    filter: none;
+  }
+  8% {
+    filter: brightness(1.8);
+  }
+  22% {
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+    filter: none;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.7, 1);
   }
   100% {
-    transform: translateY(100%);
-    clip-path: inset(0 0 100% 0);
+    transform: translateY(55%);
+    clip-path: inset(0 0 55% 0);
+    opacity: 0;
+    filter: grayscale(1) brightness(0.6);
   }
 }
 @keyframes recallBeam {

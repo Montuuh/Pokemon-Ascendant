@@ -34,15 +34,20 @@ interface Props {
   /** §2.6.4 — throw a ball from the catch picker (v0.8.6). */
   interactive: boolean;
   onThrow: (cardId: string, targetUid: string) => void;
+  /** §9.9.1 — a foe that has just fainted: its card, fading where it stood while its sprite sinks (v0.9.11). */
+  fallen?: boolean;
+  /** §9.9.1 — while a faint plays, the place and the layout as the line stood before it (v0.9.11). */
+  held?: { place: string; group: boolean };
 }
 
 // Per §9.2.2.3 / §9.2.5 — one enemy's HUD: the intent chip (kind glyph, the move, its target, and for a single
 // hit the number it lands), the card with HP, phase markers, status and stages, the catch pill in a wild fight,
 // and — while a card is held — the number that card would deal here (§9.2.4). The sprite lives in the arena.
-export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow }: Props) {
+export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow, fallen, held }: Props) {
   const phase = currentPhase(enemy, ctx.config);
   // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
-  const place = enemySlotLabel(state, enemy);
+  const place = held ? held.place : enemySlotLabel(state, enemy);
+  const inGroup = held ? held.group : state.enemies.length > 1;
   // §5.6 — in a group the enemy's card is the door to its place.
   const cardTipProps = useTip(placeTip(place, state.enemies.length + state.enemyQueue.length <= 1, !!enemy.shiny));
   // §5.5.1 — under Trainer's Instinct the enemy's committed plan for next turn sits under this turn's.
@@ -60,8 +65,11 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
     : 'Wild';
 
   return (
-    <div className={[styles.zone, styles.compact, state.enemies.length > 1 ? (place === 'Lead' ? styles.leadZone : styles.supportZone) : ''].join(' ')} data-testid="foe-panel" data-enemy-uid={enemy.uid} onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}>
-      <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={0} />
+    <div className={[styles.zone, styles.compact, fallen ? styles.fallen : '', inGroup ? (place === 'Lead' ? styles.leadZone : styles.supportZone) : ''].join(' ')} data-testid={fallen ? 'foe-panel-fallen' : 'foe-panel'} data-enemy-uid={enemy.uid} onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)} aria-hidden={fallen ? true : undefined} inert={fallen ? true : undefined}>
+      {/* A fallen foe's chip keeps its room, unseen, so the card fades where it stood rather than dropping. */}
+      <div className={fallen ? styles.chipRoom : undefined}>
+        <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={0} />
+      </div>
       {enemy.second && enemy.hp > 0 && <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={1} />}
 
       {next && enemy.hp > 0 && (
@@ -155,7 +163,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
         </span>
       </button>
 
-      {state.kind === 'wild' && (
+      {state.kind === 'wild' && !fallen && (
         <div className={styles.catchInline}>
           <CatchPicker state={state} enemy={enemy} ctx={ctx} interactive={interactive} onThrow={onThrow} />
         </div>
