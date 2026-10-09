@@ -193,7 +193,9 @@ describe('Run pacing — §2.1, §3.7', () => {
     expect(r2.length).toBeGreaterThan(100);
     const statused = (list: FightTrace[]) => list.filter((f) => f.team.some((m) => m.status)).length / Math.max(1, list.length);
     console.log(`region 2: fights leaving a status ${statused(r2).toFixed(2)} (R1 ${statused(r1).toFixed(2)})`);
-    expect(statused(r2), 'fights that leave a status on the team').toBeGreaterThan(statused(r1) * 1.5);
+    // ×1.25 since v0.9.10: the Pokémon behind a Region 1 Lead are whole and play their own status moves too, so Region 1
+    // sends more statuses home than it did; Region 2's accent still clears it.
+    expect(statused(r2), 'fights that leave a status on the team').toBeGreaterThan(statused(r1) * 1.25);
   });
 
   it('Regions_EscalateByForm_NotByType_§2.2', () => {

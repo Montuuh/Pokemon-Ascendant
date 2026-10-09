@@ -294,7 +294,7 @@
       "enemies": [
         {
           "species": "graveler",
-          "level": 13,
+          "level": 16,
           "tier": "wild",
           "phaseCount": 1
         }
@@ -339,13 +339,13 @@
       "enemies": [
         {
           "species": "geodude",
-          "level": 14,
+          "level": 16,
           "tier": "boss",
           "phaseCount": 2
         },
         {
           "species": "golem",
-          "level": 16,
+          "level": 19,
           "tier": "boss",
           "phaseCount": 3
         }

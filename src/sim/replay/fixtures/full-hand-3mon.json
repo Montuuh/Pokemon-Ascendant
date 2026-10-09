@@ -3,12 +3,20 @@
   "seed": 1005,
   "actions": [
     {
-      "type": "swap",
-      "benchIndex": 0
+      "type": "play-card",
+      "cardId": "c5"
+    },
+    {
+      "type": "use-consumable",
+      "cardId": "k14"
     },
     {
       "type": "play-card",
-      "cardId": "c5"
+      "cardId": "c1"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c2"
     },
     {
       "type": "play-card",
@@ -18,16 +26,16 @@
       "type": "end-turn"
     },
     {
+      "type": "swap",
+      "benchIndex": 0
+    },
+    {
       "type": "play-card",
       "cardId": "c3"
     },
     {
-      "type": "use-consumable",
-      "cardId": "k14"
-    },
-    {
       "type": "play-card",
-      "cardId": "c0"
+      "cardId": "c4"
     },
     {
       "type": "end-turn"
@@ -41,7 +49,7 @@
       "cardId": "c9"
     }
   ],
-  "fingerprint": "t3 victory lead=0 ap=0 team=[wartortle:68/95,ivysaur:96/96,charmeleon:82/82] enemies=[graveler:0/91] events=41 rng=3795274202",
+  "fingerprint": "t3 victory lead=0 ap=0 team=[wartortle:86/97,ivysaur:98/98,charmeleon:68/95] enemies=[graveler:0/100] events=45 rng=3795274202",
   "turns": 3,
   "outcome": "victory"
 }

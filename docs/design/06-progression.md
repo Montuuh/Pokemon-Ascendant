@@ -82,14 +82,20 @@ screen (§3.6).
 
 ## §6.2.3 Stat growth
 
-Each level adds a flat amount to HP, Attack and Defence from the line's growth curve:
+**Every stat grows in proportion to its own base** (v0.9.10, the user's call: "stats like the series' — Magikarp
+has very few in total, Gyarados very many; Legendaries and single stages higher"):
 
 ```
-stat(level) = base + growth × (level − 1)
+stat(level) = base × (1 + STAT_GROWTH_RATE × (level − 1))      STAT_GROWTH_RATE = 0.035
+HP adds the level on top                                        HP_PER_LEVEL = 1
 ```
 
-Growth curves are tuned for this game, not copied from Gen I. **Single-stage species get +25 % growth per
-level** to compensate for never evolving (`ProgressionConfig.singleStageGrowthBonusPercent`).
+The base is the species' own (§4.1.5.1: Attack the higher of Gen I's Attack and Special, Defence their mean), so a
+species' total at any level keeps the proportion of its base total, as the series' does: Magikarp stays small,
+Gyarados grows big, a final form stands above its pre-evolution at the same level, and a single stage or a
+Legendary carries the higher total its base already gives it — with no bonus on top. The rate keeps the mean total
+at Lv 30 where the old curves left it. *(Until v0.9.10 each line had a flat growth per level, shared by every stage
+and +25 % for a single stage: Geodude grew as fast as Golem, and Tauros and Lapras out-totalled Dragonite at Lv 30.)*
 
 The XP curve is `xpToNext(L) = 12 + (L − 1) × 4` (`levelUpBaseXp`, `levelUpSlopeXp`).
 

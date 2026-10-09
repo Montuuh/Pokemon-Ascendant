@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PIDGEY, STARTERS, content, ctx, eventsOf, scenario, start, startFixture } from '../testing/harness';
-import { effectiveMaxHp, statAtLevel } from './stats';
+import { HP_PER_LEVEL, STAT_GROWTH_RATE, effectiveMaxHp, statAtLevel } from './stats';
 
 describe('createCombat — §3.2.1 Combat Start', () => {
   it('Start_ThreeStarters_BuildsTwelveCardDeckAndDrawsFive', () => {
@@ -30,9 +30,10 @@ describe('createCombat — §3.2.1 Combat Start', () => {
     const s = start(scenario({ team: [{ species: 'charmander', level: 8 }], enemies: [PIDGEY] }));
     const c = s.player.team[0]!;
     const species = ctx.content.species('charmander');
-    expect(c.maxHp).toBe(39 + 2 * 7);
+    // §6.2.3 (v0.9.10) — base × (1 + rate × 7), and HP adds the level.
+    expect(c.maxHp).toBe(Math.round(39 * (1 + STAT_GROWTH_RATE * 7) + HP_PER_LEVEL * 8));
     // §4.1.5.1 — Attack is max(Atk 52, Spc 60) = 60, not the raw physical stat.
-    expect(c.base.attack).toBe(60 + 3 * 7);
+    expect(c.base.attack).toBe(Math.round(60 * (1 + STAT_GROWTH_RATE * 7)));
     expect(c.base.attack).toBe(statAtLevel(species, 'attack', 8));
   });
 
@@ -63,7 +64,7 @@ describe('createCombat — §3.2.1 Combat Start', () => {
     expect(effectiveMaxHp(100, 10, ctx.config)).toBe(25);
     expect(effectiveMaxHp(100, 14, ctx.config)).toBe(25); // capped
     const s = start(scenario({ team: [{ species: 'charmander', level: 8, traumaStacks: 2 }], enemies: [PIDGEY] }));
-    expect(s.player.team[0]!.maxHp).toBe(Math.floor(53 * 0.9));
+    expect(s.player.team[0]!.maxHp).toBe(Math.floor(statAtLevel(ctx.content.species('charmander'), 'hp', 8) * 0.9));
   });
 
   it('Start_TheWholeBagIsOpen_TwoItemsATurn_§3.5', () => {

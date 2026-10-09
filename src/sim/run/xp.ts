@@ -114,16 +114,15 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
   }
 
   const sp = content.species(mon.speciesId);
-  const g = sp.growth;
-  const n = mon.level - from;
   const at = (k: 'hp' | 'attack' | 'defense' | 'speed') => statAtLevel(sp, k, mon.level, mon.archetype);
+  const was = (k: 'hp' | 'attack' | 'defense' | 'speed') => statAtLevel(sp, k, from, mon.archetype);
   const up: LevelUp = {
     uid: mon.uid,
     from,
     to: mon.level,
     learned,
     activated,
-    gains: { hp: g.hp * n, attack: g.attack * n, defense: g.defense * n, speed: g.speed * n },
+    gains: { hp: at('hp') - was('hp'), attack: at('attack') - was('attack'), defense: at('defense') - was('defense'), speed: at('speed') - was('speed') },
     statsAt: { hp: at('hp'), attack: at('attack'), defense: at('defense'), speed: at('speed') },
   };
   if (isEvolutionReady(mon, content)) up.evolutionReady = true;

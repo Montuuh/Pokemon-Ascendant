@@ -37,7 +37,7 @@
 | `spearow` | 21 | basic | Normal/Flying | 40/60/30/31/70 | 60/31 | common | **L12** → `fearow` | 1 `peck` · 1 `growl` · 4 `leer` · 8 `fury-attack` |
 | `fearow` | 22 | stage1 | Normal/Flying | 65/90/65/61/100 | 90/63 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `keen-eye` `tangled-feet` `snipe` (the last is hidden, §6.8.3) · **Tutor** Spearow: `quick-attack` `swift` · Fearow: —
+**Abilities** `keen-eye` `tangled-feet` `snipe` (the last is hidden, §6.8.3) · **Tutor** Spearow: `quick-attack` `swift` · Fearow: —
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -50,7 +50,7 @@
 | `ekans` | 23 | basic | Poison | 35/60/44/40/55 | 60/42 | common | **L12** → `arbok` | 1 `wrap` · 1 `leer` · 4 `poison-sting` · 8 `bite` |
 | `arbok` | 24 | stage1 | Poison | 60/85/69/65/80 | 85/67 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `intimidate` `poison-point` `guts` (the last is hidden, §6.8.3) · **Tutor** Ekans: `acid-armor` `dig` · Arbok: `earthquake` `slam`
+**Abilities** `intimidate` `poison-point` `guts` (the last is hidden, §6.8.3) · **Tutor** Ekans: `acid-armor` `dig` · Arbok: `earthquake` `slam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -63,7 +63,7 @@
 | `sandshrew` | 27 | basic | Ground | 50/75/85/30/40 | 75/58 | common | **L12** → `sandslash` | 1 `scratch` · 1 `defense-curl` · 4 `sand-attack` · 8 `poison-sting` |
 | `sandslash` | 28 | stage1 | Ground | 75/100/110/55/65 | 100/83 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/3/3/2 · **Abilities** `sand-veil` `iron-shell` `tough-claws` (the last is hidden, §6.8.3) · **Tutor** Sandshrew: — · Sandslash: `rock-slide`
+**Abilities** `sand-veil` `iron-shell` `tough-claws` (the last is hidden, §6.8.3) · **Tutor** Sandshrew: — · Sandslash: `rock-slide`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -77,7 +77,7 @@
 | `nidorina` | 30 | stage1 | Poison | 70/62/67/55/56 | 62/61 | — | **L26** → `nidoqueen` | — *(its base form's kit, rewritten by evolution)* |
 | `nidoqueen` | 31 | stage2 | Poison/Ground | 90/82/87/75/76 | 82/81 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/3/2 · **Abilities** `poison-point` `hustle` `guts` (the last is hidden, §6.8.3) · **Tutor** Nidoran♀: `quick-attack` · Nidorina: `take-down` · Nidoqueen: `surf` `ice-beam`
+**Abilities** `poison-point` `hustle` `guts` (the last is hidden, §6.8.3) · **Tutor** Nidoran♀: `quick-attack` · Nidorina: `take-down` · Nidoqueen: `surf` `ice-beam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -92,7 +92,7 @@
 | `nidorino` | 33 | stage1 | Poison | 61/72/57/55/65 | 72/56 | — | **L26** → `nidoking` | — *(its base form's kit, rewritten by evolution)* |
 | `nidoking` | 34 | stage2 | Poison/Ground | 81/92/77/75/85 | 92/76 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `poison-point` `hustle` `guts` (the last is hidden, §6.8.3) · **Tutor** Nidoran♂: `quick-attack` · Nidorino: `take-down` · Nidoking: `ice-beam`
+**Abilities** `poison-point` `hustle` `guts` (the last is hidden, §6.8.3) · **Tutor** Nidoran♂: `quick-attack` · Nidorino: `take-down` · Nidoking: `ice-beam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -106,7 +106,7 @@
 | `meowth` | 52 | basic | Normal | 40/45/35/40/90 | 45/38 | common | **L12** → `persian` | 1 `scratch` · 1 `growl` · 4 `bite` · 8 `pay-day` |
 | `persian` | 53 | stage1 | Normal | 65/70/60/65/115 | 70/63 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/2/2/4 · **Abilities** `run-down` `tough-claws` `moxie` (the last is hidden, §6.8.3) · **Tutor** Meowth: `quick-attack` · Persian: `thunderbolt` `slam`
+**Abilities** `run-down` `tough-claws` `moxie` (the last is hidden, §6.8.3) · **Tutor** Meowth: `quick-attack` · Persian: `thunderbolt` `slam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -119,7 +119,7 @@
 | `mankey` | 56 | basic | Fighting | 40/80/35/35/70 | 80/35 | uncommon | **L12** → `primeape` | 1 `scratch` · 1 `leer` · 4 `low-kick` · 8 `karate-chop` |
 | `primeape` | 57 | stage1 | Fighting | 65/105/60/60/95 | 105/60 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/1/3 · **Abilities** `vital-spirit` `guts` (the last is hidden, §6.8.3) · **Tutor** Mankey: `meditate` `rolling-kick` · Primeape: —
+**Abilities** `vital-spirit` `guts` (the last is hidden, §6.8.3) · **Tutor** Mankey: `meditate` `rolling-kick` · Primeape: —
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -132,7 +132,7 @@
 | `doduo` | 84 | basic | Normal/Flying | 35/85/45/35/75 | 85/40 | uncommon | **L12** → `dodrio` | 1 `peck` · 1 `growl` · 4 `fury-attack` · 8 `quick-attack` |
 | `dodrio` | 85 | stage1 | Normal/Flying | 60/110/70/60/100 | 110/65 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `keen-eye` `tangled-feet` `run-down` (the last is hidden, §6.8.3) · **Tutor** Doduo: `double-kick` · Dodrio: `double-edge`
+**Abilities** `keen-eye` `tangled-feet` `run-down` (the last is hidden, §6.8.3) · **Tutor** Doduo: `double-kick` · Dodrio: `double-edge`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -144,7 +144,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `farfetchd` | 83 | basic | Normal/Flying | 52/65/55/58/60 | 65/57 | uncommon | — | 1 `peck` · 1 `sand-attack` · 8 `leer` · 16 `fury-attack` · 24 `swords-dance` |
 
-**Growth** 3/4/3/4 · **Abilities** `keen-eye` `inner-focus` · **Tutor** Farfetch'd: `gust` `slash` · **Archetype** vanguard
+**Abilities** `keen-eye` `inner-focus` · **Tutor** Farfetch'd: `gust` `slash` · **Archetype** vanguard
 
 ### `tauros` — Normal · rare · single stage
 
@@ -152,7 +152,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `tauros` | 128 | basic | Normal | 75/100/95/70/110 | 100/83 | rare | — | 1 `tackle` · 1 `tail-whip` · 8 `stomp` · 16 `leer` · 24 `take-down` |
 
-**Growth** 3/4/3/4 · **Abilities** `intimidate` `guts` · **Tutor** Tauros: `earthquake` `body-slam` · **Archetype** vanguard
+**Abilities** `intimidate` `guts` · **Tutor** Tauros: `earthquake` `body-slam` · **Archetype** vanguard
 
 ### `kangaskhan` — Normal · rare · single stage
 
@@ -160,7 +160,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `kangaskhan` | 115 | basic | Normal | 105/95/80/40/90 | 95/60 | rare | — | 1 `comet-punch` · 1 `rage` · 8 `bite` · 16 `tail-whip` · 24 `mega-punch` |
 
-**Growth** 4/3/3/3 · **Abilities** `inner-focus` `guts` · **Tutor** Kangaskhan: `earthquake` `fire-punch` · **Archetype** vanguard
+**Abilities** `inner-focus` `guts` · **Tutor** Kangaskhan: `earthquake` `fire-punch` · **Archetype** vanguard
 
 ### `lickitung` — Normal · rare · single stage
 
@@ -168,7 +168,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `lickitung` | 108 | basic | Normal | 90/55/75/60/30 | 60/68 | rare | — | 1 `wrap` · 1 `supersonic` · 8 `stomp` · 16 `disable` · 24 `slam` |
 
-**Growth** 4/3/3/2 · **Abilities** `own-tempo` `cloud-nine` · **Tutor** Lickitung: `ice-beam` `thunderbolt` · **Archetype** support
+**Abilities** `own-tempo` `cloud-nine` · **Tutor** Lickitung: `ice-beam` `thunderbolt` · **Archetype** support
 
 ## 2. Forest, marsh and mountain
 
@@ -179,7 +179,7 @@
 | `clefairy` | 35 | basic | Normal | 70/45/48/60/35 | 60/54 | uncommon | **L12** → `clefable` | 1 `pound` · 1 `growl` · 4 `sing` · 8 `double-slap` |
 | `clefable` | 36 | stage1 | Normal | 95/70/73/85/60 | 85/79 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/2/2 · **Abilities** `cute-charm` `solid-rock` `healer` (the last is hidden, §6.8.3) · **Tutor** Clefairy: — · Clefable: `ice-beam` `thunderbolt`
+**Abilities** `cute-charm` `solid-rock` `healer` (the last is hidden, §6.8.3) · **Tutor** Clefairy: — · Clefable: `ice-beam` `thunderbolt`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -192,7 +192,7 @@
 | `jigglypuff` | 39 | basic | Normal | 115/45/20/25/20 | 45/23 | common | **L12** → `wigglytuff` | 1 `sing` · 1 `pound` · 4 `defense-curl` · 8 `double-slap` |
 | `wigglytuff` | 40 | stage1 | Normal | 140/70/45/50/45 | 70/48 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 4/2/1/1 · **Abilities** `cute-charm` `iron-shell` `healer` (the last is hidden, §6.8.3) · **Tutor** Jigglypuff: `growl` · Wigglytuff: `ice-beam` `psychic`
+**Abilities** `cute-charm` `iron-shell` `healer` (the last is hidden, §6.8.3) · **Tutor** Jigglypuff: `growl` · Wigglytuff: `ice-beam` `psychic`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -205,7 +205,7 @@
 | `paras` | 46 | basic | Bug/Grass | 35/70/55/55/25 | 70/55 | common | **L12** → `parasect` | 1 `scratch` · 1 `stun-spore` · 4 `leech-life` · 8 `absorb` |
 | `parasect` | 47 | stage1 | Bug/Grass | 60/95/80/80/30 | 95/80 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/3/1 · **Abilities** `effect-spore` `swarm` `damp` (the last is hidden, §6.8.3) · **Tutor** Paras: `fury-swipes` · Parasect: —
+**Abilities** `effect-spore` `swarm` `damp` (the last is hidden, §6.8.3) · **Tutor** Paras: `fury-swipes` · Parasect: —
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -218,7 +218,7 @@
 | `venonat` | 48 | basic | Bug/Poison | 60/55/50/40/45 | 55/45 | common | **L12** → `venomoth` | 1 `tackle` · 1 `disable` · 4 `supersonic` · 8 `confusion` |
 | `venomoth` | 49 | stage1 | Bug/Poison | 70/65/60/90/90 | 90/75 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/2/2 · **Abilities** `compound-eyes` `snipe` `run-down` (the last is hidden, §6.8.3) · **Tutor** Venonat: — · Venomoth: `mega-drain`
+**Abilities** `compound-eyes` `snipe` `run-down` (the last is hidden, §6.8.3) · **Tutor** Venonat: — · Venomoth: `mega-drain`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -231,7 +231,7 @@
 | `exeggcute` | 102 | basic | Grass/Psychic | 60/40/80/60/40 | 60/70 | uncommon | **L12** → `exeggutor` | 1 `barrage` · 1 `hypnosis` · 4 `reflect` · 8 `leech-seed` |
 | `exeggutor` | 103 | stage1 | Grass/Psychic | 95/95/85/125/55 | 125/105 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/3/1 · **Abilities** `chlorophyll` `healer` · **Tutor** Exeggcute: `absorb` `mega-drain` · Exeggutor: `mega-drain` `psybeam`
+**Abilities** `chlorophyll` `healer` · **Tutor** Exeggcute: `absorb` `mega-drain` · Exeggutor: `mega-drain` `psybeam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -243,7 +243,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `tangela` | 114 | basic | Grass | 65/55/115/100/60 | 100/108 | uncommon | — | 1 `constrict` · 1 `bind` · 8 `absorb` · 16 `poison-powder` · 24 `stun-spore` |
 
-**Growth** 3/3/4/2 · **Abilities** `chlorophyll` `healer` · **Tutor** Tangela: `sleep-powder` `rock-slide` · **Archetype** support
+**Abilities** `chlorophyll` `healer` · **Tutor** Tangela: `sleep-powder` `rock-slide` · **Archetype** support
 
 ### `pinsir` — Bug · rare · single stage
 
@@ -251,7 +251,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `pinsir` | 127 | basic | Bug | 65/125/100/55/85 | 125/78 | rare | — | 1 `vice-grip` · 1 `focus-energy` · 8 `seismic-toss` · 16 `harden` · 24 `guillotine` |
 
-**Growth** 3/4/3/3 · **Abilities** `moxie` `guts` · **Tutor** Pinsir: `earthquake` `rock-slide` · **Archetype** vanguard
+**Abilities** `moxie` `guts` · **Tutor** Pinsir: `earthquake` `rock-slide` · **Archetype** vanguard
 
 ### `scyther` — Bug/Flying · rare · single stage
 
@@ -259,7 +259,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `scyther` | 123 | basic | Bug/Flying | 70/110/80/55/105 | 110/68 | rare | — | 1 `quick-attack` · 1 `leer` · 8 `focus-energy` · 16 `swift` · 24 `wing-attack` |
 
-**Growth** 3/4/3/4 · **Abilities** `swarm` `steadfast` · **Tutor** Scyther: `double-edge` · **Archetype** vanguard
+**Abilities** `swarm` `steadfast` · **Tutor** Scyther: `double-edge` · **Archetype** vanguard
 
 ## 3. Fire, water and sea
 
@@ -270,7 +270,7 @@
 | `vulpix` | 37 | basic | Fire | 38/41/40/65/65 | 65/53 | common | **L12** → `ninetales` | 1 `ember` · 1 `tail-whip` · 4 `quick-attack` · 8 `roar` |
 | `ninetales` | 38 | stage1 | Fire | 73/76/75/100/100 | 100/88 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `flash-fire` `flame-body` `anticipation` (the last is hidden, §6.8.3) · **Tutor** Vulpix: `agility` `swift` · Ninetales: `solar-beam` `psychic`
+**Abilities** `flash-fire` `flame-body` `anticipation` (the last is hidden, §6.8.3) · **Tutor** Vulpix: `agility` `swift` · Ninetales: `solar-beam` `psychic`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -283,7 +283,7 @@
 | `ponyta` | 77 | basic | Fire | 50/85/55/65/90 | 85/60 | common | **L12** → `rapidash` | 1 `ember` · 1 `tail-whip` · 4 `stomp` · 8 `growl` |
 | `rapidash` | 78 | stage1 | Fire | 65/100/70/80/105 | 100/75 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `flash-fire` `flame-body` `run-down` (the last is hidden, §6.8.3) · **Tutor** Ponyta: `double-kick` `quick-attack` · Rapidash: `dig` `solar-beam`
+**Abilities** `flash-fire` `flame-body` `run-down` (the last is hidden, §6.8.3) · **Tutor** Ponyta: `double-kick` `quick-attack` · Rapidash: `dig` `solar-beam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -295,7 +295,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `magmar` | 126 | basic | Fire | 65/95/57/85/93 | 95/71 | uncommon | — | 1 `ember` · 1 `leer` · 8 `confuse-ray` · 16 `fire-punch` · 24 `smokescreen` |
 
-**Growth** 3/4/3/4 · **Abilities** `flame-body` `vital-spirit` · **Tutor** Magmar: `thunder-punch` `psychic` · **Archetype** specialist
+**Abilities** `flame-body` `vital-spirit` · **Tutor** Magmar: `thunder-punch` `psychic` · **Archetype** specialist
 
 ### `slowpoke` line — Water/Psychic · common
 
@@ -304,7 +304,7 @@
 | `slowpoke` | 79 | basic | Water/Psychic | 90/65/65/40/15 | 65/53 | common | **L12** → `slowbro` | 1 `confusion` · 1 `disable` · 4 `headbutt` · 8 `growl` |
 | `slowbro` | 80 | stage1 | Water/Psychic | 95/75/110/80/30 | 80/95 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 4/2/2/1 · **Abilities** `own-tempo` `healer` `solid-rock` (the last is hidden, §6.8.3) · **Tutor** Slowpoke: `bubble-beam` `body-slam` · Slowbro: `ice-beam` `flamethrower`
+**Abilities** `own-tempo` `healer` `solid-rock` (the last is hidden, §6.8.3) · **Tutor** Slowpoke: `bubble-beam` `body-slam` · Slowbro: `ice-beam` `flamethrower`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -317,7 +317,7 @@
 | `goldeen` | 118 | basic | Water | 45/67/60/50/63 | 67/55 | common | **L12** → `seaking` | 1 `peck` · 1 `tail-whip` · 4 `supersonic` · 8 `horn-attack` |
 | `seaking` | 119 | stage1 | Water | 80/92/65/80/68 | 92/73 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `water-veil` `swift-swim` `snipe` (the last is hidden, §6.8.3) · **Tutor** Goldeen: `bubble` `rage` · Seaking: `ice-beam` `surf`
+**Abilities** `water-veil` `swift-swim` `snipe` (the last is hidden, §6.8.3) · **Tutor** Goldeen: `bubble` `rage` · Seaking: `ice-beam` `surf`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -330,7 +330,7 @@
 | `omanyte` | 138 | basic | Rock/Water | 35/40/100/90/35 | 90/95 | rare | **L12** → `omastar` | 1 `water-gun` · 1 `withdraw` · 4 `horn-attack` · 8 `leer` |
 | `omastar` | 139 | stage1 | Rock/Water | 70/60/125/115/55 | 115/120 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/3/2 · **Abilities** `shell-armor` `swift-swim` · **Tutor** Omanyte: `sand-attack` `aurora-beam` · Omastar: `earthquake`
+**Abilities** `shell-armor` `swift-swim` · **Tutor** Omanyte: `sand-attack` `aurora-beam` · Omastar: `earthquake`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -343,7 +343,7 @@
 | `kabuto` | 140 | basic | Rock/Water | 30/80/90/45/55 | 80/68 | rare | **L12** → `kabutops` | 1 `scratch` · 1 `harden` · 4 `absorb` · 8 `leer` |
 | `kabutops` | 141 | stage1 | Rock/Water | 60/115/105/70/80 | 115/88 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/3/3 · **Abilities** `battle-armor` `swift-swim` · **Tutor** Kabuto: `sand-attack` `rock-throw` · Kabutops: `waterfall`
+**Abilities** `battle-armor` `swift-swim` · **Tutor** Kabuto: `sand-attack` `rock-throw` · Kabutops: `waterfall`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -357,7 +357,7 @@
 | `dragonair` | 148 | stage1 | Dragon | 61/84/65/70/70 | 84/68 | — | **L26** → `dragonite` | — *(its base form's kit, rewritten by evolution)* |
 | `dragonite` | 149 | stage2 | Dragon/Flying | 91/134/95/100/80 | 134/98 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `inner-focus` `iron-shell` `solid-rock` (the last is hidden, §6.8.3) · **Tutor** Dratini: `bubble` · Dragonair: — · Dragonite: `fire-punch` `thunder-punch`
+**Abilities** `inner-focus` `iron-shell` `solid-rock` (the last is hidden, §6.8.3) · **Tutor** Dratini: `bubble` · Dragonair: — · Dragonite: `fire-punch` `thunder-punch`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -374,7 +374,7 @@
 | `kadabra` | 64 | stage1 | Psychic | 40/35/30/120/105 | 120/75 | — | **L26** → `alakazam` | — *(its base form's kit, rewritten by evolution)* |
 | `alakazam` | 65 | stage2 | Psychic | 55/50/45/135/120 | 135/90 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 1/3/1/3 · **Abilities** `inner-focus` `anticipation` `adaptability` (the last is hidden, §6.8.3) · **Tutor** Abra: `swift` · Kadabra: `headbutt` `thunder-punch` · Alakazam: `fire-punch` `ice-punch`
+**Abilities** `inner-focus` `anticipation` `adaptability` (the last is hidden, §6.8.3) · **Tutor** Abra: `swift` · Kadabra: `headbutt` `thunder-punch` · Alakazam: `fire-punch` `ice-punch`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -388,7 +388,7 @@
 | `drowzee` | 96 | basic | Psychic | 60/48/45/90/42 | 90/68 | uncommon | **L12** → `hypno` | 1 `pound` · 1 `hypnosis` · 4 `disable` · 8 `confusion` |
 | `hypno` | 97 | stage1 | Psychic | 85/73/70/115/67 | 115/93 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/2/2 · **Abilities** `insomnia` `inner-focus` `anticipation` (the last is hidden, §6.8.3) · **Tutor** Drowzee: `kinesis` `swift` · Hypno: `ice-punch` `thunder-punch`
+**Abilities** `insomnia` `inner-focus` `anticipation` (the last is hidden, §6.8.3) · **Tutor** Drowzee: `kinesis` `swift` · Hypno: `ice-punch` `thunder-punch`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -400,7 +400,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `mr-mime` | 122 | basic | Psychic | 40/45/65/100/90 | 100/83 | rare | — | 1 `confusion` · 1 `barrier` · 8 `light-screen` · 16 `double-slap` · 24 `reflect` |
 
-**Growth** 2/3/3/4 · **Abilities** `solid-rock` `inner-focus` · **Tutor** Mr. Mime: `thunder-wave` `hypnosis` · **Archetype** support
+**Abilities** `solid-rock` `inner-focus` · **Tutor** Mr. Mime: `thunder-wave` `hypnosis` · **Archetype** support
 
 ### `jynx` — Ice/Psychic · rare · single stage
 
@@ -408,7 +408,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `jynx` | 124 | basic | Ice/Psychic | 65/50/35/95/95 | 95/65 | rare | — | 1 `pound` · 1 `lovely-kiss` · 8 `lick` · 16 `double-slap` · 24 `ice-punch` |
 
-**Growth** 3/3/2/3 · **Abilities** `anticipation` `own-tempo` · **Tutor** Jynx: `psychic` `amnesia` · **Archetype** specialist
+**Abilities** `anticipation` `own-tempo` · **Tutor** Jynx: `psychic` `amnesia` · **Archetype** specialist
 
 ### `gastly` line — Ghost/Poison · common
 
@@ -418,7 +418,7 @@
 | `haunter` | 93 | stage1 | Ghost/Poison | 45/50/45/115/95 | 115/80 | — | **L26** → `gengar` | — *(its base form's kit, rewritten by evolution)* |
 | `gengar` | 94 | stage2 | Ghost/Poison | 60/65/60/130/110 | 130/95 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 1/3/1/3 · **Abilities** `anticipation` `snipe` `adaptability` (the last is hidden, §6.8.3) · **Tutor** Gastly: `screech` · Haunter: `thunderbolt` `sludge` · Gengar: `ice-punch` `fire-punch`
+**Abilities** `anticipation` `snipe` `adaptability` (the last is hidden, §6.8.3) · **Tutor** Gastly: `screech` · Haunter: `thunderbolt` `sludge` · Gengar: `ice-punch` `fire-punch`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -432,7 +432,7 @@
 | `grimer` | 88 | basic | Poison | 80/80/50/40/25 | 80/45 | common | **L12** → `muk` | 1 `pound` · 1 `poison-gas` · 4 `disable` · 8 `sludge` |
 | `muk` | 89 | stage1 | Poison | 105/105/75/65/50 | 105/70 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/3/2/1 · **Abilities** `poison-point` `guts` `iron-shell` (the last is hidden, §6.8.3) · **Tutor** Grimer: `sand-attack` · Muk: `fire-punch` `thunder-punch`
+**Abilities** `poison-point` `guts` `iron-shell` (the last is hidden, §6.8.3) · **Tutor** Grimer: `sand-attack` · Muk: `fire-punch` `thunder-punch`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -447,7 +447,7 @@
 | `cubone` | 104 | basic | Ground | 50/50/95/40/35 | 50/68 | rare | **L12** → `marowak` | 1 `bone-club` · 1 `growl` · 4 `tail-whip` · 8 `leer` |
 | `marowak` | 105 | stage1 | Ground | 60/80/110/50/45 | 80/80 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/3/3/2 · **Abilities** `rock-head` `battle-armor` (the last is hidden, §6.8.3) · **Tutor** Cubone: `sand-attack` · Marowak: `swords-dance`
+**Abilities** `rock-head` `battle-armor` (the last is hidden, §6.8.3) · **Tutor** Cubone: `sand-attack` · Marowak: `swords-dance`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -460,7 +460,7 @@
 | `rhyhorn` | 111 | basic | Ground/Rock | 80/85/95/30/25 | 85/63 | uncommon | **L12** → `rhydon` | 1 `horn-attack` · 1 `tail-whip` · 4 `stomp` · 8 `rock-throw` |
 | `rhydon` | 112 | stage1 | Ground/Rock | 105/130/120/45/40 | 130/83 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/3/3/1 · **Abilities** `rock-head` `solid-rock` · **Tutor** Rhyhorn: `slam` · Rhydon: `surf` `thunderbolt`
+**Abilities** `rock-head` `solid-rock` · **Tutor** Rhyhorn: `slam` · Rhydon: `surf` `thunderbolt`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -472,7 +472,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `aerodactyl` | 142 | basic | Rock/Flying | 80/105/65/60/130 | 105/63 | rare | — | 1 `wing-attack` · 1 `agility` · 8 `supersonic` · 16 `bite` · 24 `take-down` |
 
-**Growth** 4/4/3/5 · **Abilities** `rock-head` `tough-claws` (the last is hidden, §6.8.3) · **Tutor** Aerodactyl: `earthquake` `fire-punch` · **Archetype** vanguard
+**Abilities** `rock-head` `tough-claws` (the last is hidden, §6.8.3) · **Tutor** Aerodactyl: `earthquake` `fire-punch` · **Archetype** vanguard
 
 ## 6. Fighters
 
@@ -482,7 +482,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `hitmonlee` | 106 | basic | Fighting | 50/120/53/35/87 | 120/44 | rare | — | 1 `double-kick` · 1 `meditate` · 8 `swift` · 16 `rolling-kick` · 24 `high-jump-kick` |
 
-**Growth** 3/4/3/4 · **Abilities** `limber` `rock-head` · **Tutor** Hitmonlee: `low-kick` · **Archetype** vanguard
+**Abilities** `limber` `rock-head` · **Tutor** Hitmonlee: `low-kick` · **Archetype** vanguard
 
 ## 7. The rest of the book
 
@@ -492,7 +492,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `chansey` | 113 | basic | Normal | 250/5/5/105/50 | 105/55 | rare | — | 1 `pound` · 1 `double-slap` · 8 `sing` · 16 `growl` · 24 `soft-boiled` |
 
-**Growth** 6/2/2/2 · **Abilities** `healer` · **Tutor** Chansey: `ice-beam` `thunderbolt` · **Archetype** support
+**Abilities** `healer` · **Tutor** Chansey: `ice-beam` `thunderbolt` · **Archetype** support
 
 ### `ditto` — Normal · rare · single stage
 
@@ -500,7 +500,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `ditto` | 132 | basic | Normal | 48/48/48/48/48 | 48/48 | rare | — | 1 `transform` · 1 `pound` |
 
-**Growth** 2/2/2/2 · **Abilities** `limber` · **Tutor** Ditto: — · **Archetype** support
+**Abilities** `limber` · **Tutor** Ditto: — · **Archetype** support
 
 ### `porygon` — Normal · rare · single stage
 
@@ -508,7 +508,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `porygon` | 137 | basic | Normal | 65/60/70/75/40 | 75/73 | rare | — | 1 `tackle` · 1 `sharpen` · 8 `conversion` · 16 `psybeam` · 24 `agility` |
 
-**Growth** 3/3/3/2 · **Abilities** `adaptability` `anticipation` · **Tutor** Porygon: `ice-beam` `thunderbolt` · **Archetype** specialist
+**Abilities** `adaptability` `anticipation` · **Tutor** Porygon: `ice-beam` `thunderbolt` · **Archetype** specialist
 
 ## 8. Legendary
 
@@ -518,7 +518,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `articuno` | 144 | basic | Ice/Flying | 90/85/100/125/85 | 125/113 | legendary | — | 1 `peck` · 1 `ice-beam` · 10 `blizzard` · 20 `agility` · 40 `mist` |
 
-**Growth** 4/3/4/3 · **Abilities** `snipe` `inner-focus` · **Tutor** Articuno: `recover` `haze` · **Archetype** specialist
+**Abilities** `snipe` `inner-focus` · **Tutor** Articuno: `recover` `haze` · **Archetype** specialist
 
 ### `zapdos` — Electric/Flying · legendary · single stage
 
@@ -526,7 +526,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `zapdos` | 145 | basic | Electric/Flying | 90/90/85/125/100 | 125/105 | legendary | — | 1 `thunder-shock` · 1 `drill-peck` · 10 `thunder` · 20 `agility` · 40 `light-screen` |
 
-**Growth** 4/3/3/4 · **Abilities** `static` `volt-absorb` · **Tutor** Zapdos: `recover` · **Archetype** specialist
+**Abilities** `static` `volt-absorb` · **Tutor** Zapdos: `recover` · **Archetype** specialist
 
 ### `moltres` — Fire/Flying · legendary · single stage
 
@@ -534,7 +534,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `moltres` | 146 | basic | Fire/Flying | 90/100/90/125/90 | 125/108 | legendary | — | 1 `peck` · 1 `fire-spin` · 10 `leer` · 20 `agility` · 40 `sky-attack` |
 
-**Growth** 4/3/3/3 · **Abilities** `flame-body` `flash-fire` · **Tutor** Moltres: `recover` `confuse-ray` · **Archetype** specialist
+**Abilities** `flame-body` `flash-fire` · **Tutor** Moltres: `recover` `confuse-ray` · **Archetype** specialist
 
 ### `mewtwo` — Psychic · legendary · single stage
 
@@ -542,7 +542,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `mewtwo` | 150 | basic | Psychic | 106/110/90/154/130 | 154/122 | legendary | — | 1 `confusion` · 1 `disable` · 10 `swift` · 20 `psychic` · 40 `barrier` |
 
-**Growth** 4/4/3/4 · **Abilities** `inner-focus` `adaptability` · **Tutor** Mewtwo: `ice-beam` `thunderbolt` · **Archetype** specialist
+**Abilities** `inner-focus` `adaptability` · **Tutor** Mewtwo: `ice-beam` `thunderbolt` · **Archetype** specialist
 
 ### `mew` — Psychic · legendary · single stage
 
@@ -550,4 +550,4 @@
 |---|---|---|---|---|---|---|---|---|
 | `mew` | 151 | basic | Psychic | 100/100/100/100/100 | 100/100 | legendary | — | 1 `pound` · 1 `transform` · 10 `mega-punch` · 20 `metronome` · 40 `psychic` |
 
-**Growth** 4/3/3/3 · **Abilities** `inner-focus` `solid-rock` · **Tutor** Mew: `flamethrower` `thunderbolt` `ice-beam` · **Archetype** support
+**Abilities** `inner-focus` `solid-rock` · **Tutor** Mew: `flamethrower` `thunderbolt` `ice-beam` · **Archetype** support

@@ -72,7 +72,7 @@
       "cardId": "c2"
     }
   ],
-  "fingerprint": "t4 victory lead=0 ap=2 team=[charmander:50/53,squirtle:62/62,bulbasaur:56/63] enemies=[pidgey:0/52] events=60 rng=663891820",
+  "fingerprint": "t4 victory lead=0 ap=2 team=[charmander:54/57,squirtle:60/60,bulbasaur:55/61] enemies=[pidgey:0/55] events=60 rng=663891820",
   "turns": 4,
   "outcome": "victory"
 }

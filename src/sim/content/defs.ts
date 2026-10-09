@@ -109,8 +109,6 @@ export interface SpeciesDef {
   types: PokemonType[];
   stage: EvolutionStage;
   baseStats: StatBlock;
-  /** §6.2.3 — flat per-level growth of the line. */
-  growth: StatBlock;
   /** §6.9 — ordered (level, move). Known moves are every entry at or below the current level. */
   learnset: { level: number; move: string }[];
   /** §6.5.1 — the species' ability pool; the first entry is granted at the first evolution. */

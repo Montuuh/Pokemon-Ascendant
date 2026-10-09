@@ -17,12 +17,25 @@ export const ARCHETYPE_STAT_BIAS: Record<BranchArchetype, Record<'hp' | Stat, nu
   support: { hp: 1.05, attack: 0.95, defense: 1.05, speed: 1 },
 };
 
-// §6.2.3 — level-scaled base stats: base + growth × (level − 1). Flat growth per line (Unity StatGrowthCurve), then
-// the archetype's lean (§6.3.4) for a Pokémon that has taken a path.
+/**
+ * §6.2.3 — the share of its base a stat gains every level (v0.9.10, the user's call: stats in proportion to the
+ * series'). Every stat grows in proportion to its own base, so a species' total at any level keeps the proportion
+ * of its base total: Magikarp stays small and Gyarados grows big, a final form stands above its pre-evolutions at
+ * the same level, and a single stage or a Legendary carries its higher total. Chosen so the mean total at Lv 30 is
+ * where the old flat per-line growth left it (584).
+ */
+export const STAT_GROWTH_RATE = 0.035;
+
+/** §6.2.3 — HP also gains this much a level whatever its base, as the series adds the level to HP: a low-level fight keeps some length. */
+export const HP_PER_LEVEL = 1;
+
+// §6.2.3 — level-scaled base stats: base × (1 + rate × (level − 1)), then the archetype's lean (§6.3.4) for a
+// Pokémon that has taken a path. (Until v0.9.10: base + a flat per-line growth × (level − 1), which gave Geodude
+// Golem's growth and a single stage a quarter more than a final form.)
 export function statAtLevel(species: SpeciesDef, stat: 'hp' | Stat, level: number, archetype?: BranchArchetype | null): number {
   const lv = Math.max(1, Math.trunc(level));
-  const raw = species.baseStats[stat] + species.growth[stat] * (lv - 1);
-  return archetype ? Math.round(raw * ARCHETYPE_STAT_BIAS[archetype][stat]) : raw;
+  const raw = species.baseStats[stat] * (1 + STAT_GROWTH_RATE * (lv - 1)) + (stat === 'hp' ? HP_PER_LEVEL * lv : 0);
+  return Math.round(archetype ? raw * ARCHETYPE_STAT_BIAS[archetype][stat] : raw);
 }
 
 /**

@@ -80,7 +80,6 @@ export const SpeciesSchema = z.object({
   types: z.array(PokemonTypeSchema).min(1).max(2),
   stage: z.enum(['basic', 'stage1', 'stage2']),
   baseStats: StatBlockSchema,
-  growth: StatBlockSchema,
   /** §6.9 — ordered (level, move); a Pokémon knows every entry at or below its level. An evolved form has none of its
    *  own since v0.9.5: its kit is its base form's, rewritten by the evolutions (§6.3.5). */
   learnset: z.array(z.object({ level: z.number().int().min(1), move: KebabId })),

@@ -930,15 +930,18 @@ export const STATUS_ACCENT_FALLBACK = 'glare';
  * v0.9.10 made the Pokémon behind an enemy Lead whole (§5.6: no role, all its HP and Attack) and cut the relics a run
  * collects (§7.3: ~10 at a won run's end → ~7): R1 44 % · R2|R1 36 %. Attack ×1.2 / ×1.9 / ×2.7: R1 57 % · R2|R1 61 % ·
  * R3|R2 52 % · run 18 % (720 runs).
+ *
+ * Stats then grew in proportion to their base (§6.2.3): R1 55 % · R3|R2 43 %. Attack ×1.15 / ×1.9 / ×2.55: R1 60 % ·
+ * R2|R1 59 % · R3|R2 51 % · run 18 % (720 runs).
  */
 export interface StatTier {
   hp: number;
   attack: number;
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { hp: 0.6, attack: 1.2 },
+  { hp: 0.6, attack: 1.15 },
   { hp: 0.45, attack: 1.9 },
-  { hp: 0.35, attack: 2.7 },
+  { hp: 0.35, attack: 2.55 },
 ];
 
 /**

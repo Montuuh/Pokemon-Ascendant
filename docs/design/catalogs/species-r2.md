@@ -27,7 +27,7 @@
 | `tentacool` | 72 | basic | Water/Poison | 40/40/35/100/70 | 100/68 | common | **L12** → `tentacruel` | 1 `acid` · 1 `supersonic` · 4 `wrap` · 8 `poison-sting` |
 | `tentacruel` | 73 | stage1 | Water/Poison | 80/70/65/120/100 | 120/93 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `poison-point` `water-absorb` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Tentacool: `rest` · Tentacruel: —
+**Abilities** `poison-point` `water-absorb` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Tentacool: `rest` · Tentacruel: —
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -40,7 +40,7 @@
 | `shellder` | 90 | basic | Water | 30/65/100/45/40 | 65/73 | common | **L12** → `cloyster` | 1 `tackle` · 1 `withdraw` · 4 `supersonic` · 8 `clamp` |
 | `cloyster` | 91 | stage1 | Water/Ice | 50/95/180/85/70 | 95/133 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/4/2 · **Abilities** `shell-armor` `iron-shell` `sturdy` (the third is hidden, §6.8.3) · **Tutor** Shellder: `water-gun` `harden` · Cloyster: `hydro-pump` `surf`
+**Abilities** `shell-armor` `iron-shell` `sturdy` (the third is hidden, §6.8.3) · **Tutor** Shellder: `water-gun` `harden` · Cloyster: `hydro-pump` `surf`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -53,7 +53,7 @@
 | `horsea` | 116 | basic | Water | 30/40/70/70/60 | 70/70 | common | **L12** → `seadra` | 1 `bubble` · 1 `smokescreen` · 4 `leer` · 8 `water-gun` |
 | `seadra` | 117 | stage1 | Water | 55/65/95/95/85 | 95/95 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `snipe` `damp` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Horsea: `swift` · Seadra: `surf`
+**Abilities** `snipe` `damp` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Horsea: `swift` · Seadra: `surf`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -66,7 +66,7 @@
 | `staryu` | 120 | basic | Water | 30/45/55/70/85 | 70/63 | uncommon | **L12** → `starmie` | 1 `tackle` · 1 `harden` · 4 `water-gun` · 8 `swift` |
 | `starmie` | 121 | stage1 | Water/Psychic | 60/75/85/100/115 | 100/93 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/4 · **Abilities** `healer` `anticipation` `adaptability` (the third is hidden, §6.8.3) · **Tutor** Staryu: `agility` · Starmie: `surf`
+**Abilities** `healer` `anticipation` `adaptability` (the third is hidden, §6.8.3) · **Tutor** Staryu: `agility` · Starmie: `surf`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -79,7 +79,7 @@
 | `seel` | 86 | basic | Water | 65/45/55/70/45 | 70/63 | uncommon | **L12** → `dewgong` | 1 `headbutt` · 1 `growl` · 4 `aurora-beam` · 8 `water-gun` |
 | `dewgong` | 87 | stage1 | Water/Ice | 90/70/80/95/70 | 95/88 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/3/2 · **Abilities** `thick-fat` `iron-shell` `healer` (the third is hidden, §6.8.3) · **Tutor** Seel: — · Dewgong: `hydro-pump`
+**Abilities** `thick-fat` `iron-shell` `healer` (the third is hidden, §6.8.3) · **Tutor** Seel: — · Dewgong: `hydro-pump`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -94,7 +94,7 @@
 | `voltorb` | 100 | basic | Electric | 40/30/50/55/100 | 55/53 | common | **L12** → `electrode` | 1 `tackle` · 1 `screech` · 4 `sonic-boom` · 8 `thunder-shock` |
 | `electrode` | 101 | stage1 | Electric | 60/50/70/80/140 | 80/75 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/2/2/4 · **Abilities** `static` `run-down` `speed-boost` (the third is hidden, §6.8.3) · **Tutor** Voltorb: `thunder-wave` `defense-curl` · Electrode: `thunder` `tri-attack`
+**Abilities** `static` `run-down` `speed-boost` (the third is hidden, §6.8.3) · **Tutor** Voltorb: `thunder-wave` `defense-curl` · Electrode: `thunder` `tri-attack`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -107,7 +107,7 @@
 | `magnemite` | 81 | basic | Electric | 25/35/70/95/45 | 95/83 | common | **L12** → `magneton` | 1 `tackle` · 1 `sonic-boom` · 4 `thunder-shock` · 8 `supersonic` |
 | `magneton` | 82 | stage1 | Electric | 50/60/95/120/70 | 120/108 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/3/2 · **Abilities** `sturdy` `static` `solid-rock` (the third is hidden, §6.8.3) · **Tutor** Magnemite: `defense-curl` `slash` · Magneton: `double-edge`
+**Abilities** `sturdy` `static` `solid-rock` (the third is hidden, §6.8.3) · **Tutor** Magnemite: `defense-curl` `slash` · Magneton: `double-edge`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -120,7 +120,7 @@
 | `pikachu` | 25 | basic | Electric | 35/55/30/50/90 | 55/40 | uncommon | **L12** → `raichu` | 1 `thunder-shock` · 1 `growl` · 4 `quick-attack` · 8 `thunder-wave` |
 | `raichu` | 26 | stage1 | Electric | 60/90/55/90/100 | 90/73 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/4 · **Abilities** `static` `run-down` `volt-absorb` (the third is hidden, §6.8.3) · **Tutor** Pikachu: `surf` · Raichu: `body-slam`
+**Abilities** `static` `run-down` `volt-absorb` (the third is hidden, §6.8.3) · **Tutor** Pikachu: `surf` · Raichu: `body-slam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -132,7 +132,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `electabuzz` | 125 | basic | Electric | 65/83/57/85/105 | 85/71 | rare | — | 1 `quick-attack` · 1 `leer` · 8 `thunder-shock` · 16 `screech` · 24 `thunder-punch` |
 
-**Growth** 3/4/3/4 · **Abilities** `static` `hustle` · **Tutor** Electabuzz: `fire-punch` `ice-punch`
+**Abilities** `static` `hustle` · **Tutor** Electabuzz: `fire-punch` `ice-punch`
 
 ## 3. The Gyms' lines
 
@@ -143,7 +143,7 @@
 | `growlithe` | 58 | basic | Fire | 55/70/45/50/60 | 70/48 | uncommon | **L12** → `arcanine` | 1 `bite` · 1 `roar` · 4 `ember` · 8 `leer` |
 | `arcanine` | 59 | stage1 | Fire | 90/110/80/80/95 | 110/80 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/3/2/3 · **Abilities** `intimidate` `flash-fire` `steadfast` (the third is hidden, §6.8.3) · **Tutor** Growlithe: `confuse-ray` `agility` · Arcanine: `slam`
+**Abilities** `intimidate` `flash-fire` `steadfast` (the third is hidden, §6.8.3) · **Tutor** Growlithe: `confuse-ray` `agility` · Arcanine: `slam`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -156,7 +156,7 @@
 | `koffing` | 109 | basic | Poison | 40/65/95/60/35 | 65/78 | common | **L12** → `weezing` | 1 `tackle` · 1 `smog` · 4 `smokescreen` · 8 `self-destruct` |
 | `weezing` | 110 | stage1 | Poison | 65/90/120/85/60 | 90/103 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/2/4/1 · **Abilities** `poison-point` `cloud-nine` · **Tutor** Koffing: `acid-armor` `screech` · Weezing: `flamethrower` `thunderbolt`
+**Abilities** `poison-point` `cloud-nine` · **Tutor** Koffing: `acid-armor` `screech` · Weezing: `flamethrower` `thunderbolt`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -170,7 +170,7 @@
 |---|---|---|---|---|---|---|---|---|
 | `hitmonchan` | 107 | basic | Fighting | 50/105/79/35/76 | 105/57 | rare | — | 1 `comet-punch` · 1 `agility` · 8 `swift` · 16 `fire-punch` · 24 `ice-punch` |
 
-**Growth** 3/4/3/3 · **Abilities** `inner-focus` `steadfast` · **Tutor** Hitmonchan: `body-slam`
+**Abilities** `inner-focus` `steadfast` · **Tutor** Hitmonchan: `body-slam`
 
 ## 5. What Region 2 shipped without
 

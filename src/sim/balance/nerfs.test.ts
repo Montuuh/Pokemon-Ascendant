@@ -107,7 +107,8 @@ describe('Drain — §4.1.6, catalogs/moves.md', () => {
     expect(net).toBeLessThan(-0.03);
     // Before: 12.5 % of Max HP per AP whatever it hit, which out-healed a same-level trainer with Leftovers on top.
     // Now the heal is half the damage dealt, so it tracks the matchup and stays under a Potion's worth per AP.
-    expect(plain.healPerAp).toBeLessThan(0.06);
+    // 6.5 % since v0.9.10: HP grows with its base (§6.2.3) and the fixture's Max HP moved with it.
+    expect(plain.healPerAp).toBeLessThan(0.065);
     expect(plain.healPerDamage).toBeGreaterThan(0.45);
     expect(plain.healPerDamage).toBeLessThan(0.55);
   });

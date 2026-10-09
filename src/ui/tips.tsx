@@ -1041,8 +1041,8 @@ export function evolveTip(label: string): ReactNode {
 
 /** What a level-up added: each stat from its old value to its new one. */
 export function levelGainTip(name: string, from: number, to: number, gains: Record<string, number>, statsAt?: Record<string, number>): ReactNode {
-  const body = statsAt ? Object.entries(gains).map(([k, v]) => <div key={k}>{STAT_LONG[k] ?? k} {statsAt[k]! - v} → <b>{statsAt[k]}</b></div>) : "Every level adds the line's growth to each stat.";
-  return <Tip title={`${name} — Lv ${from} → ${to}`} body={body} footer="Every level adds the line's growth to each stat. Trauma still takes its share of HP." />;
+  const body = statsAt ? Object.entries(gains).map(([k, v]) => <div key={k}>{STAT_LONG[k] ?? k} {statsAt[k]! - v} → <b>{statsAt[k]}</b></div>) : "Every level adds a share of each base stat: a bigger base grows more.";
+  return <Tip title={`${name} — Lv ${from} → ${to}`} body={body} footer="Every level adds a share of each base stat: a bigger base grows more. Trauma still takes its share of HP." />;
 }
 
 /** A move that arrived past four: where it is, and how to play it. */

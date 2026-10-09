@@ -15,12 +15,6 @@
         "defense": 57,
         "speed": 45
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [
         {
           "level": 1,
@@ -135,12 +129,6 @@
         "defense": 72,
         "speed": 60
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "overgrow",
@@ -230,12 +218,6 @@
         "defense": 92,
         "speed": 80
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "overgrow",
@@ -263,12 +245,6 @@
         "attack": 60,
         "defense": 52,
         "speed": 65
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -387,12 +363,6 @@
         "defense": 69,
         "speed": 80
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "blaze",
@@ -482,12 +452,6 @@
         "defense": 94,
         "speed": 100
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "blaze",
@@ -514,12 +478,6 @@
         "attack": 50,
         "defense": 58,
         "speed": 43
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -638,12 +596,6 @@
         "defense": 73,
         "speed": 58
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "torrent",
@@ -729,12 +681,6 @@
         "defense": 93,
         "speed": 78
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "torrent",
@@ -761,12 +707,6 @@
         "attack": 30,
         "defense": 28,
         "speed": 45
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 1,
-        "defense": 2,
-        "speed": 2
       },
       "learnset": [
         {
@@ -878,12 +818,6 @@
         "defense": 40,
         "speed": 30
       },
-      "growth": {
-        "hp": 2,
-        "attack": 1,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "iron-shell",
@@ -977,12 +911,6 @@
         "defense": 70,
         "speed": 70
       },
-      "growth": {
-        "hp": 2,
-        "attack": 1,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "compound-eyes",
@@ -1010,12 +938,6 @@
         "attack": 35,
         "defense": 25,
         "speed": 50
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
       },
       "learnset": [
         {
@@ -1107,12 +1029,6 @@
         "defense": 38,
         "speed": 35
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "iron-shell",
@@ -1190,12 +1106,6 @@
         "defense": 43,
         "speed": 75
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "swarm",
@@ -1225,12 +1135,6 @@
         "attack": 45,
         "defense": 38,
         "speed": 56
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -1344,12 +1248,6 @@
         "defense": 53,
         "speed": 71
       },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "keen-eye",
@@ -1443,12 +1341,6 @@
         "defense": 73,
         "speed": 101
       },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "keen-eye",
@@ -1476,12 +1368,6 @@
         "attack": 56,
         "defense": 30,
         "speed": 72
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -1580,12 +1466,6 @@
         "defense": 55,
         "speed": 97
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "guts",
@@ -1613,12 +1493,6 @@
         "attack": 60,
         "defense": 31,
         "speed": 70
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -1713,12 +1587,6 @@
         "defense": 63,
         "speed": 100
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "keen-eye",
@@ -1742,12 +1610,6 @@
         "attack": 60,
         "defense": 42,
         "speed": 55
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -1843,12 +1705,6 @@
         "defense": 67,
         "speed": 80
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "intimidate",
@@ -1875,12 +1731,6 @@
         "attack": 55,
         "defense": 40,
         "speed": 90
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 4
       },
       "learnset": [
         {
@@ -1995,12 +1845,6 @@
         "defense": 73,
         "speed": 100
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 4
-      },
       "learnset": [],
       "availableAbilities": [
         "static",
@@ -2026,12 +1870,6 @@
         "attack": 75,
         "defense": 58,
         "speed": 40
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -2123,12 +1961,6 @@
         "defense": 83,
         "speed": 65
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "sand-veil",
@@ -2154,12 +1986,6 @@
         "attack": 47,
         "defense": 46,
         "speed": 41
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -2255,12 +2081,6 @@
         "defense": 61,
         "speed": 56
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "poison-point",
@@ -2328,12 +2148,6 @@
         "defense": 81,
         "speed": 76
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "poison-point",
@@ -2360,12 +2174,6 @@
         "attack": 57,
         "defense": 40,
         "speed": 50
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -2459,12 +2267,6 @@
         "defense": 56,
         "speed": 65
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "poison-point",
@@ -2532,12 +2334,6 @@
         "defense": 76,
         "speed": 85
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "poison-point",
@@ -2563,12 +2359,6 @@
         "attack": 60,
         "defense": 54,
         "speed": 35
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
       },
       "learnset": [
         {
@@ -2661,12 +2451,6 @@
         "defense": 79,
         "speed": 60
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "cute-charm",
@@ -2693,12 +2477,6 @@
         "attack": 65,
         "defense": 53,
         "speed": 65
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -2794,12 +2572,6 @@
         "defense": 88,
         "speed": 100
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "flash-fire",
@@ -2826,12 +2598,6 @@
         "attack": 45,
         "defense": 23,
         "speed": 20
-      },
-      "growth": {
-        "hp": 4,
-        "attack": 2,
-        "defense": 1,
-        "speed": 1
       },
       "learnset": [
         {
@@ -2925,12 +2691,6 @@
         "defense": 48,
         "speed": 45
       },
-      "growth": {
-        "hp": 4,
-        "attack": 2,
-        "defense": 1,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "cute-charm",
@@ -2958,12 +2718,6 @@
         "attack": 45,
         "defense": 38,
         "speed": 55
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -3061,12 +2815,6 @@
         "defense": 73,
         "speed": 90
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "inner-focus",
@@ -3095,12 +2843,6 @@
         "attack": 75,
         "defense": 65,
         "speed": 30
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 3,
-        "speed": 1
       },
       "learnset": [
         {
@@ -3218,12 +2960,6 @@
         "defense": 78,
         "speed": 40
       },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 3,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "chlorophyll",
@@ -3318,12 +3054,6 @@
         "defense": 93,
         "speed": 50
       },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 3,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "chlorophyll",
@@ -3352,12 +3082,6 @@
         "attack": 70,
         "defense": 55,
         "speed": 25
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 3,
-        "speed": 1
       },
       "learnset": [
         {
@@ -3454,12 +3178,6 @@
         "defense": 80,
         "speed": 30
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 3,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "effect-spore",
@@ -3484,12 +3202,6 @@
         "attack": 55,
         "defense": 45,
         "speed": 45
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
       },
       "learnset": [
         {
@@ -3583,12 +3295,6 @@
         "defense": 75,
         "speed": 90
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "compound-eyes",
@@ -3614,12 +3320,6 @@
         "attack": 55,
         "defense": 35,
         "speed": 95
-      },
-      "growth": {
-        "hp": 1,
-        "attack": 3,
-        "defense": 1,
-        "speed": 4
       },
       "learnset": [
         {
@@ -3715,12 +3415,6 @@
         "defense": 60,
         "speed": 120
       },
-      "growth": {
-        "hp": 1,
-        "attack": 3,
-        "defense": 1,
-        "speed": 4
-      },
       "learnset": [],
       "availableAbilities": [
         "sand-veil",
@@ -3746,12 +3440,6 @@
         "attack": 45,
         "defense": 38,
         "speed": 90
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 2,
-        "speed": 4
       },
       "learnset": [
         {
@@ -3846,12 +3534,6 @@
         "defense": 63,
         "speed": 115
       },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 2,
-        "speed": 4
-      },
       "learnset": [],
       "availableAbilities": [
         "run-down",
@@ -3878,12 +3560,6 @@
         "attack": 65,
         "defense": 57,
         "speed": 55
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -3980,12 +3656,6 @@
         "defense": 87,
         "speed": 85
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "cloud-nine",
@@ -4014,12 +3684,6 @@
         "attack": 80,
         "defense": 35,
         "speed": 70
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
       },
       "learnset": [
         {
@@ -4112,12 +3776,6 @@
         "defense": 60,
         "speed": 95
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "vital-spirit"
@@ -4140,12 +3798,6 @@
         "attack": 70,
         "defense": 48,
         "speed": 60
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -4242,12 +3894,6 @@
         "defense": 80,
         "speed": 95
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "intimidate",
@@ -4273,12 +3919,6 @@
         "attack": 50,
         "defense": 40,
         "speed": 90
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -4395,12 +4035,6 @@
         "defense": 58,
         "speed": 90
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "water-absorb",
@@ -4491,12 +4125,6 @@
         "defense": 83,
         "speed": 70
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "water-absorb",
@@ -4523,12 +4151,6 @@
         "attack": 105,
         "defense": 60,
         "speed": 90
-      },
-      "growth": {
-        "hp": 1,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
       },
       "learnset": [
         {
@@ -4619,12 +4241,6 @@
         "defense": 75,
         "speed": 105
       },
-      "growth": {
-        "hp": 1,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "inner-focus",
@@ -4692,12 +4308,6 @@
         "defense": 90,
         "speed": 120
       },
-      "growth": {
-        "hp": 1,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "inner-focus",
@@ -4724,12 +4334,6 @@
         "attack": 80,
         "defense": 43,
         "speed": 35
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 2,
-        "speed": 1
       },
       "learnset": [
         {
@@ -4829,12 +4433,6 @@
         "defense": 60,
         "speed": 45
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 2,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "guts",
@@ -4905,12 +4503,6 @@
         "defense": 73,
         "speed": 55
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 2,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "guts",
@@ -4939,12 +4531,6 @@
         "attack": 75,
         "defense": 53,
         "speed": 40
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 2
       },
       "learnset": [
         {
@@ -5039,12 +4625,6 @@
         "defense": 68,
         "speed": 55
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "chlorophyll"
@@ -5116,12 +4696,6 @@
         "defense": 83,
         "speed": 70
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "chlorophyll"
@@ -5147,12 +4721,6 @@
         "attack": 100,
         "defense": 68,
         "speed": 70
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -5249,12 +4817,6 @@
         "defense": 93,
         "speed": 100
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "poison-point",
@@ -5279,12 +4841,6 @@
         "attack": 80,
         "defense": 65,
         "speed": 20
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 4,
-        "speed": 2
       },
       "learnset": [
         {
@@ -5401,12 +4957,6 @@
         "defense": 80,
         "speed": 35
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 4,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "sturdy",
@@ -5499,12 +5049,6 @@
         "defense": 93,
         "speed": 45
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 4,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "sturdy",
@@ -5534,12 +5078,6 @@
         "attack": 85,
         "defense": 60,
         "speed": 90
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -5635,12 +5173,6 @@
         "defense": 75,
         "speed": 105
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "flash-fire",
@@ -5668,12 +5200,6 @@
         "attack": 65,
         "defense": 53,
         "speed": 15
-      },
-      "growth": {
-        "hp": 4,
-        "attack": 2,
-        "defense": 2,
-        "speed": 1
       },
       "learnset": [
         {
@@ -5769,12 +5295,6 @@
         "defense": 95,
         "speed": 30
       },
-      "growth": {
-        "hp": 4,
-        "attack": 2,
-        "defense": 2,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "own-tempo",
@@ -5801,12 +5321,6 @@
         "attack": 95,
         "defense": 83,
         "speed": 45
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -5898,12 +5412,6 @@
         "defense": 108,
         "speed": 70
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "sturdy",
@@ -5930,12 +5438,6 @@
         "attack": 65,
         "defense": 57,
         "speed": 60
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 4,
-        "defense": 3,
-        "speed": 4
       },
       "learnset": [
         {
@@ -5992,12 +5494,6 @@
         "attack": 85,
         "defense": 40,
         "speed": 75
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -6092,12 +5588,6 @@
         "defense": 65,
         "speed": 100
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "keen-eye",
@@ -6123,12 +5613,6 @@
         "attack": 70,
         "defense": 63,
         "speed": 45
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -6223,12 +5707,6 @@
         "defense": 88,
         "speed": 70
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "thick-fat",
@@ -6254,12 +5732,6 @@
         "attack": 80,
         "defense": 45,
         "speed": 25
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 2,
-        "speed": 1
       },
       "learnset": [
         {
@@ -6354,12 +5826,6 @@
         "defense": 70,
         "speed": 50
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 2,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "poison-point",
@@ -6386,12 +5852,6 @@
         "attack": 65,
         "defense": 73,
         "speed": 40
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 4,
-        "speed": 2
       },
       "learnset": [
         {
@@ -6488,12 +5948,6 @@
         "defense": 133,
         "speed": 70
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 4,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "shell-armor",
@@ -6521,12 +5975,6 @@
         "attack": 100,
         "defense": 65,
         "speed": 80
-      },
-      "growth": {
-        "hp": 1,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
       },
       "learnset": [
         {
@@ -6621,12 +6069,6 @@
         "defense": 80,
         "speed": 95
       },
-      "growth": {
-        "hp": 1,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "anticipation",
@@ -6695,12 +6137,6 @@
         "defense": 95,
         "speed": 110
       },
-      "growth": {
-        "hp": 1,
-        "attack": 3,
-        "defense": 1,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "anticipation",
@@ -6728,12 +6164,6 @@
         "attack": 45,
         "defense": 95,
         "speed": 70
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 5,
-        "speed": 3
       },
       "learnset": [
         {
@@ -6787,12 +6217,6 @@
         "attack": 90,
         "defense": 68,
         "speed": 42
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
       },
       "learnset": [
         {
@@ -6888,12 +6312,6 @@
         "defense": 93,
         "speed": 67
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "insomnia",
@@ -6920,12 +6338,6 @@
         "attack": 105,
         "defense": 58,
         "speed": 50
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -7021,12 +6433,6 @@
         "defense": 83,
         "speed": 75
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "shell-armor",
@@ -7052,12 +6458,6 @@
         "attack": 55,
         "defense": 53,
         "speed": 100
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 2,
-        "speed": 4
       },
       "learnset": [
         {
@@ -7149,12 +6549,6 @@
         "defense": 75,
         "speed": 140
       },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 2,
-        "speed": 4
-      },
       "learnset": [],
       "availableAbilities": [
         "static",
@@ -7182,12 +6576,6 @@
         "attack": 60,
         "defense": 70,
         "speed": 40
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 1
       },
       "learnset": [
         {
@@ -7283,12 +6671,6 @@
         "defense": 105,
         "speed": 55
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 3,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "chlorophyll",
@@ -7315,12 +6697,6 @@
         "attack": 50,
         "defense": 68,
         "speed": 35
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -7413,12 +6789,6 @@
         "defense": 80,
         "speed": 45
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "rock-head"
@@ -7443,12 +6813,6 @@
         "attack": 120,
         "defense": 44,
         "speed": 87
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 4,
-        "defense": 3,
-        "speed": 4
       },
       "learnset": [
         {
@@ -7502,12 +6866,6 @@
         "defense": 57,
         "speed": 76
       },
-      "growth": {
-        "hp": 3,
-        "attack": 4,
-        "defense": 3,
-        "speed": 3
-      },
       "learnset": [
         {
           "level": 1,
@@ -7559,12 +6917,6 @@
         "attack": 60,
         "defense": 68,
         "speed": 30
-      },
-      "growth": {
-        "hp": 4,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -7619,12 +6971,6 @@
         "attack": 65,
         "defense": 78,
         "speed": 35
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 4,
-        "speed": 1
       },
       "learnset": [
         {
@@ -7720,12 +7066,6 @@
         "defense": 103,
         "speed": 60
       },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 4,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "poison-point",
@@ -7753,12 +7093,6 @@
         "attack": 85,
         "defense": 63,
         "speed": 25
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 3,
-        "speed": 1
       },
       "learnset": [
         {
@@ -7854,12 +7188,6 @@
         "defense": 83,
         "speed": 40
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 3,
-        "speed": 1
-      },
       "learnset": [],
       "availableAbilities": [
         "rock-head",
@@ -7886,12 +7214,6 @@
         "attack": 105,
         "defense": 55,
         "speed": 50
-      },
-      "growth": {
-        "hp": 6,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
       },
       "learnset": [
         {
@@ -7943,12 +7265,6 @@
         "attack": 100,
         "defense": 108,
         "speed": 60
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 4,
-        "speed": 2
       },
       "learnset": [
         {
@@ -8004,12 +7320,6 @@
         "defense": 60,
         "speed": 90
       },
-      "growth": {
-        "hp": 4,
-        "attack": 3,
-        "defense": 3,
-        "speed": 3
-      },
       "learnset": [
         {
           "level": 1,
@@ -8063,12 +7373,6 @@
         "attack": 70,
         "defense": 70,
         "speed": 60
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -8164,12 +7468,6 @@
         "defense": 95,
         "speed": 85
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "snipe",
@@ -8195,12 +7493,6 @@
         "attack": 67,
         "defense": 55,
         "speed": 63
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -8295,12 +7587,6 @@
         "defense": 73,
         "speed": 68
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "water-veil",
@@ -8327,12 +7613,6 @@
         "attack": 70,
         "defense": 63,
         "speed": 85
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 4
       },
       "learnset": [
         {
@@ -8424,12 +7704,6 @@
         "defense": 93,
         "speed": 115
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 4
-      },
       "learnset": [],
       "availableAbilities": [
         "healer",
@@ -8455,12 +7729,6 @@
         "attack": 100,
         "defense": 83,
         "speed": 90
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 3,
-        "speed": 4
       },
       "learnset": [
         {
@@ -8518,12 +7786,6 @@
         "defense": 68,
         "speed": 105
       },
-      "growth": {
-        "hp": 3,
-        "attack": 4,
-        "defense": 3,
-        "speed": 4
-      },
       "learnset": [
         {
           "level": 1,
@@ -8578,12 +7840,6 @@
         "defense": 65,
         "speed": 95
       },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [
         {
           "level": 1,
@@ -8636,12 +7892,6 @@
         "attack": 85,
         "defense": 71,
         "speed": 105
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 4,
-        "defense": 3,
-        "speed": 4
       },
       "learnset": [
         {
@@ -8696,12 +7946,6 @@
         "attack": 95,
         "defense": 71,
         "speed": 93
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 4,
-        "defense": 3,
-        "speed": 4
       },
       "learnset": [
         {
@@ -8758,12 +8002,6 @@
         "defense": 78,
         "speed": 85
       },
-      "growth": {
-        "hp": 3,
-        "attack": 4,
-        "defense": 3,
-        "speed": 3
-      },
       "learnset": [
         {
           "level": 1,
@@ -8818,12 +8056,6 @@
         "defense": 83,
         "speed": 110
       },
-      "growth": {
-        "hp": 3,
-        "attack": 4,
-        "defense": 3,
-        "speed": 4
-      },
       "learnset": [
         {
           "level": 1,
@@ -8872,12 +8104,6 @@
         "attack": 20,
         "defense": 38,
         "speed": 80
-      },
-      "growth": {
-        "hp": 1,
-        "attack": 1,
-        "defense": 2,
-        "speed": 2
       },
       "learnset": [
         {
@@ -8964,12 +8190,6 @@
         "defense": 90,
         "speed": 81
       },
-      "growth": {
-        "hp": 3,
-        "attack": 4,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "swift-swim",
@@ -8999,12 +8219,6 @@
         "attack": 95,
         "defense": 88,
         "speed": 60
-      },
-      "growth": {
-        "hp": 5,
-        "attack": 3,
-        "defense": 4,
-        "speed": 3
       },
       "learnset": [
         {
@@ -9061,12 +8275,6 @@
         "defense": 48,
         "speed": 48
       },
-      "growth": {
-        "hp": 2,
-        "attack": 2,
-        "defense": 2,
-        "speed": 2
-      },
       "learnset": [
         {
           "level": 1,
@@ -9099,12 +8307,6 @@
         "attack": 65,
         "defense": 58,
         "speed": 55
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -9225,12 +8427,6 @@
         "defense": 85,
         "speed": 65
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "adaptability",
@@ -9260,12 +8456,6 @@
         "attack": 110,
         "defense": 85,
         "speed": 130
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [],
       "availableAbilities": [
@@ -9298,12 +8488,6 @@
         "defense": 85,
         "speed": 65
       },
-      "growth": {
-        "hp": 3,
-        "attack": 2,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "adaptability",
@@ -9333,12 +8517,6 @@
         "attack": 75,
         "defense": 73,
         "speed": 40
-      },
-      "growth": {
-        "hp": 3,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -9389,12 +8567,6 @@
         "attack": 90,
         "defense": 95,
         "speed": 35
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
       },
       "learnset": [
         {
@@ -9490,12 +8662,6 @@
         "defense": 120,
         "speed": 55
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 3,
-        "speed": 2
-      },
       "learnset": [],
       "availableAbilities": [
         "shell-armor",
@@ -9522,12 +8688,6 @@
         "attack": 80,
         "defense": 68,
         "speed": 55
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 3,
-        "speed": 3
       },
       "learnset": [
         {
@@ -9622,12 +8782,6 @@
         "defense": 88,
         "speed": 80
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 3,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "battle-armor",
@@ -9654,12 +8808,6 @@
         "attack": 105,
         "defense": 63,
         "speed": 130
-      },
-      "growth": {
-        "hp": 4,
-        "attack": 4,
-        "defense": 3,
-        "speed": 5
       },
       "learnset": [
         {
@@ -9714,12 +8862,6 @@
         "defense": 65,
         "speed": 30
       },
-      "growth": {
-        "hp": 5,
-        "attack": 3,
-        "defense": 3,
-        "speed": 1
-      },
       "learnset": [
         {
           "level": 1,
@@ -9771,12 +8913,6 @@
         "defense": 113,
         "speed": 85
       },
-      "growth": {
-        "hp": 4,
-        "attack": 3,
-        "defense": 4,
-        "speed": 3
-      },
       "learnset": [
         {
           "level": 1,
@@ -9827,12 +8963,6 @@
         "defense": 105,
         "speed": 100
       },
-      "growth": {
-        "hp": 4,
-        "attack": 3,
-        "defense": 3,
-        "speed": 4
-      },
       "learnset": [
         {
           "level": 1,
@@ -9882,12 +9012,6 @@
         "defense": 108,
         "speed": 90
       },
-      "growth": {
-        "hp": 4,
-        "attack": 3,
-        "defense": 3,
-        "speed": 3
-      },
       "learnset": [
         {
           "level": 1,
@@ -9936,12 +9060,6 @@
         "attack": 64,
         "defense": 48,
         "speed": 50
-      },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
       },
       "learnset": [
         {
@@ -10053,12 +9171,6 @@
         "defense": 68,
         "speed": 70
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "inner-focus",
@@ -10150,12 +9262,6 @@
         "defense": 98,
         "speed": 80
       },
-      "growth": {
-        "hp": 2,
-        "attack": 3,
-        "defense": 2,
-        "speed": 3
-      },
       "learnset": [],
       "availableAbilities": [
         "inner-focus",
@@ -10182,12 +9288,6 @@
         "attack": 154,
         "defense": 122,
         "speed": 130
-      },
-      "growth": {
-        "hp": 4,
-        "attack": 4,
-        "defense": 3,
-        "speed": 4
       },
       "learnset": [
         {
@@ -10237,12 +9337,6 @@
         "attack": 100,
         "defense": 100,
         "speed": 100
-      },
-      "growth": {
-        "hp": 4,
-        "attack": 3,
-        "defense": 3,
-        "speed": 3
       },
       "learnset": [
         {

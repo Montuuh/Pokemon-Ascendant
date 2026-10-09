@@ -48,7 +48,7 @@
 | `ivysaur` | 2 | stage1 | Grass/Poison | 60/62/63/80/60 | — | **L26** → `venusaur` | — *(its base form's kit, rewritten by evolution)* |
 | `venusaur` | 3 | stage2 | Grass/Poison | 80/82/83/100/80 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/2/2 · **Abilities** `overgrow` `chlorophyll` `healer` · **Mastery** `solar-beam` → `solar-beam-plus` → `solar-beam-plus-plus`
+**Abilities** `overgrow` `chlorophyll` `healer` · **Mastery** `solar-beam` → `solar-beam-plus` → `solar-beam-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -63,7 +63,7 @@
 | `charmeleon` | 5 | stage1 | Fire | 58/64/58/65/80 | — | **L26** → `charizard` | — *(its base form's kit, rewritten by evolution)* |
 | `charizard` | 6 | stage2 | Fire/Flying | 78/84/78/85/100 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `blaze` `tough-claws` `snipe` · **Mastery** `fire-blast` → `fire-blast-plus` → `fire-blast-plus-plus`
+**Abilities** `blaze` `tough-claws` `snipe` · **Mastery** `fire-blast` → `fire-blast-plus` → `fire-blast-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -78,7 +78,7 @@
 | `wartortle` | 8 | stage1 | Water | 59/63/80/65/58 | — | **L26** → `blastoise` | — *(its base form's kit, rewritten by evolution)* |
 | `blastoise` | 9 | stage2 | Water | 79/83/100/85/78 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/3/2 · **Abilities** `torrent` `shell-armor` `rain-dish` · **Mastery** `waterfall` → `waterfall-plus` → `waterfall-plus-plus`
+**Abilities** `torrent` `shell-armor` `rain-dish` · **Mastery** `waterfall` → `waterfall-plus` → `waterfall-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -97,7 +97,7 @@
 | `metapod` | 11 | stage1 | Bug | 50/20/55/25/30 | — | L12 → `butterfree` | — *(its base form's kit, rewritten by evolution)* |
 | `butterfree` | 12 | stage2 | Bug/Flying ★ | 60/45/50/80/70 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/1/2/2 · **Abilities** `compound-eyes` `iron-shell` `swarm` · **Mastery** `psybeam` → `psybeam-plus` → `psybeam-plus-plus`
+**Abilities** `compound-eyes` `iron-shell` `swarm` · **Mastery** `psybeam` → `psybeam-plus` → `psybeam-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -112,7 +112,7 @@
 | `kakuna` | 14 | stage1 | Bug/Poison | 45/25/50/25/35 | — | L12 → `beedrill` | — *(its base form's kit, rewritten by evolution)* |
 | `beedrill` | 15 | stage2 | Bug/Poison | 65/80/40/45/75 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/1/3 · **Abilities** `swarm` `poison-point` `snipe` · **Mastery** `fury-attack` → `fury-attack-plus` → `fury-attack-plus-plus`
+**Abilities** `swarm` `poison-point` `snipe` · **Mastery** `fury-attack` → `fury-attack-plus` → `fury-attack-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -127,7 +127,7 @@
 | `pidgeotto` | 17 | stage1 | Normal/Flying | 63/60/55/50/71 | — | **L26** → `pidgeot` | — *(its base form's kit, rewritten by evolution)* |
 | `pidgeot` | 18 | stage2 | Normal/Flying | 83/80/75/70/91 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/2/2/3 · **Abilities** `keen-eye` `tangled-feet` `healer` · **Mastery** `sky-attack` → `sky-attack-plus` → `sky-attack-plus-plus`
+**Abilities** `keen-eye` `tangled-feet` `healer` · **Mastery** `sky-attack` → `sky-attack-plus` → `sky-attack-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -141,7 +141,7 @@
 | `rattata` | 19 | basic | Normal | 30/56/35/25/72 | common | **L12** → `raticate` | 1 `tackle` · 1 `tail-whip` · 4 `quick-attack` · 8 `bite` |
 | `raticate` | 20 | stage1 (final) | Normal | 55/81/60/50/97 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/3 · **Abilities** `guts` `hustle` `run-down` · **Mastery** `super-fang` → `super-fang-plus`
+**Abilities** `guts` `hustle` `run-down` · **Mastery** `super-fang` → `super-fang-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -155,7 +155,7 @@
 | `gloom` | 44 | stage1 | Grass/Poison | 60/65/70/85/40 | — | **L26** → `vileplume` (Leaf Stone from L18) | — *(its base form's kit, rewritten by evolution)* |
 | `vileplume` | 45 | stage2 | Grass/Poison | 75/80/85/100/50 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/2/3/1 · **Abilities** `chlorophyll` `effect-spore` `healer` · **Mastery** `solar-beam` → `solar-beam-plus` → `solar-beam-plus-plus`
+**Abilities** `chlorophyll` `effect-spore` `healer` · **Mastery** `solar-beam` → `solar-beam-plus` → `solar-beam-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -174,7 +174,7 @@
 | `weepinbell` | 70 | stage1 | Grass/Poison | 65/90/50/85/55 | — | **L26** → `victreebel` (Leaf Stone from L18) | — *(its base form's kit, rewritten by evolution)* |
 | `victreebel` | 71 | stage2 | Grass/Poison | 80/105/65/100/70 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/2/2 · **Abilities** `chlorophyll` `gluttony` `snipe` · **Mastery** `solar-beam` → `solar-beam-plus` → `solar-beam-plus-plus`
+**Abilities** `chlorophyll` `gluttony` `snipe` · **Mastery** `solar-beam` → `solar-beam-plus` → `solar-beam-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -188,7 +188,7 @@
 | `mankey` | 56 | basic | Fighting | 40/80/35/35/70 | uncommon | **L12** → `primeape` | 1 `scratch` · 1 `leer` · 4 `low-kick` · 8 `karate-chop` |
 | `primeape` | 57 | stage1 (final) | Fighting | 65/105/60/60/95 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/3/1/3 · **Abilities** `anger-point` `vital-spirit` `guts` · **Mastery** `rage` → `rage-plus`
+**Abilities** `anger-point` `vital-spirit` `guts` · **Mastery** `rage` → `rage-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -203,7 +203,7 @@
 | `jolteon` | 135 | stage1 (final) | Electric ★ | 65/65/60/110/130 | — | — | — *(its base form's kit, rewritten by evolution)* |
 | `flareon` | 136 | stage1 (final) | Fire | 65/130/60/110/65 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/2/3 · **Abilities** `adaptability` `run-down` `anticipation` (Vaporeon adds `water-absorb`; Jolteon `volt-absorb`, `speed-boost`; Flareon `flash-fire`, `guts`) · **Mastery** `take-down` → `take-down-plus`
+**Abilities** `adaptability` `run-down` `anticipation` (Vaporeon adds `water-absorb`; Jolteon `volt-absorb`, `speed-boost`; Flareon `flash-fire`, `guts`) · **Mastery** `take-down` → `take-down-plus`
 
 | Evolution | Vanguard (→ Flareon) | Specialist (→ Jolteon) | Support (→ Vaporeon) |
 |---|---|---|---|
@@ -223,7 +223,7 @@
 | `zubat` | 41 | basic | Poison/Flying | 40/45/35/40/55 | common | **L12** → `golbat` | 1 `leech-life` · 1 `supersonic` · 4 `bite` · 8 `wing-attack` |
 | `golbat` | 42 | stage1 (final) | Poison/Flying | 75/80/70/75/90 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/2/3 · **Abilities** `inner-focus` `infiltrator` `snipe` · **Mastery** `sky-attack` → `sky-attack-plus`
+**Abilities** `inner-focus` `infiltrator` `snipe` · **Mastery** `sky-attack` → `sky-attack-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -237,7 +237,7 @@
 | `graveler` | 75 | stage1 | Rock/Ground | 55/95/115/45/35 | — | **L26** → `golem` | — *(its base form's kit, rewritten by evolution)* |
 | `golem` | 76 | stage2 | Rock/Ground | 80/110/130/55/45 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/3/3/2 · **Abilities** `sturdy` `rock-head` `solid-rock` · **Mastery** `mega-punch` → `mega-punch-plus` → `mega-punch-plus-plus`
+**Abilities** `sturdy` `rock-head` `solid-rock` · **Mastery** `mega-punch` → `mega-punch-plus` → `mega-punch-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -251,7 +251,7 @@
 | `diglett` | 50 | basic | Ground | 10/55/25/45/95 | common | **L12** → `dugtrio` | 1 `scratch` · 1 `sand-attack` · 4 `growl` · 8 `dig` |
 | `dugtrio` | 51 | stage1 (final) | Ground | 35/80/50/70/120 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 1/3/1/4 · **Abilities** `sand-veil` `hustle` `arena-trap` · **Mastery** `tri-attack` → `tri-attack-plus`
+**Abilities** `sand-veil` `hustle` `arena-trap` · **Mastery** `tri-attack` → `tri-attack-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -266,7 +266,7 @@
 |---|---|---|---|---|---|---|---|
 | `onix` | 95 | basic (final) | Rock/Ground | 35/45/160/30/70 | uncommon | — (single stage: +25 % growth, §6.2.4) | 1 `tackle` · 1 `screech` · 8 `bind` · 16 `rock-throw` · 24 `harden` |
 
-**Growth** 2/2/4/2 (+25 %) · **Abilities** `sturdy` `rock-head` `weak-armor` · **Mastery** `rock-slide`
+**Abilities** `sturdy` `rock-head` `weak-armor` · **Mastery** `rock-slide`
 
 ### `machop` line — Fighting · 2 archetypes (Vanguard, Support) · 🆕 · uncommon
 
@@ -276,7 +276,7 @@
 | `machoke` | 67 | stage1 | Fighting | 80/100/70/50/45 | — | **L26** → `machamp` | — *(its base form's kit, rewritten by evolution)* |
 | `machamp` | 68 | stage2 | Fighting | 90/130/80/65/55 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/3/2/1 · **Abilities** `guts` `no-guard` `steadfast` · **Mastery** `seismic-toss` → `seismic-toss-plus` → `seismic-toss-plus-plus`
+**Abilities** `guts` `no-guard` `steadfast` · **Mastery** `seismic-toss` → `seismic-toss-plus` → `seismic-toss-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -289,7 +289,7 @@
 |---|---|---|---|---|---|---|---|
 | `aerodactyl` | 142 | basic (final) | Rock/Flying | 80/105/65/60/130 | rare | — (+25 % growth) | 1 `wing-attack` · 1 `agility` · 8 `supersonic` · 16 `bite` · 24 `take-down` |
 
-**Growth** 3/3/2/4 (+25 %) · **Abilities** `rock-head` `pressure` `tough-claws` · **Mastery** `rock-slide`
+**Abilities** `rock-head` `pressure` `tough-claws` · **Mastery** `rock-slide`
 
 ### `lapras` — Water/Ice · single stage · ✅ v0.7.3 · rare (Cave lake + River, and Region 2's Sea)
 
@@ -301,7 +301,7 @@
 |---|---|---|---|---|---|---|---|
 | `lapras` | 131 | basic (final) | Water/Ice | 130/85/80/95/60 | rare | — (+25 % growth) | 1 `water-gun` · 1 `growl` · 8 `sing` · 16 `mist` · 24 `body-slam` |
 
-**Growth** 4/2/3/2 (+25 %) · **Abilities** `water-absorb` `shell-armor` `hydration` · **Mastery** `ice-beam`
+**Abilities** `water-absorb` `shell-armor` `hydration` · **Mastery** `ice-beam`
 
 ---
 
@@ -314,7 +314,7 @@
 | `magikarp` | 129 | basic | Water | 20/10/55/20/80 | common | **L18** → `gyarados` *(bespoke — the number is the joke)* | 1 `splash` · 1 `tackle` |
 | `gyarados` | 130 | stage1 (final) | Water/Flying | 95/125/79/100/81 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 1/1/2/2 (Magikarp) → line growth 3/4/2/2 after evolution (a deliberate exception) · **Abilities** `swift-swim` `intimidate` `moxie` · **Mastery** `hyper-beam` → `hyper-beam-plus`
+**Abilities** `swift-swim` `intimidate` `moxie` · **Mastery** `hyper-beam` → `hyper-beam-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -330,7 +330,7 @@
 | `poliwhirl` | 61 | stage1 | Water | 65/65/65/50/90 | — | **L26** → `poliwrath` (Water Stone from L18) | — *(its base form's kit, rewritten by evolution)* |
 | `poliwrath` | 62 | stage2 | Water/Fighting | 90/85/95/70/70 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/2/3 · **Abilities** `water-absorb` `damp` `swift-swim` · **Mastery** `mega-punch` → `mega-punch-plus` → `mega-punch-plus-plus`
+**Abilities** `water-absorb` `damp` `swift-swim` · **Mastery** `mega-punch` → `mega-punch-plus` → `mega-punch-plus-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -344,7 +344,7 @@
 | `psyduck` | 54 | basic | Water | 50/52/48/50/55 | uncommon | **L12** → `golduck` | 1 `scratch` · 1 `tail-whip` · 4 `water-gun` · 8 `disable` |
 | `golduck` | 55 | stage1 (final) | Water | 80/82/78/80/85 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 3/2/2/3 · **Abilities** `cloud-nine` `damp` `swift-swim` · **Mastery** `psybeam` → `psybeam-plus`
+**Abilities** `cloud-nine` `damp` `swift-swim` · **Mastery** `psybeam` → `psybeam-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -357,7 +357,7 @@
 | `krabby` | 98 | basic | Water | 30/105/90/25/50 | uncommon | **L12** → `kingler` | 1 `bubble` · 1 `leer` · 4 `vice-grip` · 8 `harden` |
 | `kingler` | 99 | stage1 (final) | Water | 55/130/115/50/75 | — | — | — *(its base form's kit, rewritten by evolution)* |
 
-**Growth** 2/4/3/2 · **Abilities** `hyper-cutter` `shell-armor` `sheer-force` · **Mastery** `crabhammer` → `crabhammer-plus`
+**Abilities** `hyper-cutter` `shell-armor` `sheer-force` · **Mastery** `crabhammer` → `crabhammer-plus`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
@@ -373,7 +373,7 @@
 |---|---|---|---|---|---|---|---|
 | `snorlax` | 143 | basic (final) | Normal | 160/110/65/65/30 | boss-wild | — (+25 % growth) | 1 `headbutt` · 1 `amnesia` · 8 `rest` · 16 `body-slam` · 24 `harden` |
 
-**Growth** 5/3/2/1 (+25 %) · **Abilities** `thick-fat` `immunity` `gluttony` · **Mastery** `double-edge`
+**Abilities** `thick-fat` `immunity` `gluttony` · **Mastery** `double-edge`
 **Boss script**: P1 stall (`rest` heals every HP, self-Sleep, P1 only · `amnesia` +2 Def) → P2 offence (`body-slam` Melee 85, 30 % Paralysis · `headbutt`). Catch → recruit `snorlax` at its level with 0 Trauma.
 
 ### `marowak` (+ `marowak-spirit` boss variant) — Ground / Ghost · ✅ (the `cubone` line of `species-gen1.md` evolves into it)
@@ -383,7 +383,7 @@
 | `marowak` | 105 | stage1 (final) | Ground | 60/80/110/50/45 | boss-wild recruit | — | — *(its base form's kit, rewritten by evolution)* |
 | `marowak-spirit` | 105-s | boss variant | Ghost | 60/80/110/50/45 | boss-wild | — | fixed kit: Curse · `confuse-ray` · Shadow Bone · `lick` |
 
-**Growth** 3/3/3/2 · **Abilities** `rock-head` `lightning-rod` `battle-armor` (spirit: `levitate` `cursed-body`) · **Mastery** `bonemerang` → `bonemerang-plus`
+**Abilities** `rock-head` `lightning-rod` `battle-armor` (spirit: `levitate` `cursed-body`) · **Mastery** `bonemerang` → `bonemerang-plus`
 **Boss script**: Curse = 25 % self-HP → 3-turn DoT on target · `confuse-ray` 3t · Shadow Bone Melee 85 Ghost, 20 % −1 Def · `lick` Melee 40, 30 % Paralysis. **Catch → recruit a living Ground `marowak`** holding `thick-club` (held item, Marowak-only, +50 % Melee). `cubone` (R3 Tower pool) evolves into `marowak` at L12.
 
 ---
