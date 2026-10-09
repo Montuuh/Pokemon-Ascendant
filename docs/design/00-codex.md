@@ -135,9 +135,9 @@ Giovanni 30 % in R3, otherwise a Specialist. The **Rival counter-picks your star
 **Mystery Events** — 22, tagged 🟢 Safe 30 % / 🟡 Tradeoff 50 % / 🔴 Gamble 20 %, badge visible before entering,
 never repeating in a run.
 **Shops** — the route's merchant: Potion ×3, a Tier-1 bundle, Balls ×3, a wildcard (a Common relic one visit in
-three). City: 8 **team-curated** slots — Potion ×5, bundles, a Common and an Uncommon relic (Rare a quarter of the
+five). City: 8 **team-curated** slots — Potion ×5, bundles, a Common and an Uncommon relic (Rare a quarter of the
 time), Balls ×5 — +30 % prices, sells at 30 % (the only money exit). Celadon's Department Store: five floors, a
-re-roll restocks one floor. Relics carry the collector's premium (+25 % per relic bought).
+re-roll restocks one floor. Relics carry the collector's premium (+50 % per relic bought); a trainer never drops one (v0.9.10).
 
 ---
 

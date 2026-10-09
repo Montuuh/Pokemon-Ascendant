@@ -393,15 +393,13 @@
           "species": "spearow",
           "level": 7,
           "tier": "wild",
-          "phaseCount": 1,
-          "role": "attacker"
+          "phaseCount": 1
         },
         {
           "species": "pidgey",
           "level": 7,
           "tier": "wild",
           "phaseCount": 1,
-          "role": "buffer",
           "moves": [
             "gust",
             "sand-attack"
@@ -456,7 +454,6 @@
           "level": 9,
           "tier": "trainer",
           "phaseCount": 1,
-          "role": "buffer",
           "moves": [
             "vine-whip",
             "poison-powder",
@@ -512,7 +509,6 @@
           "level": 9,
           "tier": "trainer",
           "phaseCount": 1,
-          "role": "defender",
           "moves": [
             "recover",
             "pound",
@@ -580,7 +576,6 @@
           "level": 10,
           "tier": "trainer",
           "phaseCount": 1,
-          "role": "buffer",
           "moves": [
             "growth",
             "double-slap",

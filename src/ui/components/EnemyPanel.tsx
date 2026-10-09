@@ -4,11 +4,11 @@ import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim
 import { SLOT_LABEL, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
 import { CatchPicker } from './CatchPicker';
 import { iconOf, intentGlyph } from '@/ui/art';
-import { INTENT_LABEL, ROLE_LABEL } from '@/ui/strings';
+import { INTENT_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
-import { nextIntentTip, roleTip } from '@/ui/tips';
+import { nextIntentTip, placeTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EnemyPanel.module.css';
 
@@ -44,7 +44,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
   // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
   const place = enemySlotLabel(state, enemy);
   // §5.6 — in a group the enemy's card is the door to its place and role.
-  const cardTipProps = useTip(roleTip(place, enemy.role ?? null, ctx.config.supportEscalateFromTurn, state.enemies.length + state.enemyQueue.length <= 1, !!enemy.shiny));
+  const cardTipProps = useTip(placeTip(place, state.enemies.length + state.enemyQueue.length <= 1, !!enemy.shiny));
   // §5.5.1 — under Trainer's Instinct the enemy's committed plan for next turn sits under this turn's.
   const next = enemy.next?.intent ?? null;
   const nextMove = next?.moveId ? ctx.content.move(next.moveId) : null;
@@ -137,8 +137,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
           <span className={styles.chips}>
             {place && (
               <span className={place === 'Lead' ? styles.chipLead : styles.chipRole} data-testid="foe-place">
-                {/* §9.2.1 — behind the Lead, the place is the formation's to say; the chip names the role (v0.8.6). */}
-                {enemy.role && place !== 'Lead' ? ROLE_LABEL[enemy.role] : place}
+                {place}
               </span>
             )}
             {stageChips.map((s) => (

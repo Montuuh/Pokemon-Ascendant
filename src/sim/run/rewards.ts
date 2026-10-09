@@ -98,7 +98,8 @@ export function rollFightSupplies(rng: GameRng, content: ContentRegistry, kind: 
  * 1-of-3 (`gymRelicOffer`). Nothing else in a fight hands one over.
  */
 export const RELIC_REWARD = {
-  trainerChance: 0.15,
+  /** v0.9.10 (the user's call: a run held ~11 relics at its end) — a trainer pays money and supplies, never a relic. Was 0.15. */
+  trainerChance: 0,
   trainerRarity: 'common' as RelicRarity,
   /** §2.8.1 — the Elite Trainer's pick: two Uncommons and a Rare. */
   elitePick: ['uncommon', 'uncommon', 'rare'] as RelicRarity[],

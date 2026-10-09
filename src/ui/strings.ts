@@ -74,20 +74,6 @@ export const INTENT_LABEL: Record<string, string> = {
   guard: 'Cover',
 };
 
-/** §5.6 — the three support roles, as the chip names them (v0.8.6). */
-export const ROLE_LABEL: Record<string, string> = {
-  attacker: 'Attacker',
-  defender: 'Defender',
-  buffer: 'Buffer',
-};
-
-/** §5.6 — what each support role does, in the player's words (v0.8.6). */
-export const ROLE_HINT: Record<string, string> = {
-  attacker: 'Leans on hits: a second threat beside the Lead. Most of the back row is this.',
-  defender: 'Shields its Lead: heals it, and when the Lead is hurt it telegraphs Cover and steps in front — then your Melee cards reach only it, braced with +1 Defence.',
-  buffer: 'Raises its allies, lowers your team and puts statuses on it. The group never doubles a status it already plans.',
-};
-
 /** §2.6.4.4 — the series' lines for a ball that breaks open, by how many shake checks passed first (Gen III). */
 export const CATCH_BREAK_LINE = ['Oh no! The Pokémon broke free!', 'Aww! It appeared to be caught!', 'Aargh! Almost had it!', 'Shoot! It was so close, too!'] as const;
 

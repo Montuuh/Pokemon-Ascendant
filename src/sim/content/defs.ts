@@ -506,7 +506,6 @@ export interface EnemySetup {
    * §5.6 — a support's role in a group fight. Its presence is what makes the Pokémon a support: it enters with
    * `supportHpMultiplier` of its HP, and a Healer or Buffer aims its heal or stat raise at the enemy Lead.
    */
-  role?: SupportRole;
   /** §5.6.1 — a Pokémon that acts twice a turn: two intents, both shown, resolved one after the other. */
   acts?: 1 | 2;
   /** §5.6.2 — the companions its Call for Help can bring in, in order. Not on the field until called. */
@@ -515,7 +514,6 @@ export interface EnemySetup {
 
 /** §5.6 — the four support roles. */
 /** §5.6 — a support's job (v0.8.6: Attacker, Defender, Buffer — the old Healer is part of the Defender's, the old Debuffer the Buffer's). */
-export type SupportRole = 'attacker' | 'defender' | 'buffer';
 
 export interface ScenarioDef {
   id: string;

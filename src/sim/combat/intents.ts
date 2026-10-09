@@ -59,12 +59,11 @@ export function classifyMove(state: CombatState, enemy: EnemyCombatant, move: Mo
  * cut it, so a move with a self-status or a self-cost stays on its caster.
  */
 function withAlly(state: CombatState, enemy: EnemyCombatant, move: MoveDef, intent: Intent): Intent {
-  const role = enemy.role;
-  const fits = (role === 'defender' && intent.kind === 'stall') || (role === 'buffer' && intent.kind === 'buff');
-  if (!fits || !allyGivable(move)) return intent;
-  const leadEnemy = activeEnemy(state);
-  if (!leadEnemy || leadEnemy.uid === enemy.uid) return intent;
-  return { ...intent, targetEnemyUid: leadEnemy.uid };
+  // §5.6 (v0.9.10) — every enemy keeps its own heals and raises: no role hands them to the Lead any more.
+  void state;
+  void enemy;
+  void move;
+  return intent;
 }
 
 /** §5.6 — a move whose every effect is a heal or a self-raise, so it means the same on an ally. */
@@ -155,20 +154,12 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
   // two: then it is urgent. Otherwise it is never chosen, so a Defender at the front goes back to its other moves.
   if (intent.kind === 'guard') {
     const leadEnemy = activeEnemy(state);
-    if (!leadEnemy || leadEnemy.uid === enemy.uid || enemy.role !== 'defender') return 0;
-    if (hpFraction(leadEnemy) > cfg.coverLeadHp || hpFraction(enemy) <= hpFraction(leadEnemy)) return 0;
-    // Weighted to beat the Defender's own heal on the Lead: under the threshold, stepping in front is the play.
-    return score * cfg.supportRoleMultiplier * (1 + 2 * (1 - hpFraction(leadEnemy)));
+    // No Pokémon carries Cover since roles went (v0.9.10); a kit that did would never choose it.
+    void leadEnemy;
+    return 0;
   }
   // §5.6 — a Defender's heal or a Buffer's raise is weighed on the ally it lands on, not on the caster.
   const recipient = intentRecipient(state, enemy, intent);
-  // §5.6 — a support leans on what its role is for; everything else still scores, so it never idles.
-  const role = enemy.role;
-  const onRole =
-    (role === 'buffer' && (intent.kind === 'status' || intent.kind === 'debuff' || (intent.kind === 'buff' && recipient.uid !== enemy.uid)))
-    || (role === 'attacker' && OFFENSIVE.includes(intent.kind))
-    || (role === 'defender' && (intent.kind === 'stall' || intent.kind === 'buff'));
-  if (onRole) score *= cfg.supportRoleMultiplier;
   if (intent.kind === 'buff') {
     const fx = move.effects.find((e) => e.kind === 'stage' && e.target === 'self');
     if (fx && fx.kind === 'stage') {

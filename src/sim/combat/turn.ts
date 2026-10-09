@@ -2,7 +2,7 @@ import type { RunCtx } from './context';
 import { emit, log } from './context';
 import { discardHand, openBag, drawSkillCards, returnConsumableHand, sweepEchoes } from './deck';
 import { applyPhaseTransitions, tempoApTax } from './boss';
-import { changeStage, dealDamage, heal } from './damageFlow';
+import { dealDamage, heal } from './damageFlow';
 import { declareIntent } from './intents';
 import { aliveTeam, benchIndices, lead, resolutionOrder } from './slots';
 import type { Combatant, CombatState, EnemyCombatant } from './state';
@@ -119,27 +119,15 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   for (const e of state.enemies) {
     if (e.hp <= 0) continue;
     applyPhaseTransitions(state, e, ctx);
-    escalateSupport(state, e, ctx);
+    escalateSupport(state, e);
     declareIntent(state, e, ctx, ctx.rng);
   }
   state.phase = 'action';
 }
 
-/**
- * §5.6 — a support is meant to fall in two or three turns; one still standing at its fourth Intent phase starts
- * to escalate, a stage of Attack at every Intent phase from then on. A Lead never does: it is the fight.
- */
-function escalateSupport(state: CombatState, e: EnemyCombatant, ctx: RunCtx): void {
+/** §5.6 — how many Intent phases an enemy has stood on the field for (kept for the record; v0.9.10 dropped the escalation it fed). */
+function escalateSupport(_state: CombatState, e: EnemyCombatant): void {
   e.fieldTurns = (e.fieldTurns ?? 0) + 1;
-  if (state.enemies[0]?.uid === e.uid) return;
-  // §5.6 — only a support escalates: one with a role. A Lead a Defender covered (v0.8.6), or an Elite's or a Gym's
-  // second Pokémon, stands behind without being a support, and does not grow fierce for it.
-  if (!e.role) return;
-  // …up to supportEscalateCap stages of its own making (v0.8.5: uncapped, a trio fight's supports snowballed).
-  const grown = (e.fieldTurns - ctx.config.supportEscalateFromTurn) * ctx.config.supportEscalateStages;
-  if (e.fieldTurns < ctx.config.supportEscalateFromTurn || grown >= ctx.config.supportEscalateCap || e.stages.attack >= 6) return;
-  log(state, 'enemy', `${e.name} has lingered too long and grows fierce!`);
-  changeStage(state, e, 'attack', ctx.config.supportEscalateStages);
 }
 
 /** §3.2.5 — Resolution: enemy intents → abilities → status ticks → cooldowns → discard → outcome → next turn. */

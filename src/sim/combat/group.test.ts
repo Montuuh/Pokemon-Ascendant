@@ -10,7 +10,7 @@ import { statAtLevel } from './stats';
 // §5.6 — fights against a group: the formation, reach, area cards, the group's AI, and the honest intent.
 
 const RATTATA: EnemySetup = { species: 'rattata', level: 8, tier: 'wild', phaseCount: 1 };
-const SUPPORT: EnemySetup = { species: 'pidgey', level: 7, tier: 'wild', phaseCount: 1, role: 'attacker' };
+const SUPPORT: EnemySetup = { species: 'pidgey', level: 7, tier: 'wild', phaseCount: 1 };
 const KIT = ['tackle', 'water-gun', 'surf', 'withdraw'];
 // Only the kit's owner carries a Tackle, so the Melee card in hand is always the Lead's.
 const TEAM = [{ species: 'squirtle', level: 12, moves: KIT }, { species: 'charmander', level: 8 }];
@@ -20,13 +20,12 @@ function group(extra: Partial<Parameters<typeof scenario>[0]> = {}) {
 }
 
 describe('Multi-enemy fights — §5.6', () => {
-  it('Setup_OnField3_ThreeStandTogether_SupportsEnterAtTheirShare', () => {
+  it('Setup_OnField3_ThreeStandTogether_EachWhole', () => {
     const s = group();
     expect(s.enemies).toHaveLength(3);
     expect(s.enemyQueue).toHaveLength(0);
-    // A support enters with supportHpMultiplier of its pool; the Lead with all of it.
-    const full = statAtLevel(ctx.content.species('pidgey'), 'hp', 7);
-    expect(s.enemies[1]!.maxHp).toBe(Math.round(full * ctx.config.supportHpMultiplier));
+    // v0.9.10 — behind the Lead stands a whole Pokémon: all its HP, as the Lead has all of its.
+    expect(s.enemies[1]!.maxHp).toBe(statAtLevel(ctx.content.species('pidgey'), 'hp', 7));
     expect(s.enemies[0]!.maxHp).toBe(statAtLevel(ctx.content.species('rattata'), 'hp', 8));
     // All three declared an intent in the same Intent phase.
     expect(s.enemies.every((e) => e.intent !== null)).toBe(true);
@@ -119,42 +118,15 @@ describe('Multi-enemy fights — §5.6', () => {
     expect(state.enemies).toHaveLength(0);
   });
 
-  it('Escalation_ASupportThatLingers_GrowsFierce_TheLeadNever', () => {
-    let s = tweak(group(), (d) => { for (const m of d.player.team) { m.hp = 999; m.maxHp = 999; } });
-    for (let t = 0; t < ctx.config.supportEscalateFromTurn - 1; t++) s = dispatch(s, { type: 'end-turn' });
-    const support = s.enemies.find((e) => e.uid === 'e1')!;
-    expect(support.stages.attack).toBeGreaterThanOrEqual(ctx.config.supportEscalateStages);
-    expect(s.enemies.find((e) => e.uid === 'e0')!.stages.attack).toBe(0);
-  });
 });
 
 describe('The group AI — §5.6', () => {
-  it('Healer_AimsItsHeal_AtTheEnemyLead_AndHealsIt', () => {
-    let s = startFixture('group-hiker-healer');
-    s = tweak(s, (d) => { d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.3); });
-    const healer = s.enemies[1]!;
-    const move = ctx.content.move('recover');
-    const intent = classifyMove(s, healer, move, ctx)!;
-    expect(intent.kind).toBe('stall');
-    expect(intent.targetEnemyUid).toBe(s.enemies[0]!.uid);
-    // The Clefairy is at full HP; its heal is still worth playing, because the Lead is not.
-    expect(scoreIntent(s, healer, { intent, move }, ctx)).toBeGreaterThan(0);
-    const hurt = s.enemies[0]!.hp;
-    const forced = tweak(s, (d) => { d.enemies[1]!.intent = { ...intent }; });
-    const after = dispatch(forced, { type: 'end-turn' });
-    const heal = eventsOf(after, 'heal').find((e) => e.t === 'heal' && e.targetUid === s.enemies[0]!.uid);
-    expect(heal).toBeDefined();
-    expect(after.enemies.find((e) => e.uid === 'e0')!.hp).toBeGreaterThan(hurt - 50);
-  });
-
-  it('Buffer_RaisesTheLead_NotItself', () => {
+  it('AnEnemyBehindTheLead_KeepsItsHealAndItsRaise_ForItself', () => {
+    // v0.9.10 — no role hands a heal or a raise to the Lead: every enemy is a Pokémon of its own.
     const s = startFixture('group-elite-buffer');
     const clefairy = s.enemies[1]!;
     const intent = classifyMove(s, clefairy, ctx.content.move('growth'), ctx)!;
-    const forced = tweak(s, (d) => { d.enemies[1]!.intent = { ...intent }; d.enemies[0]!.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false }; });
-    const after = dispatch(forced, { type: 'end-turn' });
-    expect(after.enemies.find((e) => e.uid === 'e0')!.stages.attack).toBeGreaterThan(0);
-    expect(after.enemies.find((e) => e.uid === 'e1')!.stages.attack).toBe(0);
+    expect(intent.targetEnemyUid).toBeUndefined();
   });
 
   it('Debuffer_NeverDoublesAStatus_TheGroupAlreadyPlans', () => {
@@ -256,7 +228,6 @@ describe('Calling for help — §5.6.2', () => {
     expect(after.enemies).toHaveLength(2);
     const joined = after.enemies[1]!;
     expect(joined.speciesId).toBe('nidoran-f');
-    expect(joined.role).toBe('buffer');
     expect(after.enemies[0]!.helpers).toHaveLength(1);
     expect(after.onField).toBe(2);
     expect(eventsOf(after, 'enemy-enter').some((e) => e.t === 'enemy-enter' && e.called)).toBe(true);
@@ -278,38 +249,6 @@ describe('Calling for help — §5.6.2', () => {
     const after = dispatch(s, { type: 'play-card', cardId: handCard(s, 'scratch').id });
     expect(after.outcome).toBe('in-progress');
     expect(after.enemies[0]!.speciesId).toBe('nidoran-f');
-  });
-});
-
-describe('The Defender covers its Lead — §5.6 (v0.8.6)', () => {
-  const DEFENDER: EnemySetup = { species: 'geodude', level: 8, tier: 'wild', phaseCount: 1, role: 'defender', moves: ['tackle', 'cover'] };
-  const pair = () => start(scenario({ team: TEAM, enemies: [RATTATA, DEFENDER], onField: 2 }));
-
-  it('Cover_IsWorthNothing_WhileTheLeadIsHealthy_AndUrgentOnceItIsHurt', () => {
-    const s = pair();
-    const cover = ctx.content.move('cover');
-    const defender = s.enemies[1]!;
-    const intent = classifyMove(s, defender, cover, ctx)!;
-    expect(intent.kind).toBe('guard');
-    expect(scoreIntent(s, defender, { intent, move: cover }, ctx)).toBe(0);
-    const hurt = tweak(s, (d) => {
-      d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.3);
-    });
-    expect(scoreIntent(hurt, hurt.enemies[1]!, { intent, move: cover }, ctx)).toBeGreaterThan(0);
-  });
-
-  it('Cover_TakesTheLeadsPlace_AndBraces', () => {
-    let s = tweak(pair(), (d) => {
-      d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.3);
-    });
-    // The next Intent phase sees the hurt Lead; the Defender declares Cover, and the Resolution after lands it.
-    s = dispatch(s, { type: 'end-turn' });
-    expect(s.enemies[1]!.intent?.kind).toBe('guard');
-    const defenderUid = s.enemies[1]!.uid;
-    s = dispatch(s, { type: 'end-turn' });
-    expect(s.enemies[0]!.uid).toBe(defenderUid);
-    expect(s.enemies[0]!.stages.defense).toBe(ctx.config.coverDefenseStages);
-    expect(eventsOf(s, 'enemy-cover')).toHaveLength(1);
   });
 });
 

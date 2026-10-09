@@ -35,7 +35,8 @@ export const PRICES = {
    * §2.11.2.3 — a relic's list price, before the collector's premium (`RELIC_PREMIUM`). Raised in v0.8.6 with
    * the premium: relics are meant to be scarce, and a shelf of them for 150 ₽ apiece was the main leak.
    */
-  relic: { common: 175, uncommon: 350, rare: 650, legendary: 0 } as Record<RelicRarity, number>,
+  // v0.9.10: 175 / 350 / 650 → 300 / 550 / 900 — a run held ~10 relics at its end, four in ten of them bought.
+  relic: { common: 300, uncommon: 550, rare: 900, legendary: 0 } as Record<RelicRarity, number>,
   /**
    * §2.9.2 / §2.11.2.2 — consumables are sold in bundles now that a played one is gone (§3.5): how many a slot
    * holds by the item's tier, the Potion's larger City bundle, and the bulk discount on the unit price.
@@ -385,10 +386,11 @@ export function rollShopStock(
  * this share of its list price (v0.8.6). A flat price let a full wallet turn into a shelf of relics; a rising
  * one lets the first purchase stay easy and makes the fourth a real decision.
  */
-export const RELIC_PREMIUM = 0.25;
+/** v0.9.10 — half again per relic already bought (was a quarter): relics are a run's few big moments, not a shopping list. */
+export const RELIC_PREMIUM = 0.5;
 
 /** §2.9.2 — the merchant's wildcard is a Common relic this often, otherwise a Held Item. */
-export const MERCHANT_RELIC_CHANCE = 1 / 3;
+export const MERCHANT_RELIC_CHANCE = 1 / 5;
 /** §2.11.2.2 — a City Mart's second relic slot is a Rare this often, otherwise an Uncommon. */
 export const CITY_RARE_CHANCE = 0.25;
 

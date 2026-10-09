@@ -926,15 +926,19 @@ export const STATUS_ACCENT_FALLBACK = 'glare';
  *
  * v0.9.9 turned Region Modifiers off (§2.11.3), and the harness lost the pick it took at each gate: R2|R1 51 %. Region
  * 2's Attack ×2.5 → ×2.4: R1 61 % · R2|R1 60 % · R3|R2 49 % · run 18 % (720 runs).
+ *
+ * v0.9.10 made the Pokémon behind an enemy Lead whole (§5.6: no role, all its HP and Attack) and cut the relics a run
+ * collects (§7.3: ~10 at a won run's end → ~7): R1 44 % · R2|R1 36 %. Attack ×1.2 / ×1.9 / ×2.7: R1 57 % · R2|R1 61 % ·
+ * R3|R2 52 % · run 18 % (720 runs).
  */
 export interface StatTier {
   hp: number;
   attack: number;
 }
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { hp: 0.6, attack: 1.4 },
-  { hp: 0.45, attack: 2.4 },
-  { hp: 0.35, attack: 3.6 },
+  { hp: 0.6, attack: 1.2 },
+  { hp: 0.45, attack: 1.9 },
+  { hp: 0.35, attack: 2.7 },
 ];
 
 /**

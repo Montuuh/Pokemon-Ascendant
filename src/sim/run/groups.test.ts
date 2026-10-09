@@ -5,7 +5,7 @@ import { DEFAULT_BATTLE_CONFIG } from '../combat/battleConfig';
 import { GameRng } from '../rng/gameRng';
 import { buildScenario } from './encounter';
 import { rollWild } from './wild';
-import { GROUP_RATES, ROLE_SHARE, SOCIAL_CALLERS, groupPlanFor, roleFor } from './groups';
+import { GROUP_RATES, SOCIAL_CALLERS, groupPlanFor } from './groups';
 import { TEAM_SIZE } from './region';
 import { createRun, defaultRunCtx } from './run';
 import type { MapNode, RunState } from './types';
@@ -56,7 +56,7 @@ describe('Groups across the run — §5.6.3', () => {
       const sc = buildScenario(node, run, content, new GameRng(seed))!;
       expect(sc.onField).toBe(plan.kind === 'pack' ? plan.size : 0);
       expect(sc.enemies[0]!.species).toBe(rollWild(node, run, content).species);
-      expect(sc.enemies.slice(1).every((e) => e.role && e.level < sc.enemies[0]!.level)).toBe(true);
+      expect(sc.enemies.slice(1).every((e) => e.level < sc.enemies[0]!.level)).toBe(true);
       // And it is a fight the combat sim can open.
       expect(createCombat(sc, { content, config: DEFAULT_BATTLE_CONFIG }).enemies).toHaveLength(sc.onField!);
       return;
@@ -86,8 +86,6 @@ describe('Groups across the run — §5.6.3', () => {
         const sc = buildScenario(node, run, content, new GameRng(5))!;
         expect(sc.onField).toBe(2);
         expect(sc.enemies.length).toBeGreaterThanOrEqual(4);
-        // Their Pokémon are the team, not supports: full HP, no role.
-        expect(sc.enemies.every((e) => !e.role)).toBe(true);
       }
     }
   });
@@ -125,16 +123,4 @@ describe('Groups across the run — §5.6.3', () => {
     for (const n of nodesOf(run, 'trainer')) expect(n.preview.enemies!.length).toBeGreaterThanOrEqual(TEAM_SIZE.trainer[0]);
   });
 
-  it('RoleFor_MostSupportsAttack_AQuarterDefend_AFifthBuff_§5.6', () => {
-    // §5.6 (v0.8.6) — most supports hit; a quarter defend; a fifth buff, if their kit can.
-    const rng = new GameRng(7);
-    const n = 4000;
-    const tally = { attacker: 0, defender: 0, buffer: 0 };
-    for (let i = 0; i < n; i++) tally[roleFor(['growth', 'pound'], rng, content)] += 1;
-    expect(Math.abs(tally.defender / n - ROLE_SHARE.defender)).toBeLessThan(0.03);
-    expect(Math.abs(tally.buffer / n - ROLE_SHARE.buffer)).toBeLessThan(0.03);
-    expect(tally.attacker / n).toBeGreaterThan(0.5);
-    // A kit with nothing to buff, lower or afflict never Buffs.
-    for (let i = 0; i < 500; i++) expect(roleFor(['tackle', 'peck'], rng, content)).not.toBe('buffer');
-  });
 });

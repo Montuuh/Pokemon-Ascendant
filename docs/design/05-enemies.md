@@ -149,36 +149,17 @@ mirrored (§3.3): the Lead stands in front of its group.
 - **Catching in a pack:** §2.6.4.1 — the ball is aimed, and a catch scatters the rest.
 - **Acting twice, and calling for help** — §5.6.1 and §5.6.2.
 
-| Support role | Share | Behaviour |
-|---|---|---|
-| **Attacker** | the rest (~60 %) | Leans on hits: a second threat beside the Lead's |
-| **Defender** | 20 % | Shields its Lead. Its heal goes to the Lead, weighed by the Lead's missing HP; it raises its own guard. When the Lead is at or under `coverLeadHp` (35 %) and the Defender is the sturdier of the two, it telegraphs **Cover** (an enemy-only move it brings; under the threshold it outranks its own heal): at Resolution it **takes the Lead's place** — your single-target Melee cards now reach only it — with +`coverDefenseStages` (1) Defence, and the old Lead drops behind, keeping its declared intent |
-| **Buffer** | 20 % | Raises its allies (a raise goes to the Lead, decaying with the stages it has banked), lowers your team's stats and puts statuses on it |
+**Behind the Lead stands a Pokémon like any other** (v0.9.10, the user's call: "no tags — support, attacker, anything;
+another normal Pokémon, like the Lead"). It enters with **its whole HP and its whole Attack**, plays **its own kit**
+by the same §5.3 scoring as the Lead, keeps its heals and raises for itself, and never grows fiercer the longer it
+stands. Its card names only its place (Lead, Behind). The one group rule the AI keeps: **the group never doubles a
+status** — a status another enemy already declared this turn on the same slot scores 0.
 
-*(Rewritten 2026-09-30, the user's call: "not all, or most, of the ones behind should be supporters" — they want
-attackers, defenders with a swap, and buffers. The old four roles came from each Pokémon's kit, and because most
-basics carry Growl, Tail Whip or Sand Attack most of the back row was a Debuffer. Now a seeded roll gives the
-share above, checked against the kit: a Buffer needs a move that can raise, lower or afflict, otherwise it
-attacks; any Pokémon can defend, since the role brings Cover. The old Healer is the Defender's heal; the old
-Debuffer is the Buffer's second half. Measured: Cover at a 50 % trigger and a quarter of supports cost Region 3
-twenty points; at 35 % and a fifth it stands where v0.8.5 left it.)*
-
-A support's role is authored on the encounter (`role`) and is what makes it a support. The AI is the same §5.3
-scoring function with two additions: the intents a role is for score ×`supportRoleMultiplier` (1.5), and **the
-group never doubles a status** — a status another enemy already declared this turn on the same slot scores 0.
-Only a move that does nothing but heal or raise can be handed to the Lead (Rest would put it to sleep, Belly Drum
-would cut it); anything else stays on its caster.
-
-**Supports are meant to fall in 2–3 turns.** A support enters with `supportHpMultiplier` (0.6) of its HP and hits
-with `supportAttackMultiplier` (0.7) of its Attack — a group widens a fight more than it multiplies its damage
-(v0.8.5: with trainers of three fighting as trios, full-Attack supports left Region 3 teams at a third of their HP
-after every trainer). **One that lingers escalates**: from its `supportEscalateFromTurn`th (4th) Intent phase on the
-field it gains `supportEscalateStages` (+1) Attack at every Intent phase, up to `supportEscalateCap` (+2) in all,
-logged and shown as a stage chip. A Lead never escalates — it is the fight — and **only a Pokémon with a role
-escalates**: a Lead a Defender covered, now standing behind, and an Elite's or a Gym's second Pokémon are not
-supports and do not grow fierce (v0.8.6: a covered Lead escalating at full Attack was most of Cover's cost). The Elite's and the Gym's second
-Pokémon are the team, not supports: no role, full HP and Attack, no escalation. *(All four numbers are `BattleConfig` first values, 2026-09-29; the v0.8.7 balance
-pass tunes them.)*
+*(Until v0.9.10 the back row were **supports**: a seeded role (Attacker ~60 %, Defender 20 % — which healed the Lead
+and could telegraph Cover to take its place — Buffer 20 %), 60 % of their HP and 70 % of their Attack, and +1 Attack
+an Intent phase from their fourth on, up to +2. The Cover move and its `guard` intent remain in the engine; no
+Pokémon carries them. Whole Pokémon made every group fight harder — Region 1 59 % → 44 % — and the Region tiers came
+down to pay for it, §2.2.1.)*
 
 ## §5.6.1 Acting twice
 
@@ -200,7 +181,7 @@ levels than a lone Lead would have.
 
 **Call for Help** (`call-for-help`, an enemy-only move: Normal, Ranged, 1 AP, 2-turn recharge) brings the caller's
 next waiting **companion** onto the field as a support. The companions are authored on the caller (`helpers`, in
-order, each with its role); nothing else can answer. The call is a **telegraphed intent** like any other: its chip
+order, each a whole Pokémon); nothing else can answer. The call is a **telegraphed intent** like any other: its chip
 reads *Call for Help → +Nidoran♀*, naming who will come, and its card says where they will stand. At Resolution the
 companion steps in (`maxOnField`, 3, is the most that can stand at once — a call with no room or nobody left to
 answer is a wasted turn); it declares its own intent in the Intent phase that follows at once, so **its first action
@@ -221,9 +202,9 @@ with a bubble that says what it means (Pillar 1).
 
 | Shape | What it is | R1 | R2 | R3 |
 |---|---|---|---|---|
-| **Pack** | A wild node's Pokémon leads companions from its biome's common list (another species first), a level lower, each a support with the role its kit gives | 30 % of wild nodes; 15 % of packs are 3 | 40 %; 35 % of 3 | 50 %; half of 3 |
+| **Pack** | A wild node's Pokémon leads companions from its biome's common list (another species first), two levels lower (`COMPANION_LEVEL_GAP`, one until v0.9.10), each a whole Pokémon | 30 % of wild nodes; 15 % of packs are 3 | 40 %; 35 % of 3 | 50 %; half of 3 |
 | **Caller** | A lone wild Pokémon carries Call for Help (§5.6.2) with companions waiting, a level lower. **A social species always does** (below) | 10 % + social | 15 % + social | 20 % + social, 2 waiting |
-| **Two at a time** | A trainer (three Pokémon, §2.7) sends two out at once; the others take the role their kit gives | 50 % of trainers | 60 % | 70 % |
+| **Two at a time** | A trainer (three Pokémon, §2.7) sends two out at once, each whole | 50 % of trainers | 60 % | 70 % |
 | **Three at a time** | …or three at once, when it has three | a quarter of those | 40 % | half |
 | **Two at a time (boss)** | The Elite (four Pokémon, §2.8.1) and the Gym (five, §5.9.3) always fight two at a time, their whole team at full strength | ✓ | ✓ | ✓ |
 | **Acts twice** | The Elite Wild acts twice (§5.6.1) at 75 % of its HP | — | — | ✓ |
@@ -233,7 +214,7 @@ pack, and their companions are **more of their own kind**: Rattata, Spearow, Zub
 Magnemite and Doduo lines — the ones the games show in swarms and colonies. *(User, 2026-09-30: "some Pokémon
 start with Call for Help".)*
 
-A support's role is rolled by its share and checked against its kit (§5.6's table). Every companion, helper and support is folded through the Region's stat tier,
+Every companion and helper is folded through the Region's stat tier,
 status accent and the run's modifiers like any enemy. The numbers live in `GROUP_RATES` (`run/groups.ts`).
 
 *Why so many (user, 2026-09-30): group fights are where the game is most strategic, so they are the rule, not the

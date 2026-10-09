@@ -745,7 +745,7 @@ Region so a Region with four trainer nodes never repeats a team.
 | Trainer XP (meta) | 5 |
 | Poké Dollars | 50–150 (R1) · 120–260 (R2) · 200–400 (R3) |
 | Supplies | **1–2 consumables, always**, from the Region's supply table (Potions and cures in Region 1, Super Potions in Region 2, Hyper Potions in Region 3), and a Poké Ball one time in five |
-| Relic | **15 %**, and only a **Common** (v0.8.6: relics are scarce, §7.3.1) |
+| Relic | **Never** (v0.9.10, the user's call: a won run ended holding ~10 relics; was 15 %, a Common). Relics are a run's few big moments — the start, the Elite, the Gym — and its shops |
 | Held Item | 20 % chance |
 | TM | 5 % chance |
 | Pokédex | Each defeated Pokémon counts toward its species' kill thresholds (§5.13) |
@@ -898,7 +898,7 @@ spent (§3.5, v0.8.6), at 10 % off the unit price.
 | 1 | **Potion ×3** | 110 ₽ |
 | 2 | Another Tier-1 consumable ×3 — a status cure, an Ether, an X Attack | 110 ₽ |
 | 3 | Poké Balls ×3 | 120 ₽ |
-| 4 | Wildcard — a Common relic one visit in three, otherwise a Held Item | 175 ₽ + premium / 300 ₽ |
+| 4 | Wildcard — a Common relic one visit in five (one in three until v0.9.10), otherwise a Held Item | 300 ₽ + premium / 300 ₽ |
 
 Stock is seeded per visit. The merchant does **not** buy anything: selling exists only in a City (§2.11.2.4).
 
@@ -1278,8 +1278,9 @@ unable to catch for a whole Region on the luck of a draw. *(Settled while buildi
 About 30 % above the travelling merchant's prices. You are paying for selection quality.
 
 **The collector's premium** (v0.8.6): every relic bought in a shop this run makes every relic on every shelf dearer
-by **25 % of its list price** — the first at list (175 / 350 / 650 ₽ for Common / Uncommon / Rare before the City
-markup), the fifth at double. A flat price let a full wallet become a shelf of relics (the harness's reflex buyer
+by **50 % of its list price** — the first at list (300 / 550 / 900 ₽ for Common / Uncommon / Rare before the City
+markup), the third at double. *(v0.9.10: 25 % on 175 / 350 / 650 ₽ left four relics in ten bought; with the
+trainer drop gone and the merchant's relic one visit in five, a won run ends with ~7 relics, not ~10.)* A flat price let a full wallet become a shelf of relics (the harness's reflex buyer
 took five a run); a rising one keeps the first purchase easy and makes each later one a real decision. The tag
 shows the premium beside the price. Gifts, drops, picks and events do not count and do not pay it.
 

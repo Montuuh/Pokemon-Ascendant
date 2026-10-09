@@ -138,7 +138,7 @@ describe('Shops — §2.9.2, §2.11.2.2, §2.11.2.3', () => {
     const base = { kind: 'relic' as const, price: 200 };
     expect(slotPrice({ relicsBought: 0 }, base)).toBe(200);
     expect(slotPrice({ relicsBought: 1 }, base)).toBe(Math.round((200 * (1 + RELIC_PREMIUM)) / 5) * 5);
-    expect(slotPrice({ relicsBought: 4 }, base)).toBe(400);
+    expect(slotPrice({ relicsBought: 4 }, base)).toBe(Math.round((200 * (1 + RELIC_PREMIUM * 4)) / 5) * 5);
     // Only relics carry it.
     expect(slotPrice({ relicsBought: 4 }, { kind: 'consumable', price: 200 })).toBe(200);
   });

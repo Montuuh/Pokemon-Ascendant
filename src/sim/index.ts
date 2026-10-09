@@ -48,7 +48,7 @@ export { kitPaths, MOVE_CAP } from './combat/kit';
 export { branchPayload, type BranchPayload } from './run/xp';
 export { listPrice, type PricedKind } from './run/economy';
 export { itemSources, type ItemSources } from './run/rewards';
-export { GROUP_RATES, groupPlanFor, applyGroups, roleFor, ROLE_SHARE, type GroupPlan, type GroupRates } from './run/groups';
+export { GROUP_RATES, groupPlanFor, applyGroups, type GroupPlan, type GroupRates } from './run/groups';
 export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } from './run/flee';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';
 

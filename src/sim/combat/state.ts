@@ -1,5 +1,5 @@
 import type { CombatTally } from '../run/types';
-import type { EncounterKind, EnemySetup, EnemyTier, SupportRole } from '../content/defs';
+import type { EncounterKind, EnemySetup, EnemyTier } from '../content/defs';
 import type { IntentKind, PokemonType, PrimaryStatus, SlotId, Stat, StatusCondition } from '../types';
 import type { Effectiveness } from './typeChart';
 import type { FieldState } from './fields';
@@ -91,8 +91,6 @@ export interface EnemyCombatant extends Combatant {
   veiled?: boolean;
   /** §5.5.1 — under Trainer's Instinct, what it will do next turn. It commits to it unless it becomes illegal. */
   next?: QueuedIntent | null;
-  /** §5.6 — a support's role; absent on a Lead and on every enemy of a one-on-one fight. */
-  role?: SupportRole;
   /** §5.6 — Intent phases this Pokémon has stood on the field for; a support that lingers escalates. */
   fieldTurns?: number;
   /** §5.6.1 — it acts twice a turn; `second` is this turn's second intent, resolved right after the first. */

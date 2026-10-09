@@ -4,7 +4,7 @@ import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO,
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, ROLE_HINT, ROLE_LABEL, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -309,19 +309,14 @@ export function groupTip(plan: GroupPlan): ReactNode {
 }
 
 /** §5.6 — an enemy's place in a group: the Lead in front, or a support behind it with its role. */
-export function roleTip(place: string, role: string | null, escalateFrom: number, alone = false, shiny = false): ReactNode {
+export function placeTip(place: string, alone = false, shiny = false): ReactNode {
   const withShiny = (text: string): ReactNode => (shiny ? [<div key="r">{text}</div>, shinyLine(false)] : text);
   if (place === 'Lead' && alone) return <Tip title="Enemy Lead" body={withShiny('It stands alone. Every card reaches it; Melee cards reach only the enemy that leads.')} />;
   if (place === 'Lead') {
     return <Tip title="Enemy Lead" body={withShiny('It stands in front of its group. Your Melee cards reach only this one; Ranged and area cards reach the rest. If it falls, the strongest of the others steps up.')} />;
   }
-  return (
-    <Tip
-      title={role ? `Support · ${ROLE_LABEL[role]}` : 'Support'}
-      body={withShiny(role ? ROLE_HINT[role]! : 'It fights behind the Lead.')}
-      footer={`Supports stand behind the Lead: only Ranged and area cards reach them. They enter weaker, and one still standing on turn ${escalateFrom} grows fiercer every turn.`}
-    />
-  );
+  // §5.6 (v0.9.10) — behind the Lead stands a Pokémon like any other: whole, its own kit, no role.
+  return <Tip title={place} body={withShiny('It fights behind the Lead, with its whole HP and its own moves.')} footer="Only Ranged and area cards reach it. If the Lead falls, the strongest one behind steps up." />;
 }
 
 /** §5.5.1 Trainer's Instinct — the enemy's plan for next turn, and the one way it can change. */

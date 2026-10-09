@@ -267,7 +267,6 @@ const EnemySetupBase = z.object({
   veiled: z.boolean().optional(),
   /** §5.14 — a wild Pokémon in its shiny palette. */
   shiny: z.boolean().optional(),
-  role: z.enum(['attacker', 'defender', 'buffer']).optional(),
   acts: z.union([z.literal(1), z.literal(2)]).optional(),
 });
 /** §5.6.2 — a caller's companions are enemy setups of their own; they call nobody in turn. */

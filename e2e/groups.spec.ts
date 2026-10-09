@@ -16,14 +16,14 @@ const hpOf = async (page: Page, uid: string) =>
   }, uid);
 
 test.describe('Group fights — §5.6', () => {
-  test('a flock of three stands together, each with its intent, its place and its role', async ({ page }) => {
+  test('a flock of three stands together, each with its intent and its place — no role (v0.9.10)', async ({ page }) => {
     await page.goto('/?scenario=group-wild-flock');
     const screen = page.getByTestId('combat-screen');
     await expect(screen).toHaveAttribute('data-enemies', '3');
     await expect(page.getByTestId('foe-panel')).toHaveCount(3);
     await expect(page.getByTestId('intent-chip')).toHaveCount(3);
     await expect(page.getByTestId('foe-place').first()).toHaveText('Lead');
-    await expect(page.getByTestId('foe-place').nth(2)).toContainText('Buffer');
+    await expect(page.getByTestId('foe-place').nth(2)).not.toContainText(/Attacker|Defender|Buffer/);
     await expect(page.getByTestId('arena-enemy')).toHaveCount(3);
     await settle(page);
     await page.screenshot({ path: 'playtest/combat-group-flock.png' });
