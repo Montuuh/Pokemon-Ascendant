@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.10 — Combat, stats and moves, revisited · 2026-10-09
+
+Whole Pokémon in groups, stats in the series' proportions, many more moves.
+
+- **Groups.** Behind the Lead, whole Pokémon: no role, full HP.
+- **Stats.** Each grows with its base: Gyarados big, Magikarp not.
+- **Moves.** 46 TMs, a Dojo that remembers, Porygon fixed.
+- **Fixes.** Swaps, the catch, the faint, Shell Armor; fewer relics.
+
 ### v0.9.9 — The Hub's books, and the Master Ball · 2026-10-09
 
 A Pokédex with every evolution path, an Item Guide, and leaner run options.

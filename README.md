@@ -49,9 +49,8 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.9 — The Hub's books, and the Master Ball.** The Pokédex shows every evolution path — the stats it moves, the
-moves it learns and forgets — and an Item Guide on the lobby's table holds every item in the game; the Master Ball is
-an item you win, not a relic; Region Modifiers are off for now, and picking two starters is two clear places.
+**v0.9.10 — Combat, stats and moves, revisited.** The Pokémon behind an enemy Lead fights whole, stats grow in the
+series' proportions, 46 TMs and a Dojo that remembers bring the lost moves back, and fewer, bigger relics.
 
 ## Run it locally
 

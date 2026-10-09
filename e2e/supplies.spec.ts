@@ -80,7 +80,7 @@ test.describe('Supplies and scarce relics — v0.8.6', () => {
     const relics = slots.map((s, i) => ({ ...s, i })).filter((s) => s.kind === 'relic');
     expect(relics).toHaveLength(2);
     await page.getByTestId(`shop-slot-${relics[0]!.i}`).click();
-    await expect(page.getByTestId(`shop-premium-${relics[1]!.i}`)).toContainText('+25 %');
+    await expect(page.getByTestId(`shop-premium-${relics[1]!.i}`)).toContainText('+50 %');
     await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete));
     await page.screenshot({ path: 'playtest/shop-bundles-premium.png' });
   });

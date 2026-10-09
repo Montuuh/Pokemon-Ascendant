@@ -57,45 +57,11 @@
 }
 .body {
   display: grid;
-  grid-template-columns: minmax(240px, 340px) 1fr;
-  gap: var(--sp-4);
+  grid-template-columns: 1fr 380px;
+  gap: var(--sp-5);
   align-items: start;
 }
-.list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 2px;
-  max-height: 62vh;
-  overflow: auto;
-}
-.row {
-  display: grid;
-  grid-template-columns: 30px 1fr auto;
-  align-items: center;
-  gap: var(--sp-2);
-  width: 100%;
-  padding: var(--sp-1) var(--sp-2);
-  border: 2px solid transparent;
-  border-radius: var(--radius-sm);
-  background: none;
-  font: inherit;
-  color: var(--ink-primary);
-  text-align: left;
-  cursor: pointer;
-}
-.row:hover {
-  background: var(--surface-2);
-}
-.rowOn {
-  border-color: var(--accent-action);
-  background: var(--surface-2);
-}
-.rowName {
-  font-size: var(--type-small);
-}
-/* The rarity or tier, once above its rows. */
+/* A shelf's heading: its rarity or tier, and how many. */
 .group {
   margin: var(--sp-2) 0 2px var(--sp-2);
   font-size: var(--type-caption);
@@ -118,7 +84,11 @@
   color: var(--ink-secondary);
 }
 .detail {
-  max-width: 720px;
+  position: sticky;
+  top: var(--sp-4);
+  /* The panel scrolls itself when an item holds more than the screen (a TM's species list at 720p). */
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
   display: grid;
   gap: var(--sp-3);
   padding: var(--sp-4);
@@ -173,8 +143,91 @@
   margin: 0;
   font-size: var(--type-small);
 }
-@media (max-width: 760px) {
+
+/* The collection: shelves of tiles, a shelf per rarity or tier. */
+.collection {
+  display: grid;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+.shelf {
+  display: grid;
+  gap: var(--sp-2);
+}
+.group span {
+  margin-left: var(--sp-1);
+  color: var(--ink-muted);
+}
+.tiles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: var(--sp-2);
+}
+.tile {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--sp-1);
+  width: 100%;
+  height: 100%;
+  padding: var(--sp-2) var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-bottom-width: 4px;
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  cursor: pointer;
+  transition: transform var(--motion-fast) ease, border-color var(--motion-fast) ease;
+}
+.tile:hover {
+  transform: translateY(-2px);
+}
+/* A relic's rarity is its frame's foot, the colours a relic card uses (ItemCard). */
+.tile[data-rarity='common'] {
+  border-bottom-color: var(--border-strong);
+}
+.tile[data-rarity='uncommon'] {
+  border-bottom-color: var(--rarity-uncommon);
+}
+.tile[data-rarity='rare'] {
+  border-bottom-color: var(--rarity-rare);
+}
+.tile[data-rarity='legendary'] {
+  border-bottom-color: var(--rarity-legendary);
+}
+.tileOn {
+  border-color: var(--accent-action);
+  background: color-mix(in srgb, var(--accent-action) 14%, var(--surface-1));
+}
+.tileLocked img {
+  filter: grayscale(1) opacity(0.55);
+}
+.tileName {
+  font-size: var(--type-caption);
+  line-height: 1.2;
+  text-align: center;
+}
+.fallback {
+  width: 60px;
+  height: 60px;
+  color: var(--ink-muted);
+}
+.lock {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+  color: var(--ink-muted);
+}
+@media (max-width: 1100px) {
   .body {
     grid-template-columns: 1fr;
+  }
+  .detail {
+    position: static;
   }
 }

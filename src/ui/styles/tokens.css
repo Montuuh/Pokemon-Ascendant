@@ -55,6 +55,10 @@
   /* White text on --brand-red is 3.77:1; a filled button needs the deeper red (5.06:1). D5. */
   --brand-red-deep: #c93a3a;
   --brand-blue: #4fa3e3;
+  /* §7.3.1 — a rarity's colour, its own token: type hues belong to types, the gold to "selected" (v0.9.10). */
+  --rarity-uncommon: #4fa3e3;
+  --rarity-rare: #d8649a;
+  --rarity-legendary: #e0812b;
   --brand-cream: #fff1d6;
   /* §6.3.4 — the three archetypes, as fills under dark ink (the Evolution screen). */
   --arch-vanguard: #f6b9a3;

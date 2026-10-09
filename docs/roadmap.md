@@ -1083,7 +1083,27 @@ table): relics, items, held items, Evolution Items and TMs, grouped, searchable 
 (`MOVE_CAP`, §6.3.5): all 151 checked on every path — none over its caps; what read as "too many moves" was the old
 Kit tab listing the whole line's learnset. Region 2 re-tuned for the harness's lost modifier pick: Attack ×2.5 → ×2.4, R1 61 % · R2|R1 60 % · R3|R2 49 % · run 18 % (720 runs).
 
-### v0.9.10 — Victory Road  ☐
+### v0.9.10 — Combat, stats and moves, revisited  ✅ 2026-10-09
+The user's notes on v0.9.9: the item dictionary's design, too many relics, weak supports in group fights, the faint
+animation, Porygon, moves lost on evolving, the stat totals, Shell Armor, Pressure Plate, the swap order and the catch
+on a support.
+
+**Shipped.** **Groups** (§5.6): the Pokémon behind an enemy Lead is whole — no role, all its HP and Attack, its own kit, no
+escalation (Cover stays in the engine, carried by none); companions two levels under the Lead. **Relics** (§2.7.2,
+§2.11.2.3): a trainer never drops one, shop relics cost 300 / 550 / 900 ₽ with a 50 % premium per relic bought, the
+merchant's relic one visit in five — a won run ends with ~7, not ~10. **Stats** (§6.2.3): every stat grows in
+proportion to its base (`STAT_GROWTH_RATE` 0.035, HP adds the level), so totals keep the series' proportions;
+per-line growth and the single-stage bonus are gone. **Moves**: Gen I's TM set (46, by rule, `scripts/gen-tms.mjs`);
+the Dojo remembers what a line learned and lost (`rememberedMoves`); Porygon learns Recover and Tri Attack; a kit
+analysis found 20 moves lost on every path across 79 lines, most of them upgraded. **Combat fixes**: a swap trades two
+places (`player.order`); the catch animates on the targeted support; your fallen Pokémon stands through the hits, sinks,
+and the replacement pick waits; Shell Armor and Battle Armor take 15 % off a hit (was a flat 2, which halved small
+hits on a high-Defence Lead — the forecast was never wrong); Pressure Plate verified and pinned. **The Item Guide** is a
+collection of tiles by shelf, relics framed by rarity and locked ones greyed, the detail beside it. Re-tuned: Attack
+×1.15 / ×1.9 / ×2.55, Celadon's Ring +10 — R1 60 % · R2|R1 59 % · R3|R2 51 % · run 18 % (720 runs).
+**Not done:** a cap on how many moves a pool can hold (taught moves still add without limit) — the user's call.
+
+### v0.9.11 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 - **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
@@ -1091,7 +1111,7 @@ Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
   Road's Apex (§2.12.2) is where the canon already brings the run's rarest species, and the two are balanced together.
   Needs the backlog's "a Legendary takes two team slots" designed with the user first.
 
-### v0.9.11 — The League  ☐
+### v0.9.12 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
@@ -1130,7 +1150,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.10's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.10, designed first |
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.11's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.11, designed first |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -1155,7 +1175,7 @@ the account revamps move to v0.9):
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.10 |
+| — | Recovering missed Badges | v0.9.11 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.10 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.11 (with the two-slot balance, designed first) |

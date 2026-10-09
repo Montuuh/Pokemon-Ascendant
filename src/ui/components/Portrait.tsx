@@ -120,11 +120,11 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
           )}
         </span>
       )}
-      {variant === 'bench' && !fainted && swapCost !== undefined && (
+      {variant === 'bench' && mon.hp > 0 && swapCost !== undefined && (
         <span className={swapAllowed ? styles.swapChip : styles.swapChipOff}>Swap: {swapCost} AP</span>
       )}
       {/* §9.2.5 — the swap, priced in HP: what this turn's intents would do to it at the Lead (v0.8.6). */}
-      {variant === 'bench' && !fainted && asLead && (
+      {variant === 'bench' && mon.hp > 0 && asLead && (
         <span className={asLead.ko ? styles.asLeadKo : styles.asLead} data-testid={`as-lead-${mon.speciesId}`}>
           −{asLead.amount}
           {asLead.ko ? ' KO' : ''}

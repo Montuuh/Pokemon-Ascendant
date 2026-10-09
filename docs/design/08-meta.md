@@ -158,7 +158,7 @@ Hub conveniences, and never a single point of damage or HP.
 | Win | ~790 |
 
 *(Measured as a career by `balance/accountCareer.test.ts`: one account, many runs in a row, the account's perks
-playing into each. The Victory Road, Elite Four and Champion rows wait on those fights (v0.9.10–v0.9.11); the Pokédex
+playing into each. The Victory Road, Elite Four and Champion rows wait on those fights (v0.9.11–v0.9.12); the Pokédex
 pays only Familiar's 25 since its other tiers moved to the Bond.)*
 
 Difficulty modifiers multiply the run's total (§8.8.3).
@@ -275,7 +275,7 @@ on the Trainer's Corner from Level 1, the rest on the Hub upgrades shelf from Le
 | Curated Starting Relic +1 | Corner (Lv 1) | 3 | Run start offers 4 Starting Relics instead of 3 |
 | Pokédex Insight | Hub upgrades (Lv 4) | 4 | The first fight each run against a species you have **not yet** made Familiar shows its opening intent free |
 | Trauma Salve Cache | Hub upgrades | 4 | City 1's shop is guaranteed to stock at least one Trauma Salve, in the Uncommon relic's slot *(sold since v0.7.1)* |
-| Apex Pokémon Reveal | Hub upgrades | 4 | The Victory Road Apex species is shown on entering Region 3 *(off the shelf until Victory Road ships, v0.9.10: a priced row that can never be bought is a promise, not a shelf)* |
+| Apex Pokémon Reveal | Hub upgrades | 4 | The Victory Road Apex species is shown on entering Region 3 *(off the shelf until Victory Road ships, v0.9.11: a priced row that can never be bought is a promise, not a shelf)* |
 | Expanded Box | Hub upgrades | 5 | Box capacity 6 → 8 for all future runs |
 | Difficulty Modifier Slot +1 | Hub upgrades | 6 | Stack 2 difficulty modifiers per run instead of 1 |
 | Second Starter Slot (Twin Run) | Hub upgrades | 8 | Choose two starters; the Box starts +1 larger. Active Team stays 3. The start screen shows two places, **Lead** and **Partner**: a tile fills the place in focus, the focus moves to the partner once the Lead is chosen, a tile already in the other place trades places, and the partner comes off with its own button (v0.9.9) |

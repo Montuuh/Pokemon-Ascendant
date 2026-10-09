@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react';
-import { IconSearch } from '@tabler/icons-react';
+import { IconLock, IconPackage, IconSearch } from '@tabler/icons-react';
 import { Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
@@ -14,17 +14,20 @@ import { Tipped } from '@/ui/tooltip';
 import styles from './ItemGuide.module.css';
 
 // §8.4 / §7 — the Item Guide (v0.9.9, the user's call: "a dictionary of relics, consumables and held items somewhere in
-// the Hub"): the table in the lobby's corner. Every item the game has, by kind — a list to pick from, grouped by rarity
-// or tier, and the whole of one item beside it: what it does, how rare, what it costs, where it turns up, and for a
+// the Hub"): the table in the lobby's corner. Every item the game has, by kind — a collection of tiles, the icon first,
+// grouped by rarity or tier and framed in the rarity's colour, and the whole of the picked item in a panel that stays
+// beside them: what it does, how rare, what it costs, where it turns up, and for a
 // relic, where your account stands with it. Facts come from the content and the sim (`listPrice`, `itemSources`,
 // `discoveryProgress`). The search runs across every kind, and each tab counts its matches.
 
 interface Row {
   id: string;
   name: string;
-  /** The subheading the row sits under: a rarity, a tier, a kind of held item. */
+  /** The heading the tile sits under: a rarity, a tier, a kind of held item. */
   group: string;
   icon: string;
+  /** The tile's frame: a relic's rarity; the rest are plain. */
+  rarity?: string;
   /** A TM's move type, drawn as its badge. */
   type?: PokemonType;
 }
@@ -37,7 +40,7 @@ function rowsOf(kind: PricedKind): Row[] {
   const content = getContent();
   switch (kind) {
     case 'relic':
-      return [...content.allRelics()].sort((a, b) => RARITY_ORDER.indexOf(a.rarity) - RARITY_ORDER.indexOf(b.rarity)).map((r) => ({ id: r.id, name: r.name, group: cap(r.rarity), icon: itemIcon(r.id) }));
+      return [...content.allRelics()].sort((a, b) => RARITY_ORDER.indexOf(a.rarity) - RARITY_ORDER.indexOf(b.rarity)).map((r) => ({ id: r.id, name: r.name, group: cap(r.rarity), icon: itemIcon(r.id), rarity: r.rarity }));
     case 'consumable':
       return [...content.allConsumables()].sort((a, b) => a.tier - b.tier).map((c) => ({ id: c.id, name: c.name, group: GUIDE_TEXT.tier(c.tier), icon: itemIcon(c.id) }));
     case 'held-item':
@@ -49,10 +52,20 @@ function rowsOf(kind: PricedKind): Row[] {
   }
 }
 
+/** The rows by their heading, in the order they come. */
+function groupsOf(rows: readonly Row[]): [string, Row[]][] {
+  const out = new Map<string, Row[]>();
+  for (const r of rows) out.set(r.group, [...(out.get(r.group) ?? []), r]);
+  return [...out];
+}
+
 export function ItemGuide() {
+  const account = useAccountStore((s) => s.account);
   const [kind, setKind] = useState<PricedKind>('relic');
   const [query, setQuery] = useState('');
   const [picked, setPicked] = useState<string | null>(null);
+  // Items whose icon is missing on disk: drawn with a plain package instead of an empty tile.
+  const [broken, setBroken] = useState<ReadonlySet<string>>(new Set());
   const all = useMemo(() => Object.fromEntries(KINDS.map((k) => [k, rowsOf(k)])) as Record<PricedKind, Row[]>, []);
   const q = query.trim().toLowerCase();
   // A TM is found by its move's name too: "flamethrower" finds TM04.
@@ -81,19 +94,35 @@ export function ItemGuide() {
           <Tabs.Content key={k} value={k} className={styles.body}>
             {k === kind && (
               <>
-                <ul className={styles.list} aria-label={GUIDE_TEXT.kind[k]}>
-                  {shown.map((r, i) => (
-                    <li key={r.id}>
-                      {(i === 0 || shown[i - 1]!.group !== r.group) && <p className={styles.group}>{r.group}</p>}
-                      <button type="button" className={`${styles.row} ${current?.id === r.id ? styles.rowOn : ''}`} aria-pressed={current?.id === r.id} onClick={() => setPicked(r.id)} data-testid={`guide-item-${r.id}`}>
-                        <img src={r.icon} alt="" width={30} height={30} className={styles.pixel} onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} />
-                        <span className={styles.rowName}>{r.name}</span>
-                        {r.type && <TypeBadge type={r.type} size={14} mode="attack" />}
-                      </button>
-                    </li>
+                <div className={styles.collection} aria-label={GUIDE_TEXT.kind[k]}>
+                  {groupsOf(shown).map(([group, rows]) => (
+                    <section key={group} className={styles.shelf}>
+                      <h3 className={styles.group}>
+                        {group} <span className="tabular">{rows.length}</span>
+                      </h3>
+                      <ul className={styles.tiles}>
+                        {rows.map((r) => {
+                          const locked = k === 'relic' && !relicUnlocked(account, getContent().relic(r.id));
+                          return (
+                            <li key={r.id}>
+                              <button type="button" className={`${styles.tile} ${current?.id === r.id ? styles.tileOn : ''} ${locked ? styles.tileLocked : ''}`} data-rarity={r.rarity} aria-pressed={current?.id === r.id} onClick={() => setPicked(r.id)} data-testid={`guide-item-${r.id}`}>
+                                {broken.has(r.id) ? (
+                                  <IconPackage className={styles.fallback} stroke={1.4} aria-hidden="true" />
+                                ) : (
+                                  <img src={r.icon} alt="" width={60} height={60} className={styles.pixel} onError={() => setBroken((b) => new Set(b).add(r.id))} />
+                                )}
+                                <span className={styles.tileName}>{r.name}</span>
+                                {r.type && <TypeBadge type={r.type} size={14} mode="attack" />}
+                                {locked && <IconLock size={14} className={styles.lock} role="img" aria-label={GUIDE_TEXT.locked} />}
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </section>
                   ))}
-                  {shown.length === 0 && <li className={styles.empty}>{GUIDE_TEXT.none}</li>}
-                </ul>
+                  {shown.length === 0 && <p className={styles.empty}>{GUIDE_TEXT.none}</p>}
+                </div>
                 {current && <Detail kind={kind} id={current.id} icon={current.icon} />}
               </>
             )}

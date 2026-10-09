@@ -308,7 +308,7 @@ export function groupTip(plan: GroupPlan): ReactNode {
   return <Tip title={groupLabel(plan)} body={GROUP_HINT[plan.kind]} />;
 }
 
-/** §5.6 — an enemy's place in a group: the Lead in front, or a support behind it with its role. */
+/** §5.6 — an enemy's place in a group: the Lead in front, or one behind it. */
 export function placeTip(place: string, alone = false, shiny = false): ReactNode {
   const withShiny = (text: string): ReactNode => (shiny ? [<div key="r">{text}</div>, shinyLine(false)] : text);
   if (place === 'Lead' && alone) return <Tip title="Enemy Lead" body={withShiny('It stands alone. Every card reaches it; Melee cards reach only the enemy that leads.')} />;
@@ -316,7 +316,7 @@ export function placeTip(place: string, alone = false, shiny = false): ReactNode
     return <Tip title="Enemy Lead" body={withShiny('It stands in front of its group. Your Melee cards reach only this one; Ranged and area cards reach the rest. If it falls, the strongest of the others steps up.')} />;
   }
   // §5.6 (v0.9.10) — behind the Lead stands a Pokémon like any other: whole, its own kit, no role.
-  return <Tip title={place} body={withShiny('It fights behind the Lead, with its whole HP and its own moves.')} footer="Only Ranged and area cards reach it. If the Lead falls, the strongest one behind steps up." />;
+  return <Tip title={place} body={withShiny('It fights behind the Lead.')} footer="Only Ranged and area cards reach it. If the Lead falls, the strongest one behind steps up." />;
 }
 
 /** §5.5.1 Trainer's Instinct — the enemy's plan for next turn, and the one way it can change. */

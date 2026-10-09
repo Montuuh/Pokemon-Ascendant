@@ -698,6 +698,7 @@ export const GUIDE_TEXT = {
   compatible: 'Learnable by',
   price: 'Price',
   notSold: 'Never sold.',
-  prices: (route: number, city: number) => `${route} ₽ from the merchant, ${city} ₽ in a City`,
+  // A non-breaking space keeps each amount whole when the line wraps.
+  prices: (route: number, city: number) => `${route} ₽ from the merchant, ${city} ₽ in a City`,
   pending: (why: string) => `Not working yet: ${why}`,
 };

@@ -43,7 +43,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
   const phase = currentPhase(enemy, ctx.config);
   // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
   const place = enemySlotLabel(state, enemy);
-  // §5.6 — in a group the enemy's card is the door to its place and role.
+  // §5.6 — in a group the enemy's card is the door to its place.
   const cardTipProps = useTip(placeTip(place, state.enemies.length + state.enemyQueue.length <= 1, !!enemy.shiny));
   // §5.5.1 — under Trainer's Instinct the enemy's committed plan for next turn sits under this turn's.
   const next = enemy.next?.intent ?? null;
@@ -136,7 +136,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
           </span>
           <span className={styles.chips}>
             {place && (
-              <span className={place === 'Lead' ? styles.chipLead : styles.chipRole} data-testid="foe-place">
+              <span className={place === 'Lead' ? styles.chipLead : styles.chipPlace} data-testid="foe-place">
                 {place}
               </span>
             )}

@@ -370,7 +370,7 @@ export function CombatScreen() {
         <div className={styles.arena} aria-hidden="true" style={fxTimings()}>
           {lead.hp > 0 && (
             <div className={`${styles.leadSprite} ${fx.classes[lead.uid] === 'fx-lunge-right' ? 'fx-lunge-right' : ''} ${fx.sprites[lead.uid] ?? ''}`}>
-              <img className="pixel" src={spriteOf(lead, 'back', shiny)} alt="" draggable={false} data-shiny={shiny || undefined} style={lead.hp <= 0 ? { opacity: 0 } : undefined} />
+              <img className="pixel" src={spriteOf(lead, 'back', shiny)} alt="" draggable={false} data-shiny={shiny || undefined} />
               <span className={styles.platform} />
             </div>
           )}
