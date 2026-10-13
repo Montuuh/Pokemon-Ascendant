@@ -3,7 +3,8 @@
 **Date:** 2026-10-09 · **Version:** v0.9.12 shipped (*Whole enemies, and the double intent*).
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 
-**Sprint goal next:** **v0.9.13** Victory Road (see `docs/roadmap.md`).
+**Sprint goal next:** **v0.9.13** Victory Road (see `docs/roadmap.md`). Awaiting the user's pick: the fan-game study's
+8 design + 7 art proposals (`docs/research/2026-10-13-fan-games-pokelike-pokesurvivor.md`; nothing placed yet).
 
 **v0.8.7–v0.8.10** — the route, balance, harness, growth curves (`BALANCE_REPORT=1 REPORT_SEEDS=240`). **v0.9.1** — Shiny found in the wild (§5.14, `run/shiny.ts`, 1 in 40, `copyIsShiny`), its collection in the
 Pokédex, +N Bond on the reward screen; the Bond in four linear ranks of 100 (Shiny Charm · hidden ability · the whole
