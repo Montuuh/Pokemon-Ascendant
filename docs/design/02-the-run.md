@@ -1087,6 +1087,36 @@ commonest stop, and the smallest: the route's breathing between fights, not a re
 The find is rolled with the map, so a reload shows the same one. Money is in the table because the bag already
 fills faster than a careful player empties it (v0.8.6), and the City is where a stop's worth is spent.
 
+**A guarded find** (☐ v0.9.17): about one find in eight is guarded — a better find (a held item, a TM, an Uncommon or
+Rare relic) under a Pokémon that will not be beaten in time. It is a **hold-out** fight (§5.6.5), named on the map as
+one: *Guarded — hold out for 3 turns*. Never the only stop in its column, so walking past it is always a choice.
+
+## §2.9.6 The route Trader
+
+> ☐ **v0.9.18** — designed 2026-10-14 (the user's note 7: "el nodo intercambiador en la ruta me parece bien"). After
+> Pokelike's trade node, reworked there in v3.1 into a choice with half its information hidden.
+
+A trainer at the roadside who will swap. **Give one Pokémon from your Box, then choose one of three face-down
+offers.** Each offer shows **one of the newcomer's types and its level**, nothing else; the species is revealed when
+it is yours. The newcomer arrives **two levels above the Pokémon you gave** (`TRADER_LEVEL_BONUS`), at full HP, with
+no Trauma, its learnset at that level, and its line's Bond counted from a first recruit (§6.8.1). You may also walk
+on without trading.
+
+- **The offers** are rolled once, on entry (the Encounter stream), from the **current Region's Wild Areas** —
+  Common 50 % · Uncommon 35 % · Rare 15 % — at the Region's form (§2.6.3), never a species already in your Box,
+  never a starter line, never a Legendary. Leaving and coming back shows the same three.
+- **What you give** may be anyone in the Box but the last Pokémon standing; a fainted one may be given (the trader
+  nurses it). What it held comes back to the bag. Releasing is permanent, as in §2.3.
+- **Where:** a stop (§2.5.1), at most one per route, from the crossroads (column 8) on — never in the opening
+  stops, where nobody has anything to trade yet — on about **half** of all routes. The map marks it with the trader's
+  own sprite.
+
+*Why face-down (delegated, 2026-10-14):* a trade that showed the species would be a shop with Pokémon on the shelf
+(the anti-pillar "not card acquisition"). A type and a level are enough to plan around — you know what hole you are
+filling and how strong the answer arrives — and the species is the surprise that makes it a Pokémon trade, priced in
+the one you let go (Pillar 3: you sculpt the team by choosing what to give up). The Black Market's Trader (§2.11.6)
+stays the rare, named version: stolen species no route offers, shown face up.
+
 ---
 
 # §2.10 Mystery Events
@@ -1551,6 +1581,40 @@ different paths.
 ## §2.12.2 🦕 Apex Pokémon
 A single high-rarity species exclusive to Victory Road, already partially evolved or carrying a unique moveset.
 One per run, on a seeded path — **not reachable on every route**.
+
+### §2.12.2.1 Legendary arenas
+
+> ☐ **v0.9.19** — designed 2026-10-14 (the user's note 3: "OK, realiza todo el diseño; implementación todavía no, ya
+> que no están los legendarios implementados"). After PokéSurvivor's rifts, where each Legendary waits in an arena of
+> its own type with its own terrain and weather.
+
+When the Legendary Pokémon enter the run (v0.9.19 — Victory Road's Apex and the Black Market's Executive), **each one
+is fought in its own arena**: a place the player recognises from Gen I, a **field** set at the fight's start, and
+**one arena rule** — the Legendary's answer to §5.9.5's Leader rules. All three are shown before the fight, on the
+node and its preview (Pillar 1), and the arena is where the fight happens whoever brought you there.
+
+| Legendary | Arena (backdrop) | Field (§4.3) | Arena rule | The answer |
+|---|---|---|---|---|
+| **Articuno** | Seafoam Islands (ice-cave) | **Hail** | **Mist** — Articuno's stats cannot be lowered, and it is never Frozen | Raise your own; fight the hail with Ice-types or heal through it |
+| **Zapdos** | the Power Plant (power-plant) | **Electric Terrain** | **Thundercloud** — from Phase 2 the sky opens: its Thunder becomes a Cleave that never misses | Ground-types and Flying Pokémon over the terrain; finish Phase 1 with something in hand |
+| **Moltres** | Mt. Ember (volcano) | **Sunny Day** | **Rekindle** — the first time it falls to 20 %, it rises once: +25 % HP and its status cleared, telegraphed by the chip *Rekindles at 20 %* | Hold a burst for after the rise; Water in the sun is halved, Rock is not |
+| **Mewtwo** | Cerulean Cave (damp-cave) | **Psychic Terrain** | **Barrier** — every third turn it raises a Barrier that halves all damage it takes that turn, shown a turn ahead | Spend those turns on swaps, heals and set-up; hit on the other two |
+| **Mew** | Faraway Island (forest) | **Metronome** — a new field each turn, drawn from the ten and shown a turn ahead | **Playful** — it copies the type of the last move that hit it (its STAB follows), shown on its panel | Read the next field; choose what type to hit it with, since it becomes what you hit it with |
+
+**What every arena shares.**
+- A Legendary is a **catch-or-defeat** fight like the Elite Wild (§2.8.2): catch it and it joins (the two-slot balance
+  in the roadmap's backlog decides how), defeat it and it pays a Legendary relic pick. Phase 2 makes it easier to
+  catch, as an Elite Wild's does.
+- The arena's field is a **Battlefield** (neutral, §4.3), not a Home Field: it cuts both ways, and Defog clears it as
+  it clears any field. The **arena rule is not a field** — Defog and Cloud Nine do not touch it.
+- No healing before the fight beyond what Victory Road allows (§2.12), and running is the Elite toll (§3.1.2).
+- Every backdrop is already in the game (§9.1.2's real battle backgrounds); Mew's Faraway Island uses the forest until
+  a backdrop of its own is fetched. **Metronome** is the only new field kind — a Battlefield that redraws itself each
+  turn from the existing ten, one turn ahead.
+
+*Why a rule each (delegated, 2026-10-14):* a Legendary fought on a plain field is a big stat block, and a big stat
+block is the one fight Pillar 1 has nothing to say about. A field plus one rule makes each of the five a different
+plan — the same reason the Leaders got theirs (§5.9.5) — and the places are the ones Gen I put them in.
 
 ## §2.12.3 🏋️ Training Grounds
 No fight. Pick one Pokémon and one upgrade:

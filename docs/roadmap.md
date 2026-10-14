@@ -25,9 +25,9 @@ loop layer and re-tests the core inside it.
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
 | v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner played, every City door open. **Twelve subversions** | ✅ 2026-09-28 |
 | v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ✅ 2026-10-05 |
-| v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, then Victory Road, the League and the Champion | ☐ |
-| v1.0 | Release | Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
-| v1.1 | Polish | Audio, accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
+| v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, Gym Leaders with rules of their own, the map, the combat screen and the title redrawn, new fight objectives and the route Trader, then Victory Road, the League, the Champion and sound | ☐ |
+| v1.0 | Release | Single-player. Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
+| v1.1 | Polish | Accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
 | v1.2 | The world, wider | Fossils and the Laboratory, role events, Ditto's Transform, HMs | ☐ |
 | v2.0 | Two players | A dual mode, designed with the user first | ☐ |
 
@@ -1134,25 +1134,77 @@ one a fight — the Elite Wild everywhere, from Region 2 a Rare, an Ace Trainer'
 Gym Leader's ace, in Region 3 the Elite's Lead; the map promises it. R1 60 % · R2|R1 61 % · R3|R2 46 % · run 17 %
 (720 runs), fights 5.0 / 7.8 / 9.7 turns, Gyms 7.6 / 13.4 / 19.5.
 
-### v0.9.13 — Victory Road  ☐
+> **Re-planned 2026-10-14** (the user's notes on the fan-game study, `docs/research/2026-10-13-fan-games-pokelike-pokesurvivor.md`):
+> six patches go in before Victory Road — the Gym Leaders, the map, the combat screen, the title screen, fights with
+> another objective and the route Trader — so Victory Road moves to v0.9.19 and the League to v0.9.20, and Sound
+> (v0.9.21) is pulled forward from v1.1 so that v1.0 ships with it. **v1.0 is single-player**: every mode that needs
+> accounts or a second player waits in the backlog's *Multiplayer* and *Game modes* tables.
+
+### v0.9.13 — The Gym Leaders, on stage and by their own rule  ☐
+The user's notes 2 and 9. A Leader stands behind its Pokémon for the whole fight (today the trainer sprite is drawn
+only while ≤ 1 enemy is on the field, and a Gym always fights two at a time), with a slide-in as the fight opens. Each
+of the twelve Leaders fights under **one signature rule of its own** (§5.9.5) — printed on the Gym's node, its preview
+and the fight's top bar — on top of the per-type Phase 2 and the Home Field. Answers the v0.8.8 finding that a Region 2
+Gym is decided by the counter-pick: a rule that is not about type keeps the climax a puzzle. Re-measured over 720 runs.
+
+### v0.9.14 — The map, redrawn  ☐
+The user's notes 1 and 11, after Pokelike's map: **straight, diagonal dashed lines** between nodes instead of 90°
+roads, so a route reads as a line you can follow; **every node drawn as what it is** — the trainer class's sprite,
+the tall grass, the Centre, the item — in full colour, the far future faded rather than every node grey; the walked
+path dark, the open paths bright; the node preview over a **dimmed, still-visible map** instead of a black void; and no
+arrow that promises a move the node cannot make (an edge belongs to its two nodes, and only a node's own children are
+offered).
+
+### v0.9.15 — The combat screen and its cards, reworked  ☐
+The user's note 10 — "one of the ugliest parts of the art today". The combat screen revisited as a whole, and **new
+card art**: a move card shows its **move** (an illustration per move family, in the type's palette) with its owner
+as a small badge, instead of the owner's portrait on every card; the consumable cards redrawn to match. The same art
+feeds the arena's hit effects.
+
+### v0.9.16 — The title screen, a battle  ☐
+The user's note 8. The main menu and the run's first screens (difficulty, starter, Starting Relic) redrawn: behind
+the title, an **animated Pokémon battle** in the game's own art — real battle sprites trading moves on a battle
+backdrop, a matchup that changes — and a title mark of its own instead of plain type.
+
+### v0.9.17 — Fights with another objective  ☐
+The user's note 5. Some fight nodes win by something other than "knock everything out" (§5.6.5): **the flee race**
+— a Pokémon that leaves in N turns, telegraphed as a countdown, worth a lot if it falls first — and **the hold-out** —
+survive N turns against a rampage to win. Placed by §5.6.3's table, promised on the map.
+
+### v0.9.18 — The route Trader  ☐
+The user's note 7. A stop on the route (§2.9.6): give one of your Box, then choose one of three **face-down** offers
+that show only a type and a level; the newcomer arrives above the level you gave. A way to re-roll a line that is
+not working, priced in the Pokémon you let go.
+
+### v0.9.19 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 - **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
   2026-09-28): the showcase offers a Legendary Pokémon, never "sold out" and never shut by a cap. Here because Victory
   Road's Apex (§2.12.2) is where the canon already brings the run's rarest species, and the two are balanced together.
   Needs the backlog's "a Legendary takes two team slots" designed with the user first.
+- **Each Legendary is fought in its own arena** (§2.12.2.1, designed 2026-10-14, the user's note 3): its field, its
+  backdrop and one arena rule, set at the fight's start and shown before it.
 
-### v0.9.14 — The League  ☐
+### v0.9.20 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
 
+### v0.9.21 — Sound  ☐
+The user's note 12: sound is its own version, before v1.0. §9.5's direction, pulled forward from v1.1: the SFX
+first (card play, hit, super-effective, faint, swap, the ball and its shakes, catch, level-up, evolution, the UI),
+then the music. The fan-game study's cheap path is the first candidate — a Web Audio synthesiser with every sound
+composed in code, no files and nothing of Nintendo's.
+
 ## v1.0 — Release  ☐
-Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads, the final balance pass with
-telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial, IP disclaimer everywhere.
+**Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
+the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,
+IP disclaimer everywhere.
 
 ## v1.1 — Polish  ☐
-Audio direction + stems + SFX bible (§9.5), accessibility tier (§9.6), localisation architecture + es-ES/en-US (§9.10), generated backdrop set (`ui/07`), VFX pass, performance pass.
+Accessibility tier (§9.6), localisation architecture + es-ES/en-US (§9.10), generated backdrop set (`ui/07`), VFX pass,
+performance pass. *(Audio moved to v0.9.21, 2026-10-14.)*
 
 ## v1.2 — The world, wider  ☐
 Content that makes a second hundred runs different: **Fossils and the Laboratory** (revive Omanyte, Kabuto or
@@ -1181,7 +1233,31 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.13's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.13, designed first |
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.19's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.19, designed first |
+
+**Multiplayer** — everything that needs **player accounts and a server**. None of it is in v1.0, which is
+single-player (user, 2026-10-14). When accounts land (the save layer is already behind a provider interface for a
+"logged-in server profile", §10.8.2), these arrive together as the game's online layer:
+
+| Idea | Noted | What it is |
+|---|---|---|
+| **Player accounts** | user, 2026-10-14 | A logged-in profile behind §10.8.2's save provider; the prerequisite of every row below |
+| **Co-op runs** | user, 2026-10-14 | Two players in one run or in two linked runs — e.g. Pokelike's *Soul Link*: each walks a route of their own, Pokémon caught on the same route are bound, and they meet at every Gym. Input to v2.0's two-player design talk |
+| **The Daily Route** | user, 2026-10-14 | One seed for everyone each day (the starter and a difficulty modifier with it), one attempt, a result grid to share, a streak with a grace day. The canon's hidden Mystery Door (§8.4) was always meant for it |
+| **Leaderboards** | user, 2026-10-14 | Per Daily Route and per mode. A score is verified by **replaying its input log** on the server (§10.7.4: seed + log is bit-exact) |
+| **Hall of Fame** | user, 2026-10-14 | Every won run's team recorded (sprites, levels, paths, relics, seed), shareable, with "watch it again" from the replay log |
+| **Friends** | user, 2026-10-14 | A friends list, their Hall of Fame and records, invitations to co-op |
+| **Public profile** | study, 2026-10-13 | Trainer Card, favourite Pokémon, medals — what friends and leaderboards link to |
+
+**Game modes** — variants on the run, for after v1.0 (user, 2026-10-14). Most are a rule plus a page of text over
+content that exists; each would read the difficulty modifiers (§8.8) where it can:
+
+| Idea | Noted | What it is |
+|---|---|---|
+| **Nuzlocke** | study, 2026-10-13 | A faint is a release; only the first Pokémon of each Wild Area may be caught. HP persistence and Trauma already carry half of it |
+| **Challenge of the week** | study, 2026-10-13 | A fixed seed and a curated rule set, with a medal: Baby Cup (nothing evolves past stage 1), Monotype, TM Overdrive (kits start at their weakest; only TMs improve them), Trick Room… |
+| **Endless** | study, 2026-10-13 | Regions that loop with rising levels. Lesson kept from Pokelike: effects that scale with the enemy's max HP fade when outlevelled, and a fight clock beats stall builds — "Endless is meant to end" |
+| **Randomizer** | study, 2026-10-13 | Every Pokémon received — starter included — a random species |
 
 **Placed.** Every idea from the user's priority pass of 2026-09-24, and where each item went after the user's review
 of the order (multi-enemy stays v0.8 and spreads through the run, the route joins it, the balance pass follows both;
@@ -1206,7 +1282,22 @@ the account revamps move to v0.9):
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.13 |
+| — | Recovering missed Badges | v0.9.19 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.13 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.19 (with the two-slot balance, designed first) |
+
+**Placed 2026-10-14** — the user's notes on the fan-game study (`docs/research/2026-10-13-fan-games-pokelike-pokesurvivor.md`):
+
+| Note | Idea | Placed in |
+|---|---|---|
+| 2, 9 | A signature rule for every Gym Leader; the Leader's sprite in the fight | v0.9.13 |
+| 1, 11 | The map after Pokelike's: diagonal lines, nodes drawn as what they are, a better preview | v0.9.14 |
+| 10 | The combat screen and new move and item card art | v0.9.15 |
+| 8 | An animated battle behind the title, and the first screens | v0.9.16 |
+| 5 | Fights with another objective — the flee race and the hold-out | v0.9.17 |
+| 7 | The route Trader | v0.9.18 |
+| 3 | Each Legendary in its own arena — designed now, built with the Legendaries | §2.12.2.1 · v0.9.19 |
+| 12 | Sound, before v1.0 | v0.9.21 |
+| 4 | Co-op, the Daily Route, leaderboards, Hall of Fame, friends | Backlog — *Multiplayer* |
+| 6 | Nuzlocke, weekly challenges, Endless, Randomizer | Backlog — *Game modes* |

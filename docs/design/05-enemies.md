@@ -249,6 +249,53 @@ any Pocket Healer. HP persists between fights (§2.4) and a group takes more of 
 gives back what the *extra* enemies took, so more group fights does not mean more attrition. A lost or escaped fight
 gives nothing.
 
+## §5.6.5 Fights with another objective
+
+> ☐ **v0.9.17** — designed 2026-10-14 (the user's note 5 on the fan-game study: "me gusta lo de combates con otros
+> objetivos"). Two shapes, after PokéSurvivor's treasure goblins and locked chests, made turn-based.
+
+Most fights are won by knocking everything out. Two are won by something else, and **the map promises which**
+before you commit: the node's preview card names the objective and a bubble says what it means (Pillar 1).
+
+**The flee race — *It won't stay long*.** A lone wild Pokémon that **leaves in N turns**. It wears a countdown on
+its panel from the first turn (*Flees in 3*); at the end of its Nth turn, if it is still standing, it runs and the
+fight ends as **Fled** — no XP, no drop, no catch, and no toll either (nothing was lost but the chance). Knock it out
+first and it pays far above its node; **weaken it and throw a ball** and it is a catch like any other, which is the
+classic Safari Zone race the series made of Chansey. It fights while it waits: its intents are its own, and the last
+one before it goes is always its getaway (*Teleport*, *Run*), shown like any intent.
+
+| Runner | Region | Flees in | Knock it out for | Why it runs |
+|---|---|---|---|---|
+| **Abra** · Kadabra · Alakazam (at the Region's form) | 1 · 2 · 3 | 2 | XP ×2 and a Rare Candy | Gen I's Abra knows only Teleport: the first Pokémon that taught a generation to throw fast |
+| **Meowth** · Persian | 1–2 · 3 | 3 | Pay Day: ₽ ×4 a trainer's purse | Pay Day scatters coins; a cat does not stay to be robbed |
+| **Chansey** | 2–3 | 3 | XP ×3 to every Active Pokémon | The Safari Zone's Chansey — rare, fragile in defence, gone in a blink |
+
+*The numbers (`FLEE_RACE` in `run/objectives.ts`):* about **one Wild Area node in twelve** is a runner in place of its
+pool's roll (never the first two columns, never two on a route); the runner's level is the node's band top; it
+cannot be part of a pack and never calls for help. A runner is never Shiny-rolled differently — a shiny Abra that
+teleports is the oldest heartbreak in the series, kept on purpose.
+
+**The hold-out — *Hold out for N turns*.** A **guarded find** (§2.9.5): something worth having lies on the ground
+and a Pokémon that will not be beaten in time stands over it. You win by **still having a Pokémon standing at the end
+of turn N**; knocking the guard out also wins, and early. The guard hits hard and **escalates** — its Attack rises
+one stage at the end of every turn — so the fight is a defensive puzzle: swaps, shields, heals and statuses that buy
+turns, the purest test of Pillar 2. A bar on the fight's top line counts the turns left (*Hold on: 2*).
+
+| Guard | Region | Turns | Guarding |
+|---|---|---|---|
+| **Primeape** (Thrash, Rage) | 1 | 3 | a held item, or an Uncommon relic one time in four |
+| **Tauros** ×2, two at a time (Stampede) | 2 | 4 | a TM of a type your Active Team carries, or an Uncommon relic one time in three |
+| **Rhydon** (Horn Drill telegraphed on the last turn) | 3 | 4 | a Rare relic one time in three, a held item otherwise |
+
+*The numbers (`HOLD_OUT`):* a guarded find replaces about **one stop in eight** of §2.9.5's finds, never in a column
+with no other choice. A guard's level is its column's trainer band, its Attack the Region's tier ×1.2. XP is a won
+wild fight's. Running from a hold-out is allowed and costs the wild toll (§3.1.2); losing it is a lost fight.
+
+*Why these two (delegated, 2026-10-14):* both are telegraphed races — one against a countdown you can see, one
+against a guard that escalates on a schedule you can see — so they add stakes without any hidden rule. The runner
+rewards **burst and the catch**, the hold-out rewards **defence and the swap**; together they cover the two halves
+of the deck that a "knock everything out" fight already rewards less evenly.
+
 ---
 
 # §5.7 Counter-intel
@@ -373,6 +420,49 @@ what is coming.
 | **Status Siege** | Poison, Grass, Bug | Floods the Lead with the Gym's signature condition | Cleanse, swap the statused Lead, immune typing |
 | **Onslaught** | Fire, Fighting, Normal | Mass Attack, amplified ×1.5 by the Home Field — a burst race | Resist wall, defensive swaps, healing |
 | **Tempo Control** | Electric, Psychic, Ice, Water | AP and swap taxes plus Paralysis and Freeze locks | AP management, status immunity, planning two turns ahead |
+
+## §5.9.5 The Leader's rule
+
+> ☐ **v0.9.13** — designed 2026-10-14 (the user's note 2 on the fan-game study: "lo veo OK, realiza todo el diseño e
+> implementación"). After Pokelike's SpireMon, where every Gym Leader fights under a signature rule.
+
+Every Gym Leader fights under **one rule of its own**, for the whole fight, on both of its Pokémon on the field and
+every one still to come. The rule is the **Leader's**, not the type's: it sits on top of the per-type Phase 2
+(§5.9.4) and the Home Field (§4.3.5), and two Leaders of the same archetype play nothing alike. It is **printed
+wherever the Gym is**: on its map node and lane telegraph from the first column (§2.5), on its preview card, and as a
+chip on the fight's top bar whose bubble says the whole rule — with a counter where the rule keeps one (*Riptide
+next turn*, *Rollout ×1.30*, *Quake in 2*).
+
+**Why** (2026-10-14): the v0.8.8 harness found that a Region 2 Gym is decided by the counter-pick at the fork — bring
+the right type and no multiplier made it a climax (§5.9.3). A rule that is not about type keeps the fight a puzzle
+after the counter-pick, gives each of the twelve Leaders a memory of its own, and makes a second run against the same
+Leader a different plan rather than the same type check.
+
+| Leader | Rule | What it does | The answer |
+|---|---|---|---|
+| **Brock** (Rock) | **Rock Solid** | No single hit takes more than **a quarter** of his Pokémon's Max HP; a multi-hit move is capped hit by hit | Multi-hit moves, Burn and Poison, several cards a turn — he is a wall you chip, not one you break |
+| **Misty** (Water) | **Riptide** | At the end of **every second turn** the tide trades your Lead with Bench 1 (Bench 2 if Bench 1 is down): a free swap that is not yours and counts as none | Choose who stands on Bench 1 before the tide turns — the swap is hers, the line-up is yours |
+| **Aster** (Bug) | **Swarm** | Her Pokémon on the field hit **+10 %** for every one of hers still waiting to come out | Knock them out fast: every one down thins the swarm |
+| **Wren** (Normal) | **Rollout** | Her Lead hits **+15 %** harder for every turn in a row your Lead has been the same Pokémon, up to +60 % | Rotate your Lead; a swap resets the roll |
+| **Blaine** (Fire) | **Meltdown** | Every hit his Pokémon land lowers its target's Defence **one stage**, down to −3 | Spread the hits with swaps, raise Defence, or win the race |
+| **Erika** (Grass) | **Bloom** | At the end of each turn, each of her Pokémon on the field that took **no damage** that turn restores **10 %** of its Max HP | Touch both: Ranged and area cards, a status that ticks |
+| **Surge** (Electric) | **Overcharge** | The **first card** you play each turn costs **+1 AP** | Open with a cheap card, or a consumable; plan two-card turns |
+| **Koga** (Poison) | **Toxic** | Every Poison his side inflicts is **badly poisoned**: its damage doubles each turn (§7.5) | Poison-types are immune; cure it early, or win before it doubles twice |
+| **Sabrina** (Psychic) | **Mind Lock** | At every draw she **seals the strongest attack in your hand** (most power; ties the costliest): it cannot be played this turn | Hold a second plan; the seal is shown before you spend a point |
+| **Giovanni** (Ground) | **Tremor** | **Every third turn**, at its end, the ground shakes: each of your grounded Pokémon loses **10 %** of its Max HP | Flying and Levitate stand above it; a countdown names the turn |
+| **Kiyo** (Fighting) | **Close Quarters** | Your **Ranged** cards deal **half** against his Pokémon; your **Melee** cards **+10 %** | Fight at the front: put your hitter in the Lead (Pillar 2) |
+| **Lorelei** (Ice) | **Ice Armour** | At each Intent phase her Lead's ice shield is set to **10 %** of its Max HP (it absorbs damage before HP and does not stack); a **Fire** move shatters it whole before it lands | Fire, multi-hits to strip it, or hit hard enough that 10 % does not matter |
+
+**How the rules are kept honest.**
+- **Every number the player reads already holds the rule.** The damage preview, the intent's number (§5.2) and the
+  card's AP cost are computed with it: a card under Mind Lock is shown sealed, a card under Overcharge shows its
+  higher cost, Brock's cap and Kiyo's halving are in the preview, Swarm and Rollout are in the intent's number.
+- **The rules are the enemy's.** A rule never helps the player, never applies outside its Leader's Gym, and no relic,
+  Badge or modifier copies one. Defog (§4.3.6) clears fields, not rules.
+- **The numbers are data** (`BattleConfig.gymRules`), re-measured over 720 runs with every Gym: a rule that turns a
+  Gym into a wall is cut down, not removed.
+
+Rules, by id, beside each Gym in [`catalogs/gyms.md`](catalogs/gyms.md).
 
 # §5.10 Badges
 
