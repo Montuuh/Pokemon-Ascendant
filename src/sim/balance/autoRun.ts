@@ -22,6 +22,8 @@ import { autoPlay, type AutoPlayerOptions } from './autoPlayer';
 // where to go, who to field, when to throw a ball — so the pacing numbers cover the run, not just one fight.
 
 export interface RunPolicy extends AutoPlayerOptions {
+  /** §5.9.5 — a measure of the Gyms without their Leaders' rules, for the baseline a rule is tuned against. */
+  noGymRules?: boolean;
   /** Take the field nurse whenever the team is below this share of its effective Max HP (§2.9.1). */
   restBelow: number;
   /** Prefer a Wild node while the Box has fewer than this many Pokémon: you need a team. */
@@ -735,9 +737,11 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
     }
     if (!run.pendingScenario) continue;
 
-    const combat = autoPlay(createCombat(run.pendingScenario, ctx, run.pendingScenario.seed), ctx, policy);
+    // §5.9.5 — the baseline measure fights every Gym without its Leader's rule.
+    const fought = policy.noGymRules ? { ...run.pendingScenario, gymRule: undefined } : run.pendingScenario;
+    const combat = autoPlay(createCombat(fought, ctx, fought.seed), ctx, policy);
     turns += combat.turns;
-    const scenario = run.pendingScenario;
+    const scenario = fought;
     const before = run.activeUids.map((uid) => run.box.find((m) => m.uid === uid)!).map((m) => ({ uid: m.uid, hp: m.hp, level: m.level, xp: totalXp(m) }));
     const boxLevel = run.box.reduce((a, m) => a + m.level, 0) / Math.max(1, run.box.length);
     const relicsHeld = run.relics.length;

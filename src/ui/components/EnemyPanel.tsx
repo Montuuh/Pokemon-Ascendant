@@ -4,11 +4,11 @@ import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim
 import { SLOT_LABEL, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
 import { CatchPicker } from './CatchPicker';
 import { iconOf, intentGlyph } from '@/ui/art';
-import { INTENT_LABEL } from '@/ui/strings';
+import { ARMOUR_LABEL, INTENT_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
-import { nextIntentTip, placeTip } from '@/ui/tips';
+import { armourTip, nextIntentTip, placeTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './EnemyPanel.module.css';
 
@@ -137,7 +137,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
             {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={22} />}
           </span>
         </span>
-        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={10} />
+        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} shield={enemy.shield} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={10} />
         <span className={styles.hpRow}>
           <span className={`display tabular ${styles.hpText}`}>
             {enemy.hp} / {enemy.maxHp}
@@ -154,6 +154,12 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
                 {enemy.stages[s]}
               </span>
             ))}
+            {/* §5.9.5 Ice Armour — what it takes before HP, and the rule behind it a hover away. */}
+            {enemy.shield > 0 && (
+              <Tipped tip={armourTip(enemy.shield)} className={styles.chipInfo} data-testid="foe-armour">
+                {ARMOUR_LABEL} {enemy.shield}
+              </Tipped>
+            )}
             {enemy.sturdyAvailable && (
               <Tipped tip={<Tip title="Sturdy" body="Survives one hit that would have knocked it out, at 1 HP. Once per fight." />} className={styles.chipInfo}>
                 Sturdy

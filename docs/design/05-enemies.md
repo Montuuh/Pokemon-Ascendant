@@ -398,7 +398,7 @@ when XP stopped carrying teams seven levels over their Region; 0 / +2 before; +4
 - **But never a free win.** Each team carries at least one answer to a full-resist party — usually an
   off-type coverage move, like the Rock Gym's Fighting-typed `body-press`.
 - **A Home Field** of its type is set at combat start (§4.3.5), over the Gym's own Battlefield (§4.3.14).
-- **The Gym hits harder than its Region** (`GYM_ATTACK_MULTIPLIER`, ×1.15 / ×1.1 / ×1.15 by Region; ×1.3 / ×1.5 / ×1.15 until v0.9.8 evolved the Gyms' teams by their level). A higher
+- **The Gym hits harder than its Region** (`GYM_ATTACK_MULTIPLIER`, ×1.15 / ×0.95 / ×0.9 by Region since v0.9.13 gave every Leader a rule, §5.9.5; ×1.15 / ×1.0 / ×1.0 in v0.9.12, ×1.3 / ×1.5 / ×1.15 until v0.9.8 evolved the Gyms' teams by their level). A higher
   level premium was tried first and made the run *easier*: a Gym above the team pays it more XP (§6.2.1), so the team
   left stronger. Attack makes the climax a threat without that refund — Gym fights are lost 8 % / 2 % / 10 % of the
   time by Region, against 1–4 % before. Region 2's Gyms stay soft at any multiplier the harness tried (to ×1.85):
@@ -440,18 +440,18 @@ Leader a different plan rather than the same type check.
 
 | Leader | Rule | What it does | The answer |
 |---|---|---|---|
-| **Brock** (Rock) | **Rock Solid** | No single hit takes more than **a quarter** of his Pokémon's Max HP; a multi-hit move is capped hit by hit | Multi-hit moves, Burn and Poison, several cards a turn — he is a wall you chip, not one you break |
+| **Brock** (Rock) | **Rock Solid** | No single hit takes more than **40 %** of his Pokémon's Max HP; a multi-hit move is capped hit by hit | Multi-hit moves, Burn and Poison, several cards a turn — he is a wall you chip, not one you break |
 | **Misty** (Water) | **Riptide** | At the end of **every second turn** the tide trades your Lead with Bench 1 (Bench 2 if Bench 1 is down): a free swap that is not yours and counts as none | Choose who stands on Bench 1 before the tide turns — the swap is hers, the line-up is yours |
-| **Aster** (Bug) | **Swarm** | Her Pokémon on the field hit **+10 %** for every one of hers still waiting to come out | Knock them out fast: every one down thins the swarm |
-| **Wren** (Normal) | **Rollout** | Her Lead hits **+15 %** harder for every turn in a row your Lead has been the same Pokémon, up to +60 % | Rotate your Lead; a swap resets the roll |
-| **Blaine** (Fire) | **Meltdown** | Every hit his Pokémon land lowers its target's Defence **one stage**, down to −3 | Spread the hits with swaps, raise Defence, or win the race |
-| **Erika** (Grass) | **Bloom** | At the end of each turn, each of her Pokémon on the field that took **no damage** that turn restores **10 %** of its Max HP | Touch both: Ranged and area cards, a status that ticks |
-| **Surge** (Electric) | **Overcharge** | The **first card** you play each turn costs **+1 AP** | Open with a cheap card, or a consumable; plan two-card turns |
+| **Aster** (Bug) | **Swarm** | Her Pokémon on the field hit **+20 %** for every one of hers still waiting to come out | Knock them out fast: every one down thins the swarm |
+| **Wren** (Normal) | **Rollout** | Her Lead hits **+25 %** harder for every turn in a row your Lead has been the same Pokémon, up to +100 % | Rotate your Lead; a swap resets the roll |
+| **Blaine** (Fire) | **Meltdown** | Every attack his Pokémon land lowers its target's Defence **one stage**, down to −2 | Spread the hits with swaps, raise Defence, or win the race |
+| **Erika** (Grass) | **Bloom** | At the end of each turn, each of her Pokémon on the field that took **no damage** that turn restores **8 %** of its Max HP | Touch both: Ranged and area cards, a status that ticks |
+| **Surge** (Electric) | **Overcharge** | **Every second turn** the field is overcharged: the **first card** you play costs **+1 AP** | Open those turns with a cheap card; the chip says which turn |
 | **Koga** (Poison) | **Toxic** | Every Poison his side inflicts is **badly poisoned**: its damage doubles each turn (§7.5) | Poison-types are immune; cure it early, or win before it doubles twice |
-| **Sabrina** (Psychic) | **Mind Lock** | At every draw she **seals the strongest attack in your hand** (most power; ties the costliest): it cannot be played this turn | Hold a second plan; the seal is shown before you spend a point |
-| **Giovanni** (Ground) | **Tremor** | **Every third turn**, at its end, the ground shakes: each of your grounded Pokémon loses **10 %** of its Max HP | Flying and Levitate stand above it; a countdown names the turn |
-| **Kiyo** (Fighting) | **Close Quarters** | Your **Ranged** cards deal **half** against his Pokémon; your **Melee** cards **+10 %** | Fight at the front: put your hitter in the Lead (Pillar 2) |
-| **Lorelei** (Ice) | **Ice Armour** | At each Intent phase her Lead's ice shield is set to **10 %** of its Max HP (it absorbs damage before HP and does not stack); a **Fire** move shatters it whole before it lands | Fire, multi-hits to strip it, or hit hard enough that 10 % does not matter |
+| **Sabrina** (Psychic) | **Mind Lock** | At the draw of **every second turn** she **seals the strongest attack in your hand** (most power; ties the costliest): it cannot be played that turn | Hold a second plan; the seal is shown before you spend a point |
+| **Giovanni** (Ground) | **Tremor** | **Every third turn**, at its end, the ground shakes: each of your grounded Pokémon loses **5 %** of its Max HP | Flying and Levitate stand above it; a countdown names the turn |
+| **Kiyo** (Fighting) | **Close Quarters** | Your **Ranged** cards deal **70 %** against his Pokémon; your **Melee** cards **110 %** | Fight at the front: put your hitter in the Lead (Pillar 2) |
+| **Lorelei** (Ice) | **Ice Armour** | At each Intent phase her Lead's ice shield is set to **4 %** of its Max HP (it absorbs damage before HP and does not stack); a **Fire** move shatters it whole before it lands | Fire, multi-hits to strip it, or hit hard enough that 4 % does not matter |
 
 **How the rules are kept honest.**
 - **Every number the player reads already holds the rule.** The damage preview, the intent's number (§5.2) and the
@@ -459,8 +459,12 @@ Leader a different plan rather than the same type check.
   higher cost, Brock's cap and Kiyo's halving are in the preview, Swarm and Rollout are in the intent's number.
 - **The rules are the enemy's.** A rule never helps the player, never applies outside its Leader's Gym, and no relic,
   Badge or modifier copies one. Defog (§4.3.6) clears fields, not rules.
-- **The numbers are data** (`BattleConfig.gymRules`), re-measured over 720 runs with every Gym: a rule that turns a
-  Gym into a wall is cut down, not removed.
+- **The numbers are data** (`BattleConfig.gymRules`), measured on the whole-run harness against the same Gyms fought
+  without their rules (`NO_GYM_RULES=1`): a rule that turns a Gym into a wall is cut down, not removed. v0.9.13, 360 runs
+  each way: Gyms lost 1 % / 8 % / 24 % by Region without the rules, **4 % / 11 % / 26 %** with them, and Regions 2 and 3
+  gave back a little Attack for it (`GYM_ATTACK_MULTIPLIER` ×0.95 / ×0.9) so the curve holds: R1 58 % · R2|R1 60 % ·
+  R3|R2 48 % · the whole run 17 %. Two rules came down from their first draft: Overcharge and Mind Lock act every second
+  turn (every turn, the harness lost a third of its Surge and Sabrina fights).
 
 Rules, by id, beside each Gym in [`catalogs/gyms.md`](catalogs/gyms.md).
 

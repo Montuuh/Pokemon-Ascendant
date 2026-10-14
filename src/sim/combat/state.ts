@@ -3,6 +3,7 @@ import type { EncounterKind, EnemySetup, EnemyTier } from '../content/defs';
 import type { IntentKind, PokemonType, PrimaryStatus, SlotId, Stat, StatusCondition } from '../types';
 import type { Effectiveness } from './typeChart';
 import type { FieldState } from './fields';
+import type { GymRuleId } from './gymRules';
 
 // Plain, JSON-serialisable combat state. Everything the UI shows, the save writes and a replay compares is here.
 // No classes, no functions, no references: `structuredClone`/`JSON` round-trips are identity.
@@ -100,6 +101,8 @@ export interface EnemyCombatant extends Combatant {
   stagger?: number;
   /** §5.6.2 — the companions its Call for Help can still bring in, in order. */
   helpers?: EnemySetup[];
+  /** §5.9.5 Bloom — it took damage this turn, so it does not bloom at the turn's end. */
+  hurtThisTurn?: boolean;
 }
 
 /** §5.5.1 — the intent queue: an enemy's committed plan for next turn, and the boss phase it was planned in. */
@@ -236,13 +239,13 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'consumable-used'; consumableId: string; targetUid: string | null; apCost: number }
   | { t: 'enemy-action'; enemyUid: string; intent: Intent; fizzled: boolean }
   | { t: 'attack'; sourceUid: string; targetUid: string; moveId: string }
-  | { t: 'damage'; sourceUid: string | null; targetUid: string; amount: number; crit: boolean; effectiveness: Effectiveness; hpAfter: number; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail' }
+  | { t: 'damage'; sourceUid: string | null; targetUid: string; amount: number; crit: boolean; effectiveness: Effectiveness; hpAfter: number; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail' | 'tremor' }
   | { t: 'heal'; targetUid: string; amount: number; hpAfter: number; cause: 'move' | 'consumable' | 'regen' | 'ability' }
   | { t: 'status-applied'; targetUid: string; status: StatusCondition }
   | { t: 'status-immune'; targetUid: string; status: StatusCondition }
   | { t: 'status-cleared'; targetUid: string; status: StatusCondition; cause: 'expired' | 'cured' }
   | { t: 'stage'; targetUid: string; stat: Stat; delta: number; total: number }
-  | { t: 'swap'; fromIndex: number; toIndex: number; kind: 'manual' | 'step-forward' | 'step-backward' | 'replacement'; apCost: number }
+  | { t: 'swap'; fromIndex: number; toIndex: number; kind: 'manual' | 'step-forward' | 'step-backward' | 'replacement' | 'forced'; apCost: number }
   | { t: 'sturdy'; uid: string }
   | { t: 'faint'; uid: string; side: 'player' | 'enemy' }
   | { t: 'enemy-enter'; enemyUid: string; called?: boolean }
@@ -286,6 +289,10 @@ export interface CombatState {
   onField: number;
   /** §4.3 — the Battlefield and any Home Field standing. Empty when the fight has none. */
   fields: FieldState;
+  /** §5.9.5 — the Gym Leader's rule, for the whole fight. Absent in every fight but a Gym. */
+  gymRule?: GymRuleId;
+  /** §5.9.5 — what a rule keeps between turns: Rollout's Lead and its count, Mind Lock's sealed card. */
+  ruleState?: { leadUid?: string; leadTurns?: number; sealedCardId?: string };
   /** §5.9.3 — enemies still to come, fought sequentially. */
   enemyQueue: EnemyCombatant[];
   /** Fainted/caught enemies, for the summary. */
@@ -335,4 +342,6 @@ export type RejectReason =
   | 'no-fleeing-a-gym'
   | 'nothing-to-cure'
   /** §7.4.5 — a held item forbids this card: Choice Band's Ranged lock, or Choice Scarf's one-a-turn. */
-  | 'choice-locked';
+  | 'choice-locked'
+  /** §5.9.5 Mind Lock — Sabrina sealed this card at the draw. */
+  | 'sealed';

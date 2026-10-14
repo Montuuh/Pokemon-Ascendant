@@ -2,8 +2,9 @@ import { useEffect, useRef } from 'react';
 import { getContent } from '@/content/registry';
 import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
-import { ALL_TRAINERS, fieldsFor, doubleActorFor, groupPlanFor, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
+import { ALL_TRAINERS, fieldsFor, doubleActorFor, gymById, groupPlanFor, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
 import { FieldChips } from './FieldChips';
+import { RuleChip } from './RuleChip';
 import { doubleActorTip, groupTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { fallbackBadge, nodeBadge, trainerSprite, itemIcon } from '@/ui/art';
@@ -51,6 +52,9 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
       ? (ALL_TRAINERS.find((t) => t.id === node.preview.rosterId) ??
         ALL_TRAINERS.find((t) => t.name === node.preview.title))
       : undefined;
+  // §5.9.5 — the Gym's own rule, promised on its preview like its field and its team.
+  const gymId = node.kind === 'gym' && run && node.lane !== undefined ? run.map.gyms[node.lane] : undefined;
+  const gym = gymId ? gymById(gymId) : undefined;
 
   useEffect(() => {
     enterRef.current?.focus();
@@ -95,13 +99,16 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
             )}
             <h2 className={`${styles.title} display`}>{node.preview.title}</h2>
           </div>
-          {roster && <img className={styles.trainer} src={trainerSprite(roster.sprite)} alt="" />}
+          {(roster ?? gym) && <img className={styles.trainer} src={trainerSprite((roster ?? gym)!.sprite)} alt="" />}
         </header>
 
         {detail && !node.preview.find && !node.preview.wild && <p className={styles.detail}>{detail}</p>}
         <p className={styles.hint}>{NODE_HINT[node.kind]}</p>
         {/* §2.6.1 / §4.3 — the ground it is fought on, promised like the rest. */}
-        <FieldChips fields={fields} compact />
+        <div className={styles.chipRow}>
+          <FieldChips fields={fields} compact />
+          {gym && <RuleChip rule={gym.rule} compact />}
+        </div>
         {plan.kind !== 'single' && (
           <Tipped tip={groupTip(plan)} className={styles.group} data-testid="preview-group">
             <GroupIcon size={16} aria-hidden="true" />

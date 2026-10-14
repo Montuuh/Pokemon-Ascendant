@@ -1,3 +1,4 @@
+import type { GymRuleId } from '../combat/gymRules';
 import type { ContentRegistry } from '../content/defs';
 import type { PokemonType } from '../types';
 import { fnv1a } from '../rng/rngStreams';
@@ -135,9 +136,10 @@ export const GYM_LEVEL_PREMIUM = { other: -2, ace: 0 } as const;
  * by levels — a higher premium made the run easier, because a Gym above the team pays it more XP (§6.2.1). v0.9.8 walked
  * every Gym through its evolutions (§2.7.3) — Region 2's fielded Arcanine and Electrode where they had held a Growlithe
  * and a Voltorb, and lost 34 % of the time — so ×1.3 / ×1.5 / ×1.15 became ×1.15 / ×1.1 / ×1.15. v0.9.12 (whole HP,
- * divisor 5, the Gym's ace acting twice): ×1.15 / ×1.0 / ×1.0.
+ * divisor 5, the Gym's ace acting twice): ×1.15 / ×1.0 / ×1.0. v0.9.13 gave every Leader a rule of its own (§5.9.5), the
+ * climax's threat by how it fights; Regions 2 and 3 handed back a little Attack for it: ×1.15 / ×0.95 / ×0.9.
  */
-export const GYM_ATTACK_MULTIPLIER: readonly number[] = [1.15, 1.0, 1.0];
+export const GYM_ATTACK_MULTIPLIER: readonly number[] = [1.15, 0.95, 0.9];
 
 /**
  * Pad a team to `size` from `pool` (another species first), deterministically: the pick is a hash of `key` and
@@ -303,6 +305,8 @@ export interface GymDef {
   team: { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[] }[];
   /** §2.5 — the one-line promise the map shows from layer 0, so the fork is never a surprise. */
   telegraph: string;
+  /** §5.9.5 — the Leader's own rule, for the whole fight. */
+  rule: GymRuleId;
 }
 
 /**
@@ -326,7 +330,7 @@ export const GYMS: GymDef[] = [
     name: 'Leader Brock',
     sprite: 'brock',
     type: 'rock',
-    badgeId: 'boulder-badge',
+    badgeId: 'boulder-badge', rule: 'rock-solid',
     // §2.5 — a Gym's backdrop is its own lane's biome at depth or at dusk, never a fifth unrelated room. The
     // lane has looked like this for four layers; arriving somewhere else would throw that away at the door.
     stage: 'damp-cave',
@@ -345,7 +349,7 @@ export const GYMS: GymDef[] = [
     name: 'Leader Misty',
     sprite: 'misty',
     type: 'water',
-    badgeId: 'cascade-badge',
+    badgeId: 'cascade-badge', rule: 'riptide',
     stage: 'sea',
     line: 'My policy is an all-out offensive with Water-type Pokémon!',
     telegraph: 'Taxes your AP and muddles your hand. Bring Grass or Electric, and cards you can afford.',
@@ -362,7 +366,7 @@ export const GYMS: GymDef[] = [
     name: 'Leader Aster',
     sprite: 'bugsy',
     type: 'bug',
-    badgeId: 'hive-badge',
+    badgeId: 'hive-badge', rule: 'swarm',
     stage: 'forest',
     line: 'Bug Pokémon are tougher than you think. Let me show you.',
     telegraph: 'Floods you with Sleep and Confusion. Bring cures, Fire or Flying.',
@@ -377,7 +381,7 @@ export const GYMS: GymDef[] = [
     name: 'Leader Wren',
     sprite: 'whitney',
     type: 'normal',
-    badgeId: 'plain-badge',
+    badgeId: 'plain-badge', rule: 'rollout',
     stage: 'night-meadow',
     line: 'Nothing fancy. Just everything, all at once.',
     telegraph: 'No weakness to exploit and a Home Field that makes every hit land harder. Bring Fighting, or bring more HP.',
@@ -584,28 +588,28 @@ export const ELITE_WILD_R2: EliteWildDef = {
  */
 export const GYMS_R2: GymDef[] = [
   {
-    id: 'fire-gym-r2', region: 2, name: 'Leader Blaine', sprite: 'blaine', type: 'fire', badgeId: 'volcano-badge',
+    id: 'fire-gym-r2', region: 2, name: 'Leader Blaine', sprite: 'blaine', type: 'fire', badgeId: 'volcano-badge', rule: 'meltdown',
     stage: 'volcano',
     line: 'Hah! I hope you brought Burn Heal. My Pokémon burn hotter than this whole coast.',
     telegraph: 'A burst race on a Home Field that makes every Fire hit land harder. Bring Water or Rock, or bring more HP.',
     team: [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'] }],
   },
   {
-    id: 'grass-gym-r2', region: 2, name: 'Leader Erika', sprite: 'erika', type: 'grass', badgeId: 'rainbow-badge',
+    id: 'grass-gym-r2', region: 2, name: 'Leader Erika', sprite: 'erika', type: 'grass', badgeId: 'rainbow-badge', rule: 'bloom',
     stage: 'forest',
     line: 'Oh… I was dozing among the flowers. Shall we? I do not intend to lose.',
     telegraph: 'Floods your Lead with Sleep and Poison. Bring cures, Fire or Flying.',
     team: [{ species: 'weepinbell', level: 20, phaseCount: 2 }, { species: 'vileplume', level: 22, phaseCount: 3 }],
   },
   {
-    id: 'electric-gym-r2', region: 2, name: 'Leader Surge', sprite: 'ltsurge', type: 'electric', badgeId: 'thunder-badge',
+    id: 'electric-gym-r2', region: 2, name: 'Leader Surge', sprite: 'ltsurge', type: 'electric', badgeId: 'thunder-badge', rule: 'overcharge',
     stage: 'power-plant',
     line: 'Hey, kid! Electric Pokémon saved me in the war. They will shock you just the same!',
     telegraph: 'Taxes your AP and locks your Lead with Paralysis. Bring Ground, and cards you can afford.',
     team: [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'] }],
   },
   {
-    id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'soul-badge',
+    id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'soul-badge', rule: 'toxic',
     stage: 'dark-city',
     line: 'Fwahahaha! A ninja does not strike. He waits for the poison to do it.',
     telegraph: 'Poisons everything and waits you out. Bring cures, Psychic or Ground.',
@@ -740,7 +744,7 @@ export const ELITE_WILD_R3: EliteWildDef = {
  */
 export const GYMS_R3: GymDef[] = [
   {
-    id: 'psychic-gym-r3', region: 3, name: 'Leader Sabrina', sprite: 'sabrina', type: 'psychic', badgeId: 'marsh-badge',
+    id: 'psychic-gym-r3', region: 3, name: 'Leader Sabrina', sprite: 'sabrina', type: 'psychic', badgeId: 'marsh-badge', rule: 'mind-lock',
     stage: 'library',
     line: 'I foresaw your arrival. I also foresaw how this ends.',
     telegraph: 'Taxes your AP and locks your hand. Bring Bug or Ghost, and cards you can afford.',
@@ -750,14 +754,14 @@ export const GYMS_R3: GymDef[] = [
     ],
   },
   {
-    id: 'ground-gym-r3', region: 3, name: 'Leader Giovanni', sprite: 'giovanni', type: 'ground', badgeId: 'earth-badge',
+    id: 'ground-gym-r3', region: 3, name: 'Leader Giovanni', sprite: 'giovanni', type: 'ground', badgeId: 'earth-badge', rule: 'tremor',
     stage: 'desert',
     line: 'This Gym is the last thing between you and the League. It does not move.',
     telegraph: 'A wall that braces harder the more you hit it. Bring Water, Grass or Ice.',
     team: [{ species: 'nidoqueen', level: 34, phaseCount: 2 }, { species: 'rhydon', level: 36, phaseCount: 3 }],
   },
   {
-    id: 'fighting-gym-r3', region: 3, name: 'Leader Kiyo', sprite: 'kiyo', type: 'fighting', badgeId: 'knuckle-badge',
+    id: 'fighting-gym-r3', region: 3, name: 'Leader Kiyo', sprite: 'kiyo', type: 'fighting', badgeId: 'knuckle-badge', rule: 'close-quarters',
     stage: 'gym',
     line: 'A hundred days on this mountain, training. Show me your hundred.',
     telegraph: 'A burst race on a Home Field that makes every Fighting hit land harder. Bring Psychic or Flying, or more HP.',
@@ -767,7 +771,7 @@ export const GYMS_R3: GymDef[] = [
     ],
   },
   {
-    id: 'ice-gym-r3', region: 3, name: 'Leader Lorelei', sprite: 'lorelei', type: 'ice', badgeId: 'glacier-badge',
+    id: 'ice-gym-r3', region: 3, name: 'Leader Lorelei', sprite: 'lorelei', type: 'ice', badgeId: 'glacier-badge', rule: 'ice-armour',
     stage: 'ice-cave',
     line: 'Your Pokémon will freeze before they reach me. Let us see how long you last.',
     telegraph: 'Freezes your Lead and taxes your AP. Bring Fighting, Electric or Rock.',

@@ -1,3 +1,4 @@
+import { GYM_RULE_IDS } from '@/sim/combat/gymRules';
 import { z } from 'zod';
 import { POKEMON_TYPES, PRIMARY_STATUSES } from '@/sim/types';
 
@@ -288,6 +289,7 @@ export const ScenarioSchema = z.object({
   }),
   enemies: z.array(EnemySetupSchema).min(1),
   wildTier: z.enum(['common', 'uncommon', 'rare']).optional(),
+  gymRule: z.enum(GYM_RULE_IDS).optional(),
   onField: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
   fields: z
     .object({

@@ -49,6 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.13 — The Gym Leaders, on stage and by their own rule.** Each of the twelve Gym Leaders fights under a rule
+of its own — Brock's wall that only chips, Misty's riptide that swaps your Lead, Sabrina's seal on your best card —
+shown on the map and the fight's top bar, and the Leader stands behind its Pokémon for the whole fight. Before it,
 **v0.9.12 — Whole enemies, and the double intent.** Enemies fight on the HP their species and level give, every hit
 lands harder, and Ace Trainers, Rare wild Pokémon and Gym aces act twice — a combo you can break. Before it,
 **v0.9.11 — Moves for every path, and the faint that fades.** Every evolved Pokémon learns its line's signature

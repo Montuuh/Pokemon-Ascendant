@@ -108,3 +108,23 @@ entirely (§8.8.2). That is a real difficulty increase and the one place a playe
 3. Both Pokémon must have at least one answer to a full-resist team, or the counter-pick becomes a free win —
    usually a Normal-type coverage move (the Rock Gym's `body-press` is Fighting, not Rock, for exactly this).
 4. The Home Field badge is shown persistently; the damage preview already accounts for it (§4.3.6).
+
+## 8. The Leader's rule (§5.9.5) ✅ v0.9.13
+
+One rule per Leader, for the whole fight, on every one of its Pokémon. The numbers are `BattleConfig.gymRules`, tuned
+on the whole-run harness (`BALANCE_REPORT=1`, which prints every rule's loss rate and length).
+
+| id | Leader | Gym | What it does (v0.9.13 numbers) |
+|---|---|---|---|
+| `rock-solid` | Brock | `rock-gym-r1` | No single hit takes more than 40 % of his Pokémon's Max HP; multi-hits capped hit by hit |
+| `riptide` | Misty | `water-gym-r1` | Every second turn, at its end, the tide trades your Lead with Bench 1 (Bench 2 if Bench 1 is down) |
+| `swarm` | Aster | `bug-gym-r1` | Her Pokémon on the field hit +20 % per Pokémon of hers still waiting |
+| `rollout` | Wren | `normal-gym-r1` | Her Lead hits +25 % per turn in a row your Lead has been the same Pokémon, up to four turns |
+| `meltdown` | Blaine | `fire-gym-r2` | Every attack his Pokémon land lowers its target's Defence a stage, down to −2 |
+| `bloom` | Erika | `grass-gym-r2` | Each of her Pokémon on the field that took no damage this turn restores 8 % at its end |
+| `overcharge` | Surge | `electric-gym-r2` | Every second turn, the first card you play costs +1 AP |
+| `toxic` | Koga | `poison-gym-r2` | Every Poison his side inflicts is badly poisoned (§7.5) |
+| `mind-lock` | Sabrina | `psychic-gym-r3` | Every second turn, at the draw, she seals the strongest attack in your hand for the turn |
+| `tremor` | Giovanni | `ground-gym-r3` | Every third turn, at its end, each of your grounded Pokémon loses 5 % of its Max HP |
+| `close-quarters` | Kiyo | `fighting-gym-r3` | Your Ranged cards deal 70 % against his Pokémon; your Melee cards 110 % |
+| `ice-armour` | Lorelei | `ice-gym-r3` | At each Intent phase her Lead's ice armour is set to 4 % of its Max HP; Fire shatters it |

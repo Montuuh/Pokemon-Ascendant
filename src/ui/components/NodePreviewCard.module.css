@@ -42,8 +42,16 @@
   font-size: var(--type-h2);
 }
 .trainer {
-  width: 64px;
+  /* The Showdown trainer sprites are 80 px: at their own size, never a fraction of a pixel (D9). */
+  width: 80px;
   image-rendering: pixelated;
+}
+/* The ground the fight is on and, at a Gym, the Leader's rule: one row of chips, each its own width. */
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  justify-self: start;
 }
 .detail {
   margin: 0;

@@ -727,3 +727,21 @@ export const nodesInLayer = (map: RegionMap, layer: number): MapNode[] =>
 export function laneGymOf(map: RegionMap, node: MapNode): GymDef | null {
   return node.lane === undefined ? null : gymById(map.gyms[node.lane]!);
 }
+
+/**
+ * §9.3 — every node the route can still lead to from where you stand (the node itself excluded): the descendants of
+ * `from`, or every node before the first step. The map draws these in full and everything else faded, so the routes
+ * still open read at a glance — the same promise Pillar 1 makes inside a fight, made of the road.
+ */
+export function nodesAhead(map: RegionMap, from: string | null): Set<string> {
+  const ahead = new Set<string>();
+  const queue = from === null ? nodesInLayer(map, 0).map((n) => n.id) : [...(map.nodes[from]?.next ?? [])];
+  if (from === null) for (const id of queue) ahead.add(id);
+  for (let i = 0; i < queue.length; i++) {
+    const node = map.nodes[queue[i]!];
+    if (!node) continue;
+    ahead.add(node.id);
+    for (const id of node.next) if (!ahead.has(id)) queue.push(id);
+  }
+  return ahead;
+}

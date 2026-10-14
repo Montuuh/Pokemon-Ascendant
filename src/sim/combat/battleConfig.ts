@@ -1,3 +1,5 @@
+import type { GymRuleConfig } from './gymRules';
+
 // Per docs/design/04-resolution.md — every balance value the combat sim reads lives here, never inline.
 // Web counterpart of the Unity BattleConfigSO. Values are canon unless a § says "tuned in playtest".
 // Content overlays (difficulty modifiers, badges, region modifiers) derive a per-run BattleConfig; the sim
@@ -94,6 +96,8 @@ export interface BattleConfig {
   grassyHealPercent: number;
   /** §4.3.13 — Sticky Web: the Speed stages a Pokémon loses stepping into the Lead. */
   stickyWebStages: number;
+  /** §5.9.5 — the Gym Leaders' rules. */
+  gymRules: GymRuleConfig;
 }
 
 export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
@@ -155,5 +159,23 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   typeTerrainBoost: 1.3,
   grassyHealPercent: 0.03,
   stickyWebStages: 1,
+  // §5.9.5 — the Leaders' rules, measured on the whole-run harness with every Gym (v0.9.13).
+  gymRules: {
+    rockSolidCap: 0.4,
+    riptideEvery: 2,
+    swarmPerWaiting: 0.2,
+    rolloutPerTurn: 0.25,
+    rolloutMaxTurns: 4,
+    meltdownFloor: -2,
+    bloomHeal: 0.08,
+    overchargeAp: 1,
+    overchargeEvery: 2,
+    tremorEvery: 3,
+    tremorPercent: 0.05,
+    mindLockEvery: 2,
+    closeQuartersRanged: 0.7,
+    closeQuartersMelee: 1.1,
+    iceArmour: 0.04,
+  },
 };
 

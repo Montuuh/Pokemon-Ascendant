@@ -793,6 +793,65 @@
           "phaseCount": 1
         }
       ]
+    },
+    {
+      "id": "gym-sabrina-rule",
+      "name": "Gym — Sabrina's Mind Lock",
+      "description": "A Psychic Gym two at a time, under Sabrina's own rule: every second turn she seals the strongest attack in your hand. Leader on stage, rule on the top bar.",
+      "kind": "boss",
+      "stage": "library",
+      "seed": 1313,
+      "trainer": {
+        "name": "Leader Sabrina",
+        "sprite": "sabrina"
+      },
+      "gymRule": "mind-lock",
+      "fields": {
+        "home": "psychic"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "wartortle",
+            "level": 30
+          },
+          {
+            "species": "ivysaur",
+            "level": 30
+          },
+          {
+            "species": "charmeleon",
+            "level": 30
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "super-potion",
+          "potion"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "kadabra",
+          "level": 28,
+          "tier": "boss",
+          "phaseCount": 1
+        },
+        {
+          "species": "hypno",
+          "level": 28,
+          "tier": "boss",
+          "phaseCount": 1
+        },
+        {
+          "species": "alakazam",
+          "level": 30,
+          "tier": "boss",
+          "phaseCount": 3
+        }
+      ],
+      "onField": 2
     }
   ]
 }

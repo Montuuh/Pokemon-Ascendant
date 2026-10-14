@@ -1,4 +1,4 @@
-import type { RejectReason } from '@/sim';
+import type { GymRuleConfig, GymRuleId, RejectReason, RuleCounter } from '@/sim';
 
 // User-facing strings for the combat screen, gathered for the v0.9 localisation pass.
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -40,7 +40,39 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
   'item-limit': 'No more items this turn; the next turn allows more.',
   'nothing-to-cure': 'Nothing to cure.',
   'choice-locked': 'Its held item will not let it play that.',
+  'sealed': 'Mind Lock has sealed this card for the turn',
 };
+
+/** §5.9.5 Ice Armour — the enemy panel's chip for the shield it wears. */
+export const ARMOUR_LABEL = 'Armour';
+
+/** A locked card's overlay: one word for why, and a few for how long (the whole sentence is in its tooltip). */
+export const LOCK_LABEL: Partial<Record<RejectReason, { title: string; sub: string }>> = {
+  'melee-needs-lead': { title: 'Melee', sub: 'needs Lead' },
+  'owner-asleep': { title: 'Asleep', sub: 'this turn' },
+  'owner-frozen': { title: 'Frozen', sub: 'this turn' },
+  'owner-fainted': { title: 'Fainted', sub: 'out of the fight' },
+  sealed: { title: 'Sealed', sub: 'this turn' },
+};
+
+/** §5.9.5 — the chip's count, in a few words: when a timed rule lands, or where a growing one stands. */
+export function ruleCountText(rule: GymRuleId, count: RuleCounter): string | null {
+  if (!count) return null;
+  if (count.kind === 'multiplier') return `×${count.value.toFixed(2)}`;
+  const when = count.turns === 1 ? 'this turn' : count.turns === 2 ? 'next turn' : `in ${count.turns} turns`;
+  switch (rule) {
+    case 'riptide':
+      return `tide ${when}`;
+    case 'tremor':
+      return `quake ${when}`;
+    case 'overcharge':
+      return count.turns === 1 ? 'overcharged now' : `overcharged ${when}`;
+    case 'mind-lock':
+      return count.turns === 1 ? 'sealed this turn' : `seal ${when}`;
+    default:
+      return when;
+  }
+}
 
 export const STATUS_LABEL: Record<string, string> = {
   burn: 'Burned',
@@ -117,6 +149,54 @@ export const ROUTE_TEXT = {
   scroller: 'The route. Arrow keys, Home and End scroll it.',
   found: (what: string) => `You picked up ${what}.`,
 };
+
+/** §5.9.5 — each Gym Leader's rule, by name. */
+export const GYM_RULE_LABEL: Record<GymRuleId, string> = {
+  'rock-solid': 'Rock Solid',
+  riptide: 'Riptide',
+  swarm: 'Swarm',
+  rollout: 'Rollout',
+  meltdown: 'Meltdown',
+  bloom: 'Bloom',
+  overcharge: 'Overcharge',
+  toxic: 'Toxic',
+  'mind-lock': 'Mind Lock',
+  tremor: 'Tremor',
+  'close-quarters': 'Close Quarters',
+  'ice-armour': 'Ice Armour',
+};
+
+/** §5.9.5 — what a rule does, in one paragraph, with the numbers read from the config. */
+export function gymRuleText(rule: GymRuleId, g: GymRuleConfig): string {
+  const pct = (x: number) => `${Math.round(x * 100)}%`;
+  const every = (n: number) => (n === 2 ? 'every second turn' : n === 3 ? 'every third turn' : `every ${n} turns`);
+  switch (rule) {
+    case 'rock-solid':
+      return `No single hit takes more than ${pct(g.rockSolidCap)} of his Pokémon's Max HP — a multi-hit move is capped hit by hit. Chip the wall: multi-hits, Burn and Poison.`;
+    case 'riptide':
+      return `At the end of ${every(g.riptideEvery)} the tide trades your Lead with Bench 1 (Bench 2 if Bench 1 is down). It is her swap, not yours: it costs nothing and counts as none. Choose who stands on Bench 1.`;
+    case 'swarm':
+      return `Her Pokémon on the field hit ${pct(g.swarmPerWaiting)} harder for every one of hers still waiting to come out. Every one you knock out thins the swarm.`;
+    case 'rollout':
+      return `Her Lead hits ${pct(g.rolloutPerTurn)} harder for every turn in a row your Lead has been the same Pokémon, up to ${pct(g.rolloutPerTurn * g.rolloutMaxTurns)}. A swap resets the roll.`;
+    case 'meltdown':
+      return `Every attack his Pokémon land lowers its target's Defence one stage, down to ${g.meltdownFloor}. Spread the hits with swaps, or raise your Defence back.`;
+    case 'bloom':
+      return `At the end of each turn, each of her Pokémon on the field that took no damage restores ${pct(g.bloomHeal)} of its Max HP. Touch them both: Ranged and area cards, a status that ticks.`;
+    case 'overcharge':
+      return `${every(g.overchargeEvery)[0]!.toUpperCase()}${every(g.overchargeEvery).slice(1)} the field is overcharged: the first card you play costs ${g.overchargeAp} more AP. Open those turns with a cheap card.`;
+    case 'toxic':
+      return 'Every Poison his side inflicts is badly poisoned: its damage doubles each turn. Poison-types are immune; cure it early.';
+    case 'mind-lock':
+      return `At the draw of ${every(g.mindLockEvery)} she seals the strongest attack in your hand: it cannot be played that turn. The seal is shown before you spend a point.`;
+    case 'tremor':
+      return `At the end of ${every(g.tremorEvery)} the ground shakes: each of your Pokémon on the ground loses ${pct(g.tremorPercent)} of its Max HP. Flying Pokémon stand above it.`;
+    case 'close-quarters':
+      return `Your Ranged cards deal ${pct(g.closeQuartersRanged)} against his Pokémon; your Melee cards ${pct(g.closeQuartersMelee)}. Fight at the front: put your hitter in the Lead.`;
+    case 'ice-armour':
+      return `At each Intent phase her Lead's ice armour is set to ${pct(g.iceArmour)} of its Max HP — it takes damage before HP does and never stacks. A Fire move shatters it whole.`;
+  }
+}
 
 /** §4.3 — each Battlefield, as its chip names it. */
 export const FIELD_LABEL: Record<string, string> = {

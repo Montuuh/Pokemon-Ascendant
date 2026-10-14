@@ -30,6 +30,7 @@ import { effectiveAttack, effectiveDefense } from './stats';
 import { applyStatus, cureStatus } from './status';
 import { effectivenessLabel } from './typeChart';
 import { fieldBlocksStatus, fieldDamageMultiplier, fieldsSuppressed, isGrounded, toxicSpikesSpare } from './fields';
+import { markHurt, ruleDamageMultiplier, ruleEscalatesPoison, ruleHitCap, ruleMeltsDefence, shatterIce } from './gymRules';
 
 // Shared damage / effect pipeline used by player cards and enemy intents.
 
@@ -73,6 +74,8 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   let itemMul = 1;
   // §4.3 — the field is one more independent term (§7.3.6).
   const fieldMul = state ? fieldDamageMultiplier(state, attacker, target, move, ctx) : 1;
+  // §5.9.5 — and the Leader's rule, the last independent term: Swarm, Rollout and Close Quarters.
+  const ruleMul = state ? ruleDamageMultiplier(state, attacker, target, move, ctx.config) : 1;
   if (state) {
     // §7.3.6 — relic, item, badge and field terms all multiply independently into the same formula.
     itemMul = itemAttackMultiplier(state, attacker, move, ctx.content, { typeMultiplier: raw.typeMultiplier });
@@ -89,10 +92,14 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   // §5.13.2 — a Mastery move's condition is one more multiplier, before the one floor.
   const bonus = powerBonus(attacker, target, move);
   // Ability and thaw multipliers are applied to the pre-floor value so a single floor remains (§4.1.1).
-  let final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill * bonus * fieldMul);
+  let final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill * bonus * fieldMul * ruleMul);
   // §5.13.2 Super Fang — a share of what the target has left, whatever the formula says. Immunity still wins.
   const fixed = move.effects.find((e) => e.kind === 'fixed-damage');
   if (fixed && fixed.kind === 'fixed-damage' && raw.typeMultiplier > 0) final = Math.max(1, Math.floor(target.hp * fixed.percentOfTargetHp));
+  // §5.9.5 Rock Solid — no hit takes more than its share; a multi-hit move is capped hit by hit, so its total is the
+  // cap times its hits. Last, after everything, so the preview's number and the hit's are the same one.
+  const cap = state ? ruleHitCap(state, target, ctx.config) : null;
+  if (cap !== null) final = Math.min(final, cap * hitsOf(move));
   return { ...raw, final, ...(fieldMul !== 1 ? { fieldMultiplier: fieldMul } : {}) };
 }
 
@@ -129,6 +136,9 @@ export function strike(
     return { breakdown: { ...bd, final: 0 }, dealt: 0 };
   }
 
+  // §5.9.5 Ice Armour — a Fire move shatters the shield whole before it lands.
+  if (shatterIce(state, target, move.type)) log(state, 'system', `The fire shatters ${target.name}'s ice armour.`);
+
   let dealt = 0;
   if (hits > 1) {
     // Deterministic, and the printed power is the total: five hits of power/5, each floored on its own.
@@ -148,6 +158,11 @@ export function strike(
 
   // §5.10.3 — the chill is spent by the attack it blunted.
   if (attacker.chill !== undefined) delete attacker.chill;
+  // §5.9.5 Meltdown — the Leader's hit melts the target's defences a stage.
+  if (ruleMeltsDefence(state, attacker, target, dealt, ctx.config)) {
+    changeStage(state, target, 'defense', -1);
+    log(state, 'enemy', `${target.name}'s defences melt.`);
+  }
   riposte(state, ctx, attacker, target, move);
   applyOnKill(state, ctx, attacker, move, target);
   applyRecoil(state, ctx, attacker, move, dealt);
@@ -257,7 +272,7 @@ export function dealDamage(
   sourceUid: string | null,
   target: Combatant,
   amount: number,
-  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail'; cleave?: boolean },
+  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail' | 'tremor'; cleave?: boolean },
 ): number {
   if (target.hp <= 0) return 0;
   let dmg = Math.max(0, amount);
@@ -325,6 +340,7 @@ export function dealDamage(
   // damage taken, and "win without taking any" would be a lie if it were not counted.
   if (isPlayers(state, target)) state.player.totalDamageTaken += dmg;
   emit(state, { t: 'damage', sourceUid, targetUid: target.uid, amount: dmg, crit: meta.crit, effectiveness: meta.effectiveness, hpAfter: target.hp, cause: meta.cause });
+  markHurt(state, target, dmg);
   staggerCombo(state, ctx, sourceUid, target, dmg, meta.effectiveness, meta.cause);
 
   if (target.hp === 0) {
@@ -494,7 +510,8 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
           log(state, 'system', `${recipient.name} is immune to ${fx.status}.`);
           break;
         }
-        const res = applyStatus(recipient, fx.status, state.turn, ctx.config, fx.escalating);
+        // §5.9.5 Toxic — a Poison the Leader's side inflicts is the badly-poisoned kind.
+        const res = applyStatus(recipient, fx.status, state.turn, ctx.config, fx.escalating || (fx.status === 'poison' && ruleEscalatesPoison(state, attacker)));
         // §7.3.4 Status Lance — the statuses *you* apply stick around a turn longer. Sleep and Freeze are
         // excluded on purpose: both already remove a turn of agency and a fourth would not be fun.
         const extra = fx.self || !isPlayers(state, attacker) ? 0 : itemStatusExtraTurns(state, ctx.content);

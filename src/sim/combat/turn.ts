@@ -11,6 +11,7 @@ import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, 
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeTurn } from './enemyTurn';
 import { fieldDrawBonus, fieldsSuppressed, hailImmune, isGrounded, sandstormImmune } from './fields';
+import { armourLead, ruleTurnEnd, ruleTurnStart, sealStrongest } from './ruleTurn';
 
 // §3.2 — the five-phase loop. `beginTurn` = Draw + Intent (lands in Action); `resolveTurn` = Resolution → next turn.
 
@@ -18,6 +19,8 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   state.turn += 1;
   state.phase = 'draw';
   const p = state.player;
+  // §5.9.5 — the per-turn bookkeeping a Leader's rule keeps (Bloom's hurt flags, Mind Lock's seal) starts over.
+  ruleTurnStart(state);
 
   // §3.2.2 — AP refill (Tempo Control may tax it), swap counter and discount reset.
   // §7.3 — AP banked by a relic last turn (Cycle Cell, Move Echo) lands on top of the refill.
@@ -108,8 +111,13 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
     }
   }
 
+  // §5.9.5 Mind Lock — with the hand complete, Sabrina seals its strongest attack before you read a thing.
+  sealStrongest(state, ctx);
+
   // §3.2.3 — Intent phase (boss phase transitions first, §5.8.3).
   state.phase = 'intent';
+  // §5.9.5 Ice Armour — the enemy Lead is armoured before it declares, so the shield is on the field you plan against.
+  armourLead(state, ctx);
   // §5.6 — last turn's intents are spent. Cleared before anyone declares, so a support that reads what its group
   // already plans this turn (a status nobody should double-apply) never reads a stale one.
   for (const e of state.enemies) {
@@ -199,6 +207,9 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
       dealDamage(state, ctx, trapper!.uid, e, chip, { crit: false, effectiveness: 'neutral', cause: 'move' });
     }
   }
+  // §5.9.5 — the Leader's rule at the turn's end: Bloom, Tremor, the Rollout count, then the tide.
+  if (checkOutcome(state)) return finish(state);
+  ruleTurnEnd(state, ctx);
   if (checkOutcome(state)) return finish(state);
 
   // §5.3 — cooldowns tick down.

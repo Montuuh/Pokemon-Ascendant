@@ -43,6 +43,8 @@ const SCREENS = {
   // §4.3 — a fight on a field: the top bar's field chips and the breakdown's field term.
   'combat-field': { url: '/?scenario=field-gym-sandstorm&seed=7', match: [/components\/FieldChips/] },
   'combat-boss': { url: '/?scenario=wild-boss-3phase&seed=7', match: [/components\/EnemyPanel/, /combat\/boss/] },
+  // §5.9.5 — a Gym under its Leader's rule, the Leader on stage behind a group.
+  'combat-gym': { url: '/?scenario=gym-sabrina-rule&seed=3', match: [/components\/RuleChip/, /combat\/gymRules/] },
   map: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'goTo("map")'], match: [/screens\/MapScreen/, /components\/(NodeMarker|NodePreviewCard|BoxPanel|InventoryDrawer|Money)/] },
   // §2.11 — the towns. `run.city(n)` stands the run in one (0 Pallet Town, 1 Celadon City); the buildings are clicks.
   city: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(4)', 'run.city(0)'], match: [/screens\/city\//, /ui\/strings/] },

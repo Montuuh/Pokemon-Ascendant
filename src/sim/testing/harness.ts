@@ -59,6 +59,8 @@ export function scenario(partial: {
   insight?: string[];
   /** §5.6 — how many enemies stand together. */
   onField?: 1 | 2 | 3;
+  /** §5.9.5 — a Gym Leader's rule. */
+  gymRule?: ScenarioDef['gymRule'];
 }): ScenarioDef {
   const def: ScenarioDef = {
     id: partial.id ?? 'test',
@@ -83,6 +85,7 @@ export function scenario(partial: {
   if (partial.trainer) def.trainer = partial.trainer;
   if (partial.modifiers) def.modifiers = partial.modifiers;
   if (partial.onField) def.onField = partial.onField;
+  if (partial.gymRule) def.gymRule = partial.gymRule;
   return def;
 }
 

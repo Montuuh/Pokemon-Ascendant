@@ -93,6 +93,8 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
     stage: scenario.stage,
     trainer: scenario.trainer ? { ...scenario.trainer } : null,
     ...(scenario.wildTier ? { wildTier: scenario.wildTier } : {}),
+    // §5.9.5 — the Leader's rule rides in with its Gym, and only with it.
+    ...(scenario.gymRule ? { gymRule: scenario.gymRule } : {}),
     seed,
     rngCursor: rng.cursor,
     turn: 0,

@@ -129,18 +129,20 @@
 .enemySprite {
   right: 10%;
   top: 8%;
+  /* Over the trainer standing behind a group. */
+  z-index: 1;
 }
 .leadSprite img {
   height: 200px;
   width: auto;
   filter: drop-shadow(0 14px 10px rgba(0, 0, 0, 0.45));
-  animation: breathe 2.4s ease-in-out infinite;
+  animation: global(breathe) 2.4s ease-in-out infinite;
 }
 .enemySprite img {
   height: 170px;
   width: auto;
   filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.45));
-  animation: breathe 2.8s ease-in-out infinite;
+  animation: global(breathe) 2.8s ease-in-out infinite;
 }
 .platform {
   width: 170px;
@@ -157,8 +159,22 @@
   opacity: 0.95;
   filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.45));
 }
+/* v0.9.13 — a group's trainer (a Gym Leader, the Elite) stands behind its Pokémon, raised between the Lead and the
+   back row, the way the games keep a Leader on the field behind its party. Under the sprites, never over them. */
+.trainerBehind {
+  right: 19%;
+  top: 0;
+  height: 140px;
+  z-index: 0;
+  opacity: 0.9;
+}
+/* The trainer walks in as the fight opens (the series' slide-in). Only when motion is on: `animate` gates the class. */
+.trainerIn {
+  animation: global(wildEnter) var(--fx-wild-enter) var(--ease-step) both;
+}
 /* §9.9.1 — where a thrown Poké Ball starts and a recalled one ends. */
 .handTrainer,
+.handTrainerBehind,
 .handOffRight,
 .handPlayer {
   position: absolute;
@@ -169,6 +185,10 @@
 .handTrainer {
   right: 3%;
   top: 40%;
+}
+.handTrainerBehind {
+  right: 24%;
+  top: 14%;
 }
 .handOffRight {
   right: -4%;
@@ -191,7 +211,7 @@
   z-index: var(--z-tooltip);
   min-width: 150px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-  animation: popIn var(--motion-fast) var(--ease-spring) both;
+  animation: global(popIn) var(--motion-fast) var(--ease-spring) both;
 }
 .previewValue {
   font-size: 40px;
@@ -221,7 +241,7 @@
   border-radius: var(--radius-pill);
   padding: 6px 22px;
   font-size: var(--type-h2);
-  animation: bannerIn 1300ms ease-out forwards;
+  animation: global(bannerIn) 1300ms ease-out forwards;
   z-index: var(--z-toast);
   pointer-events: none;
   white-space: nowrap;
@@ -287,7 +307,7 @@
   padding: 8px 16px;
   font-size: var(--type-small);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  animation: popIn var(--motion-fast) var(--ease-spring) both;
+  animation: global(popIn) var(--motion-fast) var(--ease-spring) both;
 }
 
 /* ---- Hand tray (§9.2.2.4) ---- */

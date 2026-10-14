@@ -9,7 +9,7 @@ import { STARTER_IDS } from '../run/region';
 // v0.8.10 — and the run's two growth curves: relics (§7.3: how many, from where, at each Gym) and XP (§6.2.1: what a
 // fight pays, how many levels a Region adds, and the level gap to what the team fights, column by column).
 // Off in `npm run check` (it is minutes long); run it with `BALANCE_REPORT=1 REPORT_SEEDS=80 npx vitest run
-// src/sim/balance/report.test.ts`.
+// src/sim/balance/report.test.ts` (`NO_GYM_RULES=1` fights every Gym without its Leader's rule, for the baseline).
 
 const ON = !!process.env.BALANCE_REPORT;
 const SEEDS = Number(process.env.REPORT_SEEDS ?? 40);
@@ -39,7 +39,7 @@ describe.skipIf(!ON)('Balance report — §2.2.1', () => {
     let shiniesCaught = 0;
     for (const starter of STARTER_IDS) {
       for (let seed = 1; seed <= SEEDS; seed++) {
-        const r = autoRun(9000 + seed, starter, ctx, DEFAULT_RUN_POLICY, 3, (f) => fights.push(f));
+        const r = autoRun(9000 + seed, starter, ctx, { ...DEFAULT_RUN_POLICY, noGymRules: !!process.env.NO_GYM_RULES }, 3, (f) => fights.push(f));
         cleared[r.regionsCleared]! += 1;
         bagLeft.push(r.bagLeft.length);
         relics.push(r.relicsGained);
@@ -63,6 +63,14 @@ describe.skipIf(!ON)('Balance report — §2.2.1', () => {
           ` · items used per fight ${(used.length / Math.max(1, here.length)).toFixed(2)}`,
       );
     }
+    // §5.9.5 — every Leader (and its rule): how many met it, how often it ends a run, and how long the fight runs.
+    const byRule = new Map<string, FightTrace[]>();
+    for (const f of fights) {
+      if (f.kind !== 'gym') continue;
+      const key = `${(f.scenario.trainer?.name ?? '?').replace(/^Leader /, '')}${f.scenario.gymRule ? `/${f.scenario.gymRule}` : ''}`;
+      byRule.set(key, [...(byRule.get(key) ?? []), f]);
+    }
+    console.log(`Gyms by rule: ${[...byRule].map(([r, fs]) => `${r} ${fs.length} lost ${pct(fs.filter((x) => x.outcome === 'defeat').length / fs.length)} ${mean(fs.map((x) => x.turns)).toFixed(1)}t`).join(' · ')}`);
     console.log(`shinies (§5.14): met ${(shiniesMet / n).toFixed(2)} a run · caught ${(shiniesCaught / n).toFixed(2)} a run`);
     console.log(`bag left at the run's end: mean ${(bagLeft.reduce((a, b) => a + b, 0) / bagLeft.length).toFixed(1)} · median ${median(bagLeft)}`);
 

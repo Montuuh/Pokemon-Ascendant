@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.13 — The Gym Leaders, on stage and by their own rule · 2026-10-14
+
+Every Gym Leader fights under a rule of its own, and stands behind its team.
+
+- **Leader rules.** Twelve, one per Leader, on the map and the top bar.
+- **On stage.** The Leader or the Elite stands behind their Pokémon, and walks in.
+- **Fixes.** Damage numbers, banners and the arena's idle sway animate again.
+
 ### v0.9.12 — Whole enemies, and the double intent · 2026-10-09
 
 Enemies fight on their whole HP; some act twice, and you can break it.

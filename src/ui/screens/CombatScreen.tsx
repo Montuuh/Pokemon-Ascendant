@@ -29,6 +29,7 @@ import { MoveCard } from '@/ui/components/MoveCard';
 import { OutcomeOverlay } from '@/ui/components/OutcomeOverlay';
 import { Portrait } from '@/ui/components/Portrait';
 import { FieldChips } from '@/ui/components/FieldChips';
+import { RuleChip } from '@/ui/components/RuleChip';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
 import { fxTimings, useCombatFx, type SpriteSlot } from '@/ui/hooks/useCombatFx';
@@ -200,6 +201,9 @@ export function CombatScreen() {
       })
     : enemies.map((enemy) => ({ enemy }));
   const groupShown = (heldLine ?? enemies).length > 1;
+  // A group's trainer (a Gym Leader, the Elite, a trainer sending two out) stands behind its Pokémon for the whole
+  // fight: its place is fixed by the fight's shape, not by how many stand at the moment, so it never jumps aside.
+  const trainerBehind = !!state.trainer && state.onField > 1;
   const heldPlace = (i: number) => (heldLine ? { place: groupShown && i > 0 ? 'Support' : 'Lead', group: groupShown } : undefined);
   const leadIdx = state.player.leadIndex;
   const lead = state.player.team[leadIdx]!;
@@ -359,6 +363,8 @@ export function CombatScreen() {
           <span className={`${styles.chip} ${styles.chipStrong}`}>{scenarioName(state)}</span>
           <span className={styles.chip}>{ENCOUNTER_LABEL[state.kind] ?? state.kind}</span>
           {state.trainer && <span className={styles.chip}>{state.trainer.name}</span>}
+          {/* §5.9.5 — the Leader's rule, with its count; the whole rule is one hover away. */}
+          {state.gymRule && <RuleChip rule={state.gymRule} live={{ state, config: ctx.config }} />}
           {/* §9.2.2.1 — the active field, with the Home Field marker when the enemy owns it. */}
           <FieldChips fields={state.fields} suppressed={fieldsSuppressed(state, ctx.content)} />
         </div>
@@ -390,12 +396,20 @@ export function CombatScreen() {
               <span className={styles.platform} />
             </div>
           )}
-          {/* The trainer stays to the last faint: its ball comes back to it. */}
-          {state.trainer && enemies.length <= 1 && (
-            <img className={`${styles.trainer} pixel`} src={trainerSprite(state.trainer.sprite)} alt={state.trainer.name} draggable={false} />
+          {/* The trainer stays to the last faint: its ball comes back to it. A group's trainer — a Gym Leader, the Elite —
+              stands behind its Pokémon for the whole fight instead of stepping aside, and walks in as it opens. */}
+          {state.trainer && (
+            <img
+              key={combatKey}
+              className={[styles.trainer, trainerBehind ? styles.trainerBehind : '', animate ? styles.trainerIn : '', 'pixel'].join(' ')}
+              src={trainerSprite(state.trainer.sprite)}
+              alt={state.trainer.name}
+              draggable={false}
+              data-testid="arena-trainer"
+            />
           )}
           {/* §9.9.1 — the hands the Poké Balls fly from and back to: the foe's trainer, and yours off the left edge. */}
-          <span className={state.trainer && enemies.length <= 1 ? styles.handTrainer : styles.handOffRight} data-fx-hand="trainer" />
+          <span className={trainerBehind ? styles.handTrainerBehind : state.trainer ? styles.handTrainer : styles.handOffRight} data-fx-hand="trainer" />
           <span className={styles.handPlayer} data-fx-hand="player" />
           {/* §9.2.1 — one enemy stands large; a group uses the squad grammar mirrored: the Lead forward, the
               supports behind it. Every sprite is a drop target too. */}

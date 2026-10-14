@@ -14,7 +14,7 @@ import { PauseMenu } from '@/ui/components/PauseMenu';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { ROUTE_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
-import { bagTip, ballsTip, forkFooter, moneyTip, regionTip } from '@/ui/tips';
+import { bagTip, ballsTip, forkFooter, forkGymTip, moneyTip, regionTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
 import { RouteView } from './map/RouteView';
 import styles from './MapScreen.module.css';
@@ -153,7 +153,7 @@ export function MapScreen() {
               return (
                 <Tipped
                   key={id}
-                  tip={<Tip title={gym.name} meta={[`${gym.type.charAt(0).toUpperCase() + gym.type.slice(1)} Gym`, shut ? 'Not on your lane' : 'One of two endings']} body={shut ? `${gym.name} is on the lane you did not take.` : gym.telegraph} footer={shut ? undefined : forkFooter((run.map.yLayer ?? run.map.forkLayer) + 1, noReturnLayer(run.map) + 1)} />}
+                  tip={forkGymTip(gym, shut, forkFooter((run.map.yLayer ?? run.map.forkLayer) + 1, noReturnLayer(run.map) + 1))}
                   className={`${styles.forkGym} ${shut ? styles.forkShut : ''}`}
                   data-type={gym.type}
                   data-lane={lane}

@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, type CombatCtx } from '@/sim';
+import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, type GymDef, type GymRuleId, type CombatCtx } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, INTENT_LABEL, MARKET_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, INTENT_LABEL, MARKET_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -243,6 +243,34 @@ export function homeFieldTip(type: PokemonType, suppressed = false): ReactNode {
       footer={suppressed ? 'Suppressed: a Cloud Nine Pokémon is leading.' : 'A Defog clears it for the rest of the fight.'}
     />
   );
+}
+
+/** §5.9.5 — a Gym Leader's rule: whose it is, and the whole of what it does. */
+export function gymRuleTip(rule: GymRuleId): ReactNode {
+  const gym = ALL_GYMS.find((g) => g.rule === rule);
+  return (
+    <Tip
+      title={GYM_RULE_LABEL[rule]}
+      meta={gym ? [`${gym.name}'s rule`, 'The whole fight'] : ['A Leader\'s rule']}
+      body={gymRuleText(rule, DEFAULT_BATTLE_CONFIG.gymRules)}
+      footer="A rule is not a field: Defog does not clear it."
+    />
+  );
+}
+
+/**
+ * §2.5 / §5.9.5 — one of the route's two Gyms on the fork banner: its type, its telegraph and its Leader's rule — or,
+ * once the other lane is taken, that it is not yours any more.
+ */
+export function forkGymTip(gym: GymDef, shut: boolean, footer: string): ReactNode {
+  const meta = [`${typeName(gym.type)} Gym`, shut ? 'Not on your lane' : `Rule: ${GYM_RULE_LABEL[gym.rule]}`];
+  if (shut) return <Tip title={gym.name} meta={meta} body={`${gym.name} is on the lane you did not take.`} />;
+  return <Tip title={gym.name} meta={meta} body={`${gym.telegraph} ${gymRuleText(gym.rule, DEFAULT_BATTLE_CONFIG.gymRules)}`} footer={footer} />;
+}
+
+/** §5.9.5 Ice Armour — the shield on an enemy: what it takes before HP, and how it goes. */
+export function armourTip(amount: number): ReactNode {
+  return <Tip title={`${ARMOUR_LABEL} ${amount}`} body={`Takes the next ${amount} damage before its HP does. Lorelei's Ice Armour sets it again at every Intent phase, and never stacks.`} footer="A Fire move shatters it whole before it lands." />;
 }
 
 /** §2.6.2 — a rarity row in a Wild Area's pool: its chance, split evenly between its Pokémon. */

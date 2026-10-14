@@ -226,6 +226,8 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
     stage: gym.stage,
     seed: rng.cursor,
     trainer: { name: gym.name, sprite: gym.sprite },
+    // §5.9.5 — the Leader's own rule, for the whole fight.
+    gymRule: gym.rule,
     player: {
       team: activeSetups(run, content),
       leadIndex: 0,

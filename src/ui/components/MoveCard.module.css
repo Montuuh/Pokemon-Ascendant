@@ -29,7 +29,7 @@
 .selected {
   outline: 3px solid var(--accent-action);
   outline-offset: 2px;
-  animation: glowPulse 1.2s ease-out infinite;
+  animation: global(glowPulse) 1.2s ease-out infinite;
 }
 .noAp {
   filter: grayscale(0.75);
@@ -175,7 +175,8 @@
   position: absolute;
   inset: 0;
   border-radius: var(--radius-md);
-  background: rgba(40, 52, 80, 0.62);
+  /* Dense enough that the card under it does not read through the words on it (D5). */
+  background: rgba(40, 52, 80, 0.82);
   display: flex;
   flex-direction: column;
   align-items: center;

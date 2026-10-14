@@ -39,7 +39,7 @@
 }
 .selectable {
   border-color: var(--accent-positive);
-  animation: glowPulse 1.2s ease-out infinite;
+  animation: global(glowPulse) 1.2s ease-out infinite;
   cursor: pointer;
 }
 .fainted {
@@ -85,7 +85,7 @@
   height: 92%;
   object-fit: contain;
   filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.35));
-  animation: breathe 3.2s ease-in-out infinite;
+  animation: global(breathe) 3.2s ease-in-out infinite;
 }
 .fainted .art img {
   animation: none;

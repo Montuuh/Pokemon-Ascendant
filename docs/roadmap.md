@@ -1140,12 +1140,23 @@ Gym Leader's ace, in Region 3 the Elite's Lead; the map promises it. R1 60 % · 
 > (v0.9.21) is pulled forward from v1.1 so that v1.0 ships with it. **v1.0 is single-player**: every mode that needs
 > accounts or a second player waits in the backlog's *Multiplayer* and *Game modes* tables.
 
-### v0.9.13 — The Gym Leaders, on stage and by their own rule  ☐
+### v0.9.13 — The Gym Leaders, on stage and by their own rule  ✅ 2026-10-14
 The user's notes 2 and 9. A Leader stands behind its Pokémon for the whole fight (today the trainer sprite is drawn
 only while ≤ 1 enemy is on the field, and a Gym always fights two at a time), with a slide-in as the fight opens. Each
 of the twelve Leaders fights under **one signature rule of its own** (§5.9.5) — printed on the Gym's node, its preview
 and the fight's top bar — on top of the per-type Phase 2 and the Home Field. Answers the v0.8.8 finding that a Region 2
 Gym is decided by the counter-pick: a rule that is not about type keeps the climax a puzzle. Re-measured over 720 runs.
+
+**Shipped.** **Twelve rules** (§5.9.5, `combat/gymRules.ts` for the terms every number reads, `combat/ruleTurn.ts` for what acts at a
+turn's edges, `BattleConfig.gymRules`): Rock Solid, Riptide, Swarm, Rollout, Meltdown, Bloom, Overcharge, Toxic, Mind Lock,
+Tremor, Close Quarters, Ice Armour — each in the preview, the intent's number and the card's cost; a chip on the top bar
+with its count, on the Gym's preview card and in the fork banner's bubble; a sealed card shown sealed; Ice Armour as a
+shield on the HP bar and a chip. **The Leader on stage**: a group's trainer stands behind its Pokémon for the whole fight
+and walks in. **Measured** against the same Gyms without their rules (`NO_GYM_RULES=1`, 360 runs each): Gyms lost
+1 / 8 / 24 % → **4 / 11 / 26 %**; Overcharge and Mind Lock act every second turn (every turn cost a third of the harness's
+Surge and Sabrina fights); the Gym Attack ×1.15 / ×0.95 / ×0.9; R1 58 % · R2|R1 60 % · R3|R2 48 % · run 17 %. **Fixed**: CSS
+Modules had been scoping the names of the global keyframes, so the arena's idle sway, the target pulse, the floating
+numbers and the fight's banner never animated — they read the global ones through `global()` now.
 
 ### v0.9.14 — The map, redrawn  ☐
 The user's notes 1 and 11, after Pokelike's map: **straight, diagonal dashed lines** between nodes instead of 90°

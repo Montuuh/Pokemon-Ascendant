@@ -3,7 +3,7 @@ import type { CardPlayability } from '@/sim';
 import { portraitOf } from '@/ui/art';
 import { TypeLabel } from './TypeBadge';
 import { describeMove } from '@/ui/moveText';
-import { REJECT_TEXT } from '@/ui/strings';
+import { LOCK_LABEL, REJECT_TEXT } from '@/ui/strings';
 import { moveTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
 import styles from './MoveCard.module.css';
@@ -82,7 +82,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         lead && lead.typeMultiplier !== 1 ? `${effectivenessPhrase(lead.typeMultiplier)} on the enemy Lead` : null,
         // `describeMove` ends its own sentences, so it joins without another full stop.
         describeMove(play).replace(/\.$/, ''),
-        play.playable ? null : `unplayable: ${reasonText}`,
+        play.playable ? null : `unplayable: ${reasonText.replace(/\.$/, '')}`,
         `card ${index + 1} of ${total}`,
       ]
         .filter(Boolean)
@@ -146,8 +146,8 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
       {state === 'locked' && (
         <span className={styles.lock}>
           {play.reason === 'owner-asleep' || play.reason === 'owner-frozen' ? <IconZzz size={22} /> : <IconLock size={22} />}
-          <span className="display">{play.reason === 'melee-needs-lead' ? 'Melee' : play.reason === 'owner-asleep' ? 'Asleep' : play.reason === 'owner-frozen' ? 'Frozen' : play.reason === 'owner-fainted' ? 'Fainted' : 'Locked'}</span>
-          <small>{play.reason === 'melee-needs-lead' ? 'needs Lead' : reasonText}</small>
+          <span className="display">{(play.reason && LOCK_LABEL[play.reason]?.title) ?? 'Locked'}</span>
+          <small>{(play.reason && LOCK_LABEL[play.reason]?.sub) ?? reasonText}</small>
         </span>
       )}
     </button>

@@ -1,3 +1,4 @@
+import { isSealed, ruleApDelta } from './gymRules';
 import type { ConsumableDef, MoveDef } from '../content/defs';
 import type { CombatCtx } from './context';
 import { breakdownFor } from './damageFlow';
@@ -67,6 +68,8 @@ export function effectiveApCost(state: CombatState, move: MoveDef, owner: Combat
   // §7.3.4 / §7.4.5 — relic and held-item AP changes. Choice Specs and Choice Band return a large negative
   // to mean "free", which the floor below turns into 0 without special-casing the sentinel anywhere else.
   cost += itemApDelta(state, owner, move, ctx.content);
+  // §5.9.5 Overcharge — Surge's rule: the turn's first card costs more.
+  cost += ruleApDelta(state, ctx.config);
   return Math.max(0, cost);
 }
 
@@ -97,6 +100,8 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
   else if (owner.hp <= 0) reason = 'owner-fainted';
   else if (cardsLocked(owner) === 'sleep') reason = 'owner-asleep';
   else if (cardsLocked(owner) === 'freeze') reason = 'owner-frozen';
+  // §5.9.5 Mind Lock — the card Sabrina sealed at the draw, shown sealed and never hidden.
+  else if (isSealed(state, card.id)) reason = 'sealed';
   else if (move.range === 'melee' && !isLead && move.modifier !== 'step-forward') reason = 'melee-needs-lead';
   // §7.4.5 — Choice Band and Choice Scarf: shown as a lock, never hidden (ui.md).
   else if (choiceLockBlocks(state, owner, move, ctx.content)) reason = 'choice-locked';

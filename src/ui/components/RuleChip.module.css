@@ -1,0 +1,14 @@
+/* §5.9.5 — the Leader's rule: the field chips' pill with a gold border (the boss's colour, never on the text, D5). */
+.chip {
+  composes: chip from './FieldChips.module.css';
+  border-color: var(--accent-action);
+}
+.compact {
+  padding: 0 var(--sp-2);
+}
+.count {
+  padding-left: var(--sp-1);
+  border-left: 1px solid var(--border-strong);
+  color: var(--ink-secondary);
+  font-weight: 600;
+}
