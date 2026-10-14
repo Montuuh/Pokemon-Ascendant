@@ -108,7 +108,9 @@ and carries the **Elite** (col 9–10) · two lanes of two tracks, each **in its
 **field** drawn as weather · **two Gyms at 19**. **Stop columns** at 2|3, 5|6, 8, p, p+2|p+3 and 18: every node a
 stop — the field nurse (one per lane at 18, guaranteed), the merchant (≥1 in the trunk), a Mystery, or **something
 on the ground** (a find named on the map, one click). So every route walks ~12 fights and ~7 stops. ~65 nodes. The
-map is **painted from a tileset** by a pure function of the map (§2.5.4) and saved whole in the run.
+map is **painted from a tileset** by a pure function of the map (§2.5.4) and saved whole in the run. Since v0.9.14
+(§9.3, after Pokelike) every edge is a **straight line** node to node and every node is drawn **as what it is** — the
+trainer, the Leader at 2×, the Pokémon in the grass, the item — full colour on the routes still open, faded behind.
 
 **Wild nodes** show **their whole pool by rarity** — Common 60 % · Uncommon 30 % · Rare 10 %, split evenly inside a
 row — and **roll who leads on entry** (v0.9.7, §2.6.2). All 146 non-Legendary species placed by Region strength:

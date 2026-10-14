@@ -1158,13 +1158,22 @@ Surge and Sabrina fights); the Gym Attack ×1.15 / ×0.95 / ×0.9; R1 58 % · R2
 Modules had been scoping the names of the global keyframes, so the arena's idle sway, the target pulse, the floating
 numbers and the fight's banner never animated — they read the global ones through `global()` now.
 
-### v0.9.14 — The map, redrawn  ☐
+### v0.9.14 — The map, redrawn  ✅ 2026-10-14
 The user's notes 1 and 11, after Pokelike's map: **straight, diagonal dashed lines** between nodes instead of 90°
 roads, so a route reads as a line you can follow; **every node drawn as what it is** — the trainer class's sprite,
 the tall grass, the Centre, the item — in full colour, the far future faded rather than every node grey; the walked
 path dark, the open paths bright; the node preview over a **dimmed, still-visible map** instead of a black void; and no
 arrow that promises a move the node cannot make (an edge belongs to its two nodes, and only a node's own children are
 offered).
+
+**Shipped.** §9.3 and §2.5.4 rewritten. **Lines** (`terrain.ts`): every edge one straight line node to node, the ground
+within a tile of it kept clear, a bridge wherever a line crosses the river, the Gym and the Elite on a clearing of road;
+four registers in `RouteView` — live (gold, marching), open (dashed cream, from `nodesAhead`), walked (dark), gone (a
+faint trace). **Nodes** (`nodeArt.ts`, `NodeMarker`): the trainer's sprite, the Leader at 2× captioned with its name,
+the Elite captioned, a Wild Area's commonest Pokémon as its animated Gen V sprite in its lane's own tall grass (or water),
+the Elite Wild itself, the nurse, the merchant, a find's item, a pixel "?"; full colour ahead, faded and named "off your
+route" behind, darkened with a tick when cleared; hit targets the picture's size. **Preview** over the dimmed, blurred
+route, wearing the node's picture. **Strip**: routes and nodes in miniature. The disc emblems retired but the Gym Badges.
 
 ### v0.9.15 — The combat screen and its cards, reworked  ☐
 The user's note 10 — "one of the ugliest parts of the art today". The combat screen revisited as a whole, and **new

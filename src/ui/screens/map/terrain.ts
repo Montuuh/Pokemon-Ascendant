@@ -1,13 +1,15 @@
 import { gymById, type MapNode, type RegionMap } from '@/sim';
 
 // §2.5.4 — the route's terrain: a pure function of the map that lays a tile grid under the nodes. It says *what*
-// each tile is (the road, a path, the scenery between two routes, tall grass, the river at the point of no
-// return) and *which terrain* it belongs to; `tileset.ts` says how each of those is drawn. The same map always
+// each tile is (open ground, a landmark's clearing of road, the scenery between two routes, tall grass, the river at
+// the point of no return) and *which terrain* it belongs to; `tileset.ts` says how each of those is drawn. The same map always
 // paints the same terrain — every "random" choice here is a hash of the map's seed and the tile.
 //
 // The route runs left to right: a column of the map is COL_TILES tiles wide, a row of the map's grid ROW_TILES
-// tiles tall. Paths are two tiles wide and turn at right angles, the way FireRed / LeafGreen draw a route: an
-// edge leaves its node to the right, turns halfway to the next column, and walks into the next node level.
+// tiles tall. Since v0.9.14 an edge is a **straight line** from node to node (the screen draws it dashed), after
+// Pokelike's map: a route reads as a line you can follow, and two edges never share a stretch of road, so no node
+// seems to lead where it cannot. The ground along every line is kept clear of scenery, the Gym and the Elite stand on
+// a clearing of road, and a line that crosses the river at the point of no return crosses it on a bridge.
 
 /** Tiles per map column (left to right) and per map row (top to bottom). */
 export const COL_TILES = 7;
@@ -15,8 +17,10 @@ export const ROW_TILES = 2;
 /** The scenery framing the route: tiles left and right of the first and last column, above and below the rows. */
 export const MARGIN_X = 5;
 export const MARGIN_Y = 3;
-/** Where an edge turns: this many tiles right of the node it leaves. */
-const TURN = 3;
+/** How far either side of an edge's line the ground is kept clear of scenery, in tiles. */
+const CORRIDOR = 0.75;
+/** Where the river stands, in tiles right of the point of no return's column. */
+const RIVER_AT = 4;
 
 /** §2.5.4 — the looks a stretch of route can have: a Region's road, or a Gym's terrain. */
 export type TerrainId =
@@ -43,7 +47,7 @@ export const TERRAIN_BY_TYPE: Readonly<Record<string, TerrainId>> = {
 };
 
 /**
- * How much of a terrain's open ground is scenery (trees, rock, water…) once it is two tiles from any path. A cave
+ * How much of a terrain's open ground is scenery (trees, rock, water…) once it is off the routes' lines. A cave
  * is mostly rock and a lake mostly water; a meadow is mostly open, which is what makes it a meadow.
  */
 const FILL_DENSITY: Readonly<Record<TerrainId, number>> = {
@@ -88,7 +92,7 @@ export interface MapTerrain {
   h: number;
   /** `cells[y][x]`. */
   cells: TerrainCell[][];
-  /** Each node's centre, in tiles (a node sits on the corner where four path tiles meet). */
+  /** Each node's centre, in tiles (a node sits on the corner where four tiles meet). */
   at: Record<string, { x: number; y: number }>;
   /** Each edge's polyline, in tiles, keyed `from>to`. The screen draws the edge along it. */
   edges: Record<string, { x: number; y: number }[]>;
@@ -128,13 +132,6 @@ export const nodeTile = (node: Pick<MapNode, 'layer' | 'row'>) => ({
   y: MARGIN_Y + node.row * ROW_TILES + 1,
 });
 
-/** §2.5.4 — an edge as FireRed draws a route: out to the right, a turn halfway, and level into the next node. */
-export function edgePolyline(a: { x: number; y: number }, b: { x: number; y: number }): { x: number; y: number }[] {
-  if (a.y === b.y) return [a, b];
-  const turn = a.x + TURN;
-  return [a, { x: turn, y: a.y }, { x: turn, y: b.y }, b];
-}
-
 /** The terrain a node's own stretch wears: its lane's, its leaning track's, or the Region's road. */
 export function terrainOfNode(map: RegionMap, node: MapNode): TerrainId {
   const side = node.lane ?? node.lean;
@@ -154,32 +151,53 @@ export function mapTerrain(map: RegionMap): MapTerrain {
   const at: MapTerrain['at'] = {};
   for (const n of nodes) at[n.id] = nodeTile(n);
 
-  // The paths: every edge as a two-tile-wide polyline. A segment from (x1, y) to (x2, y) covers the tiles either
-  // side of its line, and its ends cover the node blocks.
+  // The point of no return's river, in tile columns (placed here because a line that crosses it needs a bridge).
+  const noReturnCol = map.forkLayer - 1;
+  const river = map.yLayer === undefined ? null : { x0: MARGIN_X + noReturnCol * COL_TILES + RIVER_AT, x1: MARGIN_X + noReturnCol * COL_TILES + RIVER_AT + 2 };
+
+  // Every edge is a straight line between two node centres (a node's centre is the corner where four tiles meet), and
+  // the ground within CORRIDOR of it is kept clear: scenery and tall grass stand beside a line, never under it, and a
+  // node stands on open ground. The landmarks stand on a clearing of their lane's road — the Gym's four tiles wide, the
+  // Elite's two — the way a route's boss stands on its own sand. Where a line crosses the river, a bridge two tiles
+  // tall spans it.
   const path = Array.from({ length: h }, () => new Uint8Array(w));
-  const mark = (x: number, y: number) => {
-    if (x >= 0 && y >= 0 && x < w && y < h) path[y]![x] = 1;
-  };
+  const clear = Array.from({ length: h }, () => new Uint8Array(w));
+  const bridge = Array.from({ length: h }, () => new Uint8Array(w));
+  const inside = (x: number, y: number) => x >= 0 && y >= 0 && x < w && y < h;
   const edges: MapTerrain['edges'] = {};
   for (const n of nodes) {
+    const c = at[n.id]!;
+    for (const [dx, dy] of [[-1, -1], [0, -1], [-1, 0], [0, 0]] as const) if (inside(c.x + dx, c.y + dy)) clear[c.y + dy]![c.x + dx] = 1;
+    const pad = n.kind === 'gym' ? 2 : n.kind === 'elite' ? 1 : 0;
+    for (let dx = -pad; dx < pad; dx++) for (const dy of [-1, 0]) if (inside(c.x + dx, c.y + dy)) path[c.y + dy]![c.x + dx] = 1;
     for (const id of n.next) {
-      const line = edgePolyline(at[n.id]!, at[id]!);
+      // §9.3 — one straight line from node to node (v0.9.14; until then a FireRed road that turned at right angles).
+      const line = [c, at[id]!];
       edges[`${n.id}>${id}`] = line;
-      for (let i = 0; i + 1 < line.length; i++) {
-        const [p, q] = [line[i]!, line[i + 1]!];
-        for (let x = Math.min(p.x, q.x) - 1; x <= Math.max(p.x, q.x); x++)
-          for (let y = Math.min(p.y, q.y) - 1; y <= Math.max(p.y, q.y); y++) mark(x, y);
+      const [p, q] = [line[0]!, line[line.length - 1]!];
+      const steps = Math.ceil(Math.hypot(q.x - p.x, q.y - p.y) * 4);
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const [lx, ly] = [p.x + (q.x - p.x) * t, p.y + (q.y - p.y) * t];
+        // A tile is clear when the line passes within CORRIDOR of its centre (the line runs on tile corners' grid).
+        for (let x = Math.floor(lx - CORRIDOR - 0.5); x <= Math.ceil(lx + CORRIDOR - 0.5); x++)
+          for (let y = Math.floor(ly - CORRIDOR - 0.5); y <= Math.ceil(ly + CORRIDOR - 0.5); y++)
+            if (inside(x, y) && Math.abs(x + 0.5 - lx) <= CORRIDOR + 0.5 && Math.abs(y + 0.5 - ly) <= CORRIDOR + 0.5) clear[y]![x] = 1;
+      }
+      if (river && p.x < river.x0 && q.x >= river.x1) {
+        // The bridge stands where the line meets the river's middle, two tiles tall and the river's width.
+        const tm = ((river.x0 + river.x1) / 2 - p.x) / (q.x - p.x);
+        const yb = Math.round(p.y + (q.y - p.y) * tm);
+        for (let x = river.x0; x < river.x1; x++) for (const y of [yb - 1, yb]) if (inside(x, y)) bridge[y]![x] = 1;
       }
     }
-    // A node is a 2 × 2 block of path even with no edge out of it (a Gym).
-    const c = at[n.id]!;
-    for (const [dx, dy] of [[-1, -1], [0, -1], [-1, 0], [0, 0]] as const) mark(c.x + dx, c.y + dy);
   }
 
-  // How far each tile is from the nearest path tile (4-neighbour steps), so scenery keeps its distance.
-  const dist = Array.from({ length: h }, (_, y) => Array.from({ length: w }, (_, x) => (path[y]![x] ? 0 : Infinity)));
+  // How far each tile is from the nearest kept-clear tile (4-neighbour steps), so scenery keeps its distance.
+  const kept = (x: number, y: number) => path[y]![x] || clear[y]![x];
+  const dist = Array.from({ length: h }, (_, y) => Array.from({ length: w }, (_, x) => (kept(x, y) ? 0 : Infinity)));
   const queue: [number, number][] = [];
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (path[y]![x]) queue.push([x, y]);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (kept(x, y)) queue.push([x, y]);
   for (let i = 0; i < queue.length; i++) {
     const [x, y] = queue[i]!;
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
@@ -195,7 +213,7 @@ export function mapTerrain(map: RegionMap): MapTerrain {
   const yLayer = map.yLayer ?? map.forkLayer;
   const noReturn = map.forkLayer - 1;
   const xY = MARGIN_X + yLayer * COL_TILES - Math.floor(COL_TILES / 2);
-  const xFork = MARGIN_X + noReturn * COL_TILES + TURN + 1;
+  const xFork = MARGIN_X + noReturn * COL_TILES + RIVER_AT;
   const colOf = (x: number) => Math.max(0, Math.min(map.layers - 1, Math.round((x - MARGIN_X) / COL_TILES)));
   const byLayer = new Map<number, MapNode[]>();
   for (const n of nodes) byLayer.set(n.layer, [...(byLayer.get(n.layer) ?? []), n].sort((a, b) => a.row - b.row));
@@ -231,9 +249,6 @@ export function mapTerrain(map: RegionMap): MapTerrain {
     return null;
   };
 
-  // §2.5.4 — the point of no return's river: two tiles of water across the whole map, between the Y's last
-  // column and the lanes, bridged wherever a path crosses it.
-  const river = map.yLayer === undefined ? null : { x0: MARGIN_X + noReturn * COL_TILES + TURN + 1, x1: MARGIN_X + noReturn * COL_TILES + TURN + 3 };
 
   /** The terrain of the nearest node to a road tile: its column's, the row nearest it. */
   const roadTerrain = (x: number, y: number): TerrainId => {
@@ -250,7 +265,7 @@ export function mapTerrain(map: RegionMap): MapTerrain {
     const c = at[n.id]!;
     for (let dy = -3; dy <= 2; dy++) for (let dx = -2; dx <= 1; dx++) {
       const [x, y] = [c.x + dx, c.y + dy];
-      if (x >= 0 && y >= 0 && x < w && y < h && !path[y]![x]) tall[y]![x] = 1;
+      if (x >= 0 && y >= 0 && x < w && y < h && !kept(x, y)) tall[y]![x] = 1;
     }
   }
 
@@ -266,13 +281,13 @@ export function mapTerrain(map: RegionMap): MapTerrain {
       const n = cellHash(seed, x, y);
       const inRiver = river !== null && x >= river.x0 && x < river.x1;
       let k: CellKind;
-      if (inRiver) k = path[y]![x] ? 'bridge' : 'river';
+      if (inRiver) k = bridge[y]![x] ? 'bridge' : 'river';
       else if (path[y]![x]) k = 'path';
       else if (tall[y]![x]) k = 'tall';
       else {
-        // Scenery two tiles off any path, in clumps; the margins are walled in, as a route's edges are.
+        // Scenery off the routes' lines, in clumps; the margins are walled in, as a route's edges are.
         const edge = y < MARGIN_Y - 1 || y >= h - MARGIN_Y + 1 || x < 2 || x >= w - 2;
-        const far = dist[y]![x]! >= 2;
+        const far = dist[y]![x]! >= 1;
         // Water comes in bodies, not puddles: its noise is coarser than a wood's or a rockfall's.
         const scale = t === 'lake' || t === 'coast' ? 5 : 3;
         k = edge || (far && blob(seed, x, y, scale, 11) < FILL_DENSITY[t]) ? 'fill' : 'ground';
@@ -306,7 +321,7 @@ export function mapTerrain(map: RegionMap): MapTerrain {
   const lanes: LaneZone[] = [];
   if (map.forkLayer < map.layers) {
     const line = split(map.forkLayer, (n) => n.lane === 0, (n) => n.lane === 1) ?? h / 2;
-    const x0 = river ? river.x1 : MARGIN_X + (map.forkLayer - 1) * COL_TILES + TURN;
+    const x0 = river ? river.x1 : MARGIN_X + (map.forkLayer - 1) * COL_TILES + RIVER_AT;
     lanes.push({ lane: 0, x0, x1: w, y0: 0, y1: Math.round(line) }, { lane: 1, x0, x1: w, y0: Math.round(line), y1: h });
   }
 

@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { battlefields, gymById, laneField as laneBattlefield, type FieldId, type MapNode, type RunState } from '@/sim';
+import { battlefields, gymById, laneField as laneBattlefield, nodesAhead, type FieldId, type MapNode, type RunState } from '@/sim';
 import { NodeMarker, type NodeStatus } from '@/ui/components/NodeMarker';
+import { landmarkName, nodeArt } from '@/ui/components/nodeArt';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { FIELD_LABEL, ROUTE_TEXT } from '@/ui/strings';
 import { fieldTip, noReturnTip, routeStripTip } from '@/ui/tips';
@@ -36,6 +37,12 @@ const WEATHER_CLASS: Record<FieldId, string | undefined> = {
   'toxic-spikes': styles.toxic,
   'sticky-web': styles.web,
 };
+
+/** §9.3 — an edge's look: the road walked, the steps you can take now, the routes still open, and the rest. */
+const EDGE_CLASS = { walked: styles.edgeWalked, live: styles.edgeLive, open: styles.edge, gone: styles.edgeGone } as const;
+const STRIP_EDGE_CLASS = { walked: styles.stripWalked, live: styles.stripLive, open: styles.stripOpen, gone: styles.stripGoneLine } as const;
+/** The nodes that are a fight, drawn filled on the strip; the stops are rings. */
+const FIGHTS = new Set(['wild', 'trainer', 'elite', 'elite-wild']);
 
 export function RouteView({ run, statusOf, onEnter }: Props) {
   const terrain = useMemo(() => mapTerrain(run.map), [run.map]);
@@ -154,13 +161,19 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   };
 
   const nodes = Object.values(run.map.nodes);
+  // §9.3 — the routes still open from where you stand: drawn in full, everything else faded.
+  const ahead = useMemo(() => nodesAhead(run.map, run.position ?? null), [run.map, run.position]);
   const edges = nodes.flatMap((n) =>
-    n.next.map((id) => ({
-      key: `${n.id}>${id}`,
-      points: (terrain.edges[`${n.id}>${id}`] ?? []).map((p) => `${p.x},${p.y}`).join(' '),
-      walked: run.visited.includes(n.id) && (run.visited.includes(id) || run.position === id),
-      live: run.phase === 'map' && (run.position === n.id || (run.position === null && n.layer === 0)) && run.reachable.includes(id),
-    })),
+    n.next.map((id) => {
+      const walked = run.visited.includes(n.id) && (run.visited.includes(id) || run.position === id);
+      const live = run.phase === 'map' && run.position === n.id && run.reachable.includes(id);
+      const open = ahead.has(id) && (ahead.has(n.id) || n.id === run.position);
+      return {
+        key: `${n.id}>${id}`,
+        points: (terrain.edges[`${n.id}>${id}`] ?? []).map((p) => `${p.x},${p.y}`).join(' '),
+        state: walked ? 'walked' : live ? 'live' : open ? 'open' : 'gone',
+      } as const;
+    }),
   );
   const gymNames = run.map.gyms.map((id) => gymById(id).name.replace(/^Leader /, ''));
 
@@ -186,7 +199,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
 
           <svg className={styles.edges} viewBox={`0 0 ${terrain.w} ${terrain.h}`} preserveAspectRatio="none" aria-hidden="true">
             {edges.map((e) => (
-              <polyline key={e.key} points={e.points} className={e.walked ? styles.edgeWalked : e.live ? styles.edgeLive : styles.edge} vectorEffect="non-scaling-stroke" />
+              <polyline key={e.key} points={e.points} className={EDGE_CLASS[e.state]} vectorEffect="non-scaling-stroke" data-edge={e.state} />
             ))}
           </svg>
 
@@ -198,7 +211,18 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
 
           {nodes.map((node) => {
             const at = terrain.at[node.id]!;
-            return <NodeMarker key={node.id} node={node} status={statusOf(node)} style={{ left: at.x * px, top: at.y * px }} onClick={() => onEnter(node.id)} />;
+            return (
+              <NodeMarker
+                key={node.id}
+                node={node}
+                status={statusOf(node)}
+                art={nodeArt(node, run.map)}
+                ahead={ahead.has(node.id)}
+                caption={landmarkName(node, run.map)}
+                style={{ left: at.x * px, top: at.y * px }}
+                onClick={() => onEnter(node.id)}
+              />
+            );
           })}
         </div>
       </div>
@@ -217,6 +241,23 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
         data-testid="route-strip"
       >
         <canvas ref={strip} className={styles.stripArt} aria-hidden="true" />
+        {/* §9.3 — the routes and every node on them, in miniature: a fight a filled dot, a stop a ring; the road behind
+            you dark, the routes you can no longer take faded — the whole Region's choice at a glance. */}
+        <svg className={styles.stripLines} viewBox={`0 0 ${terrain.w} ${terrain.h}`} preserveAspectRatio="none" aria-hidden="true">
+          {edges.map((e) => (
+            <polyline key={e.key} points={e.points} className={STRIP_EDGE_CLASS[e.state]} vectorEffect="non-scaling-stroke" />
+          ))}
+        </svg>
+        {nodes
+          .filter((n) => n.kind !== 'gym')
+          .map((n) => (
+            <span
+              key={n.id}
+              className={[styles.stripNode, FIGHTS.has(n.kind) ? styles.stripFight : styles.stripStop, run.visited.includes(n.id) ? styles.stripDone : !ahead.has(n.id) && n.id !== run.position ? styles.stripGone : ''].join(' ')}
+              style={{ left: `${(terrain.at[n.id]!.x / terrain.w) * 100}%`, top: `${(terrain.at[n.id]!.y / terrain.h) * 100}%` }}
+              data-strip-kind={n.kind}
+            />
+          ))}
         <span className={styles.window} style={{ left: `${view.left * 100}%`, width: `${Math.min(1, view.width) * 100}%` }} />
         {nodes
           .filter((n) => n.id === run.position || n.kind === 'gym')

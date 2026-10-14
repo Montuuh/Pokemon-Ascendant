@@ -1,184 +1,192 @@
-/* The badges are full-colour Pokémon emblems on their own cream disc, so the marker itself is just a hit
-   target and a state ring. State reads through scale, ring and saturation, never through colour alone. */
+/* §9.3 (v0.9.14) — a node is the thing itself standing on the route: its picture's feet on the node's point, its hit
+   target the picture's own size, a ring on the ground under it. State reads through the picture (full, faded,
+   cleared) and the ring, never through colour alone; only the Gym and the Elite carry a caption — the Leader's or the
+   Elite's name. */
 .node {
   position: absolute;
-  width: 48px;
-  height: 48px;
-  margin: -24px 0 0 -24px;
+  width: 64px;
+  height: 80px;
+  /* The box ends a few pixels under the node's point: that is where the picture's feet stand. */
+  margin: -72px 0 0 -32px;
   padding: 0;
   border: none;
-  border-radius: 50%;
   background: none;
-  display: grid;
-  place-items: center;
-  filter: drop-shadow(0 4px 8px rgba(26, 18, 28, 0.5));
   /* Only a reachable node can be entered; the others still open their bubble on hover. */
   cursor: not-allowed;
   transition:
     transform var(--motion-fast) var(--ease-spring),
-    filter var(--motion-fast) ease;
+    filter var(--motion-base) ease;
 }
-.badge {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  pointer-events: none;
-}
-.caption {
+
+/* The picture, standing on the node's point. Pixel art at its own size or a whole multiple of it (D9). */
+.art {
   position: absolute;
-  /* Just under the badge, whatever size the state makes it. */
-  top: calc(100% - 2px);
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  padding: 1px 8px;
-  border-radius: var(--radius-pill);
-  /* Opaque, in every state: the route is what the player plans on (D5), so no caption rides on the plate. */
-  background: var(--surface-0);
-  color: var(--ink-primary);
+  inset: 0;
   pointer-events: none;
+  filter: drop-shadow(0 3px 2px color-mix(in srgb, var(--scrim) 70%, transparent));
+}
+.art img {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+  /* The picture keeps its own size: wider than the hit target is fine, squashed into it is not. */
+  max-width: none;
+}
+/* The Showdown trainer sprites are 80 px with air round the figure: shown at their own size, feet on the point. */
+.trainer img {
+  width: 80px;
+  height: 80px;
+  bottom: -6px;
+}
+/* A Gen V battle sprite, cropped to the Pokémon, at its own size: a Caterpie small, a Snorlax big, as they are. */
+.pokemon img {
+  bottom: 2px;
+}
+/* The tuft it peeks out of — its lane's own tall grass — or the water the sea's and the river's are met in. */
+.grass,
+.water {
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 56px;
+  height: 13px;
+  transform: translateX(-50%);
+  background-size: 32px 32px;
+  background-repeat: repeat-x;
+  image-rendering: pixelated;
+}
+.grass {
+  background-position: 0 0;
+}
+.water {
+  border-radius: 50%;
+  background-position: center;
+  opacity: 0.95;
+}
+.item img {
+  width: 40px;
+  height: 40px;
+  bottom: 2px;
+}
+.sign img {
+  width: 48px;
+  height: 48px;
+  bottom: 0;
+}
+
+/* The ring on the ground: where you stand, and where you can step to next. */
+.ground {
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 52px;
+  height: 18px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--scrim) 34%, transparent);
+  pointer-events: none;
+}
+/* Under a Pokémon in the grass the ring is wider and lower than the tuft, so it shows round it. */
+.node[data-art='pokemon'] .ground {
+  width: 70px;
+  height: 22px;
+  bottom: -12px;
+}
+.reachable .ground,
+.current .ground {
+  background: color-mix(in srgb, var(--accent-action) 38%, transparent);
+  box-shadow: 0 0 0 2px var(--accent-action);
+}
+.current .ground {
+  animation: global(pulseRing) var(--motion-ring-pulse) ease-in-out infinite;
 }
 
 .reachable {
   cursor: pointer;
 }
-.reachable:hover {
-  transform: scale(1.14);
-  filter: drop-shadow(0 6px 12px rgba(26, 18, 28, 0.55)) brightness(1.06);
+.reachable .art {
+  animation: global(nodeBob) var(--motion-node-bob) ease-in-out infinite;
+}
+.reachable:hover,
+.reachable:focus-visible {
+  transform: scale(1.1);
+}
+.reachable:hover .art {
+  filter: drop-shadow(0 6px 4px color-mix(in srgb, var(--scrim) 75%, transparent)) brightness(1.08);
 }
 
-/* Not reachable yet is said by the badge and the ring, never by fading the node: the caption under it is a
-   place on the route the player is planning toward, so it keeps full contrast (D5). */
-.locked {
-  filter: drop-shadow(0 3px 6px rgba(26, 18, 28, 0.45));
+/* The Gym and the Elite are the route's landmarks: they keep their glow at any distance while they are ahead. */
+.landmark .art {
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brand-red) 55%, transparent)) drop-shadow(0 3px 2px color-mix(in srgb, var(--scrim) 70%, transparent));
 }
-.locked .badge {
-  filter: grayscale(0.85) brightness(0.78);
-  opacity: 0.7;
-}
-.locked::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 2px dashed color-mix(in srgb, var(--ink-primary) 70%, transparent);
-  /* The ring reaches past the button; at 720 it would take the pointer meant for the badge beneath. */
-  pointer-events: none;
+.climax .art,
+.climax.reachable:hover .art {
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--accent-action) 70%, transparent)) drop-shadow(0 3px 2px color-mix(in srgb, var(--scrim) 70%, transparent));
 }
 
-.visited {
-  filter: saturate(0.35) brightness(0.85) drop-shadow(0 3px 6px rgba(26, 18, 28, 0.45));
+/* A node on no route you can still take: there, and readable, but quiet — the open routes are what the eye follows.
+   After the landmark rules, so a Gym on the lane you left fades with everything else. */
+.gone .art,
+.landmark.gone .art {
+  filter: grayscale(0.9) brightness(0.9);
+  opacity: 0.45;
 }
 
-.current {
-  width: 62px;
-  height: 62px;
-  margin: -31px 0 0 -31px;
+/* Cleared: the picture dims and a tick says so — a cleared Elite too. */
+.visited .art,
+.landmark.visited .art {
+  filter: grayscale(0.7) brightness(0.62);
 }
-/* The ring is a pseudo-element so it can sit behind a transparent badge without a box to clip it. */
-.current::before {
-  content: '';
-  position: absolute;
-  inset: -5px;
-  border-radius: 50%;
-  border: 3px solid var(--accent-action);
-  pointer-events: none;
-  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-action) 34%, transparent);
-  animation: pulse 1.6s ease-in-out infinite;
-}
-
-/* The Gym is the Region's climax: bigger, and haloed even while it is out of reach. */
-.climax {
-  width: 62px;
-  height: 62px;
-  margin: -31px 0 0 -31px;
-}
-.climax.reachable,
-.climax.locked,
-.climax.visited {
-  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--accent-action) 60%, transparent))
-    drop-shadow(0 4px 8px rgba(26, 18, 28, 0.5));
-}
-/* The two landmarks keep their colour out of reach — they are what the route is steered toward — and only
-   fade a little; the ring still says "not yet". */
-.climax.locked .badge,
-.major.locked .badge {
-  filter: none;
-}
-.climax.locked .badge {
-  opacity: 0.85;
-}
-
 .tick {
   position: absolute;
-  right: -2px;
-  bottom: -2px;
+  right: 4px;
+  bottom: 4px;
   display: grid;
   place-items: center;
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  font-size: 12px;
+  font-size: var(--type-caption);
   font-weight: 700;
   line-height: 1;
+  color: var(--surface-1);
+  background: var(--ink-primary);
+  border: 2px solid var(--surface-1);
+}
+
+/* The Gym's Leader stands at twice the size, and so does its hit target: the Region's climax, visible from anywhere on
+   the route and taken by its head as well as its feet. */
+.climax {
+  width: 112px;
+  height: 156px;
+  margin: -148px 0 0 -56px;
+}
+.climax .trainer img {
+  width: 160px;
+  height: 160px;
+  bottom: -12px;
+}
+.climax .ground {
+  width: 96px;
+  height: 28px;
+}
+
+.caption {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  /* Opaque, in every state: the route is what the player plans on (D5). */
+  background: var(--surface-0);
   color: var(--ink-primary);
-  background: #2f7d4f;
-  border: 2px solid color-mix(in srgb, var(--ink-primary) 90%, transparent);
-}
-/* On a short window the twelve layers sit closer than a badge is tall, so the opaque caption tucks onto its own
-   badge's rim rather than across the head of the badge beneath it — and the visited tick climbs above it. */
-@media (max-height: 800px) {
-  .caption {
-    top: calc(100% - 11px);
-  }
-  .tick {
-    bottom: 11px;
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-action) 34%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 11px color-mix(in srgb, var(--accent-action) 10%, transparent);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .current::before {
-    animation: none;
-  }
-}
-
-/* §2.8.1 — the Elite is the run's second landmark: between an ordinary node and the Gym in size and glow,
-   because it is between them in what it asks of you. It takes its whole layer, so it is never a fork. */
-.major {
-  width: 54px;
-  height: 54px;
-  margin: -27px 0 0 -27px;
-}
-.major.reachable,
-.major.locked,
-.major.visited {
-  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brand-red) 55%, transparent))
-    drop-shadow(0 3px 6px rgba(26, 18, 28, 0.5));
-}
-
-/* §9.3 — with the whole route on the board, a caption on every node is a wall of words. A caption names the nodes
-   you can take and the one you stand on; any other shows its caption under the pointer or the focus, and its
-   bubble names it either way. */
-.locked .caption,
-.visited .caption {
-  display: none;
-}
-.locked:hover .caption,
-.locked:focus-visible .caption,
-.visited:hover .caption,
-.visited:focus-visible .caption {
-  display: block;
+  pointer-events: none;
 }

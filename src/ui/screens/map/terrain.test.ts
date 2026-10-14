@@ -7,7 +7,7 @@ import { mapTerrain, nodeTile, TERRAIN_BY_TYPE, ROAD } from './terrain';
 import { piecesFor } from './tileset';
 
 // §2.5.4 — the route's terrain: a pure function of the map, so the same map always paints the same ground, every
-// path the route draws is a path on the ground, and every tile it asks for is a file on disk.
+// line the route draws runs over open ground, and every tile it asks for is a file on disk.
 
 const content = buildRegistry();
 const mapsOf = (region: number, n: number): RegionMap[] =>
@@ -19,30 +19,36 @@ describe('The route terrain — §2.5.4', () => {
     expect(mapTerrain(maps[0]!)).toEqual(mapTerrain(maps[0]!));
   });
 
-  it('EveryEdgeAndEveryNode_StandsOnPath', () => {
+  it('EveryEdge_IsAStraightLine_OverClearGround', () => {
+    // §9.3 (v0.9.14) — an edge is one straight line between two node centres, and no scenery stands under it.
     for (const m of maps.slice(0, 20)) {
       const t = mapTerrain(m);
-      const walkable = (x: number, y: number) => ['path', 'bridge'].includes(t.cells[y]![x]!.k);
       for (const n of Object.values(m.nodes)) {
-        const c = nodeTile(n);
-        for (const [dx, dy] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) expect(walkable(c.x + dx!, c.y + dy!), `${m.seed} ${n.id}`).toBe(true);
         for (const id of n.next) {
           const line = t.edges[`${n.id}>${id}`]!;
-          expect(line.length).toBeGreaterThanOrEqual(2);
-          // Every corner of the polyline is on the road.
-          for (const p of line) expect(walkable(p.x, p.y) || walkable(p.x - 1, p.y - 1), `${m.seed} ${n.id}>${id}`).toBe(true);
+          expect(line, `${m.seed} ${n.id}>${id}`).toEqual([nodeTile(n), nodeTile(m.nodes[id]!)]);
+          const [p, q] = [line[0]!, line[1]!];
+          for (let i = 0; i <= 20; i++) {
+            const [x, y] = [Math.floor(p.x + ((q.x - p.x) * i) / 20), Math.floor(p.y + ((q.y - p.y) * i) / 20)];
+            expect(['fill', 'tall'], `${m.seed} ${n.id}>${id} at ${x},${y}`).not.toContain(t.cells[y]![x]!.k);
+          }
         }
       }
     }
   });
 
-  it('TheRiverCrossesTheWholeMap_AndEveryPathOverItIsABridge', () => {
+  it('TheRiverCrossesTheWholeMap_AndEveryLineOverItHasABridge', () => {
     for (const m of maps.slice(0, 20)) {
       const t = mapTerrain(m);
       expect(t.river, `${m.seed}`).not.toBeNull();
-      for (let y = 0; y < t.h; y++) for (let x = t.river!.x0; x < t.river!.x1; x++) expect(['river', 'bridge']).toContain(t.cells[y]![x]!.k);
-      const bridges = t.cells.flat().filter((c) => c.k === 'bridge').length;
-      expect(bridges, `${m.seed} has no bridge`).toBeGreaterThan(0);
+      const r = t.river!;
+      for (let y = 0; y < t.h; y++) for (let x = r.x0; x < r.x1; x++) expect(['river', 'bridge']).toContain(t.cells[y]![x]!.k);
+      for (const [key, line] of Object.entries(t.edges)) {
+        const [p, q] = [line[0]!, line[line.length - 1]!];
+        if (!(p.x < r.x0 && q.x >= r.x1)) continue;
+        const y = Math.round(p.y + ((q.y - p.y) * ((r.x0 + r.x1) / 2 - p.x)) / (q.x - p.x));
+        expect(t.cells[y]![r.x0]!.k, `${m.seed} ${key} has no bridge`).toBe('bridge');
+      }
     }
   });
 

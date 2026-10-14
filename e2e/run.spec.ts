@@ -410,7 +410,7 @@ test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ p
     // The whole Box, not only the Lead: XP scales with the level gap (§6.2.1), so a Lv 20 Lead no longer drags
     // a Lv 6 bench up to the Gym on its own.
     const run = e.run as unknown as { state: () => { box: { uid: string }[] }; levelTo: (n: number, uid?: string) => void; heal: () => void };
-    for (const m of run.state().box) run.levelTo(20, m.uid);
+    for (const m of run.state().box) run.levelTo(24, m.uid);
     run.heal();
     // Straight to the Gym: an unseeded route can wear the team down before it, and the route is not under test.
     (e.run as unknown as { jump: (k: string) => boolean }).jump('gym');

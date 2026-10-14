@@ -50,30 +50,41 @@
   pointer-events: none;
   overflow: visible;
 }
-/* The route lines ride the painted paths. Each has a dark casing under it, so it holds 3:1 against grass, sand,
-   rock and water alike. */
+/* §9.3 (v0.9.14, after Pokelike's map) — every edge is a straight line from node to node, so a route reads as a line
+   you can follow and no two edges share a stretch. A dark casing under each keeps it 3:1 on grass, sand and water.
+   The steps you can take now are solid gold and march toward where they lead; the routes still open are dashed cream;
+   the road behind you is solid and dark; a route you can no longer take is a faint dotted trace. */
 .edge,
 .edgeLive,
-.edgeWalked {
+.edgeWalked,
+.edgeGone {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 .edge {
-  stroke: rgba(255, 253, 248, 0.92);
-  stroke-width: 2.5;
-  stroke-dasharray: 5 7;
-  filter: drop-shadow(0 0 1.5px rgba(26, 18, 28, 0.95));
+  stroke: color-mix(in srgb, var(--ink-primary) 95%, transparent);
+  stroke-width: 3;
+  stroke-dasharray: 7 7;
+  filter: drop-shadow(0 0 1.5px var(--surface-sunken));
 }
 .edgeLive {
   stroke: var(--accent-action);
-  stroke-width: 4;
-  filter: drop-shadow(0 0 2px rgba(26, 18, 28, 0.95));
+  stroke-width: 4.5;
+  stroke-dasharray: 12 6;
+  filter: drop-shadow(0 0 2px var(--surface-sunken));
+  animation: global(dashFlow) var(--motion-dash-flow) linear infinite;
 }
 .edgeWalked {
-  stroke: var(--surface-1);
+  stroke: color-mix(in srgb, var(--surface-sunken) 85%, transparent);
   stroke-width: 4;
-  filter: drop-shadow(0 0 2px rgba(26, 18, 28, 0.95));
+  filter: drop-shadow(0 0 1.5px color-mix(in srgb, var(--ink-primary) 80%, transparent));
+}
+.edgeGone {
+  stroke: color-mix(in srgb, var(--ink-primary) 50%, transparent);
+  stroke-width: 2;
+  stroke-dasharray: 2 8;
+  filter: drop-shadow(0 0 1px color-mix(in srgb, var(--surface-sunken) 60%, transparent));
 }
 
 .noReturn {
@@ -229,4 +240,60 @@
   border-radius: var(--radius-xs);
   transform: rotate(45deg);
   box-shadow: 0 0 0 2px var(--surface-1);
+}
+
+/* §9.3 (v0.9.14) — the strip's routes and nodes: the map's choice in miniature. */
+.stripLines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.stripOpen,
+.stripLive,
+.stripWalked,
+.stripGoneLine {
+  fill: none;
+  stroke-linecap: round;
+}
+.stripOpen {
+  stroke: color-mix(in srgb, var(--ink-primary) 85%, transparent);
+  stroke-width: 1.5;
+}
+.stripLive {
+  stroke: var(--accent-action);
+  stroke-width: 2.5;
+}
+.stripWalked {
+  stroke: var(--surface-sunken);
+  stroke-width: 2.5;
+}
+.stripGoneLine {
+  stroke: color-mix(in srgb, var(--ink-primary) 30%, transparent);
+  stroke-width: 1;
+}
+.stripNode {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px var(--surface-sunken);
+}
+/* A fight: a filled dot in the route's red. A stop: a cream ring. Told apart by shape first. */
+.stripFight {
+  background: var(--brand-red);
+}
+.stripStop {
+  background: transparent;
+  border: 2px solid var(--ink-primary);
+}
+.stripDone {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+.stripGone {
+  opacity: 0.3;
 }

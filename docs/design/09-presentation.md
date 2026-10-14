@@ -260,9 +260,9 @@ hidden intent (§5.5) opens the kind and nothing more. The numbers stay on the s
 │ Region 1 · column 6 of 20      Brock (Rock) · Misty (Water)     ₽ ◓ 🎒  │
 ├──────────────────┬─────────────────────────────────────────────────────┤
 │  Active Team     │ ◀ scroll ▶                                          │
-│  [Lead ★] [B][B] │  ══●═══⛺═══●══╱══●══●══⛺══════ (cave) ══════ 👑    │
-│                  │  ══●═══⛺═══◉══⛺══●⚔══●══⛺┤                        │
-│  Box             │  ══●═══⛺═══●══╲══●══●══⛺══════ (water, rain) ═ 👑   │
+│  [Lead ★] [B][B] │  🧢- - -🌿- - -?╲ - 🧢- -🌿- - (cave) - -🌿- - - 🧔    │
+│                  │  ✓━━━🧢━━━◉┉┉┉🌿╳ - 🎒- -⚔- -┤                        │
+│  Box             │  🌿- - -💊- - -🧢╱ - 🌿- -?- - (water, rain) - 🧢- 👧   │
 │  ⚪ ⚪ ⚠2 ⚪ …    │  [ the whole route in a strip, your view outlined ] │
 └──────────────────┴─────────────────────────────────────────────────────┘
 ```
@@ -274,15 +274,30 @@ preview. A strip under the graph shows the whole route at a glance with the visi
 jumps there. The vertical map was a roguelike convention borrowed from a game about climbing a tower; a route is
 a road.
 
-The terrain is drawn from tiles at whole-pixel scale, so the FRLG pixel stays crisp: the tracks as paths, the
-scenery between them, each lane in its Gym's terrain, the point of no return as a landmark, and a lane's
-Battlefield drawn over it as weather (§2.5.4). The edges are drawn over the paths at 3:1 against the terrain
-under them.
+The terrain is drawn from tiles at whole-pixel scale, so the FRLG pixel stays crisp: open ground, the scenery
+between the routes, each lane in its Gym's terrain, the point of no return as a river with a bridge under every line
+that crosses it, and a lane's Battlefield drawn over it as weather (§2.5.4).
 
-The graph must read as **routes, not a tangle**: 44px node badges, the current position at 1.35× with a pulsing
-gold ring, reachable nodes in full colour with a white border, locked nodes desaturated, visited nodes with a
-check, the walked path drawn solid, and the two Gyms scaled up at the far right with a gold aura. A Wild node
-wears its biome's emblem; a trainer its archetype; a stop its service.
+**The routes are lines, the nodes are the things themselves** (v0.9.14, the user's note after Pokelike's map: "es
+bastante limpio, y la ruta que el jugador querría seguir queda bastante clara, ya que los iconos son bastante
+representativos de lo que va a venir"). Every edge is one **straight line** from node to node — diagonal where the
+route changes track — so a route reads as a line you can follow and two edges never share a stretch of road. (The
+FireRed roads that turned at right angles before it made a node seem to lead wherever a neighbour's road did.) The
+lines speak in four registers, each with a dark casing so it holds 3:1 on any ground: **the steps you can take now**
+solid gold, marching toward where they lead; **the routes still open** from where you stand dashed cream; **the road
+behind you** solid; **a route you can no longer take** a faint dotted trace.
+
+A node is drawn as **what it is**, standing on its point with a shadow under it: a trainer is its class's sprite, the
+Elite its trainer, a Gym its Leader at twice the size with a gold glow; a Wild Area the Pokémon you will meet most,
+peeking out of the grass (or the water, on the sea and the river); the Elite Wild the Pokémon itself; the nurse and the
+merchant themselves; a find the item lying there; a Mystery the overworld's "?". State reads through the picture —
+full colour on every route still open from where you stand (`nodesAhead`), faded where you can no longer go,
+darkened with a tick once cleared — and through a ring on the ground: pulsing gold where you stand, gold under the
+nodes you can step to next, which also bob on their spot. Only the Gyms and the Elite carry a caption; any
+other names itself under the pointer, and its bubble says the rest. The node's preview opens over the route dimmed
+and softened, never over a black void, and wears the same picture as the node. The strip under the board draws
+the routes and every node in miniature — a fight a filled dot, a stop a ring, the Gyms diamonds in their types'
+colours — the walked road dark and the closed routes faded, so the whole Region's choice is one glance.
 
 The left column is the Active Team (three tiles, the Lead crowned) above a scrollable Box. Trauma badges overlay
 any portrait; fainted Pokémon are dimmed but still draggable, so you can prepare a post-nurse line-up.

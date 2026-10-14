@@ -4,7 +4,10 @@
   z-index: var(--z-modal);
   display: grid;
   place-items: center;
-  background: var(--scrim);
+  /* The route stays in sight behind the card, dimmed and softened: you decide where you are going with the map
+     in view, not over a black void (§9.3, v0.9.14). */
+  background: color-mix(in srgb, var(--scrim) 45%, transparent);
+  backdrop-filter: blur(2px) saturate(0.85);
   padding: var(--sp-5);
 }
 .card {
@@ -27,8 +30,39 @@
   align-items: center;
   gap: var(--sp-3);
 }
-.kindIcon {
-  color: var(--ink-secondary);
+/* The node's own picture, on a disc of the card's own surface. */
+.art {
+  position: relative;
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.art img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: none;
+}
+/* A trainer sprite at its own 80 px. A Pokémon's battle sprite stands on the disc's floor at the largest whole
+   multiple of its size that fits (`--scale`, set when it loads): a Caterpie at 2×, a Snorlax at 1×. */
+.artTrainer img {
+  width: 80px;
+  height: 80px;
+}
+.artPokemon img {
+  top: auto;
+  bottom: 8px;
+  transform: translateX(-50%) scale(var(--scale, 1));
+  transform-origin: bottom center;
+}
+.artItem img,
+.artSign img {
+  width: 48px;
+  height: 48px;
 }
 .kind {
   margin: 0;
@@ -40,11 +74,6 @@
 .title {
   margin: 0;
   font-size: var(--type-h2);
-}
-.trainer {
-  /* The Showdown trainer sprites are 80 px: at their own size, never a fraction of a pixel (D9). */
-  width: 80px;
-  image-rendering: pixelated;
 }
 /* The ground the fight is on and, at a Gym, the Leader's rule: one row of chips, each its own width. */
 .chipRow {

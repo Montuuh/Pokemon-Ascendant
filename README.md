@@ -49,6 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.14 — The map, redrawn.** The route is drawn the way Pokelike draws its map: straight diagonal lines from node
+to node instead of right-angled roads, each node drawn as what waits there — the trainer, the Gym Leader, the Pokémon
+peeking out of the grass, the item on the ground — and the routes you can no longer take faded. Before it,
 **v0.9.13 — The Gym Leaders, on stage and by their own rule.** Each of the twelve Gym Leaders fights under a rule
 of its own — Brock's wall that only chips, Misty's riptide that swaps your Lead, Sabrina's seal on your best card —
 shown on the map and the fight's top bar, and the Leader stands behind its Pokémon for the whole fight. Before it,

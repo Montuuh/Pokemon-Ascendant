@@ -656,7 +656,14 @@ export function noReturnTip(gyms: readonly string[]): ReactNode {
 
 /** §9.3 — the strip under the route. */
 export function routeStripTip(): ReactNode {
-  return <Tip title="The whole route" body="Where you stand, the two Gyms at the end, and the stretch the board is showing. Click to jump there." />;
+  return (
+    <Tip
+      title="The whole route"
+      meta={['Dot: a fight', 'Ring: a stop', 'Diamond: a Gym']}
+      body="Where you stand, the two Gyms at the end, and the stretch the board is showing. Click to jump there."
+      footer="The road you walked is dark; a route you can no longer take is faded."
+    />
+  );
 }
 
 /** §2.11.0 — the town itself: how a lobby works, and what waits past its gate. */

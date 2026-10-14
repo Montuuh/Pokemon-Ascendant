@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.14 — The map, redrawn · 2026-10-14
+
+Routes drawn as straight lines, and every node as what it is.
+
+- **Lines.** Straight, diagonal routes; the next step gold, closed routes faded.
+- **Nodes.** Trainers, Leaders, Pokémon in the grass, items, nurse, merchant.
+- **Preview.** The map stays visible behind a node's card.
+- **Strip.** The minimap shows every route and node.
+
 ### v0.9.13 — The Gym Leaders, on stage and by their own rule · 2026-10-14
 
 Every Gym Leader fights under a rule of its own, and stands behind its team.

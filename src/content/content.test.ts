@@ -40,16 +40,11 @@ describe('content registry', () => {
     for (const stage of [GYM.stage, ...GYMS.map((g) => g.stage), ...Object.values(BIOMES).map((b) => b!.stage), ELITE_WILD.stage, ...everyRegion]) {
       expect(existsSync(`public/art/stages/${stage}.jpg`), `stage ${stage}`).toBe(true);
     }
-    // §9.4.1 — every Wild biome wears its own emblem, and a find on the ground its item ball (v0.8.7).
-    for (const biome of new Set(REGIONS.flatMap((r) => Object.keys(r.biomes)))) expect(existsSync(`public/art/icons/map/node-wild-${biome}.png`), `wild emblem ${biome}`).toBe(true);
-    expect(existsSync('public/art/icons/map/node-cache.png'), 'find badge').toBe(true);
     expect(existsSync('public/art/ui/menu-vista.png'), 'main menu vista').toBe(true);
-    // Every archetype a Region fields and every Gym type it can draw has its own badge on the map (§2.5).
-    const archetypes = REGIONS.flatMap((r) => r.trainers.map((t) => `node-trainer-${t.archetype}`));
-    const gymTypes = REGIONS.flatMap((r) => r.gyms.map((g) => `node-gym-${g.type}`));
-    for (const icon of [...new Set(['node-wild', 'node-trainer', 'node-aid', 'node-merchant', 'node-gym', ...archetypes, ...gymTypes])]) {
-      expect(existsSync(`public/art/icons/map/${icon}.png`), `map node badge ${icon}`).toBe(true);
-    }
+    // §5.10 — every Gym type a Region can draw has its Badge's emblem (a City's Badge row, the Legendary pick); the map
+    // draws its nodes as the things themselves since v0.9.14, and every trainer a Region fields has its sprite.
+    for (const t of new Set(REGIONS.flatMap((r) => r.gyms.map((g) => g.type)))) expect(existsSync(`public/art/icons/map/node-gym-${t}.png`), `Badge emblem ${t}`).toBe(true);
+    for (const sprite of new Set([...REGIONS.flatMap((r) => r.trainers.map((t) => t.sprite)), 'nurse', 'merchant'])) expect(existsSync(`public/art/trainers/${sprite}.png`), `trainer ${sprite}`).toBe(true);
   });
 
   it('every consumable has an item icon, and every TM a disc in its move\'s type', () => {

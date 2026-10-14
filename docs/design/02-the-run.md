@@ -452,7 +452,10 @@ the new screen with rows derived from its columns.
 ## §2.5.4 The terrain
 
 The map is painted from a **tileset**, not a backdrop: a pure function of the map (`mapTerrain`) lays a tile
-grid under the nodes — the tracks as paths, the scenery between them, and the terrain of each stretch. The trunk
+grid under the nodes — the open ground the routes run over, the scenery between them, and the terrain of each stretch.
+Since v0.9.14 the routes are not roads: every edge is a **straight line** from node to node (§9.3), and the ground
+within a tile of it is kept clear of scenery and tall grass; where a line crosses the river at the point of no return,
+a bridge spans it. The trunk
 is the Region's road. On a leaning track the road **blends** into its Gym's terrain over the Y, and past the point
 of no return each lane is its Gym's terrain outright: water for Water, a cave for Rock, a forest for Bug, a power
 plant for Electric. The point of no return is drawn as a landmark across the whole map.

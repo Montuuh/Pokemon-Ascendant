@@ -1,13 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { getContent } from '@/content/registry';
 import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
-import { ALL_TRAINERS, fieldsFor, doubleActorFor, gymById, groupPlanFor, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
+import { fieldsFor, doubleActorFor, gymById, groupPlanFor, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
 import { FieldChips } from './FieldChips';
 import { RuleChip } from './RuleChip';
 import { doubleActorTip, groupTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
-import { fallbackBadge, nodeBadge, trainerSprite, itemIcon } from '@/ui/art';
+import { itemIcon, mysterySign } from '@/ui/art';
+import { nodeArt } from './nodeArt';
 import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_HINT, NODE_LABEL, WILD_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import { WildPool } from './WildPool';
@@ -18,6 +19,11 @@ import styles from './NodePreviewCard.module.css';
 
 // Per docs/design/ui/screens.md §3.4 — the popover that says what is inside before you commit (Pillar 1).
 // Esc cancels, Enter enters. It names the species because a preview that hides the fight is not a preview.
+
+/** The disc's picture at its own scale: a trainer sprite at 80 px, a Pokémon at a whole multiple of its own size. */
+/** The height a Pokémon may stand to in the 72-px disc. */
+const DISC_FIT = 64;
+const ART_CLASS = { trainer: styles.artTrainer, pokemon: styles.artPokemon, item: styles.artItem, sign: styles.artSign } as const;
 
 interface Props {
   node: MapNode;
@@ -47,11 +53,8 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         : plan.kind === 'pack' || plan.kind === 'trio'
           ? IconUsersGroup
           : IconUsers;
-  const roster =
-    node.kind === 'trainer'
-      ? (ALL_TRAINERS.find((t) => t.id === node.preview.rosterId) ??
-        ALL_TRAINERS.find((t) => t.name === node.preview.title))
-      : undefined;
+  const art = run ? nodeArt(node, run.map) : { kind: 'sign' as const, src: mysterySign() };
+  const [artScale, setArtScale] = useState(1);
   // §5.9.5 — the Gym's own rule, promised on its preview like its field and its team.
   const gymId = node.kind === 'gym' && run && node.lane !== undefined ? run.map.gyms[node.lane] : undefined;
   const gym = gymId ? gymById(gymId) : undefined;
@@ -81,25 +84,24 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         data-testid="node-preview"
       >
         <header className={styles.head}>
-          <img
-            className={styles.kindIcon}
-            src={nodeBadge(node.preview.icon ?? node.kind)}
-            // A biome with no emblem of its own yet (v0.8.7 draws one for every biome) falls back the way the map marker does.
-            onError={(e) => {
-              const fb = fallbackBadge(node.kind);
-              if (!e.currentTarget.src.endsWith(fb)) e.currentTarget.src = fb;
-            }}
-            alt=""
-            width={44}
-            height={44}
-          />
+          {/* §9.3 — the node's own picture, the one the map draws: who or what waits there. */}
+          <span className={`${styles.art} ${ART_CLASS[art.kind]}`} aria-hidden="true">
+            <img
+              className={art.kind === 'item' ? undefined : 'pixel'}
+              src={art.src}
+              alt=""
+              draggable={false}
+              style={{ '--scale': artScale } as CSSProperties}
+              // D9 — a Pokémon at the largest whole multiple of its own size that fits the disc.
+              onLoad={(e) => art.kind === 'pokemon' && setArtScale(Math.max(1, Math.floor(DISC_FIT / Math.max(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight))))}
+            />
+          </span>
           <div>
             {NODE_LABEL[node.kind] !== node.preview.title && (
               <p className={styles.kind}>{NODE_LABEL[node.kind]}</p>
             )}
             <h2 className={`${styles.title} display`}>{node.preview.title}</h2>
           </div>
-          {(roster ?? gym) && <img className={styles.trainer} src={trainerSprite((roster ?? gym)!.sprite)} alt="" />}
         </header>
 
         {detail && !node.preview.find && !node.preview.wild && <p className={styles.detail}>{detail}</p>}

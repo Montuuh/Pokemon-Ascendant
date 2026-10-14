@@ -19,7 +19,7 @@ chrome; canonical Gen I type hues. Concretely:
 | Game glyphs: status ×6, intent ×7, trait ×5, modifier ×2, rarity ×5, medal ×4, action ×10, nav ×8, toolbar ×6 | Authored SVG set (`docs/art/icon-set.md`) | ✅ 56 (`public/art/icons/<family>`) |
 | Nav / system icons | Tabler via `@tabler/icons-react` (MIT) | ✅ installed |
 | Item icons (consumables) | **The real Scarlet & Violet renders** at 160², fetched from Serebii (`npm run art:pokemon`) | ✅ 11 |
-| Map node markers | **Real assets on a common badge disc**: the HGSS tall-grass tile, the HGSS Pokémon Centre, the Boulder Badge, and the four Showdown trainer-class sprites | ✅ 7 (`npm run art:pokemon`, then `install-art badge`) |
+| Map nodes (v0.9.14) | **The things themselves**, no disc: the Showdown trainer sprites (a Gym's Leader at 2×), the Gen V battle sprite of a Wild Area's commonest Pokémon peeking out of its lane's own `tall` tile, the item icon of a find, and one authored pixel "?" (`icons/map/node-mystery-sign.svg`, 16-px grid). The disc emblems survive only as the twelve Gym Badges (`node-gym-<type>.png`, the City's Badge row and the Legendary pick); the rest were retired with the map's badges | ✅ `ui/components/nodeArt.ts` |
 | Stage backdrops | **The real battle backgrounds**, ripped from the games via Showdown's gen6 set (`npm run art:fetch`) | ✅ 13 |
 | Card art (144×96) | Type-glyph on a gradient window → generated later | ◐ fallback live |
 | VFX / motion | CSS keyframes + DOM floating numbers (`src/ui/styles/motion.css`, `useCombatFx`) | ✅ v0.1 |
@@ -179,7 +179,7 @@ red-roofed Centre, Potion bottles with the classic cap, route signposts, tall-gr
 | Main-menu vista, Region map plate, town lobbies | 16:9 | `gemini-3-pro-image` | 4 |
 | Consumable item icons | 1:1 | **real** — Serebii S&V renders | 11 |
 | TM discs, one per type | 1:1 | **real** — S&V bag sprites, Bulbagarden | 15 |
-| Map node markers | 1:1 | **real** — badge / building / tile / trainer sprites on a shared disc | 10 |
+| Map nodes | 1:1 | **real** — trainer and battle sprites, item icons; Gym Badges on a disc | 12 + 1 authored |
 
 The item and marker rows moved from generated to real when the doctrine settled (§6 above): a model
 approximates an object and cannot reproduce a specific one, and the player already knows exactly what a Potion

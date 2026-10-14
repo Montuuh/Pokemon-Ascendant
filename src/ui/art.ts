@@ -24,20 +24,31 @@ export function tmIcon(tmId: string): string {
   const type = getContent().move(getContent().tm(tmId).move).type;
   return asset(`art/items/tm${type === 'normal' ? '' : `-${type}`}.png`);
 }
+/**
+ * §9.3 — what a map node looks like (v0.9.14, after Pokelike's map): the thing it is, not an emblem of it. A trainer
+ * is its class's sprite; a Gym its Leader and the Elite its trainer; a Wild Area the Pokémon you will meet most,
+ * peeking out of the grass (or the water); the Elite Wild the Pokémon itself; the nurse and the merchant themselves; a
+ * find the item lying there; a Mystery the overworld's "?".
+ */
+export type NodeArt =
+  | { kind: 'trainer'; src: string }
+  /** `cover`: the tile it peeks out of — its lane's own tall grass, or the water — or nothing on bare ground. */
+  | { kind: 'pokemon'; src: string; cover: { kind: 'grass' | 'water'; tile: string } | null }
+  | { kind: 'item'; src: string }
+  | { kind: 'sign'; src: string };
+export const routeTile = (terrain: string, piece: string) => asset(`art/route/${terrain}/${piece}.png`);
 export const stageBackdrop = (stage: string) => asset(`art/stages/${stage}.jpg`);
+export const mysterySign = () => asset('art/icons/map/node-mystery-sign.svg');
 export const trainerSprite = (sprite: string) => asset(`art/trainers/${sprite}.png`);
 /** The games' own pixel type label (32×12, FireRed/LeafGreen), fetched by `npm run art:types`. */
 export const typeGlyph = (type: string) => asset(`art/icons/type/icon-type-${type}.png`);
 export const statusGlyph = (status: string) => asset(`art/icons/status/icon-status-${status}.svg`);
 export const intentGlyph = (kind: string) => asset(`art/icons/intent/icon-intent-${kind}.svg`);
-/** §9 — a map node's badge, by the preview's icon id (`wild-cave`, `trainer-hiker`, `gym-rock`) or its kind. */
-export const nodeBadge = (id: string) => asset(`art/icons/map/node-${id}.png`);
 /**
- * What a node badge degrades to when its specific file does not exist yet: a biome-tinted Wild (and the Elite
- * Wild) falls back to the generic tall grass rather than to a broken-image glyph, so adding a biome or a Gym type
- * to the map is never blocked on adding a PNG first.
+ * §9 — an emblem on a disc, by id (`gym-rock`, `wild-cave`, `trainer-hiker`). The map draws its nodes as the things
+ * themselves since v0.9.14 (`nodeArt`); the Gym emblems still mark a won Badge in a City and on the Legendary pick.
  */
-export const fallbackBadge = (kind: string) => nodeBadge(kind === 'elite-wild' ? 'wild' : kind);
+export const nodeBadge = (id: string) => asset(`art/icons/map/node-${id}.png`);
 export const menuVista = () => asset('art/ui/menu-vista.png');
 /** §2.11 — a City's lobby background (`npm run art:gen`, then `install-art town`). */
 export const townArt = (cityId: string) => asset(`art/towns/${cityId}.png`);

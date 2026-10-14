@@ -373,3 +373,29 @@ html[data-motion='reduced'] .fx-sendout::before,
 html[data-motion='reduced'] .fx-burst::before {
   animation: none;
 }
+
+/* §9.3 — the map's nodes you can step to next bob on their spot, and the ring under where you stand breathes. */
+@keyframes nodeBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes pulseRing {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px var(--accent-action);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent-action) 30%, transparent);
+  }
+}
+/* §9.3 — the steps you can take now march along their line toward where they lead. */
+@keyframes dashFlow {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
