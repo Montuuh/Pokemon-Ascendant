@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.15 — The combat screen and its cards.** Every move card shows the move itself — a pixel illustration for each
+of the 161 Gen I moves, which also lands on the Pokémon it hits — with its owner in the corner, a clearer cost and
+power, and locks that keep the card readable; the item cards match, the tray is one row, the battle log is a ticker in
+the top bar and your team is drawn in the arena's own pixels. Before it,
 **v0.9.14 — The map, redrawn.** The route is drawn the way Pokelike draws its map: straight diagonal lines from node
 to node instead of right-angled roads, each node drawn as what waits there — the trainer, the Gym Leader, the Pokémon
 peeking out of the grass, the item on the ground — and the routes you can no longer take faded. Before it,

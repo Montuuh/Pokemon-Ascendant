@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { IconCards, IconMenu2 } from '@tabler/icons-react';
+import { IconCards, IconMenu2, IconPaw, IconStar, IconTrophy, IconUser } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
@@ -38,7 +38,7 @@ import { WildTierBanner } from '@/ui/components/WildTierBanner';
 import { ArenaFx } from '@/ui/components/ArenaFx';
 import { ENCOUNTER_LABEL, REJECT_TEXT } from '@/ui/strings';
 import { iconOf, itemIcon } from '@/ui/art';
-import { apTip, fleeTip, swapTip } from '@/ui/tips';
+import { apTip, fightKindTip, fleeTip } from '@/ui/tips';
 import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './CombatScreen.module.css';
 
@@ -204,6 +204,12 @@ export function CombatScreen() {
   // A group's trainer (a Gym Leader, the Elite, a trainer sending two out) stands behind its Pokémon for the whole
   // fight: its place is fixed by the fight's shape, not by how many stand at the moment, so it never jumps aside.
   const trainerBehind = !!state.trainer && state.onField > 1;
+  const title = scenarioName(state);
+  const kindLabel = ENCOUNTER_LABEL[state.kind] ?? state.kind;
+  const KindIcon = KIND_ICON[state.kind] ?? IconPaw;
+  // §9.2.2.4 — the hand's row holds five cards side by side; a bigger hand (a relic's sixth or seventh card) tucks
+  // each card under its neighbour by just enough to keep the same width, so it never runs into the AP or the Bag.
+  const handOverlap = plays.length > HAND_FIT ? Math.ceil(((plays.length - HAND_FIT) * (CARD_WIDTH + CARD_GAP)) / (plays.length - 1)) : 0;
   const heldPlace = (i: number) => (heldLine ? { place: groupShown && i > 0 ? 'Support' : 'Lead', group: groupShown } : undefined);
   const leadIdx = state.player.leadIndex;
   const lead = state.player.team[leadIdx]!;
@@ -360,13 +366,20 @@ export function CombatScreen() {
           <button type="button" className={styles.iconBtn} onClick={() => setPaused(true)} aria-label="Menu" data-testid="btn-pause">
             <IconMenu2 size={18} />
           </button>
-          <span className={`${styles.chip} ${styles.chipStrong}`}>{scenarioName(state)}</span>
-          <span className={styles.chip}>{ENCOUNTER_LABEL[state.kind] ?? state.kind}</span>
-          {state.trainer && <span className={styles.chip}>{state.trainer.name}</span>}
+          {/* §9.2.2.1 — one chip says what this fight is: its kind as an icon, then its name. A trainer fight is
+              already named after the trainer, so the trainer is named once. */}
+          <Tipped tip={fightKindTip(state.kind, kindLabel)} className={`${styles.chip} ${styles.chipStrong}`} data-testid="fight-title">
+            <KindIcon size={15} stroke={2.2} aria-label={kindLabel} />
+            {title}
+            {state.trainer && !title.includes(state.trainer.name) && <span className={styles.chipSub}>{state.trainer.name}</span>}
+          </Tipped>
           {/* §5.9.5 — the Leader's rule, with its count; the whole rule is one hover away. */}
           {state.gymRule && <RuleChip rule={state.gymRule} live={{ state, config: ctx.config }} />}
           {/* §9.2.2.1 — the active field, with the Home Field marker when the enemy owns it. */}
           <FieldChips fields={state.fields} suppressed={fieldsSuppressed(state, ctx.content)} />
+        </div>
+        <div className={styles.logSlot}>
+          <CombatLog log={shownLog} />
         </div>
         <div className={styles.chips}>
           <span className={styles.chip} data-testid="turn-chip">
@@ -438,7 +451,7 @@ export function CombatScreen() {
               {boxEnemy.hp <= boxDamage.final && <div className={styles.previewKo}>KO</div>}
             </div>
           )}
-          <ArenaFx ghosts={fx.ghosts} balls={fx.balls} catching={fx.catching} slotClass={slotClass} />
+          <ArenaFx ghosts={fx.ghosts} balls={fx.balls} hits={fx.hits} catching={fx.catching} slotClass={slotClass} />
           {/* §2.6.2 — the rarity the Wild Area rolled, once, as the fight opens. */}
           {state.wildTier && <WildTierBanner key={combatKey} tier={state.wildTier} animate={animate} />}
           {fx.banner && (
@@ -491,10 +504,6 @@ export function CombatScreen() {
           )}
         </div>
 
-        <div className={styles.logWrap}>
-          <CombatLog log={shownLog} />
-        </div>
-
         {selection.mode !== 'none' && !drag && (
           <div className={styles.hint} data-testid="selection-hint">
             {selection.mode === 'card' && 'Click an enemy to aim it — or the card again for the Lead. Esc to cancel.'}
@@ -513,24 +522,52 @@ export function CombatScreen() {
         )}
       </section>
 
+      {/* §9.2.2.4 — the tray as one row: the AP on the left, the hand and the bag in the middle, the turn's end on the
+          right, so the hand keeps the height at 720 p. */}
       <footer className={styles.tray} ref={trayRef}>
-        <div className={styles.trayHeader}>
-          <Tipped as="div" tip={apTip(state.player.ap, ctx.config.baseApPerTurn)} className={styles.ap} data-testid="ap-pips">
-            {Array.from({ length: Math.max(ctx.config.baseApPerTurn, state.player.ap) }, (_, i) => (
-              <span key={i} className={i < state.player.ap ? styles.pip : styles.pipDim} />
-            ))}
-            <span className="tabular">{state.player.ap} AP</span>
-            {state.player.defensiveDiscount && (
-              <Tipped tip={<Tip title="Defensive discount" body="You swapped this turn, so your next Defensive card costs 1 AP less. Spent the moment you play one." />} className={styles.discount}>
-                −1 Def
-              </Tipped>
-            )}
-            <Tipped tip={swapTip(Math.min(3, state.player.swapCounter + 1), state.player.swapCounter)} className={styles.swapInfo}>
-              Next swap: {Math.min(3, state.player.swapCounter + 1)} AP
-            </Tipped>
+        <div className={styles.apPanel}>
+          <Tipped as="div" tip={apTip(state.player.ap, ctx.config.baseApPerTurn)} className={styles.apOrb} data-empty={state.player.ap === 0 || undefined} data-testid="ap-pips">
+            <span className={`${styles.apValue} display tabular`}>{state.player.ap}</span>{' '}
+            <span className={styles.apUnit}>AP</span>
           </Tipped>
-          {/* §3.1.2 — running is a decision with a price on it, so the price is on the button. Outside a run
-              (a practice fixture) there is no toll to pay and no map to return to, so there is no button. */}
+          {state.player.defensiveDiscount && (
+            <Tipped tip={<Tip title="Defensive discount" body="You swapped this turn, so your next Defensive card costs 1 AP less. Spent the moment you play one." />} className={styles.discount}>
+              −1 Def
+            </Tipped>
+          )}
+        </div>
+        <div className={styles.hand} data-testid="hand">
+          {plays.map((p, i) => (
+            <MoveCard
+              key={p.card.id}
+              play={p}
+              selected={selection.cardId === p.card.id && selection.mode !== 'consumable-ally' && selection.mode !== 'consumable-foe'}
+              onClick={() => onCardClick(p)}
+              onHover={(h) => setHoverCardId(h ? p.card.id : null)}
+              onPointerDown={(e) => interactive && p.playable && begin(e, p.card.id)}
+              index={i}
+              total={plays.length}
+              overlap={handOverlap}
+            />
+          ))}
+          {plays.length === 0 && <div className={styles.emptyHand}>No cards in hand</div>}
+          <div className={styles.divider} />
+          {/* §3.5 — the whole bag, one button (v0.8.6): consumables are spent, so nothing is dealt at random. */}
+          <BagButton
+            plays={consumablePlays}
+            itemsUsed={state.player.itemsUsed}
+            itemCap={state.player.itemCap}
+            disabled={!interactive}
+            selectedCardId={selection.mode === 'consumable-ally' || selection.mode === 'consumable-foe' ? selection.cardId ?? null : null}
+            onUse={onConsumableClick}
+          />
+        </div>
+        <div className={styles.turnPanel}>
+          <button type="button" className={`${styles.endTurn} display`} onClick={() => dispatch({ type: 'end-turn' })} disabled={!interactive} data-testid="btn-end-turn">
+            End Turn
+          </button>
+          {/* §3.1.2 — running is a decision with a price on it, and the price is in its bubble. Outside a run (a
+              practice fixture) there is no toll to pay and no map to return to, so there is no button. */}
           {inRun && (
             <Tipped
               as="button"
@@ -545,34 +582,6 @@ export function CombatScreen() {
               Run
             </Tipped>
           )}
-          <button type="button" className={`${styles.endTurn} display`} onClick={() => dispatch({ type: 'end-turn' })} disabled={!interactive} data-testid="btn-end-turn">
-            End Turn
-          </button>
-        </div>
-        <div className={styles.hand} data-testid="hand">
-          {plays.map((p, i) => (
-            <MoveCard
-              key={p.card.id}
-              play={p}
-              selected={selection.cardId === p.card.id && selection.mode !== 'consumable-ally' && selection.mode !== 'consumable-foe'}
-              onClick={() => onCardClick(p)}
-              onHover={(h) => setHoverCardId(h ? p.card.id : null)}
-              onPointerDown={(e) => interactive && p.playable && begin(e, p.card.id)}
-              index={i}
-              total={plays.length}
-            />
-          ))}
-          {plays.length === 0 && <div className={styles.emptyHand}>No cards in hand</div>}
-          <div className={styles.divider} />
-          {/* §3.5 — the whole bag, one button (v0.8.6): consumables are spent, so nothing is dealt at random. */}
-          <BagButton
-            plays={consumablePlays}
-            itemsUsed={state.player.itemsUsed}
-            itemCap={state.player.itemCap}
-            disabled={!interactive}
-            selectedCardId={selection.mode === 'consumable-ally' || selection.mode === 'consumable-foe' ? selection.cardId ?? null : null}
-            onUse={onConsumableClick}
-          />
         </div>
       </footer>
 
@@ -623,6 +632,14 @@ export function CombatScreen() {
     </main>
   );
 }
+
+/** Layout: a move card's width and the hand's gap (MoveCard.module.css, `.hand`), and how many sit side by side. */
+const CARD_WIDTH = 152;
+const CARD_GAP = 8;
+const HAND_FIT = 5;
+
+/** §5.8 — the header chip's icon for each kind of fight. */
+const KIND_ICON: Record<string, typeof IconPaw> = { wild: IconPaw, trainer: IconUser, elite: IconStar, boss: IconTrophy };
 
 function scenarioName(state: CombatState): string {
   const named = useCombatStore.getState().scenarioName;

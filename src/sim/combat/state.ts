@@ -221,7 +221,11 @@ export interface PlayerState {
   queuedCards: { moveId: string; ownerUid: string }[];
 }
 
-export type LogCategory = 'player' | 'enemy' | 'turn' | 'system';
+/**
+ * §9.2 — `intent` is an enemy's declaration for the turn ("readies Ember → Lead"): the intent chip already shows it,
+ * so the log's ticker skips it and says what happened instead; the full log keeps it.
+ */
+export type LogCategory = 'player' | 'enemy' | 'intent' | 'turn' | 'system';
 export interface LogEntry {
   turn: number;
   category: LogCategory;

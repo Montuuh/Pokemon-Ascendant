@@ -40,6 +40,13 @@ export interface BallFlight {
   ball: string;
 }
 
+/** §9.2.3 / §9.9 — a move's own illustration flashed over the Pokémon it hits: the card's picture, landing. */
+export interface MoveHit {
+  id: number;
+  slot: SpriteSlot;
+  moveId: string;
+}
+
 /** The catch, beat by beat: the ball, the Pokémon drawn into it, the wobbles, and the checks the sim rolled. */
 export interface CatchFx {
   id: number;
@@ -62,6 +69,7 @@ export interface CombatFxState {
   sprites: Record<string, string>;
   ghosts: Ghost[];
   balls: BallFlight[];
+  hits: MoveHit[];
   catching: CatchFx | null;
   banner: string | null;
   /** A beat is playing that the screen should not talk over — the catch, a faint: the outcome waits, the hand waits. */
@@ -108,6 +116,8 @@ export const FX_MS = {
   result: 1000,
   /** Between two Pokémon sent out together at a fight's start. */
   stagger: 220,
+  /** A move's illustration over its target: pops in with the lunge, gone before the next hit's number. */
+  moveHit: 560,
 } as const;
 
 /** The beats' lengths as CSS custom properties on the arena, so the keyframes and the timers read one table. */
@@ -115,6 +125,7 @@ export const fxTimings = (): CSSProperties =>
   ({
     '--fx-sendout': `${FX_MS.sendOut}ms`,
     '--fx-wild-enter': `${FX_MS.wildEnter}ms`,
+    '--fx-move-hit': `${FX_MS.moveHit}ms`,
     '--fx-ball-fly': `${FX_MS.ballFly}ms`,
     '--fx-faint': `${FX_MS.faint}ms`,
     '--fx-recall': `${FX_MS.recall}ms`,
@@ -160,6 +171,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   const [sprites, setSprites] = useState<Record<string, string>>({});
   const [ghosts, setGhosts] = useState<Ghost[]>([]);
   const [balls, setBalls] = useState<BallFlight[]>([]);
+  const [hits, setHits] = useState<MoveHit[]>([]);
   const [catching, setCatching] = useState<CatchFx | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -228,6 +240,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       setClasses({});
       setGhosts([]);
       setBalls([]);
+      setHits([]);
       setCatching(null);
       setSprites({});
       setLogHold(null);
@@ -290,10 +303,19 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           else addFloat({ uid: e.enemyUid, kind: 'text', text: 'Missed!' }, delay);
           delay += 350;
           break;
-        case 'attack':
+        case 'attack': {
           addClass(e.sourceUid, e.sourceUid.startsWith('p') ? 'fx-lunge-right' : 'fx-lunge-left', delay);
+          // The move's picture lands on its target: a foe where it stands, or your Lead.
+          const at = state.enemies.findIndex((x) => x.uid === e.targetUid);
+          const slot: SpriteSlot | null = at >= 0 ? slotOf(at, state.enemies.length) : e.targetUid === state.player.team[state.player.leadIndex]?.uid ? 'player' : (before.enemies.get(e.targetUid)?.slot ?? null);
+          if (slot && animate) {
+            const id = nextId.current++;
+            schedule(() => setHits((hs) => [...hs, { id, slot, moveId: e.moveId }]), delay);
+            schedule(() => setHits((hs) => hs.filter((x) => x.id !== id)), delay + FX_MS.moveHit);
+          }
           delay += 180;
           break;
+        }
         case 'damage': {
           const emphasis = e.crit ? 'crit' : e.effectiveness === 'double' || e.effectiveness === 'quad' ? 'super' : e.effectiveness === 'half' || e.effectiveness === 'quarter' ? 'weak' : e.effectiveness === 'immune' ? 'immune' : undefined;
           const suffix = e.cause !== 'move' ? ` ${e.cause}` : '';
@@ -449,7 +471,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, balls, catching, banner, busy, logHold, faintPending };
+  return { floats, classes, sprites, ghosts, balls, hits, catching, banner, busy, logHold, faintPending };
 }
 
 export type { CombatEvent };

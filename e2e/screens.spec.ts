@@ -75,6 +75,24 @@ test('end turn advances to turn 2 and the enemy acts', async ({ page }) => {
   await expect(page.getByTestId('combat-log')).toContainText('Turn 2');
 });
 
+// §9.2.2.1 — the log is a ticker in the top bar: the last thing that happened (never an intent the chip already
+// shows), the whole fight dropping down on a click and closing on Escape or a click elsewhere.
+test('the log ticker says what happened and drops down the whole fight', async ({ page }) => {
+  await page.goto('/?scenario=wild-basic');
+  const ticker = page.getByTestId('log-ticker');
+  await expect(ticker).not.toContainText(/readies|prepares|planning/);
+  await expect(page.getByTestId('fight-title')).toContainText('Wild');
+  await expect(page.getByTestId('combat-log')).toBeHidden();
+  await ticker.click();
+  await expect(page.getByTestId('combat-log')).toBeVisible();
+  await expect(page.getByTestId('combat-log')).toContainText('Turn 1');
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('combat-log')).toBeHidden();
+  await ticker.click();
+  await page.getByTestId('combat-screen').locator('section').first().click({ position: { x: 10, y: 10 } });
+  await expect(page.getByTestId('combat-log')).toBeHidden();
+});
+
 test('the address bar stays clean: deep links are consumed, F5 restores the screen, a fresh tab starts at the menu', async ({ page, browser }) => {
   // A deep link works — and is gone from the bar the moment it has been read. The query string was a
   // developer affordance that had leaked into every player's history.

@@ -3,7 +3,7 @@ import { IntentChip } from './IntentChip';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
 import { SLOT_LABEL, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
 import { CatchPicker } from './CatchPicker';
-import { iconOf, intentGlyph } from '@/ui/art';
+import { intentGlyph } from '@/ui/art';
 import { ARMOUR_LABEL, INTENT_LABEL } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
@@ -119,7 +119,6 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
           )
         )}
         <span className={styles.header}>
-          <img className={`${styles.icon} pixel`} src={iconOf(enemy)} alt="" width={48} height={40} />
           <span className={styles.types}>
             {enemy.types.map((t) => (
               <TypeBadge key={t} type={t} size={14} defenderTypes={enemy.types} />

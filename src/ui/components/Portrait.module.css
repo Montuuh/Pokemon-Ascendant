@@ -28,7 +28,6 @@
 }
 .bench {
   width: 140px;
-  padding-bottom: var(--sp-4);
 }
 .bench .art {
   aspect-ratio: 5 / 4;
@@ -57,17 +56,18 @@
   transform: translateX(-50%);
   background: var(--surface-3);
   color: var(--ink-secondary);
-  font-size: 10px;
+  font-size: var(--type-micro);
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   border-radius: var(--radius-pill);
   padding: 1px 8px;
+  white-space: nowrap;
   z-index: 3;
 }
 .lead .slotTag {
   background: var(--accent-action);
-  color: #3a2e22;
+  color: var(--ink-on-accent);
   top: -11px;
 }
 .art {
@@ -80,10 +80,10 @@
   justify-content: center;
   overflow: hidden;
 }
+/* Sized by `usePixelFit` to a whole-pixel scale (D9). */
 .art img {
-  width: 92%;
-  height: 92%;
-  object-fit: contain;
+  flex: none;
+  max-width: none;
   filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.35));
   animation: global(breathe) 3.2s ease-in-out infinite;
 }
@@ -93,7 +93,7 @@
 .faintedTag {
   position: absolute;
   inset: auto 0 8px;
-  color: #fff;
+  color: var(--brand-cream);
   font-size: 14px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -156,6 +156,14 @@
   font-size: var(--type-caption);
   color: var(--ink-secondary);
   line-height: 1;
+  white-space: nowrap;
+}
+/* A bench card shares its last row between the HP and the swap price: both stay on one line. */
+.bench .hpText {
+  font-size: var(--type-micro);
+}
+.bench .hpRow {
+  gap: var(--sp-1);
 }
 .lead .hpText {
   font-size: var(--type-small);
@@ -169,11 +177,11 @@
 .chipUp,
 .chipDown,
 .chipTrauma {
-  font-size: 10px;
+  font-size: var(--type-micro);
   font-weight: 800;
   border-radius: var(--radius-sm);
   padding: 1px 6px;
-  color: #3a2e22;
+  color: var(--ink-on-accent);
 }
 .chipUp {
   background: var(--accent-positive);
@@ -184,18 +192,21 @@
 .chipTrauma {
   background: var(--accent-warning);
 }
+.hpRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+}
 .swapChip,
 .swapChipOff {
-  position: absolute;
-  bottom: -11px;
-  left: 50%;
-  transform: translateX(-50%);
   background: var(--surface-2);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
-  padding: 2px 8px;
-  font-size: var(--type-caption);
+  padding: 0 6px;
+  font-size: var(--type-micro);
   font-weight: 700;
+  line-height: 1.5;
   white-space: nowrap;
   color: var(--accent-action);
 }
@@ -273,8 +284,5 @@
 @media (max-height: 800px) {
   .bench .art {
     aspect-ratio: 2 / 1;
-  }
-  .bench {
-    padding-bottom: var(--sp-2);
   }
 }

@@ -17,6 +17,11 @@ export function spriteOf(c: Pick<Combatant, 'speciesId'>, side: 'front' | 'back'
 }
 export const itemIcon = (consumableId: string) => asset(`art/items/${consumableId}.png`);
 /**
+ * §9.2.3 (v0.9.15) — a move card's illustration: the effect itself, pixel art on the card's own window. A "+" move
+ * (one made better, §6.3.5) wears its base move's picture.
+ */
+export const moveArt = (moveId: string) => asset(`art/moves/${moveId.replace(/(-plus)+$/, '')}.png`);
+/**
  * §6.4.1 — a TM disc is coloured by its move's type in the real games, so the icon follows the move rather
  * than being one generic disc: every Gen I type has its own (v0.9.11). Normal is the plain disc.
  */

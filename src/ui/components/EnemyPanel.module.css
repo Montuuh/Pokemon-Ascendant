@@ -126,13 +126,6 @@
   flex-direction: column;
   gap: 2px;
 }
-.icon {
-  width: 48px;
-  height: 40px;
-  object-fit: contain;
-  background: var(--surface-2);
-  border-radius: var(--radius-sm);
-}
 .nameBlock {
   flex: 1;
   min-width: 0;
@@ -177,7 +170,7 @@
   font-weight: 800;
   border-radius: var(--radius-sm);
   padding: 1px 6px;
-  color: #3a2e22;
+  color: var(--ink-on-accent);
 }
 .chipUp {
   background: var(--accent-positive);
@@ -198,10 +191,6 @@
 .compact .card {
   gap: var(--sp-1);
   padding: var(--sp-2) var(--sp-3);
-}
-.compact .icon {
-  width: var(--sp-8);
-  height: var(--sp-6);
 }
 .compact .name {
   font-size: var(--type-body);
@@ -294,7 +283,6 @@
   .compact {
     gap: 0;
   }
-  .compact .icon,
   .compact .meta {
     display: none;
   }
@@ -335,9 +323,15 @@
   .leadZone .chips {
     flex-wrap: wrap;
   }
+  /* The HP and the place chip keep to the right, so the catch pill has the lower-left corner to itself. */
+  .supportZone .hpRow,
+  .leadZone .hpRow {
+    align-self: flex-end;
+  }
+  /* On the panel's lower-left corner: the lower-right one is the Lead / role chip's. */
   .compact .catchInline {
     position: absolute;
-    right: var(--sp-2);
+    left: var(--sp-1);
     bottom: calc(var(--sp-2) * -1);
     margin: 0;
     z-index: 1;

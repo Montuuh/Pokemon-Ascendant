@@ -294,11 +294,11 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     if (plan) enemy.next = { intent: { ...plan, hidden: enemy.intent.hidden }, phase: currentPhase(enemy, ctx.config) };
   }
   emit(state, { t: 'intent', enemyUid: enemy.uid, intent: { ...enemy.intent } });
-  if (!enemy.intent.hidden) log(state, 'enemy', `${enemy.name} ${describeIntent(state, enemy, ctx, enemy.intent, false)}`);
-  else log(state, 'enemy', `${enemy.name} is planning something…`);
+  if (!enemy.intent.hidden) log(state, 'intent', `${enemy.name} ${describeIntent(state, enemy, ctx, enemy.intent, false)}`);
+  else log(state, 'intent', `${enemy.name} is planning something…`);
   if (enemy.second) {
     emit(state, { t: 'intent', enemyUid: enemy.uid, intent: { ...enemy.second } });
-    log(state, 'enemy', enemy.second.hidden ? `…and something more.` : `…and then ${describeIntent(state, enemy, ctx, enemy.second, false)}`);
+    log(state, 'intent', enemy.second.hidden ? `…and something more.` : `…and then ${describeIntent(state, enemy, ctx, enemy.second, false)}`);
   }
 }
 

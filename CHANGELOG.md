@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.15 — The combat screen and its cards · 2026-10-15
+
+Every move card shows its move, and the combat screen is tidier.
+
+- **Move art.** A pixel illustration for every move, landing on hits.
+- **Cards.** Clearer cost, power and locks; item cards to match.
+- **Tray.** One row: the AP orb, the hand, End Turn.
+- **Top bar.** One fight chip; the battle log as a ticker.
+
 ### v0.9.14 — The map, redrawn · 2026-10-14
 
 Routes drawn as straight lines, and every node as what it is.

@@ -1,6 +1,6 @@
-import { IconAlertTriangle, IconArrowBackUp, IconArrowForwardUp, IconHandGrab, IconLock, IconShieldHalf, IconSparkles, IconSword, IconTargetArrow, IconZzz } from '@tabler/icons-react';
+import { IconAlertTriangle, IconArrowBackUp, IconArrowForwardUp, IconHandGrab, IconLock, IconShield, IconSparkles, IconSwords, IconTargetArrow, IconZzz } from '@tabler/icons-react';
 import type { CardPlayability } from '@/sim';
-import { portraitOf } from '@/ui/art';
+import { iconOf, moveArt } from '@/ui/art';
 import { TypeLabel } from './TypeBadge';
 import { describeMove } from '@/ui/moveText';
 import { LOCK_LABEL, REJECT_TEXT } from '@/ui/strings';
@@ -17,6 +17,8 @@ interface Props {
   onPointerDown?: (e: React.PointerEvent) => void;
   index: number;
   total: number;
+  /** Layout only: how far each card after the first tucks under its neighbour, so a big hand fits its row. */
+  overlap?: number;
 }
 
 /** §4.1.2 — the ×N chip said in words, for the label. */
@@ -26,11 +28,14 @@ function effectivenessPhrase(multiplier: number): string {
   return `not very effective, ×${multiplier}`;
 }
 
-const roleIcon = { offensive: IconSword, defensive: IconShieldHalf, utility: IconSparkles } as const;
+// The role's glyphs are the card's own: the TypeChart's sword and half-shield mean "when it hits / is hit".
+const roleIcon = { offensive: IconSwords, defensive: IconShield, utility: IconSparkles } as const;
 
-// Per docs/design/ui/09 — locked move-card anatomy: type-flooded body, owner avatar + range icon + name band,
-// art window, effect plate, footer AP dots (left) + power (right). Unplayable cards stay visible (ui rule).
-export function MoveCard({ play, selected, onClick, onHover, onPointerDown, index, total }: Props) {
+// §9.2.3 — the move card. The head says what it costs and what it is; the window shows the move itself — its pixel
+// illustration on its type's ground — with its owner's sprite in the corner, so a hand of five from three Pokémon
+// reads as five moves and three owners; the plate says what it does; the foot its range, role, power and type.
+// Unplayable cards stay visible and keep their words at full ink: the lock is a band on the window (ui rule, D5).
+export function MoveCard({ play, selected, onClick, onHover, onPointerDown, index, total, overlap = 0 }: Props) {
   const { move, owner } = play;
   const Role = roleIcon[move.role];
   const Range = move.range === 'melee' ? IconHandGrab : IconTargetArrow;
@@ -39,22 +44,22 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
   // Fan: spread by hand size so 2 cards fan as clearly as 12 (Unity-era ApplyHandFan).
   const mid = (total - 1) / 2;
   const rot = total > 1 ? ((index - mid) / Math.max(1, mid)) * 6 : 0;
-  const lift = Math.abs(index - mid) * 4;
+  const lift = Math.abs(index - mid) * 3;
   const reasonText = play.reason ? REJECT_TEXT[play.reason] : '';
-  // §9.6 / 2026-09-21 — one bubble for the whole card: type, range, cost, power, what it does, what it will
-  // do to this target, and why it is locked. It replaced nine native `title`s spread over the card's parts,
-  // none of which anyone waited a second for.
+  // §9.6 / 2026-09-21 — one bubble for the whole card: type, range, role, cost, power, what it does, what it will
+  // do to this target, and why it is locked.
   const tip = useTip(moveTip(play));
-  // §9.2.3 / §5.6 — the corner prints the move's power, never one enemy's number: each enemy's number is on its
-  // panel while the card is held. One grammar for one enemy or three (user, 2026-09-30). The ×N chip keeps the hand
-  // comparable at a glance: it is measured against the enemy Lead, the card's default target.
+  // §9.2.3 / §5.6 — the foot prints the move's power, never one enemy's number: each enemy's number is on its
+  // panel while the card is held. The ×N chip keeps the hand comparable at a glance, against the enemy Lead.
   const lead = play.damage;
+  const costChanged = play.apCost !== move.apCost;
+  const lockLabel = play.reason ? LOCK_LABEL[play.reason] : undefined;
 
   return (
     <button
       type="button"
       className={`${classes} fx-card-in`}
-      style={{ ['--card-type' as string]: `var(--type-${move.type})`, ['--rot' as string]: `${rot}deg`, ['--lift' as string]: `${lift}px`, animationDelay: `${index * 40}ms` }}
+      style={{ ['--card-type' as string]: `var(--type-${move.type})`, ['--rot' as string]: `${rot}deg`, ['--lift' as string]: `${lift}px`, marginLeft: index > 0 && overlap ? -overlap : undefined, animationDelay: `${index * 40}ms` }}
       onClick={onClick}
       onPointerDown={onPointerDown}
       {...tip}
@@ -71,16 +76,14 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
       data-mastery={play.card.mastery || undefined}
       data-state={state === 'no-ap' ? 'no-ap' : state === 'locked' ? (play.reason ?? 'locked') : 'playable'}
       aria-pressed={selected}
-      // The card's visible content is icons, dots and a number. Spelled out, it becomes a sentence a screen
+      // The card's visible content is icons, a picture and numbers. Spelled out, it becomes a sentence a screen
       // reader can actually use: who owns it, what it costs, what it does, and why it is greyed out (§9.6).
       aria-label={[
         `${move.name}, ${move.type}`,
         `from ${owner.name}`,
         `${play.apCost} AP`,
         move.power > 0 ? `${move.power} power${play.hitsAll ? ', hits every enemy' : ''}` : null,
-        // The chip's meaning in words: how the type lands on the enemy Lead, the card's default target.
         lead && lead.typeMultiplier !== 1 ? `${effectivenessPhrase(lead.typeMultiplier)} on the enemy Lead` : null,
-        // `describeMove` ends its own sentences, so it joins without another full stop.
         describeMove(play).replace(/\.$/, ''),
         play.playable ? null : `unplayable: ${reasonText.replace(/\.$/, '')}`,
         `card ${index + 1} of ${total}`,
@@ -88,68 +91,65 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         .filter(Boolean)
         .join('. ')}
     >
-      <span className={styles.mech}>
-        <span className={styles.badge}>
-          <Role size={12} stroke={2.6} />
+      <span className={styles.head}>
+        {/* The cost as a gem: what this card costs now. A cost changed today (Paralysis, a rule) wears a warning ring. */}
+        <span className={`${styles.cost} display tabular`} data-changed={costChanged || undefined}>
+          {play.apCost}
         </span>
-        {/* §5.13.2 — the Mastery star. A badge like the others, not a new layout. */}
-        {play.card.mastery && (
-          <span className={`${styles.badge} ${styles.mastery}`} aria-hidden="true">★</span>
-        )}
-        {move.modifier === 'step-forward' && (
-          <span className={`${styles.badge} ${styles.mod}`}>
-            <IconArrowForwardUp size={12} stroke={2.6} />
-          </span>
-        )}
-        {move.modifier === 'step-backward' && (
-          <span className={`${styles.badge} ${styles.mod}`}>
-            <IconArrowBackUp size={12} stroke={2.6} />
-          </span>
-        )}
-      </span>
-      {lead && lead.typeMultiplier !== 1 && (
-        <span className={`${styles.eff} ${lead.typeMultiplier > 1 ? styles.effUp : styles.effDown} display`}>
-          {lead.typeMultiplier === 0 ? '×0' : `×${lead.typeMultiplier}`}
-        </span>
-      )}
-      {/* The owner is the art. A shared hand of twelve cards is unreadable if you cannot tell at a glance
-          whose card this is, and a 22 px avatar tucked beside the title was not telling anyone. */}
-      <span className={styles.art}>
-        <img className={styles.portrait} src={portraitOf(owner)} alt="" draggable={false} />
-        <span className={styles.typeChip}>
-          <TypeLabel type={move.type} size={18} />
-        </span>
-        <span className={`${styles.owner} display`}>{owner.name}</span>
-      </span>
-      <span className={styles.band}>
-        <Range size={13} stroke={2.4} className={styles.rangeIcon} />
         <span className={`${styles.name} display`}>{move.name}</span>
       </span>
-      <span className={styles.plate}>{describeMove(play)}</span>
-      <span className={styles.footer}>
-        <span className={styles.dots}>
-          {state === 'no-ap' && <IconAlertTriangle size={13} className={styles.warn} />}
-          {Array.from({ length: play.apCost }, (_, i) => (
-            <span key={i} className={styles.dot} />
-          ))}
-          {play.apCost === 0 && <span className={styles.free}>free</span>}
-          {play.apCost !== move.apCost && (
-            <span className={styles.costNote}>
-              ({move.apCost})
+
+      <span className={styles.art}>
+        <img className={`${styles.moveArt} pixel`} src={moveArt(move.id)} alt="" draggable={false} onError={(e) => (e.currentTarget.style.visibility = 'hidden')} />
+        {/* The owner's box icon at 1× (D9), its empty margin cropped away: the Pokémon is the middle of a 68×56 tile. */}
+        <span className={styles.owner}>
+          <img className="pixel" src={iconOf(owner)} alt="" draggable={false} />
+        </span>
+        {/* §4.1.2 — how the move's type lands on the enemy Lead: ×2 up, ×0.5 down. */}
+        {lead && lead.typeMultiplier !== 1 && (
+          <span className={`${styles.eff} ${lead.typeMultiplier > 1 ? styles.effUp : styles.effDown} display`}>
+            {lead.typeMultiplier === 0 ? '×0' : `×${lead.typeMultiplier}`}
+          </span>
+        )}
+        {/* §5.13.2 — the Mastery star, and a Step-Forward or Step-Backward card's arrow, on the window's corner. */}
+        <span className={styles.mech}>
+          {play.card.mastery && (
+            <span className={`${styles.badge} ${styles.mastery}`} aria-hidden="true">
+              ★
+            </span>
+          )}
+          {move.modifier === 'step-forward' && (
+            <span className={`${styles.badge} ${styles.mod}`}>
+              <IconArrowForwardUp size={12} stroke={2.6} />
+            </span>
+          )}
+          {move.modifier === 'step-backward' && (
+            <span className={`${styles.badge} ${styles.mod}`}>
+              <IconArrowBackUp size={12} stroke={2.6} />
             </span>
           )}
         </span>
-        <span className={`${move.power > 0 ? styles.power : styles.noPower} display tabular`}>
-          {move.power > 0 ? move.power : '—'}
-        </span>
+        {state === 'locked' && (
+          <span className={styles.lock}>
+            {play.reason === 'owner-asleep' || play.reason === 'owner-frozen' ? <IconZzz size={16} /> : <IconLock size={16} />}
+            <span className={styles.lockText}>
+              <b className="display">{lockLabel?.title ?? 'Locked'}</b>
+              <small>{lockLabel?.sub ?? reasonText}</small>
+            </span>
+          </span>
+        )}
       </span>
-      {state === 'locked' && (
-        <span className={styles.lock}>
-          {play.reason === 'owner-asleep' || play.reason === 'owner-frozen' ? <IconZzz size={22} /> : <IconLock size={22} />}
-          <span className="display">{(play.reason && LOCK_LABEL[play.reason]?.title) ?? 'Locked'}</span>
-          <small>{(play.reason && LOCK_LABEL[play.reason]?.sub) ?? reasonText}</small>
-        </span>
-      )}
+
+      <span className={styles.plate}>{describeMove(play)}</span>
+
+      <span className={styles.foot}>
+        <Range size={14} stroke={2.4} className={styles.footIcon} />
+        <Role size={14} stroke={2.4} className={styles.footIcon} />
+        {state === 'no-ap' && <IconAlertTriangle size={14} className={styles.warn} />}
+        {costChanged && <span className={styles.costNote}>was {move.apCost}</span>}
+        <span className={`${move.power > 0 ? styles.power : styles.noPower} display tabular`}>{move.power > 0 ? move.power : '—'}</span>
+        <TypeLabel type={move.type} size={12} className={styles.typeLabel} />
+      </span>
     </button>
   );
 }

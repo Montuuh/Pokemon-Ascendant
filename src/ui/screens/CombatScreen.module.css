@@ -15,9 +15,10 @@
 
 /* ---- Top bar (§9.2.2.1) ---- */
 .topbar {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
+  gap: var(--sp-4);
   padding: 0 var(--sp-4);
   background: var(--surface-1);
   border-bottom: 1px solid var(--border-subtle);
@@ -27,6 +28,12 @@
   display: flex;
   align-items: center;
   gap: var(--sp-2);
+}
+/* §9.2 — the log's ticker takes the bar's middle, centred in whatever room the chips leave. */
+.logSlot {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
 }
 .chip {
   display: inline-flex;
@@ -41,6 +48,11 @@
 }
 .chipStrong {
   color: var(--ink-primary);
+  gap: var(--sp-2);
+}
+.chipSub {
+  color: var(--ink-secondary);
+  font-weight: 600;
 }
 .iconBtn {
   width: 38px;
@@ -61,7 +73,7 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(300px, 420px) 1fr minmax(320px, 400px);
-  grid-template-rows: 1fr auto;
+  grid-template-rows: minmax(0, 1fr);
   align-items: center;
   padding: var(--sp-5) var(--sp-6) var(--sp-3);
   overflow: hidden;
@@ -79,8 +91,7 @@
 }
 .squad,
 .arena,
-.enemyZone,
-.logWrap {
+.enemyZone {
   position: relative;
   z-index: 1;
 }
@@ -110,9 +121,10 @@
   grid-area: lead;
   z-index: 2;
 }
+/* The arena takes the stage's height up to 440 px: at 720 p it was a fixed 400 and spilled past the stage. */
 .arena {
   position: relative;
-  height: 400px;
+  height: min(440px, 100%);
   align-self: center;
 }
 .leadSprite,
@@ -219,7 +231,7 @@
   color: var(--accent-negative);
 }
 .previewSub {
-  font-size: 11px;
+  font-size: var(--type-micro);
   color: var(--ink-secondary);
   margin-top: 2px;
 }
@@ -264,16 +276,6 @@
   font-size: var(--type-caption);
   color: var(--ink-secondary);
 }
-.logWrap {
-  grid-column: 1 / -1;
-  justify-self: center;
-  width: min(640px, 100%);
-  height: 84px;
-  margin-top: var(--sp-2);
-}
-.logWrap > div {
-  height: 100%;
-}
 .hint {
   position: absolute;
   left: 50%;
@@ -310,57 +312,72 @@
   animation: global(popIn) var(--motion-fast) var(--ease-spring) both;
 }
 
-/* ---- Hand tray (§9.2.2.4) ---- */
+/* ---- Hand tray (§9.2.2.4): AP · hand + bag · the turn's end, one row ---- */
 .tray {
+  display: grid;
+  grid-template-columns: 120px 1fr 150px;
+  align-items: end;
+  gap: var(--sp-3);
   background: var(--surface-1);
   border-top: 1px solid var(--border-subtle);
-  padding: var(--sp-2) var(--sp-6) var(--sp-3);
+  padding: 0 var(--sp-5) var(--sp-3);
   z-index: 2;
 }
-.trayHeader {
+.apPanel,
+.turnPanel {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: var(--sp-3);
+  gap: var(--sp-2);
+  align-self: center;
+  padding-top: var(--sp-4);
 }
-.ap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
-  font-weight: 700;
-}
-.pip,
-.pipDim {
-  width: 18px;
-  height: 18px;
+/* The AP as an orb: the one number a turn is planned around, the biggest thing on the tray. Its bubble says the
+   most it can be; the next swap's price is on each bench Pokémon. */
+.apOrb {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff1b0, var(--accent-action) 60%);
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  display: inline-block;
-  transition: background var(--motion-fast) ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 36% 30%, var(--brand-cream), var(--accent-action) 52%, var(--accent-action-deep));
+  border: 3px solid var(--tip-surface);
+  box-shadow:
+    0 0 0 2px var(--accent-action-deep),
+    0 6px 14px rgba(0, 0, 0, 0.4);
+  color: var(--ink-on-accent);
+  transition: filter var(--motion-base) ease;
 }
-.pipDim {
-  background: var(--surface-3);
+.apOrb[data-empty] {
+  filter: grayscale(0.85) brightness(0.7);
 }
+.apValue {
+  font-size: var(--type-h1);
+  line-height: 0.9;
+}
+.apUnit {
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+/* §3.3.1 — after a manual swap, the next Defensive card is 1 AP cheaper: dark ink on the blue (D5). */
 .discount {
   background: var(--brand-blue);
-  color: #fff;
+  color: var(--ink-on-accent);
   border-radius: var(--radius-pill);
   padding: 1px 8px;
-  font-size: 11px;
-}
-.swapInfo {
-  color: var(--ink-secondary);
-  font-weight: 600;
-  margin-left: var(--sp-2);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  white-space: nowrap;
 }
 .endTurn {
+  width: 100%;
   background: var(--accent-action);
   border: 2px solid var(--accent-action-deep);
   border-radius: var(--radius-pill);
-  padding: var(--sp-2) var(--sp-6);
+  padding: var(--sp-3) var(--sp-2);
   font-size: var(--type-h3);
   color: var(--ink-on-accent);
   box-shadow: 0 4px 0 var(--accent-action-deep);
@@ -379,7 +396,10 @@
   align-items: flex-end;
   gap: var(--sp-2);
   min-height: 228px;
-  padding-top: var(--sp-5);
+  min-width: 0;
+  padding-top: var(--sp-3);
+  /* Room for the fan: the outer cards turn and drop a little below the row. */
+  padding-bottom: var(--sp-3);
 }
 .emptyHand {
   color: var(--ink-muted);

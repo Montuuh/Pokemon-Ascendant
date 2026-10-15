@@ -88,6 +88,14 @@ const RANGE_BODY = {
   ranged: 'Ranged: anyone on your team can play it, from the bench too, and it reaches any enemy.',
 } as const;
 
+// §3.3.4 — the role, the foot's second glyph. Only Defensive changes a price: the discount after a manual swap.
+const ROLE_NAME = { offensive: 'Offensive', defensive: 'Defensive', utility: 'Utility' } as const;
+const ROLE_BODY = {
+  offensive: null,
+  defensive: 'Defensive: after a manual swap, your first Defensive card that turn costs 1 AP less.',
+  utility: null,
+} as const;
+
 const MODIFIER_BODY = {
   'step-forward': 'Step-Forward: the Pokémon that owns this card steps up to Lead first, then the move resolves. That swap is free and does not count towards the swap ladder.',
   'step-backward': 'Step-Backward: the move resolves, then the Pokémon retreats to a bench of your choice. Free, and off the ladder.',
@@ -97,13 +105,15 @@ const MODIFIER_BODY = {
 /** §3.3.4, §4.1 — a move card in full: what it is, what it does, what it will do to this target. */
 export function moveTip(play: CardPlayability): ReactNode {
   const { move, owner } = play;
-  const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', `${play.apCost} AP${play.apCost !== move.apCost ? ` (base ${move.apCost})` : ''}`];
+  const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', ROLE_NAME[move.role], `${play.apCost} AP${play.apCost !== move.apCost ? ` (base ${move.apCost})` : ''}`];
   if (move.power > 0) meta.push(`${move.power} power`);
   if (move.targeting === 'cleave') meta.push('Hits every enemy');
   // §5.13.2 — the fifth card says so: it is the one card in the hand no Move Manager can reach.
   if (play.card.mastery) meta.push('★ Mastery');
   const lines: ReactNode[] = [describeMoveDef(move)];
   lines.push(RANGE_BODY[move.range]);
+  const role = ROLE_BODY[move.role];
+  if (role) lines.push(role);
   const mod = MODIFIER_BODY[move.modifier];
   if (mod) lines.push(mod);
   let footer: ReactNode = play.card.mastery ? `${owner.name}'s Mastery Move — a fifth card its line has earned.` : `${owner.name}'s card.`;
@@ -377,6 +387,17 @@ export function apTip(ap: number, max = 3): ReactNode {
   return <Tip title={`${ap} of ${max} action points`} body="Every card and every swap costs AP. You get 3 at the start of each turn; unspent AP is lost, so a turn that ends with points left is a turn that did less than it could." />;
 }
 
+/** §5.8 — what kind of fight this is: the header chip's icon, said in words. */
+const FIGHT_KIND_BODY: Record<string, string> = {
+  wild: 'A wild Pokémon. It can be caught: weaken it, then throw a Poké Ball.',
+  trainer: 'A trainer and their team. Trainer Pokémon cannot be caught; they come out one after another.',
+  elite: 'An Elite Trainer: a stronger team, and a better reward for beating it.',
+  boss: 'The Gym Leader. Win and the Badge is yours — and the way on to the next Region.',
+};
+export function fightKindTip(kind: string, label: string): ReactNode {
+  return <Tip title={`${label} fight`} body={FIGHT_KIND_BODY[kind] ?? ''} />;
+}
+
 /** §3.3.1 — the swap ladder. */
 export function swapTip(nextCost: number, swapsSoFar: number): ReactNode {
   return <Tip title={`Next swap: ${nextCost} AP`} meta={['1st swap 1 AP', '2nd 2 AP', '3rd 3 AP']} body={`Swapping your Lead costs more each time you do it in a turn — ${swapsSoFar} so far this turn. The ladder resets every turn. Step-Forward and Step-Backward cards swap for free and do not climb it.`} footer="After a manual swap, your first Defensive card that turn is cheaper." />;
@@ -435,7 +456,7 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
   if (extra?.incomingKo) lines.push(<div key="ko"><b>Together they knock it out</b> unless you act.</div>);
   // §9.2.5 — the swap, priced in HP (v0.8.6).
   if (extra?.asLead) lines.push(<div key="al">As your Lead this turn it would take <b>{extra.asLead.amount}</b>{extra.asLead.ko ? ' — a knockout' : ''}.</div>);
-  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP.` : undefined;
+  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP. Each swap this turn costs 1 more (1, 2, 3); the ladder resets every turn, and Step cards swap for free.` : undefined;
   return <Tip title={c.name} meta={meta} body={lines.length ? lines : undefined} footer={footer} />;
 }
 

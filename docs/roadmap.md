@@ -1175,11 +1175,25 @@ the Elite Wild itself, the nurse, the merchant, a find's item, a pixel "?"; full
 route" behind, darkened with a tick when cleared; hit targets the picture's size. **Preview** over the dimmed, blurred
 route, wearing the node's picture. **Strip**: routes and nodes in miniature. The disc emblems retired but the Gym Badges.
 
-### v0.9.15 — The combat screen and its cards, reworked  ☐
+### v0.9.15 — The combat screen and its cards, reworked  ✅ 2026-10-15
 The user's note 10 — "one of the ugliest parts of the art today". The combat screen revisited as a whole, and **new
-card art**: a move card shows its **move** (an illustration per move family, in the type's palette) with its owner
-as a small badge, instead of the owner's portrait on every card; the consumable cards redrawn to match. The same art
-feeds the arena's hit effects.
+card art**: a move card shows its **move** (an illustration per move, in the type's palette) with its owner as a small
+badge, instead of the owner's portrait on every card; the consumable cards redrawn to match. The same art feeds the
+arena's hit effects.
+
+**Shipped.** §9.2.1–§9.2.3 rewritten. **Move art**: 161 pixel illustrations, one per Gen I move (a "+" wears its
+base's), generated from one style paragraph, a line per move (`docs/art/prompts/move-art.json`) and the type's palette,
+then rebuilt as true pixel art on one 68-cell grid (`npm run art:moves`; `install-move-art.mjs`); drawn at 2× on the
+card and flashed at 3× over the Pokémon a move hits. **The move card**: a type-coloured frame; a dark head (the cost
+gem, the name); the window (the illustration, the owner's box icon at 1×, the ×N chip, Mastery and Step marks); the
+plate; a dark foot (range, role, power, type). A locked card keeps its words — a blue band on the window says why; a
+hand over five tucks under itself. **Item cards** in the same anatomy, framed by what they do (Max Potion and Revive
+no longer read "cure"). **The screen**: one fight chip (kind icon + name, the trainer once); the log a ticker in the top
+bar that skips the intents the chips already show (`LogCategory 'intent'`), dropping down the whole fight; the tray
+one row (the AP orb · hand and Bag · End Turn, Run); the squad drawn with the battle sprites at a whole-pixel scale; the
+bench's swap price inside its card; the enemy panel's speck of an icon gone; an open bubble follows its content (a swap
+no longer leaves the old price up). **Fixed**: the hand's entrance animation had held every card's transform, so the
+fan, the hover lift and the no-AP fade never applied; the arena's fixed 400 px spilled past the stage at 720 p.
 
 ### v0.9.16 — The title screen, a battle  ☐
 The user's note 8. The main menu and the run's first screens (difficulty, starter, Starting Relic) redrawn: behind

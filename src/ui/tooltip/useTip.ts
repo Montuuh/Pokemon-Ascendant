@@ -26,10 +26,18 @@ export function useTip(content: ReactNode, delay = TIP_DELAY_MS): TipTriggerProp
   // The latest content, read at fire time rather than captured at enter time: a card's damage preview can
   // change while the pointer rests on it, and the bubble should say what is true when it opens.
   const latest = useRef(content);
+  /** The element this trigger last opened on (or tried to). */
+  const last = useRef<HTMLElement | null>(null);
   // Written after every render rather than during it (React's rule for refs); an event can only fire after
   // the commit, so it always reads the current content.
   useEffect(() => {
     latest.current = content;
+    // An open bubble follows its content: a click that swaps a Pokémon in must not leave its old price on screen.
+    const el = last.current;
+    if (el && useTipStore.getState().anchor === el) {
+      if (content === null || content === undefined || content === false) hide(el);
+      else if (useTipStore.getState().content !== content) show(el, content);
+    }
   });
 
   const cancel = useCallback(() => {
@@ -64,7 +72,6 @@ export function useTip(content: ReactNode, delay = TIP_DELAY_MS): TipTriggerProp
   );
 
   // Unmounting with the bubble open (a card leaves the hand under the pointer) must not strand it.
-  const last = useRef<HTMLElement | null>(null);
   useEffect(() => () => {
     cancel();
     if (last.current) hide(last.current);

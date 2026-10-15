@@ -21,7 +21,8 @@ chrome; canonical Gen I type hues. Concretely:
 | Item icons (consumables) | **The real Scarlet & Violet renders** at 160², fetched from Serebii (`npm run art:pokemon`) | ✅ 11 |
 | Map nodes (v0.9.14) | **The things themselves**, no disc: the Showdown trainer sprites (a Gym's Leader at 2×), the Gen V battle sprite of a Wild Area's commonest Pokémon peeking out of its lane's own `tall` tile, the item icon of a find, and one authored pixel "?" (`icons/map/node-mystery-sign.svg`, 16-px grid). The disc emblems survive only as the twelve Gym Badges (`node-gym-<type>.png`, the City's Badge row and the Legendary pick); the rest were retired with the map's badges | ✅ `ui/components/nodeArt.ts` |
 | Stage backdrops | **The real battle backgrounds**, ripped from the games via Showdown's gen6 set (`npm run art:fetch`) | ✅ 13 |
-| Card art (144×96) | Type-glyph on a gradient window → generated later | ◐ fallback live |
+| Move card art (v0.9.15) | **Generated pixel art of the effect itself — never a creature** (Gemini, `npm run art:moves`): one style paragraph (FireRed-era, ~64 px wide, 8 colours, 1-px outlines, flat dark-plum ground) plus each move's line in `docs/art/prompts/move-art.json` and its type's palette; `scripts/install-move-art.mjs` crops a stray frame, keys the ground out, samples **one fixed 68-cell grid** (a mode per cell), snaps to 20 colours and trims — so every card draws its art at the same 2× in a 136-px window. A `+` move wears its base move's picture. Judge the set on the contact sheet (`npm run art:moves -- --sheet`) and regenerate a weak one by naming it | ✅ `public/art/moves/<move-id>.png` |
+| Owner / enemy icon on a card or panel | The box icon at **1×**, its empty margin cropped by a window (never squeezed: at 0.7× it read as a speck) | ✅ |
 | VFX / motion | CSS keyframes + DOM floating numbers (`src/ui/styles/motion.css`, `useCombatFx`) | ✅ v0.1 |
 | Trainer sprites | Showdown trainer sprites | ✅ 7 fetched, one per archetype. **Do not generate these** — AI trainers clash with the pixel-art battle sprites |
 | Main-menu vista | Generated **top-down pixel art**, the same overworld register as the map plate | ✅ `public/art/ui/menu-vista.png` |
@@ -69,6 +70,7 @@ look, and the disclaimer in `ATTRIBUTION.md` carries the rest.
 | Game glyph | author SVG (32×32 viewBox, 2.2–3 px rounded strokes, style in `docs/art/icon-set.md`) | `public/art/icons/<family>/icon-<family>-<name>.svg` |
 | Backdrop, procedural | CSS layers in the screen's `.backdrop` (gradients, SVG shapes, parallax) | in the `.module.css` or `public/art/stages/<name>.svg` |
 | Backdrop / card art, generated | `npm run art:gen -- --out <path>.png --prompt-file docs/art/prompts/<name>.txt --aspect 16:9 --n 4 [--ref <style-key>.png]` | PNG on disk; read it back and judge |
+| Move card art | `npm run art:moves` (every move without art) · `npm run art:moves -- <id…>` (regenerate these) · `-- --sheet` (contact sheet). Vertex's regional quota runs out at a few images a minute: `GOOGLE_CLOUD_LOCATION=global` and `--jobs 2` | `public/art/moves/<move-id>.png` |
 | VFX | keyframes in `src/ui/styles/motion.css`; components toggle classes from sim events | no assets |
 
 Prompts: copy the relevant block from `docs/art/backdrop-prompts.md` into
@@ -85,7 +87,7 @@ a few dollars; that money buys back the human-in-the-loop that stalled the last 
 | Battle sprite | native gif (≈96²) | GIF (animated) | `<id>.gif`, `<id>-back.gif` |
 | Glyph | 32×32 viewBox | SVG | `icon-<family>-<name>.svg` |
 | Stage backdrop | 1920×1080 (16:9), calm centre + lower third | PNG/JPG ≤ 600 KB or SVG | `<region>-<scene>.png` |
-| Card art | 144×96 | PNG | `<move-id>.png` |
+| Move card art | ≤ 68 px wide (one 68-cell grid), drawn at 2× | PNG, ≤ 20 colours, transparent | `public/art/moves/<move-id>.png` |
 | Trainer sprite | native | PNG | `trainer-<class>.png` |
 
 All filenames lowercase kebab. Pokémon art paths are derived by the helpers in `src/content/schemas/species.ts`

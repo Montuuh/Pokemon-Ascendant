@@ -1,6 +1,7 @@
+import { useCallback, useEffect, useState } from 'react';
 import { IconCrown } from '@tabler/icons-react';
 import type { Combatant } from '@/sim';
-import { portraitOf } from '@/ui/art';
+import { spriteOf } from '@/ui/art';
 import { FloatingNumbers, type FloatingFx } from './FloatingNumbers';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
@@ -58,6 +59,7 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
   // 2026-09-21 — the portrait's bubble is the Pokémon's summary: types, ability, held item, status, Trauma,
   // and its role right now (Lead, or what a swap costs). It replaced five native titles on the card's corners.
   const hits = !fainted && incoming?.length ? incoming : null;
+  const { attach: fitBox, onLoad: fitLoad, style: fitStyle } = usePixelFit();
   const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}), ...(asLead && !fainted ? { asLead } : {}) }));
   const incomingText = hits ? `; incoming: ${hits.map((h) => `${h.amount} from ${h.name}'s ${h.move}`).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
 
@@ -92,8 +94,9 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
           <StatusBadge status="confusion" size={variant === 'bench' ? 24 : 28} />
         )}
       </span>
-      <span className={styles.art} style={{ background: `color-mix(in srgb, var(--type-${primary}) 30%, var(--surface-2))` }}>
-        <img src={portraitOf(mon)} alt={mon.name} draggable={false} />
+      {/* §9.2.2.2 — the Pokémon's own battle sprite, the arena's pixels, at a whole-pixel scale (D9). */}
+      <span className={styles.art} ref={fitBox} style={{ background: `color-mix(in srgb, var(--type-${primary}) 30%, var(--surface-2))` }}>
+        <img className="pixel" src={spriteOf(mon, 'front', !!mon.shiny)} alt={mon.name} draggable={false} onLoad={fitLoad} style={fitStyle} />
         {fainted && <span className={`${styles.faintedTag} display`}>Fainted</span>}
       </span>
       <span className={styles.name}>
@@ -102,8 +105,13 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
         <span className={styles.level}>Lv {mon.level}</span>
       </span>
       <HpBar hp={mon.hp} maxHp={mon.maxHp} height={variant === 'bench' ? 8 : 11} />
-      <span className={`${styles.hpText} display tabular`}>
-        {mon.hp} / {mon.maxHp}
+      {/* A bench card's last row is its HP and its swap price, side by side and inside the card: hung under it, the
+          price covered the HP and the next card's label on a short stage. */}
+      <span className={styles.hpRow}>
+        <span className={`${styles.hpText} display tabular`}>
+          {mon.hp} / {mon.maxHp}
+        </span>
+        {variant === 'bench' && mon.hp > 0 && swapCost !== undefined && <span className={swapAllowed ? styles.swapChip : styles.swapChipOff}>Swap {swapCost} AP</span>}
       </span>
       {(stageChips.length > 0 || mon.traumaStacks > 0) && (
         <span className={styles.chips}>
@@ -120,9 +128,6 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
           )}
         </span>
       )}
-      {variant === 'bench' && mon.hp > 0 && swapCost !== undefined && (
-        <span className={swapAllowed ? styles.swapChip : styles.swapChipOff}>Swap: {swapCost} AP</span>
-      )}
       {/* §9.2.5 — the swap, priced in HP: what this turn's intents would do to it at the Lead (v0.8.6). */}
       {variant === 'bench' && mon.hp > 0 && asLead && (
         <span className={asLead.ko ? styles.asLeadKo : styles.asLead} data-testid={`as-lead-${mon.speciesId}`}>
@@ -133,4 +138,27 @@ export function Portrait({ mon, variant, slotLabel, swapCost, swapAllowed, swapH
       <FloatingNumbers uid={mon.uid} fx={fx} />
     </button>
   );
+}
+
+/**
+ * D9 — a battle sprite at the biggest WHOLE-pixel scale that fits its window (a 41-px Charmander at 4×, a 91-px
+ * Charizard at 2×), never `object-fit`'s 2.91× that makes uneven rows. Re-measured when the window resizes.
+ */
+function usePixelFit() {
+  // The window and the sprite's natural size are state, not refs: the size is read during render.
+  const [box, setBox] = useState<HTMLSpanElement | null>(null);
+  const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
+  const [room, setRoom] = useState<{ w: number; h: number } | null>(null);
+  useEffect(() => {
+    if (!box || typeof ResizeObserver === 'undefined') return;
+    const measure = () => setRoom((cur) => (cur && cur.w === box.clientWidth && cur.h === box.clientHeight ? cur : { w: box.clientWidth, h: box.clientHeight }));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(box);
+    return () => ro.disconnect();
+  }, [box]);
+  const onLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => setNatural({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight }), []);
+  const scale = natural && room ? Math.max(1, Math.floor(Math.min((room.w * 0.92) / natural.w, (room.h * 0.92) / natural.h))) : 0;
+  const style = natural && scale ? { width: natural.w * scale, height: natural.h * scale } : { visibility: 'hidden' as const };
+  return { attach: setBox, onLoad, style };
 }

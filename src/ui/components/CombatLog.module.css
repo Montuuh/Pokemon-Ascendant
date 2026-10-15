@@ -1,23 +1,77 @@
+.wrap {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  max-width: 560px;
+}
+/* The last line, as a chip: the fight's ticker. */
+.ticker {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  min-width: 0;
+  background: var(--surface-2);
+  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+  text-align: left;
+}
+.ticker:hover,
+.ticker[aria-expanded='true'] {
+  background: var(--surface-3);
+}
+.tickerIcon,
+.chevron {
+  flex: 0 0 auto;
+  color: var(--ink-muted);
+}
+.chevron {
+  transition: transform var(--motion-fast) ease;
+}
+.chevron[data-open] {
+  transform: rotate(180deg);
+}
+.last {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: global(popIn) var(--motion-base) var(--ease-spring) both;
+}
+/* The whole fight, dropped down under the bar. */
 .log {
-  background: color-mix(in srgb, var(--surface-0) 78%, black);
-  border: 1px solid var(--border-subtle);
+  position: absolute;
+  top: calc(100% + var(--sp-2));
+  left: 0;
+  right: 0;
+  max-height: min(320px, 50vh);
+  z-index: var(--z-overlay);
+  background: color-mix(in srgb, var(--surface-0) 92%, black);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
   padding: var(--sp-2) var(--sp-3);
-  font-size: 12px;
+  font-size: var(--type-caption);
   line-height: 1.35;
   color: var(--ink-secondary);
   overflow-y: auto;
   scrollbar-width: thin;
-  backdrop-filter: blur(4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+.log[hidden] {
+  display: none;
 }
 .line {
   padding: 1px 0;
 }
 .player {
-  color: #ffe08a;
+  color: color-mix(in srgb, var(--accent-action) 60%, var(--brand-cream));
 }
-.enemy {
-  color: #ffb1b1;
+.enemy,
+.intent {
+  color: color-mix(in srgb, var(--accent-negative) 55%, var(--brand-cream));
 }
 .system {
   color: var(--ink-secondary);
@@ -29,6 +83,6 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: var(--type-micro);
   margin-top: 4px;
 }

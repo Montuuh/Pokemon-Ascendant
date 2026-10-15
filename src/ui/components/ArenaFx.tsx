@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, type CSSProperties, type RefObject } from 'react';
 import { SHAKE_CHECKS } from '@/sim/combat/catch';
-import { itemIcon, spriteOf } from '@/ui/art';
-import { catchTimeline, type BallFlight, type CatchFx, type Ghost, type SpriteSlot } from '@/ui/hooks/useCombatFx';
+import { itemIcon, moveArt, spriteOf } from '@/ui/art';
+import { catchTimeline, type BallFlight, type CatchFx, type Ghost, type MoveHit, type SpriteSlot } from '@/ui/hooks/useCombatFx';
 import styles from './ArenaFx.module.css';
 
 // §9.9.1 — the arena's beats that outlive the sim's state (v0.9.3): a Pokémon that has fainted or been caught is no
@@ -12,9 +12,15 @@ import styles from './ArenaFx.module.css';
 
 type SlotClass = (slot: SpriteSlot) => string;
 
-export function ArenaFx({ ghosts, balls, catching, slotClass }: { ghosts: readonly Ghost[]; balls: readonly BallFlight[]; catching: CatchFx | null; slotClass: SlotClass }) {
+export function ArenaFx({ ghosts, balls, hits = [], catching, slotClass }: { ghosts: readonly Ghost[]; balls: readonly BallFlight[]; hits?: readonly MoveHit[]; catching: CatchFx | null; slotClass: SlotClass }) {
   return (
     <>
+      {/* §9.2.3 — the card's own picture, landing on what it hits: at 3×, whole pixels (D9). */}
+      {hits.map((h) => (
+        <div key={h.id} className={`${slotClass(h.slot)} ${styles.hit}`} data-testid="move-hit" data-move={h.moveId} aria-hidden="true">
+          <img className={`pixel ${styles.hitArt}`} src={moveArt(h.moveId)} alt="" draggable={false} onError={(e) => (e.currentTarget.style.display = 'none')} />
+        </div>
+      ))}
       {ghosts.map((g) => (
         <div key={g.id} className={`${slotClass(g.slot)} ${styles.ghost} fx-ghost-${g.kind}`} style={{ '--ghost-at': `${g.at}ms` } as CSSProperties} data-testid="arena-ghost" data-kind={g.kind} data-slot={g.slot} aria-hidden="true">
           <img className="pixel" src={spriteOf({ speciesId: g.speciesId }, g.slot === 'player' ? 'back' : 'front', g.shiny)} alt="" draggable={false} />

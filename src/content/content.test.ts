@@ -47,6 +47,18 @@ describe('content registry', () => {
     for (const sprite of new Set([...REGIONS.flatMap((r) => r.trainers.map((t) => t.sprite)), 'nurse', 'merchant'])) expect(existsSync(`public/art/trainers/${sprite}.png`), `trainer ${sprite}`).toBe(true);
   });
 
+  it('MoveArt_EveryMoveAHandCanHold_HasItsIllustration_§9.2.3', () => {
+    // §9.2.3 (v0.9.15) — a card's window is its move's picture; a "+" move wears its base move's. The group's orders
+    // (Call for Help, Cover, §5.6) are enemy-only: they never reach a hand, so they have no card to illustrate.
+    const enemyOnly = (m: ReturnType<typeof reg.allMoves>[number]) => m.effects.some((e) => e.kind === 'summon' || e.kind === 'cover');
+    const described = JSON.parse(readFileSync('docs/art/prompts/move-art.json', 'utf8')) as Record<string, string>;
+    for (const m of reg.allMoves().filter((x) => !enemyOnly(x))) {
+      const base = m.id.replace(/(-plus)+$/, '');
+      expect(described[base], `${base} has a line in move-art.json`).toBeTruthy();
+      expect(existsSync(`public/art/moves/${base}.png`), `${base} illustration`).toBe(true);
+    }
+  });
+
   it('every consumable has an item icon, and every TM a disc in its move\'s type', () => {
     for (const c of reg.allConsumables()) {
       expect(existsSync(`public/art/items/${c.id}.png`), `${c.id} icon`).toBe(true);

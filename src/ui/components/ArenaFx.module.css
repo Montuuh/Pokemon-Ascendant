@@ -370,3 +370,40 @@
     border-color: var(--accent-negative);
   }
 }
+
+/* §9.2.3 — a move's illustration over what it hits: the slot's box, the picture centred in it at 3×, popping in with
+   the lunge and fading before the next number. Over the sprite, under the floating numbers. */
+.hit {
+  pointer-events: none;
+  width: 180px;
+  height: 170px;
+  /* The slot class makes this a flex column; centre the picture on both axes of the sprite's box. */
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+.hit .hitArt {
+  width: auto;
+  height: auto;
+  max-width: none;
+  filter: drop-shadow(0 0 6px rgba(255, 246, 236, 0.55));
+  animation: moveHit var(--fx-move-hit) var(--ease-step) both;
+}
+@keyframes moveHit {
+  0% {
+    opacity: 0;
+    transform: scale(2);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(3);
+  }
+  75% {
+    opacity: 1;
+    transform: scale(3);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3);
+  }
+}

@@ -96,7 +96,7 @@ hue — a requirement that exists for colour-blind players and pays off for ever
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│ [Region] [Field] [Relics]              [Bag][Team][Dex][Pause]       │  top bar, 60px
+│ [≡] [⚑ Fight name] [Rule] [Field]   [≣ last log line ▾]   [Turn][Deck]│  top bar, 56px
 ├──────────────────────────────────────────────────────────────────────┤
 │  ┌────────┐                                                          │
 │  │ Bench 1│                                    ╔══════════════╗      │
@@ -107,8 +107,8 @@ hue — a requirement that exists for colour-blind players and pays off for ever
 │  └────────┘                                     [intent chip]        │
 │   player squad, left                            enemy, right          │
 ├──────────────────────────────────────────────────────────────────────┤
-│ ●●● AP   Deck 8   Discard 3                            [ End Turn ]  │
-│ [Card][Card][Card][Card][Card] │ [Bag 2/2]                           │
+│  (3)   [Card][Card][Card][Card][Card] │ [Bag 2/2]       [ End Turn ] │
+│  AP                                                      [ Run ]     │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -129,8 +129,9 @@ hue — a requirement that exists for colour-blind players and pays off for ever
 - **The enemy's intent is a chip above it** — icon, magnitude, target label — not an arrow crossing the screen.
 - **The catch pill** (wild only) sits under the enemy's card with the best ball's chance; pressing it opens the
   **ball picker** — every ball in the bag with its count and its own chance, a row to throw (§2.6.4.1).
-- **The hand tray runs along the bottom**: 5 skill cards, a divider, the **Bag** (its item count and the turn's
-  uses left, 2/2; it opens every item carried, one card per kind with ×N), AP pips and counters left, End Turn right.
+- **The hand tray runs along the bottom, in one row** (v0.9.15): the AP orb left, then the 5 skill cards, a
+  divider and the **Bag** (its item count and the turn's uses left, 2/2; it opens every item carried, one card per
+  kind with ×N), and End Turn with Run under it on the right.
 - **The damage preview appears next to the targeted Pokémon** when a card is dragged or selected onto it —
   compact, at the point of decision, not in a distant panel. Against a group, **every enemy's panel carries the
   held card's own number** (and a KO flag), or a blue dashed **Out of reach** lock where a Melee card cannot land.
@@ -140,14 +141,22 @@ hue — a requirement that exists for colour-blind players and pays off for ever
 ## §9.2.2 Zones
 
 ### §9.2.2.1 Top bar
-Persistent and never collapsed: Region modifier badges, the active field badge (with the `🏠 Home Field` marker
-when the enemy owns it), up to three relic badges, and the toolbar — Bag, Team, Pokédex, Pause. Each badge shows
-its full text on hover or focus.
+Persistent and never collapsed. Left: the menu, then **one chip naming the fight** — its kind as an icon (paw,
+trainer, star for an Elite, trophy for a Gym; the bubble says what the kind means) and its name, the trainer named
+once (v0.9.15: it was three chips, two of them saying the trainer's name); a Gym Leader's rule chip (§5.9.5); the
+active field badge (with the `🏠 Home Field` marker when the enemy owns it). Middle: **the battle log as a ticker** —
+the last thing that happened on one line, the whole fight dropping down on a click (it used to sit on the arena
+floor, and fell off the stage at 720 p; the arena is for the fight). Right: the turn and the deck/discard counts.
+Each chip shows its full text on hover or focus.
 
 ### §9.2.2.2 Player squad
-Each of the three slots shows, in this order: portrait with type badges; the **Lead crown** on the Lead; an HP
+Each of the three slots shows, in this order: portrait with type badges — the Pokémon's own animated **battle
+sprite**, the arena's pixels (v0.9.15; the official art was the one painted thing left on the screen, D9); the
+**Lead crown** on the Lead; an HP
 bar with a numeric `cur / max` and a cyan shield segment when a shield is present; a status-condition row; a
 stat-stage row; a Trauma badge on the portrait corner; and the Lead Aura icon under the Lead when one is active.
+A bench card's last row is its HP and its **swap price** side by side, inside the card. The sprite is drawn at the
+biggest whole-pixel scale its window holds.
 
 The Lead is 1.25× scale with a gold border; the bench sits behind with a neutral border.
 
@@ -160,32 +169,42 @@ Portrait with type badges, a Pokédex tier badge, a thicker HP bar (it should fe
 A boss adds a faint type-coloured aura glow.
 
 ### §9.2.2.4 Hand tray
-AP pips (three, a second row up to six, then a `+N` chip), deck and discard counts, the hand itself, and the End
-Turn button — which **shifts to gold** when no affordable playable card remains, so "your turn is over" is
-visible rather than deduced.
+One row (v0.9.15; the header row it replaced cost the hand 60 px at 720 p). Left, **the AP orb**: the turn's AP as
+the biggest number on the tray, gold, greyed at 0 (the most it can be is in its bubble), and the Defensive discount
+chip under it when it is live. The next swap's price is not repeated here: it is on each bench card, where the swap
+is clicked, with the ladder in that card's bubble. Middle, the hand and the Bag. Right, End Turn and, in a run, Run
+under it — the exit quieter than the plan. The deck and discard counts live in the top bar.
 
 ## §9.2.3 The move card
 
-The card is **flooded with its move's type colour**, so a hand reads as a type spread at a glance, while the art
-window and the effect text sit in calm cream insets so they stay legible.
+The card's **frame is its move's type colour**, so a hand reads as a type spread at a glance; everything on it
+sits in insets that stay legible on any type (v0.9.15, the user's "one of the ugliest parts of the art"):
 
-Two states: **compressed** at rest, showing only what you need in order to decide — owner avatar, name, range
-glyph, AP cost bottom-left, power bottom-right; and **expanded** on hover, focus, selection or drag, unfolding
-the art window and effect text **in place**, with neighbouring cards sliding aside rather than the card popping
-over the board.
+| Part | What it shows |
+|---|---|
+| **Head** (dark) | The **AP cost as a gold gem** (a cost changed this turn — Paralysis, a rule — wears an amber ring and the foot says `was N`) and the name, with the whole width for it |
+| **Window** (dark, lit in the type's colour) | **The move itself**: its pixel illustration at 2× on one 68-cell grid for the whole set (D9; `public/art/moves/`, lane in `docs/art/pipeline.md`) — and the **owner**, its box sprite at 1× bottom-left (its name is in the bubble), so five cards from three Pokémon read as five moves and three owners. The ×N chip top-left; the Mastery star and a Step arrow top-right |
+| **Plate** (cream) | What it does (`describeMove`), two lines held open so a row's gems line up |
+| **Foot** (dark) | Range and role glyphs, the **power** in a dashed pill (a dash for none), the type's own pixel label (FRLG) |
 
-Badges overhang the corners: **top-left the mechanics** (category, range, modifier — gold tint for a positional
-modifier), **top-right the status rider** in its condition's colour. Left is how it works, right is what it
-inflicts.
+The ×N chip sits on the window's top-left: how the move's type lands on the enemy Lead, green up, dark down. The
+whole card's explanation is its one bubble, and it names the role in words (Offensive · Defensive · Utility) — the
+foot's second glyph, which is the card's own and not the TypeChart's sword and shield. **The same picture lands on
+the target**: when a move hits, its illustration flashes over the Pokémon it struck at 3× for about half a second,
+with the lunge — an enemy's moves on your Lead too; never under reduced motion. A hand bigger than five tucks each card
+under its neighbour so the row keeps its width. An item card (the Bag, §3.5) is the same anatomy smaller and pill-soft —
+cost gem and name, the item on a lit window, what it does on the plate — its frame coloured by what it does: a
+ball red, medicine green, a battle item blue.
 
 **The two ways a card can be unplayable are colour-separated on purpose:**
 
 | State | Treatment |
 |---|---|
-| **Not enough AP** | Desaturated, an amber border and warning, AP dots showing what you have against what you need |
-| **Out of position** (a Melee card whose owner is not the Lead) | **Not** desaturated — you can afford it — but a blue positional lock, `Melee` in bold and `needs Lead slot` beneath |
+| **Not enough AP** | An amber border, a warning glyph in the foot, the picture faded |
+| **Out of position** (a Melee card whose owner is not the Lead; also asleep, frozen, sealed) | A dashed edge, the picture faded, and a **blue band across the window**: `Melee` in bold and `needs Lead` beneath |
 
-Amber means AP. Blue means position. Neither card is ever hidden.
+Amber means AP. Blue means position. Neither card is ever hidden, and neither loses its words: the name, the cost, the
+plate and the owner stay at full ink, because they are what you plan the swap or the next turn with (D5).
 
 Full anatomy: [`ui/design-system.md`](ui/design-system.md).
 

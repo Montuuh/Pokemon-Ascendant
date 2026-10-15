@@ -77,14 +77,11 @@
   }
 }
 
+/* No `to`: the card lands on its own transform (its place in the fan), not on an upright card it then jumps from. */
 @keyframes cardIn {
   from {
     transform: translateY(40px) rotate(-4deg);
     opacity: 0;
-  }
-  to {
-    transform: translateY(0) rotate(0);
-    opacity: 1;
   }
 }
 
@@ -169,7 +166,8 @@
   animation: faintOut 600ms ease-in forwards;
 }
 .fx-card-in {
-  animation: cardIn var(--motion-slow) var(--ease-spring) both;
+  /* backwards, not both: once in, the card is its own again — the fan, the hover lift and the no-AP fade (v0.9.15). */
+  animation: cardIn var(--motion-slow) var(--ease-spring) backwards;
 }
 .fx-pop {
   animation: popIn var(--motion-base) var(--ease-spring) both;
