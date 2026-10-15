@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { changelogUnread } from '@/app/changelogSeen';
-import { menuVista } from '@/ui/art';
-import { portraitUrl } from '@/content/schemas/species';
+import { TitleBattle } from '@/ui/title/TitleBattle';
+import { TitleMark } from '@/ui/title/TitleMark';
 import styles from './MainMenu.module.css';
 
-// Per docs/design/ui/03 §3.2 — warm-light front-end.
+// §9.13 — the title screen (v0.9.17): the battle behind, the mark and the menu in one column on its left.
 //
 // Four entries, and no more on purpose (2026-09-21). Quick fight and Practice fights were developer doors —
 // fixtures reachable by deep link (`?scenario=`) that had leaked onto the player's menu — and How to play
@@ -31,14 +31,11 @@ export function MainMenu() {
   }
 
   return (
-    <main className={styles.root} data-testid="main-menu">
-      <div className={styles.vista} aria-hidden="true">
-        <img className={styles.plate} src={menuVista()} alt="" />
-        <div className={styles.warmth} />
-        <img className={styles.mascot} src={portraitUrl(4, 'charmander')} alt="" />
-      </div>
-      <section className={styles.panel}>
-        <h1 className={`${styles.title} display`}>Pokémon Ascendant</h1>
+    <main className={`${styles.root} theme-stage`} data-testid="main-menu">
+      <TitleBattle className={styles.battle} />
+      <div className={styles.dusk} aria-hidden="true" />
+      <section className={styles.column}>
+        <TitleMark />
         <p className={styles.tagline}>Your party is your deck.</p>
         <nav className={styles.menu}>
           {resumable && (

@@ -2,7 +2,7 @@
 
 > **Canon.** `§` numbers are an API cited from code and tests — never renumber or delete a section.
 >
-> **This topic owns:** the art direction, the colour and type system, the combat and map layouts, iconography, audio, accessibility and the screen inventory.
+> **This topic owns:** the art direction, the colour and type system, the combat and map layouts, the title screen, iconography, audio, accessibility and the screen inventory.
 > **It does not own:** any rule the UI displays. Per-screen detail is in [`ui/screens.md`](ui/screens.md), tokens and components in [`ui/design-system.md`](ui/design-system.md), and rendered references in [`ui/mockups/`](ui/mockups/).
 
 ---
@@ -619,3 +619,47 @@ flowchart TD
 - **Healing previews show before → after** on each team row: solid for current HP, hatched for the restoration.
 - **Mystery choices show outcome tags** — gain, cost, risk. Never blind RNG (Pillar 1).
 - **Defeat is warm, not punishing.** It shows how far you got and what you kept (Pillar 5).
+
+# §9.13 The title screen
+
+The front door and the run's first steps, redrawn in v0.9.17 on the user's note 8 ("mejora el arte del main menu y
+las primeras pantallas — un fondo animado, que sea de lucha pokemon, usando un arte parecido al del juego"). The
+warm-light front end it replaces (a generated town vista and a still mascot) read as a different game from the
+fights; the title is now made of the fights' own pictures.
+
+## §9.13.1 The battle behind the title
+
+Across the whole screen, **a Pokémon battle that plays by itself**: one of the game's battle backdrops; the series'
+composition — the foe far and high on its battle base, the near Pokémon low with its back to you — set right of
+centre, so the menu's column on the left keeps its ground. The sprites are the battle sprites the fights use, at
+the whole or half multiple nearest the screen's height (D9), the near one half a step larger. Each wears a small plate,
+its name and its HP bar.
+
+**A fight is five hits**: the winner strikes first and lands three, the third the knock-out; the other lands two
+between them. A hit is the series' beat — the attacker lunges, **the move's own picture** (§9.2.3) lands on the target,
+it flinches and its bar drains — then a breath. The loser faints as a Pokémon faints in a fight (§9.9.1), the scene
+fades, and **the next matchup** comes in on its own backdrop: the far one steps in, the near one out of its ball. About
+eleven seconds a fight.
+
+**The matchups** are pairs the series is known for (Charizard and Venusaur, Pikachu and Gyarados, Machamp and Snorlax…),
+each Pokémon with moves it learns there, never a move its target is immune to, and the winner the one its types favour —
+so a fan reading the fight finds nothing off (`src/ui/title/matchups.ts`; no two fights in a row share a backdrop or a
+Pokémon). It is decoration: no rule reads it, it takes no input, a screen reader skips it. **With motion off it is one
+still frame**, both standing, both bars full (§9.6).
+
+## §9.13.2 The title mark
+
+The name as a mark of its own, not a line of type: **"Pokémon" small and spaced over "Ascendant" large**, cream
+lettering with a dark outline and a red step under it, beside **its emblem — a ball whose upper half is a peak**, the
+climb a run is. Drawn in code (SVG and the display face), so it is sharp at every size and costs no image.
+
+## §9.13.3 The menu and the new-run steps
+
+**The menu** is one column on the left over a dusk held dark to the column's edge, then gone within a short fade: the mark, the line *Your
+party is your deck.*, the buttons (the next step gold, the rest dark glass), the version as the door to What's new,
+and the fan-project line, never pushed off the screen (§9.6). The stage theme, cream on dark: the colour is the battle's.
+
+**The new-run steps** (difficulty, starter, Starting Relic) are the same battle carried on — the matchup it was on,
+from its entrance — under a dusk the panels read on, in the stage theme: near-opaque behind the header and the step's
+heading, lighter below, where the cards bring their own ground. **Each starter is drawn as the fights draw it**: its
+battle sprite in the window a combat card gives a Pokémon (§9.2.1), lit in its type, the one chosen breathing.

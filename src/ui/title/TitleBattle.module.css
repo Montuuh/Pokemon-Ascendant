@@ -1,0 +1,208 @@
+/* §9.13.1 — the battle behind the title: the series' battle composition on one of the game's backdrops — the foe far
+   and high on its base, yours near and low with its back to you — set right of centre, so the menu's column on the
+   left keeps its ground. Sprites at a whole or half multiple of their pixels (D9), from the screen's height. */
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--tip-surface);
+}
+.scene {
+  position: absolute;
+  inset: 0;
+  transition: opacity var(--t-out) ease-in;
+}
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center 62%;
+}
+/* The ground darkens toward the bottom, so the bases and the near Pokémon stand on something. */
+.scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.28) 100%);
+}
+.live {
+  animation: titleIn var(--t-out) ease-out both;
+}
+.out {
+  opacity: 0;
+}
+
+/* ── A fighter: its base, the Pokémon on it, its plate ─────────────────────────────────────────────────────── */
+.fighter {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  translate: -50% 0;
+}
+.far {
+  --scale: var(--far-scale, 2);
+  left: 80%;
+  bottom: 39%;
+}
+.near {
+  --scale: var(--near-scale, 2.5);
+  z-index: 2;
+  left: 59%;
+  bottom: 5%;
+}
+/* The series' battle base: an oval of lit ground with a darker rim, under the Pokémon's feet. */
+.base {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--scale) * -6px);
+  width: calc(var(--scale) * 84px);
+  height: calc(var(--scale) * 20px);
+  translate: -50% 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08) 70%, transparent 72%),
+    radial-gradient(closest-side, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.22) 85%, transparent 100%);
+}
+.body {
+  position: relative;
+}
+.sprite {
+  display: block;
+  /* Its own pixels times the scale; nothing until it has loaded and said how wide it is. */
+  width: calc(var(--n-w, 0) * var(--scale) * 1px);
+  max-width: none;
+  height: auto;
+}
+.live .sprite {
+  animation: global(breathe) 2.6s ease-in-out 900ms infinite;
+}
+/* In: the far one steps in from the grass, yours out of its ball. */
+.enter {
+  display: block;
+}
+.live .far .enter {
+  animation: global(wildEnter) 560ms var(--ease-step) both;
+}
+.live .near .enter {
+  animation: global(sendOut) 600ms var(--ease-spring) 250ms both;
+}
+.live .near .body.lunge {
+  animation: titleLungeNear 380ms var(--ease-spring);
+}
+.live .far .body.lunge {
+  animation: titleLungeFar 380ms var(--ease-spring);
+}
+.live .body.flinch {
+  animation:
+    global(shake) 420ms ease-in-out,
+    global(hitFlash) 420ms ease-in-out;
+}
+.live .fighter[data-fainted] .sprite {
+  animation: global(faintDrop) var(--t-faint) linear both;
+}
+.live .fighter[data-fainted] .plate {
+  opacity: 0;
+  transition: opacity var(--t-faint) ease-in;
+}
+
+/* The move's picture, landing on the one it hits (§9.2.3): the attacker's own move, at a step past the sprite's scale. */
+.art {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 45%;
+  width: calc(var(--n-w, 0) * (var(--scale) + 0.5) * 1px);
+  max-width: none;
+  height: auto;
+  translate: -50% -50%;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--brand-cream) 55%, transparent));
+  animation: titleArt var(--t-art) var(--ease-step) both;
+}
+
+/* The plate: who it is and how much is left — the far one's above-left of it, yours to its right, as in the series. */
+.plate {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  /* As large as the sprites it names: from the screen's height, as they are. */
+  width: calc(var(--far-scale, 2) * 64px);
+  padding: var(--sp-1) var(--sp-2) var(--sp-2);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--tip-surface) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-cream) 18%, transparent);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+/* A plate comes in with its Pokémon, never before it. */
+.live .far .plate {
+  animation: titleIn 300ms ease-out 260ms both;
+}
+.live .near .plate {
+  animation: titleIn 300ms ease-out 650ms both;
+}
+.far .plate {
+  right: calc(100% + var(--sp-3));
+  top: 0;
+}
+.near .plate {
+  left: calc(100% + var(--sp-3));
+  bottom: 30%;
+}
+.name {
+  font-size: clamp(var(--type-caption), calc(var(--far-scale, 2) * 6px), var(--type-body));
+  font-weight: 700;
+  color: var(--brand-cream);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@keyframes titleIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes titleLungeNear {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  40% {
+    transform: translate(32px, -14px);
+  }
+}
+@keyframes titleLungeFar {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  40% {
+    transform: translate(-28px, 12px);
+  }
+}
+@keyframes titleArt {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}

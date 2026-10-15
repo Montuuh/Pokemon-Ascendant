@@ -105,7 +105,7 @@ export const MODIFIERS: DifficultyModifier[] = [
     // effect and no HP marker for a fourth. Promoting 1→2 and 2→3 is the half that has a definition, and
     // it still touches three of the four boss-tier enemies on a Region 1 route.
     // Player-facing, so no section number: a § tells us where the rule lives and tells a player nothing.
-    partial: 'A Pokémon that already has three phases keeps three — a fourth arrives in v0.5.',
+    partial: 'A Pokémon that already has three phases keeps three — a fourth is not in the game yet.',
     params: { extraPhases: 1, maxPhases: 3 },
   },
   {

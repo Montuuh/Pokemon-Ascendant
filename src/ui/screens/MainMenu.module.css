@@ -1,75 +1,52 @@
+/* §9.13 — the title screen (v0.9.17): the battle across the whole screen, a dusk over its left side, and on it the
+   title mark and the menu in one column. The stage theme: cream on dark, the battle's colour left to the battle. */
 .root {
+  /* Where the column starts and ends: the dusk is held dark to its right edge, whatever the screen's width. */
+  --column-left: clamp(var(--sp-6), 6vw, 112px);
+  --column-right: calc(var(--column-left) + 440px);
   position: relative;
   height: 100%;
   display: grid;
-  place-items: center;
-  /* The vista is a fixed backdrop, so the horizontal axis never scrolls; the vertical one has to, because
-     the panel can outgrow the viewport at 150 % text on a 720p window — and the line it pushes off the
-     bottom is the one that says this is an unaffiliated fan project. That line is not optional. */
+  align-items: center;
+  /* The battle is a fixed backdrop, so the horizontal axis never scrolls; the vertical one has to, because the column
+     can outgrow the viewport at 150 % text on a 720p window — and the line it pushes off the bottom is the one that
+     says this is an unaffiliated fan project. That line is not optional. */
   overflow-x: hidden;
   overflow-y: auto;
   background: var(--surface-0);
 }
-.vista {
-  position: absolute;
+/* Fixed, so a column that scrolls (150 % text at 720 p) scrolls over a battle that stays put. */
+.root > .battle {
+  position: fixed;
+}
+/* The dusk: dark under the whole column (the fan-project line included, D5 on every backdrop), then gone within a
+   short fade, so the fight on the right is seen whole. */
+.dusk {
+  position: fixed;
   inset: 0;
-  overflow: hidden;
-  background: #cfe9ff;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--tip-surface) 92%, transparent) 0,
+    color-mix(in srgb, var(--tip-surface) 84%, transparent) var(--column-right),
+    transparent calc(var(--column-right) + 12vw)
+  );
 }
-.plate {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 55%;
-  /* The vista is pixel art as of v0.5, and the browser will happily smooth it back into a smudge on the last
-     step of a chain that was nearest-neighbour the whole way up. */
-  image-rendering: pixelated;
-}
-/* The menu panel sits on the left third, so that side gets a warm wash to keep the text readable. */
-.warmth {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(251, 244, 230, 0.82) 0%, rgba(251, 244, 230, 0.45) 34%, rgba(251, 244, 230, 0) 62%);
-}
-.mascot {
-  position: absolute;
-  right: 12%;
-  bottom: 8%;
-  width: 420px;
-  filter: drop-shadow(0 18px 20px rgba(58, 46, 34, 0.35));
-}
-.panel {
+.column {
   position: relative;
-  /* Keep a gutter above and below so the panel never butts against the window edge when it is the taller
-     of the two. */
-  margin-block: var(--sp-5);
-  background: color-mix(in srgb, var(--surface-1) 88%, transparent);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
-  padding: var(--sp-8) var(--sp-10);
-  min-width: 460px;
-  text-align: center;
-  box-shadow: 0 24px 60px rgba(58, 46, 34, 0.25);
-  justify-self: start;
-  margin-left: 10vw;
-}
-.title {
-  /* Two words and an accent, where the name used to be one short one. A fixed 84px fitted the old title and
-     sat a hair inside the panel with this one, which is not a margin — it is a coincidence waiting for a
-     narrower window or a larger text scale. Clamp lets it give way instead of overflowing. */
-  font-size: clamp(40px, 7.2vw, 84px);
-  line-height: 1.05;
-  margin: 0;
-  color: var(--brand-red);
-  letter-spacing: -1px;
-  text-wrap: balance;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(440px, 100%);
+  margin: var(--sp-6) 0 var(--sp-6) var(--column-left);
 }
 .tagline {
-  margin: var(--sp-2) 0 var(--sp-6);
+  margin: var(--sp-3) 0 var(--sp-6) 0.2em;
   color: var(--ink-secondary);
   font-size: var(--type-h3);
 }
 .menu {
+  align-self: stretch;
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
@@ -81,30 +58,46 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--type-h3);
-  transition: transform var(--motion-fast) var(--ease-spring);
+  text-align: left;
+  transition:
+    transform var(--motion-fast) var(--ease-spring),
+    background var(--motion-fast) ease,
+    border-color var(--motion-fast) ease;
 }
 .primary {
   background: var(--accent-action);
-  color: var(--ink-primary);
-  box-shadow: 0 6px 0 #d9a51d;
+  color: var(--ink-on-accent);
+  border: 2px solid var(--accent-action-deep);
+  box-shadow: 0 6px 0 var(--accent-action-deep);
 }
 .primary:hover {
   transform: translateY(-2px);
 }
 .secondary {
-  background: var(--surface-2);
-  color: var(--ink-secondary);
+  background: color-mix(in srgb, var(--surface-1) 90%, transparent);
+  color: var(--ink-primary);
   border: 1px solid var(--border-subtle);
+}
+.secondary:hover {
+  transform: translateX(3px);
+  border-color: var(--border-strong);
 }
 .secondary:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
+.subLabel {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--type-caption);
+  color: inherit;
+  opacity: 0.85;
+}
 /* The version, as the door to What's new (docs/release-doctrine.md). */
 .whatsNew {
   position: relative;
-  justify-self: start;
-  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
@@ -135,14 +128,7 @@
 }
 .footnote {
   margin: var(--sp-2) 0 0;
-  font-size: var(--type-caption);
-  color: var(--ink-muted);
-}
-.subLabel {
-  display: block;
-  margin-top: 2px;
-  font-family: var(--font-body);
-  font-weight: 600;
+  text-wrap: balance;
   font-size: var(--type-caption);
   color: var(--ink-secondary);
 }

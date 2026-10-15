@@ -1,11 +1,36 @@
+/* §9.13 — the new-run steps in the stage theme, over the title's battle (fixed, so it never scrolls with a step) and a
+   dusk that keeps the battle seen but quiet behind the panels: near-opaque behind the header and the step's heading,
+   whose words sit on it, lighter below, where the cards bring their own ground (D5, measured over all ten backdrops). */
 .root {
+  position: relative;
   height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  background: radial-gradient(120% 80% at 50% 0%, #fffaf0 0%, var(--surface-0) 60%);
+  background: var(--surface-0);
   color: var(--ink-primary);
 }
+.root > .battle {
+  position: fixed;
+}
+.veil {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-0) 95%, transparent) 0%,
+    color-mix(in srgb, var(--surface-0) 93%, transparent) 36%,
+    color-mix(in srgb, var(--surface-0) 76%, transparent) 54%
+  );
+  /* No blur: re-blurring the whole screen on every frame of the battle's GIFs cost a slow machine its frame rate. */
+}
+.chrome,
+.body,
+.footer {
+  position: relative;
+}
 .chrome {
+  background: color-mix(in srgb, var(--surface-0) 70%, transparent);
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -31,7 +56,7 @@
   align-items: center;
   gap: var(--sp-2);
   font-size: var(--type-small);
-  color: var(--ink-muted);
+  color: var(--ink-secondary);
 }
 .dot::before,
 .dotOn::before {
@@ -121,14 +146,17 @@
   padding: 2px var(--sp-2);
   border-radius: var(--radius-pill);
   background: var(--accent-action);
-  color: var(--ink-primary);
+  color: var(--ink-on-accent);
   font-size: 11px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
+/* A locked row says "not now" with its lock and its level, never with opacity (D5): its name steps back in colour. */
 .locked {
-  opacity: 0.6;
   cursor: not-allowed;
+}
+.locked .diffName {
+  color: var(--ink-secondary);
 }
 .picked {
   border-color: var(--brand-red);
@@ -155,12 +183,16 @@
 .tile:hover {
   transform: translateY(-3px);
 }
-.tile img {
-  image-rendering: auto;
-  filter: drop-shadow(0 8px 10px rgba(58, 46, 34, 0.22));
+/* The starter's window (UnitCard's), as wide as the tile. */
+.tileWindow {
+  --night: color-mix(in srgb, var(--unit-type, var(--surface-2)) 16%, var(--tip-surface));
+  justify-self: stretch;
+  height: clamp(96px, 16vh, 150px);
 }
+/* Over the window's corner, as on a combat card. */
 .tileType {
   position: absolute;
+  z-index: 1;
   top: var(--sp-3);
   left: var(--sp-3);
 }
@@ -283,7 +315,7 @@
   gap: var(--sp-4);
   padding: var(--sp-4) var(--sp-8);
   border-top: 2px solid var(--border-subtle);
-  background: var(--surface-1);
+  background: color-mix(in srgb, var(--surface-1) 86%, transparent);
 }
 .back,
 .next {
@@ -303,8 +335,8 @@
 }
 .next {
   background: var(--accent-action);
-  color: var(--ink-primary);
-  box-shadow: 0 6px 0 #d9a51d;
+  color: var(--ink-on-accent);
+  box-shadow: 0 6px 0 var(--accent-action-deep);
 }
 .next:hover {
   transform: translateY(-2px);
@@ -341,7 +373,7 @@
 .stepTitle {
   margin: 0 0 var(--sp-2);
   font-size: var(--type-h1);
-  color: var(--brand-red);
+  color: var(--ink-primary);
 }
 .stepLede {
   margin: 0;
@@ -353,7 +385,7 @@
   margin: var(--sp-3) 0 0;
   font-size: var(--type-small);
 }
-.xpNote { color: var(--ink-muted); }
+.xpNote { color: var(--ink-secondary); }
 
 /* §8.6.3 — the 1-of-3 Starting Relic offer. */
 .relics {

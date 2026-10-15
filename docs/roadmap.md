@@ -1228,10 +1228,24 @@ Pokémon's card one size (`--unit-card`, a fraction of the stage's height); a lo
 formation rows); a break-out bursting on its last wobble with the Pokémon back at once (`catchTimeline(wobbles,
 success)`, `FX_MS.burst`); and the throw a true parabola (`catchThrowX` / `catchThrowY`), its path no longer spun.
 
-### v0.9.17 — The title screen, a battle  ☐
+### v0.9.17 — The title screen, a battle  ✅ 2026-10-15
 The user's note 8. The main menu and the run's first screens (difficulty, starter, Starting Relic) redrawn: behind
 the title, an **animated Pokémon battle** in the game's own art — real battle sprites trading moves on a battle
 backdrop, a matchup that changes — and a title mark of its own instead of plain type.
+
+**Shipped.** §9.13 written. **The battle** (`src/ui/title/TitleBattle.tsx`): one of the stage backdrops, the foe far
+on its battle base and yours near with its back to you, right of centre; sprites at the half step nearest the screen's
+height over 330 px (2× / 2.5× at 720 p, 3.5× / 4× at 1080 p); a plate each (name, HP bar). Ten matchups
+(`matchups.ts`: Charizard–Venusaur, Pikachu–Gyarados, Gengar–Golduck, Blastoise–Arcanine, Machamp–Snorlax,
+Rhydon–Primeape, Lapras–Dragonite, Scyther–Exeggutor, Nidoking–Magmar, Jolteon–Starmie), each a five-hit fight
+(`titleHits`: the winner three, the other two) — lunge, the move's picture on the target, flinch, drain — then the
+faint, a fade, and the next; ~11 s a fight; carried across the menu and the steps (`resume`); one still frame with
+motion off. **The mark** (`TitleMark.tsx`): "Pokémon" over "Ascendant", cream on a dark outline and a red step,
+an SVG emblem (a ball whose top is a peak). **The menu** in the stage theme, one column over a dusk on the left;
+**the new-run steps** over the same battle under a dusk near-opaque behind their headings, each starter's battle sprite in a UnitCard window. The
+menu vista retired from the menu (kept as the town lobbies' style key). Tests: `matchups.test` (sprites, moves,
+art, backdrops, every fight decided, no repeat in a row), `e2e/title` (still frame; a hit lands, a bar drains, one
+faints, the next comes; the battle behind the steps).
 
 ### v0.9.18 — Fights with another objective  ☐
 The user's note 5. Some fight nodes win by something other than "knock everything out" (§5.6.5): **the flee race**

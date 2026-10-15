@@ -40,7 +40,6 @@ describe('content registry', () => {
     for (const stage of [GYM.stage, ...GYMS.map((g) => g.stage), ...Object.values(BIOMES).map((b) => b!.stage), ELITE_WILD.stage, ...everyRegion]) {
       expect(existsSync(`public/art/stages/${stage}.jpg`), `stage ${stage}`).toBe(true);
     }
-    expect(existsSync('public/art/ui/menu-vista.png'), 'main menu vista').toBe(true);
     // §5.10 — every Gym type a Region can draw has its Badge's emblem (a City's Badge row, the Legendary pick); the map
     // draws its nodes as the things themselves since v0.9.14, and every trainer a Region fields has its sprite.
     for (const t of new Set(REGIONS.flatMap((r) => r.gyms.map((g) => g.type)))) expect(existsSync(`public/art/icons/map/node-gym-${t}.png`), `Badge emblem ${t}`).toBe(true);

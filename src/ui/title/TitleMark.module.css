@@ -1,0 +1,58 @@
+/* §9.13.2 — the title mark. Its size is the mark's font size (set by the screen that shows it); every part is in em. */
+.mark {
+  --mark-ink: var(--tip-surface);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.18em;
+  margin: 0;
+  font-size: clamp(44px, 6.4vw, 92px);
+  line-height: 1;
+}
+.emblem {
+  flex: 0 0 auto;
+  width: 1.15em;
+  height: 1.15em;
+  filter: drop-shadow(0 0.06em 0 var(--brand-red-deep)) drop-shadow(0 0.12em 0.12em rgba(0, 0, 0, 0.35));
+}
+.ink {
+  fill: var(--mark-ink);
+}
+.cream {
+  fill: var(--brand-cream);
+}
+.red {
+  fill: var(--brand-red);
+}
+.shine {
+  fill: var(--brand-cream);
+  opacity: 0.55;
+}
+.words {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+/* The lettering: cream, outlined in the mark's ink (drawn under the fill), a red step under it, a soft shadow below. */
+.kicker,
+.word {
+  -webkit-text-stroke: 0.14em var(--mark-ink);
+  paint-order: stroke fill;
+  color: var(--brand-cream);
+  letter-spacing: 0.01em;
+}
+.kicker {
+  font-size: 0.42em;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-red);
+  -webkit-text-stroke-width: 0.2em;
+  margin: 0 0 -0.05em 0.12em;
+}
+.word {
+  font-weight: 800;
+  text-shadow:
+    0 0.07em 0 var(--brand-red-deep),
+    0 0.11em 0 var(--mark-ink),
+    0 0.2em 0.25em rgba(0, 0, 0, 0.4);
+}

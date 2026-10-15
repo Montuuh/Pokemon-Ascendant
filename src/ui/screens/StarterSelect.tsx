@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
 import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconLock, IconX } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
@@ -6,6 +6,10 @@ import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import { GYM, MODIFIERS, RUN_START, activeMoves, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState } from '@/sim';
 import { portraitUrl } from '@/content/schemas/species';
+import { spriteOf } from '@/ui/art';
+import { ArenaSprite } from '@/ui/components/ArenaSprite';
+import card from '@/ui/components/UnitCard.module.css';
+import { TitleBattle } from '@/ui/title/TitleBattle';
 import { ItemCard } from '@/ui/components/ItemCard';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
@@ -159,7 +163,10 @@ export function StarterSelect() {
   const STEPS = ['Difficulty', 'Starter', 'Relic', 'Region'].slice(0, LAST_STEP + 1);
 
   return (
-    <main className={styles.root} data-testid="starter-select">
+    <main className={`${styles.root} theme-stage`} data-testid="starter-select">
+      {/* §9.13 — the title's battle carries on behind the new-run steps, under a dusk the panels read on. */}
+      <TitleBattle className={styles.battle} />
+      <div className={styles.veil} aria-hidden="true" />
       <header className={styles.chrome}>
         <h1 className={`${styles.title} display`}>New run</h1>
         <ol className={styles.dots} aria-label={`Step ${step + 1} of ${STEPS.length}`}>
@@ -328,7 +335,13 @@ export function StarterSelect() {
                 <span className={styles.tileType}>
                   <TypeBadge type={s.types[0]!} size={18} defenderTypes={s.types} />
                 </span>
-                <img src={portraitUrl(s.dex, s.id)} alt={s.name} width={132} height={132} />
+                {/* §9.13.3 — each starter as the fights draw it: its battle sprite in the window a combat card gives a
+                    Pokémon (§9.2.1), lit in its type; the one chosen breathes. */}
+                <span className={`${card.window} ${styles.tileWindow}`} style={{ '--unit-type': `var(--type-${s.types[0] ?? 'normal'})` } as CSSProperties} aria-hidden="true">
+                  <span className={card.stand}>
+                    <ArenaSprite src={spriteOf({ speciesId: s.id }, 'front')} className={card.sprite} {...(pick === s.id || second === s.id ? { imgClassName: card.breathe } : {})} />
+                  </span>
+                </span>
                 <span className={`${styles.tileName} display`}>{s.name}</span>
               </button>
             ))}

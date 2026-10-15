@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen, its cards and the formation (§9.2) as of 2026-10-15. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen, its cards and the formation (§9.2) as of 2026-10-15; the title screen (§9.13) as of 2026-10-15. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -397,6 +397,10 @@ its owner's sprite in the corner, cost gem and name on a dark head, power and ty
 lands on the target when it hits. Unplayable cards are **never hidden and keep their words**: amber means AP, a blue
 band means position. The tray is one row — the hand and the Bag, End Turn — with the AP capsule docked over the hand at the screen's centre; the log is a ticker in the
 top bar; the squad's portraits are the battle sprites at a whole-pixel scale.
+
+**The title is a battle** (§9.13, v0.9.17): behind the menu and the new-run steps, two battle sprites trade their own
+moves on a battle backdrop — the move's picture lands, a bar drains, one faints, the next famous matchup comes in —
+still when motion is off; the name is a mark of its own (cream lettering, a ball whose top is a peak).
 
 **Accessibility is staged**: reduced motion and text size at v0.5 because they are expensive to retrofit; the
 rest at v1.1. Information never waits on an animation.

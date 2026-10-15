@@ -35,6 +35,8 @@ async function startRun(page: Page) {
 }
 
 test('every control on every screen has an accessible name', async ({ page }) => {
+  // A sweep: five cold loads of the dev build (each ~1,600 modules) and a run started — past 30 s under a loaded suite.
+  test.setTimeout(60_000);
   await page.goto('/?screen=menu');
   await everyControlIsNamed(page);
 
@@ -172,6 +174,8 @@ test('the rules are one click away from the map and from a fight', async ({ page
 });
 
 test('the fan-project disclaimer is reachable at every supported size', async ({ page }) => {
+  // Six cold loads of the menu, one per size and text scale: a sweep, with a sweep's time.
+  test.setTimeout(60_000);
   // The project carries the trademark in its title as of 2026-09-20, which makes the unaffiliated-fan-work
   // line on the menu load-bearing rather than decorative. It only has to be *reachable* — scrolling to it
   // is fine — but it must never be clipped away, and 150 % text on a 720p window is where it went first.

@@ -54,7 +54,6 @@ export const intentGlyph = (kind: string) => asset(`art/icons/intent/icon-intent
  * themselves since v0.9.14 (`nodeArt`); the Gym emblems still mark a won Badge in a City and on the Legendary pick.
  */
 export const nodeBadge = (id: string) => asset(`art/icons/map/node-${id}.png`);
-export const menuVista = () => asset('art/ui/menu-vista.png');
 /** §2.11 — a City's lobby background (`npm run art:gen`, then `install-art town`). */
 export const townArt = (cityId: string) => asset(`art/towns/${cityId}.png`);
 /** §2.11.6 — the Safari's FRLG tiles, tokens and entrance map (`npm run art:safari`). */

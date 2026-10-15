@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.17 — The title screen, a battle.** Behind the title and the new-run steps, a Pokémon battle plays by itself
+— famous matchups like Charizard and Venusaur or Pikachu and Gyarados trading their own moves on the game's battle
+backdrops, the move's picture landing, a bar draining, one fainting and the next coming in — under a title mark of
+the game's own, and the starters stand in their cards as the fights draw them. Before it,
 **v0.9.16 — The arena, one formation.** Every Pokémon on the field is a card with its animated sprite in a window —
 your three in formation on the left, the Lead centred between its bench, the enemy mirrored on the right and tagged
 Lead, Bench 1 and Bench 2 like yours — an arrow in the intent's colour from each enemy to the Pokémon it will hit, the

@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.17 — The title screen, a battle · 2026-10-15
+
+A Pokémon battle plays behind the title and the new-run steps.
+
+- **Title battle.** Famous matchups trade moves; one faints, the next comes in.
+- **Title mark.** The name as a logo, with a ball whose top is a peak.
+- **New run.** The battle carries on behind the steps; starters as battle sprites.
+
 ### v0.9.16 — The arena, one formation · 2026-10-15
 
 Every Pokémon on the field is a card, and every card is played onto its target.
