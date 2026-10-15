@@ -201,6 +201,8 @@ export function consumablePlayability(state: CombatState, cardId: string, ctx: C
   else if (state.player.itemsUsed >= state.player.itemCap) reason = 'item-limit';
   else if (def.apCost > state.player.ap) reason = 'not-enough-ap';
   else if (def.effect.kind === 'catch' && state.kind !== 'wild') reason = 'not-wild';
+  // §5.6.5 — a guarded find's guard is the find's, not yours: hold out, or knock it out.
+  else if (def.effect.kind === 'catch' && state.objective?.kind === 'hold') reason = 'guard';
   else if (def.effect.kind === 'catch' && state.player.balls <= 0) reason = 'no-balls';
   else if (def.effect.kind === 'catch' && !catchTarget(state, targetUid)) reason = 'no-enemy';
   return { cardId, def, playable: reason === null, reason, needsAllyTarget: def.target === 'ally', aimsAtFoe: def.effect.kind === 'catch' };

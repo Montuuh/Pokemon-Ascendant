@@ -22,6 +22,12 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
     if (intent) log(state, 'enemy', `${enemy.name} can't move!`);
     return;
   }
+  // §5.6.5 — a runner's getaway: it does nothing to you; at the turn's end it is gone (`objectiveTurnEnd`).
+  if (intent.kind === 'getaway') {
+    emit(state, { t: 'enemy-action', enemyUid: enemy.uid, intent: { ...intent }, fizzled: false });
+    log(state, 'enemy', `${enemy.name} is looking for a way out!`);
+    return;
+  }
   const move = intent.moveId ? ctx.content.move(intent.moveId) : null;
   if (!move) return;
 

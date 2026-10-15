@@ -12,6 +12,7 @@ import { dotDamage, statusActiveThisTurn } from './status';
 import { executeTurn } from './enemyTurn';
 import { fieldDrawBonus, fieldsSuppressed, hailImmune, isGrounded, sandstormImmune } from './fields';
 import { armourLead, ruleTurnEnd, ruleTurnStart, sealStrongest } from './ruleTurn';
+import { objectiveTurnEnd } from './objective';
 
 // §3.2 — the five-phase loop. `beginTurn` = Draw + Intent (lands in Action); `resolveTurn` = Resolution → next turn.
 
@@ -211,6 +212,9 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
   if (checkOutcome(state)) return finish(state);
   ruleTurnEnd(state, ctx);
   if (checkOutcome(state)) return finish(state);
+  // §5.6.5 — the fight's other objective: the runner gets away, the hold is won, the guard grows angrier.
+  objectiveTurnEnd(state, ctx);
+  if (checkOutcome(state)) return finish(state);
 
   // §5.3 — cooldowns tick down.
   for (const e of state.enemies) {
@@ -311,6 +315,6 @@ export function flee(state: CombatState, ctx: RunCtx): void {
 export function finish(state: CombatState): void {
   state.phase = 'ended';
   emit(state, { t: 'outcome', outcome: state.outcome });
-  log(state, 'system', state.outcome === 'defeat' ? 'Your team was wiped out…' : state.outcome === 'caught' ? 'Gotcha!' : state.outcome === 'escaped' ? 'Got away.' : 'Victory!');
+  log(state, 'system', state.outcome === 'defeat' ? 'Your team was wiped out…' : state.outcome === 'caught' ? 'Gotcha!' : state.outcome === 'escaped' ? 'Got away.' : state.outcome === 'fled' ? 'It got away.' : 'Victory!');
   // §4.2.7 — statuses and stages clear at combat end (kept in state for the summary; the run layer resets).
 }

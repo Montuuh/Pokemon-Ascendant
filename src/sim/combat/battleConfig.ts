@@ -98,6 +98,11 @@ export interface BattleConfig {
   stickyWebStages: number;
   /** §5.9.5 — the Gym Leaders' rules. */
   gymRules: GymRuleConfig;
+  /**
+   * §5.6.5 — fights with another objective: a hold-out's guard gains this many Attack stages at the end of every
+   * turn, and on the last turn it telegraphs its finisher if its kit holds it (Rhydon's Horn Drill).
+   */
+  objectives: { guardEscalation: number; guardFinisher: string };
 }
 
 export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
@@ -177,5 +182,6 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
     closeQuartersMelee: 1.1,
     iceArmour: 0.04,
   },
+  objectives: { guardEscalation: 1, guardFinisher: 'horn-drill' },
 };
 

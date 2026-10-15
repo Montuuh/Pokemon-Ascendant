@@ -205,6 +205,19 @@
 }
 
 /* ---- the account's progress ------------------------------------------------------------------------- */
+/* §5.6.5 — the objective's pay: an amber edge (the countdown's colour, on the border only, D5), a line each. */
+.objective {
+  list-style: none;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  display: grid;
+  gap: 2px;
+  border-left: 4px solid var(--accent-warning);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+  font-weight: 600;
+}
 .progress {
   list-style: none;
   margin: 0;

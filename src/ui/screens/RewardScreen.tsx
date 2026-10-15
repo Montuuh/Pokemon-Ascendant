@@ -195,6 +195,15 @@ export function RewardScreen() {
           })}
         </ul>
 
+        {/* §5.6.5 — what the fight's other objective paid: the runner's premium, or the find held. */}
+        {reward.objective && (
+          <ul className={styles.objective}>
+            {reward.objective.lines.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        )}
+
         {/* §8.7 / §8.6.1 — what the fight moved on the account: a medal, a discovery. */}
         {lastProgress.length > 0 && (
           <ul className={styles.progress} aria-label="Progress" data-testid="reward-progress">

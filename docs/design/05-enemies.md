@@ -31,6 +31,7 @@ Intents target **slots**. The display names the slot and its current occupant.
 | `Status(cond, slot)` | 💢 BURN → Lead | Applies a condition to the slot's occupant |
 | `Unknown` | ❓ + a kind glyph | Hidden magnitude (§5.5) |
 | `Summon(helper)` | 👤+ Call for Help → +Nidoran♀ | Brings a named companion onto the field as a support (§5.6.2) |
+| `Getaway` | ⇥ Teleport — gone at the turn's end | A runner's last action: nothing happens to you, and at the turn's end it is gone (§5.6.5) |
 
 **The number is the hit** (v0.8.1). What an intent prints is the Resolution phase run dry on a copy of the fight:
 every term the real hit has — relics, Badges, held items, abilities, flat reductions, guards, shields, faint
@@ -254,8 +255,10 @@ gives nothing.
 
 ## §5.6.5 Fights with another objective
 
-> ☐ **v0.9.18** — designed 2026-10-14 (the user's note 5 on the fan-game study: "me gusta lo de combates con otros
-> objetivos"). Two shapes, after PokéSurvivor's treasure goblins and locked chests, made turn-based.
+> ✅ **v0.9.18** — designed 2026-10-14 (the user's note 5 on the fan-game study: "me gusta lo de combates con otros
+> objetivos"), built 2026-10-15. Two shapes, after PokéSurvivor's treasure goblins and locked chests, made turn-based.
+> Code: `combat/objective.ts` (the clock, the getaway, the escalation), `run/objectives.ts` (the tables, the placing,
+> the previews); `BattleConfig.objectives`.
 
 Most fights are won by knocking everything out. Two are won by something else, and **the map promises which**
 before you commit: the node's preview card names the objective and a bubble says what it means (Pillar 1).
@@ -265,7 +268,10 @@ its panel from the first turn (*Flees in 3*); at the end of its Nth turn, if it 
 fight ends as **Fled** — no XP, no drop, no catch, and no toll either (nothing was lost but the chance). Knock it out
 first and it pays far above its node; **weaken it and throw a ball** and it is a catch like any other, which is the
 classic Safari Zone race the series made of Chansey. It fights while it waits: its intents are its own, and the last
-one before it goes is always its getaway (*Teleport*, *Run*), shown like any intent.
+one before it goes is always its getaway (*Teleport*, *Run*), shown like any intent. **It runs only on a turn it declared
+its getaway** (v0.9.18): asleep or frozen when its last turn begins, it cannot, and it runs the first turn it can — so a
+sleep landed a turn ahead buys a turn, while a status landed in the last turn itself only telegraphs (§4.2.1 G7) and does
+not stop a getaway already declared. The Rare Candy is your Lead's: one level, with whatever the level brings (§2.11.6).
 
 | Runner | Region | Flees in | Knock it out for | Why it runs |
 |---|---|---|---|---|
@@ -276,7 +282,9 @@ one before it goes is always its getaway (*Teleport*, *Run*), shown like any int
 *The numbers (`FLEE_RACE` in `run/objectives.ts`):* about **one Wild Area node in twelve** is a runner in place of its
 pool's roll (never the first two columns, never two on a route); the runner's level is the node's band top; it
 cannot be part of a pack and never calls for help. A runner is never Shiny-rolled differently — a shiny Abra that
-teleports is the oldest heartbreak in the series, kept on purpose.
+teleports is the oldest heartbreak in the series, kept on purpose. The runners and the guarded finds are placed once the
+route is built, on a stream of their own seeded off the map's without spending it, so every other node of a map is what
+it was before v0.9.18.
 
 **The hold-out — *Hold out for N turns*.** A **guarded find** (§2.9.5): something worth having lies on the ground
 and a Pokémon that will not be beaten in time stands over it. You win by **still having a Pokémon standing at the end
@@ -286,13 +294,17 @@ turns, the purest test of Pillar 2. A bar on the fight's top line counts the tur
 
 | Guard | Region | Turns | Guarding |
 |---|---|---|---|
-| **Primeape** (Thrash, Rage) | 1 | 3 | a held item, or an Uncommon relic one time in four |
-| **Tauros** ×2, two at a time (Stampede) | 2 | 4 | a TM of a type your Active Team carries, or an Uncommon relic one time in three |
-| **Rhydon** (Horn Drill telegraphed on the last turn) | 3 | 4 | a Rare relic one time in three, a held item otherwise |
+| **Primeape** (Thrash, Rage, Karate Chop) | 1 | 3 | a held item, or an Uncommon relic one time in four |
+| **Tauros** ×2, two at a time (Stomp, Take Down, Rage) | 2 | 4 | a TM of a type your Active Team carries, or an Uncommon relic one time in three |
+| **Rhydon** (Horn Attack, Stomp; Horn Drill telegraphed on the last turn, at your Lead) | 3 | 4 | a Rare relic one time in three, a held item otherwise |
 
-*The numbers (`HOLD_OUT`):* a guarded find replaces about **one stop in eight** of §2.9.5's finds, never in a column
-with no other choice. A guard's level is its column's trainer band, its Attack the Region's tier ×1.2. XP is a won
-wild fight's. Running from a hold-out is allowed and costs the wild toll (§3.1.2); losing it is a lost fight.
+*The numbers (`HOLD_OUT`):* a guarded find replaces about **one find in eight** of §2.9.5's, never where it is the only
+way on (every way into it has another way out). A guard's level is its column's trainer band, its Attack the Region's
+tier ×1.2, and it stands on **×1.75 a wild Pokémon's HP** — "will not be beaten in time" — so knocking it out early is
+possible and costly. **A guard is not for catching**: the find is the prize, not the Pokémon over it. The map names the
+prize's kind (*a held item*, *an Uncommon relic*); which one is rolled when the hold is won, never one you hold, and a
+TM is of a type your Active Team carries then. XP is a won wild fight's. Running from a hold-out is allowed and costs
+the wild toll (§3.1.2); losing it is a lost fight.
 
 *Why these two (delegated, 2026-10-14):* both are telegraphed races — one against a countdown you can see, one
 against a guard that escalates on a schedule you can see — so they add stakes without any hidden rule. The runner

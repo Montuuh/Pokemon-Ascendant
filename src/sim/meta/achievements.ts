@@ -25,7 +25,7 @@ export type MedalTier = 'bronze' | 'silver' | 'gold' | 'platinum';
 export type MetaEvent =
   | {
       t: 'combat-end';
-      outcome: 'victory' | 'defeat' | 'caught' | 'escaped';
+      outcome: 'victory' | 'defeat' | 'caught' | 'escaped' | 'fled';
       kind: string;
       damageTaken: number;
       manualSwaps: number;

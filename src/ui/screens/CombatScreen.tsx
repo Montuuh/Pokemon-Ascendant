@@ -32,6 +32,7 @@ import { IntentArrows } from '@/ui/components/IntentArrows';
 import { TrainerParty } from '@/ui/components/TrainerParty';
 import { ApMeter } from '@/ui/components/ApMeter';
 import { RuleChip } from '@/ui/components/RuleChip';
+import { ObjectiveChip } from '@/ui/components/ObjectiveChip';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
 import { fxTimings, useCombatFx, type SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
@@ -443,6 +444,8 @@ export function CombatScreen() {
           </Tipped>
           {/* §5.9.5 — the Leader's rule, with its count; the whole rule is one hover away. */}
           {state.gymRule && <RuleChip rule={state.gymRule} live={{ state, config: ctx.config }} />}
+          {/* §5.6.5 — a hold-out counts its turns on the top line; a runner counts on its own card. */}
+          {state.objective?.kind === 'hold' && <ObjectiveChip kind="hold" turns={state.objective.turns} live={state} />}
           {/* §9.2.2.1 — the active field, with the Home Field marker when the enemy owns it. */}
           <FieldChips fields={state.fields} suppressed={fieldsSuppressed(state, ctx.content)} />
         </div>
@@ -519,7 +522,7 @@ export function CombatScreen() {
                     onHover={(h) => setHoverEnemyUid((cur) => (h ? enemy.uid : cur === enemy.uid ? null : cur))}
                     fxClass={fx.classes[enemy.uid]}
                     fxSlot={fieldSlot(i)}
-                    spriteClass={fx.catching?.targetUid === enemy.uid && fx.catching.success ? 'fx-hidden' : fx.sprites[enemy.uid]}
+                    spriteClass={fx.catching?.targetUid === enemy.uid && fx.catching.success ? 'fx-hidden' : state.outcome === 'fled' ? 'fx-fled' : fx.sprites[enemy.uid]}
                     floats={fx.floats}
                     waiting={fx.sprites[enemy.uid] === 'fx-hidden' && fx.catching?.targetUid !== enemy.uid}
                     quiet={!!fx.catching}

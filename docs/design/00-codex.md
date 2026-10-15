@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen, its cards and the formation (§9.2) as of 2026-10-15; the title screen (§9.13) as of 2026-10-15. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen, its cards and the formation (§9.2) as of 2026-10-15; the title screen (§9.13) and fights with another objective built (§5.6.5) as of 2026-10-15. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -254,6 +254,12 @@ to 30 %. Supports hit at 70 % and escalate at most +2.
 preview card names it — wild **packs** (30 / 40 / 50 % of wild nodes, some of three), wild **callers** (10 / 15 /
 20 % + every social species), trainers **two at a time** (50 / 60 / 70 %) or **three**, the Elite (four Pokémon) and
 the Gym (five, v0.8.8) **always two at a time**, the Region 3 Elite Wild **acts twice** at 75 % HP (v0.8.5).
+
+**Fights with another objective** (§5.6.5, v0.9.18): about one Wild Area in twelve is a **runner** (Abra, Meowth,
+Chansey at their Region's form) that gets away at the end of its last turn — no XP, no drop, no toll — unless it is
+knocked out first (its premium: XP ×2 and a Rare Candy, Pay Day ₽, XP ×3) or caught; about one find in eight is
+**guarded** — hold out to the end of turn 3–4 against a guard that gains an Attack stage every turn, or knock it out,
+and the find and its prize are yours. Both named on the map and counted down on screen.
 
 **Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
 signature uncapped, Sturdy). **Gyms:** 2 Pokémon, ace 3-phase, **no mid-fight evolution** — the threat is a level

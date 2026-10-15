@@ -260,6 +260,16 @@ html[data-motion='reduced'] *::after {
   pointer-events: none;
   animation: sendOutRing var(--fx-sendout) ease-out both;
 }
+/* §5.6.5 — a runner that got away: gone from its window, a fade and a step aside, before the overlay says so. */
+.fx-fled img {
+  animation: fledOut 500ms ease-in forwards;
+}
+@keyframes fledOut {
+  to {
+    transform: translateX(40%);
+    opacity: 0;
+  }
+}
 .fx-wild-enter img {
   animation: wildEnter var(--fx-wild-enter) var(--ease-step) both;
 }

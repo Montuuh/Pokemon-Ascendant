@@ -852,6 +852,97 @@
         }
       ],
       "onField": 2
+    },
+    {
+      "id": "flee-abra",
+      "name": "Objective — An Abra that won’t stay",
+      "description": "A flee race (§5.6.5): the Abra teleports away at the end of turn 2. Knock it out first for its premium, or weaken it and throw a ball; put it to sleep and it cannot run.",
+      "kind": "wild",
+      "stage": "meadow",
+      "seed": 1807,
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 10
+          },
+          {
+            "species": "squirtle",
+            "level": 10
+          },
+          {
+            "species": "bulbasaur",
+            "level": 10
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "poke-ball",
+          "poke-ball",
+          "potion"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "abra",
+          "level": 9,
+          "tier": "wild",
+          "phaseCount": 1
+        }
+      ],
+      "objective": {
+        "kind": "flee",
+        "turns": 2
+      }
+    },
+    {
+      "id": "hold-primeape",
+      "name": "Objective — A Primeape on guard",
+      "description": "A hold-out (§5.6.5): keep a Pokémon standing to the end of turn 3 against a Primeape that grows angrier every turn — or knock it out first. Not for catching.",
+      "kind": "wild",
+      "stage": "forest",
+      "seed": 1808,
+      "player": {
+        "team": [
+          {
+            "species": "charmander",
+            "level": 10
+          },
+          {
+            "species": "squirtle",
+            "level": 10
+          },
+          {
+            "species": "bulbasaur",
+            "level": 10
+          }
+        ],
+        "leadIndex": 1,
+        "consumables": [
+          "super-potion",
+          "potion",
+          "poke-ball"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "primeape",
+          "level": 11,
+          "tier": "wild",
+          "phaseCount": 1,
+          "moves": [
+            "thrash",
+            "rage",
+            "karate-chop"
+          ]
+        }
+      ],
+      "objective": {
+        "kind": "hold",
+        "turns": 3
+      }
     }
   ]
 }

@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, type GymDef, type GymRuleId, type CombatCtx } from '@/sim';
+import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, INTENT_LABEL, MARKET_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -155,6 +155,7 @@ const INTENT_BODY: Record<string, string> = {
   incapacitated: 'Asleep, frozen, or caught off guard by your Time Spinner. It does nothing this turn.',
   summon: 'Calling a companion into the fight. It spends its turn on it — a free turn for you, and the last one against fewer enemies.',
   guard: 'Finish the Lead now, or switch to Ranged.',
+  getaway: OBJECTIVE_TEXT.getawayBody,
 };
 
 /** §5.5 — what an intent means and what to do about it. `hidden` intents show the kind only. */
@@ -188,7 +189,8 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
       : who.length === 1 ? `${who[0]} joins the fight as a support, behind its Lead. It acts from next turn.`
       : `${who.join(' and ')} join the fight as supports, behind their Lead. They act from next turn.`,
     );
-  } else if (intent.kind === 'guard') lines.push(`Steps in front of ${ally.name}: after this turn it leads, braced with +1 Defence, and your Melee cards reach only it.`);
+  } else if (intent.kind === 'getaway') lines.push(OBJECTIVE_TEXT.getawayBody);
+  else if (intent.kind === 'guard') lines.push(`Steps in front of ${ally.name}: after this turn it leads, braced with +1 Defence, and your Melee cards reach only it.`);
   else lines.push(ally.uid === enemy.uid ? 'On itself.' : `On ${ally.name}, its Lead.`);
   if (enemy.acts === 2 && action === 0) lines.push('It acts twice: this first, then the Also below.');
   if (action === 1) {
@@ -350,6 +352,19 @@ export function stoneUseTip(stoneId: string): ReactNode {
 /** §5.6.1 — the node's Pokémon that acts twice, on its preview card. */
 export function doubleActorTip(who: 'lead' | 'ace'): ReactNode {
   return <Tip title={DOUBLE_ACTOR_LABEL[who]} body={DOUBLE_ACTOR_HINT} />;
+}
+
+/** §5.6.5 — what a race pays, for its bubble: the runner's premium, or what the guard stands over. */
+export function objectiveMeta(objective: NodeObjective | undefined): string[] {
+  if (!objective) return [];
+  return objective.kind === 'flee' ? [`Knock it out first: ${runnerRewardLine(runnerById(objective.runner).reward)}`] : [`Guarding ${holdPrizeLine(objective.prize)}`];
+}
+
+/** §5.6.5 — a fight with another objective: the runner's race or the hold-out, with its turns. */
+export function objectiveTip(kind: 'flee' | 'hold', turns: number, meta: string[] = []): ReactNode {
+  return kind === 'flee'
+    ? <Tip title={OBJECTIVE_TEXT.fleeTitle} meta={meta} body={OBJECTIVE_TEXT.fleeBody(turns)} />
+    : <Tip title={OBJECTIVE_TEXT.holdTitle} meta={meta} body={OBJECTIVE_TEXT.holdBody(turns, DEFAULT_BATTLE_CONFIG.objectives.guardEscalation)} />;
 }
 
 /** §5.6.3 — a fight node's shape on the map: a pack, a pair, a caller, a support, a Pokémon that acts twice. */

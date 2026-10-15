@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.18 — Fights with another objective · 2026-10-15
+
+Some fights are won by something other than knocking everything out.
+
+- **Flee race.** A runner leaves after its last turn; beat it first.
+- **Hold-out.** Outlast a guard that hits harder every turn.
+- **On the map.** Both named on the node and counted down in the fight.
+
 ### v0.9.17 — The title screen, a battle · 2026-10-15
 
 A Pokémon battle plays behind the title and the new-run steps.

@@ -81,7 +81,7 @@ describe('Region Modifiers — §2.11.3', () => {
     // v0.8.4 — the Battlefields exist, so the modifier does what it says: a Water Lead fights wild Pokémon in Rain.
     const surveyed = withModifier('field-surveyor');
     expect(priceFor(surveyed, content, 150)).toBe(150);
-    const node = Object.values(surveyed.map.nodes).find((n) => n.kind === 'wild')!;
+    const node = Object.values(surveyed.map.nodes).find((n) => n.kind === 'wild' && !n.preview.objective)!;
     const sc = buildScenario(node, surveyed, content, new GameRng(1))!;
     expect(sc.fields?.weather).toBe('rain-dance');
   });
@@ -152,7 +152,7 @@ describe("The v0.7.5 modifiers — §2.11.3", () => {
       for (let seed = 1; seed <= 40; seed++) {
         const run = createRun('squirtle', seed, ctx, 0, [], undefined, id);
         for (const node of Object.values(run.map.nodes)) {
-          if (node.kind !== 'wild') continue;
+          if (node.kind !== 'wild' || node.preview.objective) continue;
           wilds += 1;
           shown = node.preview.wild!.odds.rare;
           if (rollWild(node, run, ctx.content).tier === 'rare') n += 1;

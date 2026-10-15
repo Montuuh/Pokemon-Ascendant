@@ -14,6 +14,7 @@ import { activeEnemy, slotOccupant, SLOT_LABEL } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent, QueuedIntent } from './state';
 import { hpFraction } from './stats';
 import { cardsLocked, isImmuneToStatus, paralysisApBonus } from './status';
+import { objectiveIntent } from './objective';
 import { typeMultiplier } from './typeChart';
 
 // §5 — enemy AI: candidate intents from the enemy's 4 moves, context-aware scoring, randomness floor,
@@ -212,7 +213,7 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
     cands.push({ intent, move, score: scoreIntent(state, enemy, { intent, move }, ctx) });
   }
   // Ties resolve toward pressure: offensive intents are considered before setup/utility with equal scores.
-  const KIND_PRIORITY: Record<IntentKind, number> = { attack: 0, cleave: 0, backstrike: 0, status: 1, debuff: 2, summon: 3, guard: 3, stall: 3, buff: 4, unknown: 5, incapacitated: 5 };
+  const KIND_PRIORITY: Record<IntentKind, number> = { attack: 0, cleave: 0, backstrike: 0, status: 1, debuff: 2, summon: 3, guard: 3, stall: 3, buff: 4, unknown: 5, incapacitated: 5, getaway: 6 };
   const pool = applyArchetypeFilter(enemy, cands, ctx.config)
     .filter((c) => c.score > 0)
     .sort((a, b) => KIND_PRIORITY[a.intent.kind] - KIND_PRIORITY[b.intent.kind]);
@@ -266,7 +267,9 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     const kept = planned && plannedStillLegal(state, enemy, planned, ctx) ? { ...planned.intent } : null;
     if (planned && !kept) log(state, 'enemy', `${enemy.name} changes its plan.`);
     const firstCap = enemy.acts === 2 ? Math.max(...enemy.moveIds.map((m) => ctx.content.move(m).apCost).filter((ap) => ap + roomFor(null) <= budget), 0) : Infinity;
-    const intent = kept ?? chooseIntent(state, enemy, ctx, rng, undefined, firstCap) ?? chooseIntent(state, enemy, ctx, rng);
+    // §5.6.5 — the objective's last turn dictates: the runner's getaway, the guard's finisher.
+    const forced = objectiveIntent(state, enemy, ctx);
+    const intent = forced ?? kept ?? chooseIntent(state, enemy, ctx, rng, undefined, firstCap) ?? chooseIntent(state, enemy, ctx, rng);
     enemy.intent = intent ?? { kind: 'stall', moveId: null, targetSlot: null, hidden: false };
     // §5.5 (CL-011) — Elite/Gym enemies hide their first intent until they have fired a move.
     // §8.8 Dense Fog extends the same one-intent blind to the ordinary enemies, which is the whole modifier:
@@ -278,7 +281,7 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     // shows one intent free the first time you meet a species you have not yet earned that on.
     const known = state.familiar.includes(enemy.speciesId) || (!enemy.witnessed && state.insight.includes(enemy.speciesId));
     // §7.3.7 Clear Mind does what §6.5.2's ability does, from the relic case instead of the party.
-    enemy.intent.hidden = hides && !known && !teamRevealsIntents(state.player.team, ctx.content, !enemy.witnessed) && !relicsRevealIntents(state, ctx.content, !enemy.witnessed, state.turn);
+    enemy.intent.hidden = !forced && hides && !known && !teamRevealsIntents(state.player.team, ctx.content, !enemy.witnessed) && !relicsRevealIntents(state, ctx.content, !enemy.witnessed, state.turn);
     // §5.6.1 — a Pokémon that acts twice declares its second action now, chosen knowing the first: a different
     // move, and never a status the first (or the group) already means to put there. It hides what the first hides.
     if (enemy.acts === 2) {
@@ -373,6 +376,8 @@ export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: C
     }
     case 'guard':
       return `will step in front of ${ally?.name ?? 'its Lead'} (${move?.name}) and lead the group.`;
+    case 'getaway':
+      return move ? `is about to get away (${move.name})!` : 'is about to run away!';
   }
 }
 

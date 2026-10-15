@@ -1090,9 +1090,10 @@ commonest stop, and the smallest: the route's breathing between fights, not a re
 The find is rolled with the map, so a reload shows the same one. Money is in the table because the bag already
 fills faster than a careful player empties it (v0.8.6), and the City is where a stop's worth is spent.
 
-**A guarded find** (☐ v0.9.18): about one find in eight is guarded — a better find (a held item, a TM, an Uncommon or
-Rare relic) under a Pokémon that will not be beaten in time. It is a **hold-out** fight (§5.6.5), named on the map as
-one: *Guarded — hold out for 3 turns*. Never the only stop in its column, so walking past it is always a choice.
+**A guarded find** (✅ v0.9.18): about one find in eight is guarded — the find and a better one beside it (a held item,
+a TM, an Uncommon or Rare relic) under a Pokémon that will not be beaten in time. It is a **hold-out** fight (§5.6.5),
+drawn on the map as its guard and named on its preview: *A guarded find* · *Hold out · 3 turns*. Never the only way on,
+so walking past it is always a choice.
 
 ## §2.9.6 The route Trader
 

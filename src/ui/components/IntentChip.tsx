@@ -2,7 +2,7 @@ import { IconQuestionMark } from '@tabler/icons-react';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
 import { SLOT_LABEL, asLeadDamage, comboBreakAt, intentRecipient, slotOccupant, summonedBy } from '@/sim';
 import { intentGlyph } from '@/ui/art';
-import { INTENT_LABEL } from '@/ui/strings';
+import { INTENT_LABEL, OBJECTIVE_TEXT } from '@/ui/strings';
 import { intentCardTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
 import { intentTone } from '@/ui/intentTone';
@@ -71,6 +71,8 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
             {intent.kind === 'summon' && <> → <b>{called.length ? `+${called.join(', +')}` : 'nobody left'}</b></>}
             {/* §5.6 — Cover names the Lead it steps in front of. */}
             {intent.kind === 'guard' && ally && <> → <b>{ally.name}</b></>}
+            {/* §5.6.5 — a runner's getaway: it aims at nobody, it is a promise to be gone. */}
+            {intent.kind === 'getaway' && OBJECTIVE_TEXT.getawayNote}
             {intent.kind === 'incapacitated' && (enemy.status?.kind === 'sleep' ? ' — fast asleep' : enemy.status?.kind === 'freeze' ? ' — frozen solid' : ' — caught off guard')}
           </span>
         </>

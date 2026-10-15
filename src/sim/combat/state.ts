@@ -143,7 +143,17 @@ export interface ConsumableCard {
 }
 
 export type Phase = 'draw' | 'intent' | 'action' | 'resolution' | 'ended';
-export type Outcome = 'in-progress' | 'victory' | 'defeat' | 'caught' | 'escaped';
+/** §5.6.5 — `fled`: a runner got away before it was beaten or caught. Nothing was lost but the chance. */
+export type Outcome = 'in-progress' | 'victory' | 'defeat' | 'caught' | 'escaped' | 'fled';
+
+/**
+ * §5.6.5 — a fight won by something other than knocking everything out: a runner that leaves at the end of turn
+ * `turns` (`flee`), or a find held until the end of turn `turns` against a guard that escalates (`hold`).
+ */
+export interface CombatObjective {
+  kind: 'flee' | 'hold';
+  turns: number;
+}
 
 export interface PlayerState {
   team: Combatant[];
@@ -295,6 +305,8 @@ export interface CombatState {
   fields: FieldState;
   /** §5.9.5 — the Gym Leader's rule, for the whole fight. Absent in every fight but a Gym. */
   gymRule?: GymRuleId;
+  /** §5.6.5 — the fight's other objective, for the whole fight. Absent in every fight won the usual way. */
+  objective?: CombatObjective;
   /** §5.9.5 — what a rule keeps between turns: Rollout's Lead and its count, Mind Lock's sealed card. */
   ruleState?: { leadUid?: string; leadTurns?: number; sealedCardId?: string };
   /** §5.9.3 — enemies still to come, fought sequentially. */
@@ -340,6 +352,8 @@ export type RejectReason =
   | 'lead-frozen'
   | 'invalid-index'
   | 'not-wild'
+  /** §5.6.5 — a hold-out's guard is not for catching. */
+  | 'guard'
   | 'no-balls'
   | 'item-limit'
   /** §3.1.2 — there is no running from a Gym. */

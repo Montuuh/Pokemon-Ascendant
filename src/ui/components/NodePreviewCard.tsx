@@ -5,11 +5,12 @@ import { useRunStore } from '@/app/runStore';
 import { fieldsFor, doubleActorFor, gymById, groupPlanFor, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
 import { FieldChips } from './FieldChips';
 import { RuleChip } from './RuleChip';
+import { ObjectiveChip } from './ObjectiveChip';
 import { doubleActorTip, groupTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { itemIcon, mysterySign } from '@/ui/art';
 import { nodeArt } from './nodeArt';
-import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_HINT, NODE_LABEL, WILD_TEXT } from '@/ui/strings';
+import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_LABEL, nodeHint, WILD_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import { WildPool } from './WildPool';
 import { Money } from './Money';
@@ -69,6 +70,10 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   }, [onCancel]);
 
   const hiddenTeam = node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym';
+  // §5.6.5 — a runner or a guarded find: the race it is, named on the card.
+  const objective = node.preview.objective;
+  // A find is a fight only when it is guarded.
+  const fight = node.kind !== 'cache' || objective?.kind === 'hold';
   // The Poké Balls below say how many; the line keeps only what they do not (a Gym's telegraph, the Elite's prize).
   const detail = hiddenTeam
     ? node.preview.detail.replace(/^A team of \d+ Pokémon( · )?/, '')
@@ -104,12 +109,14 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           </div>
         </header>
 
-        {detail && !node.preview.find && !node.preview.wild && <p className={styles.detail}>{detail}</p>}
-        <p className={styles.hint}>{NODE_HINT[node.kind]}</p>
+        {detail && (!node.preview.find || objective) && !node.preview.wild && <p className={styles.detail}>{detail}</p>}
+        <p className={styles.hint}>{nodeHint(node)}</p>
         {/* §2.6.1 / §4.3 — the ground it is fought on, promised like the rest. */}
         <div className={styles.chipRow}>
           <FieldChips fields={fields} compact />
           {gym && <RuleChip rule={gym.rule} compact />}
+          {/* §5.6.5 — the map promises the fight's other objective before you commit (Pillar 1). */}
+          {objective && <ObjectiveChip kind={objective.kind} turns={objective.turns} objective={objective} compact />}
         </div>
         {plan.kind !== 'single' && (
           <Tipped tip={groupTip(plan)} className={styles.group} data-testid="preview-group">
@@ -167,9 +174,9 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         {!hiddenTeam && !node.preview.wild && node.preview.speciesIds.length > 0 && (
           <>
             <h3 className={styles.sectionTitle}>
-              {node.kind === 'wild' ? 'Could be waiting' : 'Their team'}
+              {node.kind === 'wild' ? (objective ? 'Waiting there' : 'Could be waiting') : objective?.kind === 'hold' ? 'On guard' : 'Their team'}
               <span className={styles.band}>
-                Lv {node.preview.levelBand[0]}–{node.preview.levelBand[1]}
+                {node.preview.levelBand[0] === node.preview.levelBand[1] ? `Lv ${node.preview.levelBand[0]}` : `Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`}
               </span>
             </h3>
             <ul className={styles.species}>
@@ -196,7 +203,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           </div>
         )}
 
-        {node.kind !== 'cache' && (
+        {fight && (
           <>
             <h3 className={styles.sectionTitle}>
               {node.kind === 'aid' || node.kind === 'merchant' ? 'Bringing along' : 'Going in with'}
@@ -237,7 +244,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
               ? 'Rest here'
               : node.kind === 'merchant'
                 ? 'Browse'
-                : node.kind === 'cache'
+                : node.kind === 'cache' && !fight
                   ? 'Pick it up'
                   : 'Enter'}
           </button>

@@ -12,6 +12,7 @@ import { applyDoubleAction } from './doubleAction';
 import { rollWild } from './wild';
 import { applyShiny } from './shiny';
 import { applyFields } from './battlefields';
+import { HOLD_OUT, guardById, runnerById } from './objectives';
 
 /** The catch consumable's catalog id (§7.2.5). */
 
@@ -121,6 +122,49 @@ export function buildWildScenario(node: MapNode, run: RunState, content: Content
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
     enemies: [{ species: speciesId, level, tier: 'wild', phaseCount: 1 }],
+  };
+}
+
+/**
+ * §5.6.5 — the flee race: the runner the map named, alone, at the node's band top, with the turns it stays. A wild
+ * fight in every other way — it can be caught — but never a pack and never a caller.
+ */
+export function buildRunnerScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng): ScenarioDef {
+  const objective = node.preview.objective!;
+  const runner = node.preview.enemies?.[0] ?? { species: node.preview.speciesIds[0]!, level: node.preview.levelBand[1] };
+  const turns = objective.kind === 'flee' ? runnerById(objective.runner).turns : objective.turns;
+  const wild = buildWildScenario(node, run, content, rng, runner.species);
+  return { ...wild, enemies: [{ ...wild.enemies[0]!, level: runner.level }], objective: { kind: 'flee', turns } };
+}
+
+/**
+ * §5.6.5 — the hold-out: the guard (or the pair) over the find, hitting hard and harder, on more HP than a wild
+ * Pokémon of its level. Fought where its node stands; its Pokémon are not for catching.
+ */
+export function buildGuardScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng): ScenarioDef {
+  const objective = node.preview.objective!;
+  const guard = guardById(objective.kind === 'hold' ? objective.guard : '');
+  const level = node.preview.enemies?.[0]?.level ?? node.preview.levelBand[1];
+  const name = content.species(guard.team[0]!.species).name;
+  return {
+    id: `run-${node.id}`,
+    name: guard.team.length > 1 ? `${guard.team.length} ${name} on guard` : `${name} on guard`,
+    description: 'Hold out, or knock it out.',
+    kind: 'wild',
+    stage: stageFor(node, run),
+    seed: rng.cursor,
+    player: {
+      team: activeSetups(run, content),
+      leadIndex: 0,
+      consumables: [...run.consumables],
+      balls: 0,
+      relics: [...run.relics],
+      badges: [...run.badges],
+      ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
+    },
+    enemies: guard.team.map((m): EnemySetup => ({ species: m.species, level, tier: 'wild', phaseCount: 1, moves: [...m.moves], attackMultiplier: HOLD_OUT.attackMultiplier, hpMultiplier: HOLD_OUT.hpMultiplier })),
+    ...(guard.team.length > 1 ? { onField: Math.min(3, guard.team.length) as 2 | 3 } : {}),
+    objective: { kind: 'hold', turns: guard.turns },
   };
 }
 
@@ -343,6 +387,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
     switch (node.kind) {
       case 'wild':
       {
+        // §5.6.5 — a runner is the map's own Pokémon, not a roll.
+        if (node.preview.objective?.kind === 'flee') return buildRunnerScenario(node, run, content, rng);
         // §2.6.2 — the rarity and the species are rolled as you walk in (v0.9.7), and the fight announces the rarity.
         if (wildChoice) return buildWildScenario(node, run, content, rng, wildChoice);
         const roll = rollWild(node, run, content);
@@ -356,18 +402,22 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
         return buildEliteScenario(node, run, content, rng);
       case 'elite-wild':
         return buildEliteWildScenario(node, run, content, rng);
+      // §5.6.5 — a find is a fight only when something guards it.
+      case 'cache':
+        return node.preview.objective?.kind === 'hold' ? buildGuardScenario(node, run, content, rng) : null;
       // A service node has no fight to build.
       case 'aid':
       case 'merchant':
       case 'mystery':
-      case 'cache':
         return null;
     }
   })();
   // §5.6.3 — the node's group first, so its companions and supports take the Region's tier, accent and modifiers too.
   // §4.3 — and the ground it is fought on: the biome's Battlefield, a Gym's or an Elite's Home Field.
   // §5.6.1 — and who in it acts twice. §5.14 — and, once the group is in, whether any wild Pokémon in it is shiny.
-  return base ? applyPerks(applyModifiers(applyRegion(applyFields(applyShiny(applyDoubleAction(applyGroups(base, node, run, content), node, run), node, run, content), node, run, content), run, content), run), run, content) : null;
+  // §5.6.5 — a fight with another objective is its own shape: never a group, never a double action.
+  const shaped = base && !node.preview.objective ? applyDoubleAction(applyGroups(base, node, run, content), node, run) : base;
+  return shaped ? applyPerks(applyModifiers(applyRegion(applyFields(applyShiny(shaped, node, run, content), node, run, content), run, content), run), run, content) : null;
 }
 
 /**

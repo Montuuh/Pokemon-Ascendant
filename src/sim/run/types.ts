@@ -75,7 +75,17 @@ export interface NodePreview {
   rosterId?: string;
   /** §2.9.5 — what lies on the ground at a `cache` node: rolled with the map and named before you choose it. */
   find?: { items: string[]; money: number };
+  /**
+   * §5.6.5 — a fight with another objective, placed with the map and named on it: a Wild Area whose Pokémon is a
+   * runner (`flee`), or a find with a guard standing over it (`hold`). Absent on every other node.
+   */
+  objective?: NodeObjective;
 }
+
+/** §5.6.5 — the runner or the guard (their rows in `run/objectives.ts`), the turns, and what a hold guards. */
+export type NodeObjective =
+  | { kind: 'flee'; runner: string; turns: number }
+  | { kind: 'hold'; guard: string; turns: number; prize: { kind: 'held-item' } | { kind: 'tm' } | { kind: 'relic'; rarity: 'uncommon' | 'rare' } };
 
 export interface RegionMap {
   seed: number;
@@ -243,6 +253,11 @@ export interface RewardSummary {
   balls: number;
   /** §7.4.6 — the held item this fight dropped, if any. */
   heldItem: string | null;
+  /**
+   * §5.6.5 — what the fight's other objective paid, line by line: a runner knocked out before it fled (its XP, its
+   * Rare Candy, its Pay Day), or a hold-out won (the find). Absent after every other fight.
+   */
+  objective?: { kind: 'flee' | 'hold'; lines: string[] };
 }
 
 /** §2.9.2 — one row of shop stock. Seeded per visit; a sold slot stays sold across a re-roll. */
@@ -583,7 +598,8 @@ export interface RunPerks {
 
 /** What a finished combat reports back to the run layer. */
 export interface CombatOutcomeReport {
-  outcome: 'victory' | 'defeat' | 'caught' | 'escaped';
+  /** §5.6.5 — `fled`: a runner got away. */
+  outcome: 'victory' | 'defeat' | 'caught' | 'escaped' | 'fled';
   /** Final HP and status for each Active Pokémon, keyed by uid. §4.2.7.1 — the status leaves with its clock. */
   team: { uid: string; hp: number; status: CarriedStatus | null; confusionTurns?: number; fainted: boolean; defeats?: number }[];
   /** The wild Pokémon that was caught, if any. */

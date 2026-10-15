@@ -1,0 +1,25 @@
+/* §5.6.5 — the objective's countdown: the field chips' pill, its border the warning's amber (never on the text, D5), and
+   solid on the last turn, when the race is decided. */
+.chip {
+  composes: chip from './FieldChips.module.css';
+  border-color: var(--accent-warning);
+  white-space: nowrap;
+}
+.compact {
+  padding: 0 var(--sp-2);
+}
+.count {
+  padding-left: var(--sp-1);
+  border-left: 1px solid var(--border-strong);
+  color: var(--ink-secondary);
+  font-weight: 700;
+}
+/* Doubled, so it outranks the composed pill's own ground whatever order the sheets load in. */
+.chip.urgent {
+  background: var(--accent-warning);
+  color: var(--ink-on-accent);
+}
+.chip.urgent .count {
+  color: var(--ink-on-accent);
+  border-left-color: currentColor;
+}

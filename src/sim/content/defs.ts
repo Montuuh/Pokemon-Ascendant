@@ -543,6 +543,8 @@ export interface ScenarioDef {
   wildTier?: 'common' | 'uncommon' | 'rare';
   /** §5.9.5 — a Gym fight's Leader rule. */
   gymRule?: GymRuleId;
+  /** §5.6.5 — a fight with another objective: a runner (`flee`) or a guarded find (`hold`), and its turns. */
+  objective?: { kind: 'flee' | 'hold'; turns: number };
   /**
    * §5.6 — how many enemies stand on the field at once: 1 (the default) fights them one after another, 2–3 is
    * a group — the first is the Lead, the rest are supports, and the list's remainder waits to fill a free place.

@@ -58,6 +58,8 @@ export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
       return face ? { kind: 'pokemon', src: pokemonIcon(face), cover: null } : { kind: 'sign', src: mysterySign() };
     }
     case 'cache': {
+      // §5.6.5 — a guarded find shows who stands over it.
+      if (p.objective?.kind === 'hold' && p.speciesIds[0]) return { kind: 'pokemon', src: pokemonIcon(p.speciesIds[0]), cover: null };
       const item = p.find?.items[0];
       return { kind: 'item', src: itemIcon(item ?? 'poke-ball') };
     }

@@ -7,6 +7,7 @@ import {
 import { AID_HEAL_PCT } from './economy';
 import { hasModifier } from './modifiers';
 import { rollGroundFind, supplyLabel, type GroundFind } from './rewards';
+import { placeObjectives } from './objectives';
 import type { MapNode, NodeKind, NodePreview, RegionMap } from './types';
 import type { PokemonType } from '../types';
 
@@ -703,6 +704,9 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
     pick.kind = 'merchant';
     pick.preview = MERCHANT_PREVIEW;
   }
+
+  // §5.6.5 — the runners and the guarded finds, once every node is what it is.
+  placeObjectives({ nodes, entry: ids[0]! }, rng.cursor, regionIndex, content);
 
   return {
     seed,

@@ -773,6 +773,8 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
       });
     }
     if (run.outcome !== 'in-progress') break;
+    // §5.6.5 — a runner that got away leaves nothing to claim: the run is back on the map.
+    if (phase() === 'map') continue;
 
     // §6.4.1 — a TM that dropped is worth nothing in the bag; teach it to whoever can take it.
     const tm = run.pendingReward?.tm ?? null;

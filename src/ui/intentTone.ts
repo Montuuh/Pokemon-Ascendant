@@ -23,7 +23,9 @@ export function intentTone(intent: Intent | null | undefined): IntentTone | null
     case 'stall':
     case 'guard':
       return 'ally';
+    // §5.6.5 — a runner's getaway aims at nobody: it is a promise to be gone, like a call for help's.
     case 'summon':
+    case 'getaway':
       return 'other';
     default:
       return null;

@@ -55,7 +55,9 @@ export type IntentKind =
   /** §5.6.2 — calls one or two companions into the fight. */
   | 'summon'
   /** §5.6 — a Defender steps in front of its Lead and takes the Lead's place (v0.8.6). */
-  | 'guard';
+  | 'guard'
+  /** §5.6.5 — a runner's last action: it gets away at the end of the turn (Teleport, or just running). */
+  | 'getaway';
 
 // Per §3.3 — the three Active Team slots. Slots are positions; occupants change when the Lead swaps.
 export const SLOT_IDS = ['lead', 'bench1', 'bench2'] as const;

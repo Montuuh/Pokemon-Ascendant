@@ -1247,10 +1247,27 @@ menu vista retired from the menu (kept as the town lobbies' style key). Tests: `
 art, backdrops, every fight decided, no repeat in a row), `e2e/title` (still frame; a hit lands, a bar drains, one
 faints, the next comes; the battle behind the steps).
 
-### v0.9.18 — Fights with another objective  ☐
+### v0.9.18 — Fights with another objective  ✅ 2026-10-15
 The user's note 5. Some fight nodes win by something other than "knock everything out" (§5.6.5): **the flee race**
 — a Pokémon that leaves in N turns, telegraphed as a countdown, worth a lot if it falls first — and **the hold-out** —
 survive N turns against a rampage to win. Placed by §5.6.3's table, promised on the map.
+
+**Shipped.** §5.6.5 as designed, with what building it settled. **The fight** (`combat/objective.ts`): a
+`CombatObjective` on the scenario; the runner's last-turn intent is its `getaway` (Teleport when it knows it), never
+hidden, and at the turn's end it is gone — `Outcome 'fled'` — but only on a turn it declared it (asleep or frozen when
+the turn began, it runs the first turn it can; a status landed that turn only telegraphs, §4.2.1 G7); a hold is won at
+the end of its last turn with a Pokémon standing, the guard +1 Attack stage at the end of every turn before
+(`BattleConfig.objectives`), Rhydon's Horn Drill forced at your Lead on the last; a guard refuses a ball
+(`RejectReason 'guard'`). **The run** (`run/objectives.ts`): `FLEE_RACE` (Abra 2 turns: XP ×2 and a Rare Candy for
+the Lead; Meowth/Persian 3: Pay Day, a trainer's purse ×4; Chansey 3, R2–3: XP ×3) on about one Wild Area in twelve
+from column 2, one a route; `HOLD_OUT` (Primeape 3 turns · Tauros ×2 4 · Rhydon 4, Attack ×1.2 and HP ×1.75) on about
+one find in eight, never the only way on, its prize's kind named and the item rolled when won; placed on a stream of
+their own seeded off the map's, so no other node moved. Fled pays nothing and costs nothing; running from a guard costs
+the wild toll. **The screen** (`ObjectiveChip`): the runner's countdown on its card (a running figure and *in 2*, amber
+and solid on its last turn), the hold's on the top bar, either on the node's preview with its bubble; the getaway's
+chip says it is gone at the turn's end; *It got away* and *You held out!* overlays; the reward screen names what the
+objective paid; a guarded find is drawn as its guard. Fixtures `flee-abra`, `hold-primeape`. Balance (180 runs):
+win 50 / 53 / 60 % by starter, inside the bands.
 
 ### v0.9.19 — The route Trader  ☐
 The user's note 7. A stop on the route (§2.9.6): give one of your Box, then choose one of three **face-down** offers

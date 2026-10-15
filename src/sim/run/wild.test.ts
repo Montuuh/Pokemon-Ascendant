@@ -12,7 +12,7 @@ import { rollWild, wildChances } from './wild';
 const ctx = defaultRunCtx(content);
 const LEGENDARIES = ['articuno', 'zapdos', 'moltres', 'mewtwo', 'mew'];
 const idsOf = (biomes: typeof BIOMES_R2) => new Set(Object.values(biomes).flatMap((b) => [...b!.common, ...b!.uncommon, ...b!.rare]));
-const wildsOf = (run: RunState): MapNode[] => Object.values(run.map.nodes).filter((n) => n.kind === 'wild');
+const wildsOf = (run: RunState): MapNode[] => Object.values(run.map.nodes).filter((n) => n.kind === 'wild' && !n.preview.objective);
 
 describe('The pools — §2.6.3', () => {
   it('EveryNonLegendary_LivesOnSomeRoute_TheLegendariesOnNone', () => {

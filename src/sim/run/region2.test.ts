@@ -28,7 +28,7 @@ describe('Region 2 — its own content — §2.2, §2.6.1', () => {
       const map = createRun('squirtle', seed, ctx, 1).map;
       for (const id of map.gyms) expect(GYMS_R2.map((g) => g.id), `seed ${seed}`).toContain(id);
       for (const n of Object.values(map.nodes)) {
-        if (n.kind === 'wild') for (const id of n.preview.speciesIds) expect(r2Species.has(id) || r2Counters.has(id), `${n.id} ${id}`).toBe(true);
+        if (n.kind === 'wild' && !n.preview.objective) for (const id of n.preview.speciesIds) expect(r2Species.has(id) || r2Counters.has(id), `${n.id} ${id}`).toBe(true);
         if (n.kind === 'trainer') expect(TRAINERS_R2.map((t) => t.name), n.id).toContain(n.preview.title);
         if (n.kind === 'elite') expect(n.preview.title).toBe(ELITE_R2.name);
         if (n.kind === 'elite-wild') expect(n.preview.speciesIds).toEqual(['lapras']);
@@ -39,7 +39,7 @@ describe('Region 2 — its own content — §2.2, §2.6.1', () => {
   it('RegionTwo_RampsAcrossItsOwnBand_§2.6.5', () => {
     const map = createRun('squirtle', 3, ctx, 1).map;
     for (const n of Object.values(map.nodes)) {
-      if (n.kind !== 'wild') continue;
+      if (n.kind !== 'wild' || n.preview.objective) continue;
       expect(n.preview.levelBand, n.id).toEqual(wildBandFor(n.layer, REGIONS[1]!.wildBand));
     }
     expect(wildBandFor(0, REGIONS[1]!.wildBand)[0]).toBe(14);

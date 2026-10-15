@@ -30,7 +30,9 @@ export const FLEE_TOLL: Record<FleeTier, FleeToll> = {
 /** Which toll a node's fight carries; null where running is not allowed at all. */
 export function fleeTierFor(kind: NodeKind): FleeTier | null {
   switch (kind) {
+    // §5.6.5 — a find is a fight only when it is guarded, and running from the guard costs a wild fight's toll.
     case 'wild':
+    case 'cache':
       return 'wild';
     case 'trainer':
       return 'trainer';

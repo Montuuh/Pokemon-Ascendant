@@ -36,6 +36,7 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
   'lead-frozen': 'Your Lead is frozen in place.',
   'invalid-index': 'Invalid target.',
   'not-wild': 'You can only catch wild Pokémon.',
+  guard: 'A guard is not for catching.',
   'no-balls': 'No Poké Balls left.',
   'item-limit': 'No more items this turn; the next turn allows more.',
   'nothing-to-cure': 'Nothing to cure.',
@@ -104,6 +105,7 @@ export const INTENT_LABEL: Record<string, string> = {
   incapacitated: "Can't act",
   summon: 'Call for Help',
   guard: 'Cover',
+  getaway: 'Getaway',
 };
 
 /** §2.6.4.4 — the series' lines for a ball that breaks open, by how many shake checks passed first (Gen III). */
@@ -247,6 +249,34 @@ export const DOUBLE_ACTOR_LABEL: Record<'lead' | 'ace', string> = {
 };
 export const DOUBLE_ACTOR_HINT =
   'Two actions a turn, both shown. Hurt it by a quarter of its Max HP in your turn, or hit it super-effectively, and the second is broken.';
+
+/**
+ * §5.6.5 — a fight with another objective, said once: the chip's words and the bubble's. The numbers are the
+ * fight's own (its turns, the guard's escalation), never repeated here.
+ */
+export const OBJECTIVE_TEXT = {
+  fleeLabel: 'Flees',
+  holdLabel: 'Hold out',
+  /** The same count for both races: the turns left, this one included, and the last one said as such. */
+  count: (left: number) => (left <= 1 ? 'last turn' : `${left} turns`),
+  fleeTitle: "It won't stay long",
+  fleeBody: (turns: number) =>
+    `It gets away at the end of turn ${turns}: no XP, no drop, no catch — and no toll, nothing lost but the chance. Knock it out first for its premium, or weaken it and throw a ball. Asleep or frozen when its last turn begins, it cannot run until it wakes.`,
+  holdTitle: 'Hold out',
+  holdBody: (turns: number, rise: number) =>
+    `Keep a Pokémon standing to the end of turn ${turns} and the find is yours — or knock the guard out first. It grows angrier: its Attack rises ${rise === 1 ? 'a stage' : `${rise} stages`} at the end of every turn. A guard is not for catching.`,
+  nodeHint: 'A fight: outlast the guard, or knock it out.',
+  fled: (name: string) => `${name} fled`,
+  fledBody: 'No XP, no drop, no catch — and no toll. Nothing was lost but the chance.',
+  heldBody: 'You held out: the find is yours.',
+  getawayBody: "Its last action: nothing happens to you, and at the end of this turn it is gone. Knock it out or catch it before then.",
+  guardMeta: 'On guard — its Attack rises every turn',
+  getawayNote: " — gone at the turn's end",
+} as const;
+
+/** §2.5 / §5.6.5 — what a node is in one line, the same on the map's bubble and the preview card: a find with a guard is a fight. */
+export const nodeHint = (node: { kind: string; preview: { objective?: { kind: string } } }): string =>
+  node.preview.objective?.kind === 'hold' ? OBJECTIVE_TEXT.nodeHint : (NODE_HINT[node.kind] ?? '');
 
 export const NODE_HINT: Record<string, string> = {
   wild: 'Beat them for XP, or throw a ball and take one with you.',

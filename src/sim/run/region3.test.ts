@@ -32,7 +32,7 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
       const map = createRun('squirtle', seed, ctx, 2).map;
       for (const id of map.gyms) expect(GYMS_R3.map((g) => g.id), `seed ${seed}`).toContain(id);
       for (const n of Object.values(map.nodes)) {
-        if (n.kind === 'wild') for (const id of n.preview.speciesIds) expect(r3Species.has(id) || r3Counters.has(id), `${n.id} ${id}`).toBe(true);
+        if (n.kind === 'wild' && !n.preview.objective) for (const id of n.preview.speciesIds) expect(r3Species.has(id) || r3Counters.has(id), `${n.id} ${id}`).toBe(true);
         if (n.kind === 'trainer') expect(TRAINERS_R3.map((t) => t.id), n.id).toContain(n.preview.rosterId);
         if (n.kind === 'elite') expect(n.preview.title).toBe(ELITE_R3.name);
         if (n.kind === 'elite-wild') expect(n.preview.speciesIds).toEqual(['aerodactyl']);
@@ -48,7 +48,7 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
 
   it('RegionThree_RampsAcrossItsOwnBand_§2.6.5', () => {
     const map = createRun('squirtle', 3, ctx, 2).map;
-    for (const n of Object.values(map.nodes)) if (n.kind === 'wild') expect(n.preview.levelBand, n.id).toEqual(wildBandFor(n.layer, REGIONS[2]!.wildBand));
+    for (const n of Object.values(map.nodes)) if (n.kind === 'wild' && !n.preview.objective) expect(n.preview.levelBand, n.id).toEqual(wildBandFor(n.layer, REGIONS[2]!.wildBand));
     // catalogs/biomes-regions.md §3 — Region 3 recruits at 24–32 (v0.8.10).
     expect(wildBandFor(0, REGIONS[2]!.wildBand)[0]).toBe(24);
     expect(wildBandFor(18, REGIONS[2]!.wildBand)[1]).toBe(32);

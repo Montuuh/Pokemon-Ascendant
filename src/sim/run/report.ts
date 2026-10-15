@@ -31,7 +31,7 @@ export function buildOutcomeReport(combat: CombatState, run: RunState): CombatOu
       : null;
 
   const outcome: CombatOutcomeReport['outcome'] =
-    combat.outcome === 'caught' ? 'caught' : combat.outcome === 'victory' ? 'victory' : combat.outcome === 'escaped' ? 'escaped' : 'defeat';
+    combat.outcome === 'caught' ? 'caught' : combat.outcome === 'victory' ? 'victory' : combat.outcome === 'escaped' ? 'escaped' : combat.outcome === 'fled' ? 'fled' : 'defeat';
 
   // §8.8 No Refunds reads this; every other run keeps its shelf stocked and simply ignores it.
   const spentConsumables = combat.player.consumables.used.map((c) => c.consumableId);

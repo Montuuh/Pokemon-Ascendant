@@ -167,7 +167,8 @@ column: what a Pokémon is and where it stands are read in one place.
 Persistent and never collapsed. Left: the menu, then **one chip naming the fight** — its kind as an icon (paw,
 trainer, star for an Elite, trophy for a Gym; the bubble says what the kind means) and its name, the trainer named
 once (v0.9.15: it was three chips, two of them saying the trainer's name); a Gym Leader's rule chip (§5.9.5); the
-active field badge (with the `🏠 Home Field` marker when the enemy owns it). Middle: **the battle log as a ticker** —
+active field badge (with the `🏠 Home Field` marker when the enemy owns it); a hold-out's count (*Hold out · 2 turns*,
+amber, solid on the last turn — §5.6.5). Middle: **the battle log as a ticker** —
 the last thing that happened on one line, the whole fight dropping down on a click (it used to sit on the arena
 floor, and fell off the stage at 720 p; the arena is for the fight) — and, while a card or an item waits for its
 target, **the gold hint** in its place ("Click an enemy to aim it…", Cancel): on the field it lay across the very
@@ -190,7 +191,9 @@ from the screen — the player needs to see the shape of their team.
 Each is a card (§9.2.1) under its intent chips: its place tag (Lead in the enemy's deep red, Bench 1, Bench 2), the
 status condition on the corner, type labels, name and level, the animated front sprite in its window, the HP bar with
 **phase-threshold notches** for boss-tier enemies and a **Phase N/M** chip beside it — and, on the one a card is aimed
-at (on every one, for an area card), the part that card would take, striped — and the stage, armour and Sturdy chips. Its tier (Wild, Trainer, Elite, Gym Leader) is in the plate's bubble, not printed on every plate. The sprite is
+at (on every one, for an area card), the part that card would take, striped — and the stage, armour and Sturdy chips;
+a runner's countdown (a running figure and *in 2*, amber and solid on its last turn, its bubble the race — §5.6.5). A
+guard carries no catch pill. Its tier (Wild, Trainer, Elite, Gym Leader) is in the plate's bubble, not printed on every plate. The sprite is
 as much the target as the plate: a click on either aims the held card there.
 
 ### §9.2.2.4 Hand tray

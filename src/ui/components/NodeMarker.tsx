@@ -1,6 +1,6 @@
 import type { MapNode } from '@/sim';
 import type { NodeArt } from '@/ui/art';
-import { NODE_HINT, NODE_LABEL } from '@/ui/strings';
+import { nodeHint, NODE_LABEL } from '@/ui/strings';
 import { Tip, useTip } from '@/ui/tooltip';
 import { typeName } from '@/ui/tips';
 import styles from './NodeMarker.module.css';
@@ -52,13 +52,13 @@ export function NodeMarker({
         // The kind only when the title does not already say it, and a level band only where there is a fight.
         ...(NODE_LABEL[node.kind] && NODE_LABEL[node.kind] !== node.preview.title ? [NODE_LABEL[node.kind]!] : []),
         // §2.7 — a trainer's levels are part of the surprise (v0.8.6); a wild node keeps its band.
-        ...(node.preview.levelBand[1] > 0 && (node.kind === 'wild' || node.kind === 'elite-wild') ? [`Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`] : []),
+        ...(node.preview.levelBand[1] > 0 && (node.kind === 'wild' || node.kind === 'elite-wild' || node.preview.objective?.kind === 'hold') ? [`Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`] : []),
         // §2.7.3 — a hidden team's hint.
         ...(node.preview.usualTypes?.length ? [`Usually ${node.preview.usualTypes.map(typeName).join(' · ')}`] : []),
         said,
       ]}
       body={node.preview.detail}
-      footer={NODE_HINT[node.kind]}
+      footer={nodeHint(node)}
     />,
   );
   // Not `disabled`: a disabled button gets no mouse events, and the bubble is how a node you cannot enter yet

@@ -16,6 +16,7 @@ import { mysteryEvent, rollEvent, STONE_CACHE, type EventOutcome } from './event
 import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, regionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
+import { runnerById } from './objectives';
 import { BLACK_MARKET, atLegendaryCap, candyPrice, fencePrice, rollBlackMarket, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
@@ -855,7 +856,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           draft.phase = 'event';
           break;
         }
-        if (node.kind === 'cache') {
+        if (node.kind === 'cache' && node.preview.objective?.kind !== 'hold') {
           // §2.9.5 — something on the ground: picked up and walked on, no screen. What it was is on the map's
           // preview, and the map says it once more as you leave.
           const find = node.preview.find ?? { items: [], money: 0 };
@@ -1005,6 +1006,22 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           break;
         }
 
+        // §5.6.5 — the runner got away: nothing was lost but the chance. No XP, no drop, no catch, and no toll.
+        if (report.outcome === 'fled') {
+          const runner = node.preview.enemies?.[0]?.species ?? node.preview.speciesIds[0];
+          say(draft, `The wild ${runner ? ctx.content.species(runner).name : 'Pokémon'} got away.`);
+          draft.pendingScenario = null;
+          advanceFrom(draft, node.id);
+          draft.pendingNodeId = null;
+          draft.phase = 'map';
+          break;
+        }
+
+        // §5.6.5 — a runner knocked out before it fled pays its premium; a catch is a catch like any other.
+        const objective = node.preview.objective;
+        const runnerPrize = objective?.kind === 'flee' && report.outcome === 'victory' ? runnerById(objective.runner).reward : null;
+        const objectiveLines: string[] = [];
+
         // 2. XP: the Active Team at full rate, the rest of the Box at three-quarters (§6.2.1), times any
         // relic multiplier (§7.3.3 Lucky Egg Token, Exp Share).
         // §2.8.2 — an Elite Wild pays elite XP whichever way it ended; the catch is the *premium* path, not
@@ -1018,8 +1035,10 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const pot = Math.round(
           encounterXp(tier, enemyCount, ctx.progression)
             * relicMultiplier(draft, ctx.content, 'xp-multiplier')
-            * modifierXpMultiplier(draft.modifiers),
+            * modifierXpMultiplier(draft.modifiers)
+            * (runnerPrize?.xpMultiplier ?? 1),
         );
+        if (runnerPrize?.xpMultiplier) objectiveLines.push(`Knocked out before it fled: XP ×${runnerPrize.xpMultiplier}.`);
         const share = benchXpShare(draft, ctx.content, ctx.progression.benchXpShare);
         const activeIds = new Set(draft.activeUids);
         const xpAwarded: { uid: string; amount: number }[] = [];
@@ -1042,6 +1061,21 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           }
         }
 
+        // §5.6.5 — the runner's Rare Candy: one level for the Lead, with whatever the level brings (§2.11.6's).
+        const candyFor = draft.box.find((m) => m.uid === draft.activeUids[0] && m.hp > 0) ?? draft.box.find((m) => activeIds.has(m.uid) && m.hp > 0);
+        for (let i = 0; i < (runnerPrize?.candy ?? 0) && candyFor; i++) {
+          const up = grantXp(candyFor, xpToNext(candyFor.level, ctx.progression) - candyFor.xp, ctx.content, ctx.progression);
+          if (!up) continue;
+          const had = levelUps.find((l) => l.uid === up.uid);
+          if (had) {
+            had.to = up.to;
+            had.learned.push(...up.learned);
+            had.activated.push(...up.activated);
+          } else levelUps.push(up);
+          objectiveLines.push(`A Rare Candy: ${ctx.content.species(candyFor.speciesId).name} grew to Lv ${up.to}.`);
+          say(draft, `A Rare Candy: ${ctx.content.species(candyFor.speciesId).name} grew to level ${up.to}.`);
+        }
+
         // §6.3.1 — anything standing at its threshold owes an Evolution screen before the next node.
         queueEvolutions(draft, ctx.content);
 
@@ -1052,7 +1086,11 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
         const band = MONEY_REWARD[node.kind] ?? [0, 0];
         const rawMoney = band[0] + Math.floor(lootRng.range01() * (band[1] - band[0] + 1));
-        const moneyEarned = Math.round(rawMoney * relicMultiplier(draft, ctx.content, 'money-multiplier'));
+        // §5.6.5 Pay Day — a runner that scatters coins pays a trainer's purse, times its multiplier, rolled on the same stream.
+        const purseBand = MONEY_REWARD.trainer ?? [0, 0];
+        const purse = runnerPrize?.purse ? runnerPrize.purse * (purseBand[0] + Math.floor(lootRng.range01() * (purseBand[1] - purseBand[0] + 1))) : 0;
+        if (purse) objectiveLines.push(`Pay Day: ${purse} ₽ scattered across the grass.`);
+        const moneyEarned = Math.round((rawMoney + purse) * relicMultiplier(draft, ctx.content, 'money-multiplier'));
         draft.money += moneyEarned;
         if (moneyEarned > 0) say(draft, `Picked up ${moneyEarned} ₽.`);
 
@@ -1107,6 +1145,40 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         if (supplies.consumables.length) say(draft, `Found ${supplyLabel(supplies.consumables, (id) => ctx.content.consumable(id).name)}.`);
         draft.cursors.LootRNG = lootRng.cursor;
 
+        // §5.6.5 — a hold-out won: the find on the ground, and what the guard stood over, rolled now and never one you hold.
+        let heldFind: { items: string[]; money: number } | null = null;
+        if (objective?.kind === 'hold' && report.outcome === 'victory') {
+          const find = node.preview.find ?? { items: [], money: 0 };
+          heldFind = { items: [...find.items], money: find.money };
+          draft.consumables.push(...find.items);
+          draft.money += find.money;
+          const prize = objective.prize;
+          if (prize.kind === 'relic') {
+            relicDrop = rollRelic(lootRng, ctx.content, draft.relics, prize.rarity, draft.perks.relicPool);
+            if (relicDrop) acquireRelic(draft, relicDrop, ctx.content);
+          } else if (prize.kind === 'held-item') {
+            itemDrop = rollHeldItem(lootRng, ctx.content, ownedItems(draft));
+            if (itemDrop) draft.bag.push(itemDrop);
+          } else {
+            const types = new Set(activeOf(draft).flatMap((m) => ctx.content.species(m.speciesId).types));
+            const offer = ctx.content.allTms().filter((t) => types.has(ctx.content.move(t.move).type) && draft.box.some((m) => t.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(t.move)));
+            if (offer.length) {
+              tmDrop = offer[Math.min(offer.length - 1, Math.floor(lootRng.range01() * offer.length))]!.id;
+              draft.tms.push(tmDrop);
+            }
+          }
+          draft.cursors.LootRNG = lootRng.cursor;
+          const parts = [
+            ...(find.items.length ? [supplyLabel(find.items, (id) => ctx.content.consumable(id).name)] : []),
+            ...(find.money ? [`${find.money} ₽`] : []),
+            ...(relicDrop ? [`the ${ctx.content.relic(relicDrop).name}`] : []),
+            ...(itemDrop ? [`a ${ctx.content.heldItem(itemDrop).name}`] : []),
+            ...(tmDrop ? [ctx.content.tm(tmDrop).name] : []),
+          ];
+          const took = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : parts[0] ?? 'the find';
+          say(draft, `You held out and took ${took}.`);
+        }
+
         // 3. A thrown ball is a spent consumable and already left the bag above; add any found in the grass.
         draft.consumables.push(...pokeBalls(supplies.balls));
         if (supplies.balls) say(draft, `Found ${supplies.balls} Poké Ball${supplies.balls > 1 ? 's' : ''}.`);
@@ -1141,12 +1213,13 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           caught,
           faintedUids: report.team.filter((t) => t.fainted).map((t) => t.uid),
           tm: tmDrop,
-          money: moneyEarned,
+          money: moneyEarned + (heldFind?.money ?? 0),
           relic: relicDrop,
           relicPick,
-          consumables: supplies.consumables,
+          consumables: [...supplies.consumables, ...(heldFind?.items ?? [])],
           balls: supplies.balls,
           heldItem: itemDrop,
+          ...(objective && objectiveLines.length ? { objective: { kind: objective.kind, lines: objectiveLines } } : {}),
         };
         draft.phase = 'reward';
         break;

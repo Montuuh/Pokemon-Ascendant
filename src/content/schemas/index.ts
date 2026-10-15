@@ -290,6 +290,7 @@ export const ScenarioSchema = z.object({
   enemies: z.array(EnemySetupSchema).min(1),
   wildTier: z.enum(['common', 'uncommon', 'rare']).optional(),
   gymRule: z.enum(GYM_RULE_IDS).optional(),
+  objective: z.object({ kind: z.enum(['flee', 'hold']), turns: z.number().int().min(1).max(9) }).optional(),
   onField: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
   fields: z
     .object({

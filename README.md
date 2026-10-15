@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.18 — Fights with another objective.** Some fights are won by something else: a runner — an Abra, a Meowth,
+a Chansey — that gets away after a turn or two unless you knock it out first for its premium or catch it, and a
+guarded find you win by holding out to the last turn against a guard that hits harder every turn. Both are named on
+the map and counted down in the fight. Before it,
 **v0.9.17 — The title screen, a battle.** Behind the title and the new-run steps, a Pokémon battle plays by itself
 — famous matchups like Charizard and Venusaur or Pikachu and Gyarados trading their own moves on the game's battle
 backdrops, the move's picture landing, a bar draining, one fainting and the next coming in — under a title mark of
