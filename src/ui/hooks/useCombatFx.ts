@@ -118,6 +118,8 @@ export const FX_MS = {
   pause: 450,
   wobble: 600,
   result: 1000,
+  /** A Pokémon breaking out of the ball: the burst, and it is out. */
+  burst: 450,
   /** Between two Pokémon sent out together at a fight's start. */
   stagger: 420,
   /** A move's illustration over its target: pops in with the lunge, gone before the next hit's number. */
@@ -138,17 +140,21 @@ export const fxTimings = (): CSSProperties =>
     '--fx-drop': `${FX_MS.drop}ms`,
     '--fx-wobble-cycle': `${FX_MS.pause + FX_MS.wobble}ms`,
     '--fx-result': `${FX_MS.result}ms`,
+    '--fx-burst': `${FX_MS.burst}ms`,
   }) as CSSProperties;
 
-/** §2.6.4.4 — when each beat of a catch starts, from the throw. */
-export function catchTimeline(wobbles: number) {
+/**
+ * §2.6.4.4 — when each beat of a catch starts, from the throw. A catch holds still a moment after its last wobble, then
+ * clicks; a Pokémon that breaks free bursts out on its last wobble, and the beat ends with the burst (v0.9.16: the
+ * extra pause and a full second after it read as the animation stalling).
+ */
+export function catchTimeline(wobbles: number, success: boolean) {
   const absorbAt = FX_MS.throw;
   const dropAt = absorbAt + FX_MS.absorb;
   const wobbleAt = dropAt + FX_MS.drop;
   const cycle = FX_MS.pause + FX_MS.wobble;
-  /** The end of wobble `i` (1-based): where its shake check lands. */
-  const resultAt = wobbleAt + wobbles * cycle + FX_MS.pause;
-  return { absorbAt, dropAt, wobbleAt, cycle, resultAt, total: resultAt + FX_MS.result };
+  const resultAt = wobbleAt + wobbles * cycle + (success ? FX_MS.pause : 0);
+  return { absorbAt, dropAt, wobbleAt, cycle, resultAt, total: resultAt + (success ? FX_MS.result : FX_MS.burst) };
 }
 
 interface Seen {
@@ -418,7 +424,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
             // The log names it as it comes out of the ball, not while the last one is still falling.
             const cut = state.log.findLastIndex((l) => l.text.includes(' sent out '));
             if (cut >= 0) {
-              schedule(() => setLogHold(cut), 0);
+              // eslint-disable-next-line react-hooks/set-state-in-effect -- a layout effect, so before paint: the ticker never shows the line before the ball does
+              setLogHold(cut);
               schedule(() => setLogHold((h) => (h === cut ? null : h)), delay + FX_MS.ballFly);
             }
           }
@@ -448,14 +455,16 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           }
           const [uid, was] = target;
           const wobbles = e.success ? SHAKE_CHECKS - 1 : wobblesShown(e.checks);
-          const t = catchTimeline(wobbles);
+          const t = catchTimeline(wobbles, e.success);
           const id = nextId.current++;
           const fx: CatchFx = { id, slot: was.slot, speciesId: was.speciesId, shiny: was.shiny, ball: lastBall, success: e.success, checks: e.checks, wobbles, line: [...before.enemies.values()].map((v) => v.enemy), targetUid: uid };
-          schedule(() => setCatching(fx), delay);
+          if (delay === 0) setCatching(fx);
+          else schedule(() => setCatching(fx), delay);
           // The log already holds the result: it shows the throw, and the rest when the ball clicks or bursts.
           const cut = state.log.findLastIndex((l) => l.text.startsWith('Used ')) + 1;
           if (cut > 0) {
-            schedule(() => setLogHold(cut), 0);
+            // Before paint, not on a timer: a frame of the result in the ticker before the throw told it (v0.9.16).
+            setLogHold(cut);
             schedule(() => setLogHold((h) => (h === cut ? null : h)), delay + t.resultAt);
           }
           // A Pokémon that broke free is still on the field: hidden while it is in the ball, then out again.

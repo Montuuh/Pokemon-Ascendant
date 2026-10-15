@@ -1,13 +1,21 @@
-/* §9.2.2.4 — the AP capsule: the number over a pill of cells, filled from the bottom. */
+/* §9.2.2.4 — the AP capsule: the number beside a pill of cells, filled from the left, on a dark plate so it reads over
+   any field. */
 .meter {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--sp-1);
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface-0) 88%, transparent);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
+/* As wide as its widest reading ("3 → 2 AP"), so the capsule keeps its place while a preview comes and goes. */
 .value {
   display: inline-flex;
   align-items: baseline;
+  justify-content: center;
+  min-width: 3.9em;
   gap: 3px;
   white-space: nowrap;
   color: var(--ink-primary);
@@ -36,9 +44,8 @@
 }
 .capsule {
   display: flex;
-  flex-direction: column-reverse;
   gap: 3px;
-  width: 44px;
+  height: 30px;
   padding: var(--sp-1);
   border-radius: var(--radius-pill);
   background: var(--surface-sunken);
@@ -48,7 +55,7 @@
     0 6px 14px rgba(0, 0, 0, 0.4);
 }
 .cell {
-  height: 20px;
+  width: 28px;
   border-radius: var(--radius-sm);
   background: var(--surface-2);
   transition:
@@ -57,12 +64,12 @@
 }
 /* The ends of the capsule are round, as the pill is. */
 .cell:first-child {
+  border-top-left-radius: var(--radius-pill);
   border-bottom-left-radius: var(--radius-pill);
-  border-bottom-right-radius: var(--radius-pill);
 }
 .cell:last-child {
-  border-top-left-radius: var(--radius-pill);
   border-top-right-radius: var(--radius-pill);
+  border-bottom-right-radius: var(--radius-pill);
 }
 .cell[data-state='kept'] {
   background: radial-gradient(circle at 35% 30%, var(--brand-cream), var(--accent-action) 55%, var(--accent-action-deep));

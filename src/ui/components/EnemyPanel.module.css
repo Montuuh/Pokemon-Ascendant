@@ -1,6 +1,9 @@
-/* §9.2.1 / §9.2.2.3 — one enemy on the field: its intent above it, its card (UnitCard's anatomy) under it. */
+/* §9.2.1 / §9.2.2.3 — one enemy on the field: its intent above it, its card (UnitCard's anatomy) under it. The unit is
+   at least as wide as its card and as wide as its widest chip, so a long chip takes its own room in the formation and
+   never runs onto a neighbour's card; what hangs on the card's corner (the catch pill) sits on .cardWrap. */
 .unit {
   position: relative;
+  min-width: var(--unit-card, 176px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,6 +21,9 @@
 .leadUnit,
 .solo {
   z-index: 1;
+}
+.cardWrap {
+  position: relative;
 }
 /* Still in its ball: its place kept, nothing of it shown yet (§9.9.1). */
 .waiting .intents,
@@ -107,7 +113,8 @@
 }
 /* §9.2.1 — the enemy Lead wears the player Lead's frame in the enemy's red, so who stands in front reads at a glance. */
 .card.frontCard {
-  border: 3px solid var(--brand-red);
+  --frame: 3px;
+  border-color: var(--brand-red);
 }
 /* The deep red, not the frame's: cream text on it holds 4.5:1 (D5). */
 .card .frontTag {

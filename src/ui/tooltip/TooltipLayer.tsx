@@ -45,6 +45,17 @@ export function TooltipLayer() {
     left = Math.max(MARGIN, Math.min(vw - b.width - MARGIN, left));
 
     let top = a.top - b.height - GAP;
+    // A live readout marked `data-tip-keep` (the AP meter, whose cost preview the hovered card is the reason for) is
+    // never covered (v0.9.16): a bubble that would sit on it steps aside, the shorter way that stays on screen, so it is
+    // still beside its anchor; only where neither side fits does it go up over the readout.
+    for (const keep of document.querySelectorAll<HTMLElement>('[data-tip-keep]')) {
+      if (keep.contains(anchor)) continue;
+      const k = keep.getBoundingClientRect();
+      if (!(left < k.right && left + b.width > k.left && top < k.bottom && top + b.height > k.top)) continue;
+      const sides = [k.left - GAP - b.width, k.right + GAP].filter((x) => x >= MARGIN && x + b.width <= vw - MARGIN);
+      if (sides.length) left = sides.reduce((best, x) => (Math.abs(x - left) < Math.abs(best - left) ? x : best));
+      else if (k.top - b.height - GAP >= MARGIN) top = k.top - b.height - GAP;
+    }
     let below = false;
     if (top < MARGIN) {
       top = a.bottom + GAP;

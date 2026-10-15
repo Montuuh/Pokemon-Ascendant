@@ -17,10 +17,10 @@ The account's systems revisited, and the road to the Champion.
 
 Every Pokémon on the field is a card, and every card is played onto its target.
 
-- **Formation.** All three as cards, Lead centred; enemy tagged the same.
+- **Formation.** All three as cards, one size; enemy tagged the same.
 - **Intents.** Arrows in the intent's colour; HP about to go striped.
 - **Cards.** Dragged whole, played only onto an enemy or an ally.
-- **AP capsule.** Shows what the card under the pointer would spend.
+- **AP capsule.** Centred; shows what the card under the pointer costs.
 
 ### v0.9.15 — The combat screen and its cards · 2026-10-15
 

@@ -119,14 +119,15 @@ in a window lit in its first type**, its HP under it. There is no separate portr
 column: what a Pokémon is and where it stands are read in one place.
 
 - **Your formation sits left**: the **Lead forward**, in the column nearest the enemy, **centred between its
-  bench** — Bench 1 above, Bench 2 below, close together — the whole side centred on the stage; the Lead's card larger,
-  gold-framed and crowned. All three show their back sprites — the series' triple-battle picture. A bench card's last
+  bench** — Bench 1 above, Bench 2 below, close together — the whole side centred on the stage; the Lead's card
+  gold-framed and crowned, the same size as the rest. All three show their back sprites — the series' triple-battle picture. A bench card's last
   row is its HP and its swap price; the hits coming at a Pokémon this turn hang off its card's edge, towards the enemy
   (§9.2.5). The whole card is the button: a swap, an ally target, a step-back choice, the card it takes.
 - **The enemy's formation mirrors yours, and is named as yours**: its **Lead** forward (the column nearest you,
   centred, red-framed), **Bench 1** behind it high and **Bench 2** low — the same tags as your plates (v0.9.16, the
   user's call; the rules still call the two behind the Lead its supports, §5.6). Each is its intent chips above its
-  card (one line each, so two fit a column at 720 p) and the card; a wild card carries the catch pill inside, at the end
+  card (one line each, so two fit a column at 720 p; a chip wider than the card widens its column, never running onto a
+  neighbour's card) and the card; a wild card carries the catch pill inside, at the end
   of its HP row. **One grammar for one enemy or three** (user, 2026-09-30): a lone enemy is a Lead
   standing large; the held card's number sits on every plate it reaches, and the full breakdown opens only for the one
   aimed at. **Two on the field stand as if three did**: the Lead centred, the other in the upper place, the lower empty.
@@ -144,16 +145,18 @@ column: what a Pokémon is and where it stands are read in one place.
   still to come plain — who they are stays a surprise until they come out (§2.7.3).
 - **A fight opens one ball at a time**: the enemy's Pokémon sent out one after another, then yours — the Lead, a moment
   later Bench 1, then Bench 2 — each popping out in its card's window.
-- **The sizes come from the stage's height**, so 720 p and 1080 p hold the same picture: each card is a set fraction
-  of the stage tall (capped only where a 1440 p screen would make it absurd), its window follows, and the sprite in the
-  window is drawn at the whole or half multiple nearest it, never more than a tenth past it (D9).
+- **Every Pokémon's card is one size**, yours and the enemy's, a Lead or a lone wild one — the Lead is told by its
+  frame and crown, not by its scale (v0.9.16, the user's call) — and **the size comes from the stage's height**, so
+  720 p and 1080 p hold the same picture, smaller or larger: the card is a set fraction of the stage tall (capped only
+  where a 1440 p screen would make it absurd), its window follows, and the sprite in the window is drawn at the whole or
+  half multiple nearest it, never more than a tenth past it (D9).
 - **The catch pill** (wild only) sits inside the enemy card, at the end of its HP row, with the best ball's chance; pressing it opens the
   **ball picker** — every ball in the bag with its count and its own chance, a row to throw (§2.6.4.1). **While the ball
   rocks, the field holds** as it stood when it left the hand — a pack does not scatter before the click says it was
   caught — the intents and arrows step back, and the ball shows only its wobbles.
-- **The hand tray runs along the bottom, in one row** (v0.9.15): the AP orb left, then the 5 skill cards, a
-  divider and the **Bag** (its item count and the turn's uses left, 2/2; it opens every item carried, one card per
-  kind with ×N), and End Turn with Run under it on the right.
+- **The hand tray runs along the bottom, in one row** (v0.9.15): the 5 skill cards in the middle, a divider and
+  the **Bag** (its item count and the turn's uses left, 2/2; it opens every item carried, one card per kind with ×N),
+  and End Turn with Run under it on the right; **the AP capsule docks over the hand, at the screen's centre** (§9.2.2.4).
 - **The damage preview** opens in the open ground between the formations when a card is aimed at an enemy — the
   number on the plate is the decision, the box the breakdown. Against a group, **every plate carries the held card's
   own number** (and a KO flag), or a blue dashed **Out of reach** lock where a Melee card cannot land.
@@ -176,8 +179,8 @@ Each of the three is a card (§9.2.1): the slot tag (and the **Lead crown**) on 
 the corner, type labels, name and level on the head, the animated back sprite in its window, an HP bar with a numeric
 `cur / max` — **the part this turn's visible intents will take striped** (v0.9.16; the number is on the chip hung off the
 card) — and a cyan shield segment when a shield is present, the stat-stage and Trauma chips on a row of their own,
-and on a bench its **swap price** and what it would take as the Lead. The Lead stands larger, gold-framed; the bench smaller,
-behind it. A slot an intent is aimed at glows red round its plate and keeps its own frame — your Lead stays gold, so it
+and on a bench its **swap price** and what it would take as the Lead. The Lead stands forward, gold-framed and crowned; the
+bench behind it, the same size. A slot an intent is aimed at glows red round its plate and keeps its own frame — your Lead stays gold, so it
 never reads as the enemy's red Lead.
 
 A **fainted** Pokémon keeps its place: its sprite gone, its plate dimmed and reading *Fainted*. It is never removed
@@ -191,13 +194,18 @@ at (on every one, for an area card), the part that card would take, striped — 
 as much the target as the plate: a click on either aims the held card there.
 
 ### §9.2.2.4 Hand tray
-One row (v0.9.15; the header row it replaced cost the hand 60 px at 720 p). Left, **the AP capsule** (v0.9.16): the
-number over a pill of cells, one per point, gold like a card's cost gem, draining as you play — of a capsule that
-fills, a sphere that drains and a striped bar, the cells are the one you can count at a glance. **While a card is under
+One row (v0.9.15; the header row it replaced cost the hand 60 px at 720 p): the hand and the Bag in the middle, End
+Turn and, in a run, Run under it on the right — the exit quieter than the plan. **The AP capsule** (v0.9.16) sits in
+the middle of the screen, the user's call: docked at the bottom centre of the field, right over the hand it is spent
+from and clear of both formations — the number beside a pill of cells, one per point, gold like a card's cost gem,
+draining as you play, and **no bubble covers it** — a card's steps aside, still over its card — and it keeps its
+place while its number reads a preview. Of a capsule that fills, a sphere that drains and a striped bar, the cells are the one you can
+count at a glance. **While a card is under
 the pointer** — hovered, dragged or held — the cells it would spend go striped and the number reads `3 → 1` (a free
-card changes nothing, so shows nothing); a card you cannot afford shows the cells you are short in red. The Defensive discount chip sits under it when it is live. The next swap's price is not repeated here: it is on each bench card, where the swap
-is clicked, with the ladder in that card's bubble. Middle, the hand and the Bag. Right, End Turn and, in a run, Run
-under it — the exit quieter than the plan. The deck and discard counts live in the top bar.
+card changes nothing, so shows nothing); a card you cannot afford shows the cells you are short in red. The Defensive discount chip sits beside it when it is live. The next swap's price is not repeated here: it is on
+each bench card, where the swap is clicked, with the ladder in that card's bubble. A hand wider than its row — a
+relic's sixth or seventh card, or a narrow screen — tucks each card under its neighbour by just enough to fit, never
+pushing the Bag. The deck and discard counts live in the top bar.
 
 ## §9.2.3 The move card
 
@@ -513,7 +521,7 @@ The series' own beats, drawn in the arena on top of a result the sim has already
 | **Recalled** | A swapped-out Lead turns red and shrinks into its ball, and the ball flies back to your hand. |
 | **Fainted** | A fallen Pokémon holds a beat and flashes, then sinks through the ground line as it greys and fades out — gone by the last frame, never cut while it still shows, and it never fades back. A foe's card fades with it in its place, and the others hold theirs until it has gone (v0.9.11). A trainer's, or yours, then goes back into its ball, which flies back to the trainer's hand before the next one is thrown. A wild one simply goes. |
 | **Evolution** | "What? Bulbasaur is evolving!" on a dark stage; the sprite turns to light, the old and the new shapes trade places faster and faster — never under 100 ms, both the same light, so a shape changes and not a screen's brightness — a bloom behind it, and the new Pokémon in its colours: "Congratulations! …". A click or a key skips it; it plays before the path is chosen when every path makes one species, after when they differ (v0.9.6). |
-| **The catch** | The ball is thrown in an arc, opens on the Pokémon and draws it in, falls to the ground with a bounce, and rocks: a still moment, then a rock, once per shake check (§2.6.4.4) — three wobbles and the click with three sparks on a catch; on a break, the ball bursts open after the wobble its check followed. Four lights under the ball light up one per passed check, the one it broke on in red, beside the chance the player read before throwing. "Gotcha!" or the series' line for how close it came lands with the click or the burst. About six and a half seconds, the series' pace. |
+| **The catch** | The ball is thrown in a parabola — across at an even pace, up and down under gravity, its path never spun (v0.9.16: a rotated path swung it round in a loop), and never higher than the field has room for, so a Bench 1 at 720 p gets a flatter throw rather than a ball out of sight — opens on the Pokémon and draws it in, falls to the ground with a bounce, and rocks: a still moment, then a rock, once per shake check (§2.6.4.4) — three wobbles, a still moment, and the click with three sparks on a catch; on a break, the ball bursts open as the wobble its check followed ends, and the Pokémon is back in its card with the burst (v0.9.16: a still moment and a second's wait after it read as the beat stalling). The ball shows only its wobbles: the chance was on the pill before the throw (v0.9.16, the user's call: the lights under it went). "Gotcha!" or the series' line for how close it came lands with the click or the burst. About six and a half seconds for a catch, the series' pace; a break is over sooner. |
 
 The beats are presentation only: the catch's result is rolled first (§2.6.4.1) and the ball only shows it. A beat
 the player should not talk over — the catch and a faint — holds the hand, the keys and the outcome until it has played,

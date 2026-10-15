@@ -15,6 +15,7 @@ import { ShinyMark } from './ShinyMark';
 import { armourTip, nextIntentTip, placeTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
+import { UNIT_BADGE, UNIT_HP_BAR } from './unitCard';
 import styles from './EnemyPanel.module.css';
 
 /** §9.2.4 — what the card in hand would do to this enemy: its own number, or that it cannot reach it. */
@@ -132,109 +133,112 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
         )}
       </div>
 
-      <button
-        type="button"
-        className={[card.card, !inGroup ? card.solo : place === 'Lead' ? card.lead : '', styles.card, state.kind === 'wild' ? styles.wildCard : '', front ? styles.frontCard : '', targetable ? styles.targetable : '', aimed ? styles.aimed : '', preview && !preview.reachable ? styles.outOfReach : '', enemy.hp <= 0 ? styles.fainted : ''].join(' ')}
-        style={{ '--unit-type': `var(--type-${enemy.types[0] ?? 'normal'})` } as CSSProperties}
-        onClick={onClick}
-        {...cardTipProps}
-        onFocus={(e) => {
-          cardTipProps.onFocus?.(e);
-          onHover(true);
-        }}
-        onBlur={(e) => {
-          cardTipProps.onBlur?.(e);
-          onHover(false);
-        }}
-        data-testid={`enemy-${enemy.speciesId}`}
-        data-enemy-uid={enemy.uid}
-        data-arrow-card={enemy.uid}
-        data-tip-side="side"
-        aria-label={`${enemy.name}${enemy.shiny ? ', shiny' : ''}${place ? `, ${place}` : ''}, ${enemy.hp} of ${enemy.maxHp} HP${preview ? (preview.reachable ? `; the card deals ${preview.final}${preview.ko ? ', a knockout' : ''}` : '; out of reach of this card') : ''}`}
-      >
-        {/* §9.2.1 — its place, tagged as yours are: Lead, Bench 1, Bench 2. */}
-        <span className={`${card.tag} ${front ? styles.frontTag : ''}`} data-testid="foe-place">
-          {place}
-        </span>
-        {(enemy.status || enemy.confusionTurns > 0) && (
-          <span className={card.corner}>
-            {enemy.status && <StatusBadge status={enemy.status.kind} size={22} />}
-            {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={22} />}
+      {/* The card and what hangs on its corner, in a box the card's own size (the unit can be wider, for a chip). */}
+      <div className={styles.cardWrap}>
+        <button
+          type="button"
+          className={[card.card, styles.card, state.kind === 'wild' ? styles.wildCard : '', front ? styles.frontCard : '', targetable ? styles.targetable : '', aimed ? styles.aimed : '', preview && !preview.reachable ? styles.outOfReach : '', enemy.hp <= 0 ? styles.fainted : ''].join(' ')}
+          style={{ '--unit-type': `var(--type-${enemy.types[0] ?? 'normal'})` } as CSSProperties}
+          onClick={onClick}
+          {...cardTipProps}
+          onFocus={(e) => {
+            cardTipProps.onFocus?.(e);
+            onHover(true);
+          }}
+          onBlur={(e) => {
+            cardTipProps.onBlur?.(e);
+            onHover(false);
+          }}
+          data-testid={`enemy-${enemy.speciesId}`}
+          data-enemy-uid={enemy.uid}
+          data-arrow-card={enemy.uid}
+          data-tip-side="side"
+          aria-label={`${enemy.name}${enemy.shiny ? ', shiny' : ''}${place ? `, ${place}` : ''}, ${enemy.hp} of ${enemy.maxHp} HP${preview ? (preview.reachable ? `; the card deals ${preview.final}${preview.ko ? ', a knockout' : ''}` : '; out of reach of this card') : ''}`}
+        >
+          {/* §9.2.1 — its place, tagged as yours are: Lead, Bench 1, Bench 2. */}
+          <span className={`${card.tag} ${front ? styles.frontTag : ''}`} data-testid="foe-place">
+            {place}
           </span>
-        )}
-        {/* §9.2.4 / §5.6 — the held card's number on this enemy; blue is position: a Melee card cannot reach it. */}
-        {preview &&
-          (preview.reachable ? (
-            <span className={[styles.hitPreview, preview.ko ? styles.hitKo : ''].join(' ')} data-testid="target-preview">
-              <span className="display tabular">{preview.final}</span>
-              {preview.ko && <b>KO</b>}
-            </span>
-          ) : (
-            <span className={styles.reachLock} data-testid="target-out-of-reach">
-              <IconLock size={12} /> Out of reach
-            </span>
-          ))}
-        <span className={card.head}>
-          <span className={card.types}>
-            {enemy.types.map((t) => (
-              <TypeBadge key={t} type={t} size={front ? 14 : 12} defenderTypes={enemy.types} />
-            ))}
-          </span>
-          <span className={`${card.name} display`}>{enemy.name}</span>
-          {enemy.shiny && <ShinyMark name={enemy.name} size={12} plain />}
-          <span className={card.level}>Lv {enemy.level}</span>
-        </span>
-
-        {/* §9.2.1 — the Pokémon itself, in its window. Every sprite is a drop target too (`data-enemy-uid`). */}
-        <span className={card.window}>
-          <span className={card.stand} data-fx-slot={fxSlot} data-arrow-from={enemy.uid}>
-            <span className={[card.sprite, fxClass ?? '', spriteClass ?? ''].join(' ')} data-testid="arena-enemy" data-enemy-uid={enemy.uid}>
-              <ArenaSprite src={spriteOf(enemy, 'front', !!enemy.shiny)} shiny={!!enemy.shiny} concealed={enemy.hp <= 0} imgClassName={`${card.breathe} ${enemy.shiny ? 'fx-shiny' : ''}`} />
-              <FloatingNumbers uid={enemy.uid} fx={floats} />
-            </span>
-          </span>
-        </span>
-
-        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} shield={enemy.shield} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={front ? 10 : 8} future={future} />
-        <span className={`${card.hpRow} ${styles.catchRoom}`}>
-          <span className={`${card.hpText} display tabular`}>
-            {enemy.hp} / {enemy.maxHp}
-          </span>
-          {/* §5.9 — a boss's phase, on the card at every size: the notches on its bar are its thresholds. */}
-          {enemy.phaseCount > 1 && (
-            <span className={`${card.chip} ${card.warn}`}>
-              Phase {phase}/{enemy.phaseCount}
+          {(enemy.status || enemy.confusionTurns > 0) && (
+            <span className={card.corner}>
+              {enemy.status && <StatusBadge status={enemy.status.kind} size={22} />}
+              {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={22} />}
             </span>
           )}
-        </span>
-        {(stageChips.length > 0 || enemy.shield > 0 || enemy.sturdyAvailable) && (
-          <span className={`${card.chips} ${styles.catchRoom}`}>
-            {stageChips.map((s) => (
-              <span key={s} className={`${card.chip} ${enemy.stages[s] > 0 ? card.up : card.down}`}>
-                {s === 'attack' ? 'Atk' : 'Def'} {enemy.stages[s] > 0 ? '+' : ''}
-                {enemy.stages[s]}
+          {/* §9.2.4 / §5.6 — the held card's number on this enemy; blue is position: a Melee card cannot reach it. */}
+          {preview &&
+            (preview.reachable ? (
+              <span className={[styles.hitPreview, preview.ko ? styles.hitKo : ''].join(' ')} data-testid="target-preview">
+                <span className="display tabular">{preview.final}</span>
+                {preview.ko && <b>KO</b>}
+              </span>
+            ) : (
+              <span className={styles.reachLock} data-testid="target-out-of-reach">
+                <IconLock size={12} /> Out of reach
               </span>
             ))}
-            {/* §5.9.5 Ice Armour — what it takes before HP, and the rule behind it a hover away. */}
-            {enemy.shield > 0 && (
-              <Tipped tip={armourTip(enemy.shield)} className={`${card.chip} ${card.info}`} data-testid="foe-armour">
-                {ARMOUR_LABEL} {enemy.shield}
-              </Tipped>
-            )}
-            {enemy.sturdyAvailable && (
-              <Tipped tip={<Tip title="Sturdy" body="Survives one hit that would have knocked it out, at 1 HP. Once per fight." />} className={`${card.chip} ${card.info}`}>
-                Sturdy
-              </Tipped>
+          <span className={card.head}>
+            <span className={card.types}>
+              {enemy.types.map((t) => (
+                <TypeBadge key={t} type={t} size={UNIT_BADGE} defenderTypes={enemy.types} />
+              ))}
+            </span>
+            <span className={`${card.name} display`}>{enemy.name}</span>
+            {enemy.shiny && <ShinyMark name={enemy.name} size={12} plain />}
+            <span className={card.level}>Lv {enemy.level}</span>
+          </span>
+
+          {/* §9.2.1 — the Pokémon itself, in its window. Every sprite is a drop target too (`data-enemy-uid`). */}
+          <span className={card.window}>
+            <span className={card.stand} data-fx-slot={fxSlot} data-arrow-from={enemy.uid}>
+              <span className={[card.sprite, fxClass ?? '', spriteClass ?? ''].join(' ')} data-testid="arena-enemy" data-enemy-uid={enemy.uid}>
+                <ArenaSprite src={spriteOf(enemy, 'front', !!enemy.shiny)} shiny={!!enemy.shiny} concealed={enemy.hp <= 0} imgClassName={`${card.breathe} ${enemy.shiny ? 'fx-shiny' : ''}`} />
+                <FloatingNumbers uid={enemy.uid} fx={floats} />
+              </span>
+            </span>
+          </span>
+
+          <HpBar hp={enemy.hp} maxHp={enemy.maxHp} shield={enemy.shield} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={UNIT_HP_BAR} future={future} />
+          <span className={`${card.hpRow} ${styles.catchRoom}`}>
+            <span className={`${card.hpText} display tabular`}>
+              {enemy.hp} / {enemy.maxHp}
+            </span>
+            {/* §5.9 — a boss's phase, on the card at every size: the notches on its bar are its thresholds. */}
+            {enemy.phaseCount > 1 && (
+              <span className={`${card.chip} ${card.warn}`}>
+                Phase {phase}/{enemy.phaseCount}
+              </span>
             )}
           </span>
-        )}
-      </button>
+          {(stageChips.length > 0 || enemy.shield > 0 || enemy.sturdyAvailable) && (
+            <span className={`${card.chips} ${styles.catchRoom}`}>
+              {stageChips.map((s) => (
+                <span key={s} className={`${card.chip} ${enemy.stages[s] > 0 ? card.up : card.down}`}>
+                  {s === 'attack' ? 'Atk' : 'Def'} {enemy.stages[s] > 0 ? '+' : ''}
+                  {enemy.stages[s]}
+                </span>
+              ))}
+              {/* §5.9.5 Ice Armour — what it takes before HP, and the rule behind it a hover away. */}
+              {enemy.shield > 0 && (
+                <Tipped tip={armourTip(enemy.shield)} className={`${card.chip} ${card.info}`} data-testid="foe-armour">
+                  {ARMOUR_LABEL} {enemy.shield}
+                </Tipped>
+              )}
+              {enemy.sturdyAvailable && (
+                <Tipped tip={<Tip title="Sturdy" body="Survives one hit that would have knocked it out, at 1 HP. Once per fight." />} className={`${card.chip} ${card.info}`}>
+                  Sturdy
+                </Tipped>
+              )}
+            </span>
+          )}
+        </button>
 
-      {state.kind === 'wild' && !fallen && !quiet && (
-        <div className={styles.catchInline}>
-          <CatchPicker state={state} enemy={enemy} ctx={ctx} interactive={interactive} onThrow={onThrow} />
-        </div>
-      )}
+        {state.kind === 'wild' && !fallen && !quiet && (
+          <div className={styles.catchInline}>
+            <CatchPicker state={state} enemy={enemy} ctx={ctx} interactive={interactive} onThrow={onThrow} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

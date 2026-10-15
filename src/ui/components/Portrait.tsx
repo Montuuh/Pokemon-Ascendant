@@ -11,6 +11,7 @@ import { ShinyMark } from './ShinyMark';
 import { combatantTip, traumaTip } from '@/ui/tips';
 import { Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
+import { UNIT_BADGE, UNIT_HP_BAR } from './unitCard';
 import styles from './Portrait.module.css';
 
 type Variant = 'lead' | 'bench';
@@ -60,7 +61,7 @@ interface Props {
 export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapAllowed, swapHint, targeted, selectable, onHover, onClick, fx, fxClass, incoming, incomingKo, asLead, faintPending }: Props) {
   // §9.9.1 — at 0 HP but its faint still to play: it stands through the hits on screen first.
   const fainted = mon.hp <= 0 && !faintPending;
-  const classes = [card.card, variant === 'lead' ? card.lead : '', styles.unit, styles[variant], targeted ? styles.targeted : '', selectable ? styles.selectable : '', fainted ? styles.fainted : ''].filter(Boolean).join(' ');
+  const classes = [card.card, styles.unit, styles[variant], targeted ? styles.targeted : '', selectable ? styles.selectable : '', fainted ? styles.fainted : ''].filter(Boolean).join(' ');
   const stageChips = (['attack', 'defense'] as const).filter((s) => mon.stages[s] !== 0);
   // 2026-09-21 — the card's bubble is the Pokémon's summary: types, ability, held item, status, Trauma, and its role
   // right now (Lead, or what a swap costs).
@@ -69,7 +70,6 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
   const incomingText = hits ? `; incoming: ${hits.map((h) => `${h.amount} from ${h.name}'s ${h.move}`).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
   // §9.2.5 — the HP left after the visible hits: what the striped end of the bar shows.
   const future = hits ? Math.max(0, mon.hp - hits.reduce((a, h) => a + h.amount, 0)) : null;
-  const badge = variant === 'bench' ? 12 : 14;
 
   return (
     <button
@@ -114,7 +114,7 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
       <span className={card.head}>
         <span className={card.types}>
           {mon.types.map((t) => (
-            <TypeBadge key={t} type={t} size={badge} defenderTypes={mon.types} />
+            <TypeBadge key={t} type={t} size={UNIT_BADGE} defenderTypes={mon.types} />
           ))}
         </span>
         <span className={`${card.name} display`}>{mon.name}</span>
@@ -150,7 +150,7 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
         </span>
       )}
 
-      <HpBar hp={mon.hp} maxHp={mon.maxHp} height={variant === 'bench' ? 7 : 9} future={future} />
+      <HpBar hp={mon.hp} maxHp={mon.maxHp} height={UNIT_HP_BAR} future={future} />
       <span className={card.hpRow}>
         <span className={`${card.hpText} display tabular`}>
           {fainted ? 'Fainted' : `${mon.hp} / ${mon.maxHp}`}

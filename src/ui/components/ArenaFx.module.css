@@ -67,12 +67,19 @@
   transform-origin: 50% 55%;
   animation: catchAbsorb var(--fx-absorb) ease-in var(--at-absorb) both;
 }
-/* The throw: from your hand, in an arc, to the air in front of the Pokémon. */
+/* The throw: from your hand to the air in front of the Pokémon, as a parabola — across at an even pace (this), up and
+   down under gravity (.arcY) — never rotating the path, which swung the ball round in a loop. */
 .arc {
   position: absolute;
   left: 0;
   top: 0;
-  animation: catchThrow var(--fx-throw) linear 0ms both;
+  animation: catchThrowX var(--fx-throw) linear 0ms both;
+}
+.arcY {
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: catchThrowY var(--fx-throw) linear 0ms both;
 }
 /* The drop: the ball falls to the ground and bounces once. */
 .fall {
@@ -103,7 +110,7 @@
 .catch .broke {
   animation:
     catchWobble var(--fx-wobble-cycle) linear var(--at-wobble) var(--wobbles),
-    catchBurst calc(var(--fx-result) * 0.5) ease-out var(--at-result) forwards;
+    catchBurst var(--fx-burst) ease-out var(--at-result) forwards;
 }
 /* The flash: once as the ball opens on the Pokémon, once more on a burst. */
 .flash {
@@ -120,7 +127,7 @@
 .arc:has(.broke) ~ .flash {
   animation:
     catchFlash var(--fx-absorb) ease-out var(--at-absorb) both,
-    catchFlash calc(var(--fx-result) * 0.5) ease-out var(--at-result) forwards;
+    catchFlash var(--fx-burst) ease-out var(--at-result) forwards;
 }
 .stars {
   position: absolute;
@@ -176,26 +183,37 @@
     opacity: 0.3;
   }
 }
-@keyframes catchThrow {
+@keyframes catchThrowX {
   0% {
-    transform: translate(var(--hand-x), calc(var(--hand-y) + 90px)) rotate(-720deg);
+    transform: translateX(var(--hand-x));
     opacity: 0;
   }
   8% {
     opacity: 1;
   }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+/* Rising, slowing to the top, then falling faster: the two halves of a parabola. */
+@keyframes catchThrowY {
+  0% {
+    transform: translateY(calc(var(--hand-y) + 60px));
+    animation-timing-function: cubic-bezier(0.33, 0.66, 0.66, 1);
+  }
   50% {
-    transform: translate(calc(var(--hand-x) * 0.4), calc(var(--hand-y) * 0.4 - 120px)) rotate(-300deg);
+    transform: translateY(calc(var(--arc-rise, 130px) * -1));
+    animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0.33);
   }
   100% {
-    transform: translate(0, 0) rotate(0);
-    opacity: 1;
+    transform: translateY(0);
   }
 }
 /* Held in the air while the Pokémon goes in (fill backwards), then down to the ground with one bounce. */
 @keyframes catchDrop {
   0% {
-    transform: translateY(-90px);
+    transform: translateY(calc(var(--drop-hold, 90px) * -1));
     animation-timing-function: ease-in;
   }
   65% {

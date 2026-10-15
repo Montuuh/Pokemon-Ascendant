@@ -385,7 +385,7 @@ may be fills, tints or borders — **never running text** (they fail AA).
 
 **Combat is one formation each side** (v0.9.16): every Pokémon on the field is a card — tag, types, name, level, its
 animated sprite in a lit window, HP (the part about to go striped). Yours on the left, the Lead centred and crowned
-between Bench 1 and 2; the enemy mirrored on the right and tagged the same way, an intent **chip** above each and an
+between Bench 1 and 2, every card one size that follows the screen's height; the enemy mirrored on the right and tagged the same way, an intent **chip** above each and an
 **arrow** in the intent's colour (hit red, stat blue, condition violet, help green) to the slot it will hit. The rival
 trainer stands behind its line-up, its team as Poké Balls. **A card is played onto its target** — an enemy, or the
 Pokémon it acts on — never cast at nothing; the AP capsule shows what it would spend first. The hand tray runs along the bottom, and the held
@@ -395,7 +395,7 @@ The preview shows the final number, the full breakdown, crit, riders and a KO fl
 the sim does. **A move card shows its move** (v0.9.15): a pixel illustration per move on a window lit in its type,
 its owner's sprite in the corner, cost gem and name on a dark head, power and type in a dark foot; the same picture
 lands on the target when it hits. Unplayable cards are **never hidden and keep their words**: amber means AP, a blue
-band means position. The tray is one row — the AP orb, the hand and the Bag, End Turn; the log is a ticker in the
+band means position. The tray is one row — the hand and the Bag, End Turn — with the AP capsule docked over the hand at the screen's centre; the log is a ticker in the
 top bar; the squad's portraits are the battle sprites at a whole-pixel scale.
 
 **Accessibility is staged**: reduced motion and text size at v0.5 because they are expensive to retrofit; the

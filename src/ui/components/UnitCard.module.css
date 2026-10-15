@@ -1,19 +1,22 @@
 /* §9.2.1 (v0.9.16) — a Pokémon on the field, as a card in the move card's grammar: a frame; a dark head (types, name,
    level); a window lit in its first type with the animated sprite standing in it; its HP; a row of what else it carries.
-   Yours and the enemy's share this anatomy; the frame says whose Lead it is. The sizes are the formation's (custom
-   properties on the stage), so the card scales with the stage's height. */
+   Yours and the enemy's share this anatomy; the frame says whose Lead it is. Every card is one size — the Lead is told
+   by its frame and crown, not its scale — and that size follows the stage's height (`--unit-card`, on the stage):
+   smaller at 720 p, larger at 1080 p (the user's call). */
 .card {
-  --card-w: var(--bench-card, 160px);
-  --window-h: calc(var(--card-w) * 0.5);
+  --card-w: var(--unit-card, 176px);
+  --window-h: calc(var(--card-w) * 0.46);
   --night: color-mix(in srgb, var(--unit-type, var(--surface-2)) 16%, var(--tip-surface));
   position: relative;
   width: var(--card-w);
   display: flex;
   flex-direction: column;
   gap: 3px;
-  padding: 10px var(--sp-1) var(--sp-1);
+  /* A Lead's heavier frame (`--frame: 3px`) comes out of the padding, so every card keeps one size. */
+  --frame: 2px;
+  padding: calc(12px - var(--frame)) calc(var(--sp-1) + 2px - var(--frame)) calc(var(--sp-1) + 2px - var(--frame));
   border-radius: var(--radius-md);
-  border: 2px solid var(--border-subtle);
+  border: var(--frame) solid var(--border-subtle);
   background: color-mix(in srgb, var(--surface-1) 94%, transparent);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
   color: var(--ink-primary);
@@ -22,14 +25,6 @@
     transform var(--motion-base) var(--ease-spring),
     border-color var(--motion-fast) ease,
     box-shadow var(--motion-base) ease;
-}
-.lead {
-  --card-w: var(--lead-card, 200px);
-  --window-h: calc(var(--card-w) * 0.6);
-}
-.solo {
-  --card-w: var(--solo-card, 220px);
-  --window-h: calc(var(--card-w) * 0.62);
 }
 /* The place, on the frame's top edge; the condition on its corner. */
 .tag {
@@ -59,11 +54,14 @@
   display: flex;
   gap: 2px;
 }
+/* Room for two type labels on every card (unitCard.ts UNIT_BADGE, 14 px × 2 and the 1 px gap), so a single-type card
+   stands as tall as a dual-type one. */
 .head {
   display: flex;
   align-items: center;
   gap: var(--sp-1);
   min-width: 0;
+  min-height: 29px;
   padding: 0 2px;
 }
 .types {
@@ -80,10 +78,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.lead .name,
-.solo .name {
-  font-size: var(--type-small);
 }
 /* Secondary ink, not muted: on the card the muted grey fell under 4.5:1 (D5). */
 .level {
@@ -133,10 +127,6 @@
   line-height: 1;
   white-space: nowrap;
   margin-right: auto;
-}
-.lead .hpText,
-.solo .hpText {
-  font-size: var(--type-caption);
 }
 .chips {
   display: flex;

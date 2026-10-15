@@ -72,6 +72,28 @@ export function CombatScreen() {
   // the arena's beats (balls, ghosts, the catch, a move's picture) land on the sprite wherever the formation put it. A
   // slot that empties keeps its last box, so a beat that outlives its Pokémon still plays where it stood.
   const [stageEl, setStageEl] = useState<HTMLElement | null>(null);
+  // §9.2.2.4 — the width the hand's cards have, once the Bag has its place: what decides whether they tuck.
+  const [handEl, setHandEl] = useState<HTMLDivElement | null>(null);
+  const [handRoom, setHandRoom] = useState(0);
+  useEffect(() => {
+    if (!handEl || typeof ResizeObserver === 'undefined') return;
+    // The row's width less its padding and what is not a card — the divider and the Bag, measured with their margins
+    // and the row's gap, so a change to their CSS is read rather than copied here.
+    const measure = () => {
+      const row = getComputedStyle(handEl);
+      const gap = parseFloat(row.columnGap) || 0;
+      let fixed = parseFloat(row.paddingLeft) + parseFloat(row.paddingRight);
+      for (const el of handEl.querySelectorAll<HTMLElement>(':scope > [data-hand-fixed], :scope > [data-testid="btn-bag"]')) {
+        const s = getComputedStyle(el);
+        fixed += el.offsetWidth + parseFloat(s.marginLeft) + parseFloat(s.marginRight) + gap;
+      }
+      setHandRoom(Math.max(0, handEl.clientWidth - fixed));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(handEl);
+    return () => ro.disconnect();
+  }, [handEl]);
   const [slotBoxes, setSlotBoxes] = useState<Partial<Record<SpriteSlot, SlotBox>>>({});
   useLayoutEffect(() => {
     if (!stageEl) return;
@@ -233,9 +255,10 @@ export function CombatScreen() {
   const title = scenarioName(state);
   const kindLabel = ENCOUNTER_LABEL[state.kind] ?? state.kind;
   const KindIcon = KIND_ICON[state.kind] ?? IconPaw;
-  // §9.2.2.4 — the hand's row holds five cards side by side; a bigger hand (a relic's sixth or seventh card) tucks
-  // each card under its neighbour by just enough to keep the same width, so it never runs into the AP or the Bag.
-  const handOverlap = plays.length > HAND_FIT ? Math.ceil(((plays.length - HAND_FIT) * (CARD_WIDTH + CARD_GAP)) / (plays.length - 1)) : 0;
+  // §9.2.2.4 — the hand's cards side by side while they fit the room the Bag leaves them; a bigger hand (a relic's
+  // sixth or seventh card), or a narrower screen, tucks each card under its neighbour by just enough to fit.
+  const handNeed = plays.length * CARD_WIDTH + Math.max(0, plays.length - 1) * CARD_GAP;
+  const handOverlap = plays.length > 1 && handRoom > 0 && handNeed > handRoom ? Math.ceil((handNeed - handRoom) / (plays.length - 1)) : 0;
   // A held line (a faint playing, a ball rocking) keeps its places' names as they stood.
   const heldPlace = (i: number) => (catchLine || heldLine ? { place: groupShown && i > 0 ? `Bench ${i}` : 'Lead', group: groupShown } : undefined);
   /** §9.9 — the FX anchor of the i-th Pokémon on the enemy's side, as `useCombatFx` names it. */
@@ -456,6 +479,7 @@ export function CombatScreen() {
       <section
         ref={setStageEl}
         className={styles.stage}
+        data-fx-stage
         style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings() }}
       >
         <div className={styles.stageTint} aria-hidden="true" />
@@ -495,7 +519,7 @@ export function CombatScreen() {
                     onHover={(h) => setHoverEnemyUid((cur) => (h ? enemy.uid : cur === enemy.uid ? null : cur))}
                     fxClass={fx.classes[enemy.uid]}
                     fxSlot={fieldSlot(i)}
-                    spriteClass={fx.catching?.targetUid === enemy.uid ? 'fx-hidden' : fx.sprites[enemy.uid]}
+                    spriteClass={fx.catching?.targetUid === enemy.uid && fx.catching.success ? 'fx-hidden' : fx.sprites[enemy.uid]}
                     floats={fx.floats}
                     waiting={fx.sprites[enemy.uid] === 'fx-hidden' && fx.catching?.targetUid !== enemy.uid}
                     quiet={!!fx.catching}
@@ -519,6 +543,17 @@ export function CombatScreen() {
         {/* §9.9.1 — the hands the Poké Balls fly from and back to: a wild Pokémon's, off the right edge; yours, off the left. */}
         {!state.trainer && <span className={styles.handOffRight} data-fx-hand="trainer" />}
         <span className={styles.handPlayer} data-fx-hand="player" />
+
+        {/* §9.2.2.4 — the AP, in the middle of the screen: docked at the bottom centre of the field, right over the hand
+            it is spent from, with what the card under the pointer would spend shown before it is paid. */}
+        <div className={styles.apDock}>
+          <ApMeter ap={state.player.ap} base={ctx.config.baseApPerTurn} cost={costPreview} />
+          {state.player.defensiveDiscount && (
+            <Tipped tip={<Tip title="Defensive discount" body="You swapped this turn, so your next Defensive card costs 1 AP less. Spent the moment you play one." />} className={styles.discount}>
+              −1 Def
+            </Tipped>
+          )}
+        </div>
 
         <div className={styles.overlay} aria-hidden="true">
           {boxDamage && boxEnemy && previewPlay && (
@@ -551,19 +586,9 @@ export function CombatScreen() {
         )}
       </section>
 
-      {/* §9.2.2.4 — the tray as one row: the AP on the left, the hand and the bag in the middle, the turn's end on the
-          right, so the hand keeps the height at 720 p. */}
+      {/* §9.2.2.4 — the tray as one row: the hand and the bag in the middle, the turn's end on the right. */}
       <footer className={styles.tray} ref={trayRef}>
-        <div className={styles.apPanel}>
-          {/* §9.2.2.4 — the AP capsule, with what the card under the pointer would spend shown before it is paid. */}
-          <ApMeter ap={state.player.ap} base={ctx.config.baseApPerTurn} cost={costPreview} />
-          {state.player.defensiveDiscount && (
-            <Tipped tip={<Tip title="Defensive discount" body="You swapped this turn, so your next Defensive card costs 1 AP less. Spent the moment you play one." />} className={styles.discount}>
-              −1 Def
-            </Tipped>
-          )}
-        </div>
-        <div className={styles.hand} data-testid="hand">
+        <div className={styles.hand} data-testid="hand" ref={setHandEl}>
           {plays.map((p, i) => (
             <MoveCard
               key={p.card.id}
@@ -579,7 +604,7 @@ export function CombatScreen() {
             />
           ))}
           {plays.length === 0 && <div className={styles.emptyHand}>No cards in hand</div>}
-          <div className={styles.divider} />
+          <div className={styles.divider} data-hand-fixed />
           {/* §3.5 — the whole bag, one button (v0.8.6): consumables are spent, so nothing is dealt at random. */}
           <BagButton
             plays={consumablePlays}
@@ -675,10 +700,9 @@ function dropOnAllyText(state: CombatState, targets: number[]): string {
 /** A slot's sprite box on the stage, in the stage's own pixels. */
 type SlotBox = { left: number; top: number; width: number; height: number };
 
-/** Layout: a move card's width and the hand's gap (MoveCard.module.css, `.hand`), and how many sit side by side. */
+/** Layout: a move card's width and the hand's gap (MoveCard.module.css, `.hand`). */
 const CARD_WIDTH = 152;
 const CARD_GAP = 8;
-const HAND_FIT = 5;
 
 /** §5.8 — the header chip's icon for each kind of fight. */
 const KIND_ICON: Record<string, typeof IconPaw> = { wild: IconPaw, trainer: IconUser, elite: IconStar, boss: IconTrophy };

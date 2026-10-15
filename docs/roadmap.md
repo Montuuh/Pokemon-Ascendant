@@ -1222,7 +1222,11 @@ capsule** of cells with a preview of what the card under the pointer would spend
 and **played onto its target only** — an enemy, or the Pokémon it acts on (`allyRecipients`, `CardPlayability.allyTargets`)
 — never cast by a second click or onto nothing; the trainer behind its bench with its team as small Poké Balls; the
 send-out one ball at a time, your bench included; and a catch that holds the pack until the ball opens, with only its
-wobbles and no intents or arrows meanwhile.
+wobbles and no intents or arrows meanwhile. **A last round of notes** the same day: the AP capsule docked at the
+screen's centre over the hand (`apDock`), the hand tucking by its measured room so the Bag is never squeezed; every
+Pokémon's card one size (`--unit-card`, a fraction of the stage's height); a lone Bench 1 in the upper place (two equal
+formation rows); a break-out bursting on its last wobble with the Pokémon back at once (`catchTimeline(wobbles,
+success)`, `FX_MS.burst`); and the throw a true parabola (`catchThrowX` / `catchThrowY`), its path no longer spun.
 
 ### v0.9.17 — The title screen, a battle  ☐
 The user's note 8. The main menu and the run's first screens (difficulty, starter, Starting Relic) redrawn: behind

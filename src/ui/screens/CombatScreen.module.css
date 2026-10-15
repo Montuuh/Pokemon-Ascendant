@@ -74,9 +74,7 @@
   /* The formation's sizes are read from the stage's own height (cqh), so 720 p and 1080 p hold the same picture. */
   container-type: size;
   /* Each card's width, from the stage's height: the window inside it (and the sprite in the window) follows. */
-  --lead-card: clamp(192px, 46cqh, 360px);
-  --bench-card: clamp(176px, 34cqh, 270px);
-  --solo-card: clamp(200px, 50cqh, 390px);
+  --unit-card: clamp(176px, 38cqh, 310px);
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-rows: minmax(0, 1fr);
@@ -102,7 +100,10 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-rows: auto auto;
+  /* Two equal rows, sized by the taller, the side itself only as tall as they are and centred on the stage: a lone
+     Bench 1 keeps the upper place (as if Bench 2 stood below it), and the Lead stays centred between them. */
+  grid-template-rows: 1fr 1fr;
+  align-self: center;
   align-content: center;
   align-items: center;
   /* Room for an intent chip wider than its card, more of it where the screen has it. */
@@ -128,6 +129,7 @@
 .foeSolo {
   grid-template-columns: auto auto;
   grid-template-rows: auto;
+  align-self: center;
   grid-template-areas: 'solo trainer';
 }
 .slotLead {
@@ -293,10 +295,10 @@
   animation: global(popIn) var(--motion-fast) var(--ease-spring) both;
 }
 
-/* ---- Hand tray (§9.2.2.4): AP · hand + bag · the turn's end, one row ---- */
+/* ---- Hand tray (§9.2.2.4): hand + bag · the turn's end, one row (the AP is docked on the field, .apDock) ---- */
 .tray {
   display: grid;
-  grid-template-columns: 120px 1fr 150px;
+  grid-template-columns: 150px minmax(0, 1fr) 150px;
   align-items: end;
   gap: var(--sp-3);
   background: var(--surface-1);
@@ -304,8 +306,20 @@
   padding: 0 var(--sp-5) var(--sp-3);
   z-index: 2;
 }
-.apPanel,
+/* §9.2.2.4 — the AP, docked at the bottom centre of the field over the hand: the middle of the screen, clear of both
+   formations. */
+.apDock {
+  position: absolute;
+  left: 50%;
+  bottom: var(--sp-2);
+  translate: -50% 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
 .turnPanel {
+  grid-column: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -314,6 +328,12 @@
   padding-top: var(--sp-4);
 }
 /* §3.3.1 — after a manual swap, the next Defensive card is 1 AP cheaper: dark ink on the blue (D5). */
+/* Beside the AP, out of the dock's flow, so its coming and going never moves the capsule. */
+.apDock .discount {
+  position: absolute;
+  left: 100%;
+  margin-left: var(--sp-2);
+}
 .discount {
   background: var(--brand-blue);
   color: var(--ink-on-accent);
@@ -341,7 +361,9 @@
   opacity: 0.5;
   box-shadow: none;
 }
+/* The hand in the middle column, centred under the AP; the turn's end in the right one (the left keeps it centred). */
 .hand {
+  grid-column: 2;
   display: flex;
   justify-content: center;
   align-items: flex-end;

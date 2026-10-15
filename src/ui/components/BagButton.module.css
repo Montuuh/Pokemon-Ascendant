@@ -1,6 +1,7 @@
 /* §3.5 — the bag: a card-sized button on the tray, where the two drawn items used to sit. */
 .button {
   position: relative;
+  flex: 0 0 auto;
   width: 118px;
   min-height: 150px;
   display: flex;

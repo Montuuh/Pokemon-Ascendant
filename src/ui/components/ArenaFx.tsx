@@ -65,10 +65,27 @@ function Flight({ b, slotStyle }: { b: BallFlight; slotStyle: SlotStyle }) {
   );
 }
 
+/** The throw's apex over its landing point, and how high the ball hangs there before it drops (`catchDrop`). */
+const ARC_RISE = 130;
+const DROP_HOLD = 90;
+const ARC_MARGIN = 8;
+
 function CatchBeat({ c, slotStyle }: { c: CatchFx; slotStyle: SlotStyle }) {
   const spot = useRef<HTMLSpanElement>(null);
   useHand(spot, 'player');
-  const t = catchTimeline(c.wobbles);
+  // §9.9.1 — the arc rises no higher than the field has room for: a Bench 1 at 720 p sits near the stage's top, and a
+  // fixed apex threw the ball out of sight for a third of the throw (v0.9.16).
+  useLayoutEffect(() => {
+    const el = spot.current;
+    const stage = el?.closest('[data-fx-stage]');
+    const ball = el?.querySelector('img');
+    if (!el || !stage || !ball) return;
+    const room = el.getBoundingClientRect().top - stage.getBoundingClientRect().top;
+    const rise = Math.max(0, Math.min(ARC_RISE, room - DROP_HOLD - ball.offsetHeight - ARC_MARGIN));
+    el.style.setProperty('--arc-rise', `${rise}px`);
+    el.style.setProperty('--drop-hold', `${DROP_HOLD}px`);
+  }, []);
+  const t = catchTimeline(c.wobbles, c.success);
   const vars = {
     '--at-absorb': `${t.absorbAt}ms`,
     '--at-drop': `${t.dropAt}ms`,
@@ -81,8 +98,10 @@ function CatchBeat({ c, slotStyle }: { c: CatchFx; slotStyle: SlotStyle }) {
       <ArenaSprite src={spriteOf({ speciesId: c.speciesId }, 'front', c.shiny)} imgClassName={styles.mon} />
       <span ref={spot} className={styles.spot}>
         <span className={styles.arc}>
-          <span className={styles.fall}>
-            <img className={`pixel ${styles.ball} ${c.success ? styles.caught : styles.broke}`} src={itemIcon(c.ball)} alt="" draggable={false} />
+          <span className={styles.arcY}>
+            <span className={styles.fall}>
+              <img className={`pixel ${styles.ball} ${c.success ? styles.caught : styles.broke}`} src={itemIcon(c.ball)} alt="" draggable={false} />
+            </span>
           </span>
         </span>
         <span className={styles.flash} />
