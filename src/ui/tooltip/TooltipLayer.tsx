@@ -31,6 +31,16 @@ export function TooltipLayer() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
+    // `data-tip-side="side"` on the anchor: beside it, towards the middle of the screen, vertically centred.
+    if (anchor.dataset.tipSide === 'side') {
+      const towardsLeft = a.left + a.width / 2 > vw / 2;
+      const sideLeft = towardsLeft ? a.left - b.width - GAP : a.right + GAP;
+      const sideTop = Math.max(MARGIN, Math.min(vh - b.height - MARGIN, a.top + a.height / 2 - b.height / 2));
+      if (sideLeft >= MARGIN && sideLeft + b.width <= vw - MARGIN) {
+        setPos({ left: sideLeft, top: sideTop, below: false });
+        return;
+      }
+    }
     let left = a.left + a.width / 2 - b.width / 2;
     left = Math.max(MARGIN, Math.min(vw - b.width - MARGIN, left));
 

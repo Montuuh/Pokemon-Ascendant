@@ -146,52 +146,6 @@
   animation-delay: calc(var(--at-result) + 240ms);
 }
 
-/* §2.6.4.4 — the four shake checks under the ball: each lights as it passes, the one it broke on turns red. */
-.checks {
-  position: absolute;
-  left: 50%;
-  bottom: -16%;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  transform: translateX(-50%);
-  padding: var(--sp-1) var(--sp-3);
-  border-radius: var(--radius-pill);
-  background: var(--scrim);
-  animation: chipIn var(--motion-base) var(--ease-spring) var(--at-drop) both;
-}
-.pip {
-  display: block;
-  width: var(--sp-3);
-  height: var(--sp-3);
-  border-radius: 50%;
-  border: 2px solid var(--ink-muted);
-  background: transparent;
-}
-.pip[data-state='pass'] {
-  animation: pipPass var(--motion-base) ease-out both;
-}
-.pip[data-state='fail'] {
-  animation: pipFail var(--motion-base) ease-out both;
-}
-/* The check it broke on is a cross, not only a colour (D5). */
-.pip[data-state='fail']::after {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--ink-primary);
-  clip-path: polygon(20% 10%, 50% 40%, 80% 10%, 90% 20%, 60% 50%, 90% 80%, 80% 90%, 50% 60%, 20% 90%, 10% 80%, 40% 50%, 10% 20%);
-  opacity: 0;
-  animation: inherit;
-  animation-name: crossIn;
-}
-.pct {
-  margin-left: var(--sp-1);
-  font-size: var(--type-small);
-  color: var(--ink-primary);
-}
-
 @keyframes ballIn {
   0% {
     transform: translate(var(--hand-x), var(--hand-y)) rotate(-720deg) scale(0.7);
@@ -342,40 +296,6 @@
     opacity: 0;
   }
 }
-@keyframes chipIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
-  }
-}
-@keyframes crossIn {
-  to {
-    opacity: 1;
-  }
-}
-@keyframes pipPass {
-  from {
-    background: transparent;
-  }
-  to {
-    background: var(--accent-action);
-    border-color: var(--accent-action);
-  }
-}
-@keyframes pipFail {
-  from {
-    background: transparent;
-  }
-  to {
-    background: var(--accent-negative);
-    border-color: var(--accent-negative);
-  }
-}
-
 /* §9.2.3 — a move's illustration over what it hits: the slot's box, the picture centred in it at 3×, popping in with
    the lunge and fading before the next number. Over the sprite, under the floating numbers. */
 .hit {

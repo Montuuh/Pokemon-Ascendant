@@ -1,200 +1,49 @@
-/* §9.2.1 / §9.2.2.2 — one of your Pokémon on the field: the sprite standing where it is in the formation, its plate
-   attached under it. The sizes come from the formation (`--lead-sprite`, `--bench-sprite` on the stage), so the whole
-   squad scales with the stage's height. */
+/* §9.2.2.2 — your Pokémon's card: what is yours alone (the anatomy is UnitCard's). */
 .unit {
-  --sprite: var(--bench-sprite, 110px);
-  --plate-w: var(--bench-plate, 172px);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0;
-  background: none;
-  border: none;
-  color: var(--ink-primary);
-  text-align: left;
   cursor: pointer;
 }
-.lead {
-  --sprite: var(--lead-sprite, 180px);
-  --plate-w: var(--lead-plate, 214px);
+.unit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
 }
-
-/* ── The sprite ─────────────────────────────────────────────────────────────────────────────────────────── */
-.stand {
-  position: relative;
-  width: var(--sprite);
-  height: var(--sprite);
-}
-/* The FX anchor and the arrows' landing point: exactly the place the Pokémon stands in. */
-.sprite {
-  position: absolute;
-  inset: 0;
-}
-.shadow {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: -7%;
-  height: 16%;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 70%);
-}
-.breathe {
-  animation: global(breathe) 2.6s ease-in-out infinite;
-}
-.fainted .shadow {
-  opacity: 0.4;
-}
-
-/* ── The plate ──────────────────────────────────────────────────────────────────────────────────────────── */
-.plate {
-  position: relative;
-  z-index: 1;
-  width: var(--plate-w);
-  margin-top: var(--sp-1);
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 10px var(--sp-2) var(--sp-1);
-  border-radius: var(--radius-md);
-  border: 2px solid var(--border-subtle);
-  background: color-mix(in srgb, var(--surface-1) 90%, transparent);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-  transition:
-    transform var(--motion-base) var(--ease-spring),
-    border-color var(--motion-fast) ease,
-    box-shadow var(--motion-base) ease;
-}
-.lead .plate {
+/* The Lead: gold, crowned. */
+.unit.lead {
   border: 3px solid var(--accent-action);
 }
-.unit:hover .plate {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
-}
-/* §5.2 — an intent is aimed at this slot: a red glow round the plate, its own frame kept — your Lead stays gold, so
-   it never reads as the enemy's red-framed Lead. */
-.targeted .plate {
-  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.45), 0 0 20px rgba(255, 107, 107, 0.35);
-}
-.selectable .plate {
-  border-color: var(--accent-positive);
-  animation: global(glowPulse) 1.2s ease-out infinite;
-}
-.fainted {
-  cursor: default;
-}
-.fainted .plate {
-  filter: saturate(0.2) brightness(0.8);
-  opacity: 0.8;
-}
-.fainted:hover .plate {
-  transform: none;
-}
-.slotTag {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  background: var(--surface-3);
-  color: var(--ink-secondary);
-  font-size: var(--type-micro);
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  border-radius: var(--radius-pill);
-  padding: 1px var(--sp-2);
-  white-space: nowrap;
-}
-.lead .slotTag {
+.unit .leadTag {
   background: var(--accent-action);
   color: var(--ink-on-accent);
 }
-.status {
-  position: absolute;
-  top: -11px;
-  right: calc(var(--sp-2) * -1);
-  display: flex;
-  gap: 2px;
+/* One behind the Lead: a neutral frame. */
+.unit.bench {
+  border-color: var(--surface-3);
 }
-.head {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-1);
-  min-width: 0;
+/* §5.2 — an intent is aimed at this slot: a red glow round the card, its own frame kept — your Lead stays gold, so it
+   never reads as the enemy's red-framed Lead. */
+.unit.targeted {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent-negative) 45%, transparent),
+    0 0 20px color-mix(in srgb, var(--accent-negative) 35%, transparent);
 }
-.types {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex: 0 0 auto;
+/* A focus ring in cream, outside the frame: gold on the Lead's gold frame read as a thicker frame. */
+.unit:focus-visible {
+  outline: 2px solid var(--brand-cream);
+  outline-offset: 3px;
 }
-.name {
-  flex: 1;
-  min-width: 0;
-  font-size: var(--type-caption);
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Wanted for the card or item held: a green frame and a green glow that stays when motion is off (D5: not colour
+   alone — the hint names it "highlighted", and the glow is a shape). */
+.unit.selectable {
+  border-color: var(--accent-positive);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-positive) 45%, transparent);
+  animation: global(glowPulse) 1.2s ease-out infinite;
 }
-.lead .name {
-  font-size: var(--type-small);
+.unit.fainted {
+  cursor: default;
+  filter: saturate(0.2) brightness(0.8);
+  opacity: 0.8;
 }
-.level {
-  flex: 0 0 auto;
-  font-size: var(--type-micro);
-  /* Secondary ink, not muted: on the translucent plate the muted grey fell under 4.5:1 (D5). */
-  color: var(--ink-secondary);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 0 5px;
-  white-space: nowrap;
-}
-.hpRow {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-1);
-  min-height: 18px;
-}
-.hpText {
-  font-size: var(--type-micro);
-  color: var(--ink-secondary);
-  line-height: 1;
-  white-space: nowrap;
-  margin-right: auto;
-}
-.lead .hpText {
-  font-size: var(--type-caption);
-}
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-}
-.chipUp,
-.chipDown,
-.chipTrauma {
-  white-space: nowrap;
-  font-size: var(--type-micro);
-  font-weight: 800;
-  border-radius: var(--radius-sm);
-  padding: 0 5px;
-  color: var(--ink-on-accent);
-}
-.chipUp {
-  background: var(--accent-positive);
-}
-.chipDown {
-  background: var(--accent-negative);
-}
-.chipTrauma {
-  background: var(--accent-warning);
+.unit.fainted:hover {
+  transform: none;
 }
 .swapChip,
 .swapChipOff {
@@ -209,8 +58,12 @@
   color: var(--accent-action);
 }
 .swapChipOff {
-  color: var(--ink-muted);
-  border-color: var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--ink-primary);
+  border-style: dashed;
+  border-color: var(--ink-muted);
 }
 /* §9.2.5 — what it would take as the Lead this turn: the swap, priced in HP. Quiet, not an alarm; red only at KO. */
 .asLead,
@@ -231,25 +84,24 @@
   color: var(--ink-on-accent);
 }
 
-/* §9.2.5 — what lands on this Pokémon this turn: beside it, towards the enemy, one chip per hit and a KO flag. */
+/* §9.2.5 — what lands on this Pokémon this turn: hung off the card's right edge, towards the enemy. */
 .incoming {
   position: absolute;
-  left: 88%;
-  top: 14%;
+  left: calc(100% - var(--sp-3));
+  top: 30%;
   width: max-content;
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--sp-1);
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
-  white-space: nowrap;
 }
 .incomingHit {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  padding: 0 var(--sp-2);
+  padding: 0 var(--sp-2) 0 2px;
   border-radius: var(--radius-pill);
   background: var(--surface-1);
   border: 2px solid var(--accent-negative);

@@ -30,6 +30,15 @@
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.5);
   z-index: 3;
 }
+/* §5.6 — the card being dragged waits in the hand, faded, while its copy travels with the pointer. */
+.lifted {
+  opacity: 0.3;
+  transform: rotate(var(--rot)) translateY(var(--lift));
+}
+.ghost {
+  transform: none;
+  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.55);
+}
 .selected {
   outline: 3px solid var(--accent-action);
   outline-offset: 2px;

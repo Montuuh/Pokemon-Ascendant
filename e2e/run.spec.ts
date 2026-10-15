@@ -20,6 +20,13 @@ async function playOneTurn(page: Page): Promise<void> {
     const playable = page.locator('[data-testid="hand"] [data-testid^="card-"][data-state="playable"]');
     if ((await playable.count()) === 0) break;
     await playable.first().click();
+    // §5.6 — a card for your own side is played onto the Pokémon it acts on (lit, data-selectable).
+    const ally = page.locator('[data-testid^="portrait-"][data-selectable]');
+    if ((await page.getByTestId('selection-hint').getAttribute('data-target').catch(() => null)) === 'ally' && (await ally.count()) > 0 && !(await page.getByTestId('selection-hint').textContent())?.includes('Step-Backward')) {
+      await ally.first().click();
+      await page.waitForTimeout(110);
+      continue;
+    }
     const hint = page.getByTestId('selection-hint');
     if ((await hint.count()) > 0 && (await hint.textContent())?.includes('Step-Backward')) {
       await page.locator('[data-testid^="portrait-bench-"]').first().click();

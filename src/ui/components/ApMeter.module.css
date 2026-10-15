@@ -1,0 +1,92 @@
+/* §9.2.2.4 — the AP capsule: the number over a pill of cells, filled from the bottom. */
+.meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  white-space: nowrap;
+  color: var(--ink-primary);
+}
+.value b {
+  font-size: var(--type-h1);
+  line-height: 1;
+  color: var(--accent-action);
+}
+/* Secondary ink: the strike already says "was"; muted grey fell under 4.5:1 (D5). */
+.was {
+  font-size: var(--type-body);
+  color: var(--ink-secondary);
+}
+.to {
+  color: var(--ink-muted);
+}
+.value b.short {
+  color: var(--accent-negative);
+}
+.unit {
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ink-secondary);
+}
+.capsule {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
+  width: 44px;
+  padding: var(--sp-1);
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  border: 2px solid var(--tip-surface);
+  box-shadow:
+    0 0 0 2px var(--accent-action-deep),
+    0 6px 14px rgba(0, 0, 0, 0.4);
+}
+.cell {
+  height: 20px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  transition:
+    background var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
+}
+/* The ends of the capsule are round, as the pill is. */
+.cell:first-child {
+  border-bottom-left-radius: var(--radius-pill);
+  border-bottom-right-radius: var(--radius-pill);
+}
+.cell:last-child {
+  border-top-left-radius: var(--radius-pill);
+  border-top-right-radius: var(--radius-pill);
+}
+.cell[data-state='kept'] {
+  background: radial-gradient(circle at 35% 30%, var(--brand-cream), var(--accent-action) 55%, var(--accent-action-deep));
+}
+/* What the card under the pointer would spend: still gold, striped, breathing — not gone yet. */
+.cell[data-state='spend'] {
+  background:
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--surface-sunken) 45%, transparent) 0 3px, transparent 3px 6px),
+    var(--accent-action);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-action) 70%, transparent);
+  animation: global(lossPulse) 1.2s ease-in-out infinite;
+}
+/* A cost beyond what is left: the cells you are short, in red. */
+.cell[data-state='short'] {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--accent-negative);
+}
+.meter[data-empty] .capsule {
+  box-shadow:
+    0 0 0 2px var(--surface-3),
+    0 6px 14px rgba(0, 0, 0, 0.4);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cell[data-state='spend'] {
+    animation: none;
+  }
+}

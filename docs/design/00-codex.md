@@ -383,11 +383,12 @@ Two warm themes: a cream **front-end** and a deep-plum **combat stage**. Baloo 2
 hues, always paired with a glyph so colour is never the only channel. On the light theme the semantic accents
 may be fills, tints or borders — **never running text** (they fail AA).
 
-**Combat is one formation each side** (v0.9.16): every Pokémon on the field is a unit — its animated sprite and its
-plate under it (tag, types, name, level, HP, status). Yours on the left, the Lead forward and crowned, Bench 1 and 2
-behind; the enemy mirrored on the right and tagged the same way (Lead, Bench 1, Bench 2), an intent **chip** above each,
-and a quiet dotted **arrow** from each visible intent to the slot it will hit. The rival trainer stands at the back with
-its whole team in a row (beaten, out, still to come as closed balls). The hand tray runs along the bottom, and the held
+**Combat is one formation each side** (v0.9.16): every Pokémon on the field is a card — tag, types, name, level, its
+animated sprite in a lit window, HP (the part about to go striped). Yours on the left, the Lead centred and crowned
+between Bench 1 and 2; the enemy mirrored on the right and tagged the same way, an intent **chip** above each and an
+**arrow** in the intent's colour (hit red, stat blue, condition violet, help green) to the slot it will hit. The rival
+trainer stands behind its line-up, its team as Poké Balls. **A card is played onto its target** — an enemy, or the
+Pokémon it acts on — never cast at nothing; the AP capsule shows what it would spend first. The hand tray runs along the bottom, and the held
 card's number sits on every plate it reaches — with a blue "out of reach" lock where a Melee card cannot land. Hits coming at you sit on your portraits, one number each; an
 area intent's chip says "→ ALL" and prints no number. Resting on an intent opens the **intent card** (§9.2.6).
 The preview shows the final number, the full breakdown, crit, riders and a KO flag — it calls the same function

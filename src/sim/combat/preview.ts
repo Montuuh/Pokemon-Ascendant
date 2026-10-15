@@ -33,12 +33,27 @@ export interface CardPlayability {
   hitsAll: boolean;
   /** §5.6 / §9.2.4 — every enemy on the field, whether this card can reach it, and what it would deal there. */
   targets: CardTarget[];
+  /**
+   * §5.6 / §9.2.3 — a card that does not land on the foe acts on your own side: the team indices it acts on (its owner
+   * for a self buff, a heal or a draw; the bench for a bench stage; everyone standing for a guard or a cure). It is
+   * played onto one of them, never cast at nothing. Empty for a card that aims at the foe.
+   */
+  allyTargets: number[];
 }
 
 export interface CardTarget {
   uid: string;
   reachable: boolean;
   damage: DamageBreakdown | null;
+}
+
+/** §5.6 — which of your Pokémon a card that does not land on the foe acts on (see `CardPlayability.allyTargets`). */
+export function allyRecipients(state: CombatState, move: MoveDef, ownerIndex: number): number[] {
+  if (aimsAtFoe(move)) return [];
+  const standing = state.player.team.map((m, i) => ({ m, i })).filter(({ m }) => m.hp > 0);
+  if (move.effects.some((e) => e.kind === 'team-guard' || e.kind === 'team-cure')) return standing.map(({ i }) => i);
+  if (move.effects.some((e) => e.kind === 'stage' && e.target === 'bench')) return standing.filter(({ i }) => i !== state.player.leadIndex).map(({ i }) => i);
+  return [ownerIndex];
 }
 
 /** §5.6 — does the move land on the foe side at all (a hit, a status, a stat drop)? */
@@ -131,6 +146,7 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
     aimsAtFoe: foe,
     hitsAll: move.targeting === 'cleave',
     targets,
+    allyTargets: allyRecipients(state, move, state.player.team.indexOf(owner)),
   };
 }
 

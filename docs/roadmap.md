@@ -1213,7 +1213,16 @@ plate with its place tag — Lead / Bench 1 / Bench 2 (`enemySlotLabel`) — and
 every slot for a Cleave; a second action fainter), measured from the sprites, an enemy's own brought forward on hover.
 **The rival's team** (`TrainerParty`) in a row under the trainer at the back of the field: beaten (grey, struck), out
 (ringed), to come (closed balls, §2.7.3). The arena's beats (balls, ghosts, the catch, a move's picture) anchor to each
-slot's measured box (`data-fx-slot`), keeping the last one when a Pokémon leaves.
+slot's measured box (`data-fx-slot`), keeping the last one when a Pokémon leaves. **Then, on the user's notes the same
+day** (folded into this version, the roadmap unmoved): every Pokémon a **card** in the move card's grammar with its
+sprite in a lit window (`UnitCard.module.css`), the formation centred and sized from the stage's height; the intent's
+colour on chip and arrow (`intentTone`: hit red, stat blue, condition violet, help green), bolder arrows, the ones aimed
+at a hovered ally brought forward; the HP about to go striped on the bar (`HpBar.future`); the **AP
+capsule** of cells with a preview of what the card under the pointer would spend (`ApMeter`); a card **dragged whole**
+and **played onto its target only** — an enemy, or the Pokémon it acts on (`allyRecipients`, `CardPlayability.allyTargets`)
+— never cast by a second click or onto nothing; the trainer behind its bench with its team as small Poké Balls; the
+send-out one ball at a time, your bench included; and a catch that holds the pack until the ball opens, with only its
+wobbles and no intents or arrows meanwhile.
 
 ### v0.9.17 — The title screen, a battle  ☐
 The user's note 8. The main menu and the run's first screens (difficulty, starter, Starting Relic) redrawn: behind

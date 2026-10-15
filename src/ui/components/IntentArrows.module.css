@@ -1,51 +1,61 @@
-/* §5.2 — the intent arrows: a quiet layer under the Pokémon, over the backdrop. */
+/* §5.2 — the intent arrows: over the field and its cards, catching nothing, from card edge to card edge. Dotted, in the
+   intent's colour, with a dark edge so they read on a bright backdrop as well as a dark one (v0.9.16: they were too
+   faint, and under the cards their heads were hidden). */
 .svg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
   overflow: visible;
 }
 .arrow {
   fill: none;
-  stroke-width: 2;
+  stroke-width: 3;
   stroke-linecap: round;
-  stroke-dasharray: 2 7;
-  opacity: 0.5;
+  stroke-dasharray: 2 8;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--surface-sunken) 90%, transparent));
   transition:
     opacity var(--motion-base) ease,
     stroke-width var(--motion-base) ease;
   animation: global(dashFlow) var(--motion-dash-flow) linear infinite;
 }
-/* The marker's head shares the line's colour; a line is stroke, a head is fill. */
+/* The head shares the line's colour; a line is stroke, a head is fill. */
 .hit {
   stroke: var(--accent-negative);
   fill: var(--accent-negative);
 }
+.stat {
+  stroke: var(--brand-blue);
+  fill: var(--brand-blue);
+}
 .status {
-  stroke: var(--type-psychic);
-  fill: var(--type-psychic);
+  stroke: var(--intent-status);
+  fill: var(--intent-status);
 }
 .ally {
   stroke: var(--accent-positive);
   fill: var(--accent-positive);
 }
 .arrow.hit,
+.arrow.stat,
 .arrow.status,
 .arrow.ally {
   fill: none;
 }
 /* §5.6.1 — a second action: the same arrow, a step quieter. */
 .second {
-  opacity: 0.32;
+  opacity: 0.6;
 }
-/* Resting on an enemy: its arrows forward, the others back. */
+/* Resting on an enemy, or on the one of yours it aims at: those arrows forward, bolder; the others back. */
 .focus {
-  opacity: 0.95;
-  stroke-width: 2.6;
+  opacity: 1;
+  stroke-width: 4.5;
+  stroke-dasharray: 3 7;
+  filter: drop-shadow(0 0 3px var(--surface-sunken)) drop-shadow(0 0 6px color-mix(in srgb, var(--brand-cream) 35%, transparent));
 }
 .faded {
-  opacity: 0.14;
+  opacity: 0.22;
 }

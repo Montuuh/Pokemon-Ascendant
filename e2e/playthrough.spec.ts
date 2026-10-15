@@ -10,6 +10,13 @@ async function playOneTurn(page: Page): Promise<void> {
     const card = playable.first();
     await card.click();
     // Step-Backward cards ask for a bench: pick the first selectable portrait if the hint says so.
+    // §5.6 — a card for your own side is played onto the Pokémon it acts on (lit, data-selectable).
+    const ally = page.locator('[data-testid^="portrait-"][data-selectable]');
+    if ((await page.getByTestId('selection-hint').getAttribute('data-target').catch(() => null)) === 'ally' && (await ally.count()) > 0 && !(await page.getByTestId('selection-hint').textContent())?.includes('Step-Backward')) {
+      await ally.first().click();
+      await page.waitForTimeout(110);
+      continue;
+    }
     const hint = page.getByTestId('selection-hint');
     if ((await hint.count()) > 0 && (await hint.textContent())?.includes('Step-Backward')) {
       const bench = page.locator('[data-testid^="portrait-bench-"]').first();

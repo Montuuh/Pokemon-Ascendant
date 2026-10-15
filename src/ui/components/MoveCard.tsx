@@ -19,6 +19,10 @@ interface Props {
   total: number;
   /** Layout only: how far each card after the first tucks under its neighbour, so a big hand fits its row. */
   overlap?: number;
+  /** §5.6 — this card is the one being dragged: it waits in the hand, faded, while its copy travels. */
+  lifted?: boolean;
+  /** §5.6 — the copy that travels under the pointer: not a control, not in the hand's fan. */
+  ghost?: boolean;
 }
 
 /** §4.1.2 — the ×N chip said in words, for the label. */
@@ -35,12 +39,12 @@ const roleIcon = { offensive: IconSwords, defensive: IconShield, utility: IconSp
 // illustration on its type's ground — with its owner's sprite in the corner, so a hand of five from three Pokémon
 // reads as five moves and three owners; the plate says what it does; the foot its range, role, power and type.
 // Unplayable cards stay visible and keep their words at full ink: the lock is a band on the window (ui rule, D5).
-export function MoveCard({ play, selected, onClick, onHover, onPointerDown, index, total, overlap = 0 }: Props) {
+export function MoveCard({ play, selected, onClick, onHover, onPointerDown, index, total, overlap = 0, lifted, ghost }: Props) {
   const { move, owner } = play;
   const Role = roleIcon[move.role];
   const Range = move.range === 'melee' ? IconHandGrab : IconTargetArrow;
   const state = play.playable ? 'playable' : play.reason === 'not-enough-ap' ? 'no-ap' : 'locked';
-  const classes = [styles.card, styles[state === 'no-ap' ? 'noAp' : state], selected ? styles.selected : ''].filter(Boolean).join(' ');
+  const classes = [styles.card, styles[state === 'no-ap' ? 'noAp' : state], selected ? styles.selected : '', lifted ? styles.lifted : '', ghost ? styles.ghost : ''].filter(Boolean).join(' ');
   // Fan: spread by hand size so 2 cards fan as clearly as 12 (Unity-era ApplyHandFan).
   const mid = (total - 1) / 2;
   const rot = total > 1 ? ((index - mid) / Math.max(1, mid)) * 6 : 0;
@@ -58,10 +62,16 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
   return (
     <button
       type="button"
-      className={`${classes} fx-card-in`}
+      className={ghost ? classes : `${classes} fx-card-in`}
+      tabIndex={ghost ? -1 : undefined}
+      aria-hidden={ghost || undefined}
       style={{ ['--card-type' as string]: `var(--type-${move.type})`, ['--rot' as string]: `${rot}deg`, ['--lift' as string]: `${lift}px`, marginLeft: index > 0 && overlap ? -overlap : undefined, animationDelay: `${index * 40}ms` }}
       onClick={onClick}
-      onPointerDown={onPointerDown}
+      onPointerDown={(e) => {
+        // A press may become a drag: the card's bubble closes, or it would stay open over the field.
+        tip.onMouseLeave(e);
+        onPointerDown?.(e);
+      }}
       {...tip}
       onMouseEnter={(e) => {
         tip.onMouseEnter(e);
@@ -71,7 +81,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         tip.onMouseLeave(e);
         onHover(false);
       }}
-      data-testid={`card-${move.id}`}
+      data-testid={ghost ? 'drag-ghost-card' : `card-${move.id}`}
       data-card-id={play.card.id}
       data-mastery={play.card.mastery || undefined}
       data-state={state === 'no-ap' ? 'no-ap' : state === 'locked' ? (play.reason ?? 'locked') : 'playable'}

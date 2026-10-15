@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { IconLock, IconQuestionMark } from '@tabler/icons-react';
 import { IntentChip } from './IntentChip';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
@@ -13,6 +14,7 @@ import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
 import { armourTip, nextIntentTip, placeTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
+import card from './UnitCard.module.css';
 import styles from './EnemyPanel.module.css';
 
 /** §9.2.4 — what the card in hand would do to this enemy: its own number, or that it cannot reach it. */
@@ -20,6 +22,8 @@ export interface TargetPreview {
   final: number;
   ko: boolean;
   reachable: boolean;
+  /** An area card: it lands on every enemy at once, so each one's bar shows what it would take. */
+  area?: boolean;
 }
 
 interface Props {
@@ -46,15 +50,19 @@ interface Props {
   /** §9.9.1 — the sprite's own beat: in its ball, being sent out, entering from the grass. */
   spriteClass?: string;
   floats: FloatingFx[];
-  /** Still in its ball: the place is kept, the Pokémon and its plate are not shown yet. */
+  /** Still in its ball: the place is kept, the Pokémon and its card are not shown yet. */
   waiting?: boolean;
+  /** §9.9.1 — a ball is rocking: what it was about to do is not the question now, so its intent steps back. */
+  quiet?: boolean;
 }
 
-// Per §9.2.1 / §9.2.2.3 / §9.2.5 — one enemy on the field, as one unit: its intent chip above it (kind glyph, the move,
-// its target, and for a single hit the number it lands), its animated sprite, and its plate under it — the place tag
-// (Lead, Bench 1, Bench 2, as yours), types, name, level, status, HP with phase markers, stages — with the catch pill in
-// a wild fight and, while a card is held, the number that card would deal here (§9.2.4).
-export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow, fallen, held, fxSlot, spriteClass, floats, waiting }: Props) {
+// Per §9.2.1 / §9.2.2.3 / §9.2.5 — one enemy on the field, as a card in the move card's grammar (v0.9.16): its intent
+// chips above it (kind glyph, the move, its target, and for a single hit the number it lands), and the card — the place
+// tag (Lead, Bench 1, Bench 2, as yours) on its top edge, its condition on the corner, types, name and level on a dark
+// head, the animated front sprite in a window lit in its first type, its HP with phase markers (and, while a card is
+// aimed at it, the part that card would take, striped), its chips — with the catch pill in a wild fight and the held
+// card's number on the corner (§9.2.4). The whole card, sprite and all, is the target.
+export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow, fallen, held, fxSlot, spriteClass, floats, waiting, quiet }: Props) {
   const phase = currentPhase(enemy, ctx.config);
   // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
   const place = held ? held.place : enemySlotLabel(state, enemy);
@@ -72,50 +80,62 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
     : enemy.tier === 'elite' ? 'Elite'
     : enemy.tier === 'trainer' ? 'Trainer'
     : 'Wild';
-  // §5.6 — the plate is the door to its place, and to what the plate does not print: its tier and its phase. While a
-  // card is aimed the bubble stays shut — the plate's number and the breakdown are what is read then.
+  // §5.6 — the card is the door to its place, and to what the card does not print: its tier and its phase. While a
+  // card is aimed the bubble stays shut — the card's number and the breakdown are what is read then.
   const placeMeta = [tierLabel, ...(enemy.phaseCount > 1 ? [`Phase ${phase} of ${enemy.phaseCount}`] : [])];
   const cardTipProps = useTip(targetable ? null : placeTip(place, state.enemies.length + state.enemyQueue.length <= 1, !!enemy.shiny, placeMeta));
+  const front = place === 'Lead' || !inGroup;
+  // §9.2.4 — the HP the card would leave it: only on the one it is aimed at (or on all of them, for an area card) —
+  // the number on every card's corner already compares them.
+  const future = preview && preview.reachable && (aimed || preview.area) ? Math.max(0, enemy.hp - preview.final) : null;
 
   return (
-    <div className={[styles.unit, !inGroup ? styles.solo : place === 'Lead' ? styles.leadUnit : styles.benchUnit, fallen ? styles.fallen : '', waiting ? styles.waiting : ''].join(' ')} data-testid={fallen ? 'foe-panel-fallen' : 'foe-panel'} data-enemy-uid={enemy.uid} onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)} aria-hidden={fallen ? true : undefined} inert={fallen ? true : undefined}>
+    <div
+      className={[styles.unit, !inGroup ? styles.solo : place === 'Lead' ? styles.leadUnit : styles.benchUnit, fallen ? styles.fallen : '', waiting ? styles.waiting : '', quiet ? styles.quiet : ''].join(' ')}
+      data-testid={fallen ? 'foe-panel-fallen' : 'foe-panel'}
+      data-enemy-uid={enemy.uid}
+      onMouseEnter={() => onHover(true)}
+      onMouseLeave={() => onHover(false)}
+      aria-hidden={fallen ? true : undefined}
+      inert={fallen ? true : undefined}
+    >
       <div className={styles.intents}>
         {/* A fallen foe's chip keeps its room, unseen, so the unit fades where it stood rather than dropping. */}
         <div className={fallen ? styles.chipRoom : undefined}>
           <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={0} />
         </div>
         {enemy.second && enemy.hp > 0 && <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={1} />}
-
-      {next && enemy.hp > 0 && (
-        <div className={styles.next} data-testid="intent-next" tabIndex={0} {...nextTipProps}>
-          <span className={styles.nextLabel}>Then</span>
-          {next.hidden ? (
-            <IconQuestionMark size={14} />
-          ) : (
-            <img src={intentGlyph(next.kind === 'debuff' ? 'status' : next.kind === 'incapacitated' ? 'stall' : next.kind)} alt="" width={16} height={16} className={styles.intentIcon} />
-          )}
-          <span>
-            {next.hidden ? 'Unknown' : nextMove ? nextMove.name : INTENT_LABEL[next.kind]}
-            {!next.hidden && next.targetSlot && <> → <b>{SLOT_LABEL[next.targetSlot]}</b></>}
-            {!next.hidden && next.kind === 'cleave' && <> → <b>All</b></>}
-          </span>
-        </div>
-      )}
+        {next && enemy.hp > 0 && (
+          <div className={styles.next} data-testid="intent-next" tabIndex={0} {...nextTipProps}>
+            <span className={styles.nextLabel}>Then</span>
+            {next.hidden ? (
+              <IconQuestionMark size={14} />
+            ) : (
+              <img src={intentGlyph(next.kind === 'incapacitated' ? 'stall' : next.kind)} alt="" width={16} height={16} className={styles.intentIcon} />
+            )}
+            <span>
+              {next.hidden ? 'Unknown' : nextMove ? nextMove.name : INTENT_LABEL[next.kind]}
+              {!next.hidden && next.targetSlot && (
+                <>
+                  {' '}
+                  → <b>{SLOT_LABEL[next.targetSlot]}</b>
+                </>
+              )}
+              {!next.hidden && next.kind === 'cleave' && (
+                <>
+                  {' '}
+                  → <b>All</b>
+                </>
+              )}
+            </span>
+          </div>
+        )}
       </div>
-
-      {/* §9.2.1 — the Pokémon itself, standing on its plate. Every sprite is a drop target too (`data-enemy-uid`). */}
-      {/* The sprite is as much the target as its plate: a click on either aims the card here. */}
-      <span className={`${styles.stand} ${targetable ? styles.standTarget : ''}`} data-fx-slot={fxSlot} data-arrow-from={enemy.uid} onClick={onClick}>
-        <span className={[styles.sprite, fxClass ?? '', spriteClass ?? '', aimed ? styles.spriteAimed : ''].join(' ')} data-testid="arena-enemy" data-enemy-uid={enemy.uid}>
-          <span className={styles.shadow} aria-hidden="true" />
-          <ArenaSprite src={spriteOf(enemy, 'front', !!enemy.shiny)} shiny={!!enemy.shiny} concealed={enemy.hp <= 0} imgClassName={`${styles.breathe} ${enemy.shiny ? 'fx-shiny' : ''}`} />
-          <FloatingNumbers uid={enemy.uid} fx={floats} />
-        </span>
-      </span>
 
       <button
         type="button"
-        className={[styles.card, targetable ? styles.targetable : '', aimed ? styles.aimed : '', preview && !preview.reachable ? styles.outOfReach : '', enemy.hp <= 0 ? styles.fainted : ''].join(' ')}
+        className={[card.card, !inGroup ? card.solo : place === 'Lead' ? card.lead : '', styles.card, state.kind === 'wild' ? styles.wildCard : '', front ? styles.frontCard : '', targetable ? styles.targetable : '', aimed ? styles.aimed : '', preview && !preview.reachable ? styles.outOfReach : '', enemy.hp <= 0 ? styles.fainted : ''].join(' ')}
+        style={{ '--unit-type': `var(--type-${enemy.types[0] ?? 'normal'})` } as CSSProperties}
         onClick={onClick}
         {...cardTipProps}
         onFocus={(e) => {
@@ -128,15 +148,23 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
         }}
         data-testid={`enemy-${enemy.speciesId}`}
         data-enemy-uid={enemy.uid}
+        data-arrow-card={enemy.uid}
+        data-tip-side="side"
         aria-label={`${enemy.name}${enemy.shiny ? ', shiny' : ''}${place ? `, ${place}` : ''}, ${enemy.hp} of ${enemy.maxHp} HP${preview ? (preview.reachable ? `; the card deals ${preview.final}${preview.ko ? ', a knockout' : ''}` : '; out of reach of this card') : ''}`}
       >
         {/* §9.2.1 — its place, tagged as yours are: Lead, Bench 1, Bench 2. */}
-        <span className={styles.slotTag} data-testid="foe-place">
+        <span className={`${card.tag} ${front ? styles.frontTag : ''}`} data-testid="foe-place">
           {place}
         </span>
+        {(enemy.status || enemy.confusionTurns > 0) && (
+          <span className={card.corner}>
+            {enemy.status && <StatusBadge status={enemy.status.kind} size={22} />}
+            {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={22} />}
+          </span>
+        )}
         {/* §9.2.4 / §5.6 — the held card's number on this enemy; blue is position: a Melee card cannot reach it. */}
-        {preview && (
-          preview.reachable ? (
+        {preview &&
+          (preview.reachable ? (
             <span className={[styles.hitPreview, preview.ko ? styles.hitKo : ''].join(' ')} data-testid="target-preview">
               <span className="display tabular">{preview.final}</span>
               {preview.ko && <b>KO</b>}
@@ -145,62 +173,64 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
             <span className={styles.reachLock} data-testid="target-out-of-reach">
               <IconLock size={12} /> Out of reach
             </span>
-          )
-        )}
-        <span className={styles.header}>
-          <span className={styles.types}>
+          ))}
+        <span className={card.head}>
+          <span className={card.types}>
             {enemy.types.map((t) => (
-              <TypeBadge key={t} type={t} size={14} defenderTypes={enemy.types} />
+              <TypeBadge key={t} type={t} size={front ? 14 : 12} defenderTypes={enemy.types} />
             ))}
           </span>
-          <span className={styles.nameBlock}>
-            <span className={styles.nameRow}>
-              <span className={`${styles.name} display`}>{enemy.name}</span>
-              {enemy.shiny && <ShinyMark name={enemy.name} size={12} plain />}
-              <span className={styles.level}>Lv {enemy.level}</span>
+          <span className={`${card.name} display`}>{enemy.name}</span>
+          {enemy.shiny && <ShinyMark name={enemy.name} size={12} plain />}
+          <span className={card.level}>Lv {enemy.level}</span>
+        </span>
+
+        {/* §9.2.1 — the Pokémon itself, in its window. Every sprite is a drop target too (`data-enemy-uid`). */}
+        <span className={card.window}>
+          <span className={card.stand} data-fx-slot={fxSlot} data-arrow-from={enemy.uid}>
+            <span className={[card.sprite, fxClass ?? '', spriteClass ?? ''].join(' ')} data-testid="arena-enemy" data-enemy-uid={enemy.uid}>
+              <ArenaSprite src={spriteOf(enemy, 'front', !!enemy.shiny)} shiny={!!enemy.shiny} concealed={enemy.hp <= 0} imgClassName={`${card.breathe} ${enemy.shiny ? 'fx-shiny' : ''}`} />
+              <FloatingNumbers uid={enemy.uid} fx={floats} />
             </span>
           </span>
         </span>
-        {(enemy.status || enemy.confusionTurns > 0) && (
-          <span className={styles.badges}>
-            {enemy.status && <StatusBadge status={enemy.status.kind} size={22} />}
-            {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={22} />}
-          </span>
-        )}
-        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} shield={enemy.shield} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={10} />
-        <span className={styles.hpRow}>
-          <span className={`display tabular ${styles.hpText}`}>
+
+        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} shield={enemy.shield} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={front ? 10 : 8} future={future} />
+        <span className={`${card.hpRow} ${styles.catchRoom}`}>
+          <span className={`${card.hpText} display tabular`}>
             {enemy.hp} / {enemy.maxHp}
           </span>
-          <span className={styles.chips}>
-            {/* §5.9 — a boss's phase, on the plate at every size: the notches on its bar are its thresholds. */}
-            {enemy.phaseCount > 1 && (
-              <span className={styles.chipPhase}>
-                Phase {phase}/{enemy.phaseCount}
-              </span>
-            )}
+          {/* §5.9 — a boss's phase, on the card at every size: the notches on its bar are its thresholds. */}
+          {enemy.phaseCount > 1 && (
+            <span className={`${card.chip} ${card.warn}`}>
+              Phase {phase}/{enemy.phaseCount}
+            </span>
+          )}
+        </span>
+        {(stageChips.length > 0 || enemy.shield > 0 || enemy.sturdyAvailable) && (
+          <span className={`${card.chips} ${styles.catchRoom}`}>
             {stageChips.map((s) => (
-              <span key={s} className={enemy.stages[s] > 0 ? styles.chipUp : styles.chipDown}>
+              <span key={s} className={`${card.chip} ${enemy.stages[s] > 0 ? card.up : card.down}`}>
                 {s === 'attack' ? 'Atk' : 'Def'} {enemy.stages[s] > 0 ? '+' : ''}
                 {enemy.stages[s]}
               </span>
             ))}
             {/* §5.9.5 Ice Armour — what it takes before HP, and the rule behind it a hover away. */}
             {enemy.shield > 0 && (
-              <Tipped tip={armourTip(enemy.shield)} className={styles.chipInfo} data-testid="foe-armour">
+              <Tipped tip={armourTip(enemy.shield)} className={`${card.chip} ${card.info}`} data-testid="foe-armour">
                 {ARMOUR_LABEL} {enemy.shield}
               </Tipped>
             )}
             {enemy.sturdyAvailable && (
-              <Tipped tip={<Tip title="Sturdy" body="Survives one hit that would have knocked it out, at 1 HP. Once per fight." />} className={styles.chipInfo}>
+              <Tipped tip={<Tip title="Sturdy" body="Survives one hit that would have knocked it out, at 1 HP. Once per fight." />} className={`${card.chip} ${card.info}`}>
                 Sturdy
               </Tipped>
             )}
           </span>
-        </span>
+        )}
       </button>
 
-      {state.kind === 'wild' && !fallen && (
+      {state.kind === 'wild' && !fallen && !quiet && (
         <div className={styles.catchInline}>
           <CatchPicker state={state} enemy={enemy} ctx={ctx} interactive={interactive} onThrow={onThrow} />
         </div>

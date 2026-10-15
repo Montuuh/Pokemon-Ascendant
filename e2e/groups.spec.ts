@@ -29,9 +29,9 @@ test.describe('Group fights — §5.6', () => {
     await page.screenshot({ path: 'playtest/combat-group-flock.png' });
   });
 
-  // §9.2.1 (v0.9.16) — one formation each side, every Pokémon its sprite and its plate: yours the Lead and the bench,
+  // §9.2.1 (v0.9.16) — one formation each side, every Pokémon a card: yours the Lead and the bench,
   // theirs tagged the same way; an arrow from each enemy to the slot it will hit; the trainer's whole team by its side.
-  test('the field is one formation each side: sprites with their plates, the same tags, arrows to the target, the rival team', async ({ page }) => {
+  test('the field is one formation each side: cards, the same tags, arrows to the target, the rival team', async ({ page }) => {
     await page.goto('/?scenario=group-wild-flock&seed=7');
     await expect(page.getByTestId('squad').locator('[data-testid^="portrait-"]')).toHaveCount(3);
     await expect(page.getByTestId('squad').locator('[data-arrow-to] img')).toHaveCount(3);

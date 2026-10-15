@@ -12,6 +12,18 @@
   border-radius: var(--radius-pill);
   transition: width var(--motion-slow) ease-out;
 }
+/* §9.2.5 — the HP about to go: red stripes over the end of the fill, breathing so it reads as "not yet". */
+.loss {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  background:
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--surface-sunken) 55%, transparent) 0 3px, transparent 3px 6px),
+    var(--accent-negative);
+  border-left: 1px solid var(--surface-sunken);
+  animation: global(lossPulse) 1.4s ease-in-out infinite;
+}
 .shield {
   position: absolute;
   top: 0;
@@ -30,4 +42,9 @@
   opacity: 0.85;
   z-index: 3;
   transform: translateX(-1px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .loss {
+    animation: none;
+  }
 }

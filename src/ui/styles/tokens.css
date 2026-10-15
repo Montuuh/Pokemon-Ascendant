@@ -16,9 +16,6 @@
   --sp-6: 32px;
   --sp-8: 48px;
   --sp-10: 64px;
-  /* §5.6 — a support's battle sprite stands smaller than its Lead's (170 px, 140 px under 1400 px wide). */
-  --sprite-support: 120px;
-  --sprite-support-small: 100px;
 
   /* ---- Radius scale (§1.1, warm/rounded per Pillar 5) ---- */
   --radius-xs: 3px;
@@ -71,6 +68,8 @@
   /* The dark bubble every tooltip and the progress panel sit on, whatever the theme. */
   --tip-surface: #2a2230;
   --shield: #a8e6f0;
+  /* §9.2.5 — a status intent's colour (chip and arrow): violet, clear of the hit's red on the dark stage. */
+  --intent-status: #c57be0;
 
   /* ---- §2.11.5 — the Roulette: the classic wheel's pockets, its wooden rim and the ivory ball ---- */
   --roulette-red: #c8283a;

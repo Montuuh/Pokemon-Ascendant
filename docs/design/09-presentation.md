@@ -111,37 +111,46 @@ hue — a requirement that exists for colour-blind players and pays off for ever
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**One formation each side, and every Pokémon on the field is one unit** (v0.9.16, the user's call: "unificar
-información… que salgan los 3 pokemons que tiene el player, y que su información esté en la animación"): its animated
-battle sprite standing where it is, and its **plate** attached under it — the slot tag on the plate's top edge, the
-condition on its corner, types, name, level, HP. There is no separate portrait column and no separate enemy panel
-column any more: what a Pokémon is and where it stands are read in one place.
+**One formation each side, and every Pokémon on the field is one card** (v0.9.16, the user's calls: "unificar
+información… que salgan los 3 pokemons que tiene el player, y que su información esté en la animación", and then "la
+animación encapsulada dentro de la carta, algo parecido a las cartas de los movimientos"): the move card's grammar —
+the slot tag on its top edge, the condition on its corner, types, name and level on a dark head, **the animated sprite
+in a window lit in its first type**, its HP under it. There is no separate portrait column and no separate enemy panel
+column: what a Pokémon is and where it stands are read in one place.
 
-- **Your formation sits left**: the **Lead forward**, in the column nearest the enemy, at the bottom, its back
-  sprite large and its plate gold-framed and crowned; **Bench 1 behind it high, Bench 2 behind it low**, smaller. All
-  three show their back sprites — the series' triple-battle picture. A bench plate's last row is its HP and its swap
-  price; the hits coming at a Pokémon this turn hang beside its sprite, towards the enemy (§9.2.5). The whole unit is
-  the button: a swap, an ally target, a step-back choice.
+- **Your formation sits left**: the **Lead forward**, in the column nearest the enemy, **centred between its
+  bench** — Bench 1 above, Bench 2 below, close together — the whole side centred on the stage; the Lead's card larger,
+  gold-framed and crowned. All three show their back sprites — the series' triple-battle picture. A bench card's last
+  row is its HP and its swap price; the hits coming at a Pokémon this turn hang off its card's edge, towards the enemy
+  (§9.2.5). The whole card is the button: a swap, an ally target, a step-back choice, the card it takes.
 - **The enemy's formation mirrors yours, and is named as yours**: its **Lead** forward (the column nearest you,
   centred, red-framed), **Bench 1** behind it high and **Bench 2** low — the same tags as your plates (v0.9.16, the
-  user's call; the rules still call the two behind the Lead its supports, §5.6). Each unit is its intent chip above
-  the sprite (one line each, so two fit a column at 720 p), the front sprite, and the plate; a wild plate keeps the
-  catch pill inside its HP row. **One grammar for one enemy or three** (user, 2026-09-30): a lone enemy is a Lead
+  user's call; the rules still call the two behind the Lead its supports, §5.6). Each is its intent chips above its
+  card (one line each, so two fit a column at 720 p) and the card; a wild card carries the catch pill inside, at the end
+  of its HP row. **One grammar for one enemy or three** (user, 2026-09-30): a lone enemy is a Lead
   standing large; the held card's number sits on every plate it reaches, and the full breakdown opens only for the one
   aimed at. **Two on the field stand as if three did**: the Lead centred, the other in the upper place, the lower empty.
-- **Who an enemy will hit is drawn, quietly** (v0.9.16, the user's "flechas… muy sutil"): a thin dotted arrow from
-  each enemy's sprite to the slot its visible intent names — red for a hit, violet for a status or a debuff, green to
-  an ally it buffs or heals, every slot for a Cleave, a second action fainter. The chip is still the reading: the
-  arrow only joins it to its target. A hidden intent draws none. Resting on an enemy brings its arrows forward and
-  the rest back. The arrows lie under the Pokémon and over the ground.
-- **The rival trainer stands at the back of the field**, by its own side, with **its whole team in a row under it**
-  (v0.9.16): the beaten greyed and struck, the ones on the field ringed in red, the ones still to come as closed Poké
-  Balls — who they are stays a surprise until they come out (§2.7.3).
-- **The sizes come from the stage's height**, so 720 p and 1080 p hold the same picture: each sprite stands in a box
-  a set fraction of the stage tall and is drawn at the whole or half multiple nearest that box, never more than a
-  tenth past it (D9) — so a big species never stands smaller than a small one beside it.
-- **The catch pill** (wild only) sits in the enemy plate with the best ball's chance; pressing it opens the **ball
-  picker** — every ball in the bag with its count and its own chance, a row to throw (§2.6.4.1).
+- **Who an enemy will hit is drawn** (v0.9.16, the user's "flechas… muy sutil", then "se ven muy poquito"): a
+  dotted arrow with a dark edge from the edge of each enemy's card to the edge of the card its visible intent names —
+  over the cards, so its head is always in sight and a bench enemy's arrow is not taken for its Lead's — in **the
+  intent's colour, which its chip's edge shares**: red a hit, **blue a stat change** (a drop on you, a rise on itself;
+  its glyph an arrow down or up, so it is a shape as well as a colour), violet a condition, green help for an ally (a
+  heal, a Cover) — every slot for a Cleave, a second action fainter. The chip is still the reading:
+  the arrow joins it to its target. A hidden intent draws none. **Resting on an enemy** brings its arrows forward and the
+  rest back (its bubble opens to its side, never over its own chip); **resting on one of yours** — or focusing it —
+  brings forward the arrows aimed at it. The arrows step back while a ball rocks.
+- **The rival trainer stands behind its line-up**, in the far column, between its Bench 1 and Bench 2 (v0.9.16), with
+  **its whole team at its feet as the series' small Poké Balls**: beaten grey and struck, on the field lit and ringed,
+  still to come plain — who they are stays a surprise until they come out (§2.7.3).
+- **A fight opens one ball at a time**: the enemy's Pokémon sent out one after another, then yours — the Lead, a moment
+  later Bench 1, then Bench 2 — each popping out in its card's window.
+- **The sizes come from the stage's height**, so 720 p and 1080 p hold the same picture: each card is a set fraction
+  of the stage tall (capped only where a 1440 p screen would make it absurd), its window follows, and the sprite in the
+  window is drawn at the whole or half multiple nearest it, never more than a tenth past it (D9).
+- **The catch pill** (wild only) sits inside the enemy card, at the end of its HP row, with the best ball's chance; pressing it opens the
+  **ball picker** — every ball in the bag with its count and its own chance, a row to throw (§2.6.4.1). **While the ball
+  rocks, the field holds** as it stood when it left the hand — a pack does not scatter before the click says it was
+  caught — the intents and arrows step back, and the ball shows only its wobbles.
 - **The hand tray runs along the bottom, in one row** (v0.9.15): the AP orb left, then the 5 skill cards, a
   divider and the **Bag** (its item count and the turn's uses left, 2/2; it opens every item carried, one card per
   kind with ×N), and End Turn with Run under it on the right.
@@ -163,10 +172,11 @@ Pokémon being aimed at (v0.9.16). Right: the turn and the deck/discard counts.
 Each chip shows its full text on hover or focus.
 
 ### §9.2.2.2 Player squad
-Each of the three is a unit (§9.2.1): its animated back sprite where it stands, and its plate — the slot tag (and
-the **Lead crown**) on the top edge, the status condition on the corner, type labels, name, level, an HP bar with a
-numeric `cur / max` and a cyan shield segment when a shield is present, the stat-stage and Trauma chips, and on a
-bench its **swap price** and what it would take as the Lead. The Lead stands larger, gold-framed; the bench smaller,
+Each of the three is a card (§9.2.1): the slot tag (and the **Lead crown**) on the top edge, the status condition on
+the corner, type labels, name and level on the head, the animated back sprite in its window, an HP bar with a numeric
+`cur / max` — **the part this turn's visible intents will take striped** (v0.9.16; the number is on the chip hung off the
+card) — and a cyan shield segment when a shield is present, the stat-stage and Trauma chips on a row of their own,
+and on a bench its **swap price** and what it would take as the Lead. The Lead stands larger, gold-framed; the bench smaller,
 behind it. A slot an intent is aimed at glows red round its plate and keeps its own frame — your Lead stays gold, so it
 never reads as the enemy's red Lead.
 
@@ -174,16 +184,18 @@ A **fainted** Pokémon keeps its place: its sprite gone, its plate dimmed and re
 from the screen — the player needs to see the shape of their team.
 
 ### §9.2.2.3 Enemy
-Each is a unit (§9.2.1): the intent chip above, the animated front sprite, and the plate — its place tag (Lead in
-the enemy's deep red, Bench 1, Bench 2), the status condition on the corner, type labels, name, level, the HP bar with
-**phase-threshold notches** for boss-tier enemies and a **Phase N/M** chip beside it, and the stage, armour and Sturdy
-chips. Its tier (Wild, Trainer, Elite, Gym Leader) is in the plate's bubble, not printed on every plate. The sprite is
+Each is a card (§9.2.1) under its intent chips: its place tag (Lead in the enemy's deep red, Bench 1, Bench 2), the
+status condition on the corner, type labels, name and level, the animated front sprite in its window, the HP bar with
+**phase-threshold notches** for boss-tier enemies and a **Phase N/M** chip beside it — and, on the one a card is aimed
+at (on every one, for an area card), the part that card would take, striped — and the stage, armour and Sturdy chips. Its tier (Wild, Trainer, Elite, Gym Leader) is in the plate's bubble, not printed on every plate. The sprite is
 as much the target as the plate: a click on either aims the held card there.
 
 ### §9.2.2.4 Hand tray
-One row (v0.9.15; the header row it replaced cost the hand 60 px at 720 p). Left, **the AP orb**: the turn's AP as
-the biggest number on the tray, gold, greyed at 0 (the most it can be is in its bubble), and the Defensive discount
-chip under it when it is live. The next swap's price is not repeated here: it is on each bench card, where the swap
+One row (v0.9.15; the header row it replaced cost the hand 60 px at 720 p). Left, **the AP capsule** (v0.9.16): the
+number over a pill of cells, one per point, gold like a card's cost gem, draining as you play — of a capsule that
+fills, a sphere that drains and a striped bar, the cells are the one you can count at a glance. **While a card is under
+the pointer** — hovered, dragged or held — the cells it would spend go striped and the number reads `3 → 1` (a free
+card changes nothing, so shows nothing); a card you cannot afford shows the cells you are short in red. The Defensive discount chip sits under it when it is live. The next swap's price is not repeated here: it is on each bench card, where the swap
 is clicked, with the ladder in that card's bubble. Middle, the hand and the Bag. Right, End Turn and, in a run, Run
 under it — the exit quieter than the plan. The deck and discard counts live in the top bar.
 
@@ -199,7 +211,9 @@ sits in insets that stay legible on any type (v0.9.15, the user's "one of the ug
 | **Plate** (cream) | What it does (`describeMove`), two lines held open so a row's gems line up |
 | **Foot** (dark) | Range and role glyphs, the **power** in a dashed pill (a dash for none), the type's own pixel label (FRLG) |
 
-The ×N chip sits on the window's top-left: how the move's type lands on the enemy Lead, green up, dark down. The
+**Dragged, the card itself travels** (v0.9.16), from the drag's first move: it hangs under the pointer, its place in
+the hand left faded and its bubble shut, and over a target it can take it shrinks, lights and lifts up and aside, so the
+target's own card — its number, its HP — stays in sight. The ×N chip sits on the window's top-left: how the move's type lands on the enemy Lead, green up, dark down. The
 whole card's explanation is its one bubble, and it names the role in words (Offensive · Defensive · Utility) — the
 foot's second glyph, which is the card's own and not the TypeChart's sword and shield. **The same picture lands on
 the target**: when a move hits, its illustration flashes over the Pokémon it struck at 3× for about half a second,

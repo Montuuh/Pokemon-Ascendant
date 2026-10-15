@@ -56,7 +56,7 @@ test.describe('Arena animations — §9.9', () => {
     await page.screenshot({ path: 'playtest/anim-sendout.png' });
   });
 
-  test('the catch: the ball rocks once per shake check, the checks light up, and the outcome waits for the click or the burst', async ({ page }) => {
+  test('the catch: the ball rocks once per shake check that passes, and the outcome waits for the click or the burst', async ({ page }) => {
     await page.goto('/?scenario=wild-catch-ready&seed=3');
     await expect(page.getByTestId('combat-screen')).toBeVisible();
     await page.waitForTimeout(900);

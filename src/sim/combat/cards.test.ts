@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PIDGEY, STARTERS, ctx, dispatch, eventsOf, handCard, reject, scenario, start, tweak, withHand } from '../testing/harness';
-import { cardPlayability } from './preview';
+import { allyRecipients, cardPlayability } from './preview';
 
 const base = () => start(scenario({ team: STARTERS, enemies: [PIDGEY] }));
 
@@ -129,5 +129,36 @@ describe('Card play — §3.2.4 / §3.3.1 Melee-Ranged', () => {
     s = dispatch(s, { type: 'end-turn' });
     expect(s.player.hand).toHaveLength(5);
     expect(s.player.deck.length + s.player.discard.length + s.player.hand.length).toBe(12);
+  });
+});
+
+// §5.6 / §9.2.3 (v0.9.16) — a card is played onto its target, never cast at nothing: a card that lands on the foe takes
+// an enemy; one that does not acts on your own side, and these are the Pokémon it acts on.
+describe('Ally targets — §5.6', () => {
+  it('AllyTargets_FoeCard_None', () => {
+    const s = base();
+    expect(allyRecipients(s, ctx.content.move('ember'), 0)).toEqual([]);
+    expect(allyRecipients(s, ctx.content.move('growl'), 0)).toEqual([]);
+  });
+
+  it('AllyTargets_SelfBuff_TheOwnerOnly', () => {
+    expect(allyRecipients(base(), ctx.content.move('swords-dance'), 2)).toEqual([2]);
+  });
+
+  it('AllyTargets_BenchStage_TheBenchStanding_NotTheLead', () => {
+    const s = base();
+    expect(allyRecipients(s, ctx.content.move('reflect'), s.player.leadIndex)).toEqual([0, 1, 2].filter((i) => i !== s.player.leadIndex));
+  });
+
+  it('AllyTargets_TeamCure_EveryoneStanding_NotTheFainted', () => {
+    const s = tweak(base(), (d) => {
+      d.player.team[2]!.hp = 0;
+    });
+    expect(allyRecipients(s, ctx.content.move('haze'), 0)).toEqual([0, 1]);
+  });
+
+  it('CardPlayability_CarriesTheAllyTargets', () => {
+    const s = withHand(base(), ['ember']);
+    expect(cardPlayability(s, handCard(s, 'ember').id, ctx)!.allyTargets).toEqual([]);
   });
 });

@@ -5,6 +5,7 @@ import { intentGlyph } from '@/ui/art';
 import { INTENT_LABEL } from '@/ui/strings';
 import { intentCardTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
+import { intentTone } from '@/ui/intentTone';
 import styles from './EnemyPanel.module.css';
 
 interface Props {
@@ -41,6 +42,7 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
     <div
       className={[styles.intent, intent?.hidden ? styles.intentHidden : '', intent?.kind === 'incapacitated' ? styles.intentIdle : '', action === 1 ? styles.intentSecond : '', intent?.broken ? styles.intentBroken : ''].join(' ')}
       data-testid={action === 0 ? 'intent-chip' : 'intent-chip-second'}
+      data-kind={intentTone(intent) ?? undefined}
       tabIndex={0}
       {...tip}
     >
@@ -52,7 +54,7 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
         </>
       ) : intent ? (
         <>
-          <img src={intentGlyph(intent.kind === 'incapacitated' ? 'stall' : intent.kind === 'debuff' ? 'status' : intent.kind)} alt="" width={20} height={20} className={styles.intentIcon} />
+          <img src={intentGlyph(intent.kind === 'incapacitated' ? 'stall' : intent.kind)} alt="" width={20} height={20} className={styles.intentIcon} />
           <span className={styles.intentText}>
             <b>{move ? move.name : INTENT_LABEL[intent.kind]}</b>
             {/* §9.2.5 — an area intent prints no number: every target takes its own, on its portrait. */}

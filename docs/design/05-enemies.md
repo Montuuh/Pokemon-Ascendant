@@ -139,10 +139,13 @@ mirrored (§3.3): the Lead stands in front of its group.
   refused and says why ("out of reach") — shown in the position colour, never hidden (§9.2.3).
 - **Area cards** (the player's Cleave moves) hit **every enemy on the field**, each with its own number, riders
   rolled per target. §6.3.6.4's ×1.6 budget for a `cleave` move is what pays for that.
-- The player picks a target for each card that lands on an enemy (a hit, a foe status, a foe stat drop):
-  **dragging the card onto the enemy**, or clicking the card and then the enemy; clicking the card again, or
-  Enter, aims it at the enemy Lead. Before it is played, a card shows **its damage against every enemy it can
-  hit** — the preview is per target, never one number for the fight (§9.2.4).
+- **A card is played onto its target, never cast at nothing** (v0.9.16, the user's call). A card that lands on an
+  enemy (a hit, a foe status, a foe stat drop) is **dragged onto the enemy**, or clicked and then the enemy is clicked
+  (Tab to the enemy and Enter, from the keyboard); let go anywhere else it goes back to the hand, and a second click on
+  it only puts it down. A card for your own side is played the same way **onto one of the Pokémon it acts on** — its
+  owner for a self buff, a heal or a draw; the bench for a bench stage; everyone standing for a guard or a cure — which
+  light up while it is held (`allyRecipients`). Before it is played, a card shows **its damage against every enemy it
+  can hit** — the preview is per target, never one number for the fight (§9.2.4).
 - **The Lead falls, the fight goes on** (user, 2026-09-29). When the enemy Lead faints, the **strongest** of what
   stands (most HP, then level; a fresh arrival from the queue counts) **steps up to lead**, and the fight ends only
   when every enemy is down. A newcomer's first intent is declared at once, as §5.1 requires.

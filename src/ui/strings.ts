@@ -789,3 +789,14 @@ export const GUIDE_TEXT = {
   prices: (route: number, city: number) => `${route}\u00a0₽ from the merchant, ${city}\u00a0₽ in a City`,
   pending: (why: string) => `Not working yet: ${why}`,
 };
+
+// ---- Playing a card onto its target (§5.6, v0.9.16) -----------------------------------------------------------------
+
+/** The top bar's hint while a card waits for its target. */
+export const HINT_FOE_CARD = 'Click the enemy to play it on. Esc to cancel.';
+export const HINT_ALLY_CARD = 'Click one of the highlighted Pokémon it acts on. Esc to cancel.';
+/** A card let go of in the wrong place. */
+export const DROP_ON_FOE = 'Play it onto an enemy.';
+export function dropOnAlly(names: string[]): string {
+  return names.length === 1 ? `Play it onto ${names[0]}.` : 'Play it onto one of the highlighted Pokémon.';
+}

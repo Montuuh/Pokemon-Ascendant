@@ -15,12 +15,12 @@ The account's systems revisited, and the road to the Champion.
 
 ### v0.9.16 — The arena, one formation · 2026-10-15
 
-Every Pokémon on the field is its sprite with its plate attached.
+Every Pokémon on the field is a card, and every card is played onto its target.
 
-- **Your team.** All three out: the Lead in front, the bench behind.
-- **The enemy.** Mirrored, tagged Lead, Bench 1 and Bench 2.
-- **Arrows.** A quiet dotted line from each enemy to its target.
-- **Rival team.** Beaten, out and still to come, by the trainer.
+- **Formation.** All three as cards, Lead centred; enemy tagged the same.
+- **Intents.** Arrows in the intent's colour; HP about to go striped.
+- **Cards.** Dragged whole, played only onto an enemy or an ally.
+- **AP capsule.** Shows what the card under the pointer would spend.
 
 ### v0.9.15 — The combat screen and its cards · 2026-10-15
 

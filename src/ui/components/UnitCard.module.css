@@ -1,0 +1,166 @@
+/* §9.2.1 (v0.9.16) — a Pokémon on the field, as a card in the move card's grammar: a frame; a dark head (types, name,
+   level); a window lit in its first type with the animated sprite standing in it; its HP; a row of what else it carries.
+   Yours and the enemy's share this anatomy; the frame says whose Lead it is. The sizes are the formation's (custom
+   properties on the stage), so the card scales with the stage's height. */
+.card {
+  --card-w: var(--bench-card, 160px);
+  --window-h: calc(var(--card-w) * 0.5);
+  --night: color-mix(in srgb, var(--unit-type, var(--surface-2)) 16%, var(--tip-surface));
+  position: relative;
+  width: var(--card-w);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px var(--sp-1) var(--sp-1);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface-1) 94%, transparent);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+  color: var(--ink-primary);
+  text-align: left;
+  transition:
+    transform var(--motion-base) var(--ease-spring),
+    border-color var(--motion-fast) ease,
+    box-shadow var(--motion-base) ease;
+}
+.lead {
+  --card-w: var(--lead-card, 200px);
+  --window-h: calc(var(--card-w) * 0.6);
+}
+.solo {
+  --card-w: var(--solo-card, 220px);
+  --window-h: calc(var(--card-w) * 0.62);
+}
+/* The place, on the frame's top edge; the condition on its corner. */
+.tag {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  color: var(--ink-secondary);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.corner {
+  position: absolute;
+  top: -11px;
+  right: calc(var(--sp-2) * -1);
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  padding: 0 2px;
+}
+.types {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 0 0 auto;
+}
+.name {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--type-caption);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lead .name,
+.solo .name {
+  font-size: var(--type-small);
+}
+/* Secondary ink, not muted: on the card the muted grey fell under 4.5:1 (D5). */
+.level {
+  flex: 0 0 auto;
+  font-size: var(--type-micro);
+  color: var(--ink-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 5px;
+  white-space: nowrap;
+}
+
+/* ── The window: the Pokémon itself, standing on its type's ground ──────────────────────────────────────── */
+.window {
+  position: relative;
+  height: var(--window-h);
+  border-radius: var(--radius-sm);
+  background:
+    radial-gradient(70% 45% at 50% 92%, rgba(0, 0, 0, 0.42), transparent 70%),
+    radial-gradient(75% 85% at 50% 60%, color-mix(in srgb, var(--unit-type, var(--surface-2)) 46%, var(--night)), var(--night));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+/* The FX anchor and the arrows' end: the sprite's own box, a little in from the window's edges. */
+.stand {
+  position: absolute;
+  inset: 8% 4% 6%;
+}
+.sprite {
+  position: absolute;
+  inset: 0;
+}
+.breathe {
+  animation: global(breathe) 2.6s ease-in-out infinite;
+}
+
+/* ── HP and the rest ────────────────────────────────────────────────────────────────────────────────────── */
+.hpRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 18px;
+  padding: 0 2px;
+}
+.hpText {
+  font-size: var(--type-micro);
+  color: var(--ink-secondary);
+  line-height: 1;
+  white-space: nowrap;
+  margin-right: auto;
+}
+.lead .hpText,
+.solo .hpText {
+  font-size: var(--type-caption);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 0 2px;
+}
+.chip {
+  font-size: var(--type-micro);
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  padding: 0 5px;
+  color: var(--ink-on-accent);
+  white-space: nowrap;
+}
+.up {
+  background: var(--accent-positive);
+}
+.down {
+  background: var(--accent-negative);
+}
+.warn {
+  background: var(--accent-warning);
+}
+.info {
+  background: var(--brand-cream);
+}

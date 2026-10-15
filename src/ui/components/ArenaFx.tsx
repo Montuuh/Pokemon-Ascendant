@@ -1,5 +1,4 @@
 import { useLayoutEffect, useRef, type CSSProperties, type RefObject } from 'react';
-import { SHAKE_CHECKS } from '@/sim/combat/catch';
 import { itemIcon, moveArt, spriteOf } from '@/ui/art';
 import { catchTimeline, type BallFlight, type CatchFx, type Ghost, type MoveHit, type SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { ArenaSprite } from './ArenaSprite';
@@ -8,7 +7,7 @@ import styles from './ArenaFx.module.css';
 // §9.9.1 — the arena's beats that outlive the sim's state (v0.9.3): a Pokémon that has fainted or been caught is no
 // longer on the field when its event arrives, so it is drawn here one more time, where it stood. A Poké Ball flies
 // between a trainer's hand and the field. The catch is drawn whole: the ball thrown, the Pokémon drawn into it, the
-// ball dropping and rocking, one shake check after each wobble and the fourth at the click — to the checks the sim
+// ball dropping and rocking — one wobble per shake check that passed, the fourth the click — to the checks the sim
 // rolled before the throw left the hand (§2.6.4.4).
 
 /** §9.2.1 — where a slot's Pokémon stands on the stage, measured from its unit (`data-fx-slot`): the box every beat
@@ -69,7 +68,6 @@ function Flight({ b, slotStyle }: { b: BallFlight; slotStyle: SlotStyle }) {
 function CatchBeat({ c, slotStyle }: { c: CatchFx; slotStyle: SlotStyle }) {
   const spot = useRef<HTMLSpanElement>(null);
   useHand(spot, 'player');
-  const pct = Math.round(c.chance * 100);
   const t = catchTimeline(c.wobbles);
   const vars = {
     '--at-absorb': `${t.absorbAt}ms`,
@@ -78,14 +76,6 @@ function CatchBeat({ c, slotStyle }: { c: CatchFx; slotStyle: SlotStyle }) {
     '--at-result': `${t.resultAt}ms`,
     '--wobbles': c.wobbles,
   } as CSSProperties;
-  // §2.6.4.4 — one light per shake check: lit as it passes, red where the Pokémon broke out. The first three land at
-  // the end of their wobble; the fourth is the click.
-  const pips = Array.from({ length: SHAKE_CHECKS }, (_, i) => {
-    const k = i + 1;
-    const state = k <= c.checks ? 'pass' : !c.success && k === c.checks + 1 ? 'fail' : 'idle';
-    const at = k < SHAKE_CHECKS && state === 'pass' ? t.checkAt(k) : t.resultAt;
-    return { k, state, at };
-  });
   return (
     <div className={`${styles.box} ${styles.catch}`} style={{ ...slotStyle(c.slot), ...vars }} data-testid="catch-fx" data-slot={c.slot} data-success={c.success} data-wobbles={c.wobbles} data-checks={c.checks} aria-hidden="true">
       <ArenaSprite src={spriteOf({ speciesId: c.speciesId }, 'front', c.shiny)} imgClassName={styles.mon} />
@@ -103,12 +93,6 @@ function CatchBeat({ c, slotStyle }: { c: CatchFx; slotStyle: SlotStyle }) {
             <i />
           </span>
         )}
-      </span>
-      <span className={styles.checks}>
-        {pips.map((p) => (
-          <i key={p.k} className={styles.pip} data-state={p.state} style={{ animationDelay: `${p.at}ms` }} />
-        ))}
-        <b className={`${styles.pct} tabular`}>{pct}%</b>
       </span>
     </div>
   );

@@ -30,16 +30,16 @@ import { Portrait } from '@/ui/components/Portrait';
 import { FieldChips } from '@/ui/components/FieldChips';
 import { IntentArrows } from '@/ui/components/IntentArrows';
 import { TrainerParty } from '@/ui/components/TrainerParty';
+import { ApMeter } from '@/ui/components/ApMeter';
 import { RuleChip } from '@/ui/components/RuleChip';
-import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
 import { fxTimings, useCombatFx, type SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { WildTierBanner } from '@/ui/components/WildTierBanner';
 import { ArenaFx } from '@/ui/components/ArenaFx';
-import { ENCOUNTER_LABEL, REJECT_TEXT } from '@/ui/strings';
+import { DROP_ON_FOE, ENCOUNTER_LABEL, HINT_ALLY_CARD, HINT_FOE_CARD, REJECT_TEXT, dropOnAlly } from '@/ui/strings';
 import { iconOf } from '@/ui/art';
-import { apTip, fightKindTip, fleeTip } from '@/ui/tips';
+import { fightKindTip, fleeTip } from '@/ui/tips';
 import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './CombatScreen.module.css';
 
@@ -64,6 +64,8 @@ export function CombatScreen() {
   }, [fx.busy]);
   const [hoverCardId, setHoverCardId] = useState<string | null>(null);
   const [hoverEnemyUid, setHoverEnemyUid] = useState<string | null>(null);
+  // §5.2 — one of yours under the pointer: the arrows aimed at its slot come forward.
+  const [hoverAllySlot, setHoverAllySlot] = useState<SlotId | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const trayRef = useRef<HTMLElement | null>(null);
   // §9.2.1 — the stage, and where each slot's Pokémon stands on it: measured from the formation after every layout, so
@@ -139,25 +141,25 @@ export function CombatScreen() {
     [dispatch, fail, select],
   );
 
-  // §5.6 — the drop: onto an enemy, the card is aimed there; anywhere above the hand, a card that takes no enemy
-  // (or hits them all, or has only one to hit) is played; anywhere else, the drag is let go.
+  // §5.6 (v0.9.16) — a card is played onto its target, never cast at nothing: a card that lands on the foe only onto
+  // an enemy, a card for your own side only onto one of the Pokémon it acts on. Let go anywhere else, it goes back.
   const onDrop = useCallback(
     (d: CardDrag) => {
       const live = useCombatStore.getState().state;
       if (!live || live.outcome !== 'in-progress' || live.player.pendingLeadPick) return;
-      const aboveHand = d.y < (trayRef.current?.getBoundingClientRect().top ?? Infinity);
       const play = cardPlayability(live, d.id, ctx);
-      if (!play) return;
+      if (!play || !d.out) return;
       if (!play.playable) return fail(play.reason ? REJECT_TEXT[play.reason] : 'Cannot play that.');
-      if (d.overUid && play.aimsAtFoe) return playCard(play, d.overUid);
-      if (aboveHand && (!play.aimsAtFoe || play.hitsAll || live.enemies.length <= 1)) return playCard(play);
+      if (play.aimsAtFoe) return d.overUid ? playCard(play, d.overUid) : fail(DROP_ON_FOE);
+      if (d.overAlly !== null && play.allyTargets.includes(d.overAlly)) return playCard(play);
+      fail(dropOnAllyText(live, play.allyTargets));
     },
     [ctx, fail, playCard],
   );
-  const { drag, begin, clickWasDrag } = useCardDrag(onDrop);
+  const { drag, begin, clickWasDrag } = useCardDrag(onDrop, () => trayRef.current?.getBoundingClientRect().top ?? Infinity);
 
-  // §9.6 — the whole fight is playable from the keyboard, not just tabbable. 1–9 pick a card, Enter fires the
-  // selection at the enemy Lead (Tab to an enemy and Enter aims it there), E ends the turn, Esc cancels.
+  // §9.6 — the whole fight is playable from the keyboard, not just tabbable. 1–9 pick a card, Tab to its target (an
+  // enemy, or one of yours) and Enter plays it there, E ends the turn, Esc cancels.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const el = document.activeElement;
@@ -179,14 +181,6 @@ export function CombatScreen() {
         }
         return;
       }
-      if (e.key === 'Enter' && live.selection.mode === 'card' && live.selection.cardId && !(el instanceof HTMLButtonElement)) {
-        const play = cardPlayability(s, live.selection.cardId, live.ctx);
-        if (play?.playable) {
-          e.preventDefault();
-          playCard(play);
-        }
-        return;
-      }
       if (e.key.toLowerCase() === 'e') {
         e.preventDefault();
         live.dispatch({ type: 'end-turn' });
@@ -194,7 +188,7 @@ export function CombatScreen() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [clearSelection, playCard]);
+  }, [clearSelection]);
 
   // §3.1.2 — the toll this fight would cost to run from, from the node the run is standing on.
   const nodeKind = useRunStore((s) => (s.run?.pendingNodeId ? s.run.map.nodes[s.run.pendingNodeId]?.kind ?? null : null));
@@ -222,7 +216,12 @@ export function CombatScreen() {
   // made plays out when the beat ends (v0.9.11).
   const fallen = fx.ghosts.filter((g) => g.kind === 'faint' && g.foe && !enemies.some((e) => e.uid === g.foe!.enemy.uid));
   const heldLine = fallen[0]?.foe?.line ?? null;
-  const field: { enemy: EnemyCombatant; fallenAt?: number }[] = heldLine
+  // §9.9.1 (v0.9.16) — while a ball rocks, the field stays as it stood when the ball left the hand: a catch that has
+  // already succeeded in the sim does not scatter the pack before the click tells it.
+  const catchLine = fx.catching?.line ?? null;
+  const field: { enemy: EnemyCombatant; fallenAt?: number }[] = catchLine
+    ? catchLine.map((enemy) => ({ enemy }))
+    : heldLine
     ? heldLine.flatMap((uid) => {
         const live = enemies.find((e) => e.uid === uid);
         if (live) return [{ enemy: live }];
@@ -230,14 +229,15 @@ export function CombatScreen() {
         return g ? [{ enemy: { ...g.foe!.enemy, hp: 0 }, fallenAt: g.at }] : [];
       })
     : enemies.map((enemy) => ({ enemy }));
-  const groupShown = (heldLine ?? enemies).length > 1;
+  const groupShown = (catchLine ?? heldLine ?? enemies).length > 1;
   const title = scenarioName(state);
   const kindLabel = ENCOUNTER_LABEL[state.kind] ?? state.kind;
   const KindIcon = KIND_ICON[state.kind] ?? IconPaw;
   // §9.2.2.4 — the hand's row holds five cards side by side; a bigger hand (a relic's sixth or seventh card) tucks
   // each card under its neighbour by just enough to keep the same width, so it never runs into the AP or the Bag.
   const handOverlap = plays.length > HAND_FIT ? Math.ceil(((plays.length - HAND_FIT) * (CARD_WIDTH + CARD_GAP)) / (plays.length - 1)) : 0;
-  const heldPlace = (i: number) => (heldLine ? { place: groupShown && i > 0 ? `Bench ${i}` : 'Lead', group: groupShown } : undefined);
+  // A held line (a faint playing, a ball rocking) keeps its places' names as they stood.
+  const heldPlace = (i: number) => (catchLine || heldLine ? { place: groupShown && i > 0 ? `Bench ${i}` : 'Lead', group: groupShown } : undefined);
   /** §9.9 — the FX anchor of the i-th Pokémon on the enemy's side, as `useCombatFx` names it. */
   const fieldSlot = (i: number): SpriteSlot => (!groupShown ? 'single' : i === 0 ? 'lead' : i === 1 ? 'support1' : 'support2');
   const leadIdx = state.player.leadIndex;
@@ -246,6 +246,8 @@ export function CombatScreen() {
   const selectedPlay = selection.mode === 'card' || selection.mode === 'step-back' ? plays.find((p) => p.card.id === selection.cardId) ?? null : null;
   const draggedPlay = drag ? plays.find((p) => p.card.id === drag.id) ?? null : null;
   const previewPlay = draggedPlay ?? plays.find((p) => p.card.id === hoverCardId) ?? selectedPlay;
+  // §9.2.2.4 — what the card under the pointer (dragged, hovered, or held) would spend: shown on the AP capsule.
+  const costPreview = previewPlay && previewPlay.apCost > 0 ? previewPlay.apCost : null;
   // The enemy the held card points at: under the drag, or under the mouse while a card is selected.
   const aimUid = drag ? drag.overUid : selectedPlay && selection.mode === 'card' ? hoverEnemyUid : null;
   const aimedTarget = previewPlay && aimUid ? previewPlay.targets.find((t) => t.uid === aimUid) ?? null : null;
@@ -305,13 +307,14 @@ export function CombatScreen() {
     const hp = enemies.find((e) => e.uid === uid)?.hp ?? 0;
     if (!t.reachable) return { final: 0, ko: false, reachable: false };
     if (!t.damage) return null;
-    return { final: t.damage.final, ko: t.damage.final >= hp, reachable: true };
+    return { final: t.damage.final, ko: t.damage.final >= hp, reachable: true, area: previewPlay.hitsAll };
   }
 
   function onCardClick(play: CardPlayability) {
     if (!interactive || clickWasDrag()) return;
     if (!play.playable) return fail(play.reason ? REJECT_TEXT[play.reason] : 'Cannot play that.');
-    if (selection.cardId === play.card.id && selection.mode === 'card') return playCard(play);
+    // §5.6 — a second click puts it back: a card is played onto its target, never by clicking it twice.
+    if (selection.cardId === play.card.id && selection.mode === 'card') return clearSelection();
     select({ mode: 'card', cardId: play.card.id });
   }
 
@@ -321,7 +324,10 @@ export function CombatScreen() {
       dispatch({ type: 'use-consumable', cardId: selection.cardId, targetUid: uid });
       return;
     }
-    if (selectedPlay && selection.mode === 'card') playCard(selectedPlay, uid);
+    if (selectedPlay && selection.mode === 'card') {
+      if (!selectedPlay.aimsAtFoe) return fail(dropOnAllyText(state!, selectedPlay.allyTargets));
+      playCard(selectedPlay, uid);
+    }
   }
 
   function onConsumableClick(cp: (typeof consumablePlays)[number]) {
@@ -347,6 +353,12 @@ export function CombatScreen() {
       dispatch({ type: 'use-consumable', cardId: selection.cardId, targetIndex: index });
       return;
     }
+    // §5.6 — a card for your own side, played onto one of the Pokémon it acts on.
+    if (selection.mode === 'card' && selectedPlay && !selectedPlay.aimsAtFoe) {
+      if (!selectedPlay.allyTargets.includes(index)) return fail(dropOnAllyText(state!, selectedPlay.allyTargets));
+      playCard(selectedPlay);
+      return;
+    }
     if (index === leadIdx) return;
     if (selection.mode === 'step-back' && selectedPlay) {
       if (!selectedPlay.stepBackOptions.includes(index)) return fail('That Pokémon cannot take the Lead right now.');
@@ -360,6 +372,9 @@ export function CombatScreen() {
   }
 
   const allySelectable = selection.mode === 'consumable-ally';
+  // §5.6 — a card for your own side, held or dragged: the Pokémon it acts on light up, and only they take it.
+  const allyCard = draggedPlay ?? (selection.mode === 'card' ? selectedPlay : null);
+  const allyCardTargets = allyCard && !allyCard.aimsAtFoe && allyCard.playable ? new Set(allyCard.allyTargets) : new Set<number>();
   const stepBackSelectable = selection.mode === 'step-back' && selectedPlay ? new Set(selectedPlay.stepBackOptions) : new Set<number>();
   const enemyTargetable = interactive && ((!!selectedPlay && selection.mode === 'card' && selectedPlay.aimsAtFoe) || selection.mode === 'consumable-foe' || (!!draggedPlay && draggedPlay.aimsAtFoe));
   // The full breakdown opens only for the enemy the card points at (under the drag, or the pointer once selected);
@@ -374,7 +389,7 @@ export function CombatScreen() {
     const slot = indexToSlot(state!, bi);
     return (
       <div className={cls}>
-        <Portrait mon={mon} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(indexToSlot(state!, bi))} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi)} onClick={() => onTeamClick(bi)} fx={fx.floats} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} {...incomingFor(mon.uid)} />
+        <Portrait mon={mon} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fx={fx.floats} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -387,8 +402,8 @@ export function CombatScreen() {
         {shownLog.slice(-1).map((l) => l.text).join(' ')}
       </p>
       <p className="sr-only">
-        Turn {state.turn}, {state.player.ap} action points. Press 1 to 9 to pick a card, Enter to play it at the
-        enemy Lead, E to end the turn, Escape to cancel.
+        Turn {state.turn}, {state.player.ap} action points. Press 1 to 9 to pick a card, Tab to its target and Enter to
+        play it there, E to end the turn, Escape to cancel.
       </p>
       <header className={styles.topbar}>
         <div className={styles.chips}>
@@ -412,9 +427,10 @@ export function CombatScreen() {
             happened otherwise: on the field the hint lay across the very Pokémon you were aiming at. */}
         <div className={styles.logSlot}>
           {selection.mode !== 'none' && !drag ? (
-            <div className={styles.hint} data-testid="selection-hint">
+            <div className={styles.hint} data-testid="selection-hint" data-target={(selection.mode === 'card' && selectedPlay && !selectedPlay.aimsAtFoe) || selection.mode === 'consumable-ally' || selection.mode === 'step-back' ? 'ally' : 'foe'}>
               <span className={styles.hintText}>
-                {selection.mode === 'card' && 'Click an enemy to aim it — or the card again for the Lead. Esc to cancel.'}
+                {selection.mode === 'card' && selectedPlay && !selectedPlay.aimsAtFoe && HINT_ALLY_CARD}
+                {selection.mode === 'card' && (!selectedPlay || selectedPlay.aimsAtFoe) && HINT_FOE_CARD}
                 {selection.mode === 'step-back' && 'Choose the bench Pokémon that takes the Lead after the hit.'}
                 {selection.mode === 'consumable-ally' && 'Choose the Pokémon to use it on.'}
                 {selection.mode === 'consumable-foe' && 'Choose the wild Pokémon to throw it at.'}
@@ -443,30 +459,21 @@ export function CombatScreen() {
         style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings() }}
       >
         <div className={styles.stageTint} aria-hidden="true" />
-        {/* §5.2 — who each enemy is about to hit: quiet arrows under the Pokémon, over the ground. */}
-        <IntentArrows state={state} stage={stageEl} focusUid={hoverEnemyUid} />
+        {/* §5.2 — who each enemy is about to hit: arrows under the Pokémon, over the ground; gone while a ball rocks. */}
+        <IntentArrows state={state} stage={stageEl} focusUid={hoverEnemyUid} focusSlot={hoverAllySlot} hidden={!!fx.catching} />
 
-        {/* §9.2.1 — your three on the field, each Pokémon its sprite and its plate: the Lead forward, towards the enemy;
-            the bench behind it, one high and one low. */}
+        {/* §9.2.1 — your three on the field, each a card: the Lead forward, towards the enemy, centred between its
+            bench — Bench 1 above, Bench 2 below. */}
         <div className={`${styles.formation} ${styles.squadSide}`} data-testid="squad">
           {benchUnit(benches[0], styles.slotB1)}
           {benchUnit(benches[1], styles.slotB2)}
           <div className={styles.slotLead}>
-            <Portrait mon={lead} variant="lead" slotLabel="Lead" slotId="lead" fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={allySelectable && lead.hp > 0} onClick={() => onTeamClick(leadIdx)} fx={fx.floats} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} {...incomingFor(lead.uid)} />
+            <Portrait mon={lead} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fx={fx.floats} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} {...incomingFor(lead.uid)} />
           </div>
         </div>
 
-        {/* The open ground between the two sides — and, at the back, the rival trainer with the whole team by its side. */}
-        <div className={styles.middle}>
-          {state.trainer && (
-            <div className={styles.trainerBlock}>
-              {/* The trainer stays to the last faint: its ball comes back to it. It walks in as the fight opens. */}
-              <img key={combatKey} className={[styles.trainer, animate ? styles.trainerIn : '', 'pixel'].join(' ')} src={trainerSprite(state.trainer.sprite)} alt={state.trainer.name} draggable={false} data-testid="arena-trainer" />
-              <span className={styles.handTrainer} data-fx-hand="trainer" />
-              <TrainerParty state={state} />
-            </div>
-          )}
-        </div>
+        {/* The open ground between the two sides. */}
+        <div className={styles.middle} />
 
         {/* §9.2.1 — the enemy, mirrored: one stands alone and large; a group's Lead forward, its bench behind it. */}
         <div className={[styles.formation, styles.foeSide, groupShown ? styles.foeGroup : styles.foeSolo].join(' ')}>
@@ -488,15 +495,25 @@ export function CombatScreen() {
                     onHover={(h) => setHoverEnemyUid((cur) => (h ? enemy.uid : cur === enemy.uid ? null : cur))}
                     fxClass={fx.classes[enemy.uid]}
                     fxSlot={fieldSlot(i)}
-                    spriteClass={fx.sprites[enemy.uid]}
+                    spriteClass={fx.catching?.targetUid === enemy.uid ? 'fx-hidden' : fx.sprites[enemy.uid]}
                     floats={fx.floats}
-                    waiting={fx.sprites[enemy.uid] === 'fx-hidden'}
+                    waiting={fx.sprites[enemy.uid] === 'fx-hidden' && fx.catching?.targetUid !== enemy.uid}
+                    quiet={!!fx.catching}
                     interactive={interactive}
                     onThrow={(cardId, targetUid) => dispatch({ type: 'use-consumable', cardId, targetUid })}
                   />
                 </div>
               ))
             : !fx.catching && <div className={styles.chip}>No enemies remain</div>}
+          {/* §9.2.1 — the rival trainer at the back of its side, behind its bench, with its whole team at its feet. It
+              stays to the last faint (its ball comes back to it) and walks in as the fight opens. */}
+          {state.trainer && (
+            <div className={styles.trainerBlock}>
+              <img key={combatKey} className={[styles.trainer, animate ? styles.trainerIn : '', 'pixel'].join(' ')} src={trainerSprite(state.trainer.sprite)} alt={state.trainer.name} draggable={false} data-testid="arena-trainer" />
+              <span className={styles.handTrainer} data-fx-hand="trainer" />
+              <TrainerParty state={state} />
+            </div>
+          )}
         </div>
 
         {/* §9.9.1 — the hands the Poké Balls fly from and back to: a wild Pokémon's, off the right edge; yours, off the left. */}
@@ -538,10 +555,8 @@ export function CombatScreen() {
           right, so the hand keeps the height at 720 p. */}
       <footer className={styles.tray} ref={trayRef}>
         <div className={styles.apPanel}>
-          <Tipped as="div" tip={apTip(state.player.ap, ctx.config.baseApPerTurn)} className={styles.apOrb} data-empty={state.player.ap === 0 || undefined} data-testid="ap-pips">
-            <span className={`${styles.apValue} display tabular`}>{state.player.ap}</span>{' '}
-            <span className={styles.apUnit}>AP</span>
-          </Tipped>
+          {/* §9.2.2.4 — the AP capsule, with what the card under the pointer would spend shown before it is paid. */}
+          <ApMeter ap={state.player.ap} base={ctx.config.baseApPerTurn} cost={costPreview} />
           {state.player.defensiveDiscount && (
             <Tipped tip={<Tip title="Defensive discount" body="You swapped this turn, so your next Defensive card costs 1 AP less. Spent the moment you play one." />} className={styles.discount}>
               −1 Def
@@ -560,6 +575,7 @@ export function CombatScreen() {
               index={i}
               total={plays.length}
               overlap={handOverlap}
+              lifted={drag?.id === p.card.id}
             />
           ))}
           {plays.length === 0 && <div className={styles.emptyHand}>No cards in hand</div>}
@@ -597,11 +613,11 @@ export function CombatScreen() {
         </div>
       </footer>
 
-      {/* The card under the pointer while it is dragged: its name in its type's colour. */}
-      {drag && (
-        <div className={styles.dragGhost} style={{ left: drag.x, top: drag.y, ['--card-type' as string]: draggedPlay ? `var(--type-${draggedPlay.move.type})` : 'var(--brand-red)' }} aria-hidden="true" data-testid="drag-ghost">
-          {draggedPlay && <TypeLabel type={draggedPlay.move.type} size={16} />}
-          <span className="display">{draggedPlay?.move.name}</span>
+      {/* §5.6 (v0.9.16) — the card itself travels with the pointer, hanging under it so what it points at stays in sight;
+          over a target it can take, it shrinks and lights; over anything else it is only being carried. */}
+      {drag && draggedPlay && (
+        <div className={styles.dragGhost} data-over={dropOk(draggedPlay, drag) || undefined} style={{ left: drag.x, top: drag.y }} aria-hidden="true" data-testid="drag-ghost">
+          <MoveCard play={draggedPlay} selected={false} onClick={() => undefined} onHover={() => undefined} index={0} total={1} ghost />
         </div>
       )}
 
@@ -643,6 +659,17 @@ export function CombatScreen() {
       )}
     </main>
   );
+}
+
+/** §5.6 — the drag is over a target this card can be played onto (an enemy for a foe card, one it acts on for yours). */
+function dropOk(play: CardPlayability, d: CardDrag): boolean {
+  if (!play.playable) return false;
+  return play.aimsAtFoe ? d.overUid !== null : d.overAlly !== null && play.allyTargets.includes(d.overAlly);
+}
+
+/** §5.6 — what a card let go of in the wrong place says: the one it acts on, by name, when there is one. */
+function dropOnAllyText(state: CombatState, targets: number[]): string {
+  return dropOnAlly(targets.map((i) => state.player.team[i]?.name).filter((n): n is string => !!n));
 }
 
 /** A slot's sprite box on the stage, in the stage's own pixels. */

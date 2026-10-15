@@ -391,6 +391,16 @@ html[data-motion='reduced'] .fx-burst::before {
     box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent-action) 30%, transparent);
   }
 }
+/* §9.2.5 — the HP about to go, breathing. */
+@keyframes lossPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
 /* §9.3 — the steps you can take now march along their line toward where they lead. */
 @keyframes dashFlow {
   to {

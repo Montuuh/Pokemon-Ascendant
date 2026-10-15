@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import type { CombatEvent, CombatState, EnemyCombatant } from '@/sim';
+import { benchIndices, indexToSlot } from '@/sim';
 import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
 import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/strings';
@@ -13,7 +14,8 @@ import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/string
 // A Pokémon that faints or is caught has already left `state.enemies` when its event arrives, so its last moment
 // is drawn as a **ghost**: what stood in that slot a render ago (`seen`), playing out where it stood.
 
-export type SpriteSlot = 'single' | 'lead' | 'support1' | 'support2' | 'player';
+/** Where a Pokémon stands: the enemy's places (`single` when it stands alone), and yours — `player` is your Lead. */
+export type SpriteSlot = 'single' | 'lead' | 'support1' | 'support2' | 'player' | 'bench1' | 'bench2';
 
 /** Someone who has left the field, drawn for one more beat where it stood. */
 export interface Ghost {
@@ -54,11 +56,13 @@ export interface CatchFx {
   speciesId: string;
   shiny: boolean;
   ball: string;
-  chance: number;
   success: boolean;
   /** §2.6.4.4 — how many of the four shake checks passed (4 is the catch). */
   checks: number;
   wobbles: number;
+  /** §9.9.1 — the enemies on the field as the ball left the hand: they stay, as they stood, until it opens. */
+  line: EnemyCombatant[];
+  targetUid: string;
 }
 
 export interface CombatFxState {
@@ -115,7 +119,7 @@ export const FX_MS = {
   wobble: 600,
   result: 1000,
   /** Between two Pokémon sent out together at a fight's start. */
-  stagger: 220,
+  stagger: 420,
   /** A move's illustration over its target: pops in with the lunge, gone before the next hit's number. */
   moveHit: 560,
 } as const;
@@ -143,9 +147,8 @@ export function catchTimeline(wobbles: number) {
   const wobbleAt = dropAt + FX_MS.drop;
   const cycle = FX_MS.pause + FX_MS.wobble;
   /** The end of wobble `i` (1-based): where its shake check lands. */
-  const checkAt = (i: number) => wobbleAt + i * cycle;
   const resultAt = wobbleAt + wobbles * cycle + FX_MS.pause;
-  return { absorbAt, dropAt, wobbleAt, cycle, checkAt, resultAt, total: resultAt + FX_MS.result };
+  return { absorbAt, dropAt, wobbleAt, cycle, resultAt, total: resultAt + FX_MS.result };
 }
 
 interface Seen {
@@ -261,8 +264,14 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         }
         at += FX_MS.stagger;
       });
-      const lead = state.player.team[state.player.leadIndex];
-      if (lead) sendOut(lead.uid, 'player', 'player', at + (ball ? FX_MS.ballFly : FX_MS.wildEnter) - FX_MS.stagger);
+      // §9.9.1 (v0.9.16) — then yours, one ball at a time: the Lead, a moment later Bench 1, then Bench 2.
+      let mine = at + (ball ? FX_MS.ballFly : FX_MS.wildEnter) - FX_MS.stagger;
+      for (const i of [state.player.leadIndex, ...benchIndices(state)]) {
+        const m = state.player.team[i];
+        if (!m || m.hp <= 0) continue;
+        sendOut(m.uid, i === state.player.leadIndex ? 'player' : indexToSlot(state, i) === 'bench1' ? 'bench1' : 'bench2', 'player', mine);
+        mine += FX_MS.stagger;
+      }
       // The fight may start at once: Pokémon coming out never hold the hand.
       return;
     }
@@ -441,7 +450,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           const wobbles = e.success ? SHAKE_CHECKS - 1 : wobblesShown(e.checks);
           const t = catchTimeline(wobbles);
           const id = nextId.current++;
-          const fx: CatchFx = { id, slot: was.slot, speciesId: was.speciesId, shiny: was.shiny, ball: lastBall, chance: e.chance, success: e.success, checks: e.checks, wobbles };
+          const fx: CatchFx = { id, slot: was.slot, speciesId: was.speciesId, shiny: was.shiny, ball: lastBall, success: e.success, checks: e.checks, wobbles, line: [...before.enemies.values()].map((v) => v.enemy), targetUid: uid };
           schedule(() => setCatching(fx), delay);
           // The log already holds the result: it shows the throw, and the rest when the ball clicks or bursts.
           const cut = state.log.findLastIndex((l) => l.text.startsWith('Used ')) + 1;
