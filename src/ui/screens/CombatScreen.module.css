@@ -68,14 +68,25 @@
   background: var(--surface-3);
 }
 
-/* ---- Stage (§9.2.2.2 / §9.2.2.3) ---- */
+/* ---- Stage (§9.2.1, v0.9.16): the two formations face each other across open ground ---- */
 .stage {
   position: relative;
+  /* The formation's sizes are read from the stage's own height (cqh), so 720 p and 1080 p hold the same picture. */
+  container-type: size;
+  --lead-sprite: clamp(96px, 30cqh, 220px);
+  --bench-sprite: clamp(64px, 21cqh, 150px);
+  /* The enemy's bench carries an intent chip above it, so it stands a little smaller to fit two in a column. */
+  --foe-bench-sprite: clamp(56px, 17cqh, 140px);
+  --solo-sprite: clamp(110px, 36cqh, 250px);
+  --lead-plate: 212px;
+  --bench-plate: 172px;
+  --solo-plate: 236px;
   display: grid;
-  grid-template-columns: minmax(300px, 420px) 1fr minmax(320px, 400px);
+  grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-rows: minmax(0, 1fr);
-  align-items: center;
-  padding: var(--sp-5) var(--sp-6) var(--sp-3);
+  column-gap: var(--sp-4);
+  /* On a wide screen the two sides come in from the edges, so the field reads as one fight and not two corners. */
+  padding: var(--sp-4) clamp(var(--sp-5), 5vw, 128px) var(--sp-3);
   overflow: hidden;
   background-size: cover;
   background-position: center 40%;
@@ -89,96 +100,79 @@
     linear-gradient(180deg, rgba(20, 15, 26, 0.35) 0%, rgba(20, 15, 26, 0.05) 35%, rgba(20, 15, 26, 0.55) 100%),
     radial-gradient(70% 60% at 50% 45%, rgba(0, 0, 0, 0) 0%, rgba(20, 15, 26, 0.25) 100%);
 }
-.squad,
-.arena,
-.enemyZone {
+/* A side of the field: the Lead in the column nearest the enemy, the bench behind it — Bench 1 high, Bench 2 low. */
+.formation {
   position: relative;
-  z-index: 1;
-}
-.squad {
+  z-index: 2;
   display: grid;
-  grid-template-columns: 140px 212px;
   grid-template-rows: 1fr 1fr;
+  /* Room for an intent chip wider than its plate, more of it where the screen has it. */
+  column-gap: clamp(var(--sp-4), 3vw, var(--sp-8));
+  row-gap: var(--sp-2);
+  min-height: 0;
+}
+.squadSide {
+  grid-template-columns: auto auto;
   grid-template-areas:
-    'bench1 lead'
-    'bench2 lead';
-  column-gap: var(--sp-4);
-  row-gap: var(--sp-5);
+    'b1 lead'
+    'b2 lead';
   align-items: center;
-  align-self: center;
-  width: fit-content;
-  padding-top: var(--sp-2);
 }
-.benchTop {
-  grid-area: bench1;
-  align-self: end;
+.foeGroup {
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    'lead b1'
+    'lead b2';
+  align-items: center;
 }
-.benchBottom {
-  grid-area: bench2;
-  align-self: start;
+.foeSolo {
+  grid-template-columns: auto;
+  grid-template-rows: 1fr;
+  align-items: center;
+  justify-items: center;
+  padding-right: var(--sp-6);
 }
-.leadSlot {
+.slotLead {
   grid-area: lead;
   z-index: 2;
 }
-/* The arena takes the stage's height up to 440 px: at 720 p it was a fixed 400 and spilled past the stage. */
-.arena {
-  position: relative;
-  height: min(440px, 100%);
+.squadSide .slotLead {
+  align-self: end;
+}
+.foeGroup .slotLead {
   align-self: center;
 }
-.leadSprite,
-.enemySprite {
+.slotB1 {
+  grid-area: b1;
+  align-self: start;
+}
+.slotB2 {
+  grid-area: b2;
+  align-self: end;
+}
+.slotSolo {
+  align-self: center;
+}
+/* The open ground between the sides: the trainer stands at its back, by its own side of the field. */
+.middle {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+.trainerBlock {
   position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.leadSprite {
-  left: 8%;
-  bottom: 4%;
-}
-.enemySprite {
-  right: 10%;
-  top: 8%;
-  /* Over the trainer standing behind a group. */
-  z-index: 1;
-}
-.leadSprite img {
-  height: 200px;
-  width: auto;
-  filter: drop-shadow(0 14px 10px rgba(0, 0, 0, 0.45));
-  animation: global(breathe) 2.4s ease-in-out infinite;
-}
-.enemySprite img {
-  height: 170px;
-  width: auto;
-  filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.45));
-  animation: global(breathe) 2.8s ease-in-out infinite;
-}
-.platform {
-  width: 170px;
-  height: 34px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0));
-  margin-top: -18px;
+  gap: var(--sp-1);
 }
 .trainer {
-  position: absolute;
-  right: -2%;
-  top: 30%;
-  height: 110px;
+  height: clamp(84px, 24cqh, 170px);
+  width: auto;
   opacity: 0.95;
   filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.45));
-}
-/* v0.9.13 — a group's trainer (a Gym Leader, the Elite) stands behind its Pokémon, raised between the Lead and the
-   back row, the way the games keep a Leader on the field behind its party. Under the sprites, never over them. */
-.trainerBehind {
-  right: 19%;
-  top: 0;
-  height: 140px;
-  z-index: 0;
-  opacity: 0.9;
 }
 /* The trainer walks in as the fight opens (the series' slide-in). Only when motion is on: `animate` gates the class. */
 .trainerIn {
@@ -186,7 +180,6 @@
 }
 /* §9.9.1 — where a thrown Poké Ball starts and a recalled one ends. */
 .handTrainer,
-.handTrainerBehind,
 .handOffRight,
 .handPlayer {
   position: absolute;
@@ -195,12 +188,8 @@
   pointer-events: none;
 }
 .handTrainer {
-  right: 3%;
+  left: 30%;
   top: 40%;
-}
-.handTrainerBehind {
-  right: 24%;
-  top: 14%;
 }
 .handOffRight {
   right: -4%;
@@ -210,11 +199,20 @@
   left: -4%;
   bottom: 12%;
 }
+/* Over everything on the field, catching nothing: the damage box, the beats, the banners. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+/* The breakdown, in the open ground between the sides. `translate`, not `transform`: the pop-in's scale animates
+   `transform`, and took the centring with it. */
 .preview {
   position: absolute;
   left: 50%;
-  top: 38%;
-  transform: translate(-50%, -50%);
+  top: 40%;
+  translate: -50% -50%;
   background: color-mix(in srgb, var(--surface-1) 94%, transparent);
   border: 2px solid var(--border-strong);
   border-radius: var(--radius-md);
@@ -258,40 +256,27 @@
   pointer-events: none;
   white-space: nowrap;
 }
-.enemyZone {
-  justify-self: end;
+/* In the top bar's middle, in the log's place: gold, because it is the one thing to do now. */
+.hint {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: var(--sp-3);
-  width: 100%;
-}
-.queue {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-1);
-  background: color-mix(in srgb, var(--surface-1) 85%, transparent);
-  border-radius: var(--radius-pill);
-  padding: 0 var(--sp-2);
-  font-size: var(--type-caption);
-  color: var(--ink-secondary);
-}
-.hint {
-  position: absolute;
-  left: 50%;
-  bottom: 96px;
-  transform: translateX(-50%);
-  z-index: var(--z-toast);
+  min-width: 0;
+  max-width: 560px;
   background: var(--accent-action);
   color: var(--ink-on-accent);
   border-radius: var(--radius-pill);
-  padding: 6px 14px;
+  padding: 5px 14px;
   font-size: var(--type-caption);
   font-weight: 700;
-  display: flex;
-  gap: var(--sp-3);
-  align-items: center;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: global(popIn) var(--motion-fast) var(--ease-spring) both;
+}
+.hintText {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .hintCancel {
   text-decoration: underline;
@@ -441,23 +426,6 @@
   color: var(--ink-muted);
 }
 
-@media (max-width: 1400px) {
-  .stage {
-    grid-template-columns: minmax(280px, 360px) 1fr minmax(300px, 340px);
-    padding: var(--sp-4);
-  }
-  .squad {
-    grid-template-columns: 128px 190px;
-    column-gap: var(--sp-3);
-  }
-  .leadSprite img {
-    height: 160px;
-  }
-  .enemySprite img {
-    height: 140px;
-  }
-}
-
 /* §3.1.2 — the Run button: quiet next to End Turn, because it is the exit and not the plan. */
 .flee {
   padding: var(--sp-2) var(--sp-4);
@@ -478,70 +446,6 @@
   cursor: default;
 }
 
-/* §9.2.1 / §5.6 — a group: the squad grammar mirrored. The enemy Lead stands forward (towards your side), its
-   supports behind it, smaller, one high and one low — the way your bench sits behind your Lead. */
-.foeLead {
-  right: 34%;
-  top: 26%;
-}
-.foeSupport1,
-.foeSupport2 {
-  right: 0;
-}
-.foeSupport1 {
-  top: 0;
-}
-.foeSupport2 {
-  top: 52%;
-}
-.foeSupport1 img,
-.foeSupport2 img {
-  height: var(--sprite-support);
-}
-/* The card being dragged is over this sprite. */
-.foeAimed .platform {
-  background: radial-gradient(ellipse, color-mix(in srgb, var(--accent-action) 70%, transparent), transparent);
-}
-/* §9.2.1 — a group mirrors the squad (v0.8.6): the Lead's panel forward (toward the arena) and centred, the
-   supports stacked behind it. The column widens to hold two panels side by side. */
-.stageGroup {
-  grid-template-columns: minmax(300px, 400px) 1fr minmax(440px, 560px);
-}
-.enemyZoneGroup {
-  display: grid;
-  grid-template-columns: minmax(260px, 1.15fr) minmax(0, 1fr);
-  grid-template-rows: 1fr 1fr auto;
-  grid-template-areas:
-    'lead s1'
-    'lead s2'
-    'queue queue';
-  column-gap: var(--sp-3);
-  row-gap: var(--sp-4);
-  align-items: center;
-  align-self: center;
-}
-/* §5.6 — what waits behind the group: its own row, centred under the formation. */
-.enemyZoneGroup > .queue {
-  grid-area: queue;
-  justify-self: center;
-}
-.foeOnly {
-  display: contents;
-}
-.foeLeadPanel {
-  grid-area: lead;
-  z-index: 2;
-}
-.foePanel1 {
-  grid-area: s1;
-  align-self: end;
-}
-.foePanel2 {
-  grid-area: s2;
-  align-self: start;
-}
-/* Two on the field stand as if three did (the user's call): the support takes the upper place behind, the Lead
-   stays centred and forward, and the lower place is left empty. */
 /* The card under the pointer while it is dragged. */
 .dragGhost {
   position: fixed;
@@ -559,26 +463,4 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
   pointer-events: none;
   white-space: nowrap;
-}
-
-@media (max-width: 1400px) {
-  .foeSupport1 img,
-  .foeSupport2 img {
-    height: var(--sprite-support-small);
-  }
-  .stageGroup {
-    grid-template-columns: minmax(260px, 330px) 1fr minmax(400px, 460px);
-  }
-}
-
-/* A 720 p stage: the three enemy panels need every pixel of the column. */
-@media (max-height: 800px) {
-  .enemyZoneGroup {
-    gap: var(--sp-1);
-  }
-  /* The squad's two bench portraits and the Lead fit the short stage: less air between them. */
-  .squad {
-    row-gap: var(--sp-3);
-    padding-top: 0;
-  }
 }

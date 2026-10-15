@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { IconCards, IconMenu2, IconPaw, IconStar, IconTrophy, IconUser } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
@@ -18,17 +18,18 @@ import {
   type CardPlayability,
   type CombatState,
   type SlotId, type EnemyCombatant, benchIndices } from '@/sim';
-import { portraitOf, stageBackdrop, spriteOf, trainerSprite } from '@/ui/art';
+import { stageBackdrop, trainerSprite } from '@/ui/art';
 import { CombatLog } from '@/ui/components/CombatLog';
 import { BagButton } from '@/ui/components/BagButton';
 import { EnemyPanel, type TargetPreview } from '@/ui/components/EnemyPanel';
-import { FloatingNumbers } from '@/ui/components/FloatingNumbers';
 import { Modal } from '@/ui/components/Modal';
 import { PauseMenu } from '@/ui/components/PauseMenu';
 import { MoveCard } from '@/ui/components/MoveCard';
 import { OutcomeOverlay } from '@/ui/components/OutcomeOverlay';
 import { Portrait } from '@/ui/components/Portrait';
 import { FieldChips } from '@/ui/components/FieldChips';
+import { IntentArrows } from '@/ui/components/IntentArrows';
+import { TrainerParty } from '@/ui/components/TrainerParty';
 import { RuleChip } from '@/ui/components/RuleChip';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
@@ -37,7 +38,7 @@ import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { WildTierBanner } from '@/ui/components/WildTierBanner';
 import { ArenaFx } from '@/ui/components/ArenaFx';
 import { ENCOUNTER_LABEL, REJECT_TEXT } from '@/ui/strings';
-import { iconOf, itemIcon } from '@/ui/art';
+import { iconOf } from '@/ui/art';
 import { apTip, fightKindTip, fleeTip } from '@/ui/tips';
 import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './CombatScreen.module.css';
@@ -65,6 +66,35 @@ export function CombatScreen() {
   const [hoverEnemyUid, setHoverEnemyUid] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const trayRef = useRef<HTMLElement | null>(null);
+  // §9.2.1 — the stage, and where each slot's Pokémon stands on it: measured from the formation after every layout, so
+  // the arena's beats (balls, ghosts, the catch, a move's picture) land on the sprite wherever the formation put it. A
+  // slot that empties keeps its last box, so a beat that outlives its Pokémon still plays where it stood.
+  const [stageEl, setStageEl] = useState<HTMLElement | null>(null);
+  const [slotBoxes, setSlotBoxes] = useState<Partial<Record<SpriteSlot, SlotBox>>>({});
+  useLayoutEffect(() => {
+    if (!stageEl) return;
+    const measure = () => {
+      const base = stageEl.getBoundingClientRect();
+      const found: Partial<Record<SpriteSlot, SlotBox>> = {};
+      stageEl.querySelectorAll<HTMLElement>('[data-fx-slot]').forEach((el) => {
+        const r = el.getBoundingClientRect();
+        found[el.dataset.fxSlot as SpriteSlot] = { left: Math.round(r.left - base.left), top: Math.round(r.top - base.top), width: Math.round(r.width), height: Math.round(r.height) };
+      });
+      setSlotBoxes((cur) => {
+        const next = { ...cur, ...found };
+        return JSON.stringify(next) === JSON.stringify(cur) ? cur : next;
+      });
+    };
+    measure();
+    // The formation settles a moment after the state (a Pokémon sent out, a font): measure once more then.
+    const late = window.setTimeout(measure, 300);
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    ro?.observe(stageEl);
+    return () => {
+      window.clearTimeout(late);
+      ro?.disconnect();
+    };
+  }, [stageEl, state]);
 
   const plays = useMemo(() => (state ? state.player.hand.map((c) => cardPlayability(state, c.id, ctx)!) : []), [state, ctx]);
   const consumablePlays = useMemo(() => (state ? state.player.consumables.hand.map((c) => consumablePlayability(state, c.id, ctx)!) : []), [state, ctx]);
@@ -201,20 +231,17 @@ export function CombatScreen() {
       })
     : enemies.map((enemy) => ({ enemy }));
   const groupShown = (heldLine ?? enemies).length > 1;
-  // A group's trainer (a Gym Leader, the Elite, a trainer sending two out) stands behind its Pokémon for the whole
-  // fight: its place is fixed by the fight's shape, not by how many stand at the moment, so it never jumps aside.
-  const trainerBehind = !!state.trainer && state.onField > 1;
   const title = scenarioName(state);
   const kindLabel = ENCOUNTER_LABEL[state.kind] ?? state.kind;
   const KindIcon = KIND_ICON[state.kind] ?? IconPaw;
   // §9.2.2.4 — the hand's row holds five cards side by side; a bigger hand (a relic's sixth or seventh card) tucks
   // each card under its neighbour by just enough to keep the same width, so it never runs into the AP or the Bag.
   const handOverlap = plays.length > HAND_FIT ? Math.ceil(((plays.length - HAND_FIT) * (CARD_WIDTH + CARD_GAP)) / (plays.length - 1)) : 0;
-  const heldPlace = (i: number) => (heldLine ? { place: groupShown && i > 0 ? 'Support' : 'Lead', group: groupShown } : undefined);
+  const heldPlace = (i: number) => (heldLine ? { place: groupShown && i > 0 ? `Bench ${i}` : 'Lead', group: groupShown } : undefined);
+  /** §9.9 — the FX anchor of the i-th Pokémon on the enemy's side, as `useCombatFx` names it. */
+  const fieldSlot = (i: number): SpriteSlot => (!groupShown ? 'single' : i === 0 ? 'lead' : i === 1 ? 'support1' : 'support2');
   const leadIdx = state.player.leadIndex;
   const lead = state.player.team[leadIdx]!;
-  // §5.14 — a caught shiny wears its palette; the fight carries the flag.
-  const shiny = !!lead.shiny;
   const benches = benchIndices(state);
   const selectedPlay = selection.mode === 'card' || selection.mode === 'step-back' ? plays.find((p) => p.card.id === selection.cardId) ?? null : null;
   const draggedPlay = drag ? plays.find((p) => p.card.id === drag.id) ?? null : null;
@@ -232,9 +259,11 @@ export function CombatScreen() {
     }
   }
   const ended = state.outcome !== 'in-progress';
-  /** §9.9 — where a ghost or the catch stands: the slot's own sprite box, as the live sprite uses it. */
-  const slotClass = (slot: SpriteSlot): string =>
-    slot === 'player' ? styles.leadSprite ?? '' : slot === 'single' ? styles.enemySprite ?? '' : `${styles.enemySprite} ${slot === 'lead' ? styles.foeLead : slot === 'support1' ? styles.foeSupport1 : styles.foeSupport2}`;
+  /** §9.9 — where a ghost, a ball or the catch stands: the slot's own sprite box, as the formation drew it. */
+  const slotStyle = (slot: SpriteSlot): CSSProperties => {
+    const b = slotBoxes[slot];
+    return b ? { left: b.left, top: b.top, width: b.width, height: b.height } : { visibility: 'hidden' };
+  };
   // §9.9 — a beat the screen should not talk over (the catch, a faint) holds the hand and the outcome until it has
   // played; a Pokémon coming out never does. While a ball rocks, the log keeps its result back too.
   const interactive = !ended && !state.player.pendingLeadPick && !fx.busy;
@@ -253,7 +282,7 @@ export function CombatScreen() {
       // §5.6.1 — each action is its own hit, so a Pokémon that acts twice puts two chips on the same portrait.
       const i = h.action === 1 ? e.second : e.intent;
       const move = i?.moveId ? ctx.content.move(i.moveId).name : 'attack';
-      return { key: `${h.enemyUid}#${h.action}`, enemyUid: h.enemyUid, amount: h.amount, name: e.name, move, icon: portraitOf(e) };
+      return { key: `${h.enemyUid}#${h.action}`, enemyUid: h.enemyUid, amount: h.amount, name: e.name, move, icon: iconOf(e) };
     });
     return { incoming: list, incomingKo: list.length > 0 && list.reduce((a, h) => a + h.amount, 0) >= mon.hp };
   }
@@ -338,13 +367,14 @@ export function CombatScreen() {
   const boxDamage = aimedTarget?.reachable ? aimedTarget.damage : null;
   const boxEnemy = enemies.find((e) => e.uid === aimUid) ?? null;
 
-  function benchPortrait(bi: number | undefined, cls: string | undefined) {
+  function benchUnit(bi: number | undefined, cls: string | undefined) {
     if (bi === undefined) return null;
     const mon = state!.player.team[bi]!;
     const opt = swaps.find((o) => o.benchIndex === bi);
+    const slot = indexToSlot(state!, bi);
     return (
       <div className={cls}>
-        <Portrait mon={mon} variant="bench" slotLabel={SLOT_LABEL[indexToSlot(state!, bi)]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(indexToSlot(state!, bi))} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi)} onClick={() => onTeamClick(bi)} fx={fx.floats} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} {...incomingFor(mon.uid)} />
+        <Portrait mon={mon} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(indexToSlot(state!, bi))} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi)} onClick={() => onTeamClick(bi)} fx={fx.floats} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -378,8 +408,24 @@ export function CombatScreen() {
           {/* §9.2.2.1 — the active field, with the Home Field marker when the enemy owns it. */}
           <FieldChips fields={state.fields} suppressed={fieldsSuppressed(state, ctx.content)} />
         </div>
+        {/* §9.2.2.1 — the bar's middle says what to do now while a card or an item waits for its target, and what just
+            happened otherwise: on the field the hint lay across the very Pokémon you were aiming at. */}
         <div className={styles.logSlot}>
-          <CombatLog log={shownLog} />
+          {selection.mode !== 'none' && !drag ? (
+            <div className={styles.hint} data-testid="selection-hint">
+              <span className={styles.hintText}>
+                {selection.mode === 'card' && 'Click an enemy to aim it — or the card again for the Lead. Esc to cancel.'}
+                {selection.mode === 'step-back' && 'Choose the bench Pokémon that takes the Lead after the hit.'}
+                {selection.mode === 'consumable-ally' && 'Choose the Pokémon to use it on.'}
+                {selection.mode === 'consumable-foe' && 'Choose the wild Pokémon to throw it at.'}
+              </span>
+              <button type="button" onClick={clearSelection} className={styles.hintCancel}>
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <CombatLog log={shownLog} />
+          )}
         </div>
         <div className={styles.chips}>
           <span className={styles.chip} data-testid="turn-chip">
@@ -391,53 +437,73 @@ export function CombatScreen() {
         </div>
       </header>
 
-      <section className={[styles.stage, groupShown ? styles.stageGroup : ''].join(' ')} style={{ backgroundImage: `url(${stageBackdrop(state.stage)})` }}>
+      <section
+        ref={setStageEl}
+        className={styles.stage}
+        style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings() }}
+      >
         <div className={styles.stageTint} aria-hidden="true" />
+        {/* §5.2 — who each enemy is about to hit: quiet arrows under the Pokémon, over the ground. */}
+        <IntentArrows state={state} stage={stageEl} focusUid={hoverEnemyUid} />
 
-        <div className={styles.squad} data-testid="squad">
-          {benchPortrait(benches[0], styles.benchTop)}
-          {benchPortrait(benches[1], styles.benchBottom)}
-          <div className={styles.leadSlot}>
-            <Portrait mon={lead} variant="lead" slotLabel="Lead" targeted={targetSlots.has('lead')} selectable={allySelectable && lead.hp > 0} onClick={() => onTeamClick(leadIdx)} fx={fx.floats} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} {...incomingFor(lead.uid)} />
+        {/* §9.2.1 — your three on the field, each Pokémon its sprite and its plate: the Lead forward, towards the enemy;
+            the bench behind it, one high and one low. */}
+        <div className={`${styles.formation} ${styles.squadSide}`} data-testid="squad">
+          {benchUnit(benches[0], styles.slotB1)}
+          {benchUnit(benches[1], styles.slotB2)}
+          <div className={styles.slotLead}>
+            <Portrait mon={lead} variant="lead" slotLabel="Lead" slotId="lead" fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={allySelectable && lead.hp > 0} onClick={() => onTeamClick(leadIdx)} fx={fx.floats} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} {...incomingFor(lead.uid)} />
           </div>
         </div>
 
-        <div className={styles.arena} aria-hidden="true" style={fxTimings()}>
-          {lead.hp > 0 && (
-            <div className={`${styles.leadSprite} ${fx.classes[lead.uid] === 'fx-lunge-right' ? 'fx-lunge-right' : ''} ${fx.sprites[lead.uid] ?? ''}`}>
-              <img className="pixel" src={spriteOf(lead, 'back', shiny)} alt="" draggable={false} data-shiny={shiny || undefined} />
-              <span className={styles.platform} />
-            </div>
-          )}
-          {/* The trainer stays to the last faint: its ball comes back to it. A group's trainer — a Gym Leader, the Elite —
-              stands behind its Pokémon for the whole fight instead of stepping aside, and walks in as it opens. */}
+        {/* The open ground between the two sides — and, at the back, the rival trainer with the whole team by its side. */}
+        <div className={styles.middle}>
           {state.trainer && (
-            <img
-              key={combatKey}
-              className={[styles.trainer, trainerBehind ? styles.trainerBehind : '', animate ? styles.trainerIn : '', 'pixel'].join(' ')}
-              src={trainerSprite(state.trainer.sprite)}
-              alt={state.trainer.name}
-              draggable={false}
-              data-testid="arena-trainer"
-            />
-          )}
-          {/* §9.9.1 — the hands the Poké Balls fly from and back to: the foe's trainer, and yours off the left edge. */}
-          <span className={trainerBehind ? styles.handTrainerBehind : state.trainer ? styles.handTrainer : styles.handOffRight} data-fx-hand="trainer" />
-          <span className={styles.handPlayer} data-fx-hand="player" />
-          {/* §9.2.1 — one enemy stands large; a group uses the squad grammar mirrored: the Lead forward, the
-              supports behind it. Every sprite is a drop target too. */}
-          {field.map(({ enemy, fallenAt }, i) => fallenAt === undefined && (
-            <div
-              key={enemy.uid}
-              className={[styles.enemySprite, groupShown ? (i === 0 ? styles.foeLead : i === 1 ? styles.foeSupport1 : styles.foeSupport2) : '', aimUid === enemy.uid ? styles.foeAimed : '', fx.classes[enemy.uid] ?? '', fx.sprites[enemy.uid] ?? ''].join(' ')}
-              data-testid="arena-enemy"
-              data-enemy-uid={enemy.uid}
-            >
-              <img className={`pixel ${enemy.shiny ? 'fx-shiny' : ''}`} src={spriteOf(enemy, 'front', !!enemy.shiny)} alt="" draggable={false} data-shiny={enemy.shiny || undefined} style={enemy.hp <= 0 ? { opacity: 0 } : undefined} />
-              <span className={styles.platform} />
-              <FloatingNumbers uid={enemy.uid} fx={fx.floats} />
+            <div className={styles.trainerBlock}>
+              {/* The trainer stays to the last faint: its ball comes back to it. It walks in as the fight opens. */}
+              <img key={combatKey} className={[styles.trainer, animate ? styles.trainerIn : '', 'pixel'].join(' ')} src={trainerSprite(state.trainer.sprite)} alt={state.trainer.name} draggable={false} data-testid="arena-trainer" />
+              <span className={styles.handTrainer} data-fx-hand="trainer" />
+              <TrainerParty state={state} />
             </div>
-          ))}
+          )}
+        </div>
+
+        {/* §9.2.1 — the enemy, mirrored: one stands alone and large; a group's Lead forward, its bench behind it. */}
+        <div className={[styles.formation, styles.foeSide, groupShown ? styles.foeGroup : styles.foeSolo].join(' ')}>
+          {field.length > 0
+            ? field.map(({ enemy, fallenAt }, i) => (
+                // §9.9.1 — a Pokémon still in its ball keeps its place unseen: it is named when it comes out.
+                <div key={enemy.uid} className={groupShown ? (i === 0 ? styles.slotLead : i === 1 ? styles.slotB1 : styles.slotB2) : styles.slotSolo} style={fallenAt !== undefined ? ({ '--ghost-at': `${fallenAt}ms` } as CSSProperties) : undefined}>
+                  <EnemyPanel
+                    fallen={fallenAt !== undefined}
+                    held={heldPlace(i)}
+                    state={state}
+                    enemy={enemy}
+                    ctx={ctx}
+                    forecast={forecast}
+                    targetable={enemyTargetable}
+                    aimed={aimUid === enemy.uid}
+                    preview={previewOn(enemy.uid)}
+                    onClick={() => onEnemyClick(enemy.uid)}
+                    onHover={(h) => setHoverEnemyUid((cur) => (h ? enemy.uid : cur === enemy.uid ? null : cur))}
+                    fxClass={fx.classes[enemy.uid]}
+                    fxSlot={fieldSlot(i)}
+                    spriteClass={fx.sprites[enemy.uid]}
+                    floats={fx.floats}
+                    waiting={fx.sprites[enemy.uid] === 'fx-hidden'}
+                    interactive={interactive}
+                    onThrow={(cardId, targetUid) => dispatch({ type: 'use-consumable', cardId, targetUid })}
+                  />
+                </div>
+              ))
+            : !fx.catching && <div className={styles.chip}>No enemies remain</div>}
+        </div>
+
+        {/* §9.9.1 — the hands the Poké Balls fly from and back to: a wild Pokémon's, off the right edge; yours, off the left. */}
+        {!state.trainer && <span className={styles.handOffRight} data-fx-hand="trainer" />}
+        <span className={styles.handPlayer} data-fx-hand="player" />
+
+        <div className={styles.overlay} aria-hidden="true">
           {boxDamage && boxEnemy && previewPlay && (
             <div className={styles.preview} data-testid="damage-preview">
               <div className={`${styles.previewValue} display tabular`}>{boxDamage.final}</div>
@@ -451,7 +517,7 @@ export function CombatScreen() {
               {boxEnemy.hp <= boxDamage.final && <div className={styles.previewKo}>KO</div>}
             </div>
           )}
-          <ArenaFx ghosts={fx.ghosts} balls={fx.balls} hits={fx.hits} catching={fx.catching} slotClass={slotClass} />
+          <ArenaFx ghosts={fx.ghosts} balls={fx.balls} hits={fx.hits} catching={fx.catching} slotStyle={slotStyle} />
           {/* §2.6.2 — the rarity the Wild Area rolled, once, as the fight opens. */}
           {state.wildTier && <WildTierBanner key={combatKey} tier={state.wildTier} animate={animate} />}
           {fx.banner && (
@@ -461,60 +527,6 @@ export function CombatScreen() {
           )}
         </div>
 
-        {/* §9.2.1 — a group's panels mirror the player's squad (v0.8.6): the Lead's panel forward and centred, the
-            supports stacked behind it, the way the bench stacks behind your Lead. */}
-        <div className={[styles.enemyZone, groupShown ? styles.enemyZoneGroup : ''].join(' ')}>
-          {field.length > 0 ? (
-            field.map(({ enemy, fallenAt }, i) => (
-              // §9.9.1 — a Pokémon still in its ball has no panel yet: it is named when it comes out.
-              <div
-                key={enemy.uid}
-                className={groupShown ? (i === 0 ? styles.foeLeadPanel : i === 1 ? styles.foePanel1 : styles.foePanel2) : styles.foeOnly}
-                style={fallenAt !== undefined ? ({ ...fxTimings(), '--ghost-at': `${fallenAt}ms` } as CSSProperties) : fx.sprites[enemy.uid] === 'fx-hidden' ? { visibility: 'hidden' } : undefined}
-              >
-                <EnemyPanel
-                  fallen={fallenAt !== undefined}
-                  held={heldPlace(i)}
-                  state={state}
-                  enemy={enemy}
-                  ctx={ctx}
-                  forecast={forecast}
-                  targetable={enemyTargetable}
-                  aimed={aimUid === enemy.uid}
-                  preview={previewOn(enemy.uid)}
-                  onClick={() => onEnemyClick(enemy.uid)}
-                  onHover={(h) => setHoverEnemyUid((cur) => (h ? enemy.uid : cur === enemy.uid ? null : cur))}
-                  fxClass={fx.classes[enemy.uid]}
-                  interactive={interactive}
-                  onThrow={(cardId, targetUid) => dispatch({ type: 'use-consumable', cardId, targetUid })}
-                />
-              </div>
-            ))
-          ) : (
-            !fx.catching && <div className={styles.chip}>No enemies remain</div>
-          )}
-          {state.enemyQueue.length > 0 && (
-            <Tipped as="div" tip={<Tip title="Still to come" body={groupShown ? 'These wait behind the group and step in the moment a place falls free.' : 'This trainer sends out the next Pokémon when this one falls. You fight them one at a time.'} />} className={styles.queue} role="group" aria-label={`${state.enemyQueue.length} Pokémon still to come`} data-testid="enemy-queue">
-              {/* §2.7 — who comes next is a surprise (v0.8.6): one Poké Ball per Pokémon still to come. */}
-              {state.enemyQueue.map((e) => (
-                <img key={e.uid} className="pixel" src={itemIcon('poke-ball')} alt="" width={22} height={22} />
-              ))}
-              <span>to come</span>
-            </Tipped>
-          )}
-        </div>
-
-        {selection.mode !== 'none' && !drag && (
-          <div className={styles.hint} data-testid="selection-hint">
-            {selection.mode === 'card' && 'Click an enemy to aim it — or the card again for the Lead. Esc to cancel.'}
-            {selection.mode === 'step-back' && 'Choose the bench Pokémon that takes the Lead after the hit.'}
-            {selection.mode === 'consumable-ally' && 'Choose the Pokémon to use it on.'}
-            {selection.mode === 'consumable-foe' && 'Choose the wild Pokémon to throw it at.'}
-            <button type="button" onClick={clearSelection} className={styles.hintCancel}>
-              Cancel
-            </button>
-          </div>
-        )}
         {toast && (
           <div className={styles.toast} role="status" data-testid="toast">
             {toast}
@@ -632,6 +644,9 @@ export function CombatScreen() {
     </main>
   );
 }
+
+/** A slot's sprite box on the stage, in the stage's own pixels. */
+type SlotBox = { left: number; top: number; width: number; height: number };
 
 /** Layout: a move card's width and the hand's gap (MoveCard.module.css, `.hand`), and how many sit side by side. */
 const CARD_WIDTH = 152;

@@ -1,59 +1,106 @@
-.portrait {
+/* §9.2.1 / §9.2.2.2 — one of your Pokémon on the field: the sprite standing where it is in the formation, its plate
+   attached under it. The sizes come from the formation (`--lead-sprite`, `--bench-sprite` on the stage), so the whole
+   squad scales with the stage's height. */
+.unit {
+  --sprite: var(--bench-sprite, 110px);
+  --plate-w: var(--bench-plate, 172px);
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--sp-2);
-  text-align: center;
+  padding: 0;
+  background: none;
+  border: none;
   color: var(--ink-primary);
-  transition:
-    transform var(--motion-base) var(--ease-spring),
-    box-shadow var(--motion-base) ease,
-    border-color var(--motion-fast) ease;
-  backdrop-filter: blur(4px);
-}
-.portrait:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-}
-.lead {
-  border: 4px solid var(--accent-action);
-  border-radius: var(--radius-lg);
-  padding: var(--sp-3);
-  width: 212px;
-}
-.bench {
-  width: 140px;
-}
-.bench .art {
-  aspect-ratio: 5 / 4;
-}
-.targeted {
-  border-color: var(--accent-negative);
-  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.45), 0 0 24px rgba(255, 107, 107, 0.35);
-}
-.selectable {
-  border-color: var(--accent-positive);
-  animation: global(glowPulse) 1.2s ease-out infinite;
+  text-align: left;
   cursor: pointer;
 }
+.lead {
+  --sprite: var(--lead-sprite, 180px);
+  --plate-w: var(--lead-plate, 214px);
+}
+
+/* ── The sprite ─────────────────────────────────────────────────────────────────────────────────────────── */
+.stand {
+  position: relative;
+  width: var(--sprite);
+  height: var(--sprite);
+}
+/* The FX anchor and the arrows' landing point: exactly the place the Pokémon stands in. */
+.sprite {
+  position: absolute;
+  inset: 0;
+}
+.shadow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -7%;
+  height: 16%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 70%);
+}
+.breathe {
+  animation: global(breathe) 2.6s ease-in-out infinite;
+}
+.fainted .shadow {
+  opacity: 0.4;
+}
+
+/* ── The plate ──────────────────────────────────────────────────────────────────────────────────────────── */
+.plate {
+  position: relative;
+  z-index: 1;
+  width: var(--plate-w);
+  margin-top: var(--sp-1);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px var(--sp-2) var(--sp-1);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface-1) 90%, transparent);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  transition:
+    transform var(--motion-base) var(--ease-spring),
+    border-color var(--motion-fast) ease,
+    box-shadow var(--motion-base) ease;
+}
+.lead .plate {
+  border: 3px solid var(--accent-action);
+}
+.unit:hover .plate {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+}
+/* §5.2 — an intent is aimed at this slot: a red glow round the plate, its own frame kept — your Lead stays gold, so
+   it never reads as the enemy's red-framed Lead. */
+.targeted .plate {
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.45), 0 0 20px rgba(255, 107, 107, 0.35);
+}
+.selectable .plate {
+  border-color: var(--accent-positive);
+  animation: global(glowPulse) 1.2s ease-out infinite;
+}
 .fainted {
+  cursor: default;
+}
+.fainted .plate {
   filter: saturate(0.2) brightness(0.8);
   opacity: 0.8;
 }
-.fainted:hover {
+.fainted:hover .plate {
   transform: none;
-  box-shadow: none;
 }
 .slotTag {
   position: absolute;
-  top: -9px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   background: var(--surface-3);
   color: var(--ink-secondary);
   font-size: var(--type-micro);
@@ -61,126 +108,83 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   border-radius: var(--radius-pill);
-  padding: 1px 8px;
+  padding: 1px var(--sp-2);
   white-space: nowrap;
-  z-index: 3;
 }
 .lead .slotTag {
   background: var(--accent-action);
   color: var(--ink-on-accent);
+}
+.status {
+  position: absolute;
   top: -11px;
-}
-.art {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-/* Sized by `usePixelFit` to a whole-pixel scale (D9). */
-.art img {
-  flex: none;
-  max-width: none;
-  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.35));
-  animation: global(breathe) 3.2s ease-in-out infinite;
-}
-.fainted .art img {
-  animation: none;
-}
-.faintedTag {
-  position: absolute;
-  inset: auto 0 8px;
-  color: var(--brand-cream);
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-}
-.cornerTL,
-.cornerTR {
-  position: absolute;
-  top: 12px;
-  z-index: 2;
+  right: calc(var(--sp-2) * -1);
   display: flex;
   gap: 2px;
 }
-.cornerTL {
-  left: -8px;
-  flex-direction: column;
-}
-.cornerTR {
-  right: -8px;
-  flex-direction: column;
-}
-.lead .cornerTL {
-  left: -10px;
-  top: 14px;
-}
-.lead .cornerTR {
-  right: -10px;
-  top: 14px;
-}
-.crown {
-  position: absolute;
-  top: 6px;
-  right: 10px;
-  color: var(--accent-action);
-  z-index: 3;
+.head {
   display: flex;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.types {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 0 0 auto;
 }
 .name {
-  display: flex;
-  align-items: baseline;
-  gap: var(--sp-2);
-  font-size: var(--type-small);
+  flex: 1;
+  min-width: 0;
+  font-size: var(--type-caption);
   line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .lead .name {
-  font-size: var(--type-h3);
+  font-size: var(--type-small);
 }
 .level {
-  font-size: var(--type-caption);
-  color: var(--ink-muted);
+  flex: 0 0 auto;
+  font-size: var(--type-micro);
+  /* Secondary ink, not muted: on the translucent plate the muted grey fell under 4.5:1 (D5). */
+  color: var(--ink-secondary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 0 6px;
-  /* §9.6 — "Lv 13" is two words and a pill, and at 150 % text it was breaking between them, which turned a
-     badge into two stacked lines beside the name. A level never wraps. */
+  padding: 0 5px;
   white-space: nowrap;
 }
+.hpRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 18px;
+}
 .hpText {
-  font-size: var(--type-caption);
+  font-size: var(--type-micro);
   color: var(--ink-secondary);
   line-height: 1;
   white-space: nowrap;
-}
-/* A bench card shares its last row between the HP and the swap price: both stay on one line. */
-.bench .hpText {
-  font-size: var(--type-micro);
-}
-.bench .hpRow {
-  gap: var(--sp-1);
+  margin-right: auto;
 }
 .lead .hpText {
-  font-size: var(--type-small);
+  font-size: var(--type-caption);
 }
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: 3px;
-  justify-content: center;
 }
 .chipUp,
 .chipDown,
 .chipTrauma {
+  white-space: nowrap;
   font-size: var(--type-micro);
   font-weight: 800;
   border-radius: var(--radius-sm);
-  padding: 1px 6px;
+  padding: 0 5px;
   color: var(--ink-on-accent);
 }
 .chipUp {
@@ -191,12 +195,6 @@
 }
 .chipTrauma {
   background: var(--accent-warning);
-}
-.hpRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-2);
 }
 .swapChip,
 .swapChipOff {
@@ -214,17 +212,36 @@
   color: var(--ink-muted);
   border-color: var(--border-subtle);
 }
+/* §9.2.5 — what it would take as the Lead this turn: the swap, priced in HP. Quiet, not an alarm; red only at KO. */
+.asLead,
+.asLeadKo {
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-size: var(--type-micro);
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.asLeadKo {
+  border-color: var(--accent-negative);
+  background: var(--accent-negative);
+  color: var(--ink-on-accent);
+}
 
-/* §9.2.5 — what lands on this Pokémon this turn: one chip per enemy hit, a KO flag when they add up to one. */
+/* §9.2.5 — what lands on this Pokémon this turn: beside it, towards the enemy, one chip per hit and a KO flag. */
 .incoming {
   position: absolute;
-  top: 38%;
-  right: var(--sp-1);
+  left: 88%;
+  top: 14%;
+  width: max-content;
   display: inline-flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: var(--sp-1);
-  z-index: 3;
+  z-index: 2;
   pointer-events: none;
   white-space: nowrap;
 }
@@ -251,38 +268,19 @@
   letter-spacing: 0.08em;
 }
 .incomingFace {
+  position: relative;
+  flex: 0 0 auto;
   width: var(--sp-5);
   height: var(--sp-5);
   border-radius: 50%;
-  object-fit: cover;
+  overflow: hidden;
   background: var(--surface-2);
 }
-
-/* §9.2.5 — what it would take as the Lead this turn: the swap, priced in HP. Quiet, not an alarm; red only at KO. */
-.asLead,
-.asLeadKo {
+.incomingFace img {
   position: absolute;
-  top: var(--sp-1);
-  right: var(--sp-1);
-  z-index: 1;
-  padding: 0 var(--sp-2);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-strong);
-  background: var(--surface-1);
-  color: var(--ink-primary);
-  font-size: var(--type-caption);
-  font-weight: 700;
-  white-space: nowrap;
-}
-.asLeadKo {
-  border-color: var(--accent-negative);
-  background: var(--accent-negative);
-  color: var(--ink-on-accent);
-}
-
-/* A short stage (720 p): the bench's art gives up height so both bench portraits fit above the tray. */
-@media (max-height: 800px) {
-  .bench .art {
-    aspect-ratio: 2 / 1;
-  }
+  left: -22px;
+  top: -24px;
+  width: 68px;
+  height: 56px;
+  max-width: none;
 }

@@ -1,6 +1,11 @@
 /* §9.9.1 — the arena's lasting beats: ghosts of the fallen, balls in flight, and the catch. Timings come from the
    hook's table as custom properties (`fxTimings`), so the keyframes and the timers can never disagree. */
 
+/* Every beat is drawn in its slot's box: where that Pokémon stands, measured from the formation. */
+.box {
+  position: absolute;
+  pointer-events: none;
+}
 .ghost,
 .flight,
 .catch {
@@ -374,10 +379,7 @@
 /* §9.2.3 — a move's illustration over what it hits: the slot's box, the picture centred in it at 3×, popping in with
    the lunge and fading before the next number. Over the sprite, under the floating numbers. */
 .hit {
-  pointer-events: none;
-  width: 180px;
-  height: 170px;
-  /* The slot class makes this a flex column; centre the picture on both axes of the sprite's box. */
+  display: flex;
   justify-content: center;
   align-items: center;
   z-index: 2;

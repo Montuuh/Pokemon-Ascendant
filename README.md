@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.16 — The arena, one formation.** Every Pokémon on the field is one unit — its animated sprite with its plate
+(name, level, HP, status) attached — your three in formation on the left, the enemy mirrored on the right and tagged
+Lead, Bench 1 and Bench 2 like yours, a quiet dotted arrow from each enemy to the Pokémon it is about to hit, and the
+rival trainer's whole team by its side: beaten, out and still to come. Before it,
 **v0.9.15 — The combat screen and its cards.** Every move card shows the move itself — a pixel illustration for each
 of the 161 Gen I moves, which also lands on the Pokémon it hits — with its owner in the corner, a clearer cost and
 power, and locks that keep the card readable; the item cards match, the tray is one row, the battle log is a ticker in

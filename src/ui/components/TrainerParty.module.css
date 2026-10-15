@@ -1,0 +1,76 @@
+/* The trainer's team as a row of round slots: a dark pill on the field, each Pokémon in its own socket. */
+.party {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface-0) 82%, transparent);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+}
+/* A socket: the box icon at 1× (D9), its empty margin cropped, the Pokémon in the middle of a 68×56 tile. */
+.slot {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.slot img {
+  position: absolute;
+  left: -19px;
+  top: -21px;
+  width: 68px;
+  height: 56px;
+  max-width: none;
+}
+/* On the field: lit, ringed in the enemy's red. */
+.field {
+  background: color-mix(in srgb, var(--accent-negative) 22%, var(--surface-2));
+  box-shadow: inset 0 0 0 2px var(--accent-negative);
+}
+/* Beaten: grey, dimmed, struck through. */
+.beaten img {
+  filter: grayscale(1) brightness(0.7);
+  opacity: 0.6;
+}
+.beaten::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 46%, var(--accent-negative) 46%, var(--accent-negative) 54%, transparent 54%);
+  opacity: 0.85;
+}
+/* Still in its ball: who it is stays a surprise (§2.7.3). */
+.ball {
+  background: transparent;
+}
+.ball img {
+  left: 3px;
+  top: 3px;
+  width: 24px;
+  height: 24px;
+}
+
+/* A tall stage (1080 p): the team at 2×, so the whole of it reads from across the field (D9: a whole multiple). */
+@media (min-height: 900px) {
+  .slot {
+    width: 54px;
+    height: 54px;
+  }
+  .slot img {
+    left: -41px;
+    top: -46px;
+    width: 136px;
+    height: 112px;
+  }
+  .ball img {
+    left: 7px;
+    top: 7px;
+    width: 40px;
+    height: 40px;
+  }
+}

@@ -251,7 +251,7 @@ gives nothing.
 
 ## §5.6.5 Fights with another objective
 
-> ☐ **v0.9.17** — designed 2026-10-14 (the user's note 5 on the fan-game study: "me gusta lo de combates con otros
+> ☐ **v0.9.18** — designed 2026-10-14 (the user's note 5 on the fan-game study: "me gusta lo de combates con otros
 > objetivos"). Two shapes, after PokéSurvivor's treasure goblins and locked chests, made turn-based.
 
 Most fights are won by knocking everything out. Two are won by something else, and **the map promises which**

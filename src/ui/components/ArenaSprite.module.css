@@ -1,0 +1,16 @@
+/* A sprite's box fills the place the formation gives it (a square sized from the stage's height): the Pokémon stands
+   on its bottom edge, centred, and may rise above it or spread past its sides. */
+.box {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.img {
+  flex: none;
+  max-width: none;
+  filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.45));
+}

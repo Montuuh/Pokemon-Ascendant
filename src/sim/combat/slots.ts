@@ -74,10 +74,13 @@ export function resolutionOrder(state: CombatState): EnemyCombatant[] {
   return first ? [...rest, first] : [];
 }
 
-/** §5.6 — what the player reads on an enemy's place: the Lead, or a Support (the sprites show the order). */
+/**
+ * §5.6 / §9.2.1 — what the player reads on an enemy's place, named as the player's own (v0.9.16, the user's call): the
+ * Lead, then Bench 1 and Bench 2 in slot order. The rules call the two behind the Lead its supports.
+ */
 export function enemySlotLabel(state: CombatState, enemy: EnemyCombatant): string {
   const i = state.enemies.findIndex((e) => e.uid === enemy.uid);
-  return i <= 0 ? 'Lead' : 'Support';
+  return i <= 0 ? 'Lead' : `Bench ${i}`;
 }
 
 export function findCombatant(state: CombatState, uid: string): Combatant | null {

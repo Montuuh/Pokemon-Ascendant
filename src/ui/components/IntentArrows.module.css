@@ -1,0 +1,51 @@
+/* §5.2 — the intent arrows: a quiet layer under the Pokémon, over the backdrop. */
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+.arrow {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 2 7;
+  opacity: 0.5;
+  transition:
+    opacity var(--motion-base) ease,
+    stroke-width var(--motion-base) ease;
+  animation: global(dashFlow) var(--motion-dash-flow) linear infinite;
+}
+/* The marker's head shares the line's colour; a line is stroke, a head is fill. */
+.hit {
+  stroke: var(--accent-negative);
+  fill: var(--accent-negative);
+}
+.status {
+  stroke: var(--type-psychic);
+  fill: var(--type-psychic);
+}
+.ally {
+  stroke: var(--accent-positive);
+  fill: var(--accent-positive);
+}
+.arrow.hit,
+.arrow.status,
+.arrow.ally {
+  fill: none;
+}
+/* §5.6.1 — a second action: the same arrow, a step quieter. */
+.second {
+  opacity: 0.32;
+}
+/* Resting on an enemy: its arrows forward, the others back. */
+.focus {
+  opacity: 0.95;
+  stroke-width: 2.6;
+}
+.faded {
+  opacity: 0.14;
+}

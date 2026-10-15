@@ -29,6 +29,33 @@ test.describe('Group fights — §5.6', () => {
     await page.screenshot({ path: 'playtest/combat-group-flock.png' });
   });
 
+  // §9.2.1 (v0.9.16) — one formation each side, every Pokémon its sprite and its plate: yours the Lead and the bench,
+  // theirs tagged the same way; an arrow from each enemy to the slot it will hit; the trainer's whole team by its side.
+  test('the field is one formation each side: sprites with their plates, the same tags, arrows to the target, the rival team', async ({ page }) => {
+    await page.goto('/?scenario=group-wild-flock&seed=7');
+    await expect(page.getByTestId('squad').locator('[data-testid^="portrait-"]')).toHaveCount(3);
+    await expect(page.getByTestId('squad').locator('[data-arrow-to] img')).toHaveCount(3);
+    await expect(page.getByTestId('foe-place')).toHaveText(['Lead', 'Bench 1', 'Bench 2']);
+    await expect(page.locator('[data-testid="foe-panel"] [data-testid="arena-enemy"]')).toHaveCount(3);
+    // The flock's three intents are all aimed at your Lead: three arrows, each from its own enemy.
+    const arrows = page.getByTestId('intent-arrow');
+    await expect(arrows).toHaveCount(3);
+    await expect(arrows.and(page.locator('[data-from="e1"]'))).toHaveCount(1);
+    // Resting on an enemy brings its arrow forward and the others back.
+    await page.locator('[data-testid="foe-panel"][data-enemy-uid="e1"] [data-testid^="enemy-"]').hover();
+    await expect(page.locator('[data-testid="intent-arrow"][data-from="e1"]')).toHaveClass(/focus/);
+    await expect(page.locator('[data-testid="intent-arrow"][data-from="e0"]')).toHaveClass(/faded/);
+
+    // §2.7.3 — a trainer's team by its side: two on the field, nobody beaten yet, and the rest still balls.
+    await page.goto('/?scenario=group-trainer-pair&seed=7');
+    const party = page.getByTestId('trainer-party');
+    await expect(party.locator('[data-state="field"]')).toHaveCount(2);
+    await expect(party.locator('[data-state="beaten"]')).toHaveCount(0);
+    await expect(party).toHaveAttribute('aria-label', /2 on the field, 0 beaten/);
+    await settle(page);
+    await page.screenshot({ path: 'playtest/combat-formation.png' });
+  });
+
   test('a Ranged card prints its number on every enemy; a Melee card stops at the Lead', async ({ page }) => {
     await page.goto('/?scenario=group-wild-flock');
     await expect(page.getByTestId('combat-screen')).toBeVisible();

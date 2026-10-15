@@ -359,14 +359,14 @@ export function groupTip(plan: GroupPlan): ReactNode {
 }
 
 /** §5.6 — an enemy's place in a group: the Lead in front, or one behind it. */
-export function placeTip(place: string, alone = false, shiny = false): ReactNode {
+export function placeTip(place: string, alone = false, shiny = false, meta: string[] = []): ReactNode {
   const withShiny = (text: string): ReactNode => (shiny ? [<div key="r">{text}</div>, shinyLine(false)] : text);
-  if (place === 'Lead' && alone) return <Tip title="Enemy Lead" body={withShiny('It stands alone. Every card reaches it; Melee cards reach only the enemy that leads.')} />;
+  if (place === 'Lead' && alone) return <Tip title="Enemy Lead" meta={meta} body={withShiny('It stands alone. Every card reaches it; Melee cards reach only the enemy that leads.')} />;
   if (place === 'Lead') {
-    return <Tip title="Enemy Lead" body={withShiny('It stands in front of its group. Your Melee cards reach only this one; Ranged and area cards reach the rest. If it falls, the strongest of the others steps up.')} />;
+    return <Tip title="Enemy Lead" meta={meta} body={withShiny('It stands in front of its group. Your Melee cards reach only this one; Ranged and area cards reach the rest. If it falls, the strongest of the others steps up.')} />;
   }
   // §5.6 (v0.9.10) — behind the Lead stands a Pokémon like any other: whole, its own kit, no role.
-  return <Tip title={place} body={withShiny('It fights behind the Lead.')} footer="Only Ranged and area cards reach it. If the Lead falls, the strongest one behind steps up." />;
+  return <Tip title={place} meta={meta} body={withShiny('It fights behind the Lead.')} footer="Only Ranged and area cards reach it. If the Lead falls, the strongest one behind steps up." />;
 }
 
 /** §5.5.1 Trainer's Instinct — the enemy's plan for next turn, and the one way it can change. */
@@ -385,6 +385,17 @@ export function nextIntentTip(detail: string): ReactNode {
 /** §3.2.2 — the AP pool. */
 export function apTip(ap: number, max = 3): ReactNode {
   return <Tip title={`${ap} of ${max} action points`} body="Every card and every swap costs AP. You get 3 at the start of each turn; unspent AP is lost, so a turn that ends with points left is a turn that did less than it could." />;
+}
+
+/** §2.7.3 — the rival trainer's team by the trainer's side: who is out, who is beaten, how many still wait. */
+export function trainerPartyTip(name: string, field: number, fainted: number, toCome: number): ReactNode {
+  return (
+    <Tip
+      title={`${name}'s team`}
+      meta={[`${field} on the field`, `${fainted} beaten`, `${toCome} to come`]}
+      body={toCome > 0 ? 'The closed balls are the Pokémon still to come: who they are is a surprise until they are sent out, and one steps in the moment a place falls free.' : undefined}
+    />
+  );
 }
 
 /** §5.8 — what kind of fight this is: the header chip's icon, said in words. */

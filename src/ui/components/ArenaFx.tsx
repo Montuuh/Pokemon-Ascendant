@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, type CSSProperties, type RefObject } from 'rea
 import { SHAKE_CHECKS } from '@/sim/combat/catch';
 import { itemIcon, moveArt, spriteOf } from '@/ui/art';
 import { catchTimeline, type BallFlight, type CatchFx, type Ghost, type MoveHit, type SpriteSlot } from '@/ui/hooks/useCombatFx';
+import { ArenaSprite } from './ArenaSprite';
 import styles from './ArenaFx.module.css';
 
 // §9.9.1 — the arena's beats that outlive the sim's state (v0.9.3): a Pokémon that has fainted or been caught is no
@@ -10,26 +11,28 @@ import styles from './ArenaFx.module.css';
 // ball dropping and rocking, one shake check after each wobble and the fourth at the click — to the checks the sim
 // rolled before the throw left the hand (§2.6.4.4).
 
-type SlotClass = (slot: SpriteSlot) => string;
+/** §9.2.1 — where a slot's Pokémon stands on the stage, measured from its unit (`data-fx-slot`): the box every beat
+ *  of that slot is drawn in. */
+type SlotStyle = (slot: SpriteSlot) => CSSProperties;
 
-export function ArenaFx({ ghosts, balls, hits = [], catching, slotClass }: { ghosts: readonly Ghost[]; balls: readonly BallFlight[]; hits?: readonly MoveHit[]; catching: CatchFx | null; slotClass: SlotClass }) {
+export function ArenaFx({ ghosts, balls, hits = [], catching, slotStyle }: { ghosts: readonly Ghost[]; balls: readonly BallFlight[]; hits?: readonly MoveHit[]; catching: CatchFx | null; slotStyle: SlotStyle }) {
   return (
     <>
       {/* §9.2.3 — the card's own picture, landing on what it hits: at 3×, whole pixels (D9). */}
       {hits.map((h) => (
-        <div key={h.id} className={`${slotClass(h.slot)} ${styles.hit}`} data-testid="move-hit" data-move={h.moveId} aria-hidden="true">
+        <div key={h.id} className={`${styles.box} ${styles.hit}`} style={slotStyle(h.slot)} data-testid="move-hit" data-move={h.moveId} aria-hidden="true">
           <img className={`pixel ${styles.hitArt}`} src={moveArt(h.moveId)} alt="" draggable={false} onError={(e) => (e.currentTarget.style.display = 'none')} />
         </div>
       ))}
       {ghosts.map((g) => (
-        <div key={g.id} className={`${slotClass(g.slot)} ${styles.ghost} fx-ghost-${g.kind}`} style={{ '--ghost-at': `${g.at}ms` } as CSSProperties} data-testid="arena-ghost" data-kind={g.kind} data-slot={g.slot} aria-hidden="true">
-          <img className="pixel" src={spriteOf({ speciesId: g.speciesId }, g.slot === 'player' ? 'back' : 'front', g.shiny)} alt="" draggable={false} />
+        <div key={g.id} className={`${styles.box} ${styles.ghost} fx-ghost-${g.kind}`} style={{ ...slotStyle(g.slot), '--ghost-at': `${g.at}ms` } as CSSProperties} data-testid="arena-ghost" data-kind={g.kind} data-slot={g.slot} aria-hidden="true">
+          <ArenaSprite src={spriteOf({ speciesId: g.speciesId }, g.slot === 'player' ? 'back' : 'front', g.shiny)} />
         </div>
       ))}
       {balls.map((b) => (
-        <Flight key={b.id} b={b} slotClass={slotClass} />
+        <Flight key={b.id} b={b} slotStyle={slotStyle} />
       ))}
-      {catching && <CatchBeat key={catching.id} c={catching} slotClass={slotClass} />}
+      {catching && <CatchBeat key={catching.id} c={catching} slotStyle={slotStyle} />}
     </>
   );
 }
@@ -50,11 +53,11 @@ function useHand(spot: RefObject<HTMLSpanElement | null>, hand: BallFlight['hand
   }, [spot, hand]);
 }
 
-function Flight({ b, slotClass }: { b: BallFlight; slotClass: SlotClass }) {
+function Flight({ b, slotStyle }: { b: BallFlight; slotStyle: SlotStyle }) {
   const spot = useRef<HTMLSpanElement>(null);
   useHand(spot, b.hand);
   return (
-    <div className={`${slotClass(b.slot)} ${styles.flight}`} data-testid="ball-flight" data-dir={b.dir} data-hand={b.hand} aria-hidden="true">
+    <div className={`${styles.box} ${styles.flight}`} style={slotStyle(b.slot)} data-testid="ball-flight" data-dir={b.dir} data-hand={b.hand} aria-hidden="true">
       <span ref={spot} className={styles.spot}>
         <img className={`pixel ${styles.flyBall} ${b.dir === 'in' ? styles.flyIn : styles.flyOut}`} src={itemIcon(b.ball)} alt="" draggable={false} />
         <span className={b.dir === 'in' ? styles.openFlash : styles.redFlash} />
@@ -63,7 +66,7 @@ function Flight({ b, slotClass }: { b: BallFlight; slotClass: SlotClass }) {
   );
 }
 
-function CatchBeat({ c, slotClass }: { c: CatchFx; slotClass: SlotClass }) {
+function CatchBeat({ c, slotStyle }: { c: CatchFx; slotStyle: SlotStyle }) {
   const spot = useRef<HTMLSpanElement>(null);
   useHand(spot, 'player');
   const pct = Math.round(c.chance * 100);
@@ -84,8 +87,8 @@ function CatchBeat({ c, slotClass }: { c: CatchFx; slotClass: SlotClass }) {
     return { k, state, at };
   });
   return (
-    <div className={`${slotClass(c.slot)} ${styles.catch}`} style={vars} data-testid="catch-fx" data-slot={c.slot} data-success={c.success} data-wobbles={c.wobbles} data-checks={c.checks} aria-hidden="true">
-      <img className={`pixel ${styles.mon}`} src={spriteOf({ speciesId: c.speciesId }, 'front', c.shiny)} alt="" draggable={false} />
+    <div className={`${styles.box} ${styles.catch}`} style={{ ...slotStyle(c.slot), ...vars }} data-testid="catch-fx" data-slot={c.slot} data-success={c.success} data-wobbles={c.wobbles} data-checks={c.checks} aria-hidden="true">
+      <ArenaSprite src={spriteOf({ speciesId: c.speciesId }, 'front', c.shiny)} imgClassName={styles.mon} />
       <span ref={spot} className={styles.spot}>
         <span className={styles.arc}>
           <span className={styles.fall}>

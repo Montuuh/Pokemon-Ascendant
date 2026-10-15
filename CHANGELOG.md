@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.16 — The arena, one formation · 2026-10-15
+
+Every Pokémon on the field is its sprite with its plate attached.
+
+- **Your team.** All three out: the Lead in front, the bench behind.
+- **The enemy.** Mirrored, tagged Lead, Bench 1 and Bench 2.
+- **Arrows.** A quiet dotted line from each enemy to its target.
+- **Rival team.** Beaten, out and still to come, by the trainer.
+
 ### v0.9.15 — The combat screen and its cards · 2026-10-15
 
 Every move card shows its move, and the combat screen is tidier.

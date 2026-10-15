@@ -1,15 +1,47 @@
-.zone {
+/* §9.2.1 / §9.2.2.3 — one enemy on the field: its intent above it, its sprite, its plate under it. The sizes come
+   from the formation (`--solo-sprite`, `--lead-sprite`, `--bench-sprite` on the stage). */
+.unit {
+  --sprite: var(--foe-bench-sprite, 100px);
+  --plate-w: var(--bench-plate, 176px);
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--sp-3);
-  width: 100%;
-  max-width: 360px;
+  width: var(--plate-w);
 }
-/* §9.2.1 — a group's Lead wears the player Lead's frame, so who stands in front reads at a glance (v0.8.6). */
-.leadZone .card {
-  border: 3px solid var(--brand-red);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-red) 30%, transparent), 0 10px 24px rgba(0, 0, 0, 0.35);
+.solo {
+  --sprite: var(--solo-sprite, 200px);
+  --plate-w: var(--solo-plate, 236px);
+}
+.leadUnit {
+  --sprite: var(--lead-sprite, 180px);
+  --plate-w: var(--lead-plate, 214px);
+}
+/* One behind the Lead: the bench's sizes (the unit's defaults), drawn under the Lead where they overlap. Its chips
+   grow from the plate's right edge into the open ground, never past the stage's edge. */
+.benchUnit {
+  z-index: 0;
+}
+.benchUnit .intents {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+/* Still in its ball: its place kept, nothing of it shown yet (§9.9.1). */
+.waiting .intents,
+.waiting .card,
+.waiting .catchInline {
+  visibility: hidden;
+}
+
+/* ── Above: the intent ──────────────────────────────────────────────────────────────────────────────────── */
+/* One line each: a chip that wraps costs the formation a row it does not have at 720 p. */
+.intents {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  z-index: 2;
+  white-space: nowrap;
 }
 .intent {
   display: inline-flex;
@@ -18,8 +50,8 @@
   background: color-mix(in srgb, var(--surface-1) 92%, transparent);
   border: 2px solid var(--accent-negative);
   border-radius: var(--radius-md);
-  padding: 8px 12px;
-  font-size: var(--type-small);
+  padding: 3px var(--sp-2);
+  font-size: var(--type-caption);
   color: var(--ink-primary);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(4px);
@@ -30,8 +62,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
-  margin-top: calc(var(--sp-1) * -1);
-  padding: var(--sp-1) var(--sp-2);
+  padding: 2px var(--sp-2);
   border: 1px dashed var(--border-strong);
   border-radius: var(--radius-sm);
   background: var(--surface-1);
@@ -57,23 +88,82 @@
 .dmg {
   color: var(--accent-negative);
 }
+
+/* ── The sprite ─────────────────────────────────────────────────────────────────────────────────────────── */
+.stand {
+  position: relative;
+  width: var(--sprite);
+  height: var(--sprite);
+  margin-top: var(--sp-1);
+}
+/* The FX anchor and the arrows' starting point: exactly the place the Pokémon stands in. */
+.sprite {
+  position: absolute;
+  inset: 0;
+}
+.shadow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -7%;
+  height: 16%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 70%);
+}
+/* The card being dragged is over this enemy: its ground lights up. */
+.spriteAimed .shadow {
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--accent-action) 70%, transparent), transparent 70%);
+}
+.breathe {
+  animation: global(breathe) 2.8s ease-in-out infinite;
+}
+
+/* ── Below: the plate ───────────────────────────────────────────────────────────────────────────────────── */
 .card {
   position: relative;
   width: 100%;
+  margin-top: var(--sp-1);
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
+  gap: 3px;
   background: color-mix(in srgb, var(--surface-1) 90%, transparent);
   border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: var(--sp-3);
+  border-radius: var(--radius-md);
+  padding: 10px var(--sp-2) var(--sp-1);
   color: var(--ink-primary);
   text-align: left;
   backdrop-filter: blur(4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
   transition:
     box-shadow var(--motion-base) ease,
     border-color var(--motion-fast) ease,
     transform var(--motion-base) var(--ease-spring);
+}
+/* §9.2.1 — the enemy Lead wears the player Lead's frame in the enemy's red, so who stands in front reads at a glance. */
+.leadUnit .card,
+.solo .card {
+  border: 3px solid var(--brand-red);
+}
+.slotTag {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-3);
+  color: var(--ink-secondary);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  padding: 1px var(--sp-2);
+  white-space: nowrap;
+}
+/* The deep red, not the frame's: cream text on it holds 4.5:1 (D5). */
+.leadUnit .slotTag,
+.solo .slotTag {
+  background: var(--brand-red-deep);
+  color: var(--brand-cream);
 }
 .targetable {
   border-color: var(--accent-action);
@@ -83,7 +173,7 @@
 .targetable:hover {
   transform: scale(1.02);
 }
-/* §9.9.1 — a foe that has just fainted: its card greys and fades in its place on the sprite's beat (v0.9.11). */
+/* §9.9.1 — a foe that has just fainted: its unit greys and fades in its place on the sprite's beat (v0.9.11). */
 .fallen {
   pointer-events: none;
   animation: fallenOut var(--fx-faint) ease-in var(--ghost-at, 0ms) both;
@@ -119,12 +209,14 @@
 .header {
   display: flex;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-1);
+  min-width: 0;
 }
 .types {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  flex: 0 0 auto;
 }
 .nameBlock {
   flex: 1;
@@ -132,18 +224,39 @@
   display: flex;
   flex-direction: column;
 }
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
 .name {
-  font-size: var(--type-h2);
-  line-height: 1;
-}
-.meta {
+  min-width: 0;
   font-size: var(--type-caption);
-  color: var(--ink-muted);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.phase {
-  color: var(--accent-warning);
+.solo .name,
+.leadUnit .name {
+  font-size: var(--type-small);
 }
+.level {
+  flex: 0 0 auto;
+  font-size: var(--type-micro);
+  /* Secondary ink, not muted: on the translucent plate the muted grey fell under 4.5:1 (D5). */
+  color: var(--ink-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 5px;
+  white-space: nowrap;
+}
+/* Its condition on the plate's corner, as the place tag is on its top: the name keeps the row. */
 .badges {
+  position: absolute;
+  top: -11px;
+  right: calc(var(--sp-2) * -1);
   display: flex;
   gap: 2px;
 }
@@ -151,11 +264,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-1);
+  min-height: 18px;
 }
 .hpText {
-  font-size: var(--type-number);
+  font-size: var(--type-caption);
   line-height: 1;
+  white-space: nowrap;
 }
 .chips {
   display: flex;
@@ -166,10 +281,10 @@
 .chipUp,
 .chipDown,
 .chipInfo {
-  font-size: 10px;
+  font-size: var(--type-micro);
   font-weight: 800;
   border-radius: var(--radius-sm);
-  padding: 1px 6px;
+  padding: 0 5px;
   color: var(--ink-on-accent);
 }
 .chipUp {
@@ -181,29 +296,25 @@
 .chipInfo {
   background: var(--brand-cream);
 }
-/* §5.6 — one look for one enemy or three (v0.8.5): every panel drawn small enough that three fit the column. */
-.compact {
-  gap: var(--sp-1);
+.chipPhase {
+  font-size: var(--type-micro);
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  padding: 0 5px;
+  background: var(--accent-warning);
+  color: var(--ink-on-accent);
+  white-space: nowrap;
 }
-.compact .intent {
-  padding: var(--sp-1) var(--sp-2);
-}
-.compact .card {
-  gap: var(--sp-1);
-  padding: var(--sp-2) var(--sp-3);
-}
-.compact .name {
-  font-size: var(--type-body);
-}
-.compact .hpText {
-  font-size: var(--type-small);
+/* The sprite as a target: the same cursor as its plate while a card is aimed. */
+.standTarget {
+  cursor: crosshair;
 }
 /* The card being dragged is over this enemy: it is the one the drop will hit. */
 .aimed {
   border-color: var(--accent-action);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-action) 45%, transparent);
 }
-/* §9.2.3 — blue means position: a Melee card cannot reach a support. Not desaturated: nothing is wrong with it. */
+/* §9.2.3 — blue means position: a Melee card cannot reach one behind the Lead. Not desaturated: nothing is wrong. */
 .outOfReach {
   border-color: var(--brand-blue);
   border-style: dashed;
@@ -213,11 +324,11 @@
 .outOfReach:hover {
   transform: none;
 }
-/* §9.2.4 — the held card's number on this enemy, at the card's corner, never over its HP. */
+/* §9.2.4 — the held card's number on this enemy, on the plate's top-left corner, never over its HP. */
 .hitPreview {
   position: absolute;
-  top: calc(var(--sp-3) * -1);
-  left: var(--sp-2);
+  top: calc(var(--sp-4) * -1);
+  left: calc(var(--sp-2) * -1);
   display: inline-flex;
   align-items: baseline;
   gap: var(--sp-1);
@@ -226,7 +337,7 @@
   background: var(--surface-1);
   border: 2px solid var(--accent-negative);
   color: var(--accent-negative);
-  font-size: var(--type-h2);
+  font-size: var(--type-h3);
   line-height: 1.2;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
   z-index: 2;
@@ -243,8 +354,8 @@
 }
 .reachLock {
   position: absolute;
-  top: calc(var(--sp-3) * -1);
-  left: var(--sp-2);
+  top: calc(var(--sp-4) * -1);
+  left: calc(var(--sp-2) * -1);
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
@@ -257,95 +368,19 @@
   z-index: 2;
   pointer-events: none;
 }
-.chipLead,
-.chipPlace {
-  font-size: var(--type-caption);
-  font-weight: 800;
-  border-radius: var(--radius-sm);
-  padding: 0 var(--sp-1);
-  color: var(--ink-on-accent);
-}
-.chipLead {
-  background: var(--accent-action);
-}
-.chipPlace {
-  background: var(--brand-cream);
+
+/* §2.6.4 — the catch pill (CatchPicker), hung on the plate's lower-right corner. */
+.catchInline {
+  position: absolute;
+  right: var(--sp-2);
+  bottom: calc(var(--sp-3) * -1);
+  z-index: 2;
 }
 
-/* §2.6.4 — where the catch pill (CatchPicker) sits on the panel. */
-.catchInline {
-  display: inline-flex;
-  align-self: flex-end;
-  margin-top: calc(var(--sp-1) * -1);
-}
-/* A 720 p stage: three panels have to fit, so each drops its art and its level line (both are in the bubble). */
-@media (max-height: 800px) {
-  .compact {
-    gap: 0;
-  }
-  .compact .meta {
-    display: none;
-  }
-  .compact .intent {
-    font-size: var(--type-caption);
-    padding: 2px var(--sp-2);
-  }
-  /* The name and the HP number share one line, the bar runs under both. */
-  .compact .card {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    column-gap: var(--sp-2);
-    row-gap: 2px;
-    padding: var(--sp-1) var(--sp-2);
-  }
-  .compact .card > :global(*):not(.header):not(.hpRow):not(.hitPreview):not(.reachLock) {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-  .compact .header {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .compact .hpRow {
-    grid-column: 2;
-    grid-row: 1;
-  }
-  .compact {
-    position: relative;
-  }
-  /* In the mirrored formation every panel is part of a column: HP goes back under the name, and the chips wrap. */
-  .supportZone .card,
-  .leadZone .card {
-    display: flex;
-  }
-  .supportZone .chips,
-  .leadZone .chips {
-    flex-wrap: wrap;
-  }
-  /* The HP and the place chip keep to the right, so the catch pill has the lower-left corner to itself. */
-  .supportZone .hpRow,
-  .leadZone .hpRow {
-    align-self: flex-end;
-  }
-  /* On the panel's lower-left corner: the lower-right one is the Lead / role chip's. */
-  .compact .catchInline {
-    position: absolute;
-    left: var(--sp-1);
-    bottom: calc(var(--sp-2) * -1);
-    margin: 0;
-    z-index: 1;
-  }
-}
 
 /* §5.6.1 — the second action of a Pokémon that acts twice: the same chip, marked, and a step quieter. */
 .intentSecond {
-  margin-top: calc(var(--sp-2) * -1);
   border-style: dashed;
-}
-/* A compact panel already sits its chips close: the pull-up would lay the second over the first. */
-.compact .intentSecond {
-  margin-top: 0;
 }
 .secondLabel {
   font-size: var(--type-caption);

@@ -1090,13 +1090,13 @@ commonest stop, and the smallest: the route's breathing between fights, not a re
 The find is rolled with the map, so a reload shows the same one. Money is in the table because the bag already
 fills faster than a careful player empties it (v0.8.6), and the City is where a stop's worth is spent.
 
-**A guarded find** (☐ v0.9.17): about one find in eight is guarded — a better find (a held item, a TM, an Uncommon or
+**A guarded find** (☐ v0.9.18): about one find in eight is guarded — a better find (a held item, a TM, an Uncommon or
 Rare relic) under a Pokémon that will not be beaten in time. It is a **hold-out** fight (§5.6.5), named on the map as
 one: *Guarded — hold out for 3 turns*. Never the only stop in its column, so walking past it is always a choice.
 
 ## §2.9.6 The route Trader
 
-> ☐ **v0.9.18** — designed 2026-10-14 (the user's note 7: "el nodo intercambiador en la ruta me parece bien"). After
+> ☐ **v0.9.19** — designed 2026-10-14 (the user's note 7: "el nodo intercambiador en la ruta me parece bien"). After
 > Pokelike's trade node, reworked there in v3.1 into a choice with half its information hidden.
 
 A trainer at the roadside who will swap. **Give one Pokémon from your Box, then choose one of three face-down
@@ -1587,11 +1587,11 @@ One per run, on a seeded path — **not reachable on every route**.
 
 ### §2.12.2.1 Legendary arenas
 
-> ☐ **v0.9.19** — designed 2026-10-14 (the user's note 3: "OK, realiza todo el diseño; implementación todavía no, ya
+> ☐ **v0.9.20** — designed 2026-10-14 (the user's note 3: "OK, realiza todo el diseño; implementación todavía no, ya
 > que no están los legendarios implementados"). After PokéSurvivor's rifts, where each Legendary waits in an arena of
 > its own type with its own terrain and weather.
 
-When the Legendary Pokémon enter the run (v0.9.19 — Victory Road's Apex and the Black Market's Executive), **each one
+When the Legendary Pokémon enter the run (v0.9.20 — Victory Road's Apex and the Black Market's Executive), **each one
 is fought in its own arena**: a place the player recognises from Gen I, a **field** set at the fight's start, and
 **one arena rule** — the Legendary's answer to §5.9.5's Leader rules. All three are shown before the fight, on the
 node and its preview (Pillar 1), and the arena is where the fight happens whoever brought you there.

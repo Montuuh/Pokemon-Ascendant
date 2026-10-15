@@ -1136,8 +1136,8 @@ Gym Leader's ace, in Region 3 the Elite's Lead; the map promises it. R1 60 % · 
 
 > **Re-planned 2026-10-14** (the user's notes on the fan-game study, `docs/research/2026-10-13-fan-games-pokelike-pokesurvivor.md`):
 > six patches go in before Victory Road — the Gym Leaders, the map, the combat screen, the title screen, fights with
-> another objective and the route Trader — so Victory Road moves to v0.9.19 and the League to v0.9.20, and Sound
-> (v0.9.21) is pulled forward from v1.1 so that v1.0 ships with it. **v1.0 is single-player**: every mode that needs
+> another objective and the route Trader — so Victory Road moves to v0.9.20 and the League to v0.9.21, and Sound
+> (v0.9.22) is pulled forward from v1.1 so that v1.0 ships with it. **v1.0 is single-player**: every mode that needs
 > accounts or a second player waits in the backlog's *Multiplayer* and *Game modes* tables.
 
 ### v0.9.13 — The Gym Leaders, on stage and by their own rule  ✅ 2026-10-14
@@ -1195,22 +1195,42 @@ bench's swap price inside its card; the enemy panel's speck of an icon gone; an 
 no longer leaves the old price up). **Fixed**: the hand's entrance animation had held every card's transform, so the
 fan, the hover lift and the no-AP fade never applied; the arena's fixed 400 px spilled past the stage at 720 p.
 
-### v0.9.16 — The title screen, a battle  ☐
+### v0.9.16 — The arena, one formation  ✅ 2026-10-15
+The user's follow-up to v0.9.15, before the title screen (2026-10-15: "lo que busco es unificar información"): see the
+three Pokémon you have out, each one's information on its animation; the enemy's sprite and card joined the same way
+and tagged Lead / Bench 1 / Bench 2 like yours; a very quiet arrow from each enemy to whom it will hit; and the rival
+trainer's whole team — beaten, out, still to come — shown and placed anew. Inserted here; the title and everything
+after it moved down one version.
+
+**Shipped.** §9.2.1–§9.2.2.3 rewritten. **The formation** (`CombatScreen`): no portrait column and no enemy panel column —
+each side a grid, the Lead nearest the enemy and the bench behind it high and low, sized from the stage's height
+(`container-type: size`, `--lead-sprite`, `--bench-sprite`, `--foe-bench-sprite`, `--solo-sprite`). **Your units**
+(`Portrait`): the animated back sprite (`ArenaSprite` — the nearest whole-pixel scale to its box) and the plate under it
+(slot tag and crown, status on the corner, types, name, level, HP, chips, the swap price, as-Lead damage), the hits
+coming at it beside the sprite. **Enemy units** (`EnemyPanel`): the intent chips (one line each), the front sprite, the
+plate with its place tag — Lead / Bench 1 / Bench 2 (`enemySlotLabel`) — and the catch pill inside a wild plate.
+**Arrows** (`IntentArrows`): dotted curves from each visible intent to its slot (red hit, violet status, green ally;
+every slot for a Cleave; a second action fainter), measured from the sprites, an enemy's own brought forward on hover.
+**The rival's team** (`TrainerParty`) in a row under the trainer at the back of the field: beaten (grey, struck), out
+(ringed), to come (closed balls, §2.7.3). The arena's beats (balls, ghosts, the catch, a move's picture) anchor to each
+slot's measured box (`data-fx-slot`), keeping the last one when a Pokémon leaves.
+
+### v0.9.17 — The title screen, a battle  ☐
 The user's note 8. The main menu and the run's first screens (difficulty, starter, Starting Relic) redrawn: behind
 the title, an **animated Pokémon battle** in the game's own art — real battle sprites trading moves on a battle
 backdrop, a matchup that changes — and a title mark of its own instead of plain type.
 
-### v0.9.17 — Fights with another objective  ☐
+### v0.9.18 — Fights with another objective  ☐
 The user's note 5. Some fight nodes win by something other than "knock everything out" (§5.6.5): **the flee race**
 — a Pokémon that leaves in N turns, telegraphed as a countdown, worth a lot if it falls first — and **the hold-out** —
 survive N turns against a rampage to win. Placed by §5.6.3's table, promised on the map.
 
-### v0.9.18 — The route Trader  ☐
+### v0.9.19 — The route Trader  ☐
 The user's note 7. A stop on the route (§2.9.6): give one of your Box, then choose one of three **face-down** offers
 that show only a type and a level; the newcomer arrives above the level you gave. A way to re-roll a line that is
 not working, priced in the Pokémon you let go.
 
-### v0.9.19 — Victory Road  ☐
+### v0.9.20 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
 Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 - **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
@@ -1220,12 +1240,12 @@ Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
 - **Each Legendary is fought in its own arena** (§2.12.2.1, designed 2026-10-14, the user's note 3): its field, its
   backdrop and one arena rule, set at the fight's start and shown before it.
 
-### v0.9.20 — The League  ☐
+### v0.9.21 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
 
-### v0.9.21 — Sound  ☐
+### v0.9.22 — Sound  ☐
 The user's note 12: sound is its own version, before v1.0. §9.5's direction, pulled forward from v1.1: the SFX
 first (card play, hit, super-effective, faint, swap, the ball and its shakes, catch, level-up, evolution, the UI),
 then the music. The fan-game study's cheap path is the first candidate — a Web Audio synthesiser with every sound
@@ -1238,7 +1258,7 @@ IP disclaimer everywhere.
 
 ## v1.1 — Polish  ☐
 Accessibility tier (§9.6), localisation architecture + es-ES/en-US (§9.10), generated backdrop set (`ui/07`), VFX pass,
-performance pass. *(Audio moved to v0.9.21, 2026-10-14.)*
+performance pass. *(Audio moved to v0.9.22, 2026-10-14.)*
 
 ## v1.2 — The world, wider  ☐
 Content that makes a second hundred runs different: **Fossils and the Laboratory** (revive Omanyte, Kabuto or
@@ -1267,7 +1287,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.19's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.19, designed first |
+| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.20's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.20, designed first |
 
 **Multiplayer** — everything that needs **player accounts and a server**. None of it is in v1.0, which is
 single-player (user, 2026-10-14). When accounts land (the save layer is already behind a provider interface for a
@@ -1316,10 +1336,10 @@ the account revamps move to v0.9):
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.19 |
+| — | Recovering missed Badges | v0.9.20 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.19 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.20 (with the two-slot balance, designed first) |
 
 **Placed 2026-10-14** — the user's notes on the fan-game study (`docs/research/2026-10-13-fan-games-pokelike-pokesurvivor.md`):
 
@@ -1328,10 +1348,11 @@ the account revamps move to v0.9):
 | 2, 9 | A signature rule for every Gym Leader; the Leader's sprite in the fight | v0.9.13 |
 | 1, 11 | The map after Pokelike's: diagonal lines, nodes drawn as what they are, a better preview | v0.9.14 |
 | 10 | The combat screen and new move and item card art | v0.9.15 |
-| 8 | An animated battle behind the title, and the first screens | v0.9.16 |
-| 5 | Fights with another objective — the flee race and the hold-out | v0.9.17 |
-| 7 | The route Trader | v0.9.18 |
-| 3 | Each Legendary in its own arena — designed now, built with the Legendaries | §2.12.2.1 · v0.9.19 |
-| 12 | Sound, before v1.0 | v0.9.21 |
+| 10 (2026-10-15) | One formation each side, information on the animation, intent arrows, the rival's whole team | v0.9.16 |
+| 8 | An animated battle behind the title, and the first screens | v0.9.17 |
+| 5 | Fights with another objective — the flee race and the hold-out | v0.9.18 |
+| 7 | The route Trader | v0.9.19 |
+| 3 | Each Legendary in its own arena — designed now, built with the Legendaries | §2.12.2.1 · v0.9.20 |
+| 12 | Sound, before v1.0 | v0.9.22 |
 | 4 | Co-op, the Daily Route, leaderboards, Hall of Fame, friends | Backlog — *Multiplayer* |
 | 6 | Nuzlocke, weekly challenges, Endless, Randomizer | Backlog — *Game modes* |

@@ -50,7 +50,19 @@ export function CatchPicker({ state, enemy, ctx, interactive, onThrow }: Props) 
         </button>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content side="bottom" align="end" sideOffset={6} className={styles.panel} data-testid="catch-picker">
+        {/* Focus lands on the first ball, not the InfoDot: focusing the dot before the panel was placed opened its
+            bubble at the panel's unplaced corner, half off the screen. */}
+        <Popover.Content
+          side="bottom"
+          align="end"
+          sideOffset={6}
+          className={styles.panel}
+          data-testid="catch-picker"
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            (e.currentTarget as HTMLElement).querySelector<HTMLButtonElement>('[data-testid^="catch-with-"]:not(:disabled)')?.focus();
+          }}
+        >
           <p className={styles.head}>
             <b>Catch {enemy.name}</b>
             <InfoDot tip={catchPickerTip(best?.odds ?? gauge)} label={`About catching ${enemy.name}`} />

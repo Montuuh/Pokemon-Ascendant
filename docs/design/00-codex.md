@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen and its cards (§9.2) as of 2026-10-15. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen, its cards and the formation (§9.2) as of 2026-10-15. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -383,10 +383,12 @@ Two warm themes: a cream **front-end** and a deep-plum **combat stage**. Baloo 2
 hues, always paired with a glyph so colour is never the only channel. On the light theme the semantic accents
 may be fills, tints or borders — **never running text** (they fail AA).
 
-**Combat is a squad formation**: player cluster left with the Lead forward and crowned, a single enlarged enemy
-right (a group mirrored: its Lead forward, supports behind, one compact panel each), an intent **chip** above it,
-the hand tray along the bottom, and the **damage preview beside the target** — per target in a group, with a blue
-"out of reach" lock where a Melee card cannot land. Hits coming at you sit on your portraits, one number each; an
+**Combat is one formation each side** (v0.9.16): every Pokémon on the field is a unit — its animated sprite and its
+plate under it (tag, types, name, level, HP, status). Yours on the left, the Lead forward and crowned, Bench 1 and 2
+behind; the enemy mirrored on the right and tagged the same way (Lead, Bench 1, Bench 2), an intent **chip** above each,
+and a quiet dotted **arrow** from each visible intent to the slot it will hit. The rival trainer stands at the back with
+its whole team in a row (beaten, out, still to come as closed balls). The hand tray runs along the bottom, and the held
+card's number sits on every plate it reaches — with a blue "out of reach" lock where a Melee card cannot land. Hits coming at you sit on your portraits, one number each; an
 area intent's chip says "→ ALL" and prints no number. Resting on an intent opens the **intent card** (§9.2.6).
 The preview shows the final number, the full breakdown, crit, riders and a KO flag — it calls the same function
 the sim does. **A move card shows its move** (v0.9.15): a pixel illustration per move on a window lit in its type,
