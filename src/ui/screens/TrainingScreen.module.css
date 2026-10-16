@@ -1,0 +1,167 @@
+/* §2.12.3 — the Training Grounds: a stop on Victory Road, in the route stops' warm light. Who trains, which upgrade,
+   the detail it needs, Train. */
+
+.root {
+  height: 100%;
+  display: grid;
+  grid-auto-rows: auto;
+  /* From the top, not centred: a row appearing below a choice never moves the choices above it. */
+  align-content: start;
+  justify-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-8) var(--sp-5) var(--sp-5);
+  position: relative;
+  background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow-y: auto;
+}
+.corner {
+  position: absolute;
+  top: var(--sp-5);
+  left: var(--sp-5);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.trainer {
+  image-rendering: pixelated;
+}
+.text {
+  display: grid;
+  gap: var(--sp-1);
+}
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red-deep);
+}
+.sub {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: var(--type-body);
+  font-weight: 600;
+}
+
+.box,
+.upgrades {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+.mon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  white-space: nowrap;
+}
+.name {
+  font-size: var(--type-small);
+}
+.level {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+
+/* The five upgrades: what each does, or why it cannot be done on this Pokémon. */
+.upgrade {
+  display: grid;
+  gap: 2px;
+  width: 176px;
+  min-height: 60px;
+  align-content: start;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  text-align: left;
+}
+.upgrade[aria-disabled] {
+  cursor: not-allowed;
+  background: var(--surface-2);
+}
+.upgrade[aria-disabled] .upgradeName {
+  color: var(--ink-secondary);
+}
+.upgradeName {
+  font-size: var(--type-small);
+}
+.upgradeLine {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+
+.detail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.replace {
+  display: grid;
+  gap: var(--sp-2);
+}
+.detailLabel {
+  font-size: var(--type-caption);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+  min-width: 3em;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+}
+
+/* The one picked in each row. Doubled, so it outranks the row's own border whatever the order. */
+.mon.picked,
+.upgrade.picked,
+.chip.picked {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-red) 22%, transparent);
+}
+
+.train {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-6);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--accent-action-deep);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-h3);
+  box-shadow: 0 5px 0 var(--accent-action-deep);
+}
+.train:disabled {
+  background: var(--surface-2);
+  border-color: var(--border-subtle);
+  color: var(--ink-secondary);
+  box-shadow: none;
+  cursor: not-allowed;
+}

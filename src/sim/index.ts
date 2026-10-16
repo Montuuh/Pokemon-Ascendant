@@ -54,6 +54,7 @@ export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } fr
 export { FLEE_RACE, HOLD_OUT, guardById, holdPrizeLine, runnerById, runnerRewardLine, type GuardDef, type HoldPrize, type RunnerDef, type RunnerReward } from './run/objectives';
 export { objectiveTurnsLeft } from './combat/objective';
 export { TRADER, TRADER_PREVIEW, rollTradeOffers, tradeLevel, tradeRefusal, type TradeOffer } from './run/trader';
+export { VICTORY_ROAD, TRAINING_UPGRADES, TRAINING_PREVIEW, SUMMIT_PREVIEW, generateVictoryRoad, trainingOptions, perfectClearBadge, victoryRoadLevel, type TrainingUpgrade } from './run/victoryRoad';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';
 
 // §8.7 — achievements. Pure definitions and a pure fold; persistence is the app layer's (achievementStore).

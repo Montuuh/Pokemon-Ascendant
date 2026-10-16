@@ -2,15 +2,15 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { getContent } from '@/content/registry';
 import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
-import { fieldsFor, doubleActorFor, gymById, groupPlanFor, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
+import { fieldsFor, doubleActorFor, gymById, groupPlanFor, isServiceNode, perfectClearBadge, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
 import { FieldChips } from './FieldChips';
 import { RuleChip } from './RuleChip';
 import { ObjectiveChip } from './ObjectiveChip';
-import { doubleActorTip, groupTip } from '@/ui/tips';
+import { doubleActorTip, groupTip, perfectClearTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
-import { itemIcon, mysterySign } from '@/ui/art';
+import { itemIcon, mysterySign, nodeBadge } from '@/ui/art';
 import { nodeArt } from './nodeArt';
-import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_LABEL, nodeHint, WILD_TEXT } from '@/ui/strings';
+import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_LABEL, nodeHint, VICTORY_TEXT, WILD_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import { WildPool } from './WildPool';
 import { Money } from './Money';
@@ -59,6 +59,9 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   // §5.9.5 — the Gym's own rule, promised on its preview like its field and its team.
   const gymId = node.kind === 'gym' && run && node.lane !== undefined ? run.map.gyms[node.lane] : undefined;
   const gym = gymId ? gymById(gymId) : undefined;
+  // §2.12.6 — a Gauntlet won with nobody fainting pays a passed-by Gym's Badge, while the run has one to give.
+  const clearBadge = node.kind === 'gauntlet' && run ? perfectClearBadge(run) : null;
+  const hint = nodeHint(node);
 
   useEffect(() => {
     enterRef.current?.focus();
@@ -69,11 +72,11 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
     return () => window.removeEventListener('keydown', onKey);
   }, [onCancel]);
 
-  const hiddenTeam = node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym';
+  const hiddenTeam = node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym' || node.kind === 'gauntlet';
   // §5.6.5 — a runner or a guarded find: the race it is, named on the card.
   const objective = node.preview.objective;
   // A find is a fight only when it is guarded.
-  const fight = (node.kind !== 'cache' && node.kind !== 'trader') || objective?.kind === 'hold';
+  const fight = !isServiceNode(node.kind) || objective?.kind === 'hold';
   // The Poké Balls below say how many; the line keeps only what they do not (a Gym's telegraph, the Elite's prize).
   const detail = hiddenTeam
     ? node.preview.detail.replace(/^A team of \d+ Pokémon( · )?/, '')
@@ -110,13 +113,19 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         </header>
 
         {detail && (!node.preview.find || objective) && !node.preview.wild && <p className={styles.detail}>{detail}</p>}
-        <p className={styles.hint}>{nodeHint(node)}</p>
+        {hint && <p className={styles.hint}>{hint}</p>}
         {/* §2.6.1 / §4.3 — the ground it is fought on, promised like the rest. */}
         <div className={styles.chipRow}>
           <FieldChips fields={fields} compact />
           {gym && <RuleChip rule={gym.rule} compact />}
           {/* §5.6.5 — the map promises the fight's other objective before you commit (Pillar 1). */}
           {objective && <ObjectiveChip kind={objective.kind} turns={objective.turns} objective={objective} compact />}
+          {clearBadge && (
+            <Tipped tip={perfectClearTip(content.badge(clearBadge).name)} className={styles.clearChip} data-testid="preview-perfect-clear">
+              <img src={nodeBadge(`gym-${content.badge(clearBadge).type}`)} alt="" width={16} height={16} />
+              {VICTORY_TEXT.perfectClear}
+            </Tipped>
+          )}
         </div>
         {plan.kind !== 'single' && (
           <Tipped tip={groupTip(plan)} className={styles.group} data-testid="preview-group">
@@ -246,8 +255,10 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
                 ? 'Browse'
                 : node.kind === 'cache' && !fight
                   ? 'Pick it up'
-                  : node.kind === 'trader'
+                  : node.kind === 'trader' || node.kind === 'training'
                     ? 'Stop'
+                    : node.kind === 'summit'
+                      ? 'Climb'
                   : 'Enter'}
           </button>
         </div>

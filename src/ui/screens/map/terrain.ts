@@ -27,8 +27,8 @@ export type TerrainId =
   | 'route' | 'coast' | 'highland'
   | 'meadow' | 'forest' | 'cave' | 'dank-cave' | 'ice-cave' | 'lake' | 'plant' | 'volcano' | 'scorched' | 'tower';
 
-/** §2.13 — each Region's road: the trunk and the Y's middle track. */
-export const ROAD: readonly TerrainId[] = ['route', 'coast', 'highland'];
+/** §2.13 — each Region's road: the trunk and the Y's middle track; and §2.12 Victory Road's, a cave. */
+export const ROAD: readonly TerrainId[] = ['route', 'coast', 'highland', 'cave'];
 
 /** §2.5.4 — a lane's terrain, by its Gym's type. */
 export const TERRAIN_BY_TYPE: Readonly<Record<string, TerrainId>> = {
@@ -234,7 +234,8 @@ export function mapTerrain(map: RegionMap): MapTerrain {
    * material under your feet halfway across.
    */
   const sideOf = (x: number, y: number, wobble: boolean): number | null => {
-    if (x < xY) return null;
+    // §2.12 — a map without Gyms (Victory Road) has no lanes: it is all road.
+    if (!laneTerrain.length || x < xY) return null;
     const layer = colOf(x);
     const bend = wobble ? (blob(seed, x, 0, 5, 17) - 0.5) * 2.5 : 0;
     if (x >= xFork || layer > noReturn) {

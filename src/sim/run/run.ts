@@ -18,6 +18,7 @@ import { priceFor, regionModifierOffer, traumaZone1Pct, victoryHealPct } from '.
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { runnerById } from './objectives';
 import { rollTradeOffers, tradeLevel, tradeRefusal } from './trader';
+import { VICTORY_ROAD, generateVictoryRoad, perfectClearBadge, trainingOptions } from './victoryRoad';
 import { BLACK_MARKET, atLegendaryCap, candyPrice, fencePrice, rollBlackMarket, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
@@ -148,6 +149,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     seed,
     regionIndex,
     map,
+    gymsOffered: [[...map.gyms]],
     position: null,
     reachable: [...map.entry],
     visited: [],
@@ -288,11 +290,25 @@ export function dojoPrice(run: RunState, content: ContentRegistry, service: 'mov
  */
 function endRegion(draft: RunState, ctx: RunCtx): void {
   if (isFinalRegion(draft.regionIndex) || !cityAfter(draft.regionIndex)) {
-    draft.outcome = 'victory';
-    draft.phase = 'ended';
+    enterVictoryRoad(draft, ctx);
     return;
   }
   arriveAtCity(draft, ctx);
+}
+
+/** §2.12 — the third Gym won: the run climbs Victory Road, its own small map, the Summit at its end. */
+function enterVictoryRoad(draft: RunState, ctx: RunCtx): void {
+  const mapRng = new RngStreams(draft.seed).get('MapRNG');
+  mapRng.cursor = draft.cursors.MapRNG ?? mapRng.cursor;
+  draft.map = generateVictoryRoad(mapRng, ctx.content, draft.seed);
+  draft.cursors.MapRNG = mapRng.cursor;
+  draft.zone = 'victory-road';
+  draft.position = null;
+  draft.reachable = [...draft.map.entry];
+  draft.visited = [];
+  draft.pendingNodeId = null;
+  draft.phase = 'map';
+  say(draft, 'Victory Road — the last climb before the League. No healing until the Summit.');
 }
 
 /** §2.11.2 — which shelf a shop visit is standing at. */
@@ -630,7 +646,8 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
 }
 
 /** §2.9 — the nodes that are not a fight: nobody needs to be standing to walk into one. */
-export const isServiceNode = (kind: NodeKind): boolean => kind === 'aid' || kind === 'merchant' || kind === 'mystery' || kind === 'cache' || kind === 'trader';
+export const isServiceNode = (kind: NodeKind): boolean =>
+  kind === 'aid' || kind === 'merchant' || kind === 'mystery' || kind === 'cache' || kind === 'trader' || kind === 'training' || kind === 'summit';
 
 /** After a node is cleared, the next layer's linked nodes open up. */
 function advanceFrom(draft: RunState, nodeId: string): void {
@@ -869,6 +886,26 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           leaveNode(draft, node.id, ctx);
           break;
         }
+        if (node.kind === 'training') {
+          // §2.12.3 — one Pokémon, one upgrade; the choice is the screen's.
+          draft.phase = 'training';
+          break;
+        }
+        if (node.kind === 'summit') {
+          // §2.12.4 — the last healing before the League: every Pokémon in the Box, HP and status; then a Legendary
+          // relic to choose, on the loot stream like a Gym's.
+          for (const mon of draft.box) {
+            mon.hp = effectiveMax(draft, mon, ctx.content);
+            cureAll(mon);
+          }
+          const pickRng = new RngStreams(draft.seed).get('LootRNG');
+          pickRng.cursor = draft.cursors.LootRNG ?? pickRng.cursor;
+          draft.pendingSummit = { relics: gymRelicOffer(pickRng, ctx.content, draft.relics, VICTORY_ROAD.regionIndex, draft.perks.relicPool) };
+          draft.cursors.LootRNG = pickRng.cursor;
+          say(draft, 'The Summit. Everyone is healed in full.');
+          draft.phase = 'summit';
+          break;
+        }
         if (node.kind === 'trader') {
           // §2.9.6 — the roadside trader: three face-down offers, rolled once on entry from the Encounter stream.
           const rng = encounterRng(draft);
@@ -927,7 +964,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // first that took the field, so a group widens a fight without multiplying the attrition it leaves behind.
         const won = report.outcome === 'victory' || report.outcome === 'caught';
         const extra = Math.max(0, (report.fielded ?? 1) - 1);
-        const healPct = won ? victoryHealPct(draft, ctx.content) + Math.min(GROUP_BREATHER.cap, extra * GROUP_BREATHER.perEnemy) : 0;
+        // §2.12 — Victory Road heals nobody until the Summit: a Gauntlet gives back nothing, not even a group's breather.
+        const healPct = won && node?.kind !== 'gauntlet' ? victoryHealPct(draft, ctx.content) + Math.min(GROUP_BREATHER.cap, extra * GROUP_BREATHER.perEnemy) : 0;
 
         // §8.6.1 Cleanse Tag's discovery counts statuses taken across the whole run.
         draft.stats.statusesTaken += report.tally?.statusesTaken ?? 0;
@@ -1036,7 +1074,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // §2.8.2 — an Elite Wild pays elite XP whichever way it ended; the catch is the *premium* path, not
         // a discount on the fight.
         const tier = node.kind === 'gym' ? 'boss'
-          : node.kind === 'elite' || node.kind === 'elite-wild' ? 'elite'
+          : node.kind === 'elite' || node.kind === 'elite-wild' || node.kind === 'gauntlet' ? 'elite'
           : node.kind === 'trainer' ? 'trainer' : 'wild';
         // §5.6.2 — a companion called for help is one more enemy on the field, and pays like one.
         const enemyCount = Math.max(draft.pendingScenario?.enemies.length ?? 1, report.fielded ?? 0);
@@ -1135,6 +1173,19 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         } else if (node.kind === 'elite') {
           relicPick = rollMixedOffer(lootRng, ctx.content, draft.relics, RELIC_REWARD.elitePick, draft.perks.relicPool);
           if (!relicPick.length) relicPick = null;
+        } else if (node.kind === 'gauntlet') {
+          // §2.12.1 — a Gauntlet's reward: one of three Rare relics, taken on the reward screen.
+          relicPick = gymRelicOffer(lootRng, ctx.content, draft.relics, 0, draft.perks.relicPool);
+          if (!relicPick.length) relicPick = null;
+          // §2.12.6 — a Perfect Clear: nobody fainted, and the Badge of a Gym the run passed by is yours.
+          if (report.outcome === 'victory' && report.team.every((t) => !t.fainted)) {
+            const badge = perfectClearBadge(draft);
+            if (badge) {
+              draft.badges.push(badge);
+              draft.bonusBadge = badge;
+              say(draft, 'A Perfect Clear! A Badge you passed by is yours after all.');
+            }
+          }
         }
         if (relicDrop) acquireRelic(draft, relicDrop, ctx.content);
 
@@ -1437,6 +1488,60 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
+      // §2.12.3 — one upgrade for one Pokémon, then the road. They do not combine: the node is spent.
+      case 'train': {
+        const mon = draft.box.find((m) => m.uid === action.uid)!;
+        const name = ctx.content.species(mon.speciesId).name;
+        if (action.upgrade === 'stat') {
+          const stat = action.stat!;
+          const add = VICTORY_ROAD.statBoost[stat];
+          mon.boosts = { ...(mon.boosts ?? {}), [stat]: (mon.boosts?.[stat] ?? 0) + add };
+          if (stat === 'hp') mon.hp += add;
+          say(draft, `${name}'s ${stat === 'hp' ? 'HP' : stat} rose by ${add} for the rest of the run.`);
+        } else if (action.upgrade === 'move-upgrade') {
+          const from = action.moveId!;
+          const to = `${from}-plus`;
+          mon.moveIds = mon.moveIds.map((id) => (id === from ? to : id));
+          if (!mon.pool.includes(to)) mon.pool.push(to);
+          say(draft, `${name}'s ${ctx.content.move(from).name} became ${ctx.content.move(to).name}.`);
+        } else if (action.upgrade === 'level') {
+          grantXp(mon, xpToNext(mon.level, ctx.progression) - mon.xp, ctx.content, ctx.progression);
+          say(draft, `${name} grew to level ${mon.level}.`);
+        } else if (action.upgrade === 'evolve') {
+          if (!draft.pendingEvolutions.some((p) => p.uid === mon.uid)) {
+            draft.pendingEvolutions.push({ uid: mon.uid, from: mon.speciesId, branchIds: ctx.content.species(mon.speciesId).branches.map((b) => b.id), returnTo: 'map' });
+          }
+          say(draft, `${name} is ready to evolve.`);
+        } else {
+          const from = action.moveId!;
+          const to = action.newMoveId!;
+          mon.moveIds = mon.moveIds.map((id) => (id === from ? to : id));
+          learnMove(mon, to);
+          say(draft, `${name} learned ${ctx.content.move(to).name} in place of ${ctx.content.move(from).name}.`);
+        }
+        leaveNode(draft, draft.pendingNodeId!, ctx);
+        if (draft.phase === 'map') queueEvolutionsReturning(draft, ctx.content, 'map');
+        if (draft.phase === 'map' && draft.pendingEvolutions.length) draft.phase = 'evolution';
+        break;
+      }
+
+      case 'leave-training': {
+        leaveNode(draft, draft.pendingNodeId!, ctx);
+        break;
+      }
+
+      // §2.12.4 — the Summit's Legendary relic, and the League's gate. Until the League is built, the gate ends the run won.
+      case 'enter-league': {
+        if (action.relicId) acquireRelic(draft, action.relicId, ctx.content);
+        draft.pendingSummit = null;
+        advanceFrom(draft, draft.pendingNodeId!);
+        draft.pendingNodeId = null;
+        draft.outcome = 'victory';
+        draft.phase = 'ended';
+        say(draft, 'Through the gate: the League is ahead. The run is won.');
+        break;
+      }
+
       case 'leave-trader': {
         draft.pendingTrade = null;
         leaveNode(draft, draft.pendingNodeId!, ctx);
@@ -1730,6 +1835,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // §2.1 placeholder — a Gym whose Badge you hold is not drawn again (Region 3 still draws Region 1's pool).
         const beaten = ALL_GYMS.filter((g) => draft.badges.includes(g.badgeId)).map((g) => g.id);
         draft.map = generateRegion(mapRng, ctx.content, draft.regionIndex, draft.seed, draft.modifiers, beaten, wildRareChance(draft.regionModifier, ctx.content));
+        // §2.12.6 — the Gyms this Region offers, for a Perfect Clear to pay the one passed by.
+        draft.gymsOffered = [...(draft.gymsOffered ?? []), [...draft.map.gyms]];
         draft.cursors.MapRNG = mapRng.cursor;
         draft.position = null;
         draft.reachable = [...draft.map.entry];
@@ -2200,6 +2307,25 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
 
     case 'leave-trader':
       return state.phase === 'trader' ? undefined : 'wrong-phase';
+
+    case 'train': {
+      if (state.phase !== 'training') return 'wrong-phase';
+      const mon = state.box.find((m) => m.uid === action.uid);
+      if (!mon) return 'unknown-pokemon';
+      const opts = trainingOptions(mon, ctx.content, ctx.progression.maxLevel);
+      if (action.upgrade === 'stat') return action.stat && action.stat in VICTORY_ROAD.statBoost ? undefined : 'no-upgrade';
+      if (action.upgrade === 'move-upgrade') return action.moveId && opts.upgradable.includes(action.moveId) ? undefined : 'no-upgrade';
+      if (action.upgrade === 'level') return opts.canLevel ? undefined : 'no-upgrade';
+      if (action.upgrade === 'evolve') return opts.canEvolve ? undefined : 'no-upgrade';
+      return action.moveId && mon.moveIds.includes(action.moveId) && action.newMoveId && opts.ahead.includes(action.newMoveId) ? undefined : 'no-upgrade';
+    }
+
+    case 'leave-training':
+      return state.phase === 'training' ? undefined : 'wrong-phase';
+
+    case 'enter-league':
+      if (state.phase !== 'summit' || !state.pendingSummit) return 'wrong-phase';
+      return action.relicId === null || state.pendingSummit.relics.includes(action.relicId) ? undefined : 'not-offered';
 
     case 'enter-building': {
       if (state.phase !== 'city' || !state.city) return 'not-in-city';

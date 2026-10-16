@@ -727,6 +727,24 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
       step({ type: 'leave-trader' });
       continue;
     }
+    // §2.12.3 — a Training Grounds: the harness takes the Level Push on its Lead, the upgrade every Pokémon can use.
+    if (phase() === 'training') {
+      const lead = run.box.find((m) => m.uid === run.activeUids[0]);
+      if (lead && lead.level < runCtx.progression.maxLevel) step({ type: 'train', uid: lead.uid, upgrade: 'level' });
+      else step({ type: 'leave-training' });
+      while (phase() === 'evolution') {
+        const pending = run.pendingEvolutions[0]!;
+        const mon = run.box.find((m) => m.uid === pending.uid)!;
+        step({ type: 'choose-branch', uid: pending.uid, branchId: chooseBranch(mon, pending.branchIds, ctx.content) });
+        evolutions += 1;
+      }
+      continue;
+    }
+    // §2.12.4 — the Summit: the first Legendary relic on offer, and through the gate.
+    if (phase() === 'summit') {
+      step({ type: 'enter-league', relicId: run.pendingSummit?.relics[0] ?? null });
+      break;
+    }
     if (phase() === 'event') {
       step({ type: 'choose-event', option: answerEvent(run, policy) });
       step({ type: 'leave-event' });

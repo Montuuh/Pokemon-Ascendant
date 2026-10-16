@@ -136,6 +136,14 @@
   background: var(--surface-3);
   color: var(--ink-primary);
 }
+.boost {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 4px;
+  border-radius: var(--radius-pill);
+  background: var(--brand-cream);
+  color: var(--ink-primary);
+}
 .trauma {
   display: inline-flex;
   align-items: center;

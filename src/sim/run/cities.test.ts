@@ -111,13 +111,15 @@ describe('The seam — §2.1.4', () => {
     expect(reject(s, { type: 'depart-city', modifierId: other.id })).toBe('not-offered');
   });
 
-  it('SecondGym_ArrivesInCeladon_ThirdGym_WinsTheRun_§2.1', () => {
+  it('SecondGym_ArrivesInCeladon_ThirdGym_ClimbsVictoryRoad_§2.1_§2.12', () => {
     let s = clearRegion(start());
     s = clearRegion(apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0] ?? null }));
     expect(s.city?.id).toBe('celadon-city');
     s = clearRegion(apply(s, { type: 'depart-city', modifierId: s.city!.reflection[0] ?? null }));
-    expect(s.outcome).toBe('victory');
-    expect(s.phase).toBe('ended');
+    // §2.12 — the third Gym won is not the end: Victory Road is.
+    expect(s.outcome).toBe('in-progress');
+    expect(s.zone).toBe('victory-road');
+    expect(s.phase).toBe('map');
     expect(new Set(s.badges).size).toBe(3);
   });
 

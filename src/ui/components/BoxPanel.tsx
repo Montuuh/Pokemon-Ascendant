@@ -1,4 +1,4 @@
-import { IconCrown, IconAlertTriangle, IconCards, IconZzz } from '@tabler/icons-react';
+import { IconCrown, IconAlertTriangle, IconBarbell, IconCards, IconZzz } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
 import { maxHpOf, stoneUse, xpToNext, type PartyMon } from '@/sim';
 import { HpBar } from './HpBar';
@@ -7,7 +7,7 @@ import { ShinyMark } from './ShinyMark';
 import { TypeBadge } from './TypeBadge';
 import { statusGlyph } from '@/ui/art';
 import { STATUS_LABEL } from '@/ui/strings';
-import { statusTip, traumaTip, restingTip, shinyLine } from '@/ui/tips';
+import { statusTip, traumaTip, boostsTip, restingTip, shinyLine } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './BoxPanel.module.css';
 
@@ -122,6 +122,12 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
             <Tipped tip={restingTip()} className={styles.resting} tabIndex={-1} data-testid={`box-resting-${mon.speciesId}`}>
               <IconZzz size={12} stroke={2.6} aria-hidden="true" />
               Resting
+            </Tipped>
+          )}
+          {/* §2.12.3 — what the Training Grounds left on it, for the rest of the run. */}
+          {mon.boosts && Object.values(mon.boosts).some((v) => v) && (
+            <Tipped tip={boostsTip(mon.boosts)} className={styles.boost} tabIndex={-1} data-testid={`box-boost-${mon.speciesId}`}>
+              <IconBarbell size={12} stroke={2.6} aria-label="Trained" />
             </Tipped>
           )}
           {mon.traumaStacks > 0 && (

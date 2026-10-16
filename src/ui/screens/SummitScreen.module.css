@@ -1,0 +1,21 @@
+/* §2.12.4 — the Summit's header: its peak, the Box healed in full, said once. */
+.healed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+}
+.peak {
+  image-rendering: pixelated;
+}
+.box {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--sp-1);
+}
+.healedText {
+  font-weight: 700;
+  color: var(--ink-secondary);
+}

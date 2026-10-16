@@ -13,8 +13,8 @@ import { itemIcon, tmIcon } from '@/ui/art';
 import { PokeDollar } from '@/ui/components/Money';
 import { RelicOffer } from '@/ui/components/RelicOffer';
 import { SupplyStrip } from '@/ui/components/SupplyStrip';
-import { abilityTip, bondGainTip, bondUnlockTip, elitePrizeTip, levelGainTip, lootTip, poolTip, progressNoteTip, rewardMoneyTip } from '@/ui/tips';
-import { REWARD_TEXT, STAT_SHORT } from '@/ui/strings';
+import { abilityTip, bondGainTip, bondUnlockTip, elitePrizeTip, gauntletPrizeTip, levelGainTip, lootTip, poolTip, progressNoteTip, rewardMoneyTip } from '@/ui/tips';
+import { REWARD_TEXT, STAT_SHORT, VICTORY_TEXT } from '@/ui/strings';
 import { Tipped } from '@/ui/tooltip';
 import { ShinyMark } from '@/ui/components/ShinyMark';
 import styles from './RewardScreen.module.css';
@@ -57,12 +57,14 @@ export function RewardScreen() {
   if (!reward) return null;
 
   const pick = reward.relicPick ?? null;
+  // §2.12.1 — a Gauntlet's pick is three Rares, said by its own heading and tip.
+  const gauntlet = !!run.pendingNodeId && run.map.nodes[run.pendingNodeId]?.kind === 'gauntlet';
   if (picking && pick) {
     return (
       <RelicOffer
         testId="elite-relic-pick"
-        heading="The Elite's prize"
-        headingTip={elitePrizeTip()}
+        heading={gauntlet ? VICTORY_TEXT.gauntletPrize : "The Elite's prize"}
+        headingTip={gauntlet ? gauntletPrizeTip() : elitePrizeTip()}
         lede="Three relics. Take one, or none."
         offer={pick}
         onPick={(relicId) => dispatch({ type: 'claim-reward', ...(relicId ? { relicId } : {}) })}

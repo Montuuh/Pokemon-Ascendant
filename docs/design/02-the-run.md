@@ -100,9 +100,9 @@ is the per-act accent. Pool of 17: §2.11.3.1.
 
 ## §2.1.5 Victory Road
 
-After Gym 3: a small branching zone (3–4 layers, 2–3 lanes, all converging on the Summit) with node types found
-nowhere else — Gauntlet, Apex Pokémon, Training Grounds — and no healing except at the end. The hardest
-non-boss content in the game and the last window to prepare. Full design: §2.12.
+After Gym 3: a small map of its own (four columns of three tracks, all converging on the Summit) with node types
+found nowhere else — Gauntlet, Training Grounds, and from v0.9.21 the Apex Pokémon — and no Pokémon Center until
+the Summit. The hardest non-boss content in the game and the last window to prepare. Full design: §2.12.
 
 ## §2.1.6 The League
 
@@ -1584,15 +1584,31 @@ first values for the balance pass (v0.8.7).
 
 # §2.12 Victory Road
 
-A dedicated preparation zone between Gym 3 and the League: a small branching map of **3–4 layers and 2–3 lanes,
-all converging on the Summit**. The hardest non-boss content in the game, with no free healing until the end.
+> ✅ **v0.9.20** — built 2026-10-16 (the Apex Pokémon and the Legendary arenas are v0.9.21). Code: `run/victoryRoad.ts`
+> (`VICTORY_ROAD`, `generateVictoryRoad`, `trainingOptions`, `perfectClearBadge`), the `train`, `leave-training`
+> and `enter-league` actions, `TrainingScreen`, `SummitScreen`.
+
+A dedicated preparation zone between Gym 3 and the League, entered straight from the third Gym's Legendary pick
+(no City after it): a map of its own, **four columns of three tracks, every track ending at the Summit**. A track
+crosses to a neighbour about one node in two (45 %), so the three paths are a choice, not three corridors. Its road
+is a cave, its fights Region 3's strongest raised: a route fight stands **2 levels** over Region 3's last wild band, a
+Gauntlet **4**. The nodes that are neither Gauntlet nor Training Grounds are Region 3's trainer rosters at those
+levels or, about one in two, the cave's wild Pokémon — Region 3's Uncommons as its Commons, its Rares as its
+Uncommons (60 / 30 / 10 %).
+
+**No Pokémon Center, no rest, no shop** until the Summit. A route group fight's breather (§5.6.4) still follows it;
+**a Gauntlet gives back nothing**, though it is a group fight. *Why (delegated, 2026-10-16):* the Gauntlet is where the
+zone's attrition is meant to bite, and the ordinary fights keep the rules they had on every route.
 
 ## Node types
 
 ## §2.12.1 ⚔️ Gauntlet Battle
-An Elite-tier trainer fight with **no pre-fight healing** — you enter at whatever HP you have. Difficulty sits
-between Gym 3 and Elite Four 1. **Reward:** a choice of 1 of 3 Rare relics. One or two per Victory Road, on
-different paths.
+An Elite-tier trainer fight with **no healing before or after** — you enter at whatever HP you have and leave the
+same way. Difficulty sits between Gym 3 and Elite Four 1: an **Ace Trainer** with **four** of Region 3's trainer
+Pokémon at Victory Road's Gauntlet level (the last one a level higher), **every one two-phase, two on the field at
+a time**; Elite XP, ₽300. **Reward:** a choice of 1 of 3 Rare relics. **One or two per Victory Road**, in the middle
+two columns, on different tracks — a Gauntlet is never the only way on. Its team is hidden until the fight, as a
+trainer's is.
 
 ## §2.12.2 🦕 Apex Pokémon
 A single high-rarity species exclusive to Victory Road, already partially evolved or carrying a unique moveset.
@@ -1633,24 +1649,27 @@ block is the one fight Pillar 1 has nothing to say about. A field plus one rule 
 plan — the same reason the Leaders got theirs (§5.9.5) — and the places are the ones Gen I put them in.
 
 ## §2.12.3 🏋️ Training Grounds
-No fight. Pick one Pokémon and one upgrade:
+No fight. Pick one Pokémon from the Box and one upgrade. **One or two per Victory Road**, never two in one column.
 
 | Upgrade | Effect |
 |---|---|
-| **Stat Boost** | Permanently raise one stat by a flat amount for the rest of the run |
-| **Move Upgrade** | Improve one move: more power, −1 AP, add a positional modifier, or add a status rider |
-| **Level Push** | Grant XP equivalent to one level |
-| **Early Evolution** | Evolve now if eligible, with the full archetype choice |
-| **Move Replacement** | Swap a move for a stronger one from the Pokémon's learnset |
+| **Stat Boost** | One stat raised for the rest of the run: **HP +12** (healed by as much), **Attack, Defense or Speed +6** |
+| **Move Upgrade** | One move becomes its **upgraded form** — the `+` version the content already carries (more power, a cheaper cost or a rider) |
+| **Level Push** | Exactly one level, now |
+| **Early Evolution** | Evolve now, whatever the level, with the full choice of path (§6.3) |
+| **Move Replacement** | A move from **further up the Pokémon's learnset** (above its level, not yet learned) in place of one it holds |
 
-One upgrade per node; they do not combine.
+One upgrade per node; they do not combine. An upgrade that cannot be done on the chosen Pokémon (no move with an
+upgraded form, nothing further up its learnset, no evolution) is shown with the reason, not hidden. Walking on
+without training is allowed.
 
 ## §2.12.4 🏔️ Summit *(mandatory, final)*
-- **Full HP restore** across the whole Box — the last healing before the League.
-- **A 1-of-3 Legendary relic pick** (§7.3.7).
-- **League roster preview**: the type identities and silhouettes of all five League opponents. Names and
+- **Full HP restore** across the whole Box, and every status cured — the last healing before the League.
+- **A 1-of-3 Legendary relic pick** (§7.3.7), on the loot stream as a Gym's is.
+- **League roster preview** (☐ v0.9.22): the type identities and silhouettes of all five League opponents. Names and
   movesets stay hidden.
-- A one-way confirmation gate: "Enter the League?"
+- **The relic pick is the gate**: taking a relic or leaving them goes through, one way. Until the League is built
+  (v0.9.22), going through **ends the run won**.
 
 ## §2.12.5 League Boons — superseded
 
@@ -1665,8 +1684,10 @@ Up to one extra Badge per run, beyond the three from Gyms.
 - **Cities pay no Badge** (2026-09-22). The City Gym that used to was replaced by the Challenge Ring
   (§2.9.4.1), which pays money and loot. A way to earn the Badges of Gym types a run's pool never offered is in
   the backlog.
-- **§2.12.6 Victory Road Perfect Clear**: clearing a Gauntlet with no Pokémon fainting awards the Badge of the
-  Gym path you did *not* take in the matching Region tier.
+- **§2.12.6 Victory Road Perfect Clear** (✅ v0.9.20): winning a Gauntlet with no Pokémon fainting awards the Badge of
+  a Gym the run **was offered and passed by** — the earliest Region's first such Gym. Once a run; a second Perfect
+  Clear pays nothing more. *Why "earliest" (delegated, 2026-10-16):* the earliest Badge is the one the run has gone
+  longest without, and a fixed rule needs no screen to choose it.
 
 ---
 

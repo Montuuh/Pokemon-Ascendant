@@ -456,7 +456,7 @@ test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ p
   await page.screenshot({ path: 'playtest/run-town-badge.png' });
 });
 
-test('the third Gym ends the run with the summary — §2.1', async ({ page }) => {
+test('the third Gym leads to Victory Road, and its Summit ends the run with the summary — §2.1, §2.12', async ({ page }) => {
   // Driven through the dev hook: stand the run in Celadon City, leave through the gate into Region 3, and let
   // the walker fight to its Gym. What is under test is the ending, not twelve layers of clicking.
   test.setTimeout(240_000);
@@ -475,12 +475,35 @@ test('the third Gym ends the run with the summary — §2.1', async ({ page }) =
     dev.run.jump('gym');
     dev.run.goto('gym');
   });
-  const phase = await page.evaluate(() => window.__ascendant!.run.state()!.phase);
-  test.skip(phase !== 'legendary', `the walk ended in ${phase}, not at the last Gym's pick; the ending is covered by the sim`);
+  // The walker plays the fights by a fixed rule and does not always win the Gym; when it does not, the run is stood at
+  // the third Gym's Legendary pick as winning it leaves it — the ending is what is under test.
+  await page.evaluate(() => {
+    const dev = window.__ascendant!;
+    if (dev.run.state()!.phase === 'legendary') return;
+    dev.run.patch((d) => {
+      d.outcome = 'in-progress';
+      d.badges = d.badges.length ? d.badges : ['boulder-badge'];
+      d.pendingNodeId = null;
+      d.pendingLegendary = ['flow-state', 'last-stand', 'type-mastery'];
+      d.phase = 'legendary';
+    });
+  });
 
   await page.evaluate(() => window.__ascendant!.goTo('map'));
   await expect(page.getByTestId('legendary-screen')).toBeVisible();
   await page.getByTestId('btn-decline-legendary').click();
+
+  // §2.12 — the third Gym leads onto Victory Road; its Summit's gate ends the run until the League.
+  await expect(page.getByRole('heading', { name: 'Victory Road' })).toBeVisible();
+  await page.evaluate(() => {
+    const a = window.__ascendant!;
+    a.run.patch((d) => {
+      d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === 'summit')!.id];
+    });
+    a.run.dispatch({ type: 'enter-node', nodeId: a.run.state()!.reachable[0]! });
+    a.run.dispatch({ type: 'begin-combat' });
+  });
+  await page.getByTestId('btn-decline-summit-relic').click();
 
   const victory = page.getByTestId('victory-screen');
   await expect(victory).toBeVisible();

@@ -13,6 +13,7 @@ import { rollWild } from './wild';
 import { applyShiny } from './shiny';
 import { applyFields } from './battlefields';
 import { HOLD_OUT, guardById, runnerById } from './objectives';
+import { VICTORY_ROAD } from './victoryRoad';
 
 /** The catch consumable's catalog id (§7.2.5). */
 
@@ -25,6 +26,8 @@ import { HOLD_OUT, guardById, runnerById } from './objectives';
  * layers deep into a cave lane — the one place the theming had to hold, undone by a default.
  */
 function stageFor(node: MapNode, run: RunState): string {
+  // §2.12 — a node that names its own ground (Victory Road's cave) is fought there.
+  if (node.preview.stage) return node.preview.stage;
   const region = regionContent(run.regionIndex);
   if (node.lane === undefined) return region.trunkStage;
   const gymId = run.map.gyms[node.lane];
@@ -69,6 +72,8 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
       if (mon.defeats) setup.defeats = mon.defeats;
       // §5.14 — a caught shiny wears its palette in every fight after.
       if (mon.shiny) setup.shiny = true;
+      // §2.12.3 — and a Training Grounds' Stat Boost goes with it.
+      if (mon.boosts) setup.boosts = { ...mon.boosts };
       // §7.3.5 Soul Link — the Box keeps arrival order, so its first two are the pair that has come furthest.
       if (run.box.slice(0, 2).some((m) => m.uid === mon.uid) && run.box.length >= 2) setup.soulLinked = true;
       // §5.13.2 — the fifth slot, from the account's Mastery tier for this line (frozen into the run's perks).
@@ -82,7 +87,7 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
 /** Effective Max HP for a Box Pokémon, Trauma included (§8.2.1). */
 export function maxHpOf(mon: PartyMon, content: ContentRegistry, traumaZone1 = 5, zone1Pct = 5, zone2Pct = 10, cap = 10): number {
   const species = content.species(mon.speciesId);
-  const base = statAtLevel(species, 'hp', mon.level, mon.archetype);
+  const base = statAtLevel(species, 'hp', mon.level, mon.archetype) + (mon.boosts?.hp ?? 0);
   const s = Math.min(Math.max(0, mon.traumaStacks), cap);
   const penalty = Math.min(s, traumaZone1) * zone1Pct + Math.max(0, s - traumaZone1) * zone2Pct;
   const floor = 100 - (traumaZone1 * zone1Pct + (cap - traumaZone1) * zone2Pct);
@@ -108,7 +113,7 @@ export function buildWildScenario(node: MapNode, run: RunState, content: Content
     name: `Wild ${content.species(speciesId).name}`,
     description: `Wild ${content.species(speciesId).name}`,
     kind: 'wild',
-    stage: biome?.stage ?? 'meadow',
+    stage: node.preview.stage ?? biome?.stage ?? 'meadow',
     seed: rng.cursor,
     player: {
       team: activeSetups(run, content),
@@ -165,6 +170,34 @@ export function buildGuardScenario(node: MapNode, run: RunState, content: Conten
     enemies: guard.team.map((m): EnemySetup => ({ species: m.species, level, tier: 'wild', phaseCount: 1, moves: [...m.moves], attackMultiplier: HOLD_OUT.attackMultiplier, hpMultiplier: HOLD_OUT.hpMultiplier })),
     ...(guard.team.length > 1 ? { onField: Math.min(3, guard.team.length) as 2 | 3 } : {}),
     objective: { kind: 'hold', turns: guard.turns },
+  };
+}
+
+/**
+ * §2.12.1 — a Gauntlet: an Elite-tier Ace Trainer, every Pokémon two-phase, two at a time, entered at whatever HP you
+ * have. The team is the preview's, so what the map promised is what you fight.
+ */
+export function buildGauntletScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng): ScenarioDef {
+  const g = VICTORY_ROAD.gauntlet;
+  return {
+    id: `run-${node.id}`,
+    name: node.preview.title,
+    description: 'The road does not heal you first.',
+    kind: 'trainer',
+    stage: stageFor(node, run),
+    seed: rng.cursor,
+    trainer: { name: node.preview.title, sprite: g.sprite },
+    player: {
+      team: activeSetups(run, content),
+      leadIndex: 0,
+      consumables: [...run.consumables],
+      balls: 0,
+      relics: [...run.relics],
+      badges: [...run.badges],
+      ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
+    },
+    enemies: (node.preview.enemies ?? []).map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: g.phaseCount })),
+    onField: g.onField,
   };
 }
 
@@ -402,6 +435,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
         return buildEliteScenario(node, run, content, rng);
       case 'elite-wild':
         return buildEliteWildScenario(node, run, content, rng);
+      case 'gauntlet':
+        return buildGauntletScenario(node, run, content, rng);
       // §5.6.5 — a find is a fight only when something guards it.
       case 'cache':
         return node.preview.objective?.kind === 'hold' ? buildGuardScenario(node, run, content, rng) : null;
@@ -410,6 +445,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
       case 'merchant':
       case 'mystery':
       case 'trader':
+      case 'training':
+      case 'summit':
         return null;
     }
   })();

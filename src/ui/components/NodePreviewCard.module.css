@@ -82,6 +82,13 @@
   gap: var(--sp-1);
   justify-self: start;
 }
+/* §2.12.6 — the Badge a Gauntlet won with nobody fainting would pay, as a pill beside the fight's other promises. */
+.clearChip {
+  composes: chip from './FieldChips.module.css';
+  padding: 0 var(--sp-2);
+  border-color: var(--accent-action);
+  white-space: nowrap;
+}
 .detail {
   margin: 0;
   color: var(--ink-primary);

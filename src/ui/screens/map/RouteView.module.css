@@ -31,8 +31,10 @@
   outline-offset: 2px;
 }
 
+/* A board narrower than its window (Victory Road's five columns) stands in its middle; a wider one scrolls. */
 .board {
   position: relative;
+  margin-inline: auto;
 }
 
 /* FRLG's pixel, kept a block at every size: the canvas is drawn at 16 px a tile and scaled here. */
@@ -196,6 +198,11 @@
 }
 .web .weatherTag { border: 2px solid var(--type-bug); }
 
+/* A board that fits its window whole has no scroll position to show (Victory Road). Hidden, not unmounted: its
+   canvas keeps the paint for when a narrower window needs it. */
+.strip.stripHidden {
+  display: none;
+}
 .strip {
   position: relative;
   height: 56px;

@@ -144,7 +144,52 @@ export const NODE_LABEL: Record<string, string> = {
   cache: 'Find',
   gym: 'Gym',
   trader: 'Roadside trader',
+  gauntlet: 'Gauntlet',
+  training: 'Training Grounds',
+  summit: 'The Summit',
 };
+
+/** §2.12 — Victory Road's own words. */
+export const VICTORY_TEXT = {
+  name: 'Victory Road',
+  gauntletPrize: "The Gauntlet's prize",
+  summitLede: 'Take one, or none, and go through the gate.',
+  summitHealed: 'Healed in full',
+  perfectClear: 'Perfect Clear',
+} as const;
+
+/** §2.12.3 — the Training Grounds' own words. */
+export const TRAINING_TEXT = {
+  title: 'Training Grounds',
+  pickMon: 'Who will train?',
+  pickUpgrade: 'One upgrade. They do not combine.',
+  pickDetail: 'Choose how.',
+  ready: 'Ready to train.',
+  train: 'Train',
+  upgrade: {
+    stat: 'Stat Boost',
+    'move-upgrade': 'Move Upgrade',
+    level: 'Level Push',
+    evolve: 'Early Evolution',
+    'move-replace': 'Move Replacement',
+  } as Record<string, string>,
+  /** What each upgrade does, said in its tooltip; the card says only what it would do to this Pokémon. */
+  line: {
+    stat: 'A stat raised for the rest of the run: HP by 12 (and healed by as much), Attack, Defense or Speed by 6.',
+    'move-upgrade': 'One move becomes its stronger self — more power, a cheaper cost or a rider.',
+    level: 'One level, now, with every move and evolution it brings.',
+    evolve: 'Evolve now, whatever the level, with the full choice of path.',
+    'move-replace': 'A move from further up its learnset, in place of one it holds.',
+  } as Record<string, string>,
+  none: {
+    'move-upgrade': 'No move of its has a stronger self.',
+    level: 'Already at the top level.',
+    evolve: 'It does not evolve.',
+    'move-replace': 'Nothing further up its learnset.',
+  } as Record<string, string>,
+  out: 'Out',
+  in: 'In',
+} as const;
 
 /** §2.9.6 — the roadside trader's own words. */
 export const TRADER_TEXT = {

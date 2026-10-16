@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.20 — Victory Road.** After the third Gym the run climbs one last road before the League: three tracks of
+Region 3's strongest, Ace Trainers in Gauntlets that give back no healing and pay a Rare relic (and, won with nobody
+fainting, a Badge the run passed by), Training Grounds where one Pokémon takes one upgrade, and the Summit, which
+heals everyone and offers a Legendary relic before its gate — for now, the run is won there. Before it,
 **v0.9.19 — The route Trader.** On about half the routes a Poké Fan waits by the road: give one of your Box and pick
 one of three face-down offers, each showing a type and the level it arrives at — two above the one you gave — and the
 species is the surprise. Before it,

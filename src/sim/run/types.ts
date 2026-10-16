@@ -10,7 +10,7 @@ import type { WildTier } from './region';
  * (`aid`) and the travelling merchant. The Pokémon Center, the Mart and the Dojo are City buildings (§2.11),
  * reached through `RunState.city`, not map nodes. `cache` is something on the ground (§2.9.5, v0.8.7).
  */
-export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'cache', 'gym', 'trader'] as const;
+export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'cache', 'gym', 'trader', 'gauntlet', 'training', 'summit'] as const;
 export type NodeKind = (typeof NODE_KINDS)[number];
 
 export interface MapNode {
@@ -73,6 +73,8 @@ export interface NodePreview {
    * "Rocket Grunt"), so the fight and the preview card find the roster by this and never by its title.
    */
   rosterId?: string;
+  /** §2.12 — the backdrop a node's fight stands on, when the node says so (Victory Road's cave). */
+  stage?: string;
   /** §2.9.5 — what lies on the ground at a `cache` node: rolled with the map and named before you choose it. */
   find?: { items: string[]; money: number };
   /**
@@ -129,6 +131,8 @@ export interface PartyMon {
   abilityId: string | null;
   /** §6.3 — the archetype picked at the last evolution. Null on a base form. */
   archetype: BranchArchetype | null;
+  /** §2.12.3 — the Training Grounds' Stat Boost: flat additions for the rest of the run. Absent on almost everyone. */
+  boosts?: Partial<Record<'hp' | 'attack' | 'defense' | 'speed', number>>;
   /**
    * §4.2.7.1 — the primary condition carried out of the last fight, with what is left of its clock. Every status
    * outlives the fight that inflicted it; the nurse and the Center cure it.
@@ -185,6 +189,10 @@ export type RunPhase =
    * Region asks for.
    */
   | 'legendary'
+  /** §2.12.3 — at a Training Grounds: one Pokémon, one upgrade. */
+  | 'training'
+  /** §2.12.4 — at the Summit: healed, a Legendary relic to choose, the League's gate. */
+  | 'summit'
   /** The run is over, won or lost. */
   | 'ended';
 
@@ -519,6 +527,14 @@ export interface RunState {
    * removed, which is why there is no `lostBadges` and never will be.
    */
   badges: string[];
+  /** §2.12.6 — the Perfect Clear's Badge, when one was given: one a run, and it is in `badges` too. */
+  bonusBadge?: string;
+  /** §2.12.6 — the two Gyms each Region offered, in order: what a Perfect Clear can pay. Absent on older saves. */
+  gymsOffered?: string[][];
+  /** §2.12 — where the run stands after the third Gym: Victory Road. Absent on the Regions' routes. */
+  zone?: 'victory-road';
+  /** §2.12.4 — the Summit's Legendary relics, while the run stands on it. */
+  pendingSummit?: { relics: string[] } | null;
   /** §7.4 — held items not currently equipped. Equipped ones live on their PartyMon. */
   bag: string[];
   /** §8.8 — difficulty modifiers opted into at run start. Empty is the baseline, and the baseline is the floor. */
@@ -771,9 +787,20 @@ export type RunAction =
   /** §2.10 — acknowledge the result and walk on. */
   | { type: 'leave-event' }
   /** §7.3.7 — take one of the three, or `null` to decline. Declining is a real option: two is the cap. */
-  | { type: 'pick-legendary'; relicId: string | null };
+  | { type: 'pick-legendary'; relicId: string | null }
+  /**
+   * §2.12.3 — one upgrade for one Pokémon at a Training Grounds: a stat (`stat`), a move made its stronger self
+   * (`moveId`), a level, an early evolution, or a move from further up its learnset in place of one it holds
+   * (`moveId` out, `newMoveId` in).
+   */
+  | { type: 'train'; uid: string; upgrade: 'stat' | 'move-upgrade' | 'level' | 'evolve' | 'move-replace'; stat?: 'hp' | 'attack' | 'defense' | 'speed'; moveId?: string; newMoveId?: string }
+  | { type: 'leave-training' }
+  /** §2.12.4 — take a Legendary relic (or none) and go through the League's gate. */
+  | { type: 'enter-league'; relicId: string | null };
 
 export type RunRejectReason =
+  /** §2.12.3 — the Training Grounds: an upgrade that cannot be made on that Pokémon. */
+  | 'no-upgrade'
   /** §2.9.6 — the roadside trader: one trade a visit, an offer that exists, never the last Pokémon standing. */
   | 'already-traded'
   | 'no-such-offer'

@@ -17,7 +17,9 @@ import { beginTurn } from './turn';
 function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: CombatCtx, traumaStacks = 0): Combatant {
   const species = ctx.content.species(setup.species);
   const arch = (setup as TeamMemberSetup).archetype;
-  const baseMax = statAtLevel(species, 'hp', setup.level, arch);
+  // §2.12.3 — a Training Grounds' Stat Boost: a flat addition the Pokémon carries for the rest of the run.
+  const boosts = (setup as TeamMemberSetup).boosts ?? {};
+  const baseMax = statAtLevel(species, 'hp', setup.level, arch) + (boosts.hp ?? 0);
   // §8.8 Iron Will — a flat scale on the enemy's pool, applied before Trauma so the curve keeps its shape.
   const scaled = Math.round(baseMax * ((setup as EnemySetup).hpMultiplier ?? 1));
   const maxHp = effectiveMaxHp(scaled, traumaStacks, ctx.config);
@@ -35,9 +37,9 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
     hp,
     base: {
       // §2.2 — the Region's stat tier reaches an enemy's Attack here, once, like Iron Will reaches its HP.
-      attack: Math.round(statAtLevel(species, 'attack', setup.level, arch) * ((setup as EnemySetup).attackMultiplier ?? 1)),
-      defense: statAtLevel(species, 'defense', setup.level, arch),
-      speed: statAtLevel(species, 'speed', setup.level, arch),
+      attack: Math.round(statAtLevel(species, 'attack', setup.level, arch) * ((setup as EnemySetup).attackMultiplier ?? 1)) + (boosts.attack ?? 0),
+      defense: statAtLevel(species, 'defense', setup.level, arch) + (boosts.defense ?? 0),
+      speed: statAtLevel(species, 'speed', setup.level, arch) + (boosts.speed ?? 0),
     },
     stages: { attack: 0, defense: 0, speed: 0 },
     status: null,

@@ -1,7 +1,7 @@
 import { getContent } from '@/content/registry';
 import { battleSpriteUrl } from '@/content/schemas/species';
-import { ALL_ELITES, ALL_TRAINERS, TRADER, gymById, type MapNode, type RegionMap } from '@/sim';
-import { itemIcon, mysterySign, routeTile, trainerSprite, type NodeArt } from '@/ui/art';
+import { ALL_ELITES, ALL_TRAINERS, TRADER, VICTORY_ROAD, gymById, type MapNode, type RegionMap } from '@/sim';
+import { itemIcon, mysterySign, routeTile, summitSign, trainerSprite, type NodeArt } from '@/ui/art';
 import { terrainOfNode, type TerrainId } from '@/ui/screens/map/terrain';
 
 // §9.3 — which picture a map node wears (v0.9.14). Read off the node's own preview, so the map shows exactly who and
@@ -50,6 +50,13 @@ export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
     // §2.9.6 — the roadside trader, a Poké Fan.
     case 'trader':
       return { kind: 'trainer', src: trainerSprite(TRADER.sprite) };
+    // §2.12 — Victory Road: the Gauntlet's Ace Trainer, the Training Grounds' Black Belt, the Summit's peak.
+    case 'gauntlet':
+      return { kind: 'trainer', src: trainerSprite(VICTORY_ROAD.gauntlet.sprite) };
+    case 'training':
+      return { kind: 'trainer', src: trainerSprite('blackbelt') };
+    case 'summit':
+      return { kind: 'sign', src: summitSign() };
     case 'wild': {
       // The Pokémon you will meet most often: the first Common of the pool, or the old preview's first species.
       const face = p.wild?.pool.common[0] ?? p.wild?.pool.uncommon[0] ?? p.speciesIds[0];

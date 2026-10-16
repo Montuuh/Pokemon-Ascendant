@@ -13,8 +13,8 @@ import { NodePreviewCard } from '@/ui/components/NodePreviewCard';
 import { PauseMenu } from '@/ui/components/PauseMenu';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
-import { ROUTE_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
-import { bagTip, ballsTip, forkFooter, forkGymTip, moneyTip, regionTip } from '@/ui/tips';
+import { ROUTE_TEXT, RUN_REJECT_TEXT, VICTORY_TEXT } from '@/ui/strings';
+import { bagTip, ballsTip, forkFooter, forkGymTip, moneyTip, regionTip, victoryRoadTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
 import { RouteView } from './map/RouteView';
 import styles from './MapScreen.module.css';
@@ -130,11 +130,11 @@ export function MapScreen() {
       <header className={styles.topBar}>
         <div>
           <div className={styles.regionRow}>
-            <h1 className={`${styles.regionName} display`}>Region {run.regionIndex + 1}</h1>
-            <InfoDot tip={regionTip(run.regionIndex, run.modifiers.includes('greater-threats'))} />
+            <h1 className={`${styles.regionName} display`}>{run.zone === 'victory-road' ? VICTORY_TEXT.name : `Region ${run.regionIndex + 1}`}</h1>
+            <InfoDot tip={run.zone === 'victory-road' ? victoryRoadTip() : regionTip(run.regionIndex, run.modifiers.includes('greater-threats'))} />
           </div>
           <p className={styles.progress}>
-            {regionName(run.regionIndex) ? `${regionName(run.regionIndex)} · ` : ''}
+            {run.zone !== 'victory-road' && regionName(run.regionIndex) ? `${regionName(run.regionIndex)} · ` : ''}
             {'Column '}<b className="tabular">{Math.min(standingLayer + 2, run.map.layers)}</b> of <b className="tabular">{run.map.layers}</b>
             {' · seed '}
             <span className="tabular">{run.seed}</span>
@@ -144,6 +144,7 @@ export function MapScreen() {
         {/* §2.5 — both Gyms, named from the first column. Pillar 1 telegraphs every intent inside a fight; the
             Region's two possible climaxes are the largest thing it can telegraph, and they decide what you recruit
             in the trunk and which side of the Y you lean to. The banner stops offering both past the river. */}
+        {run.zone !== 'victory-road' && (
         <div className={styles.fork} data-testid="fork-banner">
           <span className={styles.forkLabel}>{committedLane === null ? 'This route ends at one of' : 'You committed to'}</span>
           <span className={styles.forkGyms}>
@@ -165,6 +166,7 @@ export function MapScreen() {
             })}
           </span>
         </div>
+        )}
         <div className={styles.purse}>
           {/* §2.14 — the wallet is on the map because the map is where you decide whether the merchant
               is worth the fight it costs. Deciding that without knowing the balance is not a decision. */}

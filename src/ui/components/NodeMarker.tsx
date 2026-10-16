@@ -75,7 +75,7 @@ export function NodeMarker({
       onClick={enterable ? onClick : undefined}
       aria-disabled={enterable ? undefined : true}
       tabIndex={enterable ? undefined : -1}
-      aria-label={`${NODE_LABEL[node.kind]}, ${said}. ${node.preview.title}`}
+      aria-label={`${NODE_LABEL[node.kind]}, ${said}.${node.preview.title !== NODE_LABEL[node.kind] ? ` ${node.preview.title}` : ''}`}
       aria-current={status === 'current' ? 'location' : undefined}
       {...tip}
       data-testid={`node-${node.id}`}

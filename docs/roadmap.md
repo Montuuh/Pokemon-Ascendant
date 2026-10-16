@@ -1290,10 +1290,23 @@ newcomer out of its ball in a combat card's window. The balance harness walks on
 > then the Legendaries (now designed: two places, one body, §2.3) on top of it — so the League moves to v0.9.22 and
 > Sound to v0.9.23.
 
-### v0.9.20 — Victory Road  ☐
+### v0.9.20 — Victory Road  ✅ 2026-10-16
 §2.12's zone between the third Gym and the League, and its nodes — Gauntlet, Training Grounds, Summit — and a way back
 to the Badges a run never met: the Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)* Until the League
 is built, the Summit's gate ends the run won.
+
+**Shipped.** §2.12 as rewritten. **The zone** (`run/victoryRoad.ts`): the third Gym's Legendary pick leads onto a map
+of its own (`generateVictoryRoad`, on the MapRNG cursor) — four columns of three tracks crossing 45 % of the time, the
+Summit fifth; a cave road and stage; Region 3's rosters and its Uncommons and Rares as the cave's wilds, 2 levels over
+its last wild band; no Pokémon Center. **The Gauntlet** (§2.12.1): one or two in the middle columns on different
+tracks, an Ace Trainer with four of Region 3's trainer Pokémon 4 levels over, every one two-phase, two on the field;
+Elite XP, ₽300, no healing after (not even a group's breather), a Rare relic pick. **The Perfect Clear** (§2.12.6): win
+a Gauntlet with nobody fainting and the earliest Gym the run was offered and passed by pays its Badge, once a run
+(`RunState.gymsOffered`, `bonusBadge`). **The Training Grounds** (§2.12.3, `TrainingScreen`): one Pokémon, one of
+five upgrades — a stat (HP +12, the others +6, `PartyMon.boosts`), a move to its `+` form, a level, an early
+evolution, a move from further up its learnset — an upgrade it cannot take shown with the reason. **The Summit**
+(§2.12.4, `SummitScreen`): the Box healed in full, a Legendary relic pick that is the gate, and the run won. The
+harness takes a Level Push and the first Summit relic; dev `run.victoryRoad()`; `e2e/victory-road`.
 
 ### v0.9.21 — The Legendaries  ☐
 - **A Legendary takes two places, one body** (§2.3, the user's call of 2026-10-16).
@@ -1398,7 +1411,7 @@ the account revamps move to v0.9):
 | — | The Dojo's extra moves; the Center's Daycare and PC Box | v0.7.9 |
 | — | The Game Corner played: the classic Roulette and the Slots' reels | v0.7.8 |
 | — | End-of-run ₽ surplus | v0.9.2 |
-| — | Recovering missed Badges | v0.9.20 |
+| — | Recovering missed Badges | v0.9.20 ✅ (the Perfect Clear) |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
 | — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.21 (with the two-slot balance, designed 2026-10-16) |

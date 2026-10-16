@@ -4,7 +4,7 @@ import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO,
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -733,6 +733,42 @@ export function partyTip(name: string, level: number, hp: number, max: number, s
 /** §2.9.1 — the field nurse. */
 export function nurseTip(): ReactNode {
   return <Tip title="Field nurse" body={`${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free.`} footer="Trauma stays — only a Pokémon Center's Therapy takes it off." />;
+}
+
+/** §2.12 — Victory Road: what it is, and what waits at its top. */
+export function victoryRoadTip(): ReactNode {
+  return <Tip title="Victory Road" body="The last climb before the League: Region 3's strongest, a few levels up, the Gauntlets and the Training Grounds — and no healing until the Summit." footer="The Summit heals everyone and offers a Legendary relic; its gate is one way." />;
+}
+
+/** §2.12.4 — the Summit: what it gives, and that the gate is one way. */
+export function summitTip(): ReactNode {
+  return <Tip title={NODE_LABEL.summit} body="Every Pokémon in the Box healed in full and its status cured — the last healing before the League — and a Legendary relic to choose." footer="Taking one or leaving them goes through the gate. There is no coming back down." />;
+}
+
+/** §2.12.1 — the Gauntlet's prize. */
+export function gauntletPrizeTip(): ReactNode {
+  return <Tip title={VICTORY_TEXT.gauntletPrize} body="Three Rare relics. A Gauntlet gives back no HP, so this is all it pays." footer="Leaving all three is allowed." />;
+}
+
+/** §2.12.6 — the Perfect Clear: the Badge a Gauntlet won with nobody fainting would pay. */
+export function perfectClearTip(badge: string): ReactNode {
+  return <Tip title={VICTORY_TEXT.perfectClear} body={`Win this Gauntlet with nobody fainting and the ${badge} is yours — a Badge of a Gym you passed by.`} footer="Once a run." />;
+}
+
+/** §2.12.3 — what one Training Grounds upgrade does. */
+export function trainingUpgradeTip(upgrade: string): ReactNode {
+  return <Tip title={TRAINING_TEXT.upgrade[upgrade] ?? upgrade} body={TRAINING_TEXT.line[upgrade] ?? ''} footer="One upgrade a node; they do not combine." />;
+}
+
+/** §2.12.3 — what the Training Grounds left on a Pokémon, for the rest of the run. */
+export function boostsTip(boosts: Partial<Record<'hp' | 'attack' | 'defense' | 'speed', number>>): ReactNode {
+  const lines = (['hp', 'attack', 'defense', 'speed'] as const).filter((s) => boosts[s]).map((s) => `${STAT_LONG[s] ?? s} +${boosts[s]}`);
+  return <Tip title="Trained" meta={lines} body="Raised at the Training Grounds, for the rest of the run." />;
+}
+
+/** §2.12.3 — the Training Grounds. */
+export function trainingTip(): ReactNode {
+  return <Tip title={TRAINING_TEXT.title} body="Pick one Pokémon and one upgrade: a stat raised for the rest of the run, a move made its stronger self, a level, an early evolution, or a move from further up its learnset." footer="One upgrade a node; they do not combine. You may walk on." />;
 }
 
 /** §2.9.6 — the roadside trader: what a trade is, and what it is not. */

@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.20 — Victory Road · 2026-10-16
+
+After the third Gym, one last climb before the League.
+
+- **The road.** Four columns, three tracks, the Summit at the end.
+- **Gauntlets.** Ace Trainers, no healing, a Rare relic pick.
+- **Training Grounds.** One Pokémon, one of five upgrades.
+- **The Summit.** Healed in full, a Legendary relic; the run is won.
+
 ### v0.9.19 — The route Trader · 2026-10-15
 
 A roadside trader swaps one of your Pokémon for a face-down offer.

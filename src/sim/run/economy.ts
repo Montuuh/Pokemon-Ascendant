@@ -13,6 +13,8 @@ export const MONEY_REWARD: Record<string, [number, number]> = {
   trainer: [50, 150],
   elite: [300, 300],
   'elite-wild': [200, 200],
+  // §2.12.1 — a Gauntlet pays an Elite's purse.
+  gauntlet: [300, 300],
   gym: [500, 500],
 };
 

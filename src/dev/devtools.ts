@@ -5,6 +5,7 @@ import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { produce } from 'immer';
 import * as sim from '@/sim';
+import { RngStreams } from '@/sim/rng/rngStreams';
 import { nextAction } from '@/sim/balance/autoPlayer';
 
 // DEV-ONLY window hook — the web equivalent of the Unity-era CombatDebug/ScenarioLauncher. From the browser
@@ -101,6 +102,8 @@ export interface AscendantRunTools {
    * lobby rolled the way a Gym win would roll it. The route is skipped; the City is the real one.
    */
   city: (regionIndex?: number) => void;
+  /** §2.12 — stand the run at the foot of Victory Road (Region 3 done), without walking there. */
+  victoryRoad: () => void;
   /** Edit the run state in place through an Immer draft — for a test that needs a board laid out just so. */
   patch: (recipe: (draft: sim.RunState) => void) => void;
   save: () => void;
@@ -269,6 +272,27 @@ export function installDevTools(): void {
         if (!run) return;
         const ctx = sim.defaultRunCtx(getContent());
         useRunStore.setState({ run: produce(run, (d) => { d.regionIndex = regionIndex; sim.arriveAtCity(d, ctx); }) });
+        useAppStore.getState().goTo('map');
+      },
+
+      victoryRoad: () => {
+        const run = useRunStore.getState().run;
+        if (!run) return;
+        const content = getContent();
+        const map = sim.generateVictoryRoad(new RngStreams(run.seed).get('MapRNG'), content, run.seed);
+        useRunStore.setState({
+          run: produce(run, (d) => {
+            d.regionIndex = 2;
+            d.city = null;
+            d.zone = 'victory-road';
+            d.map = map;
+            d.position = null;
+            d.reachable = [...map.entry];
+            d.visited = [];
+            d.pendingNodeId = null;
+            d.phase = 'map';
+          }),
+        });
         useAppStore.getState().goTo('map');
       },
 

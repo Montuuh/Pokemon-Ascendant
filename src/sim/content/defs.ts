@@ -474,6 +474,8 @@ export interface TeamMemberSetup {
   defeats?: number;
   /** §5.14 — a shiny the run caught: it wears the official shiny palette. */
   shiny?: boolean;
+  /** §2.12.3 — the Training Grounds' flat additions, carried from the Box. */
+  boosts?: Partial<Record<'hp' | 'attack' | 'defense' | 'speed', number>>;
   /**
    * §5.13.2 — the Mastery Move in the immutable fifth slot, if this line has unlocked one. It is dealt into
    * the deck beside the active four and no Move Manager, TM or tutor can reach it.

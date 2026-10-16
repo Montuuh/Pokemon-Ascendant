@@ -51,6 +51,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
   const animate = useMotionPref();
   const [scale, setScale] = useState(2);
+  const [fits, setFits] = useState(false);
   const [view, setView] = useState({ left: 0, width: 1 });
   // Which terrain the canvas holds: the board says it is painted only once this map's tiles are down.
   const [paintedFor, setPaintedFor] = useState<object | null>(null);
@@ -75,12 +76,20 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   useLayoutEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    const fit = () => setScale(Math.max(1, el.clientHeight / (terrain.h * TILE)));
+    const root = el.parentElement;
+    const fit = () => {
+      setScale(Math.max(1, el.clientHeight / (terrain.h * TILE)));
+      // §9.3 — the strip is the scroll position; a board that fits its window whole has none to show. Judged at the
+      // height the board would have without the strip, so hiding it can never make the board overflow.
+      const tall = Math.max(1, (root?.clientHeight ?? el.clientHeight) / (terrain.h * TILE));
+      setFits(terrain.w * TILE * tall <= el.clientWidth);
+    };
     fit();
     const obs = new ResizeObserver(fit);
     obs.observe(el);
+    if (root) obs.observe(root);
     return () => obs.disconnect();
-  }, [terrain.h]);
+  }, [terrain.h, terrain.w]);
 
   const px = TILE * scale;
   const boardW = terrain.w * px;
@@ -229,7 +238,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
 
       {/* §9.3 — the whole route in a strip, the window you are looking through outlined; a click jumps there. */}
       <div
-        className={styles.strip}
+        className={`${styles.strip} ${fits ? styles.stripHidden : ''}`}
         onClick={(e) => {
           const el = scroller.current;
           if (!el) return;
