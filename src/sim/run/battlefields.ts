@@ -1,3 +1,4 @@
+import { LEGENDARY_ARENAS, type LegendaryId } from './legendaries';
 import type { ContentRegistry, ScenarioDef } from '../content/defs';
 import type { PokemonType } from '../types';
 import { GYM, gymById, regionContent } from './region';
@@ -54,6 +55,8 @@ const FAVOURED: Partial<Record<PokemonType, Battlefield>> = {
  * Elite Trainer one of its lead Pokémon's type. The Elite Wild is a wild Pokémon and brings none.
  */
 export function fieldsFor(node: MapNode, run: RunState, content: ContentRegistry): Battlefield {
+  // §2.12.2.1 — a Legendary's arena opens under its own field, whoever brought you there.
+  if (node.kind === 'apex') return node.preview.legendary ? { ...LEGENDARY_ARENAS[node.preview.legendary as LegendaryId].fields } : {};
   if (!['wild', 'trainer', 'elite', 'gym', 'elite-wild'].includes(node.kind)) return {};
   const out: Battlefield = {};
   // Past the fork only: the lane telegraphs its Gym, and the trunk — where you plan — stays open ground. Measured

@@ -943,6 +943,97 @@
         "kind": "hold",
         "turns": 3
       }
+    },
+    {
+      "id": "legendary-mewtwo-barrier",
+      "name": "Legendary — Mewtwo in Cerulean Cave",
+      "description": "Victory Road's Apex (§2.12.2): Mewtwo in its arena — Psychic Terrain, and its Barrier every third turn, counted on the top bar. Your Zapdos takes two of the three places (§2.3), so it goes in with one partner.",
+      "kind": "wild",
+      "stage": "damp-cave",
+      "seed": 2121,
+      "arenaRule": "barrier",
+      "fields": {
+        "terrain": "psychic-terrain"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "zapdos",
+            "level": 46
+          },
+          {
+            "species": "blastoise",
+            "level": 44
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "super-potion",
+          "ultra-ball",
+          "ultra-ball"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "mewtwo",
+          "level": 46,
+          "tier": "boss",
+          "phaseCount": 2,
+          "moves": [
+            "psychic",
+            "swift",
+            "recover",
+            "barrier"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legendary-mew-metronome",
+      "name": "Legendary — Mew on Faraway Island",
+      "description": "Victory Road's Apex (§2.12.2): Mew in its arena — Metronome redraws the field every turn, the next one shown a turn ahead, and Playful makes it the type of whatever hit it last.",
+      "kind": "wild",
+      "stage": "forest",
+      "seed": 2222,
+      "arenaRule": "playful",
+      "metronome": true,
+      "player": {
+        "team": [
+          {
+            "species": "wartortle",
+            "level": 40
+          },
+          {
+            "species": "ivysaur",
+            "level": 40
+          },
+          {
+            "species": "charmeleon",
+            "level": 40
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "super-potion",
+          "ultra-ball"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "mew",
+          "level": 46,
+          "tier": "boss",
+          "phaseCount": 2,
+          "moves": [
+            "psychic",
+            "mega-punch",
+            "transform",
+            "recover"
+          ]
+        }
+      ]
     }
   ]
 }

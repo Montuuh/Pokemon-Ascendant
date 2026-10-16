@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen, its cards and the formation (§9.2) as of 2026-10-15; the title screen (§9.13), fights with another objective (§5.6.5) and the route Trader (§2.9.6) built as of 2026-10-15; Victory Road (§2.12) built as of 2026-10-16. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen, its cards and the formation (§9.2) as of 2026-10-15; the title screen (§9.13), fights with another objective (§5.6.5) and the route Trader (§2.9.6) built as of 2026-10-15; Victory Road (§2.12) and the Legendaries (§2.3, §2.12.2) built as of 2026-10-16. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -58,8 +58,8 @@ Pokémon.
   of Celadon's Game Corner, a switch behind it opens stairs down. Four counters, none paid in the usual coin: the
   **Trader** (one of yours for one of two stolen Pokémon no route offers), the **Fence** (Rare Candy, 400 ₽ a level;
   buys relics at 40 %), the **Gambler** (1–3 relics staked on a Rare at a printed 80 % × stake ÷ prize, 5–90 %), and
-  the **Executive's showcase** (one Legendary for **three of your Pokémon**, off the books — it may take a run to 3 —
-  and the deal closes the market). Measured: buying it by reflex costs Region 3 twelve points. *(2026-09-25.)*
+  the **Executive's showcase** (one Legendary **Pokémon** every visit for **three of yours**, at the strongest given's level —
+  and the deal closes the market). Measured as the relic it sold until v0.9.21: buying it by reflex cost Region 3 twelve points. *(2026-09-25.)*
   Both Cities hold the **Safari Zone** (§2.11.6): a ticket (200 / 350 ₽) buys 3 Safari Balls and a 10 / 12-turn
   clock for a lineup of species no route offers (Dratini only in the city), each **stalked** on a tile board — two
   actions a turn, its path and its look shown, tall grass hides you, bait and rock, a throw is the whole turn at a
@@ -69,6 +69,9 @@ Pokémon.
   Center, Grand Dojo, Black Market}.
 - **Region Modifiers are per-Region**: exactly 1 active, re-picked each Region, expiring with it. Relics and
   Badges are the run-long systems.
+- **Legendary Pokémon** (✅ v0.9.21): **two places in the Active Team, one body** (§2.3). Met at Victory Road's
+  **Apex** — one of five the Box lacks, in its own arena (a field and one rule: Mist, Thundercloud, Rekindle, Barrier,
+  Playful under Metronome), catch it or beat it for a Legendary relic pick — and bought at the Black Market's showcase.
 - **Victory Road** (✅ v0.9.20): four columns of three tracks to the Summit, Region 3 raised 2 levels, no Pokémon
   Center. Gauntlet ×1–2 (an Ace Trainer's four two-phase Pokémon, no heal before or after, 1-of-3 Rare; winning it
   with nobody fainting pays a passed-by Gym's Badge once a run), Training Grounds ×1–2 (one Pokémon, one of five
@@ -340,8 +343,7 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
 - **60 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 25 Common (15 of them the +15 % party type
   charms) / 18 Uncommon / 7 Rare / **10 Legendary**. A trainer drops a Common 15 % of the time; the Elite Trainer
   offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym a Rare 1-of-3**,
-  later Gyms and the Summit a **Legendary 1-of-3, max 2 per run** — plus the Black Market's one, off the books, for
-  three Pokémon (to 3). Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
+  later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run**. Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
   of list per relic bought this run.
 - **19 held items.** 8 type boosts (+20 % wearer-only) · 5 Type Plates (Lead Aura) · Leftovers, Eviolite, Focus
   Sash · Choice Band, Choice Scarf · Thick Club.

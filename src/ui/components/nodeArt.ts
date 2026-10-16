@@ -63,6 +63,8 @@ export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
       if (!face) return { kind: 'sign', src: mysterySign() };
       return { kind: 'pokemon', src: pokemonIcon(face), cover: coverOf(node, map) };
     }
+    // §2.12.2 — the Apex: the Legendary, standing on its node.
+    case 'apex':
     case 'elite-wild': {
       const face = p.enemies?.[0]?.species ?? p.speciesIds[0];
       return face ? { kind: 'pokemon', src: pokemonIcon(face), cover: null } : { kind: 'sign', src: mysterySign() };

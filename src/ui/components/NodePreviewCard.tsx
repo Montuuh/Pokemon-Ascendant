@@ -2,9 +2,10 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { getContent } from '@/content/registry';
 import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
-import { fieldsFor, doubleActorFor, gymById, groupPlanFor, isServiceNode, perfectClearBadge, wildChancesFor, type MapNode, type PartyMon } from '@/sim';
+import { fieldsFor, doubleActorFor, gymById, groupPlanFor, isServiceNode, perfectClearBadge, wildChancesFor, type MapNode, type PartyMon, LEGENDARY_ARENAS, type LegendaryId } from '@/sim';
 import { FieldChips } from './FieldChips';
 import { RuleChip } from './RuleChip';
+import { MetronomeChip } from './MetronomeChip';
 import { ObjectiveChip } from './ObjectiveChip';
 import { doubleActorTip, groupTip, perfectClearTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
@@ -61,6 +62,8 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   const gym = gymId ? gymById(gymId) : undefined;
   // §2.12.6 — a Gauntlet won with nobody fainting pays a passed-by Gym's Badge, while the run has one to give.
   const clearBadge = node.kind === 'gauntlet' && run ? perfectClearBadge(run) : null;
+  // §2.12.2.1 — the Apex's arena: its rule, and Mew's Metronome, promised as a Gym's rule is.
+  const arena = node.kind === 'apex' && node.preview.legendary ? LEGENDARY_ARENAS[node.preview.legendary as LegendaryId] : null;
   const hint = nodeHint(node);
 
   useEffect(() => {
@@ -118,6 +121,8 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         <div className={styles.chipRow}>
           <FieldChips fields={fields} compact />
           {gym && <RuleChip rule={gym.rule} compact />}
+          {arena && <RuleChip rule={arena.rule} compact />}
+          {arena?.metronome && <MetronomeChip compact />}
           {/* §5.6.5 — the map promises the fight's other objective before you commit (Pillar 1). */}
           {objective && <ObjectiveChip kind={objective.kind} turns={objective.turns} objective={objective} compact />}
           {clearBadge && (

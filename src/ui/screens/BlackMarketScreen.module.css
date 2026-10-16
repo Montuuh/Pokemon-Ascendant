@@ -121,6 +121,13 @@
   cursor: pointer;
 }
 .monOn { border: 3px solid var(--border-strong); }
+/* §2.11.6 — the showcase's Legendary: shown, not picked, so no pointer; the gold border of a Legendary. */
+.showcase {
+  justify-self: center;
+  min-width: 240px;
+  cursor: default;
+  border-color: var(--rarity-legendary);
+}
 .mon:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
 .monSprite { width: 96px; height: 96px; object-fit: contain; }
 .monName { font-size: var(--type-h3); }

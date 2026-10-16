@@ -1,4 +1,4 @@
-import type { GymRuleConfig, GymRuleId, RejectReason, RuleCounter } from '@/sim';
+import type { GymRuleConfig, GymRuleId, RejectReason, RuleCounter, ArenaRuleId, ArenaRuleConfig, ArenaCounter } from '@/sim';
 
 // User-facing strings for the combat screen, gathered for the v0.9 localisation pass.
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -60,7 +60,8 @@ export const LOCK_LABEL: Partial<Record<RejectReason, { title: string; sub: stri
 export function ruleCountText(rule: GymRuleId, count: RuleCounter): string | null {
   if (!count) return null;
   if (count.kind === 'multiplier') return `×${count.value.toFixed(2)}`;
-  const when = count.turns === 1 ? 'this turn' : count.turns === 2 ? 'next turn' : `in ${count.turns} turns`;
+  // 1 = at the end of this turn, 2 = the next, 3 = the one after: two turns from now.
+  const when = count.turns === 1 ? 'this turn' : count.turns === 2 ? 'next turn' : `in ${count.turns - 1} turns`;
   switch (rule) {
     case 'riptide':
       return `tide ${when}`;
@@ -147,6 +148,7 @@ export const NODE_LABEL: Record<string, string> = {
   gauntlet: 'Gauntlet',
   training: 'Training Grounds',
   summit: 'The Summit',
+  apex: 'Legendary',
 };
 
 /** §2.12 — Victory Road's own words. */
@@ -212,6 +214,45 @@ export const ROUTE_TEXT = {
   scroller: 'The route. Arrow keys, Home and End scroll it.',
   found: (what: string) => `You picked up ${what}.`,
 };
+
+/** §2.12.2.1 — the Legendaries' arena rules, by name. */
+export const ARENA_RULE_LABEL: Record<ArenaRuleId, string> = {
+  mist: 'Mist',
+  thundercloud: 'Thundercloud',
+  rekindle: 'Rekindle',
+  barrier: 'Barrier',
+  playful: 'Playful',
+};
+export const METRONOME_LABEL = 'Metronome';
+export const metronomeNextText = (field: string) => `next: ${field}`;
+/** §2.3 — the two places a Legendary takes, said on its Box card. */
+export const TWO_PLACES = '2 places';
+
+/** §2.12.2.1 — what an arena rule does, in one paragraph, with the numbers read from the config. */
+export function arenaRuleText(rule: ArenaRuleId, a: ArenaRuleConfig): string {
+  const pct = (x: number) => `${Math.round(x * 100)}%`;
+  switch (rule) {
+    case 'mist':
+      return 'Its stats cannot be lowered, and it is never Frozen. Raise your own instead.';
+    case 'thundercloud':
+      return 'From its second phase the sky opens: its Thunder becomes a Cleave and hits your whole team. Finish the first phase with something in hand.';
+    case 'rekindle':
+      return `The first time it falls to ${pct(a.rekindleAt)} of its HP it rises once: ${pct(a.rekindleHeal)} back and its status gone. Hold a burst for after.`;
+    case 'barrier':
+      return `Every ${a.barrierEvery === 3 ? 'third' : `${a.barrierEvery}th`} turn it raises a Barrier and takes ${pct(a.barrierTaken)} of all damage. Spend those turns on swaps, heals and set-up.`;
+    case 'playful':
+      return 'It takes the type of the last move that hit it — its STAB and its weaknesses follow. Choose what to hit it with.';
+  }
+}
+
+/** §2.12.2.1 — an arena rule's count on its chip in a fight. */
+export function arenaCountText(rule: ArenaRuleId, count: ArenaCounter, a: ArenaRuleConfig): string | null {
+  if (!count) return null;
+  if (count.kind === 'turns') return count.turns === 1 ? 'up this turn' : count.turns === 2 ? 'up next turn' : `up in ${count.turns - 1} turns`;
+  if (count.kind === 'rekindle') return count.spent ? 'spent' : `at ${Math.round(a.rekindleAt * 100)}%`;
+  // Playful's type is on the Legendary's own card, as its type label: the chip does not say it twice.
+  return null;
+}
 
 /** §5.9.5 — each Gym Leader's rule, by name. */
 export const GYM_RULE_LABEL: Record<GymRuleId, string> = {
@@ -350,6 +391,7 @@ export const NODE_HINT: Record<string, string> = {
   cache: 'No fight.',
   trader: 'No fight.',
   gym: 'The Gym Leader. Beat it and the next town is yours to rest in.',
+  apex: 'Catch it and it joins you, two places in the team; beat it for a Legendary relic pick. Never both.',
 };
 
 export const RUN_REJECT_TEXT: Record<string, string> = {
@@ -366,7 +408,7 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'node-unreachable': 'You cannot get there from here.',
   'wrong-phase': 'Not now.',
   'no-healthy-pokemon': 'Every Pokémon in your Box has fainted. Find a Center.',
-  'team-too-large': 'Three Pokémon can be Active at once.',
+  'team-too-large': 'The Active Team has three places, and a Legendary takes two.',
   'unknown-pokemon': 'That Pokémon is not in your Box.',
   'box-not-full': 'There is room in the Box already.',
   'unknown-branch': 'That evolution is not on offer.',
@@ -400,7 +442,6 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'no-ap': 'Nothing left this turn — end it.',
   'market-closed': 'Nothing more there for you this visit.',
   'bad-payment': 'They will not take that.',
-  'legendary-cap': 'You already carry as many Legendary relics as a run can hold.',
 };
 
 /** §2.11.0 — the warning before walking out of a building that closes behind you. */
@@ -506,7 +547,7 @@ export const MARKET_TEXT = {
   trader: { name: 'The Trader', line: 'Fresh stock, no questions asked.' },
   fence: { name: 'The Fence', line: 'Candy for the road. And I buy what you don’t need.' },
   gambler: { name: 'The Gambler', line: 'Put up a few trinkets. Win, and the good one’s yours.' },
-  showcase: { name: 'The Executive', line: 'The rarest thing in Kanto. Three of your Pokémon.' },
+  showcase: { name: 'The Executive', line: 'A Legendary Pokémon. Three of yours.' },
   traded: 'Pleasure doing business.',
   soldOut: 'Sold out',
   pickGive: 'Pick one of yours to hand over',
@@ -524,13 +565,13 @@ export const MARKET_TEXT = {
   lost: (pct: number) => `At ${pct} %, the house won. The stake is gone.`,
   wagerOn: (name: string) => `Wager on the ${name}`,
   pickTarget: 'Pick the relic to win',
-  priceTag: (n: number) => `${n} Pokémon`,
   pickThree: (n: number, of: number) => `Pick ${of} to hand over — ${n} of ${of}`,
   keepOne: 'You must keep at least one Pokémon.',
   handOver: (names: string) => `Hand over ${names}`,
   pickN: (n: number) => `Pick ${n}`,
   dealTitle: 'Hand them over?',
-  dealBody: (names: string, relic: string) => `${names} go to Team Rocket for the ${relic}, and the door locks behind you.`,
+  dealBody: (names: string, legendary: string) => `${names} go to Team Rocket for ${legendary}, and the door locks behind you.`,
+  arrivesAt: (level: number | null) => (level === null ? 'At the level of the strongest you give' : `Arrives at Lv ${level}`),
   deal: 'Deal',
 };
 

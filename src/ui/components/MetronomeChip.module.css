@@ -1,0 +1,15 @@
+/* §2.12.2.1 — Metronome: a field chip that changes every turn, with the next one beside it. */
+.chip {
+  composes: chip from './FieldChips.module.css';
+  border-color: var(--accent-action);
+  white-space: nowrap;
+}
+.compact {
+  padding: 0 var(--sp-2);
+}
+.count {
+  padding-left: var(--sp-1);
+  border-left: 1px solid var(--border-strong);
+  color: var(--ink-secondary);
+  font-weight: 600;
+}

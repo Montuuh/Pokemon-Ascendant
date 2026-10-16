@@ -1,3 +1,4 @@
+import { ARENA_RULE_IDS } from '@/sim/combat/arenaRules';
 import { GYM_RULE_IDS } from '@/sim/combat/gymRules';
 import { z } from 'zod';
 import { POKEMON_TYPES, PRIMARY_STATUSES } from '@/sim/types';
@@ -290,12 +291,14 @@ export const ScenarioSchema = z.object({
   enemies: z.array(EnemySetupSchema).min(1),
   wildTier: z.enum(['common', 'uncommon', 'rare']).optional(),
   gymRule: z.enum(GYM_RULE_IDS).optional(),
+  arenaRule: z.enum(ARENA_RULE_IDS).optional(),
+  metronome: z.boolean().optional(),
   objective: z.object({ kind: z.enum(['flee', 'hold']), turns: z.number().int().min(1).max(9) }).optional(),
   onField: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
   fields: z
     .object({
-      weather: z.enum(['sunny-day', 'rain-dance']).optional(),
-      terrain: z.literal('electric-terrain').optional(),
+      weather: z.enum(['sunny-day', 'rain-dance', 'hail']).optional(),
+      terrain: z.enum(['electric-terrain', 'grassy-terrain', 'psychic-terrain', 'misty-terrain']).optional(),
       hazard: z.literal('sandstorm').optional(),
       home: PokemonTypeSchema.optional(),
     })

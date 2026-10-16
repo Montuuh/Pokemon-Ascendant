@@ -3,21 +3,7 @@ import { IconCards, IconMenu2, IconPaw, IconStar, IconTrophy, IconUser } from '@
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
-import {
-  FLEE_TOLL,
-  SLOT_LABEL,
-  cardPlayability,
-  fleeTierFor,
-  consumablePlayability,
-  fieldsSuppressed,
-  asLeadDamage,
-  forecastTurn,
-  indexToSlot,
-  pickLeadOptions,
-  swapOptions,
-  type CardPlayability,
-  type CombatState,
-  type SlotId, type EnemyCombatant, benchIndices } from '@/sim';
+import { FLEE_TOLL, SLOT_LABEL, cardPlayability, fleeTierFor, consumablePlayability, fieldsSuppressed, asLeadDamage, forecastTurn, indexToSlot, pickLeadOptions, swapOptions, type CardPlayability, type CombatState, type SlotId, type EnemyCombatant, benchIndices, metronomeNext } from '@/sim';
 import { stageBackdrop, trainerSprite } from '@/ui/art';
 import { CombatLog } from '@/ui/components/CombatLog';
 import { BagButton } from '@/ui/components/BagButton';
@@ -32,6 +18,7 @@ import { IntentArrows } from '@/ui/components/IntentArrows';
 import { TrainerParty } from '@/ui/components/TrainerParty';
 import { ApMeter } from '@/ui/components/ApMeter';
 import { RuleChip } from '@/ui/components/RuleChip';
+import { MetronomeChip } from '@/ui/components/MetronomeChip';
 import { ObjectiveChip } from '@/ui/components/ObjectiveChip';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
 import { fxTimings, useCombatFx, type SpriteSlot } from '@/ui/hooks/useCombatFx';
@@ -444,6 +431,9 @@ export function CombatScreen() {
           </Tipped>
           {/* §5.9.5 — the Leader's rule, with its count; the whole rule is one hover away. */}
           {state.gymRule && <RuleChip rule={state.gymRule} live={{ state, config: ctx.config }} />}
+          {/* §2.12.2.1 — a Legendary's arena rule, and Mew's Metronome with the field it draws next. */}
+          {state.arenaRule && <RuleChip rule={state.arenaRule} live={{ state, config: ctx.config }} />}
+          {metronomeNext(state) && <MetronomeChip next={metronomeNext(state)} />}
           {/* §5.6.5 — a hold-out counts its turns on the top line; a runner counts on its own card. */}
           {state.objective?.kind === 'hold' && <ObjectiveChip kind="hold" turns={state.objective.turns} live={state} />}
           {/* §9.2.2.1 — the active field, with the Home Field marker when the enemy owns it. */}

@@ -49,6 +49,11 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.21 — The Legendaries.** Articuno, Zapdos, Moltres, Mewtwo and Mew join the run. One waits at the top of
+Victory Road in its own arena — Mewtwo's Barrier in Cerulean Cave, Moltres rising again on Mt. Ember, Mew changing the
+field every turn — to be caught, or beaten for a Legendary relic; Team Rocket's Executive sells one for three of your
+Pokémon. A Legendary fills two of the team's three places with one body: strong, and only one partner to swap to.
+Before it,
 **v0.9.20 — Victory Road.** After the third Gym the run climbs one last road before the League: three tracks of
 Region 3's strongest, Ace Trainers in Gauntlets that give back no healing and pay a Rare relic (and, won with nobody
 fainting, a Badge the run passed by), Training Grounds where one Pokémon takes one upgrade, and the Summit, which

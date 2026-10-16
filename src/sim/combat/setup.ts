@@ -1,6 +1,8 @@
 import type { EnemySetup, ScenarioDef, TeamMemberSetup } from '../content/defs';
 import { GameRng } from '../rng/gameRng';
 import { RngStreams } from '../rng/rngStreams';
+import { METRONOME_FIELDS } from './arenaRules';
+import { withField } from './fields';
 import type { CombatCtx } from './context';
 import { emit, log } from './context';
 import { buildConsumablePool, buildSkillDeck } from './deck';
@@ -97,6 +99,8 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
     ...(scenario.wildTier ? { wildTier: scenario.wildTier } : {}),
     // §5.9.5 — the Leader's rule rides in with its Gym, and only with it.
     ...(scenario.gymRule ? { gymRule: scenario.gymRule } : {}),
+    // §2.12.2.1 — a Legendary's arena rule rides in with its arena.
+    ...(scenario.arenaRule ? { arenaRule: scenario.arenaRule } : {}),
     // §5.6.5 — and a fight's other objective with its fight.
     ...(scenario.objective ? { objective: { ...scenario.objective } } : {}),
     seed,
@@ -203,6 +207,13 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
       c.stages[boost.stat] = Math.max(-6, Math.min(6, c.stages[boost.stat] + boost.stages));
       emit(state, { t: 'stage', targetUid: c.uid, stat: boost.stat, delta: boost.stages, total: c.stages[boost.stat] });
     }
+  }
+
+  // §2.12.2.1 Metronome — the arena opens under a field drawn from the ten, and the next one is shown a turn ahead.
+  if (scenario.metronome) {
+    const now = METRONOME_FIELDS[rng.range(0, METRONOME_FIELDS.length)]!;
+    state.fields = withField({ ...(state.fields.home ? { home: state.fields.home } : {}) }, now);
+    state.ruleState = { ...(state.ruleState ?? {}), metronomeNext: METRONOME_FIELDS[rng.range(0, METRONOME_FIELDS.length)]! };
   }
 
   emit(state, { t: 'combat-start' });

@@ -1308,12 +1308,25 @@ evolution, a move from further up its learnset — an upgrade it cannot take sho
 (§2.12.4, `SummitScreen`): the Box healed in full, a Legendary relic pick that is the gate, and the run won. The
 harness takes a Level Push and the first Summit relic; dev `run.victoryRoad()`; `e2e/victory-road`.
 
-### v0.9.21 — The Legendaries  ☐
+### v0.9.21 — The Legendaries  ✅ 2026-10-16
 - **A Legendary takes two places, one body** (§2.3, the user's call of 2026-10-16).
 - **Legendary Pokémon enter the run** at Victory Road's Apex (§2.12.2), and the Black Market's Executive sells one
   **every time** (user, 2026-09-28): the showcase offers a Legendary Pokémon, never "sold out" and never shut by a cap.
 - **Each Legendary is fought in its own arena** (§2.12.2.1, designed 2026-10-14, the user's note 3): its field, its
   backdrop and one arena rule, set at the fight's start and shown before it.
+
+**Shipped.** **Two places, one body** (§2.3, `run/legendaries.ts`): every place the Active Team grows or refills counts
+places — a catch, a recruit, the Safari, the Daycare's return, the showcase — and `set-active` refuses more than three;
+`joinTeam` steps back whoever has stood longest until the places fit; the map counts the team in places and a
+Legendary's card says *2 places*. **The Apex** (§2.12.2): one Legendary the Box lacks, on one track of Victory Road's
+last column, 6 levels over Region 3's last wild band, boss-tier and two-phase with its arena's kit; caught it joins,
+beaten it pays a Legendary relic pick. **The arenas** (§2.12.2.1, `combat/arenaRules.ts`): Articuno's Mist under Hail
+(no stat drops, never Frozen), Zapdos's Thundercloud on Electric Terrain (its Thunder a Cleave from Phase 2), Moltres's
+Rekindle in the sun (+25 % at 20 %, once), Mewtwo's Barrier on Psychic Terrain (half damage every third turn, in the
+preview's number), Mew's Playful under Metronome (it takes the type that hit it; a new field every turn, the next one
+shown); the rule rides on the top bar with its count (`RuleChip`, `MetronomeChip`). **The Executive** (§2.11.6)
+sells a Legendary *Pokémon* every visit, at the strongest given's level — the off-the-books relic and its cap are gone;
+run save v21. Fixtures `legendary-mewtwo-barrier`, `legendary-mew-metronome`; `e2e/legendaries`.
 
 ### v0.9.22 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
@@ -1414,7 +1427,7 @@ the account revamps move to v0.9):
 | — | Recovering missed Badges | v0.9.20 ✅ (the Perfect Clear) |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.21 (with the two-slot balance, designed 2026-10-16) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.21 ✅ |
 
 **Placed 2026-10-14** — the user's notes on the fan-game study (`docs/research/2026-10-13-fan-games-pokelike-pokesurvivor.md`):
 

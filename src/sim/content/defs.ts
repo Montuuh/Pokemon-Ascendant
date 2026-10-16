@@ -1,3 +1,4 @@
+import type { ArenaRuleId } from '../combat/arenaRules';
 import type { GymRuleId } from '../combat/gymRules';
 import type {
   BranchArchetype,
@@ -545,6 +546,10 @@ export interface ScenarioDef {
   wildTier?: 'common' | 'uncommon' | 'rare';
   /** §5.9.5 — a Gym fight's Leader rule. */
   gymRule?: GymRuleId;
+  /** §2.12.2.1 — a Legendary's arena rule. */
+  arenaRule?: ArenaRuleId;
+  /** §2.12.2.1 — Metronome: the arena's Battlefield is redrawn every turn from the ten, a turn ahead. */
+  metronome?: boolean;
   /** §5.6.5 — a fight with another objective: a runner (`flee`) or a guarded find (`hold`), and its turns. */
   objective?: { kind: 'flee' | 'hold'; turns: number };
   /**

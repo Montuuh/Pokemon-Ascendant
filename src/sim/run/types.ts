@@ -10,7 +10,7 @@ import type { WildTier } from './region';
  * (`aid`) and the travelling merchant. The Pokémon Center, the Mart and the Dojo are City buildings (§2.11),
  * reached through `RunState.city`, not map nodes. `cache` is something on the ground (§2.9.5, v0.8.7).
  */
-export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'cache', 'gym', 'trader', 'gauntlet', 'training', 'summit'] as const;
+export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'cache', 'gym', 'trader', 'gauntlet', 'training', 'summit', 'apex'] as const;
 export type NodeKind = (typeof NODE_KINDS)[number];
 
 export interface MapNode {
@@ -75,6 +75,8 @@ export interface NodePreview {
   rosterId?: string;
   /** §2.12 — the backdrop a node's fight stands on, when the node says so (Victory Road's cave). */
   stage?: string;
+  /** §2.12.2 — the Apex's Legendary: the arena (§2.12.2.1) the fight is in is its. */
+  legendary?: string;
   /** §2.9.5 — what lies on the ground at a `cache` node: rolled with the map and named before you choose it. */
   find?: { items: string[]; money: number };
   /**
@@ -401,8 +403,8 @@ export interface BlackMarketState {
   /** The Gambler — the Rare relics a wager can aim at; one wager a visit. */
   wagerTargets: string[];
   wager: MarketWager | null;
-  /** The showcase — one Legendary relic, paid for in Pokémon. Null when the pool had none to show. */
-  legendary: string | null;
+  /** The showcase — one Legendary Pokémon (a species id), paid for in Pokémon. Null only when the run holds all five. */
+  showcase: string | null;
 }
 
 /** §2.11.6 — the Safari's own difficulty tiers: the board a species is stalked on, not its drop rarity. */
@@ -860,7 +862,6 @@ export type RunRejectReason =
   /** §2.11.6 — a price in Pokémon the Box cannot pay and keep one, or a stake the Gambler will not take. */
   | 'bad-payment'
   /** §7.3.7 — the run already holds two Legendaries. */
-  | 'legendary-cap'
   /** The reducer threw: the store turns a crash into a refusal the screen can say. */
   | 'internal-error'
   /** §7.2.1 — a bag item used out of a fight: why it would do nothing (fieldItems.ts). */

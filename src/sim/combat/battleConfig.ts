@@ -1,3 +1,4 @@
+import type { ArenaRuleConfig } from './arenaRules';
 import type { GymRuleConfig } from './gymRules';
 
 // Per docs/design/04-resolution.md — every balance value the combat sim reads lives here, never inline.
@@ -98,6 +99,8 @@ export interface BattleConfig {
   stickyWebStages: number;
   /** §5.9.5 — the Gym Leaders' rules. */
   gymRules: GymRuleConfig;
+  /** §2.12.2.1 — the Legendaries' arena rules. */
+  arenaRules: ArenaRuleConfig;
   /**
    * §5.6.5 — fights with another objective: a hold-out's guard gains this many Attack stages at the end of every
    * turn, and on the last turn it telegraphs its finisher if its kit holds it (Rhydon's Horn Drill).
@@ -181,6 +184,13 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
     closeQuartersRanged: 0.7,
     closeQuartersMelee: 1.1,
     iceArmour: 0.04,
+  },
+  // §2.12.2.1 — the arena rules: first values (v0.9.21), for the balance pass.
+  arenaRules: {
+    rekindleAt: 0.2,
+    rekindleHeal: 0.25,
+    barrierEvery: 3,
+    barrierTaken: 0.5,
   },
   objectives: { guardEscalation: 1, guardFinisher: 'horn-drill' },
 };

@@ -11,7 +11,7 @@ import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, 
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeTurn } from './enemyTurn';
 import { fieldDrawBonus, fieldsSuppressed, hailImmune, isGrounded, sandstormImmune } from './fields';
-import { armourLead, ruleTurnEnd, ruleTurnStart, sealStrongest } from './ruleTurn';
+import { arenaTurnEnd, armourLead, ruleTurnEnd, ruleTurnStart, sealStrongest } from './ruleTurn';
 import { objectiveTurnEnd } from './objective';
 
 // §3.2 — the five-phase loop. `beginTurn` = Draw + Intent (lands in Action); `resolveTurn` = Resolution → next turn.
@@ -211,6 +211,7 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
   // §5.9.5 — the Leader's rule at the turn's end: Bloom, Tremor, the Rollout count, then the tide.
   if (checkOutcome(state)) return finish(state);
   ruleTurnEnd(state, ctx);
+  arenaTurnEnd(state, ctx);
   if (checkOutcome(state)) return finish(state);
   // §5.6.5 — the fight's other objective: the runner gets away, the hold is won, the guard grows angrier.
   objectiveTurnEnd(state, ctx);

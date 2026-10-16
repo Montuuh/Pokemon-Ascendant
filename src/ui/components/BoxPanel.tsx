@@ -1,13 +1,13 @@
 import { IconCrown, IconAlertTriangle, IconBarbell, IconCards, IconZzz } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
-import { maxHpOf, stoneUse, xpToNext, type PartyMon } from '@/sim';
+import { maxHpOf, stoneUse, xpToNext, type PartyMon, ACTIVE_TEAM, placesOf, placesTaken } from '@/sim';
 import { HpBar } from './HpBar';
 import { MonIcon } from './MonIcon';
 import { ShinyMark } from './ShinyMark';
 import { TypeBadge } from './TypeBadge';
 import { statusGlyph } from '@/ui/art';
-import { STATUS_LABEL } from '@/ui/strings';
-import { statusTip, traumaTip, boostsTip, restingTip, shinyLine } from '@/ui/tips';
+import { STATUS_LABEL, TWO_PLACES } from '@/ui/strings';
+import { statusTip, traumaTip, boostsTip, restingTip, shinyLine, twoPlacesTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './BoxPanel.module.css';
 
@@ -124,6 +124,12 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
               Resting
             </Tipped>
           )}
+          {/* §2.3 — a Legendary fills two of the Active Team's three places. */}
+          {placesOf(mon.speciesId, content) > 1 && (
+            <Tipped tip={twoPlacesTip(species.name)} className={styles.places} tabIndex={-1} data-testid={`box-places-${mon.speciesId}`}>
+              {TWO_PLACES}
+            </Tipped>
+          )}
           {/* §2.12.3 — what the Training Grounds left on it, for the rest of the run. */}
           {mon.boosts && Object.values(mon.boosts).some((v) => v) && (
             <Tipped tip={boostsTip(mon.boosts)} className={styles.boost} tabIndex={-1} data-testid={`box-boost-${mon.speciesId}`}>
@@ -160,11 +166,13 @@ export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMov
 
   const activeMons = activeUids.map((uid) => box.find((m) => m.uid === uid)).filter((m): m is PartyMon => !!m);
   const benched = box.filter((m) => !activeUids.includes(m.uid));
+  // §2.3 — the team is counted in places: a Legendary takes two.
+  const places = placesTaken(activeUids, box, getContent());
 
   return (
     <div className={styles.root} data-testid="box-panel">
       <h2 className={styles.heading}>
-        Active Team <span className={styles.count}>{activeMons.length}/3</span>
+        Active Team <span className={styles.count}>{places}/{ACTIVE_TEAM.places}</span>
       </h2>
       <ul className={styles.list}>
         {activeMons.map((m, i) => (

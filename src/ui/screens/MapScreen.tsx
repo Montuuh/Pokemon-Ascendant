@@ -3,7 +3,7 @@ import { IconMenu2, IconBackpack, IconSparkles } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { ballsIn, boxCapacity, gymById, isServiceNode, noReturnLayer, regionName, supplyLabel, type MapNode, type PartyMon } from '@/sim';
+import { ballsIn, boxCapacity, gymById, isServiceNode, joinTeam, noReturnLayer, regionName, supplyLabel, type MapNode, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { InventoryDrawer } from '@/ui/components/InventoryDrawer';
 import { Money } from '@/ui/components/Money';
@@ -121,7 +121,7 @@ export function MapScreen() {
 
   const toggleActive = (uid: string) => {
     const on = run.activeUids.includes(uid);
-    const next = on ? run.activeUids.filter((u) => u !== uid) : [...run.activeUids, uid].slice(-3);
+    const next = on ? run.activeUids.filter((u) => u !== uid) : joinTeam(run.activeUids, uid, run.box, getContent());
     dispatch({ type: 'set-active', uids: next });
   };
 

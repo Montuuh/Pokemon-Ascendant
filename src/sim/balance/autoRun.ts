@@ -8,7 +8,8 @@ import { RUN_START, gymById, gymTeamFor } from '../run/region';
 import { applyBranch, autoPickMoves, stoneUse, xpToNext } from '../run/xp';
 import { maxHpOf } from '../run/encounter';
 import { PRICES, slotPrice, therapyPrice } from '../run/economy';
-import { atLegendaryCap, BLACK_MARKET, candyPrice } from '../run/blackMarket';
+import { BLACK_MARKET, candyPrice } from '../run/blackMarket';
+import { fillTeam } from '../run/legendaries';
 import { regionModifierOffer } from '../run/regionModifiers';
 import { allOutcomes, mysteryEvent } from '../run/events';
 import type { MapNode, PartyMon, RunPerks, RunState, SafariSpot, ShopSlot } from '../run/types';
@@ -318,12 +319,15 @@ function bestTeam(run: RunState, content: CombatCtx['content'], against: MapNode
     return score / enemyTypes.length;
   };
 
-  return [...run.box]
-    .filter((m) => m.hp > 0)
-    .map((m) => ({ m, score: matchup(m.speciesId), health: m.hp / maxHpOf(m, content) }))
-    .sort((a, b) => b.score - a.score || b.health - a.health || b.m.level - a.m.level)
-    .slice(0, 3)
-    .map((x) => x.m.uid);
+  // §2.3 — three places, a Legendary two of them: the best that still fit, in order.
+  return fillTeam(
+    [...run.box]
+      .filter((m) => m.hp > 0)
+      .map((m) => ({ m, score: matchup(m.speciesId), health: m.hp / maxHpOf(m, content) }))
+      .sort((a, b) => b.score - a.score || b.health - a.health || b.m.level - a.m.level)
+      .map((x) => x.m),
+    content,
+  );
 }
 
 /** What one tutor move is worth to this Pokémon: its own damage, plus a bonus for a type it does not have. */
@@ -648,7 +652,7 @@ function visitMarket(get: () => RunState, content: CombatCtx['content'], policy:
   }
   const run = get();
   const market = run.city!.blackMarket!;
-  if (market.legendary && !atLegendaryCap(run, content) && run.box.length >= (policy.marketLegendaryFrom ?? 5)) {
+  if (market.showcase && run.box.length >= (policy.marketLegendaryFrom ?? 5)) {
     const give = [...run.box].sort((a, b) => a.level - b.level).slice(0, BLACK_MARKET.legendaryPrice).map((m) => m.uid);
     step({ type: 'market-legendary', giveUids: give });
   } else step({ type: 'leave-black-market' });
@@ -909,7 +913,7 @@ export function playRing(start: RunState, ctx: CombatCtx, policy: RunPolicy = DE
   };
   if (run.phase !== 'city' || !run.city?.ring) return null;
   const healthiest = () =>
-    [...run.box].filter((m) => m.hp > 0).sort((a, b) => b.level - a.level || b.hp - a.hp).slice(0, 3).map((m) => m.uid);
+    fillTeam([...run.box].filter((m) => m.hp > 0).sort((a, b) => b.level - a.level || b.hp - a.hp), ctx.content);
   step({ type: 'enter-building', building: 'center' });
   step({ type: 'leave-center' });
   step({ type: 'set-active', uids: healthiest() });

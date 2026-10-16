@@ -3,6 +3,8 @@ import type { EncounterKind, EnemySetup, EnemyTier } from '../content/defs';
 import type { IntentKind, PokemonType, PrimaryStatus, SlotId, Stat, StatusCondition } from '../types';
 import type { Effectiveness } from './typeChart';
 import type { FieldState } from './fields';
+import type { ArenaRuleId } from './arenaRules';
+import type { FieldId } from './fields';
 import type { GymRuleId } from './gymRules';
 
 // Plain, JSON-serialisable combat state. Everything the UI shows, the save writes and a replay compares is here.
@@ -273,6 +275,8 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'outcome'; outcome: Outcome }
   /** §4.3.6 — the fields changed mid-fight (Defog). */
   | { t: 'field'; fields: FieldState }
+  /** §2.12.2.1 Playful — a Legendary took the type of the move that hit it. */
+  | { t: 'type-change'; targetUid: string; types: PokemonType[] }
 );
 
 export interface CombatState {
@@ -305,10 +309,20 @@ export interface CombatState {
   fields: FieldState;
   /** §5.9.5 — the Gym Leader's rule, for the whole fight. Absent in every fight but a Gym. */
   gymRule?: GymRuleId;
+  /** §2.12.2.1 — a Legendary's arena rule, for the whole fight. Absent in every fight but a Legendary's. */
+  arenaRule?: ArenaRuleId;
   /** §5.6.5 — the fight's other objective, for the whole fight. Absent in every fight won the usual way. */
   objective?: CombatObjective;
   /** §5.9.5 — what a rule keeps between turns: Rollout's Lead and its count, Mind Lock's sealed card. */
-  ruleState?: { leadUid?: string; leadTurns?: number; sealedCardId?: string };
+  ruleState?: {
+    leadUid?: string;
+    leadTurns?: number;
+    sealedCardId?: string;
+    /** §2.12.2.1 Rekindle — it has risen, once a fight. */
+    rekindled?: boolean;
+    /** §2.12.2.1 Metronome — the field drawn for the next turn, shown a turn ahead. */
+    metronomeNext?: FieldId;
+  };
   /** §5.9.3 — enemies still to come, fought sequentially. */
   enemyQueue: EnemyCombatant[];
   /** Fainted/caught enemies, for the summary. */

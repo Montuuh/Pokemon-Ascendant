@@ -19,7 +19,8 @@ import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { runnerById } from './objectives';
 import { rollTradeOffers, tradeLevel, tradeRefusal } from './trader';
 import { VICTORY_ROAD, generateVictoryRoad, perfectClearBadge, trainingOptions } from './victoryRoad';
-import { BLACK_MARKET, atLegendaryCap, candyPrice, fencePrice, rollBlackMarket, wagerChance } from './blackMarket';
+import { ACTIVE_TEAM, fillTeam, hasPlaceFor, placesTaken } from './legendaries';
+import { BLACK_MARKET, candyPrice, fencePrice, rollBlackMarket, showcaseLevel, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
 import { BOND_TIER } from '../meta/bond';
@@ -63,7 +64,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 20;
+export const RUN_SAVE_VERSION = 21;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -300,7 +301,7 @@ function endRegion(draft: RunState, ctx: RunCtx): void {
 function enterVictoryRoad(draft: RunState, ctx: RunCtx): void {
   const mapRng = new RngStreams(draft.seed).get('MapRNG');
   mapRng.cursor = draft.cursors.MapRNG ?? mapRng.cursor;
-  draft.map = generateVictoryRoad(mapRng, ctx.content, draft.seed);
+  draft.map = generateVictoryRoad(mapRng, ctx.content, draft.seed, draft.box);
   draft.cursors.MapRNG = mapRng.cursor;
   draft.zone = 'victory-road';
   draft.position = null;
@@ -381,11 +382,12 @@ export function daycarePrice(run: RunState, content: ContentRegistry): number {
  * §2.11.1 — after a fight, the Pokémon resting at the Daycare walks back: into the first free slot of the active
  * team, if there is one; otherwise it waits in the Box like any other.
  */
-function returnFromDaycare(draft: RunState): void {
+function returnFromDaycare(draft: RunState, content: ContentRegistry): void {
   const uid = draft.resting;
   if (!uid) return;
   draft.resting = null;
-  if (draft.box.some((m) => m.uid === uid) && draft.activeUids.length < 3 && !draft.activeUids.includes(uid)) draft.activeUids.push(uid);
+  const mon = draft.box.find((m) => m.uid === uid);
+  if (mon && hasPlaceFor(draft, mon.speciesId, content) && !draft.activeUids.includes(uid)) draft.activeUids.push(uid);
 }
 
 /**
@@ -534,7 +536,7 @@ function endHunt(draft: RunState, result: 'caught' | 'fled' | 'left' | 'closed',
     if (shiny) recruit.shiny = true;
     draft.box.push(recruit);
     draft.stats.recruits += 1;
-    if (draft.activeUids.length < 3) draft.activeUids.push(recruit.uid);
+    if (hasPlaceFor(draft, recruit.speciesId, ctx.content)) draft.activeUids.push(recruit.uid);
     queueSafariEvolutions(draft, ctx.content);
   } else {
     draft.pendingRecruit = { speciesId: spot.species, level: spot.level, ...(copyIsShiny(draft, spot.species, `safari:${draft.regionIndex}:${spot.species}:${draft.stats.catches}`, ctx.content) ? { shiny: true } : {}) };
@@ -578,9 +580,9 @@ function marketRngOf(draft: RunState): GameRng {
  * §2.11.6 — Pokémon leave the Box at the Black Market (traded, or paid for the showcase). The Active Team keeps
  * whoever is left in it; if nobody is, the first three left in the Box step up, so there is always a team to field.
  */
-function afterBoxShrinks(draft: RunState): void {
+function afterBoxShrinks(draft: RunState, content: ContentRegistry): void {
   draft.activeUids = draft.activeUids.filter((u) => draft.box.some((m) => m.uid === u));
-  if (!draft.activeUids.length) draft.activeUids = draft.box.slice(0, 3).map((m) => m.uid);
+  if (!draft.activeUids.length) draft.activeUids = fillTeam(draft.box, content);
 }
 
 /** §6.3.1 — a Pokémon the market leaves at its threshold picks its branch now, and the screen hands back below. */
@@ -1074,7 +1076,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // §2.8.2 — an Elite Wild pays elite XP whichever way it ended; the catch is the *premium* path, not
         // a discount on the fight.
         const tier = node.kind === 'gym' ? 'boss'
-          : node.kind === 'elite' || node.kind === 'elite-wild' || node.kind === 'gauntlet' ? 'elite'
+          : node.kind === 'elite' || node.kind === 'elite-wild' || node.kind === 'gauntlet' || node.kind === 'apex' ? 'elite'
           : node.kind === 'trainer' ? 'trainer' : 'wild';
         // §5.6.2 — a companion called for help is one more enemy on the field, and pays like one.
         const enemyCount = Math.max(draft.pendingScenario?.enemies.length ?? 1, report.fielded ?? 0);
@@ -1173,6 +1175,10 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         } else if (node.kind === 'elite') {
           relicPick = rollMixedOffer(lootRng, ctx.content, draft.relics, RELIC_REWARD.elitePick, draft.perks.relicPool);
           if (!relicPick.length) relicPick = null;
+        } else if (node.kind === 'apex' && report.outcome !== 'caught') {
+          // §2.12.2 — the Apex is catch-or-defeat (§2.8.2): beaten, it pays a Legendary relic pick; caught, itself.
+          relicPick = gymRelicOffer(lootRng, ctx.content, draft.relics, VICTORY_ROAD.regionIndex, draft.perks.relicPool);
+          if (!relicPick.length) relicPick = null;
         } else if (node.kind === 'gauntlet') {
           // §2.12.1 — a Gauntlet's reward: one of three Rare relics, taken on the reward screen.
           relicPick = gymRelicOffer(lootRng, ctx.content, draft.relics, 0, draft.perks.relicPool);
@@ -1253,7 +1259,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             if (caught.shiny) recruit.shiny = true;
             draft.box.push(recruit);
             draft.stats.recruits += 1;
-            if (draft.activeUids.length < 3) draft.activeUids.push(recruit.uid);
+            // §2.3 — a Legendary joins the Active Team only where two places are free.
+            if (hasPlaceFor(draft, recruit.speciesId, ctx.content)) draft.activeUids.push(recruit.uid);
             say(draft, `Caught ${caught.shiny ? 'a shiny ' : ''}${ctx.content.species(caught.speciesId).name}!`);
             // §6.3.1 — a recruit caught past its threshold owes its Evolution screen now, like anyone else: a
             // Region 2 basic arrives at Lv 14–22 and every basic evolves at 12, so the catch is where its branch is chosen.
@@ -1345,7 +1352,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             if (recruit.shiny) fresh.shiny = true;
             draft.box.push(fresh);
             draft.stats.recruits += 1;
-            if (draft.activeUids.length < 3) draft.activeUids.push(fresh.uid);
+            if (hasPlaceFor(draft, fresh.speciesId, ctx.content)) draft.activeUids.push(fresh.uid);
             say(draft, `Released ${ctx.content.species(released!.speciesId).name} for ${ctx.content.species(recruit.speciesId).name}.`);
           }
         } else {
@@ -1745,13 +1752,21 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       // §2.11.6 / §7.3.7 — the showcase: the Legendary for three of your Pokémon, and the deal closes the market.
       case 'market-legendary': {
         const market = draft.city!.blackMarket!;
-        const names = draft.box.filter((m) => action.giveUids.includes(m.uid)).map((m) => ctx.content.species(m.speciesId).name);
+        const given = draft.box.filter((m) => action.giveUids.includes(m.uid));
+        const names = given.map((m) => ctx.content.species(m.speciesId).name);
         for (const m of draft.box) if (action.giveUids.includes(m.uid) && m.heldItem) draft.bag.push(m.heldItem);
         draft.box = draft.box.filter((m) => !action.giveUids.includes(m.uid));
-        afterBoxShrinks(draft);
+        afterBoxShrinks(draft, ctx.content);
+        const level = showcaseLevel({ box: given }, action.giveUids);
         say(draft, `${names.join(', ')} went to Team Rocket.`);
-        acquireRelic(draft, market.legendary!, ctx.content);
-        market.legendary = null;
+        // §2.3 — the Legendary joins as a recruit: fresh, at the strongest given's level, two places in the team.
+        const legendary = newPartyMon(market.showcase!, level, ctx.content, draft.seed, mintUid(draft));
+        if (copyIsShiny(draft, market.showcase!, `market:${draft.regionIndex}:${market.showcase}`, ctx.content)) legendary.shiny = true;
+        draft.box.push(legendary);
+        draft.stats.recruits += 1;
+        if (hasPlaceFor(draft, legendary.speciesId, ctx.content)) draft.activeUids.push(legendary.uid);
+        say(draft, `${ctx.content.species(legendary.speciesId).name} is yours (Lv ${level}).`);
+        market.showcase = null;
         market.done = true;
         draft.phase = 'game-corner';
         say(draft, 'The Executive shows you up the stairs, and the door locks behind you.');
@@ -1942,7 +1957,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         draft.resting = mon.uid;
         draft.activeUids = draft.activeUids.filter((u) => u !== mon.uid);
         if (!draft.activeUids.some((u) => (draft.box.find((m) => m.uid === u)?.hp ?? 0) > 0))
-          draft.activeUids = draft.box.filter((m) => m.uid !== mon.uid && m.hp > 0).slice(0, 3).map((m) => m.uid);
+          draft.activeUids = fillTeam(draft.box.filter((m) => m.uid !== mon.uid && m.hp > 0), ctx.content);
         say(draft, `The Daycare raised ${ctx.content.species(mon.speciesId).name} to Lv ${mon.level}. It will sit out the next fight.`);
         queueEvolutionsReturning(draft, ctx.content, 'center');
         break;
@@ -2023,7 +2038,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       }
     }
     // §2.11.1 — one fight played, whatever it was (a route node, a Ring rung): the Daycare's Pokémon is back.
-    if (action.type === 'finish-combat') returnFromDaycare(draft);
+    if (action.type === 'finish-combat') returnFromDaycare(draft, ctx.content);
   });
 
   return { state: next };
@@ -2069,7 +2084,8 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       // §2.3 — the loadout changes on the map, in a preview, in a City's lobby and its Center's PC Box (§2.11.1),
       // and between Ring rungs.
       if (!teamPhase(state)) return 'wrong-phase';
-      if (action.uids.length > 3) return 'team-too-large';
+      // §2.3 — three places; a Legendary takes two of them.
+      if (placesTaken(action.uids, state.box, ctx.content) > ACTIVE_TEAM.places || new Set(action.uids).size !== action.uids.length) return 'team-too-large';
       if (action.uids.some((u) => !state.box.some((m) => m.uid === u))) return 'unknown-pokemon';
       // §2.11.1 — the Daycare's Pokémon sits this fight out.
       if (state.resting && action.uids.includes(state.resting)) return 'resting';
@@ -2244,8 +2260,7 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
     case 'market-legendary': {
       const market = state.city?.blackMarket;
       if (state.phase !== 'black-market' || !market) return 'wrong-phase';
-      if (!market.legendary) return 'market-closed';
-      if (atLegendaryCap(state, ctx.content)) return 'legendary-cap';
+      if (!market.showcase) return 'market-closed';
       const give = action.giveUids;
       if (give.length !== BLACK_MARKET.legendaryPrice || new Set(give).size !== give.length) return 'bad-payment';
       if (give.some((u) => !state.box.some((m) => m.uid === u))) return 'unknown-pokemon';

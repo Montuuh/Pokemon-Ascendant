@@ -1,7 +1,8 @@
 import type { ContentRegistry, RelicRarity } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import type { BlackMarketState, RunState } from './types';
-import { LEGENDARY_CAP, inPool, isOfferable, rollRelic, rollRelicOffer } from './economy';
+import { rollRelic, rollRelicOffer } from './economy';
+import { rollLegendary } from './legendaries';
 import { priceFor } from './regionModifiers';
 
 // §2.11.6 — Team Rocket's Black Market, beneath the Celadon Game Corner. No door on the City map: a switch behind
@@ -11,7 +12,7 @@ import { priceFor } from './regionModifiers';
 //   the Trader    two stolen Pokémon, one of yours for one of them
 //   the Fence     Rare Candies (a level, on the spot), and it buys relics for money
 //   the Gambler   relics staked on a Rare at a printed chance, the house's edge in plain sight
-//   the showcase  one Legendary, paid for in Pokémon — and the deal closes the market
+//   the showcase  one Legendary Pokémon, paid for in Pokémon — and the deal closes the market
 //
 // Money cannot buy apex power here: the Legendary costs three of your Pokémon, the one price no Center in the
 // same City can refund (a price in HP or Trauma could be healed or bought back two streets away).
@@ -38,13 +39,6 @@ export const BLACK_MARKET = {
   maxChance: 0.9,
   /** The showcase's price: this many Pokémon from the Box, which must keep at least one. */
   legendaryPrice: 3,
-  /**
-   * §7.3.7 — the showcase's Legendary is off the books: it may take a run this many past the hold cap. Measured while
-   * building v0.7.7: a run that took both Gyms' Legendaries reaches Celadon already at the cap of two, so a showcase
-   * bound by it was shut to nearly everyone who found it. The cap is there against a snowball; three Pokémon is a
-   * harder brake than the cap, and only once a run.
-   */
-  overCap: 1,
 };
 
 /** §2.11.6 — what a relic is worth at the market's counters. */
@@ -68,18 +62,18 @@ export function wagerChance(content: ContentRegistry, stake: readonly string[], 
   return Math.round(Math.min(BLACK_MARKET.maxChance, Math.max(BLACK_MARKET.minChance, raw)) * 100) / 100;
 }
 
-/** §7.3.7 — the most Legendaries the showcase will sell up to: the hold cap, plus its one off the books. */
-export const SHOWCASE_CAP = LEGENDARY_CAP + BLACK_MARKET.overCap;
-
-/** §7.3.7 / §2.11.6 — does the run already hold as many Legendaries as the showcase will let it? */
-export const atLegendaryCap = (run: RunState, content: ContentRegistry): boolean =>
-  run.relics.filter((id) => content.relic(id).rarity === 'legendary').length >= SHOWCASE_CAP;
+/**
+ * §2.11.6 — the showcase's Legendary arrives at the level of the strongest of the three you gave: Team Rocket weighs
+ * the price, and the Pokémon is worth what was paid for it.
+ */
+export function showcaseLevel(run: Pick<RunState, 'box'>, giveUids: readonly string[]): number {
+  return Math.max(1, ...run.box.filter((m) => giveUids.includes(m.uid)).map((m) => m.level));
+}
 
 /**
  * §2.11.6 — roll the market for this visit, on its own stream: the two stolen Pokémon, the Gambler's three Rares
  * (topped up from the rarity below for an account that has not opened three, as the Ring's prize is), and one
- * Legendary the run does not hold. The Legendary is shown whatever the cap; the cap is checked at the counter, so
- * a run at the showcase's cap can still stake one at the Gambler and come back for it.
+ * Legendary Pokémon the Box does not hold — every visit (user, 2026-09-28): never sold out, never shut by a cap.
  */
 export function rollBlackMarket(rng: GameRng, content: ContentRegistry, run: RunState): BlackMarketState {
   const pool = run.perks?.relicPool ?? null;
@@ -94,8 +88,7 @@ export function rollBlackMarket(rng: GameRng, content: ContentRegistry, run: Run
     wagerTargets.push(id);
   }
 
-  const legendaries = content.allRelics().filter((r) => r.rarity === 'legendary' && isOfferable(r) && inPool(r, pool) && !run.relics.includes(r.id));
-  const legendary = legendaries.length ? legendaries[rng.range(0, legendaries.length)]!.id : null;
+  const showcase = rollLegendary(rng, run.box);
 
-  return { found: false, entered: false, done: false, trades, traded: false, candies: BLACK_MARKET.candies, wagerTargets, wager: null, legendary };
+  return { found: false, entered: false, done: false, trades, traded: false, candies: BLACK_MARKET.candies, wagerTargets, wager: null, showcase };
 }

@@ -39,6 +39,7 @@ export function fleeTierFor(kind: NodeKind): FleeTier | null {
     case 'elite':
     case 'elite-wild':
     case 'gauntlet':
+    case 'apex':
       return 'elite';
     default:
       return null;

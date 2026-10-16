@@ -143,21 +143,25 @@ test.describe('The counters — §2.11.6', () => {
     expect(run.relics.includes(target)).toBe(run.city!.blackMarket!.wager!.won);
   });
 
-  test('the showcase takes three Pokémon for its Legendary, asks, and the deal shuts the market', async ({ page }) => {
+  test('the showcase takes three Pokémon for a Legendary Pokémon, asks, and the deal shuts the market — §2.11.6, §2.3', async ({ page }) => {
     await inCeladon(page);
     await findIt(page);
     await page.getByTestId('market-showcase').click();
     const run = await page.evaluate(() => window.__ascendant!.run.state()!);
-    const legendary = run.city!.blackMarket!.legendary!;
+    const legendary = run.city!.blackMarket!.showcase!;
+    await expect(page.getByTestId('showcase-legendary')).toBeVisible();
     for (const m of run.box.slice(2, 5)) await page.getByTestId(`showcase-give-${m.uid}`).click();
+    // The Legendary arrives at the level of the strongest handed over.
+    const top = Math.max(...run.box.slice(2, 5).map((m) => m.level));
+    await expect(page.getByTestId('showcase-legendary')).toContainText(`Lv ${top}`);
     await page.screenshot({ path: 'playtest/black-market-showcase.png' });
     await page.getByTestId('btn-showcase').click();
     await expect(page.getByTestId('confirm-showcase')).toBeVisible();
     await page.getByTestId('btn-leave-confirm').click();
     await expect(page.getByTestId('game-corner-screen')).toBeVisible();
     const after = await page.evaluate(() => window.__ascendant!.run.state()!);
-    expect(after.relics).toContain(legendary);
-    expect(after.box).toHaveLength(2);
+    expect(after.box.some((m) => m.speciesId === legendary)).toBe(true);
+    expect(after.box).toHaveLength(3);
     await expect(page.getByTestId('gc-hatch')).toBeVisible();
   });
 });

@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
   arriveAtCity, BIOMES, BIOMES_R2, BIOMES_R3, BLACK_MARKET, boxCapacity, candyPrice, createRun, defaultRunCtx, deserialiseRun, fencePrice,
-  LEGENDARY_CAP, newPartyMon, SHOWCASE_CAP, relicValue, runReducer, SAFARI, serialiseRun, wagerChance, xpToNext,
+  LEGENDARY_CAP, LEGENDARY_IDS, newPartyMon, relicValue, runReducer, SAFARI, serialiseRun, wagerChance, xpToNext,
   type RunAction, type RunState,
 } from '@/sim';
 
@@ -25,10 +25,10 @@ const reject = (s: RunState, a: RunAction) => runReducer(s, a, ctx).rejected ?? 
  * real Box would be, nobody stands at a threshold unevolved: the starter wears the form its level warrants, and the
  * rest are lines that do not evolve.
  */
-const inCity = (regionIndex = 1, { money = 5000, seed = 7, boxSize = 5, level = 24, relics = [] as string[] } = {}): RunState =>
+const inCity = (regionIndex = 1, { money = 5000, seed = 7, boxSize = 5, level = 24, relics = [] as string[], holding = [] as string[] } = {}): RunState =>
   produce({ ...createRun('squirtle', seed, ctx, regionIndex), money }, (d) => {
     d.relics = [...relics];
-    const extra = ['tauros', 'kangaskhan', 'farfetchd', 'lapras', 'snorlax', 'scyther'];
+    const extra = [...holding, 'tauros', 'kangaskhan', 'farfetchd', 'lapras', 'snorlax', 'scyther'];
     d.box[0]!.level = level;
     d.box[0]!.speciesId = level >= 26 ? 'blastoise' : level >= 12 ? 'wartortle' : 'squirtle';
     for (let i = 1; i < boxSize; i++) d.box.push(newPartyMon(extra[i - 1]!, level, content, seed + i));
@@ -77,7 +77,7 @@ describe('What is on offer — §2.11.6', () => {
     for (const id of m.trades) expect(BLACK_MARKET.tradePool).toContain(id);
     expect(m.wagerTargets).toHaveLength(BLACK_MARKET.wagerTargets);
     for (const id of m.wagerTargets) expect(content.relic(id).rarity).toBe('rare');
-    expect(content.relic(m.legendary!).rarity).toBe('legendary');
+    expect(LEGENDARY_IDS).toContain(m.showcase);
     expect(m.candies).toBe(BLACK_MARKET.candies);
     expect(s.cursors.MarketRNG).toBeDefined();
   });
@@ -99,9 +99,14 @@ describe('What is on offer — §2.11.6', () => {
     expect(SAFARI.pools['celadon-city'].rare).toContain('dratini');
   });
 
-  it('TheLegendary_IsOneTheRunDoesNotHold', () => {
-    const held = ofRarity('legendary').slice(0, 1);
-    for (let seed = 1; seed < 20; seed++) expect(inCity(1, { seed, relics: held }).city!.blackMarket!.legendary).not.toBe(held[0]);
+  it('TheLegendary_IsOneTheBoxDoesNotHold', () => {
+    for (let seed = 1; seed < 20; seed++) expect(inCity(1, { seed, holding: ['zapdos'] }).city!.blackMarket!.showcase).not.toBe('zapdos');
+  });
+
+  it('TheLegendary_IsShownEveryVisit_WhateverTheRelicsHeld', () => {
+    // §2.11.6 (user, 2026-09-28) — never sold out, never shut by a cap.
+    const all = ofRarity('legendary');
+    for (let seed = 1; seed < 10; seed++) expect(inCity(1, { seed, relics: all }).city!.blackMarket!.showcase).not.toBeNull();
   });
 });
 
@@ -249,15 +254,17 @@ describe('The Gambler — §2.11.6', () => {
   });
 });
 
-describe('The showcase — §2.11.6, §7.3.7', () => {
-  it('TheLegendary_CostsThreePokemon_AndTheDealClosesTheMarket', () => {
+describe('The showcase — §2.11.6, §2.3', () => {
+  it('TheLegendary_CostsThreePokemon_ArrivesAtTheStrongestGivensLevel_AndTheDealClosesTheMarket', () => {
     let s = downstairs(inCity(1, { boxSize: 5 }));
-    s = produce(s, (d) => { d.box[2]!.heldItem = 'leftovers'; });
-    const legendary = s.city!.blackMarket!.legendary!;
+    s = produce(s, (d) => { d.box[2]!.heldItem = 'leftovers'; d.box[1]!.level = 31; });
+    const legendary = s.city!.blackMarket!.showcase!;
     const give = [s.box[0]!.uid, s.box[1]!.uid, s.box[2]!.uid];
     const after = apply(s, { type: 'market-legendary', giveUids: give });
-    expect(after.relics).toContain(legendary);
-    expect(after.box).toHaveLength(2);
+    const bought = after.box.find((m) => m.speciesId === legendary)!;
+    expect(bought.level).toBe(31);
+    expect(bought.hp).toBeGreaterThan(0);
+    expect(after.box).toHaveLength(3);
     expect(after.bag).toContain('leftovers');
     expect(after.activeUids.length).toBeGreaterThan(0);
     for (const u of after.activeUids) expect(after.box.some((m) => m.uid === u)).toBe(true);
@@ -266,7 +273,7 @@ describe('The showcase — §2.11.6, §7.3.7', () => {
     expect(reject(after, { type: 'enter-black-market' })).toBe('market-closed');
   });
 
-  it('RefusesAPriceTheBoxCannotPay_AndARunAtTheCap', () => {
+  it('RefusesAPriceTheBoxCannotPay', () => {
     const small = downstairs(inCity(1, { boxSize: 3 }));
     expect(reject(small, { type: 'market-legendary', giveUids: small.box.map((m) => m.uid) })).toBe('bad-payment');
     const s = downstairs(inCity(1, { boxSize: 5 }));
@@ -274,23 +281,23 @@ describe('The showcase — §2.11.6, §7.3.7', () => {
     expect(reject(s, { type: 'market-legendary', giveUids: uids.slice(0, 2) })).toBe('bad-payment');
     expect(reject(s, { type: 'market-legendary', giveUids: [uids[0]!, uids[0]!, uids[1]!] })).toBe('bad-payment');
     expect(reject(s, { type: 'market-legendary', giveUids: [uids[0]!, uids[1]!, 'nobody'] })).toBe('unknown-pokemon');
-    // Off the books: a run at the usual cap of two may still buy it, and one at the showcase's own cap may not.
-    const others = ofRarity('legendary').filter((id) => id !== s.city!.blackMarket!.legendary);
-    const atTwo = produce(s, (d) => { d.relics.push(...others.slice(0, LEGENDARY_CAP)); });
-    expect(reject(atTwo, { type: 'market-legendary', giveUids: uids.slice(0, 3) })).toBeNull();
-    const capped = produce(s, (d) => { d.relics.push(...others.slice(0, SHOWCASE_CAP)); });
-    expect(reject(capped, { type: 'market-legendary', giveUids: uids.slice(0, 3) })).toBe('legendary-cap');
+    // No relic cap reaches it: a run holding every Legendary relic it may still buys the Pokémon.
+    const capped = produce(s, (d) => { d.relics.push(...ofRarity('legendary').slice(0, LEGENDARY_CAP + 1)); });
+    expect(reject(capped, { type: 'market-legendary', giveUids: uids.slice(0, 3) })).toBeNull();
   });
 
-  it('StakingALegendaryAtTheGambler_FreesTheSlotForTheShowcase', () => {
-    let s = downstairs(inCity(1, { boxSize: 5 }));
-    const offered = s.city!.blackMarket!.legendary!;
-    const two = ofRarity('legendary').filter((id) => id !== offered).slice(0, SHOWCASE_CAP);
-    s = produce(s, (d) => { d.relics.push(...two); });
-    const uids = s.box.map((m) => m.uid).slice(0, 3);
-    expect(reject(s, { type: 'market-legendary', giveUids: uids })).toBe('legendary-cap');
-    s = apply(s, { type: 'market-wager', target: s.city!.blackMarket!.wagerTargets[0]!, stake: [two[0]!] });
-    expect(reject(s, { type: 'market-legendary', giveUids: uids })).toBeNull();
+  it('TheLegendary_TakesTwoPlaces_SoItJoinsTheTeamOnlyWhereTwoAreFree', () => {
+    // Three given, the two left fill two places: one is free, and the Legendary waits in the Box.
+    const s = downstairs(inCity(1, { boxSize: 5 }));
+    const give = s.box.slice(2, 5).map((m) => m.uid);
+    const kept = produce(s, (d) => { d.activeUids = [d.box[0]!.uid, d.box[1]!.uid]; });
+    const after = apply(kept, { type: 'market-legendary', giveUids: give });
+    const bought = after.box.find((m) => m.speciesId === s.city!.blackMarket!.showcase)!;
+    expect(after.activeUids).not.toContain(bought.uid);
+    // With one standing beside it, it joins.
+    const roomy = produce(s, (d) => { d.activeUids = [d.box[0]!.uid]; });
+    const joined = apply(roomy, { type: 'market-legendary', giveUids: give });
+    expect(joined.activeUids).toContain(joined.box.find((m) => m.speciesId === s.city!.blackMarket!.showcase)!.uid);
   });
 });
 
@@ -305,5 +312,21 @@ describe('Saving — §10.8', () => {
     old.checksum = JSON.parse(serialiseRun({ ...old.run }, 0)).checksum;
     const migrated = deserialiseRun(JSON.stringify(old), content);
     expect(migrated.ok && migrated.run.city!.blackMarket).toBeNull();
+  });
+
+  it('Save_AVersion20Showcase_ARelic_IsClosedForTheVisit_TheRestKept', () => {
+    // §2.11.6 (v0.9.21) — the showcase sells a Pokémon now; a market saved mid-visit with a relic on show keeps the rest.
+    const s = downstairs(inCity());
+    const old = JSON.parse(serialiseRun(s, 0));
+    delete old.run.city.blackMarket.showcase;
+    old.run.city.blackMarket.legendary = ofRarity('legendary')[0];
+    old.version = 20;
+    old.checksum = JSON.parse(serialiseRun({ ...old.run }, 0)).checksum;
+    const migrated = deserialiseRun(JSON.stringify(old), content);
+    expect(migrated.ok).toBe(true);
+    const market = migrated.ok ? migrated.run.city!.blackMarket! : null;
+    expect(market!.showcase).toBeNull();
+    expect('legendary' in market!).toBe(false);
+    expect(market!.trades).toEqual(s.city!.blackMarket!.trades);
   });
 });

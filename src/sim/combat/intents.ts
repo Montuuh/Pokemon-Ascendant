@@ -1,3 +1,4 @@
+import { arenaCleaves } from './arenaRules';
 import type { EnemySetup, MoveDef } from '../content/defs';
 import { doubleActionBudget } from './combo';
 import type { GameRng } from '../rng/gameRng';
@@ -29,7 +30,8 @@ export interface Candidate {
 /** §5.2 — classify a move into an intent kind and pick its slot. */
 export function classifyMove(state: CombatState, enemy: EnemyCombatant, move: MoveDef, ctx: CombatCtx): Intent | null {
   if (move.power > 0) {
-    const targeting = move.targeting ?? 'single';
+    // §2.12.2.1 Thundercloud — from Phase 2 a Legendary's Thunder is a Cleave.
+    const targeting = arenaCleaves(state, enemy, move) ? 'cleave' : (move.targeting ?? 'single');
     if (targeting === 'cleave') return { kind: 'cleave', moveId: move.id, targetSlot: null, hidden: false };
     if (targeting === 'backstrike') {
       const slot = pickBackstrikeSlot(state, enemy, move, ctx);

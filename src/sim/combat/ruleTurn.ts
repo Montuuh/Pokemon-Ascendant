@@ -1,7 +1,8 @@
 import type { RunCtx } from './context';
 import { emit, log } from './context';
 import { dealDamage, heal, onEnterLead } from './damageFlow';
-import { isGrounded } from './fields';
+import { METRONOME_FIELDS } from './arenaRules';
+import { isGrounded, withField } from './fields';
 import { ruleOf, turnsUntil } from './gymRules';
 import { benchIndices, setLead } from './slots';
 import type { CombatState } from './state';
@@ -86,6 +87,19 @@ export function ruleTurnEnd(state: CombatState, ctx: RunCtx): void {
   }
 
   if (rule === 'riptide' && turnsUntil(state, g.riptideEvery) === 1) tide(state, ctx);
+}
+
+/**
+ * §2.12.2.1 Metronome — at the end of every turn the field drawn a turn ago stands, alone, and the next is drawn. A
+ * Defog clears what stands; the next draw puts one back, since the arena is where the fight is.
+ */
+export function arenaTurnEnd(state: CombatState, ctx: RunCtx): void {
+  const next = state.ruleState?.metronomeNext;
+  if (!next) return;
+  state.fields = withField(state.fields.home ? { home: state.fields.home } : {}, next);
+  emit(state, { t: 'field', fields: state.fields });
+  log(state, 'enemy', `Metronome! The arena turns to ${next.replace(/-/g, ' ')}.`);
+  state.ruleState!.metronomeNext = METRONOME_FIELDS[ctx.rng.range(0, METRONOME_FIELDS.length)]!;
 }
 
 /**

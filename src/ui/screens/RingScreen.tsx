@@ -4,7 +4,7 @@ import { useAppStore } from '@/app/store';
 import { markRingGuideSeen, ringGuideSeen } from '@/app/ringGuideSeen';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { boxCapacity, CITIES, rarePickOpen, RING, type RingRung } from '@/sim';
+import { boxCapacity, CITIES, joinTeam, rarePickOpen, RING, type RingRung } from '@/sim';
 import { trainerSprite } from '@/ui/art';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { ConfirmLeave } from '@/ui/components/ConfirmLeave';
@@ -65,7 +65,7 @@ export function RingScreen() {
   const prizes = ring.rungs.map((r) => prizeLabel(r, rare));
   const toggleActive = (uid: string) => {
     const on = run.activeUids.includes(uid);
-    act({ type: 'set-active', uids: on ? run.activeUids.filter((u) => u !== uid) : [...run.activeUids, uid].slice(-3) });
+    act({ type: 'set-active', uids: on ? run.activeUids.filter((u) => u !== uid) : joinTeam(run.activeUids, uid, run.box, content) });
   };
 
   return (

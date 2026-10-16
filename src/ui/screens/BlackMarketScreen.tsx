@@ -4,7 +4,7 @@ import { IconArrowsExchange, IconCheck, IconDice5, IconLock, IconX } from '@tabl
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import {
-  atLegendaryCap, BLACK_MARKET, candyPrice, DEFAULT_PROGRESSION, fencePrice, marketTakesRelic, relicValue, wagerChance,
+  BLACK_MARKET, candyPrice, DEFAULT_PROGRESSION, fencePrice, marketTakesRelic, relicValue, showcaseLevel, wagerChance,
   type BlackMarketState, type PartyMon, type RunState,
 } from '@/sim';
 import { blackMarketArt, itemIcon, spriteOf, trainerSprite } from '@/ui/art';
@@ -58,7 +58,7 @@ export function BlackMarketScreen() {
     trader: market.traded,
     fence: false,
     gambler: !!market.wager,
-    showcase: !market.legendary,
+    showcase: !market.showcase,
   };
 
   return (
@@ -362,10 +362,10 @@ function Showcase({ run, market, act }: CounterProps) {
   const content = getContent();
   const [give, setGive] = useState<string[]>([]);
   const [sure, setSure] = useState(false);
-  if (!market.legendary) return <Done>{MARKET_TEXT.soldOut}</Done>;
-  const r = content.relic(market.legendary);
+  if (!market.showcase) return <Done>{MARKET_TEXT.soldOut}</Done>;
+  // §2.11.6 — a Legendary Pokémon, every visit; it arrives at the level of the strongest you hand over.
+  const s = content.species(market.showcase);
   const price = BLACK_MARKET.legendaryPrice;
-  const atCap = atLegendaryCap(run, content);
   const canPay = run.box.length - price >= 1;
   const full = give.length >= price;
   const toggle = (uid: string) => setGive(give.includes(uid) ? give.filter((u) => u !== uid) : full ? give : [...give, uid]);
@@ -373,20 +373,25 @@ function Showcase({ run, market, act }: CounterProps) {
   return (
     <div className={styles.stack}>
       <div className={styles.targets}>
-        <ItemCard id={r.id} kind="relic" name={r.name} description={r.description} rarity="legendary" footer={<span className={styles.priceTag}>{MARKET_TEXT.priceTag(price)}</span>} />
+        <Tipped as="div" tip={showcaseTip(s.name, price)} className={`${styles.mon} ${styles.showcase}`} data-testid="showcase-legendary">
+          <img className={styles.monSprite} src={spriteOf({ speciesId: s.id }, 'front')} alt="" width={96} height={96} />
+          <span className={`${styles.monName} display`}>{s.name}</span>
+          <span className={styles.types}>{s.types.map((t) => <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />)}</span>
+          <span className={styles.priceTag}>{MARKET_TEXT.arrivesAt(give.length ? showcaseLevel(run, give) : null)}</span>
+        </Tipped>
       </div>
       <p className={styles.ask}>
-        {atCap ? RUN_REJECT_TEXT['legendary-cap'] : canPay ? MARKET_TEXT.pickThree(give.length, price) : MARKET_TEXT.keepOne}
-        <InfoDot tip={showcaseTip(r, price, atCap)} />
+        {canPay ? MARKET_TEXT.pickThree(give.length, price) : MARKET_TEXT.keepOne}
+        <InfoDot tip={showcaseTip(s.name, price)} />
       </p>
       <div className={styles.chips}>
         {run.box.map((m) => {
           const on = give.includes(m.uid);
-          return <MonChip key={m.uid} mon={m} selected={on} disabled={atCap || !canPay || (!on && full)} locked={atCap || !canPay} onClick={() => toggle(m.uid)} testId={`showcase-give-${m.uid}`} />;
+          return <MonChip key={m.uid} mon={m} selected={on} disabled={!canPay || (!on && full)} locked={!canPay} onClick={() => toggle(m.uid)} testId={`showcase-give-${m.uid}`} />;
         })}
       </div>
       <div className={styles.actions}>
-        <button type="button" className={styles.primary} disabled={atCap || give.length !== price} onClick={() => setSure(true)} data-testid="btn-showcase">
+        <button type="button" className={styles.primary} disabled={give.length !== price} onClick={() => setSure(true)} data-testid="btn-showcase">
           {give.length === price ? MARKET_TEXT.handOver(names) : MARKET_TEXT.pickN(price)}
         </button>
       </div>
@@ -394,7 +399,7 @@ function Showcase({ run, market, act }: CounterProps) {
         <ConfirmLeave
           testId="confirm-showcase"
           heading={MARKET_TEXT.dealTitle}
-          body={MARKET_TEXT.dealBody(names, r.name)}
+          body={MARKET_TEXT.dealBody(names, s.name)}
           leaveLabel={MARKET_TEXT.deal}
           exitIcon={false}
           onStay={() => setSure(false)}

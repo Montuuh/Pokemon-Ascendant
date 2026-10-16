@@ -157,7 +157,7 @@ Sixty relics: **50 in the drop pool** (Common, Uncommon, Rare) plus **10 choice-
 | Common | 25 | 60 % | A trainer now and then (15 %), the merchant's wildcard, City Shops, a rare event |
 | Uncommon | 18 | 30 % | The Elite Trainer's pick, City Shops, a rare event |
 | Rare | 7 | 10 % | The Elite Trainer's pick, the first Gym's pick, the beaten Elite Wild, the Ring, a rare Gamble event |
-| **Legendary** | 10 | **never drops** | The Gym's 1-of-3 from the second Gym on, the Summit, and the Black Market's showcase (§7.3.7) |
+| **Legendary** | 10 | **never drops** | The Gym's 1-of-3 from the second Gym on, the Summit, and a beaten Apex (§7.3.7) |
 
 **Relics are scarce** (the user's call, 2026-09-30, v0.8.6). Before it a whole run ended holding about sixteen:
 a trainer dropped one a third of the time, the Elite, the Elite Wild and the Gym each dropped one outright on top
@@ -276,8 +276,8 @@ the relic system and retuned for permanent scope.
 
 | | |
 |---|---|
-| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory from the **second** on, and at the Victory Road Summit. The first Gym's pick is three Rares (v0.8.6: the apex tier arrives mid-run, not after the first boss). Seeded; already-held relics are excluded. And one more, off the books: the Black Market's showcase sells **one** Legendary the run does not hold, for three of your Pokémon (§2.11.6) |
-| **Hold cap** | **Maximum 2 per run** from the picks. At the cap, a pick-moment offers a Rare instead, or a skip. The showcase may take a run to **3**: a run that took both Gyms' Legendaries reaches Celadon at the cap, and a showcase bound by it was shut to nearly everyone who found it (measured in v0.7.7). Three Pokémon is the brake instead |
+| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory from the **second** on, and at the Victory Road Summit. The first Gym's pick is three Rares (v0.8.6: the apex tier arrives mid-run, not after the first boss). Seeded; already-held relics are excluded. And a beaten Apex on Victory Road offers the same 1-of-3 (§2.12.2). The Black Market's showcase sells a Legendary *Pokémon* since v0.9.21, not a relic (§2.11.6) |
+| **Hold cap** | **Maximum 2 per run**. At the cap, a pick-moment offers a Rare instead, or a skip |
 | **Never** | Not in Starting Relics, not in shop random stock, not in the drop pool |
 | **Meta status** | Available from run 1 — Legendary is a rarity class, not a meta tier |
 | **Power** | The six ported Boons were retuned to about **two-thirds** strength, because they now last a whole run instead of five League fights |

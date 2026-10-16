@@ -181,8 +181,19 @@ function migrateMasterBallTo20(run: RunState): void {
   if (run.bag) run.bag = run.bag.filter((r) => r !== id);
 }
 
+/**
+ * §2.11.6 — version 20 → 21: the showcase sells a Legendary Pokémon, not a relic (v0.9.21). A market saved mid-visit
+ * keeps its other counters; its showcase, rolled as a relic, is shown as closed for the rest of that visit.
+ */
+function migrateShowcaseTo21(run: RunState): void {
+  const market = run.city?.blackMarket as (NonNullable<NonNullable<RunState['city']>['blackMarket']> & { legendary?: string | null }) | undefined;
+  if (!market) return;
+  delete market.legendary;
+  market.showcase = null;
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20, 20: migrateShowcaseTo21 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

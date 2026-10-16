@@ -30,6 +30,7 @@ import { effectiveAttack, effectiveDefense } from './stats';
 import { applyStatus, cureStatus } from './status';
 import { effectivenessLabel } from './typeChart';
 import { fieldBlocksStatus, fieldDamageMultiplier, fieldsSuppressed, isGrounded, toxicSpikesSpare } from './fields';
+import { arenaBlocksStage, arenaBlocksStatus, arenaDamageMultiplier, playfulTakes, rekindles } from './arenaRules';
 import { markHurt, ruleDamageMultiplier, ruleEscalatesPoison, ruleHitCap, ruleMeltsDefence, shatterIce } from './gymRules';
 
 // Shared damage / effect pipeline used by player cards and enemy intents.
@@ -75,7 +76,8 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   // §4.3 — the field is one more independent term (§7.3.6).
   const fieldMul = state ? fieldDamageMultiplier(state, attacker, target, move, ctx) : 1;
   // §5.9.5 — and the Leader's rule, the last independent term: Swarm, Rollout and Close Quarters.
-  const ruleMul = state ? ruleDamageMultiplier(state, attacker, target, move, ctx.config) : 1;
+  // §2.12.2.1 — a Legendary's Barrier is one more, on the same footing.
+  const ruleMul = state ? ruleDamageMultiplier(state, attacker, target, move, ctx.config) * arenaDamageMultiplier(state, target, ctx.config) : 1;
   if (state) {
     // §7.3.6 — relic, item, badge and field terms all multiply independently into the same formula.
     itemMul = itemAttackMultiplier(state, attacker, move, ctx.content, { typeMultiplier: raw.typeMultiplier });
@@ -158,6 +160,12 @@ export function strike(
 
   // §5.10.3 — the chill is spent by the attack it blunted.
   if (attacker.chill !== undefined) delete attacker.chill;
+  // §2.12.2.1 Playful — the Legendary becomes what it was hit with.
+  const took = playfulTakes(state, target, move, dealt);
+  if (took) {
+    emit(state, { t: 'type-change', targetUid: target.uid, types: [took] });
+    log(state, 'enemy', `${target.name} plays along — it is ${took[0]!.toUpperCase()}${took.slice(1)} now.`);
+  }
   // §5.9.5 Meltdown — the Leader's hit melts the target's defences a stage.
   if (ruleMeltsDefence(state, attacker, target, dealt, ctx.config)) {
     changeStage(state, target, 'defense', -1);
@@ -342,6 +350,13 @@ export function dealDamage(
   emit(state, { t: 'damage', sourceUid, targetUid: target.uid, amount: dmg, crit: meta.crit, effectiveness: meta.effectiveness, hpAfter: target.hp, cause: meta.cause });
   markHurt(state, target, dmg);
   staggerCombo(state, ctx, sourceUid, target, dmg, meta.effectiveness, meta.cause);
+  // §2.12.2.1 Rekindle — the first time the Legendary falls to its share, it rises: HP back and its status gone.
+  if (rekindles(state, target, ctx.config)) {
+    state.ruleState = { ...(state.ruleState ?? {}), rekindled: true };
+    for (const kind of cureStatus(target, 'all')) emit(state, { t: 'status-cleared', targetUid: target.uid, status: kind, cause: 'cured' });
+    const back = heal(state, target, Math.max(1, Math.floor(target.maxHp * ctx.config.arenaRules.rekindleHeal)), 'ability');
+    log(state, 'enemy', `${target.name} rekindles! (+${back})`);
+  }
 
   if (target.hp === 0) {
     // §7.3.5 Champion's Crest — credit the Pokémon that actually landed the blow, and only for an enemy.
@@ -471,6 +486,11 @@ export function heal(state: CombatState, target: Combatant, amount: number, caus
 
 export function changeStage(state: CombatState, target: Combatant, stat: 'attack' | 'defense' | 'speed', delta: number): void {
   if (target.hp <= 0 || delta === 0) return;
+  // §2.12.2.1 Mist — the Legendary's stats cannot be lowered.
+  if (arenaBlocksStage(state, target, delta)) {
+    log(state, 'system', `The mist protects ${target.name}'s ${stat}.`);
+    return;
+  }
   const before = target.stages[stat];
   target.stages[stat] = Math.max(-6, Math.min(6, before + delta));
   const applied = target.stages[stat] - before;
@@ -505,7 +525,7 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         const roll = fx.chance >= 1 || alwaysRider ? true : ctx.rng.chance(fx.chance);
         if (!roll) break;
         // §6.5.2 — an ability immunity reads exactly like a type immunity to the player; §4.3.3 so does the terrain.
-        if (abilityBlocksStatus(recipient, fx.status, ctx.content) || fieldBlocksStatus(state, recipient, fx.status, ctx.content) || teamGuardBlocksStatus(state, recipient)) {
+        if (abilityBlocksStatus(recipient, fx.status, ctx.content) || fieldBlocksStatus(state, recipient, fx.status, ctx.content) || arenaBlocksStatus(state, recipient, fx.status) || teamGuardBlocksStatus(state, recipient)) {
           emit(state, { t: 'status-immune', targetUid: recipient.uid, status: fx.status });
           log(state, 'system', `${recipient.name} is immune to ${fx.status}.`);
           break;

@@ -14,6 +14,8 @@ export { CATCH, catchOdds, catchRateOf, catchPercent, type CatchOdds } from './c
 export { predictIntentDamage, describeIntent, intentRecipient, summonCount, summonedBy } from './combat/intents';
 export { forecastTurn, forecastOn, forecastIfLead, asLeadDamage, type TurnForecast, type IntentForecast, type ForecastHit } from './combat/forecast';
 export { currentPhase, phaseMarkers, bossArchetype } from './combat/boss';
+export { ARENA_RULE_IDS, METRONOME_FIELDS, arenaCounter, arenaRuleOf, barrierUp, metronomeNext, type ArenaRuleId, type ArenaCounter, type ArenaRuleConfig } from './combat/arenaRules';
+export { ACTIVE_TEAM, APEX, LEGENDARY_ARENAS, LEGENDARY_IDS, fillTeam, hasPlaceFor, isLegendarySpecies, joinTeam, legendariesOpen, placesOf, placesTaken, type LegendaryArena, type LegendaryId } from './run/legendaries';
 export { GYM_RULE_IDS, rolloutTurns, ruleCounter, turnsUntil, isSealed, type GymRuleId, type GymRuleConfig, type RuleCounter } from './combat/gymRules';
 export { slotOccupant, slotToIndex, indexToSlot, lead, benchIndices, aliveTeam, activeEnemy, aliveEnemies, isEnemyLead, resolutionOrder, enemySlotLabel, findCombatant, SLOT_LABEL } from './combat/slots';
 export { effectiveAttack, effectiveDefense, statAtLevel, effectiveMaxHp, hpFraction, isFainted, knownMoves, activeMoves } from './combat/stats';
@@ -31,7 +33,7 @@ export { rememberedMoves, createRun, runReducer, validateRunAction, newPartyMon,
 // §2.1.4, §2.11 — the Cities between Regions.
 export { CASINO, CITIES, REGION_COUNT, RING, betChance, casinoExpectedValue, cityAfter, pocketColour, isFinalRegion, type CityDef } from './run/cities';
 export { SAFARI, afterTurn, canToss, coneOf, lineBlocked, notices, planOf, playerCanStand, rollHunt, rollSafari, throwOdds, tileAt, traitsOf, walkDistance, type MonPlan, type SafariOdds, type SafariTrait, type SafariTraits } from './run/safari';
-export { BLACK_MARKET, SHOWCASE_CAP, atLegendaryCap, candyPrice, fencePrice, relicValue, rollBlackMarket, wagerChance } from './run/blackMarket';
+export { BLACK_MARKET, candyPrice, showcaseLevel, fencePrice, relicValue, rollBlackMarket, wagerChance } from './run/blackMarket';
 export { activeSetups, buildRingScenario, buildScenario, maxHpOf } from './run/encounter';
 export { AID_HEAL_PCT, MONEY_REWARD, PRICES, LEGENDARY_CAP, isOfferable, inPool, rollRelic, rollLegendaryOffer, rollHeldItem, ownedItems, relicMultiplier, benchXpShare, wildRolls, rollShopStock, slotPrice, RELIC_PREMIUM, rollRelicOffer, rarePickOpen, floorRestockable, rerollPrice, therapyPrice, sellPrice } from './run/economy';
 export { usableInField, fieldUseRefusal, applyFieldItem, type FieldUseRefusal } from './run/fieldItems';
@@ -54,7 +56,7 @@ export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } fr
 export { FLEE_RACE, HOLD_OUT, guardById, holdPrizeLine, runnerById, runnerRewardLine, type GuardDef, type HoldPrize, type RunnerDef, type RunnerReward } from './run/objectives';
 export { objectiveTurnsLeft } from './combat/objective';
 export { TRADER, TRADER_PREVIEW, rollTradeOffers, tradeLevel, tradeRefusal, type TradeOffer } from './run/trader';
-export { VICTORY_ROAD, TRAINING_UPGRADES, TRAINING_PREVIEW, SUMMIT_PREVIEW, generateVictoryRoad, trainingOptions, perfectClearBadge, victoryRoadLevel, type TrainingUpgrade } from './run/victoryRoad';
+export { VICTORY_ROAD, TRAINING_UPGRADES, TRAINING_PREVIEW, SUMMIT_PREVIEW, generateVictoryRoad, apexPreview, trainingOptions, perfectClearBadge, victoryRoadLevel, type TrainingUpgrade } from './run/victoryRoad';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';
 
 // §8.7 — achievements. Pure definitions and a pure fold; persistence is the app layer's (achievementStore).

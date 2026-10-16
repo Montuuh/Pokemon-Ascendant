@@ -279,7 +279,7 @@ export function installDevTools(): void {
         const run = useRunStore.getState().run;
         if (!run) return;
         const content = getContent();
-        const map = sim.generateVictoryRoad(new RngStreams(run.seed).get('MapRNG'), content, run.seed);
+        const map = sim.generateVictoryRoad(new RngStreams(run.seed).get('MapRNG'), content, run.seed, run.box);
         useRunStore.setState({
           run: produce(run, (d) => {
             d.regionIndex = 2;
@@ -369,7 +369,7 @@ export function installDevTools(): void {
           let first = goal;
           while (cameFrom.has(first)) first = cameFrom.get(first)!;
 
-          const healthy = run.box.filter((m) => m.hp > 0).slice(0, 3).map((m) => m.uid);
+          const healthy = sim.fillTeam(run.box.filter((m) => m.hp > 0), getContent());
           if (healthy.length) store().dispatch({ type: 'set-active', uids: healthy });
           if (!store().dispatch({ type: 'enter-node', nodeId: first })) break;
           store().beginCombat();

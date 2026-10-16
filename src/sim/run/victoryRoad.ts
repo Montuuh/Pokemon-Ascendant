@@ -2,6 +2,7 @@ import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { ROUTE_LAYERS, WILD_TIERS, evolvedAt, regionContent, wildBandFor, type WildTier } from './region';
 import { ALL_GYMS } from './region';
+import { APEX, LEGENDARY_ARENAS, rollLegendary, type LegendaryId } from './legendaries';
 import type { MapNode, NodeKind, NodePreview, PartyMon, RegionMap, RunState } from './types';
 
 // §2.12 — Victory Road: the last climb between the third Gym and the League. A small map of its own — four columns of
@@ -62,7 +63,7 @@ export function victoryRoadLevel(extra: number): number {
 }
 
 /** §2.12 — Victory Road's map: four columns of three tracks, the Summit last. Deterministic in `rng`. */
-export function generateVictoryRoad(rng: GameRng, content: ContentRegistry, seed: number): RegionMap {
+export function generateVictoryRoad(rng: GameRng, content: ContentRegistry, seed: number, box: readonly PartyMon[] = []): RegionMap {
   const VR = VICTORY_ROAD;
   const tracks = VR.rows.length;
   const pick = <T,>(list: readonly T[]): T => list[Math.min(list.length - 1, Math.floor(rng.range01() * list.length))]!;
@@ -82,6 +83,13 @@ export function generateVictoryRoad(rng: GameRng, content: ContentRegistry, seed
   }
   // The rest: Ace trainers and the cave's wild Pokémon, about half and half.
   for (const col of kinds) for (let t = 0; t < tracks; t++) if (col[t] === 'trainer' && rng.range01() < VR.wildShare) col[t] = 'wild';
+  // §2.12.2 — the Apex: one Legendary the Box does not hold, on one track of the last column — not on every path.
+  const legendary = rollLegendary(rng, box);
+  if (legendary) {
+    const open = [...Array(tracks).keys()].filter((t) => kinds[APEX.column]![t] !== 'training');
+    const t = open[rng.range(0, open.length)];
+    if (t !== undefined) kinds[APEX.column]![t] = 'apex';
+  }
 
   const nodes: Record<string, MapNode> = {};
   const id = (c: number, t: number) => `v${c}-${t}`;
@@ -95,7 +103,7 @@ export function generateVictoryRoad(rng: GameRng, content: ContentRegistry, seed
         next.push(id(c + 1, side));
       }
       const kind = kinds[c]![t]!;
-      nodes[id(c, t)] = { id: id(c, t), layer: c, col: t, row: VR.rows[t]!, kind, next: [...new Set(next)].sort(), preview: previewFor(kind, rng, content, pick) };
+      nodes[id(c, t)] = { id: id(c, t), layer: c, col: t, row: VR.rows[t]!, kind, next: [...new Set(next)].sort(), preview: kind === 'apex' && legendary ? apexPreview(legendary, content) : previewFor(kind, rng, content, pick) };
     }
   }
   nodes[summit] = { id: summit, layer: VR.columns, col: 0, row: VR.rows[1]!, kind: 'summit', next: [], preview: { ...SUMMIT_PREVIEW } };
@@ -110,6 +118,22 @@ export function generateVictoryRoad(rng: GameRng, content: ContentRegistry, seed
     gyms: [],
     // No fork and no river: every track reaches the Summit.
     forkLayer: VR.columns + 1,
+  };
+}
+
+/** §2.12.2 — the Apex's preview: the Legendary itself, where it waits, and the choice it is. */
+export function apexPreview(legendary: LegendaryId, content: ContentRegistry): NodePreview {
+  const arena = LEGENDARY_ARENAS[legendary];
+  const level = victoryRoadLevel(APEX.levelOver);
+  return {
+    title: content.species(legendary).name,
+    detail: arena.place,
+    speciesIds: [legendary],
+    levelBand: [level, level],
+    enemies: [{ species: legendary, level }],
+    icon: 'apex',
+    stage: arena.stage,
+    legendary,
   };
 }
 

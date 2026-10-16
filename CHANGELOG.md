@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.21 — The Legendaries · 2026-10-16
+
+Articuno, Zapdos, Moltres, Mewtwo and Mew join the run.
+
+- **Two places, one body.** A Legendary fills two team places.
+- **The Apex.** One waits on Victory Road: catch it or beat it.
+- **Arenas.** Each fights under its own field and rule.
+- **The Executive.** Sells a Legendary Pokémon for three of yours.
+
 ### v0.9.20 — Victory Road · 2026-10-16
 
 After the third Gym, one last climb before the League.

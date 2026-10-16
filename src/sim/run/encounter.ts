@@ -1,3 +1,4 @@
+import { APEX, LEGENDARY_ARENAS, type LegendaryId } from './legendaries';
 import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { activeMoves, statAtLevel } from '../combat/stats';
@@ -198,6 +199,36 @@ export function buildGauntletScenario(node: MapNode, run: RunState, content: Con
     },
     enemies: (node.preview.enemies ?? []).map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: g.phaseCount })),
     onField: g.onField,
+  };
+}
+
+/**
+ * §2.12.2 — the Apex: a Legendary in its arena (§2.12.2.1), boss-tier and two-phase, its arena's kit. A wild fight by
+ * kind — the balls come with you, it is the catch-or-defeat of §2.8.2 — under its arena's field and rule.
+ */
+export function buildApexScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng): ScenarioDef {
+  const legendary = node.preview.legendary as LegendaryId;
+  const arena = LEGENDARY_ARENAS[legendary];
+  const mon = node.preview.enemies?.[0] ?? { species: legendary, level: node.preview.levelBand[0] };
+  return {
+    id: `run-${node.id}`,
+    name: `${content.species(legendary).name} — ${arena.place}`,
+    description: arena.line,
+    kind: 'wild',
+    stage: arena.stage,
+    seed: rng.cursor,
+    player: {
+      team: activeSetups(run, content),
+      leadIndex: 0,
+      consumables: [...run.consumables],
+      balls: 0,
+      relics: [...run.relics],
+      badges: [...run.badges],
+      ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
+    },
+    enemies: [{ species: mon.species, level: mon.level, tier: 'boss', phaseCount: APEX.phaseCount, moves: [...arena.moves] }],
+    arenaRule: arena.rule,
+    ...(arena.metronome ? { metronome: true } : {}),
   };
 }
 
@@ -437,6 +468,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
         return buildEliteWildScenario(node, run, content, rng);
       case 'gauntlet':
         return buildGauntletScenario(node, run, content, rng);
+      case 'apex':
+        return buildApexScenario(node, run, content, rng);
       // §5.6.5 — a find is a fight only when something guards it.
       case 'cache':
         return node.preview.objective?.kind === 'hold' ? buildGuardScenario(node, run, content, rng) : null;

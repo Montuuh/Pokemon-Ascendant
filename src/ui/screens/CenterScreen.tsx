@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { IconBuildingWarehouse, IconHeartPlus, IconLock, IconSparkles, IconZzz } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { boxCapacity, daycarePrice, runHelpers, therapyPrice, type PartyMon } from '@/sim';
+import { boxCapacity, daycarePrice, joinTeam, runHelpers, therapyPrice, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { MoveManager } from '@/ui/components/MoveManager';
@@ -49,7 +49,7 @@ export function CenterScreen() {
 
   const toggleActive = (uid: string) => {
     const on = run.activeUids.includes(uid);
-    act({ type: 'set-active', uids: on ? run.activeUids.filter((u) => u !== uid) : [...run.activeUids, uid].slice(-3) });
+    act({ type: 'set-active', uids: on ? run.activeUids.filter((u) => u !== uid) : joinTeam(run.activeUids, uid, run.box, content) });
   };
 
   const traumatised = run.box.filter((m) => m.traumaStacks > 0);

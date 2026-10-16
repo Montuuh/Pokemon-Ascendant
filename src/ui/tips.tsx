@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective } from '@/sim';
+import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -230,6 +230,11 @@ const mult = (m: number) => `×${Math.round(m * 100) / 100}`;
 
 /** §4.3.1–§4.3.4 — a Battlefield, with its numbers read off the config, and what answers it. */
 export function fieldTip(id: FieldId, suppressed = false): ReactNode {
+  return fieldTipWith(id, fieldBody(id), suppressed);
+}
+
+/** §4.3 — what one Battlefield does, in one paragraph, for its own tip and for Metronome's next one. */
+export function fieldBody(id: FieldId): string {
   const c = DEFAULT_BATTLE_CONFIG;
   const body: Record<FieldId, string> = {
     'sunny-day': `Fire moves ${mult(c.weatherBoost)}, Water moves ${mult(c.weatherDamp)} — for both sides. Chlorophyll draws one more card on turn 1.`,
@@ -243,7 +248,11 @@ export function fieldTip(id: FieldId, suppressed = false): ReactNode {
     'toxic-spikes': 'Whoever steps into the Lead mid-fight — a swap, a step, a replacement, on either side — is Poisoned, unless it is a Poison-type or not on the ground.',
     'sticky-web': `Whoever steps into the Lead mid-fight, on either side, loses ${c.stickyWebStages} Speed stage — unless it is not on the ground.`,
   };
-  return <Tip title={FIELD_LABEL[id]} body={body[id]} footer={suppressed ? 'Suppressed: a Cloud Nine Pokémon is leading.' : 'A Defog clears it for the rest of the fight.'} />;
+  return body[id];
+}
+
+function fieldTipWith(id: FieldId, text: string, suppressed: boolean): ReactNode {
+  return <Tip title={FIELD_LABEL[id]} body={text} footer={suppressed ? 'Suppressed: a Cloud Nine Pokémon is leading.' : 'A Defog clears it for the rest of the fight.'} />;
 }
 
 /** §4.3.5 — a Home Field: the enemy's own type hits harder, yours gets nothing. */
@@ -944,8 +953,38 @@ export function wagerTip(chance: number, staked: number, target: number): ReactN
 }
 
 /** §2.11.6 / §7.3.7 — the showcase's Legendary and its price in Pokémon. */
-export function showcaseTip(relic: RelicDef, price: number, atCap: boolean): ReactNode {
-  return <Tip title={relic.name} meta={['Legendary', `${price} of your Pokémon`]} body={relic.description} footer={atCap ? `You already carry ${SHOWCASE_CAP} Legendaries — even the Black Market sells no more.` : `Off the books: it can take you past the usual ${LEGENDARY_CAP}, to ${SHOWCASE_CAP}. The deal closes the market — do the other counters first.`} />;
+export function showcaseTip(name: string, price: number): ReactNode {
+  return <Tip title={name} meta={['Legendary Pokémon', `${price} of your Pokémon`]} body={`${name} joins you fresh, at the level of the strongest Pokémon you hand over. In the Active Team a Legendary takes two of the three places: strong, and one body to lose.`} footer="The deal closes the market — do the other counters first." />;
+}
+
+/** §2.12.2.1 — a Legendary's arena rule. */
+export function arenaRuleTip(rule: ArenaRuleId): ReactNode {
+  const owner = (Object.keys(LEGENDARY_ARENAS) as LegendaryId[]).find((id) => LEGENDARY_ARENAS[id].rule === rule);
+  return (
+    <Tip
+      title={ARENA_RULE_LABEL[rule]}
+      meta={owner ? [`${getContent().species(owner).name}'s arena`, 'The whole fight'] : ['An arena rule']}
+      body={arenaRuleText(rule, DEFAULT_BATTLE_CONFIG.arenaRules)}
+      footer="A rule is not a field: Defog and Cloud Nine do not touch it."
+    />
+  );
+}
+
+/** §2.12.2.1 — Mew's Metronome: a new field every turn, the next one shown a turn ahead. */
+export function metronomeTip(next: FieldId | null): ReactNode {
+  return (
+    <Tip
+      title={next ? `${METRONOME_LABEL} — next: ${FIELD_LABEL[next] ?? next}` : METRONOME_LABEL}
+      meta={[LEGENDARY_ARENAS.mew.place, 'Every turn']}
+      body={next ? fieldBody(next) : "The arena's field is redrawn at the end of every turn from all ten Battlefields — it cuts both ways."}
+      footer={next ? 'It stands from the end of this turn; the one after is shown then.' : 'The next field is shown a turn ahead.'}
+    />
+  );
+}
+
+/** §2.3 — a Legendary's two places in the Active Team. */
+export function twoPlacesTip(name: string): ReactNode {
+  return <Tip title="Two places, one body" body={`In the Active Team ${name} fills two of the three places: you go in with it and one partner. Its cards come round often, but there is only one bench to swap to.`} footer="In the Box it is one Pokémon like any other." />;
 }
 
 /** §2.11.2 / §2.9.3 — the re-roll button: the ladder, and why it is off when it is. */

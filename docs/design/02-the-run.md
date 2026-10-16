@@ -266,12 +266,16 @@ There is no mid-combat loadout change.
 XP is a separate question — benched Box Pokémon still earn 75 % of combat XP (§6.2.1), so a Pokémon on the bench
 falls behind but does not fall out of the run.
 
-**A Legendary Pokémon takes two places** (☐ v0.9.21 — the user's call, 2026-10-16, from four options: two places and one
-body; two places and its kit twice; one place and two Box spaces; one place and +1 AP on its cards). In the Active Team
-it fills **two of the three places with one body**: you go in with the Legendary and one partner. The deck is its cards
-(and its Mastery) and the partner's — eight or nine, so its moves come round often — but there is only one bench to
-swap to, and if it falls you are down to one. Strong and fragile at once: the swap, already a decision (Pillar 2),
-becomes the dearest one in the game. In the Box it is one Pokémon like any other.
+**A Legendary Pokémon takes two places** (✅ v0.9.21 — the user's call, 2026-10-16, from four options: two places and
+one body; two places and its kit twice; one place and two Box spaces; one place and +1 AP on its cards). In the Active
+Team it fills **two of the three places with one body**: you go in with the Legendary and one partner. The deck is its
+cards (and its Mastery) and the partner's — eight or nine, so its moves come round often — but there is only one bench
+to swap to, and if it falls you are down to one. Strong and fragile at once: the swap, already a decision (Pillar 2),
+becomes the dearest one in the game. In the Box it is one Pokémon like any other. A Legendary caught or bought joins the
+Active Team only where two places are free, and waits in the Box otherwise; putting one in steps back whoever has
+stood there longest until the places fit. The team's count on the map is in places (*3/3*), and the Legendary's card
+says *2 places*. Code: `run/legendaries.ts` (`ACTIVE_TEAM`, `placesOf`, `placesTaken`, `hasPlaceFor`, `fillTeam`,
+`joinTeam`).
 
 ## §2.3.1 Box overflow — Swap or Skip
 
@@ -1552,13 +1556,12 @@ once per visit, and going back up locks the door.
 | **The Fence** | **Rare Candy**: one level, now, with every move and evolution it brings — the one item no shop sells. Three a visit | 400 ₽ each (Region Modifiers apply) |
 | | …and it **buys relics**: the only way a relic becomes money again | Pays 40 % of the relic's value |
 | **The Gambler** | Three Rares to aim at (the rarity below for an account that has not opened three, as the Ring's prize) | 1–3 of your relics, staked at a **printed chance** of 80 % × stake ÷ prize, from 5 % to 90 %; the stake is lost either way. Once a visit |
-| **The Executive** (the showcase) | One Legendary the run does not hold | **Three of your Pokémon**, and the Box keeps at least one. **The deal closes the market** |
+| **The Executive** (the showcase) | One **Legendary Pokémon** the Box does not hold — every visit, never sold out, never shut by a cap (user, 2026-09-28). It arrives fresh at the level of the strongest Pokémon handed over, and takes two places in the team (§2.3) | **Three of your Pokémon**, and the Box keeps at least one. **The deal closes the market** |
 
 A relic's value at these counters is its shop price — Common 150, Uncommon 300, Rare 600 — and a Legendary 1 200. A
 relic whose charge is spent, or whose loss would leave the Box over its capacity (the Box Expander), is taken by
 neither the Fence nor the Gambler. The Gambler's expectation is 0.8 in relic value: a way to turn relics you do not
-want into a chance at one you do, never a farm (§2.11.5's argument). Staking a Legendary frees its place under the
-cap, and the showcase is there for it.
+want into a chance at one you do, never a farm (§2.11.5's argument).
 
 **Why Pokémon, not HP or Trauma.** The first sketch priced the Legendary in HP or Trauma; the user rejected it
 (2026-09-25): the Pokémon Center two streets away heals the HP free and its Therapy buys the Trauma back, so neither
@@ -1566,11 +1569,12 @@ was a price. A Pokémon handed over is the one cost no building in the City refu
 Bond progress leave with it — and it is what Team Rocket does. The deal closing the market (rather than an HP cost
 that locks the counters) was the user's other half of the idea: the showcase is the last thing you do down there.
 
-**The showcase is off the books** (§7.3.7): its Legendary may take a run to **three**, one past the hold cap.
-Measured while building it: a run that took both Gyms' Legendaries reaches Celadon already holding two, so a showcase
-bound by the cap was shut to nearly everyone who found it (every harness run that reached Celadon in the first block
-held two). Off the books, the harness buys it in 248 of 266 Celadon visits. The cap is there against a snowball;
-three Pokémon is a harder brake than the cap.
+**The showcase sells a Pokémon** (v0.9.21; until then it sold a Legendary *relic*, off the books past the hold cap).
+The user asked for the Executive to sell a Legendary every time (2026-09-28); a relic bound by the cap was shut to
+nearly every run that reached Celadon holding the Gyms' two, and the off-the-books exception that answered it was a
+rule bent for one counter. A Legendary Pokémon needs no cap — the two places it takes are its brake (§2.3), and three
+Pokémon handed over is the price. It is bought, not fought: Team Rocket caught it, and the arena (§2.12.2.1) is the
+Apex's. The measurement below was of the relic; the Pokémon is for the next balance pass.
 
 **Measured, not asserted** (`src/sim/balance/market.test.ts`, 720 runs each way, the harness that has found it
 buying three candies for its Lead and the Legendary for its three lowest-levelled whenever the Box holds five):
@@ -1611,19 +1615,34 @@ two columns, on different tracks — a Gauntlet is never the only way on. Its te
 trainer's is.
 
 ## §2.12.2 🦕 Apex Pokémon
-A single high-rarity species exclusive to Victory Road, already partially evolved or carrying a unique moveset.
-One per run, on a seeded path — **not reachable on every route**.
+
+> ✅ **v0.9.21** — built 2026-10-16. Code: `run/legendaries.ts` (`LEGENDARY_ARENAS`, `APEX`, `rollLegendary`),
+> `apexPreview` and the placement in `generateVictoryRoad`, `buildApexScenario` (`encounter.ts`).
+
+**A Legendary Pokémon**, the one place on the road a run can fight one: **Articuno, Zapdos, Moltres, Mewtwo or Mew**,
+drawn with the map from those the Box does not hold, on **one track of the last column** before the Summit — so not
+on every path, and none at all for a Box that holds all five. It stands **6 levels** over Region 3's last wild band
+(two over a Gauntlet), boss-tier with **two phases**, in its arena (§2.12.2.1) with its arena's kit, and it is a
+**catch-or-defeat** fight as the Elite Wild is (§2.8.2): **catch it** and it joins — two places in the team (§2.3) —
+or **beat it** for a **Legendary relic pick** (1 of 3, as at the Summit). Never both. Elite XP, ₽200, the Elite toll
+to run. *Why a Legendary and not a rare species (delegated, 2026-10-16):* the old Apex — "a high-rarity species
+already evolved" — was the Elite Wild again; the Legendaries had no place to be met in the wild, and the road before
+the League is the place Gen I put them.
 
 ### §2.12.2.1 Legendary arenas
 
-> ☐ **v0.9.21** — designed 2026-10-14 (the user's note 3: "OK, realiza todo el diseño; implementación todavía no, ya
-> que no están los legendarios implementados"). After PokéSurvivor's rifts, where each Legendary waits in an arena of
-> its own type with its own terrain and weather.
+> ✅ **v0.9.21** — designed 2026-10-14 (the user's note 3: "OK, realiza todo el diseño; implementación todavía no, ya
+> que no están los legendarios implementados"), built 2026-10-16. After PokéSurvivor's rifts, where each Legendary
+> waits in an arena of its own type with its own terrain and weather. Code: `combat/arenaRules.ts` (the queries,
+> `METRONOME_FIELDS`, `arenaCounter`), Rekindle and Playful in `damageFlow.ts`, Thundercloud in `intents.ts`,
+> Metronome in `ruleTurn.ts` (`arenaTurnEnd`); `BattleConfig.arenaRules`; UI `RuleChip` (both kinds of rule),
+> `MetronomeChip`; fixtures `legendary-mewtwo-barrier`, `legendary-mew-metronome`.
 
-When the Legendary Pokémon enter the run (v0.9.21 — Victory Road's Apex and the Black Market's Executive), **each one
-is fought in its own arena**: a place the player recognises from Gen I, a **field** set at the fight's start, and
-**one arena rule** — the Legendary's answer to §5.9.5's Leader rules. All three are shown before the fight, on the
-node and its preview (Pillar 1), and the arena is where the fight happens whoever brought you there.
+**Each Legendary is fought in its own arena** — wherever a run fights one, which is Victory Road's Apex (§2.12.2): a
+place the player recognises from Gen I, a **field** set at the fight's start, and **one arena rule** — the
+Legendary's answer to §5.9.5's Leader rules. All three are shown before the fight, on the node and its preview
+(Pillar 1), and the rule rides on the fight's top bar with its count. The Black Market's showcase sells a Legendary
+that Team Rocket already caught: it is bought, not fought (§2.11.6).
 
 | Legendary | Arena (backdrop) | Field (§4.3) | Arena rule | The answer |
 |---|---|---|---|---|
@@ -1641,8 +1660,13 @@ node and its preview (Pillar 1), and the arena is where the fight happens whoeve
   it clears any field. The **arena rule is not a field** — Defog and Cloud Nine do not touch it.
 - No healing before the fight beyond what Victory Road allows (§2.12), and running is the Elite toll (§3.1.2).
 - Every backdrop is already in the game (§9.1.2's real battle backgrounds); Mew's Faraway Island uses the forest until
-  a backdrop of its own is fetched. **Metronome** is the only new field kind — a Battlefield that redraws itself each
-  turn from the existing ten, one turn ahead.
+  a backdrop of its own is fetched. **Metronome** is the only new field kind — a Battlefield that redraws itself at the
+  end of each turn from the existing ten, the next one shown a turn ahead; it opens under one drawn the same way.
+- The numbers (first values, `BattleConfig.arenaRules`): Rekindle at **20 %**, rising by **25 %** of Max HP, once;
+  the Barrier every **third** turn, taking **half** of all damage — the damage preview already holds it.
+- Each fights with its arena's kit, not its learnset's: **Articuno** Blizzard, Ice Beam, Peck, Agility; **Zapdos**
+  Thunder, Drill Peck, Thunder Shock, Agility; **Moltres** Fire Blast, Flamethrower, Sky Attack, Agility; **Mewtwo**
+  Psychic, Swift, Recover, Barrier; **Mew** Psychic, Mega Punch, Transform, Recover. Caught, it learns as its line does.
 
 *Why a rule each (delegated, 2026-10-14):* a Legendary fought on a plain field is a big stat block, and a big stat
 block is the one fight Pillar 1 has nothing to say about. A field plus one rule makes each of the five a different
