@@ -1,3 +1,4 @@
+import type { Volume } from '@/app/settingsStore';
 import type { GymRuleConfig, GymRuleId, RejectReason, RuleCounter, ArenaRuleId, ArenaRuleConfig, ArenaCounter } from '@/sim';
 
 // User-facing strings for the combat screen, gathered for the v0.9 localisation pass.
@@ -160,6 +161,14 @@ export const VICTORY_TEXT = {
   summitHealed: 'Healed in full',
   leagueAhead: 'The League ahead',
   perfectClear: 'Perfect Clear',
+} as const;
+
+/** §9.5 — the sound settings' words: a name for every volume step, or the typecheck says so. */
+export const SOUND_TEXT = {
+  title: 'Sound',
+  music: 'Music',
+  effects: 'Effects',
+  level: { 0: 'Off', 0.33: 'Low', 0.66: 'Medium', 1: 'High' } satisfies Record<Volume, string>,
 } as const;
 
 /** §2.1.6 — the League's own words. */

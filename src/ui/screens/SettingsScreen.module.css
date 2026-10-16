@@ -1,12 +1,13 @@
-/* §9.6 — settings. Deliberately narrow and calm: two decisions, each with its own consequence written out. */
+/* §9.6 — settings. Deliberately narrow and calm: text size with its sample, motion with each option's consequence, and
+   §9.5's two volumes last, their explanation one hover away. */
 
 .root {
   height: 100%;
   display: grid;
-  grid-template-rows: auto auto auto 1fr;
+  align-content: start;
   gap: var(--sp-5);
   padding: var(--sp-5) var(--sp-5) var(--sp-6);
-  background: radial-gradient(120% 80% at 50% 0%, #fdf0dd 0%, var(--surface-0) 70%);
+  background: radial-gradient(120% 80% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
   color: var(--ink-primary);
   overflow-y: auto;
 }
@@ -47,16 +48,25 @@
   margin: 0;
   font-size: var(--type-h3);
 }
-.groupNote {
-  margin: 0;
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
-}
-
 .options {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: var(--sp-3);
+}
+/* A labelled row of options (the two volumes): the label, then its four steps, one line each. */
+.volumeRow {
+  display: grid;
+  grid-template-columns: 6em repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: var(--sp-3);
+}
+.rowLabel {
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+.volumeRow .option {
+  padding: var(--sp-2) var(--sp-4);
+  text-align: center;
 }
 .option {
   display: grid;

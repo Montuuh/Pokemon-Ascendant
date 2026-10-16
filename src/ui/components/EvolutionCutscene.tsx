@@ -1,3 +1,4 @@
+import { playSfx } from '@/ui/audio/sfx';
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type SyntheticEvent } from 'react';
 import { IconPlayerTrackNext } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
@@ -54,6 +55,8 @@ export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fro
     const timers: number[] = [];
     const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
     let t = EVO_MS.intro;
+    // §9.5.3 — the evolution's rise and its chime, on the cutscene's own clock.
+    playSfx('evolve', t / 1000);
     at(t, () => setPhase('whiten'));
     t += EVO_MS.whiten;
     at(t, () => setPhase('trade'));

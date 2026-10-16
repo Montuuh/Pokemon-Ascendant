@@ -12,14 +12,21 @@ import { claimLegacyKey, SETTINGS_KEY } from './storageKeys';
 export const TEXT_SCALES = [0.8, 1, 1.25, 1.5] as const;
 export type TextScale = (typeof TEXT_SCALES)[number];
 export type MotionMode = 'system' | 'reduced' | 'full';
+/** §9.5 / §9.6 — a volume, in four steps: off, low, medium, high. */
+export const VOLUMES = [0, 0.33, 0.66, 1] as const;
+export type Volume = (typeof VOLUMES)[number];
 
 export interface Settings {
   textScale: TextScale;
   motion: MotionMode;
+  /** §9.5 — the effects and the music, each on its own bus. */
+  sfxVolume: Volume;
+  musicVolume: Volume;
 }
 
 const KEY = SETTINGS_KEY;
-const DEFAULTS: Settings = { textScale: 1, motion: 'system' };
+const DEFAULTS: Settings = { textScale: 1, motion: 'system', sfxVolume: 0.66, musicVolume: 0.33 };
+const volumeOr = (v: unknown, fallback: Volume): Volume => (VOLUMES.includes(v as Volume) ? (v as Volume) : fallback);
 
 function load(): Settings {
   claimLegacyKey(KEY);
@@ -30,6 +37,8 @@ function load(): Settings {
     return {
       textScale: TEXT_SCALES.includes(parsed.textScale as TextScale) ? (parsed.textScale as TextScale) : DEFAULTS.textScale,
       motion: parsed.motion === 'reduced' || parsed.motion === 'full' ? parsed.motion : DEFAULTS.motion,
+      sfxVolume: volumeOr(parsed.sfxVolume, DEFAULTS.sfxVolume),
+      musicVolume: volumeOr(parsed.musicVolume, DEFAULTS.musicVolume),
     };
   } catch {
     return DEFAULTS;
@@ -55,7 +64,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
   ...load(),
 
   set: (patch) => {
-    const next: Settings = { textScale: get().textScale, motion: get().motion, ...patch };
+    const next: Settings = { textScale: get().textScale, motion: get().motion, sfxVolume: get().sfxVolume, musicVolume: get().musicVolume, ...patch };
     try {
       localStorage.setItem(KEY, JSON.stringify(next));
     } catch {

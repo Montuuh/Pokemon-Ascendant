@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.23 — Sound.** The game is no longer silent: every sound is synthesised as it plays, with no recordings —
+each card type has its own whoosh, hits land by how effective they were, the Poké Ball wobbles and clicks, and the
+music follows you from Region to Region, through the Cities, up Victory Road and into the League, pressing on when
+your team runs low. Music and Effects volumes are in Settings. Before it,
 **v0.9.22 — The League.** Through the Summit's gate the run reaches the Pokémon League: five doors in a row —
 Bruno, Agatha, Will and Lance of the Elite Four, each on their own type's ground, then Champion Blue with the starter
 that beats yours and a team that hits harder for every ally that falls. Between doors, everyone standing gets a little

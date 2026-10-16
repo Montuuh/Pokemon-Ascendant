@@ -1345,11 +1345,21 @@ micro-rest** to everyone standing; the Champion wins the run. The League Boons s
 whole run 9 % (40 runs a starter; §2.2.1 re-targeted to ~10 %). Sprites `bruno`, `agatha`, `will`, `lance`, `blue`;
 fixture `league-champion`; dev `run.league()`; `e2e/league`.
 
-### v0.9.23 — Sound  ☐
+### v0.9.23 — Sound  ✅ 2026-10-16
 The user's note 12: sound is its own version, before v1.0. §9.5's direction, pulled forward from v1.1: the SFX
 first (card play, hit, super-effective, faint, swap, the ball and its shakes, catch, level-up, evolution, the UI),
 then the music. The fan-game study's cheap path is the first candidate — a Web Audio synthesiser with every sound
 composed in code, no files and nothing of Nintendo's.
+
+**Shipped.** §9.5 as rewritten (`src/ui/audio/`). **The synthesiser**: a tone and a filtered noise on two buses, woken
+by the first gesture, silent before it. **Effects** (§9.5.3): a swish coloured by each of the fifteen types for every
+card, hits by effectiveness and a crit's ping, a sting per status, stat stages, swaps and steps, faints, draws, End
+Turn's bell, a boss's phase, the ball thrown, a wobble per passing check and the click or the burst on the catch
+animation's clock, victory and defeat, level-up, the evolution's rise, a tick for every button — a fight's sounds a
+beat apart in their order (`sfxForEvent`). **Music** (§9.5.4): ten tracks composed in code (`TRACKS`), scheduled a
+beat ahead and cross-faded in 250 ms; the **tension layer** under 30 % team HP. **Settings**: Music and Effects, four
+steps each. Every recipe and every bar is rendered offline and measured in `e2e/audio` (audible, never clipping). One
+League track rather than one per member; SFX subtitles stay v1.1.
 
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,

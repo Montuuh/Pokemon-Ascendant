@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.23 — Sound · 2026-10-16
+
+The game has sound: every effect and song synthesised as it plays.
+
+- **Effects.** Each card type, hits, statuses, the ball, level-ups.
+- **Music.** Per Region, City, Victory Road, League, boss and Champion.
+- **Tension.** Below 30 % team HP the fight's music presses on.
+- **Settings.** Music and Effects volumes, four steps each.
+
 ### v0.9.22 — The League · 2026-10-16
 
 Through the Summit's gate: the Elite Four, then the Champion.

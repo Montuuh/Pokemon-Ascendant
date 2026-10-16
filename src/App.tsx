@@ -23,6 +23,7 @@ import { EvolutionScreen } from '@/ui/screens/EvolutionScreen';
 import { MainMenu } from '@/ui/screens/MainMenu';
 import { MapScreen } from '@/ui/screens/MapScreen';
 import { RewardScreen } from '@/ui/screens/RewardScreen';
+import { useAudioUnlock, useMusicDirector } from '@/ui/audio/useAudio';
 import { TraderScreen } from '@/ui/screens/TraderScreen';
 import { TrainingScreen } from '@/ui/screens/TrainingScreen';
 import { SummitScreen } from '@/ui/screens/SummitScreen';
@@ -125,6 +126,9 @@ function Screens() {
 
 /** The screen router plus the one tooltip layer every screen borrows (see src/ui/tooltip). */
 export function App() {
+  // §9.5 — sound: the first gesture wakes it, the music follows the screen.
+  useAudioUnlock();
+  useMusicDirector();
   return (
     <>
       <Screens />

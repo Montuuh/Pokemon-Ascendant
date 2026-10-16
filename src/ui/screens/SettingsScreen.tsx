@@ -1,6 +1,9 @@
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
-import { TEXT_SCALES, useSettingsStore, type MotionMode, type TextScale } from '@/app/settingsStore';
+import { TEXT_SCALES, useSettingsStore, VOLUMES, type MotionMode, type TextScale, type Volume } from '@/app/settingsStore';
+import { playSfx } from '@/ui/audio/sfx';
+import { SOUND_TEXT } from '@/ui/strings';
+import { soundTip } from '@/ui/tips';
 import { InfoDot, Tip } from '@/ui/tooltip';
 import styles from './SettingsScreen.module.css';
 
@@ -16,11 +19,18 @@ const MOTION_OPTIONS: { id: MotionMode; label: string; note: string }[] = [
 ];
 
 const SCALE_LABEL: Record<TextScale, string> = { 0.8: 'Compact', 1: 'Normal', 1.25: 'Large', 1.5: 'Largest' };
+const VOLUME_ROWS = [
+  { key: 'musicVolume', label: SOUND_TEXT.music, id: 'music' },
+  { key: 'sfxVolume', label: SOUND_TEXT.effects, id: 'sfx' },
+] as const;
 
 export function SettingsScreen() {
   const goTo = useAppStore((s) => s.goTo);
   const textScale = useSettingsStore((s) => s.textScale);
   const motion = useSettingsStore((s) => s.motion);
+  const musicVolume = useSettingsStore((s) => s.musicVolume);
+  const sfxVolume = useSettingsStore((s) => s.sfxVolume);
+  const volumes = { musicVolume, sfxVolume };
   const setSetting = useSettingsStore((s) => s.set);
   const reset = useSettingsStore((s) => s.reset);
 
@@ -58,6 +68,11 @@ export function SettingsScreen() {
         </div>
       </section>
 
+      {/* What the text size looks like, beside the control it previews. */}
+      <p className={styles.sample} data-testid="settings-sample">
+        A Pidgey appeared! Gust is coming for your Lead — 6 damage, and it will not be the last.
+      </p>
+
       <section className={styles.group}>
         <h2 className={styles.groupTitle}>Motion</h2>
         <div className={styles.options} role="group" aria-label="Motion">
@@ -77,9 +92,35 @@ export function SettingsScreen() {
         </div>
       </section>
 
-      <p className={styles.sample} data-testid="settings-sample">
-        A Pidgey appeared! Gust is coming for your Lead — 6 damage, and it will not be the last.
-      </p>
+      {/* §9.5 — the music and the effects, each in four steps; an effects step plays a sample of itself. */}
+      <section className={styles.group}>
+        <h2 className={styles.groupTitle}>
+          {SOUND_TEXT.title}
+          <InfoDot tip={soundTip()} />
+        </h2>
+        {VOLUME_ROWS.map((row) => (
+          <div key={row.key} className={styles.volumeRow} role="group" aria-label={row.label}>
+            <span className={styles.rowLabel}>{row.label}</span>
+            {VOLUMES.map((v) => (
+              <button
+                key={v}
+                type="button"
+                className={`${styles.option} ${volumes[row.key] === v ? styles.on : ''}`}
+                onClick={() => {
+                  setSetting({ [row.key]: v } as { sfxVolume: Volume } | { musicVolume: Volume });
+                  if (row.key === 'sfxVolume') playSfx('ui-click', 0.12);
+                }}
+                aria-pressed={volumes[row.key] === v}
+                data-testid={`volume-${row.id}-${Math.round(v * 100)}`}
+                data-sfx={row.key === 'sfxVolume' ? 'own' : undefined}
+              >
+                <span className={`${styles.optionLabel} display`}>{SOUND_TEXT.level[v]}</span>
+              </button>
+            ))}
+          </div>
+        ))}
+      </section>
+
     </main>
   );
 }

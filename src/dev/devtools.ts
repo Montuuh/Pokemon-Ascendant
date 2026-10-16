@@ -1,3 +1,5 @@
+import { music, renderBar, type TrackId } from '@/ui/audio/music';
+import { recentSfx, renderSfx, SFX, type SfxId } from '@/ui/audio/sfx';
 import { useAccountStore } from '@/app/accountStore';
 import { useAppStore, type Screen } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
@@ -37,6 +39,15 @@ export interface AscendantDevTools {
   version: string;
   dump: () => Record<string, unknown> | null;
   goTo: (screen: Screen) => void;
+  /** §9.5 — what the sound has been asked to play: a test cannot listen, so it reads. */
+  audio: {
+    recent: () => readonly string[];
+    track: () => string | null;
+    /** §9.5.5 — every sound id the game has, and one rendered offline and measured. */
+    ids: () => string[];
+    render: (id: string) => Promise<{ peak: number; rms: number }>;
+    renderBar: (track: string, tension?: boolean) => Promise<{ peak: number; rms: number }>;
+  };
   start: (scenarioId: string, seed?: number) => void;
   dispatch: (action: sim.CombatAction) => boolean;
   auto: (steps?: number) => number;
@@ -150,6 +161,13 @@ export function installDevTools(): void {
       reset: () => useAccountStore.getState().reset(),
     },
     goTo: (screen) => useAppStore.getState().goTo(screen),
+    audio: {
+      recent: () => recentSfx(),
+      track: () => music.track,
+      ids: () => [...Object.keys(SFX), ...sim.POKEMON_TYPES.map((t) => `card-${t}`), ...[...sim.PRIMARY_STATUSES, 'confusion'].map((s) => `status-${s}`)],
+      render: (id) => renderSfx(id as SfxId),
+      renderBar: (track, tension) => renderBar(track as TrackId, tension),
+    },
     start: (id, seed) => combat().start(id, seed),
     dispatch: (action) => combat().dispatch(action),
     state: () => combat().state,

@@ -1,3 +1,4 @@
+import { playSfx } from '@/ui/audio/sfx';
 import { useEffect, useMemo, useState } from 'react';
 import { IconSparkles } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
@@ -41,6 +42,11 @@ export function RewardScreen() {
     const t = setTimeout(() => setFilled(true), 60);
     return () => clearTimeout(t);
   }, []);
+  // §9.5.3 — a level gained is heard as the bars fill.
+  const leveled = !!reward?.levelUps.length;
+  useEffect(() => {
+    if (leveled) playSfx('level-up', 0.3);
+  }, [leveled]);
 
   const rows = useMemo(() => {
     if (!reward) return [];

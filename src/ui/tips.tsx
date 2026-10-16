@@ -749,6 +749,11 @@ export function victoryRoadTip(): ReactNode {
   return <Tip title="Victory Road" body="The last climb before the League: Region 3's strongest, a few levels up, the Gauntlets and the Training Grounds — and no healing until the Summit." footer="The Summit heals everyone and offers a Legendary relic; its gate is one way." />;
 }
 
+/** §9.5 — the sound settings. */
+export function soundTip(): ReactNode {
+  return <Tip title="Sound" body="Every sound in the game is made as it plays — no recordings. Music follows where you are: each Region, the Cities, Victory Road, the League; a fight speeds it up, and it grows tense when your team is low." footer="Sound starts after your first click or key press." />;
+}
+
 /** §2.1.6 — the League, on the map's heading. */
 export function leagueTip(): ReactNode {
   return <Tip title={LEAGUE_TEXT.name} body="Five doors in a row — the Elite Four, then the Champion — one after another, with no path to choose. Nothing is sold and nobody joins; change your team between doors." footer="Beat the Champion and the run is won." />;

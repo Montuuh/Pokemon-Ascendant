@@ -410,38 +410,56 @@ while a fight or its reward screen is up — a fight's own news is its reward sc
 
 # §9.5 Audio
 
+> ✅ **v0.9.23** — built 2026-10-16 (the user's note 12, pulled forward from v1.1). Code: `src/ui/audio/` — `synth.ts`
+> (the Web Audio synthesiser: a tone and a filtered noise, two buses under a master), `sfx.ts` (the recipes and
+> `sfxForEvent`), `music.ts` (the tracks and `notesForBar`), `director.ts` (`trackFor`, `inTension`), `useAudio.ts`
+> (the hooks); the volumes in `settingsStore`; `e2e/audio` renders every sound offline and measures it.
+
 ## §9.5.1 Direction
-Layered orchestral-electronic, themed per Region. Combat audio is multi-stem so it can follow the fight's
-tension; map audio is ambient-forward. Every player action has feedback, every status has a motif, and bosses
-get their own track.
+**Every sound is made as it plays** — a Web Audio synthesiser with two voices, a tone (an oscillator with a pitch glide
+and an envelope) and a filtered noise burst, and no recorded files at all: nothing to license, nothing of Nintendo's,
+and the whole of it a few kilobytes. *Why (the fan-game study's cheap path, 2026-10-14):* a game that plays in a
+browser tab and ships as a portfolio piece gains more from a coherent, small, chip-flavoured voice than from stems it
+could not author. Themed per Region; combat follows the fight's tension; every player action has feedback, every
+status has a motif, and the bosses and the Champion get their own tracks. Sound starts on the first click or key press
+(the browser's rule), and is silent until then.
 
 ## §9.5.2 Combat stems
 
-| Stem | Trigger |
-|---|---|
-| `combat_base` | Always playing |
-| `combat_low_hp` | Team total HP below 30 % |
-| `combat_setup` | The first two turns of a boss fight |
-| `combat_phase` | Boss Phase 2 or 3 |
-| `combat_victory` / `combat_defeat` | Outcome stings |
+| Stem | Trigger | Built as |
+|---|---|---|
+| `combat_base` | Always playing | The fight's track: **combat**, or **boss** for a Gym, an Elite, a League door or a Legendary's arena, or **champion** |
+| `combat_low_hp` | Team total HP below 30 % | The **tension layer**: the bass doubled an octave up, the hats doubled, the kick pushing on the off-beats |
+| `combat_setup` | The first two turns of a boss fight | — (the boss track carries it) |
+| `combat_phase` | Boss Phase 2 or 3 | A **sting** on the phase change: rising, then a hit and a low chord |
+| `combat_victory` / `combat_defeat` | Outcome stings | Two short arpeggios, up and down |
 
-Stems cross-fade over 250 ms.
+A new track cross-fades over the old one in 250 ms; the tension layer is read at every bar.
 
 ## §9.5.3 SFX
-Type-coded card whooshes (Fire crackles, Water splashes) · a soft chime for consumables · a confident step plus
-chord for a manual swap · directional whooshes for Step-Forward and Step-Backward · a soft fall for a faint ·
-type-coded status stings · a crystalline ping for a crit · a heavy layered impact for super-effective · a muted
-thud for resisted · paper shuffle for draws · a solid bell for End Turn · rising tension then an orchestral hit
-for a boss evolution.
+Type-coded card whooshes — a swish under each of the fifteen types' own colour (Fire crackles, Water splashes,
+Electric zaps, Ground rumbles) · a soft chime for consumables · a confident step plus chord for a manual swap ·
+directional whooshes for Step-Forward and Step-Backward · a soft fall for a faint · a status sting each (Burn, Poison,
+Paralysis, Sleep, Freeze, Confusion) · a crystalline ping for a crit · a heavy layered impact for super-effective · a
+muted thud for resisted · a rising or falling triplet for a stat stage · paper shuffle for draws · a solid bell for End
+Turn · rising tension then a hit for a boss's new phase · the ball's throw, a wobble per check that passed and the
+click or the burst, on the catch animation's own clock · a level-up run · the evolution's rise and chime · a soft tick
+for every button. A turn's sounds play a beat apart, in the order they happened.
 
 ## §9.5.4 Music
-Region 1 light flute and strings with birdsong, ~110 BPM major · Region 2 brass, waves and tense strings,
-~115 BPM minor · Region 3 percussion, brass and sub-bass, ~125 BPM modal minor · Cities a warm looped rest-hub
-jingle · Victory Road sparse cinematic strings, ~85 BPM · each League member a unique track, the Champion a
-three-phase dynamic composition.
+Each track is a key, a tempo, a four-bar progression and the patterns its voices play — a lead, a bass, a held pad and
+a little kick, snare and hat — composed in code (`TRACKS`). Region 1 a light flute-like lead over strings, ~110 BPM
+major · Region 2 brass-like and tense, ~115 BPM minor · Region 3 percussion and sub-bass, ~125 BPM modal (dorian) minor
+· Cities and the Hub a warm looped jingle · Victory Road sparse, ~85 BPM · the League a steady minor march, ~130 BPM ·
+a fight ~140 BPM minor · a boss ~150 BPM phrygian · the Champion ~156 BPM dorian · the title a hopeful march. *Divergence
+(2026-10-16):* one League track, not one per member, and the Champion's is one composition with the tension layer
+rather than three phases; a track per member is for the music pass after v1.0.
 
 ## §9.5.5 Mix
-Master −14 LUFS integrated, music −18, SFX −16 peak. Normalised at authoring time.
+Two volumes the player sets — **Music** and **Effects**, each Off / Low / Medium / High (defaults Low and Medium) — over
+a master at 0.8: the music a bed under the effects. Every recipe and every track's bar is **rendered offline and
+measured** (`e2e/audio`): audible (an effect's peak over 1 %, a bar's RMS over 0.5 %) and never clipping (peak ≤ 1).
+The LUFS targets wait for a real mix pass; the synthesiser's levels are the authoring-time normalisation for now.
 
 ---
 
@@ -458,7 +476,7 @@ at polish.
 | **Screen-reader labelling** | v0.2 ✅ | Brought forward from post-v1.0. Every control carries a name, cards read as a sentence rather than a pile of glyphs, and a polite live region narrates the fight and the map. Asserted by `e2e/a11y.spec.ts`, so it cannot rot |
 | **Focus management** | v0.2 ✅ | Every modal takes focus on open, cycles Tab inside itself, and hands focus back on close |
 | **Text size** (80 / 100 / 125 / 150 %) | v0.5 | Layouts have to be built at 150 % from the start or they clip |
-| Basic settings — audio, fullscreen, language | v0.1 ✅ | Shipped |
+| Basic settings — audio, fullscreen, language | v0.1 ✅ | Shipped; the Music and Effects volumes since v0.9.23 (§9.5.5) |
 | Colour-blind palettes and pattern overlays | v1.1 | The shape-not-just-colour rule (§9.1.3.2) is already enforced, which is the hard half |
 | SFX subtitles | v1.1 | Needs the audio pass first |
 | Full key and pad rebinding, two profiles | v1.1 | |
