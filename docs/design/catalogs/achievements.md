@@ -43,9 +43,9 @@
 | 31 | Boss | Gym Sweep | Defeat all 3 Gym Leaders in one run | 🥇 | `badge-awarded` ×3 |
 | 32 | Boss | Flawless Gym | Beat a Gym Leader with no faints | 🥇 | `combat-end(gym)` + faints |
 | 33 | Boss | ~~City Conqueror~~ | 🔒 **Retired 2026-09-22** — the City Gym is gone (§2.12.6). A replacement waits on the Challenge Ring's design (§2.9.4.1) | 🥇 | — |
-| 34 | Boss | Champion ◆ | Defeat the Champion | 💎 | `run-end(win)` |
-| 35 | Boss | Underdog ★◆ | Beat the Champion with no fully-evolved Pokémon | 💎 | `run-end(win)` + team |
-| 36 | Boss | Speedrunner ◆ | Beat the Champion in under 90 minutes | 💎 | `run-end(win)` + timer |
+| 34 | Boss | Champion ✅ v0.9.22 | Defeat the Champion | 💎 | `run-end(win)` — a won run is a Champion beaten |
+| 35 | Boss | Underdog ★ ✅ v0.9.22 | Beat the Champion with no fully-evolved Pokémon | 💎 | `run-end(win)` + `noneFullyEvolved` (the Active Team at the end) |
+| 36 | Boss | Speedrunner ◆ | Beat the Champion in under 90 minutes | 💎 | `run-end(win)` + timer — waits on a run clock the sim does not keep (§10.7: time is an input) |
 | 37 | Boss | Type Tactician (H) | Beat a Gym using only super-effective damage | 🥈 | `damage-dealt` log |
 | 38 | Build Identity | Monotype Master | Win a run with an all-one-type Active Team | 🥇 | `run-end(win)` + team |
 | 39 | Build Identity | Pure Form | Win a run with no evolution | 💎 | `run-end(win)` + evo tally |
@@ -67,7 +67,7 @@ from the Battle Pass track comfortably funds the 50 Tokens the Tier-3 Mastery la
 
 **Shipped state (2026-09-21, v0.6).** 24 of 50 in `achievements.ts`: the ten v0.5 rows plus #8, #12, #18–#21
 (the Mastery category, fed by a `dex-tier-up` event the account fold raises on every promotion), #28, #30,
-#38, #42, #43, #45, #46 and #49. The rest wait on Regions 2–3, the League, the card log and a shiny recruit.
+#38, #42, #43, #45, #46 and #49; v0.9.22 added #34 Champion and #35 Underdog (26 of 50). The rest wait on Regions 2–3, a run clock, the card log and a shiny recruit.
 
 ## Required run-tally surface
 

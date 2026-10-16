@@ -22,6 +22,8 @@ export const GYM_RULE_IDS = [
   'tremor',
   'close-quarters',
   'ice-armour',
+  // §5.12.1 — not a Leader's: the Champion's signature, Full Team Synergy.
+  'synergy',
 ] as const;
 export type GymRuleId = (typeof GYM_RULE_IDS)[number];
 
@@ -53,6 +55,9 @@ export interface GymRuleConfig {
   closeQuartersMelee: number;
   /** Ice Armour — the shield the enemy Lead wears at each Intent phase, as a share of its Max HP. */
   iceArmour: number;
+  /** §5.12.1 Full Team Synergy — the Champion's hits per fallen ally, and the most it reaches. */
+  synergyPerFallen: number;
+  synergyCap: number;
 }
 
 export const ruleOf = (state: Pick<CombatState, 'gymRule'>): GymRuleId | null => state.gymRule ?? null;
@@ -93,12 +98,20 @@ export function ruleDamageMultiplier(state: CombatState, attacker: Combatant, ta
       // Her Lead only: the Pokémon behind it hits as it always does.
       if (!fromEnemy || enemyLead(state)?.uid !== attacker.uid) return 1;
       return 1 + g.rolloutPerTurn * rolloutTurns(state, config);
+    case 'synergy':
+      return fromEnemy ? synergyMultiplier(state, config) : 1;
     case 'close-quarters':
       if (fromEnemy || !isEnemy(state, target) || move.power <= 0) return 1;
       return move.range === 'ranged' ? g.closeQuartersRanged : g.closeQuartersMelee;
     default:
       return 1;
   }
+}
+
+/** §5.12.1 Full Team Synergy — every fallen Champion Pokémon lifts the survivors' hits, to a cap. */
+export function synergyMultiplier(state: CombatState, config: BattleConfig): number {
+  if (ruleOf(state) !== 'synergy') return 1;
+  return 1 + Math.min(config.gymRules.synergyCap, config.gymRules.synergyPerFallen * state.defeatedEnemies.length);
 }
 
 /**
@@ -177,6 +190,10 @@ export function ruleCounter(state: CombatState, config: BattleConfig): RuleCount
     case 'swarm': {
       const waiting = state.enemyQueue.filter((e) => e.hp > 0).length;
       return waiting > 0 ? { kind: 'multiplier', value: 1 + g.swarmPerWaiting * waiting } : null;
+    }
+    case 'synergy': {
+      const m = synergyMultiplier(state, config);
+      return m > 1 ? { kind: 'multiplier', value: m } : null;
     }
     default:
       return null;

@@ -64,7 +64,7 @@ test.describe('Victory Road — §2.12', () => {
     await expect(page.getByTestId('box-boost-squirtle')).toBeVisible();
   });
 
-  test('the Summit heals everyone, and its relic pick is the gate', async ({ page }) => {
+  test('the Summit heals everyone, shows the League ahead, and its relic pick is the gate onto it', async ({ page }) => {
     await onVictoryRoad(page);
     await page.evaluate(() => window.__ascendant!.run.patch((d) => { d.box[1]!.hp = 1; }));
     await stopAt(page, 'summit');
@@ -75,9 +75,14 @@ test.describe('Victory Road — §2.12', () => {
     });
     expect(hurt).toBeGreaterThan(1);
     await expect(page.locator('[data-testid^="summit-offer-"]')).not.toHaveCount(0);
+    // §2.12.4 — the League ahead: five silhouettes and their types, no names.
+    await expect(page.getByTestId('summit-league').locator('li')).toHaveCount(5);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="summit-screen"] img')].every((i) => (i as HTMLImageElement).complete && (i as HTMLImageElement).naturalWidth > 0));
     await page.getByTestId('summit-screen').screenshot({ path: 'playtest/victory-road-summit.png' });
 
     await page.getByTestId('btn-decline-summit-relic').click();
-    await expect.poll(() => page.evaluate(() => window.__ascendant!.run.state()?.outcome ?? null)).toBe('victory');
+    // §2.1.6 — one way, onto the League's five doors.
+    await expect(page.getByTestId('league-hall')).toBeVisible();
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.outcome)).toBe('in-progress');
   });
 });

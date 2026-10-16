@@ -106,11 +106,17 @@ the Summit. The hardest non-boss content in the game and the last window to prep
 
 ## §2.1.6 The League
 
-> 🔒 **Deferred.** The League is designed but not built: it is roadmap v0.9.8, on the multi-enemy fights of v0.8,
-> which it is built on. The spec stands; do not implement ahead of it.
+> ✅ **v0.9.22** — built 2026-10-16. Code: `run/league.ts` (`LEAGUE`, `LEAGUE_MEMBERS`, `generateLeague`,
+> `leagueTeam`, `championAce`), `buildLeagueScenario` (`encounter.ts`), the `enter-league` action and `leaveNode`
+> (`run.ts`); UI `ui/screens/map/LeagueHall.tsx` in the map's place.
 
-Five sequential fights with no map: Elite Four ×4, then the Champion. Between fights, a **micro-rest** restores
-30 % of Effective Max HP. No shop, no recruitment. Defeating the Champion wins the run. Full design: §5.11, §5.12.
+Five sequential fights with no map: Elite Four ×4, then the Champion. The Summit's gate (§2.12.4) opens onto them as
+**five doors in a row** where the map was — one way on from each, no path to choose — and the Box and the team are
+managed between doors as on the map. Each door previews like a Gym: who, the type they are known by, how many
+Pokémon, never which. A League fight is a boss fight: no running (§3.1.2), Leader XP, ₽500; nothing heals in it,
+not even a group's breather. Between fights, a **micro-rest** gives every Pokémon **still standing** 30 % of its
+Effective Max HP; the fallen stay down (a Revive is the way back). No shop, no recruitment. Defeating the Champion
+wins the run; losing any door loses it. Full design: §5.11, §5.12.
 
 ## §2.1.7 End of run
 
@@ -171,10 +177,15 @@ Measured with the whole-run harness's autoplayer, which plays every fight and ev
 |---|---|---|
 | Region 2 cleared, given Region 1 | ~60 % | 40–80 % |
 | Region 3 cleared, given Region 2 | ~50 % | 30–72 % |
-| The whole run | ~17 % | 6–32 % |
+| Victory Road and the League, given Region 3 | ~65 % | 35–92 % |
+| The whole run — the Champion beaten | ~10 % | 4–24 % |
 
 Region 1's own bands are §3.7's (the pacing table). The curve climbs: every Region is a little less likely to
-fall than the one before it, and the full run is roughly one in six for a player who plays like the harness.
+fall than the one before it, and the full run is roughly one in ten for a player who plays like the harness.
+*Rewritten v0.9.22 (delegated, 2026-10-16):* the whole run read ~17 % while it ended at the third Gym; with Victory
+Road and the League after it (§2.12, §2.1.6) it is the Champion that wins it, and the road and the League take about
+a third of the runs that reach them — the first measure, 40 runs a starter: R1 56 % · R2|R1 52 % · R3|R2 49 % ·
+League|R3 65 % · the whole run 9 %. The final balance pass (v1.0) re-reads it at 720 runs.
 
 Four things hold it there. Levels alone did not: v0.7.1 first shipped with the later Regions at their canon
 bands (§2.6.5) and nothing else, and every autoplayed run that beat Gym 1 beat the other two, one or two turns a
@@ -1690,10 +1701,9 @@ without training is allowed.
 ## §2.12.4 🏔️ Summit *(mandatory, final)*
 - **Full HP restore** across the whole Box, and every status cured — the last healing before the League.
 - **A 1-of-3 Legendary relic pick** (§7.3.7), on the loot stream as a Gym's is.
-- **League roster preview** (☐ v0.9.22): the type identities and silhouettes of all five League opponents. Names and
-  movesets stay hidden.
-- **The relic pick is the gate**: taking a relic or leaving them goes through, one way. Until the League is built
-  (v0.9.22), going through **ends the run won**.
+- **League roster preview** (✅ v0.9.22): the type identities and silhouettes of all five League opponents. Names and
+  movesets stay hidden until their doors.
+- **The relic pick is the gate**: taking a relic or leaving them goes through, one way, onto the League (§2.1.6).
 
 ## §2.12.5 League Boons — superseded
 

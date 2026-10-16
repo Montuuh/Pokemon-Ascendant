@@ -107,10 +107,10 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('pc-sheet')).toHaveCount(0);
 
-    // §8.7 — the medal case: twenty-four rows, all visible, none earned; a hidden row keeps its description.
+    // §8.7 — the medal case: every row, all visible, none earned; a hidden row keeps its description.
     await page.getByTestId('pc-tab-medals').click();
-    await expect(page.locator('[data-testid^="achievement-"]')).toHaveCount(25);
-    await expect(page.getByTestId('pc-tab-medals')).toContainText('0 / 25');
+    await expect(page.locator('[data-testid^="achievement-"]')).toHaveCount(27);
+    await expect(page.getByTestId('pc-tab-medals')).toContainText('0 / 27');
     await expect(page.getByTestId('achievement-full-house')).toContainText('???');
     await expect(page.getByTestId('achievement-full-house')).toContainText('hidden');
 

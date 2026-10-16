@@ -53,6 +53,14 @@ const TRAINERS = {
   rocketgruntf: 'rocketgruntf',
   gambler: 'gambler',
   archer: 'archer',
+  // v0.9.22 — the League (§5.11, §5.12): the Elite Four and the Champion. Showdown has no default Agatha, so her
+  // FireRed/LeafGreen sprite stands in, as Lorelei's does; Will (the Psychic seat, since Lorelei leads a Gym here)
+  // and the rest are the default set. The Champion is the Rival, Blue.
+  bruno: 'bruno',
+  agatha: 'agatha-gen3',
+  will: 'will',
+  lance: 'lance',
+  blue: 'blue',
 };
 
 const url = (id) => `https://play.pokemonshowdown.com/sprites/trainers/${id}.png`;

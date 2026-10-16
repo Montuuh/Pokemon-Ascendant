@@ -456,7 +456,7 @@ test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ p
   await page.screenshot({ path: 'playtest/run-town-badge.png' });
 });
 
-test('the third Gym leads to Victory Road, and its Summit ends the run with the summary — §2.1, §2.12', async ({ page }) => {
+test('the third Gym leads to Victory Road, the Summit to the League, and the Champion ends the run with the summary — §2.1, §2.12', async ({ page }) => {
   // Driven through the dev hook: stand the run in Celadon City, leave through the gate into Region 3, and let
   // the walker fight to its Gym. What is under test is the ending, not twelve layers of clicking.
   test.setTimeout(240_000);
@@ -504,6 +504,24 @@ test('the third Gym leads to Victory Road, and its Summit ends the run with the 
     a.run.dispatch({ type: 'begin-combat' });
   });
   await page.getByTestId('btn-decline-summit-relic').click();
+
+  // §2.1.6 — the League's five doors, fought through the reducer: the ending is under test, not five fights.
+  await expect(page.getByTestId('league-hall')).toBeVisible();
+  await page.evaluate(() => {
+    const a = window.__ascendant!;
+    for (let i = 0; i < 5; i++) {
+      a.run.dispatch({ type: 'enter-node', nodeId: a.run.state()!.reachable[0]! });
+      a.run.dispatch({ type: 'begin-combat' });
+      const s = a.run.state()!;
+      a.run.dispatch({ type: 'finish-combat', report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 30, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 6 } });
+      a.run.dispatch({ type: 'claim-reward' });
+      for (let g = 0; g < 6 && a.run.state()!.phase === 'evolution'; g++) {
+        const e = a.run.state()!.pendingEvolutions[0]!;
+        a.run.dispatch({ type: 'choose-branch', uid: e.uid, branchId: e.branchIds[0]! });
+      }
+    }
+    a.goTo('map');
+  });
 
   const victory = page.getByTestId('victory-screen');
   await expect(victory).toBeVisible();

@@ -160,10 +160,13 @@ describe('Run pacing — §2.1, §3.7', () => {
 
   it('Run_EachRegionCostsRuns_InsideItsBand_§2.2.1', { timeout: 180_000 + CURVE_SEEDS * 3_000 }, () => {
     const cleared = [0, 0, 0, 0];
+    let won = 0;
     for (const starter of STARTER_IDS) {
       for (let seed = 1; seed <= CURVE_SEEDS; seed++) {
         const r = autoRun(7000 + seed, starter, ctx, DEFAULT_RUN_POLICY, 3, (f) => fights.push(f));
         cleared[r.regionsCleared]! += 1;
+        // §2.1.6 — the whole run is won at the Champion, past Victory Road and the League.
+        if (r.outcome === 'victory') won += 1;
       }
     }
     const n = CURVE_SEEDS * STARTER_IDS.length;
@@ -171,16 +174,20 @@ describe('Run pacing — §2.1, §3.7', () => {
     const past2 = cleared[2]! + cleared[3]!;
     const r2 = past2 / past1;
     const r3 = cleared[3]! / Math.max(1, past2);
-    const full = cleared[3]! / n;
-    console.log(`regions: R1 ${(past1 / n).toFixed(2)} · R2|R1 ${r2.toFixed(2)} · R3|R2 ${r3.toFixed(2)} · full run ${full.toFixed(2)}`);
+    const full = won / n;
+    const league = won / Math.max(1, cleared[3]!);
+    console.log(`regions: R1 ${(past1 / n).toFixed(2)} · R2|R1 ${r2.toFixed(2)} · R3|R2 ${r3.toFixed(2)} · League|R3 ${league.toFixed(2)} · full run ${full.toFixed(2)}`);
     expect(r2, 'Region 2, given Region 1').toBeGreaterThan(0.4);
     expect(r2, 'Region 2, given Region 1').toBeLessThan(0.8);
     // ~50 runs reach Region 3 in this block of 40 seeds a starter (a standard error near 0.07): v0.9.8 read 0.25 here and
     // 0.44 over CURVE_SEEDS=240, so the floor is a sanity bound, not the target (48 %, tuned at 240).
     expect(r3, 'Region 3, given Region 2').toBeGreaterThan(0.2);
     expect(r3, 'Region 3, given Region 2').toBeLessThan(0.72);
-    expect(full, 'the whole run').toBeGreaterThan(0.06);
-    expect(full, 'the whole run').toBeLessThan(0.32);
+    // §2.2.1 (v0.9.22) — Victory Road and the League cost runs too: about a third of those that beat the third Gym.
+    expect(league, 'Victory Road and the League, given Region 3').toBeGreaterThan(0.35);
+    expect(league, 'Victory Road and the League, given Region 3').toBeLessThan(0.92);
+    expect(full, 'the whole run').toBeGreaterThan(0.04);
+    expect(full, 'the whole run').toBeLessThan(0.24);
   });
 
   it('RegionTwo_PlaysDifferently_NotJustHarder_§2.2', () => {

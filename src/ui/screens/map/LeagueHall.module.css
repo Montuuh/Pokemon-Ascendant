@@ -1,0 +1,132 @@
+/* §2.1.6 — the League's hall in the map's place: five doors in a row, the next one lit, the beaten ones ticked. */
+
+.root {
+  height: 100%;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-subtle);
+  background: var(--route-backdrop);
+  overflow: auto;
+}
+
+/* The Elite Four under one label, the Champion apart. */
+.groups {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: end;
+  gap: var(--sp-5);
+}
+.group {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+}
+.seat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  font-size: var(--type-caption);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.doors {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.door {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  width: 150px;
+  padding: var(--sp-3) var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+}
+.door:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+.next {
+  border-color: var(--accent-action);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-action) 35%, transparent);
+  cursor: pointer;
+}
+.ahead {
+  border-style: dashed;
+  cursor: default;
+}
+.beaten {
+  border-color: var(--accent-positive);
+  cursor: default;
+}
+/* The Champion's door: the last and the heaviest frame. */
+.championGroup .door {
+  border-width: 3px;
+}
+.sprite {
+  image-rendering: pixelated;
+}
+.beaten .sprite {
+  filter: grayscale(0.7);
+}
+.name {
+  font-size: var(--type-small);
+  text-align: center;
+}
+.type {
+  min-height: 18px;
+}
+.many {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.balls {
+  display: inline-flex;
+  gap: 2px;
+}
+.tick {
+  position: absolute;
+  top: calc(var(--sp-3) * -1);
+  right: calc(var(--sp-3) * -1);
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-positive);
+  color: var(--ink-on-accent);
+}
+
+.rest {
+  color: var(--ink-secondary);
+  font-weight: 600;
+}
+
+/* A tall board: the doors and their sprites at twice the sprite's size, whole pixels both times (D9). */
+@media (min-height: 900px) {
+  .door {
+    width: 200px;
+  }
+  .sprite {
+    width: 160px;
+    height: 160px;
+  }
+}

@@ -744,10 +744,10 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
       }
       continue;
     }
-    // §2.12.4 — the Summit: the first Legendary relic on offer, and through the gate.
+    // §2.12.4 — the Summit: the first Legendary relic on offer, and through the gate onto the League (§2.1.6).
     if (phase() === 'summit') {
       step({ type: 'enter-league', relicId: run.pendingSummit?.relics[0] ?? null });
-      break;
+      continue;
     }
     if (phase() === 'event') {
       step({ type: 'choose-event', option: answerEvent(run, policy) });
@@ -868,10 +868,12 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
   }
 
   if (phase() === 'city') regionsCleared = Math.max(regionsCleared, run.regionIndex + 1);
-  if (run.outcome === 'victory') regionsCleared = run.regionIndex + 1;
+  // §2.12 — Victory Road and the League are past the third Gym: a run standing there has cleared all three Regions.
+  if (run.zone || run.outcome === 'victory') regionsCleared = Math.max(regionsCleared, run.regionIndex + 1);
   const depth = run.position ? run.map.nodes[run.position]!.layer + 1 : 0;
   return {
-    outcome: run.outcome === 'victory' || regionsCleared >= regions ? 'victory' : 'defeat',
+    // The whole run (three Regions asked for) is won at the Champion (§2.1.6); a shorter measurement at its last Gym.
+    outcome: run.outcome === 'victory' || (regions < 3 && regionsCleared >= regions) ? 'victory' : 'defeat',
     regionsCleared,
     depth,
     nodesCleared: run.stats.nodesCleared,

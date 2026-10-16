@@ -149,6 +149,7 @@ export const NODE_LABEL: Record<string, string> = {
   training: 'Training Grounds',
   summit: 'The Summit',
   apex: 'Legendary',
+  league: 'League',
 };
 
 /** §2.12 — Victory Road's own words. */
@@ -157,7 +158,25 @@ export const VICTORY_TEXT = {
   gauntletPrize: "The Gauntlet's prize",
   summitLede: 'Take one, or none, and go through the gate.',
   summitHealed: 'Healed in full',
+  leagueAhead: 'The League ahead',
   perfectClear: 'Perfect Clear',
+} as const;
+
+/** §2.1.6 — the League's own words. */
+export const LEAGUE_TEXT = {
+  name: 'Pokémon League',
+  doors: 'The Elite Four and the Champion',
+  doorWord: 'Door',
+  eliteFour: 'Elite Four',
+  champion: 'Champion',
+  hallLabel: 'The Pokémon League, five doors',
+  srHint: 'Choose the next door. Press Escape for the menu.',
+  lockNote: 'The team locks when you enter. Change it in the hall first.',
+  manyTypes: 'Many types',
+  championHint: 'No running, and nothing heals in the fight. Beat him and the run is won.',
+  beaten: 'Beaten',
+  teamOf: (n: number) => `${n} Pokémon`,
+  microRest: (pct: number) => `Between doors: ${pct} % HP back to everyone standing`,
 } as const;
 
 /** §2.12.3 — the Training Grounds' own words. */
@@ -268,6 +287,7 @@ export const GYM_RULE_LABEL: Record<GymRuleId, string> = {
   tremor: 'Tremor',
   'close-quarters': 'Close Quarters',
   'ice-armour': 'Ice Armour',
+  synergy: 'Full Team Synergy',
 };
 
 /** §5.9.5 — what a rule does, in one paragraph, with the numbers read from the config. */
@@ -299,6 +319,8 @@ export function gymRuleText(rule: GymRuleId, g: GymRuleConfig): string {
       return `Your Ranged cards deal ${pct(g.closeQuartersRanged)} against his Pokémon; your Melee cards ${pct(g.closeQuartersMelee)}. Fight at the front: put your hitter in the Lead.`;
     case 'ice-armour':
       return `At each Intent phase her Lead's ice armour is set to ${pct(g.iceArmour)} of its Max HP — it takes damage before HP does and never stacks. A Fire move shatters it whole.`;
+    case 'synergy':
+      return `Each fallen ally empowers his teammates: his Pokémon hit ${pct(g.synergyPerFallen)} harder for every one of them you have beaten, up to +${pct(g.synergyCap)}. His last two take the field together.`;
   }
 }
 
@@ -377,8 +399,11 @@ export const OBJECTIVE_TEXT = {
 } as const;
 
 /** §2.5 / §5.6.5 — what a node is in one line, the same on the map's bubble and the preview card: a find with a guard is a fight. */
-export const nodeHint = (node: { kind: string; preview: { objective?: { kind: string } } }): string =>
-  node.preview.objective?.kind === 'hold' ? OBJECTIVE_TEXT.nodeHint : (NODE_HINT[node.kind] ?? '');
+export const nodeHint = (node: { kind: string; preview: { objective?: { kind: string }; rosterId?: string } }): string =>
+  node.preview.objective?.kind === 'hold' ? OBJECTIVE_TEXT.nodeHint
+    // §2.1.6 — the Champion's door is the last: there is no rest after it, only the run won.
+    : node.kind === 'league' && node.preview.rosterId === 'champion' ? LEAGUE_TEXT.championHint
+    : (NODE_HINT[node.kind] ?? '');
 
 export const NODE_HINT: Record<string, string> = {
   wild: 'Beat them for XP, or throw a ball and take one with you.',
@@ -392,6 +417,7 @@ export const NODE_HINT: Record<string, string> = {
   trader: 'No fight.',
   gym: 'The Gym Leader. Beat it and the next town is yours to rest in.',
   apex: 'Catch it and it joins you, two places in the team; beat it for a Legendary relic pick. Never both.',
+  league: 'No running, and nothing heals in the fight.',
 };
 
 export const RUN_REJECT_TEXT: Record<string, string> = {

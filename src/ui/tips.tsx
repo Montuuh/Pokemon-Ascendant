@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective } from '@/sim';
+import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -272,7 +272,7 @@ export function gymRuleTip(rule: GymRuleId): ReactNode {
   return (
     <Tip
       title={GYM_RULE_LABEL[rule]}
-      meta={gym ? [`${gym.name}'s rule`, 'The whole fight'] : ['A Leader\'s rule']}
+      meta={gym ? [`${gym.name}'s rule`, 'The whole fight'] : rule === 'synergy' ? ['The Champion\'s signature', 'The whole fight'] : ['A Leader\'s rule']}
       body={gymRuleText(rule, DEFAULT_BATTLE_CONFIG.gymRules)}
       footer="A rule is not a field: Defog does not clear it."
     />
@@ -747,6 +747,33 @@ export function nurseTip(): ReactNode {
 /** §2.12 — Victory Road: what it is, and what waits at its top. */
 export function victoryRoadTip(): ReactNode {
   return <Tip title="Victory Road" body="The last climb before the League: Region 3's strongest, a few levels up, the Gauntlets and the Training Grounds — and no healing until the Summit." footer="The Summit heals everyone and offers a Legendary relic; its gate is one way." />;
+}
+
+/** §2.1.6 — the League, on the map's heading. */
+export function leagueTip(): ReactNode {
+  return <Tip title={LEAGUE_TEXT.name} body="Five doors in a row — the Elite Four, then the Champion — one after another, with no path to choose. Nothing is sold and nobody joins; change your team between doors." footer="Beat the Champion and the run is won." />;
+}
+
+/** §2.12.4 — the League ahead, on the Summit: five shapes and their types. */
+export function leagueAheadTip(): ReactNode {
+  const types = LEAGUE_MEMBERS.map((m) => (m.type ? typeName(m.type) : LEAGUE_TEXT.manyTypes.toLowerCase()));
+  return <Tip title={VICTORY_TEXT.leagueAhead} meta={['5 doors', 'One way']} body={`Through the gate: the Elite Four — ${types.slice(0, 4).join(', ')} — then the Champion, with ${types[4]}. Their names and their teams wait behind their doors.`} footer="Pick the relic with them in mind." />;
+}
+
+/** §2.1.6 — the micro-rest between League doors. */
+export function microRestTip(): ReactNode {
+  return <Tip title="Micro-rest" body={`After each door you win, every Pokémon still standing gets ${LEAGUE.microRest} % of its Max HP back. The fallen stay down — a Revive is the only way back.`} footer="The only healing in the League." />;
+}
+
+/** §2.1.6 — one League door: who waits behind it, and where you stand with it. */
+export function leagueDoorTip(node: MapNode, state: 'beaten' | 'next' | 'ahead'): ReactNode {
+  const member = leagueMemberOf(node);
+  const count = node.preview.enemies?.length ?? 0;
+  const body = member?.title === 'Champion'
+    ? `The Champion: ${count} Pokémon over ${LEAGUE_TEXT.manyTypes.toLowerCase()}, the last two together, and each one you beat makes the rest hit harder.`
+    : `${member?.title ?? 'Elite Four'}: ${count} Pokémon, a ${member?.type ? typeName(member.type) : ''} specialist on ${member?.type ? `${typeName(member.type)} home ground` : 'open ground'}. The ace has ${member?.team.at(-1)?.phaseCount ?? 3} phases.`;
+  const footer = state === 'beaten' ? 'Beaten.' : state === 'next' ? 'The next door. Click to look before you go in.' : 'Behind the door before it.';
+  return <Tip title={node.preview.title} meta={[`Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`]} body={body} footer={footer} />;
 }
 
 /** §2.12.4 — the Summit: what it gives, and that the gate is one way. */

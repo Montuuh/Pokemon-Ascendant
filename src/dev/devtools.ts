@@ -104,6 +104,8 @@ export interface AscendantRunTools {
   city: (regionIndex?: number) => void;
   /** §2.12 — stand the run at the foot of Victory Road (Region 3 done), without walking there. */
   victoryRoad: () => void;
+  /** §2.1.6 — stand the run at the League's first door, as the Summit's gate leaves it. */
+  league: () => void;
   /** Edit the run state in place through an Immer draft — for a test that needs a board laid out just so. */
   patch: (recipe: (draft: sim.RunState) => void) => void;
   save: () => void;
@@ -285,6 +287,26 @@ export function installDevTools(): void {
             d.regionIndex = 2;
             d.city = null;
             d.zone = 'victory-road';
+            d.map = map;
+            d.position = null;
+            d.reachable = [...map.entry];
+            d.visited = [];
+            d.pendingNodeId = null;
+            d.phase = 'map';
+          }),
+        });
+        useAppStore.getState().goTo('map');
+      },
+
+      league: () => {
+        const run = useRunStore.getState().run;
+        if (!run) return;
+        const map = sim.generateLeague(run, getContent());
+        useRunStore.setState({
+          run: produce(run, (d) => {
+            d.regionIndex = 2;
+            d.city = null;
+            d.zone = 'league';
             d.map = map;
             d.position = null;
             d.reachable = [...map.entry];

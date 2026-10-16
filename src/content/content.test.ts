@@ -13,7 +13,7 @@ describe('content registry', () => {
     expect(reg.allMoves().length).toBeGreaterThanOrEqual(50);
     expect(reg.allSpecies().length).toBeGreaterThanOrEqual(40);
     expect(reg.allConsumables().length).toBeGreaterThanOrEqual(10);
-    expect(reg.allScenarios()).toHaveLength(21);
+    expect(reg.allScenarios()).toHaveLength(22);
   });
 
   it('every species has portrait, box icon and animated battle sprites on disk', () => {

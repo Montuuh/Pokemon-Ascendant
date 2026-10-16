@@ -17,6 +17,8 @@ export const MONEY_REWARD: Record<string, [number, number]> = {
   gauntlet: [300, 300],
   // §2.12.2 — the Apex pays as the Elite Wild does.
   apex: [200, 200],
+  // §5.11 — an Elite Four member pays a Leader's purse; the Champion's ends the run.
+  league: [500, 500],
   gym: [500, 500],
 };
 

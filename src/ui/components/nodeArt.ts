@@ -1,6 +1,6 @@
 import { getContent } from '@/content/registry';
 import { battleSpriteUrl } from '@/content/schemas/species';
-import { ALL_ELITES, ALL_TRAINERS, TRADER, VICTORY_ROAD, gymById, type MapNode, type RegionMap } from '@/sim';
+import { ALL_ELITES, ALL_TRAINERS, TRADER, VICTORY_ROAD, gymById, type MapNode, type RegionMap, leagueMemberOf } from '@/sim';
 import { itemIcon, mysterySign, routeTile, summitSign, trainerSprite, type NodeArt } from '@/ui/art';
 import { terrainOfNode, type TerrainId } from '@/ui/screens/map/terrain';
 
@@ -51,6 +51,9 @@ export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
     case 'trader':
       return { kind: 'trainer', src: trainerSprite(TRADER.sprite) };
     // §2.12 — Victory Road: the Gauntlet's Ace Trainer, the Training Grounds' Black Belt, the Summit's peak.
+    // §2.1.6 — a League door: its member.
+    case 'league':
+      return { kind: 'trainer', src: trainerSprite(leagueMemberOf(node)?.sprite ?? 'acetrainer') };
     case 'gauntlet':
       return { kind: 'trainer', src: trainerSprite(VICTORY_ROAD.gauntlet.sprite) };
     case 'training':

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { getContent } from '@/content/registry';
 import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
-import { fieldsFor, doubleActorFor, gymById, groupPlanFor, isServiceNode, perfectClearBadge, wildChancesFor, type MapNode, type PartyMon, LEGENDARY_ARENAS, type LegendaryId } from '@/sim';
+import { fieldsFor, doubleActorFor, gymById, groupPlanFor, isServiceNode, perfectClearBadge, wildChancesFor, type MapNode, type PartyMon, LEGENDARY_ARENAS, type LegendaryId, leagueMemberOf } from '@/sim';
 import { FieldChips } from './FieldChips';
 import { RuleChip } from './RuleChip';
 import { MetronomeChip } from './MetronomeChip';
@@ -11,7 +11,7 @@ import { doubleActorTip, groupTip, perfectClearTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { itemIcon, mysterySign, nodeBadge } from '@/ui/art';
 import { nodeArt } from './nodeArt';
-import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_LABEL, nodeHint, VICTORY_TEXT, WILD_TEXT } from '@/ui/strings';
+import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_LABEL, nodeHint, VICTORY_TEXT, WILD_TEXT, LEAGUE_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import { WildPool } from './WildPool';
 import { Money } from './Money';
@@ -75,7 +75,10 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
     return () => window.removeEventListener('keydown', onKey);
   }, [onCancel]);
 
-  const hiddenTeam = node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym' || node.kind === 'gauntlet';
+  const hiddenTeam = node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym' || node.kind === 'gauntlet' || node.kind === 'league';
+  // §2.1.6 — a League door names its member's seat, and the Champion's preview promises his signature (§5.12.1).
+  const member = node.kind === 'league' ? leagueMemberOf(node) : undefined;
+  const kindLabel = member?.title ?? NODE_LABEL[node.kind];
   // §5.6.5 — a runner or a guarded find: the race it is, named on the card.
   const objective = node.preview.objective;
   // A find is a fight only when it is guarded.
@@ -108,8 +111,8 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
             />
           </span>
           <div>
-            {NODE_LABEL[node.kind] !== node.preview.title && (
-              <p className={styles.kind}>{NODE_LABEL[node.kind]}</p>
+            {kindLabel !== node.preview.title && (
+              <p className={styles.kind}>{kindLabel}</p>
             )}
             <h2 className={`${styles.title} display`}>{node.preview.title}</h2>
           </div>
@@ -122,6 +125,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           <FieldChips fields={fields} compact />
           {gym && <RuleChip rule={gym.rule} compact />}
           {arena && <RuleChip rule={arena.rule} compact />}
+          {member?.title === 'Champion' && <RuleChip rule="synergy" compact />}
           {arena?.metronome && <MetronomeChip compact />}
           {/* §5.6.5 — the map promises the fight's other objective before you commit (Pillar 1). */}
           {objective && <ObjectiveChip kind={objective.kind} turns={objective.turns} objective={objective} compact />}
@@ -236,7 +240,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
                 );
               })}
             </ul>
-            <p className={styles.lockNote}>The team locks when you enter. Change it on the map first.</p>
+            <p className={styles.lockNote}>{node.kind === 'league' ? LEAGUE_TEXT.lockNote : 'The team locks when you enter. Change it on the map first.'}</p>
           </>
         )}
 

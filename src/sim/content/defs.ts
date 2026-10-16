@@ -557,6 +557,8 @@ export interface ScenarioDef {
    * a group — the first is the Lead, the rest are supports, and the list's remainder waits to fill a free place.
    */
   onField?: 1 | 2 | 3;
+  /** §5.12 — from the moment this many enemies have fallen, two stand on the field (the Champion's last pair). */
+  pairFrom?: number;
   /** §4.3 — the Battlefield (by category) and any Home Field the fight opens under. */
   fields?: { weather?: 'sunny-day' | 'rain-dance' | 'hail'; terrain?: 'electric-terrain' | 'grassy-terrain' | 'psychic-terrain' | 'misty-terrain'; hazard?: 'sandstorm' | 'toxic-spikes' | 'sticky-web'; home?: PokemonType };
   /**

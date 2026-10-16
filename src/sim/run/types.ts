@@ -10,7 +10,7 @@ import type { WildTier } from './region';
  * (`aid`) and the travelling merchant. The Pokémon Center, the Mart and the Dojo are City buildings (§2.11),
  * reached through `RunState.city`, not map nodes. `cache` is something on the ground (§2.9.5, v0.8.7).
  */
-export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'cache', 'gym', 'trader', 'gauntlet', 'training', 'summit', 'apex'] as const;
+export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'cache', 'gym', 'trader', 'gauntlet', 'training', 'summit', 'apex', 'league'] as const;
 export type NodeKind = (typeof NODE_KINDS)[number];
 
 export interface MapNode {
@@ -534,7 +534,7 @@ export interface RunState {
   /** §2.12.6 — the two Gyms each Region offered, in order: what a Perfect Clear can pay. Absent on older saves. */
   gymsOffered?: string[][];
   /** §2.12 — where the run stands after the third Gym: Victory Road. Absent on the Regions' routes. */
-  zone?: 'victory-road';
+  zone?: 'victory-road' | 'league';
   /** §2.12.4 — the Summit's Legendary relics, while the run stands on it. */
   pendingSummit?: { relics: string[] } | null;
   /** §7.4 — held items not currently equipped. Equipped ones live on their PartyMon. */

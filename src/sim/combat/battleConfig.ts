@@ -184,6 +184,8 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
     closeQuartersRanged: 0.7,
     closeQuartersMelee: 1.1,
     iceArmour: 0.04,
+    synergyPerFallen: 0.05,
+    synergyCap: 0.2,
   },
   // §2.12.2.1 — the arena rules: first values (v0.9.21), for the balance pass.
   arenaRules: {

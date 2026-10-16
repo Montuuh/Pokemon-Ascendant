@@ -1328,10 +1328,22 @@ shown); the rule rides on the top bar with its count (`RuleChip`, `MetronomeChip
 sells a Legendary *Pokémon* every visit, at the strongest given's level — the off-the-books relic and its cap are gone;
 run save v21. Fixtures `legendary-mewtwo-barrier`, `legendary-mew-metronome`; `e2e/legendaries`.
 
-### v0.9.22 — The League  ☐
+### v0.9.22 — The League  ✅ 2026-10-16
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
+
+**Shipped.** §2.1.6, §5.11, §5.12 (`run/league.ts`). The Summit's gate opens onto **five doors in a row** where the map
+was (`LeagueHall` in `MapScreen`; each door previews as a Gym does, the team hidden): **Bruno** (Fighting, Sandstorm),
+**Agatha** (Ghost, Toxic Spikes), **Will** (Psychic, Psychic Terrain — Lorelei leads a Gym here), **Lance** (Dragon,
+Rain), each on its Home Field, two Pokémon then three, the ace three-phase; then **Champion Blue**: Pidgeot, Rhydon,
+Arcanine, then Exeggutor beside his ace together (`pairFrom`), the ace the starter that beats yours, **Full Team
+Synergy** (+5 % a fallen ally, to +20 %) on the top bar. Boss fights: no running, no breather; between doors a **30 %
+micro-rest** to everyone standing; the Champion wins the run. The League Boons stay superseded by the Legendary relics
+(§2.12.5). The Summit shows the five as silhouettes and types. The account pays: medals **Champion** and **Underdog**
+(Speedrunner waits on a run clock). The harness plays through: R1 56 % · R2|R1 52 % · R3|R2 49 % · League|R3 65 % · the
+whole run 9 % (40 runs a starter; §2.2.1 re-targeted to ~10 %). Sprites `bruno`, `agatha`, `will`, `lance`, `blue`;
+fixture `league-champion`; dev `run.league()`; `e2e/league`.
 
 ### v0.9.23 — Sound  ☐
 The user's note 12: sound is its own version, before v1.0. §9.5's direction, pulled forward from v1.1: the SFX

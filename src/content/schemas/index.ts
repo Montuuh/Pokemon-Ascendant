@@ -295,6 +295,7 @@ export const ScenarioSchema = z.object({
   metronome: z.boolean().optional(),
   objective: z.object({ kind: z.enum(['flee', 'hold']), turns: z.number().int().min(1).max(9) }).optional(),
   onField: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
+  pairFrom: z.number().int().min(1).optional(),
   fields: z
     .object({
       weather: z.enum(['sunny-day', 'rain-dance', 'hail']).optional(),

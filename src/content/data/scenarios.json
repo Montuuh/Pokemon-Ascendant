@@ -1034,6 +1034,80 @@
           ]
         }
       ]
+    },
+    {
+      "id": "league-champion",
+      "name": "League — Champion Blue",
+      "description": "The last door (§5.12): five Pokémon, the first three one after another and the last two together; Full Team Synergy lifts his hits 5 % for every one that falls, up to 20 %, counted on the top bar.",
+      "kind": "boss",
+      "stage": "gym",
+      "seed": 2323,
+      "trainer": {
+        "name": "Champion Blue",
+        "sprite": "blue"
+      },
+      "gymRule": "synergy",
+      "pairFrom": 3,
+      "player": {
+        "team": [
+          {
+            "species": "blastoise",
+            "level": 46
+          },
+          {
+            "species": "pidgeot",
+            "level": 45
+          },
+          {
+            "species": "raichu",
+            "level": 45
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "super-potion",
+          "revive"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "pidgeot",
+          "level": 42,
+          "tier": "boss",
+          "phaseCount": 2
+        },
+        {
+          "species": "rhydon",
+          "level": 43,
+          "tier": "boss",
+          "phaseCount": 2
+        },
+        {
+          "species": "arcanine",
+          "level": 43,
+          "tier": "boss",
+          "phaseCount": 2
+        },
+        {
+          "species": "exeggutor",
+          "level": 43,
+          "tier": "boss",
+          "phaseCount": 2,
+          "moves": [
+            "egg-bomb",
+            "psychic",
+            "growth",
+            "amnesia"
+          ]
+        },
+        {
+          "species": "venusaur",
+          "level": 45,
+          "tier": "boss",
+          "phaseCount": 3
+        }
+      ]
     }
   ]
 }

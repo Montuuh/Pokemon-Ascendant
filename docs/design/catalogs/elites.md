@@ -64,17 +64,26 @@ trainer ace. Two phases; Phase 2 raises the catch threshold rather than the defe
 > the catch window exactly when the player reaches for it, punishing the interesting choice. "It is tiring,
 > throw now" is the readable story, and it keeps catching a real alternative to killing.
 
-## 6. Victory Road roster 🔒 v0.8 (§2.12)
+## 6. Victory Road roster ✅ v0.9.20–v0.9.21 (§2.12)
 
 | Node | Content |
 |---|---|
-| Gauntlet | Elite-tier trainer, no pre-heal, 1-of-3 Rare relic. Roster: the Region's unused Specialist + a Rival rematch |
-| Apex Pokémon | a VR-exclusive recruit, partially evolved: `dragonair*` / `kangaskhan*` / `chansey*` (ids reserved) |
-| Training Grounds | no fight; one upgrade (stat / move / level / early evolution / move replacement) |
-| Summit | full heal + a 1-of-3 **Legendary** pick + League roster preview + the one-way gate |
+| Gauntlet | ✅ v0.9.20 — an Ace Trainer with four of Region 3's trainer Pokémon, every one two-phase, two on the field; no healing before or after; 1-of-3 Rare relic |
+| Apex Pokémon | ✅ v0.9.21 — a Legendary (Articuno, Zapdos, Moltres, Mewtwo, Mew) in its arena (§2.12.2.1); the reserved `dragonair*` / `kangaskhan*` / `chansey*` were superseded |
+| Training Grounds | ✅ v0.9.20 — no fight; one upgrade (stat / move / level / early evolution / move replacement) |
+| Summit | ✅ v0.9.22 — full heal + a 1-of-3 **Legendary** pick + League roster preview + the one-way gate |
 
-## 7. League 🔒 deferred
+## 7. League ✅ v0.9.22 (§5.11, §5.12)
 
-Elite Four ×4 + Champion, 21 boss-tier Pokémon total (§5.8.2), micro-rest 30 % HP between fights, Champion
-signature +5 % Attack per fallen ally (cap +20 %, §5.12.1). Ids reserved: `elite-four-1`…`elite-four-4`,
-`champion`. Do not author rosters until the R1→Victory Road loop ships.
+Micro-rest 30 % HP between fights; Champion signature +5 % per fallen ally (cap +20 %, §5.12.1). Levels are over
+Region 3's last wild band (`leagueBase`); every ace three-phase, every other Pokémon two.
+
+| id | Member | Type · Battlefield | Stage | Team (levels over the base) |
+|---|---|---|---|---|
+| `elite-four-1` | Bruno | Fighting · Sandstorm | cave | `onix` +4 · `machamp` +5 |
+| `elite-four-2` | Agatha | Ghost · Toxic Spikes | tower | `arbok` +6 · `gengar` +7 |
+| `elite-four-3` | Will | Psychic · Psychic Terrain | library | `jynx` +7 · `slowbro` +8 · `alakazam` +9 |
+| `elite-four-4` | Lance | Dragon · Rain | sky-pillar | `gyarados` +9 · `aerodactyl` +10 · `dragonite` +11 |
+| `champion` | Blue | — (Full Team Synergy) | gym | `pidgeot` +10 · `rhydon` +11 · `arcanine` +11 · `exeggutor` +11 (Egg Bomb, Psychic, Growth, Amnesia) · the counter-pick starter +13 |
+
+Sprites: Showdown's trainer set — Bruno, Agatha (its FireRed/LeafGreen sprite: there is no default one), Will, Lance and Blue (`npm run art:trainers`).

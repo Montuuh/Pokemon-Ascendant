@@ -137,7 +137,7 @@ describe('Victory Road, the run — §2.12', () => {
     expect(apply(base, { type: 'leave-training' }).box).toEqual(base.box);
   });
 
-  it('Summit_HealsTheWholeBox_OffersRelics_AndTheGateEndsTheRunWon', () => {
+  it('Summit_HealsTheWholeBox_OffersRelics_AndTheGateOpensOntoTheLeague', () => {
     const hurt = structuredClone(onVictoryRoad()) as RunState;
     for (const m of hurt.box) m.hp = 1;
     const s = standOn(hurt, 'summit');
@@ -147,6 +147,11 @@ describe('Victory Road, the run — §2.12', () => {
     const relic = s.pendingSummit!.relics[0]!;
     const after = apply(s, { type: 'enter-league', relicId: relic });
     expect(after.relics).toContain(relic);
-    expect(after.outcome).toBe('victory');
+    // §2.1.6 — one way, onto the League's five doors.
+    expect(after.outcome).toBe('in-progress');
+    expect(after.zone).toBe('league');
+    expect(after.phase).toBe('map');
+    expect(Object.values(after.map.nodes).every((n) => n.kind === 'league')).toBe(true);
+    expect(after.reachable).toEqual(after.map.entry);
   });
 });

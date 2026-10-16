@@ -449,8 +449,12 @@ export function onFaint(state: CombatState, ctx: RunCtx, c: Combatant): void {
     e.intent = null;
     state.enemies = state.enemies.filter((x) => x.uid !== e.uid);
     state.defeatedEnemies.push(e);
-    const next = state.enemies.length < state.onField ? state.enemyQueue.shift() : undefined;
-    if (next) {
+    // §5.12 — the Champion's last pair: from its count of fallen, two places stand open.
+    if (state.pairFrom !== undefined && state.defeatedEnemies.length >= state.pairFrom) state.onField = Math.max(state.onField, 2);
+    const arrived: EnemyCombatant[] = [];
+    while (state.enemies.length < state.onField && state.enemyQueue.length) {
+      const next = state.enemyQueue.shift()!;
+      arrived.push(next);
       state.enemies.push(next);
       emit(state, { t: 'enemy-enter', enemyUid: next.uid });
       log(state, 'enemy', state.trainer || state.onField === 1 ? `${state.trainer?.name ?? 'The enemy'} sent out ${next.name}!` : `A wild ${next.name} joins the fight!`);
@@ -468,7 +472,7 @@ export function onFaint(state: CombatState, ctx: RunCtx, c: Combatant): void {
     }
     // Telegraph immediately so the player can still react with remaining AP (§5.1). After the promotion, so a
     // newcomer's intent is chosen knowing whether it leads.
-    if (next) ctx.declareIntentFor?.(state, next);
+    for (const next of arrived) ctx.declareIntentFor?.(state, next);
   }
 }
 

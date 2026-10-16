@@ -1,3 +1,4 @@
+import { LEAGUE, leagueMemberOf, leagueTeam } from './league';
 import { APEX, LEGENDARY_ARENAS, type LegendaryId } from './legendaries';
 import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
@@ -229,6 +230,36 @@ export function buildApexScenario(node: MapNode, run: RunState, content: Content
     enemies: [{ species: mon.species, level: mon.level, tier: 'boss', phaseCount: APEX.phaseCount, moves: [...arena.moves] }],
     arenaRule: arena.rule,
     ...(arena.metronome ? { metronome: true } : {}),
+  };
+}
+
+/**
+ * §5.11 / §5.12 — a League door: a boss fight with no running (§3.1.2), the member's team as the preview fixed it, the
+ * ace three-phase. The Champion's fight carries its signature (§5.12.1) and its last pair (§5.12).
+ */
+export function buildLeagueScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng): ScenarioDef {
+  const member = leagueMemberOf(node)!;
+  const team = leagueTeam(member, run, content);
+  const champion = member.id === 'champion';
+  return {
+    id: `run-${node.id}`,
+    name: `${member.title} ${member.name}`,
+    description: member.line,
+    kind: 'boss',
+    stage: member.stage,
+    seed: rng.cursor,
+    trainer: { name: champion ? `${member.title} ${member.name}` : member.name, sprite: member.sprite },
+    player: {
+      team: activeSetups(run, content),
+      leadIndex: 0,
+      consumables: [...run.consumables],
+      balls: 0,
+      relics: [...run.relics],
+      badges: [...run.badges],
+      ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
+    },
+    enemies: team,
+    ...(champion ? { gymRule: 'synergy' as const, pairFrom: LEAGUE.championPairFrom } : {}),
   };
 }
 
@@ -470,6 +501,8 @@ export function buildScenario(node: MapNode, run: RunState, content: ContentRegi
         return buildGauntletScenario(node, run, content, rng);
       case 'apex':
         return buildApexScenario(node, run, content, rng);
+      case 'league':
+        return buildLeagueScenario(node, run, content, rng);
       // §5.6.5 — a find is a fight only when something guards it.
       case 'cache':
         return node.preview.objective?.kind === 'hold' ? buildGuardScenario(node, run, content, rng) : null;

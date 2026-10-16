@@ -1,3 +1,4 @@
+import { leagueMemberOf } from './league';
 import { LEGENDARY_ARENAS, type LegendaryId } from './legendaries';
 import type { ContentRegistry, ScenarioDef } from '../content/defs';
 import type { PokemonType } from '../types';
@@ -57,6 +58,11 @@ const FAVOURED: Partial<Record<PokemonType, Battlefield>> = {
 export function fieldsFor(node: MapNode, run: RunState, content: ContentRegistry): Battlefield {
   // §2.12.2.1 — a Legendary's arena opens under its own field, whoever brought you there.
   if (node.kind === 'apex') return node.preview.legendary ? { ...LEGENDARY_ARENAS[node.preview.legendary as LegendaryId].fields } : {};
+  // §5.11 — an Elite fights on its type's Home Field and one Battlefield; the Champion on open ground.
+  if (node.kind === 'league') {
+    const member = leagueMemberOf(node);
+    return member?.type ? { ...(member.battlefield ?? {}), home: member.type } : {};
+  }
   if (!['wild', 'trainer', 'elite', 'gym', 'elite-wild'].includes(node.kind)) return {};
   const out: Battlefield = {};
   // Past the fork only: the lane telegraphs its Gym, and the trunk — where you plan — stays open ground. Measured

@@ -32,7 +32,7 @@ const CATEGORY_LABEL: Record<AchievementDef['category'], string> = {
   evolution: 'Evolution',
   mastery: 'Bond',
   combat: 'Combat',
-  boss: 'Gym Leaders',
+  boss: 'Gym Leaders and the League',
   'build-identity': 'Build identity',
   endurance: 'Endurance',
 };

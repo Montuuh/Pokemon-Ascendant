@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.22 — The League · 2026-10-16
+
+Through the Summit's gate: the Elite Four, then the Champion.
+
+- **Five doors.** Bruno, Agatha, Will, Lance, then Champion Blue.
+- **Micro-rest.** Win a door: 30 % HP back to everyone standing.
+- **The Champion.** Your counter-pick ace; fallen allies make the rest hit harder.
+- **Medals.** Champion and Underdog.
+
 ### v0.9.21 — The Legendaries · 2026-10-16
 
 Articuno, Zapdos, Moltres, Mewtwo and Mew join the run.

@@ -13,8 +13,9 @@ import { NodePreviewCard } from '@/ui/components/NodePreviewCard';
 import { PauseMenu } from '@/ui/components/PauseMenu';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
-import { ROUTE_TEXT, RUN_REJECT_TEXT, VICTORY_TEXT } from '@/ui/strings';
-import { bagTip, ballsTip, forkFooter, forkGymTip, moneyTip, regionTip, victoryRoadTip } from '@/ui/tips';
+import { LEAGUE_TEXT, ROUTE_TEXT, RUN_REJECT_TEXT, VICTORY_TEXT } from '@/ui/strings';
+import { LeagueHall } from './map/LeagueHall';
+import { bagTip, ballsTip, forkFooter, forkGymTip, moneyTip, regionTip, victoryRoadTip, leagueTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
 import { RouteView } from './map/RouteView';
 import styles from './MapScreen.module.css';
@@ -130,12 +131,12 @@ export function MapScreen() {
       <header className={styles.topBar}>
         <div>
           <div className={styles.regionRow}>
-            <h1 className={`${styles.regionName} display`}>{run.zone === 'victory-road' ? VICTORY_TEXT.name : `Region ${run.regionIndex + 1}`}</h1>
-            <InfoDot tip={run.zone === 'victory-road' ? victoryRoadTip() : regionTip(run.regionIndex, run.modifiers.includes('greater-threats'))} />
+            <h1 className={`${styles.regionName} display`}>{run.zone === 'league' ? LEAGUE_TEXT.name : run.zone === 'victory-road' ? VICTORY_TEXT.name : `Region ${run.regionIndex + 1}`}</h1>
+            <InfoDot tip={run.zone === 'league' ? leagueTip() : run.zone === 'victory-road' ? victoryRoadTip() : regionTip(run.regionIndex, run.modifiers.includes('greater-threats'))} />
           </div>
           <p className={styles.progress}>
-            {run.zone !== 'victory-road' && regionName(run.regionIndex) ? `${regionName(run.regionIndex)} · ` : ''}
-            {'Column '}<b className="tabular">{Math.min(standingLayer + 2, run.map.layers)}</b> of <b className="tabular">{run.map.layers}</b>
+            {!run.zone && regionName(run.regionIndex) ? `${regionName(run.regionIndex)} · ` : ''}
+            {run.zone === 'league' ? `${LEAGUE_TEXT.doorWord} ` : 'Column '}<b className="tabular">{Math.min(standingLayer + 2, run.map.layers)}</b> of <b className="tabular">{run.map.layers}</b>
             {' · seed '}
             <span className="tabular">{run.seed}</span>
           </p>
@@ -144,7 +145,7 @@ export function MapScreen() {
         {/* §2.5 — both Gyms, named from the first column. Pillar 1 telegraphs every intent inside a fight; the
             Region's two possible climaxes are the largest thing it can telegraph, and they decide what you recruit
             in the trunk and which side of the Y you lean to. The banner stops offering both past the river. */}
-        {run.zone !== 'victory-road' && (
+        {!run.zone && (
         <div className={styles.fork} data-testid="fork-banner">
           <span className={styles.forkLabel}>{committedLane === null ? 'This route ends at one of' : 'You committed to'}</span>
           <span className={styles.forkGyms}>
@@ -229,10 +230,15 @@ export function MapScreen() {
           />
         </aside>
 
-        <section className={styles.graph} data-testid="map-graph" aria-label={`Region ${run.regionIndex + 1} route map, ${run.map.layers} columns`}>
-          <RouteView run={run} statusOf={statusOf} onEnter={(nodeId) => dispatch({ type: 'enter-node', nodeId })} />
+        <section className={styles.graph} data-testid="map-graph" aria-label={run.zone === 'league' ? LEAGUE_TEXT.hallLabel : `Region ${run.regionIndex + 1} route map, ${run.map.layers} columns`}>
+          {/* §2.1.6 — the League has no map to walk: its five doors stand in the board's place. */}
+          {run.zone === 'league' ? (
+            <LeagueHall run={run} onEnter={(nodeId) => dispatch({ type: 'enter-node', nodeId })} />
+          ) : (
+            <RouteView run={run} statusOf={statusOf} onEnter={(nodeId) => dispatch({ type: 'enter-node', nodeId })} />
+          )}
           <p className="sr-only">
-            {run.position ? 'Choose where to go next.' : 'Pick where the route begins.'} Press Escape for the menu. Tab moves between the nodes you can reach.
+            {run.zone === 'league' ? LEAGUE_TEXT.srHint : `${run.position ? 'Choose where to go next.' : 'Pick where the route begins.'} Press Escape for the menu. Tab moves between the nodes you can reach.`}
           </p>
           {/* §2.9.5 — what a find on the ground held: said once, on the board, then gone. */}
           {foundShown && (

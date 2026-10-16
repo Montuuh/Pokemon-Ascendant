@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.22 — The League.** Through the Summit's gate the run reaches the Pokémon League: five doors in a row —
+Bruno, Agatha, Will and Lance of the Elite Four, each on their own type's ground, then Champion Blue with the starter
+that beats yours and a team that hits harder for every ally that falls. Between doors, everyone standing gets a little
+HP back; beat the Champion and the run is won. Before it,
 **v0.9.21 — The Legendaries.** Articuno, Zapdos, Moltres, Mewtwo and Mew join the run. One waits at the top of
 Victory Road in its own arena — Mewtwo's Barrier in Cerulean Cave, Moltres rising again on Mt. Ember, Mew changing the
 field every turn — to be caught, or beaten for a Legendary relic; Team Rocket's Executive sells one for three of your

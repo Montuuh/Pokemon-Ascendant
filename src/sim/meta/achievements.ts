@@ -50,7 +50,7 @@ export type MetaEvent =
   | { t: 'evolution'; uid: string; /** §8.9 — the species it evolved from, for that species' record. */ fromSpeciesId?: string; toSpeciesId: string }
   | { t: 'badge-awarded'; badgeId: string }
   | { t: 'relic-acquired'; relicId: string; heldCount: number }
-  | { t: 'run-end'; won: boolean; catches: number; badges: number; /** §8.3.2 — for the failed-run formula. */ layersCleared?: number; activeSpecies?: string[]; modifierCount?: number; /** §8.6.1 Soothe Bell — a Trauma Salve was taken this run. */ usedSalve?: boolean; /** §8.7 Monotype Master — the Active Team shared one first type. */ monoType?: boolean; /** §8.7 Minimalist — relics held at the end. */ relicCount?: number; /** §8.6.1 Phoenix Feather — the Region the run ended in (0-based). */ regionIndex?: number; /** §8.3.4 — the ₽ the run ended with, which becomes Tokens. */ moneyLeft?: number }
+  | { t: 'run-end'; won: boolean; catches: number; badges: number; /** §8.3.2 — for the failed-run formula. */ layersCleared?: number; activeSpecies?: string[]; modifierCount?: number; /** §8.6.1 Soothe Bell — a Trauma Salve was taken this run. */ usedSalve?: boolean; /** §8.7 Monotype Master — the Active Team shared one first type. */ monoType?: boolean; /** §8.7 Minimalist — relics held at the end. */ relicCount?: number; /** §8.6.1 Phoenix Feather — the Region the run ended in (0-based). */ regionIndex?: number; /** §8.3.4 — the ₽ the run ended with, which becomes Tokens. */ moneyLeft?: number; /** §8.7 Underdog — no Pokémon in the Active Team at its final form. */ noneFullyEvolved?: boolean }
   /** §5.13.1 — a species reached Familiar. Raised by the account fold, never by the run diff. */
   | { t: 'dex-tier-up'; speciesId: string; tier: 1 }
   /** §6.8.2 — a line crossed a Bond rank. Raised by the account fold. */
@@ -199,6 +199,17 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'flawless-gym', category: 'boss', name: 'Flawless Gym', tier: 'gold', goal: 1,
     description: 'Beat a Gym Leader without a single Pokémon fainting.',
     count: (e) => (e.t === 'combat-end' && e.kind === 'boss' && e.outcome === 'victory' && e.faints === 0 ? 1 : 0),
+  },
+  // §2.1.6 — a run is won at the Champion (v0.9.22), so a won run is a Champion beaten.
+  {
+    id: 'champion', category: 'boss', name: 'Champion', tier: 'platinum', goal: 1,
+    description: 'Defeat the Champion.',
+    count: (e) => (e.t === 'run-end' && e.won ? 1 : 0),
+  },
+  {
+    id: 'underdog', category: 'boss', name: 'Underdog', tier: 'platinum', goal: 1,
+    description: 'Beat the Champion with no fully-evolved Pokémon in your Active Team.',
+    count: (e) => (e.t === 'run-end' && e.won && e.noneFullyEvolved ? 1 : 0),
   },
   // ── Build Identity
   {
@@ -366,6 +377,7 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
       relicCount: after.relics.length,
       regionIndex: after.regionIndex,
       moneyLeft: after.money,
+      noneFullyEvolved: activeSpecies.length > 0 && activeSpecies.every((id) => content.species(id).evolvesTo.length > 0),
     });
   }
 

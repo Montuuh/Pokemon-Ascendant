@@ -20,6 +20,7 @@ import { runnerById } from './objectives';
 import { rollTradeOffers, tradeLevel, tradeRefusal } from './trader';
 import { VICTORY_ROAD, generateVictoryRoad, perfectClearBadge, trainingOptions } from './victoryRoad';
 import { ACTIVE_TEAM, fillTeam, hasPlaceFor, placesTaken } from './legendaries';
+import { LEAGUE, generateLeague } from './league';
 import { BLACK_MARKET, candyPrice, fencePrice, rollBlackMarket, showcaseLevel, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
@@ -672,6 +673,22 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
   const node = draft.map.nodes[nodeId]!;
   advanceFrom(draft, node.id);
   draft.pendingNodeId = null;
+  if (node.kind === 'league') {
+    if (!node.next.length) {
+      // §2.1.6 — the Champion is beaten: the run is won.
+      draft.outcome = 'victory';
+      draft.phase = 'ended';
+      draft.log.push(`${node.preview.title} is beaten. You are the Champion.`);
+      return;
+    }
+    // §2.1.6 — the micro-rest: everyone standing gets a share of Effective Max HP back before the next door.
+    for (const mon of draft.box) {
+      if (mon.hp <= 0) continue;
+      const max = effectiveMax(draft, mon, ctx.content);
+      mon.hp = Math.min(max, mon.hp + Math.max(1, Math.floor((max * LEAGUE.microRest) / 100)));
+    }
+    draft.log.push(`${node.preview.title} is beaten. A moment's rest before the next door: ${LEAGUE.microRest} % back to everyone standing.`);
+  }
   if (node.kind === 'gym') {
     // §5.10 — the Badge, before the run is marked won, so a save taken at the summary already has it.
     const gym = node.lane !== undefined ? gymById(draft.map.gyms[node.lane] ?? GYM.id) : GYM;
@@ -967,7 +984,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const won = report.outcome === 'victory' || report.outcome === 'caught';
         const extra = Math.max(0, (report.fielded ?? 1) - 1);
         // §2.12 — Victory Road heals nobody until the Summit: a Gauntlet gives back nothing, not even a group's breather.
-        const healPct = won && node?.kind !== 'gauntlet' ? victoryHealPct(draft, ctx.content) + Math.min(GROUP_BREATHER.cap, extra * GROUP_BREATHER.perEnemy) : 0;
+        // §2.1.6 — in the League the micro-rest between doors is the only healing; a fight there gives back nothing itself.
+        const healPct = won && node?.kind !== 'gauntlet' && node?.kind !== 'league' ? victoryHealPct(draft, ctx.content) + Math.min(GROUP_BREATHER.cap, extra * GROUP_BREATHER.perEnemy) : 0;
 
         // §8.6.1 Cleanse Tag's discovery counts statuses taken across the whole run.
         draft.stats.statusesTaken += report.tally?.statusesTaken ?? 0;
@@ -1075,7 +1093,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // relic multiplier (§7.3.3 Lucky Egg Token, Exp Share).
         // §2.8.2 — an Elite Wild pays elite XP whichever way it ended; the catch is the *premium* path, not
         // a discount on the fight.
-        const tier = node.kind === 'gym' ? 'boss'
+        const tier = node.kind === 'gym' || node.kind === 'league' ? 'boss'
           : node.kind === 'elite' || node.kind === 'elite-wild' || node.kind === 'gauntlet' || node.kind === 'apex' ? 'elite'
           : node.kind === 'trainer' ? 'trainer' : 'wild';
         // §5.6.2 — a companion called for help is one more enemy on the field, and pays like one.
@@ -1537,15 +1555,19 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
-      // §2.12.4 — the Summit's Legendary relic, and the League's gate. Until the League is built, the gate ends the run won.
+      // §2.12.4 — the Summit's Legendary relic, and the League's gate: one way, onto five doors in a row (§2.1.6).
       case 'enter-league': {
         if (action.relicId) acquireRelic(draft, action.relicId, ctx.content);
         draft.pendingSummit = null;
         advanceFrom(draft, draft.pendingNodeId!);
         draft.pendingNodeId = null;
-        draft.outcome = 'victory';
-        draft.phase = 'ended';
-        say(draft, 'Through the gate: the League is ahead. The run is won.');
+        draft.zone = 'league';
+        draft.map = generateLeague(draft, ctx.content);
+        draft.position = null;
+        draft.reachable = [...draft.map.entry];
+        draft.visited = [];
+        draft.phase = 'map';
+        say(draft, 'Through the gate: the Pokémon League. Four of the Elite Four, then the Champion.');
         break;
       }
 

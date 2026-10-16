@@ -85,6 +85,8 @@ describe('Balance envelope (auto-player)', () => {
   });
 
   it('no fixture drags past 30 turns on average', () => {
-    for (const r of rows) expect(r.avgTurns, r.scenario).toBeLessThan(30);
+    // §5.12 — the Champion is five boss Pokémon and eleven phases in one fight, the game's last and longest by design;
+    // it gets a cap of its own. Everything else stays under 30.
+    for (const r of rows) expect(r.avgTurns, r.scenario).toBeLessThan(r.scenario === 'league-champion' ? 40 : 30);
   });
 });

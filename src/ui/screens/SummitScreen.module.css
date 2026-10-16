@@ -19,3 +19,31 @@
   font-weight: 700;
   color: var(--ink-secondary);
 }
+
+/* §2.12.4 — the League ahead, as silhouettes: who waits is a shape and a type until its door. One hover for the row. */
+.leagueRow {
+  display: flex;
+  justify-content: center;
+}
+.league {
+  list-style: none;
+  margin: var(--sp-3) 0 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-3);
+}
+.member {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+}
+.silhouette {
+  image-rendering: pixelated;
+  filter: brightness(0);
+  opacity: 0.75;
+}
+.many {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}

@@ -305,6 +305,8 @@ export interface CombatState {
   enemies: EnemyCombatant[];
   /** §5.6 — how many enemies stand on the field at once (1 = one after another). */
   onField: number;
+  /** §5.12 — from this many fallen, two stand on the field. Absent everywhere but the Champion. */
+  pairFrom?: number;
   /** §4.3 — the Battlefield and any Home Field standing. Empty when the fight has none. */
   fields: FieldState;
   /** §5.9.5 — the Gym Leader's rule, for the whole fight. Absent in every fight but a Gym. */

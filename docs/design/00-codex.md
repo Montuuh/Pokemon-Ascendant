@@ -5,7 +5,7 @@
 > or an edge case anywhere. **When this file and a topic file disagree, the topic file wins** and this one needs
 > regenerating.
 >
-> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen, its cards and the formation (§9.2) as of 2026-10-15; the title screen (§9.13), fights with another objective (§5.6.5) and the route Trader (§2.9.6) built as of 2026-10-15; Victory Road (§2.12) and the Legendaries (§2.3, §2.12.2) built as of 2026-10-16. Regenerate the affected section whenever a
+> **Reflects canon as of 2026-09-19**, after the full design pass; §2 (the Cities) and §8.9.2 (the unmet silhouette) as of 2026-09-23; the Safari Zone (§2.11.6) as of 2026-09-24; the Ring as a building and the Black Market (§2.9.4.1, §2.11.0, §2.11.6, §7.3.7) as of 2026-09-25; the Game Corner's Roulette (§2.11.5), the Daycare, the PC Box and egg moves (§2.11.1, §2.9.4.2) as of 2026-09-28; multi-enemy fights, reach and the honest intent (§5.6, §5.2, §9.2.4–§9.2.6, §2.6.4.1) as of 2026-09-29; acting twice and calling for help (§5.6.1, §5.6.2) and groups placed across the run (§5.6.3) as of 2026-09-29; field effects live (§4.3, §2.6.1) as of 2026-09-30; consumables that are spent and scarcer relics (§3.5, §7.2–§7.3, §2.7.2, §2.11.2.3) as of 2026-09-30. The route revamp (§2.5, §2.9, §9.3) as of 2026-10-02; the balance pass (§2.2.1, §5.9.3, §2.9.4.1) as of 2026-10-05; the Wild Areas' pools and roll (§2.6.1–§2.6.3) as of 2026-10-08; the Leader's rule (§5.9.5), fights with another objective (§5.6.5), the route Trader (§2.9.6) and Legendary arenas (§2.12.2.1) as of 2026-10-14; the combat screen, its cards and the formation (§9.2) as of 2026-10-15; the title screen (§9.13), fights with another objective (§5.6.5) and the route Trader (§2.9.6) built as of 2026-10-15; Victory Road (§2.12), the Legendaries (§2.3, §2.12.2) and the League (§2.1.6, §5.11, §5.12) built as of 2026-10-16. Regenerate the affected section whenever a
 > topic changes meaningfully, and bump that date.
 
 ---
@@ -75,9 +75,12 @@ Pokémon.
 - **Victory Road** (✅ v0.9.20): four columns of three tracks to the Summit, Region 3 raised 2 levels, no Pokémon
   Center. Gauntlet ×1–2 (an Ace Trainer's four two-phase Pokémon, no heal before or after, 1-of-3 Rare; winning it
   with nobody fainting pays a passed-by Gym's Badge once a run), Training Grounds ×1–2 (one Pokémon, one of five
-  upgrades), the Apex recruit (v0.9.21), Summit (full heal + 1-of-3 Legendary + League preview; its gate ends the run
-  won until the League).
-- **League** 🔒 deferred: 5 fights, 30 % micro-rest between them.
+  upgrades), the Apex Legendary (v0.9.21), Summit (full heal + 1-of-3 Legendary + the League's five in silhouette;
+  its gate opens onto the League).
+- **League** (✅ v0.9.22): five doors where the map was — Bruno (Fighting), Agatha (Ghost), Will (Psychic), Lance
+  (Dragon), then Champion Blue (five over many types, his ace the starter that beats yours, the last two together, Full
+  Team Synergy +5 % a fallen ally to +20 %); each Elite on its Home Field and one Battlefield; no running; a 30 %
+  micro-rest to everyone standing between doors. Beating the Champion wins the run.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
   numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier on Attack only — an enemy's HP is

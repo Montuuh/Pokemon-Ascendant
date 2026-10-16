@@ -5,7 +5,7 @@ import { dexTierFor, DEX_FAMILIAR, emptyDexEntry, normalizeDexEntry } from './po
 import { BOND, BOND_RANKS, bondRank } from './bond';
 import { accountContextFor, modifierUnlocked, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
 import { shelfOpen } from './mart';
-import { emptyProgress, type MetaEvent } from './achievements';
+import { emptyProgress, MEDAL_XP, type MetaEvent } from './achievements';
 import { MODIFIERS } from '../run/modifiers';
 
 // §8.3–§8.6 — the account fold. Every number here is the canon's; the tests pin the shape, not the tuning.
@@ -59,8 +59,11 @@ describe('XP sources — §8.3.2', () => {
     const lost = (layers: number) => applyAccountEvent(seasoned(), { t: 'run-end', won: false, catches: 0, badges: 0, layersCleared: layers }, ctx).delta.xp;
     expect(lost(3)).toBe(150);
     expect(lost(12)).toBe(XP.failedRunCap);
-    // A won run's XP came from its fights, Badge and Legendary along the way; the end itself pays nothing extra.
-    expect(applyAccountEvent(seasoned(), { t: 'run-end', won: true, catches: 1, badges: 1, layersCleared: 12 }, ctx).delta.xp).toBe(0);
+    // A won run's XP came from its fights, Badge and Legendary along the way; the end itself pays nothing extra — only the
+    // medals it completes (§8.7: a won run is a Champion beaten, v0.9.22).
+    const won = applyAccountEvent(seasoned(), { t: 'run-end', won: true, catches: 1, badges: 1, layersCleared: 12 }, ctx).delta;
+    expect(won.unlockedAchievements.map((a) => a.id)).toContain('champion');
+    expect(won.xp).toBe(won.unlockedAchievements.reduce((n, a) => n + MEDAL_XP[a.tier], 0));
   });
 
   it('TheDifficultyMultiplierScalesEveryXp_§8.8.3', () => {

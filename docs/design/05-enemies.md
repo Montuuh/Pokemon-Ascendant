@@ -552,35 +552,43 @@ Badge. The effects stay with their types.
 
 # §5.11 The Elite Four
 
-> 🔒 **Deferred.** Specified, not built. The build order completes the Region 1 → Victory Road loop first.
+> ✅ **v0.9.22** — built 2026-10-16 (`run/league.ts`, `catalogs/elites.md` §7).
 
-Four sequential boss trainers, no map navigation, a **30 % HP micro-rest** between fights.
+Four sequential boss trainers, no map navigation, a **30 % HP micro-rest** between fights (§2.1.6).
 
-| Fight | Difficulty | Team |
-|---|---|---|
-| Elite 1 | Easiest League fight — a recalibration, slightly easier than Gym 3 | 2 |
-| Elite 2 | A meaningful step up | 2 |
-| Elite 3 | Near-Elite-4 | 3 |
-| Elite 4 | The hardest non-Champion fight | 3 |
+| Fight | Member | Type · ground | Difficulty | Team |
+|---|---|---|---|---|
+| Elite 1 | **Bruno** | Fighting · Sandstorm | Easiest League fight — a recalibration, slightly easier than Gym 3 | 2: Onix, Machamp |
+| Elite 2 | **Agatha** | Ghost · Toxic Spikes | A meaningful step up | 2: Arbok, Gengar |
+| Elite 3 | **Will** | Psychic · Psychic Terrain | Near-Elite-4 | 3: Jynx, Slowbro, Alakazam |
+| Elite 4 | **Lance** | Dragon · Rain | The hardest non-Champion fight | 3: Gyarados, Aerodactyl, Dragonite |
 
-Rules: a distinct type identity each; mixed field effects the player has not met at boss intensity; counter-intel
-active when fully scouted (§5.7); the ace always has three phases.
+Rules: a distinct type identity each, fought on its own **Home Field** (§4.3.5) and **one Battlefield** the run has not
+met at boss intensity; counter-intel active when fully scouted (§5.7); the ace always has three phases, the others two.
+Levels climb from 4 to 11 over Region 3's last wild band (Victory Road's Gauntlets stand at 4). *Why Will
+(delegated, 2026-10-16):* Lorelei leads the Ice Gym here (§5.9), so the Psychic seat of the later Elite Four takes her
+place; the other three are Gen I's own.
 
 ---
 
 # §5.12 The Champion
 
-> 🔒 **Deferred**, with §5.11.
+> ✅ **v0.9.22** — built 2026-10-16.
 
-Five Pokémon covering multiple types — no single counter works across the team. Pokémon 1–3 are sequential;
-**4 and 5 are fielded simultaneously**, the only encounter in the game that does, with the support healing or
-buffing the ace. Every Champion Pokémon has at least two phases; the ace has three and evolves at 50 %.
+**Blue, the Rival**, five Pokémon covering multiple types — no single counter works across the team: Pidgeot, Rhydon,
+Arcanine, Exeggutor, and the ace, **the starter that beats yours** (Venusaur against Squirtle, Blastoise against
+Charmander, Charizard against Bulbasaur — the Rival's counter-pick, `catalogs/elites.md` §2). Pokémon 1–3 are
+sequential; **4 and 5 are fielded simultaneously** once three have fallen (`pairFrom`), the only encounter in the game
+that does, with the support (Exeggutor's Growth and Amnesia) buffing the ace. Every Champion Pokémon has at least two
+phases; the ace has three. *The ace does not evolve mid-fight* (rewritten 2026-10-16): at the League's levels it is
+already its final form, and a mid-fight evolution belongs to the Rival's Region 3 fight.
 
 ## §5.12.1 Signature — Full Team Synergy
 
-Each defeated Champion Pokémon buffs the survivors: **+5 % Attack per fallen ally, capped at +20 %**. It is
-displayed from the first turn ("Each fallen ally empowers their teammates") and shown as a live stack on the
-remaining HP bars.
+Each defeated Champion Pokémon buffs the survivors: **+5 % to their hits per fallen ally, capped at +20 %**
+(`BattleConfig.gymRules.synergy*`, a term in the damage formula as a Leader's rule is). It is displayed from the first
+turn as the rule chip on the top bar ("Each fallen ally empowers his teammates"), its multiplier counted there once
+one has fallen, and promised on the Champion's preview.
 
 ---
 
