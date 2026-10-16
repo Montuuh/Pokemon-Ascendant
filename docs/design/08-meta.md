@@ -158,7 +158,7 @@ Hub conveniences, and never a single point of damage or HP.
 | Win | ~790 |
 
 *(Measured as a career by `balance/accountCareer.test.ts`: one account, many runs in a row, the account's perks
-playing into each. The Victory Road, Elite Four and Champion rows wait on those fights (v0.9.20–v0.9.21); the Pokédex
+playing into each. The Victory Road, Elite Four and Champion rows wait on those fights (v0.9.20–v0.9.22); the Pokédex
 pays only Familiar's 25 since its other tiers moved to the Bond.)*
 
 Difficulty modifiers multiply the run's total (§8.8.3).

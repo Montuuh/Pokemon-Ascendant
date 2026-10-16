@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-15 · **Version:** v0.9.19 shipped (*The route Trader*).
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
-**Sprint goal next:** **v0.9.20** Victory Road (§2.12; the Legendaries' two team slots need the user's call first), then v0.9.21 League · v0.9.22 Sound — re-planned 2026-10-14; v0.9.16 inserted 2026-10-15.
+**Sprint goal next:** **v0.9.20** Victory Road (§2.12), then v0.9.21 the Legendaries (two places, one body — the user's call, §2.3) · v0.9.22 League · v0.9.23 Sound — re-planned 2026-10-16.
 
 **v0.8.7–v0.8.10** — the route, balance, harness, growth curves (`BALANCE_REPORT=1 REPORT_SEEDS=240`). **v0.9.1** — Shiny found in the wild (§5.14, `run/shiny.ts`, 1 in 40, `copyIsShiny`), its collection in the
 Pokédex, +N Bond on the reward screen; the Bond in four linear ranks of 100 (Shiny Charm · hidden ability · the whole

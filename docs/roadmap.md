@@ -1286,22 +1286,28 @@ for the Bond and the medals; one trade a visit; past its threshold it evolves as
 why), three face-down cards lit in the type they show with the level they would arrive at, *Give Pidgey*, then the
 newcomer out of its ball in a combat card's window. The balance harness walks on.
 
+> **Re-planned 2026-10-16**: Victory Road and the Legendaries are two versions, not one — the zone and its nodes first,
+> then the Legendaries (now designed: two places, one body, §2.3) on top of it — so the League moves to v0.9.22 and
+> Sound to v0.9.23.
+
 ### v0.9.20 — Victory Road  ☐
-§2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the
-Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)*
-- **Legendary Pokémon enter the run here**, and the Black Market's Executive sells one **every time** (user,
-  2026-09-28): the showcase offers a Legendary Pokémon, never "sold out" and never shut by a cap. Here because Victory
-  Road's Apex (§2.12.2) is where the canon already brings the run's rarest species, and the two are balanced together.
-  Needs the backlog's "a Legendary takes two team slots" designed with the user first.
+§2.12's zone between the third Gym and the League, and its nodes — Gauntlet, Training Grounds, Summit — and a way back
+to the Badges a run never met: the Perfect Clear of §2.12.6. *(Backlog: recovering missed Badges.)* Until the League
+is built, the Summit's gate ends the run won.
+
+### v0.9.21 — The Legendaries  ☐
+- **A Legendary takes two places, one body** (§2.3, the user's call of 2026-10-16).
+- **Legendary Pokémon enter the run** at Victory Road's Apex (§2.12.2), and the Black Market's Executive sells one
+  **every time** (user, 2026-09-28): the showcase offers a Legendary Pokémon, never "sold out" and never shut by a cap.
 - **Each Legendary is fought in its own arena** (§2.12.2.1, designed 2026-10-14, the user's note 3): its field, its
   backdrop and one arena rule, set at the fight's start and shown before it.
 
-### v0.9.21 — The League  ☐
+### v0.9.22 — The League  ☐
 Five fights with a micro-rest between them, the Champion's signature (§5.12), League Boons — on v0.8's
 multi-enemy fights, which the League is built on.
 **Exit (v0.9):** a run ends at the Champion, and the account pays for all of it.
 
-### v0.9.22 — Sound  ☐
+### v0.9.23 — Sound  ☐
 The user's note 12: sound is its own version, before v1.0. §9.5's direction, pulled forward from v1.1: the SFX
 first (card play, hit, super-effective, faint, swap, the ball and its shakes, catch, level-up, evolution, the UI),
 then the music. The fan-game study's cheap path is the first candidate — a Web Audio synthesiser with every sound
@@ -1314,7 +1320,7 @@ IP disclaimer everywhere.
 
 ## v1.1 — Polish  ☐
 Accessibility tier (§9.6), localisation architecture + es-ES/en-US (§9.10), generated backdrop set (`ui/07`), VFX pass,
-performance pass. *(Audio moved to v0.9.22, 2026-10-14.)*
+performance pass. *(Audio moved to v0.9.23, 2026-10-14; renumbered 2026-10-16.)*
 
 ## v1.2 — The world, wider  ☐
 Content that makes a second hundred runs different: **Fossils and the Laboratory** (revive Omanyte, Kabuto or
@@ -1343,7 +1349,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 
 | Idea | Noted | Likely home |
 |---|---|---|
-| **A Legendary Pokémon takes two team slots.** Owning a Legendary opens the question of how to balance one; the user's idea is that it fills two places in the team. Not designed — kept for the design pass with the user. It gates v0.9.20's Legendary Pokémon at the Black Market. | user, 2026-09-28 | v0.9.20, designed first |
+| ~~**A Legendary Pokémon takes two team slots.**~~ Designed 2026-10-16 — the user's call: two places, one body (§2.3). Built with the Legendaries. | user, 2026-09-28 | v0.9.21 |
 
 **Multiplayer** — everything that needs **player accounts and a server**. None of it is in v1.0, which is
 single-player (user, 2026-10-14). When accounts land (the save layer is already behind a provider interface for a
@@ -1395,7 +1401,7 @@ the account revamps move to v0.9):
 | — | Recovering missed Badges | v0.9.20 |
 | — | Fossils and the Laboratory · role events · Ditto's Transform · HMs | v1.2 |
 | — | Multiplayer — a dual mode | v2.0 |
-| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.20 (with the two-slot balance, designed first) |
+| — | The Black Market's Executive always sells a Legendary Pokémon | v0.9.21 (with the two-slot balance, designed 2026-10-16) |
 
 **Placed 2026-10-14** — the user's notes on the fan-game study (`docs/research/2026-10-13-fan-games-pokelike-pokesurvivor.md`):
 
@@ -1408,7 +1414,7 @@ the account revamps move to v0.9):
 | 8 | An animated battle behind the title, and the first screens | v0.9.17 |
 | 5 | Fights with another objective — the flee race and the hold-out | v0.9.18 |
 | 7 | The route Trader | v0.9.19 |
-| 3 | Each Legendary in its own arena — designed now, built with the Legendaries | §2.12.2.1 · v0.9.20 |
-| 12 | Sound, before v1.0 | v0.9.22 |
+| 3 | Each Legendary in its own arena — designed now, built with the Legendaries | §2.12.2.1 · v0.9.21 |
+| 12 | Sound, before v1.0 | v0.9.23 |
 | 4 | Co-op, the Daily Route, leaderboards, Hall of Fame, friends | Backlog — *Multiplayer* |
 | 6 | Nuzlocke, weekly challenges, Endless, Randomizer | Backlog — *Game modes* |

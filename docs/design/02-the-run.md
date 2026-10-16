@@ -266,6 +266,13 @@ There is no mid-combat loadout change.
 XP is a separate question — benched Box Pokémon still earn 75 % of combat XP (§6.2.1), so a Pokémon on the bench
 falls behind but does not fall out of the run.
 
+**A Legendary Pokémon takes two places** (☐ v0.9.21 — the user's call, 2026-10-16, from four options: two places and one
+body; two places and its kit twice; one place and two Box spaces; one place and +1 AP on its cards). In the Active Team
+it fills **two of the three places with one body**: you go in with the Legendary and one partner. The deck is its cards
+(and its Mastery) and the partner's — eight or nine, so its moves come round often — but there is only one bench to
+swap to, and if it falls you are down to one. Strong and fragile at once: the swap, already a decision (Pillar 2),
+becomes the dearest one in the game. In the Box it is one Pokémon like any other.
+
 ## §2.3.1 Box overflow — Swap or Skip
 
 Recruiting at a full Box forces a choice:
@@ -1593,11 +1600,11 @@ One per run, on a seeded path — **not reachable on every route**.
 
 ### §2.12.2.1 Legendary arenas
 
-> ☐ **v0.9.20** — designed 2026-10-14 (the user's note 3: "OK, realiza todo el diseño; implementación todavía no, ya
+> ☐ **v0.9.21** — designed 2026-10-14 (the user's note 3: "OK, realiza todo el diseño; implementación todavía no, ya
 > que no están los legendarios implementados"). After PokéSurvivor's rifts, where each Legendary waits in an arena of
 > its own type with its own terrain and weather.
 
-When the Legendary Pokémon enter the run (v0.9.20 — Victory Road's Apex and the Black Market's Executive), **each one
+When the Legendary Pokémon enter the run (v0.9.21 — Victory Road's Apex and the Black Market's Executive), **each one
 is fought in its own arena**: a place the player recognises from Gen I, a **field** set at the fight's start, and
 **one arena rule** — the Legendary's answer to §5.9.5's Leader rules. All three are shown before the fight, on the
 node and its preview (Pillar 1), and the arena is where the fight happens whoever brought you there.
@@ -1612,7 +1619,7 @@ node and its preview (Pillar 1), and the arena is where the fight happens whoeve
 
 **What every arena shares.**
 - A Legendary is a **catch-or-defeat** fight like the Elite Wild (§2.8.2): catch it and it joins (the two-slot balance
-  in the roadmap's backlog decides how), defeat it and it pays a Legendary relic pick. Phase 2 makes it easier to
+  of §2.3 decides how: two places, one body), defeat it and it pays a Legendary relic pick. Phase 2 makes it easier to
   catch, as an Elite Wild's does.
 - The arena's field is a **Battlefield** (neutral, §4.3), not a Home Field: it cuts both ways, and Defog clears it as
   it clears any field. The **arena rule is not a field** — Defog and Cloud Nine do not touch it.
