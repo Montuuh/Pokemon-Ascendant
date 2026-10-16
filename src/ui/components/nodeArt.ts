@@ -1,6 +1,6 @@
 import { getContent } from '@/content/registry';
 import { battleSpriteUrl } from '@/content/schemas/species';
-import { ALL_ELITES, ALL_TRAINERS, gymById, type MapNode, type RegionMap } from '@/sim';
+import { ALL_ELITES, ALL_TRAINERS, TRADER, gymById, type MapNode, type RegionMap } from '@/sim';
 import { itemIcon, mysterySign, routeTile, trainerSprite, type NodeArt } from '@/ui/art';
 import { terrainOfNode, type TerrainId } from '@/ui/screens/map/terrain';
 
@@ -47,6 +47,9 @@ export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
       return { kind: 'trainer', src: trainerSprite('nurse') };
     case 'merchant':
       return { kind: 'trainer', src: trainerSprite('merchant') };
+    // §2.9.6 — the roadside trader, a Poké Fan.
+    case 'trader':
+      return { kind: 'trainer', src: trainerSprite(TRADER.sprite) };
     case 'wild': {
       // The Pokémon you will meet most often: the first Common of the pool, or the old preview's first species.
       const face = p.wild?.pool.common[0] ?? p.wild?.pool.uncommon[0] ?? p.speciesIds[0];

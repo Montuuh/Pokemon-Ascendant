@@ -17,6 +17,7 @@ import { hasModifier, modifierValue, modifierXpMultiplier } from './modifiers';
 import { priceFor, regionModifierOffer, traumaZone1Pct, victoryHealPct } from './regionModifiers';
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { runnerById } from './objectives';
+import { rollTradeOffers, tradeLevel, tradeRefusal } from './trader';
 import { BLACK_MARKET, atLegendaryCap, candyPrice, fencePrice, rollBlackMarket, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
@@ -629,7 +630,7 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
 }
 
 /** §2.9 — the nodes that are not a fight: nobody needs to be standing to walk into one. */
-export const isServiceNode = (kind: NodeKind): boolean => kind === 'aid' || kind === 'merchant' || kind === 'mystery' || kind === 'cache';
+export const isServiceNode = (kind: NodeKind): boolean => kind === 'aid' || kind === 'merchant' || kind === 'mystery' || kind === 'cache' || kind === 'trader';
 
 /** After a node is cleared, the next layer's linked nodes open up. */
 function advanceFrom(draft: RunState, nodeId: string): void {
@@ -866,6 +867,14 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           const parts = [...(find.items.length ? [supplyLabel(find.items, (id) => ctx.content.consumable(id).name)] : []), ...(find.money ? [`${find.money} ₽`] : [])];
           say(draft, `You pick up ${parts.join(' and ') || 'nothing'}.`);
           leaveNode(draft, node.id, ctx);
+          break;
+        }
+        if (node.kind === 'trader') {
+          // §2.9.6 — the roadside trader: three face-down offers, rolled once on entry from the Encounter stream.
+          const rng = encounterRng(draft);
+          draft.pendingTrade = { offers: rollTradeOffers(rng, draft, ctx.content) };
+          draft.cursors.EncounterRNG = rng.cursor;
+          draft.phase = 'trader';
           break;
         }
         if (node.kind === 'aid') {
@@ -1406,6 +1415,33 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       case 'leave-aid': {
         draft.lastGift = null;
         leaveNode(draft, draft.pendingNodeId!, ctx);
+        break;
+      }
+
+      // §2.9.6 — the trade: the Pokémon given leaves the Box for good (what it held comes back to the bag); the newcomer
+      // arrives two levels above it, at full HP, with no Trauma and its learnset at that level, in the given one's place.
+      case 'trade': {
+        const trade = draft.pendingTrade!;
+        const given = draft.box.find((m) => m.uid === action.giveUid)!;
+        const offer = trade.offers[action.offer]!;
+        const level = tradeLevel(given.level);
+        if (given.heldItem) draft.bag.push(given.heldItem);
+        const recruit = newPartyMon(offer.speciesId, level, ctx.content, draft.seed, mintUid(draft));
+        const at = draft.box.findIndex((m) => m.uid === given.uid);
+        draft.box.splice(at, 1, recruit);
+        draft.activeUids = draft.activeUids.map((u) => (u === given.uid ? recruit.uid : u));
+        if (draft.resting === given.uid) draft.resting = null;
+        draft.stats.recruits += 1;
+        trade.done = { given: { speciesId: given.speciesId, level: given.level }, receivedUid: recruit.uid };
+        say(draft, `Traded ${ctx.content.species(given.speciesId).name} for ${ctx.content.species(offer.speciesId).name} (Lv ${level}).`);
+        break;
+      }
+
+      case 'leave-trader': {
+        draft.pendingTrade = null;
+        leaveNode(draft, draft.pendingNodeId!, ctx);
+        // §6.3.1 — a newcomer that arrived past its threshold owes its Evolution screen now, as a catch's does.
+        if (draft.phase === 'map') queueEvolutionsReturning(draft, ctx.content, 'map');
         break;
       }
 
@@ -2154,6 +2190,16 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
 
     case 'leave-aid':
       return state.phase === 'aid' ? undefined : 'wrong-phase';
+
+    case 'trade': {
+      if (state.phase !== 'trader' || !state.pendingTrade) return 'wrong-phase';
+      if (state.pendingTrade.done) return 'already-traded';
+      if (!state.pendingTrade.offers[action.offer]) return 'no-such-offer';
+      return tradeRefusal(state, action.giveUid) ?? undefined;
+    }
+
+    case 'leave-trader':
+      return state.phase === 'trader' ? undefined : 'wrong-phase';
 
     case 'enter-building': {
       if (state.phase !== 'city' || !state.city) return 'not-in-city';

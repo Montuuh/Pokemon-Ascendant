@@ -721,6 +721,12 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
       step({ type: 'leave-aid' });
       continue;
     }
+    // §2.9.6 — the roadside trader: the harness walks on. A trade is a bet on a face-down card, and the measure of the
+    // route should not depend on how a policy would price one.
+    if (phase() === 'trader') {
+      step({ type: 'leave-trader' });
+      continue;
+    }
     if (phase() === 'event') {
       step({ type: 'choose-event', option: answerEvent(run, policy) });
       step({ type: 'leave-event' });

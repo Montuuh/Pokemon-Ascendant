@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective } from '@/sim';
+import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SHOWCASE_CAP, SLOT_LABEL, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -733,6 +733,41 @@ export function partyTip(name: string, level: number, hp: number, max: number, s
 /** §2.9.1 — the field nurse. */
 export function nurseTip(): ReactNode {
   return <Tip title="Field nurse" body={`${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free.`} footer="Trauma stays — only a Pokémon Center's Therapy takes it off." />;
+}
+
+/** §2.9.6 — the roadside trader: what a trade is, and what it is not. */
+export function traderTip(): ReactNode {
+  return (
+    <Tip
+      title={TRADER_TEXT.title}
+      body={`Give one of your Box, then pick one of three face-down offers: each shows one of its types and the level it arrives at — ${TRADER.levelBonus} above the one you gave, at full HP and with no Trauma. The species is the surprise.`}
+      footer="The one you give is gone for good; what it held comes back to the bag. You may walk on without trading."
+    />
+  );
+}
+
+/** §2.9.6 — one face-down offer. */
+export function tradeOfferTip(type: string, level: number | null): ReactNode {
+  return (
+    <Tip
+      title="A face-down offer"
+      meta={[`${cap(type)} type`, level ? `Arrives at Lv ${level}` : `Arrives ${TRADER.levelBonus} levels above the one you give`]}
+      body="From this Region's Wild Areas, never a line already in your Box. It shows one of its types; it may have another."
+    />
+  );
+}
+
+/** §2.9.6 — one of your Box, as something to give: where it stands, what it holds, and what the trader does with it. */
+export function tradeGiveTip(name: string, level: number, hp: number, max: number, active: boolean, held: string | null, locked: boolean): ReactNode {
+  const meta = [`Lv ${level}`, `${hp} / ${max} HP`, active ? 'Active Team' : 'Box', ...(held ? [`Holds ${held}`] : [])];
+  const body = locked
+    ? TRADER_TEXT.lastStanding
+    : hp <= 0
+      ? 'Fainted — the trader nurses it. The newcomer takes its place.'
+      : active
+        ? 'The newcomer takes its place in the Active Team.'
+        : 'The newcomer takes its place in the Box.';
+  return <Tip title={name} meta={meta} body={body} footer={held ? 'What it holds comes back to the bag.' : undefined} />;
 }
 
 /** §2.9.2 / §2.11.2 — which shop this is, and how it differs from the other kind. */

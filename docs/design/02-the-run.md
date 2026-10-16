@@ -1097,23 +1097,28 @@ so walking past it is always a choice.
 
 ## §2.9.6 The route Trader
 
-> ☐ **v0.9.19** — designed 2026-10-14 (the user's note 7: "el nodo intercambiador en la ruta me parece bien"). After
-> Pokelike's trade node, reworked there in v3.1 into a choice with half its information hidden.
+> ✅ **v0.9.19** — designed 2026-10-14 (the user's note 7: "el nodo intercambiador en la ruta me parece bien"), built
+> 2026-10-15. After Pokelike's trade node, reworked there in v3.1 into a choice with half its information hidden. Code:
+> `run/trader.ts` (`TRADER`, `rollTradeOffers`, `tradeRefusal`, `placeTrader`), the `trade` and `leave-trader`
+> actions, `TraderScreen`.
 
 A trainer at the roadside who will swap. **Give one Pokémon from your Box, then choose one of three face-down
-offers.** Each offer shows **one of the newcomer's types and its level**, nothing else; the species is revealed when
-it is yours. The newcomer arrives **two levels above the Pokémon you gave** (`TRADER_LEVEL_BONUS`), at full HP, with
-no Trauma, its learnset at that level, and its line's Bond counted from a first recruit (§6.8.1). You may also walk
-on without trading.
+offers.** Each offer shows **one of the newcomer's types**, nothing else, and the level they all arrive at is said once,
+on the Pokémon you pick to give (*Lv 8 → 10*); the species is revealed when it is yours. The newcomer arrives **two levels above the Pokémon you gave** (`TRADER_LEVEL_BONUS`), at full HP, with
+no Trauma, its learnset at that level, and its line's Bond counted from a first recruit (§6.8.1). It takes the
+given one's place — in the Active Team if that is where it stood — and one past its threshold owes its Evolution screen
+as you walk on, as a catch's does. One trade a visit; you may also walk on without trading.
 
 - **The offers** are rolled once, on entry (the Encounter stream), from the **current Region's Wild Areas** —
-  Common 50 % · Uncommon 35 % · Rare 15 % — at the Region's form (§2.6.3), never a species already in your Box,
-  never a starter line, never a Legendary. Leaving and coming back shows the same three.
+  Common 50 % · Uncommon 35 % · Rare 15 % — at the Region's form (§2.6.3), never a **line** already in your Box (a
+  Bulbasaur in the Box rules out Ivysaur too: a trade is a new Pokémon, not a later form of one you have), never a starter
+  line, never a Legendary, three different species. They are kept with the run, so a reload shows the same three.
 - **What you give** may be anyone in the Box but the last Pokémon standing; a fainted one may be given (the trader
   nurses it). What it held comes back to the bag. Releasing is permanent, as in §2.3.
 - **Where:** a stop (§2.5.1), at most one per route, from the crossroads (column 8) on — never in the opening
-  stops, where nobody has anything to trade yet — on about **half** of all routes. The map marks it with the trader's
-  own sprite.
+  stops, where nobody has anything to trade yet — on about **half** of all routes, never on the field nurse or a guarded
+  find, placed on a stream of its own so no other node moves. The map marks it with the trader's own sprite, a **Poké
+  Fan** (Showdown's `pokefan`): the trainer class that lives for other people's Pokémon.
 
 *Why face-down (delegated, 2026-10-14):* a trade that showed the species would be a shop with Pokémon on the shelf
 (the anti-pillar "not card acquisition"). A type and a level are enough to plan around — you know what hole you are

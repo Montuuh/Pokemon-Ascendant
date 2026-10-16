@@ -309,6 +309,7 @@ export function installDevTools(): void {
           // the merchant is a walk that did not finish — which is exactly what it used to do.
           if (run.phase === 'shop') { store().dispatch({ type: 'leave-shop' }); continue; }
           if (run.phase === 'aid') { store().dispatch({ type: 'leave-aid' }); continue; }
+          if (run.phase === 'trader') { store().dispatch({ type: 'leave-trader' }); continue; }
           if (run.phase === 'event') {
             // Option 0 is a real choice made by the real reducer; the walker just always takes the first.
             if (!run.eventResult) store().dispatch({ type: 'choose-event', option: 0 });

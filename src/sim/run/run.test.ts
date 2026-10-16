@@ -118,7 +118,7 @@ describe('Region map — §2.5', () => {
   it('Map_PutsANurseOnlyInAStopColumn_NeverBesideAFight_§2.9.1', () => {
     // v0.8.7: a nurse no longer costs a fight — she stands in a stop column, where every node is a stop, so a
     // rest costs the other stops beside it. She is never in the opening and never beside a fight.
-    const stops = new Set(['aid', 'merchant', 'mystery', 'cache']);
+    const stops = new Set(['aid', 'merchant', 'mystery', 'cache', 'trader']);
     for (let seed = 1; seed <= 40; seed++) {
       const m = generateRegion(new RngStreams(seed).get('MapRNG'), content, 0, seed);
       for (const n of Object.values(m.nodes)) {

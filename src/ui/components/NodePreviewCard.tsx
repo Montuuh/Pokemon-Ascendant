@@ -73,7 +73,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   // §5.6.5 — a runner or a guarded find: the race it is, named on the card.
   const objective = node.preview.objective;
   // A find is a fight only when it is guarded.
-  const fight = node.kind !== 'cache' || objective?.kind === 'hold';
+  const fight = (node.kind !== 'cache' && node.kind !== 'trader') || objective?.kind === 'hold';
   // The Poké Balls below say how many; the line keeps only what they do not (a Gym's telegraph, the Elite's prize).
   const detail = hiddenTeam
     ? node.preview.detail.replace(/^A team of \d+ Pokémon( · )?/, '')
@@ -246,6 +246,8 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
                 ? 'Browse'
                 : node.kind === 'cache' && !fight
                   ? 'Pick it up'
+                  : node.kind === 'trader'
+                    ? 'Stop'
                   : 'Enter'}
           </button>
         </div>

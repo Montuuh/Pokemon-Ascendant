@@ -49,6 +49,9 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.19 — The route Trader.** On about half the routes a Poké Fan waits by the road: give one of your Box and pick
+one of three face-down offers, each showing a type and the level it arrives at — two above the one you gave — and the
+species is the surprise. Before it,
 **v0.9.18 — Fights with another objective.** Some fights are won by something else: a runner — an Abra, a Meowth,
 a Chansey — that gets away after a turn or two unless you knock it out first for its premium or catch it, and a
 guarded find you win by holding out to the last turn against a guard that hits harder every turn. Both are named on

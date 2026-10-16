@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.19 — The route Trader · 2026-10-15
+
+A roadside trader swaps one of your Pokémon for a face-down offer.
+
+- **Trade.** Give one of your Box; pick one of three face-down offers.
+- **Face down.** Each shows a type and its level: two above the one you gave.
+- **On the map.** About half the routes, from the crossroads on.
+
 ### v0.9.18 — Fights with another objective · 2026-10-15
 
 Some fights are won by something other than knocking everything out.

@@ -16,7 +16,7 @@ import { RngStreams } from '@/sim/rng/rngStreams';
 const content = buildRegistry();
 const SEEDS = 200;
 const maps = Array.from({ length: SEEDS }, (_, i) => generateRegion(new RngStreams(i + 1).get('MapRNG'), content, 0, i + 1));
-const STOPS = new Set(['aid', 'merchant', 'mystery', 'cache']);
+const STOPS = new Set(['aid', 'merchant', 'mystery', 'cache', 'trader']);
 
 describe('Map generation rules — §2.5', () => {
   it('TheRouteLengthIsOneNumber_SharedByTheMapAndTheLevelBand', () => {

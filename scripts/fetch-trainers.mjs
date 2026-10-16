@@ -28,6 +28,8 @@ const TRAINERS = {
   // trainer class that walks the routes with everything on its back, which is what the merchant is).
   nurse: 'nurse',
   merchant: 'backpacker',
+  // v0.9.19 — the route Trader (§2.9.6): a Poké Fan, the trainer class that lives for other people's Pokémon.
+  pokefan: 'pokefan',
   // v0.7.3 — Region 2: the Engineer (a Scientist), the Rocket Grunt, the Karate King Specialist, and the four
   // Region 2 Gym Leaders.
   scientist: 'scientist',

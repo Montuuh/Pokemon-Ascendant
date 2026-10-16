@@ -10,7 +10,7 @@ import type { WildTier } from './region';
  * (`aid`) and the travelling merchant. The Pokémon Center, the Mart and the Dojo are City buildings (§2.11),
  * reached through `RunState.city`, not map nodes. `cache` is something on the ground (§2.9.5, v0.8.7).
  */
-export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'cache', 'gym'] as const;
+export const NODE_KINDS = ['wild', 'trainer', 'elite', 'elite-wild', 'aid', 'merchant', 'mystery', 'cache', 'gym', 'trader'] as const;
 export type NodeKind = (typeof NODE_KINDS)[number];
 
 export interface MapNode {
@@ -145,6 +145,8 @@ export interface PartyMon {
 export type RunPhase =
   /** Looking at the map, choosing where to go. */
   | 'map'
+  /** §2.9.6 — at the roadside trader: give one, take one of three face-down offers, or walk on. */
+  | 'trader'
   /** A node is selected; the preview is open and the team can still be changed (§2.3). */
   | 'preview'
   /** Inside a fight. The combat sim owns the state; the run waits for its result. */
@@ -528,6 +530,11 @@ export interface RunState {
   regionModifier: string | null;
   /** §2.9.2 — the stock of the shop currently being visited, re-rolled at a rising price. */
   pendingShop: ShopStock | null;
+  /**
+   * §2.9.6 — the roadside trader's three face-down offers, rolled once on entry, and — once a trade is made — who
+   * went and who came. Optional on purpose: every save from before v0.9.19 reads as no trader.
+   */
+  pendingTrade?: { offers: { speciesId: string; shownType: PokemonType }[]; done?: { given: { speciesId: string; level: number }; receivedUid: string } } | null;
   /** §2.11 — the City the run is standing in, between two Regions. Null on a route. */
   city: CityState | null;
   /** §2.10 — the Mystery Event on screen. */
@@ -689,6 +696,10 @@ export type RunAction =
   | { type: 'leave-center' }
   /** §2.9.1 — walk on from the field nurse. */
   | { type: 'leave-aid' }
+  /** §2.9.6 — give `giveUid` for the face-down offer at `offer`. Once a visit. */
+  | { type: 'trade'; giveUid: string; offer: number }
+  /** §2.9.6 — walk on from the trader, traded or not. */
+  | { type: 'leave-trader' }
   /** §2.11.0 — walk into one of the City's open buildings. Leaving it returns to the lobby. */
   | { type: 'enter-building'; building: CityBuilding }
   /** §2.11.3 — the gate: pick one of the three Region Modifiers, which *is* leaving the City for the next Region. */
@@ -763,6 +774,11 @@ export type RunAction =
   | { type: 'pick-legendary'; relicId: string | null };
 
 export type RunRejectReason =
+  /** §2.9.6 — the roadside trader: one trade a visit, an offer that exists, never the last Pokémon standing. */
+  | 'already-traded'
+  | 'no-such-offer'
+  | 'not-in-box'
+  | 'last-standing'
   /** §6.8.3 — the line's hidden ability, before Bond rank 3. */
   | 'ability-locked'
   | 'not-on-map'

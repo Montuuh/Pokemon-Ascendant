@@ -1269,10 +1269,22 @@ chip says it is gone at the turn's end; *It got away* and *You held out!* overla
 objective paid; a guarded find is drawn as its guard. Fixtures `flee-abra`, `hold-primeape`. Balance (180 runs):
 win 50 / 53 / 60 % by starter, inside the bands.
 
-### v0.9.19 — The route Trader  ☐
+### v0.9.19 — The route Trader  ✅ 2026-10-15
 The user's note 7. A stop on the route (§2.9.6): give one of your Box, then choose one of three **face-down** offers
 that show only a type and a level; the newcomer arrives above the level you gave. A way to re-roll a line that is
 not working, priced in the Pokémon you let go.
+
+**Shipped.** §2.9.6 as designed. **The node** (`run/trader.ts`): `NodeKind 'trader'` on about half of all routes, at
+most one, on a stop from column 8 (never the nurse, never a guarded find), placed on its own stream so no other node
+moved; drawn as a Poké Fan (`public/art/trainers/pokefan.png`, `npm run art:trainers`). **The trade**: three offers
+rolled on entry from the Encounter stream and kept with the run (`pendingTrade`) — the Region's Wild Areas by rarity
+(50 / 35 / 15 %), three species, never a line already in the Box, a starter line or a Legendary, each showing one of
+its types; give anyone but your last one standing (a fainted one may go, its held item back to the bag) and the
+newcomer arrives `TRADER.levelBonus` (2) above it at full HP with no Trauma, in its place in the Active Team, a recruit
+for the Bond and the medals; one trade a visit; past its threshold it evolves as you walk on. **The screen**
+(`TraderScreen`): the Poké Fan and the step you are on, your Box as choices (the last one standing locked and saying
+why), three face-down cards lit in the type they show with the level they would arrive at, *Give Pidgey*, then the
+newcomer out of its ball in a combat card's window. The balance harness walks on.
 
 ### v0.9.20 — Victory Road  ☐
 §2.12's nodes — Gauntlet, Apex, Training Grounds, Summit — and a way back to the Badges a run never met: the

@@ -55,6 +55,6 @@ Engineer, `rocketgrunt` and `blackbelt` as the Karate King, and v0.7.4's `hexman
 `hexmaniac-gen3`), the twelve Gym Leaders (`brock`, `misty`, `bugsy`, `whitney`; `blaine`, `erika`, `ltsurge`,
 `koga`; `sabrina`, `giovanni` — also the Region 3 Elite —, `kiyo` — Showdown's `blackbelt-gen4` — and `lorelei` —
 `lorelei-gen3`), the route's two services (`nurse`, and
-`merchant` — the Showdown `backpacker`), and v0.7.7's Black Market dealers (`rocketgruntf` the Trader, `gambler`,
+`merchant` — the Showdown `backpacker` — and, from v0.9.19, the route Trader `pokefan`), and v0.7.7's Black Market dealers (`rocketgruntf` the Trader, `gambler`,
 and `archer` the Executive; the Fence is `rocketgrunt`) — fetched by `npm run art:trainers`. Same terms as the battle
 sprites: © Nintendo / Creatures / GAME FREAK, community sprite work, fan use only.

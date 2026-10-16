@@ -606,7 +606,7 @@ flowchart TD
 | **Front-end** | Boot · Main Menu · Trainer Hub · Achievements · Settings |
 | **New run** | Difficulty · Starter · Starting Relic · Region Modifier |
 | **In run** | Route Map · Node Preview · **Combat** · Post-Combat Reward · Evolution · Legendary Pick |
-| **Node services** | Pokémon Center · Shop · Dojo · City Plaza · Mystery Event |
+| **Node services** | Pokémon Center · Shop · Dojo · City Plaza · Mystery Event · Roadside Trader |
 | **Management** | Team & Loadout · Move Manager · Inventory · Pokédex |
 | **Run end** | Victory · Defeat |
 | **Overlay** | Pause · confirmation modal · toast · tooltip |

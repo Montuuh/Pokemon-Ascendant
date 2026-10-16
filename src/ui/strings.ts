@@ -143,7 +143,23 @@ export const NODE_LABEL: Record<string, string> = {
   mystery: 'Mystery',
   cache: 'Find',
   gym: 'Gym',
+  trader: 'Roadside trader',
 };
+
+/** §2.9.6 — the roadside trader's own words. */
+export const TRADER_TEXT = {
+  title: 'Roadside trader',
+  pickGive: 'Who will you give?',
+  pickOffer: 'Pick one.',
+  lastStanding: 'Your last one standing — it cannot go.',
+  give: 'Give',
+  trade: (name: string) => `Give ${name}`,
+  offersLabel: 'Three face-down offers',
+  arrivesAt: (from: number, to: number) => `Lv ${from} → ${to}`,
+  joined: (name: string) => `${name} joins you!`,
+  wentWith: (name: string) => `${name} went with the trader.`,
+  walkOn: 'Walk on',
+} as const;
 
 /** §9.3 — the route board's own words. */
 export const ROUTE_TEXT = {
@@ -287,10 +303,13 @@ export const NODE_HINT: Record<string, string> = {
   merchant: 'No fight. Once you walk on, the cart is gone.',
   mystery: 'No fight. A scene and a choice, with every outcome written on the button before you press it.',
   cache: 'No fight.',
+  trader: 'No fight.',
   gym: 'The Gym Leader. Beat it and the next town is yours to rest in.',
 };
 
 export const RUN_REJECT_TEXT: Record<string, string> = {
+  'already-traded': 'One trade a visit.',
+  'last-standing': 'Not your last Pokémon standing.',
   'internal-error': 'Something went wrong. Reload the page — the run is saved.',
   'not-a-field-item': 'That one only works in a fight.',
   fainted: 'It has fainted — a Revive first.',

@@ -23,6 +23,7 @@ import { EvolutionScreen } from '@/ui/screens/EvolutionScreen';
 import { MainMenu } from '@/ui/screens/MainMenu';
 import { MapScreen } from '@/ui/screens/MapScreen';
 import { RewardScreen } from '@/ui/screens/RewardScreen';
+import { TraderScreen } from '@/ui/screens/TraderScreen';
 import { RunEndScreen } from '@/ui/screens/RunEndScreen';
 import { ScenarioPicker } from '@/ui/screens/ScenarioPicker';
 import { ShopScreen } from '@/ui/screens/ShopScreen';
@@ -73,6 +74,7 @@ function Screens() {
     if (runPhase === 'event') return <EventScreen />;
     if (runPhase === 'center') return <CenterScreen />;
     if (runPhase === 'aid') return <AidScreen />;
+    if (runPhase === 'trader') return <TraderScreen />;
     // §2.11 — a Gym is behind the run and the town is the lobby; its buildings open the screens above.
     if (runPhase === 'city') return <CityScreen />;
     // §2.9.4.1 — the Challenge Ring between rungs, and its top prize. §2.11.5 — the Game Corner.

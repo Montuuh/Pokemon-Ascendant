@@ -8,6 +8,7 @@ import { AID_HEAL_PCT } from './economy';
 import { hasModifier } from './modifiers';
 import { rollGroundFind, supplyLabel, type GroundFind } from './rewards';
 import { placeObjectives } from './objectives';
+import { placeTrader } from './trader';
 import type { MapNode, NodeKind, NodePreview, RegionMap } from './types';
 import type { PokemonType } from '../types';
 
@@ -110,7 +111,7 @@ const STOP_MIX: Record<StopMix, Partial<Record<NodeKind, number>>> = {
 /** A stop column holds at most one of each of these: two nurses side by side is one nurse and a wasted node. */
 const ONE_PER_COLUMN: readonly NodeKind[] = ['aid', 'merchant'];
 /** §2.9 — the kinds that are stops rather than fights. */
-const STOP_KINDS: readonly NodeKind[] = ['aid', 'merchant', 'mystery', 'cache'];
+const STOP_KINDS: readonly NodeKind[] = ['aid', 'merchant', 'mystery', 'cache', 'trader'];
 
 /**
  * §2.5.1 — the two rolled special nodes, and the reason they are percentages rather than guarantees.
@@ -707,6 +708,8 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
 
   // §5.6.5 — the runners and the guarded finds, once every node is what it is.
   placeObjectives({ nodes, entry: ids[0]! }, rng.cursor, regionIndex, content);
+  // §2.9.6 — and the roadside trader, on about half of all routes.
+  placeTrader({ nodes }, rng.cursor);
 
   return {
     seed,
