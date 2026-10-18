@@ -8,47 +8,50 @@
 .num {
   position: absolute;
   top: 30%;
+  /* A word about the hit sits a row under its number per --row. */
+  margin-top: calc(var(--row, 0) * (var(--sp-6) + var(--sp-1)));
   transform: translateX(-50%);
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 30px;
+  font-size: var(--type-h1);
   line-height: 1;
-  color: #fff;
-  -webkit-text-stroke: 1.5px rgba(20, 15, 26, 0.9);
+  /* The stage's own light and its darkest ink (the numbers are drawn on the stage): light letters, a dark stroke. */
+  color: var(--ink-primary);
+  -webkit-text-stroke: 1.5px var(--surface-sunken);
   paint-order: stroke fill;
-  text-shadow: 0 3px 0 rgba(20, 15, 26, 0.9), 0 0 12px rgba(0, 0, 0, 0.5);
-  animation: global(floatUp) 1100ms ease-out forwards;
+  text-shadow: 0 3px 0 var(--surface-sunken);
+  animation: global(floatUp) var(--fx-float) ease-out forwards;
   white-space: nowrap;
 }
 .damage {
-  color: #ffd6d6;
+  color: color-mix(in srgb, var(--accent-negative) 30%, var(--ink-primary));
 }
 .heal {
-  color: #b9f5cf;
+  color: color-mix(in srgb, var(--accent-positive) 45%, var(--ink-primary));
 }
 .status {
-  color: #ffe9b3;
-  font-size: 20px;
+  color: color-mix(in srgb, var(--accent-action) 35%, var(--ink-primary));
+  font-size: var(--type-h3);
 }
 .text {
-  color: #f5efff;
-  font-size: 20px;
+  color: var(--ink-primary);
+  font-size: var(--type-h3);
 }
 .crit {
-  font-size: 40px;
-  color: #ffcb3d;
+  font-size: var(--type-display);
+  color: var(--accent-action);
 }
 .super {
-  font-size: 36px;
-  color: #ff9f45;
+  font-size: calc(var(--type-h1) * 1.2);
+  color: var(--accent-warning);
 }
 .weak {
-  font-size: 24px;
-  color: #c9c1d6;
+  font-size: var(--type-h2);
+  color: var(--ink-secondary);
 }
 .immune {
-  font-size: 22px;
-  color: #c9c1d6;
+  font-size: var(--type-number);
+  color: var(--ink-secondary);
 }
 
 /* A word said on top of a hit's numbers (§5.6.1 Broken!): a row higher, clear of them. */

@@ -51,6 +51,10 @@ export interface AscendantDevTools {
   start: (scenarioId: string, seed?: number) => void;
   dispatch: (action: sim.CombatAction) => boolean;
   auto: (steps?: number) => number;
+  /** §9.9.2 — debug: the hand made these moves, all the Lead's, with AP to spare (to watch each move's animation). */
+  hand: (moveIds: string[]) => void;
+  /** §9.9.2 — debug: the first enemy's next intent made this move (a Cleave when it hits the whole team). */
+  intend: (moveId: string) => void;
   replay: () => sim.RecordedCombat | null;
   state: () => sim.CombatState | null;
   run: AscendantRunTools;
@@ -172,6 +176,29 @@ export function installDevTools(): void {
     dispatch: (action) => combat().dispatch(action),
     state: () => combat().state,
     replay: () => combat().exportReplay(),
+    hand: (moveIds) => {
+      const s = combat().state;
+      if (!s) return;
+      const lead = s.player.team[s.player.leadIndex]!.uid;
+      useCombatStore.setState({
+        state: produce(s, (d) => {
+          d.player.hand = moveIds.map((moveId, i) => ({ id: `dbg-${i}-${moveId}`, moveId, ownerUid: lead }));
+          d.player.ap = 9;
+        }),
+      });
+    },
+    intend: (moveId) => {
+      const s = combat().state;
+      if (!s || !s.enemies[0]) return;
+      const move = combat().ctx.content.move(moveId);
+      useCombatStore.setState({
+        state: produce(s, (d) => {
+          const e = d.enemies[0]!;
+          e.moveIds = [moveId];
+          e.intent = move.power > 0 ? { kind: move.targeting === 'cleave' ? 'cleave' : 'attack', moveId, targetSlot: move.targeting === 'cleave' ? null : 'lead', hidden: false } : { kind: 'status', moveId, targetSlot: 'lead', hidden: false };
+        }),
+      });
+    },
     auto: (steps = 1) => {
       let done = 0;
       for (let i = 0; i < steps; i++) {

@@ -22,7 +22,10 @@ import { useCombatSfx } from '@/ui/audio/useAudio';
 import { MetronomeChip } from '@/ui/components/MetronomeChip';
 import { ObjectiveChip } from '@/ui/components/ObjectiveChip';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
-import { fxTimings, useCombatFx, type SpriteSlot } from '@/ui/hooks/useCombatFx';
+import { fxTimings, useCombatFx, type SlotBox, type SpriteSlot } from '@/ui/hooks/useCombatFx';
+import { MoveFxLayer } from '@/ui/components/MoveFx';
+import { FloatingNumbers } from '@/ui/components/FloatingNumbers';
+import { motionTimings } from '@/ui/moveMotion';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { WildTierBanner } from '@/ui/components/WildTierBanner';
 import { ArenaFx } from '@/ui/components/ArenaFx';
@@ -284,6 +287,14 @@ export function CombatScreen() {
   // played; a Pokémon coming out never does. While a ball rocks, the log keeps its result back too.
   const interactive = !ended && !state.player.pendingLeadPick && !fx.busy;
   const shownLog = fx.logHold === null ? state.log : state.log.slice(0, fx.logHold);
+  /** §9.9.2 — a Pokémon as the screen shows it: with the HP it had until the move on its way lands. */
+  const shownHp = <T extends { uid: string; hp: number }>(m: T): T => (m.uid in fx.hp ? { ...m, hp: fx.hp[m.uid]! } : m);
+  // §9.9.2 — where each Pokémon's numbers rise: over its sprite, above everything a move draws.
+  const floatSlots: [string, SpriteSlot][] = [
+    [lead.uid, 'player'],
+    ...benches.map((bi): [string, SpriteSlot] => [state.player.team[bi]!.uid, indexToSlot(state, bi) === 'bench1' ? 'bench1' : 'bench2']),
+    ...field.map(({ enemy }, i): [string, SpriteSlot] => [enemy.uid, fieldSlot(i)]),
+  ];
 
   /** §9.2.5 — the hits coming at one of your Pokémon, from the enemies whose intent is not hidden. */
   function incomingFor(uid: string) {
@@ -403,7 +414,7 @@ export function CombatScreen() {
     const slot = indexToSlot(state!, bi);
     return (
       <div className={cls}>
-        <Portrait mon={mon} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fx={fx.floats} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} {...incomingFor(mon.uid)} />
+        <Portrait mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -474,13 +485,17 @@ export function CombatScreen() {
 
       <section
         ref={setStageEl}
-        className={styles.stage}
+        className={`${styles.stage} ${fx.stageClass ?? ''}`}
         data-fx-stage
-        style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings() }}
+        style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings(), ...motionTimings() }}
       >
         <div className={styles.stageTint} aria-hidden="true" />
+        {/* §9.9.2 — what a move does in the ground itself (Earthquake), under the cards. */}
+        <div className={styles.floor} aria-hidden="true">
+          <MoveFxLayer moves={fx.moves} boxes={slotBoxes} floor />
+        </div>
         {/* §5.2 — who each enemy is about to hit: arrows under the Pokémon, over the ground; gone while a ball rocks. */}
-        <IntentArrows state={state} stage={stageEl} focusUid={hoverEnemyUid} focusSlot={hoverAllySlot} hidden={!!fx.catching} />
+        <IntentArrows state={state} stage={stageEl} focusUid={hoverEnemyUid} focusSlot={hoverAllySlot} hidden={!!fx.catching || fx.acting} />
 
         {/* §9.2.1 — your three on the field, each a card: the Lead forward, towards the enemy, centred between its
             bench — Bench 1 above, Bench 2 below. */}
@@ -488,7 +503,7 @@ export function CombatScreen() {
           {benchUnit(benches[0], styles.slotB1)}
           {benchUnit(benches[1], styles.slotB2)}
           <div className={styles.slotLead}>
-            <Portrait mon={lead} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fx={fx.floats} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} {...incomingFor(lead.uid)} />
+            <Portrait mon={shownHp(lead)} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} {...incomingFor(lead.uid)} />
           </div>
         </div>
 
@@ -505,7 +520,7 @@ export function CombatScreen() {
                     fallen={fallenAt !== undefined}
                     held={heldPlace(i)}
                     state={state}
-                    enemy={enemy}
+                    enemy={shownHp(enemy)}
                     ctx={ctx}
                     forecast={forecast}
                     targetable={enemyTargetable}
@@ -516,9 +531,8 @@ export function CombatScreen() {
                     fxClass={fx.classes[enemy.uid]}
                     fxSlot={fieldSlot(i)}
                     spriteClass={fx.catching?.targetUid === enemy.uid && fx.catching.success ? 'fx-hidden' : state.outcome === 'fled' ? 'fx-fled' : fx.sprites[enemy.uid]}
-                    floats={fx.floats}
                     waiting={fx.sprites[enemy.uid] === 'fx-hidden' && fx.catching?.targetUid !== enemy.uid}
-                    quiet={!!fx.catching}
+                    quiet={!!fx.catching || fx.acting}
                     interactive={interactive}
                     onThrow={(cardId, targetUid) => dispatch({ type: 'use-consumable', cardId, targetUid })}
                   />
@@ -565,7 +579,16 @@ export function CombatScreen() {
               {boxEnemy.hp <= boxDamage.final && <div className={styles.previewKo}>KO</div>}
             </div>
           )}
+          {/* §9.9.2 — the moves: a dash, a throw, a beam, a bolt, the whole stage. Under the beats that outlive the state. */}
+          <MoveFxLayer moves={fx.moves} boxes={slotBoxes} />
           <ArenaFx ghosts={fx.ghosts} balls={fx.balls} hits={fx.hits} catching={fx.catching} slotStyle={slotStyle} />
+          {floatSlots.map(([uid, slot]) =>
+            fx.floats.some((f) => f.uid === uid) ? (
+              <div key={uid} className={styles.floatAnchor} style={slotStyle(slot)}>
+                <FloatingNumbers uid={uid} fx={fx.floats} />
+              </div>
+            ) : null,
+          )}
           {/* §2.6.2 — the rarity the Wild Area rolled, once, as the fight opens. */}
           {state.wildTier && <WildTierBanner key={combatKey} tier={state.wildTier} animate={animate} />}
           {fx.banner && (
@@ -692,9 +715,6 @@ function dropOk(play: CardPlayability, d: CardDrag): boolean {
 function dropOnAllyText(state: CombatState, targets: number[]): string {
   return dropOnAlly(targets.map((i) => state.player.team[i]?.name).filter((n): n is string => !!n));
 }
-
-/** A slot's sprite box on the stage, in the stage's own pixels. */
-type SlotBox = { left: number; top: number; width: number; height: number };
 
 /** Layout: a move card's width and the hand's gap (MoveCard.module.css, `.hand`). */
 const CARD_WIDTH = 152;

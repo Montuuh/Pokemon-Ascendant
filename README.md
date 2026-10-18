@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.24 — Move animations.** Every move now plays out across the field: a Pokémon dashes over to tackle and
+comes back, a fireball or a spray of bubbles flies from one side to the other, Hydro Pump is a beam and Thunderbolt a
+bolt, and Surf rolls a wave across the whole screen while Earthquake splits the floor and shakes it — the damage
+landing as the move does. Before it,
 **v0.9.23 — Sound.** The game is no longer silent: every sound is synthesised as it plays, with no recordings —
 each card type has its own whoosh, hits land by how effective they were, the Poké Ball wobbles and clicks, and the
 music follows you from Region to Region, through the Cities, up Victory Road and into the League, pressing on when

@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.24 — Move animations · 2026-10-18
+
+Every move is animated from its user to its target.
+
+- **Melee.** The Pokémon dashes across the field, strikes, returns.
+- **Ranged.** Charged and thrown: fireballs, bubbles, leaves, beams, bolts.
+- **Full screen.** Surf's wave, Earthquake's shake, Blizzard, Thunder.
+- **On impact.** The number, the HP and the log land when the move does.
+
 ### v0.9.23 — Sound · 2026-10-16
 
 The game has sound: every effect and song synthesised as it plays.

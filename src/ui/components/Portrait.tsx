@@ -4,7 +4,6 @@ import type { Combatant, SlotId } from '@/sim';
 import { spriteOf } from '@/ui/art';
 import type { SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { ArenaSprite } from './ArenaSprite';
-import { FloatingNumbers, type FloatingFx } from './FloatingNumbers';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
@@ -40,7 +39,6 @@ interface Props {
   /** §5.2 — this card is under the pointer: the arrows aimed at its slot come forward. */
   onHover?: (hovering: boolean) => void;
   onClick?: () => void;
-  fx: FloatingFx[];
   fxClass?: string;
   /**
    * §9.2.5 — every hit coming at this Pokémon this turn, as the dry-run Resolution prints it: one number per
@@ -58,7 +56,7 @@ interface Props {
 // on a dark head, the animated back sprite in a window lit in its first type, its HP — with the part this turn's visible
 // intents will take striped — and on a bench the swap price and what it would take as the Lead. The hits coming at it
 // hang off the card's edge, towards the enemy. The whole card is one button: a swap, an ally target, a step-back choice.
-export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapAllowed, swapHint, targeted, selectable, onHover, onClick, fx, fxClass, incoming, incomingKo, asLead, faintPending }: Props) {
+export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapAllowed, swapHint, targeted, selectable, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending }: Props) {
   // §9.9.1 — at 0 HP but its faint still to play: it stands through the hits on screen first.
   const fainted = mon.hp <= 0 && !faintPending;
   const classes = [card.card, styles.unit, styles[variant], targeted ? styles.targeted : '', selectable ? styles.selectable : '', fainted ? styles.fainted : ''].filter(Boolean).join(' ');
@@ -126,7 +124,6 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
         <span className={card.stand} data-fx-slot={fxSlot} data-arrow-to={slotId}>
           <span className={`${card.sprite} ${fxClass ?? ''} ${spriteClass ?? ''}`}>
             <ArenaSprite src={spriteOf(mon, 'back', !!mon.shiny)} shiny={!!mon.shiny} concealed={fainted} imgClassName={card.breathe} />
-            <FloatingNumbers uid={mon.uid} fx={fx} />
           </span>
         </span>
       </span>

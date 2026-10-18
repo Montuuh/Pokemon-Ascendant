@@ -7,7 +7,6 @@ import { CatchPicker } from './CatchPicker';
 import { intentGlyph, spriteOf } from '@/ui/art';
 import type { SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { ArenaSprite } from './ArenaSprite';
-import { FloatingNumbers, type FloatingFx } from './FloatingNumbers';
 import { ARMOUR_LABEL, INTENT_LABEL, OBJECTIVE_TEXT } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
@@ -51,7 +50,6 @@ interface Props {
   fxSlot: SpriteSlot;
   /** §9.9.1 — the sprite's own beat: in its ball, being sent out, entering from the grass. */
   spriteClass?: string;
-  floats: FloatingFx[];
   /** Still in its ball: the place is kept, the Pokémon and its card are not shown yet. */
   waiting?: boolean;
   /** §9.9.1 — a ball is rocking: what it was about to do is not the question now, so its intent steps back. */
@@ -64,7 +62,7 @@ interface Props {
 // head, the animated front sprite in a window lit in its first type, its HP with phase markers (and, while a card is
 // aimed at it, the part that card would take, striped), its chips — with the catch pill in a wild fight and the held
 // card's number on the corner (§9.2.4). The whole card, sprite and all, is the target.
-export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow, fallen, held, fxSlot, spriteClass, floats, waiting, quiet }: Props) {
+export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow, fallen, held, fxSlot, spriteClass, waiting, quiet }: Props) {
   const phase = currentPhase(enemy, ctx.config);
   // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
   const place = held ? held.place : enemySlotLabel(state, enemy);
@@ -196,14 +194,13 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
             <span className={card.stand} data-fx-slot={fxSlot} data-arrow-from={enemy.uid}>
               <span className={[card.sprite, fxClass ?? '', spriteClass ?? ''].join(' ')} data-testid="arena-enemy" data-enemy-uid={enemy.uid}>
                 <ArenaSprite src={spriteOf(enemy, 'front', !!enemy.shiny)} shiny={!!enemy.shiny} concealed={enemy.hp <= 0} imgClassName={`${card.breathe} ${enemy.shiny ? 'fx-shiny' : ''}`} />
-                <FloatingNumbers uid={enemy.uid} fx={floats} />
               </span>
             </span>
           </span>
 
           <HpBar hp={enemy.hp} maxHp={enemy.maxHp} shield={enemy.shield} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={UNIT_HP_BAR} future={future} />
           <span className={`${card.hpRow} ${styles.catchRoom}`}>
-            <span className={`${card.hpText} display tabular`}>
+            <span className={`${card.hpText} display tabular`} data-testid="foe-hp">
               {enemy.hp} / {enemy.maxHp}
             </span>
             {/* §5.9 — a boss's phase, on the card at every size: the notches on its bar are its thresholds. */}

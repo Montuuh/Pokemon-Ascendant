@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
-import type { CombatEvent, CombatState, EnemyCombatant } from '@/sim';
+import type { CombatEvent, CombatState, EnemyCombatant, PokemonType } from '@/sim';
 import { benchIndices, indexToSlot } from '@/sim';
+import { getContent } from '@/content/registry';
+import { MOTION_MS, motionOf, type Motion } from '@/ui/moveMotion';
 import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
 import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/strings';
@@ -16,6 +18,9 @@ import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/string
 
 /** Where a Pokémon stands: the enemy's places (`single` when it stands alone), and yours — `player` is your Lead. */
 export type SpriteSlot = 'single' | 'lead' | 'support1' | 'support2' | 'player' | 'bench1' | 'bench2';
+
+/** A slot's sprite box on the stage, in the stage's own pixels: where every beat of that slot is drawn. */
+export type SlotBox = { left: number; top: number; width: number; height: number };
 
 /** Someone who has left the field, drawn for one more beat where it stood. */
 export interface Ghost {
@@ -65,6 +70,23 @@ export interface CatchFx {
   targetUid: string;
 }
 
+/**
+ * §9.9.2 — a move used: who used it and from where, what it hit, and how it moves (`motionOf`). Drawn by `MoveFx`;
+ * the hit's number, its shake and its HP are scheduled for its impact.
+ */
+export interface MoveFx {
+  id: number;
+  moveId: string;
+  type: PokemonType;
+  motion: Motion;
+  from: SpriteSlot;
+  to: SpriteSlot[];
+  /** Whose move: yours throw to the right, the foe's to the left. */
+  side: 'player' | 'enemy';
+  /** The user, drawn as it dashes across the field (a Melee move): its real sprite waits hidden in its card. */
+  actor?: { speciesId: string; shiny: boolean };
+}
+
 export interface CombatFxState {
   floats: FloatingFx[];
   /** uid → css class applied to that combatant's card for a moment. */
@@ -74,6 +96,10 @@ export interface CombatFxState {
   ghosts: Ghost[];
   balls: BallFlight[];
   hits: MoveHit[];
+  /** §9.9.2 — the moves playing now. */
+  moves: MoveFx[];
+  /** §9.9.2 — a class on the whole stage while a move shakes it (Earthquake). */
+  stageClass: string | null;
   catching: CatchFx | null;
   banner: string | null;
   /** A beat is playing that the screen should not talk over — the catch, a faint: the outcome waits, the hand waits. */
@@ -84,11 +110,14 @@ export interface CombatFxState {
    * lit it up again, and the faint looked like it played twice).
    */
   faintPending: Record<string, true>;
-  /** While a ball rocks, the log shows only this many lines: the result is not read before the ball tells it. */
+  /** While a move flies or a ball rocks, the log shows only this many lines: a result is not read before it lands. */
   logHold: number | null;
+  /** §9.9.2 — uid → the HP shown while a hit is on its way: what it had, until the move lands. */
+  hp: Record<string, number>;
+  /** §9.9.2 — the foes' moves are playing: their next intents wait until they have (the hand waits too, `busy`). */
+  acting: boolean;
 }
 
-const FLOAT_MS = 1150;
 const CLASS_MS = 450;
 const BANNER_MS = 1300;
 const FAINT_CARD_MS = 650;
@@ -124,6 +153,8 @@ export const FX_MS = {
   stagger: 420,
   /** A move's illustration over its target: pops in with the lunge, gone before the next hit's number. */
   moveHit: 560,
+  /** A number or a word rising off a Pokémon. */
+  float: 1100,
 } as const;
 
 /** The beats' lengths as CSS custom properties on the arena, so the keyframes and the timers read one table. */
@@ -141,6 +172,7 @@ export const fxTimings = (): CSSProperties =>
     '--fx-wobble-cycle': `${FX_MS.pause + FX_MS.wobble}ms`,
     '--fx-result': `${FX_MS.result}ms`,
     '--fx-burst': `${FX_MS.burst}ms`,
+    '--fx-float': `${FX_MS.float}ms`,
   }) as CSSProperties;
 
 /**
@@ -160,6 +192,9 @@ export function catchTimeline(wobbles: number, success: boolean) {
 interface Seen {
   enemies: Map<string, { speciesId: string; shiny: boolean; slot: SpriteSlot; enemy: EnemyCombatant }>;
   lead: { uid: string; speciesId: string; shiny: boolean } | null;
+  /** Everyone's HP, and how long the log was: what the screen showed before a batch. */
+  hp: Map<string, number>;
+  logLength: number;
 }
 
 const slotOf = (index: number, count: number): SpriteSlot => (count <= 1 ? 'single' : index === 0 ? 'lead' : index === 1 ? 'support1' : 'support2');
@@ -168,8 +203,14 @@ function look(state: CombatState): Seen {
   const enemies: Seen['enemies'] = new Map();
   state.enemies.forEach((e, i) => enemies.set(e.uid, { speciesId: e.speciesId, shiny: !!e.shiny, slot: slotOf(i, state.enemies.length), enemy: e }));
   const l = state.player.team[state.player.leadIndex];
-  return { enemies, lead: l && l.hp > 0 ? { uid: l.uid, speciesId: l.speciesId, shiny: !!l.shiny } : null };
+  const hp = new Map<string, number>([...state.player.team, ...state.enemies].map((m) => [m.uid, m.hp]));
+  return { enemies, lead: l && l.hp > 0 ? { uid: l.uid, speciesId: l.speciesId, shiny: !!l.shiny } : null, hp, logLength: state.log.length };
 }
+
+/** §9.9.2 — a line that starts a beat in the log: a move used, or a trainer's Pokémon sent out. */
+const usedLine = (l: CombatState['log'][number]) => (l.category === 'player' || l.category === 'enemy') && l.text.includes(' used ');
+const sentLine = (l: CombatState['log'][number]) => l.text.includes(' sent out ');
+const faintLine = (l: CombatState['log'][number]) => l.text.endsWith(' fainted!');
 
 /** A fight whose Pokémon come out of a trainer's ball, rather than out of the grass. */
 const fromABall = (state: CombatState) => state.kind !== 'wild' || !!state.trainer;
@@ -181,11 +222,22 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   const [ghosts, setGhosts] = useState<Ghost[]>([]);
   const [balls, setBalls] = useState<BallFlight[]>([]);
   const [hits, setHits] = useState<MoveHit[]>([]);
+  const [moves, setMoves] = useState<MoveFx[]>([]);
+  const [stageClass, setStageClass] = useState<string | null>(null);
   const [catching, setCatching] = useState<CatchFx | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [faintPending, setFaintPending] = useState<Record<string, true>>({});
   const [logHold, setLogHold] = useState<number | null>(null);
+  const [hpShown, setHpShown] = useState<Record<string, number>>({});
+  // §9.9.2 — one clock for the moves across batches, in wall time: a card played while the last move is still in the air
+  // starts at that move's impact, a Pokémon that dashed waits until it is back, and the HP and log a batch holds back are
+  // let go by the batch that ends last.
+  const clock = useRef({ impact: 0, dashes: {} as Record<string, number>, heldUntil: 0, actingUntil: 0 });
+  const [acting, setActing] = useState(false);
+  // §9.9.1 — a fallen foe's line, held on screen while its faint plays (the others keep their places): a move drawn
+  // meanwhile is aimed by that line, as the screen draws it.
+  const held = useRef<{ line: string[]; until: number } | null>(null);
   // Every timer this hook has set, kept across batches: a batch arriving mid-beat must not cancel the end of the
   // last one (a sprite left hidden, the hand left locked). They are cleared only on a new fight and on unmount.
   const pending = useRef<number[]>([]);
@@ -250,9 +302,15 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       setGhosts([]);
       setBalls([]);
       setHits([]);
+      setMoves([]);
+      setStageClass(null);
       setCatching(null);
       setSprites({});
       setLogHold(null);
+      setHpShown({});
+      setActing(false);
+      clock.current = { impact: 0, dashes: {}, heldUntil: 0, actingUntil: 0 };
+      held.current = null;
       // Nothing from the last fight holds this one.
       if (busyTimer.current !== null) window.clearTimeout(busyTimer.current);
       busyTimer.current = null;
@@ -288,13 +346,26 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     seen.current = look(state);
     if (fresh.length === 0) return;
 
-    let delay = 0;
+    const t0 = Date.now();
+    // A batch arriving while a move is still on its way waits for it to land.
+    let delay = animate ? Math.max(0, clock.current.impact - t0) : 0;
     let busyMs = 0;
+    // §9.9.2 — what this batch holds back, and when each is let go: the log's lines (up to `upTo`) and HPs.
+    const logCuts: { at: number; upTo: number }[] = [];
+    const hpAt: { at: number; uid: string; hp: number }[] = [];
+    const marks = state.log.flatMap((l, i) => (i >= before.logLength && (usedLine(l) || sentLine(l) || faintLine(l)) ? [i] : []));
+    const used = marks.filter((i) => usedLine(state.log[i]!));
+    const sent = marks.filter((i) => sentLine(state.log[i]!));
+    const fainted = marks.filter((i) => faintLine(state.log[i]!));
+    /** When the foes' moves in this batch have played out. */
+    let foesDone = 0;
+    /** The lines from one beat's start up to the next beat's start. */
+    const nextMark = (after: number) => marks.find((i) => i > after) ?? state.log.length;
     let lastBall = 'poke-ball';
     const addFloat = (f: Omit<FloatingFx, 'id'>, at: number) => {
       const id = nextId.current++;
       schedule(() => setFloats((fs) => [...fs, { ...f, id }]), at);
-      schedule(() => setFloats((fs) => fs.filter((x) => x.id !== id)), at + FLOAT_MS);
+      schedule(() => setFloats((fs) => fs.filter((x) => x.id !== id)), at + FX_MS.float);
     };
     const addClass = (uid: string, cls: string, at: number, ms = CLASS_MS) => {
       schedule(() => setClasses((c) => ({ ...c, [uid]: cls })), at);
@@ -310,43 +381,146 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       schedule(() => setBanner(text), at);
       schedule(() => setBanner(null), at + ms);
     };
+    /** The move's picture landing on one target: an attack no move was drawn for. */
+    const addHit = (slot: SpriteSlot, moveId: string, at: number) => {
+      const id = nextId.current++;
+      schedule(() => setHits((hs) => [...hs, { id, slot, moveId }]), at);
+      schedule(() => setHits((hs) => hs.filter((x) => x.id !== id)), at + FX_MS.moveHit);
+    };
+    /** Where a Pokémon stands at `at` — as the screen draws it then: by a fallen foe's held line while its faint plays,
+     *  else where it stands now, or stood a render ago if it has just left the field. */
+    const slotOfUid = (uid: string, at: number): SpriteSlot | null => {
+      const mine = state.player.team.findIndex((m) => m.uid === uid);
+      if (mine >= 0) {
+        if (mine === state.player.leadIndex) return 'player';
+        return indexToSlot(state, mine) === 'bench1' ? 'bench1' : 'bench2';
+      }
+      const line = held.current && t0 + at < held.current.until ? held.current.line : null;
+      const inLine = line ? line.indexOf(uid) : -1;
+      if (line && inLine >= 0) return slotOf(inLine, line.length);
+      const now = state.enemies.findIndex((x) => x.uid === uid);
+      return now >= 0 ? slotOf(now, state.enemies.length) : (before.enemies.get(uid)?.slot ?? null);
+    };
+    const actorOf = (uid: string): { speciesId: string; shiny: boolean } | null => {
+      const m = state.player.team.find((x) => x.uid === uid) ?? state.enemies.find((x) => x.uid === uid) ?? before.enemies.get(uid)?.enemy;
+      return m ? { speciesId: m.speciesId, shiny: !!m.shiny } : null;
+    };
+    const isMine = (uid: string) => state.player.team.some((m) => m.uid === uid);
+    /** The move being drawn: its hits land at its impact — on each of several a stagger apart — not at their own beat. */
+    let moving: { moveId: string; userUid: string; hitAt: Map<string, number> } | null = null;
+    /**
+     * §9.9.2 — a move used: gather who it touched from the events that follow (its hits, or for a move with no power,
+     * whom its status, stage or heal landed on), choose its motion, schedule it, and move the batch's clock to its impact.
+     */
+    const drawMove = (userUid: string, moveId: string, aimed: string | null, from: number) => {
+      const move = getContent().move(moveId);
+      const hit: string[] = [];
+      const touched: string[] = [];
+      for (let j = from + 1; j < fresh.length; j++) {
+        const n = fresh[j]!;
+        if (n.t === 'card-played' || n.t === 'enemy-action' || n.t === 'turn-start' || n.t === 'consumable-used' || n.t === 'outcome') break;
+        if (n.t === 'attack' && n.moveId === moveId && !hit.includes(n.targetUid)) hit.push(n.targetUid);
+        if ((n.t === 'status-applied' || n.t === 'status-immune' || n.t === 'stage' || n.t === 'heal') && !touched.includes(n.targetUid)) touched.push(n.targetUid);
+      }
+      const motion = motionOf(move, hit.length);
+      // A Pokémon still dashing back from its last blow finishes coming back first.
+      delay = Math.max(delay, (clock.current.dashes[userUid] ?? 0) - t0);
+      const fromSlot = slotOfUid(userUid, delay);
+      if (!fromSlot) return;
+      const onFoe = (uid: string) => isMine(uid) !== isMine(userUid);
+      const targets =
+        motion.kind === 'aura' ? [touched.find((u) => !onFoe(u)) ?? userUid]
+        : motion.kind === 'hex' ? (touched.filter(onFoe).length ? touched.filter(onFoe) : aimed ? [aimed] : [])
+        : hit.length ? hit : aimed ? [aimed] : [];
+      const to = targets.map((u) => slotOfUid(u, delay)).filter((s): s is SpriteSlot => !!s);
+      if (!to.length && motion.kind !== 'area') return;
+      const actor = motion.kind === 'melee' ? actorOf(userUid) : null;
+      const id = nextId.current++;
+      const fx: MoveFx = { id, moveId, type: move.type, motion, from: fromSlot, to, side: isMine(userUid) ? 'player' : 'enemy', ...(actor ? { actor } : {}) };
+      schedule(() => setMoves((ms) => [...ms, fx]), delay);
+      schedule(() => setMoves((ms) => ms.filter((x) => x.id !== id)), delay + motion.totalMs);
+      // A dash: the real sprite waits hidden in its card while its double crosses the field and comes back.
+      // Its own class, not fx-hidden: a foe hidden that way reads as still in its ball, and its whole card waits unseen.
+      if (motion.kind === 'melee') {
+        // Cleared only by the dash it belongs to: a second dash starting as the first ends keeps the sprite unseen.
+        const back = t0 + delay + motion.totalMs;
+        clock.current.dashes[userUid] = back;
+        schedule(() => setSprites((c) => ({ ...c, [userUid]: 'fx-dashing' })), delay);
+        schedule(() => {
+          if (clock.current.dashes[userUid] === back) setSprites((c) => (c[userUid] === 'fx-dashing' ? { ...c, [userUid]: '' } : c));
+        }, delay + motion.totalMs);
+      }
+      if (!isMine(userUid)) foesDone = Math.max(foesDone, delay + motion.totalMs);
+      // Earthquake: the whole stage shakes from a beat before its impact to its end.
+      if (motion.kind === 'area' && motion.style === 'quake') {
+        const shakeAt = delay + motion.impactMs - MOTION_MS.stage.lead;
+        schedule(() => setStageClass('fx-quake'), shakeAt);
+        schedule(() => setStageClass((c) => (c === 'fx-quake' ? null : c)), shakeAt + MOTION_MS.stage.shake);
+      }
+      // The log names the move as it is used, and tells what it did when it lands.
+      const line = used.shift();
+      if (line !== undefined) {
+        logCuts.push({ at: delay, upTo: line + 1 });
+        logCuts.push({ at: delay + motion.impactMs, upTo: nextMark(line) });
+      }
+      const stagger = motion.kind === 'area' ? MOTION_MS.impact.stagger : 0;
+      const hitAt = new Map(targets.map((uid, k) => [uid, delay + motion.impactMs + k * stagger]));
+      clock.current.impact = Math.max(clock.current.impact, t0 + delay + motion.impactMs);
+      delay += motion.impactMs;
+      moving = { moveId, userUid, hitAt };
+    };
 
-    for (const e of fresh as CombatEvent[]) {
+    for (const [index, e] of (fresh as CombatEvent[]).entries()) {
       switch (e.t) {
+        case 'card-played':
+          moving = null;
+          if (animate) drawMove(e.ownerUid, e.moveId, e.targetUid, index);
+          break;
         case 'enemy-action':
+          moving = null;
           if (!e.fizzled) showBanner('Enemy turn', delay);
           else addFloat({ uid: e.enemyUid, kind: 'text', text: 'Missed!' }, delay);
           delay += 350;
+          if (animate && !e.fizzled && e.intent.moveId) {
+            const aimed = e.intent.targetSlot === 'lead' ? (state.player.team[state.player.leadIndex]?.uid ?? null) : null;
+            drawMove(e.enemyUid, e.intent.moveId, aimed, index);
+          }
           break;
         case 'attack': {
+          // §9.9.2 — part of a move already drawn: the motion is its picture, and its hits land at its impact.
+          if ((moving as { moveId: string } | null)?.moveId === e.moveId) break;
           addClass(e.sourceUid, e.sourceUid.startsWith('p') ? 'fx-lunge-right' : 'fx-lunge-left', delay);
-          // The move's picture lands on its target: a foe where it stands, or your Lead.
-          const at = state.enemies.findIndex((x) => x.uid === e.targetUid);
-          const slot: SpriteSlot | null = at >= 0 ? slotOf(at, state.enemies.length) : e.targetUid === state.player.team[state.player.leadIndex]?.uid ? 'player' : (before.enemies.get(e.targetUid)?.slot ?? null);
-          if (slot && animate) {
-            const id = nextId.current++;
-            schedule(() => setHits((hs) => [...hs, { id, slot, moveId: e.moveId }]), delay);
-            schedule(() => setHits((hs) => hs.filter((x) => x.id !== id)), delay + FX_MS.moveHit);
-          }
+          // No move drawn for it: the move's picture lands on its target, where it stands.
+          const slot = slotOfUid(e.targetUid, delay);
+          if (slot && animate) addHit(slot, e.moveId, delay);
           delay += 180;
           break;
         }
         case 'damage': {
+          // A drawn move's hit lands at its impact (a move landing on several, on each a stagger apart); any other now.
+          const m = moving as { userUid: string; hitAt: Map<string, number> } | null;
+          const drawn = m && e.cause === 'move' && e.sourceUid === m.userUid ? m.hitAt.get(e.targetUid) : undefined;
+          if (drawn !== undefined) m!.hitAt.delete(e.targetUid);
+          const at = drawn ?? delay;
           const emphasis = e.crit ? 'crit' : e.effectiveness === 'double' || e.effectiveness === 'quad' ? 'super' : e.effectiveness === 'half' || e.effectiveness === 'quarter' ? 'weak' : e.effectiveness === 'immune' ? 'immune' : undefined;
           const suffix = e.cause !== 'move' ? ` ${e.cause}` : '';
-          addFloat({ uid: e.targetUid, kind: 'damage', text: e.amount === 0 && e.effectiveness === 'immune' ? 'immune' : `-${e.amount}${suffix}`, emphasis }, delay);
-          if (e.amount > 0) addClass(e.targetUid, 'fx-shake', delay);
-          if (e.crit) addFloat({ uid: e.targetUid, kind: 'text', text: 'CRIT' }, delay + 120);
-          else if (emphasis === 'super') addFloat({ uid: e.targetUid, kind: 'text', text: EFFECTIVENESS_LABEL[e.effectiveness] ?? '' }, delay + 120);
-          delay += 220;
+          addFloat({ uid: e.targetUid, kind: 'damage', text: e.amount === 0 && e.effectiveness === 'immune' ? 'immune' : `-${e.amount}${suffix}`, emphasis }, at);
+          if (e.amount > 0) addClass(e.targetUid, 'fx-shake', at);
+          // Said under the number it explains, never over it.
+          if (e.crit) addFloat({ uid: e.targetUid, kind: 'text', text: 'CRIT', under: true }, at + 120);
+          else if (emphasis === 'super') addFloat({ uid: e.targetUid, kind: 'text', text: EFFECTIVENESS_LABEL[e.effectiveness] ?? '', under: true }, at + 120);
+          if (animate && at > 0) hpAt.push({ at, uid: e.targetUid, hp: e.hpAfter });
+          delay = Math.max(delay, at) + 220;
           break;
         }
         case 'heal':
           addFloat({ uid: e.targetUid, kind: 'heal', text: `+${e.amount}` }, delay);
+          if (animate && delay > 0) hpAt.push({ at: delay, uid: e.targetUid, hp: e.hpAfter });
           delay += 150;
           break;
         case 'status-applied':
-          addFloat({ uid: e.targetUid, kind: 'status', text: STATUS_LABEL[e.status] ?? e.status }, delay);
+          // A word, said under the number of the hit that brought it.
+          addFloat({ uid: e.targetUid, kind: 'status', text: STATUS_LABEL[e.status] ?? e.status, under: true }, delay);
           delay += 150;
           break;
         case 'status-immune':
@@ -354,7 +528,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           delay += 150;
           break;
         case 'stage':
-          addFloat({ uid: e.targetUid, kind: 'status', text: `${e.stat === 'attack' ? 'Atk' : e.stat === 'defense' ? 'Def' : 'Spd'} ${e.delta > 0 ? '+' : ''}${e.delta}` }, delay);
+          addFloat({ uid: e.targetUid, kind: 'status', text: `${e.stat === 'attack' ? 'Atk' : e.stat === 'defense' ? 'Def' : 'Spd'} ${e.delta > 0 ? '+' : ''}${e.delta}`, under: true }, delay);
           delay += 120;
           break;
         case 'combo-break':
@@ -368,6 +542,9 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           delay += 150;
           break;
         case 'faint': {
+          // The log says it fainted as its beat starts, not at the blow.
+          const said = animate ? fainted.shift() : undefined;
+          if (said !== undefined) logCuts.push({ at: delay, upTo: nextMark(said) });
           // The card stands until its beat, then dims into its fainted look (motion.css faintOut).
           if (e.side !== 'enemy' && delay > 0) {
             const uid = e.uid;
@@ -390,6 +567,12 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           }
           const slot: SpriteSlot = enemy ? enemy.slot : 'player';
           addGhost({ slot, speciesId: who.speciesId, shiny: who.shiny, kind: 'faint', at: delay, ...(enemy ? { foe: { enemy: enemy.enemy, line: [...before.enemies.keys()] } } : {}) }, FX_MS.faint);
+          if (enemy) {
+            // The screen holds the line as it stood until the ghost has played — the first fallen's line, if one still is.
+            const until = t0 + delay + FX_MS.faint + GHOST_TAIL_MS;
+            const still = held.current && held.current.until > t0 + delay ? held.current : null;
+            held.current = still ? { line: still.line, until: Math.max(still.until, until) } : { line: [...before.enemies.keys()], until };
+          }
           let end = delay + FX_MS.faint;
           if (mine || fromABall(state)) {
             flyBall({ slot, dir: 'out', hand: mine ? 'player' : 'trainer', ball: 'poke-ball' }, end);
@@ -422,11 +605,10 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           if (fromABall(state) && !e.called) {
             sendOut(e.enemyUid, slot, 'trainer', delay);
             // The log names it as it comes out of the ball, not while the last one is still falling.
-            const cut = state.log.findLastIndex((l) => l.text.includes(' sent out '));
-            if (cut >= 0) {
-              // eslint-disable-next-line react-hooks/set-state-in-effect -- a layout effect, so before paint: the ticker never shows the line before the ball does
-              setLogHold(cut);
-              schedule(() => setLogHold((h) => (h === cut ? null : h)), delay + FX_MS.ballFly);
+            const line = sent.shift();
+            if (line !== undefined) {
+              logCuts.push({ at: delay, upTo: line });
+              logCuts.push({ at: delay + FX_MS.ballFly, upTo: nextMark(line) });
             }
           }
           else {
@@ -463,9 +645,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           // The log already holds the result: it shows the throw, and the rest when the ball clicks or bursts.
           const cut = state.log.findLastIndex((l) => l.text.startsWith('Used ')) + 1;
           if (cut > 0) {
-            // Before paint, not on a timer: a frame of the result in the ticker before the throw told it (v0.9.16).
-            setLogHold(cut);
-            schedule(() => setLogHold((h) => (h === cut ? null : h)), delay + t.resultAt);
+            logCuts.push({ at: delay, upTo: cut });
+            logCuts.push({ at: delay + t.resultAt, upTo: state.log.length });
           }
           // A Pokémon that broke free is still on the field: hidden while it is in the ball, then out again.
           if (!e.success) {
@@ -479,17 +660,52 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           break;
         }
         case 'turn-start':
+          moving = null;
           if (e.turn > 1) showBanner(`Turn ${e.turn}`, delay, 900);
           break;
         default:
           break;
       }
     }
+    // §9.9.2 — the foes' turn plays out before the next one is shown: their next intents and the hand wait for it.
+    if (foesDone > 0) {
+      busyMs = Math.max(busyMs, foesDone);
+      clock.current.actingUntil = Math.max(clock.current.actingUntil, t0 + foesDone);
+      setActing(true);
+      schedule(() => {
+        if (Date.now() >= clock.current.actingUntil - 5) setActing(false);
+      }, foesDone);
+    }
     if (busyMs > 0) holdBusy(busyMs);
+    // §9.9.2 — before paint, the log and the HP as they stood (or as an earlier batch still holds them) — never a frame of
+    // a result before its beat told it (v0.9.16); each cut and each hit lets a little more through; the batch that ends
+    // last lets go of the rest.
+    if (logCuts.length || hpAt.length) {
+      if (logCuts.length) {
+        const first = Math.max(before.logLength, ...logCuts.filter((c) => c.at <= 0).map((c) => c.upTo));
+        setLogHold((h) => h ?? first);
+        for (const c of logCuts) if (c.at > 0) schedule(() => setLogHold((h) => (h === null ? null : Math.max(h, c.upTo))), c.at);
+      }
+      if (hpAt.length) {
+        setHpShown((cur) => {
+          const next = { ...cur };
+          for (const h of hpAt) if (!(h.uid in next)) next[h.uid] = before.hp.get(h.uid) ?? h.hp;
+          return next;
+        });
+        for (const h of hpAt) schedule(() => setHpShown((c) => ({ ...c, [h.uid]: h.hp })), h.at);
+      }
+      const end = Math.max(...logCuts.map((c) => c.at), ...hpAt.map((h) => h.at));
+      clock.current.heldUntil = Math.max(clock.current.heldUntil, t0 + end);
+      schedule(() => {
+        if (Date.now() < clock.current.heldUntil - 5) return;
+        setLogHold(null);
+        setHpShown({});
+      }, end);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, balls, hits, catching, banner, busy, logHold, faintPending };
+  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, acting };
 }
 
 export type { CombatEvent };

@@ -522,9 +522,9 @@ commitment.
 
 | Element | Motion |
 |---|---|
-| **Pokémon** | 2-frame idle breath · 4-frame attack lunge · flash and recoil on damage · 3-frame faint fade · an 8-frame evolution sequence |
+| **Pokémon** | 2-frame idle breath · a move's own animation (§9.9.2) · flash and recoil on damage · 3-frame faint fade · an 8-frame evolution sequence |
 | **Cards** | Draw slides from the deck (200 ms) · play lifts, glows and fades toward the target (350 ms) · discard fades (150 ms) · the hand fans in |
-| **Camera** | Locked in combat; a 1px shake on heavy hits · smooth pan on the map · a 1.5 s zoom and chord for a boss intro |
+| **Camera** | Locked in combat; a 1px shake on heavy hits, the whole stage shaken by Earthquake (§9.9.2) · smooth pan on the map · a 1.5 s zoom and chord for a boss intro |
 
 **The choreography principle:** anything the player must *read in order to decide* — an intent, a damage
 preview, a catch gauge — appears **instantly and persistently**. Flourish animates; information does not.
@@ -549,6 +549,60 @@ the player should not talk over — the catch and a faint — holds the hand, th
 and the combat log keeps the catch's result back until the ball tells it; a Pokémon coming out never holds the hand, so
 a fight can start at once. Their lengths are one table (`FX_MS`) that the timers and the keyframes both read. Under
 reduced motion every beat is instant.
+
+## §9.9.2 Moves
+
+> ✅ **v0.9.24** — built 2026-10-18 (the user's note: "not a sprite appearing on the target, but a whole animation").
+> Code: `ui/moveMotion.ts` (`motionOf`, `MOTION_MS`, `AREA_MOVES`), `useCombatFx` (`MoveFx`, the impact on the batch's
+> clock, the move clock across batches, the HP and the log held to the impact), `ui/components/MoveFx.tsx` +
+> `.module.css`, the numbers' layer in `CombatScreen`, `.fx-quake` and `.fx-dashing` in `motion.css`.
+
+**Every move is animated from its user to what it hits**, read from the move's own row — its range, its reach, its type
+and its power — so a move added to the content has its animation before anyone draws one:
+
+| Kind | Which moves | What the player sees |
+|---|---|---|
+| **Melee** | A damaging Melee move | The user winds up, **dashes across the field** to its target, jabs into the blow and comes back to its card. Its sprite waits unseen in its card while its double crosses; the card itself stays |
+| **Thrown** | A damaging Ranged move | A glow gathers on the user, then the move **flies along the line** to its target in its type's shape — a fireball with its tail (Fire), bubbles (Water), leaves (Grass), shards (Ice), rocks (Rock, Ground), needles (Bug), sludge (Poison), rings (Psychic), stars (Normal), a gust (Flying), a shadow (Ghost), an orb (the rest) — one, or a volley a beat apart |
+| **Stream** | Flamethrower, Water Gun, Hydro Pump, Ice Beam, Psybeam, Bubble Beam, Aurora Beam, Hyper Beam, Solar Beam, Tri Attack, Sonic Boom | One continuous **beam** from the user to the target: it grows, holds and thins away |
+| **Lightning** | Thunder Shock, Thunderbolt, and every other Ranged Electric move | A jagged **bolt** drawn from the user to the target, flickering |
+| **Drain** | Absorb, Mega Drain, Dream Eater | A tendril to the target, the hit, and the life **flowing back** to the user as motes |
+| **Stage** | Surf, Earthquake, Fissure, Blizzard, Thunder, Fire Blast, Rock Slide, Explosion, Self-Destruct, Petal Dance, Psychic, Razor Wind, Night Shade, Pin Missile, Dragon Rage — and **any move that lands on several at once** | The **whole stage** takes it: Surf a wall of water rolling across from its user's side; Earthquake the floor splitting from side to side, dust the width of the field, stones jumping and **the stage itself shaking**; Blizzard a driven storm of snow with frost at the edges; Thunder the sky darkening and a bolt striking each target; Fire Blast a great fireball and a wall of flame where it lands; Rock Slide rocks falling from above; Explosion and Self-Destruct a blast spreading from the user and a white flash; Psychic and Dragon Rage rings across the field; Petal Dance, Razor Wind and Pin Missile streaming across it. A move hitting several with no picture of its own fills the stage in its type's way |
+| **Glow** | A move with no power that raises, heals or guards | Rings rise from the user's feet — or its ally's — in its type's light |
+| **Hex** | A move with no power that puts a status or a lowered stat on the foe | Motes thrown at the foe and a swirl round it |
+
+**The hit lands with its impact.** The damage number, the shake, the HP on the target's card and a burst of sparks in
+the type's colour all wait for the moment the move arrives — the dash's end, the projectile's landing, the wave's
+crest — so nothing reads before the blow: until then the card shows the HP it had. The log does the same: the line
+naming the move as it is used, what it did when it lands, and a faint as its beat starts. A move that lands on several
+lands on each a beat apart. A foe's move plays the same way, back across the field. An upgraded card (`-plus`) moves
+as its base move. The move's own picture (§9.2.3) is not flashed on the target as well: the motion is the picture (it
+still lands for an attack no move is drawn for). The numbers rise on a layer of their own over everything a move draws,
+each over its Pokémon's sprite — a word about the hit (CRIT, Super effective, a status, a stage) a row under its
+number, never over it — and the AP stays above the field's beats.
+
+**One clock for the moves.** A move does not hold the hand — you may play the next card while one plays — but it waits
+its turn: a card played while the last move is in the air starts when that one lands, and a Pokémon that has dashed
+comes back to its card before it moves again. The enemy's turn starts the same way, and plays out before the next is
+shown: the foes' next intents and your hand wait until their moves have landed. A move drawn while a fallen foe's
+faint plays is aimed by the line as the screen still holds it. The kinds' lengths are one table (`MOTION_MS`, about
+half a second to the impact and three-quarters for a dash or a throw, a second and a quarter for the stage, with the
+impact's burst, the stagger between targets, every volley's and field's stagger and the stage's own beats —
+Earthquake's shake, the flashes, the stones — beside them) that the timers and the keyframes both read, as `FX_MS` is
+for the beats. They are presentation only: the sim has already decided the hit. **Under reduced motion none of it plays**: the number and the
+HP land at once, as before.
+
+**Flat, beside pixel sprites (D9).** Every shape is drawn flat — hard colour stops, an outline darker than its type,
+no blur and no soft glow — and what spins turns in steps; the dashing double moves and never scales or turns. What
+rises from a target's feet (Fire Blast's flames, Rock Slide's dust, a fog) is sized from its sprite's box, so it stays
+in its window and off its plate; what happens in the ground itself (Earthquake's cracks and dust) is drawn under the
+cards. Surf's wave is a slope of banded water under a white crest; Blizzard's frost closes in as flat frames. Every
+beat ends with its impact's burst played out, and every stagger fits inside it — nothing is cut off as the move goes.
+
+*Why (the user's call, 2026-10-18):* the card's picture flashed on the target said *what* hit, not *how*. A Pokémon that
+crosses the field to hit, a Water move that arrives as water, and Surf as a wave the whole screen sees make each card
+in the hand a different thing to play; the moves' own shapes, coloured by type, carry the Gen I feeling without a
+frame of the series' art.
 
 ---
 

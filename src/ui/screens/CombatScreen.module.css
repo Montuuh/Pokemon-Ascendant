@@ -197,12 +197,23 @@
   left: -4%;
   bottom: 12%;
 }
+/* §9.9.2 — the ground under the cards: what a move does in the floor itself (Earthquake's cracks and dust). */
+.floor {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
 /* Over everything on the field, catching nothing: the damage box, the beats, the banners. */
 .overlay {
   position: absolute;
   inset: 0;
   z-index: 3;
   pointer-events: none;
+}
+/* §9.9.2 — a Pokémon's numbers, over its sprite's box and over every move drawn on the field. */
+.floatAnchor {
+  position: absolute;
 }
 /* The breakdown, at the top of the field between the sides, clear of every card (the number is on the target's own
    card). `translate`, not `transform`: the pop-in's scale animates `transform`, and took the centring with it. */
@@ -313,7 +324,8 @@
   left: 50%;
   bottom: var(--sp-2);
   translate: -50% 0;
-  z-index: 3;
+  /* Over the overlay: a move filling the stage never covers what there is to spend. */
+  z-index: 4;
   display: flex;
   align-items: center;
   gap: var(--sp-2);

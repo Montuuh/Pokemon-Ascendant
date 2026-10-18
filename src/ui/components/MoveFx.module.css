@@ -1,0 +1,745 @@
+/* §9.9.2 — a move, drawn over the stage. Light is the stage's own (--ink-primary, a warm white on the dark stage), the
+   colour is the move's type (--mv-type), and every beat's length is a custom property from MOTION_MS (motionTimings),
+   so the picture lands when the number does. Each shape is placed at a point (left/top in px) and drawn around it.
+   D9 — beside pixel sprites every shape is flat: hard colour stops, a dark outline, no blur and no soft glow; the
+   spinning shapes turn in steps, as a sprite's frames do. */
+
+.move {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* The outline every shape is drawn with: the type's colour, darkened. */
+  --mv-line: color-mix(in srgb, var(--surface-sunken) 65%, var(--mv-type));
+}
+
+/* ── The charge: a glow gathering on the user ───────────────────────────────────────────────────────────── */
+.cast {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.cast::before {
+  content: '';
+  position: absolute;
+  left: -40px;
+  top: -40px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ink-primary) 0 22%, var(--mv-type) 22% 44%, var(--mv-line) 44% 50%, transparent 50%);
+  animation: castGlow var(--cast-ms) ease-in both;
+}
+@keyframes castGlow {
+  0% { transform: scale(0.2); opacity: 0; }
+  70% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.5); opacity: 0; }
+}
+
+/* ── The impact: a ring and sparks where the move lands ─────────────────────────────────────────────────── */
+.impact {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.impactRing {
+  position: absolute;
+  left: -44px;
+  top: -44px;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 6px solid var(--mv-type);
+  box-shadow: 0 0 0 2px var(--mv-line), inset 0 0 0 3px var(--ink-primary);
+  opacity: 0;
+  animation: impactRing var(--mv-impact-ring) steps(6) var(--impact-at) both;
+}
+.impactBig .impactRing {
+  left: -64px;
+  top: -64px;
+  width: 128px;
+  height: 128px;
+}
+@keyframes impactRing {
+  0% { transform: scale(0.15); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.spark {
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 4px;
+  height: 22px;
+  border-radius: 2px;
+  background: linear-gradient(var(--ink-primary) 0 50%, var(--mv-type) 50%);
+  transform-origin: 2px 2px;
+  rotate: calc(var(--i) * 45deg);
+  opacity: 0;
+  animation: spark var(--mv-impact-spark) steps(5) var(--impact-at) both;
+}
+@keyframes spark {
+  0% { opacity: 1; transform: translateY(4px) scaleY(0.4); }
+  100% { opacity: 0; transform: translateY(30px) scaleY(1.4); }
+}
+
+/* ── A flight: a shape carried along the line from the user to its target ───────────────────────────────── */
+.flight {
+  position: absolute;
+  width: 0;
+  height: 0;
+  rotate: var(--angle);
+  opacity: 0;
+  animation: fly var(--mv-projectile-travel) cubic-bezier(0.4, 0, 0.9, 0.6) calc(var(--mv-projectile-cast) + var(--i) * var(--mv-projectile-volley)) both;
+}
+/* The flight runs in its own frame, turned to face the target: forward is +x, aside is +y. */
+@keyframes fly {
+  0% { opacity: 1; transform: translate(0, var(--off)) scale(0.6); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dist), 0) scale(1); }
+}
+.shot {
+  position: absolute;
+  left: -21px;
+  top: -21px;
+  width: 42px;
+  height: 42px;
+}
+/* An orb: a hot core in the type's colour, its tail of fading echoes behind it. */
+.orb,
+.flame,
+.shadow,
+.sludge {
+  border-radius: 50%;
+  background: radial-gradient(circle at 60% 50%, var(--ink-primary) 0 28%, var(--mv-type) 28% 62%, var(--mv-line) 62% 70%, transparent 70%);
+}
+.flame {
+  width: 50px;
+  height: 50px;
+  left: -25px;
+  top: -25px;
+  border-radius: 55% 45% 45% 55%;
+  animation: flicker 90ms steps(1) infinite alternate;
+}
+.shadow {
+  background: radial-gradient(circle, var(--surface-sunken) 0 34%, var(--mv-type) 34% 62%, var(--mv-line) 62% 70%, transparent 70%);
+}
+.sludge {
+  border-radius: 46% 54% 60% 40%;
+  background: radial-gradient(circle at 40% 40%, color-mix(in srgb, var(--ink-primary) 60%, var(--mv-type)) 0 22%, var(--mv-type) 22% 62%, var(--mv-line) 62% 70%, transparent 70%);
+}
+@keyframes flicker {
+  from { scale: 1 0.92; }
+  to { scale: 0.92 1.06; }
+}
+.tail {
+  position: absolute;
+  top: 25%;
+  left: calc(var(--t) * -14px);
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  background: var(--mv-type);
+  opacity: calc(0.6 - var(--t) * 0.15);
+}
+/* A volley: bubbles, leaves, shards, rocks, needles, rings, stars, a gust — several small shapes a beat apart. */
+.bubbles {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--ink-primary);
+  background: radial-gradient(circle at 35% 35%, var(--ink-primary) 0 18%, color-mix(in srgb, var(--mv-type) 60%, transparent) 18%);
+}
+.leaves {
+  width: 30px;
+  height: 15px;
+  border-radius: 100% 0;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--ink-primary) 30%, var(--mv-type)) 0 50%, var(--mv-type) 50%);
+  box-shadow: 0 0 0 2px var(--mv-line);
+  animation: spin 220ms steps(4) infinite;
+}
+.shards {
+  width: 36px;
+  height: 14px;
+  clip-path: polygon(0 50%, 30% 0, 100% 50%, 30% 100%);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ink-primary) 40%, var(--mv-type)) 0 50%, var(--ink-primary) 50%);
+  filter: drop-shadow(0 2px 0 var(--mv-line));
+}
+.rocks {
+  width: 30px;
+  height: 27px;
+  clip-path: polygon(20% 0, 80% 8%, 100% 55%, 70% 100%, 15% 90%, 0 40%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--ink-primary) 25%, var(--mv-type)) 0 45%, var(--mv-line) 45%);
+  animation: spin 300ms steps(4) infinite;
+}
+.needles {
+  width: 40px;
+  height: 5px;
+  top: -2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--mv-line) 0 30%, var(--mv-type) 30% 75%, var(--ink-primary) 75%);
+}
+.rings {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--mv-type);
+  box-shadow: 0 0 0 2px var(--mv-line);
+  animation: pulse 160ms steps(2) infinite alternate;
+}
+.stars {
+  width: 32px;
+  height: 32px;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  background: var(--ink-primary);
+  filter: drop-shadow(0 2px 0 var(--mv-type));
+  animation: spin 260ms steps(5) infinite;
+}
+.gust {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-right: 4px solid color-mix(in srgb, var(--ink-primary) 60%, var(--mv-type));
+  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  opacity: 0.85;
+}
+.mote {
+  width: 12px;
+  height: 12px;
+  left: -6px;
+  top: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ink-primary) 0 34%, var(--mv-type) 34%);
+  box-shadow: 0 0 0 2px var(--mv-line);
+}
+@keyframes spin {
+  to { rotate: 360deg; }
+}
+@keyframes pulse {
+  from { scale: 0.8; }
+  to { scale: 1.2; }
+}
+
+/* ── A stream: one line from the user to its target, grown, held, gone ───────────────────────────────────── */
+.beam {
+  position: absolute;
+  width: var(--dist);
+  height: 26px;
+  margin-top: -13px;
+  rotate: var(--angle);
+  transform-origin: 0 50%;
+  border-radius: 9px;
+  background: linear-gradient(to bottom, var(--mv-line) 0 12%, var(--mv-type) 12% 88%, var(--mv-line) 88%);
+  animation:
+    beamGrow var(--mv-beam-grow) ease-out var(--mv-beam-cast) both,
+    beamFade var(--mv-beam-fade) ease-in calc(var(--mv-beam-cast) + var(--mv-beam-grow) + var(--mv-beam-hold)) forwards;
+}
+.beamCore {
+  position: absolute;
+  inset: 9px 0;
+  border-radius: 3px;
+  background: var(--ink-primary);
+  animation: pulse 70ms steps(1) infinite alternate;
+}
+@keyframes beamGrow {
+  from { scale: 0 1; }
+  to { scale: 1 1; }
+}
+@keyframes beamFade {
+  from { opacity: 1; scale: 1 1; }
+  to { opacity: 0; scale: 1 0.2; }
+}
+/* A drain's tendril: thinner, and gone as the life starts flowing back. */
+.tendril {
+  height: 8px;
+  margin-top: -4px;
+  animation:
+    beamGrow var(--mv-drain-travel) ease-out var(--mv-drain-cast) both,
+    beamFade var(--mv-beam-fade) ease-in calc(var(--mv-drain-cast) + var(--mv-drain-travel)) forwards;
+}
+.tendril .beamCore {
+  inset: 3px 0;
+}
+/* The motes flowing back to the user after the hit, a stagger apart; the sixth is home as the beat ends. */
+.back {
+  animation: fly calc(var(--mv-drain-back) - 5 * var(--mv-drain-stagger)) ease-in-out calc(var(--mv-drain-cast) + var(--mv-drain-travel) + var(--i) * var(--mv-drain-stagger)) both;
+}
+.hexFlight {
+  animation: fly var(--mv-hex-travel) ease-in calc(var(--mv-hex-cast) + var(--i) * var(--mv-hex-stagger)) both;
+}
+
+/* ── Lightning, and every line drawn on the whole stage ──────────────────────────────────────────────────── */
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.boltGlow,
+.boltCore {
+  fill: none;
+  stroke-linejoin: miter;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.boltGlow {
+  stroke: var(--mv-type);
+  stroke-width: 9;
+  animation:
+    boltDraw var(--mv-bolt-strike) linear var(--mv-bolt-cast) both,
+    boltFlicker var(--mv-bolt-hold) steps(4) calc(var(--mv-bolt-cast) + var(--mv-bolt-strike)) forwards;
+}
+.boltCore {
+  stroke: var(--ink-primary);
+  stroke-width: 3;
+  animation:
+    boltDraw var(--mv-bolt-strike) linear var(--mv-bolt-cast) both,
+    boltFlicker var(--mv-bolt-hold) steps(4) calc(var(--mv-bolt-cast) + var(--mv-bolt-strike)) forwards;
+}
+@keyframes boltDraw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes boltFlicker {
+  0% { opacity: 1; stroke-dashoffset: 0; }
+  50% { opacity: 0.3; stroke-dashoffset: 0; }
+  75% { opacity: 1; stroke-dashoffset: 0; }
+  100% { opacity: 0; stroke-dashoffset: 0; }
+}
+
+/* ── Melee: the user's double dashes across, strikes, and comes back ────────────────────────────────────── */
+.double {
+  position: absolute;
+  animation:
+    meleeWindup var(--mv-melee-windup) ease-out 0ms both,
+    meleeOut var(--mv-melee-dash) cubic-bezier(0.5, 0, 0.9, 0.7) var(--mv-melee-windup) forwards,
+    meleeBack var(--mv-melee-back) ease-in-out calc(var(--mv-melee-windup) + var(--mv-melee-dash) + var(--mv-melee-strike)) forwards;
+}
+/* Moved, never scaled or turned: a pixel sprite keeps its pixels (D9). */
+@keyframes meleeWindup {
+  to { transform: translate(calc(var(--dx) * -0.1), calc(var(--dy) * -0.1)); }
+}
+@keyframes meleeOut {
+  from { transform: translate(calc(var(--dx) * -0.1), calc(var(--dy) * -0.1)); }
+  to { transform: translate(var(--dx), var(--dy)); }
+}
+@keyframes meleeBack {
+  from { transform: translate(var(--dx), var(--dy)); }
+  to { transform: translate(0, 0); }
+}
+/* The blow itself: a jab further in as the dash arrives (on its own wrapper: the sprite keeps its breathing). */
+.jab {
+  position: absolute;
+  inset: 0;
+  animation: strike var(--mv-melee-strike) steps(3) calc(var(--mv-melee-windup) + var(--mv-melee-dash)) both;
+}
+@keyframes strike {
+  0% { translate: 0 0; }
+  40% { translate: calc(var(--dx) * 0.08) calc(var(--dy) * 0.08); }
+  100% { translate: 0 0; }
+}
+/* The rush: a streak of the type's colour behind the dashing Pokémon. */
+.trail {
+  position: absolute;
+  inset: 25% 10%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--mv-type) 55%, transparent) 0 60%, transparent 60%);
+  opacity: 0;
+  animation: trail var(--mv-melee-dash) ease-out var(--mv-melee-windup) both;
+}
+@keyframes trail {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ── A hex: a swirl round the foe ───────────────────────────────────────────────────────────────────────── */
+.swirl {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.swirl::before {
+  content: '';
+  position: absolute;
+  left: -46px;
+  top: -46px;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 4px dashed var(--mv-type);
+  opacity: 0;
+  animation: swirl var(--mv-hex-swirl) ease-out calc(var(--mv-hex-cast) + var(--mv-hex-travel)) both;
+}
+@keyframes swirl {
+  0% { opacity: 0; transform: scale(1.4) rotate(0deg); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: scale(0.5) rotate(240deg); }
+}
+
+/* ── A raise or a heal: rings rising from the feet, sparks going up ─────────────────────────────────────── */
+.aura {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.auraRing {
+  position: absolute;
+  left: -64px;
+  top: -16px;
+  width: 128px;
+  height: 32px;
+  border-radius: 50%;
+  border: 4px solid color-mix(in srgb, var(--ink-primary) 40%, var(--mv-type));
+  box-shadow: 0 0 0 2px var(--mv-line);
+  opacity: 0;
+  /* Three rings a stagger apart, the last gone as the beat ends. */
+  animation: auraRise calc(var(--mv-aura-rise) - 2 * var(--mv-aura-stagger)) ease-out calc(var(--i, 0) * var(--mv-aura-stagger)) both;
+}
+@keyframes auraRise {
+  0% { opacity: 0; transform: translateY(0) scale(0.6); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(calc(var(--h) * -1)) scale(1); }
+}
+/* The light the Pokémon stands in while it rises. */
+.auraGlow {
+  position: absolute;
+  left: -60px;
+  top: calc(var(--h) * -1);
+  width: 120px;
+  height: var(--h);
+  border-radius: 50% 50% 40% 40%;
+  background: radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--mv-type) 45%, transparent) 0 66%, transparent 66%);
+  opacity: 0;
+  animation: tint var(--mv-aura-rise) ease-in-out both;
+}
+.auraSpark {
+  position: absolute;
+  left: var(--x);
+  top: 0;
+  width: 7px;
+  height: 18px;
+  border-radius: 3px;
+  background: linear-gradient(var(--ink-primary) 0 50%, var(--mv-type) 50%);
+  opacity: 0;
+  /* Ten sparks a fifth of the rings' stagger apart, inside the same beat. */
+  animation: auraRise calc(var(--mv-aura-rise) - 2 * var(--mv-aura-stagger)) ease-out calc(var(--i) * var(--mv-aura-stagger) / 5) both;
+}
+
+/* ── The stage-filling moves ─────────────────────────────────────────────────────────────────────────────── */
+.area {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+/* The whole field washed in the move's colour, at its height. */
+.tint {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--mv-type) 30%, transparent);
+  opacity: 0;
+  animation: tint calc(var(--mv-area-build) + var(--mv-area-peak) + var(--mv-area-settle)) ease-in-out both;
+}
+@keyframes tint {
+  0% { opacity: 0; }
+  45% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.move[data-style='darkness'] .tint,
+.move[data-style='storm'] .tint {
+  background: color-mix(in srgb, var(--surface-sunken) 70%, transparent);
+}
+
+/* Surf: a wall of water rolling across the whole field from its user's side — the track carries it across, the body is
+   the water (mirrored for a foe's wave). Flat: a white crest along its slope and its face, bands of water under it, and
+   a back that slopes down into the field, so it never leaves the edge of a box behind. */
+.waveTrack {
+  position: absolute;
+  inset: 0;
+  animation: waveRoll calc(var(--mv-area-build) + var(--mv-area-peak) + var(--mv-area-settle)) cubic-bezier(0.35, 0.05, 0.55, 1) both;
+}
+.waveBody {
+  position: absolute;
+  left: -15%;
+  bottom: -6%;
+  width: 115%;
+  height: 92%;
+  scale: var(--dir) 1;
+  transform-origin: 56% 50%;
+  background: var(--ink-primary);
+  clip-path: polygon(0% 100%, 22% 68%, 46% 34%, 70% 12%, 86% 4%, 96% 9%, 100% 26%, 100% 100%);
+  opacity: 0.94;
+}
+/* The water under the crest: the same shape, a band lower and a little short of the face. */
+.waveBody::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--mv-line) 0 30%, var(--mv-type) 30% 72%, color-mix(in srgb, var(--ink-primary) 35%, var(--mv-type)) 72%);
+  clip-path: polygon(0% 100%, 22% 73%, 46% 40%, 70% 19%, 86% 11%, 94% 15%, 97.5% 30%, 97.5% 100%);
+}
+@keyframes waveRoll {
+  0% { transform: translateX(calc(var(--dir) * -115%)); }
+  55% { transform: translateX(0); }
+  85% { opacity: 0.7; }
+  100% { transform: translateX(calc(var(--dir) * 120%)); opacity: 0; }
+}
+
+/* Earthquake: the floor splits from the user's side to the far one; dust rises the whole width of the field — both in
+   the ground, under the cards (the floor layer), so the plates stay readable; stones jump under the targets — and the
+   stage itself shakes (motion.css .fx-quake). */
+.crack {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink-primary) 45%, var(--mv-type));
+  stroke-width: 5;
+  stroke-linejoin: bevel;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 2px 0 var(--surface-sunken));
+}
+.crackField {
+  animation:
+    crackOpen var(--mv-area-peak) cubic-bezier(0.3, 0, 0.7, 1) calc(var(--mv-area-build) - var(--mv-stage-lead)) both,
+    crackFade var(--mv-area-settle) ease-in calc(var(--mv-area-build) + var(--mv-area-peak)) forwards;
+}
+@keyframes crackOpen {
+  from { clip-path: inset(0 calc(50% + 50% * var(--dir)) 0 calc(50% - 50% * var(--dir))); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes crackFade {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+/* A cloud of dust: three flat puffs, hard-edged, in the ground's colour. */
+.dust {
+  position: absolute;
+  width: 150px;
+  height: 90px;
+  margin: -45px 0 0 -75px;
+  --puff: color-mix(in srgb, var(--mv-type) 55%, var(--ink-primary));
+  background:
+    radial-gradient(circle at 28% 62%, var(--puff) 0 26%, transparent 26%),
+    radial-gradient(circle at 70% 58%, var(--puff) 0 30%, transparent 30%),
+    radial-gradient(circle at 48% 36%, var(--puff) 0 28%, transparent 28%);
+  opacity: 0;
+  /* Twelve puffs (four for a Rock Slide's target) all going within the spread, all settled by the beat's end. */
+  animation: dust calc(var(--mv-area-peak) + var(--mv-area-settle) - var(--mv-stage-spread)) ease-out calc(var(--mv-area-build) + var(--i) * var(--mv-stage-spread) / 12) both;
+}
+@keyframes dust {
+  0% { opacity: 0; transform: translateY(20px) scale(0.5); }
+  25% { opacity: 0.85; }
+  100% { opacity: 0; transform: translateY(-90px) scale(1.7); }
+}
+.debris {
+  position: absolute;
+  width: 16px;
+  height: 14px;
+  margin: -7px 0 0 -8px;
+  clip-path: polygon(20% 0, 80% 8%, 100% 55%, 70% 100%, 15% 90%, 0 40%);
+  background: color-mix(in srgb, var(--surface-sunken) 40%, var(--mv-type));
+  opacity: 0;
+  animation: debris var(--mv-stage-debris) cubic-bezier(0.2, 0.8, 0.6, 1) calc(var(--mv-area-build) + var(--i) * var(--mv-stage-spread) / 5) both;
+}
+@keyframes debris {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(calc(var(--h, 140px) * -0.45)) rotate(160deg); }
+  100% { opacity: 0; transform: translateY(0) rotate(320deg); }
+}
+/* Rock Slide's dust, at the size of the Pokémon it falls on. */
+.dustSmall {
+  width: calc(var(--w, 140px) * 0.6);
+  height: calc(var(--w, 140px) * 0.36);
+  margin: calc(var(--w, 140px) * -0.3) 0 0 calc(var(--w, 140px) * -0.3);
+}
+
+/* Blizzard: a storm of snow driven across the whole field, frost closing in from the edges. */
+.flake {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: calc(26px * var(--s));
+  height: calc(7px * var(--s));
+  border-radius: 2px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--mv-type) 50%, transparent) 0 55%, var(--ink-primary) 55%);
+  rotate: calc(var(--dir) * 32deg);
+  opacity: 0;
+  /* Each crosses once; their starts spread over the beat, so the last is across as it ends. */
+  animation: flake var(--mv-stage-flake) linear calc(var(--i) * (var(--mv-area-build) + var(--mv-area-peak) + var(--mv-area-settle) - var(--mv-stage-flake)) / var(--flakes)) both;
+}
+@keyframes flake {
+  0% { opacity: 0; transform: translateX(-120px); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(360px); }
+}
+.frost {
+  position: absolute;
+  inset: 0;
+  --frost: color-mix(in srgb, var(--ink-primary) 55%, var(--mv-type));
+  /* Frost closing in from the edges as two flat frames, the outer one thicker. */
+  box-shadow:
+    inset 0 0 0 var(--sp-4) var(--frost),
+    inset 0 0 0 var(--sp-8) color-mix(in srgb, var(--frost) 40%, transparent);
+  opacity: 0;
+  animation: tint calc(var(--mv-area-build) + var(--mv-area-peak) + var(--mv-area-settle)) ease-in-out both;
+}
+
+/* Fire Blast: a wall of flame rising from its targets' feet, as tall as the Pokémon and no taller: it stays in its
+   window, off its plate. Flat tongues of fire — a white heart, the type's colour, a red edge. */
+.pyre {
+  position: absolute;
+  width: calc(var(--w) * 0.2);
+  height: calc(var(--h) * 0.7);
+  margin-left: calc(var(--w) * -0.1);
+  margin-top: calc(var(--h) * -0.7);
+  border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%;
+  background: radial-gradient(ellipse at 50% 85%, var(--ink-primary) 0 20%, var(--mv-type) 20% 48%, var(--accent-negative) 48% 66%, transparent 66%);
+  transform-origin: 50% 100%;
+  opacity: 0;
+  /* From half a beat before the impact, the outer tongues a little later; all down by the beat's end. */
+  animation: flameRise calc(var(--mv-area-settle) + var(--mv-stage-lead) / 2 - var(--mv-stage-spread) / 2) ease-out calc(var(--mv-area-build) + var(--mv-area-peak) - var(--mv-stage-lead) / 2 + var(--i) * var(--mv-stage-spread) / 6) both;
+}
+/* Fire Blast's fireball: bigger than an Ember's, across the build, landing as the flames rise. */
+.blastFlight {
+  animation: fly calc(var(--mv-area-build) + var(--mv-area-peak) - var(--mv-stage-lead)) cubic-bezier(0.4, 0, 0.9, 0.6) var(--mv-stage-lead) both;
+}
+.blast {
+  width: 80px;
+  height: 80px;
+  left: -40px;
+  top: -40px;
+}
+@keyframes flameRise {
+  0% { opacity: 0; scale: 0.6 0.1; }
+  30% { opacity: 1; scale: 1.1 1.2; }
+  60% { scale: 0.9 1; }
+  100% { opacity: 0; scale: 0.7 1.4; }
+}
+
+/* Rock Slide: rocks falling onto its targets from above the field. */
+.rock {
+  position: absolute;
+  width: calc(46px * var(--s));
+  height: calc(40px * var(--s));
+  margin: -20px 0 0 -23px;
+  filter: drop-shadow(0 4px 0 var(--surface-sunken));
+  clip-path: polygon(20% 0, 80% 8%, 100% 55%, 70% 100%, 15% 90%, 0 40%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--ink-primary) 25%, var(--mv-type)) 0 45%, var(--mv-line) 45%);
+  opacity: 0;
+  animation: rockFall calc(var(--mv-area-build) * 0.9) cubic-bezier(0.5, 0, 1, 0.6) calc(var(--mv-area-peak) * 0.3 + var(--i) * var(--mv-stage-spread) / 6) both;
+}
+@keyframes rockFall {
+  0% { opacity: 1; transform: translateY(calc(var(--fall) * -1)) rotate(0deg); }
+  95% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(0) rotate(200deg); }
+}
+
+/* Thunder: the sky's bolts strike a beat into the build, each with its flash. */
+.skyBolt .boltGlow,
+.skyBolt .boltCore {
+  animation:
+    boltDraw var(--mv-bolt-strike) linear calc(var(--mv-area-build) + var(--mv-area-peak) - var(--mv-bolt-strike)) both,
+    boltFlicker var(--mv-area-settle) steps(5) calc(var(--mv-area-build) + var(--mv-area-peak)) forwards;
+}
+/* Explosion, Psychic, Dragon Rage: rings spreading out over the whole field from the user; Explosion's flash. */
+.ripple {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.ripple::before {
+  content: '';
+  position: absolute;
+  left: -60px;
+  top: -60px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 6px solid var(--mv-type);
+  box-shadow: 0 0 0 2px var(--mv-line);
+  opacity: 0;
+  animation: ripple calc(var(--mv-area-build) + var(--mv-area-peak)) ease-out calc(var(--i) * var(--mv-stage-spread) / 2) both;
+}
+@keyframes ripple {
+  0% { opacity: 1; transform: scale(0.1); }
+  100% { opacity: 0; transform: scale(9); }
+}
+.flash {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-primary);
+  opacity: 0;
+  animation: flash var(--mv-stage-flash) steps(4) var(--mv-area-build) both;
+}
+/* Thunder, Fire Blast: a brief flash in the move's colour as it strikes. */
+.strikeFlash {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--ink-primary) 40%, var(--mv-type));
+  opacity: 0;
+  animation: strikeFlash var(--mv-stage-strike) steps(3) calc(var(--mv-area-build) + var(--mv-area-peak) - var(--mv-stage-lead) / 2) both;
+}
+@keyframes strikeFlash {
+  0% { opacity: 0; }
+  15% { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+@keyframes flash {
+  0% { opacity: 0; }
+  12% { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+
+/* Petal Dance, Razor Wind, Pin Missile: a storm of small things across the field in the user's direction. */
+.streakPetals,
+.streakGale,
+.streakSwarm {
+  position: absolute;
+  top: var(--y);
+  left: 0;
+  opacity: 0;
+  /* Their starts spread over the settle, so the last is across as the beat ends. */
+  animation: across calc(var(--mv-area-build) + var(--mv-area-peak)) linear calc(var(--i) * var(--mv-area-settle) / var(--n)) both;
+}
+/* Petals are pink whatever their type's colour: a petal is a flower's, not a leaf's. */
+.streakPetals {
+  width: 20px;
+  height: 13px;
+  border-radius: 100% 0;
+  background: linear-gradient(135deg, var(--ink-primary) 0 40%, color-mix(in srgb, var(--ink-primary) 30%, var(--type-psychic)) 40%);
+  /* A petal tumbles as it flies, in steps like a sprite's frames. */
+  animation:
+    across calc(var(--mv-area-build) + var(--mv-area-peak)) linear calc(var(--i) * var(--mv-area-settle) / var(--n)) both,
+    spin 240ms steps(4) infinite;
+}
+.streakGale {
+  width: 90px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ink-primary) 40%, transparent) 0 60%, var(--ink-primary) 60%);
+}
+.streakSwarm {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mv-type);
+  box-shadow: 0 0 0 1px var(--mv-line);
+}
+@keyframes across {
+  0% { opacity: 0; transform: translateX(calc(var(--dir) * -10vw + (1 - var(--dir)) * 50vw)); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(calc(var(--dir) * 110vw + (1 - var(--dir)) * 50vw)); }
+}
+
+/* Sludge and poison gas: a fog rising round its targets. */
+.fog {
+  position: absolute;
+  width: calc(var(--w) * 0.4);
+  height: calc(var(--w) * 0.4);
+  margin: calc(var(--w) * -0.2) 0 0 calc(var(--w) * -0.2);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--mv-type) 75%, transparent);
+  box-shadow: 0 0 0 2px var(--mv-line);
+  opacity: 0;
+  animation: dust calc(var(--mv-area-peak) + var(--mv-area-settle) - var(--mv-stage-spread)) ease-out calc(var(--mv-area-build) + var(--i) * var(--mv-stage-spread) / 5) both;
+}
+.move[data-style='darkness'] .swirl::before {
+  animation: swirl calc(var(--mv-area-peak) + var(--mv-area-settle)) ease-out var(--mv-area-build) both;
+}

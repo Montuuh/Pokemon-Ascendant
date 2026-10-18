@@ -1361,6 +1361,22 @@ beat ahead and cross-faded in 250 ms; the **tension layer** under 30 % team HP. 
 steps each. Every recipe and every bar is rendered offline and measured in `e2e/audio` (audible, never clipping). One
 League track rather than one per member; SFX subtitles stay v1.1.
 
+### v0.9.24 — Move animations  ✅ 2026-10-18
+The user's note after v0.9.23: a move should be a whole animation, not its picture appearing on the target — a Melee
+move moving its Pokémon to strike, a Ranged one cast and thrown across to the foe, Surf and Earthquake filling the
+screen.
+
+**Shipped.** §9.9.2 (`ui/moveMotion.ts`, `ui/components/MoveFx.tsx`). Every move's animation read from its row: a
+**dash** for Melee (the user's double crosses the field, jabs and returns while its sprite waits in its card); a
+**throw** for Ranged, charged on the user and flown to the target in its type's shape (a fireball, bubbles, leaves,
+shards, rocks, needles, sludge, rings, stars, a gust, a shadow, an orb); **beams** for the streams, **bolts** for
+lightning, a **drain** flowing back to the user; the **whole stage** for Surf (a wave rolling across), Earthquake
+(cracks, dust and the stage shaking), Blizzard, Thunder, Fire Blast, Rock Slide, Explosion, Psychic, Petal Dance and
+anything hitting several; a **glow** for a raise or a heal and a **hex** for a status. The number, the shake, the HP
+and the log land at the impact, the numbers over the move; a card played mid-move waits for it to land; every shape
+flat beside the pixel sprites (D9); a foe's move plays back the same way; reduced motion keeps the instant beat. Dev
+`hand`/`intend`; `e2e/move-animations`.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,
