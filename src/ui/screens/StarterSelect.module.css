@@ -115,6 +115,13 @@
   color: var(--ink-secondary);
   font-size: var(--type-small);
 }
+/* §8.8 — a base number your account has moved past, struck through beside yours. */
+.was {
+  color: var(--ink-muted);
+}
+.diffEffect b {
+  color: var(--ink-primary);
+}
 /* A locked or partial row explains itself in place, under the effect — an asterisk with no footnote is
    exactly the kind of thing §7.7 exists to stop. */
 .lockTag,

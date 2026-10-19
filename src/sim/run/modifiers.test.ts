@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import {
   AVAILABLE_MODIFIERS, DEFAULT_BATTLE_CONFIG, MODIFIERS, battleConfigFor, boxCapacity, buildScenario,
-  createRun, defaultRunCtx, effectiveMax, hasModifier, modifierValue, modifierXpMultiplier, nodesInLayer,
+  createRun, defaultRunCtx, effectiveMax, hasModifier, microRestPct, modifierValue, modifierXpMultiplier, nodesInLayer,
   runReducer, type RunAction, type RunState,
 } from '@/sim';
 import { createCombat } from '@/sim/combat/setup';
@@ -40,16 +40,26 @@ describe('Difficulty modifiers — §8.8', () => {
     for (const m of MODIFIERS) expect(modifierXpMultiplier([m.id])).toBeGreaterThanOrEqual(1);
   });
 
-  it('AnUnavailableModifier_IsInertEvenIfASaveNamesIt', () => {
+  it('AnUnknownModifier_IsInertEvenIfASaveNamesIt', () => {
     // A save from a later build, or a hand-edited one, must not switch on a rule the sim cannot honour.
-    expect(hasModifier(['tight-schedule'], 'tight-schedule')).toBe(false);
-    expect(modifierXpMultiplier(['tight-schedule'])).toBe(1);
-    expect(modifierValue(['tight-schedule'], 'tight-schedule', 'anything', 42)).toBe(42);
+    expect(hasModifier(['from-the-future'], 'from-the-future')).toBe(false);
+    expect(modifierXpMultiplier(['from-the-future'])).toBe(1);
+    expect(modifierValue(['from-the-future'], 'from-the-future', 'anything', 42)).toBe(42);
   });
 
-  it('BoxSqueeze_ShrinksTheBox_§8.8', () => {
+  it('BoxSqueeze_TakesTwoPlacesOffTheBoxTheAccountBought_§8.8', () => {
     expect(boxCapacity(start())).toBe(6);
     expect(boxCapacity(start(['box-squeeze']))).toBe(4);
+    // With the Expanded Box the Box holds 8; squeezed, 6 — and the Box Expander relic does not reach it.
+    const bought = (mods: string[], relics: string[] = []) => ({ ...start(mods), perks: { ...start(mods).perks!, boxBonus: 2 }, relics });
+    expect(boxCapacity(bought([]))).toBe(8);
+    expect(boxCapacity(bought(['box-squeeze']))).toBe(6);
+    expect(boxCapacity(bought(['box-squeeze'], ['box-expander']))).toBe(6);
+  });
+
+  it('TightSchedule_TheLeaguesMicroRestHeals20Not30_§8.8', () => {
+    expect(microRestPct([])).toBe(30);
+    expect(microRestPct(['tight-schedule'])).toBe(20);
   });
 
   it('TraumaSurge_ReachesBothLayers_TheRunAndTheFight_§8.2.1', () => {

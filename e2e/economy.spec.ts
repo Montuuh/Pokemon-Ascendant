@@ -419,8 +419,8 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await page.getByTestId('difficulty-lean-pack').click();
     await expect(page.getByTestId('difficulty-xp')).toContainText('×1.30');
 
-    // §7.7 — a modifier whose system does not exist cannot be taken, and the card says why.
-    await expect(page.getByTestId('difficulty-tight-schedule')).toBeDisabled();
+    // Tight Schedule is live since the League is (§2.1.6): open at Level 4.
+    await expect(page.getByTestId('difficulty-tight-schedule')).toBeEnabled();
     await expect(page.getByTestId('difficulty-tight-schedule')).toContainText('League');
     // Greater Threats is live since the Regions have stat tiers (§2.2.1) — locked by level, not by version.
     await expect(page.getByTestId('difficulty-lock-greater-threats')).toContainText('Lv 10');

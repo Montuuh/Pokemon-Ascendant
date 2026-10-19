@@ -3,6 +3,7 @@ import type { PokemonType } from '../types';
 import { evolvedAt } from './region';
 import type { MapNode, NodePreview, RegionMap, RunState } from './types';
 import { victoryRoadLevel } from './victoryRoad';
+import { modifierValue } from './modifiers';
 
 // §2.1.6 / §5.11 / §5.12 — the League: through the Summit's gate, five doors in a row and no map to walk — the Elite
 // Four, then the Champion. Between doors a micro-rest gives everyone standing a share of their HP back; nothing else
@@ -141,4 +142,9 @@ export function generateLeague(run: Pick<RunState, 'starter' | 'seed'>, content:
     gyms: [],
     forkLayer: LEAGUE_MEMBERS.length,
   };
+}
+
+/** §2.1.6 with §8.8 — the micro-rest's share of Max HP this run: Tight Schedule cuts it. */
+export function microRestPct(modifiers: readonly string[]): number {
+  return modifierValue(modifiers, 'tight-schedule', 'microRest', LEAGUE.microRest);
 }

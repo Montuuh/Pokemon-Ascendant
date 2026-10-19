@@ -15,7 +15,7 @@ export { predictIntentDamage, describeIntent, intentRecipient, summonCount, summ
 export { forecastTurn, forecastOn, forecastIfLead, asLeadDamage, type TurnForecast, type IntentForecast, type ForecastHit } from './combat/forecast';
 export { currentPhase, phaseMarkers, bossArchetype } from './combat/boss';
 export { ARENA_RULE_IDS, METRONOME_FIELDS, arenaCounter, arenaRuleOf, barrierUp, metronomeNext, type ArenaRuleId, type ArenaCounter, type ArenaRuleConfig } from './combat/arenaRules';
-export { LEAGUE, LEAGUE_MEMBERS, championAce, generateLeague, leagueBase, leagueMemberOf, leaguePreview, leagueTeam, type LeagueMember } from './run/league';
+export { LEAGUE, LEAGUE_MEMBERS, championAce, generateLeague, leagueBase, leagueMemberOf, leaguePreview, leagueTeam, microRestPct, type LeagueMember } from './run/league';
 export { ACTIVE_TEAM, APEX, LEGENDARY_ARENAS, LEGENDARY_IDS, fillTeam, hasPlaceFor, isLegendarySpecies, joinTeam, legendariesOpen, placesOf, placesTaken, type LegendaryArena, type LegendaryId } from './run/legendaries';
 export { GYM_RULE_IDS, rolloutTurns, ruleCounter, synergyMultiplier, turnsUntil, isSealed, type GymRuleId, type GymRuleConfig, type RuleCounter } from './combat/gymRules';
 export { slotOccupant, slotToIndex, indexToSlot, lead, benchIndices, aliveTeam, activeEnemy, aliveEnemies, isEnemyLead, resolutionOrder, enemySlotLabel, findCombatant, SLOT_LABEL } from './combat/slots';

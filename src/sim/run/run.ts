@@ -20,7 +20,7 @@ import { runnerById } from './objectives';
 import { rollTradeOffers, tradeLevel, tradeRefusal } from './trader';
 import { VICTORY_ROAD, generateVictoryRoad, perfectClearBadge, trainingOptions } from './victoryRoad';
 import { ACTIVE_TEAM, fillTeam, hasPlaceFor, placesTaken } from './legendaries';
-import { LEAGUE, generateLeague } from './league';
+import { LEAGUE, generateLeague, microRestPct } from './league';
 import { BLACK_MARKET, candyPrice, fencePrice, rollBlackMarket, showcaseLevel, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
@@ -235,12 +235,14 @@ export function abilityLocked(run: RunState, speciesId: string, abilityId: strin
 }
 
 /**
- * §2.3.1 with §8.8 and §8.4.2 — how many the Box holds. Box Squeeze takes it to four and says "not expandable",
- * so the account's Expanded Box and the Box Expander relic both stand down under it.
+ * §2.3.1 with §8.8 and §8.4.2 — how many the Box holds: six, and what the account has bought (the Expanded Box, a
+ * Twin Run's partner), and the Box Expander relic's two. Box Squeeze takes two places off what the account has bought
+ * — four, or six with an Expanded Box — and no relic expands it (the Box Expander stands down).
  */
 export function boxCapacity(run: RunState): number {
-  if (hasModifier(run.modifiers, 'box-squeeze')) return modifierValue(run.modifiers, 'box-squeeze', 'boxCapacity', 4);
-  return RUN_START.boxCapacity + (run.perks?.boxBonus ?? 0) + (run.relics.includes('box-expander') ? 2 : 0);
+  const bought = RUN_START.boxCapacity + (run.perks?.boxBonus ?? 0);
+  if (hasModifier(run.modifiers, 'box-squeeze')) return bought - modifierValue(run.modifiers, 'box-squeeze', 'boxCut', 2);
+  return bought + (run.relics.includes('box-expander') ? 2 : 0);
 }
 
 /** §2.3.1 — would the Box still fit its Pokémon with these relics gone? (The Box Expander holds two of the slots.) */
@@ -681,13 +683,15 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
       draft.log.push(`${node.preview.title} is beaten. You are the Champion.`);
       return;
     }
-    // §2.1.6 — the micro-rest: everyone standing gets a share of Effective Max HP back before the next door.
+    // §2.1.6 — the micro-rest: everyone standing gets a share of Effective Max HP back before the next door (less under
+    // §8.8's Tight Schedule).
+    const rest = microRestPct(draft.modifiers);
     for (const mon of draft.box) {
       if (mon.hp <= 0) continue;
       const max = effectiveMax(draft, mon, ctx.content);
-      mon.hp = Math.min(max, mon.hp + Math.max(1, Math.floor((max * LEAGUE.microRest) / 100)));
+      mon.hp = Math.min(max, mon.hp + Math.max(1, Math.floor((max * rest) / 100)));
     }
-    draft.log.push(`${node.preview.title} is beaten. A moment's rest before the next door: ${LEAGUE.microRest} % back to everyone standing.`);
+    draft.log.push(`${node.preview.title} is beaten. A moment's rest before the next door: ${rest} % back to everyone standing.`);
   }
   if (node.kind === 'gym') {
     // §5.10 — the Badge, before the run is marked won, so a save taken at the summary already has it.

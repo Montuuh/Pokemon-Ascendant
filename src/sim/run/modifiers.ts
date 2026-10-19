@@ -65,14 +65,16 @@ export const MODIFIERS: DifficultyModifier[] = [
     available: true,
   },
   {
+    // §8.8 (the user's note, 2026-10-19) — two places fewer than the Box the account has bought, not a flat four: an
+    // Expanded Box holds 8, so squeezed it holds 6. No relic expands it.
     id: 'box-squeeze',
     name: 'Box Squeeze',
-    effect: 'The Box holds 4 instead of 6, and cannot be expanded.',
+    effect: 'The Box holds 4 instead of 6, and no relic expands it.',
     xpMultiplier: 1.2,
     unlock: 'Trainer Lv 7',
     unlockLevel: 7,
     available: true,
-    params: { boxCapacity: 4 },
+    params: { boxCut: 2 },
   },
   {
     id: 'trauma-surge',
@@ -133,8 +135,8 @@ export const MODIFIERS: DifficultyModifier[] = [
     xpMultiplier: 1.15,
     unlock: 'Trainer Lv 4',
     unlockLevel: 4,
-    available: false,
-    pending: 'not yet — the League is still to come',
+    available: true,
+    params: { microRest: 20 },
   },
 ];
 

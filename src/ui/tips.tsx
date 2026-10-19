@@ -778,8 +778,8 @@ export function leagueAheadTip(): ReactNode {
 }
 
 /** §2.1.6 — the micro-rest between League doors. */
-export function microRestTip(): ReactNode {
-  return <Tip title="Micro-rest" body={`After each door you win, every Pokémon still standing gets ${LEAGUE.microRest} % of its Max HP back. The fallen stay down — a Revive is the only way back.`} footer="The only healing in the League." />;
+export function microRestTip(pct: number = LEAGUE.microRest): ReactNode {
+  return <Tip title="Micro-rest" body={`After each door you win, every Pokémon still standing gets ${pct} % of its Max HP back. The fallen stay down — a Revive is the only way back.`} footer={pct < LEAGUE.microRest ? `The only healing in the League — ${LEAGUE.microRest} % without Tight Schedule.` : 'The only healing in the League.'} />;
 }
 
 /** §2.1.6 — one League door: who waits behind it, and where you stand with it. */

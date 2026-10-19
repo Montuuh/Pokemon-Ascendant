@@ -1,10 +1,10 @@
-import { useMemo, useState, type CSSProperties } from 'react';
+import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconLock, IconX } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { GYM, MODIFIERS, RUN_START, activeMoves, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState } from '@/sim';
+import { GYM, MODIFIERS, RUN_START, activeMoves, runPerksFor, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState } from '@/sim';
 import { portraitUrl } from '@/content/schemas/species';
 import { spriteOf } from '@/ui/art';
 import { ArenaSprite } from '@/ui/components/ArenaSprite';
@@ -63,6 +63,26 @@ function relicOffer(seed: number, count: number, account: AccountState, lean: re
     out[out.length - 1] = leanPool[x % leanPool.length]!;
   }
   return out;
+}
+
+/**
+ * §8.8 — a modifier's effect as it reads for this account: Box Squeeze's numbers are the Box you have bought (the user's
+ * note, 2026-10-19) — the base ones struck through beside yours when an Expanded Box or a Twin Run's partner has grown it.
+ */
+function modifierEffect(id: string, effect: string, boxBonus: number): ReactNode {
+  if (id !== 'box-squeeze' || boxBonus <= 0) return effect;
+  const base = RUN_START.boxCapacity;
+  const cut = MODIFIERS.find((m) => m.id === 'box-squeeze')?.params?.boxCut ?? 2;
+  const yours = (from: number, to: number) => (
+    <>
+      <s className={styles.was}>{from}</s> <b>{to}</b>
+    </>
+  );
+  return (
+    <>
+      The Box holds {yours(base - cut, base + boxBonus - cut)} instead of {yours(base, base + boxBonus)}, and no relic expands it.
+    </>
+  );
 }
 
 export function StarterSelect() {
@@ -160,6 +180,8 @@ export function StarterSelect() {
   }
 
   const xpBonus = modifierXpMultiplier(modifiers);
+  // §8.8 — the Box the account has bought (an Expanded Box, a Twin Run's partner): what Box Squeeze takes two from.
+  const boxBonus = runPerksFor(account, content, !!second && second !== pick).boxBonus;
   const STEPS = ['Difficulty', 'Starter', 'Relic', 'Region'].slice(0, LAST_STEP + 1);
 
   return (
@@ -209,7 +231,7 @@ export function StarterSelect() {
                 >
                   <span className={`${styles.diffName} display`}>{d.name}</span>
                   <span className={styles.diffXp}>×{d.xpMultiplier.toFixed(2)} XP</span>
-                  <span className={styles.diffEffect}>{d.effect}</span>
+                  <span className={styles.diffEffect}>{modifierEffect(d.id, d.effect, boxBonus)}</span>
                   {/* §7.7's rule applied to modifiers: a row whose system does not exist says so and cannot
                       be taken, rather than charging its XP premium for nothing. */}
                   {!d.available ? (

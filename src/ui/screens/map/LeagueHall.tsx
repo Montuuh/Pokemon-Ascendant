@@ -1,5 +1,5 @@
 import { IconCheck, IconTrophy } from '@tabler/icons-react';
-import { LEAGUE, leagueMemberOf, type MapNode, type RunState } from '@/sim';
+import { leagueMemberOf, type MapNode, type RunState, microRestPct } from '@/sim';
 import { itemIcon, trainerSprite } from '@/ui/art';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { LEAGUE_TEXT } from '@/ui/strings';
@@ -66,8 +66,8 @@ export function LeagueHall({ run, onEnter }: { run: RunState; onEnter: (nodeId: 
         </section>
       </div>
       {/* §2.1.6 — the micro-rest: one line, its paragraph a hover away. */}
-      <Tipped tip={microRestTip()} className={styles.rest} data-testid="league-rest">
-        {LEAGUE_TEXT.microRest(LEAGUE.microRest)}
+      <Tipped tip={microRestTip(microRestPct(run.modifiers))} className={styles.rest} data-testid="league-rest">
+        {LEAGUE_TEXT.microRest(microRestPct(run.modifiers))}
       </Tipped>
     </div>
   );
