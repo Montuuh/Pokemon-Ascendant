@@ -170,18 +170,65 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-red) 22%, transparent);
 }
 
+/* §3.3b — the starter step: the roster and the detail side by side, each scrolling on its own, so a long roster
+   (every Soulbound line joins it, §6.8.2) never pushes the detail out of sight. */
+.starterBody {
+  overflow: hidden;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+  padding-bottom: var(--sp-4);
+}
+.rosterPane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.filter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 28px;
+  padding: 2px var(--sp-2);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-secondary);
+  font: inherit;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  cursor: pointer;
+}
+.filterOn {
+  border-color: var(--border-strong);
+  color: var(--ink-primary);
+  background: var(--surface-2);
+}
 .roster {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--sp-4);
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--sp-3);
   align-content: start;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--sp-1) var(--sp-1) var(--sp-2);
 }
 .tile {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-4);
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-2) var(--sp-3);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
   border-radius: var(--radius-lg);
   border: 2px solid var(--border-subtle);
   background: var(--surface-1);
@@ -194,59 +241,124 @@
 .tileWindow {
   --night: color-mix(in srgb, var(--unit-type, var(--surface-2)) 16%, var(--tip-surface));
   justify-self: stretch;
-  height: clamp(96px, 16vh, 150px);
+  height: clamp(76px, 13vh, 116px);
 }
-/* Over the window's corner, as on a combat card. */
-.tileType {
+/* The one the detail shows, when it is not one of the picks: a quiet ring, so the eye knows what it is reading. */
+.inFocus:not(.picked):not(.pickedSecond) {
+  border-color: var(--border-strong);
+}
+/* Which place a pick fills, on the tile's top edge (a Twin Run's Lead and partner). */
+.tilePlace {
   position: absolute;
-  z-index: 1;
-  top: var(--sp-3);
-  left: var(--sp-3);
+  top: -9px;
+  left: 50%;
+  translate: -50% 0;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--brand-red);
+  color: var(--ink-primary);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tilePlacePartner {
+  background: var(--brand-blue);
+}
+.tileTypes {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+/* §6.8 — the line's Bond with you: a heart and its rank. */
+.tileBond {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: var(--sp-1);
+  color: var(--brand-red);
+  font-size: var(--type-micro);
+  font-weight: 800;
 }
 .tileName {
-  font-size: var(--type-h3);
+  font-size: var(--type-body);
+  line-height: 1.2;
 }
 
 .detail {
   background: var(--surface-1);
   border: 2px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: var(--sp-5);
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
   display: grid;
   align-content: start;
   gap: var(--sp-2);
+  min-height: 0;
+  overflow: auto;
 }
-.detailHead {
-  display: flex;
+/* The starter itself, large, beside its name, number, types and Bond. */
+.hero {
+  display: grid;
+  grid-template-columns: 132px 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
+  gap: var(--sp-4);
+}
+.heroWindow {
+  --night: color-mix(in srgb, var(--unit-type, var(--surface-2)) 16%, var(--tip-surface));
+  height: 120px;
+}
+.heroText {
+  display: grid;
+  justify-items: start;
+  gap: var(--sp-1);
+}
+.dex {
+  color: var(--ink-muted);
+  font-size: var(--type-caption);
+  font-weight: 700;
 }
 .detailName {
   margin: 0;
   font-size: var(--type-h2);
+  line-height: 1.1;
 }
 .chips {
   display: flex;
   gap: var(--sp-2);
 }
-.typeChip {
+.bond {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  text-transform: capitalize;
+  gap: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--brand-red) 22%, var(--surface-2));
   font-size: var(--type-caption);
   font-weight: 700;
-  padding: 2px var(--sp-2) 2px 2px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  color: var(--ink-secondary);
 }
-.flavour {
-  margin: 0 0 var(--sp-2);
+/* Three numbers a run starts from, as tiles. */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+  margin: var(--sp-2) 0 0;
+}
+.facts div {
+  display: grid;
+  justify-items: center;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.facts dt {
   color: var(--ink-secondary);
-  font-size: var(--type-small);
+  font-size: var(--type-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.facts dd {
+  margin: 0;
+  font-size: var(--type-h3);
 }
 .sectionTitle {
   margin: var(--sp-3) 0 0;
@@ -288,6 +400,10 @@
   height: 100%;
   background: var(--accent-action);
 }
+/* Its best stat, in the type's colour: what it is built for. */
+.statBest {
+  background: var(--accent-positive);
+}
 .moves {
   list-style: none;
   margin: 0;
@@ -295,25 +411,120 @@
   display: grid;
   gap: 6px;
 }
-.moveChip {
+/* A starting card as a row: its cost gem, its picture, its name and what it does, then its reach, power and type —
+   the hand's card, laid flat. The left edge is the move's type. */
+.moveRow {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 36px 1fr auto;
   align-items: center;
   gap: var(--sp-2);
-  padding: 4px var(--sp-2);
+  padding: 4px var(--sp-2) 4px 4px;
   border-radius: var(--radius-sm);
+  border-left: 4px solid var(--card-type);
   background: var(--surface-2);
-  font-size: var(--type-small);
 }
 .moveCost {
-  font-weight: 700;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
   font-size: var(--type-caption);
+  font-weight: 800;
+}
+.moveArt {
+  width: 36px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--card-type) 18%, var(--tip-surface));
+}
+.moveText {
+  display: grid;
+  min-width: 0;
+  line-height: 1.2;
+}
+.moveText b {
+  font-size: var(--type-small);
+}
+.moveText small {
+  color: var(--ink-secondary);
+  font-size: var(--type-micro);
+}
+.moveMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+}
+/* The line, as its forms: each stage's portrait and name, and the level it is reached at between. */
+.evoLine {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.evoStage {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.evoArrow {
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+  font-size: var(--type-micro);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.evoForms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.evoForm {
+  display: grid;
+  justify-items: center;
+  font-size: var(--type-micro);
   color: var(--ink-secondary);
 }
-.line {
-  margin: 0;
+.evoForm img {
+  image-rendering: pixelated;
+}
+/* §4.1.2 — what hits it hard, and what it shrugs off: the type labels themselves. */
+.matchups {
+  display: grid;
+  gap: var(--sp-1);
+}
+.matchRow {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.matchLabel {
+  font-size: var(--type-caption);
   font-weight: 700;
-  color: var(--ink-secondary);
+  border-left: 3px solid;
+  padding-left: var(--sp-1);
+}
+.matchWeak {
+  border-color: var(--accent-negative);
+}
+.matchStrong {
+  border-color: var(--accent-positive);
+}
+.matchTypes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
 }
 
 .footer {
@@ -350,25 +561,6 @@
 }
 
 /* Region 1 Gym matchup. Tone is carried by a left border and a word, never by colour alone (ui.md). */
-.gym {
-  display: grid;
-  gap: 2px;
-  margin: 0;
-  padding: var(--sp-2) var(--sp-3);
-  border-left: 4px solid var(--border-strong);
-  background: var(--surface-2);
-  border-radius: var(--radius-sm);
-  font-size: var(--type-small);
-}
-.gymGood {
-  border-left-color: var(--accent-positive);
-}
-.gymFair {
-  border-left-color: var(--border-strong);
-}
-.gymHard {
-  border-left-color: var(--accent-warning);
-}
 
 /* Step chrome shared by the Difficulty and Relic steps: a heading, a lede, then the grid. */
 .diffIntro {
@@ -408,11 +600,7 @@
   font-size: var(--type-caption);
 }
 
-/* §8.4.2 Twin Run — the partner tile is marked in blue so the two picks read as first and second. The roster
-   wraps once the meta-starters arrive (§8.5.2): three columns was the default trio, not a rule. */
-.roster {
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-}
+/* §8.4.2 Twin Run — the partner tile is marked in blue so the two picks read as first and second. */
 .pickedSecond {
   border-color: var(--brand-blue);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-blue) 22%, transparent);

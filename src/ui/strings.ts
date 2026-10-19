@@ -907,6 +907,19 @@ export const STARTER_TEXT = {
   partner: 'Partner',
   pickPartner: 'Pick a partner',
   clearPartner: 'Remove the partner',
+  filter: 'Show starters of one type',
+  all: 'All',
+  joins: 'Joins at',
+  cards: 'Cards',
+  evolves: 'Evolves at',
+  startingCards: 'Starting cards',
+  baseStats: 'Base stats',
+  evolution: 'Evolution',
+  matchups: 'Matchups',
+  weakTo: 'Weak to',
+  resists: 'Resists',
+  immune: 'Immune to',
+  noEffect: 'No damage.',
 };
 
 // §6.3 — the Pokédex's evolutions and kit (v0.9.9).

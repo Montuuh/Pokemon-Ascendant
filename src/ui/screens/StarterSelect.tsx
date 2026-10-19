@@ -1,19 +1,20 @@
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
-import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconLock, IconX } from '@tabler/icons-react';
+import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconHandGrab, IconHeartFilled, IconLock, IconTargetArrow, IconX } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { GYM, MODIFIERS, RUN_START, activeMoves, runPerksFor, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState } from '@/sim';
+import { BOND_RANK_NAME, MODIFIERS, POKEMON_TYPES, RUN_START, activeMoves, bondRank, runPerksFor, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState, type PokemonType } from '@/sim';
 import { portraitUrl } from '@/content/schemas/species';
-import { spriteOf } from '@/ui/art';
+import { moveArt, spriteOf } from '@/ui/art';
 import { ArenaSprite } from '@/ui/components/ArenaSprite';
 import card from '@/ui/components/UnitCard.module.css';
 import { TitleBattle } from '@/ui/title/TitleBattle';
 import { ItemCard } from '@/ui/components/ItemCard';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { clearPartnerTip, twinRunTip } from '@/ui/tips';
+import { clearPartnerTip, moveDefTip, twinRunTip } from '@/ui/tips';
+import { describeMoveDef } from '@/ui/moveText';
 import { STARTER_TEXT } from '@/ui/strings';
 import styles from './StarterSelect.module.css';
 
@@ -31,6 +32,7 @@ import styles from './StarterSelect.module.css';
 type Step = 0 | 1 | 2 | 3;
 
 const STAT_MAX = { hp: 120, attack: 120, defense: 120, speed: 120 };
+const STAT_NAME = { hp: 'HP', attack: 'Attack', defense: 'Defence', speed: 'Speed' } as const;
 
 /**
  * §8.5.3 Magikarp — its Starting Relic offer is biased toward Water and toward survivability, "because the
@@ -115,32 +117,36 @@ export function StarterSelect() {
   const starters = useMemo(() => starterIds.map((id) => content.species(id)), [starterIds, content]);
   // The detail panel shows the place being filled: the partner, once there is one and it is the place in focus.
   const chosen = content.species(twin && slot === 'partner' && second ? second : pick);
-
-  /** How this starter's own type fares against the Gym ace it will have to get through. */
-  const gymMatch = useMemo(() => {
-    const ace = content.species(GYM.team[GYM.team.length - 1]!.species);
-    const best = Math.max(...chosen.types.map((t) => typeMultiplier(t, ace.types)));
-    const against = Math.max(...ace.types.map((t) => typeMultiplier(t, chosen.types)));
-    if (best >= 2) return { tone: styles.gymGood, text: `Your ${chosen.types[0]} hits ${ace.name} for ×${best}. A kind start.` };
-    if (best < 1) return { tone: styles.gymHard, text: `Your ${chosen.types[0]} only does ×${best} to ${ace.name}, and it hits back for ×${against}. The hard start — plan on recruiting an answer.` };
-    return { tone: styles.gymFair, text: `Neutral into ${ace.name}. It comes down to levels and your bench.` };
-  }, [chosen, content]);
-  const kit = activeMoves(content, pick, RUN_START.starterLevel);
-  const line = useMemo(() => {
-    const names = [chosen.name];
+  // §8.5 — the roster narrowed by type (a long one: every Soulbound line joins it). Null is every type.
+  const [typeFilter, setTypeFilter] = useState<PokemonType | null>(null);
+  const rosterTypes = useMemo(() => POKEMON_TYPES.filter((t) => starters.some((s) => s.types.includes(t))), [starters]);
+  const shown = typeFilter ? starters.filter((s) => s.types.includes(typeFilter)) : starters;
+  // The cards of the starter on show — the partner's when the partner is in focus (the user's report, 2026-10-19: they
+  // were always the Lead's).
+  const kit = activeMoves(content, chosen.id, RUN_START.starterLevel);
+  const chosenRank = bondRank(account.bond[chosen.id] ?? 0);
+  const bestStat = (['hp', 'attack', 'defense', 'speed'] as const).reduce((a, k) => (chosen.baseStats[k] > chosen.baseStats[a] ? k : a), 'hp' as 'hp' | 'attack' | 'defense' | 'speed');
+  /** The line from this form: each stage its forms (a fork shows every branch) and the level it is reached at. */
+  const line = (() => {
+    const stages: { ids: string[]; at?: number }[] = [{ ids: [chosen.id] }];
     let cur = chosen;
     while (cur.evolvesTo.length) {
       // §8.5.2 Eevee — a line that forks into species, not archetypes, is shown as the fork it is.
-      if (cur.evolvesTo.length > 1) {
-        names.push(cur.evolvesTo.map((id) => content.species(id).name).join(' / '));
-        break;
-      }
-      const next = content.species(cur.evolvesTo[0]!);
-      names.push(next.name);
-      cur = next;
+      stages.push({ ids: [...cur.evolvesTo], ...(cur.evolveLevel ? { at: cur.evolveLevel } : {}) });
+      if (cur.evolvesTo.length > 1) break;
+      cur = content.species(cur.evolvesTo[0]!);
     }
-    return names;
-  }, [chosen, content]);
+    return stages;
+  })();
+  /** §4.1.2 — what this starter's types take ×2 or more from, what they resist, and what does nothing to them. */
+  const matchups = (() => {
+    const by = (pred: (m: number) => boolean) => POKEMON_TYPES.filter((atk) => pred(typeMultiplier(atk, chosen.types)));
+    return [
+      { label: STARTER_TEXT.weakTo, types: by((m) => m > 1), weak: true },
+      { label: STARTER_TEXT.resists, types: by((m) => m > 0 && m < 1), weak: false },
+      { label: STARTER_TEXT.immune, types: by((m) => m === 0), weak: false },
+    ];
+  })();
 
   function begin() {
     newRun(pick, seed, modifiers, relic ?? undefined, region ?? undefined, second && second !== pick ? second : undefined);
@@ -317,8 +323,8 @@ export function StarterSelect() {
 
         </section>
       ) : (
-        <section className={styles.body} data-testid="step-starter">
-          <div className={styles.roster}>
+        <section className={`${styles.body} ${styles.starterBody}`} data-testid="step-starter">
+          <div className={styles.rosterPane}>
             {/* §8.4.2 Twin Run — the two places, Lead and partner: a click on a place puts it in focus. */}
             {twin && (
               <div className={styles.slots} role="group" aria-label="Your two starters" data-testid="twin-slots">
@@ -345,54 +351,127 @@ export function StarterSelect() {
                 <InfoDot tip={twinRunTip()} />
               </div>
             )}
-            {starters.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                className={`${styles.tile} ${pick === s.id ? styles.picked : ''} ${second === s.id ? styles.pickedSecond : ''}`}
-                onClick={() => choose(s.id)}
-                data-testid={`starter-${s.id}`}
-                aria-pressed={pick === s.id || second === s.id}
-              >
-                <span className={styles.tileType}>
-                  <TypeBadge type={s.types[0]!} size={18} defenderTypes={s.types} />
-                </span>
-                {/* §9.13.3 — each starter as the fights draw it: its battle sprite in the window a combat card gives a
-                    Pokémon (§9.2.1), lit in its type; the one chosen breathes. */}
-                <span className={`${card.window} ${styles.tileWindow}`} style={{ '--unit-type': `var(--type-${s.types[0] ?? 'normal'})` } as CSSProperties} aria-hidden="true">
-                  <span className={card.stand}>
-                    <ArenaSprite src={spriteOf({ speciesId: s.id }, 'front')} className={card.sprite} {...(pick === s.id || second === s.id ? { imgClassName: card.breathe } : {})} />
-                  </span>
-                </span>
-                <span className={`${styles.tileName} display`}>{s.name}</span>
-              </button>
-            ))}
+            {/* A long roster (the Mart's three, every Soulbound line, §6.8.2): narrowed by type, a click on a chip; the count says
+                how many. Three starters need no filter. */}
+            {starters.length > 4 && rosterTypes.length > 1 && (
+              <div className={styles.filters} role="group" aria-label={STARTER_TEXT.filter} data-testid="starter-filters">
+                <button type="button" className={`${styles.filter} ${typeFilter === null ? styles.filterOn : ''}`} aria-pressed={typeFilter === null} onClick={() => setTypeFilter(null)} data-testid="starter-filter-all">
+                  {STARTER_TEXT.all} <span className="tabular">{starters.length}</span>
+                </button>
+                {rosterTypes.map((t) => (
+                  <button key={t} type="button" className={`${styles.filter} ${typeFilter === t ? styles.filterOn : ''}`} aria-pressed={typeFilter === t} aria-label={`${t}: ${starters.filter((x) => x.types.includes(t)).length}`} onClick={() => setTypeFilter(typeFilter === t ? null : t)} data-testid={`starter-filter-${t}`}>
+                    <TypeBadge type={t} size={16} />
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className={styles.roster} data-testid="starter-roster">
+              {shown.map((s) => {
+                const place = pick === s.id ? STARTER_TEXT.lead : second === s.id ? STARTER_TEXT.partner : null;
+                const rank = bondRank(account.bond[s.id] ?? 0);
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`${styles.tile} ${pick === s.id ? styles.picked : ''} ${second === s.id ? styles.pickedSecond : ''} ${chosen.id === s.id ? styles.inFocus : ''}`}
+                    onClick={() => choose(s.id)}
+                    data-testid={`starter-${s.id}`}
+                    aria-pressed={pick === s.id || second === s.id}
+                  >
+                    {/* §9.13.3 — each starter as the fights draw it: its battle sprite in the window a combat card gives a
+                        Pokémon (§9.2.1), lit in its type; the one chosen breathes. */}
+                    <span className={`${card.window} ${styles.tileWindow}`} style={{ '--unit-type': `var(--type-${s.types[0] ?? 'normal'})` } as CSSProperties} aria-hidden="true">
+                      <span className={card.stand}>
+                        <ArenaSprite src={spriteOf({ speciesId: s.id }, 'front')} className={card.sprite} {...(pick === s.id || second === s.id ? { imgClassName: card.breathe } : {})} />
+                      </span>
+                    </span>
+                    {place && <span className={`${styles.tilePlace} ${second === s.id ? styles.tilePlacePartner : ''}`}>{place}</span>}
+                    <span className={`${styles.tileName} display`}>{s.name}</span>
+                    <span className={styles.tileTypes}>
+                      {s.types.map((t) => (
+                        <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />
+                      ))}
+                      {rank > 0 && (
+                        <span className={styles.tileBond} aria-label={`Bond: ${BOND_RANK_NAME[rank]}`}>
+                          <IconHeartFilled size={11} /> {rank}
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <aside className={styles.detail} data-testid="starter-detail">
-            <div className={styles.detailHead}>
-              <h2 className={`${styles.detailName} display`}>{chosen.name}</h2>
-              <span className={styles.chips}>
-                {chosen.types.map((t) => (
-                  <span key={t} className={styles.typeChip}>
-                    <TypeBadge type={t} size={18} defenderTypes={chosen.types} />
-                    {t}
-                  </span>
-                ))}
+            <div className={styles.hero}>
+              <span className={`${card.window} ${styles.heroWindow}`} style={{ '--unit-type': `var(--type-${chosen.types[0] ?? 'normal'})` } as CSSProperties} aria-hidden="true">
+                <span className={card.stand}>
+                  <ArenaSprite src={spriteOf({ speciesId: chosen.id }, 'front')} className={card.sprite} imgClassName={card.breathe} />
+                </span>
               </span>
+              <div className={styles.heroText}>
+                <span className={styles.dex}>#{String(chosen.dex).padStart(3, '0')}</span>
+                <h2 className={`${styles.detailName} display`}>{chosen.name}</h2>
+                <span className={styles.chips}>
+                  {chosen.types.map((t) => (
+                    <TypeBadge key={t} type={t} size={18} defenderTypes={chosen.types} />
+                  ))}
+                </span>
+                {chosenRank > 0 && (
+                  <span className={styles.bond} data-testid="starter-bond">
+                    <IconHeartFilled size={12} /> {BOND_RANK_NAME[chosenRank]}
+                  </span>
+                )}
+              </div>
             </div>
-            <p className={styles.flavour}>
-              Joins at Lv {RUN_START.starterLevel} with {kit.length} cards, and evolves at Lv {chosen.evolveLevel ?? '—'}.
-            </p>
 
-            <h3 className={styles.sectionTitle}>Base stats</h3>
+            <dl className={styles.facts}>
+              <div>
+                <dt>{STARTER_TEXT.joins}</dt>
+                <dd className="display tabular">Lv {RUN_START.starterLevel}</dd>
+              </div>
+              <div>
+                <dt>{STARTER_TEXT.cards}</dt>
+                <dd className="display tabular">{kit.length}</dd>
+              </div>
+              <div>
+                <dt>{STARTER_TEXT.evolves}</dt>
+                <dd className="display tabular">{chosen.evolveLevel ? `Lv ${chosen.evolveLevel}` : '—'}</dd>
+              </div>
+            </dl>
+
+            <h3 className={styles.sectionTitle}>{STARTER_TEXT.startingCards}</h3>
+            <ul className={styles.moves}>
+              {kit.map((m) => {
+                const move = content.move(m);
+                const Range = move.range === 'melee' ? IconHandGrab : IconTargetArrow;
+                return (
+                  <Tipped as="li" key={m} tip={moveDefTip(move)} className={styles.moveRow} style={{ '--card-type': `var(--type-${move.type})` } as CSSProperties}>
+                    <span className={`${styles.moveCost} display tabular`}>{move.apCost}</span>
+                    <img className={`${styles.moveArt} pixel`} src={moveArt(move.id)} alt="" onError={(e) => (e.currentTarget.style.visibility = 'hidden')} />
+                    <span className={styles.moveText}>
+                      <b>{move.name}</b>
+                      <small>{describeMoveDef(move) || STARTER_TEXT.noEffect}</small>
+                    </span>
+                    <span className={styles.moveMeta}>
+                      <Range size={14} stroke={2.4} aria-label={move.range} />
+                      <span className="display tabular">{move.power > 0 ? move.power : '—'}</span>
+                      <TypeBadge type={move.type} size={14} mode="attack" />
+                    </span>
+                  </Tipped>
+                );
+              })}
+            </ul>
+
+            <h3 className={styles.sectionTitle}>{STARTER_TEXT.baseStats}</h3>
             <dl className={styles.stats}>
               {(['hp', 'attack', 'defense', 'speed'] as const).map((k) => (
                 <div key={k} className={styles.statRow}>
-                  <dt>{k === 'hp' ? 'HP' : k === 'attack' ? 'Attack' : k === 'defense' ? 'Defense' : 'Speed'}</dt>
+                  <dt>{STAT_NAME[k]}</dt>
                   <dd>
                     <span className={styles.statTrack}>
-                      <span className={styles.statFill} style={{ width: `${Math.min(100, (chosen.baseStats[k] / STAT_MAX[k]) * 100)}%` }} />
+                      <span className={`${styles.statFill} ${k === bestStat ? styles.statBest : ''}`} style={{ width: `${Math.min(100, (chosen.baseStats[k] / STAT_MAX[k]) * 100)}%` }} />
                     </span>
                     <span className="display tabular">{chosen.baseStats[k]}</span>
                   </dd>
@@ -400,38 +479,41 @@ export function StarterSelect() {
               ))}
             </dl>
 
-            <h3 className={styles.sectionTitle}>Starting cards</h3>
-            <ul className={styles.moves}>
-              {kit.map((m) => {
-                const move = content.move(m);
-                return (
-                  <li key={m} className={styles.moveChip}>
-                    <TypeBadge type={move.type} size={18} mode="attack" />
-                    <span>{move.name}</span>
-                    <span className={styles.moveCost}>{move.apCost} AP</span>
-                  </li>
-                );
-              })}
-            </ul>
+            <h3 className={styles.sectionTitle}>{STARTER_TEXT.evolution}</h3>
+            <ol className={styles.evoLine} data-testid="starter-evo-line">
+              {line.map((stage, i) => (
+                <li key={stage.ids.join('/')} className={styles.evoStage}>
+                  {i > 0 && <span className={styles.evoArrow}>{stage.at ? `Lv ${stage.at}` : '→'}</span>}
+                  <span className={styles.evoForms}>
+                    {stage.ids.map((id) => {
+                      const sp = content.species(id);
+                      return (
+                        <span key={id} className={styles.evoForm}>
+                          <img src={portraitUrl(sp.dex, sp.id)} alt="" width={40} height={40} />
+                          <span>{sp.name}</span>
+                        </span>
+                      );
+                    })}
+                  </span>
+                </li>
+              ))}
+            </ol>
 
-            <h3 className={styles.sectionTitle}>Evolution line</h3>
-            <p className={styles.line}>{line.join(' → ')}</p>
-
-            {/* Pillar 1 says the game telegraphs. It telegraphs every intent inside a fight and then said
-                nothing about the run's climax, which in v0.3 was the single biggest thing separating these
-                three: against a Rock/Ground Gym, Grass and Water hit for ×4 and Fire for ×½, and the win
-                rates were 61 / 28 / 90 %.
-                v0.4's economy narrowed that to 47 / 47 / 57 without touching the Gym — a Fire start now has
-                four places to buy an answer. The line stays anyway: the matchup is still real, it is still
-                the thing that decides the last fight, and a player choosing a starter deserves to know it
-                before they spend twenty minutes finding out. */}
-            <h3 className={styles.sectionTitle}>Region 1 Gym</h3>
-            <p className={`${styles.gym} ${gymMatch.tone}`}>
-              <b>
-                {GYM.name} · {GYM.type}-type
-              </b>
-              <span>{gymMatch.text}</span>
-            </p>
+            <h3 className={styles.sectionTitle}>{STARTER_TEXT.matchups}</h3>
+            <div className={styles.matchups}>
+              {matchups.map((row) =>
+                row.types.length ? (
+                  <div key={row.label} className={styles.matchRow}>
+                    <span className={`${styles.matchLabel} ${row.weak ? styles.matchWeak : styles.matchStrong}`}>{row.label}</span>
+                    <span className={styles.matchTypes}>
+                      {row.types.map((t) => (
+                        <TypeBadge key={t} type={t} size={14} />
+                      ))}
+                    </span>
+                  </div>
+                ) : null,
+              )}
+            </div>
           </aside>
         </section>
       )}

@@ -987,14 +987,21 @@ recommended, 2px brand outline), each: name, one-line effect, modifiers list. **
 text not color-only. **Loc:** `ui.newrun.difficulty.*`.
 
 ### 3.3b Starter Select  (resolves OD-3 — single pick, §2.1)
-**Purpose.** Pick one Starter from the unlocked pool (Bulbasaur/Charmander/Squirtle + meta unlocks).
-**Zones.** Starter roster (portrait tiles) · detail panel (type, base stats radial, the 2 starting
-moves per CL-006, evolution line preview, flavor). **Components.** `Pokémon card tile`, `type badge`,
-`stat radial`, `move chip`. **Bindings.** `StarterCatalog` (unlocked subset via `MetaProgressionSO`),
-`PokemonSpeciesSO`, `LearnsetSO`. **Interactions.** select tile → detail updates → Continue.
-**States.** locked Starters (silhouette + unlock hint, not hidden) · selected (brand edge).
-**Accessibility.** roster is a focusable grid; stat radial has a text-equivalent table.
-**Loc:** `species.*`, `ui.newrun.starter.*`.
+**Purpose.** Pick one Starter from the unlocked pool (Bulbasaur/Charmander/Squirtle, the Mart's three, every Soulbound
+line — §6.8.2 — so the roster can run to dozens), and with Twin Run a partner. **Zones** (reworked 2026-10-19, the
+user's note: a better panel, and a roster that holds many). The roster and the detail side by side, **each scrolling
+on its own**, so a long roster never pushes the detail away. **Roster:** the Twin Run places on top; a row of **type
+filter chips** (All N, then every type present) once there are more than four; compact tiles — the battle sprite in a
+window lit in its type, the name, the type labels, the line's Bond as a heart and its rank; the Lead's and the
+partner's tile tagged on their top edge. **Detail** — always the starter in focus (the partner's when the partner place
+is: v0.9's panel showed the Lead's cards for anyone, the user's report): the sprite large beside its Dex number, name,
+types and Bond rank; three tiles — joins at, cards, evolves at; the **starting cards** as rows of the hand's card laid
+flat (cost gem, picture, name, what it does, reach, power, type; the card's bubble on hover); base stats as bars, the
+best in green; the **evolution line as its forms** with the level between (a fork shows every branch); and its
+**matchups** — weak to, resists, immune to. The Region 1 Gym line is gone (the user's note): the run's Gym is a fork
+of four, so one Gym's matchup told the player little. **Interactions.** a tile fills the place in focus → the detail
+follows → Continue. **Accessibility.** every tile and chip is a button with its state pressed. **Loc:** `species.*`,
+`STARTER_TEXT`.
 
 ### 3.3c Starting Relic Select
 **Purpose.** Pick the opening relic (replaces the temp `StartingRelicPanelUI`). **Components.**
