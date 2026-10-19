@@ -1,0 +1,20 @@
+/* §7.3.1 — the rarity gem: the rarity's own colour, a dark outline, a cream facet (D9: flat, crisp, ours). */
+.gem {
+  flex: none;
+  overflow: visible;
+}
+.gem[data-rarity='common'] { --gem: var(--rarity-common); }
+.gem[data-rarity='uncommon'] { --gem: var(--rarity-uncommon); }
+.gem[data-rarity='rare'] { --gem: var(--rarity-rare); }
+.gem[data-rarity='legendary'] { --gem: var(--rarity-legendary); }
+.body {
+  fill: var(--gem);
+  stroke: var(--surface-sunken);
+  stroke-width: 1;
+  stroke-linejoin: miter;
+  paint-order: stroke fill;
+}
+.light {
+  fill: var(--brand-cream);
+  opacity: 0.85;
+}

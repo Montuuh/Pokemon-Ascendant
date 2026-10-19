@@ -63,6 +63,9 @@
 }
 /* A shelf's heading: its rarity or tier, and how many. */
 .group {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
   margin: var(--sp-2) 0 2px var(--sp-2);
   font-size: var(--type-caption);
   letter-spacing: 0.06em;
@@ -189,7 +192,7 @@
 }
 /* A relic's rarity is its frame's foot, the colours a relic card uses (ItemCard). */
 .tile[data-rarity='common'] {
-  border-bottom-color: var(--border-strong);
+  border-bottom-color: var(--rarity-common);
 }
 .tile[data-rarity='uncommon'] {
   border-bottom-color: var(--rarity-uncommon);
@@ -222,6 +225,12 @@
   top: var(--sp-1);
   right: var(--sp-1);
   color: var(--ink-muted);
+}
+/* §7.3.1 — a relic's rarity gem on its tile's corner. */
+.tileGem {
+  position: absolute;
+  top: var(--sp-1);
+  left: var(--sp-1);
 }
 @media (max-width: 1100px) {
   .body {

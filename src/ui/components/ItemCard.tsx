@@ -2,6 +2,8 @@ import { IconAlertTriangle } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { Tip, useTip } from '@/ui/tooltip';
+import { RARITY_LABEL } from '@/ui/strings';
+import { RarityGem } from './RarityGem';
 import styles from './ItemCard.module.css';
 
 // One card shape for everything you can own (§7.2–§7.4): a consumable, a relic, a held item, a TM, a ball.
@@ -51,7 +53,7 @@ export function ItemCard(props: ItemCardProps) {
     <Tip
       icon={<img src={kind === 'tm' ? tmIcon(id) : itemIcon(id)} alt="" width={22} height={22} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />}
       title={name}
-      meta={[rarity ? rarity.charAt(0).toUpperCase() + rarity.slice(1) : null, KIND_LABEL[kind]].filter((m): m is string => !!m)}
+      meta={[rarity ? RARITY_LABEL[rarity] : null, KIND_LABEL[kind]].filter((m): m is string => !!m)}
       body={description}
       footer={pending ? `Not working yet: ${pending}` : tipNote ?? (kind === 'stone' ? "Used from a Pokémon's Move Manager, between nodes." : undefined)}
     />,
@@ -63,7 +65,7 @@ export function ItemCard(props: ItemCardProps) {
       className={[styles.card, selected && styles.selected, dim && styles.dim, interactive && styles.interactive]
         .filter(Boolean)
         .join(' ')}
-      data-rarity={rarity ?? 'common'}
+      data-rarity={rarity}
       data-kind={kind}
       disabled={interactive ? disabled : undefined}
       onClick={onClick}
@@ -90,9 +92,12 @@ export function ItemCard(props: ItemCardProps) {
           }}
         />
         {tag && <span className={styles.tag}>{tag}</span>}
+        {/* §7.3.1 — the rarity's gem on the picture's corner: its shape and its colour (the user's ladder). */}
+        {rarity && <RarityGem rarity={rarity} size={18} className={styles.gem} />}
       </span>
       <span className={styles.body}>
         <span className={`${styles.name} display`}>{name}</span>
+        {rarity && <span className={styles.rarity}>{RARITY_LABEL[rarity]}</span>}
         <span className={styles.desc}>{description}</span>
         {pending && (
           <span className={styles.pending}>

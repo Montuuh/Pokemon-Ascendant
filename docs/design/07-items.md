@@ -173,6 +173,14 @@ relic, so the premium stays at 0.25: money is not what limits a buyer.
 Rarity is **drop weight**. Meta tier (§8.6.1) is **pool membership**. They are orthogonal and conflating them is
 the single easiest mistake to make in this system.
 
+**How a rarity looks** (the user's ladder, 2026-10-19): a gem whose shape and colour both name it — Common a **green
+square**, Uncommon a **blue pentagon**, Rare a **red star**, Legendary a **gold crown** (`RarityGem`, the
+`--rarity-*` tokens). The gem sits on the corner of the relic's picture on every card (the offers, the drawer, the
+shops, the Black Market, the Item Guide), the card's left edge and the picture's ground take the rarity's colour,
+the rarity's name sits under the relic's in quiet ink, and the hover rings the card in it; a Legendary keeps a second
+gold ring. The shape is there for whoever cannot tell the colours apart (D5). *Why:* until then Common wore the
+border's gold, so a Common and a Legendary looked alike.
+
 ## §7.3.2 Synergy categories
 
 Every relic carries one primary and optionally one secondary category. The City Shop's curation algorithm

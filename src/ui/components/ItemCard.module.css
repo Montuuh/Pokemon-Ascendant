@@ -17,20 +17,44 @@
   font: inherit;
 }
 
-/* §7.3.1 — the left edge is the rarity band. Drop weight, not power: an Uncommon is rarer, not stronger. */
-.card[data-rarity='common'] { border-left-color: var(--border-strong); }
-.card[data-rarity='uncommon'] { border-left-color: var(--brand-blue); }
-.card[data-rarity='rare'] { border-left-color: var(--type-psychic); }
-.card[data-rarity='legendary'] { border-left-color: var(--accent-action); }
+/* §7.3.1 — the left edge is the rarity band, the picture's ground is lit in it and its gem sits on the corner. Drop
+   weight, not power: an Uncommon is rarer, not stronger. A card with no rarity (a consumable, a TM) keeps the gold. */
+.card { border-left-color: var(--border-strong); }
+.card[data-rarity='common'] { --rarity: var(--rarity-common); }
+.card[data-rarity='uncommon'] { --rarity: var(--rarity-uncommon); }
+.card[data-rarity='rare'] { --rarity: var(--rarity-rare); }
+.card[data-rarity='legendary'] { --rarity: var(--rarity-legendary); }
+.card[data-rarity] { border-left-color: var(--rarity); }
+.card[data-rarity] .art {
+  background: color-mix(in srgb, var(--rarity) 22%, var(--surface-2));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--rarity) 45%, transparent);
+}
+/* A Legendary keeps a second ring of its gold inside the card: the rarest thing reads as such before it is read. */
+.card[data-rarity='legendary'] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rarity) 55%, transparent);
+}
+.gem {
+  position: absolute;
+  top: -7px;
+  left: -7px;
+}
+/* The rarity's name under the item's, in quiet ink (the colour is the gem's and the edge's, never the text's). */
+.rarity {
+  color: var(--ink-muted);
+  font-size: var(--type-micro);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 
 .interactive {
   cursor: pointer;
   transition: transform var(--motion-fast) ease, box-shadow var(--motion-fast) ease, border-color var(--motion-fast) ease;
 }
 .interactive:hover:not(:disabled) {
-  transform: translateY(-2px);
-  border-color: var(--border-strong);
-  box-shadow: 0 6px 16px rgba(58, 46, 34, 0.14);
+  transform: translateY(-3px);
+  border-color: var(--rarity, var(--border-strong));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--rarity, var(--border-strong)) 45%, transparent), 0 8px 18px rgba(58, 46, 34, 0.2);
 }
 .interactive:focus-visible {
   outline: 3px solid var(--brand-blue);

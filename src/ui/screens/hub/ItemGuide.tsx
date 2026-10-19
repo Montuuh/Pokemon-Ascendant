@@ -8,6 +8,7 @@ import { itemIcon, tmIcon } from '@/ui/art';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { MoveChip } from '@/ui/components/MoveChip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
+import { RarityGem, type GemRarity } from '@/ui/components/RarityGem';
 import { GUIDE_TEXT } from '@/ui/strings';
 import { guidePriceTip, relicTierNoteTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
@@ -98,6 +99,8 @@ export function ItemGuide() {
                   {groupsOf(shown).map(([group, rows]) => (
                     <section key={group} className={styles.shelf}>
                       <h3 className={styles.group}>
+                        {/* §7.3.1 — a relic shelf under its rarity's gem. */}
+                        {rows[0]?.rarity && <RarityGem rarity={rows[0].rarity as GemRarity} size={14} />}
                         {group} <span className="tabular">{rows.length}</span>
                       </h3>
                       <ul className={styles.tiles}>
@@ -113,6 +116,7 @@ export function ItemGuide() {
                                 )}
                                 <span className={styles.tileName}>{r.name}</span>
                                 {r.type && <TypeBadge type={r.type} size={14} mode="attack" />}
+                                {r.rarity && <RarityGem rarity={r.rarity as GemRarity} size={14} className={styles.tileGem} />}
                                 {locked && <IconLock size={14} className={styles.lock} role="img" aria-label={GUIDE_TEXT.locked} />}
                               </button>
                             </li>
