@@ -94,3 +94,54 @@ test.describe('The starter step — screens §3.3b', () => {
     await page.screenshot({ path: 'playtest/readout-starter.png' });
   });
 });
+
+test.describe('A formation never outgrows its stage — §9.2.2.3', () => {
+  test.use({ viewport: { width: 1280, height: 720 } });
+  test('at 720 p, after a few turns of stages and with every foe acting twice and planning ahead, every foe stands inside the stage', async ({ page }) => {
+    for (const scenario of ['group-wild-flock', 'group-trainer-pair', 'league-champion']) {
+      await page.goto(`/?scenario=${scenario}&seed=7`);
+      await expect(page.getByTestId('combat-screen')).toBeVisible();
+      for (const crowd of [false, true]) {
+        await asc(page)((c) => {
+          const a = (window as unknown as { __ascendant: Ascendant & { auto: (n: number) => number; crowd: () => void } }).__ascendant;
+          if (c) a.crowd();
+          else a.auto(12);
+        }, crowd);
+        const out = await asc(page)(() => {
+          const stage = document.querySelector('[data-fx-stage]')!.getBoundingClientRect();
+          return [...document.querySelectorAll('[data-testid="foe-panel"]')]
+            .map((el) => el.getBoundingClientRect())
+            .filter((b) => b.width > 0 && (b.top < stage.top - 0.5 || b.bottom > stage.bottom + 0.5 || b.left < stage.left || b.right > stage.right)).length;
+        });
+        expect(out, `${scenario}${crowd ? ' crowded' : ''}`).toBe(0);
+        // On the short stage a bench foe's second action and next plan are badges on its chip.
+        if (crowd && scenario === 'group-wild-flock') {
+          await expect(page.locator('[data-testid="intent-also-badge"]:visible').first()).toBeVisible();
+          await expect(page.locator('[data-testid="intent-next-badge"]:visible').first()).toBeVisible();
+          await page.screenshot({ path: 'playtest/readout-720-chips.png' });
+        }
+      }
+    }
+  });
+});
+
+test.describe('Chips on a short stage — §9.2.2.3', () => {
+  test.use({ viewport: { width: 1280, height: 720 } });
+  test('at 720 p a card with many chips shows the first and "+N", whose bubble names the rest', async ({ page }) => {
+    await page.goto('/?scenario=wild-boss-3phase&seed=7');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await page.evaluate(async () => {
+      // The dev server serves the store's module: every chip turned on at once, as no fixture opens with.
+      const path = '/src/app/combatStore.ts';
+      const m = (await import(/* @vite-ignore */ path)) as { useCombatStore: { getState: () => { state: unknown }; setState: (p: { state: unknown }) => void } };
+      const d = JSON.parse(JSON.stringify(m.useCombatStore.getState().state)) as { enemies: { stages: Record<string, number> }[] };
+      for (const e of d.enemies) Object.assign(e, { stages: { ...e.stages, attack: -2, defense: 1 }, shield: 15, sturdyAvailable: true });
+      m.useCombatStore.setState({ state: d });
+    });
+    const more = page.getByTestId('unit-chips-more').first();
+    await expect(more).toBeVisible();
+    await expect(more).toHaveText('+3');
+    await more.hover();
+    await expect(page.getByRole('tooltip')).toContainText('Armour 15');
+  });
+});

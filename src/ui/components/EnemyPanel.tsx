@@ -7,12 +7,13 @@ import { CatchPicker } from './CatchPicker';
 import { intentGlyph, spriteOf } from '@/ui/art';
 import type { SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { ArenaSprite } from './ArenaSprite';
-import { ARMOUR_LABEL, INTENT_LABEL, OBJECTIVE_TEXT } from '@/ui/strings';
+import { ARMOUR_LABEL, INTENT_BADGE, INTENT_LABEL, OBJECTIVE_TEXT, UNIT_CHIPS_TEXT } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
 import { ObjectiveChip } from './ObjectiveChip';
-import { armourTip, nextIntentTip, placeTip } from '@/ui/tips';
+import { UnitChips } from './UnitChips';
+import { armourTip, intentCardTip, nextIntentTip, placeTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
 import { UNIT_BADGE, UNIT_HP_BAR } from './unitCard';
@@ -60,8 +61,8 @@ interface Props {
 // chips above it (kind glyph, the move, its target, and for a single hit the number it lands), and the card — the place
 // tag (Lead, Bench 1, Bench 2, as yours) on its top edge, its condition on the corner, types, name and level on a dark
 // head, the animated front sprite in a window lit in its first type, its HP with phase markers (and, while a card is
-// aimed at it, the part that card would take, striped), its chips — with the catch pill in a wild fight and the held
-// card's number on the corner (§9.2.4). The whole card, sprite and all, is the target.
+// aimed at it, the part that card would take, striped), its chips on the window's corner, the catch pill in a wild
+// fight and the held card's number on the corner (§9.2.4). The whole card, sprite and all, is the target.
 export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow, fallen, held, fxSlot, spriteClass, waiting, quiet }: Props) {
   const phase = currentPhase(enemy, ctx.config);
   // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
@@ -71,6 +72,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
   const next = enemy.next?.intent ?? null;
   const nextMove = next?.moveId ? ctx.content.move(next.moveId) : null;
   const nextTipProps = useTip(next ? nextIntentTip(`${enemy.name} ${describeIntent(state, enemy, ctx, next)}`) : null);
+  const alsoTipProps = useTip(enemy.second ? intentCardTip(state, enemy, forecast, 1, [], ctx) : null);
   // §5.6.5 — the flee race's runner: the one enemy of a fight that has one.
   const runner = state.objective?.kind === 'flee' && enemy.hp > 0;
   const stageChips = (['attack', 'defense'] as const).filter((s) => enemy.stages[s] !== 0);
@@ -103,12 +105,29 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
     >
       <div className={styles.intents}>
         {/* A fallen foe's chip keeps its room, unseen, so the unit fades where it stood rather than dropping. */}
-        <div className={fallen ? styles.chipRoom : undefined}>
+        <div className={[styles.chipLine, fallen ? styles.chipRoom : ''].join(' ')}>
           <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={0} />
+          {/* §5.6.1 / §5.5.1 — on a short stage a bench foe's second action and its next plan fold into badges on its
+              chip's end, each with its whole bubble: as lines of their own they made the formation taller than the
+              stage (the user's report, 2026-10-19). The hits still show one by one on your cards. */}
+          {enemy.second && enemy.hp > 0 && (
+            <span className={[styles.badge, styles.badgeAlso, enemy.second.broken ? styles.badgeBroken : '', styles.compactOnly].join(' ')} tabIndex={0} data-testid="intent-also-badge" {...alsoTipProps}>
+              {INTENT_BADGE.also}
+            </span>
+          )}
+          {next && enemy.hp > 0 && (
+            <span className={[styles.badge, styles.compactOnly].join(' ')} tabIndex={0} data-testid="intent-next-badge" {...nextTipProps}>
+              {INTENT_BADGE.then}
+            </span>
+          )}
         </div>
-        {enemy.second && enemy.hp > 0 && <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={1} />}
+        {enemy.second && enemy.hp > 0 && (
+          <div className={styles.fullOnly}>
+            <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={1} />
+          </div>
+        )}
         {next && enemy.hp > 0 && (
-          <div className={styles.next} data-testid="intent-next" tabIndex={0} {...nextTipProps}>
+          <div className={`${styles.next} ${styles.fullOnly}`} data-testid="intent-next" tabIndex={0} {...nextTipProps}>
             <span className={styles.nextLabel}>Then</span>
             {next.hidden ? (
               <IconQuestionMark size={14} />
@@ -143,7 +162,8 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
           onClick={onClick}
           {...cardTipProps}
           onFocus={(e) => {
-            cardTipProps.onFocus?.(e);
+            // A chip inside the card (its "+N", Armour, Sturdy) opens its own bubble, not the card's.
+            if (e.target === e.currentTarget) cardTipProps.onFocus?.(e);
             onHover(true);
           }}
           onBlur={(e) => {
@@ -196,6 +216,28 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
                 <ArenaSprite src={spriteOf(enemy, 'front', !!enemy.shiny)} shiny={!!enemy.shiny} concealed={enemy.hp <= 0} imgClassName={`${card.breathe} ${enemy.shiny ? 'fx-shiny' : ''}`} />
               </span>
             </span>
+            {/* Its stages, Armour, Sturdy and a runner's count on the window's corner, over the sky the sprite leaves free:
+                the card keeps one size, so a chip never makes the formation taller than the stage (the user's report,
+                2026-10-19: a Bench 1's intent went under the top bar at 720 p). */}
+            {/* What changes a decision first — the runner's count, Sturdy, Armour — then the stages, which the damage
+                preview already counts: on a short stage only the first chip stays out. */}
+            <UnitChips
+              chips={[
+                // §5.6.5 — a runner wears its countdown on its own card.
+                ...(runner ? [{ key: 'runner', label: OBJECTIVE_TEXT.runnerChip(state.objective!.turns), node: <ObjectiveChip kind="flee" turns={state.objective!.turns} live={state} compact terse /> }] : []),
+                ...(enemy.sturdyAvailable
+                  ? [{ key: 'sturdy', label: UNIT_CHIPS_TEXT.sturdy, explain: UNIT_CHIPS_TEXT.sturdyBody, node: <Tipped tip={<Tip title={UNIT_CHIPS_TEXT.sturdy} body={UNIT_CHIPS_TEXT.sturdyBody} />} className={`${card.chip} ${card.info}`}>{UNIT_CHIPS_TEXT.sturdy}</Tipped> }]
+                  : []),
+                // §5.9.5 Ice Armour — what it takes before HP, and the rule behind it a hover away.
+                ...(enemy.shield > 0
+                  ? [{ key: 'armour', label: `${ARMOUR_LABEL} ${enemy.shield}`, explain: UNIT_CHIPS_TEXT.armourBody(enemy.shield), node: <Tipped tip={armourTip(enemy.shield)} className={`${card.chip} ${card.info}`}>{ARMOUR_LABEL} {enemy.shield}</Tipped> }]
+                  : []),
+                ...stageChips.map((s) => {
+                  const label = `${s === 'attack' ? 'Atk' : 'Def'} ${enemy.stages[s] > 0 ? '+' : ''}${enemy.stages[s]}`;
+                  return { key: s, label, node: <span className={`${card.chip} ${enemy.stages[s] > 0 ? card.up : card.down}`}>{label}</span> };
+                }),
+              ]}
+            />
           </span>
 
           <HpBar hp={enemy.hp} maxHp={enemy.maxHp} shield={enemy.shield} phaseMarkers={phaseMarkers(enemy, ctx.config)} height={UNIT_HP_BAR} future={future} />
@@ -210,29 +252,6 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
               </span>
             )}
           </span>
-          {(stageChips.length > 0 || enemy.shield > 0 || enemy.sturdyAvailable || runner) && (
-            <span className={`${card.chips} ${styles.catchRoom}`}>
-              {/* §5.6.5 — a runner wears its countdown on its own card. */}
-              {runner && <ObjectiveChip kind="flee" turns={state.objective!.turns} live={state} compact terse />}
-              {stageChips.map((s) => (
-                <span key={s} className={`${card.chip} ${enemy.stages[s] > 0 ? card.up : card.down}`}>
-                  {s === 'attack' ? 'Atk' : 'Def'} {enemy.stages[s] > 0 ? '+' : ''}
-                  {enemy.stages[s]}
-                </span>
-              ))}
-              {/* §5.9.5 Ice Armour — what it takes before HP, and the rule behind it a hover away. */}
-              {enemy.shield > 0 && (
-                <Tipped tip={armourTip(enemy.shield)} className={`${card.chip} ${card.info}`} data-testid="foe-armour">
-                  {ARMOUR_LABEL} {enemy.shield}
-                </Tipped>
-              )}
-              {enemy.sturdyAvailable && (
-                <Tipped tip={<Tip title="Sturdy" body="Survives one hit that would have knocked it out, at 1 HP. Once per fight." />} className={`${card.chip} ${card.info}`}>
-                  Sturdy
-                </Tipped>
-              )}
-            </span>
-          )}
         </button>
 
         {/* §5.6.5 — a hold-out's guard is not for catching, so it carries no pill. */}

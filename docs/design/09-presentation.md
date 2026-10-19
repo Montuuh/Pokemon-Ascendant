@@ -187,8 +187,8 @@ of one name are told apart by their place (`Spearow (Bench 1) took 17 …`).
 Each of the three is a card (§9.2.1): the slot tag (and the **Lead crown**) on the top edge, the status condition on
 the corner, type labels, name and level on the head, the animated back sprite in its window, an HP bar with a numeric
 `cur / max` — **the part this turn's visible intents will take striped** (v0.9.16; the number is on the chip hung off the
-card) — and a cyan shield segment when a shield is present, the stat-stage and Trauma chips on a row of their own,
-and on a bench its **swap price** and what it would take as the Lead. The Lead stands forward, gold-framed and crowned; the
+card) — and a cyan shield segment when a shield is present, the stat-stage, Shield and Trauma chips in a column on the
+window's top-left corner, and on a bench its **swap price** and what it would take as the Lead. The Lead stands forward, gold-framed and crowned; the
 bench behind it, the same size. A slot an intent is aimed at glows red round its plate and keeps its own frame — your Lead stays gold, so it
 never reads as the enemy's red Lead.
 
@@ -199,10 +199,22 @@ from the screen — the player needs to see the shape of their team.
 Each is a card (§9.2.1) under its intent chips: its place tag (Lead in the enemy's deep red, Bench 1, Bench 2), the
 status condition on the corner, type labels, name and level, the animated front sprite in its window, the HP bar with
 **phase-threshold notches** for boss-tier enemies and a **Phase N/M** chip beside it — and, on the one a card is aimed
-at (on every one, for an area card), the part that card would take, striped — and the stage, armour and Sturdy chips;
-a runner's countdown (a running figure and *in 2*, amber and solid on its last turn, its bubble the race — §5.6.5). A
-guard carries no catch pill. Its tier (Wild, Trainer, Elite, Gym Leader) is in the plate's bubble, not printed on every plate. The sprite is
-as much the target as the plate: a click on either aims the held card there.
+at (on every one, for an area card), the part that card would take, striped — and the stage, armour and Sturdy chips
+and a runner's countdown (a running figure and *in 2*, amber and solid on its last turn, its bubble the race — §5.6.5)
+in a column on the window's top-left corner. A guard carries no catch pill. Its tier (Wild, Trainer, Elite, Gym
+Leader) is in the plate's bubble, not printed on every plate.
+
+The sprite is as much the target as the plate: a click on either aims the held card there.
+
+**A formation never outgrows its stage** (the user's report, 2026-10-19: at 720 p a group's Bench 1 intent was cut under
+the top bar). The enemy group's two bench rows are each as tall as the taller unit, so nothing a fight hands out may
+grow a unit unchecked. *Every card keeps one size, on both sides:* the chips — stages, a shield, Armour, Sturdy,
+Trauma, a runner's count — sit in a column on the window's top-left corner, the corner a sprite anchored at its feet
+mostly leaves free, never on a row of their own (one grew a card by 18 px). *On a short stage* (under 680 px, as at
+720 p; the stage is a size container) the column holds two rows at most — the first chip, then **+N** whose bubble
+names the rest — so it never covers the sprite; and a bench foe's second action and its next-turn plan (§5.6.1, §5.5.1)
+fold into **Also** and **Then** badges on its intent chip's end, each with its whole bubble, the hits still shown one
+by one on your cards. Where the stage is tall, everything is spelled out. A chip over a picture keeps a dark edge.
 
 ### §9.2.2.4 Hand tray
 One row (v0.9.15; the header row it replaced cost the hand 60 px at 720 p): the hand and the Bag in the middle, End

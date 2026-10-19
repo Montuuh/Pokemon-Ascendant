@@ -7,8 +7,9 @@ import { ArenaSprite } from './ArenaSprite';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
+import { UnitChips } from './UnitChips';
 import { combatantTip, shieldTip, traumaTip } from '@/ui/tips';
-import { SHIELD_LABEL } from '@/ui/strings';
+import { SHIELD_LABEL, UNIT_CHIPS_TEXT } from '@/ui/strings';
 import { Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
 import { UNIT_BADGE, UNIT_HP_BAR } from './unitCard';
@@ -87,7 +88,8 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
         onHover?.(false);
       }}
       onFocus={(e) => {
-        tip.onFocus(e);
+        // A chip inside the card (its "+N", Shield, Trauma) opens its own bubble, not the card's.
+        if (e.target === e.currentTarget) tip.onFocus(e);
         onHover?.(true);
       }}
       onBlur={(e) => {
@@ -130,6 +132,23 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
             <ArenaSprite src={spriteOf(mon, 'back', !!mon.shiny)} shiny={!!mon.shiny} concealed={fainted} imgClassName={card.breathe} />
           </span>
         </span>
+        {/* Its stages, Shield and Trauma on the window's corner, only when it has any: the card keeps one size. */}
+        <UnitChips
+          chips={[
+            // §7.3.7 Battle Hardened — the shield it opened the fight behind, drawn on the bar too.
+            ...(mon.shield > 0
+              ? [{ key: 'shield', label: `${SHIELD_LABEL} ${mon.shield}`, explain: UNIT_CHIPS_TEXT.shieldBody(mon.shield), node: <Tipped tip={shieldTip(mon.shield)} className={`${card.chip} ${card.info}`} data-testid="unit-shield">{SHIELD_LABEL} {mon.shield}</Tipped> }]
+              : []),
+            ...stageChips.map((s) => {
+              const label = `${s === 'attack' ? 'Atk' : 'Def'} ${mon.stages[s] > 0 ? '+' : ''}${mon.stages[s]}`;
+              return { key: s, label, node: <span className={`${card.chip} ${mon.stages[s] > 0 ? card.up : card.down}`}>{label}</span> };
+            }),
+            // Trauma last: its cost is already in the max HP on the card.
+            ...(mon.traumaStacks > 0
+              ? [{ key: 'trauma', label: `Trauma ×${mon.traumaStacks}`, explain: UNIT_CHIPS_TEXT.traumaBody, node: <Tipped tip={traumaTip(mon.traumaStacks, mon.maxHp)} className={`${card.chip} ${card.warn}`}>Trauma ×{mon.traumaStacks}</Tipped> }]
+              : []),
+          ]}
+        />
       </span>
 
       {/* §9.2.5 — what lands on it this turn, hung off the card's edge towards the enemy: one chip per hit, KO when
@@ -179,28 +198,6 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
           </span>
         )}
       </span>
-      {/* Its stages and Trauma on a row of their own, only when it has any: the HP row is full on a bench card. */}
-      {(stageChips.length > 0 || mon.traumaStacks > 0 || mon.shield > 0) && (
-        <span className={card.chips}>
-          {stageChips.map((s) => (
-            <span key={s} className={`${card.chip} ${mon.stages[s] > 0 ? card.up : card.down}`}>
-              {s === 'attack' ? 'Atk' : 'Def'} {mon.stages[s] > 0 ? '+' : ''}
-              {mon.stages[s]}
-            </span>
-          ))}
-          {/* §7.3.7 Battle Hardened — the shield it opened the fight behind, drawn on the bar too. */}
-          {mon.shield > 0 && (
-            <Tipped tip={shieldTip(mon.shield)} className={`${card.chip} ${card.info}`} data-testid="unit-shield">
-              {SHIELD_LABEL} {mon.shield}
-            </Tipped>
-          )}
-          {mon.traumaStacks > 0 && (
-            <Tipped tip={traumaTip(mon.traumaStacks, mon.maxHp)} className={`${card.chip} ${card.warn}`}>
-              Trauma ×{mon.traumaStacks}
-            </Tipped>
-          )}
-        </span>
-      )}
     </button>
   );
 }

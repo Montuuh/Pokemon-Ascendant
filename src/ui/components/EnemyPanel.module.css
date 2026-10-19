@@ -241,6 +241,48 @@
   padding-right: calc(var(--sp-8) + var(--sp-2));
 }
 
+/* The intent chip and, on a short stage, the badges folded onto its end. */
+.chipLine {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+/* §5.6.1 / §5.5.1 — a bench foe's second action and next plan, folded to badges: shown only on a short stage, where the
+   full lines would make the group's formation taller than the stage (the stage is a size container). The lead keeps
+   its lines: it stands alone in its column. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--sp-2);
+  min-height: 22px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.badgeAlso {
+  border: 2px dashed var(--accent-negative);
+}
+.badgeBroken {
+  text-decoration: line-through;
+  color: var(--ink-secondary);
+}
+.compactOnly {
+  display: none;
+}
+@container (max-height: 680px) {
+  .benchUnit .compactOnly {
+    display: inline-flex;
+  }
+  .benchUnit .fullOnly {
+    display: none;
+  }
+}
+
 /* §5.6.1 — the second action of a Pokémon that acts twice: the same chip, marked, and a step quieter. */
 .intentSecond {
   border-style: dashed;

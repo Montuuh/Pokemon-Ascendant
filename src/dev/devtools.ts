@@ -55,6 +55,8 @@ export interface AscendantDevTools {
   hand: (moveIds: string[]) => void;
   /** §9.9.2 — debug: the first enemy's next intent made this move (a Cleave when it hits the whole team); `all`, every enemy's. */
   intend: (moveId: string, all?: boolean) => void;
+  /** Debug: every foe acts twice and shows its next plan (Trainer's Instinct) — the tallest intent stacks there are. */
+  crowd: () => void;
   /** Debug: set one combatant's HP — `lead`, or a uid (`p0`, `e1`) — to see a knockout coming. */
   setHp: (who: string, hp: number) => void;
   replay: () => sim.RecordedCombat | null;
@@ -198,6 +200,20 @@ export function installDevTools(): void {
           for (const e of all ? d.enemies : [d.enemies[0]!]) {
             e.moveIds = [moveId];
             e.intent = move.power > 0 ? { kind: move.targeting === 'cleave' ? 'cleave' : 'attack', moveId, targetSlot: move.targeting === 'cleave' ? null : 'lead', hidden: false } : { kind: 'status', moveId, targetSlot: 'lead', hidden: false };
+          }
+        }),
+      });
+    },
+    crowd: () => {
+      const s = combat().state;
+      if (!s) return;
+      useCombatStore.setState({
+        state: produce(s, (d) => {
+          for (const e of d.enemies) {
+            if (!e.intent) continue;
+            e.acts = 2;
+            e.second = { ...e.intent };
+            e.next = { intent: { ...e.intent }, phase: 1 };
           }
         }),
       });

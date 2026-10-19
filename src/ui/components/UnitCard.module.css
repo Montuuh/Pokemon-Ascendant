@@ -1,5 +1,6 @@
 /* §9.2.1 (v0.9.16) — a Pokémon on the field, as a card in the move card's grammar: a frame; a dark head (types, name,
-   level); a window lit in its first type with the animated sprite standing in it; its HP; a row of what else it carries.
+   level); a window lit in its first type with the animated sprite standing in it, what else it carries as chips on the
+   window's corner; its HP.
    Yours and the enemy's share this anatomy; the frame says whose Lead it is. Every card is one size — the Lead is told
    by its frame and crown, not its scale — and that size follows the stage's height (`--unit-card`, on the stage):
    smaller at 720 p, larger at 1080 p (the user's call). */
@@ -128,11 +129,38 @@
   white-space: nowrap;
   margin-right: auto;
 }
+/* Stages, a shield, Armour, Trauma: a column on the window's top-left corner, over the sky a sprite anchored at its
+   feet leaves free — never a row of their own, so every card keeps one size and a formation never outgrows its stage. */
 .chips {
+  position: absolute;
+  top: var(--sp-1);
+  left: var(--sp-1);
+  z-index: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-  padding: 0 2px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+/* Each chip's wrapper hugs its chip (a line box would add the card's line height to every row). */
+.chips > span {
+  display: flex;
+}
+/* Over a picture a chip keeps a dark edge, so a green Atk+ on a Grass window still reads as a chip (D5). */
+.chips .chip,
+.chips > span > span {
+  box-shadow: 0 0 0 1px var(--ink-on-accent);
+}
+/* On a short stage (720 p) two rows at most: the first chip, and "+N" whose bubble names the rest. */
+.chips > .chipMore {
+  display: none;
+}
+@container (max-height: 680px) {
+  .chips > .chipFolds {
+    display: none;
+  }
+  .chips > .chipMore {
+    display: inline-block;
+  }
 }
 .chip {
   font-size: var(--type-micro);

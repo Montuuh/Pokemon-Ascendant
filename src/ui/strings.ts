@@ -50,6 +50,19 @@ export const ARMOUR_LABEL = 'Armour';
 /** §7.3.7 Battle Hardened — one of yours behind its shield. */
 export const SHIELD_LABEL = 'Shield';
 
+/** §9.2.2.2 — a card's chips folded on a short stage: the "+N" bubble's title. */
+export const UNIT_CHIPS_TEXT = {
+  more: (n: number) => `${n} more`,
+  sturdy: 'Sturdy',
+  sturdyBody: 'Survives one hit that would have knocked it out, at 1 HP. Once per fight.',
+  armourBody: (n: number) => `takes the next ${n} damage before its HP; a Fire move shatters it.`,
+  shieldBody: (n: number) => `takes the next ${n} damage before its HP; it does not come back.`,
+  traumaBody: 'its max HP is lowered until treated.',
+};
+
+/** §5.6.1 / §5.5.1 — a bench foe's second action and next plan, folded to badges on its chip on a short stage. */
+export const INTENT_BADGE = { also: 'Also', then: 'Then' };
+
 /** §9.2.2.4 — a card that costs more AP than is left, said on its top edge. */
 export const NO_AP_LABEL = 'Not enough AP';
 
@@ -397,6 +410,8 @@ export const DOUBLE_ACTOR_HINT =
  */
 export const OBJECTIVE_TEXT = {
   fleeLabel: 'Flees',
+  /** A runner's count, in words, for a folded chip's bubble. */
+  runnerChip: (turns: number) => `Gets away in ${turns}`,
   holdLabel: 'Hold out',
   /** The same count for both races: the turns left, this one included, and the last one said as such. */
   count: (left: number) => (left <= 1 ? 'last turn' : `${left} turns`),
