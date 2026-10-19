@@ -47,7 +47,7 @@
   top: calc(100% + var(--sp-2));
   left: 0;
   right: 0;
-  max-height: min(320px, 50vh);
+  max-height: min(420px, 60vh);
   z-index: var(--z-overlay);
   background: color-mix(in srgb, var(--surface-0) 92%, black);
   border: 1px solid var(--border-strong);
@@ -64,7 +64,19 @@
   display: none;
 }
 .line {
-  padding: 1px 0;
+  padding: 1px 0 1px var(--sp-2);
+  border-left: 2px solid transparent;
+}
+/* Who the line is about: yours on a gold edge, the foe's on a red one; the rest plain. */
+.line.player {
+  border-left-color: color-mix(in srgb, var(--accent-action) 60%, transparent);
+}
+.line.enemy {
+  border-left-color: color-mix(in srgb, var(--accent-negative) 60%, transparent);
+}
+.line b {
+  color: var(--ink-primary);
+  font-weight: 800;
 }
 .player {
   color: color-mix(in srgb, var(--accent-action) 60%, var(--brand-cream));
@@ -76,6 +88,15 @@
 .system {
   color: var(--ink-secondary);
 }
+/* Each turn under its own header, held at the top while its lines scroll under it. */
+.line:has(.turn) {
+  position: sticky;
+  top: calc(var(--sp-2) * -1);
+  z-index: 1;
+  padding: 0;
+  border-left: 0;
+  background: color-mix(in srgb, var(--surface-0) 92%, black);
+}
 .turn {
   display: block;
   text-align: center;
@@ -84,5 +105,6 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: var(--type-micro);
-  margin-top: 4px;
+  padding-top: 4px;
+  border-bottom: 1px solid var(--border-subtle);
 }

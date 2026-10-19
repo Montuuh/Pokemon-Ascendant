@@ -22,7 +22,10 @@
   padding: 0 var(--sp-4);
   background: var(--surface-1);
   border-bottom: 1px solid var(--border-subtle);
-  z-index: 2;
+  /* Over the stage: the log drops down across the field, over its chips and arrows (the stage is its own stacking
+     context — a size container — so this places the whole bar, the log with it, above the field). */
+  position: relative;
+  z-index: var(--z-hud);
 }
 .chips {
   display: flex;

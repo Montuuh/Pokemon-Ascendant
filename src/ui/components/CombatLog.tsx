@@ -3,11 +3,17 @@ import { IconChevronDown, IconListDetails } from '@tabler/icons-react';
 import type { LogEntry } from '@/sim';
 import styles from './CombatLog.module.css';
 
+/** A line's numbers in bold, so a fight read back is read by its numbers: what a hit took, what is left. */
+function withNumbers(text: string) {
+  const parts = text.split(/(\d+(?:\/\d+)?)/);
+  return parts.map((p, i) => (i % 2 ? <b key={i}>{p}</b> : p));
+}
+
 /**
  * §9.2.2.1 — the combat log, in the top bar: the last thing that happened on one line, the whole fight one click
  * away. The arena is for the fight; the sr-only announcer still says every line aloud.
  */
-export function CombatLog({ log, max = 60 }: { log: LogEntry[]; max?: number }) {
+export function CombatLog({ log, max = 200 }: { log: LogEntry[]; max?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -44,7 +50,7 @@ export function CombatLog({ log, max = 60 }: { log: LogEntry[]; max?: number }) 
       <div className={styles.log} ref={ref} data-testid="combat-log" hidden={!open}>
         {lines.map((l, i) => (
           <div key={`${l.turn}-${i}-${l.text}`} className={`${styles.line} ${styles[l.category]}`}>
-            {l.category === 'turn' ? <span className={styles.turn}>{l.text}</span> : l.text}
+            {l.category === 'turn' ? <span className={styles.turn}>{l.text}</span> : withNumbers(l.text)}
           </div>
         ))}
       </div>

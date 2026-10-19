@@ -173,6 +173,13 @@ the last thing that happened on one line, the whole fight dropping down on a cli
 floor, and fell off the stage at 720 p; the arena is for the fight) — and, while a card or an item waits for its
 target, **the gold hint** in its place ("Click an enemy to aim it…", Cancel): on the field it lay across the very
 Pokémon being aimed at (v0.9.16). Right: the turn and the deck/discard counts.
+
+**The log reads the fight back** (the user's note, 2026-10-19: it said who used what, never what it did). Every hit
+says what it took and what is left — `Spearow took 17 (10/55 HP left).`, a multi-hit move its hits counted — and a
+foe's hit says how it landed (a critical hit, super or not very effective, or that it did not affect its target), as a
+card of yours already says on the line before its hit. The drop-down holds the whole fight (200 lines), each turn
+under its own header held at the top while its lines scroll, your lines on a gold edge and the foe's on a red one,
+every number in bold; it drops over the field, its chips and its arrows (the top bar sits above the stage).
 Each chip shows its full text on hover or focus.
 
 ### §9.2.2.2 Player squad

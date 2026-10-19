@@ -142,13 +142,15 @@ export function strike(
   if (shatterIce(state, target, move.type)) log(state, 'system', `The fire shatters ${target.name}'s ice armour.`);
 
   let dealt = 0;
+  let landed = 1;
   if (hits > 1) {
     // Deterministic, and the printed power is the total: five hits of power/5, each floored on its own.
     const per = Math.max(1, Math.floor(bd.final / hits));
+    landed = 0;
     for (let i = 0; i < hits && target.hp > 0; i++) {
       dealt += dealDamage(state, ctx, attacker.uid, target, per, { crit: bd.isCrit, effectiveness: effectivenessLabel(bd.typeMultiplier), cause: 'move' });
+      landed++;
     }
-    log(state, 'system', `Hit ${hits} times for ${dealt}.`);
   } else {
     dealt = dealDamage(state, ctx, attacker.uid, target, bd.final, {
       crit: bd.isCrit,
@@ -157,6 +159,7 @@ export function strike(
       cleave: move.targeting === 'cleave',
     });
   }
+  logHit(state, attacker, target, bd, dealt, landed);
 
   // §5.10.3 — the chill is spent by the attack it blunted.
   if (attacker.chill !== undefined) delete attacker.chill;
@@ -427,6 +430,23 @@ export function applyReactiveStage(state: CombatState, fx: ReactiveStage, focus:
         ? state.player.team.filter((m) => m.uid !== (focus ?? leadMon)?.uid)
         : state.player.team;
   for (const m of targets) if (m && m.hp > 0) changeStage(state, m, fx.stat, fx.stages);
+}
+
+/**
+ * §9.2.2.1 — a hit, read back (the user's note, 2026-10-19: the log said who used what, never what it did): what it took
+ * and what is left, the hits of a multi-hit move counted. A foe's hit carries its own commentary — critical, super or
+ * not very effective — which a card of yours has already said on the line before it (`reducer`).
+ */
+function logHit(state: CombatState, attacker: Combatant, target: Combatant, bd: DamageBreakdown, dealt: number, landed: number): void {
+  const mine = isPlayers(state, attacker);
+  if (!mine && bd.typeMultiplier === 0) {
+    log(state, 'enemy', `It doesn't affect ${target.name}…`);
+    return;
+  }
+  const notes = mine ? [] : [bd.isCrit ? 'a critical hit' : null, bd.typeMultiplier > 1 ? 'super effective' : bd.typeMultiplier > 0 && bd.typeMultiplier < 1 ? 'not very effective' : null].filter((n): n is string => !!n);
+  const times = landed > 1 ? ` in ${landed} hits` : '';
+  const left = target.hp > 0 ? ` (${target.hp}/${target.maxHp} HP left)` : '';
+  log(state, mine ? 'player' : 'enemy', `${target.name} took ${dealt}${times}${notes.length ? ` — ${notes.join(', ')}` : ''}${left}.`);
 }
 
 export function onFaint(state: CombatState, ctx: RunCtx, c: Combatant): void {
