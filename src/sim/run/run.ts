@@ -20,7 +20,7 @@ import { runnerById } from './objectives';
 import { rollTradeOffers, tradeLevel, tradeRefusal } from './trader';
 import { VICTORY_ROAD, generateVictoryRoad, perfectClearBadge, trainingOptions } from './victoryRoad';
 import { ACTIVE_TEAM, fillTeam, hasPlaceFor, placesTaken } from './legendaries';
-import { LEAGUE, generateLeague, microRestPct } from './league';
+import { generateLeague, microRestPct } from './league';
 import { BLACK_MARKET, candyPrice, fencePrice, rollBlackMarket, showcaseLevel, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
