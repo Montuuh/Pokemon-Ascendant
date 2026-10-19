@@ -715,7 +715,8 @@ export const TRAINERS_R3: TrainerRoster[] = [
 export const ELITE_R3: EliteDef = {
   id: 'elite-giovanni-r3',
   name: 'Boss Giovanni',
-  sprite: 'giovanni',
+  // The Team Rocket boss, in its suit (the user's note, 2026-10-19) — apart from the Ground Gym's Leader Giovanni.
+  sprite: 'giovanni-rocket',
   line: 'So you are the one who keeps getting in Team Rocket’s way. I will end that here.',
   team: [
     { species: 'dugtrio', level: 32, phaseCount: 2 },

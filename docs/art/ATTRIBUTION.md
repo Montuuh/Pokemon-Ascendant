@@ -53,8 +53,8 @@ Add a row for every third-party asset you bring in (game-icons.net entries need 
 `lass`, `bug-catcher`, `hiker`, `swimmer`, `camper`, `picnicker`, `acetrainer`, and v0.7.3's `scientist` as the
 Engineer, `rocketgrunt` and `blackbelt` as the Karate King, and v0.7.4's `hexmaniac` — Showdown's FireRed/LeafGreen
 `hexmaniac-gen3`), the twelve Gym Leaders (`brock`, `misty`, `bugsy`, `whitney`; `blaine`, `erika`, `ltsurge`,
-`koga`; `sabrina`, `giovanni` — also the Region 3 Elite —, `kiyo` — Showdown's `blackbelt-gen4` — and `lorelei` —
-`lorelei-gen3`), the route's two services (`nurse`, and
+`koga`; `sabrina`, `giovanni`, `kiyo` — Showdown's `blackbelt-gen4` — and `lorelei` —
+`lorelei-gen3`), Region 3's Elite Boss Giovanni as `giovanni-rocket` (Showdown's `giovanni-lgpe`, 2026-10-19), the route's two services (`nurse`, and
 `merchant` — the Showdown `backpacker` — and, from v0.9.19, the route Trader `pokefan`), and v0.7.7's Black Market dealers (`rocketgruntf` the Trader, `gambler`,
 and `archer` the Executive; the Fence is `rocketgrunt`), and v0.9.22's League (`bruno`, `agatha` — Showdown's `agatha-gen3` —, `will`, `lance`, and `blue` the Champion) — fetched by `npm run art:trainers`. Same terms as the battle
 sprites: © Nintendo / Creatures / GAME FREAK, community sprite work, fan use only.

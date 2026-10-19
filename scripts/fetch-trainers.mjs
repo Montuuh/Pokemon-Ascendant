@@ -45,6 +45,9 @@ const TRAINERS = {
   // keeps him apart from Region 2's Karate King on the plain `blackbelt`.
   hexmaniac: 'hexmaniac-gen3',
   giovanni: 'giovanni',
+  // 2026-10-19 (the user's note) — Boss Giovanni, Region 3's Elite, as the Team Rocket boss: the Let's Go suit, black
+  // and red, apart from the Gym Leader's coat.
+  'giovanni-rocket': 'giovanni-lgpe',
   sabrina: 'sabrina',
   lorelei: 'lorelei-gen3',
   kiyo: 'blackbelt-gen4',
