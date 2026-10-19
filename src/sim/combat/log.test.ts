@@ -29,3 +29,15 @@ describe('The combat log — §9.2.2.1', () => {
     expect(lines.some((l) => l.startsWith(`${lead.name} took `) && l.endsWith('HP left).'))).toBe(true);
   });
 });
+
+describe('The combat log, two of a name — §9.2.2.1', () => {
+  it('TwoFoesOfOneName_AreToldApartByTheirPlace', () => {
+    const s = tweak(withHand(startFixture('group-wild-flock'), ['ember']), (d) => {
+      d.player.ap = 3;
+    });
+    const twins = s.enemies.filter((e) => s.enemies.filter((x) => x.name === e.name).length > 1);
+    expect(twins.length).toBeGreaterThan(1);
+    const after = dispatch(s, { type: 'play-card', cardId: handCard(s, 'ember').id, targetUid: twins[0]!.uid });
+    expect(linesSince(s, after).some((l) => l.startsWith(`${twins[0]!.name} (`) && l.includes(' took '))).toBe(true);
+  });
+});

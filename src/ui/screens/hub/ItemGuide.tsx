@@ -9,7 +9,7 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { MoveChip } from '@/ui/components/MoveChip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { RarityGem, type GemRarity } from '@/ui/components/RarityGem';
-import { GUIDE_TEXT } from '@/ui/strings';
+import { GUIDE_TEXT, RARITY_LABEL } from '@/ui/strings';
 import { guidePriceTip, relicTierNoteTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import styles from './ItemGuide.module.css';
@@ -41,7 +41,7 @@ function rowsOf(kind: PricedKind): Row[] {
   const content = getContent();
   switch (kind) {
     case 'relic':
-      return [...content.allRelics()].sort((a, b) => RARITY_ORDER.indexOf(a.rarity) - RARITY_ORDER.indexOf(b.rarity)).map((r) => ({ id: r.id, name: r.name, group: cap(r.rarity), icon: itemIcon(r.id), rarity: r.rarity }));
+      return [...content.allRelics()].sort((a, b) => RARITY_ORDER.indexOf(a.rarity) - RARITY_ORDER.indexOf(b.rarity)).map((r) => ({ id: r.id, name: r.name, group: RARITY_LABEL[r.rarity], icon: itemIcon(r.id), rarity: r.rarity }));
     case 'consumable':
       return [...content.allConsumables()].sort((a, b) => a.tier - b.tier).map((c) => ({ id: c.id, name: c.name, group: GUIDE_TEXT.tier(c.tier), icon: itemIcon(c.id) }));
     case 'held-item':
@@ -116,7 +116,6 @@ export function ItemGuide() {
                                 )}
                                 <span className={styles.tileName}>{r.name}</span>
                                 {r.type && <TypeBadge type={r.type} size={14} mode="attack" />}
-                                {r.rarity && <RarityGem rarity={r.rarity as GemRarity} size={14} className={styles.tileGem} />}
                                 {locked && <IconLock size={14} className={styles.lock} role="img" aria-label={GUIDE_TEXT.locked} />}
                               </button>
                             </li>
@@ -153,7 +152,7 @@ function Detail({ kind, id, icon }: { kind: PricedKind; id: string; icon: string
     name = r.name;
     body = r.description;
     pending = r.pending;
-    meta.push(cap(r.rarity), <Tipped key="tier" as="span" tip={relicTierNoteTip(r.tier ?? 1)} className={styles.metaTip}>{GUIDE_TEXT.relicTier(r.tier ?? 1)}</Tipped>);
+    meta.push(RARITY_LABEL[r.rarity], <Tipped key="tier" as="span" tip={relicTierNoteTip(r.tier ?? 1)} className={styles.metaTip}>{GUIDE_TEXT.relicTier(r.tier ?? 1)}</Tipped>);
     facts.push([GUIDE_TEXT.categories, r.categories.map(cap).join(' · ')]);
     const prog = discoveryProgress(account, r);
     facts.push([GUIDE_TEXT.yours, relicUnlocked(account, r) ? GUIDE_TEXT.inPool : r.tier === 3 ? GUIDE_TEXT.mastery(MART_PRICE.mastery) : prog ? GUIDE_TEXT.discover(prog.text, prog.have, prog.goal) : GUIDE_TEXT.locked]);

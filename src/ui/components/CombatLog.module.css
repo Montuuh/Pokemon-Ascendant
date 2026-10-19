@@ -71,7 +71,8 @@
 .line.player {
   border-left-color: color-mix(in srgb, var(--accent-action) 60%, transparent);
 }
-.line.enemy {
+.line.enemy,
+.line.intent {
   border-left-color: color-mix(in srgb, var(--accent-negative) 60%, transparent);
 }
 .line b {
@@ -105,6 +106,6 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: var(--type-micro);
-  padding-top: 4px;
+  padding-top: var(--sp-1);
   border-bottom: 1px solid var(--border-subtle);
 }

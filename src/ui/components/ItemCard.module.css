@@ -19,7 +19,7 @@
 
 /* §7.3.1 — the left edge is the rarity band, the picture's ground is lit in it and its gem sits on the corner. Drop
    weight, not power: an Uncommon is rarer, not stronger. A card with no rarity (a consumable, a TM) keeps the gold. */
-.card { border-left-color: var(--border-strong); }
+.card { border-left-color: var(--border-subtle); }
 .card[data-rarity='common'] { --rarity: var(--rarity-common); }
 .card[data-rarity='uncommon'] { --rarity: var(--rarity-uncommon); }
 .card[data-rarity='rare'] { --rarity: var(--rarity-rare); }
@@ -35,17 +35,10 @@
 }
 .gem {
   position: absolute;
-  top: -7px;
-  left: -7px;
+  top: calc(var(--sp-2) * -1);
+  left: calc(var(--sp-2) * -1);
 }
-/* The rarity's name under the item's, in quiet ink (the colour is the gem's and the edge's, never the text's). */
-.rarity {
-  color: var(--ink-muted);
-  font-size: var(--type-micro);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
+
 
 .interactive {
   cursor: pointer;
@@ -54,7 +47,7 @@
 .interactive:hover:not(:disabled) {
   transform: translateY(-3px);
   border-color: var(--rarity, var(--border-strong));
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--rarity, var(--border-strong)) 45%, transparent), 0 8px 18px rgba(58, 46, 34, 0.2);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--rarity, var(--border-strong)) 45%, transparent), 0 8px 18px color-mix(in srgb, var(--ink-on-accent) 20%, transparent);
 }
 .interactive:focus-visible {
   outline: 3px solid var(--brand-blue);
@@ -71,6 +64,13 @@
 .selected {
   border-color: var(--accent-action);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-action) 40%, transparent);
+}
+
+/* The pick outranks the rarity: gold, whatever the rarity's ring, hovered or not. */
+.card.selected,
+.card.selected:hover:not(:disabled) {
+  border-color: var(--accent-action);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-action) 40%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--rarity, transparent) 55%, transparent);
 }
 
 .dim { opacity: 0.5; }

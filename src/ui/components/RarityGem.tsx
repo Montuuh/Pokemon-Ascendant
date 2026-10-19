@@ -27,7 +27,6 @@ export function RarityGem({ rarity, size = 14, label = false, className }: { rar
       viewBox="0 0 12 12"
       shapeRendering="crispEdges"
       {...(label ? { role: 'img', 'aria-label': RARITY_LABEL[rarity] } : { 'aria-hidden': true })}
-      data-testid={`gem-${rarity}`}
     >
       <polygon className={styles.body} points={s.body} />
       <polygon className={styles.light} points={s.light} />

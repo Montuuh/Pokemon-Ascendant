@@ -1,4 +1,5 @@
-/* §7.3.1 — the rarity gem: the rarity's own colour, a dark outline, a cream facet (D9: flat, crisp, ours). */
+/* §7.3.1 — the rarity gem: the rarity's own colour, an outline dark on both themes (the shape is the colour-blind
+   channel, so its edge must read — D5), a cream facet (D9: flat, crisp, ours). */
 .gem {
   flex: none;
   overflow: visible;
@@ -9,7 +10,7 @@
 .gem[data-rarity='legendary'] { --gem: var(--rarity-legendary); }
 .body {
   fill: var(--gem);
-  stroke: var(--surface-sunken);
+  stroke: var(--ink-on-accent);
   stroke-width: 1;
   stroke-linejoin: miter;
   paint-order: stroke fill;

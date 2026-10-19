@@ -97,7 +97,6 @@ export function ItemCard(props: ItemCardProps) {
       </span>
       <span className={styles.body}>
         <span className={`${styles.name} display`}>{name}</span>
-        {rarity && <span className={styles.rarity}>{RARITY_LABEL[rarity]}</span>}
         <span className={styles.desc}>{description}</span>
         {pending && (
           <span className={styles.pending}>

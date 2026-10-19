@@ -177,7 +177,7 @@ the single easiest mistake to make in this system.
 square**, Uncommon a **blue pentagon**, Rare a **red star**, Legendary a **gold crown** (`RarityGem`, the
 `--rarity-*` tokens). The gem sits on the corner of the relic's picture on every card (the offers, the drawer, the
 shops, the Black Market, the Item Guide), the card's left edge and the picture's ground take the rarity's colour,
-the rarity's name sits under the relic's in quiet ink, and the hover rings the card in it; a Legendary keeps a second
+its name is in the card's bubble, and the hover rings the card in it (a picked card keeps its gold ring); a Legendary keeps a second
 gold ring. The shape is there for whoever cannot tell the colours apart (D5). *Why:* until then Common wore the
 border's gold, so a Common and a Legendary looked alike.
 

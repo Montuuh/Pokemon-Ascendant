@@ -29,6 +29,7 @@ import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { effectiveAttack, effectiveDefense } from './stats';
 import { applyStatus, cureStatus } from './status';
 import { effectivenessLabel } from './typeChart';
+import { enemySlotLabel } from './slots';
 import { fieldBlocksStatus, fieldDamageMultiplier, fieldsSuppressed, isGrounded, toxicSpikesSpare } from './fields';
 import { arenaBlocksStage, arenaBlocksStatus, arenaDamageMultiplier, playfulTakes, rekindles } from './arenaRules';
 import { markHurt, ruleDamageMultiplier, ruleEscalatesPoison, ruleHitCap, ruleMeltsDefence, shatterIce } from './gymRules';
@@ -141,6 +142,8 @@ export function strike(
   // §5.9.5 Ice Armour — a Fire move shatters the shield whole before it lands.
   if (shatterIce(state, target, move.type)) log(state, 'system', `The fire shatters ${target.name}'s ice armour.`);
 
+  // Named before the hit: a foe it knocks out has left the field by the time the line is written.
+  const who = logName(state, target);
   let dealt = 0;
   let landed = 1;
   if (hits > 1) {
@@ -159,7 +162,7 @@ export function strike(
       cleave: move.targeting === 'cleave',
     });
   }
-  logHit(state, attacker, target, bd, dealt, landed);
+  logHit(state, attacker, target, who, bd, dealt, landed);
 
   // §5.10.3 — the chill is spent by the attack it blunted.
   if (attacker.chill !== undefined) delete attacker.chill;
@@ -437,16 +440,23 @@ export function applyReactiveStage(state: CombatState, fx: ReactiveStage, focus:
  * and what is left, the hits of a multi-hit move counted. A foe's hit carries its own commentary — critical, super or
  * not very effective — which a card of yours has already said on the line before it (`reducer`).
  */
-function logHit(state: CombatState, attacker: Combatant, target: Combatant, bd: DamageBreakdown, dealt: number, landed: number): void {
+function logHit(state: CombatState, attacker: Combatant, target: Combatant, who: string, bd: DamageBreakdown, dealt: number, landed: number): void {
   const mine = isPlayers(state, attacker);
   if (!mine && bd.typeMultiplier === 0) {
-    log(state, 'enemy', `It doesn't affect ${target.name}…`);
+    log(state, 'enemy', `It doesn't affect ${who}…`);
     return;
   }
   const notes = mine ? [] : [bd.isCrit ? 'a critical hit' : null, bd.typeMultiplier > 1 ? 'super effective' : bd.typeMultiplier > 0 && bd.typeMultiplier < 1 ? 'not very effective' : null].filter((n): n is string => !!n);
   const times = landed > 1 ? ` in ${landed} hits` : '';
   const left = target.hp > 0 ? ` (${target.hp}/${target.maxHp} HP left)` : '';
-  log(state, mine ? 'player' : 'enemy', `${target.name} took ${dealt}${times}${notes.length ? ` — ${notes.join(', ')}` : ''}${left}.`);
+  log(state, mine ? 'player' : 'enemy', `${who} took ${dealt}${times}${notes.length ? ` — ${notes.join(', ')}` : ''}${left}.`);
+}
+
+/** A foe's name in the log, with its place when another foe on the field shares it (two Spearow). */
+function logName(state: CombatState, c: Combatant): string {
+  const foe = state.enemies.find((e) => e.uid === c.uid);
+  if (!foe || state.enemies.filter((e) => e.name === c.name).length < 2) return c.name;
+  return `${c.name} (${enemySlotLabel(state, foe)})`;
 }
 
 export function onFaint(state: CombatState, ctx: RunCtx, c: Combatant): void {

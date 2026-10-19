@@ -50,13 +50,13 @@ export const ARMOUR_LABEL = 'Armour';
 /** §7.3.7 Battle Hardened — one of yours behind its shield. */
 export const SHIELD_LABEL = 'Shield';
 
-/** A locked card's overlay: one word for why, and a few for how long (the whole sentence is in its tooltip). */
 /** §9.2.2.4 — a card that costs more AP than is left, said on its top edge. */
 export const NO_AP_LABEL = 'Not enough AP';
 
 /** §7.3.1 — a relic's rarity, by name. */
 export const RARITY_LABEL: Record<'common' | 'uncommon' | 'rare' | 'legendary', string> = { common: 'Common', uncommon: 'Uncommon', rare: 'Rare', legendary: 'Legendary' };
 
+/** A locked card's overlay: one word for why, and a few for how long (the whole sentence is in its tooltip). */
 export const LOCK_LABEL: Partial<Record<RejectReason, { title: string; sub: string }>> = {
   'melee-needs-lead': { title: 'Melee', sub: 'needs Lead' },
   'owner-asleep': { title: 'Asleep', sub: 'this turn' },
