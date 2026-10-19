@@ -58,8 +58,9 @@ export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fro
     let t = EVO_MS.intro;
     // §9.5.3 / §9.5.4 — the evolution's own music under the whole scene (the user's note, 2026-10-19), the light's rise
     // as the sprite whitens, and the fanfare as the new Pokémon stands in its colours, the music hushed for it.
+    // On the cutscene's own timers, so a skip — or a remount — cancels a sound not yet played.
     music.setScene('evolution');
-    playSfx('evolve', t / 1000);
+    at(t, () => playSfx('evolve'));
     at(t, () => setPhase('whiten'));
     t += EVO_MS.whiten;
     at(t, () => setPhase('trade'));
@@ -73,8 +74,10 @@ export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fro
     at(t, () => setPhase('bloom'));
     t += EVO_MS.bloom;
     at(t, () => setPhase('reveal'));
-    at(t, () => music.setScene('hush'));
-    playSfx('evolved', t / 1000);
+    at(t, () => {
+      music.setScene('hush');
+      playSfx('evolved');
+    });
     t += EVO_MS.reveal + EVO_MS.hold;
     at(t, finish);
     return () => {
