@@ -3,7 +3,7 @@ import type { CardPlayability } from '@/sim';
 import { iconOf, moveArt } from '@/ui/art';
 import { TypeLabel } from './TypeBadge';
 import { describeMove } from '@/ui/moveText';
-import { LOCK_LABEL, REJECT_TEXT } from '@/ui/strings';
+import { LOCK_LABEL, REJECT_TEXT, NO_AP_LABEL } from '@/ui/strings';
 import { moveTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
 import styles from './MoveCard.module.css';
@@ -101,6 +101,13 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         .filter(Boolean)
         .join('. ')}
     >
+      {/* Not enough AP: said on the card's top edge, over the hand, where the eye is when it reaches for it. */}
+      {state === 'no-ap' && (
+        <span className={styles.apShort} data-testid="card-no-ap">
+          <IconAlertTriangle size={12} stroke={2.6} />
+          {NO_AP_LABEL}
+        </span>
+      )}
       <span className={styles.head}>
         {/* The cost as a gem: what this card costs now. A cost changed today (Paralysis, a rule) wears a warning ring. */}
         <span className={`${styles.cost} display tabular`} data-changed={costChanged || undefined}>

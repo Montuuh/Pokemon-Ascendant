@@ -162,6 +162,28 @@ describe('The honest intent — §9.2.5', () => {
     }
   });
 
+  it('Forecast_AHitOnALeadAlreadyKnockedOut_IsWasted_AndSaysWhatItWouldHaveTaken', () => {
+    // Every enemy aims at the Lead, the first knocks it out: the rest hit nothing (§3.2.5), and the forecast keeps the
+    // number each would have taken, so the chip reads "wasted" rather than "0".
+    const s = tweak(group(), (d) => {
+      d.player.team[d.player.leadIndex]!.hp = 1;
+      for (const e of d.enemies) e.intent = { kind: 'attack', moveId: e.moveIds.find((m) => ctx.content.move(m).power > 0) ?? 'tackle', targetSlot: 'lead', hidden: false };
+    });
+    const f = forecastTurn(s, ctx);
+    const lead = s.player.team[s.player.leadIndex]!.uid;
+    const order = resolutionOrder(s);
+    expect(f.byAction[`${order[0]!.uid}#0`]!.hits[0]).toMatchObject({ targetUid: lead, ko: true });
+    for (const later of order.slice(1)) {
+      expect(f.byAction[`${later.uid}#0`]!.hits).toHaveLength(0);
+      expect(f.moot[`${later.uid}#0`]).toMatchObject({ targetUid: lead });
+      expect(f.moot[`${later.uid}#0`]!.amount).toBeGreaterThan(0);
+    }
+    // And the real turn agrees: nothing after the knockout lands on it.
+    const after = dispatch(s, { type: 'end-turn' });
+    const onLead = after.events.slice(s.events.length).filter((e) => e.t === 'damage' && e.targetUid === lead);
+    expect(onLead).toHaveLength(1);
+  });
+
   it('PredictIntentDamage_ReadsTheForecast_NotTheBareFormula', () => {
     // A Barrier-style flat reduction lives after the formula; the old predictor left it out.
     // The Pidgey is made to open with Gust: the question is the number, not which card it drew.

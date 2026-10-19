@@ -22,7 +22,7 @@ import { useCombatSfx } from '@/ui/audio/useAudio';
 import { MetronomeChip } from '@/ui/components/MetronomeChip';
 import { ObjectiveChip } from '@/ui/components/ObjectiveChip';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
-import { fxTimings, useCombatFx, type SlotBox, type SpriteSlot } from '@/ui/hooks/useCombatFx';
+import { FX_MS, fxTimings, useCombatFx, type SlotBox, type SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { MoveFxLayer } from '@/ui/components/MoveFx';
 import { FloatingNumbers } from '@/ui/components/FloatingNumbers';
 import { motionTimings } from '@/ui/moveMotion';
@@ -114,11 +114,37 @@ export function CombatScreen() {
     };
   }, [stageEl, state]);
 
+  // §3.3.1 — a swap, drawn as the cards trading places (the user's note, 2026-10-19): each of your cards that changed
+  // place since the last layout glides from where it stood to where it stands now, the Pokémon in it — a FLIP on the
+  // card itself (`translate` and `scale`, apart from its own `transform`). Only a change of place moves a card.
+  const units = useRef<{ key: number; at: Map<string, { rect: DOMRect; slot: string }> } | null>(null);
+  useLayoutEffect(() => {
+    const squad = stageEl?.querySelector('[data-testid="squad"]');
+    if (!squad) return;
+    const els = [...squad.querySelectorAll<HTMLElement>('[data-unit-uid]')];
+    const now = new Map<string, { rect: DOMRect; slot: string }>();
+    for (const el of els) {
+      for (const a of el.getAnimations()) if (a.id === 'unit-swap') a.finish();
+      now.set(el.dataset.unitUid!, { rect: el.getBoundingClientRect(), slot: el.dataset.arrowCard ?? '' });
+    }
+    const prev = units.current;
+    units.current = { key: combatKey, at: now };
+    if (!animate || !prev || prev.key !== combatKey) return;
+    for (const el of els) {
+      const was = prev.at.get(el.dataset.unitUid!);
+      const is = now.get(el.dataset.unitUid!)!;
+      if (!was || was.slot === is.slot || !is.rect.width) continue;
+      const dx = was.rect.left + was.rect.width / 2 - (is.rect.left + is.rect.width / 2);
+      const dy = was.rect.top + was.rect.height / 2 - (is.rect.top + is.rect.height / 2);
+      el.animate([{ translate: `${dx}px ${dy}px`, scale: `${was.rect.width / is.rect.width}`, zIndex: 5 }, { translate: '0 0', scale: '1', zIndex: 5 }], { duration: FX_MS.swap, easing: 'cubic-bezier(0.3, 0.7, 0.3, 1)', id: 'unit-swap' });
+    }
+  }, [state, stageEl, combatKey, animate]);
+
   const plays = useMemo(() => (state ? state.player.hand.map((c) => cardPlayability(state, c.id, ctx)!) : []), [state, ctx]);
   const consumablePlays = useMemo(() => (state ? state.player.consumables.hand.map((c) => consumablePlayability(state, c.id, ctx)!) : []), [state, ctx]);
   const swaps = useMemo(() => (state ? swapOptions(state) : []), [state]);
   // §9.2.5 — this turn's Resolution run dry: the numbers on the chips and on the portraits are its numbers.
-  const forecast = useMemo(() => (state && state.outcome === 'in-progress' ? forecastTurn(state, ctx) : { byEnemy: {}, byAction: {}, incoming: {}, hpAfter: {} }), [state, ctx]);
+  const forecast = useMemo(() => (state && state.outcome === 'in-progress' ? forecastTurn(state, ctx) : { byEnemy: {}, byAction: {}, incoming: {}, hpAfter: {}, moot: {} }), [state, ctx]);
 
   /** Dispatch and surface the sim's rejection reason as a toast (the sim never throws on illegal input). */
   const dispatch = useCallback(
@@ -296,22 +322,37 @@ export function CombatScreen() {
     ...field.map(({ enemy }, i): [string, SpriteSlot] => [enemy.uid, fieldSlot(i)]),
   ];
 
+  /** §9.9.1 — one of yours still in its ball, or coming out of it: its card waits for it. */
+  const arrivalOf = (uid: string) => (fx.sprites[uid] === 'fx-hidden' ? 'waiting' : fx.sprites[uid] === 'fx-sendout' ? 'entering' : null);
+  /** §9.2.5 / §9.9.2 — what is aimed at your side waits while the fight opens and while the foes' moves play. */
+  const aimsWait = fx.opening || fx.acting;
+
   /** §9.2.5 — the hits coming at one of your Pokémon, from the enemies whose intent is not hidden. */
   function incomingFor(uid: string) {
+    if (aimsWait) return { incoming: [], incomingKo: false };
     const hits = (forecast.incoming[uid] ?? []).filter((h) => {
       const e = enemies.find((x) => x.uid === h.enemyUid);
       const i = h.action === 1 ? e?.second : e?.intent;
       return i && !i.hidden && h.amount > 0;
     });
     const mon = state!.player.team.find((m) => m.uid === uid)!;
-    const list = hits.map((h) => {
-      const e = enemies.find((x) => x.uid === h.enemyUid)!;
+    const chip = (enemyUid: string, action: number, amount: number, moot: boolean) => {
+      const e = enemies.find((x) => x.uid === enemyUid)!;
       // §5.6.1 — each action is its own hit, so a Pokémon that acts twice puts two chips on the same portrait.
-      const i = h.action === 1 ? e.second : e.intent;
+      const i = action === 1 ? e.second : e.intent;
       const move = i?.moveId ? ctx.content.move(i.moveId).name : 'attack';
-      return { key: `${h.enemyUid}#${h.action}`, enemyUid: h.enemyUid, amount: h.amount, name: e.name, move, icon: iconOf(e) };
+      return { key: `${enemyUid}#${action}`, enemyUid, amount, name: e.name, move, icon: iconOf(e), ...(moot ? { moot: true } : {}) };
+    };
+    const list = hits.map((h) => chip(h.enemyUid, h.action, h.amount, false));
+    // §9.2.5 — what would also have come at it, wasted on it being down already: struck through after the knockout.
+    const wasted = Object.entries(forecast.moot).flatMap(([key, m]) => {
+      if (m.targetUid !== uid) return [];
+      const [enemyUid, action] = key.split('#') as [string, string];
+      const e = enemies.find((x) => x.uid === enemyUid);
+      const i = action === '1' ? e?.second : e?.intent;
+      return e && i && !i.hidden ? [chip(enemyUid, Number(action), m.amount, true)] : [];
     });
-    return { incoming: list, incomingKo: list.length > 0 && list.reduce((a, h) => a + h.amount, 0) >= mon.hp };
+    return { incoming: [...list, ...wasted], incomingKo: list.length > 0 && list.reduce((a, h) => a + h.amount, 0) >= mon.hp };
   }
 
   /**
@@ -319,6 +360,7 @@ export function CombatScreen() {
    * it leading, counting only the intents you can see. Null when nothing visible would land on it there.
    */
   function asLeadFor(bi: number): { amount: number; ko: boolean } | null {
+    if (aimsWait) return null;
     const hit = asLeadDamage(state!, ctx, bi);
     return hit && hit.amount > 0 ? hit : null;
   }
@@ -414,7 +456,7 @@ export function CombatScreen() {
     const slot = indexToSlot(state!, bi);
     return (
       <div className={cls}>
-        <Portrait mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} {...incomingFor(mon.uid)} />
+        <Portrait mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -495,7 +537,7 @@ export function CombatScreen() {
           <MoveFxLayer moves={fx.moves} boxes={slotBoxes} floor />
         </div>
         {/* §5.2 — who each enemy is about to hit: arrows under the Pokémon, over the ground; gone while a ball rocks. */}
-        <IntentArrows state={state} stage={stageEl} focusUid={hoverEnemyUid} focusSlot={hoverAllySlot} hidden={!!fx.catching || fx.acting} />
+        <IntentArrows state={state} stage={stageEl} focusUid={hoverEnemyUid} focusSlot={hoverAllySlot} hidden={!!fx.catching || fx.acting || fx.opening} />
 
         {/* §9.2.1 — your three on the field, each a card: the Lead forward, towards the enemy, centred between its
             bench — Bench 1 above, Bench 2 below. */}
@@ -503,7 +545,7 @@ export function CombatScreen() {
           {benchUnit(benches[0], styles.slotB1)}
           {benchUnit(benches[1], styles.slotB2)}
           <div className={styles.slotLead}>
-            <Portrait mon={shownHp(lead)} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} {...incomingFor(lead.uid)} />
+            <Portrait mon={shownHp(lead)} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} arrival={arrivalOf(lead.uid)} {...incomingFor(lead.uid)} />
           </div>
         </div>
 

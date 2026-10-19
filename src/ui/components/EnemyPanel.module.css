@@ -106,6 +106,11 @@
 .dmg {
   color: var(--accent-negative);
 }
+/* §9.2.5 — a hit wasted on a target already down: its number struck through, in muted ink. */
+.dmgMoot {
+  color: var(--ink-muted);
+  font-weight: 700;
+}
 
 /* ── The card: what is the enemy's alone ────────────────────────────────────────────────────────────────── */
 .unit .card {

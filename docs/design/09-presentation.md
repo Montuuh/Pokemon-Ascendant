@@ -237,7 +237,7 @@ ball red, medicine green, a battle item blue.
 
 | State | Treatment |
 |---|---|
-| **Not enough AP** | An amber border, a warning glyph in the foot, the picture faded |
+| **Not enough AP** | An amber border, a warning glyph in the foot, the picture faded, and an amber **Not enough AP** tag on the card's top edge, over the hand (the user's note, 2026-10-19) |
 | **Out of position** (a Melee card whose owner is not the Lead; also asleep, frozen, sealed) | A dashed edge, the picture faded, and a **blue band across the window**: `Melee` in bold and `needs Lead` beneath |
 
 Amber means AP. Blue means position. Neither card is ever hidden, and neither loses its words: the name, the cost, the
@@ -282,6 +282,13 @@ that disagrees with the outcome is a bug, never a rounding difference.
 
 A Pokémon that **acts twice** (§5.6.1) shows its second intent as a second chip under the first, marked *Also*
 with a dashed border; each has its own number and its own intent card.
+
+**A wasted hit** (the user's report, 2026-10-19): an attack on a slot whose Pokémon an earlier intent this turn has
+already knocked out hits nothing (§3.2.5). Its chip does not print 0: it prints the number it *would* have taken,
+struck through (`forecast.moot`), and the portrait hangs it after the KO chip, dashed and struck — so the overkill
+reads as overkill, and a swap that saves the Lead shows what the later hits would then do to whoever stands there.
+While the foes' moves are playing (§9.9.2) and while the fight opens, the hits aimed at your side are not shown at
+all: the next turn's intents wait for this one to land.
 
 The intent number **recomputes live** when the player swaps, because it is predicted against whoever now
 occupies the slot. The v0.1 playtest identified this as the element that makes the swap decision legible; it is
@@ -538,8 +545,8 @@ The series' own beats, drawn in the arena on top of a result the sim has already
 
 | Beat | What the player sees |
 |---|---|
-| **Sent out** | A Poké Ball flies in an arc from the trainer's hand — the foe's trainer, or yours from off the left edge — lands, and pops open; the Pokémon whitens and grows out of a ring of light. The foes first, staggered, then your Lead. A wild one steps in from the grass instead. A trainer's next Pokémon, and a swap's new Lead, come out the same way. |
-| **Recalled** | A swapped-out Lead turns red and shrinks into its ball, and the ball flies back to your hand. |
+| **Sent out** | A Poké Ball flies in an arc from the trainer's hand — the foe's trainer, or yours from off the left edge — lands, and pops open; the Pokémon whitens and grows out of a ring of light. The foes first, staggered, then your Lead, then your bench. A wild one steps in from the grass instead. A trainer's next Pokémon comes out the same way. **No card before its Pokémon** (the user's note, 2026-10-19): while a Pokémon waits in its ball its whole card is unseen, its place kept, and the card comes in with it; the intents' arrows and the hits aimed at your side wait until your last Pokémon is out. |
+| **Swapped** | No ball (the user's note, 2026-10-19): the two cards **glide between their places**, the Pokémon in them — the bench card forward to the Lead, the Lead back to the bench — a FLIP on the card itself (`FX_MS.swap`). A replacement after a faint, a Step-Forward, a Step-Backward and a forced swap move the same way. |
 | **Fainted** | A fallen Pokémon holds a beat and flashes, then sinks through the ground line as it greys and fades out — gone by the last frame, never cut while it still shows, and it never fades back. A foe's card fades with it in its place, and the others hold theirs until it has gone (v0.9.11). A trainer's, or yours, then goes back into its ball, which flies back to the trainer's hand before the next one is thrown. A wild one simply goes. |
 | **Evolution** | "What? Bulbasaur is evolving!" on a dark stage; the sprite turns to light, the old and the new shapes trade places faster and faster — never under 100 ms, both the same light, so a shape changes and not a screen's brightness — a bloom behind it, and the new Pokémon in its colours: "Congratulations! …". A click or a key skips it; it plays before the path is chosen when every path makes one species, after when they differ (v0.9.6). |
 | **The catch** | The ball is thrown in a parabola — across at an even pace, up and down under gravity, its path never spun (v0.9.16: a rotated path swung it round in a loop), and never higher than the field has room for, so a Bench 1 at 720 p gets a flatter throw rather than a ball out of sight — opens on the Pokémon and draws it in, falls to the ground with a bounce, and rocks: a still moment, then a rock, once per shake check (§2.6.4.4) — three wobbles, a still moment, and the click with three sparks on a catch; on a break, the ball bursts open as the wobble its check followed ends, and the Pokémon is back in its card with the burst (v0.9.16: a still moment and a second's wait after it read as the beat stalling). The ball shows only its wobbles: the chance was on the pill before the throw (v0.9.16, the user's call: the lights under it went). "Gotcha!" or the series' line for how close it came lands with the click or the burst. About six and a half seconds for a catch, the series' pace; a break is over sooner. |

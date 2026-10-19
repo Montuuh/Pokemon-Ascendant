@@ -27,6 +27,8 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
   const single = intent && slotOcc && (intent.kind === 'attack' || intent.kind === 'backstrike')
     ? forecast.byAction[`${enemy.uid}#${action}`]?.hits.find((h) => h.targetUid === slotOcc.uid)?.amount ?? 0
     : null;
+  // §9.2.5 — an earlier hit this turn knocks its target out first: what it would take, struck through.
+  const moot = forecast.moot[`${enemy.uid}#${action}`] ?? null;
   const ally = intent?.targetEnemyUid ? intentRecipient(state, enemy, intent) : null;
   const called = intent?.kind === 'summon' ? summonedBy(state, enemy, move, ctx.config.maxOnField).map((h) => ctx.content.species(h.species).name) : [];
   // §9.2.5 — a hit on your Lead, shown on everyone who could take the Lead instead (v0.8.6).
@@ -62,7 +64,11 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
             {intent.targetSlot && (
               <>
                 {' '}→ <span className={styles.nowrap}><b>{SLOT_LABEL[intent.targetSlot]}</b> ({slotOcc ? slotOcc.name : 'empty'})</span>
-                {single !== null && single > 0 ? <> <span className={styles.nowrap}>· <b className={styles.dmg} data-testid="intent-dmg">{single} dmg</b></span></> : null}
+                {single !== null && single > 0 ? (
+                  <> <span className={styles.nowrap}>· <b className={styles.dmg} data-testid="intent-dmg">{single} dmg</b></span></>
+                ) : moot ? (
+                  <> <span className={styles.nowrap}>· <s className={styles.dmgMoot} data-testid="intent-dmg-moot">{moot.amount} dmg</s></span></>
+                ) : null}
               </>
             )}
             {intent.kind === 'buff' && (ally && ally.uid !== enemy.uid ? <> → <b>{ally.name}</b></> : ' — powering up')}

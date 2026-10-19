@@ -7,7 +7,7 @@ import { ArenaSprite } from './ArenaSprite';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
-import { combatantTip, traumaTip } from '@/ui/tips';
+import { combatantTip, shieldTip, traumaTip } from '@/ui/tips';
 import { Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
 import { UNIT_BADGE, UNIT_HP_BAR } from './unitCard';
@@ -44,11 +44,13 @@ interface Props {
    * §9.2.5 — every hit coming at this Pokémon this turn, as the dry-run Resolution prints it: one number per
    * enemy, never one figure for an area hit. `icon` names the source when a group is on the field.
    */
-  incoming?: { key: string; enemyUid: string; amount: number; icon?: string; name: string; move: string }[];
+  incoming?: { key: string; enemyUid: string; amount: number; icon?: string; name: string; move: string; moot?: boolean }[];
   /** The hits above add up to a knockout. */
   incomingKo?: boolean;
   /** §9.2.5 — a bench Pokémon: what it would take this turn as the Lead (v0.8.6). */
   asLead?: { amount: number; ko: boolean } | null;
+  /** §9.9.1 — its Pokémon is still in its ball (`waiting`: the whole card unseen) or coming out of it (`entering`). */
+  arrival?: 'waiting' | 'entering' | null;
 }
 
 // §9.2.1 / §9.2.2.2 — one of your Pokémon on the field, as a card (v0.9.16, the user's "la animación encapsulada dentro
@@ -56,18 +58,18 @@ interface Props {
 // on a dark head, the animated back sprite in a window lit in its first type, its HP — with the part this turn's visible
 // intents will take striped — and on a bench the swap price and what it would take as the Lead. The hits coming at it
 // hang off the card's edge, towards the enemy. The whole card is one button: a swap, an ally target, a step-back choice.
-export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapAllowed, swapHint, targeted, selectable, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending }: Props) {
+export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapAllowed, swapHint, targeted, selectable, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending, arrival }: Props) {
   // §9.9.1 — at 0 HP but its faint still to play: it stands through the hits on screen first.
   const fainted = mon.hp <= 0 && !faintPending;
-  const classes = [card.card, styles.unit, styles[variant], targeted ? styles.targeted : '', selectable ? styles.selectable : '', fainted ? styles.fainted : ''].filter(Boolean).join(' ');
+  const classes = [card.card, styles.unit, styles[variant], targeted ? styles.targeted : '', selectable ? styles.selectable : '', fainted ? styles.fainted : '', arrival ? styles[arrival] : ''].filter(Boolean).join(' ');
   const stageChips = (['attack', 'defense'] as const).filter((s) => mon.stages[s] !== 0);
   // 2026-09-21 — the card's bubble is the Pokémon's summary: types, ability, held item, status, Trauma, and its role
   // right now (Lead, or what a swap costs).
   const hits = !fainted && incoming?.length ? incoming : null;
   const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}), ...(asLead && !fainted ? { asLead } : {}) }));
-  const incomingText = hits ? `; incoming: ${hits.map((h) => `${h.amount} from ${h.name}'s ${h.move}`).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
-  // §9.2.5 — the HP left after the visible hits: what the striped end of the bar shows.
-  const future = hits ? Math.max(0, mon.hp - hits.reduce((a, h) => a + h.amount, 0)) : null;
+  const incomingText = hits ? `; incoming: ${hits.map((h) => (h.moot ? `${h.name}'s ${h.move}, wasted on it being down` : `${h.amount} from ${h.name}'s ${h.move}`)).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
+  // §9.2.5 — the HP left after the visible hits: what the striped end of the bar shows (a wasted hit takes nothing).
+  const future = hits ? Math.max(0, mon.hp - hits.reduce((a, h) => a + (h.moot ? 0 : h.amount), 0)) : null;
 
   return (
     <button
@@ -95,6 +97,7 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
       data-testid={`portrait-${variant}-${mon.speciesId}`}
       data-ally-index={allyIndex}
       data-arrow-card={slotId}
+      data-unit-uid={mon.uid}
       data-selectable={selectable || undefined}
       aria-label={fainted ? `${mon.name} fainted` : `${swapHint ?? `${mon.name}${mon.shiny ? ', shiny' : ''} · ${slotLabel}`}${incomingText}${asLead ? `; as Lead it would take ${asLead.amount}${asLead.ko ? ', a knockout' : ''}` : ''}`}
     >
@@ -132,22 +135,30 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
           they add up. */}
       {hits && (
         <span className={styles.incoming} data-testid="incoming" aria-hidden="true">
-          {hits.map((h) => (
-            <span key={h.key} className={styles.incomingHit}>
-              {/* Who hits: its box icon at 1×, cropped to the Pokémon (D9). */}
-              {h.icon && (
-                <span className={styles.incomingFace}>
-                  <img className="pixel" src={h.icon} alt="" />
-                </span>
-              )}
-              <span className="display tabular">−{h.amount}</span>
-            </span>
-          ))}
-          {incomingKo && <b className={styles.incomingKo}>KO</b>}
+          {/* The hits that land, the knockout they add up to, then any wasted on it being down already. */}
+          {[...hits.filter((h) => !h.moot), null, ...hits.filter((h) => h.moot)].map((h) =>
+            h === null ? (
+              incomingKo && (
+                <b key="ko" className={styles.incomingKo}>
+                  KO
+                </b>
+              )
+            ) : (
+              <span key={h.key} className={h.moot ? `${styles.incomingHit} ${styles.incomingMoot}` : styles.incomingHit} data-moot={h.moot || undefined}>
+                {/* Who hits: its box icon at 1×, cropped to the Pokémon (D9). */}
+                {h.icon && (
+                  <span className={styles.incomingFace}>
+                    <img className="pixel" src={h.icon} alt="" />
+                  </span>
+                )}
+                <span className="display tabular">−{h.amount}</span>
+              </span>
+            ),
+          )}
         </span>
       )}
 
-      <HpBar hp={mon.hp} maxHp={mon.maxHp} height={UNIT_HP_BAR} future={future} />
+      <HpBar hp={mon.hp} maxHp={mon.maxHp} shield={mon.shield} height={UNIT_HP_BAR} future={future} />
       <span className={card.hpRow}>
         <span className={`${card.hpText} display tabular`}>
           {fainted ? 'Fainted' : `${mon.hp} / ${mon.maxHp}`}
@@ -168,7 +179,7 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
         )}
       </span>
       {/* Its stages and Trauma on a row of their own, only when it has any: the HP row is full on a bench card. */}
-      {(stageChips.length > 0 || mon.traumaStacks > 0) && (
+      {(stageChips.length > 0 || mon.traumaStacks > 0 || mon.shield > 0) && (
         <span className={card.chips}>
           {stageChips.map((s) => (
             <span key={s} className={`${card.chip} ${mon.stages[s] > 0 ? card.up : card.down}`}>
@@ -176,6 +187,12 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
               {mon.stages[s]}
             </span>
           ))}
+          {/* §7.3.7 Battle Hardened — the shield it opened the fight behind, drawn on the bar too. */}
+          {mon.shield > 0 && (
+            <Tipped tip={shieldTip(mon.shield)} className={`${card.chip} ${card.info}`} data-testid="unit-shield">
+              Shield {mon.shield}
+            </Tipped>
+          )}
           {mon.traumaStacks > 0 && (
             <Tipped tip={traumaTip(mon.traumaStacks, mon.maxHp)} className={`${card.chip} ${card.warn}`}>
               Trauma ×{mon.traumaStacks}

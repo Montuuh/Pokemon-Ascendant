@@ -284,7 +284,7 @@ the relic system and retuned for permanent scope.
 
 | Legendary | Category | Effect |
 |---|---|---|
-| **Battle Hardened** | Combat | Every Active Pokémon starts each combat with a Shield equal to 10 % of its max HP |
+| **Battle Hardened** | Combat | Every Active Pokémon starts each combat with a Shield equal to 10 % of its max HP — drawn as the pale blue end of its HP bar and a *Shield N* chip on its card, the rule in its bubble (the user's note, 2026-10-19: it had no picture) |
 | **Flow State** | Lead | The first manual swap each combat costs 0 AP |
 | **Last Stand** | Combat | Once per combat, the first Pokémon that would faint survives at 1 HP |
 | **Type Mastery** | Combat | Super-effective moves deal an extra +0.15× |

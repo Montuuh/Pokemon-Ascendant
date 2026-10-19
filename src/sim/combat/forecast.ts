@@ -2,7 +2,7 @@ import { current, isDraft } from 'immer';
 import { GameRng } from '../rng/gameRng';
 import type { CombatCtx, RunCtx } from './context';
 import { executeIntent } from './enemyTurn';
-import { resolutionOrder } from './slots';
+import { resolutionOrder, slotOccupant } from './slots';
 import type { CombatState, EnemyCombatant, Intent } from './state';
 
 // §5.2 / §9.2.5 — the honest intent. What an intent chip prints is not a formula run beside the rules: it is the
@@ -34,6 +34,12 @@ export interface TurnForecast {
   incoming: Record<string, { enemyUid: string; action: number; amount: number }[]>;
   /** Per Pokémon of yours, its HP once every intent has landed. */
   hpAfter: Record<string, number>;
+  /**
+   * §9.2.5 — per action (`<enemyUid>#<action>`), a hit that lands on nobody because an earlier one this turn knocked its
+   * target out first (§3.2.5: an attack on a fallen slot hits nothing): the HP it would have taken, had the target still
+   * stood. Printed struck through, so a wasted attack reads as wasted rather than as a zero.
+   */
+  moot: Record<string, { targetUid: string; amount: number }>;
 }
 
 /**
@@ -76,7 +82,9 @@ function computeForecast(state: CombatState, ctx: CombatCtx): TurnForecast {
   sim.phase = 'resolution';
   const run: RunCtx = { ...ctx, rng: new SteadyRng() };
   const mine = new Set(sim.player.team.map((c) => c.uid));
-  const out: TurnForecast = { byEnemy: {}, byAction: {}, incoming: {}, hpAfter: {} };
+  const out: TurnForecast = { byEnemy: {}, byAction: {}, incoming: {}, hpAfter: {}, moot: {} };
+  // The fight as the turn begins: who stands where before any intent lands.
+  const start = structuredClone(sim);
 
   /** Run one action and read off the HP it took from each of yours. */
   const act = (enemy: EnemyCombatant, intent: Intent, action: number): ForecastHit[] => {
@@ -94,6 +102,18 @@ function computeForecast(state: CombatState, ctx: CombatCtx): TurnForecast {
       (out.incoming[targetUid] ??= []).push({ enemyUid: enemy.uid, action, amount });
     }
     out.byAction[`${enemy.uid}#${action}`] = { enemyUid: enemy.uid, hits };
+    // Aimed at one of yours who stood there when the turn began and is down before this lands: what it would have done.
+    const was = !hits.length && intent.targetSlot ? slotOccupant(start, intent.targetSlot) : null;
+    if (was && sim.player.team.find((c) => c.uid === was.uid)!.hp <= 0) {
+      const alone = structuredClone(start);
+      const self = alone.enemies.find((x) => x.uid === enemy.uid);
+      if (self) {
+        const at = alone.events.length;
+        executeIntent(alone, self, run, structuredClone(intent));
+        const amount = alone.events.slice(at).reduce((a, e) => a + (e.t === 'damage' && e.sourceUid === enemy.uid && e.targetUid === was.uid ? e.amount : 0), 0);
+        if (amount > 0) out.moot[`${enemy.uid}#${action}`] = { targetUid: was.uid, amount };
+      }
+    }
     return hits;
   };
 

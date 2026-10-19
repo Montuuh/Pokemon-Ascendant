@@ -111,6 +111,23 @@
   line-height: 1.3;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
+/* §9.9.1 — no card before its Pokémon: while it waits in its ball the whole card is unseen (its place kept), and it
+   comes in with the Pokémon, on the send-out's own beat. */
+.waiting {
+  visibility: hidden;
+}
+.entering {
+  animation: global(unitIn) var(--fx-sendout) var(--ease-spring) both;
+}
+/* §9.2.5 — a hit that would also come, wasted on it being down already: struck through, after the knockout. */
+.incomingMoot {
+  border-style: dashed;
+  border-color: var(--border-subtle);
+  color: var(--ink-muted);
+}
+.incomingMoot .display {
+  text-decoration: line-through;
+}
 .incomingKo {
   padding: 0 var(--sp-2);
   border-radius: var(--radius-pill);

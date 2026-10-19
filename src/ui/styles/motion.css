@@ -255,6 +255,17 @@ html[data-motion='reduced'] *::after {
 .fx-hidden img {
   visibility: hidden;
 }
+/* §9.9.1 — a card coming in with its Pokémon, out of the ball. */
+@keyframes unitIn {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
 /* §9.9.2 — a Pokémon whose double is dashing across the field: its card stands, its sprite waits unseen. */
 .fx-dashing img {
   visibility: hidden;
@@ -292,10 +303,6 @@ html[data-motion='reduced'] *::after {
 }
 .fx-ghost-faint img {
   animation: faintDrop var(--fx-faint) linear var(--ghost-at) both;
-}
-.fx-ghost-recall img {
-  transform-origin: 50% 85%;
-  animation: recallBeam var(--fx-recall) ease-in var(--ghost-at) both;
 }
 
 @keyframes sendOut {
@@ -365,25 +372,12 @@ html[data-motion='reduced'] *::after {
     filter: grayscale(1) brightness(0.6);
   }
 }
-@keyframes recallBeam {
-  0% {
-    transform: scale(1);
-    filter: sepia(1) saturate(8) hue-rotate(-30deg) brightness(0.9);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(30%) scale(0.04);
-    filter: sepia(1) saturate(8) hue-rotate(-30deg) brightness(1.6);
-    opacity: 0;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .fx-sendout img,
   .fx-burst img,
   .fx-wild-enter img,
   .fx-ghost-faint img,
-  .fx-ghost-recall img,
   .fx-sendout::before,
   .fx-burst::before {
     animation: none;
@@ -393,7 +387,6 @@ html[data-motion='reduced'] .fx-sendout img,
 html[data-motion='reduced'] .fx-burst img,
 html[data-motion='reduced'] .fx-wild-enter img,
 html[data-motion='reduced'] .fx-ghost-faint img,
-html[data-motion='reduced'] .fx-ghost-recall img,
 html[data-motion='reduced'] .fx-sendout::before,
 html[data-motion='reduced'] .fx-burst::before {
   animation: none;

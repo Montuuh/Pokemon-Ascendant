@@ -53,8 +53,10 @@ export interface AscendantDevTools {
   auto: (steps?: number) => number;
   /** §9.9.2 — debug: the hand made these moves, all the Lead's, with AP to spare (to watch each move's animation). */
   hand: (moveIds: string[]) => void;
-  /** §9.9.2 — debug: the first enemy's next intent made this move (a Cleave when it hits the whole team). */
-  intend: (moveId: string) => void;
+  /** §9.9.2 — debug: the first enemy's next intent made this move (a Cleave when it hits the whole team); `all`, every enemy's. */
+  intend: (moveId: string, all?: boolean) => void;
+  /** Debug: set one combatant's HP — `lead`, or a uid (`p0`, `e1`) — to see a knockout coming. */
+  setHp: (who: string, hp: number) => void;
   replay: () => sim.RecordedCombat | null;
   state: () => sim.CombatState | null;
   run: AscendantRunTools;
@@ -187,15 +189,26 @@ export function installDevTools(): void {
         }),
       });
     },
-    intend: (moveId) => {
+    intend: (moveId, all = false) => {
       const s = combat().state;
       if (!s || !s.enemies[0]) return;
       const move = combat().ctx.content.move(moveId);
       useCombatStore.setState({
         state: produce(s, (d) => {
-          const e = d.enemies[0]!;
-          e.moveIds = [moveId];
-          e.intent = move.power > 0 ? { kind: move.targeting === 'cleave' ? 'cleave' : 'attack', moveId, targetSlot: move.targeting === 'cleave' ? null : 'lead', hidden: false } : { kind: 'status', moveId, targetSlot: 'lead', hidden: false };
+          for (const e of all ? d.enemies : [d.enemies[0]!]) {
+            e.moveIds = [moveId];
+            e.intent = move.power > 0 ? { kind: move.targeting === 'cleave' ? 'cleave' : 'attack', moveId, targetSlot: move.targeting === 'cleave' ? null : 'lead', hidden: false } : { kind: 'status', moveId, targetSlot: 'lead', hidden: false };
+          }
+        }),
+      });
+    },
+    setHp: (who, hp) => {
+      const s = combat().state;
+      if (!s) return;
+      useCombatStore.setState({
+        state: produce(s, (d) => {
+          const c = who === 'lead' ? d.player.team[d.player.leadIndex] : [...d.player.team, ...d.enemies].find((x) => x.uid === who);
+          if (c) c.hp = Math.max(0, Math.min(c.maxHp, hp));
         }),
       });
     },

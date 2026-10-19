@@ -203,7 +203,11 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
     const mon = state.player.team.find((m) => m.uid === h.targetUid);
     lines.push(<b key={h.targetUid}>{`${mon?.name ?? '?'}: ${h.amount} damage${h.ko ? ' — knocks it out' : ''}`}</b>);
   }
-  if (move.power > 0 && hits.length === 0) lines.push('No damage lands: the target is immune, or the slot is empty.');
+  // §9.2.5 — its target is knocked out first by an earlier hit this turn: what it would have taken, and that it is wasted.
+  const moot = forecast.moot[`${enemy.uid}#${action}`];
+  const mootMon = moot ? state.player.team.find((m) => m.uid === moot.targetUid) : null;
+  if (moot && mootMon) lines.push(<b key="moot">{`${mootMon.name} is down before this lands: it would take ${moot.amount}, so the attack is wasted.`}</b>);
+  else if (move.power > 0 && hits.length === 0) lines.push('No damage lands: the target is immune, or the slot is empty.');
   // §9.2.5 — aimed at your Lead: the same hit on whoever else could stand there (v0.8.6).
   for (const w of ifLead) lines.push(`If ${w.name} led: ${w.amount} damage${w.ko ? ' — knocks it out' : ''}`);
   for (const fx of move.effects) {
@@ -292,6 +296,11 @@ export function forkGymTip(gym: GymDef, shut: boolean, footer: string): ReactNod
 /** §5.9.5 Ice Armour — the shield on an enemy: what it takes before HP, and how it goes. */
 export function armourTip(amount: number): ReactNode {
   return <Tip title={`${ARMOUR_LABEL} ${amount}`} body={`Takes the next ${amount} damage before its HP does. Lorelei's Ice Armour sets it again at every Intent phase, and never stacks.`} footer="A Fire move shatters it whole before it lands." />;
+}
+
+/** §7.3.7 Battle Hardened — one of yours behind its shield. */
+export function shieldTip(amount: number): ReactNode {
+  return <Tip title={`Shield ${amount}`} body={`Takes the next ${amount} damage before its HP does — the pale blue end of its HP bar.`} footer="Battle Hardened: every Pokémon opens each fight behind one. Once spent, it does not come back." />;
 }
 
 /** §2.6.2 — a rarity row in a Wild Area's pool: its chance, split evenly between its Pokémon. */
@@ -471,7 +480,7 @@ export function traumaTip(stacks: number, max: number): ReactNode {
 }
 
 /** The Pokémon itself: species, types, level, ability, item — the summary a portrait owes on hover. */
-export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number; incoming?: { name: string; move: string; amount: number }[]; incomingKo?: boolean; asLead?: { amount: number; ko: boolean } }): ReactNode {
+export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number; incoming?: { name: string; move: string; amount: number; moot?: boolean }[]; incomingKo?: boolean; asLead?: { amount: number; ko: boolean } }): ReactNode {
   const content = getContent();
   const meta: ReactNode[] = [`Lv ${c.level}`, ...c.types.map(typeName)];
   const lines: ReactNode[] = [];
@@ -486,8 +495,11 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
   if (c.status) lines.push(<div key="s"><b>{STATUS_LABEL[c.status.kind]}</b> — {STATUS_HINT[c.status.kind]}</div>);
   if (c.traumaStacks > 0) lines.push(<div key="t"><b>Trauma ×{c.traumaStacks}</b> — max HP is lowered until treated.</div>);
   if (c.shiny) lines.push(shinyLine(true));
-  // §9.2.5 — what lands on it this turn, one line per enemy, the same numbers as the chips beside it.
-  for (const h of extra?.incoming ?? []) lines.push(<div key={`i-${h.name}-${h.move}`}><b>−{h.amount}</b> from {h.name}'s {h.move} this turn.</div>);
+  // §7.3.7 Battle Hardened — the shield it opened the fight behind: what it takes before HP, gone once spent.
+  if (c.shield > 0) lines.push(<div key="sh"><b>Shield {c.shield}</b> — takes the next {c.shield} damage before HP does. It does not come back.</div>);
+  // §9.2.5 — what lands on it this turn, one line per enemy, the same numbers as the chips beside it; a hit wasted on
+  // it being down already, struck through.
+  for (const h of extra?.incoming ?? []) lines.push(h.moot ? <div key={`m-${h.name}-${h.move}`}>{h.name}'s {h.move} would take <s>{h.amount}</s> — wasted: it is down by then.</div> : <div key={`i-${h.name}-${h.move}`}><b>−{h.amount}</b> from {h.name}'s {h.move} this turn.</div>);
   if (extra?.incomingKo) lines.push(<div key="ko"><b>Together they knock it out</b> unless you act.</div>);
   // §9.2.5 — the swap, priced in HP (v0.8.6).
   if (extra?.asLead) lines.push(<div key="al">As your Lead this turn it would take <b>{extra.asLead.amount}</b>{extra.asLead.ko ? ' — a knockout' : ''}.</div>);

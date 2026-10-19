@@ -9,7 +9,7 @@ import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/string
 
 // Turns new sim events into transient visual effects (§9.9): floating numbers, hit shakes, lunges, a turn banner —
 // and, since v0.9.3, the series' own beats (§9.9.1): a Poké Ball thrown from a trainer's hand and a Pokémon coming out
-// of it, a Pokémon recalled into its ball and the ball going back to the hand, a faint, and the catch. The sim state is
+// of it, a faint and its ball going back to the hand, and the catch. The sim state is
 // already final when this runs; every effect is a beat of feedback layered on top, and the outcome is never decided
 // here — the catch's ball rocks to the shake checks the sim rolled before the first frame (§2.6.4.4).
 //
@@ -28,8 +28,8 @@ export interface Ghost {
   slot: SpriteSlot;
   speciesId: string;
   shiny: boolean;
-  /** `faint`: sinks out of sight. `recall`: the red light takes it back into its ball. */
-  kind: 'faint' | 'recall';
+  /** `faint`: sinks out of sight. */
+  kind: 'faint';
   /** When its beat starts, from the batch: until then it stands as it was, so the fallen never blink out early. */
   at: number;
   /** A fallen foe: who it was, and the line as it stood before it fell (uids in order), so its panel fades in its
@@ -116,6 +116,8 @@ export interface CombatFxState {
   hp: Record<string, number>;
   /** §9.9.2 — the foes' moves are playing: their next intents wait until they have (the hand waits too, `busy`). */
   acting: boolean;
+  /** §9.9.1 — the fight's Pokémon are still coming out of their balls: what is aimed at them waits until they are out. */
+  opening: boolean;
 }
 
 const CLASS_MS = 450;
@@ -138,7 +140,6 @@ export const FX_MS = {
   /** A ball between a hand and a slot. */
   ballFly: 650,
   faint: 900,
-  recall: 520,
   /** The catch: the throw, the Pokémon drawn in, the ball dropping to the ground, then each wobble — a still
    *  moment and a rock — and after the last a still moment more before the click or the burst. */
   throw: 750,
@@ -155,6 +156,8 @@ export const FX_MS = {
   moveHit: 560,
   /** A number or a word rising off a Pokémon. */
   float: 1100,
+  /** §3.3.1 — a swap: the cards trading places across your formation (`CombatScreen`'s glide). */
+  swap: 460,
 } as const;
 
 /** The beats' lengths as CSS custom properties on the arena, so the keyframes and the timers read one table. */
@@ -165,7 +168,6 @@ export const fxTimings = (): CSSProperties =>
     '--fx-move-hit': `${FX_MS.moveHit}ms`,
     '--fx-ball-fly': `${FX_MS.ballFly}ms`,
     '--fx-faint': `${FX_MS.faint}ms`,
-    '--fx-recall': `${FX_MS.recall}ms`,
     '--fx-throw': `${FX_MS.throw}ms`,
     '--fx-absorb': `${FX_MS.absorb}ms`,
     '--fx-drop': `${FX_MS.drop}ms`,
@@ -235,6 +237,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   // let go by the batch that ends last.
   const clock = useRef({ impact: 0, dashes: {} as Record<string, number>, heldUntil: 0, actingUntil: 0 });
   const [acting, setActing] = useState(false);
+  const [opening, setOpening] = useState(false);
   // §9.9.1 — a fallen foe's line, held on screen while its faint plays (the others keep their places): a move drawn
   // meanwhile is aimed by that line, as the screen draws it.
   const held = useRef<{ line: string[]; until: number } | null>(null);
@@ -316,6 +319,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       busyTimer.current = null;
       busyEnd.current = 0;
       setBusy(false);
+      setOpening(animate);
       if (!animate) return;
       const ball = fromABall(state);
       let at = 0;
@@ -336,6 +340,9 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         sendOut(m.uid, i === state.player.leadIndex ? 'player' : indexToSlot(state, i) === 'bench1' ? 'bench1' : 'bench2', 'player', mine);
         mine += FX_MS.stagger;
       }
+      // The arrows and the hits aimed at your Pokémon wait until the last of them is out.
+      const out = mine - FX_MS.stagger + FX_MS.ballFly + FX_MS.sendOut;
+      schedule(() => setOpening(false), out);
       // The fight may start at once: Pokémon coming out never hold the hand.
       return;
     }
@@ -582,21 +589,11 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           delay = end;
           break;
         }
-        case 'swap': {
-          if (!animate) break;
-          // §3.3.1 — the Lead goes back into its ball, the ball back to your hand, and the new one is thrown out. A
-          // replacement follows a faint, whose ball already went back.
-          const now = state.player.team[state.player.leadIndex];
-          if (!now) break;
-          if (e.kind !== 'replacement' && before.lead && before.lead.uid !== now.uid) {
-            addGhost({ slot: 'player', speciesId: before.lead.speciesId, shiny: before.lead.shiny, kind: 'recall', at: delay }, FX_MS.recall);
-            flyBall({ slot: 'player', dir: 'out', hand: 'player', ball: 'poke-ball' }, delay + FX_MS.recall - 80);
-            delay += FX_MS.recall - 80 + FX_MS.ballFly - 120;
-          }
-          sendOut(now.uid, 'player', 'player', delay);
-          delay += 200;
+        case 'swap':
+          // §3.3.1 (the user's note, 2026-10-19) — no ball: the cards glide between their places, the Pokémon in them
+          // (`CombatScreen`). What follows the swap waits for the glide.
+          if (animate) delay += FX_MS.swap;
           break;
-        }
         case 'enemy-enter': {
           if (!animate) break;
           // §5.6.2 / §5.9.3 — the trainer's next Pokémon, thrown from the trainer's hand; or a wild one answering a call.
@@ -705,7 +702,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, acting };
+  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, acting, opening };
 }
 
 export type { CombatEvent };
