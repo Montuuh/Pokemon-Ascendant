@@ -8,6 +8,7 @@ import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
 import { combatantTip, shieldTip, traumaTip } from '@/ui/tips';
+import { SHIELD_LABEL } from '@/ui/strings';
 import { Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
 import { UNIT_BADGE, UNIT_HP_BAR } from './unitCard';
@@ -190,7 +191,7 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
           {/* §7.3.7 Battle Hardened — the shield it opened the fight behind, drawn on the bar too. */}
           {mon.shield > 0 && (
             <Tipped tip={shieldTip(mon.shield)} className={`${card.chip} ${card.info}`} data-testid="unit-shield">
-              Shield {mon.shield}
+              {SHIELD_LABEL} {mon.shield}
             </Tipped>
           )}
           {mon.traumaStacks > 0 && (

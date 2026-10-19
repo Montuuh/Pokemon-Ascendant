@@ -61,8 +61,8 @@
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 1px var(--sp-2);
+  gap: var(--sp-1);
+  padding: 0 var(--sp-2);
   border-radius: var(--radius-pill);
   background: var(--accent-warning);
   color: var(--ink-on-accent);
@@ -259,9 +259,6 @@
 }
 .costNote {
   font-size: var(--type-micro);
-  color: var(--accent-warning);
-}
-.warn {
   color: var(--accent-warning);
 }
 /* §9.2.3 — the move's power, in a dashed pill so it cannot pass for a hit (the hit is on the enemy's panel). */

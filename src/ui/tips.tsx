@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS } from '@/sim';
+import { visibleMoot, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -204,7 +204,7 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
     lines.push(<b key={h.targetUid}>{`${mon?.name ?? '?'}: ${h.amount} damage${h.ko ? ' — knocks it out' : ''}`}</b>);
   }
   // §9.2.5 — its target is knocked out first by an earlier hit this turn: what it would have taken, and that it is wasted.
-  const moot = forecast.moot[`${enemy.uid}#${action}`];
+  const moot = visibleMoot(state, forecast, `${enemy.uid}#${action}`);
   const mootMon = moot ? state.player.team.find((m) => m.uid === moot.targetUid) : null;
   if (moot && mootMon) lines.push(<b key="moot">{`${mootMon.name} is down before this lands: it would take ${moot.amount}, so the attack is wasted.`}</b>);
   else if (move.power > 0 && hits.length === 0) lines.push('No damage lands: the target is immune, or the slot is empty.');
@@ -300,7 +300,7 @@ export function armourTip(amount: number): ReactNode {
 
 /** §7.3.7 Battle Hardened — one of yours behind its shield. */
 export function shieldTip(amount: number): ReactNode {
-  return <Tip title={`Shield ${amount}`} body={`Takes the next ${amount} damage before its HP does — the pale blue end of its HP bar.`} footer="Battle Hardened: every Pokémon opens each fight behind one. Once spent, it does not come back." />;
+  return <Tip title={`${SHIELD_LABEL} ${amount}`} body={`Takes the next ${amount} damage before its HP does — the pale blue end of its HP bar.`} footer="Battle Hardened: every Pokémon opens each fight behind one. Once spent, it does not come back." />;
 }
 
 /** §2.6.2 — a rarity row in a Wild Area's pool: its chance, split evenly between its Pokémon. */
@@ -496,11 +496,12 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
   if (c.traumaStacks > 0) lines.push(<div key="t"><b>Trauma ×{c.traumaStacks}</b> — max HP is lowered until treated.</div>);
   if (c.shiny) lines.push(shinyLine(true));
   // §7.3.7 Battle Hardened — the shield it opened the fight behind: what it takes before HP, gone once spent.
-  if (c.shield > 0) lines.push(<div key="sh"><b>Shield {c.shield}</b> — takes the next {c.shield} damage before HP does. It does not come back.</div>);
+  if (c.shield > 0) lines.push(<div key="sh"><b>{SHIELD_LABEL} {c.shield}</b> — takes the next {c.shield} damage before HP does. It does not come back.</div>);
   // §9.2.5 — what lands on it this turn, one line per enemy, the same numbers as the chips beside it; a hit wasted on
   // it being down already, struck through.
-  for (const h of extra?.incoming ?? []) lines.push(h.moot ? <div key={`m-${h.name}-${h.move}`}>{h.name}'s {h.move} would take <s>{h.amount}</s> — wasted: it is down by then.</div> : <div key={`i-${h.name}-${h.move}`}><b>−{h.amount}</b> from {h.name}'s {h.move} this turn.</div>);
+  for (const h of extra?.incoming ?? []) if (!h.moot) lines.push(<div key={`i-${h.name}-${h.move}`}><b>−{h.amount}</b> from {h.name}'s {h.move} this turn.</div>);
   if (extra?.incomingKo) lines.push(<div key="ko"><b>Together they knock it out</b> unless you act.</div>);
+  for (const h of extra?.incoming ?? []) if (h.moot) lines.push(<div key={`m-${h.name}-${h.move}`}>{h.name}'s {h.move} would take <s>{h.amount}</s> — wasted: it is down by then.</div>);
   // §9.2.5 — the swap, priced in HP (v0.8.6).
   if (extra?.asLead) lines.push(<div key="al">As your Lead this turn it would take <b>{extra.asLead.amount}</b>{extra.asLead.ko ? ' — a knockout' : ''}.</div>);
   const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP. Each swap this turn costs 1 more (1, 2, 3); the ladder resets every turn, and Step cards swap for free.` : undefined;
@@ -1295,6 +1296,18 @@ export function levelGainTip(name: string, from: number, to: number, gains: Reco
 /** A move that arrived past four: where it is, and how to play it. */
 export function poolTip(moveName: string): ReactNode {
   return <Tip title={moveName} meta={['In the pool']} body="The active four are full, so it waits in the pool." footer="Swap it in from the Move Manager, on the map." />;
+}
+
+/** §6.8.2 — a line's Bond with you as it stands: its rank, and everything that rank has opened. */
+export function bondStatusTip(rank: number, lineName: string): ReactNode {
+  const open: Record<number, string> = {
+    1: 'Shiny Charm: wild ones three times as likely to be shiny.',
+    2: 'Its hidden ability is open.',
+    3: 'The whole Mastery: its fifth card at every stage.',
+    4: 'Soulbound: it can start a run.',
+  };
+  const lines = [1, 2, 3, 4].filter((r) => r <= rank).map((r) => <div key={r}>{open[r]}</div>);
+  return <Tip title={`${lineName} — ${BOND_RANK_NAME[rank]}`} meta={['Bond', `rank ${rank} of 4`]} body={lines} footer="Bond grows with every run the line is part of." />;
 }
 
 /** §6.8.2 — what a Bond rank opened. */

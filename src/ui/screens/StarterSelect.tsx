@@ -11,11 +11,11 @@ import { ArenaSprite } from '@/ui/components/ArenaSprite';
 import card from '@/ui/components/UnitCard.module.css';
 import { TitleBattle } from '@/ui/title/TitleBattle';
 import { ItemCard } from '@/ui/components/ItemCard';
-import { TypeBadge } from '@/ui/components/TypeBadge';
+import { TypeBadge, TypeLabel } from '@/ui/components/TypeBadge';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { clearPartnerTip, moveDefTip, twinRunTip } from '@/ui/tips';
+import { bondStatusTip, clearPartnerTip, moveDefTip, twinRunTip } from '@/ui/tips';
 import { describeMoveDef } from '@/ui/moveText';
-import { STARTER_TEXT } from '@/ui/strings';
+import { DIFFICULTY_TEXT, STAT_LONG, STARTER_TEXT } from '@/ui/strings';
 import styles from './StarterSelect.module.css';
 
 // Per docs/design/ui/screens.md §3.3 — the new-run stepper: difficulty (§8.8), the Starter (§3.3b), the Starting Relic
@@ -32,7 +32,6 @@ import styles from './StarterSelect.module.css';
 type Step = 0 | 1 | 2 | 3;
 
 const STAT_MAX = { hp: 120, attack: 120, defense: 120, speed: 120 };
-const STAT_NAME = { hp: 'HP', attack: 'Attack', defense: 'Defence', speed: 'Speed' } as const;
 
 /**
  * §8.5.3 Magikarp — its Starting Relic offer is biased toward Water and toward survivability, "because the
@@ -72,18 +71,21 @@ function relicOffer(seed: number, count: number, account: AccountState, lean: re
  * note, 2026-10-19) — the base ones struck through beside yours when an Expanded Box or a Twin Run's partner has grown it.
  */
 function modifierEffect(id: string, effect: string, boxBonus: number): ReactNode {
-  if (id !== 'box-squeeze' || boxBonus <= 0) return effect;
+  const squeeze = MODIFIERS.find((m) => m.id === 'box-squeeze');
+  if (id !== 'box-squeeze' || boxBonus <= 0 || !squeeze?.params) return effect;
   const base = RUN_START.boxCapacity;
-  const cut = MODIFIERS.find((m) => m.id === 'box-squeeze')?.params?.boxCut ?? 2;
+  const cut = squeeze.params.boxCut!;
+  const t = DIFFICULTY_TEXT.boxSqueeze;
   const yours = (from: number, to: number) => (
     <>
-      <s className={styles.was}>{from}</s> <b>{to}</b>
+      <s className={styles.was} aria-hidden="true">{from}</s> <b>{to}</b>
     </>
   );
   return (
-    <>
-      The Box holds {yours(base - cut, base + boxBonus - cut)} instead of {yours(base, base + boxBonus)}, and no relic expands it.
-    </>
+    <span aria-label={t.plain(base + boxBonus - cut, base + boxBonus)}>
+      {t.holds} {yours(base - cut, base + boxBonus - cut)} {t.instead} {yours(base, base + boxBonus)}
+      {t.tail}
+    </span>
   );
 }
 
@@ -359,8 +361,8 @@ export function StarterSelect() {
                   {STARTER_TEXT.all} <span className="tabular">{starters.length}</span>
                 </button>
                 {rosterTypes.map((t) => (
-                  <button key={t} type="button" className={`${styles.filter} ${typeFilter === t ? styles.filterOn : ''}`} aria-pressed={typeFilter === t} aria-label={`${t}: ${starters.filter((x) => x.types.includes(t)).length}`} onClick={() => setTypeFilter(typeFilter === t ? null : t)} data-testid={`starter-filter-${t}`}>
-                    <TypeBadge type={t} size={16} />
+                  <button key={t} type="button" className={`${styles.filter} ${typeFilter === t ? styles.filterOn : ''}`} aria-pressed={typeFilter === t} aria-label={STARTER_TEXT.onlyType(t, starters.filter((x) => x.types.includes(t)).length)} onClick={() => setTypeFilter(typeFilter === t ? null : t)} data-testid={`starter-filter-${t}`}>
+                    <TypeLabel type={t} size={16} />
                   </button>
                 ))}
               </div>
@@ -392,9 +394,9 @@ export function StarterSelect() {
                         <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />
                       ))}
                       {rank > 0 && (
-                        <span className={styles.tileBond} aria-label={`Bond: ${BOND_RANK_NAME[rank]}`}>
+                        <Tipped as="span" tip={bondStatusTip(rank, s.name)} className={styles.tileBond} aria-label={`Bond: ${BOND_RANK_NAME[rank]}`}>
                           <IconHeartFilled size={11} /> {rank}
-                        </span>
+                        </Tipped>
                       )}
                     </span>
                   </button>
@@ -419,27 +421,12 @@ export function StarterSelect() {
                   ))}
                 </span>
                 {chosenRank > 0 && (
-                  <span className={styles.bond} data-testid="starter-bond">
+                  <Tipped as="span" tip={bondStatusTip(chosenRank, chosen.name)} className={styles.bond} data-testid="starter-bond">
                     <IconHeartFilled size={12} /> {BOND_RANK_NAME[chosenRank]}
-                  </span>
+                  </Tipped>
                 )}
               </div>
             </div>
-
-            <dl className={styles.facts}>
-              <div>
-                <dt>{STARTER_TEXT.joins}</dt>
-                <dd className="display tabular">Lv {RUN_START.starterLevel}</dd>
-              </div>
-              <div>
-                <dt>{STARTER_TEXT.cards}</dt>
-                <dd className="display tabular">{kit.length}</dd>
-              </div>
-              <div>
-                <dt>{STARTER_TEXT.evolves}</dt>
-                <dd className="display tabular">{chosen.evolveLevel ? `Lv ${chosen.evolveLevel}` : '—'}</dd>
-              </div>
-            </dl>
 
             <h3 className={styles.sectionTitle}>{STARTER_TEXT.startingCards}</h3>
             <ul className={styles.moves}>
@@ -468,7 +455,7 @@ export function StarterSelect() {
             <dl className={styles.stats}>
               {(['hp', 'attack', 'defense', 'speed'] as const).map((k) => (
                 <div key={k} className={styles.statRow}>
-                  <dt>{STAT_NAME[k]}</dt>
+                  <dt>{STAT_LONG[k]}</dt>
                   <dd>
                     <span className={styles.statTrack}>
                       <span className={`${styles.statFill} ${k === bestStat ? styles.statBest : ''}`} style={{ width: `${Math.min(100, (chosen.baseStats[k] / STAT_MAX[k]) * 100)}%` }} />

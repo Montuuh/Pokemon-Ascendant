@@ -162,7 +162,6 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
       <span className={styles.foot}>
         <Range size={14} stroke={2.4} className={styles.footIcon} />
         <Role size={14} stroke={2.4} className={styles.footIcon} />
-        {state === 'no-ap' && <IconAlertTriangle size={14} className={styles.warn} />}
         {costChanged && <span className={styles.costNote}>was {move.apCost}</span>}
         <span className={`${move.power > 0 ? styles.power : styles.noPower} display tabular`}>{move.power > 0 ? move.power : '—'}</span>
         <TypeLabel type={move.type} size={12} className={styles.typeLabel} />

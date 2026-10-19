@@ -117,7 +117,7 @@
 }
 /* §8.8 — a base number your account has moved past, struck through beside yours. */
 .was {
-  color: var(--ink-muted);
+  color: var(--ink-secondary);
 }
 .diffEffect b {
   color: var(--ink-primary);
@@ -218,7 +218,7 @@
   align-content: start;
   min-height: 0;
   overflow: auto;
-  padding: var(--sp-1) var(--sp-1) var(--sp-2);
+  padding: var(--sp-4) var(--sp-1) var(--sp-2);
 }
 .tile {
   position: relative;
@@ -255,15 +255,17 @@
   translate: -50% 0;
   padding: 0 var(--sp-2);
   border-radius: var(--radius-pill);
-  background: var(--brand-red);
+  background: var(--brand-red-deep);
   color: var(--ink-primary);
   font-size: var(--type-micro);
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+/* The partner's blue is light: dark ink on it (D5). */
 .tilePlacePartner {
   background: var(--brand-blue);
+  color: var(--ink-on-accent);
 }
 .tileTypes {
   display: flex;
@@ -274,11 +276,15 @@
 .tileBond {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--sp-1);
   margin-left: var(--sp-1);
-  color: var(--brand-red);
+  color: var(--ink-primary);
   font-size: var(--type-micro);
   font-weight: 800;
+}
+/* The heart keeps the red as an icon's tint; the number is ink (D5). */
+.tileBond svg {
+  color: var(--brand-red);
 }
 .tileName {
   font-size: var(--type-body);
@@ -313,7 +319,7 @@
   gap: var(--sp-1);
 }
 .dex {
-  color: var(--ink-muted);
+  color: var(--ink-secondary);
   font-size: var(--type-caption);
   font-weight: 700;
 }
@@ -336,30 +342,7 @@
   font-size: var(--type-caption);
   font-weight: 700;
 }
-/* Three numbers a run starts from, as tiles. */
-.facts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--sp-2);
-  margin: var(--sp-2) 0 0;
-}
-.facts div {
-  display: grid;
-  justify-items: center;
-  padding: var(--sp-1) var(--sp-2);
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-}
-.facts dt {
-  color: var(--ink-secondary);
-  font-size: var(--type-micro);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.facts dd {
-  margin: 0;
-  font-size: var(--type-h3);
-}
+
 .sectionTitle {
   margin: var(--sp-3) 0 0;
   font-size: var(--type-caption);
@@ -400,7 +383,7 @@
   height: 100%;
   background: var(--accent-action);
 }
-/* Its best stat, in the type's colour: what it is built for. */
+/* Its best stat, in green: what it is built for. */
 .statBest {
   background: var(--accent-positive);
 }
@@ -418,7 +401,7 @@
   grid-template-columns: auto 36px 1fr auto;
   align-items: center;
   gap: var(--sp-2);
-  padding: 4px var(--sp-2) 4px 4px;
+  padding: var(--sp-1) var(--sp-2) var(--sp-1) var(--sp-1);
   border-radius: var(--radius-sm);
   border-left: 4px solid var(--card-type);
   background: var(--surface-2);
@@ -559,8 +542,6 @@
 .next:hover {
   transform: translateY(-2px);
 }
-
-/* Region 1 Gym matchup. Tone is carried by a left border and a word, never by colour alone (ui.md). */
 
 /* Step chrome shared by the Difficulty and Relic steps: a heading, a lede, then the grid. */
 .diffIntro {

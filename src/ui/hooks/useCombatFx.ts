@@ -244,19 +244,22 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   // Every timer this hook has set, kept across batches: a batch arriving mid-beat must not cancel the end of the
   // last one (a sprite left hidden, the hand left locked). They are cleared only on a new fight and on unmount.
   const pending = useRef<number[]>([]);
+  const seenSeq = useRef(0);
+  const seenCombat = useRef<number | null>(null);
+  const seen = useRef<Seen | null>(null);
+  const nextId = useRef(1);
   const busyEnd = useRef(0);
   const busyTimer = useRef<number | null>(null);
   useEffect(
     () => () => {
       pending.current.forEach((t) => window.clearTimeout(t));
       if (busyTimer.current !== null) window.clearTimeout(busyTimer.current);
+      // A remount starts the fight's beats over, as a fresh hook would: the timers just cleared (the opening's end
+      // among them) are set again. React's dev double-mount keeps refs across it, and left the opening on for good.
+      seenCombat.current = null;
     },
     [],
   );
-  const seenSeq = useRef(0);
-  const seenCombat = useRef<number | null>(null);
-  const seen = useRef<Seen | null>(null);
-  const nextId = useRef(1);
 
   // Before paint: a ghost stands in for the sprite it replaces in the same frame, never a blank one between.
   useLayoutEffect(() => {

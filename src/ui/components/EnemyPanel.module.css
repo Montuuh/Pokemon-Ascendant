@@ -108,7 +108,7 @@
 }
 /* §9.2.5 — a hit wasted on a target already down: its number struck through, in muted ink. */
 .dmgMoot {
-  color: var(--ink-muted);
+  color: var(--ink-secondary);
   font-weight: 700;
 }
 

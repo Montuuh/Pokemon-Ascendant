@@ -47,13 +47,15 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
 
 /** §5.9.5 Ice Armour — the enemy panel's chip for the shield it wears. */
 export const ARMOUR_LABEL = 'Armour';
+/** §7.3.7 Battle Hardened — one of yours behind its shield. */
+export const SHIELD_LABEL = 'Shield';
 
 /** A locked card's overlay: one word for why, and a few for how long (the whole sentence is in its tooltip). */
-/** §7.3.1 — a relic's rarity, by name. */
-export const RARITY_LABEL: Record<'common' | 'uncommon' | 'rare' | 'legendary', string> = { common: 'Common', uncommon: 'Uncommon', rare: 'Rare', legendary: 'Legendary' };
-
 /** §9.2.2.4 — a card that costs more AP than is left, said on its top edge. */
 export const NO_AP_LABEL = 'Not enough AP';
+
+/** §7.3.1 — a relic's rarity, by name. */
+export const RARITY_LABEL: Record<'common' | 'uncommon' | 'rare' | 'legendary', string> = { common: 'Common', uncommon: 'Uncommon', rare: 'Rare', legendary: 'Legendary' };
 
 export const LOCK_LABEL: Partial<Record<RejectReason, { title: string; sub: string }>> = {
   'melee-needs-lead': { title: 'Melee', sub: 'needs Lead' },
@@ -905,6 +907,16 @@ export const WILD_TEXT = {
 };
 
 // §8.4.2 Twin Run — the new-run screen's two places (v0.9.9).
+/** §8.8 — the difficulty step's words that read the account (Box Squeeze, as your Box is). */
+export const DIFFICULTY_TEXT = {
+  boxSqueeze: {
+    holds: 'The Box holds',
+    instead: 'instead of',
+    tail: ', and no relic expands it.',
+    plain: (yours: number, bought: number) => `The Box holds ${yours} instead of ${bought}, and no relic expands it.`,
+  },
+};
+
 export const STARTER_TEXT = {
   lead: 'Lead',
   partner: 'Partner',
@@ -912,9 +924,6 @@ export const STARTER_TEXT = {
   clearPartner: 'Remove the partner',
   filter: 'Show starters of one type',
   all: 'All',
-  joins: 'Joins at',
-  cards: 'Cards',
-  evolves: 'Evolves at',
   startingCards: 'Starting cards',
   baseStats: 'Base stats',
   evolution: 'Evolution',
@@ -922,6 +931,7 @@ export const STARTER_TEXT = {
   weakTo: 'Weak to',
   resists: 'Resists',
   immune: 'Immune to',
+  onlyType: (type: string, n: number) => `Show only ${type.charAt(0).toUpperCase()}${type.slice(1)} starters (${n})`,
   noEffect: 'No damage.',
 };
 

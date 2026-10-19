@@ -39,7 +39,7 @@ export interface TurnForecast {
    * target out first (§3.2.5: an attack on a fallen slot hits nothing): the HP it would have taken, had the target still
    * stood. Printed struck through, so a wasted attack reads as wasted rather than as a zero.
    */
-  moot: Record<string, { targetUid: string; amount: number }>;
+  moot: Record<string, { targetUid: string; amount: number; after: string }>;
 }
 
 /**
@@ -85,6 +85,8 @@ function computeForecast(state: CombatState, ctx: CombatCtx): TurnForecast {
   const out: TurnForecast = { byEnemy: {}, byAction: {}, incoming: {}, hpAfter: {}, moot: {} };
   // The fight as the turn begins: who stands where before any intent lands.
   const start = structuredClone(sim);
+  /** Which action knocked each of yours out in the dry run (`<enemyUid>#<action>`). */
+  const koBy = new Map<string, string>();
 
   /** Run one action and read off the HP it took from each of yours. */
   const act = (enemy: EnemyCombatant, intent: Intent, action: number): ForecastHit[] => {
@@ -99,6 +101,7 @@ function computeForecast(state: CombatState, ctx: CombatCtx): TurnForecast {
     for (const [targetUid, amount] of totals) {
       const hpAfter = sim.player.team.find((c) => c.uid === targetUid)!.hp;
       hits.push({ targetUid, amount, hpAfter, ko: hpAfter <= 0 });
+      if (hpAfter <= 0 && !koBy.has(targetUid)) koBy.set(targetUid, `${enemy.uid}#${action}`);
       (out.incoming[targetUid] ??= []).push({ enemyUid: enemy.uid, action, amount });
     }
     out.byAction[`${enemy.uid}#${action}`] = { enemyUid: enemy.uid, hits };
@@ -111,7 +114,7 @@ function computeForecast(state: CombatState, ctx: CombatCtx): TurnForecast {
         const at = alone.events.length;
         executeIntent(alone, self, run, structuredClone(intent));
         const amount = alone.events.slice(at).reduce((a, e) => a + (e.t === 'damage' && e.sourceUid === enemy.uid && e.targetUid === was.uid ? e.amount : 0), 0);
-        if (amount > 0) out.moot[`${enemy.uid}#${action}`] = { targetUid: was.uid, amount };
+        if (amount > 0) out.moot[`${enemy.uid}#${action}`] = { targetUid: was.uid, amount, after: koBy.get(was.uid) ?? '' };
       }
     }
     return hits;
@@ -138,6 +141,22 @@ function computeForecast(state: CombatState, ctx: CombatCtx): TurnForecast {
  * The HP an enemy's intent takes off one Pokémon of yours this turn (0 when it does not land there). `action` 1 is
  * the second action of a Pokémon that acts twice; absent, its whole turn.
  */
+/**
+ * §9.2.5 — a wasted hit as the player may see it: only when both it and the action that knocked its target out first
+ * are visible — a hidden intent's knockout must not be read off the hit it wastes (Pillar 1 hides what it hides).
+ */
+export function visibleMoot(state: CombatState, forecast: TurnForecast, key: string): { targetUid: string; amount: number } | null {
+  const m = forecast.moot[key];
+  if (!m) return null;
+  const shown = (k: string) => {
+    const [uid, action] = k.split('#');
+    const e = state.enemies.find((x) => x.uid === uid);
+    const i = action === '1' ? e?.second : e?.intent;
+    return !!i && !i.hidden;
+  };
+  return shown(key) && shown(m.after) ? m : null;
+}
+
 export function forecastOn(forecast: TurnForecast, enemyUid: string, targetUid: string, action?: number): number {
   const f = action === undefined ? forecast.byEnemy[enemyUid] : forecast.byAction[`${enemyUid}#${action}`];
   return f?.hits.find((h) => h.targetUid === targetUid)?.amount ?? 0;

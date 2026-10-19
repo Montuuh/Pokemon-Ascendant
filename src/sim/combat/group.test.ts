@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { EnemySetup } from '../content/defs';
 import { ctx, dispatch, eventsOf, handCard, reject, scenario, start, startFixture, tweak, withConsumableHand, withHand, consumableCard } from '../testing/harness';
-import { forecastIfLead, forecastOn, forecastTurn } from './forecast';
+import { forecastIfLead, forecastOn, forecastTurn, visibleMoot } from './forecast';
 import { classifyMove, predictIntentDamage, scoreIntent } from './intents';
 import { cardPlayability } from './preview';
 import { resolutionOrder } from './slots';
@@ -182,6 +182,13 @@ describe('The honest intent — §9.2.5', () => {
     const after = dispatch(s, { type: 'end-turn' });
     const onLead = after.events.slice(s.events.length).filter((e) => e.t === 'damage' && e.targetUid === lead);
     expect(onLead).toHaveLength(1);
+    // Pillar 1 — the knockout's own intent hidden: the wasted hit must not give it away.
+    const second = `${order[1]!.uid}#0`;
+    expect(visibleMoot(s, f, second)).not.toBeNull();
+    const fogged = tweak(s, (d) => {
+      d.enemies.find((e) => e.uid === order[0]!.uid)!.intent!.hidden = true;
+    });
+    expect(visibleMoot(fogged, forecastTurn(fogged, ctx), second)).toBeNull();
   });
 
   it('PredictIntentDamage_ReadsTheForecast_NotTheBareFormula', () => {

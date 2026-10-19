@@ -12,7 +12,7 @@ export { combatReducer, validateAction, type ReduceResult } from './combat/reduc
 export { cardPlayability, consumablePlayability, swapOptions, catchStatus, catchOptions, catchTarget, canReach, aimsAtFoe, pickLeadOptions, stepBackOptions, effectiveApCost, type CardPlayability, type CardTarget, type SwapOption, type ConsumablePlayability } from './combat/preview';
 export { CATCH, catchOdds, catchRateOf, catchPercent, type CatchOdds } from './combat/catch';
 export { predictIntentDamage, describeIntent, intentRecipient, summonCount, summonedBy } from './combat/intents';
-export { forecastTurn, forecastOn, forecastIfLead, asLeadDamage, type TurnForecast, type IntentForecast, type ForecastHit } from './combat/forecast';
+export { forecastTurn, forecastOn, forecastIfLead, asLeadDamage, type TurnForecast, type IntentForecast, type ForecastHit, visibleMoot } from './combat/forecast';
 export { currentPhase, phaseMarkers, bossArchetype } from './combat/boss';
 export { ARENA_RULE_IDS, METRONOME_FIELDS, arenaCounter, arenaRuleOf, barrierUp, metronomeNext, type ArenaRuleId, type ArenaCounter, type ArenaRuleConfig } from './combat/arenaRules';
 export { LEAGUE, LEAGUE_MEMBERS, championAce, generateLeague, leagueBase, leagueMemberOf, leaguePreview, leagueTeam, microRestPct, type LeagueMember } from './run/league';

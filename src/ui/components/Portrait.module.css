@@ -123,9 +123,7 @@
 .incomingMoot {
   border-style: dashed;
   border-color: var(--border-subtle);
-  color: var(--ink-muted);
-}
-.incomingMoot .display {
+  color: var(--ink-secondary);
   text-decoration: line-through;
 }
 .incomingKo {

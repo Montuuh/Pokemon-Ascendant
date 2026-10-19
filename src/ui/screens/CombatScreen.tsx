@@ -3,7 +3,7 @@ import { IconCards, IconMenu2, IconPaw, IconStar, IconTrophy, IconUser } from '@
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
-import { FLEE_TOLL, SLOT_LABEL, cardPlayability, fleeTierFor, consumablePlayability, fieldsSuppressed, asLeadDamage, forecastTurn, indexToSlot, pickLeadOptions, swapOptions, type CardPlayability, type CombatState, type SlotId, type EnemyCombatant, benchIndices, metronomeNext } from '@/sim';
+import { FLEE_TOLL, SLOT_LABEL, cardPlayability, fleeTierFor, consumablePlayability, fieldsSuppressed, asLeadDamage, forecastTurn, indexToSlot, pickLeadOptions, swapOptions, type CardPlayability, type CombatState, type SlotId, type EnemyCombatant, benchIndices, metronomeNext, visibleMoot } from '@/sim';
 import { stageBackdrop, trainerSprite } from '@/ui/art';
 import { CombatLog } from '@/ui/components/CombatLog';
 import { BagButton } from '@/ui/components/BagButton';
@@ -137,7 +137,7 @@ export function CombatScreen() {
       if (!was || was.slot === is.slot || !is.rect.width) continue;
       const dx = was.rect.left + was.rect.width / 2 - (is.rect.left + is.rect.width / 2);
       const dy = was.rect.top + was.rect.height / 2 - (is.rect.top + is.rect.height / 2);
-      el.animate([{ translate: `${dx}px ${dy}px`, scale: `${was.rect.width / is.rect.width}`, zIndex: 5 }, { translate: '0 0', scale: '1', zIndex: 5 }], { duration: FX_MS.swap, easing: 'cubic-bezier(0.3, 0.7, 0.3, 1)', id: 'unit-swap' });
+      el.animate([{ translate: `${dx}px ${dy}px`, scale: `${was.rect.width / is.rect.width}`, zIndex: 5 }, { translate: '0 0', scale: '1', zIndex: 5 }], { duration: FX_MS.swap, easing: getComputedStyle(el).getPropertyValue('--ease-step').trim() || 'ease-out', id: 'unit-swap' });
     }
   }, [state, stageEl, combatKey, animate]);
 
@@ -346,12 +346,11 @@ export function CombatScreen() {
     };
     const list = hits.map((h) => chip(h.enemyUid, h.action, h.amount, false));
     // §9.2.5 — what would also have come at it, wasted on it being down already: struck through after the knockout.
-    const wasted = Object.entries(forecast.moot).flatMap(([key, m]) => {
-      if (m.targetUid !== uid) return [];
+    const wasted = Object.keys(forecast.moot).flatMap((key) => {
+      const m = visibleMoot(state!, forecast, key);
+      if (!m || m.targetUid !== uid) return [];
       const [enemyUid, action] = key.split('#') as [string, string];
-      const e = enemies.find((x) => x.uid === enemyUid);
-      const i = action === '1' ? e?.second : e?.intent;
-      return e && i && !i.hidden ? [chip(enemyUid, Number(action), m.amount, true)] : [];
+      return [chip(enemyUid, Number(action), m.amount, true)];
     });
     return { incoming: [...list, ...wasted], incomingKo: list.length > 0 && list.reduce((a, h) => a + h.amount, 0) >= mon.hp };
   }

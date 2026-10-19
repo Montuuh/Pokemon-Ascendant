@@ -1,6 +1,6 @@
 import { IconQuestionMark } from '@tabler/icons-react';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
-import { SLOT_LABEL, asLeadDamage, comboBreakAt, intentRecipient, slotOccupant, summonedBy } from '@/sim';
+import { SLOT_LABEL, asLeadDamage, comboBreakAt, intentRecipient, slotOccupant, summonedBy, visibleMoot } from '@/sim';
 import { intentGlyph } from '@/ui/art';
 import { INTENT_LABEL, OBJECTIVE_TEXT } from '@/ui/strings';
 import { intentCardTip } from '@/ui/tips';
@@ -28,7 +28,7 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
     ? forecast.byAction[`${enemy.uid}#${action}`]?.hits.find((h) => h.targetUid === slotOcc.uid)?.amount ?? 0
     : null;
   // §9.2.5 — an earlier hit this turn knocks its target out first: what it would take, struck through.
-  const moot = forecast.moot[`${enemy.uid}#${action}`] ?? null;
+  const moot = visibleMoot(state, forecast, `${enemy.uid}#${action}`);
   const ally = intent?.targetEnemyUid ? intentRecipient(state, enemy, intent) : null;
   const called = intent?.kind === 'summon' ? summonedBy(state, enemy, move, ctx.config.maxOnField).map((h) => ctx.content.species(h.species).name) : [];
   // §9.2.5 — a hit on your Lead, shown on everyone who could take the Lead instead (v0.8.6).

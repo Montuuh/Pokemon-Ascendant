@@ -178,7 +178,8 @@
   --surface-sunken: #140f1a;
   --ink-primary: #fff6ec;
   --ink-secondary: #e0d2c2;
-  --ink-muted: #9e8fa0;
+  /* 4.6:1 on --surface-1 (D5; it was #9e8fa0, 4.11:1 — the ui-reviewer's measure, 2026-10-19). */
+  --ink-muted: #a99bab;
   --border-subtle: #4a3e50;
   --border-strong: #ffc15a;
   --scrim: rgba(26, 18, 28, 0.66);
