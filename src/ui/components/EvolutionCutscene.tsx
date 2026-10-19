@@ -1,4 +1,5 @@
 import { playSfx } from '@/ui/audio/sfx';
+import { music } from '@/ui/audio/music';
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type SyntheticEvent } from 'react';
 import { IconPlayerTrackNext } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
@@ -55,7 +56,9 @@ export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fro
     const timers: number[] = [];
     const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
     let t = EVO_MS.intro;
-    // §9.5.3 — the evolution's rise and its chime, on the cutscene's own clock.
+    // §9.5.3 / §9.5.4 — the evolution's own music under the whole scene (the user's note, 2026-10-19), the light's rise
+    // as the sprite whitens, and the fanfare as the new Pokémon stands in its colours, the music hushed for it.
+    music.setScene('evolution');
     playSfx('evolve', t / 1000);
     at(t, () => setPhase('whiten'));
     t += EVO_MS.whiten;
@@ -70,9 +73,14 @@ export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fro
     at(t, () => setPhase('bloom'));
     t += EVO_MS.bloom;
     at(t, () => setPhase('reveal'));
+    at(t, () => music.setScene('hush'));
+    playSfx('evolved', t / 1000);
     t += EVO_MS.reveal + EVO_MS.hold;
     at(t, finish);
-    return () => timers.forEach((x) => window.clearTimeout(x));
+    return () => {
+      timers.forEach((x) => window.clearTimeout(x));
+      music.setScene(null);
+    };
   }, [finish]);
 
   // Any key or click: skip to the end, as the series lets you (but never cancels — the evolution happens).

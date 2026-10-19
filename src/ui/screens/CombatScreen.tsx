@@ -18,7 +18,7 @@ import { IntentArrows } from '@/ui/components/IntentArrows';
 import { TrainerParty } from '@/ui/components/TrainerParty';
 import { ApMeter } from '@/ui/components/ApMeter';
 import { RuleChip } from '@/ui/components/RuleChip';
-import { useCombatSfx } from '@/ui/audio/useAudio';
+import { useCatchSfx, useCombatSfx } from '@/ui/audio/useAudio';
 import { MetronomeChip } from '@/ui/components/MetronomeChip';
 import { ObjectiveChip } from '@/ui/components/ObjectiveChip';
 import { useCardDrag, type CardDrag } from '@/ui/hooks/useCardDrag';
@@ -50,8 +50,9 @@ export function CombatScreen() {
   const rawDispatch = useCombatStore((s) => s.dispatch);
   const animate = useMotionPref();
   const fx = useCombatFx(state, combatKey, animate);
-  // §9.5.3 — and what they sound like.
-  useCombatSfx(state);
+  // §9.5.3 — and what they sound like: a throw on the ball's own clock.
+  useCombatSfx(state, animate);
+  useCatchSfx(fx.catching);
   const busyRef = useRef(fx.busy);
   useEffect(() => {
     busyRef.current = fx.busy;

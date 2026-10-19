@@ -449,16 +449,23 @@ Electric zaps, Ground rumbles) · a soft chime for consumables · a confident st
 directional whooshes for Step-Forward and Step-Backward · a soft fall for a faint · a status sting each (Burn, Poison,
 Paralysis, Sleep, Freeze, Confusion) · a crystalline ping for a crit · a heavy layered impact for super-effective · a
 muted thud for resisted · a rising or falling triplet for a stat stage · paper shuffle for draws · a solid bell for End
-Turn · rising tension then a hit for a boss's new phase · the ball's throw, a wobble per check that passed and the
-click or the burst, on the catch animation's own clock · a level-up run · the evolution's rise and chime · a soft tick
-for every button. A turn's sounds play a beat apart, in the order they happened.
+Turn · rising tension then a hit for a boss's new phase · **the catch, each sound on its frame of the ball's animation**
+(`catchSounds`, the user's report of 2026-10-19 that it drifted): the throw as the ball leaves the hand on screen, the
+beam as it opens on the Pokémon, a tap and a smaller one as it lands and bounces, each wobble as the ball rocks (after
+the still moment that opens its cycle), and the click or the burst as the ball shows it — started by the ball itself, not
+counted from the fight's events · a level-up run · the evolution's rise as the sprite whitens and a fanfare as the new
+Pokémon stands in its colours · a soft tick for every button. A turn's sounds play a beat apart, in the order they
+happened.
 
 ## §9.5.4 Music
 Each track is a key, a tempo, a four-bar progression and the patterns its voices play — a lead, a bass, a held pad and
 a little kick, snare and hat — composed in code (`TRACKS`). Region 1 a light flute-like lead over strings, ~110 BPM
 major · Region 2 brass-like and tense, ~115 BPM minor · Region 3 percussion and sub-bass, ~125 BPM modal (dorian) minor
 · Cities and the Hub a warm looped jingle · Victory Road sparse, ~85 BPM · the League a steady minor march, ~130 BPM ·
-a fight ~140 BPM minor · a boss ~150 BPM phrygian · the Champion ~156 BPM dorian · the title a hopeful march. *Divergence
+a fight ~140 BPM minor · a boss ~150 BPM phrygian · the Champion ~156 BPM dorian · the title a hopeful march · **the
+evolution** (the user's note, 2026-10-19), a scene's own loop over the screen's (`music.setScene`): a hushed pulse of
+eighths under a circling figure, the chord climbing a step a bar so it never settles, ~144 BPM — ours, as every track
+is — hushed for the fanfare, the screen's music back when the scene ends. *Divergence
 (2026-10-16):* one League track, not one per member, and the Champion's is one composition with the tension layer
 rather than three phases; a track per member is for the music pass after v1.0.
 

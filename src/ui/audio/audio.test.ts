@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import { POKEMON_TYPES, PRIMARY_STATUSES, createCombat, DEFAULT_BATTLE_CONFIG, type CombatEvent, type CombatState, type RunState } from '@/sim';
+import { catchTimeline, FX_MS } from '@/ui/hooks/useCombatFx';
 import { inTension, trackFor } from './director';
+import { catchSounds } from './useAudio';
 import { degreeToMidi, notesForBar, TRACK_IDS, TRACKS } from './music';
 import { SFX, sfxForEvent, STATUS_STING, stepsOf, TYPE_TIMBRE, type SfxId } from './sfx';
 
@@ -97,5 +99,25 @@ describe('Music — §9.5.4', () => {
     expect(inTension(s)).toBe(false);
     for (const m of s.player.team) m.hp = Math.floor(m.maxHp * 0.2);
     expect(inTension(s)).toBe(true);
+  });
+});
+
+describe('The catch, heard — §9.5.3, §2.6.4.4', () => {
+  it('CatchSounds_EachAtItsBeatOfTheBallsAnimation_InOrder', () => {
+    const t = catchTimeline(3, true);
+    const s = catchSounds(3, true);
+    expect(s.map(([id]) => id)).toEqual(['ball-throw', 'ball-open', 'ball-land', 'ball-shake', 'ball-shake', 'ball-shake', 'ball-click']);
+    expect(s[1]![1]).toBe(t.absorbAt);
+    // Each wobble is heard as it rocks, after the still moment that opens its cycle — not at the cycle's start.
+    expect(s[3]![1]).toBe(t.wobbleAt + FX_MS.pause);
+    expect(s[4]![1] - s[3]![1]).toBe(t.cycle);
+    expect(s.at(-1)![1]).toBe(t.resultAt);
+    for (let i = 1; i < s.length; i++) expect(s[i]![1]).toBeGreaterThan(s[i - 1]![1]);
+  });
+
+  it('CatchSounds_ABreakOut_BurstsOnItsLastWobble', () => {
+    const s = catchSounds(1, false);
+    expect(s.map(([id]) => id)).toEqual(['ball-throw', 'ball-open', 'ball-land', 'ball-shake', 'ball-break']);
+    expect(s.at(-1)![1]).toBe(catchTimeline(1, false).resultAt);
   });
 });

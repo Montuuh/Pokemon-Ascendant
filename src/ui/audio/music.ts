@@ -6,7 +6,7 @@ import { hz, Synth, synth, type Wave } from './synth';
 // scheduled a beat ahead on the music bus. §9.5.2's stems become one layer: **tension**, the fight's low-HP layer
 // (busier drums, the bass doubled), cross-faded in and out over 250 ms.
 
-export const TRACK_IDS = ['title', 'region-1', 'region-2', 'region-3', 'city', 'victory-road', 'league', 'combat', 'boss', 'champion'] as const;
+export const TRACK_IDS = ['title', 'region-1', 'region-2', 'region-3', 'city', 'victory-road', 'league', 'combat', 'boss', 'champion', 'evolution'] as const;
 export type TrackId = (typeof TRACK_IDS)[number];
 export type Voice = 'lead' | 'bass' | 'pad' | 'kick' | 'hat' | 'snare';
 
@@ -71,6 +71,21 @@ export const TRACKS: Record<TrackId, Track> = {
   boss: T({ bpm: 150, root: 52, scale: PHRYGIAN, progression: [0, 1, 0, 6], lead: [0, 1, 0, null, 4, 3, 1, null, 0, 1, 3, 4, 5, null, 4, null], bass: [0, 1, 2, 3, 4, 5, 6, 7], kick: [0, 2, 4, 6], snare: [2, 6], hat: [1, 3, 5, 7], leadWave: 'sawtooth', mix: { lead: 0.035, bass: 0.11, pad: 0.03, kick: 0.28, hat: 0.04, snare: 0.13 } }),
   // The Champion — dorian, the fastest.
   champion: T({ bpm: 156, root: 50, scale: DORIAN, progression: [0, 3, 6, 4], lead: [7, 9, 7, 4, 2, 4, 7, null, 9, 11, 9, 7, 4, null, 2, null], bass: [0, 1, 2, 3, 4, 5, 6, 7], kick: [0, 2, 4, 6], snare: [2, 6], hat: [0, 1, 2, 3, 4, 5, 6, 7], leadWave: 'sawtooth', mix: { lead: 0.04, bass: 0.11, pad: 0.03, kick: 0.28, hat: 0.03, snare: 0.13 } }),
+  evolution: T({
+    // The evolution (the user's note, 2026-10-19: the series has its music here) — our own: a pulse of eighths on one
+    // note under a rising, circling figure, the chord climbing a step each bar so it never settles until the bloom. Fast,
+    // hushed and expectant; no snare, no kick, only the pulse and the shimmer.
+    bpm: 144,
+    root: 62,
+    scale: MAJOR,
+    progression: [0, 1, 2, 3],
+    lead: [0, 4, 7, 4, 2, 4, 7, 9, 0, 4, 7, 11, 9, 7, 4, 2],
+    bass: [0, 1, 2, 3, 4, 5, 6, 7],
+    hat: [1, 3, 5, 7],
+    leadWave: 'square',
+    padWave: 'triangle',
+    mix: { lead: 0.035, bass: 0.07, pad: 0.04, hat: 0.03 },
+  }),
 };
 
 /** One note: when in the bar (in beats), what, how long (in beats), which voice. */
@@ -150,6 +165,9 @@ function voice(on: Synth, track: Track, n: Note, at: number, beat: number, out: 
  */
 class MusicPlayer {
   private current: TrackId | null = null;
+  /** The screen's track (the director's), and a scene's over it — the evolution — or its silence (`hush`). */
+  private base: TrackId | null = null;
+  private scene: TrackId | 'hush' | null = null;
   private channel: GainNode | null = null;
   private bar = 0;
   private nextBarAt = 0;
@@ -160,7 +178,19 @@ class MusicPlayer {
     return this.current;
   }
 
+  /** The screen's track; it waits under a scene until the scene ends. */
   play(id: TrackId | null): void {
+    this.base = id;
+    if (this.scene === null) this.switchTo(id);
+  }
+
+  /** §9.5.4 — a scene's own music over the screen's (`hush`: its silence); null gives the screen its track back. */
+  setScene(id: TrackId | 'hush' | null): void {
+    this.scene = id;
+    this.switchTo(id === null ? this.base : id === 'hush' ? null : id);
+  }
+
+  private switchTo(id: TrackId | null): void {
     if (id === this.current) return;
     this.fadeOut();
     this.current = id;

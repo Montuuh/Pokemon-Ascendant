@@ -84,8 +84,11 @@ export const SFX = {
   // §9.5.3 — rising tension then a hit for a boss's new phase.
   phase: [tone({ wave: 'sawtooth', from: 110, to: 440, dur: 0.5, gain: 0.15, cutoff: 1500 }), hiss({ filter: 'lowpass', from: 1500, to: 200, dur: 0.35, gain: 0.6, delay: 0.5 }), ...chord([45, 52, 57], 0.6, 0.1, 0.5, 'sawtooth')],
   'combo-break': [tone({ wave: 'square', from: 1046, to: 523, dur: 0.15, gain: 0.1 }), hiss({ filter: 'highpass', from: 3000, dur: 0.1, gain: 0.2 })],
-  // The ball: thrown, a wobble per check, then the click — or the burst.
+  // The ball: thrown, opening on the Pokémon (its beam drawing it in), down to the ground with a bounce, a wobble per
+  // check, then the click — or the burst.
   'ball-throw': [hiss({ filter: 'bandpass', from: 600, to: 2400, q: 1, dur: 0.3, gain: 0.3 })],
+  'ball-open': [tone({ wave: 'square', from: 300, to: 1500, dur: 0.22, gain: 0.07, cutoff: 3500 }), hiss({ filter: 'highpass', from: 2500, to: 5000, dur: 0.35, gain: 0.18, delay: 0.05 }), tone({ wave: 'sine', from: 1200, to: 200, dur: 0.4, gain: 0.08, delay: 0.25 })],
+  'ball-land': [tone({ wave: 'triangle', from: 320, to: 110, dur: 0.07, gain: 0.3 }), hiss({ filter: 'lowpass', from: 900, dur: 0.05, gain: 0.3 }), tone({ wave: 'triangle', from: 300, to: 120, dur: 0.05, gain: 0.14, delay: 0.19 })],
   'ball-shake': [tone({ wave: 'triangle', from: 220, to: 180, dur: 0.08, gain: 0.25 }), hiss({ filter: 'lowpass', from: 600, dur: 0.05, gain: 0.25 })],
   'ball-click': [tone({ wave: 'square', from: hz(88), dur: 0.04, gain: 0.12, cutoff: 4000 }), ...arp([72, 76, 79, 84], 0.08, 0.3, 0.08)],
   'ball-break': [hiss({ filter: 'highpass', from: 2000, dur: 0.15, gain: 0.4 }), tone({ wave: 'square', from: 660, to: 220, dur: 0.2, gain: 0.08, cutoff: 2500 })],
@@ -93,7 +96,9 @@ export const SFX = {
   victory: arp([72, 76, 79, 84, 79, 84], 0.09, 0.3, 0.09),
   defeat: arp([64, 60, 57, 52], 0.18, 0.5, 0.08, 'triangle'),
   'level-up': arp([72, 74, 76, 77, 79, 84], 0.06, 0.2, 0.08),
-  evolve: [tone({ wave: 'sine', from: 220, to: 880, dur: 1.2, gain: 0.12 }), ...arp([72, 76, 79, 84, 88, 91], 0.1, 0.5, 0.07, 'triangle').map((s) => ({ ...s, delay: (s.delay ?? 0) + 1.1 }))],
+  // The evolution: the light's rise as the sprite whitens; the fanfare when the new Pokémon stands in its colours.
+  evolve: [tone({ wave: 'sine', from: 220, to: 880, dur: 1.2, gain: 0.12 }), hiss({ filter: 'bandpass', from: 1500, to: 6000, q: 0.7, dur: 1.2, gain: 0.08 })],
+  evolved: [...arp([67, 72, 76, 79], 0.09, 0.22, 0.08, 'square'), ...chord([72, 76, 79, 84], 1, 0.06, 0.38, 'triangle'), tone({ wave: 'square', from: hz(91), dur: 0.6, gain: 0.04, delay: 0.38, cutoff: 3000 })],
   // The interface: a soft tick on a button.
   'ui-click': [tone({ wave: 'sine', from: 900, to: 700, dur: 0.05, gain: 0.05 })],
 } satisfies Record<string, Step[]>;

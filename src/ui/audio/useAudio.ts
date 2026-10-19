@@ -5,10 +5,10 @@ import { useRunStore } from '@/app/runStore';
 import { useSettingsStore } from '@/app/settingsStore';
 import { getContent } from '@/content/registry';
 import type { CombatState } from '@/sim';
-import { catchTimeline } from '@/ui/hooks/useCombatFx';
+import { catchTimeline, FX_MS, type CatchFx } from '@/ui/hooks/useCombatFx';
 import { inTension, trackFor } from './director';
 import { music } from './music';
-import { playSfx, sfxForEvent } from './sfx';
+import { playSfx, sfxForEvent, type SfxId } from './sfx';
 import { synth } from './synth';
 
 // §9.5 — where the sound meets the app. Three hooks: the first gesture wakes the context and every button ticks; the
@@ -56,11 +56,42 @@ export function useMusicDirector(): void {
   }, [tension]);
 }
 
+/** §2.6.4.4 — where in the drop (`catchDrop`'s keyframes) the ball first touches the ground; it bounces once after. */
+const CATCH_TOUCH = 0.65;
+
 /**
- * §9.5.3 — a fight's sounds: each new event's, a beat apart so a turn reads in order; a throw's wobbles and its click
- * or burst on the catch animation's own clock.
+ * §9.5.3 / §2.6.4.4 — a throw's sounds, each at its beat of the catch animation (`catchTimeline`, the keyframes' own
+ * clock), in ms from the throw: the throw, the ball opening on the Pokémon, the ground and its bounce, each rock of each
+ * wobble (after the still moment that opens its cycle), and the click — or the burst. Pure.
  */
-export function useCombatSfx(state: CombatState | null): void {
+export function catchSounds(wobbles: number, success: boolean): [SfxId, number][] {
+  const t = catchTimeline(wobbles, success);
+  const out: [SfxId, number][] = [
+    ['ball-throw', 0],
+    ['ball-open', t.absorbAt],
+    ['ball-land', t.dropAt + FX_MS.drop * CATCH_TOUCH],
+  ];
+  for (let i = 0; i < wobbles; i++) out.push(['ball-shake', t.wobbleAt + i * t.cycle + FX_MS.pause]);
+  out.push([success ? 'ball-click' : 'ball-break', t.resultAt]);
+  return out;
+}
+
+/** §9.5.3 — the catch, heard as it is drawn: started when the ball leaves the hand on screen. */
+export function useCatchSfx(c: CatchFx | null): void {
+  const id = c?.id ?? null;
+  useEffect(() => {
+    if (!c) return;
+    for (const [sfx, at] of catchSounds(c.wobbles, c.success)) playSfx(sfx, at / 1000);
+    // Keyed on the throw itself: a re-render mid-throw must not throw it again.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+}
+
+/**
+ * §9.5.3 — a fight's sounds: each new event's, a beat apart so a turn reads in order. A throw is heard on the catch
+ * animation's clock (`useCatchSfx`); with no animation, its result at once.
+ */
+export function useCombatSfx(state: CombatState | null, animate = true): void {
   const seen = useRef(0);
   useEffect(() => {
     if (!state) return;
@@ -73,18 +104,17 @@ export function useCombatSfx(state: CombatState | null): void {
     let delay = 0;
     for (const e of fresh) {
       if (e.t === 'catch') {
-        // The throw, a wobble per check that passed (three at most), then the click or the burst (§2.6.4.4).
-        const wobbles = Math.min(3, e.checks);
-        const t = catchTimeline(wobbles, e.success);
-        playSfx('ball-throw', delay);
-        for (let i = 0; i < wobbles; i++) playSfx('ball-shake', delay + (t.wobbleAt + i * t.cycle) / 1000);
-        playSfx(e.success ? 'ball-click' : 'ball-break', delay + t.resultAt / 1000);
-        delay += t.total / 1000;
+        // The ball's own sounds play with the ball (`useCatchSfx`); what follows waits for it to finish.
+        if (!animate) {
+          playSfx(e.success ? 'ball-click' : 'ball-break', delay);
+          delay += 0.3;
+        } else delay += catchTimeline(Math.min(3, e.checks), e.success).total / 1000;
         continue;
       }
       const ids = sfxForEvent(e, look);
       for (const id of ids) playSfx(id, delay);
       if (ids.length) delay += 0.08;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 }
