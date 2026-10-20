@@ -5,6 +5,7 @@ import { getContent } from '@/content/registry';
 import { boxCapacity, daycarePrice, joinTeam, runHelpers, therapyPrice, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { HealPanel } from '@/ui/components/HealPanel';
+import { TeamScreen } from '@/ui/components/TeamScreen';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { HpBar } from '@/ui/components/HpBar';
@@ -33,6 +34,8 @@ export function CenterScreen() {
   const [managing, setManaging] = useState<string | null>(null);
   // §9.9.3 — the counters open once the machine has run: what it gave is said by the machine, not by the PC's bars first.
   const [healed, setHealed] = useState(false);
+  /** §9.12 — the Team screen, from the PC Box. */
+  const [team, setTeam] = useState(false);
 
   function act(action: Parameters<typeof dispatch>[0]) {
     if (!dispatch(action)) {
@@ -200,6 +203,7 @@ export function CenterScreen() {
             onOpenMoves={setManaging}
             stones={run.stones}
             restingUid={run.resting}
+            onOpenTeam={() => setTeam(true)}
           />
         </section>
       </div>
@@ -216,6 +220,7 @@ export function CenterScreen() {
       </footer>
 
       {managing && <MoveManager uid={managing} onClose={() => setManaging(null)} />}
+      {team && <TeamScreen onClose={() => setTeam(false)} />}
     </main>
   );
 }

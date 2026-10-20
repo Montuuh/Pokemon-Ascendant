@@ -734,7 +734,7 @@ flowchart TD
 | **New run** | Difficulty · Starter · Starting Relic · Region Modifier |
 | **In run** | Route Map · Node Preview · **Combat** · Post-Combat Reward · Evolution · Legendary Pick |
 | **Node services** | Pokémon Center · Shop · Dojo · City Plaza · Mystery Event · Roadside Trader |
-| **Management** | Team & Loadout · Move Manager · Inventory · Pokédex |
+| **Management** | Team (the formation, the Box and each Pokémon's sheet, §2.3) · Move Manager · Inventory · Pokédex |
 | **Run end** | Victory · Defeat |
 | **Overlay** | Pause · confirmation modal · toast · tooltip |
 

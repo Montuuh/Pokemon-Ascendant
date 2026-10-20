@@ -1,0 +1,464 @@
+/* §2.3 / §9.12 — the Team screen: the formation and the Box on the left, the selected Pokémon's sheet on the right. The
+   overlay chrome is the Move Manager's (title bar, ✕, Escape), so every management sheet opens the same way. */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-5);
+  background: var(--scrim);
+}
+.panel {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--sp-3);
+  width: min(1160px, 100%);
+  max-height: min(820px, 94vh);
+  padding: var(--sp-5);
+  background: var(--surface-1);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-modal);
+  color: var(--ink-primary);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h2);
+}
+.lockNote {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+.close {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  cursor: pointer;
+}
+.close:hover { background: var(--surface-3); }
+.close:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--sp-5);
+  min-height: 0;
+  overflow: auto;
+}
+.left {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+.section {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+
+/* The formation: the three places side by side, the Lead's first and gold. */
+.formation {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.slot {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--sp-1);
+  min-height: 200px;
+  padding: var(--sp-2);
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-0);
+}
+.slot:first-child { border-color: color-mix(in srgb, var(--accent-action) 70%, var(--border-subtle)); }
+.slotLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-caption);
+  font-weight: 800;
+  color: var(--ink-secondary);
+}
+.over {
+  border-color: var(--brand-blue);
+  background: color-mix(in srgb, var(--brand-blue) 10%, var(--surface-0));
+}
+.empty {
+  display: grid;
+  place-items: center;
+  padding: var(--sp-3);
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+  text-align: center;
+}
+
+.card {
+  display: grid;
+  justify-items: center;
+  align-content: end;
+  gap: var(--sp-1);
+  padding: var(--sp-2);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: inherit;
+  font: inherit;
+  cursor: grab;
+}
+.card:active { cursor: grabbing; }
+/* The sprite stands on the card's floor at a whole or half multiple of its own size (PixelSprite). */
+.spriteBox {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+}
+/* The next free place: a "+" that puts the selected Pokémon there. */
+.put {
+  display: grid;
+  place-items: center;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--ink-secondary);
+  cursor: pointer;
+}
+.put:hover { border-color: var(--accent-action); color: var(--ink-primary); }
+.put:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.cardName {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-small);
+  font-weight: 800;
+}
+.cardLevel {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.card > :last-child { width: 100%; }
+
+.selected {
+  border-color: var(--accent-action);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-action) 35%, transparent);
+}
+.fainted {
+  filter: grayscale(0.7);
+}
+.card:focus-visible,
+.tile:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+/* The Box: a grid of faces, dropped onto to send a Pokémon back. */
+.boxArea {
+  padding: var(--sp-2);
+  border: 2px dashed transparent;
+  border-radius: var(--radius-lg);
+}
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tile {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  width: 100%;
+  padding: var(--sp-2);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: inherit;
+  font: inherit;
+  cursor: grab;
+}
+.tile > :last-child { width: 100%; }
+.tileName {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--type-caption);
+  font-weight: 800;
+}
+.tileLevel {
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+.note {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+}
+
+/* The sheet: the selected Pokémon, read as a page. */
+.sheet {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-0);
+}
+.sheetHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.sheetName {
+  display: grid;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  font-size: var(--type-h3);
+}
+.types {
+  display: inline-flex;
+  gap: var(--sp-1);
+}
+.level {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+}
+.xp {
+  position: relative;
+  width: 120px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.xp > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--brand-blue);
+}
+
+.places {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-1);
+}
+.placeBtn {
+  padding: var(--sp-1) var(--sp-2);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  cursor: pointer;
+}
+.placeBtn[aria-pressed='true'] {
+  border-color: var(--accent-action);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+}
+/* A place it cannot take (a gap, the last one out, a locked team): dashed and quieter; its bubble says why. */
+.placeBtn[aria-disabled='true'] {
+  cursor: not-allowed;
+  border-style: dashed;
+  background: transparent;
+  color: var(--ink-secondary);
+}
+.placeBtn:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+
+/* The four stats as bars against its own best: the shape of the Pokémon. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-1) var(--sp-4);
+  margin: 0;
+}
+.stat {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 0 var(--sp-2);
+}
+.stat dt {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+.stat dd {
+  margin: 0;
+  font-size: var(--type-small);
+  font-weight: 800;
+}
+.statBar {
+  grid-column: 1 / -1;
+  position: relative;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+/* Against its own best stat, in the XP's blue: the shape of the Pokémon, never to be read as its HP. */
+.statBar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--brand-blue);
+}
+
+.rows {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+.rowLabel {
+  font-size: var(--type-caption);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.rowValue {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+  font-weight: 700;
+}
+.muted {
+  color: var(--ink-secondary);
+  font-weight: 600;
+}
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.small {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  cursor: pointer;
+}
+.small:hover { border-color: var(--border-strong); }
+.small:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.bagItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bagItem {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  cursor: pointer;
+}
+.bagItem:hover { border-color: var(--accent-action); }
+.bagItem:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.moves {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* Against the Gyms ahead: a chip a Gym, good news and bad news by a border and its words, never by colour alone. */
+.matchups {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.matchup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-2);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+.matchup[data-good] { border-color: var(--accent-positive); }
+.matchup[data-bad] { border-color: var(--accent-negative); }
+
+/* A refusal, in the header, over nothing the player is reading. */
+.toast {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  border-left: 4px solid var(--accent-warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: color-mix(in srgb, var(--accent-warning) 14%, var(--surface-1));
+  font-size: var(--type-small);
+}
+
+@media (max-width: 960px) {
+  .body { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-height: 800px) {
+  .slot { min-height: 160px; }
+
+}

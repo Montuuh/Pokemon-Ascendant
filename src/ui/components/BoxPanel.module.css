@@ -5,6 +5,25 @@
   overflow: auto;
   padding-right: var(--sp-1);
 }
+/* §9.12 — the Team screen's door, over the list it opens in full. */
+.teamBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  font-size: var(--type-small);
+  font-weight: 800;
+  cursor: pointer;
+}
+.teamBtn:hover { border-color: var(--accent-action); }
+.teamBtn:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
 .heading {
   display: flex;
   align-items: baseline;

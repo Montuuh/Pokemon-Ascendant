@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   IconArrowBigUpLines, IconBackpack, IconBarrierBlock, IconBuildingStore, IconClover, IconHeartPlus, IconKarate,
-  IconMenu2, IconShoppingBag, IconTrees, IconTrophy,
+  IconMenu2, IconShoppingBag, IconTrees, IconTrophy, IconUsersGroup,
 } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
@@ -10,12 +10,14 @@ import { itemIcon, nodeBadge, statusGlyph, townArt } from '@/ui/art';
 import { DoorSoonPanel } from '@/ui/components/DoorSoonPanel';
 import { HpBar } from '@/ui/components/HpBar';
 import { InventoryDrawer } from '@/ui/components/InventoryDrawer';
+import { TeamScreen } from '@/ui/components/TeamScreen';
+import { useTeamKey } from '@/ui/hooks/useTeamKey';
 import { Modal } from '@/ui/components/Modal';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money } from '@/ui/components/Money';
 import { PauseMenu } from '@/ui/components/PauseMenu';
-import { CITY_DOOR_HINT, CITY_DOOR_LABEL, RUN_REJECT_TEXT, STATUS_LABEL, type CityBuildingDoor, type CityDoor } from '@/ui/strings';
-import { badgeTip, bagTip, ballsTip, doorTip, moneyTip, partyTip, townTip } from '@/ui/tips';
+import { CITY_DOOR_HINT, CITY_DOOR_LABEL, RUN_REJECT_TEXT, STATUS_LABEL, TEAM_TEXT, type CityBuildingDoor, type CityDoor } from '@/ui/strings';
+import { badgeTip, bagTip, ballsTip, doorTip, moneyTip, partyTip, teamTip, townTip } from '@/ui/tips';
 import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
 import { TOWNS, type DoorPlacement } from './towns';
 import styles from './CityScreen.module.css';
@@ -49,6 +51,11 @@ export function CityScreen() {
   const [paused, setPaused] = useState(false);
   const [inventory, setInventory] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  /** §9.12 — the Team screen: the lobby is where the team for the next door is chosen (§2.11.0). */
+  const [team, setTeam] = useState(false);
+  const openTeam = useCallback(() => setTeam(true), [setTeam]);
+  useTeamKey(openTeam, !team && !paused && !inventory && !panel);
+  const teamTipProps = useTip(teamTip());
 
   const city = run.city!;
   const def = CITIES[city.id];
@@ -59,7 +66,8 @@ export function CityScreen() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
-      // Innermost first: a panel, the bag, then the menu.
+      // Innermost first: the Team screen (it closes itself), a panel, the bag, then the menu.
+      if (document.querySelector('[data-testid="team-screen"]')) return;
       if (panel) setPanel(null);
       else if (inventory) setInventory(false);
       else setPaused((p) => !p);
@@ -115,6 +123,9 @@ export function CityScreen() {
           <CityBagButton count={bagCount} onOpen={() => setInventory(true)} />
         </div>
         <Party box={run.box} />
+        <button type="button" className={styles.teamBtn} onClick={openTeam} aria-label={TEAM_TEXT.openLabel} data-testid="btn-team" {...teamTipProps}>
+          <IconUsersGroup size={18} aria-hidden="true" /> {TEAM_TEXT.open}
+        </button>
         <button type="button" className={styles.menuBtn} onClick={() => setPaused(true)} data-testid="btn-pause">
           <IconMenu2 size={18} /> Menu
         </button>
@@ -180,6 +191,7 @@ export function CityScreen() {
       )}
 
       {inventory && <InventoryDrawer onClose={() => setInventory(false)} />}
+      {team && <TeamScreen onClose={() => setTeam(false)} />}
       {paused && <PauseMenu onResume={() => setPaused(false)} />}
     </main>
   );

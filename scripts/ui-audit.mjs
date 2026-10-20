@@ -97,6 +97,9 @@ const SCREENS = {
   // §9.9.3 — the Center's machine on a hurt Box (a click skips to the bars filled), and the map with every node named.
   'center-heal': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.patch((d) => { d.box[0].hp = 3; d.box[1].hp = 0; })'], clicks: ['door-center', 'center-heal'], match: [/components\/HealPanel/, /screens\/CenterScreen/] },
   'map-labels': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'goTo("map")'], clicks: ['map-labels'], match: [/screens\/map\/RouteView/, /components\/nodeArt/, /components\/NodeMarker/] },
+  // §9.12 — the Team screen, from the map (a full formation, an item to give) and from a City's lobby.
+  team: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(4)', 'run.patch((d) => { d.activeUids = d.box.slice(0, 3).map((m) => m.uid); d.bag = [...d.bag, "leftovers"]; })', 'goTo("map")'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /hooks\/useTeamKey/, /components\/BoxPanel/] },
+  'team-city': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /screens\/city\/CityScreen/] },
   evolution: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("wild", true)', 'goTo("map")'], match: [/screens\/EvolutionScreen/] },
 };
 

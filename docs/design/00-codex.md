@@ -107,7 +107,9 @@ Pokémon.
   field effects) is v0.8's. *(2026-09-23.)*
 
 **Box & Active Team.** Box capacity 6 (→8). Active Team is 3, locked on node entry; only those 3 contribute
-cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent.
+cards. Overflow on recruit → **Swap or Skip**, and releasing is permanent. The **Team screen** (v0.9.26, T) is where it is
+chosen on the map, in a City and at its Center: the formation (Lead · Bench 1 · Bench 2) and the Box by drag or by a
+Pokémon's sheet — its stats, ability, held item, cards, evolution and its matchup against the Gyms ahead.
 
 **HP persists** across combats and nodes. `currentHP == 0` **is** fainted. No in-combat revival except the
 `revive` consumable. Every faint costs a **Trauma stack**.

@@ -580,6 +580,46 @@ export const CENTER_TEXT = {
   daycareDone: 'The Daycare has taken its Pokémon this visit.',
 };
 
+/** §2.3 / §9.12 — the Team screen (`TeamScreen`): the formation, the Box and the selected Pokémon's sheet. */
+export const TEAM_TEXT = {
+  title: 'Team',
+  open: 'Team',
+  openLabel: 'Open the Team: formation, Box and each Pokémon\'s sheet',
+  close: 'Close the Team',
+  formation: 'Formation',
+  slots: ['Lead', 'Bench 1', 'Bench 2'] as const,
+  box: 'Box',
+  emptyPlace: 'Empty place',
+  putHere: (name: string, place: string) => `Put ${name} in ${place}`,
+  secondPlace: 'Its second place',
+  allOut: 'Everyone you have is in the formation.',
+  locked: 'Locked for this node',
+  refused: 'Not now.',
+  lastOne: 'Somebody has to be in the formation: this is the last one there.',
+  resting: 'resting at the Daycare',
+  placeLabel: 'Where it stands',
+  ability: 'Ability',
+  noAbility: 'No ability yet',
+  held: 'Holds',
+  holdingNothing: 'Nothing',
+  take: 'Take',
+  give: 'Give',
+  giveLabel: (item: string, name: string) => `Give ${item} to ${name}`,
+  moves: 'Moves',
+  manage: 'Manage',
+  evolution: 'Evolution',
+  ready: 'Ready to evolve',
+  evolvesAt: (level: number) => `At Lv ${level}`,
+  vsGyms: 'Against the Gyms ahead',
+  stats: { hp: 'HP', attack: 'Attack', defense: 'Defense', speed: 'Speed' } as const,
+  sheet: (name: string) => `${name}'s sheet`,
+  monLabel: (name: string, level: number, hp: number, max: number) => `${name}, level ${level}, ${hp} of ${max} HP`,
+  /** The matchup's chip: how hard it hits that type, and how hard that type hits it. */
+  matchup: (attack: number, defend: number) => `hits ×${fmtMult(attack)} · takes ×${fmtMult(defend)}`,
+};
+/** A type multiplier as the chips write it: ×2, ×½, ×¼, ×0. */
+export const fmtMult = (m: number) => (m === 0.5 ? '½' : m === 0.25 ? '¼' : String(m));
+
 /** §2.9.5 — the item ball's reel (`FindScreen`, the preview's `ReelPool`). */
 export const FIND_TEXT = {
   title: 'Item ball',

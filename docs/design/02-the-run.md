@@ -291,6 +291,25 @@ stood there longest until the places fit. The team's count on the map is in plac
 says *2 places*. Code: `run/legendaries.ts` (`ACTIVE_TEAM`, `placesOf`, `placesTaken`, `hasPlaceFor`, `fillTeam`,
 `joinTeam`).
 
+**The Team screen** (✅ v0.9.26 — the user, 2026-10-20: "improve the design of managing the team, on the route and in
+the towns"). One sheet wherever the team is chosen: the map (its Box panel's **Team** button, or **T**), a City's lobby
+(beside its party), its Center's PC Box and the Ring between rungs. On its left the **formation** as the fight will stand
+it — the **Lead**, **Bench 1**, **Bench 2** — with the Box below; on its right the **sheet** of the Pokémon picked: its
+four stats as its next fight fields them (level, path, Training, the Trauma ceiling), its ability, the item it holds
+(given from the bag or taken back here), its four cards and the Move Manager behind them, its evolution, and **how it
+meets the Gyms the route ends at** — its best card against each Gym's type and that type against it. A Pokémon moves by
+being **dragged** onto a place or onto the Box, or by the four **place buttons** on its sheet; a place it cannot take
+(a gap in the formation) is shown and refused, and every move is the run's `set-active`, so every rule above holds
+and the screen says why when one refuses. Once a node is entered the sheet still reads and nothing moves. Code:
+`ui/components/TeamScreen.tsx`, `run/team.ts` (`teamStats`, `matchupAgainst`), `hooks/useTeamKey.ts`.
+
+*Why one screen (delegated, 2026-10-20).* The team was managed in three places at once — a list on the map whose
+clicks meant different things on different rows (bench it, make it the Lead), the Move Manager for the cards, and the
+bag drawer for the held item — and in a City only inside the Center. Three shapes were weighed: improving the side
+list (drag to reorder, slot labels), a full sheet, and both. Both won: the list stays where the map needs a glance,
+and its door opens the sheet where the decision is made — the formation drawn the way the arena draws it, the Pokémon
+read as a page, and the Gym the route ends at in the same view, because the counter is planned in the trunk (§2.5.0).
+
 ## §2.3.1 Box overflow — Swap or Skip
 
 Recruiting at a full Box forces a choice:

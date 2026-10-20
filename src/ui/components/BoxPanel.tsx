@@ -1,4 +1,4 @@
-import { IconCrown, IconAlertTriangle, IconBarbell, IconCards, IconZzz } from '@tabler/icons-react';
+import { IconCrown, IconAlertTriangle, IconBarbell, IconCards, IconUsersGroup, IconZzz } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
 import { maxHpOf, stoneUse, xpToNext, type PartyMon, ACTIVE_TEAM, placesOf, placesTaken } from '@/sim';
 import { HpBar } from './HpBar';
@@ -6,8 +6,8 @@ import { MonIcon } from './MonIcon';
 import { ShinyMark } from './ShinyMark';
 import { TypeBadge } from './TypeBadge';
 import { statusGlyph } from '@/ui/art';
-import { STATUS_LABEL, TWO_PLACES } from '@/ui/strings';
-import { statusTip, traumaTip, boostsTip, restingTip, shinyLine, twoPlacesTip } from '@/ui/tips';
+import { STATUS_LABEL, TEAM_TEXT, TWO_PLACES } from '@/ui/strings';
+import { statusTip, teamTip, traumaTip, boostsTip, restingTip, shinyLine, twoPlacesTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './BoxPanel.module.css';
 
@@ -28,6 +28,8 @@ interface Props {
   stones?: readonly string[];
   /** §2.11.1 — the Pokémon resting after the Daycare: it sits out the next fight, so its row cannot be fielded. */
   restingUid?: string | null;
+  /** §9.12 — the Team screen's door: the formation, the Box and each Pokémon's sheet. Absent: no door. */
+  onOpenTeam?: () => void;
 }
 
 function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, onSetLead, onOpenMoves, stones = [] }: { mon: PartyMon; active: boolean; index: number; locked: boolean; resting?: boolean; onToggleActive: Props['onToggleActive']; onSetLead: Props['onSetLead']; onOpenMoves: Props['onOpenMoves']; stones?: readonly string[] }) {
@@ -161,7 +163,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
   );
 }
 
-export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMoves, capacity, stones = [], restingUid = null }: Props) {
+export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMoves, capacity, stones = [], restingUid = null, onOpenTeam }: Props) {
   const locked = !onToggleActive;
 
   const activeMons = activeUids.map((uid) => box.find((m) => m.uid === uid)).filter((m): m is PartyMon => !!m);
@@ -171,6 +173,11 @@ export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMov
 
   return (
     <div className={styles.root} data-testid="box-panel">
+      {onOpenTeam && (
+        <Tipped as="button" type="button" tip={teamTip()} className={styles.teamBtn} onClick={onOpenTeam} aria-label={TEAM_TEXT.openLabel} data-testid="btn-team">
+          <IconUsersGroup size={16} aria-hidden="true" /> {TEAM_TEXT.open}
+        </Tipped>
+      )}
       <h2 className={styles.heading}>
         Active Team <span className={styles.count}>{places}/{ACTIVE_TEAM.places}</span>
       </h2>

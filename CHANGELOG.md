@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.26 — The team, managed · 2026-10-20
+
+One Team screen on the route and in the towns.
+
+- **Team screen.** Formation and Box; drag, or place buttons (T).
+- **The sheet.** Stats, ability, held item, cards, evolution.
+- **Matchups.** Each Pokémon against the route's two Gyms.
+
 ### v0.9.25 — The route, reworked · 2026-10-20
 
 Wild Areas as habitats, the item ball's reel, the heal seen, honest levels.

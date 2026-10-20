@@ -10,6 +10,7 @@ import { BoxPanel } from '@/ui/components/BoxPanel';
 import { ConfirmLeave } from '@/ui/components/ConfirmLeave';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
+import { TeamScreen } from '@/ui/components/TeamScreen';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { LEAVE_WARNING, RING_GUIDE, RING_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
 import { bankedTip, moneyTip, ringEntryTip, ringTip, rungTip } from '@/ui/tips';
@@ -35,6 +36,8 @@ export function RingScreen() {
   const goTo = useAppStore((s) => s.goTo);
   const content = getContent();
   const [toast, setToast] = useState<string | null>(null);
+  /** §9.12 — the Team screen, between rungs. */
+  const [team, setTeam] = useState(false);
   const [leaving, setLeaving] = useState(false);
   // §2.9.4.1 — the How to play opens by itself on this browser's first walk into a Ring.
   const [guide, setGuide] = useState(() => !ringGuideSeen());
@@ -151,6 +154,7 @@ export function RingScreen() {
             onSetLead={(uid) => act({ type: 'set-lead', uid })}
             onOpenMoves={null}
             restingUid={run.resting}
+            onOpenTeam={() => setTeam(true)}
           />
         </aside>
       </div>
@@ -200,6 +204,7 @@ export function RingScreen() {
           }}
         />
       )}
+      {team && <TeamScreen onClose={() => setTeam(false)} />}
     </main>
   );
 }

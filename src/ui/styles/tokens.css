@@ -37,6 +37,8 @@
   --border-subtle: #e4d4b5;
   --border-strong: #c9a86a;
   --scrim: rgba(58, 46, 34, 0.55);
+  /* The management sheets' lift (the Move Manager, the Team screen). */
+  --shadow-modal: 0 24px 60px rgba(58, 46, 34, 0.35);
 
   /* ---- Semantic accents (§1.2). On the LIGHT theme: fill/border/icon only, never text colour. ---- */
   --accent-action: #ffcb3d;

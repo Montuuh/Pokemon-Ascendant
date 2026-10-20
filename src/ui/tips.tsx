@@ -4,7 +4,7 @@ import { visibleMoot, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MA
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -764,6 +764,54 @@ export function healTip(variant: 'center' | 'nurse', hp: number | null, cured: n
       footer={variant === 'center' ? "Trauma stays: only the Center's Therapy takes it off." : undefined}
     />
   );
+}
+
+/** §2.3 / §9.12 — the Team screen, on its heading. */
+export function teamTip(): ReactNode {
+  return <Tip title="Team" meta={['T']} body="The three in the formation are the three that fight, in their places: the Lead in front, two on the bench. Drag a Pokémon onto a place, or onto the Box, or use the place buttons on its sheet. The sheet is the Pokémon: its stats as its next fight fields them, its ability, what it holds, its four cards and how it meets the Gyms ahead." footer="A Legendary takes two places. The team locks once you enter a node." />;
+}
+
+/** §2.3 — one of a Pokémon's stats, on its sheet. */
+export function teamStatTip(stat: 'hp' | 'attack' | 'defense' | 'speed', value: number): ReactNode {
+  const body = {
+    hp: 'Its HP as its next fight starts it full: its level, its path, any Training, less what Trauma has taken off the top.',
+    attack: 'How hard its cards hit: its level, its path and any Training.',
+    defense: 'How much less it takes from every hit.',
+    speed: 'Who acts first when a turn has both sides moving at once.',
+  }[stat];
+  return <Tip title={`${STAT_LONG[stat] ?? stat} ${value}`} body={body} />;
+}
+
+/** §4.1.2 — how a Pokémon meets a Gym's type: its best card against it, and that type against it. */
+export function matchupTip(leader: string, type: PokemonType, attack: number, defend: number): ReactNode {
+  const hit = attack > 1 ? 'hits it hard' : attack < 1 ? 'is resisted' : 'hits it evenly';
+  const take = defend > 1 ? 'is hit hard' : defend < 1 ? 'shrugs it off' : 'takes it evenly';
+  return <Tip title={`vs ${leader} · ${typeName(type)}`} meta={[`Its best card ×${fmtMult(attack)}`, `${typeName(type)} on it ×${fmtMult(defend)}`]} body={`Its best damaging card ${hit}; ${typeName(type)} attacks: it ${take}.`} footer="Build the answer before the fork: a Gym's own lane offers its type's friends, not its counter." />;
+}
+
+/** §2.3 — a place on the sheet that is refused, and why. */
+export function teamPlaceTip(why: 'gap' | 'last' | 'locked'): ReactNode {
+  const body = {
+    gap: 'The formation has no gaps: a place fills after the one before it.',
+    last: TEAM_TEXT.lastOne,
+    locked: 'The team is locked once you enter a node.',
+  }[why];
+  return <Tip title="Not this place" body={body} />;
+}
+
+/** §6.2 — a Pokémon's XP on its sheet: to the next level, and what the bench learns, as this run pays it. */
+export function teamXpTip(xp: number, next: number, benchShare: number): ReactNode {
+  return <Tip title={`${xp} / ${next} XP`} body={`To the next level. The formation earns a fight's XP in full; the Box earns ${Math.round(benchShare * 100)} % of it.`} />;
+}
+
+/** §6.5.1 — a Pokémon's ability on its sheet, or why it has none yet. */
+export function abilitySheetTip(ability: { name: string; description: string } | null): ReactNode {
+  return ability ? <Tip title={ability.name} body={ability.description} /> : <Tip title="No ability yet" body="A Pokémon takes its ability with its first evolution; the Dojo can teach it another." />;
+}
+
+/** §7.4 — a held item, on a Pokémon's sheet or in the bag it could give. */
+export function heldItemTip(item: { name: string; description: string }): ReactNode {
+  return <Tip title={item.name} body={item.description} footer="One item a Pokémon. Giving another swaps it back into the bag." />;
 }
 
 /** §2.9.5 — the item ball, on its screen's heading. */

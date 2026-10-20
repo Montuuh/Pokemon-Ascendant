@@ -12,7 +12,8 @@
 
 .topBar {
   display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  /* The name, the purse, the party, its Team door, the menu. */
+  grid-template-columns: 1fr auto auto auto auto;
   align-items: center;
   gap: var(--sp-4);
   padding: var(--sp-3) var(--sp-4);
@@ -47,6 +48,8 @@
   font-size: var(--type-body);
 }
 .bagBtn,
+/* §9.12 — the Team screen's door, beside the party it opens: the menu button's plate, the action's border. */
+.teamBtn,
 .menuBtn {
   display: inline-flex;
   align-items: center;
@@ -60,7 +63,10 @@
   font-weight: 700;
   cursor: pointer;
 }
+.teamBtn { border-color: var(--border-strong); }
+.teamBtn:hover { border-color: var(--accent-action); }
 .bagBtn:focus-visible,
+.teamBtn:focus-visible,
 .menuBtn:focus-visible {
   outline: 3px solid var(--brand-blue);
   outline-offset: 2px;

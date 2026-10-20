@@ -16,7 +16,7 @@ import styles from './FindPrize.module.css';
  * D9 — an item's icon at `size`: a small pixel sprite (the 30-px bag icons) at the largest whole or half multiple of its
  * own size that fits, crisp; a large render (the 128-px ones) smooth at `size`.
  */
-function ItemIcon({ src, size }: { src: string; size: number }) {
+export function ItemIcon({ src, size }: { src: string; size: number }) {
   const [px, setPx] = useState<number | null>(null);
   const shown = px ?? size;
   return (

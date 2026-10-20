@@ -1400,11 +1400,15 @@ toggle and the L key name every node. **The curve held** (§2.2.1): over two ind
 seeds are fixed, so one block is one sample — `CURVE_BASE`), R1 53 % · R2|R1 59–62 % · R3|R2 50–51 % · League|R3 43–56 % ·
 the whole run 7–9 %, against HEAD's 54–56 · 55–63 · 42–51 · 54–60 · 8–9; Elite lost 9 / 7 / 11 %, Gyms 7 / 7 / 13 %.
 
-### v0.9.26 — The team, managed  ☐
-The pack's last item: team management, on the route and in the towns. One **Team** screen opened from the map (and a
-key) and from a City's team strip: the formation (Lead, Bench 1, Bench 2) and the Box with drag and drop, and the
-selected Pokémon's sheet — stats, ability, held item to give or take, moves, evolution — with its matchup against the
-route's Gyms.
+### v0.9.26 — The team, managed  ✅ 2026-10-20
+The pack's last item: team management, on the route and in the towns.
+
+**Shipped.** §2.3 (`TeamScreen`, `run/team.ts`): one **Team** screen wherever the team is chosen — the map's Box
+panel (its button, or **T**), a City's lobby beside its party, its Center's PC Box and the Ring. The formation as the
+arena draws it (Lead · Bench 1 · Bench 2) and the Box, moved by **drag** or by the sheet's **place buttons**, every move
+the run's `set-active`; the selected Pokémon's **sheet** — stats as its next fight fields them, ability, held item
+given from the bag or taken, its cards and the Move Manager, its evolution, and its **matchup against the Gyms the
+route ends at**. The side list stays for the glance; the screen is where the decision is made. `e2e/team`.
 
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,

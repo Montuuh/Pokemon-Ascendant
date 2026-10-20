@@ -56,6 +56,7 @@ export { GROUP_RATES, groupPlanFor, applyGroups, type GroupPlan, type GroupRates
 export { FLEE_TOLL, fleeTierFor, describeToll, type FleeTier, type FleeToll } from './run/flee';
 export { FLEE_RACE, HOLD_OUT, guardById, holdPrizeLine, runnerById, runnerRewardLine, type GuardDef, type HoldPrize, type RunnerDef, type RunnerReward } from './run/objectives';
 export { objectiveTurnsLeft } from './combat/objective';
+export { teamStats, matchupAgainst, type TeamStats, type Matchup } from './run/team';
 export { FIND_REEL, REEL_SHAPE, buildReel, placeReels, prizeLabel, reelChances, spinReel } from './run/finds';
 export { TRADER, TRADER_PREVIEW, rollTradeOffers, tradeLevel, tradeRefusal, type TradeOffer } from './run/trader';
 export { VICTORY_ROAD, TRAINING_UPGRADES, TRAINING_PREVIEW, SUMMIT_PREVIEW, generateVictoryRoad, apexPreview, trainingOptions, perfectClearBadge, victoryRoadLevel, type TrainingUpgrade } from './run/victoryRoad';

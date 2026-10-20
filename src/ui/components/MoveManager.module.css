@@ -19,7 +19,7 @@
   background: var(--surface-1);
   border: 2px solid var(--border-strong);
   border-radius: var(--radius-xl);
-  box-shadow: 0 24px 60px rgba(58, 46, 34, 0.35);
+  box-shadow: var(--shadow-modal);
 }
 .close {
   position: absolute;

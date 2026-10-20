@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { IconMenu2, IconBackpack, IconSparkles } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
@@ -11,6 +11,8 @@ import { MoveManager } from '@/ui/components/MoveManager';
 import type { NodeStatus } from '@/ui/components/NodeMarker';
 import { NodePreviewCard } from '@/ui/components/NodePreviewCard';
 import { PauseMenu } from '@/ui/components/PauseMenu';
+import { TeamScreen } from '@/ui/components/TeamScreen';
+import { useTeamKey } from '@/ui/hooks/useTeamKey';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { LEAGUE_TEXT, ROUTE_TEXT, RUN_REJECT_TEXT, VICTORY_TEXT } from '@/ui/strings';
@@ -35,6 +37,10 @@ export function MapScreen() {
   const [managing, setManaging] = useState<string | null>(null);
   /** §7.2–§7.5 — the inventory drawer: relics, held items, the bag. The only place a Held Item moves. */
   const [inventory, setInventory] = useState(false);
+  /** §9.12 — the Team screen: the formation, the Box and each Pokémon's sheet (T). */
+  const [team, setTeam] = useState(false);
+  const openTeam = useCallback(() => setTeam(true), [setTeam]);
+  useTeamKey(openTeam, !team && !paused && !inventory && !managing);
   const bagBubble = useTip(bagTip());
   /**
    * §2.9.5 — the find the pill has already said, so it is said once. Only a save from before the item ball's reel walks
@@ -70,7 +76,9 @@ export function MapScreen() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
-      // Escape closes the innermost open thing first, then toggles the menu (§9.6, shared overlay chrome).
+      // Escape closes the innermost open thing first, then toggles the menu (§9.6, shared overlay chrome). The Team
+      // screen closes itself (its Move Manager first).
+      if (document.querySelector('[data-testid="team-screen"]')) return;
       if (useRunStore.getState().run && document.querySelector('[data-testid="inventory-drawer"]')) {
         setInventory(false);
         return;
@@ -230,6 +238,7 @@ export function MapScreen() {
             onOpenMoves={setManaging}
             stones={run.stones}
             restingUid={run.resting}
+            onOpenTeam={openTeam}
           />
         </aside>
 
@@ -265,6 +274,7 @@ export function MapScreen() {
 
       {managing && <MoveManager uid={managing} onClose={() => setManaging(null)} />}
       {inventory && <InventoryDrawer onClose={() => setInventory(false)} />}
+      {team && <TeamScreen onClose={() => setTeam(false)} locked={locked} />}
 
       {paused && <PauseMenu onResume={() => setPaused(false)} />}
 

@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.26 — The team, managed.** One Team screen wherever the team is chosen — on the map (or with T), in a City's
+lobby, at its Center: the formation as it will fight and the Box beside it, moved by dragging or by a button, and the
+sheet of the Pokémon you pick — its stats, its ability, the item it holds, its cards, its evolution, and how it meets
+the Gyms your route ends at. Before it,
 **v0.9.25 — The route, reworked.** Wild Areas are habitats now — Tall Grass, a Forest, a Fishing Spot, a Rocky Ridge,
 the Power Plant, an Old Tower and more, each a pool of one family with its own backdrop — so where you look is a plan.
 A find on the path is an item ball whose reel of seven prizes spins as you pick it up, relics among them; the Pokémon
