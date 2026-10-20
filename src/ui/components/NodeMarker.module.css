@@ -44,16 +44,7 @@
 .pokemon img {
   bottom: 2px;
 }
-/* §9.3 — a Wild Area is its habitat's landmark at its own size (a building at half of it, a peak at twice), its foot
-   in the grass; one that lies flat (a pond, a reef, flowers) sits a little higher, so the grass hides its rim, not it. */
-.habitat img {
-  bottom: var(--sp-1);
-}
-.habitat img[data-low] {
-  bottom: var(--sp-2);
-}
-/* The tufts every Wild Area stands in — one grass for all of them — and the Elite Wild with them. */
-.habitat .grass,
+/* The Elite Wild and a runner stand in the grass every Wild Area shares (a Wild Area's own layers are HabitatArt's). */
 .pokemon .grass {
   bottom: -6px;
 }

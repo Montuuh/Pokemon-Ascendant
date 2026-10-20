@@ -8,7 +8,7 @@ import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { FIELD_LABEL, ROUTE_TEXT } from '@/ui/strings';
 import { fieldTip, mapLabelsTip, noReturnTip, routeStripTip } from '@/ui/tips';
 import { Tipped, useTip } from '@/ui/tooltip';
-import { mapTerrain } from './terrain';
+import { mapTerrain, COL_TILES } from './terrain';
 import { loadPieces, paintStrip, paintTerrain, piecesFor, TILE } from './tileset';
 import styles from './RouteView.module.css';
 
@@ -204,7 +204,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   return (
     <div className={styles.root}>
       <div ref={scroller} className={styles.scroller} tabIndex={0} onKeyDown={onKey} aria-label={ROUTE_TEXT.scroller} data-testid="route-scroller">
-        <div className={styles.board} style={{ width: boardW, height: terrain.h * px }} data-painted={painted || undefined} data-testid="route-board">
+        <div className={styles.board} style={{ width: boardW, height: terrain.h * px, '--reach': `${Math.floor((COL_TILES * px) / 2) - 4}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
           <canvas ref={canvas} className={styles.terrain} style={{ width: boardW, height: terrain.h * px }} aria-hidden="true" />
 
           {/* §2.5.4 — each lane's Battlefield, drawn over its stretch as weather, and named at the lane's mouth. */}

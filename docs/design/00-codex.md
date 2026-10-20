@@ -132,7 +132,7 @@ trader** (§2.9.6: give one of your Box for one of three face-down offers — a 
 you gave). So every route walks ~12 fights and ~7 stops. ~65 nodes. The
 map is **painted from a tileset** by a pure function of the map (§2.5.4) and saved whole in the run. Since v0.9.14
 (§9.3, after Pokelike) every edge is a **straight line** node to node and every node is drawn **as what it is** — the
-trainer, the Leader at 2×, a Wild Area its habitat's landmark in one grass (the Pokémon Tower, a cave's mouth), the item ball — full colour on the routes still open, faded behind; the nodes you can step to wear their chip as a gold button; a **Labels** toggle (L) puts a chip with its kind's icon and word under every node (Wild, Trainer, Nurse…).
+trainer, the Leader at 2×, a Wild Area its habitat's landmark in one grass (the Pokémon Tower, a cave's mouth) with its pool's Pokémon going round at its sides, the item ball — full colour on the routes still open, faded behind; the nodes you can step to wear their chip as a gold button; a **Labels** toggle (L) puts a chip with its kind's icon and word under every node (Wild, Trainer, Nurse…).
 
 **Wild nodes** show **their whole pool by rarity** — Common 60 % · Uncommon 30 % · Rare 10 %, split evenly inside a
 row — and **roll who leads on entry** (v0.9.7, §2.6.2). All 146 non-Legendary species placed by Region strength:

@@ -31,7 +31,8 @@ export function tmIcon(tmId: string): string {
 }
 /**
  * §9.3 — what a map node looks like (v0.9.14, after Pokelike's map): the thing it is, not an emblem of it. A trainer
- * is its class's sprite; a Gym its Leader and the Elite its trainer; a Wild Area its habitat's landmark in the grass; the
+ * is its class's sprite; a Gym its Leader and the Elite its trainer; a Wild Area its habitat's landmark in the grass, its
+ * pool's Pokémon going round at its sides; the
  * Elite Wild and a runner the Pokémon itself; the nurse and the merchant themselves; a find the item lying there; a
  * Mystery the overworld's "?".
  */
@@ -39,8 +40,11 @@ export type NodeArt =
   | { kind: 'trainer'; src: string }
   /** `grass`: it stands in the Wild Areas' one grass (`WILD_GRASS`). */
   | { kind: 'pokemon'; src: string; grass: boolean }
-  /** §9.3 — a Wild Area: its habitat's landmark, standing in the one grass; `low` for one that lies flat (a pond, a reef). */
-  | { kind: 'habitat'; src: string; low: boolean }
+  /**
+   * §9.3 — a Wild Area: its habitat's landmark, standing in the one grass (`low` for one that lies flat: a pond, a reef),
+   * and its pool's battle sprites, which go round at its sides (`HabitatArt`).
+   */
+  | { kind: 'habitat'; src: string; low: boolean; pool: string[] }
   | { kind: 'item'; src: string }
   | { kind: 'sign'; src: string };
 /** §9.3 — the tall grass every Wild Area stands in, whatever its habitat: Route 1's own tufts (`npm run art:habitats`). */

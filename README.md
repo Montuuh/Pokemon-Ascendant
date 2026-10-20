@@ -49,6 +49,8 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.29 — Who lives there.** Each Wild Area on the map now shows its habitat in front with two of its Pokémon at
+its sides, and they go round the whole pool as you look, so the board tells you who lives where. Before it,
 **v0.9.28 — The map, at a glance.** A Wild Area on the map is now its habitat alone — the Pokémon Tower, a cave, a
 volcano, a reef — standing in the same grass; every node's chip is a rounded plate with an icon, and the nodes you can
 go to next wear theirs as a gold button you can click. The team panel on the route only shows the team now (the Team

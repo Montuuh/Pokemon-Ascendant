@@ -371,22 +371,30 @@ solid gold, marching toward where they lead; **the routes still open** from wher
 behind you** solid; **a route you can no longer take** a faint dotted trace.
 
 A node is drawn as **what it is**, standing on its point with a shadow under it: a trainer is its class's sprite, the
-Elite its trainer, a Gym its Leader at twice the size with a gold glow; a **Wild Area its habitat** — the habitat's
-landmark standing in **one grass every Wild Area shares** (the user, 2026-10-20: "the Old Tower with the Pokémon Tower
-behind its sprite, the same grass under every Wild one"; then "try only the habitat, not the Pokémon"): the Pokémon
-Tower's dome, the Power Plant, a cave's mouth in a peak, a cone with a glowing crater, a Tanoby chamber, three pines,
-flowers, a pond, a reef, a sandbank, a marsh, an ice rock in a pool, sandstone, spires, and for the plain Tall Grass a
-stand of it rustling as the games draw grass with a Pokémon in it (`npm run art:habitats`, FireRed's own pixels). Who
-is met there is the bubble's and the preview's to say: a picture of one of a pool's Pokémon promised one face of ten,
-and the Pokémon in front hid the landmark that told the habitats apart. A runner (§5.6.5) and the Elite Wild are the
-Pokémon itself, in the same grass — there the Pokémon is the point; the nurse and the merchant are themselves; an item
-ball the Poké Ball lying there; a Mystery the overworld's "?". State reads through the picture — full colour on every
-route still open from where you stand (`nodesAhead`), faded where you can no longer go, darkened with a tick once
-cleared — and through a ring on the ground: pulsing gold where you stand, gold under the nodes you can step to next,
-which also bob on their spot.
+Elite its trainer, a Gym its Leader at twice the size with a gold glow; a **Wild Area its habitat**, with **its pool
+going round at its sides** — the habitat's landmark in front, in the middle, standing in **one grass every Wild Area
+shares**, and either side of it one of its pool's Pokémon at half size (a small one, under 40 px, at its own: halved,
+a Diglett is a speck), each going round the whole pool (Commons first), the two half a pool apart so they never show
+the same one; each holds a face 2.4 s, the second half a face behind the first, and every node starts at its own point
+of the period (`POOL_CYCLE`, `nodeHash`), so the map changes one face here and there and a node never both at once —
+calm enough for a screen the player studies. A resident reaches no further than half the gap to the next column
+(`--reach`): a wide one tucks behind its landmark instead. Hovering one opens its node's bubble, which names the pool
+by rarity. With motion off they stand still, on a pair each node picks. (The user, 2026-10-20: "the Old Tower with the
+Pokémon Tower behind its sprite, the same grass under every Wild one"; then the habitat alone, then "Pokémon +
+habitat, but the Pokémon animated, changing among the pool" — of the Pokémon in front with the habitat behind, or the
+habitat in front with the pool at its sides, the user took the sides: the place stays the anchor, still at a glance,
+and the residents say who lives there over a few seconds, where one face in front promised one of ten.) The landmarks:
+the Pokémon Tower's dome, the Power Plant, a cave's mouth in a peak, a cone with a glowing crater, a Tanoby chamber,
+three pines, flowers, a pond, a reef, a sandbank, a marsh, an ice-green pool, sandstone, spires above cloud, and for
+the plain Tall Grass a stand of it rustling as the games draw grass with a Pokémon in it (`npm run art:habitats`,
+FireRed's own pixels). A runner (§5.6.5) and the Elite Wild are the Pokémon itself, in the same grass — there the
+Pokémon is the point; the nurse and the merchant are themselves; an item ball the Poké Ball lying there; a Mystery the
+overworld's "?". State reads through the picture — full colour on every route still open from where you stand
+(`nodesAhead`), faded where you can no longer go, darkened with a tick once cleared — and through a ring on the
+ground: pulsing gold where you stand, gold under the nodes you can step to next, which also bob on their spot.
 
 **A node's chip** is a rounded plate under it with its kind's icon and its word (a paw for a Wild Area, a figure for a
-trainer, a castle for a Gym, a first-aid kit for the nurse, a Poké Ball for an item ball, swords for a guarded find…). A
+trainer, a castle for a Gym, a first-aid kit for the nurse, a gift for an item ball, swords for a guarded find…). A
 node **you can step to always wears its chip as a button** — the action's gold, a dark rim with a step under it, and an
 arrow — so what takes a click reads apart from what does not (the user, 2026-10-20). The Gyms and the Elite always
 carry theirs (the Leader's name, the Elite's); any other names itself under the pointer, and its bubble says the rest.
@@ -417,7 +425,7 @@ is the route.
 ## §9.4.1 Node icons
 On the map a node is its own picture (§9.3) and its chip carries a Tabler icon for its kind: Wild Area paw · Trainer
 user · Elite Trainer user-star · Elite Wild crown · Gym castle · Field nurse first-aid kit · Merchant shopping bag ·
-Trader arrows-exchange · Item ball Poké Ball (a guarded find swords) · Mystery question mark · Gauntlet swords · Training
+Trader arrows-exchange · Item ball gift (its picture is already the ball; a guarded find swords) · Mystery question mark · Gauntlet swords · Training
 barbell · Summit mountain · Legendary sparkles · League trophy (`KIND_ICON` in `NodeMarker`).
 
 ## §9.4.2 Resource icons

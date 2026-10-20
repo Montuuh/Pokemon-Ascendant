@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.29 — Who lives there · 2026-10-20
+
+A Wild Area's pool goes round at the sides of its habitat.
+
+- **Residents.** Two of the pool's Pokémon at half size beside the landmark.
+- **Rotation.** Each goes round the whole pool, out of step; still with motion off.
+
 ### v0.9.28 — The map, at a glance · 2026-10-20
 
 Wild Areas as their habitats, button chips, and two Team fixes.

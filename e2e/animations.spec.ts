@@ -13,6 +13,24 @@ type Dev = {
 };
 const dev = (page: Page) => page.evaluate.bind(page);
 
+test.describe('A Wild Area on the map — §9.3', () => {
+  test("its pool's Pokémon go round at the landmark's sides, the two never the same", async ({ page }) => {
+    await page.goto('/?screen=menu');
+    await page.evaluate(() => {
+      const a = (window as unknown as { __ascendant: { run: Record<string, (...x: unknown[]) => unknown>; goTo: (s: string) => void } }).__ascendant;
+      a.run.new!('squirtle', 7);
+      a.goTo('map');
+    });
+    const habitat = page.getByTestId('habitat-art').first();
+    const faces = () => habitat.locator('[data-resident]').evaluateAll((els) => els.map((e) => (e as HTMLImageElement).src));
+    const first = await faces();
+    expect(first).toHaveLength(2);
+    expect(first[0]).not.toBe(first[1]);
+    await expect.poll(async () => (await faces())[0], { timeout: 4_000 }).not.toBe(first[0]);
+    await page.screenshot({ path: 'playtest/anim-habitat-residents.png' });
+  });
+});
+
 test.describe('The heal and the item ball, played — §9.9.3, §2.9.5', () => {
   // A new run, hurt, in Pallet Town: the Center's machine runs on the way in.
   test('the Center runs its machine, fills the bars after it, and opens the counters last', async ({ page }) => {

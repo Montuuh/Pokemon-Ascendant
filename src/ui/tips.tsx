@@ -42,6 +42,20 @@ function attackChart(type: PokemonType): ReactNode {
   );
 }
 
+/** §9.3 — a Wild Area's residents named, by rarity, Commons first: the map's bubble for the faces going round. */
+export function wildPoolBody(pool: Record<WildTier, string[]>): ReactNode {
+  const c = getContent();
+  return (
+    <>
+      {WILD_TIERS.filter((t) => pool[t].length).map((t) => (
+        <div key={t}>
+          <b>{WILD_TIER_LABEL[t]}</b> — {pool[t].map((id) => c.species(id).name).join(', ')}
+        </div>
+      ))}
+    </>
+  );
+}
+
 export function typeAttackTip(type: PokemonType): ReactNode {
   return <Tip icon={glyphIcon(type)} title={`${typeName(type)} moves`} meta={['Attacking']} body={attackChart(type)} footer="Every other type takes it ×1. On a Pokémon of two types the multipliers stack." />;
 }

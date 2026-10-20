@@ -10,6 +10,18 @@ import { MAP_LABEL, MAP_TEXT, NODE_LABEL } from '@/ui/strings';
 /** Its animated Gen V battle sprite, cropped tight to the Pokémon: the same sprite the arena shows. */
 const pokemonIcon = (speciesId: string) => battleSpriteUrl(getContent().species(speciesId).id, 'front');
 
+/**
+ * A node's id, mixed into a number (FNV-1a with a final avalanche): neighbours' ids differ in a character or two, and a
+ * plain sum would give them neighbouring numbers — the same face, the same beat.
+ */
+export function nodeHash(id: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 0x01000193);
+  h = Math.imul(h ^ (h >>> 16), 0x85ebca6b);
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+  return (h ^ (h >>> 16)) >>> 0;
+}
+
 /** §9.3 — the habitats whose landmark lies flat on the ground: water, sand, flowers. */
 const LOW_PROPS: ReadonlySet<BiomeId> = new Set(['meadow', 'river', 'shore', 'sea', 'swamp', 'lake']);
 
@@ -76,13 +88,15 @@ export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
       return { kind: 'sign', src: summitSign() };
     case 'wild': {
       // §9.3 (the user, 2026-10-20) — a Wild Area is its habitat: the landmark — the Pokémon Tower, a cave's mouth, a
-      // reef — standing in the one grass every Wild Area shares. Who is met there is its bubble's and its preview's.
+      // reef — standing in the one grass every Wild Area shares, and the Pokémon met there going round at its sides:
+      // the whole pool, Commons first, so a glance over time shows who lives there.
       const habitat = p.objective?.kind === 'flee' ? null : habitatOf(node, map);
-      if (habitat) return { kind: 'habitat', src: habitatProp(habitat), low: LOW_PROPS.has(habitat) };
+      const pool = p.wild ? [...p.wild.pool.common, ...p.wild.pool.uncommon, ...p.wild.pool.rare].map(pokemonIcon) : [];
+      if (habitat) return { kind: 'habitat', src: habitatProp(habitat), low: LOW_PROPS.has(habitat), pool };
       // A runner (§5.6.5) is one named Pokémon, met wherever it bolts: the Pokémon itself, as the Elite Wild. So is a
       // Wild Area from a save older than its habitat: one of its Commons, picked by the node's id.
       const commons = p.wild?.pool.common ?? [];
-      const face = commons.length ? commons[[...node.id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % commons.length] : p.wild?.pool.uncommon[0] ?? p.speciesIds[0];
+      const face = commons.length ? commons[nodeHash(node.id) % commons.length] : p.wild?.pool.uncommon[0] ?? p.speciesIds[0];
       return face ? { kind: 'pokemon', src: pokemonIcon(face), grass: true } : { kind: 'sign', src: mysterySign() };
     }
     // §2.8.2 — the Elite Wild: the Pokémon itself, in the same grass; §2.12.2 — the Apex: the Legendary, on its node.

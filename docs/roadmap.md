@@ -1431,6 +1431,14 @@ board to the strip's end. **Fixes**: the route's side panel is read-only (`BoxPa
 place the team changes; the Move Manager's ✕ or a move taken out of the four no longer closes the Team; a Box Pokémon
 placed in the formation goes through `placeInTeam` (a Legendary's two places).
 
+### v0.9.29 — Who lives there  ✅ 2026-10-20
+The user's third follow-up, after a side-by-side of two layouts with the pool rotating: the habitat in front, the pool at
+its sides.
+
+**Shipped.** §9.3: a Wild Area node is its habitat's landmark in front, in the shared grass, with two of its pool's
+Pokémon at half size either side (`HabitatArt`), each going round the whole pool, half a pool apart and out of step
+with the nodes round it, on one clock for the map (`usePoolStep`, `POOL_CYCLE`); still with motion off.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

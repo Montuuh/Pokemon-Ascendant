@@ -1,0 +1,45 @@
+/* §9.3 — a Wild Area on the map: the landmark in front in the middle, its pool's Pokémon either side of it, a little
+   behind, each with a tuft of the shared grass over its feet. Back to front: the residents, their tufts, the landmark,
+   the grass. Every layer is an image the map node already places (`.art img`); these say where. */
+.root {
+  position: absolute;
+  inset: 0;
+}
+/* The landmark at its own size (a building at half, a peak at twice), its foot in the grass; one that lies flat (a
+   pond, a reef, flowers) a little higher, so the grass hides its rim, not it. */
+.root .landmark {
+  bottom: var(--sp-1);
+}
+.root .landmark[data-low] {
+  bottom: var(--sp-2);
+}
+.root .grass {
+  bottom: -6px;
+}
+/* A resident: its battle sprite at half its size (D9: a half multiple), a small one at its own (--scale), its inner
+   edge just inside the landmark's side (--half) — or further in, so its outer edge (--w out) stays inside half the gap
+   to the next column (--reach, from the board): neighbours' residents never meet. It takes the pointer, for its
+   node: a hover opens the node's bubble, a click enters it. */
+.root .face {
+  bottom: 2px;
+  transform: scale(var(--scale, 0.5));
+  pointer-events: auto;
+}
+.root .tuft {
+  bottom: -6px;
+  transform: scale(0.5);
+}
+/* `left: auto` undoes the node's centring of its images: a resident is anchored at its inner edge. */
+.root .left {
+  left: auto;
+  right: calc(50% + min(var(--half) - 4px, var(--reach, 999px) - var(--w, 0px)));
+  transform-origin: right bottom;
+}
+.root .right {
+  left: calc(50% + min(var(--half) - 4px, var(--reach, 999px) - var(--w, 0px)));
+  transform-origin: left bottom;
+}
+.root .tuft.left,
+.root .tuft.right {
+  --w: 29px;
+}

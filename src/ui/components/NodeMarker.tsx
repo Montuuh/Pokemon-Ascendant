@@ -21,8 +21,9 @@ import type { MapNode } from '@/sim';
 import { WILD_GRASS, type NodeArt } from '@/ui/art';
 import { nodeHint } from '@/ui/strings';
 import { Tip, useTip } from '@/ui/tooltip';
-import { typeName } from '@/ui/tips';
-import { kindName, titleSays } from './nodeArt';
+import { typeName, wildPoolBody } from '@/ui/tips';
+import { HabitatArt } from './HabitatArt';
+import { kindName, nodeHash, titleSays } from './nodeArt';
 import styles from './NodeMarker.module.css';
 
 export type NodeStatus = 'reachable' | 'locked' | 'visited' | 'current';
@@ -100,7 +101,8 @@ export function NodeMarker({
         ...(node.preview.usualTypes?.length ? [`Usually ${node.preview.usualTypes.map(typeName).join(' · ')}`] : []),
         said,
       ]}
-      body={node.preview.detail}
+      // A Wild Area's bubble names who lives there, by rarity: the faces going round at its sides.
+      body={node.kind === 'wild' && node.preview.wild && node.preview.objective?.kind !== 'flee' ? wildPoolBody(node.preview.wild.pool) : node.preview.detail}
       footer={nodeHint(node)}
     />,
   );
@@ -131,11 +133,18 @@ export function NodeMarker({
       data-art={art.kind}
     >
       <span className={styles.ground} aria-hidden="true" />
-      <span className={`${styles.art} ${styles[art.kind]}`} aria-hidden="true">
-        {/* An item is a smooth render, not pixel art: it is drawn with smoothing; everything else stays crisp. */}
-        <img className={art.kind === 'item' ? undefined : 'pixel'} src={art.src} alt="" draggable={false} data-low={(art.kind === 'habitat' && art.low) || undefined} />
-        {/* The one grass every Wild Area shares, in front: a habitat's landmark stands in it, as an Elite Wild does. */}
-        {(art.kind === 'habitat' || (art.kind === 'pokemon' && art.grass)) && <img className={`pixel ${styles.grass}`} src={WILD_GRASS} alt="" draggable={false} />}
+      <span className={[styles.art, styles[art.kind]].filter(Boolean).join(' ')} aria-hidden="true">
+        {art.kind === 'habitat' ? (
+          // A Wild Area: its landmark, its residents going round, out of step with the nodes round it.
+          <HabitatArt src={art.src} low={art.low} pool={art.pool} seed={nodeHash(node.id)} />
+        ) : (
+          <>
+            {/* An item is a smooth render, not pixel art: it is drawn with smoothing; everything else stays crisp. */}
+            <img className={art.kind === 'item' ? undefined : 'pixel'} src={art.src} alt="" draggable={false} />
+            {/* The one grass every Wild Area shares, in front: an Elite Wild stands in it as a Wild Area's landmark does. */}
+            {art.kind === 'pokemon' && art.grass && <img className={`pixel ${styles.grass}`} src={WILD_GRASS} alt="" draggable={false} />}
+          </>
+        )}
       </span>
       {status === 'visited' && (
         <span className={styles.tick} aria-hidden="true">
