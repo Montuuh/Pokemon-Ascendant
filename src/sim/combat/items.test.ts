@@ -29,7 +29,7 @@ describe('Relics — §7.3', () => {
   it('TypeBoost_MultipliesOnlyItsOwnType_§7.3.6', () => {
     const team = teamWithKit(['water-gun', 'tackle']);
     const base = start(plain({ team, enemies: [PIDGEY] }));
-    const withRelic = start(plain({ team, enemies: [PIDGEY], relics: ['mystic-water-charm'] }));
+    const withRelic = start(plain({ team, enemies: [PIDGEY], relics: ['water-gem'] }));
 
     const water = content.move('water-gun');
     const normal = content.move('tackle');
@@ -47,11 +47,11 @@ describe('Relics — §7.3', () => {
   });
 
   it('TwoTypeBoosts_OfTheSameType_MultiplyRatherThanAdd_§7.3.6', () => {
-    // Mystic Water and the Water Plate both boost Water. §7.3.6 says independent multiplicative terms, so
-    // 1.2 × 1.2 = 1.44, not 1 + 0.2 + 0.2 = 1.4. One damage point apart on a small hit, and the difference
+    // Mystic Water and the Water Gem both boost Water. §7.3.6 says independent multiplicative terms, so
+    // 1.1 × 1.2 = 1.32, not 1 + 0.1 + 0.2 = 1.3. One damage point apart on a small hit, and the difference
     // compounds: this is the assertion that stops someone "simplifying" the stack into a sum.
     const team = teamWithKit(['water-gun']);
-    const one = start(plain({ team, enemies: [PIDGEY], relics: ['mystic-water-charm'] }));
+    const one = start(plain({ team, enemies: [PIDGEY], relics: ['water-gem'] }));
     const bare = start(plain({ team, enemies: [PIDGEY] }));
     const move = content.move('water-gun');
 
@@ -128,29 +128,63 @@ describe('Relics — §7.3', () => {
 });
 
 describe('Held items — §7.4', () => {
-  it('ChoiceBand_BuysItsMeleeBoost_WithARangedLockout_§7.4.4', () => {
-    // §7.4.4 — Choice Band is +25 % Melee and *Melee only*: the restriction is the price, not a side effect.
+  it('PowerBracer_BuysItsMeleeBoost_WithARangedLockout_§7.4.5', () => {
+    // §7.4.5 — Power Bracer is +25 % Melee and *Melee only*: the restriction is the price, not a side effect.
     // The wearer's Ranged cards are greyed out for the whole fight, which is what `choice-locked` means.
     // Only the wearer is a Squirtle: `withHand` matches cards by move id, so a second Squirtle on the bench
-    // would let the test pick *its* Water Gun and quietly measure a Pokémon with no Band on.
+    // would let the test pick *its* Water Gun and quietly measure a Pokémon with no Bracer on.
     const kit = ['water-gun', 'tackle'];
     const bench = [STARTERS[0]!, STARTERS[2]!];
-    const withBand = [{ species: 'squirtle', level: 12, moves: kit, heldItem: 'choice-band' }, ...bench];
+    const withBracer = [{ species: 'squirtle', level: 12, moves: kit, heldItem: 'power-bracer' }, ...bench];
     const without = [{ species: 'squirtle', level: 12, moves: kit }, ...bench];
 
-    const banded = withHand(start(plain({ team: withBand, enemies: [PIDGEY] })), kit);
+    const braced = withHand(start(plain({ team: withBracer, enemies: [PIDGEY] })), kit);
     const bare = withHand(start(plain({ team: without, enemies: [PIDGEY] })), kit);
-    const wearer = banded.player.team[0]!.uid;
+    const wearer = braced.player.team[0]!.uid;
 
-    expect(reject(banded, { type: 'play-card', cardId: handCard(banded, 'water-gun', wearer).id })).toBe('choice-locked');
+    expect(reject(braced, { type: 'play-card', cardId: handCard(braced, 'water-gun', wearer).id })).toBe('choice-locked');
     expect(reject(bare, { type: 'play-card', cardId: handCard(bare, 'water-gun', bare.player.team[0]!.uid).id })).toBeNull();
 
-    // The Melee card is legal, and it hits harder than the same card without the Band.
-    expect(reject(banded, { type: 'play-card', cardId: handCard(banded, 'tackle', wearer).id })).toBeNull();
+    // The Melee card is legal, and it hits harder than the same card without the Bracer.
+    expect(reject(braced, { type: 'play-card', cardId: handCard(braced, 'tackle', wearer).id })).toBeNull();
     const tackle = content.move('tackle');
-    const hard = breakdownFor(leadOf(banded), enemyOf(banded), tackle, false, ctx, banded).final;
+    const hard = breakdownFor(leadOf(braced), enemyOf(braced), tackle, false, ctx, braced).final;
     const soft = breakdownFor(leadOf(bare), enemyOf(bare), tackle, false, ctx, bare).final;
     expect(hard).toBeGreaterThan(soft);
+  });
+
+  it('ChoiceBandRelic_FirstMeleeMoveEachTurnIsFree_LaterMeleeMovesCostPlusOne_§7.3.4', () => {
+    let s = withHand(
+      start(scenario({ team: teamWithKit(['tackle', 'scratch', 'ember'], 'charmander', 20), enemies: [{ ...PIDGEY, level: 30 }], relics: ['choice-band'] })),
+      ['tackle', 'scratch', 'ember'],
+    );
+    const cost = (id: string) => effectiveApCost(s, ctx.content.move(id), leadOf(s), ctx);
+    expect(cost('tackle')).toBe(0);
+    expect(cost('ember')).toBe(1);
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'tackle').id });
+    expect(cost('scratch')).toBe(2);
+  });
+
+  it('ThreeTierElementalHierarchy_PlateLeadAura_UniqueItem_AndGemRelic_StackMultiplicatively_§7.3.6', () => {
+    const team = [
+      { species: 'charmander', level: 20, moves: ['ember'], heldItem: 'flame-plate' },
+      { species: 'vulpix', level: 20, moves: ['ember'], heldItem: 'charcoal' },
+      { species: 'bulbasaur', level: 20, moves: ['vine-whip'] },
+    ];
+    const bareState = start(plain({
+      team: [
+        { species: 'charmander', level: 20, moves: ['ember'] },
+        { species: 'vulpix', level: 20, moves: ['ember'] },
+        { species: 'bulbasaur', level: 20, moves: ['vine-whip'] },
+      ],
+      enemies: [PIDGEY],
+    }));
+    const fullState = start(plain({ team, enemies: [PIDGEY], relics: ['fire-gem'] }));
+    const ember = content.move('ember');
+    // Bench Vulpix gets: Fire Gem (1.1) * Charcoal (1.2) * Lead Flame Plate aura (1.05) = 1.386
+    const mult = itemAttackMultiplier(fullState, fullState.player.team[1]!, ember, content);
+    expect(mult).toBeCloseTo(1.1 * 1.2 * 1.05, 5);
+    expect(itemAttackMultiplier(bareState, bareState.player.team[1]!, ember, content)).toBe(1);
   });
 
   it('Leftovers_HealsItsWearerAtTurnEnd_AndNobodyElse_§7.4.4', () => {
@@ -194,8 +228,8 @@ describe('Held items — §7.4', () => {
     for (const i of content.allHeldItems().filter((x) => x.hook === 'none')) {
       expect(i.pending, `${i.id} is inert but does not say why`).toBeTruthy();
     }
-    // v0.7.3 added Pikachu's Light Ball (§8.5.3).
-    expect(content.allHeldItems()).toHaveLength(20);
+    // 11 Unique Type-Boosters + 14 Type Plates + 3 Sustain/Defence + 2 Tempo + 2 Signature = 32 (§7.4).
+    expect(content.allHeldItems()).toHaveLength(32);
   });
 
   it('AnItemLockedToASpeciesTheGameCannotProduce_NeverReachesAPlayer_§7.4.2', () => {

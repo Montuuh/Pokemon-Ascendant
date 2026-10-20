@@ -11,8 +11,7 @@
 
 ## §9.1.1 The statement
 
-**Modern illustrated 2D, warm.** Bright, cel-shaded creature-RPG art with depth from lighting rather than
-perspective; deckbuilder UI minimalism — Slay the Spire's clarity over decoration.
+**Classic Pokémon Pixel Art (GBA/DS era), warm.** The game's visual identity is built on authentic Gen III–V Pokémon pixel art — FireRed/LeafGreen 16-px overworld tiles, buildings, interiors and type labels; GBA/DS pixel bag sprites for every item, TM and relic; Gen V animated battle sprites and trainer sprites; and pixel-art typography — framed by clean, tactile deckbuilder UI plates (Slay the Spire's clarity married to classic handheld Pokémon charm).
 
 **Tone.** Cheerful, warm and vibrant by default (Pillar 5). Each Region layers its own palette and lighting on
 top without ever breaking the base: even the Volcanic Highlands is *intense and dramatic*, never grim.
@@ -24,20 +23,19 @@ top without ever breaking the base: even the Volcanic Highlands is *intense and 
 | **Warm-light front-end** | Menus, map, node services, management, run-end, meta | Cream surfaces, warm-brown ink — a Pokémon Center interior |
 | **Warm-dim stage** | The combat screen only | Deep-plum surface, warm-cream ink — the lights go down for a fight |
 
-Display font **Baloo 2** (rounded), body font **Nunito**. Iconography is a single-weight rounded line set.
+Typography pairs **classic Pokémon pixel-art display and UI fonts** (for headings, Pokémon names, levels, numbers, combat plates and badges) with a clean legible body face where needed for dense tooltips. Iconography uses the franchise's own pixel badges and sprites for every in-world object, paired with a clean single-weight pixel/rounded glyph set for deckbuilder mechanics (status, intent, range, role).
 
 ## §9.1.2 Asset sizes
 
 | Asset | Size | Notes |
 |---|---|---|
-| Battle sprite | ~96 × 96, animated | Front and back; scaled up in the stage |
-| Portrait | 475 × 475 | Menus, detail panels, card owner avatars at 32 × 32 |
-| Box icon | 68 × 56 | Lists and the Box |
-| Move card art | 144 × 96 | Landscape, framed by the card chrome |
-| Relic icon | 64 × 64 | Rarity-tinted border |
-| Held Item icon | 32 × 32 | With an equipped-state overlay |
-| Consumable icon | 48 × 48 | 64 × 96 when framed as a card |
-| Backdrop | 1920 × 1080 | Calm centre and lower third, so UI sits over it |
+| Battle sprite | ~96 × 96, animated | Front and back (`gen5ani`); integer/half-step nearest-neighbour scaled |
+| Portrait | 96 × 96 / 475 × 475 | Pixel sprites on combat/map/menus; high-res or pixel sprite in Pokédex |
+| Box icon | 68 × 56 | Gen VII/VIII pixel box sprites (`public/art/pokemon/icons`) |
+| Move card art | 68 × 45 (drawn at 2×) | GBA-style pixel art of the move effect on a 68-cell grid (`public/art/moves`) |
+| Relic / Held / Consumable / TM icon | 24 × 24 / 32 × 32 | Authentic GBA/DS pixel bag sprites, nearest-neighbour scaled (`public/art/items`) |
+| Overworld & interior maps | 16 × 16 px tile grid | Authentic FRLG tilesets and rooms (`public/art/route`, `mart`, `hub`, `towns`) |
+| Backdrop | 1920 × 1080 | Official battle backgrounds (`public/art/stages`), calm centre and lower third |
 
 ## §9.1.3 Colour
 
@@ -573,9 +571,6 @@ the simulation as a boolean plus a reason.
 Components are state-driven by class, styled from the design tokens of §9.1.3, and structured per screen in
 [`ui/design-system.md`](ui/design-system.md). Every display string is localisation-ready with a namespaced
 key; no literal English in a component.
-
-> The per-screen specs in `ui/` name their data sources in Unity-era vocabulary — "channels" and "SOs". Read
-> those as **store selectors and content lookups**; the binding *shape* is correct even where the noun is not.
 
 ---
 

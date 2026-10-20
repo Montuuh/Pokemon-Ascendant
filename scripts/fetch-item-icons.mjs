@@ -1,14 +1,9 @@
 #!/usr/bin/env node
-// Fetch relic and held-item icons from the PokéAPI sprite set into public/art/items.
+// Fetch consumable, TM, stone, held-item and relic pixel-art icons from the PokéAPI sprite set into public/art/items.
 // Usage: npm run art:items [-- --force]
 //
-// Every held item in §7.4 is a real Pokémon item, so all twenty come straight off the shelf. Relics are
-// ours, so most of them borrow the real item they are named after — Coin Pouch takes the Amulet Coin, Lucky
-// Egg Token takes the Lucky Egg. Where nothing fits, the row maps to null and the UI draws a rarity glyph
-// instead, which is honest: a made-up icon that looks official is worse than no icon at all.
-//
-// This is the same rule the rest of the pipeline follows (docs/art/ATTRIBUTION.md): generate a scene, fetch
-// an object. Never invent an object that is supposed to be a real one.
+// Per D9 (docs/design/ui-doctrine.md) and docs/art/pipeline.md, every item, TM disc, stone, held item and relic
+// uses a 24×24 GBA/DS pixel-art sprite from PokéAPI/sprites — never a 3D Scarlet & Violet render.
 import { mkdir, writeFile, access } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -17,14 +12,46 @@ const ROOT = resolve(import.meta.dirname, '..');
 const OUT = resolve(ROOT, 'public/art/items');
 const force = process.argv.includes('--force');
 
-/** Held items (§7.4.4) — all twenty are real items and keep their own names. */
-// A few PokéAPI slugs differ from our ids; the map is only for those.
+/** Consumables (§7.2) — real Pokémon items plus Defog, which wears the pixel-art Smoke Ball. */
+const CONSUMABLE_SLUG = { defog: 'smoke-ball' };
+const CONSUMABLES = [
+  'potion', 'super-potion', 'hyper-potion', 'max-potion', 'revive',
+  'antidote', 'burn-heal', 'ice-heal', 'awakening', 'paralyze-heal', 'full-heal',
+  'ether', 'x-attack', 'x-defense', 'poke-ball', 'defog',
+];
+
+/** §6.4.1 — TM discs by type (Normal is stored at tm.png). */
+const TMS = [
+  ['tm', 'tm-normal'],
+  ['tm-fire', 'tm-fire'],
+  ['tm-water', 'tm-water'],
+  ['tm-grass', 'tm-grass'],
+  ['tm-electric', 'tm-electric'],
+  ['tm-ice', 'tm-ice'],
+  ['tm-fighting', 'tm-fighting'],
+  ['tm-poison', 'tm-poison'],
+  ['tm-ground', 'tm-ground'],
+  ['tm-flying', 'tm-flying'],
+  ['tm-psychic', 'tm-psychic'],
+  ['tm-bug', 'tm-bug'],
+  ['tm-rock', 'tm-rock'],
+  ['tm-ghost', 'tm-ghost'],
+  ['tm-dragon', 'tm-dragon'],
+];
+
+/** Held items (§7.4) — all 32 are real Pokémon items and keep their own names. */
 const HELD_SLUG = { nevermeltice: 'never-melt-ice' };
 
 const HELD = [
+  // §7.4.2 Unique type-boosters (11)
   'charcoal', 'mystic-water', 'magnet', 'miracle-seed', 'nevermeltice', 'black-belt', 'sharp-beak',
-  'twisted-spoon', 'splash-plate', 'flame-plate', 'zap-plate', 'meadow-plate', 'mind-plate',
-  'leftovers', 'eviolite', 'focus-sash', 'choice-band', 'choice-scarf', 'thick-club', 'light-ball',
+  'twisted-spoon', 'soft-sand', 'hard-stone', 'silk-scarf',
+  // §7.4.3 Type Plates (14)
+  'splash-plate', 'flame-plate', 'zap-plate', 'meadow-plate', 'mind-plate',
+  'icicle-plate', 'fist-plate', 'earth-plate', 'sky-plate', 'stone-plate',
+  'toxic-plate', 'insect-plate', 'spooky-plate', 'draco-plate',
+  // §7.4.4–§7.4.6 Sustain, tempo, signatures (7)
+  'leftovers', 'eviolite', 'focus-sash', 'power-bracer', 'choice-scarf', 'thick-club', 'light-ball',
 ];
 
 /** Evolution Items (§6.3.2, §7.2.5) — the five Gen I stones, real items under their own names. */
@@ -34,21 +61,21 @@ const STONES = ['fire-stone', 'water-stone', 'thunder-stone', 'leaf-stone', 'moo
 const SAFARI = ['safari-ball', 'rare-candy', 'great-ball', 'ultra-ball', 'master-ball'];
 
 /**
- * Relics (§7.3) — our id → the PokéAPI item whose icon it wears, or null for "no honest match".
- * A null here is a deliberate decision, not a gap: see the header.
+ * Relics (§7.3) — our id → the PokéAPI item whose pixel-art icon it wears.
  */
 const RELIC_ICON = {
-  'soft-sand': 'soft-sand',
-  'mystic-water-charm': 'mystic-water',
-  'charcoal-charm': 'charcoal',
-  'miracle-seed-charm': 'miracle-seed',
-  'hard-stone': 'hard-stone',
-  'sharp-beak-charm': 'sharp-beak',
-  'magnet-charm': 'magnet',
-  'twisted-spoon-charm': 'twisted-spoon',
-  'black-belt-charm': 'black-belt',
-  // Pink Bow is a Gen II item with no sprite in the set; the Silk Scarf is its modern equivalent.
-  'pink-bow': 'silk-scarf',
+  // §7.3.3 Common Elemental Gems (10) — +10 % party-wide
+  'ground-gem': 'ground-gem',
+  'water-gem': 'water-gem',
+  'fire-gem': 'fire-gem',
+  'grass-gem': 'grass-gem',
+  'rock-gem': 'rock-gem',
+  'flying-gem': 'flying-gem',
+  'electric-gem': 'electric-gem',
+  'psychic-gem': 'psychic-gem',
+  'fighting-gem': 'fighting-gem',
+  'normal-gem': 'normal-gem',
+
   'barrier-charm': 'light-clay',
   'berry-pouch': 'berry-pouch',
   'coin-pouch': 'amulet-coin',
@@ -56,25 +83,25 @@ const RELIC_ICON = {
   'lucky-egg-token': 'lucky-egg',
   'exp-share': 'exp-share',
   'quick-draw': 'quick-powder',
-  'brave-charm': 'expert-belt',
+  'brave-charm': 'red-flute',
   'recycle-tag': 'macho-brace',
   'hikers-coat': 'rocky-helmet',
   'defense-curl-charm': 'metal-coat',
   'soothe-bell': 'soothe-bell',
   'wide-lens': 'wide-lens',
-  'battle-hat': 'scope-lens',
+  'battle-hat': 'black-glasses',
   'quick-claw-charm': 'quick-claw',
   'choice-specs': 'choice-specs',
-  'choice-band-relic': 'choice-band',
-  'type-resonance': 'shell-bell',
+  'choice-band': 'choice-band',
+  'type-resonance': 'odd-keystone',
   'adrenal-surge': 'life-orb',
   'reactor-core': 'power-herb',
   'pressure-plate': 'iron-plate',
   'vital-pendant': 'shell-bell',
-  'tacticians-coin': 'smoke-ball',
+  'tacticians-coin': 'relic-gold',
   'steady-aim': 'zoom-lens',
   'status-lance': 'toxic-orb',
-  'healers-kit': 'full-heal',
+  'healers-kit': 'heal-ball',
   'bond-bracelet': 'destiny-knot',
   'lure-module': 'honey',
   'cycle-cell': 'cell-battery',
@@ -83,9 +110,7 @@ const RELIC_ICON = {
   'hand-off-pouch': 'big-root',
   'battle-tracker': 'binding-band',
 
-  // §7.3.5 Rare + §7.3.7 Legendary (v0.5). Same rule as above: the relic wears the real item it is named
-  // after or shares a mechanic with, and a few icons are shared because two relics genuinely do the same
-  // kind of thing — Type Mastery and Brave Charm both want the Expert Belt.
+  // §7.3.5 Rare + §7.3.7 Legendary (v0.5).
   'champions-crest': 'gold-bottle-cap',
   'phoenix-feather': 'sacred-ash',
   'sages-tome': 'wise-glasses',
@@ -96,38 +121,55 @@ const RELIC_ICON = {
   'last-stand': 'focus-band',
   'type-mastery': 'expert-belt',
   'clear-mind': 'mental-herb',
-  'evolutions-edge': 'moon-stone',
-  'grandmasters-tempo': 'metronome',
-  'living-legend': 'lucky-egg',
+  'evolutions-edge': 'prism-scale',
+  'grandmasters-tempo': 'griseous-orb',
+  'living-legend': 'relic-crown',
   'unbreakable-will': 'lum-berry',
   'apex-predator': 'razor-claw',
   'battle-hardened': 'assault-vest',
-  // §8.6.1 Tier-3 lane (v0.6). Perfect Recall recycles the discard, Trainer's Instinct is a lens on the
-  // enemy, the Catalyst is an evolution stone, the Expander is a bigger Box in spirit.
+  // §8.6.1 Tier-3 lane (v0.6).
   'perfect-recall': 'reveal-glass',
   'trainers-instinct': 'scope-lens',
   'evolution-catalyst': 'dawn-stone',
-  'box-expander': 'exp-share',
+  'box-expander': 'storage-key',
 };
 
 const url = (slug) => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${slug}.png`;
 const exists = async (p) => access(p).then(() => true, () => false);
 
-// Fail loudly if the catalogue grows a row this table has not been told about: a relic with no entry here
-// would silently ship iconless, and nobody would notice until it dropped in a playtest.
+// Fail loudly if the catalogue grows a row this table has not been told about.
 const relics = JSON.parse(readFileSync(resolve(ROOT, 'src/content/data/relics.json'), 'utf8')).relics;
-const missing = relics.map((r) => r.id).filter((id) => !(id in RELIC_ICON));
-if (missing.length) {
-  console.error(`relics with no icon mapping: ${missing.join(', ')}`);
+const missingRelics = relics.map((r) => r.id).filter((id) => !(id in RELIC_ICON));
+if (missingRelics.length) {
+  console.error(`relics with no icon mapping: ${missingRelics.join(', ')}`);
+  process.exit(2);
+}
+
+const heldItems = JSON.parse(readFileSync(resolve(ROOT, 'src/content/data/held-items.json'), 'utf8')).items;
+const missingHeld = heldItems.map((i) => i.id).filter((id) => !HELD.includes(id));
+if (missingHeld.length) {
+  console.error(`held items with no icon mapping: ${missingHeld.join(', ')}`);
   process.exit(2);
 }
 
 const jobs = [
+  ...CONSUMABLES.map((id) => ({ id, slug: CONSUMABLE_SLUG[id] ?? id })),
+  ...TMS.map(([id, slug]) => ({ id, slug })),
   ...HELD.map((id) => ({ id, slug: HELD_SLUG[id] ?? id })),
   ...STONES.map((id) => ({ id, slug: id })),
   ...SAFARI.map((id) => ({ id, slug: id })),
   ...Object.entries(RELIC_ICON).filter(([, slug]) => slug).map(([id, slug]) => ({ id, slug })),
 ];
+
+// Per D9 — every item, TM, stone, held item and relic must wear a distinct pixel-art sprite.
+const seenSlugs = new Map();
+for (const { id, slug } of jobs) {
+  if (seenSlugs.has(slug)) {
+    console.error(`duplicate item icon slug "${slug}" shared by ${seenSlugs.get(slug)} and ${id}`);
+    process.exit(2);
+  }
+  seenSlugs.set(slug, id);
+}
 
 await mkdir(OUT, { recursive: true });
 let ok = 0, skip = 0, fail = 0;

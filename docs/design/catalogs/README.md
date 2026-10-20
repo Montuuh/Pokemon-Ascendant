@@ -16,7 +16,7 @@
 
 ## Conventions
 
-- **Ids** are kebab-case, unique across *all* catalogs (a relic and a held item may not share an id: the relic is `charcoal-charm`, the held item `charcoal`). Ids never change once a save can reference them.
+- **Ids** are kebab-case, unique across *all* catalogs (a relic and a held item may not share an id: the relic is `fire-gem`, the held item `charcoal`). Ids never change once a save can reference them.
 - **Numbers** are placeholders unless the row says `tuned`. The knob that owns a number is named (`BattleConfig.x`, `ProgressionConfig.y`) so tuning happens in one place.
 - **Cross-references** inside a row use backticks: `` `vine-whip` ``. `node scripts/check-catalogs.mjs` (Pokémon Ascendant) extracts every backticked kebab id and checks it exists as a primary id in some catalog — the catalogs have the same rot-guard as the JSON.
 - **Canon pointer**: each catalog names the § it implements; a catalog never restates a *rule*, only *data*. Rules live in the topic files; what is built is in `../implementation-status.md`.
@@ -33,7 +33,7 @@
 | `mastery-moves.md` | Mastery Lv1–Lv3 per line + unlock achievements | §5.13.2, §6.8 | v0.6 |
 | `consumables.md` | 24 launch consumables + balls + Defog + Evolution Items (new class) | §7.2, §2.6.4, §6.3.2 | v0.1 (11) / v0.4 |
 | `relics.md` | 50 drop-pool + 10 Legendary, with meta tiers and Tier-2 unlock criteria | §7.3, §8.6 | v0.4 |
-| `held-items.md` | 19 held items | §7.4 | v0.4 |
+| `held-items.md` | 32 held items | §7.4 | v0.4 |
 | `tms.md` | 15 TMs with compatibility lists | §7.5, §6.4.1 | v0.3 |
 | `trainers.md` | 8 archetypes × 3 regions, rosters, rewards, sprites, lines | §2.7 | v0.2 |
 | `gyms.md` | 12 Gym Leaders (teams, Phase-2 archetype, Home Field, badge, sprite) | §5.9, §5.10 | v0.2 (1) / v0.5 (4) / v0.7 (12) |

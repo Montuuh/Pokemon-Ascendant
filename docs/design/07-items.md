@@ -196,11 +196,12 @@ Every relic carries one primary and optionally one secondary category. The City 
 
 ## §7.3.3 Common relics (25)
 
-Fifteen of them are the type-boost charms — Soft Sand, Mystic Water, Charcoal, Miracle Seed, Hard Stone, Sharp
-Beak, Magnet, Twisted Spoon, Black Belt and Pink Bow among them — each giving **+15 % to that type's moves for
-the whole party**. They are the reliable backbone of the Common tier and the reason a mono-type team can commit.
+Ten of them are the **Elemental Gems** — Ground, Water, Fire, Grass, Rock, Flying, Electric, Psychic, Fighting and
+Normal Gem — each giving **+10 % to that type's moves for the whole party**. They are the reliable backbone of the
+Common tier and the reason a mono-type team can commit, sitting alongside the wearer-only Held Items (+20 %) and
+the Lead-Aura Type Plates (+5 % for the bench).
 
-The other ten shape a turn rather than a number:
+The other fifteen shape a turn rather than a type:
 
 | Relic | Category | Effect |
 |---|---|---|
@@ -309,7 +310,7 @@ The 2-per-run cap is what keeps these a deliberate apex sculpt rather than a sno
 
 # §7.4 Held Items
 
-Eighteen items plus one signature, one slot per Pokémon.
+Thirty generic items plus two signatures, one slot per Pokémon.
 
 ## §7.4.1 Rules
 
@@ -322,17 +323,16 @@ Eighteen items plus one signature, one slot per Pokémon.
 | **Mid-combat** | No changes. The loadout locks with the Active Team (§2.3) |
 | **Sources** | Trainer battles 20 % of the time, the Elite Trainer's guaranteed slot, City Shop slot 7, Mystery rewards. **Never** in wild loot |
 
-## §7.4.2 Type boosts (8)
+## §7.4.2 Type boosts (11)
 
-Charcoal · Mystic Water · Magnet · Miracle Seed · NeverMeltIce · Black Belt · Sharp Beak · Twisted Spoon.
+Charcoal · Mystic Water · Magnet · Miracle Seed · NeverMeltIce · Black Belt · Sharp Beak · Twisted Spoon · Soft Sand · Hard Stone · Silk Scarf.
 Each gives the **wearer** +20 % on that type's moves.
 
-They share names with the Common relic charms on purpose, and they are deliberately different: the **relic**
-gives +15 % to the whole party, the **item** gives +20 % to one Pokémon. Breadth against focus.
+Together with the Common **Elemental Gem** relics (+10 % party-wide, §7.3.3) and the **Type Plates** (+5 % Lead Aura for the bench, §7.4.3), they form a clean three-tier elemental hierarchy with zero duplicate icons: Gems boost the whole team modestly, unique items boost one specialist strongly, and Plates reward the Lead/Swap positioning loop.
 
-## §7.4.3 Type Plates (5) — the Lead Aura source
+## §7.4.3 Type Plates (14) — the Lead Aura source
 
-Splash · Flame · Zap · Meadow · Mind Plate. While the wearer is **Lead**, every bench Pokémon's moves of that
+Splash · Flame · Zap · Meadow · Mind · Icicle · Fist · Earth · Sky · Stone · Toxic · Insect · Spooky · Draco Plate. While the wearer is **Lead**, every bench Pokémon's moves of that
 type deal **+5 %** (§6.5.4). Rare drops and the Mysterious Stone event.
 
 ## §7.4.4 Sustain and defence (3)
@@ -350,7 +350,7 @@ healthy.
 
 | Item | Effect |
 |---|---|
-| **Choice Band** | Melee +25 %; the wearer's **Ranged moves are unplayable** |
+| **Power Bracer** | Melee +25 %; the wearer's **Ranged moves are unplayable** |
 | **Choice Scarf** | The wearer's moves cost −1 AP (minimum 0); only one of its moves may be played per turn |
 
 Both are genuine double edges, and the UI shows the restriction as a positional-style lock rather than quietly

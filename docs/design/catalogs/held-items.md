@@ -1,10 +1,11 @@
-# Held Item catalog — 19
+# Held Item catalog — 32
 
-> Implements §8.4. One slot per Pokémon, always-on, swapped only in the Map View, persists to run end
-> (§7.4.1). Distinct from the same-named **relics** (party-wide, weaker): the Held Item is wearer-only and
-> stronger. Ids differ so the rot-guard can tell them apart (`charcoal` item vs `charcoal-charm` relic).
+> Implements §7.4. One slot per Pokémon, always-on, swapped only in the Map View, persists to run end
+> (§7.4.1). Distinct from the party-wide **Elemental Gem relics** (+10 % to the whole party, §7.3.3): a
+> type-boost Held Item is wearer-only and stronger (+20 %, §7.4.2), while a Type Plate grants a Lead Aura
+> (+5 % for the bench while the wearer leads, §7.4.3).
 
-## 1. Type-boost (8) — +20 % wearer-only (§7.4.2)
+## 1. Unique Type-boost items (11) — +20 % wearer-only (§7.4.2)
 
 | id | Name | Effect | Sources |
 |---|---|---|---|
@@ -16,8 +17,11 @@
 | `black-belt` | Black Belt | Wearer's Fighting moves +20 % | same |
 | `sharp-beak` | Sharp Beak | Wearer's Flying moves +20 % | same |
 | `twisted-spoon` | Twisted Spoon | Wearer's Psychic moves +20 % | same |
+| `soft-sand` | Soft Sand | Wearer's Ground moves +20 % | same |
+| `hard-stone` | Hard Stone | Wearer's Rock moves +20 % | same |
+| `silk-scarf` | Silk Scarf | Wearer's Normal moves +20 % | same |
 
-## 2. Type Plates — Lead Aura source (5) 🆕 authored, canon §7.4.3 / §6.5.4
+## 2. Type Plates — Lead Aura source (14) 🆕 authored, canon §7.4.3 / §6.5.4
 
 While the wearer is **Lead**, every bench Pokémon's moves of that type deal +5 %. Auras stack additively with an
 ability-granted aura on the same Pokémon.
@@ -29,6 +33,15 @@ ability-granted aura on the same Pokémon.
 | `zap-plate` | Zap Plate | Electric | same |
 | `meadow-plate` | Meadow Plate | Grass | same |
 | `mind-plate` | Mind Plate | Psychic | same |
+| `icicle-plate` | Icicle Plate | Ice | same |
+| `fist-plate` | Fist Plate | Fighting | same |
+| `earth-plate` | Earth Plate | Ground | same |
+| `sky-plate` | Sky Plate | Flying | same |
+| `stone-plate` | Stone Plate | Rock | same |
+| `toxic-plate` | Toxic Plate | Poison | same |
+| `insect-plate` | Insect Plate | Bug | same |
+| `spooky-plate` | Spooky Plate | Ghost | same |
+| `draco-plate` | Draco Plate | Dragon | same |
 
 ## 3. Sustain & defence (3)
 
@@ -42,7 +55,7 @@ ability-granted aura on the same Pokémon.
 
 | id | Name | Effect |
 |---|---|---|
-| `choice-band` | Choice Band | Melee +25 %; the wearer's Ranged moves are unplayable |
+| `power-bracer` | Power Bracer | Melee +25 %; the wearer's Ranged moves are unplayable |
 | `choice-scarf` | Choice Scarf | The wearer's moves cost −1 AP (min 0); only one of the wearer's moves may be played per turn |
 
 ## 5. Signature (2)
@@ -54,7 +67,7 @@ ability-granted aura on the same Pokémon.
 
 ## 6. Rules
 
-- **Acquisition** (§7.4.6): Trainer battles drop one 20 % of the time (uniform across the 18 generic items);
+- **Acquisition** (§7.4.6): Trainer battles drop one 20 % of the time (uniform across the generic items);
   the Elite Trainer has a guaranteed slot; City Shop slot 7 is curated to the team; Mystery rewards.
   Wild loot never contains Held Items. `thick-club` is not in any random pool.
 - **Box transfer**: releasing a Pokémon drops its item back to the inventory — never lost.

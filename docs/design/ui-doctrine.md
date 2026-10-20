@@ -65,11 +65,12 @@ screenshot has been *read*. **An animated outcome reveals its result when the an
 a lit row or a wallet that updates while the wheel is still turning has told the player before the machine did.
 *(Added 2026-09-23 from the v0.7.2 Game Corner review.)*
 
-### D9 — Pixel-art kin
-The battle sprites, portraits and type labels are pixel art. Anything placed beside them is either pixel art
-too (nearest-neighbour scaled, integer or half multiples) or so plainly *ours* — flat, rounded, warm — that it
-reads as the frame around the picture, never as a competing picture. No third-party icon style for a thing the
-games already drew.
+### D9 — Classic Pokémon pixel-art register
+Every game-world asset is **authentic classic Pokémon pixel art** (GBA FireRed/LeafGreen overworlds, interiors, tiles, badges and type boxes; DS/Gen III–V bag sprites for items, TMs, berries and relics; Gen V animated battle sprites and Showdown trainer sprites).
+- **Integer pixel scaling only:** every pixel-art asset is rendered with `image-rendering: pixelated` at integer (or clean half-step) multiples. Never mix smooth 3D/HD renders (e.g., Scarlet & Violet 3D item renders) or cel-shaded illustrations into icons, items, TMs, trainers or map props.
+- **Tile-grid parity in scenes:** overworld maps, town lobbies and interior rooms (`PixelRoom`) are built on the 16×16 px FRLG tile grid from authentic tiles and exterior/interior sprites. Any custom structure or prop that the original games never drew (such as the Challenge Ring, Pokémon Coliseum, Roulette table, or Move Card illustrations) must be authored or quantised onto the exact pixel grid with a 1-px dark outline and snapped to the FRLG palette — never soft AI "mixels" or half-scaled building cutouts.
+- **One icon per item/relic identity:** no relic may share the exact same sprite file as a Held Item or another Relic. Every item, TM and relic in the game carries a distinct pixel-art sprite from the franchise's item/key-item/underground/berry sprite archive (or a palette/pixel edit in the same 24×24 / 32×32 GBA/DS bag style).
+- **Typography & UI chrome:** typography uses **pixel-art / classic handheld fonts** for headers, names, numbers, combat plates, chips and dialogue boxes so the UI speaks the same visual language as the sprites, while the surrounding UI frames stay clean, tactile and warm (Poké-Center cream and combat-stage plum, classic bordered plates, no competing modern vector illustrations).
 
 ### D10 — One voice
 Strings on a screen come from the content row or the string tables; tooltips from `tips.tsx`. The same thing

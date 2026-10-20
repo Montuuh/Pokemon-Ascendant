@@ -2,29 +2,14 @@
 
 > Every screen, in the order the player meets it. **Topic 9 §9.12** holds the inventory and the decisions;
 > this file holds the per-screen detail — zones, components, bindings, interactions and states.
->
-> Written in the Unity era: where these pages name a "channel" or an "SO", read **store selector** and
-> **content lookup**. The binding *shape* is correct even where the noun is not.
+> Implemented in React (`src/ui/screens/`) using Zustand store selectors and content lookups.
 
 ---
 
-# Project Ascendant — UI Design Specification (Q23)
+# Pokémon Ascendant — UI Screen Specifications
 
-> **Status:** WIP draft (design/ — pre-Notion). Owner: producer + ui-programmer + art-director.
-> **Purpose:** Define the complete UI of the game so Epic 13 implementation is a *translation*
-> job (spec → UXML/USS), not a design job. On user approval this is ratified into GDD **Topic 10**
-> as **CL-023** (resolves design question **Q23**) and re-exported.
->
-> **Relationship to existing canon:** Topic 10 already specs the combat screen (§9.2), map view
-> (§9.3), palette (§9.1.3), iconography (§9.4), audio (§9.5), accessibility (§9.6), UI Toolkit
-> architecture (§9.7), animation (§9.9), localization (§9.10). This spec **extends** that, it does
-> not contradict it. Where this spec changes an existing §, it is flagged `↻ CHANGE` and routed to
-> `game-designer`/`systems-designer` before ratification.
->
-> **Relationship to existing code:** every `Assets/Scripts/UI/*PanelUI.cs` today is a **temporary
-> uGUI overlay** (gap #38 tech-debt, built imperatively so the Coplay bridge can screenshot it). The
-> target below is **UI Toolkit** (§9.7). Epic 13 replaces the temp overlays screen-by-screen; this
-> spec is that blueprint. No existing UXML/USS exists yet — this is greenfield in the right framework.
+> **Canon:** Topic 9 (`09-presentation.md`) and `ui-doctrine.md` (D1–D10).
+> All screens follow the **Classic Pokémon Pixel Art** register (D9): authentic FRLG 16-px tile rooms and maps, Gen V battle sprites, GBA/DS pixel item/TM/relic icons, and pixel-art typography.
 
 ---
 

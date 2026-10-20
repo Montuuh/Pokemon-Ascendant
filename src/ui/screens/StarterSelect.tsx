@@ -38,7 +38,7 @@ const STAT_MAX = { hp: 120, attack: 120, defense: 120, speed: 120 };
  * first two Regions are a defensive problem". Implemented as a guarantee: at least one of these is in the
  * offer when Magikarp is the pick, drawn from the same seed so a shared seed still reproduces the pre-run.
  */
-const MAGIKARP_LEAN = ['mystic-water-charm', 'barrier-charm', 'berry-pouch', 'hikers-coat', 'vital-pendant', 'brave-charm'];
+const MAGIKARP_LEAN = ['water-gem', 'barrier-charm', 'berry-pouch', 'hikers-coat', 'vital-pendant', 'brave-charm'];
 
 /** §8.6.3 — the offer is Common and Uncommon only, from the account's pool, seeded off the run seed. */
 function relicOffer(seed: number, count: number, account: AccountState, lean: readonly string[] = []): string[] {

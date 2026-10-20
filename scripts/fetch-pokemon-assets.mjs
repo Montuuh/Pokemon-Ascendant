@@ -1,42 +1,15 @@
 #!/usr/bin/env node
-// Fetch the *actual* Pokémon assets, not an impression of them.
-//
-// A generative model approximates an object; it cannot reproduce a specific one. For anything the player
-// already knows by heart — a Potion, a Poké Ball, the Boulder Badge, a Pokémon Centre — an approximation
-// reads as wrong no matter how well drawn it is. So those come from the real sources and generation is kept
-// for the scenes, which have no canonical original to get wrong.
+// Fetch map-marker emblems from Bulbagarden archives.
+// Item, TM, stone, held-item and relic sprites are fetched as 24×24 GBA/DS pixel art by `scripts/fetch-item-icons.mjs`.
 //
 //   npm run art:pokemon            fetch everything missing
 //   npm run art:pokemon -- --force re-download
-//
-// Sources, in the order we prefer them:
-//   Serebii itemdex/sv  · the Scarlet & Violet item renders, 160², smooth and current
-//   Bulbagarden archives · badges and overworld building/tile sprites, via the MediaWiki API
-// Both are fan archives of Nintendo / Creatures / GAME FREAK artwork. Fan, non-commercial use only; the
-// disclaimer and the per-family credits are in docs/art/ATTRIBUTION.md.
 import { mkdir, writeFile, access } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const OUT = resolve(import.meta.dirname, '../playtest/artgen/official');
 const force = process.argv.includes('--force');
 const UA = 'PokemonAscendant/0.2 (non-commercial fan game; contact via project repo)';
-
-/** Our consumable id → the name Serebii files it under. */
-const ITEMS = {
-  potion: 'potion',
-  'super-potion': 'superpotion',
-  antidote: 'antidote',
-  'burn-heal': 'burnheal',
-  'ice-heal': 'iceheal',
-  awakening: 'awakening',
-  'paralyze-heal': 'paralyzeheal',
-  'full-heal': 'fullheal',
-  ether: 'ether',
-  'x-attack': 'xattack',
-  'poke-ball': 'pokeball',
-  // §4.3.6 Defog is not an item in the games; it borrows the Smoke Ball, the one real item made of fog.
-  defog: 'smokeball',
-};
 
 /** Map-marker emblems, by Bulbagarden file title. */
 const EMBLEMS = {
@@ -45,28 +18,6 @@ const EMBLEMS = {
   'emblem-wild': 'File:HGSS Long Grass.png',
   // §2.9.4 — the Dojo. The Saffron Fighting Dojo's overworld building, same era and scale as the Centre.
   'emblem-dojo': 'File:Fighting Dojo Exterior FRLG.png',
-};
-
-/**
- * §6.4.1 — TM discs. A TM's colour is its move's type in the real games, so each of Gen I's fifteen types gets its
- * own disc (v0.9.11: the 46 TMs cover them all), and the Normal disc doubles as the bag badge.
- */
-const TMS = {
-  'item-tm': 'File:Bag TM Normal SV Sprite.png',
-  'item-tm-fire': 'File:Bag TM Fire SV Sprite.png',
-  'item-tm-water': 'File:Bag TM Water SV Sprite.png',
-  'item-tm-grass': 'File:Bag TM Grass SV Sprite.png',
-  'item-tm-electric': 'File:Bag TM Electric SV Sprite.png',
-  'item-tm-ice': 'File:Bag TM Ice SV Sprite.png',
-  'item-tm-fighting': 'File:Bag TM Fighting SV Sprite.png',
-  'item-tm-poison': 'File:Bag TM Poison SV Sprite.png',
-  'item-tm-ground': 'File:Bag TM Ground SV Sprite.png',
-  'item-tm-flying': 'File:Bag TM Flying SV Sprite.png',
-  'item-tm-psychic': 'File:Bag TM Psychic SV Sprite.png',
-  'item-tm-bug': 'File:Bag TM Bug SV Sprite.png',
-  'item-tm-rock': 'File:Bag TM Rock SV Sprite.png',
-  'item-tm-ghost': 'File:Bag TM Ghost SV Sprite.png',
-  'item-tm-dragon': 'File:Bag TM Dragon SV Sprite.png',
 };
 
 const exists = async (p) => access(p).then(() => true, () => false);
@@ -102,24 +53,9 @@ let ok = 0;
 let skip = 0;
 let fail = 0;
 
-console.log('items — Serebii Scarlet & Violet renders\n');
-for (const [id, slug] of Object.entries(ITEMS)) {
-  const dest = `${OUT}/item-${id}.png`;
-  if (!force && (await exists(dest))) { skip++; console.log(`  skip ${id}`); continue; }
-  try {
-    const size = await download(`https://www.serebii.net/itemdex/sprites/sv/${slug}.png`, dest);
-    ok++;
-    console.log(`  ok   ${id.padEnd(16)} ${Math.round(size / 1024)}KB`);
-  } catch (e) {
-    fail++;
-    console.log(`  FAIL ${id.padEnd(16)} ${e.message}`);
-  }
-}
-
-console.log('\nemblems and TM discs — Bulbagarden archives\n');
-const fromArchive = { ...EMBLEMS, ...TMS };
-const resolved = await resolveArchiveUrls(Object.values(fromArchive));
-for (const [id, title] of Object.entries(fromArchive)) {
+console.log('emblems — Bulbagarden archives\n');
+const resolved = await resolveArchiveUrls(Object.values(EMBLEMS));
+for (const [id, title] of Object.entries(EMBLEMS)) {
   const dest = `${OUT}/${id}.png`;
   if (!force && (await exists(dest))) { skip++; console.log(`  skip ${id}`); continue; }
   const info = resolved[title];

@@ -46,7 +46,8 @@ img {
   max-width: 100%;
 }
 
-.pixel {
+.pixel,
+img[src*='/art/items/'] {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }

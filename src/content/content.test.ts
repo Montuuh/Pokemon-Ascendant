@@ -58,9 +58,31 @@ describe('content registry', () => {
     }
   });
 
-  it('every consumable has an item icon, and every TM a disc in its move\'s type', () => {
+  it('every consumable, held item, stone and relic has an item icon, and every TM a disc in its move\'s type', () => {
     for (const c of reg.allConsumables()) {
       expect(existsSync(`public/art/items/${c.id}.png`), `${c.id} icon`).toBe(true);
+    }
+    for (const h of reg.allHeldItems()) {
+      expect(existsSync(`public/art/items/${h.id}.png`), `${h.id} icon`).toBe(true);
+    }
+    for (const s of reg.allEvolutionItems()) {
+      expect(existsSync(`public/art/items/${s.id}.png`), `${s.id} icon`).toBe(true);
+    }
+    for (const r of reg.allRelics()) {
+      expect(existsSync(`public/art/items/${r.id}.png`), `${r.id} icon`).toBe(true);
+    }
+    // Per D9 — no two items/relics may share the exact same icon bytes.
+    const allItemIds = [
+      ...reg.allConsumables().map((x) => x.id),
+      ...reg.allHeldItems().map((x) => x.id),
+      ...reg.allEvolutionItems().map((x) => x.id),
+      ...reg.allRelics().map((x) => x.id),
+    ];
+    const byBytes = new Map<string, string>();
+    for (const id of allItemIds) {
+      const hex = readFileSync(`public/art/items/${id}.png`).toString('hex');
+      expect(byBytes.get(hex), `${id} shares identical icon bytes with ${byBytes.get(hex)}`).toBeUndefined();
+      byBytes.set(hex, id);
     }
     // §6.4.1 — a TM's disc is coloured by its move's type, falling back to the Normal one.
     for (const tm of reg.allTms()) {

@@ -1,40 +1,25 @@
-# UI Icons — game-specific SVG set
+# UI Icons — game-specific SVG & pixel set
 
-Original warm/rounded vector glyphs authored for Project Ascendant (the **Claude-SVG** half of the
-hybrid icon plan, `design/ui/08`). The generic nav/system/toolbar icons stay **Tabler (MIT)** and node
-markers stay **game-icons.net (CC BY 3.0)** — those are *not* in this folder.
+Game-specific iconography for **Pokémon Ascendant** (`public/art/icons/`).
+- **In-world Pokémon objects** (Type labels, Gym Badges, Items, TMs, Relics, Map Landmarks) use **authentic GBA/DS pixel art** (see `docs/art/pipeline.md`).
+- **Deckbuilder system glyphs** (Status conditions, Intents, Card Traits, Step Modifiers, Rarity gems, Medals, Actions, Navigation) live in `public/art/icons/<family>/` as crisp 32×32 SVGs or pixel-snapped badges, paired with `@tabler/icons-react` (MIT) for secondary UI chrome.
 
-## Style spec
-- **32×32 viewBox**, single visual weight, **2.2–3px rounded strokes**, rounded joins/caps.
-- **Filled** for `Type/` + `Status/` (they carry colour identity). **Line** for `Intent/`, `Trait/`,
-  `Modifier/`.
-- **Shape carries meaning** so each reads without colour (colorblind requirement, §9.6).
-- Reads from a 48px relic icon down to a 16px card badge.
+## Style & Accessibility Spec
+- **32×32 viewBox**, crisp edges, high contrast on both the warm-light front-end (`#FBF4E6`) and the warm-dim stage (`#2A2230`).
+- **Shape carries meaning** so every icon reads without colour (colour-blind requirement, §9.6).
+- **Type labels (`public/art/icons/type/`)**: the authentic 32×12 FireRed/LeafGreen pixel boxes (`npm run art:types`), rendered with `image-rendering: pixelated` at integer or half-step multiples (12/15/18/24 px tall).
 
-## Families & files (44)
-| Folder | Count | Colour | Notes |
+## Families in `public/art/icons/`
+| Folder | Count | Format | Notes |
 |--------|------:|--------|-------|
-| ~~`Type/`~~ | — | — | **Retired 2026-09-22.** The type badge is the games' own pixel label now (`npm run art:types`, see `pipeline.md`); the authored silhouettes are in git history |
-| `Status/` | 6 | fixed condition colour | filled **badge** + a unique **colorblind hatch/dot pattern** per condition + white glyph — burn/poison/paralysis/sleep/freeze/confusion |
-| `Intent/` | 7 | **monochrome `#3A2E22`** → tint in USS | attack/cleave/backstrike/buff/stall/status/unknown |
-| `Trait/` | 5 | **monochrome** → tint | category: offensive/defensive/utility · range: melee/ranged |
-| `Modifier/` | 2 | **gold `#E0A81E`** (movement class) | step-forward / step-backward |
-| `Rarity/` | 5 | fixed rarity colour | rounded-square frames; Legendary adds a star |
-| `Medal/` | 4 | fixed tier colour | bronze/silver/gold/platinum |
-
-## Naming
-`icon-<family>-<name>.svg` (kebab-case), e.g. `icon-type-fire.svg`, `icon-status-burn.svg`,
-`icon-intent-attack.svg`, `icon-mod-step-forward.svg`, `icon-cat-offensive.svg`,
-`icon-range-melee.svg`, `icon-rarity-legendary.svg`, `icon-medal-gold.svg`.
-
-## Tinting (UI Toolkit)
-- **Monochrome** families (`Intent/`, `Trait/`) are authored in `#3A2E22` and meant to be **tinted**
-  via USS (`-unity-background-image-tint-color`) to white on coloured chips or to the intent colour.
-- **Fixed-colour** families (`Type/`, `Status/`, `Rarity/`, `Medal/`, `Modifier/`) ship their colour
-  and are used as-is.
-- Import as **Vector** (com.unity.vectorgraphics) → `VectorImage`, or rasterise to Sprite at 2× for
-  pixel-snapping. Map portraits/sprites are a separate pipeline (PokéAPI, `design/ui/08`).
-
-## Status
-✅ 44 / 44 authored (iteration 1, style approved 2026-06-14). Refine individual paths during the first
-Epic-13 build pass if any glyph reads weakly at 16px.
+| `type/` | 15 | PNG (pixel) | Official FRLG 32×12 pixel type boxes (`normal`..`dragon`) |
+| `map/` | 25 | PNG / SVG | The 12 official Gym Badges on discs (`node-gym-<type>.png`), legacy map emblems, and the authored 16-px grid `node-mystery-sign.svg` |
+| `status/` | 6 | SVG | Filled badge + colour-blind pattern + white glyph (`burn`, `poison`, `paralysis`, `sleep`, `freeze`, `confusion`) |
+| `intent/` | 11 | SVG | Attack, cleave, backstrike, buff, debuff, stall, status, heal, call-for-help, guard, unknown |
+| `trait/` | 5 | SVG | Category (`offensive`, `defensive`, `utility`) and range (`melee`, `ranged`) |
+| `modifier/` | 2 | SVG | Movement class (`step-forward`, `step-backward`) |
+| `rarity/` | 5 | SVG | Common, Uncommon, Rare, Epic, Legendary frames/gems |
+| `medal/` | 4 | SVG | Bronze, Silver, Gold, Platinum achievement tiers |
+| `action/` | 10 | SVG | Verb glyphs (`use`, `equip`, `unequip`, `swap`, `evolve`, `teach`, `catch`, `release`, `heal`, `buy`) |
+| `nav/` | 8 | SVG | Back, confirm, close, drag, search, filter, lock, info |
+| `toolbar/` | 6 | SVG | Bag, Team, Pokédex, Settings, Pause, Map |

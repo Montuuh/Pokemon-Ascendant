@@ -19,16 +19,16 @@
 | `berry-pouch` | Berry Pouch | combat | Healing consumables restore +20 % | `on-heal` | ✅ |
 | `soothe-bell` | Soothe Bell | combat | A Pokémon at full HP at turn start deals +5 % on its next attack | `on-turn-start` | ✅ |
 | `coin-pouch` | Coin Pouch | meta | Poké Dollar drops ×1.25 | `on-reward` | ✅ |
-| `soft-sand` | Soft Sand | combat | Ground moves +15 % (party-wide) | `on-damage` | ✅ |
-| `mystic-water-charm` | Mystic Water Charm | combat | Water moves +15 % | `on-damage` | ✅ |
-| `charcoal-charm` | Charcoal Charm | combat | Fire moves +15 % | `on-damage` | ✅ |
-| `miracle-seed-charm` | Miracle Seed Charm | combat | Grass moves +15 % | `on-damage` | ✅ |
-| `hard-stone` | Hard Stone | combat | Rock moves +15 % | `on-damage` | ✅ |
-| `sharp-beak-charm` | Sharp Beak Charm | combat | Flying moves +15 % | `on-damage` | ✅ |
-| `magnet-charm` | Magnet Charm | combat | Electric moves +15 % | `on-damage` | ✅ |
-| `twisted-spoon-charm` | Twisted Spoon Charm | combat | Psychic moves +15 % | `on-damage` | ✅ |
-| `black-belt-charm` | Black Belt Charm | combat | Fighting moves +15 % | `on-damage` | ✅ |
-| `pink-bow` | Pink Bow | combat | Normal moves +15 % | `on-damage` | ✅ |
+| `ground-gem` | Ground Gem | combat | Ground moves +10 % (party-wide) | `on-damage` | ✅ |
+| `water-gem` | Water Gem | combat | Water moves +10 % | `on-damage` | ✅ |
+| `fire-gem` | Fire Gem | combat | Fire moves +10 % | `on-damage` | ✅ |
+| `grass-gem` | Grass Gem | combat | Grass moves +10 % | `on-damage` | ✅ |
+| `rock-gem` | Rock Gem | combat | Rock moves +10 % | `on-damage` | ✅ |
+| `flying-gem` | Flying Gem | combat | Flying moves +10 % | `on-damage` | ✅ |
+| `electric-gem` | Electric Gem | combat | Electric moves +10 % | `on-damage` | ✅ |
+| `psychic-gem` | Psychic Gem | combat | Psychic moves +10 % | `on-damage` | ✅ |
+| `fighting-gem` | Fighting Gem | combat | Fighting moves +10 % | `on-damage` | ✅ |
+| `normal-gem` | Normal Gem | combat | Normal moves +10 % | `on-damage` | ✅ |
 | `cleanse-tag` | Cleanse Tag | status | The first status applied to your side each combat is blocked | `on-status-apply` | ✅ |
 | `lucky-egg-token` | Lucky Egg Token | meta | In-run XP ×1.15 | `on-xp` | ✅ |
 | `exp-share` | Exp Share | meta | Benched Box Pokémon earn 100 % XP (from the 75 % baseline) | `on-xp` | ✅ |
@@ -45,7 +45,7 @@
 | id | Name | Cat | Effect | Meta tier | Status |
 |---|---|---|---|---|---|
 | `choice-specs` | Choice Specs | card | The first Ranged move each turn costs 0 AP; later Ranged moves cost +1 | T1 | ✅ |
-| `choice-band-relic` | Choice Band (relic) | card | The first Melee move each turn costs 0 AP; later Melee moves cost +1 | T1 | ✅ |
+| `choice-band` | Choice Band | card | The first Melee move each turn costs 0 AP; later Melee moves cost +1 | T1 | ✅ |
 | `move-echo` | Move Echo | card | Play 3 different moves from one Pokémon in a turn → +1 AP next turn | T1 | ✅ |
 | `type-resonance` | Type Resonance | combat | Active Team members sharing a primary type buff each other's matching moves +10 % per shared member | T1 | ✅ |
 | `adrenal-surge` | Adrenal Surge | combat | When a Pokémon faints, the rest of the Active Team gains Atk +1 | T1 | ✅ |
@@ -152,6 +152,6 @@ Level 8 (§8.3.5), which is the only road to the two above until their systems s
 
 ## 8. Conflicts resolved (§7.3.6)
 
-`choice-band-relic` + `choice-specs` may both be held; each tracks its own first-move-of-type discount.
+`choice-band` + `choice-specs` may both be held; each tracks its own first-move-of-type discount.
 Faint prevention order: **Sturdy (ability) → `last-stand` (Legendary) → `phoenix-feather` (Rare)**.
 Type-boost relics, Held Items and field effects all multiply into the damage formula independently.

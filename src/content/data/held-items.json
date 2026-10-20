@@ -1,5 +1,5 @@
 {
-  "_note": "Held Item catalog — all 19 of docs/design/catalogs/held-items.md. One slot per Pokémon, always on, wearer-only, swapped only in the Map View and kept until the run ends (§7.4.1). Releasing a Pokémon drops its item back to the bag rather than losing it. Ids differ from the same-named relics on purpose: the relic is party-wide and weaker, the item is one Pokémon and stronger (§7.4.2). `thick-club` is locked to Marowak and never enters a random pool (§7.4.6); Marowak is not in the build yet, so it is authored and unreachable rather than dropped from the file.",
+  "_note": "Held Item catalog — all 32 of docs/design/catalogs/held-items.md. One slot per Pokémon, always on, wearer-only, swapped only in the Map View and kept until the run ends (§7.4.1). Releasing a Pokémon drops its item back to the bag rather than losing it. Type-boost items (+20 % wearer-only, §7.4.2), Type Plates (+5 % Lead Aura for the bench, §7.4.3), sustain/defence (§7.4.4), tempo (§7.4.5) and signatures (§7.4.6). `thick-club` is locked to Marowak and never enters a random pool.",
   "items": [
     {
       "id": "charcoal",
@@ -90,6 +90,39 @@
       }
     },
     {
+      "id": "soft-sand",
+      "name": "Soft Sand",
+      "description": "The wearer deals +20 % with ground moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "ground",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "hard-stone",
+      "name": "Hard Stone",
+      "description": "The wearer deals +20 % with rock moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "rock",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "silk-scarf",
+      "name": "Silk Scarf",
+      "description": "The wearer deals +20 % with normal moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "normal",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
       "id": "splash-plate",
       "name": "Splash Plate",
       "description": "While the wearer leads, every benched Pokémon deals +5 % with water moves.",
@@ -145,6 +178,105 @@
       "grantsLeadAura": "psychic"
     },
     {
+      "id": "icicle-plate",
+      "name": "Icicle Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with ice moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "ice",
+        "percent": 5
+      },
+      "grantsLeadAura": "ice"
+    },
+    {
+      "id": "fist-plate",
+      "name": "Fist Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with fighting moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "fighting",
+        "percent": 5
+      },
+      "grantsLeadAura": "fighting"
+    },
+    {
+      "id": "earth-plate",
+      "name": "Earth Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with ground moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "ground",
+        "percent": 5
+      },
+      "grantsLeadAura": "ground"
+    },
+    {
+      "id": "sky-plate",
+      "name": "Sky Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with flying moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "flying",
+        "percent": 5
+      },
+      "grantsLeadAura": "flying"
+    },
+    {
+      "id": "stone-plate",
+      "name": "Stone Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with rock moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "rock",
+        "percent": 5
+      },
+      "grantsLeadAura": "rock"
+    },
+    {
+      "id": "toxic-plate",
+      "name": "Toxic Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with poison moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "poison",
+        "percent": 5
+      },
+      "grantsLeadAura": "poison"
+    },
+    {
+      "id": "insect-plate",
+      "name": "Insect Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with bug moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "bug",
+        "percent": 5
+      },
+      "grantsLeadAura": "bug"
+    },
+    {
+      "id": "spooky-plate",
+      "name": "Spooky Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with ghost moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "ghost",
+        "percent": 5
+      },
+      "grantsLeadAura": "ghost"
+    },
+    {
+      "id": "draco-plate",
+      "name": "Draco Plate",
+      "description": "While the wearer leads, every benched Pokémon deals +5 % with dragon moves.",
+      "hook": "lead-aura",
+      "params": {
+        "type": "dragon",
+        "percent": 5
+      },
+      "grantsLeadAura": "dragon"
+    },
+    {
       "id": "leftovers",
       "name": "Leftovers",
       "description": "The wearer recovers a sixteenth of its HP at the end of every turn.",
@@ -174,8 +306,8 @@
       }
     },
     {
-      "id": "choice-band",
-      "name": "Choice Band",
+      "id": "power-bracer",
+      "name": "Power Bracer",
       "description": "The wearer deals +25 % with Melee moves, and cannot play Ranged ones at all.",
       "hook": "choice-lock",
       "params": {

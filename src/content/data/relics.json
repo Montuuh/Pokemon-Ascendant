@@ -2,143 +2,143 @@
   "_note": "Relic catalog — Common (25) + Uncommon (18), the v0.4 half of §7.8's build order. Rare and Legendary are v0.5; `tier`, `discovery` and the four Tier-3 rows are v0.6 (§8.6.1). Rows come from docs/design/catalogs/relics.md; `hook` maps each onto §7.7's named-hook vocabulary, so a new relic is data as long as its hook already exists. The hand is discarded whole each turn (§3.4), so \"max hand size +1\" and \"draw +1\" are the same effect here and the descriptions say the one the player sees. Every row is live since v0.7.5: the four that waited on an activated action were rewritten as passives (§7.3), which keeps combat free of relic buttons. A row whose system does not exist would carry `pending`, and the UI would show it rather than sell a no-op.",
   "relics": [
     {
-      "id": "soft-sand",
-      "name": "Soft Sand",
+      "id": "ground-gem",
+      "name": "Ground Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with ground moves.",
+      "description": "Your whole team deals +10 % with ground moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "ground",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
-      "id": "mystic-water-charm",
-      "name": "Mystic Water Charm",
+      "id": "water-gem",
+      "name": "Water Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with water moves.",
+      "description": "Your whole team deals +10 % with water moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "water",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
-      "id": "charcoal-charm",
-      "name": "Charcoal Charm",
+      "id": "fire-gem",
+      "name": "Fire Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with fire moves.",
+      "description": "Your whole team deals +10 % with fire moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "fire",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
-      "id": "miracle-seed-charm",
-      "name": "Miracle Seed Charm",
+      "id": "grass-gem",
+      "name": "Grass Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with grass moves.",
+      "description": "Your whole team deals +10 % with grass moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "grass",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
-      "id": "hard-stone",
-      "name": "Hard Stone",
+      "id": "rock-gem",
+      "name": "Rock Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with rock moves.",
+      "description": "Your whole team deals +10 % with rock moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "rock",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
-      "id": "sharp-beak-charm",
-      "name": "Sharp Beak Charm",
+      "id": "flying-gem",
+      "name": "Flying Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with flying moves.",
+      "description": "Your whole team deals +10 % with flying moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "flying",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
-      "id": "magnet-charm",
-      "name": "Magnet Charm",
+      "id": "electric-gem",
+      "name": "Electric Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with electric moves.",
+      "description": "Your whole team deals +10 % with electric moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "electric",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
-      "id": "twisted-spoon-charm",
-      "name": "Twisted Spoon Charm",
+      "id": "psychic-gem",
+      "name": "Psychic Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with psychic moves.",
+      "description": "Your whole team deals +10 % with psychic moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "psychic",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
-      "id": "black-belt-charm",
-      "name": "Black Belt Charm",
+      "id": "fighting-gem",
+      "name": "Fighting Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with fighting moves.",
+      "description": "Your whole team deals +10 % with fighting moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "fighting",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
-      "id": "pink-bow",
-      "name": "Pink Bow",
+      "id": "normal-gem",
+      "name": "Normal Gem",
       "rarity": "common",
       "categories": [
         "combat"
       ],
-      "description": "Your whole team deals +15 % with normal moves.",
+      "description": "Your whole team deals +10 % with normal moves.",
       "hook": "damage-dealt",
       "params": {
         "type": "normal",
-        "multiplier": 1.15
+        "multiplier": 1.1
       }
     },
     {
@@ -392,8 +392,8 @@
       }
     },
     {
-      "id": "choice-band-relic",
-      "name": "Choice Band (relic)",
+      "id": "choice-band",
+      "name": "Choice Band",
       "rarity": "uncommon",
       "categories": [
         "card"

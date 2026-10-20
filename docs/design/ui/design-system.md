@@ -1,27 +1,20 @@
 # UI design system
 
 > Tokens, components, motion, input and the move-card anatomy. The decisions these implement are canon in
-> **Topic 9 — Presentation**; this is the implementation-level detail, and the rendered references live in
-> [mockups/](mockups/).
->
-> Written in the Unity era: where these pages name a "channel" or an "SO", read **store selector** and
-> **content lookup**. The binding *shape* is correct even where the noun is not.
+> **Topic 9 — Presentation** (`docs/design/09-presentation.md`) and **`docs/design/ui-doctrine.md` (D1–D10)**;
+> the live token values live in `src/ui/styles/tokens.css`, and the art rules live in `docs/art/pipeline.md`.
 
 ---
 
 # UI Design System — The Standards
 
 > The shared foundation every screen inherits. If a screen needs something not defined here, it is
-> added here first, then used — never invented per-screen. Maps 1:1 onto a UI Toolkit `theme.uss`
-> token sheet + a reusable component USS/UXML library. Extends GDD §9.1.3, §9.4, §9.7, §9.9.
+> added here first, then used — never invented per-screen. Maps 1:1 onto `src/ui/styles/tokens.css`
+> and the React + CSS Modules component library under `src/ui/components/`. Extends §9.1.3, §9.4, §9.7, §9.9.
 
-## §9.1.1 Art direction — "Pokémon Center warmth" (Pillar 5)
+## §9.1.1 Art direction — "Classic Pokémon Pixel Art & Pokémon Center warmth" (Pillar 5, D9)
 
-> `↻ DECISION (user, this pass):` the UI leans **warm, bright, friendly and rounded** — the cosy
-> Pokémon-Center / hand-held-menu feeling — *over* a cold tactical-dark deckbuilder look. This is a
-> deliberate steer toward **Pillar 5 (cheerful core)** and is the most-visible change this spec makes
-> to existing canon. It revises the **§9.1.3 palette** (currently cold navy) and the radius/tone
-> language below. Routed to `art-director` + WCAG re-verification at ratification (CL-023).
+> **Direction:** Classic GBA/DS Pokémon pixel art (FRLG 16-px overworlds and interiors, GBA/DS 24×24–32×32 pixel bag icons, Gen V animated battle sprites, FRLG type boxes, classic pixel typography) framed by warm, tactile, rounded deckbuilder UI plates. Never mix smooth 3D renders or Unity-era vector illustrations with the pixel sprites.
 
 **Principles**
 - **Warm not cold.** Surfaces are warm cream / soft parchment in the front-end and a warm-neutral

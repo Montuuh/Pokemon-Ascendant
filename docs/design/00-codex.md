@@ -354,13 +354,13 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
   Potions → Super → Hyper), a wild node ~30 % leaves 1–2 Poké Balls, the Elite and the Gym add a prize, the nurse
   and a City's Center hand over a pair, shops sell **bundles** (Potion ×3 / ×5, Balls ×3 / ×5, 10 % off), and three
   Mystery Events are supplies.
-- **60 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 25 Common (15 of them the +15 % party type
-  charms) / 18 Uncommon / 7 Rare / **10 Legendary**. A trainer drops a Common 15 % of the time; the Elite Trainer
+- **60 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 25 Common (10 of them the +10 % party Elemental
+  Gems) / 18 Uncommon / 7 Rare / **10 Legendary**. A trainer drops a Common 15 % of the time; the Elite Trainer
   offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym a Rare 1-of-3**,
   later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run**. Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
   of list per relic bought this run.
-- **19 held items.** 8 type boosts (+20 % wearer-only) · 5 Type Plates (Lead Aura) · Leftovers, Eviolite, Focus
-  Sash · Choice Band, Choice Scarf · Thick Club.
+- **32 held items.** 11 unique type boosts (+20 % wearer-only) · 14 Type Plates (Lead Aura) · Leftovers, Eviolite, Focus
+  Sash · Power Bracer, Choice Scarf · Thick Club, Light Ball.
 - **15 TMs**, gated by `compatibleSpecies`, Mastery-exempt.
 - **Faint prevention order:** Sturdy → Last Stand → Focus Sash → Phoenix Feather.
 
@@ -406,9 +406,7 @@ fetched rather than a hue-shift — §5.14.)*
 
 ## 9. Presentation *(Topic 9)*
 
-Two warm themes: a cream **front-end** and a deep-plum **combat stage**. Baloo 2 + Nunito. 15 canonical type
-hues, always paired with a glyph so colour is never the only channel. On the light theme the semantic accents
-may be fills, tints or borders — **never running text** (they fail AA).
+**Classic Pokémon Pixel Art (GBA/DS era, §9.1.1 & D9)** framed by two warm themes: a cream **front-end** and a deep-plum **combat stage**. Classic Pokémon pixel-art typography for headings, names, levels, numbers and plates; 15 canonical type hues (authentic FRLG 32×12 pixel boxes), always paired with a glyph so colour is never the only channel; authentic GBA/DS pixel bag sprites for every item, TM and relic (one unique sprite per item/relic identity). On the light theme the semantic accents may be fills, tints or borders — **never running text** (they fail AA).
 
 **Combat is one formation each side** (v0.9.16): every Pokémon on the field is a card — tag, types, name, level, its
 animated sprite in a lit window, HP (the part about to go striped). Yours on the left, the Lead centred and crowned
