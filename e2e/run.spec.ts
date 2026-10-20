@@ -398,6 +398,22 @@ test('the Labels toggle names every node under its picture, and L flips it — �
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
   expect(await captions.count()).toBeGreaterThan(landmarks + 20);
+  // Generic: a node says its kind, not its habitat or its trainer's class (the user, 2026-10-20).
+  const wilds = page.locator('[data-testid="route-board"] [data-kind="wild"]');
+  await expect(wilds.first()).toContainText(/^Wild$/);
+  await expect(page.locator('[data-testid="route-board"] [data-kind="trainer"]').first()).toContainText(/^Trainer$/);
+  // A Gym keeps its Leader with the word; an item ball with a guard on it is a fight, and says so.
+  await expect(page.locator('[data-testid="route-board"] [data-kind="gym"]').first()).toContainText(/^\S.*'s Gym$/);
+  const guarded = await page.evaluate(() =>
+    Object.values(window.__ascendant!.run.state()!.map.nodes)
+      .filter((n) => n.preview.objective?.kind === 'hold')
+      .map((n) => n.id),
+  );
+  for (const id of guarded) await expect(page.getByTestId(`node-${id}`)).toContainText(/^Guarded find$/);
+  // Every Wild Area's Pokémon stands in the one grass, its habitat's landmark behind it.
+  const wildCount = await wilds.count();
+  await expect(wilds.locator('img[src$="habitat/grass.png"]')).toHaveCount(wildCount);
+  expect(await wilds.locator('img[src*="/habitat/"]:not([src$="grass.png"])').count()).toBeGreaterThan(0);
   await page.screenshot({ path: 'playtest/run-map-labels.png' });
   // The key flips it back, and the choice is kept for the next visit.
   await page.getByTestId('route-scroller').focus();

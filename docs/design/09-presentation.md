@@ -372,19 +372,33 @@ behind you** solid; **a route you can no longer take** a faint dotted trace.
 
 A node is drawn as **what it is**, standing on its point with a shadow under it: a trainer is its class's sprite, the
 Elite its trainer, a Gym its Leader at twice the size with a gold glow; a Wild Area the Pokémon you will meet most,
-peeking out of the grass (or the water, on the sea and the river); the Elite Wild the Pokémon itself; the nurse and the
-merchant themselves; an item ball the Poké Ball lying there; a Mystery the overworld's "?". State reads through the picture —
-full colour on every route still open from where you stand (`nodesAhead`), faded where you can no longer go,
-darkened with a tick once cleared — and through a ring on the ground: pulsing gold where you stand, gold under the
-nodes you can step to next, which also bob on their spot. The Gyms and the Elite always carry a caption; any
+standing in **one grass for every Wild Area** with **its habitat's landmark behind it** (the user, 2026-10-20: "the
+Old Tower with the Pokémon Tower behind its sprite, the same grass under every Wild one") — the Pokémon Tower's dome,
+the Power Plant, a cave's mouth in a peak, a cone with a glowing crater, a Tanoby chamber, three pines, flowers,
+a pond, a reef, a sandbank, a marsh, an ice rock in a pool, sandstone, spires (`npm run art:habitats`,
+FireRed's own pixels). The landmark stands further up the route and a little aside, as the board draws depth, so it
+rises over the Pokémon's shoulder rather than hiding behind it; one that lies flat (water, sand, flowers) further
+still. The plain Tall Grass has none — the grass is its habitat — nor has a runner (one named Pokémon, met wherever it
+bolts). One grass replaced each lane's own tuft and the water: the habitat is the landmark's to say, and a grass that
+changed with the lane said it twice and unclearly. The Elite Wild is the Pokémon itself in the same grass; the nurse
+and the merchant themselves; an item ball the Poké Ball lying there; a Mystery the overworld's "?". State reads
+through the picture — full colour on every route still open from where you stand (`nodesAhead`), faded where you can
+no longer go, darkened with a tick once cleared — and through a ring on the ground: pulsing gold where you stand, gold
+under the nodes you can step to next, which also bob on their spot. The Gyms and the Elite always carry a caption; any
 other names itself under the pointer, and its bubble says the rest. **The Labels toggle** (the user, 2026-10-20: "a
-toggle for the node's label, under its icon") — a pill in the board's top-right corner, and the **L** key — puts a short
-name under every node in a quieter caption than a landmark's: a Wild Area's ground, a trainer's class (never who: that
-stays the preview's surprise, §2.7), *Item ball*, *Nurse*, *Merchant*, *Mystery*, *Trader*, and *Runner* or *Guarded
-find* for a fight with another objective. Off by default — the pictures are the map — and kept between sessions. The node's preview opens over the route dimmed
-and softened, never over a black void, and wears the same picture as the node. The strip under the board draws
-the routes and every node in miniature — a fight a filled dot, a stop a ring, the Gyms diamonds in their types'
-colours — the walked road dark and the closed routes faded, so the whole Region's choice is one glance.
+toggle for the node's label, under its icon") — a pill in the board's top-right corner, and the **L** key — puts a
+short name under every node in a quieter caption than a landmark's: its **kind**, generic (the user, 2026-10-20: "more
+generic — Wild, Trainer, Elite Trainer, Elite Wild, Gym, Nurse, Trader") — *Wild*, *Trainer*, *Elite Trainer*, *Elite
+Wild*, *Nurse*, *Merchant*, *Trader*, *Item ball*, *Mystery*, *Legendary*… — and a Gym its Leader's name with it (*Brock's
+Gym*: which lane ends at whom is the choice the board is for), while the Elite says *Elite Trainer* (what it is
+weighs on the route; who it is, its bubble says), and an item ball with a guard on it *Guarded find* (a
+fight, not a pickup). The habitat is the landmark's to say, the trainer's
+class the sprite's, who exactly the bubble's: a label that named them all crowded the board and read as many kinds of
+node where there are a few. Off by default — the pictures are the map — and kept between
+sessions. The node's preview opens over the route dimmed and softened, never over a black void, and wears the same
+picture as the node. The strip under the board draws the routes and every node in miniature — a fight a filled dot, a
+stop a ring, the Gyms diamonds in their types' colours — the walked road dark and the closed routes faded, so the
+whole Region's choice is one glance.
 
 The left column is the Active Team (three tiles, the Lead crowned) above a scrollable Box. Trauma badges overlay
 any portrait; fainted Pokémon are dimmed but still draggable, so you can prepare a post-nurse line-up.

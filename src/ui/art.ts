@@ -31,17 +31,23 @@ export function tmIcon(tmId: string): string {
 }
 /**
  * §9.3 — what a map node looks like (v0.9.14, after Pokelike's map): the thing it is, not an emblem of it. A trainer
- * is its class's sprite; a Gym its Leader and the Elite its trainer; a Wild Area the Pokémon you will meet most,
- * peeking out of the grass (or the water); the Elite Wild the Pokémon itself; the nurse and the merchant themselves; a
+ * is its class's sprite; a Gym its Leader and the Elite its trainer; a Wild Area the Pokémon you will meet most, in the
+ * grass, its habitat's landmark behind it; the Elite Wild the Pokémon itself; the nurse and the merchant themselves; a
  * find the item lying there; a Mystery the overworld's "?".
  */
 export type NodeArt =
   | { kind: 'trainer'; src: string }
-  /** `cover`: the tile it peeks out of — its lane's own tall grass, or the water — or nothing on bare ground. */
-  | { kind: 'pokemon'; src: string; cover: { kind: 'grass' | 'water'; tile: string } | null }
+  /**
+   * `grass`: it stands in the Wild Areas' one grass (`WILD_GRASS`); `prop`: its habitat's landmark, behind it — `low` for
+   * one that lies flat on the ground (a pond, a reef, flowers), drawn further back so it shows past the Pokémon.
+   */
+  | { kind: 'pokemon'; src: string; grass: boolean; prop: { src: string; low: boolean } | null }
   | { kind: 'item'; src: string }
   | { kind: 'sign'; src: string };
-export const routeTile = (terrain: string, piece: string) => asset(`art/route/${terrain}/${piece}.png`);
+/** §9.3 — the tall grass every Wild Area's Pokémon stands in, whatever its habitat: Route 1's own tufts (`npm run art:habitats`). */
+export const WILD_GRASS = asset('art/map/habitat/grass.png');
+/** §9.3 — a habitat's landmark, behind its Pokémon on the map (`npm run art:habitats`): the Pokémon Tower, a cave's mouth. */
+export const habitatProp = (habitat: string) => asset(`art/map/habitat/${habitat}.png`);
 export const stageBackdrop = (stage: string) => asset(`art/stages/${stage}.jpg`);
 export const mysterySign = () => asset('art/icons/map/node-mystery-sign.svg');
 /** §2.12.4 — the Summit's peak and pennant, on the Mystery sign's 16-px grid. */

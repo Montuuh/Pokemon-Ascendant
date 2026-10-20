@@ -1,8 +1,9 @@
 import type { MapNode } from '@/sim';
-import type { NodeArt } from '@/ui/art';
-import { nodeHint, NODE_LABEL } from '@/ui/strings';
+import { WILD_GRASS, type NodeArt } from '@/ui/art';
+import { nodeHint } from '@/ui/strings';
 import { Tip, useTip } from '@/ui/tooltip';
 import { typeName } from '@/ui/tips';
+import { kindName, titleSays } from './nodeArt';
 import styles from './NodeMarker.module.css';
 
 export type NodeStatus = 'reachable' | 'locked' | 'visited' | 'current';
@@ -44,6 +45,7 @@ export function NodeMarker({
   // A node you can no longer reach says so in words too, not only by fading.
   const gone = status === 'locked' && !ahead;
   const said = STATUS_TEXT[gone ? 'gone' : status];
+  const kind = kindName(node);
   // The node's whole story in one bubble: what it is, who is in it, the level band, and whether you can go.
   // The full preview card opens on click; this is the glance before the click.
   const tip = useTip(
@@ -51,7 +53,7 @@ export function NodeMarker({
       title={node.preview.title}
       meta={[
         // The kind only when the title does not already say it, and a level band only where there is a fight.
-        ...(NODE_LABEL[node.kind] && NODE_LABEL[node.kind] !== node.preview.title ? [NODE_LABEL[node.kind]!] : []),
+        ...(titleSays(node.preview.title, kind) ? [] : [kind]),
         // §2.7 — a trainer's levels are part of the surprise (v0.8.6); a wild node keeps its band.
         ...(node.preview.levelBand[1] > 0 && (node.kind === 'wild' || node.kind === 'elite-wild' || node.preview.objective?.kind === 'hold') ? [`Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`] : []),
         // §2.7.3 — a hidden team's hint.
@@ -76,7 +78,8 @@ export function NodeMarker({
       onClick={enterable ? onClick : undefined}
       aria-disabled={enterable ? undefined : true}
       tabIndex={enterable ? undefined : -1}
-      aria-label={`${NODE_LABEL[node.kind]}, ${said}.${node.preview.title !== NODE_LABEL[node.kind] ? ` ${node.preview.title}` : ''}`}
+      // A title that already says the kind is read in its place ("A guarded find"), never dropped: a Gym's names its Leader.
+      aria-label={titleSays(node.preview.title, kind) ? `${node.preview.title}, ${said}.` : `${kind}, ${said}. ${node.preview.title}`}
       aria-current={status === 'current' ? 'location' : undefined}
       {...tip}
       data-testid={`node-${node.id}`}
@@ -87,11 +90,13 @@ export function NodeMarker({
     >
       <span className={styles.ground} aria-hidden="true" />
       <span className={`${styles.art} ${styles[art.kind]}`} aria-hidden="true">
+        {/* A Wild Area's landmark stands behind its Pokémon. */}
+        {art.kind === 'pokemon' && art.prop && (
+          <img className={`pixel ${styles.prop}`} src={art.prop.src} alt="" draggable={false} data-low={art.prop.low || undefined} />
+        )}
         {/* An item is a smooth render, not pixel art: it is drawn with smoothing; everything else stays crisp. */}
         <img className={art.kind === 'item' ? undefined : 'pixel'} src={art.src} alt="" draggable={false} />
-        {art.kind === 'pokemon' && art.cover && (
-          <span className={art.cover.kind === 'water' ? styles.water : styles.grass} style={{ backgroundImage: `url(${art.cover.tile})` }} />
-        )}
+        {art.kind === 'pokemon' && art.grass && <img className={`pixel ${styles.grass}`} src={WILD_GRASS} alt="" draggable={false} />}
       </span>
       {status === 'visited' && (
         <span className={styles.tick} aria-hidden="true">

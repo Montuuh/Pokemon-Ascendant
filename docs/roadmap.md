@@ -1410,6 +1410,16 @@ the run's `set-active`; the selected Pokémon's **sheet** — stats as its next 
 given from the bag or taken, its cards and the Move Manager, its evolution, and its **matchup against the Gyms the
 route ends at**. The side list stays for the glance; the screen is where the decision is made. `e2e/team`.
 
+### v0.9.27 — Landmarks  ✅ 2026-10-20
+The user's follow-up to the pack: the map's labels and the Wild Areas' pictures.
+
+**Shipped.** §9.3: **generic labels** — the Labels toggle names each node's kind (*Wild*, *Trainer*, *Elite Trainer*,
+*Nurse*, *Trader*…), a Gym with its Leader (*Brock's Gym*), a guarded find as one. **Wild Area landmarks** — every Wild
+Area's Pokémon stands in one grass, its habitat's landmark behind it: 15 props cut from FireRed / LeafGreen's map
+renders or put together from the route's tiles (`npm run art:habitats`, `public/art/map/habitat/`), drawn up and to
+the side so they show past the Pokémon; none for the plain Tall Grass, a runner or the Elite Wild. `BiomePool.cover`
+retired. A lane's Battlefield tag moved to the lane's outer edge (it sat on a first-column label at 720 p).
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

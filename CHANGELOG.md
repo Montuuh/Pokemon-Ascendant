@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.27 — Landmarks · 2026-10-20
+
+Every Wild Area shows where it is; the labels say what each node is.
+
+- **Landmarks.** 15 habitats cut from FireRed: Pokémon Tower, Power Plant, Tanoby…
+- **One grass.** Every Wild Area's Pokémon stands in the same tufts.
+- **Labels.** Generic: Wild, Trainer, Elite Trainer, Nurse — Brock's Gym.
+
 ### v0.9.26 — The team, managed · 2026-10-20
 
 One Team screen on the route and in the towns.

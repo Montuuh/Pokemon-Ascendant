@@ -845,7 +845,7 @@ export function reelRowTip(tier: WildTier, share: number, n: number): ReactNode 
 
 /** §9.3 — the map's Labels toggle. */
 export function mapLabelsTip(on: boolean): ReactNode {
-  return <Tip title={on ? 'Hide the labels' : 'Show the labels'} meta={['L']} body="A name under every node: the Wild Area's ground, the trainer's class, the stop. The Gym and the Elite are always named." />;
+  return <Tip title={on ? 'Hide the labels' : 'Show the labels'} meta={['L']} body="What every node is, in a word — Wild, Trainer, Elite Trainer, Nurse — and each Gym with its Leader. Its picture and its bubble say the rest." />;
 }
 
 /** §2.9.1 — the field nurse. */

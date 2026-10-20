@@ -156,8 +156,24 @@ export const ENCOUNTER_LABEL: Record<string, string> = {
   boss: 'Gym',
 };
 
-/** §9.3 — the map's labels for a node whose objective says more than its kind (§5.6.5). */
-export const NODE_TEXT = { guarded: 'Guarded find', runner: 'Runner' };
+/**
+ * §9.3 — the map's Labels: one short word for each kind of node (the user, 2026-10-20: "more generic — Wild, Trainer,
+ * Elite Trainer, Elite Wild, Gym, Nurse, Trader") — its `NODE_LABEL`, or the shorter word here. What waits there
+ * exactly is the node's bubble and its preview.
+ */
+export const MAP_LABEL: Partial<Record<string, string>> = {
+  wild: 'Wild',
+  aid: 'Nurse',
+  trader: 'Trader',
+  training: 'Training',
+  summit: 'Summit',
+};
+export const MAP_TEXT = {
+  /** §5.6.5 — an item ball with a guard on it is a fight, and says so. */
+  guarded: 'Guarded find',
+  /** A Gym keeps its Leader's name: which lane ends at whom is the choice the board is for. */
+  gym: (leader: string) => `${leader}'s Gym`,
+};
 
 export const NODE_LABEL: Record<string, string> = {
   wild: 'Wild Area',
@@ -176,12 +192,6 @@ export const NODE_LABEL: Record<string, string> = {
   apex: 'Legendary',
   league: 'League',
 };
-
-/**
- * §9.3 — a trainer class as the games name it, from its archetype id: `bug-catcher` → "Bug Catcher". The map's labels
- * name the class, not the person: who exactly waits there is the preview's surprise (§2.7).
- */
-export const trainerClass = (archetype: string): string => archetype.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
 /** §2.12 — Victory Road's own words. */
 export const VICTORY_TEXT = {

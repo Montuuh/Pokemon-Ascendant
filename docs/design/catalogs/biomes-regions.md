@@ -6,27 +6,27 @@
 
 ## 1. Habitats (16) ✅ v0.9.25
 
-A Wild Area is a habitat (§2.6.1, 2026-10-20): a small pool of one family, a backdrop, and what its Pokémon peek out
-of on the map. The first three ids are the v0.9.7 biomes', kept for saved maps. Display names by Region in §2.
+A Wild Area is a habitat (§2.6.1, 2026-10-20): a small pool of one family, a backdrop, and a landmark behind its
+Pokémon on the map (§9.3, v0.9.27; `public/art/map/habitat/<id>.png`). The first three ids are the v0.9.7 biomes', kept for saved maps. Display names by Region in §2.
 
-| id | Name | Regions | Primary in | Theme | Map cover | Stage art |
+| id | Name | Regions | Primary in | Theme | Map landmark | Stage art |
 |---|---|---|---|---|---|---|
-| `tall-grass` | Tall Grass | R1, R2 | **R1** | Normal, Flying, Poison | grass | `route.jpg` ✅ (Showdown classic) |
-| `meadow` | Flower Meadow | R1 | — | Grass, Fire, Normal | grass | `meadow.jpg` ✅ |
-| `forest` | Forest | R1, R2 | — | Bug, Grass | grass | `forest.jpg` ✅ |
-| `cave` | Cave · Deep Cave (R3) | R1, R2, R3 | — | Rock, Ground, Poison, Fighting; fossils | none | `cave.jpg` ✅ |
-| `ridge` | Rocky Ridge · Mountain Trail (R2) | R1, R2 | — | Fighting, Ground, Fire | none | `mountain.jpg` ✅ (Showdown classic) |
-| `river` | Fishing Spot | R1, R2 | — | Water | water | `pond.jpg` ✅ (Showdown classic) |
-| `shore` | Seashore · Rocky Shore (R2) | R1, R2 | — | Water, Poison, Rock, Flying | water | `beach.jpg` ✅ (Showdown classic) |
-| `sea` | Open Sea | R2 | **R2** | Deep-water Water, Ice | water | `sea.jpg` ✅ |
-| `power-plant` | Power Plant | R1, R2 | — | Electric, Poison | none | `power-plant.jpg` ✅ |
-| `tower` | Old Tower · Haunted Tower (R3) | R1, R3 | — | Ghost, Psychic | none | `tower.jpg` ✅ |
-| `swamp` | Toxic Marsh | R2 | — | Poison | grass | `night-meadow.jpg` ✅ |
-| `volcano` | Volcano Slope | R3 | **R3** | Fire | none | `volcano.jpg` ✅ |
-| `badlands` | Badlands | R3 | — | Ground, Rock | none | `desert.jpg` ✅ |
-| `lake` | Underground Lake | R3 | — | Water, Ice | water | `ice-cave.jpg` ✅ |
-| `sky` | Sky Cliffs | R3 | — | Flying, Dragon | none | `sky-pillar.jpg` ✅ |
-| `ruins` | Overgrown Ruins | R3 | — | Grass, Psychic | grass | `forest.jpg` ✅ |
+| `tall-grass` | Tall Grass | R1, R2 | **R1** | Normal, Flying, Poison | — (the grass itself) | `route.jpg` ✅ (Showdown classic) |
+| `meadow` | Flower Meadow | R1 | — | Grass, Fire, Normal | flowers | `meadow.jpg` ✅ |
+| `forest` | Forest | R1, R2 | — | Bug, Grass | three pines | `forest.jpg` ✅ |
+| `cave` | Cave · Deep Cave (R3) | R1, R2, R3 | — | Rock, Ground, Poison, Fighting; fossils | a peak with a cave's mouth | `cave.jpg` ✅ |
+| `ridge` | Rocky Ridge · Mountain Trail (R2) | R1, R2 | — | Fighting, Ground, Fire | Kindle Road's rocks | `mountain.jpg` ✅ (Showdown classic) |
+| `river` | Fishing Spot | R1, R2 | — | Water | a pond | `pond.jpg` ✅ (Showdown classic) |
+| `shore` | Seashore · Rocky Shore (R2) | R1, R2 | — | Water, Poison, Rock, Flying | a sandbank, sea rocks | `beach.jpg` ✅ (Showdown classic) |
+| `sea` | Open Sea | R2 | **R2** | Deep-water Water, Ice | a reef on open water | `sea.jpg` ✅ |
+| `power-plant` | Power Plant | R1, R2 | — | Electric, Poison | the Power Plant | `power-plant.jpg` ✅ |
+| `tower` | Old Tower · Haunted Tower (R3) | R1, R3 | — | Ghost, Psychic | the Pokémon Tower's dome | `tower.jpg` ✅ |
+| `swamp` | Toxic Marsh | R2 | — | Poison | a marsh | `night-meadow.jpg` ✅ |
+| `volcano` | Volcano Slope | R3 | **R3** | Fire | a cone with a glowing crater | `volcano.jpg` ✅ |
+| `badlands` | Badlands | R3 | — | Ground, Rock | sandstone rocks | `desert.jpg` ✅ |
+| `lake` | Underground Lake | R3 | — | Water, Ice | an ice rock in a pool | `ice-cave.jpg` ✅ |
+| `sky` | Sky Cliffs | R3 | — | Flying, Dragon | rock spires | `sky-pillar.jpg` ✅ |
+| `ruins` | Overgrown Ruins | R3 | — | Grass, Psychic | a Tanoby chamber | `forest.jpg` ✅ |
 
 **Binding is canon**: the eligible set and the primary weighting are fixed per Region. The opt-in
 `naturalist-lens` Region Modifier raises the Rare row's odds instead of moving a habitat (§2.11.3.1).

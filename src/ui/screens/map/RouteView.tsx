@@ -225,7 +225,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
             const style: CSSProperties = { left: z.x0 * px, top: z.y0 * px, width: (z.x1 - z.x0) * px, height: (z.y1 - z.y0) * px };
             return (
               <div key={z.lane} className={`${styles.weather} ${WEATHER_CLASS[field] ?? ''}`} style={style} data-field={field}>
-                <Tipped tip={fieldTip(field)} className={styles.weatherTag} style={{ left: px * 4, [z.lane === 0 ? 'top' : 'bottom']: px * 1.5 }}>
+                <Tipped tip={fieldTip(field)} className={styles.weatherTag} style={{ left: px * 4, [z.lane === 0 ? 'top' : 'bottom']: px * 0.5 }}>
                   {FIELD_LABEL[field]}
                 </Tipped>
               </div>

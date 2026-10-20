@@ -1,9 +1,8 @@
 import { getContent } from '@/content/registry';
 import { battleSpriteUrl } from '@/content/schemas/species';
 import { ALL_ELITES, ALL_TRAINERS, TRADER, VICTORY_ROAD, gymById, leagueMemberOf, regionContent, type BiomeId, type MapNode, type RegionMap } from '@/sim';
-import { itemIcon, mysterySign, routeTile, summitSign, trainerSprite, type NodeArt } from '@/ui/art';
-import { terrainOfNode, type TerrainId } from '@/ui/screens/map/terrain';
-import { NODE_LABEL, NODE_TEXT, trainerClass } from '@/ui/strings';
+import { habitatProp, itemIcon, mysterySign, summitSign, trainerSprite, type NodeArt } from '@/ui/art';
+import { MAP_LABEL, MAP_TEXT, NODE_LABEL } from '@/ui/strings';
 
 // §9.3 — which picture a map node wears (v0.9.14). Read off the node's own preview, so the map shows exactly who and
 // what the preview card will promise: the roster's own sprite, the Gym's own Leader, the find's own item.
@@ -11,25 +10,15 @@ import { NODE_LABEL, NODE_TEXT, trainerClass } from '@/ui/strings';
 /** Its animated Gen V battle sprite, cropped tight to the Pokémon: the same sprite the arena shows. */
 const pokemonIcon = (speciesId: string) => battleSpriteUrl(getContent().species(speciesId).id, 'front');
 
-/** The terrains whose tiles include tall grass (`public/art/route/<terrain>/tall.png`); a cave or a plant has none. */
-const TALL_GRASS: ReadonlySet<TerrainId> = new Set(['route', 'coast', 'highland', 'meadow', 'forest', 'lake']);
+/** §9.3 — the habitats with no landmark: the plain route's tall grass is the grass every Wild Area stands in. */
+const NO_LANDMARK: ReadonlySet<BiomeId> = new Set(['tall-grass']);
+/** §9.3 — the habitats whose landmark lies flat on the ground: water, sand, flowers. */
+const LOW_PROPS: ReadonlySet<BiomeId> = new Set(['meadow', 'river', 'shore', 'sea', 'swamp', 'lake']);
 
-/** §2.6.1 — a Wild Area's habitat, from the id its preview's icon carries (`wild-<habitat>`). */
-function habitatOf(node: MapNode, map: RegionMap) {
+/** §2.6.1 — a Wild Area's habitat, from the id its preview's icon carries (`wild-<habitat>`), if this region has it. */
+function habitatOf(node: MapNode, map: RegionMap): BiomeId | null {
   const id = node.preview.icon?.startsWith('wild-') ? (node.preview.icon.slice('wild-'.length) as BiomeId) : null;
-  return id ? regionContent(map.regionIndex).biomes[id] : undefined;
-}
-
-/**
- * §9.3 — what a Wild Area's Pokémon peeks out of: the water for a habitat met in the water (the sea, the fishing spot, a
- * shore, a lake), its terrain's tall grass for one met in the grass, and open ground for a cave, a ridge or a plant.
- */
-function coverOf(node: MapNode, map: RegionMap): { kind: 'grass' | 'water'; tile: string } | null {
-  const cover = habitatOf(node, map)?.cover ?? 'grass';
-  if (cover === 'water') return { kind: 'water', tile: routeTile('river', 'water-c') };
-  if (cover === 'none') return null;
-  const terrain = terrainOfNode(map, node);
-  return TALL_GRASS.has(terrain) ? { kind: 'grass', tile: routeTile(terrain, 'tall') } : null;
+  return id && regionContent(map.regionIndex).biomes[id] ? id : null;
 }
 
 /** §9.3 — a landmark's caption names who waits there, which its picture alone cannot: the Leader, the Elite. */
@@ -39,29 +28,20 @@ export function landmarkName(node: MapNode, map: RegionMap): string | null {
   return null;
 }
 
+/** A node's kind in words — a guarded find is a fight, not an item ball (§5.6.5). For its bubble and its name read aloud. */
+export const kindName = (node: MapNode): string => (node.preview.objective?.kind === 'hold' ? MAP_TEXT.guarded : NODE_LABEL[node.kind] ?? node.kind);
+/** Whether a title already says the kind ("A guarded find", "Gym"): then the kind is not said again beside it. */
+export const titleSays = (title: string, kind: string): boolean => title.toLowerCase().includes(kind.toLowerCase());
+
 /**
- * §9.3 — the short name a node wears under its picture when the map's labels are on: a Wild Area's ground, a trainer's
- * class, a stop's name. Landmarks keep their own (`landmarkName`); a fight with another objective says so first.
+ * §9.3 — the word a node wears under its picture when the map's labels are on: its kind, generic (the user, 2026-10-20) —
+ * Wild, Trainer, Elite Trainer, Nurse… — and a Gym its Leader's name too (*Brock's Gym*). The habitat and the trainer's
+ * class are the picture's and the bubble's to say.
  */
 export function nodeLabel(node: MapNode, map: RegionMap): string {
-  const landmark = landmarkName(node, map);
-  if (landmark) return landmark;
-  const p = node.preview;
-  if (p.objective?.kind === 'hold') return NODE_TEXT.guarded;
-  if (p.objective?.kind === 'flee') return NODE_TEXT.runner;
-  switch (node.kind) {
-    case 'wild':
-      // The ground it is met on: its habitat's name.
-      return habitatOf(node, map)?.name ?? NODE_LABEL.wild!;
-    case 'trainer':
-      return p.icon?.startsWith('trainer-') ? trainerClass(p.icon.slice('trainer-'.length)) : NODE_LABEL.trainer!;
-    case 'elite-wild': {
-      const face = p.enemies?.[0]?.species ?? p.speciesIds[0];
-      return face ? getContent().species(face).name : NODE_LABEL['elite-wild']!;
-    }
-    default:
-      return NODE_LABEL[node.kind] ?? node.kind;
-  }
+  const leader = node.kind === 'gym' ? landmarkName(node, map) : null;
+  if (leader) return MAP_TEXT.gym(leader);
+  return MAP_LABEL[node.kind] ?? kindName(node);
 }
 
 export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
@@ -102,18 +82,22 @@ export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
       const commons = p.wild?.pool.common ?? [];
       const face = commons.length ? commons[[...node.id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % commons.length] : p.wild?.pool.uncommon[0] ?? p.speciesIds[0];
       if (!face) return { kind: 'sign', src: mysterySign() };
-      // A runner (§5.6.5) stands on open ground whatever its habitat: an Abra is not met in the water.
-      return { kind: 'pokemon', src: pokemonIcon(face), cover: p.objective?.kind === 'flee' ? null : coverOf(node, map) };
+      // §9.3 (the user, 2026-10-20) — every Wild Area's Pokémon in the one grass, and its habitat said by the landmark
+      // behind it: the Pokémon Tower behind an Old Tower's Gastly, a cave's mouth behind a Zubat. A runner (§5.6.5) is
+      // one named Pokémon, met wherever it bolts: no landmark, as the Elite Wild has none.
+      const habitat = p.objective?.kind === 'flee' ? null : habitatOf(node, map);
+      const prop = habitat && !NO_LANDMARK.has(habitat) ? { src: habitatProp(habitat), low: LOW_PROPS.has(habitat) } : null;
+      return { kind: 'pokemon', src: pokemonIcon(face), grass: true, prop };
     }
-    // §2.12.2 — the Apex: the Legendary, standing on its node.
+    // §2.8.2 — the Elite Wild: the Pokémon itself, in the same grass; §2.12.2 — the Apex: the Legendary, on its node.
     case 'apex':
     case 'elite-wild': {
       const face = p.enemies?.[0]?.species ?? p.speciesIds[0];
-      return face ? { kind: 'pokemon', src: pokemonIcon(face), cover: null } : { kind: 'sign', src: mysterySign() };
+      return face ? { kind: 'pokemon', src: pokemonIcon(face), grass: node.kind === 'elite-wild', prop: null } : { kind: 'sign', src: mysterySign() };
     }
     case 'cache': {
       // §5.6.5 — a guarded find shows who stands over it.
-      if (p.objective?.kind === 'hold' && p.speciesIds[0]) return { kind: 'pokemon', src: pokemonIcon(p.speciesIds[0]), cover: null };
+      if (p.objective?.kind === 'hold' && p.speciesIds[0]) return { kind: 'pokemon', src: pokemonIcon(p.speciesIds[0]), grass: false, prop: null };
       // §2.9.5 — an item ball since its reel (2026-10-20): the ball lying on the path, as the overworld draws it.
       if (p.reel) return { kind: 'item', src: itemIcon('poke-ball') };
       const item = p.find?.items[0];

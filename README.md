@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.27 — Landmarks.** Every Wild Area on the map shows where it is: its Pokémon stands in the same tall grass
+everywhere, with its habitat's landmark rising behind it — the Pokémon Tower's dome, the Power Plant, a cave's mouth, a
+volcano, a Tanoby chamber, a reef — all FireRed's own pixels. And the Labels toggle names each node by its kind: Wild,
+Trainer, Elite Trainer, Nurse, and each Gym with its Leader. Before it,
 **v0.9.26 — The team, managed.** One Team screen wherever the team is chosen — on the map (or with T), in a City's
 lobby, at its Center: the formation as it will fight and the Box beside it, moved by dragging or by a button, and the
 sheet of the Pokémon you pick — its stats, its ability, the item it holds, its cards, its evolution, and how it meets

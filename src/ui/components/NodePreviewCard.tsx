@@ -10,8 +10,8 @@ import { ObjectiveChip } from './ObjectiveChip';
 import { doubleActorTip, groupTip, perfectClearTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { itemIcon, mysterySign, nodeBadge } from '@/ui/art';
-import { nodeArt } from './nodeArt';
-import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_LABEL, nodeHint, VICTORY_TEXT, WILD_TEXT, LEAGUE_TEXT, FIND_TEXT } from '@/ui/strings';
+import { kindName, nodeArt, titleSays } from './nodeArt';
+import { DOUBLE_ACTOR_LABEL, groupLabel, nodeHint, VICTORY_TEXT, WILD_TEXT, LEAGUE_TEXT, FIND_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import { WildPool } from './WildPool';
 import { ReelPool } from './FindPrize';
@@ -79,7 +79,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   const hiddenTeam = node.kind === 'trainer' || node.kind === 'elite' || node.kind === 'gym' || node.kind === 'gauntlet' || node.kind === 'league';
   // §2.1.6 — a League door names its member's seat, and the Champion's preview promises his signature (§5.12.1).
   const member = node.kind === 'league' ? leagueMemberOf(node) : undefined;
-  const kindLabel = member?.title ?? NODE_LABEL[node.kind];
+  const kindLabel = member?.title ?? kindName(node);
   // §5.6.5 — a runner or a guarded find: the race it is, named on the card.
   const objective = node.preview.objective;
   // A find is a fight only when it is guarded.
@@ -112,7 +112,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
             />
           </span>
           <div>
-            {kindLabel !== node.preview.title && (
+            {!titleSays(node.preview.title, kindLabel) && (
               <p className={styles.kind}>{kindLabel}</p>
             )}
             <h2 className={`${styles.title} display`}>{node.preview.title}</h2>

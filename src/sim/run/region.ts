@@ -25,8 +25,6 @@ export interface BiomePool {
   name: string;
   /** Stage backdrop id under public/art/stages. */
   stage: string;
-  /** §9.3 — what its Pokémon peek out of on the map: tall grass, water, or open ground. */
-  cover: 'grass' | 'water' | 'none';
   common: string[];
   uncommon: string[];
   rare: string[];
@@ -53,55 +51,55 @@ export const WILD_TIER_ODDS: Record<WildTier, number> = { common: 0.6, uncommon:
  */
 export const BIOMES: Partial<Record<BiomeId, BiomePool>> & Record<'meadow' | 'cave' | 'river', BiomePool> = {
   'tall-grass': {
-    id: 'tall-grass', name: 'Tall Grass', stage: 'route', cover: 'grass',
+    id: 'tall-grass', name: 'Tall Grass', stage: 'route',
     common: ['pidgey', 'rattata', 'spearow', 'nidoran-f', 'nidoran-m'],
     uncommon: ['ekans', 'meowth', 'doduo', 'jigglypuff'],
     rare: ['eevee'],
   },
   forest: {
-    id: 'forest', name: 'Forest', stage: 'forest', cover: 'grass',
+    id: 'forest', name: 'Forest', stage: 'forest',
     common: ['caterpie', 'weedle', 'oddish', 'paras'],
     uncommon: ['bellsprout', 'venonat', 'exeggcute'],
     rare: ['pikachu', 'bulbasaur'],
   },
   meadow: {
-    id: 'meadow', name: 'Flower Meadow', stage: 'meadow', cover: 'grass',
+    id: 'meadow', name: 'Flower Meadow', stage: 'meadow',
     common: ['oddish', 'bellsprout', 'jigglypuff', 'nidoran-f'],
     uncommon: ['clefairy', 'exeggcute', 'vulpix', 'growlithe', 'ponyta'],
     rare: ['bulbasaur', 'eevee'],
   },
   cave: {
-    id: 'cave', name: 'Cave', stage: 'cave', cover: 'none',
+    id: 'cave', name: 'Cave', stage: 'cave',
     common: ['zubat', 'geodude', 'diglett', 'paras'],
     uncommon: ['clefairy', 'sandshrew', 'cubone', 'rhyhorn'],
     rare: ['kabuto', 'omanyte'],
   },
   ridge: {
-    id: 'ridge', name: 'Rocky Ridge', stage: 'mountain', cover: 'none',
+    id: 'ridge', name: 'Rocky Ridge', stage: 'mountain',
     common: ['geodude', 'mankey', 'machop', 'sandshrew', 'spearow'],
     uncommon: ['rhyhorn', 'cubone', 'ponyta', 'growlithe'],
     rare: ['charmander'],
   },
   river: {
-    id: 'river', name: 'Fishing Spot', stage: 'pond', cover: 'water',
+    id: 'river', name: 'Fishing Spot', stage: 'pond',
     common: ['magikarp', 'poliwag', 'goldeen', 'psyduck', 'krabby'],
     uncommon: ['slowpoke', 'horsea', 'shellder'],
     rare: ['dratini', 'squirtle'],
   },
   shore: {
-    id: 'shore', name: 'Seashore', stage: 'beach', cover: 'water',
+    id: 'shore', name: 'Seashore', stage: 'beach',
     common: ['tentacool', 'krabby', 'shellder', 'psyduck'],
     uncommon: ['staryu', 'seel', 'horsea'],
     rare: ['squirtle', 'omanyte'],
   },
   'power-plant': {
-    id: 'power-plant', name: 'Power Plant', stage: 'power-plant', cover: 'none',
+    id: 'power-plant', name: 'Power Plant', stage: 'power-plant',
     common: ['magnemite', 'voltorb', 'rattata', 'grimer'],
     uncommon: ['koffing', 'meowth', 'ekans'],
     rare: ['pikachu'],
   },
   tower: {
-    id: 'tower', name: 'Old Tower', stage: 'tower', cover: 'none',
+    id: 'tower', name: 'Old Tower', stage: 'tower',
     common: ['gastly', 'zubat', 'koffing'],
     uncommon: ['drowzee', 'cubone', 'grimer', 'exeggcute'],
     rare: ['abra'],
@@ -548,55 +546,55 @@ export const LANE_THEME: Record<string, LaneTheme> = {
  */
 export const BIOMES_R2: Partial<Record<BiomeId, BiomePool>> = {
   sea: {
-    id: 'sea', name: 'Open Sea', stage: 'sea', cover: 'water',
+    id: 'sea', name: 'Open Sea', stage: 'sea',
     common: ['tentacruel', 'seadra', 'seaking', 'golduck'],
     uncommon: ['starmie', 'dewgong', 'slowbro'],
     rare: ['jynx', 'dragonair'],
   },
   river: {
-    id: 'river', name: 'Fishing Spot', stage: 'pond', cover: 'water',
+    id: 'river', name: 'Fishing Spot', stage: 'pond',
     common: ['poliwhirl', 'seaking', 'golduck', 'kingler'],
     uncommon: ['slowbro', 'seadra'],
     rare: ['wartortle', 'dragonair'],
   },
   shore: {
-    id: 'shore', name: 'Rocky Shore', stage: 'beach', cover: 'water',
+    id: 'shore', name: 'Rocky Shore', stage: 'beach',
     common: ['kingler', 'golbat', 'graveler', 'pidgeotto'],
     uncommon: ['onix', 'dewgong', 'starmie'],
     rare: ['farfetchd', 'wartortle'],
   },
   'power-plant': {
-    id: 'power-plant', name: 'Power Plant', stage: 'power-plant', cover: 'none',
+    id: 'power-plant', name: 'Power Plant', stage: 'power-plant',
     common: ['magneton', 'electrode', 'raichu'],
     uncommon: ['electabuzz', 'muk', 'weezing'],
     rare: ['porygon', 'ditto'],
   },
   cave: {
-    id: 'cave', name: 'Cave', stage: 'cave', cover: 'none',
+    id: 'cave', name: 'Cave', stage: 'cave',
     common: ['golbat', 'graveler', 'dugtrio', 'sandslash'],
     uncommon: ['onix', 'haunter', 'kadabra'],
     rare: ['charmeleon'],
   },
   ridge: {
-    id: 'ridge', name: 'Mountain Trail', stage: 'mountain', cover: 'none',
+    id: 'ridge', name: 'Mountain Trail', stage: 'mountain',
     common: ['machoke', 'primeape', 'graveler', 'sandslash'],
     uncommon: ['dugtrio', 'onix', 'nidorino'],
     rare: ['hitmonlee', 'hitmonchan'],
   },
   swamp: {
-    id: 'swamp', name: 'Toxic Marsh', stage: 'night-meadow', cover: 'grass',
+    id: 'swamp', name: 'Toxic Marsh', stage: 'night-meadow',
     common: ['muk', 'weezing', 'arbok', 'gloom'],
     uncommon: ['haunter', 'golbat', 'weepinbell', 'venomoth'],
     rare: ['ditto'],
   },
   'tall-grass': {
-    id: 'tall-grass', name: 'Tall Grass', stage: 'route', cover: 'grass',
+    id: 'tall-grass', name: 'Tall Grass', stage: 'route',
     common: ['raticate', 'pidgeotto', 'arbok', 'nidorina', 'nidorino'],
     uncommon: ['persian', 'wigglytuff', 'clefable', 'lickitung', 'hypno'],
     rare: ['farfetchd', 'ivysaur'],
   },
   forest: {
-    id: 'forest', name: 'Forest', stage: 'forest', cover: 'grass',
+    id: 'forest', name: 'Forest', stage: 'forest',
     common: ['butterfree', 'beedrill', 'parasect', 'venomoth', 'metapod', 'kakuna'],
     uncommon: ['gloom', 'weepinbell', 'tangela'],
     rare: ['scyther', 'pinsir', 'ivysaur'],
@@ -736,43 +734,43 @@ export const LANE_THEME_R2: Record<string, LaneTheme> = {
  */
 export const BIOMES_R3: Partial<Record<BiomeId, BiomePool>> = {
   volcano: {
-    id: 'volcano', name: 'Volcano Slope', stage: 'volcano', cover: 'none',
+    id: 'volcano', name: 'Volcano Slope', stage: 'volcano',
     common: ['arcanine', 'ninetales', 'rapidash', 'rhydon'],
     uncommon: ['magmar', 'flareon', 'golem'],
     rare: ['charizard'],
   },
   badlands: {
-    id: 'badlands', name: 'Badlands', stage: 'desert', cover: 'none',
+    id: 'badlands', name: 'Badlands', stage: 'desert',
     common: ['rhydon', 'golem', 'nidoking', 'nidoqueen'],
     uncommon: ['marowak', 'tauros', 'dodrio'],
     rare: ['aerodactyl'],
   },
   cave: {
-    id: 'cave', name: 'Deep Cave', stage: 'cave', cover: 'none',
+    id: 'cave', name: 'Deep Cave', stage: 'cave',
     common: ['machamp', 'golem', 'poliwrath'],
     uncommon: ['omastar', 'kabutops', 'marowak'],
     rare: ['snorlax', 'kangaskhan'],
   },
   lake: {
-    id: 'lake', name: 'Underground Lake', stage: 'ice-cave', cover: 'water',
+    id: 'lake', name: 'Underground Lake', stage: 'ice-cave',
     common: ['cloyster', 'poliwrath', 'vaporeon'],
     uncommon: ['gyarados', 'omastar', 'kabutops'],
     rare: ['lapras', 'blastoise'],
   },
   sky: {
-    id: 'sky', name: 'Sky Cliffs', stage: 'sky-pillar', cover: 'none',
+    id: 'sky', name: 'Sky Cliffs', stage: 'sky-pillar',
     common: ['pidgeot', 'fearow', 'dodrio'],
     uncommon: ['gyarados', 'scyther', 'jolteon'],
     rare: ['dragonite', 'aerodactyl'],
   },
   tower: {
-    id: 'tower', name: 'Haunted Tower', stage: 'tower', cover: 'none',
+    id: 'tower', name: 'Haunted Tower', stage: 'tower',
     common: ['gengar', 'hypno'],
     uncommon: ['alakazam', 'mr-mime', 'exeggutor', 'vileplume'],
     rare: ['chansey', 'venusaur'],
   },
   ruins: {
-    id: 'ruins', name: 'Overgrown Ruins', stage: 'forest', cover: 'grass',
+    id: 'ruins', name: 'Overgrown Ruins', stage: 'forest',
     common: ['vileplume', 'victreebel', 'exeggutor'],
     uncommon: ['hypno', 'jolteon', 'mr-mime', 'scyther'],
     rare: ['venusaur'],

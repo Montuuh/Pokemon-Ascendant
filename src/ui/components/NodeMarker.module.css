@@ -44,26 +44,21 @@
 .pokemon img {
   bottom: 2px;
 }
-/* The tuft it peeks out of — its lane's own tall grass — or the water the sea's and the river's are met in. */
-.grass,
-.water {
-  position: absolute;
-  left: 50%;
-  bottom: -4px;
-  width: 56px;
-  height: 13px;
-  transform: translateX(-50%);
-  background-size: 32px 32px;
-  background-repeat: repeat-x;
-  image-rendering: pixelated;
+/* §9.3 — a Wild Area's landmark, behind its Pokémon at its own size (a building at half of it). Behind is further up the
+   route and a little aside, as the board itself draws depth: what stands further off is higher on the screen, so the
+   Pokémon Tower rises over a Gastly's shoulder instead of hiding behind it. */
+.pokemon .prop {
+  left: calc(50% + var(--sp-4));
+  bottom: var(--sp-4);
 }
-.grass {
-  background-position: 0 0;
+/* One that lies flat (a pond, a reef, flowers) is further back still, or a Pokémon of any size would cover it. */
+.pokemon .prop[data-low] {
+  left: calc(50% + var(--sp-5));
+  bottom: var(--sp-6);
 }
-.water {
-  border-radius: 50%;
-  background-position: center;
-  opacity: 0.95;
+/* The tufts every Wild Area's Pokémon stands in — one grass for all of them, its feet in it. */
+.pokemon .grass {
+  bottom: -6px;
 }
 .item img {
   width: 40px;
