@@ -3,7 +3,7 @@ import { IconCards, IconCrown, IconLock, IconPlus, IconX } from '@tabler/icons-r
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { battleSpriteUrl } from '@/content/schemas/species';
-import { benchXpShare, boxCapacity, gymById, matchupAgainst, placesOf, runHelpers, teamStats, xpToNext, DEFAULT_PROGRESSION, type PartyMon, type RunAction } from '@/sim';
+import { benchXpShare, boxCapacity, gymById, matchupAgainst, placeInTeam, placesOf, runHelpers, teamStats, xpToNext, DEFAULT_PROGRESSION, type PartyMon, type RunAction } from '@/sim';
 import { itemIcon } from '@/ui/art';
 import { ItemIcon } from '@/ui/components/FindPrize';
 import { HpBar } from '@/ui/components/HpBar';
@@ -144,10 +144,9 @@ export function TeamScreen({ onClose, locked = false, initialUid = null }: Props
       act({ type: 'set-active', uids: now });
       return;
     }
-    // From the Box: it takes the place, and whoever stood there goes to the Box.
-    if (slot < now.length) now[slot] = uid;
-    else now.push(uid);
-    act({ type: 'set-active', uids: now });
+    // From the Box: it takes the place, and whoever stood there goes to the Box — and a Legendary's second place is made
+    // by whoever has stood there longest stepping back (§2.3).
+    act({ type: 'set-active', uids: placeInTeam(now, uid, slot, run.box, content) });
   }
 
   const drag = (uid: string) => ({
@@ -177,7 +176,9 @@ export function TeamScreen({ onClose, locked = false, initialUid = null }: Props
   const monName = content.species(mon.speciesId).name;
 
   return (
-    <div className={styles.scrim} role="presentation" onClick={onClose}>
+    // Only a click on the scrim itself closes the Team: the Move Manager is drawn inside this scrim, and every click in
+    // it — its ✕, a move taken out of the four — would otherwise bubble up here and close both.
+    <div className={styles.scrim} role="presentation" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div ref={panel} className={styles.panel} role="dialog" aria-modal="true" aria-label={TEAM_TEXT.title} onClick={(e) => e.stopPropagation()} data-testid="team-screen">
         <header className={styles.head}>
           <h2 className={`${styles.title} display`}>

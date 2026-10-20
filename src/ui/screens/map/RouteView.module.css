@@ -8,12 +8,17 @@
   height: 100%;
 }
 
-/* §9.3 — the Labels toggle, in the board's top-right corner: off, a quiet plate; on, the action's gold. */
+/* §9.3 — the row under the board: the strip, and the Labels toggle at its end. */
+.foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-2);
+}
+/* §9.3 — the Labels toggle, beside the strip, off the board: off, a quiet plate; on, the action's gold. With no strip
+   (a board that fits its window) it keeps its end of the row. */
 .labelsToggle {
-  position: absolute;
-  top: var(--sp-2);
-  right: var(--sp-2);
-  z-index: 5;
+  grid-column: 2;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);

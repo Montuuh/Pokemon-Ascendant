@@ -541,8 +541,8 @@ The recruitment workhorse.
 > `ui/components/nodeArt.ts` (the landmark and the face; v0.9.27); new backdrops `route`, `mountain`, `beach`, `pond`
 > (Showdown's classic set).
 
-A Wild Area is a **habitat**: a small pool with a type of its own, a battle backdrop, and a landmark standing behind
-its Pokémon on the map — the Pokémon Tower, the Power Plant, a cave's mouth, a reef (§9.3). Sixteen across the game, seven to nine to a Region:
+A Wild Area is a **habitat**: a small pool with a type of its own, a battle backdrop, and a landmark that is its picture
+on the map — the Pokémon Tower, the Power Plant, a cave's mouth, a reef (§9.3). Sixteen across the game, seven to nine to a Region:
 
 | Habitat | Regions | Theme | Map | Backdrop |
 |---|---|---|---|---|

@@ -59,6 +59,13 @@
   transform: translateX(-50%) scale(var(--scale, 1));
   transform-origin: bottom center;
 }
+/* A Wild Area's landmark at its own size, on the disc's floor. */
+.artHabitat img {
+  top: auto;
+  bottom: 6px;
+  transform: translateX(-50%) scale(var(--scale, 1));
+  transform-origin: bottom center;
+}
 .artItem img,
 .artSign img {
   width: 48px;

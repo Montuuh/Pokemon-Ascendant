@@ -139,6 +139,47 @@ test.describe('The Team screen — §2.3, §9.12', () => {
     await expect(page.getByTestId('team-give-leftovers')).toBeFocused();
   });
 
+  test('the Move Manager closes alone: its ✕ and a move taken out of the four leave the Team open', async ({ page }) => {
+    await newRun(page, (() => {
+      const a = (window as unknown as { __ascendant: Dev }).__ascendant;
+      a.run.new!('bulbasaur', 7);
+      a.goTo('map');
+    }));
+    await page.getByTestId('btn-team').click();
+    const team = page.getByTestId('team-screen');
+    await page.getByTestId('team-manage-moves').click();
+    const manager = page.getByTestId('move-manager');
+    await expect(manager).toBeVisible();
+    // A move out of the four: both stay open, and the move goes to the pool.
+    const before = await manager.locator('[data-testid^="move-"][data-in-kit="true"]').count();
+    await manager.locator('[data-testid^="move-"][data-in-kit="true"]').first().click();
+    await expect(manager.locator('[data-testid^="move-"][data-in-kit="true"]')).toHaveCount(before - 1);
+    await expect(manager).toBeVisible();
+    await expect(team).toBeVisible();
+    // Its ✕ closes the Move Manager only.
+    await page.getByTestId('btn-close-moves').click();
+    await expect(page.getByTestId('move-manager-overlay')).toHaveCount(0);
+    await expect(team).toBeVisible();
+  });
+
+  test("the route's panel shows the team and manages nothing: no row to click, no Move Manager — the Team screen does", async ({ page }) => {
+    await newRun(page, (() => {
+      const a = (window as unknown as { __ascendant: Dev }).__ascendant;
+      a.run.new!('squirtle', 7);
+      a.run.fill!(3);
+      a.goTo('map');
+    }));
+    const panel = page.getByTestId('box-panel');
+    await expect(panel.locator('[data-testid^="box-row-"]')).toHaveCount(3);
+    await expect(panel.locator('button[data-testid^="box-row-"]')).toHaveCount(0);
+    await expect(panel.locator('[data-testid^="box-moves-"]')).toHaveCount(0);
+    const before = (await state(page)).activeUids;
+    await panel.locator('[data-testid^="box-row-"]').first().click();
+    expect((await state(page)).activeUids).toEqual(before);
+    await expect(page.getByTestId('move-manager-overlay')).toHaveCount(0);
+    await expect(panel.getByTestId('btn-team')).toBeVisible();
+  });
+
   test('from a City lobby, beside its party', async ({ page }) => {
     await newRun(page, (() => {
       const a = (window as unknown as { __ascendant: Dev }).__ascendant;

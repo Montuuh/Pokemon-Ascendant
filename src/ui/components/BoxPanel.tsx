@@ -30,9 +30,14 @@ interface Props {
   restingUid?: string | null;
   /** §9.12 — the Team screen's door: the formation, the Box and each Pokémon's sheet. Absent: no door. */
   onOpenTeam?: () => void;
+  /**
+   * §9.12 — the team at a glance and nothing more (the route, the user, 2026-10-20): no row to click, no Move Manager;
+   * each row's bubble says what it is, and the Team screen is where it changes.
+   */
+  readOnly?: boolean;
 }
 
-function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, onSetLead, onOpenMoves, stones = [] }: { mon: PartyMon; active: boolean; index: number; locked: boolean; resting?: boolean; onToggleActive: Props['onToggleActive']; onSetLead: Props['onSetLead']; onOpenMoves: Props['onOpenMoves']; stones?: readonly string[] }) {
+function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, onSetLead, onOpenMoves, stones = [], readOnly = false }: { mon: PartyMon; active: boolean; index: number; locked: boolean; resting?: boolean; onToggleActive: Props['onToggleActive']; onSetLead: Props['onSetLead']; onOpenMoves: Props['onOpenMoves']; stones?: readonly string[]; readOnly?: boolean }) {
   const content = getContent();
   const species = content.species(mon.speciesId);
   const max = maxHpOf(mon, content);
@@ -48,9 +53,10 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
   }).length;
   const waiting = pooled + ready;
   const ability = mon.abilityId ? content.ability(mon.abilityId) : null;
+  const Row = readOnly ? 'div' : 'button';
   const held = mon.heldItem ? content.heldItem(mon.heldItem) : null;
   // The row's bubble is the Pokémon: ability, item, what clicking does. It replaced three native titles.
-  const movesTip = useTip(<Tip title="Move Manager" meta={[`${mon.pool.length} known`, `${mon.moveIds.length} active`]} body={[pooled > 0 ? `${species.name} knows ${pooled} move${pooled === 1 ? '' : 's'} that ${pooled === 1 ? 'is' : 'are'} not in its four cards.` : null, ready > 0 ? `A stone in the bag can evolve it now.` : null].filter(Boolean).join(' ') || `Choose which four of ${species.name}'s moves go in the deck.`} footer="A Pokémon's four active moves are its four cards. The pool never shrinks." />);
+  const movesTip = useTip(<Tip title={readOnly ? TEAM_TEXT.waiting(waiting) : 'Move Manager'} meta={[`${mon.pool.length} known`, `${mon.moveIds.length} active`]} body={[pooled > 0 ? `${species.name} knows ${pooled} move${pooled === 1 ? '' : 's'} that ${pooled === 1 ? 'is' : 'are'} not in its four cards.` : null, ready > 0 ? `A stone in the bag can evolve it now.` : null].filter(Boolean).join(' ') || `Choose which four of ${species.name}'s moves go in the deck.`} footer={readOnly ? TEAM_TEXT.panelHint : "A Pokémon's four active moves are its four cards. The pool never shrinks."} />);
   const rowTip = useTip(
     <Tip
       title={species.name}
@@ -63,16 +69,16 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
           {mon.shiny && shinyLine(true)}
         </>
       }
-      footer={locked ? 'The team is locked once you enter a node.' : active ? (index > 0 ? 'Click to make it the Lead.' : 'Click a Box row to swap it out.') : 'Click to put it on the Active Team.'}
+      footer={readOnly ? TEAM_TEXT.panelHint : locked ? 'The team is locked once you enter a node.' : active ? (index > 0 ? 'Click to make it the Lead.' : 'Click a Box row to swap it out.') : 'Click to put it on the Active Team.'}
     />,
   );
   return (
     <li key={mon.uid} className={styles.item}>
-      <button
-        type="button"
-        className={`${styles.row} ${active ? styles.active : ''} ${fainted ? styles.fainted : ''} ${isLead ? styles.lead : ''} ${onOpenMoves ? styles.hasMoves : ''}`}
-        onClick={() => (active && index > 0 && onSetLead ? onSetLead(mon.uid) : onToggleActive?.(mon.uid))}
-        disabled={locked || resting}
+      <Row
+        className={`${styles.row} ${readOnly ? styles.static : ''} ${active ? styles.active : ''} ${fainted ? styles.fainted : ''} ${isLead ? styles.lead : ''} ${onOpenMoves || (readOnly && waiting > 0) ? styles.hasMoves : ''}`}
+        {...(readOnly
+          ? { tabIndex: 0, role: 'group' }
+          : { type: 'button', onClick: () => (active && index > 0 && onSetLead ? onSetLead(mon.uid) : onToggleActive?.(mon.uid)), disabled: locked || resting })}
         data-testid={`box-row-${mon.speciesId}`}
         data-active={active}
         aria-label={[
@@ -82,7 +88,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
           mon.traumaStacks ? `Trauma ${mon.traumaStacks}` : null,
           mon.status ? STATUS_LABEL[mon.status.kind] ?? mon.status.kind : null,
           isLead ? 'Lead' : active ? 'Active' : 'in the Box',
-          resting ? 'resting until the next fight is over' : locked ? 'team locked' : active ? (index > 0 ? 'press to make Lead' : 'press to bench') : 'press to field',
+          resting ? 'resting until the next fight is over' : readOnly ? null : locked ? 'team locked' : active ? (index > 0 ? 'press to make Lead' : 'press to bench') : 'press to field',
         ]
           .filter(Boolean)
           .join(', ')}
@@ -145,7 +151,14 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
             </Tipped>
           )}
         </span>
-      </button>
+      </Row>
+      {/* Read-only, the moves waiting are a count to see, not a door: the Team screen's sheet is where they go in. */}
+      {readOnly && waiting > 0 && (
+        <span className={`${styles.moves} ${styles.movesWaiting} ${styles.movesInfo}`} tabIndex={0} data-testid={`box-waiting-${mon.speciesId}`} {...movesTip} aria-label={`${species.name}: ${TEAM_TEXT.waiting(waiting)}`}>
+          <IconCards size={15} stroke={2.4} aria-hidden="true" />
+          <span className={`${styles.movesCount} tabular`}>{waiting}</span>
+        </span>
+      )}
       {onOpenMoves && (
         <button
           type="button"
@@ -163,8 +176,8 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
   );
 }
 
-export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMoves, capacity, stones = [], restingUid = null, onOpenTeam }: Props) {
-  const locked = !onToggleActive;
+export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMoves, capacity, stones = [], restingUid = null, onOpenTeam, readOnly = false }: Props) {
+  const locked = !readOnly && !onToggleActive;
 
   const activeMons = activeUids.map((uid) => box.find((m) => m.uid === uid)).filter((m): m is PartyMon => !!m);
   const benched = box.filter((m) => !activeUids.includes(m.uid));
@@ -183,10 +196,10 @@ export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMov
       </h2>
       <ul className={styles.list}>
         {activeMons.map((m, i) => (
-          <BoxRow key={m.uid} mon={m} active index={i} locked={locked} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} stones={stones} />
+          <BoxRow key={m.uid} mon={m} active index={i} locked={locked} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} stones={stones} readOnly={readOnly} />
         ))}
       </ul>
-      {activeMons.length === 0 && <p className={styles.empty}>Pick up to three from the Box.</p>}
+      {activeMons.length === 0 && <p className={styles.empty}>{readOnly ? TEAM_TEXT.panelHint : 'Pick up to three from the Box.'}</p>}
 
       <h2 className={styles.heading}>
         Box{' '}
@@ -196,7 +209,7 @@ export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMov
       </h2>
       <ul className={styles.list}>
         {benched.map((m) => (
-          <BoxRow key={m.uid} mon={m} active={false} index={-1} locked={locked} resting={m.uid === restingUid} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} stones={stones} />
+          <BoxRow key={m.uid} mon={m} active={false} index={-1} locked={locked} resting={m.uid === restingUid} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} stones={stones} readOnly={readOnly} />
         ))}
       </ul>
       {benched.length === 0 && <p className={styles.empty}>Everyone you have is out front.</p>}

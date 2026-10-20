@@ -29,7 +29,7 @@ for (const seed of [7, 11, 23, 42]) {
       await page.waitForTimeout(150);
       const b = await el.boundingBox();
       if (!b) continue;
-      const clip = { x: Math.max(0, b.x - 28), y: Math.max(0, b.y - 24), width: b.width + 56, height: b.height + 56 };
+      const clip = { x: Math.max(0, b.x - 40), y: Math.max(0, b.y - 24), width: b.width + 104, height: b.height + 56 };
       shots.set(key, await page.screenshot({ clip }));
     }
   }

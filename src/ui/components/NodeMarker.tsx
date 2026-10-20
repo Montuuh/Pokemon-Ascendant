@@ -1,3 +1,22 @@
+import {
+  IconArrowsExchange,
+  IconBarbell,
+  IconBuildingCastle,
+  IconChevronRight,
+  IconCrown,
+  IconFirstAidKit,
+  IconGift,
+  IconMountain,
+  IconPaw,
+  IconQuestionMark,
+  IconShoppingBag,
+  IconSparkles,
+  IconSwords,
+  IconTrophy,
+  IconUser,
+  IconUserStar,
+  type TablerIcon,
+} from '@tabler/icons-react';
 import type { MapNode } from '@/sim';
 import { WILD_GRASS, type NodeArt } from '@/ui/art';
 import { nodeHint } from '@/ui/strings';
@@ -8,6 +27,26 @@ import styles from './NodeMarker.module.css';
 
 export type NodeStatus = 'reachable' | 'locked' | 'visited' | 'current';
 
+/** §9.3 — each kind's mark on its chip: the word's picture, so a chip reads before it is read. */
+const KIND_ICON: Record<string, TablerIcon> = {
+  wild: IconPaw,
+  trainer: IconUser,
+  elite: IconUserStar,
+  'elite-wild': IconCrown,
+  gym: IconBuildingCastle,
+  aid: IconFirstAidKit,
+  merchant: IconShoppingBag,
+  trader: IconArrowsExchange,
+  // The node's picture is the games' own ball: its chip says what it holds, a find, not a second ball.
+  cache: IconGift,
+  mystery: IconQuestionMark,
+  gauntlet: IconSwords,
+  training: IconBarbell,
+  summit: IconMountain,
+  apex: IconSparkles,
+  league: IconTrophy,
+};
+
 /** What the marker means, said in words, because colour and size alone are not a label (§9.6). */
 const STATUS_TEXT: Record<NodeStatus | 'gone', string> = {
   current: 'you are here',
@@ -17,12 +56,13 @@ const STATUS_TEXT: Record<NodeStatus | 'gone', string> = {
   gone: 'off your route',
 };
 
-// §9.3 (v0.9.14, after Pokelike's map) — a node is drawn as what it is: the trainer, the Leader, the Pokémon in the
-// grass, the item on the ground. State reads through the picture itself — full colour on every route still open,
+// §9.3 (v0.9.14, after Pokelike's map) — a node is drawn as what it is: the trainer, the Leader, a Wild Area's habitat
+// in the grass, the item on the ground. State reads through the picture itself — full colour on every route still open,
 // faded where you can no longer go, darkened with a tick once cleared — and through a ring on the ground under the
 // node you stand on and the ones you can step to next. The Gym and the Elite always carry a caption, naming who waits
 // there; every other node is its own picture, and its bubble says the rest — unless the map's labels are on (the user,
-// 2026-10-20), and then every node wears its short name under it, in a lighter caption than a landmark's.
+// 2026-10-20), and then every node wears its short name under it, in a lighter caption than a landmark's. A node you can
+// step to always wears its chip, as a button: gold, with an arrow (the user, 2026-10-20: "contrast what is clickable").
 export function NodeMarker({
   node,
   status,
@@ -68,6 +108,8 @@ export function NodeMarker({
   // is read — who is in it, how strong, which Gym is which. It still takes no click and no Tab stop.
   const enterable = status === 'reachable';
   const landmark = node.kind === 'gym' || node.kind === 'elite';
+  // A guarded find is a fight: its chip wears the swords, not the ball.
+  const ChipIcon = node.preview.objective?.kind === 'hold' ? IconSwords : (KIND_ICON[node.kind] ?? IconQuestionMark);
   return (
     <button
       type="button"
@@ -90,20 +132,25 @@ export function NodeMarker({
     >
       <span className={styles.ground} aria-hidden="true" />
       <span className={`${styles.art} ${styles[art.kind]}`} aria-hidden="true">
-        {/* A Wild Area's landmark stands behind its Pokémon. */}
-        {art.kind === 'pokemon' && art.prop && (
-          <img className={`pixel ${styles.prop}`} src={art.prop.src} alt="" draggable={false} data-low={art.prop.low || undefined} />
-        )}
         {/* An item is a smooth render, not pixel art: it is drawn with smoothing; everything else stays crisp. */}
-        <img className={art.kind === 'item' ? undefined : 'pixel'} src={art.src} alt="" draggable={false} />
-        {art.kind === 'pokemon' && art.grass && <img className={`pixel ${styles.grass}`} src={WILD_GRASS} alt="" draggable={false} />}
+        <img className={art.kind === 'item' ? undefined : 'pixel'} src={art.src} alt="" draggable={false} data-low={(art.kind === 'habitat' && art.low) || undefined} />
+        {/* The one grass every Wild Area shares, in front: a habitat's landmark stands in it, as an Elite Wild does. */}
+        {(art.kind === 'habitat' || (art.kind === 'pokemon' && art.grass)) && <img className={`pixel ${styles.grass}`} src={WILD_GRASS} alt="" draggable={false} />}
       </span>
       {status === 'visited' && (
         <span className={styles.tick} aria-hidden="true">
           ✓
         </span>
       )}
-      {caption && <span className={`${styles.caption} ${landmark ? '' : styles.label}`}>{caption}</span>}
+      {/* §9.3 — the chip: the kind's icon and its word; a node you can step to wears it as a button (gold, with its
+          arrow), so what takes a click reads apart from what does not. */}
+      {caption && (
+        <span className={[styles.caption, landmark ? styles.name : styles.label, enterable ? styles.go : ''].filter(Boolean).join(' ')} data-chip={enterable ? 'go' : 'label'}>
+          <ChipIcon size={12} stroke={2.4} aria-hidden="true" className={styles.chipIcon} />
+          {caption}
+          {enterable && <IconChevronRight size={12} stroke={2.8} aria-hidden="true" className={styles.chipIcon} />}
+        </span>
+      )}
     </button>
   );
 }

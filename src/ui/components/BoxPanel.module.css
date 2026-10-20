@@ -65,11 +65,19 @@
   text-align: left;
   transition: transform var(--motion-fast) var(--ease-spring);
 }
-.row:hover:not(:disabled) {
+.row:hover:not(:disabled):not(.static) {
   transform: translateX(2px);
 }
 .row:disabled {
   cursor: default;
+}
+/* §9.12 — read-only (the route): a card to look at, its bubble the detail; it neither moves nor takes a click. */
+.static {
+  cursor: default;
+}
+.static:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
 }
 .active {
   background: var(--surface-1);
@@ -217,6 +225,18 @@
   background: var(--accent-action);
   color: var(--ink-primary);
   border-color: var(--ink-primary);
+}
+/* Read-only, the count is a sign to read, not a button: a quiet plate, never the gold a click wears. */
+.movesInfo,
+.movesInfo:hover {
+  cursor: default;
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  border-color: var(--border-strong);
+}
+.movesInfo:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
 }
 .movesCount {
   font-family: var(--font-display);

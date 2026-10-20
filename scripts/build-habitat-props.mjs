@@ -202,6 +202,19 @@ const kindle = {
   mound: () => cutObject('kindle', { left: 191, top: 1103, width: 34, height: 34 }),
 };
 
+/** A bank of cloud on the 1-px grid, the games' white with a pale-blue underside and a soft blue-grey rim. */
+const CLOUD = [
+  '.....OOOO..........OOOOO....',
+  '...OOWWWWOO.....OOOWWWWWOO..',
+  '..OWWWWWWWWO..OOWWWWWWWWWWO.',
+  '.OWWWWWWWWWWOOWWWWWWWWWWWWWO',
+  'OWWWWWWWWWWWWWWWWWWWWWWWWWWO',
+  'OWWWWWWWWWWWWWWWWWWWWWWWWWWO',
+  'OBBWWWWWBBBWWWWWWBBBWWWWBBBO',
+  '.OBBBBBBBBBBBBBBBBBBBBBBBBO.',
+  '..OOOOOOOOOOOOOOOOOOOOOOOO..',
+];
+
 /** Pixels painted onto an image: `[x, y, [r, g, b]]`, on its own grid. */
 function paint(im, dots) {
   for (const [x, y, [r, g, b]] of dots) {
@@ -225,14 +238,13 @@ async function peakWith(kind) {
   const im = await kindle.peak();
   if (kind === 'cave') {
     // Find the foot of the rock, in the middle: the mouth sits on it.
-    // On the right flank's foot, not the middle: the landmark stands to the Pokémon's right, and a mouth in the middle
-    // would be behind any Pokémon wider than a Zubat.
-    const cx = Math.round(im.w * 0.68);
+    // In the middle of the face, set up off the foot: the grass every Wild Area stands in covers the foot.
+    const cx = Math.floor(im.w / 2);
     let foot = im.h - 1;
     while (foot > 0 && im.px[(foot * im.w + cx) * 4 + 3] === 0) foot--;
     const O = [40, 32, 48];
     const D = [24, 24, 32];
-    return paint(im, shape(cx - 5, foot - 8, [
+    return paint(im, shape(cx - 5, foot - 16, [
       '..OOOOOO..',
       '.ODDDDDDO.',
       'ODDDDDDDDO',
@@ -266,7 +278,23 @@ async function peakWith(kind) {
 const PROPS = {
   // The grass every Wild Area's Pokémon stands in, whatever its habitat (not a habitat's: the tuft drawn in front).
   grass: async () => compose([[await tall(), 6, 0], [await tall(), 22, 0], [await tall(), 38, 0], [await tall(), 0, 6], [await tall(), 14, 7], [await tall(), 28, 6], [await tall(), 42, 7]]),
-  // (The plain route's Tall Grass has none: the grass every Wild Area stands in is its habitat.)
+  // The plain route's: a stand of tall grass, rows deep, rustling as the games draw grass with a Pokémon in it (the
+  // Poké Radar's shake) — so it reads apart from the board's own grass round it. The marks are drawn: three 1-px strokes.
+  'tall-grass': async () => {
+    const stand = await compose([
+      [await tall(), 12, 8], [await tall(), 28, 8],
+      [await tall(), 4, 14], [await tall(), 20, 14], [await tall(), 36, 14],
+      [await tall(), 12, 20], [await tall(), 28, 20],
+    ]);
+    const W = [248, 248, 240];
+    const O = [56, 88, 48];
+    // The fan of a shaking stand: a stroke leaning out each side and one upright, white, each ringed with the grass's dark.
+    const fan = [[0, 0], [1, 1], [2, 2], [3, 3], [9, 0], [9, 1], [9, 2], [9, 3], [18, 0], [17, 1], [16, 2], [15, 3]];
+    const strokes = fan.flatMap(([x, y]) => [[x, y], [x + 1, y]]).map(([x, y]) => [x + 13, y + 1]);
+    const white = new Set(strokes.map(([x, y]) => x + ',' + y));
+    const ring = strokes.flatMap(([x, y]) => [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]).filter(([x, y]) => !white.has(x + ',' + y));
+    return paint(stand, [...ring.map(([x, y]) => [x, y, O]), ...strokes.map(([x, y]) => [x, y, W])]);
+  },
   meadow: async () => compose([[await flower(), 0, 0], [await flower(), 16, 0], [await flower(), 32, 0], [await flower(), 8, 9], [await flower(), 24, 9]]),
   forest: async () => compose([[await pine(), 16, 0], [await pine(), 0, 10], [await pine(), 32, 10]]),
   // A mountain with a cave's mouth at its foot: Mt. Moon's, Rock Tunnel's, Cerulean Cave's.
@@ -289,8 +317,17 @@ const PROPS = {
     return compose([[recolour(await kindle.mound(), sand), 0, 8], [recolour(await kindle.peak(), sand), 22, 0], [recolour(await kindle.pebble(), sand), 48, 26]]);
   },
   volcano: async () => double(await peakWith('volcano')),
-  lake: async () => compose([[await pond(), 0, 6], [await boulder('ice-cave'), 16, 0]]),
-  sky: async () => compose([[await kindle.spire(), 0, 0], [await kindle.spire(), 22, 10], [await kindle.pebble(), 46, 40]]),
+  // Seafoam's: the pool gone to ice-green, an ice rock in it — apart from the Fishing Spot's pond.
+  lake: async () => {
+    const ice = recolour(await pond(), ([r, g, b]) => (b > r && b > g ? [Math.round(r * 0.5 + 70), Math.round(g * 0.55 + 105), Math.round(b * 0.75 + 55)] : [r, g, b]));
+    return compose([[ice, 0, 6], [await boulder('ice-cave'), 16, 0]]);
+  },
+  // Spires standing out of a bank of cloud: high up, apart from the ridge's rocks on the ground.
+  sky: async () => {
+    const colours = { W: [248, 248, 248], B: [200, 224, 240], O: [120, 144, 176] };
+    const peaks = await compose([[await kindle.spire(), 6, 0], [await kindle.spire(), 26, 6], [{ w: 56, h: 60, px: Buffer.alloc(56 * 60 * 4) }, 0, 0]]);
+    return paint(paint(peaks, shape(0, 40, CLOUD, colours)), shape(28, 44, CLOUD, colours));
+  },
   // A Tanoby chamber's front, out of the rock it is set in, with the grass grown up round its steps.
   ruins: async () =>
     compose([

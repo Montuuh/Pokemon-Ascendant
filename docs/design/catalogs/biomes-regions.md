@@ -6,12 +6,12 @@
 
 ## 1. Habitats (16) ✅ v0.9.25
 
-A Wild Area is a habitat (§2.6.1, 2026-10-20): a small pool of one family, a backdrop, and a landmark behind its
-Pokémon on the map (§9.3, v0.9.27; `public/art/map/habitat/<id>.png`). The first three ids are the v0.9.7 biomes', kept for saved maps. Display names by Region in §2.
+A Wild Area is a habitat (§2.6.1, 2026-10-20): a small pool of one family, a backdrop, and a landmark that is its
+picture on the map (§9.3, v0.9.28; `public/art/map/habitat/<id>.png`). The first three ids are the v0.9.7 biomes', kept for saved maps. Display names by Region in §2.
 
 | id | Name | Regions | Primary in | Theme | Map landmark | Stage art |
 |---|---|---|---|---|---|---|
-| `tall-grass` | Tall Grass | R1, R2 | **R1** | Normal, Flying, Poison | — (the grass itself) | `route.jpg` ✅ (Showdown classic) |
+| `tall-grass` | Tall Grass | R1, R2 | **R1** | Normal, Flying, Poison | a stand of rustling tall grass | `route.jpg` ✅ (Showdown classic) |
 | `meadow` | Flower Meadow | R1 | — | Grass, Fire, Normal | flowers | `meadow.jpg` ✅ |
 | `forest` | Forest | R1, R2 | — | Bug, Grass | three pines | `forest.jpg` ✅ |
 | `cave` | Cave · Deep Cave (R3) | R1, R2, R3 | — | Rock, Ground, Poison, Fighting; fossils | a peak with a cave's mouth | `cave.jpg` ✅ |

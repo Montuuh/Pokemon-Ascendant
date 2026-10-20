@@ -371,45 +371,54 @@ solid gold, marching toward where they lead; **the routes still open** from wher
 behind you** solid; **a route you can no longer take** a faint dotted trace.
 
 A node is drawn as **what it is**, standing on its point with a shadow under it: a trainer is its class's sprite, the
-Elite its trainer, a Gym its Leader at twice the size with a gold glow; a Wild Area the Pokémon you will meet most,
-standing in **one grass for every Wild Area** with **its habitat's landmark behind it** (the user, 2026-10-20: "the
-Old Tower with the Pokémon Tower behind its sprite, the same grass under every Wild one") — the Pokémon Tower's dome,
-the Power Plant, a cave's mouth in a peak, a cone with a glowing crater, a Tanoby chamber, three pines, flowers,
-a pond, a reef, a sandbank, a marsh, an ice rock in a pool, sandstone, spires (`npm run art:habitats`,
-FireRed's own pixels). The landmark stands further up the route and a little aside, as the board draws depth, so it
-rises over the Pokémon's shoulder rather than hiding behind it; one that lies flat (water, sand, flowers) further
-still. The plain Tall Grass has none — the grass is its habitat — nor has a runner (one named Pokémon, met wherever it
-bolts). One grass replaced each lane's own tuft and the water: the habitat is the landmark's to say, and a grass that
-changed with the lane said it twice and unclearly. The Elite Wild is the Pokémon itself in the same grass; the nurse
-and the merchant themselves; an item ball the Poké Ball lying there; a Mystery the overworld's "?". State reads
-through the picture — full colour on every route still open from where you stand (`nodesAhead`), faded where you can
-no longer go, darkened with a tick once cleared — and through a ring on the ground: pulsing gold where you stand, gold
-under the nodes you can step to next, which also bob on their spot. The Gyms and the Elite always carry a caption; any
-other names itself under the pointer, and its bubble says the rest. **The Labels toggle** (the user, 2026-10-20: "a
-toggle for the node's label, under its icon") — a pill in the board's top-right corner, and the **L** key — puts a
-short name under every node in a quieter caption than a landmark's: its **kind**, generic (the user, 2026-10-20: "more
-generic — Wild, Trainer, Elite Trainer, Elite Wild, Gym, Nurse, Trader") — *Wild*, *Trainer*, *Elite Trainer*, *Elite
-Wild*, *Nurse*, *Merchant*, *Trader*, *Item ball*, *Mystery*, *Legendary*… — and a Gym its Leader's name with it (*Brock's
-Gym*: which lane ends at whom is the choice the board is for), while the Elite says *Elite Trainer* (what it is
-weighs on the route; who it is, its bubble says), and an item ball with a guard on it *Guarded find* (a
-fight, not a pickup). The habitat is the landmark's to say, the trainer's
-class the sprite's, who exactly the bubble's: a label that named them all crowded the board and read as many kinds of
-node where there are a few. Off by default — the pictures are the map — and kept between
-sessions. The node's preview opens over the route dimmed and softened, never over a black void, and wears the same
-picture as the node. The strip under the board draws the routes and every node in miniature — a fight a filled dot, a
-stop a ring, the Gyms diamonds in their types' colours — the walked road dark and the closed routes faded, so the
-whole Region's choice is one glance.
+Elite its trainer, a Gym its Leader at twice the size with a gold glow; a **Wild Area its habitat** — the habitat's
+landmark standing in **one grass every Wild Area shares** (the user, 2026-10-20: "the Old Tower with the Pokémon Tower
+behind its sprite, the same grass under every Wild one"; then "try only the habitat, not the Pokémon"): the Pokémon
+Tower's dome, the Power Plant, a cave's mouth in a peak, a cone with a glowing crater, a Tanoby chamber, three pines,
+flowers, a pond, a reef, a sandbank, a marsh, an ice rock in a pool, sandstone, spires, and for the plain Tall Grass a
+stand of it rustling as the games draw grass with a Pokémon in it (`npm run art:habitats`, FireRed's own pixels). Who
+is met there is the bubble's and the preview's to say: a picture of one of a pool's Pokémon promised one face of ten,
+and the Pokémon in front hid the landmark that told the habitats apart. A runner (§5.6.5) and the Elite Wild are the
+Pokémon itself, in the same grass — there the Pokémon is the point; the nurse and the merchant are themselves; an item
+ball the Poké Ball lying there; a Mystery the overworld's "?". State reads through the picture — full colour on every
+route still open from where you stand (`nodesAhead`), faded where you can no longer go, darkened with a tick once
+cleared — and through a ring on the ground: pulsing gold where you stand, gold under the nodes you can step to next,
+which also bob on their spot.
 
-The left column is the Active Team (three tiles, the Lead crowned) above a scrollable Box. Trauma badges overlay
-any portrait; fainted Pokémon are dimmed but still draggable, so you can prepare a post-nurse line-up.
+**A node's chip** is a rounded plate under it with its kind's icon and its word (a paw for a Wild Area, a figure for a
+trainer, a castle for a Gym, a first-aid kit for the nurse, a Poké Ball for an item ball, swords for a guarded find…). A
+node **you can step to always wears its chip as a button** — the action's gold, a dark rim with a step under it, and an
+arrow — so what takes a click reads apart from what does not (the user, 2026-10-20). The Gyms and the Elite always
+carry theirs (the Leader's name, the Elite's); any other names itself under the pointer, and its bubble says the rest.
+**The Labels toggle** (the user, 2026-10-20: "a toggle for the node's label, under its icon") — a pill at the end of the
+strip under the board, off the board so no pill that scrolls past slides under it, and the **L** key — puts a chip
+under every node, quieter than a button's: its **kind**, generic (the user, 2026-10-20: "more generic — Wild, Trainer,
+Elite Trainer, Elite Wild, Gym, Nurse, Trader") — *Wild*, *Trainer*, *Elite Trainer*, *Elite Wild*, *Nurse*,
+*Merchant*, *Trader*, *Item ball*, *Mystery*, *Legendary*… — and a Gym its Leader's name with it (*Brock's Gym*: which
+lane ends at whom is the choice the board is for), while the Elite says *Elite Trainer* (what it is weighs on the
+route; who it is, its bubble says), and an item ball with a guard on it *Guarded find* (a fight, not a pickup). The
+trainer's class is the sprite's to say, who exactly the bubble's: a label that named them all crowded the board and
+read as many kinds of node where there are a few. Off by default — the pictures and the buttons are the map — and kept
+between sessions. The node's preview opens over the route dimmed and softened, never over a black void, and wears the
+same picture as the node. The strip under the board draws the routes and every node in miniature — a fight a filled
+dot, a stop a ring, the Gyms diamonds in their types' colours — the walked road dark and the closed routes faded, so
+the whole Region's choice is one glance.
+
+The left column is the Active Team (three tiles, the Lead crowned) above a scrollable Box — **the team at a glance,
+and nothing to manage** (the user, 2026-10-20: "informative only"): a row is a card whose bubble says what it is, its
+Trauma, status and the moves waiting a count to read, and the Team screen (§9.12; its door on top, or **T**) is where
+the formation, the order and the moves change. Two places to change one team was one too many on a screen whose job
+is the route.
 
 ---
 
 # §9.4 Iconography
 
 ## §9.4.1 Node icons
-Wild 🌿 (its biome's emblem) · Trainer 👤 (its archetype) · Elite Trainer 👤⭐ · Elite Wild 🦕 · Field nurse ❤️ ·
-Merchant 🛒 · Mystery ❓ · Something on the ground ◓ (the item ball) · Gym 👑 · City 🏙️.
+On the map a node is its own picture (§9.3) and its chip carries a Tabler icon for its kind: Wild Area paw · Trainer
+user · Elite Trainer user-star · Elite Wild crown · Gym castle · Field nurse first-aid kit · Merchant shopping bag ·
+Trader arrows-exchange · Item ball Poké Ball (a guarded find swords) · Mystery question mark · Gauntlet swords · Training
+barbell · Summit mountain · Legendary sparkles · League trophy (`KIND_ICON` in `NodeMarker`).
 
 ## §9.4.2 Resource icons
 AP ● · Poké Dollar ₽ · Pokéball ◓ · Trainer XP ⭐ · Token 🪙 · Trauma ⚠ · Mastery 🏆.

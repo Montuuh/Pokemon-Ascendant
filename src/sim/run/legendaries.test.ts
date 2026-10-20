@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import {
   ACTIVE_TEAM, ALL_GYMS, APEX, LEGENDARY_ARENAS, LEGENDARY_IDS, buildScenario, createRun, defaultRunCtx, fillTeam, generateVictoryRoad,
-  newPartyMon, placesOf, placesTaken, runReducer,
+  newPartyMon, placeInTeam, placesOf, placesTaken, runReducer,
   type CombatOutcomeReport, type LegendaryId, type MapNode, type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
@@ -65,6 +65,18 @@ describe('Two places, one body — §2.3', () => {
     expect(refusal(run, { type: 'set-active', uids: [zapdos!, squirtle!] })).toBeNull();
     expect(refusal(run, { type: 'set-active', uids: [zapdos!, squirtle!, golem!] })).toBe('team-too-large');
     expect(placesTaken([zapdos!, squirtle!], run.box, content)).toBe(ACTIVE_TEAM.places);
+  });
+
+  it('PlaceInTeam_ALegendaryIntoAFullTeam_TheLongestStandingStepsBack', () => {
+    const run = withALegendary();
+    const [squirtle, golem, arcanine, zapdos] = run.box.map((m) => m.uid);
+    const team = [squirtle!, golem!, arcanine!];
+    // Into the third place: Arcanine goes to the Box, and Squirtle, there longest, steps back for the second place.
+    expect(placeInTeam(team, zapdos!, 2, run.box, content)).toEqual([golem!, zapdos!]);
+    expect(refusal(run, { type: 'set-active', uids: placeInTeam(team, zapdos!, 2, run.box, content) })).toBeNull();
+    // Anyone else just takes the place.
+    expect(placeInTeam([squirtle!, golem!], arcanine!, 0, run.box, content)).toEqual([arcanine!, golem!]);
+    expect(placeInTeam([squirtle!], arcanine!, 1, run.box, content)).toEqual([squirtle!, arcanine!]);
   });
 
   it('FillTeam_TakesEachOneThatStillFits_InOrder', () => {

@@ -1420,6 +1420,17 @@ renders or put together from the route's tiles (`npm run art:habitats`, `public/
 the side so they show past the Pokémon; none for the plain Tall Grass, a runner or the Elite Wild. `BiomePool.cover`
 retired. A lane's Battlefield tag moved to the lane's outer edge (it sat on a first-column label at 720 p).
 
+### v0.9.28 — The map, at a glance  ✅ 2026-10-20
+The user's second follow-up: habitat-only Wild nodes, chips that say what takes a click, and two Team bugs.
+
+**Shipped.** §9.3: a **Wild Area node is its habitat** — the landmark standing in the shared grass, no Pokémon (a runner
+and the Elite Wild stay their Pokémon); Tall Grass a stand rustling as the games draw it, the Underground Lake an
+ice-green pool, the Sky Cliffs spires above cloud. **Chips**: a rounded plate with the kind's icon and word; a node you
+can step to always wears it as a gold button with an arrow, and it takes the click; the Labels toggle moved off the
+board to the strip's end. **Fixes**: the route's side panel is read-only (`BoxPanel readOnly`), the Team screen the one
+place the team changes; the Move Manager's ✕ or a move taken out of the four no longer closes the Team; a Box Pokémon
+placed in the formation goes through `placeInTeam` (a Legendary's two places).
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

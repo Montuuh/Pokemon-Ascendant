@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.28 — The map, at a glance · 2026-10-20
+
+Wild Areas as their habitats, button chips, and two Team fixes.
+
+- **Habitats.** A Wild Area node is its landmark in the grass, no Pokémon.
+- **Chips.** Rounded, with an icon; a node you can reach is a gold button.
+- **Team.** The Move Manager closes alone; the route's panel only shows.
+
 ### v0.9.27 — Landmarks · 2026-10-20
 
 Every Wild Area shows where it is; the labels say what each node is.

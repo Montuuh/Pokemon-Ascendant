@@ -31,22 +31,21 @@ export function tmIcon(tmId: string): string {
 }
 /**
  * §9.3 — what a map node looks like (v0.9.14, after Pokelike's map): the thing it is, not an emblem of it. A trainer
- * is its class's sprite; a Gym its Leader and the Elite its trainer; a Wild Area the Pokémon you will meet most, in the
- * grass, its habitat's landmark behind it; the Elite Wild the Pokémon itself; the nurse and the merchant themselves; a
- * find the item lying there; a Mystery the overworld's "?".
+ * is its class's sprite; a Gym its Leader and the Elite its trainer; a Wild Area its habitat's landmark in the grass; the
+ * Elite Wild and a runner the Pokémon itself; the nurse and the merchant themselves; a find the item lying there; a
+ * Mystery the overworld's "?".
  */
 export type NodeArt =
   | { kind: 'trainer'; src: string }
-  /**
-   * `grass`: it stands in the Wild Areas' one grass (`WILD_GRASS`); `prop`: its habitat's landmark, behind it — `low` for
-   * one that lies flat on the ground (a pond, a reef, flowers), drawn further back so it shows past the Pokémon.
-   */
-  | { kind: 'pokemon'; src: string; grass: boolean; prop: { src: string; low: boolean } | null }
+  /** `grass`: it stands in the Wild Areas' one grass (`WILD_GRASS`). */
+  | { kind: 'pokemon'; src: string; grass: boolean }
+  /** §9.3 — a Wild Area: its habitat's landmark, standing in the one grass; `low` for one that lies flat (a pond, a reef). */
+  | { kind: 'habitat'; src: string; low: boolean }
   | { kind: 'item'; src: string }
   | { kind: 'sign'; src: string };
-/** §9.3 — the tall grass every Wild Area's Pokémon stands in, whatever its habitat: Route 1's own tufts (`npm run art:habitats`). */
+/** §9.3 — the tall grass every Wild Area stands in, whatever its habitat: Route 1's own tufts (`npm run art:habitats`). */
 export const WILD_GRASS = asset('art/map/habitat/grass.png');
-/** §9.3 — a habitat's landmark, behind its Pokémon on the map (`npm run art:habitats`): the Pokémon Tower, a cave's mouth. */
+/** §9.3 — a habitat's landmark, a Wild Area's picture on the map (`npm run art:habitats`): the Pokémon Tower, a cave's mouth. */
 export const habitatProp = (habitat: string) => asset(`art/map/habitat/${habitat}.png`);
 export const stageBackdrop = (stage: string) => asset(`art/stages/${stage}.jpg`);
 export const mysterySign = () => asset('art/icons/map/node-mystery-sign.svg');

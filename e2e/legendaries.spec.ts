@@ -60,11 +60,15 @@ test.describe('The Legendaries — §2.3, §2.12.2', () => {
       a.goTo('map');
     });
     await expect(page.getByTestId('box-places-zapdos')).toHaveText('2 places');
-    // Putting it in steps back whoever has stood there longest until the places fit: it and one partner.
-    await page.getByTestId('box-row-zapdos').click();
+    // Put in beside the Lead (on the Team screen: the route's panel only shows), it fills the places: it and one partner
+    // (a full team would step back whoever has stood there longest — `placeInTeam`, run/legendaries.test).
+    await page.getByTestId('btn-team').click();
+    await page.getByTestId('team-tile-legend-z').click();
+    await page.getByTestId('team-place-1').click();
+    await expect.poll(async () => page.evaluate(() => window.__ascendant!.run.state()!.activeUids)).toHaveLength(2);
     const team = await page.evaluate(() => window.__ascendant!.run.state()!.activeUids);
-    expect(team).toHaveLength(2);
     expect(team).toContain('legend-z');
+    await page.getByTestId('team-close').click();
     await expect(page.getByTestId('box-panel')).toContainText('3/3');
     await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="box-panel"] img')].every((i) => (i as HTMLImageElement).complete && (i as HTMLImageElement).naturalWidth > 0));
     await page.getByTestId('box-panel').screenshot({ path: 'playtest/legendary-two-places.png' });

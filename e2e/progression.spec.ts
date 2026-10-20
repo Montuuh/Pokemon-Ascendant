@@ -151,7 +151,8 @@ test('the Dojo sells as many services as the money covers — §2.9.4', async ({
 test('a TM is greyed out on an incompatible Pokémon, never hidden', async ({ page }) => {
   await newRun(page, 'squirtle');
   await page.evaluate(() => window.__ascendant!.run.grantTm('tm05-surf', 'tm04-flamethrower'));
-  await page.getByTestId('box-moves-squirtle').click();
+  await page.getByTestId('btn-team').click();
+  await page.getByTestId('team-manage-moves').click();
 
   const manager = page.getByTestId('move-manager');
   await expect(manager).toBeVisible();
@@ -179,9 +180,10 @@ test('a move left in the pool is reported, not lost', async ({ page }) => {
   });
   await page.evaluate(() => window.__ascendant!.run.dispatch({ type: 'set-moves', uid: window.__ascendant!.run.state()!.box[0]!.uid, moveIds: window.__ascendant!.run.state()!.box[0]!.pool.slice(0, 4) }));
 
-  const handle = page.getByTestId('box-moves-squirtle');
-  await expect(handle).toContainText('1');
-  await handle.click();
+  // The route's panel counts it (a sign, not a door); the Team screen's sheet opens the Move Manager.
+  await expect(page.getByTestId('box-waiting-squirtle')).toContainText('1');
+  await page.getByTestId('btn-team').click();
+  await page.getByTestId('team-manage-moves').click();
   const manager = page.getByTestId('move-manager');
   await expect(manager.locator('[data-testid^="move-"][data-in-kit="true"]')).toHaveCount(4);
   await expect(manager.locator('[data-testid^="move-"][data-in-kit="false"]')).toHaveCount(1);
@@ -195,8 +197,9 @@ test('an Evolution Item evolves early from the Move Manager and hands back to th
   await page.evaluate(() => window.__ascendant!.run.levelTo(9));
   await page.evaluate(() => window.__ascendant!.run.grantStone('fire-stone', 'leaf-stone'));
   // One stone it can take now: the badge counts it (its four learned moves all fit the kit).
-  await expect(page.getByTestId('box-moves-eevee')).toContainText('1');
-  await page.getByTestId('box-moves-eevee').click();
+  await expect(page.getByTestId('box-waiting-eevee')).toContainText('1');
+  await page.getByTestId('btn-team').click();
+  await page.getByTestId('team-manage-moves').click();
 
   // A stone this Pokémon cannot use stays on the list, locked, and answers a click with the reason.
   const leaf = page.getByTestId('stone-leaf-stone');

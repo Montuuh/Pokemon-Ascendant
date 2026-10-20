@@ -203,17 +203,6 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
 
   return (
     <div className={styles.root}>
-      <button
-        type="button"
-        className={styles.labelsToggle}
-        aria-pressed={labels}
-        onClick={() => useSettingsStore.getState().set({ mapLabels: !labels })}
-        data-testid="map-labels"
-        {...labelsTip}
-      >
-        <IconTag size={16} stroke={2.4} aria-hidden="true" />
-        {ROUTE_TEXT.labels}
-      </button>
       <div ref={scroller} className={styles.scroller} tabIndex={0} onKeyDown={onKey} aria-label={ROUTE_TEXT.scroller} data-testid="route-scroller">
         <div className={styles.board} style={{ width: boardW, height: terrain.h * px }} data-painted={painted || undefined} data-testid="route-board">
           <canvas ref={canvas} className={styles.terrain} style={{ width: boardW, height: terrain.h * px }} aria-hidden="true" />
@@ -253,7 +242,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
                 status={statusOf(node)}
                 art={nodeArt(node, run.map)}
                 ahead={ahead.has(node.id)}
-                caption={labels ? nodeLabel(node, run.map) : landmarkName(node, run.map)}
+                caption={labels ? nodeLabel(node, run.map) : (landmarkName(node, run.map) ?? (statusOf(node) === 'reachable' ? nodeLabel(node, run.map) : null))}
                 style={{ left: at.x * px, top: at.y * px }}
                 onClick={() => onEnter(node.id)}
               />
@@ -262,51 +251,66 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
         </div>
       </div>
 
-      {/* §9.3 — the whole route in a strip, the window you are looking through outlined; a click jumps there. */}
-      <div
-        className={`${styles.strip} ${fits ? styles.stripHidden : ''}`}
-        onClick={(e) => {
-          const el = scroller.current;
-          if (!el) return;
-          const r = e.currentTarget.getBoundingClientRect();
-          const t = (e.clientX - r.left) / r.width;
-          el.scrollTo({ left: t * boardW - el.clientWidth / 2, behavior });
-        }}
-        {...stripTip}
-        data-testid="route-strip"
-      >
-        <canvas ref={strip} className={styles.stripArt} aria-hidden="true" />
-        {/* §9.3 — the routes and every node on them, in miniature: a fight a filled dot, a stop a ring; the road behind
-            you dark, the routes you can no longer take faded — the whole Region's choice at a glance. */}
-        <svg className={styles.stripLines} viewBox={`0 0 ${terrain.w} ${terrain.h}`} preserveAspectRatio="none" aria-hidden="true">
-          {edges.map((e) => (
-            <polyline key={e.key} points={e.points} className={STRIP_EDGE_CLASS[e.state]} vectorEffect="non-scaling-stroke" />
-          ))}
-        </svg>
-        {nodes
-          .filter((n) => n.kind !== 'gym')
-          .map((n) => (
-            <span
-              key={n.id}
-              className={[styles.stripNode, FIGHTS.has(n.kind) ? styles.stripFight : styles.stripStop, run.visited.includes(n.id) ? styles.stripDone : !ahead.has(n.id) && n.id !== run.position ? styles.stripGone : ''].join(' ')}
-              style={{ left: `${(terrain.at[n.id]!.x / terrain.w) * 100}%`, top: `${(terrain.at[n.id]!.y / terrain.h) * 100}%` }}
-              data-strip-kind={n.kind}
-            />
-          ))}
-        <span className={styles.window} style={{ left: `${view.left * 100}%`, width: `${Math.min(1, view.width) * 100}%` }} />
-        {nodes
-          .filter((n) => n.id === run.position || n.kind === 'gym')
-          .map((n) => (
-            <span
-              key={n.id}
-              className={n.kind === 'gym' ? styles.stripGym : styles.stripYou}
-              style={{
-                left: `${(terrain.at[n.id]!.x / terrain.w) * 100}%`,
-                top: `${(terrain.at[n.id]!.y / terrain.h) * 100}%`,
-                ...(n.kind === 'gym' ? { background: `var(--type-${gymById(run.map.gyms[n.lane ?? 0]!).type})` } : {}),
-              }}
-            />
-          ))}
+      {/* §9.3 — under the board, the strip and the Labels toggle at its end: the map's own controls, off the board, so
+          nothing that scrolls past (a lane's Battlefield, the point of no return) ever slides under one. */}
+      <div className={styles.foot}>
+        {/* §9.3 — the whole route in a strip, the window you are looking through outlined; a click jumps there. */}
+        <div
+          className={`${styles.strip} ${fits ? styles.stripHidden : ''}`}
+          onClick={(e) => {
+            const el = scroller.current;
+            if (!el) return;
+            const r = e.currentTarget.getBoundingClientRect();
+            const t = (e.clientX - r.left) / r.width;
+            el.scrollTo({ left: t * boardW - el.clientWidth / 2, behavior });
+          }}
+          {...stripTip}
+          data-testid="route-strip"
+        >
+          <canvas ref={strip} className={styles.stripArt} aria-hidden="true" />
+          {/* §9.3 — the routes and every node on them, in miniature: a fight a filled dot, a stop a ring; the road behind
+              you dark, the routes you can no longer take faded — the whole Region's choice at a glance. */}
+          <svg className={styles.stripLines} viewBox={`0 0 ${terrain.w} ${terrain.h}`} preserveAspectRatio="none" aria-hidden="true">
+            {edges.map((e) => (
+              <polyline key={e.key} points={e.points} className={STRIP_EDGE_CLASS[e.state]} vectorEffect="non-scaling-stroke" />
+            ))}
+          </svg>
+          {nodes
+            .filter((n) => n.kind !== 'gym')
+            .map((n) => (
+              <span
+                key={n.id}
+                className={[styles.stripNode, FIGHTS.has(n.kind) ? styles.stripFight : styles.stripStop, run.visited.includes(n.id) ? styles.stripDone : !ahead.has(n.id) && n.id !== run.position ? styles.stripGone : ''].join(' ')}
+                style={{ left: `${(terrain.at[n.id]!.x / terrain.w) * 100}%`, top: `${(terrain.at[n.id]!.y / terrain.h) * 100}%` }}
+                data-strip-kind={n.kind}
+              />
+            ))}
+          <span className={styles.window} style={{ left: `${view.left * 100}%`, width: `${Math.min(1, view.width) * 100}%` }} />
+          {nodes
+            .filter((n) => n.id === run.position || n.kind === 'gym')
+            .map((n) => (
+              <span
+                key={n.id}
+                className={n.kind === 'gym' ? styles.stripGym : styles.stripYou}
+                style={{
+                  left: `${(terrain.at[n.id]!.x / terrain.w) * 100}%`,
+                  top: `${(terrain.at[n.id]!.y / terrain.h) * 100}%`,
+                  ...(n.kind === 'gym' ? { background: `var(--type-${gymById(run.map.gyms[n.lane ?? 0]!).type})` } : {}),
+                }}
+              />
+            ))}
+        </div>
+        <button
+          type="button"
+          className={styles.labelsToggle}
+          aria-pressed={labels}
+          onClick={() => useSettingsStore.getState().set({ mapLabels: !labels })}
+          data-testid="map-labels"
+          {...labelsTip}
+        >
+          <IconTag size={16} stroke={2.4} aria-hidden="true" />
+          {ROUTE_TEXT.labels}
+        </button>
       </div>
     </div>
   );

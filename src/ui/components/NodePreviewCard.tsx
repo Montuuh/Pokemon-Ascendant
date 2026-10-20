@@ -11,7 +11,7 @@ import { doubleActorTip, groupTip, perfectClearTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { itemIcon, mysterySign, nodeBadge } from '@/ui/art';
 import { kindName, nodeArt, titleSays } from './nodeArt';
-import { DOUBLE_ACTOR_LABEL, groupLabel, nodeHint, VICTORY_TEXT, WILD_TEXT, LEAGUE_TEXT, FIND_TEXT } from '@/ui/strings';
+import { DOUBLE_ACTOR_LABEL, groupLabel, nodeHint, PREVIEW_TEXT, VICTORY_TEXT, WILD_TEXT, LEAGUE_TEXT, FIND_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import { WildPool } from './WildPool';
 import { ReelPool } from './FindPrize';
@@ -26,7 +26,7 @@ import styles from './NodePreviewCard.module.css';
 /** The disc's picture at its own scale: a trainer sprite at 80 px, a Pokémon at a whole multiple of its own size. */
 /** The height a Pokémon may stand to in the 72-px disc. */
 const DISC_FIT = 64;
-const ART_CLASS = { trainer: styles.artTrainer, pokemon: styles.artPokemon, item: styles.artItem, sign: styles.artSign } as const;
+const ART_CLASS = { trainer: styles.artTrainer, pokemon: styles.artPokemon, habitat: styles.artHabitat, item: styles.artItem, sign: styles.artSign } as const;
 
 interface Props {
   node: MapNode;
@@ -108,7 +108,12 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
               draggable={false}
               style={{ '--scale': artScale } as CSSProperties}
               // D9 — a Pokémon at the largest whole multiple of its own size that fits the disc.
-              onLoad={(e) => art.kind === 'pokemon' && setArtScale(Math.max(1, Math.floor(DISC_FIT / Math.max(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight))))}
+              // A landmark at its own size, or at half (a half multiple) when it is wider or taller than the disc holds.
+              onLoad={(e) => {
+                const side = Math.max(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight);
+                if (art.kind === 'pokemon') setArtScale(Math.max(1, Math.floor(DISC_FIT / side)));
+                if (art.kind === 'habitat') setArtScale(side > DISC_FIT ? 0.5 : 1);
+              }}
             />
           </span>
           <div>
@@ -248,7 +253,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
                 );
               })}
             </ul>
-            <p className={styles.lockNote}>{node.kind === 'league' ? LEAGUE_TEXT.lockNote : 'The team locks when you enter. Change it on the map first.'}</p>
+            <p className={styles.lockNote}>{node.kind === 'league' ? LEAGUE_TEXT.lockNote : PREVIEW_TEXT.teamLock}</p>
           </>
         )}
 

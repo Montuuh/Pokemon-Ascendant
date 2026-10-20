@@ -168,6 +168,11 @@ export const MAP_LABEL: Partial<Record<string, string>> = {
   training: 'Training',
   summit: 'Summit',
 };
+/** §9.3 — the node preview's own words. */
+export const PREVIEW_TEXT = {
+  /** §2.3 — the loadout locks on entry; the Team screen is where it changes (the route's panel only shows it). */
+  teamLock: 'The team locks when you enter. Change it on the Team screen (T) first.',
+};
 export const MAP_TEXT = {
   /** §5.6.5 — an item ball with a guard on it is a fight, and says so. */
   guarded: 'Guarded find',
@@ -606,6 +611,9 @@ export const TEAM_TEXT = {
   locked: 'Locked for this node',
   refused: 'Not now.',
   lastOne: 'Somebody has to be in the formation: this is the last one there.',
+  /** §9.12 — the route's side panel is the team at a glance; the Team screen is where it changes. */
+  panelHint: 'Change the team, its order and its moves on the Team screen (T).',
+  waiting: (n: number) => `${n} waiting`,
   resting: 'resting at the Daycare',
   placeLabel: 'Where it stands',
   ability: 'Ability',

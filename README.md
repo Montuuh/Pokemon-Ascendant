@@ -49,6 +49,10 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.28 — The map, at a glance.** A Wild Area on the map is now its habitat alone — the Pokémon Tower, a cave, a
+volcano, a reef — standing in the same grass; every node's chip is a rounded plate with an icon, and the nodes you can
+go to next wear theirs as a gold button you can click. The team panel on the route only shows the team now (the Team
+screen changes it), and closing the Move Manager no longer closes the Team screen with it. Before it,
 **v0.9.27 — Landmarks.** Every Wild Area on the map shows where it is: its Pokémon stands in the same tall grass
 everywhere, with its habitat's landmark rising behind it — the Pokémon Tower's dome, the Power Plant, a cave's mouth, a
 volcano, a Tanoby chamber, a reef — all FireRed's own pixels. And the Labels toggle names each node by its kind: Wild,

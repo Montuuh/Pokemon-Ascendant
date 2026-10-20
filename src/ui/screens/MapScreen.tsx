@@ -3,11 +3,10 @@ import { IconMenu2, IconBackpack, IconSparkles } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { ballsIn, boxCapacity, gymById, isServiceNode, joinTeam, noReturnLayer, regionName, supplyLabel, type MapNode, type PartyMon } from '@/sim';
+import { ballsIn, boxCapacity, gymById, isServiceNode, noReturnLayer, regionName, supplyLabel, type MapNode, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { InventoryDrawer } from '@/ui/components/InventoryDrawer';
 import { Money } from '@/ui/components/Money';
-import { MoveManager } from '@/ui/components/MoveManager';
 import type { NodeStatus } from '@/ui/components/NodeMarker';
 import { NodePreviewCard } from '@/ui/components/NodePreviewCard';
 import { PauseMenu } from '@/ui/components/PauseMenu';
@@ -33,14 +32,12 @@ export function MapScreen() {
   const rawBeginCombat = useRunStore((s) => s.beginCombat);
   const [paused, setPaused] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  /** §6.7.2 — which Pokémon the Move Manager is open on, if any. */
-  const [managing, setManaging] = useState<string | null>(null);
   /** §7.2–§7.5 — the inventory drawer: relics, held items, the bag. The only place a Held Item moves. */
   const [inventory, setInventory] = useState(false);
   /** §9.12 — the Team screen: the formation, the Box and each Pokémon's sheet (T). */
   const [team, setTeam] = useState(false);
   const openTeam = useCallback(() => setTeam(true), [setTeam]);
-  useTeamKey(openTeam, !team && !paused && !inventory && !managing);
+  useTeamKey(openTeam, !team && !paused && !inventory);
   const bagBubble = useTip(bagTip());
   /**
    * §2.9.5 — the find the pill has already said, so it is said once. Only a save from before the item ball's reel walks
@@ -83,11 +80,7 @@ export function MapScreen() {
         setInventory(false);
         return;
       }
-      setManaging((open) => {
-        if (open) return null;
-        if (phase === 'map') setPaused((p) => !p);
-        return open;
-      });
+      if (phase === 'map') setPaused((p) => !p);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -129,12 +122,6 @@ export function MapScreen() {
     if (run.visited.includes(node.id)) return 'visited';
     if (run.reachable.includes(node.id) && run.phase === 'map') return 'reachable';
     return 'locked';
-  };
-
-  const toggleActive = (uid: string) => {
-    const on = run.activeUids.includes(uid);
-    const next = on ? run.activeUids.filter((u) => u !== uid) : joinTeam(run.activeUids, uid, run.box, getContent());
-    dispatch({ type: 'set-active', uids: next });
   };
 
   return (
@@ -233,12 +220,13 @@ export function MapScreen() {
             box={run.box}
             activeUids={run.activeUids}
             capacity={boxCapacity(run)}
-            onToggleActive={locked ? null : toggleActive}
-            onSetLead={locked ? null : (uid) => dispatch({ type: 'set-lead', uid })}
-            onOpenMoves={setManaging}
+            onToggleActive={null}
+            onSetLead={null}
+            onOpenMoves={null}
             stones={run.stones}
             restingUid={run.resting}
             onOpenTeam={openTeam}
+            readOnly
           />
         </aside>
 
@@ -272,7 +260,6 @@ export function MapScreen() {
         />
       )}
 
-      {managing && <MoveManager uid={managing} onClose={() => setManaging(null)} />}
       {inventory && <InventoryDrawer onClose={() => setInventory(false)} />}
       {team && <TeamScreen onClose={() => setTeam(false)} locked={locked} />}
 

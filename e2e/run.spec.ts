@@ -187,7 +187,8 @@ test('the new-run flow reaches a twenty-column route with three or four first ch
 
 test('the Move Manager moves a card between the pool and the active 4', async ({ page }) => {
   await startRun(page, 'bulbasaur');
-  await page.getByTestId('box-moves-bulbasaur').click();
+  await page.getByTestId('btn-team').click();
+  await page.getByTestId('team-manage-moves').click();
   const panel = page.getByTestId('move-manager');
   await expect(panel).toBeVisible();
 
@@ -392,9 +393,20 @@ test('the Labels toggle names every node under its picture, and L flips it — �
   await startRun(page);
   const toggle = page.getByTestId('map-labels');
   const captions = page.locator('[data-testid="route-board"] [data-kind] span').filter({ hasText: /\S/ });
-  // Off: only the landmarks (the Gyms, the Elite) carry a name.
+  // Off: only the landmarks (the Gyms, the Elite) and the nodes you can step to carry a chip — those as buttons.
   await expect(toggle).toHaveAttribute('aria-pressed', 'false');
   const landmarks = await captions.count();
+  const reachable = page.locator('[data-testid="route-board"] [data-status="reachable"]');
+  await expect(reachable.locator('[data-chip="go"]')).toHaveCount(await reachable.count());
+  expect(await page.locator('[data-testid="route-board"] [data-status="locked"] [data-chip="go"]').count()).toBe(0);
+  // The gold chip is the node's own button: a click on it opens that node's preview.
+  const first = reachable.first();
+  const firstId = (await first.getAttribute('data-testid'))!.slice('node-'.length);
+  await first.locator('[data-chip="go"]').click();
+  await expect(page.getByTestId('node-preview')).toBeVisible();
+  expect(await page.evaluate(() => window.__ascendant!.run.state()!.pendingNodeId)).toBe(firstId);
+  await page.getByTestId('btn-cancel-node').click();
+  await expect(page.getByTestId('node-preview')).toBeHidden();
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
   expect(await captions.count()).toBeGreaterThan(landmarks + 20);
@@ -422,6 +434,37 @@ test('the Labels toggle names every node under its picture, and L flips it — �
   await page.keyboard.press('L');
   await page.reload();
   await expect(page.getByTestId('map-labels')).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('at 1280x720 every gold chip in the first column enters its own node, hovered as a player does — §9.3', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  // With motion on, as a player has it: the hover's lift is what made the next node paint over a chip.
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  // Seed 7's first column stacks three reachable nodes tight enough that a chip overlaps the node below it.
+  await page.goto('/?screen=menu');
+  await page.evaluate(() => window.localStorage.clear());
+  await page.goto('/?screen=menu');
+  await page.waitForFunction(() => !!window.__ascendant);
+  await page.evaluate(() => {
+    window.__ascendant!.run.new('squirtle', 7);
+    window.__ascendant!.goTo('map');
+  });
+  await page.waitForSelector('[data-testid="route-board"][data-painted="true"]');
+  const chips = page.locator('[data-testid="route-board"] [data-status="reachable"] [data-chip="go"]');
+  const n = await chips.count();
+  expect(n).toBeGreaterThan(1);
+  for (let i = 0; i < n; i++) {
+    const node = page.locator('[data-testid="route-board"] [data-status="reachable"]').nth(i);
+    const id = (await node.getAttribute('data-testid'))!.slice('node-'.length);
+    const box = (await chips.nth(i).boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 4 });
+    await page.mouse.down();
+    await page.mouse.up();
+    await expect(page.getByTestId('node-preview')).toBeVisible();
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.pendingNodeId)).toBe(id);
+    await page.getByTestId('btn-cancel-node').click();
+    await expect(page.getByTestId('node-preview')).toBeHidden();
+  }
 });
 
 test('an item ball shows its reel, spins it on the way in and lands on what is yours — §2.9.5', async ({ page }) => {

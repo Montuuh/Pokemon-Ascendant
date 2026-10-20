@@ -10,8 +10,6 @@ import { MAP_LABEL, MAP_TEXT, NODE_LABEL } from '@/ui/strings';
 /** Its animated Gen V battle sprite, cropped tight to the Pokémon: the same sprite the arena shows. */
 const pokemonIcon = (speciesId: string) => battleSpriteUrl(getContent().species(speciesId).id, 'front');
 
-/** §9.3 — the habitats with no landmark: the plain route's tall grass is the grass every Wild Area stands in. */
-const NO_LANDMARK: ReadonlySet<BiomeId> = new Set(['tall-grass']);
 /** §9.3 — the habitats whose landmark lies flat on the ground: water, sand, flowers. */
 const LOW_PROPS: ReadonlySet<BiomeId> = new Set(['meadow', 'river', 'shore', 'sea', 'swamp', 'lake']);
 
@@ -77,27 +75,25 @@ export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
     case 'summit':
       return { kind: 'sign', src: summitSign() };
     case 'wild': {
-      // One of the Pokémon you will meet most often — a Common, picked by the node's id, so two nodes of one habitat
-      // need not wear the same face — or the old preview's first species.
+      // §9.3 (the user, 2026-10-20) — a Wild Area is its habitat: the landmark — the Pokémon Tower, a cave's mouth, a
+      // reef — standing in the one grass every Wild Area shares. Who is met there is its bubble's and its preview's.
+      const habitat = p.objective?.kind === 'flee' ? null : habitatOf(node, map);
+      if (habitat) return { kind: 'habitat', src: habitatProp(habitat), low: LOW_PROPS.has(habitat) };
+      // A runner (§5.6.5) is one named Pokémon, met wherever it bolts: the Pokémon itself, as the Elite Wild. So is a
+      // Wild Area from a save older than its habitat: one of its Commons, picked by the node's id.
       const commons = p.wild?.pool.common ?? [];
       const face = commons.length ? commons[[...node.id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % commons.length] : p.wild?.pool.uncommon[0] ?? p.speciesIds[0];
-      if (!face) return { kind: 'sign', src: mysterySign() };
-      // §9.3 (the user, 2026-10-20) — every Wild Area's Pokémon in the one grass, and its habitat said by the landmark
-      // behind it: the Pokémon Tower behind an Old Tower's Gastly, a cave's mouth behind a Zubat. A runner (§5.6.5) is
-      // one named Pokémon, met wherever it bolts: no landmark, as the Elite Wild has none.
-      const habitat = p.objective?.kind === 'flee' ? null : habitatOf(node, map);
-      const prop = habitat && !NO_LANDMARK.has(habitat) ? { src: habitatProp(habitat), low: LOW_PROPS.has(habitat) } : null;
-      return { kind: 'pokemon', src: pokemonIcon(face), grass: true, prop };
+      return face ? { kind: 'pokemon', src: pokemonIcon(face), grass: true } : { kind: 'sign', src: mysterySign() };
     }
     // §2.8.2 — the Elite Wild: the Pokémon itself, in the same grass; §2.12.2 — the Apex: the Legendary, on its node.
     case 'apex':
     case 'elite-wild': {
       const face = p.enemies?.[0]?.species ?? p.speciesIds[0];
-      return face ? { kind: 'pokemon', src: pokemonIcon(face), grass: node.kind === 'elite-wild', prop: null } : { kind: 'sign', src: mysterySign() };
+      return face ? { kind: 'pokemon', src: pokemonIcon(face), grass: node.kind === 'elite-wild' } : { kind: 'sign', src: mysterySign() };
     }
     case 'cache': {
       // §5.6.5 — a guarded find shows who stands over it.
-      if (p.objective?.kind === 'hold' && p.speciesIds[0]) return { kind: 'pokemon', src: pokemonIcon(p.speciesIds[0]), grass: false, prop: null };
+      if (p.objective?.kind === 'hold' && p.speciesIds[0]) return { kind: 'pokemon', src: pokemonIcon(p.speciesIds[0]), grass: false };
       // §2.9.5 — an item ball since its reel (2026-10-20): the ball lying on the path, as the overworld draws it.
       if (p.reel) return { kind: 'item', src: itemIcon('poke-ball') };
       const item = p.find?.items[0];

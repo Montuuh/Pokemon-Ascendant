@@ -55,6 +55,19 @@ export function joinTeam(uids: readonly string[], uid: string, box: readonly Par
   return next;
 }
 
+/**
+ * §2.3 / §9.12 — a Box Pokémon put into a place of the formation (the Team screen): it takes that place, whoever stood
+ * there going back to the Box, or the next free one; and, as `joinTeam`, whoever has stood there longest steps back
+ * until the places fit — a Legendary taking two.
+ */
+export function placeInTeam(uids: readonly string[], uid: string, slot: number, box: readonly PartyMon[], content: ContentRegistry): string[] {
+  const next = uids.filter((u) => u !== uid);
+  if (slot < next.length) next[slot] = uid;
+  else next.push(uid);
+  while (next.length > 1 && placesTaken(next, box, content) > ACTIVE_TEAM.places) next.splice(next.findIndex((u) => u !== uid), 1);
+  return next;
+}
+
 /** §2.12.2.1 — a Legendary's arena: the place, its backdrop, the field it opens under, its rule, and its kit there. */
 export interface LegendaryArena {
   place: string;
