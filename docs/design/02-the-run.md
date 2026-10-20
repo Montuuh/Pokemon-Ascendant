@@ -185,7 +185,10 @@ fall than the one before it, and the full run is roughly one in ten for a player
 *Rewritten v0.9.22 (delegated, 2026-10-16):* the whole run read ~17 % while it ended at the third Gym; with Victory
 Road and the League after it (§2.12, §2.1.6) it is the Champion that wins it, and the road and the League take about
 a third of the runs that reach them — the first measure, 40 runs a starter: R1 56 % · R2|R1 52 % · R3|R2 49 % ·
-League|R3 65 % · the whole run 9 %. The final balance pass (v1.0) re-reads it at 720 runs.
+League|R3 65 % · the whole run 9 %. The final balance pass (v1.0) re-reads it at 720 runs. **One block is one sample**
+(paid for 2026-10-20): the harness's seeds are fixed, so a change reshuffles which runs reach the League and a single
+720-run block moved League|R3 from 60 to 43 % on a change that a second block (`CURVE_BASE=20000`) read as 54 → 56 %.
+Before reacting to a conditional rate late in the run, read it on a second block.
 
 Four things hold it there. Levels alone did not: v0.7.1 first shipped with the later Regions at their canon
 bands (§2.6.5) and nothing else, and every autoplayed run that beat Gym 1 beat the other two, one or two turns a
@@ -512,32 +515,63 @@ can field, and several types share one where the Region has few, but every Gym g
 
 The recruitment workhorse.
 
-## §2.6.1 Biomes
+## §2.6.1 Biomes — the habitats
 
-| Biome | Regions | Primary in | Theme |
-|---|---|---|---|
-| **Meadow** 🌾 | R1, R2 rare | **R1** | Normal, Bug, Grass |
-| **Cave** 🕳️ | R1, R2, R3 | — | Rock, Ground, Fighting, dual types |
-| **River / Lake** 💧 | R1, R2 | — | Water, Bug-Water |
-| **Sea** 🌊 | R2 | **R2** | Deep-water Water, Ice |
-| **Power Plant** ⚡ | R2, R3 | — | Electric |
-| **Volcano Slope** 🔥 | R3 | **R3** | Fire, Rock-Fire, Ground |
-| **Sky / Cliffs** 🦅 | R3 | — | Flying, Bug-Flying, Psychic |
-| **Abandoned Tower** 👻 | R3 rare | — | Ghost, Poison, Psychic |
+> ✅ **v0.9.25** — the user, 2026-10-20: "many more kinds of Wild Area node, with more pools of Pokémon". Code:
+> `run/region.ts` (`BiomePool.cover`, the three Regions' tables and weights, `LaneTheme.habitats`), `run/map.ts`
+> (`wildPreview`), `ui/components/nodeArt.ts` (the cover and the face); new backdrops `route`, `mountain`, `beach`,
+> `pond` (Showdown's classic set).
 
-Each Region has a fixed eligible set and a primary biome that appears most often. **Biome-to-Region binding is
+A Wild Area is a **habitat**: a small pool with a type of its own, a battle backdrop, and what its Pokémon peek out of
+on the map — tall grass, water, or open ground. Sixteen across the game, seven to nine to a Region:
+
+| Habitat | Regions | Theme | Map | Backdrop |
+|---|---|---|---|---|
+| **Tall Grass** | R1 (primary), R2 rare | Normal, Flying, Poison | grass | `route` |
+| **Forest** | R1, R2 rare | Bug, Grass (and Pikachu) | grass | `forest` |
+| **Flower Meadow** | R1 | Grass, Fairy-ish Normal, Fire | grass | `meadow` |
+| **Cave** · **Deep Cave** | R1, R2, R3 | Rock, Ground, Poison; the fossils; Fighting in R3 | ground | `cave` |
+| **Rocky Ridge** · **Mountain Trail** | R1, R2 | Fighting, Ground, Fire; the Hitmons | ground | `mountain` |
+| **Fishing Spot** | R1, R2 | Water (Dratini) | water | `pond` |
+| **Seashore** · **Rocky Shore** | R1, R2 | Water, Poison; Rock and Flying on the cliffs | water | `beach` |
+| **Open Sea** | R2 (primary) | Deep water, Ice | water | `sea` |
+| **Power Plant** | R1, R2 | Electric, Poison (Porygon, Ditto) | ground | `power-plant` |
+| **Old Tower** · **Haunted Tower** | R1, R3 rare | Ghost, Psychic | ground | `tower` |
+| **Toxic Marsh** | R2 | Poison | grass | `night-meadow` |
+| **Volcano Slope** | R3 (primary) | Fire | ground | `volcano` |
+| **Badlands** | R3 | Ground, Rock | ground | `desert` |
+| **Underground Lake** | R3 | Water, Ice | water | `ice-cave` |
+| **Sky Cliffs** | R3 | Flying, Dragon | ground | `sky-pillar` |
+| **Overgrown Ruins** | R3 rare | Grass, Psychic | grass | `forest` |
+
+*Why habitats (delegated, 2026-10-20).* Three shapes were weighed: **more biomes** (more pools, the same node);
+**encounter methods** as node kinds — fishing, Rock Smash, Headbutt, each with a pool; and **node variants with a
+rule** — a swarm of one named species, a nest, a horde. The first two are one idea seen from two sides and were merged:
+a Fishing Spot is a habitat *and* a method, a Rocky Ridge is where Rock Smash would turn up Geodude and Machop. The
+third was left out: a swarm names its one Pokémon, which makes the node a shop with one shelf — what v0.9.7 took away
+from the Wild Area on purpose (§2.6.2). What decided it is the *plan*: the v0.9.7 Meadow held twenty-five species, so a
+Wild Area was a lottery with a grass backdrop; eight to twelve species of one family make **where you look** the
+decision — a Fishing Spot for Water against Brock, the Power Plant for Electric against Misty — which is what the trunk
+is for (§2.5.0). A pool keeps v0.9.7's floor of eight, so a habitat is still a surprise inside its family. On the map each node shows one of its own Commons (a node's own pick, so two of one habitat need not
+wear the same face), in its grass or its water.
+
+**Lanes draw from two.** A lane's Wild Areas take the Gym's own habitat or the one beside it (`LaneTheme.habitats`:
+the Rock lane a Cave or a Rocky Ridge, the Water lane a Fishing Spot or a Seashore, the Bug lane a Forest or a Flower
+Meadow…), one per node by its place on the map — never a draw, so the map's stream does not move. The lane's trainers,
+Elite and Gym fight on its first habitat's backdrop.
+
+Each Region has a fixed eligible set and a primary habitat that appears most often. **Biome-to-Region binding is
 canon**: biomes always follow the Region's theme, and Region Modifiers never steer them — with one deliberate
 exception, **Naturalist's Lens** (§2.11.3.1), which triples the Wild Areas' chance of a Rare instead of moving a
 biome. *(v0.7.5: the "promote one biome" version needed a choose-a-biome screen and a map re-roll after it — a
 second map for one modifier. Rarer finds give the same fantasy, a naturalist's eye, without either.)*
 
-**A biome is a species pool and a backdrop, and it must be wide enough to surprise.** Since v0.9.7 the whole
-Pokédex lives somewhere: every one of the 146 non-Legendary species is in a pool, eight to twenty-five to a biome,
-so a lane does not repeat itself and a Wild Area is a question rather than a list. *(The user's call, 2026-10-08:
-"a big pool of varied Pokémon" in place of three names. Region 1 had shipped with four to six per biome; v0.7.3
-widened it to eight, still thin enough to see the same three twice in a lane.)* A species may sit in more than one
-biome; across Regions only four repeat — Onix and Farfetch'd (Regions 1 and 2), Hypno and Scyther (2 and 3) — so
-Region 3 fields species the first two never do.
+**The whole Pokédex lives somewhere.** Since v0.9.7 every one of the 146 non-Legendary species is in a pool, and
+since v0.9.25 in a habitat of its kind — eight to twelve to a pool, so a habitat is a question rather than a list, and
+a lane, drawing from two, does not repeat itself. *(The user's call, 2026-10-08: "a big pool of varied Pokémon" in
+place of three names; 2026-10-20: "more kinds of Wild Area, with more pools".)* A species may sit in more than one
+habitat; across Regions only Hypno and Scyther repeat (Regions 2 and 3), so Region 3 fields species the first two never
+do.
 
 **A lane carries its Gym's field** (§4.3.14 — until v0.8.7 it was its biome's, and five Gyms stood on open ground),
 so the ground you fight on is part of what a lane telegraphs (§2.5.0).
@@ -584,45 +618,65 @@ seven a supply from the Region's table (§2.7.2) — a catching route should pay
 last evolution on Route 1, not even one that never evolves (Onix and Farfetch'd wait for Region 2; the cocoons too,
 v0.9.8). Region 2 is the middle of the lines — first evolutions and the Pokémon that never evolve; no basic that still
 has a form ahead of it. Region 3 is final forms only: nothing there has an evolution left, so no Lapras on the first
-node of Route 1 and no pre-evolution on Route 3. **The starters are Rares** in their biome, at their Region's form
+node of Route 1 and no pre-evolution on Route 3. **The starters are Rares** in their habitats, at their Region's form
 (Bulbasaur, Ivysaur, Venusaur…). **The Legendaries are in no pool.** The rows live in `src/sim/run/region.ts` and [`catalogs/biomes-regions.md`](catalogs/biomes-regions.md).
 
-Region 1 — Meadow (primary), Cave, River:
+Region 1 — Tall Grass (primary), Forest, Flower Meadow, Cave, Rocky Ridge, Fishing Spot, Seashore, Power Plant, Old Tower:
 
-| Biome | Common · 60 % | Uncommon · 30 % | Rare · 10 % |
+| Habitat | Common · 60 % | Uncommon · 30 % | Rare · 10 % |
 |---|---|---|---|
-| Meadow | Caterpie · Weedle · Pidgey · Rattata · Spearow · Oddish · Bellsprout · Nidoran♀ · Nidoran♂ | Metapod · Kakuna · Paras · Venonat · Meowth · Ekans · Doduo · Exeggcute · Jigglypuff · Growlithe · Ponyta · Vulpix | Bulbasaur · Pikachu · Eevee · Farfetch'd |
-| Cave | Zubat · Geodude · Diglett · Sandshrew · Machop · Mankey | Onix · Cubone · Clefairy · Rhyhorn · Grimer · Koffing · Gastly · Abra · Drowzee · Magnemite · Voltorb | Charmander · Omanyte · Kabuto |
-| River | Magikarp · Poliwag · Psyduck · Goldeen · Tentacool · Krabby | Slowpoke · Horsea · Shellder · Seel · Staryu | Squirtle · Dratini |
+| Tall Grass | Pidgey · Rattata · Spearow · Nidoran♀ · Nidoran♂ | Ekans · Meowth · Doduo · Jigglypuff | Eevee |
+| Forest | Caterpie · Weedle · Oddish · Paras | Bellsprout · Venonat · Exeggcute | Pikachu · Bulbasaur |
+| Flower Meadow | Oddish · Bellsprout · Jigglypuff · Nidoran♀ | Clefairy · Exeggcute · Vulpix · Growlithe · Ponyta | Bulbasaur · Eevee |
+| Cave | Zubat · Geodude · Diglett · Paras | Clefairy · Sandshrew · Cubone · Rhyhorn | Kabuto · Omanyte |
+| Rocky Ridge | Geodude · Mankey · Machop · Sandshrew · Spearow | Rhyhorn · Cubone · Ponyta · Growlithe | Charmander |
+| Fishing Spot | Magikarp · Poliwag · Goldeen · Psyduck · Krabby | Slowpoke · Horsea · Shellder | Dratini · Squirtle |
+| Seashore | Tentacool · Krabby · Shellder · Psyduck | Staryu · Seel · Horsea | Squirtle · Omanyte |
+| Power Plant | Magnemite · Voltorb · Rattata · Grimer | Koffing · Meowth · Ekans | Pikachu |
+| Old Tower | Gastly · Zubat · Koffing | Drowzee · Cubone · Grimer · Exeggcute | Abra |
 
-Region 2 — Sea (primary), River, Power Plant, Cave, Meadow (rare):
+Weights 4 · 3 · 2 · 2 · 2 · 2 · 1 · 1 · 1 in that order. Lanes: Rock — Cave, Rocky Ridge · Water — Fishing Spot,
+Seashore · Bug — Forest, Flower Meadow · Normal — Tall Grass, Flower Meadow.
 
-| Biome | Common · 60 % | Uncommon · 30 % | Rare · 10 % |
+Region 2 — Open Sea (primary), Power Plant, Fishing Spot, Rocky Shore, Cave, Mountain Trail, Toxic Marsh, Tall Grass and Forest (rare):
+
+| Habitat | Common · 60 % | Uncommon · 30 % | Rare · 10 % |
 |---|---|---|---|
-| Sea | Tentacruel · Seadra · Seaking · Golduck | Starmie · Dewgong · Slowbro | Wartortle · Jynx · Dragonair |
-| River | Poliwhirl · Kingler · Golduck · Seaking | Slowbro · Seadra · Dewgong | Wartortle · Dragonair · Ditto |
-| Power Plant | Magneton · Electrode · Raichu | Electabuzz · Kadabra · Hypno | Porygon · Ditto |
-| Cave | Golbat · Graveler · Machoke · Dugtrio · Sandslash · Primeape | Haunter · Muk · Weezing · Kadabra · Onix | Charmeleon · Hitmonlee · Hitmonchan |
-| Meadow | Raticate · Pidgeotto · Arbok · Butterfree · Beedrill · Parasect · Venomoth | Gloom · Weepinbell · Nidorina · Nidorino · Persian · Wigglytuff · Clefable · Tangela · Lickitung | Ivysaur · Scyther · Pinsir · Farfetch'd |
+| Open Sea | Tentacruel · Seadra · Seaking · Golduck | Starmie · Dewgong · Slowbro | Jynx · Dragonair |
+| Fishing Spot | Poliwhirl · Seaking · Golduck · Kingler | Slowbro · Seadra | Wartortle · Dragonair |
+| Rocky Shore | Kingler · Golbat · Graveler · Pidgeotto | Onix · Dewgong · Starmie | Farfetch'd · Wartortle |
+| Power Plant | Magneton · Electrode · Raichu | Electabuzz · Muk · Weezing | Porygon · Ditto |
+| Cave | Golbat · Graveler · Dugtrio · Sandslash | Onix · Haunter · Kadabra | Charmeleon |
+| Mountain Trail | Machoke · Primeape · Graveler · Sandslash | Dugtrio · Onix · Nidorino | Hitmonlee · Hitmonchan |
+| Toxic Marsh | Muk · Weezing · Arbok · Gloom | Haunter · Golbat · Weepinbell · Venomoth | Ditto |
+| Tall Grass | Raticate · Pidgeotto · Arbok · Nidorina · Nidorino | Persian · Wigglytuff · Clefable · Lickitung · Hypno | Farfetch'd · Ivysaur |
+| Forest | Butterfree · Beedrill · Parasect · Venomoth · Metapod · Kakuna | Gloom · Weepinbell · Tangela | Scyther · Pinsir · Ivysaur |
 
-Region 3 — Volcano (primary), Cave, Sky, Abandoned Tower (rare):
+Weights 4 · 3 · 2 · 2 · 2 · 2 · 2 · 1 · 1 (Open Sea, Power Plant, Fishing Spot, Rocky Shore, Cave, Mountain Trail,
+Toxic Marsh, Tall Grass, Forest). Lanes: Fire — Mountain Trail, Tall Grass · Grass — Forest, Tall Grass · Electric —
+Power Plant, Rocky Shore · Poison — Toxic Marsh, Cave.
 
-| Biome | Common · 60 % | Uncommon · 30 % | Rare · 10 % |
+Region 3 — Volcano Slope (primary), Badlands, Deep Cave, Underground Lake, Sky Cliffs, Haunted Tower and Overgrown Ruins (rare):
+
+| Habitat | Common · 60 % | Uncommon · 30 % | Rare · 10 % |
 |---|---|---|---|
-| Volcano | Arcanine · Ninetales · Rapidash · Rhydon | Magmar · Flareon · Nidoking · Nidoqueen · Golem | Charizard · Tauros |
-| Cave | Machamp · Poliwrath · Golem · Cloyster | Omastar · Kabutops · Vaporeon · Marowak | Blastoise · Aerodactyl · Lapras · Snorlax · Kangaskhan |
-| Sky | Pidgeot · Fearow · Dodrio | Gyarados · Jolteon · Scyther | Dragonite · Aerodactyl |
-| Abandoned Tower | Gengar · Hypno | Alakazam · Exeggutor · Vileplume · Victreebel | Venusaur · Chansey · Mr. Mime |
+| Volcano Slope | Arcanine · Ninetales · Rapidash · Rhydon | Magmar · Flareon · Golem | Charizard |
+| Badlands | Rhydon · Golem · Nidoking · Nidoqueen | Marowak · Tauros · Dodrio | Aerodactyl |
+| Deep Cave | Machamp · Golem · Poliwrath | Omastar · Kabutops · Marowak | Snorlax · Kangaskhan |
+| Underground Lake | Cloyster · Poliwrath · Vaporeon | Gyarados · Omastar · Kabutops | Lapras · Blastoise |
+| Sky Cliffs | Pidgeot · Fearow · Dodrio | Gyarados · Scyther · Jolteon | Dragonite · Aerodactyl |
+| Haunted Tower | Gengar · Hypno | Alakazam · Mr. Mime · Exeggutor · Vileplume | Chansey · Venusaur |
+| Overgrown Ruins | Vileplume · Victreebel · Exeggutor | Hypno · Jolteon · Mr. Mime · Scyther | Venusaur |
 
-The Sea is drawn five times in thirteen in Region 2, the Power Plant three, the River and the Cave two each, the
-Meadow once. The Gym lanes (§2.5) walk their own biome in every Region.
+Weights 4 · 2 · 2 · 2 · 2 · 1 · 1. Lanes: Psychic — Haunted Tower, Overgrown Ruins · Ground — Badlands, Volcano Slope ·
+Fighting — Deep Cave, Badlands · Ice — Underground Lake, Deep Cave.
 
 **Evolved forms caught in the wild arrive on their species' own path.** A Graveler caught in Region 2 comes with its
 species' archetype and chooses its next path at its next threshold (§6.3); the choice a basic offers is the Region 1
 catch's, and the starter's. *(The trade-off of the Region-strength rule, accepted with it: a Region 2 catch skips
 one branching choice, and arrives stronger for it.)*
 
-A species that appears in two biomes is the same species with different flavour text, not a variant.
+A species that appears in two habitats is the same species with different flavour text, not a variant.
 
 ## §2.6.4 Catching
 
@@ -820,10 +874,16 @@ Two node types sit above Trainer Battles and below the Gym.
 
 A human mini-boss: **four Pokémon, two at a time** (§5.6.3; user, 2026-09-30: an Elite carries at least four). Its
 own two keep **2 phases each** (the Rival's Region 3 ace gets 3 and evolves mid-fight): the first opens, the second
-closes; the Region's trainers lend the two between them, six levels under the Elite's floor, one phase each. The
-Elite sits **two under** the wild band's top (ELITE_LEVEL_PREMIUM −2 since v0.8.6, when teams stopped arriving
-over-levelled; 0 in v0.8.5; +2 while it fought one Pokémon at a time, which in a double lost Region 1 runs at the
-Elite nine times in ten).
+closes; the Region's trainers lend the two between them, one phase each.
+
+**Levels read right** (2026-10-20, the user's playtest: "a Lv 8 Pidgeotto and a Lv 2 Onix, and mine were all 11 — no
+sense"). The Elite's own Pokémon stand **over** the team that reaches it — its opener two over the wild band's top,
+its closer three (ELITE_LEVEL_PREMIUM +2) — and the two it borrows stand at the route's own level, the band's bottom
+(PAD_LEVEL_GAP 3 under its floor). Its threat is tuned by **Attack** (ELITE_ATTACK_MULTIPLIER ×0.65 / ×0.85 / ×0.9 by
+Region) and its pay by its tier's XP (§6.2.1), so the higher level never refunds itself. *(Until then the premium was
+−2 and the padding six under: the difficulty was kept by standing the Elite five levels under the team, and its
+borrowed Pokémon at Lv 2–4 — a number nobody could read as a mini-boss. Measured over 240 runs: the Elite is lost
+9 % / 7 % / 11 % of the time by Region, against 23 / 4 / 6 % before.)*
 Guaranteed once per Region in the late trunk. **No type lock** — that identity belongs to Gyms, which makes the
 Elite a different kind of test from the Gym ahead of it.
 
@@ -1097,19 +1157,36 @@ others — has none here either: the counter says so rather than inventing some.
 egg moves over a type-coverage catalogue, which would have erased the lines' identity, and over a fifth move
 slot, which would have broken the four-per-Pokémon hand.)*
 
-## §2.9.5 Something on the ground
+## §2.9.5 Something on the ground — the item ball
 
-The overworld's item ball: a find on the path, named on the map before you choose it (Pillar 1) — you see that it
-is a Great Ball, not that it is "an item". Choosing it picks it up and walks on: one click, no screen. It is the
-commonest stop, and the smallest: the route's breathing between fights, not a reward that competes with them.
+> ✅ **v0.9.25** — the user, 2026-10-20: "instead of handing over the generated item, a roulette between several, and a
+> pool of everything: consumables, money, held items, relics". Code: `run/finds.ts` (`FIND_REEL`, `buildReel`,
+> `placeReels`, `spinReel`, `reelChances`), the `find` phase and `leave-find`, `FindScreen`, `FindPrize`
+> (`ReelPool` on the preview).
 
-| Region | What lies there (equal odds) |
-|---|---|
-| 1 | a Potion · two Poké Balls · an Antidote and a Paralyze Heal · an X Attack · an Ether · 80 ₽ |
-| 2 | a Super Potion · a Great Ball · a Full Heal · an X Defense · three Poké Balls · 150 ₽ |
-| 3 | a Hyper Potion · an Ultra Ball · a Revive · a Full Heal and an X Attack · two Great Balls · 250 ₽ |
+The overworld's item ball, and a **reel**: seven prizes the preview card shows before you choose it (Pillar 1), in three
+rows like a Wild Area's pool (§2.6.2) — **three Commons at 20 % each, two Uncommons at 15 %, two Rares at 5 %** (the row's
+share, 60 / 30 / 10, split evenly). Picking it up **spins the reel**: the prizes run past a marker and slow to a stop on
+the one that is yours, a tick for each tile that passes; it is in the bag by the time the reel stops, and you walk on.
 
-The find is rolled with the map, so a reload shows the same one. Money is in the table because the bag already
+| Row | Region 1 | Region 2 | Region 3 |
+|---|---|---|---|
+| **Common** (3 of) | Potion ×2 · Poké Ball ×3 · Antidote and Paralyze Heal · Ether · X Attack · 100 ₽ | Super Potion ×2 · Great Ball · Full Heal · Ether · X Defense · 180 ₽ | Hyper Potion · Ultra Ball · Full Heal and X Attack · Great Ball ×2 · Ether ×2 · 300 ₽ |
+| **Uncommon** (2 of) | Super Potion ×2 · Great Ball ×2 · 250 ₽ · a held item · a TM · X Attack and X Defense | Hyper Potion · Great Ball ×3 · 400 ₽ · a held item · a TM · Revive | Max Potion · Revive · 600 ₽ · a held item · a TM · Ultra Ball ×2 |
+| **Rare** (2: a relic, and 1 of) | a Common or Uncommon relic · an Evolution stone · Revive · Hyper Potion · a held item | an Uncommon or Rare relic · a stone · Ultra Ball ×2 · Max Potion · a held item | an Uncommon or Rare relic · a stone · Revive ×2 · Max Potion ×2 · a held item |
+
+Supplies, money, the TM and the stone are **named on the reel**. A held item and a relic show their kind (and the
+relic its rarity's gem) behind the overworld's "?", and the reel says **which one when it lands** — so it is never one
+the run already holds; with none left, the Region's fallback money (300 / 500 / 800 ₽). Every reel carries a relic in its
+Rare row, so every find holds the chance of one (about one find in twenty pays one).
+
+*Why a reel (delegated, 2026-10-20).* The find used to be one named item, picked up in a click: certain, and forgotten.
+Three shapes were weighed — a wheel (the Game Corner's own, §2.11.5: a casino on the route), three face-down balls to
+choose from (a pick without information is a coin toss dressed as a decision), and a reel that runs and stops. The reel
+won: the whole pool and its odds are on the map before you choose the stop (as a Wild Area's are), the spin is the
+moment the find was missing, and the stop lands on a thing you can see coming. The reel is rolled with the map on a
+stream of its own (a hash of the map's cursor and the node), so no other node moves; the spin is a hash of the run's
+seed, the Region and the node, so a reload lands on the same tile. Money stays in the pool because the bag already
 fills faster than a careful player empties it (v0.8.6), and the City is where a stop's worth is spent.
 
 **A guarded find** (✅ v0.9.18): about one find in eight is guarded — the find and a better one beside it (a held item,

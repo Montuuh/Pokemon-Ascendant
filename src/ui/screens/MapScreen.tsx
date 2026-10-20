@@ -36,7 +36,10 @@ export function MapScreen() {
   /** §7.2–§7.5 — the inventory drawer: relics, held items, the bag. The only place a Held Item moves. */
   const [inventory, setInventory] = useState(false);
   const bagBubble = useTip(bagTip());
-  /** §2.9.5 — the find the pill has already said, so it is said once. */
+  /**
+   * §2.9.5 — the find the pill has already said, so it is said once. Only a save from before the item ball's reel walks
+   * a find this way (a reel has its own screen, `FindScreen`).
+   */
   const [dismissedFind, setDismissedFind] = useState<object | null>(null);
   const lastFind = run?.lastFind ?? null;
   useEffect(() => {
@@ -240,7 +243,7 @@ export function MapScreen() {
           <p className="sr-only">
             {run.zone === 'league' ? LEAGUE_TEXT.srHint : `${run.position ? 'Choose where to go next.' : 'Pick where the route begins.'} Press Escape for the menu. Tab moves between the nodes you can reach.`}
           </p>
-          {/* §2.9.5 — what a find on the ground held: said once, on the board, then gone. */}
+          {/* §2.9.5 — what a find from before the reel held (an older save): said once, on the board, then gone. */}
           {foundShown && (
             <p className={styles.found} role="status" data-testid="map-found">
               {ROUTE_TEXT.found(foundShown)}

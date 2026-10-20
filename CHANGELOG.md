@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.25 — The route, reworked · 2026-10-20
+
+Wild Areas as habitats, the item ball's reel, the heal seen, honest levels.
+
+- **Habitats.** 25 Wild Area pools, each of one family, new backdrops.
+- **Item ball.** A 7-prize reel: supplies, ₽, TMs, stones, items, relics.
+- **The heal.** The Center's machine and jingle; +HP on every bar.
+- **Levels.** Elite and Gym stand over the team; map labels (L).
+
 ### v0.9.24 — Move animations · 2026-10-18
 
 Every move is animated from its user to its target.

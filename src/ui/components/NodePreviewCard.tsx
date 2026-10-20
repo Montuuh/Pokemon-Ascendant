@@ -11,9 +11,10 @@ import { doubleActorTip, groupTip, perfectClearTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { itemIcon, mysterySign, nodeBadge } from '@/ui/art';
 import { nodeArt } from './nodeArt';
-import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_LABEL, nodeHint, VICTORY_TEXT, WILD_TEXT, LEAGUE_TEXT } from '@/ui/strings';
+import { DOUBLE_ACTOR_LABEL, groupLabel, NODE_LABEL, nodeHint, VICTORY_TEXT, WILD_TEXT, LEAGUE_TEXT, FIND_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import { WildPool } from './WildPool';
+import { ReelPool } from './FindPrize';
 import { Money } from './Money';
 import { SupplyStrip } from './SupplyStrip';
 import { TypeBadge } from './TypeBadge';
@@ -211,8 +212,15 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
           </>
         )}
 
-        {/* §2.9.5 — something on the ground: what it is, named before you choose it. */}
-        {node.preview.find && (
+        {/* §2.9.5 — an item ball: its reel's seven prizes by row, each with its chance, before you choose it. */}
+        {node.preview.reel && !objective && (
+          <>
+            <h3 className={styles.sectionTitle}>{FIND_TEXT.pool}</h3>
+            <ReelPool tiles={node.preview.reel} />
+          </>
+        )}
+        {/* §2.9.5 — a find from before the reel, or what a guard stands over: named before you choose it. */}
+        {node.preview.find && (!node.preview.reel || objective) && (
           <div className={styles.find} data-testid="preview-find">
             {node.preview.find.items.length > 0 && (
               <SupplyStrip ids={node.preview.find.items} testId="preview-find-items" />

@@ -23,10 +23,11 @@ import { ACTIVE_TEAM, fillTeam, hasPlaceFor, placesTaken } from './legendaries';
 import { generateLeague, microRestPct } from './league';
 import { BLACK_MARKET, candyPrice, fencePrice, rollBlackMarket, showcaseLevel, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
+import { prizeLabel, spinReel } from './finds';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
 import { BOND_TIER } from '../meta/bond';
 import { copyIsShiny } from './shiny';
-import type { BlackMarketState, LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunPhase, RunReduceResult, RunState, ShopSlot } from './types';
+import type { BlackMarketState, HealLine, LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunPhase, RunReduceResult, RunState, ShopSlot } from './types';
 
 
 /** A shop row in the player's words, for the log line after a purchase. */
@@ -279,6 +280,22 @@ function wildRareChance(modifierId: string | null, content: ContentRegistry): nu
 function cureAll(mon: PartyMon): void {
   mon.status = null;
   mon.confusionTurns = 0;
+}
+
+/**
+ * §2.4.2 — heal every Pokémon in the Box to `to(mon, max)` and cure it, and say what that did to each one (§9.9.3: the
+ * screen fills each bar from its old HP). The Center heals to the ceiling; the field nurse a share of it.
+ */
+function healBox(draft: RunState, to: (mon: PartyMon, max: number) => number, content: ContentRegistry): HealLine[] {
+  draft.heals = (draft.heals ?? 0) + 1;
+  return draft.box.map((mon) => {
+    const max = effectiveMax(draft, mon, content);
+    const from = mon.hp;
+    const cured = !!mon.status || (mon.confusionTurns ?? 0) > 0;
+    mon.hp = to(mon, max);
+    cureAll(mon);
+    return { uid: mon.uid, from, to: mon.hp, cured };
+  });
 }
 
 /** §2.9.4 — a Dojo service's price here: the City's markup (base in the town, +30 % in the city), then any Region Modifier. */
@@ -897,6 +914,24 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           draft.phase = 'event';
           break;
         }
+        if (node.kind === 'cache' && node.preview.objective?.kind !== 'hold' && node.preview.reel?.length) {
+          // §2.9.5 — an item ball: the reel spins as you walk in, and what it lands on goes into the bag now; the screen
+          // shows the spin and waits for you to walk on (a screen, not a doorway).
+          const tiles = node.preview.reel;
+          const { won, got } = spinReel(draft, node, ctx.content);
+          const prize = tiles[won]!.prize;
+          if (got.money !== undefined) draft.money += got.money;
+          else if (got.relic) acquireRelic(draft, got.relic, ctx.content);
+          else if (got.heldItem) draft.bag.push(got.heldItem);
+          else if (prize.kind === 'supply') draft.consumables.push(...prize.items);
+          else if (prize.kind === 'money') draft.money += prize.amount;
+          else if (prize.kind === 'tm') draft.tms.push(prize.id);
+          else if (prize.kind === 'stone') draft.stones.push(prize.id);
+          draft.pendingFind = { tiles: tiles.map((t) => ({ tier: t.tier, prize: t.prize })), won, got };
+          say(draft, `The item ball held ${prizeLabel(prize, ctx.content, got)}.`);
+          draft.phase = 'find';
+          break;
+        }
         if (node.kind === 'cache' && node.preview.objective?.kind !== 'hold') {
           // §2.9.5 — something on the ground: picked up and walked on, no screen. What it was is on the map's
           // preview, and the map says it once more as you leave.
@@ -941,11 +976,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           // §2.9.1 — the field nurse: half a heal for everyone in the Box, fainted or not, and every status
           // cured. Not a decision, so it happens on arrival; the screen only says what she did. Trauma is a
           // Pokémon Center's work, and the Centers are in the Cities now.
-          for (const mon of draft.box) {
-            const max = effectiveMax(draft, mon, ctx.content);
-            mon.hp = Math.min(max, mon.hp + Math.floor((max * AID_HEAL_PCT) / 100));
-            cureAll(mon);
-          }
+          draft.lastHeal = healBox(draft, (mon, max) => Math.min(max, mon.hp + Math.floor((max * AID_HEAL_PCT) / 100)), ctx.content);
           say(draft, 'The nurse patched everyone up.');
           // §2.9.1 — and sends you off with a pair for the road (v0.8.6).
           const gift = serviceGift('nurse', draft.regionIndex);
@@ -1095,10 +1126,12 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
         // 2. XP: the Active Team at full rate, the rest of the Box at three-quarters (§6.2.1), times any
         // relic multiplier (§7.3.3 Lucky Egg Token, Exp Share).
-        // §2.8.2 — an Elite Wild pays elite XP whichever way it ended; the catch is the *premium* path, not
-        // a discount on the fight.
-        const tier = node.kind === 'gym' || node.kind === 'league' ? 'boss'
-          : node.kind === 'elite' || node.kind === 'elite-wild' || node.kind === 'gauntlet' || node.kind === 'apex' ? 'elite'
+        // §2.8.2 — an Elite Wild pays a boss-wild's XP (`apexXp`) whichever way it ended; the catch is the *premium*
+        // path, not a discount on the fight.
+        const tier = node.kind === 'league' ? 'league'
+          : node.kind === 'gauntlet' || node.kind === 'apex' || node.kind === 'elite-wild' ? 'apex'
+          : node.kind === 'gym' ? 'boss'
+          : node.kind === 'elite' ? 'elite'
           : node.kind === 'trainer' ? 'trainer' : 'wild';
         // §5.6.2 — a companion called for help is one more enemy on the field, and pays like one.
         const enemyCount = Math.max(draft.pendingScenario?.enemies.length ?? 1, report.fielded ?? 0);
@@ -1483,6 +1516,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       case 'leave-dojo':
       case 'leave-center': {
         draft.lastGift = null;
+        draft.lastHeal = null;
         // §2.11.0 — a City building's door leads back to the lobby, not onward.
         if (draft.city) {
           draft.phase = 'city';
@@ -1492,8 +1526,15 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
+      case 'leave-find': {
+        draft.pendingFind = null;
+        leaveNode(draft, draft.pendingNodeId!, ctx);
+        break;
+      }
+
       case 'leave-aid': {
         draft.lastGift = null;
+        draft.lastHeal = null;
         leaveNode(draft, draft.pendingNodeId!, ctx);
         break;
       }
@@ -1588,10 +1629,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       case 'enter-building': {
         const city = draft.city!;
         if (action.building === 'center') {
-          for (const mon of draft.box) {
-            mon.hp = effectiveMax(draft, mon, ctx.content);
-            cureAll(mon);
-          }
+          draft.lastHeal = healBox(draft, (_mon, max) => max, ctx.content);
           say(draft, 'The Pokémon Center restored your whole Box.');
           // §2.11.1 — the first visit sends you off with a pair sized for the Region ahead (v0.8.6).
           if (!city.giftTaken) {
@@ -2338,6 +2376,9 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
 
     case 'leave-aid':
       return state.phase === 'aid' ? undefined : 'wrong-phase';
+
+    case 'leave-find':
+      return state.phase === 'find' ? undefined : 'wrong-phase';
 
     case 'trade': {
       if (state.phase !== 'trader' || !state.pendingTrade) return 'wrong-phase';

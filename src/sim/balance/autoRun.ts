@@ -720,6 +720,11 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
       equipFromBag(() => run, ctx.content, step);
       continue;
     }
+    // §2.9.5 — the item ball's prize went into the bag on the way in; the harness walks on.
+    if (phase() === 'find') {
+      step({ type: 'leave-find' });
+      continue;
+    }
     // §2.9.1 — the nurse healed on arrival; there is nothing to decide.
     if (phase() === 'aid') {
       step({ type: 'leave-aid' });

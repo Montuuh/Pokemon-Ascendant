@@ -4,6 +4,7 @@ import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { boxCapacity, daycarePrice, joinTeam, runHelpers, therapyPrice, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
+import { HealPanel } from '@/ui/components/HealPanel';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { HpBar } from '@/ui/components/HpBar';
@@ -30,6 +31,8 @@ export function CenterScreen() {
   const content = getContent();
   const [toast, setToast] = useState<string | null>(null);
   const [managing, setManaging] = useState<string | null>(null);
+  // §9.9.3 — the counters open once the machine has run: what it gave is said by the machine, not by the PC's bars first.
+  const [healed, setHealed] = useState(false);
 
   function act(action: Parameters<typeof dispatch>[0]) {
     if (!dispatch(action)) {
@@ -76,11 +79,8 @@ export function CenterScreen() {
         <div>
           <h1 className={`${styles.title} display`}>
             <IconHeartPlus size={26} /> Pokémon Center
-          </h1>
-          <p className={styles.sub}>
-            {CENTER_TEXT.healed}
             <InfoDot tip={centerTip()} />
-          </p>
+          </h1>
           {/* §2.11.1 — the first visit's supplies (v0.8.6), shown for this visit only. */}
           <SupplyStrip ids={run.lastGift ?? []} testId="center-gift" />
         </div>
@@ -90,7 +90,9 @@ export function CenterScreen() {
         </span>
       </header>
 
-      <div className={styles.body}>
+      <HealPanel lines={run.lastHeal ?? []} box={run.box} stamp={run.heals ?? 0} variant="center" onDone={() => setHealed(true)} testId="center-heal" />
+
+      <div className={styles.body} data-ready={healed || undefined} inert={!healed || undefined}>
         {/* Therapy: one Trauma stack off, priced by how bad it already is. */}
         <section className={styles.service} aria-label={CENTER_TEXT.therapy}>
           <h2 className={styles.colTitle}>

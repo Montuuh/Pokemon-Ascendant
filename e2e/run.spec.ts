@@ -293,8 +293,13 @@ test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', asy
       await page.waitForTimeout(150);
       continue;
     }
-    // §2.9.5 — a find is picked up on the spot: the map says what it was, and the route goes on.
-    if ((await page.getByTestId('map-found').count()) > 0) continue;
+    // §2.9.5 — an item ball: its reel stops (at once, under reduced motion) and you walk on.
+    if ((await page.getByTestId('find-screen').count()) > 0) {
+      await page.getByTestId('btn-find-done').click();
+      if ((await page.getByTestId('find-screen').count()) > 0) await page.getByTestId('btn-find-done').click();
+      await page.waitForTimeout(150);
+      continue;
+    }
     // §2.9.2 — the merchant's cart: walk past it.
     if ((await page.getByTestId('btn-leave-shop').count()) > 0) {
       await page.getByTestId('btn-leave-shop').click();
@@ -383,28 +388,58 @@ test('the map is usable at 1280x720', async ({ page }) => {
   await expect(page.getByTestId('btn-enter-node')).toBeInViewport();
 });
 
-test('a find on the ground is named, picked up in one click, and said once — §2.9.5', async ({ page }) => {
+test('the Labels toggle names every node under its picture, and L flips it — §9.3', async ({ page }) => {
   await startRun(page);
-  // Stand the run beside the map's first find, the way the dev hook stands it anywhere.
+  const toggle = page.getByTestId('map-labels');
+  const captions = page.locator('[data-testid="route-board"] [data-kind] span').filter({ hasText: /\S/ });
+  // Off: only the landmarks (the Gyms, the Elite) carry a name.
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  const landmarks = await captions.count();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  expect(await captions.count()).toBeGreaterThan(landmarks + 20);
+  await page.screenshot({ path: 'playtest/run-map-labels.png' });
+  // The key flips it back, and the choice is kept for the next visit.
+  await page.getByTestId('route-scroller').focus();
+  await page.keyboard.press('l');
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await page.keyboard.press('L');
+  await page.reload();
+  await expect(page.getByTestId('map-labels')).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('an item ball shows its reel, spins it on the way in and lands on what is yours — §2.9.5', async ({ page }) => {
+  await startRun(page);
+  // Stand the run beside the map's first plain find, the way the dev hook stands it anywhere.
   await page.evaluate(() => {
-    const a = (window as unknown as { __ascendant: { run: { patch: (r: (d: { reachable: string[]; map: { nodes: Record<string, { kind: string; id: string }> } }) => void) => void } } }).__ascendant;
+    const a = (window as unknown as { __ascendant: { run: { patch: (r: (d: { reachable: string[]; map: { nodes: Record<string, { kind: string; id: string; preview: { reel?: unknown } }> } }) => void) => void } } }).__ascendant;
     a.run.patch((d) => {
-      const find = Object.values(d.map.nodes).find((n) => n.kind === 'cache')!;
+      const find = Object.values(d.map.nodes).find((n) => n.kind === 'cache' && n.preview.reel)!;
       d.reachable = [find.id];
     });
   });
   await page.locator('[data-testid^="node-"][data-status="reachable"][data-kind="cache"]').click();
   const preview = page.getByTestId('node-preview');
-  await expect(preview.getByTestId('preview-find')).toBeVisible();
-  // No team to bring and nothing to fight: the card is the find and one button.
+  // The reel before you choose it: seven prizes in three rows, each with its chance.
+  await expect(preview.getByTestId('reel-pool')).toBeVisible();
+  await expect(preview.locator('[data-testid^="reel-prize-"]')).toHaveCount(7);
+  // No team to bring and nothing to fight: the card is the reel and one button.
   await expect(preview.getByTestId('preview-team')).toHaveCount(0);
   await expect(page.getByTestId('btn-enter-node')).toHaveText('Pick it up');
+  await page.screenshot({ path: 'playtest/run-find-preview.png' });
   await page.getByTestId('btn-enter-node').click();
+  // Reduced motion: the reel stands stopped, the prize named, already in the bag.
+  await expect(page.getByTestId('find-screen')).toBeVisible();
+  const won = await page.evaluate(() => {
+    const s = (window as unknown as { __ascendant: { run: { state: () => { pendingFind: { won: number; tiles: unknown[] } } } } }).__ascendant.run.state();
+    return s.pendingFind.won;
+  });
+  expect(won).toBeGreaterThanOrEqual(0);
+  await expect(page.getByTestId('find-prize')).not.toBeEmpty();
+  await expect(page.getByTestId('btn-find-done')).toHaveText('Walk on');
+  await page.screenshot({ path: 'playtest/run-find.png' });
+  await page.getByTestId('btn-find-done').click();
   await expect(page.getByTestId('map-screen')).toBeVisible();
-  await expect(page.getByTestId('map-found')).toContainText('You picked up');
-  await page.screenshot({ path: 'playtest/run-map-found.png' });
-  // Said once, then gone.
-  await expect(page.getByTestId('map-found')).toBeHidden({ timeout: 6000 });
 });
 
 test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ page }) => {

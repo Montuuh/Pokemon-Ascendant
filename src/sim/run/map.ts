@@ -1,3 +1,4 @@
+import { fnv1a } from '../rng/rngStreams';
 import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import {
@@ -6,7 +7,8 @@ import {
 } from './region';
 import { AID_HEAL_PCT } from './economy';
 import { hasModifier } from './modifiers';
-import { rollGroundFind, supplyLabel, type GroundFind } from './rewards';
+import { rollGroundFind, type GroundFind } from './rewards';
+import { placeReels } from './finds';
 import { placeObjectives } from './objectives';
 import { placeTrader } from './trader';
 import type { MapNode, NodeKind, NodePreview, RegionMap } from './types';
@@ -180,13 +182,15 @@ const wildSpecies = (pool: Record<WildTier, string[]>): string[] => [...new Set(
  * each rarity's chance (v0.9.7, the user's call — a big, varied pool rather than three names). Which one is waiting
  * is rolled when you walk in (`rollWild`).
  *
- * `theme` is the lane's, once the trunk has forked: the biome is the Gym's biome. The lane's `counter` — the one
- * species that answers its own Gym — is always in the pool (an Uncommon if the biome lacks it), so a lane is a
- * commitment and never a dead end.
+ * `theme` is the lane's, once the trunk has forked: the habitat is one of the Gym's (`LaneTheme.habitats`), taken by
+ * the node's place on the map (a hash of its column and track, never a draw, so the map's stream does not move). The
+ * lane's `counter` — the one species that answers its own Gym — is always in the pool (an Uncommon if the habitat
+ * lacks it), so a lane is a commitment and never a dead end.
  */
-function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, lane: GymDef | null, region: RegionContent, rareChance = WILD_RARE_CHANCE): { preview: NodePreview; biome: BiomeId } {
+function wildPreview(rng: GameRng, content: ContentRegistry, layer: number, col: number, lane: GymDef | null, region: RegionContent, rareChance = WILD_RARE_CHANCE): { preview: NodePreview; biome: BiomeId } {
   const theme = lane ? region.laneThemes[lane.type] : undefined;
-  const biome = theme ? theme.biome : biomeFor(rng, region.biomeWeights);
+  const habitats = theme ? (theme.habitats.length ? theme.habitats : [theme.biome]) : [];
+  const biome = theme ? habitats[fnv1a(`habitat:${layer}:${col}`) % habitats.length]! : biomeFor(rng, region.biomeWeights);
   const source = region.biomes[biome]!;
   const pool: Record<WildTier, string[]> = { common: [...source.common], uncommon: [...source.uncommon], rare: [...source.rare] };
   if (theme && !WILD_TIERS.some((t) => pool[t].includes(theme.counter))) pool.uncommon.push(theme.counter);
@@ -321,15 +325,15 @@ function gymPreview(content: ContentRegistry, gym: GymDef): NodePreview {
 }
 
 
-/** §2.9.5 — something on the ground. The find is named on the map: you see a Great Ball, not "an item". */
-function cachePreview(find: GroundFind, content: ContentRegistry): NodePreview {
-  const parts = [
-    ...(find.items.length ? [supplyLabel(find.items, (id) => content.consumable(id).name)] : []),
-    ...(find.money ? [`${find.money} ₽`] : []),
-  ];
+/**
+ * §2.9.5 — an item ball. Its reel (`placeReels`, once the guarded finds are placed) is the preview's promise: seven
+ * prizes and each one's chance. The find under it is still rolled here — it is what a guarded find stands over (§5.6.5),
+ * and rolling it keeps the map's stream where it was.
+ */
+function cachePreview(find: GroundFind): NodePreview {
   return {
-    title: 'Something on the ground',
-    detail: parts.join(' and '),
+    title: 'Item ball',
+    detail: 'Seven prizes on a reel: it spins as you pick it up.',
     speciesIds: [],
     levelBand: [0, 0],
     icon: 'cache',
@@ -673,12 +677,12 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
       // A committed lane, or a leaning track, wears its Gym's theme; the trunk and the middle track draw from the Region.
       const theme = lane !== undefined ? lanes[lane]! : lean !== undefined ? lanes[lean]! : null;
       const preview = shifted(
-        kind === 'wild' ? wildPreview(rng, content, layer, theme, region, rareChance).preview
+        kind === 'wild' ? wildPreview(rng, content, layer, col, theme, region, rareChance).preview
         : kind === 'trainer' ? trainerPreview(rng, content, usedTrainers, layer, theme, region)
         : kind === 'aid' ? AID_PREVIEW
         : kind === 'merchant' ? MERCHANT_PREVIEW
         : kind === 'mystery' ? MYSTERY_PREVIEW
-        : kind === 'cache' ? cachePreview(rollGroundFind(rng, regionIndex), content)
+        : kind === 'cache' ? cachePreview(rollGroundFind(rng, regionIndex))
         : kind === 'elite' ? elitePreview(content, layer, region)
         : kind === 'elite-wild' ? eliteWildPreview(content, layer, region)
         : gymPreview(content, lanes[col]!),
@@ -710,6 +714,8 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
   placeObjectives({ nodes, entry: ids[0]! }, rng.cursor, regionIndex, content);
   // §2.9.6 — and the roadside trader, on about half of all routes.
   placeTrader({ nodes }, rng.cursor);
+  // §2.9.5 — every plain find's reel, each on a stream of its own.
+  placeReels({ nodes }, rng.cursor, regionIndex, content);
 
   return {
     seed,

@@ -101,10 +101,12 @@ and Dratini are the Safari's too: the park's are stalked, the Trader's are stole
 
 | Source | XP | Field |
 |---|---|---|
-| Wild | 48 | `wildXp` |
-| Trainer | 72 | `trainerXp` |
-| Elite | 110 | `eliteXp` |
-| Gym | 200 | `gymXp` |
+| Wild | 26 | `wildXp` |
+| Trainer | 39 | `trainerXp` |
+| Elite | 49 | `eliteXp` |
+| Gym | 80 | `gymXp` |
+| Elite Wild · Gauntlet · Apex | 66 | `apexXp` |
+| League door | 120 | `leagueXp` |
 | Distribution | Active 100 % / benched Box 75 %; `exp-share` lifts the bench to 100 % | |
 | Level curve | `xpToNext(L) = 12 + (L − 1) × 4` | `levelUpBaseXp`, `levelUpSlopeXp` |
 | Single-stage bonus | +25 % stat growth per level (§6.2.4) | `singleStageGrowthBonusPercent` |

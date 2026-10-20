@@ -4,70 +4,96 @@
 > §2.13 (region aesthetics), §2.5 v2 (map dimensions). Species ids resolve in `species-r1.md` /
 > `species-pool-r2-r3.md`.
 
-## 1. Biomes (8)
+## 1. Habitats (16) ✅ v0.9.25
 
-| id | Name | Regions | Primary in | Theme | Stage art |
-|---|---|---|---|---|---|
-| `meadow` | Meadow 🌾 | R1, R2 (rare) | **R1** | Normal, Bug, Grass | `meadow.png` ✅ |
-| `cave` | Cave 🕳️ | R1, R2, R3 | — | Rock, Ground, Fighting, duals | `cave.png` ✅ |
-| `river` | River / Lake 💧 | R1, R2 | — | Water, Bug-Water | `river.png` (use `forest.png` until fetched) |
-| `sea` | Sea 🌊 | R2 | **R2** | deep-water Water, Ice | ☐ |
-| `power-plant` | Power Plant ⚡ | R2, R3 | — | Electric | ☐ |
-| `volcano` | Volcano Slope 🔥 | R3 | **R3** | Fire, Rock-Fire, Ground | ✅ `volcano.jpg` |
-| `sky` | Sky / Cliffs 🦅 | R3 | — | Flying, Bug-Flying, Psychic | ✅ `sky-pillar.jpg` |
-| `tower` | Abandoned Tower 👻 | R3 (rare) | — | Ghost, Poison, Psychic | ✅ `tower.jpg` (generated, v0.7.4) |
+A Wild Area is a habitat (§2.6.1, 2026-10-20): a small pool of one family, a backdrop, and what its Pokémon peek out
+of on the map. The first three ids are the v0.9.7 biomes', kept for saved maps. Display names by Region in §2.
+
+| id | Name | Regions | Primary in | Theme | Map cover | Stage art |
+|---|---|---|---|---|---|---|
+| `tall-grass` | Tall Grass | R1, R2 | **R1** | Normal, Flying, Poison | grass | `route.jpg` ✅ (Showdown classic) |
+| `meadow` | Flower Meadow | R1 | — | Grass, Fire, Normal | grass | `meadow.jpg` ✅ |
+| `forest` | Forest | R1, R2 | — | Bug, Grass | grass | `forest.jpg` ✅ |
+| `cave` | Cave · Deep Cave (R3) | R1, R2, R3 | — | Rock, Ground, Poison, Fighting; fossils | none | `cave.jpg` ✅ |
+| `ridge` | Rocky Ridge · Mountain Trail (R2) | R1, R2 | — | Fighting, Ground, Fire | none | `mountain.jpg` ✅ (Showdown classic) |
+| `river` | Fishing Spot | R1, R2 | — | Water | water | `pond.jpg` ✅ (Showdown classic) |
+| `shore` | Seashore · Rocky Shore (R2) | R1, R2 | — | Water, Poison, Rock, Flying | water | `beach.jpg` ✅ (Showdown classic) |
+| `sea` | Open Sea | R2 | **R2** | Deep-water Water, Ice | water | `sea.jpg` ✅ |
+| `power-plant` | Power Plant | R1, R2 | — | Electric, Poison | none | `power-plant.jpg` ✅ |
+| `tower` | Old Tower · Haunted Tower (R3) | R1, R3 | — | Ghost, Psychic | none | `tower.jpg` ✅ |
+| `swamp` | Toxic Marsh | R2 | — | Poison | grass | `night-meadow.jpg` ✅ |
+| `volcano` | Volcano Slope | R3 | **R3** | Fire | none | `volcano.jpg` ✅ |
+| `badlands` | Badlands | R3 | — | Ground, Rock | none | `desert.jpg` ✅ |
+| `lake` | Underground Lake | R3 | — | Water, Ice | water | `ice-cave.jpg` ✅ |
+| `sky` | Sky Cliffs | R3 | — | Flying, Dragon | none | `sky-pillar.jpg` ✅ |
+| `ruins` | Overgrown Ruins | R3 | — | Grass, Psychic | grass | `forest.jpg` ✅ |
 
 **Binding is canon**: the eligible set and the primary weighting are fixed per Region. The opt-in
-`naturalist-lens` Region Modifier raises the Rare row's odds instead of moving a biome (§2.11.3.1).
+`naturalist-lens` Region Modifier raises the Rare row's odds instead of moving a habitat (§2.11.3.1).
 
-## 2. Encounter composition (§2.6.2, §2.6.3) — v0.9.7
+## 2. Encounter composition (§2.6.2, §2.6.3) — v0.9.7, habitats v0.9.25
 
-Each Wild Area node shows **its biome's whole pool by rarity** and rolls who leads on entry: Common 60 % ·
+Each Wild Area node shows **its habitat's whole pool by rarity** and rolls who leads on entry: Common 60 % ·
 Uncommon 30 % · Rare 10 %, then one of the row evenly. `naturalist-lens` makes the Rare 30 %; `lure-module`
-keeps the better of two rarity rolls. A lane's counter (§2.5) joins its pool as an Uncommon when the biome lacks it.
-Every non-Legendary species is placed (146 ✅); each Region fields its strength: R1 basics (and the cocoons), R2
-middle forms and the never-evolving, R3 final forms only. Starters are Rares at their Region's form. ✅ v0.9.7
+keeps the better of two rarity rolls. A lane draws from two habitats and its counter (§2.5) joins a pool as an Uncommon
+when the habitat lacks it. Every non-Legendary species is placed (146 ✅); each Region fields its strength: R1 basics
+(and the cocoons), R2 middle forms and the never-evolving, R3 final forms only. Starters are Rares at their Region's form.
 
-Region 1 (weights: Meadow 5 · Cave 3 · River 2):
+Region 1 — Tall Grass, Forest, Flower Meadow, Cave, Rocky Ridge, Fishing Spot, Seashore, Power Plant, Old Tower (weights 4 · 3 · 2 · 2 · 2 · 2 · 1 · 1 · 1):
 
-| Biome | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
+| Habitat | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
 |---|---|---|---|
-| `meadow` | `caterpie` `weedle` `pidgey` `rattata` `spearow` `oddish` `bellsprout` `nidoran-f` `nidoran-m` | `metapod` `kakuna` `paras` `venonat` `meowth` `ekans` `doduo` `exeggcute` `jigglypuff` `growlithe` `ponyta` `vulpix` | `bulbasaur` `pikachu` `eevee` `farfetchd` |
-| `cave` | `zubat` `geodude` `diglett` `sandshrew` `machop` `mankey` | `onix` `cubone` `clefairy` `rhyhorn` `grimer` `koffing` `gastly` `abra` `drowzee` `magnemite` `voltorb` | `charmander` `omanyte` `kabuto` |
-| `river` | `magikarp` `poliwag` `psyduck` `goldeen` `tentacool` `krabby` | `slowpoke` `horsea` `shellder` `seel` `staryu` | `squirtle` `dratini` |
+| `tall-grass` | `pidgey` `rattata` `spearow` `nidoran-f` `nidoran-m` | `ekans` `meowth` `doduo` `jigglypuff` | `eevee` |
+| `forest` | `caterpie` `weedle` `oddish` `paras` | `bellsprout` `venonat` `exeggcute` | `pikachu` `bulbasaur` |
+| `meadow` | `oddish` `bellsprout` `jigglypuff` `nidoran-f` | `clefairy` `exeggcute` `vulpix` `growlithe` `ponyta` | `bulbasaur` `eevee` |
+| `cave` | `zubat` `geodude` `diglett` `paras` | `clefairy` `sandshrew` `cubone` `rhyhorn` | `kabuto` `omanyte` |
+| `ridge` | `geodude` `mankey` `machop` `sandshrew` `spearow` | `rhyhorn` `cubone` `ponyta` `growlithe` | `charmander` |
+| `river` | `magikarp` `poliwag` `goldeen` `psyduck` `krabby` | `slowpoke` `horsea` `shellder` | `dratini` `squirtle` |
+| `shore` | `tentacool` `krabby` `shellder` `psyduck` | `staryu` `seel` `horsea` | `squirtle` `omanyte` |
+| `power-plant` | `magnemite` `voltorb` `rattata` `grimer` | `koffing` `meowth` `ekans` | `pikachu` |
+| `tower` | `gastly` `zubat` `koffing` | `drowzee` `cubone` `grimer` `exeggcute` | `abra` |
 
-Region 2 (weights: Sea 5 · Power Plant 3 · River 2 · Cave 2 · Meadow 1):
+Region 2 — Open Sea, Power Plant, Fishing Spot, Rocky Shore, Cave, Mountain Trail, Toxic Marsh, Tall Grass, Forest (weights 4 · 3 · 2 · 2 · 2 · 2 · 2 · 1 · 1):
 
-| Biome | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
+| Habitat | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
 |---|---|---|---|
-| `sea` | `tentacruel` `seadra` `seaking` `golduck` | `starmie` `dewgong` `slowbro` | `wartortle` `jynx` `dragonair` |
-| `river` | `poliwhirl` `kingler` `golduck` `seaking` | `slowbro` `seadra` `dewgong` | `wartortle` `dragonair` `ditto` |
-| `power-plant` | `magneton` `electrode` `raichu` | `electabuzz` `kadabra` `hypno` | `porygon` `ditto` |
-| `cave` | `golbat` `graveler` `machoke` `dugtrio` `sandslash` `primeape` | `haunter` `muk` `weezing` `kadabra` `onix` | `charmeleon` `hitmonlee` `hitmonchan` |
-| `meadow` | `raticate` `pidgeotto` `arbok` `butterfree` `beedrill` `parasect` `venomoth` | `gloom` `weepinbell` `nidorina` `nidorino` `persian` `wigglytuff` `clefable` `tangela` `lickitung` | `ivysaur` `scyther` `pinsir` `farfetchd` |
+| `sea` | `tentacruel` `seadra` `seaking` `golduck` | `starmie` `dewgong` `slowbro` | `jynx` `dragonair` |
+| `river` | `poliwhirl` `seaking` `golduck` `kingler` | `slowbro` `seadra` | `wartortle` `dragonair` |
+| `shore` | `kingler` `golbat` `graveler` `pidgeotto` | `onix` `dewgong` `starmie` | `farfetchd` `wartortle` |
+| `power-plant` | `magneton` `electrode` `raichu` | `electabuzz` `muk` `weezing` | `porygon` `ditto` |
+| `cave` | `golbat` `graveler` `dugtrio` `sandslash` | `onix` `haunter` `kadabra` | `charmeleon` |
+| `ridge` | `machoke` `primeape` `graveler` `sandslash` | `dugtrio` `onix` `nidorino` | `hitmonlee` `hitmonchan` |
+| `swamp` | `muk` `weezing` `arbok` `gloom` | `haunter` `golbat` `weepinbell` `venomoth` | `ditto` |
+| `tall-grass` | `raticate` `pidgeotto` `arbok` `nidorina` `nidorino` | `persian` `wigglytuff` `clefable` `lickitung` `hypno` | `farfetchd` `ivysaur` |
+| `forest` | `butterfree` `beedrill` `parasect` `venomoth` `metapod` `kakuna` | `gloom` `weepinbell` `tangela` | `scyther` `pinsir` `ivysaur` |
 
-Region 3 (weights: Volcano 5 · Cave 3 · Sky 2 · Tower 1):
+Region 3 — Volcano Slope, Badlands, Deep Cave, Underground Lake, Sky Cliffs, Haunted Tower, Overgrown Ruins (weights 4 · 2 · 2 · 2 · 2 · 1 · 1):
 
-| Biome | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
+| Habitat | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
 |---|---|---|---|
-| `volcano` | `arcanine` `ninetales` `rapidash` `rhydon` | `magmar` `flareon` `nidoking` `nidoqueen` `golem` | `charizard` `tauros` |
-| `cave` | `machamp` `poliwrath` `golem` `cloyster` | `omastar` `kabutops` `vaporeon` `marowak` | `blastoise` `aerodactyl` `lapras` `snorlax` `kangaskhan` |
-| `sky` | `pidgeot` `fearow` `dodrio` | `gyarados` `jolteon` `scyther` | `dragonite` `aerodactyl` |
-| `tower` | `gengar` `hypno` | `alakazam` `exeggutor` `vileplume` `victreebel` | `venusaur` `chansey` `mr-mime` |
+| `volcano` | `arcanine` `ninetales` `rapidash` `rhydon` | `magmar` `flareon` `golem` | `charizard` |
+| `badlands` | `rhydon` `golem` `nidoking` `nidoqueen` | `marowak` `tauros` `dodrio` | `aerodactyl` |
+| `cave` | `machamp` `golem` `poliwrath` | `omastar` `kabutops` `marowak` | `snorlax` `kangaskhan` |
+| `lake` | `cloyster` `poliwrath` `vaporeon` | `gyarados` `omastar` `kabutops` | `lapras` `blastoise` |
+| `sky` | `pidgeot` `fearow` `dodrio` | `gyarados` `scyther` `jolteon` | `dragonite` `aerodactyl` |
+| `tower` | `gengar` `hypno` | `alakazam` `mr-mime` `exeggutor` `vileplume` | `chansey` `venusaur` |
+| `ruins` | `vileplume` `victreebel` `exeggutor` | `hypno` `jolteon` `mr-mime` `scyther` | `venusaur` |
 
 ## 3. Level bands (§2.6.5)
 
-| Region | Wild recruits | Trainers | Elite | Gym non-ace / ace | Elite Wild |
+| Region | Wild recruits | Trainers | Elite (own · lent) | Gym non-ace / ace (lent) | Elite Wild |
 |---|---|---|---|---|---|
-| R1 | 5–10 | 6–12 | 12–15 | 12–13 / 14–16 | 14–16 |
-| R2 | 14–22 | 17–24 | 24–28 | 20–22 / 22–24 | 26–28 |
-| R3 | 24–32 | 28–36 | 34–38 | 30–32 / 32–34 | 36–38 |
+| R1 | 5–13 | 6–15 | 12–14 · 9–10 | 14 / 15 (12) | 14–16 |
+| R2 | 14–22 | 15–24 | 21–23 · 18–19 | 23 / 24 (21) | 23–25 |
+| R3 | 24–32 | 25–34 | 31–33 · 28–29 | 33 / 34 (31) | 33–35 |
 
 A late-Region recruit spawns at the top of the band so it catches up rather than being dead weight.
 
 *(v0.8.10: Region 2 and Region 3 moved up two levels — 12–20 → 14–22, 22–30 → 24–32. Region 1's band ends at 13 and
 Region 2's began at 12, so a team that left Region 1 at Lv 15–16 walked into Region 2 four levels over everything;
-measured, see §2.6.5. The Gym's two columns follow `GYM_LEVEL_PREMIUM`: the band's top −2 and +0.)*
+measured, see §2.6.5. The Gym's two columns follow `GYM_LEVEL_PREMIUM`: the band's top +1 and +2 since 2026-10-20 — −2
+and +0 before, with its lent Pokémon eight under; the Elite's own two over its column's top, its lent ones at the
+column's bottom, §2.8.1.)*
 
 ## 4. Regions (3)
 

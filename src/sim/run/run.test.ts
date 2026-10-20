@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ballsIn } from './rewards';
 import { buildRegistry } from '@/content/registry';
-import { PAD_LEVEL_GAP } from './region';
+import { BIOMES, PAD_LEVEL_GAP } from './region';
 import {
   activeSetups, applyBranch, resetUidCounter, previewBranch, autoPickMoves, createRun, defaultRunCtx, deserialiseRun, generateRegion,
   isEvolutionReady, LAYERS, maxHpOf, nodesInLayer, runReducer, serialiseRun, xpToNext, assertRegionContent,
@@ -51,6 +51,7 @@ const clearNode = (s: RunState): RunState => {
     case 'shop': return apply(s, { type: 'leave-shop' });
     case 'center': return apply(s, { type: 'leave-center' });
     case 'aid': return apply(s, { type: 'leave-aid' });
+    case 'find': return apply(s, { type: 'leave-find' });
     case 'trader': return apply(s, { type: 'leave-trader' });
     // §2.12 — Victory Road's stops: walk past the Training Grounds, take nothing at the Summit and go through.
     case 'training': return apply(s, { type: 'leave-training' });
@@ -1035,7 +1036,7 @@ describe('Node badges — §2.5, Pillar 1', () => {
     // §9 — a Wild badge is tinted by its biome, and a Gym badge by its type, because both are things the
     // player is choosing between on the map rather than reading one at a time.
     for (const n of Object.values(s.map.nodes)) {
-      if (n.kind === 'wild') expect(n.preview.icon, n.id).toMatch(/^wild-(meadow|cave|river)$/);
+      if (n.kind === 'wild') expect(Object.keys(BIOMES).map((b) => `wild-${b}`), n.id).toContain(n.preview.icon);
       if (n.kind === 'gym') expect(n.preview.icon, n.id).toMatch(/^gym-(rock|water|bug|normal)$/);
     }
   });

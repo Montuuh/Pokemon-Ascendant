@@ -4,7 +4,7 @@ import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { activeMoves, statAtLevel } from '../combat/stats';
 import type { BiomeId } from './region';
-import { ALL_TRAINERS, GYM, GYM_ATTACK_MULTIPLIER, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
+import { ALL_TRAINERS, ELITE_ATTACK_MULTIPLIER, GYM, GYM_ATTACK_MULTIPLIER, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
 import { hasModifier, modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
 import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
@@ -317,7 +317,8 @@ export function buildEliteScenario(node: MapNode, run: RunState, content: Conten
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
     // By slot, not by species: a later Region's preview may have evolved the species the row names.
-    enemies: team.map((m, i): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: eliteTeamFor(node.layer, elite, regionContent(run.regionIndex).wildBand)[i]?.phaseCount ?? 1 })),
+    // §2.8.1 — its threat by Attack, now that its levels read right (2026-10-20).
+    enemies: team.map((m, i): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: eliteTeamFor(node.layer, elite, regionContent(run.regionIndex).wildBand)[i]?.phaseCount ?? 1, attackMultiplier: ELITE_ATTACK_MULTIPLIER[run.regionIndex] ?? 1 })),
   };
 }
 
@@ -385,7 +386,7 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
       tier: 'boss',
       phaseCount: m.phaseCount,
       // §5.9.3 — the climax hits harder than its Region: a Gym that more levels made easier (they pay more XP).
-      attackMultiplier: GYM_ATTACK_MULTIPLIER[gym.region - 1] ?? 1,
+      attackMultiplier: (GYM_ATTACK_MULTIPLIER[gym.region - 1] ?? 1) * (gym.attackScale ?? 1),
       ...(m.moves ? { moves: [...m.moves] } : {}),
     })),
   };

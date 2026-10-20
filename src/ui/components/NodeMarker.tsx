@@ -19,8 +19,9 @@ const STATUS_TEXT: Record<NodeStatus | 'gone', string> = {
 // §9.3 (v0.9.14, after Pokelike's map) — a node is drawn as what it is: the trainer, the Leader, the Pokémon in the
 // grass, the item on the ground. State reads through the picture itself — full colour on every route still open,
 // faded where you can no longer go, darkened with a tick once cleared — and through a ring on the ground under the
-// node you stand on and the ones you can step to next. Only the Gym and the Elite carry a caption, naming who waits
-// there; every other node is its own picture, and its bubble says the rest.
+// node you stand on and the ones you can step to next. The Gym and the Elite always carry a caption, naming who waits
+// there; every other node is its own picture, and its bubble says the rest — unless the map's labels are on (the user,
+// 2026-10-20), and then every node wears its short name under it, in a lighter caption than a landmark's.
 export function NodeMarker({
   node,
   status,
@@ -35,7 +36,7 @@ export function NodeMarker({
   art: NodeArt;
   /** Still on a route you can take from where you stand. */
   ahead: boolean;
-  /** A landmark's name (the Leader, the Elite); null on every other node. */
+  /** A landmark's name (the Leader, the Elite), or any node's short name while the map's labels are on; else null. */
   caption: string | null;
   onClick?: () => void;
   style?: React.CSSProperties;
@@ -97,7 +98,7 @@ export function NodeMarker({
           ✓
         </span>
       )}
-      {caption && <span className={styles.caption}>{caption}</span>}
+      {caption && <span className={`${styles.caption} ${landmark ? '' : styles.label}`}>{caption}</span>}
     </button>
   );
 }

@@ -1,7 +1,7 @@
 /* §9.3 (v0.9.14) — a node is the thing itself standing on the route: its picture's feet on the node's point, its hit
    target the picture's own size, a ring on the ground under it. State reads through the picture (full, faded,
-   cleared) and the ring, never through colour alone; only the Gym and the Elite carry a caption — the Leader's or the
-   Elite's name. */
+   cleared) and the ring, never through colour alone; the Gym and the Elite always carry a caption — the Leader's or the
+   Elite's name — and with the map's Labels toggle on, every node carries its short name (`.label`). */
 .node {
   position: absolute;
   width: 64px;
@@ -175,6 +175,8 @@
 
 .caption {
   position: absolute;
+  /* Over the next node's picture, which is later in the board and would otherwise cover it (a 720 p map is tight). */
+  z-index: 1;
   top: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
@@ -190,3 +192,13 @@
   color: var(--ink-primary);
   pointer-events: none;
 }
+/* Any node's label (the map's toggle): the same plate, quieter than a landmark's name. */
+.label {
+  top: calc(100% + var(--sp-1));
+  font-weight: 600;
+  letter-spacing: 0;
+  padding: 0 var(--sp-1);
+  border: 1px solid var(--border-subtle);
+}
+/* A route you can no longer take: its labels fade with it — history, not a plan (D5). */
+.gone .label { opacity: 0.6; }

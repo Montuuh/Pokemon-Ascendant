@@ -1,0 +1,85 @@
+/* §2.9.5 — an item ball's prizes: the face of one, and the preview card's pool of seven by rarity. */
+
+.face {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+}
+.stack {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-end;
+}
+.icon {
+  display: block;
+  object-fit: contain;
+}
+.gem {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+}
+.count {
+  font-size: var(--type-caption);
+  font-weight: 800;
+  color: var(--ink-primary);
+  line-height: 1;
+}
+
+/* The pool, as the Wild Area's: a row per rarity, the rarity's band on its left edge. */
+.pool {
+  display: grid;
+  gap: var(--sp-1);
+}
+.tier {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2) var(--sp-1) 0;
+  border-left: 4px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.tier[data-tier='uncommon'] { border-left-color: var(--brand-blue); }
+.tier[data-tier='rare'] { border-left-color: var(--type-psychic); }
+.head {
+  display: grid;
+  justify-items: start;
+  padding-left: var(--sp-2);
+  line-height: 1.15;
+}
+.label {
+  font-size: var(--type-caption);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.odds {
+  font-size: var(--type-body);
+  color: var(--ink-primary);
+}
+.prizes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.prize {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 36px;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-sm);
+}
+.prize:hover,
+.prize:focus-visible {
+  background: var(--surface-1);
+  outline: 2px solid var(--accent-action);
+  outline-offset: -2px;
+}

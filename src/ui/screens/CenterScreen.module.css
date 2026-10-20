@@ -3,7 +3,7 @@
 .root {
   height: 100%;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto;
   gap: var(--sp-4);
   padding: var(--sp-5);
   background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
@@ -28,13 +28,6 @@
   color: var(--brand-red);
 }
 
-.sub {
-  margin: 2px 0 0;
-  max-width: 68ch;
-  color: var(--ink-secondary);
-  font-size: var(--type-small);
-}
-
 .wallet {
   display: inline-flex;
   align-items: center;
@@ -56,7 +49,10 @@
   align-content: start;
   min-height: 0;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--motion-slow) ease-out;
 }
+.body[data-ready] { opacity: 1; }
 /* Each counter is as tall as what it holds, up to the room there is; a long list scrolls inside it. */
 .service {
   display: grid;

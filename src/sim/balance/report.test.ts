@@ -54,12 +54,14 @@ describe.skipIf(!ON)('Balance report — §2.2.1', () => {
     for (const region of [0, 1, 2]) {
       const here = fights.filter((f) => f.region === region);
       const gyms = here.filter((f) => f.kind === 'gym');
+      const elites = here.filter((f) => f.kind === 'elite');
       const lost = (f: FightTrace) => f.outcome === 'defeat';
       const used = here.flatMap((f) => f.used).filter((id) => ctx.content.consumable(id).effect.kind !== 'catch');
       console.log(
         `R${region + 1}: fights ${here.length} · turns ${(here.reduce((a, f) => a + f.turns, 0) / Math.max(1, here.length)).toFixed(1)}` +
           ` · median enemy hit ${pct(median(here.flatMap((f) => f.enemyHits)))}` +
           ` · Gym fights ${gyms.length} lost ${pct(gyms.filter(lost).length / Math.max(1, gyms.length))} (${(gyms.reduce((a, f) => a + f.turns, 0) / Math.max(1, gyms.length)).toFixed(1)} turns)` +
+          ` · Elite fights ${elites.length} lost ${pct(elites.filter(lost).length / Math.max(1, elites.length))} (${(elites.reduce((a, f) => a + f.turns, 0) / Math.max(1, elites.length)).toFixed(1)} turns)` +
           ` · items used per fight ${(used.length / Math.max(1, here.length)).toFixed(2)}`,
       );
     }

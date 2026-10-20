@@ -373,11 +373,15 @@ behind you** solid; **a route you can no longer take** a faint dotted trace.
 A node is drawn as **what it is**, standing on its point with a shadow under it: a trainer is its class's sprite, the
 Elite its trainer, a Gym its Leader at twice the size with a gold glow; a Wild Area the Pokémon you will meet most,
 peeking out of the grass (or the water, on the sea and the river); the Elite Wild the Pokémon itself; the nurse and the
-merchant themselves; a find the item lying there; a Mystery the overworld's "?". State reads through the picture —
+merchant themselves; an item ball the Poké Ball lying there; a Mystery the overworld's "?". State reads through the picture —
 full colour on every route still open from where you stand (`nodesAhead`), faded where you can no longer go,
 darkened with a tick once cleared — and through a ring on the ground: pulsing gold where you stand, gold under the
-nodes you can step to next, which also bob on their spot. Only the Gyms and the Elite carry a caption; any
-other names itself under the pointer, and its bubble says the rest. The node's preview opens over the route dimmed
+nodes you can step to next, which also bob on their spot. The Gyms and the Elite always carry a caption; any
+other names itself under the pointer, and its bubble says the rest. **The Labels toggle** (the user, 2026-10-20: "a
+toggle for the node's label, under its icon") — a pill in the board's top-right corner, and the **L** key — puts a short
+name under every node in a quieter caption than a landmark's: a Wild Area's ground, a trainer's class (never who: that
+stays the preview's surprise, §2.7), *Item ball*, *Nurse*, *Merchant*, *Mystery*, *Trader*, and *Runner* or *Guarded
+find* for a fight with another objective. Off by default — the pictures are the map — and kept between sessions. The node's preview opens over the route dimmed
 and softened, never over a black void, and wears the same picture as the node. The strip under the board draws
 the routes and every node in miniature — a fight a filled dot, a stop a ring, the Gyms diamonds in their types'
 colours — the walked road dark and the closed routes faded, so the whole Region's choice is one glance.
@@ -637,6 +641,23 @@ beat ends with its impact's burst played out, and every stagger fits inside it �
 crosses the field to hit, a Water move that arrives as water, and Surf as a wave the whole screen sees make each card
 in the hand a different thing to play; the moves' own shapes, coloured by type, carry the Gen I feeling without a
 frame of the series' art.
+
+## §9.9.3 The heal, seen
+
+> ✅ **v0.9.25** — the user, 2026-10-20: "an animation for the Pokémon Center and the nurse, saying how much HP comes
+> back, with the classic sound of the machine switching on". Code: `ui/components/HealPanel.tsx`, the run's
+> `lastHeal` (`healBox` in `run/run.ts`), the `ball-set` and `heal-machine` sounds, the machine's art cut by
+> `scripts/cut-heal-machine.mjs` from the Hub's FRLG lobby.
+
+**The Pokémon Center** runs its machine — FireRed's own, cut from the Indigo Plateau lobby the Hub already shows: a Poké
+Ball is set in its tray for each Pokémon, one by one with a click, then the machine lights and its balls blink to the
+**healing jingle** (written for the synth, an homage to the series' six notes), the music hushed under it as the games
+do. Only then do the bars fill, each Pokémon's with its **+N HP**, a *Revived* or *Cured* tag where one applies, and the
+total on a pill under the machine (*+146 HP · 1 cured*). The Center's three counters open when the machine has run —
+the PC Box's bars would otherwise tell the result first (D8). **The field nurse** plays the same jingle while she works
+on a Box laid out the same way, her half heal filling each bar. A click or a key skips to the end; with motion off the
+bars stand filled and the jingle still plays; with nothing to heal the machine stays dark and says so. A heal already
+shown is not run again when its screen comes back (from an Evolution the Daycare's level made ready).
 
 ---
 

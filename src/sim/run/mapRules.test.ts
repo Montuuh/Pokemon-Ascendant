@@ -117,7 +117,7 @@ describe('Map generation rules — §2.5', () => {
         if (side === undefined || n.layer === LAYERS - 1) continue;
         const theme = LANE_THEME[gymById(m.gyms[side]!).type]!;
         if (n.kind === 'wild') {
-          expect(n.preview.icon, `${n.id} wild badge`).toBe(`wild-${theme.biome}`);
+          expect(theme.habitats.map((h) => `wild-${h}`), `${n.id} wild badge`).toContain(n.preview.icon);
           checked++;
           if (n.lean !== undefined) leaning++;
         }

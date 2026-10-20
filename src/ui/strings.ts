@@ -156,6 +156,9 @@ export const ENCOUNTER_LABEL: Record<string, string> = {
   boss: 'Gym',
 };
 
+/** §9.3 — the map's labels for a node whose objective says more than its kind (§5.6.5). */
+export const NODE_TEXT = { guarded: 'Guarded find', runner: 'Runner' };
+
 export const NODE_LABEL: Record<string, string> = {
   wild: 'Wild Area',
   trainer: 'Trainer',
@@ -164,7 +167,7 @@ export const NODE_LABEL: Record<string, string> = {
   aid: 'Field nurse',
   merchant: 'Merchant',
   mystery: 'Mystery',
-  cache: 'Find',
+  cache: 'Item ball',
   gym: 'Gym',
   trader: 'Roadside trader',
   gauntlet: 'Gauntlet',
@@ -173,6 +176,12 @@ export const NODE_LABEL: Record<string, string> = {
   apex: 'Legendary',
   league: 'League',
 };
+
+/**
+ * §9.3 — a trainer class as the games name it, from its archetype id: `bug-catcher` → "Bug Catcher". The map's labels
+ * name the class, not the person: who exactly waits there is the preview's surprise (§2.7).
+ */
+export const trainerClass = (archetype: string): string => archetype.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
 /** §2.12 — Victory Road's own words. */
 export const VICTORY_TEXT = {
@@ -260,6 +269,7 @@ export const TRADER_TEXT = {
 /** §9.3 — the route board's own words. */
 export const ROUTE_TEXT = {
   noReturn: 'Point of no return',
+  labels: 'Labels',
   scroller: 'The route. Arrow keys, Home and End scroll it.',
   found: (what: string) => `You picked up ${what}.`,
 };
@@ -561,7 +571,6 @@ export const DOJO_TEXT = {
 
 /** §2.11.1 — the Pokémon Center's three counters. */
 export const CENTER_TEXT = {
-  healed: 'Everyone is healed, free.',
   therapy: 'Therapy',
   daycare: 'Daycare',
   pcBox: 'PC Box',
@@ -569,6 +578,31 @@ export const CENTER_TEXT = {
   resting: (name: string) => `${name} is resting until the next fight is over.`,
   alone: 'Needs a partner',
   daycareDone: 'The Daycare has taken its Pokémon this visit.',
+};
+
+/** §2.9.5 — the item ball's reel (`FindScreen`, the preview's `ReelPool`). */
+export const FIND_TEXT = {
+  title: 'Item ball',
+  pool: 'On the reel',
+  spins: 'Picking it up spins the reel: each prize as likely as its row says.',
+  spinning: 'Spinning…',
+  skip: 'Stop',
+  walkOn: 'Walk on',
+  bagged: (prize: { kind: string }, got: { relic?: string; heldItem?: string; money?: number }) =>
+    got.money !== undefined || prize.kind === 'money' ? 'Into your wallet.' : got.relic ? 'A relic, yours for the run.' : prize.kind === 'tm' ? 'Into your TM case.' : prize.kind === 'stone' ? 'Into the bag, for evolving.' : got.heldItem ? 'Into the bag, to give a Pokémon.' : 'Into the bag.',
+};
+
+/** §9.9.3 — the heal, seen: the Center's machine and the field nurse (`HealPanel`). */
+export const HEAL_TEXT = {
+  label: 'Healing',
+  patients: 'Your Box, healing',
+  working: 'Healing…',
+  skip: 'Skip the wait',
+  nothing: 'Everyone is already fighting fit.',
+  cured: 'Cured',
+  revived: 'Revived',
+  total: (hp: number, cured: number) => [hp > 0 ? `+${hp} HP` : null, cured > 0 ? `${cured} cured` : null].filter(Boolean).join(' · '),
+  patient: (name: string, hp: number, max: number, gain: number) => `${name}, ${hp} of ${max} HP${gain > 0 ? `, ${gain} restored` : ''}`,
 };
 
 /** The way out of every town building, one phrase wherever it is written. */

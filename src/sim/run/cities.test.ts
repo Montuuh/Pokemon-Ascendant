@@ -29,6 +29,7 @@ function drain(s: RunState): RunState {
     else if (s.phase === 'legendary') s = apply(s, { type: 'pick-legendary', relicId: s.pendingLegendary![0]! });
     else if (s.phase === 'shop') s = apply(s, { type: 'leave-shop' });
     else if (s.phase === 'aid') s = apply(s, { type: 'leave-aid' });
+    else if (s.phase === 'find') s = apply(s, { type: 'leave-find' });
     else if (s.phase === 'event') s = apply(apply(s, { type: 'choose-event', option: 0 }), { type: 'leave-event' });
     else if (s.phase === 'swap-or-skip') s = apply(s, { type: 'resolve-recruit', releaseUid: null });
     else break;

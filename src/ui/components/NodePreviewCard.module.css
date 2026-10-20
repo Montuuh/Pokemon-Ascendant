@@ -176,7 +176,8 @@
 }
 .enter {
   background: var(--accent-action);
-  color: var(--ink-primary);
+  /* D5 — on the stage theme --ink-primary is cream: on gold that read 1.4:1. */
+  color: var(--ink-on-accent);
   box-shadow: 0 5px 0 #d9a51d;
 }
 .enter:disabled {

@@ -169,7 +169,7 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   stickyWebStages: 1,
   // §5.9.5 — the Leaders' rules, measured on the whole-run harness with every Gym (v0.9.13).
   gymRules: {
-    rockSolidCap: 0.4,
+    rockSolidCap: 0.5,
     riptideEvery: 2,
     swarmPerWaiting: 0.2,
     rolloutPerTurn: 0.25,

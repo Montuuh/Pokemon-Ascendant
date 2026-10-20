@@ -1377,6 +1377,35 @@ and the log land at the impact, the numbers over the move; a card played mid-mov
 flat beside the pixel sprites (D9); a foe's move plays back the same way; reduced motion keeps the instant beat. Dev
 `hand`/`intend`; `e2e/move-animations`.
 
+### v0.9.25 — The route, reworked  ✅ 2026-10-20
+The user's pack of 2026-10-20: many more kinds of Wild Area with more pools; the heal animated at the Center and the
+nurse, with how much HP comes back and the machine's sound; a toggle for the nodes' labels; the Elite fielding a Lv 8
+Pidgeotto and a Lv 2 Onix against a team at Lv 11 ("no sense"); the find on the ground as a roulette between several
+prizes, from a pool of everything — consumables, money, held items, relics. Design delegated: several options weighed
+for each, the best kept, the rationale in canon.
+
+**Shipped.** **Levels that read right** (§2.8.1, §5.9.3): the Elite's own two over the band's top and its lent ones at
+the route's level, the Gym's non-aces +1 and its ace +2 with its lent ones at the band's top; the threat by Attack
+(Elite ×0.65 / ×0.85 / ×0.9, Gym ×0.7 / ×0.62 / ×0.5, Brock ×0.6 and Misty ×0.85 of it, Rock Solid's cap 40 → 50 %,
+Sabrina's Alakazam with Reflect not Recover) and the pay by tier (`eliteXp` 66 → 49, `gymXp` 120 → 80; the boss-wilds,
+Victory Road and the League keep theirs as `apexXp`, `leagueXp`). **The heal, seen** (§9.9.3, `HealPanel`): FireRed's
+machine cut from the Hub's lobby, a ball per Pokémon, the jingle (synthesised), then each bar's +N HP and Revived/Cured;
+the Center's counters open after it; the nurse the same. **The item ball** (§2.9.5, `run/finds.ts`, `FindScreen`): a
+reel of seven prizes by row (20 / 15 / 5 % a tile), a relic in every Rare row, held items and relics revealed as it
+lands, never one you hold. **Habitats** (§2.6.1, §2.6.3): 25 pools of 8–12, one family each, across 16 habitats (Tall
+Grass, Forest, Flower Meadow, Cave, Rocky Ridge, Fishing Spot, Seashore, Open Sea, Power Plant, Old/Haunted Tower,
+Toxic Marsh, Volcano Slope, Badlands, Underground Lake, Sky Cliffs, Overgrown Ruins); a lane draws from two; each node
+its own face, in grass or water; Showdown's `route`, `mountain`, `beach` and `pond` backdrops. **Labels** (§9.3): a
+toggle and the L key name every node. **The curve held** (§2.2.1): over two independent blocks of 720 runs (the
+seeds are fixed, so one block is one sample — `CURVE_BASE`), R1 53 % · R2|R1 59–62 % · R3|R2 50–51 % · League|R3 43–56 % ·
+the whole run 7–9 %, against HEAD's 54–56 · 55–63 · 42–51 · 54–60 · 8–9; Elite lost 9 / 7 / 11 %, Gyms 7 / 7 / 13 %.
+
+### v0.9.26 — The team, managed  ☐
+The pack's last item: team management, on the route and in the towns. One **Team** screen opened from the map (and a
+key) and from a City's team strip: the formation (Lead, Bench 1, Bench 2) and the Box with drag and drop, and the
+selected Pokémon's sheet — stats, ability, held item to give or take, moves, evolution — with its matchup against the
+route's Gyms.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

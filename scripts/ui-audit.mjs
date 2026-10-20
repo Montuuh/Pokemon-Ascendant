@@ -91,6 +91,12 @@ const SCREENS = {
   merchant: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("merchant")', 'goTo("map")'], match: [/screens\/ShopScreen/] },
   aid: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("aid")', 'goTo("map")'], match: [/screens\/AidScreen/] },
   mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("mystery")', 'goTo("map")'], match: [/screens\/EventScreen/] },
+  // §2.9.5 — the item ball: its reel on the preview card, and the reel stopped (a click lands it at once).
+  'find-preview': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'goTo("map")'], match: [/components\/FindPrize/, /components\/NodePreviewCard/] },
+  find: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'], clicks: ['find-reel'], match: [/screens\/FindScreen/, /components\/FindPrize/] },
+  // §9.9.3 — the Center's machine on a hurt Box (a click skips to the bars filled), and the map with every node named.
+  'center-heal': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.patch((d) => { d.box[0].hp = 3; d.box[1].hp = 0; })'], clicks: ['door-center', 'center-heal'], match: [/components\/HealPanel/, /screens\/CenterScreen/] },
+  'map-labels': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'goTo("map")'], clicks: ['map-labels'], match: [/screens\/map\/RouteView/, /components\/nodeArt/, /components\/NodeMarker/] },
   evolution: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("wild", true)', 'goTo("map")'], match: [/screens\/EvolutionScreen/] },
 };
 

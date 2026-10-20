@@ -41,8 +41,8 @@
 
 ## 2. Region 2 pool — Fire · Grass · Electric · Poison ✅ v0.7.3
 
-> The levels below are the catalogue's; the fight's come from the band (`GYM_LEVEL_PREMIUM`, −2 / +0 on the top of
-> Region 2's 14–22 route), so every Region 2 Gym fields its others at Lv 20 and its ace at Lv 22. Slot 1 was written as the line's
+> The levels below are the catalogue's; the fight's come from the band (`GYM_LEVEL_PREMIUM`, +1 / +2 on the top of
+> Region 2's 14–22 route since 2026-10-20), so every Region 2 Gym fields its others at Lv 23 and its ace at Lv 24. Slot 1 was written as the line's
 > young one — Growlithe, Weepinbell, Voltorb, Koffing — but since v0.9.8 every Gym is walked through its evolutions
 > like any roster (§2.7.3), so at Lv 20 they stand as Arcanine, Weepinbell, Electrode and Weezing. Stages: volcano, forest, power-plant, dark-city.
 

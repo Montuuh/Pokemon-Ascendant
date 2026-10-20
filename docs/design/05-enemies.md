@@ -240,8 +240,9 @@ Every companion and helper is folded through the Region's stat tier,
 status accent and the run's modifiers like any enemy. The numbers live in `GROUP_RATES` (`run/groups.ts`).
 
 *Why so many (user, 2026-09-30): group fights are where the game is most strategic, so they are the rule, not the
-exception. What it cost and what paid for it, measured over 360 runs: the padding stands under its team (trainer −4,
-Elite −6, Gym −6 levels), the Elite and the Gym came down to the band (§2.8.1, §5.9.3), supports hit at 70 % and
+exception. What it cost and what paid for it, measured over 360 runs: the padding stood under its team (trainer −4,
+Elite −6, Gym −8 levels until 2026-10-20; −3 / −3 / −1 since, at the route's own level, with the Elite and the Gym over
+the band and their Attack and XP retuned instead — §2.8.1, §5.9.3), supports hit at 70 % and
 escalate at most twice, the breather (§5.6.4) gives back what the extra enemies take, and Region 3's tier came down
 (§2.2.1). Region 1 59 %, Region 2 given 1 58 %, Region 3 given 2 42 %, the whole run 15 %.*
 
@@ -402,22 +403,25 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
 - **Five Pokémon, two at a time** (§5.6.3; user, 2026-09-30: "at least four, if not five" — five since v0.8.8, once
   the balance pass made it affordable). **No support beyond the two on the field**: the second Pokémon out *is* the
   Gym's support, at full strength, and nothing escalates beside it — the v0.8.3 option of a support that grows every
-  turn cost Region 3 seventeen points in fights this long, and two at a time already gives the Gym a back row. The Leader's own non-ace opens; its lane's favourites pad the team (§2.5), six
-  levels under it; **the ace always comes out last**, with three phases and Sturdy in Phase 3.
-- **No mid-fight evolution.** That belongs to the Rival and the Champion. A Gym's threat is a **power premium**:
-  the non-ace sits **two under** the Region's wild band top, the ace **at** it (GYM_LEVEL_PREMIUM −2 / 0 since v0.8.6,
-when XP stopped carrying teams seven levels over their Region; 0 / +2 before; +4 / +6 while a Gym
-  fought two Pokémon one at a time).
+  turn cost Region 3 seventeen points in fights this long, and two at a time already gives the Gym a back row. The Leader's own non-ace opens; its lane's favourites pad the team (§2.5) at the
+  route's last level (the band's top less one); **the ace always comes out last**, with three phases and Sturdy in Phase 3.
+- **No mid-fight evolution.** That belongs to the Rival and the Champion. **Levels read right** (2026-10-20): the
+  Leader's non-ace sits **one over** the Region's wild band top and the ace **two over** (GYM_LEVEL_PREMIUM +1 / +2), so
+  the climax stands over the team that reaches it. *(Since v0.8.6 they had stood −2 / 0 with the padding eight under —
+  Lv 3 Pokémon in front of Brock — which kept the fight winnable by putting the team eight levels over the Gym.)*
 - **Single-type identity.** The Leader's own Pokémon are the Gym's type and its padding comes from the lane that
   telegraphs it, which is what makes the counter-pick meaningful.
 - **But never a free win.** Each team carries at least one answer to a full-resist party — usually an
   off-type coverage move, like the Rock Gym's Fighting-typed `body-press`.
 - **A Home Field** of its type is set at combat start (§4.3.5), over the Gym's own Battlefield (§4.3.14).
-- **The Gym hits harder than its Region** (`GYM_ATTACK_MULTIPLIER`, ×1.15 / ×0.95 / ×0.9 by Region since v0.9.13 gave every Leader a rule, §5.9.5; ×1.15 / ×1.0 / ×1.0 in v0.9.12, ×1.3 / ×1.5 / ×1.15 until v0.9.8 evolved the Gyms' teams by their level). A higher
-  level premium was tried first and made the run *easier*: a Gym above the team pays it more XP (§6.2.1), so the team
-  left stronger. Attack makes the climax a threat without that refund — Gym fights are lost 8 % / 2 % / 10 % of the
-  time by Region, against 1–4 % before. Region 2's Gyms stay soft at any multiplier the harness tried (to ×1.85):
-  what makes them easy is the matchup the harness counter-picks, not their numbers — a finding for the next pass.
+- **The Gym's Attack is its own** (`GYM_ATTACK_MULTIPLIER` ×0.7 / ×0.62 / ×0.5 by Region since 2026-10-20, when its
+  levels came up; ×1.15 / ×0.95 / ×0.9 before), with a **Leader's own scale** where its rule and its type's matchups make
+  it harder than its neighbours (`GymDef.attackScale`: Brock ×0.6 — Rock resists most of Region 1 and Rock Solid caps
+  what gets through; Misty ×0.85 — the tide hits the whole team at once). A higher level premium once made the run
+  *easier*, because a Gym above the team pays it more XP (§6.2.1); since 2026-10-20 the Gym's base XP came down to
+  match (`gymXp` 120 → 80), so the level reads right and the refund is gone. Measured over 240 runs: Gyms lost 7 % / 7 %
+  / 13 % by Region (Brock 18 %, Koga and Lorelei the hardest); Sabrina's Alakazam carries Reflect, not Recover — at its real
+  level Recover through three phases outlasted the team.
 - **Giovanni is both** a Gym Leader (Viridian, Ground, Region 3) and an Elite Trainer (§2.8.1). A run can face
   both; both are canon.
 

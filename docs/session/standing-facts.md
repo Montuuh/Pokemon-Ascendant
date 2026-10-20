@@ -145,6 +145,9 @@
   comparison failed on pure noise once.
 - **The starter spread closed in v0.4** (v0.3 read 61/28/90) — the economy gave the weak start four places to
   buy an answer. The current figures live in the header of `active.md`, rewritten every version.
+- **One block of fixed seeds is one sample.** v0.9.25 read League|R3 60 → 43 % at 720 runs and chased it through five
+  experiments; a second block (`CURVE_BASE=20000`) read HEAD 54 % and the change 56 %. The harness seeds are fixed, so
+  any change reshuffles which runs reach a late stage; read a conditional rate on two blocks before tuning against it.
 - **The seed-count rule earned its place a second time.** The same table at 30 seeds read 63/67/80 and looked
   like the Region Modifiers had blown a 17-point hole in the spread. At 120 it was 7 points. Before reacting
   to a *difference* moving, re-run it long.
@@ -159,6 +162,12 @@
 - **A harness that ignores the telegraph measures someone else's game.** Until v0.8.9 the autoplayer never played a
   status card that cost AP and swapped only a Lead about to fall; it under-read the whole run by four points (17 vs
   21 %). When a number looks low against play, read what the harness *declines* to do before touching a tier.
+- **A boss tuned by standing under the team reads as a bug.** Until v0.9.25 the Elite and the Gym kept their difficulty
+  by sitting two levels under the band and lending Pokémon six to eight under that — the harness was happy, and the user
+  met a Lv 2 Onix beside a Lv 8 Pidgeotto against a team at Lv 11. Levels are what the player reads: put the boss over
+  the team, tune it by Attack, and take its XP base down by the level factor so the run's growth does not move
+  (`eliteXp`, `gymXp`; the League and the boss-wilds kept their own pay). Measure against HEAD in a worktree (junction
+  `node_modules`; remove the junction before `git worktree remove`, or it deletes the real one).
 - **Read the level gap before the clear rate.** v0.8.10's report found Region 2 easy because its band began below
   where Region 1's ended — no tier multiplier could see that. `balance/report.test.ts` prints the team's level over
   what it fights, column by column; a Region that is soft or hard by levels is fixed in its band, not its tier.
@@ -311,6 +320,8 @@
 - **A module imported from page JS through Vite (`import('/src/…')`) is a second instance**, not the app's:
   setting a store through it changes nothing. Drive the game through `window.__ascendant` hooks.
 
+- **Two quick edits to one module can leave Vite serving the one in between** (`regionContent is not defined` from a
+  file that imports it): the watcher took the first write and missed the second. `touch` the file and reload.
 - **Rewriting a CSS module wholesale leaves Vite serving an empty object**, so every class comes back
   `undefined` and the component renders unstyled. It looks like a layout bug and it is a stale-cache bug.
   Restart the dev server.

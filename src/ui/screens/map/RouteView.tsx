@@ -1,10 +1,12 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { battlefields, gymById, laneField as laneBattlefield, nodesAhead, type FieldId, type MapNode, type RunState } from '@/sim';
+import { IconTag } from '@tabler/icons-react';
+import { useSettingsStore } from '@/app/settingsStore';
 import { NodeMarker, type NodeStatus } from '@/ui/components/NodeMarker';
-import { landmarkName, nodeArt } from '@/ui/components/nodeArt';
+import { landmarkName, nodeArt, nodeLabel } from '@/ui/components/nodeArt';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { FIELD_LABEL, ROUTE_TEXT } from '@/ui/strings';
-import { fieldTip, noReturnTip, routeStripTip } from '@/ui/tips';
+import { fieldTip, mapLabelsTip, noReturnTip, routeStripTip } from '@/ui/tips';
 import { Tipped, useTip } from '@/ui/tooltip';
 import { mapTerrain } from './terrain';
 import { loadPieces, paintStrip, paintTerrain, piecesFor, TILE } from './tileset';
@@ -57,6 +59,19 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   const [paintedFor, setPaintedFor] = useState<object | null>(null);
   const painted = paintedFor === terrain;
   const stripTip = useTip(routeStripTip());
+  // §9.3 — the Labels toggle (the user, 2026-10-20): a name under every node, kept between sessions; L flips it.
+  const labels = useSettingsStore((s) => s.mapLabels);
+  const labelsTip = useTip(mapLabelsTip(labels));
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.key !== 'l' && e.key !== 'L') || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+      if (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+      const s = useSettingsStore.getState();
+      s.set({ mapLabels: !s.mapLabels });
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   // Paint once per map: the tiles are loaded, the terrain drawn, the strip drawn from the same pieces.
   useEffect(() => {
@@ -188,6 +203,17 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
 
   return (
     <div className={styles.root}>
+      <button
+        type="button"
+        className={styles.labelsToggle}
+        aria-pressed={labels}
+        onClick={() => useSettingsStore.getState().set({ mapLabels: !labels })}
+        data-testid="map-labels"
+        {...labelsTip}
+      >
+        <IconTag size={16} stroke={2.4} aria-hidden="true" />
+        {ROUTE_TEXT.labels}
+      </button>
       <div ref={scroller} className={styles.scroller} tabIndex={0} onKeyDown={onKey} aria-label={ROUTE_TEXT.scroller} data-testid="route-scroller">
         <div className={styles.board} style={{ width: boardW, height: terrain.h * px }} data-painted={painted || undefined} data-testid="route-board">
           <canvas ref={canvas} className={styles.terrain} style={{ width: boardW, height: terrain.h * px }} aria-hidden="true" />
@@ -227,7 +253,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
                 status={statusOf(node)}
                 art={nodeArt(node, run.map)}
                 ahead={ahead.has(node.id)}
-                caption={landmarkName(node, run.map)}
+                caption={labels ? nodeLabel(node, run.map) : landmarkName(node, run.map)}
                 style={{ left: at.x * px, top: at.y * px }}
                 onClick={() => onEnter(node.id)}
               />

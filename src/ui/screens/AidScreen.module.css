@@ -1,4 +1,4 @@
-/* The field nurse, §2.9.1 — a warm stop on the route: who she is, the Box after her, and the way on. */
+/* The field nurse, §2.9.1 — a warm stop on the route: who she is, the Box healing under her hands, and the way on. */
 
 .root {
   height: 100%;
@@ -16,15 +16,7 @@
 /* The way on, where every stop keeps it: the top-left corner. */
 .corner { position: absolute; top: var(--sp-5); left: var(--sp-5); }
 
-.card {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-4);
-}
-.nurse {
-  image-rendering: pixelated;
-}
-.text { display: grid; gap: var(--sp-1); }
+.text { display: grid; justify-items: center; gap: var(--sp-2); }
 .title {
   display: flex;
   align-items: center;
@@ -33,33 +25,3 @@
   font-size: var(--type-h1);
   color: var(--brand-red-deep);
 }
-.sub {
-  margin: 0;
-  color: var(--ink-secondary);
-  font-size: var(--type-small);
-}
-
-.box {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--sp-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-width: 900px;
-}
-.patient {
-  display: grid;
-  justify-items: center;
-  gap: var(--sp-1);
-  width: 128px;
-  padding: var(--sp-3);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--surface-1);
-}
-.patient:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
-.patient > :last-child { width: 100%; }
-.name { font-size: var(--type-small); font-weight: 700; }
-

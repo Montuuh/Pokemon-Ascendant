@@ -77,7 +77,12 @@ export interface NodePreview {
   stage?: string;
   /** §2.12.2 — the Apex's Legendary: the arena (§2.12.2.1) the fight is in is its. */
   legendary?: string;
-  /** §2.9.5 — what lies on the ground at a `cache` node: rolled with the map and named before you choose it. */
+  /**
+   * §2.9.5 — what lies on the ground at a `cache` node, rolled with the map: since 2026-10-20 the item ball's reel, its
+   * seven prizes by row (`run/finds.ts`). `find` is the find before the reel — what a guarded find (§5.6.5) and a save
+   * from before it still hold.
+   */
+  reel?: FindTile[];
   find?: { items: string[]; money: number };
   /**
    * §5.6.5 — a fight with another objective, placed with the map and named on it: a Wild Area whose Pokémon is a
@@ -109,6 +114,37 @@ export interface RegionMap {
   rows: number;
   /** §2.5 — the column the Y opens at (the crossroads); the outer tracks lean from here. Absent on a pre-v0.8.7 map. */
   yLayer?: number;
+}
+
+/**
+ * §2.9.5 — one prize on an item ball's reel. Supplies (balls among them), money, a TM and a stone are named on the reel;
+ * a held item and a relic say only their kind and rarity, and which one it was is drawn when the reel lands.
+ */
+export type FindPrize =
+  | { kind: 'supply'; items: string[] }
+  | { kind: 'money'; amount: number }
+  | { kind: 'tm'; id: string }
+  | { kind: 'stone'; id: string }
+  | { kind: 'held-item' }
+  | { kind: 'relic'; rarity: 'common' | 'uncommon' | 'rare' };
+/** §2.9.5 — a tile of the reel: its prize and the row it sits in (which sets its chance). */
+export interface FindTile {
+  tier: WildTier;
+  prize: FindPrize;
+}
+/** §2.9.5 — what a held item or a relic tile turned out to be, or the money it became when there was none left. */
+export interface FindGot {
+  relic?: string;
+  heldItem?: string;
+  money?: number;
+}
+
+/** §2.4.2 — one Pokémon's share of a heal: its HP before and after, and whether it was cured of a status. */
+export interface HealLine {
+  uid: string;
+  from: number;
+  to: number;
+  cured: boolean;
 }
 
 /** A Pokémon in the Box. HP and Trauma persist between fights (§2.4); this is the run's real state. */
@@ -165,6 +201,8 @@ export type RunPhase =
   | 'swap-or-skip'
   /** §2.9.1 — the route's field nurse. The half-heal already happened; the screen says what it did. */
   | 'aid'
+  /** §2.9.5 — an item ball: its reel spun on the way in and its prize is in the bag; the screen shows the spin. */
+  | 'find'
   /** §2.11 — standing in a City's lobby, between buildings. */
   | 'city'
   /** §2.11.1 / §8.2.4 — inside a City's Pokémon Center. The heal already happened; Therapy is left to decide. */
@@ -513,6 +551,14 @@ export interface RunState {
    */
   lastGift?: string[] | null;
   /**
+   * §2.4.2 / §9.9.3 — what the last heal did to each Pokémon in the Box (the Center, the field nurse): its HP before and
+   * after and whether a status came off, so the screen can show the machine at work and every bar filling. Cleared on
+   * the way out. Absent in older saves.
+   */
+  lastHeal?: HealLine[] | null;
+  /** §9.9.3 — how many heals the run has had: the stamp a screen keys the last one by, so it is shown once. */
+  heals?: number;
+  /**
    * §2.9.5 — what the last find on the ground held, for the map to say as you walk on; cleared when the next node
    * is entered. Absent in older saves.
    */
@@ -552,6 +598,8 @@ export interface RunState {
    * §2.9.6 — the roadside trader's three face-down offers, rolled once on entry, and — once a trade is made — who
    * went and who came. Optional on purpose: every save from before v0.9.19 reads as no trader.
    */
+  /** §2.9.5 — the item ball on screen: its reel, the tile it landed on, and what that tile turned out to be. */
+  pendingFind?: { tiles: FindTile[]; won: number; got: FindGot } | null;
   pendingTrade?: { offers: { speciesId: string; shownType: PokemonType }[]; done?: { given: { speciesId: string; level: number }; receivedUid: string } } | null;
   /** §2.11 — the City the run is standing in, between two Regions. Null on a route. */
   city: CityState | null;
@@ -718,6 +766,8 @@ export type RunAction =
   | { type: 'trade'; giveUid: string; offer: number }
   /** §2.9.6 — walk on from the trader, traded or not. */
   | { type: 'leave-trader' }
+  /** §2.9.5 — walk on from an item ball once its reel has landed. */
+  | { type: 'leave-find' }
   /** §2.11.0 — walk into one of the City's open buildings. Leaving it returns to the lobby. */
   | { type: 'enter-building'; building: CityBuilding }
   /** §2.11.3 — the gate: pick one of the three Region Modifiers, which *is* leaving the City for the next Region. */

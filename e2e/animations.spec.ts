@@ -13,6 +13,62 @@ type Dev = {
 };
 const dev = (page: Page) => page.evaluate.bind(page);
 
+test.describe('The heal and the item ball, played — §9.9.3, §2.9.5', () => {
+  // A new run, hurt, in Pallet Town: the Center's machine runs on the way in.
+  test('the Center runs its machine, fills the bars after it, and opens the counters last', async ({ page }) => {
+    await page.goto('/?screen=menu');
+    await page.evaluate(() => {
+      const a = (window as unknown as { __ascendant: { run: Record<string, (...x: unknown[]) => unknown> } }).__ascendant;
+      a.run.new!('squirtle', 7);
+      a.run.fill!(3);
+      a.run.city!(0);
+      a.run.patch!((d: { box: { hp: number }[] }) => {
+        d.box[0]!.hp = 3;
+        d.box[1]!.hp = 0;
+      });
+    });
+    await page.getByTestId('door-center').click();
+    const heal = page.getByTestId('center-heal');
+    await expect(heal).toBeVisible();
+    // Running: the pill says so, the counters wait, inert.
+    await expect(page.getByTestId('center-heal-total')).toHaveText('Healing…');
+    await expect(page.locator('[inert] [data-testid="center-pc"]')).toHaveCount(1);
+    await page.waitForTimeout(1600);
+    await page.screenshot({ path: 'playtest/anim-center-machine.png' });
+    // Landed: the total, and the counters open.
+    await expect(heal).toHaveAttribute('data-beat', 'done', { timeout: 8_000 });
+    await expect(page.getByTestId('center-heal-total')).toContainText('HP');
+    await expect(page.locator('[inert] [data-testid="center-pc"]')).toHaveCount(0);
+    await page.screenshot({ path: 'playtest/anim-center-healed.png' });
+  });
+
+  test('the item ball spins, says nothing until it stops, then stops on the prize already in the bag', async ({ page }) => {
+    await page.goto('/?screen=menu');
+    await page.evaluate(() => {
+      const a = (window as unknown as { __ascendant: { goTo: (s: string) => void; run: Record<string, (...x: unknown[]) => unknown> } }).__ascendant;
+      a.run.new!('squirtle', 7);
+      a.run.patch!((d: { reachable: string[]; map: { nodes: Record<string, { id: string; kind: string; preview: { reel?: unknown } }> } }) => {
+        d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === 'cache' && n.preview.reel)!.id];
+      });
+      const id = (a.run.state!() as { reachable: string[] }).reachable[0];
+      a.run.dispatch!({ type: 'enter-node', nodeId: id });
+      a.run.dispatch!({ type: 'begin-combat' });
+      a.goTo('map');
+    });
+    await expect(page.getByTestId('find-screen')).toBeVisible();
+    await expect(page.getByTestId('find-result')).toContainText('Spinning');
+    await expect(page.getByTestId('btn-find-done')).toHaveText('Stop');
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: 'playtest/anim-find-spin.png' });
+    await expect(page.getByTestId('find-screen')).toHaveAttribute('data-landed', 'true', { timeout: 8_000 });
+    await expect(page.getByTestId('find-prize')).not.toBeEmpty();
+    // The way on has the focus; Escape walks on.
+    await expect(page.getByTestId('btn-find-done')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('map-screen')).toBeVisible();
+  });
+});
+
 test.describe('Arena animations — §9.9', () => {
   test('a Wild Area fight opens by saying the rarity it rolled, then lets it go — §2.6.2', async ({ page }) => {
     await page.goto('/?scenario=wild-rare');

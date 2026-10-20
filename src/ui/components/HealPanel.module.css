@@ -1,0 +1,125 @@
+/* §9.9.3 — the heal, seen: the machine (or the nurse) beside the Box's bars filling. */
+
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+  cursor: default;
+}
+
+/* The machine or the nurse, with the total under it: one button, a click or a key skips the wait. */
+.stand {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.stand:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 4px; }
+
+/* FireRed's machine, 34 × 28 art pixels, drawn at a whole multiple: ×4, ×3 on a short window. Its tray balls sit on its
+   lights, in the same pixels. */
+.machine {
+  --px: 4px;
+  position: relative;
+  display: block;
+  width: calc(34 * var(--px));
+  height: calc(28 * var(--px));
+}
+.machine > img:first-child {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ball {
+  position: absolute;
+  left: calc(var(--x) * var(--px));
+  top: calc(var(--y) * var(--px));
+  width: calc(4 * var(--px));
+  height: calc(4 * var(--px));
+  animation: global(popIn) var(--motion-base) ease-out both;
+}
+/* The machine runs: its balls blink in pairs, as FireRed's do. */
+.running .ball { animation: ballBlink calc(var(--motion-slow) + var(--motion-fast) / 2) steps(1, end) infinite; }
+@keyframes ballBlink {
+  50% { filter: brightness(1.9) saturate(0.6); }
+}
+
+.nurseSprite { display: block; }
+.working { animation: nurseHop calc(var(--motion-slow) + var(--motion-fast)) ease-in-out infinite; }
+@keyframes nurseHop {
+  50% { transform: translateY(calc(-1 * var(--sp-1))); }
+}
+
+.total {
+  min-width: 9ch;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+  font-weight: 700;
+  text-align: center;
+}
+
+.patients {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 900px;
+}
+.patient {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  width: 128px;
+  padding: var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.patient:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.name { font-size: var(--type-small); font-weight: 700; }
+.bar { width: 100%; }
+/* What came back, rising off the bar as it fills; nothing before the machine has run. */
+.gain {
+  min-height: 1.2em;
+  font-size: var(--type-small);
+  font-weight: 800;
+  color: var(--ink-primary);
+  opacity: 0;
+}
+.gain[data-shown='true'] { animation: global(popIn) var(--motion-slow) ease-out both; opacity: 1; }
+.cured {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-xs);
+  background: var(--accent-positive);
+  color: var(--ink-on-accent);
+  font-size: var(--type-micro);
+  font-weight: 800;
+}
+
+/* The Center's band is slimmer: the machine and the bars side by side, above its counters. */
+.center .patient { width: 112px; padding: var(--sp-2); }
+
+/* A short window (720 p): the machine a size down, the rows tighter, so the counters keep their room. */
+@media (max-height: 800px) {
+  .machine { --px: 3px; }
+  .center .patient { width: 100px; gap: 0; padding: var(--sp-1) var(--sp-2); }
+  .center .gain { min-height: 1em; }
+}

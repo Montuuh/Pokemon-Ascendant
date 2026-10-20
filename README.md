@@ -49,6 +49,11 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.25 — The route, reworked.** Wild Areas are habitats now — Tall Grass, a Forest, a Fishing Spot, a Rocky Ridge,
+the Power Plant, an Old Tower and more, each a pool of one family with its own backdrop — so where you look is a plan.
+A find on the path is an item ball whose reel of seven prizes spins as you pick it up, relics among them; the Pokémon
+Center runs its healing machine to its jingle and every bar says what came back; the Elite and the Gyms stand over
+your team instead of under it; and a Labels toggle names every node on the map. Before it,
 **v0.9.24 — Move animations.** Every move now plays out across the field: a Pokémon dashes over to tackle and
 comes back, a fireball or a spray of bubbles flies from one side to the other, Hydro Pump is a beam and Thunderbolt a
 bolt, and Surf rolls a wave across the whole screen while Earthquake splits the floor and shakes it — the damage

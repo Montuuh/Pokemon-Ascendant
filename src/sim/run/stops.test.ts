@@ -15,15 +15,22 @@ const apply = (s: RunState, a: RunAction): RunState => {
   return r.state;
 };
 
-/** The first find on the map, made the one place the run can step next. */
-function besideACache(seed = 7): { s: RunState; id: string } {
+/** The first find on the map, made the one place the run can step next — as a save from before its reel holds it. */
+function besideACache(seed = 7, reel = false): { s: RunState; id: string } {
   const s = start(seed);
-  const cache = Object.values(s.map.nodes).find((n) => n.kind === 'cache')!;
-  return { s: produce(s, (d) => void (d.reachable = [cache.id])), id: cache.id };
+  const cache = Object.values(s.map.nodes).find((n) => n.kind === 'cache' && !n.preview.objective)!;
+  return {
+    s: produce(s, (d) => {
+      d.reachable = [cache.id];
+      if (!reel) delete d.map.nodes[cache.id]!.preview.reel;
+    }),
+    id: cache.id,
+  };
 }
 
 describe('Something on the ground — §2.9.5', () => {
-  it('PickingItUp_AddsTheFind_AndWalksOn_WithoutAScreen', () => {
+  // §2.9.5 — since 2026-10-20 a find is an item ball with a reel (`finds.test.ts`); a find from before it still works.
+  it('AFindFromBeforeTheReel_PicksUpInAClick_AndWalksOn_WithoutAScreen', () => {
     const { s: before, id } = besideACache();
     const find = before.map.nodes[id]!.preview.find!;
     let s = apply(before, { type: 'enter-node', nodeId: id });
@@ -51,12 +58,13 @@ describe('Something on the ground — §2.9.5', () => {
   });
 
   it('NobodyNeedsToBeStanding_ToPickSomethingUp', () => {
-    const { s: before, id } = besideACache();
+    const { s: before, id } = besideACache(7, true);
     const fainted = produce(before, (d) => {
       for (const m of d.box) m.hp = 0;
     });
     const s = apply(apply(fainted, { type: 'enter-node', nodeId: id }), { type: 'begin-combat' });
-    expect(s.phase).toBe('map');
+    expect(s.phase).toBe('find');
+    expect(apply(s, { type: 'leave-find' }).phase).toBe('map');
   });
 });
 

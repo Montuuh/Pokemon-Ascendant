@@ -1,0 +1,141 @@
+/* §2.9.5 — the item ball: a reel of its seven prizes, slowing to a stop under a marker, and what it stopped on. */
+
+.root {
+  position: relative;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto auto auto;
+  align-content: center;
+  justify-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
+  color: var(--ink-primary);
+  overflow: hidden;
+}
+.corner { position: absolute; top: var(--sp-5); left: var(--sp-5); }
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.ball { display: block; }
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h1);
+  color: var(--brand-red-deep);
+}
+
+/* The window the reel runs through: five tiles wide, the marker at its middle — its line behind the tiles, its two
+   pointers above and below them, so the prize it stops on is never crossed out — the edges fading the strip in and out. */
+.window {
+  position: relative;
+  width: min(640px, 100%);
+  height: 148px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 3px solid var(--border-strong);
+  background: var(--surface-1);
+  cursor: pointer;
+  mask-image: linear-gradient(90deg, transparent 0, black 14%, black 86%, transparent 100%);
+}
+.strip {
+  position: absolute;
+  z-index: 1;
+  top: 18px;
+  left: 0;
+  display: flex;
+  will-change: transform;
+}
+.tile {
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  border: 3px solid var(--border-subtle);
+  border-bottom-width: 6px;
+  background: var(--surface-2);
+}
+/* The row a tile is from, as the pool's band shows it: the colour on its foot; the result names the row. */
+.tile[data-tier='uncommon'] { border-bottom-color: var(--brand-blue); }
+.tile[data-tier='rare'] { border-bottom-color: var(--type-psychic); }
+.tile[data-won] {
+  border-color: var(--accent-action);
+  background: color-mix(in srgb, var(--accent-action) 18%, var(--surface-1));
+  animation: wonBump var(--motion-slow) ease-out both;
+}
+@keyframes wonBump {
+  50% { transform: scale(1.08); }
+}
+.marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  margin-left: -2px;
+  background: var(--brand-red);
+  box-shadow: 0 0 0 2px var(--surface-1);
+  pointer-events: none;
+}
+.marker::before,
+.marker::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  margin-left: -9px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+}
+.marker::before { top: 0; border-top: 12px solid var(--brand-red); }
+.marker::after { bottom: 0; border-bottom: 12px solid var(--brand-red); }
+
+.result {
+  min-height: 92px;
+  display: grid;
+  place-items: center;
+}
+.prize {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-5);
+  border-radius: var(--radius-md);
+  animation: global(popIn) var(--motion-slow) ease-out both;
+}
+.prize:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.tier {
+  font-size: var(--type-caption);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.name { font-size: var(--type-h2); }
+.bagged {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.spinning {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+
+.walkOn {
+  min-width: 180px;
+  padding: var(--sp-3) var(--sp-6);
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.walkOn:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }

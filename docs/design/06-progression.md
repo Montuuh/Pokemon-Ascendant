@@ -28,10 +28,16 @@ XP is awarded at combat end and scales with the enemy tier.
 
 | Enemy | XP | Config field |
 |---|---|---|
-| Wild | 29 | `ProgressionConfig.wildXp` |
-| Trainer | 43 | `trainerXp` |
-| Elite | 66 | `eliteXp` |
-| Gym Leader | 120 | `gymXp` |
+| Wild | 26 | `ProgressionConfig.wildXp` |
+| Trainer | 39 | `trainerXp` |
+| Elite | 49 | `eliteXp` |
+| Gym Leader | 80 | `gymXp` |
+| Elite Wild, Victory Road's Gauntlet and Apex | 66 | `apexXp` |
+| A League door | 120 | `leagueXp` |
+
+*(2026-10-20: the Elite and the Gym 66 → 49 and 120 → 80, when their levels came up to stand over the team (§2.8.1,
+§5.9.3): the level factor below pays a foe over the team more, and the base came down by as much, so the team reaches
+each Gym at the level it did. The boss-wilds and the League kept their levels and their pay.)*
 
 These are for the first enemy; **every enemy past the first pays 50 %** (`extraEnemyXpShare`). **v0.8.6, the user's
 call ("a mega nerf"):** groups are the rule since v0.8.5, and with every Pokémon of a trio paid in full (48 / 72 /

@@ -99,6 +99,21 @@ export const SFX = {
   // The evolution: the light's rise as the sprite whitens; the fanfare when the new Pokémon stands in its colours.
   evolve: [tone({ wave: 'sine', from: 220, to: 880, dur: 1.2, gain: 0.12 }), hiss({ filter: 'bandpass', from: 1500, to: 6000, q: 0.7, dur: 1.2, gain: 0.08 })],
   evolved: [...arp([67, 72, 76, 79], 0.09, 0.22, 0.08, 'square'), ...chord([72, 76, 79, 84], 1, 0.06, 0.38, 'triangle'), tone({ wave: 'square', from: hz(91), dur: 0.6, gain: 0.04, delay: 0.38, cutoff: 3000 })],
+  // §9.9.3 — the Pokémon Center's machine: a ball set in the tray, then the jingle as it lights (an homage, written for
+  // the synth: a bright square lead rising over a triangle bass, resolving up an octave). The nurse plays it too.
+  'ball-set': [tone({ wave: 'square', from: hz(81), dur: 0.035, gain: 0.07, cutoff: 3500 }), tone({ wave: 'triangle', from: 260, to: 140, dur: 0.06, gain: 0.16 })],
+  'heal-machine': [
+    ...([[79, 0, 0.11], [84, 0.12, 0.11], [88, 0.24, 0.11], [91, 0.36, 0.22], [88, 0.6, 0.11], [91, 0.72, 0.36], [89, 1.1, 0.11], [93, 1.22, 0.11], [96, 1.34, 0.6]] as const).map(
+      ([n, delay, dur]) => tone({ wave: 'square', from: hz(n), dur, gain: 0.065, delay, cutoff: 3200 }),
+    ),
+    ...([[48, 0, 0.56], [55, 0.6, 0.46], [53, 1.1, 0.22], [48, 1.34, 0.6]] as const).map(([n, delay, dur]) => tone({ wave: 'triangle', from: hz(n), dur, gain: 0.1, delay })),
+    hiss({ filter: 'highpass', from: 5000, to: 9000, dur: 0.5, gain: 0.06, delay: 1.36 }),
+  ],
+  // §2.9.5 — the item ball's reel: a dry tick for each tile past the marker, then a chime where it stops — brighter, with
+  // a sparkle, on a Rare.
+  'reel-tick': [tone({ wave: 'square', from: hz(93), dur: 0.018, gain: 0.05, cutoff: 5000 })],
+  'reel-land': [...arp([76, 79, 84], 0.07, 0.25, 0.08, 'square'), tone({ wave: 'triangle', from: hz(60), dur: 0.35, gain: 0.08, delay: 0.14 })],
+  'reel-rare': [...arp([72, 76, 79, 84, 88], 0.07, 0.3, 0.08, 'square'), ...chord([84, 88, 91], 0.8, 0.05, 0.36, 'triangle'), hiss({ filter: 'highpass', from: 5000, to: 9000, dur: 0.6, gain: 0.07, delay: 0.36 })],
   // The interface: a soft tick on a button.
   'ui-click': [tone({ wave: 'sine', from: 900, to: 700, dur: 0.05, gain: 0.05 })],
 } satisfies Record<string, Step[]>;

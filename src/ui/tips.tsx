@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { visibleMoot, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS } from '@/sim';
+import { visibleMoot, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
@@ -706,9 +706,10 @@ const capitalise = (line: string) => line.charAt(0).toUpperCase() + line.slice(1
 
 /** §2.2 — the Region you are in, beside its name on the map. */
 export function regionTip(regionIndex: number, greaterThreats: boolean): ReactNode {
-  // §2.6.1 — the biomes it is made of, primary first: what the wild nodes here will offer.
+  // §2.6.1 — the habitats it is mostly made of, primary first: what the wild nodes here will offer most (its four
+  // commonest — nine pills would be a list, not a glance).
   const region = regionContent(regionIndex);
-  const biomes = [...region.biomeWeights].sort((x, y) => y.weight - x.weight).map((b) => region.biomes[b.biome]?.name ?? b.biome);
+  const biomes = [...region.biomeWeights].sort((x, y) => y.weight - x.weight).slice(0, 4).map((b) => region.biomes[b.biome]?.name ?? b.biome);
   const name = regionName(regionIndex);
   return <Tip title={name ? `Region ${regionIndex + 1} — ${name}` : `Region ${regionIndex + 1}`} meta={biomes} body={capitalise(regionAccent(regionIndex, greaterThreats))} footer={regionIndex >= STATUS_ACCENT_FROM ? 'Enemies here also field the forms their levels warrant.' : undefined} />;
 }
@@ -750,6 +751,53 @@ export function partyTip(name: string, level: number, hp: number, max: number, s
   const meta = [`Lv ${level}`, `${hp} / ${max} HP`, ...(status ? [STATUS_LABEL[status] ?? status] : []), ...(trauma ? [`Trauma ×${trauma}`] : [])];
   const hurt = hp < max || status !== null;
   return <Tip title={name} meta={meta} body={hurt ? 'A Pokémon Center heals and cures, free — every town has one.' : 'Fighting fit.'} footer={trauma ? 'Trauma comes off only with Therapy, at a Pokémon Center.' : undefined} />;
+}
+
+/** §9.9.3 — what the heal just did, on the machine or the nurse: the HP back and the cures, and that a click skips. */
+export function healTip(variant: 'center' | 'nurse', hp: number | null, cured: number | null, running: boolean): ReactNode {
+  const meta = [...(hp ? [`+${hp} HP`] : []), ...(cured ? [`${cured} cured`] : [])];
+  return (
+    <Tip
+      title={variant === 'center' ? 'The healing machine' : 'Field nurse'}
+      meta={meta}
+      body={running ? 'At work. A click or a key skips the wait.' : hp || cured ? 'What came back is on each bar.' : 'Nobody needed it.'}
+      footer={variant === 'center' ? "Trauma stays: only the Center's Therapy takes it off." : undefined}
+    />
+  );
+}
+
+/** §2.9.5 — the item ball, on its screen's heading. */
+export function findTip(): ReactNode {
+  const n = WILD_TIERS.reduce((a, t) => a + REEL_SHAPE[t], 0);
+  const rows = WILD_TIERS.map((t) => `${WILD_TIER_LABEL[t]} ${WILD_TEXT.pct(WILD_TIER_ODDS[t])}`).join(', ');
+  return <Tip title="Item ball" body={`${n} prizes on a reel, by row: ${rows}, each row's share split evenly between its prizes. The reel spun as you picked it up, and what it stops on is already yours.`} footer="A held item or a relic shows only its kind until the reel stops on it: then it is one you do not have yet." />;
+}
+
+/** §2.9.5 — one prize on the reel: what it is and its chance (and, once landed, what it turned out to be). */
+export function prizeTip(prize: FindPrize, chance: number, got: FindGot = {}): ReactNode {
+  const content = getContent();
+  const name = prizeLabel(prize, content, got);
+  const body =
+    got.relic ? content.relic(got.relic).description
+    : got.heldItem ? content.heldItem(got.heldItem).description
+    : got.money !== undefined ? 'Every held item there is was already yours, so the find paid in Poké Dollars.'
+    : prize.kind === 'tm' ? `Teaches ${content.move(content.tm(prize.id).move).name} to a Pokémon that can learn it.`
+    : prize.kind === 'stone' ? content.evolutionItem(prize.id).description
+    : prize.kind === 'held-item' ? 'A held item you do not have yet, said when the reel stops on it.'
+    : prize.kind === 'relic' ? `A ${prize.rarity} relic you do not hold yet, said when the reel stops on it.`
+    : prize.kind === 'money' ? 'Poké Dollars, for the City.'
+    : 'Supplies for the bag.';
+  return <Tip title={name} meta={[`${WILD_TEXT.pct(chance)} chance`]} body={body} />;
+}
+
+/** §2.9.5 — a row of the reel: its share and how it is split. */
+export function reelRowTip(tier: WildTier, share: number, n: number): ReactNode {
+  return <Tip title={`${WILD_TIER_LABEL[tier]} · ${WILD_TEXT.pct(share)}`} body={`The reel stops in this row ${WILD_TEXT.pct(share)} of the time, on each of its ${n} prizes as often as the next.`} />;
+}
+
+/** §9.3 — the map's Labels toggle. */
+export function mapLabelsTip(on: boolean): ReactNode {
+  return <Tip title={on ? 'Hide the labels' : 'Show the labels'} meta={['L']} body="A name under every node: the Wild Area's ground, the trainer's class, the stop. The Gym and the Elite are always named." />;
 }
 
 /** §2.9.1 — the field nurse. */

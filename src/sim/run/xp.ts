@@ -12,6 +12,13 @@ export interface ProgressionConfig {
   trainerXp: number;
   eliteXp: number;
   gymXp: number;
+  /**
+   * §6.2.1 — the boss-wilds (the Elite Wild, the Apex), Victory Road's Gauntlet, and the League's doors: priced on their
+   * own since 2026-10-20, at what they paid before, when the Elite's and the Gym's levels came up to read right and their
+   * pay came down to match (§2.8.1, §5.9.3). None of these moved a level.
+   */
+  apexXp: number;
+  leagueXp: number;
   /** §6.2.1 — benched Box Pokémon learn at three-quarters speed, so rotating the team stays viable. */
   benchXpShare: number;
   levelUpBaseXp: number;
@@ -37,8 +44,12 @@ export const DEFAULT_PROGRESSION: ProgressionConfig = {
   // ~9.5 (§2.5.1). ×0.8 overshot (360 runs: R3|R2 30 %); ×0.9 reads R1 64 % · R2 61 % · R3 58 %.
   wildXp: 26,
   trainerXp: 39,
-  eliteXp: 66,
-  gymXp: 120,
+  // 2026-10-20: 66 → 49 and 120 → 80 — the Elite and the Gym stand over the team now (§2.8.1, §5.9.3), and the level
+  // factor below pays them that much more; the run's XP stays where it was (harness: team Lv at each Gym unchanged).
+  eliteXp: 49,
+  gymXp: 80,
+  apexXp: 66,
+  leagueXp: 120,
   benchXpShare: 0.75,
   levelUpBaseXp: 12,
   levelUpSlopeXp: 4,
@@ -52,9 +63,11 @@ export function xpToNext(level: number, config = DEFAULT_PROGRESSION): number {
   return config.levelUpBaseXp + (Math.max(1, level) - 1) * config.levelUpSlopeXp;
 }
 
-/** §6.2.1 — XP for clearing an encounter, by the tier of what you beat. */
-export function encounterXp(tier: EnemyTier, enemyCount: number, config = DEFAULT_PROGRESSION): number {
-  const per = tier === 'boss' ? config.gymXp
+/** §6.2.1 — XP for clearing an encounter, by the tier of what you beat (and the boss-wilds' and the League's own). */
+export function encounterXp(tier: EnemyTier | 'apex' | 'league', enemyCount: number, config = DEFAULT_PROGRESSION): number {
+  const per = tier === 'league' ? config.leagueXp
+    : tier === 'apex' ? config.apexXp
+    : tier === 'boss' ? config.gymXp
     : tier === 'elite' ? config.eliteXp
     : tier === 'trainer' ? config.trainerXp
     : config.wildXp;

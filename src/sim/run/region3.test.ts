@@ -61,7 +61,7 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
         if (n.lane === undefined || n.kind === 'gym') continue;
         const gym = GYMS_R3.find((g) => g.id === map.gyms[n.lane!])!;
         const theme = LANE_THEME_R3[gym.type]!;
-        if (n.kind === 'wild') expect(n.preview.icon, `${n.id} in the ${gym.type} lane`).toBe(`wild-${theme.biome}`);
+        if (n.kind === 'wild') expect(theme.habitats.map((h) => `wild-${h}`), `${n.id} in the ${gym.type} lane`).toContain(n.preview.icon);
         if (n.kind === 'trainer') {
           const roster = TRAINERS_R3.find((t) => t.id === n.preview.rosterId)!;
           expect(theme.trainers, `${n.id} ${roster.id}`).toContain(roster.archetype);

@@ -22,10 +22,12 @@ export interface Settings {
   /** §9.5 — the effects and the music, each on its own bus. */
   sfxVolume: Volume;
   musicVolume: Volume;
+  /** §9.3 — a name under every node on the route, not only the Gym's and the Elite's (the map's Labels toggle, L). */
+  mapLabels: boolean;
 }
 
 const KEY = SETTINGS_KEY;
-const DEFAULTS: Settings = { textScale: 1, motion: 'system', sfxVolume: 0.66, musicVolume: 0.33 };
+const DEFAULTS: Settings = { textScale: 1, motion: 'system', sfxVolume: 0.66, musicVolume: 0.33, mapLabels: false };
 const volumeOr = (v: unknown, fallback: Volume): Volume => (VOLUMES.includes(v as Volume) ? (v as Volume) : fallback);
 
 function load(): Settings {
@@ -39,6 +41,7 @@ function load(): Settings {
       motion: parsed.motion === 'reduced' || parsed.motion === 'full' ? parsed.motion : DEFAULTS.motion,
       sfxVolume: volumeOr(parsed.sfxVolume, DEFAULTS.sfxVolume),
       musicVolume: volumeOr(parsed.musicVolume, DEFAULTS.musicVolume),
+      mapLabels: typeof parsed.mapLabels === 'boolean' ? parsed.mapLabels : DEFAULTS.mapLabels,
     };
   } catch {
     return DEFAULTS;
@@ -64,7 +67,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
   ...load(),
 
   set: (patch) => {
-    const next: Settings = { textScale: get().textScale, motion: get().motion, sfxVolume: get().sfxVolume, musicVolume: get().musicVolume, ...patch };
+    const next: Settings = { textScale: get().textScale, motion: get().motion, sfxVolume: get().sfxVolume, musicVolume: get().musicVolume, mapLabels: get().mapLabels, ...patch };
     try {
       localStorage.setItem(KEY, JSON.stringify(next));
     } catch {
