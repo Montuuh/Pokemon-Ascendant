@@ -1,5 +1,5 @@
 {
-  "_note": "Held Item catalog — all 32 of docs/design/catalogs/held-items.md. One slot per Pokémon, always on, wearer-only, swapped only in the Map View and kept until the run ends (§7.4.1). Releasing a Pokémon drops its item back to the bag rather than losing it. Type-boost items (+20 % wearer-only, §7.4.2), Type Plates (+5 % Lead Aura for the bench, §7.4.3), sustain/defence (§7.4.4), tempo (§7.4.5) and signatures (§7.4.6). `thick-club` is locked to Marowak and never enters a random pool.",
+  "_note": "Held Item catalog — all 32 of docs/design/catalogs/held-items.md. One slot per Pokémon, always on, wearer-only, swapped only in the Map View and kept until the run ends (§7.4.1). Releasing a Pokémon drops its item back to the bag rather than losing it. Type-boost items (+20 % wearer-only, §7.4.2), Type Plates (+10 % wearer, +5 % Lead Aura for the bench, §7.4.3), sustain/defence (§7.4.4), tempo (§7.4.5) and signatures (§7.4.6). `thick-club` is locked to Marowak and never enters a random pool.",
   "items": [
     {
       "id": "charcoal",
@@ -125,10 +125,12 @@
     {
       "id": "splash-plate",
       "name": "Splash Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with water moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with water moves; while leading, benched Pokémon deal +5 % with water moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "water",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "water"
@@ -136,10 +138,12 @@
     {
       "id": "flame-plate",
       "name": "Flame Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with fire moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with fire moves; while leading, benched Pokémon deal +5 % with fire moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "fire",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "fire"
@@ -147,10 +151,12 @@
     {
       "id": "zap-plate",
       "name": "Zap Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with electric moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with electric moves; while leading, benched Pokémon deal +5 % with electric moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "electric",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "electric"
@@ -158,10 +164,12 @@
     {
       "id": "meadow-plate",
       "name": "Meadow Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with grass moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with grass moves; while leading, benched Pokémon deal +5 % with grass moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "grass",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "grass"
@@ -169,10 +177,12 @@
     {
       "id": "mind-plate",
       "name": "Mind Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with psychic moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with psychic moves; while leading, benched Pokémon deal +5 % with psychic moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "psychic",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "psychic"
@@ -180,10 +190,12 @@
     {
       "id": "icicle-plate",
       "name": "Icicle Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with ice moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with ice moves; while leading, benched Pokémon deal +5 % with ice moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "ice",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "ice"
@@ -191,10 +203,12 @@
     {
       "id": "fist-plate",
       "name": "Fist Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with fighting moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with fighting moves; while leading, benched Pokémon deal +5 % with fighting moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "fighting",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "fighting"
@@ -202,10 +216,12 @@
     {
       "id": "earth-plate",
       "name": "Earth Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with ground moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with ground moves; while leading, benched Pokémon deal +5 % with ground moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "ground",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "ground"
@@ -213,10 +229,12 @@
     {
       "id": "sky-plate",
       "name": "Sky Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with flying moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with flying moves; while leading, benched Pokémon deal +5 % with flying moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "flying",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "flying"
@@ -224,10 +242,12 @@
     {
       "id": "stone-plate",
       "name": "Stone Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with rock moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with rock moves; while leading, benched Pokémon deal +5 % with rock moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "rock",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "rock"
@@ -235,10 +255,12 @@
     {
       "id": "toxic-plate",
       "name": "Toxic Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with poison moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with poison moves; while leading, benched Pokémon deal +5 % with poison moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "poison",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "poison"
@@ -246,10 +268,12 @@
     {
       "id": "insect-plate",
       "name": "Insect Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with bug moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with bug moves; while leading, benched Pokémon deal +5 % with bug moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "bug",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "bug"
@@ -257,10 +281,12 @@
     {
       "id": "spooky-plate",
       "name": "Spooky Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with ghost moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with ghost moves; while leading, benched Pokémon deal +5 % with ghost moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "ghost",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "ghost"
@@ -268,10 +294,12 @@
     {
       "id": "draco-plate",
       "name": "Draco Plate",
-      "description": "While the wearer leads, every benched Pokémon deals +5 % with dragon moves.",
-      "hook": "lead-aura",
+      "description": "The wearer deals +10 % with dragon moves; while leading, benched Pokémon deal +5 % with dragon moves.",
+      "hook": "damage-dealt",
       "params": {
         "type": "dragon",
+        "multiplier": 1.1,
+        "wearerOnly": true,
         "percent": 5
       },
       "grantsLeadAura": "dragon"

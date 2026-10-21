@@ -127,8 +127,8 @@ export function itemAttackMultiplier(
 }
 
 /**
- * §6.5.4 / §7.4.3 — a Type Plate on the **Lead** boosts that type for every *benched* Pokémon, not the Lead
- * itself. It is an opt-in build pillar precisely because it rewards the swap decision rather than the hitter.
+ * §6.5.4 / §7.4.3 — a Type Plate gives +10 % to the wearer, and on the **Lead** boosts that type by +5 %
+ * for every *benched* Pokémon, not the Lead itself. It rewards both the holder and the swap decision.
  */
 function leadAuraMultiplier(state: CombatState, attacker: Combatant, move: MoveDef, content: ContentRegistry): number {
   if (!isPlayers(state, attacker)) return 1;

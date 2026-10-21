@@ -359,7 +359,7 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
   offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym a Rare 1-of-3**,
   later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run**. Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
   of list per relic bought this run.
-- **32 held items.** 11 unique type boosts (+20 % wearer-only) · 14 Type Plates (Lead Aura) · Leftovers, Eviolite, Focus
+- **32 held items.** 11 unique type boosts (+20 % wearer-only) · 14 Type Plates (+10 % wearer, +5 % Lead Aura for the bench) · Leftovers, Eviolite, Focus
   Sash · Power Bracer, Choice Scarf · Thick Club, Light Ball.
 - **15 TMs**, gated by `compatibleSpecies`, Mastery-exempt.
 - **Faint prevention order:** Sturdy → Last Stand → Focus Sash → Phoenix Feather.

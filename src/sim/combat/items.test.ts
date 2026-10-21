@@ -181,10 +181,40 @@ describe('Held items — §7.4', () => {
     }));
     const fullState = start(plain({ team, enemies: [PIDGEY], relics: ['fire-gem'] }));
     const ember = content.move('ember');
+    // Lead Charmander gets: Fire Gem (1.1) * Flame Plate wearer bonus (1.1) = 1.21 (no aura to itself)
+    const leadMult = itemAttackMultiplier(fullState, fullState.player.team[0]!, ember, content);
+    expect(leadMult).toBeCloseTo(1.1 * 1.1, 5);
     // Bench Vulpix gets: Fire Gem (1.1) * Charcoal (1.2) * Lead Flame Plate aura (1.05) = 1.386
     const mult = itemAttackMultiplier(fullState, fullState.player.team[1]!, ember, content);
     expect(mult).toBeCloseTo(1.1 * 1.2 * 1.05, 5);
     expect(itemAttackMultiplier(bareState, bareState.player.team[1]!, ember, content)).toBe(1);
+  });
+
+  it('TypePlate_GrantsWearerBoost_AndBenchLeadAuraWhenLeading_§7.4.3', () => {
+    const ember = content.move('ember');
+    // 1. Wearer on bench: gets +10 % wearer bonus, no aura from lead
+    const benchPlateState = start(plain({
+      team: [
+        { species: 'bulbasaur', level: 20, moves: ['vine-whip'] },
+        { species: 'charmander', level: 20, moves: ['ember'], heldItem: 'flame-plate' },
+      ],
+      enemies: [PIDGEY],
+    }));
+    expect(itemAttackMultiplier(benchPlateState, benchPlateState.player.team[1]!, ember, content)).toBeCloseTo(1.1, 5);
+    // Non-matching move on bench gets no boost
+    const vineWhip = content.move('vine-whip');
+    expect(itemAttackMultiplier(benchPlateState, benchPlateState.player.team[0]!, vineWhip, content)).toBe(1);
+
+    // 2. Wearer on lead: wearer gets +10 %, teammate on bench gets +5 % aura
+    const leadPlateState = start(plain({
+      team: [
+        { species: 'charmander', level: 20, moves: ['ember'], heldItem: 'flame-plate' },
+        { species: 'vulpix', level: 20, moves: ['ember'] },
+      ],
+      enemies: [PIDGEY],
+    }));
+    expect(itemAttackMultiplier(leadPlateState, leadPlateState.player.team[0]!, ember, content)).toBeCloseTo(1.1, 5);
+    expect(itemAttackMultiplier(leadPlateState, leadPlateState.player.team[1]!, ember, content)).toBeCloseTo(1.05, 5);
   });
 
   it('Leftovers_HealsItsWearerAtTurnEnd_AndNobodyElse_§7.4.4', () => {

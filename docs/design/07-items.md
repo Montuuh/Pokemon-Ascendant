@@ -199,7 +199,7 @@ Every relic carries one primary and optionally one secondary category. The City 
 Ten of them are the **Elemental Gems** — Ground, Water, Fire, Grass, Rock, Flying, Electric, Psychic, Fighting and
 Normal Gem — each giving **+10 % to that type's moves for the whole party**. They are the reliable backbone of the
 Common tier and the reason a mono-type team can commit, sitting alongside the wearer-only Held Items (+20 %) and
-the Lead-Aura Type Plates (+5 % for the bench).
+the Type Plates (+10 % wearer, +5 % Lead Aura for the bench).
 
 The other fifteen shape a turn rather than a type:
 
@@ -328,11 +328,12 @@ Thirty generic items plus two signatures, one slot per Pokémon.
 Charcoal · Mystic Water · Magnet · Miracle Seed · NeverMeltIce · Black Belt · Sharp Beak · Twisted Spoon · Soft Sand · Hard Stone · Silk Scarf.
 Each gives the **wearer** +20 % on that type's moves.
 
-Together with the Common **Elemental Gem** relics (+10 % party-wide, §7.3.3) and the **Type Plates** (+5 % Lead Aura for the bench, §7.4.3), they form a clean three-tier elemental hierarchy with zero duplicate icons: Gems boost the whole team modestly, unique items boost one specialist strongly, and Plates reward the Lead/Swap positioning loop.
+Together with the Common **Elemental Gem** relics (+10 % party-wide, §7.3.3) and the **Type Plates** (+10 % wearer, +5 % Lead Aura for the bench, §7.4.3), they form a clean three-tier elemental hierarchy with zero duplicate icons: Gems boost the whole team modestly, unique items boost one specialist strongly, and Plates reward both the wearer and the Lead/Swap positioning loop.
 
 ## §7.4.3 Type Plates (14) — the Lead Aura source
 
-Splash · Flame · Zap · Meadow · Mind · Icicle · Fist · Earth · Sky · Stone · Toxic · Insect · Spooky · Draco Plate. While the wearer is **Lead**, every bench Pokémon's moves of that
+Splash · Flame · Zap · Meadow · Mind · Icicle · Fist · Earth · Sky · Stone · Toxic · Insect · Spooky · Draco Plate. The wearer's moves of that
+type deal **+10 %**; and while the wearer is **Lead**, every bench Pokémon's moves of that
 type deal **+5 %** (§6.5.4). Rare drops and the Mysterious Stone event.
 
 ## §7.4.4 Sustain and defence (3)
