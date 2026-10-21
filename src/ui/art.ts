@@ -59,8 +59,10 @@ export const trainerSprite = (sprite: string) => asset(`art/trainers/${sprite}.p
 /** The games' own pixel type label (32×12, FireRed/LeafGreen), fetched by `npm run art:types`. */
 export const typeGlyph = (type: string) => asset(`art/icons/type/icon-type-${type}.png`);
 export const statusGlyph = (status: string) => asset(`art/icons/status/icon-status-${status}.svg`);
+export const statusEmblemGlyph = (status: string) => asset(`art/icons/status/icon-status-emblem-${status}.svg`);
 export const intentGlyph = (kind: string) => asset(`art/icons/intent/icon-intent-${kind}.svg`);
 export const medalGlyph = (tier: string) => asset(`art/icons/medal/icon-medal-${tier}.svg`);
+export const trophyGlyph = (tier: string) => asset(`art/icons/trophy/icon-trophy-${tier}.svg`);
 /**
  * §9 — an emblem on a disc, by id (`gym-rock`, `wild-cave`, `trainer-hiker`). The map draws its nodes as the things
  * themselves since v0.9.14 (`nodeArt`); the Gym emblems still mark a won Badge in a City and on the Legendary pick.
