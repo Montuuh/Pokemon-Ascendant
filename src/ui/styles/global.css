@@ -47,7 +47,8 @@ img {
 }
 
 .pixel,
-img[src*='/art/items/'] {
+img[src*='/art/items/'],
+img[src*='/art/pokemon/'] {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }

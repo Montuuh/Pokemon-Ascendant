@@ -2,7 +2,7 @@ import { useMemo, useRef, useState, type KeyboardEvent, type SyntheticEvent } fr
 import { IconArrowNarrowRight, IconPlus, IconSparkles } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { boxIconUrl, portraitUrl } from '@/content/schemas/species';
+import { boxIconUrl } from '@/content/schemas/species';
 import { previewBranch, type BranchPreview } from '@/sim';
 import { EvolutionCutscene } from '@/ui/components/EvolutionCutscene';
 import { MoveChip } from '@/ui/components/MoveChip';
@@ -120,13 +120,9 @@ function EvolutionChoice({ uid }: { uid: string }) {
 
         <aside className={styles.hero} aria-label={focus ? `${after.name} on this path` : `${before.name} now`}>
           <div className={styles.portraitWrap}>
-            {/* §5.14 — a shiny keeps its palette through the evolution. The official artwork has no shiny version, so a
-                shiny is drawn with its battle sprite in the shiny palette, at a whole-number scale as the cutscene draws it. */}
-            {mon.shiny ? (
-              <ShinySprite key={after.id} speciesId={after.id} name={after.name} />
-            ) : (
-              <img key={after.id} className={styles.portrait} src={portraitUrl(after.dex, after.id)} alt={after.name} width={200} height={200} data-testid="evolution-after" />
-            )}
+            {/* §5.14 & docs/design/ui-doctrine.md §D9 — the evolved form is drawn with its canonical pixel-art battle sprite
+                at a whole-number scale, matching the EvolutionCutscene and keeping a shiny's palette when shiny. */}
+            <HeroSprite key={after.id} speciesId={after.id} name={after.name} shiny={!!mon.shiny} />
           </div>
           <p className={`${styles.heroName} display`}>
             {after.name}
@@ -265,10 +261,10 @@ function EvolutionChoice({ uid }: { uid: string }) {
 }
 
 /**
- * §5.14 — a shiny's battle sprite in the hero's box, at the largest whole-number scale that fits it (the cutscene's
- * rule), so the pixels stay square at every size the box takes.
+ * §5.14 / §D9 — the Pokémon's battle sprite in the hero's box, at the largest whole-number scale that fits it (the
+ * cutscene's rule), so the pixels stay square at every size the box takes.
  */
-function ShinySprite({ speciesId, name }: { speciesId: string; name: string }) {
+function HeroSprite({ speciesId, name, shiny }: { speciesId: string; name: string; shiny: boolean }) {
   const [size, setSize] = useState<[number, number] | null>(null);
   const onLoad = (e: SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
@@ -280,11 +276,11 @@ function ShinySprite({ speciesId, name }: { speciesId: string; name: string }) {
     <img
       className={`pixel ${styles.portrait}`}
       style={size ? { width: size[0], height: size[1] } : { visibility: 'hidden' }}
-      src={spriteOf({ speciesId }, 'front', true)}
-      alt={`Shiny ${name}`}
+      src={spriteOf({ speciesId }, 'front', shiny)}
+      alt={shiny ? `Shiny ${name}` : name}
       onLoad={onLoad}
       data-testid="evolution-after"
-      data-shiny="true"
+      {...(shiny ? { 'data-shiny': 'true' } : {})}
     />
   );
 }
