@@ -1,4 +1,3 @@
-import { IconQuestionMark } from '@tabler/icons-react';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
 import { SLOT_LABEL, asLeadDamage, comboBreakAt, intentRecipient, slotOccupant, summonedBy, visibleMoot } from '@/sim';
 import { intentGlyph } from '@/ui/art';
@@ -51,7 +50,7 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
       {action === 1 && <span className={styles.secondLabel}>Also</span>}
       {intent?.hidden ? (
         <>
-          <IconQuestionMark size={18} />
+          <img src={intentGlyph('unknown')} alt="" width={20} height={20} className={styles.intentIcon} />
           <span>Unknown intent</span>
         </>
       ) : intent ? (

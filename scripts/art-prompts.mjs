@@ -11,20 +11,20 @@ import { writeFile, mkdir } from 'node:fs/promises';
 const OUT = 'docs/art/prompts';
 
 /** The look, stated in full in every prompt. Models do not remember the last call. */
-const STYLE = `Bright, cheerful, polished cel-shaded environment art in the exact visual language of a modern
-Pokémon game — clean crisp linework, smooth cel-shading, saturated friendly colours, soft rounded toy-like
-geometry, gentle warm global illumination, cosy miniature-diorama charm, the wholesome all-ages look of a
-handheld creature-collecting adventure.`;
+const STYLE = `Authentic 16-bit Game Boy Advance / Nintendo DS pixel art environment in the exact visual language of
+classic Pokémon FireRed, LeafGreen, Emerald and HeartGold/SoulSilver — crisp chunky square pixels, a strict pixel grid,
+a warm saturated handheld palette, clean pixel clusters and dithering, 1-pixel dark outlines, no anti-aliasing, no
+smooth vector gradients, and the cheerful all-ages charm of a classic handheld Pokémon adventure.`;
 
 /** Every scene wants the same things kept out. */
 const AVOID = `Avoid: text, words, letters, numbers, UI, buttons, HUD, watermark, signature, creatures,
-monsters, animals, people, characters, photorealistic, 3D photoreal render, dark, gloomy, grim, scary,
-cluttered, harsh shadows, neon, low quality, blurry, jpeg artifacts.`;
+monsters, animals, people, characters, photorealistic, 3D photoreal render, smooth cel-shading, vector illustration,
+anti-aliasing, mixels, dark, gloomy, grim, scary, cluttered, harsh shadows, neon, low quality, blurry, jpeg artifacts.`;
 
 /** A battle plate has a UI contract: the middle and the bottom third must stay quiet. */
-const BATTLE_FRAMING = `Wide establishing battlefield view with an open, uncluttered flat playing area across
-the centre and foreground; far background softly blurred into atmospheric parallax layers. Keep the centre and
-the lower third low-contrast and calm so battle sprites and a card tray overlay on top and stay readable.
+const BATTLE_FRAMING = `Wide establishing pixel-art battlefield view with an open, uncluttered flat playing area across
+the centre and foreground; far background framed with clean pixel-art layers. Keep the centre and
+the lower third low-contrast and calm so pixel battle sprites and a card tray overlay on top and stay readable.
 16:9 widescreen.`;
 
 const scenes = {

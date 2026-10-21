@@ -1,13 +1,16 @@
-import { IconMedal } from '@tabler/icons-react';
-import styles from './MedalIcon.module.css';
+import { medalGlyph } from '@/ui/art';
 
-// §8.7 — a medal's disc in its tier's colour (the reward screen's progress rows, the progress panel).
-const TIER_CLASS: Record<string, string | undefined> = { bronze: styles.bronze, silver: styles.silver, gold: styles.gold, platinum: styles.platinum };
-
+// §8.7 — a medal's GBA pixel-art ribbon in its tier's colour (a fight's progress door, the PC Terminal medal case).
 export function MedalIcon({ tier, size = 26 }: { tier: string; size?: number }) {
   return (
-    <span className={`${styles.medal} ${TIER_CLASS[tier] ?? ''}`} style={{ width: size, height: size }} aria-hidden="true">
-      <IconMedal size={Math.round(size * 0.6)} />
-    </span>
+    <img
+      src={medalGlyph(tier)}
+      alt=""
+      width={size}
+      height={size}
+      className="pixel"
+      style={{ flex: 'none' }}
+      aria-hidden="true"
+    />
   );
 }

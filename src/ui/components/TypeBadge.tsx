@@ -31,12 +31,12 @@ export function TypeBadge({ type, size = 18, defenderTypes, mode = 'defense' }: 
   );
 }
 
-// Status SVGs ship their own coloured badge + colour-blind pattern + white glyph, so they render bare.
-export function StatusBadge({ status, size = 22 }: { status: string; size?: number }) {
+// Status pills (32×12 GBA pixel boxes: BRN, PSN, PAR, SLP, FRZ, CNF) share the type label's pixel grammar.
+export function StatusBadge({ status, size = 14 }: { status: string; size?: number }) {
   const tip = useTip(statusTip(status));
   return (
-    <span className={styles.bare} style={{ width: size, height: size }} aria-label={status} tabIndex={0} {...tip}>
-      <img src={statusGlyph(status)} alt="" width={size} height={size} />
+    <span className={styles.badge} aria-label={status} tabIndex={0} {...tip}>
+      <img src={statusGlyph(status)} alt="" height={size} className={styles.label} draggable={false} />
     </span>
   );
 }

@@ -100,7 +100,8 @@
   border-color: var(--ink-muted);
 }
 .intentIcon {
-  filter: invert(1) brightness(1.4);
+  image-rendering: pixelated;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
   flex: 0 0 auto;
 }
 .dmg {

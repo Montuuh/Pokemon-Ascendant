@@ -111,8 +111,8 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
       {/* Its condition on the card's corner, as the slot tag is on its top: the name keeps the row. */}
       {(mon.status || mon.confusionTurns > 0) && (
         <span className={card.corner}>
-          {mon.status && <StatusBadge status={mon.status.kind} size={22} />}
-          {mon.confusionTurns > 0 && <StatusBadge status="confusion" size={22} />}
+          {mon.status && <StatusBadge status={mon.status.kind} size={UNIT_BADGE} />}
+          {mon.confusionTurns > 0 && <StatusBadge status="confusion" size={UNIT_BADGE} />}
         </span>
       )}
       <span className={card.head}>

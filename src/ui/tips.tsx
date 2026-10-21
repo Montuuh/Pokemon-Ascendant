@@ -91,7 +91,7 @@ export function typeDefenseTip(types: readonly PokemonType[]): ReactNode {
 
 /** §4.2 — a status condition, what it does, and how long it lasts. */
 export function statusTip(status: string): ReactNode {
-  return <Tip icon={<img src={statusGlyph(status)} alt="" width={20} height={20} />} title={STATUS_LABEL[status] ?? cap(status)} body={STATUS_HINT[status]} />;
+  return <Tip icon={<img src={statusGlyph(status)} alt="" height={14} className="pixel" />} title={STATUS_LABEL[status] ?? cap(status)} body={STATUS_HINT[status]} />;
 }
 
 // ── Moves ────────────────────────────────────────────────────────────────────────────────────────────────

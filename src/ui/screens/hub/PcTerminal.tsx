@@ -4,7 +4,8 @@ import { motion } from 'motion/react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, BOND_RANKS, MAX_BOND_RANK, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, type MedalTier, speciesMet } from '@/sim';
+import { ACHIEVEMENTS, BOND_RANKS, MAX_BOND_RANK, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, speciesMet } from '@/sim';
+import { MedalIcon } from '@/ui/components/MedalIcon';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon } from '@/ui/art';
 import { TypeLabel } from '@/ui/components/TypeBadge';
@@ -36,8 +37,6 @@ const CATEGORY_LABEL: Record<AchievementDef['category'], string> = {
   'build-identity': 'Build identity',
   endurance: 'Endurance',
 };
-
-const MEDAL_GLYPH: Record<MedalTier, string> = { bronze: '🥉', silver: '🥈', gold: '🥇', platinum: '💎' };
 
 export function PcTerminal() {
   const account = useAccountStore((s) => s.account);
@@ -163,7 +162,7 @@ export function PcTerminal() {
                   const blurb = a.hidden && !got ? '???' : a.description;
                   return (
                     <li key={a.id} className={got ? styles.got : styles.pendingRow} data-testid={`achievement-${a.id}`}>
-                      <span className={styles.medal} aria-hidden="true">{MEDAL_GLYPH[a.tier]}</span>
+                      <span className={styles.medal} aria-hidden="true"><MedalIcon tier={a.tier} size={28} /></span>
                       <span className={styles.rowBody}>
                         <span className={`${styles.rowName} display`}>{a.hidden && !got ? `${a.name} (hidden)` : a.name}</span>
                         <span className={styles.rowDesc}>{blurb}</span>

@@ -182,8 +182,8 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
           </span>
           {(enemy.status || enemy.confusionTurns > 0) && (
             <span className={card.corner}>
-              {enemy.status && <StatusBadge status={enemy.status.kind} size={22} />}
-              {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={22} />}
+              {enemy.status && <StatusBadge status={enemy.status.kind} size={UNIT_BADGE} />}
+              {enemy.confusionTurns > 0 && <StatusBadge status="confusion" size={UNIT_BADGE} />}
             </span>
           )}
           {/* §9.2.4 / §5.6 — the held card's number on this enemy; blue is position: a Melee card cannot reach it. */}

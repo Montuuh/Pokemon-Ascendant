@@ -238,7 +238,7 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
                                 <MonIcon speciesId={mon.speciesId} size={28} />
                                 <span className={styles.useBody}>
                                   <span>
-                                    {name} {mon.status && <img src={statusGlyph(mon.status.kind)} alt="" width={16} height={16} className={styles.useStatus} />}
+                                    {name} {mon.status && <img src={statusGlyph(mon.status.kind)} alt="" height={12} className={`pixel ${styles.useStatus}`} />}
                                   </span>
                                   <HpBar hp={mon.hp} maxHp={max} height={6} />
                                   <span className={`${styles.useHp} tabular`}>
