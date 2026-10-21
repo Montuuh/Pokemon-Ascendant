@@ -1439,6 +1439,11 @@ its sides.
 Pokémon at half size either side (`HabitatArt`), each going round the whole pool, half a pool apart and out of step
 with the nodes round it, on one clock for the map (`usePoolStep`, `POOL_CYCLE`); still with motion off.
 
+### v0.9.30 — Gen II type chart  ✅ 2026-10-21
+The 15-type chart rebalanced with Generation II matchups to fix Gen I's balance defects.
+
+**Shipped.** §4.1.2: type effectiveness across the 15 types now follows Generation II rules. Ghost hits Psychic for ×2 (fixing the Gen I bug where Psychic was immune), Fire resists Ice at ×0.5, Bug hits Poison for ×0.5, and Poison hits Bug neutrally (×1).
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

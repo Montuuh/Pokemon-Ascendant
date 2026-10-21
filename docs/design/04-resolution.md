@@ -48,8 +48,11 @@ with the result is a bug — both call the same pure function.
 
 ## §4.1.2 The type chart
 
-The **Gen I 15-type chart**, exactly: Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground,
-Flying, Psychic, Bug, Rock, Ghost, Dragon. Dark, Steel and Fairy do not exist in Pokémon Ascendant.
+The **15-type chart with Gen II effectiveness**: Normal, Fire, Water, Electric, Grass, Ice, Fighting,
+Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon. Dark, Steel and Fairy do not exist in Pokémon
+Ascendant. Effectiveness relationships use Generation II to resolve Gen I's balance defects (Ghost hits
+Psychic for 2.0× rather than Gen I's 0× bug; Fire resists Ice at 0.5×; Bug hits Poison for 0.5×; Poison hits Bug
+neutrally at 1.0×).
 
 | Matchup | Multiplier | Label |
 |---|---|---|
@@ -64,8 +67,8 @@ A dual-type defender multiplies both halves: Fire vs Grass/Poison = 2.0 × 1.0 =
 Water/Flying = 2.0 × 2.0 = **4.0**; Ground vs Water/Rock = 1.0 × 2.0 = **2.0**; Normal vs Ghost/Poison =
 0.0 × 1.0 = **0.0** — immunity always wins.
 
-Gen I immunities are preserved (Ghost immune to Normal and Fighting, Ground immune to Electric, Flying immune to
-Ground, and so on). They are displayed in the Intent Phase and on card hover — never hidden.
+Immunities are preserved (Ghost immune to Normal and Fighting, Ground immune to Electric, Flying immune to
+Ground, Normal immune to Ghost, and so on). They are displayed in the Intent Phase and on card hover — never hidden.
 
 **STAB** is 1.5 when the card's type matches either of the user's types.
 

@@ -20,7 +20,7 @@ it is cheap to iterate — the whole Combat Slice landed in one session on 2026-
 | `Core/GameRNG.cs`, `Core/RNGStreams.cs` | xorshift32 + 5 streams | `src/sim/rng/*` | ✅ core bit-compatible; stream seeds fmix32-mixed (§5) |
 | `Core/Data/GameTypes.cs` | enums | `src/sim/types.ts` | ✅ 15 types (CL-025) |
 | `Core/Data/BattleConfigSO.cs` | balance config | `src/sim/combat/battleConfig.ts` | ✅ combat fields; relic/badge/field fields arrive with their systems |
-| `Combat/TypeChart.cs` | Gen I chart | `src/sim/combat/typeChart.ts` | ✅ |
+| `Combat/TypeChart.cs` | 15-type chart (Gen II rebalance) | `src/sim/combat/typeChart.ts` | ✅ |
 | `Combat/DamageCalculator.cs` | §4.1.1 | `src/sim/combat/damage.ts` + `damageFlow.ts` | ✅ |
 | `Combat/StatStageManager.cs`, `CombatStatResolver.cs` | stages, effective stats | `statStages.ts`, `stats.ts` | ✅ |
 | `Combat/StatusEffectManager.cs`, `StatusModifiers.cs` | §4.2 | `status.ts` + ticks in `turn.ts` | ✅ (enemy-side translations CL-025) |

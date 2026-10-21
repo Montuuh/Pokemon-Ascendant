@@ -1,11 +1,12 @@
 import type { PokemonType } from '../types';
 
-// Per docs/design/04-resolution.md §4.1.2 — Gen I type effectiveness, "Gen I matrix exactly".
+// Per docs/design/04-resolution.md §4.1.2 — Gen II type effectiveness across the 15 types.
 // Only non-neutral cells are listed; everything else is ×1.
-// Gen I quirks preserved on purpose (they are canon for this game):
-//   - Ghost → Psychic = ×0   (the famous Gen I bug)
-//   - Bug   → Poison  = ×2   (Gen I; later gens ×0.5)
-//   - Poison → Bug    = ×2   (Gen I; later gens ×1)
+// Resolves Gen I balance quirks:
+//   - Ghost   → Psychic = ×2   (fixes the Gen I bug where Ghost had ×0)
+//   - Bug     → Poison  = ×0.5 (was ×2 in Gen I)
+//   - Poison  → Bug     = ×1   (neutral, was ×2 in Gen I)
+//   - Ice     → Fire    = ×0.5 (Fire resists Ice, was ×1 in Gen I)
 // The worked example in the spec prose (Ground vs Water/Rock = 0.5×) is arithmetically wrong; the matrix
 // gives ×1 × ×2 = ×2 and the test suite asserts that (Unity-era OPEN G6, resolved in favour of the matrix).
 type Row = Partial<Record<PokemonType, number>>;
@@ -16,15 +17,15 @@ export const TYPE_CHART: Readonly<Record<PokemonType, Row>> = {
   water: { fire: 2, water: 0.5, grass: 0.5, ground: 2, rock: 2, dragon: 0.5 },
   electric: { water: 2, electric: 0.5, grass: 0.5, ground: 0, flying: 2, dragon: 0.5 },
   grass: { fire: 0.5, water: 2, grass: 0.5, poison: 0.5, ground: 2, flying: 0.5, bug: 0.5, rock: 2, dragon: 0.5 },
-  ice: { water: 0.5, grass: 2, ice: 0.5, ground: 2, flying: 2, dragon: 2 },
+  ice: { fire: 0.5, water: 0.5, grass: 2, ice: 0.5, ground: 2, flying: 2, dragon: 2 },
   fighting: { normal: 2, ice: 2, poison: 0.5, flying: 0.5, psychic: 0.5, bug: 0.5, rock: 2, ghost: 0 },
-  poison: { grass: 2, poison: 0.5, ground: 0.5, bug: 2, rock: 0.5, ghost: 0.5 },
+  poison: { grass: 2, poison: 0.5, ground: 0.5, rock: 0.5, ghost: 0.5 },
   ground: { fire: 2, electric: 2, grass: 0.5, poison: 2, flying: 0, bug: 0.5, rock: 2 },
   flying: { electric: 0.5, grass: 2, fighting: 2, bug: 2, rock: 0.5 },
   psychic: { fighting: 2, poison: 2, psychic: 0.5 },
-  bug: { fire: 0.5, grass: 2, fighting: 0.5, poison: 2, flying: 0.5, psychic: 2, ghost: 0.5 },
+  bug: { fire: 0.5, grass: 2, fighting: 0.5, poison: 0.5, flying: 0.5, psychic: 2, ghost: 0.5 },
   rock: { fire: 2, ice: 2, fighting: 0.5, ground: 0.5, flying: 2, bug: 2 },
-  ghost: { normal: 0, psychic: 0, ghost: 2 },
+  ghost: { normal: 0, psychic: 2, ghost: 2 },
   dragon: { dragon: 2 },
 };
 

@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.30 — Gen II type chart · 2026-10-21
+
+The 15-type chart rebalanced with Generation II effectiveness.
+
+- **Ghost vs Psychic.** Ghost deals ×2 to Psychic, resolving the Gen I 0× bug.
+- **Fire vs Ice.** Fire resists Ice (Ice attacks deal ×0.5).
+- **Bug and Poison.** Bug deals ×0.5 to Poison; Poison deals ×1 (neutral) to Bug.
+
 ### v0.9.29 — Who lives there · 2026-10-20
 
 A Wild Area's pool goes round at the sides of its habitat.

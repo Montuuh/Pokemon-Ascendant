@@ -207,7 +207,7 @@ clamp — only immunity deals 0. Level is not in the formula.
 **Stats:** one Attack, one Defence, derived from Gen I as `attack = max(Atk, Spc)`,
 `defence = round((Def+Spc)/2)`. Effective = `base + growth×(level−1)`, then stage, then status.
 
-**Type chart:** Gen I **15 types** exactly — no Dark, Steel or Fairy. ×4 / ×2 / ×1 / ×0.5 / ×0.25 / ×0; dual
+**Type chart:** **15 types** with **Gen II effectiveness** — no Dark, Steel or Fairy. ×4 / ×2 / ×1 / ×0.5 / ×0.25 / ×0; dual
 types multiply; immunity always wins. Steel-typed source moves are typed Rock here.
 
 **Crit:** base **0 %**. Only AlwaysCrit moves, consumables and abilities grant it; additive, soft cap ~30–35 %.
