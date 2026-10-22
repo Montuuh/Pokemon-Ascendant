@@ -525,8 +525,9 @@ export function CombatScreen() {
         </div>
       </header>
 
-      <section
-        ref={setStageEl}
+      <div className={styles.stageFrame}>
+        <section
+          ref={setStageEl}
         className={`${styles.stage} ${fx.stageClass ?? ''}`}
         data-fx-stage
         style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings(), ...motionTimings() }}
@@ -646,6 +647,7 @@ export function CombatScreen() {
           </div>
         )}
       </section>
+      </div>
 
       {/* §9.2.2.4 — the tray as one row: the hand and the bag in the middle, the turn's end on the right. */}
       <footer className={styles.tray} ref={trayRef}>

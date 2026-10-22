@@ -71,7 +71,18 @@
   background: var(--surface-3);
 }
 
-/* ---- Stage (§9.2.1, v0.9.16): the two formations face each other across open ground ---- */
+/* ---- Stage Frame & Diorama Stage (§9.2.1) ---- */
+.stageFrame {
+  position: relative;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-2) var(--sp-4);
+  background: radial-gradient(circle at 50% 50%, rgba(28, 22, 36, 0.6) 0%, rgba(10, 8, 14, 0.95) 100%);
+  overflow: hidden;
+}
+
 .stage {
   position: relative;
   /* The formation's sizes are read from the stage's own height (cqh), so 720 p and 1080 p hold the same picture. */
@@ -82,12 +93,23 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-rows: minmax(0, 1fr);
   column-gap: var(--sp-4);
-  /* On a wide screen the two sides come in from the edges, so the field reads as one fight and not two corners. */
-  padding: var(--sp-4) clamp(var(--sp-5), 5vw, 128px) var(--sp-3);
+  /* Controlled horizontal padding within the framed diorama */
+  padding: var(--sp-3) clamp(var(--sp-4), 4cqw, 72px) var(--sp-3);
   overflow: hidden;
   background-size: cover;
-  background-position: center 40%;
+  background-position: center center;
   min-height: 0;
+
+  /* Arena diorama rectangle (16:9 proportion, contained within the frame) */
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 16px 44px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    inset 0 0 80px rgba(0, 0, 0, 0.2);
 }
 .stageTint {
   position: absolute;
