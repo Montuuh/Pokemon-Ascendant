@@ -138,9 +138,11 @@ green (heal / buff) · `--accent-negative` #FF6B6B coral red (damage / faint) ·
 
 ## DS-3 Typography
 
-- **Two families:** `--font-display` (pixel-style display face for headings, Pokémon names, numbers
-  on cards) and `--font-body` (clean humanist sans for body/longform — readability at small sizes &
-  CJK roadmap §9.10). Both must ship en-US glyph coverage; body face must have a CJK fallback hook.
+- **Three families, bundled locally under SIL OFL 1.1:** `--font-display` (**Pixelify Sans** for
+  headings, Pokémon names and chips), `--font-number` (**Tiny5** for numbers) and `--font-body`
+  (**Nunito** for body/longform — readability at small sizes & CJK roadmap §9.10). All must ship
+  en-US glyph coverage; body face must have a CJK fallback hook. Pixel display and number faces
+  keep short tactical reads distinct from longer prose.
 - **Type scale** (base 16px; all sizes are tokens, multiplied by the accessibility text-size factor
   80/100/125/150% from §9.6 — **every text element binds the factor, designed to not clip at 150%**):
 
@@ -153,7 +155,7 @@ green (heal / buff) · `--accent-negative` #FF6B6B coral red (damage / faint) ·
   | `--type-body` | 17 | body regular | descriptions, effect text |
   | `--type-small` | 15 | body regular | secondary/meta |
   | `--type-caption` | 13 | body medium | badges, footnotes, counters |
-  | `--type-number` | 22 | display bold tabular | HP/AP/damage (tabular figures, no jitter) |
+  | `--type-number` | 22 | number regular tabular | HP/AP/damage (tabular figures, no jitter) |
 
 - **Numbers use tabular figures** everywhere they change live (HP, AP, damage preview, counters).
 - **Line length:** body text wraps at ≤ 60ch. **Never** rely on overflow clipping for meaning.
@@ -314,8 +316,8 @@ event-bus channel / SO, never a direct system call; ④ lists empty/loading/disa
 
 > Authoritative anatomy for the skill card, agreed via mockup iteration (move_card_v3 + modifier/rider).
 > Supersedes the generic card note in §9.2.3 and `01-design-system §9.1` — those should point here.
-> Style: warm/rounded (§9.1.1), full type-colour theming. Fonts: **Baloo 2** (display) / **Nunito**
-> (body). All taxonomy cited to canon; every face element maps to a `MoveSO` field. Status: locked for
+> Style: warm/rounded (§9.1.1), full type-colour theming. Fonts: **Pixelify Sans** (display), **Tiny5**
+> (numbers), **Nunito** (body). All taxonomy cited to canon; every face element maps to a `MoveSO` field. Status: locked for
 > the first iteration; the three flagged micro-decisions at the end stay open.
 
 ---
@@ -344,10 +346,10 @@ AP-left / power-right**. No internal trait strip.
 |------|---------|-------------------|
 | **Mechanics badges** | **category + range + modifier** icons | **overhang the top-LEFT edge**, half above the card; ~20–22px circles; modifier gold-tinted |
 | **Status-rider badge** | condition glyph(s), condition-coloured | **overhang the top-RIGHT edge**; 2px dark ring |
-| **Top bar** | **owner** avatar + **move name** | deeper type shade; name `Baloo 2`, owner avatar = 32×32 species portrait |
+| **Top bar** | **owner** avatar + **move name** | deeper type shade; name `Pixelify Sans`, owner avatar = 32×32 species portrait |
 | **Window** (expanded only) | **owner portrait** ‖ **move art** | cream `--surface` inset, `--radius-md` |
 | **Effect plate** (expanded only) | localised effect text, modifier/rider terms colour-coded inline | cream inset, `Nunito` ~12px |
-| **Footer** | **AP cost dots — bottom-LEFT** · **`PWR n` — bottom-RIGHT** | `Baloo 2`; power = base only, **no STAB/maths here** |
+| **Footer** | **AP cost dots — bottom-LEFT** · **`PWR n` — bottom-RIGHT** | `Pixelify Sans` label, `Tiny5` number; power = base only, **no STAB/maths here** |
 
 **Compressed** = type-colour body · the two overhanging badge clusters · top bar (owner avatar + name)
 · footer (AP bottom-left, power bottom-right). It drops only the window + effect plate. Everything

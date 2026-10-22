@@ -60,6 +60,9 @@ img[src*='/art/icons/'] {
   font-weight: 700;
 }
 .tabular {
+  font-family: var(--font-number);
+  font-weight: 400;
+  font-synthesis: none;
   font-variant-numeric: tabular-nums;
 }
 .sr-only {

@@ -14,6 +14,7 @@
   background: var(--frame);
   border: 2px solid color-mix(in srgb, var(--card-type) 45%, var(--tip-surface));
   color: var(--brand-cream);
+  font-family: var(--font-ui);
   text-align: left;
   transform-origin: 50% 120%;
   transform: rotate(var(--rot)) translateY(var(--lift));
@@ -93,6 +94,8 @@
   padding: 3px 6px 3px 3px;
 }
 .cost {
+  font-family: var(--font-number);
+  font-synthesis: none;
   flex: 0 0 auto;
   width: 22px;
   height: 22px;
@@ -157,6 +160,8 @@
 }
 /* §4.1.2 — how the move's type lands on the enemy Lead: ×2 up, ×0.5 down. */
 .eff {
+  font-family: var(--font-number);
+  font-synthesis: none;
   position: absolute;
   top: 3px;
   left: 3px;
@@ -236,6 +241,7 @@
 
 /* Plate: what it does — two lines held open, so the row's gems line up; a rare third line grows the card. */
 .plate {
+  font-family: var(--font-body);
   background: var(--brand-cream);
   color: var(--ink-on-accent);
   border-radius: var(--radius-sm);

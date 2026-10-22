@@ -56,13 +56,27 @@
   box-shadow: 0 20px 40px rgba(58, 46, 34, 0.2);
 }
 .thumb {
+  container-type: size;
+  image-rendering: pixelated;
   position: relative;
   height: 170px;
-  background-size: cover;
+  background-size: 0 0;
+  background-repeat: no-repeat;
   background-position: center;
   display: flex;
   align-items: flex-end;
   justify-content: center;
+}
+.thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: inherit;
+  /* D9 — the thumbnail crops the same 640×360 grid at whole or half steps. */
+  background-size: round(up, max(100cqw, calc(100cqh * 16 / 9)), 320px) auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
 }
 .thumb::after {
   content: '';

@@ -21,6 +21,7 @@
   background: color-mix(in srgb, var(--surface-1) 94%, transparent);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
   color: var(--ink-primary);
+  font-family: var(--font-ui);
   text-align: left;
   transition:
     transform var(--motion-base) var(--ease-spring),
@@ -82,6 +83,8 @@
 }
 /* Secondary ink, not muted: on the card the muted grey fell under 4.5:1 (D5). */
 .level {
+  font-family: var(--font-number);
+  font-synthesis: none;
   flex: 0 0 auto;
   font-size: var(--type-micro);
   color: var(--ink-secondary);
@@ -163,6 +166,8 @@
   }
 }
 .chip {
+  font-family: var(--font-number);
+  font-synthesis: none;
   font-size: var(--type-micro);
   font-weight: 800;
   border-radius: var(--radius-sm);

@@ -24,7 +24,7 @@ describe('The title battles — §9.13.1', () => {
         expect(() => content.move(id), id).not.toThrow();
         expect(existsSync(`public/art/moves/${id}.png`), `${id} art`).toBe(true);
       }
-      expect(existsSync(`public/art/stages/${m.stage}.jpg`), m.stage).toBe(true);
+      expect(existsSync(`public/art/stages/${m.stage}.png`), m.stage).toBe(true);
     }
   });
 

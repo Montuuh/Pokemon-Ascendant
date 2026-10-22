@@ -6,21 +6,22 @@
 // look at the candidates, then install the one you picked at the size and format the loader expects.
 //
 // Usage:
-//   node scripts/install-art.mjs stage <src.png> <name>    → public/art/stages/<name>.jpg   1920×1080 q82
+//   node scripts/install-art.mjs stage <src.png> <name>    → public/art/stages/<name>.png   640×360, 256 colours, nearest
 //   node scripts/install-art.mjs map <src.png> <name>      → public/art/map/<name>.jpg      1920×1080 q82
 //   node scripts/install-art.mjs vista <src.png> <name>    → public/art/ui/<name>.jpg       1920×1080 q86
 //   node scripts/install-art.mjs pixel-vista <src> <name>  → public/art/ui/<name>.png       1920×1080 nearest
 //   node scripts/install-art.mjs icon <src.png> <name> [px]→ public/art/items/<name>.png    128×128
 //   node scripts/install-art.mjs pixel-icon <src> <name>   → public/art/safari/<name>.png   16×16 nearest, trimmed
 //
-// Every profile is lossy on purpose except `icon`. Backdrops sit behind a scrim and a blur, so q82 is
-// invisible; an icon sits at 100 % on a card, so it stays PNG.
+// Stage art uses the reviewed logical pixel grid and a lossless PNG container. Other scene profiles
+// below keep their individual format contracts; generated sources remain in playtest/artgen/.
 import sharp from 'sharp';
-import { mkdir, stat } from 'node:fs/promises';
+import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+import { normaliseStage, STAGE_PROFILE } from './normalise-stages.mjs';
 
 const PROFILES = {
-  stage: { dir: 'public/art/stages', ext: 'jpg', w: 1920, h: 1080, quality: 82, fit: 'cover' },
+  stage: { dir: 'public/art/stages', ext: 'png', w: STAGE_PROFILE.width, h: STAGE_PROFILE.height, stage: true },
   map: { dir: 'public/art/map', ext: 'jpg', w: 1920, h: 1080, quality: 82, fit: 'cover' },
   // Pixel art has to be scaled with nearest-neighbour or the hard edges turn to mush, which defeats the point
   // of asking for pixel art. Generate small, blow it up in whole-ish steps, and keep it lossless.
@@ -94,6 +95,13 @@ async function cutout(image, tolerance) {
 let input = sharp(src);
 const meta = await input.metadata();
 if (profile.cut) input = await cutout(input, profile.cut);
+
+if (profile.stage) {
+  if (width !== STAGE_PROFILE.width || height !== STAGE_PROFILE.height) throw new Error('Stage installation requires the reviewed 640x360 grid. Use normalise-stages samples to compare alternatives.');
+  await writeFile(dest, await normaliseStage(src, STAGE_PROFILE));
+  console.log(`${dest}  ${meta.width}×${meta.height} → ${width}×${height}, 256-colour logical grid, lossless PNG`);
+  process.exit(0);
+}
 
 /**
  * §2.11.6 — a generated sprite onto a tiny tile grid. The model draws on a ~32-cell grid at 1024 px, so nearest-

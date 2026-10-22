@@ -7,11 +7,11 @@ Poké Mart marks, and all Pokémon names are trademarks of Nintendo / Creatures 
 
 **On the art, in two halves.**
 
-*Generated:* scenes, and only scenes — the main-menu vista and the two town lobbies (and the three route plates the map
-was painted on until v0.8.7, kept as the style key for generated scenes)
-(Pallet Town, Celadon City, v0.7.1). All are drawn as **top-down pixel art**, in the franchise's own overworld
-register, deliberately and knowingly, on the basis that the project is free and stays free. v0.4 also generated the four battle backdrops; v0.5 replaced them
-with the real ones, because a place the player has stood in is an object like any other.
+*Generated:* scene compositions, including the main-menu vista, the town lobbies and the current battle-stage
+set. The three route plates the map was painted on until v0.8.7 remain as a style key. Overworld scenes use
+the franchise's top-down register; battle stages use a ground-level arena view. The project deliberately uses
+Pokémon-themed scenes on the basis that it is free and stays free. The current stage inventory and its
+provenance limits are recorded below; the older official-stage rows are historical records.
 
 *Real assets:* everything the player already knows by heart — every item, the Boulder Badge, the Pokémon
 Centre, the trainer classes, the Pokémon themselves. A generative model approximates an object; it cannot
@@ -24,10 +24,12 @@ If Pokémon Ascendant ever stopped being non-commercial, none of this could ship
 | Asset family | Source | Licence / terms | Path |
 |---|---|---|---|
 | Pokémon official artwork, Gen VIII box icons | [PokeAPI/sprites](https://github.com/PokeAPI/sprites) (mirrors official assets) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/pokemon/{portraits,icons}` |
+| Compact Pokémon icons (151, A05) | Derived from the existing PokéAPI box icons by `node scripts/build-compact-icons.mjs`: exact alpha-bound crop, no resampling | Same rights and fan-use terms as the source icons | `public/art/pokemon/compact/*.png` |
 | Animated battle sprites (gen5ani, and the gen5ani-shiny palettes for §5.13.1 Veteran) | [Pokémon Showdown](https://play.pokemonshowdown.com/sprites/) / Smogon sprite project | © Nintendo / Creatures / GAME FREAK; sprite edits by the Smogon community; fan use | `public/art/pokemon/battle` |
-| Stage backdrops (14) | **The real battle backgrounds** — Pokémon Showdown's gen6 rips (`npm run art:fetch`) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/stages` |
-| Stage backdrops: `power-plant`, `volcano` (v0.7.3) | **The real battle backgrounds** — Pokémon Showdown's classic set (`play.pokemonshowdown.com/fx/bg-thunderplains.png`, `bg-volcanocave.png`), installed with `install-art stage` | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/stages` |
-| Stage backdrops: `route`, `mountain`, `beach`, `pond` (v0.9.25, the Wild Areas' habitats) | **The real battle backgrounds** — Pokémon Showdown's classic set (`play.pokemonshowdown.com/fx/bg-route.png`, `bg-mountain.png`, `bg-beachshore.png`, `bg-river.png`), installed with `install-art stage` | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/stages` |
+| Legacy stage backdrops (14; superseded inventory) | Historical Pokémon Showdown gen6 rips (`npm run art:fetch`); this row does not identify the current stage compositions | © Nintendo / Creatures / GAME FREAK; fan use | Historical contents of `public/art/stages` |
+| Legacy stage backdrops: `power-plant`, `volcano` (v0.7.3; superseded inventory) | Historical Pokémon Showdown classic set (`play.pokemonshowdown.com/fx/bg-thunderplains.png`, `bg-volcanocave.png`), installed with `install-art stage` | © Nintendo / Creatures / GAME FREAK; fan use | Historical contents of `public/art/stages` |
+| Legacy stage backdrops: `route`, `mountain`, `beach`, `pond` (v0.9.25; superseded inventory) | Historical Pokémon Showdown classic set (`play.pokemonshowdown.com/fx/bg-route.png`, `bg-mountain.png`, `bg-beachshore.png`, `bg-river.png`), installed with `install-art stage` | © Nintendo / Creatures / GAME FREAK; fan use | Historical contents of `public/art/stages` |
+| Current stage backdrops (45, A06 runtime derivatives) | Existing JPG compositions associated with the project's Gemini scene-generation batches; re-exported by `node scripts/normalise-stages.mjs install` as indexed 640×360 PNGs, ≤256 colours, no dithering. See provenance limits below | Generated Pokémon-themed scenes; underlying Pokémon marks and any incorporated official artwork retain their respective rights. Individual embedded-portrait provenance is not established | `public/art/stages/*.png`; retained sources `*.jpg`; `manifest.json` |
 | The Pokémon Center's healing machine and its tray ball (v0.9.25) | **The real asset** — cut from the FRLG Indigo Plateau Pokémon Center map the Hub already ships (`scripts/cut-heal-machine.mjs`); the 4 × 4 tray ball drawn on its grid | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/hub/heal-machine.png`, `heal-ball.png` |
 | Game glyph SVG set (status, intent, trait, modifier, rarity, medal, action, nav, toolbar) | Authored for this project | project licence | `public/art/icons/**` |
 | Type labels, 15 (FireRed/LeafGreen) | **The real assets** — the games' type boxes, via the PokéAPI sprites mirror | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/icons/type/*.png` |
@@ -45,10 +47,30 @@ If Pokémon Ascendant ever stopped being non-commercial, none of this could ship
 | The Trainer Hub (v0.9.2): the Indigo Plateau's Pokémon Center lobby from FireRed / LeafGreen, FireRed's Red overworld sprite, and the Gen IV Pokémon Center nurse overworld (trimmed) | **The real assets** via the [Bulbagarden Archives](https://archives.bulbagarden.net) (`npm run art:hub`) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/hub` |
 | The Safari's bait and rock tokens (v0.7.6) — the games never drew either as an item | Generated with Google Gemini image models (`npm run art:gen`; prompts in `docs/art/prompts/safari-*.txt`), installed onto the tiles' 16-px grid (`install-art pixel-icon`) | generated work; SynthID watermark; usable per Google's terms | `public/art/safari/{bait,rock}.png` |
 | Nav / system icons | [Tabler Icons](https://tabler.io/icons) | MIT | `@tabler/icons-react` |
-| Baloo 2 | Ek Type | SIL OFL 1.1 (`src/assets/fonts/OFL-Baloo2.txt`) | `src/assets/fonts` |
+| Pixelify Sans (headings, names, chips; replaces Baloo 2) | The Pixelify Sans Project Authors, [eifetx/Pixelify-Sans](https://github.com/eifetx/Pixelify-Sans); distributed via [Google Fonts](https://github.com/google/fonts/tree/main/ofl/pixelifysans) | SIL OFL 1.1 (`src/assets/fonts/OFL-PixelifySans.txt`) | `src/assets/fonts/PixelifySans-VariableFont_wght.ttf` |
+| Tiny5 (numbers) | The Tiny5 Project Authors, [Gissio/font_tiny5](https://github.com/Gissio/font_tiny5), copyright 2022–2024; distributed via [Google Fonts](https://github.com/google/fonts/tree/main/ofl/tiny5) | SIL OFL 1.1 (`src/assets/fonts/OFL-Tiny5.txt`) | `src/assets/fonts/Tiny5-VariableFont.ttf` |
 | Nunito | Vernon Adams, Cyreal, Jacques Le Bailly | SIL OFL 1.1 (`src/assets/fonts/OFL-Nunito.txt`) | `src/assets/fonts` |
 
 Add a row for every third-party asset you bring in (game-icons.net entries need the author name per CC BY 3.0).
+
+## Current stage provenance and processing (A06)
+
+The 45 current runtime PNGs derive from the JPG files already present in `public/art/stages`. The existing
+`scripts/gen-batch*.mjs` scene-generation scripts record prompts and generation/install operations for the
+project's stage work; they do not prove a complete chain of authorship for every pixel of every retained JPG.
+In particular, portraits already embedded in Gym or apex-stage compositions have not been traced to an
+original source. Their visual appearance is not evidence of official authorship. The historical Showdown
+rows above must not be used as attribution for the current files.
+
+`public/art/stages/manifest.json` records each source JPG and its SHA-256, each output PNG's SHA-256,
+dimensions, bytes and palette metrics, plus the processing settings and library versions. The deterministic
+normalisation uses nearest-neighbour cover sampling at 640×360 and per-scene indexed palettes of at most
+256 colours without dithering. It introduces no generated content, does not establish missing provenance
+and cannot undo JPEG loss. Source JPGs are retained. The PNG runtime set is 5,194,563 bytes versus
+21,875,118 bytes for those JPGs (76.25% less runtime stage data); this is not a repository-size reduction.
+
+Pixelify Sans, Tiny5 and Nunito are bundled locally with their SIL OFL 1.1 notices. Baloo 2 is retired from
+the runtime typography; its earlier attribution does not describe the current display face.
 
 ## Trainer sprites
 

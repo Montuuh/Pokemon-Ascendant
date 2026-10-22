@@ -12,6 +12,11 @@ export function iconOf(c: Pick<Combatant, 'speciesId'>): string {
   const s = getContent().species(c.speciesId);
   return boxIconUrl(s.dex, s.id);
 }
+/** D9 — authentic box sprites with transparent margins trimmed, without resampling by build-compact-icons.mjs. */
+export function compactIconOf(speciesId: string): string {
+  const species = getContent().species(speciesId);
+  return asset(`art/pokemon/compact/${String(species.dex).padStart(3, '0')}-${species.id}.png`);
+}
 export function spriteOf(c: Pick<Combatant, 'speciesId'>, side: 'front' | 'back', shiny = false): string {
   return battleSpriteUrl(c.speciesId, side, shiny);
 }
@@ -51,7 +56,7 @@ export type NodeArt =
 export const WILD_GRASS = asset('art/map/habitat/grass.png');
 /** §9.3 — a habitat's landmark, a Wild Area's picture on the map (`npm run art:habitats`): the Pokémon Tower, a cave's mouth. */
 export const habitatProp = (habitat: string) => asset(`art/map/habitat/${habitat}.png`);
-export const stageBackdrop = (stage: string) => asset(`art/stages/${stage}.jpg`);
+export const stageBackdrop = (stage: string) => asset(`art/stages/${stage}.png`);
 export const mysterySign = () => asset('art/icons/map/node-mystery-sign.svg');
 /** §2.12.4 — the Summit's peak and pennant, on the Mystery sign's 16-px grid. */
 export const summitSign = () => asset('art/icons/map/node-summit-sign.svg');

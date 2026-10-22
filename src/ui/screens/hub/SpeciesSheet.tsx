@@ -4,6 +4,7 @@ import { Tabs } from 'radix-ui';
 import { getContent } from '@/content/registry';
 import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, UNMET_NAME, kitPaths, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef, speciesMet, BOND_TIER } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { PixelSprite } from '@/ui/components/PixelSprite';
 import { MoveChip } from '@/ui/components/MoveChip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { ARCHETYPE_LABEL, DEX_EVO_TEXT } from '@/ui/strings';
@@ -53,9 +54,9 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
         <span className={styles.heroArt}>
           {spriteOk ? (
             // §5.14 — a species you have caught shiny shows the palette you caught: the collection, on the cover.
-            <img src={spriteOf({ speciesId }, 'front', entry.shinyCaught > 0)} alt={name} className={`${styles.heroSprite} ${met ? '' : styles.heroSilhouette}`} onError={() => setSpriteOk(false)} />
+            <PixelSprite src={spriteOf({ speciesId }, 'front', entry.shinyCaught > 0)} alt={name} width={160} height={128} imgClassName={`${styles.heroSprite} ${met ? '' : styles.heroSilhouette}`} onError={() => setSpriteOk(false)} />
           ) : (
-            <img src={portraitOf({ speciesId })} alt={name} className={`${styles.heroSprite} ${met ? '' : styles.heroSilhouette}`} />
+            <PixelSprite src={portraitOf({ speciesId })} alt={name} width={160} height={128} imgClassName={`${styles.heroSprite} ${met ? '' : styles.heroSilhouette}`} />
           )}
         </span>
         <div className={styles.heroBody}>

@@ -1,0 +1,1222 @@
+{
+  "schemaVersion": 1,
+  "command": "install",
+  "processing": {
+    "kernel": "nearest",
+    "fit": "cover",
+    "colourspace": "srgb",
+    "dithering": 0,
+    "pngEffort": 10,
+    "pngCompressionLevel": 9,
+    "quantisation": "per-scene palette; no shared palette",
+    "versions": {
+      "aom": "3.14.1",
+      "archive": "3.8.9",
+      "cairo": "1.18.4",
+      "cgif": "0.5.3",
+      "exif": "0.6.26",
+      "expat": "2.8.3",
+      "ffi": "3.8.0",
+      "fontconfig": "2.18.3",
+      "freetype": "2.14.3",
+      "fribidi": "1.0.16",
+      "glib": "2.89.4",
+      "harfbuzz": "14.3.1",
+      "heif": "1.23.2",
+      "highway": "1.4.0",
+      "imagequant": "2.4.1",
+      "lcms": "2.19.1",
+      "mozjpeg": "0826579",
+      "pango": "1.58.2",
+      "pixman": "0.46.4",
+      "png": "1.6.58",
+      "proxy-libintl": "0.5",
+      "rsvg": "2.62.91",
+      "tiff": "4.7.2",
+      "uhdr": "2.0.2",
+      "vips": "8.18.6",
+      "webp": "1.6.0",
+      "xml2": "2.15.3",
+      "zlib-ng": "2.3.3",
+      "sharp": "0.35.4"
+    }
+  },
+  "provenance": "Re-export of existing checked-in JPGs. Generated-stage lineage is documented by the existing batch scripts; no new artwork generated. Embedded portrait provenance is not established by this conversion.",
+  "records": [
+    {
+      "id": "apex-articuno",
+      "file": "apex-articuno.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/apex-articuno.jpg",
+        "sha256": "7da44a43162b87a48e774c8c0762c1a38b9defb06b2226de04c85d9d7130dde6",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 599661
+      },
+      "output": {
+        "sha256": "65f1f04f3573002f7ef9dde8aac7ff79918937932da1a9d2a8e55e31293e6819",
+        "width": 640,
+        "height": 360,
+        "bytes": 127033,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.128,
+      "paletteMeanColourShiftRgb255": [
+        -0.132,
+        -0.093,
+        0.071
+      ]
+    },
+    {
+      "id": "apex-mew",
+      "file": "apex-mew.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/apex-mew.jpg",
+        "sha256": "4527a45be6e644284d83ed6ca90817f4bc0efb0172afd4b27da9c79821eca5fe",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 899003
+      },
+      "output": {
+        "sha256": "dbcb3a176c1ab2694d2de0913c334a6596bac8830ef9f2027f318b5c385d2105",
+        "width": 640,
+        "height": 360,
+        "bytes": 125915,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 2.758,
+      "paletteMeanColourShiftRgb255": [
+        0.011,
+        0.019,
+        -0.093
+      ]
+    },
+    {
+      "id": "apex-mewtwo",
+      "file": "apex-mewtwo.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/apex-mewtwo.jpg",
+        "sha256": "33967ea310a6397a1ef068e4e2acb5daa60dc09dafb8af4c613f490d6597eb30",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 449358
+      },
+      "output": {
+        "sha256": "71811805f60cebf0267549ba7905e59b5a14c348e816876e2f78de944c9da7eb",
+        "width": 640,
+        "height": 360,
+        "bytes": 105717,
+        "colours": 255,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.242,
+      "paletteMeanColourShiftRgb255": [
+        -0.028,
+        -0.07,
+        0.002
+      ]
+    },
+    {
+      "id": "apex-moltres",
+      "file": "apex-moltres.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/apex-moltres.jpg",
+        "sha256": "1fe0197e71330118a45ba6a5579b644c5c7f11dd47658e209ff51646b9dbbaf1",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 708155
+      },
+      "output": {
+        "sha256": "fa62092123232097bde5ff46f912f1cd1168cd9304ed2eee903bb83ddbfadbad",
+        "width": 640,
+        "height": 360,
+        "bytes": 122290,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.388,
+      "paletteMeanColourShiftRgb255": [
+        -0.035,
+        -0.085,
+        -0.085
+      ]
+    },
+    {
+      "id": "apex-zapdos",
+      "file": "apex-zapdos.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/apex-zapdos.jpg",
+        "sha256": "f847808704ce0b016289dbb395455bf4ba11c53f4c103fcf9768e81c9e4ea2f0",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 492867
+      },
+      "output": {
+        "sha256": "88bc4b5a113f267de6e1594a11bb2c8904673a61d2e5dc649a00d8958dcae7ea",
+        "width": 640,
+        "height": 360,
+        "bytes": 114174,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 0.801,
+      "paletteMeanColourShiftRgb255": [
+        -0.08,
+        -0.049,
+        -0.03
+      ]
+    },
+    {
+      "id": "badlands",
+      "file": "badlands.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/badlands.jpg",
+        "sha256": "4421883a62181647e5f394c6d67f00949d78cc69fd16f94a979bd78045da7ef0",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 516255
+      },
+      "output": {
+        "sha256": "4c3b2dd9f2253df566032bb3f7b4f2c4722c917d0a241b069b0569bbe17267ed",
+        "width": 640,
+        "height": 360,
+        "bytes": 118100,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.929,
+      "paletteMeanColourShiftRgb255": [
+        0.1,
+        -0.088,
+        -0.076
+      ]
+    },
+    {
+      "id": "beach",
+      "file": "beach.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/beach.jpg",
+        "sha256": "43ffdb92dd3a203194b15fe964fa4f272f9310fd3c2bdf7f3caacc013400c5b1",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 297361
+      },
+      "output": {
+        "sha256": "239c5e4fde7256d9822a926d5f0e14474d3e1e6fd0f66f30f082d1990ac628c2",
+        "width": 640,
+        "height": 360,
+        "bytes": 86277,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 0.956,
+      "paletteMeanColourShiftRgb255": [
+        0.146,
+        0.079,
+        -0.041
+      ]
+    },
+    {
+      "id": "cave",
+      "file": "cave.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/cave.jpg",
+        "sha256": "c7f9fb95d0f1a84812d04b288124a8fac1f1c3a175398ce0cf39e929d2c3a37f",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 340152
+      },
+      "output": {
+        "sha256": "6bbc78b0c01737621de90c927d06a298649f8aca9b5f4be83565d3160463a06f",
+        "width": 640,
+        "height": 360,
+        "bytes": 123832,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 0.741,
+      "paletteMeanColourShiftRgb255": [
+        -0.065,
+        -0.076,
+        -0.069
+      ]
+    },
+    {
+      "id": "elite-aerodactyl",
+      "file": "elite-aerodactyl.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/elite-aerodactyl.jpg",
+        "sha256": "4567b32cee7b396b0004885d541eb9adf1732a84f09ed1f338d5da768db91fc3",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 452466
+      },
+      "output": {
+        "sha256": "bbba93d4cf162025153e6cc88d1fa4a7ca51f709c571b713790668c262ec246b",
+        "width": 640,
+        "height": 360,
+        "bytes": 120621,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.43,
+      "paletteMeanColourShiftRgb255": [
+        0.043,
+        -0.037,
+        -0.07
+      ]
+    },
+    {
+      "id": "elite-lapras",
+      "file": "elite-lapras.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/elite-lapras.jpg",
+        "sha256": "44209bc25d0b71de45e8a6326bcb71dd3bdc4a6bc2b65d2c859b8c02b50d1606",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 314212
+      },
+      "output": {
+        "sha256": "2ec51cffcc87c8de17bc1949cf485cba2f2351165d70c5fa7c0139e3e1e6be20",
+        "width": 640,
+        "height": 360,
+        "bytes": 93467,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.308,
+      "paletteMeanColourShiftRgb255": [
+        -0.163,
+        0.034,
+        0.137
+      ]
+    },
+    {
+      "id": "elite-snorlax",
+      "file": "elite-snorlax.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/elite-snorlax.jpg",
+        "sha256": "36939c7d2dd59e1f879f250ff8f3e6c03133434f91dd142331b8ded728aced8d",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 513382
+      },
+      "output": {
+        "sha256": "b9fdeaa4326c3ef98f113710159617330ad50653adc7143fd1090fe541793a36",
+        "width": 640,
+        "height": 360,
+        "bytes": 113510,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 2.274,
+      "paletteMeanColourShiftRgb255": [
+        0,
+        0.003,
+        -0.098
+      ]
+    },
+    {
+      "id": "forest",
+      "file": "forest.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/forest.jpg",
+        "sha256": "57fe992c42d0420614e0b7f1407461324df81da5460b52296cae6188846bcc5d",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 589029
+      },
+      "output": {
+        "sha256": "a450e6c8b6f1fa48b7991b3d76929d1064797ef0f3fb20b2ae1ff3e6bec78759",
+        "width": 640,
+        "height": 360,
+        "bytes": 132476,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 2.316,
+      "paletteMeanColourShiftRgb255": [
+        -0.01,
+        0.05,
+        -0.108
+      ]
+    },
+    {
+      "id": "gym-bug",
+      "file": "gym-bug.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-bug.jpg",
+        "sha256": "721750c146493ffe594d32adb804b056f5f25d640cc3f90573ad04f00c7680eb",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 668008
+      },
+      "output": {
+        "sha256": "5fa7c672c1280e643d575730145cfee611e812007211a314ae0c3f62620feaff",
+        "width": 640,
+        "height": 360,
+        "bytes": 126281,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 2.557,
+      "paletteMeanColourShiftRgb255": [
+        0.065,
+        0.022,
+        -0.072
+      ]
+    },
+    {
+      "id": "gym-electric",
+      "file": "gym-electric.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-electric.jpg",
+        "sha256": "f655f1bc385a7aa67ba43a1fe5ff72dfec1cd9acc9fa7f58968830af4f8ed8b2",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 798940
+      },
+      "output": {
+        "sha256": "a7cb39ca5e40a4602b1c5995fe18f0eb16d49b11617c55df9d4ef58a571a2e76",
+        "width": 640,
+        "height": 360,
+        "bytes": 95481,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 2.172,
+      "paletteMeanColourShiftRgb255": [
+        -0.012,
+        0.035,
+        -0.024
+      ]
+    },
+    {
+      "id": "gym-fighting",
+      "file": "gym-fighting.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-fighting.jpg",
+        "sha256": "b6da66434ac4cc0bd664b204e23de872fa5bd8384c586d559621c53da928ddf5",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 477290
+      },
+      "output": {
+        "sha256": "9688af81394e643cd6e506be846e5b7ce5315df56c1c7829a6d9b211da004bec",
+        "width": 640,
+        "height": 360,
+        "bytes": 94227,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.773,
+      "paletteMeanColourShiftRgb255": [
+        -0.065,
+        -0.111,
+        -0.045
+      ]
+    },
+    {
+      "id": "gym-fire",
+      "file": "gym-fire.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-fire.jpg",
+        "sha256": "4043792a87c05b5341387d273184e4f1cbc0ef5156d3b0e87dc2a006c55f235b",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 634512
+      },
+      "output": {
+        "sha256": "6f3998a03ef67c3026f655931fd5d77581ac1bfe57da964e4d64978e74a49911",
+        "width": 640,
+        "height": 360,
+        "bytes": 151660,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 2.246,
+      "paletteMeanColourShiftRgb255": [
+        -0.007,
+        -0.053,
+        -0.023
+      ]
+    },
+    {
+      "id": "gym-grass",
+      "file": "gym-grass.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-grass.jpg",
+        "sha256": "f85f227d1a515ea41f70524498f24ba150f0bc1273c79dd4b17729be712c3330",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 611082
+      },
+      "output": {
+        "sha256": "2dda259dd534d173ba25898990dc2a2bcdb3f2a6b811df9b49927e1381cb62df",
+        "width": 640,
+        "height": 360,
+        "bytes": 111362,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 2.605,
+      "paletteMeanColourShiftRgb255": [
+        0.124,
+        0.076,
+        -0.02
+      ]
+    },
+    {
+      "id": "gym-ground",
+      "file": "gym-ground.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-ground.jpg",
+        "sha256": "63e3ff5e18c093dbaf241093fb54b53afa6a0e5e0578552b89a9adf263218a5e",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 554277
+      },
+      "output": {
+        "sha256": "d613830dd7124d7c0d63a41094cb7537b165a51e09d1c7e7e883a5aa9b2ddbdc",
+        "width": 640,
+        "height": 360,
+        "bytes": 138071,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.499,
+      "paletteMeanColourShiftRgb255": [
+        0.031,
+        -0.019,
+        -0.046
+      ]
+    },
+    {
+      "id": "gym-ice",
+      "file": "gym-ice.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-ice.jpg",
+        "sha256": "f003935277c8ac5d7f0ac66888594f115b2783d75d38bd2f279bd6fbd3bedc70",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 493248
+      },
+      "output": {
+        "sha256": "6a1549085d6ebbfbb7483e1466805b9c08c59c4aa725fcb6c5b3b4f6d187ab1a",
+        "width": 640,
+        "height": 360,
+        "bytes": 105254,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.437,
+      "paletteMeanColourShiftRgb255": [
+        -0.198,
+        0.033,
+        0.192
+      ]
+    },
+    {
+      "id": "gym-normal",
+      "file": "gym-normal.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-normal.jpg",
+        "sha256": "5217669a58d1e6267273a7184d1bcc6f3471f523870f1f7b1d9383fcaf7556e1",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 467663
+      },
+      "output": {
+        "sha256": "88a166d7d6d3f78600b18f645e03f00560e765eb8c104123b77f7672b1b5e151",
+        "width": 640,
+        "height": 360,
+        "bytes": 103619,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.584,
+      "paletteMeanColourShiftRgb255": [
+        0.114,
+        -0.102,
+        -0.106
+      ]
+    },
+    {
+      "id": "gym-poison",
+      "file": "gym-poison.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-poison.jpg",
+        "sha256": "35adea4fa1edfdd56598778c29fe00875484d81d718ae8953ec1580ef2f70a9a",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 441029
+      },
+      "output": {
+        "sha256": "be566baa479656cf48fde777e3ddef563ac7ebe6570f083b398adfda09da6248",
+        "width": 640,
+        "height": 360,
+        "bytes": 89219,
+        "colours": 254,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.456,
+      "paletteMeanColourShiftRgb255": [
+        -0.126,
+        -0.168,
+        0.01
+      ]
+    },
+    {
+      "id": "gym-psychic",
+      "file": "gym-psychic.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-psychic.jpg",
+        "sha256": "44d4327aab24b95055db0afb47f7f69da8c766c811a1162b17e5241788d00501",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 413842
+      },
+      "output": {
+        "sha256": "c5fc5fc2df2f3bdad2d081f15ed5922a09e33d8a6b40a045f9b34dda8993ca8a",
+        "width": 640,
+        "height": 360,
+        "bytes": 131287,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.455,
+      "paletteMeanColourShiftRgb255": [
+        -0.086,
+        -0.152,
+        -0.027
+      ]
+    },
+    {
+      "id": "gym-rock",
+      "file": "gym-rock.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-rock.jpg",
+        "sha256": "8d652ea4e947194e6962e0006c6beb6cc4a84bf2e91359adb92e38d23a3062d7",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 392460
+      },
+      "output": {
+        "sha256": "66e9bf4f8e98bed9b74e309648e79c7b75ba1314ccbb7402b7e1ff4a1ead7465",
+        "width": 640,
+        "height": 360,
+        "bytes": 119258,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 0.877,
+      "paletteMeanColourShiftRgb255": [
+        -0.001,
+        -0.073,
+        -0.041
+      ]
+    },
+    {
+      "id": "gym-water",
+      "file": "gym-water.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/gym-water.jpg",
+        "sha256": "bf755525b3e3997888feaa5dffcb40a7c35a4960eac2d648613d8db0682dafe0",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 517949
+      },
+      "output": {
+        "sha256": "0457d7c1e79f1a03fb6b58d1226e91c926566240160009648e3e76f0fed4b775",
+        "width": 640,
+        "height": 360,
+        "bytes": 101221,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.715,
+      "paletteMeanColourShiftRgb255": [
+        -0.118,
+        0.014,
+        0.018
+      ]
+    },
+    {
+      "id": "league-agatha",
+      "file": "league-agatha.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/league-agatha.jpg",
+        "sha256": "0d82fa8f074efba3af5380c50bd531b6f3fe6120dc7d5860e2a1c3682d2c75aa",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 407070
+      },
+      "output": {
+        "sha256": "b86dc8284f9fb036d7e3523628a053c63a0ecee83d0c6e94bf9c50ae70b04fa6",
+        "width": 640,
+        "height": 360,
+        "bytes": 113794,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.294,
+      "paletteMeanColourShiftRgb255": [
+        -0.094,
+        -0.048,
+        0.01
+      ]
+    },
+    {
+      "id": "league-bruno",
+      "file": "league-bruno.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/league-bruno.jpg",
+        "sha256": "9d6ce055a2f78236d913c6d5feed38372392eb8a5f75bd86ad4eda184f32eb34",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 396928
+      },
+      "output": {
+        "sha256": "c61f765754a04d52f286ec3ffe52cd34daceee9e00c0eeec3640afcb1cc60bca",
+        "width": 640,
+        "height": 360,
+        "bytes": 109915,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.235,
+      "paletteMeanColourShiftRgb255": [
+        0.101,
+        -0.093,
+        -0.12
+      ]
+    },
+    {
+      "id": "league-champion",
+      "file": "league-champion.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/league-champion.jpg",
+        "sha256": "23ced5eed063d3a1b6c7f481770463ca62e7290903ffe145ebf461967c8218a3",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 558280
+      },
+      "output": {
+        "sha256": "ef46f131780d340e73ed62b0c2b9fbb933a7ec05a267aae78db734ce693c6495",
+        "width": 640,
+        "height": 360,
+        "bytes": 109176,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 2.314,
+      "paletteMeanColourShiftRgb255": [
+        0.121,
+        0.091,
+        0.032
+      ]
+    },
+    {
+      "id": "league-lance",
+      "file": "league-lance.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/league-lance.jpg",
+        "sha256": "4ec3adb114d9560f9ddd918d3a55f95746e4e9ffe93adaa9e49491a3521d3004",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 481138
+      },
+      "output": {
+        "sha256": "f60ff610f0e6c4ec4bc9d7348efa813653c12d0c014296d73f100da0a6469548",
+        "width": 640,
+        "height": 360,
+        "bytes": 134104,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.475,
+      "paletteMeanColourShiftRgb255": [
+        -0.072,
+        -0.143,
+        -0.036
+      ]
+    },
+    {
+      "id": "league-will",
+      "file": "league-will.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/league-will.jpg",
+        "sha256": "b4c7e09ea2abf3cbd0008ca18550b025ab81bfca67712efd4036f7db0aac9133",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 414979
+      },
+      "output": {
+        "sha256": "abc8af16919d7d7b51dc1ac05ed9e7f9a82fd920c1ececbf818cc81093c725a5",
+        "width": 640,
+        "height": 360,
+        "bytes": 116970,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.727,
+      "paletteMeanColourShiftRgb255": [
+        -0.077,
+        -0.145,
+        0.012
+      ]
+    },
+    {
+      "id": "meadow",
+      "file": "meadow.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/meadow.jpg",
+        "sha256": "d7af0a2af02b892c76228e46341c763a5aad1058c546d6bf1938ede5367afb75",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 413789
+      },
+      "output": {
+        "sha256": "3ff3f05cb053dd6577f30f54dde1af9fd783d0488acac3cec0b94f7bc90dd4b9",
+        "width": 640,
+        "height": 360,
+        "bytes": 113101,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.339,
+      "paletteMeanColourShiftRgb255": [
+        0.026,
+        0.128,
+        0.002
+      ]
+    },
+    {
+      "id": "mountain",
+      "file": "mountain.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/mountain.jpg",
+        "sha256": "dfe9892d2b4928866babd5c63e80f09fb4420341c91acf7dfdd15dec3b59d163",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 569613
+      },
+      "output": {
+        "sha256": "a2f22c454af92ba4b57f4928878986ea97cf98b16c2570f149c0a8f505241215",
+        "width": 640,
+        "height": 360,
+        "bytes": 128052,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.76,
+      "paletteMeanColourShiftRgb255": [
+        -0.026,
+        0.052,
+        0.084
+      ]
+    },
+    {
+      "id": "pond",
+      "file": "pond.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/pond.jpg",
+        "sha256": "81dc67cd64d9ae1e800740c7b0bde2ea48568d1aa10ef78550e5d944a1108c0a",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 442644
+      },
+      "output": {
+        "sha256": "669f4f713f77e8c77f02482c3db0ae16cf2b7629f4b9c62c8c467ecf94dc96f0",
+        "width": 640,
+        "height": 360,
+        "bytes": 92431,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.821,
+      "paletteMeanColourShiftRgb255": [
+        -0.047,
+        0.07,
+        0.048
+      ]
+    },
+    {
+      "id": "power-plant",
+      "file": "power-plant.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/power-plant.jpg",
+        "sha256": "0dada7823aab0a4c1fdb1f0b22f5c5882e08ca6a667f99ba724338b4b7e4d1f0",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 397129
+      },
+      "output": {
+        "sha256": "ed779e24fcc5b606d8971f1280c0ffcd0653669c4fe276930b2d12e2f5e7b28d",
+        "width": 640,
+        "height": 360,
+        "bytes": 110978,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.085,
+      "paletteMeanColourShiftRgb255": [
+        -0.086,
+        -0.099,
+        -0.051
+      ]
+    },
+    {
+      "id": "ring-celadon",
+      "file": "ring-celadon.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/ring-celadon.jpg",
+        "sha256": "e2a592e46dd5ef6f55dbe77712844061833f690eb402708df451052535e5006e",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 392553
+      },
+      "output": {
+        "sha256": "b27fa903e6e97be9b17dd3876c44f8e350c47c7ed39aff17b3d7d50c9484f822",
+        "width": 640,
+        "height": 360,
+        "bytes": 90208,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.462,
+      "paletteMeanColourShiftRgb255": [
+        0.019,
+        0.024,
+        0
+      ]
+    },
+    {
+      "id": "ring-pallet",
+      "file": "ring-pallet.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/ring-pallet.jpg",
+        "sha256": "16266ae2d473d9b529ad597a4dc45902c18ba21aa8e75bed6a3d4a045f10f558",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 439902
+      },
+      "output": {
+        "sha256": "8bc11a370f3c25f63f8b45a129ec721283687e52fb19d0cac0e99bb65484329b",
+        "width": 640,
+        "height": 360,
+        "bytes": 91322,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.854,
+      "paletteMeanColourShiftRgb255": [
+        0.085,
+        0.181,
+        0.063
+      ]
+    },
+    {
+      "id": "ruins",
+      "file": "ruins.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/ruins.jpg",
+        "sha256": "a7319585b84f2c65f4e17a9e14f54b30c96fb5f4fdf2cc9dd04d1696417e22f1",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 485801
+      },
+      "output": {
+        "sha256": "1be7cfd4b9b7c2196b6900245a9ef2ac59606c02964ad77be0127f4d9f18383f",
+        "width": 640,
+        "height": 360,
+        "bytes": 130649,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.527,
+      "paletteMeanColourShiftRgb255": [
+        -0.056,
+        0,
+        -0.077
+      ]
+    },
+    {
+      "id": "sea",
+      "file": "sea.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/sea.jpg",
+        "sha256": "09ee318679c4718df65edc4319016a4677174fde38eb0c3f1973845bec0e366b",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 447399
+      },
+      "output": {
+        "sha256": "4a48a8a6500d6fc1e7c82820feee1ca39c03641eb87176b95d9e9ced4298fe58",
+        "width": 640,
+        "height": 360,
+        "bytes": 113103,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.402,
+      "paletteMeanColourShiftRgb255": [
+        -0.148,
+        0.072,
+        0.214
+      ]
+    },
+    {
+      "id": "sky-pillar",
+      "file": "sky-pillar.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/sky-pillar.jpg",
+        "sha256": "b57aaa215a48009876aef27815098f21cd972cf0527c65a2826439d04df13856",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 402327
+      },
+      "output": {
+        "sha256": "0ff31ff61b802f45797b65cab03366095b33d825adf025b25d23c90dd7cc3ed6",
+        "width": 640,
+        "height": 360,
+        "bytes": 104996,
+        "colours": 255,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.387,
+      "paletteMeanColourShiftRgb255": [
+        0.115,
+        0.094,
+        0.034
+      ]
+    },
+    {
+      "id": "swamp",
+      "file": "swamp.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/swamp.jpg",
+        "sha256": "bfe0be07078e9f0f77b459df73b916835c5e4922b1b40fa2fa4246644ecb61fd",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 397528
+      },
+      "output": {
+        "sha256": "a47c5585fb5d7a0e25b0c2e250ddb8dcfcfc69cace6cd2cb39c6a5b96b090403",
+        "width": 640,
+        "height": 360,
+        "bytes": 107850,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.331,
+      "paletteMeanColourShiftRgb255": [
+        -0.018,
+        -0.105,
+        -0.073
+      ]
+    },
+    {
+      "id": "tall-grass",
+      "file": "tall-grass.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/tall-grass.jpg",
+        "sha256": "379bb8b5a2e446b628e699d6105ff705fa810c8dc3d99ba34509cd5754838428",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 555274
+      },
+      "output": {
+        "sha256": "5f71cc44edae008cb7a63fc81feab356dc5565e5a79fd2f1bfe383cb836e71c7",
+        "width": 640,
+        "height": 360,
+        "bytes": 142564,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.561,
+      "paletteMeanColourShiftRgb255": [
+        -0.07,
+        0.05,
+        -0.055
+      ]
+    },
+    {
+      "id": "tower",
+      "file": "tower.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/tower.jpg",
+        "sha256": "3835f98dd62772433c57f4130f058e9f076b29a76c943eddd991c184960775d0",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 299808
+      },
+      "output": {
+        "sha256": "8114fa9aea918d41ea0b7626f6a4f556dda55ed3c3da2453766f4a1dd783803e",
+        "width": 640,
+        "height": 360,
+        "bytes": 132512,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 0.67,
+      "paletteMeanColourShiftRgb255": [
+        -0.07,
+        -0.121,
+        -0.007
+      ]
+    },
+    {
+      "id": "underwater",
+      "file": "underwater.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/underwater.jpg",
+        "sha256": "ab207b48248865bda5ebc3b42cd9e32eba28a32c743638ee4759fdd1163d6a45",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 546931
+      },
+      "output": {
+        "sha256": "e3c1665cd57d8eb17b764ab34cbbcc5c2b7ac3bbeb5e13ba2ab79ce1e369ba1c",
+        "width": 640,
+        "height": 360,
+        "bytes": 115214,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 2.379,
+      "paletteMeanColourShiftRgb255": [
+        -0.089,
+        0.077,
+        0.097
+      ]
+    },
+    {
+      "id": "victory-road-wild",
+      "file": "victory-road-wild.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/victory-road-wild.jpg",
+        "sha256": "731ba3b7f33ad3915863c64b8b533e74e08b3465755bb94ff163f9a43186755d",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 391759
+      },
+      "output": {
+        "sha256": "a6bdee4816ccc00b86dc84aa791de851d278d89a032901106fe8179a002554b4",
+        "width": 640,
+        "height": 360,
+        "bytes": 135924,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.064,
+      "paletteMeanColourShiftRgb255": [
+        -0.07,
+        -0.094,
+        -0.085
+      ]
+    },
+    {
+      "id": "victory-road",
+      "file": "victory-road.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/victory-road.jpg",
+        "sha256": "46d8892fa91895612070260dcd368eef1b42849c636c7f6483de8b8106e9449a",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 401146
+      },
+      "output": {
+        "sha256": "60553ead09173528d19d10550b6a788bf399b0d376fe3c49be4b11644203871b",
+        "width": 640,
+        "height": 360,
+        "bytes": 133662,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.221,
+      "paletteMeanColourShiftRgb255": [
+        0.012,
+        -0.082,
+        -0.059
+      ]
+    },
+    {
+      "id": "volcano",
+      "file": "volcano.png",
+      "paletteLimit": 256,
+      "source": {
+        "path": "public/art/stages/volcano.jpg",
+        "sha256": "d23ad3fc7ea6930feabdd07bd658cc72e01eb8163d743bf51e936984b8844c47",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 390919
+      },
+      "output": {
+        "sha256": "c300acfc59ecbd74ff291c1cccbe2e90f52cbb7edac5b8dfc4ee1c63b314b6c7",
+        "width": 640,
+        "height": 360,
+        "bytes": 117686,
+        "colours": 256,
+        "decodedRgbBytes": 691200
+      },
+      "paletteMeanAbsoluteErrorRgb255": 1.226,
+      "paletteMeanColourShiftRgb255": [
+        0.029,
+        -0.107,
+        -0.12
+      ]
+    }
+  ],
+  "totals": {
+    "count": 45,
+    "sourceBytes": 21875118,
+    "outputBytes": 5194563
+  }
+}

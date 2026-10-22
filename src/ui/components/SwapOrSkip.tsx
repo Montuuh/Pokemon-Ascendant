@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { portraitUrl } from '@/content/schemas/species';
 import { maxHpOf } from '@/sim';
 import { Modal } from './Modal';
 import { MonIcon } from './MonIcon';
@@ -24,7 +23,7 @@ export function SwapOrSkip() {
   return (
     <Modal title="The Box is full" testId="swap-or-skip">
       <div className={styles.recruit}>
-        <img src={portraitUrl(species.dex, species.id)} alt="" width={96} height={96} />
+        <MonIcon speciesId={species.id} alt="" size={96} />
         <div>
           <h3 className={`${styles.name} display`}>
             {species.name} <span className="tabular">Lv {recruit.level}</span>

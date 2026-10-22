@@ -82,7 +82,7 @@ export function AboutScreen() {
             <dt>Interface icons</dt>
             <dd>Tabler Icons (MIT)</dd>
             <dt>Type</dt>
-            <dd>Baloo 2 · Nunito (SIL OFL)</dd>
+            <dd>Pixelify Sans · Tiny5 · Nunito (SIL OFL)</dd>
           </dl>
         </section>
 

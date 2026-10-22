@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.32 — Pixel clarity · 2026-10-23
+
+Classic typography, crisp Pokémon icons and unified battle scenery.
+
+- **Typography.** Pixel headings and clearer combat numbers.
+- **Pokémon icons.** Proportional sprites and crisp type labels.
+- **Battle scenery.** 45 indexed PNGs on a consistent pixel grid.
+
 ### v0.9.31 — Arena fit · 2026-10-22
 
 Combat formations fit the available arena at both desktop sizes.

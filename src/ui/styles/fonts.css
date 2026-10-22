@@ -1,8 +1,16 @@
 /* Bundled variable fonts (SIL OFL — licences in src/assets/fonts/). No network fetch at runtime. */
 @font-face {
-  font-family: 'Baloo 2';
-  src: url('../../assets/fonts/Baloo2-VariableFont_wght.ttf') format('truetype');
-  font-weight: 400 800;
+  font-family: 'Pixelify Sans';
+  src: url('../../assets/fonts/PixelifySans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  /* Its open, distinct digits are used at regular weight; do not synthesise a bold counter. */
+  font-family: 'Tiny5';
+  src: url('../../assets/fonts/Tiny5-VariableFont.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }

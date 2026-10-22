@@ -1,6 +1,7 @@
 /* A move as a chip (the Evolution screen, the reward screen): its type label, its name, its card on hover. */
 
 .chip {
+  font-family: var(--font-ui);
   position: relative;
   display: inline-flex;
   align-items: center;

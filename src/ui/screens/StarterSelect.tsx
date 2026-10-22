@@ -5,7 +5,7 @@ import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import { BOND_RANK_NAME, MODIFIERS, POKEMON_TYPES, RUN_START, activeMoves, bondRank, runPerksFor, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState, type PokemonType } from '@/sim';
-import { portraitUrl } from '@/content/schemas/species';
+import { MonIcon } from '@/ui/components/MonIcon';
 import { moveArt, spriteOf } from '@/ui/art';
 import { ArenaSprite } from '@/ui/components/ArenaSprite';
 import card from '@/ui/components/UnitCard.module.css';
@@ -336,7 +336,7 @@ export function StarterSelect() {
                   return (
                     <div key={place} className={`${styles.slot} ${slot === place ? styles.slotOn : ''}`} data-place={place}>
                       <button type="button" className={styles.slotPick} aria-pressed={slot === place} onClick={() => setSlot(place)} data-testid={`twin-slot-${place}`}>
-                        {s ? <img src={portraitUrl(s.dex, s.id)} alt="" width={40} height={40} /> : <span className={styles.slotEmpty} aria-hidden="true" />}
+                        {s ? <MonIcon speciesId={s.id} alt="" size={40} /> : <span className={styles.slotEmpty} aria-hidden="true" />}
                         <span className={styles.slotText}>
                           <span className={styles.slotLabel}>{place === 'lead' ? STARTER_TEXT.lead : STARTER_TEXT.partner}</span>
                           <span className={`${styles.slotName} display`}>{s ? s.name : STARTER_TEXT.pickPartner}</span>
@@ -476,7 +476,7 @@ export function StarterSelect() {
                       const sp = content.species(id);
                       return (
                         <span key={id} className={styles.evoForm}>
-                          <img src={portraitUrl(sp.dex, sp.id)} alt="" width={40} height={40} />
+                          <MonIcon speciesId={sp.id} alt="" size={40} />
                           <span>{sp.name}</span>
                         </span>
                       );

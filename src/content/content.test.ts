@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { activeMoves, knownMoves, BIOMES, ELITE_WILD, GYMS, LEAGUE_MEMBERS, LEGENDARY_ARENAS, REGIONS, TRAINER_SPRITES, VICTORY_ROAD, GYM } from '@/sim';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import sharp from 'sharp';
 import { MOVE_CAP, applyPayload, kitPaths, upgradeParents } from '@/sim/combat/kit';
 import { buildRegistry } from './registry';
 import { boxIconUrl, portraitUrl, battleSpriteUrl } from './schemas/species';
@@ -37,14 +38,33 @@ describe('content registry', () => {
     // four Gyms its own place, so a stage key that ships without a file is a black screen behind a real
     // fight — and it would only ever show up on the one seed that drew that Gym.
     const everyRegion = REGIONS.flatMap((r) => [r.trunkStage, r.eliteWild.stage, ...r.gyms.map((g) => g.stage), ...Object.values(r.biomes).map((b) => b!.stage)]);
-    const extraStages = [VICTORY_ROAD.stage, ...Object.values(LEGENDARY_ARENAS).map((a) => a.stage), ...LEAGUE_MEMBERS.map((m) => m.stage), 'ring-pallet', 'ring-celadon'];
+    const extraStages = [VICTORY_ROAD.stage, VICTORY_ROAD.wildStage, ...Object.values(LEGENDARY_ARENAS).map((a) => a.stage), ...LEAGUE_MEMBERS.map((m) => m.stage), 'ring-pallet', 'ring-celadon'];
     for (const stage of new Set([GYM.stage, ...GYMS.map((g) => g.stage), ...Object.values(BIOMES).map((b) => b!.stage), ELITE_WILD.stage, ...everyRegion, ...extraStages])) {
-      expect(existsSync(`public/art/stages/${stage}.jpg`), `stage ${stage}`).toBe(true);
+      expect(existsSync(`public/art/stages/${stage}.png`), `stage ${stage}`).toBe(true);
     }
     // §5.10 — every Gym type a Region can draw has its Badge's emblem (a City's Badge row, the Legendary pick); the map
     // draws its nodes as the things themselves since v0.9.14, and every trainer a Region fields has its sprite.
     for (const t of new Set(REGIONS.flatMap((r) => r.gyms.map((g) => g.type)))) expect(existsSync(`public/art/icons/map/node-gym-${t}.png`), `Badge emblem ${t}`).toBe(true);
     for (const sprite of new Set([...REGIONS.flatMap((r) => r.trainers.map((t) => t.sprite)), 'nurse', 'merchant'])) expect(existsSync(`public/art/trainers/${sprite}.png`), `trainer ${sprite}`).toBe(true);
+  });
+
+  it('StageArtwork_EveryShippedBackdrop_DecodesOnTheReviewedPixelGrid_§9.2.1', async () => {
+    // D9 — checking the path alone accepts a renamed JPEG, corrupt PNG or a raw multi-megabyte AI
+    // output. Decode every shipped scene and verify the actual grid, opaque ground and palette cap.
+    const files = readdirSync('public/art/stages').filter((file) => file.endsWith('.png'));
+    expect(files.length).toBeGreaterThan(0);
+    for (const file of files) {
+      const path = `public/art/stages/${file}`;
+      const meta = await sharp(path).metadata();
+      expect(meta.format, file).toBe('png');
+      expect([meta.width, meta.height], file).toEqual([640, 360]);
+      expect(meta.isPalette, file).toBe(true);
+      expect(meta.hasAlpha, file).toBe(false);
+      const pixels = await sharp(path).removeAlpha().raw().toBuffer();
+      const colours = new Set<number>();
+      for (let i = 0; i < pixels.length; i += 3) colours.add((pixels[i]! << 16) | (pixels[i + 1]! << 8) | pixels[i + 2]!);
+      expect(colours.size, file).toBeLessThanOrEqual(256);
+    }
   });
 
   it('MoveArt_EveryMoveAHandCanHold_HasItsIllustration_§9.2.3', () => {
@@ -95,7 +115,7 @@ describe('content registry', () => {
 
   it('every scenario stage backdrop and trainer sprite exists', () => {
     for (const sc of reg.allScenarios()) {
-      expect(existsSync(`public/art/stages/${sc.stage}.jpg`), `${sc.id} stage ${sc.stage}`).toBe(true);
+      expect(existsSync(`public/art/stages/${sc.stage}.png`), `${sc.id} stage ${sc.stage}`).toBe(true);
       if (sc.trainer) expect(existsSync(`public/art/trainers/${sc.trainer.sprite}.png`), `${sc.id} trainer`).toBe(true);
     }
   });

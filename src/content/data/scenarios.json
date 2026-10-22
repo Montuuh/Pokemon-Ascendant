@@ -1,5 +1,5 @@
 {
-  "_note": "Combat fixtures (docs/roadmap.md v0.1 tooling). Each is a complete CombatSetup: deep-link with /?scenario=<id>, used by Playwright, golden-master replays and playtests. Enemies listed in order are fought one after another (Gym leaders field 2, §5.9.3) unless `onField` is 2 or 3: then that many stand together as a group — the first is the Lead, the rest supports with a `role` — and the remainder waits to fill a free place (§5.6). `hpPercent`/`status` seed a mid-fight state. Stage keys map to public/art/stages/<stage>.jpg.",
+  "_note": "Combat fixtures (docs/roadmap.md v0.1 tooling). Each is a complete CombatSetup: deep-link with /?scenario=<id>, used by Playwright, golden-master replays and playtests. Enemies listed in order are fought one after another (Gym leaders field 2, §5.9.3) unless `onField` is 2 or 3: then that many stand together as a group — the first is the Lead, the rest supports with a `role` — and the remainder waits to fill a free place (§5.6). `hpPercent`/`status` seed a mid-fight state. Stage keys map to public/art/stages/<stage>.png (640x360 logical pixel grid).",
   "scenarios": [
     {
       "id": "wild-basic",

@@ -10,9 +10,9 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 | Layer | Source & Register | Status & Path |
 |---|---|---|
 | **Battle sprites** (front/back, normal & shiny) | Pokémon Showdown `gen5ani` & `gen5ani-shiny` (`npm run art:sprites`) | ✅ `public/art/pokemon/battle/*.gif` |
-| **Box / party / owner icons** (68×56) | PokéAPI pixel box icons (`npm run art:portraits`) | ✅ `public/art/pokemon/icons/*.png` |
+| **Box / party / owner icons** | PokéAPI pixel box icons (`npm run art:portraits`); 151 compact derivatives trimmed to exact alpha bounds without resampling (`node scripts/build-compact-icons.mjs`) | ✅ `public/art/pokemon/{icons,compact}/*.png` |
 | **Pokémon portraits** (475²) | PokéAPI official artwork (or pixel sprites where pixel-unified) | ✅ `public/art/pokemon/portraits/*.png` |
-| **Type labels** ×15 | **Authentic FRLG pixel boxes** (32×12, `npm run art:types`), rendered nearest-neighbour at 12/15/18/24 px | ✅ `public/art/icons/type/*.png` |
+| **Type labels** ×15 | **Authentic FRLG pixel boxes** (32×12, `npm run art:types`), rendered nearest-neighbour only at 12/18/24 px | ✅ `public/art/icons/type/*.png` |
 | **Consumable, Held, Stone, Ball, TM & Relic icons** | **Authentic GBA/DS pixel bag sprites** (`PokeAPI/sprites/items` & Bulbagarden Archives, `npm run art:items`). **Never** smooth 3D renders. Every relic and held item uses a **unique** pixel sprite | 🎯 **Priority 1** (`public/art/items/*.png`) |
 | **Trainer sprites** (36) | Pokémon Showdown pixel trainer sprites (`npm run art:trainers`) | ✅ `public/art/trainers/trainer-*.png` |
 | **Move card art** (161) | **GBA-style pixel art of the move effect** (never a creature) on a fixed 68×45 cell grid, ≤20 colours, 1-px dark outline, transparent ground (`npm run art:moves` + `scripts/install-move-art.mjs`), drawn at 2× | ✅ `public/art/moves/<move-id>.png` |
@@ -21,9 +21,9 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 | **Town lobbies** (Pallet Town, Celadon City) | **Authentic FRLG overworld buildings & tiles** on the 16-px grid, with custom buildings (Challenge Ring, Coliseum) pixel-snapped to FRLG palette and grid | 🎯 **Priority 2** (`public/art/towns/*.png`) |
 | **Interior rooms** (Hub, Poké Mart, Dept. Store, Game Corner, Black Market, Dojo) | **Authentic FRLG interior maps** from Bulbagarden Archives (`npm run art:hub`, `art:mart`, `art:rocket`), shown at integer pixel scale (`PixelRoom`) | ✅ `public/art/{hub,mart,game-corner,black-market}` (🎯 **Priority 3**: Dojo interior & Event vignettes) |
 | **Safari Zone board** | **Authentic FRLG Safari Zone tiles & sprites** on the 16-px grid (`npm run art:safari`), plus pixel-grid bait & rock tokens | ✅ `public/art/safari/**` |
-| **Stage backdrops** (21) | Official battle backgrounds via Pokémon Showdown (`gen6bgs` & classic pixel/battle sets, `npm run art:fetch`) | ✅ `public/art/stages/*.jpg` |
+| **Stage backdrops** (45) | Existing JPG scene compositions, normalised to indexed 640×360 PNG, ≤256 colours per scene, no dithering (`node scripts/normalise-stages.mjs install`); JPGs retained as sources | ✅ `public/art/stages/*.png`; source/output SHA-256 in `manifest.json` |
 | **Gym Badges** (12) | Official badge sprites via Bulbagarden Archives (`scripts/fetch-map-emblems.mjs`) | ✅ `public/art/icons/map/node-gym-*.png` |
-| **Typography** | **Classic Pokémon pixel-art fonts** for headers, names, levels, numbers, combat plates and chips + clean body fallback | 🎯 **UI/Font pass** (`src/assets/fonts`) |
+| **Typography** | **Pixelify Sans** for headings, names and chips; **Tiny5** for numbers; **Nunito** for prose. Locally bundled SIL OFL fonts | ✅ `src/assets/fonts` |
 
 ---
 
@@ -41,6 +41,12 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 3. **One icon per mechanical identity.** Every Consumable, Held Item, Evolution Stone, Poké Ball, TM and Relic must have its own distinct pixel sprite. Do not reuse a Held Item's sprite on a Relic, or share one sprite between two different Relics.
 4. **Judge in context, at real size.** Always render with `npm run shot` and inspect the PNG in `playtest/`. Check pixel crispness, contrast (WCAG AA per D5), calm zones under UI, and palette warmth.
 
+### Runtime sizing and reproducible derivatives (A04–A06)
+
+`MonIcon` uses compact pixel icons below 48 px and portraits at 48 px or above. Compact icons preserve every source pixel: only fully transparent margins are removed. `PixelSprite` fits the original aspect ratio into its cell using 0.5× scale steps, without stretching. `TypeLabel` keeps its native 32×12 aspect ratio and snaps its height to multiples of 6 px; the current UI uses 12, 18 and 24 px.
+
+Stage scenes use 0.5× scale steps with cover cropping. Regenerate the 45 runtime PNGs with `node scripts/normalise-stages.mjs install`: nearest-neighbour cover sampling onto a 640×360 logical grid, independent palettes of at most 256 colours and no dithering. `public/art/stages/manifest.json` records source and output hashes, dimensions, bytes and processing settings. The retained JPG sources total 21,875,118 bytes; the runtime PNG set totals 5,194,563 bytes (76.25% less). This measures runtime stage assets, not repository size: both sets remain in the repository. Normalisation cannot recover detail lost to JPEG compression or establish the origin of portraits already embedded in a scene; see [attribution](ATTRIBUTION.md).
+
 ---
 
 ## 3. Fast Lanes & Commands
@@ -49,6 +55,8 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 |---|---|---|
 | Battle sprites (animated front/back + shiny) | `npm run art:sprites` | `public/art/pokemon/battle/<id>[-back].gif` |
 | Portraits + box icons | `npm run art:portraits -- <dex…>` | `public/art/pokemon/{portraits,icons}/NNN-<id>.png` |
+| Compact party / owner icons | `node scripts/build-compact-icons.mjs` | `public/art/pokemon/compact/NNN-<id>.png` |
+| Normalise existing stage JPGs | `node scripts/normalise-stages.mjs install` | `public/art/stages/*.png` + `manifest.json` (JPG sources retained) |
 | Trainer sprites | `npm run art:trainers` | `public/art/trainers/trainer-<class>.png` |
 | Type pixel boxes (FRLG / HGSS) | `npm run art:types` | `public/art/icons/type/<type>.png` |
 | All item, TM, stone, ball & relic pixel icons | `npm run art:items` | `public/art/items/<id>.png` |

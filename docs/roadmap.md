@@ -1449,6 +1449,11 @@ Combat formations remain readable at both desktop sizes.
 
 **Shipped.** §9.2.1: the live arena uses its available width, with unit windows constrained by both dimensions. All units, intents, HP rows and the trainer's party remain inside the field at 1280×720 and 1920×1080, including crowded plans. Trainer sprites retain their intrinsic proportions at whole-pixel scales. Geometric e2e coverage checks clipping, overlap, matching card widths and mirrored formations.
 
+### v0.9.32 — Pixel clarity  ✅ 2026-10-23
+Art-review follow-up A04–A06: consistent classic typography, pixel sizing and battle scenery.
+
+**Shipped.** Pixelify Sans headings and Pokémon names, Tiny5 numeric readouts and Nunito prose are bundled offline under SIL OFL. Small Pokémon cells use 151 alpha-cropped box icons; larger portraits and animated species sheets preserve proportions at half-step scales. Type labels retain their native 32×12 grid. All 45 current stages are exported as 640×360 indexed PNGs with at most 256 colours, without dithering, and rendered at whole or half steps in combat, title and previews. Runtime stage assets total 5,194,563 bytes, 76.25% below the original JPG set; the originals remain as authoring sources, with conversion hashes in the manifest. The results rework and A03 remain with the other session.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,
@@ -1457,6 +1462,8 @@ IP disclaimer everywhere.
 ## v1.1 — Polish  ☐
 Accessibility tier (§9.6), localisation architecture + es-ES/en-US (§9.10), generated backdrop set (`ui/07`), VFX pass,
 performance pass. *(Audio moved to v0.9.23, 2026-10-14; renumbered 2026-10-16.)*
+
+Title effects: preload move images before their short animation beat. The existing lazy-load path can miss a beat on a cold, busy dev server; the A04–A06 review reproduced the risk and confirmed the isolated title suite still passes.
 
 ## v1.2 — The world, wider  ☐
 Content that makes a second hundred runs different: **Fossils and the Laboratory** (revive Omanyte, Kabuto or

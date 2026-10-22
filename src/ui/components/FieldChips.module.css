@@ -5,6 +5,7 @@
   gap: var(--sp-1);
 }
 .chip {
+  font-family: var(--font-ui);
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);

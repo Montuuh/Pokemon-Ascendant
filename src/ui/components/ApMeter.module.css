@@ -12,6 +12,8 @@
 }
 /* As wide as its widest reading ("3 → 2 AP"), so the capsule keeps its place while a preview comes and goes. */
 .value {
+  font-family: var(--font-number);
+  font-synthesis: none;
   display: inline-flex;
   align-items: baseline;
   justify-content: center;
@@ -21,6 +23,7 @@
   color: var(--ink-primary);
 }
 .value b {
+  font-weight: 400;
   font-size: var(--type-h1);
   line-height: 1;
   color: var(--accent-action);

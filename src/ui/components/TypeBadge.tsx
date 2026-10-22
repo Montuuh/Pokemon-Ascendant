@@ -8,14 +8,15 @@ import styles from './TypeBadge.module.css';
 // The type badge is the games' own pixel label — the "FIRE" / "WATER" box of FireRed/LeafGreen, 32×12, fetched
 // by `npm run art:types` — drawn at an integer or half multiple of its size with nearest-neighbour scaling, so it
 // sits with the pixel-art sprites rather than beside them. The label carries its colour and its word, which is
-// as colour-blind-safe as a badge gets. `size` is the label's height; its width follows the sprite.
+// as colour-blind-safe as a badge gets. `size` is the available height; snap down so tiny chips never grow.
 //
 // Both badges carry their own tooltip, so every place one appears explains itself without the caller doing
 // anything. A move's type reads attacking, a Pokémon's defending (v0.9.6), each as a chart of type labels.
 
 /** The label alone, for callers that already own a tooltip (a move card, a Tip's icon slot). */
 export function TypeLabel({ type, size = 18, className }: { type: PokemonType | string; size?: number; className?: string }) {
-  return <img src={typeGlyph(type)} alt={type} height={size} className={`${styles.label} ${className ?? ''}`} draggable={false} />;
+  const height = labelHeight(size);
+  return <img src={typeGlyph(type)} alt={type} width={height / 12 * 32} height={height} style={{ imageRendering: 'pixelated' }} className={`${styles.label} ${className ?? ''}`} draggable={false} />;
 }
 
 /**
@@ -36,7 +37,12 @@ export function StatusBadge({ status, size = 14 }: { status: string; size?: numb
   const tip = useTip(statusTip(status));
   return (
     <span className={styles.badge} aria-label={status} tabIndex={0} {...tip}>
-      <img src={statusGlyph(status)} alt="" height={size} className={styles.label} draggable={false} />
+      <img src={statusGlyph(status)} alt="" width={labelHeight(size) / 12 * 32} height={labelHeight(size)} style={{ imageRendering: 'pixelated' }} className={styles.label} draggable={false} />
     </span>
   );
+}
+
+/** The source label is 32×12. D9 permits 0.5×, 1×, 1.5×…; 14/15/16 px requests fit at 12 px. */
+function labelHeight(room: number): number {
+  return Math.max(6, Math.floor(room / 6) * 6);
 }

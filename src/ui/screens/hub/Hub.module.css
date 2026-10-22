@@ -708,11 +708,7 @@
   pointer-events: none;
 }
 .dexArt img {
-  transition: transform var(--motion-base) var(--ease-spring);
   filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.16));
-}
-.dexCard:hover img {
-  transform: scale(1.08);
 }
 /* Five pips, one per Bond rank of the line: the bar is on the sheet; the card only needs "how many". */
 .pips {

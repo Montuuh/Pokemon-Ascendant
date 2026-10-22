@@ -48,6 +48,8 @@
 }
 .swapChip,
 .swapChipOff {
+  font-family: var(--font-number);
+  font-synthesis: none;
   background: var(--surface-2);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
@@ -69,6 +71,8 @@
 /* §9.2.5 — what it would take as the Lead this turn: the swap, priced in HP. Quiet, not an alarm; red only at KO. */
 .asLead,
 .asLeadKo {
+  font-family: var(--font-number);
+  font-synthesis: none;
   padding: 0 6px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--border-strong);

@@ -73,6 +73,7 @@
 
 /* ---- Stage Frame & Diorama Stage (§9.2.1) ---- */
 .stageFrame {
+  container-type: size;
   position: relative;
   min-height: 0;
   display: flex;
@@ -118,6 +119,13 @@
   background:
     linear-gradient(180deg, rgba(20, 15, 26, 0.35) 0%, rgba(20, 15, 26, 0.05) 35%, rgba(20, 15, 26, 0.55) 100%),
     radial-gradient(70% 60% at 50% 45%, rgba(0, 0, 0, 0) 0%, rgba(20, 15, 26, 0.25) 100%);
+}
+/* D9 — each stage is a 640×360 logical bitmap. Cover the field at 0.5× steps (320px wide), cropping the
+   excess instead of stretching its pixel grid. A result's separate backdrop reads this same stage container. */
+.stage,
+.stage [style*='/art/stages/'] {
+  image-rendering: pixelated;
+  background-size: round(up, max(100cqw, calc(100cqh * 16 / 9)), 320px) auto;
 }
 /* Per §9.2.1 / D8 — the two formations need four card columns plus the trainer. The frame's available width,
    rather than a fixed 16:9 crop, is the arena; both dimensions constrain the cards. Keep this scoped to live combat:

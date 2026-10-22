@@ -407,6 +407,8 @@
   background: var(--surface-2);
 }
 .moveCost {
+  font-family: var(--font-number);
+  font-synthesis: none;
   display: grid;
   place-items: center;
   width: 22px;
@@ -430,6 +432,7 @@
   line-height: 1.2;
 }
 .moveText b {
+  font-family: var(--font-ui);
   font-size: var(--type-small);
 }
 .moveText small {
@@ -459,6 +462,8 @@
   gap: var(--sp-1);
 }
 .evoArrow {
+  font-family: var(--font-number);
+  font-synthesis: none;
   padding: 0 var(--sp-1);
   border-radius: var(--radius-pill);
   background: var(--surface-2);
@@ -473,6 +478,7 @@
   gap: var(--sp-1);
 }
 .evoForm {
+  font-family: var(--font-ui);
   display: grid;
   justify-items: center;
   font-size: var(--type-micro);
