@@ -19,22 +19,37 @@ import { VICTORY_ROAD } from './victoryRoad';
 
 /** The catch consumable's catalog id (§7.2.5). */
 
+/** Natural habitat preference for specialist trainer archetypes when met in the shared trunk before the fork. */
+const ARCHETYPE_BIOMES: Readonly<Record<string, readonly BiomeId[]>> = {
+  swimmer: ['sea', 'lake', 'river', 'shore'],
+  hiker: ['ridge', 'cave'],
+  'bug-catcher': ['forest'],
+  engineer: ['power-plant'],
+  'hex-maniac': ['tower', 'ruins'],
+  'rocket-grunt': ['swamp', 'badlands'],
+};
+
 /**
- * §2.5 — where a fight happens. Past the fork a node belongs to a lane, and the lane's whole job is to look
- * like the Gym at the end of it, so its trainers stand in the same biome its wilds come from. Before the
- * fork there is no lane yet and the trunk is the Region's default.
- *
- * This used to be the string `'meadow'`, written in twice, which quietly put every Hiker in a field four
- * layers deep into a cave lane — the one place the theming had to hold, undone by a default.
+ * §2.5 — where a fight happens. Past the crossroads a node belongs to a leaning track (`lean`) or a committed lane
+ * (`lane`), and its whole job is to look like the Gym at the end of it, so its trainers, Elites and guards stand in
+ * the same biome its wilds come from. In the trunk before the fork, specialist trainer archetypes stand on their
+ * natural terrain in that Region and generalists stand on the Region's trunk stage.
  */
-function stageFor(node: MapNode, run: RunState): string {
-  // §2.12 — a node that names its own ground (Victory Road's cave) is fought there.
+function stageFor(node: MapNode, run: RunState, archetype?: string): string {
+  // §2.12 — a node that names its own ground (Victory Road) is fought there.
   if (node.preview.stage) return node.preview.stage;
   const region = regionContent(run.regionIndex);
-  if (node.lane === undefined) return region.trunkStage;
-  const gymId = run.map.gyms[node.lane];
-  const theme = gymId ? region.laneThemes[gymById(gymId).type] : undefined;
-  return (theme && region.biomes[theme.biome]?.stage) ?? region.trunkStage;
+  const side = node.lane ?? node.lean;
+  if (side !== undefined) {
+    const gymId = run.map.gyms[side];
+    const theme = gymId ? region.laneThemes[gymById(gymId).type] : undefined;
+    if (theme && region.biomes[theme.biome]?.stage) return region.biomes[theme.biome]!.stage;
+  }
+  if (archetype) {
+    const preferred = ARCHETYPE_BIOMES[archetype]?.find((b) => region.biomes[b]);
+    if (preferred) return region.biomes[preferred]!.stage;
+  }
+  return region.trunkStage;
 }
 
 // Turning a map node into a fight (§2.6–§2.8, §5.9). Everything the combat sim needs comes from here, so the
@@ -276,7 +291,7 @@ export function buildTrainerScenario(node: MapNode, run: RunState, content: Cont
     name: roster.name,
     description: roster.line,
     kind: 'trainer',
-    stage: stageFor(node, run),
+    stage: stageFor(node, run, roster.archetype),
     seed: rng.cursor,
     trainer: { name: roster.name, sprite: roster.sprite },
     player: {
@@ -458,7 +473,7 @@ export function buildRingScenario(run: RunState, rung: RingRung, index: number, 
     name: rung.trainer,
     description: rung.line,
     kind: 'trainer',
-    stage: 'gym',
+    stage: run.city?.id === 'celadon-city' ? 'ring-celadon' : 'ring-pallet',
     seed: rng.cursor,
     trainer: { name: rung.trainer, sprite: rung.sprite },
     player: {

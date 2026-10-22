@@ -305,7 +305,7 @@
       "name": "Gym — Rock Leader Brock",
       "description": "The Region 1 climax, fought by a team that actually walked the route: Geodude, then the Golem ace with three phases, Cleave, Backstrike and Sturdy.",
       "kind": "boss",
-      "stage": "gym",
+      "stage": "gym-rock",
       "seed": 1006,
       "trainer": {
         "name": "Leader Brock",
@@ -704,7 +704,7 @@
       "name": "Field — Brock under a Sandstorm",
       "description": "A Rock Gym on its own turf: a Home Field lifts its Rock moves, and the Sandstorm wears down everyone but Rock, Ground and Fighting. A Defog clears both.",
       "kind": "boss",
-      "stage": "gym",
+      "stage": "gym-rock",
       "seed": 1107,
       "trainer": {
         "name": "Leader Brock",
@@ -757,7 +757,7 @@
       "name": "Field — Rain on the river",
       "description": "A wild fight under Rain: Water moves hit harder, Fire moves softer, and a Swift Swim Psyduck draws a card more on turn 1.",
       "kind": "wild",
-      "stage": "river",
+      "stage": "pond",
       "seed": 1108,
       "fields": {
         "weather": "rain-dance"
@@ -799,7 +799,7 @@
       "name": "Gym — Sabrina's Mind Lock",
       "description": "A Psychic Gym two at a time, under Sabrina's own rule: every second turn she seals the strongest attack in your hand. Leader on stage, rule on the top bar.",
       "kind": "boss",
-      "stage": "library",
+      "stage": "gym-psychic",
       "seed": 1313,
       "trainer": {
         "name": "Leader Sabrina",
@@ -949,7 +949,7 @@
       "name": "Legendary — Mewtwo in Cerulean Cave",
       "description": "Victory Road's Apex (§2.12.2): Mewtwo in its arena — Psychic Terrain, and its Barrier every third turn, counted on the top bar. Your Zapdos takes two of the three places (§2.3), so it goes in with one partner.",
       "kind": "wild",
-      "stage": "damp-cave",
+      "stage": "apex-mewtwo",
       "seed": 2121,
       "arenaRule": "barrier",
       "fields": {
@@ -994,7 +994,7 @@
       "name": "Legendary — Mew on Faraway Island",
       "description": "Victory Road's Apex (§2.12.2): Mew in its arena — Metronome redraws the field every turn, the next one shown a turn ahead, and Playful makes it the type of whatever hit it last.",
       "kind": "wild",
-      "stage": "forest",
+      "stage": "apex-mew",
       "seed": 2222,
       "arenaRule": "playful",
       "metronome": true,
@@ -1040,7 +1040,7 @@
       "name": "League — Champion Blue",
       "description": "The last door (§5.12): five Pokémon, the first three one after another and the last two together; Full Team Synergy lifts his hits 5 % for every one that falls, up to 20 %, counted on the top bar.",
       "kind": "boss",
-      "stage": "gym",
+      "stage": "league-champion",
       "seed": 2323,
       "trainer": {
         "name": "Champion Blue",

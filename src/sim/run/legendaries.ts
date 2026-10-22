@@ -83,7 +83,7 @@ export interface LegendaryArena {
 export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
   articuno: {
     place: 'Seafoam Islands',
-    stage: 'ice-cave',
+    stage: 'apex-articuno',
     fields: { weather: 'hail' },
     rule: 'mist',
     moves: ['blizzard', 'ice-beam', 'peck', 'agility'],
@@ -91,7 +91,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
   },
   zapdos: {
     place: 'the Power Plant',
-    stage: 'power-plant',
+    stage: 'apex-zapdos',
     fields: { terrain: 'electric-terrain' },
     rule: 'thundercloud',
     moves: ['thunder', 'drill-peck', 'thunder-shock', 'agility'],
@@ -99,7 +99,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
   },
   moltres: {
     place: 'Mt. Ember',
-    stage: 'volcano',
+    stage: 'apex-moltres',
     fields: { weather: 'sunny-day' },
     rule: 'rekindle',
     moves: ['fire-blast', 'flamethrower', 'sky-attack', 'agility'],
@@ -107,7 +107,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
   },
   mewtwo: {
     place: 'Cerulean Cave',
-    stage: 'damp-cave',
+    stage: 'apex-mewtwo',
     fields: { terrain: 'psychic-terrain' },
     rule: 'barrier',
     moves: ['psychic', 'swift', 'recover', 'barrier'],
@@ -115,7 +115,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
   },
   mew: {
     place: 'Faraway Island',
-    stage: 'forest',
+    stage: 'apex-mew',
     fields: {},
     metronome: true,
     rule: 'playful',

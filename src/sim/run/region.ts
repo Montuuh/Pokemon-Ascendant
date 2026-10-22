@@ -51,7 +51,7 @@ export const WILD_TIER_ODDS: Record<WildTier, number> = { common: 0.6, uncommon:
  */
 export const BIOMES: Partial<Record<BiomeId, BiomePool>> & Record<'meadow' | 'cave' | 'river', BiomePool> = {
   'tall-grass': {
-    id: 'tall-grass', name: 'Tall Grass', stage: 'route',
+    id: 'tall-grass', name: 'Tall Grass', stage: 'tall-grass',
     common: ['pidgey', 'rattata', 'spearow', 'nidoran-f', 'nidoran-m'],
     uncommon: ['ekans', 'meowth', 'doduo', 'jigglypuff'],
     rare: ['eevee'],
@@ -334,7 +334,7 @@ export const ELITE_WILD: EliteWildDef = {
   level: 15,
   /** §2.8.2 — boss-tier HP, two phases, no evolution: it is a wild, not an ace. */
   phaseCount: 2,
-  stage: 'meadow',
+  stage: 'elite-snorlax',
   line: 'Something enormous is asleep across the path. It has not noticed you yet.',
 };
 
@@ -382,7 +382,7 @@ export interface GymDef {
  * Every team carries one off-type answer (§5.9.3): a Gym you can hard-counter with a single type is not a
  * fight, it is a type check. Since v0.9.5 the aces' kits are scripted from their lines' Gen I moves, so the answer and
  * the telegraph are the cards fought rather than whatever a five-card pool's Auto pick lands on: Brock's Graveler
- * carries Dig, Misty's Kingler Stomp, Aster's Butterfree Confusion beside Sleep Powder, Wren's Raticate Dig.
+ * carries Dig, Misty's Kingler Stomp, Aster's Butterfree Confusion beside Sleep Powder, Whitney's Raticate Dig.
  */
 export const GYMS: GymDef[] = [
   {
@@ -395,9 +395,8 @@ export const GYMS: GymDef[] = [
     // §5.9.3 — Rock resists most of what Region 1 recruits, and Rock Solid caps the hits that get through: with its
     // whole team at its real level (2026-10-20) Brock ended two runs in three at the Region's Attack.
     attackScale: 0.6,
-    // §2.5 — a Gym's backdrop is its own lane's biome at depth or at dusk, never a fifth unrelated room. The
-    // lane has looked like this for four layers; arriving somewhere else would throw that away at the door.
-    stage: 'damp-cave',
+    // §2.5 — each Gym Leader fights in their own dedicated Gym arena backdrop.
+    stage: 'gym-rock',
     line: 'My rock-hard willpower is evident even in my Pokémon!',
     telegraph: 'A wall that braces harder the more you hit it. Bring Water, Grass or Fighting.',
     // Tuned on the whole-run harness: a route team arrives around Lv 14 having evolved once, so the Region 1
@@ -416,7 +415,7 @@ export const GYMS: GymDef[] = [
     badgeId: 'cascade-badge', rule: 'riptide',
     // §5.9.3 — the tide's turns hit the whole team at once; at its real levels Misty lost one run in four.
     attackScale: 0.85,
-    stage: 'sea',
+    stage: 'gym-water',
     line: 'My policy is an all-out offensive with Water-type Pokémon!',
     telegraph: 'Taxes your AP and muddles your hand. Bring Grass or Electric, and cards you can afford.',
     // §5.9.3 forbids fielding a starter line: a Gym Leader should not hold a Pokémon the player may own.
@@ -433,7 +432,7 @@ export const GYMS: GymDef[] = [
     sprite: 'bugsy',
     type: 'bug',
     badgeId: 'hive-badge', rule: 'swarm',
-    stage: 'forest',
+    stage: 'gym-bug',
     line: 'Bug Pokémon are tougher than you think. Let me show you.',
     telegraph: 'Floods you with Sleep and Confusion. Bring cures, Fire or Flying.',
     team: [
@@ -444,11 +443,11 @@ export const GYMS: GymDef[] = [
   {
     id: 'normal-gym-r1',
     region: 1,
-    name: 'Leader Wren',
+    name: 'Leader Whitney',
     sprite: 'whitney',
     type: 'normal',
     badgeId: 'plain-badge', rule: 'rollout',
-    stage: 'night-meadow',
+    stage: 'gym-normal',
     line: 'Nothing fancy. Just everything, all at once.',
     telegraph: 'No weakness to exploit and a Home Field that makes every hit land harder. Bring Fighting, or bring more HP.',
     team: [
@@ -582,13 +581,13 @@ export const BIOMES_R2: Partial<Record<BiomeId, BiomePool>> = {
     rare: ['hitmonlee', 'hitmonchan'],
   },
   swamp: {
-    id: 'swamp', name: 'Toxic Marsh', stage: 'night-meadow',
+    id: 'swamp', name: 'Toxic Marsh', stage: 'swamp',
     common: ['muk', 'weezing', 'arbok', 'gloom'],
     uncommon: ['haunter', 'golbat', 'weepinbell', 'venomoth'],
     rare: ['ditto'],
   },
   'tall-grass': {
-    id: 'tall-grass', name: 'Tall Grass', stage: 'route',
+    id: 'tall-grass', name: 'Tall Grass', stage: 'tall-grass',
     common: ['raticate', 'pidgeotto', 'arbok', 'nidorina', 'nidorino'],
     uncommon: ['persian', 'wigglytuff', 'clefable', 'lickitung', 'hypno'],
     rare: ['farfetchd', 'ivysaur'],
@@ -677,7 +676,7 @@ export const ELITE_WILD_R2: EliteWildDef = {
   species: 'lapras',
   level: 24,
   phaseCount: 2,
-  stage: 'sea',
+  stage: 'elite-lapras',
   moves: ['sing', 'body-slam', 'ice-beam', 'surf'],
   line: 'A song carries over the water. Something large is riding the swell toward you.',
 };
@@ -689,28 +688,28 @@ export const ELITE_WILD_R2: EliteWildDef = {
 export const GYMS_R2: GymDef[] = [
   {
     id: 'fire-gym-r2', region: 2, name: 'Leader Blaine', sprite: 'blaine', type: 'fire', badgeId: 'volcano-badge', rule: 'meltdown',
-    stage: 'volcano',
+    stage: 'gym-fire',
     line: 'Hah! I hope you brought Burn Heal. My Pokémon burn hotter than this whole coast.',
     telegraph: 'A burst race on a Home Field that makes every Fire hit land harder. Bring Water or Rock, or bring more HP.',
     team: [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'] }],
   },
   {
     id: 'grass-gym-r2', region: 2, name: 'Leader Erika', sprite: 'erika', type: 'grass', badgeId: 'rainbow-badge', rule: 'bloom',
-    stage: 'forest',
+    stage: 'gym-grass',
     line: 'Oh… I was dozing among the flowers. Shall we? I do not intend to lose.',
     telegraph: 'Floods your Lead with Sleep and Poison. Bring cures, Fire or Flying.',
     team: [{ species: 'weepinbell', level: 20, phaseCount: 2 }, { species: 'vileplume', level: 22, phaseCount: 3 }],
   },
   {
     id: 'electric-gym-r2', region: 2, name: 'Leader Surge', sprite: 'ltsurge', type: 'electric', badgeId: 'thunder-badge', rule: 'overcharge',
-    stage: 'power-plant',
+    stage: 'gym-electric',
     line: 'Hey, kid! Electric Pokémon saved me in the war. They will shock you just the same!',
     telegraph: 'Taxes your AP and locks your Lead with Paralysis. Bring Ground, and cards you can afford.',
     team: [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'] }],
   },
   {
     id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'soul-badge', rule: 'toxic',
-    stage: 'dark-city',
+    stage: 'gym-poison',
     line: 'Fwahahaha! A ninja does not strike. He waits for the poison to do it.',
     telegraph: 'Poisons everything and waits you out. Bring cures, Psychic or Ground.',
     team: [{ species: 'koffing', level: 20, phaseCount: 2 }, { species: 'weezing', level: 22, phaseCount: 3 }],
@@ -740,7 +739,7 @@ export const BIOMES_R3: Partial<Record<BiomeId, BiomePool>> = {
     rare: ['charizard'],
   },
   badlands: {
-    id: 'badlands', name: 'Badlands', stage: 'desert',
+    id: 'badlands', name: 'Badlands', stage: 'badlands',
     common: ['rhydon', 'golem', 'nidoking', 'nidoqueen'],
     uncommon: ['marowak', 'tauros', 'dodrio'],
     rare: ['aerodactyl'],
@@ -752,7 +751,7 @@ export const BIOMES_R3: Partial<Record<BiomeId, BiomePool>> = {
     rare: ['snorlax', 'kangaskhan'],
   },
   lake: {
-    id: 'lake', name: 'Underground Lake', stage: 'ice-cave',
+    id: 'lake', name: 'Underground Lake', stage: 'underwater',
     common: ['cloyster', 'poliwrath', 'vaporeon'],
     uncommon: ['gyarados', 'omastar', 'kabutops'],
     rare: ['lapras', 'blastoise'],
@@ -770,7 +769,7 @@ export const BIOMES_R3: Partial<Record<BiomeId, BiomePool>> = {
     rare: ['chansey', 'venusaur'],
   },
   ruins: {
-    id: 'ruins', name: 'Overgrown Ruins', stage: 'forest',
+    id: 'ruins', name: 'Overgrown Ruins', stage: 'ruins',
     common: ['vileplume', 'victreebel', 'exeggutor'],
     uncommon: ['hypno', 'jolteon', 'mr-mime', 'scyther'],
     rare: ['venusaur'],
@@ -846,7 +845,7 @@ export const ELITE_WILD_R3: EliteWildDef = {
   species: 'aerodactyl',
   level: 34,
   phaseCount: 2,
-  stage: 'sky-pillar',
+  stage: 'elite-aerodactyl',
   moves: ['agility', 'bite', 'fly', 'rock-slide'],
   line: 'A shriek from the crags. Something ancient is circling overhead, and it has seen you.',
 };
@@ -859,7 +858,7 @@ export const ELITE_WILD_R3: EliteWildDef = {
 export const GYMS_R3: GymDef[] = [
   {
     id: 'psychic-gym-r3', region: 3, name: 'Leader Sabrina', sprite: 'sabrina', type: 'psychic', badgeId: 'marsh-badge', rule: 'mind-lock',
-    stage: 'library',
+    stage: 'gym-psychic',
     line: 'I foresaw your arrival. I also foresaw how this ends.',
     telegraph: 'Taxes your AP and locks your hand. Bring Bug or Ghost, and cards you can afford.',
     team: [
@@ -871,14 +870,14 @@ export const GYMS_R3: GymDef[] = [
   },
   {
     id: 'ground-gym-r3', region: 3, name: 'Leader Giovanni', sprite: 'giovanni', type: 'ground', badgeId: 'earth-badge', rule: 'tremor',
-    stage: 'desert',
+    stage: 'gym-ground',
     line: 'This Gym is the last thing between you and the League. It does not move.',
     telegraph: 'A wall that braces harder the more you hit it. Bring Water, Grass or Ice.',
     team: [{ species: 'nidoqueen', level: 34, phaseCount: 2 }, { species: 'rhydon', level: 36, phaseCount: 3 }],
   },
   {
     id: 'fighting-gym-r3', region: 3, name: 'Leader Kiyo', sprite: 'kiyo', type: 'fighting', badgeId: 'knuckle-badge', rule: 'close-quarters',
-    stage: 'gym',
+    stage: 'gym-fighting',
     line: 'A hundred days on this mountain, training. Show me your hundred.',
     telegraph: 'A burst race on a Home Field that makes every Fighting hit land harder. Bring Psychic or Flying, or more HP.',
     team: [
@@ -888,7 +887,7 @@ export const GYMS_R3: GymDef[] = [
   },
   {
     id: 'ice-gym-r3', region: 3, name: 'Leader Lorelei', sprite: 'lorelei', type: 'ice', badgeId: 'glacier-badge', rule: 'ice-armour',
-    stage: 'ice-cave',
+    stage: 'gym-ice',
     line: 'Your Pokémon will freeze before they reach me. Let us see how long you last.',
     telegraph: 'Freezes your Lead and taxes your AP. Bring Fighting, Electric or Rock.',
     team: [{ species: 'dewgong', level: 34, phaseCount: 2 }, { species: 'cloyster', level: 36, phaseCount: 3, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'] }],
@@ -930,12 +929,12 @@ export interface RegionContent {
 
 export const REGIONS: readonly RegionContent[] = [
   {
-    index: 0, name: 'Verdant Route', biomes: BIOMES, biomeWeights: REGION1_BIOME_WEIGHTS, wildBand: WILD_LEVEL_BAND, trunkStage: 'meadow',
+    index: 0, name: 'Verdant Route', biomes: BIOMES, biomeWeights: REGION1_BIOME_WEIGHTS, wildBand: WILD_LEVEL_BAND, trunkStage: 'tall-grass',
     trainers: TRAINERS, elite: ELITE, eliteWild: ELITE_WILD, gyms: GYMS, laneThemes: LANE_THEME, levelOffset: 0,
   },
   {
     // §2.6.5 — 14–22 and 24–32 since v0.8.10 (were 12–20, 22–30): the team entered Region 2 four levels over.
-    index: 1, name: 'Coastal Cliffs', biomes: BIOMES_R2, biomeWeights: REGION2_BIOME_WEIGHTS, wildBand: [14, 22], trunkStage: 'river',
+    index: 1, name: 'Coastal Cliffs', biomes: BIOMES_R2, biomeWeights: REGION2_BIOME_WEIGHTS, wildBand: [14, 22], trunkStage: 'beach',
     trainers: TRAINERS_R2, elite: ELITE_R2, eliteWild: ELITE_WILD_R2, gyms: GYMS_R2, laneThemes: LANE_THEME_R2, levelOffset: 0,
   },
   {

@@ -19,7 +19,7 @@
 | `rock-gym-r1` | Brock | Rock | `geodude` L14 | `graveler` L16 | **Entrenchment** (+2 Def, race the wall) | `boulder-badge` |
 | `water-gym-r1` | Misty | Water | `krabby` L12 | `kingler` L14 | **Tempo Control** (AP tax + Confusion) | `cascade-badge` |
 | `bug-gym-r1` | Aster | Bug | `caterpie` L12 | `butterfree` L15 | **Status Siege** (Sleep/Confusion flood) | `hive-badge` |
-| `normal-gym-r1` | Wren | Normal | `pidgey` L13 | `raticate` L15 | **Onslaught** (Mass Attack ×1.5 Home Field) | `plain-badge` |
+| `normal-gym-r1` | Whitney | Normal | `pidgey` L13 | `raticate` L15 | **Onslaught** (Mass Attack ×1.5 Home Field) | `plain-badge` |
 
 > **The Water Gym fields Krabby and Kingler** (decided 2026-09-19). The Unity build used Squirtle and
 > Wartortle — a starter line the player may own themselves, which cannibalises the starter's identity. A Gym
@@ -119,7 +119,7 @@ on the whole-run harness (`BALANCE_REPORT=1`, which prints every rule's loss rat
 | `rock-solid` | Brock | `rock-gym-r1` | No single hit takes more than 40 % of his Pokémon's Max HP; multi-hits capped hit by hit |
 | `riptide` | Misty | `water-gym-r1` | Every second turn, at its end, the tide trades your Lead with Bench 1 (Bench 2 if Bench 1 is down) |
 | `swarm` | Aster | `bug-gym-r1` | Her Pokémon on the field hit +20 % per Pokémon of hers still waiting |
-| `rollout` | Wren | `normal-gym-r1` | Her Lead hits +25 % per turn in a row your Lead has been the same Pokémon, up to four turns |
+| `rollout` | Whitney | `normal-gym-r1` | Her Lead hits +25 % per turn in a row your Lead has been the same Pokémon, up to four turns |
 | `meltdown` | Blaine | `fire-gym-r2` | Every attack his Pokémon land lowers its target's Defence a stage, down to −2 |
 | `bloom` | Erika | `grass-gym-r2` | Each of her Pokémon on the field that took no damage this turn restores 8 % at its end |
 | `overcharge` | Surge | `electric-gym-r2` | Every second turn, the first card you play costs +1 AP |

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { activeMoves, knownMoves, BIOMES, ELITE_WILD, GYMS, REGIONS, TRAINER_SPRITES, GYM } from '@/sim';
+import { activeMoves, knownMoves, BIOMES, ELITE_WILD, GYMS, LEAGUE_MEMBERS, LEGENDARY_ARENAS, REGIONS, TRAINER_SPRITES, VICTORY_ROAD, GYM } from '@/sim';
 import { existsSync, readFileSync } from 'node:fs';
 import { MOVE_CAP, applyPayload, kitPaths, upgradeParents } from '@/sim/combat/kit';
 import { buildRegistry } from './registry';
@@ -37,7 +37,8 @@ describe('content registry', () => {
     // four Gyms its own place, so a stage key that ships without a file is a black screen behind a real
     // fight — and it would only ever show up on the one seed that drew that Gym.
     const everyRegion = REGIONS.flatMap((r) => [r.trunkStage, r.eliteWild.stage, ...r.gyms.map((g) => g.stage), ...Object.values(r.biomes).map((b) => b!.stage)]);
-    for (const stage of [GYM.stage, ...GYMS.map((g) => g.stage), ...Object.values(BIOMES).map((b) => b!.stage), ELITE_WILD.stage, ...everyRegion]) {
+    const extraStages = [VICTORY_ROAD.stage, ...Object.values(LEGENDARY_ARENAS).map((a) => a.stage), ...LEAGUE_MEMBERS.map((m) => m.stage), 'ring-pallet', 'ring-celadon'];
+    for (const stage of new Set([GYM.stage, ...GYMS.map((g) => g.stage), ...Object.values(BIOMES).map((b) => b!.stage), ELITE_WILD.stage, ...everyRegion, ...extraStages])) {
       expect(existsSync(`public/art/stages/${stage}.jpg`), `stage ${stage}`).toBe(true);
     }
     // §5.10 — every Gym type a Region can draw has its Badge's emblem (a City's Badge row, the Legendary pick); the map

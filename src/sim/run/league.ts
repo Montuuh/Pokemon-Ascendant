@@ -42,27 +42,27 @@ export interface LeagueMember {
  */
 export const LEAGUE_MEMBERS: readonly LeagueMember[] = [
   {
-    id: 'elite-four-1', name: 'Bruno', title: 'Elite Four', sprite: 'bruno', type: 'fighting', battlefield: { hazard: 'sandstorm' }, stage: 'cave',
+    id: 'elite-four-1', name: 'Bruno', title: 'Elite Four', sprite: 'bruno', type: 'fighting', battlefield: { hazard: 'sandstorm' }, stage: 'league-bruno',
     line: 'We will grind you down with our superior power! Hoo hah!',
     team: [{ species: 'onix', over: 4, phaseCount: 2 }, { species: 'machamp', over: 5, phaseCount: 3 }],
   },
   {
-    id: 'elite-four-2', name: 'Agatha', title: 'Elite Four', sprite: 'agatha', type: 'ghost', battlefield: { hazard: 'toxic-spikes' }, stage: 'tower',
+    id: 'elite-four-2', name: 'Agatha', title: 'Elite Four', sprite: 'agatha', type: 'ghost', battlefield: { hazard: 'toxic-spikes' }, stage: 'league-agatha',
     line: 'Pokémon are for battling, child. I will show you how a real Trainer fights.',
     team: [{ species: 'arbok', over: 6, phaseCount: 2 }, { species: 'gengar', over: 7, phaseCount: 3 }],
   },
   {
-    id: 'elite-four-3', name: 'Will', title: 'Elite Four', sprite: 'will', type: 'psychic', battlefield: { terrain: 'psychic-terrain' }, stage: 'library',
+    id: 'elite-four-3', name: 'Will', title: 'Elite Four', sprite: 'will', type: 'psychic', battlefield: { terrain: 'psychic-terrain' }, stage: 'league-will',
     line: 'I have trained all over the world to make my Psychic Pokémon powerful. I cannot lose now.',
     team: [{ species: 'jynx', over: 7, phaseCount: 2 }, { species: 'slowbro', over: 8, phaseCount: 2 }, { species: 'alakazam', over: 9, phaseCount: 3 }],
   },
   {
-    id: 'elite-four-4', name: 'Lance', title: 'Elite Four', sprite: 'lance', type: 'dragon', battlefield: { weather: 'rain-dance' }, stage: 'sky-pillar',
+    id: 'elite-four-4', name: 'Lance', title: 'Elite Four', sprite: 'lance', type: 'dragon', battlefield: { weather: 'rain-dance' }, stage: 'league-lance',
     line: 'Dragons are mythical Pokémon. They are hard to catch and raise, but their power is superior.',
     team: [{ species: 'gyarados', over: 9, phaseCount: 2 }, { species: 'aerodactyl', over: 10, phaseCount: 2 }, { species: 'dragonite', over: 11, phaseCount: 3 }],
   },
   {
-    id: 'champion', name: 'Blue', title: 'Champion', sprite: 'blue', type: null, stage: 'gym',
+    id: 'champion', name: 'Blue', title: 'Champion', sprite: 'blue', type: null, stage: 'league-champion',
     line: 'I hate to say it, but I was waiting for you. Now I get to beat you in front of everyone.',
     // The fifth is the counter-pick (`championAce`); the fourth is the support that stands beside it, buffing it.
     team: [
