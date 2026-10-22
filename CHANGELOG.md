@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.31 — Arena fit · 2026-10-22
+
+Combat formations fit the available arena at both desktop sizes.
+
+- **Arena fit.** All units and intents remain visible at 720p.
+- **Trainer sprites.** Preserve proportions and whole-pixel scaling.
+
 ### v0.9.30 — Gen II type chart · 2026-10-21
 
 The 15-type chart rebalanced with Generation II effectiveness.

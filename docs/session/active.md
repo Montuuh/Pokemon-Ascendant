@@ -1,8 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-21 · **Version:** v0.9.30 shipped (*Gen II type chart*) — the 15-type chart rebalanced with Gen II effectiveness.
+**Date:** 2026-10-22 · **Version:** v0.9.31 shipped (*Arena fit*) — A01: full combat formations and trainer proportions at 720p/1080p.
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 **Sprint goal next:** **v1.0** Release (Tauri build, the final balance pass at 720 runs on two seed blocks, press kit) — the user plays the pack first.
+
+**Art review follow-up:** A01 is isolated in CombatScreen.module.css and e2e/arena-layout.spec.ts. A02's seven-line Badge spacing fix is applied locally in the other session's untracked results CSS; preserve it when integrating that rework. Local handoff: .claude/patches/A02-badge-handoff.md, A02-badge.patch and e2e/badge-layout.spec.ts. A level-up panel still covers the Badge temporarily at 720p; results.spec.ts:74 also fails with the A02 patch reversed. These remain with the external results rework/A03. Do not clear its shared UI-review queue on this scoped review.
 
 **v0.8.7–v0.8.10** — the route, balance, harness, growth curves (`BALANCE_REPORT=1 REPORT_SEEDS=240`). **v0.9.1** — Shiny found in the wild (§5.14, `run/shiny.ts`, 1 in 40, `copyIsShiny`), its collection in the
 Pokédex, +N Bond on the reward screen; the Bond in four linear ranks of 100 (Shiny Charm · hidden ability · the whole

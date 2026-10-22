@@ -119,6 +119,33 @@
     linear-gradient(180deg, rgba(20, 15, 26, 0.35) 0%, rgba(20, 15, 26, 0.05) 35%, rgba(20, 15, 26, 0.55) 100%),
     radial-gradient(70% 60% at 50% 45%, rgba(0, 0, 0, 0) 0%, rgba(20, 15, 26, 0.25) 100%);
 }
+/* Per §9.2.1 / D8 — the two formations need four card columns plus the trainer. The frame's available width,
+   rather than a fixed 16:9 crop, is the arena; both dimensions constrain the cards. Keep this scoped to live combat:
+   FightResults shares .stage but has its own composition and no .stageFrame. */
+.stageFrame > .stage {
+  width: 100%;
+  aspect-ratio: auto;
+  padding-inline: var(--sp-3);
+  column-gap: var(--sp-3);
+  --unit-card: clamp(176px, min(38cqh, calc(25cqw - var(--sp-10))), 310px);
+}
+.stageFrame .formation {
+  column-gap: clamp(var(--sp-4), 1.2cqw, var(--sp-6));
+}
+/* Two bench cards share the height. Reserve 128px per row for the unchanged name/HP chrome, intent and gap;
+   give the sprite window the remaining room instead of clipping a whole card or making the text smaller. */
+.stageFrame [data-arrow-card] {
+  --window-h: min(calc(var(--unit-card) * 0.46), calc(50cqh - 128px));
+}
+/* The trainer keeps its native proportions even when long intents widen the preceding columns. The global image
+   max-width otherwise squeezes its width to the remaining track while leaving its height unchanged. */
+.stageFrame .trainerBlock {
+  min-width: max-content;
+}
+.stageFrame .trainer {
+  max-width: none;
+  height: round(nearest, clamp(80px, 22cqh, 160px), 40px);
+}
 /* A side of the field (§9.2.1): the Lead in the column nearest the enemy, centred between its bench — Bench 1 above,
    Bench 2 below, close together — the whole side centred on the stage's height. */
 .formation {

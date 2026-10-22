@@ -1444,6 +1444,11 @@ The 15-type chart rebalanced with Generation II matchups to fix Gen I's balance 
 
 **Shipped.** §4.1.2: type effectiveness across the 15 types now follows Generation II rules. Ghost hits Psychic for ×2 (fixing the Gen I bug where Psychic was immune), Fire resists Ice at ×0.5, Bug hits Poison for ×0.5, and Poison hits Bug neutrally (×1).
 
+### v0.9.31 — Arena fit  ✅ 2026-10-22
+Combat formations remain readable at both desktop sizes.
+
+**Shipped.** §9.2.1: the live arena uses its available width, with unit windows constrained by both dimensions. All units, intents, HP rows and the trainer's party remain inside the field at 1280×720 and 1920×1080, including crowded plans. Trainer sprites retain their intrinsic proportions at whole-pixel scales. Geometric e2e coverage checks clipping, overlap, matching card widths and mirrored formations.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,
