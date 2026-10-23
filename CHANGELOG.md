@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.36 — Pages build fix · 2026-10-23
+
+Fix the clean build used to publish GitHub Pages.
+
+- **Build.** Stage validation reads the configuration included in the release.
+- **Verification.** Release checks run against a clean copy of the published files.
+
 ### v0.9.35 — Indigo Ascent · 2026-10-23
 
 The Summit and League become a connected classic pixel-art destination.

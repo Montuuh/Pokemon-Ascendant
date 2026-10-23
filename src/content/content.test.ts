@@ -38,7 +38,10 @@ describe('content registry', () => {
     // four Gyms its own place, so a stage key that ships without a file is a black screen behind a real
     // fight — and it would only ever show up on the one seed that drew that Gym.
     const everyRegion = REGIONS.flatMap((r) => [r.trunkStage, r.eliteWild.stage, ...r.gyms.map((g) => g.stage), ...Object.values(r.biomes).map((b) => b!.stage)]);
-    const extraStages = [VICTORY_ROAD.stage, VICTORY_ROAD.wildStage, ...Object.values(LEGENDARY_ARENAS).map((a) => a.stage), ...LEAGUE_MEMBERS.map((m) => m.stage), 'ring-pallet', 'ring-celadon'];
+    // §2.12 — validate the stage fields actually present in the shipped road configuration, including variants.
+    const victoryStages = Object.entries(VICTORY_ROAD).flatMap(([key, value]) =>
+      /stage$/i.test(key) && typeof value === 'string' ? [value] : []);
+    const extraStages = [...victoryStages, ...Object.values(LEGENDARY_ARENAS).map((a) => a.stage), ...LEAGUE_MEMBERS.map((m) => m.stage), 'ring-pallet', 'ring-celadon'];
     for (const stage of new Set([GYM.stage, ...GYMS.map((g) => g.stage), ...Object.values(BIOMES).map((b) => b!.stage), ELITE_WILD.stage, ...everyRegion, ...extraStages])) {
       expect(existsSync(`public/art/stages/${stage}.png`), `stage ${stage}`).toBe(true);
     }

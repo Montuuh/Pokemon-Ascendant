@@ -1,8 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-23 · **Version:** v0.9.35 shipped (*Indigo Ascent*) — A11 option A selected: Indigo Plateau arrival, five-door League gallery and a distinct Champion threshold.
+**Date:** 2026-10-23 · **Version:** v0.9.36 (*Pages build fix*) — clean-release stage validation no longer requires an unpublished Victory Road field; A11 Indigo Ascent remains included.
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 **Sprint goal next:** **v1.0** Release (Tauri build, the final balance pass at 720 runs on two seed blocks, press kit) — the user plays the pack first.
+
+**Pages fix:** v0.9.32–v0.9.35 failed clean CI because content.test.ts referenced an uncommitted Victory Road wildStage field. The guard now validates the stage fields actually shipped. Exact release-tree export + fresh npm ci: full check 887 passed / 3 skipped, all guards green; production build under /Pokemon-Ascendant/ and browser smoke pass (v0.9.36 visible, no broken images or request/page errors). Evidence: playtest/pages-fix-0936. Validate release trees separately from the shared working folder; preserve the other session's work.
 
 **Art review follow-up:** A01 is isolated in CombatScreen.module.css and e2e/arena-layout.spec.ts. A02's seven-line Badge spacing fix is applied locally in the other session's untracked results CSS; preserve it when integrating that rework. Local handoff: .claude/patches/A02-badge-handoff.md, A02-badge.patch and e2e/badge-layout.spec.ts. A level-up panel still covers the Badge temporarily at 720p; results.spec.ts:74 also fails with the A02 patch reversed. These remain with the external results rework/A03. Do not clear its shared UI-review queue on this scoped review.
 

@@ -298,6 +298,11 @@
 
 ## Working in a shared folder (2026-09-23/24)
 
+- **A passing shared working tree does not prove the release tree passes.** v0.9.32–v0.9.35's stage guard
+  referenced an unpublished Victory Road field from another session: local checks passed, clean Pages builds failed.
+  Before publishing, verify the exact staged/committed tree in an isolated export with a fresh dependency install;
+  keep the other session's files outside that check. The v0.9.36 fix validates the fields actually present.
+
 - **Other agents edit this tree while you work.** `git status` will show files you never touched; they are
   theirs until they commit them. **Never `git add -A` and commit blind**: stage by path, or `git add -A` then
   `git reset -- <their files>`, and read `git diff --cached --stat` before committing. Paid for: a

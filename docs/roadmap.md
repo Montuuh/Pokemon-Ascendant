@@ -1469,6 +1469,11 @@ Art-review follow-up A11: option A, selected by the user from the three [arrival
 
 **Shipped.** The Summit has a composed Indigo Plateau exterior, a healed Box, three real Legendary offers and the anonymous five-member League preview. Taking a relic or declining still crosses the existing one-way gate. The League uses a new FRLG tile composition with four Elite doors, a separate Champion threshold and live beaten/next/ahead markers. Names, types and team counts remain visible; only the next door opens its existing preview. Team management, hidden enemy species and modifier-aware micro-rest are preserved. League chrome uses warm cream; route and combat chrome retain their stage theme. Native scenes and trainers use clean pixel scales, with retained source maps, crop coordinates and hashes. No sim rules change.
 
+### v0.9.36 — Pages build fix  ✅ 2026-10-23
+Restore GitHub Pages publishing after the clean checkout exposed a content-test dependency on uncommitted work.
+
+**Shipped.** The stage asset guard discovers the stage fields present in the shipped Victory Road configuration, including variants when defined. It no longer requires an unpublished wildStage field. Verification uses an isolated export of the committed files with a fresh dependency installation, followed by the Pages sub-path build. Game rules and the independent results rework are unchanged.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,
