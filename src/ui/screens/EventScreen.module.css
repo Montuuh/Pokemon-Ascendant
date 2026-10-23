@@ -3,8 +3,8 @@
 .root {
   height: 100%;
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: var(--sp-5);
+  grid-template-rows: auto 1fr auto auto;
+  gap: var(--sp-4);
   padding: var(--sp-6) var(--sp-5);
   background: radial-gradient(120% 80% at 50% 0%, var(--surface-2) 0%, var(--surface-0) 72%);
   color: var(--ink-primary);
@@ -31,12 +31,24 @@
   background: var(--surface-1);
   font-size: var(--type-small);
 }
-.root[data-risk='safe'] .risk { border-color: var(--accent-positive); }
-.root[data-risk='safe'] .risk svg { color: var(--accent-positive); }
-.root[data-risk='tradeoff'] .risk { border-color: var(--accent-warning); }
-.root[data-risk='tradeoff'] .risk svg { color: var(--accent-warning); }
-.root[data-risk='gamble'] .risk { border-color: var(--brand-red); }
-.root[data-risk='gamble'] .risk svg { color: var(--brand-red); }
+.root[data-risk='safe'] .risk {
+  border-color: var(--accent-positive);
+}
+.root[data-risk='safe'] .risk svg {
+  color: var(--accent-positive);
+}
+.root[data-risk='tradeoff'] .risk {
+  border-color: var(--accent-warning);
+}
+.root[data-risk='tradeoff'] .risk svg {
+  color: var(--accent-warning);
+}
+.root[data-risk='gamble'] .risk {
+  border-color: var(--brand-red);
+}
+.root[data-risk='gamble'] .risk svg {
+  color: var(--brand-red);
+}
 
 .wallet {
   display: inline-flex;
@@ -48,20 +60,25 @@
 }
 
 .scene {
-  max-width: 62ch;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--sp-3);
+  max-width: 960px;
   margin: 0 auto;
   text-align: center;
 }
 
 .title {
-  margin: 0 0 var(--sp-3);
-  font-size: var(--type-display);
+  margin: 0;
+  font-size: var(--type-h1);
   line-height: 1.1;
-  color: var(--brand-red);
+  color: var(--ink-primary);
 }
 
 .prose {
   margin: 0;
+  max-width: 70ch;
   color: var(--ink-secondary);
   font-size: var(--type-body);
   line-height: 1.5;
@@ -71,7 +88,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 320px));
   justify-content: center;
-  align-content: center;
+  align-content: start;
   gap: var(--sp-4);
   width: 100%;
   max-width: 1040px;
@@ -89,15 +106,23 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: transform var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
+  transition:
+    transform var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
 }
 .choice:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 10px 24px rgba(58, 46, 34, 0.16);
 }
-.choice:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 3px; }
+.choice:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 3px;
+}
 /* D5 — a choice you cannot pay for is read to plan, so it keeps its contrast; the dashed edge marks it shut. */
-.choice:disabled { cursor: not-allowed; border-style: dashed; }
+.choice:disabled {
+  cursor: not-allowed;
+  border-style: dashed;
+}
 
 .choiceLabel {
   font-size: var(--type-h3);
@@ -111,9 +136,15 @@
   line-height: 1.4;
 }
 
-.choiceCost { justify-self: start; }
+.choiceCost {
+  justify-self: start;
+}
 
-.footer { display: grid; justify-items: center; min-height: 24px; }
+.footer {
+  display: grid;
+  justify-items: center;
+  min-height: 24px;
+}
 
 .toast {
   margin: 0;
@@ -125,9 +156,16 @@
 }
 
 @media (max-width: 720px) {
-  .root { padding: var(--sp-5) var(--sp-4); gap: var(--sp-4); }
-  .title { font-size: var(--type-h1); }
-  .choices { grid-template-columns: 1fr; }
+  .root {
+    padding: var(--sp-5) var(--sp-4);
+    gap: var(--sp-4);
+  }
+  .title {
+    font-size: var(--type-h1);
+  }
+  .choices {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* The outcome, held on screen until it is acknowledged (§2.10). */
@@ -176,5 +214,20 @@
   font-weight: 700;
   cursor: pointer;
 }
-.leave:hover { transform: translateY(-1px); }
-.leave:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.leave:hover {
+  transform: translateY(-1px);
+}
+.leave:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+
+@media (max-height: 800px) and (min-width: 721px) {
+  .root {
+    padding: var(--sp-4) var(--sp-5);
+    gap: var(--sp-3);
+  }
+  .choice {
+    padding: var(--sp-4);
+  }
+}

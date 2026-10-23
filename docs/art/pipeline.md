@@ -41,6 +41,12 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 3. **One icon per mechanical identity.** Every Consumable, Held Item, Evolution Stone, Poké Ball, TM and Relic must have its own distinct pixel sprite. Do not reuse a Held Item's sprite on a Relic, or share one sprite between two different Relics.
 4. **Judge in context, at real size.** Always render with `npm run shot` and inspect the PNG in `playtest/`. Check pixel crispness, contrast (WCAG AA per D5), calm zones under UI, and palette warmth.
 
+### Mystery Event scenes (A10)
+
+Every implemented Mystery Event, including Eevee's Stone Cache, has a native 256×112 vignette in `public/art/events`. The 15 compositions reuse authentic FRLG tiles and furniture, Emerald people and objects, and previously credited habitat props. The hot spring uses the Emerald Lavaridge map. No AI generation is used for this family; the existing cave landmark retains its original pixel-authored opening.
+
+Rebuild with `node scripts/build-event-art.mjs` (add `--fetch` to refresh pinned sources). `manifest.json` records source URLs, crop coordinates and SHA-256 hashes. Generate the 2× contact sheet with `node scripts/event-art-gallery.mjs`. Scenes render at 2× at 720p and 3× at 1080p. Choice miniatures show only named, guaranteed items: random supplies, relics and gamble branches do not disclose an invented reward.
+
 ### Runtime sizing and reproducible derivatives (A04–A06)
 
 `MonIcon` uses compact pixel icons below 48 px and portraits at 48 px or above. Compact icons preserve every source pixel: only fully transparent margins are removed. `PixelSprite` fits the original aspect ratio into its cell using 0.5× scale steps, without stretching. `TypeLabel` keeps its native 32×12 aspect ratio and snaps its height to multiples of 6 px; the current UI uses 12, 18 and 24 px.

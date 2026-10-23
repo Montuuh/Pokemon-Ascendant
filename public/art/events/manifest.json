@@ -1,0 +1,338 @@
+{
+  "description": "A10 Mystery Event vignettes. Authentic Gen III objects and people on native FRLG tile compositions.",
+  "rights": "Pokémon artwork © Nintendo / Creatures / GAME FREAK; non-commercial fan use. Map renders: Bulbagarden Archives. Emerald extraction: pret/pokeemerald.",
+  "processing": {
+    "script": "scripts/build-event-art.mjs",
+    "grid": [
+      256,
+      112
+    ],
+    "resampling": "none for tiles and NPCs; exact half-scale for named stone/coin props",
+    "dithering": false,
+    "alpha": "palette-zero exact RGB key on opaque sprite sheets",
+    "sharp": "0.35.4"
+  },
+  "sources": [
+    {
+      "file": "sources/route1-frlg.png",
+      "url": "https://archives.bulbagarden.net/wiki/File%3AKanto%20Route%201%20FRLG.png",
+      "sha256": "54f02af9af75a420b0550d054cb1362781f021873024c78c7d5d23396e2ebe25",
+      "width": 384,
+      "height": 640
+    },
+    {
+      "file": "sources/lavaridge-emerald.png",
+      "url": "https://archives.bulbagarden.net/wiki/File%3ALavaridge%20Town%20E.png",
+      "sha256": "97b128b38f4c406d804f965a2f4698c7ce3c6d7ba5e01557a8a763cb158b8032",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "file": "sources/apothecary.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/old_woman.png",
+      "sha256": "47a9b6617c48f2e10f680858a6fe4048b73aa35bebc070e2fd41c15c6040126d",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "file": "sources/grandfather.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/old_man.png",
+      "sha256": "07d7a5ba4401a9ee606a9b4f4cdbf63559169512b9cb805bb9eeb996eee4b7c6",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "file": "sources/grandmother.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/old_woman.png",
+      "sha256": "47a9b6617c48f2e10f680858a6fe4048b73aa35bebc070e2fd41c15c6040126d",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "file": "sources/courier.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/mystery_event_deliveryman.png",
+      "sha256": "d5c5f5e8a597c9c371fd5397064e52d0a3a591ea9dc20b2716c345401fcc27bf",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "file": "sources/trader.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/man_3.png",
+      "sha256": "34319acb3f0ce5280b4d9fc49007ebb03650d7ff4f63a6afbb8f361ddba9c862",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "file": "sources/ranger.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/picnicker.png",
+      "sha256": "9f636a2605b63fd47947b56c742b8aba0470ce980cfd8b7a22e894b976a5ce4a",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "file": "sources/carny.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/man_4.png",
+      "sha256": "264a7e6d2916f397c592aed0f663350612908b0da2bc8fe3e77410a6c525ab32",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "file": "sources/bag.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/birchs_bag.png",
+      "sha256": "4facdd95cf1a101d93aea09b65aa68f5de1a2f911672d0f9f41bd1dc1206f266",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "sources/ball.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/item_ball.png",
+      "sha256": "f06d3076062bd9cffee3f7940d57bc59ce60ef470d42c1ec4861333797ae4786",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "sources/box.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/moving_box.png",
+      "sha256": "39e4e175e4be4991f81037dd4e621fa4a574db56d4ad57bbcc1d0a7bb55f5442",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "sources/truck.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/truck.png",
+      "sha256": "cd03e0e84235edfa95ee60f1be56d7ff270771ef695494d39651293e3104475c",
+      "width": 48,
+      "height": 48
+    },
+    {
+      "file": "sources/berries.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/berry_trees/oran.png",
+      "sha256": "6dc6ea6107cd01797c8658ab2b40a1b360165a773c4bdff267fc6c37e304a47c",
+      "width": 96,
+      "height": 32
+    },
+    {
+      "file": "sources/boulder.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/pushable_boulder.png",
+      "sha256": "9ff11e929fbc9c221dd5228e342be51a04b19591b7248ad12aa698e60221e663",
+      "width": 16,
+      "height": 16
+    }
+  ],
+  "localSources": [
+    {
+      "file": "../route/route/tree.png",
+      "sha256": "1eb557c724be5be1d36610cb67cd45ab594f5515778460c4b7e7b5a2c0693013",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../mart/mart.png",
+      "sha256": "67fe3939a467d19b0e55258eed9fedec3184ddff7fd5b53d3ba399f88027e79b",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/tall.png",
+      "sha256": "c74040cfe2e558bd871420acfb925b8ab40958663b268c7266171d52d7d861d2",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../items/fire-stone.png",
+      "sha256": "79b9f7aa7adf5f43465545cfb7b510789c90215b27680d91acaa0690c57f2507",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../items/water-stone.png",
+      "sha256": "a213ec2d62b816073a9a78bf659b436de8e196df3b14437b3d768f466b3e9616",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../items/thunder-stone.png",
+      "sha256": "74fa4c73cad9285a250f8f7e8e434409b3e89670adc6f30b419b709fce1bad10",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/ground.png",
+      "sha256": "1890d11fd51ba031d30ee5c13c15dda6d7eb675ca89f16a13dc61706e8f492e1",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/path-c.png",
+      "sha256": "9119f9571e521e130e839239a17d9a4f51c6b72049dc1549eec8ddf38a550cad",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/path-n.png",
+      "sha256": "df0866fbb0996934dc0deb11c2494f31ccc804d0a336262f331d220f3459bba4",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/path-s.png",
+      "sha256": "b2962f0a4965ab027dbc1ecd328021a6b98fa117b7cc6ea267edcc203171d31a",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/meadow/deco.png",
+      "sha256": "a2fb92aa23cdc712cb6c7ebb12d0ee67bd7fb98634598fc33dded695197ee43b",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../items/tacticians-coin.png",
+      "sha256": "f9c96d0802a7c5b2e19a458e3013468a63d5d299ae5b84a9d322e2ff731a3e2d",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/tower/fill.png",
+      "sha256": "ab2b0bd87a48bccf598bf96944ffcca60eeb2446f7d368c8562a984318ab8ec2",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/tower/path.png",
+      "sha256": "cb31b2b27d01fa2a90776a3b161fdb2f84a6aa6b813a6a6ad34b3d3c9e0ecd3d",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../map/habitat/cave.png",
+      "sha256": "5519530156080550065fa5e6d715657079ab606c75d850d8a222bad5b7cc5b27",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    }
+  ],
+  "cuts": [
+    {
+      "source": "../mart/mart.png",
+      "box": [
+        112,
+        16,
+        48,
+        24
+      ]
+    },
+    {
+      "source": "../mart/mart.png",
+      "box": [
+        16,
+        94,
+        32,
+        16
+      ]
+    },
+    {
+      "source": "sources/route1-frlg.png",
+      "box": [
+        144,
+        496,
+        16,
+        16
+      ]
+    },
+    {
+      "source": "sources/route1-frlg.png",
+      "box": [
+        128,
+        576,
+        16,
+        16
+      ]
+    },
+    {
+      "source": "sources/lavaridge-emerald.png",
+      "box": [
+        0,
+        16,
+        256,
+        112
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "file": "traveling-apothecary.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "21a424c0165326cee6612c1c77c4eaf7c040150c8ba40fe42334947b4bdeb99e"
+    },
+    {
+      "file": "roadside-trader.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "7a6818eb2cb57a84f742c2ffc88644954d497efb40012f4cf65df4342f95d34b"
+    },
+    {
+      "file": "field-medic.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "e6d56b4e3f2775c9fb58c08c8a5aef5dff234f9d3b5aa1a8e43ea4578ce5daac"
+    },
+    {
+      "file": "lost-backpack.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "98084aed222c1f208af7e13d9e6981dc52ffcc4871301594ac429a14f5bf4e47"
+    },
+    {
+      "file": "fallen-crate.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "da722879d8cbd6da1a587885b706765e247338ba6490dab03454cd9c110d1b2f"
+    },
+    {
+      "file": "abandoned-pokeball.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "193c3ef2f26ff57873eefc1e07869d511885f5b8329c01dd30174542b727b548"
+    },
+    {
+      "file": "berry-bush.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "78cb1facf935018bc3a75423822d158fbbd25558ebeccea7001170d3fb4e9115"
+    },
+    {
+      "file": "moving-truck.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "7a71ad31fb2fb778b857c8185274a57c7db6f52feb7009b62e0cf314c07d84ea"
+    },
+    {
+      "file": "daycare-recovery.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "7dedd775a68d58db543db973735665db8d21dcdc15607fd62eea9c7e0cb0a7bb"
+    },
+    {
+      "file": "hot-spring.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "8b627c8a28a1372f2cd2bbb90f1372cbc0b4d5b44fba23c26c96f8b529fafd13"
+    },
+    {
+      "file": "slot-booth.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "25e4e6d80a450fad471db2a882849a86fe1d2bcb8e4e1465f5b683705ee7377f"
+    },
+    {
+      "file": "cursed-trinket.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "03fc2d5ffc708127647d8b5c4425f3c86c1576260199b6531f480ab33d35d940"
+    },
+    {
+      "file": "mysterious-stone.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "36bc2731ded26f52b85637844d75d99f454e1968607745b214ce28b557e6afae"
+    },
+    {
+      "file": "stone-cache.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "8fc1958b59976ec019139e797798ff011bfa576e082cd05451b98f7f6e01046b"
+    },
+    {
+      "file": "unmarked-cave.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "3a82121abd986af7c0a00bc4ba98da331e4d2c5c365056f776afeb61000c1b53"
+    }
+  ]
+}

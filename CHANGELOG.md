@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.34 — Illustrated encounters · 2026-10-23
+
+Mystery Events gain classic pixel scenes and illustrated item choices.
+
+- **Scenes.** Fifteen event illustrations, including Eevee's evolution stones.
+- **Choices.** Guaranteed items appear beside their exact effects and prices.
+- **Clarity.** Event scenes and choices fit at 720p and 1080p.
+
 ### v0.9.33 — Service rooms · 2026-10-23
 
 The Dojo and Pokémon Center become classic pixel-art interiors.

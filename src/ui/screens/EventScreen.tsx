@@ -4,6 +4,8 @@ import { useRunStore } from '@/app/runStore';
 import { mysteryEvent, RISK_LABEL, type EventRisk } from '@/sim';
 import { Money, Price } from '@/ui/components/Money';
 import { RUN_REJECT_TEXT } from '@/ui/strings';
+import { EventVignette } from './events/EventVignette';
+import { EventChoiceLoot } from './events/EventChoiceLoot';
 import styles from './EventScreen.module.css';
 
 // Mystery Event, §2.10 — a scene and two or three choices.
@@ -54,6 +56,7 @@ export function EventScreen() {
       </header>
 
       <section className={styles.scene}>
+        <EventVignette eventId={event.id} />
         <h1 className={`${styles.title} display`}>{event.title}</h1>
         <p className={styles.prose}>{event.scene}</p>
       </section>
@@ -78,31 +81,32 @@ export function EventScreen() {
           </button>
         </div>
       ) : (
-      <div className={styles.choices} role="group" aria-label="What do you do?">
-        {event.choices.map((choice, i) => {
-          const affordable = !choice.cost || run.money >= choice.cost;
-          return (
-            <button
-              key={choice.label}
-              type="button"
-              className={styles.choice}
-              disabled={!affordable}
-              onClick={() => choose(i)}
-              data-testid={`event-choice-${i}`}
-            >
-              <span className={`${styles.choiceLabel} display`}>{choice.label}</span>
-              {/* The promise, verbatim from the content row. `eventContent.test.ts` holds this string and the
+        <div className={styles.choices} role="group" aria-label="What do you do?">
+          {event.choices.map((choice, i) => {
+            const affordable = !choice.cost || run.money >= choice.cost;
+            return (
+              <button
+                key={choice.label}
+                type="button"
+                className={styles.choice}
+                disabled={!affordable}
+                onClick={() => choose(i)}
+                data-testid={`event-choice-${i}`}
+              >
+                <span className={`${styles.choiceLabel} display`}>{choice.label}</span>
+                <EventChoiceLoot outcomes={choice.outcomes} />
+                {/* The promise, verbatim from the content row. `eventContent.test.ts` holds this string and the
                   outcomes it describes to the same numbers, so what the button says is what the run does. */}
-              <span className={styles.choiceDetail}>{choice.detail}</span>
-              {choice.cost ? (
-                <span className={styles.choiceCost}>
-                  <Price amount={choice.cost} affordable={affordable} />
-                </span>
-              ) : null}
-            </button>
-          );
-        })}
-      </div>
+                <span className={styles.choiceDetail}>{choice.detail}</span>
+                {choice.cost ? (
+                  <span className={styles.choiceCost}>
+                    <Price amount={choice.cost} affordable={affordable} />
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
       )}
 
       <footer className={styles.footer}>

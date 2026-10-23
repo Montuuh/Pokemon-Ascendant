@@ -1459,6 +1459,13 @@ Art-review follow-up A08–A09: the Dojo and Pokémon Center as recognisable pla
 
 **Shipped.** The Dojo builds on the original FRLG Fighting Dojo, with a practice area and pixel props, move-effect illustrations, separate preview/learn controls and a Deck dialog for comparison. The Center has its own room composed from authentic FRLG tiles and furniture, with central reception, a Daycare corner and a PC desk; its animated healing machine aligns with the map. Healing still reveals HP gains only after the machine runs; completed per-Pokémon history sits behind Healing report. Both rooms use clean pixel scales, keyboard-accessible doors, trapped dialogs and focus restoration. Modal tooltips remain available to assistive technology; the hidden-ability explanation derives its Bond rank from the sim. No service rules or prices change. The external results rework/A03 remains separate.
 
+### v0.9.34 — Illustrated encounters  ✅ 2026-10-23
+Art-review follow-up A10: narrative encounters as recognisable pixel scenes.
+
+**Shipped.** All 14 implemented Mystery Events and Eevee's Stone Cache have native 256×112 vignettes, composed from credited FRLG and Emerald scenery, people and objects. Named, guaranteed loot appears on choices; unknown supplies, relics and gamble branches stay undisclosed. Risk, prices, effects, held outcomes and leave behaviour are unchanged. Source URLs, crop coordinates and hashes are retained in the asset manifest. Scenes use exact 2×/3× scales at 720p/1080p.
+
+**A11 awaiting a direction.** Three paired Summit/League mockups are in [league-arrival](design/ui/mockups/league-arrival/README.md): Indigo Ascent, Laurel Court and Last Threshold. The user chooses before production integration; none is adopted as canon by this release.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

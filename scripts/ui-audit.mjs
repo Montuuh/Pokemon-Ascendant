@@ -90,7 +90,8 @@ const SCREENS = {
   },
   merchant: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("merchant")', 'goTo("map")'], match: [/screens\/ShopScreen/] },
   aid: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("aid")', 'goTo("map")'], match: [/screens\/AidScreen/] },
-  mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("mystery")', 'goTo("map")'], match: [/screens\/EventScreen/] },
+  // Pin the event directly: auto-playing towards a Mystery can lose the run before reaching the screen.
+  mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.phase = "event"; d.pendingEvent = "traveling-apothecary"; d.pendingNodeId = Object.values(d.map.nodes).find((n) => n.kind === "mystery").id; d.eventResult = null; d.money = 100; })', 'goTo("map")'], match: [/screens\/EventScreen/, /screens\/events\//] },
   // §2.9.5 — the item ball: its reel on the preview card, and the reel stopped (a click lands it at once).
   'find-preview': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'goTo("map")'], match: [/components\/FindPrize/, /components\/NodePreviewCard/] },
   find: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'], clicks: ['find-reel'], match: [/screens\/FindScreen/, /components\/FindPrize/] },

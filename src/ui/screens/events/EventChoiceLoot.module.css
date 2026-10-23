@@ -1,0 +1,14 @@
+.loot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.loot img {
+  display: block;
+  /* Native 30×30 item canvases: no resampling. */
+  width: 30px;
+  height: 30px;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
