@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { getContent } from '@/content/registry';
 import { runHelpers, type HealLine, type PartyMon } from '@/sim';
 import { hubArt, trainerSprite } from '@/ui/art';
@@ -25,7 +25,14 @@ type Beat = 'tray' | 'run' | 'fill' | 'done';
 /** The beats' lengths, in ms: a ball every `ball`, the jingle's run, the bars' fill. */
 const MS = { ball: 260, run: 2000, fill: 900 } as const;
 /** The machine's six lights, where its tray balls sit (the art's own pixels, `scripts/cut-heal-machine.mjs`). */
-const SOCKETS: readonly [number, number][] = [[12, 10], [18, 10], [12, 14], [18, 14], [12, 18], [18, 18]];
+const SOCKETS: readonly [number, number][] = [
+  [12, 10],
+  [18, 10],
+  [12, 14],
+  [18, 14],
+  [12, 18],
+  [18, 18],
+];
 /**
  * The heals already shown this session, by the run's stamp (`RunState.heals`): a screen that remounts on the same heal
  * (back from an Evolution the Daycare's level made ready) shows it done rather than running the machine again.
@@ -41,10 +48,23 @@ interface Props {
   variant: 'center' | 'nurse';
   /** Told once the bars have filled (or at once, when there is nothing to show). */
   onDone?: () => void;
+  /** Place the existing animated machine over its matching furniture in an interior scene. */
+  machineStyle?: CSSProperties;
+  /** Once the heal has landed, keep its per-Pokémon history behind a disclosure in the lobby. */
+  compactAfterDone?: boolean;
   testId?: string;
 }
 
-export function HealPanel({ lines, box, stamp, variant, onDone, testId = 'heal' }: Props) {
+export function HealPanel({
+  lines,
+  box,
+  stamp,
+  variant,
+  onDone,
+  machineStyle,
+  compactAfterDone = false,
+  testId = 'heal',
+}: Props) {
   const animate = useMotionPref();
   const healed = lines.reduce((a, l) => a + Math.max(0, l.to - l.from), 0);
   const cured = lines.filter((l) => l.cured).length;
@@ -116,9 +136,33 @@ export function HealPanel({ lines, box, stamp, variant, onDone, testId = 'heal' 
 
   const content = getContent();
   const total = idle ? HEAL_TEXT.nothing : shown ? HEAL_TEXT.total(healed, cured) : HEAL_TEXT.working;
+  const patients = !idle && (
+    <ul className={styles.patients} aria-label={HEAL_TEXT.patients}>
+      {lines.map((l) => {
+        const mon = box.find((m) => m.uid === l.uid);
+        if (!mon) return null;
+        return (
+          <Patient
+            key={l.uid}
+            mon={mon}
+            line={l}
+            beat={beat}
+            max={runHelpers.maxHpOf(mon, content)}
+            testId={testId}
+          />
+        );
+      })}
+    </ul>
+  );
 
   return (
-    <section className={`${styles.root} ${styles[variant] ?? ''}`} data-testid={testId} data-beat={beat} aria-label={HEAL_TEXT.label} onClick={skip}>
+    <section
+      className={`${styles.root} ${styles[variant] ?? ''}`}
+      data-testid={testId}
+      data-beat={beat}
+      aria-label={HEAL_TEXT.label}
+      onClick={skip}
+    >
       <button
         type="button"
         className={styles.stand}
@@ -133,7 +177,7 @@ export function HealPanel({ lines, box, stamp, variant, onDone, testId = 'heal' 
         {...tip}
       >
         {variant === 'center' ? (
-          <span className={`${styles.machine} ${beat === 'run' ? styles.running : ''}`}>
+          <span className={`${styles.machine} ${beat === 'run' ? styles.running : ''}`} style={machineStyle}>
             <img className="pixel" src={hubArt('heal-machine')} alt="" draggable={false} />
             {SOCKETS.slice(0, Math.min(balls, lines.length)).map(([x, y], i) => (
               <img
@@ -147,45 +191,84 @@ export function HealPanel({ lines, box, stamp, variant, onDone, testId = 'heal' 
             ))}
           </span>
         ) : (
-          <img className={`pixel ${styles.nurseSprite} ${beat === 'run' ? styles.working : ''}`} src={trainerSprite('nurse')} alt="" width={120} height={120} draggable={false} />
+          <img
+            className={`pixel ${styles.nurseSprite} ${beat === 'run' ? styles.working : ''}`}
+            src={trainerSprite('nurse')}
+            alt=""
+            width={120}
+            height={120}
+            draggable={false}
+          />
         )}
-        <span className={`${styles.total} display tabular`} data-testid={`${testId}-total`} aria-live="polite">
+        <span
+          className={`${styles.total} display tabular`}
+          data-testid={`${testId}-total`}
+          aria-live="polite"
+        >
           {total}
         </span>
       </button>
 
-      {!idle && (
-        <ul className={styles.patients} aria-label={HEAL_TEXT.patients}>
-          {lines.map((l) => {
-            const mon = box.find((m) => m.uid === l.uid);
-            if (!mon) return null;
-            return <Patient key={l.uid} mon={mon} line={l} beat={beat} max={runHelpers.maxHpOf(mon, content)} testId={testId} />;
-          })}
-        </ul>
+      {patients && compactAfterDone && beat === 'done' ? (
+        <details className={styles.report} onClick={(event) => event.stopPropagation()}>
+          <summary data-testid={`${testId}-report`}>{HEAL_TEXT.report}</summary>
+          {patients}
+        </details>
+      ) : (
+        patients
       )}
     </section>
   );
 }
 
-function Patient({ mon, line, beat, max, testId }: { mon: PartyMon; line: HealLine; beat: Beat; max: number; testId: string }) {
+function Patient({
+  mon,
+  line,
+  beat,
+  max,
+  testId,
+}: {
+  mon: PartyMon;
+  line: HealLine;
+  beat: Beat;
+  max: number;
+  testId: string;
+}) {
   const s = getContent().species(mon.speciesId);
   const shown = beat === 'fill' || beat === 'done';
   // Before the machine has run, the HP it had; as the bars fill, what the heal gave; once done, the Pokémon as it is now.
   const hp = beat === 'done' ? mon.hp : shown ? line.to : line.from;
   const gain = line.to - line.from;
-  const tip = useTip(partyTip(s.name, mon.level, hp, max, beat === 'done' ? (mon.status?.kind ?? null) : null, mon.traumaStacks));
+  const tip = useTip(
+    partyTip(
+      s.name,
+      mon.level,
+      hp,
+      max,
+      beat === 'done' ? (mon.status?.kind ?? null) : null,
+      mon.traumaStacks,
+    ),
+  );
   return (
-    <li className={styles.patient} tabIndex={0} aria-label={HEAL_TEXT.patient(s.name, hp, max, shown ? gain : 0)} data-testid={`${testId}-${mon.uid}`} {...tip}>
+    <li
+      className={styles.patient}
+      tabIndex={0}
+      aria-label={HEAL_TEXT.patient(s.name, hp, max, shown ? gain : 0)}
+      data-testid={`${testId}-${mon.uid}`}
+      {...tip}
+    >
       <MonIcon speciesId={s.id} size={40} />
       <span className={`${styles.name} display`}>{s.name}</span>
       <span className={styles.bar}>
         <HpBar hp={hp} maxHp={max} height={8} />
       </span>
-      <span className={`${styles.gain} tabular`} data-shown={shown && gain > 0 ? 'true' : undefined}>
+      <span className={`${styles.gain} tabular`} aria-hidden={!shown || gain <= 0} data-shown={shown && gain > 0 ? 'true' : undefined}>
         {gain > 0 ? `+${gain}` : ''}
       </span>
       {/* A fainted one back on its feet says so; otherwise a status that came off. */}
-      {shown && (line.from <= 0 || line.cured) && <span className={styles.cured}>{line.from <= 0 ? HEAL_TEXT.revived : HEAL_TEXT.cured}</span>}
+      {shown && (line.from <= 0 || line.cured) && (
+        <span className={styles.cured}>{line.from <= 0 ? HEAL_TEXT.revived : HEAL_TEXT.cured}</span>
+      )}
     </li>
   );
 }

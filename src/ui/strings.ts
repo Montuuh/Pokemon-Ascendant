@@ -1,4 +1,5 @@
 import type { Volume } from '@/app/settingsStore';
+import { BOND_RANK_NAME, BOND_TIER } from '@/sim';
 import type { GymRuleConfig, GymRuleId, RejectReason, RuleCounter, ArenaRuleId, ArenaRuleConfig, ArenaCounter } from '@/sim';
 
 // User-facing strings for the combat screen, gathered for the v0.9 localisation pass.
@@ -486,7 +487,7 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'not-fainted': 'It has not fainted.',
   'full-hp': 'Already at full HP.',
   'nothing-to-cure': 'Nothing for this to cure.',
-  'ability-locked': 'This is the line\'s hidden ability — it opens at Bond rank 3 (Veteran).',
+  'ability-locked': `This is the line's hidden ability — it opens at Bond rank ${BOND_TIER.hiddenAbility} (${BOND_RANK_NAME[BOND_TIER.hiddenAbility]}).`,
   'not-on-map': 'Finish what you are doing first.',
   'node-unreachable': 'You cannot get there from here.',
   'wrong-phase': 'Not now.',
@@ -571,21 +572,30 @@ export const BET_NAME: Record<'red' | 'black' | 'green', string> = { red: 'Red',
 
 /** §2.9.4 — the Dojo's counters. */
 export const DOJO_TEXT = {
-  sub: 'Moves off the learnset, egg moves, and passives.',
+  title: 'The Dojo',
+  box: 'Your Box',
+  deck: 'Deck',
+  closeDeck: 'Close the Move Manager',
+  learn: 'Learn',
+  known: 'already known',
+  equipped: 'equipped',
+  locked: 'locked',
+  master: 'Master',
+  scrolls: 'Scrolls',
+  apprentice: 'Apprentice',
+  room: 'Fighting Dojo',
+  preview: 'Preview move',
+  deckFor: (name: string) => `${name}’s deck`,
   counters: 'The Dojo’s counters',
   tab: { tutor: 'Tutor', eggs: 'Egg moves', passive: 'Passive' },
   tabLabel: (name: string, left: number) => `${name}, ${left} still to buy for this Pokémon`,
-  heading: {
-    tutor: (name: string) => `Tutor move — ${name}`,
-    eggs: (name: string) => `Egg moves — ${name}`,
-    passive: (name: string) => `Passive ability — ${name}`,
-  },
   noTutor: 'The master has nothing to teach this one.',
   noEggs: 'The master has no scrolls for this line.',
 };
 
 /** §2.11.1 — the Pokémon Center's three counters. */
 export const CENTER_TEXT = {
+  lobby: 'Lobby',
   therapy: 'Therapy',
   daycare: 'Daycare',
   pcBox: 'PC Box',
@@ -652,6 +662,7 @@ export const FIND_TEXT = {
 
 /** §9.9.3 — the heal, seen: the Center's machine and the field nurse (`HealPanel`). */
 export const HEAL_TEXT = {
+  report: 'Healing report',
   label: 'Healing',
   patients: 'Your Box, healing',
   working: 'Healing…',

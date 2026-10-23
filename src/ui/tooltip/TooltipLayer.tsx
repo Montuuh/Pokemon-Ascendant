@@ -52,8 +52,11 @@ export function TooltipLayer() {
       if (keep.contains(anchor)) continue;
       const k = keep.getBoundingClientRect();
       if (!(left < k.right && left + b.width > k.left && top < k.bottom && top + b.height > k.top)) continue;
-      const sides = [k.left - GAP - b.width, k.right + GAP].filter((x) => x >= MARGIN && x + b.width <= vw - MARGIN);
-      if (sides.length) left = sides.reduce((best, x) => (Math.abs(x - left) < Math.abs(best - left) ? x : best));
+      const sides = [k.left - GAP - b.width, k.right + GAP].filter(
+        (x) => x >= MARGIN && x + b.width <= vw - MARGIN,
+      );
+      if (sides.length)
+        left = sides.reduce((best, x) => (Math.abs(x - left) < Math.abs(best - left) ? x : best));
       else if (k.top - b.height - GAP >= MARGIN) top = k.top - b.height - GAP;
     }
     let below = false;
@@ -83,18 +86,23 @@ export function TooltipLayer() {
     };
   }, [anchor, hide]);
 
-  if (!anchor || content === null || content === undefined) return null;
-
+  // Keep the description portal mounted before a modal opens. Radix preserves live-region containers when
+  // hiding the background; `off` leaves announcements to the trigger's aria-describedby, without double speech.
+  const visible = anchor && content !== null && content !== undefined;
   return createPortal(
-    <div
-      ref={box}
-      id={id}
-      role="tooltip"
-      className={`${styles.bubble} ${pos?.below ? styles.below : styles.above} ${pos ? styles.placed : ''}`}
-      style={pos ? { left: pos.left, top: pos.top } : { left: -9999, top: -9999 }}
-      data-testid="tooltip"
-    >
-      {content}
+    <div aria-live="off">
+      {visible && (
+        <div
+          ref={box}
+          id={id}
+          role="tooltip"
+          className={`${styles.bubble} ${pos?.below ? styles.below : styles.above} ${pos ? styles.placed : ''}`}
+          style={pos ? { left: pos.left, top: pos.top } : { left: -9999, top: -9999 }}
+          data-testid="tooltip"
+        >
+          {content}
+        </div>
+      )}
     </div>,
     document.body,
   );

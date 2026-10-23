@@ -1,12 +1,14 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-23 · **Version:** v0.9.32 shipped (*Pixel clarity*) — A04–A06: classic typography, proportional icons and 45 indexed battle stages.
+**Date:** 2026-10-23 · **Version:** v0.9.33 shipped (*Service rooms*) — A08–A09: authentic Dojo and Center interiors, illustrated moves and integrated healing.
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 **Sprint goal next:** **v1.0** Release (Tauri build, the final balance pass at 720 runs on two seed blocks, press kit) — the user plays the pack first.
 
 **Art review follow-up:** A01 is isolated in CombatScreen.module.css and e2e/arena-layout.spec.ts. A02's seven-line Badge spacing fix is applied locally in the other session's untracked results CSS; preserve it when integrating that rework. Local handoff: .claude/patches/A02-badge-handoff.md, A02-badge.patch and e2e/badge-layout.spec.ts. A level-up panel still covers the Badge temporarily at 720p; results.spec.ts:74 also fails with the A02 patch reversed. These remain with the external results rework/A03. Do not clear its shared UI-review queue on this scoped review.
 
 **A04–A06 verified:** full check 899 passed / 3 skipped; screenshot suite 13 passed; pixel, typography and arena checks 18 passed; stage/title suite 5 passed on a fresh v0.9.32 server. The first combined run missed a lazy-loaded title effect; trace confirmed its image arrived during the short beat and polling missed it. Isolated reruns pass; preloading is recorded under v1.1, separately from A16's card-window work. Art sources and conversion hashes: docs/art/pipeline.md and public/art/stages/manifest.json.
+
+**A08–A09 verified:** UI review Ship after the user's second art pass: dedicated 320×224 Center, Dojo equipment/practice props, authentic Gen III Pokémon/shiny/Substitute/Egg and brief move effects. Full check 899 passed / 3 skipped; shot 13 passed. Final combined e2e 50/51; the catch-log timing assertion missed its pre-completion window under parallel load and passed isolated 1/1. Final Dojo 5/5 includes a 900ms delayed effect to prove it plays after loading. Local evidence: playtest/a08-a09 and .claude/state/ui-a08-a09-review.md. Keep external results review separate.
 
 **v0.8.7–v0.8.10** — the route, balance, harness, growth curves (`BALANCE_REPORT=1 REPORT_SEEDS=240`). **v0.9.1** — Shiny found in the wild (§5.14, `run/shiny.ts`, 1 in 40, `copyIsShiny`), its collection in the
 Pokédex, +N Bond on the reward screen; the Bond in four linear ranks of 100 (Shiny Charm · hidden ability · the whole

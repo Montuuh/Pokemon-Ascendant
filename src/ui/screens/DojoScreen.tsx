@@ -1,27 +1,27 @@
 import { useState, type ReactNode } from 'react';
-import { Tabs } from 'radix-ui';
-import { IconBook, IconCheck, IconEgg, IconSparkles } from '@tabler/icons-react';
+import { Dialog, Tabs } from 'radix-ui';
+import { IconBook, IconCheck, IconEgg, IconLock, IconPlus, IconSparkles, IconX } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { abilityLocked, dojoPrice, eggMovesFor, tutorListFor, type MoveDef, type PartyMon, BOND_TIER } from '@/sim';
+import { asset } from '@/content/paths';
+import { abilityLocked, dojoPrice, eggMovesFor, tutorListFor, type MoveDef } from '@/sim';
+import { moveArt } from '@/ui/art';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
+import { PixelRoom } from '@/ui/components/PixelRoom';
+import { PixelSprite } from '@/ui/components/PixelSprite';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { BACK_TO_TOWN, DOJO_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
 import { counterTabTip, dojoTip, eggMovesTip, moveDefTip, passiveTip, tutorTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
 import { BackButton } from '@/ui/components/BackButton';
+import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import styles from './DojoScreen.module.css';
 
-// Per docs/design/ui/screens.md (Dojo / Tutor, screen 4.7) and §2.9.4 — the Dojo, a City building since v0.7.1
-// (§2.11.4): header, content, and a door back to town. Three counters — the tutor, the egg moves (§2.9.4.2, the
-// master's scrolls: the line's own, for any stage) and the passive — beside the deck they change.
-//
-// As many services as you can pay for, each priced by the sim (`dojoPrice`: the town's price, the city's +30 %,
-// any modifier's discount). The Dojo is the run's main money sink, so the wallet is in the header and every
-// offer wears its price — deciding *whether* is part of the visit, not just which.
-
+// §2.9.4, §2.9.4.2 — the master's room and the line's scrolls, beside a visual move shelf.
+// The original FRLG map includes the master and his pupils. Every service still uses the sim's prices,
+// stage-aware lists and gates; learning adds to the pool, while the Move Manager owns the active four.
 type Counter = 'tutor' | 'eggs' | 'passive';
 const COUNTERS: readonly Counter[] = ['tutor', 'eggs', 'passive'];
 const COUNTER_ICON: Record<Counter, ReactNode> = {
@@ -37,17 +37,46 @@ export function DojoScreen() {
   const [uid, setUid] = useState<string>(run.activeUids[0] ?? run.box[0]!.uid);
   const [toast, setToast] = useState<string | null>(null);
   const [counter, setCounter] = useState<Counter>('tutor');
-
+  const [selected, setSelected] = useState<string | null>(null);
+  const [deckOpen, setDeckOpen] = useState(false);
+  const [practiceBeat, setPracticeBeat] = useState(0);
+  const motion = useMotionPref();
   const mon = run.box.find((m) => m.uid === uid) ?? run.box[0]!;
   const species = content.species(mon.speciesId);
-  // §2.9.4 — the town's price, the city's +30 %, and any modifier's discount: the sim prices it, not the screen.
+  // §2.9.4 — including Celadon's +30% and any modifier discount, computed by the sim.
   const movePrice = dojoPrice(run, content, 'move');
   const abilityPrice = dojoPrice(run, content, 'ability');
   const eggPrice = dojoPrice(run, content, 'egg');
-  const canEgg = run.money >= eggPrice;
-  const canMove = run.money >= movePrice;
-  const canAbility = run.money >= abilityPrice;
+  const tutorList = tutorListFor(run, mon, content).map((id) => ({
+    id,
+    move: content.move(id),
+    known: mon.pool.includes(id),
+  }));
+  const eggList = eggMovesFor(mon, content).map((id) => ({
+    id,
+    move: content.move(id),
+    known: mon.pool.includes(id),
+  }));
+  // §6.8.3 — hidden abilities remain named, visible and locked until the line's Bond opens them.
+  const abilities = species.availableAbilities.map((id) => ({
+    id,
+    def: content.ability(id),
+    equipped: mon.abilityId === id,
+    locked: abilityLocked(run, mon.speciesId, id, content),
+  }));
+  const counts: Record<Counter, number> = {
+    tutor: tutorList.filter((o) => !o.known).length,
+    eggs: eggList.filter((o) => !o.known).length,
+    passive: abilities.filter((a) => !a.equipped && !a.locked).length,
+  };
+  const offers = counter === 'eggs' ? eggList : tutorList;
+  const preview =
+    counter !== 'passive' ? (offers.find((o) => o.id === selected) ?? offers[0])?.move : undefined;
 
+  function choose(next: Counter) {
+    setCounter(next);
+    setSelected(null);
+  }
   function act(action: Parameters<typeof dispatch>[0]) {
     if (!dispatch(action)) {
       setToast(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? 'Not now.');
@@ -55,212 +84,374 @@ export function DojoScreen() {
     }
   }
 
-  // §6.4.3 — the tutor list belongs to this *stage*, so evolving changes the menu and delaying one to take a
-  // pre-form move is a legal play.
-  // §2.9.4 — the city Dojo's list is wider: every stage the line has reached (tutorListFor).
-  const tutorList = tutorListFor(run, mon, content).map((id) => ({ id, move: content.move(id), known: mon.pool.includes(id) }));
-  // §2.9.4.2 — the line's egg moves: inherited, not grown into, so every stage of the line is offered the same list.
-  const eggList = eggMovesFor(mon, content).map((id) => ({ id, move: content.move(id), known: mon.pool.includes(id) }));
-  // §6.8.3 — the line's hidden ability is listed, greyed and named as such, until the line's Bond opens it.
-  const abilities = species.availableAbilities.map((id) => ({ id, def: content.ability(id), equipped: mon.abilityId === id, locked: abilityLocked(run, mon.speciesId, id, content) }));
-  // What each tab still has to sell this Pokémon, on the tab itself.
-  const counts: Record<Counter, number> = {
-    tutor: tutorList.filter((o) => !o.known).length,
-    eggs: eggList.filter((o) => !o.known).length,
-    passive: abilities.filter((a) => !a.equipped && !a.locked).length,
-  };
-
   return (
-    // A node service screen is front-end chrome, not stage chrome: warm light, like the Pokémon Centre
-    // (screen 4.6 of docs/design/ui/screens.md, "the warmest screen").
     <main className={styles.root} data-testid="dojo-screen">
       <header className={styles.topBar}>
-        <BackButton label={BACK_TO_TOWN} onClick={() => act({ type: 'leave-dojo' })} testId="btn-leave-dojo" />
-        <div>
-          <h1 className={`${styles.title} display`}>The Dojo</h1>
-          <p className={styles.sub}>
-            {DOJO_TEXT.sub}
-            <InfoDot tip={dojoTip()} />
-          </p>
-        </div>
+        <BackButton
+          label={BACK_TO_TOWN}
+          onClick={() => act({ type: 'leave-dojo' })}
+          testId="btn-leave-dojo"
+        />
+        <h1 className={`${styles.title} display`}>
+          {DOJO_TEXT.title}
+          <InfoDot tip={dojoTip()} />
+        </h1>
         <span className={styles.credits} data-testid="dojo-money">
           <Money amount={run.money} size={18} />
-          <span className={styles.creditsLabel}>in hand</span>
         </span>
       </header>
-
       <div className={styles.body}>
-        <aside className={styles.roster} aria-label="Choose a Pokémon">
-          <h2 className={styles.colTitle}>Your Box</h2>
-          <ul className={styles.list}>
-            {run.box.map((m: PartyMon) => {
+        <div className={styles.roomWrap} data-practice-beat={practiceBeat % 2}>
+          <PixelRoom<Counter>
+            art={asset('art/dojo/training-room.png')}
+            w={208}
+            h={256}
+            frame="silhouette"
+            scaleStep={0.5}
+            label={DOJO_TEXT.room}
+            testId="dojo-room"
+            chosen={counter}
+            onChoose={choose}
+            sprites={[
+              {
+                src: asset(`art/dojo/pokemon/${species.id}${mon.shiny ? '-shiny' : ''}.png`),
+                at: [72, 152, 32, 32],
+              },
+              ...(counter === 'passive'
+                ? []
+                : [
+                    {
+                      src: asset(`art/dojo/${counter === 'eggs' ? 'egg' : 'substitute'}.png`),
+                      at: [108, 112, 32, 32] as const,
+                    },
+                  ]),
+              ...(selected && preview && motion
+                ? [
+                    {
+                      src: asset(`art/dojo/effects/${preview.id.replace(/(-plus)+$/, '')}.png`),
+                      at: [100, 112, 48, 32] as const,
+                      onLoad: () => setPracticeBeat((beat) => beat + 1),
+                    },
+                  ]
+                : []),
+            ]}
+            spots={[
+              {
+                id: 'tutor',
+                boxes: [
+                  [94, 73, 20, 23],
+                  [28, 64, 32, 40],
+                ],
+                label: DOJO_TEXT.master,
+                ariaLabel: DOJO_TEXT.tab.tutor,
+                tip: tutorTip(),
+                testId: 'dojo-master',
+              },
+              {
+                id: 'eggs',
+                boxes: [
+                  [148, 64, 32, 40],
+                  [79, 22, 50, 24],
+                ],
+                label: DOJO_TEXT.scrolls,
+                ariaLabel: DOJO_TEXT.tab.eggs,
+                tip: eggMovesTip(),
+                testId: 'dojo-scrolls',
+              },
+              {
+                id: 'passive',
+                boxes: [[175, 155, 17, 23]],
+                label: DOJO_TEXT.apprentice,
+                ariaLabel: DOJO_TEXT.tab.passive,
+                tip: passiveTip(),
+                testId: 'dojo-apprentice',
+              },
+            ]}
+          />
+        </div>
+        <section className={styles.services}>
+          <div className={styles.who}>
+            <div className={styles.selectedMon}>
+              <MonIcon speciesId={species.id} size={40} />
+              <h2 className="display">{species.name}</h2>
+              {species.types.map((t) => (
+                <TypeBadge key={t} type={t} size={12} defenderTypes={species.types} />
+              ))}
+            </div>
+            <Dialog.Root open={deckOpen} onOpenChange={setDeckOpen}>
+              <Dialog.Trigger asChild>
+                <button type="button" className={styles.deckButton} data-testid="dojo-deck">
+                  <IconBook size={18} />
+                  {DOJO_TEXT.deck}
+                </button>
+              </Dialog.Trigger>
+              <Dialog.Portal>
+                <Dialog.Overlay className={styles.scrim} />
+                <Dialog.Content
+                  className={styles.deckPanel}
+                  aria-describedby={undefined}
+                  data-testid="dojo-deck-dialog"
+                >
+                  <div className={styles.deckHeading}>
+                    <Dialog.Title className="display">{DOJO_TEXT.deckFor(species.name)}</Dialog.Title>
+                    <Dialog.Close asChild>
+                      <button
+                        type="button"
+                        className={styles.close}
+                        aria-label={DOJO_TEXT.closeDeck}
+                        data-testid="dojo-deck-close"
+                      >
+                        <IconX size={20} />
+                      </button>
+                    </Dialog.Close>
+                  </div>
+                  {preview && (
+                    <Tipped
+                      tip={moveDefTip(preview)}
+                      className={styles.comparison}
+                      data-testid="dojo-comparison"
+                    >
+                      <PixelSprite src={moveArt(preview.id)} alt="" width={136} height={90} />
+                      <span>
+                        <strong className="display">{preview.name}</strong>
+                        <span className={styles.previewStats}>
+                          <TypeBadge type={preview.type} size={18} mode="attack" />
+                          {preview.apCost} AP{preview.power > 0 && ` · ${preview.power}`}
+                        </span>
+                      </span>
+                    </Tipped>
+                  )}
+                  <MoveManager uid={uid} onClose={() => setDeckOpen(false)} embedded />
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog.Root>
+          </div>
+          <ul className={styles.roster} aria-label={DOJO_TEXT.box}>
+            {run.box.map((m) => {
               const s = content.species(m.speciesId);
               return (
                 <li key={m.uid}>
-                  <button
+                  <Tipped
+                    as="button"
                     type="button"
-                    className={`${styles.pick} ${m.uid === uid ? styles.picked : ''}`}
-                    onClick={() => setUid(m.uid)}
+                    tip={<Tip title={s.name} meta={[`Lv ${m.level}`, `${m.pool.length} moves learned`]} />}
+                    className={styles.pick}
+                    onClick={() => {
+                      setUid(m.uid);
+                      setSelected(null);
+                    }}
                     aria-pressed={m.uid === uid}
                     data-testid={`dojo-pick-${s.id}`}
                     aria-label={`${s.name}, level ${m.level}, ${m.pool.length} moves learned`}
                   >
-                    <MonIcon speciesId={s.id} size={40} />
-                    <span className={styles.pickBody}>
-                      <span className={`${styles.pickName} display`}>{s.name}</span>
-                      <span className={styles.pickMeta}>
-                        Lv {m.level} · {m.pool.length} known
-                      </span>
-                    </span>
-                    {s.types.map((t) => (
-                      <TypeBadge key={t} type={t} size={12} defenderTypes={s.types} />
-                    ))}
-                  </button>
+                    <MonIcon speciesId={s.id} size={32} />
+                  </Tipped>
                 </li>
               );
             })}
           </ul>
-        </aside>
-
-        <section className={styles.services}>
-          {/* Three counters as tabs, so the one being bought from sits beside the deck it changes at every size. */}
-          <Tabs.Root className={styles.counters} value={counter} onValueChange={(v) => setCounter(v as Counter)}>
+          <Tabs.Root className={styles.counters} value={counter} onValueChange={(v) => choose(v as Counter)}>
             <Tabs.List className={styles.counterTabs} aria-label={DOJO_TEXT.counters}>
               {COUNTERS.map((c) => (
-                <CounterTab key={c} counter={c} left={counts[c]} price={c === 'tutor' ? movePrice : c === 'eggs' ? eggPrice : abilityPrice} />
+                <CounterTab
+                  key={c}
+                  counter={c}
+                  left={counts[c]}
+                  price={c === 'tutor' ? movePrice : c === 'eggs' ? eggPrice : abilityPrice}
+                />
               ))}
             </Tabs.List>
-
-            <Tabs.Content value="tutor" className={styles.service}>
-              <h2 className={styles.colTitle}>
-                {DOJO_TEXT.heading.tutor(species.name)}
-                <InfoDot tip={tutorTip()} />
-              </h2>
-              {tutorList.length === 0 ? (
-                <p className={styles.empty}>{DOJO_TEXT.noTutor}</p>
-              ) : (
-                <ul className={styles.list}>
-                  {tutorList.map((o) => (
-                    <MoveOffer key={o.id} {...o} price={movePrice} affordable={canMove} testId={`tutor-${o.id}`} onBuy={() => act({ type: 'teach-move', uid, moveId: o.id })} />
-                  ))}
-                </ul>
-              )}
-            </Tabs.Content>
-
-            <Tabs.Content value="eggs" className={styles.service} data-testid="dojo-eggs">
-              <h2 className={styles.colTitle}>
-                {DOJO_TEXT.heading.eggs(species.name)}
-                <InfoDot tip={eggMovesTip()} />
-              </h2>
-              {eggList.length === 0 ? (
-                <p className={styles.empty}>{DOJO_TEXT.noEggs}</p>
-              ) : (
-                <ul className={styles.list}>
-                  {eggList.map((o) => (
-                    <MoveOffer key={o.id} {...o} price={eggPrice} affordable={canEgg} testId={`egg-${o.id}`} onBuy={() => act({ type: 'teach-egg-move', uid, moveId: o.id })} />
-                  ))}
-                </ul>
-              )}
-            </Tabs.Content>
-
+            {(['tutor', 'eggs'] as const).map((c) => {
+              const list = c === 'tutor' ? tutorList : eggList;
+              const price = c === 'tutor' ? movePrice : eggPrice;
+              return (
+                <Tabs.Content
+                  key={c}
+                  value={c}
+                  className={styles.service}
+                  data-testid={c === 'eggs' ? 'dojo-eggs' : 'dojo-tutor'}
+                >
+                  {list.length === 0 ? (
+                    <p className={styles.empty}>{c === 'tutor' ? DOJO_TEXT.noTutor : DOJO_TEXT.noEggs}</p>
+                  ) : (
+                    <ul className={styles.shelf}>
+                      {list.map((o) => (
+                        <MoveOffer
+                          key={o.id}
+                          {...o}
+                          price={price}
+                          affordable={run.money >= price}
+                          selected={preview?.id === o.id}
+                          testId={`${c === 'tutor' ? 'tutor' : 'egg'}-${o.id}`}
+                          counter={c}
+                          onSelect={() => {
+                            setSelected(o.id);
+                            setPracticeBeat((n) => n + 1);
+                          }}
+                          onBuy={() => {
+                            setSelected(o.id);
+                            act({ type: c === 'tutor' ? 'teach-move' : 'teach-egg-move', uid, moveId: o.id });
+                          }}
+                        />
+                      ))}
+                    </ul>
+                  )}
+                </Tabs.Content>
+              );
+            })}
             <Tabs.Content value="passive" className={styles.service}>
-              <h2 className={styles.colTitle}>
-                {DOJO_TEXT.heading.passive(species.name)}
-                <InfoDot tip={passiveTip()} />
-              </h2>
-              <ul className={styles.list}>
-                {abilities.map(({ id, def, equipped, locked }) => {
-                  const inert = def.hook === 'none';
-                  return (
-                    <li key={id}>
-                      <Tipped
-                        as="button"
+              <ul className={styles.abilities}>
+                {abilities.map(({ id, def, equipped, locked }) => (
+                  <li key={id}>
+                    <Tipped
+                      as="div"
+                      tabIndex={equipped || run.money < abilityPrice || locked ? 0 : -1}
+                      tip={
+                        <Tip
+                          title={def.name}
+                          meta={['Ability', 'Passive', ...(locked ? ['Hidden'] : [])]}
+                          body={def.description}
+                          footer={
+                            locked
+                              ? RUN_REJECT_TEXT['ability-locked']
+                              : def.hook === 'none'
+                                ? 'No effect until a later version.'
+                                : equipped
+                                  ? 'Already equipped.'
+                                  : 'Replaces the current passive. One slot per Pokémon.'
+                          }
+                        />
+                      }
+                    >
+                      <button
                         type="button"
-                        tip={<Tip title={def.name} meta={['Ability', 'Passive', ...(locked ? ['Hidden'] : [])]} body={def.description} footer={locked ? RUN_REJECT_TEXT['ability-locked'] : inert ? 'No effect until a later version.' : equipped ? 'Already equipped.' : 'Replaces the current passive. One slot per Pokémon.'} />}
-                        className={`${styles.offer} ${equipped ? styles.off : !canAbility || locked ? styles.short : ''}`}
-                        disabled={equipped || !canAbility || locked}
+                        className={styles.ability}
+                        disabled={equipped || run.money < abilityPrice || locked}
                         onClick={() => act({ type: 'set-ability', uid, abilityId: id })}
                         data-testid={`ability-${id}`}
                         data-locked={locked || undefined}
                       >
-                        <span className={styles.offerBody}>
-                          <span className={`${styles.offerName} display`}>{locked ? '🧬 ' : ''}{def.name}</span>
-                          <span className={styles.offerMeta}>
-                            {def.description}
-                            {/* Honesty over polish: a Region-1 passive that waits on a system this build does not
-                                have yet says so rather than selling a no-op. */}
-                            {inert && ' · no effect until a later version'}
-                            {locked && ` · hidden ability — opens at Bond rank ${BOND_TIER.hiddenAbility}`}
-                          </span>
+                        <span className={styles.abilityIcon}>
+                          {locked ? (
+                            <IconLock size={28} />
+                          ) : equipped ? (
+                            <IconCheck size={28} />
+                          ) : (
+                            <IconSparkles size={28} />
+                          )}
                         </span>
-                        {equipped ? <span className={styles.tag}>equipped</span> : locked ? <span className={styles.tag}>locked</span> : <Price amount={abilityPrice} affordable={canAbility} />}
-                      </Tipped>
-                    </li>
-                  );
-                })}
+                        <span className={`${styles.offerName} display`}>{def.name}</span>
+                        {equipped ? (
+                          <span className={styles.tag}>{DOJO_TEXT.equipped}</span>
+                        ) : locked ? (
+                          <span className={styles.tag}>{DOJO_TEXT.locked}</span>
+                        ) : (
+                          <Price amount={abilityPrice} affordable={run.money >= abilityPrice} />
+                        )}
+                      </button>
+                    </Tipped>
+                  </li>
+                ))}
               </ul>
             </Tabs.Content>
           </Tabs.Root>
-
-          {/* The deck sits beside the shelf, so what a purchase does to the active 4 is on screen while you
-              are deciding whether to make it. */}
-          <div className={`${styles.service} ${styles.deck}`}>
-            <h2 className={styles.colTitle}>Deck</h2>
-            <MoveManager uid={uid} onClose={() => undefined} embedded />
-          </div>
         </section>
       </div>
-
-      <footer className={styles.footer}>
-        {toast && (
-          <p className={styles.toast} role="status" data-testid="dojo-toast">
-            {toast}
-          </p>
-        )}
-        <p className="sr-only" role="status" aria-live="polite">
-          {run.log.slice(-1).join(' ')}
+      {toast && (
+        <p className={styles.toast} role="status">
+          {toast}
         </p>
-      </footer>
-
+      )}
+      <p className="sr-only" role="status" aria-live="polite">
+        {run.log.slice(-1).join(' ')}
+      </p>
     </main>
   );
 }
 
-/** A counter's tab: its name, and how much of it this Pokémon has left to buy — the number explained on hover. */
 function CounterTab({ counter, left, price }: { counter: Counter; left: number; price: number }) {
   const tip = useTip(counterTabTip(DOJO_TEXT.tab[counter], left, price));
   return (
-    <Tabs.Trigger value={counter} className={styles.counterTab} data-testid={`dojo-tab-${counter}`} aria-label={DOJO_TEXT.tabLabel(DOJO_TEXT.tab[counter], left)} {...tip}>
+    <Tabs.Trigger
+      value={counter}
+      className={styles.counterTab}
+      data-testid={`dojo-tab-${counter}`}
+      aria-label={DOJO_TEXT.tabLabel(DOJO_TEXT.tab[counter], left)}
+      {...tip}
+    >
       {COUNTER_ICON[counter]}
       {DOJO_TEXT.tab[counter]}
-      <span className={`${styles.tabCount} tabular`} aria-hidden="true">{left}</span>
+      <span className={`${styles.tabCount} tabular`} aria-hidden="true">
+        {left}
+      </span>
     </Tabs.Trigger>
   );
 }
 
-/** One move on a Dojo counter — the tutor's or the scrolls': its type, its card line, and its price or a tick. */
-function MoveOffer({ move, known, price, affordable, testId, onBuy }: { move: MoveDef; known: boolean; price: number; affordable: boolean; testId: string; onBuy: () => void }) {
+// A focusable preview remains available when the purchase is locked, so a player can inspect what to save for.
+function MoveOffer({
+  move,
+  known,
+  price,
+  affordable,
+  selected,
+  testId,
+  counter,
+  onSelect,
+  onBuy,
+}: {
+  move: MoveDef;
+  known: boolean;
+  price: number;
+  affordable: boolean;
+  selected: boolean;
+  testId: string;
+  counter: Counter;
+  onSelect: () => void;
+  onBuy: () => void;
+}) {
   return (
-    <li>
+    <li className={styles.moveCard} data-selected={selected} data-known={known}>
       <Tipped
         as="button"
         type="button"
         tip={moveDefTip(move)}
-        className={`${styles.offer} ${known ? styles.off : !affordable ? styles.short : ''}`}
+        className={styles.preview}
+        onClick={onSelect}
+        aria-pressed={selected}
+        aria-label={`${DOJO_TEXT.preview}: ${move.name}`}
+        data-testid={`dojo-preview-${counter}-${move.id}`}
+      >
+        <span className={styles.artWindow}>
+          <PixelSprite src={moveArt(move.id)} alt="" width={136} height={90} />
+        </span>
+        <span className={`${styles.offerName} display`}>{move.name}</span>
+        <span className={styles.moveMeta}>
+          <TypeBadge type={move.type} size={12} mode="attack" />
+          <span className="tabular">{move.apCost} AP</span>
+        </span>
+      </Tipped>
+      <button
+        type="button"
+        className={styles.buy}
         disabled={known || !affordable}
         onClick={onBuy}
         data-testid={testId}
+        aria-label={`${known ? DOJO_TEXT.known : DOJO_TEXT.learn} ${move.name}, ${price} ₽`}
       >
-        <TypeBadge type={move.type} size={18} mode="attack" />
-        <span className={styles.offerBody}>
-          <span className={`${styles.offerName} display`}>{move.name}</span>
-          <span className={styles.offerMeta}>
-            {[move.range, move.role, move.power > 0 ? `${move.power} power` : null, known ? 'already known' : null].filter(Boolean).join(' · ')}
-          </span>
-        </span>
-        <span className={`${styles.ap} tabular`}>{move.apCost} AP</span>
-        {known ? <IconCheck size={16} /> : <Price amount={price} affordable={affordable} />}
-      </Tipped>
+        {known ? (
+          <>
+            <IconCheck size={16} aria-hidden="true" />
+            {DOJO_TEXT.known}
+          </>
+        ) : (
+          <>
+            <IconPlus size={16} aria-hidden="true" />
+            {DOJO_TEXT.learn}
+            <Price amount={price} affordable={affordable} />
+          </>
+        )}
+      </button>
     </li>
   );
 }

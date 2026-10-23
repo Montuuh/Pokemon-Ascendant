@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.33 — Service rooms · 2026-10-23
+
+The Dojo and Pokémon Center become classic pixel-art interiors.
+
+- **Dojo.** Authentic FRLG room and illustrated move offers.
+- **Pokémon Center.** In-room healing machine and service counters.
+- **Navigation.** Keyboard access and nested dialog focus repaired.
+
 ### v0.9.32 — Pixel clarity · 2026-10-23
 
 Classic typography, crisp Pokémon icons and unified battle scenery.

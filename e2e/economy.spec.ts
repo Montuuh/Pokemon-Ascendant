@@ -306,6 +306,7 @@ test.describe('The Pokémon Centre — §2.11.1, §8.2.4', () => {
     expect(hurt).toBe(0);
 
     // With no Trauma the screen says so rather than showing an empty list.
+    await page.getByTestId('door-center-therapy').click();
     await expect(page.getByTestId('center-no-trauma')).toBeVisible();
 
     // §8.2.4 — give the Lead some Trauma and the service appears, priced by how bad it is.
@@ -319,6 +320,7 @@ test.describe('The Pokémon Centre — §2.11.1, §8.2.4', () => {
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(before - 400);
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.traumaStacks)).toBe(2);
 
+    await page.keyboard.press('Escape');
     await page.getByTestId('btn-leave-center').click();
     await expect(page.getByTestId('city-screen')).toBeVisible();
   });
@@ -335,7 +337,10 @@ test.describe('The Daycare and the PC Box — §2.11.1', () => {
     await expect(page.getByTestId('city-screen')).toBeVisible();
     await page.getByTestId('door-center').click();
     await expect(page.getByTestId('center-screen')).toBeVisible();
+    await page.getByTestId('door-center-pc').click();
     await expect(page.getByTestId('center-pc').getByTestId('box-panel')).toBeVisible();
+    await page.getByTestId('center-service-back').click();
+    await page.getByTestId('door-center-daycare').click();
 
     // The Daycare: the second Pokémon in the Box, a level up, out of the team until a fight is played.
     const second = await page.evaluate(() => window.__ascendant!.run.state()!.box[1]!);
@@ -350,7 +355,11 @@ test.describe('The Daycare and the PC Box — §2.11.1', () => {
     expect(after.box[1]!.level).toBe(second.level + 1);
     expect(after.resting).toBe(second.uid);
     expect(after.activeUids).not.toContain(second.uid);
+    // An evolution may return to the lobby; reopen the counter to inspect the visit's record.
+    if (await page.getByTestId('center-screen').getAttribute('data-counter') === 'lobby') await page.getByTestId('door-center-daycare').click();
     await expect(page.getByTestId('daycare-used')).toContainText('resting');
+    await page.getByTestId('center-service-back').click();
+    await page.getByTestId('door-center-pc').click();
     // In the PC Box its row is shut and says why.
     await expect(page.getByTestId(`box-resting-${after.box[1]!.speciesId}`)).toBeVisible();
     await expect(page.getByTestId(`box-row-${after.box[1]!.speciesId}`)).toBeDisabled();
@@ -363,6 +372,7 @@ test.describe('The Daycare and the PC Box — §2.11.1', () => {
     await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
     await page.screenshot({ path: 'playtest/run-center-daycare.png' });
 
+    await page.keyboard.press('Escape');
     await page.getByTestId('btn-leave-center').click();
     await expect(page.getByTestId('city-screen')).toBeVisible();
   });

@@ -13,8 +13,8 @@ import styles from './PixelRoom.module.css';
 // wears its name plate and takes the Tab stop; the others are the same spot for the pointer and hidden from the
 // accessibility tree.
 //
-// The map is drawn at the largest whole-pixel scale its box allows, so every pixel is square (D9); only a box too small
-// for ×2 shrinks it freely rather than drop to a postage stamp at ×1.
+// By default the map uses whole-pixel scales, with a free fit below ×2. Compact service rooms opt into scaleStep
+// to keep whole or half-step pixel scales throughout their available size (D9).
 
 /** A box in a map's pixels: left, top, width, height. */
 export type Box = readonly [number, number, number, number];
@@ -38,6 +38,8 @@ export interface RoomSpot<Id extends string> {
 export interface RoomSprite {
   src: string;
   at: Box;
+  /** Decorative effects may start their beat once their pixels have arrived. */
+  onLoad?: () => void;
 }
 
 /** The way out: a doormat, the stairs down. It lights like a spot, never gold: it is never chosen. */
@@ -56,7 +58,7 @@ const PLATE = { raised: styles.plateRaised, 'raised-right': styles.plateRaisedRi
 /** The frame's border, outside the map's pixels. */
 const FRAME = 3;
 
-export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], exit, chosen = null, onChoose, label, testId, maxScale = 4, frame = 'box' }: {
+export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], exit, chosen = null, onChoose, label, testId, maxScale = 4, frame = 'box', scaleStep }: {
   art: string;
   w: number;
   h: number;
@@ -68,6 +70,8 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
   label: string;
   testId: string;
   maxScale?: number;
+  /** D9 — constrain a compact service room to a whole or half-step grid, including below 2×. */
+  scaleStep?: 0.5 | 1;
   /**
    * `box`: a bordered rectangle round the map (the shops). `silhouette`: no box — an ink outline drawn round the
    * map's own shape, for a room that is not a rectangle (the Hub's L-shaped lobby), so the frame never draws a shape
@@ -87,13 +91,15 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
     if (!el) return;
     const fit = () => {
       const fitIn = Math.min((el.clientWidth - FRAME * 2) / w, (el.clientHeight - FRAME * 2) / h);
-      setScale(fitIn >= 2 ? Math.min(maxScale, Math.floor(fitIn)) : Math.max(1, fitIn));
+      setScale(scaleStep
+        ? Math.max(1, Math.min(maxScale, Math.floor(fitIn / scaleStep) * scaleStep))
+        : fitIn >= 2 ? Math.min(maxScale, Math.floor(fitIn)) : Math.max(1, fitIn));
     };
     fit();
     const watch = new ResizeObserver(fit);
     watch.observe(el);
     return () => watch.disconnect();
-  }, [w, h, maxScale]);
+  }, [w, h, maxScale, scaleStep]);
 
   const place = ([x, y, bw, bh]: Box): CSSProperties => ({
     left: `${(x / w) * 100}%`,
@@ -109,7 +115,7 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
       <div className={`${styles.floor} ${frame === 'silhouette' ? styles.silhouette : ''}`} style={{ width: w * scale + FRAME * 2, height: h * scale + FRAME * 2 }}>
         <img className={styles.art} src={art} alt="" draggable={false} />
         {sprites.map((s, i) => (
-          <img key={i} className={styles.sprite} style={place(s.at)} src={s.src} alt="" draggable={false} />
+          <img key={i} className={styles.sprite} style={place(s.at)} src={s.src} alt="" draggable={false} onLoad={s.onLoad} />
         ))}
 
         {/* Each spot's pieces as one shape, outlined together while it is chosen or the pointer is on it. */}

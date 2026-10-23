@@ -1214,39 +1214,39 @@ buy has keyboard path; affordability not color-only (add "can't afford" label). 
 
 ---
 
-## 4.6 Pokémon Center  (node screen · §7 Center)
+## 4.6 Pokémon Center  (City building · §2.11.1, §8.2.4)
 
-**Purpose.** Heal/recovery hub — the warmest screen, sets the Pillar-5 tone. Heals HP, may reduce
-Trauma per §8.2 / §7 rules. **Zones.** warm Center interior · team row with HP/Trauma before→after ·
-service buttons (Heal, Trauma care if applicable) · Leave. **Components.** `Pokémon row`, `HP bar`,
-`Trauma badge`, `service button`, `confirm`. **Bindings.** `HealService`, `ActiveTeamChannel`/`BoxChannel`,
-`TraumaChannel`, costs from `EconomyConfigSO`. **Interactions.** choose service → animated heal (bars
-rise) → Leave. **States.** already-full (service disabled) · cost-gated (if any) · Trauma-care
-availability (per design). **Accessibility.** heal bars instant in reduced-motion; chime has subtitle
-option (§9.6). **Loc:** `ui.center.*`.
-
-> `↻ flag` Whether the Center reduces Trauma (and at what cost) is a §8.2/§7 design point — confirm
-> with `game-designer`; UI supports both (show the service only if enabled).
+**Purpose.** The warmest service stop: free automatic healing on entry, followed by optional Therapy,
+Daycare and PC Box decisions. The simulation owns each service and price; the screen dispatches actions.
+**Zones.** A dedicated room composed from authentic FRLG interior tiles and furniture, with central
+reception, a Daycare corner, a PC desk and a waiting area. The animated healing machine aligns with
+its furniture in the map; the heal's HP report and labelled service counters remain direct doors. A counter opens
+one service panel, with Lobby/Escape returning to its door. The PC retains the Team and Move Manager.
+**Sequence.** `HealPanel` mounts once for the visit. Balls, jingle, HP gains and completion keep the
+§9.9.3 order; service doors remain inert until completion or skip. Returning from a Daycare evolution
+does not replay the same heal. With reduced motion, the report is immediate.
+After the animation, per-Pokémon history folds into Healing report while the total stays visible.
+**States.** No HP missing, no Trauma, unaffordable Therapy, Daycare used/resting/needs a partner,
+and a full Box all remain explicit. Offers keep their prices and explanations. Room pixels use a
+fixed whole or half-step scale at 720p and 1080p. **Loc:** `CENTER_TEXT` and shared tooltips.
 
 ---
 
-## 4.7 Dojo / Tutor  (node screen · CL-009) — ✅ v0.3
+## 4.7 Dojo / Tutor  (City building · §2.9.4, §2.9.4.2)
 
-**Purpose.** Paid move/ability tutoring (CL-009 standalone Dojo). **Zones.** tutor framing · target
-Pokémon · teachable moves/abilities with ₽ costs · before/after · Leave. **Components.** reuses the
-**TM/Move Manager** body (4.4) plus a price layer + an ability-teach row (CL-008 earned-learner).
-**Bindings.** `DojoServiceChannel`, `LearnsetSO`, `AbilityCatalog`, `RunEconomyChannel`. **Interactions.**
-pick service → pay → teach (kit rules apply) → Leave. **States.** can't-afford · at-cap (replace) ·
-ability already known. **Accessibility.** same as 4.4 + price text. **Loc:** `ui.dojo.*`.
-
-> **As shipped (v0.3).** Built on the node-screen chrome, in the warm front-end theme like the Centre (4.6)
-> rather than the stage theme — a service stop is not a fight. Three columns: the Box on the left, the two
-> services in the middle, the live deck (4.4 embedded) on the right.
->
-> "Can't afford" is **"no services left"** until the economy lands: a visit carries one service instead of a
-> purse (§2.9.4's v0.3 substitution), and spending it greys every other row at once, which turns out to read
-> more clearly than a price would. An ability whose hook has not shipped says "no effect until a later
-> version" on its own row rather than being sold as working.
+**Purpose.** Choose a Pokémon and pay for tutor moves, the line's egg moves or a passive. Purchases are
+uncapped while affordable; prices, available moves and hidden-ability locks come from the simulation.
+**Zones.** The authentic FRLG Fighting Dojo, with its original master and pupils; a compact Box selector;
+Tutor/Egg moves/Passive counters; illustrated move offers. Preview and purchase are separate controls,
+so an unaffordable move remains inspectable. Each move uses its existing effect art on the original grid.
+The mat is a practice area for the selected Pokémon, with a Substitute target or Egg and palette-matched
+equipment, scroll storage and platforms. These are scene illustrations, not additional combat rules.
+**Comparison.** The Deck door opens the existing Move Manager beside the selected move's preview,
+preserving the four chosen moves and the locked Mastery slot. Escape closes the dialog and returns focus.
+Teaching does not replace a chosen move automatically; kit rules remain in the sim.
+**States.** Empty tutor/egg list, known move, unaffordable service, equipped passive and hidden ability
+are explicit without adding effect paragraphs to the base screen. Tooltips hold the detailed move and
+ability explanations. **Loc:** `DOJO_TEXT` and shared tooltips.
 
 ---
 

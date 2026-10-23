@@ -79,6 +79,26 @@
   list-style: none;
   max-width: 900px;
 }
+.report {
+  min-width: 0;
+  max-width: 100%;
+}
+.report > summary {
+  width: fit-content;
+  margin: 0 auto var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-ui);
+  font-size: var(--type-caption);
+  cursor: pointer;
+}
+.report > summary:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
 .patient {
   position: relative;
   display: grid;

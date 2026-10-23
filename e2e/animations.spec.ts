@@ -50,13 +50,13 @@ test.describe('The heal and the item ball, played — §9.9.3, §2.9.5', () => {
     await expect(heal).toBeVisible();
     // Running: the pill says so, the counters wait, inert.
     await expect(page.getByTestId('center-heal-total')).toHaveText('Healing…');
-    await expect(page.locator('[inert] [data-testid="center-pc"]')).toHaveCount(1);
+    await expect(page.locator('[inert] [data-testid="door-center-pc"]')).toHaveCount(1);
     await page.waitForTimeout(1600);
     await page.screenshot({ path: 'playtest/anim-center-machine.png' });
     // Landed: the total, and the counters open.
     await expect(heal).toHaveAttribute('data-beat', 'done', { timeout: 8_000 });
     await expect(page.getByTestId('center-heal-total')).toContainText('HP');
-    await expect(page.locator('[inert] [data-testid="center-pc"]')).toHaveCount(0);
+    await expect(page.locator('[inert] [data-testid="door-center-pc"]')).toHaveCount(0);
     await page.screenshot({ path: 'playtest/anim-center-healed.png' });
   });
 

@@ -19,7 +19,7 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 | **Region map terrain** | **Authentic FRLG 16×16 tiles**, cut from Bulbagarden Archives map renders (`npm run art:route`), painted by `src/ui/screens/map/tileset.ts` at 2× integer scale | ✅ `public/art/route/**` |
 | **Wild Area landmarks** (25) | **Authentic FRLG map structures & tiles** (`npm run art:habitats`), cut with transparent flood-fill or assembled from route tiles + `grass.png` | ✅ `public/art/map/habitat/*.png` |
 | **Town lobbies** (Pallet Town, Celadon City) | **Authentic FRLG overworld buildings & tiles** on the 16-px grid, with custom buildings (Challenge Ring, Coliseum) pixel-snapped to FRLG palette and grid | 🎯 **Priority 2** (`public/art/towns/*.png`) |
-| **Interior rooms** (Hub, Poké Mart, Dept. Store, Game Corner, Black Market, Dojo) | **Authentic FRLG interior maps** from Bulbagarden Archives (`npm run art:hub`, `art:mart`, `art:rocket`), shown at integer pixel scale (`PixelRoom`) | ✅ `public/art/{hub,mart,game-corner,black-market}` (🎯 **Priority 3**: Dojo interior & Event vignettes) |
+| **Interior rooms** (Hub, Pokémon Center, Poké Mart, Dept. Store, Game Corner, Black Market, Dojo) | **Authentic FRLG tiles and interior maps** from Bulbagarden Archives, shown at whole or half-step pixel scale (`PixelRoom`). The Center has its own 320×224 composition; the Dojo adds palette-matched practice props and authentic Gen III creatures to its original room | ✅ `public/art/{hub,center,mart,game-corner,black-market,dojo}` (🎯 **Priority 3**: Event vignettes) |
 | **Safari Zone board** | **Authentic FRLG Safari Zone tiles & sprites** on the 16-px grid (`npm run art:safari`), plus pixel-grid bait & rock tokens | ✅ `public/art/safari/**` |
 | **Stage backdrops** (45) | Existing JPG scene compositions, normalised to indexed 640×360 PNG, ≤256 colours per scene, no dithering (`node scripts/normalise-stages.mjs install`); JPGs retained as sources | ✅ `public/art/stages/*.png`; source/output SHA-256 in `manifest.json` |
 | **Gym Badges** (12) | Official badge sprites via Bulbagarden Archives (`scripts/fetch-map-emblems.mjs`) | ✅ `public/art/icons/map/node-gym-*.png` |
@@ -64,6 +64,9 @@ Stage scenes use 0.5× scale steps with cover cropping. Regenerate the 45 runtim
 | Route FRLG tileset | `npm run art:route` | `public/art/route/**` |
 | Wild Area FRLG habitat props | `npm run art:habitats` · `node scripts/habitat-gallery.mjs` | `public/art/map/habitat/*.png` |
 | Hub / Mart / Rocket / Safari FRLG rooms | `npm run art:hub` · `art:mart` · `art:rocket` · `art:safari` | `public/art/{hub,mart,game-corner,black-market,safari}` |
+| Fighting Dojo, original master and pupils | `npm run art:dojo` | `public/art/dojo/room.png` + source/output hashes in `manifest.json` |
+| Dojo practice area, equipment and Gen III practice sprites | `node scripts/build-dojo-props.mjs` | `public/art/dojo/training-room.png`, props and `pokemon/*.png`; `props-manifest.json` |
+| Dedicated Pokémon Center composition | `npm run art:center` (`-- --fetch` refreshes credited source maps) | `public/art/center/room.png`; source maps, crop coordinates and SHA-256 in `manifest.json` |
 | Raw AI image generation (Vertex AI) | `npm run art:gen -- --out <png> --prompt "…" --size 1K` | Staging file in `playtest/artgen/` |
 | Install & quantise staging art | `node scripts/install-art.mjs <profile> <src> <name>` | `public/art/…` |
 

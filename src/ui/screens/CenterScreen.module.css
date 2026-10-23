@@ -1,24 +1,20 @@
-/* Pokémon Center, §2.9.1 — the warmest screen. Node-screen chrome: header · content · Leave. */
-
+/* §2.11.1 / §9.9.3 — a dedicated FRLG tile composition; the machine runs in its own place in the room. */
 .root {
   height: 100%;
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: var(--sp-4);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--sp-3);
   padding: var(--sp-5);
   background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
   color: var(--ink-primary);
   overflow: hidden;
 }
-
 .topBar {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--sp-4);
-  flex-wrap: wrap;
 }
-
 .title {
   display: flex;
   align-items: center;
@@ -27,68 +23,113 @@
   font-size: var(--type-h1);
   color: var(--brand-red);
 }
-
 .wallet {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-4);
   border-radius: var(--radius-pill);
   border: 2px solid var(--border-strong);
   background: var(--surface-1);
   font-size: var(--type-small);
 }
-.walletLabel { color: var(--ink-muted); }
-
-/* Three counters side by side: Therapy, the Daycare, and the PC Box (the widest, it holds the whole team). */
-.body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: var(--sp-4);
-  align-items: start;
-  align-content: start;
-  min-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity var(--motion-slow) ease-out;
+.walletLabel {
+  color: var(--ink-muted);
 }
-.body[data-ready] { opacity: 1; }
-/* Each counter is as tall as what it holds, up to the room there is; a long list scrolls inside it. */
+
+.scene {
+  --scene-px: 2px;
+  position: relative;
+  min-height: 0;
+  width: 100%;
+  max-width: 1440px;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  align-items: center;
+  gap: var(--sp-4);
+}
+.room {
+  height: 100%;
+  min-width: 0;
+  font-family: var(--font-ui);
+}
+.reception {
+  padding: var(--sp-4);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+.reception [data-testid='center-heal'] {
+  gap: var(--sp-3);
+}
+.reception [data-testid='center-heal'] ul {
+  max-height: min(36dvh, 360px);
+  overflow-y: auto;
+  align-content: start;
+}
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: var(--scrim);
+}
+.counter {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 31;
+  transform: translate(-50%, -50%);
+  width: min(960px, calc(100vw - var(--sp-8)));
+  max-height: calc(100dvh - var(--sp-8));
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-0);
+  box-shadow: var(--shadow-modal);
+  color: var(--ink-primary);
+}
+.counterBack {
+  display: flex;
+}
+.moveScope {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
 .service {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   align-content: start;
-  gap: var(--sp-3);
+  gap: var(--sp-4);
   min-height: 0;
-  max-height: 100%;
-  padding: var(--sp-4);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface-1) 70%, transparent);
+  overflow-y: auto;
+  padding: var(--sp-1);
 }
-.pc { overflow-y: auto; }
-
 .colTitle {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
   margin: 0;
-  font-size: var(--type-h3);
+  font-family: var(--font-display);
+  font-size: var(--type-h2);
 }
-
 .list {
   display: grid;
   gap: var(--sp-2);
   margin: 0;
-  padding: 0;
+  padding: var(--sp-1);
   list-style: none;
+  min-height: 0;
   overflow-y: auto;
   align-content: start;
 }
-
 .patient {
   display: grid;
-  grid-template-columns: 44px 1fr auto;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--sp-3);
   width: 100%;
@@ -100,14 +141,18 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: transform var(--motion-fast) ease, border-color var(--motion-fast) ease;
+  transition: border-color var(--motion-fast) ease;
 }
-.patient:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--border-strong); }
-.patient:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
-/* D5 — Therapy you cannot afford yet stays readable; the price chip carries "not enough money". */
-.off { cursor: not-allowed; }
-.off[aria-disabled='true']:hover { transform: none; border-color: var(--border-subtle); }
-/* A Daycare row nobody could stand in for: a lock, not a price. */
+.patient:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+.patient:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+.off {
+  cursor: not-allowed;
+}
 .lock {
   display: inline-flex;
   align-items: center;
@@ -119,26 +164,38 @@
   font-size: var(--type-caption);
   font-weight: 700;
 }
-
-.patientBody { display: grid; gap: 4px; min-width: 0; }
-.patientName { font-size: var(--type-body); font-weight: 700; }
-.patientMeta { color: var(--ink-secondary); font-size: var(--type-caption); }
-
-.empty {
-  margin: 0;
+.patientBody {
+  display: grid;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.patientName {
+  font-size: var(--type-body);
+  font-weight: 700;
+}
+.patientMeta {
   color: var(--ink-secondary);
-  font-size: var(--type-small);
+  font-size: var(--type-caption);
 }
 .empty {
+  margin: 0;
   padding: var(--sp-5);
   border: 2px dashed var(--border-subtle);
   border-radius: var(--radius-md);
+  color: var(--ink-secondary);
+  font-size: var(--type-small);
   text-align: center;
 }
-.list { min-height: 0; overflow-y: auto; }
-
-.footer { display: grid; gap: var(--sp-2); justify-items: center; }
-
+.footer {
+  position: relative;
+  display: grid;
+  gap: var(--sp-2);
+  justify-items: center;
+}
+.footer > :global(.sr-only) {
+  top: 0;
+  margin: 0;
+}
 .toast {
   margin: 0;
   padding: var(--sp-2) var(--sp-4);
@@ -147,12 +204,24 @@
   background: color-mix(in srgb, var(--accent-warning) 14%, var(--surface-1));
   font-size: var(--type-small);
 }
-
-@media (max-width: 1100px) {
-  .body { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow-y: auto; }
-  .pc { grid-column: 1 / -1; }
+@media (max-height: 800px) {
+  .root {
+    padding: var(--sp-2);
+    gap: var(--sp-1);
+  }
+  .counter {
+    padding: var(--sp-4);
+  }
 }
 @media (max-width: 720px) {
-  .root { padding: var(--sp-4); }
-  .body { grid-template-columns: minmax(0, 1fr); }
+  .walletLabel {
+    display: none;
+  }
+  .title {
+    font-size: var(--type-h2);
+  }
+  .scene {
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: var(--sp-2);
+  }
 }

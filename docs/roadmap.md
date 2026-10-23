@@ -1454,6 +1454,11 @@ Art-review follow-up A04–A06: consistent classic typography, pixel sizing and 
 
 **Shipped.** Pixelify Sans headings and Pokémon names, Tiny5 numeric readouts and Nunito prose are bundled offline under SIL OFL. Small Pokémon cells use 151 alpha-cropped box icons; larger portraits and animated species sheets preserve proportions at half-step scales. Type labels retain their native 32×12 grid. All 45 current stages are exported as 640×360 indexed PNGs with at most 256 colours, without dithering, and rendered at whole or half steps in combat, title and previews. Runtime stage assets total 5,194,563 bytes, 76.25% below the original JPG set; the originals remain as authoring sources, with conversion hashes in the manifest. The results rework and A03 remain with the other session.
 
+### v0.9.33 — Service rooms  ✅ 2026-10-23
+Art-review follow-up A08–A09: the Dojo and Pokémon Center as recognisable places.
+
+**Shipped.** The Dojo builds on the original FRLG Fighting Dojo, with a practice area and pixel props, move-effect illustrations, separate preview/learn controls and a Deck dialog for comparison. The Center has its own room composed from authentic FRLG tiles and furniture, with central reception, a Daycare corner and a PC desk; its animated healing machine aligns with the map. Healing still reveals HP gains only after the machine runs; completed per-Pokémon history sits behind Healing report. Both rooms use clean pixel scales, keyboard-accessible doors, trapped dialogs and focus restoration. Modal tooltips remain available to assistive technology; the hidden-ability explanation derives its Bond rank from the sim. No service rules or prices change. The external results rework/A03 remains separate.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,
