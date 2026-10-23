@@ -122,10 +122,11 @@
   text-overflow: ellipsis;
 }
 
-/* Window: the illustration at 2×, whole pixels, centred; the owner, the ×N and the marks on its corners. */
+/* D9 / §9.2.3 — the complete 68×45 native cell at 2×; keep its 90px height under flex layout too. */
 .art {
   position: relative;
-  height: 80px;
+  height: 90px;
+  flex-shrink: 0;
   border-radius: var(--radius-sm);
   overflow: hidden;
   display: grid;

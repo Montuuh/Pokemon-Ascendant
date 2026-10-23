@@ -106,6 +106,12 @@ The twelve selected A14 effect illustrations are generated assets, not official 
 
 All 161 current move PNGs also pass through deterministic palette reduction: at most 20 actual opaque RGB colours, original binary transparency restored, no spatial resampling. The original runtime baseline is the artwork committed at 02af49b709cbb14ff0a8ae8bd36927c9e5919a54. Its palette-only derivatives and alpha-mask hashes are recorded in `public/art/moves/palette-manifest.json`; that manifest explicitly links the twelve subsequent silhouette replacements. This processing does not change the authorship or rights of the source illustrations. Pokémon names and game concepts retain their respective owners' rights under the fan-project notice above.
 
+## Route overworld and market derivatives (A17–A18)
+
+The 36 route frames in `public/art/map/people` and four market NPCs in `public/art/black-market` use authentic FRLG overworld sheets from [pret/pokefirered](https://github.com/pret/pokefirered/tree/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people), pinned to commit `ce6406d8c2eaf46d543c8a2606de0c3cb1951982`. Each derivative retains its native 16×32 south-facing frame, with palette-zero transparency and no resampling. Matching FRLG trainer classes stand in for Johto and role-only identities on the route; the preview retains each trainer's real name and battle portrait. The route item ball uses the previously credited pret/pokeemerald source retained with the event family. Rebuild with `scripts/build-map-people.mjs`; the manifest records URLs, crops and hashes.
+
+The new 320×256 market floorplan uses authentic [Rocket Hideout B1F FRLG](https://archives.bulbagarden.net/wiki/File:Rocket_Hideout_B1F_FRLG.png) floor, wall, stairway, furniture, storage and computer crops, plus the already credited Game Corner roulette table. It is a new arrangement, not a reused Hub or original game room. `scripts/build-black-market-art.mjs` rebuilds it; `public/art/black-market/room-manifest.json` retains sources, crop rectangles, dimensions and hashes. No generated imagery or spatial resampling is used. Underlying game artwork remains © Nintendo / Creatures / GAME FREAK; Bulbagarden Archives and pret provide the retained references. Non-commercial fan use under the notice above.
+
 ## Trainer sprites
 
 `public/art/trainers` holds thirty-five Pokémon Showdown trainer-class sprites — the archetypes (`youngster`,

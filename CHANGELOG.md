@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.39 — Grounded places · 2026-10-23
+
+Complete move illustrations and more coherent overworld places.
+
+- **Move cards.** Full illustrations fit at their native double scale.
+- **Routes.** Overworld trainers share clearer ground anchors.
+- **Interiors.** Four physical counters furnish a hidden market.
+
 ### v0.9.38 — Move clarity · 2026-10-23
 
 Clearer move illustrations with genuinely limited pixel-art palettes.

@@ -9,20 +9,25 @@ async function inCeladon(page: Page, money = 5000, relics: string[] = []): Promi
   await page.evaluate(() => window.localStorage.clear());
   await page.reload();
   await page.waitForFunction(() => !!window.__ascendant);
-  await page.evaluate(([m, r]) => {
-    const dev = window.__ascendant!;
-    dev.run.new('squirtle', 7);
-    dev.run.fill(5);
-    // Everyone at a level where nobody owes an Evolution screen, so the counters are what is on screen.
-    for (const mon of dev.run.state()!.box) dev.run.levelTo(30, mon.uid);
-    const settled = ['blastoise', 'tauros', 'kangaskhan', 'lapras', 'snorlax', 'scyther'];
-    dev.run.patch((d) => {
-      d.box.forEach((mon, i) => { mon.speciesId = settled[i]!; });
-    });
-    dev.run.city(1);
-    dev.run.pay(m as number);
-    for (const id of r as string[]) dev.run.grantRelic(id);
-  }, [money, relics] as const);
+  await page.evaluate(
+    ([m, r]) => {
+      const dev = window.__ascendant!;
+      dev.run.new('squirtle', 7);
+      dev.run.fill(5);
+      // Everyone at a level where nobody owes an Evolution screen, so the counters are what is on screen.
+      for (const mon of dev.run.state()!.box) dev.run.levelTo(30, mon.uid);
+      const settled = ['blastoise', 'tauros', 'kangaskhan', 'lapras', 'snorlax', 'scyther'];
+      dev.run.patch((d) => {
+        d.box.forEach((mon, i) => {
+          mon.speciesId = settled[i]!;
+        });
+      });
+      dev.run.city(1);
+      dev.run.pay(m as number);
+      for (const id of r as string[]) dev.run.grantRelic(id);
+    },
+    [money, relics] as const,
+  );
   await expect(page.getByTestId('city-screen')).toBeVisible();
 }
 
@@ -40,7 +45,9 @@ async function findIt(page: Page): Promise<void> {
 }
 
 test.describe('Finding it — §2.11.6', () => {
-  test('a player never told finds it: the City has no door to it, the Game Corner has a poster', async ({ page }) => {
+  test('a player never told finds it: the City has no door to it, the Game Corner has a poster', async ({
+    page,
+  }) => {
     await inCeladon(page);
     await expect(page.getByTestId('door-black-market')).toHaveCount(0);
     await page.getByTestId('door-game-corner').click();
@@ -100,6 +107,7 @@ test.describe('The counters — §2.11.6', () => {
     const before = await page.evaluate(() => window.__ascendant!.run.state()!);
     const give = before.box[1]!;
     const species = before.city!.blackMarket!.trades[0]!;
+    await page.getByTestId('market-trader').click();
     await page.getByTestId('trade-offer-0').click();
     await page.getByTestId(`trade-give-${give.uid}`).click();
     await expect(page.getByTestId('btn-trade')).toContainText(`Lv ${give.level}`);
@@ -108,7 +116,10 @@ test.describe('The counters — §2.11.6', () => {
     const after = await page.evaluate(() => window.__ascendant!.run.state()!);
     expect(after.box).toHaveLength(before.box.length);
     expect(after.box[1]!.speciesId === species || after.phase === 'evolution').toBe(true);
-    if (after.phase === 'black-market') await expect(page.getByTestId('market-trader')).toHaveAttribute('data-dealt', 'true');
+    if (after.phase === 'black-market') {
+      await page.getByTestId('btn-close-market-counter').click();
+      await expect(page.getByTestId('market-trader')).toHaveAttribute('aria-label', /Dealt this visit/);
+    }
   });
 
   test('the Fence sells a Rare Candy for a level, and buys a relic on the second press', async ({ page }) => {
@@ -120,7 +131,10 @@ test.describe('The counters — §2.11.6', () => {
     await page.getByTestId(`candy-${mon.uid}`).click();
     await page.screenshot({ path: 'playtest/black-market-fence.png' });
     await page.getByTestId('btn-candy').click();
-    const levelled = await page.evaluate((uid) => window.__ascendant!.run.state()!.box.find((m) => m.uid === uid)!.level, mon.uid);
+    const levelled = await page.evaluate(
+      (uid) => window.__ascendant!.run.state()!.box.find((m) => m.uid === uid)!.level,
+      mon.uid,
+    );
     expect(levelled).toBe(mon.level + 1);
     await page.getByTestId('sell-coin-pouch').click();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.relics)).toContain('coin-pouch');
@@ -128,11 +142,15 @@ test.describe('The counters — §2.11.6', () => {
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.relics)).not.toContain('coin-pouch');
   });
 
-  test('the Gambler prints the chance before the stake is down, and takes it either way', async ({ page }) => {
+  test('the Gambler prints the chance before the stake is down, and takes it either way', async ({
+    page,
+  }) => {
     await inCeladon(page, 5000, ['coin-pouch', 'brave-charm']);
     await findIt(page);
     await page.getByTestId('market-gambler').click();
-    const target = await page.evaluate(() => window.__ascendant!.run.state()!.city!.blackMarket!.wagerTargets[0]!);
+    const target = await page.evaluate(
+      () => window.__ascendant!.run.state()!.city!.blackMarket!.wagerTargets[0]!,
+    );
     await page.getByTestId(`wager-target-${target}`).click();
     await page.getByTestId('stake-coin-pouch').click();
     await expect(page.getByTestId('wager-chance')).toContainText('%');
@@ -143,7 +161,9 @@ test.describe('The counters — §2.11.6', () => {
     expect(run.relics.includes(target)).toBe(run.city!.blackMarket!.wager!.won);
   });
 
-  test('the showcase takes three Pokémon for a Legendary Pokémon, asks, and the deal shuts the market — §2.11.6, §2.3', async ({ page }) => {
+  test('the showcase takes three Pokémon for a Legendary Pokémon, asks, and the deal shuts the market — §2.11.6, §2.3', async ({
+    page,
+  }) => {
     await inCeladon(page);
     await findIt(page);
     await page.getByTestId('market-showcase').click();
@@ -173,7 +193,15 @@ test.describe('At 1280 × 720 — §9.6', () => {
     await page.getByTestId('door-game-corner').click();
     await expect(page.getByTestId('game-corner-room')).toBeVisible();
     await page.screenshot({ path: 'playtest/game-corner-720.png' });
-    for (const id of ['gc-poster', 'gc-slots-0', 'gc-slots-3', 'gc-roulette-0', 'gc-roulette-1', 'btn-leave-game-corner']) await expect(page.getByTestId(id)).toBeInViewport();
+    for (const id of [
+      'gc-poster',
+      'gc-slots-0',
+      'gc-slots-3',
+      'gc-roulette-0',
+      'gc-roulette-1',
+      'btn-leave-game-corner',
+    ])
+      await expect(page.getByTestId(id)).toBeInViewport();
     await page.getByTestId('gc-roulette-0').click();
     await expect(page.getByTestId('btn-spin')).toBeInViewport();
     await page.screenshot({ path: 'playtest/game-corner-roulette-720.png' });

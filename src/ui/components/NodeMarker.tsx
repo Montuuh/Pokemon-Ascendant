@@ -23,7 +23,7 @@ import { nodeHint } from '@/ui/strings';
 import { Tip, useTip } from '@/ui/tooltip';
 import { typeName, wildPoolBody } from '@/ui/tips';
 import { HabitatArt } from './HabitatArt';
-import { kindName, nodeHash, titleSays } from './nodeArt';
+import { kindName, nodeHash, routeNodeArt, titleSays } from './nodeArt';
 import styles from './NodeMarker.module.css';
 
 export type NodeStatus = 'reachable' | 'locked' | 'visited' | 'current';
@@ -87,6 +87,7 @@ export function NodeMarker({
   const gone = status === 'locked' && !ahead;
   const said = STATUS_TEXT[gone ? 'gone' : status];
   const kind = kindName(node);
+  const picture = routeNodeArt(art, node);
   // The node's whole story in one bubble: what it is, who is in it, the level band, and whether you can go.
   // The full preview card opens on click; this is the glance before the click.
   const tip = useTip(
@@ -134,13 +135,12 @@ export function NodeMarker({
     >
       <span className={styles.ground} aria-hidden="true" />
       <span className={[styles.art, styles[art.kind]].filter(Boolean).join(' ')} aria-hidden="true">
-        {art.kind === 'habitat' ? (
+        {picture.kind === 'habitat' ? (
           // A Wild Area: its landmark, its residents going round, out of step with the nodes round it.
-          <HabitatArt src={art.src} low={art.low} pool={art.pool} seed={nodeHash(node.id)} />
+          <HabitatArt src={picture.src} low={picture.low} pool={picture.pool} seed={nodeHash(node.id)} />
         ) : (
           <>
-            {/* An item is a smooth render, not pixel art: it is drawn with smoothing; everything else stays crisp. */}
-            <img className={art.kind === 'item' ? undefined : 'pixel'} src={art.src} alt="" draggable={false} />
+            <img className="pixel" src={picture.src} alt="" draggable={false} />
             {/* The one grass every Wild Area shares, in front: an Elite Wild stands in it as a Wild Area's landmark does. */}
             {art.kind === 'pokemon' && art.grass && <img className={`pixel ${styles.grass}`} src={WILD_GRASS} alt="" draggable={false} />}
           </>

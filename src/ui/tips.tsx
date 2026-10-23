@@ -4,7 +4,7 @@ import { visibleMoot, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MA
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -1074,7 +1074,17 @@ export function rouletteTableTip(): ReactNode {
 
 /** §2.11.6 — the market's heading bubble: four counters, and a door that locks behind you. */
 export function marketTip(): ReactNode {
-  return <Tip title="Black Market" body="Team Rocket’s back room. Nothing here is paid for in the usual way: a Pokémon for a Pokémon, relics on a wager, and the rarest relic of all for three of your team." footer="Every counter deals once a visit. The door locks when you go back up." />;
+  return <Tip title={MARKET_TEXT.title} body="Team Rocket’s back room: trade a Pokémon, buy Rare Candy or sell relics, stake a relic, or exchange three of your team for a Legendary Pokémon." footer="Each counter shows its visit limits. The door locks when you go back up." />;
+}
+
+/** §2.11.6 — a physical counter opens its existing transaction. */
+export function marketCounterTip(name: string, line: string, dealt: boolean): ReactNode {
+  return <Tip title={name} body={line} footer={dealt ? MARKET_TEXT.dealt : undefined} />;
+}
+
+/** §2.11.0 — leaving the room closes it for this visit. */
+export function marketExitTip(): ReactNode {
+  return <Tip title={MARKET_TEXT.up} body={LEAVE_WARNING.market} />;
 }
 
 /** §2.11.6 — one of the Trader's two stolen Pokémon. */
@@ -1095,11 +1105,6 @@ export function fenceTip(relic: RelicDef, price: number, takes: boolean): ReactN
 /** §2.11.6 — one of your relics, as a stake on the Gambler's table. */
 export function stakeTip(relic: RelicDef, value: number, takes: boolean): ReactNode {
   return <Tip title={relic.name} meta={[cap(relic.rarity), `Worth ${value} ₽ to the Gambler`]} body={relic.description} footer={takes ? 'Staked, it is gone whether you win or lose.' : 'He won’t take it: its charge is spent, or your Box needs it.'} />;
-}
-
-/** §2.11.6 — a counter that has already dealt this visit. */
-export function dealtTip(): ReactNode {
-  return <Tip title="Dealt" body="This counter has done its business for this visit." />;
 }
 
 /** §2.11.6 — the Gambler's printed chance, and what a stake is worth to him. */

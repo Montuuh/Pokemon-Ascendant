@@ -1,0 +1,671 @@
+{
+  "build": "node scripts/build-map-people.mjs",
+  "processing": "First south-facing 16x32 frame, exact palette-zero transparency; no resampling, no colour edits. Render at 2x on the map. Battle portraits remain in the preview.",
+  "aliases": "Johto and role-only identities use the matching FRLG trainer class, with their real name, rank, type and portrait retained in the preview.",
+  "sources": [
+    {
+      "path": "public/art/map/people/sources/youngster.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/youngster.png",
+      "sha256": "86dfa7e28d76ce53d82085ced36f0c76bc35b715ef7975e25ad8699850a6e6e8",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/lass.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/lass.png",
+      "sha256": "ac95c576fddcefda90842b49e7ea88de5a950f9ce4f0701843ff95ca5a367e83",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/bug_catcher.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/bug_catcher.png",
+      "sha256": "254af8578f1b520862d45c55aa44b4064c9b3a2d3cecea04626fde96d21489f1",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/hiker.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/hiker.png",
+      "sha256": "30f1bf91e395f1542467d40a8f9c22073d57ee86ef054a7d2ff0014b03928cd7",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/camper.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/camper.png",
+      "sha256": "5f0b5173637324bf11260415b74100db4cda1fa5773241b8a1915590922c70e2",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/picnicker.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/picnicker.png",
+      "sha256": "2a7bc2a314535b01b77fde63ad0885e70468dc36067e1f19967e33a8042b2b13",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/cooltrainer_f.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/cooltrainer_f.png",
+      "sha256": "e1608d6afa617111d5edb0339e7d46ca5f5e117f3cea1e974bc24f2ca09db173",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/swimmer_f_land.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/swimmer_f_land.png",
+      "sha256": "433e4629fbd33b0f9e90044fe9741e755f394dbb8d2a2418247ba28278ddd648",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/nurse.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/nurse.png",
+      "sha256": "bdc75f7b4711bd12c8949cef034233914fbdabe431d752761f538b6d5616a94b",
+      "width": 64,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/clerk.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/clerk.png",
+      "sha256": "dc08770288111df9ae0b49ef88c568746e156a635d137a9348385ed7cb61a12b",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/fat_man.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/fat_man.png",
+      "sha256": "be589118d9a218642ae004029d8b982de10dd5cb8fbbda428ca74fbdb930ed25",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/scientist.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/scientist.png",
+      "sha256": "0421b6307c965839a0d074a5e52e0d0a39b1f024f370f9dac512fa285655785e",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/rocket_m.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/rocket_m.png",
+      "sha256": "df9978edee318b6193fc85be4a88fa85202bbd6e689bb21e602c181dab3b6e12",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/rocket_f.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/rocket_f.png",
+      "sha256": "aa84b66499afe516e8b816cd12add9035208d4f95a85559d82406244d9f40d9d",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/black_belt.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/black_belt.png",
+      "sha256": "e87367429f72f88ebdbc5bd80e1265238f2f862d418b219bef1f89d24336aa8d",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/channeler.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/channeler.png",
+      "sha256": "2659591822451cadd1293b10105d77a576ea0021486eceffc61b9b1be47e72c8",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/brock.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/brock.png",
+      "sha256": "6fede6fe6aae9e23af78efee0e55a0012c84a1ea80e5d13e2827e37772a21963",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/misty.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/misty.png",
+      "sha256": "a21a6f1283fc93f32f1a62b7c11132df253e4f649bd76214eed48a3571a29414",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/blaine.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/blaine.png",
+      "sha256": "65acf68645ad1d3b6256fd97e6a73e63042f80eddb9d9571c0bfd2cef61a163a",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/erika.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/erika.png",
+      "sha256": "593c9a80d241f5eff8f495406b57cacb587b6f1a646ca8a332678e2e4df51744",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/lt_surge.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/lt_surge.png",
+      "sha256": "84a863136b514b01ed6bba2ca418392ebdd2ec1b052d23cb50967cd73ff28573",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/koga.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/koga.png",
+      "sha256": "6b75213fa8df086d93c253088b820df0df1931e251d79591013c2757b9e542d9",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/giovanni.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/giovanni.png",
+      "sha256": "fa7cc4b067c0dc5271af3832dcb2353edeb8ed51b0a2b279de462265a1ec50d2",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/sabrina.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/sabrina.png",
+      "sha256": "8a4c54fa32b572647b1098c85b597d327ca4c578ace20221dc8981a786665fbb",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/lorelei.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/lorelei.png",
+      "sha256": "4f2d6bec56c2ae56e894a264fa10bd45e0279681fd7945714088e699dd40b805",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/lance.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/lance.png",
+      "sha256": "a47a03b01998e1bb0e35f0cf380cd5ba813d40c8782020b760d9ca221be00da2",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/bruno.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/bruno.png",
+      "sha256": "f85c6faf9f73bcc23cf9dca4fef6fa1f380b9b21ad7d73ee79666c939bf7253b",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/agatha.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/agatha.png",
+      "sha256": "9b5e8d2fa49492989c28bd5582188f1bbc0d615a3caa8949aa388c17ec7e59d2",
+      "width": 48,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/blue.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/blue.png",
+      "sha256": "2b66b767e56237d811ad83585f7b6a8732f73efd8d8406069e07322d36d791fb",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/cooltrainer_m.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/cooltrainer_m.png",
+      "sha256": "0bf14055f9641ce78418c1396df0b329c7b7de571e9f9b6fd31161985e8a1dad",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/gentleman.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/gentleman.png",
+      "sha256": "0f5b22e8cad76ff95ed064fa317260bff8c7744a5575a8b04b997d4d3a6108f0",
+      "width": 160,
+      "height": 32
+    }
+  ],
+  "outputs": [
+    {
+      "id": "youngster",
+      "file": "youngster.png",
+      "source": "sources/youngster.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "170ab0eafe2da45a25062fabeb30ad7a3a30b6e4b490d1d131ee2ae69be55345"
+    },
+    {
+      "id": "lass",
+      "file": "lass.png",
+      "source": "sources/lass.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "b07ede9452c61eb62b63899a0dff99c00dd4565a83a51b5c3c91acd142105e02"
+    },
+    {
+      "id": "bug-catcher",
+      "file": "bug-catcher.png",
+      "source": "sources/bug_catcher.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "40a463c5cc77d6dbe18184b0d4cc2dabcbe9ed3e36ba0875fd6ae3440fcbf15a"
+    },
+    {
+      "id": "hiker",
+      "file": "hiker.png",
+      "source": "sources/hiker.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "c019b652b80b248345623605353e07fa94673ead23725e2433a12f28f4942e12"
+    },
+    {
+      "id": "camper",
+      "file": "camper.png",
+      "source": "sources/camper.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "da84e69c90341c9155179d959ae25a027390cd2bf90d6518fa543fbc70b9dde0"
+    },
+    {
+      "id": "picnicker",
+      "file": "picnicker.png",
+      "source": "sources/picnicker.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "2830b2d0b277a973246e9ce0f2957449908b04d55e17c96116602555277b4f61"
+    },
+    {
+      "id": "acetrainer",
+      "file": "acetrainer.png",
+      "source": "sources/cooltrainer_f.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "e523832d7c089e83691744b6bb294d849bc896be45d5d6b2570073a3d607c42d"
+    },
+    {
+      "id": "swimmer",
+      "file": "swimmer.png",
+      "source": "sources/swimmer_f_land.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "f80354e665c77b30a7a4e15f94cb855aee3d56b0f49d65a5386d2809f5506563"
+    },
+    {
+      "id": "nurse",
+      "file": "nurse.png",
+      "source": "sources/nurse.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "a6e110f8a48e6163744aee2c5c8d0d58a586f93aa0cdb3ea35076584a3f8a44b"
+    },
+    {
+      "id": "merchant",
+      "file": "merchant.png",
+      "source": "sources/clerk.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "8cd05d78f3ca546b734476d058ac1c2b95e15f3dee7f3fe92539f7529b5f98da"
+    },
+    {
+      "id": "pokefan",
+      "file": "pokefan.png",
+      "source": "sources/fat_man.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "f607ff978f450cd5656bf217856733c09a6248084cab037d132392f48ced1e70"
+    },
+    {
+      "id": "scientist",
+      "file": "scientist.png",
+      "source": "sources/scientist.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "ee125e9aaf1917a3bf09d4596281b8070e3adade10b9c9519915430db376afa5"
+    },
+    {
+      "id": "rocketgrunt",
+      "file": "rocketgrunt.png",
+      "source": "sources/rocket_m.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "d2e26f9053be225906975aecca3ae374eb324f2f0b1e7371f4e9475a47e8ab63"
+    },
+    {
+      "id": "rocketgruntf",
+      "file": "rocketgruntf.png",
+      "source": "sources/rocket_f.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "0f2208e7510c1c560f6637d92931fe8eb4299ab339bacf0bae794738077ac142"
+    },
+    {
+      "id": "blackbelt",
+      "file": "blackbelt.png",
+      "source": "sources/black_belt.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "02c3ce73ef4e04f89fa9fe47d3fc59020b8878b7ac9309ea4d3e19d7fd2ba560"
+    },
+    {
+      "id": "hexmaniac",
+      "file": "hexmaniac.png",
+      "source": "sources/channeler.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "efbf7812d518ff7c225f3e98464ff96634a8aedd960a9c21f68653bf199e0620"
+    },
+    {
+      "id": "brock",
+      "file": "brock.png",
+      "source": "sources/brock.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "8fddb60526c092ac9eed4005317a6a057395daca24e2451e8de9d6e9cf1016bc"
+    },
+    {
+      "id": "misty",
+      "file": "misty.png",
+      "source": "sources/misty.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "8a6c77908f3cd76543f2a10d3b97c06ee47ce9ec8a41dd4bd8d1d51ddda094ab"
+    },
+    {
+      "id": "bugsy",
+      "file": "bugsy.png",
+      "source": "sources/bug_catcher.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "40a463c5cc77d6dbe18184b0d4cc2dabcbe9ed3e36ba0875fd6ae3440fcbf15a"
+    },
+    {
+      "id": "whitney",
+      "file": "whitney.png",
+      "source": "sources/lass.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "b07ede9452c61eb62b63899a0dff99c00dd4565a83a51b5c3c91acd142105e02"
+    },
+    {
+      "id": "blaine",
+      "file": "blaine.png",
+      "source": "sources/blaine.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "b4d824181208886e73ad63212c8ac42f35f433466b6296f7d6f4b90e3b818ca5"
+    },
+    {
+      "id": "erika",
+      "file": "erika.png",
+      "source": "sources/erika.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "2e5dc47ffc5854bc4c0624b0cb339ec4014d667eb6944dcdea6ec29da1bee386"
+    },
+    {
+      "id": "ltsurge",
+      "file": "ltsurge.png",
+      "source": "sources/lt_surge.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "d6b69f7006bb7fead62bbdb398405aa7338fc7f342dda3fa8e9ae90292b73206"
+    },
+    {
+      "id": "koga",
+      "file": "koga.png",
+      "source": "sources/koga.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "5505e808892c05c74b0769fece2e27e73e53ed589547a77c2556f885a12b88ca"
+    },
+    {
+      "id": "giovanni",
+      "file": "giovanni.png",
+      "source": "sources/giovanni.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "109c79e57aee67fdbfd4147e454505a8d0d148ebf8ed827aeb732a089247f8de"
+    },
+    {
+      "id": "giovanni-rocket",
+      "file": "giovanni-rocket.png",
+      "source": "sources/giovanni.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "109c79e57aee67fdbfd4147e454505a8d0d148ebf8ed827aeb732a089247f8de"
+    },
+    {
+      "id": "kiyo",
+      "file": "kiyo.png",
+      "source": "sources/black_belt.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "02c3ce73ef4e04f89fa9fe47d3fc59020b8878b7ac9309ea4d3e19d7fd2ba560"
+    },
+    {
+      "id": "sabrina",
+      "file": "sabrina.png",
+      "source": "sources/sabrina.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "8c7db4fbfcbc9c963c5b4613c1b74a29b9583acc26b8d6ceb6bf444a5284522a"
+    },
+    {
+      "id": "lorelei",
+      "file": "lorelei.png",
+      "source": "sources/lorelei.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "7563027537f209ecf6af8718af696458185f00e3f0e9ffd962c6be37a8adc372"
+    },
+    {
+      "id": "lance",
+      "file": "lance.png",
+      "source": "sources/lance.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "aed131f7ee97f0ca2e0772485d3a69d6fc91bfa91a5429fba0f0a03c401dc752"
+    },
+    {
+      "id": "bruno",
+      "file": "bruno.png",
+      "source": "sources/bruno.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "c212f9be05b3b20cce086791a89c063aef0996ecaef64121d8c1d31f0d97704f"
+    },
+    {
+      "id": "agatha",
+      "file": "agatha.png",
+      "source": "sources/agatha.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "c8364aabd8b2b4a2bcbf8f0c0bd53b6805d0627e7a26f196c6ce338e4285f493"
+    },
+    {
+      "id": "blue",
+      "file": "blue.png",
+      "source": "sources/blue.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "18123cf86313c7ff5a83fd85213ccf29845ecca819c1f955b47881951657d26f"
+    },
+    {
+      "id": "will",
+      "file": "will.png",
+      "source": "sources/cooltrainer_m.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "b434f709e51c36ac1d8d70d345f6083c1d9824daca67bc481f75803804e6411b"
+    },
+    {
+      "id": "gambler",
+      "file": "gambler.png",
+      "source": "sources/gentleman.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "97235bbe7763ba16b7697feff31e9a5600e55292eae7e4e5d517e930fbe48dd3"
+    },
+    {
+      "id": "archer",
+      "file": "archer.png",
+      "source": "sources/rocket_m.png",
+      "crop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "sha256": "d2e26f9053be225906975aecca3ae374eb324f2f0b1e7371f4e9475a47e8ab63"
+    }
+  ],
+  "ball": {
+    "file": "item-ball.png",
+    "source": "public/art/events/sources/ball.png",
+    "sourceSha256": "f06d3076062bd9cffee3f7940d57bc59ce60ef470d42c1ec4861333797ae4786",
+    "sha256": "56b0207d5abdca930988420691192c6c3a2150029c2b3734fe93aae7a8ac5c84",
+    "crop": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/item_ball.png"
+  }
+}

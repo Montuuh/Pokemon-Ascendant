@@ -47,9 +47,17 @@ Every runtime move PNG contains at most **20 decoded opaque RGB colours** and bi
 
 `node scripts/normalise-move-art.mjs samples` previews eight representative effects; `stage` exports all current move PNGs to staging, and `install` explicitly updates runtime files. The manifests record decoded counts, dimensions, alpha-mask hashes and perceptual-change metrics. The original v0.9.37 baseline is pinned to commit 02af49b709cbb14ff0a8ae8bd36927c9e5919a54; each input hash identifies the actual source. The regression guard decodes PNG pixels independently of the exporter and checks all move files, including future additions.
 
-A14 replaces twelve weak effects: Sing, Screech, Flash, Tackle, Take Down, Roar, Fury Attack, Comet Punch, Spike Cannon, Swift, Conversion and Double Slap. The selected source outputs and exact prompts are retained in `docs/art/sources/moves-a14`, with models, hashes, framing margins and final dimensions in `public/art/moves/refresh-manifest.json`. Rebuild them with `node scripts/install-move-refresh.mjs`; every result must match its reviewed hash. Twenty-six generated candidates were compared at the actual 2× card scale on cream and plum. The selected effects fit within 64×38 native pixels. Card layout is unchanged; A16 remains a separate review item.
+A14 replaces twelve weak effects: Sing, Screech, Flash, Tackle, Take Down, Roar, Fury Attack, Comet Punch, Spike Cannon, Swift, Conversion and Double Slap. The selected source outputs and exact prompts are retained in `docs/art/sources/moves-a14`, with models, hashes, framing margins and final dimensions in `public/art/moves/refresh-manifest.json`. Rebuild them with `node scripts/install-move-refresh.mjs`; every result must match its reviewed hash. Twenty-six generated candidates were compared at the actual 2× card scale on cream and plum. The selected effects fit within 64×38 native pixels. A16 now fits the complete native 68×45 cell at 2× in a fixed 90px card window; every move is checked in the actual card at 720p and 1080p.
 
 The palette-only manifest retains its original 161 outputs; twelve later replacements are explicitly linked to the refresh manifest. Thus the dimension/mask-preservation claim applies to palette reduction, not to replacing a silhouette. Surf, Fire Blast and Thunderbolt retain their original silhouettes and masks through the palette pass.
+
+### Grounded overworld and market (A16–A18)
+
+Move cards reserve the full native 68×45 illustration cell at 2×, without shrinking it under flex layout. `e2e/move-window.spec.ts` checks the image bounds of all 161 moves in real cards at both desktop viewports.
+
+`node scripts/build-map-people.mjs` extracts native 16×32 FRLG overworld frames for route-only use. Ordinary people use 2×; Gym landmarks retain a larger 4× register. Feet and ground shadows are aligned; idle bobbing and broad glows no longer float people above the terrain. Habitat residents retain their seeded rotation and native half-step scales. Full battle portraits remain in the preview. Sources, trainer-class aliases and output hashes are retained in `public/art/map/people/manifest.json`.
+
+`node scripts/build-black-market-art.mjs` assembles a dedicated native 320×256 Rocket interior. Four physical counters occupy storage, supply, gambling and office areas; each opens the existing transaction in a focus-managed dialog. The room renders at 2×/3× on supported desktop viewports. Its source crops, coordinates and hashes are retained in `public/art/black-market/room-manifest.json`. No generation or resampling is used for either family.
 
 ### Arenas and route stops (A12–A13)
 

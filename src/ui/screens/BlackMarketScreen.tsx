@@ -1,46 +1,59 @@
-import { useState, type CSSProperties, type ReactNode } from 'react';
-import { Tabs } from 'radix-ui';
-import { IconArrowsExchange, IconCheck, IconDice5, IconLock, IconX } from '@tabler/icons-react';
+import { useRef, useState, type ReactNode } from 'react';
+import { Dialog } from 'radix-ui';
+import { IconArrowsExchange, IconDice5, IconLock, IconX } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import {
-  BLACK_MARKET, candyPrice, DEFAULT_PROGRESSION, fencePrice, marketTakesRelic, relicValue, showcaseLevel, wagerChance,
-  type BlackMarketState, type PartyMon, type RunState,
+  BLACK_MARKET,
+  candyPrice,
+  DEFAULT_PROGRESSION,
+  fencePrice,
+  marketTakesRelic,
+  relicValue,
+  showcaseLevel,
+  wagerChance,
+  type BlackMarketState,
+  type PartyMon,
+  type RunState,
 } from '@/sim';
-import { blackMarketArt, itemIcon, spriteOf, trainerSprite } from '@/ui/art';
+import { itemIcon, spriteOf } from '@/ui/art';
 import { ConfirmLeave } from '@/ui/components/ConfirmLeave';
 import { ItemCard, type Rarity } from '@/ui/components/ItemCard';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { Money, Price } from '@/ui/components/Money';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { LEAVE_WARNING, MARKET_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
-import { candyTip, dealtTip, fenceTip, marketTip, moneyTip, showcaseTip, stakeTip, tradeTip, wagerTip } from '@/ui/tips';
+import {
+  candyTip,
+  fenceTip,
+  marketTip,
+  moneyTip,
+  showcaseTip,
+  stakeTip,
+  tradeTip,
+  wagerTip,
+} from '@/ui/tips';
 import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
 import { BackButton } from '@/ui/components/BackButton';
 import styles from './BlackMarketScreen.module.css';
+import { BlackMarketRoom } from './black-market/BlackMarketRoom';
+import { type MarketCounter as Counter } from './black-market/room';
 
 // §2.11.6 — Team Rocket's Black Market, down the stairs behind the Game Corner's poster. The room is the Rocket
-// Hideout's B1F (its wall and its floor; the way back up is the corner arrow), and four Rocket people stand in it, each at a counter:
-// pick one and their counter opens below. Nothing here is a rule — every price, chance and limit is the sim's
+// Hideout's native tiles, arranged into four working counters and a separate Executive's office:
+// pick one and their transaction opens over the room. Nothing here is a rule — every price, chance and limit is the sim's
 // (`BLACK_MARKET`, `candyPrice`, `wagerChance`, `fencePrice`), and every counter the sim has closed says so.
 // Walking back up the stairs locks the door for the visit, so it asks first (§2.11.0); the showcase's deal locks it
 // too, so it asks as well.
 
 type Act = Parameters<ReturnType<typeof useRunStore.getState>['dispatch']>[0];
-type Counter = 'trader' | 'fence' | 'gambler' | 'showcase';
-const DEALER: Record<Counter, { sprite: string; text: { name: string; line: string } }> = {
-  trader: { sprite: 'rocketgruntf', text: MARKET_TEXT.trader },
-  fence: { sprite: 'rocketgrunt', text: MARKET_TEXT.fence },
-  gambler: { sprite: 'gambler', text: MARKET_TEXT.gambler },
-  showcase: { sprite: 'archer', text: MARKET_TEXT.showcase },
-};
-const COUNTERS: Counter[] = ['trader', 'fence', 'gambler', 'showcase'];
 const pct = (chance: number) => Math.round(chance * 100);
 
 export function BlackMarketScreen() {
   const run = useRunStore((s) => s.run)!;
   const dispatch = useRunStore((s) => s.dispatch);
-  const [counter, setCounter] = useState<Counter>('trader');
+  const [counter, setCounter] = useState<Counter | null>(null);
+  const returnTo = useRef<HTMLElement | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
   const market = run.city!.blackMarket!;
@@ -51,7 +64,10 @@ export function BlackMarketScreen() {
   }
   function act(action: Act): boolean {
     const ok = dispatch(action);
-    if (!ok) say(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? RUN_REJECT_TEXT['wrong-phase']!);
+    if (!ok)
+      say(
+        RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? RUN_REJECT_TEXT['wrong-phase']!,
+      );
     return ok;
   }
   const dealt: Record<Counter, boolean> = {
@@ -62,11 +78,7 @@ export function BlackMarketScreen() {
   };
 
   return (
-    <main
-      className={`${styles.root} theme-stage`}
-      style={{ '--floor': `url(${blackMarketArt('floor')})`, '--wall': `url(${blackMarketArt('wall')})` } as CSSProperties}
-      data-testid="black-market-screen"
-    >
+    <main className={`${styles.root} theme-stage`} data-testid="black-market-screen">
       <header className={styles.wall}>
         {/* Back up the stairs to the Game Corner; the door locks behind you, so it asks first (§2.11.0). */}
         <BackButton label={MARKET_TEXT.up} onClick={() => setLeaving(true)} testId="btn-leave-market" />
@@ -79,38 +91,93 @@ export function BlackMarketScreen() {
         </Tipped>
       </header>
 
-      <Tabs.Root className={styles.hall} value={counter} onValueChange={(v) => setCounter(v as Counter)}>
-        <Tabs.List className={styles.dealers} aria-label={MARKET_TEXT.counters}>
-          {COUNTERS.map((c) => (
-            <Tabs.Trigger key={c} value={c} className={styles.dealer} data-testid={`market-${c}`} data-dealt={dealt[c] || undefined}>
-              <img className={styles.dealerSprite} src={trainerSprite(DEALER[c].sprite)} alt="" width={96} height={96} />
-              <span className={`${styles.dealerName} display`}>{DEALER[c].text.name}</span>
-              {dealt[c] && (
-                <Tipped tip={dealtTip()} className={styles.dealtMark}>
-                  <IconCheck size={16} aria-hidden="true" />
-                  <span className="sr-only">{MARKET_TEXT.dealt}</span>
-                </Tipped>
-              )}
-            </Tabs.Trigger>
-          ))}
-        </Tabs.List>
-        {COUNTERS.map((c) => (
-          <Tabs.Content key={c} value={c} className={styles.counter}>
-            <p className={styles.line}>“{DEALER[c].text.line}”</p>
-            {c === 'trader' && <Trader run={run} market={market} act={act} />}
-            {c === 'fence' && <Fence run={run} market={market} act={act} />}
-            {c === 'gambler' && <Gambler run={run} market={market} act={act} />}
-            {c === 'showcase' && <Showcase run={run} market={market} act={act} />}
-          </Tabs.Content>
-        ))}
-      </Tabs.Root>
+      <BlackMarketRoom
+        chosen={counter}
+        dealt={dealt}
+        onChoose={(id) => {
+          returnTo.current = document.activeElement as HTMLElement;
+          setCounter(id);
+        }}
+        onExit={() => setLeaving(true)}
+      />
+
+      <Dialog.Root
+        open={counter !== null}
+        onOpenChange={(open) => {
+          if (!open) setCounter(null);
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay className={styles.scrim} />
+          <Dialog.Content
+            className={`${styles.counter} theme-stage`}
+            aria-describedby={undefined}
+            data-testid="market-counter"
+            data-counter={counter}
+            onOpenAutoFocus={(event) => {
+              event.preventDefault();
+              document.querySelector<HTMLElement>('[data-testid="btn-close-market-counter"]')?.focus();
+            }}
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              returnTo.current?.focus();
+            }}
+            onEscapeKeyDown={(event) => {
+              if (document.querySelector('[data-testid="confirm-showcase"]')) event.preventDefault();
+            }}
+            onPointerDownOutside={(event) => {
+              if (document.querySelector('[data-testid="confirm-showcase"]')) event.preventDefault();
+            }}
+          >
+            {counter && (
+              <>
+                <header className={styles.counterHead}>
+                  <BackButton
+                    label={MARKET_TEXT.counters}
+                    onClick={() => setCounter(null)}
+                    testId="btn-close-market-counter"
+                  />
+                  <Dialog.Title className={`${styles.counterTitle} display`}>
+                    {MARKET_TEXT[counter].name}
+                  </Dialog.Title>
+                  <Money amount={run.money} size={16} />
+                </header>
+                <div className={styles.counterBody}>
+                  <p className={styles.line}>“{MARKET_TEXT[counter].line}”</p>
+                  {counter === 'trader' && <Trader run={run} market={market} act={act} />}
+                  {counter === 'fence' && <Fence run={run} market={market} act={act} />}
+                  {counter === 'gambler' && <Gambler run={run} market={market} act={act} />}
+                  {counter === 'showcase' && <Showcase run={run} market={market} act={act} />}
+                  {toast && (
+                    <p className={styles.toast} role="status">
+                      {toast}
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
 
       <footer className={styles.footer}>
-        {toast && <p className={styles.toast} role="status">{toast}</p>}
-        <p className="sr-only" role="status" aria-live="polite">{run.log.slice(-1).join(' ')}</p>
+        {toast && !counter && (
+          <p className={styles.toast} role="status">
+            {toast}
+          </p>
+        )}
+        <p className="sr-only" role="status" aria-live="polite">
+          {run.log.slice(-1).join(' ')}
+        </p>
       </footer>
 
-      {leaving && <ConfirmLeave body={LEAVE_WARNING.market} onStay={() => setLeaving(false)} onLeave={() => act({ type: 'leave-black-market' })} />}
+      {leaving && (
+        <ConfirmLeave
+          body={LEAVE_WARNING.market}
+          onStay={() => setLeaving(false)}
+          onLeave={() => act({ type: 'leave-black-market' })}
+        />
+      )}
     </main>
   );
 }
@@ -121,7 +188,23 @@ export function BlackMarketScreen() {
  * A chip to pick. One that cannot be picked keeps its full ink — you still read it to plan — and says why by shape:
  * a dashed border when the counter is full, and a lock where the dealer will not take it at all.
  */
-function Chip({ selected, disabled, locked, onClick, testId, tip, children }: { selected: boolean; disabled?: boolean; locked?: boolean; onClick: () => void; testId: string; tip?: ReactNode; children: ReactNode }) {
+function Chip({
+  selected,
+  disabled,
+  locked,
+  onClick,
+  testId,
+  tip,
+  children,
+}: {
+  selected: boolean;
+  disabled?: boolean;
+  locked?: boolean;
+  onClick: () => void;
+  testId: string;
+  tip?: ReactNode;
+  children: ReactNode;
+}) {
   const tipProps = useTip(tip ?? null);
   return (
     <button
@@ -141,7 +224,21 @@ function Chip({ selected, disabled, locked, onClick, testId, tip, children }: { 
 }
 
 /** One of your Pokémon as a pickable chip: icon, name, level. */
-function MonChip({ mon, selected, disabled, locked, onClick, testId }: { mon: PartyMon; selected: boolean; disabled?: boolean; locked?: boolean; onClick: () => void; testId: string }) {
+function MonChip({
+  mon,
+  selected,
+  disabled,
+  locked,
+  onClick,
+  testId,
+}: {
+  mon: PartyMon;
+  selected: boolean;
+  disabled?: boolean;
+  locked?: boolean;
+  onClick: () => void;
+  testId: string;
+}) {
   const s = getContent().species(mon.speciesId);
   return (
     <Chip selected={selected} disabled={disabled} locked={locked} onClick={onClick} testId={testId}>
@@ -153,7 +250,25 @@ function MonChip({ mon, selected, disabled, locked, onClick, testId }: { mon: Pa
 }
 
 /** One of your relics as a pickable chip, with what the counter would give for it. */
-function RelicChip({ relicId, selected, disabled, locked, extra, tip, onClick, testId }: { relicId: string; selected: boolean; disabled?: boolean; locked?: boolean; extra: ReactNode; tip: ReactNode; onClick: () => void; testId: string }) {
+function RelicChip({
+  relicId,
+  selected,
+  disabled,
+  locked,
+  extra,
+  tip,
+  onClick,
+  testId,
+}: {
+  relicId: string;
+  selected: boolean;
+  disabled?: boolean;
+  locked?: boolean;
+  extra: ReactNode;
+  tip: ReactNode;
+  onClick: () => void;
+  testId: string;
+}) {
   const r = getContent().relic(relicId);
   return (
     <Chip selected={selected} disabled={disabled} locked={locked} onClick={onClick} testId={testId} tip={tip}>
@@ -194,9 +309,19 @@ function Trader({ run, market, act }: CounterProps) {
               onClick={() => setOffer(offer === i ? null : i)}
               data-testid={`trade-offer-${i}`}
             >
-              <img className={styles.monSprite} src={spriteOf({ speciesId: id }, 'front')} alt="" width={96} height={96} />
+              <img
+                className={styles.monSprite}
+                src={spriteOf({ speciesId: id }, 'front')}
+                alt=""
+                width={96}
+                height={96}
+              />
               <span className={`${styles.monName} display`}>{s.name}</span>
-              <span className={styles.types}>{s.types.map((t) => <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />)}</span>
+              <span className={styles.types}>
+                {s.types.map((t) => (
+                  <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />
+                ))}
+              </span>
             </Tipped>
           );
         })}
@@ -204,13 +329,31 @@ function Trader({ run, market, act }: CounterProps) {
       <h3 className={styles.ask}>{MARKET_TEXT.pickGive}</h3>
       <div className={styles.chips}>
         {run.box.map((m) => (
-          <MonChip key={m.uid} mon={m} selected={give === m.uid} onClick={() => setGive(give === m.uid ? null : m.uid)} testId={`trade-give-${m.uid}`} />
+          <MonChip
+            key={m.uid}
+            mon={m}
+            selected={give === m.uid}
+            onClick={() => setGive(give === m.uid ? null : m.uid)}
+            testId={`trade-give-${m.uid}`}
+          />
         ))}
       </div>
       <div className={styles.actions}>
-        <button type="button" className={styles.primary} disabled={offer === null || !given} onClick={() => offer !== null && give && act({ type: 'market-trade', offer, giveUid: give })} data-testid="btn-trade">
+        <button
+          type="button"
+          className={styles.primary}
+          disabled={offer === null || !given}
+          onClick={() => offer !== null && give && act({ type: 'market-trade', offer, giveUid: give })}
+          data-testid="btn-trade"
+        >
           <IconArrowsExchange size={18} aria-hidden="true" />
-          {offer !== null && given ? MARKET_TEXT.tradeFor(content.species(given.speciesId).name, content.species(market.trades[offer]!).name, given.level) : MARKET_TEXT.trade}
+          {offer !== null && given
+            ? MARKET_TEXT.tradeFor(
+                content.species(given.speciesId).name,
+                content.species(market.trades[offer]!).name,
+                given.level,
+              )
+            : MARKET_TEXT.trade}
         </button>
       </div>
     </div>
@@ -230,17 +373,36 @@ function Fence({ run, market, act }: CounterProps) {
     <div className={styles.stack}>
       <Tipped tip={candyTip(price, market.candies)} className={styles.candy}>
         <img className={styles.relicIcon} src={itemIcon('rare-candy')} alt="" width={30} height={30} />
-        <b>{MARKET_TEXT.candy}</b> <Price amount={price} affordable={run.money >= price} /> <span className="tabular">×{market.candies}</span>
+        <b>{MARKET_TEXT.candy}</b> <Price amount={price} affordable={run.money >= price} />{' '}
+        <span className="tabular">×{market.candies}</span>
       </Tipped>
       <div className={styles.chips}>
         {run.box.map((m) => {
           const top = m.level >= DEFAULT_PROGRESSION.maxLevel;
-          return <MonChip key={m.uid} mon={m} selected={uid === m.uid} disabled={top} locked={top} onClick={() => setUid(uid === m.uid ? null : m.uid)} testId={`candy-${m.uid}`} />;
+          return (
+            <MonChip
+              key={m.uid}
+              mon={m}
+              selected={uid === m.uid}
+              disabled={top}
+              locked={top}
+              onClick={() => setUid(uid === m.uid ? null : m.uid)}
+              testId={`candy-${m.uid}`}
+            />
+          );
         })}
       </div>
       <div className={styles.actions}>
-        <button type="button" className={styles.primary} disabled={!mon || !candyOk} onClick={() => mon && act({ type: 'market-candy', uid: mon.uid })} data-testid="btn-candy">
-          {mon ? MARKET_TEXT.candyFor(content.species(mon.speciesId).name, mon.level + 1) : MARKET_TEXT.pickMon}
+        <button
+          type="button"
+          className={styles.primary}
+          disabled={!mon || !candyOk}
+          onClick={() => mon && act({ type: 'market-candy', uid: mon.uid })}
+          data-testid="btn-candy"
+        >
+          {mon
+            ? MARKET_TEXT.candyFor(content.species(mon.speciesId).name, mon.level + 1)
+            : MARKET_TEXT.pickMon}
         </button>
       </div>
 
@@ -261,7 +423,15 @@ function Fence({ run, market, act }: CounterProps) {
                 disabled={!takes}
                 locked={!takes}
                 tip={fenceTip(content.relic(id), pay, takes)}
-                extra={armed ? <b>{MARKET_TEXT.sellArmed} <Money amount={pay} size={12} /></b> : <Money amount={pay} size={12} />}
+                extra={
+                  armed ? (
+                    <b>
+                      {MARKET_TEXT.sellArmed} <Money amount={pay} size={12} />
+                    </b>
+                  ) : (
+                    <Money amount={pay} size={12} />
+                  )
+                }
                 onClick={() => {
                   // Two presses: a relic sold is gone for good, and a stray click should not be the one that does it.
                   if (!armed) return setSelling(id);
@@ -289,7 +459,9 @@ function Gambler({ run, market, act }: CounterProps) {
     return (
       <Done>
         {w.won ? <IconDice5 size={18} aria-hidden="true" /> : <IconX size={18} aria-hidden="true" />}
-        {w.won ? MARKET_TEXT.won(pct(w.chance), content.relic(w.target).name) : MARKET_TEXT.lost(pct(w.chance))}
+        {w.won
+          ? MARKET_TEXT.won(pct(w.chance), content.relic(w.target).name)
+          : MARKET_TEXT.lost(pct(w.chance))}
       </Done>
     );
   }
@@ -297,7 +469,8 @@ function Gambler({ run, market, act }: CounterProps) {
   const chance = target && stake.length ? wagerChance(content, stake, target) : null;
   const staked = stake.reduce((a, id) => a + relicValue(content, id), 0);
   const full = stake.length >= BLACK_MARKET.maxStake;
-  const toggle = (id: string) => setStake(stake.includes(id) ? stake.filter((x) => x !== id) : full ? stake : [...stake, id]);
+  const toggle = (id: string) =>
+    setStake(stake.includes(id) ? stake.filter((x) => x !== id) : full ? stake : [...stake, id]);
   return (
     <div className={styles.stack}>
       <div className={styles.targets} role="group" aria-label={MARKET_TEXT.pickTarget}>
@@ -344,11 +517,21 @@ function Gambler({ run, market, act }: CounterProps) {
       )}
       <div className={styles.actions}>
         {chance !== null && target && (
-          <Tipped tip={wagerTip(chance, staked, relicValue(content, target))} className={styles.chance} data-testid="wager-chance">
+          <Tipped
+            tip={wagerTip(chance, staked, relicValue(content, target))}
+            className={styles.chance}
+            data-testid="wager-chance"
+          >
             <IconDice5 size={20} aria-hidden="true" /> <b className="tabular">{pct(chance)} %</b>
           </Tipped>
         )}
-        <button type="button" className={styles.primary} disabled={chance === null} onClick={() => target && act({ type: 'market-wager', target, stake })} data-testid="btn-wager">
+        <button
+          type="button"
+          className={styles.primary}
+          disabled={chance === null}
+          onClick={() => target && act({ type: 'market-wager', target, stake })}
+          data-testid="btn-wager"
+        >
           {target ? MARKET_TEXT.wagerOn(content.relic(target).name) : MARKET_TEXT.pickTarget}
         </button>
       </div>
@@ -368,16 +551,37 @@ function Showcase({ run, market, act }: CounterProps) {
   const price = BLACK_MARKET.legendaryPrice;
   const canPay = run.box.length - price >= 1;
   const full = give.length >= price;
-  const toggle = (uid: string) => setGive(give.includes(uid) ? give.filter((u) => u !== uid) : full ? give : [...give, uid]);
-  const names = run.box.filter((m) => give.includes(m.uid)).map((m) => content.species(m.speciesId).name).join(', ');
+  const toggle = (uid: string) =>
+    setGive(give.includes(uid) ? give.filter((u) => u !== uid) : full ? give : [...give, uid]);
+  const names = run.box
+    .filter((m) => give.includes(m.uid))
+    .map((m) => content.species(m.speciesId).name)
+    .join(', ');
   return (
     <div className={styles.stack}>
       <div className={styles.targets}>
-        <Tipped as="div" tip={showcaseTip(s.name, price)} className={`${styles.mon} ${styles.showcase}`} data-testid="showcase-legendary">
-          <img className={styles.monSprite} src={spriteOf({ speciesId: s.id }, 'front')} alt="" width={96} height={96} />
+        <Tipped
+          as="div"
+          tip={showcaseTip(s.name, price)}
+          className={`${styles.mon} ${styles.showcase}`}
+          data-testid="showcase-legendary"
+        >
+          <img
+            className={styles.monSprite}
+            src={spriteOf({ speciesId: s.id }, 'front')}
+            alt=""
+            width={96}
+            height={96}
+          />
           <span className={`${styles.monName} display`}>{s.name}</span>
-          <span className={styles.types}>{s.types.map((t) => <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />)}</span>
-          <span className={styles.priceTag}>{MARKET_TEXT.arrivesAt(give.length ? showcaseLevel(run, give) : null)}</span>
+          <span className={styles.types}>
+            {s.types.map((t) => (
+              <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />
+            ))}
+          </span>
+          <span className={styles.priceTag}>
+            {MARKET_TEXT.arrivesAt(give.length ? showcaseLevel(run, give) : null)}
+          </span>
         </Tipped>
       </div>
       <p className={styles.ask}>
@@ -387,11 +591,27 @@ function Showcase({ run, market, act }: CounterProps) {
       <div className={styles.chips}>
         {run.box.map((m) => {
           const on = give.includes(m.uid);
-          return <MonChip key={m.uid} mon={m} selected={on} disabled={!canPay || (!on && full)} locked={!canPay} onClick={() => toggle(m.uid)} testId={`showcase-give-${m.uid}`} />;
+          return (
+            <MonChip
+              key={m.uid}
+              mon={m}
+              selected={on}
+              disabled={!canPay || (!on && full)}
+              locked={!canPay}
+              onClick={() => toggle(m.uid)}
+              testId={`showcase-give-${m.uid}`}
+            />
+          );
         })}
       </div>
       <div className={styles.actions}>
-        <button type="button" className={styles.primary} disabled={give.length !== price} onClick={() => setSure(true)} data-testid="btn-showcase">
+        <button
+          type="button"
+          className={styles.primary}
+          disabled={give.length !== price}
+          onClick={() => setSure(true)}
+          data-testid="btn-showcase"
+        >
           {give.length === price ? MARKET_TEXT.handOver(names) : MARKET_TEXT.pickN(price)}
         </button>
       </div>

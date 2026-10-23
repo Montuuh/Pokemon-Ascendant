@@ -27,6 +27,12 @@ const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : null
 // ── Screens: how to reach each one, and which source files it is the picture of ──────────────────────────
 // `setup` runs against window.__ascendant (the dev hook); `clicks` are data-testids pressed in order.
 const SCREENS = {
+  // A16–A18 — complete move cells, overworld node registers and every physical market counter.
+  'move-art-window': { url: '/?scenario=wild-basic&seed=7', ready: 'combat-screen', setup: ['hand(["flash", "fire-blast", "skull-bash", "surf", "barrier"])'], match: [/components\/MoveCard/] },
+  'map-region-2': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.dispatch({ type: "depart-city", modifierId: a.run.state().city.reflection[0] ?? null })', 'goTo("map")'], match: [/components\/(NodeMarker|HabitatArt|nodeArt)/] },
+  'map-region-3': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.dispatch({ type: "depart-city", modifierId: a.run.state().city.reflection[0] ?? null })', 'goTo("map")'], match: [/components\/(NodeMarker|HabitatArt|nodeArt)/] },
+  'map-victory-road': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 7)', 'run.fill(6)', 'run.victoryRoad()', 'goTo("map")'], match: [/components\/(NodeMarker|HabitatArt|nodeArt)/] },
+  ...Object.fromEntries(['trader', 'fence', 'showcase'].map((counter) => [`black-market-${counter}`, { url: '/?screen=menu', ready: 'market-counter', setup: ['run.new("squirtle", 7)', 'run.fill(5)', 'run.city(1)', 'run.pay(3000)', 'run.dispatch({ type: "enter-building", building: "game-corner" })', 'run.dispatch({ type: "push-switch" })', 'run.dispatch({ type: "enter-black-market" })'], clicks: [`market-${counter}`], match: [/screens\/BlackMarketScreen/, /screens\/black-market\//] }])),
   menu: { url: '/?screen=menu', match: [/screens\/MainMenu/, /App\.tsx/] },
   about: { url: '/?screen=about', match: [/screens\/AboutScreen/] },
   changelog: { url: '/?screen=changelog', match: [/screens\/ChangelogScreen/, /content\/changelog/] },
@@ -342,6 +348,11 @@ async function main() {
           await document.fonts.ready;
           await Promise.all([...document.images].map((img) => img.decode()));
         });
+      }
+      // A17 — a route root can mount before its asynchronous terrain canvas has painted.
+      if (id === 'map' || id.startsWith('map-')) {
+        await page.getByTestId('route-board').waitFor({ state: 'visible' });
+        await page.waitForFunction(() => document.querySelector('[data-testid="route-board"]')?.getAttribute('data-painted') === 'true');
       }
       await page.waitForTimeout(900);
       const data = await page.evaluate(measure);

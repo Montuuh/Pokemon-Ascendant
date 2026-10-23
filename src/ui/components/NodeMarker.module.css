@@ -23,7 +23,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  filter: drop-shadow(0 3px 2px color-mix(in srgb, var(--scrim) 70%, transparent));
+  filter: drop-shadow(0 2px 0 var(--scrim));
 }
 .art img {
   position: absolute;
@@ -34,11 +34,11 @@
   /* The picture keeps its own size: wider than the hit target is fine, squashed into it is not. */
   max-width: none;
 }
-/* The Showdown trainer sprites are 80 px with air round the figure: shown at their own size, feet on the point. */
+/* Authentic 16×32 overworld frames at 2×: the route's people share the tiles' pixel register. */
 .trainer img {
-  width: 80px;
-  height: 80px;
-  bottom: -6px;
+  width: 32px;
+  height: 64px;
+  bottom: 0;
 }
 /* A Gen V battle sprite, cropped to the Pokémon, at its own size: a Caterpie small, a Snorlax big, as they are. */
 .pokemon img {
@@ -49,23 +49,24 @@
   bottom: -6px;
 }
 .item img {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   bottom: 2px;
 }
 .sign img {
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   bottom: 0;
 }
+.node[data-kind='summit'] .sign img { width: 48px; height: 48px; }
 
 /* The ring on the ground: where you stand, and where you can step to next. */
 .ground {
   position: absolute;
   left: 50%;
   bottom: -8px;
-  width: 52px;
-  height: 18px;
+  width: 40px;
+  height: 12px;
   transform: translateX(-50%);
   border-radius: 50%;
   background: color-mix(in srgb, var(--scrim) 34%, transparent);
@@ -75,9 +76,9 @@
    tufts, so it shows round them. */
 .node[data-art='pokemon'] .ground,
 .node[data-art='habitat'] .ground {
-  width: 70px;
-  height: 22px;
-  bottom: -12px;
+  width: 68px;
+  height: 14px;
+  bottom: -8px;
 }
 .reachable .ground,
 .current .ground {
@@ -91,9 +92,7 @@
 .reachable {
   cursor: pointer;
 }
-.reachable .art {
-  animation: global(nodeBob) var(--motion-node-bob) ease-in-out infinite;
-}
+/* People stand on the route. The gold ground/chip and its lift carry interaction without floating their feet. */
 .reachable:hover,
 .reachable:focus-visible {
   transform: scale(1.1);
@@ -102,16 +101,16 @@
   z-index: 2;
 }
 .reachable:hover .art {
-  filter: drop-shadow(0 6px 4px color-mix(in srgb, var(--scrim) 75%, transparent)) brightness(1.08);
+  filter: drop-shadow(0 2px 0 var(--scrim)) brightness(1.08);
 }
 
-/* The Gym and the Elite are the route's landmarks: they keep their glow at any distance while they are ahead. */
+/* The named Elite keeps the same grounded shadow; the double-size Gym retains a restrained gold edge. */
 .landmark .art {
-  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brand-red) 55%, transparent)) drop-shadow(0 3px 2px color-mix(in srgb, var(--scrim) 70%, transparent));
+  filter: drop-shadow(0 2px 0 var(--scrim));
 }
 .climax .art,
 .climax.reachable:hover .art {
-  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--accent-action) 70%, transparent)) drop-shadow(0 3px 2px color-mix(in srgb, var(--scrim) 70%, transparent));
+  filter: drop-shadow(0 0 var(--sp-1) color-mix(in srgb, var(--accent-action) 70%, transparent)) drop-shadow(0 2px 0 var(--scrim));
 }
 
 /* A node on no route you can still take: there, and readable, but quiet — the open routes are what the eye follows.
@@ -152,9 +151,9 @@
   margin: -148px 0 0 -56px;
 }
 .climax .trainer img {
-  width: 160px;
-  height: 160px;
-  bottom: -12px;
+  width: 64px;
+  height: 128px;
+  bottom: 0;
 }
 .climax .ground {
   width: 96px;
@@ -197,6 +196,12 @@
   padding: 0 var(--sp-2) 0 var(--sp-1);
   border: 1px solid var(--border-subtle);
 }
+.label:not(.go) {
+  color: var(--ink-secondary);
+  border-color: transparent;
+  padding-inline: var(--sp-1);
+}
+.label:not(.go) .chipIcon { display: none; }
 .chipIcon {
   flex: none;
 }

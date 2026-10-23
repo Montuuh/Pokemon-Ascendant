@@ -88,5 +88,3 @@ export const gameCornerArt = (name: 'room' | 'room-open' | 'room-shut' | 'roulet
 export const martArt = (name: 'mart' | 'floor-1' | 'floor-2' | 'floor-3' | 'floor-4' | 'floor-5' | 'clerk') => asset(`art/mart/${name}.png`);
 /** §8.4 — the Trainer Hub: the Indigo Plateau's Pokémon Center lobby and the people in it (`npm run art:hub`). */
 export const hubArt = (name: 'lobby' | 'nurse' | 'player' | 'heal-machine' | 'heal-ball') => asset(`art/hub/${name}.png`);
-/** §2.11.6 — the Rocket Hideout's wall and floor, the Black Market's room (`npm run art:rocket`). */
-export const blackMarketArt = (name: 'wall' | 'floor') => asset(`art/black-market/${name}.png`);

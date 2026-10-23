@@ -1,0 +1,194 @@
+{
+  "description": "A18 authored Black Market floorplan: cargo pens, a separate back office, goods counter, gambling table and stairway.",
+  "rights": "Pokémon artwork © Nintendo / Creatures / GAME FREAK; non-commercial fan use. Maps: Bulbagarden Archives. NPC extraction: pret/pokefirered.",
+  "processing": {
+    "script": "scripts/build-black-market-art.mjs",
+    "resampling": "none",
+    "grid": 16,
+    "npcAlpha": "exact palette-zero RGB key",
+    "sharp": "0.35.4"
+  },
+  "sources": [
+    {
+      "path": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Rocket_Hideout_B1F_FRLG.png",
+      "sha256": "c50435a921327e8cfe0618530ed036fcb5afa5f7acbfdfc317ec979699e1425f"
+    },
+    {
+      "path": "public/art/game-corner/roulette.png",
+      "url": "docs/art/ATTRIBUTION.md — authentic FRLG Game Corner table",
+      "sha256": "96cd854158c068689d1c59e9784b1e4de00604687f618bcb1b95416ea6c379e4"
+    },
+    {
+      "path": "public/art/black-market/sources/trader.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/rocket_f.png",
+      "sha256": "aa84b66499afe516e8b816cd12add9035208d4f95a85559d82406244d9f40d9d"
+    },
+    {
+      "path": "public/art/black-market/sources/fence.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/rocket_m.png",
+      "sha256": "df9978edee318b6193fc85be4a88fa85202bbd6e689bb21e602c181dab3b6e12"
+    },
+    {
+      "path": "public/art/black-market/sources/gambler.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/gentleman.png",
+      "sha256": "0f5b22e8cad76ff95ed064fa317260bff8c7744a5575a8b04b997d4d3a6108f0"
+    },
+    {
+      "path": "public/art/black-market/sources/showcase.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/giovanni.png",
+      "sha256": "fa7cc4b067c0dc5271af3832dcb2353edeb8ed51b0a2b279de462265a1ec50d2"
+    }
+  ],
+  "crops": [
+    {
+      "source": "public/art/black-market/sources/trader.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/fence.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/gambler.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/showcase.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        192,
+        176,
+        16,
+        16
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        208,
+        8,
+        48,
+        24
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        8,
+        336,
+        8,
+        16
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        160,
+        16,
+        40,
+        48
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        320,
+        224,
+        96,
+        48
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        64,
+        384,
+        80,
+        48
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        48,
+        240,
+        48,
+        32
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        112,
+        208,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        16,
+        336,
+        48,
+        32
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "file": "trader.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "72b720ee81796e4489e9cada0dd2ff37c94b6366277dd2a76537c8bcba433180"
+    },
+    {
+      "file": "fence.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "a7bd9fb1cef09c17689428ffed9dabe23f57d01992aa1071c94b6ea1e87ef343"
+    },
+    {
+      "file": "gambler.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "11597c9443caf19f53be59b97052a8e16e7c65c6831892a67e32fabd682eb754"
+    },
+    {
+      "file": "showcase.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "2aa9b13f39f7b776d919bc1cfc013ecd6f66450129b79883be2e875cbf4a958e"
+    },
+    {
+      "file": "room.png",
+      "width": 320,
+      "height": 256,
+      "sha256": "f0b0c8601f5e6fd240bf3af3c039a7566ef24a9281efaae12544456855e0bcca"
+    }
+  ]
+}

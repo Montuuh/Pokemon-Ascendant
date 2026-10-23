@@ -14,19 +14,20 @@
   bottom: var(--sp-2);
 }
 .root .grass {
-  bottom: -6px;
+  bottom: calc(-1 * var(--sp-1));
 }
 /* A resident: its battle sprite at half its size (D9: a half multiple), a small one at its own (--scale), its inner
    edge just inside the landmark's side (--half) — or further in, so its outer edge (--w out) stays inside half the gap
    to the next column (--reach, from the board): neighbours' residents never meet. It takes the pointer, for its
    node: a hover opens the node's bubble, a click enters it. */
 .root .face {
-  bottom: 2px;
+  /* Residents and their landmark share one foot line; the same tufts cover their feet. */
+  bottom: var(--sp-1);
   transform: scale(var(--scale, 0.5));
   pointer-events: auto;
 }
 .root .tuft {
-  bottom: -6px;
+  bottom: calc(-1 * var(--sp-1));
   transform: scale(0.5);
 }
 /* `left: auto` undoes the node's centring of its images: a resident is anchored at its inner edge. */

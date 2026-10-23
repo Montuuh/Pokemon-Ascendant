@@ -3,12 +3,23 @@ import { battleSpriteUrl } from '@/content/schemas/species';
 import { ALL_ELITES, ALL_TRAINERS, TRADER, VICTORY_ROAD, gymById, leagueMemberOf, regionContent, type BiomeId, type MapNode, type RegionMap } from '@/sim';
 import { habitatProp, itemIcon, mysterySign, summitSign, trainerSprite, type NodeArt } from '@/ui/art';
 import { MAP_LABEL, MAP_TEXT, NODE_LABEL } from '@/ui/strings';
+import { asset } from '@/content/paths';
 
 // §9.3 — which picture a map node wears (v0.9.14). Read off the node's own preview, so the map shows exactly who and
 // what the preview card will promise: the roster's own sprite, the Gym's own Leader, the find's own item.
 
 /** Its animated Gen V battle sprite, cropped tight to the Pokémon: the same sprite the arena shows. */
 const pokemonIcon = (speciesId: string) => battleSpriteUrl(getContent().species(speciesId).id, 'front');
+
+/** §9.3 / D9 — the route is an overworld; its preview keeps the battle portrait and full encounter detail. */
+export function routeNodeArt(art: NodeArt, node: MapNode): NodeArt {
+  if (art.kind === 'trainer') {
+    const id = art.src.split('/').pop()?.replace(/\.png$/, '') ?? 'youngster';
+    return { kind: 'trainer', src: asset(`art/map/people/${id}.png`) };
+  }
+  if (art.kind === 'item' && node.kind === 'cache' && node.preview.reel) return { kind: 'item', src: asset('art/map/people/item-ball.png') };
+  return art;
+}
 
 /**
  * A node's id, mixed into a number (FNV-1a with a final avalanche): neighbours' ids differ in a character or two, and a

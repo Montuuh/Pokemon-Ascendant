@@ -1484,6 +1484,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** Twelve weak move illustrations gain a dominant silhouette, selected from two generated candidates per move and reviewed at the card's actual size. All 161 illustrations are exported with at most 20 opaque RGB colours and binary alpha. The existing-art pass preserves dimensions and transparency masks; palette reduction alone does not redraw the effects. The installer validates decoded output rather than trusting PNG palette metadata. Prompts, source hashes and processing details are retained for the selected effects. Card layout, combat rules and the separate results rework/A03 are unchanged.
 
+### v0.9.39 — Grounded places  ✅ 2026-10-23
+
+**Shipped.** A16 fits the complete 68×45 native move cell at 2× in a fixed 90px window. A17 replaces route-only battle portraits with authentic FRLG overworld frames, aligns node feet and quiets idle map chrome while retaining seeded rotating habitat residents and full preview portraits. A18 composes a dedicated native 320×256 Rocket interior with four physical counters, opening the existing transactions in focus-managed dialogs. Native sources, crops and hashes remain reproducible. No map, economy or encounter rules change. The separate results/A03 rework remains outside this release.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,
