@@ -1474,6 +1474,11 @@ Restore GitHub Pages publishing after the clean checkout exposed a content-test 
 
 **Shipped.** The stage asset guard discovers the stage fields present in the shipped Victory Road configuration, including variants when defined. It no longer requires an unpublished wildStage field. Verification uses an isolated export of the committed files with a fresh dependency installation, followed by the Pages sub-path build. Game rules and the independent results rework are unchanged.
 
+### v0.9.37 — Arenas and route stops  ✅ 2026-10-23
+Art-review follow-up A12–A13: distinct city arenas and a shared language for route services.
+
+**Shipped.** The Challenge Ring has a garden court; the Pokémon Coliseum has spectator banks and a ceremonial stone arena. Trainer rungs form a visual route, while the full next-rival roster and existing entry, fight, team and cash-out controls remain available. Merchant, field nurse and Training Grounds share native 256×112 route vignettes with authentic terrain, people and service props. Prices, rewards, healing, upgrades and city shops are unchanged. Source crops and hashes are retained in the manifests. The separate results rework/A03 is outside this art pass.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

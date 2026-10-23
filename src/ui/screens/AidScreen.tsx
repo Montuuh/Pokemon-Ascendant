@@ -2,6 +2,7 @@ import { useRunStore } from '@/app/runStore';
 import { BackButton } from '@/ui/components/BackButton';
 import { HealPanel } from '@/ui/components/HealPanel';
 import { SupplyStrip } from '@/ui/components/SupplyStrip';
+import { RouteStop } from '@/ui/components/RouteStop';
 import { SHOP_TEXT } from '@/ui/strings';
 import { nurseTip } from '@/ui/tips';
 import { InfoDot } from '@/ui/tooltip';
@@ -18,7 +19,11 @@ export function AidScreen() {
   return (
     <main className={styles.root} data-testid="aid-screen">
       <div className={styles.corner}>
-        <BackButton label={SHOP_TEXT.backToRoute} onClick={() => dispatch({ type: 'leave-aid' })} testId="btn-leave-aid" />
+        <BackButton
+          label={SHOP_TEXT.backToRoute}
+          onClick={() => dispatch({ type: 'leave-aid' })}
+          testId="btn-leave-aid"
+        />
       </div>
       <header className={styles.text}>
         <h1 className={`${styles.title} display`}>
@@ -29,7 +34,17 @@ export function AidScreen() {
         <SupplyStrip ids={run.lastGift ?? []} testId="aid-gift" />
       </header>
 
-      <HealPanel lines={run.lastHeal ?? []} box={run.box} stamp={run.heals ?? 0} variant="nurse" testId="aid-box" />
+      <div className={styles.stop}>
+        <RouteStop kind="aid" />
+        <HealPanel
+          lines={run.lastHeal ?? []}
+          box={run.box}
+          stamp={run.heals ?? 0}
+          variant="nurse"
+          showNurseArt={false}
+          testId="aid-box"
+        />
+      </div>
 
       <p className="sr-only" role="status" aria-live="polite">
         {run.log.slice(-1).join(' ')}

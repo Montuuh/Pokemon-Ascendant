@@ -1,0 +1,132 @@
+{
+  "build": "node scripts/build-ring-art.mjs",
+  "processing": "Native pixel crops and repeated authentic tiles; original stepped courts, ring markings, route, grandstand and banners in FRLG colours. No resampling or AI.",
+  "sources": [
+    {
+      "path": "public/art/league/sources/indigo-frlg.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Indigo_Plateau_FRLG.png",
+      "sha256": "671324cd66a879bfbe0ada5e6bf0aa15a3dd99455f893b93e4c8877ab55e5baf"
+    },
+    {
+      "path": "public/art/route/forest/tree.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Viridian_Forest_FRLG.png",
+      "sha256": "0b5760a9baa603f15e48e4b6e461008a59ffca837cd3fe69eae60ad26db6af67"
+    },
+    {
+      "path": "public/art/route/meadow/ground.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Route_1_FRLG.png",
+      "sha256": "1890d11fd51ba031d30ee5c13c15dda6d7eb675ca89f16a13dc61706e8f492e1"
+    },
+    {
+      "path": "public/art/events/sources/carny.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/man_4.png",
+      "sha256": "264a7e6d2916f397c592aed0f663350612908b0da2bc8fe3e77410a6c525ab32"
+    },
+    {
+      "path": "public/art/events/sources/ranger.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/picnicker.png",
+      "sha256": "9f636a2605b63fd47947b56c742b8aba0470ce980cfd8b7a22e894b976a5ce4a"
+    },
+    {
+      "path": "public/art/events/sources/grandmother.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/old_woman.png",
+      "sha256": "47a9b6617c48f2e10f680858a6fe4048b73aa35bebc070e2fd41c15c6040126d"
+    }
+  ],
+  "crops": [
+    {
+      "source": "public/art/events/sources/carny.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/events/sources/ranger.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/events/sources/grandmother.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/league/sources/indigo-frlg.png",
+      "box": [
+        176,
+        144,
+        16,
+        16
+      ]
+    },
+    {
+      "source": "public/art/league/sources/indigo-frlg.png",
+      "box": [
+        144,
+        240,
+        16,
+        16
+      ]
+    },
+    {
+      "source": "public/art/league/sources/indigo-frlg.png",
+      "box": [
+        96,
+        128,
+        16,
+        32
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "file": "pallet-ring.png",
+      "width": 480,
+      "height": 192,
+      "stops": [
+        [
+          144,
+          112
+        ],
+        [
+          336,
+          72
+        ]
+      ],
+      "sha256": "96054b0200920034f64ce9712d4a9302dcfdbe7157b5921855b5f8c1a57cc7e1",
+      "bytes": 4588
+    },
+    {
+      "file": "celadon-coliseum.png",
+      "width": 480,
+      "height": 192,
+      "stops": [
+        [
+          96,
+          128
+        ],
+        [
+          240,
+          96
+        ],
+        [
+          384,
+          64
+        ]
+      ],
+      "sha256": "82a86d2a0ac96425269427b5d8f551e7c5f08d21103916acd6bcf344a1690aec",
+      "bytes": 2662
+    }
+  ]
+}

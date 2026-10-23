@@ -92,6 +92,14 @@ and cannot undo JPEG loss. Source JPGs are retained. The PNG runtime set is 5,19
 Pixelify Sans, Tiny5 and Nunito are bundled locally with their SIL OFL 1.1 notices. Baloo 2 is retired from
 the runtime typography; its earlier attribution does not describe the current display face.
 
+## Arena and route-stop compositions (A12–A13)
+
+`public/art/ring` contains two native 480×192 compositions rebuilt by `scripts/build-ring-art.mjs` from the already credited FRLG Indigo Plateau, Viridian Forest and Route 1 maps, plus Emerald spectator sprites. The courts, route, grandstands, markings and banners are authored on the same pixel grid in FRLG colours. The manifest records the source paths, URLs, crop coordinates and SHA-256 hashes. The trainer overlays use the existing Showdown sprites credited below; these compositions are new arrangements, not original game maps.
+
+`public/art/route-stops` contains three native 256×112 compositions rebuilt by `scripts/build-route-stop-art.mjs`. They reuse credited FRLG route terrain and furniture, Emerald trader and object sprites retained with the event family, and the existing Dojo equipment. The new Emerald nurse and Black Belt source sheets are retained with URLs pinned to pret/pokeemerald commit 731ad5bfd6e6f265508d0efcca0ba42f9dcf5881. Source crops and hashes, output dimensions and hashes are recorded in the manifest. No AI generation or resampling is used for either family.
+
+Underlying game artwork remains © Nintendo / Creatures / GAME FREAK, mirrored by Bulbagarden Archives and pret/pokeemerald; non-commercial fan use under the terms described above. New arrangements do not change ownership of their source pixels.
+
 ## Trainer sprites
 
 `public/art/trainers` holds thirty-five Pokémon Showdown trainer-class sprites — the archetypes (`youngster`,

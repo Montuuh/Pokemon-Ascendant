@@ -41,6 +41,14 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 3. **One icon per mechanical identity.** Every Consumable, Held Item, Evolution Stone, Poké Ball, TM and Relic must have its own distinct pixel sprite. Do not reuse a Held Item's sprite on a Relic, or share one sprite between two different Relics.
 4. **Judge in context, at real size.** Always render with `npm run shot` and inspect the PNG in `playtest/`. Check pixel crispness, contrast (WCAG AA per D5), calm zones under UI, and palette warmth.
 
+### Arenas and route stops (A12–A13)
+
+Rebuild the two native 480×192 arena compositions with `node scripts/build-ring-art.mjs`. Pallet uses an outdoor garden court; Celadon uses spectator banks and stepped courts. The scene and trainer anchors share the same coordinates. The ladder retains its prizes and levels, and the next rival remains fully visible outside the scenery. Scenes fit in half-step scales; trainers preserve their own native proportions.
+
+Rebuild the three native 256×112 service vignettes with `node scripts/build-route-stop-art.mjs`. `RouteStop` gives the merchant, field nurse and Training Grounds a common frame at 2×/3× on the supported desktop viewports. Terrain, furniture and people come from the credited FRLG/Emerald sources; the Training Grounds also use existing Dojo props. Healing and service controls remain separate from the decorative image. The nurse vignette replaces only the duplicate portrait in the healing panel, retaining its animation and report.
+
+Both families retain source hashes, crop coordinates and output hashes in their manifests under `public/art/ring` and `public/art/route-stops`. No AI generation or image resampling is used.
+
 ### Indigo Ascent scenes (A11)
 
 Rebuild `public/art/league/summit.png` (304×240) and `gallery.png` (448×224) with `node scripts/build-league-art.mjs`. The arrival uses authentic Indigo Plateau façade and approach crops. The new gallery composes five authentic thresholds, statues and furniture on stone paving, with palette-matched runner strips and a separate Champion bay; it does not reuse the Hub room plan. The manifest retains source hashes, crop coordinates and native door anchors. No generated imagery or resampling is used.

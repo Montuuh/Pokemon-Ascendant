@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.37 — Arenas and route stops · 2026-10-23
+
+Distinct arenas and grounded route services in classic pixel art.
+
+- **Arenas.** Separate Ring and Coliseum scenery with a visible ladder route.
+- **Route stops.** Merchant, nurse and training scenes use authentic tiles and props.
+- **Controls.** Rival previews and service choices remain beside the scenery.
+
 ### v0.9.36 — Pages build fix · 2026-10-23
 
 Fix the clean build used to publish GitHub Pages.

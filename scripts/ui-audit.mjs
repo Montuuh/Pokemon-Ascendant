@@ -56,8 +56,8 @@ const SCREENS = {
   // v0.7.2 — the city: the Ring (§2.9.4.1; its own building since v0.7.7), its prize, the Game Corner (§2.11.5), the store's floors (§2.11.2).
   // A fresh browser: the Ring's How to play opens by itself, so `ring` measures the guide and the others skip it.
   'ring-guide': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-next'], match: [/screens\/RingGuide/] },
-  ring: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip'], match: [/screens\/RingScreen/, /components\/ConfirmLeave/] },
-  'ring-climb': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip', 'btn-ring-enter'], match: [/screens\/RingScreen/] },
+  ring: { url: '/?screen=menu', ready: 'ring-screen', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip'], match: [/screens\/RingScreen/, /screens\/ring\//, /components\/ConfirmLeave/] },
+  'ring-climb': { url: '/?screen=menu', ready: 'ring-screen', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip', 'btn-ring-enter'], match: [/screens\/RingScreen/, /screens\/ring\//] },
   'ring-prize': {
     url: '/?screen=menu',
     setup: [
@@ -88,8 +88,21 @@ const SCREENS = {
     clicks: ['btn-guide-back'],
     match: [/screens\/safari\//],
   },
-  merchant: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("merchant")', 'goTo("map")'], match: [/screens\/ShopScreen/] },
-  aid: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("aid")', 'goTo("map")'], match: [/screens\/AidScreen/] },
+  merchant: {
+    url: '/?screen=menu', ready: 'shop-screen',
+    setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.pay(1000)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "merchant").id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'],
+    match: [/screens\/ShopScreen/, /components\/RouteStop/],
+  },
+  aid: {
+    url: '/?screen=menu', ready: 'aid-screen',
+    setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.patch((d) => { d.box.forEach((m) => { m.hp = 1; }); d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "aid").id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'],
+    match: [/screens\/AidScreen/, /components\/RouteStop/],
+  },
+  training: {
+    url: '/?screen=menu', ready: 'training-screen',
+    setup: ['run.new("squirtle", 11)', 'run.fill(6)', 'run.victoryRoad()', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "training").id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'],
+    match: [/screens\/TrainingScreen/, /components\/RouteStop/],
+  },
   // Pin the event directly: auto-playing towards a Mystery can lose the run before reaching the screen.
   mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.phase = "event"; d.pendingEvent = "traveling-apothecary"; d.pendingNodeId = Object.values(d.map.nodes).find((n) => n.kind === "mystery").id; d.eventResult = null; d.money = 100; })', 'goTo("map")'], match: [/screens\/EventScreen/, /screens\/events\//] },
   // A11 — enter real Summit/League states directly; never rely on the auto-player reaching an art review.
@@ -315,16 +328,16 @@ async function main() {
         await page.waitForTimeout(150);
       }
       if (s.setup?.length) await page.waitForTimeout(400);
+      for (const tid of s.clicks ?? []) {
+        await page.getByTestId(tid).first().click();
+        await page.waitForTimeout(250);
+      }
       if (s.ready) {
         await page.getByTestId(s.ready).waitFor({ state: 'visible' });
         await page.evaluate(async () => {
           await document.fonts.ready;
           await Promise.all([...document.images].map((img) => img.decode()));
         });
-      }
-      for (const tid of s.clicks ?? []) {
-        await page.getByTestId(tid).first().click();
-        await page.waitForTimeout(250);
       }
       await page.waitForTimeout(900);
       const data = await page.evaluate(measure);

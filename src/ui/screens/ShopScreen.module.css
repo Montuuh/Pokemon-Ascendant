@@ -37,7 +37,32 @@
   font-size: var(--type-small);
 }
 
-.heading { flex: 1; min-width: 0; }
+.heading {
+  flex: 1;
+  min-width: 0;
+}
+
+/* §2.9.2 — the cart stays in sight while its four offers are considered. */
+.routeStop {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-6);
+  min-height: 0;
+  width: min(100%, 1640px);
+  margin: 0 auto;
+}
+.routeStop .shelf {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-height: 100%;
+}
+@media (max-width: 1100px) {
+  .routeStop {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    overflow-y: auto;
+  }
+}
 
 .wallet {
   display: inline-flex;
@@ -49,7 +74,9 @@
   background: var(--surface-1);
   font-size: var(--type-small);
 }
-.walletLabel { color: var(--ink-muted); }
+.walletLabel {
+  color: var(--ink-muted);
+}
 
 /* Three columns at most. Bare `auto-fill` gave five on a 1920 screen and the shelf read as a spreadsheet
    with a page of empty space under it. A Mart has a counter, not an aisle. */
@@ -116,13 +143,23 @@
   font: inherit;
   font-size: var(--type-small);
   cursor: pointer;
-  transition: transform var(--motion-fast) ease, background var(--motion-fast) ease;
+  transition:
+    transform var(--motion-fast) ease,
+    background var(--motion-fast) ease;
 }
-.reroll:hover:not(:disabled) { transform: translateY(-1px); background: var(--surface-2); }
+.reroll:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--surface-2);
+}
 /* D5 — the re-roll's price is read to plan; a dashed edge marks it shut, not a fade. */
-.reroll:disabled { cursor: not-allowed; border-style: dashed; }
-.reroll:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
-
+.reroll:disabled {
+  cursor: not-allowed;
+  border-style: dashed;
+}
+.reroll:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
 
 .toast {
   margin: 0;
@@ -135,12 +172,19 @@
 }
 
 @media (max-width: 720px) {
-  .root { padding: var(--sp-4); }
-  .shelf { grid-template-columns: 1fr; }
+  .root {
+    padding: var(--sp-4);
+  }
+  .shelf {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* §2.11.2.4 — the counter that buys held items back, under the counter's own shelf. */
-.sell { display: grid; gap: var(--sp-2); }
+.sell {
+  display: grid;
+  gap: var(--sp-2);
+}
 .sellTitle {
   display: inline-flex;
   align-items: center;
@@ -169,8 +213,13 @@
   font-size: var(--type-small);
   cursor: pointer;
 }
-.sellBtn:hover { border-color: var(--border-strong); }
-.sellBtn:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.sellBtn:hover {
+  border-color: var(--border-strong);
+}
+.sellBtn:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
 
 /* §2.11.2 — a City shop: the lift (in the store), then the room and the shelf pressed, side by side. */
 .hall {
@@ -198,7 +247,10 @@
   background: color-mix(in srgb, var(--surface-1) 70%, transparent);
 }
 /* The clerk's list: one titled group per shelf. */
-.group { display: grid; gap: var(--sp-2); }
+.group {
+  display: grid;
+  gap: var(--sp-2);
+}
 .groupTitle {
   margin: 0;
   color: var(--ink-secondary);
@@ -207,12 +259,34 @@
   letter-spacing: 0.04em;
 }
 /* The clerk's two jobs: Buy and Sell, as tabs over one panel. */
-.deal { display: grid; gap: var(--sp-3); align-content: start; }
-.dealTabs { display: flex; gap: var(--sp-2); }
-.dealPanel { display: grid; gap: var(--sp-3); }
-.dealPanel[hidden] { display: none; }
-.panelTitle { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--type-h3); }
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--sp-3); }
+.deal {
+  display: grid;
+  gap: var(--sp-3);
+  align-content: start;
+}
+.dealTabs {
+  display: flex;
+  gap: var(--sp-2);
+}
+.dealPanel {
+  display: grid;
+  gap: var(--sp-3);
+}
+.dealPanel[hidden] {
+  display: none;
+}
+.panelTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--type-h3);
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: var(--sp-3);
+}
 .empty {
   margin: 0;
   padding: var(--sp-4);
@@ -223,7 +297,11 @@
   text-align: center;
 }
 @media (max-width: 1000px) {
-  .aisle { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(260px, 1fr) auto; overflow-y: auto; }
+  .aisle {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(260px, 1fr) auto;
+    overflow-y: auto;
+  }
 }
 .floors {
   display: flex;
@@ -249,7 +327,10 @@
   background: var(--accent-action);
   color: var(--ink-on-accent);
 }
-.floor:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.floor:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
 .floorNo {
   display: inline-grid;
   place-items: center;

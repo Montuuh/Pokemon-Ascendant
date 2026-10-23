@@ -14,9 +14,34 @@
   overflow: hidden;
 }
 /* The way on, where every stop keeps it: the top-left corner. */
-.corner { position: absolute; top: var(--sp-5); left: var(--sp-5); }
+.corner {
+  position: absolute;
+  top: var(--sp-5);
+  left: var(--sp-5);
+}
 
-.text { display: grid; justify-items: center; gap: var(--sp-2); }
+.text {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+}
+.stop {
+  display: grid;
+  grid-template-columns: auto minmax(0, 500px);
+  align-items: center;
+  gap: var(--sp-6);
+}
+@media (max-width: 1100px) {
+  .root {
+    overflow-y: auto;
+    align-content: start;
+    padding-top: var(--sp-10);
+  }
+  .stop {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+}
 .title {
   display: flex;
   align-items: center;

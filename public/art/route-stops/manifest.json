@@ -1,0 +1,156 @@
+{
+  "description": "A13 route service vignettes. Native FRLG terrain and furniture, Emerald people, and existing palette-matched Dojo props.",
+  "rights": "Pokémon artwork © Nintendo / Creatures / GAME FREAK; non-commercial fan use. Map renders: Bulbagarden Archives. Emerald extraction: pret/pokeemerald.",
+  "processing": {
+    "script": "scripts/build-route-stop-art.mjs",
+    "grid": [
+      256,
+      112
+    ],
+    "resampling": "none",
+    "alpha": "exact palette-zero key on opaque Emerald sheets",
+    "dithering": false,
+    "sharp": "0.35.4"
+  },
+  "sources": [
+    {
+      "file": "sources/nurse.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/nurse.png",
+      "sha256": "64b55cff3a5cf89689524212a755e5ad22715427a6ba19a6994a0a7615152039"
+    },
+    {
+      "file": "sources/black-belt.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/black_belt.png",
+      "sha256": "5e6dd34ff0760090a322f9f420bb40b080a5ed60ca5fec9364a6d97bfb767eaa"
+    },
+    {
+      "file": "../events/sources/trader.png",
+      "sha256": "34319acb3f0ce5280b4d9fc49007ebb03650d7ff4f63a6afbb8f361ddba9c862",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../events/sources/box.png",
+      "sha256": "39e4e175e4be4991f81037dd4e621fa4a574db56d4ad57bbcc1d0a7bb55f5442",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../events/sources/bag.png",
+      "sha256": "4facdd95cf1a101d93aea09b65aa68f5de1a2f911672d0f9f41bd1dc1206f266",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../mart/mart.png",
+      "sha256": "67fe3939a467d19b0e55258eed9fedec3184ddff7fd5b53d3ba399f88027e79b",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/tree.png",
+      "sha256": "1eb557c724be5be1d36610cb67cd45ab594f5515778460c4b7e7b5a2c0693013",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../dojo/equipment.png",
+      "sha256": "be7262e7aa0c0fcd622911e24a2ab4f18073b00f9ab531ae77b935db944eb323",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../dojo/platform.png",
+      "sha256": "7857ca23d8fcb61d668c625f15e597612a18fc8cd88e2a626b7caa64d927754e",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../dojo/scroll-rack.png",
+      "sha256": "c7e198ca7abe759ef41b9d739cffedf0a804fe7643b5ac002a8cbd6969fd2fe0",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/ground.png",
+      "sha256": "1890d11fd51ba031d30ee5c13c15dda6d7eb675ca89f16a13dc61706e8f492e1",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/path-n.png",
+      "sha256": "df0866fbb0996934dc0deb11c2494f31ccc804d0a336262f331d220f3459bba4",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/path-c.png",
+      "sha256": "9119f9571e521e130e839239a17d9a4f51c6b72049dc1549eec8ddf38a550cad",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/route/path-s.png",
+      "sha256": "b2962f0a4965ab027dbc1ecd328021a6b98fa117b7cc6ea267edcc203171d31a",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/meadow/deco.png",
+      "sha256": "a2fb92aa23cdc712cb6c7ebb12d0ee67bd7fb98634598fc33dded695197ee43b",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/cave/ground.png",
+      "sha256": "e24ee9b1a6d874ea96c628c78d5087b17c337e096e09ac740ba73c99a42b5bcc",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../route/cave/fill.png",
+      "sha256": "e36877c30f83f2cc83122feacc680f5111e096f1934eac849a2722c0a9fa8332",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../events/sources/boulder.png",
+      "sha256": "9ff11e929fbc9c221dd5228e342be51a04b19591b7248ad12aa698e60221e663",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    }
+  ],
+  "cuts": [
+    {
+      "source": "sources/nurse.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "sources/black-belt.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "../mart/mart.png",
+      "box": [
+        16,
+        94,
+        32,
+        16
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "file": "merchant.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "b1312e21e3d4552274287be3d103554d4118b2c801d2706b5528c11063a2ce23"
+    },
+    {
+      "file": "aid.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "2457836bccea36ceb30f047e83f0f10d9f262307ef8a1bd953bbf514ef5a0dc5"
+    },
+    {
+      "file": "training.png",
+      "width": 256,
+      "height": 112,
+      "sha256": "4e5049f0e332ad0cb37ce384b062a3ca1856557a1ed62a72e9495666b199349e"
+    }
+  ]
+}

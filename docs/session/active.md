@@ -1,8 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-23 · **Version:** v0.9.36 (*Pages build fix*) — clean-release stage validation no longer requires an unpublished Victory Road field; A11 Indigo Ascent remains included.
+**Date:** 2026-10-23 · **Version:** v0.9.37 (*Arenas and route stops*) — A12–A13: distinct Ring/Coliseum scenery, spatial rungs and grounded route-service vignettes.
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 **Sprint goal next:** **v1.0** Release (Tauri build, the final balance pass at 720 runs on two seed blocks, press kit) — the user plays the pack first.
+
+**A12–A13 verified:** distinct native 480×192 Ring/Coliseum scenes and three shared 256×112 route-service vignettes; full rivals, cash-out, shopping, healing and all five training upgrades preserved. UI review: Ship, no remaining findings. Shared full check: 899 passed / 3 skipped; exact staged release export with fresh npm ci: 887 passed / 3 skipped, all guards green. Working UI suite: 27/27 (13 global screenshots, 2 arenas, 9 stops, 3 Victory Road); clean release server: 11/11 specific cases. Read all ten final audit captures and the long-training/banked stress states; no measured contrast, overflow, spill, unnamed-control or console failures. Image-backed contrast remains partly unmeasured. Production sub-path smoke loads all five new scenes with no errors. Evidence: playtest/a12-a13; .claude/state/ui-a12-a13-review.md. Preserve the separate results/A03 queue.
 
 **Pages fix:** v0.9.32–v0.9.35 failed clean CI because content.test.ts referenced an uncommitted Victory Road wildStage field. The guard now validates the stage fields actually shipped. Exact release-tree export + fresh npm ci: full check 887 passed / 3 skipped, all guards green; production build under /Pokemon-Ascendant/ and browser smoke pass (v0.9.36 visible, no broken images or request/page errors). Evidence: playtest/pages-fix-0936. Validate release trees separately from the shared working folder; preserve the other session's work.
 

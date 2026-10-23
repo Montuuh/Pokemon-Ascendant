@@ -3,15 +3,36 @@ import { Tabs } from 'radix-ui';
 import { IconBackpack, IconBuildingStore, IconCoins, IconDice5, IconShoppingBag } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { CITIES, PRICES, RELIC_PREMIUM, STORE_FLOORS, floorRestockable, rerollPrice, sellPrice, slotPrice, type ShopSlot, type StoreFloor } from '@/sim';
+import {
+  CITIES,
+  PRICES,
+  RELIC_PREMIUM,
+  STORE_FLOORS,
+  floorRestockable,
+  rerollPrice,
+  sellPrice,
+  slotPrice,
+  type ShopSlot,
+  type StoreFloor,
+} from '@/sim';
 import { itemIcon } from '@/ui/art';
 import { ItemCard, type ItemKind, type Rarity } from '@/ui/components/ItemCard';
 import { Money, Price } from '@/ui/components/Money';
 import { RUN_REJECT_TEXT, SHELF_LABEL, SHOP_TEXT, STORE_FLOOR_LABEL } from '@/ui/strings';
 import { BackButton } from '@/ui/components/BackButton';
+import { RouteStop } from '@/ui/components/RouteStop';
 import styles from './ShopScreen.module.css';
 import { InfoDot, Tipped } from '@/ui/tooltip';
-import { floorTip, heldItemSellTip, relicPremiumLine, rerollTip, sellTip, shelfTip, shopExitTip, shopTip } from '@/ui/tips';
+import {
+  floorTip,
+  heldItemSellTip,
+  relicPremiumLine,
+  rerollTip,
+  sellTip,
+  shelfTip,
+  shopExitTip,
+  shopTip,
+} from '@/ui/tips';
 import { MART, STORE, shelfOf, type Room, type ShelfId } from './shop/rooms';
 import { ShopRoom } from './shop/ShopRoom';
 
@@ -36,16 +57,33 @@ const KIND_TAG: Record<ShopSlot['kind'], string> = {
 };
 
 /** Everything a slot needs to become a card. The Shop is the only place that has to translate all five. */
-function describe(slot: ShopSlot): { name: string; description: string; kind: ItemKind; rarity?: Rarity; pending?: string } {
+function describe(slot: ShopSlot): {
+  name: string;
+  description: string;
+  kind: ItemKind;
+  rarity?: Rarity;
+  pending?: string;
+} {
   const content = getContent();
   switch (slot.kind) {
     case 'relic': {
       const r = content.relic(slot.id);
-      return { name: r.name, description: r.description, kind: 'relic', rarity: r.rarity, ...(r.pending ? { pending: r.pending } : {}) };
+      return {
+        name: r.name,
+        description: r.description,
+        kind: 'relic',
+        rarity: r.rarity,
+        ...(r.pending ? { pending: r.pending } : {}),
+      };
     }
     case 'held-item': {
       const i = content.heldItem(slot.id);
-      return { name: i.name, description: i.description, kind: 'held-item', ...(i.pending ? { pending: i.pending } : {}) };
+      return {
+        name: i.name,
+        description: i.description,
+        kind: 'held-item',
+        ...(i.pending ? { pending: i.pending } : {}),
+      };
     }
     case 'tm': {
       const t = content.tm(slot.id);
@@ -97,8 +135,16 @@ export function ShopScreen() {
   const unsold = stock?.slots.filter((s) => !s.sold && (!store || s.floor === floor)).length ?? 0;
   // §2.11.2 — a floor with nothing else in its pool is not charged for the same shelf (the sim refuses it too).
   const restockable = !store || floorRestockable(run, floor, getContent());
-  const title = !city ? 'Travelling merchant' : city.shop === 'department-store' ? 'Department Store' : 'Poké Mart';
-  const TitleIcon = !city ? IconBackpack : city.shop === 'department-store' ? IconBuildingStore : IconShoppingBag;
+  const title = !city
+    ? 'Travelling merchant'
+    : city.shop === 'department-store'
+      ? 'Department Store'
+      : 'Poké Mart';
+  const TitleIcon = !city
+    ? IconBackpack
+    : city.shop === 'department-store'
+      ? IconBuildingStore
+      : IconShoppingBag;
   // §2.9.3 — the ladder this shop climbs: one rung for the merchant, all three in a City.
   const ladder = PRICES.rerolls.slice(0, stock?.maxRerolls ?? PRICES.rerolls.length);
   const heldInBag = run.bag;
@@ -108,10 +154,16 @@ export function ShopScreen() {
 
   // The room on screen and where every slot of it sits, by index into the stock so a card buys the right slot.
   const room: Room | null = !city ? null : store ? STORE[floor] : MART;
-  const placed = (stock?.slots ?? []).map((slot, index) => ({ slot, index })).filter(({ slot }) => !store || slot.floor === floor);
-  const onShelf = (id: ShelfId) => (room ? placed.filter(({ slot }) => shelfOf(room, slot, content) === id) : []);
+  const placed = (stock?.slots ?? [])
+    .map((slot, index) => ({ slot, index }))
+    .filter(({ slot }) => !store || slot.floor === floor);
+  const onShelf = (id: ShelfId) =>
+    room ? placed.filter(({ slot }) => shelfOf(room, slot, content) === id) : [];
   const counts: Record<string, number> = {};
-  for (const shelf of room?.shelves ?? []) counts[shelf.id] = (shelf.id === 'clerk' ? placed : onShelf(shelf.id)).filter(({ slot }) => !slot.sold).length;
+  for (const shelf of room?.shelves ?? [])
+    counts[shelf.id] = (shelf.id === 'clerk' ? placed : onShelf(shelf.id)).filter(
+      ({ slot }) => !slot.sold,
+    ).length;
   // The clerk's list is where a room opens: everything it sells, before any one shelf is pressed.
   const shelf = room ? (room.shelves.find((s) => s.id === (picked ?? 'clerk')) ?? room.shelves[0]!) : null;
   // The clerk's list, shelf by shelf in the room's order, the Poké Balls (the clerk's own) last. A slot no shelf
@@ -120,7 +172,11 @@ export function ShopScreen() {
     .filter((s) => s.id !== 'clerk')
     .map((s) => ({ key: s.id as string, label: SHELF_LABEL[s.id] as string | null, items: onShelf(s.id) }))
     .concat([
-      { key: 'balls', label: SHOP_TEXT.balls, items: onShelf('clerk').filter(({ slot }) => slot.kind === 'ball') },
+      {
+        key: 'balls',
+        label: SHOP_TEXT.balls,
+        items: onShelf('clerk').filter(({ slot }) => slot.kind === 'ball'),
+      },
       { key: 'other', label: null, items: onShelf('clerk').filter(({ slot }) => slot.kind !== 'ball') },
     ])
     .filter((g) => g.items.length > 0);
@@ -140,7 +196,15 @@ export function ShopScreen() {
             const item = content.heldItem(id);
             return (
               <li key={`${id}-${i}`}>
-                <Tipped as="button" type="button" tip={heldItemSellTip(id)} className={styles.sellBtn} onClick={() => act({ type: 'sell-item', itemId: id })} data-testid={`sell-${id}`} aria-label={`Sell ${item.name} for ${sellPrice()} Poké Dollars`}>
+                <Tipped
+                  as="button"
+                  type="button"
+                  tip={heldItemSellTip(id)}
+                  className={styles.sellBtn}
+                  onClick={() => act({ type: 'sell-item', itemId: id })}
+                  data-testid={`sell-${id}`}
+                  aria-label={`Sell ${item.name} for ${sellPrice()} Poké Dollars`}
+                >
                   <img src={itemIcon(id)} alt="" width={24} height={24} />
                   {item.name}
                   <Price amount={sellPrice()} affordable />
@@ -202,7 +266,12 @@ export function ShopScreen() {
       <header className={styles.topBar}>
         {/* The way back sits in the corner, out of the shop's way: an arrow, named on hover. The room's door is the
             same way out (`ShopRoom`'s doormat or stairs). */}
-        <BackButton label={leaveLabel} onClick={leave} testId="btn-leave-shop" tip={shopExitTip(leaveLabel, !!city)} />
+        <BackButton
+          label={leaveLabel}
+          onClick={leave}
+          testId="btn-leave-shop"
+          tip={shopExitTip(leaveLabel, !!city)}
+        />
         <div className={styles.heading}>
           <h1 className={`${styles.title} display`}>
             <TitleIcon size={26} /> {title}
@@ -222,12 +291,25 @@ export function ShopScreen() {
         <div className={styles.hall}>
           {store && (
             // §2.11.2 — the Department Store's lift: one floor per category, each its own room.
-            <Tabs.Root value={floor} onValueChange={(v) => { setFloor(v as StoreFloor); setPicked(null); }} data-testid="store-floors">
+            <Tabs.Root
+              value={floor}
+              onValueChange={(v) => {
+                setFloor(v as StoreFloor);
+                setPicked(null);
+              }}
+              data-testid="store-floors"
+            >
               <Tabs.List className={styles.floors} aria-label="Floors">
                 {STORE_FLOORS.map((f, i) => {
                   const count = stock?.slots.filter((s) => s.floor === f && !s.sold).length ?? 0;
                   return (
-                    <Tabs.Trigger key={f} value={f} className={styles.floor} data-testid={`floor-${f}`} asChild>
+                    <Tabs.Trigger
+                      key={f}
+                      value={f}
+                      className={styles.floor}
+                      data-testid={`floor-${f}`}
+                      asChild
+                    >
                       <Tipped as="button" type="button" tip={floorTip(STORE_FLOOR_LABEL[f] ?? f, count)}>
                         <span className={styles.floorNo}>{i + 1}F</span> {STORE_FLOOR_LABEL[f]}
                       </Tipped>
@@ -238,16 +320,33 @@ export function ShopScreen() {
             </Tabs.Root>
           )}
           <div className={styles.aisle}>
-            <ShopRoom room={room} counts={counts} chosen={shelf.id} onChoose={setPicked} onExit={leave} exitLabel={leaveLabel} label={store ? `${title}, ${STORE_FLOOR_LABEL[floor]}` : title} />
+            <ShopRoom
+              room={room}
+              counts={counts}
+              chosen={shelf.id}
+              onChoose={setPicked}
+              onExit={leave}
+              exitLabel={leaveLabel}
+              label={store ? `${title}, ${STORE_FLOOR_LABEL[floor]}` : title}
+            />
 
             {/* The shelf pressed: its cards; at the clerk, everything in one list, and the buy-back on its own tab. */}
-            <section className={styles.panel} aria-label={SHELF_LABEL[shelf.id]} data-testid="shelf-panel" data-shelf={shelf.id}>
+            <section
+              className={styles.panel}
+              aria-label={SHELF_LABEL[shelf.id]}
+              data-testid="shelf-panel"
+              data-shelf={shelf.id}
+            >
               <h2 className={styles.panelTitle}>
                 {SHELF_LABEL[shelf.id]}
                 <InfoDot tip={shelfTip(shelf.id, counts[shelf.id] ?? 0)} />
               </h2>
               {shelf.id === 'clerk' ? (
-                <Tabs.Root value={deal} onValueChange={(v) => setDeal(v as 'buy' | 'sell')} className={styles.deal}>
+                <Tabs.Root
+                  value={deal}
+                  onValueChange={(v) => setDeal(v as 'buy' | 'sell')}
+                  className={styles.deal}
+                >
                   <Tabs.List className={styles.dealTabs} aria-label={SHOP_TEXT.clerkTabs}>
                     <Tabs.Trigger value="buy" className={styles.floor} data-testid="clerk-buy">
                       <IconShoppingBag size={16} aria-hidden="true" /> {SHOP_TEXT.buy}
@@ -260,8 +359,18 @@ export function ShopScreen() {
                     {clerkGroups.length === 0 && <p className={styles.empty}>{SHOP_TEXT.emptyShelf}</p>}
                     {clerkGroups.map((g) => (
                       <div key={g.key} className={styles.group}>
-                        {g.label && <h3 className={styles.groupTitle} id={`group-${g.key}`}>{g.label}</h3>}
-                        <div className={styles.cards} role="list" {...(g.label ? { 'aria-labelledby': `group-${g.key}` } : { 'aria-label': SHELF_LABEL.clerk })}>
+                        {g.label && (
+                          <h3 className={styles.groupTitle} id={`group-${g.key}`}>
+                            {g.label}
+                          </h3>
+                        )}
+                        <div
+                          className={styles.cards}
+                          role="list"
+                          {...(g.label
+                            ? { 'aria-labelledby': `group-${g.key}` }
+                            : { 'aria-label': SHELF_LABEL.clerk })}
+                        >
                           {g.items.map(({ slot, index }) => renderSlot(slot, index))}
                         </div>
                       </div>
@@ -278,13 +387,15 @@ export function ShopScreen() {
               ) : (
                 <p className={styles.empty}>{SHOP_TEXT.emptyShelf}</p>
               )}
-
             </section>
           </div>
         </div>
       ) : (
-        <div className={styles.shelf} role="list" aria-label="On the shelf">
-          {stock?.slots.map((slot, index) => renderSlot(slot, index))}
+        <div className={styles.routeStop}>
+          <RouteStop kind="merchant" />
+          <div className={styles.shelf} role="list" aria-label="On the shelf">
+            {stock?.slots.map((slot, index) => renderSlot(slot, index))}
+          </div>
         </div>
       )}
 
@@ -311,7 +422,14 @@ export function ShopScreen() {
             data-testid="btn-reroll"
           >
             <IconDice5 size={18} />
-            {reroll === null ? 'No re-rolls left' : <>{store ? 'Re-roll this floor' : 'Re-roll the shelf'} <Price amount={reroll} affordable={run.money >= reroll} /></>}
+            {reroll === null ? (
+              'No re-rolls left'
+            ) : (
+              <>
+                {store ? 'Re-roll this floor' : 'Re-roll the shelf'}{' '}
+                <Price amount={reroll} affordable={run.money >= reroll} />
+              </>
+            )}
           </Tipped>
         </div>
       </footer>

@@ -52,6 +52,8 @@ interface Props {
   machineStyle?: CSSProperties;
   /** Once the heal has landed, keep its per-Pokémon history behind a disclosure in the lobby. */
   compactAfterDone?: boolean;
+  /** Route-stop scenes already contain their grounded overworld nurse. */
+  showNurseArt?: boolean;
   testId?: string;
 }
 
@@ -63,6 +65,7 @@ export function HealPanel({
   onDone,
   machineStyle,
   compactAfterDone = false,
+  showNurseArt = true,
   testId = 'heal',
 }: Props) {
   const animate = useMotionPref();
@@ -190,7 +193,7 @@ export function HealPanel({
               />
             ))}
           </span>
-        ) : (
+        ) : showNurseArt ? (
           <img
             className={`pixel ${styles.nurseSprite} ${beat === 'run' ? styles.working : ''}`}
             src={trainerSprite('nurse')}
@@ -199,7 +202,7 @@ export function HealPanel({
             height={120}
             draggable={false}
           />
-        )}
+        ) : null}
         <span
           className={`${styles.total} display tabular`}
           data-testid={`${testId}-total`}
