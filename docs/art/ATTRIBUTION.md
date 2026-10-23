@@ -100,6 +100,12 @@ the runtime typography; its earlier attribution does not describe the current di
 
 Underlying game artwork remains © Nintendo / Creatures / GAME FREAK, mirrored by Bulbagarden Archives and pret/pokeemerald; non-commercial fan use under the terms described above. New arrangements do not change ownership of their source pixels.
 
+## Move effect refresh and palette derivatives (A14–A15)
+
+The twelve selected A14 effect illustrations are generated assets, not official move-animation rips. Eleven use Gemini 3 Pro Image through Vertex AI; Take Down uses Gemini 2.5 Flash Image after three rejected variants. Their raw outputs and exact prompts are retained in `docs/art/sources/moves-a14`. `public/art/moves/refresh-manifest.json` records each model, source/prompt/output SHA-256, native dimensions and framing margin. The fixed-grid installer removes the flat background and applies the effective per-image palette. New silhouettes depict effects only; no Pokémon or trainer art was generated.
+
+All 161 current move PNGs also pass through deterministic palette reduction: at most 20 actual opaque RGB colours, original binary transparency restored, no spatial resampling. The original runtime baseline is the artwork committed at 02af49b709cbb14ff0a8ae8bd36927c9e5919a54. Its palette-only derivatives and alpha-mask hashes are recorded in `public/art/moves/palette-manifest.json`; that manifest explicitly links the twelve subsequent silhouette replacements. This processing does not change the authorship or rights of the source illustrations. Pokémon names and game concepts retain their respective owners' rights under the fan-project notice above.
+
 ## Trainer sprites
 
 `public/art/trainers` holds thirty-five Pokémon Showdown trainer-class sprites — the archetypes (`youngster`,

@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.38 — Move clarity · 2026-10-23
+
+Clearer move illustrations with genuinely limited pixel-art palettes.
+
+- **Silhouettes.** Twelve move effects gain stronger, distinct shapes.
+- **Palettes.** All 161 illustrations use at most 20 opaque colours.
+- **Export.** Palette checks preserve transparent edges and the native pixel grid.
+
 ### v0.9.37 — Arenas and route stops · 2026-10-23
 
 Distinct arenas and grounded route services in classic pixel art.

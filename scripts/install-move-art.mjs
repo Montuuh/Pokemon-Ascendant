@@ -14,19 +14,24 @@
 //   4. the colours snap to a 20-colour palette, and the result is trimmed to what is drawn.
 import sharp from 'sharp';
 import { mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { writeFile } from 'node:fs/promises';
+import { normaliseMovePalette } from './lib/move-palette.mjs';
 
 const args = process.argv.slice(2);
-const [src, id] = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--grid');
+const [src, id] = args.filter((a, i) => !a.startsWith('--') && !['--grid', '--out'].includes(args[i - 1]));
 const GRID = Number(args[args.indexOf('--grid') + 1] || 68) || 68;
 if (!src || !id) {
-  console.error('usage: install-move-art <src.png> <move-id> [--grid 68]');
+  console.error('usage: install-move-art <src.png> <move-id> [--grid 68] [--out staging.png]');
   process.exit(1);
 }
 
 const full = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
 // 1a — crop 3 % off every side: a frame, if the model drew one, lives there.
 const m = Math.round(Math.min(full.info.width, full.info.height) * 0.03);
-const { data, info } = await sharp(full.data, { raw: { width: full.info.width, height: full.info.height, channels: 4 } })
+const { data, info } = await sharp(full.data, {
+  raw: { width: full.info.width, height: full.info.height, channels: 4 },
+})
   .extract({ left: m, top: m, width: full.info.width - 2 * m, height: full.info.height - 2 * m })
   .raw()
   .toBuffer({ resolveWithObject: true });
@@ -93,18 +98,25 @@ for (let cy = 0; cy < h; cy++) {
 
 // 4 — trim to what is drawn (a 1-px margin), and snap to a small palette.
 let [x0, y0, x1, y1] = [w, h, -1, -1];
-for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (out[(y * w + x) * 4 + 3]) [x0, y0, x1, y1] = [Math.min(x0, x), Math.min(y0, y), Math.max(x1, x), Math.max(y1, y)];
+for (let y = 0; y < h; y++)
+  for (let x = 0; x < w; x++)
+    if (out[(y * w + x) * 4 + 3])
+      [x0, y0, x1, y1] = [Math.min(x0, x), Math.min(y0, y), Math.max(x1, x), Math.max(y1, y)];
 if (x1 < 0) {
   console.error(`${src}: nothing left after keying the background`);
   process.exit(2);
 }
-mkdirSync('public/art/moves', { recursive: true });
-const dest = `public/art/moves/${id}.png`;
+const outIndex = args.indexOf('--out');
+if (outIndex >= 0 && (!args[outIndex + 1] || args[outIndex + 1].startsWith('--')))
+  throw new Error('--out requires a PNG path');
+const dest = outIndex < 0 ? `public/art/moves/${id}.png` : args[outIndex + 1];
+mkdirSync(dirname(dest), { recursive: true });
 const left = Math.max(0, x0 - 1);
 const topY = Math.max(0, y0 - 1);
-await sharp(out, { raw: { width: w, height: h, channels: 4 } })
+const cropped = await sharp(out, { raw: { width: w, height: h, channels: 4 } })
   .extract({ left, top: topY, width: Math.min(w, x1 + 2) - left, height: Math.min(h, y1 + 2) - topY })
-  .png({ palette: true, colours: 20, dither: 0 })
-  .toFile(dest);
+  .png({ palette: false })
+  .toBuffer();
+await writeFile(dest, await normaliseMovePalette(cropped));
 const meta = await sharp(dest).metadata();
 console.log(`${dest}  ${meta.width}×${meta.height} on a ${GRID}-cell grid`);

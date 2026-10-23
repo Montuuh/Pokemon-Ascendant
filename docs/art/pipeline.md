@@ -41,6 +41,16 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 3. **One icon per mechanical identity.** Every Consumable, Held Item, Evolution Stone, Poké Ball, TM and Relic must have its own distinct pixel sprite. Do not reuse a Held Item's sprite on a Relic, or share one sprite between two different Relics.
 4. **Judge in context, at real size.** Always render with `npm run shot` and inspect the PNG in `playtest/`. Check pixel crispness, contrast (WCAG AA per D5), calm zones under UI, and palette warmth.
 
+### Move silhouettes and effective palettes (A14–A15)
+
+Every runtime move PNG contains at most **20 decoded opaque RGB colours** and binary alpha. A PNG encoder's palette option is not proof: libvips rounds the requested 20-entry PNG palette to an 8-bit capacity, and the previous exports retained 108–255 opaque colours. `scripts/lib/move-palette.mjs` now builds a per-image first-pass palette, merges colours using weighted OKLab distance and remaps to at most 20 palette medoids. It restores the original alpha mask and writes lossless RGBA, with no second lossy encoding. Existing artwork is not resized, cropped or moved during this palette-only pass.
+
+`node scripts/normalise-move-art.mjs samples` previews eight representative effects; `stage` exports all current move PNGs to staging, and `install` explicitly updates runtime files. The manifests record decoded counts, dimensions, alpha-mask hashes and perceptual-change metrics. The original v0.9.37 baseline is pinned to commit 02af49b709cbb14ff0a8ae8bd36927c9e5919a54; each input hash identifies the actual source. The regression guard decodes PNG pixels independently of the exporter and checks all move files, including future additions.
+
+A14 replaces twelve weak effects: Sing, Screech, Flash, Tackle, Take Down, Roar, Fury Attack, Comet Punch, Spike Cannon, Swift, Conversion and Double Slap. The selected source outputs and exact prompts are retained in `docs/art/sources/moves-a14`, with models, hashes, framing margins and final dimensions in `public/art/moves/refresh-manifest.json`. Rebuild them with `node scripts/install-move-refresh.mjs`; every result must match its reviewed hash. Twenty-six generated candidates were compared at the actual 2× card scale on cream and plum. The selected effects fit within 64×38 native pixels. Card layout is unchanged; A16 remains a separate review item.
+
+The palette-only manifest retains its original 161 outputs; twelve later replacements are explicitly linked to the refresh manifest. Thus the dimension/mask-preservation claim applies to palette reduction, not to replacing a silhouette. Surf, Fire Blast and Thunderbolt retain their original silhouettes and masks through the palette pass.
+
 ### Arenas and route stops (A12–A13)
 
 Rebuild the two native 480×192 arena compositions with `node scripts/build-ring-art.mjs`. Pallet uses an outdoor garden court; Celadon uses spectator banks and stepped courts. The scene and trainer anchors share the same coordinates. The ladder retains its prizes and levels, and the next rival remains fully visible outside the scenery. Scenes fit in half-step scales; trainers preserve their own native proportions.

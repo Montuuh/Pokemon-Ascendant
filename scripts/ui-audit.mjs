@@ -38,6 +38,10 @@ const SCREENS = {
   'hub-daycare': { url: '/?screen=hub', setup: ['meta.xp(3000)'], clicks: ['kiosk-daycare'], match: [/hub\/Daycare/] },
   starter: { url: '/?screen=starter', match: [/screens\/StarterSelect/] },
   combat: { url: '/?scenario=wild-basic&seed=7', match: [/screens\/CombatScreen/, /components\/(EnemyPanel|Portrait|MoveCard|HpBar|ConsumableCard|CombatLog|FloatingNumbers|SwapOrSkip|TypeBadge|OutcomeOverlay)/, /ui\/tooltip/, /ui\/tips/] },
+  // A14–A15 — review selected move silhouettes in the actual card windows, not only on a contact sheet.
+  'move-art-sound': { url: '/?scenario=wild-basic&seed=7', ready: 'combat-screen', setup: ['hand(["sing", "screech", "roar", "flash"])'], match: [/components\/MoveCard/] },
+  'move-art-impact': { url: '/?scenario=wild-basic&seed=7', ready: 'combat-screen', setup: ['hand(["tackle", "take-down", "double-slap", "comet-punch"])'], match: [/components\/MoveCard/] },
+  'move-art-projectiles': { url: '/?scenario=wild-basic&seed=7', ready: 'combat-screen', setup: ['hand(["fury-attack", "spike-cannon", "swift", "conversion"])'], match: [/components\/MoveCard/] },
   // §5.6 — a group fight: three enemies, their panels, reach and the per-target numbers.
   'combat-group': { url: '/?scenario=group-wild-flock&seed=7', match: [/screens\/CombatScreen/, /components\/(EnemyPanel|Portrait|MoveCard)/, /hooks\/useCardDrag/] },
   // §4.3 — a fight on a field: the top bar's field chips and the breakdown's field term.

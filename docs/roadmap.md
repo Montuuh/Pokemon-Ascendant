@@ -1479,6 +1479,11 @@ Art-review follow-up A12–A13: distinct city arenas and a shared language for r
 
 **Shipped.** The Challenge Ring has a garden court; the Pokémon Coliseum has spectator banks and a ceremonial stone arena. Trainer rungs form a visual route, while the full next-rival roster and existing entry, fight, team and cash-out controls remain available. Merchant, field nurse and Training Grounds share native 256×112 route vignettes with authentic terrain, people and service props. Prices, rewards, healing, upgrades and city shops are unchanged. Source crops and hashes are retained in the manifests. The separate results rework/A03 is outside this art pass.
 
+### v0.9.38 — Move clarity  ✅ 2026-10-23
+Art-review follow-up A14–A15: recognisable small move effects and an effective palette contract.
+
+**Shipped.** Twelve weak move illustrations gain a dominant silhouette, selected from two generated candidates per move and reviewed at the card's actual size. All 161 illustrations are exported with at most 20 opaque RGB colours and binary alpha. The existing-art pass preserves dimensions and transparency masks; palette reduction alone does not redraw the effects. The installer validates decoded output rather than trusting PNG palette metadata. Prompts, source hashes and processing details are retained for the selected effects. Card layout, combat rules and the separate results rework/A03 are unchanged.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,
