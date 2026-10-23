@@ -125,7 +125,7 @@ export function MapScreen() {
   };
 
   return (
-    <main className={`${styles.root} theme-stage`} data-testid="map-screen">
+    <main className={`${styles.root} ${run.zone === 'league' ? '' : 'theme-stage'}`} data-testid="map-screen">
       <header className={styles.topBar}>
         <div>
           <div className={styles.regionRow}>

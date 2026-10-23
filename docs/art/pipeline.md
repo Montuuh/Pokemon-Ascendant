@@ -41,6 +41,12 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 3. **One icon per mechanical identity.** Every Consumable, Held Item, Evolution Stone, Poké Ball, TM and Relic must have its own distinct pixel sprite. Do not reuse a Held Item's sprite on a Relic, or share one sprite between two different Relics.
 4. **Judge in context, at real size.** Always render with `npm run shot` and inspect the PNG in `playtest/`. Check pixel crispness, contrast (WCAG AA per D5), calm zones under UI, and palette warmth.
 
+### Indigo Ascent scenes (A11)
+
+Rebuild `public/art/league/summit.png` (304×240) and `gallery.png` (448×224) with `node scripts/build-league-art.mjs`. The arrival uses authentic Indigo Plateau façade and approach crops. The new gallery composes five authentic thresholds, statues and furniture on stone paving, with palette-matched runner strips and a separate Champion bay; it does not reuse the Hub room plan. The manifest retains source hashes, crop coordinates and native door anchors. No generated imagery or resampling is used.
+
+The Summit renders at 2×/3× on the supported desktop viewports; the gallery fits available space in half-step scales. Its DOM controls follow the native gate anchors, while `PixelSprite` preserves each trainer's own grid. The selected direction and historical alternatives are retained in `docs/design/ui/mockups/league-arrival`.
+
 ### Mystery Event scenes (A10)
 
 Every implemented Mystery Event, including Eevee's Stone Cache, has a native 256×112 vignette in `public/art/events`. The 15 compositions reuse authentic FRLG tiles and furniture, Emerald people and objects, and previously credited habitat props. The hot spring uses the Emerald Lavaridge map. No AI generation is used for this family; the existing cave landmark retains its original pixel-authored opening.

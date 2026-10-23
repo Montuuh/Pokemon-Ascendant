@@ -1,6 +1,6 @@
 # A11 — three visual proposals
 
-**Decision preview only.** Nothing here is installed in production, changes the design canon, or modifies run state. Choose a direction before implementation. English labels reproduce the game's choices; the narrow bottom toolbar belongs to the proposal viewer.
+**Option A selected by the user, 2026-10-23; integrated in v0.9.35.** These are the historical comparison mockups, not the live game. The production Summit and League use real run data and existing previews; B and C remain reference alternatives. The viewer never modifies run state. Its narrow bottom toolbar belongs to the proposal viewer.
 
 Run `npm run dev`, then open [the gallery](http://localhost:5173/docs/design/ui/mockups/league-arrival/index.html). All assets and controls load locally. The twelve captured views are retained beside the source; this viewer is a standalone proposal, not a game route.
 
@@ -44,7 +44,7 @@ League previews preserve the actual sequence and counts: Bruno/Fighting/2/Sandst
 - **Authored here:** every new floor plan, the repetition and placement of gates/statues, the terrace and corridor geometry, and flat runner strips sampled from the FRLG room palette. Canvas draws native-resolution crops without smoothing; world scenes render at exactly 2×. The fixed 2× visual size is preserved at 1080p rather than stretching pixels to fit extra space.
 - **Not claimed as final:** mockup architecture, exact hotspot positions, incidental scene labels, the sample party/HP, or integration of management sheets. Those must be refined and verified after the direction is chosen. No generated Pokémon, trainer, item or backdrop was used. The 45 runtime stage PNGs were deliberately not used as a provenance shortcut.
 
-All Pokémon game imagery is © Nintendo / Creatures / GAME FREAK, used for this non-commercial fan project. A production adoption must add the newly downloaded Indigo map to the shared art attribution; this proposal keeps its own source record so shared documents remain untouched until a direction is selected.
+All Pokémon game imagery is © Nintendo / Creatures / GAME FREAK, used for this non-commercial fan project. The shipped option A's sources and authored geometry are recorded in the shared art attribution and `public/art/league/manifest.json`; this historical comparison retains its original source record too.
 
 ## Evidence
 

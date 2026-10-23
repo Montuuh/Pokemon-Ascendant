@@ -1464,7 +1464,10 @@ Art-review follow-up A10: narrative encounters as recognisable pixel scenes.
 
 **Shipped.** All 14 implemented Mystery Events and Eevee's Stone Cache have native 256×112 vignettes, composed from credited FRLG and Emerald scenery, people and objects. Named, guaranteed loot appears on choices; unknown supplies, relics and gamble branches stay undisclosed. Risk, prices, effects, held outcomes and leave behaviour are unchanged. Source URLs, crop coordinates and hashes are retained in the asset manifest. Scenes use exact 2×/3× scales at 720p/1080p.
 
-**A11 awaiting a direction.** Three paired Summit/League mockups are in [league-arrival](design/ui/mockups/league-arrival/README.md): Indigo Ascent, Laurel Court and Last Threshold. The user chooses before production integration; none is adopted as canon by this release.
+### v0.9.35 — Indigo Ascent  ✅ 2026-10-23
+Art-review follow-up A11: option A, selected by the user from the three [arrival proposals](design/ui/mockups/league-arrival/README.md).
+
+**Shipped.** The Summit has a composed Indigo Plateau exterior, a healed Box, three real Legendary offers and the anonymous five-member League preview. Taking a relic or declining still crosses the existing one-way gate. The League uses a new FRLG tile composition with four Elite doors, a separate Champion threshold and live beaten/next/ahead markers. Names, types and team counts remain visible; only the next door opens its existing preview. Team management, hidden enemy species and modifier-aware micro-rest are preserved. League chrome uses warm cream; route and combat chrome retain their stage theme. Native scenes and trainers use clean pixel scales, with retained source maps, crop coordinates and hashes. No sim rules change.
 
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,

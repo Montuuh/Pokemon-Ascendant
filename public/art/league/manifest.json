@@ -1,0 +1,199 @@
+{
+  "version": 1,
+  "build": "node scripts/build-league-art.mjs",
+  "processing": {
+    "nativePixelGrid": true,
+    "resampling": "none",
+    "palette": 256,
+    "dither": 0,
+    "furnitureKey": {
+      "source": "../../../public/art/center/source/center-frlg.png",
+      "box": [
+        48,
+        64,
+        16,
+        16
+      ],
+      "colours": [
+        "246,246,205",
+        "230,222,156",
+        "238,238,172"
+      ]
+    },
+    "authored": "Floor plan, repeated authentic gates and statues, and flat runner / separator geometry. No AI generation."
+  },
+  "sources": [
+    {
+      "file": "sources/indigo-frlg.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Indigo_Plateau_FRLG.png",
+      "sha256": "671324cd66a879bfbe0ada5e6bf0aa15a3dd99455f893b93e4c8877ab55e5baf",
+      "width": 384,
+      "height": 320
+    },
+    {
+      "file": "../../../public/art/hub/lobby.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Indigo_Plateau_Center_FRLG.png",
+      "sha256": "b01388423294fe7b0253269279681d472c283f4fc254f5b71caae9475e774268",
+      "width": 402,
+      "height": 276
+    },
+    {
+      "file": "../../../public/art/center/source/center-frlg.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Pok%C3%A9mon_Center_inside_FRLG.png",
+      "sha256": "a3df02c1b7c648ebdc13a247ef434c98e49a42b567072c47067ebc77f92eb94b",
+      "width": 240,
+      "height": 160
+    },
+    {
+      "file": "../../../public/art/route/route/tree.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Kanto_Route_1_FRLG.png",
+      "sha256": "1eb557c724be5be1d36610cb67cd45ab594f5515778460c4b7e7b5a2c0693013",
+      "width": 32,
+      "height": 48
+    },
+    {
+      "file": "../../../public/art/route/highland/ground.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Mt_Ember_FRLG.png",
+      "sha256": "09216d923399a00f76624b42fc216d2922c2d9ebdae2328fc1b46c9a6c260fdd",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "../../../public/art/hub/player.png",
+      "url": "https://archives.bulbagarden.net/wiki/File:Red_FRLG_OD.png",
+      "sha256": "3f65d93ae4f152a33e8ac724c29b200c20a7c4c273eae889db23cdb8cae0412a",
+      "width": 16,
+      "height": 20
+    }
+  ],
+  "crops": [
+    {
+      "source": "sources/indigo-frlg.png",
+      "box": [
+        96,
+        0,
+        176,
+        128
+      ]
+    },
+    {
+      "source": "sources/indigo-frlg.png",
+      "box": [
+        160,
+        144,
+        48,
+        16
+      ]
+    },
+    {
+      "source": "sources/indigo-frlg.png",
+      "box": [
+        0,
+        192,
+        80,
+        48
+      ]
+    },
+    {
+      "source": "sources/indigo-frlg.png",
+      "box": [
+        304,
+        192,
+        80,
+        48
+      ]
+    },
+    {
+      "source": "../../../public/art/hub/lobby.png",
+      "box": [
+        34,
+        16,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "../../../public/art/hub/lobby.png",
+      "box": [
+        46,
+        0,
+        16,
+        16
+      ]
+    },
+    {
+      "source": "../../../public/art/hub/lobby.png",
+      "box": [
+        62,
+        8,
+        24,
+        20
+      ]
+    },
+    {
+      "source": "sources/indigo-frlg.png",
+      "box": [
+        176,
+        144,
+        16,
+        16
+      ]
+    },
+    {
+      "source": "../../../public/art/center/source/center-frlg.png",
+      "box": [
+        16,
+        12,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "../../../public/art/center/source/center-frlg.png",
+      "box": [
+        96,
+        80,
+        48,
+        48
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "file": "summit.png",
+      "width": 304,
+      "height": 240,
+      "sha256": "9e985ba93d7e031cb3da16a0b0fb4d836b3ec477460d94f1b00c3778ecaa617f",
+      "bytes": 5283
+    },
+    {
+      "file": "gallery.png",
+      "width": 448,
+      "height": 224,
+      "sha256": "79d4ba02e35012a7c85e37c3afc088e8ffb846146913e2fff1312a85bc2849b9",
+      "bytes": 3017
+    }
+  ],
+  "galleryDoors": [
+    {
+      "x": 48,
+      "y": 32
+    },
+    {
+      "x": 128,
+      "y": 32
+    },
+    {
+      "x": 208,
+      "y": 32
+    },
+    {
+      "x": 288,
+      "y": 32
+    },
+    {
+      "x": 392,
+      "y": 32
+    }
+  ]
+}

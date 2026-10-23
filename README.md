@@ -49,7 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.34 — Illustrated encounters.** Fifteen Mystery Event scenes use classic Gen III pixels; guaranteed item offers show their objects alongside unchanged effects, risks and prices. Before it,
+**v0.9.35 — Indigo Ascent.** The Summit arrives at Indigo Plateau, then opens onto a five-door League gallery with clear progress and a separate Champion entrance. Before it,
 **v0.9.30 — Gen II type chart.** The 15-type chart now uses Generation II effectiveness: Ghost hits Psychic for ×2, Fire resists Ice at ×0.5, Bug hits Poison for ×0.5, and Poison hits Bug neutrally at ×1. Before it,
 **v0.9.29 — Who lives there.** Each Wild Area on the map now shows its habitat in front with two of its Pokémon at
 its sides, and they go round the whole pool as you look, so the board tells you who lives where. Before it,

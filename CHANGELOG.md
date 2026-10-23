@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.35 — Indigo Ascent · 2026-10-23
+
+The Summit and League become a connected classic pixel-art destination.
+
+- **Summit.** Indigo Plateau arrival beside the final Legendary relic choice.
+- **League.** Five physical doors, clear progress and a distinct Champion entrance.
+- **Navigation.** Keyboard previews and team management remain available between fights.
+
 ### v0.9.34 — Illustrated encounters · 2026-10-23
 
 Mystery Events gain classic pixel scenes and illustrated item choices.

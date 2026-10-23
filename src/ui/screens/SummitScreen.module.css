@@ -1,49 +1,53 @@
-/* §2.12.4 — the Summit's header: its peak, the Box healed in full, said once. */
-.healed {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-3);
+/* §2.12.4 — a destination, the final gift, then five unknown opponents. Art stays at 2× / 3×. */
+.root { height: 100%; overflow-y: auto; display: grid; place-items: center; padding: var(--sp-5); background: var(--surface-0); color: var(--ink-primary); }
+.arrival { display: grid; gap: var(--sp-4); width: max-content; max-width: 100%; }
+.heading { display: flex; align-items: center; gap: var(--sp-5); }
+.heading h1 { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--type-h1); }
+.heading p { margin: 0; color: var(--ink-secondary); font-size: var(--type-small); }
+.content { display: grid; grid-template-columns: 608px 400px; gap: var(--sp-5); align-items: center; }
+.scene { position: relative; width: 608px; height: 480px; overflow: hidden; outline: 2px solid var(--border-strong); border-radius: var(--radius-md); }
+.backdrop { display: block; width: 608px; height: 480px; image-rendering: pixelated; image-rendering: crisp-edges; }
+.place { position: absolute; bottom: var(--sp-3); left: var(--sp-3); padding: var(--sp-2) var(--sp-3); border-radius: var(--radius-sm); background: var(--surface-1); font-size: var(--type-h3); box-shadow: var(--shadow-1); }
+.gift { min-width: 0; display: grid; gap: var(--sp-3); }
+.healed { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); border: 1px solid var(--border-subtle); background: var(--surface-2); border-radius: var(--radius-sm); }
+.healed > span { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--type-small); font-weight: 700; }
+.box { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1); margin: 0; padding: 0; }
+.box li { display: flex; }
+.offerHeading { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-2); }
+.offerHeading h2 { margin: 0; font-size: var(--type-body); }
+.offerHeading > span { font-size: var(--type-caption); color: var(--ink-secondary); }
+.offer { display: grid; gap: var(--sp-3); }
+.actions { display: grid; gap: var(--sp-2); }
+.confirm, .decline { padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-sm); font: inherit; cursor: pointer; }
+.confirm { border: 2px solid var(--accent-action-deep); background: var(--accent-action); color: var(--ink-on-accent); font-weight: 700; }
+.confirm:disabled { border-color: var(--border-subtle); background: var(--surface-2); color: var(--ink-secondary); cursor: default; }
+.decline { border: 0; background: transparent; color: var(--ink-secondary); text-decoration: underline; font-size: var(--type-small); }
+.confirm:focus-visible, .decline:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
+.ahead { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-5); padding: var(--sp-3) var(--sp-4); background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+.ahead h2 { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--type-h3); }
+.leagueRow { display: flex; }
+.league { list-style: none; margin: 0; padding: 0; display: flex; align-items: start; justify-content: center; gap: var(--sp-5); }
+.member { display: grid; justify-items: center; gap: var(--sp-1); min-width: 48px; }
+.silhouette { image-rendering: pixelated; filter: brightness(0); opacity: .75; }
+.many { font-size: var(--type-caption); color: var(--ink-secondary); }
+/* The full Box and the longest selected Legendary offer must keep both gate actions on screen at 720p. */
+@media (max-height: 800px) and (min-width: 801px) {
+  .root { padding: var(--sp-4); }
+  .arrival { gap: var(--sp-3); }
+  .gift, .offer { gap: var(--sp-2); }
+  .actions { gap: var(--sp-1); }
 }
-.peak {
-  image-rendering: pixelated;
+@media (min-width: 1600px) and (min-height: 950px) {
+  .content { grid-template-columns: 912px 440px; gap: var(--sp-6); }
+  .scene, .backdrop { width: 912px; height: 720px; }
 }
-.box {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: var(--sp-1);
+@media (max-width: 1080px) {
+  .content { grid-template-columns: 456px minmax(280px, 400px); gap: var(--sp-4); }
+  .scene, .backdrop { width: 456px; height: 360px; }
 }
-.healedText {
-  font-weight: 700;
-  color: var(--ink-secondary);
-}
-
-/* §2.12.4 — the League ahead, as silhouettes: who waits is a shape and a type until its door. One hover for the row. */
-.leagueRow {
-  display: flex;
-  justify-content: center;
-}
-.league {
-  list-style: none;
-  margin: var(--sp-3) 0 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  gap: var(--sp-3);
-}
-.member {
-  display: grid;
-  justify-items: center;
-  gap: var(--sp-1);
-}
-.silhouette {
-  image-rendering: pixelated;
-  filter: brightness(0);
-  opacity: 0.75;
-}
-.many {
-  font-size: var(--type-caption);
-  color: var(--ink-secondary);
+@media (max-width: 800px) {
+  .root { padding: var(--sp-4); }
+  .heading, .ahead { flex-wrap: wrap; }
+  .content { grid-template-columns: 1fr; justify-items: center; }
+  .gift { width: 100%; }
 }

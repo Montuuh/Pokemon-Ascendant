@@ -1,132 +1,82 @@
-/* §2.1.6 — the League's hall in the map's place: five doors in a row, the next one lit, the beaten ones ticked. */
-
+/* §2.1.6 — transparent hit regions sit over the native gallery; geometry is measured in scene pixels (D9). */
 .root {
-  height: 100%;
+  height: 100%; min-height: 0; min-width: 0;
   display: grid;
-  align-content: center;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   justify-items: center;
-  gap: var(--sp-5);
-  padding: var(--sp-5);
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--border-subtle);
-  background: var(--route-backdrop);
-  overflow: auto;
-}
-
-/* The Elite Four under one label, the Champion apart. */
-.groups {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: end;
-  gap: var(--sp-5);
-}
-.group {
-  display: grid;
-  justify-items: center;
-  gap: var(--sp-2);
-}
-.seat {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  margin: 0;
-  font-size: var(--type-caption);
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-secondary);
-}
-.doors {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   gap: var(--sp-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.door {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: var(--sp-1);
-  width: 150px;
-  padding: var(--sp-3) var(--sp-2) var(--sp-3);
-  border-radius: var(--radius-md);
+  padding: var(--sp-3);
   border: 2px solid var(--border-subtle);
-  background: var(--surface-1);
-  color: var(--ink-primary);
-  font: inherit;
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
 }
-.door:focus-visible {
-  outline: 3px solid var(--brand-blue);
-  outline-offset: 2px;
+.galleryHead { max-width: 100%; display: grid; grid-template-columns: 352fr 96fr; }
+.seat {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-1);
+  margin: 0; color: var(--ink-secondary); font-family: var(--font-display); font-size: var(--type-small);
 }
-.next {
-  border-color: var(--accent-action);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-action) 35%, transparent);
-  cursor: pointer;
+.frame { display: grid; place-items: center; min-height: 0; width: 100%; }
+.gallery { position: relative; flex: none; border-radius: var(--radius-sm); outline: 2px solid var(--border-strong); }
+.art { display: block; width: 100%; height: 100%; image-rendering: pixelated; border-radius: var(--radius-sm); user-select: none; }
+.doors { list-style: none; margin: 0; padding: 0; }
+.threshold {
+  position: absolute;
+  width: calc(70px * var(--gallery-scale));
+  height: calc(172px * var(--gallery-scale));
+  transform: translateX(-50%);
 }
-.ahead {
-  border-style: dashed;
-  cursor: default;
+.door {
+  position: relative; display: block; width: 100%; height: 100%; padding: 0;
+  border: 0; background: transparent; color: var(--ink-primary); font: inherit; cursor: default;
 }
-.beaten {
-  border-color: var(--accent-positive);
-  cursor: default;
+/* Highlight the physical doorway as well as its plate, without turning the room into five cards. */
+.door::before {
+  content: ''; position: absolute; top: 0; left: 50%;
+  width: calc(24px * var(--gallery-scale)); height: calc(23px * var(--gallery-scale));
+  transform: translateX(-50%);
 }
-/* The Champion's door: the last and the heaviest frame. */
-.championGroup .door {
-  border-width: 3px;
+.next { cursor: pointer; }
+.next::before { outline: 3px solid var(--accent-action); box-shadow: 0 0 0 5px var(--ink-primary); }
+.door:hover::before, .door:focus-visible::before { outline: 3px solid var(--ink-primary); box-shadow: 0 0 0 5px var(--surface-1); }
+.door:focus-visible { outline: none; }
+.door:focus-visible .plate { outline: 3px solid var(--ink-primary); outline-offset: 3px; box-shadow: 0 0 0 7px var(--surface-1); }
+.number {
+  position: absolute; left: 50%; top: calc(3px * var(--gallery-scale)); transform: translateX(-50%);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-1);
+  min-width: var(--sp-5); padding: 0 var(--sp-1); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xs); background: var(--surface-1); color: var(--ink-primary);
+  font-family: var(--font-number); font-size: var(--type-number); line-height: 1.1;
 }
 .sprite {
-  image-rendering: pixelated;
+  position: absolute; left: 50%; top: calc(30px * var(--gallery-scale)); transform: translateX(-50%);
+  width: calc(40px * var(--gallery-scale)); height: calc(40px * var(--gallery-scale));
+  image-rendering: pixelated; pointer-events: none;
 }
-.beaten .sprite {
-  filter: grayscale(0.7);
+.beaten .sprite { filter: grayscale(0.7); }
+.placard {
+  position: absolute; top: calc(83px * var(--gallery-scale)); left: 0; right: 0;
+  display: grid; gap: var(--sp-2);
 }
-.name {
-  font-size: var(--type-small);
-  text-align: center;
+.plate {
+  display: grid; justify-items: center; gap: var(--sp-1); padding: var(--sp-2) var(--sp-1);
+  border: 2px solid var(--border-strong); border-radius: var(--radius-sm);
+  background: var(--surface-1); color: var(--ink-primary);
 }
-.type {
-  min-height: 18px;
+.next .plate { border-color: var(--ink-primary); box-shadow: 0 0 0 3px var(--accent-action); }
+.beaten .plate { border-color: var(--ink-primary); }
+.name { font-size: var(--type-h3); line-height: 1.1; }
+.many, .count { font-size: var(--type-caption); line-height: 1.2; }
+.state {
+  justify-self: center;
+  display: inline-flex; align-items: center; gap: var(--sp-1); padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-pill);
+  background: var(--surface-1); color: var(--ink-primary);
+  font-size: var(--type-caption); font-weight: 700; line-height: 1; white-space: nowrap;
 }
-.many {
-  font-size: var(--type-caption);
-  color: var(--ink-secondary);
-}
-.balls {
-  display: inline-flex;
-  gap: 2px;
-}
-.tick {
-  position: absolute;
-  top: calc(var(--sp-3) * -1);
-  right: calc(var(--sp-3) * -1);
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-pill);
-  background: var(--accent-positive);
-  color: var(--ink-on-accent);
-}
-
+.next .state { border-color: var(--ink-primary); background: var(--accent-action); }
+.beaten .state { border-color: var(--ink-primary); background: var(--accent-positive); }
 .rest {
-  color: var(--ink-secondary);
-  font-weight: 600;
+  display: inline-block; padding: var(--sp-1) var(--sp-3); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill); background: var(--surface-1); color: var(--ink-secondary); font-size: var(--type-small);
 }
-
-/* A tall board: the doors and their sprites at twice the sprite's size, whole pixels both times (D9). */
-@media (min-height: 900px) {
-  .door {
-    width: 200px;
-  }
-  .sprite {
-    width: 160px;
-    height: 160px;
-  }
-}
+.rest:focus-visible { outline: 3px solid var(--ink-primary); outline-offset: 2px; }

@@ -92,6 +92,22 @@ const SCREENS = {
   aid: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.levelTo(20)', 'run.goto("aid")', 'goTo("map")'], match: [/screens\/AidScreen/] },
   // Pin the event directly: auto-playing towards a Mystery can lose the run before reaching the screen.
   mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.phase = "event"; d.pendingEvent = "traveling-apothecary"; d.pendingNodeId = Object.values(d.map.nodes).find((n) => n.kind === "mystery").id; d.eventResult = null; d.money = 100; })', 'goTo("map")'], match: [/screens\/EventScreen/, /screens\/events\//] },
+  // A11 — enter real Summit/League states directly; never rely on the auto-player reaching an art review.
+  summit: {
+    url: '/?screen=menu', ready: 'summit-screen',
+    setup: ['run.new("squirtle", 11)', 'run.fill(6)', 'run.victoryRoad()', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "summit").id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'],
+    match: [/screens\/SummitScreen/, /screens\/league\//],
+  },
+  league: {
+    url: '/?screen=menu', ready: 'league-hall',
+    setup: ['run.new("squirtle", 11)', 'run.fill(3)', 'run.league()'],
+    match: [/screens\/map\/LeagueHall/, /screens\/league\//],
+  },
+  'league-champion': {
+    url: '/?screen=menu', ready: 'league-hall',
+    setup: ['run.new("squirtle", 11)', 'run.fill(3)', 'run.league()', 'run.patch((d) => { const doors = Object.values(d.map.nodes).sort((a, b) => a.layer - b.layer); d.visited = doors.slice(0, 4).map((n) => n.id); d.reachable = [doors[4].id]; d.position = doors[3].id; })'],
+    match: [/screens\/map\/LeagueHall/, /screens\/league\//],
+  },
   // §2.9.5 — the item ball: its reel on the preview card, and the reel stopped (a click lands it at once).
   'find-preview': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'goTo("map")'], match: [/components\/FindPrize/, /components\/NodePreviewCard/] },
   find: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'], clicks: ['find-reel'], match: [/screens\/FindScreen/, /components\/FindPrize/] },
@@ -299,6 +315,13 @@ async function main() {
         await page.waitForTimeout(150);
       }
       if (s.setup?.length) await page.waitForTimeout(400);
+      if (s.ready) {
+        await page.getByTestId(s.ready).waitFor({ state: 'visible' });
+        await page.evaluate(async () => {
+          await document.fonts.ready;
+          await Promise.all([...document.images].map((img) => img.decode()));
+        });
+      }
       for (const tid of s.clicks ?? []) {
         await page.getByTestId(tid).first().click();
         await page.waitForTimeout(250);

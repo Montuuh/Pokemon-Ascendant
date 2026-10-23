@@ -67,9 +67,11 @@ The 15 native 256×112 scenes in `public/art/events` combine previously credited
 
 Pokémon artwork © Nintendo / Creatures / GAME FREAK; map renders by the Bulbagarden community and Emerald extraction by pret, used for this non-commercial fan project. The manifest retains sources, exact crops and hashes; `scripts/build-event-art.mjs` reproduces the compositions without generated imagery. The reused cave landmark includes its previously authored pixel opening; this entry does not claim every pixel of that composite is official artwork.
 
-## League arrival proposals (A11, not adopted)
+## Indigo Ascent (A11)
 
-`docs/design/ui/mockups/league-arrival/indigo-source.png` retains the authentic [Indigo Plateau FRLG map](https://archives.bulbagarden.net/wiki/File:Indigo_Plateau_FRLG.png) from Bulbagarden Archives. The three proposal floor plans combine crops from it and previously credited Hub, Center and route assets. Their README distinguishes authored architecture from source imagery. Pokémon artwork © Nintendo / Creatures / GAME FREAK, map render by the Bulbagarden community, non-commercial fan use. These assets illustrate alternatives awaiting a user decision; they do not replace the game's Summit or League.
+`public/art/league/sources/indigo-frlg.png` retains the authentic [Indigo Plateau FRLG map](https://archives.bulbagarden.net/wiki/File:Indigo_Plateau_FRLG.png) from Bulbagarden Archives. The shipped exterior and newly composed gallery combine its crops with previously credited Hub, Center, Route 1 and Mt. Ember pixels. The floor plan, repeated gate placement and flat runner/separator shapes are authored for this project in the FRLG palette. The build script and manifest retain source URLs, exact crops, source/output hashes and processing details; no AI-generated artwork is added.
+
+Pokémon artwork © Nintendo / Creatures / GAME FREAK, map renders by the Bulbagarden community, non-commercial fan use. The three historical proposal floor plans remain in `docs/design/ui/mockups/league-arrival`; option A was selected by the user and integrated as Indigo Ascent.
 
 ## Current stage provenance and processing (A06)
 

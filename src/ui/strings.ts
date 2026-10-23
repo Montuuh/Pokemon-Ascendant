@@ -205,6 +205,13 @@ export const VICTORY_TEXT = {
   gauntletPrize: "The Gauntlet's prize",
   summitLede: 'Take one, or none, and go through the gate.',
   summitHealed: 'Healed in full',
+  summitPlace: 'Indigo Plateau',
+  summitOffer: 'One Legendary relic',
+  summitPick: 'Choose 1 of 3',
+  summitConfirm: (name: string) => `Take ${name} & enter →`,
+  summitPickPrompt: 'Choose a relic',
+  summitDecline: 'Enter without a relic →',
+  summitSelected: 'Selected',
   leagueAhead: 'The League ahead',
   perfectClear: 'Perfect Clear',
 } as const;
@@ -230,7 +237,10 @@ export const LEAGUE_TEXT = {
   manyTypes: 'Many types',
   championHint: 'No running, and nothing heals in the fight. Beat him and the run is won.',
   beaten: 'Beaten',
+  next: 'Next',
+  ahead: 'Ahead',
   teamOf: (n: number) => `${n} Pokémon`,
+  microRestLabel: (pct: number) => `Micro-rest · ${pct} % HP`,
   microRest: (pct: number) => `Between doors: ${pct} % HP back to everyone standing`,
 } as const;
 

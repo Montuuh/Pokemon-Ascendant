@@ -759,6 +759,8 @@ UI **never** queries logic systems directly — all bindings are event-driven or
 
 ## 2.2 Map View  (base panel · extends §9.3)
 
+**League presentation (A11, Indigo Ascent).** In the League (§2.1.6), the graph becomes a native pixel gallery with five physical thresholds: four Elite doors and a separate Champion bay. Live plates show name, type, team count and beaten/next/ahead state; only the next threshold opens its existing node preview. The cream frame keeps Team management and utility access available, with modifier-aware micro-rest behind one tooltip. Before it, the Summit (§2.12.4) composes the Indigo Plateau exterior beside the healed Box and real Legendary offer, with five anonymous silhouettes below. Taking or declining a relic remains the one-way gate. The full Box and longest selected offers fit at 1280×720; scenes use clean pixel scales, not a stretched backdrop.
+
 **Purpose.** Between-combat navigation + the **only** place to change the Active Team/Box loadout
 (§2.3, locked on node entry). Shows the branching Region graph, current position, the team, the Box,
 and utility access. Layout already canon in §10.3.

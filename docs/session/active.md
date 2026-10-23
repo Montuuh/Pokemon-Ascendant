@@ -1,6 +1,6 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-23 · **Version:** v0.9.34 shipped (*Illustrated encounters*) — A10: 15 event scenes and guaranteed-item miniatures. A11: three Summit/League proposals awaiting the user's choice.
+**Date:** 2026-10-23 · **Version:** v0.9.35 shipped (*Indigo Ascent*) — A11 option A selected: Indigo Plateau arrival, five-door League gallery and a distinct Champion threshold.
 **First, read [`standing-facts.md`](standing-facts.md) → *Working with the user* and *Working in a shared folder*.**
 **Sprint goal next:** **v1.0** Release (Tauri build, the final balance pass at 720 runs on two seed blocks, press kit) — the user plays the pack first.
 
@@ -10,7 +10,9 @@
 
 **A08–A09 verified:** UI review Ship after the user's second art pass: dedicated 320×224 Center, Dojo equipment/practice props, authentic Gen III Pokémon/shiny/Substitute/Egg and brief move effects. Full check 899 passed / 3 skipped; shot 13 passed. Final combined e2e 50/51; the catch-log timing assertion missed its pre-completion window under parallel load and passed isolated 1/1. Final Dojo 5/5 includes a 900ms delayed effect to prove it plays after loading. Local evidence: playtest/a08-a09 and .claude/state/ui-a08-a09-review.md. Keep external results review separate.
 
-**A10 / A11:** 15 illustrated events (including Stone Cache), explicit guaranteed-loot icons, source hashes and native scales. Full check: 899 passed / 3 skipped; event e2e 4/4 and screenshot suite 13/13 pass together on a fresh v0.9.34 server. UI review: Ship after removing one unused test ID. Mystery audit now pins the apothecary directly; the previous auto-play setup could end on Run over instead. Corrected audit: no measured contrast failures, overflow, spill, unnamed controls or console errors; three gradient-backed text blocks remain unmeasured. A11's three paired proposals are in docs/design/ui/mockups/league-arrival, not production. Await the user's direction; root recommends Indigo Ascent. External results queue remains pending.
+**A10:** 15 illustrated events (including Stone Cache), explicit guaranteed-loot icons, source hashes and native scales. Full check: 899 passed / 3 skipped; event e2e 4/4 and screenshot suite 13/13 pass together on a fresh v0.9.34 server. UI review: Ship. Mystery audit now pins the apothecary directly; the previous auto-play setup could end on Run over instead. Corrected audit: no measured contrast failures, overflow, spill, unnamed controls or console errors; three gradient-backed text blocks remain unmeasured.
+
+**A11:** User selected Indigo Ascent. Native 304×240 Summit exterior and 448×224 League gallery composed from authentic FRLG crops; cream League chrome, live door states, hidden species and existing preview/team flows. Full check: 899 passed / 3 skipped; fresh-server UI suite: 26/26 (13 global screenshots + 13 Summit/League/Victory Road cases), including six healed Pokémon and the longest selected Legendary offers at 720p (spacing corrected after that case initially failed). UI review: Ship; six current audit captures have no contrast, overflow, spill, unnamed-control or console failures. Source hashes/crops: public/art/league/manifest.json. Historical alternatives: docs/design/ui/mockups/league-arrival. Evidence: playtest/a11-implementation and playtest/ui-audit. Preserve the external results rework and its separate pending review queue.
 
 **v0.8.7–v0.8.10** — the route, balance, harness, growth curves (`BALANCE_REPORT=1 REPORT_SEEDS=240`). **v0.9.1** — Shiny found in the wild (§5.14, `run/shiny.ts`, 1 in 40, `copyIsShiny`), its collection in the
 Pokédex, +N Bond on the reward screen; the Bond in four linear ranks of 100 (Shiny Charm · hidden ability · the whole
