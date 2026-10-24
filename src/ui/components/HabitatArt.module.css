@@ -28,7 +28,7 @@
 }
 .root .tuft {
   bottom: calc(-1 * var(--sp-1));
-  transform: scale(0.5);
+  transform: scale(var(--tuft-scale, 0.5));
 }
 /* `left: auto` undoes the node's centring of its images: a resident is anchored at its inner edge. */
 .root .left {
@@ -42,5 +42,5 @@
 }
 .root .tuft.left,
 .root .tuft.right {
-  --w: 29px;
+  --w: calc(58px * var(--tuft-scale, 0.5));
 }

@@ -344,15 +344,15 @@ hidden intent (§5.5) opens the kind and nothing more. The numbers stay on the s
 │  [Lead ★] [B][B] │  🧢- - -🌿- - -?╲ - 🧢- -🌿- - (cave) - -🌿- - - 🧔    │
 │                  │  ✓━━━🧢━━━◉┉┉┉🌿╳ - 🎒- -⚔- -┤                        │
 │  Box             │  🌿- - -💊- - -🧢╱ - 🌿- -?- - (water, rain) - 🧢- 👧   │
-│  ⚪ ⚪ ⚠2 ⚪ …    │  [ the whole route in a strip, your view outlined ] │
+│  ⚪ ⚪ ⚠2 ⚪ …    │                                     [Labels]      │
 └──────────────────┴─────────────────────────────────────────────────────┘
 ```
 
 The route runs **left to right**, the way a Pokémon route is walked, and it is wider than the screen: the graph
 is a horizontal scroller over the painted terrain (§2.5.4), dragged, wheeled or keyed (arrows, Home/End), and the
 view follows the player — it centres on where you stand after every node and on a node when you open its
-preview. A strip under the graph shows the whole route at a glance with the visible window outlined; clicking it
-jumps there. The vertical map was a roguelike convention borrowed from a game about climbing a tower; a route is
+preview. The route fills the available height; there is no miniature summary strip. Its Labels control stays
+in the lower-right corner, above the terrain and outside the scrolling content. The vertical map was a roguelike convention borrowed from a game about climbing a tower; a route is
 a road.
 
 The terrain is drawn from tiles at whole-pixel scale, so the FRLG pixel stays crisp: open ground, the scenery
@@ -389,15 +389,23 @@ FireRed's own pixels). A runner (§5.6.5) and the Elite Wild are the Pokémon it
 Pokémon is the point; the nurse and the merchant are themselves; an item ball the Poké Ball lying there; a Mystery the
 overworld's "?". State reads through the picture — full colour on every route still open from where you stand
 (`nodesAhead`), faded where you can no longer go, darkened with a tick once cleared — and through a ring on the
-ground: pulsing gold where you stand, gold under the nodes you can step to next, which also bob on their spot.
+ground: pulsing gold where you stand, gold under the nodes you can step to next. People keep their feet on the ground, including on hover.
+
+Node artwork scales with the route viewport in native half steps: ordinary overworld people are larger on a taller
+board, Gym Leaders retain their double register, and habitat residents are independently snapped to whole/half
+multiples of their own source pixels. Every caption has the same minimum size and lies below the complete
+artwork; a gold choice chip never moves up over its sprite. Hover and keyboard focus strengthen the ground ring
+and open a compact place card: the node's status, visible level band, combat shape/fields and service details,
+with Wild pool faces/names by rarity and the actual current odds. Hidden trainer species and levels stay hidden;
+clicking an available node still opens the preview before any commitment.
 
 **A node's chip** is a rounded plate under it with its kind's icon and its word (a paw for a Wild Area, a figure for a
 trainer, a castle for a Gym, a first-aid kit for the nurse, a gift for an item ball, swords for a guarded find…). A
 node **you can step to always wears its chip as a button** — the action's gold, a dark rim with a step under it, and an
 arrow — so what takes a click reads apart from what does not (the user, 2026-10-20). The Gyms and the Elite always
 carry theirs (the Leader's name, the Elite's); any other names itself under the pointer, and its bubble says the rest.
-**The Labels toggle** (the user, 2026-10-20: "a toggle for the node's label, under its icon") — a pill at the end of the
-strip under the board, off the board so no pill that scrolls past slides under it, and the **L** key — puts a chip
+**The Labels toggle** (the user, 2026-10-20: "a toggle for the node's label, under its icon") — a pill in the
+lower-right corner of the route viewport, above its scrolling content, and the **L** key — puts a chip
 under every node, quieter than a button's: its **kind**, generic (the user, 2026-10-20: "more generic — Wild, Trainer,
 Elite Trainer, Elite Wild, Gym, Nurse, Trader") — *Wild*, *Trainer*, *Elite Trainer*, *Elite Wild*, *Nurse*,
 *Merchant*, *Trader*, *Item ball*, *Mystery*, *Legendary*… — and a Gym its Leader's name with it (*Brock's Gym*: which
@@ -406,9 +414,7 @@ route; who it is, its bubble says), and an item ball with a guard on it *Guarded
 trainer's class is the sprite's to say, who exactly the bubble's: a label that named them all crowded the board and
 read as many kinds of node where there are a few. Off by default — the pictures and the buttons are the map — and kept
 between sessions. The node's preview opens over the route dimmed and softened, never over a black void, and wears the
-same picture as the node. The strip under the board draws the routes and every node in miniature — a fight a filled
-dot, a stop a ring, the Gyms diamonds in their types' colours — the walked road dark and the closed routes faded, so
-the whole Region's choice is one glance.
+same picture as the node. Wheel, drag, arrow keys and Home/End navigate the full route without a second map.
 
 The left column is the Active Team (three tiles, the Lead crowned) above a scrollable Box — **the team at a glance,
 and nothing to manage** (the user, 2026-10-20: "informative only"): a row is a card whose bubble says what it is, its
@@ -774,7 +780,12 @@ flowchart TD
   to fill or overwrite, and Mastery is never a target.
 - **Healing previews show before → after** on each team row: solid for current HP, hatched for the restoration.
 - **Mystery choices show outcome tags** — gain, cost, risk. Never blind RNG (Pillar 1).
-- **Defeat is warm, not punishing.** It shows how far you got and what you kept (Pillar 5).
+- **The final team is the ending's picture.** Victory presents the complete final Box in the Champion hall;
+  defeat remembers it on a warm meadow, without dimming fainted members (Pillar 5). All members share a native
+  whole/half-step sprite scale so relative proportions remain intact; Shiny artwork and actually earned Badges
+  are retained. The visible distance cue and XP/Tokens door show what was kept. **Run record** opens the existing
+  account progress, full metrics and final HP/Trauma, with keyboard close and focus return. Main menu and Run again
+  preserve the existing account and run-ending semantics. Zero Badges never produces invented medal slots.
 
 # §9.13 The title screen
 

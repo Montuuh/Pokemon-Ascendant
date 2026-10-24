@@ -342,13 +342,15 @@ test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', asy
 
   await page.screenshot({ path: 'playtest/run-summary.png', fullPage: true });
   // A defeat is a legal run too; what must hold is that the summary is honest and the save is gone.
-  await expect(defeat).toContainText(/Nodes cleared|Depth reached/);
+  await page.getByTestId('btn-run-record').click();
+  await expect(page.getByTestId('run-record')).toContainText(/Nodes cleared|Depth reached/);
   // §8.3 — and that the account was paid: a lost run pays by depth, so the XP line is never zero after a run
   // that cleared a node. A run lost on the very first node has cleared none, and owes nothing.
   await expect(page.getByTestId('account-summary')).toBeVisible();
   const cleared = await page.evaluate(() => window.__ascendant?.run.state()?.stats.nodesCleared ?? 0);
   const xpLine = await page.getByTestId('summary-xp').textContent();
   if (cleared > 0) expect(Number(xpLine?.replace(/[^0-9]/g, ''))).toBeGreaterThan(0);
+  await page.getByTestId('btn-close-run-record').click();
   await defeat.getByTestId('btn-end-continue').click();
   await expect(page.getByTestId('main-menu')).toBeVisible();
   await expect(page.getByTestId('btn-continue-run')).toHaveCount(0);
@@ -377,11 +379,12 @@ test('the map is usable at 1280x720', async ({ page }) => {
   }
   await page.screenshot({ path: 'playtest/run-map-720.png' });
 
-  // §9.3 — the strip under the board is the whole route: a click near its end jumps the board there.
+  // §9.3 — no miniature strip: keyboard navigation still reaches the other end of the route.
   const scroller = page.getByTestId('route-scroller');
   expect(await scroller.evaluate((el) => el.scrollLeft)).toBe(0);
-  const strip = (await page.getByTestId('route-strip').boundingBox())!;
-  await page.mouse.click(strip.x + strip.width * 0.9, strip.y + strip.height / 2);
+  await expect(page.getByTestId('route-strip')).toHaveCount(0);
+  await scroller.focus();
+  await page.keyboard.press('End');
   await expect.poll(() => scroller.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
 
   // The preview still fits and is still actionable at this height.

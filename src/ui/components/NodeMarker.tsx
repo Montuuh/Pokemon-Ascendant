@@ -17,11 +17,10 @@ import {
   IconUserStar,
   type TablerIcon,
 } from '@tabler/icons-react';
-import type { MapNode } from '@/sim';
+import type { MapNode, RunState } from '@/sim';
 import { WILD_GRASS, type NodeArt } from '@/ui/art';
-import { nodeHint } from '@/ui/strings';
-import { Tip, useTip } from '@/ui/tooltip';
-import { typeName, wildPoolBody } from '@/ui/tips';
+import { useTip } from '@/ui/tooltip';
+import { routeNodeTip } from '@/ui/tips';
 import { HabitatArt } from './HabitatArt';
 import { kindName, nodeHash, routeNodeArt, titleSays } from './nodeArt';
 import styles from './NodeMarker.module.css';
@@ -66,6 +65,8 @@ const STATUS_TEXT: Record<NodeStatus | 'gone', string> = {
 // step to always wears its chip, as a button: gold, with an arrow (the user, 2026-10-20: "contrast what is clickable").
 export function NodeMarker({
   node,
+  run,
+  artScale,
   status,
   art,
   ahead,
@@ -74,6 +75,8 @@ export function NodeMarker({
   style,
 }: {
   node: MapNode;
+  run: RunState;
+  artScale: number;
   status: NodeStatus;
   art: NodeArt;
   /** Still on a route you can take from where you stand. */
@@ -90,23 +93,7 @@ export function NodeMarker({
   const picture = routeNodeArt(art, node);
   // The node's whole story in one bubble: what it is, who is in it, the level band, and whether you can go.
   // The full preview card opens on click; this is the glance before the click.
-  const tip = useTip(
-    <Tip
-      title={node.preview.title}
-      meta={[
-        // The kind only when the title does not already say it, and a level band only where there is a fight.
-        ...(titleSays(node.preview.title, kind) ? [] : [kind]),
-        // §2.7 — a trainer's levels are part of the surprise (v0.8.6); a wild node keeps its band.
-        ...(node.preview.levelBand[1] > 0 && (node.kind === 'wild' || node.kind === 'elite-wild' || node.preview.objective?.kind === 'hold') ? [`Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`] : []),
-        // §2.7.3 — a hidden team's hint.
-        ...(node.preview.usualTypes?.length ? [`Usually ${node.preview.usualTypes.map(typeName).join(' · ')}`] : []),
-        said,
-      ]}
-      // A Wild Area's bubble names who lives there, by rarity: the faces going round at its sides.
-      body={node.kind === 'wild' && node.preview.wild && node.preview.objective?.kind !== 'flee' ? wildPoolBody(node.preview.wild.pool) : node.preview.detail}
-      footer={nodeHint(node)}
-    />,
-  );
+  const tip = useTip(routeNodeTip(node, run, picture.src, kind, status, ahead));
   // Not `disabled`: a disabled button gets no mouse events, and the bubble is how a node you cannot enter yet
   // is read — who is in it, how strong, which Gym is which. It still takes no click and no Tab stop.
   const enterable = status === 'reachable';
@@ -119,7 +106,7 @@ export function NodeMarker({
       className={[styles.node, styles[status], gone ? styles.gone : '', landmark ? styles.landmark : '', node.kind === 'gym' ? styles.climax : '']
         .filter(Boolean)
         .join(' ')}
-      style={style}
+      style={{ ...style, '--habitat-scale': Math.max(1, artScale - 0.5) } as React.CSSProperties}
       onClick={enterable ? onClick : undefined}
       aria-disabled={enterable ? undefined : true}
       tabIndex={enterable ? undefined : -1}
@@ -128,6 +115,7 @@ export function NodeMarker({
       aria-current={status === 'current' ? 'location' : undefined}
       {...tip}
       data-testid={`node-${node.id}`}
+      data-tip-side="side"
       data-kind={node.kind}
       data-status={status}
       data-ahead={ahead || undefined}
@@ -137,7 +125,7 @@ export function NodeMarker({
       <span className={[styles.art, styles[art.kind]].filter(Boolean).join(' ')} aria-hidden="true">
         {picture.kind === 'habitat' ? (
           // A Wild Area: its landmark, its residents going round, out of step with the nodes round it.
-          <HabitatArt src={picture.src} low={picture.low} pool={picture.pool} seed={nodeHash(node.id)} />
+          <HabitatArt artScale={Math.max(1, artScale - 0.5)} src={picture.src} low={picture.low} pool={picture.pool} seed={nodeHash(node.id)} />
         ) : (
           <>
             <img className="pixel" src={picture.src} alt="" draggable={false} />

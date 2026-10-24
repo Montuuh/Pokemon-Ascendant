@@ -7,11 +7,12 @@ Poké Mart marks, and all Pokémon names are trademarks of Nintendo / Creatures 
 
 **On the art, in two halves.**
 
-*Generated:* scene compositions, including the main-menu vista, the town lobbies and the current battle-stage
-set. The three route plates the map was painted on until v0.8.7 remain as a style key. Overworld scenes use
+*Generated:* effect illustrations and scene compositions, including the main-menu vista and town lobbies.
+The current battle-stage set has a documented generation workflow, but incomplete per-image authorship
+records; see the provenance limits below. The three route plates the map was painted on until v0.8.7 remain as a style key. Overworld scenes use
 the franchise's top-down register; battle stages use a ground-level arena view. The project deliberately uses
 Pokémon-themed scenes on the basis that it is free and stays free. The current stage inventory and its
-provenance limits are recorded below; the older official-stage rows are historical records.
+provenance limits are recorded below; the older official-stage credits are historical records.
 
 *Real assets:* everything the player already knows by heart — every item, the Boulder Badge, the Pokémon
 Centre, the trainer classes, the Pokémon themselves. A generative model approximates an object; it cannot
@@ -26,18 +27,16 @@ If Pokémon Ascendant ever stopped being non-commercial, none of this could ship
 | Pokémon official artwork, Gen VIII box icons | [PokeAPI/sprites](https://github.com/PokeAPI/sprites) (mirrors official assets) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/pokemon/{portraits,icons}` |
 | Compact Pokémon icons (151, A05) | Derived from the existing PokéAPI box icons by `node scripts/build-compact-icons.mjs`: exact alpha-bound crop, no resampling | Same rights and fan-use terms as the source icons | `public/art/pokemon/compact/*.png` |
 | Animated battle sprites (gen5ani, and the gen5ani-shiny palettes for §5.13.1 Veteran) | [Pokémon Showdown](https://play.pokemonshowdown.com/sprites/) / Smogon sprite project | © Nintendo / Creatures / GAME FREAK; sprite edits by the Smogon community; fan use | `public/art/pokemon/battle` |
-| Legacy stage backdrops (14; superseded inventory) | Historical Pokémon Showdown gen6 rips (`npm run art:fetch`); this row does not identify the current stage compositions | © Nintendo / Creatures / GAME FREAK; fan use | Historical contents of `public/art/stages` |
-| Legacy stage backdrops: `power-plant`, `volcano` (v0.7.3; superseded inventory) | Historical Pokémon Showdown classic set (`play.pokemonshowdown.com/fx/bg-thunderplains.png`, `bg-volcanocave.png`), installed with `install-art stage` | © Nintendo / Creatures / GAME FREAK; fan use | Historical contents of `public/art/stages` |
-| Legacy stage backdrops: `route`, `mountain`, `beach`, `pond` (v0.9.25; superseded inventory) | Historical Pokémon Showdown classic set (`play.pokemonshowdown.com/fx/bg-route.png`, `bg-mountain.png`, `bg-beachshore.png`, `bg-river.png`), installed with `install-art stage` | © Nintendo / Creatures / GAME FREAK; fan use | Historical contents of `public/art/stages` |
-| Current stage backdrops (45, A06 runtime derivatives) | Existing JPG compositions associated with the project's Gemini scene-generation batches; re-exported by `node scripts/normalise-stages.mjs install` as indexed 640×360 PNGs, ≤256 colours, no dithering. See provenance limits below | Generated Pokémon-themed scenes; underlying Pokémon marks and any incorporated official artwork retain their respective rights. Individual embedded-portrait provenance is not established | `public/art/stages/*.png`; retained sources `*.jpg`; `manifest.json` |
+| Current stage backdrops (45, A06 runtime derivatives) | Retained JPG sources and matching source/output hashes in `manifest.json`; indexed 640×360 PNG derivatives from `scripts/normalise-stages.mjs`. Generation batch scripts document the workflow, not a complete per-image authorship chain | Pokémon-themed compositions; underlying marks and incorporated artwork retain their respective rights. Embedded-portrait provenance remains unverified | `public/art/stages/*.png`; retained sources `*.jpg`; `manifest.json` |
+| Move effect illustrations (161) | Project generation workflow in `scripts/gen-move-art.mjs` and `docs/art/prompts/move-art.json`; twelve A14 replacements have retained raw outputs, exact prompts and model/hash records. The earlier 149 have a committed input baseline, without a complete retained raw/prompt chain | Generated project illustrations as documented by the workflow; Pokémon names and concepts retain their owners' rights. See the A14–A15 provenance limits below | `public/art/moves/*.png`; `palette-manifest.json`, `refresh-manifest.json`; `docs/art/sources/moves-a14` |
 | The Pokémon Center's healing machine and its tray ball (v0.9.25) | **The real asset** — cut from the FRLG Indigo Plateau Pokémon Center map the Hub already ships (`scripts/cut-heal-machine.mjs`); the 4 × 4 tray ball drawn on its grid | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/hub/heal-machine.png`, `heal-ball.png` |
 | Game glyph SVG set (status, intent, trait, modifier, rarity, medal, action, nav, toolbar) | Authored for this project | project licence | `public/art/icons/**` |
 | Type labels, 15 (FireRed/LeafGreen) | **The real assets** — the games' type boxes, via the PokéAPI sprites mirror | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/icons/type/*.png` |
 | Scene art: the three Region route plates, the Abandoned Tower backdrop (v0.7.4), the main-menu vista and the town lobbies (v0.7.7: Pallet's Challenge Ring and Celadon's Pokémon Coliseum, generated as edits of the lobbies and pasted back over only the square they replace, in the original's palette) | Generated with Google Gemini image models (`npm run art:gen`; prompts in `docs/art/prompts/`) | generated work, Pokémon-themed by intent; outputs carry a SynthID watermark and are usable per Google's terms | `public/art/map/region-{1,2,3}.png`, `public/art/stages/tower.jpg`, `public/art/ui/menu-vista.png`, `public/art/towns/*.png` |
-| 12 consumable item icons (Defog borrows the Smoke Ball) | **The real item renders**, Scarlet & Violet, 160², via [Serebii's itemdex](https://www.serebii.net/itemdex/) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/items` |
+| Consumable item icons (Defog borrows the pixel Smoke Ball) | Pixel bag sprites from [PokeAPI/sprites](https://github.com/PokeAPI/sprites/tree/master/sprites/items), fetched by `scripts/fetch-item-icons.mjs`; native files, without spatial resampling. The former Serebii 160² render attribution is superseded | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/items` |
 | Map emblems: the twelve Badges (Boulder, Cascade, Hive, Plain; Volcano, Rainbow, Thunder, Soul; Marsh, Earth, Knuckle, Glacier — each named as its art is) | **The real assets**, via the [Bulbagarden Archives](https://archives.bulbagarden.net) MediaWiki API | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/icons/map` |
 | Held-item, relic and Evolution Item icons (the five stones since v0.7.5, the Safari Ball since v0.7.6, the Rare Candy since v0.7.7, the Great and Ultra Balls since v0.8.6) — every one the real item it is, or the real item a relic is named after | [PokeAPI/sprites](https://github.com/PokeAPI/sprites) `sprites/items` (`npm run art:items`) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/items` |
-| TM discs, one per type (all fifteen Gen I types) | **The real assets** — the Scarlet & Violet bag sprites, same archive | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/items/tm*.png` |
+| TM discs, one per type (all fifteen Gen I types) | Pixel bag sprites from [PokeAPI/sprites](https://github.com/PokeAPI/sprites/tree/master/sprites/items): `tm-normal` is installed as `tm.png`; the other fourteen use their type slug. Current files are 30×30; a source-game edition is not established here for every sprite | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/items/tm*.png` |
 | The Safari Zone (v0.7.6): the board's tiles — tall grass, short grass, the pond and its rim, the forest — cut on the 16-px grid from the FireRed / LeafGreen Safari Zone entrance map, the FRLG Strength boulder, Red's FRLG overworld sprite, and the entrance map itself as the Safari's backdrop | **The real assets**, via the [Bulbagarden Archives](https://archives.bulbagarden.net) (`npm run art:safari`) | © Nintendo / Creatures / GAME FREAK; fan use | `public/art/safari` |
 | The Region map's terrain (v0.8.7): every tile — Route 1's grass, sand road, trees, tall grass and flowers; Route 24's water and Nugget Bridge (turned to run east–west); Viridian Forest's canopy and road; Mt. Moon's and Seafoam's cave floors and boulders; the Power Plant's floor and rubble; Ruby Path's rock; Pokémon Tower's floor and graves; Kindle Road's sea and beach; Mt. Ember's slopes — cut on the 16-px grid from the FireRed / LeafGreen map renders (`npm run art:route`) | **The real assets**, from the full map renders on the [Bulbagarden Archives](https://archives.bulbagarden.net/) | © Nintendo / Creatures / GAME FREAK; map renders by the Bulbagarden community; fan use | `public/art/route/**` |
 | The Wild Areas' landmarks on the map (v0.9.27): the Pokémon Tower's dome and the Power Plant (Route 10, halved), a Tanoby chamber's front, a sandbank off Route 20 (halved), Kindle Road's rocks — cut whole from the FireRed / LeafGreen map renders, their ground flooded transparent — and the route's own tiles (tall grass, flowers, pines, a pond, sea rocks, boulders) put together; a cave's mouth, a crater's glow, the open sea's oval, the Tall Grass's rustle, a bank of cloud and four recolours (basalt, sandstone, a marsh's water, an icy pool) drawn on their 1-px grid (`npm run art:habitats`) | **The real assets**, from the full map renders on the [Bulbagarden Archives](https://archives.bulbagarden.net/) and `public/art/route` | © Nintendo / Creatures / GAME FREAK; map renders by the Bulbagarden community; fan use | `public/art/map/habitat/*.png` |
@@ -75,12 +74,17 @@ Pokémon artwork © Nintendo / Creatures / GAME FREAK, map renders by the Bulbag
 
 ## Current stage provenance and processing (A06)
 
+Earlier attribution listed fourteen Showdown gen6 backdrops, then additional Showdown classic sources
+(`bg-thunderplains`, `bg-volcanocave`, `bg-route`, `bg-mountain`, `bg-beachshore`, `bg-river`). These are
+historical source credits, not the current inventory or evidence that a retained JPG is an official rip.
+No artwork was removed as part of this documentation correction.
+
 The 45 current runtime PNGs derive from the JPG files already present in `public/art/stages`. The existing
 `scripts/gen-batch*.mjs` scene-generation scripts record prompts and generation/install operations for the
 project's stage work; they do not prove a complete chain of authorship for every pixel of every retained JPG.
 In particular, portraits already embedded in Gym or apex-stage compositions have not been traced to an
 original source. Their visual appearance is not evidence of official authorship. The historical Showdown
-rows above must not be used as attribution for the current files.
+credits above must not be used as attribution for the current files.
 
 `public/art/stages/manifest.json` records each source JPG and its SHA-256, each output PNG's SHA-256,
 dimensions, bytes and palette metrics, plus the processing settings and library versions. The deterministic
@@ -106,6 +110,25 @@ The twelve selected A14 effect illustrations are generated assets, not official 
 
 All 161 current move PNGs also pass through deterministic palette reduction: at most 20 actual opaque RGB colours, original binary transparency restored, no spatial resampling. The original runtime baseline is the artwork committed at 02af49b709cbb14ff0a8ae8bd36927c9e5919a54. Its palette-only derivatives and alpha-mask hashes are recorded in `public/art/moves/palette-manifest.json`; that manifest explicitly links the twelve subsequent silhouette replacements. This processing does not change the authorship or rights of the source illustrations. Pokémon names and game concepts retain their respective owners' rights under the fan-project notice above.
 
+The generation scripts and prompt collection document the intended workflow for the earlier 149 effects.
+Their committed input hashes establish which images were processed; they do not establish a retained,
+per-image raw-output and exact-prompt chain comparable to the twelve A14 replacements.
+
+## Inventory verification and limits (A19, 2026-10-23)
+
+All 45 stage source/output pairs match their manifest SHA-256 values. All 161 current move images match
+the palette manifest or its linked refresh output; all twelve retained A14 source images and exact prompts
+match the refresh hashes. These checks establish file identity and reproducible derivation, not missing
+authorship or original rights.
+
+The current item directory contains 136 native pixel PNGs: 135 are 30×30 and `berry-pouch.png` is 24×24.
+The fifteen TM files are 30×30. The Potion, Smoke Ball used for Defog, and Normal TM source downloads
+were independently compared byte for byte with the current PokéAPI mirror and matched. The fetch script
+uses the mirror's moving `master` branch, without a pinned source revision or a full per-item hash manifest;
+this sample verification does not assert that every item has been checked against its remote source.
+The old Scarlet/Violet render credit does not describe the current pixel files. Their exact source-game
+edition remains unverified where the mirror and fetch mapping do not identify it.
+
 ## Route overworld and market derivatives (A17–A18)
 
 The 36 route frames in `public/art/map/people` and four market NPCs in `public/art/black-market` use authentic FRLG overworld sheets from [pret/pokefirered](https://github.com/pret/pokefirered/tree/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people), pinned to commit `ce6406d8c2eaf46d543c8a2606de0c3cb1951982`. Each derivative retains its native 16×32 south-facing frame, with palette-zero transparency and no resampling. Matching FRLG trainer classes stand in for Johto and role-only identities on the route; the preview retains each trainer's real name and battle portrait. The route item ball uses the previously credited pret/pokeemerald source retained with the event family. Rebuild with `scripts/build-map-people.mjs`; the manifest records URLs, crops and hashes.
@@ -114,7 +137,7 @@ The new 320×256 market floorplan uses authentic [Rocket Hideout B1F FRLG](https
 
 ## Trainer sprites
 
-`public/art/trainers` holds thirty-five Pokémon Showdown trainer-class sprites — the archetypes (`youngster`,
+`public/art/trainers` holds thirty-six Pokémon Showdown trainer-class sprites — the archetypes (`youngster`,
 `lass`, `bug-catcher`, `hiker`, `swimmer`, `camper`, `picnicker`, `acetrainer`, and v0.7.3's `scientist` as the
 Engineer, `rocketgrunt` and `blackbelt` as the Karate King, and v0.7.4's `hexmaniac` — Showdown's FireRed/LeafGreen
 `hexmaniac-gen3`), the twelve Gym Leaders (`brock`, `misty`, `bugsy`, `whitney`; `blaine`, `erika`, `ltsurge`,

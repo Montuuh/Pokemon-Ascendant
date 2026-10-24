@@ -1488,6 +1488,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** A16 fits the complete 68×45 native move cell at 2× in a fixed 90px window. A17 replaces route-only battle portraits with authentic FRLG overworld frames, aligns node feet and quiets idle map chrome while retaining seeded rotating habitat residents and full preview portraits. A18 composes a dedicated native 320×256 Rocket interior with four physical counters, opening the existing transactions in focus-managed dialogs. Native sources, crops and hashes remain reproducible. No map, economy or encounter rules change. The separate results/A03 rework remains outside this release.
 
+### v0.9.40 — Places worth reading  ✅ 2026-10-23
+
+**Shipped.** A19 updates provenance against retained sources and hashes, stating gaps for older generated artwork rather than inferring authorship. The UI audit verifies expected roots and painted assets at both sizes, continues after a failed screen with an explicit failed record, removes stale captures and exits nonzero. A20 centres the complete final team and earned Badges in distinct victory/defeat scenes; one common native sprite scale preserves relative proportions. Account progress, metrics and final condition remain in Run record. The user's map feedback enlarges artwork with the route viewport, preserves native half steps and rotating residents, equalises caption sizes below the sprites, and adds richer hover cards without revealing hidden teams. The miniature strip is removed, Labels sits in the lower-right corner, and hit boxes no longer cover neighbouring pictures. Vite ignores generated review/trace artifacts to prevent unintended development reloads. Game rules and the separate results/A03 work remain unchanged.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

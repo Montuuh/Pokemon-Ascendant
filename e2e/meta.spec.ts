@@ -338,6 +338,7 @@ test.describe('Leftover money — §8.3.4', () => {
       A.meta.record([{ t: 'run-end', won: false, catches: 0, badges: 0, layersCleared: 4, moneyLeft: 540 }]);
       A.goTo('defeat');
     });
+    await page.getByTestId('btn-run-record').click();
     await expect(page.getByTestId('account-summary')).toContainText('540 left → 2 Tokens');
     await page.waitForTimeout(600);
     await page.screenshot({ path: 'playtest/run-end-money.png' });

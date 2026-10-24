@@ -473,6 +473,17 @@ export const nodeHint = (node: { kind: string; preview: { objective?: { kind: st
     : node.kind === 'league' && node.preview.rosterId === 'champion' ? LEAGUE_TEXT.championHint
     : (NODE_HINT[node.kind] ?? '');
 
+export const RUN_END_TEXT = {
+  victoryTitle: 'Run complete!', defeatTitle: 'Run over',
+  victoryLine: 'Your team made it to the top.', defeatLine: 'Your team, and everything you learned.',
+  team: 'The team you finished with', badges: 'Badges earned', progress: 'Run record',
+  closeRecord: 'Back to the team', mainMenu: 'Main menu', runAgain: 'Run again',
+  metrics: { regions: 'Regions cleared', nodes: 'Nodes cleared', fights: 'Fights won', turns: 'Turns played', catches: 'Pokémon caught', faints: 'Faints', depth: 'Depth reached' },
+  region: (n: number, total: number) => `Regions ${n} / ${total}`,
+  depth: (n: number, total: number) => `Column ${n} / ${total}`,
+  trauma: (n: number) => `Trauma ×${n}`,
+} as const;
+
 export const NODE_HINT: Record<string, string> = {
   wild: 'Beat them for XP, or throw a ball and take one with you.',
   trainer: 'A trainer with a full team. More XP than a wild fight, and no catching.',

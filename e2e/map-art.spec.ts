@@ -53,7 +53,8 @@ for (const size of [{ width: 1280, height: 720 }, { width: 1920, height: 1080 }]
     expect(await people.evaluateAll((images) => images.every((image) => {
       const im = image as HTMLImageElement;
       const b = im.getBoundingClientRect();
-      const scale = im.closest('[data-kind="gym"]') ? 4 : 2;
+      const routeScale = Number.parseFloat(getComputedStyle(im.closest('[data-testid="route-board"]')!).getPropertyValue('--node-scale'));
+      const scale = (im.closest('[data-kind="gym"]') ? 4 : 2) * routeScale;
       return im.src.includes('/art/map/people/') && b.width === im.naturalWidth * scale && b.height === im.naturalHeight * scale;
     }))).toBe(true);
     for (const node of await board.locator('[data-kind="wild"][data-art="habitat"]').all()) {

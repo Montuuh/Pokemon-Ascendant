@@ -6,15 +6,15 @@ import { NodeMarker, type NodeStatus } from '@/ui/components/NodeMarker';
 import { landmarkName, nodeArt, nodeLabel } from '@/ui/components/nodeArt';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { FIELD_LABEL, ROUTE_TEXT } from '@/ui/strings';
-import { fieldTip, mapLabelsTip, noReturnTip, routeStripTip } from '@/ui/tips';
+import { fieldTip, mapLabelsTip, noReturnTip } from '@/ui/tips';
 import { Tipped, useTip } from '@/ui/tooltip';
 import { mapTerrain, COL_TILES } from './terrain';
-import { loadPieces, paintStrip, paintTerrain, piecesFor, TILE } from './tileset';
+import { loadPieces, paintTerrain, piecesFor, TILE } from './tileset';
 import styles from './RouteView.module.css';
 
 // §9.3 — the route, left to right, wider than the screen: the painted terrain (§2.5.4) on a canvas, the edges drawn
-// along its paths, the nodes on top, each lane's Battlefield as weather over it, and a strip under it all with the
-// whole route and the window you are looking through. Dragged, wheeled or keyed; the view follows the player.
+// along its paths, responsive nodes on top and each lane's Battlefield as weather. Dragged, wheeled or keyed;
+// the view follows the player. Labels stays in the board's corner; the user removed the miniature route strip.
 
 interface Props {
   run: RunState;
@@ -42,23 +42,16 @@ const WEATHER_CLASS: Record<FieldId, string | undefined> = {
 
 /** §9.3 — an edge's look: the road walked, the steps you can take now, the routes still open, and the rest. */
 const EDGE_CLASS = { walked: styles.edgeWalked, live: styles.edgeLive, open: styles.edge, gone: styles.edgeGone } as const;
-const STRIP_EDGE_CLASS = { walked: styles.stripWalked, live: styles.stripLive, open: styles.stripOpen, gone: styles.stripGoneLine } as const;
-/** The nodes that are a fight, drawn filled on the strip; the stops are rings. */
-const FIGHTS = new Set(['wild', 'trainer', 'elite', 'elite-wild']);
 
 export function RouteView({ run, statusOf, onEnter }: Props) {
   const terrain = useMemo(() => mapTerrain(run.map), [run.map]);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const strip = useRef<HTMLCanvasElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const animate = useMotionPref();
   const [scale, setScale] = useState(2);
-  const [fits, setFits] = useState(false);
-  const [view, setView] = useState({ left: 0, width: 1 });
   // Which terrain the canvas holds: the board says it is painted only once this map's tiles are down.
   const [paintedFor, setPaintedFor] = useState<object | null>(null);
   const painted = paintedFor === terrain;
-  const stripTip = useTip(routeStripTip());
   // §9.3 — the Labels toggle (the user, 2026-10-20): a name under every node, kept between sessions; L flips it.
   const labels = useSettingsStore((s) => s.mapLabels);
   const labelsTip = useTip(mapLabelsTip(labels));
@@ -73,13 +66,12 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // Paint once per map: the tiles are loaded, the terrain drawn, the strip drawn from the same pieces.
+  // Paint once per map: load the tiles, then draw the terrain.
   useEffect(() => {
     let live = true;
     void loadPieces(piecesFor(terrain)).then((pieces) => {
       if (!live || !canvas.current) return;
       paintTerrain(canvas.current, terrain, pieces);
-      if (strip.current) paintStrip(strip.current, terrain, pieces);
       setPaintedFor(terrain);
     });
     return () => {
@@ -91,21 +83,17 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   useLayoutEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    const root = el.parentElement;
     const fit = () => {
       setScale(Math.max(1, el.clientHeight / (terrain.h * TILE)));
-      // §9.3 — the strip is the scroll position; a board that fits its window whole has none to show. Judged at the
-      // height the board would have without the strip, so hiding it can never make the board overflow.
-      const tall = Math.max(1, (root?.clientHeight ?? el.clientHeight) / (terrain.h * TILE));
-      setFits(terrain.w * TILE * tall <= el.clientWidth);
     };
     fit();
     const obs = new ResizeObserver(fit);
     obs.observe(el);
-    if (root) obs.observe(root);
     return () => obs.disconnect();
   }, [terrain.h, terrain.w]);
 
+  // Native half steps grow the artwork with the route, rather than leaving fixed 32px people on a large board.
+  const nodeScale = Math.max(1.5, Math.round(scale * 1.25 * 2) / 2);
   const px = TILE * scale;
   const boardW = terrain.w * px;
   const behavior: ScrollBehavior = animate ? 'smooth' : 'auto';
@@ -120,20 +108,6 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
     const target = (at?.x ?? 0) * px - el.clientWidth * 0.35;
     el.scrollTo({ left: Math.max(0, target), behavior: focusId ? behavior : 'auto' });
   }, [focusId, px, terrain, behavior]);
-
-  // The strip's window follows the scroll.
-  useEffect(() => {
-    const el = scroller.current;
-    if (!el) return;
-    const sync = () => setView({ left: el.scrollLeft / Math.max(1, boardW), width: el.clientWidth / Math.max(1, boardW) });
-    sync();
-    el.addEventListener('scroll', sync, { passive: true });
-    window.addEventListener('resize', sync);
-    return () => {
-      el.removeEventListener('scroll', sync);
-      window.removeEventListener('resize', sync);
-    };
-  }, [boardW]);
 
   // A mouse wheel scrolls the route sideways; dragging the terrain pans it. A press on a node, a weather tag or the
   // river's pill is theirs, not a drag.
@@ -184,7 +158,8 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
     e.preventDefault();
   };
 
-  const nodes = Object.values(run.map.nodes);
+  // Upper nodes paint last, so a lower sprite's transparent hit box cannot cover their feet or captions.
+  const nodes = Object.values(run.map.nodes).sort((a, b) => b.row - a.row);
   // §9.3 — the routes still open from where you stand: drawn in full, everything else faded.
   const ahead = useMemo(() => nodesAhead(run.map, run.position ?? null), [run.map, run.position]);
   const edges = nodes.flatMap((n) =>
@@ -204,7 +179,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   return (
     <div className={styles.root}>
       <div ref={scroller} className={styles.scroller} tabIndex={0} onKeyDown={onKey} aria-label={ROUTE_TEXT.scroller} data-testid="route-scroller">
-        <div className={styles.board} style={{ width: boardW, height: terrain.h * px, '--reach': `${Math.floor((COL_TILES * px) / 2) - 4}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
+        <div className={styles.board} style={{ width: boardW, height: terrain.h * px, '--node-scale': nodeScale, '--node-label-size': `${Math.min(16, 12 + nodeScale)}px`, '--column-reach': `${Math.floor((COL_TILES * px) / 2) - 8}px`, '--reach': `${(Math.floor((COL_TILES * px) / 2) - 8) / nodeScale}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
           <canvas ref={canvas} className={styles.terrain} style={{ width: boardW, height: terrain.h * px }} aria-hidden="true" />
 
           {/* §2.5.4 — each lane's Battlefield, drawn over its stretch as weather, and named at the lane's mouth. */}
@@ -239,11 +214,13 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
               <NodeMarker
                 key={node.id}
                 node={node}
+                run={run}
+                artScale={nodeScale}
                 status={statusOf(node)}
                 art={nodeArt(node, run.map)}
                 ahead={ahead.has(node.id)}
                 caption={labels ? nodeLabel(node, run.map) : (landmarkName(node, run.map) ?? (statusOf(node) === 'reachable' ? nodeLabel(node, run.map) : null))}
-                style={{ left: at.x * px, top: at.y * px }}
+                style={{ left: at.x * px, top: at.y * px, '--node-top': `${at.y * px}px` } as CSSProperties}
                 onClick={() => onEnter(node.id)}
               />
             );
@@ -251,55 +228,6 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
         </div>
       </div>
 
-      {/* §9.3 — under the board, the strip and the Labels toggle at its end: the map's own controls, off the board, so
-          nothing that scrolls past (a lane's Battlefield, the point of no return) ever slides under one. */}
-      <div className={styles.foot}>
-        {/* §9.3 — the whole route in a strip, the window you are looking through outlined; a click jumps there. */}
-        <div
-          className={`${styles.strip} ${fits ? styles.stripHidden : ''}`}
-          onClick={(e) => {
-            const el = scroller.current;
-            if (!el) return;
-            const r = e.currentTarget.getBoundingClientRect();
-            const t = (e.clientX - r.left) / r.width;
-            el.scrollTo({ left: t * boardW - el.clientWidth / 2, behavior });
-          }}
-          {...stripTip}
-          data-testid="route-strip"
-        >
-          <canvas ref={strip} className={styles.stripArt} aria-hidden="true" />
-          {/* §9.3 — the routes and every node on them, in miniature: a fight a filled dot, a stop a ring; the road behind
-              you dark, the routes you can no longer take faded — the whole Region's choice at a glance. */}
-          <svg className={styles.stripLines} viewBox={`0 0 ${terrain.w} ${terrain.h}`} preserveAspectRatio="none" aria-hidden="true">
-            {edges.map((e) => (
-              <polyline key={e.key} points={e.points} className={STRIP_EDGE_CLASS[e.state]} vectorEffect="non-scaling-stroke" />
-            ))}
-          </svg>
-          {nodes
-            .filter((n) => n.kind !== 'gym')
-            .map((n) => (
-              <span
-                key={n.id}
-                className={[styles.stripNode, FIGHTS.has(n.kind) ? styles.stripFight : styles.stripStop, run.visited.includes(n.id) ? styles.stripDone : !ahead.has(n.id) && n.id !== run.position ? styles.stripGone : ''].join(' ')}
-                style={{ left: `${(terrain.at[n.id]!.x / terrain.w) * 100}%`, top: `${(terrain.at[n.id]!.y / terrain.h) * 100}%` }}
-                data-strip-kind={n.kind}
-              />
-            ))}
-          <span className={styles.window} style={{ left: `${view.left * 100}%`, width: `${Math.min(1, view.width) * 100}%` }} />
-          {nodes
-            .filter((n) => n.id === run.position || n.kind === 'gym')
-            .map((n) => (
-              <span
-                key={n.id}
-                className={n.kind === 'gym' ? styles.stripGym : styles.stripYou}
-                style={{
-                  left: `${(terrain.at[n.id]!.x / terrain.w) * 100}%`,
-                  top: `${(terrain.at[n.id]!.y / terrain.h) * 100}%`,
-                  ...(n.kind === 'gym' ? { background: `var(--type-${gymById(run.map.gyms[n.lane ?? 0]!).type})` } : {}),
-                }}
-              />
-            ))}
-        </div>
         <button
           type="button"
           className={styles.labelsToggle}
@@ -311,7 +239,6 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
           <IconTag size={16} stroke={2.4} aria-hidden="true" />
           {ROUTE_TEXT.labels}
         </button>
-      </div>
     </div>
   );
 }

@@ -1,0 +1,150 @@
+/* Existing 640×360 scenes cover at exact half steps; the last team stands together in front of them. */
+.scene {
+  position: relative;
+  isolation: isolate;
+  container-type: size;
+  width: min(1648px, 100%);
+  height: min(52vh, 520px);
+  min-height: 400px;
+  margin: 0;
+  overflow: hidden;
+  border: 3px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  background: var(--surface-2);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+}
+.won {
+  border-color: var(--accent-action-deep);
+}
+.backdrop {
+  position: absolute;
+  z-index: -2;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: round(up, max(100cqw, calc(100cqh * 16 / 9)), 320px);
+  max-width: none;
+  height: auto;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+.scene::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(transparent 35%, color-mix(in srgb, var(--surface-0) 50%, transparent));
+  pointer-events: none;
+}
+.caption {
+  justify-self: center;
+  padding: var(--sp-1) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+}
+.team {
+  --sprite-cell-w: 144px;
+  --sprite-cell-h: 160px;
+  display: grid;
+  grid-template-columns: repeat(var(--members), minmax(0, 1fr));
+  width: min(100%, calc(var(--members) * var(--sprite-cell-w) + (var(--members) - 1) * var(--sp-2)));
+  justify-self: center;
+  justify-content: center;
+  align-items: end;
+  gap: var(--sp-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+}
+.member {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  border-radius: var(--radius-md);
+}
+.member:focus-visible {
+  outline: 3px solid var(--ink-primary);
+  outline-offset: var(--sp-1);
+  box-shadow: 0 0 0 var(--sp-2) var(--surface-1);
+}
+.nameplate {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  min-width: 100%;
+  padding: var(--sp-1) var(--sp-2);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-size: var(--type-caption);
+}
+.nameplate > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-weight: 700;
+  font-size: var(--type-small);
+}
+.spriteCell {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: var(--sprite-cell-h);
+}
+.sprite {
+  display: block;
+  flex: none;
+  max-width: none;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.badgeLabel {
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  font-size: var(--type-small);
+}
+.badge {
+  display: inline-flex;
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  border: 2px solid var(--border-strong);
+}
+.badge:focus-visible {
+  outline: 3px solid var(--ink-primary);
+  outline-offset: var(--sp-1);
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .team {
+    --sprite-cell-w: 192px;
+    --sprite-cell-h: 208px;
+  }
+}
+@media (max-width: 1100px) {
+  .scene {
+    height: auto;
+    min-height: 360px;
+    container-type: inline-size;
+  }
+  .team {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: min(100%, calc(4 * var(--sprite-cell-w) + 3 * var(--sp-2)));
+  }
+}

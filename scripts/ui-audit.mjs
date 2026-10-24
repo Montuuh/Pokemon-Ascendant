@@ -15,18 +15,32 @@
 // and playtest/ui-audit/report.md, and prints the report.
 import { chromium } from '@playwright/test';
 import { execSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, unlinkSync } from 'node:fs';
 import { join, relative, resolve, dirname, basename } from 'node:path';
+import { auditHover, auditObserved, auditReady } from './lib/ui-audit-ready.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
-const OUT = resolve(ROOT, 'playtest/ui-audit');
+const OUT = resolve(ROOT, process.env.UI_AUDIT_OUT ?? 'playtest/ui-audit');
+const ARTIFACTS = relative(ROOT, OUT).replaceAll('\\', '/');
+const READY_TIMEOUT = Number(process.env.UI_AUDIT_TIMEOUT ?? 15_000);
 const BASE = process.env.UI_AUDIT_BASE ?? 'http://localhost:5173';
 const args = process.argv.slice(2);
 const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : null);
 
 // ── Screens: how to reach each one, and which source files it is the picture of ──────────────────────────
 // `setup` runs against window.__ascendant (the dev hook); `clicks` are data-testids pressed in order.
+// Explicit terminal snapshots mirror the dedicated run-end art fixture; they do not simulate earning a win.
+const endingSetup = (outcome) => [
+  'meta.reset()', 'run.new("squirtle", 7)', 'run.fill(6)', 'run.levelTo(35)',
+  `run.patch((d) => { const species = ["blastoise", "charizard", "venusaur", "pikachu", "lapras", "dragonite"]; d.box.forEach((m, i) => { m.speciesId = species[i]; m.hp = ${outcome === 'defeat' ? 0 : 30}; m.traumaStacks = i % 2; m.shiny = i === 1; }); d.badges = ["boulder-badge", "thunder-badge", "marsh-badge"]; d.regionIndex = 2; d.stats.nodesCleared = 41; d.stats.combatsWon = 24; d.stats.turnsPlayed = 137; d.stats.catches = 8; d.phase = "ended"; d.outcome = "${outcome}"; })`,
+  `meta.record([{ t: "run-end", won: ${outcome === 'victory'}, catches: 8, badges: 3, layersCleared: 41, moneyLeft: 540 }])`,
+  `goTo("${outcome}")`,
+];
 const SCREENS = {
+  ...Object.fromEntries(['victory', 'defeat'].flatMap((outcome) => [
+    [outcome, { url: '/?screen=menu', setup: endingSetup(outcome), match: [/screens\/RunEndScreen/, /screens\/run-end\//] }],
+    [`${outcome}-record`, { url: '/?screen=menu', setup: endingSetup(outcome), clicks: ['btn-run-record'], match: [/screens\/RunEndScreen/, /screens\/run-end\//, /hub\/AccountSummary/] }],
+  ])),
   // A16–A18 — complete move cells, overworld node registers and every physical market counter.
   'move-art-window': { url: '/?scenario=wild-basic&seed=7', ready: 'combat-screen', setup: ['hand(["flash", "fire-blast", "skull-bash", "surf", "barrier"])'], match: [/components\/MoveCard/] },
   'map-region-2': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.dispatch({ type: "depart-city", modifierId: a.run.state().city.reflection[0] ?? null })', 'goTo("map")'], match: [/components\/(NodeMarker|HabitatArt|nodeArt)/] },
@@ -41,7 +55,8 @@ const SCREENS = {
   'hub-pc': { url: '/?screen=hub', clicks: ['kiosk-pc'], match: [/hub\/(PcTerminal|BondBar|rankIcons|Hub\.module)/] },
   'hub-pc-sheet': { url: '/?screen=hub', setup: ['meta.record([{ t: "combat-end", outcome: "victory", kind: "wild", damageTaken: 0, manualSwaps: 0, faints: 0, defeated: ["pidgey"], enemies: ["pidgey"], activeSpecies: ["squirtle"], leadTurns: { squirtle: 3 } }])'], clicks: ['kiosk-pc', 'dex-squirtle'], match: [/hub\/(PcSheet|SpeciesSheet|LineSheet|usePcSheet)/] },
   'hub-mart': { url: '/?screen=hub', setup: ['meta.tokens(9)'], clicks: ['kiosk-mart'], match: [/hub\/(PokeMart|frames)/] },
-  'hub-daycare': { url: '/?screen=hub', setup: ['meta.xp(3000)'], clicks: ['kiosk-daycare'], match: [/hub\/Daycare/] },
+  'hub-card': { url: '/?screen=hub', setup: ['meta.xp(3000)'], clicks: ['kiosk-card'], match: [/hub\/(TrainerCard|RewardTrack|trackText)/] },
+  'center-daycare': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-center', 'door-center-daycare'], rootAttributes: { 'data-counter': 'daycare' }, match: [/screens\/CenterScreen/] },
   starter: { url: '/?screen=starter', match: [/screens\/StarterSelect/] },
   combat: { url: '/?scenario=wild-basic&seed=7', match: [/screens\/CombatScreen/, /components\/(EnemyPanel|Portrait|MoveCard|HpBar|ConsumableCard|CombatLog|FloatingNumbers|SwapOrSkip|TypeBadge|OutcomeOverlay)/, /ui\/tooltip/, /ui\/tips/] },
   // A14–A15 — review selected move silhouettes in the actual card windows, not only on a contact sheet.
@@ -56,6 +71,12 @@ const SCREENS = {
   // §5.9.5 — a Gym under its Leader's rule, the Leader on stage behind a group.
   'combat-gym': { url: '/?scenario=gym-sabrina-rule&seed=3', match: [/components\/RuleChip/, /combat\/gymRules/] },
   map: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'goTo("map")'], match: [/screens\/MapScreen/, /components\/(NodeMarker|NodePreviewCard|BoxPanel|InventoryDrawer|Money)/] },
+  ...Object.fromEntries(['wild', 'trainer', 'service', 'locked'].map((kind) => [`map-hover-${kind}`, {
+    url: '/?screen=menu', motion: 'no-preference',
+    setup: ['run.new("squirtle", 7)', ...(kind === 'service' ? ['run.jump("aid")'] : []), 'goTo("map")'],
+    hover: kind === 'service' ? '[data-testid="route-board"] [data-kind="aid"][data-status="reachable"]' : kind === 'locked' ? '[data-testid="route-board"] [data-status="locked"][data-ahead="true"]' : `[data-testid="route-board"] [data-kind="${kind}"][data-status="reachable"]`,
+    match: [/components\/(NodeMarker|HabitatArt|nodeArt|NodeHover)/],
+  }])),
   // §2.11 — the towns. `run.city(n)` stands the run in one (0 Pallet Town, 1 Celadon City); the buildings are clicks.
   city: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(4)', 'run.city(0)'], match: [/screens\/city\//, /ui\/strings/] },
   'city-celadon': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)'], match: [/screens\/city\//] },
@@ -113,8 +134,8 @@ const SCREENS = {
     setup: ['run.new("squirtle", 11)', 'run.fill(6)', 'run.victoryRoad()', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "training").id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'],
     match: [/screens\/TrainingScreen/, /components\/RouteStop/],
   },
-  // Pin the event directly: auto-playing towards a Mystery can lose the run before reaching the screen.
-  mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.phase = "event"; d.pendingEvent = "traveling-apothecary"; d.pendingNodeId = Object.values(d.map.nodes).find((n) => n.kind === "mystery").id; d.eventResult = null; d.money = 100; })', 'goTo("map")'], match: [/screens\/EventScreen/, /screens\/events\//] },
+  // A19 — enter the seeded event through the reducer; no auto-player or fabricated terminal phase.
+  mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.pay(100)', 'run.jump("mystery")', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'], match: [/screens\/EventScreen/, /screens\/events\//] },
   // A11 — enter real Summit/League states directly; never rely on the auto-player reaching an art review.
   summit: {
     url: '/?screen=menu', ready: 'summit-screen',
@@ -140,13 +161,39 @@ const SCREENS = {
   // §9.12 — the Team screen, from the map (a full formation, an item to give) and from a City's lobby.
   team: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(4)', 'run.patch((d) => { d.activeUids = d.box.slice(0, 3).map((m) => m.uid); d.bag = [...d.bag, "leftovers"]; })', 'goTo("map")'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /hooks\/useTeamKey/, /components\/BoxPanel/] },
   'team-city': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /screens\/city\/CityScreen/] },
-  evolution: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.goto("wild", true)', 'goTo("map")'], match: [/screens\/EvolutionScreen/] },
+  evolution: { url: '/?screen=menu', setup: ['run.new("bulbasaur", 7)', 'run.fill(3)', 'run.levelTo(12)', 'run.victoryRoad()', 'run.jump("training")', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'run.dispatch({ type: "train", uid: a.run.state().box[0].uid, upgrade: "evolve" })', 'goTo("map")'], match: [/screens\/EvolutionScreen/] },
 };
+
+// A19 — every preset declares the screen or intentionally opened panel the audit promises to capture.
+// A missing declaration is a configuration failure, never permission to photograph an arbitrary landing page.
+const EXPECTED_ROOT = {
+  victory: 'victory-screen', defeat: 'defeat-screen', 'victory-record': 'run-record', 'defeat-record': 'run-record',
+  menu: 'main-menu', about: 'about-screen', changelog: 'changelog-screen', settings: 'settings-screen',
+  hub: 'hub-screen', 'hub-pc': 'pc-terminal', 'hub-pc-sheet': 'pc-sheet', 'hub-mart': 'poke-mart', 'hub-card': 'trainer-card',
+  starter: 'starter-select', combat: 'combat-screen', 'combat-group': 'combat-screen', 'combat-field': 'combat-screen', 'combat-boss': 'combat-screen', 'combat-gym': 'combat-screen',
+  'move-art-window': 'combat-screen', 'move-art-sound': 'combat-screen', 'move-art-impact': 'combat-screen', 'move-art-projectiles': 'combat-screen',
+  map: 'map-screen', 'map-labels': 'map-screen', 'map-region-2': 'map-screen', 'map-region-3': 'map-screen', 'map-victory-road': 'map-screen',
+  'map-hover-wild': 'map-screen', 'map-hover-trainer': 'map-screen', 'map-hover-service': 'map-screen', 'map-hover-locked': 'map-screen',
+  city: 'city-screen', 'city-celadon': 'city-screen', 'city-gate': 'reflection', dojo: 'dojo-screen', center: 'center-screen', 'center-heal': 'center-screen', 'center-daycare': 'center-screen',
+  shop: 'shop-screen', merchant: 'shop-screen', store: 'shop-screen', aid: 'aid-screen', training: 'training-screen',
+  'ring-guide': 'ring-guide', ring: 'ring-screen', 'ring-climb': 'ring-screen', 'ring-prize': 'ring-prize-screen',
+  'game-corner': 'game-corner-room', 'game-corner-roulette': 'game-corner-screen', 'game-corner-slots': 'game-corner-screen', 'game-corner-open': 'game-corner-room', 'game-corner-shut': 'game-corner-room',
+  'black-market': 'black-market-screen', 'black-market-gambler': 'market-counter', 'black-market-trader': 'market-counter', 'black-market-fence': 'market-counter', 'black-market-showcase': 'market-counter',
+  safari: 'safari-screen', 'safari-guide': 'safari-guide', 'safari-stalk': 'safari-screen',
+  mystery: 'event-screen', evolution: 'evolution-screen', summit: 'summit-screen', league: 'league-hall', 'league-champion': 'league-hall',
+  'find-preview': 'node-preview', find: 'find-screen', team: 'team-screen', 'team-city': 'team-screen',
+};
+for (const [id, screen] of Object.entries(SCREENS)) screen.root = EXPECTED_ROOT[id];
+if (args.includes('--list')) {
+  console.log(JSON.stringify(Object.fromEntries(Object.entries(SCREENS).map(([id, { root, ready, hover }]) => [id, { root, ready, hover }])), null, 2));
+  process.exit(Object.values(SCREENS).some((screen) => !screen.root) ? 1 : 0);
+}
 
 // ── Which screens? ───────────────────────────────────────────────────────────────────────────────────────
 function changedFiles() {
   const list = (cmd) => execSync(cmd, { cwd: ROOT, encoding: 'utf8' }).split('\n').map((s) => s.trim()).filter(Boolean);
-  const files = new Set([...list('git diff --name-only HEAD'), ...list('git ls-files --others --exclude-standard')]);
+  // Restrict Git before buffering: generated evidence can contain far more untracked paths than the UI tree.
+  const files = new Set([...list('git diff --name-only HEAD -- src/ui src/app'), ...list('git ls-files --others --exclude-standard -- src/ui src/app')]);
   return [...files].filter((f) => /^src\/(ui|app)\/.*\.(tsx|ts|css)$/.test(f));
 }
 function screensFor(files) {
@@ -156,7 +203,6 @@ function screensFor(files) {
 }
 const files = opt('--files') ? opt('--files').split(',') : changedFiles();
 let screens = args.includes('--all') ? Object.keys(SCREENS) : opt('--screens') ? opt('--screens').split(',') : screensFor(files);
-screens = screens.filter((s) => SCREENS[s]);
 
 // ── In-page measurement ──────────────────────────────────────────────────────────────────────────────────
 // Runs inside the page. Returns plain data; every number here maps to a doctrine id.
@@ -324,8 +370,16 @@ async function main() {
     const browser = await chromium.launch({ channel: process.env.PW_CHANNEL ?? 'chrome' });
     for (const id of screens) {
       const s = SCREENS[id];
-      const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+      let page;
       const errors = [];
+      const captures = { at1080: null, at720: null };
+      try {
+      if (!s?.root) throw new Error(s ? `No expected root declared for ${id}.` : `Unknown audit preset: ${id}.`);
+      // Remove only this audit's previous outputs, so a failed recapture cannot masquerade as fresh evidence.
+      for (const shot of [`${id}.png`, `${id}-720.png`]) if (existsSync(join(OUT, shot))) unlinkSync(join(OUT, shot));
+      page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+      page.setDefaultTimeout(READY_TIMEOUT);
+      await page.emulateMedia({ reducedMotion: s.motion ?? 'reduce' });
       page.on('pageerror', (e) => errors.push(String(e.message ?? e)));
       page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push(m.text()); });
       page.on('response', (r) => { if (r.status() >= 400) errors.push(`${r.status()} ${r.url().replace(BASE, '')}`); });
@@ -334,7 +388,8 @@ async function main() {
       await page.goto(BASE + s.url);
       await page.waitForFunction(() => !!window.__ascendant);
       for (const step of s.setup ?? []) {
-        await page.evaluate((code) => new Function('a', `return a.${code}`)(window.__ascendant), step);
+        const result = await page.evaluate((code) => new Function('a', `return a.${code}`)(window.__ascendant), step);
+        if (step.startsWith('run.dispatch(') && result === false) throw new Error(`Setup action was rejected: ${step}`);
         await page.waitForTimeout(150);
       }
       if (s.setup?.length) await page.waitForTimeout(400);
@@ -342,25 +397,27 @@ async function main() {
         await page.getByTestId(tid).first().click();
         await page.waitForTimeout(250);
       }
-      if (s.ready) {
-        await page.getByTestId(s.ready).waitFor({ state: 'visible' });
-        await page.evaluate(async () => {
-          await document.fonts.ready;
-          await Promise.all([...document.images].map((img) => img.decode()));
-        });
-      }
-      // A17 — a route root can mount before its asynchronous terrain canvas has painted.
-      if (id === 'map' || id.startsWith('map-')) {
-        await page.getByTestId('route-board').waitFor({ state: 'visible' });
-        await page.waitForFunction(() => document.querySelector('[data-testid="route-board"]')?.getAttribute('data-painted') === 'true');
-      }
+      await page.mouse.move(0, 0);
+      // A clicked doorway may retain a focus tooltip after its panel opens; only hover presets request one.
+      await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
       await page.waitForTimeout(900);
+      await auditReady(page, s, READY_TIMEOUT);
+      if (s.hover) {
+        await auditHover(page, s.hover, READY_TIMEOUT);
+        await auditReady(page, s, READY_TIMEOUT);
+      }
       const data = await page.evaluate(measure);
       const shot = `${id}.png`;
       await page.screenshot({ path: join(OUT, shot) });
+      captures.at1080 = { screenshot: shot, root: s.root };
       // A second pass at 720p for overflow only (D8).
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.waitForTimeout(300);
+      await auditReady(page, s, READY_TIMEOUT);
+      if (s.hover) {
+        await auditHover(page, s.hover, READY_TIMEOUT);
+        await auditReady(page, s, READY_TIMEOUT);
+      }
       const small = await page.evaluate(() => {
         const vw = document.documentElement.clientWidth;
         const vis = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none'; };
@@ -369,12 +426,13 @@ async function main() {
         return { overflowing: over, pageScrollX: document.documentElement.scrollWidth > vw + 1 };
       });
       await page.screenshot({ path: join(OUT, `${id}-720.png`) });
-      await page.close();
-      const result = { screen: id, url: s.url, screenshot: shot, errors, ...data, at720: small };
+      captures.at720 = { screenshot: `${id}-720.png`, root: s.root };
+      const result = { screen: id, status: 'captured', expectedRoot: s.root, captures, url: s.url, screenshot: shot, errors, ...data, at720: small };
       results[id] = result;
       writeFileSync(join(OUT, `${id}.json`), JSON.stringify(result, null, 2));
       report.push(`## ${id}  (${s.url}${s.clicks ? ' → ' + s.clicks.join(' → ') : ''})`);
-      report.push(`- screenshot: \`playtest/ui-audit/${shot}\` (and \`${id}-720.png\`)`);
+      report.push(`- **Captured**: expected root \`${s.root}\` verified at both sizes`);
+      report.push(`- screenshot: \`${ARTIFACTS}/${shot}\` (and \`${id}-720.png\`)`);
       report.push(`- **D1 text**: ${data.totalChars} chars in ${data.blocks} blocks · ${data.long.length} block(s) over 120 chars`);
       for (const l of data.long) report.push(`  - ${l.chars} chars @ \`${l.at}\`: “${l.text}”`);
       report.push(`- **D2 doors**: ${data.tipped} tooltip carriers, ${data.infoDots} InfoDots, ${data.interactive} interactive elements${data.titles.length ? ` · ⚠ ${data.titles.length} native title= (${data.titles.map((t) => t.at).join(', ')})` : ''}`);
@@ -384,6 +442,18 @@ async function main() {
       report.push(`- **D8 works**: ${data.unnamed.length} unnamed control(s)${data.unnamed.length ? ' (' + data.unnamed.join(', ') + ')' : ''} · overflow 1080p: ${data.overflowing.length ? data.overflowing.join(', ') : 'none'}${data.pageScrollX ? ' · page scrolls sideways' : ''} · overflow 720p: ${small.overflowing.length ? small.overflowing.join(', ') : 'none'}${small.pageScrollX ? ' · page scrolls sideways' : ''} · console errors: ${errors.length}`);
       for (const e of errors.slice(0, 5)) report.push(`  - ${e.slice(0, 160)}`);
       report.push('');
+      } catch (error) {
+        const observed = page ? await auditObserved(page).catch(() => null) : null;
+        const result = { screen: id, status: 'failed', expectedRoot: s?.root ?? null, url: s?.url ?? null, screenshot: null, captures, observed, error: String(error.message ?? error), errors };
+        results[id] = result;
+        writeFileSync(join(OUT, `${id}.json`), JSON.stringify(result, null, 2));
+        report.push(`## ${id} — FAILED`, `- Expected root: \`${s?.root ?? 'not declared'}\``, `- ${result.error.replaceAll('\n', ' ').slice(0, 600)}`, `- Observed: ${JSON.stringify(observed)}`, '- This screen was not successfully captured at both sizes.');
+        for (const [size, capture] of Object.entries(captures)) if (capture) report.push(`- Partial diagnostic only (${size}): \`${ARTIFACTS}/${capture.screenshot}\``);
+        report.push('');
+        console.error(`ui-audit: ${id} FAILED; continuing: ${result.error.split('\n')[0]}`);
+      } finally {
+        if (page) await page.close().catch(() => {});
+      }
     }
     await browser.close();
   }
@@ -394,9 +464,12 @@ async function main() {
   report.push(`- **D7 dead CSS**: ${st.deadCss.length ? st.deadCss.map((d) => `\`${d.file}\` → ${d.classes.join(', ')}${d.users === 0 ? ' (module imported by nothing?)' : ''}`).join('; ') : 'none'}`);
   report.push(`- **D6 literals**: ${st.hexLiterals.length ? st.hexLiterals.map((h) => `\`${h.file}:${h.line}\` ${h.literal}`).join(', ') : 'none'}`);
   report.push(`- **D2 title=**: ${st.titleAttrs.length ? st.titleAttrs.map((t) => `\`${t.file}:${t.line}\``).join(', ') : 'none'}`);
-  const md = `# UI audit — ${new Date().toISOString().slice(0, 16).replace('T', ' ')}\n\nScreens: ${screens.join(', ') || '—'}\n\n${report.join('\n')}\n`;
+  const failed = Object.values(results).filter((result) => result.status === 'failed').map((result) => result.screen);
+  const summary = { requested: screens.length, captured: Object.values(results).filter((result) => result.status === 'captured').length, failed };
+  const md = `# UI audit — ${new Date().toISOString().slice(0, 16).replace('T', ' ')}\n\nScreens: ${screens.join(', ') || '—'}\n\nCaptured: ${summary.captured}/${summary.requested} · Failed: ${failed.join(', ') || 'none'}\n\n${report.join('\n')}\n`;
   writeFileSync(join(OUT, 'report.md'), md);
-  writeFileSync(join(OUT, 'report.json'), JSON.stringify({ screens: results, static: st, files }, null, 2));
+  writeFileSync(join(OUT, 'report.json'), JSON.stringify({ summary, screens: results, static: st, files }, null, 2));
+  if (failed.length) process.exitCode = 1;
   console.log(md);
   console.log(`→ ${relative(ROOT, join(OUT, 'report.md'))}`);
 }

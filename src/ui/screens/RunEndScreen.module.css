@@ -1,149 +1,89 @@
+/* §9.12.3 — a final team portrait, a warm ending, and the record one click away. */
 .root {
   height: 100%;
   display: grid;
-  place-items: center;
+  grid-template-rows: auto auto auto;
+  justify-items: center;
+  align-content: center;
+  gap: var(--sp-5);
   padding: var(--sp-5);
-  overflow: auto;
   color: var(--ink-primary);
+  overflow-y: auto;
 }
 .won {
-  background: radial-gradient(130% 90% at 50% 0%, color-mix(in srgb, var(--accent-action) 22%, var(--surface-0)) 0%, var(--surface-0) 62%);
+  background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream), var(--surface-0));
 }
 .lost {
-  background: radial-gradient(130% 90% at 50% 0%, var(--surface-2) 0%, var(--surface-0) 62%);
+  background: radial-gradient(130% 90% at 50% 0%, var(--surface-2), var(--surface-0));
 }
-.card {
-  width: min(700px, 100%);
-  background: var(--surface-1);
-  border: 2px solid var(--border-strong);
-  border-radius: var(--radius-xl);
-  padding: var(--sp-6);
-  box-shadow: 0 24px 60px rgba(58, 46, 34, 0.25);
+.heading {
   display: grid;
-  gap: var(--sp-3);
-  align-content: start;
+  justify-items: center;
+  gap: var(--sp-1);
 }
 .title {
   margin: 0;
-  text-align: center;
   font-size: var(--type-display);
-  color: var(--brand-red);
+  color: var(--brand-red-deep);
 }
 .sub {
   margin: 0;
-  text-align: center;
+  font-size: var(--type-body);
   color: var(--ink-secondary);
 }
-.badge {
-  justify-self: center;
-  display: grid;
-  gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-5);
-  border-radius: var(--radius-lg);
-  background: var(--surface-2);
-  border: 2px solid var(--accent-action);
-  color: var(--ink-primary);
-  font-size: var(--type-h3);
-}
-.badgeRow {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  text-align: left;
-}
-.badgeRow img {
-  image-rendering: pixelated;
-}
-.badgeRow > span {
-  display: grid;
-}
-.metrics {
-  margin: var(--sp-3) 0 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--sp-3);
-}
-.metrics > div {
-  background: var(--surface-2);
-  border-radius: var(--radius-md);
-  padding: var(--sp-3);
-  text-align: center;
-}
-.metrics dt {
-  font-size: var(--type-caption);
-  color: var(--ink-secondary);
-}
-.metrics dd {
-  margin: 2px 0 0;
-  font-size: var(--type-h2);
-}
-.sectionTitle {
-  margin: var(--sp-4) 0 0;
-  font-size: var(--type-caption);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-}
-.team {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--sp-2);
-}
-.team li {
-  display: grid;
-  grid-template-columns: 56px 1fr auto auto auto;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-2);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
+.distance {
   font-size: var(--type-small);
-}
-.memberName {
-  font-family: var(--font-display);
-  font-weight: 700;
-}
-.hp {
   color: var(--ink-secondary);
-}
-.fainted {
-  opacity: 0.55;
-  filter: grayscale(0.6);
-}
-.trauma {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: var(--radius-pill);
-  background: var(--accent-warning);
-  color: var(--ink-on-accent);
 }
 .actions {
-  margin-top: var(--sp-5);
   display: flex;
+  align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: var(--sp-3);
 }
+.recordDoor,
 .continue,
 .again {
-  border-radius: var(--radius-md);
-  padding: var(--sp-3) var(--sp-6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  padding: var(--sp-3) var(--sp-5);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--type-h3);
+  cursor: pointer;
 }
 .continue {
-  background: var(--surface-2);
+  background: var(--surface-1);
   color: var(--ink-primary);
-  border: 1px solid var(--border-subtle);
 }
 .again {
   background: var(--accent-action);
-  color: var(--ink-primary);
-  box-shadow: 0 6px 0 var(--accent-action-deep);
+  color: var(--ink-on-accent);
+  border-color: var(--accent-action-deep);
 }
-.again:hover {
-  transform: translateY(-2px);
+.recordDoor {
+  background: var(--surface-1);
+  color: var(--ink-primary);
+}
+.earned {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-small);
+}
+.recordDoor:focus-visible,
+.continue:focus-visible,
+.again:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: var(--sp-1);
+}
+@media (max-height: 800px) {
+  .root {
+    gap: var(--sp-4);
+  }
 }

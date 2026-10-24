@@ -14,7 +14,7 @@ const WHOLE_BELOW = 40;
  * so they never show the same one. `seed` (the node's hash) sets where in the pool and in the period this node starts,
  * so two neighbours of one habitat never move together. With motion off they stand still on the pair the seed picks.
  */
-export function HabitatArt({ src, low, pool, seed }: { src: string; low: boolean; pool: readonly string[]; seed: number }) {
+export function HabitatArt({ src, low, pool, seed, artScale = 1 }: { src: string; low: boolean; pool: readonly string[]; seed: number; artScale?: number }) {
   const n = pool.length;
   const moving = useMotionPref() && n > 1;
   const offset = seed % POOL_CYCLE.faceMs;
@@ -43,7 +43,8 @@ export function HabitatArt({ src, low, pool, seed }: { src: string; low: boolean
 
   const face = (url: string, side: 'left' | 'right') => {
     const size = sizes[url];
-    const scale = size && size.h < WHOLE_BELOW ? 1 : 0.5;
+    // The surrounding route grows; each resident still lands on a native whole/half pixel multiple.
+    const scale = Math.max(0.5, Math.round((size && size.h < WHOLE_BELOW ? 1 : 0.5) * artScale * 2) / 2) / artScale;
     return (
       <img
         className={`pixel ${styles.face} ${styles[side]}`}
@@ -57,7 +58,7 @@ export function HabitatArt({ src, low, pool, seed }: { src: string; low: boolean
     );
   };
   return (
-    <span className={styles.root} style={{ '--half': `${half}px` } as CSSProperties} data-testid="habitat-art">
+    <span className={styles.root} style={{ '--half': `${half}px`, '--tuft-scale': Math.max(0.5, Math.round(artScale) / 2) / artScale } as CSSProperties} data-testid="habitat-art">
       {left && face(left, 'left')}
       {right && face(right, 'right')}
       {left && <img className={`pixel ${styles.tuft} ${styles.left}`} src={WILD_GRASS} alt="" draggable={false} />}

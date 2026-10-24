@@ -13,10 +13,10 @@ import { gymById, type MapNode, type RegionMap } from '@/sim';
 
 /** Tiles per map column (left to right) and per map row (top to bottom). */
 export const COL_TILES = 7;
-export const ROW_TILES = 2;
+export const ROW_TILES = 3;
 /** The scenery framing the route: tiles left and right of the first and last column, above and below the rows. */
 export const MARGIN_X = 5;
-export const MARGIN_Y = 3;
+export const MARGIN_Y = 2;
 /** How far either side of an edge's line the ground is kept clear of scenery, in tiles. */
 const CORRIDOR = 0.75;
 /** Where the river stands, in tiles right of the point of no return's column. */

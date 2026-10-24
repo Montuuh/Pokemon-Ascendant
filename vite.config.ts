@@ -13,6 +13,8 @@ export default defineConfig({
   // sprite rather than quietly on the third screen.
   base: process.env.VITE_BASE ?? '/',
   plugins: [react()],
+  // Playwright writes HTML traces and review exports here; those artifacts must not reload an active game.
+  server: { watch: { ignored: ['**/playtest/**'] } },
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },

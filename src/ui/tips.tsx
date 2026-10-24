@@ -1,4 +1,8 @@
 import type { ReactNode } from 'react';
+import { fieldsFor, groupPlanFor, wildChancesFor, type RunState } from '@/sim';
+import { nodeHint } from '@/ui/strings';
+import { NodeHover } from '@/ui/components/NodeHover';
+import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { visibleMoot, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
@@ -17,7 +21,39 @@ import { TypeChart } from '@/ui/components/TypeChart';
 // words, and the § it comes from is named in a comment rather than in the text (players do not read §).
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+/** §9.4 — the final team keeps its condition in the run record. */
+export function runEndTeamTip(name: string, level: number, hp: number, max: number, trauma: number): ReactNode {
+  return <Tip title={name} meta={[`Lv ${level}`, `${hp} / ${max} HP`]} body={trauma ? `Trauma ×${trauma}` : undefined} footer="Final condition at the end of this run." />;
+}
+/** §9.4 — results remain accessible behind the final team's record door. */
+export function runEndProgressTip(): ReactNode {
+  return <Tip title="Run record" body="Review your run, Trainer progress, discoveries and Bond gained." />;
+}
 export const typeName = (t: string) => cap(t);
+
+/** §9.3 / §2.7 — a richer glance preserves hidden trainer teams and never commits a choice. */
+export function routeNodeTip(node: MapNode, run: RunState, art: string, kind: string, status: string, ahead: boolean): ReactNode {
+  const content = getContent();
+  const p = node.preview;
+  const group = groupLabel(groupPlanFor(node, run));
+  const fields = fieldsFor(node, run, content);
+  const odds = wildChancesFor(node, run, content);
+  const pool = node.kind === 'wild' && p.objective?.kind !== 'flee' ? p.wild?.pool : undefined;
+  const visibleLevel = p.levelBand[1] > 0 && (node.kind === 'wild' || node.kind === 'elite-wild' || p.objective?.kind === 'hold');
+  const access = status === 'reachable' ? 'Available now · click to inspect before choosing'
+    : status === 'current' ? 'You are here'
+    : status === 'visited' ? 'Cleared · this stop is already behind you'
+    : ahead ? 'Ahead on your route · reach this column to choose'
+    : 'Off your route · this branch is no longer reachable';
+  const detail = node.kind === 'aid' ? `${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free. Trauma stays.`
+    : node.kind === 'merchant' ? 'Buy supplies and equipment for the road. Inspect the cart before you spend.'
+    : node.kind === 'trader' ? 'Trade one Pokémon for one of the offers, at the level of the one you give. Its held item returns to your bag.'
+    : node.kind === 'training' ? 'Paid training for the team before the final climb. Inspect the available upgrades and prices before choosing.'
+    : node.kind === 'mystery' ? null : p.detail;
+  return <NodeHover heading={p.title} art={art} available={status === 'reachable'} access={access}
+    facts={[...(titleSays(p.title, kind) ? [] : [kind]), ...(visibleLevel ? [`Lv ${p.levelBand[0]}–${p.levelBand[1]}`] : []), ...(p.usualTypes?.length ? [`Usually ${p.usualTypes.map(typeName).join(' · ')}`] : []), ...(group ? [group] : []), ...Object.keys(fields).map((id) => id === 'home' ? `Home field: ${typeName(String(fields.home))}` : FIELD_LABEL[id as keyof typeof FIELD_LABEL]).filter((label): label is string => Boolean(label))]}
+    detail={detail} hint={nodeHint(node)} pool={pool} chances={odds?.chances} />;
+}
 
 // ── Types and statuses ───────────────────────────────────────────────────────────────────────────────────
 
@@ -736,18 +772,6 @@ export function forkFooter(yColumn: number, noReturnColumn: number): string {
 /** §2.5 — the river at the point of no return. */
 export function noReturnTip(gyms: readonly string[]): ReactNode {
   return <Tip title="Point of no return" body={`Past the river the two lanes never meet again: the top one ends at ${gyms[0]}, the bottom one at ${gyms[1]}. The middle track's last stop offers both.`} />;
-}
-
-/** §9.3 — the strip under the route. */
-export function routeStripTip(): ReactNode {
-  return (
-    <Tip
-      title="The whole route"
-      meta={['Dot: a fight', 'Ring: a stop', 'Diamond: a Gym']}
-      body="Where you stand, the two Gyms at the end, and the stretch the board is showing. Click to jump there."
-      footer="The road you walked is dark; a route you can no longer take is faded."
-    />
-  );
 }
 
 /** §2.11.0 — the town itself: how a lobby works, and what waits past its gate. */

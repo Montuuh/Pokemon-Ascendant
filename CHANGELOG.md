@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.40 — Places worth reading · 2026-10-23
+
+Responsive route markers, useful hover cards and a final team portrait.
+
+- **Routes.** Larger markers, clear labels and richer place previews.
+- **Endings.** Final teams and earned Badges lead victory and defeat.
+- **Art records.** Provenance clarified; screen audits check their targets.
+
 ### v0.9.39 — Grounded places · 2026-10-23
 
 Complete move illustrations and more coherent overworld places.

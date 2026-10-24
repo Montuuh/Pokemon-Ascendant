@@ -4,26 +4,32 @@
    Elite's name — and with the map's Labels toggle on, every node carries its short name (`.label`). */
 .node {
   position: absolute;
-  width: 64px;
-  height: 80px;
+  /* Upper feet paint above lower transparent hit boxes; a lower node cannot steal their pointer. */
+  z-index: auto;
+  width: calc(64px * var(--node-scale, 1));
+  height: calc(48px * var(--node-scale, 1));
   /* The box ends a few pixels under the node's point: that is where the picture's feet stand. */
-  margin: -72px 0 0 -32px;
+  margin: calc(-48px * var(--node-scale, 1)) 0 0 calc(-32px * var(--node-scale, 1));
   padding: 0;
   border: none;
   background: none;
   /* Only a reachable node can be entered; the others still open their bubble on hover. */
-  cursor: not-allowed;
-  transition:
-    transform var(--motion-fast) var(--ease-spring),
-    filter var(--motion-base) ease;
+  cursor: help;
 }
 
 /* The picture, standing on the node's point. Pixel art at its own size or a whole multiple of it (D9). */
 .art {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  bottom: 0;
+  width: 64px;
+  height: 80px;
+  margin-left: -32px;
+  transform: scale(var(--node-scale, 1));
+  transform-origin: center bottom;
   pointer-events: none;
   filter: drop-shadow(0 2px 0 var(--scrim));
+  transition: filter var(--motion-fast) ease;
 }
 .art img {
   position: absolute;
@@ -65,8 +71,8 @@
   position: absolute;
   left: 50%;
   bottom: -8px;
-  width: 40px;
-  height: 12px;
+  width: calc(40px * var(--node-scale, 1));
+  height: calc(12px * var(--node-scale, 1));
   transform: translateX(-50%);
   border-radius: 50%;
   background: color-mix(in srgb, var(--scrim) 34%, transparent);
@@ -76,8 +82,8 @@
    tufts, so it shows round them. */
 .node[data-art='pokemon'] .ground,
 .node[data-art='habitat'] .ground {
-  width: 68px;
-  height: 14px;
+  width: calc(68px * var(--node-scale, 1));
+  height: calc(14px * var(--node-scale, 1));
   bottom: -8px;
 }
 .reachable .ground,
@@ -92,18 +98,6 @@
 .reachable {
   cursor: pointer;
 }
-/* People stand on the route. The gold ground/chip and its lift carry interaction without floating their feet. */
-.reachable:hover,
-.reachable:focus-visible {
-  transform: scale(1.1);
-  /* The lift makes the node a stack of its own: it rises above its neighbours with it, or the next node (later on the
-     board) would paint over its chip and take the click aimed at it — a 720 p board packs a column tight. */
-  z-index: 2;
-}
-.reachable:hover .art {
-  filter: drop-shadow(0 2px 0 var(--scrim)) brightness(1.08);
-}
-
 /* The named Elite keeps the same grounded shadow; the double-size Gym retains a restrained gold edge. */
 .landmark .art {
   filter: drop-shadow(0 2px 0 var(--scrim));
@@ -146,9 +140,9 @@
 /* The Gym's Leader stands at twice the size, and so does its hit target: the Region's climax, visible from anywhere on
    the route and taken by its head as well as its feet. */
 .climax {
-  width: 112px;
-  height: 156px;
-  margin: -148px 0 0 -56px;
+  width: calc(112px * var(--node-scale, 1));
+  height: min(calc(112px * var(--node-scale, 1)), var(--node-top));
+  margin: calc(-1 * min(112px * var(--node-scale, 1), var(--node-top))) 0 0 calc(-56px * var(--node-scale, 1));
 }
 .climax .trainer img {
   width: 64px;
@@ -156,16 +150,16 @@
   bottom: 0;
 }
 .climax .ground {
-  width: 96px;
-  height: 28px;
+  width: calc(96px * var(--node-scale, 1));
+  height: calc(28px * var(--node-scale, 1));
 }
 
 /* §9.3 — a node's chip: a rounded plate with its kind's icon and its word. */
 .caption {
   position: absolute;
-  /* Over the next node's picture, which is later in the board and would otherwise cover it (a 720 p map is tight). */
-  z-index: 1;
-  top: calc(100% + 12px);
+  /* Chips keep their pointer above neighbouring hit boxes without covering their visible art. */
+  z-index: 3;
+  top: calc(100% + var(--sp-1) * var(--node-scale, 1) + var(--sp-1));
   left: 50%;
   transform: translateX(-50%);
   display: inline-flex;
@@ -173,7 +167,10 @@
   gap: 3px;
   white-space: nowrap;
   font-family: var(--font-display);
-  font-size: var(--type-caption);
+  font-size: var(--node-label-size, var(--type-caption));
+  min-height: var(--sp-5);
+  min-width: calc(var(--sp-10) + var(--sp-8));
+  justify-content: center;
   font-weight: 700;
   letter-spacing: 0.02em;
   padding: 1px 8px;
@@ -190,7 +187,7 @@
 /* Any node's label (the map's toggle): the same plate, quieter than a landmark's name, under the ring, so the ring
    where you stand still shows. */
 .label {
-  top: calc(100% + var(--sp-1));
+  top: calc(100% + var(--sp-1) * var(--node-scale, 1) + var(--sp-1));
   font-weight: 600;
   letter-spacing: 0;
   padding: 0 var(--sp-2) 0 var(--sp-1);
@@ -205,13 +202,11 @@
 .chipIcon {
   flex: none;
 }
-/* A node you can step to: its chip is a button — the action's gold, a dark rim and a step under it, and an arrow. It
-   lifts with the node on hover and focus, as a button does. */
+/* A node you can step to: gold, a dark rim and an arrow. Focus strengthens its contour without moving its feet. */
 .go {
-  /* It is the node's own button (a child of it): a click on it enters the node, and it lifts with it. Tucked up onto
-     its own node's ground (its ring's job, which it takes over), so on a short board it never sits on the next node. */
+  /* The same caption line as every other node: below its feet, never covering the artwork. */
   pointer-events: auto;
-  top: calc(100% - var(--sp-3));
+  top: calc(100% + var(--sp-1) * var(--node-scale, 1) + var(--sp-1));
   padding: 1px var(--sp-1) 1px var(--sp-2);
   border: 2px solid var(--ink-on-accent);
   background: var(--accent-action);
@@ -225,3 +220,18 @@
 }
 /* A route you can no longer take: its labels fade with it — history, not a plan (D5). */
 .gone .label { opacity: 0.6; }
+
+/* Every place can be inspected, even before its column is reachable. */
+.node:hover, .node:focus-visible { z-index: 2; outline: none; }
+.node:hover .ground, .node:focus-visible .ground { box-shadow: 0 0 0 3px var(--brand-blue); }
+.reachable:hover .ground, .reachable:focus-visible .ground { box-shadow: 0 0 0 3px var(--accent-action); }
+.node:hover .art, .node:focus-visible .art { filter: drop-shadow(0 2px 0 var(--scrim)) brightness(1.12); }
+
+/* Broad habitats reserve a caption lane between neighbours; people retain their larger native frames. */
+.node[data-art='habitat'] .art {
+  transform: scale(var(--habitat-scale));
+  --reach: calc(var(--column-reach) / var(--habitat-scale));
+}
+.node[data-art='habitat'] .caption {
+  top: calc(100% + var(--sp-1) * var(--habitat-scale) + 2px);
+}

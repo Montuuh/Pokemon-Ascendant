@@ -13,10 +13,10 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 | **Box / party / owner icons** | PokéAPI pixel box icons (`npm run art:portraits`); 151 compact derivatives trimmed to exact alpha bounds without resampling (`node scripts/build-compact-icons.mjs`) | ✅ `public/art/pokemon/{icons,compact}/*.png` |
 | **Pokémon portraits** (475²) | PokéAPI official artwork (or pixel sprites where pixel-unified) | ✅ `public/art/pokemon/portraits/*.png` |
 | **Type labels** ×15 | **Authentic FRLG pixel boxes** (32×12, `npm run art:types`), rendered nearest-neighbour only at 12/18/24 px | ✅ `public/art/icons/type/*.png` |
-| **Consumable, Held, Stone, Ball, TM & Relic icons** | **Authentic GBA/DS pixel bag sprites** (`PokeAPI/sprites/items` & Bulbagarden Archives, `npm run art:items`). **Never** smooth 3D renders. Every relic and held item uses a **unique** pixel sprite | 🎯 **Priority 1** (`public/art/items/*.png`) |
-| **Trainer sprites** (36) | Pokémon Showdown pixel trainer sprites (`npm run art:trainers`) | ✅ `public/art/trainers/trainer-*.png` |
+| **Consumable, Held, Stone, Ball, TM & Relic icons** | **Authentic pixel bag sprites** (`PokeAPI/sprites/items` & Bulbagarden Archives, `npm run art:items`), retained at native resolution: current files are mostly 30×30, one 24×24. Exact source-game editions are not established for every file. **Never** smooth 3D renders. Every relic and held item uses a **unique** pixel sprite | ✅ `public/art/items/*.png` |
+| **Trainer sprites** (36) | Pokémon Showdown pixel trainer sprites (`npm run art:trainers`) | ✅ `public/art/trainers/<class>.png` |
 | **Move card art** (161) | **GBA-style pixel art of the move effect** (never a creature) on a fixed 68×45 cell grid, ≤20 colours, 1-px dark outline, transparent ground (`npm run art:moves` + `scripts/install-move-art.mjs`), drawn at 2× | ✅ `public/art/moves/<move-id>.png` |
-| **Region map terrain** | **Authentic FRLG 16×16 tiles**, cut from Bulbagarden Archives map renders (`npm run art:route`), painted by `src/ui/screens/map/tileset.ts` at 2× integer scale | ✅ `public/art/route/**` |
+| **Region map terrain** | **Authentic FRLG 16×16 tiles**, cut from Bulbagarden Archives map renders (`npm run art:route`), painted by `src/ui/screens/map/tileset.ts` with nearest-neighbour viewport scaling | ✅ `public/art/route/**` |
 | **Wild Area landmarks** (25) | **Authentic FRLG map structures & tiles** (`npm run art:habitats`), cut with transparent flood-fill or assembled from route tiles + `grass.png` | ✅ `public/art/map/habitat/*.png` |
 | **Town lobbies** (Pallet Town, Celadon City) | **Authentic FRLG overworld buildings & tiles** on the 16-px grid, with custom buildings (Challenge Ring, Coliseum) pixel-snapped to FRLG palette and grid | 🎯 **Priority 2** (`public/art/towns/*.png`) |
 | **Interior rooms** (Hub, Pokémon Center, Poké Mart, Dept. Store, Game Corner, Black Market, Dojo) | **Authentic FRLG tiles and interior maps** from Bulbagarden Archives, shown at whole or half-step pixel scale (`PixelRoom`). The Center has its own 320×224 composition; the Dojo adds palette-matched practice props and authentic Gen III creatures to its original room | ✅ `public/art/{hub,center,mart,game-corner,black-market,dojo}` (🎯 **Priority 3**: Event vignettes) |
@@ -55,7 +55,7 @@ The palette-only manifest retains its original 161 outputs; twelve later replace
 
 Move cards reserve the full native 68×45 illustration cell at 2×, without shrinking it under flex layout. `e2e/move-window.spec.ts` checks the image bounds of all 161 moves in real cards at both desktop viewports.
 
-`node scripts/build-map-people.mjs` extracts native 16×32 FRLG overworld frames for route-only use. Ordinary people use 2×; Gym landmarks retain a larger 4× register. Feet and ground shadows are aligned; idle bobbing and broad glows no longer float people above the terrain. Habitat residents retain their seeded rotation and native half-step scales. Full battle portraits remain in the preview. Sources, trainer-class aliases and output hashes are retained in `public/art/map/people/manifest.json`.
+`node scripts/build-map-people.mjs` extracts native 16×32 FRLG overworld frames for route-only use. Ordinary people start from 2× native frames; Gym landmarks retain a double register. Both grow in native half steps with the route viewport. Habitat compositions grow separately so captions clear neighbouring landmarks. Feet and ground shadows are aligned; idle bobbing and broad glows no longer float people above the terrain. Habitat residents retain their seeded rotation and native half-step scales. Full battle portraits remain in the preview. Sources, trainer-class aliases and output hashes are retained in `public/art/map/people/manifest.json`.
 
 `node scripts/build-black-market-art.mjs` assembles a dedicated native 320×256 Rocket interior. Four physical counters occupy storage, supply, gambling and office areas; each opens the existing transaction in a focus-managed dialog. The room renders at 2×/3× on supported desktop viewports. Its source crops, coordinates and hashes are retained in `public/art/black-market/room-manifest.json`. No generation or resampling is used for either family.
 
@@ -87,6 +87,29 @@ Stage scenes use 0.5× scale steps with cover cropping. Regenerate the 45 runtim
 
 ---
 
+### Capture validity and provenance checks (A19)
+
+`node scripts/ui-audit.mjs --list` lists every preset and its expected root. A capture must verify that root,
+any required panel state, painted map terrain, loaded fonts and decoded images before taking either the
+1920×1080 or 1280×720 image. Fixed settling delays alone are not readiness evidence. Hover presets also
+verify their node-hover content with full motion enabled.
+
+The audit writes an explicit failed record when setup, readiness or either capture fails, continues through
+the remaining screens, and exits nonzero. Failed records name the expected and observed roots and run
+phase; a partial image is diagnostic evidence only. Old images for that preset are removed before retrying.
+Never use a Run over landing page as evidence for a Mystery Event or Evolution. The current fixtures enter
+those states through the run reducer; Trainer Card and Center Daycare use their current building controls.
+`UI_AUDIT_BASE` selects the server; `UI_AUDIT_OUT` selects an isolated evidence directory.
+Run `node --test scripts/ui-audit.test.mjs` to check root declarations and failure/continuation behavior.
+
+Source/output hashes verify identity and processing, not ownership. The current stage and move manifests
+cover 45 and 161 outputs respectively; twelve A14 moves additionally retain exact prompts and raw outputs.
+The earlier 149 move inputs and embedded stage portraits lack a complete retained authorship chain.
+Item fetches use an unpinned mirror branch; native pixel dimensions and sampled byte matches must not be
+presented as a fully pinned per-item provenance record. See [the verified inventory and its limits](ATTRIBUTION.md).
+
+---
+
 ## 3. Fast Lanes & Commands
 
 | Lane | Command | Output |
@@ -95,7 +118,7 @@ Stage scenes use 0.5× scale steps with cover cropping. Regenerate the 45 runtim
 | Portraits + box icons | `npm run art:portraits -- <dex…>` | `public/art/pokemon/{portraits,icons}/NNN-<id>.png` |
 | Compact party / owner icons | `node scripts/build-compact-icons.mjs` | `public/art/pokemon/compact/NNN-<id>.png` |
 | Normalise existing stage JPGs | `node scripts/normalise-stages.mjs install` | `public/art/stages/*.png` + `manifest.json` (JPG sources retained) |
-| Trainer sprites | `npm run art:trainers` | `public/art/trainers/trainer-<class>.png` |
+| Trainer sprites | `npm run art:trainers` | `public/art/trainers/<class>.png` |
 | Type pixel boxes (FRLG / HGSS) | `npm run art:types` | `public/art/icons/type/<type>.png` |
 | All item, TM, stone, ball & relic pixel icons | `npm run art:items` | `public/art/items/<id>.png` |
 | Move card pixel art | `npm run art:moves [id…]` · `npm run art:moves -- --sheet` | `public/art/moves/<move-id>.png` |
