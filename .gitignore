@@ -1,10 +1,8 @@
 node_modules/
 dist/
 coverage/
-# visual verification output (regenerate with `npm run shot`)
-playtest/*.png
-playtest/artgen/
-playtest/test-results/
+# visual verification and playtest output (regenerate with `npm run shot`)
+playtest/
 playwright-report/
 # secrets (image-gen API keys etc.)
 .env
@@ -22,5 +20,3 @@ playwright-report/
 Thumbs.db
 *.log
 
-# UI audit output (regenerate with `npm run ui:audit`)
-playtest/ui-audit/
