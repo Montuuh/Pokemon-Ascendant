@@ -1500,6 +1500,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B03 names the reached Region column, Victory Road column or League opponent in the ending and defeat record. The marker reads the attempted fight before the last cleared position, with an entrance fallback for arrival snapshots. No game rules change.
 
+### v0.9.43 — A still final team  ✅ 2026-10-24
+
+**Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

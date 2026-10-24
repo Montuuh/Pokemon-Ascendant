@@ -1,0 +1,13 @@
+import { chromium } from '@playwright/test';
+import { writeFileSync } from 'node:fs';
+const out='playtest/art-review-2026-10-24/implementation/B04';
+const browser=await chromium.launch({channel:'chrome',headless:true});
+const page=await browser.newPage({viewport:{width:1280,height:720},reducedMotion:'reduce'});
+await page.goto('http://localhost:5173/?screen=settings');
+await page.getByTestId('text-scale-150').click();
+await page.goto('http://localhost:5173/?screen=menu');
+await page.evaluate(()=>{const a=window.__ascendant;a.meta.reset();a.run.new('squirtle',7);a.run.fill(6);a.run.patch(d=>{d.box.forEach((m,i)=>{m.speciesId=['blastoise','charizard','venusaur','pikachu','lapras','dragonite'][i];m.shiny=i===1;m.level=35;m.hp=30;});d.phase='ended';d.outcome='victory';d.badges=['boulder-badge','thunder-badge','marsh-badge'];});a.goTo('victory');});
+await page.evaluate(()=>document.fonts.ready);await page.waitForFunction(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0));
+await page.waitForTimeout(250);
+const result=await page.evaluate(()=>{const rect=n=>{const r=n.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};};const badges=[...document.querySelectorAll('[data-testid^="run-end-badge-"]')];const plates=[...document.querySelectorAll('[data-testid^="run-end-mon-"] > span:last-child')];return {badges:badges.map(n=>({id:n.getAttribute('data-testid'),...rect(n)})),plates:plates.map(n=>({text:n.textContent,...rect(n)})),overlaps:badges.flatMap(b=>plates.flatMap(p=>{const a=rect(b),z=rect(p),w=Math.min(a.right,z.right)-Math.max(a.left,z.left),h=Math.min(a.bottom,z.bottom)-Math.max(a.top,z.top);return w>0&&h>0?[{badge:b.getAttribute('data-testid'),plate:p.textContent,width:w,height:h}]:[]}))};});
+await page.screenshot({path:out+'/review-150-overlap.png'});writeFileSync(out+'/review-150-overlap.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));await browser.close();

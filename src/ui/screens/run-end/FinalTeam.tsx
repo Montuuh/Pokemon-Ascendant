@@ -4,6 +4,7 @@ import { maxHpOf, type PartyMon } from '@/sim';
 import { nodeBadge, spriteOf, stageBackdrop } from '@/ui/art';
 import { PixelSprite } from '@/ui/components/PixelSprite';
 import { ShinyMark } from '@/ui/components/ShinyMark';
+import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { RUN_END_TEXT } from '@/ui/strings';
 import { badgeTip, runEndTeamTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
@@ -20,6 +21,7 @@ export function FinalTeam({
   won: boolean;
 }) {
   const content = getContent();
+  const animate = useMotionPref();
   const team = useRef<HTMLUListElement>(null);
   const [cell, setCell] = useState({ width: 144, height: 160 });
   const [dimensions, setDimensions] = useState<Record<string, { width: number; height: number }>>({});
@@ -38,8 +40,13 @@ export function FinalTeam({
     observer.observe(el);
     return () => observer.disconnect();
   }, [box.length]);
-  const sources = box.map((mon) => spriteOf(mon, 'front', !!mon.shiny));
-  const loaded = sources.flatMap((src) => (dimensions[src] ? [dimensions[src]] : []));
+  // §9.6 — GIF playback is independent of CSS; use its unscaled first frame when motion is off.
+  const sources = box.map((mon) => ({
+    src: spriteOf(mon, 'front', !!mon.shiny, animate),
+    // Both formats retain the same native canvas; keep the fit during a live source change.
+    sizeKey: `${mon.speciesId}/${!!mon.shiny}`,
+  }));
+  const loaded = sources.flatMap(({ sizeKey }) => (dimensions[sizeKey] ? [dimensions[sizeKey]] : []));
   const scale =
     loaded.length === box.length && loaded.length > 0
       ? Math.max(
@@ -67,10 +74,10 @@ export function FinalTeam({
         style={{ '--members': box.length } as CSSProperties}
         aria-label={RUN_END_TEXT.team}
       >
-        {box.map((mon) => {
+        {box.map((mon, index) => {
           const species = content.species(mon.speciesId);
-          const src = spriteOf(mon, 'front', !!mon.shiny);
-          const size = dimensions[src];
+          const { src, sizeKey } = sources[index]!;
+          const size = dimensions[sizeKey];
           return (
             <li key={mon.uid}>
               <Tipped
@@ -91,9 +98,9 @@ export function FinalTeam({
                     onLoad={(event) => {
                       const { naturalWidth: width, naturalHeight: height } = event.currentTarget;
                       setDimensions((old) =>
-                        old[src]?.width === width && old[src]?.height === height
+                        old[sizeKey]?.width === width && old[sizeKey]?.height === height
                           ? old
-                          : { ...old, [src]: { width, height } },
+                          : { ...old, [sizeKey]: { width, height } },
                       );
                     }}
                   />

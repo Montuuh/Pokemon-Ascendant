@@ -1,0 +1,233 @@
+
+> pokemon-ascendant@0.9.43 check
+> npm run typecheck && npm run lint && npm run test && npm run check:refs && npm run check:catalogs && npm run check:version
+
+
+> pokemon-ascendant@0.9.43 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> pokemon-ascendant@0.9.43 lint
+> eslint .
+
+
+> pokemon-ascendant@0.9.43 test
+> vitest run
+
+
+ RUN  v5.0.1 C:/Users/dmont/AppData/Local/Temp/ascendant-b04-release-p6uLFI
+
+ ✓ src/sim/combat/moveEffects.test.ts (19 tests) 83ms
+ ✓ src/sim/combat/status.test.ts (16 tests) 94ms
+ ✓ src/sim/combat/fields.test.ts (15 tests) 79ms
+ ✓ src/sim/combat/badges.test.ts (20 tests) 64ms
+ ✓ src/sim/combat/intents.test.ts (16 tests) 98ms
+ ✓ src/sim/combat/abilities.test.ts (19 tests) 103ms
+ ✓ src/sim/combat/items.test.ts (24 tests) 86ms
+ ✓ src/sim/combat/group.test.ts (23 tests) 197ms
+ ✓ src/sim/meta/account.test.ts (29 tests) 31ms
+ ✓ src/sim/run/safari.test.ts (16 tests) 97ms
+ ✓ src/sim/run/objectives.test.ts (11 tests) 82ms
+ ✓ src/sim/run/regionModifiers.test.ts (15 tests) 196ms
+ ✓ src/sim/run/cities.test.ts (19 tests) 334ms
+ ✓ src/sim/run/blackMarket.test.ts (21 tests) 363ms
+ ✓ src/sim/run/city.test.ts (25 tests) 497ms
+ ✓ src/sim/combat/gymRules.test.ts (16 tests) 64ms
+ ✓ src/sim/meta/mart.test.ts (12 tests) 12ms
+ ✓ src/sim/run/run.test.ts (81 tests) 790ms
+ ↓ src/sim/balance/report.test.ts (1 test | 1 skipped)
+ ✓ src/sim/run/modifiers.test.ts (11 tests) 94ms
+ ✓ src/sim/run/region2.test.ts (12 tests) 151ms
+ ✓ src/sim/run/legendaries.test.ts (10 tests) 81ms
+ ✓ src/sim/combat/cards.test.ts (20 tests) 49ms
+ ✓ src/sim/meta/achievements.test.ts (13 tests) 31ms
+ ✓ src/sim/run/difficulty.test.ts (11 tests) 83ms
+ ✓ src/sim/run/rewards.test.ts (14 tests) 422ms
+   ✓ Relics are scarce — §7.3.1, §2.8.1, §7.3.7 (5)
+     ✓ ATrainer_DropsOnlyACommon_AndRarely 332ms
+ ✓ src/sim/run/victoryRoad.test.ts (8 tests) 96ms
+ ✓ src/sim/combat/swap.test.ts (15 tests) 52ms
+ ✓ src/sim/combat/catch.test.ts (13 tests) 52ms
+ ✓ src/sim/run/services.test.ts (11 tests) 133ms
+ ✓ src/sim/run/league.test.ts (6 tests) 88ms
+ ✓ src/sim/run/mapRules.test.ts (19 tests) 1685ms
+   ✓ Map generation rules — §2.5 (19)
+     ✓ TracksNotALattice_OneOrTwoChildren_NoCrossedEdges_§2.5 569ms
+ ✓ src/sim/combat/arenaRules.test.ts (8 tests) 39ms
+stdout | src/sim/balance/nerfs.test.ts > Sleep lock — §4.2.2.4 > SleepLock_EnemyStillActsEveryOtherTurn
+sleep lock: the enemy acted 6 of 10 turns
+
+ ✓ src/sim/run/finds.test.ts (10 tests) 354ms
+stdout | src/sim/balance/nerfs.test.ts > Drain — §4.1.6, catalogs/moves.md > MegaDrain_HealsAShareOfTheDamage_NotOfTheMaxHp
+mega drain: 9.7 % Max HP per AP · 49 % of the damage back · with Leftovers the Lead's HP moves -7.0 % of Max HP a turn under fire
+
+ ✓ src/sim/balance/nerfs.test.ts (2 tests) 91ms
+ ✓ src/sim/combat/setup.test.ts (13 tests) 29ms
+ ✓ src/sim/run/region3.test.ts (9 tests) 172ms
+ ✓ src/content/moveArt.test.ts (3 tests) 701ms
+   ✓ Move art palette — §9.2.3 / D9 (3)
+     ✓ Runtime_AllMovePNGs_ActualDecodedColoursAndBinaryAlphaMeetContract 447ms
+ ✓ src/sim/combat/objective.test.ts (11 tests) 43ms
+ ✓ src/sim/run/groups.test.ts (8 tests) 187ms
+ ✓ src/sim/run/shiny.test.ts (5 tests) 143ms
+ ✓ src/ui/audio/audio.test.ts (10 tests) 39ms
+ ✓ src/sim/combat/typeChart.test.ts (10 tests) 11ms
+ ✓ src/sim/combat/mastery.test.ts (8 tests) 35ms
+ ✓ src/content/changelog.test.ts (7 tests) 19ms
+ ✓ src/sim/run/wild.test.ts (9 tests) 194ms
+ ✓ src/sim/run/trader.test.ts (6 tests) 57ms
+ ✓ src/app/storageKeys.test.ts (5 tests) 7ms
+ ✓ src/sim/combat/damage.test.ts (6 tests) 5ms
+ ✓ src/sim/combat/boss.test.ts (8 tests) 41ms
+ ✓ src/sim/combat/combo.test.ts (6 tests) 46ms
+ ✓ src/sim/run/stops.test.ts (4 tests) 44ms
+ ✓ src/sim/rng/gameRng.test.ts (11 tests) 272ms
+ ✓ src/ui/moveMotion.test.ts (7 tests) 16ms
+ ↓ src/sim/balance/accountCareer.test.ts (1 test | 1 skipped)
+ ✓ src/content/roadmap.test.ts (4 tests) 7ms
+ ✓ src/sim/combat/faint.test.ts (7 tests) 40ms
+ ↓ src/sim/balance/bondCareer.test.ts (1 test | 1 skipped)
+ ✓ src/sim/run/fieldItems.test.ts (5 tests) 53ms
+ ✓ src/sim/run/guide.test.ts (6 tests) 18ms
+ ✓ src/ui/title/matchups.test.ts (4 tests) 20ms
+ ✓ src/sim/meta/progress.test.ts (3 tests) 7ms
+ ✓ src/content/content.test.ts (26 tests) 3309ms
+   ✓ content registry (23)
+     ✓ StageArtwork_EveryShippedBackdrop_DecodesOnTheReviewedPixelGrid_§9.2.1 1969ms
+     ✓ every consumable, held item, stone and relic has an item icon, and every TM a disc in its move's type 849ms
+ ✓ src/sim/combat/log.test.ts (3 tests) 26ms
+ ✓ src/ui/screens/run-end/runEndLocation.test.ts (9 tests) 50ms
+ ✓ src/sim/combat/flee.test.ts (3 tests) 22ms
+ ✓ src/sim/combat/statStages.test.ts (3 tests) 4ms
+ ✓ src/sim/run/battlefields.test.ts (5 tests) 85ms
+ ✓ src/sim/meta/pokedex.test.ts (4 tests) 5ms
+ ✓ src/sim/run/doubleAction.test.ts (5 tests) 337ms
+ ✓ src/sim/replay/golden.test.ts (3 tests) 76ms
+ ✓ src/sim/run/team.test.ts (3 tests) 18ms
+ ✓ src/sim/run/usualTypes.test.ts (2 tests) 25ms
+ ✓ src/content/roster.test.ts (2 tests) 48ms
+ ✓ src/sim/replay/determinism.test.ts (47 tests) 2141ms
+   ✓ Determinism & replay (47)
+     ✓ EveryFixture_EndsWithinActionBudget 422ms
+ ✓ src/ui/screens/map/terrain.test.ts (7 tests) 4008ms
+   ✓ The route terrain — §2.5.4 (6)
+     ✓ EveryEdge_IsAStraightLine_OverClearGround 914ms
+     ✓ EachLaneWearsItsGymsTerrain_PastTheRiver 439ms
+     ✓ EveryTileAnyRouteAsksFor_IsAFileOnDisk 455ms
+   ✓ The route tiles on disk — §2.5.4 (1)
+     ✓ EveryPieceHasItsSize_GroundIsOpaque_ObjectsAreCutOut 1946ms
+stdout | src/sim/balance/balance.test.ts
+┌─────────┬────────────────────────────┬─────────┬──────────┬──────────┬──────────┬───────────┬──────────┬───────────────┐
+│ (index) │ scenario                   │ winRate │ avgTurns │ minTurns │ maxTurns │ avgFaints │ avgSwaps │ avgTeamHpLeft │
+├─────────┼────────────────────────────┼─────────┼──────────┼──────────┼──────────┼───────────┼──────────┼───────────────┤
+│ 0       │ 'wild-basic'               │ '1.00'  │ '2.4'    │ 2        │ 3        │ '0.00'    │ '0.50'   │ '1.00'        │
+│ 1       │ 'wild-rare'                │ '1.00'  │ '3.9'    │ 3        │ 4        │ '0.00'    │ '0.92'   │ '1.00'        │
+│ 2       │ 'wild-catch-ready'         │ '1.00'  │ '1.2'    │ 1        │ 2        │ '0.00'    │ '0.08'   │ '1.00'        │
+│ 3       │ 'wild-shiny'               │ '1.00'  │ '1.0'    │ 1        │ 1        │ '0.00'    │ '0.00'   │ '1.00'        │
+│ 4       │ 'trainer-2enemy'           │ '1.00'  │ '4.1'    │ 3        │ 5        │ '0.00'    │ '0.50'   │ '0.87'        │
+│ 5       │ 'status-showcase'          │ '1.00'  │ '3.3'    │ 3        │ 5        │ '0.00'    │ '0.08'   │ '0.91'        │
+│ 6       │ 'full-hand-3mon'           │ '1.00'  │ '2.2'    │ 2        │ 3        │ '0.00'    │ '1.00'   │ '0.90'        │
+│ 7       │ 'wild-boss-3phase'         │ '1.00'  │ '6.4'    │ 5        │ 8        │ '0.75'    │ '1.33'   │ '0.61'        │
+│ 8       │ 'group-wild-flock'         │ '1.00'  │ '6.3'    │ 6        │ 7        │ '0.00'    │ '1.42'   │ '0.89'        │
+│ 9       │ 'group-trainer-pair'       │ '1.00'  │ '8.1'    │ 7        │ 10       │ '0.08'    │ '2.92'   │ '0.64'        │
+│ 10      │ 'group-hiker-healer'       │ '1.00'  │ '8.2'    │ 7        │ 10       │ '0.00'    │ '1.58'   │ '0.73'        │
+│ 11      │ 'group-elite-buffer'       │ '1.00'  │ '7.8'    │ 7        │ 8        │ '1.08'    │ '2.42'   │ '0.27'        │
+│ 12      │ 'group-call-for-help'      │ '1.00'  │ '6.0'    │ 6        │ 6        │ '0.00'    │ '1.58'   │ '0.90'        │
+│ 13      │ 'wild-acts-twice'          │ '1.00'  │ '4.3'    │ 4        │ 5        │ '0.00'    │ '1.75'   │ '0.69'        │
+│ 14      │ 'field-gym-sandstorm'      │ '1.00'  │ '4.1'    │ 4        │ 5        │ '0.00'    │ '0.67'   │ '0.89'        │
+│ 15      │ 'field-rain-river'         │ '1.00'  │ '2.1'    │ 2        │ 3        │ '0.00'    │ '0.67'   │ '1.00'        │
+│ 16      │ 'gym-sabrina-rule'         │ '0.00'  │ '6.9'    │ 6        │ 8        │ '3.00'    │ '4.25'   │ '0.00'        │
+│ 17      │ 'flee-abra'                │ '1.00'  │ '2.0'    │ 2        │ 2        │ '0.00'    │ '0.42'   │ '0.91'        │
+│ 18      │ 'hold-primeape'            │ '1.00'  │ '3.0'    │ 3        │ 3        │ '0.00'    │ '0.75'   │ '0.76'        │
+│ 19      │ 'legendary-mewtwo-barrier' │ '0.00'  │ '19.6'   │ 15       │ 25       │ '2.00'    │ '5.75'   │ '0.00'        │
+│ 20      │ 'legendary-mew-metronome'  │ '1.00'  │ '8.2'    │ 7        │ 9        │ '0.00'    │ '0.00'   │ '0.81'        │
+│ 21      │ 'league-champion'          │ '0.00'  │ '30.9'   │ 27       │ 37       │ '3.00'    │ '14.75'  │ '0.00'        │
+└─────────┴────────────────────────────┴─────────┴──────────┴──────────┴──────────┴───────────┴──────────┴───────────────┘
+
+ ✓ src/sim/balance/balance.test.ts (5 tests) 4ms
+stdout | src/sim/balance/safari.test.ts > The Safari Zone, measured — §2.11.6 > Bands_OneOrTwoAVisit_TheRareAThird_AndTheWorseBet
+Pallet rare-first: 1.47 a visit · 2+ 52 % · a rare 45 % · rare 45 % vs common 35 %
+   nidoran-m 29% · exeggcute 62% · pinsir 48% · venonat 32% · slowpoke 73% · tauros 47% · paras 43% · kangaskhan 38% · goldeen 37% · chansey 47%
+   turns used 8.6 · balls used 2.4 · ended by {"fled":84,"caught":220,"closed":41,"left":34}
+Pallet easy-first: 1.59 a visit · 2+ 61 % · a rare 17 % · rare 17 % vs common 81 %
+   nidoran-m 74% · exeggcute 67% · pinsir 6% · venonat 86% · slowpoke 56% · tauros 30% · paras 93% · kangaskhan 14% · goldeen 73% · chansey 16%
+   turns used 8.1 · balls used 2.7 · ended by {"caught":239,"closed":29,"fled":52,"left":29}
+Celadon rare-first: 1.47 a visit · 2+ 50 % · a rare 37 % · rare 37 % vs common 19 %
+   nidoran-m 21% · goldeen 20% · slowpoke 72% · kangaskhan 21% · venonat 16% · chansey 50% · dratini 39% · paras 20% · exeggcute 72% · pinsir 34% · tauros 45%
+   turns used 9.5 · balls used 2.6 · ended by {"fled":103,"caught":220,"left":41,"closed":26}
+Celadon easy-first: 1.94 a visit · 2+ 61 % · a rare 0 % · rare 0 % vs common 78 %
+   nidoran-m 69% · goldeen 72% · slowpoke 43% · kangaskhan 0% · venonat 84% · chansey 0% · dratini 0% · paras 87% · exeggcute 32% · pinsir 0% · tauros 0%
+   turns used 7.8 · balls used 2.8 · ended by {"caught":291,"left":71,"closed":29,"fled":2}
+
+ ✓ src/sim/balance/safari.test.ts (1 test) 10834ms
+   ✓ The Safari Zone, measured — §2.11.6 (1)
+     ✓ Bands_OneOrTwoAVisit_TheRareAThird_AndTheWorseBet 10833ms
+stdout | src/sim/balance/market.test.ts > The Black Market, found — §2.11.6 > Market_UsedAtCeladon_TakesTheLegendaryForThreePokemon_AndIsMeasured
+black market (12 runs each): R3|R2 0.50 → 0.50 · full run 0.17 → 0.17 · Legendary bought in 4 of 4 Celadon visits
+
+ ✓ src/sim/balance/market.test.ts (1 test) 11023ms
+   ✓ The Black Market, found — §2.11.6 (1)
+     ✓ Market_UsedAtCeladon_TakesTheLegendaryForThreePokemon_AndIsMeasured 11016ms
+stdout | src/sim/balance/intentAccuracy.test.ts > The honest intent, measured over whole runs — §9.2.5 > Forecast_PrintsTheHitThatLands_WhereTheOldChipMissed
+intent accuracy over 2148 hits: old chip 67 % · forecast 100 % | cleave 186 hits: old 26 % · forecast 99 %
+
+ ✓ src/sim/balance/intentAccuracy.test.ts (1 test) 14117ms
+   ✓ The honest intent, measured over whole runs — §9.2.5 (1)
+     ✓ Forecast_PrintsTheHitThatLands_WhereTheOldChipMissed 14115ms
+stdout | src/sim/balance/runBalance.test.ts > Run pacing — §2.1, §3.7 > prints the run table
+┌─────────┬──────────────┬────────┬────────┬────────┬───────┬─────────┬────────┬────────┬───────┐
+│ (index) │ starter      │ win %  │ depth  │ nodes  │ turns │ catches │ faints │ top lv │ evos  │
+├─────────┼──────────────┼────────┼────────┼────────┼───────┼─────────┼────────┼────────┼───────┤
+│ 0       │ 'bulbasaur'  │ '0.47' │ '16.3' │ '16.3' │ '63'  │ '3.4'   │ '1.9'  │ '15.9' │ '4.0' │
+│ 1       │ 'charmander' │ '0.60' │ '15.7' │ '15.7' │ '57'  │ '3.5'   │ '1.2'  │ '15.6' │ '4.0' │
+│ 2       │ 'squirtle'   │ '0.50' │ '16.0' │ '16.0' │ '60'  │ '3.8'   │ '1.7'  │ '15.6' │ '4.3' │
+└─────────┴──────────────┴────────┴────────┴────────┴───────┴─────────┴────────┴────────┴───────┘
+
+stdout | src/sim/balance/ring.test.ts > The Challenge Ring is meant to be lost — §2.9.4.1 > Pallet_Rung1AboutHalf_TheLadderAboutOneInSix
+pallet ring: n 66 · rung 1 0.62 · ladder 0.17
+
+stdout | src/sim/balance/ring.test.ts > The Challenge Ring is meant to be lost — §2.9.4.1 > Celadon_Rung1AboutHalf_TheLadderUnderOneInTen
+celadon ring: n 39 · rung 1 0.46 · rung 2 0.08 · ladder 0.03
+
+ ✓ src/sim/balance/ring.test.ts (2 tests) 60192ms
+   ✓ The Challenge Ring is meant to be lost — §2.9.4.1 (2)
+     ✓ Pallet_Rung1AboutHalf_TheLadderAboutOneInSix 23304ms
+     ✓ Celadon_Rung1AboutHalf_TheLadderUnderOneInTen 36882ms
+stdout | src/sim/balance/runBalance.test.ts > Run pacing — §2.1, §3.7 > Run_EachRegionCostsRuns_InsideItsBand_§2.2.1
+regions: R1 0.60 · R2|R1 0.56 · R3|R2 0.38 · League|R3 0.53 · full run 0.07
+
+stdout | src/sim/balance/runBalance.test.ts > Run pacing — §2.1, §3.7 > RegionTwo_PlaysDifferently_NotJustHarder_§2.2
+region 2: fights leaving a status 0.19 (R1 0.11)
+
+stdout | src/sim/balance/runBalance.test.ts > Run pacing — §2.1, §3.7 > Regions_EscalateByForm_NotByType_§2.2
+final forms: R1 0.20 · R2 0.72 · R3 1.00
+
+ ✓ src/sim/balance/runBalance.test.ts (12 tests) 165196ms
+   ✓ Run pacing — §2.1, §3.7 (12)
+     ✓ Run_TakingAServiceNode_IsNotATrap_the merchant 67490ms
+     ✓ Run_TakingAServiceNode_IsNotATrap_a Mystery 57813ms
+     ✓ Run_EachRegionCostsRuns_InsideItsBand_§2.2.1 39880ms
+
+ Test Files  79 passed | 3 skipped (82)
+      Tests  899 passed | 3 skipped (902)
+   Start at  17:48:55
+   Duration  184.21s (tests 77%, import 19%, transform 4%)
+
+
+> pokemon-ascendant@0.9.43 check:refs
+> node scripts/check-refs.mjs --strict
+
+refs: 401 sections defined · 6997 citations checked
+✅ every § reference resolves
+
+> pokemon-ascendant@0.9.43 check:catalogs
+> node scripts/check-catalogs.mjs --strict
+
+catalogs: 22 files · 1044 ids defined · 1095 ids referenced
+✅ every referenced id resolves
+
+> pokemon-ascendant@0.9.43 check:version
+> node scripts/check-version.mjs
+
+version: v0.9.43 — package.json, lockfile, CHANGELOG, roadmap, README and session agree
+✅ the active version is stamped everywhere

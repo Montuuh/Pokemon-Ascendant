@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.43 — A still final team · 2026-10-24
+
+Final teams follow the chosen motion preference.
+
+- **Reduced motion.** Victory and defeat keep every normal and shiny Pokémon still.
+- **Live settings.** System and in-game motion changes apply without reopening the screen.
+
 ### v0.9.42 — Where the run ended · 2026-10-24
 
 Ending labels identify the zone and the fight reached.

@@ -162,7 +162,7 @@ for (const viewport of [
         await expect(page.locator('[data-testid^="run-end-badge-"]')).toHaveCount(3);
         await expect(page.getByTestId('account-summary')).toHaveCount(0);
         const shiny = page.locator('[data-testid^="run-end-mon-"][data-shiny="true"]');
-        await expect(shiny.locator('img').first()).toHaveAttribute('src', /charizard-shiny\.gif/);
+        await expect(shiny.locator('img').first()).toHaveAttribute('src', /charizard-shiny\.png/);
         await noOverflow(page);
         await commonPhysicalScale(page);
         await badgesContained(page);

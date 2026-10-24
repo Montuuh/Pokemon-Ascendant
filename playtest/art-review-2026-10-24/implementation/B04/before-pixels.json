@@ -1,0 +1,14 @@
+[
+  {
+    "outcome": "victory",
+    "prefersReduced": true,
+    "src": "/art/pokemon/battle/charizard-shiny.gif",
+    "changedChannelBytes": 28999
+  },
+  {
+    "outcome": "defeat",
+    "prefersReduced": true,
+    "src": "/art/pokemon/battle/charizard-shiny.gif",
+    "changedChannelBytes": 28786
+  }
+]

@@ -1,0 +1,85 @@
+{
+  "system": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "full": [
+    56514,
+    66769,
+    66941,
+    19028,
+    28208,
+    42158
+  ],
+  "reduced": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "override": [
+    58989,
+    66818,
+    82228,
+    19028,
+    24368,
+    42105
+  ],
+  "geometry": [
+    {
+      "name": "Blastoise",
+      "width": 140,
+      "height": 132,
+      "bottom": 652.203125,
+      "cellBottom": 652.203125,
+      "scale": 2
+    },
+    {
+      "name": "Charizard",
+      "width": 178,
+      "height": 182,
+      "bottom": 652.203125,
+      "cellBottom": 652.203125,
+      "scale": 2
+    },
+    {
+      "name": "Venusaur",
+      "width": 172,
+      "height": 142,
+      "bottom": 652.203125,
+      "cellBottom": 652.203125,
+      "scale": 2
+    },
+    {
+      "name": "Pikachu",
+      "width": 100,
+      "height": 92,
+      "bottom": 652.203125,
+      "cellBottom": 652.203125,
+      "scale": 2
+    },
+    {
+      "name": "Lapras",
+      "width": 136,
+      "height": 144,
+      "bottom": 652.203125,
+      "cellBottom": 652.203125,
+      "scale": 2
+    },
+    {
+      "name": "Dragonite",
+      "width": 160,
+      "height": 164,
+      "bottom": 652.203125,
+      "cellBottom": 652.203125,
+      "scale": 2
+    }
+  ],
+  "errors": []
+}

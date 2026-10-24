@@ -1,5 +1,14 @@
 # Pokémon Ascendant — Art Pipeline & Classic Pixel Doctrine
 
+## Reduced-motion battle stills (B04)
+
+Run `node scripts/build-battle-stills.mjs` after fetching roster battle GIFs. It
+extracts the first frame into a sibling PNG for each normal/shiny front/back
+sprite. Canvas dimensions, transparency, colours and native pixels are retained;
+there is no trim, resize or generation. `stills-manifest.json` records source and
+output hashes. FinalTeam selects these PNGs through the existing sprite helpers
+when `useMotionPref()` disables animation; the default helper URL remains a GIF.
+
 > **Art is a file at a canonical path.** Adding or updating art = fetch or generate into a staging folder → process to exact pixel grid & palette → drop in `public/art/` → `npm run shot` → inspect in context.
 
 ## 1. Art Direction (Locked — Classic Pokémon Pixel Art, §9.1.1 & D9)

@@ -1,0 +1,4234 @@
+{
+  "source": "Local Showdown gen5ani GIFs; see docs/art/ATTRIBUTION.md",
+  "method": "First frame; original canvas and RGBA pixels; no resampling",
+  "entries": [
+    {
+      "name": "bulbasaur",
+      "width": 37,
+      "height": 38,
+      "sourceSha256": "e1a6800e8e26a6d2ae85c85c359110d75f3508a82371b3fe1842ebbacc9b2c9c",
+      "outputSha256": "fcdff9202c6e1d56e3714dd76db76a57b2e9ef1c90e3f92d96ad93b4180f0921"
+    },
+    {
+      "name": "bulbasaur-shiny",
+      "width": 37,
+      "height": 38,
+      "sourceSha256": "ce88c2ff220bff380bbe1686b718529480ebf99f35246d2e3da73d1d0cca57fa",
+      "outputSha256": "15d4e539d6b38910995f864a27d124d9aee6f15a6f433d3a26b6bba7e3425fd3"
+    },
+    {
+      "name": "bulbasaur-back",
+      "width": 32,
+      "height": 37,
+      "sourceSha256": "770f9d20da0317eded682f847bfffec8d7c2a08894a7969cc6a6a54ab073a742",
+      "outputSha256": "f69f37c1849d2739830ecc31e6aad4af92cc77fde6ab456ccbe5590f00ada9b9"
+    },
+    {
+      "name": "bulbasaur-shiny-back",
+      "width": 32,
+      "height": 37,
+      "sourceSha256": "305a1c4399cc4f01819d19064760d4046beab551cf9641badae74f9e093eddc2",
+      "outputSha256": "a0ea3abb91a69575652456cb4d6f35c6fbad072c4ec728c1b954a7f4522554a3"
+    },
+    {
+      "name": "ivysaur",
+      "width": 58,
+      "height": 51,
+      "sourceSha256": "1ce929acbe3aa60af6160cb4029484ff720548657f4049d211e430d0088c64cb",
+      "outputSha256": "9c5dd42fe272d272e36c985c9fb03fafbd95dfe948b56e0a33947f9736566f1b"
+    },
+    {
+      "name": "ivysaur-shiny",
+      "width": 58,
+      "height": 51,
+      "sourceSha256": "03956d5ed0b44455515a6a5884efb038d7183532a3cdf58b789c4617574ca423",
+      "outputSha256": "fb6af1b4229a0d8d2cd1b699dcceb4ed03109622f083ed91e90d991310d26aed"
+    },
+    {
+      "name": "ivysaur-back",
+      "width": 57,
+      "height": 45,
+      "sourceSha256": "3e66f0077c0191f55af141833cefc44943c1da29cc672429f325dc55b8b3b759",
+      "outputSha256": "030eb0197daa6e9739ead5fa996def2658935e6318eefd0cb889f58f6ff41708"
+    },
+    {
+      "name": "ivysaur-shiny-back",
+      "width": 57,
+      "height": 45,
+      "sourceSha256": "024e6ea6c9709f5f962e00bac99d5f482a647e75c515e919297bb516069f374e",
+      "outputSha256": "e4d4e0159d6c95bc3ffa2c82376de77465525a99304c47d3992d1fd958897850"
+    },
+    {
+      "name": "venusaur",
+      "width": 86,
+      "height": 71,
+      "sourceSha256": "39249bf8a695bbaeec4613654f9211ac455057466bf91ae7595f00f1671a9e44",
+      "outputSha256": "3cfd7572a6399e0422d4328d468967d2210cdecc4c897b8a15f52c542a2f16de"
+    },
+    {
+      "name": "venusaur-shiny",
+      "width": 86,
+      "height": 71,
+      "sourceSha256": "4bacf94a2f1fe1d023c75e66ed6c178465c1c8001ad5faf6b329350b830e6c88",
+      "outputSha256": "bea2d14bcfaba313dcf0be37aa6db115582afe6eab77aab9b5e777330e90aef4"
+    },
+    {
+      "name": "venusaur-back",
+      "width": 89,
+      "height": 64,
+      "sourceSha256": "a7e5b1097be07f765636edec3ed1ed5e3df8a11452a0fce1debdd4a1f1cee75f",
+      "outputSha256": "4d2310853742d9e785b8d722086799a4fe61a35205c59d1b0abe92ae268d5f88"
+    },
+    {
+      "name": "venusaur-shiny-back",
+      "width": 89,
+      "height": 64,
+      "sourceSha256": "ad83274c7d740447275afc4b9ddea1cb5307354f29db197621cccfbf1310f105",
+      "outputSha256": "4012ac3f1f7fbff6fb7dfb350598be86aca860665398224fc69d552d667cf09f"
+    },
+    {
+      "name": "charmander",
+      "width": 41,
+      "height": 42,
+      "sourceSha256": "1c0c6dfe583825e5c6009b2cc32cbdb39115c905f4812f06553b7fefd8e2e83a",
+      "outputSha256": "d4218abcf7f201705c19dae756dc4d0bf8f3064f16edaa34e093a6e173f8d9cd"
+    },
+    {
+      "name": "charmander-shiny",
+      "width": 41,
+      "height": 42,
+      "sourceSha256": "978610a0aeade4642e09151eea7a15aa1b571f4c108407bfc2c6c4f56b71bb54",
+      "outputSha256": "522449e666cb3caff36844d54e3f08d915d2a343e8e351d9bce2eb318d59fbef"
+    },
+    {
+      "name": "charmander-back",
+      "width": 44,
+      "height": 44,
+      "sourceSha256": "4bedc29c71781178910be887c693f03ef187dcc0d75f286742aaeffeffe68a7a",
+      "outputSha256": "4b6b3465e5f11875d4bfe0e8478a35c4e65dd3c301c9ae85122d84a1e58eb860"
+    },
+    {
+      "name": "charmander-shiny-back",
+      "width": 44,
+      "height": 44,
+      "sourceSha256": "0e015864b1e85a0d22994973ac933aaa998902e5e1e5d591eef56b3826ec4338",
+      "outputSha256": "5e7b6b30fbfa47fbdea282d40b1015bd62bddad12d7f4805495ced4d3ae1f6d4"
+    },
+    {
+      "name": "charmeleon",
+      "width": 69,
+      "height": 56,
+      "sourceSha256": "febea821f0da480c7a6793c87d603db44eae0612c8f296e664a86328fdb6cb32",
+      "outputSha256": "beaa4d9102061f2e5c99f99d671aa149d1aff63dcf96e7cdf1e5fdee4e2fe445"
+    },
+    {
+      "name": "charmeleon-shiny",
+      "width": 69,
+      "height": 56,
+      "sourceSha256": "7342934bdaea15c06937f4ff8ae36ef1d7f2e766fcd23f539d158b16f1cc60ab",
+      "outputSha256": "587f5a10917f6adf2c52211beebff562b5c747a1d1d7c68c4c8088f56337a3ce"
+    },
+    {
+      "name": "charmeleon-back",
+      "width": 67,
+      "height": 60,
+      "sourceSha256": "86c629cbf28e827b637875942b64dc4a665ed49f682728636712eb7690dc6e87",
+      "outputSha256": "45b63cc7492162f63bbb4b1be91f6a82a43f63ce514d348f03483f4695637179"
+    },
+    {
+      "name": "charmeleon-shiny-back",
+      "width": 67,
+      "height": 60,
+      "sourceSha256": "0249d92c766d241d443d8ae0c66cb2e983cc587895671bd146ad4eede8bb1bef",
+      "outputSha256": "d22c02c1a8b14bca1f31e8aed3fc96b2ae9988344c6a3260af51344b68a5241b"
+    },
+    {
+      "name": "charizard",
+      "width": 89,
+      "height": 91,
+      "sourceSha256": "ca7c8dc34156aeef6188cd9cb2384122d70dd2e20cb00b9968acedddc1b7459d",
+      "outputSha256": "2b62a8a9e5518a62f56cbfb0e994b18d618c77ac6a8cb4e64d05ee5f13684c52"
+    },
+    {
+      "name": "charizard-shiny",
+      "width": 89,
+      "height": 91,
+      "sourceSha256": "fa3d54cbb9d8481d7dde3f27a207c5c2f934185d8b990f6c8cd1cab5ed3814f2",
+      "outputSha256": "f4e30397ca87b2ef322073f1e1a36ddc287a34eb4c5f59c46145f8b52959810f"
+    },
+    {
+      "name": "charizard-back",
+      "width": 98,
+      "height": 83,
+      "sourceSha256": "c4f60d4d91d20f022a2193a4987c1757de8d6ed1560edfc1bfd4c874ea972931",
+      "outputSha256": "67a01b1f4fb1156e0098fda5b35b47e76f7558093c552a24f3ba4300ec0af877"
+    },
+    {
+      "name": "charizard-shiny-back",
+      "width": 98,
+      "height": 83,
+      "sourceSha256": "315ed80ffee731c81ad4afa46e0a7aa9b0224cf725a47a502523afc40a9911c8",
+      "outputSha256": "7d693f8bf346e45b0f88c9d2ad2b044da6989b4ac203f2782e606bface691c21"
+    },
+    {
+      "name": "squirtle",
+      "width": 39,
+      "height": 43,
+      "sourceSha256": "8d44a2685fe6b1b1ebc6bc7cf509ac79dd9d869821775f6281a49f0a12138d45",
+      "outputSha256": "3ce08344f745363900c27effd6059bfedf4d59ff3dc4d037bfc8699cf00799e9"
+    },
+    {
+      "name": "squirtle-shiny",
+      "width": 39,
+      "height": 43,
+      "sourceSha256": "504262de859d46231278082069d07848fd95bb41e63441564ecfa4fbd67aa4d7",
+      "outputSha256": "23fe96ecc4ae7d8f4f8b3fcd09ee48d58b6ecc3abcbc9d82892d8c20efc5af19"
+    },
+    {
+      "name": "squirtle-back",
+      "width": 39,
+      "height": 45,
+      "sourceSha256": "8f60fba4e8b43d8b2a9e0e2a039897ad090c471b7a7c2bc5b572b5096d3004a7",
+      "outputSha256": "95f950eabfe8da5406d76e72d1df7f394fe2d0ccb94ca22d5e548c994bac8f44"
+    },
+    {
+      "name": "squirtle-shiny-back",
+      "width": 39,
+      "height": 45,
+      "sourceSha256": "894928db7db812f89dc576c6d6c54b82884b6a79c2453a3044774a5ab5646734",
+      "outputSha256": "232d52b7d08cd57df6171c8f2794c38600cc6200675b12dd5ea244c88b9ba891"
+    },
+    {
+      "name": "wartortle",
+      "width": 60,
+      "height": 57,
+      "sourceSha256": "5fcb535291214996055581f2901644711dc9d289c35644dcbbd0c824864e56b4",
+      "outputSha256": "4077f2bedfd33f189117f5ad7bd19c061b67d95cf429ffdb97f7dfcb3165a826"
+    },
+    {
+      "name": "wartortle-shiny",
+      "width": 60,
+      "height": 57,
+      "sourceSha256": "ff88b5440f8089cd0dd978cf7f255c5014cbac46604947f4cb7b2284d2f1e1d1",
+      "outputSha256": "e3b6add51ec2aa0f83f48867a109dc7ac76174a00f6b374dc370d445948e06b4"
+    },
+    {
+      "name": "wartortle-back",
+      "width": 56,
+      "height": 62,
+      "sourceSha256": "046e5d43fae9a29c75334d585c271dcdbd1d07db83f858aa851337041c043223",
+      "outputSha256": "a4f42d6be87fe9151a7acd9a214d8cbd5d94846b5185c5e8eb48957164ccba11"
+    },
+    {
+      "name": "wartortle-shiny-back",
+      "width": 56,
+      "height": 62,
+      "sourceSha256": "aa5b9adf4afbb25936bca0701115106782412feb48aaa9bda15407cd019e2615",
+      "outputSha256": "b29f03d387cf13c59460426bf0152b20e7e26bbc170966aa46cfe57f7c9e3034"
+    },
+    {
+      "name": "blastoise",
+      "width": 70,
+      "height": 66,
+      "sourceSha256": "d6323dc2a62aaf72b088f1e02aadf65d4e3261c6ed870d05a319bf506f6c5c44",
+      "outputSha256": "6dd6b2760715f83dba9e5fe68301e8e68ba6970d42e5743ab52ca3cb2995a030"
+    },
+    {
+      "name": "blastoise-shiny",
+      "width": 70,
+      "height": 66,
+      "sourceSha256": "9e421c24edfa953a95dca24ed96edec2fb67ca6b5a51422aae142bef4a7586ba",
+      "outputSha256": "4161fcbcc809d2db2c18bfea2508c43d6e030a6e6ab4e159ba0b6be08a506314"
+    },
+    {
+      "name": "blastoise-back",
+      "width": 66,
+      "height": 67,
+      "sourceSha256": "49f3c32eac7191b462db6ece5bc084143e72b16479e8d68580961b08719cbf5d",
+      "outputSha256": "45931338c519b211bcd894ce5e353ffdb5296d657b8c1c6dc52138d63c04d423"
+    },
+    {
+      "name": "blastoise-shiny-back",
+      "width": 66,
+      "height": 67,
+      "sourceSha256": "6d2193176acb4220a5e0c1a446a7d8e114e72103e1f521a7e7d853bf5cf35052",
+      "outputSha256": "1909dd82a09414cb7c251b8cfd09f4dc04785334eace636e52ebe2bb75ed918d"
+    },
+    {
+      "name": "caterpie",
+      "width": 36,
+      "height": 37,
+      "sourceSha256": "8e9324adb18a48048bba4314d77ccef4a044e3139bc45caebf13d3def67aba1a",
+      "outputSha256": "ddae372bcd268a3757deb46db0055c16641c75d45f6b87abbeeb8b0a717b4d4b"
+    },
+    {
+      "name": "caterpie-shiny",
+      "width": 36,
+      "height": 37,
+      "sourceSha256": "992d1825452c679df17d062e279554d782d6ccfdc048d3e5128c97c5eb7f8185",
+      "outputSha256": "ebac54c9321984c27650c7549bb53b7f8a3a61a979ba2e8098d396e624403883"
+    },
+    {
+      "name": "caterpie-back",
+      "width": 38,
+      "height": 35,
+      "sourceSha256": "9c532744d432b1c1cc9249512457c4c016b5db854c879b1817eac91829c83b03",
+      "outputSha256": "ea5e0152b80cb73ced176542c4848dc4519dad7730a150d2550a6bcbb8507e59"
+    },
+    {
+      "name": "caterpie-shiny-back",
+      "width": 38,
+      "height": 35,
+      "sourceSha256": "5e7d7db24b95c45c736d3aa09a77e1bcb3db6dfd33f99618e006cce4c77c9555",
+      "outputSha256": "cd120def994f47d164a5011d26e01ea366dea1fd62e3a11e8bd42904b461eff4"
+    },
+    {
+      "name": "metapod",
+      "width": 37,
+      "height": 38,
+      "sourceSha256": "85dd7078542ab60aec3122e2b0dfb885f2526e1e3804d47cf4493583072b8889",
+      "outputSha256": "37790b8dc8b7c8465e48773a227fb7b4e92775ad9f0d088bfe3afcfa7ede4b69"
+    },
+    {
+      "name": "metapod-shiny",
+      "width": 37,
+      "height": 38,
+      "sourceSha256": "c3a4db3a9354a6ec24fbebe7ecb10778c52f699ca15eb93a4ebd808f09c7a5bd",
+      "outputSha256": "dea3164656658f6834f2116b8b5518d6031295042684e6029c481362652825e5"
+    },
+    {
+      "name": "metapod-back",
+      "width": 43,
+      "height": 43,
+      "sourceSha256": "c004db7c8872952a92fac9da5b27b9f66cff7bfdbd909eeefd1f11e4a28117b3",
+      "outputSha256": "75e0f391429b053cd2822ef586a0be36f9c4f121fc939288f7a7fee3dde179ec"
+    },
+    {
+      "name": "metapod-shiny-back",
+      "width": 43,
+      "height": 43,
+      "sourceSha256": "f4867a9dd8e845c1a254937370710d5904db36f76d4293cfacbe04b516920a9c",
+      "outputSha256": "ca103f69688aa6510bc19675c188af7f64108d5e5f44c11eca8235e94a30e2a9"
+    },
+    {
+      "name": "butterfree",
+      "width": 61,
+      "height": 58,
+      "sourceSha256": "46c977409223ca79acc99fcfb1498b6b12bd34551f87555066298b3a968e06d7",
+      "outputSha256": "2c3ce3c8ca0e0982ee1476ba264e2e1252a60aaf8dfeefdacf62b20da9030f76"
+    },
+    {
+      "name": "butterfree-shiny",
+      "width": 61,
+      "height": 58,
+      "sourceSha256": "83619110ddfddcff3491ff14e77d50b003743f5aed827ad59190bdad1970d80e",
+      "outputSha256": "2e4218c87853d727bc3fe589e750a4ef579e3ba0da26ae0d043609c37e127640"
+    },
+    {
+      "name": "butterfree-back",
+      "width": 64,
+      "height": 57,
+      "sourceSha256": "ebe8aa1c8e4f9eb12ed0110104c5ed20f39faacf8d6c2c9569f549c3e529e94d",
+      "outputSha256": "d72e3986021f902c668b00ffb8889dba0908166ce4eb0662f96a6906a9b541cb"
+    },
+    {
+      "name": "butterfree-shiny-back",
+      "width": 64,
+      "height": 57,
+      "sourceSha256": "09bf91fbcec415307a7e68006db5e2f57de4b69df02a10e3e245c74e12db083c",
+      "outputSha256": "4f802738ce5fc3877f4c409a30294ce8f497905650435ba43e18f33b5e1c1ca8"
+    },
+    {
+      "name": "weedle",
+      "width": 37,
+      "height": 47,
+      "sourceSha256": "13fb4215f083b771b6aa46d2751302f347e6ca262b570e2487a66a3d69e916d0",
+      "outputSha256": "3bfaf5e854573d9f0cdf01f1ba41c212d86b8cd3aba059a99c76b3468d868076"
+    },
+    {
+      "name": "weedle-shiny",
+      "width": 37,
+      "height": 47,
+      "sourceSha256": "35b5781737d6a0db29aaa6bfb2001a01b9cda9f700d21f96e0729aede68876d1",
+      "outputSha256": "39a8f6ca1d40cf88fca66610dec0d7018f57084583a2740e6e3113e16a23f0a7"
+    },
+    {
+      "name": "weedle-back",
+      "width": 42,
+      "height": 46,
+      "sourceSha256": "7ce953d296dcf9ff81aff49aa939c69417abd921535146b96d05713d1d553ec4",
+      "outputSha256": "ea3150ce5e503ce7344f795346d8ce48a075c7cc1b9b1a4d6deacaf5cded04e2"
+    },
+    {
+      "name": "weedle-shiny-back",
+      "width": 42,
+      "height": 46,
+      "sourceSha256": "bbcce3031791ec762c9da968b5effdda71609b8b5521eb78794db487ec8cf8cd",
+      "outputSha256": "30360ca423d1b9fd847b4fe5c25b0b3d65807d77db7d774edcbff6d35a3e1ddc"
+    },
+    {
+      "name": "kakuna",
+      "width": 31,
+      "height": 40,
+      "sourceSha256": "1e22925e3010955c2dd61315756281da7dfc58100495c4e0a4ff2efcb613f389",
+      "outputSha256": "f0134e5c27e9dd18d654db32348e40a71760b5f66b342fb6854bed5b386e5747"
+    },
+    {
+      "name": "kakuna-shiny",
+      "width": 31,
+      "height": 40,
+      "sourceSha256": "af5ced780a492baa5f2d6fb834cdf28bc57dec70bc12003f476bf6fb3596946d",
+      "outputSha256": "06570239dea7d6683da6e9d941d362397f37c24677fea5572aabebc11a205f50"
+    },
+    {
+      "name": "kakuna-back",
+      "width": 32,
+      "height": 41,
+      "sourceSha256": "d6f9b49c9814d5a6d956a829003c729a8ce2cdc7249606688baf8c3bf8b34dec",
+      "outputSha256": "ce052142cd66f094e8ac0e6eb71f67dca299da1e3555221178da431249a14d65"
+    },
+    {
+      "name": "kakuna-shiny-back",
+      "width": 32,
+      "height": 41,
+      "sourceSha256": "84ba026ce30ed93bb0959ad6aff1fc2c9d6a3ae8b2c892aa43434c5981cffa73",
+      "outputSha256": "f4332c6c7e18ce4daad9536cf1d6a9edfe0976657f0ef642547f830701067252"
+    },
+    {
+      "name": "beedrill",
+      "width": 73,
+      "height": 69,
+      "sourceSha256": "f4b122e7f493ced1f73da4aea8bc1358be05a051923d6e39b001fd3d6fce0720",
+      "outputSha256": "e2db2dc43abd093ab05482f0f556d743c98047cf75a3abe5b992121467be2a4a"
+    },
+    {
+      "name": "beedrill-shiny",
+      "width": 73,
+      "height": 69,
+      "sourceSha256": "43edd7069865801bc63111a7676ce475fa4a5c728c611a032c5f6bfced230b8c",
+      "outputSha256": "e08364d159ce2291260d1a457581d01f2c04a08f93b18bd8c8dab000095cd6da"
+    },
+    {
+      "name": "beedrill-back",
+      "width": 76,
+      "height": 68,
+      "sourceSha256": "4efdc3bb93c257c9daaa4e07b4de682b42c5c60d146e6331a2c820f958430d61",
+      "outputSha256": "a38db3f2e31346a2fffe3daff33b7aebfe37cf1b6e38ab706974181e66f2a2bf"
+    },
+    {
+      "name": "beedrill-shiny-back",
+      "width": 76,
+      "height": 68,
+      "sourceSha256": "43e0a54faa8abfb4db423cf2e04fdd647ec88ca06ca5d3628e5bf6d983913996",
+      "outputSha256": "f7f7b1b5002d1967de5950fa61af3b330d84bceee612b0a51acded2fe02e3b9f"
+    },
+    {
+      "name": "pidgey",
+      "width": 42,
+      "height": 48,
+      "sourceSha256": "34f48649467d0557d10945f1429084d5b4df2f8f48a971d4381db0de5182c121",
+      "outputSha256": "c3d137dcb5ecabf14ec4ac9513f5d5388a1f9f2dd0e4311f99e18e9fc11e685b"
+    },
+    {
+      "name": "pidgey-shiny",
+      "width": 42,
+      "height": 48,
+      "sourceSha256": "fa5323874f108a790f3273bd356f45900cb247f98e1cb91918bb21c44cd8e325",
+      "outputSha256": "7a68903424f00bdef5cd27153cd4cbf3b0088174ed0660a80947e75f8c875727"
+    },
+    {
+      "name": "pidgey-back",
+      "width": 45,
+      "height": 47,
+      "sourceSha256": "da189df5c58d328aec8feb88576f2ff78995fcf9b6c507fcb3dcf7a1c8c0a23f",
+      "outputSha256": "2ddbc497658ce6ea3aa7f61b01f5c84b01fbf3581226a9b72176475db3ed3b59"
+    },
+    {
+      "name": "pidgey-shiny-back",
+      "width": 45,
+      "height": 47,
+      "sourceSha256": "6d31d3cfdce5a0b5590dc7210201854c940035121706a23d76ec89324d797afe",
+      "outputSha256": "fbb4561e5183a012fb51130d83edee37064fbf671677cce8daac2c85914cbc6e"
+    },
+    {
+      "name": "pidgeotto",
+      "width": 82,
+      "height": 117,
+      "sourceSha256": "5b8bad68c74717717c9776a6d4772b0581cd081f8f7acbcd78a21762ea9c4833",
+      "outputSha256": "39b217f4c07457d0bda1d71f065e704476d33ace60bcec7662f9ae63f16a440d"
+    },
+    {
+      "name": "pidgeotto-shiny",
+      "width": 82,
+      "height": 117,
+      "sourceSha256": "6da6db06a2bdfbb4de9b67a5da3c498199063353fe33a7f87eec27db3a3738db",
+      "outputSha256": "6328cc48998bce5886a5cccc3c41e454f7db5bcebf0a591f7e0438c217e74f06"
+    },
+    {
+      "name": "pidgeotto-back",
+      "width": 95,
+      "height": 95,
+      "sourceSha256": "496a9e36cbd879267af4e520d2a5a77e235c321aa1dbbaa18ed5bae62b340c4b",
+      "outputSha256": "4ec1c95e469f74e11f9050591021aa043777f89e916ea858d13a2795ac4c2fee"
+    },
+    {
+      "name": "pidgeotto-shiny-back",
+      "width": 95,
+      "height": 95,
+      "sourceSha256": "3d785ccd83440ddf2da71cd9f270b4f706ded5ef6d4868ea226217fa944a933b",
+      "outputSha256": "eb6a6d092d79cc84a18d97251fca6ab247042e710c1603aecc08a2a11439e834"
+    },
+    {
+      "name": "pidgeot",
+      "width": 58,
+      "height": 68,
+      "sourceSha256": "003ca892ac72399c26f9333983a6873de50869fc2626995366caf470fa737343",
+      "outputSha256": "a0ffb55a486614f9fa905d8d88d25a5ffdf48c176d4a1d8908d7dc69e08a62d4"
+    },
+    {
+      "name": "pidgeot-shiny",
+      "width": 58,
+      "height": 68,
+      "sourceSha256": "de2c6cf965ba446c7269081cae525c00db2c727a19bcf4ccf804102b41cf6411",
+      "outputSha256": "a9ec5b217e85536b939d9b4d3090fbad1cac6d67261824e645b6e6b4b62abc02"
+    },
+    {
+      "name": "pidgeot-back",
+      "width": 68,
+      "height": 66,
+      "sourceSha256": "f5075487cf09d2e9e997d3764c59ddccf6d95fb828fbcb34e0a742f5c1866b2d",
+      "outputSha256": "ff67d5b049a75ea8a9f2e6684d27c8aae5945fed9b57b8cf0d8275c36782e928"
+    },
+    {
+      "name": "pidgeot-shiny-back",
+      "width": 68,
+      "height": 66,
+      "sourceSha256": "a825c2be78639832249cd006ae257843b978cac501853e787c11fd34dae78667",
+      "outputSha256": "c66b51d350d5f3fe247b17c2d0ed7131f8aca3263427facbeed643d5720821fe"
+    },
+    {
+      "name": "rattata",
+      "width": 43,
+      "height": 43,
+      "sourceSha256": "75fb59f79cfb97fdeff737a672bdd3ed157bb667bf69ab02b3d1450b2bfc70df",
+      "outputSha256": "886cca24e5707c5b4c12388a76531a00c07c5eee5ddfe66604285c23bb789726"
+    },
+    {
+      "name": "rattata-shiny",
+      "width": 43,
+      "height": 43,
+      "sourceSha256": "9b8c8b8f2efb07d730696e761ffa2891d32f8db70c83c80d06bb10b47430ed34",
+      "outputSha256": "4174991994d1fc1dfc7c9120dcad0bc7215dbbbb562a43b43377862fb50d08ea"
+    },
+    {
+      "name": "rattata-back",
+      "width": 59,
+      "height": 42,
+      "sourceSha256": "b201625a93e3041726bc318636d2abcbdb0b3d45881e2e5c3a3df365c1ce4268",
+      "outputSha256": "a3f5274b29693bff56d6e998890c60efece56e29cac7fc2d9e27b1da797b48fb"
+    },
+    {
+      "name": "rattata-shiny-back",
+      "width": 59,
+      "height": 42,
+      "sourceSha256": "4df65ea6d629733c2c333726ceff96ad03488875c0c3abfee0efeb594a4f0273",
+      "outputSha256": "66a5eb01a5ad21d57b7bdb3e3d250b186bc8a85791298464eb43a5f421d1f044"
+    },
+    {
+      "name": "raticate",
+      "width": 65,
+      "height": 51,
+      "sourceSha256": "0c938e3019eece5f45a6518761b1d4f905a94b352e50cd8044a1c5f1ca5c83ab",
+      "outputSha256": "f7e10c6262de63f2fb4e7214a59c122eeab3cb3de211a54a41b3ae146a53c424"
+    },
+    {
+      "name": "raticate-shiny",
+      "width": 65,
+      "height": 51,
+      "sourceSha256": "5b4746604dc4f3ab6d14673af50cdc64965534a492e93e89087bab21e5f93f5d",
+      "outputSha256": "74047cdc328ddc3a5ed15f29bac47ded80d4b97d8b4ba6f15b185e19dabb5b4f"
+    },
+    {
+      "name": "raticate-back",
+      "width": 66,
+      "height": 52,
+      "sourceSha256": "65ba073ba311f02ba9d7d66dc16fcc0441c6988d135c9913178c45f7b79760f6",
+      "outputSha256": "497c7230a7d7b258edf8ef8c42f09b025ae413601ca0052922ea8ec30a4574ae"
+    },
+    {
+      "name": "raticate-shiny-back",
+      "width": 66,
+      "height": 52,
+      "sourceSha256": "980d822a5048976cf1592fa8dfda5ccb52eef64cebc682ed4d9ba254c5f58761",
+      "outputSha256": "35f5db24060cda4594787ea9d78a706789b7be8db2eb1767c26dfc3950bee638"
+    },
+    {
+      "name": "spearow",
+      "width": 33,
+      "height": 40,
+      "sourceSha256": "5ea4dba69e64a4f6266839d15001c9795c3dcabdec3aed4c01eb298b25e7af66",
+      "outputSha256": "082a6f3d4c1428273bbf332cb10a9c35e5da12c6c28c7e770a64bb19bbfa1cc8"
+    },
+    {
+      "name": "spearow-shiny",
+      "width": 33,
+      "height": 40,
+      "sourceSha256": "fbf52bbb261f90f690c4b0274eea4c61282b9299fae609bc86f6794fbeb0426b",
+      "outputSha256": "282960836c90141580eab59014fecf582fbfdac36133617efa21b210ed17e349"
+    },
+    {
+      "name": "spearow-back",
+      "width": 34,
+      "height": 40,
+      "sourceSha256": "1d64ebf285ad6b69f5ce4131540afe67d95aec84684eec3c56ec31bd4ba47809",
+      "outputSha256": "13ba098896fe7b308c952736aeb4e5dd0c258abe461bb000a51548539fa1bdfe"
+    },
+    {
+      "name": "spearow-shiny-back",
+      "width": 34,
+      "height": 40,
+      "sourceSha256": "248f86586c8917b665d6437b1d3ea988bad43d630ce3b5797146f90664d78773",
+      "outputSha256": "dff2d7eda5fb0f2a88c96719055dc598bdceef9660a504e66d3c37077144e902"
+    },
+    {
+      "name": "fearow",
+      "width": 82,
+      "height": 105,
+      "sourceSha256": "365d64f8842468dd6b3bfb829d3458f5cbc6e8dd24192e675a62b2ad822e0784",
+      "outputSha256": "4dfc0daf65a939df4b6ca467b3df49c8b267846ab45db3e3df5fd1ee6d22e0c0"
+    },
+    {
+      "name": "fearow-shiny",
+      "width": 82,
+      "height": 105,
+      "sourceSha256": "c22de96dbe022e7e91401fe5d9a14e5ca363aef39bfa5143477b7f198a7d2a32",
+      "outputSha256": "62a58c213f06acaebdf2ed38f520e747c12f26c502232fa162b3d0d8bb318eb7"
+    },
+    {
+      "name": "fearow-back",
+      "width": 78,
+      "height": 112,
+      "sourceSha256": "d136d59c14cc6e93b95713af612ff8c622be8137f2857bd805d4cdaea8ba50a2",
+      "outputSha256": "e36361ab7807a3b74061e560c205f6ab001273da44fa8ef641cd3e59f2315b18"
+    },
+    {
+      "name": "fearow-shiny-back",
+      "width": 78,
+      "height": 112,
+      "sourceSha256": "31d68ec91e117bbfc1224e09d6f6f430f0eff5ca1826301eca746e5865381044",
+      "outputSha256": "308148b2d0208cf4cfdaaad8054fd7a63f731da0291f292a0154fa53904de09b"
+    },
+    {
+      "name": "ekans",
+      "width": 59,
+      "height": 45,
+      "sourceSha256": "f8eaeabe9e4cdc65bd1b5eeec6d107a5e8c73e56a1f7c5964d092b7e76816f1f",
+      "outputSha256": "34380a778352002fea884d7ea0cbae4bf4462a5399eb8a95da449e7b1496835a"
+    },
+    {
+      "name": "ekans-shiny",
+      "width": 59,
+      "height": 45,
+      "sourceSha256": "a23304f32be436972028938b6025a81f485de9b8f5875b53cd38a39b6551eb49",
+      "outputSha256": "8e6ec0a265a9557380c083e91fc1d8fb8a3323161217cdf630fe90c63532587b"
+    },
+    {
+      "name": "ekans-back",
+      "width": 57,
+      "height": 50,
+      "sourceSha256": "b31c2fdbb02831f35703e75b165b96d5d95e1467558c63ad2d684f26b9e8b62e",
+      "outputSha256": "0a1ac76c19b1edf7f210d796fc0add9ac699ea75aa6df31dd339a2b2ff43660e"
+    },
+    {
+      "name": "ekans-shiny-back",
+      "width": 57,
+      "height": 50,
+      "sourceSha256": "473c77def1eb3e459793a660b477e983276b6596961d8c8151238a06c7bc0490",
+      "outputSha256": "dfcf372cf77ca3383ca583e533af6ad4a233df38dcde4f98bdd35b87da79d5f6"
+    },
+    {
+      "name": "arbok",
+      "width": 82,
+      "height": 75,
+      "sourceSha256": "85eb9e9727eed707dd8869365e9fba4b874306b8f1d4a4f7ec561ccaeb2d20f6",
+      "outputSha256": "1749dd2cef94fc608eb323e16dc8e30682f97dd9428edc9d7f34ff0db05daec0"
+    },
+    {
+      "name": "arbok-shiny",
+      "width": 82,
+      "height": 75,
+      "sourceSha256": "26ca8741194d44e8dcce2f60a6c86477b40bc7a717db11c1cf54af768eb3ef61",
+      "outputSha256": "4c880e841566d8793bf2505dd31e2cdaddcfb08ba6484dd6769a1a26ce9502b7"
+    },
+    {
+      "name": "arbok-back",
+      "width": 86,
+      "height": 71,
+      "sourceSha256": "2c426756d7bfbfb1cba2952c1c6f8f38e336751988e3284d6d46abda80b4a147",
+      "outputSha256": "b85896762965c00dd73286585eac9fd914c74f8eb22a358c393bb49e2f98b98f"
+    },
+    {
+      "name": "arbok-shiny-back",
+      "width": 86,
+      "height": 71,
+      "sourceSha256": "415f7336d6dbbfd3800c26ef850ea1100ee00c2884200ec6d2178f4ba5b79659",
+      "outputSha256": "fde594e6811dcbd1435379ce7623a0b7183c028c43e69d5bc13ec45ba4a47951"
+    },
+    {
+      "name": "pikachu",
+      "width": 50,
+      "height": 46,
+      "sourceSha256": "326dc427fccebad97ad4ab6fe42a1ec5734556b2200b306ef520c76672a5e58b",
+      "outputSha256": "44ba2ab807945a60ff99c55ff36e74754cd9eda1424dc07a03d9c227e6ff02d4"
+    },
+    {
+      "name": "pikachu-shiny",
+      "width": 50,
+      "height": 46,
+      "sourceSha256": "e8fabf6318e3ece43337365293238cea2fed4ca2ea0df2a630ee99eb0eb1798b",
+      "outputSha256": "ced33c7e91c920caea1bff9acc1a7f6cc0e4e974e9693743e1a0eaae3cbc2c37"
+    },
+    {
+      "name": "pikachu-back",
+      "width": 40,
+      "height": 47,
+      "sourceSha256": "f13c51252d3f6890b6bf5c4038eeda409c772274b4c89e90a1e0675f5ce25fdd",
+      "outputSha256": "1399a6203eaa01953a6e2e323dfb8f9c5e7f3403083d11a6874431a594077b93"
+    },
+    {
+      "name": "pikachu-shiny-back",
+      "width": 40,
+      "height": 47,
+      "sourceSha256": "6f9b31c8a774f7a162e9c1b074cbe1896ca42109994ec277121a51e5f4a62bdc",
+      "outputSha256": "8129b18819410de01e27082ca89ba13683dcda6a3a0117e45a415bb18a6d124a"
+    },
+    {
+      "name": "raichu",
+      "width": 74,
+      "height": 73,
+      "sourceSha256": "abf9970168fdfb7e0ab84c631e7f1ba7e153fa7342069d3a330e1b3093d508a5",
+      "outputSha256": "c0f3f5aaa560b6839be25945a57f5ee5ef43b5b3320e47bb97c51d2e8ff032a1"
+    },
+    {
+      "name": "raichu-shiny",
+      "width": 74,
+      "height": 73,
+      "sourceSha256": "9a2e2a9cf2178acac682231d4e22647196468ae885803fcbc61b95a8c115991d",
+      "outputSha256": "68a4f1366ead1c0a200823f347a84d48d933d9ec9fde51828f00c531ee44b565"
+    },
+    {
+      "name": "raichu-back",
+      "width": 76,
+      "height": 73,
+      "sourceSha256": "5c8688e68b3ac4696521a5c01ef12e9b90313be56d3273834fad99ad09e5e228",
+      "outputSha256": "d27c2b80f04099201eb4f57e49d16e3f2135978f1d15fdd174b9f8b9f8220ceb"
+    },
+    {
+      "name": "raichu-shiny-back",
+      "width": 76,
+      "height": 73,
+      "sourceSha256": "add9c6964886a9b15fdc37710a59b446eddf1bd047e61164b42f481ac35e8299",
+      "outputSha256": "f664c749521f7332a5e450df42f5222d2e6b55862d63345001c226c50ad9731c"
+    },
+    {
+      "name": "sandshrew",
+      "width": 36,
+      "height": 39,
+      "sourceSha256": "c748749dd2e8f5b47d448289519080d324e293cb3bd345d84662c21c8b910678",
+      "outputSha256": "7504bb9ca5861961fa1c65ccc3962ed03f4ceaf4c4098ec0ffc02fb757b181cd"
+    },
+    {
+      "name": "sandshrew-shiny",
+      "width": 36,
+      "height": 39,
+      "sourceSha256": "5f26ba5fa4cf29845e5f30c7ebcfd073efda49d8510064078e12be3271e56068",
+      "outputSha256": "a8718aa78783359cdf27c6c53d898dd632bb413df3ba08af84ba1349a047441c"
+    },
+    {
+      "name": "sandshrew-back",
+      "width": 41,
+      "height": 38,
+      "sourceSha256": "2f0cc7a4fbed1b0bb374d8505494fa683c6570d2266d161b7158b06addf624e0",
+      "outputSha256": "34496a3f3a6d8e6afe1549f2bf8a6744db86b9b2c6802d11f7d1b2019e120f9e"
+    },
+    {
+      "name": "sandshrew-shiny-back",
+      "width": 41,
+      "height": 38,
+      "sourceSha256": "2a63369f3a96ff9f2ba50a30aabefebf2c0e9bc0d0f52f1519d63f61dbc4cc7e",
+      "outputSha256": "cdeab8854eac837f96c86f51c3d4a8d698580b3775798668aac0fb02fcd4c095"
+    },
+    {
+      "name": "sandslash",
+      "width": 57,
+      "height": 53,
+      "sourceSha256": "c62ed83ca05c018f7d815c61f9fa821720475150b98eca861a0460392df81b9a",
+      "outputSha256": "f56ae6a0054eddf461aa47d89b0b24ffb234ebdd6a6d810319079a4336b9d52c"
+    },
+    {
+      "name": "sandslash-shiny",
+      "width": 57,
+      "height": 53,
+      "sourceSha256": "d6421f7aa8215ab8364a241d6dc48842a142417e7afee62683c3eeca3fecffa9",
+      "outputSha256": "509e40a1b321cd1d80d0b74880febdca15afca9bc0d98e424c9f209ee7a3ad78"
+    },
+    {
+      "name": "sandslash-back",
+      "width": 57,
+      "height": 52,
+      "sourceSha256": "db40349120c86e8de754b06a105a74b6bc2ddc3d0fbd6dc3e26d41fcda999428",
+      "outputSha256": "957acc8df5997e250f70f1b071d92f632b4cd1e0638ff901e8e5a7764fdd07cd"
+    },
+    {
+      "name": "sandslash-shiny-back",
+      "width": 57,
+      "height": 52,
+      "sourceSha256": "055b7e4d4e7b9fb10d5f7a0f10e21f115df3d5de8827c5417b93aadae101617c",
+      "outputSha256": "3ef28447a6f1b9e19d274113d5040ca9fe13cdcb3891a3ffcbf6c018702ab7ac"
+    },
+    {
+      "name": "nidoran-f",
+      "width": 35,
+      "height": 34,
+      "sourceSha256": "5e5e4e598569184a172159209d85c7ad49b5e3d155b8309ac1847c70311b64e9",
+      "outputSha256": "3f3693255f277aab49894accf6b1f7ffd0e4e02515022e89172605befbb490d0"
+    },
+    {
+      "name": "nidoran-f-shiny",
+      "width": 35,
+      "height": 34,
+      "sourceSha256": "2ee981c1468f4b5250a41585e4a09d17cfcbc588a5b9b1b4263ec87845e65ae6",
+      "outputSha256": "535a61e318565be26dcb4f658fea1a1336b10f5c78a4758cd03308e886da0106"
+    },
+    {
+      "name": "nidoran-f-back",
+      "width": 33,
+      "height": 36,
+      "sourceSha256": "c71ddef296dac5f1f1386169af4321cbb1145da010b2c78690f885b982959c7f",
+      "outputSha256": "4bc7f0964787cf95c14a22b9c08226cdfec97e8ae03dfb1bccdabe8b4ea51130"
+    },
+    {
+      "name": "nidoran-f-shiny-back",
+      "width": 33,
+      "height": 36,
+      "sourceSha256": "0266ad50bbe4376523aed25214ba34be2f46a2d408992742b4c82278ea589d19",
+      "outputSha256": "7fbe8a61246ff117889d6bed66f8185f776ea545e602c9f7373f8a37f6eeb634"
+    },
+    {
+      "name": "nidorina",
+      "width": 52,
+      "height": 47,
+      "sourceSha256": "108973032cd8f12e5386064379d3a7dcb8b552dc93873e738acd81147a631510",
+      "outputSha256": "ef33a0175e45279b825e72222d472e840f50bccca6a13668a4cab4f16b7271c6"
+    },
+    {
+      "name": "nidorina-shiny",
+      "width": 52,
+      "height": 47,
+      "sourceSha256": "323969d589b084ea51f3f70c58a1e050cad027ef5b1db301153bf02a89f51e6b",
+      "outputSha256": "3cc4fbb70cff683cde4ac9677c9b1b0c8805dcf227ae4013b0168fa2f03303ac"
+    },
+    {
+      "name": "nidorina-back",
+      "width": 51,
+      "height": 43,
+      "sourceSha256": "336ee65c6330094234121148c89dfda688aedd3a0bd12ed82228df2860c27db2",
+      "outputSha256": "6637cad305dfad81461fdfb020571cdf1a2ab8128e75edf2cd33fdb8cd54f2e2"
+    },
+    {
+      "name": "nidorina-shiny-back",
+      "width": 51,
+      "height": 43,
+      "sourceSha256": "8a29cbb65d1c3245a64c09db92357d41c8c884f4c7ef0f2bbb39dc06033c7c00",
+      "outputSha256": "a366a086bf3984756720aabcdd1a72f58d02fee9f18d8fe0988e8de7d99582fd"
+    },
+    {
+      "name": "nidoqueen",
+      "width": 77,
+      "height": 70,
+      "sourceSha256": "fc37df4443dbd6a62ca6e99db823c1cb5c17db97712803ab4f9bf16c3c9cf472",
+      "outputSha256": "924d061fc8f9fd6ea17d2c6fdac64a36473160c97fded564514e994feba2b96f"
+    },
+    {
+      "name": "nidoqueen-shiny",
+      "width": 77,
+      "height": 70,
+      "sourceSha256": "b3c53b428b8fdba92fc61b7153a91826be3fbaa95dbf0ce1d380ade480885aac",
+      "outputSha256": "d49c00375a83e8c527b409231431ffd24579680585a9d02e328b10d6d5ff5442"
+    },
+    {
+      "name": "nidoqueen-back",
+      "width": 85,
+      "height": 71,
+      "sourceSha256": "fbe752e176e2a98079d79d2b64522459e7a17a97196c6ed41374c3d09b408009",
+      "outputSha256": "a3d4cd5a5f3d2523e8232e5d23f94a3abe2e3359a1e8e286ed46215aa1a89b36"
+    },
+    {
+      "name": "nidoqueen-shiny-back",
+      "width": 85,
+      "height": 71,
+      "sourceSha256": "19d33f3fc2a45e40179f613df5abb82253d87b488cef4a7bee169da7a38756a7",
+      "outputSha256": "2a2a48e91dbe522b04765055469f2c50b17b3a91742c707aa1f2e7b49d9423f7"
+    },
+    {
+      "name": "nidoran-m",
+      "width": 37,
+      "height": 37,
+      "sourceSha256": "8e9130f77b2f0a17403ce5ea4be6bc919f50591c7a584ddeb8a0427fd64e32cc",
+      "outputSha256": "aa5e734cb9c922c326b73222e585bb7a24403958f2dedcb770227cdc200810ab"
+    },
+    {
+      "name": "nidoran-m-shiny",
+      "width": 37,
+      "height": 37,
+      "sourceSha256": "3017ece86c49190303c092d1e8f8f0ce36b676e907e7246f4ed53cfab328c3f3",
+      "outputSha256": "5f02fb38e61b6f5636e3e614659a2a3fdd6a31c93b03b49213c270b08ef0ccb6"
+    },
+    {
+      "name": "nidoran-m-back",
+      "width": 37,
+      "height": 43,
+      "sourceSha256": "5fb2fbf10bb41475b5359baefeec5b9a6bbf29d86188c7e80f5c075847a04e1f",
+      "outputSha256": "8ad12553db0b1e014e2a5ca9bf1efee8dff505ae81f768b122ad5443f08e1f8f"
+    },
+    {
+      "name": "nidoran-m-shiny-back",
+      "width": 37,
+      "height": 43,
+      "sourceSha256": "b9ccf6fb580fd9af231bc0bce9d48593fd63e7959f0c5cf559942be4207626ed",
+      "outputSha256": "d3e3e23e95d19d9dfc367165f6fc241ad93847836fb2492114839c7b0583d0c6"
+    },
+    {
+      "name": "nidorino",
+      "width": 52,
+      "height": 56,
+      "sourceSha256": "ea319706b266b0c9c5f5dd726b32a280f93b1a83bc7434c1fde6e10d7632d207",
+      "outputSha256": "65e1b858e4834813c2af198d3c27045369d54ccb8d81479adef2b9cacbfbe480"
+    },
+    {
+      "name": "nidorino-shiny",
+      "width": 52,
+      "height": 56,
+      "sourceSha256": "2df95550da2ec77683220cd8c1319182e0ab9e1bb4d4c7df9dbcfa881b7c0319",
+      "outputSha256": "33834e4ac48297ba2fcc5b1813e47556c7a6201f3034bbe1c71e3b3a98b32c4b"
+    },
+    {
+      "name": "nidorino-back",
+      "width": 54,
+      "height": 56,
+      "sourceSha256": "dedf3daf10637d975dbf155ac622e534017643b477cb8bd063537e44e80154c5",
+      "outputSha256": "7b3cb514374d816cb9b9dcd6f518666fb2b5520315b10725c00b3de504351b7c"
+    },
+    {
+      "name": "nidorino-shiny-back",
+      "width": 54,
+      "height": 56,
+      "sourceSha256": "262b961934d95b907766c596868b248876650f644d494d9d07f3192f6c2cecbf",
+      "outputSha256": "ea1e14d78e218a9657bafa43075baebc63f6037bbd6ddb4eaf04817dd490a552"
+    },
+    {
+      "name": "nidoking",
+      "width": 86,
+      "height": 71,
+      "sourceSha256": "1e7dcd57f0fd435e6b1fa8f0e6bf684a24e32b2f4c5153ab875693256cdddfbb",
+      "outputSha256": "4680b4a880e3e53bccdeb19072221aacdb23a8d04d53b5360f03c00005931d8a"
+    },
+    {
+      "name": "nidoking-shiny",
+      "width": 86,
+      "height": 71,
+      "sourceSha256": "229d5b87530ef03ff1bbdf57ef872651ecfaad608569f82be4d7167f8692c967",
+      "outputSha256": "3d50c51721439d4101e25c7ecf33d41887d31d5ae602a61d30af4aa2cc52a6c3"
+    },
+    {
+      "name": "nidoking-back",
+      "width": 88,
+      "height": 69,
+      "sourceSha256": "bdb1b1fc5edd53a66daaf1a4f3ee878a258b73f3455b11923145cfd6d4c3555b",
+      "outputSha256": "7ae48f04883a50c42c99fd12244a71c675ef90fe098216f375d93c7d358e4000"
+    },
+    {
+      "name": "nidoking-shiny-back",
+      "width": 88,
+      "height": 69,
+      "sourceSha256": "959d391aca229f5566918a642431b796bc31e1c9a713a289450c507861b6fa70",
+      "outputSha256": "d2a595100d622baeb3b4d29afbbcf48bb1be4daaaa4e7c9d0c3eab9529997cbb"
+    },
+    {
+      "name": "clefairy",
+      "width": 48,
+      "height": 42,
+      "sourceSha256": "43598c1a542f920d65263bf4c753d772b6d42939ef0e0619476fa4464bbef4a3",
+      "outputSha256": "115a97a6fbfa25f6773e7d2788dda74ffe9d4120f57780d2da0e5d2be0c50076"
+    },
+    {
+      "name": "clefairy-shiny",
+      "width": 48,
+      "height": 42,
+      "sourceSha256": "0587c417c16f171ac8f09b4f812f499613c260cf2c60c5df724c89acef45cef4",
+      "outputSha256": "1936a2bcb2b53e9e5cfba187f99cb3cdd62c60161ee6f0e845f2d9527001d721"
+    },
+    {
+      "name": "clefairy-back",
+      "width": 55,
+      "height": 43,
+      "sourceSha256": "e78bf5e0a6a41d3669e7fffc502ac19ad99905b681888ae180fe125cd182d98c",
+      "outputSha256": "a02a632cad57146224b871bad421501ee5d1ff5a46a2e8779b07101a7a32ccd3"
+    },
+    {
+      "name": "clefairy-shiny-back",
+      "width": 55,
+      "height": 43,
+      "sourceSha256": "326938050c0a10cbd5f31c5a881dabd58d9fee2a90607c46f1d56ee477ecd1ba",
+      "outputSha256": "0a7170c6e2d9a70f873022a283ce7d79ba4f5cf52cb29725985ac9ef4c419ccc"
+    },
+    {
+      "name": "clefable",
+      "width": 54,
+      "height": 52,
+      "sourceSha256": "46e907f4dd1867011fd1f0a84cd7ed70abe4cb91433da968edf3bc5364301b25",
+      "outputSha256": "ba0e3fcd098154898cabdb45e6be9fc08f379215830afd1e91b4422ccf4afbdd"
+    },
+    {
+      "name": "clefable-shiny",
+      "width": 54,
+      "height": 52,
+      "sourceSha256": "3ee03d4d0c2dc21f8e3119ac6bc26ba0002e15c644a6cf1771245da8411157e2",
+      "outputSha256": "c50015460129633661519937eff16b3cbc989cc7f8e59419fe536d6712d36ce2"
+    },
+    {
+      "name": "clefable-back",
+      "width": 55,
+      "height": 51,
+      "sourceSha256": "7590c33a555a6fec54ac4308e26505a13af4c4bbbcbe7b71bd91c90522453e41",
+      "outputSha256": "7d6f0dd076dfc9c9c996da84d20caa360539cac1757f9be2ad6523c314c205fe"
+    },
+    {
+      "name": "clefable-shiny-back",
+      "width": 55,
+      "height": 51,
+      "sourceSha256": "7af7fc9ed4ef00fc9bae18ec1e736080d567843967703e704335a9f7d6ad4bdd",
+      "outputSha256": "84d33ebf5b4cd3bd04dc84dc533a3077e4a5a4853dd5d54cf33106f573cd1cd0"
+    },
+    {
+      "name": "vulpix",
+      "width": 60,
+      "height": 50,
+      "sourceSha256": "c2af363a404b2b060bbeb81adda1778753e42f74c4b0c23d7e516707feb18fd6",
+      "outputSha256": "7c8e1670d7374132731c5bea5e3c7c287bf2a77631d775c6b98ded9728d2c289"
+    },
+    {
+      "name": "vulpix-shiny",
+      "width": 60,
+      "height": 50,
+      "sourceSha256": "169e70f4fc103f5537ed6d14c8869aeb28aa6574d23f772e37a004728c512c67",
+      "outputSha256": "c41afed52d19f4d24034efdb5e28532f075e1e8b6f21e1934eae01a6d237844a"
+    },
+    {
+      "name": "vulpix-back",
+      "width": 62,
+      "height": 52,
+      "sourceSha256": "d805decf83f2e8359b79595a07c9f3501d89bd398d079a6d977504eafe41aead",
+      "outputSha256": "7e342bb7bf3977e96bf673a49d893eeb4ea217f0f2967164c030e01c76687250"
+    },
+    {
+      "name": "vulpix-shiny-back",
+      "width": 62,
+      "height": 52,
+      "sourceSha256": "c419c915b2de2d77253b645eb50c62199dde937255535f330d9d00212d52da1e",
+      "outputSha256": "18d88a698c7c0a72e9fab998c843de0ae619e53d92fabc2881af18190a753f98"
+    },
+    {
+      "name": "ninetales",
+      "width": 74,
+      "height": 73,
+      "sourceSha256": "832af4a02403036449cedce05c683583ef74b6e13a43553597e21017a302f948",
+      "outputSha256": "374ce95c9eac9b97c723ef74beb9af019ec2d113e6dd14b6652736a70485395a"
+    },
+    {
+      "name": "ninetales-shiny",
+      "width": 74,
+      "height": 73,
+      "sourceSha256": "cb36df9766acdbadd520eed2efc4a51edcc47165b31421debbfa9a65906989d3",
+      "outputSha256": "1c4ddee24905150583e0f93f887150c0b07d59c6fa407fcdc4fbeb7aa30de31a"
+    },
+    {
+      "name": "ninetales-back",
+      "width": 76,
+      "height": 64,
+      "sourceSha256": "6f2ea5c280222816324a2766117654252da500f686e8e0b396a5b114c5ce0070",
+      "outputSha256": "e2d0732df46f574d86d7612a399a9f773019ab8c37b49321728104a928b5ba17"
+    },
+    {
+      "name": "ninetales-shiny-back",
+      "width": 76,
+      "height": 64,
+      "sourceSha256": "c8b6266facf88f13c428c492663ed7281b134422164dec1dc479012264e5cb6a",
+      "outputSha256": "f8148cf566c39055cc3ac64b71c1d279a08692649885ee0400dff24bb767c51b"
+    },
+    {
+      "name": "jigglypuff",
+      "width": 47,
+      "height": 46,
+      "sourceSha256": "95a0e9cee17315933e685fd0bc2be52cfe7ad90cfafa6ac6c7c77d49c28187cf",
+      "outputSha256": "935cda80accbdd304d76ad5d403405562308079258bde0f42fc4304604ee9388"
+    },
+    {
+      "name": "jigglypuff-shiny",
+      "width": 47,
+      "height": 46,
+      "sourceSha256": "3dee999237185cb3a016190d68001b8b4ac7d07886ad3f9d82f2bf7a789ca179",
+      "outputSha256": "ee4866ca882490da624595db435a8a64ec2a3227d68b572ca822c421dd1c9651"
+    },
+    {
+      "name": "jigglypuff-back",
+      "width": 46,
+      "height": 48,
+      "sourceSha256": "0fb2a0c8e6925affd41dcd015e77fba66be6ff69002ff867b337343b230a4085",
+      "outputSha256": "58ab14efcf43b5da22698f4043290c3dff0bdef615aa927702a9b78038021b53"
+    },
+    {
+      "name": "jigglypuff-shiny-back",
+      "width": 46,
+      "height": 48,
+      "sourceSha256": "964b96a08a1899edc3dbdd57dcde649aa6db9e50b82e59998c42b769e205dc97",
+      "outputSha256": "4d92cf421d9c1da8cc4e2f3e310258bff54a5c9ee7d40abadd5e3bf9f320b720"
+    },
+    {
+      "name": "wigglytuff",
+      "width": 48,
+      "height": 82,
+      "sourceSha256": "31ecad7bfae70357a8d4e53cb26c2c55c4166a31a286e6dd2b1ff1fac8440cc8",
+      "outputSha256": "8ee4b67a8baaed3343eb519243dc325f571371a277d3033cdc43cdb766e6ad06"
+    },
+    {
+      "name": "wigglytuff-shiny",
+      "width": 48,
+      "height": 82,
+      "sourceSha256": "3daa7bf4abe85e0ef25a0619143393a37fc7efab7c95f03af5fdee015c1b2f86",
+      "outputSha256": "15ac5ad48345234936facd4745709861ab6597f1ae148338c897a22ad93ed49e"
+    },
+    {
+      "name": "wigglytuff-back",
+      "width": 47,
+      "height": 82,
+      "sourceSha256": "31098672de0e86fe084b92bbca3bc3ebba3ca569ef817d90f604ea112e27c9d0",
+      "outputSha256": "bd2ffe2c9eb04d55747a078d24f43c47353c3365d2cc66753f2350d325a5ff6b"
+    },
+    {
+      "name": "wigglytuff-shiny-back",
+      "width": 47,
+      "height": 82,
+      "sourceSha256": "1150aab20211fc85bc8b511eaac9df608c4ecf3671eb5048e9ecd7ad4af03984",
+      "outputSha256": "c8b37137c4236a8a5851c8c5ef1d34b14701730be9d79ef2726eda0faa5fdb03"
+    },
+    {
+      "name": "zubat",
+      "width": 53,
+      "height": 46,
+      "sourceSha256": "af807eca9843ef5fadc5705d7b3dfd064746c35384052dcfcafed5d8b4306620",
+      "outputSha256": "714880608d15de1e86d1c11a90deff12ec394ff30be0a1935e849acf3f4c6b29"
+    },
+    {
+      "name": "zubat-shiny",
+      "width": 53,
+      "height": 46,
+      "sourceSha256": "073a26ee56892d54aa035b20b90da46b1a72590591d744dfe87022b86879401d",
+      "outputSha256": "a21d47b5ad419cd6ae9722d6c86fa2741eff52c1526206afa793abf77c6fa036"
+    },
+    {
+      "name": "zubat-back",
+      "width": 49,
+      "height": 59,
+      "sourceSha256": "2053f8e01037deb66536fd687684ff9b70cd31908545c3a7d9cd5bf863dc06ac",
+      "outputSha256": "5c863f144adb3dcfb6635a81dcb02bd5c9ac26b6051adb75bee0053f4dd09a03"
+    },
+    {
+      "name": "zubat-shiny-back",
+      "width": 49,
+      "height": 59,
+      "sourceSha256": "5c97211be4626430b34602f4512078117e0e97b00ae642fbbc60056de2404360",
+      "outputSha256": "1cf131d5a9d597648fd408ea24b0f97a9bec9bcffd74412f379a02831c58b563"
+    },
+    {
+      "name": "golbat",
+      "width": 110,
+      "height": 82,
+      "sourceSha256": "fafa341e4f7269426006e94e31f2cdbb89664a229b330a137d6d3aaf6c9726af",
+      "outputSha256": "638d56f7e362501ed13e62a55693ff3ce013acfac4853ea79b738707b15cb1a4"
+    },
+    {
+      "name": "golbat-shiny",
+      "width": 110,
+      "height": 82,
+      "sourceSha256": "d928de6e9352c0ab00276964fc3cfb248e5139f2288b99f04b76076002f1258d",
+      "outputSha256": "f1272fa5b4b777b25761ad65b8ee7a98516c6b7841db85443be9e1105caeb394"
+    },
+    {
+      "name": "golbat-back",
+      "width": 95,
+      "height": 84,
+      "sourceSha256": "7252e80cb1bd90b12ac1d518dd0cf7faca9b1899611bf54afef544d1c6271ddc",
+      "outputSha256": "80c81f89716ca8cbcca804582032d87e8ad0e6d6687a864c0d2eefee98df8226"
+    },
+    {
+      "name": "golbat-shiny-back",
+      "width": 95,
+      "height": 84,
+      "sourceSha256": "a6b29220ef8199a4953a6dd9fd32206aa97091b79eaeda12a442b62393e527b7",
+      "outputSha256": "65815a979974c6e0a153e9a18c19540a009af03fe999075a78578944a864225e"
+    },
+    {
+      "name": "oddish",
+      "width": 37,
+      "height": 50,
+      "sourceSha256": "0efa0614541b3e0af0f9c7928867e559945b6ff5c5cec63a86652dc7cacae3ad",
+      "outputSha256": "c99234bc96ecc355696eede37e728fc1cd8ab45140b09fd38ab48427ce85b5a0"
+    },
+    {
+      "name": "oddish-shiny",
+      "width": 37,
+      "height": 50,
+      "sourceSha256": "ab6d9b7856cc0e75b0b6c3f3e4720f5cdcaedf85598dbd4bbb16e1295337db86",
+      "outputSha256": "a42681b3ccd832f3bef04e16a96ce95454d5443b2a39fe9162a4d5a0255715af"
+    },
+    {
+      "name": "oddish-back",
+      "width": 41,
+      "height": 51,
+      "sourceSha256": "0bb46e9b7750ebe6d4e05e463d2e2f1b40143a7a2bc2eaa9cd1080fbcc3da08e",
+      "outputSha256": "93fd657a9a3ccdad86b01a3d29202cd4acc3bf8e7695c599b54cd650c97576d6"
+    },
+    {
+      "name": "oddish-shiny-back",
+      "width": 41,
+      "height": 51,
+      "sourceSha256": "1a587b87f32c88e6622d3937042703caad86eaaaf42d34b2cb492764226434f4",
+      "outputSha256": "048e03731b3600eb13fb0d7da57bee3ce2cc39d5b8f85f8f00b0d6b8129da9b6"
+    },
+    {
+      "name": "gloom",
+      "width": 50,
+      "height": 45,
+      "sourceSha256": "d46cb7b4ded42a1aea5e4b94048e7f42f301ef9f91f873cbbfabe06235f07ce9",
+      "outputSha256": "c92b024d26ce83697b18908d76fea3d5781b61237f4d0b44d1399e7be18af8a0"
+    },
+    {
+      "name": "gloom-shiny",
+      "width": 50,
+      "height": 45,
+      "sourceSha256": "eaf68ae100e49cc88c23bfa43c003ab32cf8dbe74e98b145c666a6087260a33f",
+      "outputSha256": "9c1f47af607198985f671252076e23e875ebecc1150128b8d1fffebdda493249"
+    },
+    {
+      "name": "gloom-back",
+      "width": 49,
+      "height": 47,
+      "sourceSha256": "068592c34f9f598050c7fd5526143f9a7b1bbfe5c86b99441f287debad1c4e9d",
+      "outputSha256": "ecf4d6c0f841ebea787405a8001784d53c03672a39732d3f1a54aa45c24aeb93"
+    },
+    {
+      "name": "gloom-shiny-back",
+      "width": 49,
+      "height": 47,
+      "sourceSha256": "b3cce92d85ab53693677c6fde2efed70ed4b1a311c274e682f85de78e9f370a9",
+      "outputSha256": "6a921cd964db7e4f536bee74f397aa596bbd7dcb13495081c663e59aeceae609"
+    },
+    {
+      "name": "vileplume",
+      "width": 56,
+      "height": 50,
+      "sourceSha256": "718c55263dfbf2fb64696646248b417e9d0949d82af137e49e5e79bc4400fb0d",
+      "outputSha256": "223b8aa6a087756ea5b892347411c6387217c838c2dba62dd9c2795c43ab0e4f"
+    },
+    {
+      "name": "vileplume-shiny",
+      "width": 56,
+      "height": 50,
+      "sourceSha256": "548e9a0610e1f2c6cc02023fd09aafd49bb336aebbe6e4d3c097d3ca34eae1ec",
+      "outputSha256": "ad7234537255687228d1009e67e5f04c218ea6316fcc9a0ef5884be2be5fd1b7"
+    },
+    {
+      "name": "vileplume-back",
+      "width": 56,
+      "height": 48,
+      "sourceSha256": "3f90afa01da0d29ea530065cb7e6435055c1ff07586b33198bc7484aa9e00edd",
+      "outputSha256": "1ccde569fed2fcaea68b21492202b29d3b136b5f5c94f651fb0679f701799892"
+    },
+    {
+      "name": "vileplume-shiny-back",
+      "width": 56,
+      "height": 48,
+      "sourceSha256": "1ee2f1b25618c3b5c72cf4ab9f4e5f7b6c10f543cece69f6c533a3d2a53fbd15",
+      "outputSha256": "6baeb4a5063d8815a86775009e3445fb72524fbb1f26049e9d9ea48f7789b242"
+    },
+    {
+      "name": "paras",
+      "width": 48,
+      "height": 37,
+      "sourceSha256": "8c973f9a57ef3bf5bda9ac9c4df43a9228f52abd6f80ac29c6c6d01df74424a5",
+      "outputSha256": "0875e6caea4604641c0f1121fe711af4d45d1d6eaf4ea837fca98f84c06b6a22"
+    },
+    {
+      "name": "paras-shiny",
+      "width": 48,
+      "height": 37,
+      "sourceSha256": "95d80084a1439f4eda3c8e1937909bda5132eb9ec719b62a8b932544c3be0c8f",
+      "outputSha256": "5df28f6130f81b193a45c1d24517021207a1d718d99323f84b71bf3364ac148c"
+    },
+    {
+      "name": "paras-back",
+      "width": 48,
+      "height": 32,
+      "sourceSha256": "a43336a2b31eea585cea0bea38a5c1291e61b7c9a415dba47d694aa0b27d4d7b",
+      "outputSha256": "d0abb6669087368b6d7ae9fa267dcbc62b338cbb6f8a59bc7d26828bcf31aeb6"
+    },
+    {
+      "name": "paras-shiny-back",
+      "width": 48,
+      "height": 32,
+      "sourceSha256": "3710bd977c9622b128ef93eafd1f18b44ea14ea2f8f0d8e053b069d368197ac2",
+      "outputSha256": "1f777af644361f7b1d5d13356e836a4c12e7b7e94ffd693e40bf37ff63bfa6af"
+    },
+    {
+      "name": "parasect",
+      "width": 62,
+      "height": 63,
+      "sourceSha256": "5f89636e600d548187fa949c9788fb73bb1ef59449a7efede931dd69d27ed8ed",
+      "outputSha256": "ec621acd87b47ed1e9df0142e7c91c7a5b7c4cffcc41c7a1c791a3228e995761"
+    },
+    {
+      "name": "parasect-shiny",
+      "width": 62,
+      "height": 63,
+      "sourceSha256": "1216540fdc0388f7de8b5046feff0c10078996da744fa3742bee4f131c083557",
+      "outputSha256": "0790c86092fee1ec04126e26e014e9a3d4233840b9e87eefdb1ff7e78e0930e5"
+    },
+    {
+      "name": "parasect-back",
+      "width": 70,
+      "height": 52,
+      "sourceSha256": "223c1e21242d36da7229f23241a98533cce09c94450674df6ceb34bf3645acf5",
+      "outputSha256": "b8dd92cfa343190f0e1de720f56624ea6e87e7a3ca36d33e87e8e64f8493ce92"
+    },
+    {
+      "name": "parasect-shiny-back",
+      "width": 70,
+      "height": 52,
+      "sourceSha256": "f53f3f5991211ceef876ffd14c5ad609c8b1a9661f4d081d0ac13a5ee91c37a9",
+      "outputSha256": "bc597c6160d560aeccc19897dbb1c89b5ede365d0117e3daffa2f593f379cabe"
+    },
+    {
+      "name": "venonat",
+      "width": 42,
+      "height": 53,
+      "sourceSha256": "5a47271a91e6eb4d10170ea5bed12a6822b1b834d21d206d0ba25a253ff3680b",
+      "outputSha256": "f5cb97a3df16c75623ba4660332221c7a110fd19727d3e6c367c54e2267ef636"
+    },
+    {
+      "name": "venonat-shiny",
+      "width": 42,
+      "height": 53,
+      "sourceSha256": "3baac40d2d871e9e90441d3c06acc49877a1e123053ffb376fcb408f95503eff",
+      "outputSha256": "e9a16ba96772ddd65e622755be3cd7d34ac6901b4e25d535e1d4a1a04848a417"
+    },
+    {
+      "name": "venonat-back",
+      "width": 42,
+      "height": 52,
+      "sourceSha256": "776c9bb448d1ce4a202806c2d5613074bd6503ae853742ef865f1dfe7fbb6375",
+      "outputSha256": "872328589552da5fb284354f263b7fc804ece3ee7f54708c186e12e283d1075f"
+    },
+    {
+      "name": "venonat-shiny-back",
+      "width": 42,
+      "height": 52,
+      "sourceSha256": "839cacb184edae196e491b5e538ed23afb009b95ca89965e6385d9082a7d29c5",
+      "outputSha256": "8b73066b2c0344caa43e60ea2d3398db78129e10be44136ce06fe72914d72851"
+    },
+    {
+      "name": "venomoth",
+      "width": 100,
+      "height": 74,
+      "sourceSha256": "46cff287d6db2b2eec927fcfcc814c2f38a3e74e4f7ce2004e86628421244bdf",
+      "outputSha256": "7a5ad9a8f5d003cb3e14f3b4cb5f473e9e708235f45f010b6e5d017ec832f5cc"
+    },
+    {
+      "name": "venomoth-shiny",
+      "width": 100,
+      "height": 74,
+      "sourceSha256": "3e8636d3b0eba65bba9895e9aebf5b775c6fcbb871634a03682bee5e6906ff0e",
+      "outputSha256": "82159be8c2b8621ac9e5231dcacc7a15cec3c7fd7147e6e11f1fa963aab393ae"
+    },
+    {
+      "name": "venomoth-back",
+      "width": 104,
+      "height": 73,
+      "sourceSha256": "813df17fbeee93bf01abbbf4b11206a5143054bed58e954e398ad80c7bf0bc1f",
+      "outputSha256": "40446225bbfb7a613529d6d28136bbc60ee6c4842af86553e230414162b5c2b0"
+    },
+    {
+      "name": "venomoth-shiny-back",
+      "width": 104,
+      "height": 73,
+      "sourceSha256": "146fe0f01eb2b7c96a5d4d7bdce3e4995b08af23b88d27663e2b326c85a16f77",
+      "outputSha256": "d5bb1c137814bf6ca781e8fb346d0b88d47052c7437a32166c32f5daaa2ee429"
+    },
+    {
+      "name": "diglett",
+      "width": 38,
+      "height": 31,
+      "sourceSha256": "332caa5b6f3ffdac791e4d7211a00baabaab6a610420a481024e40652e5392e5",
+      "outputSha256": "7cf92844f9dd15a3b77cf2cedf153cb0be563094150603da0628cd875596f9ee"
+    },
+    {
+      "name": "diglett-shiny",
+      "width": 38,
+      "height": 31,
+      "sourceSha256": "b8b74187f549abef42408e707b67c5e73f355f056e15afc672b61b0dbd5b313c",
+      "outputSha256": "dec2f88fb2ef48799d63ecb36cfdd844fff1fe0bd693244e6ff1ca261595db77"
+    },
+    {
+      "name": "diglett-back",
+      "width": 38,
+      "height": 32,
+      "sourceSha256": "4b61ed5212eaf0cf2aa17788a0e643f4018e17f59b9a47ae49a5926657e8f902",
+      "outputSha256": "a17b1f94f5f77999f443a66cd8f9d9545d7c2ce57138341aa71f2fdfb478956c"
+    },
+    {
+      "name": "diglett-shiny-back",
+      "width": 38,
+      "height": 32,
+      "sourceSha256": "5d4aff159aed6dfa5aa50e192705255b58d1f89bd899e2564cf269a02668ca5b",
+      "outputSha256": "ad30624be0fef75ef23ecbc34d5f7f166cc13f36954ec418f87bcf258b9dbe8e"
+    },
+    {
+      "name": "dugtrio",
+      "width": 52,
+      "height": 42,
+      "sourceSha256": "5e724ce1d5afcabc9c533c3f77d30f0c1fcc5838718ce1c3c1951c5ec4447b33",
+      "outputSha256": "c28044082afeb3d415668fb27165e4e66a971da46a0892af699f486b5b05121a"
+    },
+    {
+      "name": "dugtrio-shiny",
+      "width": 52,
+      "height": 42,
+      "sourceSha256": "930a62bd19deb1a1ea808920e4b9b8197545cb13e5cfb0b5437da99741dabb3d",
+      "outputSha256": "0261b5f84534d3a97dd8145c069f6447fd539b152006657babaab71d11a48601"
+    },
+    {
+      "name": "dugtrio-back",
+      "width": 52,
+      "height": 43,
+      "sourceSha256": "b93f5ee6d7c00853cb18fff54d0186136e430e0c88006f85dc1f09c3a0751116",
+      "outputSha256": "129472068377545ec0947ab2413793d06db2cb65c91ef9e99dc45a2800e7a76d"
+    },
+    {
+      "name": "dugtrio-shiny-back",
+      "width": 52,
+      "height": 43,
+      "sourceSha256": "ddf97ce30f2ad615c403e9f1332e9c87a38c50321973e92e25fe78ae848a7944",
+      "outputSha256": "98550d39d808a47c1b79a3490d8cb36d57968c6307b75c6e7d6dc57dd0b2e5dd"
+    },
+    {
+      "name": "meowth",
+      "width": 48,
+      "height": 65,
+      "sourceSha256": "00bc917ce684f9d13ce887fcbff66646dc63d10495ee45201a0ffbd385083da1",
+      "outputSha256": "0529408618fc1ce4b47d331e5834d9c1b3e99c38be212ff24aa707f18f08f6b5"
+    },
+    {
+      "name": "meowth-shiny",
+      "width": 48,
+      "height": 65,
+      "sourceSha256": "9ddfb877fa1e8ba2b98ec1e3f0f98c23370945c5f6042845fbe861cf7bc3c592",
+      "outputSha256": "7662067fe743d7b50ce9ad39d3063031c94a1ba0086e5144df20120bd9c5855d"
+    },
+    {
+      "name": "meowth-back",
+      "width": 59,
+      "height": 64,
+      "sourceSha256": "2d5d6504fffddcafe54f6ec8bd5f48a698baa2250b45cb4bfd091f9c176ce84e",
+      "outputSha256": "0427dc3555aa8ecf4a07647fb56f5b73794c8789c45dba718e99cc142b899375"
+    },
+    {
+      "name": "meowth-shiny-back",
+      "width": 59,
+      "height": 64,
+      "sourceSha256": "2b9565f33c0a817a3372574e6316f6449131498da8605bac82544baf11c00620",
+      "outputSha256": "573461762ff30819065192a9fc6dbaa5b809796e73aa3abcb7eae1d2ae35fc20"
+    },
+    {
+      "name": "persian",
+      "width": 72,
+      "height": 62,
+      "sourceSha256": "2226c68bf5e713226cfb5880e5002dc4a51a0d74d4e9ea0ec61d4be04fad225f",
+      "outputSha256": "506f4dab117343e6f3fbbac59f9ebe9cd14bada7d77521e2080dfe1c17aef557"
+    },
+    {
+      "name": "persian-shiny",
+      "width": 72,
+      "height": 62,
+      "sourceSha256": "ee5ce3660a2f7577f07b5046df8d33c9cd0de39460452b0b4ef078eccba8ec3e",
+      "outputSha256": "7682008e9b4008a09b86dacee7d3516f5a5ffac233c34e68f98a6b8c147f58de"
+    },
+    {
+      "name": "persian-back",
+      "width": 78,
+      "height": 56,
+      "sourceSha256": "cc737fcd9f250498db7941f7a1e09ebcae3a995cfa3658ec64ed9b86b494acc1",
+      "outputSha256": "c1b7a1151c3e6e5dff1a6d5b9cf72276a5a44485342d1188828d748055284fdc"
+    },
+    {
+      "name": "persian-shiny-back",
+      "width": 78,
+      "height": 56,
+      "sourceSha256": "c005ed98ee443fcb494b9fbe592eeb44a6798ba7f94a39d72539e546d09101be",
+      "outputSha256": "19cc3876bd5f7245b0196e2d33b628ac0fa2c3020a1d65c1bfe1c76934045968"
+    },
+    {
+      "name": "psyduck",
+      "width": 38,
+      "height": 46,
+      "sourceSha256": "670eb6887dd84b8cb5a7cfd8a1a93b467baedf989a6a485a49d69d7f4ee60989",
+      "outputSha256": "cb9cb14339a600d07658cea84b7854b4ba323a7a63607674b6460706659ae35d"
+    },
+    {
+      "name": "psyduck-shiny",
+      "width": 38,
+      "height": 46,
+      "sourceSha256": "8604a0f1affb98803e02911126550f4f5ad839469ef220e88462104e4206a0d5",
+      "outputSha256": "bd6a8e5386336c98815b41f2d83b622ac08a28f5a526c1fe94ef83e27744937a"
+    },
+    {
+      "name": "psyduck-back",
+      "width": 37,
+      "height": 45,
+      "sourceSha256": "77d76d4b37f2565d93fa7798b1dde4ed56c59590d1690503418b5d02bbb502bf",
+      "outputSha256": "b4a3c7f219ed607c4b9a773e003c5649c906ec7ce41cd5d1876d223357c54a56"
+    },
+    {
+      "name": "psyduck-shiny-back",
+      "width": 37,
+      "height": 45,
+      "sourceSha256": "c8034cb12db659c9ea60443ff50fd9985afb746cf8769e695ea6b2ef7e76f46d",
+      "outputSha256": "ea0978f4afc1d02e6bd583900a67b8a00bcfab23ac41bf69f5fee4b7624a9577"
+    },
+    {
+      "name": "golduck",
+      "width": 60,
+      "height": 59,
+      "sourceSha256": "213e3cae1f1fd009f483ab0ccc043c6cc5ddc4725b82dcebeb361452215abc55",
+      "outputSha256": "a4ccd5c4b6a8e5259d295efc7a35bdecae8ab4770ac9e4343356fc65e50a9fa8"
+    },
+    {
+      "name": "golduck-shiny",
+      "width": 60,
+      "height": 59,
+      "sourceSha256": "eb9d24803350cc1a291409ae4c435d21be57a8aa29acf78713c026c7a783b256",
+      "outputSha256": "bb04d02374f29e5b36022eeb1d46ef2cdfb2c2b7354433824b0f5dfdc3c16e96"
+    },
+    {
+      "name": "golduck-back",
+      "width": 55,
+      "height": 57,
+      "sourceSha256": "68375771517ad971accc140cc20f1e3376af9e7e42db9620b8017e4143ce9c18",
+      "outputSha256": "8dbab3b45afce4b40b2054b403d8630600a86f29720a0dab0ee3341677956bfe"
+    },
+    {
+      "name": "golduck-shiny-back",
+      "width": 55,
+      "height": 57,
+      "sourceSha256": "fa4607ad49bdf1ab1ec08e4a3aa2e7440084b483b121c23c5c9fe2f729c76d96",
+      "outputSha256": "0d7b392ae8a74858dd03fa5bca6607863ee76c874f5380b17bcc5e73c879cbd3"
+    },
+    {
+      "name": "mankey",
+      "width": 65,
+      "height": 61,
+      "sourceSha256": "33c6b8f73bec0cef945d1af8dd96d44a159a32445226def778cea71f797f3e17",
+      "outputSha256": "77e2e0f237209d99ea8f0e75dd95fcba8ab7b60efc65356e86e87da3d1a45559"
+    },
+    {
+      "name": "mankey-shiny",
+      "width": 65,
+      "height": 61,
+      "sourceSha256": "8b46a91ea5ad25446a726cf318eee71b943133c3c886932612aa70badefd45de",
+      "outputSha256": "a78022c52168502c1a57fb1188b20944b8437c26b7e481c54234de929ca5fbd8"
+    },
+    {
+      "name": "mankey-back",
+      "width": 61,
+      "height": 59,
+      "sourceSha256": "71760ca69143d9e331815f83a54bfc99516b418570079f5d174f9be92bd7414e",
+      "outputSha256": "ce86fd3f2e404833107b16640186c0b3f11021dab6a39e9863db5c64559847e5"
+    },
+    {
+      "name": "mankey-shiny-back",
+      "width": 61,
+      "height": 59,
+      "sourceSha256": "321d040da51987158abfa7a19188dc78c00bdc241a0d6a7564a06426acfd18e9",
+      "outputSha256": "b6e2519f0ebb121ab5a4a2bc4458acb61b1bd34e783817545a7361e9a251c13d"
+    },
+    {
+      "name": "primeape",
+      "width": 67,
+      "height": 61,
+      "sourceSha256": "c99ab1dde635ab38ea65b4bb422cb13a11e4be6bcaff158f18a9239de6697ded",
+      "outputSha256": "037e1e01cf72e7e15c2e6a6103871b514ef13743a208229d339d8e1f1e535f9d"
+    },
+    {
+      "name": "primeape-shiny",
+      "width": 67,
+      "height": 61,
+      "sourceSha256": "90f7999f3abd129c1779b94210c2820cbbc13aea7e305c77310d10d77fcc0b24",
+      "outputSha256": "209510ce51c1a59ad9c30bb43e5fdebfd35834a71f636325ff062f610f9f9b8e"
+    },
+    {
+      "name": "primeape-back",
+      "width": 72,
+      "height": 58,
+      "sourceSha256": "fb095e4791cf2ed6027aedae6221292bb9ab218168ab981ee611a50173bfc20c",
+      "outputSha256": "cd00b0555584c7331dc08e7de6452d6679567dd24548b23000b30374d4a5e6c0"
+    },
+    {
+      "name": "primeape-shiny-back",
+      "width": 72,
+      "height": 58,
+      "sourceSha256": "b0697f2f2c31869a0be79ff335b6bb532d208f1f5a4fcb65fc62d66d2bc21bfa",
+      "outputSha256": "9a4678dbdded7c0e59c6d389b7910f979aba4731b08589cc56764537f71caa2c"
+    },
+    {
+      "name": "growlithe",
+      "width": 56,
+      "height": 51,
+      "sourceSha256": "83c132fd7437c637e598199e1a900380cc8bb3b00fe8a63ddaff1db4dbdfac8e",
+      "outputSha256": "c0a6af4dcffbc2b66f61befc37e2a05adc7f2f4a51c99f3482d1686dcd745f62"
+    },
+    {
+      "name": "growlithe-shiny",
+      "width": 56,
+      "height": 51,
+      "sourceSha256": "a1389dba99d39b8ac70b79d38eeb6c21a458f4bcde9b085896d50d2252e65e10",
+      "outputSha256": "142899873180a460fcec431ac94dace5d3d9d9fb08a654bbec5cbee73f5594f1"
+    },
+    {
+      "name": "growlithe-back",
+      "width": 56,
+      "height": 58,
+      "sourceSha256": "6b88e1e31cc9afc560b81e0262f2d6128a15af2681aa95e464f71398537fade8",
+      "outputSha256": "eab3f01e0bda8da287cbdbce775223f330f514ee350de7bd71b97f1ef709a26d"
+    },
+    {
+      "name": "growlithe-shiny-back",
+      "width": 56,
+      "height": 58,
+      "sourceSha256": "9be6148910ef5aa1ab9561c249e11b00935473a270392043a2acbd6592bc9e6a",
+      "outputSha256": "6fd4dd7980b175eb296b6498e6df2d2d14fa552ee897760098d4f1ea1e7139ec"
+    },
+    {
+      "name": "arcanine",
+      "width": 78,
+      "height": 69,
+      "sourceSha256": "9b1629a6bff84554f502fb8b6c54beb6e091f7a43517770cd725d5c7022b3790",
+      "outputSha256": "4f151863e99956081a850a5085794de41ffad0d7dabb30f9e18c2356c5e4d244"
+    },
+    {
+      "name": "arcanine-shiny",
+      "width": 78,
+      "height": 69,
+      "sourceSha256": "1b173e05bf4f78cfd51888150acaa6120a6212098395db20c6736d5383f9c9f0",
+      "outputSha256": "6f04e41e6476d88b51d16d9a1fae137faf38e427709ba084e68f659fac888b74"
+    },
+    {
+      "name": "arcanine-back",
+      "width": 86,
+      "height": 69,
+      "sourceSha256": "7621864a567041b8dd720328fc152dfd49ec3dbaf11bced06cdd5b4163191665",
+      "outputSha256": "502576c21b910031bf201b246054e2c059f5a3a073961b45fafba3396322bc05"
+    },
+    {
+      "name": "arcanine-shiny-back",
+      "width": 86,
+      "height": 69,
+      "sourceSha256": "1f12f8d7e09c35d8370627009587ca6bdc94498b3f63bf69546ac846b8a14f70",
+      "outputSha256": "5ce92aa0cc2bb1e170aabdd6effd8e2a895d49216d443afe217f8cda7137b9d6"
+    },
+    {
+      "name": "poliwag",
+      "width": 53,
+      "height": 34,
+      "sourceSha256": "13408eaf4edd00bd83d962b46a9037a9c46d0792cfc79a6d9d0802e89db7504c",
+      "outputSha256": "4258f99dc58c3586e81087a203b929eba5dd7e98f4ff2846d9e1f45f6c78d979"
+    },
+    {
+      "name": "poliwag-shiny",
+      "width": 53,
+      "height": 34,
+      "sourceSha256": "4849ea04cc0dea9799638695dc85c019996cd0edf82109204488707a6c6a2ad5",
+      "outputSha256": "31bcae572c43fdb2180ed7722ca4ba41757809ced8faa76960f2fab80714101f"
+    },
+    {
+      "name": "poliwag-back",
+      "width": 54,
+      "height": 35,
+      "sourceSha256": "59d1c88b8997c1cb9149c9a7b1230f53ab09a926c4d0a0f957e26482ea6066e8",
+      "outputSha256": "691673e12376d636df8e58dfc4ed77229174a4bb0d09431b8ed0f11d037ec048"
+    },
+    {
+      "name": "poliwag-shiny-back",
+      "width": 54,
+      "height": 35,
+      "sourceSha256": "7966860d9e5d652998b9578ebb4d941e75321e61effac82fd1bf0c868db0bc40",
+      "outputSha256": "33fa4111519fffb25c3b793bad9dbe569b7cad4c6edcd6db3803b6e9ecc7d21b"
+    },
+    {
+      "name": "poliwhirl",
+      "width": 74,
+      "height": 55,
+      "sourceSha256": "1635ab05b441abd392630bc935abb5ef7836883242c47a736a72ff4d036746be",
+      "outputSha256": "81c03832050fd29b17e3b909e04a2607b5766b27d448598980dc5345780240e3"
+    },
+    {
+      "name": "poliwhirl-shiny",
+      "width": 74,
+      "height": 55,
+      "sourceSha256": "c543f87b6ec10d51e0e0412a662af839ce36d04807a92d43ce7b58f71707e54d",
+      "outputSha256": "1edb42138f58d8d107f71a0dc47f2a60b191151f9e74d28609255619fd252926"
+    },
+    {
+      "name": "poliwhirl-back",
+      "width": 80,
+      "height": 58,
+      "sourceSha256": "ef3fffb1a3c0e6aa97e5ff5f7b9eeb4ec6461a37fe8020dda962ca49496a14c8",
+      "outputSha256": "897fc0633c54554b1a2933681a0233811d70ec75213a1d4609bcf46cbcfec86a"
+    },
+    {
+      "name": "poliwhirl-shiny-back",
+      "width": 80,
+      "height": 58,
+      "sourceSha256": "adf82562235fb251001cacbf9db76a8055a12fd4708adba24e06f8173a5e8ad3",
+      "outputSha256": "16d6b1f1f883476b5eb2cfcb24cf7aad885a208b7554b63d13b6aa2fcfe2fdaf"
+    },
+    {
+      "name": "poliwrath",
+      "width": 81,
+      "height": 57,
+      "sourceSha256": "5c169cf1e2def77fd51a0fdea045338142c9324eba7d7afa0aba1eba38344325",
+      "outputSha256": "bb2d783d807ef0476ff7d27a83b199fad7a02fd46d4785e06888fb3f23e56e2a"
+    },
+    {
+      "name": "poliwrath-shiny",
+      "width": 81,
+      "height": 57,
+      "sourceSha256": "ad71b76d09642f239e56f5d89be37aa243b82e7fcae8b363f4ffdd30577eb733",
+      "outputSha256": "653bab9aafc16e033bd6bfc8d23af2a293962dce6292b8085b1164da2560c8bf"
+    },
+    {
+      "name": "poliwrath-back",
+      "width": 74,
+      "height": 57,
+      "sourceSha256": "3f66197f8cb982f873bd036d588877779a43b47cb68b32b6ec2c7a1f6678c427",
+      "outputSha256": "966b5b0a23af6b7eb3898c877159157d0198b3de6356e614c5e2850464d65590"
+    },
+    {
+      "name": "poliwrath-shiny-back",
+      "width": 74,
+      "height": 57,
+      "sourceSha256": "ea90043a26077360423b21a91fe0b477a0ff79c15527ce6310a7d88448596766",
+      "outputSha256": "6f2dc1f2cf5169e0e0812a7424cc6db6f5f39ee69b776fbd668100d953189f39"
+    },
+    {
+      "name": "abra",
+      "width": 64,
+      "height": 53,
+      "sourceSha256": "035b1db2b9e7be1852fe6b3abd4aa8b7b82888def4bf009e80e59d6e25b3550f",
+      "outputSha256": "34ba4c6f926da71f706770905a497c981350dd1ae552ad70a8c197f017453681"
+    },
+    {
+      "name": "abra-shiny",
+      "width": 64,
+      "height": 53,
+      "sourceSha256": "935036689a5590bb2aa33992b049f1c9ea14b4810a33c599d37c98c27429cb95",
+      "outputSha256": "6c4d904693779b33f5911aa38125cfb723ecc3fb00138d0f43c1beb0bcc3fd1e"
+    },
+    {
+      "name": "abra-back",
+      "width": 71,
+      "height": 56,
+      "sourceSha256": "ef87546789f4595cfaf36214aece3322e1eeaa1cc5057477d14135d4afea774c",
+      "outputSha256": "0a3b2b3670f8e4d2fb7c7ca8ffa05f11033e9f30781b3132485fe1ff01475b52"
+    },
+    {
+      "name": "abra-shiny-back",
+      "width": 71,
+      "height": 56,
+      "sourceSha256": "fcaff46fb2c73df1b9c69264dd3ba51ac924e9da00df5074acf1c1522f8fc764",
+      "outputSha256": "dd7521eeb807c09f02c25730e9c800305c9d514fb7c3e322f07e62946762816c"
+    },
+    {
+      "name": "kadabra",
+      "width": 78,
+      "height": 61,
+      "sourceSha256": "ddfc43cabb5e1d7fa6e4c3784978d4f58eee278572d32b033fc38fa8ccc37df9",
+      "outputSha256": "7a899e271c65d7eb5aae76300fe2c0d9124da3a93e9e1e57996b3b93d9cf104c"
+    },
+    {
+      "name": "kadabra-shiny",
+      "width": 78,
+      "height": 61,
+      "sourceSha256": "f43ff7459bcb8ecb6ff463c550d4d4977326579a19f08c7eff88f7082f55131e",
+      "outputSha256": "e19fb63fdb7adc63c68fe1ee00d0f3a23bcf4188690dbaf3051d6d9d7f0a334e"
+    },
+    {
+      "name": "kadabra-back",
+      "width": 80,
+      "height": 65,
+      "sourceSha256": "19d7fa4fe2e59fe12449fda2b2183d411a48fa4bbf960ba7546f5d3c422be972",
+      "outputSha256": "3194664c635f10f42cf284141c583f7255d94e4955ae20637532b179b737d06e"
+    },
+    {
+      "name": "kadabra-shiny-back",
+      "width": 80,
+      "height": 65,
+      "sourceSha256": "3981976d674a55c889e337c735e94ac2d541f0804b535d78b012128d6a93b5c7",
+      "outputSha256": "994aa84a2a770a124d20105870d910f138116b63d7e4c32f477d74e0dd264f56"
+    },
+    {
+      "name": "alakazam",
+      "width": 92,
+      "height": 69,
+      "sourceSha256": "8ed59a978621527b23831b59d098000e3c87aa875a326c8d5f2d4384163d4ffb",
+      "outputSha256": "f38e4afb2f367a31aa34c144842a6c430ed7d0f950a4e2801fe254d7a46f79a4"
+    },
+    {
+      "name": "alakazam-shiny",
+      "width": 92,
+      "height": 69,
+      "sourceSha256": "9c51b58ee77832125db45403e5d627c6b0c34336387823b4f9c90f74b2832c49",
+      "outputSha256": "54802828c821c647bb60d737d6e5afe657bcfeabfae6c9757ab1fbbb2edc97d5"
+    },
+    {
+      "name": "alakazam-back",
+      "width": 83,
+      "height": 66,
+      "sourceSha256": "110bf47d52f946ddbd55e9f593a1b448d33cf473ba3fd10340373c724138e0ec",
+      "outputSha256": "0331098591ddbd87023a05aea29d6eb68bb96a29ad87505f29dc4c4afe13b2d8"
+    },
+    {
+      "name": "alakazam-shiny-back",
+      "width": 83,
+      "height": 66,
+      "sourceSha256": "a1d2c99f23bc33377391a460afa495698ea973910d5645ee1fc901a0e88b75f9",
+      "outputSha256": "32f06724800f68abe0165709902345df8e7fa271b6f1d0d342ad6a598d0629c5"
+    },
+    {
+      "name": "machop",
+      "width": 50,
+      "height": 50,
+      "sourceSha256": "e0a8a93065ee6d9c64bf50a2492c0f6a732381885b6c92556e74c258c58ee714",
+      "outputSha256": "70caee95d46ba766afaf84256ffcd4c63ae9d21a8da08da3f65d6e2c84178f4e"
+    },
+    {
+      "name": "machop-shiny",
+      "width": 50,
+      "height": 50,
+      "sourceSha256": "e13386f2be71030dc74f5d7655df9c9e04f3f8607c392393fc649194ad4f7d60",
+      "outputSha256": "e1830f10a3af140515db42ddfb3a8073a90534202951fa2a0374207974034819"
+    },
+    {
+      "name": "machop-back",
+      "width": 52,
+      "height": 51,
+      "sourceSha256": "d5c54d70de4c58c368d498be1f9e1051c90ba51e63f3110d1e310dc8d448f96a",
+      "outputSha256": "5999cef1b0134267da9492e113245fbec83ce4b27ae6f04e82fbe4790b4d7ce4"
+    },
+    {
+      "name": "machop-shiny-back",
+      "width": 52,
+      "height": 51,
+      "sourceSha256": "6d150ffa5f68455846ffc84ebebc0a15ec2220a8e5b3898034cc434919209078",
+      "outputSha256": "13f2f368d4723a43db37f289ffa72661d4976e86a8d2a77a1e0172550faee3f6"
+    },
+    {
+      "name": "machoke",
+      "width": 61,
+      "height": 71,
+      "sourceSha256": "9c61b1cb9c52ccfa0cb419822ff2d6980a5799eb738fc0573a75dc55f45ab1b3",
+      "outputSha256": "12324f2cc8b715a4744f5b0624084f07ec7a28a72cba5849b6c864a40ae5e3d7"
+    },
+    {
+      "name": "machoke-shiny",
+      "width": 61,
+      "height": 71,
+      "sourceSha256": "0284156184d54b0566234f8cc3aaf257289322d005e761e7b34129197fb2c6ae",
+      "outputSha256": "b5699865527737ecd0654c8a50a4e03fac8bb1275f770121d51551f7c5b5831c"
+    },
+    {
+      "name": "machoke-back",
+      "width": 61,
+      "height": 72,
+      "sourceSha256": "e511dd3a90d6bf4e2c6d23c22373144f8edf97a2bec444f73cf47963f941a492",
+      "outputSha256": "28d5553251f5b0856a661278e776177cb2923b5546885a6c43682c2bd786acf9"
+    },
+    {
+      "name": "machoke-shiny-back",
+      "width": 61,
+      "height": 72,
+      "sourceSha256": "65537aee75405fbcd6fc65ab571faa46241d82b5f5887a80be98040a35336006",
+      "outputSha256": "b6e9dc70fc783b99d9341faba63a5954200edb0bebecd2f5b8a510e547293454"
+    },
+    {
+      "name": "machamp",
+      "width": 63,
+      "height": 77,
+      "sourceSha256": "f129fb3f5d1cca47acc8c61b6405844533d60243962fa8351edba86d9a965817",
+      "outputSha256": "18ca94e89d446cf5f5961b9de7d8532987d37cb44720a665742dfa21978980a3"
+    },
+    {
+      "name": "machamp-shiny",
+      "width": 63,
+      "height": 77,
+      "sourceSha256": "78d58fa5958a9764aee90b4dfe244688ccaaebbf382fa59a1f6ff35db69d7f7a",
+      "outputSha256": "a2939045c0af9d765bd9fa9e228f465ced224781e53205bea484860ef723aa91"
+    },
+    {
+      "name": "machamp-back",
+      "width": 67,
+      "height": 77,
+      "sourceSha256": "a2bd90ebfeaaa1ec26cea47d7e278edec79aa0d2f64f0eaa8028053a5bb5fe2c",
+      "outputSha256": "9047625766934d3f4e3d3c148844ecbb63ea42bd15ab5debcb872f416b7a633a"
+    },
+    {
+      "name": "machamp-shiny-back",
+      "width": 67,
+      "height": 77,
+      "sourceSha256": "3dbe2c520711084c14ba5410510cfd1ad30a10bab473d994a1a2df5f81bb863c",
+      "outputSha256": "9174fabb4ce45a69d979c27d42590519ad45eb8ce7f1659a9920c384473b0f90"
+    },
+    {
+      "name": "bellsprout",
+      "width": 41,
+      "height": 44,
+      "sourceSha256": "9d254ddc809e674987f84e43e9f2c6d06c03cdb1ae091a01b934c2db231e3771",
+      "outputSha256": "054c7b9393a02f81564977c857242905e4ba0dc02c1ea3c1da2d779fab6b7a70"
+    },
+    {
+      "name": "bellsprout-shiny",
+      "width": 41,
+      "height": 44,
+      "sourceSha256": "c8f09c093b71cdfa18e8ed582b481330bd36be3b2934430ffb0cba5302618157",
+      "outputSha256": "bd41d943da16f3f1bef2e2b49ba33f209111c3e7cfb58cff0ddaba5bdb2f600e"
+    },
+    {
+      "name": "bellsprout-back",
+      "width": 44,
+      "height": 52,
+      "sourceSha256": "fd9306be411e1b40c880dcb1e4d6cd99447f8d87af496bbf985f635d57021021",
+      "outputSha256": "889ee03db1ab290769a9bd9215dd8bbc24fe9fde20016cfa6053d42dce4eb70e"
+    },
+    {
+      "name": "bellsprout-shiny-back",
+      "width": 44,
+      "height": 52,
+      "sourceSha256": "56a6440b619ae40e52f85fc6ab81084b3526860538c2a1950993edd09d50ba92",
+      "outputSha256": "714b89567b02d1a470069a47032b4305fe0d64f82bfc716dee6d7000487c853f"
+    },
+    {
+      "name": "weepinbell",
+      "width": 68,
+      "height": 50,
+      "sourceSha256": "7d2edcea5fe6d9b946f59e27e53b2b68f63585ad23e491e4d7110d315449357a",
+      "outputSha256": "81bf825a81bfedceb1d681e7795115a15d9361a5d44515f33f40d6b29a051319"
+    },
+    {
+      "name": "weepinbell-shiny",
+      "width": 68,
+      "height": 50,
+      "sourceSha256": "dff8fa28c7dc6384e7daa9adced7e0ffb8a63e8ecc2c3930dc849938f9382a19",
+      "outputSha256": "11c74267370c2af7fe45c1c2570290ba995242606748034693c1ed0ef6601ae8"
+    },
+    {
+      "name": "weepinbell-back",
+      "width": 72,
+      "height": 54,
+      "sourceSha256": "8acfe27c5b01bf97f3aba63897eee4d10539414b0610daf193e798f8eca2dd78",
+      "outputSha256": "17b0ed0fa7e51fdf966199242c02306d185b352b45f9192e05ca475e60906a50"
+    },
+    {
+      "name": "weepinbell-shiny-back",
+      "width": 72,
+      "height": 54,
+      "sourceSha256": "f261929e1ab487b324de9b68a493d9c67a15c0e4e74573d53277bb242f4d6cd2",
+      "outputSha256": "cf57e760c0774abe8da7b76ead1c63ff960231997908094fab13bcde82bfffcf"
+    },
+    {
+      "name": "victreebel",
+      "width": 65,
+      "height": 71,
+      "sourceSha256": "da6b8f87297772bfe5910601ce6cb6c539857806d49d98008cc82202b692131f",
+      "outputSha256": "5348461f2d00cf348623fc9e454c3ae045ec7dd5f0fbd77b9d5eedb875bb762f"
+    },
+    {
+      "name": "victreebel-shiny",
+      "width": 65,
+      "height": 71,
+      "sourceSha256": "c0682102e2c82f54d50cfa058079fbca65298ae8373c9368629beab23d0440c0",
+      "outputSha256": "a085421996f32d83cca77f94909d25b3cc358b5ef944e6bf8502a4a156b4ac94"
+    },
+    {
+      "name": "victreebel-back",
+      "width": 69,
+      "height": 70,
+      "sourceSha256": "2b119e33da201862f15188e2af34bc5d279675df9740841d54e7c0cdc99f0fda",
+      "outputSha256": "1a122deefdd57e2ccfd71abde83826fb7a15c58a65da0894bef8232a32c0d4c3"
+    },
+    {
+      "name": "victreebel-shiny-back",
+      "width": 69,
+      "height": 70,
+      "sourceSha256": "13ed20b18e932df1b2925e00a0f5b25dffca37d896aacca1b94c4d45fde53fdc",
+      "outputSha256": "fe4a15de43392442098dc3542f31608d9141d7237d53361e83513532937fae99"
+    },
+    {
+      "name": "tentacool",
+      "width": 57,
+      "height": 70,
+      "sourceSha256": "e895f8a8b7d999f111b4ec49891f51ac520693ee4b17d3ab57324f1d97507c17",
+      "outputSha256": "2d4328b3d4642a62d3a6772b3651295e0234cd67f80aba8853817335ae3c43b6"
+    },
+    {
+      "name": "tentacool-shiny",
+      "width": 57,
+      "height": 70,
+      "sourceSha256": "c3ff4002db75eb2a87481fdc2e0d17f21dfde22254517e4169f45c7df6032596",
+      "outputSha256": "bdba62bf331dd4bd0771735ca65f157190e4ecafe15738b843efec3c3d8c63b9"
+    },
+    {
+      "name": "tentacool-back",
+      "width": 62,
+      "height": 77,
+      "sourceSha256": "23dd9635d1a1515f1cac5a7ee0d7ef90d12bf4502f742b321568fb001159516c",
+      "outputSha256": "35ee5b5afa41276128b390c26669663ff10186d16d622ac5a9fd3348fd625d39"
+    },
+    {
+      "name": "tentacool-shiny-back",
+      "width": 62,
+      "height": 77,
+      "sourceSha256": "f64ab0c9df5cb7cab08ae4eaf2dc68faf423314ae31df49d5d8fc4d2c24c319f",
+      "outputSha256": "867df471bdc75dabba4b19c1abcec6fc7670d0a7723259b1d84ee1f99d1ed3ff"
+    },
+    {
+      "name": "tentacruel",
+      "width": 83,
+      "height": 85,
+      "sourceSha256": "b1766337cbf1d65ad5a458155393f9dad5f4f70ef6072b5718d1945abc8af8ea",
+      "outputSha256": "734b11899e05f3bdbd75b6c0ce2a4399700e71824a7903fd096bfb49b63e99e5"
+    },
+    {
+      "name": "tentacruel-shiny",
+      "width": 83,
+      "height": 85,
+      "sourceSha256": "2708f37958c2fefc5fc22bbcfaa02936f912d22163e7436591bf0af7c691b22b",
+      "outputSha256": "1821226aaa5a878c6ce6814a61d4a169c171a07f00978dacc584a0e61bdc6547"
+    },
+    {
+      "name": "tentacruel-back",
+      "width": 84,
+      "height": 85,
+      "sourceSha256": "a1d09900fefe677fd664f98bdba5496f2e0928fff553e7d6d85894abe3a058bb",
+      "outputSha256": "339ba1498ffc2f557f425ff59b63c0620c41a241f7a909c34c90c4057b7205f2"
+    },
+    {
+      "name": "tentacruel-shiny-back",
+      "width": 84,
+      "height": 85,
+      "sourceSha256": "893dad684a18507222f0a147da7f23179e1fe30c20d71fb794de627e0e09b611",
+      "outputSha256": "3b2a22f5154b55949e6e8e7ade6e8b2517be1a027d5726dca5f0bdde051f8ff3"
+    },
+    {
+      "name": "geodude",
+      "width": 61,
+      "height": 45,
+      "sourceSha256": "983075713e1cc5ca25f9ab88a6098601f497d7821613fe30598cd8bd6dfd9cd4",
+      "outputSha256": "46f5ad951ec5a702185e17d989aaf5208bbdb0df5a5ac7f6fd754454abe24a4e"
+    },
+    {
+      "name": "geodude-shiny",
+      "width": 61,
+      "height": 45,
+      "sourceSha256": "d05cc22bff22bc9a149afe5b94165dc8d1b563ddab5ddfd3abf2196dddfe07fd",
+      "outputSha256": "2096c4dc886559d01caa8a180a9b81a08ef2ed7daf0146a5303d0e0b0eb981b3"
+    },
+    {
+      "name": "geodude-back",
+      "width": 57,
+      "height": 52,
+      "sourceSha256": "e227be90e7ce6f3e0ea0f4f11bdae9bd4654eb677167eb76af519b4c3ebdf899",
+      "outputSha256": "d98f3ad6a00c75aa84068e58eb15796f3cd3294025d1c9b105d54bb1de667ec5"
+    },
+    {
+      "name": "geodude-shiny-back",
+      "width": 57,
+      "height": 52,
+      "sourceSha256": "b3a0e1fb4cc158ec6dd9cbab9aeed7a01018c8281b5a57d781a64e784352e4f9",
+      "outputSha256": "8a39d6f56c0b42de6182b09c77f7961cc60cd352812442ca4b1837d40c09adc7"
+    },
+    {
+      "name": "graveler",
+      "width": 71,
+      "height": 44,
+      "sourceSha256": "217f378f1d881f2725b8fa0894e94793e82edabf50108938d874c1d25a5c27bf",
+      "outputSha256": "8ab3dcc4708d47c54a51695d145755fe152c994720ccf3fa919d06f2a269d67d"
+    },
+    {
+      "name": "graveler-shiny",
+      "width": 71,
+      "height": 44,
+      "sourceSha256": "7c55030cfb0bfbb5121865bd652ddb9f10beb300f2edff81e11889d0cdd14cca",
+      "outputSha256": "f7b3d45d97aa1a2f12487f5b0e22607dbd85d393b8c8e537e18207c24e73a381"
+    },
+    {
+      "name": "graveler-back",
+      "width": 65,
+      "height": 43,
+      "sourceSha256": "01d5f42c20fe31517fbeda056b89e138fabbe914c2f9de6f150f392dd8ff0e6f",
+      "outputSha256": "5b32aaeb664a6df0201cec7e5e35c0d8ee030c2c15a92971f150c1bd35dcb106"
+    },
+    {
+      "name": "graveler-shiny-back",
+      "width": 65,
+      "height": 43,
+      "sourceSha256": "d0ede8f8b365ebeba0b065c7188750433f2c0815a521c536037f447be88dfb20",
+      "outputSha256": "9b390b6f7355d98bd1191359e40d3e0de6017608862acdcd3cf47d28a3bfa835"
+    },
+    {
+      "name": "golem",
+      "width": 72,
+      "height": 57,
+      "sourceSha256": "59d37cec5ad8066ae9433866462b18d8f667c4ead6d6175e67bf120ddbb2cdc2",
+      "outputSha256": "5816e66ebdfb8a46512e404149e254ece3efd1734a96b8c3755a5b2ab9c3086a"
+    },
+    {
+      "name": "golem-shiny",
+      "width": 72,
+      "height": 57,
+      "sourceSha256": "1bce5b3a2762616cdc411892cea182a2229280f44805e12a24d4174c1e6d4b32",
+      "outputSha256": "3e8a943e65e26f124ca6448f7b7083b56f3d13b7bf381af55bbae510888fc5bc"
+    },
+    {
+      "name": "golem-back",
+      "width": 68,
+      "height": 56,
+      "sourceSha256": "8fc019b937d2c6d46db657d58bf918fc20b130dd5f1dacb47a0cd240e570922c",
+      "outputSha256": "d121bb2fc0c0a72c1085184f991b815a26f351a4dc4b2682dbff289e21860c5a"
+    },
+    {
+      "name": "golem-shiny-back",
+      "width": 68,
+      "height": 56,
+      "sourceSha256": "9aa9be5287eeb4280c93cd98702eb3a6af74b8d2a13e74e7b616891db9193ceb",
+      "outputSha256": "57ad6e0d7677b4905652960677c74775187cf80a34fea3b5622d21a07e59907d"
+    },
+    {
+      "name": "ponyta",
+      "width": 58,
+      "height": 57,
+      "sourceSha256": "f1ce91e2c12e33057e19351d14845d2547a9482a1efdd9c9c70f14d39827cff9",
+      "outputSha256": "e499905e98bd306585ec275e26d11f9030b87b3b1aae61bcaac233fd5aa57df9"
+    },
+    {
+      "name": "ponyta-shiny",
+      "width": 58,
+      "height": 57,
+      "sourceSha256": "2c5a70dd9500c9760bbe2c1e56d96f8b9c7fef7f5beaee73765dbb3589e2668b",
+      "outputSha256": "4315d06891b9a361bfb0ba439950b5524de0eb57461012fe76fb73d2182dc2dd"
+    },
+    {
+      "name": "ponyta-back",
+      "width": 58,
+      "height": 59,
+      "sourceSha256": "39158e543a692667db8767a6a79018aa41f5a65ef774f9452607f84a15e4e1ae",
+      "outputSha256": "603b1a234b51bf0a70c272a53e7e97a383535c97656a473cf22722760e7657b6"
+    },
+    {
+      "name": "ponyta-shiny-back",
+      "width": 58,
+      "height": 59,
+      "sourceSha256": "5256b98ac5f9a363ed8eca6f297c17bd88f606a4a17c6c215b39c609d6f97e39",
+      "outputSha256": "6a5ae4880fd2e141b57dd223eedec7d863c1f814d30e89e98e739b7b9d298476"
+    },
+    {
+      "name": "rapidash",
+      "width": 74,
+      "height": 73,
+      "sourceSha256": "8d63f996791ee74a219be53a561555014302c05f26204374d0dc3098c99af334",
+      "outputSha256": "25fbd9408241bdcec109bcf5bb9b170972b919f493e1e1e652eaa5de722efe4b"
+    },
+    {
+      "name": "rapidash-shiny",
+      "width": 74,
+      "height": 73,
+      "sourceSha256": "f1766d6042945fb3141ce889a743519399ce41b049ed61bf0618930b3a2cb584",
+      "outputSha256": "a0269b5c374505a40e8cb5a0ed3ea8b6693cb52e662d9287f50e257a8d953135"
+    },
+    {
+      "name": "rapidash-back",
+      "width": 76,
+      "height": 76,
+      "sourceSha256": "35659f0ff92980098bc6684053028966a3927de6ac693358fea92a7f08d10a36",
+      "outputSha256": "56dd23171bfebe6da7cf7cbf96a6f9ed04000dd25a678779d92b8373fe00feca"
+    },
+    {
+      "name": "rapidash-shiny-back",
+      "width": 76,
+      "height": 76,
+      "sourceSha256": "4f42f6792ecce26946a238e4f20c4245f4e0332401a08b1caa3ac4a758b8efe7",
+      "outputSha256": "b12aa6bd7ae50d57cedb5bf1a9c99e101bf97741b9aa254c654fac2ba2116aab"
+    },
+    {
+      "name": "slowpoke",
+      "width": 65,
+      "height": 54,
+      "sourceSha256": "f71a54ca0c5893d40786fb8918999ed75d6cb2c34e962d31ad4bbc4bf7e66f39",
+      "outputSha256": "fba3918a57db89068fd49b1f8ff65541a116f8b94b07143bbf792a25e2a8342d"
+    },
+    {
+      "name": "slowpoke-shiny",
+      "width": 65,
+      "height": 54,
+      "sourceSha256": "b0e2e9e20bb871095c738a1d6642f0fc3bb985522260d6de8c8457d9bc4fd6af",
+      "outputSha256": "ee697c3958234dedd1672b6a70124b13136d72683a2980986765c5408de6c722"
+    },
+    {
+      "name": "slowpoke-back",
+      "width": 67,
+      "height": 51,
+      "sourceSha256": "b8535f042bd04a09195c76cddb54f3f778e516e27cfb1521b432fbe8bcf0069a",
+      "outputSha256": "0f24198793f1c98484555efd2fb715e2f4055c0b330a4152f337f59197457f6b"
+    },
+    {
+      "name": "slowpoke-shiny-back",
+      "width": 67,
+      "height": 51,
+      "sourceSha256": "e102dfcfc971588c3a6a93865ee5949949010a07ffdb6f7b2b54f16d95bdc066",
+      "outputSha256": "3ebb328db6d533d42e045baab6bc6387b96fd788ace801d513fe453482577a42"
+    },
+    {
+      "name": "slowbro",
+      "width": 62,
+      "height": 60,
+      "sourceSha256": "89419d24e953144cc186ee3fd612bd6353aa22fac59386f4019f423efed04e9d",
+      "outputSha256": "bd0d25bb8c889543d57276c3fa1e6ec032febd8d9157f9680fd06e0fa8397e30"
+    },
+    {
+      "name": "slowbro-shiny",
+      "width": 62,
+      "height": 60,
+      "sourceSha256": "7ec733c34048dab80ac6a19734570dd65e96ad24e4ca644d572c5235b5411bc4",
+      "outputSha256": "9f90ccb28ad192be6b71059d473253fa706146c9d4ceaec662cdfe41ce863232"
+    },
+    {
+      "name": "slowbro-back",
+      "width": 76,
+      "height": 58,
+      "sourceSha256": "8e98fe3399caa7dd3fb47767d77b0d13919980b75e852733a36d3c0934444729",
+      "outputSha256": "0234d353734a40a2ce50003b4b60575a49697c1e2a1f79d4543c1c8e2d8616ee"
+    },
+    {
+      "name": "slowbro-shiny-back",
+      "width": 76,
+      "height": 58,
+      "sourceSha256": "7a81fa0ffa3de54f38f2eedc599a144ab1b40e18e65a6607d6e5c7974fd7439c",
+      "outputSha256": "4baa7d2a6212dc60c637eaa367b27c5126e038fe42b26f2e3506b5df18baec6f"
+    },
+    {
+      "name": "magnemite",
+      "width": 37,
+      "height": 33,
+      "sourceSha256": "f0f664958bb589c82530a06fe4bcf9abbb7959ed91743489a14de9c9f7e5c347",
+      "outputSha256": "a6f23316dbee093ff13145abc4758126c36cd27a0c2ccb6a56725d762e33a0fe"
+    },
+    {
+      "name": "magnemite-shiny",
+      "width": 37,
+      "height": 33,
+      "sourceSha256": "41c33fa8e5995ef36d86ec94baddedb4ee51ec14d4ea4db9c5c7e1ea05fc04bd",
+      "outputSha256": "adbbb964e1d55f9b51d3f28a4e5c14d29a1d0b0c3ba76106e3bc739e1b1e55a0"
+    },
+    {
+      "name": "magnemite-back",
+      "width": 36,
+      "height": 31,
+      "sourceSha256": "e5e9ea290078a24bdc893e88b77917592ab31c44e228d4d3050361ead4dc4cec",
+      "outputSha256": "b7f0cb1de4f6d494a403d387f158813b77a5e467b94221ae15a7dc4128277641"
+    },
+    {
+      "name": "magnemite-shiny-back",
+      "width": 36,
+      "height": 31,
+      "sourceSha256": "3a83f3e710881833a530122b59372a19e17c62c1e2390a6756c17df00c732e4c",
+      "outputSha256": "aa911fe51b392795fb2460f46a1a4ce2e8eb2bbf30d75bff6d937afa2ae8b84a"
+    },
+    {
+      "name": "magneton",
+      "width": 68,
+      "height": 60,
+      "sourceSha256": "b572001ad6cd36fd67d763f06473e27ca3dc6e2b8d29e702377f218efa25497e",
+      "outputSha256": "a5f5879447b2898118efb63c39ef99c92920bf5e49f4f446e9857110c330d32a"
+    },
+    {
+      "name": "magneton-shiny",
+      "width": 68,
+      "height": 60,
+      "sourceSha256": "4f46b0f5c223bd4a7a832066b798f991a44e7e2b04cfed085323e27b55609d05",
+      "outputSha256": "f9767e1d0a2e5fb6e6baff58cdd9cd2b9b382a6825379d8760da63382da8804f"
+    },
+    {
+      "name": "magneton-back",
+      "width": 73,
+      "height": 59,
+      "sourceSha256": "7c0de4808e552f52e441b1f1ed5305c3435cd4a04f71382693a49938fd57eb38",
+      "outputSha256": "649a3a069d6589e5e09d720adce896a6830940eb788a5cc2be52dd0617684a26"
+    },
+    {
+      "name": "magneton-shiny-back",
+      "width": 73,
+      "height": 59,
+      "sourceSha256": "33c663d94305c36ba653b8d0fbb2d6c7a25fcb3b47d5d69d0c9436514b181c97",
+      "outputSha256": "e66e20a8f5c7f7f51010c8405d49b9051feff2e4d676bd2c9d4ccce077f57b15"
+    },
+    {
+      "name": "farfetchd",
+      "width": 45,
+      "height": 49,
+      "sourceSha256": "8a7a9ec11eff83b219752b39330712bb081ef71c0333a2cf26f57b4e0c5af252",
+      "outputSha256": "c2af86dbebcf47078cb6df49e777e890cb3af8e7c7f7e14f503c90a816c26955"
+    },
+    {
+      "name": "farfetchd-shiny",
+      "width": 45,
+      "height": 49,
+      "sourceSha256": "57f2789bdf537bfc758ec3a741b8f4b0160a955161b80bd7dce70691c265efc6",
+      "outputSha256": "ea652b355cc7d11511e615d3d7588ade1e8331856511a7705d88dc498a76352b"
+    },
+    {
+      "name": "farfetchd-back",
+      "width": 46,
+      "height": 50,
+      "sourceSha256": "bbe18c552af0285a176f615d1f5cd1644b50a9963728f5bf64e81f2de694aa3d",
+      "outputSha256": "73e42504a2cee851d19b718a39bdbf9cb655dfa1250848a8d94950a65ac45459"
+    },
+    {
+      "name": "farfetchd-shiny-back",
+      "width": 46,
+      "height": 50,
+      "sourceSha256": "0b72d04234add8fe7c710cf75258755f55b17d51e3f76cff852f2bd81ad4c5cf",
+      "outputSha256": "246fd36a40ef4835486a83a28257560a4550dd53e37af58ebc8d63553b2975c9"
+    },
+    {
+      "name": "doduo",
+      "width": 60,
+      "height": 54,
+      "sourceSha256": "a35c4dd45596356a59fabf110e3d65cd8c00c548787b3cfefaf4d2aff565e641",
+      "outputSha256": "f73ce0cfe33f312a6aa0687d019cc277e8e73f1ff82964fbc2a804f09b01c63a"
+    },
+    {
+      "name": "doduo-shiny",
+      "width": 60,
+      "height": 54,
+      "sourceSha256": "0c2c8a4df450f919de07f4a75e9ef96d8a2f279aac7e495bc99a04ad3ba84b12",
+      "outputSha256": "68a926e3f2fdb079b9e3773822e731d3b1608ab91759c6493626a6b37d4d09aa"
+    },
+    {
+      "name": "doduo-back",
+      "width": 60,
+      "height": 57,
+      "sourceSha256": "1aad8677d0b987786565b23687640f038e79872f0c9828fe53a9daf3fc25221d",
+      "outputSha256": "27b046d092e273d36b200d3d4cc7b5a157289e8471666b5d1f7f067dfc849208"
+    },
+    {
+      "name": "doduo-shiny-back",
+      "width": 60,
+      "height": 57,
+      "sourceSha256": "f32dc1a2056e6ee714545a79131f29638a868ed8d5139a55fcf2c815ba43a940",
+      "outputSha256": "b457dc880803a4be8f7ce0fbfbaed11da7e6c7953cbc539a08a3b21c942edff1"
+    },
+    {
+      "name": "dodrio",
+      "width": 70,
+      "height": 76,
+      "sourceSha256": "6521b95642867ee4381eba4deebdf1e7bc5dfc22791fa7e6b95785277865418b",
+      "outputSha256": "e17fd21576259226de634e0053174ce4e41a7173a9f44ce1c78eff2414048d88"
+    },
+    {
+      "name": "dodrio-shiny",
+      "width": 70,
+      "height": 76,
+      "sourceSha256": "d719c73511ff983a3dea2b096df2cf0fbcd019ad5b579045c76a5642115411f0",
+      "outputSha256": "2b5802ae2938ff0b73cefc06277b158497232b55135eed37e3233138cc8f73a6"
+    },
+    {
+      "name": "dodrio-back",
+      "width": 73,
+      "height": 76,
+      "sourceSha256": "200bdfd8fdf79e8ae6e67cdf430299765919bafe8da47174123b338664b1cf56",
+      "outputSha256": "b4773ed463767dfb3793931b34f3a79cf24a92d20258d3c9bcb0afa211e930ff"
+    },
+    {
+      "name": "dodrio-shiny-back",
+      "width": 73,
+      "height": 76,
+      "sourceSha256": "a18a6c2d168b442ea51ba809e2248f44cb4bd2fd79182ad03561782c45175796",
+      "outputSha256": "d21e2a03ded39b62dad029f9b6462a5666eb6c9012cabfdf06a85d2626bf5534"
+    },
+    {
+      "name": "seel",
+      "width": 62,
+      "height": 47,
+      "sourceSha256": "ee25f478e0e85dda38e15a2e696e25390bec802de58eef1a72a6af641939f278",
+      "outputSha256": "e9937dc0ccca5a3e471e0bdcbb8d17be29acdabd42f3627afed3da34fac3af6f"
+    },
+    {
+      "name": "seel-shiny",
+      "width": 62,
+      "height": 47,
+      "sourceSha256": "fc38932bbf1cc95a84f585a07eb26a1583d16a88a8cadf1c2c4a3f67fd60c342",
+      "outputSha256": "7952e963fc0ff568f68dc84fc0d9e5632112c491e38c014ae24c107efa1f9861"
+    },
+    {
+      "name": "seel-back",
+      "width": 61,
+      "height": 43,
+      "sourceSha256": "a218749a0568f47d45783ab17d29afb35ec4bbee49f7852ac7d87b1b9f344269",
+      "outputSha256": "67c649bdcd6263719889982b2821a68296beb6a11cc2f2caf366f48b28f7ffa2"
+    },
+    {
+      "name": "seel-shiny-back",
+      "width": 61,
+      "height": 43,
+      "sourceSha256": "622682e27a7ab1bf92fe74ce95f6cfa0006236814c7255c1ca3126392ea32e2a",
+      "outputSha256": "462f0e7b2111fb2863230509fd39c71310b3797220ef01baaa7ea10353feebc6"
+    },
+    {
+      "name": "dewgong",
+      "width": 75,
+      "height": 75,
+      "sourceSha256": "664cea91e768a1c232355529ae43c0e590a39c3b939feda955bf4c5ac3e5a550",
+      "outputSha256": "ccf1332384ef7c8eb5e8a99d19371a2cb2163fc9b0aaba016ff1ad5c7729fb4e"
+    },
+    {
+      "name": "dewgong-shiny",
+      "width": 75,
+      "height": 75,
+      "sourceSha256": "0eefee768fa823883bec3d93e53284af70696bad389a3c61429fbb40097a4118",
+      "outputSha256": "5acdb284218b4ac0b9d6b73444c24933b9d8344ea9623478afe0ada69c8f2b85"
+    },
+    {
+      "name": "dewgong-back",
+      "width": 76,
+      "height": 87,
+      "sourceSha256": "947e72c70873966afa0541cb99be4d55daa2a1f3b4b5178e681f3ffba2b2b028",
+      "outputSha256": "d80bedc43b192fb85854278057a612c5872b370c9cc0db3c283b4fe35fd7c128"
+    },
+    {
+      "name": "dewgong-shiny-back",
+      "width": 76,
+      "height": 87,
+      "sourceSha256": "19df05d8abbd6ebdde61723e5bd7a083a24963fbb98834067f70a650819d83f6",
+      "outputSha256": "6f3aa26f99c3ee6d2114c05783bb6485316d4b22bfd2416b9a75f0ae840d9394"
+    },
+    {
+      "name": "grimer",
+      "width": 72,
+      "height": 42,
+      "sourceSha256": "199db823c954d45c52ad99b791f7ea9fec58ebe56b34586cbf425d74690515c1",
+      "outputSha256": "55c6ab8ed9e0a17e5497ccf98c209beb982f2702dbae59b229e7e7699186cf20"
+    },
+    {
+      "name": "grimer-shiny",
+      "width": 72,
+      "height": 42,
+      "sourceSha256": "2f03774e064c9b056dfe5e3b6e9ee36338d21961629d54814bef911dae39d726",
+      "outputSha256": "1c1b2a78294b46e943e34d1c16447566c2d420286ea3a874f59a3430ee82ad1a"
+    },
+    {
+      "name": "grimer-back",
+      "width": 71,
+      "height": 46,
+      "sourceSha256": "e81b54b35e28c08d6dea6a7baf6699eb92d6c45edc40209e5a60d6da18818a03",
+      "outputSha256": "5bb83c0782cd8dee293d4d929d41f7a3aadab496cda128ff0bfdb0cf96bfd2e1"
+    },
+    {
+      "name": "grimer-shiny-back",
+      "width": 71,
+      "height": 46,
+      "sourceSha256": "a3b534374581c96b2d03fd15d27df97998d6130ed1cf756f70c1c677a2ae1d12",
+      "outputSha256": "d6f633c49f1a2e186cdefe9bf4f4af4cdf9cdd1997d3ad366ec9d96531f9ebbe"
+    },
+    {
+      "name": "muk",
+      "width": 94,
+      "height": 68,
+      "sourceSha256": "c0c6140d30c7cf2c046de10128e8ca370bb6603eb04e837b1842857154ff0152",
+      "outputSha256": "723d024d507c244e507224bff38838d682f15b5abd36e28e005ebc8e14b63f5d"
+    },
+    {
+      "name": "muk-shiny",
+      "width": 94,
+      "height": 68,
+      "sourceSha256": "44c4db809250a90f8bff9ade26d1f900241ff3ff93ed604c9702f1c50643037c",
+      "outputSha256": "e6694578f9059a82824fbf1740f53f26fbf74222bcce6e2a53bbee40496e51cb"
+    },
+    {
+      "name": "muk-back",
+      "width": 100,
+      "height": 82,
+      "sourceSha256": "c5c3e249b0d662186800ca88f1e53a3ecdf2fb565c30ff40a9aa2fc4a0a3b680",
+      "outputSha256": "487a28c5e61986c8cad2a2b365b7af21d9f9d3f0f06eb575f8f810479f445f0d"
+    },
+    {
+      "name": "muk-shiny-back",
+      "width": 100,
+      "height": 82,
+      "sourceSha256": "47679009d2ce4f201c048be3b7aee851e2aa018f21725ebdbf4a64548238d8a9",
+      "outputSha256": "1124896325da7aec14c8a30447ada23b55d9cc196d39fd453342cf77c1301c69"
+    },
+    {
+      "name": "shellder",
+      "width": 42,
+      "height": 38,
+      "sourceSha256": "e3f308bf59c1549b46424c602e281fb3570f44f7fce3a8c508efed25ef381fad",
+      "outputSha256": "10e6d816995dab055634a5b5ea29e21ee9ddee528365381984e4ae88f3f31371"
+    },
+    {
+      "name": "shellder-shiny",
+      "width": 42,
+      "height": 38,
+      "sourceSha256": "9b14c5c33dc6e7909b6ce2569d7b5d50a234411db85b7520ce1888cbbe81e8d7",
+      "outputSha256": "09511f4690f0a0ee564663bde534db17b1f104d7f6c64234c9976f69471dafb1"
+    },
+    {
+      "name": "shellder-back",
+      "width": 47,
+      "height": 38,
+      "sourceSha256": "c31c28bbe5fe69363a088c418a5f28c3fecf7ca084ea8d9372b501351d6012b2",
+      "outputSha256": "eabab0de95d7db547adeaa00230c907f2075f7acc3f52d979e57120393d7a0bb"
+    },
+    {
+      "name": "shellder-shiny-back",
+      "width": 47,
+      "height": 38,
+      "sourceSha256": "d67a40bbb27c95f450adfb4f1e883f02a048bd88b7b44a1cd930aaabbaaf562b",
+      "outputSha256": "fdbf73f905a1a45bc114e4b92f63511a35e26182d97e8917868e0c794021a737"
+    },
+    {
+      "name": "cloyster",
+      "width": 73,
+      "height": 65,
+      "sourceSha256": "608cf1c78cad3a68792acc5a8dddfc1aab3e609d80cfe1a2dbba2985da55aa7e",
+      "outputSha256": "0edda0e9b0532fe5cb5b5485dd0e69966e13bb2437563edb2acdbf53b0bda6a5"
+    },
+    {
+      "name": "cloyster-shiny",
+      "width": 73,
+      "height": 65,
+      "sourceSha256": "674f3fdbeb3786ad8cf5c927c073a2b8e5ea31ded621ab4a116f056a0ae87ca4",
+      "outputSha256": "7559cedcd83398adf7a80f7a011140222bc3b7af542eb1b7ee0981de12be4684"
+    },
+    {
+      "name": "cloyster-back",
+      "width": 69,
+      "height": 68,
+      "sourceSha256": "48676baf2dc3e997d05b350523154393adf0b37ebaff0751e155cd161a023023",
+      "outputSha256": "bea18f29cc6acfdb4b5b4662ca86538b167c26528ed867a51e7cb5e890ca72fa"
+    },
+    {
+      "name": "cloyster-shiny-back",
+      "width": 69,
+      "height": 68,
+      "sourceSha256": "aaa02dcc9ae42c5134f43bb9c6ebcda814e794eff6241806d34f475e010792d1",
+      "outputSha256": "7a53b12acb70dfb8dea3067701934736e76ca0b55dbe89043a2c4b75a0d11cc0"
+    },
+    {
+      "name": "gastly",
+      "width": 67,
+      "height": 75,
+      "sourceSha256": "a1b70cd7e870d1385c67d7d3c0fe9dabc3fc2189eb6933085dbdde076a4a52e5",
+      "outputSha256": "3a72ca7db3fe807eafeac3ba74504cf61160f4b3b4b6b41fbf0f8fe2425d83e4"
+    },
+    {
+      "name": "gastly-shiny",
+      "width": 67,
+      "height": 75,
+      "sourceSha256": "fad271ea439d3e1af15d753eec1302837c531f893d63244232143acf76e2ddc7",
+      "outputSha256": "5dfb2ef2fbae7963458536b2dcdf608dc49149982a72ac3448233672b4e70ff3"
+    },
+    {
+      "name": "gastly-back",
+      "width": 64,
+      "height": 78,
+      "sourceSha256": "9dd133e0d1de3e614c94f61dc031aa858f45b31ac23c40dd4ed57c782caeb8c4",
+      "outputSha256": "633a0e8110bdfba5ae2d7af339e1fa7ee326ccb24802a164ba2f01e1c93a2795"
+    },
+    {
+      "name": "gastly-shiny-back",
+      "width": 64,
+      "height": 78,
+      "sourceSha256": "25ed707a677729b1bcaaf412263dde4ce3e5c68c8d14a38f0a84d22e048012bd",
+      "outputSha256": "dae2c2bb5d944cf8788f60e9be4c5232a5095f2b40520eb9ae8cd8fe4a2ed85c"
+    },
+    {
+      "name": "haunter",
+      "width": 85,
+      "height": 71,
+      "sourceSha256": "dc55c5d5b3eee25df157c6ebbaf96fe78ce77e1fa3a62c5be7cf2b6b760d13ba",
+      "outputSha256": "aa06dc60ac136e7b3fd88b5685ee18118d620a0bd20630b215074cc011869a25"
+    },
+    {
+      "name": "haunter-shiny",
+      "width": 85,
+      "height": 71,
+      "sourceSha256": "4e9bb8a044a0e14161b2d135b5eeff369f80c5e548d4257cc4052437b717c300",
+      "outputSha256": "ece153a72f9145aed635d065d8645c1b9a89dbadf945d975877fe368e96ba580"
+    },
+    {
+      "name": "haunter-back",
+      "width": 91,
+      "height": 71,
+      "sourceSha256": "3885f20c0f42d5bdd61ba039fdda30f2a93516d6aa77eefec9359c9cb1c71230",
+      "outputSha256": "d0c804aee68e88d13b6e59f2d3e9b04dd26ab62731097091eac66d0e8d283638"
+    },
+    {
+      "name": "haunter-shiny-back",
+      "width": 91,
+      "height": 71,
+      "sourceSha256": "256a85364af3a3a44b8d2d02885b59d22256f4ce28656cd95919a3359acb95b8",
+      "outputSha256": "2c2e049d28dc75784123b5a072e58118596ab978576b8d0a0195787d67d69f4a"
+    },
+    {
+      "name": "gengar",
+      "width": 79,
+      "height": 65,
+      "sourceSha256": "2359600e5579a3bb9f341d7cb3979af1deeb44026a7632da0606fbaa75b6f27b",
+      "outputSha256": "98f82e220f0c700596b50e7cd5a4524fca96fd1767dd67cfd4fb903a5ea9fa16"
+    },
+    {
+      "name": "gengar-shiny",
+      "width": 79,
+      "height": 65,
+      "sourceSha256": "82f5dddc808838e50dac016fbb7f5a3fec7ae9fa399cd60954576abb6b0864d0",
+      "outputSha256": "35069198edc4421a0f05b54ef72f2b562a5b7112ac2f8a4712e2465c3cd6fc50"
+    },
+    {
+      "name": "gengar-back",
+      "width": 72,
+      "height": 65,
+      "sourceSha256": "9d707d05d6f8894b352ace51e5bf2064afd58f16367b56ec272a553eb11b2b25",
+      "outputSha256": "b603420abbcca83b0db389dbdc0f034b8d584e354ea312472b567ba438b68688"
+    },
+    {
+      "name": "gengar-shiny-back",
+      "width": 72,
+      "height": 65,
+      "sourceSha256": "a347ea0da446c519a58926b9c8b5f69747217185ab0c96438074b711be58549c",
+      "outputSha256": "66615906615ca6d34576564e8fa5b2aacb5b0f3bf86e27b7b68cdec5fca3905c"
+    },
+    {
+      "name": "onix",
+      "width": 73,
+      "height": 74,
+      "sourceSha256": "b946c49b157c39f2e8dc1ec6f0d38091982b50541f51d1332eaa9aad999382bb",
+      "outputSha256": "0f1eb682232f5a5187a9a08e090f9b1b0ca8961234a5f2f6141cacac562b353c"
+    },
+    {
+      "name": "onix-shiny",
+      "width": 73,
+      "height": 74,
+      "sourceSha256": "dff9bacc4dc11e4974b0e96ba5df4f59becc98040ad819f9f8fd282f1445d0fc",
+      "outputSha256": "e66b63537bdb2bc71374f5fec67919702b2bebe0ff74013800ec5045f4907718"
+    },
+    {
+      "name": "onix-back",
+      "width": 98,
+      "height": 70,
+      "sourceSha256": "75815374ca5dc46e14bf65a77e151bd9382903ab420b48b9746bb1d12eee7f41",
+      "outputSha256": "9d138bbdd9bd9265131b032db52c7b07c38a0974a8176bd87aa63655b6346ad3"
+    },
+    {
+      "name": "onix-shiny-back",
+      "width": 98,
+      "height": 70,
+      "sourceSha256": "02839345f67200759426618f33ed19b3c4aabad4289706268092b6c7943d1ed9",
+      "outputSha256": "79d53718aa694aa25481202747414338bd098d5b35ee5205fa5a6ecd94cc6cca"
+    },
+    {
+      "name": "drowzee",
+      "width": 52,
+      "height": 58,
+      "sourceSha256": "f32195f8c4587d0b013f240507ae4f1ef3e101c32bae354c4b7db9dc172789de",
+      "outputSha256": "ec90a459346dcc4dc77c759b03bc248e9dc63a00d7a1df9fc714ddb22c572eb2"
+    },
+    {
+      "name": "drowzee-shiny",
+      "width": 52,
+      "height": 58,
+      "sourceSha256": "0ce8d2b498873d1dbb73dd0e54c6f15b044c646c0f0c06dcc308bffc0cce68e4",
+      "outputSha256": "3187f9733fb40749912ddc8991cde12efa16536f06b2aca36ca6faccc43a5fb5"
+    },
+    {
+      "name": "drowzee-back",
+      "width": 57,
+      "height": 57,
+      "sourceSha256": "fd08c8dc538e707342c370928f2d999ee0631a11a3a210feb88a5d089adf704d",
+      "outputSha256": "aa42c2cefb86bca80a578321f13e62e3cde57c63ec3b991ea2cbe42e57e65728"
+    },
+    {
+      "name": "drowzee-shiny-back",
+      "width": 57,
+      "height": 57,
+      "sourceSha256": "4e01bf0f38032badd4194ea56828436515cf27a4ef2b00878ff1f925aeb601da",
+      "outputSha256": "a18d90710441d62d2f26e589826070684b9c517d4fff67a45e5e7106a00d77a5"
+    },
+    {
+      "name": "hypno",
+      "width": 67,
+      "height": 62,
+      "sourceSha256": "52cfc37fa07ecf212f2d168b33aee091406fd96a70aa964226f3b95a141cd401",
+      "outputSha256": "85cf79a8ed2aecf39e8b2b37fc5638c5fe7654bdc8d0ee8eb48f95336021fe6f"
+    },
+    {
+      "name": "hypno-shiny",
+      "width": 67,
+      "height": 62,
+      "sourceSha256": "d5b5a8f2e7bebf461e804c19abc726bf6f68c2f154ce930ba63ae04c2b725e1c",
+      "outputSha256": "df0290c0ccddfc80410d9515114547f212fb8d5175d628b9cdffc89fae2fd529"
+    },
+    {
+      "name": "hypno-back",
+      "width": 65,
+      "height": 60,
+      "sourceSha256": "aa005a7cb781ad58444eb03591cf694fd43c80fe3f7169855e2371b6dcdb5655",
+      "outputSha256": "552888a2110acb7e3c6270d770c646bc1679f5845c15cbf71382ead13ab4e44c"
+    },
+    {
+      "name": "hypno-shiny-back",
+      "width": 65,
+      "height": 60,
+      "sourceSha256": "f35c6a72186b4a2cf546a6995a1e249f48badf8549ff9e4dbeb2999e0a0300c0",
+      "outputSha256": "0308cbf173c04f5368cd23764fa5a14e6a1e21f1f23c460606f1283d9f8b7351"
+    },
+    {
+      "name": "krabby",
+      "width": 55,
+      "height": 40,
+      "sourceSha256": "92c47ced6a29fe7a88d2f8ae2311c0874c1133bfe4a0bb95aef93622dc667477",
+      "outputSha256": "1e3446633f44815a8a09ff65f1f4985a90fff5c1ef178646b11dc257090b3122"
+    },
+    {
+      "name": "krabby-shiny",
+      "width": 55,
+      "height": 40,
+      "sourceSha256": "58b2a50242f18a3f761f7b0819ef1588c81c1ba33d62a813e0cc95f6a93eeed7",
+      "outputSha256": "9daa28bcbd7e43b277382cb8ce882f7d60f77daf424985deb49ea068c9f10cfa"
+    },
+    {
+      "name": "krabby-back",
+      "width": 56,
+      "height": 43,
+      "sourceSha256": "b65e208ef30125d5f21930847aaa6a1a6355f8e3e817d16353e0c7215524085c",
+      "outputSha256": "6f03a96e2ed33b384f539cbd27fd0f0e3eb5423b816b0fef833ef12a5b5ca93a"
+    },
+    {
+      "name": "krabby-shiny-back",
+      "width": 56,
+      "height": 43,
+      "sourceSha256": "3e401e9430aeb9931b52cf15fe6213f4d707a0befca6c9f41dc688bf0eeb8da4",
+      "outputSha256": "3329743e3bb6e4a98c3f4f18b2ca3e7f09150c782efe97c87ec2f075abcb3383"
+    },
+    {
+      "name": "kingler",
+      "width": 82,
+      "height": 59,
+      "sourceSha256": "99a9f5f4c9c768b19fe79b9b9af44007fcba4e5909833417562fe4df0f5dfced",
+      "outputSha256": "f5eb7fabb07382fff334de1deee1c2191c58677ea87b443e3ae20834048e7ac5"
+    },
+    {
+      "name": "kingler-shiny",
+      "width": 82,
+      "height": 59,
+      "sourceSha256": "f7d42ed18453bbc26e78ad8ed20fbe37574b09bd38996a08287b4ccdbe205f42",
+      "outputSha256": "fce10f9d4f4c777286c34f290c1e6197026b19799e120bb74579554ad1c7530e"
+    },
+    {
+      "name": "kingler-back",
+      "width": 83,
+      "height": 62,
+      "sourceSha256": "944f70c9bae4b1d4c587d262635da1ef083e9ed3a33f49f43d2d533c026309fb",
+      "outputSha256": "dcfd5728e9aac7625b6e9cf81c2aff071c1bad6d4de16637d1fa69d22e0fb477"
+    },
+    {
+      "name": "kingler-shiny-back",
+      "width": 83,
+      "height": 62,
+      "sourceSha256": "93d75a4a591f15636bfd498cf3fb13cbe33882517bb7ba0eb39a035d1242f92f",
+      "outputSha256": "1bc1d0ff05dc02ae6d39eaa07938cea1fb1768fd424dfbae4079ae15e65ded2c"
+    },
+    {
+      "name": "voltorb",
+      "width": 46,
+      "height": 31,
+      "sourceSha256": "de2986a1115dbdd5d2b01b71df988b2c738d9cb15362057422ef17b691181235",
+      "outputSha256": "be06e7436f84f9e6633efe64b2f85b199f9de606a4c29411a8fa9349958e9490"
+    },
+    {
+      "name": "voltorb-shiny",
+      "width": 46,
+      "height": 31,
+      "sourceSha256": "c1d790895b772d6cfa049bb242e549684575718caab100b791cb338523bb8069",
+      "outputSha256": "8ef74edde7d2d3ffd7796938a56c0972db74de83171ba2d77eda62354e40c0de"
+    },
+    {
+      "name": "voltorb-back",
+      "width": 46,
+      "height": 31,
+      "sourceSha256": "1757f950b7fb516da5ac961bd427630ac14952546798b0a5dc5238a7ac015679",
+      "outputSha256": "4429a96dcecc8c517e71bfcf2ed6763158f43cf6835428de669b388ef651857e"
+    },
+    {
+      "name": "voltorb-shiny-back",
+      "width": 46,
+      "height": 31,
+      "sourceSha256": "a704b0cf729faba3adddd32aa4fbf1555b5ac6368668766820b2f43e3ac721fb",
+      "outputSha256": "c14f1d8510453fb3edc6385745fd3eec8ff3c788a1c323586de6f72636668f5c"
+    },
+    {
+      "name": "electrode",
+      "width": 48,
+      "height": 52,
+      "sourceSha256": "29af6fd93e221e83f6104779e2c2797eefd8e4ee5c65d98bf80f809109eb6bd3",
+      "outputSha256": "003a66262a2521cebe739108082f1dadac4936d0a8b5a281b2c610f11633770b"
+    },
+    {
+      "name": "electrode-shiny",
+      "width": 48,
+      "height": 52,
+      "sourceSha256": "c91fff1f63fe378ade3ab51755db16724870e4897ade01bbb883af4e440ef5d6",
+      "outputSha256": "cd3d59e2a249e7259ed1ac3c2b5d33d82082ddcda5cd6b558ef60ad959e8837f"
+    },
+    {
+      "name": "electrode-back",
+      "width": 48,
+      "height": 52,
+      "sourceSha256": "c7d7245deb19f5142131c1b187cb34bf6a3bfd515e84bec9ee59ec918a3627df",
+      "outputSha256": "be8e52f8144861aa79020b195027145dda518c245af840afa7aef92139163fc9"
+    },
+    {
+      "name": "electrode-shiny-back",
+      "width": 48,
+      "height": 52,
+      "sourceSha256": "be54b8d86097b015eccd664a3e43a7f7e555139581d0262c67dce6ed86255e0c",
+      "outputSha256": "c90f0dc98fbe2420320df46596cdfc085a6e0e27562b2ef417d3c5183ffdc869"
+    },
+    {
+      "name": "exeggcute",
+      "width": 54,
+      "height": 43,
+      "sourceSha256": "0758b9367c6f92d1093802f3ac30126736a22bb01d11c53bb3e6e3ce76463a3c",
+      "outputSha256": "4616a81219c75712aa9f8690bb62ab9a7d398b0c1ac23a1e47e9bbbaa7ad60e7"
+    },
+    {
+      "name": "exeggcute-shiny",
+      "width": 54,
+      "height": 43,
+      "sourceSha256": "1da230761df59d9e834600327af90a2e58475ac838208ec5041bd47e635a70f3",
+      "outputSha256": "e71a8e055610b4f781e5eda270af55eab8123fd6a2602538584010e76bb87213"
+    },
+    {
+      "name": "exeggcute-back",
+      "width": 55,
+      "height": 40,
+      "sourceSha256": "a35aa509426c6191042e2ab967f2113c4e69154df231e1a01faaccd92b18568e",
+      "outputSha256": "c3827fbfd62d948c96a27d58572cf8045ad67fac5c0ee927a35323d226c029eb"
+    },
+    {
+      "name": "exeggcute-shiny-back",
+      "width": 55,
+      "height": 40,
+      "sourceSha256": "1d26a83c39ae9248c8934a1dab4bc76eb460c1d913037c235cdcc858a342edb1",
+      "outputSha256": "f62ac398b2ade0b5de14bea24dc0de81fe4cedcbfc8cc0d4184739edadf05df3"
+    },
+    {
+      "name": "exeggutor",
+      "width": 78,
+      "height": 73,
+      "sourceSha256": "939ee6e842b19b29b7286dea8a54b3aca6ee5a70049c3708f4daea08e6ff29fd",
+      "outputSha256": "f1658f29db8bc81fcd50ba2e2f5f048377e9dab8b7691c7e94fd4980018a6be2"
+    },
+    {
+      "name": "exeggutor-shiny",
+      "width": 78,
+      "height": 73,
+      "sourceSha256": "56b4864fa67db558554a3b6d5729c8447843ef60bb5bb8aff9c3dea2703e353a",
+      "outputSha256": "c635d76ddf4d373fd17fc7dfef22687c1861c350c651f07630b465ea94657621"
+    },
+    {
+      "name": "exeggutor-back",
+      "width": 75,
+      "height": 71,
+      "sourceSha256": "3bfd3d7e2508c991b79b770ea9aa6bebfde42fce2883253f4decc91a570442db",
+      "outputSha256": "f55213508f2ba08af385ceb0f99e27f857f393d6fd1b44c0e438bb3b74be88f0"
+    },
+    {
+      "name": "exeggutor-shiny-back",
+      "width": 75,
+      "height": 71,
+      "sourceSha256": "6fd1c55925a108fd191d170b40b0e0152f5ef38378357ecb5a53c7b00e085943",
+      "outputSha256": "00e038cda1a232d2336a1622609b831c62ffc9ebc89a5b3d14463071fd7ccc69"
+    },
+    {
+      "name": "cubone",
+      "width": 49,
+      "height": 43,
+      "sourceSha256": "abae47db198810f7320fb30303befdfa3ce31e36f18b33a131730fe82b32b64c",
+      "outputSha256": "de93775be3b076808016c10e1ca0bdc6a7041ad8999b720c60b538bfd2cdeb8c"
+    },
+    {
+      "name": "cubone-shiny",
+      "width": 49,
+      "height": 43,
+      "sourceSha256": "d5fa4054b30ba0fc944594003955692808aee007f96e73b8a0ffa5bc69c6b96b",
+      "outputSha256": "c0b8c1fdfb694625df8b27c2890031cae6274df4d1b40d45e23d8379a74d183d"
+    },
+    {
+      "name": "cubone-back",
+      "width": 53,
+      "height": 41,
+      "sourceSha256": "69a7045e660e5f74cad2d7daba0a05196dacf18ba1ec93b29f97e709534ffc87",
+      "outputSha256": "f4d847ebcf3662c988f57e212cb8105c7899f99a57596a8e1aedec40d74a2f2b"
+    },
+    {
+      "name": "cubone-shiny-back",
+      "width": 53,
+      "height": 41,
+      "sourceSha256": "96bbedd54af19098554b689a03c23a47d291298f3489e2c7c21a8a1c3bcb209d",
+      "outputSha256": "2bc1fe7ce86bc0c661f2b06b70733e9d9b817fa263af3016bbf4b744f7900daf"
+    },
+    {
+      "name": "marowak",
+      "width": 67,
+      "height": 59,
+      "sourceSha256": "9e222b0a6b975ed2fa771c01f4e951446d3f95d18f856a664f35c7220e392cf9",
+      "outputSha256": "4506cb025789c0d4c8abab40260cfa783c1c3fafa5543db65a088863d8ef6e51"
+    },
+    {
+      "name": "marowak-shiny",
+      "width": 67,
+      "height": 59,
+      "sourceSha256": "924338f14d1e46822cd529ddd6d84c37d2f3b5bdbe157a4a77fe7705a5526a4c",
+      "outputSha256": "ed747d2dbd1a9a207ffd01dfaa8e5c0b7b0e566af30b3bd7ea1e16cf049c6856"
+    },
+    {
+      "name": "marowak-back",
+      "width": 65,
+      "height": 52,
+      "sourceSha256": "bf169473a528a54755a12aa6d1552bf33344526be3d87e958bf01e521e1f4f37",
+      "outputSha256": "18c2388a046d6fd9ba18ddef7e2c3686361a0da7dd62c62a8ddb58da13639465"
+    },
+    {
+      "name": "marowak-shiny-back",
+      "width": 65,
+      "height": 52,
+      "sourceSha256": "0d33b78e18eae414ed45b6c586558cf6573e76e3e25532d03961ef6ff21d81e5",
+      "outputSha256": "b8a80a1d5ceabda863571a11ab65783dd3d913282c7d6486269653ae206cf0e9"
+    },
+    {
+      "name": "hitmonlee",
+      "width": 67,
+      "height": 78,
+      "sourceSha256": "4b2ffd9f15bafc570e0e89b65066fefe892cacaa9664682b1f918d74082dc009",
+      "outputSha256": "7b9d43481ebe24177ac80fd48434b2475f73ecdffb13ab737872c31858eb8d2c"
+    },
+    {
+      "name": "hitmonlee-shiny",
+      "width": 67,
+      "height": 78,
+      "sourceSha256": "382df5c03ce4e4d977eddbfd3675afbeff2dbf8f07855f9d6355a0434af3b142",
+      "outputSha256": "4c3d3fcc862c477c5802b9f80cfbc2bfb3d3f7e4686cd1bed6be7bb744aec92a"
+    },
+    {
+      "name": "hitmonlee-back",
+      "width": 62,
+      "height": 75,
+      "sourceSha256": "2a3c59b3e14c9769488a402d2c10e1dd7a0af0f1f2c781fb763d94ee597b9918",
+      "outputSha256": "1cc75285c4574e5f649fa637ebdfb171d6a0476e4ca17e475a8f906df9090742"
+    },
+    {
+      "name": "hitmonlee-shiny-back",
+      "width": 62,
+      "height": 75,
+      "sourceSha256": "c54f933420875f65bfd50e19137a03b1613ac77eec9cb8c945a963bd523f09a2",
+      "outputSha256": "394f898a9435782e03733350bc02cfc2fdb49cc1f5cf841790b42fcc54360818"
+    },
+    {
+      "name": "hitmonchan",
+      "width": 34,
+      "height": 59,
+      "sourceSha256": "edc1f473bcb408f345b9d89f9b5beab873634c553ad76a801978ea9dcdc8122a",
+      "outputSha256": "17e3395f2459f0114d326d23e7819f959f91ae7c435a58bb2fa23418b93d99c4"
+    },
+    {
+      "name": "hitmonchan-shiny",
+      "width": 34,
+      "height": 59,
+      "sourceSha256": "ce527f65ad3c22ed1619b844461ae15a6dfe0ab647dd92cbfbb5605516219db5",
+      "outputSha256": "b2d4f522d696a730c4b9548ec94495480619404704daccb80fcf56377ffd2ca3"
+    },
+    {
+      "name": "hitmonchan-back",
+      "width": 44,
+      "height": 56,
+      "sourceSha256": "036de177280df4a86ccbba970a7cdae77bdd165ce8074dc9d0fc7d4234b193a6",
+      "outputSha256": "eaf97ea7309620064939c8962f3b494ee9389dc8d337bee2a5277d62d267e26c"
+    },
+    {
+      "name": "hitmonchan-shiny-back",
+      "width": 44,
+      "height": 56,
+      "sourceSha256": "bbd4e87980ae9ec047fffae597792230671f2267beefb93edb5a7e16e7712922",
+      "outputSha256": "be18b251d54f7d9854de22b37abcc47b5f9b1e6b5afce040618efb8a1081cd09"
+    },
+    {
+      "name": "lickitung",
+      "width": 68,
+      "height": 52,
+      "sourceSha256": "d2fc227aeb743d278f2d39dc9256868add0109e6fe1656ca3e2533269919168a",
+      "outputSha256": "c969d3acce4489dc0d11ddd24b6cce686279b49c5b02d4cf27b9ed5fbb197a26"
+    },
+    {
+      "name": "lickitung-shiny",
+      "width": 68,
+      "height": 52,
+      "sourceSha256": "fec718fbcc4b1f07e6e1f29735f5b621071a4564433f6053c7cd945b15949cf8",
+      "outputSha256": "3e2c3a304b99b0fcb445b77a6e13fceafb82d59bb8d4ee1ae63382e5919ddeea"
+    },
+    {
+      "name": "lickitung-back",
+      "width": 76,
+      "height": 53,
+      "sourceSha256": "70b360632a9597182eb993cc463670969b9d854719ec893a5e57cc3603a84952",
+      "outputSha256": "65dcdf2600260f2ff542954c6a964c3caad97e265262d242ea2bd50c67afa818"
+    },
+    {
+      "name": "lickitung-shiny-back",
+      "width": 76,
+      "height": 53,
+      "sourceSha256": "6d3fdc9e74724bd3434dd14fa1dbec7ce8d8f63300835c4a9e5cd3d5b4ed037e",
+      "outputSha256": "a21984bd807d2ee243d5219c01da70619dbf6cff69bef3e3737dedb5f60a5ce3"
+    },
+    {
+      "name": "koffing",
+      "width": 90,
+      "height": 59,
+      "sourceSha256": "b39d1cad5e4e7155cd3003fd4f5bc02f6f1b2524451a80297d346962433483ea",
+      "outputSha256": "06a9a530c558254a25ee2ed0f50089a7d54057143e345468b139785e236f1a9c"
+    },
+    {
+      "name": "koffing-shiny",
+      "width": 90,
+      "height": 59,
+      "sourceSha256": "7859ef857ca28fac935fbc3544599af7fef1ccd7be02b56fc0cad246ac3d4378",
+      "outputSha256": "b1777ed93449d63a400739a7e0fbf796e90e7f91e4a5427b05b1541ec165a1a5"
+    },
+    {
+      "name": "koffing-back",
+      "width": 78,
+      "height": 64,
+      "sourceSha256": "0fc4057bafb0d61bedfe29f11debea08d67f40656e4d7c55f2343979b6add54c",
+      "outputSha256": "afc709f6d4bb6036d98121f41eb3e8815593880a17855e0f8fbe651e630d7bff"
+    },
+    {
+      "name": "koffing-shiny-back",
+      "width": 78,
+      "height": 64,
+      "sourceSha256": "a7d6d2a5605c8788e6103e9f41c658a6832a4ce1a4756c41cb45d4b2ae17be4a",
+      "outputSha256": "a3324e07b1729e3900a0499baf55f314f2e11c87a3bb9dc09efb0c32baaff633"
+    },
+    {
+      "name": "weezing",
+      "width": 85,
+      "height": 68,
+      "sourceSha256": "75eeb1104302d21e66f5be5378f64e0af22aa4722c49cc78a60634d57b5785b0",
+      "outputSha256": "49d27a8261f30403c92702abee927f98ca602f7276a116b59290485749412abd"
+    },
+    {
+      "name": "weezing-shiny",
+      "width": 85,
+      "height": 68,
+      "sourceSha256": "d1ad1205c7291ae1c45f82340dbc6a278a8acc6e61123b70deea3c2d4b4abbb0",
+      "outputSha256": "3da452443ee5dea69b53e6b49469b06de953e1d101fd7dd68f0d63d2d060f406"
+    },
+    {
+      "name": "weezing-back",
+      "width": 87,
+      "height": 69,
+      "sourceSha256": "0cc0e4c8aca04e6e5f0cbe1d94bbf59bb2adc766188378390371a7efc29a8d01",
+      "outputSha256": "3659994e4f987413ee406103f6d693c05973bbc8c436cc32bd855ef5fffd6cd7"
+    },
+    {
+      "name": "weezing-shiny-back",
+      "width": 87,
+      "height": 69,
+      "sourceSha256": "8a38c18e11f19b6aef6918d3926bca35311d6806d730721efd7ccb7b366fe432",
+      "outputSha256": "2f0e2a52e597dd464b53b4fd0e498502f2abc9f4fa1dcc8c46d8444ddc56974e"
+    },
+    {
+      "name": "rhyhorn",
+      "width": 68,
+      "height": 54,
+      "sourceSha256": "cc9480b5da9c53bacbb6c67c4e91d2d407fc66df8d87c12b51a7a7ae4b88e4f1",
+      "outputSha256": "8942d4445362cae76c205c87b44301e384c456165495dbaa7462d25c6925c12c"
+    },
+    {
+      "name": "rhyhorn-shiny",
+      "width": 68,
+      "height": 54,
+      "sourceSha256": "969ff1520ceaa2c24f0b8fb2c26a6ecbcd3b69d936c722f824a91175c298bdca",
+      "outputSha256": "d8187bcc796bacde1bd87896b0a198bde29c63c6f311a47bc4657694afdd241c"
+    },
+    {
+      "name": "rhyhorn-back",
+      "width": 73,
+      "height": 54,
+      "sourceSha256": "bab1e8541b3b6ce265d91544b0a3d7a03043259f5ca7a13282870a4654782fae",
+      "outputSha256": "0f0e4da13358c563734db3732113648cb503422c111d6566e5d113db9f446edc"
+    },
+    {
+      "name": "rhyhorn-shiny-back",
+      "width": 73,
+      "height": 54,
+      "sourceSha256": "2d7fff263e745622c3ba5e86ba8e8ba1af4dadcda1831a6147bf3edd6e16a568",
+      "outputSha256": "6eb06be1cdd8463435d57532affbb0d67f5d5bfe9a3ea2a8bcae187a363041e0"
+    },
+    {
+      "name": "rhydon",
+      "width": 79,
+      "height": 68,
+      "sourceSha256": "77cf38472cb665c77e6a875fa388a195468d119da4256c638bb313f1b639faee",
+      "outputSha256": "f662f428678f66f615bf18100bb534d3cf63e19d4a6b74d92b4886351a66c4ac"
+    },
+    {
+      "name": "rhydon-shiny",
+      "width": 79,
+      "height": 68,
+      "sourceSha256": "26a53b356c9b0b61d20ab2d5a9beb1b45367b58fe96c180e79769d8ac2c8935e",
+      "outputSha256": "070be11c7f24fa2b819b78b1a8fdb6f8b52381bf2b11b52ded25cf7045aaf9e9"
+    },
+    {
+      "name": "rhydon-back",
+      "width": 84,
+      "height": 69,
+      "sourceSha256": "b99413ba945709c778accd79412f6d83a1746537e9cca0f007addb5c199a66f0",
+      "outputSha256": "df2c2be4e2df9e85721228aa6ba82afa7e47f3eccaa677af0628290e1227f430"
+    },
+    {
+      "name": "rhydon-shiny-back",
+      "width": 84,
+      "height": 69,
+      "sourceSha256": "6550b6d5e870e5925edf8b1b9a0d3f6f2352c2da09d7dce21fa9589dc401bb79",
+      "outputSha256": "5ea423ff71b0461083cdce54239623b46ace4d039eff5d2384a2fd4e8caa8c14"
+    },
+    {
+      "name": "chansey",
+      "width": 61,
+      "height": 47,
+      "sourceSha256": "928bef83e777d4199d09439b512d27c5b94aa69ad5e350378e4af51ac55afa18",
+      "outputSha256": "353a7144d4c835e7f80c5ba54891e7c6278fcd820fc0e5256f0b2af0bd0687aa"
+    },
+    {
+      "name": "chansey-shiny",
+      "width": 61,
+      "height": 47,
+      "sourceSha256": "941d1126493a8a9002d92cec7893300ba9cdcaf23785b1df623ffd8edfc15216",
+      "outputSha256": "63e56d94ff8ee8b422103dc45430e296eaa153194ab792893fdaf3aa5b7a8d24"
+    },
+    {
+      "name": "chansey-back",
+      "width": 66,
+      "height": 47,
+      "sourceSha256": "59ee2ff4453d03fd18be18588f461cbae2f6928da3caf122a5e9791de5a52dc3",
+      "outputSha256": "0575c3dcb4bae6c0e7a8f313e23dfa173ec2efba4fe9b42feeae7717962219c8"
+    },
+    {
+      "name": "chansey-shiny-back",
+      "width": 66,
+      "height": 47,
+      "sourceSha256": "2d4ba43b36280205fe10b6b492821c20da3f840c9719b84812e38e443ed9fd83",
+      "outputSha256": "b943ff0cee88a1c47062f7ee455be5b8d43eee5efa08e921b943e68bfd0a49a3"
+    },
+    {
+      "name": "tangela",
+      "width": 49,
+      "height": 42,
+      "sourceSha256": "0ef92d7399ca3f63070a2889221155fd55bea55375c0cce0e9ceb70b05c6588b",
+      "outputSha256": "a562bc3692ad81decde8e3f5e8c54d77c3158fa7c354ebddf0f0a8ed2b0c6d10"
+    },
+    {
+      "name": "tangela-shiny",
+      "width": 49,
+      "height": 42,
+      "sourceSha256": "55d52dd3644def347e2eb77780ccb8b4790dd94c5929e47ea420d380c2ad5f20",
+      "outputSha256": "1109188dea9d0a80504d8f7b5c05ac06e8e43745b6d454d3a8affe87c731c9dc"
+    },
+    {
+      "name": "tangela-back",
+      "width": 49,
+      "height": 42,
+      "sourceSha256": "d9084f1be3288951dcc9fccd266421101b5416e353e5729d894a73a511552867",
+      "outputSha256": "970445ab6b4bce983a489c16c8d45ff86292745c0efa7ecf7b7a2809c10315db"
+    },
+    {
+      "name": "tangela-shiny-back",
+      "width": 49,
+      "height": 42,
+      "sourceSha256": "a500b29f6950966a380976e867a02353d0e677085e011e64528b26ba013ad1d8",
+      "outputSha256": "aa335d8ff1600b62c4799d2f1bef0681e1c0b1efa0f7cb7a2a88c6d75a9df84c"
+    },
+    {
+      "name": "kangaskhan",
+      "width": 79,
+      "height": 61,
+      "sourceSha256": "028bc612ea57383169603654d0a0ec1bb6dd21fbeb91dd67aa6c68f2d22c24dd",
+      "outputSha256": "7812e297ee7abbf364dbe55b0412e0a1703c0998418945d8618ac5a4f688aef0"
+    },
+    {
+      "name": "kangaskhan-shiny",
+      "width": 79,
+      "height": 61,
+      "sourceSha256": "ef2d053673b8617a081fc14199537e995040651821a32f39551428922391daeb",
+      "outputSha256": "49c9a319538f97ae400ad00a7dbbf63e747c1d1d5e774abafc92ae76c35f8db8"
+    },
+    {
+      "name": "kangaskhan-back",
+      "width": 72,
+      "height": 67,
+      "sourceSha256": "fa93fb9481f3458726585df0e31c1c54f860587a020567c7a27347e47b654564",
+      "outputSha256": "0e5f90f421f7442bd4b951c144c671a545cdc8bdb618097cfb9cde3256df4835"
+    },
+    {
+      "name": "kangaskhan-shiny-back",
+      "width": 72,
+      "height": 67,
+      "sourceSha256": "2df2b5ff4d9b856919f47c25d90f06b699367d4d241a0b0fb904635456485fe4",
+      "outputSha256": "a6795e9bb961671ac450d120afefd26a5784b57b114ba9e7d77b37f31ecaca83"
+    },
+    {
+      "name": "horsea",
+      "width": 34,
+      "height": 43,
+      "sourceSha256": "2126f5f59d62c98379eb246ce06caa06122a5e2f81cd0eb9a6d9c8cabe5fdb22",
+      "outputSha256": "7e1b1afb549369679da4d32f4c84998af1f50b990121b754f59b1997009d7ef5"
+    },
+    {
+      "name": "horsea-shiny",
+      "width": 34,
+      "height": 43,
+      "sourceSha256": "7869110db6283c1a52f45fba1693a774f5661c946926362d6b2fff1ab689241d",
+      "outputSha256": "6bb9be770f5a68920b1cb8584545cd2649c4c7cbac3f6ce1ace4b34fb46fb00c"
+    },
+    {
+      "name": "horsea-back",
+      "width": 39,
+      "height": 40,
+      "sourceSha256": "cb2014d9124656eec64d93ed08a483dd772f2d66f594fe0a9792314782933173",
+      "outputSha256": "34e0693cded7c8b5cafa96875c1925ac80a5a8565ba9bf8637dd238ca80165be"
+    },
+    {
+      "name": "horsea-shiny-back",
+      "width": 39,
+      "height": 40,
+      "sourceSha256": "adc819ad7c586d11d682e9ca852bcb135ce1fb08a13b3f3accc3a545f05e4f96",
+      "outputSha256": "d95ca17ef8586d63ce303be4bb6ac79845bd21162bf23a927d92e1ac9e470fcc"
+    },
+    {
+      "name": "seadra",
+      "width": 57,
+      "height": 57,
+      "sourceSha256": "dfd7c1c0e6e3a16f9b06cbce82689e27f7bfc083610de6078a8c301a75e85edd",
+      "outputSha256": "92a863c3175758837c97b0aab3b5c269f1c472a225c09126870662aca23259d2"
+    },
+    {
+      "name": "seadra-shiny",
+      "width": 57,
+      "height": 57,
+      "sourceSha256": "14c2548fa8309d31c6711871fec34833ebeb4c54ca669e9c3688c01f49500f61",
+      "outputSha256": "2c42813e8dc74151de98613c80a2877154980b7c2533693bfebe4f2297a81f06"
+    },
+    {
+      "name": "seadra-back",
+      "width": 64,
+      "height": 58,
+      "sourceSha256": "68fc2848705d09e528a643f1b3fb92d127333da47ffbbf96a2bd569db469ed9a",
+      "outputSha256": "046fe5d40296fbf1caa251c09bc1906b45fbc60f7310f5b6d568681037058c06"
+    },
+    {
+      "name": "seadra-shiny-back",
+      "width": 64,
+      "height": 58,
+      "sourceSha256": "2151172c0840a0dcb0b2ea3fb6b3e9d9cb33d818cbc4141072872e479033be85",
+      "outputSha256": "c445d02caa9419fbae6dc6d112a08b948e510f9182f9fa7d7798952d7f3dde14"
+    },
+    {
+      "name": "goldeen",
+      "width": 75,
+      "height": 57,
+      "sourceSha256": "17a135b22d3e0ffdb2540379e4448215cc68097dbe5306667b7597696a6e2797",
+      "outputSha256": "77e5c5412d9fface18370ef3c11af482b265e29f55b661b965a6af3f4bbd0338"
+    },
+    {
+      "name": "goldeen-shiny",
+      "width": 75,
+      "height": 57,
+      "sourceSha256": "46eab100a151e299bb08a1bf7267524982301601ff4efc80e1dc87aee2a3e1f4",
+      "outputSha256": "019271bdb4ad3a891847490053f5acc5912a42127d6387fc2d89c8ee7563d318"
+    },
+    {
+      "name": "goldeen-back",
+      "width": 74,
+      "height": 57,
+      "sourceSha256": "e36ec83804c90d07b88e396ecdd393d590648353c92d9dd11d29c937fa0509e4",
+      "outputSha256": "37987652bc840f3ac06817a126e7aabcb1f177ae8b098d4983b3d66291c8bbca"
+    },
+    {
+      "name": "goldeen-shiny-back",
+      "width": 74,
+      "height": 57,
+      "sourceSha256": "4f50a133187a83bcd3a8ed24a7cfdc207c48f5fc3729d59598b1c0c245d25c47",
+      "outputSha256": "73904b67c9db63a2f262be95964e202bd350dbc79ffb1807c70ea5990b69fd12"
+    },
+    {
+      "name": "seaking",
+      "width": 75,
+      "height": 67,
+      "sourceSha256": "6d4e15072ae116e1d1b55972d7a502fa9811a8d22ae91deec76bff8dbc22f2b6",
+      "outputSha256": "05cad43f4fc83353ebfe34e7f7082fda114c6f0a7d3cc5dd8cb1414890aec73c"
+    },
+    {
+      "name": "seaking-shiny",
+      "width": 75,
+      "height": 67,
+      "sourceSha256": "968be7f7f83a4a51fe320ad64c38ee587d799cc8e5eef1960e21e06607c7c7f2",
+      "outputSha256": "f30a0ecdbeeeda98551639f596be621026856f8450522725b8a446f46ad1e10f"
+    },
+    {
+      "name": "seaking-back",
+      "width": 96,
+      "height": 72,
+      "sourceSha256": "45c3d5830fe93438b1f9d4a9c667bdda17f064be32799b249b001b34c15eb8ae",
+      "outputSha256": "208e717273b3e2667fd5de7b4a9510e73829f7c048649c9374011220555237d9"
+    },
+    {
+      "name": "seaking-shiny-back",
+      "width": 96,
+      "height": 72,
+      "sourceSha256": "0626dda603446add4cd1f2b553ab46456563279e1dd484f0e38bc18c08600c28",
+      "outputSha256": "5f599e188886507cee35b72ef1979a011cb41d25ddf7050a0a17c705ada9a462"
+    },
+    {
+      "name": "staryu",
+      "width": 58,
+      "height": 49,
+      "sourceSha256": "c9c508710d811b482f0d137da9180100d3748d0ce920bfbee60c6e9ea373fd50",
+      "outputSha256": "9e3df3af5e6aa89334ed1e6fdf2aeb4ccff5f968a1d77e8c83ef72859aed2b10"
+    },
+    {
+      "name": "staryu-shiny",
+      "width": 58,
+      "height": 49,
+      "sourceSha256": "66d2216d795ff6cb33606bd8d3fb7ac91853da0dbf1d8e115b40a04475de9ff7",
+      "outputSha256": "6bc3959f6ccb35fae53133075b2dfb0b99b2b1c4a9625603ad61cf04dc876760"
+    },
+    {
+      "name": "staryu-back",
+      "width": 55,
+      "height": 52,
+      "sourceSha256": "75f393795ae84af1ba5301740eb088ba7fa1edfee0739ece7b8e9f1d22d0952e",
+      "outputSha256": "79af5bf125bf35675219c80ca48f7d5f6d2ac4c9d878468c69db099d14566e17"
+    },
+    {
+      "name": "staryu-shiny-back",
+      "width": 55,
+      "height": 52,
+      "sourceSha256": "b7474589c623db411f92de4d493611a5a0901b3d13c60144892254f1653c41ff",
+      "outputSha256": "447c6477d5f64ac6b54935adfb8c132a9e8c45188187dab60e634fdd81a2e493"
+    },
+    {
+      "name": "starmie",
+      "width": 65,
+      "height": 59,
+      "sourceSha256": "520a2c4eb8e27fe6198cbda7ae370304d289f7baca15b662236974295f2d2c0d",
+      "outputSha256": "c7eed500c3ba89101449c73ce0c9999a174ed874c4afc8e1beb283069307bc20"
+    },
+    {
+      "name": "starmie-shiny",
+      "width": 65,
+      "height": 59,
+      "sourceSha256": "ad06e958e2b83be08433d50592b092612fe4bb47346155e34bab45197f4f728b",
+      "outputSha256": "37f0e654656a1426bdc77eca0342376ad821a171119e4fe448a0784fb89728e9"
+    },
+    {
+      "name": "starmie-back",
+      "width": 55,
+      "height": 55,
+      "sourceSha256": "80156a9307287e6a381cf8ea2bb9335306ecc92be355c0a8d5ddb86d48fadccd",
+      "outputSha256": "bf2c84bf099e3a586fce8ae75d59a34893731a5b26bb46680dd965724ad2d8c7"
+    },
+    {
+      "name": "starmie-shiny-back",
+      "width": 55,
+      "height": 55,
+      "sourceSha256": "dbe7343f1b1a8be155c4a2ce4979a8b88442826eb66c1bfd639239fcb48277ea",
+      "outputSha256": "0d661590939bc50358d2ce5d87a5fdf7f46aaef4bccf15b5b9fe2a83e9ac4dbc"
+    },
+    {
+      "name": "mr-mime",
+      "width": 58,
+      "height": 53,
+      "sourceSha256": "e957818b26938ec7fe2aa2dd2b6f854b80d2f9841d5197c8cb7f057ab243ae29",
+      "outputSha256": "d72f9275cf39674ee8f8c2742485734603c2c19f016408b78a744987fa65aca0"
+    },
+    {
+      "name": "mr-mime-shiny",
+      "width": 58,
+      "height": 53,
+      "sourceSha256": "48f03c987a36f44a71f69ab6bf25296f076ef2901e2f89cd3b65aa6fac8debe6",
+      "outputSha256": "a2651740755ca0b6cbfaf5efbcf993a925984638122c493dddd41649a5ca414f"
+    },
+    {
+      "name": "mr-mime-back",
+      "width": 54,
+      "height": 51,
+      "sourceSha256": "0730632537b6b25c0542bca2d15936deb5ab5a24ecfbe8d2bb79b6a1074e9c24",
+      "outputSha256": "b6279573843b15d8e8b9850c41ddf447cc7b61167890b1a8ac024dda580f9036"
+    },
+    {
+      "name": "mr-mime-shiny-back",
+      "width": 54,
+      "height": 51,
+      "sourceSha256": "d663fd6ab63c4519c0cfa2eb725b0085d61d61b536aa79e1ae7e920fac4b3cf8",
+      "outputSha256": "179d24acf476ca1d20207dd8b6c8d8fc7e7f7a7a5c1dcc52d1e55aeabba2ccfe"
+    },
+    {
+      "name": "scyther",
+      "width": 55,
+      "height": 61,
+      "sourceSha256": "d1993f110b8d9755b3d80d3e40f9d098997792fba868adf45878278e6f360875",
+      "outputSha256": "0de98a99b7dcab8fb301529fc187fdeae976597cf8ae8518d5a76ceb280257dd"
+    },
+    {
+      "name": "scyther-shiny",
+      "width": 55,
+      "height": 61,
+      "sourceSha256": "16f83328c4268db8229326bad985ee6331e521922c66c5f840f9d19f046b6d71",
+      "outputSha256": "14ecd1686210be16b535ccf0a3321f64e6fe875bf4e232e3bf94bd21b886cbc2"
+    },
+    {
+      "name": "scyther-back",
+      "width": 69,
+      "height": 65,
+      "sourceSha256": "d5654fd164a2d2e50c207ce0d570ab87238e3b693cbe91e1444aefd80c90eb16",
+      "outputSha256": "8f880452fdadd436566e222279cd790f2745b0c84eaff9541e1ce78416a5c74b"
+    },
+    {
+      "name": "scyther-shiny-back",
+      "width": 69,
+      "height": 65,
+      "sourceSha256": "92b573a1cb24b342d4530eda6d4ab5433664fe63e1566cabbbe3b5164f69f7e8",
+      "outputSha256": "a04b7e36303619c37bd2a7c73f2f761864c98fcc4c31e910d143bd4425a8159b"
+    },
+    {
+      "name": "jynx",
+      "width": 63,
+      "height": 60,
+      "sourceSha256": "b1a63e4ed39c30d02bfda271719cb7daaeb139d5c7f1e830b9e9a611ef339854",
+      "outputSha256": "9886df02f7872df0e6d5958df1546720037fbb04403e27c762afb53437fb3173"
+    },
+    {
+      "name": "jynx-shiny",
+      "width": 63,
+      "height": 60,
+      "sourceSha256": "221986136766b6fabe81f00e5d447e286ea8df63f9f943a3ca806e463945af73",
+      "outputSha256": "b51c1c1c1e53facab01b61dd62b8f057288cdd0cff1d80cd743adb819dc02c80"
+    },
+    {
+      "name": "jynx-back",
+      "width": 62,
+      "height": 60,
+      "sourceSha256": "96acee78b94d6b7d5b8146c4cd3173c830e68ee13585eb81412ff01a34a2b42a",
+      "outputSha256": "78d53abaf1d476b7bf8bb60d35ede74473c362a8fdd6eb55afa5e8c8c97cd737"
+    },
+    {
+      "name": "jynx-shiny-back",
+      "width": 62,
+      "height": 60,
+      "sourceSha256": "b89c42b1baf8300bb76b08677ed3282172471116d6323809fc5bce8f0278628b",
+      "outputSha256": "03637ad1d336964cb794f0f795a93fc4b6cf2908b23a9b6a29eec5bc283af043"
+    },
+    {
+      "name": "electabuzz",
+      "width": 72,
+      "height": 65,
+      "sourceSha256": "627d284046a39ea9f892014408c4597c5fba7ac37ee1e44b14c5ec4bd5c30358",
+      "outputSha256": "0ffc74f2c2a8eba8c0d09952df98f99ee53d0ec9bd2c310e4c3a23ea0c47f6e1"
+    },
+    {
+      "name": "electabuzz-shiny",
+      "width": 72,
+      "height": 65,
+      "sourceSha256": "9c1a99e662ba688360c44ba218df33842a02ee8ef0363847e7bd9ed86deb200c",
+      "outputSha256": "f6337cd7a5ce2116381063310caa34b977bec82d3d21b99ab99507ccf4db8c4d"
+    },
+    {
+      "name": "electabuzz-back",
+      "width": 72,
+      "height": 64,
+      "sourceSha256": "9fa4095183edaf3698498a523f3fe1956b8684e6e9a684b4a1a60552b32c359b",
+      "outputSha256": "f343bf7d9afabd7c66ea98da8e69f089873147243155471e63945618646974f6"
+    },
+    {
+      "name": "electabuzz-shiny-back",
+      "width": 72,
+      "height": 64,
+      "sourceSha256": "648d6d402013067cc30ef01166b17019e64b24a50dc0d9043701ec0e477155d3",
+      "outputSha256": "91ef605cd0fb04e2da7c434aa325530f0a5e04966b25247432d404e622fff982"
+    },
+    {
+      "name": "magmar",
+      "width": 71,
+      "height": 61,
+      "sourceSha256": "b9bc0ac5cec46efd710f2f50ba11aa21cc46022b7d6ef4307e21ab4d7374a220",
+      "outputSha256": "b522c11d242c1b5c6b6b8d8a4dbc4d989c5fea6604c8c7506c841729b7664211"
+    },
+    {
+      "name": "magmar-shiny",
+      "width": 71,
+      "height": 61,
+      "sourceSha256": "c3ea02a9d39190a9a25815018199c7348dc99677d4f0edd3d4561ebef8499b99",
+      "outputSha256": "f9ee60534ea2637f612396043915c1075db8f5ce0bd4ad3e56c069d94ef84b2e"
+    },
+    {
+      "name": "magmar-back",
+      "width": 70,
+      "height": 59,
+      "sourceSha256": "708c7cbd4bddb1654da3e2dc29f8d377d942ecd7771c0de24fb7018f38f5d166",
+      "outputSha256": "7f455ca598f75efd73b0042d360ebaac2fa8e719b881f383161493b69ba5052e"
+    },
+    {
+      "name": "magmar-shiny-back",
+      "width": 70,
+      "height": 59,
+      "sourceSha256": "1de33ed72652d8fec0e21f7eb934def0dbbbd5e878fa8f092f00f730ecf64fa2",
+      "outputSha256": "12ae863c5b8e4c57b357e83cf36c7475395c2dc6e8bd1684ff241d112ee13fca"
+    },
+    {
+      "name": "pinsir",
+      "width": 72,
+      "height": 63,
+      "sourceSha256": "2d27686dcb5c366875bdacf856ea9c77087e97b1e01f39bffbc36a207aeb11e9",
+      "outputSha256": "93b1a83a5b727d94439737ff5a42b74e6483c1a3d54d94346c8ed574227bfbc1"
+    },
+    {
+      "name": "pinsir-shiny",
+      "width": 72,
+      "height": 63,
+      "sourceSha256": "c13c3f9044a9503fe1d510c34ba9600b64004daf7272061aff1bfe4bd5c67246",
+      "outputSha256": "210cd871f396838b9fbf1920e4a79c8c137b6c0199f50e027d47abf18b672bc8"
+    },
+    {
+      "name": "pinsir-back",
+      "width": 70,
+      "height": 61,
+      "sourceSha256": "b04d8ef0f705179a86eb64881c4ae9d5390349b0b09903c0e289550f45a31feb",
+      "outputSha256": "12c5f9fc0c9c498a3f8e5a533e221240471bb5fa32bd9ba2a7b7d1a2fd2597dd"
+    },
+    {
+      "name": "pinsir-shiny-back",
+      "width": 70,
+      "height": 61,
+      "sourceSha256": "1708bde5aa77cbd9b98c1bb4e03bdf5cdb187568f5584c83c76b274673308dbe",
+      "outputSha256": "7f2adc4432e99ef39b6adc09e225a4deded1e1dc05ad3713ebf13dcbf3ddaaf9"
+    },
+    {
+      "name": "tauros",
+      "width": 75,
+      "height": 59,
+      "sourceSha256": "53aba5b5164ccb222340106652b90e1e518dd5c913e0a86ff6662f08d13d2289",
+      "outputSha256": "fafe35dc9afd07b136d3c97f6a2b611be4fe8441d50c3cac5cf7952a8f41feea"
+    },
+    {
+      "name": "tauros-shiny",
+      "width": 75,
+      "height": 59,
+      "sourceSha256": "94e810c1c8137d36d5fac130a7752ded59e90ce4972ff4220c6bce08f467714e",
+      "outputSha256": "33318af88fd59437346cb3a40090ca90a87fac470c21494e231b782b5b6db806"
+    },
+    {
+      "name": "tauros-back",
+      "width": 72,
+      "height": 54,
+      "sourceSha256": "905e27d24c2e6d8ffe5eb9b59ab46d7f3099722e00defd5618133165d7c19866",
+      "outputSha256": "0b342603f6cdea3f2ad7b78122bb12e4dcc39dcb8263fd9d84c3b5b63970865d"
+    },
+    {
+      "name": "tauros-shiny-back",
+      "width": 72,
+      "height": 54,
+      "sourceSha256": "7b24eb4b65a288cf260d3318747a5c222f763073697c9fa9ef35da6c77e67827",
+      "outputSha256": "4f8f3e61ac06da68cd3364bf7567e8b0de19f9f1f7b02752d2c410f0f2d8ee3d"
+    },
+    {
+      "name": "magikarp",
+      "width": 47,
+      "height": 64,
+      "sourceSha256": "c525be2da4a5198d91488fa790b0536014434caa5db9d7cf5a2b32eb2fc0b86f",
+      "outputSha256": "dddf2667fe0902b5e9d6b41e049ee4afc3eac5de4acecfa0f236a3e93c4353bd"
+    },
+    {
+      "name": "magikarp-shiny",
+      "width": 47,
+      "height": 64,
+      "sourceSha256": "918a222a833e0a31b01c257a39898ee774819b7d49d836a4a6780f9117c62418",
+      "outputSha256": "c6cccc23ee764a7b78636fbe2e98fb518dff00d64eca2cdc2f1d3c4ecdac9d50"
+    },
+    {
+      "name": "magikarp-back",
+      "width": 66,
+      "height": 58,
+      "sourceSha256": "081e76c862bfb6cafb65bfc1514ff4722f4d2a8256b37e4be41c1395b85d731d",
+      "outputSha256": "95aaf1cc5332ab465a75afbebdac0bb235e9ab26c5fe455d74e409e74be96db0"
+    },
+    {
+      "name": "magikarp-shiny-back",
+      "width": 66,
+      "height": 58,
+      "sourceSha256": "6240befb6bc9eeb80ac9afdacfae178831407877f171ab548b6d8c1f7b86cd7c",
+      "outputSha256": "071fc90de7cb62f74a52778a19cf09dc12745e9e8b545d246bd746d3f77c558f"
+    },
+    {
+      "name": "gyarados",
+      "width": 102,
+      "height": 84,
+      "sourceSha256": "f947439db16c6592c9734a101a0d3b285a6f5418c9142279674625aaa275fd5a",
+      "outputSha256": "6fb49e3d2b587a3cc2c46f18b6ff1bc5828971038187a082bf889b42f1224580"
+    },
+    {
+      "name": "gyarados-shiny",
+      "width": 102,
+      "height": 84,
+      "sourceSha256": "29d5d2899793bdb348581700998e3384a99c067f4237ca3c1c8565276847d0ae",
+      "outputSha256": "cfa4dea8441968e594d92354cbd6bb21abc2fb5fe0f212afc936bb9dd4462cbf"
+    },
+    {
+      "name": "gyarados-back",
+      "width": 109,
+      "height": 83,
+      "sourceSha256": "c09fa02315d0df9f052ac9dffaf7748c29c3c5c7bafc64959fe5468c161aed3a",
+      "outputSha256": "7f20d7b8da8d6c292ad05507707b44008e873fed8dd8de703f4e1fce8088b2ad"
+    },
+    {
+      "name": "gyarados-shiny-back",
+      "width": 109,
+      "height": 83,
+      "sourceSha256": "b6d7a0b84d462371c9b9107fc4e408e4039030c822faaeaedbad5398cfe5b8d5",
+      "outputSha256": "e1af614286f996e7403c4d949fce7e74fe8a33d52283b31cd7942bed2cac3cd1"
+    },
+    {
+      "name": "lapras",
+      "width": 68,
+      "height": 72,
+      "sourceSha256": "dfdd2b2a8886e66e0c61293b1ff7139409014a3f67c1bf610f6d799e2aa232c0",
+      "outputSha256": "e0462da19b3e3fe4c4f40f59f70a84a6fdcfe239a0d4491917f2259075aff43d"
+    },
+    {
+      "name": "lapras-shiny",
+      "width": 68,
+      "height": 72,
+      "sourceSha256": "b75ecbd91011238618552131760215e26f4d21897b28e4b2fb1bdb6432f64cbe",
+      "outputSha256": "4180d820836d4c9699155d66c95fb4f968f9ad5f354a87877a6624975bd19d99"
+    },
+    {
+      "name": "lapras-back",
+      "width": 75,
+      "height": 71,
+      "sourceSha256": "684d3ca9c6a2fa42acbb92da8f5f02ca2b9c8819a3f30241ca704fe4d13ca4f9",
+      "outputSha256": "09c605ab7cf13bf52efdbfddb2e07c06a19fbb25fd8a65788c8f2c1a7ac9d1f2"
+    },
+    {
+      "name": "lapras-shiny-back",
+      "width": 75,
+      "height": 71,
+      "sourceSha256": "61e1c41bf086b2529243f9e6a9a067953f16d2c330103e2312f54ce96adb9a18",
+      "outputSha256": "f461a2cd149cefaccd45d263ae1bf9342812d84511afe97db74dc29bdc8085ea"
+    },
+    {
+      "name": "ditto",
+      "width": 47,
+      "height": 32,
+      "sourceSha256": "6a5ab9e0745f092e0732c9ef1bebc0e217ea570e4e28aa9dbda9ff79fe0916d0",
+      "outputSha256": "9b8bd54035406a7d8fd33e31cfff079ab0755dedf08577e14a3dcfea422e9d5d"
+    },
+    {
+      "name": "ditto-shiny",
+      "width": 47,
+      "height": 32,
+      "sourceSha256": "8acdaeda640722a08cb37cb16d48327751d2d6bcbc6749f4c771f851db459dd8",
+      "outputSha256": "f380e7bff1a8a0cd4528e603bb33161c29c79e710dea3461442335d17ebe8af1"
+    },
+    {
+      "name": "ditto-back",
+      "width": 47,
+      "height": 32,
+      "sourceSha256": "5f1d17c989d40d9bf6e742470eb86f077353414a80e5ae1d714011eccf772755",
+      "outputSha256": "a39f26881e49f8fce515bcd82666d76c405592b543835f60300479e105d0af6f"
+    },
+    {
+      "name": "ditto-shiny-back",
+      "width": 47,
+      "height": 32,
+      "sourceSha256": "aa356a737f2fff223c762ff21a82c06531a9cb6743dd5ca3d441aed9c150c050",
+      "outputSha256": "cc1a9892fb1590d757f22d85e1e27b976e46a7339c69926796b3f40141d27571"
+    },
+    {
+      "name": "eevee",
+      "width": 48,
+      "height": 47,
+      "sourceSha256": "c86b9ea6fff23b73b2c955d05eb3bd3334d8c607b9f461c953a8b02ce6cb56d8",
+      "outputSha256": "291c10201e5b014409baa54a7955d0273ce5f8aa6992a977e41854b5c80f0e07"
+    },
+    {
+      "name": "eevee-shiny",
+      "width": 48,
+      "height": 47,
+      "sourceSha256": "b9c84d25ef08e5d5adfb5b95a2325bad5187c35c897d94e03e3f52d37e561a13",
+      "outputSha256": "d8c095b5de531149be52fd6cb0fac4e2499ddce0a212379165e62c9bcc2c13d7"
+    },
+    {
+      "name": "eevee-back",
+      "width": 49,
+      "height": 50,
+      "sourceSha256": "ce09cf464eaa86f399caf376e30610bba04d0d52f1452679a63eaff0874c2fcd",
+      "outputSha256": "6e82e44d1fcaf7379da059a03c5fa3b59901089c0091ef08fd10b25c06981789"
+    },
+    {
+      "name": "eevee-shiny-back",
+      "width": 49,
+      "height": 50,
+      "sourceSha256": "4d9bb4928c35eb3e6f69e416af8d00697223ab7f8fd09c7494bf2496abffa149",
+      "outputSha256": "108142c82a61e397275c656d6aa570f7db19fa7811e22a9a85e1ec58b4869246"
+    },
+    {
+      "name": "vaporeon",
+      "width": 50,
+      "height": 59,
+      "sourceSha256": "da1da43e3e69076e9a3f3bf7362ff3bfff38bc669bed6b49ca587bce868cb3cd",
+      "outputSha256": "61a942f43384cc12cbf2c7a6534113acaf1a604c6aca5c2475779a28ff23effc"
+    },
+    {
+      "name": "vaporeon-shiny",
+      "width": 50,
+      "height": 59,
+      "sourceSha256": "8af8703e19e67d778f3297eb4ecda0dc0030a8340f5e734abcf44835e38a0694",
+      "outputSha256": "7b7aff1494910b042e3c89dc686dad34ff58c0a6c64632158c64d335ca589481"
+    },
+    {
+      "name": "vaporeon-back",
+      "width": 50,
+      "height": 56,
+      "sourceSha256": "d94005a66c41d437d13b3b78ad2feb141aaf6178101afc38ec3aca38c15a738b",
+      "outputSha256": "cfb5c416d88abae726cfd35e0377b77cb03fe4b2b5639ff334678056213f890e"
+    },
+    {
+      "name": "vaporeon-shiny-back",
+      "width": 50,
+      "height": 56,
+      "sourceSha256": "9bf220f90dd28d6129b8eb9c79d1cab218c1dad5a6a4d2e692a8b9210094a065",
+      "outputSha256": "641a3f6ab1278caf5f99fc4197d4d3722f44051921ade479c8e3aa9fed827b8e"
+    },
+    {
+      "name": "jolteon",
+      "width": 47,
+      "height": 49,
+      "sourceSha256": "16b7ef4c84c7319a3e43bdc8ff41b0a513e2020aaa80af8c5f7e28eba4743f8f",
+      "outputSha256": "a55cff4cc41a07b6d199f5f952a534e743858efe2aba41994dbf76b2688e6504"
+    },
+    {
+      "name": "jolteon-shiny",
+      "width": 47,
+      "height": 49,
+      "sourceSha256": "0a43df42ef7a239b2f587cc2d4251dd0ab53992bb40b93b10ded417b25b2cef5",
+      "outputSha256": "9abf1e85d3db9597142701e28973fc2c46492beec4e2886d542d1e27389433cb"
+    },
+    {
+      "name": "jolteon-back",
+      "width": 49,
+      "height": 48,
+      "sourceSha256": "eebeb0fb33f9125ca55e7c65e60c7d164d0f4782b27ac5fdcfb98198ba06e32d",
+      "outputSha256": "79e02e67adb378264b93dd6eab020dec30a99de22050dd56487bdbf31fb50be1"
+    },
+    {
+      "name": "jolteon-shiny-back",
+      "width": 49,
+      "height": 48,
+      "sourceSha256": "3aaed2fc6a3746c4ba7db0306dfbf1de641e0a6750e48dcb7d724af1ba9e37f8",
+      "outputSha256": "4fe8c4f072cfbe9933693a10a328873aba8cd63a1ac3ae5a1a891ae5720d28c5"
+    },
+    {
+      "name": "flareon",
+      "width": 66,
+      "height": 60,
+      "sourceSha256": "7986903ade97b8428e3b5c81b638ef1a0af9c702344fc21b18626825d4da80f1",
+      "outputSha256": "acde61d66879e4c6bde10138d998ab8a4fe6682416404a9ca19fdd298927f448"
+    },
+    {
+      "name": "flareon-shiny",
+      "width": 66,
+      "height": 60,
+      "sourceSha256": "5e4d0fd6fc236f86aea507432e10e2ce9ebe9b4d25c2cf61ff3a3ced600b9fd3",
+      "outputSha256": "b3493ed0dcd303f29716cedbce43df42b10a6cdc8573df5e1801cc3823f8b202"
+    },
+    {
+      "name": "flareon-back",
+      "width": 70,
+      "height": 59,
+      "sourceSha256": "305daa94d0db70f0f097db92eef74a8466e22255de1ffd4ab79a278aafe6e866",
+      "outputSha256": "7d4dee60af2f015f6bb58a5e957cec9a3ab0ff6cfd53b86017f53e0ed2b25012"
+    },
+    {
+      "name": "flareon-shiny-back",
+      "width": 70,
+      "height": 59,
+      "sourceSha256": "3597a517864dce3abdbc69f38f7496a1cabad80b2fce8e269c5be2a8d4217dfa",
+      "outputSha256": "e036948df50d4ac5fb99ab125866a4c1e707cb8c163e34a182044bed45529964"
+    },
+    {
+      "name": "porygon",
+      "width": 57,
+      "height": 53,
+      "sourceSha256": "d9ae4cffe7b1eb47da517ed178cf3e96ea602bab33ae6211dee751b99857a3fc",
+      "outputSha256": "aa959426b1552eef8d54981b0df001b6711f5f214e3f2a6d61435be334b2ff9a"
+    },
+    {
+      "name": "porygon-shiny",
+      "width": 57,
+      "height": 53,
+      "sourceSha256": "c987cea348fbec9fba3ca798059802ec4c43b346f90be3e2fd03c10ca27eef72",
+      "outputSha256": "96ebff37c5e16c025a9fdb38607241fb03a6f0f72bed03bfd8179ef46565285b"
+    },
+    {
+      "name": "porygon-back",
+      "width": 62,
+      "height": 48,
+      "sourceSha256": "d1e562136e5c31b59c1dc4beb6f5a2f912eebcb66176831026cf9e5caa28fe87",
+      "outputSha256": "8833fd193132a49d1cbaedd8463b0f0bc02677a90fb63576581a2e41591d11cc"
+    },
+    {
+      "name": "porygon-shiny-back",
+      "width": 62,
+      "height": 48,
+      "sourceSha256": "7a03c516887fd0d89f0bbcb6c6e280b54a73877d941f7361974f5c7db6bbd642",
+      "outputSha256": "6fd4531817f2b2fc4977fbf838046ab72ea00edd9c14d8e107e74cffa95fe72b"
+    },
+    {
+      "name": "omanyte",
+      "width": 43,
+      "height": 45,
+      "sourceSha256": "f61df1044ba181ae01fc2a63371a0e2dee6dfc1ff5438399490229b24a61274a",
+      "outputSha256": "90cc093959e10a638e0dbc1fde283c848989a933a964b4a76616f64cc157fd48"
+    },
+    {
+      "name": "omanyte-shiny",
+      "width": 43,
+      "height": 45,
+      "sourceSha256": "99ad98d536a1ddc3a7e0ad8af7776ba964bc82772e81facd36db82beaeaff48f",
+      "outputSha256": "0743f19e2f9a4e9dc8e754109518640d70f603edf999869ad1d1c94a370c4f2c"
+    },
+    {
+      "name": "omanyte-back",
+      "width": 49,
+      "height": 48,
+      "sourceSha256": "82137b926b21a92e0eb034920328a278e012ea6a766292c1d69cf7e6d6f88e1f",
+      "outputSha256": "5eb9492a9aa41b5baa6f6974ecc299f9485daf9cda7c4f5015b471f70055ebf0"
+    },
+    {
+      "name": "omanyte-shiny-back",
+      "width": 49,
+      "height": 48,
+      "sourceSha256": "31447891561f856c46dedfbf0e5c33fb9c3f007bec5a3fd51370c95f149655cf",
+      "outputSha256": "d253d726c6c00562be047681009d09ccece2c371b340be86c6736e965f85b187"
+    },
+    {
+      "name": "omastar",
+      "width": 63,
+      "height": 59,
+      "sourceSha256": "962ff12f1542819ea416503791ca8520330d5ca885065b92cdf180f337f7d544",
+      "outputSha256": "d8e6785f5e428e658d7dd0191b5a6710b14bdaadd635a8fcc9dc7e824e3a4e54"
+    },
+    {
+      "name": "omastar-shiny",
+      "width": 63,
+      "height": 59,
+      "sourceSha256": "72cc0a71b80cfdcbd38a60ac030c27099fb2f039e541cd352d33b31b396d5bf8",
+      "outputSha256": "edd5bf527496a6869c1cd4a587a54dc0099c7cbaebf43c974b5161170242b376"
+    },
+    {
+      "name": "omastar-back",
+      "width": 64,
+      "height": 61,
+      "sourceSha256": "ea9cb7cab23a45d2fce10281ce932525e6f63a8865dabb513693f52cac1de822",
+      "outputSha256": "bacea5ce6a50a0ce3e0477758221b00ed2e1768309dd7bc0536325c92015db8c"
+    },
+    {
+      "name": "omastar-shiny-back",
+      "width": 64,
+      "height": 61,
+      "sourceSha256": "9d645abca73550136118707756d7a5c46f921c53ff1191810a010348ffad91d8",
+      "outputSha256": "28a41fac1864a0d1eae72a2503bf4cfdc81dcc80a2d2b805606638a2b2eaa0be"
+    },
+    {
+      "name": "kabuto",
+      "width": 39,
+      "height": 41,
+      "sourceSha256": "8a137db736807e83fbb42701d771bdc6082f7fe0dfc7234eaefaf70cdb6cb72f",
+      "outputSha256": "ec15f53345e075de06a0e23257c34b910c73ef4883c5762b2b727b7cd63ce760"
+    },
+    {
+      "name": "kabuto-shiny",
+      "width": 39,
+      "height": 41,
+      "sourceSha256": "7aaa37493a2b7ce3e4bda91d8445a4dee71ff9ac81927fbc4c599b6d25f02ee0",
+      "outputSha256": "38ec93e8d40099078441d635cf42d2fad5ed93d2a99a08dc4ab3e1aed435c33d"
+    },
+    {
+      "name": "kabuto-back",
+      "width": 37,
+      "height": 43,
+      "sourceSha256": "6e330b0bba36a6141bf3650329ad6a343b1d5b6f446d6f5f08ba9a90804076ba",
+      "outputSha256": "9efd2a738aecc15b58a8d6d09aba3773a3fd1997ccff865e7cd4bad5ad9b27f1"
+    },
+    {
+      "name": "kabuto-shiny-back",
+      "width": 37,
+      "height": 43,
+      "sourceSha256": "3c5f54f914f1c2ed944e928695162a796ea1d533b2eacbf23b9aa5d26d0f270e",
+      "outputSha256": "ccfb01dc347d0a57708b0e8b83151869437e7ef45e872644dfd6bae7f6efd39e"
+    },
+    {
+      "name": "kabutops",
+      "width": 65,
+      "height": 61,
+      "sourceSha256": "fa5d7385a9bf020cb8e35447bbe8102348dff2c5e9bb5357f90a66785bf7f46e",
+      "outputSha256": "e06ae8a0204d805027d45a2433252c412eed9ee0c5c2c5867dc8e587c73c7580"
+    },
+    {
+      "name": "kabutops-shiny",
+      "width": 65,
+      "height": 61,
+      "sourceSha256": "1fc7dd4ce48f8ee435b0d81679a651267b836ef4c36632bfd02f33f0edd7ecd0",
+      "outputSha256": "799d089537d137c045b6c778399e89bc1b2c3b3c988330bc601ce4fe5c833881"
+    },
+    {
+      "name": "kabutops-back",
+      "width": 67,
+      "height": 55,
+      "sourceSha256": "4995e66fe5e6cb4314e52b286e078ae3ef31aa587f14a5fb494cdbd7d918bcb6",
+      "outputSha256": "f15ba0998be90e987aa1db5879725617503af276aa24542feb05ac9d063ef648"
+    },
+    {
+      "name": "kabutops-shiny-back",
+      "width": 67,
+      "height": 55,
+      "sourceSha256": "1c67b439e16fe53ca65ae42d565b73237b3fd23b27b6dda53f5a7d8b2b27d79c",
+      "outputSha256": "b617dbe8893ff02bea986ea99abfa63ae791102f8b97ae6133c7229846c41df1"
+    },
+    {
+      "name": "aerodactyl",
+      "width": 94,
+      "height": 82,
+      "sourceSha256": "f76bf043deaac3a2104d276132918eee7965a92cf384f4f8bff6e53d263d0d2c",
+      "outputSha256": "7e758793cf76244554e76c4a689ff8324c98c115ecce4d944c8abc037d2aa5b0"
+    },
+    {
+      "name": "aerodactyl-shiny",
+      "width": 94,
+      "height": 82,
+      "sourceSha256": "b5e9838e193e2a06af177d5092c30b63ac0ba82ad55686f12eda50274efb69b6",
+      "outputSha256": "0d5aa852fab9a1581a4ca75fb154e390e370fd1490dcafa4c0122ffe54256a62"
+    },
+    {
+      "name": "aerodactyl-back",
+      "width": 89,
+      "height": 92,
+      "sourceSha256": "3377fd2dad0d6583d49a7bf2702b87a2da97af284d82de58b99ce26f1eb670d9",
+      "outputSha256": "cf02875ac999f03764abc08c94b5c36a84dc932c6bc0b5d41009c441e234f950"
+    },
+    {
+      "name": "aerodactyl-shiny-back",
+      "width": 89,
+      "height": 92,
+      "sourceSha256": "7d7006d6ade51c5ac0fc595ad71c8ee72b94f8d3ed76b2a7d1123fd5d845b7ee",
+      "outputSha256": "2d72a3e41c217ed9a15aecb6e10ba3d1833613b58e285985facb76b68d7a1085"
+    },
+    {
+      "name": "snorlax",
+      "width": 74,
+      "height": 75,
+      "sourceSha256": "55aad0c3ae0d7c3f9c2c210a42cb57ad0d490927fb5fadd704d862e7048d6143",
+      "outputSha256": "ba32dddcb81f0036c34028aa92ca8e59bd14c48b6258b693cc4650903321820a"
+    },
+    {
+      "name": "snorlax-shiny",
+      "width": 74,
+      "height": 75,
+      "sourceSha256": "33b8a11358caa199318165634506d614e8109c5892021d2780cb1daa8ffc31a2",
+      "outputSha256": "52825eec912d5e1349f32e059b7f81ef657597dd7141b4536377e769e28b5fd4"
+    },
+    {
+      "name": "snorlax-back",
+      "width": 75,
+      "height": 71,
+      "sourceSha256": "ca8b2f58dedcc7b2b67732e292b777c91a585e7461bf42b7e4066e4523ba7fb2",
+      "outputSha256": "907d1fd5f042abfdc9dae4043cc75d6994b17cde556774d2f8b5b48e39b1e3e2"
+    },
+    {
+      "name": "snorlax-shiny-back",
+      "width": 75,
+      "height": 71,
+      "sourceSha256": "946db9e1a9eae31bb0b1b31159c2d2e0c30931debd928ae7a05c9950f8f8c616",
+      "outputSha256": "f0cbf19753cd2979f9bd425209924bfc37b789075dd12124997e8776e5a9ac12"
+    },
+    {
+      "name": "articuno",
+      "width": 73,
+      "height": 81,
+      "sourceSha256": "0635d3e0f2e9327fc9b1b469002db65c165825bdb7f39d780c319b37ae20f1ec",
+      "outputSha256": "0505c6c9c4141b298d44e01c0d55f5b25ca1202f4ff695af525aff081bf9c530"
+    },
+    {
+      "name": "articuno-shiny",
+      "width": 73,
+      "height": 81,
+      "sourceSha256": "e7ef1f4ca8df5ada052913627587edb870ce542d869681d2b7a86c61fb1e8f26",
+      "outputSha256": "58dee1f54fe21bc1e20bc1c0e58727e6b0e59bac23988d403d8876ec42848c9d"
+    },
+    {
+      "name": "articuno-back",
+      "width": 78,
+      "height": 87,
+      "sourceSha256": "2ae53f162a1d083ad710a079663efbf308ca25ce6a1249596ad989f1a97cf070",
+      "outputSha256": "23dc844eb132900974a9f444d3b035e45200f0f1ca60a11a4893a69626513b3b"
+    },
+    {
+      "name": "articuno-shiny-back",
+      "width": 78,
+      "height": 87,
+      "sourceSha256": "6fd6e511e2b9d40684e8ab5352aca573a3c1f50993398d3efbeb75b52556d5b4",
+      "outputSha256": "0fec65ebee89b436db83c6b4d2a532aea11c2aedec18bb260d8d829de5b58d1d"
+    },
+    {
+      "name": "zapdos",
+      "width": 96,
+      "height": 71,
+      "sourceSha256": "a496c108082a0f722b67abfcf21b22214766ba95518a511c161947066706feef",
+      "outputSha256": "c47642de54937f0e9d9900615ec2e5519f69c9bed8c48b28683177071d6d0d57"
+    },
+    {
+      "name": "zapdos-shiny",
+      "width": 96,
+      "height": 71,
+      "sourceSha256": "02745002f47a68537a9d6b110accf6c52f4207785ca5e34a09d58bdbf32be7f7",
+      "outputSha256": "25f9b76d4db08b45e099eb0ca1803cdd1136ff4f2756763b5c58ece5ca0d9a4a"
+    },
+    {
+      "name": "zapdos-back",
+      "width": 85,
+      "height": 72,
+      "sourceSha256": "6a3a8870e470ece1b88db749094755cd49d2d2bb55d836f60d2d64803bf9b69d",
+      "outputSha256": "bdf4c5572fd785469b20249d5c62c2ad6a3164586abfef8e183b49c615904cfa"
+    },
+    {
+      "name": "zapdos-shiny-back",
+      "width": 85,
+      "height": 72,
+      "sourceSha256": "a35367ba5c8a785aec02d4eb02a9d2552eca23e93595569a312a4611c030204e",
+      "outputSha256": "fc659f92ae7c9760e48ef72a0048bfc27a720a35a5663c40d5ac4b9a5422ba0d"
+    },
+    {
+      "name": "moltres",
+      "width": 128,
+      "height": 97,
+      "sourceSha256": "66ea7b6b34548d5c0f6cdce15d4f245742fc40f4817f7a1789a152e148b321ca",
+      "outputSha256": "b51bc086e17ab8562c89d073af2a20925e3f870b65eb66d2e8e54fb836e16d37"
+    },
+    {
+      "name": "moltres-shiny",
+      "width": 128,
+      "height": 97,
+      "sourceSha256": "115cf31d147594809988624e6010f7118beda91fae31a2edd49b1012b6333fef",
+      "outputSha256": "0dcf0421f3933bbe2914a1b895dcacfa77711a3c7ecd45ce99d37e628ea0c4b0"
+    },
+    {
+      "name": "moltres-back",
+      "width": 117,
+      "height": 79,
+      "sourceSha256": "ed06a6c9e33d8100b753a414629ada6748182d20d517716a501cbea8074dbe6a",
+      "outputSha256": "85382888b38b99c9172b83cde8a2492062866c20e66530bdf9a13f88d438d841"
+    },
+    {
+      "name": "moltres-shiny-back",
+      "width": 117,
+      "height": 79,
+      "sourceSha256": "1498d5c7908b85dab1a13193c82306a65d533db7a70c235f7b13217e48ca5eed",
+      "outputSha256": "614cf47814beaea7550214ea0383594b58d796170af1fe9ce9d5f2a1522500fd"
+    },
+    {
+      "name": "dratini",
+      "width": 43,
+      "height": 51,
+      "sourceSha256": "a84352accbb6fe12f47f8fb93fa7ba0b13cdb91625b8b145fda0bfa8576d2134",
+      "outputSha256": "f43c0ff6fc9fed7d9d1cbc1f3a25b1e92bd1b044c6458eb963b23706a3b5121b"
+    },
+    {
+      "name": "dratini-shiny",
+      "width": 43,
+      "height": 51,
+      "sourceSha256": "391b6118903ad1eec38b1e3dc08f14aef6b14ae6de9605dcb74d0da735e3d4ed",
+      "outputSha256": "7f12f102c8fef6bb313bc5e0a5707b4e2bf9342d713ec474ddd21c6b4f83d8a7"
+    },
+    {
+      "name": "dratini-back",
+      "width": 48,
+      "height": 56,
+      "sourceSha256": "412ff5ca80621f706283d5105abc06f914b932d4f4132032ec2ad9eed2203987",
+      "outputSha256": "73b1ebcc07847f127d606a4516b1a76c87a5b23bc2885bf9498e59e3b2eed6e6"
+    },
+    {
+      "name": "dratini-shiny-back",
+      "width": 48,
+      "height": 56,
+      "sourceSha256": "975a1595d3bb1850852b34c4757c6135e3491272602d9512ed41d882babd5d35",
+      "outputSha256": "8085f3276874ff4031f73554a23cce4ac049d9cbf47123402caec338d529e0ad"
+    },
+    {
+      "name": "dragonair",
+      "width": 64,
+      "height": 73,
+      "sourceSha256": "e1eb4977825a8da202ec7bc402ba76a4be5ad7cc632de5fa5c2b91ec55deae00",
+      "outputSha256": "fef1e28d3092111ee6f82a9cda7d88c77e6d12aa8b87c65b1d5691a2fffc6a4c"
+    },
+    {
+      "name": "dragonair-shiny",
+      "width": 64,
+      "height": 73,
+      "sourceSha256": "70579fee4606d2fb87bc19b2fa28790f53412e23561194198fd216492432b9ca",
+      "outputSha256": "d9bf5a80f06a0020fa36366815b41fc6a91b6e5c14f28c1665d88fc08a9bfd6d"
+    },
+    {
+      "name": "dragonair-back",
+      "width": 63,
+      "height": 74,
+      "sourceSha256": "d2700c314e56a3820a479946d3d3fdb974da9b2c08159c0af483a472984cbfed",
+      "outputSha256": "4925558c831c8117ad4cbf540dd9d5b616d5ae908f3681791c2490f63560e12e"
+    },
+    {
+      "name": "dragonair-shiny-back",
+      "width": 63,
+      "height": 74,
+      "sourceSha256": "937afe3758c3049146fe1d3c624b06f231088e8c84965138fe942a668d01265f",
+      "outputSha256": "1c7400f531eb8456951c7688ef6044eb265d5cb3e284e7913b859b8eea4ff404"
+    },
+    {
+      "name": "dragonite",
+      "width": 80,
+      "height": 82,
+      "sourceSha256": "527321433e3b4fe08203a8cbbcb7ba50aa659113adfc5cf442ad54b2c9226ecb",
+      "outputSha256": "647e03b7137dc0fb5761ab2ce373ca6150776396b49b3bf7c26c782fbe72d9d0"
+    },
+    {
+      "name": "dragonite-shiny",
+      "width": 80,
+      "height": 82,
+      "sourceSha256": "c41daf703417e2c622c677e02f0ca95bf9495ca0b26c42d82ba3236261e64b5a",
+      "outputSha256": "9a3ee3cc78c1bf16a8271a4658aaf9bed742e50c6ffc2c884c4923f113dc29d3"
+    },
+    {
+      "name": "dragonite-back",
+      "width": 86,
+      "height": 81,
+      "sourceSha256": "ba64e3b7260480813b3223fa3ae0a6dc7b276ea6e42a5da1c352722ce9343188",
+      "outputSha256": "924a343bc3c8f5738ca0eb023001a8930d5a822c97b24db0749788d9fc878704"
+    },
+    {
+      "name": "dragonite-shiny-back",
+      "width": 86,
+      "height": 81,
+      "sourceSha256": "9d71dc80f6a30892188c8a44067ba4abf548c43aab7e75f649dc228672d70248",
+      "outputSha256": "e57c7f6f8fb94affbe25e713039ce9ef97b4506187545c324e57b332b632b294"
+    },
+    {
+      "name": "mewtwo",
+      "width": 90,
+      "height": 69,
+      "sourceSha256": "5df5ce7b01af650c948fae25e3400d5a09ef0e8f372ae52e0d26eb539bf1c0a0",
+      "outputSha256": "a4c59fa428457e46778a0dcdb37f989b2732aedd0d2f9a9d61fe8c86d2897d56"
+    },
+    {
+      "name": "mewtwo-shiny",
+      "width": 90,
+      "height": 69,
+      "sourceSha256": "005c64512e1951507f7b685263fb574707c4d18856a209a02da8926866737199",
+      "outputSha256": "e88b332997ca71f8cf23c6eb530a1b2f22b771d83b141888b61b159a53f37424"
+    },
+    {
+      "name": "mewtwo-back",
+      "width": 95,
+      "height": 71,
+      "sourceSha256": "32167f3f322b77ee89950ba67d0dc85e557902c4d05522b633fd12444d0f44a7",
+      "outputSha256": "a0f8ce648ab3f7deae3f7080d0092518d4276c0dce400c6ce1e9ecf4c87f8ab8"
+    },
+    {
+      "name": "mewtwo-shiny-back",
+      "width": 95,
+      "height": 71,
+      "sourceSha256": "f250213c4aae1d346da6fe722e7ebd5b280163e6fd48d44153d7c7bd65dae945",
+      "outputSha256": "952ff8ccc6715ba23a8c98f83dd1b2d7db55e615be71c8c2d5026d663de7e725"
+    },
+    {
+      "name": "mew",
+      "width": 77,
+      "height": 53,
+      "sourceSha256": "42d89a9365d7a265b8c06c23d1702470f49c1b1442b4afc384782430942416ca",
+      "outputSha256": "06837c7829930ec1f91a926f315418977b9829f32c3f9f36633a70bb97745f1c"
+    },
+    {
+      "name": "mew-shiny",
+      "width": 77,
+      "height": 53,
+      "sourceSha256": "155cced19d5322bafe582b53f0b17dd7dc56ce2466ed6f53a9fd7662e986bbbb",
+      "outputSha256": "a2a3337246f7c600fbb2fdbd6641080d25521b19453740e84e02224e1ec6cc6d"
+    },
+    {
+      "name": "mew-back",
+      "width": 60,
+      "height": 61,
+      "sourceSha256": "4459f0e256dd1b46e09bbdb5dd66f2ec44a8d7c80e142b5af3dbafaffa6f5954",
+      "outputSha256": "8b5d5ebd2bfb2581f826800901f35391fa85e9dfd4080aef37923a17820d15fd"
+    },
+    {
+      "name": "mew-shiny-back",
+      "width": 60,
+      "height": 61,
+      "sourceSha256": "51c944a7fd9a9503e8de92d028e86d17bdb2d9d48a628b21d52b33049da5008d",
+      "outputSha256": "152e9956b43d86fdfafebb2bd266daf616b3341b5797136ef728ba23064b8b1c"
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+
+Running 6 tests using 1 worker
+
+(node:28516) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_victory_1920_MotionAndLiveChanges — §9.6 (5.4s)
+(node:47492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_defeat_1920_MotionAndLiveChanges — §9.6 (5.4s)
+(node:59144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  3 [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_victory_1280_MotionAndLiveChanges — §9.6 (6.2s)
+(node:7940) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  4 [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_defeat_1280_MotionAndLiveChanges — §9.6 (6.2s)
+(node:57816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  5 [desktop] › e2e\run-end-motion.spec.ts:157:1 › FinalTeam_SettingsPointerAndKeyboard_150Percent — §9.6 (8.8s)
+(node:51280) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 6 [desktop] › e2e\run-end-motion.spec.ts:178:1 › BattleStills_AllRosterVariants_ExactFirstFrameAndCanvas — §9.6 (5.7s)
+
+
+  1) [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_victory_1920_MotionAndLiveChanges — §9.6 
+
+    Error: Shiny Charizard must visibly animate
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+      83 |     current.forEach((bytes, i) => { changes[i]! += bytes.reduce((n, b, j) => n + (b !== first[i]![j] ? 1 : 0), 0); });
+      84 |   }
+    > 85 |   if (animated) expect(changes[1], 'Shiny Charizard must visibly animate').toBeGreaterThan(0);
+         |                                                                            ^
+      86 |   else expect(changes, 'Every normal and shiny final-team sprite must stay still').toEqual(Array(6).fill(0));
+      87 |   await page.screenshot({ path: `${evidence}/${name}.png` });
+      88 |   return changes;
+        at pixels (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:85:76)
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:122:20
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-v-b1d37-MotionAndLiveChanges-—-§9-6-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-v-b1d37-MotionAndLiveChanges-—-§9-6-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-v-b1d37-MotionAndLiveChanges-—-§9-6-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_defeat_1920_MotionAndLiveChanges — §9.6 
+
+    Error: Shiny Charizard must visibly animate
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+      83 |     current.forEach((bytes, i) => { changes[i]! += bytes.reduce((n, b, j) => n + (b !== first[i]![j] ? 1 : 0), 0); });
+      84 |   }
+    > 85 |   if (animated) expect(changes[1], 'Shiny Charizard must visibly animate').toBeGreaterThan(0);
+         |                                                                            ^
+      86 |   else expect(changes, 'Every normal and shiny final-team sprite must stay still').toEqual(Array(6).fill(0));
+      87 |   await page.screenshot({ path: `${evidence}/${name}.png` });
+      88 |   return changes;
+        at pixels (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:85:76)
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:122:20
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-d-c4b81-MotionAndLiveChanges-—-§9-6-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-d-c4b81-MotionAndLiveChanges-—-§9-6-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-d-c4b81-MotionAndLiveChanges-—-§9-6-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_victory_1280_MotionAndLiveChanges — §9.6 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      37 |     const scale = images[0]!.width / images[0]!.naturalWidth;
+      38 |     return images.every((img) => Math.abs(img.width / img.naturalWidth - scale) < 0.001);
+    > 39 |   })).toBe(true);
+         |       ^
+      40 | }
+      41 |
+      42 | async function sources(page: Page, extension: 'png' | 'gif') {
+        at ready (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:39:7)
+        at ending (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:28:3)
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:112:7
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-v-7bd78-MotionAndLiveChanges-—-§9-6-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-v-7bd78-MotionAndLiveChanges-—-§9-6-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-v-7bd78-MotionAndLiveChanges-—-§9-6-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_defeat_1280_MotionAndLiveChanges — §9.6 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      37 |     const scale = images[0]!.width / images[0]!.naturalWidth;
+      38 |     return images.every((img) => Math.abs(img.width / img.naturalWidth - scale) < 0.001);
+    > 39 |   })).toBe(true);
+         |       ^
+      40 | }
+      41 |
+      42 | async function sources(page: Page, extension: 'png' | 'gif') {
+        at ready (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:39:7)
+        at ending (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:28:3)
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:112:7
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-d-c5114-MotionAndLiveChanges-—-§9-6-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-d-c5114-MotionAndLiveChanges-—-§9-6-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-d-c5114-MotionAndLiveChanges-—-§9-6-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [desktop] › e2e\run-end-motion.spec.ts:157:1 › FinalTeam_SettingsPointerAndKeyboard_150Percent — §9.6 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      37 |     const scale = images[0]!.width / images[0]!.naturalWidth;
+      38 |     return images.every((img) => Math.abs(img.width / img.naturalWidth - scale) < 0.001);
+    > 39 |   })).toBe(true);
+         |       ^
+      40 | }
+      41 |
+      42 | async function sources(page: Page, extension: 'png' | 'gif') {
+        at ready (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:39:7)
+        at ending (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:28:3)
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-motion.spec.ts:166:7
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-S-d45c9-dKeyboard-150Percent-—-§9-6-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-S-d45c9-dKeyboard-150Percent-—-§9-6-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B04\traces\run-end-motion-FinalTeam-S-d45c9-dKeyboard-150Percent-—-§9-6-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5 failed
+    [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_victory_1920_MotionAndLiveChanges — §9.6 
+    [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_defeat_1920_MotionAndLiveChanges — §9.6 
+    [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_victory_1280_MotionAndLiveChanges — §9.6 
+    [desktop] › e2e\run-end-motion.spec.ts:106:5 › FinalTeam_defeat_1280_MotionAndLiveChanges — §9.6 
+    [desktop] › e2e\run-end-motion.spec.ts:157:1 › FinalTeam_SettingsPointerAndKeyboard_150Percent — §9.6 
+  1 passed (43.1s)

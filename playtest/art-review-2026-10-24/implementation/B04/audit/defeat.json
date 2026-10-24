@@ -1,0 +1,39 @@
+{
+  "screen": "defeat",
+  "status": "captured",
+  "expectedRoot": "defeat-screen",
+  "captures": {
+    "at1080": {
+      "screenshot": "defeat.png",
+      "root": "defeat-screen"
+    },
+    "at720": {
+      "screenshot": "defeat-720.png",
+      "root": "defeat-screen"
+    }
+  },
+  "url": "/?screen=menu",
+  "screenshot": "defeat.png",
+  "errors": [],
+  "totalChars": 216,
+  "blocks": 22,
+  "long": [],
+  "contrastFails": [],
+  "contrastUnknownBg": 3,
+  "tipped": 10,
+  "infoDots": 0,
+  "titles": [],
+  "unnamed": [],
+  "tables": 0,
+  "textOnlyLists": [],
+  "overflowing": [],
+  "pageScrollX": false,
+  "interactive": 12,
+  "accentText": [],
+  "spills": [],
+  "at720": {
+    "overflowing": [],
+    "pageScrollX": false,
+    "spills": []
+  }
+}

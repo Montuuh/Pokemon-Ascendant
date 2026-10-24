@@ -1,0 +1,15 @@
+
+> pokemon-ascendant@0.9.42 check
+> npm run typecheck && npm run lint && npm run test && npm run check:refs && npm run check:catalogs && npm run check:version
+
+
+> pokemon-ascendant@0.9.42 typecheck
+> tsc --noEmit -p tsconfig.json
+
+e2e/run-end-motion.spec.ts(100,69): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(name: string, value: string | RegExp, options?: { ignoreCase?: boolean | undefined; signal?: AbortSignal | undefined; timeout?: number | undefined; } | undefined): Promise<...>', gave the following error.
+    Argument of type 'string | null' is not assignable to parameter of type 'string | RegExp'.
+      Type 'null' is not assignable to type 'string | RegExp'.
+  Overload 2 of 2, '(name: string, options?: { signal?: AbortSignal | undefined; timeout?: number | undefined; } | undefined): Promise<void>', gave the following error.
+    Argument of type '"reduced" | "full" | null' is not assignable to parameter of type '{ signal?: AbortSignal | undefined; timeout?: number | undefined; } | undefined'.
+      Type 'null' is not assignable to type '{ signal?: AbortSignal | undefined; timeout?: number | undefined; } | undefined'.

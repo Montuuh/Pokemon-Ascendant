@@ -1,0 +1,21 @@
+
+Running 14 tests using 1 worker
+
+(node:6328) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › e2e\run-end-art.spec.ts:159:7 › Run end art 1280 — §9.12.3 › victory_FinalTeamAndBadges_RecordBehindDoor (1.4s)
+  ok  2 [desktop] › e2e\run-end-art.spec.ts:159:7 › Run end art 1280 — §9.12.3 › defeat_FinalTeamAndBadges_RecordBehindDoor (1.4s)
+  ok  3 [desktop] › e2e\run-end-art.spec.ts:202:5 › Run end art 1280 — §9.12.3 › Defeat_EightMembersNoBadges_StaysHonestAndFits (1.2s)
+  ok  4 [desktop] › e2e\run-end-art.spec.ts:159:7 › Run end art 1920 — §9.12.3 › victory_FinalTeamAndBadges_RecordBehindDoor (1.7s)
+  ok  5 [desktop] › e2e\run-end-art.spec.ts:159:7 › Run end art 1920 — §9.12.3 › defeat_FinalTeamAndBadges_RecordBehindDoor (1.6s)
+  ok  6 [desktop] › e2e\run-end-art.spec.ts:202:5 › Run end art 1920 — §9.12.3 › Defeat_EightMembersNoBadges_StaysHonestAndFits (1.3s)
+  ok  7 [desktop] › e2e\run-end-art.spec.ts:212:1 › RunEnd_ExitAndRunAgain_PreserveAccountAndClearRun — §8.10 (1.9s)
+  ok  8 [desktop] › e2e\run-end-art.spec.ts:225:1 › RunEnd_WithoutRun_OffersTheMenuWithoutInventingATeam — §9.12.3 (1.1s)
+  ok  9 [desktop] › e2e\run-end-motion.spec.ts:100:5 › FinalTeam_victory_1920_MotionAndLiveChanges — §9.6 (6.9s)
+  ok 10 [desktop] › e2e\run-end-motion.spec.ts:100:5 › FinalTeam_defeat_1920_MotionAndLiveChanges — §9.6 (7.4s)
+  ok 11 [desktop] › e2e\run-end-motion.spec.ts:100:5 › FinalTeam_victory_1280_MotionAndLiveChanges — §9.6 (6.1s)
+  ok 12 [desktop] › e2e\run-end-motion.spec.ts:100:5 › FinalTeam_defeat_1280_MotionAndLiveChanges — §9.6 (6.3s)
+  ok 13 [desktop] › e2e\run-end-motion.spec.ts:151:1 › FinalTeam_SettingsPointerAndKeyboard_150Percent — §9.6 (9.2s)
+  ok 14 [desktop] › e2e\run-end-motion.spec.ts:172:1 › BattleStills_AllRosterVariants_ExactFirstFrameAndCanvas — §9.6 (11.3s)
+
+  14 passed (1.0m)

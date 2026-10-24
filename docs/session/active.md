@@ -1,8 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-24 · **Version:** v0.9.42 (*Where the run ended*) — B03 location labels.
+**Date:** 2026-10-24 · **Version:** v0.9.43 (*A still final team*) — B04 reduced motion.
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 release; user iterates the art review first. A03/results belongs to another active session.
+
+**B04:** final-team PNG/GIF selection follows system and in-game motion live, preserving shiny palettes and native geometry. Evidence: playtest/art-review-2026-10-24/implementation/B04. Independent review and exact-release results are recorded there. A02/A03 and their18-entry queue remain excluded.
 
 **B03:** ending/record identify the reached Region column, Victory Road column or League opponent; pending fight precedes last cleared position. Astra/high review: Ship. Exact release check899 passed/3 skipped, build and17 focused UI cases pass; shared check918/3. B02 remains uncommitted/unpublished; its hunks and the18-entry A02/A03 queue stay excluded. Evidence: playtest/art-review-2026-10-24/implementation/B03.
 

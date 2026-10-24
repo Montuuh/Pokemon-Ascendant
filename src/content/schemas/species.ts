@@ -49,6 +49,6 @@ export function boxIconUrl(dex: number, id: string): string {
   return asset(`art/pokemon/icons/${String(dex).padStart(3, '0')}-${id}.png`);
 }
 /** §5.13.1 Veteran — `shiny` picks the official shiny palette of the same sprite. */
-export function battleSpriteUrl(id: string, side: 'front' | 'back' = 'front', shiny = false): string {
-  return asset(`art/pokemon/battle/${id}${shiny ? '-shiny' : ''}${side === 'back' ? '-back' : ''}.gif`);
+export function battleSpriteUrl(id: string, side: 'front' | 'back' = 'front', shiny = false, animated = true): string {
+  return asset(`art/pokemon/battle/${id}${shiny ? '-shiny' : ''}${side === 'back' ? '-back' : ''}.${animated ? 'gif' : 'png'}`);
 }

@@ -1,0 +1,53 @@
+import { chromium, expect } from '@playwright/test';
+import { writeFileSync } from 'node:fs';
+import sharp from 'sharp';
+const out = 'playtest/art-review-2026-10-24/implementation/B04';
+const browser = await chromium.launch({channel:'chrome', headless:true});
+const results = [];
+for (const outcome of ['victory','defeat']) {
+ const page = await browser.newPage({viewport:{width:1280,height:720},reducedMotion:'reduce'});
+ const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://localhost:5173/?screen=menu');
+ await page.evaluate(outcome=>{
+  const a=window.__ascendant; a.meta.reset();a.run.new('squirtle',7);a.run.fill(6);
+  a.run.patch(d=>{d.box.forEach((m,i)=>{m.speciesId=['blastoise','charizard','venusaur','pikachu','lapras','dragonite'][i];m.shiny=i===1;m.level=35;m.hp=outcome==='defeat'?0:30;});d.phase='ended';d.outcome=outcome;d.badges=['boulder-badge','thunder-badge','marsh-badge'];});a.goTo(outcome);
+ },outcome);
+ await page.evaluate(()=>document.fonts.ready);
+ await page.waitForFunction(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0));
+ await page.waitForTimeout(250);
+ const members=page.locator('[data-testid^="run-end-mon-"]');
+ const imgs=members.locator('img');
+ const geometry=()=>imgs.evaluateAll(ns=>ns.map(n=>{const r=n.getBoundingClientRect();return {src:n.src,width:r.width,height:r.height,bottom:r.bottom};}));
+ const initial=await geometry();
+ expect(initial.every(i=>i.src.endsWith('.png'))).toBe(true);
+ const pixelA=await page.screenshot({path:out+'/review-'+outcome+'-reduced-a.png'});
+ await page.waitForTimeout(380);
+ const pixelB=await page.screenshot({path:out+'/review-'+outcome+'-reduced-b.png'});
+ const bounds=await imgs.evaluateAll(ns=>ns.map(n=>{const r=n.getBoundingClientRect();return {left:Math.floor(r.left),top:Math.floor(r.top),width:Math.ceil(r.right)-Math.floor(r.left),height:Math.ceil(r.bottom)-Math.floor(r.top)};}));
+ const changes=[];
+ for(const r of bounds){const a=await sharp(pixelA).extract(r).raw().toBuffer();const b=await sharp(pixelB).extract(r).raw().toBuffer();changes.push(a.reduce((sum,v,i)=>sum+(v!==b[i]?1:0),0));}
+ expect(changes).toEqual([0,0,0,0,0,0]);
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await expect(imgs.first()).toHaveAttribute('src',/\.gif$/);
+ await page.waitForFunction(()=>[...document.images].every(i=>i.complete));
+ const full=await geometry();
+ expect(full.map(({src,...g})=>g)).toEqual(initial.map(({src,...g})=>g));
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await expect(imgs.first()).toHaveAttribute('src',/\.png$/);
+ await members.first().focus();await page.keyboard.press('Tab');
+ await expect(members.nth(1)).toBeFocused();
+ await expect(page.getByRole('tooltip')).toContainText('Charizard');
+ const focusStyle=await members.nth(1).evaluate(el=>({outline:getComputedStyle(el).outline,boxShadow:getComputedStyle(el).boxShadow,focusVisible:el.matches(':focus-visible')}));
+ await page.screenshot({path:out+'/review-'+outcome+'-keyboard-door.png'});
+ await page.keyboard.press('Escape');await expect(page.getByRole('tooltip')).toBeHidden();
+ await page.getByTestId('run-end-badge-boulder-badge').hover();
+ await expect(page.getByRole('tooltip')).toContainText('Boulder');
+ await page.keyboard.press('Escape');
+ await page.getByTestId('btn-run-record').focus();await page.keyboard.press('Enter');
+ await expect(page.getByTestId('run-record')).toBeVisible();await page.keyboard.press('Escape');
+ await expect(page.getByTestId('btn-run-record')).toBeFocused();
+ results.push({outcome,changes,focusStyle,errors,liveOs:'png -> gif -> png without navigation; geometry identical',doors:'keyboard Charizard, hover Boulder, record Enter/Escape focus return'});
+ await page.close();
+}
+writeFileSync(out+'/review-probe.json',JSON.stringify(results,null,2));
+console.log(JSON.stringify(results,null,2));await browser.close();

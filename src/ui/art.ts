@@ -17,8 +17,8 @@ export function compactIconOf(speciesId: string): string {
   const species = getContent().species(speciesId);
   return asset(`art/pokemon/compact/${String(species.dex).padStart(3, '0')}-${species.id}.png`);
 }
-export function spriteOf(c: Pick<Combatant, 'speciesId'>, side: 'front' | 'back', shiny = false): string {
-  return battleSpriteUrl(c.speciesId, side, shiny);
+export function spriteOf(c: Pick<Combatant, 'speciesId'>, side: 'front' | 'back', shiny = false, animated = true): string {
+  return battleSpriteUrl(c.speciesId, side, shiny, animated);
 }
 export const itemIcon = (consumableId: string) => asset(`art/items/${consumableId}.png`);
 /**
