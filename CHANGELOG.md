@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.45 — Native item pixels · 2026-10-24
+
+Item cards and their tooltips preserve the original pixel grid.
+
+- **Crisp icons.** Items fit their frames at whole or half-step scales.
+- **Same cards.** Shop, Summit and bag actions keep their existing targets.
+
 ### v0.9.44 — Shiny in every summary · 2026-10-24
 
 Owned Pokémon keep their shiny identity in compact views.

@@ -86,13 +86,6 @@
   background: var(--surface-2);
 }
 
-.icon {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-  image-rendering: pixelated;
-}
-
 .tag {
   position: absolute;
   bottom: -6px;
@@ -157,7 +150,6 @@
 @media (max-width: 640px) {
   .card { grid-template-columns: 44px 1fr; }
   .art { width: 44px; height: 44px; }
-  .icon { width: 32px; height: 32px; }
 }
 
 /* A row whose icon does not exist (a Region Modifier is a rule, not an object) drops the frame entirely

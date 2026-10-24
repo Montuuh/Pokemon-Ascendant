@@ -4,6 +4,7 @@ import { itemIcon, tmIcon } from '@/ui/art';
 import { Tip, useTip } from '@/ui/tooltip';
 import { RARITY_LABEL } from '@/ui/strings';
 import { RarityGem } from './RarityGem';
+import { PixelSprite } from './PixelSprite';
 import styles from './ItemCard.module.css';
 
 // One card shape for everything you can own (§7.2–§7.4): a consumable, a relic, a held item, a TM, a ball.
@@ -51,7 +52,7 @@ export function ItemCard(props: ItemCardProps) {
   // The card's own face stays short; this is where the sentence lives.
   const tip = useTip(
     <Tip
-      icon={<img src={kind === 'tm' ? tmIcon(id) : itemIcon(id)} alt="" width={22} height={22} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />}
+      icon={<PixelSprite src={kind === 'tm' ? tmIcon(id) : itemIcon(id)} alt="" width={22} height={22} onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
       title={name}
       meta={[rarity ? RARITY_LABEL[rarity] : null, KIND_LABEL[kind]].filter((m): m is string => !!m)}
       body={description}
@@ -81,14 +82,15 @@ export function ItemCard(props: ItemCardProps) {
             card shows are not objects at all — a Region Modifier is a *rule* (§2.11.3) — and an empty beige
             tile reads as a missing asset, which is exactly the wrong thing to say about a row that is
             working perfectly. */}
-        <img
+        <PixelSprite
           src={kind === 'tm' ? tmIcon(id) : itemIcon(id)}
           alt=""
-          className={styles.icon}
+          width={40}
+          height={40}
           onError={(e) => {
-            const img = e.currentTarget as HTMLImageElement;
+            const img = e.currentTarget;
             img.style.display = 'none';
-            img.parentElement?.setAttribute('data-empty', 'true');
+            img.closest(`.${styles.art}`)?.setAttribute('data-empty', 'true');
           }}
         />
         {tag && <span className={styles.tag}>{tag}</span>}

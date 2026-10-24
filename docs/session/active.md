@@ -1,9 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-24 · **Version:** v0.9.44 (*Shiny in every summary*) — B05 owned identity.
+**Date:** 2026-10-24 · **Version:** v0.9.45 (*Native item pixels*) — B06 item rendering.
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 release; user iterates the art review first. A03/results belongs to another active session.
 
+**B06:** ItemCard face/tooltip use PixelSprite; native24/30 sources retain equal half-step scales and unchanged card targets. Evidence: playtest/art-review-2026-10-24/implementation/B06. A02/A03, B02 metrics and their pending queue remain excluded.
 **B05:** owned compact summaries retain authentic shiny palettes and named sparkles; ordinary specimens and species catalogues remain separate. Evidence and scoped Sol6.1/high review: playtest/art-review-2026-10-24/implementation/B05. A02/A03 and their18-entry queue remain excluded; B02 metrics stay outside this release.
 
 **B04:** final-team PNG/GIF selection follows system and in-game motion live, preserving shiny palettes and native geometry. Evidence: playtest/art-review-2026-10-24/implementation/B04. Independent review and exact-release results are recorded there. A02/A03 and their18-entry queue remain excluded.

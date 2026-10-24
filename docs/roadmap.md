@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.45 — Native item pixels  ✅ 2026-10-24
+
+**Shipped.** B06 fits shared item-card faces and tooltips with PixelSprite at uniform whole or half steps. Existing card/art cells, hit targets, item identity and rules stay intact; missing icons still drop their empty frame. Shop, Summit and every bag catalogue icon are covered by source-dimension, hover, keyboard and fallback checks. Evidence: playtest/art-review-2026-10-24/implementation/B06.
+
 ### v0.9.44 — Shiny in every summary  ✅ 2026-10-24
 
 **Shipped.** B05 carries each owned specimen's shiny flag through compact summaries: final record, Dojo selection, team/Box, Move Manager, bag targets, healing, trading, Training Grounds, route preview and Summit. Existing authentic FRLG shiny sprites and the shared named sparkle preserve identity at native half steps; ordinary specimens and species-only catalogues retain their defaults. No game rule or result-flow change.
