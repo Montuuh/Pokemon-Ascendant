@@ -8,6 +8,7 @@ import { ArenaSprite } from '@/ui/components/ArenaSprite';
 import { BackButton } from '@/ui/components/BackButton';
 import { HpBar } from '@/ui/components/HpBar';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { ownedMonTip } from '@/ui/ownedMonTip';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import card from '@/ui/components/UnitCard.module.css';
 import { SHOP_TEXT, TRADER_TEXT } from '@/ui/strings';
@@ -113,7 +114,7 @@ function Giveable({ mon, active, picked, locked, onPick }: { mon: PartyMon; acti
   const content = getContent();
   const s = content.species(mon.speciesId);
   const max = runHelpers.maxHpOf(mon, content);
-  const tip = useTip(tradeGiveTip(s.name, mon.level, mon.hp, max, active, mon.heldItem ? content.heldItem(mon.heldItem).name : null, locked));
+  const tip = useTip(ownedMonTip(mon, tradeGiveTip(s.name, mon.level, mon.hp, max, active, mon.heldItem ? content.heldItem(mon.heldItem).name : null, locked)));
   return (
     <li>
       <button
@@ -125,7 +126,7 @@ function Giveable({ mon, active, picked, locked, onPick }: { mon: PartyMon; acti
         data-testid={`trade-give-${mon.uid}`}
         {...tip}
       >
-        <MonIcon speciesId={s.id} size={44} />
+        <MonIcon speciesId={s.id} shiny={mon.shiny} size={44} />
         <span className={styles.monText}>
           <span className={`${styles.name} display`}>{s.name}</span>
           <span className={`${styles.monLevel} tabular`}>

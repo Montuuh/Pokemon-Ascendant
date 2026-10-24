@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.44 — Shiny in every summary  ✅ 2026-10-24
+
+**Shipped.** B05 carries each owned specimen's shiny flag through compact summaries: final record, Dojo selection, team/Box, Move Manager, bag targets, healing, trading, Training Grounds, route preview and Summit. Existing authentic FRLG shiny sprites and the shared named sparkle preserve identity at native half steps; ordinary specimens and species-only catalogues retain their defaults. No game rule or result-flow change.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

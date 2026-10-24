@@ -115,7 +115,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
   const body = (
     <div className={styles.body} data-testid="move-manager">
       <header className={styles.who}>
-        <MonIcon speciesId={species.id} size={56} />
+        <MonIcon speciesId={species.id} shiny={mon.shiny} plain={false} size={56} />
         <div>
           <h3 className={`${styles.name} display`}>
             {species.name} <span className="tabular">Lv {mon.level}</span>

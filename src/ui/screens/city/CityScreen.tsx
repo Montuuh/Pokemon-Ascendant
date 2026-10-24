@@ -14,6 +14,7 @@ import { TeamScreen } from '@/ui/components/TeamScreen';
 import { useTeamKey } from '@/ui/hooks/useTeamKey';
 import { Modal } from '@/ui/components/Modal';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { ownedMonTip } from '@/ui/ownedMonTip';
 import { Money } from '@/ui/components/Money';
 import { PauseMenu } from '@/ui/components/PauseMenu';
 import { CITY_DOOR_HINT, CITY_DOOR_LABEL, RUN_REJECT_TEXT, STATUS_LABEL, TEAM_TEXT, type CityBuildingDoor, type CityDoor } from '@/ui/strings';
@@ -249,11 +250,11 @@ function PartyChip({ mon }: { mon: PartyMon }) {
   const s = content.species(mon.speciesId);
   const max = runHelpers.maxHpOf(mon, content);
   const status = mon.status ? (STATUS_LABEL[mon.status.kind] ?? mon.status.kind) : null;
-  const tip = useTip(partyTip(s.name, mon.level, mon.hp, max, mon.status?.kind ?? null, mon.traumaStacks));
-  const name = [s.name, `${mon.hp} of ${max} HP`, status, mon.traumaStacks ? `Trauma ×${mon.traumaStacks}` : null].filter(Boolean).join(', ');
+  const tip = useTip(ownedMonTip(mon, partyTip(s.name, mon.level, mon.hp, max, mon.status?.kind ?? null, mon.traumaStacks)));
+  const name = [mon.shiny ? `Shiny ${s.name}` : s.name, `${mon.hp} of ${max} HP`, status, mon.traumaStacks ? `Trauma ×${mon.traumaStacks}` : null].filter(Boolean).join(', ');
   return (
     <li className={styles.chip} tabIndex={0} aria-label={name} data-testid={`city-mon-${s.id}`} {...tip}>
-      <MonIcon speciesId={s.id} size={34} />
+      <MonIcon speciesId={s.id} shiny={mon.shiny} size={34} />
       <span className={styles.chipBar}>
         <HpBar hp={mon.hp} maxHp={max} height={6} />
       </span>

@@ -188,7 +188,8 @@
   background: var(--surface-3);
 }
 /* Not pickable now, still readable: full ink, a dashed edge, and a lock where the dealer will not take it. */
-.chip:disabled {
+.chip:disabled,
+.chip[aria-disabled='true'] {
   cursor: not-allowed;
   border-style: dashed;
   background: transparent;

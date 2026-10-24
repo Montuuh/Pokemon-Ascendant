@@ -8,6 +8,7 @@ import { itemIcon } from '@/ui/art';
 import { ItemIcon } from '@/ui/components/FindPrize';
 import { HpBar } from '@/ui/components/HpBar';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { ownedMonTip } from '@/ui/ownedMonTip';
 import { MoveChip } from '@/ui/components/MoveChip';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { ShinyMark } from '@/ui/components/ShinyMark';
@@ -305,11 +306,12 @@ function PixelSprite({ src, box }: { src: string; box: number }) {
 
 /** A place in the formation: the battle sprite, the name and level, the HP. */
 function SlotCard({ mon, selected, onSelect, drag }: { mon: PartyMon; selected: boolean; onSelect: () => void; drag: DragProps }) {
+  const tip = useTip(ownedMonTip(mon));
   const content = getContent();
   const s = content.species(mon.speciesId);
   const max = runHelpers.maxHpOf(mon, content);
   return (
-    <button type="button" className={`${styles.card} ${selected ? styles.selected : ''} ${mon.hp <= 0 ? styles.fainted : ''}`} onClick={onSelect} aria-pressed={selected} aria-label={TEAM_TEXT.monLabel(s.name, mon.level, mon.hp, max)} data-testid={`team-card-${mon.uid}`} {...drag}>
+    <button type="button" className={`${styles.card} ${selected ? styles.selected : ''} ${mon.hp <= 0 ? styles.fainted : ''}`} onClick={onSelect} aria-pressed={selected} aria-label={TEAM_TEXT.monLabel(mon.shiny ? `Shiny ${s.name}` : s.name, mon.level, mon.hp, max)} data-testid={`team-card-${mon.uid}`} {...drag} {...tip}>
       <PixelSprite src={battleSpriteUrl(s.id, 'front', !!mon.shiny)} box={96} />
       <span className={`${styles.cardName} display`}>
         {s.name}
@@ -323,12 +325,13 @@ function SlotCard({ mon, selected, onSelect, drag }: { mon: PartyMon; selected: 
 
 /** A Pokémon in the Box: its face, its name and level, its HP. */
 function BoxTile({ mon, selected, resting, onSelect, drag }: { mon: PartyMon; selected: boolean; resting: boolean; onSelect: () => void; drag: DragProps }) {
+  const tip = useTip(ownedMonTip(mon));
   const content = getContent();
   const s = content.species(mon.speciesId);
   const max = runHelpers.maxHpOf(mon, content);
   return (
-    <button type="button" className={`${styles.tile} ${selected ? styles.selected : ''} ${mon.hp <= 0 ? styles.fainted : ''}`} onClick={onSelect} aria-pressed={selected} aria-label={TEAM_TEXT.monLabel(s.name, mon.level, mon.hp, max) + (resting ? `, ${TEAM_TEXT.resting}` : '')} data-testid={`team-tile-${mon.uid}`} {...drag}>
-      <MonIcon speciesId={s.id} size={40} />
+    <button type="button" className={`${styles.tile} ${selected ? styles.selected : ''} ${mon.hp <= 0 ? styles.fainted : ''}`} onClick={onSelect} aria-pressed={selected} aria-label={TEAM_TEXT.monLabel(mon.shiny ? `Shiny ${s.name}` : s.name, mon.level, mon.hp, max) + (resting ? `, ${TEAM_TEXT.resting}` : '')} data-testid={`team-tile-${mon.uid}`} {...drag} {...tip}>
+      <MonIcon speciesId={s.id} shiny={mon.shiny} size={40} />
       <span className={`${styles.tileName} display`}>{s.name}</span>
       <span className={`${styles.tileLevel} tabular`}>Lv {mon.level}</span>
       <HpBar hp={mon.hp} maxHp={max} height={5} />
@@ -386,11 +389,11 @@ function Sheet({
   return (
     <section className={styles.sheet} aria-label={TEAM_TEXT.sheet(s.name)} data-testid="team-sheet">
       <header className={styles.sheetHead}>
-        <MonIcon speciesId={s.id} size={72} />
+        <MonIcon speciesId={s.id} shiny={mon.shiny} marked={false} size={72} />
         <div className={styles.sheetName}>
           <h3 className={`${styles.name} display`}>
             {s.name}
-            {mon.shiny && <ShinyMark name={s.name} size={14} plain />}
+            {mon.shiny && <ShinyMark name={s.name} size={14} owned />}
           </h3>
           <span className={styles.types}>
             {s.types.map((t) => (

@@ -4,6 +4,8 @@ import { getContent } from '@/content/registry';
 import { maxHpOf } from '@/sim';
 import { Modal } from './Modal';
 import { MonIcon } from './MonIcon';
+import { ownedMonTip } from '@/ui/ownedMonTip';
+import { Tipped } from '@/ui/tooltip';
 import { TypeBadge } from './TypeBadge';
 import styles from './SwapOrSkip.module.css';
 
@@ -23,7 +25,7 @@ export function SwapOrSkip() {
   return (
     <Modal title="The Box is full" testId="swap-or-skip">
       <div className={styles.recruit}>
-        <MonIcon speciesId={species.id} alt="" size={96} />
+        <MonIcon speciesId={species.id} shiny={recruit.shiny} plain={false} alt="" size={96} />
         <div>
           <h3 className={`${styles.name} display`}>
             {species.name} <span className="tabular">Lv {recruit.level}</span>
@@ -43,14 +45,16 @@ export function SwapOrSkip() {
           const chosen = pick === mon.uid;
           return (
             <li key={mon.uid}>
-              <button
+              <Tipped
+                as="button"
+                tip={ownedMonTip(mon)}
                 type="button"
                 className={`${styles.row} ${chosen ? styles.chosen : ''}`}
                 onClick={() => setPick(chosen ? null : mon.uid)}
                 data-testid={`release-${s.id}`}
                 aria-pressed={chosen}
               >
-                <MonIcon speciesId={s.id} size={46} />
+                <MonIcon speciesId={s.id} shiny={mon.shiny} size={46} />
                 <span className={styles.rowName}>
                   {s.name} <b className="tabular">Lv {mon.level}</b>
                 </span>
@@ -58,7 +62,7 @@ export function SwapOrSkip() {
                   {mon.hp}/{maxHpOf(mon, content)}
                 </span>
                 {mon.traumaStacks > 0 && <span className={styles.trauma}>Trauma ×{mon.traumaStacks}</span>}
-              </button>
+              </Tipped>
             </li>
           );
         })}

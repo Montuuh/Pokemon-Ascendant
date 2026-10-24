@@ -143,8 +143,8 @@
   text-align: left;
   cursor: pointer;
 }
-.wearer:hover:not(:disabled) { background: var(--surface-1); }
-.wearer:disabled { opacity: 0.45; cursor: not-allowed; }
+.wearer:hover:not([aria-disabled='true']) { background: var(--surface-1); }
+.wearer[aria-disabled='true'] { cursor: not-allowed; }
 .wearer:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 1px; }
 
 .swapNote {
@@ -208,10 +208,8 @@
   font-size: var(--type-caption);
   color: var(--ink-secondary);
 }
-/* A Pokémon the item would do nothing for stays readable (D5): the reason is written on it, so it does not take the
-   wearer list's fade (opacity 1 overrides .wearer:disabled on purpose); a solid quiet edge marks it. */
-.useRow:disabled {
-  opacity: 1;
+/* D5 — an unavailable target retains its identity and ink; a quiet edge marks the refusal. */
+.useRow[aria-disabled='true'] {
   outline: 1px solid var(--border-subtle);
   outline-offset: -1px;
 }

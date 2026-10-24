@@ -35,7 +35,7 @@ export function SummitScreen() {
           <section className={styles.gift} aria-label={VICTORY_TEXT.summitOffer}>
             <div className={styles.healed}>
               <ul className={styles.box} aria-label={VICTORY_TEXT.summitHealed}>
-                {run.box.map((m) => <li key={m.uid}><MonIcon speciesId={m.speciesId} size={32} /></li>)}
+                {run.box.map((m) => <li key={m.uid}><MonIcon speciesId={m.speciesId} shiny={m.shiny} plain={false} size={32} /></li>)}
               </ul>
               <span>{VICTORY_TEXT.summitHealed}<InfoDot tip={summitTip()} /></span>
             </div>

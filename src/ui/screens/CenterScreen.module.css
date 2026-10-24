@@ -143,7 +143,7 @@
   cursor: pointer;
   transition: border-color var(--motion-fast) ease;
 }
-.patient:hover:not(:disabled) {
+.patient:hover:not([aria-disabled='true']) {
   border-color: var(--border-strong);
 }
 .patient:focus-visible {

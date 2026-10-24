@@ -13,6 +13,7 @@ import {
 import { BackButton } from '@/ui/components/BackButton';
 import { RouteStop } from '@/ui/components/RouteStop';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { ownedMonTip } from '@/ui/ownedMonTip';
 import { SHOP_TEXT, STAT_LONG, TRAINING_TEXT } from '@/ui/strings';
 import { moveDefTip, trainingTip, trainingUpgradeTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
@@ -124,17 +125,19 @@ export function TrainingScreen() {
           <ul className={styles.box} aria-label={TRAINING_TEXT.pickMon}>
             {run.box.map((m) => (
               <li key={m.uid}>
-                <button
+                <Tipped
+                  as="button"
+                  tip={ownedMonTip(m)}
                   type="button"
                   className={`${styles.mon} ${m.uid === uid ? styles.picked : ''}`}
                   onClick={() => pickMon(m)}
                   aria-pressed={m.uid === uid}
                   data-testid={`train-mon-${m.uid}`}
                 >
-                  <MonIcon speciesId={m.speciesId} size={40} />
+                  <MonIcon speciesId={m.speciesId} shiny={m.shiny} size={40} />
                   <span className={`${styles.name} display`}>{content.species(m.speciesId).name}</span>
                   <span className={`${styles.level} tabular`}>Lv {m.level}</span>
-                </button>
+                </Tipped>
               </li>
             ))}
           </ul>

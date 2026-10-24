@@ -13,7 +13,10 @@ export function iconOf(c: Pick<Combatant, 'speciesId'>): string {
   return boxIconUrl(s.dex, s.id);
 }
 /** D9 — authentic box sprites with transparent margins trimmed, without resampling by build-compact-icons.mjs. */
-export function compactIconOf(speciesId: string): string {
+export function compactIconOf(speciesId: string, shiny = false): string {
+  // §5.14 / D9 — the credited FRLG practice sprites include every shiny palette in a native 32px cell.
+  // Box icons have no shiny siblings; reuse authentic art rather than recolouring the catalogue icon.
+  if (shiny) return asset(`art/dojo/pokemon/${speciesId}-shiny.png`);
   const species = getContent().species(speciesId);
   return asset(`art/pokemon/compact/${String(species.dex).padStart(3, '0')}-${species.id}.png`);
 }

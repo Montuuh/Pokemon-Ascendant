@@ -10,6 +10,7 @@ import { PixelRoom } from '@/ui/components/PixelRoom';
 import { hubArt } from '@/ui/art';
 import { TeamScreen } from '@/ui/components/TeamScreen';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { ownedMonTip } from '@/ui/ownedMonTip';
 import { MoveManager } from '@/ui/components/MoveManager';
 import { HpBar } from '@/ui/components/HpBar';
 import { Money, Price } from '@/ui/components/Money';
@@ -278,19 +279,21 @@ export function CenterScreen() {
                       const max = runHelpers.maxHpOf(mon, content);
                       return (
                         <li key={mon.uid}>
-                          <button
+                          <Tipped
+                            as="button"
+                            tip={ownedMonTip(mon)}
                             type="button"
                             className={`${styles.patient} ${affordable ? '' : styles.off}`}
-                            disabled={!affordable}
-                            onClick={() => act({ type: 'use-therapy', uid: mon.uid })}
+                            aria-disabled={!affordable || undefined}
+                            onClick={() => affordable && act({ type: 'use-therapy', uid: mon.uid })}
                             data-testid={`therapy-${s.id}`}
                             aria-label={
                               affordable
-                                ? `Therapy for ${s.name}: take one Trauma stack off`
-                                : `Therapy for ${s.name}: not enough money`
+                                ? `Therapy for ${mon.shiny ? "Shiny " : ""}${s.name}: take one Trauma stack off`
+                                : `Therapy for ${mon.shiny ? "Shiny " : ""}${s.name}: not enough money`
                             }
                           >
-                            <MonIcon speciesId={s.id} size={44} />
+                            <MonIcon speciesId={s.id} shiny={mon.shiny} size={44} />
                             <span className={styles.patientBody}>
                               <span className={`${styles.patientName} display`}>{s.name}</span>
                               <span className={styles.patientMeta}>
@@ -300,7 +303,7 @@ export function CenterScreen() {
                               <HpBar hp={mon.hp} maxHp={max} />
                             </span>
                             <Price amount={price} affordable={affordable} />
-                          </button>
+                          </Tipped>
                         </li>
                       );
                     })}
@@ -346,14 +349,14 @@ export function CenterScreen() {
                           <Tipped
                             as="button"
                             type="button"
-                            tip={daycareRowTip(s.name, mon.level + 1, bringsFor(mon), blocked)}
+                            tip={ownedMonTip(mon, daycareRowTip(s.name, mon.level + 1, bringsFor(mon), blocked))}
                             className={`${styles.patient} ${open ? '' : styles.off}`}
                             aria-disabled={!open}
                             onClick={() => open && act({ type: 'daycare', uid: mon.uid })}
                             data-testid={`daycare-${s.id}`}
-                            aria-label={`Daycare for ${s.name}: level ${mon.level} to ${mon.level + 1}, sits out the next fight${blocked ? `, ${blocked}` : ''}`}
+                            aria-label={`Daycare for ${mon.shiny ? 'Shiny ' : ''}${s.name}: level ${mon.level} to ${mon.level + 1}, sits out the next fight${blocked ? `, ${blocked}` : ''}`}
                           >
-                            <MonIcon speciesId={s.id} size={44} />
+                            <MonIcon speciesId={s.id} shiny={mon.shiny} size={44} />
                             <span className={styles.patientBody}>
                               <span className={`${styles.patientName} display`}>{s.name}</span>
                               <span className={`${styles.patientMeta} tabular`}>

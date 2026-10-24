@@ -1,0 +1,13 @@
+/* §5.14 — preserve the cell and hit target; the shared sparkle adds a second channel to the palette. */
+.owned {
+  display: inline-flex;
+  position: relative;
+  flex: none;
+}
+
+.mark {
+  position: absolute;
+  display: inline-flex;
+  right: 0;
+  bottom: 0;
+}

@@ -55,7 +55,7 @@ export function RunRecord({ run, won }: { run: RunState; won: boolean }) {
           <ul className={styles.team}>
             {run.box.map((mon) => (
               <li key={mon.uid}>
-                <MonIcon speciesId={mon.speciesId} size={32} />
+                <MonIcon speciesId={mon.speciesId} shiny={mon.shiny} plain={false} size={32} />
                 <span className={`${styles.name} display`}>{content.species(mon.speciesId).name}</span>
                 <span className="tabular">Lv {mon.level}</span>
                 <span className="tabular">

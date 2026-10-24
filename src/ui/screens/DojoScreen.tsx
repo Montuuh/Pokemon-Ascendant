@@ -13,7 +13,7 @@ import { PixelRoom } from '@/ui/components/PixelRoom';
 import { PixelSprite } from '@/ui/components/PixelSprite';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { BACK_TO_TOWN, DOJO_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
-import { counterTabTip, dojoTip, eggMovesTip, moveDefTip, passiveTip, tutorTip } from '@/ui/tips';
+import { counterTabTip, dojoTip, eggMovesTip, moveDefTip, passiveTip, shinyLine, tutorTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
 import { BackButton } from '@/ui/components/BackButton';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
@@ -172,7 +172,7 @@ export function DojoScreen() {
         <section className={styles.services}>
           <div className={styles.who}>
             <div className={styles.selectedMon}>
-              <MonIcon speciesId={species.id} size={40} />
+              <MonIcon speciesId={species.id} shiny={mon.shiny} plain={false} size={40} />
               <h2 className="display">{species.name}</h2>
               {species.types.map((t) => (
                 <TypeBadge key={t} type={t} size={12} defenderTypes={species.types} />
@@ -234,7 +234,7 @@ export function DojoScreen() {
                   <Tipped
                     as="button"
                     type="button"
-                    tip={<Tip title={s.name} meta={[`Lv ${m.level}`, `${m.pool.length} moves learned`]} />}
+                    tip={<Tip title={s.name} meta={[`Lv ${m.level}`, `${m.pool.length} moves learned`]} body={m.shiny ? shinyLine(true) : undefined} />}
                     className={styles.pick}
                     onClick={() => {
                       setUid(m.uid);
@@ -242,9 +242,9 @@ export function DojoScreen() {
                     }}
                     aria-pressed={m.uid === uid}
                     data-testid={`dojo-pick-${s.id}`}
-                    aria-label={`${s.name}, level ${m.level}, ${m.pool.length} moves learned`}
+                    aria-label={`${m.shiny ? 'Shiny ' : ''}${s.name}, level ${m.level}, ${m.pool.length} moves learned`}
                   >
-                    <MonIcon speciesId={s.id} size={32} />
+                    <MonIcon speciesId={s.id} shiny={m.shiny} size={32} />
                   </Tipped>
                 </li>
               );

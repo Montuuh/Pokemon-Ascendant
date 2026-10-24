@@ -6,6 +6,7 @@ import { music } from '@/ui/audio/music';
 import { playSfx } from '@/ui/audio/sfx';
 import { HpBar } from '@/ui/components/HpBar';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { ownedMonTip } from '@/ui/ownedMonTip';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { HEAL_TEXT } from '@/ui/strings';
 import { healTip, partyTip } from '@/ui/tips';
@@ -243,24 +244,24 @@ function Patient({
   const hp = beat === 'done' ? mon.hp : shown ? line.to : line.from;
   const gain = line.to - line.from;
   const tip = useTip(
-    partyTip(
+    ownedMonTip(mon, partyTip(
       s.name,
       mon.level,
       hp,
       max,
       beat === 'done' ? (mon.status?.kind ?? null) : null,
       mon.traumaStacks,
-    ),
+    )),
   );
   return (
     <li
       className={styles.patient}
       tabIndex={0}
-      aria-label={HEAL_TEXT.patient(s.name, hp, max, shown ? gain : 0)}
+      aria-label={HEAL_TEXT.patient(mon.shiny ? `Shiny ${s.name}` : s.name, hp, max, shown ? gain : 0)}
       data-testid={`${testId}-${mon.uid}`}
       {...tip}
     >
-      <MonIcon speciesId={s.id} size={40} />
+      <MonIcon speciesId={s.id} shiny={mon.shiny} size={40} />
       <span className={`${styles.name} display`}>{s.name}</span>
       <span className={styles.bar}>
         <HpBar hp={hp} maxHp={max} height={8} />

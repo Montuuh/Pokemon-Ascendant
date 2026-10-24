@@ -244,7 +244,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
                 const s = content.species(m.speciesId);
                 return (
                   <li key={m.uid} className={i === 0 ? styles.leadSlot : ''}>
-                    <MonIcon speciesId={s.id} size={30} />
+                    <MonIcon speciesId={s.id} shiny={m.shiny} plain={false} size={30} />
                     <span>
                       {s.name} <b className="tabular">Lv {m.level}</b>
                     </span>

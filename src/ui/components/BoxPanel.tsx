@@ -99,7 +99,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
             <IconCrown size={15} stroke={2.6} />
           </span>
         )}
-        <MonIcon speciesId={species.id} size={46} />
+        <MonIcon speciesId={species.id} shiny={mon.shiny} marked={false} size={46} />
         <span className={styles.body}>
           <span className={styles.nameRow}>
             <span className={`${styles.name} display`}>{species.name}</span>

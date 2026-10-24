@@ -20,6 +20,7 @@ import { itemIcon, spriteOf } from '@/ui/art';
 import { ConfirmLeave } from '@/ui/components/ConfirmLeave';
 import { ItemCard, type Rarity } from '@/ui/components/ItemCard';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { ownedMonTip } from '@/ui/ownedMonTip';
 import { Money, Price } from '@/ui/components/Money';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { LEAVE_WARNING, MARKET_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
@@ -211,9 +212,10 @@ function Chip({
       type="button"
       className={`${styles.chip} ${selected ? styles.chipOn : ''}`}
       aria-pressed={selected}
-      disabled={disabled}
+      disabled={disabled && !tip}
+      aria-disabled={disabled || undefined}
       data-locked={locked || undefined}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       data-testid={testId}
       {...tipProps}
     >
@@ -241,8 +243,8 @@ function MonChip({
 }) {
   const s = getContent().species(mon.speciesId);
   return (
-    <Chip selected={selected} disabled={disabled} locked={locked} onClick={onClick} testId={testId}>
-      <MonIcon speciesId={s.id} size={34} />
+    <Chip selected={selected} disabled={disabled} locked={locked} onClick={onClick} testId={testId} tip={ownedMonTip(mon)}>
+      <MonIcon speciesId={s.id} shiny={mon.shiny} size={34} />
       <span className={styles.chipName}>{s.name}</span>
       <span className={`${styles.chipMeta} tabular`}>Lv {mon.level}</span>
     </Chip>

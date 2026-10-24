@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.44 — Shiny in every summary · 2026-10-24
+
+Owned Pokémon keep their shiny identity in compact views.
+
+- **Shiny summaries.** Authentic palettes and sparkles follow your Pokémon.
+- **Owned selections.** Team, Dojo, bag and service lists retain their identity.
+
 ### v0.9.43 — A still final team · 2026-10-24
 
 Final teams follow the chosen motion preference.

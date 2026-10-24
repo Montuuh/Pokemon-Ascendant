@@ -7,6 +7,8 @@ import { HpBar } from '@/ui/components/HpBar';
 import { itemIcon, statusGlyph } from '@/ui/art';
 import { ItemCard } from '@/ui/components/ItemCard';
 import { MonIcon } from '@/ui/components/MonIcon';
+import { ownedMonTip } from '@/ui/ownedMonTip';
+import { Tipped } from '@/ui/tooltip';
 import { Modal } from '@/ui/components/Modal';
 import { RUN_REJECT_TEXT, STATUS_LABEL } from '@/ui/strings';
 import styles from './InventoryDrawer.module.css';
@@ -114,7 +116,7 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
                     const item = content.heldItem(mon.heldItem!);
                     return (
                       <li key={mon.uid} className={styles.wornRow}>
-                        <MonIcon speciesId={mon.speciesId} size={36} />
+                        <MonIcon speciesId={mon.speciesId} shiny={mon.shiny} plain={false} size={36} />
                         <span className={styles.wornBody}>
                           <b>{content.species(mon.speciesId).name}</b>
                           <span className={styles.wornItem}>
@@ -165,27 +167,29 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
                               const busy = !!mon.heldItem;
                               return (
                                 <li key={mon.uid}>
-                                  <button
+                                  <Tipped
+                                    as="button"
+                                    tip={ownedMonTip(mon)}
                                     type="button"
                                     className={styles.wearer}
-                                    disabled={locked}
+                                    aria-disabled={locked || undefined}
                                     onClick={() => {
-                                      if (act({ type: 'equip-item', uid: mon.uid, itemId: id })) setEquipping(null);
+                                      if (!locked && act({ type: 'equip-item', uid: mon.uid, itemId: id })) setEquipping(null);
                                     }}
                                     data-testid={`equip-${id}-${mon.speciesId}`}
                                     aria-label={
                                       locked
-                                        ? `${item.name} only fits ${content.species(item.speciesLock!).name}.`
+                                        ? `${mon.shiny ? 'Shiny ' : ''}${content.species(mon.speciesId).name}: ${item.name} only fits ${content.species(item.speciesLock!).name}.`
                                         : busy
-                                          ? `Give to ${content.species(mon.speciesId).name}, swapping out ${content.heldItem(mon.heldItem!).name}`
-                                          : `Give to ${content.species(mon.speciesId).name}`
+                                          ? `Give to ${mon.shiny ? "Shiny " : ""}${content.species(mon.speciesId).name}, swapping out ${content.heldItem(mon.heldItem!).name}`
+                                          : `Give to ${mon.shiny ? "Shiny " : ""}${content.species(mon.speciesId).name}`
                                     }
                                   >
-                                    <MonIcon speciesId={mon.speciesId} size={28} />
+                                    <MonIcon speciesId={mon.speciesId} shiny={mon.shiny} size={28} />
                                     <span>{content.species(mon.speciesId).name}</span>
                                     {busy && <span className={styles.swapNote}>swaps</span>}
                                     {!busy && !locked && <IconCircleCheck size={15} />}
-                                  </button>
+                                  </Tipped>
                                 </li>
                               );
                             })}
@@ -225,17 +229,19 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
                           const name = content.species(mon.speciesId).name;
                           return (
                             <li key={mon.uid}>
-                              <button
+                              <Tipped
+                                as="button"
+                                tip={ownedMonTip(mon)}
                                 type="button"
                                 className={`${styles.wearer} ${styles.useRow}`}
-                                disabled={!!refusal}
+                                aria-disabled={!!refusal || undefined}
                                 onClick={() => {
-                                  if (act({ type: 'use-item', consumableId: id, uid: mon.uid }) && n <= 1) setUsing(null);
+                                  if (!refusal && act({ type: 'use-item', consumableId: id, uid: mon.uid }) && n <= 1) setUsing(null);
                                 }}
                                 data-testid={`use-${id}-${mon.speciesId}`}
-                                aria-label={`${refusal ? '' : `Use ${c.name} on `}${name}${mon.status ? `, ${STATUS_LABEL[mon.status.kind] ?? mon.status.kind}` : ''}${refusal ? `: ${RUN_REJECT_TEXT[refusal]}` : ''}`}
+                                aria-label={`${refusal ? '' : `Use ${c.name} on `}${mon.shiny ? 'Shiny ' : ''}${name}${mon.status ? `, ${STATUS_LABEL[mon.status.kind] ?? mon.status.kind}` : ''}${refusal ? `: ${RUN_REJECT_TEXT[refusal]}` : ''}`}
                               >
-                                <MonIcon speciesId={mon.speciesId} size={28} />
+                                <MonIcon speciesId={mon.speciesId} shiny={mon.shiny} size={28} />
                                 <span className={styles.useBody}>
                                   <span>
                                     {name} {mon.status && <img src={statusGlyph(mon.status.kind)} alt="" height={12} className={`pixel ${styles.useStatus}`} />}
@@ -246,7 +252,7 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
                                     {refusal ? ` · ${RUN_REJECT_TEXT[refusal]}` : ''}
                                   </span>
                                 </span>
-                              </button>
+                              </Tipped>
                             </li>
                           );
                         })}
