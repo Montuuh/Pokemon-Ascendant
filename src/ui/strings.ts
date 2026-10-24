@@ -479,8 +479,11 @@ export const RUN_END_TEXT = {
   team: 'The team you finished with', badges: 'Badges earned', progress: 'Run record',
   closeRecord: 'Back to the team', mainMenu: 'Main menu', runAgain: 'Run again',
   metrics: { regions: 'Regions cleared', nodes: 'Nodes cleared', fights: 'Fights won', turns: 'Turns played', catches: 'Pokémon caught', faints: 'Faints', depth: 'Depth reached' },
-  region: (n: number, total: number) => `Regions ${n} / ${total}`,
-  depth: (n: number, total: number) => `Column ${n} / ${total}`,
+  region: (n: number) => `Region ${n}`,
+  victoryRoad: 'Victory Road', league: 'League', entrance: 'Entrance',
+  champion: (name: string) => `Champion ${name}`,
+  column: (n: number, total: number) => `Column ${n} / ${total}`,
+  location: (zone: string, marker: string) => `${zone} · ${marker}`,
   trauma: (n: number) => `Trauma ×${n}`,
 } as const;
 

@@ -1,0 +1,24 @@
+
+> pokemon-ascendant@0.9.41 shot
+> playwright test e2e/screens.spec.ts --workers=1 --output=playtest/art-review-2026-10-24/implementation/B03/shot-traces
+
+
+Running 13 tests using 1 worker
+
+(node:40588) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › e2e\screens.spec.ts:13:1 › main menu renders and screenshots (2.1s)
+  ok  2 [desktop] › e2e\screens.spec.ts:21:1 › scenario picker lists all six fixtures (2.1s)
+  ok  3 [desktop] › e2e\screens.spec.ts:30:3 › combat wild-basic boots into the action phase and screenshots (2.4s)
+  ok  4 [desktop] › e2e\screens.spec.ts:30:3 › combat wild-catch-ready boots into the action phase and screenshots (2.4s)
+  ok  5 [desktop] › e2e\screens.spec.ts:30:3 › combat trainer-2enemy boots into the action phase and screenshots (2.4s)
+  ok  6 [desktop] › e2e\screens.spec.ts:30:3 › combat status-showcase boots into the action phase and screenshots (2.5s)
+  ok  7 [desktop] › e2e\screens.spec.ts:30:3 › combat full-hand-3mon boots into the action phase and screenshots (2.4s)
+  ok  8 [desktop] › e2e\screens.spec.ts:30:3 › combat wild-boss-3phase boots into the action phase and screenshots (3.6s)
+  ok  9 [desktop] › e2e\screens.spec.ts:43:1 › hovering a damaging card shows the sim-computed preview; melee bench cards are visibly locked (3.2s)
+  ok 10 [desktop] › e2e\screens.spec.ts:59:1 › selecting a card and clicking the enemy plays it (AP drops, log grows) (3.3s)
+  ok 11 [desktop] › e2e\screens.spec.ts:71:1 › end turn advances to turn 2 and the enemy acts (1.3s)
+  ok 12 [desktop] › e2e\screens.spec.ts:80:1 › the log ticker says what happened and drops down the whole fight (1.5s)
+  ok 13 [desktop] › e2e\screens.spec.ts:96:1 › the address bar stays clean: deep links are consumed, F5 restores the screen, a fresh tab starts at the menu (4.4s)
+
+  13 passed (34.7s)

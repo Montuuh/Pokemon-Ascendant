@@ -1496,6 +1496,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B01 uses the existing primary ink for What's new patch versions, retaining regular Tiny5 numerals and the accordion hierarchy. All patch labels meet 4.5:1 in expanded, collapsed and focused states at normal and 150% text sizes. No game rules change.
 
+### v0.9.42 — Where the run ended  ✅ 2026-10-24
+
+**Shipped.** B03 names the reached Region column, Victory Road column or League opponent in the ending and defeat record. The marker reads the attempted fight before the last cleared position, with an entrance fallback for arrival snapshots. No game rules change.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

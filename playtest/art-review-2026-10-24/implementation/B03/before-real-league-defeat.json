@@ -1,0 +1,447 @@
+{
+  "combat": {
+    "scenarioId": "run-league-0",
+    "kind": "boss",
+    "modifiers": [],
+    "familiar": [],
+    "insight": [],
+    "stage": "league-bruno",
+    "trainer": {
+      "name": "Bruno",
+      "sprite": "bruno"
+    },
+    "seed": 24125932,
+    "rngCursor": 1870278473,
+    "turn": 1,
+    "phase": "ended",
+    "player": {
+      "team": [
+        {
+          "uid": "p0",
+          "speciesId": "squirtle",
+          "name": "Squirtle",
+          "types": [
+            "water"
+          ],
+          "level": 5,
+          "maxHp": 55,
+          "hp": 0,
+          "base": {
+            "attack": 57,
+            "defense": 66,
+            "speed": 49
+          },
+          "stages": {
+            "attack": 0,
+            "defense": 0,
+            "speed": 0
+          },
+          "status": null,
+          "confusionTurns": 0,
+          "confusionAppliedTurn": 0,
+          "abilityIds": [],
+          "sturdyAvailable": false,
+          "moveIds": [
+            "tackle",
+            "tail-whip",
+            "bubble"
+          ],
+          "masteryMoveId": null,
+          "traumaStacks": 1,
+          "regen": null,
+          "heldItemId": null,
+          "endureAvailable": true,
+          "defeats": 0,
+          "shield": 0
+        }
+      ],
+      "leadIndex": 0,
+      "ap": 3,
+      "swapCounter": 0,
+      "itemsUsed": 0,
+      "itemCap": 2,
+      "defensiveDiscount": false,
+      "deck": [],
+      "discard": [],
+      "hand": [
+        {
+          "id": "c2",
+          "moveId": "bubble",
+          "ownerUid": "p0"
+        },
+        {
+          "id": "c0",
+          "moveId": "tackle",
+          "ownerUid": "p0"
+        },
+        {
+          "id": "c1",
+          "moveId": "tail-whip",
+          "ownerUid": "p0"
+        }
+      ],
+      "consumables": {
+        "pool": [],
+        "hand": [
+          {
+            "id": "k3",
+            "consumableId": "potion"
+          },
+          {
+            "id": "k4",
+            "consumableId": "potion"
+          },
+          {
+            "id": "k5",
+            "consumableId": "potion"
+          },
+          {
+            "id": "k6",
+            "consumableId": "antidote"
+          },
+          {
+            "id": "k7",
+            "consumableId": "paralyze-heal"
+          }
+        ],
+        "used": []
+      },
+      "balls": 0,
+      "critChance": 0,
+      "pendingLeadPick": false,
+      "guards": {
+        "status": 0,
+        "cleave": {
+          "charges": 0,
+          "percent": 0
+        }
+      },
+      "freeSwaps": 0,
+      "relics": [],
+      "badges": [],
+      "regionModifier": null,
+      "playedThisTurn": [],
+      "bankedAp": 0,
+      "reshuffled": false,
+      "spent": [],
+      "echoing": false,
+      "queuedCards": [],
+      "totalManualSwaps": 0,
+      "totalDamageTaken": 27,
+      "leadTurns": {
+        "p0": 1
+      },
+      "tally": {
+        "crits": 0,
+        "reshuffles": 0,
+        "statusesApplied": [],
+        "statusesTaken": 0,
+        "statusesCured": 0,
+        "riderFizzles": 0,
+        "maxApMove": 0,
+        "peakHandAtTurnEnd": 3,
+        "catchFails": 0,
+        "koBy": {},
+        "faintsOf": {
+          "squirtle": 1
+        },
+        "damageBy": {}
+      }
+    },
+    "enemies": [
+      {
+        "uid": "e0",
+        "speciesId": "onix",
+        "name": "Onix",
+        "types": [
+          "rock",
+          "ground"
+        ],
+        "level": 36,
+        "maxHp": 114,
+        "hp": 114,
+        "base": {
+          "attack": 82,
+          "defense": 211,
+          "speed": 156
+        },
+        "stages": {
+          "attack": 0,
+          "defense": 0,
+          "speed": 0
+        },
+        "status": null,
+        "confusionTurns": 0,
+        "confusionAppliedTurn": 0,
+        "abilityIds": [],
+        "sturdyAvailable": false,
+        "moveIds": [
+          "rock-throw",
+          "dig",
+          "harden",
+          "earthquake",
+          "glare"
+        ],
+        "masteryMoveId": null,
+        "traumaStacks": 0,
+        "regen": null,
+        "heldItemId": null,
+        "endureAvailable": true,
+        "defeats": 0,
+        "shield": 0,
+        "tier": "boss",
+        "phaseCount": 2,
+        "phase": 1,
+        "enteredPhase2": false,
+        "enteredPhase3": false,
+        "intent": {
+          "kind": "attack",
+          "moveId": "dig",
+          "targetSlot": "lead",
+          "hidden": true
+        },
+        "cooldowns": {},
+        "witnessed": true,
+        "fieldTurns": 1,
+        "next": null
+      }
+    ],
+    "onField": 1,
+    "fields": {
+      "hazard": "sandstorm",
+      "home": "fighting"
+    },
+    "enemyQueue": [
+      {
+        "uid": "e1",
+        "speciesId": "machamp",
+        "name": "Machamp",
+        "types": [
+          "fighting"
+        ],
+        "level": 37,
+        "maxHp": 240,
+        "hp": 240,
+        "base": {
+          "attack": 241,
+          "defense": 165,
+          "speed": 124
+        },
+        "stages": {
+          "attack": 0,
+          "defense": 0,
+          "speed": 0
+        },
+        "status": null,
+        "confusionTurns": 0,
+        "confusionAppliedTurn": 0,
+        "abilityIds": [
+          "guts"
+        ],
+        "sturdyAvailable": false,
+        "moveIds": [
+          "mega-kick",
+          "submission",
+          "rock-slide",
+          "earthquake",
+          "glare"
+        ],
+        "masteryMoveId": null,
+        "traumaStacks": 0,
+        "regen": null,
+        "heldItemId": null,
+        "endureAvailable": true,
+        "defeats": 0,
+        "shield": 0,
+        "tier": "boss",
+        "phaseCount": 3,
+        "phase": 1,
+        "enteredPhase2": false,
+        "enteredPhase3": false,
+        "intent": null,
+        "cooldowns": {},
+        "witnessed": false,
+        "fieldTurns": 0
+      }
+    ],
+    "defeatedEnemies": [],
+    "outcome": "defeat",
+    "events": [
+      {
+        "t": "combat-start",
+        "seq": 0,
+        "turn": 0
+      },
+      {
+        "t": "enemy-enter",
+        "enemyUid": "e0",
+        "seq": 1,
+        "turn": 0
+      },
+      {
+        "t": "turn-start",
+        "ap": 3,
+        "seq": 2,
+        "turn": 1
+      },
+      {
+        "t": "draw",
+        "cardIds": [
+          "c2",
+          "c0",
+          "c1"
+        ],
+        "consumableIds": [
+          "k3",
+          "k4",
+          "k5",
+          "k6",
+          "k7"
+        ],
+        "seq": 3,
+        "turn": 1
+      },
+      {
+        "t": "intent",
+        "enemyUid": "e0",
+        "intent": {
+          "kind": "attack",
+          "moveId": "dig",
+          "targetSlot": "lead",
+          "hidden": true
+        },
+        "seq": 4,
+        "turn": 1
+      },
+      {
+        "t": "enemy-action",
+        "enemyUid": "e0",
+        "intent": {
+          "kind": "attack",
+          "moveId": "dig",
+          "targetSlot": "lead",
+          "hidden": true
+        },
+        "fizzled": false,
+        "seq": 5,
+        "turn": 1
+      },
+      {
+        "t": "attack",
+        "sourceUid": "e0",
+        "targetUid": "p0",
+        "moveId": "dig",
+        "seq": 6,
+        "turn": 1
+      },
+      {
+        "t": "damage",
+        "sourceUid": "e0",
+        "targetUid": "p0",
+        "amount": 27,
+        "crit": false,
+        "effectiveness": "neutral",
+        "hpAfter": 0,
+        "cause": "move",
+        "seq": 7,
+        "turn": 1
+      },
+      {
+        "t": "faint",
+        "uid": "p0",
+        "side": "player",
+        "seq": 8,
+        "turn": 1
+      },
+      {
+        "t": "outcome",
+        "outcome": "defeat",
+        "seq": 9,
+        "turn": 1
+      }
+    ],
+    "log": [
+      {
+        "turn": 0,
+        "category": "system",
+        "text": "Bruno wants to battle!"
+      },
+      {
+        "turn": 1,
+        "category": "turn",
+        "text": "— Turn 1 —"
+      },
+      {
+        "turn": 1,
+        "category": "intent",
+        "text": "Onix is planning something…"
+      },
+      {
+        "turn": 1,
+        "category": "enemy",
+        "text": "Onix used Dig on Squirtle!"
+      },
+      {
+        "turn": 1,
+        "category": "player",
+        "text": "Squirtle fainted!"
+      },
+      {
+        "turn": 1,
+        "category": "enemy",
+        "text": "Squirtle took 27."
+      },
+      {
+        "turn": 1,
+        "category": "system",
+        "text": "Your team was wiped out…"
+      }
+    ],
+    "nextSeq": 10,
+    "nextCardSerial": 8
+  },
+  "run": {
+    "seed": 11,
+    "phase": "ended",
+    "outcome": "defeat",
+    "layer": 0,
+    "at": "start",
+    "reachable": [
+      "league league-0"
+    ],
+    "balls": 3,
+    "consumables": [
+      "potion",
+      "potion",
+      "potion",
+      "antidote",
+      "paralyze-heal",
+      "poke-ball",
+      "poke-ball",
+      "poke-ball"
+    ],
+    "active": [
+      "mb-1"
+    ],
+    "tms": [],
+    "box": [
+      "squirtle L5 0/52 T1 [tackle,tail-whip,bubble]"
+    ],
+    "stats": {
+      "nodesCleared": 0,
+      "combatsWon": 0,
+      "catches": 0,
+      "faints": 1,
+      "turnsPlayed": 1,
+      "recruits": 0,
+      "statusesTaken": 0,
+      "escapes": 0,
+      "startedAt": 1792854160499
+    },
+    "lastLog": [
+      "A new run begins with Squirtle.",
+      "Squirtle fainted — Trauma 1.",
+      "Your team was wiped. The run ends here."
+    ]
+  }
+}

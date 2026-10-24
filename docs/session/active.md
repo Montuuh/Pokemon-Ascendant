@@ -1,8 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-24 · **Version:** v0.9.41 (*Readable patch labels*) — B01 contrast correction.
+**Date:** 2026-10-24 · **Version:** v0.9.42 (*Where the run ended*) — B03 location labels.
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 release; user iterates the art review first. A03/results belongs to another active session.
+
+**B03:** ending/record identify the reached Region column, Victory Road column or League opponent; pending fight precedes last cleared position. Astra/high review: Ship. Exact release check899 passed/3 skipped, build and17 focused UI cases pass; shared check918/3. B02 remains uncommitted/unpublished; its hunks and the18-entry A02/A03 queue stay excluded. Evidence: playtest/art-review-2026-10-24/implementation/B03.
 
 **B01:** What's new patch versions use primary ink with regular Tiny5, measured at10.76:1 (previously4.13:1). Scoped independent review: Ship (Sol6.1 medium). Shared check902 passed/3 skipped; fresh exact export890 passed/3 skipped, production build and5 focused UI cases passed. All68 patches, expanded/collapsed/focused, at1080p/720p and100%/150% text meet the threshold. Evidence: playtest/art-review-2026-10-24/implementation/B01. A02/A03 and their18-entry review queue remain excluded.
 

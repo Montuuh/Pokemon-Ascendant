@@ -1,0 +1,71 @@
+{
+  "version": "0.9.42",
+  "baseCommit": "c98313fe59f3f8f73e573c91586f2fbe1c0b5a81",
+  "files": [
+    {
+      "path": "src/ui/screens/RunEndScreen.tsx",
+      "sha256": "2a0a5854e9054230995d0ec03084f9e780b06f6478f94cee466ea7953bbdc99b",
+      "exportMatchesIndex": true
+    },
+    {
+      "path": "src/ui/screens/run-end/RunRecord.tsx",
+      "sha256": "26c5eedb11068aaa51d0f939233dfa0c7026199741cd058a615210c9db73cf86",
+      "exportMatchesIndex": true
+    },
+    {
+      "path": "src/ui/screens/run-end/runEndLocation.ts",
+      "sha256": "4d683f5992b3e8261dd78a96b14a7ac78e146bec269e5077a4376b9e924c7304",
+      "exportMatchesIndex": true
+    },
+    {
+      "path": "src/ui/screens/run-end/runEndLocation.test.ts",
+      "sha256": "d920614b1d4260aa6709d0afc763409f7250bb8759cd3bece7244dfac0039010",
+      "exportMatchesIndex": true
+    },
+    {
+      "path": "src/ui/strings.ts",
+      "sha256": "05944b215139beb9d4fd8d7737fb3804520a702f50eed07e3169b580d1b3e75c",
+      "exportMatchesIndex": true
+    },
+    {
+      "path": "e2e/run-end-location.spec.ts",
+      "sha256": "2b3c3562d9daa75245ebc37c1827a0609b8d979c68680b131faeae3630b2f6dd",
+      "exportMatchesIndex": true
+    }
+  ],
+  "checks": {
+    "shared": {
+      "passed": 918,
+      "skipped": 3
+    },
+    "exactRelease": {
+      "passed": 899,
+      "skipped": 3
+    },
+    "focusedUnit": 9,
+    "sharedE2e": 6,
+    "exactE2e": 17,
+    "shot": 13,
+    "auditedScreens": 4,
+    "productionBuild": "passed",
+    "finalLint": "passed"
+  },
+  "independentReview": {
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "verdict": "Ship — B03 only",
+    "manualBrowserUnavailable": true
+  },
+  "excludedQueue": {
+    "count": 18,
+    "sha256": "432aae78ef0018c2155d7d3164199d1ab6068a692a30215cea92ed0eb429d237",
+    "cleared": false
+  },
+  "excludedChanges": [
+    "B02 completedRegions import and metric",
+    "all A02/A03/results changes",
+    "unrelated strings hunks",
+    "other review findings"
+  ],
+  "releaseStatus": "Verified; commit/push recorded in release-result.md after publication"
+}

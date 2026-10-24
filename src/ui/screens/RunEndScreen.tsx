@@ -3,13 +3,13 @@ import { IconBook2, IconRotateClockwise } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
-import { REGION_COUNT } from '@/sim';
 import { RUN_END_TEXT } from '@/ui/strings';
 import { runEndProgressTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { TokenIcon } from './hub/TokenIcon';
 import { FinalTeam } from './run-end/FinalTeam';
 import { RunRecord } from './run-end/RunRecord';
+import { runEndLocation } from './run-end/runEndLocation';
 import styles from './RunEndScreen.module.css';
 
 // §9.12.3 — the last team is the ending's picture. What the run kept is one door away, including on defeat.
@@ -24,7 +24,6 @@ export function RunEndScreen({ outcome }: { outcome: 'victory' | 'defeat' }) {
     abandon();
     goTo(again ? 'starter' : 'menu');
   };
-  const depth = run?.position ? (run.map.nodes[run.position]?.layer ?? -1) + 1 : 0;
 
   return (
     <main className={`${styles.root} ${won ? styles.won : styles.lost}`} data-testid={`${outcome}-screen`}>
@@ -33,9 +32,7 @@ export function RunEndScreen({ outcome }: { outcome: 'victory' | 'defeat' }) {
         {run && <p className={styles.sub}>{won ? RUN_END_TEXT.victoryLine : RUN_END_TEXT.defeatLine}</p>}
         {run && (
           <span className={`${styles.distance} tabular`} data-testid="run-end-distance">
-            {won
-              ? RUN_END_TEXT.region(run.regionIndex + 1, REGION_COUNT)
-              : RUN_END_TEXT.depth(depth, run.map.layers)}
+            {runEndLocation(run)}
           </span>
         )}
       </header>

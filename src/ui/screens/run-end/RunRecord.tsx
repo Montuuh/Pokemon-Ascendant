@@ -5,12 +5,12 @@ import { maxHpOf, REGION_COUNT, type RunState } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { RUN_END_TEXT } from '@/ui/strings';
 import { AccountSummary } from '../hub/AccountSummary';
+import { runEndLocation } from './runEndLocation';
 import styles from './RunRecord.module.css';
 
 /** §8.3 / §9.12.3 — the existing account ledger and full run record, behind the final team's door. */
 export function RunRecord({ run, won }: { run: RunState; won: boolean }) {
   const content = getContent();
-  const depth = run.position ? (run.map.nodes[run.position]?.layer ?? -1) + 1 : 0;
   const metrics = [
     {
       label: RUN_END_TEXT.metrics.regions,
@@ -21,7 +21,7 @@ export function RunRecord({ run, won }: { run: RunState; won: boolean }) {
     { label: RUN_END_TEXT.metrics.turns, value: String(run.stats.turnsPlayed) },
     { label: RUN_END_TEXT.metrics.catches, value: String(run.stats.catches) },
     { label: RUN_END_TEXT.metrics.faints, value: String(run.stats.faints) },
-    ...(won ? [] : [{ label: RUN_END_TEXT.metrics.depth, value: RUN_END_TEXT.depth(depth, run.map.layers) }]),
+    ...(won ? [] : [{ label: RUN_END_TEXT.metrics.depth, value: runEndLocation(run) }]),
   ];
   return (
     <Dialog.Portal>

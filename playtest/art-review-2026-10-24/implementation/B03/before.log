@@ -1,0 +1,159 @@
+
+Running 5 tests using 1 worker
+
+(node:62900) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1920_1 — §9.12.3 (969ms)
+(node:40476) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1920_1.5 — §9.12.3 (1.0s)
+(node:41656) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  3 [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1280_1 — §9.12.3 (1.0s)
+(node:64376) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  4 [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1280_1.5 — §9.12.3 (1.0s)
+(node:57908) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  5 [desktop] › e2e\run-end-location.spec.ts:102:1 › League_EnteredBattle_RealDefeatKeepsOpponent — §2.1.6 / §9.12.3 (6.9s)
+
+
+  1) [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1920_1 — §9.12.3 ─────
+
+    Error: expect(received).toBeTruthy()
+
+    Received: null
+
+      65 |         const state = await loseAt(page, location);
+      66 |         expect(state.entered && state.began && state.ended).toBe(true);
+    > 67 |         expect(state.position).toBeTruthy();
+         |                                ^
+      68 |         expect(state.visited).not.toContain(state.position);
+      69 |         const distance = page.getByTestId('run-end-distance');
+      70 |         const actual = await distance.innerText();
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:67:32
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1920-1-—-§9-12-3-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1920-1-—-§9-12-3-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1920-1-—-§9-12-3-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1920_1.5 — §9.12.3 ───
+
+    Error: expect(received).toBeTruthy()
+
+    Received: null
+
+      65 |         const state = await loseAt(page, location);
+      66 |         expect(state.entered && state.began && state.ended).toBe(true);
+    > 67 |         expect(state.position).toBeTruthy();
+         |                                ^
+      68 |         expect(state.visited).not.toContain(state.position);
+      69 |         const distance = page.getByTestId('run-end-distance');
+      70 |         const actual = await distance.innerText();
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:67:32
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1920-1-5-—-§9-12-3-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1920-1-5-—-§9-12-3-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1920-1-5-—-§9-12-3-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1280_1 — §9.12.3 ─────
+
+    Error: expect(received).toBeTruthy()
+
+    Received: null
+
+      65 |         const state = await loseAt(page, location);
+      66 |         expect(state.entered && state.began && state.ended).toBe(true);
+    > 67 |         expect(state.position).toBeTruthy();
+         |                                ^
+      68 |         expect(state.visited).not.toContain(state.position);
+      69 |         const distance = page.getByTestId('run-end-distance');
+      70 |         const actual = await distance.innerText();
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:67:32
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1280-1-—-§9-12-3-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1280-1-—-§9-12-3-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1280-1-—-§9-12-3-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1280_1.5 — §9.12.3 ───
+
+    Error: expect(received).toBeTruthy()
+
+    Received: null
+
+      65 |         const state = await loseAt(page, location);
+      66 |         expect(state.entered && state.began && state.ended).toBe(true);
+    > 67 |         expect(state.position).toBeTruthy();
+         |                                ^
+      68 |         expect(state.visited).not.toContain(state.position);
+      69 |         const distance = page.getByTestId('run-end-distance');
+      70 |         const actual = await distance.innerText();
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:67:32
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1280-1-5-—-§9-12-3-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1280-1-5-—-§9-12-3-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-Ending-LocationAndRecord-1280-1-5-—-§9-12-3-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [desktop] › e2e\run-end-location.spec.ts:102:1 › League_EnteredBattle_RealDefeatKeepsOpponent — §2.1.6 / §9.12.3 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('defeat-screen')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('defeat-screen') with timeout 5000ms
+      - waiting for getByTestId('defeat-screen')
+
+
+      112 |   await expect(page.getByTestId('combat-screen')).toBeVisible();
+      113 |   await page.getByTestId('btn-end-turn').click();
+    > 114 |   await expect(page.getByTestId('defeat-screen')).toBeVisible();
+          |                                                   ^
+      115 |   await capture(page, `${evidence}/${phase}-real-league-defeat.png`);
+      116 |   const state = await page.evaluate(() => ({ combat: window.__ascendant!.state(), run: window.__ascendant!.run.dump() }));
+      117 |   writeFileSync(`${evidence}/${phase}-real-league-defeat.json`, JSON.stringify(state, null, 2));
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:114:51
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-League-En-edc52-psOpponent-—-§2-1-6-§9-12-3-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-League-En-edc52-psOpponent-—-§2-1-6-§9-12-3-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B03\before-traces\run-end-location-League-En-edc52-psOpponent-—-§2-1-6-§9-12-3-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5 failed
+    [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1920_1 — §9.12.3 ──────
+    [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1920_1.5 — §9.12.3 ────
+    [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1280_1 — §9.12.3 ──────
+    [desktop] › e2e\run-end-location.spec.ts:54:5 › Ending_LocationAndRecord_1280_1.5 — §9.12.3 ────
+    [desktop] › e2e\run-end-location.spec.ts:102:1 › League_EnteredBattle_RealDefeatKeepsOpponent — §2.1.6 / §9.12.3 

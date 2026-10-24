@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.42 — Where the run ended · 2026-10-24
+
+Ending labels identify the zone and the fight reached.
+
+- **Location.** Region columns and League opponents are named.
+- **Reached marker.** Defeat keeps the attempted fight's location.
+
 ### v0.9.41 — Readable patch labels · 2026-10-24
 
 Higher contrast for version labels in What's new.

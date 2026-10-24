@@ -1,0 +1,138 @@
+
+Running 5 tests using 1 worker
+
+(node:64028) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1920_1 — §9.12.3 (2.1s)
+(node:59780) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1920_1.5 — §9.12.3 (2.3s)
+(node:43992) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  3 [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1280_1 — §9.12.3 (2.1s)
+(node:61624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  4 [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1280_1.5 — §9.12.3 (2.2s)
+(node:36856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 5 [desktop] › e2e\run-end-location.spec.ts:103:1 › League_EnteredBattle_RealDefeatKeepsOpponent — §2.1.6 / §9.12.3 (1.8s)
+
+
+  1) [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1920_1 — §9.12.3 ─────
+
+    Error: page.evaluate: TypeError: Cannot read properties of undefined (reading 'id')
+        at eval (eval at evaluate (:311:30), <anonymous>:9:27)
+        at Immer2.produce (http://localhost:5173/node_modules/.vite/deps/immer.js?v=322ad8b3:527:15)
+        at Object.patch (http://localhost:5173/src/dev/devtools.ts?t=1792852202680:267:42)
+        at eval (eval at evaluate (:311:30), <anonymous>:6:11)
+        at UtilityScript.evaluate (<anonymous>:313:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:311:30), <anonymous>:9:27)
+        at Immer2.produce (http://localhost:5173/node_modules/.vite/deps/immer.js?v=322ad8b3:527:15)
+        at Object.patch (http://localhost:5173/src/dev/devtools.ts?t=1792852202680:267:42)
+        at eval (eval at evaluate (:311:30), <anonymous>:6:11)
+        at UtilityScript.evaluate (<anonymous>:313:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at loseAt (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:19:15)
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:66:29
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1920-1-—-§9-12-3-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1920-1-—-§9-12-3-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1920-1-—-§9-12-3-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1920_1.5 — §9.12.3 ───
+
+    Error: page.evaluate: TypeError: Cannot read properties of undefined (reading 'id')
+        at eval (eval at evaluate (:311:30), <anonymous>:9:27)
+        at Immer2.produce (http://localhost:5173/node_modules/.vite/deps/immer.js?v=322ad8b3:527:15)
+        at Object.patch (http://localhost:5173/src/dev/devtools.ts?t=1792852202680:267:42)
+        at eval (eval at evaluate (:311:30), <anonymous>:6:11)
+        at UtilityScript.evaluate (<anonymous>:313:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:311:30), <anonymous>:9:27)
+        at Immer2.produce (http://localhost:5173/node_modules/.vite/deps/immer.js?v=322ad8b3:527:15)
+        at Object.patch (http://localhost:5173/src/dev/devtools.ts?t=1792852202680:267:42)
+        at eval (eval at evaluate (:311:30), <anonymous>:6:11)
+        at UtilityScript.evaluate (<anonymous>:313:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at loseAt (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:19:15)
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:66:29
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1920-1-5-—-§9-12-3-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1920-1-5-—-§9-12-3-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1920-1-5-—-§9-12-3-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1280_1 — §9.12.3 ─────
+
+    Error: page.evaluate: TypeError: Cannot read properties of undefined (reading 'id')
+        at eval (eval at evaluate (:311:30), <anonymous>:9:27)
+        at Immer2.produce (http://localhost:5173/node_modules/.vite/deps/immer.js?v=322ad8b3:527:15)
+        at Object.patch (http://localhost:5173/src/dev/devtools.ts?t=1792852202680:267:42)
+        at eval (eval at evaluate (:311:30), <anonymous>:6:11)
+        at UtilityScript.evaluate (<anonymous>:313:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:311:30), <anonymous>:9:27)
+        at Immer2.produce (http://localhost:5173/node_modules/.vite/deps/immer.js?v=322ad8b3:527:15)
+        at Object.patch (http://localhost:5173/src/dev/devtools.ts?t=1792852202680:267:42)
+        at eval (eval at evaluate (:311:30), <anonymous>:6:11)
+        at UtilityScript.evaluate (<anonymous>:313:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at loseAt (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:19:15)
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:66:29
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1280-1-—-§9-12-3-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1280-1-—-§9-12-3-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1280-1-—-§9-12-3-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1280_1.5 — §9.12.3 ───
+
+    Error: page.evaluate: TypeError: Cannot read properties of undefined (reading 'id')
+        at eval (eval at evaluate (:311:30), <anonymous>:9:27)
+        at Immer2.produce (http://localhost:5173/node_modules/.vite/deps/immer.js?v=322ad8b3:527:15)
+        at Object.patch (http://localhost:5173/src/dev/devtools.ts?t=1792852202680:267:42)
+        at eval (eval at evaluate (:311:30), <anonymous>:6:11)
+        at UtilityScript.evaluate (<anonymous>:313:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:311:30), <anonymous>:9:27)
+        at Immer2.produce (http://localhost:5173/node_modules/.vite/deps/immer.js?v=322ad8b3:527:15)
+        at Object.patch (http://localhost:5173/src/dev/devtools.ts?t=1792852202680:267:42)
+        at eval (eval at evaluate (:311:30), <anonymous>:6:11)
+        at UtilityScript.evaluate (<anonymous>:313:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at loseAt (C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:19:15)
+        at C:\Users\dmont\Desktop\CODE - Proyectos\Pokémon Ascendant\e2e\run-end-location.spec.ts:66:29
+
+    Error Context: playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1280-1-5-—-§9-12-3-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1280-1-5-—-§9-12-3-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace playtest\art-review-2026-10-24\implementation\B03\before-corrected-traces\run-end-location-Ending-LocationAndRecord-1280-1-5-—-§9-12-3-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1920_1 — §9.12.3 ──────
+    [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1920_1.5 — §9.12.3 ────
+    [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1280_1 — §9.12.3 ──────
+    [desktop] › e2e\run-end-location.spec.ts:55:5 › Ending_LocationAndRecord_1280_1.5 — §9.12.3 ────
+  1 passed (14.6s)
