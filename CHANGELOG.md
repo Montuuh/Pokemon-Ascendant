@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.41 — Readable patch labels · 2026-10-24
+
+Higher contrast for version labels in What's new.
+
+- **Patch labels.** Dark ink meets normal-text contrast.
+- **Pixel numerals.** Regular Tiny5 is preserved at every text size.
+
 ### v0.9.40 — Places worth reading · 2026-10-23
 
 Responsive route markers, useful hover cards and a final team portrait.

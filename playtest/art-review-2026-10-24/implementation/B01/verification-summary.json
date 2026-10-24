@@ -1,0 +1,273 @@
+{
+  "block": "B01",
+  "version": "0.9.41",
+  "verdict": "Ship",
+  "reviewer": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "report": "independent-review.md"
+  },
+  "acceptance": "All expanded and collapsed version labels meet 4.5:1 at normal text size, including keyboard focus and the current patch.",
+  "measurements": [
+    {
+      "file": "after-1280-720-100.json",
+      "patches": 67,
+      "readings": 268,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.40",
+      "scale": 1,
+      "motion": "no-preference",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "after-1280-720-150.json",
+      "patches": 67,
+      "readings": 268,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.40",
+      "scale": 1.5,
+      "motion": "reduce",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "after-1920-1080-100.json",
+      "patches": 67,
+      "readings": 268,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.40",
+      "scale": 1,
+      "motion": "no-preference",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "after-1920-1080-150.json",
+      "patches": 67,
+      "readings": 268,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.40",
+      "scale": 1.5,
+      "motion": "reduce",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "before-1280-720-100.json",
+      "patches": 67,
+      "readings": 268,
+      "minimumContrast": 4.133217789495175,
+      "failures": 268,
+      "current": "v0.9.40",
+      "scale": 1,
+      "motion": "no-preference",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "before-1280-720-150.json",
+      "patches": 67,
+      "readings": 268,
+      "minimumContrast": 4.133217789495175,
+      "failures": 268,
+      "current": "v0.9.40",
+      "scale": 1.5,
+      "motion": "reduce",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "before-1920-1080-100.json",
+      "patches": 67,
+      "readings": 268,
+      "minimumContrast": 4.133217789495175,
+      "failures": 268,
+      "current": "v0.9.40",
+      "scale": 1,
+      "motion": "no-preference",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "before-1920-1080-150.json",
+      "patches": 67,
+      "readings": 268,
+      "minimumContrast": 4.133217789495175,
+      "failures": 268,
+      "current": "v0.9.40",
+      "scale": 1.5,
+      "motion": "reduce",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "release-1280-720-100.json",
+      "patches": 68,
+      "readings": 272,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.40",
+      "scale": 1,
+      "motion": "no-preference",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "release-1280-720-150.json",
+      "patches": 68,
+      "readings": 272,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.40",
+      "scale": 1.5,
+      "motion": "reduce",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "release-1920-1080-100.json",
+      "patches": 68,
+      "readings": 272,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.40",
+      "scale": 1,
+      "motion": "no-preference",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "release-1920-1080-150.json",
+      "patches": 68,
+      "readings": 272,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.40",
+      "scale": 1.5,
+      "motion": "reduce",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "release-exact/release-exact-1280-720-100.json",
+      "patches": 68,
+      "readings": 272,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.41",
+      "scale": 1,
+      "motion": "no-preference",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "release-exact/release-exact-1280-720-150.json",
+      "patches": 68,
+      "readings": 272,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.41",
+      "scale": 1.5,
+      "motion": "reduce",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "release-exact/release-exact-1920-1080-100.json",
+      "patches": 68,
+      "readings": 272,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.41",
+      "scale": 1,
+      "motion": "no-preference",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    },
+    {
+      "file": "release-exact/release-exact-1920-1080-150.json",
+      "patches": 68,
+      "readings": 272,
+      "minimumContrast": 10.76174206807354,
+      "failures": 0,
+      "current": "v0.9.41",
+      "scale": 1.5,
+      "motion": "reduce",
+      "overflow": {
+        "viewport": false,
+        "screen": false
+      },
+      "errors": []
+    }
+  ],
+  "checks": {
+    "baselineFocused": "4 failed (contrast only)",
+    "afterFocused": "5 passed",
+    "sharedFull": "902 passed, 3 skipped",
+    "screenshots": "13 passed",
+    "releaseFull": "890 passed, 3 skipped",
+    "releaseProductionFocused": "5 passed",
+    "releaseBuild": "passed",
+    "audit": "0 measured failures"
+  },
+  "codeHashes": {
+    "src/ui/screens/ChangelogScreen.module.css": "f8b8f652bbb4f88856081b15ec2031f595775663babd3efa8e61ede1739e0163",
+    "e2e/changelog-contrast.spec.ts": "6a079da3736ac74cf357d6c51728b009ec7a4501f3cdcff6fce9c63c8c5f0964"
+  },
+  "verificationTree": "3dd7f684760e6ae68daca4f1f747ac7b012349ac",
+  "globalQueue": {
+    "untouched": true,
+    "entries": 18,
+    "sha256": "432aae78ef0018c2155d7d3164199d1ab6068a692a30215cea92ed0eb429d237"
+  }
+}

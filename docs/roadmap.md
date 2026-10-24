@@ -1492,6 +1492,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** A19 updates provenance against retained sources and hashes, stating gaps for older generated artwork rather than inferring authorship. The UI audit verifies expected roots and painted assets at both sizes, continues after a failed screen with an explicit failed record, removes stale captures and exits nonzero. A20 centres the complete final team and earned Badges in distinct victory/defeat scenes; one common native sprite scale preserves relative proportions. Account progress, metrics and final condition remain in Run record. The user's map feedback enlarges artwork with the route viewport, preserves native half steps and rotating residents, equalises caption sizes below the sprites, and adds richer hover cards without revealing hidden teams. The miniature strip is removed, Labels sits in the lower-right corner, and hit boxes no longer cover neighbouring pictures. Vite ignores generated review/trace artifacts to prevent unintended development reloads. Game rules and the separate results/A03 work remain unchanged.
 
+### v0.9.41 — Readable patch labels  ✅ 2026-10-24
+
+**Shipped.** B01 uses the existing primary ink for What's new patch versions, retaining regular Tiny5 numerals and the accordion hierarchy. All patch labels meet 4.5:1 in expanded, collapsed and focused states at normal and 150% text sizes. No game rules change.
+
 ## v1.0 — Release  ☐
 **Single-player** (user, 2026-10-14). Tauri desktop build (Windows; Linux stretch), itch.io web + Windows downloads,
 the final balance pass with telemetry from playtests, trailer, README/press kit. Fan project: free, non-commercial,

@@ -260,8 +260,8 @@
   border-radius: var(--radius-pill);
   background: var(--surface-2);
   font-size: var(--type-h3);
-  font-weight: 700;
-  color: var(--brand-red-deep);
+  /* D5 — Tiny5 numerals are regular-weight text, including at the base 20px size. */
+  color: var(--ink-primary);
 }
 .patchName {
   font-size: var(--type-h3);
