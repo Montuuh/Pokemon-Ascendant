@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.51 — Compact Center reception  ✅ 2026-10-25
+
+**Shipped.** B12 removes the idle Center's empty report column and outer frame, centring the authentic room above one compact reception status. Real heals retain their adjacent report throughout the animation and afterwards behind the existing disclosure. Two-column patient cards keep enlarged names readable; full-Box history remains scrollable, and the healthy room reserves space for its physical exit label and focus halo. Evidence: playtest/art-review-2026-10-24/implementation/B12. No game rules change. A02/A03 and all other blocks remain excluded.
+
 ### v0.9.50 — Daycare decisions  ✅ 2026-10-25
 
 **Shipped.** B11 reveals a brief absence cue beside the price on the hovered or focused Daycare offer. Its tooltip names the Pokémon, next-fight absence, return timing and any purchase restriction together. Unaffordable, unpartnered and maximum-level offers remain inspectable; the maximum level already enforced by the simulation no longer promises another level. Pointer, keyboard, focus return, both viewport sizes, enlarged text and reduced motion are covered. Evidence: playtest/art-review-2026-10-24/implementation/B11. No game rule changes; all other review blocks remain excluded.

@@ -45,8 +45,16 @@
   max-width: 1440px;
   justify-self: center;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
   align-items: center;
+  gap: var(--sp-2);
+}
+/* D3/D4/D7 — a healthy visit has one reception pill, not an empty report column.
+   Keep the adjacent report in place throughout a real heal, including its closed disclosure. */
+.scene:has(.reception ul) {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  grid-template-rows: minmax(0, 1fr);
   gap: var(--sp-4);
 }
 .room {
@@ -54,7 +62,16 @@
   min-width: 0;
   font-family: var(--font-ui);
 }
+.scene:not(:has(.reception ul)) .room {
+  /* The exit plate and its focus halo extend below the room's native floor. */
+  padding-bottom: var(--sp-5);
+}
 .reception {
+  min-width: 0;
+  justify-self: center;
+}
+.reception:has(ul) {
+  justify-self: stretch;
   padding: var(--sp-4);
   border: 2px solid var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -64,9 +81,17 @@
   gap: var(--sp-3);
 }
 .reception [data-testid='center-heal'] ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
   max-height: min(36dvh, 360px);
   overflow-y: auto;
   align-content: start;
+}
+.reception [data-testid='center-heal'] ul > li {
+  min-width: 0;
+  width: auto;
+  overflow-wrap: anywhere;
 }
 .scrim {
   position: fixed;
@@ -253,7 +278,7 @@
   .title {
     font-size: var(--type-h2);
   }
-  .scene {
+  .scene:has(.reception ul) {
     grid-template-columns: minmax(0, 1fr) 240px;
     gap: var(--sp-2);
   }

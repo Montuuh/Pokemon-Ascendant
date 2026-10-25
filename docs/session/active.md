@@ -1,17 +1,16 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-25 · **Version:** v0.9.50 (*Daycare decisions*) — B11 absence before purchase.
+**Date:** 2026-10-25 · **Version:** v0.9.51 (*Compact Center reception*) — B12 healthy-state composition.
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 release; user iterates the art review first. A03/results belongs to another active session.
+**B12:** Healthy visits centre the room above one compact status; healing retains adjacent, scrollable feedback after its animation. Two-column report cards support 150% text; the physical exit keeps label/focus clearance. Evidence and independent review: playtest/art-review-2026-10-24/implementation/B12. Foreign A02/A03 queue remains pending.
 **B11:** Hover/focus pairs the Daycare price with its next-fight absence; the tooltip retains Pokémon identity, return timing and block reason. Maximum-level offers respect the existing sim cap. Evidence: playtest/art-review-2026-10-24/implementation/B11. Final review/release gates are recorded there. The foreign A02/A03 queue remains pending.
 **B10:** Selected offers own the primary Learn emphasis; Deck and tabs are secondary. Preview activation reveals the full card at large text sizes. Independent Astra/high review and release evidence: playtest/art-review-2026-10-24/implementation/B10. Foreign A02/A03 and their 18-entry review queue remain excluded.
 **B09:** Dojo move windows use a quiet plum ground; pale impacts and trails retain complete native2× art. Independent Sol6.1/medium review: Ship. Evidence: playtest/art-review-2026-10-24/implementation/B09. Legacy reduced-motion test still expects an effect already removed by existing code; failure retained. Foreign18-entry A02/A03 queue stays pending.
 **B08:** Dojo mat reuses the labelled PixelRoom exit; click and Enter return to town and restore focus to its Dojo door, without service purchases. Evidence: playtest/art-review-2026-10-24/implementation/B08.
-
 **B07:** navigation doors are buttons, Center/market doors announce dialogs and expanded state, persistent Shop/Dojo choices retain pressed state. Evidence: playtest/art-review-2026-10-24/implementation/B07. A02/A03, B02 and the18-entry queue remain excluded.
 **B06:** ItemCard face/tooltip use PixelSprite; native24/30 sources retain equal half-step scales and unchanged card targets. Evidence: playtest/art-review-2026-10-24/implementation/B06. A02/A03, B02 metrics and their pending queue remain excluded.
 **B05:** owned compact summaries retain authentic shiny palettes and named sparkles; ordinary specimens and species catalogues remain separate. Evidence and scoped Sol6.1/high review: playtest/art-review-2026-10-24/implementation/B05. A02/A03 and their18-entry queue remain excluded; B02 metrics stay outside this release.
-
 **B04:** final-team PNG/GIF selection follows system and in-game motion live, preserving shiny palettes and native geometry. Evidence: playtest/art-review-2026-10-24/implementation/B04. Independent review and exact-release results are recorded there. A02/A03 and their18-entry queue remain excluded.
 
 **B03:** ending/record identify the reached Region column, Victory Road column or League opponent; pending fight precedes last cleared position. Astra/high review: Ship. Exact release check899 passed/3 skipped, build and17 focused UI cases pass; shared check918/3. B02 remains uncommitted/unpublished; its hunks and the18-entry A02/A03 queue stay excluded. Evidence: playtest/art-review-2026-10-24/implementation/B03.

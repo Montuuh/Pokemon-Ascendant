@@ -49,7 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.50 — Daycare decisions.** Hovered and focused Daycare offers pair their price with the next fight's absence. Blocked offers retain timing, price and an explanation. Before it,
+**v0.9.51 — Compact Center reception.** Healthy visits centre the room with one compact status. Healing keeps its adjacent, scrollable report and readable large-text cards. Before it,
 **v0.9.41 — Readable patch labels.** Higher-contrast patch versions in What's new, retaining pixel numerals. Before it,
 **v0.9.40 — Places worth reading.** Responsive route artwork and hover cards, clear captions, final-team portraits and verified art records. Before it,
 **v0.9.30 — Gen II type chart.** The 15-type chart now uses Generation II effectiveness: Ghost hits Psychic for ×2, Fire resists Ice at ×0.5, Bug hits Poison for ×0.5, and Poison hits Bug neutrally at ×1. Before it,

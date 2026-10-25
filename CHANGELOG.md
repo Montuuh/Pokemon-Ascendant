@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.51 — Compact Center reception · 2026-10-25
+
+Healthy visits give the Center room the full scene.
+
+- **Reception.** One compact status replaces the empty report column.
+- **Healing report.** Persistent, scrollable feedback with readable large text.
+
 ### v0.9.50 — Daycare decisions · 2026-10-25
 
 Daycare offers show the next fight's absence before purchase.
