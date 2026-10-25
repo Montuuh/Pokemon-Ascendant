@@ -144,12 +144,9 @@
   font-size: var(--type-small);
   cursor: pointer;
 }
-.deckButton {
-  background: var(--accent-action);
-}
 .counterTab[data-state='active'] {
-  background: var(--accent-action);
   border-color: var(--ink-primary);
+  box-shadow: inset 0 -2px var(--ink-primary);
 }
 .tabCount {
   min-width: 1.5em;
@@ -189,6 +186,10 @@
 .moveCard[data-selected='true'] {
   border-color: var(--ink-primary);
   box-shadow: 0 0 0 2px var(--accent-action);
+}
+/* D4 / D7 — selection and its purchase lead; browsing and Deck stay secondary. */
+.moveCard[data-selected='true'] .preview {
+  background: var(--brand-cream);
 }
 .preview {
   display: grid;
@@ -235,8 +236,8 @@
   padding: var(--sp-2);
   border: 0;
   border-top: 1px solid var(--border-subtle);
-  background: var(--accent-action);
-  color: var(--ink-on-accent);
+  background: var(--surface-2);
+  color: var(--ink-primary);
   font: inherit;
   font-size: var(--type-small);
   cursor: pointer;
@@ -245,6 +246,10 @@
   background: var(--surface-2);
   color: var(--ink-secondary);
   cursor: not-allowed;
+}
+.moveCard[data-selected='true'] .buy:not(:disabled) {
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
 }
 .moveCard[data-known='true'] .artWindow {
   opacity: 0.65;
@@ -377,6 +382,9 @@
 .buy:hover:not(:disabled),
 .deckButton:hover {
   background: var(--surface-3);
+}
+.moveCard[data-selected='true'] .buy:hover:not(:disabled) {
+  background: var(--accent-action-deep);
 }
 @media (max-width: 1400px) {
   .shelf {

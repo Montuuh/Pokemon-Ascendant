@@ -1,9 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-25 · **Version:** v0.9.48 (*Clear Dojo move art*) — B09 pale move separation.
+**Date:** 2026-10-25 · **Version:** v0.9.49 (*Dojo action hierarchy*) — B10 selected offer and purchase.
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 release; user iterates the art review first. A03/results belongs to another active session.
-
+**B10:** Selected offers own the primary Learn emphasis; Deck and tabs are secondary. Preview activation reveals the full card at large text sizes. Independent Astra/high review and release evidence: playtest/art-review-2026-10-24/implementation/B10. Foreign A02/A03 and their 18-entry review queue remain excluded.
 **B09:** Dojo move windows use a quiet plum ground; pale impacts and trails retain complete native2× art. Independent Sol6.1/medium review: Ship. Evidence: playtest/art-review-2026-10-24/implementation/B09. Legacy reduced-motion test still expects an effect already removed by existing code; failure retained. Foreign18-entry A02/A03 queue stays pending.
 **B08:** Dojo mat reuses the labelled PixelRoom exit; click and Enter return to town and restore focus to its Dojo door, without service purchases. Evidence: playtest/art-review-2026-10-24/implementation/B08.
 

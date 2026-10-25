@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.49 — Dojo action hierarchy · 2026-10-25
+
+The selected move and its purchase lead the Dojo shelf.
+
+- **Selected offer.** One highlighted Learn action; Deck stays secondary.
+- **Large text.** Selecting a move reveals its price and purchase.
+
 ### v0.9.48 — Clear Dojo move art · 2026-10-25
 
 Dojo move illustrations keep their pale details visible.

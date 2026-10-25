@@ -436,7 +436,11 @@ function MoveOffer({
         type="button"
         tip={moveDefTip(move)}
         className={styles.preview}
-        onClick={onSelect}
+        onClick={(event) => {
+          onSelect();
+          // §9.6 / D8 — at large text sizes, keep the selected move's price and Learn beside its preview.
+          event.currentTarget.closest('li')?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+        }}
         aria-pressed={selected}
         aria-label={`${DOJO_TEXT.preview}: ${move.name}`}
         data-testid={`dojo-preview-${counter}-${move.id}`}
