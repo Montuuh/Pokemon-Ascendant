@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.48 — Clear Dojo move art · 2026-10-25
+
+Dojo move illustrations keep their pale details visible.
+
+- **Move windows.** A quiet plum ground separates pale effects.
+- **Native artwork.** Complete illustrations retain their pixel scale.
+
 ### v0.9.47 — Dojo exit · 2026-10-25
 
 The Dojo's exit mat returns to town.

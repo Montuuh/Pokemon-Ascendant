@@ -207,7 +207,8 @@
   display: grid;
   place-items: center;
   width: 100%;
-  background: var(--surface-2);
+  /* D9 — pale move trails need the same quiet dark ground as combat, even on a light offer. */
+  background: var(--tip-surface);
   border-radius: var(--radius-sm);
   overflow: hidden;
 }

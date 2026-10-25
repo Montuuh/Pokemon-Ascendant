@@ -1,7 +1,7 @@
 {
   "name": "pokemon-ascendant",
   "private": true,
-  "version": "0.9.47",
+  "version": "0.9.48",
   "description": "Pokémon Ascendant — roguelike deckbuilder where the party is the deck (web build).",
   "license": "MIT",
   "type": "module",

@@ -1,10 +1,11 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-25 · **Version:** v0.9.47 (*Dojo exit*) — B08 physical exit.
+**Date:** 2026-10-25 · **Version:** v0.9.48 (*Clear Dojo move art*) — B09 pale move separation.
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 release; user iterates the art review first. A03/results belongs to another active session.
 
-**B08:** Dojo mat reuses the labelled PixelRoom exit; click and Enter return to town and restore focus to its Dojo door, without service purchases. Evidence and independent Sol6.1/medium review: playtest/art-review-2026-10-24/implementation/B08. Foreign18-entry A02/A03 queue stays pending.
+**B09:** Dojo move windows use a quiet plum ground; pale impacts and trails retain complete native2× art. Independent Sol6.1/medium review: Ship. Evidence: playtest/art-review-2026-10-24/implementation/B09. Legacy reduced-motion test still expects an effect already removed by existing code; failure retained. Foreign18-entry A02/A03 queue stays pending.
+**B08:** Dojo mat reuses the labelled PixelRoom exit; click and Enter return to town and restore focus to its Dojo door, without service purchases. Evidence: playtest/art-review-2026-10-24/implementation/B08.
 
 **B07:** navigation doors are buttons, Center/market doors announce dialogs and expanded state, persistent Shop/Dojo choices retain pressed state. Evidence: playtest/art-review-2026-10-24/implementation/B07. A02/A03, B02 and the18-entry queue remain excluded.
 **B06:** ItemCard face/tooltip use PixelSprite; native24/30 sources retain equal half-step scales and unchanged card targets. Evidence: playtest/art-review-2026-10-24/implementation/B06. A02/A03, B02 metrics and their pending queue remain excluded.

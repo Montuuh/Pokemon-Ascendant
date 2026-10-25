@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.48 — Clear Dojo move art  ✅ 2026-10-25
+
+**Shipped.** B09 gives Dojo tutor and egg-move artwork a quiet plum ground using the existing tooltip-surface token. Headbutt's pale impact and Swift's curved trail remain complete and recognisable at native 2× scale in the light Dojo and unchanged combat cards. No asset, layout or game rule changes. Evidence: `playtest/art-review-2026-10-24/implementation/B09/`. A02/A03 and all other review blocks remain excluded.
+
 ### v0.9.47 — Dojo exit  ✅ 2026-10-25
 
 **Shipped.** B08 connects the Dojo's red mat to the existing labelled PixelRoom exit. Pointer and Enter return to town; the shared Back action restores focus to the Dojo door. Tooltip, Escape dismissal and reduced motion retain the existing room behaviour. No service purchase or game rule changes. Evidence: `playtest/art-review-2026-10-24/implementation/B08/`. A02/A03 and other review blocks remain excluded.
