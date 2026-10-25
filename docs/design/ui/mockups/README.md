@@ -21,7 +21,8 @@ from `docs/art/pipeline.md`. Fonts: Baloo 2 + Nunito; icons: Tabler stand-ins.
 | `mystery-event.html` | Mystery Event | event template | v0.4 |
 | `node-preview.html` | Node Preview popover | `ui/03 §3.4` | v0.2 |
 | `legendary-pick.html` | Legendary Pick | `ui/03 §3.7` | v0.5 |
-| `victory-summary.html`, `defeat-summary.html` | Run end | `ui/03 §3.8–3.9` | v0.2 (combat-level version ✅ `OutcomeOverlay.tsx`) |
+| `victory-summary.html`, `defeat-summary.html` | Run end | `ui/03 §3.8–3.9` | v0.2 (the practice fixtures' summary ✅ `OutcomeOverlay.tsx`) |
+| `fight-end/stage.html` (+ the rejected `textbox.html`, `board.html`) | **A fight's end**, on its own stage — every case (`?case=`), the reveal (`&t=`) | §9.4.5, `fight-end/README.md` | ✅ `src/ui/screens/results/FightResults.tsx` (v0.9.30) |
 | `achievements.html` | Achievements | `ui/05 §6.2` | v0.5 |
 | `settings-basic.html` | Settings (basics) | `ui/05 §6.3` | v0.5 |
 | `pause-menu.html` | Pause | `ui/05 §6.4` | v0.2 |

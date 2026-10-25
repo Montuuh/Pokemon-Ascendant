@@ -1,8 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-25 · **Version:** v0.9.53 (*Basement service bays*) — B14 Black Market focal hierarchy.
+**Date:** 2026-10-26 · **Version:** v0.9.54 (*The field after*) — A03, the fight's end on its own stage (§9.4.5).
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
-**Next:** v1.0 release; user iterates the art review first. A03/results belongs to another active session.
+**Next:** v1.0 release; user iterates the art review first. A03 (results) shipped in v0.9.54.
+**A03 / v0.9.54:** `ui/screens/results/` (`FightResults`, `results.ts` reveal plan, `useReveal`, `LevelUpPanel`, `SpoilCard`, `ProgressDoor`), `RunState.lastFight` (`run/run.ts` finish-combat, `fightRecord.test`), `report.formation`; the result stands in `.stageFrame` like live combat. Evolution is a surprise on Continue; the outcome overlay is practice-fixture only. UI review: Ship with fixes, all applied. Mockups and the decision: `docs/design/ui/mockups/fight-end/`. Its 18-file review queue is cleared.
 **B14:** Slate circulation, warmer service bays and two native Hideout ball stands give the market a clearer focus. Anchors and rules are unchanged. Independent Sol/high review: Ship. Evidence: playtest/art-review-2026-10-24/implementation/B14. Foreign A02/A03 queue remains pending.
 **B13:** Wider relic cards retain both gate choices at 150% text with a full Box; the League preview sits below native arrival art. Keyboard, pointer, focus/Escape, motion and every real Legendary offer are covered. Evidence and independent Sol/high review: playtest/art-review-2026-10-24/implementation/B13. Foreign A02/A03 queue remains pending.
 **B12:** Healthy visits centre the room above one compact status; healing retains adjacent, scrollable feedback after its animation. Two-column report cards support 150% text; the physical exit keeps label/focus clearance. Evidence and independent review: playtest/art-review-2026-10-24/implementation/B12. Foreign A02/A03 queue remains pending.

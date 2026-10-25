@@ -147,6 +147,28 @@ export interface HealLine {
   cured: boolean;
 }
 
+/**
+ * §9.4.5 — the fight that just ended, as the result screen draws it on the fight's own stage: where it was fought,
+ * against whom, the team as the fight left it (before the victory heal and the XP), and what running cost. Written by
+ * every `finish-combat`; the next one overwrites it.
+ */
+export interface FightRecord {
+  outcome: 'victory' | 'caught' | 'defeat' | 'escaped' | 'fled';
+  /** The node fought on; null for a Ring rung (§2.9.4.1), which is not a map node. */
+  kind: NodeKind | null;
+  stage: string;
+  trainer: { name: string; sprite: string } | null;
+  foes: { speciesId: string; level: number; shiny?: boolean }[];
+  /** The team's places as the fight ended (Lead, Bench 1, Bench 2), as Box uids. */
+  formation: string[];
+  /** Every Pokémon in the Box as the fight left it: HP before the victory heal, level and XP before the award. */
+  before: { uid: string; hp: number; level: number; xp: number }[];
+  /** §5.10 — the Badge a Gym pays when the node is left (the result shows it first). */
+  badge?: string;
+  /** §3.1.2 — what running cost: Poké Dollars, who took Trauma, and what was left behind. */
+  toll?: { money: number; trauma: string[]; lost: { kind: 'relic' | 'consumable'; id: string } | null };
+}
+
 /** A Pokémon in the Box. HP and Trauma persist between fights (§2.4); this is the run's real state. */
 export interface PartyMon {
   uid: string;
@@ -225,8 +247,8 @@ export type RunPhase =
   | 'black-market'
   /**
    * §7.3.7 — a Gym is beaten and the Legendary 1-of-3 is open. It sits *between* the Gym and the end of the
-   * run rather than beside the reward screen, because it is the Gym's own reward and the last decision the
-   * Region asks for.
+   * run, after its result and any evolution, on the same stage as the result (§9.4.5): it is the Gym's own reward
+   * and the last decision the Region asks for.
    */
   | 'legendary'
   /** §2.12.3 — at a Training Grounds: one Pokémon, one upgrade. */
@@ -266,7 +288,7 @@ export interface LevelUp {
   activated: string[];
   /** §6.2.4 — the Pokémon stands at its threshold; the branch is picked on the Evolution screen (§3.6). */
   evolutionReady?: boolean;
-  /** §6.2.3 — what the levels added to each stat (growth × levels), for the reward screen (v0.9.6). Optional: a save
+  /** §6.2.3 — what the levels added to each stat (growth × levels), for the fight's result (v0.9.6, §9.4.5). Optional: a save
    *  from before reads as none. */
   gains?: { hp: number; attack: number; defense: number; speed: number };
   /** The four stats at the new level (before Trauma), so the gain reads as old → new. */
@@ -295,7 +317,7 @@ export interface RewardSummary {
   money: number;
   /** §7.3 — the relic this fight dropped, if any. */
   relic: string | null;
-  /** §2.8.1 — the Elite Trainer's relic pick, taken on the reward screen with `claim-reward`. Null elsewhere. */
+  /** §2.8.1 — the Elite Trainer's relic pick, taken on the fight's result with `claim-reward`. Null elsewhere. */
   relicPick: string[] | null;
   /** §2.7.2 — the consumables this fight dropped, already in the bag (v0.8.6). */
   consumables: string[];
@@ -556,6 +578,8 @@ export interface RunState {
    * the way out. Absent in older saves.
    */
   lastHeal?: HealLine[] | null;
+  /** §9.4.5 — the fight that just ended, for the result screen. Absent in older saves. */
+  lastFight?: FightRecord | null;
   /** §9.9.3 — how many heals the run has had: the stamp a screen keys the last one by, so it is shown once. */
   heals?: number;
   /**
@@ -696,6 +720,8 @@ export interface CombatOutcomeReport {
   leadHpFraction?: number;
   /** §8.6.1 Type Resonance's discovery — the Active Team's species at the end, in slot order. */
   activeSpecies?: string[];
+  /** §9.4.5 — the team's places as the fight ended, as Box uids: the Lead, then Bench 1 and Bench 2. */
+  formation?: string[];
   /** §8.9 — every enemy species that took the field, once each. The Pokédex counts these as met. */
   /** §5.14 — the species met shiny in this fight, once each. */
   shinies?: string[];

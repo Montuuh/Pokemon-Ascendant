@@ -77,8 +77,9 @@ Multipliers stack multiplicatively: `lucky-egg-token` ×1.15, the `quick-study` 
 
 ## §6.2.2 Levelling up
 
-Level-ups are processed **between nodes**, never mid-combat. The Post-Combat Reward screen shows the XP bar
-fill, applies the stat increase immediately, and **evolves any Pokémon that crossed its threshold** (§6.2.4).
+Level-ups are processed **between nodes**, never mid-combat. The fight's result (§9.4.5) shows the XP bar
+fill, applies the stat increase immediately, and **evolves any Pokémon that crossed its threshold** (§6.2.4) — as
+the series' surprise, on Continue: nothing on the result says one is coming.
 
 Evolution is not optional and not deferred, because a base form's learnset ends two levels *below* its
 threshold (§6.9): a Pokémon that levels past 10 without evolving simply stops learning, and its four cards
@@ -133,7 +134,7 @@ contributes, and it is the primary creative expression inside a run (Pillar 4).
 
 - Available when the Pokémon reaches its level threshold.
 - Crossing the threshold **queues an Archetype Selection screen** (§6.3.3), shown between nodes, after the
-  Post-Combat Reward and before the map. One screen per Pokémon, in Box order.
+  fight's result (§9.4.5) and before the map. One screen per Pokémon, in Box order.
 - The evolution itself is **not optional** and not deferrable, for the reason §6.2.2 gives: a base form's
   learnset ends below its threshold, so holding one back is a dead end rather than a tactic. What is
   player-initiated is the **branch** — and that choice is permanent, so the screen confirms it.
@@ -524,7 +525,7 @@ played every run reaches them after about **5 / 11 / 16 / 21 runs** — measured
 runs in a row with the account's own perks playing into each (`balance/bondCareer.test.ts`). A line recruited
 every other run takes about twice that, and the lines that are hard to find never get there by accident: that is
 the point of the top rank. After 30 runs an account holds about two Soulbound lines. The first reward arrives after
-about five runs; until then the bar and the **+N Bond** on every reward screen carry the progress. *History:* a first cut of v0.9.1
+about five runs; until then the bar and the **+N Bond** behind every fight result's progress door (§9.4.5) carry the progress. *History:* a first cut of v0.9.1
 had five ranks at 10 · 40 · 110 · 200 · 360, quick at the bottom; before it, +1 a fight with ranks at 5 · 15 · 35 ·
 60 · 100 made every played line Trusted inside its first run. A wild fight pays nothing because it is the filler
 between the fights that mean something; the Gym pays a Region.

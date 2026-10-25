@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.54 — The field after · 2026-10-26
+
+A fight ends on its own stage: one screen, one click.
+
+- **Results.** Your team where it stood, who you beat, spoils in the tray.
+- **Like the series.** HP and XP bars fill with sound; level-ups show their stats.
+- **Badges and picks.** The Badge in its case; relic picks on the same stage.
+- **Surprises.** Evolutions are not announced. Running shows its toll.
+
 ### v0.9.53 — Basement service bays · 2026-10-25
 
 Clearer service areas in the hidden market room.

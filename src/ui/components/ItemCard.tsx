@@ -8,7 +8,7 @@ import { PixelSprite } from './PixelSprite';
 import styles from './ItemCard.module.css';
 
 // One card shape for everything you can own (§7.2–§7.4): a consumable, a relic, a held item, a TM, a ball.
-// The Shop, the inventory drawer, the reward screen and the Mystery Event all draw the same card, because
+// The Shop, the inventory drawer, a fight's relic pick and the Mystery Event all draw the same card, because
 // "the thing I was offered" and "the thing I now have" should be visibly the same object.
 
 export type ItemKind = 'consumable' | 'relic' | 'held-item' | 'tm' | 'ball' | 'stone';

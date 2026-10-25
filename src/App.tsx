@@ -14,7 +14,6 @@ import { RingScreen } from '@/ui/screens/RingScreen';
 import { SafariScreen } from '@/ui/screens/safari/SafariScreen';
 import { BlackMarketScreen } from '@/ui/screens/BlackMarketScreen';
 import { CheatMenu } from '@/ui/components/CheatMenu';
-import { LegendaryScreen } from '@/ui/screens/LegendaryScreen';
 import { HubScreen } from '@/ui/screens/HubScreen';
 import { SettingsScreen } from '@/ui/screens/SettingsScreen';
 import { AboutScreen } from '@/ui/screens/AboutScreen';
@@ -22,7 +21,7 @@ import { ChangelogScreen } from '@/ui/screens/ChangelogScreen';
 import { EvolutionScreen } from '@/ui/screens/EvolutionScreen';
 import { MainMenu } from '@/ui/screens/MainMenu';
 import { MapScreen } from '@/ui/screens/MapScreen';
-import { RewardScreen } from '@/ui/screens/RewardScreen';
+import { FightResults } from '@/ui/screens/results/FightResults';
 import { useAudioUnlock, useMusicDirector } from '@/ui/audio/useAudio';
 import { TraderScreen } from '@/ui/screens/TraderScreen';
 import { FindScreen } from '@/ui/screens/FindScreen';
@@ -57,21 +56,23 @@ function Screens() {
       }
       return;
     }
-    if (fromUrl !== 'map' && fromUrl !== 'combat') return;
+    if (fromUrl !== 'map' && fromUrl !== 'combat' && fromUrl !== 'results') return;
     if (!hasRun && !useRunStore.getState().loadSave().ok) {
       goTo('menu');
       return;
     }
     // A run that was mid-fight when the tab closed comes back mid-fight.
     if (!hasCombat && useRunStore.getState().resumeCombat()) goTo('combat');
-    else if (useRunStore.getState().run?.phase !== 'combat' && fromUrl === 'combat') goTo('map');
+    // A result screen is not saved: a reload there finds the run past it, on the map (or still in the fight, above).
+    else if (useRunStore.getState().run?.phase !== 'combat' && fromUrl !== 'map') goTo('map');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // The run's own phase decides what sits over the map: a reward, an evolution, a service node, a recruit,
   // a City, or nothing. The order matches the reducer's, so the router never has to know the rules.
   if (screen === 'map') {
-    if (runPhase === 'reward') return <RewardScreen />;
+    // §9.4.5 — a fight's reward, and a Gym's 1-of-3 after it (§7.3.7), on the fight's own stage.
+    if (runPhase === 'reward') return <FightResults />;
     if (runPhase === 'evolution') return <EvolutionScreen />;
     if (runPhase === 'dojo') return <DojoScreen />;
     if (runPhase === 'shop') return <ShopScreen />;
@@ -92,7 +93,7 @@ function Screens() {
     // §2.11.6 — the Safari, and a catch into a full Box asked from inside it rather than over the map.
     if (runPhase === 'safari' || (runPhase === 'swap-or-skip' && useRunStore.getState().run?.city)) return <SafariScreen />;
     // §7.3.7 — the Gym is beaten and the 1-of-3 is open; the run is not over until it is answered.
-    if (runPhase === 'legendary') return <LegendaryScreen />;
+    if (runPhase === 'legendary') return <FightResults />;
     return (
       <>
         <MapScreen />
@@ -104,6 +105,9 @@ function Screens() {
   switch (screen) {
     case 'combat':
       return <CombatScreen />;
+    // §9.4.5 — the fight's end, on its own stage, until Continue: every ending, the ones that pay no reward too.
+    case 'results':
+      return hasRun ? <FightResults /> : <MainMenu />;
     case 'scenarios':
       return <ScenarioPicker />;
     case 'starter':

@@ -1,0 +1,131 @@
+/* §9.4.5 — the progress door: a chip on the top bar, the list under it in the tooltips' dark bubble. */
+.root {
+  position: relative;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 3px var(--sp-3) 3px var(--sp-1);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-size: var(--type-caption);
+  font-weight: 800;
+}
+.chip:hover {
+  background: var(--surface-3);
+}
+/* A Bond rank gained: the chip's gold edge glows — the one piece of this list that is news. */
+.lit {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-action) 55%, transparent);
+}
+.face {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-3);
+}
+/* A 30-px item icon at ½× (D9). */
+.face img {
+  width: 15px;
+  height: 15px;
+}
+.spark {
+  color: var(--accent-action);
+}
+.panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--sp-2));
+  z-index: var(--z-overlay);
+  width: min(380px, 90vw);
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-radius: var(--radius-md);
+  background: var(--tip-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+.heading {
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 72px auto;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+  cursor: help;
+}
+.noteIcon {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-3);
+}
+.noteIcon img {
+  width: 15px;
+  height: 15px;
+}
+.noteDone {
+  font-weight: 800;
+}
+.bar {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent-action-deep);
+}
+.done {
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-size: var(--type-micro);
+  font-weight: 800;
+}
+.bonds {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-1) var(--sp-3);
+  padding-top: var(--sp-2);
+  border-top: 1px solid var(--border-subtle);
+  font-size: var(--type-small);
+}
+.bondLabel {
+  font-weight: 800;
+}
+.bond {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  cursor: help;
+}
+.unlock {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--arch-specialist);
+  color: var(--ink-on-accent);
+  font-size: var(--type-micro);
+  font-weight: 800;
+}

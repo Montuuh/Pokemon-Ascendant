@@ -69,6 +69,7 @@ test.describe('The playtest menu', () => {
     await expect(page.getByTestId('combat-screen')).toHaveAttribute('data-turn', turn!);
     await page.getByTestId('cheat-win').click();
     await page.getByTestId('cheat-close').click();
-    await expect(page.getByTestId('combat-screen')).toHaveAttribute('data-outcome', 'victory');
+    // §9.4.5 — the fight becomes its result, on its own stage.
+    await expect(page.getByTestId('fight-results')).toHaveAttribute('data-outcome', 'victory');
   });
 });

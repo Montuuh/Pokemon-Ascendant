@@ -1,0 +1,106 @@
+/* §9.4.5 — a Pokémon on the result screen: the fight card's frames (Portrait's and EnemyPanel's), and the XP bar under
+   its HP. Not a button: nothing here is a choice. */
+.unit {
+  cursor: default;
+}
+/* Your Lead: gold, crowned; the bench a neutral frame; the enemy's Lead its red (as on the field). */
+.unit.lead {
+  --frame: 3px;
+  border-color: var(--accent-action);
+}
+.unit .leadTag {
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+}
+.unit.bench {
+  border-color: var(--surface-3);
+}
+.unit.foeLead {
+  --frame: 3px;
+  border-color: var(--brand-red);
+}
+/* The deep red, so cream text holds 4.5:1 (D5). */
+.unit .foeTag {
+  background: var(--brand-red-deep);
+  color: var(--brand-cream);
+}
+.unit.fainted {
+  filter: saturate(0.2) brightness(0.8);
+  opacity: 0.8;
+}
+/* A beaten wild Pokémon stays a moment as a ghost of its card; one still standing after you ran, faded back. */
+.unit.ghost {
+  opacity: 0.45;
+  filter: grayscale(0.9);
+}
+.unit.faded {
+  opacity: 0.6;
+}
+/* A catch: its place on the field, in your gold, under a red "New". */
+.unit.new {
+  --frame: 3px;
+  border-color: var(--accent-action);
+}
+.unit .newTag {
+  background: var(--brand-red-deep);
+  color: var(--brand-cream);
+}
+/* Its level-up panel is standing beside the Lead's card: a gold glow says whose news it is. */
+.unit.levelling {
+  box-shadow:
+    0 0 0 3px var(--accent-action),
+    0 0 24px color-mix(in srgb, var(--accent-action) 55%, transparent);
+}
+/* Yours turned round to face you: the front sprite, mirrored to look across the field. */
+.facing {
+  transform: scaleX(-1);
+}
+/* The level tag lit: it grew in this fight. */
+.unit .grew {
+  background: var(--accent-action);
+  border-color: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-weight: 800;
+}
+
+/* ── The XP bar: what it had, in blue; what this fight gave, lit ────────────────────────────────────────── */
+.xpRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 14px;
+  padding: 0 2px;
+  cursor: help;
+}
+.xpLabel {
+  font-size: var(--type-micro);
+  font-weight: 800;
+  color: var(--ink-muted);
+}
+.xpTrack {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.xpWas,
+.xpGain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--radius-pill);
+}
+.xpWas {
+  left: 0;
+  background: var(--brand-blue);
+}
+.xpGain {
+  background: color-mix(in srgb, var(--brand-blue) 40%, var(--brand-cream));
+}
+.xpPlus {
+  font-size: var(--type-micro);
+  font-weight: 800;
+  white-space: nowrap;
+}

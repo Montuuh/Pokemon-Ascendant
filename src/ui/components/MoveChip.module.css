@@ -1,4 +1,4 @@
-/* A move as a chip (the Evolution screen, the reward screen): its type label, its name, its card on hover. */
+/* A move as a chip (the Evolution screen, the Team screen, the Pokédex): its type label, its name, its card on hover. */
 
 .chip {
   font-family: var(--font-ui);

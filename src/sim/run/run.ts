@@ -27,7 +27,7 @@ import { prizeLabel, spinReel } from './finds';
 import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
 import { BOND_TIER } from '../meta/bond';
 import { copyIsShiny } from './shiny';
-import type { BlackMarketState, HealLine, LevelUp, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunPhase, RunReduceResult, RunState, ShopSlot } from './types';
+import type { BlackMarketState, HealLine, LevelUp, MapNode, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunPhase, RunReduceResult, RunState, ShopSlot } from './types';
 
 
 /** A shop row in the player's words, for the log line after a purchase. */
@@ -712,7 +712,7 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
   }
   if (node.kind === 'gym') {
     // §5.10 — the Badge, before the run is marked won, so a save taken at the summary already has it.
-    const gym = node.lane !== undefined ? gymById(draft.map.gyms[node.lane] ?? GYM.id) : GYM;
+    const gym = gymOfNode(draft, node);
     if (!draft.badges.includes(gym.badgeId)) draft.badges.push(gym.badgeId);
     draft.log.push(`${gym.name} is beaten. Region ${draft.regionIndex + 1} is cleared.`);
 
@@ -732,6 +732,11 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
   } else {
     draft.phase = 'map';
   }
+}
+
+/** §2.5 — the Gym a Gym node stands for: its lane's, or Region 1's own on a laneless map. */
+function gymOfNode(draft: RunState, node: MapNode) {
+  return node.lane !== undefined ? gymById(draft.map.gyms[node.lane] ?? GYM.id) : GYM;
 }
 
 /** §6.3.1 — every Pokémon standing at its threshold owes one Evolution screen, in Box order. */
@@ -999,6 +1004,21 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const node = draft.map.nodes[draft.pendingNodeId!]!;
         draft.stats.turnsPlayed += report.turns;
 
+        // §9.4.5 — the fight as its result screen draws it, on its own stage: where, against whom, and the team as the
+        // fight left it — HP before the victory heal, level and XP before the award — written first, so every ending
+        // (a Ring rung's too) has one.
+        const scenario = draft.pendingScenario;
+        draft.lastFight = {
+          outcome: report.outcome,
+          kind: node?.kind ?? null,
+          stage: scenario?.stage ?? 'meadow',
+          trainer: scenario?.trainer ? { ...scenario.trainer } : null,
+          foes: (scenario?.enemies ?? []).map((e) => ({ speciesId: e.species, level: e.level, ...(e.shiny ? { shiny: true } : {}) })),
+          formation: report.formation ?? report.team.map((t) => t.uid),
+          before: draft.box.map((m) => ({ uid: m.uid, hp: Math.max(0, report.team.find((t) => t.uid === m.uid)?.hp ?? m.hp), level: m.level, xp: m.xp })),
+          ...(node?.kind === 'gym' && report.outcome === 'victory' ? { badge: gymOfNode(draft, node).badgeId } : {}),
+        };
+
         // §7.3.7 — a relic charge marked `oncePerRun` does not come back with the next fight. The fight
         // reports every charge it spent; the content row is what says which of them were the last.
         for (const id of report.spentRelics ?? []) {
@@ -1083,6 +1103,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           const lootRng = new RngStreams(draft.seed).get('LootRNG');
           lootRng.cursor = draft.cursors.LootRNG ?? lootRng.cursor;
           let taken: string | null = null;
+          let takenKind: 'relic' | 'consumable' = 'relic';
           if (toll.loot === 'relic') {
             // Never a Legendary: those are a pick, not a drop, and losing one would undo a Gym.
             const pool = draft.relics.filter((id) => ctx.content.relic(id).rarity !== 'legendary');
@@ -1095,9 +1116,12 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           if ((toll.loot === 'consumable' || (toll.loot === 'relic' && !taken)) && draft.consumables.length) {
             const at = lootRng.range(0, draft.consumables.length);
             taken = draft.consumables[at]!;
+            takenKind = 'consumable';
             draft.consumables.splice(at, 1);
             say(draft, `A ${ctx.content.consumable(taken).name} was dropped in the scramble.`);
           }
+          // §9.4.5 — the toll, said with its numbers on the result screen rather than left for the map to imply.
+          if (draft.lastFight) draft.lastFight.toll = { money: lost, trauma: shaken.map((m) => m.uid), lost: taken ? { kind: takenKind, id: taken } : null };
           draft.cursors.LootRNG = lootRng.cursor;
           draft.stats.escapes += 1;
           say(draft, `Got away — ${describeToll(toll)}${lost ? ` (${lost} ₽)` : ''}.`);
@@ -1214,7 +1238,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         }
 
         // §7.3.1 — relics are scarce (v0.8.6). A Trainer drops a Common, and only sometimes; the Elite Trainer
-        // offers a pick on the reward screen (§2.8.1); the Gym's is its own 1-of-3 after the fight (§7.3.7).
+        // offers a pick on the fight's result (§2.8.1); the Gym's is its own 1-of-3 after the fight (§7.3.7).
         // Duplicates are excluded.
         //
         // §2.8.2 — the Elite Wild is the catch-**or**-kill node, and this is where that word is enforced:
@@ -1235,7 +1259,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           relicPick = gymRelicOffer(lootRng, ctx.content, draft.relics, VICTORY_ROAD.regionIndex, draft.perks.relicPool);
           if (!relicPick.length) relicPick = null;
         } else if (node.kind === 'gauntlet') {
-          // §2.12.1 — a Gauntlet's reward: one of three Rare relics, taken on the reward screen.
+          // §2.12.1 — a Gauntlet's reward: one of three Rare relics, taken on the fight's result.
           relicPick = gymRelicOffer(lootRng, ctx.content, draft.relics, 0, draft.perks.relicPool);
           if (!relicPick.length) relicPick = null;
           // §2.12.6 — a Perfect Clear: nobody fainted, and the Badge of a Gym the run passed by is yours.
@@ -1349,7 +1373,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
 
       case 'claim-reward': {
         const node = draft.map.nodes[draft.pendingNodeId!]!;
-        // §2.8.1 — the Elite Trainer's pick is taken here, on the reward screen; leaving all three is allowed.
+        // §2.8.1 — the Elite Trainer's pick is taken here, on the fight's result; leaving all three is allowed.
         if (action.relicId && draft.pendingReward?.relicPick?.includes(action.relicId)) acquireRelic(draft, action.relicId, ctx.content);
         draft.pendingReward = null;
         draft.pendingScenario = null;

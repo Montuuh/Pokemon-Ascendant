@@ -1,0 +1,105 @@
+/* §9.4.5 — the level-up window beside its card: the series' white stat window in the game's register — cream, a gold
+   edge, a pointer at the card it belongs to — over everything on the field for the length of its beat. */
+.panel {
+  position: absolute;
+  z-index: 8;
+  left: calc(100% + var(--sp-3));
+  top: 50%;
+  translate: 0 -50%;
+  width: max-content;
+  min-width: clamp(176px, 30cqh, 230px);
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 3px solid var(--accent-action);
+  background: var(--brand-cream);
+  color: var(--ink-on-accent);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
+  animation: global(popIn) var(--motion-base) var(--ease-spring) both;
+}
+/* The pointer at the card. */
+.panel::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  translate: 0 -50%;
+  border: 9px solid transparent;
+  border-right-color: var(--accent-action);
+}
+/* Bench 1's news top-aligned with the Lead's card, Bench 2's bottom-aligned; no pointer — the glowing card is theirs. */
+.b1 {
+  top: 0;
+  translate: none;
+}
+.b2 {
+  top: auto;
+  bottom: 0;
+  translate: none;
+}
+.b1::before,
+.b2::before {
+  display: none;
+}
+.folding {
+  opacity: 0;
+  transition: opacity var(--motion-fast) ease;
+}
+.head {
+  font-size: var(--type-small);
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.rows {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: var(--sp-3);
+  row-gap: 1px;
+}
+.row {
+  display: contents;
+}
+.stat {
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+.value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-caption);
+  text-align: right;
+}
+/* On the cream: a green fill under dark ink, never green text (D5). */
+.gain {
+  justify-self: start;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-positive);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  line-height: 1.5;
+}
+.move {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-top: 2px;
+  font-size: var(--type-caption);
+  white-space: nowrap;
+}
+.new {
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--brand-red-deep);
+  color: var(--brand-cream);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+/* The panel is cream inside the dark stage, so its quiet ink is the dark ink softened, not the stage's secondary. */
+.pool {
+  font-size: var(--type-micro);
+  color: color-mix(in srgb, var(--ink-on-accent) 80%, var(--brand-cream));
+}

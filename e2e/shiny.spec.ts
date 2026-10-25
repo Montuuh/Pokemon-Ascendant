@@ -38,7 +38,7 @@ test.describe('Shiny and Bond — §5.14, §6.8.1', () => {
     await page.screenshot({ path: 'playtest/shiny-combat.png' });
   });
 
-  test('a shiny catch shows its palette on the reward card, and a trainer win pays each line its Bond', async ({ page }) => {
+  test('a shiny catch shows its palette on the result, and a trainer win pays each line its Bond', async ({ page }) => {
     await fresh(page);
     await page.evaluate(() => {
       const A = (window as unknown as { __ascendant: Ascendant }).__ascendant;
@@ -51,8 +51,12 @@ test.describe('Shiny and Bond — §5.14, §6.8.1', () => {
       A.run.dispatch({ type: 'finish-combat', report: { outcome: 'caught', team: t.activeUids.map((uid) => ({ uid, hp: 18, status: null, fainted: false })), caught: { speciesId: 'pidgey', level: 6, shiny: true }, ballsLeft: 0, turns: 3 } });
       A.goTo('map');
     });
-    await expect(page.getByTestId('reward-catch-shiny')).toBeVisible();
-    await expect(page.getByTestId('reward-catch-bond')).toContainText('+10 Bond');
+    // §9.4.5 — the catch stands where it was caught, in the palette it was caught in; its Bond is behind the progress door.
+    await expect(page.getByTestId('reward-catch').locator('img[data-shiny]')).toBeVisible();
+    await expect(page.getByTestId('reward-catch').getByTestId('shiny-mark')).toBeVisible();
+    await page.getByTestId('results-progress').click();
+    // The line's Bond from this fight, the shiny catch's own +10 in it.
+    await expect(page.getByTestId('bond-pidgey')).toContainText(/Pidgey \+1\d/);
     await settle(page);
     await page.screenshot({ path: 'playtest/shiny-reward.png' });
 
@@ -66,9 +70,10 @@ test.describe('Shiny and Bond — §5.14, §6.8.1', () => {
       const t = A.run.state();
       A.run.dispatch({ type: 'finish-combat', report: { outcome: 'victory', team: t.activeUids.map((uid) => ({ uid, hp: 18, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 4, leadTurns: { squirtle: 4 } } });
     });
-    await expect(page.getByTestId('bond-squirtle')).toContainText('+2 Bond');
-    await expect(page.getByTestId('bond-pidgey')).toContainText('+1 Bond');
-    await expect(page.getByTestId('xp-pidgey').getByTestId('shiny-mark')).toBeVisible();
+    await expect(page.getByTestId('result-pidgey').getByTestId('shiny-mark')).toBeVisible();
+    await page.getByTestId('results-progress').click();
+    await expect(page.getByTestId('bond-squirtle')).toContainText('+2');
+    await expect(page.getByTestId('bond-pidgey')).toContainText('+1');
     await settle(page);
     await page.screenshot({ path: 'playtest/bond-reward.png' });
   });

@@ -17,7 +17,7 @@ async function freshRun(page: Page, seed = 7): Promise<void> {
 }
 
 test.describe('Supplies and scarce relics — v0.8.6', () => {
-  test('a trainer pays in supplies, named and counted on the reward screen — §2.7.2', async ({ page }) => {
+  test('a trainer pays in supplies, each a named card in the result tray — §2.7.2, §9.4.5', async ({ page }) => {
     await freshRun(page);
     await page.evaluate(() => {
       window.__ascendant!.run.jump('trainer');
@@ -28,10 +28,10 @@ test.describe('Supplies and scarce relics — v0.8.6', () => {
     await page.getByTestId('btn-enter-node').click();
     await expect(page.getByTestId('combat-screen')).toBeVisible();
     await page.evaluate(() => window.__ascendant!.auto(400));
-    await page.getByTestId('btn-continue-run').click();
-    await expect(page.getByTestId('reward-screen')).toBeVisible();
-    await expect(page.getByTestId('reward-supplies')).toBeVisible();
-    await page.waitForTimeout(500);
+    // §9.4.5 — no overlay: the fight becomes its result, the spoils dealt into the tray where the hand was.
+    await expect(page.getByTestId('fight-results')).toBeVisible();
+    await expect(page.getByTestId('reward-spoils').locator('[data-kind="consumable"]').first()).toBeVisible();
+    await page.waitForTimeout(300);
     await page.screenshot({ path: 'playtest/reward-supplies.png' });
     const bag = await page.evaluate(() => window.__ascendant!.run.state()!.pendingReward!.consumables.length);
     expect(bag).toBeGreaterThan(0);
@@ -44,7 +44,7 @@ test.describe('Supplies and scarce relics — v0.8.6', () => {
     const phase = await page.evaluate(() => window.__ascendant!.run.state()!.phase);
     test.skip(phase !== 'reward', `the walk ended on ${phase}`);
     await page.evaluate(() => window.__ascendant!.goTo('map'));
-    await expect(page.getByTestId('reward-screen')).toBeVisible();
+    await expect(page.getByTestId('fight-results')).toBeVisible();
     await expect(page.getByTestId('btn-claim')).toHaveText('Choose a relic');
     // The loot rows must leave the button on a 720p screen (the UI review's Blocker, v0.8.6).
     await page.setViewportSize({ width: 1280, height: 720 });
@@ -60,7 +60,7 @@ test.describe('Supplies and scarce relics — v0.8.6', () => {
     const before = await page.evaluate(() => window.__ascendant!.run.state()!.relics.length);
     await offers.nth(2).click();
     await page.getByTestId('btn-take-elite-relic').click();
-    await expect(page.getByTestId('reward-screen')).toHaveCount(0);
+    await expect(page.getByTestId('fight-results')).toHaveCount(0);
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.relics.length)).toBe(before + 1);
   });
 

@@ -464,13 +464,40 @@ player reaches its type in a fight.
 
 ## §9.4.5 Progress after a fight
 
-The reward screen (§3.5 in `ui/screens.md`) says what the fight gave as pills and chips, the words on hover: per
-Pokémon, its XP and, on a level-up, the stats gained (old → new on hover), the moves learned (an outlined chip
-"in the pool" past four), *Ready to evolve*, the Bond and what a Bond rank opened (the hidden ability as its own chip);
-then what the fight moved on the account — each medal and Tier-2 discovery with its bar, *Done* when it completed —
-and the loot as one strip. Progress made **outside** a fight (an evolution, a recruit, a run's end) shows in the
+**The fight ends where it happened** (v0.9.30, the user's pick of 2026-10-21; the mockups and the rejected directions
+are in `ui/mockups/fight-end/`). No overlay and no second page: once the last beat has played and held a moment, the
+hand clears and the stage becomes the result (`FightResults`), on the fight's own backdrop, with the series' word on a
+ribbon — *Victory!*, *Gotcha!*, *Wiped out…*, *Got away safely!*, *Abra fled!* — and one line in its voice under it
+("You defeated Swimmer Cass! Received the Boulder Badge."). A run fight's every ending has one, the ones that pay
+nothing too; a practice fixture keeps its summary.
+
+- **Your side** — the formation where the fight left it (`report.formation`), each Pokémon turned to face you, in the
+  fight card's anatomy with an XP bar under its HP. The HP fills with any victory heal and the XP bar with what the
+  fight paid, **as the series plays them**: the numbers ticking with the bar, the heal's restore and the XP bar's rising
+  whistle, the level tag ticking over as the bar tops out, with the **level-up fanfare**. A level gained stops the bar on
+  a **stat panel beside its card** — "Pidgey grew to Lv 9!", each stat's gain, then the totals counting up, and a move
+  the level brought — for the length of its beat, then it folds away; the lit level tag is its door afterwards. Nothing
+  of it is on the card itself (the user's note, 2026-10-21). A Pokémon in the Box shows its XP at the tray's left.
+- **Their side** — who you beat: a trainer steps forward with their beaten team at their feet; a wild one stays a ghost
+  of its card; a catch stands where it was caught (*New*, or *Box full*); a runner leaves its sparkles. A Gym's
+  **Badge** stands in its case between the two sides, with its fanfare.
+- **The tray** where the hand was — the spoils as cards in the move card's grammar (prize money with the wallet after,
+  each item named with its kind), dealt in with a coin as the money counts; a run's **toll with its numbers** (the share
+  of the wallet, what was left behind) and its Trauma on the cards; the way on where End Turn stood, naming what comes —
+  *Continue*, *Choose a relic*, *See how far you got*.
+- **Picks on the same stage** — the Elite's 1-of-3 (§2.8.1) and the Gym's (§7.3.7, after any evolution) fill the tray
+  with their three relics, the Badge still in its case.
+- **An evolution is the series' surprise** (the user's call, 2026-10-21): nothing on the result says one is coming — no
+  flag, no Evolve button. Continue, and "What? Bulbasaur is evolving!" plays.
+- **Behind the progress door** — a chip on the top bar: what the fight moved on the account, each medal and Tier-2
+  discovery with its bar, each line's Bond and what a rank opened (the chip lights for a rank). D4: the fight's own news
+  is its team and its spoils.
+
+The reveal is one clock (`RESULT_MS`, `revealPlan`): a click or Enter goes to the next stop (a bar's end, a panel's),
+Escape or Skip to the end, and Skip is the way on until it ends. With motion off it opens at the end and plays the
+fanfare once for a level gained. Progress made **outside** a fight (an evolution, a recruit, a run's end) shows in the
 **progress panel**: a dark note in the bottom-left corner, one at a time for a few seconds, never taking a click, held
-while a fight or its reward screen is up — a fight's own news is its reward screen's (v0.9.6).
+while a fight or its result is up (v0.9.6).
 
 ---
 
@@ -612,6 +639,7 @@ The series' own beats, drawn in the arena on top of a result the sim has already
 | **Swapped** | No ball (the user's note, 2026-10-19): the two cards **glide between their places**, the Pokémon in them — the bench card forward to the Lead, the Lead back to the bench — a FLIP on the card itself (`FX_MS.swap`). A replacement after a faint, a Step-Forward, a Step-Backward and a forced swap move the same way. |
 | **Fainted** | A fallen Pokémon holds a beat and flashes, then sinks through the ground line as it greys and fades out — gone by the last frame, never cut while it still shows, and it never fades back. A foe's card fades with it in its place, and the others hold theirs until it has gone (v0.9.11). A trainer's, or yours, then goes back into its ball, which flies back to the trainer's hand before the next one is thrown. A wild one simply goes. |
 | **Evolution** | "What? Bulbasaur is evolving!" on a dark stage; the sprite turns to light, the old and the new shapes trade places faster and faster — never under 100 ms, both the same light, so a shape changes and not a screen's brightness — a bloom behind it, and the new Pokémon in its colours: "Congratulations! …". A click or a key skips it; it plays before the path is chosen when every path makes one species, after when they differ (v0.9.6). |
+| **The fight's end** | The last beat (a faint, the catch) holds a moment; the hand clears and the stage becomes the result (§9.4.5): the ribbon drops, the other side comes forward, the heal fills every HP bar, then each Pokémon's XP bar in turn with its whistle — a level gained ticks the tag over with the fanfare and stands its stat panel beside the card — and the spoils are dealt into the tray. About two seconds with no level gained; a click goes to the next stop. |
 | **The catch** | The ball is thrown in a parabola — across at an even pace, up and down under gravity, its path never spun (v0.9.16: a rotated path swung it round in a loop), and never higher than the field has room for, so a Bench 1 at 720 p gets a flatter throw rather than a ball out of sight — opens on the Pokémon and draws it in, falls to the ground with a bounce, and rocks: a still moment, then a rock, once per shake check (§2.6.4.4) — three wobbles, a still moment, and the click with three sparks on a catch; on a break, the ball bursts open as the wobble its check followed ends, and the Pokémon is back in its card with the burst (v0.9.16: a still moment and a second's wait after it read as the beat stalling). The ball shows only its wobbles: the chance was on the pill before the throw (v0.9.16, the user's call: the lights under it went). "Gotcha!" or the series' line for how close it came lands with the click or the burst. About six and a half seconds for a catch, the series' pace; a break is over sooner. |
 
 The beats are presentation only: the catch's result is rolled first (§2.6.4.1) and the ball only shows it. A beat
@@ -745,9 +773,9 @@ flowchart TD
   City --> Center
   City --> Shop
   City --> Dojo
-  Combat --> Reward[Post-Combat Reward] --> Map
-  Combat --> Evo[Evolution] --> Reward
-  Combat --> Legendary[Legendary Pick] --> Reward
+  Combat --> Result[Fight result, on the stage] --> Map
+  Result --> Evo[Evolution] --> Map
+  Result --> Pick[The Gym's 1-of-3, on the stage] --> City
   Combat --> Defeat[Defeat Summary] --> Hub
   Map --> Victory[Victory Summary] --> Hub
   Map -.overlay.-> Team[Team & Loadout]
@@ -764,7 +792,7 @@ flowchart TD
 |---|---|
 | **Front-end** | Boot · Main Menu · Trainer Hub · Achievements · Settings |
 | **New run** | Difficulty · Starter · Starting Relic · Region Modifier |
-| **In run** | Route Map · Node Preview · **Combat** · Post-Combat Reward · Evolution · Legendary Pick |
+| **In run** | Route Map · Node Preview · **Combat** · Fight Result (the Elite's and the Gym's picks on it) · Evolution |
 | **Node services** | Pokémon Center · Shop · Dojo · City Plaza · Mystery Event · Roadside Trader |
 | **Management** | Team (the formation, the Box and each Pokémon's sheet, §2.3) · Move Manager · Inventory · Pokédex |
 | **Run end** | Victory · Defeat |

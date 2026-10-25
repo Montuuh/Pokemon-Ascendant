@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.54 — The field after.** A fight now ends on its own stage: your team stays where it stood while its HP and XP bars fill with the series' sounds, a level-up plays its fanfare and stat window, the trainer you beat steps forward (a Gym's Badge in its case), and the spoils are dealt into the tray — one click on. Evolutions arrive as a surprise. Before it,
 **v0.9.53 — Basement service bays.** Quiet slate aisles and warm service areas give the hidden market a clearer focus, with original FRLG stock props. Before it,
 **v0.9.52 — Summit decisions at large text.** Wider relic offers keep both gate choices visible at 150% text. The League preview sits beneath the arrival scene. Before it,
 **v0.9.51 — Compact Center reception.** Healthy visits centre the room with one compact status. Healing keeps its adjacent, scrollable report and readable large-text cards. Before it,

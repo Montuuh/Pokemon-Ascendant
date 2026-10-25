@@ -8,12 +8,11 @@ interface Props {
   state: CombatState;
   onRestart: () => void;
   onExit: () => void;
-  /** Inside a run the fight has consequences, so there is one way out: carry the result back (§2.4). */
-  runMode?: boolean;
 }
 
-// Victory / Defeat / Caught summary (docs/design/ui/03 §3.8–3.9 tone: warm, never punishing).
-export function OutcomeOverlay({ state, onRestart, onExit, runMode = false }: Props) {
+// A practice fixture's summary (the scenario picker's fights): Victory / Defeat / Caught, the fight in numbers, Play again.
+// A run fight never shows it — its end is its result screen, on the fight's own stage (§9.4.5, `FightResults`).
+export function OutcomeOverlay({ state, onRestart, onExit }: Props) {
   const caught = state.outcome === 'caught';
   const escaped = state.outcome === 'escaped';
   // §5.6.5 — a runner that got away; a hold-out won with the guard still standing.
@@ -31,7 +30,7 @@ export function OutcomeOverlay({ state, onRestart, onExit, runMode = false }: Pr
     <Modal title={title} tone={won ? 'victory' : 'defeat'} testId="outcome-overlay">
       <p className={styles.sub}>
         {caught
-          ? `${state.defeatedEnemies.at(-1)?.name} joins the Box. A catch counts as a full Victory.`
+          ? `${state.defeatedEnemies.at(-1)?.name} is caught. A catch counts as a full Victory.`
           : held
             ? OBJECTIVE_TEXT.heldBody
           : fled
@@ -39,8 +38,8 @@ export function OutcomeOverlay({ state, onRestart, onExit, runMode = false }: Pr
           : won
             ? `${state.trainer ? state.trainer.name : 'The wild Pokémon'} ${state.trainer ? 'is out of usable Pokémon' : 'fainted'}.`
             : escaped
-              ? 'No XP, no drop. The toll comes off on the map: money, Trauma, and for the bigger fights something from the bag.'
-              : 'Every faint leaves a Trauma stack. Rest, rethink the Lead, try again.'}
+              ? 'No XP, no drop.'
+              : 'Every faint leaves a Trauma stack. Rethink the Lead, try again.'}
       </p>
       <div className={styles.team}>
         {state.player.team.map((c) => (
@@ -79,20 +78,12 @@ export function OutcomeOverlay({ state, onRestart, onExit, runMode = false }: Pr
         </div>
       </dl>
       <div className={styles.actions}>
-        {runMode ? (
-          <button type="button" className={styles.primary} onClick={onExit} data-testid="btn-continue-run">
-            {won || escaped || fled ? 'Continue' : 'See how far you got'}
-          </button>
-        ) : (
-          <>
-            <button type="button" className={styles.primary} onClick={onRestart} data-testid="btn-restart">
-              Play again
-            </button>
-            <button type="button" className={styles.secondary} onClick={onExit} data-testid="btn-exit">
-              Scenarios
-            </button>
-          </>
-        )}
+        <button type="button" className={styles.primary} onClick={onRestart} data-testid="btn-restart">
+          Play again
+        </button>
+        <button type="button" className={styles.secondary} onClick={onExit} data-testid="btn-exit">
+          Scenarios
+        </button>
       </div>
     </Modal>
   );

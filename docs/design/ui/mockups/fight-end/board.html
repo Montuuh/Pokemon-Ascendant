@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fight end — C: the results board</title>
+<!-- Rejected direction C (2026-10-21), kept for the comparison: a results screen of its own on the light front-end
+     theme — who you beat, the team, the spoils, one Continue. Open through the dev server:
+     http://localhost:5173/docs/design/ui/mockups/fight-end/board.html -->
+<link rel="stylesheet" href="/src/ui/styles/tokens.css?direct">
+<style>
+@font-face { font-family: 'Baloo 2'; src: url('/src/assets/fonts/Baloo2-VariableFont_wght.ttf') format('truetype'); font-weight: 400 800; }
+@font-face { font-family: 'Nunito'; src: url('/src/assets/fonts/Nunito-VariableFont_wght.ttf') format('truetype'); font-weight: 200 1000; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { overflow: hidden; font-family: var(--font-body); color: var(--ink-primary); background: radial-gradient(120% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 65%); }
+:root { --u: min(1vh, 0.5625vw); --k: 1.5; }
+@media (max-height: 800px) { :root { --k: 1; } }
+.root { height: 100vh; display: grid; place-items: center; padding: calc(3 * var(--u)); }
+.board { width: min(1560px, 100%); height: 100%; max-height: calc(86 * var(--u)); display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: calc(2.4 * var(--u)); padding: calc(3 * var(--u)); border-radius: var(--radius-xl); background: var(--surface-1); border: 2px solid var(--border-strong); box-shadow: 0 24px 60px rgba(58,46,34,.22); }
+.col { display: grid; align-content: start; gap: calc(1.6 * var(--u)); min-height: 0; }
+h1 { margin: 0; font: 800 calc(6 * var(--u))/1 var(--font-display); color: var(--brand-red); }
+.cap { font-size: var(--type-micro); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-secondary); }
+.trophy { display: grid; justify-items: center; gap: 10px; padding: calc(2 * var(--u)); border-radius: var(--radius-lg); background: var(--surface-2); }
+.trophy img.tr { width: calc(80px * var(--k) * 2); image-rendering: pixelated; }
+.trophy .line { font: 700 var(--type-body)/1.2 var(--font-display); text-align: center; }
+.party { display: flex; gap: 8px; } .party img { image-rendering: pixelated; filter: grayscale(1); opacity: .7; }
+.mon { display: grid; grid-template-columns: calc(11 * var(--u)) 1fr; gap: calc(1.4 * var(--u)); align-items: center; padding: calc(1.2 * var(--u)) calc(1.6 * var(--u)); border-radius: var(--radius-lg); background: var(--surface-2); border: 2px solid var(--border-subtle); }
+.mon .pic { height: calc(10 * var(--u)); display: grid; place-items: center; border-radius: var(--radius-md); background: radial-gradient(70% 70% at 50% 60%, #fff, var(--surface-3)); }
+.mon .pic img { image-rendering: pixelated; transform: scaleX(-1); }
+.mon .body { display: grid; gap: 6px; }
+.mon .top { display: flex; align-items: center; gap: 8px; font: 700 var(--type-body)/1 var(--font-display); }
+.mon .top .lv { font: 800 var(--type-caption) var(--font-body); padding: 1px 8px; border-radius: 99px; background: var(--accent-action); }
+.mon .top .lv.flat { background: none; border: 1px solid var(--border-subtle); color: var(--ink-secondary); font-weight: 600; }
+.mon .top .xp { margin-left: auto; font: 800 var(--type-small) var(--font-body); }
+.track { height: 10px; border-radius: 99px; background: var(--surface-sunken); overflow: hidden; } .track i { display: block; height: 100%; background: linear-gradient(90deg, var(--brand-blue), color-mix(in srgb, var(--brand-blue) 55%, var(--brand-cream))); }
+.pills { display: flex; gap: 4px; flex-wrap: wrap; } .pill { padding: 1px 8px; border-radius: 99px; background: var(--accent-positive); font-size: var(--type-caption); font-weight: 800; } .pill.mv { background: var(--brand-cream); border: 1px solid var(--border-strong); }
+.loot { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: calc(1 * var(--u)) calc(1.4 * var(--u)); border-radius: var(--radius-lg); background: var(--surface-2); border: 2px solid var(--border-subtle); font: 700 var(--type-body)/1.1 var(--font-display); }
+.loot .ic { width: calc(7 * var(--u)); height: calc(7 * var(--u)); border-radius: var(--radius-md); display: grid; place-items: center; background: var(--surface-1); }
+.loot small { display: block; font: 800 var(--type-micro) var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-secondary); margin-top: 3px; }
+.prog { display: inline-flex; gap: 6px; align-items: center; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border-strong); background: var(--surface-1); font-weight: 800; justify-self: start; }
+.prog img { width: 18px; }
+.go { margin-top: auto; justify-self: stretch; padding: calc(1.4 * var(--u)); border-radius: var(--radius-md); background: var(--accent-action); box-shadow: 0 6px 0 var(--accent-action-deep); font: 800 calc(2.6 * var(--u))/1 var(--font-display); text-align: center; }
+.right { grid-template-rows: auto auto auto auto 1fr auto; height: 100%; }
+</style>
+</head>
+<body>
+<main class="root"><div class="board">
+  <section class="col">
+    <h1>Victory!</h1>
+    <div class="trophy"><img class="tr" src="/art/trainers/swimmer.png" alt=""><span class="line">You defeated Swimmer Cass!</span><span class="party"><img src="/art/pokemon/battle/poliwag.gif" alt=""><img src="/art/pokemon/battle/magikarp.gif" alt=""></span></div>
+  </section>
+  <section class="col">
+    <span class="cap">Your team</span>
+    <div class="mon"><div class="pic"><img data-fit src="/art/pokemon/battle/charmander.gif" alt=""></div><div class="body"><div class="top">Charmander <span class="lv flat">Lv 13</span><span class="xp">+41 XP</span></div><div class="track"><i style="width:68%"></i></div></div></div>
+    <div class="mon"><div class="pic"><img data-fit src="/art/pokemon/battle/pidgey.gif" alt=""></div><div class="body"><div class="top">Pidgey <span class="lv">Lv 8 → 9</span><span class="xp">+49 XP</span></div><div class="track"><i style="width:20%"></i></div><div class="pills"><span class="pill">+2 HP</span><span class="pill">+2 Atk</span><span class="pill">+2 Def</span><span class="pill">+2 Spd</span></div></div></div>
+    <div class="mon"><div class="pic"><img data-fit src="/art/pokemon/battle/rattata.gif" alt=""></div><div class="body"><div class="top">Rattata <span class="lv">Lv 8 → 9</span><span class="xp">+49 XP</span></div><div class="track"><i style="width:20%"></i></div><div class="pills"><span class="pill">+2 HP</span><span class="pill">+2 Atk</span><span class="pill">+1 Def</span><span class="pill">+2 Spd</span><span class="pill mv">New: Hyper Fang</span></div></div></div>
+  </section>
+  <section class="col right">
+    <span class="cap">Spoils</span>
+    <div class="loot"><span class="ic"><svg viewBox="0 0 16 16" width="34" height="34"><circle cx="8" cy="8" r="7" fill="#ffcb3d"/><circle cx="8" cy="8" r="5.6" fill="none" stroke="#d9a51d" stroke-width="1.2"/><path d="M6.1 11.6V4.6h2.4a1.9 1.9 0 0 1 0 3.8H6.1M5.1 9.6h3.1" fill="none" stroke="#3a2e22" stroke-width="1.5" stroke-linecap="round"/></svg></span><span>₽80<small>Prize money</small></span></div>
+    <div class="loot"><span class="ic"><img src="/art/items/super-potion.png" alt="" style="width:80%"></span><span>Super Potion<small>Consumable</small></span></div>
+    <div class="loot"><span class="ic"><img src="/art/items/mystic-water.png" alt="" style="width:60px;image-rendering:pixelated"></span><span>Mystic Water<small>Held item</small></span></div>
+    <span></span>
+    <span class="prog"><img src="/art/icons/medal/icon-medal-bronze.svg" alt=""><img src="/art/icons/medal/icon-medal-silver.svg" alt=""> +3 progress ▾</span>
+    <span class="go">Continue</span>
+  </section>
+</div></main>
+<script>
+for (const img of document.querySelectorAll('img[data-fit]')) {
+  const go = () => { const box = img.parentElement; const s = Math.max(1, Math.floor((box.clientHeight * 0.86 / img.naturalHeight) * 2) / 2); img.style.width = `${img.naturalWidth * s}px`; };
+  if (img.complete && img.naturalWidth) go(); else img.addEventListener('load', go);
+}
+window.__t = () => {};
+window.__ready = () => [...document.images].every((i) => i.complete);
+</script>
+</body>
+</html>

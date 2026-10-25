@@ -145,9 +145,9 @@ interface AccountStore {
   ledger: Ledger;
   /** Rows completed since the player last looked, so the UI can announce them once. */
   fresh: AchievementDef[];
-  /** §6.8.1 — what the last fight paid each line, for the reward screen. Not persisted: it is the moment's. */
+  /** §6.8.1 — what the last fight paid each line, for its result's progress door (§9.4.5). Not persisted: it is the moment's. */
   lastBond: { line: string; points: number; rankUps: number[] }[];
-  /** §8.7 / §8.6.1 — what the last fight moved on the account's medals and discoveries, for the reward screen. */
+  /** §8.7 / §8.6.1 — what the last fight moved on the account's medals and discoveries, for its result's progress door. */
   lastProgress: ProgressNote[];
   /** The same notes from every fold, waiting for the progress panel (v0.9.6). Not persisted: they are the moment's. */
   toasts: (ProgressNote & { key: number })[];
@@ -191,7 +191,7 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
     const notes = progressNotes(before, state, getContent());
     const ledger = addTo(get().ledger, delta);
     persist({ account: state, ledger });
-    // §6.8.1 — a fight's Bond is the reward screen's to show; any other fold that paid none leaves it standing.
+    // §6.8.1 — a fight's Bond is its result's to show; any other fold that paid none leaves it standing.
     const byLine = new Map<string, { line: string; points: number; rankUps: number[] }>();
     for (const g of delta.bondGains) byLine.set(g.line, { line: g.line, points: (byLine.get(g.line)?.points ?? 0) + g.points, rankUps: byLine.get(g.line)?.rankUps ?? [] });
     for (const r of delta.bondRankUps) byLine.get(r.line)?.rankUps.push(r.rank);
@@ -201,7 +201,7 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
       ledger,
       fresh: delta.unlockedAchievements.length ? [...get().fresh, ...delta.unlockedAchievements] : get().fresh,
       ...(fight ? { lastBond: [...byLine.values()], lastProgress: notes } : {}),
-      // A fight's notes are listed on its reward screen; the panel carries what moved anywhere else.
+      // A fight's notes are listed behind its result's door; the panel carries what moved anywhere else.
       toasts: notes.length && !fight ? [...get().toasts, ...notes.map((n) => ({ ...n, key: ++toastSerial }))] : get().toasts,
     });
     return delta;

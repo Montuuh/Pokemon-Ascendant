@@ -135,7 +135,7 @@ export const CHEATS = {
     return { say: 'relic', name: pick.name };
   },
 
-  /** End the fight on screen as a win; its reward screen follows as usual. */
+  /** End the fight on screen as a win; its result follows as usual (§9.4.5). */
   winFight(): CheatResult {
     const state = useCombatStore.getState().state;
     if (!state || state.outcome !== 'in-progress') return null;

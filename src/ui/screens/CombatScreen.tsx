@@ -33,6 +33,7 @@ import { DROP_ON_FOE, ENCOUNTER_LABEL, HINT_ALLY_CARD, HINT_FOE_CARD, REJECT_TEX
 import { iconOf } from '@/ui/art';
 import { fightKindTip, fleeTip } from '@/ui/tips';
 import { Tip, Tipped } from '@/ui/tooltip';
+import { RESULT_MS } from './results/results';
 import styles from './CombatScreen.module.css';
 
 // Per docs/design §9.2 + ui/02 §2.1 — the combat screen bound to the live sim state.
@@ -237,6 +238,17 @@ export function CombatScreen() {
   const nodeKind = useRunStore((s) => (s.run?.pendingNodeId ? s.run.map.nodes[s.run.pendingNodeId]?.kind ?? null : null));
   const fleeTier = nodeKind ? fleeTierFor(nodeKind) : null;
   const fleeToll = fleeTier ? FLEE_TOLL[fleeTier] : null;
+
+  // §9.4.5 — a run fight's end is its result, on this same stage: once the last beat has played (a faint, the catch) and
+  // held a moment, the result goes home and the screen becomes the result — no overlay between (v0.9.30).
+  const outcome = state?.outcome ?? 'in-progress';
+  useEffect(() => {
+    if (!inRun || outcome === 'in-progress' || fx.busy) return;
+    const t = window.setTimeout(() => {
+      if (finishCombat()) goTo('results');
+    }, animate ? RESULT_MS.hold : 0);
+    return () => window.clearTimeout(t);
+  }, [inRun, outcome, fx.busy, animate, finishCombat, goTo]);
 
   if (!state) {
     return (
@@ -528,10 +540,10 @@ export function CombatScreen() {
       <div className={styles.stageFrame}>
         <section
           ref={setStageEl}
-        className={`${styles.stage} ${fx.stageClass ?? ''}`}
-        data-fx-stage
-        style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings(), ...motionTimings() }}
-      >
+          className={`${styles.stage} ${fx.stageClass ?? ''}`}
+          data-fx-stage
+          style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings(), ...motionTimings() }}
+        >
         <div className={styles.stageTint} aria-hidden="true" />
         {/* §9.9.2 — what a move does in the ground itself (Earthquake), under the cards. */}
         <div className={styles.floor} aria-hidden="true">
@@ -730,21 +742,8 @@ export function CombatScreen() {
         </Modal>
       )}
       {paused && <PauseMenu onResume={() => setPaused(false)} />}
-      {ended && !fx.busy && (
-        <OutcomeOverlay
-          state={state}
-          runMode={inRun}
-          onRestart={restart}
-          onExit={() => {
-            if (inRun) {
-              finishCombat();
-              goTo('map');
-            } else {
-              goTo('scenarios');
-            }
-          }}
-        />
-      )}
+      {/* A practice fixture is its own world (§2.4): its summary, and Play again. A run fight goes to its result above. */}
+      {ended && !fx.busy && !inRun && <OutcomeOverlay state={state} onRestart={restart} onExit={() => goTo('scenarios')} />}
     </main>
   );
 }

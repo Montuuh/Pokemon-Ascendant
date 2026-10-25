@@ -691,7 +691,7 @@ export function bondRulesText(): string {
   return `Play the line. +${BOND.win} per trainer or Elite fight won with it on the Active Team (+${BOND.lead} if it led), +${BOND.gym} for a Gym, +${BOND.evolution} per evolution, +${BOND.recruit} the first time you recruit it in a run, +${BOND.shiny} for a shiny of it, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one. Wild fights pay no Bond.`;
 }
 
-/** §6.8.1 — what the last fight paid a line, on the reward screen. */
+/** §6.8.1 — what the last fight paid a line, behind its result's progress door (§9.4.5). */
 export function bondGainTip(lineName: string, points: number, total: number, rankUps: readonly number[]): ReactNode {
   const top = rankUps.length ? rankUps[rankUps.length - 1]! : null;
   const p = bondProgress(total);
@@ -1424,17 +1424,38 @@ export function evolveTip(label: string): ReactNode {
   return <Tip title={label} body="Evolves now with this path's moves and passive." footer="Final for this stage — the next evolution asks again." />;
 }
 
-// ── The reward screen (§3.5, v0.9.6) ────────────────────────────────────────────────────────────────────
+// ── A fight's result (§9.4.5, v0.9.30) ────────────────────────────────────────────────────────────────────
 
 /** What a level-up added: each stat from its old value to its new one. */
-export function levelGainTip(name: string, from: number, to: number, gains: Record<string, number>, statsAt?: Record<string, number>): ReactNode {
-  const body = statsAt ? Object.entries(gains).map(([k, v]) => <div key={k}>{STAT_LONG[k] ?? k} {statsAt[k]! - v} → <b>{statsAt[k]}</b></div>) : "Every level adds a share of each base stat: a bigger base grows more.";
-  return <Tip title={`${name} — Lv ${from} → ${to}`} body={body} footer="Every level adds a share of each base stat: a bigger base grows more. Trauma still takes its share of HP." />;
+export function levelGainTip(name: string, from: number, to: number, gains: Record<string, number>, statsAt?: Record<string, number>, learned: readonly { name: string; pooled: boolean }[] = []): ReactNode {
+  const stats = statsAt ? Object.entries(gains).map(([k, v]) => <div key={k}>{STAT_LONG[k] ?? k} {statsAt[k]! - v} → <b>{statsAt[k]}</b></div>) : [];
+  // §6.7.2 — a move the levels brought: in the four, or waiting in the pool past them.
+  const moves = learned.map((m) => <div key={m.name}>{m.pooled ? `${m.name} waits in the pool` : `Learned ${m.name}`}</div>);
+  return <Tip title={`${name} — Lv ${from} → ${to}`} body={[...stats, ...moves]} footer="Every level adds a share of each base stat: a bigger base grows more. Trauma still takes its share of HP." />;
 }
 
-/** A move that arrived past four: where it is, and how to play it. */
-export function poolTip(moveName: string): ReactNode {
-  return <Tip title={moveName} meta={['In the pool']} body="The active four are full, so it waits in the pool." footer="Swap it in from the Move Manager, on the map." />;
+/** §6.2.1 — the XP a fight paid one Pokémon: the team on the field takes the whole share, the Box a smaller one. */
+export function xpGainTip(amount: number, inBox: boolean, toNext: number): ReactNode {
+  return <Tip title={`+${amount} XP`} meta={[inBox ? 'In the Box' : 'On the field', `${toNext} to the next level`]} body={inBox ? 'A Pokémon in the Box takes a smaller share of what the fight paid.' : 'The Pokémon on the field take the whole share, scaled by the level of what they beat.'} />;
+}
+
+/** §9.4.5 — what each kind of spoil is for: the last line of its card's door. */
+export const lootHow = {
+  consumable: 'Single use, from the bag in a fight.',
+  ball: 'Thrown at a weakened wild Pokémon.',
+  relic: 'Works for the rest of the run; nothing to equip.',
+  'held-item': 'Give it to someone from the Team screen.',
+  tm: 'Teach it from the Move Manager.',
+} as const;
+
+/** §9.4.5 — one of the beaten trainer's team, by its party icon. */
+export function partyMonTip(name: string, level: number, beaten: boolean): ReactNode {
+  return <Tip title={name} meta={[`Lv ${level}`, ...(beaten ? ['Beaten'] : [])]} />;
+}
+
+/** §3.1.2 — what running cost, said on the result screen with its number. */
+export function tollTip(money: number, pct: number): ReactNode {
+  return <Tip title={`−${money} ₽`} meta={['The toll', `${pct} % of the wallet`]} body="Running costs a share of the wallet and Trauma; from a trainer, something from the bag too; from the Elite, a relic." />;
 }
 
 /** §6.8.2 — a line's Bond with you as it stands: its rank, and everything that rank has opened. */

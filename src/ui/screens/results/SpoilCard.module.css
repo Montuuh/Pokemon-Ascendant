@@ -1,0 +1,101 @@
+/* §9.4.5 — a spoil in the tray, in the move card's grammar: a head with its name, a window with the thing itself, a
+   cream foot plate with its kind. The size of a card in the hand it replaces. */
+.card {
+  position: relative;
+  /* A hand's card wide, and narrower before the row would wrap. */
+  flex: 0 1 132px;
+  min-width: 96px;
+  height: 184px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--sp-1);
+  padding: var(--sp-1) 6px 6px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface-1) 94%, transparent);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+  color: var(--ink-primary);
+  cursor: help;
+}
+.head {
+  font-size: var(--type-caption);
+  line-height: 1.2;
+  padding: 2px 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.window {
+  position: relative;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: radial-gradient(75% 75% at 50% 55%, var(--surface-3), var(--tip-surface));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+/* Item art is a mix of painted renders (scaled to fit the box) and 30-px pixel icons (drawn at 2× by SpoilCard). */
+.icon {
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+}
+.count {
+  position: absolute;
+  right: var(--sp-1);
+  bottom: var(--sp-1);
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--tip-surface) 85%, transparent);
+  font-size: var(--type-micro);
+  font-weight: 800;
+}
+.gem {
+  position: absolute;
+  top: var(--sp-1);
+  left: var(--sp-1);
+}
+.foot {
+  padding: 2px var(--sp-1);
+  border-radius: var(--radius-sm);
+  background: var(--brand-cream);
+  color: var(--ink-on-accent);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Prize money: the number is the picture. */
+.money .window {
+  background: radial-gradient(75% 75% at 50% 55%, color-mix(in srgb, var(--accent-action) 35%, var(--tip-surface)), var(--tip-surface));
+}
+.amount {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-h2);
+  color: var(--brand-cream);
+}
+/* What running cost: the warning's edge and foot, and a thing left behind struck through. */
+.toll {
+  border-color: var(--accent-warning);
+}
+.toll .foot {
+  background: var(--accent-warning);
+}
+.strike {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 50%;
+  height: 4px;
+  rotate: -20deg;
+  border-radius: var(--radius-pill);
+  background: var(--accent-warning);
+  box-shadow: 0 0 0 2px var(--tip-surface);
+}

@@ -70,9 +70,9 @@ src/
                              runStore.ts (the run + autosave + the combat bridge) · saveProvider.ts (localStorage)
   ui/
     styles/                  tokens.css · fonts.css · motion.css · global.css
-    components/              Portrait · MoveCard · ConsumableCard · EnemyPanel · HpBar · TypeBadge · CombatLog · Modal · OutcomeOverlay · FloatingNumbers
+    components/              Portrait · MoveCard · ConsumableCard · EnemyPanel · HpBar · TypeBadge · CombatLog · Modal · OutcomeOverlay (practice fixtures) · FloatingNumbers
                              BoxPanel · NodeMarker · NodePreviewCard · SwapOrSkip · PauseMenu · MonIcon
-    screens/                 MainMenu · ScenarioPicker · CombatScreen · StarterSelect · MapScreen · RewardScreen · RunEndScreen
+    screens/                 MainMenu · ScenarioPicker · CombatScreen · StarterSelect · MapScreen · results/FightResults (a fight's end, §9.4.5) · RunEndScreen
     hooks/useCombatFx.ts     sim events → floating numbers / shakes / lunges / banners
     art.ts · strings.ts · moveText.ts
   dev/devtools.ts            window.__ascendant

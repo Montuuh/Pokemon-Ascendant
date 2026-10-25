@@ -1504,6 +1504,12 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.54 — The field after  ✅ 2026-10-26
+
+The user's rework of the fight's end (2026-10-21): direction A of the shown proposal (`docs/design/ui/mockups/fight-end/`), with evolution as a surprise, the series' bar fills and sounds, and the stat gains in a temporary panel beside the card.
+
+**Shipped.** §9.4.5: a run fight ends on its own stage (`FightResults`) instead of the outcome overlay and the reward page — the formation where the fight left it with each card's HP and XP filling (`RunState.lastFight`, `report.formation`), a level gained stopping on its fanfare and stat panel beside the Lead's card, the other side showing who was beaten (a Gym's Badge in its case), the spoils as cards in the tray (a run's toll with its numbers), and the Elite's and the Gym's 1-of-3 in the same tray. Medals, discoveries and Bond behind a progress door. Sounds `exp-fill`, `hp-fill`, the `level-up` fanfare, `coin`, `badge`. `RewardScreen` and `LegendaryScreen` retired; the outcome overlay stays for practice fixtures. UI review: Ship with fixes, all applied.
+
 ### v0.9.53 — Basement service bays  ✅ 2026-10-25
 
 **Shipped.** B14 quiets the Black Market's repeating floor through exact RGB substitutions, groups the four service areas in warmer bays and adds two native Rocket Hideout ball stands to the Trader's stock. The 320×256 room, stairs, people and hotspot anchors retain their original geometry; transactions and game rules are unchanged. Evidence and independent Sol/high review: playtest/art-review-2026-10-24/implementation/B14. All other blocks remain excluded.

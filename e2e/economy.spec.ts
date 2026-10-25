@@ -489,8 +489,10 @@ test.describe('Running from a fight — §3.1.2', () => {
     await page.screenshot({ path: 'playtest/combat-run-button.png' });
 
     await run.click();
-    await expect(page.getByTestId('outcome-overlay')).toContainText('Got away');
-    await page.getByTestId('btn-continue-run').click();
+    // §9.4.5 — the result says what running cost, with its number, before the map.
+    await expect(page.getByTestId('fight-results')).toContainText('Got away');
+    await expect(page.getByTestId('results-toll')).toContainText('200');
+    await page.getByTestId('btn-claim').click();
     await expect(page.getByTestId('map-screen')).toBeVisible();
     const after = await page.evaluate(() => {
       const r = window.__ascendant!.run.state()!;

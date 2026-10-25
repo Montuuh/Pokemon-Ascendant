@@ -12,7 +12,7 @@ const LAYERS = 20;
 /** Play every playable card at the enemy, then end the turn. Returns once the fight has an outcome. */
 async function playOneTurn(page: Page): Promise<void> {
   for (let i = 0; i < 10; i++) {
-    if ((await page.getByTestId('outcome-overlay').count()) > 0) return;
+    if ((await page.getByTestId('fight-results').count()) > 0) return;
     if ((await page.getByTestId('lead-pick-modal').count()) > 0) {
       await page.locator('[data-testid^="pick-lead-"]').first().click();
       await page.waitForTimeout(80);
@@ -42,9 +42,9 @@ async function playOneTurn(page: Page): Promise<void> {
 async function fightToTheEnd(page: Page): Promise<'victory' | 'defeat'> {
   await expect(page.getByTestId('combat-screen')).toBeVisible();
   for (let turn = 0; turn < 40; turn++) {
-    if ((await page.getByTestId('outcome-overlay').count()) > 0) break;
+    if ((await page.getByTestId('fight-results').count()) > 0) break;
     await playOneTurn(page);
-    if ((await page.getByTestId('outcome-overlay').count()) > 0) break;
+    if ((await page.getByTestId('fight-results').count()) > 0) break;
     const endTurn = page.getByTestId('btn-end-turn');
     if (await endTurn.isEnabled()) await endTurn.click();
     await page.waitForTimeout(140);
@@ -52,25 +52,26 @@ async function fightToTheEnd(page: Page): Promise<'victory' | 'defeat'> {
       await page.locator('[data-testid^="pick-lead-"]').first().click();
     }
   }
-  const overlay = page.getByTestId('outcome-overlay');
-  await expect(overlay).toBeVisible();
-  const text = (await overlay.textContent()) ?? '';
-  await overlay.getByTestId('btn-continue-run').click();
-  return /Victory|Gotcha/.test(text) ? 'victory' : 'defeat';
+  // §9.4.5 — a run fight ends on its result, on the fight's own stage; clearPostCombat takes it from there.
+  const results = page.getByTestId('fight-results');
+  await expect(results).toBeVisible();
+  const outcome = await results.getAttribute('data-outcome');
+  return outcome === 'victory' || outcome === 'caught' ? 'victory' : 'defeat';
 }
 
 let rewardShot = false;
 
 /** Clear whatever the run puts in front of us after a fight, and land back on the map. */
 async function clearPostCombat(page: Page): Promise<void> {
-  if ((await page.getByTestId('reward-screen').count()) > 0) {
-    await expect(page.getByTestId('reward-screen')).toBeVisible();
+  if ((await page.getByTestId('fight-results').count()) > 0 && (await page.getByTestId('gym-relic-pick').count()) === 0) {
+    await expect(page.getByTestId('fight-results')).toHaveAttribute('data-done', 'true');
     if (!rewardShot) {
-      await page.waitForTimeout(500); // let the XP bars finish filling
       await page.screenshot({ path: 'playtest/run-reward.png' });
       rewardShot = true;
     }
     await page.getByTestId('btn-claim').click();
+    // §2.8.1 — the Elite's pick fills the same tray: leaving all three is a real answer.
+    if ((await page.getByTestId('elite-relic-pick').count()) > 0) await page.getByTestId('btn-decline-elite-relic').click();
     await page.waitForTimeout(120);
   }
   // §3.6 — one Evolution screen per Pokémon that crossed its threshold, each needing an archetype.
@@ -85,7 +86,7 @@ async function clearPostCombat(page: Page): Promise<void> {
   }
   // §7.3.7 — beating the Gym opens the Legendary 1-of-3, and the run does not reach its summary until the
   // offer is answered. Take the first: what is being tested here is that a player can finish a run.
-  if ((await page.getByTestId('legendary-screen').count()) > 0) {
+  if ((await page.getByTestId('gym-relic-pick').count()) > 0) {
     await page.screenshot({ path: 'playtest/run-legendary.png' });
     await page.locator('[data-testid^="legendary-offer-"]').first().click();
     await page.getByTestId('btn-take-legendary').click();
@@ -536,7 +537,7 @@ test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ p
   test.skip(outcome === 'defeat', 'the Gym won this seed; the ending is covered by the full-run test');
 
   // The reward, the evolutions and the recruit all queue ahead of the Gym's own rewards (§2.4).
-  if ((await page.getByTestId('reward-screen').count()) > 0) await page.getByTestId('btn-claim').click();
+  if ((await page.getByTestId('fight-results').count()) > 0 && (await page.getByTestId('gym-relic-pick').count()) === 0) await page.getByTestId('btn-claim').click();
   for (let i = 0; i < 6 && (await page.getByTestId('evolution-screen').count()) > 0; i++) {
     await page.locator('[data-testid^="branch-"]').first().click();
     await page.getByTestId('btn-evolve').click();
@@ -544,9 +545,9 @@ test('the Gym hands out a Badge and a Legendary pick, then the town', async ({ p
   }
 
   // §7.3.7 — three Legendaries, and declining is a real answer. §5.10 — the Badge just won is named above them.
-  const offer = page.getByTestId('legendary-screen');
+  const offer = page.getByTestId('gym-relic-pick');
   await expect(offer).toBeVisible();
-  await expect(page.getByTestId('badge-award')).toContainText('Badge earned');
+  await expect(page.getByTestId('badge-award')).toContainText('Badge');
   await expect(page.locator('[data-testid^="legendary-offer-"]')).toHaveCount(3);
   await page.screenshot({ path: 'playtest/run-legendary.png' });
   await page.locator('[data-testid^="legendary-offer-"]').first().click();
@@ -592,7 +593,7 @@ test('the third Gym leads to Victory Road, the Summit to the League, and the Cha
   });
 
   await page.evaluate(() => window.__ascendant!.goTo('map'));
-  await expect(page.getByTestId('legendary-screen')).toBeVisible();
+  await expect(page.getByTestId('gym-relic-pick')).toBeVisible();
   await page.getByTestId('btn-decline-legendary').click();
 
   // §2.12 — the third Gym leads onto Victory Road; its Summit's gate ends the run until the League.

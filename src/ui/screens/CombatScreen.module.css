@@ -128,8 +128,8 @@
   background-size: round(up, max(100cqw, calc(100cqh * 16 / 9)), 320px) auto;
 }
 /* Per §9.2.1 / D8 — the two formations need four card columns plus the trainer. The frame's available width,
-   rather than a fixed 16:9 crop, is the arena; both dimensions constrain the cards. Keep this scoped to live combat:
-   FightResults shares .stage but has its own composition and no .stageFrame. */
+   rather than a fixed 16:9 crop, is the arena; both dimensions constrain the cards. A fight's result (§9.4.5) stands in
+   the same frame, so its cards stand where the fight left them. */
 .stageFrame > .stage {
   width: 100%;
   aspect-ratio: auto;

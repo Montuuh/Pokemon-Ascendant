@@ -95,7 +95,26 @@ export const SFX = {
   // Stings for the fight's end, the level, the evolution.
   victory: arp([72, 76, 79, 84, 79, 84], 0.09, 0.3, 0.09),
   defeat: arp([64, 60, 57, 52], 0.18, 0.5, 0.08, 'triangle'),
-  'level-up': arp([72, 74, 76, 77, 79, 84], 0.06, 0.2, 0.08),
+  // §9.4.5 — the result screen's bars, as the series plays them: the XP bar's rising whistle while it fills (a long
+  // fill and a short one, so the sound ends with the bar), the HP bar's soft restore as a heal fills it, and the
+  // level-up fanfare when the XP bar tops out — an homage written for the synth: three quick notes and a held fourth
+  // over a triangle bass, resolving up a fourth.
+  'exp-fill': [tone({ wave: 'square', from: hz(64), to: hz(88), dur: 0.7, gain: 0.035, cutoff: 2600 }), tone({ wave: 'triangle', from: hz(52), to: hz(76), dur: 0.7, gain: 0.05 })],
+  'exp-fill-short': [tone({ wave: 'square', from: hz(72), to: hz(86), dur: 0.4, gain: 0.035, cutoff: 2600 }), tone({ wave: 'triangle', from: hz(60), to: hz(74), dur: 0.4, gain: 0.05 })],
+  'hp-fill': [tone({ wave: 'sine', from: hz(67), to: hz(86), dur: 0.55, gain: 0.07 }), ...arp([84, 88, 91], 0.06, 0.18, 0.05, 'sine').map((s) => ({ ...s, delay: (s.delay ?? 0) + 0.45 }))],
+  'level-up': [
+    ...([[79, 0, 0.1], [79, 0.12, 0.1], [79, 0.24, 0.1], [84, 0.36, 0.5]] as const).map(([n, delay, dur]) => tone({ wave: 'square', from: hz(n), dur, gain: 0.07, delay, cutoff: 3200 })),
+    ...([[48, 0, 0.34], [43, 0.36, 0.2], [48, 0.56, 0.36]] as const).map(([n, delay, dur]) => tone({ wave: 'triangle', from: hz(n), dur, gain: 0.11, delay })),
+    ...chord([72, 76, 79], 0.5, 0.04, 0.36, 'triangle'),
+  ],
+  // §9.4.5 — a coin for the prize money as it counts up, and the Badge's fanfare as its case opens.
+  coin: [tone({ wave: 'square', from: hz(93), dur: 0.05, gain: 0.05, cutoff: 5000 }), tone({ wave: 'square', from: hz(100), dur: 0.14, gain: 0.05, delay: 0.05, cutoff: 5000 })],
+  badge: [
+    ...arp([67, 72, 76, 79], 0.1, 0.22, 0.07, 'square'),
+    ...chord([72, 76, 79, 84], 1.1, 0.055, 0.42, 'triangle'),
+    tone({ wave: 'square', from: hz(88), dur: 0.7, gain: 0.04, delay: 0.42, cutoff: 3000 }),
+    hiss({ filter: 'highpass', from: 5000, to: 9000, dur: 0.6, gain: 0.06, delay: 0.42 }),
+  ],
   // The evolution: the light's rise as the sprite whitens; the fanfare when the new Pokémon stands in its colours.
   evolve: [tone({ wave: 'sine', from: 220, to: 880, dur: 1.2, gain: 0.12 }), hiss({ filter: 'bandpass', from: 1500, to: 6000, q: 0.7, dur: 1.2, gain: 0.08 })],
   evolved: [...arp([67, 72, 76, 79], 0.09, 0.22, 0.08, 'square'), ...chord([72, 76, 79, 84], 1, 0.06, 0.38, 'triangle'), tone({ wave: 'square', from: hz(91), dur: 0.6, gain: 0.04, delay: 0.38, cutoff: 3000 })],

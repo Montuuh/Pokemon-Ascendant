@@ -67,7 +67,8 @@ test.describe('The Ring and the Coliseum — §2.9.4.1', () => {
     await page.getByTestId('btn-ring-fight').click();
     await expect(page.getByTestId('combat-screen')).toBeVisible();
     await page.evaluate(() => window.__ascendant!.auto(999));
-    await page.getByTestId('btn-continue-run').click();
+    // §9.4.5 — the rung's result on its own stage, then the way on.
+    await page.getByTestId('btn-claim').click();
     // Won: back on the ladder with 300 banked. Lost: back in town, the ladder gone — never the run.
     await expect(page.getByTestId('ring-screen').or(page.getByTestId('city-screen'))).toBeVisible();
     if (await page.getByTestId('ring-screen').isVisible()) await expect(page.getByTestId('ring-banked')).toContainText('300');

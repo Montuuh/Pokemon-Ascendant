@@ -15,7 +15,8 @@ export function trackFor(screen: string, run: RunState | null, combat: CombatSta
     return 'combat';
   }
   if (screen === 'victory' || screen === 'defeat') return null;
-  if (screen === 'map' && run) {
+  // §9.4.5 — a fight's result is on its way back to the route: the route's music comes back under it.
+  if ((screen === 'map' || screen === 'results') && run) {
     if (run.zone === 'league') return 'league';
     if (run.zone === 'victory-road') return 'victory-road';
     if (run.city) return 'city';

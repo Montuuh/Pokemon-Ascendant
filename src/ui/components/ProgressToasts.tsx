@@ -9,9 +9,9 @@ import { PROGRESS_TEXT } from '@/ui/strings';
 import styles from './ProgressToasts.module.css';
 
 // §8.7 / §8.6.1 — the progress panel (v0.9.6): a medal or a discovery that moved shows for a moment along the bottom
-// corner of the screen, one at a time, and never takes a click. A fight's own progress is listed on its reward screen —
-// the moment the fight is over — so the panel carries what moves anywhere else, and holds itself while a fight or its
-// reward screen is up.
+// corner of the screen, one at a time, and never takes a click. A fight's own progress is behind its result's door
+// (§9.4.5) — the moment the fight is over — so the panel carries what moves anywhere else, and holds itself while a
+// fight or its result is up.
 
 /** How long one note stays up, and the gap before the next. */
 const SHOW_MS = 3600;
@@ -20,9 +20,9 @@ const GAP_MS = 250;
 export function ProgressToasts() {
   const toasts = useAccountStore((s) => s.toasts);
   const dismiss = useAccountStore((s) => s.dismissToast);
-  // A fight, and the reward screen that lists what the fight moved, both hold the panel.
-  const inFight = useAppStore((s) => s.screen === 'combat');
-  const onReward = useRunStore((s) => s.run?.phase === 'reward');
+  // A fight, and its result that lists what the fight moved (§9.4.5), both hold the panel.
+  const inFight = useAppStore((s) => s.screen === 'combat' || s.screen === 'results');
+  const onReward = useRunStore((s) => s.run?.phase === 'reward' || s.run?.phase === 'legendary');
   const [leaving, setLeaving] = useState(false);
   const note = inFight || onReward ? null : (toasts[0] ?? null);
 

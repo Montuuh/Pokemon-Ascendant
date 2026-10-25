@@ -35,25 +35,27 @@ test('a move type reads attacking, a Pokémon type defending (§4.1.2)', async (
   await page.screenshot({ path: 'playtest/type-defense.png' });
 });
 
-test('the reward names what the levels gave and what the fight moved on the account (§3.5, §8.7)', async ({ page }) => {
+test('the result names what the levels gave and, behind its door, what the fight moved on the account (§9.4.5, §8.7)', async ({ page }) => {
   await intoAWildFight(page);
   // The fight itself moves medals; nothing is said while it lasts.
   await page.evaluate(() => window.__ascendant!.auto(400));
   await expect(page.getByTestId('progress-toast')).toHaveCount(0);
-  const overlay = page.getByTestId('outcome-overlay');
-  await expect(overlay).toBeVisible();
-  await overlay.getByTestId('btn-continue-run').click();
-
-  await expect(page.getByTestId('reward-screen')).toBeVisible();
-  // A first win: First Blood, listed on the reward screen — the panel leaves the fight's own news to it.
-  await expect(page.getByTestId('reward-progress')).toContainText('First Blood');
+  // §9.4.5 — no overlay: the fight becomes its result, on its own stage.
+  await expect(page.getByTestId('fight-results')).toHaveAttribute('data-done', 'true');
+  // A first win: First Blood, behind the progress door — the panel leaves the fight's own news to it.
   await expect(page.getByTestId('progress-toast')).toHaveCount(0);
-  // Squirtle came in at level 5: one fight levels it, and the levels name their stats.
-  await expect(page.getByTestId('gains-squirtle')).toContainText('HP');
-  await page.waitForTimeout(500);
+  await page.getByTestId('results-progress').click();
+  await expect(page.getByTestId('reward-progress')).toContainText('First Blood');
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('reward-progress')).toHaveCount(0);
+  // Squirtle came in at level 5: one fight levels it, its level tag lit, and its door names the stats.
+  await page.getByTestId('levelup-squirtle').hover();
+  await expect(page.getByTestId('tooltip')).toContainText('HP');
+  await expect(page.getByTestId('tooltip')).toContainText('→');
   await page.screenshot({ path: 'playtest/reward-levelled.png' });
+  await page.mouse.move(0, 0);
   await page.getByTestId('btn-claim').click();
-  await expect(page.getByTestId('reward-screen')).toHaveCount(0);
+  await expect(page.getByTestId('fight-results')).toHaveCount(0);
 });
 
 test('progress made outside a fight shows in the panel, which never takes a click (§8.7)', async ({ page }) => {

@@ -85,7 +85,7 @@ export const runnerById = (id: string): RunnerDef => FLEE_RACE.runners.find((r) 
 export const guardById = (id: string): GuardDef => HOLD_OUT.guards.find((g) => g.id === id) ?? HOLD_OUT.guards[0]!;
 const guardFor = (regionIndex: number): GuardDef => HOLD_OUT.guards.find((g) => g.region === Math.min(regionIndex, HOLD_OUT.guards.length - 1)) ?? HOLD_OUT.guards[0]!;
 
-/** §5.6.5 — the runner's reward, as the map and the reward screen say it. */
+/** §5.6.5 — the runner's reward, as the map and the fight's result say it. */
 export function runnerRewardLine(r: RunnerReward): string {
   const parts = [
     ...(r.xpMultiplier ? [`XP ×${r.xpMultiplier}`] : []),

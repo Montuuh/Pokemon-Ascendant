@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fight end — B: the series' text box</title>
+<!-- Rejected direction B (2026-10-21), kept for the comparison: the arena stays and the games' text box tells the
+     result a line at a time — "Pidgey grew to Lv. 9!" with FireRed's stat window. Open through the dev server:
+     http://localhost:5173/docs/design/ui/mockups/fight-end/textbox.html -->
+<link rel="stylesheet" href="/src/ui/styles/tokens.css?direct">
+<style>
+@font-face { font-family: 'Baloo 2'; src: url('/src/assets/fonts/Baloo2-VariableFont_wght.ttf') format('truetype'); font-weight: 400 800; }
+@font-face { font-family: 'Nunito'; src: url('/src/assets/fonts/Nunito-VariableFont_wght.ttf') format('truetype'); font-weight: 200 1000; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: #140f1a; overflow: hidden; font-family: var(--font-body); }
+:root { --u: min(1vh, 0.5625vw); --k: 1.5; }
+@media (max-height: 800px) { :root { --k: 1; } }
+.screen { width: 100vw; height: 100vh; display: grid; grid-template-rows: auto 1fr auto; background: var(--surface-0); color: var(--ink-primary); }
+.topbar { height: max(44px, calc(5.2 * var(--u))); display: flex; align-items: center; gap: 12px; padding: 0 calc(1.4 * var(--u)); border-bottom: 1px solid var(--border-subtle); font-size: var(--type-caption); }
+.who { padding: 4px 12px; border-radius: 99px; background: var(--surface-1); font-weight: 800; }
+.stage { position: relative; overflow: hidden; background: url('/art/stages/meadow.jpg') center / cover; }
+.stage::before { content: ''; position: absolute; inset: 0; background: rgba(42,34,48,.25); }
+.slot { position: absolute; }
+.b1 { left: 5%; top: 17%; } .b2 { left: 5%; top: 55%; } .lead { left: 22.5%; top: 37%; }
+.unit { --card: calc(26 * var(--u)); position: relative; width: var(--card); padding: 10px 6px 6px; border-radius: var(--radius-md); border: 2px solid var(--border-subtle); background: color-mix(in srgb, var(--surface-1) 94%, transparent); box-shadow: 0 8px 18px rgba(0,0,0,.4); display: grid; gap: 3px; }
+.unit.L { border: 3px solid var(--accent-action); }
+.unit .tag { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); padding: 1px 8px; border-radius: 99px; background: var(--surface-3); color: var(--ink-secondary); font-size: var(--type-micro); font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+.unit.L .tag { background: var(--accent-action); color: var(--ink-on-accent); }
+.head { display: flex; gap: 4px; align-items: center; font: 700 var(--type-caption)/1.1 var(--font-display); }
+.head .lv { margin-left: auto; font: 400 var(--type-micro) var(--font-body); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0 5px; color: var(--ink-secondary); }
+.head img { height: calc(8px * var(--k) + 4px); image-rendering: pixelated; }
+.window { height: calc(var(--card) * .46); border-radius: var(--radius-sm); position: relative; background: radial-gradient(75% 85% at 50% 60%, #4a3e50, #2a2230); }
+.window img { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%) scaleX(-1); image-rendering: pixelated; }
+.hp { height: 7px; border-radius: 99px; background: var(--surface-sunken); overflow: hidden; } .hp i { display: block; height: 100%; background: var(--accent-positive); }
+.trainer { position: absolute; left: 60%; bottom: 14%; }
+.trainer img { width: calc(80px * var(--k) * 2); image-rendering: pixelated; }
+/* FireRed's text box and its level-up stat window. */
+.tray { height: max(158px, calc(23 * var(--u))); background: var(--surface-0); border-top: 1px solid var(--border-subtle); position: relative; display: grid; place-items: center; }
+.box { width: min(1100px, 76%); height: 70%; border-radius: 10px; background: #f8f8f8; border: 6px solid #4a6a8a; box-shadow: inset 0 0 0 4px #c8d8e8, 0 0 0 3px #f8f8f8; padding: calc(1.6 * var(--u)) calc(3 * var(--u)); font: 700 calc(3.2 * var(--u))/1.35 var(--font-display); color: #3a3a3a; position: relative; }
+.box .more { position: absolute; right: calc(2.4 * var(--u)); bottom: calc(1.2 * var(--u)); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 14px solid #e84c4c; }
+.box .count { position: absolute; right: calc(2.4 * var(--u)); top: calc(1 * var(--u)); font: 800 var(--type-micro) var(--font-body); color: #8a8a8a; letter-spacing: .06em; }
+.stats { position: absolute; right: 3%; bottom: calc(100% + 12px); width: calc(34 * var(--u)); background: #f8f8f8; border: 6px solid #4a6a8a; box-shadow: inset 0 0 0 4px #c8d8e8; border-radius: 10px; padding: calc(1.2 * var(--u)) calc(2.2 * var(--u)); font: 700 calc(2.4 * var(--u))/1.5 var(--font-display); color: #3a3a3a; display: grid; grid-template-columns: 1fr auto auto; column-gap: calc(2 * var(--u)); }
+.stats b { color: #e84c4c; }
+</style>
+</head>
+<body>
+<div class="screen theme-stage">
+  <header class="topbar"><span class="who">Swimmer Cass</span></header>
+  <section class="stage">
+    <div class="slot b1"><div class="unit"><span class="tag">Bench 1</span><div class="head"><img src="/art/icons/type/icon-type-normal.png" alt="">Pidgey<span class="lv">Lv 9</span></div><div class="window"><img data-fit src="/art/pokemon/battle/pidgey.gif" alt=""></div><div class="hp"><i style="width:96%"></i></div></div></div>
+    <div class="slot lead"><div class="unit L"><span class="tag">Lead</span><div class="head"><img src="/art/icons/type/icon-type-fire.png" alt="">Charmander<span class="lv">Lv 13</span></div><div class="window" style="background:radial-gradient(75% 85% at 50% 60%, #7a4a30, #2a2230)"><img data-fit src="/art/pokemon/battle/charmander.gif" alt=""></div><div class="hp"><i style="width:35%"></i></div></div></div>
+    <div class="slot b2"><div class="unit"><span class="tag">Bench 2</span><div class="head"><img src="/art/icons/type/icon-type-normal.png" alt="">Rattata<span class="lv">Lv 8</span></div><div class="window"><img data-fit src="/art/pokemon/battle/rattata.gif" alt=""></div><div class="hp"><i style="width:95%"></i></div></div></div>
+    <div class="trainer"><img src="/art/trainers/swimmer.png" alt=""></div>
+  </section>
+  <footer class="tray">
+    <div class="stats"><span>Max. HP</span><span>60</span><b>+2</b><span>Attack</span><span>31</span><b>+2</b><span>Defense</span><span>28</span><b>+2</b><span>Speed</span><span>34</span><b>+2</b></div>
+    <div class="box">Pidgey grew to Lv. 9!<span class="count">LINE 5 OF 11</span><i class="more"></i></div>
+  </footer>
+</div>
+<script>
+for (const img of document.querySelectorAll('img[data-fit]')) {
+  const go = () => { const box = img.parentElement; const s = Math.max(1, Math.floor((box.clientHeight * 0.86 / img.naturalHeight) * 2) / 2); img.style.width = `${img.naturalWidth * s}px`; };
+  if (img.complete && img.naturalWidth) go(); else img.addEventListener('load', go);
+}
+window.__t = () => {};
+window.__ready = () => [...document.images].every((i) => i.complete);
+</script>
+</body>
+</html>

@@ -1021,6 +1021,12 @@ known. **Accessibility.** popover traps focus, Esc=Cancel, Enter=Enter. **Loc:**
 
 ## 3.5 Post-Combat Reward  (full-screen result · forward-only)
 
+> **As shipped (v0.9.30): the Fight Result, on the fight's own stage** — `ui/screens/results/FightResults.tsx`; canon
+> is §9.4.5, mockups in `mockups/fight-end/`. It replaces the outcome overlay and this page: the formation stays, each
+> card's HP and XP fill as the series plays them, a level gained stands its stat panel beside the card, the other side
+> shows who was beaten (a Gym's Badge in its case), the spoils are cards in the tray, and the Elite's and the Gym's
+> picks fill the same tray. The spec below is the Unity-era brief, kept for its intent.
+
 **Purpose.** Resolve victory: XP to team + Box (CL-010 100%/75%), loot, catch result, Trainer-XP/
 Battle-Pass progress (CL-019). **Zones.** header ("Victory!" / "Caught {species}!") · XP panel (per-
 Pokémon bars filling, level-up & evolution-eligible flags) · loot row (₽, relics, consumables, TMs) ·
@@ -1074,6 +1080,8 @@ is capped/PEAT-safe and disabled in reduced-motion. **Loc:** `ui.evolution.*`, `
 ---
 
 ## 3.7 Legendary Pick  (full-screen step · CL-021, Gym victory)
+
+> **As shipped (v0.9.30):** the Gym's 1-of-3 is the Fight Result's tray (§9.4.5), the Badge in its case above it.
 
 **Purpose.** 1-of-3 Legendary relic choice on Gym victory / Summit / Black-Market (CL-021), max
 2/run. Replaces temp `LegendaryPickSelectUI`. **Zones.** three `relic card`s with the **Legendary

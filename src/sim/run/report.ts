@@ -1,3 +1,4 @@
+import { slotOrder } from '../combat/slots';
 import type { CombatState } from '../combat/state';
 import type { ActiveSetup, CombatOutcomeReport, RunState } from './types';
 
@@ -50,6 +51,8 @@ export function buildOutcomeReport(combat: CombatState, run: RunState): CombatOu
     tally: { ...combat.player.tally, statusesApplied: [...combat.player.tally.statusesApplied] },
     leadHpFraction: lead && lead.maxHp > 0 ? lead.hp / lead.maxHp : 1,
     activeSpecies: combat.player.team.map((c) => c.speciesId),
+    // §9.4.5 — where each stood at the end, so the result screen stands them in the same places.
+    formation: slotOrder(combat).map((i) => setups[i]?.uid ?? combat.player.team[i]!.uid),
     // §8.9 — every enemy species that took the field, once each: the ones still standing, the queue never
     // reached is not counted, and the ones already down.
     enemies: [...new Set([...combat.defeatedEnemies, ...combat.enemies].map((e) => e.speciesId))],

@@ -1,0 +1,362 @@
+/* §9.4.5 — the fight's end on the fight's own stage. The frame (top bar, stage grid, formation slots, tray) is the
+   combat screen's; what is here is the result's alone: the ribbon and its line, the lights, the Badge's case, the trainer
+   stepping forward, the tray's three columns (the Box, the spoils, the way on). */
+.root {
+  overflow: hidden;
+}
+
+/* The stage keeps the fight's backdrop on a layer of its own, so a defeat can grey the place without greying the cards. */
+.stage {
+  cursor: default;
+}
+/* §9.4.5 — the Badge owns ground between the formation and the defeated party. Its reveal's spring
+   reaches 1.079×: reserve that full width before either side is laid out, including while it is hidden. */
+.stage:has(.case) {
+  width: 100%;
+  aspect-ratio: auto;
+  grid-template-columns: auto minmax(calc(clamp(200px, 40cqh, 330px) * 1.08), 1fr) auto;
+}
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center 40%;
+}
+.grey {
+  filter: saturate(0.25) brightness(0.8);
+}
+/* A win: the lights come up a little over the field, warm, from the top. */
+.lights {
+  position: absolute;
+  z-index: 0;
+  left: 20%;
+  right: 20%;
+  top: -35%;
+  height: 80%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent-action) 32%, transparent), transparent);
+  pointer-events: none;
+}
+
+/* ── The headline ────────────────────────────────────────────────────────────────────────────────────────── */
+.headline {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: 3cqh;
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  gap: 1.2cqh;
+  pointer-events: none;
+}
+/* The series' word on a ribbon with notched ends. Dark ink on the gold (D5: cream on gold is under 3:1); cream on the
+   red, the amber and the slate. */
+.ribbon {
+  padding: 0.18em 1.5em 0.24em;
+  font-size: clamp(36px, 9cqh, 72px);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ink-on-accent);
+  background: linear-gradient(180deg, var(--rarity-legendary), var(--accent-action-deep));
+  clip-path: polygon(0 0, 100% 0, calc(100% - 0.6em) 50%, 100% 100%, 0 100%, 0.6em 50%);
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+}
+.ribbon[data-tone='red'] {
+  color: var(--brand-cream);
+  background: linear-gradient(180deg, var(--brand-red), var(--brand-red-deep));
+}
+.ribbon[data-tone='amber'] {
+  color: var(--brand-cream);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-warning) 62%, var(--tip-surface)), color-mix(in srgb, var(--accent-warning) 40%, var(--tip-surface)));
+}
+.ribbon[data-tone='slate'] {
+  color: var(--brand-cream);
+  background: linear-gradient(180deg, var(--surface-3), var(--surface-1));
+}
+.voice {
+  padding: 0.35em 1.1em;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--tip-surface) 86%, transparent);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(var(--type-small), 2.6cqh, var(--type-h3));
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+/* ── The field ───────────────────────────────────────────────────────────────────────────────────────────── */
+/* A card's slot carries the level-up panel beside it. */
+.slot {
+  position: relative;
+}
+.foeSide {
+  z-index: 2;
+}
+/* The trainer forward, at a whole or half multiple of their sprite (ArenaSprite), their team at their feet. */
+.trainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.trainerBox {
+  display: block;
+  width: clamp(120px, 26cqh, 260px);
+  height: clamp(120px, 34cqh, 260px);
+  filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.45));
+}
+.party {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface-0) 88%, transparent);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+}
+/* A party icon (68 × 56, the Pokémon standing on its bottom edge, about x 16–52 and y 14–54) at 1.5×, cropped to the
+   Pokémon (D9) — at 2× on a tall stage. */
+.partyMon {
+  position: relative;
+  width: 54px;
+  height: 60px;
+  overflow: hidden;
+}
+.partyMon img {
+  position: absolute;
+  left: -24px;
+  top: -21px;
+  width: 102px;
+  height: 84px;
+  max-width: none;
+}
+@container (min-height: 600px) {
+  .partyMon {
+    width: 72px;
+    height: 80px;
+  }
+  .partyMon img {
+    left: -32px;
+    top: -28px;
+    width: 136px;
+    height: 112px;
+  }
+}
+.beaten {
+  filter: grayscale(1) brightness(1.05);
+  opacity: 0.75;
+}
+/* Where a runner was: only its sparkles. */
+.poof {
+  width: var(--unit-card, 176px);
+  height: calc(var(--unit-card, 176px) * 0.7);
+}
+
+/* The Badge in its case, on the open ground between the two sides. */
+.case {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  justify-items: center;
+  gap: 1cqh;
+  width: clamp(200px, 40cqh, 330px);
+  padding: 2.4cqh 2cqh 2cqh;
+  border-radius: var(--radius-lg);
+  border: 3px solid var(--accent-action);
+  background: radial-gradient(80% 70% at 50% 35%, color-mix(in srgb, var(--brand-red-deep) 45%, var(--tip-surface)), var(--tip-surface));
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--tip-surface) 55%, transparent),
+    0 18px 40px rgba(0, 0, 0, 0.5),
+    0 0 60px color-mix(in srgb, var(--accent-action) 25%, transparent);
+  cursor: help;
+}
+.caseLabel {
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.badgeArt {
+  width: clamp(110px, 22cqh, 180px);
+  height: auto;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+}
+.badgeName {
+  font-size: clamp(var(--type-h3), 3.6cqh, var(--type-h1));
+  line-height: 1.1;
+  text-align: center;
+}
+
+/* Four-point sparkles round what they decorate: a twinkle with motion on, still without. */
+.sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.sparkles i {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  translate: -50% -50%;
+  background: var(--brand-cream);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  filter: drop-shadow(0 0 4px var(--accent-action));
+  animation: twinkle 1.4s ease-in-out infinite both;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    scale: 0.6;
+  }
+  50% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sparkles i {
+    animation: none;
+  }
+}
+
+/* A pick's heading, over the tray it fills. */
+.pickHead {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: var(--sp-3);
+  translate: -50% 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-4);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--tip-surface) 88%, transparent);
+  font-size: var(--type-h3);
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* ── The tray: the Box, the spoils, the way on ───────────────────────────────────────────────────────────── */
+/* The Box's column only as wide as what is in it (nothing, most fights); the way on reads its label on one line. */
+.tray {
+  grid-template-columns: auto minmax(0, 1fr) 230px;
+  align-items: center;
+}
+.box {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  align-self: center;
+}
+.boxLabel {
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.boxMon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-caption);
+  font-weight: 800;
+  cursor: help;
+}
+/* A box icon at 1× (68 × 56), cropped to the Pokémon, as the field's incoming chips draw it (D9). */
+.boxMon img {
+  width: 48px;
+  height: 40px;
+  object-fit: none;
+  object-position: center 60%;
+}
+.boxLevel {
+  padding: 0 6px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-size: var(--type-micro);
+}
+/* The spoils: one row of cards that shrink before they ever wrap (D8: the tray never grows past its row), and under
+   it, a note or the objective's lines. */
+.spoils {
+  grid-column: 2;
+  position: relative;
+  min-height: 228px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) 0;
+}
+.cards {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  max-width: 100%;
+  min-width: 0;
+}
+.relic {
+  flex: 0 1 300px;
+  min-width: 0;
+}
+.note,
+.objective {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+.objective {
+  flex-basis: 100%;
+}
+.pill {
+  padding: 3px var(--sp-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-size: var(--type-caption);
+  font-weight: 800;
+}
+.way {
+  padding-top: 0;
+}
+/* The progress door comes in once the reveal has landed. */
+.door > * {
+  animation: global(popIn) var(--motion-base) var(--ease-spring) both;
+}
+.go {
+  white-space: nowrap;
+  padding-inline: var(--sp-4);
+}
+.skip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+  font-weight: 800;
+}
+.skip:hover {
+  background: var(--surface-3);
+}

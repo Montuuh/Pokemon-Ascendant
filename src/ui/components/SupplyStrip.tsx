@@ -6,7 +6,7 @@ import { Tipped } from '@/ui/tooltip';
 import styles from './SupplyStrip.module.css';
 
 // §2.7.2 / §2.9.1 / §2.11.1 — supplies handed over, as one strip: each item's icon with its count, the name and
-// the effect one hover away (consumableTip). The reward screen, the nurse and the Center draw the same strip, so a
+// the effect one hover away (consumableTip). A node's preview, the nurse and the Center draw the same strip, so a
 // Potion ×2 looks the same wherever it came from.
 
 export function SupplyStrip({ ids, balls = 0, testId }: { ids: readonly string[]; balls?: number; testId: string }) {

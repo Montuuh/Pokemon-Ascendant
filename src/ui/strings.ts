@@ -855,17 +855,66 @@ export const EVOLUTION_TEXT = {
   evolve: (label: string | null) => (label ? `Evolve · ${label}` : 'Evolve'),
 };
 
-/** §3.5 — the reward screen's labels (v0.9.6). */
+/** §9.4.5 / §6.8.2 — a move waiting past the four, and what a Bond rank opened: words the fight's result and its doors share. */
 export const STAT_SHORT = { hp: 'HP', attack: 'Atk', defense: 'Def', speed: 'Spd' } as const;
 export const STAT_LONG: Record<string, string> = { hp: 'HP', attack: 'Attack', defense: 'Defense', speed: 'Speed' };
 export const REWARD_TEXT = {
   inPool: 'in the pool',
-  readyToEvolve: 'Ready to evolve',
   /** §6.8.2 — what a Bond rank opened, by rank (the hidden ability names itself). */
   bondUnlock: { 1: 'Shiny Charm', 3: 'Mastery', 4: 'Starts a run' } as Record<number, string>,
 };
 
-/** §8.7 / §8.6.1 — the progress panel and the reward screen's progress line (v0.9.6). */
+/** §9.4.5 — the result screen's words: the series' word on the ribbon, one line in its voice under it, and the labels. */
+export const RESULT_TEXT = {
+  ribbon: { victory: 'Victory!', caught: 'Gotcha!', defeat: 'Wiped out…', beaten: 'Beaten', escaped: 'Got away safely!', held: 'Held out!' },
+  fled: (name: string) => `${name} fled!`,
+  voice: {
+    wild: (name: string) => `The wild ${name} fainted!`,
+    wilds: 'The wild Pokémon fainted!',
+    trainer: (name: string) => `You defeated ${name}!`,
+    badge: (badge: string) => `Received the ${badge}.`,
+    caught: (name: string) => `${name} was caught!`,
+    boxFull: 'The Box is full.',
+    defeat: 'Every Pokémon is down. The run ends here.',
+    ringLost: 'The ladder is lost.',
+    escaped: (foe: string) => `You ran from ${foe}.`,
+    fled: (name: string) => `${name} got away before it went down.`,
+  },
+  wildFoe: (name: string) => `the wild ${name}`,
+  /** The level-up panel's heading, as the series says it. */
+  grew: (name: string, level: number) => `${name} grew to Lv ${level}!`,
+  learned: 'New',
+  fainted: 'Fainted',
+  stillThere: 'Still there',
+  newCatch: 'New',
+  boxFull: 'Box full',
+  prize: 'Prize money',
+  wallet: (n: number) => `Now ${n.toLocaleString('en-GB')} ₽`,
+  toll: 'Toll',
+  tollShare: (pct: number) => `${pct} %`,
+  /** A spoil card's foot: what kind of thing it is. */
+  kind: { consumable: 'Item', ball: 'Ball', relic: 'Relic', 'held-item': 'Held item', tm: 'TM' },
+  leftBehind: 'Lost',
+  noXp: 'No XP',
+  noToll: 'No toll',
+  box: 'Box',
+  received: 'Received',
+  progress: 'Progress',
+  progressHead: 'This fight moved',
+  bond: 'Bond',
+  skip: 'Skip',
+  continue: 'Continue',
+  chooseRelic: 'Choose a relic',
+  runEnd: 'See how far you got',
+  take: (name: string) => `Take ${name}`,
+  takeIt: 'Take it',
+  pickOne: 'Pick one',
+  leave: 'Leave them',
+  gymPrize: 'The Gym owes you something',
+  elitePrize: "The Elite's prize",
+};
+
+/** §8.7 / §8.6.1 — the progress panel (v0.9.6); the fight's own progress is behind its result's door (§9.4.5). */
 export const PROGRESS_TEXT = {
   heading: (kind: 'achievement' | 'discovery', done: boolean) => (kind === 'achievement' ? (done ? 'Medal earned' : 'Medal progress') : done ? 'Relic discovered' : 'Discovery progress'),
 };
