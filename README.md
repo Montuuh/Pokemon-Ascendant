@@ -49,7 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.46 — Clear room actions.** Room doors announce navigation or service dialogs; shelves and Dojo choices retain their selected state and compound hotspots keep one keyboard stop. Before it,
+**v0.9.47 — Dojo exit.** The Dojo's physical exit supports pointer, keyboard and tooltip, returning focus to its town door. Before it,
 **v0.9.41 — Readable patch labels.** Higher-contrast patch versions in What's new, retaining pixel numerals. Before it,
 **v0.9.40 — Places worth reading.** Responsive route artwork and hover cards, clear captions, final-team portraits and verified art records. Before it,
 **v0.9.30 — Gen II type chart.** The 15-type chart now uses Generation II effectiveness: Ghost hits Psychic for ×2, Fire resists Ice at ×0.5, Bug hits Poison for ×0.5, and Poison hits Bug neutrally at ×1. Before it,

@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.47 — Dojo exit · 2026-10-25
+
+The Dojo's exit mat returns to town.
+
+- **Physical exit.** The mat supports pointer, keyboard and tooltip.
+- **Focus return.** Leaving resumes at the town's Dojo door.
+
 ### v0.9.46 — Clear room actions · 2026-10-25
 
 Room controls announce the action and its meaningful state.

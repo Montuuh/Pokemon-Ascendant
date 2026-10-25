@@ -84,12 +84,21 @@ export function DojoScreen() {
     }
   }
 
+  function leave() {
+    if (dispatch({ type: 'leave-dojo' })) {
+      // §9.6 / D8 — the city remounts after leaving; resume at the door we came through.
+      window.requestAnimationFrame(() => {
+        document.querySelector<HTMLElement>('[data-testid="door-dojo"]')?.focus();
+      });
+    }
+  }
+
   return (
     <main className={styles.root} data-testid="dojo-screen">
       <header className={styles.topBar}>
         <BackButton
           label={BACK_TO_TOWN}
-          onClick={() => act({ type: 'leave-dojo' })}
+          onClick={leave}
           testId="btn-leave-dojo"
         />
         <h1 className={`${styles.title} display`}>
@@ -112,6 +121,13 @@ export function DojoScreen() {
             testId="dojo-room"
             chosen={counter}
             onChoose={choose}
+            exit={{
+              box: [88, 228, 32, 16],
+              label: BACK_TO_TOWN,
+              tip: <Tip title={BACK_TO_TOWN} />,
+              testId: 'dojo-exit',
+              onExit: leave,
+            }}
             sprites={[
               {
                 src: asset(`art/dojo/pokemon/${species.id}${mon.shiny ? '-shiny' : ''}.png`),
