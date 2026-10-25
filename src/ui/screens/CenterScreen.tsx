@@ -1,9 +1,24 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Dialog } from 'radix-ui';
-import { IconBuildingWarehouse, IconHeartPlus, IconLock, IconSparkles, IconZzz } from '@tabler/icons-react';
+import {
+  IconBuildingWarehouse,
+  IconCoinOff,
+  IconHeartPlus,
+  IconLock,
+  IconSparkles,
+  IconZzz,
+} from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { boxCapacity, daycarePrice, joinTeam, runHelpers, therapyPrice, type PartyMon } from '@/sim';
+import {
+  boxCapacity,
+  daycarePrice,
+  DEFAULT_PROGRESSION,
+  joinTeam,
+  runHelpers,
+  therapyPrice,
+  type PartyMon,
+} from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { HealPanel } from '@/ui/components/HealPanel';
 import { PixelRoom } from '@/ui/components/PixelRoom';
@@ -292,8 +307,8 @@ export function CenterScreen() {
                             data-testid={`therapy-${s.id}`}
                             aria-label={
                               affordable
-                                ? `Therapy for ${mon.shiny ? "Shiny " : ""}${s.name}: take one Trauma stack off`
-                                : `Therapy for ${mon.shiny ? "Shiny " : ""}${s.name}: not enough money`
+                                ? `Therapy for ${mon.shiny ? 'Shiny ' : ''}${s.name}: take one Trauma stack off`
+                                : `Therapy for ${mon.shiny ? 'Shiny ' : ''}${s.name}: not enough money`
                             }
                           >
                             <MonIcon speciesId={s.id} shiny={mon.shiny} size={44} />
@@ -340,39 +355,77 @@ export function CenterScreen() {
                       const s = content.species(mon.speciesId);
                       const affordable = run.money >= dayPrice;
                       const partnered = othersFor(mon);
-                      const open = affordable && partnered;
-                      const blocked = !partnered
-                        ? RUN_REJECT_TEXT['needs-another']!
-                        : !affordable
-                          ? RUN_REJECT_TEXT['cannot-afford']!
-                          : null;
+                      const capped = mon.level >= DEFAULT_PROGRESSION.maxLevel;
+                      const nextLevel = capped ? mon.level : mon.level + 1;
+                      const open = affordable && partnered && !capped;
+                      const blocked = capped
+                        ? CENTER_TEXT.maxLevel
+                        : !partnered
+                          ? RUN_REJECT_TEXT['needs-another']!
+                          : !affordable
+                            ? RUN_REJECT_TEXT['cannot-afford']!
+                            : null;
                       return (
                         <li key={mon.uid}>
                           {/* aria-disabled, not disabled: a row that cannot be taken still opens its bubble to say why. */}
                           <Tipped
                             as="button"
                             type="button"
-                            tip={ownedMonTip(mon, daycareRowTip(s.name, mon.level + 1, bringsFor(mon), blocked))}
+                            tip={ownedMonTip(
+                              mon,
+                              daycareRowTip(
+                                s.name,
+                                nextLevel,
+                                dayPrice,
+                                capped ? [] : bringsFor(mon),
+                                blocked,
+                              ),
+                            )}
                             className={`${styles.patient} ${open ? '' : styles.off}`}
                             aria-disabled={!open}
                             onClick={() => open && act({ type: 'daycare', uid: mon.uid })}
                             data-testid={`daycare-${s.id}`}
-                            aria-label={`Daycare for ${mon.shiny ? 'Shiny ' : ''}${s.name}: level ${mon.level} to ${mon.level + 1}, sits out the next fight${blocked ? `, ${blocked}` : ''}`}
+                            aria-label={`Daycare for ${mon.shiny ? 'Shiny ' : ''}${s.name}: level ${mon.level} to ${nextLevel}, ${dayPrice} Poké Dollars, sits out the next fight${blocked ? `, ${blocked}` : ''}`}
                           >
                             <MonIcon speciesId={s.id} shiny={mon.shiny} size={44} />
                             <span className={styles.patientBody}>
                               <span className={`${styles.patientName} display`}>{s.name}</span>
                               <span className={`${styles.patientMeta} tabular`}>
-                                Lv {mon.level} → <b>{mon.level + 1}</b>
+                                Lv {mon.level}
+                                {!capped && (
+                                  <>
+                                    {' '}
+                                    → <b>{nextLevel}</b>
+                                  </>
+                                )}
                               </span>
                             </span>
-                            {partnered ? (
-                              <Price amount={dayPrice} affordable={affordable} />
-                            ) : (
-                              <span className={styles.lock}>
-                                <IconLock size={14} aria-hidden="true" /> {CENTER_TEXT.alone}
+                            {/* D1/D4 — only the pointed-at or focused offer reveals the cost in fights beside its price. */}
+                            <span className={styles.dayDecision}>
+                              <span className={styles.restCue}>
+                                <IconZzz size={16} aria-hidden="true" /> {CENTER_TEXT.missesFight}
                               </span>
-                            )}
+                              <span className={styles.dayPrice} data-affordable={affordable}>
+                                {affordable ? (
+                                  <Money amount={dayPrice} />
+                                ) : (
+                                  <>
+                                    <IconCoinOff size={14} aria-hidden="true" />
+                                    <b className="tabular">{dayPrice.toLocaleString('en-GB')}</b>
+                                  </>
+                                )}
+                              </span>
+                              {blocked && (
+                                <span className={styles.lock}>
+                                  <IconLock size={14} aria-hidden="true" />
+                                  {capped
+                                    ? CENTER_TEXT.maxLevel
+                                    : !partnered
+                                      ? CENTER_TEXT.alone
+                                      : CENTER_TEXT.cannotAfford}
+                                </span>
+                              )}
+                            </span>
                           </Tipped>
                         </li>
                       );

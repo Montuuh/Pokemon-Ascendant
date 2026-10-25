@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.50 — Daycare decisions  ✅ 2026-10-25
+
+**Shipped.** B11 reveals a brief absence cue beside the price on the hovered or focused Daycare offer. Its tooltip names the Pokémon, next-fight absence, return timing and any purchase restriction together. Unaffordable, unpartnered and maximum-level offers remain inspectable; the maximum level already enforced by the simulation no longer promises another level. Pointer, keyboard, focus return, both viewport sizes, enlarged text and reduced motion are covered. Evidence: playtest/art-review-2026-10-24/implementation/B11. No game rule changes; all other review blocks remain excluded.
+
 ### v0.9.49 — Dojo action hierarchy  ✅ 2026-10-25
 
 **Shipped.** The selected move receives the strongest purchase emphasis. Other offers and Deck remain available as secondary actions; room and tab selection share one state. Activating a preview scrolls its entire card into view so its price and Learn action remain visible at 150% text. Simulation prices, gates and independent preview/purchase controls are unchanged. Evidence: playtest/art-review-2026-10-24/implementation/B10.

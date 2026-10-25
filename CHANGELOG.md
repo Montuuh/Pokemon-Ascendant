@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.50 — Daycare decisions · 2026-10-25
+
+Daycare offers show the next fight's absence before purchase.
+
+- **Resting cost.** Point or focus an offer to see its absence beside the price.
+- **Blocked offers.** Timing and price remain readable with the reason.
+
 ### v0.9.49 — Dojo action hierarchy · 2026-10-25
 
 The selected move and its purchase lead the Dojo shelf.

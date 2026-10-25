@@ -626,6 +626,9 @@ export const CENTER_TEXT = {
   noTrauma: 'Nobody is carrying Trauma. Your Box is in better shape than most that get this far.',
   resting: (name: string) => `${name} is resting until the next fight is over.`,
   alone: 'Needs a partner',
+  missesFight: 'Misses next fight',
+  maxLevel: 'Maximum level',
+  cannotAfford: 'Not enough money',
   daycareDone: 'The Daycare has taken its Pokémon this visit.',
 };
 

@@ -153,6 +153,39 @@
 .off {
   cursor: not-allowed;
 }
+.dayDecision {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--sp-2);
+  max-width: 100%;
+}
+.restCue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+  visibility: hidden;
+}
+.patient:hover .restCue,
+.patient:focus .restCue {
+  visibility: visible;
+}
+.dayPrice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  font-size: var(--type-caption);
+}
+.dayPrice[data-affordable='false'] {
+  border-style: dashed;
+  border-color: var(--border-strong);
+}
 .lock {
   display: inline-flex;
   align-items: center;

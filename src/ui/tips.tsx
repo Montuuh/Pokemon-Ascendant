@@ -1209,8 +1209,8 @@ export function restingTip(): ReactNode {
   return <Tip title="Resting" meta={['Daycare']} body="It took a level at the Daycare and sits out the next fight. When that fight is over it rejoins the team, in the first free slot." />;
 }
 /** §2.11.1 — one Daycare offer: what the level brings, and why it cannot be taken when it cannot. */
-export function daycareRowTip(name: string, level: number, brings: string[], blocked: string | null): ReactNode {
-  return <Tip title={`${name} → Lv ${level}`} meta={['Daycare']} body={brings.length ? brings.join(' ') : 'A level: more HP and power.'} footer={blocked ?? 'It sits out the next fight.'} />;
+export function daycareRowTip(name: string, level: number, price: number, brings: string[], blocked: string | null): ReactNode {
+  return <Tip title={`${name} → Lv ${level}`} meta={[`${price} ₽`, 'Misses next fight']} body={`${name} sits out the next fight, then returns to the first free team slot or waits in the Box. ${brings.join(' ')}`} footer={blocked ?? 'Activate this row to buy. Once per City visit.'} />;
 }
 /** §2.11.1 — the PC Box: the map's Box panel, indoors. */
 export function pcBoxTip(): ReactNode {
