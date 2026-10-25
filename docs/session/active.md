@@ -1,8 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-25 · **Version:** v0.9.52 (*Summit decisions at large text*) — B13 responsive decision layout.
+**Date:** 2026-10-25 · **Version:** v0.9.53 (*Basement service bays*) — B14 Black Market focal hierarchy.
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 release; user iterates the art review first. A03/results belongs to another active session.
+**B14:** Slate circulation, warmer service bays and two native Hideout ball stands give the market a clearer focus. Anchors and rules are unchanged. Independent Sol/high review: Ship. Evidence: playtest/art-review-2026-10-24/implementation/B14. Foreign A02/A03 queue remains pending.
 **B13:** Wider relic cards retain both gate choices at 150% text with a full Box; the League preview sits below native arrival art. Keyboard, pointer, focus/Escape, motion and every real Legendary offer are covered. Evidence and independent Sol/high review: playtest/art-review-2026-10-24/implementation/B13. Foreign A02/A03 queue remains pending.
 **B12:** Healthy visits centre the room above one compact status; healing retains adjacent, scrollable feedback after its animation. Two-column report cards support 150% text; the physical exit keeps label/focus clearance. Evidence and independent review: playtest/art-review-2026-10-24/implementation/B12. Foreign A02/A03 queue remains pending.
 **B11:** Hover/focus pairs the Daycare price with its next-fight absence; the tooltip retains Pokémon identity, return timing and block reason. Maximum-level offers respect the existing sim cap. Evidence: playtest/art-review-2026-10-24/implementation/B11. Final review/release gates are recorded there. The foreign A02/A03 queue remains pending.

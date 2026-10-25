@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.53 — Basement service bays.** Quiet slate aisles and warm service areas give the hidden market a clearer focus, with original FRLG stock props. Before it,
 **v0.9.52 — Summit decisions at large text.** Wider relic offers keep both gate choices visible at 150% text. The League preview sits beneath the arrival scene. Before it,
 **v0.9.51 — Compact Center reception.** Healthy visits centre the room with one compact status. Healing keeps its adjacent, scrollable report and readable large-text cards. Before it,
 **v0.9.41 — Readable patch labels.** Higher-contrast patch versions in What's new, retaining pixel numerals. Before it,

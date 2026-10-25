@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.53 — Basement service bays · 2026-10-25
+
+Clearer service areas in the hidden market room.
+
+- **Floor palette.** Quiet slate aisles frame warm service bays.
+- **Native stock.** Original FRLG ball stands identify the trading counter.
+
 ### v0.9.52 — Summit decisions at large text · 2026-10-25
 
 The Summit keeps its relic decision visible at large text sizes.

@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.53 — Basement service bays  ✅ 2026-10-25
+
+**Shipped.** B14 quiets the Black Market's repeating floor through exact RGB substitutions, groups the four service areas in warmer bays and adds two native Rocket Hideout ball stands to the Trader's stock. The 320×256 room, stairs, people and hotspot anchors retain their original geometry; transactions and game rules are unchanged. Evidence and independent Sol/high review: playtest/art-review-2026-10-24/implementation/B14. All other blocks remain excluded.
+
 ### v0.9.52 — Summit decisions at large text  ✅ 2026-10-25
 
 **Shipped.** B13 widens the Summit's relic offers and places the five-opponent League preview beneath the native arrival scene. Both gate actions fit at 150% text with a full eight-member Box and every real Legendary name and description; selection, deselection, keyboard focus, tooltips and reduced motion retain the same behaviour. Shorter windows keep native scrolling with safe top alignment. Evidence: playtest/art-review-2026-10-24/implementation/B13. No game rules change. Other review blocks remain excluded.
