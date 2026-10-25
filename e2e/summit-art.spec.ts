@@ -25,7 +25,8 @@ for (const [width, height] of [[1280,720], [1920,1080]] as const) {
     await arrive(page);
     const screen = page.getByTestId('summit-screen');
     const art = screen.locator('img[src$="/league/summit.png"]');
-    expect(await art.evaluate((image) => image.getBoundingClientRect().width / (image as HTMLImageElement).naturalWidth)).toBe(height === 720 ? 2 : 3);
+    // §9.1.1 — compact arrivals retain native half-step scaling and room for the large-text decision.
+    expect(await art.evaluate((image) => image.getBoundingClientRect().width / (image as HTMLImageElement).naturalWidth)).toBe(height === 720 ? 1.5 : 3);
     await expect(screen.getByRole('list', { name: 'Healed in full' }).locator('li')).toHaveCount(6);
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.box.every((mon) => mon.hp > 1 && mon.status === null))).toBe(true);
     await expect(page.getByTestId('summit-league').locator('li')).toHaveCount(5);

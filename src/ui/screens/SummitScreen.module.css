@@ -1,10 +1,11 @@
-/* §2.12.4 — a destination, the final gift, then five unknown opponents. Art stays at 2× / 3×. */
-.root { height: 100%; overflow-y: auto; display: grid; place-items: center; padding: var(--sp-5); background: var(--surface-0); color: var(--ink-primary); }
+/* §2.12.4 — the destination and its five opponents sit beside the final gift. Native art at 1.5× / 2× / 3×. */
+.root { height: 100%; overflow-y: auto; display: grid; place-items: safe center; padding: var(--sp-5); background: var(--surface-0); color: var(--ink-primary); }
 .arrival { display: grid; gap: var(--sp-4); width: max-content; max-width: 100%; }
 .heading { display: flex; align-items: center; gap: var(--sp-5); }
 .heading h1 { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--type-h1); }
 .heading p { margin: 0; color: var(--ink-secondary); font-size: var(--type-small); }
-.content { display: grid; grid-template-columns: 608px 400px; gap: var(--sp-5); align-items: center; }
+.content { display: grid; grid-template-columns: 608px minmax(0, 600px); gap: var(--sp-5); align-items: center; }
+.destination { display: grid; gap: var(--sp-3); }
 .scene { position: relative; width: 608px; height: 480px; overflow: hidden; outline: 2px solid var(--border-strong); border-radius: var(--radius-md); }
 .backdrop { display: block; width: 608px; height: 480px; image-rendering: pixelated; image-rendering: crisp-edges; }
 .place { position: absolute; bottom: var(--sp-3); left: var(--sp-3); padding: var(--sp-2) var(--sp-3); border-radius: var(--radius-sm); background: var(--surface-1); font-size: var(--type-h3); box-shadow: var(--shadow-1); }
@@ -23,7 +24,7 @@
 .confirm:disabled { border-color: var(--border-subtle); background: var(--surface-2); color: var(--ink-secondary); cursor: default; }
 .decline { border: 0; background: transparent; color: var(--ink-secondary); text-decoration: underline; font-size: var(--type-small); }
 .confirm:focus-visible, .decline:focus-visible { outline: 3px solid var(--brand-blue); outline-offset: 2px; }
-.ahead { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-5); padding: var(--sp-3) var(--sp-4); background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+.ahead { display: grid; justify-content: center; justify-items: center; gap: var(--sp-2); padding: var(--sp-3) var(--sp-4); background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
 .ahead h2 { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--type-h3); }
 .leagueRow { display: flex; }
 .league { list-style: none; margin: 0; padding: 0; display: flex; align-items: start; justify-content: center; gap: var(--sp-5); }
@@ -34,11 +35,15 @@
 @media (max-height: 800px) and (min-width: 801px) {
   .root { padding: var(--sp-4); }
   .arrival { gap: var(--sp-3); }
+  .content { grid-template-columns: 456px minmax(0, 600px); }
+  .scene, .backdrop { width: 456px; height: 360px; }
   .gift, .offer { gap: var(--sp-2); }
+  .healed { padding-block: var(--sp-1); }
   .actions { gap: var(--sp-1); }
+  .confirm, .decline { padding-block: var(--sp-2); }
 }
 @media (min-width: 1600px) and (min-height: 950px) {
-  .content { grid-template-columns: 912px 440px; gap: var(--sp-6); }
+  .content { grid-template-columns: 912px minmax(0, 600px); gap: var(--sp-6); }
   .scene, .backdrop { width: 912px; height: 720px; }
 }
 @media (max-width: 1080px) {
@@ -47,7 +52,7 @@
 }
 @media (max-width: 800px) {
   .root { padding: var(--sp-4); }
-  .heading, .ahead { flex-wrap: wrap; }
+  .heading { flex-wrap: wrap; }
   .content { grid-template-columns: 1fr; justify-items: center; }
   .gift { width: 100%; }
 }

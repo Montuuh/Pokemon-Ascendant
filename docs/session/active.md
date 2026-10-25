@@ -1,8 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-25 · **Version:** v0.9.51 (*Compact Center reception*) — B12 healthy-state composition.
+**Date:** 2026-10-25 · **Version:** v0.9.52 (*Summit decisions at large text*) — B13 responsive decision layout.
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 release; user iterates the art review first. A03/results belongs to another active session.
+**B13:** Wider relic cards retain both gate choices at 150% text with a full Box; the League preview sits below native arrival art. Keyboard, pointer, focus/Escape, motion and every real Legendary offer are covered. Evidence and independent Sol/high review: playtest/art-review-2026-10-24/implementation/B13. Foreign A02/A03 queue remains pending.
 **B12:** Healthy visits centre the room above one compact status; healing retains adjacent, scrollable feedback after its animation. Two-column report cards support 150% text; the physical exit keeps label/focus clearance. Evidence and independent review: playtest/art-review-2026-10-24/implementation/B12. Foreign A02/A03 queue remains pending.
 **B11:** Hover/focus pairs the Daycare price with its next-fight absence; the tooltip retains Pokémon identity, return timing and block reason. Maximum-level offers respect the existing sim cap. Evidence: playtest/art-review-2026-10-24/implementation/B11. Final review/release gates are recorded there. The foreign A02/A03 queue remains pending.
 **B10:** Selected offers own the primary Learn emphasis; Deck and tabs are secondary. Preview activation reveals the full card at large text sizes. Independent Astra/high review and release evidence: playtest/art-review-2026-10-24/implementation/B10. Foreign A02/A03 and their 18-entry review queue remain excluded.

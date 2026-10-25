@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.52 — Summit decisions at large text · 2026-10-25
+
+The Summit keeps its relic decision visible at large text sizes.
+
+- **Relic offers.** Wider cards keep both gate choices visible at 150% text.
+- **League preview.** The five silhouettes sit beneath the arrival scene.
+
 ### v0.9.51 — Compact Center reception · 2026-10-25
 
 Healthy visits give the Center room the full scene.

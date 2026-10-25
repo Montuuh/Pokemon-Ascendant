@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.52 — Summit decisions at large text  ✅ 2026-10-25
+
+**Shipped.** B13 widens the Summit's relic offers and places the five-opponent League preview beneath the native arrival scene. Both gate actions fit at 150% text with a full eight-member Box and every real Legendary name and description; selection, deselection, keyboard focus, tooltips and reduced motion retain the same behaviour. Shorter windows keep native scrolling with safe top alignment. Evidence: playtest/art-review-2026-10-24/implementation/B13. No game rules change. Other review blocks remain excluded.
+
 ### v0.9.51 — Compact Center reception  ✅ 2026-10-25
 
 **Shipped.** B12 removes the idle Center's empty report column and outer frame, centring the authentic room above one compact reception status. Real heals retain their adjacent report throughout the animation and afterwards behind the existing disclosure. Two-column patient cards keep enlarged names readable; full-Box history remains scrollable, and the healthy room reserves space for its physical exit label and focus halo. Evidence: playtest/art-review-2026-10-24/implementation/B12. No game rules change. A02/A03 and all other blocks remain excluded.

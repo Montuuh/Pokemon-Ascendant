@@ -28,9 +28,23 @@ export function SummitScreen() {
           <p>{VICTORY_TEXT.summitLede}</p>
         </header>
         <div className={styles.content}>
-          <div className={styles.scene}>
-            <img className={styles.backdrop} src={LEAGUE_ART.summit} alt="" width={SUMMIT_SCENE.width} height={SUMMIT_SCENE.height} />
-            <span className={`${styles.place} display`}>{VICTORY_TEXT.summitPlace}</span>
+          <div className={styles.destination}>
+            <div className={styles.scene}>
+              <img className={styles.backdrop} src={LEAGUE_ART.summit} alt="" width={SUMMIT_SCENE.width} height={SUMMIT_SCENE.height} />
+              <span className={`${styles.place} display`}>{VICTORY_TEXT.summitPlace}</span>
+            </div>
+            <section className={styles.ahead}>
+              <h2 className="display">{VICTORY_TEXT.leagueAhead}<InfoDot tip={leagueAheadTip()} /></h2>
+              {/* §2.12.4 — names wait at the doors: the Summit shows silhouettes and type identities. */}
+              <Tipped tip={leagueAheadTip()} className={styles.leagueRow}>
+                <ul className={styles.league} aria-label={VICTORY_TEXT.leagueAhead} data-testid="summit-league">
+                  {LEAGUE_MEMBERS.map((member) => <li key={member.id} className={styles.member}>
+                    <img className={styles.silhouette} src={trainerSprite(member.sprite)} alt="" width={40} height={40} />
+                    {member.type ? <TypeBadge type={member.type} size={12} defenderTypes={[member.type]} /> : <span className={styles.many}>{LEAGUE_TEXT.manyTypes}</span>}
+                  </li>)}
+                </ul>
+              </Tipped>
+            </section>
           </div>
           <section className={styles.gift} aria-label={VICTORY_TEXT.summitOffer}>
             <div className={styles.healed}>
@@ -62,18 +76,6 @@ export function SummitScreen() {
             </div>
           </section>
         </div>
-        <section className={styles.ahead}>
-          <h2 className="display">{VICTORY_TEXT.leagueAhead}<InfoDot tip={leagueAheadTip()} /></h2>
-          {/* §2.12.4 — names wait at the doors: the Summit shows silhouettes and type identities. */}
-          <Tipped tip={leagueAheadTip()} className={styles.leagueRow}>
-            <ul className={styles.league} aria-label={VICTORY_TEXT.leagueAhead} data-testid="summit-league">
-              {LEAGUE_MEMBERS.map((member) => <li key={member.id} className={styles.member}>
-                <img className={styles.silhouette} src={trainerSprite(member.sprite)} alt="" width={40} height={40} />
-                {member.type ? <TypeBadge type={member.type} size={12} defenderTypes={[member.type]} /> : <span className={styles.many}>{LEAGUE_TEXT.manyTypes}</span>}
-              </li>)}
-            </ul>
-          </Tipped>
-        </section>
       </div>
     </main>
   );

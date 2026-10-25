@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.52 — Summit decisions at large text.** Wider relic offers keep both gate choices visible at 150% text. The League preview sits beneath the arrival scene. Before it,
 **v0.9.51 — Compact Center reception.** Healthy visits centre the room with one compact status. Healing keeps its adjacent, scrollable report and readable large-text cards. Before it,
 **v0.9.41 — Readable patch labels.** Higher-contrast patch versions in What's new, retaining pixel numerals. Before it,
 **v0.9.40 — Places worth reading.** Responsive route artwork and hover cards, clear captions, final-team portraits and verified art records. Before it,
