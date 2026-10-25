@@ -1,4 +1,4 @@
-import { useId, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type MouseEvent, type ReactNode } from 'react';
+import { useId, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type MouseEvent, type ReactNode, type Ref } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useTip } from '@/ui/tooltip';
 import styles from './PixelRoom.module.css';
@@ -21,6 +21,8 @@ export type Box = readonly [number, number, number, number];
 
 export interface RoomSpot<Id extends string> {
   id: Id;
+  /** D8 — a door navigates or opens a dialog; only a persistent selection is a pressed button. */
+  semantics: { kind: 'navigation' } | { kind: 'selection' } | { kind: 'dialog'; open: boolean };
   /** The furniture that is this spot. The first box wears the name plate and takes the Tab stop. */
   boxes: readonly Box[];
   /** The plate's text. */
@@ -80,6 +82,7 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
   frame?: 'box' | 'silhouette';
 }) {
   const box = useRef<HTMLElement>(null);
+  const spotButtons = useRef(new Map<Id, HTMLButtonElement>());
   const [scale, setScale] = useState(2);
   // The spot under the pointer and the one holding the keyboard's focus, kept apart so the pointer passing by never
   // wipes the focus's light. The way out counts as a shape too.
@@ -109,6 +112,11 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
   });
   const lit = (id: Id | 'exit') => (id === chosen ? 'chosen' : id === hovered || id === focused ? 'near' : null);
   const exitLit = exit ? lit('exit') : null;
+  const choose = (id: Id) => {
+    // §9.6 / D8 — a pointer-only piece opens the same door and returns to its accessible keyboard stop.
+    spotButtons.current.get(id)?.focus();
+    onChoose(id);
+  };
 
   return (
     <section ref={box} className={styles.room} aria-label={label} data-testid={testId} data-scale={scale}>
@@ -155,7 +163,7 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
 
         {spots.map((spot) =>
           spot.boxes.map((b, i) => (
-            <Spot key={`${spot.id}-${i}`} spot={spot} first={i === 0} style={place(b)} chosen={chosen === spot.id} onChoose={onChoose} onHover={setHovered} onFocus={setFocused} />
+            <Spot key={`${spot.id}-${i}`} spot={spot} first={i === 0} buttonRef={i === 0 ? (node) => { if (node) spotButtons.current.set(spot.id, node); else spotButtons.current.delete(spot.id); } : undefined} style={place(b)} chosen={chosen === spot.id} onChoose={choose} onHover={setHovered} onFocus={setFocused} />
           )),
         )}
         {exit && <ExitSpot<Id> exit={exit} style={place(exit.box)} onHover={setHovered} onFocus={setFocused} />}
@@ -166,15 +174,18 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
 
 type Near<Id> = (id: Id | 'exit' | null) => void;
 
-function Spot<Id extends string>({ spot, first, style, chosen, onChoose, onHover, onFocus }: { spot: RoomSpot<Id>; first: boolean; style: CSSProperties; chosen: boolean; onChoose: (id: Id) => void; onHover: Near<Id>; onFocus: Near<Id> }) {
+function Spot<Id extends string>({ spot, first, buttonRef, style, chosen, onChoose, onHover, onFocus }: { spot: RoomSpot<Id>; first: boolean; buttonRef?: Ref<HTMLButtonElement>; style: CSSProperties; chosen: boolean; onChoose: (id: Id) => void; onHover: Near<Id>; onFocus: Near<Id> }) {
   const tip = useTip(spot.tip);
   return (
     <button
+      ref={buttonRef}
       type="button"
       className={styles.spot}
       style={style}
       onClick={() => onChoose(spot.id)}
-      aria-pressed={chosen}
+      aria-pressed={spot.semantics.kind === 'selection' ? chosen : undefined}
+      aria-haspopup={spot.semantics.kind === 'dialog' ? 'dialog' : undefined}
+      aria-expanded={spot.semantics.kind === 'dialog' ? spot.semantics.open : undefined}
       aria-label={spot.ariaLabel ?? spot.label}
       // One Tab stop and one name a spot: its first piece. The rest are the same spot for the pointer.
       tabIndex={first ? undefined : -1}

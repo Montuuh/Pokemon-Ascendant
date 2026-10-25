@@ -33,6 +33,7 @@ export function BlackMarketRoom({
       }))}
       spots={MARKET_COUNTERS.map((id) => ({
         id,
+        semantics: { kind: 'dialog', open: chosen === id },
         boxes: MARKET_SPOTS[id].boxes,
         label: `${MARKET_TEXT[id].name}${dealt[id] ? ' ✓' : ''}`,
         ariaLabel: `${MARKET_TEXT[id].name}${dealt[id] ? `, ${MARKET_TEXT.dealt}` : ''}`,

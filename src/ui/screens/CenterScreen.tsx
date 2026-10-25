@@ -174,6 +174,7 @@ export function CenterScreen() {
             spots={[
               {
                 id: 'daycare',
+                semantics: { kind: 'dialog', open: counter === 'daycare' },
                 boxes: CENTER_SPOTS.daycare,
                 label: CENTER_TEXT.daycare,
                 tip: daycareTip(dayPrice),
@@ -181,6 +182,7 @@ export function CenterScreen() {
               },
               {
                 id: 'therapy',
+                semantics: { kind: 'dialog', open: counter === 'therapy' },
                 boxes: CENTER_SPOTS.therapy,
                 label: CENTER_TEXT.therapy,
                 tip: therapyTip(),
@@ -188,6 +190,7 @@ export function CenterScreen() {
               },
               {
                 id: 'pc',
+                semantics: { kind: 'dialog', open: counter === 'pc' },
                 boxes: CENTER_SPOTS.pc,
                 label: CENTER_TEXT.pcBox,
                 tip: pcBoxTip(),

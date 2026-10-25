@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.46 — Clear room actions · 2026-10-25
+
+Room controls announce the action and its meaningful state.
+
+- **Room doors.** Navigation and service dialogs use distinct semantics.
+- **Selections.** Shelves and Dojo choices retain their selected state.
+
 ### v0.9.45 — Native item pixels · 2026-10-24
 
 Item cards and their tooltips preserve the original pixel grid.

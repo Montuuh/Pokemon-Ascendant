@@ -117,6 +117,7 @@ export function HubScreen() {
           ]}
           spots={(Object.keys(LOBBY_SPOTS) as HubSpot[]).map((id) => ({
             id,
+            semantics: { kind: 'navigation' },
             boxes: LOBBY_SPOTS[id],
             label: SPOT_LABEL[id],
             tip: hubSpotTip(id, account.tokens),

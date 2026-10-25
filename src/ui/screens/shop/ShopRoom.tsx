@@ -27,6 +27,7 @@ export function ShopRoom({ room, counts, chosen, onChoose, onExit, exitLabel, la
         const count = counts[shelf.id] ?? 0;
         return {
           id: shelf.id,
+          semantics: { kind: 'selection' } as const,
           boxes: shelf.boxes,
           label: SHELF_LABEL[shelf.id],
           ariaLabel: `${SHELF_LABEL[shelf.id]}, ${shelfCountLine(shelf.id, count)}`,

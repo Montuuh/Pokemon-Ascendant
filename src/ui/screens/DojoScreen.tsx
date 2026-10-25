@@ -138,6 +138,7 @@ export function DojoScreen() {
             spots={[
               {
                 id: 'tutor',
+                semantics: { kind: 'selection' },
                 boxes: [
                   [94, 73, 20, 23],
                   [28, 64, 32, 40],
@@ -149,6 +150,7 @@ export function DojoScreen() {
               },
               {
                 id: 'eggs',
+                semantics: { kind: 'selection' },
                 boxes: [
                   [148, 64, 32, 40],
                   [79, 22, 50, 24],
@@ -160,6 +162,7 @@ export function DojoScreen() {
               },
               {
                 id: 'passive',
+                semantics: { kind: 'selection' },
                 boxes: [[175, 155, 17, 23]],
                 label: DOJO_TEXT.apprentice,
                 ariaLabel: DOJO_TEXT.tab.passive,
