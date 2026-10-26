@@ -169,6 +169,6 @@ test.describe('Supplies and scarce relics — v0.8.6', () => {
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.hp)).toBe(30);
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.consumables.filter((id) => id === 'potion').length)).toBe(before - 1);
     // A Pokémon at full HP is offered, readable, and refused with the reason.
-    await expect(page.locator('[data-testid^="use-potion-"]:disabled').first()).toContainText('full HP');
+    await expect(page.locator('[data-testid^="use-potion-"][aria-disabled="true"]').first()).toContainText('full HP');
   });
 });

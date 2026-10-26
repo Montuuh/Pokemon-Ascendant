@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.65 — Four stale checks · 2026-10-26
+
+The last stale end-to-end checks pass again.
+
+- **Dojo.** Reduced motion expects no practice effect at all.
+- **Potion.** A refused Pokémon is found by its aria-disabled row.
+- **Route.** The caption check measures each image once.
+
 ### v0.9.64 — Five cards again · 2026-10-26
 
 Two stale end-to-end checks pass again.

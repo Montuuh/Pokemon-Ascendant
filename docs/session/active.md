@@ -1,9 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-26 · **Version:** v0.9.64 (*Five cards again*).
+**Date:** 2026-10-26 · **Version:** v0.9.65 (*Four stale checks*).
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
-**Next:** v1.0 and the remaining art-review blocks. Open: four e2e cases fail on v0.9.61 too (dojo-art reduced-motion effect, supplies Potion "full HP", route-readability 1280/1920); the audit's dead-CSS scan follows only modules imported as `styles`. Shortlisted for later: web-design-guidelines, break-ui, kill-ai-slop scanner.
+**Next:** v1.0 and the remaining art-review blocks. Open: the audit's dead-CSS scan follows only modules imported as `styles`. Shortlisted for later: web-design-guidelines, break-ui, kill-ai-slop scanner.
 **Motion review (v0.9.62):** D11 chrome / D12 world in ui-doctrine.md; checklist docs/design/ui/motion-review.md (adapted from Emil Kowalski MIT + game-feel Apache-2.0); npm run ui:motion; ui:audit reports D11 motion; ui-reviewer watches motion at full and reduced. Evidence: playtest/motion-review-2026-10-26.
+**Green e2e (v0.9.65):** the Dojo effect is unmounted under reduced motion (test asks for none); refused bag rows are `aria-disabled`; the route caption scan caches each image's opaque box. The full suite at default workers still times out a few heavy cases (each passes alone).
 **Five cards (v0.9.64):** nothing inside a card takes the `card-` test-id prefix (the suites count a hand by it): `crit-badge`, `ap-short`. The ending test opens the Run record door for Regions.
 **Both switches (v0.9.63):** every prefers-reduced-motion rule is scoped html:not([data-motion='full']) with an html[data-motion='reduced'] twin; the one-switch lint + tokens.test.ts guard it in check. ui-reviewer: Ship after three rounds.
 **Speed (v0.9.58–59):** §3.3.1.1 quick swap — faster than the enemy Lead (the Pokémon stepping in), 1 AP off every rung; Paralysis halves Speed. §4.1.3.1 critical rhythm — a meter per Pokémon, both sides, filled per act, Speed-tiered (player 3/4/5/6, enemy 3/3/4/4); enemy crits declared on the intent, never broken (the user's calls). v0.9.60: the rhythm as a dial on each card's outer edge (`RhythmDial`), ✦ CRIT on hand cards about to crit. v0.9.61: one ✦ badge on every card that will crit (AlwaysCrit or full rhythm); the rhythm's cards also keep the gold edge. Slow Pokémon get no compensation for now (the user's call); revisit only if the harness shows them behind.

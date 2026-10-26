@@ -158,9 +158,9 @@ test('the decorative practice effect follows a preview and honours reduced motio
   expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(money);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.locator('[data-testid^="dojo-preview-tutor-"]').first().click();
-  // The shared motion tokens react to a system preference changed while the room is already mounted.
-  await expect(effect).toHaveCSS('animation-duration', '0s');
-  await expect(effect).toHaveCSS('opacity', '0');
+  // §9.6 — a preference changed while the room is mounted is read live (useMotionPref): the decorative cue is not
+  // mounted at all, so a still room shows no half-drawn effect.
+  await expect(effect).toHaveCount(0);
 });
 
 test('Celadon keeps its +30% prices and the fifth Mastery slot stays fixed in the deck', async ({ page }) => {

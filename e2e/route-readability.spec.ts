@@ -26,6 +26,26 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1920, height: 108
       // Captions must clear neighbouring artwork as well as their own, including stacked caves.
       const collisions = await page.locator('[data-testid^="node-"][data-kind]').evaluateAll((nodes) => {
         const hits: string[] = [];
+        // Each image's opaque box, in its own 0–1 space, measured once: the pairwise scan below reads it per caption.
+        const opaque = new Map<HTMLImageElement, { left: number; right: number; top: number; bottom: number }>();
+        const opaqueBox = (image: HTMLImageElement) => {
+          const known = opaque.get(image);
+          if (known) return known;
+          const canvas = document.createElement('canvas');
+          canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
+          const ctx = canvas.getContext('2d')!; ctx.drawImage(image, 0, 0);
+          const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          let left = canvas.width, right = 0, top = canvas.height, bottom = 0;
+          for (let y = 0; y < canvas.height; y++) for (let x = 0; x < canvas.width; x++) {
+            if (pixels[(y * canvas.width + x) * 4 + 3]! > 0) {
+              left = Math.min(left, x); right = Math.max(right, x + 1);
+              top = Math.min(top, y); bottom = Math.max(bottom, y + 1);
+            }
+          }
+          const box = { left: left / canvas.width, right: right / canvas.width, top: top / canvas.height, bottom: bottom / canvas.height };
+          opaque.set(image, box);
+          return box;
+        };
         for (const node of nodes) {
           const chip = node.querySelector('[data-chip]');
           if (!chip) continue;
@@ -34,19 +54,9 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1920, height: 108
             if (other === node) continue;
             for (const image of other.querySelectorAll('img')) {
               const bounds = image.getBoundingClientRect();
-              const canvas = document.createElement('canvas');
-              canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
-              const ctx = canvas.getContext('2d')!; ctx.drawImage(image, 0, 0);
-              const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-              let left = canvas.width, right = 0, top = canvas.height, bottom = 0;
-              for (let y = 0; y < canvas.height; y++) for (let x = 0; x < canvas.width; x++) {
-                if (pixels[(y * canvas.width + x) * 4 + 3]! > 0) {
-                  left = Math.min(left, x); right = Math.max(right, x + 1);
-                  top = Math.min(top, y); bottom = Math.max(bottom, y + 1);
-                }
-              }
-              const b = { left: bounds.left + left / canvas.width * bounds.width, right: bounds.left + right / canvas.width * bounds.width,
-                top: bounds.top + top / canvas.height * bounds.height, bottom: bounds.top + bottom / canvas.height * bounds.height };
+              const o = opaqueBox(image);
+              const b = { left: bounds.left + o.left * bounds.width, right: bounds.left + o.right * bounds.width,
+                top: bounds.top + o.top * bounds.height, bottom: bounds.top + o.bottom * bounds.height };
               if (Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1)
                 hits.push(`${node.getAttribute('data-testid')} caption intersects ${other.getAttribute('data-testid')}: ${image.getAttribute('src')}`);
             }
