@@ -155,8 +155,7 @@ export function FightResults() {
   const tone = ribbonTone(outcome);
   const field = mons.filter((m): m is ResultMon & { place: NonNullable<ResultMon['place']> } => !!m.place);
   const box = mons.filter((m) => !m.place && m.xp);
-  // §9.4.5 — the one level-up panel standing now, if any. A bench Pokémon's stands in the open ground right of the Lead's
-  // card (top for Bench 1, bottom for Bench 2) rather than over it, and its own card glows while it does.
+  // §9.4.5 — one level-up panel in reserved ground beside the Lead; the Pokémon whose news it is glows.
   const levelling = field.map((m) => ({ m, p: monAt(m, plan, t).panel })).find((x) => x.p !== null && x.m.up) ?? null;
   const stage = rec?.stage ?? run.pendingScenario?.stage ?? 'gym';
   const pickTip = gymPick ? gymRelicTip(offer.some((id) => content.relic(id).rarity === 'legendary'), false) : rec?.kind === 'gauntlet' ? gauntletPrizeTip() : elitePrizeTip();
@@ -168,7 +167,9 @@ export function FightResults() {
         <div className={combat.chips}>
           <span className={`${combat.chip} ${combat.chipStrong}`}>{title}</span>
         </div>
-        <div />
+        <div className={styles.pickHead}>
+          {offer.length > 0 && <><span className="display">{pickHead}</span><InfoDot tip={pickTip} /></>}
+        </div>
         {/* The account's news waits for the reveal to land (D8), then its door. */}
         <div className={`${combat.chips} ${styles.door}`}>{!gymPick && done && <ProgressDoor />}</div>
       </header>
@@ -217,16 +218,18 @@ export function FightResults() {
                   levelling={levelling?.m === m}
                   testId={`result-${species.id}`}
                 />
-                {m.place === 'lead' && levelling && (
-                  <LevelUpPanel name={content.species(levelling.m.mon.speciesId).name} up={levelling.m.up!} p={levelling.p!} place={levelling.m.place} />
-                )}
               </div>
             );
           })}
         </div>
 
         {/* The open ground: a Gym's Badge in its case. */}
-        <div className={combat.middle}>
+        <div className={`${combat.middle} ${styles.middle}`}>
+          {levelling && (
+            <div className={styles.levelNews}>
+              <LevelUpPanel name={content.species(levelling.m.mon.speciesId).name} up={levelling.m.up!} p={levelling.p!} place={levelling.m.place} />
+            </div>
+          )}
           {badge && (
             <Tipped
               tip={badgeTip(badge.name, badge.description)}
@@ -284,13 +287,6 @@ export function FightResults() {
           ) : null}
         </div>
 
-        {/* §7.3.7 / §2.8.1 — a pick's heading, over the tray it fills. */}
-        {offer.length > 0 && (
-          <span className={styles.pickHead}>
-            <span className="display">{pickHead}</span>
-            <InfoDot tip={pickTip} />
-          </span>
-        )}
       </section>
       </div>
 

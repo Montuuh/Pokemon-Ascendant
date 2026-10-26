@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.55 — Room for every reward  ✅ 2026-10-26
+
+**Shipped.** A02 completes the Gym Badge layout with separate ground for the temporary level-up window, wrapping enlarged text and learned moves, and clearance below the outcome headline. A03 retains the combat stage integration shipped in v0.9.54; regression coverage exercises the full reveal at both desktop sizes and 150% text. B02 closes the pending run-record correction: Victory Road and League losses retain all three completed regions. Evidence: `playtest/art-review-2026-10-24/implementation/A02-A03/`.
+
 ### v0.9.54 — The field after  ✅ 2026-10-26
 
 The user's rework of the fight's end (2026-10-21): direction A of the shown proposal (`docs/design/ui/mockups/fight-end/`), with evolution as a surprise, the series' bar fills and sounds, and the stat gains in a temporary panel beside the card.

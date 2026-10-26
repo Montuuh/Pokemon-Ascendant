@@ -16,6 +16,24 @@
   aspect-ratio: auto;
   grid-template-columns: auto minmax(calc(clamp(200px, 40cqh, 330px) * 1.08), 1fr) auto;
 }
+/* Keep the transient stat window beside the Lead, with separate ground for the Badge's spring. */
+.middle {
+  --badge-ground: calc(clamp(200px, 40cqh, 330px) * 1.08);
+}
+.levelNews {
+  position: absolute;
+  left: 0;
+  top: calc(50% + var(--sp-5) + var(--sp-4));
+  translate: 0 -50%;
+  width: min(320px, 100%);
+}
+.middle:has(.case) .levelNews {
+  width: min(320px, calc(100% - var(--badge-ground) - var(--sp-3)));
+}
+.middle .case {
+  left: calc(100% - var(--badge-ground) / 2);
+  top: calc(50% + var(--sp-5) + var(--sp-4));
+}
 .backdrop {
   position: absolute;
   inset: 0;
@@ -87,7 +105,7 @@
 }
 
 /* ── The field ───────────────────────────────────────────────────────────────────────────────────────────── */
-/* A card's slot carries the level-up panel beside it. */
+/* Position decorative effects relative to their card. */
 .slot {
   position: relative;
 }
@@ -226,22 +244,14 @@
   }
 }
 
-/* A pick's heading, over the tray it fills. */
+/* The pick instruction belongs to the top bar, leaving the stage and Badge unobstructed. */
 .pickHead {
-  position: absolute;
-  z-index: 6;
-  left: 50%;
-  bottom: var(--sp-3);
-  translate: -50% 0;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--sp-2);
-  padding: var(--sp-1) var(--sp-4);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--tip-surface) 88%, transparent);
-  font-size: var(--type-h3);
-  white-space: nowrap;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  font-size: var(--type-small);
+  text-align: center;
 }
 
 /* ── The tray: the Box, the spoils, the way on ───────────────────────────────────────────────────────────── */

@@ -1,7 +1,7 @@
 import { Dialog } from 'radix-ui';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
-import { maxHpOf, REGION_COUNT, type RunState } from '@/sim';
+import { completedRegions, maxHpOf, REGION_COUNT, type RunState } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { RUN_END_TEXT } from '@/ui/strings';
 import { AccountSummary } from '../hub/AccountSummary';
@@ -14,7 +14,7 @@ export function RunRecord({ run, won }: { run: RunState; won: boolean }) {
   const metrics = [
     {
       label: RUN_END_TEXT.metrics.regions,
-      value: `${won ? run.regionIndex + 1 : run.regionIndex} / ${REGION_COUNT}`,
+      value: `${completedRegions(run)} / ${REGION_COUNT}`,
     },
     { label: RUN_END_TEXT.metrics.nodes, value: String(run.stats.nodesCleared) },
     { label: RUN_END_TEXT.metrics.fights, value: String(run.stats.combatsWon) },

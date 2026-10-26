@@ -1,13 +1,10 @@
 /* §9.4.5 — the level-up window beside its card: the series' white stat window in the game's register — cream, a gold
    edge, a pointer at the card it belongs to — over everything on the field for the length of its beat. */
 .panel {
-  position: absolute;
+  position: relative;
   z-index: 8;
-  left: calc(100% + var(--sp-3));
-  top: 50%;
-  translate: 0 -50%;
-  width: max-content;
-  min-width: clamp(176px, 30cqh, 230px);
+  width: 100%;
+  min-width: 0;
   display: grid;
   gap: var(--sp-1);
   padding: var(--sp-2) var(--sp-3);
@@ -16,7 +13,11 @@
   background: var(--brand-cream);
   color: var(--ink-on-accent);
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
-  animation: global(popIn) var(--motion-base) var(--ease-spring) both;
+  animation: appear var(--motion-base) ease both;
+}
+@keyframes appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 /* The pointer at the card. */
 .panel::before {
@@ -28,18 +29,8 @@
   border: 9px solid transparent;
   border-right-color: var(--accent-action);
 }
-/* Bench 1's news top-aligned with the Lead's card, Bench 2's bottom-aligned; no pointer — the glowing card is theirs. */
-.b1 {
-  top: 0;
-  translate: none;
-}
-.b2 {
-  top: auto;
-  bottom: 0;
-  translate: none;
-}
-.b1::before,
-.b2::before {
+/* A bench card identifies itself with its glow; the pointer belongs only to the Lead. */
+.panel:not([data-place='lead'])::before {
   display: none;
 }
 .folding {
@@ -49,7 +40,7 @@
 .head {
   font-size: var(--type-small);
   line-height: 1.15;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .rows {
   display: grid;
@@ -82,11 +73,11 @@
 }
 .move {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-1);
   margin-top: 2px;
   font-size: var(--type-caption);
-  white-space: nowrap;
 }
 .new {
   padding: 0 6px;

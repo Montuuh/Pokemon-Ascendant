@@ -18,15 +18,14 @@ const FOLD_AT = 0.93;
  * register): "Pidgey grew to Lv 9!", each stat's gain, then the totals counting up to their new values, and a move the
  * level brought. It takes no click: it folds away when its beat ends, and the level tag's door shows the same again.
  *
- * It stands right of the Lead's card (the caller renders it in the Lead's slot): beside it for the Lead, top-aligned
- * with it for Bench 1 and bottom-aligned for Bench 2 — in the open ground, never over another card, and the bench card
- * whose news it is glows while it stands.
+ * It stands in reserved ground right of the Lead, separately from the Badge. The card whose news it is glows;
+ * only the Lead's panel has a pointer. Enlarged text and learned moves wrap inside that reserved width.
  */
 export function LevelUpPanel({ name, up, p, place }: { name: string; up: LevelUp; p: number; place: Place }) {
   const content = getContent();
   const count = Math.max(0, Math.min(1, (p - COUNT_FROM) / (COUNT_TO - COUNT_FROM)));
   return (
-    <div className={`${styles.panel} ${styles[place] ?? ''} ${p >= FOLD_AT ? styles.folding : ''}`} role="status" aria-live="polite" data-testid={`levelup-panel-${up.uid}`}>
+    <div className={`${styles.panel} ${p >= FOLD_AT ? styles.folding : ''}`} data-place={place} role="status" aria-live="polite" data-testid={`levelup-panel-${up.uid}`}>
       <span className={`${styles.head} display`}>{RESULT_TEXT.grew(name, up.to)}</span>
       {up.gains && up.statsAt && (
         <span className={styles.rows}>

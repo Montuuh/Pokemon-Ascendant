@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.55 — Room for every reward · 2026-10-26
+
+Clear Gym rewards and accurate run records.
+
+- **Badge space.** Level-up panels leave the prize fully visible.
+- **Large text.** Stat windows wrap within their own space.
+- **Run records.** All cleared regions count after post-region defeats.
+
 ### v0.9.54 — The field after · 2026-10-26
 
 A fight ends on its own stage: one screen, one click.
