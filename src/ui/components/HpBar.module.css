@@ -10,6 +10,7 @@
   z-index: 2;
   height: 100%;
   border-radius: var(--radius-pill);
+  /* motion-ok: known width bar (§2), scaleX pass pending */
   transition: width var(--motion-slow) ease-out;
 }
 /* §9.2.5 — the HP about to go: red stripes over the end of the fill, breathing so it reads as "not yet". */
@@ -22,7 +23,7 @@
     repeating-linear-gradient(-45deg, color-mix(in srgb, var(--surface-sunken) 55%, transparent) 0 3px, transparent 3px 6px),
     var(--accent-negative);
   border-left: 1px solid var(--surface-sunken);
-  animation: global(lossPulse) 1.4s ease-in-out infinite;
+  animation: global(lossPulse) var(--motion-loop-pulse) ease-in-out infinite;
 }
 .shield {
   position: absolute;

@@ -104,20 +104,24 @@
 .sparks i:nth-child(odd) {
   background: var(--ink-primary);
 }
-.sparks i:nth-child(1) { --x: -150px; animation-delay: 0s; }
-.sparks i:nth-child(2) { --x: 120px; animation-delay: 0.3s; }
-.sparks i:nth-child(3) { --x: -90px; animation-delay: 0.6s; }
-.sparks i:nth-child(4) { --x: 170px; animation-delay: 0.9s; }
-.sparks i:nth-child(5) { --x: -40px; animation-delay: 1.2s; }
-.sparks i:nth-child(6) { --x: 60px; animation-delay: 1.5s; }
-.sparks i:nth-child(7) { --x: -180px; animation-delay: 1.8s; }
-.sparks i:nth-child(8) { --x: 20px; animation-delay: 2.1s; }
-.sparks i:nth-child(9) { --x: 140px; animation-delay: 0.45s; }
-.sparks i:nth-child(10) { --x: -120px; animation-delay: 0.75s; }
-.sparks i:nth-child(11) { --x: 95px; animation-delay: 1.05s; }
-.sparks i:nth-child(12) { --x: -10px; animation-delay: 1.35s; }
-.sparks i:nth-child(13) { --x: 200px; animation-delay: 1.65s; }
-.sparks i:nth-child(14) { --x: -200px; animation-delay: 1.95s; }
+/* Each spark is a sixteenth of the climb apart (--phase, set inline) and already climbing when the sparks fade in. */
+.sparks i {
+  animation-delay: calc(var(--phase) * var(--evo-rise) / -16);
+}
+.sparks i:nth-child(1) { --x: -150px; }
+.sparks i:nth-child(2) { --x: 120px; }
+.sparks i:nth-child(3) { --x: -90px; }
+.sparks i:nth-child(4) { --x: 170px; }
+.sparks i:nth-child(5) { --x: -40px; }
+.sparks i:nth-child(6) { --x: 60px; }
+.sparks i:nth-child(7) { --x: -180px; }
+.sparks i:nth-child(8) { --x: 20px; }
+.sparks i:nth-child(9) { --x: 140px; }
+.sparks i:nth-child(10) { --x: -120px; }
+.sparks i:nth-child(11) { --x: 95px; }
+.sparks i:nth-child(12) { --x: -10px; }
+.sparks i:nth-child(13) { --x: 200px; }
+.sparks i:nth-child(14) { --x: -200px; }
 
 /* The series' dialogue box, along the bottom. */
 .box {

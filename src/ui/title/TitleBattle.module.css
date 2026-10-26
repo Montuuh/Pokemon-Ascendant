@@ -12,6 +12,7 @@
 .scene {
   position: absolute;
   inset: 0;
+  /* motion-ok: scene leaves — the fight fades out to the next */
   transition: opacity var(--t-out) ease-in;
 }
 .backdrop {
@@ -85,34 +86,35 @@
   height: auto;
 }
 .live .sprite {
-  animation: global(breathe) 2.6s ease-in-out 900ms infinite;
+  animation: global(breathe) var(--motion-loop-breathe) ease-in-out var(--t-enter) infinite;
 }
 /* In: the far one steps in from the grass, yours out of its ball. */
 .enter {
   display: block;
 }
 .live .far .enter {
-  animation: global(wildEnter) 560ms var(--ease-step) both;
+  animation: global(wildEnter) var(--fx-wild-enter) var(--ease-step) both;
 }
 .live .near .enter {
-  animation: global(sendOut) 600ms var(--ease-spring) 250ms both;
+  animation: global(sendOut) var(--fx-sendout) var(--ease-spring) var(--t-near-at) both;
 }
 .live .near .body.lunge {
-  animation: titleLungeNear 380ms var(--ease-spring);
+  animation: titleLungeNear var(--fx-lunge) var(--ease-spring);
 }
 .live .far .body.lunge {
-  animation: titleLungeFar 380ms var(--ease-spring);
+  animation: titleLungeFar var(--fx-lunge) var(--ease-spring);
 }
 .live .body.flinch {
   animation:
-    global(shake) 420ms ease-in-out,
-    global(hitFlash) 420ms ease-in-out;
+    global(shake) var(--fx-shake) ease-out,
+    global(hitFlash) var(--fx-shake) ease-out;
 }
 .live .fighter[data-fainted] .sprite {
   animation: global(faintDrop) var(--t-faint) linear both;
 }
 .live .fighter[data-fainted] .plate {
   opacity: 0;
+  /* motion-ok: in step with faintDrop's sink */
   transition: opacity var(--t-faint) ease-in;
 }
 
@@ -146,10 +148,10 @@
 }
 /* A plate comes in with its Pokémon, never before it. */
 .live .far .plate {
-  animation: titleIn 300ms ease-out 260ms both;
+  animation: titleIn var(--motion-slow) ease-out var(--t-far-plate) both;
 }
 .live .near .plate {
-  animation: titleIn 300ms ease-out 650ms both;
+  animation: titleIn var(--motion-slow) ease-out var(--t-near-plate) both;
 }
 .far .plate {
   right: calc(100% + var(--sp-3));

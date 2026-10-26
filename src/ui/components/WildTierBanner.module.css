@@ -1,7 +1,7 @@
 /* §2.6.2 — the rolled rarity over the arena. The edge colour is the pool card's (WildPool): common, uncommon, rare. */
 .banner {
   position: absolute;
-  /* On the open ground between the two sides, clear of the Pokémon it names and of the turn banner, at every size. */
+  /* On the open ground between the two sides, clear of the Pokémon it names and of the arena's banner, at every size. */
   left: 42%;
   top: 55%;
   transform: translateX(-50%);

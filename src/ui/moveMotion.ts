@@ -46,6 +46,9 @@ export const MOTION_MS = {
    *  `lead` + the settle), the white flash of an Explosion, the coloured one of a strike, stones jumping, a snowflake
    *  crossing; `spread`: how long a field of things (dust, flames, stones, rings) takes to all get going. */
   stage: { lead: 120, shake: 640, flash: 460, strike: 300, debris: 520, flake: 480, spread: 240 },
+  /** A shape's own frames while it flies, in steps like a sprite's: a flame's flicker, a tumbling leaf, rock, star or
+   *  petal, a ring's throb, a beam's core. */
+  frames: { flicker: 90, tumble: 240, ring: 160, core: 70 },
 } as const;
 
 const T = MOTION_MS;

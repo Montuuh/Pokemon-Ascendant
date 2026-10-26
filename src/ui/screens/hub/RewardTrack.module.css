@@ -113,7 +113,7 @@
   border-color: var(--accent-action);
   background: var(--surface-2);
   box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-action) 60%, transparent);
-  animation: pulse 1.8s ease-out infinite;
+  animation: pulse var(--motion-loop-pulse) ease-out infinite;
 }
 .stop_next .lvl {
   color: var(--ink-primary);

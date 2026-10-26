@@ -56,20 +56,12 @@
   display: inline-block;
   color: var(--rhythm);
   font-size: calc(var(--size) * 0.46);
-  text-shadow: 0 0 6px var(--rhythm), 0 1px 0 #000;
-  animation: spin 3s linear infinite;
+  text-shadow: 0 1px 0 #000;
 }
-@keyframes spin {
-  to { transform: rotate(1turn); }
-}
-@keyframes pulse {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.4) drop-shadow(0 0 6px var(--rhythm)); }
-}
+/* Full: a still ring. The cards that will crit already breathe (MoveCard critEdge); one state, one loop (D12). */
 .ready {
   background: conic-gradient(var(--rhythm), #fff8 12%, var(--rhythm) 24%, var(--rhythm));
-  box-shadow: 0 0 0 2px var(--bezel), 0 0 12px var(--rhythm), 0 3px 8px rgba(0, 0, 0, 0.55);
-  animation: pulse 1.1s ease-in-out infinite;
+  box-shadow: 0 0 0 2px var(--bezel), 0 0 0 4px var(--rhythm), 0 3px 8px rgba(0, 0, 0, 0.55);
 }
 /* Full: a CRIT tab under the ring — the word the enemy's intent chip and your card use. */
 .tag {
@@ -89,16 +81,10 @@
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
 }
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-motion='full']) .dial,
-  html:not([data-motion='full']) .star,
-  html:not([data-motion='full']) .ready {
-    animation: none;
+  html:not([data-motion='full']) .dial {
     transition: none;
   }
 }
-html[data-motion='reduced'] .dial,
-html[data-motion='reduced'] .star,
-html[data-motion='reduced'] .ready {
-  animation: none;
+html[data-motion='reduced'] .dial {
   transition: none;
 }

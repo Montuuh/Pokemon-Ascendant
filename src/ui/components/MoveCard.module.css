@@ -18,10 +18,11 @@
   text-align: left;
   transform-origin: 50% 120%;
   transform: rotate(var(--rot)) translateY(var(--lift));
+  /* D11 — met on every action: quick and settled, no overshoot. */
   transition:
-    transform var(--motion-base) var(--ease-spring),
-    box-shadow var(--motion-base) ease,
-    filter var(--motion-base) ease;
+    transform var(--motion-fast) var(--ease-step),
+    box-shadow var(--motion-fast) ease-out,
+    filter var(--motion-fast) ease-out;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
   flex: 0 0 auto;
 }
@@ -43,7 +44,7 @@
 .selected {
   outline: 3px solid var(--accent-action);
   outline-offset: 2px;
-  animation: global(glowPulse) 1.2s ease-out infinite;
+  animation: global(glowPulse) var(--motion-loop-pulse) ease-out infinite;
 }
 /* Not enough AP: amber, and the picture fades — the words stay at full ink (D5). */
 .noAp {
@@ -182,10 +183,11 @@
   color: var(--brand-cream);
   border-color: var(--brand-cream);
 }
-/* §4.1.3.1 — its owner's rhythm is full: a gold edge that breathes (the ✦ badge says it will crit; the edge, now). */
+/* §4.1.3.1 — its owner's rhythm is full: a gold edge that breathes (the ✦ badge says it will crit; the edge, now).
+   A hard pixel edge, no soft glow (D12). */
 @keyframes critEdge {
-  0%, 100% { box-shadow: 0 0 0 2px var(--accent-action), 0 0 10px color-mix(in srgb, var(--accent-action) 55%, transparent); }
-  50% { box-shadow: 0 0 0 2px var(--accent-action), 0 0 20px var(--accent-action); }
+  0%, 100% { box-shadow: 0 0 0 2px var(--accent-action); }
+  50% { box-shadow: 0 0 0 4px var(--accent-action); }
 }
 /* On its own layer: the card's entrance animation (`fx-card-in`) owns the card's own `animation`. */
 .crit::after {
@@ -194,17 +196,17 @@
   inset: -2px;
   border-radius: inherit;
   pointer-events: none;
-  animation: critEdge 1.1s ease-in-out infinite;
+  animation: critEdge var(--motion-loop-pulse) ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
   html:not([data-motion='full']) .crit::after {
     animation: none;
-    box-shadow: 0 0 0 2px var(--accent-action), 0 0 14px var(--accent-action);
+    box-shadow: 0 0 0 3px var(--accent-action);
   }
 }
 html[data-motion='reduced'] .crit::after {
   animation: none;
-  box-shadow: 0 0 0 2px var(--accent-action), 0 0 14px var(--accent-action);
+  box-shadow: 0 0 0 3px var(--accent-action);
 }
 .mech {
   position: absolute;

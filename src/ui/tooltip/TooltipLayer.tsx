@@ -14,6 +14,7 @@ export function TooltipLayer() {
   const anchor = useTipStore((s) => s.anchor);
   const content = useTipStore((s) => s.content);
   const id = useTipStore((s) => s.id);
+  const warm = useTipStore((s) => s.warm);
   const hide = useTipStore((s) => s.hide);
   const box = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ left: number; top: number; below: boolean } | null>(null);
@@ -96,7 +97,7 @@ export function TooltipLayer() {
           ref={box}
           id={id}
           role="tooltip"
-          className={`${styles.bubble} ${pos?.below ? styles.below : styles.above} ${pos ? styles.placed : ''}`}
+          className={`${styles.bubble} ${pos?.below ? styles.below : ''} ${pos ? styles.placed : ''} ${warm ? styles.warm : ''}`}
           style={pos ? { left: pos.left, top: pos.top } : { left: -9999, top: -9999 }}
           data-testid="tooltip"
         >

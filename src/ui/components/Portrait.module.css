@@ -36,7 +36,7 @@
 .unit.selectable {
   border-color: var(--accent-positive);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-positive) 45%, transparent);
-  animation: global(glowPulse) 1.2s ease-out infinite;
+  animation: global(glowPulse) var(--motion-loop-pulse) ease-out infinite;
 }
 .unit.fainted {
   cursor: default;

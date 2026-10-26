@@ -528,8 +528,9 @@ export function CombatScreen() {
           )}
         </div>
         <div className={styles.chips}>
-          <span className={styles.chip} data-testid="turn-chip">
-            Turn {state.turn}
+          {/* A new turn is said here, once the foes' turn has played out: the chip pops. */}
+          <span className={`${styles.chip} ${styles.turnChip}`} key={fx.turn} data-testid="turn-chip">
+            Turn {fx.turn}
           </span>
           <Tipped tip={<Tip title="Skill deck" meta={[`${state.player.deck.length} to draw`, `${state.player.discard.length} discarded`]} body="Your three active Pokémon's four moves each: twelve cards. You draw five a turn; when the deck runs out, the discard pile shuffles back in." />} className={styles.chip}>
             <IconCards size={14} /> {state.player.deck.length} · {state.player.discard.length}
@@ -647,8 +648,12 @@ export function CombatScreen() {
           {/* §2.6.2 — the rarity the Wild Area rolled, once, as the fight opens. */}
           {state.wildTier && <WildTierBanner key={combatKey} tier={state.wildTier} animate={animate} />}
           {fx.banner && (
-            <div className={`${styles.banner} display`} key={fx.banner + state.nextSeq}>
-              {fx.banner}
+            <div
+              className={`${styles.banner} display`}
+              key={fx.banner.id}
+              style={{ '--banner-ms': `${fx.banner.ms}ms` } as CSSProperties}
+            >
+              {fx.banner.text}
             </div>
           )}
         </div>

@@ -20,7 +20,8 @@
   height: 100%;
   border-radius: var(--radius-pill);
   background: linear-gradient(90deg, var(--brand-blue), var(--accent-action));
-  transition: width var(--motion-slow) var(--ease-spring);
+  /* motion-ok: known width bar (§2), scaleX pass pending — it lands on the value, never past it */
+  transition: width var(--motion-slow) var(--ease-step);
 }
 .mark {
   position: absolute;

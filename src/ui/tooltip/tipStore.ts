@@ -17,7 +17,11 @@ export interface TipState {
   content: ReactNode;
   /** The id the anchor's `aria-describedby` points at, so screen readers read the same text sighted users hover. */
   id: string;
-  show: (anchor: HTMLElement, content: ReactNode) => void;
+  /** Opened while the pointer was still reading tips (D11): it appears without the delay or the fade. */
+  warm: boolean;
+  /** When the last bubble closed (ms, `performance.now()`), for the warm window. */
+  closedAt: number;
+  show: (anchor: HTMLElement, content: ReactNode, warm?: boolean) => void;
   hide: (anchor?: HTMLElement) => void;
 }
 
@@ -27,11 +31,14 @@ export const useTipStore = create<TipState>((set, get) => ({
   anchor: null,
   content: null,
   id: TIP_ID,
-  show: (anchor, content) => set({ anchor, content }),
+  warm: false,
+  closedAt: -Infinity,
+  // A refresh of the open bubble (the same anchor, new content) keeps how it was opened.
+  show: (anchor, content, warm) => set({ anchor, content, warm: warm ?? (get().anchor === anchor && get().warm) }),
   // A hide from a trigger that is no longer the anchor is a stale leave event racing a newer enter; ignore it,
   // or a fast sweep across three cards ends with no tooltip at all.
   hide: (anchor) => {
     if (anchor && get().anchor !== anchor) return;
-    set({ anchor: null, content: null });
+    set({ anchor: null, content: null, closedAt: performance.now() });
   },
 }));

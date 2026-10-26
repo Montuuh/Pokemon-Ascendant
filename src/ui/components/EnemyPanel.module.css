@@ -144,7 +144,7 @@
 }
 .card.targetable {
   border-color: var(--accent-action);
-  animation: global(glowPulse) 1.1s ease-out infinite;
+  animation: global(glowPulse) var(--motion-loop-pulse) ease-out infinite;
   cursor: crosshair;
 }
 .card.targetable:hover {
@@ -173,6 +173,7 @@
 /* §9.9.1 — a foe that has just fainted: its unit greys and fades in its place on the sprite's beat (v0.9.11). */
 .fallen {
   pointer-events: none;
+  /* motion-ok: in step with faintDrop's sink — the card greys as its Pokémon falls */
   animation: fallenOut var(--fx-faint) ease-in var(--ghost-at, 0ms) both;
 }
 .chipRoom {
@@ -327,6 +328,7 @@ html[data-motion='reduced'] .fallen {
   position: absolute;
   inset: 0 auto 0 0;
   background: var(--accent-positive);
+  /* motion-ok: known width bar (§2), scaleX pass pending */
   transition: width var(--motion-base) ease-out;
 }
 /* A broken second action: struck through and dimmed — it will not happen this turn. */

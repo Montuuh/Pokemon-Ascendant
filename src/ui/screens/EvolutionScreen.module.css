@@ -74,7 +74,7 @@
   inset: 8%;
   border-radius: 50%;
   background: radial-gradient(circle, color-mix(in srgb, var(--accent-action) 45%, transparent) 0%, transparent 70%);
-  animation: heroGlow 3s ease-in-out infinite;
+  animation: heroGlow var(--motion-loop-breathe) ease-in-out infinite;
 }
 .portrait {
   position: relative;
@@ -138,7 +138,8 @@
 /* The gain is the bright part past the old value; the old value stays visible underneath. */
 .barAfter {
   background: var(--accent-positive);
-  transition: width var(--motion-slow) var(--ease-spring);
+  /* motion-ok: known width bar (§2), scaleX pass pending */
+  transition: width var(--motion-slow) var(--ease-step);
 }
 .barBefore {
   z-index: 1;

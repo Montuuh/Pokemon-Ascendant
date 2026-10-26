@@ -320,10 +320,29 @@
   border-radius: var(--radius-pill);
   padding: 6px 22px;
   font-size: var(--type-h2);
-  animation: global(bannerIn) 1300ms ease-out forwards;
+  animation: global(bannerIn) var(--banner-ms) ease-out forwards;
   z-index: var(--z-toast);
   pointer-events: none;
   white-space: nowrap;
+}
+/* §9.9 — information holds still under reduced motion: the word stays its time and goes. */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) .banner {
+    animation: none;
+  }
+}
+html[data-motion='reduced'] .banner {
+  animation: none;
+}
+/* Chrome met every turn (D11): in from just under its size, no overshoot. */
+@keyframes turnIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+.turnChip {
+  animation: turnIn var(--motion-fast) var(--ease-step) both;
 }
 /* In the top bar's middle, in the log's place: gold, because it is the one thing to do now. */
 .hint {

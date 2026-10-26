@@ -27,6 +27,7 @@
   height: 80px;
   border-radius: 50%;
   background: radial-gradient(circle, var(--ink-primary) 0 22%, var(--mv-type) 22% 44%, var(--mv-line) 44% 50%, transparent 50%);
+  /* motion-ok: charge gathers — the glow builds toward the release */
   animation: castGlow var(--cast-ms) ease-in both;
 }
 @keyframes castGlow {
@@ -117,7 +118,7 @@
   left: -25px;
   top: -25px;
   border-radius: 55% 45% 45% 55%;
-  animation: flicker 90ms steps(1) infinite alternate;
+  animation: flicker var(--mv-frames-flicker) steps(1) infinite alternate;
 }
 .shadow {
   background: radial-gradient(circle, var(--surface-sunken) 0 34%, var(--mv-type) 34% 62%, var(--mv-line) 62% 70%, transparent 70%);
@@ -154,7 +155,7 @@
   border-radius: 100% 0;
   background: linear-gradient(135deg, color-mix(in srgb, var(--ink-primary) 30%, var(--mv-type)) 0 50%, var(--mv-type) 50%);
   box-shadow: 0 0 0 2px var(--mv-line);
-  animation: spin 220ms steps(4) infinite;
+  animation: spin var(--mv-frames-tumble) steps(4) infinite;
 }
 .shards {
   width: 36px;
@@ -168,7 +169,7 @@
   height: 27px;
   clip-path: polygon(20% 0, 80% 8%, 100% 55%, 70% 100%, 15% 90%, 0 40%);
   background: linear-gradient(135deg, color-mix(in srgb, var(--ink-primary) 25%, var(--mv-type)) 0 45%, var(--mv-line) 45%);
-  animation: spin 300ms steps(4) infinite;
+  animation: spin var(--mv-frames-tumble) steps(4) infinite;
 }
 .needles {
   width: 40px;
@@ -183,7 +184,7 @@
   border-radius: 50%;
   border: 3px solid var(--mv-type);
   box-shadow: 0 0 0 2px var(--mv-line);
-  animation: pulse 160ms steps(2) infinite alternate;
+  animation: pulse var(--mv-frames-ring) steps(2) infinite alternate;
 }
 .stars {
   width: 32px;
@@ -191,7 +192,7 @@
   clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   background: var(--ink-primary);
   filter: drop-shadow(0 2px 0 var(--mv-type));
-  animation: spin 260ms steps(5) infinite;
+  animation: spin var(--mv-frames-tumble) steps(5) infinite;
 }
 .gust {
   width: 40px;
@@ -229,6 +230,7 @@
   transform-origin: 0 50%;
   border-radius: 9px;
   background: linear-gradient(to bottom, var(--mv-line) 0 12%, var(--mv-type) 12% 88%, var(--mv-line) 88%);
+  /* motion-ok: leaving at speed — the beam thins away */
   animation:
     beamGrow var(--mv-beam-grow) ease-out var(--mv-beam-cast) both,
     beamFade var(--mv-beam-fade) ease-in calc(var(--mv-beam-cast) + var(--mv-beam-grow) + var(--mv-beam-hold)) forwards;
@@ -238,7 +240,7 @@
   inset: 9px 0;
   border-radius: 3px;
   background: var(--ink-primary);
-  animation: pulse 70ms steps(1) infinite alternate;
+  animation: pulse var(--mv-frames-core) steps(1) infinite alternate;
 }
 @keyframes beamGrow {
   from { scale: 0 1; }
@@ -252,6 +254,7 @@
 .tendril {
   height: 8px;
   margin-top: -4px;
+  /* motion-ok: leaving at speed — the beam thins away */
   animation:
     beamGrow var(--mv-drain-travel) ease-out var(--mv-drain-cast) both,
     beamFade var(--mv-beam-fade) ease-in calc(var(--mv-drain-cast) + var(--mv-drain-travel)) forwards;
@@ -264,6 +267,7 @@
   animation: fly calc(var(--mv-drain-back) - 5 * var(--mv-drain-stagger)) ease-in-out calc(var(--mv-drain-cast) + var(--mv-drain-travel) + var(--i) * var(--mv-drain-stagger)) both;
 }
 .hexFlight {
+  /* motion-ok: accelerates into the hit */
   animation: fly var(--mv-hex-travel) ease-in calc(var(--mv-hex-cast) + var(--i) * var(--mv-hex-stagger)) both;
 }
 
@@ -496,6 +500,7 @@
   filter: drop-shadow(0 2px 0 var(--surface-sunken));
 }
 .crackField {
+  /* motion-ok: the crack fades with the settle */
   animation:
     crackOpen var(--mv-area-peak) cubic-bezier(0.3, 0, 0.7, 1) calc(var(--mv-area-build) - var(--mv-stage-lead)) both,
     crackFade var(--mv-area-settle) ease-in calc(var(--mv-area-build) + var(--mv-area-peak)) forwards;
@@ -707,7 +712,7 @@
   /* A petal tumbles as it flies, in steps like a sprite's frames. */
   animation:
     across calc(var(--mv-area-build) + var(--mv-area-peak)) linear calc(var(--i) * var(--mv-area-settle) / var(--n)) both,
-    spin 240ms steps(4) infinite;
+    spin var(--mv-frames-tumble) steps(4) infinite;
 }
 .streakGale {
   width: 90px;

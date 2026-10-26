@@ -25,6 +25,10 @@
   opacity: 1;
   transform: none;
 }
+/* D11 — reading across the hand: the next bubble is simply there. */
+.bubble.warm {
+  transition: none;
+}
 
 .tip {
   display: grid;

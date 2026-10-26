@@ -114,7 +114,7 @@
   inset: 0;
 }
 .breathe {
-  animation: global(breathe) 2.6s ease-in-out infinite;
+  animation: global(breathe) var(--motion-loop-breathe) ease-in-out infinite;
 }
 
 /* ── HP and the rest ────────────────────────────────────────────────────────────────────────────────────── */

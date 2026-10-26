@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type CSSProperties, type SyntheticEve
 import { getContent } from '@/content/registry';
 import { moveArt, spriteOf, stageBackdrop } from '@/ui/art';
 import { HpBar } from '@/ui/components/HpBar';
+import { FX_MS, fxTimings } from '@/ui/hooks/useCombatFx';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { TITLE_MATCHUPS, titleHits, type TitleMatchup } from './matchups';
 import styles from './TitleBattle.module.css';
@@ -58,6 +59,10 @@ const resume = { match: 0 };
 const T = {
   /** Both come in: the far one steps in, the near one out of its ball. */
   enter: 900,
+  /** Inside the entrance: your ball opens a beat after the far one steps in, and each plate follows its Pokémon. */
+  nearAt: 250,
+  farPlate: 260,
+  nearPlate: 650,
   /** Between two hits: the lunge, the picture, the flinch, the bar, and a breath. */
   hit: 1500,
   /** Into a hit: when the picture lands on the target, and when its bar drains. */
@@ -94,7 +99,8 @@ function Fight({ m, animate, onDone }: { m: TitleMatchup; animate: boolean; onDo
       const target: Side = h.by === 'near' ? 'far' : 'near';
       at(t0, (b) => ({ ...b, lunge: h.by }));
       at(t0 + T.land, (b) => ({ ...b, art: { on: target, moveId: h.moveId, key: i }, flinch: target }));
-      at(t0 + T.drain, (b) => ({ ...b, lunge: null, hp: { ...b.hp, [target]: Math.max(0, b.hp[target] - h.damage) } }));
+      at(t0 + T.drain, (b) => ({ ...b, hp: { ...b.hp, [target]: Math.max(0, b.hp[target] - h.damage) } }));
+      at(t0 + FX_MS.lunge, (b) => ({ ...b, lunge: null }));
       at(t0 + T.land + T.art, (b) => ({ ...b, art: null, flinch: null }));
     });
     const end = T.enter + hits.length * T.hit + T.beforeFaint;
@@ -108,7 +114,7 @@ function Fight({ m, animate, onDone }: { m: TitleMatchup; animate: boolean; onDo
   return (
     <div
       className={`${styles.scene} ${animate ? styles.live : ''} ${beat.out ? styles.out : ''}`}
-      style={{ '--t-out': `${T.out}ms`, '--t-faint': `${T.faint}ms`, '--t-art': `${T.art}ms` } as CSSProperties}
+      style={{ ...fxTimings(), '--t-enter': `${T.enter}ms`, '--t-near-at': `${T.nearAt}ms`, '--t-far-plate': `${T.farPlate}ms`, '--t-near-plate': `${T.nearPlate}ms`, '--t-out': `${T.out}ms`, '--t-faint': `${T.faint}ms`, '--t-art': `${T.art}ms` } as CSSProperties}
       data-match={`${m.near.speciesId}-${m.far.speciesId}`}
     >
       {/* Every picture lazy: decoration never holds up the page's load (the menu is the door to everything). */}

@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.66 — Hits with weight.** The motion sweep: a routine hit recoils, a super-effective or critical one shakes, the blow that faints jolts the stage; under reduced motion the numbers hold and fade and the banners stay still; the hand hovers faster and tooltips open at once as you read across it. Before it,
 **v0.9.65 — Four stale checks.** The last three stale e2e checks fixed: the Dojo expects no practice effect under reduced motion, the Potion test finds a refused row by `aria-disabled`, and the route caption check measures each image once instead of timing out. No game change. Before it,
 **v0.9.64 — Five cards again.** Two stale end-to-end checks fixed: the ✦ crit badge no longer counts as a sixth card in hand, and the victory check finds Regions behind the Run record door. No game change. Before it,
 **v0.9.63 — Reduced motion, both ways.** Settings → Motion wins over the device both ways: Reduce stops transitions, pulses and breathing, and Full brings shakes and loops back even when the device asks for less. Before it,

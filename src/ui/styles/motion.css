@@ -15,22 +15,40 @@
   }
 }
 
+/* §9.9 / D12 — a hit's weight (useCombatFx): a routine or resisted hit recoils, a super-effective or critical one
+   shakes, decaying back to rest, and the blow that faints also jolts the stage by a pixel. */
+@keyframes recoil {
+  35% {
+    transform: translateX(3px);
+  }
+}
 @keyframes shake {
   0%,
   100% {
     transform: translateX(0);
   }
   20% {
-    transform: translateX(-8px) rotate(-1.5deg);
+    transform: translateX(-6px) rotate(-1deg);
   }
   40% {
-    transform: translateX(8px) rotate(1.5deg);
+    transform: translateX(4px) rotate(0.5deg);
   }
   60% {
-    transform: translateX(-5px);
+    transform: translateX(-3px);
   }
   80% {
-    transform: translateX(5px);
+    transform: translateX(1px);
+  }
+}
+@keyframes jolt {
+  25% {
+    transform: translate(1px, -1px);
+  }
+  50% {
+    transform: translate(-1px, 1px);
+  }
+  75% {
+    transform: translate(1px, 0);
   }
 }
 
@@ -67,11 +85,12 @@
 /* §9.9.1 — a fallen Pokémon's card dims into its fainted look (Portrait .fainted) and stays: it never vanishes and
    comes back, which read as the faint playing twice (v0.9.10). The sprite's own sink is the ghost's (fx-ghost-faint). */
 @keyframes faintOut {
-  from {
+  0%,
+  22% {
     filter: none;
     opacity: 1;
   }
-  to {
+  100% {
     filter: saturate(0.2) brightness(0.8);
     opacity: 0.8;
   }
@@ -153,17 +172,24 @@
 .fx-shiny {
   animation: shinySparkle calc(var(--motion-slow) * 4) ease-out 1 both;
 }
+.fx-recoil {
+  animation: recoil var(--fx-recoil) ease-out, hitFlash var(--fx-recoil) ease-out;
+}
 .fx-shake {
-  animation: shake 420ms ease-in-out, hitFlash 420ms ease-in-out;
+  animation: shake var(--fx-shake) ease-out, hitFlash var(--fx-shake) ease-out;
+}
+.fx-jolt {
+  animation: jolt var(--fx-jolt) linear;
 }
 .fx-lunge-right {
-  animation: lungeRight 380ms var(--ease-spring);
+  animation: lungeRight var(--fx-lunge) var(--ease-spring);
 }
 .fx-lunge-left {
-  animation: lungeLeft 380ms var(--ease-spring);
+  animation: lungeLeft var(--fx-lunge) var(--ease-spring);
 }
 .fx-faint {
-  animation: faintOut 600ms ease-in forwards;
+  /* motion-ok: in step with faintDrop's sink — the card greys as its Pokémon falls */
+  animation: faintOut var(--fx-faint) ease-in forwards;
 }
 /* §9.9.2 — Earthquake: the whole stage shakes from a beat before the impact to the move's end (MOTION_MS.stage). */
 .fx-quake {
@@ -185,9 +211,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) .fx-recoil,
   html:not([data-motion='full']) .fx-shake,
+  html:not([data-motion='full']) .fx-jolt,
   html:not([data-motion='full']) .fx-lunge-right,
   html:not([data-motion='full']) .fx-lunge-left,
+  html:not([data-motion='full']) .fx-faint,
   html:not([data-motion='full']) .fx-card-in,
   html:not([data-motion='full']) .fx-pop,
   html:not([data-motion='full']) .fx-shiny,
@@ -221,9 +250,12 @@
  * setting at all still needs a way to turn it off. `data-motion` on <html> wins over the media query in both
  * directions, and "system" removes the attribute so the media queries above are back in charge.
  */
+html[data-motion='reduced'] .fx-recoil,
 html[data-motion='reduced'] .fx-shake,
+html[data-motion='reduced'] .fx-jolt,
 html[data-motion='reduced'] .fx-lunge-right,
 html[data-motion='reduced'] .fx-lunge-left,
+html[data-motion='reduced'] .fx-faint,
 html[data-motion='reduced'] .fx-card-in,
 html[data-motion='reduced'] .fx-pop,
 html[data-motion='reduced'] .fx-shiny,
@@ -281,7 +313,8 @@ html[data-motion='reduced'] *::after {
 }
 /* §5.6.5 — a runner that got away: gone from its window, a fade and a step aside, before the overlay says so. */
 .fx-fled img {
-  animation: fledOut 500ms ease-in forwards;
+  /* motion-ok: leaving at speed — a runner accelerates away */
+  animation: fledOut var(--fx-fled) ease-in forwards;
 }
 @keyframes fledOut {
   to {
@@ -368,6 +401,7 @@ html[data-motion='reduced'] *::after {
   html:not([data-motion='full']) .fx-sendout img,
   html:not([data-motion='full']) .fx-burst img,
   html:not([data-motion='full']) .fx-wild-enter img,
+  html:not([data-motion='full']) .fx-fled img,
   html:not([data-motion='full']) .fx-ghost-faint img,
   html:not([data-motion='full']) .fx-sendout::before,
   html:not([data-motion='full']) .fx-burst::before {
@@ -377,6 +411,7 @@ html[data-motion='reduced'] *::after {
 html[data-motion='reduced'] .fx-sendout img,
 html[data-motion='reduced'] .fx-burst img,
 html[data-motion='reduced'] .fx-wild-enter img,
+html[data-motion='reduced'] .fx-fled img,
 html[data-motion='reduced'] .fx-ghost-faint img,
 html[data-motion='reduced'] .fx-sendout::before,
 html[data-motion='reduced'] .fx-burst::before {

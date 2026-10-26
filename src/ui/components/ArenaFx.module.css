@@ -38,6 +38,7 @@
 }
 /* Going back: from the spot, in an arc, to the hand, shrinking as it goes. */
 .flight .flyOut {
+  /* motion-ok: leaving at speed — the ball accelerates back to the hand */
   animation: ballOut var(--fx-ball-fly) ease-in both;
 }
 .openFlash,
@@ -65,6 +66,7 @@
    rule (so it matches the live sprite at every width); scoped under .catch so its breathing does not win. */
 .catch .mon {
   transform-origin: 50% 55%;
+  /* motion-ok: drawn into the ball — the pull quickens */
   animation: catchAbsorb var(--fx-absorb) ease-in var(--at-absorb) both;
 }
 /* The throw: from your hand to the air in front of the Pokémon, as a parabola — across at an even pace (this), up and
@@ -86,7 +88,8 @@
   position: absolute;
   left: 0;
   top: 0;
-  animation: catchDrop var(--fx-drop) ease-in var(--at-drop) both;
+  /* The keyframes own the curve (a fall, a bounce): the shorthand only paces them. */
+  animation: catchDrop var(--fx-drop) linear var(--at-drop) both;
 }
 .catch .ball {
   position: absolute;
@@ -214,6 +217,7 @@
 @keyframes catchDrop {
   0% {
     transform: translateY(calc(var(--drop-hold, 90px) * -1));
+    /* motion-ok: gravity */
     animation-timing-function: ease-in;
   }
   65% {
@@ -222,6 +226,7 @@
   }
   82% {
     transform: translateY(-14px);
+    /* motion-ok: gravity */
     animation-timing-function: ease-in;
   }
   100% {

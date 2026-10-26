@@ -32,6 +32,9 @@ const EVO_MS = {
   fade: 400,
 } as const;
 
+/** Where each spark starts on its climb, in sixteenths: spread so two neighbours never rise together. */
+const SPARK_PHASES = [0, 2, 4, 6, 8, 10, 12, 14, 3, 5, 7, 9, 11, 13];
+
 /** The sprites are drawn at one whole-number scale, so the pixels stay square and the evolved form is visibly bigger. */
 const STAGE_PX = 360;
 const scaleFor = (largest: number) => Math.max(2, Math.min(8, Math.floor(STAGE_PX / Math.max(1, largest))));
@@ -124,8 +127,8 @@ export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fro
       </button>
       <div className={`${styles.glow} ${phase === 'bloom' ? styles.bloom : ''} ${revealed ? styles.settled : ''}`} aria-hidden="true" />
       <div className={`${styles.sparks} ${lit ? styles.sparksOn : ''}`} aria-hidden="true">
-        {Array.from({ length: 14 }, (_, i) => (
-          <i key={i} />
+        {SPARK_PHASES.map((phase, i) => (
+          <i key={i} style={{ '--phase': phase } as CSSProperties} />
         ))}
       </div>
       <div className={`${styles.stage} ${ready ? '' : styles.loading}`} aria-hidden="true">

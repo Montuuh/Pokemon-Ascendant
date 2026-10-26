@@ -3,6 +3,8 @@ import { TIP_ID, useTipStore } from './tipStore';
 
 /** How long the pointer rests before the bubble opens. Focus opens at once — a keyboard user asked for it. */
 export const TIP_DELAY_MS = 450;
+/** D11 — a bubble that closed this recently means the player is reading across the hand: the next opens at once. */
+export const TIP_WARM_MS = 300;
 
 export interface TipTriggerProps {
   onMouseEnter: (e: MouseEvent<HTMLElement>) => void;
@@ -51,8 +53,10 @@ export function useTip(content: ReactNode, delay = TIP_DELAY_MS): TipTriggerProp
     (el: HTMLElement, wait: number) => {
       cancel();
       if (latest.current === null || latest.current === undefined || latest.current === false) return;
-      if (wait === 0) {
-        show(el, latest.current);
+      const { anchor, closedAt } = useTipStore.getState();
+      const warm = anchor !== null || performance.now() - closedAt < TIP_WARM_MS;
+      if (wait === 0 || warm) {
+        show(el, latest.current, warm);
         return;
       }
       timer.current = window.setTimeout(() => {

@@ -225,7 +225,7 @@
   background: var(--brand-cream);
   clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
   filter: drop-shadow(0 0 4px var(--accent-action));
-  animation: twinkle 1.4s ease-in-out infinite both;
+  animation: twinkle var(--motion-loop-breathe) ease-in-out infinite both;
 }
 @keyframes twinkle {
   0%,

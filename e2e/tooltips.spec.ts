@@ -26,6 +26,22 @@ test.describe('Tooltips', () => {
     await expect(tip).toHaveCount(0);
   });
 
+  // D11 — reading across the hand: a bubble closed a moment ago means the next one opens at once, with no fade.
+  test('reading across the hand, the next tooltip opens at once and stays warm', async ({ page }) => {
+    await page.goto('/?scenario=full-hand-3mon&seed=3');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    const cards = page.locator('[data-testid="hand"] [data-testid^="card-"]');
+    await cards.nth(0).hover();
+    await expect(page.getByTestId('tooltip')).toBeVisible();
+    await page.mouse.move(5, 5);
+    await expect(page.getByTestId('tooltip')).toHaveCount(0);
+    await cards.nth(2).hover();
+    await page.waitForTimeout(80);
+    const tip = page.getByTestId('tooltip');
+    await expect(tip).toBeVisible();
+    await expect(tip).toHaveClass(/warm/);
+  });
+
   test('focus opens a tooltip at once and Escape closes it', async ({ page }) => {
     await page.goto('/?scenario=wild-basic&seed=3');
     await expect(page.getByTestId('combat-screen')).toBeVisible();

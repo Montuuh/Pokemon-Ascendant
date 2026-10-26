@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.66 — Hits with weight · 2026-10-27
+
+The motion sweep: combat feedback weighed by the event, chrome made quick.
+
+- **Hit weight.** Routine hits recoil; super, crit and KO blows shake.
+- **Reduced motion.** Numbers, banners, faints and flights hold still.
+- **Quicker hand.** Hover settles faster; tooltips open at once in a sweep.
+- **One loop rate.** Pulses and breaths share two tokens; soft glows go flat.
+
 ### v0.9.65 — Four stale checks · 2026-10-26
 
 The last stale end-to-end checks pass again.

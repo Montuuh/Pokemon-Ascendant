@@ -7,7 +7,7 @@ import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
 import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/strings';
 
-// Turns new sim events into transient visual effects (§9.9): floating numbers, hit shakes, lunges, a turn banner —
+// Turns new sim events into transient visual effects (§9.9): floating numbers, hits weighed by what they did, lunges —
 // and, since v0.9.3, the series' own beats (§9.9.1): a Poké Ball thrown from a trainer's hand and a Pokémon coming out
 // of it, a faint and its ball going back to the hand, and the catch. The sim state is
 // already final when this runs; every effect is a beat of feedback layered on top, and the outcome is never decided
@@ -101,7 +101,8 @@ export interface CombatFxState {
   /** §9.9.2 — a class on the whole stage while a move shakes it (Earthquake). */
   stageClass: string | null;
   catching: CatchFx | null;
-  banner: string | null;
+  /** A word over the arena (Enemy turn, Gotcha!): `ms` is how long it shows, so its fade ends on screen. */
+  banner: { id: number; text: string; ms: number } | null;
   /** A beat is playing that the screen should not talk over — the catch, a faint: the outcome waits, the hand waits. */
   busy: boolean;
   /**
@@ -118,11 +119,12 @@ export interface CombatFxState {
   acting: boolean;
   /** §9.9.1 — the fight's Pokémon are still coming out of their balls: what is aimed at them waits until they are out. */
   opening: boolean;
+  /** The turn the top bar says: a new one once the foes' turn has played out, not when End Turn resolves. */
+  turn: number;
 }
 
-const CLASS_MS = 450;
-const BANNER_MS = 1300;
-const FAINT_CARD_MS = 650;
+/** A card's class outlives its keyframes by a frame or two, so a timer never cuts the last one. */
+const CLASS_TAIL_MS = 30;
 /** §5.6.1 — "Broken!" waits this long after the hit, clear of the hit's own float. */
 const BREAK_FLOAT_LAG_MS = 200;
 /** A ghost outlives its beat by this much: the keyframes end invisible and hold there, so a late timer never cuts a
@@ -158,6 +160,17 @@ export const FX_MS = {
   float: 1100,
   /** §3.3.1 — a swap: the cards trading places across your formation (`CombatScreen`'s glide). */
   swap: 460,
+  /** §9.9 / D12 — a hit's weight: a routine or resisted hit recoils, a super-effective or critical one shakes, and
+   *  the blow that faints also jolts the stage by a pixel. */
+  recoil: 160,
+  shake: 320,
+  jolt: 200,
+  /** The attacker's step toward its target. */
+  lunge: 380,
+  /** §5.6.5 — a runner leaving its window. */
+  fled: 500,
+  /** A word over the arena, held and then faded. */
+  banner: 1300,
 } as const;
 
 /** The beats' lengths as CSS custom properties on the arena, so the keyframes and the timers read one table. */
@@ -175,6 +188,11 @@ export const fxTimings = (): CSSProperties =>
     '--fx-result': `${FX_MS.result}ms`,
     '--fx-burst': `${FX_MS.burst}ms`,
     '--fx-float': `${FX_MS.float}ms`,
+    '--fx-recoil': `${FX_MS.recoil}ms`,
+    '--fx-shake': `${FX_MS.shake}ms`,
+    '--fx-jolt': `${FX_MS.jolt}ms`,
+    '--fx-lunge': `${FX_MS.lunge}ms`,
+    '--fx-fled': `${FX_MS.fled}ms`,
   }) as CSSProperties;
 
 /**
@@ -227,11 +245,12 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   const [moves, setMoves] = useState<MoveFx[]>([]);
   const [stageClass, setStageClass] = useState<string | null>(null);
   const [catching, setCatching] = useState<CatchFx | null>(null);
-  const [banner, setBanner] = useState<string | null>(null);
+  const [banner, setBanner] = useState<CombatFxState['banner']>(null);
   const [busy, setBusy] = useState(false);
   const [faintPending, setFaintPending] = useState<Record<string, true>>({});
   const [logHold, setLogHold] = useState<number | null>(null);
   const [hpShown, setHpShown] = useState<Record<string, number>>({});
+  const [shownTurn, setShownTurn] = useState<number | null>(null);
   // §9.9.2 — one clock for the moves across batches, in wall time: a card played while the last move is still in the air
   // starts at that move's impact, a Pokémon that dashed waits until it is back, and the HP and log a batch holds back are
   // let go by the batch that ends last.
@@ -311,6 +330,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       setMoves([]);
       setStageClass(null);
       setCatching(null);
+      setShownTurn(state.turn);
       setSprites({});
       setLogHold(null);
       setHpShown({});
@@ -377,9 +397,9 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       schedule(() => setFloats((fs) => [...fs, { ...f, id }]), at);
       schedule(() => setFloats((fs) => fs.filter((x) => x.id !== id)), at + FX_MS.float);
     };
-    const addClass = (uid: string, cls: string, at: number, ms = CLASS_MS) => {
+    const addClass = (uid: string, cls: string, at: number, ms: number) => {
       schedule(() => setClasses((c) => ({ ...c, [uid]: cls })), at);
-      schedule(() => setClasses((c) => (c[uid] === cls ? { ...c, [uid]: '' } : c)), at + ms);
+      schedule(() => setClasses((c) => (c[uid] === cls ? { ...c, [uid]: '' } : c)), at + ms + CLASS_TAIL_MS);
     };
     // A ghost stands in at once — the sprite it replaces is already gone — and plays its beat at `at`.
     const addGhost = (g: Omit<Ghost, 'id'>, dur: number) => {
@@ -387,9 +407,11 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       setGhosts((gs) => [...gs, { ...g, id }]);
       schedule(() => setGhosts((gs) => gs.filter((x) => x.id !== id)), g.at + dur + GHOST_TAIL_MS);
     };
-    const showBanner = (text: string, at: number, ms = BANNER_MS) => {
-      schedule(() => setBanner(text), at);
-      schedule(() => setBanner(null), at + ms);
+    // Cleared only by its own timer: a word that replaced it keeps its whole time on screen.
+    const showBanner = (text: string, at: number, ms: number = FX_MS.banner) => {
+      const id = nextId.current++;
+      schedule(() => setBanner({ id, text, ms }), at);
+      schedule(() => setBanner((b) => (b?.id === id ? null : b)), at + ms);
     };
     /** The move's picture landing on one target: an attack no move was drawn for. */
     const addHit = (slot: SpriteSlot, moveId: string, at: number) => {
@@ -499,7 +521,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         case 'attack': {
           // §9.9.2 — part of a move already drawn: the motion is its picture, and its hits land at its impact.
           if ((moving as { moveId: string } | null)?.moveId === e.moveId) break;
-          addClass(e.sourceUid, e.sourceUid.startsWith('p') ? 'fx-lunge-right' : 'fx-lunge-left', delay);
+          addClass(e.sourceUid, e.sourceUid.startsWith('p') ? 'fx-lunge-right' : 'fx-lunge-left', delay, FX_MS.lunge);
           // No move drawn for it: the move's picture lands on its target, where it stands.
           const slot = slotOfUid(e.targetUid, delay);
           if (slot && animate) addHit(slot, e.moveId, delay);
@@ -515,12 +537,23 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           const emphasis = e.crit ? 'crit' : e.effectiveness === 'double' || e.effectiveness === 'quad' ? 'super' : e.effectiveness === 'half' || e.effectiveness === 'quarter' ? 'weak' : e.effectiveness === 'immune' ? 'immune' : undefined;
           const suffix = e.cause !== 'move' ? ` ${e.cause}` : '';
           addFloat({ uid: e.targetUid, kind: 'damage', text: e.amount === 0 && e.effectiveness === 'immune' ? 'immune' : `-${e.amount}${suffix}`, emphasis }, at);
-          if (e.amount > 0) addClass(e.targetUid, 'fx-shake', at);
+          // §9.9 / D12 — weighted by what the hit did: the blow that faints is heavy, a super-effective or critical one
+          // medium, the rest light.
+          const heavy = e.amount > 0 && e.hpAfter === 0;
+          if (e.amount > 0) {
+            if (heavy || emphasis === 'super' || emphasis === 'crit') addClass(e.targetUid, 'fx-shake', at, FX_MS.shake);
+            else addClass(e.targetUid, 'fx-recoil', at, FX_MS.recoil);
+            if (heavy && animate) {
+              schedule(() => setStageClass((c) => c ?? 'fx-jolt'), at);
+              schedule(() => setStageClass((c) => (c === 'fx-jolt' ? null : c)), at + FX_MS.jolt);
+            }
+          }
           // Said under the number it explains, never over it.
           if (e.crit) addFloat({ uid: e.targetUid, kind: 'text', text: 'CRIT', under: true }, at + 120);
           else if (emphasis === 'super') addFloat({ uid: e.targetUid, kind: 'text', text: EFFECTIVENESS_LABEL[e.effectiveness] ?? '', under: true }, at + 120);
           if (animate && at > 0) hpAt.push({ at, uid: e.targetUid, hp: e.hpAfter });
-          delay = Math.max(delay, at) + 220;
+          // The blow that faints shakes to rest before the faint takes its card.
+          delay = Math.max(delay, at) + (heavy ? FX_MS.shake : 220);
           break;
         }
         case 'heal':
@@ -561,7 +594,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
             schedule(() => setFaintPending((p) => ({ ...p, [uid]: true })), 0);
             schedule(() => setFaintPending((p) => Object.fromEntries(Object.entries(p).filter(([k]) => k !== uid)) as Record<string, true>), delay);
           }
-          addClass(e.uid, 'fx-faint', delay, FAINT_CARD_MS);
+          addClass(e.uid, 'fx-faint', delay, FX_MS.faint);
           if (!animate) {
             delay += 300;
             break;
@@ -659,10 +692,12 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           delay += t.total;
           break;
         }
-        case 'turn-start':
+        case 'turn-start': {
           moving = null;
-          if (e.turn > 1) showBanner(`Turn ${e.turn}`, delay, 900);
+          const turn = e.turn;
+          schedule(() => setShownTurn(turn), delay);
           break;
+        }
         default:
           break;
       }
@@ -705,7 +740,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, acting, opening };
+  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, acting, opening, turn: shownTurn ?? state?.turn ?? 1 };
 }
 
 export type { CombatEvent };

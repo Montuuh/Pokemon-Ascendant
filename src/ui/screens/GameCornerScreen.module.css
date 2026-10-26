@@ -97,14 +97,15 @@
   box-shadow: 0 1px 2px color-mix(in srgb, var(--roulette-black) 60%, transparent);
 }
 .ballRolling { animation: ballDrop var(--motion-spin) linear both; }
+/* `top`, not a translate: the ball's radius is a share of the wheel, and a translate % would be of the ball. */
 @keyframes ballDrop {
-  0% { top: 19.5%; }
-  6% { top: 7.5%; }
-  74% { top: 7.5%; }
-  84% { top: 16%; }
-  89% { top: 12.5%; }
-  94% { top: 18%; }
-  100% { top: 19.5%; }
+  0% { top: 19.5%; } /* motion-ok: % of the wheel */
+  6% { top: 7.5%; } /* motion-ok: % of the wheel */
+  74% { top: 7.5%; } /* motion-ok: % of the wheel */
+  84% { top: 16%; } /* motion-ok: % of the wheel */
+  89% { top: 12.5%; } /* motion-ok: % of the wheel */
+  94% { top: 18%; } /* motion-ok: % of the wheel */
+  100% { top: 19.5%; } /* motion-ok: % of the wheel */
 }
 
 /* The bets: the printed table is the choice itself — the colour you are on, lit where the ball landed. */

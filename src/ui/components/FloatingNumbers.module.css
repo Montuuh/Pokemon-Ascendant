@@ -20,8 +20,30 @@
   -webkit-text-stroke: 1.5px var(--surface-sunken);
   paint-order: stroke fill;
   text-shadow: 0 3px 0 var(--surface-sunken);
-  animation: global(floatUp) var(--fx-float) ease-out forwards;
+  /* both: a word a beat behind its number is unseen until its own beat, never shown and then popped (D12). */
+  animation: global(floatUp) var(--fx-float) ease-out both;
   white-space: nowrap;
+}
+/* §9.9 — under reduced motion a number keeps its hold and a fade, because persistence is what makes it readable:
+   it neither rises nor pops. */
+@keyframes floatFade {
+  0%,
+  70% {
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) .num {
+    animation-name: floatFade;
+  }
+}
+html[data-motion='reduced'] .num {
+  animation-name: floatFade;
 }
 .damage {
   color: color-mix(in srgb, var(--accent-negative) 30%, var(--ink-primary));

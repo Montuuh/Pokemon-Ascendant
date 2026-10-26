@@ -83,7 +83,7 @@
     repeating-linear-gradient(-45deg, color-mix(in srgb, var(--surface-sunken) 45%, transparent) 0 3px, transparent 3px 6px),
     var(--accent-action);
   box-shadow: 0 0 8px color-mix(in srgb, var(--accent-action) 70%, transparent);
-  animation: global(lossPulse) 1.2s ease-in-out infinite;
+  animation: global(lossPulse) var(--motion-loop-pulse) ease-in-out infinite;
 }
 /* A cost beyond what is left: the cells you are short, in red. */
 .cell[data-state='short'] {
