@@ -70,7 +70,8 @@ export const RHYTHM_TEXT = {
   body: (left: number, side: 'ally' | 'foe') =>
     `${left} more ${side === 'ally' ? (left === 1 ? 'card' : 'cards') : left === 1 ? 'action' : 'actions'} and its next hit is a critical. Every ${side === 'ally' ? 'card it plays' : 'action it takes'} fills the ring; the faster it is, the fewer it needs.`,
   readyBody: (side: 'ally' | 'foe') =>
-    side === 'ally' ? 'Its next damaging card is a critical — its cards in your hand say CRIT, and their numbers count it.' : 'Its next hit is a critical: CRIT on its intent, and the number there counts it.',
+    side === 'ally' ? 'Its next damaging card is a critical — its cards in your hand wear the ✦ and a gold edge, and their numbers count it.' : 'Its next hit is a critical: CRIT on its intent, and the number there counts it.',
+  always: (owner: string) => `✦ Always a critical — and it never spends ${owner}'s rhythm, so a full one stays for another card.`,
   card: (owner: string) => `Critical: ${owner}'s rhythm is full, so this hit is a critical. The first of its damaging cards you play spends it.`,
 };
 

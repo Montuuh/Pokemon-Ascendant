@@ -178,6 +178,7 @@ export function moveTip(play: CardPlayability): ReactNode {
   if (!play.playable && play.reason) footer = <span>Locked — {REJECT_TEXT[play.reason]}</span>;
   // §4.1.3.1 — the critical its owner's rhythm makes of this hit.
   if (play.damage?.isCrit && !move.alwaysCrit) lines.push(<b>{RHYTHM_TEXT.card(owner.name)}</b>);
+  else if (move.alwaysCrit && move.power > 0) lines.push(<b>{RHYTHM_TEXT.always(owner.name)}</b>);
   if (move.power > 0) lines.push(attackChart(move.type));
   return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
 }

@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.61 — One crit mark · 2026-10-26
+
+Every card that will crit wears the same ✦.
+
+- **Crit badge.** ✦ on AlwaysCrit and full-rhythm cards.
+- **Rhythm edge.** A gold edge marks the rhythm's crit.
+
 ### v0.9.60 — The rhythm dial · 2026-10-26
 
 The critical rhythm, readable at a glance.

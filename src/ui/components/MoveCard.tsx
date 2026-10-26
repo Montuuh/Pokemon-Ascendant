@@ -98,6 +98,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         move.power > 0 ? `${move.power} power${play.hitsAll ? ', hits every enemy' : ''}` : null,
         lead && lead.typeMultiplier !== 1 ? `${effectivenessPhrase(lead.typeMultiplier)} on the enemy Lead` : null,
         rhythmCrit ? 'critical hit' : null,
+        move.alwaysCrit && move.power > 0 ? 'always a critical hit, without spending the rhythm' : null,
         describeMove(play).replace(/\.$/, ''),
         play.playable ? null : `unplayable: ${reasonText.replace(/\.$/, '')}`,
         `card ${index + 1} of ${total}`,
@@ -132,14 +133,15 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
             {lead.typeMultiplier === 0 ? '×0' : `×${lead.typeMultiplier}`}
           </span>
         )}
-        {/* §4.1.3.1 — a full rhythm: CRIT on the art's foot, the word the enemy's intent uses. */}
-        {rhythmCrit && (
-          <span className={`${styles.critTag} display`} data-testid="card-crit">
-            ✦ CRIT
-          </span>
-        )}
-        {/* §5.13.2 — the Mastery star, and a Step-Forward or Step-Backward card's arrow, on the window's corner. */}
+        {/* §5.13.2 — the Mastery star, and a Step-Forward or Step-Backward card's arrow, on the window's corner. §4.1.3 —
+            one ✦ for every card that will crit, whatever makes it: an AlwaysCrit move, or its owner's full rhythm (the
+            rhythm's card also wears the gold edge, which says "now"). */}
         <span className={styles.mech}>
+          {(rhythmCrit || (move.alwaysCrit && move.power > 0)) && (
+            <span className={`${styles.badge} ${styles.critBadge}`} aria-hidden="true" data-testid="card-crit" data-always={move.alwaysCrit || undefined}>
+              ✦
+            </span>
+          )}
           {play.card.mastery && (
             <span className={`${styles.badge} ${styles.mastery}`} aria-hidden="true">
               ★

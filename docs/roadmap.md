@@ -1504,6 +1504,12 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.61 — One crit mark  ✅ 2026-10-26
+
+The user's call (2026-10-26): one crit icon for every card that will crit, whatever makes it.
+
+**Shipped.** §4.1.3 / §9.2.3: a still ✦ badge — gold on dark — on the art's corner beside the Mastery star and the Step arrows marks every card that will crit: an AlwaysCrit move (Razor Leaf, Slash, Karate Chop…) always, and every damaging card of a Pokémon whose rhythm is full. v0.9.60's ✦ CRIT tab at the art's foot is gone into it. The rhythm's cards also keep the breathing gold edge, which says "now" and which an AlwaysCrit card never takes, since it does not spend the rhythm; its tooltip says so, so a full one stays for another card. Fixed with it: v0.9.60's gold edge never showed, because the card's entrance animation took the card's `animation`; the edge now breathes on its own layer.
+
 ### v0.9.60 — The rhythm dial  ✅ 2026-10-26
 
 The user's choice (2026-10-26) of five meter looks prototyped in the real combat screen: the dial.

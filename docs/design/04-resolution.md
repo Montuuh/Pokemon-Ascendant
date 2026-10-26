@@ -115,7 +115,9 @@ swap: measured on the same table, the Rock Gym (Geodude, Golem) stopped costing 
 **Shown before it lands (Pillar 1).** Every Pokémon's card wears its meter as a **dial** on its outer edge, at the
 middle of its window (v0.9.60, the user's choice of five looks): a ring of one segment per act, the acts still to go
 on its face; full, a turning star and a **CRIT** tab. Full on your side, every damaging card of that Pokémon in your
-hand wears **✦ CRIT** and a gold edge, and its damage preview already counts the crit. An enemy's crit is **declared with its intent**: the chip says **CRIT**
+hand wears the **✦** crit badge and a breathing gold edge, and its damage preview already counts the crit. The ✦ is
+the one crit mark (v0.9.61): an AlwaysCrit card wears it too, always, but never the edge — it does not spend the
+rhythm. An enemy's crit is **declared with its intent**: the chip says **CRIT**
 and its number is the critical one, a turn ahead. Nothing you do takes a declared crit back — the answer is the swap,
 the resist, or the Pokémon who can take it.
 
