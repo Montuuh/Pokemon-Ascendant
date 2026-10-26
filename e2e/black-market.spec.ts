@@ -110,7 +110,7 @@ test.describe('The counters — §2.11.6', () => {
     await page.getByTestId('market-trader').click();
     await page.getByTestId('trade-offer-0').click();
     await page.getByTestId(`trade-give-${give.uid}`).click();
-    await expect(page.getByTestId('btn-trade')).toContainText(`Lv ${give.level}`);
+    await expect(page.getByTestId('btn-trade')).toHaveAccessibleName(new RegExp(`Lv ${give.level}`));
     await page.screenshot({ path: 'playtest/black-market-trader.png' });
     await page.getByTestId('btn-trade').click();
     const after = await page.evaluate(() => window.__ascendant!.run.state()!);

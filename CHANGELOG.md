@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.57 — Clear trade comparison · 2026-10-26
+
+Compare the Pokémon you give and receive before confirming.
+
+- **Trade preview.** Identity, level and condition grouped together.
+- **Confirmation.** A clear action after choosing both Pokémon.
+- **Reduced motion.** Trader offers use still sprites when enabled.
+
 ### v0.9.56 — Victory Road scenery · 2026-10-26
 
 Dedicated cave backdrops and broader visual checks.

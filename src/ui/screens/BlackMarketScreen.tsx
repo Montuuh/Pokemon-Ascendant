@@ -21,13 +21,15 @@ import { ConfirmLeave } from '@/ui/components/ConfirmLeave';
 import { ItemCard, type Rarity } from '@/ui/components/ItemCard';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { ownedMonTip } from '@/ui/ownedMonTip';
+import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { Money, Price } from '@/ui/components/Money';
 import { TypeBadge } from '@/ui/components/TypeBadge';
-import { LEAVE_WARNING, MARKET_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
+import { LEAVE_WARNING, MARKET_TEXT, RUN_REJECT_TEXT, STATUS_LABEL } from '@/ui/strings';
 import {
   candyTip,
   fenceTip,
   marketTip,
+  marketDonorTip,
   moneyTip,
   showcaseTip,
   stakeTip,
@@ -233,6 +235,7 @@ function MonChip({
   locked,
   onClick,
   testId,
+  tip,
 }: {
   mon: PartyMon;
   selected: boolean;
@@ -240,10 +243,18 @@ function MonChip({
   locked?: boolean;
   onClick: () => void;
   testId: string;
+  tip?: ReactNode;
 }) {
   const s = getContent().species(mon.speciesId);
   return (
-    <Chip selected={selected} disabled={disabled} locked={locked} onClick={onClick} testId={testId} tip={ownedMonTip(mon)}>
+    <Chip
+      selected={selected}
+      disabled={disabled}
+      locked={locked}
+      onClick={onClick}
+      testId={testId}
+      tip={ownedMonTip(mon, tip)}
+    >
       <MonIcon speciesId={s.id} shiny={mon.shiny} size={34} />
       <span className={styles.chipName}>{s.name}</span>
       <span className={`${styles.chipMeta} tabular`}>Lv {mon.level}</span>
@@ -291,45 +302,86 @@ type CounterProps = { run: RunState; market: BlackMarketState; act: (a: Act) => 
 
 function Trader({ run, market, act }: CounterProps) {
   const content = getContent();
+  const animate = useMotionPref();
   const [offer, setOffer] = useState<number | null>(null);
   const [give, setGive] = useState<string | null>(null);
   if (market.traded) return <Done>{MARKET_TEXT.traded}</Done>;
   const given = run.box.find((m) => m.uid === give) ?? null;
   return (
     <div className={styles.stack}>
-      <div className={styles.offers} role="group" aria-label="On offer">
-        {market.trades.map((id, i) => {
-          const s = content.species(id);
-          return (
+      <div className={styles.exchange}>
+        <section className={styles.tradeSide} aria-label={MARKET_TEXT.youGive}>
+          <h3 className={styles.ask}>{MARKET_TEXT.youGive}</h3>
+          {given ? (
             <Tipped
-              key={id}
-              as="button"
-              type="button"
-              tip={tradeTip(s.name, s.types)}
-              className={`${styles.mon} ${offer === i ? styles.monOn : ''}`}
-              aria-pressed={offer === i}
-              onClick={() => setOffer(offer === i ? null : i)}
-              data-testid={`trade-offer-${i}`}
+              as="div"
+              className={styles.donor}
+              data-testid="trade-outgoing"
+              tip={ownedMonTip(given, marketDonorTip(given, run.activeUids.includes(given.uid)))}
             >
-              <img
-                className={styles.monSprite}
-                src={spriteOf({ speciesId: id }, 'front')}
-                alt=""
-                width={96}
-                height={96}
-              />
-              <span className={`${styles.monName} display`}>{s.name}</span>
-              <span className={styles.types}>
-                {s.types.map((t) => (
-                  <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />
-                ))}
-              </span>
+              <MonIcon speciesId={given.speciesId} shiny={given.shiny} size={64} />
+              <div className={styles.donorText}>
+                <b className={`${styles.monName} display`}>{content.species(given.speciesId).name}</b>
+                <b className="tabular">Lv {given.level}</b>
+                <span>{MARKET_TEXT.donorCondition(given.hp, given.traumaStacks)}</span>
+                {given.status && <span>{STATUS_LABEL[given.status.kind]}</span>}
+                {given.confusionTurns > 0 && <span>{STATUS_LABEL.confusion}</span>}
+                {given.heldItem && (
+                  <span>{MARKET_TEXT.itemToBag(content.heldItem(given.heldItem).name)}</span>
+                )}
+              </div>
             </Tipped>
-          );
-        })}
+          ) : (
+            <p className={styles.tradeEmpty}>{MARKET_TEXT.pickGive}</p>
+          )}
+        </section>
+        <IconArrowsExchange className={styles.exchangeArrow} size={24} aria-hidden="true" />
+        <section className={styles.tradeSide} aria-label={MARKET_TEXT.youReceive}>
+          <h3 className={styles.ask}>{MARKET_TEXT.youReceive}</h3>
+          <div className={styles.offers} role="group" aria-label={MARKET_TEXT.pickOffer}>
+            {market.trades.map((id, i) => {
+              const s = content.species(id);
+              return (
+                <Tipped
+                  key={id}
+                  as="button"
+                  type="button"
+                  tip={tradeTip(s.name, s.types)}
+                  className={`${styles.mon} ${offer === i ? styles.monOn : ''}`}
+                  aria-pressed={offer === i}
+                  onClick={() => setOffer(offer === i ? null : i)}
+                  data-testid={`trade-offer-${i}`}
+                >
+                  <img
+                    className={styles.monSprite}
+                    src={spriteOf({ speciesId: id }, 'front', false, animate)}
+                    alt=""
+                    width={96}
+                    height={96}
+                  />
+                  <span className={`${styles.monName} display`}>{s.name}</span>
+                  <span className={styles.types}>
+                    {s.types.map((t) => (
+                      <TypeBadge key={t} type={t} size={14} defenderTypes={s.types} />
+                    ))}
+                  </span>
+                  <span className="tabular">{given ? `Lv ${given.level}` : 'Lv —'}</span>
+                </Tipped>
+              );
+            })}
+          </div>
+          <Tipped
+            tip={tradeTip(
+              offer === null ? MARKET_TEXT.youReceive : content.species(market.trades[offer]!).name,
+              [],
+            )}
+            className={styles.tradeCondition}
+          >
+            {MARKET_TEXT.fresh}
+          </Tipped>
+        </section>
       </div>
-      <h3 className={styles.ask}>{MARKET_TEXT.pickGive}</h3>
-      <div className={styles.chips}>
+      <div className={styles.chips} role="group" aria-label={MARKET_TEXT.pickGive}>
         {run.box.map((m) => (
           <MonChip
             key={m.uid}
@@ -337,25 +389,33 @@ function Trader({ run, market, act }: CounterProps) {
             selected={give === m.uid}
             onClick={() => setGive(give === m.uid ? null : m.uid)}
             testId={`trade-give-${m.uid}`}
+            tip={marketDonorTip(m, run.activeUids.includes(m.uid))}
           />
         ))}
       </div>
-      <div className={styles.actions}>
+      <div className={`${styles.actions} ${styles.tradeActions}`}>
         <button
           type="button"
           className={styles.primary}
           disabled={offer === null || !given}
           onClick={() => offer !== null && give && act({ type: 'market-trade', offer, giveUid: give })}
           data-testid="btn-trade"
+          aria-label={
+            offer !== null && given
+              ? `${MARKET_TEXT.confirmTrade}: ${MARKET_TEXT.tradeFor(
+                  content.species(given.speciesId).name,
+                  content.species(market.trades[offer]!).name,
+                  given.level,
+                )}`
+              : undefined
+          }
         >
           <IconArrowsExchange size={18} aria-hidden="true" />
           {offer !== null && given
-            ? MARKET_TEXT.tradeFor(
-                content.species(given.speciesId).name,
-                content.species(market.trades[offer]!).name,
-                given.level,
-              )
-            : MARKET_TEXT.trade}
+            ? MARKET_TEXT.confirmTrade
+            : !given
+              ? MARKET_TEXT.pickMon
+              : MARKET_TEXT.pickOffer}
         </button>
       </div>
     </div>

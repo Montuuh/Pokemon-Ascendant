@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { fieldsFor, groupPlanFor, wildChancesFor, type RunState } from '@/sim';
+import { fieldsFor, groupPlanFor, wildChancesFor, type PartyMon, type RunState } from '@/sim';
 import { nodeHint } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
@@ -1114,6 +1114,21 @@ export function marketExitTip(): ReactNode {
 /** §2.11.6 — one of the Trader's two stolen Pokémon. */
 export function tradeTip(name: string, types: readonly string[]): ReactNode {
   return <Tip title={name} meta={[...types.map(typeName), 'No route offers it']} body="Hand over one of yours and this one takes its place — at your Pokémon’s level, fresh, with no Trauma. Its held item comes back to your bag." footer="One trade a visit." />;
+}
+
+/** §2.11.6 — inspect the exact donor without importing the roadside trader's refusal rules. */
+export function marketDonorTip(mon: PartyMon, active: boolean): ReactNode {
+  const content = getContent();
+  return (
+    <Tip
+      title={content.species(mon.speciesId).name}
+      meta={[`Lv ${mon.level}`, `${mon.hp} HP`, `Trauma ${mon.traumaStacks}`, active ? 'Active Team' : 'Box']}
+      body="This Pokémon leaves for good. The newcomer takes its place at the same level, with full HP, no Trauma and no carried conditions."
+      footer={
+        mon.heldItem ? `${content.heldItem(mon.heldItem).name} returns to your bag.` : 'One trade a visit.'
+      }
+    />
+  );
 }
 
 /** §2.11.6 — the Fence's Rare Candy. */

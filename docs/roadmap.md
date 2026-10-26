@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.57 — Clear trade comparison  ✅ 2026-10-26
+
+**Shipped.** B15 frames the Black Market Trader as two sides of one exchange. The donor's identity, shiny appearance, level, HP, Trauma, carried conditions and held-item return sit beside the incoming offers and their matching level. Selection, empty and unavailable donor states gate an explicit confirmation; cancelling restores focus without changing the run. Existing trade rules and offer tooltips remain intact, with still offer sprites under reduced motion. Evidence: `playtest/art-review-2026-10-24/implementation/B15/`.
+
 ### v0.9.56 — Victory Road scenery  ✅ 2026-10-26
 
 **Shipped.** The reviewed worktree remainder connects Victory Road Wild and Gauntlet encounters to their existing dedicated backdrops, with stage-selection regression coverage. The UI audit includes result-screen presets and reports content spilling outside painted containers at both resolutions; regression fixtures distinguish visible spill from clipped content. Gym canon now uses Whitney, matching the roster. Provisional local art-generation scripts were archived and removed, and incremental TypeScript cache files are ignored. Evidence: `playtest/cleanup-2026-10-26/`.

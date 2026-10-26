@@ -85,7 +85,7 @@ test.describe('Black Market retained contracts — §2.11.6', () => {
     await page.getByTestId('market-trader').click();
     await page.getByTestId('trade-offer-0').click();
     await page.getByTestId(`trade-give-${before.box[1]!.uid}`).click();
-    await expect(page.getByTestId('btn-trade')).toContainText('Lv 30');
+    await expect(page.getByTestId('btn-trade')).toHaveAccessibleName(/Lv 30/);
     await page.getByTestId('btn-trade').click();
     const after = await page.evaluate(() => window.__ascendant!.run.state()!);
     expect(after.box).toHaveLength(before.box.length);
