@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.59 — Critical rhythm · 2026-10-26
+
+Speed sets how often every Pokémon crits.
+
+- **Critical rhythm.** Next hit crits after 3–6 acts, by Speed.
+- **Enemy crits.** Declared as CRIT on the intent.
+- **Quick swap.** 1 AP off every swap when faster.
+
 ### v0.9.58 — Speed matters · 2026-10-26
 
 Speed now prices the swap.

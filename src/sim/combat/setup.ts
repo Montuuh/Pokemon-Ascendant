@@ -44,6 +44,7 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
       speed: statAtLevel(species, 'speed', setup.level, arch) + (boosts.speed ?? 0),
     },
     stages: { attack: 0, defense: 0, speed: 0 },
+    rhythm: 0,
     status: null,
     confusionTurns: 0,
     confusionAppliedTurn: 0,

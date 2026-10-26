@@ -19,6 +19,7 @@ export { LEAGUE, LEAGUE_MEMBERS, championAce, generateLeague, leagueBase, league
 export { ACTIVE_TEAM, APEX, LEGENDARY_ARENAS, LEGENDARY_IDS, fillTeam, hasPlaceFor, isLegendarySpecies, joinTeam, legendariesOpen, placeInTeam, placesOf, placesTaken, type LegendaryArena, type LegendaryId } from './run/legendaries';
 export { GYM_RULE_IDS, rolloutTurns, ruleCounter, synergyMultiplier, turnsUntil, isSealed, type GymRuleId, type GymRuleConfig, type RuleCounter } from './combat/gymRules';
 export { slotOccupant, slotToIndex, indexToSlot, lead, benchIndices, aliveTeam, activeEnemy, aliveEnemies, isEnemyLead, resolutionOrder, enemySlotLabel, findCombatant, SLOT_LABEL } from './combat/slots';
+export { rhythmEvery, rhythmReady, rhythmSpeed } from './combat/rhythm';
 export { effectiveAttack, effectiveDefense, effectiveSpeed, outspeeds, statAtLevel, effectiveMaxHp, hpFraction, isFainted, knownMoves, activeMoves } from './combat/stats';
 export { cardsLocked, isPositionLocked, isImmuneToStatus, dotDamage } from './combat/status';
 export { breakdownFor } from './combat/damageFlow';

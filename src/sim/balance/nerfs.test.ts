@@ -110,7 +110,9 @@ describe('Drain — §4.1.6, catalogs/moves.md', () => {
     // 6.5 % since v0.9.10: HP grows with its base (§6.2.3) and the fixture's Max HP moved with it.
     // 10 % since v0.9.12: every hit lands harder at divisor 5 (§4.1.1), the enemy's as much as this one, so half the
     // damage back is a bigger share of Max HP on both sides of the trade.
-    expect(plain.healPerAp).toBeLessThan(0.1);
+    // 11 % since v0.9.59: the critical rhythm (§4.1.3.1) crits every few cards, so the average hit is bigger again
+    // (9.7 → 10.2 %); the share stays half and the Lead under fire loses more ground (−7.0 → −8.4 % a turn).
+    expect(plain.healPerAp).toBeLessThan(0.11);
     expect(plain.healPerDamage).toBeGreaterThan(0.45);
     expect(plain.healPerDamage).toBeLessThan(0.55);
   });

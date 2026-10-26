@@ -12,12 +12,18 @@ export interface BattleConfig {
   stabMultiplier: number;
   /** §4.1.3 — critical hit multiplier. Crit base chance is 0 %; sources stack additively. */
   critMultiplier: number;
+  /**
+   * §4.1.3.1 — the critical rhythm: acts to fill the meter by level-free Speed, fastest tier first (the first
+   * `speed` reached gives `every`). The enemy's table is tighter at the slow end: it acts once a turn where you play
+   * three cards, and the Rock Gym's slow walls must still cost Pokémon (measured, v0.9.59).
+   */
+  critRhythm: { tiers: readonly { speed: number; every: number }[]; enemyTiers: readonly { speed: number; every: number }[] };
   /** §3.6 — Ranged moves deal a fraction of Melee damage. */
   rangedModifier: number;
   meleeModifier: number;
   /** §4.2.6 (CL-002) — linear ±6 stat-stage ladder, index 0 = stage −6 … index 12 = stage +6. */
   statStageMultipliers: readonly number[];
-  /** §3.3.1.1 — Quick swap: on the turn's first swap, a Pokémon faster than the enemy Lead steps in for this much less AP. */
+  /** §3.3.1.1 — Quick swap: a Pokémon faster than the enemy Lead steps in for this much less AP on every rung (floor 0). */
   quickSwapDiscount: number;
   /** §3.2.2 — AP granted at Draw phase and its ceiling. */
   baseApPerTurn: number;
@@ -120,6 +126,10 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   comboBreakShare: 0.25,
   stabMultiplier: 1.5,
   critMultiplier: 1.5,
+  critRhythm: {
+    tiers: [{ speed: 110, every: 3 }, { speed: 80, every: 4 }, { speed: 50, every: 5 }, { speed: 0, every: 6 }],
+    enemyTiers: [{ speed: 110, every: 3 }, { speed: 80, every: 3 }, { speed: 50, every: 4 }, { speed: 0, every: 4 }],
+  },
   rangedModifier: 0.75,
   meleeModifier: 1.0,
   statStageMultipliers: [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6],

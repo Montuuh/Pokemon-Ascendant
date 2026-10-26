@@ -10,6 +10,7 @@ import { choiceLockBlocks, itemApDelta } from './items';
 import { cardsLocked, isPositionLocked, paralysisApBonus } from './status';
 import { DEFAULT_BATTLE_CONFIG, type BattleConfig } from './battleConfig';
 import { outspeeds } from './stats';
+import { rhythmReady, spendsRhythm } from './rhythm';
 
 // Read-only selectors the UI (and the auto-player) use to know what is legal and what it would do.
 // Every rule here mirrors the reducer's validation — keep them in lockstep (tests assert agreement).
@@ -129,7 +130,8 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
   else if (targetUid !== undefined && foe && !enemy) reason = 'no-enemy';
   else if (foe && enemy && !canReach(state, move, enemy)) reason = 'out-of-reach';
 
-  const crit = !!move.alwaysCrit || state.player.critChance >= 1;
+  // §4.1.3.1 — a full rhythm is a certain crit, so the preview prints it.
+  const crit = !!move.alwaysCrit || state.player.critChance >= 1 || (spendsRhythm(move) && rhythmReady(owner, ctx.config));
   const damage = move.power > 0 && enemy ? breakdownFor(owner, enemy, move, crit, ctx, state) : null;
   const targets = state.enemies
     .filter((e) => e.hp > 0)
@@ -162,8 +164,8 @@ export interface SwapOption {
 }
 
 /**
- * §3.3.1 — next manual swap cost (1/2/3) and whether each bench is a legal destination. §3.3.1.1 — on the turn's
- * first swap, a Pokémon faster than the enemy Lead steps up for 1 AP less (the quick swap), so the price is per bench.
+ * §3.3.1 — next manual swap cost (1/2/3) and whether each bench is a legal destination. §3.3.1.1 — a Pokémon faster
+ * than the enemy Lead steps up for 1 AP less on every rung (the quick swap), so the price is per bench.
  */
 export function swapOptions(state: CombatState, config: BattleConfig = DEFAULT_BATTLE_CONFIG): SwapOption[] {
   // §3.3.1 — the 1/2/3 ladder, unless a free swap is banked (Run Down, Tactician's Coin, Flow State).
@@ -172,7 +174,7 @@ export function swapOptions(state: CombatState, config: BattleConfig = DEFAULT_B
   const foe = activeEnemy(state);
   return benchIndices(state).map((benchIndex) => {
     const b = state.player.team[benchIndex]!;
-    const quick = ladder > 0 && state.player.swapCounter === 0 && !!foe && outspeeds(b, foe, config);
+    const quick = ladder > 0 && !!foe && outspeeds(b, foe, config);
     const cost = quick ? Math.max(0, ladder - config.quickSwapDiscount) : ladder;
     let reason: RejectReason | null = null;
     if (state.player.pendingLeadPick) reason = 'lead-pick-pending';

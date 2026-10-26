@@ -2,6 +2,7 @@ import type { RunCtx } from './context';
 import { emit, log } from './context';
 import { absorbedByAbility, applyMoveEffects, strike } from './damageFlow';
 import { intentRecipient, summonedBy } from './intents';
+import { stepRhythm } from './rhythm';
 import { makeEnemy } from './setup';
 import { slotOccupant } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent } from './state';
@@ -13,8 +14,14 @@ import type { Combatant, CombatState, EnemyCombatant, Intent } from './state';
  * after, if it is still standing and the fight is still on.
  */
 export function executeTurn(state: CombatState, enemy: EnemyCombatant, ctx: RunCtx): void {
-  executeIntent(state, enemy, ctx, enemy.intent);
-  if (enemy.second && !enemy.second.broken && enemy.hp > 0 && state.outcome === 'in-progress') executeIntent(state, enemy, ctx, enemy.second);
+  act(state, enemy, ctx, enemy.intent);
+  if (enemy.second && !enemy.second.broken && enemy.hp > 0 && state.outcome === 'in-progress') act(state, enemy, ctx, enemy.second);
+}
+
+/** §4.1.3.1 — one action, then its critical rhythm: a declared crit empties the meter, any other action fills it a step. */
+function act(state: CombatState, enemy: EnemyCombatant, ctx: RunCtx, intent: Intent | null): void {
+  executeIntent(state, enemy, ctx, intent);
+  if (intent && intent.kind !== 'incapacitated') stepRhythm(enemy, ctx.config, !!intent.crit);
 }
 
 export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: RunCtx, intent: Intent | null = enemy.intent): void {
@@ -80,7 +87,8 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
     if (target.hp <= 0) continue;
     log(state, 'enemy', `${enemy.name} used ${move.name} on ${target.name}!`);
     if (absorbedByAbility(state, ctx, target, move)) continue;
-    if (move.power > 0) strike(state, ctx, enemy, target, move, !!move.alwaysCrit);
+    // §4.1.3.1 — a rhythm crit was declared with the intent and printed on its chip.
+    if (move.power > 0) strike(state, ctx, enemy, target, move, !!move.alwaysCrit || !!intent.crit);
     if (target.hp > 0 || move.power === 0) applyMoveEffects(state, ctx, enemy, target, move);
   }
 }

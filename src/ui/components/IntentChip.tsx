@@ -58,6 +58,8 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
           <img src={intentGlyph(intent.kind === 'incapacitated' ? 'stall' : intent.kind)} alt="" width={20} height={20} className={styles.intentIcon} />
           <span className={styles.intentText}>
             <b>{move ? move.name : INTENT_LABEL[intent.kind]}</b>
+            {/* §4.1.3.1 — its rhythm is full: this hit is a critical, and its number already counts it. */}
+            {intent.crit && <> <b className={styles.crit} data-testid="intent-crit">CRIT</b></>}
             {/* §9.2.5 — an area intent prints no number: every target takes its own, on its portrait. */}
             {intent.kind === 'cleave' && <> → <b>ALL</b></>}
             {intent.targetSlot && (

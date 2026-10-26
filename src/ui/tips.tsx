@@ -554,7 +554,7 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
   for (const h of extra?.incoming ?? []) if (h.moot) lines.push(<div key={`m-${h.name}-${h.move}`}>{h.name}'s {h.move} would take <s>{h.amount}</s> — wasted: it is down by then.</div>);
   // §9.2.5 — the swap, priced in HP (v0.8.6).
   if (extra?.asLead) lines.push(<div key="al">As your Lead this turn it would take <b>{extra.asLead.amount}</b>{extra.asLead.ko ? ' — a knockout' : ''}.</div>);
-  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP${extra.swapQuick ? ' — a quick swap: it is faster than the enemy Lead' : ''}. Each swap this turn costs 1 more (1, 2, 3); the ladder resets every turn, and Step cards swap for free. The first swap is free for a Pokémon faster than the enemy Lead.` : undefined;
+  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP${extra.swapQuick ? ' — a quick swap: it is faster than the enemy Lead, so it costs 1 less' : ''}. Each swap this turn costs 1 more (1, 2, 3); the ladder resets every turn, and Step cards swap for free. A Pokémon faster than the enemy Lead swaps in for 1 less.` : undefined;
   return <Tip title={c.name} meta={meta} body={lines.length ? lines : undefined} footer={footer} />;
 }
 

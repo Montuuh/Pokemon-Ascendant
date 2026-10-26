@@ -20,7 +20,7 @@ export const POKEMON_TYPES = [
 ] as const;
 export type PokemonType = (typeof POKEMON_TYPES)[number];
 
-// Per §4.1.1 — unified Attack/Defense (no Physical/Special split); Speed prices the swap (§3.3.1.1 quick swap).
+// Per §4.1.1 — unified Attack/Defense (no Physical/Special split); Speed prices the swap (§3.3.1.1) and sets the critical rhythm (§4.1.3.1).
 export type Stat = 'attack' | 'defense' | 'speed';
 
 // Per §4.2 — one primary status at a time; Confusion is the only secondary status.

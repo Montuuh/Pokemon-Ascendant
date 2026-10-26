@@ -6,6 +6,7 @@ import { buildSkillDeck, drawSkillCards } from './deck';
 import { echoesFirstCard, itemCureHeal, itemRidersFirst, stepDrawBonus, swapDrawBonus, swapHealAmount } from './items';
 import { catchOdds, SHAKE_CHECKS, shakeChecks } from './catch';
 import { declareIntent } from './intents';
+import { rhythmReady, spendsRhythm, stepRhythm } from './rhythm';
 import { cardPlayability, cardVictims, catchTarget, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
 import { rngFromState } from './setup';
 import { activeEnemy, lead, setLead } from './slots';
@@ -145,6 +146,10 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   emit(state, { t: 'card-played', cardId: card.id, moveId: move.id, ownerUid: owner.uid, targetUid: enemy?.uid ?? null, apCost: p.apCost });
   log(state, 'player', `${owner.name} used ${move.name}!`);
 
+  // §4.1.3.1 — a full critical rhythm makes this card's hit a critical, on every target it lands on, and empties.
+  const rhythmCrit = spendsRhythm(move) && rhythmReady(owner, ctx.config);
+  if (rhythmCrit) log(state, 'player', `${owner.name} is in rhythm!`);
+
   if (move.power > 0) {
     const several = victims.length > 1;
     for (const victim of victims) {
@@ -152,7 +157,7 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
       if (victim.hp <= 0) continue;
       // §6.5.2 — the hit was swallowed whole: no damage, no rider, nothing to check.
       if (absorbedByAbility(state, ctx, victim, move)) continue;
-      const crit = !!move.alwaysCrit || (player.critChance > 0 && ctx.rng.chance(player.critChance));
+      const crit = !!move.alwaysCrit || rhythmCrit || (player.critChance > 0 && ctx.rng.chance(player.critChance));
       // Commentary first: the hit may faint the target and bring the next enemy in, and those lines must read
       // after the hit that caused them. The breakdown is computed up front for exactly that reason.
       const preview = breakdownFor(owner, victim, move, crit, ctx);
@@ -173,6 +178,7 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   } else {
     applyMoveEffects(state, ctx, owner, enemy, move);
   }
+  stepRhythm(owner, ctx.config, rhythmCrit);
 
   // Draw effects belong to the hand, so the reducer resolves them here.
   for (const fx of move.effects) {
@@ -315,7 +321,7 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
 
 /**
  * §3.3.1 — manual swap: 1/2/3 AP ladder, arms the defensive discount, respects Freeze locks. §3.3.1.1 — a quick swap
- * (the turn's first, faster than the enemy Lead) costs 1 less and still climbs the ladder.
+ * (faster than the enemy Lead) costs 1 less on every rung and still climbs the ladder.
  */
 function manualSwap(state: CombatState, benchIndex: number, ctx: RunCtx): void {
   const player = state.player;

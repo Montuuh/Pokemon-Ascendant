@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.59 — Critical rhythm.** Every Pokémon crits its next hit after a few acts, sooner the faster it is; an enemy's crit is shown as CRIT on its intent. Swaps are 1 AP cheaper on every rung for a Pokémon faster than the enemy Lead. Before it,
 **v0.9.58 — Speed matters.** The turn's first swap is free for a Pokémon faster than the enemy Lead, Paralysis halves Speed, and every portrait names its Speed. Before it,
 **v0.9.57 — Clear trade comparison.** The Trader groups outgoing and incoming Pokémon, levels and condition around an explicit confirmation. Offers respect reduced motion. Before it,
 **v0.9.55 — Room for every reward.** Gym Badges and level-up windows have separate space at large text sizes. Run records retain every cleared region after Victory Road and League defeats. Before it,

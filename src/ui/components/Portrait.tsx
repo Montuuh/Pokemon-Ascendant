@@ -1,6 +1,7 @@
 import { IconBolt, IconCrown, IconLock } from '@tabler/icons-react';
 import type { CSSProperties } from 'react';
 import type { Combatant, SlotId } from '@/sim';
+import { DEFAULT_BATTLE_CONFIG } from '@/sim';
 import { spriteOf } from '@/ui/art';
 import type { SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { ArenaSprite } from './ArenaSprite';
@@ -8,6 +9,7 @@ import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
 import { UnitChips } from './UnitChips';
+import { rhythmChip } from './rhythmChip';
 import { combatantTip, shieldTip, traumaTip } from '@/ui/tips';
 import { SHIELD_LABEL, STAT_SHORT, UNIT_CHIPS_TEXT } from '@/ui/strings';
 import { Tipped, useTip } from '@/ui/tooltip';
@@ -141,6 +143,8 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
             ...(mon.shield > 0
               ? [{ key: 'shield', label: `${SHIELD_LABEL} ${mon.shield}`, explain: UNIT_CHIPS_TEXT.shieldBody(mon.shield), node: <Tipped tip={shieldTip(mon.shield)} className={`${card.chip} ${card.info}`} data-testid="unit-shield">{SHIELD_LABEL} {mon.shield}</Tipped> }]
               : []),
+            // §4.1.3.1 — the critical rhythm, always on the card: how full, and what fills it.
+            ...(fainted ? [] : [rhythmChip(mon, DEFAULT_BATTLE_CONFIG, false)]),
             ...stageChips.map((s) => {
               const label = `${STAT_SHORT[s]} ${mon.stages[s] > 0 ? '+' : ''}${mon.stages[s]}`;
               return { key: s, label, node: <span className={`${card.chip} ${mon.stages[s] > 0 ? card.up : card.down}`}>{label}</span> };

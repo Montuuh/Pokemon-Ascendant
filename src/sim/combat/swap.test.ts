@@ -128,7 +128,7 @@ describe('Quick swap — §3.3.1.1', () => {
     d.enemies[0]!.base.speed = foe;
   });
 
-  it('QuickSwap_FirstSwapFasterThanEnemyLead_IsFree_AndStillClimbsTheLadder', () => {
+  it('QuickSwap_FasterThanEnemyLead_CostsOneLessOnEveryRung_AndStillClimbsTheLadder', () => {
     let s = pinned(60, 50);
     const opt = swapOptions(s).find((o) => o.benchIndex === 1)!;
     expect(opt).toMatchObject({ cost: 0, quick: true, allowed: true });
@@ -137,9 +137,9 @@ describe('Quick swap — §3.3.1.1', () => {
     expect(s.player.ap).toBe(6);
     expect(s.player.swapCounter).toBe(1);
     expect((eventsOf(s, 'swap').at(-1) as { apCost: number }).apCost).toBe(0);
-    // Only the turn's first swap is quick: the second pays its full rung however fast it is.
+    // Every rung is quick for a faster Pokémon: the second swap costs 2 − 1.
     s = tweak(s, (d) => { d.player.team[0]!.base.speed = 60; });
-    expect(swapOptions(s).find((o) => o.benchIndex === 0)!).toMatchObject({ cost: 2, quick: false });
+    expect(swapOptions(s).find((o) => o.benchIndex === 0)!).toMatchObject({ cost: 1, quick: true });
   });
 
   it('QuickSwap_TieIsNotFaster', () => {

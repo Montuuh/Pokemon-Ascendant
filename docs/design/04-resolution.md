@@ -77,7 +77,8 @@ Because Steel does not exist, moves that are Steel-typed in the source material 
 
 ## §4.1.3 Crit
 
-Crits are **scarce and investment-gated**, not a background dice roll. **Base crit chance is 0 %.**
+Crits are **scarce and investment-gated**, not a background dice roll. **Base crit chance is 0 %.** Since v0.9.59
+every Pokémon also earns them on a clock its Speed sets — the critical rhythm (§4.1.3.1), never a roll.
 
 | Source | Scope | Effect |
 |---|---|---|
@@ -89,6 +90,38 @@ Stacking is additive with a soft cap around 30–35 %. The crit multiplier is **
 `steady-aim` relic. Hover always shows the effective crit chance and flags a redundant crit bonus on an
 AlwaysCrit move.
 
+### §4.1.3.1 The critical rhythm — Speed's second job
+
+Every Pokémon, **on both sides**, carries a meter. It fills **one step per act** — on your side every card that
+Pokémon plays, on the enemy's every action it takes (a Pokémon that acts twice fills it twice a turn). Full, its
+**next hit is a critical**: certain, never rolled. The hit that spends it empties it; anything else fills it a step,
+up to full, and a full meter waits for a hit. An AlwaysCrit move crits anyway and leaves the meter alone.
+
+**Speed sets the pace.** How many acts fill it is read off its **level-free Speed** — effective Speed (stages,
+Paralysis, the Dojo's points, the archetype's lean) divided by the level's growth (§6.2.3), so the tier reads the
+species and not how far into the run it is:
+
+| Level-free Speed | Your Pokémon: cards to fill | An enemy: actions to fill |
+|---|---|---|
+| 110 + | 3 | 3 |
+| 80–109 | 4 | 3 |
+| 50–79 | 5 | 4 |
+| under 50 | 6 | 4 |
+
+(`critRhythm.tiers`, `critRhythm.enemyTiers`.) The enemy's table is tighter at the slow end because an enemy acts once
+a turn where your side plays three cards, and because Speed already favours you against slow walls through the quick
+swap: measured on the same table, the Rock Gym (Geodude, Golem) stopped costing Pokémon (§3.3.1.1).
+
+**Shown before it lands (Pillar 1).** Every card wears its meter (*Crit 2/5*, then *Crit ready*). Your card's damage
+preview already counts a full meter's crit. An enemy's crit is **declared with its intent**: the chip says **CRIT**
+and its number is the critical one, a turn ahead. Nothing you do takes a declared crit back — the answer is the swap,
+the resist, or the Pokémon who can take it.
+
+*Why (the user's call, 2026-10-26):* a Speed-based crit chance, as Gen I had, was weighed and rejected — it would
+have made every preview a range and every enemy number a gamble. The rhythm keeps Speed's series meaning (fast
+Pokémon crit more) and keeps every number exact. The user set the enemy's side: every enemy has it, wild ones too;
+it fills per action, so a Pokémon that acts twice gets there sooner; it is shown on the intent; it cannot be broken.
+
 ## §4.1.5 Stats
 
 | Stat | Meaning |
@@ -96,7 +129,7 @@ AlwaysCrit move.
 | **HP** | Current / Effective Max |
 | **Attack** | One unified offensive stat, used by every move |
 | **Defence** | One unified defensive stat, used against every move |
-| **Speed** | Never in the damage formula. A Pokémon faster than the enemy Lead makes the turn's first swap free (§3.3.1.1). Paralysis halves it (§4.2.2.3) |
+| **Speed** | Never in the damage formula. A Pokémon faster than the enemy Lead swaps in for 1 AP less (§3.3.1.1); its Speed sets the pace of its critical rhythm (§4.1.3.1). Paralysis halves it (§4.2.2.3) |
 | **Level** | Drives stat growth; never enters the damage formula directly |
 
 **Effective stat** = `base + growth × (level − 1)`, then the stat-stage multiplier, then the status multiplier —

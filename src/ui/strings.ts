@@ -59,6 +59,13 @@ export const UNIT_CHIPS_TEXT = {
   armourBody: (n: number) => `takes the next ${n} damage before its HP; a Fire move shatters it.`,
   shieldBody: (n: number) => `takes the next ${n} damage before its HP; it does not come back.`,
   traumaBody: 'its max HP is lowered until treated.',
+  /** §4.1.3.1 — the critical rhythm on the card: how full, or full. */
+  rhythmTitle: 'Critical rhythm',
+  rhythm: (n: number, every: number) => (n >= every ? 'Crit ready' : `Crit ${n}/${every}`),
+  rhythmBody: (every: number, enemy: boolean) =>
+    enemy
+      ? `each action fills its meter; after ${every} its next hit is a critical, shown as CRIT on its intent. The faster it is, the fewer it needs.`
+      : `each card it plays fills its meter; after ${every} its next damaging card is a critical, and the card's number already says so. The faster it is, the fewer it needs.`,
 };
 
 /** §5.6.1 / §5.5.1 — a bench foe's second action and next plan, folded to badges on its chip on a short stage. */

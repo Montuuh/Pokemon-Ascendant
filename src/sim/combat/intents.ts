@@ -1,4 +1,5 @@
 import { arenaCleaves } from './arenaRules';
+import { markRhythm } from './rhythm';
 import type { EnemySetup, MoveDef } from '../content/defs';
 import { doubleActionBudget } from './combo';
 import type { GameRng } from '../rng/gameRng';
@@ -291,6 +292,8 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
       const second = chooseIntent(state, enemy, ctx, rng, enemy.intent.moveId ?? undefined, budget - spent);
       enemy.second = second ? { ...second, hidden: enemy.intent.hidden } : null;
     }
+    // §4.1.3.1 — a full critical rhythm is declared here, on the hit that will spend it.
+    markRhythm(enemy, ctx);
   }
   // §5.5.1 Trainer's Instinct — plan the next turn now, from what the enemy can see now, and show it. It hides
   // exactly as much as this turn's intent does: seeing further ahead is not seeing through a veil.
@@ -351,14 +354,16 @@ export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: C
   // Resolution per declaration just to print it made every harness run half again as slow.
   const dmg = withDamage && state.enemies.length <= 1 ? predictIntentDamage(state, enemy, ctx, i) : null;
   const ally = i.targetEnemyUid ? intentRecipient(state, enemy, i) : null;
+  // §4.1.3.1 — a rhythm crit is part of the declaration.
+  const crit = i.crit ? ' · CRITICAL' : '';
   switch (i.kind) {
     case 'attack':
-      return `readies ${move?.name} → ${slotText}${dmg !== null ? ` · ${dmg} dmg` : ''}`;
+      return `readies ${move?.name} → ${slotText}${dmg !== null ? ` · ${dmg} dmg` : ''}${crit}`;
     case 'backstrike':
-      return `aims ${move?.name} at ${slotText}${dmg !== null ? ` · ${dmg} dmg` : ''} (Backstrike)`;
+      return `aims ${move?.name} at ${slotText}${dmg !== null ? ` · ${dmg} dmg` : ''} (Backstrike)${crit}`;
     case 'cleave':
       // §9.2.5 — an area intent prints no single number: every target takes its own.
-      return `winds up ${move?.name} → ALL SLOTS`;
+      return `winds up ${move?.name} → ALL SLOTS${crit}`;
     case 'buff':
       return ally && ally.uid !== enemy.uid ? `will power up ${ally.name} (${move?.name}).` : `is powering up (${move?.name}).`;
     case 'debuff':

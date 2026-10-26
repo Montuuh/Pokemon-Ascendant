@@ -110,7 +110,8 @@ export function effectiveDefense(c: Combatant, config: BattleConfig): number {
 
 /**
  * §4.1.5 / §3.3.1.1 — EffSpd = floor(BaseSpd × StageMul × StatusMul), floored at 1. Paralysis halves it. Speed never
- * enters the damage formula: it decides who outpaces whom (the quick swap).
+ * enters the damage formula: it decides who outpaces whom (the quick swap) and how fast the critical rhythm fills
+ * (§4.1.3.1).
  */
 export function effectiveSpeed(c: Combatant, config: BattleConfig): number {
   const stage = stageMultiplier(c.stages.speed, config);

@@ -1504,6 +1504,12 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.59 — Critical rhythm  ✅ 2026-10-26
+
+The user's call (2026-10-26): Speed's second job, the critical rhythm (design C), on both sides; and the quick swap on every rung.
+
+**Shipped.** §4.1.3.1: every Pokémon carries a meter that fills one step per act — a card played, an enemy's action (twice a turn for one that acts twice) — and when full makes its next hit a certain critical, then empties; an AlwaysCrit move leaves it alone. Acts to fill are read off level-free Speed: 3 / 4 / 5 / 6 for your Pokémon, 3 / 3 / 4 / 4 for an enemy. An enemy's crit is declared with its intent (CRIT on the chip, the critical number in it) and cannot be broken; your card previews count a full meter. Every card wears its meter. §3.3.1.1: the quick swap is 1 AP off every rung (0 / 1 / 2), the user's call over v0.9.58's first swap only. Measured (harness, v0.9.55 → v0.9.59): R1 60 → 59 %, R2|R1 56 → 54 %, R3|R2 38 → 45 %, League|R3 53 → 47 %, the full run 7 → 7 %. The quick swap on every rung alone took the Rock Gym's fixture under its envelope (0.42 faints a fight); with the enemy's tighter table it costs Pokémon again (0.50). Mega Drain's heal per AP moved 9.7 → 10.2 % with the bigger average hit, its envelope to 11 %.
+
 ### v0.9.58 — Speed matters  ✅ 2026-10-26
 
 The user's call (2026-10-26): Speed was a quarter of every species' stats and did nothing in a fight. Of five designs weighed, the quick swap; the Speed-driven critical rhythm (§4.1.3) follows as its own version.

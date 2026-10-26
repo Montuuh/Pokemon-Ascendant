@@ -13,6 +13,7 @@ import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
 import { ObjectiveChip } from './ObjectiveChip';
 import { UnitChips } from './UnitChips';
+import { rhythmChip } from './rhythmChip';
 import { armourTip, intentCardTip, nextIntentTip, placeTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
@@ -232,6 +233,8 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
                 ...(enemy.shield > 0
                   ? [{ key: 'armour', label: `${ARMOUR_LABEL} ${enemy.shield}`, explain: UNIT_CHIPS_TEXT.armourBody(enemy.shield), node: <Tipped tip={armourTip(enemy.shield)} className={`${card.chip} ${card.info}`}>{ARMOUR_LABEL} {enemy.shield}</Tipped> }]
                   : []),
+                // §4.1.3.1 — the critical rhythm, always on the card: how full, and what fills it.
+                rhythmChip(enemy, ctx.config, true),
                 ...stageChips.map((s) => {
                   const label = `${STAT_SHORT[s]} ${enemy.stages[s] > 0 ? '+' : ''}${enemy.stages[s]}`;
                   return { key: s, label, node: <span className={`${card.chip} ${enemy.stages[s] > 0 ? card.up : card.down}`}>{label}</span> };

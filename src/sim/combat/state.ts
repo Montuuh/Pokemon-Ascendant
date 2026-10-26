@@ -40,6 +40,8 @@ export interface Combatant {
   masteryMoveId: string | null;
   /** §4.2.6 — stat stages, ±6. */
   stages: Record<Stat, number>;
+  /** §4.1.3.1 — the critical rhythm: acts since its last rhythm crit, up to the number its Speed asks for. */
+  rhythm: number;
   status: StatusInstance | null;
   /** §4.2.3.1 — secondary status; 0 = not confused. */
   confusionTurns: number;
@@ -124,6 +126,8 @@ export interface Intent {
   hidden: boolean;
   /** §5.6.1 — a second action you broke this turn: shown struck out, and it does not happen. */
   broken?: boolean;
+  /** §4.1.3.1 — its critical rhythm is full: this hit is a critical, declared and shown now. */
+  crit?: boolean;
 }
 
 export interface SkillCard {

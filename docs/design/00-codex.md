@@ -183,7 +183,7 @@ Atomic — no mid-combat save, no flee. Two outcomes, checked continuously; a le
 
 **The Lead mechanic** — the Lead absorbs 100 % of single-target damage; Cleave and Backstrike are the
 telegraphed exceptions. **Manual swap costs 1 / 2 / 3 AP** within a turn, resetting each turn, and **only manual
-swaps count**. The turn's **first swap is free** for a Pokémon **faster than the enemy Lead** (the quick swap, §3.3.1.1). A manual swap discounts the **first Defensive card after it by 1 AP**. **Melee is Lead-only**
+swaps count**. A Pokémon **faster than the enemy Lead** swaps in for **1 AP less** on every rung (the quick swap, §3.3.1.1). A manual swap discounts the **first Defensive card after it by 1 AP**. **Melee is Lead-only**
 unless the card has Step-Forward; **Ranged plays anywhere** at ×0.75.
 
 - **Step-Forward:** played from the bench, that Pokémon leads *before* the effect.
@@ -204,6 +204,7 @@ unless the card has Step-Forward; **Ranged plays anywhere** at ×0.75.
 **Damage** = `floor( Power × (Atk/Def) × Range × Crit × STAB × TypeEff / 8 )`. One floor at the end. No minimum
 clamp — only immunity deals 0. Level is not in the formula.
 **Divisor 5** (v0.9.12; 8 until enemies got their whole HP back) · STAB 1.5 · Crit 1.5 · Ranged 0.75.
+**Critical rhythm** (§4.1.3.1): every Pokémon, both sides, crits its next hit after 3–6 cards (an enemy: 3–4 actions), set by its Speed; an enemy's crit is declared as CRIT on its intent.
 **Stats:** one Attack, one Defence, derived from Gen I as `attack = max(Atk, Spc)`,
 `defence = round((Def+Spc)/2)`. Effective = `base + growth×(level−1)`, then stage, then status.
 
