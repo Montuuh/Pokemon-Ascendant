@@ -108,6 +108,21 @@ export function effectiveDefense(c: Combatant, config: BattleConfig): number {
   return Math.max(1, Math.floor(c.base.defense * stage * status));
 }
 
+/**
+ * §4.1.5 / §3.3.1.1 — EffSpd = floor(BaseSpd × StageMul × StatusMul), floored at 1. Paralysis halves it. Speed never
+ * enters the damage formula: it decides who outpaces whom (the quick swap).
+ */
+export function effectiveSpeed(c: Combatant, config: BattleConfig): number {
+  const stage = stageMultiplier(c.stages.speed, config);
+  const status = c.status?.kind === 'paralysis' ? config.paralysisSpeedMultiplier : 1;
+  return Math.max(1, Math.floor(c.base.speed * stage * status));
+}
+
+/** §3.3.1.1 — strictly faster: a tie is not outpacing. */
+export function outspeeds(a: Combatant, b: Combatant, config: BattleConfig): boolean {
+  return effectiveSpeed(a, config) > effectiveSpeed(b, config);
+}
+
 export function hasType(c: Pick<Combatant, 'types'>, type: PokemonType): boolean {
   return c.types.includes(type);
 }

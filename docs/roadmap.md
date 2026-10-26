@@ -1504,6 +1504,11 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.58 — Speed matters  ✅ 2026-10-26
+
+The user's call (2026-10-26): Speed was a quarter of every species' stats and did nothing in a fight. Of five designs weighed, the quick swap; the Speed-driven critical rhythm (§4.1.3) follows as its own version.
+
+**Shipped.** §3.3.1.1: the turn's first swap is free (1 AP less) when the Pokémon stepping in is faster than the enemy Lead, compared on the one stepping in against the enemy Lead's effective Speed, strictly faster. Paralysis halves Speed (§4.2.2.3), so Thunder Wave on the enemy Lead lowers the bar and a paralysed Pokémon loses its quick swap; Sticky Web's Speed stage now bites. The bench's swap price carries a ⚡ when it is quick; portraits and enemy cards name their Speed; Speed stages show as chips. Measured (harness, before → after): R1 60 → 64 %, R2|R1 56 → 56 %, R3|R2 38 → 51 %, League|R3 53 → 59 %, the full run 7 → 11 %; every balance envelope holds. The discount on every rung was tried first and dropped: against the Rock Gym the harness swapped three times as often and the fight stopped costing Pokémon.
 ### v0.9.57 — Clear trade comparison  ✅ 2026-10-26
 
 **Shipped.** B15 frames the Black Market Trader as two sides of one exchange. The donor's identity, shiny appearance, level, HP, Trauma, carried conditions and held-item return sit beside the incoming offers and their matching level. Selection, empty and unavailable donor states gate an explicit confirmation; cancelling restores focus without changing the run. Existing trade rules and offer tooltips remain intact, with still offer sprites under reduced motion. Evidence: `playtest/art-review-2026-10-24/implementation/B15/`.

@@ -57,7 +57,7 @@ export function validateAction(state: CombatState, action: CombatAction, ctx: Co
       return null;
     }
     case 'swap': {
-      const opt = swapOptions(state).find((o) => o.benchIndex === action.benchIndex);
+      const opt = swapOptions(state, ctx.config).find((o) => o.benchIndex === action.benchIndex);
       if (!opt) return action.benchIndex === state.player.leadIndex ? 'target-is-lead' : 'invalid-index';
       return opt.reason;
     }
@@ -313,11 +313,15 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
   if (checkOutcome(state)) finish(state);
 }
 
-/** §3.3.1 — manual swap: 1/2/3 AP ladder, arms the defensive discount, respects Freeze locks. */
+/**
+ * §3.3.1 — manual swap: 1/2/3 AP ladder, arms the defensive discount, respects Freeze locks. §3.3.1.1 — a quick swap
+ * (the turn's first, faster than the enemy Lead) costs 1 less and still climbs the ladder.
+ */
 function manualSwap(state: CombatState, benchIndex: number, ctx: RunCtx): void {
   const player = state.player;
   const free = player.freeSwaps > 0;
-  const cost = free ? 0 : Math.min(3, player.swapCounter + 1);
+  const opt = swapOptions(state, ctx.config).find((o) => o.benchIndex === benchIndex);
+  const cost = opt?.cost ?? (free ? 0 : Math.min(3, player.swapCounter + 1));
   const from = player.leadIndex;
   player.ap -= cost;
   // A free swap does not advance the ladder either: it is the swap that did not happen, economically.
@@ -327,7 +331,7 @@ function manualSwap(state: CombatState, benchIndex: number, ctx: RunCtx): void {
   player.defensiveDiscount = true;
   setLead(state, benchIndex);
   emit(state, { t: 'swap', fromIndex: from, toIndex: benchIndex, kind: 'manual', apCost: cost });
-  log(state, 'player', `${player.team[benchIndex]!.name} takes the Lead (${cost} AP).`);
+  log(state, 'player', `${player.team[benchIndex]!.name} ${opt?.quick ? 'darts into' : 'takes'} the Lead (${cost} AP${opt?.quick ? ', quick swap' : ''}).`);
 
   // §2.11.3 Swap Fuel — and the Pokémon stepping up gets a little back for stepping up.
   const fuel = swapHealAmount(state, ctx.content);

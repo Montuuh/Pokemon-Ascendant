@@ -60,6 +60,11 @@
   white-space: nowrap;
   color: var(--accent-action);
 }
+.swapChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
 .swapChipOff {
   display: inline-flex;
   align-items: center;

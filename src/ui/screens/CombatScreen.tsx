@@ -144,7 +144,7 @@ export function CombatScreen() {
 
   const plays = useMemo(() => (state ? state.player.hand.map((c) => cardPlayability(state, c.id, ctx)!) : []), [state, ctx]);
   const consumablePlays = useMemo(() => (state ? state.player.consumables.hand.map((c) => consumablePlayability(state, c.id, ctx)!) : []), [state, ctx]);
-  const swaps = useMemo(() => (state ? swapOptions(state) : []), [state]);
+  const swaps = useMemo(() => (state ? swapOptions(state, ctx.config) : []), [state, ctx]);
   // §9.2.5 — this turn's Resolution run dry: the numbers on the chips and on the portraits are its numbers.
   const forecast = useMemo(() => (state && state.outcome === 'in-progress' ? forecastTurn(state, ctx) : { byEnemy: {}, byAction: {}, incoming: {}, hpAfter: {}, moot: {} }), [state, ctx]);
 
@@ -468,7 +468,7 @@ export function CombatScreen() {
     const slot = indexToSlot(state!, bi);
     return (
       <div className={cls}>
-        <Portrait mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
+        <Portrait mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapQuick={opt?.quick} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -780,5 +780,5 @@ function swapHint(state: CombatState, index: number, swaps: ReturnType<typeof sw
   const c = state.player.team[index]!;
   const o = swaps.find((s) => s.benchIndex === index);
   if (!o) return c.name;
-  return o.allowed ? `Swap ${c.name} into the Lead for ${o.cost} AP` : `${c.name}: ${o.reason ? REJECT_TEXT[o.reason] : 'cannot swap'}`;
+  return o.allowed ? `Swap ${c.name} into the Lead for ${o.cost} AP${o.quick ? ' (quick swap: faster than the enemy Lead)' : ''}` : `${c.name}: ${o.reason ? REJECT_TEXT[o.reason] : 'cannot swap'}`;
 }

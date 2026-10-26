@@ -4,7 +4,7 @@ import { nodeHint } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { visibleMoot, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
+import { visibleMoot, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
@@ -530,9 +530,9 @@ export function traumaTip(stacks: number, max: number): ReactNode {
 }
 
 /** The Pokémon itself: species, types, level, ability, item — the summary a portrait owes on hover. */
-export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number; incoming?: { name: string; move: string; amount: number; moot?: boolean }[]; incomingKo?: boolean; asLead?: { amount: number; ko: boolean } }): ReactNode {
+export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number; swapQuick?: boolean; incoming?: { name: string; move: string; amount: number; moot?: boolean }[]; incomingKo?: boolean; asLead?: { amount: number; ko: boolean } }): ReactNode {
   const content = getContent();
-  const meta: ReactNode[] = [`Lv ${c.level}`, ...c.types.map(typeName)];
+  const meta: ReactNode[] = [`Lv ${c.level}`, ...c.types.map(typeName), `Speed ${effectiveSpeed(c, DEFAULT_BATTLE_CONFIG)}`];
   const lines: ReactNode[] = [];
   if (c.abilityIds[0]) {
     const a = content.ability(c.abilityIds[0]);
@@ -554,7 +554,7 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
   for (const h of extra?.incoming ?? []) if (h.moot) lines.push(<div key={`m-${h.name}-${h.move}`}>{h.name}'s {h.move} would take <s>{h.amount}</s> — wasted: it is down by then.</div>);
   // §9.2.5 — the swap, priced in HP (v0.8.6).
   if (extra?.asLead) lines.push(<div key="al">As your Lead this turn it would take <b>{extra.asLead.amount}</b>{extra.asLead.ko ? ' — a knockout' : ''}.</div>);
-  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP. Each swap this turn costs 1 more (1, 2, 3); the ladder resets every turn, and Step cards swap for free.` : undefined;
+  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP${extra.swapQuick ? ' — a quick swap: it is faster than the enemy Lead' : ''}. Each swap this turn costs 1 more (1, 2, 3); the ladder resets every turn, and Step cards swap for free. The first swap is free for a Pokémon faster than the enemy Lead.` : undefined;
   return <Tip title={c.name} meta={meta} body={lines.length ? lines : undefined} footer={footer} />;
 }
 

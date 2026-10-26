@@ -146,12 +146,35 @@ and Backstrike (a named bench slot) — are always telegraphed in the Intent Pha
 
 | Swap this turn | Cost |
 |---|---|
-| 1st | 1 AP |
+| 1st | 1 AP — **0 AP** for a Pokémon faster than the enemy Lead (§3.3.1.1) |
 | 2nd | 2 AP |
 | 3rd | 3 AP |
 
 The counter resets at the start of every turn. **Only manual swaps increment it** — Step-Forward, Step-Backward
 and faint replacement do not.
+
+### §3.3.1.1 Quick swap — what Speed is for
+
+The **turn's first manual swap** costs **1 AP less** (`quickSwapDiscount`, floor 0) — so nothing — when the Pokémon
+stepping in is **faster than the enemy Lead**. It is still a manual swap: it climbs the ladder (the next costs 2) and
+arms the defensive discount like any other. A banked free swap stays free and untouched.
+
+- **Who is compared.** The Pokémon **stepping in**, against the **enemy Lead** as it stands now. Strictly faster: a
+  tie is not a quick swap. When the enemy Lead falls and another steps up, the bar moves with it.
+- **Which Speed.** Effective Speed (§4.1.5): stat stages apply, and **Paralysis halves it** (§4.2.2.3). A paralysed
+  enemy Lead is a low bar; a paralysed Pokémon of yours loses its quick swap. Sticky Web (§4.3.13) takes a stage
+  from whoever steps in, so a web can turn the next swap back into a full-price one.
+- **Shown before it is paid** (Pillar 1). The bench's swap price is per Pokémon and carries a ⚡ when it is quick;
+  every portrait and enemy card names its Speed.
+
+*Why (the user's call, 2026-10-26):* Speed was a quarter of every species' stats and did nothing — the Dojo sold it,
+the Specialist paid bulk for it, Sticky Web lowered it. Of the designs weighed (Speed as cards drawn, as crit, as
+combo breaking, as a turn timeline), this is the one that lives in the game's central decision (Pillar 2): fast
+Pokémon become the pivots that step in cheaply, slow walls the ones who stay in front. Compared on the one stepping
+in and against the enemy Lead, as in the series' speed tiers. The Pokémon TCG's retreat cost is the precedent.
+*First swap only (measured, 2026-10-26):* with the discount on every rung the harness swapped three times as often
+against the Rock Gym (slow walls everyone outpaces) and the fight stopped costing Pokémon (faints 0.75 → 0.42 a fight,
+under the harness's balance envelope); on the first rung alone it costs them again (0.58).
 
 **Defensive swap discount.** A manual swap reduces the AP cost of the **first Defensive-tagged card played after
 it that turn** by 1, to a minimum of 0. Manual swaps only; the bundled position changes do not grant it.

@@ -21,8 +21,10 @@ describe('Manual swap — §3.3.1', () => {
   });
 
   it('ManualSwap_Ladder_1_2_3_AP', () => {
+    // The plain ladder: an enemy Lead nobody here outpaces, so no swap is quick (§3.3.1.1).
     let s = tweak(base(), (d) => {
       d.player.ap = 6;
+      d.enemies[0]!.base.speed = 999;
     });
     expect(swapOptions(s)[0]!.cost).toBe(1);
     s = dispatch(s, { type: 'swap', benchIndex: 1 });
@@ -113,6 +115,49 @@ describe('Manual swap — §3.3.1', () => {
     const ap = s.player.ap;
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'rest').id });
     expect(s.player.ap).toBe(ap); // −1 once, floored at 0 for a 1-AP card
+  });
+});
+
+describe('Quick swap — §3.3.1.1', () => {
+  // Charmander leads; Squirtle (bench index 1) and Bulbasaur (2) step up. Speeds are pinned so the test reads the rule.
+  const pinned = (bench: number, foe: number) => tweak(base(), (d) => {
+    d.player.ap = 6;
+    d.player.team[1]!.base.speed = bench;
+    d.player.team[2]!.base.speed = 10;
+    d.player.team[0]!.base.speed = 10;
+    d.enemies[0]!.base.speed = foe;
+  });
+
+  it('QuickSwap_FirstSwapFasterThanEnemyLead_IsFree_AndStillClimbsTheLadder', () => {
+    let s = pinned(60, 50);
+    const opt = swapOptions(s).find((o) => o.benchIndex === 1)!;
+    expect(opt).toMatchObject({ cost: 0, quick: true, allowed: true });
+    expect(swapOptions(s).find((o) => o.benchIndex === 2)!).toMatchObject({ cost: 1, quick: false });
+    s = dispatch(s, { type: 'swap', benchIndex: 1 });
+    expect(s.player.ap).toBe(6);
+    expect(s.player.swapCounter).toBe(1);
+    expect((eventsOf(s, 'swap').at(-1) as { apCost: number }).apCost).toBe(0);
+    // Only the turn's first swap is quick: the second pays its full rung however fast it is.
+    s = tweak(s, (d) => { d.player.team[0]!.base.speed = 60; });
+    expect(swapOptions(s).find((o) => o.benchIndex === 0)!).toMatchObject({ cost: 2, quick: false });
+  });
+
+  it('QuickSwap_TieIsNotFaster', () => {
+    expect(swapOptions(pinned(50, 50)).find((o) => o.benchIndex === 1)!).toMatchObject({ cost: 1, quick: false });
+  });
+
+  it('QuickSwap_ReadsStages_AndParalysisHalvesSpeed', () => {
+    const slowed = tweak(pinned(60, 50), (d) => { d.player.team[1]!.stages.speed = -2; }); // 60 × 0.8 = 48
+    expect(swapOptions(slowed).find((o) => o.benchIndex === 1)!.quick).toBe(false);
+    const paralysed = tweak(pinned(90, 50), (d) => { d.player.team[1]!.status = { kind: 'paralysis', appliedTurn: 0, turnsLeft: 3 }; }); // 45
+    expect(swapOptions(paralysed).find((o) => o.benchIndex === 1)!.quick).toBe(false);
+    const foeParalysed = tweak(pinned(30, 50), (d) => { d.enemies[0]!.status = { kind: 'paralysis', appliedTurn: 0, turnsLeft: 3 }; }); // 25
+    expect(swapOptions(foeParalysed).find((o) => o.benchIndex === 1)!.quick).toBe(true);
+  });
+
+  it('QuickSwap_ABankedFreeSwapIsUntouched', () => {
+    const s = tweak(pinned(60, 50), (d) => { d.player.freeSwaps = 1; });
+    expect(swapOptions(s).find((o) => o.benchIndex === 1)!).toMatchObject({ cost: 0, quick: false });
   });
 });
 

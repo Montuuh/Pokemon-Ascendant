@@ -17,6 +17,8 @@ export interface BattleConfig {
   meleeModifier: number;
   /** §4.2.6 (CL-002) — linear ±6 stat-stage ladder, index 0 = stage −6 … index 12 = stage +6. */
   statStageMultipliers: readonly number[];
+  /** §3.3.1.1 — Quick swap: on the turn's first swap, a Pokémon faster than the enemy Lead steps in for this much less AP. */
+  quickSwapDiscount: number;
   /** §3.2.2 — AP granted at Draw phase and its ceiling. */
   baseApPerTurn: number;
   maxApPerTurn: number;
@@ -33,6 +35,8 @@ export interface BattleConfig {
   poisonDotDivisor: number;
   poisonDefenseMultiplier: number;
   paralysisApCostBonus: number;
+  /** §4.2.2.3 / §3.3.1.1 — Paralysis also halves Speed, so a paralysed Pokémon loses its quick swap. */
+  paralysisSpeedMultiplier: number;
   paralysisDuration: number;
   sleepDuration: number;
   freezeDuration: number;
@@ -119,6 +123,7 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   rangedModifier: 0.75,
   meleeModifier: 1.0,
   statStageMultipliers: [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6],
+  quickSwapDiscount: 1,
   baseApPerTurn: 3,
   maxApPerTurn: 6,
   baseSkillCardsPerTurn: 5,
@@ -128,6 +133,7 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   poisonDotDivisor: 16,
   poisonDefenseMultiplier: 0.85,
   paralysisApCostBonus: 1,
+  paralysisSpeedMultiplier: 0.5,
   paralysisDuration: 3,
   sleepDuration: 1,
   freezeDuration: 1,

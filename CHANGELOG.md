@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.58 — Speed matters · 2026-10-26
+
+Speed now prices the swap.
+
+- **Quick swap.** First swap free when faster than the enemy Lead.
+- **Paralysis.** Also halves Speed.
+- **Speed shown.** Portraits, enemy cards and Speed stage chips.
 ### v0.9.57 — Clear trade comparison · 2026-10-26
 
 Compare the Pokémon you give and receive before confirming.

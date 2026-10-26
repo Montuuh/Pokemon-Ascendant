@@ -183,7 +183,7 @@ Atomic — no mid-combat save, no flee. Two outcomes, checked continuously; a le
 
 **The Lead mechanic** — the Lead absorbs 100 % of single-target damage; Cleave and Backstrike are the
 telegraphed exceptions. **Manual swap costs 1 / 2 / 3 AP** within a turn, resetting each turn, and **only manual
-swaps count**. A manual swap discounts the **first Defensive card after it by 1 AP**. **Melee is Lead-only**
+swaps count**. The turn's **first swap is free** for a Pokémon **faster than the enemy Lead** (the quick swap, §3.3.1.1). A manual swap discounts the **first Defensive card after it by 1 AP**. **Melee is Lead-only**
 unless the card has Step-Forward; **Ranged plays anywhere** at ×0.75.
 
 - **Step-Forward:** played from the bench, that Pokémon leads *before* the effect.

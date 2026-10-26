@@ -96,6 +96,7 @@ AlwaysCrit move.
 | **HP** | Current / Effective Max |
 | **Attack** | One unified offensive stat, used by every move |
 | **Defence** | One unified defensive stat, used against every move |
+| **Speed** | Never in the damage formula. A Pokémon faster than the enemy Lead makes the turn's first swap free (§3.3.1.1). Paralysis halves it (§4.2.2.3) |
 | **Level** | Drives stat growth; never enters the damage formula directly |
 
 **Effective stat** = `base + growth × (level − 1)`, then the stat-stage multiplier, then the status multiplier —
@@ -174,8 +175,9 @@ Permanent until cured (§4.2.7). **Poison-types are immune.**
 > each creates a swap incentive for a different reason.
 
 ### §4.2.2.3 Paralysis ⚡
-Every move belonging to that Pokémon costs **+1 AP** while it lasts, whether it is Lead or bench. Swapping it in
-or out costs nothing extra. **3 turns. Electric-types are immune.**
+Every move belonging to that Pokémon costs **+1 AP** while it lasts, whether it is Lead or bench, and its **Speed is
+halved** (`paralysisSpeedMultiplier`) — which can cost it the quick swap (§3.3.1.1), and on the enemy Lead lowers the
+bar your Pokémon must clear. Swapping it in or out costs nothing extra. **3 turns. Electric-types are immune.**
 *Economy disruption you can route around — play someone else's cards, or move it out.*
 
 ### §4.2.2.4 Sleep 💤
@@ -381,7 +383,8 @@ stand there before the spikes are laid. It makes every swap a cost (Pillar 2): t
 
 ## §4.3.13 🕸️ Sticky Web *(Hazard)*
 Whoever steps into the Lead mid-fight, and is grounded, loses **1 Speed stage** (`stickyWebStages`). The Bug Gym's
-ground: lighter than the spikes, and it stacks with every swap you make.
+ground: lighter than the spikes, and it stacks with every swap you make. Since v0.9.58 the stage bites: a slower
+Pokémon can lose its quick swap (§3.3.1.1).
 
 ## §4.3.14 Each Gym's ground
 

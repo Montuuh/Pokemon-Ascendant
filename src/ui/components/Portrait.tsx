@@ -1,4 +1,4 @@
-import { IconCrown, IconLock } from '@tabler/icons-react';
+import { IconBolt, IconCrown, IconLock } from '@tabler/icons-react';
 import type { CSSProperties } from 'react';
 import type { Combatant, SlotId } from '@/sim';
 import { spriteOf } from '@/ui/art';
@@ -9,7 +9,7 @@ import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
 import { UnitChips } from './UnitChips';
 import { combatantTip, shieldTip, traumaTip } from '@/ui/tips';
-import { SHIELD_LABEL, UNIT_CHIPS_TEXT } from '@/ui/strings';
+import { SHIELD_LABEL, STAT_SHORT, UNIT_CHIPS_TEXT } from '@/ui/strings';
 import { Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
 import { UNIT_BADGE, UNIT_HP_BAR } from './unitCard';
@@ -32,6 +32,8 @@ interface Props {
   /** §9.9.1 — the sprite's own beat: hidden in its ball, being sent out. */
   spriteClass?: string;
   swapCost?: number;
+  /** §3.3.1.1 — it outpaces the enemy Lead: the swap is a quick one, 1 AP less. */
+  swapQuick?: boolean;
   swapAllowed?: boolean;
   swapHint?: string;
   /** The intent is aimed at this slot. */
@@ -60,15 +62,15 @@ interface Props {
 // on a dark head, the animated back sprite in a window lit in its first type, its HP — with the part this turn's visible
 // intents will take striped — and on a bench the swap price and what it would take as the Lead. The hits coming at it
 // hang off the card's edge, towards the enemy. The whole card is one button: a swap, an ally target, a step-back choice.
-export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapAllowed, swapHint, targeted, selectable, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending, arrival }: Props) {
+export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapQuick, swapAllowed, swapHint, targeted, selectable, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending, arrival }: Props) {
   // §9.9.1 — at 0 HP but its faint still to play: it stands through the hits on screen first.
   const fainted = mon.hp <= 0 && !faintPending;
   const classes = [card.card, styles.unit, styles[variant], targeted ? styles.targeted : '', selectable ? styles.selectable : '', fainted ? styles.fainted : '', arrival ? styles[arrival] : ''].filter(Boolean).join(' ');
-  const stageChips = (['attack', 'defense'] as const).filter((s) => mon.stages[s] !== 0);
+  const stageChips = (['attack', 'defense', 'speed'] as const).filter((s) => mon.stages[s] !== 0);
   // 2026-09-21 — the card's bubble is the Pokémon's summary: types, ability, held item, status, Trauma, and its role
   // right now (Lead, or what a swap costs).
   const hits = !fainted && incoming?.length ? incoming : null;
-  const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}), ...(asLead && !fainted ? { asLead } : {}) }));
+  const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost, swapQuick: !!swapQuick } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}), ...(asLead && !fainted ? { asLead } : {}) }));
   const incomingText = hits ? `; incoming: ${hits.map((h) => (h.moot ? `${h.name}'s ${h.move}, wasted on it being down` : `${h.amount} from ${h.name}'s ${h.move}`)).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
   // §9.2.5 — the HP left after the visible hits: what the striped end of the bar shows (a wasted hit takes nothing).
   const future = hits ? Math.max(0, mon.hp - hits.reduce((a, h) => a + (h.moot ? 0 : h.amount), 0)) : null;
@@ -140,7 +142,7 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
               ? [{ key: 'shield', label: `${SHIELD_LABEL} ${mon.shield}`, explain: UNIT_CHIPS_TEXT.shieldBody(mon.shield), node: <Tipped tip={shieldTip(mon.shield)} className={`${card.chip} ${card.info}`} data-testid="unit-shield">{SHIELD_LABEL} {mon.shield}</Tipped> }]
               : []),
             ...stageChips.map((s) => {
-              const label = `${s === 'attack' ? 'Atk' : 'Def'} ${mon.stages[s] > 0 ? '+' : ''}${mon.stages[s]}`;
+              const label = `${STAT_SHORT[s]} ${mon.stages[s] > 0 ? '+' : ''}${mon.stages[s]}`;
               return { key: s, label, node: <span className={`${card.chip} ${mon.stages[s] > 0 ? card.up : card.down}`}>{label}</span> };
             }),
             // Trauma last: its cost is already in the max HP on the card.
@@ -194,6 +196,7 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
           // A price you cannot pay now keeps its ink (D5): a dashed edge and a lock say "not now".
           <span className={swapAllowed ? styles.swapChip : styles.swapChipOff}>
             {!swapAllowed && <IconLock size={10} stroke={2.6} />}
+            {swapQuick && <IconBolt size={10} stroke={2.6} aria-label="Quick" data-testid="swap-quick" />}
             Swap {swapCost} AP
           </span>
         )}

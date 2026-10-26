@@ -2,12 +2,12 @@ import type { CSSProperties } from 'react';
 import { IconLock, IconQuestionMark } from '@tabler/icons-react';
 import { IntentChip } from './IntentChip';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
-import { SLOT_LABEL, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
+import { SLOT_LABEL, effectiveSpeed, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
 import { CatchPicker } from './CatchPicker';
 import { intentGlyph, spriteOf } from '@/ui/art';
 import type { SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { ArenaSprite } from './ArenaSprite';
-import { ARMOUR_LABEL, INTENT_BADGE, INTENT_LABEL, OBJECTIVE_TEXT, UNIT_CHIPS_TEXT } from '@/ui/strings';
+import { ARMOUR_LABEL, STAT_SHORT, INTENT_BADGE, INTENT_LABEL, OBJECTIVE_TEXT, UNIT_CHIPS_TEXT } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
@@ -75,7 +75,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
   const alsoTipProps = useTip(enemy.second ? intentCardTip(state, enemy, forecast, 1, [], ctx) : null);
   // §5.6.5 — the flee race's runner: the one enemy of a fight that has one.
   const runner = state.objective?.kind === 'flee' && enemy.hp > 0;
-  const stageChips = (['attack', 'defense'] as const).filter((s) => enemy.stages[s] !== 0);
+  const stageChips = (['attack', 'defense', 'speed'] as const).filter((s) => enemy.stages[s] !== 0);
   // §2.8.2 — an Elite Wild is boss-*tier* and is not a Gym Leader, so the label reads the scenario's kind
   // first. Tier is how hard it hits; kind is what it is, and the chip is telling the player what it is.
   const tierLabel =
@@ -86,7 +86,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
     : 'Wild';
   // §5.6 — the card is the door to its place, and to what the card does not print: its tier and its phase. While a
   // card is aimed the bubble stays shut — the card's number and the breakdown are what is read then.
-  const placeMeta = [tierLabel, ...(enemy.phaseCount > 1 ? [`Phase ${phase} of ${enemy.phaseCount}`] : []), ...(state.objective?.kind === 'hold' ? [OBJECTIVE_TEXT.guardMeta] : [])];
+  const placeMeta = [tierLabel, `Speed ${effectiveSpeed(enemy, ctx.config)}`, ...(enemy.phaseCount > 1 ? [`Phase ${phase} of ${enemy.phaseCount}`] : []), ...(state.objective?.kind === 'hold' ? [OBJECTIVE_TEXT.guardMeta] : [])];
   const cardTipProps = useTip(targetable ? null : placeTip(place, state.enemies.length + state.enemyQueue.length <= 1, !!enemy.shiny, placeMeta));
   const front = place === 'Lead' || !inGroup;
   // §9.2.4 — the HP the card would leave it: only on the one it is aimed at (or on all of them, for an area card) —
@@ -233,7 +233,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
                   ? [{ key: 'armour', label: `${ARMOUR_LABEL} ${enemy.shield}`, explain: UNIT_CHIPS_TEXT.armourBody(enemy.shield), node: <Tipped tip={armourTip(enemy.shield)} className={`${card.chip} ${card.info}`}>{ARMOUR_LABEL} {enemy.shield}</Tipped> }]
                   : []),
                 ...stageChips.map((s) => {
-                  const label = `${s === 'attack' ? 'Atk' : 'Def'} ${enemy.stages[s] > 0 ? '+' : ''}${enemy.stages[s]}`;
+                  const label = `${STAT_SHORT[s]} ${enemy.stages[s] > 0 ? '+' : ''}${enemy.stages[s]}`;
                   return { key: s, label, node: <span className={`${card.chip} ${enemy.stages[s] > 0 ? card.up : card.down}`}>{label}</span> };
                 }),
               ]}

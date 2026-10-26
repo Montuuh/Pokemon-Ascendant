@@ -135,7 +135,7 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   const intent = enemy.intent;
   const threatensLead = !!intent && (intent.kind === 'attack' || intent.kind === 'cleave' || state.enemies.length > 1) && incoming > 0;
   if (threatensLead && intent.moveId && (hpFraction(l) < opts.retreatBelow || incoming >= l.hp)) {
-    const options = swapOptions(state).filter((o) => o.allowed);
+    const options = swapOptions(state, ctx.config).filter((o) => o.allowed);
     if (options.length > 0) {
       const moveType = ctx.content.move(intent.moveId).type;
       const best = options
@@ -154,7 +154,7 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
     const moveType = ctx.content.move(intent.moveId).type;
     const leadMult = typeMultiplier(moveType, l.types);
     if (leadMult >= 1) {
-      const options = swapOptions(state).filter((o) => o.allowed && o.cost <= 2 && state.player.ap - o.cost >= 1);
+      const options = swapOptions(state, ctx.config).filter((o) => o.allowed && o.cost <= 2 && state.player.ap - o.cost >= 1);
       const best = options
         .map((o) => ({ o, mon: state.player.team[o.benchIndex]! }))
         .filter(({ mon }) => typeMultiplier(moveType, mon.types) * 2 <= leadMult && hpFraction(mon) >= 0.5)
@@ -172,7 +172,7 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   //     when the swap plus the card still fit in the AP budget (§3.3.1 — the swap IS the decision).
   if (damaging.length === 0) {
     const locked = all.filter((p) => p.reason === 'melee-needs-lead' && p.damage && p.damage.final > 0 && p.owner.hp > 0);
-    const options = swapOptions(state).filter((o) => o.allowed);
+    const options = swapOptions(state, ctx.config).filter((o) => o.allowed);
     let best: { benchIndex: number; value: number } | null = null;
     for (const o of options) {
       const owner = state.player.team[o.benchIndex]!;

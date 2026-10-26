@@ -8,6 +8,8 @@ import { activeEnemy, aliveEnemies, benchIndices, lead } from './slots';
 import type { Combatant, CombatState, ConsumableCard, EnemyCombatant, RejectReason, SkillCard } from './state';
 import { choiceLockBlocks, itemApDelta } from './items';
 import { cardsLocked, isPositionLocked, paralysisApBonus } from './status';
+import { DEFAULT_BATTLE_CONFIG, type BattleConfig } from './battleConfig';
+import { outspeeds } from './stats';
 
 // Read-only selectors the UI (and the auto-player) use to know what is legal and what it would do.
 // Every rule here mirrors the reducer's validation — keep them in lockstep (tests assert agreement).
@@ -153,17 +155,25 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
 export interface SwapOption {
   benchIndex: number;
   cost: number;
+  /** §3.3.1.1 — it is faster than the enemy Lead, so the swap costs `quickSwapDiscount` less. */
+  quick: boolean;
   allowed: boolean;
   reason: RejectReason | null;
 }
 
-/** §3.3.1 — next manual swap cost (1/2/3) and whether each bench is a legal destination. */
-export function swapOptions(state: CombatState): SwapOption[] {
+/**
+ * §3.3.1 — next manual swap cost (1/2/3) and whether each bench is a legal destination. §3.3.1.1 — on the turn's
+ * first swap, a Pokémon faster than the enemy Lead steps up for 1 AP less (the quick swap), so the price is per bench.
+ */
+export function swapOptions(state: CombatState, config: BattleConfig = DEFAULT_BATTLE_CONFIG): SwapOption[] {
   // §3.3.1 — the 1/2/3 ladder, unless a free swap is banked (Run Down, Tactician's Coin, Flow State).
-  const cost = state.player.freeSwaps > 0 ? 0 : Math.min(3, state.player.swapCounter + 1);
+  const ladder = state.player.freeSwaps > 0 ? 0 : Math.min(3, state.player.swapCounter + 1);
   const l = lead(state);
+  const foe = activeEnemy(state);
   return benchIndices(state).map((benchIndex) => {
     const b = state.player.team[benchIndex]!;
+    const quick = ladder > 0 && state.player.swapCounter === 0 && !!foe && outspeeds(b, foe, config);
+    const cost = quick ? Math.max(0, ladder - config.quickSwapDiscount) : ladder;
     let reason: RejectReason | null = null;
     if (state.player.pendingLeadPick) reason = 'lead-pick-pending';
     else if (state.phase !== 'action' || state.outcome !== 'in-progress') reason = 'not-action-phase';
@@ -171,7 +181,7 @@ export function swapOptions(state: CombatState): SwapOption[] {
     else if (isPositionLocked(b)) reason = 'target-frozen';
     else if (l && isPositionLocked(l)) reason = 'lead-frozen';
     else if (cost > state.player.ap) reason = 'not-enough-ap';
-    return { benchIndex, cost, allowed: reason === null, reason };
+    return { benchIndex, cost, quick, allowed: reason === null, reason };
   });
 }
 

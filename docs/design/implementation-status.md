@@ -14,7 +14,7 @@
 | System | Canon | Code | Tests | Status |
 |---|---|---|---|---|
 | Combat loop, five phases | §3.2 | `sim/combat/turn.ts`, `reducer.ts`, `state.ts` | `setup`, `cards`, `faint` | ✅ |
-| Lead and swap | §3.3 | `reducer.ts`, `slots.ts`, `preview.ts` | `swap`, `faint` | ✅ |
+| Lead and swap | §3.3 | `reducer.ts`, `slots.ts`, `preview.ts` (`swapOptions` per bench, the quick swap — `outspeeds`, `effectiveSpeed` in `stats.ts`) | `swap`, `faint` | ✅ quick swap v0.9.58 |
 | Running (Escaped) | §3.1.2 | `combat/turn.ts` (`flee`), `run/flee.ts`, `run/run.ts` | `flee`, `run` | ✅ parting shot, then the toll by fight tier; never from a Gym |
 | Deck, hand, consumables | §3.4, §3.5 | `sim/combat/deck.ts`, `run/run.ts` (spent at `finish-combat`) | `cards`, `status`, `rewards` | ✅ 15 of 28 consumables, the §7.2.6 healing chain complete; spent when played since v0.8.6 |
 | Damage and type chart | §4.1 | `damage.ts`, `typeChart.ts`, `damageFlow.ts`, `stats.ts` | `damage`, `typeChart`, `statStages` | ✅ |

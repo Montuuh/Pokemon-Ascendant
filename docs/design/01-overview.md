@@ -59,7 +59,7 @@ conflict gets flagged rather than quietly resolved.
 
 ## §1.3.3 Anti-Pillars (what Pokémon Ascendant is not)
 
-- **Not a Showdown clone.** Turn order, speed, accuracy and PP are abstracted away.
+- **Not a Showdown clone.** Turn order, accuracy and PP are abstracted away; Speed survives as the price of a swap (§3.3.1.1).
 - **Not a card-acquisition game.** You recruit Pokémon; cards arrive bundled with the species and its evolutions.
 - **Not a mass-collection game.** A small sculpted party beats a sprawling box.
 - **Not a numbers-go-up auto-battler.** Every turn demands a real decision.
