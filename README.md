@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.64 — Five cards again.** Two stale end-to-end checks fixed: the ✦ crit badge no longer counts as a sixth card in hand, and the victory check finds Regions behind the Run record door. No game change. Before it,
 **v0.9.63 — Reduced motion, both ways.** Settings → Motion wins over the device both ways: Reduce stops transitions, pulses and breathing, and Full brings shakes and loops back even when the device asks for less. Before it,
 **v0.9.62 — Motion review.** Animations pass the UI review too: menus are held to quick, responsive motion, combat beats to the weight of each event, and the audit flags motion that reduced-motion settings would miss. Before it,
 **v0.9.61 — One crit mark.** Every card that will crit — AlwaysCrit or a full rhythm — wears the same ✦. Before it,

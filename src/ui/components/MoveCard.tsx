@@ -83,6 +83,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         tip.onMouseLeave(e);
         onHover(false);
       }}
+      // `card-` is the card's own test id: the suites count a hand by it, so nothing inside a card takes the prefix.
       data-testid={ghost ? 'drag-ghost-card' : `card-${move.id}`}
       data-card-id={play.card.id}
       data-mastery={play.card.mastery || undefined}
@@ -108,7 +109,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
     >
       {/* Not enough AP: said on the card's top edge, over the hand, where the eye is when it reaches for it. */}
       {state === 'no-ap' && (
-        <span className={styles.apShort} data-testid="card-no-ap">
+        <span className={styles.apShort} data-testid="ap-short">
           <IconAlertTriangle size={12} stroke={2.6} />
           {NO_AP_LABEL}
         </span>
@@ -138,7 +139,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
             rhythm's card also wears the gold edge, which says "now"). */}
         <span className={styles.mech}>
           {(rhythmCrit || (move.alwaysCrit && move.power > 0)) && (
-            <span className={`${styles.badge} ${styles.critBadge}`} aria-hidden="true" data-testid="card-crit" data-always={move.alwaysCrit || undefined}>
+            <span className={`${styles.badge} ${styles.critBadge}`} aria-hidden="true" data-testid="crit-badge" data-always={move.alwaysCrit || undefined}>
               ✦
             </span>
           )}

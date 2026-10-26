@@ -59,7 +59,7 @@ test('the combat board narrates itself to a screen reader', async ({ page }) => 
   await expect(announcer).not.toBeEmpty();
 
   // A card reads as a sentence rather than as a pile of icons.
-  const label = await page.locator('[data-testid^="card-"]').first().getAttribute('aria-label');
+  const label = await page.getByTestId('hand').locator('[data-testid^="card-"]').first().getAttribute('aria-label');
   expect(label).toMatch(/AP/);
   expect(label).toMatch(/card \d+ of \d+/);
 });
@@ -106,7 +106,7 @@ test('a modal keeps focus inside itself and gives it back', async ({ page }) => 
 test('nothing unplayable is hidden, only marked', async ({ page }) => {
   await page.goto('/?scenario=full-hand-3mon');
   await expect(page.getByTestId('combat-screen')).toBeVisible();
-  const cards = page.locator('[data-testid^="card-"]');
+  const cards = page.getByTestId('hand').locator('[data-testid^="card-"]');
   const total = await cards.count();
   expect(total).toBeGreaterThan(0);
   // Every card in hand is on screen regardless of whether it can be played (the §9.6 / ui.md invariant).

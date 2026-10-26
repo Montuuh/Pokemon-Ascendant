@@ -40,8 +40,8 @@ test.describe('What the fight reads out — §9.2.5, §9.2.3, §7.3.7', () => {
       a.hand(['hyper-beam', 'hyper-beam', 'hyper-beam']);
       for (let i = 0; i < 2; i++) a.dispatch({ type: 'play-card', cardId: a.state()!.player.hand[0]!.id, targetUid: a.state()!.enemies[0]!.uid });
     });
-    await expect(page.getByTestId('card-no-ap')).toHaveCount(1);
-    await expect(page.getByTestId('card-no-ap')).toHaveText('Not enough AP');
+    await expect(page.getByTestId('ap-short')).toHaveCount(1);
+    await expect(page.getByTestId('ap-short')).toHaveText('Not enough AP');
   });
 
   test("Battle Hardened's shield is on every card of yours", async ({ page }) => {

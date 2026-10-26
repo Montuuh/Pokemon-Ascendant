@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.64 — Five cards again · 2026-10-26
+
+Two stale end-to-end checks pass again.
+
+- **Hand count.** The crit badge no longer counts as a sixth card.
+- **Run record.** The victory check reads Regions behind its door.
+
 ### v0.9.63 — Reduced motion, both ways · 2026-10-26
 
 The motion setting now wins over the device in both directions.

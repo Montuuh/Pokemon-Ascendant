@@ -629,7 +629,10 @@ test('the third Gym leads to Victory Road, the Summit to the League, and the Cha
   const victory = page.getByTestId('victory-screen');
   await expect(victory).toBeVisible();
   await expect(victory).toContainText('Run complete');
-  await expect(victory).toContainText('Regions');
   await expect(page.getByTestId('badge-award')).toBeVisible();
   await page.screenshot({ path: 'playtest/run-victory.png' });
+  // §9.12.3 — the run's numbers live behind the record's door.
+  await page.getByTestId('btn-run-record').click();
+  await expect(page.getByTestId('run-record')).toContainText('Regions');
+  await expect(page.getByTestId('run-record')).toContainText('3 / 3');
 });
