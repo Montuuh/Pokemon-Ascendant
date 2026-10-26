@@ -1,9 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-26 · **Version:** v0.9.59 (*Critical rhythm*).
+**Date:** 2026-10-26 · **Version:** v0.9.60 (*The rhythm dial*).
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 release; continue the user's remaining art-review blocks.
-**Speed (v0.9.58–59):** §3.3.1.1 quick swap — faster than the enemy Lead (the Pokémon stepping in), 1 AP off every rung; Paralysis halves Speed. §4.1.3.1 critical rhythm — a meter per Pokémon, both sides, filled per act, Speed-tiered (player 3/4/5/6, enemy 3/3/4/4); enemy crits declared on the intent, never broken (the user's calls).
+**Speed (v0.9.58–59):** §3.3.1.1 quick swap — faster than the enemy Lead (the Pokémon stepping in), 1 AP off every rung; Paralysis halves Speed. §4.1.3.1 critical rhythm — a meter per Pokémon, both sides, filled per act, Speed-tiered (player 3/4/5/6, enemy 3/3/4/4); enemy crits declared on the intent, never broken (the user's calls). v0.9.60: the rhythm as a dial on each card's outer edge (`RhythmDial`), ✦ CRIT on hand cards about to crit. Slow Pokémon get no compensation for now (the user's call); revisit only if the harness shows them behind.
 **B15:** Black Market Trader comparison, selected donor condition and held-item return, explicit confirmation and reduced-motion offer sprites. Evidence and independent review: playtest/art-review-2026-10-24/implementation/B15/.
 **B15 verification:** Astra/high Ship; 23 browser cases, 919 unit tests passed (3 skipped), clean audit and four Pages-prefix production smoke cases.
 **A02/A03:** v0.9.54 supplied the combat-stage results flow. v0.9.55 reserves separate ground for level-up panels and Gym Badges, wraps enlarged stat text and learned moves, and keeps the outcome headline clear. Evidence: playtest/art-review-2026-10-24/implementation/A02-A03.

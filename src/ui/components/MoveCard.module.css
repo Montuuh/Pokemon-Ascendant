@@ -182,6 +182,31 @@
   color: var(--brand-cream);
   border-color: var(--brand-cream);
 }
+/* §4.1.3.1 — its owner's rhythm is full: a gold edge that breathes, and a CRIT tab on the art's foot. */
+@keyframes critEdge {
+  0%, 100% { box-shadow: 0 0 0 2px var(--accent-action), 0 0 10px color-mix(in srgb, var(--accent-action) 55%, transparent); }
+  50% { box-shadow: 0 0 0 2px var(--accent-action), 0 0 20px var(--accent-action); }
+}
+.crit {
+  animation: critEdge 1.1s ease-in-out infinite;
+}
+.critTag {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--tip-surface);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-family: var(--font-number);
+  font-synthesis: none;
+  font-size: var(--type-caption);
+  line-height: 1.4;
+}
+@media (prefers-reduced-motion: reduce) {
+  .crit { animation: none; box-shadow: 0 0 0 2px var(--accent-action), 0 0 14px var(--accent-action); }
+}
 .mech {
   position: absolute;
   top: 3px;

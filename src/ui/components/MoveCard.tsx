@@ -43,8 +43,10 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
   const { move, owner } = play;
   const Role = roleIcon[move.role];
   const Range = move.range === 'melee' ? IconHandGrab : IconTargetArrow;
+  // §4.1.3.1 — its owner's critical rhythm is full: this card's hit is a critical (an AlwaysCrit move says so itself).
+  const rhythmCrit = !!play.damage?.isCrit && !move.alwaysCrit;
   const state = play.playable ? 'playable' : play.reason === 'not-enough-ap' ? 'no-ap' : 'locked';
-  const classes = [styles.card, styles[state === 'no-ap' ? 'noAp' : state], selected ? styles.selected : '', lifted ? styles.lifted : '', ghost ? styles.ghost : ''].filter(Boolean).join(' ');
+  const classes = [styles.card, styles[state === 'no-ap' ? 'noAp' : state], selected ? styles.selected : '', rhythmCrit ? styles.crit : '', lifted ? styles.lifted : '', ghost ? styles.ghost : ''].filter(Boolean).join(' ');
   // Fan: spread by hand size so 2 cards fan as clearly as 12 (Unity-era ApplyHandFan).
   const mid = (total - 1) / 2;
   const rot = total > 1 ? ((index - mid) / Math.max(1, mid)) * 6 : 0;
@@ -84,6 +86,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
       data-testid={ghost ? 'drag-ghost-card' : `card-${move.id}`}
       data-card-id={play.card.id}
       data-mastery={play.card.mastery || undefined}
+      data-crit={rhythmCrit || undefined}
       data-state={state === 'no-ap' ? 'no-ap' : state === 'locked' ? (play.reason ?? 'locked') : 'playable'}
       aria-pressed={selected}
       // The card's visible content is icons, a picture and numbers. Spelled out, it becomes a sentence a screen
@@ -94,6 +97,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         `${play.apCost} AP`,
         move.power > 0 ? `${move.power} power${play.hitsAll ? ', hits every enemy' : ''}` : null,
         lead && lead.typeMultiplier !== 1 ? `${effectivenessPhrase(lead.typeMultiplier)} on the enemy Lead` : null,
+        rhythmCrit ? 'critical hit' : null,
         describeMove(play).replace(/\.$/, ''),
         play.playable ? null : `unplayable: ${reasonText.replace(/\.$/, '')}`,
         `card ${index + 1} of ${total}`,
@@ -126,6 +130,12 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         {lead && lead.typeMultiplier !== 1 && (
           <span className={`${styles.eff} ${lead.typeMultiplier > 1 ? styles.effUp : styles.effDown} display`}>
             {lead.typeMultiplier === 0 ? '×0' : `×${lead.typeMultiplier}`}
+          </span>
+        )}
+        {/* §4.1.3.1 — a full rhythm: CRIT on the art's foot, the word the enemy's intent uses. */}
+        {rhythmCrit && (
+          <span className={`${styles.critTag} display`} data-testid="card-crit">
+            ✦ CRIT
           </span>
         )}
         {/* §5.13.2 — the Mastery star, and a Step-Forward or Step-Backward card's arrow, on the window's corner. */}

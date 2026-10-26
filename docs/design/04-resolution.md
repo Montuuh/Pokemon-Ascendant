@@ -112,8 +112,10 @@ species and not how far into the run it is:
 a turn where your side plays three cards, and because Speed already favours you against slow walls through the quick
 swap: measured on the same table, the Rock Gym (Geodude, Golem) stopped costing Pokémon (§3.3.1.1).
 
-**Shown before it lands (Pillar 1).** Every card wears its meter (*Crit 2/5*, then *Crit ready*). Your card's damage
-preview already counts a full meter's crit. An enemy's crit is **declared with its intent**: the chip says **CRIT**
+**Shown before it lands (Pillar 1).** Every Pokémon's card wears its meter as a **dial** on its outer edge, at the
+middle of its window (v0.9.60, the user's choice of five looks): a ring of one segment per act, the acts still to go
+on its face; full, a turning star and a **CRIT** tab. Full on your side, every damaging card of that Pokémon in your
+hand wears **✦ CRIT** and a gold edge, and its damage preview already counts the crit. An enemy's crit is **declared with its intent**: the chip says **CRIT**
 and its number is the critical one, a turn ahead. Nothing you do takes a declared crit back — the answer is the swap,
 the resist, or the Pokémon who can take it.
 

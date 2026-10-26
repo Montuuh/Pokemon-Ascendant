@@ -1504,6 +1504,12 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.60 — The rhythm dial  ✅ 2026-10-26
+
+The user's choice (2026-10-26) of five meter looks prototyped in the real combat screen: the dial.
+
+**Shipped.** §4.1.3.1 / §9.2.1: the critical rhythm leaves the window's chips for a dial on the card's outer edge at the window's middle — the one place no tag, type badge, chip, HP number or intent arrow uses — its centre 7 px inside the frame so the stage's outer column never clips it. A ring of one segment per act its Speed asks for, the acts still to go on its face, its bezel the card's frame colour; full, a turning star, a glow and a CRIT tab; a tooltip says how many cards or actions are left. A Pokémon whose rhythm is full gives every damaging card of its own in the hand a ✦ CRIT tab and a breathing gold edge, and the card's tooltip says the first one played spends it. Reduced motion stills the star and the glows.
+
 ### v0.9.59 — Critical rhythm  ✅ 2026-10-26
 
 The user's call (2026-10-26): Speed's second job, the critical rhythm (design C), on both sides; and the quick swap on every rung.

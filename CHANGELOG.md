@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.60 — The rhythm dial · 2026-10-26
+
+The critical rhythm, readable at a glance.
+
+- **Rhythm dial.** A ring on each card's outer edge.
+- **Crit in hand.** Cards about to crit wear ✦ CRIT.
+
 ### v0.9.59 — Critical rhythm · 2026-10-26
 
 Speed sets how often every Pokémon crits.

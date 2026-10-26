@@ -13,7 +13,7 @@ import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
 import { ObjectiveChip } from './ObjectiveChip';
 import { UnitChips } from './UnitChips';
-import { rhythmChip } from './rhythmChip';
+import { RhythmDial } from './RhythmDial';
 import { armourTip, intentCardTip, nextIntentTip, placeTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
@@ -212,6 +212,8 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
 
           {/* §9.2.1 — the Pokémon itself, in its window. Every sprite is a drop target too (`data-enemy-uid`). */}
           <span className={card.window}>
+            {/* §4.1.3.1 — the critical rhythm, on the card's outer edge at the window's middle. */}
+            {enemy.hp > 0 && <RhythmDial c={enemy} config={ctx.config} side="foe" lead={front} />}
             <span className={card.stand} data-fx-slot={fxSlot} data-arrow-from={enemy.uid}>
               <span className={[card.sprite, fxClass ?? '', spriteClass ?? ''].join(' ')} data-testid="arena-enemy" data-enemy-uid={enemy.uid}>
                 <ArenaSprite src={spriteOf(enemy, 'front', !!enemy.shiny)} shiny={!!enemy.shiny} concealed={enemy.hp <= 0} imgClassName={`${card.breathe} ${enemy.shiny ? 'fx-shiny' : ''}`} />
@@ -233,8 +235,6 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
                 ...(enemy.shield > 0
                   ? [{ key: 'armour', label: `${ARMOUR_LABEL} ${enemy.shield}`, explain: UNIT_CHIPS_TEXT.armourBody(enemy.shield), node: <Tipped tip={armourTip(enemy.shield)} className={`${card.chip} ${card.info}`}>{ARMOUR_LABEL} {enemy.shield}</Tipped> }]
                   : []),
-                // §4.1.3.1 — the critical rhythm, always on the card: how full, and what fills it.
-                rhythmChip(enemy, ctx.config, true),
                 ...stageChips.map((s) => {
                   const label = `${STAT_SHORT[s]} ${enemy.stages[s] > 0 ? '+' : ''}${enemy.stages[s]}`;
                   return { key: s, label, node: <span className={`${card.chip} ${enemy.stages[s] > 0 ? card.up : card.down}`}>{label}</span> };
