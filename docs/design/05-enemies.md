@@ -462,7 +462,7 @@ Leader a different plan rather than the same type check.
 | **Brock** (Rock) | **Rock Solid** | No single hit takes more than **40 %** of his Pokémon's Max HP; a multi-hit move is capped hit by hit | Multi-hit moves, Burn and Poison, several cards a turn — he is a wall you chip, not one you break |
 | **Misty** (Water) | **Riptide** | At the end of **every second turn** the tide trades your Lead with Bench 1 (Bench 2 if Bench 1 is down): a free swap that is not yours and counts as none | Choose who stands on Bench 1 before the tide turns — the swap is hers, the line-up is yours |
 | **Aster** (Bug) | **Swarm** | Her Pokémon on the field hit **+20 %** for every one of hers still waiting to come out | Knock them out fast: every one down thins the swarm |
-| **Wren** (Normal) | **Rollout** | Her Lead hits **+25 %** harder for every turn in a row your Lead has been the same Pokémon, up to +100 % | Rotate your Lead; a swap resets the roll |
+| **Whitney** (Normal) | **Rollout** | Her Lead hits **+25 %** harder for every turn in a row your Lead has been the same Pokémon, up to +100 % | Rotate your Lead; a swap resets the roll |
 | **Blaine** (Fire) | **Meltdown** | Every attack his Pokémon land lowers its target's Defence **one stage**, down to −2 | Spread the hits with swaps, raise Defence, or win the race |
 | **Erika** (Grass) | **Bloom** | At the end of each turn, each of her Pokémon on the field that took **no damage** that turn restores **8 %** of its Max HP | Touch both: Ranged and area cards, a status that ticks |
 | **Surge** (Electric) | **Overcharge** | **Every second turn** the field is overcharged: the **first card** you play costs **+1 AP** | Open those turns with a cheap card; the chip says which turn |

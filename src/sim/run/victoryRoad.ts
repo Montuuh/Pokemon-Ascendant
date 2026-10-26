@@ -28,7 +28,8 @@ export const VICTORY_ROAD = {
   gauntletOver: 4,
   /** The map's own marker for its road: one past the three Regions (the painter's cave road). */
   regionIndex: 3,
-  stage: 'cave',
+  stage: 'victory-road',
+  wildStage: 'victory-road-wild',
   /** §2.12.1 — a Gauntlet's Ace Trainer: four Pokémon, every one two-phase, two at a time. */
   gauntlet: { size: 4, phaseCount: 2 as const, onField: 2 as const, sprite: 'acetrainer', names: ['Naomi', 'Gwen', 'Vincent', 'Dakota', 'Rolando', 'Mira'] },
   /** §2.12.3 — what a Training Grounds' Stat Boost adds, for the rest of the run. */
@@ -160,7 +161,7 @@ function previewFor(kind: NodeKind, rng: GameRng, content: ContentRegistry, pick
       wild: { pool, odds: { ...VICTORY_ROAD.wildOdds } },
       levelBand: [level, level + 1],
       icon: 'wild-cave',
-      stage: VICTORY_ROAD.stage,
+      stage: VICTORY_ROAD.wildStage,
     };
   }
   if (kind === 'gauntlet') {

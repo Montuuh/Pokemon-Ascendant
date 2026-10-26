@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.56 — Victory Road scenery  ✅ 2026-10-26
+
+**Shipped.** The reviewed worktree remainder connects Victory Road Wild and Gauntlet encounters to their existing dedicated backdrops, with stage-selection regression coverage. The UI audit includes result-screen presets and reports content spilling outside painted containers at both resolutions; regression fixtures distinguish visible spill from clipped content. Gym canon now uses Whitney, matching the roster. Provisional local art-generation scripts were archived and removed, and incremental TypeScript cache files are ignored. Evidence: `playtest/cleanup-2026-10-26/`.
+
 ### v0.9.55 — Room for every reward  ✅ 2026-10-26
 
 **Shipped.** A02 completes the Gym Badge layout with separate ground for the temporary level-up window, wrapping enlarged text and learned moves, and clearance below the outcome headline. A03 retains the combat stage integration shipped in v0.9.54; regression coverage exercises the full reveal at both desktop sizes and 150% text. B02 closes the pending run-record correction: Victory Road and League losses retain all three completed regions. Evidence: `playtest/art-review-2026-10-24/implementation/A02-A03/`.

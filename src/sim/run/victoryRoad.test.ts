@@ -50,6 +50,13 @@ const report = (s: RunState, fainted = false): CombatOutcomeReport => ({
 describe('Victory Road, the map — §2.12', () => {
   const maps = Array.from({ length: 40 }, (_, i) => generateVictoryRoad(new RngStreams(500 + i).get('MapRNG'), content, 500 + i));
 
+  it('WildAndGauntletNodes_UseTheirOwnVictoryRoadStages', () => {
+    for (const map of maps) for (const node of Object.values(map.nodes)) {
+      if (node.kind === 'wild') expect(node.preview.stage).toBe('victory-road-wild');
+      if (node.kind === 'gauntlet') expect(node.preview.stage).toBe('victory-road');
+    }
+  });
+
   it('FourColumnsOfThreeTracks_EveryPathReachesTheSummit_NoHealingOnTheWay', () => {
     for (const map of maps) {
       const nodes = Object.values(map.nodes);
@@ -97,7 +104,7 @@ describe('Victory Road, the run — §2.12', () => {
       expect(e.tier).toBe('elite');
       expect(e.phaseCount).toBe(2);
     }
-    expect(sc.stage).toBe('cave');
+    expect(sc.stage).toBe('victory-road');
   });
 
   it('Gauntlet_NoBreather_ARareRelicPick_AndAPerfectClearPaysABadgePassedBy', () => {

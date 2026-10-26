@@ -2,8 +2,9 @@
 // The UI audit — the measuring half of the UI review (docs/design/ui-doctrine.md). Opens each screen on the
 // running dev server, screenshots it, and measures what a doctrine can be measured on: how much text is on the
 // screen and where the long blocks are (D1), how many doors there are (D2), plain tables and text-only grids
-// (D3), contrast failures (D5), native title= and unnamed controls (D2/D8), overflow (D8). Then the static
-// half over the changed files: dead CSS classes, hex literals, title= in JSX (D6/D7).
+// (D3), contrast failures (D5), native title= and unnamed controls (D2/D8), overflow of the viewport and content
+// spilling out of its card, at 1920×1080 and 1280×720 (D8). Then the static half over the changed files: dead CSS
+// classes, hex literals, title= in JSX (D6/D7).
 //
 // It does not judge. The ui-reviewer agent reads its report and the screenshots and judges.
 //
@@ -37,6 +38,13 @@ const endingSetup = (outcome) => [
   `goTo("${outcome}")`,
 ];
 const SCREENS = {
+  ...Object.fromEntries(['wild', 'gauntlet'].map((kind) => [
+    `victory-road-${kind}`, {
+      url: '/?screen=menu',
+      setup: ['run.new("squirtle", 11)', 'run.fill(3)', 'run.victoryRoad()', `run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "${kind}").id]; })`, 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })'],
+      clicks: ['btn-enter-node'], match: [/sim\/run\/victoryRoad/],
+    },
+  ])),
   ...Object.fromEntries(['victory', 'defeat'].flatMap((outcome) => [
     [outcome, { url: '/?screen=menu', setup: endingSetup(outcome), match: [/screens\/RunEndScreen/, /screens\/run-end\//] }],
     [`${outcome}-record`, { url: '/?screen=menu', setup: endingSetup(outcome), clicks: ['btn-run-record'], match: [/screens\/RunEndScreen/, /screens\/run-end\//, /hub\/AccountSummary/] }],
@@ -162,11 +170,28 @@ const SCREENS = {
   team: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(4)', 'run.patch((d) => { d.activeUids = d.box.slice(0, 3).map((m) => m.uid); d.bag = [...d.bag, "leftovers"]; })', 'goTo("map")'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /hooks\/useTeamKey/, /components\/BoxPanel/] },
   'team-city': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /screens\/city\/CityScreen/] },
   evolution: { url: '/?screen=menu', setup: ['run.new("bulbasaur", 7)', 'run.fill(3)', 'run.levelTo(12)', 'run.victoryRoad()', 'run.jump("training")', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'run.dispatch({ type: "train", uid: a.run.state().box[0].uid, upgrade: "evolve" })', 'goTo("map")'], match: [/screens\/EvolutionScreen/] },
+  // §9.4.5 — a fight's end on its own stage: a trainer win (levels, spoils, the progress door), a Gym's Badge, a run's toll.
+  results: {
+    url: '/?screen=menu',
+    setup: ['run.new("charmander", 11)', 'run.fill(3)', 'run.dispatch({ type: "set-active", uids: a.run.state().box.slice(0, 3).map((m) => m.uid) })', 'goTo("map")', 'run.jump("trainer")', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'run.dispatch({ type: "finish-combat", report: { outcome: "victory", team: a.run.state().activeUids.map((uid, i) => ({ uid, hp: [14, 30, 22][i], status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 4, fielded: 2 } })', 'goTo("results")'],
+    match: [/screens\/results\//, /components\/OutcomeOverlay/],
+  },
+  'results-gym': {
+    url: '/?screen=menu',
+    setup: ['run.new("squirtle", 5)', 'run.fill(3)', 'run.levelTo(14)', 'run.dispatch({ type: "set-active", uids: a.run.state().box.slice(0, 3).map((m) => m.uid) })', 'goTo("map")', 'run.jump("gym")', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'run.dispatch({ type: "finish-combat", report: { outcome: "victory", team: a.run.state().activeUids.map((uid, i) => ({ uid, hp: [40, 0, 25][i], status: null, fainted: i === 1 })), caught: null, ballsLeft: 0, turns: 9 } })', 'goTo("results")'],
+    match: [/screens\/results\//],
+  },
+  'results-escape': {
+    url: '/?screen=menu',
+    setup: ['run.new("squirtle", 11)', 'run.fill(3)', 'run.pay(400)', 'run.dispatch({ type: "set-active", uids: a.run.state().box.slice(0, 3).map((m) => m.uid) })', 'goTo("map")', 'run.jump("trainer")', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'run.dispatch({ type: "finish-combat", report: { outcome: "escaped", team: a.run.state().activeUids.map((uid) => ({ uid, hp: 20, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 2 } })', 'goTo("results")'],
+    match: [/screens\/results\//],
+  },
 };
 
 // A19 — every preset declares the screen or intentionally opened panel the audit promises to capture.
 // A missing declaration is a configuration failure, never permission to photograph an arbitrary landing page.
 const EXPECTED_ROOT = {
+  'victory-road-wild': 'combat-screen', 'victory-road-gauntlet': 'combat-screen',
   victory: 'victory-screen', defeat: 'defeat-screen', 'victory-record': 'run-record', 'defeat-record': 'run-record',
   menu: 'main-menu', about: 'about-screen', changelog: 'changelog-screen', settings: 'settings-screen',
   hub: 'hub-screen', 'hub-pc': 'pc-terminal', 'hub-pc-sheet': 'pc-sheet', 'hub-mart': 'poke-mart', 'hub-card': 'trainer-card',
@@ -182,6 +207,7 @@ const EXPECTED_ROOT = {
   safari: 'safari-screen', 'safari-guide': 'safari-guide', 'safari-stalk': 'safari-screen',
   mystery: 'event-screen', evolution: 'evolution-screen', summit: 'summit-screen', league: 'league-hall', 'league-champion': 'league-hall',
   'find-preview': 'node-preview', find: 'find-screen', team: 'team-screen', 'team-city': 'team-screen',
+  results: 'fight-results', 'results-gym': 'fight-results', 'results-escape': 'fight-results',
 };
 for (const [id, screen] of Object.entries(SCREENS)) screen.root = EXPECTED_ROOT[id];
 if (args.includes('--list')) {
@@ -306,6 +332,116 @@ function measure() {
   return { totalChars, blocks: blocks.size, long: long.slice(0, 10), contrastFails: contrastFails.slice(0, 20), contrastUnknownBg: unknownBg, tipped, infoDots, titles, unnamed, tables, textOnlyLists, overflowing, pageScrollX, interactive, accentText };
 }
 
+// Runs inside the page, at whatever size the viewport is. A card's content spilling out of its card (D8) does not
+// scroll the page, so the viewport check cannot see it: an element whose box pokes past an ancestor that visibly
+// bounds it — a border on that side, a background or a shadow of its own — while that ancestor lets it show
+// (overflow: visible). A scroller or a clipping box in between hides the spill on its axis, so that is not one.
+// Skipped: tooltips, and anything absolute or fixed (portals, a wheel's pointer, a badge hung on an edge) — those
+// are placed where they are on purpose, and so is their content relative to what lies above them.
+function spills() {
+  const MIN = 2; // px — below this it is rounding and anti-aliasing, not a spill
+  const parse = (c) => {
+    const m = c.match(/rgba?\(([^)]+)\)/);
+    if (!m) return null;
+    const p = m[1].split(',').map((x) => parseFloat(x));
+    return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 };
+  };
+  const blend = (fg, bg) => ({ r: fg.r * fg.a + bg.r * (1 - fg.a), g: fg.g * fg.a + bg.g * (1 - fg.a), b: fg.b * fg.a + bg.b * (1 - fg.a), a: 1 });
+  const vis = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) return false;
+    return el.checkVisibility ? el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) : getComputedStyle(el).visibility !== 'hidden';
+  };
+  // `h3.machineName`, `button.play[btn-spin]`, `li.row in [shop-grid]` — the CSS-module hash stripped.
+  const label = (el) => {
+    const cls = (typeof el.className === 'string' ? el.className : el.className?.baseVal ?? '').split(' ').find(Boolean);
+    const local = cls ? cls.replace(/^_(.+)_[a-z0-9]{5}_\d+$/, '$1') : '';
+    const tid = el.getAttribute('data-testid');
+    const near = tid ? null : el.parentElement?.closest('[data-testid]')?.getAttribute('data-testid');
+    return `${el.tagName.toLowerCase()}${local ? '.' + local : ''}${tid ? `[${tid}]` : near ? ` in [${near}]` : ''}`;
+  };
+  // The colour seen through an element (its own composited over what is below), or null when a gradient or an
+  // image is in the way.
+  const WHITE = { r: 255, g: 255, b: 255, a: 1 };
+  const seen = new Map();
+  const bgBehind = (el) => {
+    if (!el) return WHITE;
+    if (seen.has(el)) return seen.get(el);
+    const cs = getComputedStyle(el);
+    let out;
+    if (cs.backgroundImage !== 'none') out = null;
+    else {
+      const c = parse(cs.backgroundColor);
+      if (c && c.a >= 0.999) out = c;
+      else {
+        const under = bgBehind(el.parentElement);
+        out = !under ? null : c && c.a > 0 ? blend(c, under) : under;
+      }
+    }
+    seen.set(el, out);
+    return out;
+  };
+  // Which sides of `el` a player can see as an edge: all four when it paints a background different from what is
+  // behind it or casts a shadow; otherwise the sides that carry a visible border.
+  const edges = (el, cs) => {
+    let all = cs.boxShadow !== 'none' || cs.backgroundImage !== 'none';
+    const c = parse(cs.backgroundColor);
+    if (!all && c && c.a > 0.02) {
+      const under = bgBehind(el.parentElement);
+      const mine = under ? blend(c, under) : null;
+      all = !under || Math.max(Math.abs(mine.r - under.r), Math.abs(mine.g - under.g), Math.abs(mine.b - under.b)) > 3;
+    }
+    const border = (s) => parseFloat(cs[`border${s}Width`]) > 0 && !/none|hidden/.test(cs[`border${s}Style`]) && (parse(cs[`border${s}Color`])?.a ?? 1) > 0;
+    return { top: all || border('Top'), right: all || border('Right'), bottom: all || border('Bottom'), left: all || border('Left') };
+  };
+  // A rotated or skewed box's rect is the box around its corners, not what is painted (a wheel mid-spin is still a
+  // circle), so neither it nor anything inside it is measured.
+  const turned = (cs) => {
+    if (cs.rotate && cs.rotate !== 'none') return true;
+    const m = cs.transform.match(/matrix(3d)?\(([^)]+)\)/);
+    if (!m) return false;
+    const v = m[2].split(',').map(Number);
+    return (m[1] ? [1, 2, 4, 6, 8, 9] : [1, 2]).some((i) => Math.abs(v[i]) > 1e-6);
+  };
+
+  const out = [];
+  const reported = new Set(); // a child of a spilling element moves with it: report the outermost only
+  for (const el of document.body.querySelectorAll('*')) {
+    if (el.closest('[role="tooltip"]') || !vis(el)) continue;
+    const own = getComputedStyle(el);
+    if (own.position === 'absolute' || own.position === 'fixed' || turned(own)) continue;
+    const r = el.getBoundingClientRect();
+    let clipX = false, clipY = false;
+    for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+      if (reported.has(a)) break;
+      const cs = getComputedStyle(a);
+      if (turned(cs)) break;
+      if (vis(a)) {
+        const e = edges(a, cs);
+        const b = a.getBoundingClientRect();
+        const y = !clipY && cs.overflowY === 'visible';
+        const x = !clipX && cs.overflowX === 'visible';
+        const past = [
+          ['above', y && e.top ? b.top - r.top : 0],
+          ['below', y && e.bottom ? r.bottom - b.bottom : 0],
+          ['left of', x && e.left ? b.left - r.left : 0],
+          ['right of', x && e.right ? r.right - b.right : 0],
+        ].sort((p, q) => q[1] - p[1])[0];
+        if (past[1] >= MIN) {
+          out.push({ at: label(el), px: Math.round(past[1]), side: past[0], bound: label(a) });
+          reported.add(el);
+          break;
+        }
+      }
+      if (cs.overflowX !== 'visible') clipX = true;
+      if (cs.overflowY !== 'visible') clipY = true;
+      if (/paint|strict|content/.test(cs.contain)) clipX = clipY = true;
+      if ((clipX && clipY) || cs.position === 'absolute' || cs.position === 'fixed') break;
+    }
+  }
+  return out.sort((p, q) => q.px - p.px);
+}
+
 // ── Static checks over the changed files (D6, D7, D2) ────────────────────────────────────────────────────
 function staticChecks(fileList) {
   const out = { deadCss: [], hexLiterals: [], titleAttrs: [] };
@@ -407,6 +543,7 @@ async function main() {
         await auditReady(page, s, READY_TIMEOUT);
       }
       const data = await page.evaluate(measure);
+      data.spills = await page.evaluate(spills);
       const shot = `${id}.png`;
       await page.screenshot({ path: join(OUT, shot) });
       captures.at1080 = { screenshot: shot, root: s.root };
@@ -425,6 +562,7 @@ async function main() {
         const over = [...document.querySelectorAll('body *')].filter(vis).filter((e) => { const r = e.getBoundingClientRect(); return r.right > vw + 1 && r.width < vw && !clipped(e); }).slice(0, 8).map((e) => { const t = e.closest('[data-testid]'); return t ? t.getAttribute('data-testid') : e.tagName.toLowerCase(); });
         return { overflowing: over, pageScrollX: document.documentElement.scrollWidth > vw + 1 };
       });
+      small.spills = await page.evaluate(spills);
       await page.screenshot({ path: join(OUT, `${id}-720.png`) });
       captures.at720 = { screenshot: `${id}-720.png`, root: s.root };
       const result = { screen: id, status: 'captured', expectedRoot: s.root, captures, url: s.url, screenshot: shot, errors, ...data, at720: small };
@@ -439,7 +577,11 @@ async function main() {
       report.push(`- **D3 shape**: ${data.tables} table(s), ${data.textOnlyLists.length} text-only list(s) of 8+ rows${data.textOnlyLists.length ? ' (' + data.textOnlyLists.map((l) => `${l.at}: ${l.rows}`).join('; ') + ')' : ''}`);
       report.push(`- **D5 contrast**: ${data.contrastFails.length} failure(s)${data.contrastUnknownBg ? ` · ${data.contrastUnknownBg} block(s) on a gradient/image, unmeasured` : ''}`);
       for (const c of data.contrastFails) report.push(`  - ${c.ratio}:1 (needs ${c.need}) ${c.size}px @ \`${c.at}\` “${c.text}” fg ${c.fg} on ${c.bg}`);
-      report.push(`- **D8 works**: ${data.unnamed.length} unnamed control(s)${data.unnamed.length ? ' (' + data.unnamed.join(', ') + ')' : ''} · overflow 1080p: ${data.overflowing.length ? data.overflowing.join(', ') : 'none'}${data.pageScrollX ? ' · page scrolls sideways' : ''} · overflow 720p: ${small.overflowing.length ? small.overflowing.join(', ') : 'none'}${small.pageScrollX ? ' · page scrolls sideways' : ''} · console errors: ${errors.length}`);
+      report.push(`- **D8 works**: ${data.unnamed.length} unnamed control(s)${data.unnamed.length ? ' (' + data.unnamed.join(', ') + ')' : ''} · overflow 1080p: ${data.overflowing.length ? data.overflowing.join(', ') : 'none'}${data.pageScrollX ? ' · page scrolls sideways' : ''} · overflow 720p: ${small.overflowing.length ? small.overflowing.join(', ') : 'none'}${small.pageScrollX ? ' · page scrolls sideways' : ''} · spill 1080p: ${data.spills.length || 'none'} · spill 720p: ${small.spills.length || 'none'} · console errors: ${errors.length}`);
+      for (const [at, list] of [['1080p', data.spills], ['720p', small.spills]]) {
+        for (const p of list.slice(0, 8)) report.push(`  - spill ${at}: \`${p.at}\` ${p.px} px ${p.side} \`${p.bound}\``);
+        if (list.length > 8) report.push(`  - spill ${at}: … ${list.length - 8} more in \`${ARTIFACTS}/${id}.json\``);
+      }
       for (const e of errors.slice(0, 5)) report.push(`  - ${e.slice(0, 160)}`);
       report.push('');
       } catch (error) {

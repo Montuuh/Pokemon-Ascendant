@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.56 — Victory Road scenery · 2026-10-26
+
+Dedicated cave backdrops and broader visual checks.
+
+- **Victory Road.** Wild fights and Gauntlets use their own scenery.
+- **Visual checks.** Result screens and card overflow join the audit.
+- **Documentation.** Whitney's name matches the Gym roster.
+
 ### v0.9.55 — Room for every reward · 2026-10-26
 
 Clear Gym rewards and accurate run records.

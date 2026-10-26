@@ -27,6 +27,7 @@ test('every audit preset declares its expected screen root', async () => {
   assert.equal(presets.evolution.root, 'evolution-screen');
   assert.equal(presets['hub-card'].root, 'trainer-card');
   assert.equal(presets['hub-daycare'], undefined);
+  for (const id of ['results', 'results-gym', 'results-escape']) assert.equal(presets[id].root, 'fight-results');
 });
 
 test('capture readiness rejects an undeclared target', async () => {
@@ -41,7 +42,7 @@ test('a wrong root records a failure, removes stale success evidence and continu
   const server = createServer((request, response) => {
     const about = new URL(request.url, 'http://fixture.test').searchParams.get('screen') === 'about';
     response.writeHead(200, { 'Content-Type': 'text/html' });
-    response.end(`<!doctype html><html><head><style>body{background:#fff;color:#222;font:16px sans-serif}main{padding:24px}</style></head><body><main data-testid="${about ? 'about-screen' : 'wrong-screen'}">${about ? 'About fixture' : 'Wrong landing page'}</main><script>window.__ascendant={run:{state:()=>({phase:'ended',outcome:'defeat'})}}</script></body></html>`);
+    response.end(`<!doctype html><html><head><style>body{background:#fff;color:#222;font:16px sans-serif}main{padding:24px}.card{width:80px;background:#ddd;margin-bottom:20px}.child{display:block;width:160px}.clipped{overflow:hidden}</style></head><body><main data-testid="${about ? 'about-screen' : 'wrong-screen'}">${about ? 'About fixture' : 'Wrong landing page'}<section class="card"><span class="child" data-testid="visible-spill">Visible overflow</span></section><section class="card clipped"><span class="child" data-testid="clipped-spill">Clipped content</span></section></main><script>window.__ascendant={run:{state:()=>({phase:'ended',outcome:'defeat'})}}</script></body></html>`);
   });
   await new Promise((done) => server.listen(0, '127.0.0.1', done));
   try {
@@ -59,6 +60,10 @@ test('a wrong root records a failure, removes stale success evidence and continu
     assert.equal(existsSync(resolve(out, 'menu-720.png')), false);
     assert.equal(report.screens.about.status, 'captured');
     assert.equal(report.screens.about.captures.at720.root, 'about-screen');
+    for (const measured of [report.screens.about, report.screens.about.at720]) {
+      assert.ok(measured.spills.some((spill) => spill.at.includes('visible-spill') && spill.px === 80));
+      assert.ok(!measured.spills.some((spill) => spill.at.includes('clipped-spill')));
+    }
     assert.ok(existsSync(resolve(out, 'about.png')) && existsSync(resolve(out, 'about-720.png')));
     assert.match(readFileSync(resolve(out, 'report.md'), 'utf8'), /menu — FAILED/);
   } finally {

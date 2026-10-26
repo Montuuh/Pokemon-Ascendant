@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.56 — Victory Road scenery.** Wild encounters and Gauntlets use dedicated cave backdrops. Visual audits cover results and internal content spills; Gym documentation matches Whitney's roster name. Before it,
 **v0.9.55 — Room for every reward.** Gym Badges and level-up windows have separate space at large text sizes. Run records retain every cleared region after Victory Road and League defeats. Before it,
 **v0.9.54 — The field after.** A fight now ends on its own stage: your team stays where it stood while its HP and XP bars fill with the series' sounds, a level-up plays its fanfare and stat window, the trainer you beat steps forward (a Gym's Badge in its case), and the spoils are dealt into the tray — one click on. Evolutions arrive as a surprise. Before it,
 **v0.9.53 — Basement service bays.** Quiet slate aisles and warm service areas give the hidden market a clearer focus, with original FRLG stock props. Before it,

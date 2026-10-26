@@ -1,6 +1,7 @@
 node_modules/
 dist/
 coverage/
+*.tsbuildinfo
 # visual verification and playtest output (regenerate with `npm run shot`)
 playtest/
 playwright-report/
