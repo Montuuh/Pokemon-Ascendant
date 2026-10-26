@@ -2,7 +2,7 @@
 
 The rules a screen is reviewed against after every visual change. The reviewer is `.claude/agents/ui-reviewer`,
 the protocol is `.claude/skills/ui-review`, the measuring tool is `npm run ui:audit`. Each doctrine has an id
-(**D1**…**D10**) so a finding can name the rule it breaks. Topic 9 (`09-presentation.md`) owns the theme,
+(**D1**…**D12**) so a finding can name the rule it breaks. Topic 9 (`09-presentation.md`) owns the theme,
 the type scale and the tokens; this file owns the *judgement*. *(Set by the user, 2026-09-22, after three
 rounds on the Trainer Hub: "demasiada info en pantalla — más artístico, con botones que abran mini pantallas".)*
 
@@ -78,13 +78,37 @@ is called the same name everywhere (Bond, Familiar, Token, Lead, Active Team, Bo
 §-numbers never appear on screen, and neither do roadmap versions — a thing that is not here yet says "not
 yet", not "v0.7". *(Line added by the first review, 2026-09-22.)*
 
+### D11 — Motion earns its frame
+Motion has two registers, and a finding names which one it judges. **Chrome** is everything a player operates —
+panels, sheets, tooltips, buttons, shelves, the Hub: it moves to give feedback, to show where a thing came from or
+went, or to bridge a change that would otherwise jump, and for nothing else. How often the player meets it decides
+how much it may move: what is met every turn barely moves and never makes the player wait; what is met once a run may
+take its time. Chrome enters and leaves on a strong ease-out from the `--ease-*` tokens, never `ease-in`, and stays
+under 300 ms; it grows from `scale(0.95)` and opacity, never from nothing, and a popover grows from its trigger. It
+animates `transform` and `opacity`, never layout, and `transition: all` is not a list. **The world** — the arena, the
+map, the cutscenes, the reward beats — keeps the series' pace and physics instead (D12). In both, the information a
+decision needs appears at once and stays (§9.9), and **both** switches stop the movement: the system's
+`prefers-reduced-motion` and Settings' `data-motion`. A duration that is not a token escapes both. The checklist and
+the numbers are in `docs/design/ui/motion-review.md`. *(Added 2026-10-26, adapted from Emil Kowalski's animation
+skills: their restraint is right for chrome, and wrong for a Poké Ball falling under gravity.)*
+
+### D12 — Impact lands, then rests
+A beat in the world is felt where it lands: the number, the flash, the shake, the sound and the card's HP arrive
+together at the impact (§9.9.2), two or three channels at once, and each event gets the **weight of what it is** — a
+routine hit is light, a super-effective hit or a crit heavier, a faint, a catch, a level-up, an evolution or a Badge
+the heaviest. Feedback is exaggerated briefly and returns to rest: no shake that does not decay, no pulse that became
+the normal state. It moves the picture, never the layout or the sim; a held frame (hit-stop) pauses the drawing,
+never the input or the clock of the next move. It stays in the pixel register (D9): flat shapes, stepped spins, no
+soft glow. A beat longer than a second can be skipped with a click or a key, and none holds a decision that is not
+its own (§9.9.1). *(Added 2026-10-26, adapted from the game-feel skill of awesome-gamedev-agent-skills.)*
+
 ## Severity
 
 | Level | Means | On a review |
 |---|---|---|
-| **Blocker** | D5 contrast failure on body text · D8 broken interaction or overflow · D2 a mystery with no door on a decision-bearing element | Fix before the change is done |
-| **Should** | D1 / D3 / D4 violations on a base screen · D7 garbage · D6 literals | Fix in the same change unless the user says otherwise |
-| **Nit** | wording, spacing, a door that could be one level closer | Note; fix if cheap |
+| **Blocker** | D5 contrast failure on body text · D8 broken interaction or overflow · D2 a mystery with no door on a decision-bearing element · D11 motion that makes the player wait on an every-turn action, information a decision needs animating in, or motion either reduced-motion switch does not stop | Fix before the change is done |
+| **Should** | D1 / D3 / D4 violations on a base screen · D7 garbage · D6 literals · D11 `ease-in`, over 300 ms, `scale(0)`, `transition: all` or a layout property on chrome · D12 feedback heavier or lighter than its event, or that does not return to rest | Fix in the same change unless the user says otherwise |
+| **Nit** | wording, spacing, a door that could be one level closer · D11/D12 origin, stagger, enter/exit timing | Note; fix if cheap |
 
 ## What the reviewer produces
 

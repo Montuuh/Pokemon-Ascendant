@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.62 — Motion review  ✅ 2026-10-26
+
+**Shipped.** The UI review now judges motion. Two doctrines join `ui-doctrine.md`: D11 holds chrome to restraint (purpose and frequency, ease-out, under 300 ms, `transform`/`opacity`, both reduced-motion switches) and D12 holds the world to weight (feedback scaled to the event, together at the impact, then back to rest, in the pixel register). The checklist with the numbers, the watching procedure and the motion sweep is `docs/design/ui/motion-review.md`, adapted from Emil Kowalski's animation skills (MIT) and the game-feel skill of awesome-gamedev-agent-skills (Apache-2.0); what was left out and why is recorded there. `npm run ui:motion` lints the whole UI and `ui:audit` reports the changed files' hits as *D11 motion*; the `ui-reviewer` watches motion at full speed and at reduced. **First finding, for the next patch:** Settings → Motion → Reduced does not collapse the `--motion-*` tokens (only the system preference does), so CSS transitions keep playing; the whole-UI lint also lists 47 literal durations, 15 `ease-in` (most of them the arena's physics, to be marked) and 16 layout-property animations for the sweep to sort. Evidence: `playtest/motion-review-2026-10-26/`.
+
 ### v0.9.61 — One crit mark  ✅ 2026-10-26
 
 The user's call (2026-10-26): one crit icon for every card that will crit, whatever makes it.

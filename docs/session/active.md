@@ -1,8 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-26 · **Version:** v0.9.61 (*One crit mark*).
+**Date:** 2026-10-26 · **Version:** v0.9.62 (*Motion review*).
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
-**Next:** v1.0 release; continue the user's remaining art-review blocks.
+**Next:** fix Settings → Motion → Reduced (it does not collapse the --motion-* tokens; the first D11 finding), then v1.0 and the remaining art-review blocks. The user also shortlisted the auditors (web-design-guidelines, break-ui, kill-ai-slop scanner) for later.
+**Motion review (v0.9.62):** D11 chrome / D12 world in ui-doctrine.md; checklist docs/design/ui/motion-review.md (adapted from Emil Kowalski MIT + game-feel Apache-2.0); npm run ui:motion; ui:audit reports D11 motion; ui-reviewer watches motion at full and reduced. Evidence: playtest/motion-review-2026-10-26.
 **Speed (v0.9.58–59):** §3.3.1.1 quick swap — faster than the enemy Lead (the Pokémon stepping in), 1 AP off every rung; Paralysis halves Speed. §4.1.3.1 critical rhythm — a meter per Pokémon, both sides, filled per act, Speed-tiered (player 3/4/5/6, enemy 3/3/4/4); enemy crits declared on the intent, never broken (the user's calls). v0.9.60: the rhythm as a dial on each card's outer edge (`RhythmDial`), ✦ CRIT on hand cards about to crit. v0.9.61: one ✦ badge on every card that will crit (AlwaysCrit or full rhythm); the rhythm's cards also keep the gold edge. Slow Pokémon get no compensation for now (the user's call); revisit only if the harness shows them behind.
 **B15:** Black Market Trader comparison, selected donor condition and held-item return, explicit confirmation and reduced-motion offer sprites. Evidence and independent review: playtest/art-review-2026-10-24/implementation/B15/.
 **B15 verification:** Astra/high Ship; 23 browser cases, 919 unit tests passed (3 skipped), clean audit and four Pages-prefix production smoke cases.
@@ -16,4 +17,3 @@
 **Gameplay preferences:** evolution is a surprise on Continue; HP/XP/level gains are audiovisual beats. The stat panel is temporary and nearby.
 **Shipping:** docs/release-doctrine.md; every finished unit goes to main with the next patch, changelog and all stamps.
 **Verification:** UI reviewer Ship; 13 focused browser cases pass, 918 unit tests pass with 3 skipped; isolated Pages-prefix build and four production smoke cases pass with no broken images/errors. A02/A03 review queue cleared.
-**Cleanup verification:** UI review Ship; 9 Victory Road unit cases, 3 audit CLI cases, 3 browser cases and 8 Pages-prefix production cases pass. See playtest/cleanup-2026-10-26 for logs and preserved provisional prompts.

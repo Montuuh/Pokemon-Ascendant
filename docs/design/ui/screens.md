@@ -8,7 +8,7 @@
 
 # Pokémon Ascendant — UI Screen Specifications
 
-> **Canon:** Topic 9 (`09-presentation.md`) and `ui-doctrine.md` (D1–D10).
+> **Canon:** Topic 9 (`09-presentation.md`) and `ui-doctrine.md` (D1–D12).
 > All screens follow the **Classic Pokémon Pixel Art** register (D9): authentic FRLG 16-px tile rooms and maps, Gen V battle sprites, GBA/DS pixel item/TM/relic icons, and pixel-art typography.
 
 ---

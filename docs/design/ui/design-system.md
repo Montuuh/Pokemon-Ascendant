@@ -1,7 +1,7 @@
 # UI design system
 
 > Tokens, components, motion, input and the move-card anatomy. The decisions these implement are canon in
-> **Topic 9 — Presentation** (`docs/design/09-presentation.md`) and **`docs/design/ui-doctrine.md` (D1–D10)**;
+> **Topic 9 — Presentation** (`docs/design/09-presentation.md`) and **`docs/design/ui-doctrine.md` (D1–D12)**;
 > the live token values live in `src/ui/styles/tokens.css`, and the art rules live in `docs/art/pipeline.md`.
 
 ---

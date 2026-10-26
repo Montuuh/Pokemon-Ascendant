@@ -4,7 +4,7 @@
 // screen and where the long blocks are (D1), how many doors there are (D2), plain tables and text-only grids
 // (D3), contrast failures (D5), native title= and unnamed controls (D2/D8), overflow of the viewport and content
 // spilling out of its card, at 1920×1080 and 1280×720 (D8). Then the static half over the changed files: dead CSS
-// classes, hex literals, title= in JSX (D6/D7).
+// classes, hex literals, title= in JSX (D6/D7), and the motion lint (D11/D12, scripts/lib/motion-lint.mjs).
 //
 // It does not judge. The ui-reviewer agent reads its report and the screenshots and judges.
 //
@@ -19,6 +19,7 @@ import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, unlinkSync } from 'node:fs';
 import { join, relative, resolve, dirname, basename } from 'node:path';
 import { auditHover, auditObserved, auditReady } from './lib/ui-audit-ready.mjs';
+import { formatMotion, lintMotion } from './lib/motion-lint.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const OUT = resolve(ROOT, process.env.UI_AUDIT_OUT ?? 'playtest/ui-audit');
@@ -442,9 +443,9 @@ function spills() {
   return out.sort((p, q) => q.px - p.px);
 }
 
-// ── Static checks over the changed files (D6, D7, D2) ────────────────────────────────────────────────────
+// ── Static checks over the changed files (D6, D7, D2, D11) ───────────────────────────────────────────────────
 function staticChecks(fileList) {
-  const out = { deadCss: [], hexLiterals: [], titleAttrs: [] };
+  const out = { deadCss: [], hexLiterals: [], titleAttrs: [], motion: [] };
   const srcFiles = [];
   (function walk(d) { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.(tsx|ts)$/.test(e.name)) srcFiles.push(p); } })(resolve(ROOT, 'src/ui'));
   (function walk(d) { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.(tsx|ts)$/.test(e.name)) srcFiles.push(p); } })(resolve(ROOT, 'src/app'));
@@ -453,6 +454,7 @@ function staticChecks(fileList) {
     const abs = resolve(ROOT, f);
     if (!existsSync(abs)) continue;
     const raw = readFileSync(abs, 'utf8');
+    out.motion.push(...lintMotion(f.replaceAll('\\', '/'), raw));
     // Comments blanked to the same length, so a word like `screens.md` in a note is not read as a class and a
     // hex in a note is not a literal — and line numbers still point at the right line.
     const text = f.endsWith('.css') ? raw.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' ')) : raw;
@@ -606,6 +608,10 @@ async function main() {
   report.push(`- **D7 dead CSS**: ${st.deadCss.length ? st.deadCss.map((d) => `\`${d.file}\` → ${d.classes.join(', ')}${d.users === 0 ? ' (module imported by nothing?)' : ''}`).join('; ') : 'none'}`);
   report.push(`- **D6 literals**: ${st.hexLiterals.length ? st.hexLiterals.map((h) => `\`${h.file}:${h.line}\` ${h.literal}`).join(', ') : 'none'}`);
   report.push(`- **D2 title=**: ${st.titleAttrs.length ? st.titleAttrs.map((t) => `\`${t.file}:${t.line}\``).join(', ') : 'none'}`);
+  // Evidence for D11/D12 (docs/design/ui/motion-review.md §6); the screenshots above are taken at reduced motion.
+  report.push(`- **D11 motion**: ${formatMotion(st.motion).join(' · ')}`);
+  for (const h of st.motion.slice(0, 12)) report.push(`  - [${h.rule}] \`${h.file}:${h.line}\` ${h.detail}`);
+  if (st.motion.length > 12) report.push(`  - … ${st.motion.length - 12} more: \`npm run ui:motion -- <files>\``);
   const failed = Object.values(results).filter((result) => result.status === 'failed').map((result) => result.screen);
   const summary = { requested: screens.length, captured: Object.values(results).filter((result) => result.status === 'captured').length, failed };
   const md = `# UI audit — ${new Date().toISOString().slice(0, 16).replace('T', ' ')}\n\nScreens: ${screens.join(', ') || '—'}\n\nCaptured: ${summary.captured}/${summary.requested} · Failed: ${failed.join(', ') || 'none'}\n\n${report.join('\n')}\n`;

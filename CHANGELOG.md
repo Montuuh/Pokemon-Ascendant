@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.62 — Motion review · 2026-10-26
+
+Animations now pass the same review as every screen.
+
+- **Chrome motion.** Menus and panels held to quick, responsive easing.
+- **Game feel.** Combat beats judged by the weight of each event.
+- **Motion checks.** The UI audit flags animation that reduced motion would miss.
+
 ### v0.9.61 — One crit mark · 2026-10-26
 
 Every card that will crit wears the same ✦.
