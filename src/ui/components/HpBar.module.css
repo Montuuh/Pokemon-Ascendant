@@ -44,7 +44,10 @@
   transform: translateX(-1px);
 }
 @media (prefers-reduced-motion: reduce) {
-  .loss {
+  html:not([data-motion='full']) .loss {
     animation: none;
   }
+}
+html[data-motion='reduced'] .loss {
+  animation: none;
 }

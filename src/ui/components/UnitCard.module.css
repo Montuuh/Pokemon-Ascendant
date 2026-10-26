@@ -187,3 +187,13 @@
 .info {
   background: var(--brand-cream);
 }
+
+/* D11 — a loop stops under either reduced-motion switch; its resting look carries the state. */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) .breathe {
+    animation: none;
+  }
+}
+html[data-motion='reduced'] .breathe {
+  animation: none;
+}

@@ -185,13 +185,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fx-shake,
-  .fx-lunge-right,
-  .fx-lunge-left,
-  .fx-card-in,
-  .fx-pop,
-  .fx-shiny,
-  .fx-quake {
+  html:not([data-motion='full']) .fx-shake,
+  html:not([data-motion='full']) .fx-lunge-right,
+  html:not([data-motion='full']) .fx-lunge-left,
+  html:not([data-motion='full']) .fx-card-in,
+  html:not([data-motion='full']) .fx-pop,
+  html:not([data-motion='full']) .fx-shiny,
+  html:not([data-motion='full']) .fx-quake {
     animation: none;
   }
 }
@@ -206,9 +206,9 @@
  * settles — and killing those outright would leave numbers stuck mid-air or hide them entirely.
  */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  html:not([data-motion='full']) *,
+  html:not([data-motion='full']) *::before,
+  html:not([data-motion='full']) *::after {
     animation-iteration-count: 1 !important;
   }
 }
@@ -234,15 +234,6 @@ html[data-motion='reduced'] *,
 html[data-motion='reduced'] *::before,
 html[data-motion='reduced'] *::after {
   animation-iteration-count: 1 !important;
-}
-
-/* The other direction: full motion even when the system asks for less. */
-@media (prefers-reduced-motion: reduce) {
-  html[data-motion='full'] *,
-  html[data-motion='full'] *::before,
-  html[data-motion='full'] *::after {
-    animation-iteration-count: revert !important;
-  }
 }
 
 /*
@@ -374,12 +365,12 @@ html[data-motion='reduced'] *::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fx-sendout img,
-  .fx-burst img,
-  .fx-wild-enter img,
-  .fx-ghost-faint img,
-  .fx-sendout::before,
-  .fx-burst::before {
+  html:not([data-motion='full']) .fx-sendout img,
+  html:not([data-motion='full']) .fx-burst img,
+  html:not([data-motion='full']) .fx-wild-enter img,
+  html:not([data-motion='full']) .fx-ghost-faint img,
+  html:not([data-motion='full']) .fx-sendout::before,
+  html:not([data-motion='full']) .fx-burst::before {
     animation: none;
   }
 }

@@ -399,6 +399,37 @@ test.describe('Settings — §9.6', () => {
     await page.getByTestId('motion-system').click();
     expect(await page.locator('html').getAttribute('data-motion')).toBeNull();
   });
+
+  test('both switches collapse the motion tokens, and Full brings them back — §9.6, D11', async ({ page }) => {
+    const base = () => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--motion-base').trim());
+    await menu(page);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/?screen=settings');
+    expect(await base()).toBe('220ms');
+    await page.getByTestId('motion-reduced').click();
+    expect(await base(), 'Settings → Reduced stops token-timed transitions').toBe('0ms');
+    await page.getByTestId('motion-full').click();
+    expect(await base()).toBe('220ms');
+
+    // The system asks for less: System obeys it, Full overrides it.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.getByTestId('motion-system').click();
+    expect(await base()).toBe('0ms');
+    await page.getByTestId('motion-full').click();
+    expect(await base(), 'Settings → Full wins over the system preference').toBe('220ms');
+    // Loops too: the blanket cap that plays a loop once must not reach a page under Full.
+    const loops = () => page.evaluate(() => {
+      const el = document.createElement('div');
+      el.style.animation = 'none 1s infinite';
+      document.body.append(el);
+      const count = getComputedStyle(el).animationIterationCount;
+      el.remove();
+      return count;
+    });
+    expect(await loops(), 'Settings → Full keeps a loop looping').toBe('infinite');
+    await page.getByTestId('motion-system').click();
+    expect(await loops(), 'the system preference caps a loop at one play').toBe('1');
+  });
 });
 
 test('a medal case from before the rename becomes the first account, paid what it was worth', async ({ page }) => {

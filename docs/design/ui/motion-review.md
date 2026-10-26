@@ -90,9 +90,17 @@ A routine hit dressed as heavy is a Should; so is a faint as light as a tap.
 
 Reduced motion is two switches: the system's `prefers-reduced-motion`, and Settings' `data-motion` on `<html>`
 (`reduced` or `full`, which wins either way; §9.6). Under reduced, §9.9 decides what stays: bars jump, beats are
-instant, numbers keep their hold and fade. A motion stopped by one switch and not the other is a Blocker. The usual
-leak is a literal duration (`1.2s`) — the tokens collapse to 0 ms and a literal does not — and JS motion that does not
-ask `useMotionPref()`.
+instant, numbers keep their hold and fade, loops stop (their resting look carries the state). A motion stopped by one
+switch and not the other is a Blocker. The usual leaks are a literal duration (`1.2s`) — the tokens collapse to 0 ms
+and a literal does not — JS motion that does not ask `useMotionPref()`, and a `prefers-reduced-motion` rule written
+alone. The shape that obeys both, as in `RewardTrack.module.css`:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) .pulse { animation: none; }
+}
+html[data-motion='reduced'] .pulse { animation: none; }
+```
 
 ## 5. Watching it
 
@@ -123,6 +131,10 @@ audit reads only the changed files) and reports:
 | `scale-zero` | `scale(0)`, or `scale: 0` in a Motion `initial` | D11 Should |
 | `literal-duration` | A duration or delay in `transition`/`animation` that is not a token (`0` and offsets inside `calc()` are fine) | D11 Blocker if it outlives reduced motion, else D6 |
 | `ungated-motion` | A file that uses `motion/react` or `.animate(` without `useMotionPref` | D11 Blocker |
+| `one-switch` | A `prefers-reduced-motion` rule not scoped to `html:not([data-motion='full'])`, or with no `html[data-motion='reduced']` twin | D11 Blocker |
+
+`ungated-motion` and `one-switch` are held at zero across the whole UI by `src/ui/styles/tokens.test.ts`, which also
+checks that both of `tokens.css`'s collapse blocks list every `--motion-*` duration — so they fail `npm run check`.
 
 `/* motion-ok: <reason> */` (or `// motion-ok: <reason>`) on the line or the line above silences one hit; the reason
 is required and the reviewer reads it.

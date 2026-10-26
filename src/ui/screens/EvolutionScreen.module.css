@@ -406,8 +406,8 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .portraitWrap::before,
-  .portrait {
+  html:not([data-motion='full']) .portraitWrap::before,
+  html:not([data-motion='full']) .portrait {
     animation: none;
   }
 }

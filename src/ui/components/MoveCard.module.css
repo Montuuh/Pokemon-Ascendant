@@ -197,7 +197,14 @@
   animation: critEdge 1.1s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .crit::after { animation: none; box-shadow: 0 0 0 2px var(--accent-action), 0 0 14px var(--accent-action); }
+  html:not([data-motion='full']) .crit::after {
+    animation: none;
+    box-shadow: 0 0 0 2px var(--accent-action), 0 0 14px var(--accent-action);
+  }
+}
+html[data-motion='reduced'] .crit::after {
+  animation: none;
+  box-shadow: 0 0 0 2px var(--accent-action), 0 0 14px var(--accent-action);
 }
 .mech {
   position: absolute;
@@ -310,4 +317,14 @@
 }
 .typeLabel {
   flex: 0 0 auto;
+}
+
+/* D11 — a loop stops under either reduced-motion switch; its resting look carries the state. */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) .selected {
+    animation: none;
+  }
+}
+html[data-motion='reduced'] .selected {
+  animation: none;
 }

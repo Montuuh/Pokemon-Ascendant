@@ -116,6 +116,21 @@ export function lintMotion(file, raw) {
         if (LAYOUT.test(m[1])) hit(k.index + m.index + m[0].indexOf(m[1]), 'layout-property', `@keyframes sets ${m[1]}`);
       }
     }
+    // Both switches (§9.6): a reduced-motion rule written for the system's preference also needs Settings — scoped
+    // to html:not([data-motion='full']) so Full wins, and a html[data-motion='reduced'] twin so Reduced obeys.
+    for (const m of text.matchAll(/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{/g)) {
+      let depth = 1, i = m.index + m[0].length;
+      for (; i < text.length && depth > 0; i++) { if (text[i] === '{') depth++; else if (text[i] === '}') depth--; }
+      const inner = text.slice(m.index + m[0].length, i - 1);
+      for (const r of inner.matchAll(/([^{}]+)\{[^{}]*\}/g)) {
+        for (const raw of r[1].split(',').map((s) => s.trim()).filter(Boolean)) {
+          if (/^(:global\()?html\[data-motion/.test(raw) || raw.startsWith(':root')) continue;
+          const base = raw.replace(/^(:global\()?html:not\(\[data-motion='full'\]\)\)?\s*/, '');
+          const twin = text.includes(`[data-motion='reduced'] ${base}`) || text.includes(`[data-motion='reduced']) ${base}`);
+          if (base === raw || !twin) hit(m.index, 'one-switch', `${base} — ${base === raw ? 'Settings → Full cannot restore it' : ''}${base === raw && !twin ? '; ' : ''}${twin ? '' : 'Settings → Reduced does not stop it'}`);
+        }
+      }
+    }
     // `scale: 0 1` is a line growing along its length (a beam), not a thing appearing from nothing.
     for (const m of text.matchAll(/scale\(\s*0(?:\s*,\s*0)?\s*\)|(?:^|[;{\s])scale\s*:\s*0(?:\s+0)?\s*(?=[;}]|$)/gm)) hit(m.index, 'scale-zero', m[0].trim());
   } else {

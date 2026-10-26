@@ -89,6 +89,16 @@
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
 }
 @media (prefers-reduced-motion: reduce) {
-  .dial,
-  .star { animation: none; transition: none; }
+  html:not([data-motion='full']) .dial,
+  html:not([data-motion='full']) .star,
+  html:not([data-motion='full']) .ready {
+    animation: none;
+    transition: none;
+  }
+}
+html[data-motion='reduced'] .dial,
+html[data-motion='reduced'] .star,
+html[data-motion='reduced'] .ready {
+  animation: none;
+  transition: none;
 }

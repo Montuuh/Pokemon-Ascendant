@@ -239,9 +239,12 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sparkles i {
+  html:not([data-motion='full']) .sparkles i {
     animation: none;
   }
+}
+html[data-motion='reduced'] .sparkles i {
+  animation: none;
 }
 
 /* The pick instruction belongs to the top bar, leaving the stage and Badge unobstructed. */

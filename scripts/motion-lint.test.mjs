@@ -55,6 +55,20 @@ test('comments are not read as rules, and hits carry their line', () => {
   assert.deepEqual(formatMotion([]), ['none']);
 });
 
+test('a reduced-motion rule needs both switches: the Full escape and the Reduced twin', () => {
+  const osOnly = '@media (prefers-reduced-motion: reduce) {\n  .loss { animation: none; }\n}';
+  assert.deepEqual(rules('a.module.css', osOnly), ['one-switch']);
+  const noTwin = "@media (prefers-reduced-motion: reduce) {\n  html:not([data-motion='full']) .loss { animation: none; }\n}";
+  assert.deepEqual(rules('a.module.css', noTwin), ['one-switch']);
+  const both = `${noTwin}\nhtml[data-motion='reduced'] .loss { animation: none; }`;
+  assert.deepEqual(rules('a.module.css', both), []);
+  // A bare `*` cap cannot be undone by Full: `revert` from an author sheet returns 1, not the component's `infinite`.
+  const bareCap = '@media (prefers-reduced-motion: reduce) {\n  * { animation-iteration-count: 1 !important; }\n}';
+  assert.deepEqual(rules('a.module.css', bareCap), ['one-switch']);
+  const cap = `@media (prefers-reduced-motion: reduce) {\n  html:not([data-motion='full']) * { animation-iteration-count: 1 !important; }\n}\nhtml[data-motion='reduced'] * { animation-iteration-count: 1 !important; }`;
+  assert.deepEqual(rules('a.module.css', cap), []);
+});
+
 test('files that are neither CSS nor TS are ignored', () => {
   assert.deepEqual(rules('notes.md', 'transition: all 300ms ease-in;'), []);
 });

@@ -190,12 +190,12 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fallen {
+  html:not([data-motion='full']) .fallen {
     animation: none;
     opacity: 0;
   }
 }
-:global(html[data-motion='reduced']) .fallen {
+html[data-motion='reduced'] .fallen {
   animation: none;
   opacity: 0;
 }
@@ -348,4 +348,14 @@
 /* A chip that wraps breaks at the arrow, never inside "Lead (Charmander)" or between a number and "dmg". */
 .nowrap {
   white-space: nowrap;
+}
+
+/* D11 — a loop stops under either reduced-motion switch; its resting look carries the state. */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) .card.targetable {
+    animation: none;
+  }
+}
+html[data-motion='reduced'] .card.targetable {
+  animation: none;
 }

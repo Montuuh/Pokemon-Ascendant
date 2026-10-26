@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.63 — Reduced motion, both ways · 2026-10-26
+
+The motion setting now wins over the device in both directions.
+
+- **Reduce motion.** Stops transitions, pulses and breathing, as the device setting does.
+- **Full motion.** Shakes, lunges and loops return even if the device asks for less.
+- **Guarded.** A check fails the build if a style obeys only one of the two.
+
 ### v0.9.62 — Motion review · 2026-10-26
 
 Animations now pass the same review as every screen.

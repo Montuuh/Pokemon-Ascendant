@@ -189,8 +189,11 @@
   --scrim: rgba(26, 18, 28, 0.66);
 }
 
+/* §9.6, D11 — both switches collapse the motion tokens: the system's preference (unless Settings says Full) and
+   Settings' Reduced, which `settingsStore` writes as `data-motion` on <html>. The two blocks list the same tokens;
+   `tokens.test.ts` holds them to every duration token on :root. */
 @media (prefers-reduced-motion: reduce) {
-  :root {
+  :root:not([data-motion='full']) {
     --motion-fast: 0ms;
     --motion-base: 0ms;
     --motion-slow: 0ms;
@@ -203,4 +206,17 @@
     --motion-ring-pulse: 0ms;
     --motion-dash-flow: 0ms;
   }
+}
+:root[data-motion='reduced'] {
+  --motion-fast: 0ms;
+  --motion-base: 0ms;
+  --motion-slow: 0ms;
+  --motion-spin: 0ms;
+  --motion-reel: 0ms;
+  --motion-reel-stagger: 0ms;
+  --motion-weather-rain: 0ms;
+  --motion-weather-sand: 0ms;
+  --motion-weather-spark: 0ms;
+  --motion-ring-pulse: 0ms;
+  --motion-dash-flow: 0ms;
 }

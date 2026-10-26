@@ -96,7 +96,10 @@
     0 6px 14px rgba(0, 0, 0, 0.4);
 }
 @media (prefers-reduced-motion: reduce) {
-  .cell[data-state='spend'] {
+  html:not([data-motion='full']) .cell[data-state='spend'] {
     animation: none;
   }
+}
+html[data-motion='reduced'] .cell[data-state='spend'] {
+  animation: none;
 }
