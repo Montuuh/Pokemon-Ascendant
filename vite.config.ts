@@ -14,7 +14,9 @@ export default defineConfig({
   base: process.env.VITE_BASE ?? '/',
   plugins: [react()],
   // Playwright writes HTML traces and review exports here; those artifacts must not reload an active game.
-  server: { watch: { ignored: ['**/playtest/**'] } },
+  // The port is PW_PORT's when set (default 5173), and never another: the e2e and the audit check who answers there
+  // (scripts/lib/dev-server.mjs) — another project's Vite once held :5173.
+  server: { port: Number(process.env.PW_PORT ?? 5173), strictPort: true, watch: { ignored: ['**/playtest/**'] } },
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },

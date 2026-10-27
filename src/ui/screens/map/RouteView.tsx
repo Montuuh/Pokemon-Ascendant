@@ -6,7 +6,7 @@ import { NodeMarker, type NodeStatus } from '@/ui/components/NodeMarker';
 import { landmarkName, nodeArt, nodeLabel } from '@/ui/components/nodeArt';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { FIELD_LABEL, ROUTE_TEXT } from '@/ui/strings';
-import { fieldTip, mapLabelsTip, noReturnTip } from '@/ui/tips';
+import { mapLabelsTip, noReturnTip } from '@/ui/tips';
 import { Tipped, useTip } from '@/ui/tooltip';
 import { mapTerrain, COL_TILES } from './terrain';
 import { loadPieces, paintTerrain, piecesFor, TILE } from './tileset';
@@ -99,6 +99,67 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   const boardW = terrain.w * px;
   const behavior: ScrollBehavior = animate ? 'smooth' : 'auto';
 
+  // §2.5.4 — each lane's tag is a label at its mouth: on its lane's top edge, or else its bottom one, a few steps along
+  // to clear the art and the captions there (on a lane with no clear spot, the one covering the least of heads and words). It takes no pointer (the field's explanation is a chip in the preview of every node of the
+  // lane), so it can never cost a node its click — the nodes stand so close at 720 p that no spot is free of them all
+  // (v0.9.72). It walks at most two columns, never into the Gym's, and reckons every node's caption whether Labels shows
+  // it or not, so a toggle never moves it. Measured after layout, in half tiles; the effect owns its `left` and `top`.
+  const board = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    const el = board.current;
+    if (!el) return;
+    const nodes = [...el.querySelectorAll('[data-testid^="node-"][data-kind]')].map((b) => b.getBoundingClientRect());
+    // A node's caption, where it hangs when Labels shows it: under its box, about a column wide.
+    const reach = COL_TILES * px * 0.5;
+    const captions = [
+      ...nodes.map((b) => ({ left: (b.left + b.right) / 2 - reach, right: (b.left + b.right) / 2 + reach, top: b.bottom, bottom: b.bottom + px * 1.75 })),
+      ...[...el.querySelectorAll('[data-testid^="node-"][data-kind] [data-chip]')].map((b) => b.getBoundingClientRect()),
+    ];
+    const pill = [...el.querySelectorAll('[data-testid="no-return"]')].map((b) => b.getBoundingClientRect());
+    const gymX = (lane: number) => Math.min(...Object.values(run.map.nodes).filter((n) => n.kind === 'gym' && n.lane === lane).map((n) => terrain.at[n.id]!.x));
+    // A person's head is the top of its box: covering it is worse than covering the ground at its feet.
+    const heads = nodes.map((b) => ({ left: b.left, right: b.right, top: b.top, bottom: b.top + (b.bottom - b.top) * 0.6 }));
+    const boardTop = el.getBoundingClientRect().top;
+    for (const tag of el.querySelectorAll<HTMLElement>('[data-testid="weather-tag"]')) {
+      const lane = Number(tag.dataset.lane);
+      const zone = terrain.lanes.find((l) => l.lane === lane);
+      if (!zone) continue;
+      // From its mouth on its top edge, measured where it is drawn there.
+      tag.style.left = `${(zone.x0 + 4) * px}px`;
+      tag.style.top = `${(zone.y0 + 0.5) * px}px`;
+      const box = tag.getBoundingClientRect();
+      const edges = [(zone.y0 + 0.5) * px, (zone.y1 - 0.5) * px - box.height];
+      const area = (b: { left: number; right: number; top: number; bottom: number }, step: number, top: number) => {
+        const l = box.left + step * px, y = boardTop + top;
+        return Math.max(0, Math.min(b.right, l + box.width) - Math.max(b.left, l)) * Math.max(0, Math.min(b.bottom, y + box.height) - Math.max(b.top, y));
+      };
+      // Two columns at most, and its right edge short of the Gym's column by half a column.
+      const last = Math.min(2 * COL_TILES, gymX(lane) - COL_TILES / 2 - (zone.x0 + 4) - box.width / px);
+      const spots: { step: number; top: number; cost: number }[] = [];
+      for (const top of edges) {
+        // From the lane's own edge by the river (its mouth sits four tiles in), never back across it.
+        for (let step = -3.5; step <= last; step += 0.5) {
+          const blocked = [...nodes, ...captions, ...pill].reduce((n, b) => n + area(b, step, top), 0);
+          // Clear of everything wins at once; otherwise the least of heads and words covered.
+          // A covered word cannot be read; a covered head is often its transparent margin — words weigh four times.
+          const cost = blocked === 0 ? 0 : 1 + heads.reduce((n, b) => n + area(b, step, top), 0) + 4 * [...captions, ...pill].reduce((n, b) => n + area(b, step, top), 0);
+          spots.push({ step, top, cost });
+        }
+      }
+      // …and never a node's face or body (its point) while a spot that spares them all is left: a tag across a figure
+      // reads as that node's name.
+      const faces = nodes.flatMap((b) => [0.35, 0.6].map((k) => ({ x: (b.left + b.right) / 2, y: b.top + (b.bottom - b.top) * k })));
+      const spares = (s: { step: number; top: number }) => !faces.some((p) => p.x > box.left + s.step * px - 4 && p.x < box.left + s.step * px + box.width + 4 && p.y > boardTop + s.top - 4 && p.y < boardTop + s.top + box.height + 4);
+      const cheapest = (list: typeof spots) => list.reduce((a, b) => (b.cost < a.cost ? b : a), list[0]!);
+      const sparing = spots.filter(spares);
+      const best = spots.find((s) => s.cost === 0) ?? (sparing.length ? cheapest(sparing) : cheapest(spots));
+      if (best) {
+        tag.style.left = `${(zone.x0 + 4 + best.step) * px}px`;
+        tag.style.top = `${best.top}px`;
+      }
+    }
+  }, [px, terrain, run.map]);
+
   // §9.3 — the view follows the player: where you stand after every node, the node you are looking at when its
   // preview opens, the route's start before the first step.
   const focusId = run.pendingNodeId ?? run.position ?? null;
@@ -110,8 +171,8 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
     el.scrollTo({ left: Math.max(0, target), behavior: focusId ? behavior : 'auto' });
   }, [focusId, px, terrain, behavior]);
 
-  // A mouse wheel scrolls the route sideways; dragging the terrain pans it. A press on a node, a weather tag or the
-  // river's pill is theirs, not a drag.
+  // A mouse wheel scrolls the route sideways; dragging the terrain pans it. A press on a node or the river's pill is
+  // theirs, not a drag (a lane's tag takes no pointer: a press there is the node's under it, or the terrain's).
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
@@ -180,7 +241,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   return (
     <div className={styles.root}>
       <div ref={scroller} className={styles.scroller} tabIndex={0} onKeyDown={onKey} aria-label={ROUTE_TEXT.scroller} data-testid="route-scroller">
-        <div className={styles.board} style={{ width: boardW, height: terrain.h * px, '--node-scale': nodeScale, '--node-label-size': `${Math.min(16, 12 + nodeScale)}px`, '--column-reach': `${Math.floor((COL_TILES * px) / 2) - 8}px`, '--reach': `${(Math.floor((COL_TILES * px) / 2) - 8) / nodeScale}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
+        <div ref={board} className={styles.board} style={{ width: boardW, height: terrain.h * px, '--node-scale': nodeScale, '--node-label-size': `${Math.min(16, 12 + nodeScale)}px`, '--column-reach': `${Math.floor((COL_TILES * px) / 2) - 8}px`, '--reach': `${(Math.floor((COL_TILES * px) / 2) - 8) / nodeScale}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
           <canvas ref={canvas} className={styles.terrain} style={{ width: boardW, height: terrain.h * px }} aria-hidden="true" />
 
           {/* §2.5.4 — each lane's Battlefield, drawn over its stretch as weather (named after the nodes, below). */}
@@ -223,16 +284,15 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
             );
           })}
 
-          {/* §2.5.4 — each lane named at its mouth, on its top edge: the lower lane's on the split between the rows, never
-              at the board's foot, where the bottom row's captions and the Labels toggle hang. Drawn after the nodes and
-              above them, so the tag takes the pointer, not the hit box of a node standing behind it (v0.9.69). */}
+          {/* §2.5.4 — each lane named at its mouth, on its top or bottom edge (the effect above places it). Drawn above the nodes to be read, and taking no pointer, so a node under
+              it keeps its click; the field is explained in each of the lane's node previews. */}
           {terrain.lanes.map((z) => {
             const field = laneField(run, z.lane);
             if (!field) return null;
             return (
-              <Tipped key={z.lane} tip={fieldTip(field)} className={styles.weatherTag} style={{ left: (z.x0 + 4) * px, top: (z.y0 + 0.5) * px }} data-field={field} data-testid="weather-tag">
+              <span key={z.lane} className={styles.weatherTag} data-field={field} data-lane={z.lane} data-testid="weather-tag">
                 {FIELD_LABEL[field]}
-              </Tipped>
+              </span>
             );
           })}
         </div>

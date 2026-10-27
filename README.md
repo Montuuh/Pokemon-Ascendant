@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.72 — Room to point.** A lane's weather tag is a label that never takes a node's click, placed clear of the captions; the UI audit now flags any control whose centre belongs to something else, and `npm run ui:film` records a beat in real time as a contact sheet. Before it,
 **v0.9.71 — Settled pictures.** The Summit layout e2e waits for each picture to load or fail before counting broken ones; under load it counted an offer still loading. No game change. Before it,
 **v0.9.70 — Same map every run.** A run started from the menu takes a deep link's seed (`/?screen=menu&seed=7`), so the e2e that walk the new-run steps meet the same map every time; the suite runs four workers. No game change for a player. Before it,
 **v0.9.69 — Heads and captions.** The route no longer cuts its top row's heads or its bottom row's captions at 720p: more ground above the first row when a node stands in it, a board that always fits its height, and the lower lane's weather tag on the split, clear of the captions. Before it,

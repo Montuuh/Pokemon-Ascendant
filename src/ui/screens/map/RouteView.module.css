@@ -140,12 +140,12 @@
   pointer-events: none;
   overflow: hidden;
 }
-/* Above the nodes (their hover lifts them to 2, a chip to 3): the tag takes its own pointer. */
+/* Above the nodes (their hover lifts them to 2, a chip to 3), to be read; a label, so the pointer passes through to the
+   node under it. */
 .weatherTag {
   position: absolute;
   z-index: 4;
-  pointer-events: auto;
-  cursor: help;
+  pointer-events: none;
   padding: 2px var(--sp-3);
   border-radius: var(--radius-pill);
   background: var(--surface-0);

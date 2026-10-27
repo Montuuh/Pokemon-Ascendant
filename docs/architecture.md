@@ -145,7 +145,10 @@ singleton. Tests assert every referenced asset exists on disk. Ids are permanent
 Every test is seeded, e2e included: a fixture by `&seed=<n>`, a run started from the menu by `/?screen=menu&seed=<n>`
 (the starter screen reads it through `entryRunSeed`; a player's run, with no seed in the address, draws its own).
 A random map once made a layout test pass on some runs and fail on most. `npm run e2e` runs four workers
-(`PW_WORKERS` overrides): more starves the one dev server and the canvas-heavy cases time out.
+(`PW_WORKERS` overrides): more starves the one dev server and the canvas-heavy cases time out. The dev server's port is
+`PW_PORT` (default 5173; Vite, Playwright, `ui:audit` and `ui:film` all read it), and nothing measures a server until
+its page says it is Pokémon Ascendant (`scripts/lib/dev-server.mjs`, `e2e/global-setup.ts`): another project's Vite once
+held :5173, and a reused server would have been someone else's app.
 
 ## 8. Persistence
 Per §10.8. `sim/run/save.ts` turns a `RunState` into a checksummed envelope and back; *where* that string

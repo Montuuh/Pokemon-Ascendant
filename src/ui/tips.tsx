@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { fieldsFor, groupPlanFor, wildChancesFor, type PartyMon, type RunState } from '@/sim';
+import { battlefields, fieldsFor, groupPlanFor, wildChancesFor, type PartyMon, type RunState } from '@/sim';
 import { nodeHint } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
@@ -51,7 +51,7 @@ export function routeNodeTip(node: MapNode, run: RunState, art: string, kind: st
     : node.kind === 'training' ? 'Paid training for the team before the final climb. Inspect the available upgrades and prices before choosing.'
     : node.kind === 'mystery' ? null : p.detail;
   return <NodeHover heading={p.title} art={art} available={status === 'reachable'} access={access}
-    facts={[...(titleSays(p.title, kind) ? [] : [kind]), ...(visibleLevel ? [`Lv ${p.levelBand[0]}–${p.levelBand[1]}`] : []), ...(p.usualTypes?.length ? [`Usually ${p.usualTypes.map(typeName).join(' · ')}`] : []), ...(group ? [group] : []), ...Object.keys(fields).map((id) => id === 'home' ? `Home field: ${typeName(String(fields.home))}` : FIELD_LABEL[id as keyof typeof FIELD_LABEL]).filter((label): label is string => Boolean(label))]}
+    facts={[...(titleSays(p.title, kind) ? [] : [kind]), ...(visibleLevel ? [`Lv ${p.levelBand[0]}–${p.levelBand[1]}`] : []), ...(p.usualTypes?.length ? [`Usually ${p.usualTypes.map(typeName).join(' · ')}`] : []), ...(group ? [group] : []), ...battlefields(fields).map((id) => FIELD_LABEL[id]).filter((label): label is string => Boolean(label)), ...(fields.home ? [`Home field: ${typeName(String(fields.home))}`] : [])]}
     detail={detail} hint={nodeHint(node)} pool={pool} chances={odds?.chances} />;
 }
 

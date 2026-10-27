@@ -118,6 +118,22 @@ document.getAnimations().forEach((a) => (a.playbackRate = 0.25));
 Then once with Settings → Motion → Reduced, and say what stopped and what did not. What could only be judged by
 eye — whether a curve feels right — is reported as *not verified* with what was tried, never as a pass.
 
+**The film** (`npm run ui:film`): a beat seen in real time, as one picture. The browser pane throttles a hidden page
+(frames skipped, timers late), so stepping there shows where things are, not how they move. The film opens the screen
+in its own headless Chrome, which paints every frame, records it with the DevTools screencast — each frame stamped
+with its time, kept only when the screen changed — and lays the frames out as a contact sheet with their times:
+
+```bash
+npm run ui:film -- --url "/?scenario=wild-basic&seed=7" \
+  --act "document.querySelector('[data-testid^=\"card-\"][data-state=\"playable\"]').click(); setTimeout(() => document.querySelector('[data-testid^=\"enemy-\"]').click(), 120)" \
+  --ms 1600 --every 2 --clip 640,60,640,420 --out playtest/motion-film/hit.png
+```
+
+`--setup` and `--act` run in the page with `a` = `window.__ascendant`; `--clip x,y,w,h` crops to what moves;
+`--motion reduce` films the reduced path. Read the sheet for the order of things (the number with the flash, the bar
+after the hold), the distance and the time between frames; a long gap with no frame is a moment nothing changed. It
+still does not tell whether a curve *feels* right — that stays *not verified* unless someone watched it.
+
 ## 6. The lint (`npm run ui:motion`)
 
 Deterministic evidence, not a verdict. It reads every `.css`, `.tsx` and `.ts` under `src/ui` and `src/app` (the

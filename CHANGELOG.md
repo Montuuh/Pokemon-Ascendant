@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.72 — Room to point · 2026-10-27
+
+Lane tags find a free spot, and the UI review sees clicks and motion.
+
+- **Lane tags.** Labels that take no click; the lane's nodes name the weather.
+- **Pointer check.** The UI audit flags controls something else covers.
+- **Motion film.** A beat recorded in real time as one contact sheet.
+- **Our server.** Tests and audits refuse a dev server that is not this game.
+
 ### v0.9.71 — Settled pictures · 2026-10-27
 
 The Summit layout check waits for its pictures before counting them.

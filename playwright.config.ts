@@ -7,9 +7,13 @@ import { defineConfig, devices } from '@playwright/test';
 // Chromium — the CDN download timed out on this machine and system Chrome is always present here.
 // Override with PW_CHANNEL=chromium once `npx playwright install chromium` succeeds, or PW_CHANNEL=msedge.
 const channel = process.env.PW_CHANNEL ?? 'chrome';
+// The dev server's port: PW_PORT (Vite reads it too), 5173 by default. e2e/global-setup.ts refuses a server on it that
+// is not this game — another project's Vite on :5173 would otherwise be "reused" and measured.
+const port = Number(process.env.PW_PORT ?? 5173);
 
 export default defineConfig({
   testDir: './e2e',
+  globalSetup: './e2e/global-setup.ts',
   outputDir: './playtest/test-results',
   timeout: 30_000,
   retries: 0,
@@ -19,7 +23,7 @@ export default defineConfig({
   workers: Number(process.env.PW_WORKERS ?? 4),
   reporter: [['list']],
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: `http://localhost:${port}`,
     trace: 'retain-on-failure',
     // §9.9 — the screens are asserted still: the arena's beats (a Pokémon sent out, fainting, the catch) hold a sprite
     // hidden or the outcome back for a moment, and a test acts at once. `e2e/animations.spec.ts` turns motion on.
@@ -27,7 +31,8 @@ export default defineConfig({
   },
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5173',
+    url: `http://localhost:${port}`,
+    env: { PW_PORT: String(port) },
     reuseExistingServer: true,
     timeout: 60_000,
   },

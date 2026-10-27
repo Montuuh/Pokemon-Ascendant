@@ -364,14 +364,21 @@ test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', asy
 // §9.3 — a map whose first and last rows hold nodes (seed 2), Labels on: every picture stands inside the board, heads
 // included, and every caption and lane tag hangs inside it, with nothing hidden above or below — the route scrolls
 // sideways only (v0.9.69: the top row's heads were cut off, then a taller board cut the bottom row's captions).
-test("the map keeps its top row's heads and its bottom row's captions at 1280x720", async ({ page }) => {
+// Seed 2 is the tallest map; seed 7's lower lane and Region 2's on seed 4 are so dense at 720 p that no spot on the
+// split is free of nodes.
+for (const [seed, region] of [[2, 1], [7, 1], [4, 2]] as const) test(`the map keeps its top row's heads and its bottom row's captions at 1280x720 (seed ${seed}, Region ${region})`, async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto('/?screen=menu');
-  await page.evaluate(() => {
-    const a = (window as unknown as { __ascendant: { run: Record<string, (...x: unknown[]) => unknown>; goTo: (s: string) => void } }).__ascendant;
-    a.run.new!('squirtle', 2);
+  await page.evaluate(([s, reg]) => {
+    type Dev = { run: { new: (st: string, s: number) => void; city: (i: number) => void; dispatch: (a: unknown) => boolean; state: () => { city: { reflection: string[] } } }; goTo: (s: string) => void };
+    const a = (window as unknown as { __ascendant: Dev }).__ascendant;
+    a.run.new('squirtle', s);
+    if (reg === 2) {
+      a.run.city(0);
+      a.run.dispatch({ type: 'depart-city', modifierId: a.run.state().city.reflection[0] ?? null });
+    }
     a.goTo('map');
-  });
+  }, [seed, region] as const);
   await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
   const toggle = page.getByTestId('map-labels');
   if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click();
@@ -393,16 +400,42 @@ test("the map keeps its top row's heads and its bottom row's captions at 1280x72
     return boxes('[data-testid="weather-tag"]').filter((t) => chips.some((c) => c.left < t.right - 1 && c.right > t.left + 1 && c.top < t.bottom - 1 && c.bottom > t.top + 1)).length;
   });
   expect(covered).toBe(0);
-  // …and it takes its own pointer, over the hit box of any node standing behind it.
-  const tags = await page.getByTestId('weather-tag').all();
-  expect(tags.length).toBeGreaterThan(0);
-  for (const tag of tags) {
-    await tag.scrollIntoViewIfNeeded();
-    const reached = await tag.evaluate((t) => {
-      const r = t.getBoundingClientRect();
-      return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('[data-testid="weather-tag"]') === t;
+  // …a label, not a door: it takes no pointer (the field is a chip in each of the lane's previews), stays within two
+  // columns of its mouth, and holds its place when Labels is toggled.
+  const tags = page.getByTestId('weather-tag');
+  expect(await tags.count()).toBeGreaterThan(0);
+  expect(await tags.evaluateAll((ts) => ts.map((x) => getComputedStyle(x).pointerEvents))).toEqual(Array(await tags.count()).fill('none'));
+  const lefts = () => tags.evaluateAll((ts) => ts.map((x) => (x as HTMLElement).style.left));
+  const before = await lefts();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  expect(await lefts()).toEqual(before);
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  // The label is no door, so the lane's nodes name its field: hover one of the lower lane's, and its bubble says it.
+  const lower = page.locator('[data-testid="weather-tag"][data-lane="1"]');
+  if (await lower.count()) {
+    const field = (await lower.textContent())!.trim();
+    const id = await page.evaluate(() => Object.values(window.__ascendant!.run.state()!.map.nodes).find((n) => n.lane === 1 && n.kind === 'trainer')?.id);
+    const node = page.getByTestId(`node-${id}`);
+    await node.scrollIntoViewIfNeeded();
+    await node.hover();
+    await expect(page.getByTestId('node-hover')).toContainText(field);
+  }
+  // …and no tag takes a node's own point: every node in sight owns the centre of its hit box, at both ends of the route.
+  for (const left of [0, 99999]) {
+    await scroller.evaluate((el, l) => el.scrollTo({ left: l, behavior: 'instant' as ScrollBehavior }), left);
+    const lost = await page.evaluate(() => {
+      const sc = document.querySelector('[data-testid="route-scroller"]')!.getBoundingClientRect();
+      return [...document.querySelectorAll<HTMLElement>('[data-testid^="node-"][data-kind]')].filter((n) => {
+        const b = n.getBoundingClientRect();
+        const x = (b.left + b.right) / 2, y = (b.top + b.bottom) / 2;
+        if (x < sc.left || x > sc.right) return false;
+        const hit = document.elementFromPoint(x, y);
+        return !!hit && hit !== n && !n.contains(hit) && !!hit.closest('[data-testid="weather-tag"], [data-testid="no-return"]');
+      }).map((n) => n.getAttribute('data-testid'));
     });
-    expect(reached, await tag.textContent() ?? '').toBe(true);
+    expect(lost, `scrolled to ${left}`).toEqual([]);
   }
 });
 

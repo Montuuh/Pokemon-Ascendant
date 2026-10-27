@@ -21,12 +21,13 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, unlink
 import { join, relative, resolve, dirname, basename } from 'node:path';
 import { auditHover, auditObserved, auditReady } from './lib/ui-audit-ready.mjs';
 import { formatMotion, lintMotion } from './lib/motion-lint.mjs';
+import { assertOurServer, devBase } from './lib/dev-server.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const OUT = resolve(ROOT, process.env.UI_AUDIT_OUT ?? 'playtest/ui-audit');
 const ARTIFACTS = relative(ROOT, OUT).replaceAll('\\', '/');
 const READY_TIMEOUT = Number(process.env.UI_AUDIT_TIMEOUT ?? 15_000);
-const BASE = process.env.UI_AUDIT_BASE ?? 'http://localhost:5173';
+const BASE = devBase;
 const args = process.argv.slice(2);
 const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : null);
 
@@ -167,7 +168,10 @@ const SCREENS = {
   find: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'], clicks: ['find-reel'], match: [/screens\/FindScreen/, /components\/FindPrize/] },
   // §9.9.3 — the Center's machine on a hurt Box (a click skips to the bars filled), and the map with every node named.
   'center-heal': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.patch((d) => { d.box[0].hp = 3; d.box[1].hp = 0; })'], clicks: ['door-center', 'center-heal'], match: [/components\/HealPanel/, /screens\/CenterScreen/] },
-  // Seed 2 is the tallest map — nodes in its first and last rows — so what cuts off first, heads or captions, shows here.
+  // Seed 2 is the tallest map — nodes in its first and last rows — so what cuts off first, heads or captions, shows here;
+  // -end is the same map at the route's far end, where the lanes, their tags and the Gyms are.
+  'map-labels-end': { url: '/?screen=menu', setup: ['run.new("squirtle", 2)', 'goTo("map")'], clicks: ['map-labels'], scroll: 'route-scroller', match: [/screens\/map\//, /components\/(NodeMarker|HabitatArt|nodeArt)/] },
+  'map-region-2-end': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 4)', 'run.city(0)', 'run.dispatch({ type: "depart-city", modifierId: a.run.state().city.reflection[0] ?? null })', 'goTo("map")'], clicks: ['map-labels'], scroll: 'route-scroller', match: [/screens\/map\//] },
   'map-labels': { url: '/?screen=menu', setup: ['run.new("squirtle", 2)', 'goTo("map")'], clicks: ['map-labels'], match: [/screens\/map\//, /components\/(NodeMarker|HabitatArt|nodeArt)/] },
   // §9.12 — the Team screen, from the map (a full formation, an item to give) and from a City's lobby.
   team: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(4)', 'run.patch((d) => { d.activeUids = d.box.slice(0, 3).map((m) => m.uid); d.bag = [...d.bag, "leftovers"]; })', 'goTo("map")'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /hooks\/useTeamKey/, /components\/BoxPanel/] },
@@ -200,7 +204,7 @@ const EXPECTED_ROOT = {
   hub: 'hub-screen', 'hub-pc': 'pc-terminal', 'hub-pc-sheet': 'pc-sheet', 'hub-mart': 'poke-mart', 'hub-card': 'trainer-card',
   starter: 'starter-select', combat: 'combat-screen', 'combat-group': 'combat-screen', 'combat-field': 'combat-screen', 'combat-boss': 'combat-screen', 'combat-gym': 'combat-screen',
   'move-art-window': 'combat-screen', 'move-art-sound': 'combat-screen', 'move-art-impact': 'combat-screen', 'move-art-projectiles': 'combat-screen',
-  map: 'map-screen', 'map-labels': 'map-screen', 'map-region-2': 'map-screen', 'map-region-3': 'map-screen', 'map-victory-road': 'map-screen',
+  map: 'map-screen', 'map-labels': 'map-screen', 'map-labels-end': 'map-screen', 'map-region-2-end': 'map-screen', 'map-region-2': 'map-screen', 'map-region-3': 'map-screen', 'map-victory-road': 'map-screen',
   'map-hover-wild': 'map-screen', 'map-hover-trainer': 'map-screen', 'map-hover-service': 'map-screen', 'map-hover-locked': 'map-screen',
   city: 'city-screen', 'city-celadon': 'city-screen', 'city-gate': 'reflection', dojo: 'dojo-screen', center: 'center-screen', 'center-heal': 'center-screen', 'center-daycare': 'center-screen',
   shop: 'shop-screen', merchant: 'shop-screen', store: 'shop-screen', aid: 'aid-screen', training: 'training-screen',
@@ -465,6 +469,40 @@ function hiddenOverflow() {
   return out;
 }
 
+// Runs inside the page. A control or a tooltip's trigger that is drawn but cannot be pointed at (D8): the point at the
+// centre of its visible part belongs to something else — a neighbour's transparent hit box painted after it, a caption
+// laid over it. v0.9.69's lane tag showed its word and opened the node behind it. With a modal open, only the modal's
+// own controls are asked: the scrim covers the rest on purpose.
+function pointerReach() {
+  const modal = [...document.querySelectorAll('[aria-modal="true"], [role="dialog"]')].pop();
+  const scope = modal ?? document.body;
+  const sel = 'button, a[href], input, select, textarea, [role="button"], [role="tab"], [aria-describedby="app-tooltip"]';
+  const out = [];
+  for (const el of scope.querySelectorAll(sel)) {
+    const cs = getComputedStyle(el);
+    if (cs.visibility === 'hidden' || cs.display === 'none' || cs.pointerEvents === 'none' || el.closest('[aria-hidden="true"], [inert]')) continue;
+    if (el.disabled) continue;
+    let r = el.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4) continue;
+    // What of it can be seen: the viewport and every ancestor that clips cut it down.
+    let box = { left: Math.max(0, r.left), top: Math.max(0, r.top), right: Math.min(innerWidth, r.right), bottom: Math.min(innerHeight, r.bottom) };
+    for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+      const s = getComputedStyle(a);
+      if (s.overflowX === 'visible' && s.overflowY === 'visible') continue;
+      const b = a.getBoundingClientRect();
+      box = { left: Math.max(box.left, b.left), top: Math.max(box.top, b.top), right: Math.min(box.right, b.right), bottom: Math.min(box.bottom, b.bottom) };
+    }
+    if (box.right - box.left < 4 || box.bottom - box.top < 4) continue;
+    const hit = document.elementFromPoint((box.left + box.right) / 2, (box.top + box.bottom) / 2);
+    if (!hit || hit === el || el.contains(hit) || hit.contains(el)) continue;
+    // A control inside another control (a chip on a card) answers for its parent's point and the parent for its own.
+    if (hit.closest(sel) && el.contains(hit.closest(sel))) continue;
+    const name = (e) => { const t = e.closest('[data-testid]'); return t ? t.getAttribute('data-testid') : e.tagName.toLowerCase(); };
+    out.push({ at: name(el), by: name(hit) });
+  }
+  return out;
+}
+
 // ── Static checks over the changed files (D6, D7, D2, D11) ───────────────────────────────────────────────────
 function staticChecks(fileList) {
   const out = { deadCss: [], hexLiterals: [], titleAttrs: [], motion: [] };
@@ -516,10 +554,9 @@ function staticChecks(fileList) {
 async function main() {
   mkdirSync(OUT, { recursive: true });
   try {
-    const r = await fetch(BASE);
-    if (!r.ok) throw new Error(String(r.status));
-  } catch {
-    console.error(`ui-audit: no dev server at ${BASE} — start it (npm run dev) and run again.`);
+    await assertOurServer(BASE);
+  } catch (e) {
+    console.error(`ui-audit: ${e.message}`);
     process.exit(2);
   }
   const report = [];
@@ -557,11 +594,20 @@ async function main() {
         await page.getByTestId(tid).first().click();
         await page.waitForTimeout(250);
       }
+      // `scroll`: a scroller (by test id) taken to its far end, where a long board's last stretch can be measured.
+      const scrollEnd = async () => {
+        if (!s.scroll) return;
+        // Set, not scrolled to: a smooth scroller would still be on its way when the screen is measured.
+        await page.evaluate((tid) => { const el = document.querySelector(`[data-testid="${tid}"]`); if (el) { el.style.scrollBehavior = 'auto'; el.scrollLeft = el.scrollWidth; el.scrollTop = el.scrollHeight; } }, s.scroll);
+        await page.waitForTimeout(200);
+      };
+      await scrollEnd();
       await page.mouse.move(0, 0);
       // A clicked doorway may retain a focus tooltip after its panel opens; only hover presets request one.
       await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
       await page.waitForTimeout(900);
       await auditReady(page, s, READY_TIMEOUT);
+      await scrollEnd();
       if (s.hover) {
         await auditHover(page, s.hover, READY_TIMEOUT);
         await auditReady(page, s, READY_TIMEOUT);
@@ -569,12 +615,14 @@ async function main() {
       const data = await page.evaluate(measure);
       data.spills = await page.evaluate(spills);
       data.hidden = await page.evaluate(hiddenOverflow);
+      data.pointer = await page.evaluate(pointerReach);
       const shot = `${id}.png`;
       await page.screenshot({ path: join(OUT, shot) });
       captures.at1080 = { screenshot: shot, root: s.root };
       // A second pass at 720p for overflow only (D8).
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.waitForTimeout(300);
+      await scrollEnd();
       await auditReady(page, s, READY_TIMEOUT);
       if (s.hover) {
         await auditHover(page, s.hover, READY_TIMEOUT);
@@ -589,6 +637,7 @@ async function main() {
       });
       small.spills = await page.evaluate(spills);
       small.hidden = await page.evaluate(hiddenOverflow);
+      small.pointer = await page.evaluate(pointerReach);
       await page.screenshot({ path: join(OUT, `${id}-720.png`) });
       captures.at720 = { screenshot: `${id}-720.png`, root: s.root };
       const result = { screen: id, status: 'captured', expectedRoot: s.root, captures, url: s.url, screenshot: shot, errors, ...data, at720: small };
@@ -603,8 +652,9 @@ async function main() {
       report.push(`- **D3 shape**: ${data.tables} table(s), ${data.textOnlyLists.length} text-only list(s) of 8+ rows${data.textOnlyLists.length ? ' (' + data.textOnlyLists.map((l) => `${l.at}: ${l.rows}`).join('; ') + ')' : ''}`);
       report.push(`- **D5 contrast**: ${data.contrastFails.length} failure(s)${data.contrastUnknownBg ? ` · ${data.contrastUnknownBg} block(s) on a gradient/image, unmeasured` : ''}`);
       for (const c of data.contrastFails) report.push(`  - ${c.ratio}:1 (needs ${c.need}) ${c.size}px @ \`${c.at}\` “${c.text}” fg ${c.fg} on ${c.bg}`);
-      report.push(`- **D8 works**: ${data.unnamed.length} unnamed control(s)${data.unnamed.length ? ' (' + data.unnamed.join(', ') + ')' : ''} · overflow 1080p: ${data.overflowing.length ? data.overflowing.join(', ') : 'none'}${data.pageScrollX ? ' · page scrolls sideways' : ''} · overflow 720p: ${small.overflowing.length ? small.overflowing.join(', ') : 'none'}${small.pageScrollX ? ' · page scrolls sideways' : ''} · spill 1080p: ${data.spills.length || 'none'} · spill 720p: ${small.spills.length || 'none'} · hidden 1080p: ${data.hidden.length || 'none'} · hidden 720p: ${small.hidden.length || 'none'} · console errors: ${errors.length}`);
+      report.push(`- **D8 works**: ${data.unnamed.length} unnamed control(s)${data.unnamed.length ? ' (' + data.unnamed.join(', ') + ')' : ''} · overflow 1080p: ${data.overflowing.length ? data.overflowing.join(', ') : 'none'}${data.pageScrollX ? ' · page scrolls sideways' : ''} · overflow 720p: ${small.overflowing.length ? small.overflowing.join(', ') : 'none'}${small.pageScrollX ? ' · page scrolls sideways' : ''} · spill 1080p: ${data.spills.length || 'none'} · spill 720p: ${small.spills.length || 'none'} · hidden 1080p: ${data.hidden.length || 'none'} · hidden 720p: ${small.hidden.length || 'none'} · pointer 1080p: ${data.pointer.length || 'none'} · pointer 720p: ${small.pointer.length || 'none'} · console errors: ${errors.length}`);
       for (const [at, list] of [['1080p', data.hidden], ['720p', small.hidden]]) for (const h of list.slice(0, 8)) report.push(`  - hidden ${at}: \`${h.at}\` ${h.px} px cut off on its ${h.axis} axis, which does not scroll`);
+      for (const [at, list] of [['1080p', data.pointer], ['720p', small.pointer]]) for (const p of list.slice(0, 8)) report.push(`  - pointer ${at}: \`${p.at}\` cannot be pointed at — its centre belongs to \`${p.by}\``);
       for (const [at, list] of [['1080p', data.spills], ['720p', small.spills]]) {
         for (const p of list.slice(0, 8)) report.push(`  - spill ${at}: \`${p.at}\` ${p.px} px ${p.side} \`${p.bound}\``);
         if (list.length > 8) report.push(`  - spill ${at}: … ${list.length - 8} more in \`${ARTIFACTS}/${id}.json\``);
