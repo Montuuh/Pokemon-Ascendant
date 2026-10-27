@@ -43,7 +43,7 @@ export function RingArena({ city, rungs, cleared, rare }: { city: keyof typeof C
                   <span className={styles.mark} aria-hidden="true">{state === 'won' ? <IconCheck size={16} /> : i + 1}</span>
                   <span className="sr-only">Rung {i + 1}{state === 'won' ? ', won' : state === 'next' ? ', next' : ''}:</span>
                   <span className={styles.prize}>{'money' in rung.prize ? <Money amount={rung.prize.money} size={16} /> : <><IconSparkles size={16} aria-hidden="true" /> {rare ? 'Rare relic' : 'Relic'}</>}</span>
-                  <span className={styles.level}>Lv {level}+</span>
+                  <span className="sr-only">, Lv {level}+</span>
                 </Tipped>
               </li>
             );

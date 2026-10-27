@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.76 — Plates on the rim  ✅ 2026-10-27
+
+**Shipped.** B17: each rung of the Ring's ladder is a one-line pill — its number (a tick once won) and its prize — hung on the platform's front rim, where it was a 136 px placard over the platform. The rung's level moves to its bubble (the next rival's levels stay in the dossier under the arena); the won, next and ahead states keep their border, tick and dash. Plates cover about half as much of the arena (Coliseum at 1280×720 with 150 % text: 15.5 % → 7 %) and rung 1's no longer clips at the arena's lower edge. A new e2e proves every plate sits inside the drawn arena at 720p/1080p and 100/150 % text. No game rule change.
+
 ### v0.9.75 — A real crowd  ✅ 2026-10-27
 
 **Shipped.** B16: the Coliseum's two spectator banks are dealt from six authentic Emerald NPC sheets (front, side and mirrored poses) by a fixed-seed generator in `scripts/build-ring-art.mjs` — uneven spacing, empty seats, 2 px height jitter, no person within three seats of themselves or directly above themselves, nobody behind a court. Pallet's ring is byte-identical. `ui:audit` gains a `ring-coliseum` screen. Left for B17: rung 1's label is clipped at 1280×720 with 150 % text. No game rule change.

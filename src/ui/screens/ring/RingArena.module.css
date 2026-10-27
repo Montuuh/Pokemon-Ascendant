@@ -5,15 +5,18 @@
 .stop { position: absolute; width: 0; height: 0; }
 .trainer { position: absolute; left: 0; bottom: calc(-12px * var(--ring-scale)); transform: translateX(-50%); object-fit: contain; image-rendering: pixelated; }
 .stop[data-state='won'] .trainer { filter: grayscale(1); }
+/* A plate, not a placard: number and prize on one line, hung on the platform's front rim. The level and the rest of
+   the rung are in its bubble; the next rival's full dossier is below the arena. The type grows a little with the
+   arena's scale, and the number's chip grows with the type, so a larger text size never spills out of it. */
 .rung {
-  position: absolute; top: calc(23px * var(--ring-scale)); left: 0; transform: translateX(-50%);
-  display: grid; grid-template-columns: 24px auto; column-gap: var(--sp-2); align-items: center;
-  min-width: 136px; padding: var(--sp-2); border: 2px solid var(--border-strong);
-  border-radius: var(--radius-sm); color: var(--ink-primary); background: var(--surface-1);
+  position: absolute; top: calc(26px * var(--ring-scale)); left: 0; transform: translateX(-50%);
+  display: inline-flex; gap: var(--sp-2); align-items: center; white-space: nowrap;
+  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1); border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill); color: var(--ink-primary); background: var(--surface-1);
+  font-size: calc(var(--type-small) * max(1, var(--ring-scale) / 2.5));
 }
-.mark { grid-row: 1 / 3; display: grid; place-items: center; width: 24px; height: 24px; border-radius: var(--radius-pill); background: var(--surface-2); font-weight: 800; }
-.prize { display: inline-flex; align-items: center; gap: var(--sp-1); white-space: nowrap; font-size: var(--type-small); font-weight: 800; }
-.level { color: var(--ink-secondary); font-size: var(--type-caption); }
+.mark { display: grid; place-items: center; flex: none; width: 1.45em; height: 1.45em; line-height: 1; border-radius: var(--radius-pill); background: var(--surface-2); font-weight: 800; }
+.prize { display: inline-flex; align-items: center; gap: var(--sp-1); font-weight: 800; }
 .rung[data-state='next'] { border-color: var(--accent-action-deep); box-shadow: 0 0 0 3px var(--accent-action); }
 .rung[data-state='next'] .mark { background: var(--accent-action); }
 .rung[data-state='won'] { border-color: var(--accent-positive); }

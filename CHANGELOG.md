@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.76 — Plates on the rim · 2026-10-27
+
+The Ring's rungs are small plates, so the arena is the picture.
+
+- **Rung plates.** Number and prize on one line, on the platform's rim.
+- **Never cut off.** Every plate fits at 720p with 150 % text.
+
 ### v0.9.75 — A real crowd · 2026-10-27
 
 The Coliseum's stands are seated with a mix of spectators, not a tiled strip.

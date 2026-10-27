@@ -73,3 +73,41 @@ for (const size of [{ width: 1280, height: 720 }, { width: 1920, height: 1080 }]
     }
   });
 }
+
+// The rung plates are tags on the arena's edge, not placards over it: each one sits wholly inside the drawn arena (the
+// scene clips what pokes out), its number sits inside its own chip at every text size, and together the plates leave
+// the place its own shape.
+for (const [size, textScale] of [[{ width: 1280, height: 720 }, 1.5], [{ width: 1280, height: 720 }, 1], [{ width: 1920, height: 1080 }, 1.5]] as const) {
+  test(`Ring rung plates stay inside a compact arena at ${size.width}x${size.height}, text ${textScale * 100} %`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await page.goto('/?screen=menu');
+    await page.evaluate((s) => localStorage.setItem('ascendant.settings.v1', JSON.stringify({ textScale: s, motion: 'system' })), textScale);
+    for (const city of [0, 1] as const) {
+      await arrive(page, city);
+      await page.getByTestId('btn-ring-enter').click();
+      const m = await page.evaluate(() => {
+        const scene = document.querySelector('[data-testid="ring-arena"] > div')!.getBoundingClientRect();
+        const plates = [...document.querySelectorAll('[data-testid^="ring-rung-"]')].map((el) => {
+          const b = el.getBoundingClientRect();
+          const chip = el.querySelector('[aria-hidden="true"]')!;
+          const c = chip.getBoundingClientRect();
+          const range = document.createRange();
+          range.selectNodeContents(chip);
+          const g = range.getBoundingClientRect();
+          return {
+            id: el.getAttribute('data-testid'),
+            inside: b.left >= scene.left - 0.5 && b.right <= scene.right + 0.5 && b.top >= scene.top - 0.5 && b.bottom <= scene.bottom + 0.5,
+            numberInChip: chip.querySelector('svg') !== null || (g.top >= c.top - 0.5 && g.bottom <= c.bottom + 0.5 && g.left >= c.left - 0.5 && g.right <= c.right + 0.5),
+            prize: el.children[2]?.textContent ?? '',
+            area: b.width * b.height,
+          };
+        });
+        return { plates, share: plates.reduce((s, p) => s + p.area, 0) / (scene.width * scene.height) };
+      });
+      expect(m.plates.filter((p) => !p.inside).map((p) => p.id), `city ${city}: plates cut off by the arena's edge`).toEqual([]);
+      expect(m.share, `city ${city}: plates cover too much of the arena`).toBeLessThan(0.08);
+      expect(m.plates.filter((p) => !p.numberInChip).map((p) => p.id), `city ${city}: a rung number spills out of its chip`).toEqual([]);
+      for (const p of m.plates) expect(p.prize, `${p.id} shows what it pays`).toMatch(/\d|Relic/);
+    }
+  });
+}
