@@ -19,6 +19,33 @@ describe('The combat log — §9.2.2.1', () => {
     expect(lines).toContain(hit && hit.hp > 0 ? `${foe.name} took ${took} (${hit.hp}/${hit.maxHp} HP left).` : `${foe.name} took ${took}.`);
   });
 
+  // The blow comes before its consequence: "took" before "fainted!", as the hit lands before the faint plays.
+  it('AKnockout_SaysTheHitBeforeTheFaint', () => {
+    const s = tweak(withHand(startFixture('wild-basic'), ['ember']), (d) => {
+      d.player.ap = 3;
+      d.enemies[0]!.hp = 1;
+    });
+    const foe = s.enemies[0]!;
+    const lines = linesSince(s, dispatch(s, { type: 'play-card', cardId: handCard(s, 'ember').id, targetUid: foe.uid }));
+    const took = lines.findIndex((l) => l.startsWith(`${foe.name} took `));
+    const fainted = lines.findIndex((l) => l.endsWith(`${foe.name} fainted!`));
+    expect(took).toBeGreaterThan(-1);
+    expect(fainted).toBeGreaterThan(took);
+  });
+
+  it('AFoesKnockout_SaysTheHitBeforeTheFaint', () => {
+    const s = tweak(startFixture('wild-basic'), (d) => {
+      d.enemies[0]!.intent = { kind: 'attack', moveId: 'tackle', targetSlot: 'lead', hidden: false };
+      d.player.team[d.player.leadIndex]!.hp = 1;
+    });
+    const lead = s.player.team[s.player.leadIndex]!;
+    const lines = linesSince(s, dispatch(s, { type: 'end-turn' }));
+    const took = lines.findIndex((l) => l.startsWith(`${lead.name} took `));
+    const fainted = lines.findIndex((l) => l === `${lead.name} fainted!`);
+    expect(took).toBeGreaterThan(-1);
+    expect(fainted).toBeGreaterThan(took);
+  });
+
   it('AFoesHit_SaysWhatItTookAndHowItLanded', () => {
     const s = tweak(startFixture('wild-basic'), (d) => {
       d.enemies[0]!.intent = { kind: 'attack', moveId: 'tackle', targetSlot: 'lead', hidden: false };

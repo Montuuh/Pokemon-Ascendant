@@ -1,8 +1,8 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-27 · **Version:** v0.9.67 (*The contact frame*).
+**Date:** 2026-10-27 · **Version:** v0.9.68 (*The blow, then the faint*).
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
-**Next:** v1.0 and the remaining art-review blocks. Open: the combat log prints a faint before the damage line that caused it (sim log order, pre-existing); the audit's dead-CSS scan follows only modules imported as `styles`. Shortlisted for later: web-design-guidelines, break-ui, kill-ai-slop scanner.
+**Next:** v1.0 and the remaining art-review blocks. Open: e2e run.spec.ts "map usable at 1280x720" fails most runs (node above the board, pre-existing); the audit's dead-CSS scan follows only modules imported as `styles`. Shortlisted for later: web-design-guidelines, break-ui, kill-ai-slop scanner.
 **Motion review (v0.9.62):** D11 chrome / D12 world in ui-doctrine.md; checklist docs/design/ui/motion-review.md (adapted from Emil Kowalski MIT + game-feel Apache-2.0); npm run ui:motion; ui:audit reports D11 motion; ui-reviewer watches motion at full and reduced. Evidence: playtest/motion-review-2026-10-26.
 **Contact frame (v0.9.67):** HP drain at a constant rate (--motion-hp-drain = FX_MS.hpDrain), faint waits for the bar; hit-stop 60/100 ms holds all but the target, its number and the jolt; played card leaves toward its target (or from the drop); :where() press 0.97, none on pixel art; scrimIn/sheetIn on Modal, Move Manager, Team, PC sheet, Run record.
 **Motion sweep (v0.9.66):** hits weighed (recoil / shake / KO jolt, FX_MS), reduced motion holds numbers and banners, no Turn N banner (the chip pops), hover at --motion-fast, tooltip warm window, loop tokens --motion-loop-pulse/-breathe, ui:motion at zero.

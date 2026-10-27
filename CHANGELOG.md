@@ -13,6 +13,12 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.68 — The blow, then the faint · 2026-10-27
+
+The combat log tells a knockout in the order it happened.
+
+- **Log order.** "Took 14." now comes before "fainted!", for both sides.
+
 ### v0.9.67 — The contact frame · 2026-10-27
 
 The motion sweep's five opportunities, built.

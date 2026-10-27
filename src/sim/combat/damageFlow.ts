@@ -151,7 +151,7 @@ export function strike(
     const per = Math.max(1, Math.floor(bd.final / hits));
     landed = 0;
     for (let i = 0; i < hits && target.hp > 0; i++) {
-      dealt += dealDamage(state, ctx, attacker.uid, target, per, { crit: bd.isCrit, effectiveness: effectivenessLabel(bd.typeMultiplier), cause: 'move' });
+      dealt += dealDamage(state, ctx, attacker.uid, target, per, { crit: bd.isCrit, effectiveness: effectivenessLabel(bd.typeMultiplier), cause: 'move', holdFaint: true });
       landed++;
     }
   } else {
@@ -160,9 +160,12 @@ export function strike(
       effectiveness: effectivenessLabel(bd.typeMultiplier),
       cause: 'move',
       cleave: move.targeting === 'cleave',
+      holdFaint: true,
     });
   }
   logHit(state, attacker, target, who, bd, dealt, landed);
+  // §9.2.2.1 — the blow, then its consequence: the faint is resolved once its hit is in the log ("took", then "fainted!").
+  if (target.hp === 0) onFaint(state, ctx, target);
 
   // §5.10.3 — the chill is spent by the attack it blunted.
   if (attacker.chill !== undefined) delete attacker.chill;
@@ -286,7 +289,8 @@ export function dealDamage(
   sourceUid: string | null,
   target: Combatant,
   amount: number,
-  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail' | 'tremor'; cleave?: boolean },
+  /** `holdFaint`: the caller logs the hit first and resolves the faint itself (`strike`), so the log reads in order. */
+  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail' | 'tremor'; cleave?: boolean; holdFaint?: boolean },
 ): number {
   if (target.hp <= 0) return 0;
   let dmg = Math.max(0, amount);
@@ -369,7 +373,7 @@ export function dealDamage(
     // Burn and poison have no source, which is right: a status tick is not a knockout you earned.
     const killer = sourceUid ? state.player.team.find((m) => m.uid === sourceUid) : undefined;
     if (killer && !state.player.team.some((m) => m.uid === target.uid)) killer.defeats += 1;
-    onFaint(state, ctx, target);
+    if (!meta.holdFaint) onFaint(state, ctx, target);
   }
   else itemReactions(state, ctx, target);
   return dmg;
