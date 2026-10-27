@@ -1,10 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-27 · **Version:** v0.9.73 (*The workshop in the repo*).
+**Date:** 2026-10-27 · **Version:** v0.9.74 (*The instructions too*).
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 and the remaining art-review blocks. Open: the audit's dead-CSS scan follows only modules imported as `styles`. Shortlisted for later: web-design-guidelines, break-ui, kill-ai-slop scanner.
 **Motion review (v0.9.62):** D11 chrome / D12 world in ui-doctrine.md; checklist docs/design/ui/motion-review.md (adapted from Emil Kowalski MIT + game-feel Apache-2.0); npm run ui:motion; ui:audit reports D11 motion; ui-reviewer watches motion at full and reduced. Evidence: playtest/motion-review-2026-10-26.
-**Workshop (v0.9.73):** .claude/ is versioned (skills, agents, rules, hooks, settings, launch.json); .claude/state, .claude/patches and settings.local.json stay local; CLAUDE.md still local.
+**Workshop (v0.9.73):** .claude/ is versioned (skills, agents, rules, hooks, settings, launch.json); .claude/state, .claude/patches and settings.local.json stay local; CLAUDE.md versioned too (v0.9.74).
 **Room to point (v0.9.72):** ui:audit *pointer* (centre owned by something else); lane tags are pointer-free labels placed after layout (top/bottom edge, 2 columns max); npm run ui:film (CDP screencast contact sheet, motion-review §5); ui-review-start.mjs + Stop hook in-flight, pre-review checklist (versioned since v0.9.73).
 **Settled pictures (v0.9.71):** summit-layout geometry waits for every img to load or fail (5 s cap) before counting broken ones — the ~1/400 flake was art still loading after run.patch.
 **Pinned seeds (v0.9.70):** /?screen=menu&seed=<n> seeds a menu-started run (entryRunSeed); e2e run starters pin seed 7; Playwright 4 workers (PW_WORKERS). verify skill: triage = alone+repeat, vs HEAD, restart dev server, fail-without-fix.

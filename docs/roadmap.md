@@ -1504,9 +1504,13 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.74 — The instructions too  ✅ 2026-10-27
+
+**Shipped.** The user's call: `CLAUDE.md` — how a session works on this project (what to read first, the commands, the pillars, the engineering and verification rules, how to ship) — goes into git with `.claude/`, so a session from a clone, a cloud one included, starts from the same instructions. `AGENTS.md` (Codex) stays local. No game change.
+
 ### v0.9.73 — The workshop in the repo  ✅ 2026-10-27
 
-**Shipped.** The user's call: `.claude/` goes into git — the skills (verify, ui-review, ship-version, art-add, playtest…), the agents (ui-reviewer, designer, qa), the path rules, the hooks (the UI review gate and its in-flight marker, the session start) and `settings.json` — so a session that works from a clone, a cloud one included, works the same way. What a session leaves behind stays out: `.claude/state/` (the review queue and stamps), `.claude/patches/` and `settings.local.json`. The `playtest/` ignore rule is anchored to the root, so the playtest skill is no longer swallowed by it. `CLAUDE.md` stays local for now. No game change.
+**Shipped.** The user's call: `.claude/` goes into git — the skills (verify, ui-review, ship-version, art-add, playtest…), the agents (ui-reviewer, designer, qa), the path rules, the hooks (the UI review gate and its in-flight marker, the session start) and `settings.json` — so a session that works from a clone, a cloud one included, works the same way. What a session leaves behind stays out: `.claude/state/` (the review queue and stamps), `.claude/patches/` and `settings.local.json`. The `playtest/` ignore rule is anchored to the root, so the playtest skill is no longer swallowed by it. `CLAUDE.md` followed in v0.9.74. No game change.
 
 ### v0.9.72 — Room to point  ✅ 2026-10-27
 

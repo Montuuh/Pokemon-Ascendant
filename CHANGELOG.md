@@ -13,6 +13,12 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.74 — The instructions too · 2026-10-27
+
+The project's Claude Code instructions now travel with the code.
+
+- **Versioned.** `CLAUDE.md` joins `.claude/` in the repository.
+
 ### v0.9.73 — The workshop in the repo · 2026-10-27
 
 The project's Claude Code setup now travels with the code.
