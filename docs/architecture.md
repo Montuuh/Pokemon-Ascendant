@@ -142,6 +142,11 @@ singleton. Tests assert every referenced asset exists on disk. Ids are permanent
 | Reach an awkward state fast | `__ascendant.run.new()`, `.fill(6)`, `.dispatch(action)`; `__ascendant.auto(n)` plays a fight |
 | Did a rule drift | golden fixtures |
 
+Every test is seeded, e2e included: a fixture by `&seed=<n>`, a run started from the menu by `/?screen=menu&seed=<n>`
+(the starter screen reads it through `entryRunSeed`; a player's run, with no seed in the address, draws its own).
+A random map once made a layout test pass on some runs and fail on most. `npm run e2e` runs four workers
+(`PW_WORKERS` overrides): more starves the one dev server and the canvas-heavy cases time out.
+
 ## 8. Persistence
 Per §10.8. `sim/run/save.ts` turns a `RunState` into a checksummed envelope and back; *where* that string
 lives is the app's business, behind `SaveProvider` — `app/saveProvider.ts` is localStorage today and a

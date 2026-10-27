@@ -91,6 +91,12 @@ interface AppState {
 
 const initial = readEntry();
 
+/**
+ * The seed a deep link names for a run started from the menu (`/?screen=menu&seed=7`), else null: a player's run draws
+ * its own. Tests pin a run's map this way — a random one made a layout test fail on some maps and pass on others.
+ */
+export const entryRunSeed = (): number | null => (initial.scenario ? null : initial.seed);
+
 export const useAppStore = create<AppState>((set) => ({
   screen: initial.screen,
   previous: null,

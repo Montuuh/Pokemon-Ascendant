@@ -1,6 +1,6 @@
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconHandGrab, IconHeartFilled, IconLock, IconTargetArrow, IconX } from '@tabler/icons-react';
-import { useAppStore } from '@/app/store';
+import { entryRunSeed, useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
@@ -105,8 +105,9 @@ export function StarterSelect() {
   const [slot, setSlot] = useState<'lead' | 'partner'>('lead');
   const MODIFIER_SLOTS = modifierSlots(account);
   const trainerLevel = levelFor(account.xp);
-  // The seed is drawn once, when the screen opens, so the relic offer does not reshuffle under the cursor.
-  const [seed] = useState(() => Math.floor(Math.random() * 2 ** 31));
+  // The seed is drawn once, when the screen opens, so the relic offer does not reshuffle under the cursor; a deep link
+  // may name it (entryRunSeed), so a test walks the same map every time.
+  const [seed] = useState(() => entryRunSeed() ?? Math.floor(Math.random() * 2 ** 31));
   const [relic, setRelic] = useState<string | null>(null);
   const [region, setRegion] = useState<string | null>(null);
 

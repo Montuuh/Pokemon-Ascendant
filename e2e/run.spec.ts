@@ -94,10 +94,12 @@ async function clearPostCombat(page: Page): Promise<void> {
   }
 }
 
-async function startRun(page: Page, starter = 'squirtle'): Promise<void> {
+// The seed is pinned (the menu's deep link names it): a run drawn at random walks a different map each time, and a
+// layout assertion then passes on some and fails on others.
+async function startRun(page: Page, starter = 'squirtle', seed = 7): Promise<void> {
   await page.goto('/?screen=menu');
   await page.evaluate(() => window.localStorage.clear());
-  await page.goto('/?screen=menu');
+  await page.goto(`/?screen=menu&seed=${seed}`);
   await page.getByTestId('btn-new-run').click();
   // §8.8.4 — the baseline is the floor, so the shortest legal path through the stepper takes no modifier.
   await expect(page.getByTestId('step-difficulty')).toBeVisible();
@@ -110,10 +112,12 @@ async function startRun(page: Page, starter = 'squirtle'): Promise<void> {
   // §2.11.3 — Region Modifiers are off (v0.9.9), so the relic step is the last one.
   await page.getByTestId('btn-continue').click();
   await expect(page.getByTestId('map-screen')).toBeVisible();
+  expect(await page.evaluate(() => window.__ascendant!.run.state()!.seed)).toBe(seed);
 }
 
 test('Twin Run picks a Lead and a partner in two clear places — §8.4.2', async ({ page }) => {
-  await page.goto('/?screen=menu');
+  // A pinned seed, kept across the reload by the entry the deep link left in the session.
+  await page.goto('/?screen=menu&seed=7');
   await page.evaluate(() => window.localStorage.clear());
   await page.reload();
   await page.waitForFunction(() => !!window.__ascendant);

@@ -22,7 +22,8 @@ async function everyControlIsNamed(page: Page) {
 async function startRun(page: Page) {
   await page.goto('/?screen=menu');
   await page.evaluate(() => window.localStorage.clear());
-  await page.goto('/?screen=menu');
+  // A pinned seed: the same map every run.
+  await page.goto('/?screen=menu&seed=7');
   await page.getByTestId('btn-new-run').click();
   // Three steps since v0.4: difficulty (§8.8), starter, Starting Relic (§8.6.3). Taking neither a modifier
   // nor a relic is the baseline path, and it is the one this fixture walks.

@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.70 — Same map every run · 2026-10-27
+
+The end-to-end suite walks the same maps and runs at a pace it can hold.
+
+- **Pinned seeds.** A run started from the menu takes the link's seed.
+- **Four workers.** The suite no longer starves its dev server.
+
 ### v0.9.69 — Heads and captions · 2026-10-27
 
 The route shows its top and bottom rows whole at 720p.

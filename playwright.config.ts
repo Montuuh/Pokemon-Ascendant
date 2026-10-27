@@ -13,6 +13,10 @@ export default defineConfig({
   outputDir: './playtest/test-results',
   timeout: 30_000,
   retries: 0,
+  // Four at a time: at the default (half the cores) the full suite starves the one dev server and the canvas-heavy
+  // cases (move windows, item pixels, the route's caption scan) time out, then pass alone — failures that are the
+  // machine's, not the game's. Four ran the suite in about 7 minutes with them green. PW_WORKERS overrides.
+  workers: Number(process.env.PW_WORKERS ?? 4),
   reporter: [['list']],
   use: {
     baseURL: 'http://localhost:5173',
