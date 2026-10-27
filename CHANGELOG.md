@@ -13,6 +13,12 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.71 — Settled pictures · 2026-10-27
+
+The Summit layout check waits for its pictures before counting them.
+
+- **Summit check.** Art still loading is no longer counted as broken.
+
 ### v0.9.70 — Same map every run · 2026-10-27
 
 The end-to-end suite walks the same maps and runs at a pace it can hold.

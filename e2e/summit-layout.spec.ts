@@ -32,8 +32,18 @@ async function arrive(page: Page, scale = 1.5) {
 }
 
 async function geometry(page: Page) {
-  return page.evaluate(() => {
+  return page.evaluate(async () => {
     const root = document.querySelector<HTMLElement>('[data-testid="summit-screen"]')!;
+    // A picture still on its way is not a broken one: an offer swapped in a moment ago (run.patch) loads its art now,
+    // and under a loaded machine the count ran before it landed. Each settles — loaded or failed — first, then a
+    // failed one is still counted below. Capped, so a picture that never starts loading cannot hang the test.
+    await Promise.race([
+      Promise.all([...root.querySelectorAll<HTMLImageElement>('img')].map((i) => (i.complete ? null : new Promise((done) => {
+        i.addEventListener('load', done, { once: true });
+        i.addEventListener('error', done, { once: true });
+      })))),
+      new Promise((done) => setTimeout(done, 5_000)),
+    ]);
     const visible = (el: Element, halo = 0) => {
       const r = el.getBoundingClientRect();
       return r.top - halo >= 0 && r.left - halo >= 0 && r.bottom + halo <= innerHeight && r.right + halo <= innerWidth;
