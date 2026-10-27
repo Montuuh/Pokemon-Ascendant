@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.73 — The workshop in the repo · 2026-10-27
+
+The project's Claude Code setup now travels with the code.
+
+- **Versioned.** Skills, agents, rules, hooks and settings in `.claude/`.
+- **Local only.** Review queues, stamps and handoff patches stay out.
+
 ### v0.9.72 — Room to point · 2026-10-27
 
 Lane tags find a free spot, and the UI review sees clicks and motion.

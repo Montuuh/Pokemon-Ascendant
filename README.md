@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.73 — The workshop in the repo.** `.claude/` — the skills, agents, rules, hooks and settings the work runs on — is versioned, so a cloud session has them; a session's own state (review queue, stamps, handoff patches) stays local. No game change. Before it,
 **v0.9.72 — Room to point.** A lane's weather tag is a label that never takes a node's click, placed clear of the captions; the UI audit now flags any control whose centre belongs to something else, and `npm run ui:film` records a beat in real time as a contact sheet. Before it,
 **v0.9.71 — Settled pictures.** The Summit layout e2e waits for each picture to load or fail before counting broken ones; under load it counted an offer still loading. No game change. Before it,
 **v0.9.70 — Same map every run.** A run started from the menu takes a deep link's seed (`/?screen=menu&seed=7`), so the e2e that walk the new-run steps meet the same map every time; the suite runs four workers. No game change for a player. Before it,

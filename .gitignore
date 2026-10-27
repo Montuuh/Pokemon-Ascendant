@@ -3,7 +3,7 @@ dist/
 coverage/
 *.tsbuildinfo
 # visual verification and playtest output (regenerate with `npm run shot`)
-playtest/
+/playtest/
 playwright-report/
 # secrets (image-gen API keys etc.)
 .env
@@ -12,7 +12,12 @@ playwright-report/
 # AI agent files (Claude Code, Codex) — local only, never in the repo
 /CLAUDE.md
 /AGENTS.md
-/.claude/
+# .claude is the project's workshop — skills, agents, rules, hooks, settings — versioned so a cloud session has it
+# (user, 2026-10-27). What a session leaves behind stays local: the review queue and stamps, handoff patches, and
+# personal settings.
+/.claude/state/
+/.claude/patches/
+/.claude/settings.local.json
 /.agents/
 /.codex/
 /docs/ai/
