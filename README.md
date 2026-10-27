@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.75 — A real crowd.** The Coliseum's spectators are six different Emerald NPCs — some in profile — with uneven gaps and empty seats instead of a tiled strip, and nobody sits behind a court. No game change. Before it,
 **v0.9.74 — The instructions too.** `CLAUDE.md`, the project's instructions to Claude Code, is versioned beside `.claude/`, so a cloud session starts from the same rules. No game change. Before it,
 **v0.9.73 — The workshop in the repo.** `.claude/` — the skills, agents, rules, hooks and settings the work runs on — is versioned, so a cloud session has them; a session's own state (review queue, stamps, handoff patches) stays local. No game change. Before it,
 **v0.9.72 — Room to point.** A lane's weather tag is a label that never takes a node's click, placed clear of the captions; the UI audit now flags any control whose centre belongs to something else, and `npm run ui:film` records a beat in real time as a contact sheet. Before it,

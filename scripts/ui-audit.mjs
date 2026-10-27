@@ -99,6 +99,7 @@ const SCREENS = {
   // A fresh browser: the Ring's How to play opens by itself, so `ring` measures the guide and the others skip it.
   'ring-guide': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-next'], match: [/screens\/RingGuide/] },
   ring: { url: '/?screen=menu', ready: 'ring-screen', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip'], match: [/screens\/RingScreen/, /screens\/ring\//, /components\/ConfirmLeave/] },
+  'ring-coliseum': { url: '/?screen=menu', ready: 'ring-screen', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip'], match: [/screens\/RingScreen/, /screens\/ring\//, /components\/ConfirmLeave/] },
   'ring-climb': { url: '/?screen=menu', ready: 'ring-screen', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip', 'btn-ring-enter'], match: [/screens\/RingScreen/, /screens\/ring\//] },
   'ring-prize': {
     url: '/?screen=menu',
@@ -208,7 +209,7 @@ const EXPECTED_ROOT = {
   'map-hover-wild': 'map-screen', 'map-hover-trainer': 'map-screen', 'map-hover-service': 'map-screen', 'map-hover-locked': 'map-screen',
   city: 'city-screen', 'city-celadon': 'city-screen', 'city-gate': 'reflection', dojo: 'dojo-screen', center: 'center-screen', 'center-heal': 'center-screen', 'center-daycare': 'center-screen',
   shop: 'shop-screen', merchant: 'shop-screen', store: 'shop-screen', aid: 'aid-screen', training: 'training-screen',
-  'ring-guide': 'ring-guide', ring: 'ring-screen', 'ring-climb': 'ring-screen', 'ring-prize': 'ring-prize-screen',
+  'ring-guide': 'ring-guide', ring: 'ring-screen', 'ring-coliseum': 'ring-screen', 'ring-climb': 'ring-screen', 'ring-prize': 'ring-prize-screen',
   'game-corner': 'game-corner-room', 'game-corner-roulette': 'game-corner-screen', 'game-corner-slots': 'game-corner-screen', 'game-corner-open': 'game-corner-room', 'game-corner-shut': 'game-corner-room',
   'black-market': 'black-market-screen', 'black-market-gambler': 'market-counter', 'black-market-trader': 'market-counter', 'black-market-fence': 'market-counter', 'black-market-showcase': 'market-counter',
   safari: 'safari-screen', 'safari-guide': 'safari-guide', 'safari-stalk': 'safari-screen',

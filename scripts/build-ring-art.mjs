@@ -21,17 +21,25 @@ async function crop(s, box) {
 const indigo = await source('public/art/league/sources/indigo-frlg.png', 'https://archives.bulbagarden.net/wiki/File:Indigo_Plateau_FRLG.png');
 const tree = await source('public/art/route/forest/tree.png', 'https://archives.bulbagarden.net/wiki/File:Viridian_Forest_FRLG.png');
 const grass = await source('public/art/route/meadow/ground.png', 'https://archives.bulbagarden.net/wiki/File:Route_1_FRLG.png');
-const people = [];
-for (const [name, file] of [['carny','man_4'],['ranger','picnicker'],['grandmother','old_woman']]) {
-  const s = await source(`public/art/events/sources/${name}.png`, `https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/${file}.png`);
-  const {data,info} = await sharp(await crop(s,[0,0,16,32])).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+// Emerald overworld sheets: frame 0 faces the camera, frame 2 faces left. Keyed against the sheet's own background.
+const sheets = new Map(), frames = new Map();
+async function person(name, file, frame, flip = false) {
+  if (!sheets.has(name)) sheets.set(name, await source(`public/art/events/sources/${name}.png`, `https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/${file}.png`));
+  const s = sheets.get(name);
+  if (!frames.has(`${name}:${frame}`)) frames.set(`${name}:${frame}`, await crop(s,[frame*16,0,16,32]));
+  const {data,info} = await sharp(frames.get(`${name}:${frame}`)).ensureAlpha().raw().toBuffer({resolveWithObject:true});
   const key=[...data.subarray(0,3)];
   for(let i=0;i<data.length;i+=4)if(data[i]===key[0]&&data[i+1]===key[1]&&data[i+2]===key[2])data[i+3]=0;
-  people.push(await sharp(data,{raw:info}).png().toBuffer());
+  const img = sharp(data,{raw:info});
+  return (flip ? img.flop() : img).png().toBuffer();
 }
+const SHEETS = [['carny','man_4'],['ranger','picnicker'],['grandmother','old_woman'],['trader','man_3'],['grandfather','old_man'],['courier','mystery_event_deliveryman']];
+// One entry per person: facing the camera, plus (for four of them) a left- and a right-facing pose.
+const crowd = [];
+for (const [name, file] of SHEETS) crowd.push({ front: await person(name, file, 0), side: ['carny','ranger','grandmother','trader'].includes(name) ? [await person(name, file, 2), await person(name, file, 2, true)] : null });
+const spectator = crowd[0].front;
 const stone = await crop(indigo, [176,144,16,16]);
 const wall = await crop(indigo, [144,240,16,16]);
-const spectator = people[0];
 const lamp = await crop(indigo, [96,128,16,32]);
 const W=480,H=192;
 async function build(id, stops, indoor) {
@@ -46,12 +54,29 @@ async function build(id, stops, indoor) {
   const tile=async(input,x,y,w,h)=>{const m=await sharp(input).metadata();for(let yy=y;yy<y+h;yy+=m.height)for(let xx=x;xx<x+w;xx+=m.width)await put(input,xx,yy);};
   await tile(indoor?stone:grass.bytes,0,0,W,H);
   if(indoor){
-    // Two staggered spectator banks, each with a complete row of native Emerald NPCs.
+    // Two spectator banks of native Emerald NPCs. The crowd is dealt, not tiled: a fixed-seed generator picks six
+    // distinct silhouettes (a few side-facing, some mirrored), uneven gaps, the odd empty seat and 2 px of height
+    // jitter, no person within three seats of themselves, directly above themselves or more than five times. Nobody is seated behind a court.
     await rect(0,0,W,60,'#605868');
+    let seed=0x9e3779b9;
+    const rnd=()=>{seed=(seed+0x6d2b79f5)|0;let t=Math.imul(seed^(seed>>>15),1|seed);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;};
+    const seats=[[],[]],used=crowd.map(()=>0);
     for(let row=0;row<2;row++){
       await rect(0,row*24+24,W,4,'#a8a090');
-      for(let x=16+row*16;x<W-16;x+=32){
-        await put(people[(Math.floor(x/32)+row)%people.length],x,row*24-4);
+      let x=14+Math.floor(rnd()*14);
+      while(x<W-30){
+        if(rnd()<0.14){x+=16+Math.floor(rnd()*2)*8;continue;}
+        const above=seats[0].find((q)=>Math.abs(q.x-x)<24)?.id;
+        let id,tries=0;
+        do id=Math.floor(rnd()*crowd.length);while((seats[row].slice(-3).some((q)=>q.id===id)||(row===1&&id===above)||used[id]>=5)&&++tries<40);
+        if(tries>=40)throw new Error('Coliseum crowd: no seating satisfies the spacing rules; change the seed or loosen them.');
+        used[id]++;
+        const pose=crowd[id].side&&rnd()<0.4?crowd[id].side[Math.floor(rnd()*2)]:crowd[id].front;
+        const y=row*24-4+(rnd()<0.35?2:0);
+        const court=stops.some(([cx,cy])=>x+16>cx-44&&x<cx+44&&y+32>cy-20&&y<cy+32);
+        seats[row].push({x,id});
+        if(!court)await put(pose,x,y);
+        x+=24+Math.floor(rnd()*4)*4;
       }
     }
     for(const x of [0,464]){await rect(x,56,16,136,'#605868');await rect(x+3,56,10,112,'#a85850');await rect(x+6,56,4,112,'#e0ac7c');}

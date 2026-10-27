@@ -13,6 +13,13 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.75 — A real crowd · 2026-10-27
+
+The Coliseum's stands are seated with a mix of spectators, not a tiled strip.
+
+- **Crowd.** Six kinds of spectator, some in profile, uneven seats.
+- **Clear stage.** Nobody sits behind a court, so each rival stands out.
+
 ### v0.9.74 — The instructions too · 2026-10-27
 
 The project's Claude Code instructions now travel with the code.

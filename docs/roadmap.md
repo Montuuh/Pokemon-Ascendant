@@ -1504,6 +1504,10 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.75 — A real crowd  ✅ 2026-10-27
+
+**Shipped.** B16: the Coliseum's two spectator banks are dealt from six authentic Emerald NPC sheets (front, side and mirrored poses) by a fixed-seed generator in `scripts/build-ring-art.mjs` — uneven spacing, empty seats, 2 px height jitter, no person within three seats of themselves or directly above themselves, nobody behind a court. Pallet's ring is byte-identical. `ui:audit` gains a `ring-coliseum` screen. Left for B17: rung 1's label is clipped at 1280×720 with 150 % text. No game rule change.
+
 ### v0.9.74 — The instructions too  ✅ 2026-10-27
 
 **Shipped.** The user's call: `CLAUDE.md` — how a session works on this project (what to read first, the commands, the pillars, the engineering and verification rules, how to ship) — goes into git with `.claude/`, so a session from a clone, a cloud one included, starts from the same instructions. `AGENTS.md` (Codex) stays local. No game change.

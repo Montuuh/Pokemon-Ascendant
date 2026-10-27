@@ -31,6 +31,21 @@
       "path": "public/art/events/sources/grandmother.png",
       "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/old_woman.png",
       "sha256": "47a9b6617c48f2e10f680858a6fe4048b73aa35bebc070e2fd41c15c6040126d"
+    },
+    {
+      "path": "public/art/events/sources/trader.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/man_3.png",
+      "sha256": "34319acb3f0ce5280b4d9fc49007ebb03650d7ff4f63a6afbb8f361ddba9c862"
+    },
+    {
+      "path": "public/art/events/sources/grandfather.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/old_man.png",
+      "sha256": "07d7a5ba4401a9ee606a9b4f4cdbf63559169512b9cb805bb9eeb996eee4b7c6"
+    },
+    {
+      "path": "public/art/events/sources/courier.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/mystery_event_deliveryman.png",
+      "sha256": "d5c5f5e8a597c9c371fd5397064e52d0a3a591ea9dc20b2716c345401fcc27bf"
     }
   ],
   "crops": [
@@ -38,6 +53,15 @@
       "source": "public/art/events/sources/carny.png",
       "box": [
         0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/events/sources/carny.png",
+      "box": [
+        32,
         0,
         16,
         32
@@ -53,7 +77,61 @@
       ]
     },
     {
+      "source": "public/art/events/sources/ranger.png",
+      "box": [
+        32,
+        0,
+        16,
+        32
+      ]
+    },
+    {
       "source": "public/art/events/sources/grandmother.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/events/sources/grandmother.png",
+      "box": [
+        32,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/events/sources/trader.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/events/sources/trader.png",
+      "box": [
+        32,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/events/sources/grandfather.png",
+      "box": [
+        0,
+        0,
+        16,
+        32
+      ]
+    },
+    {
+      "source": "public/art/events/sources/courier.png",
       "box": [
         0,
         0,
@@ -125,8 +203,8 @@
           64
         ]
       ],
-      "sha256": "82a86d2a0ac96425269427b5d8f551e7c5f08d21103916acd6bcf344a1690aec",
-      "bytes": 2662
+      "sha256": "dc9052efac64c04f7166af2f28272793df411d664837cfd3d65a851186121488",
+      "bytes": 4399
     }
   ]
 }
