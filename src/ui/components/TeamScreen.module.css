@@ -9,6 +9,7 @@
   place-items: center;
   padding: var(--sp-5);
   background: var(--scrim);
+  animation: global(scrimIn) var(--motion-fast) ease-out both;
 }
 .panel {
   position: relative;
@@ -23,6 +24,7 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-modal);
   color: var(--ink-primary);
+  animation: global(sheetIn) var(--motion-base) var(--ease-step) both;
 }
 
 .head {

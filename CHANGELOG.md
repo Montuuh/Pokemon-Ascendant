@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.67 — The contact frame · 2026-10-27
+
+The motion sweep's five opportunities, built.
+
+- **HP drain.** Bars empty at a constant rate; a faint waits for it.
+- **Hit-stop.** A weighty hit holds the contact frame 60–100 ms.
+- **Played card.** It leaves toward its target instead of vanishing.
+- **Press and panels.** Buttons give under a press; sheets grow in.
+
 ### v0.9.66 — Hits with weight · 2026-10-27
 
 The motion sweep: combat feedback weighed by the event, chrome made quick.

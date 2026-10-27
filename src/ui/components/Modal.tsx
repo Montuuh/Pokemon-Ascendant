@@ -73,7 +73,7 @@ export function Modal({
 
   return (
     <div className={styles.scrim} role="dialog" aria-modal="true" aria-label={title} data-testid={testId}>
-      <div ref={panel} className={`${styles.panel} ${styles[tone]} ${size === 'reading' ? styles.reading : ''} fx-pop`}>
+      <div ref={panel} className={`${styles.panel} ${styles[tone] ?? ''} ${size === 'reading' ? styles.reading : ''}`}>
         <h2 className={`${styles.title} display`}>{title}</h2>
         {children}
       </div>

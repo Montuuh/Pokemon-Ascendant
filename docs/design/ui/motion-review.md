@@ -66,7 +66,7 @@ which channels each beat uses:
 | Weight | Events | At the impact |
 |---|---|---|
 | **Light** | A routine hit, a status card, a heal tick, a ball set in the tray | The number, the type's spark, the sound |
-| **Medium** | Super effective, a crit, a status landing, a swap, a stage raised or lowered | Light + its word under the number, a flash or the 1 px shake |
+| **Medium** | Super effective, a crit, a status landing, a swap, a stage raised or lowered | Light + its word under the number, a flash or the 1 px shake; a held frame of at most 60 ms at the contact |
 | **Heavy** | A faint, the catch's click or burst, a level-up, an evolution, a Badge, a boss's entrance, a field move (Earthquake, Surf, Explosion) | A held beat before or after, the stage itself, a fanfare |
 
 A routine hit dressed as heavy is a Should; so is a faint as light as a tap.

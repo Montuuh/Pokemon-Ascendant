@@ -325,6 +325,11 @@
   pointer-events: none;
   white-space: nowrap;
 }
+/* §9.9 / D12 — the hit-stop: at a weighty impact the move's picture and everyone else hold the contact frame a beat, while the
+   target flashes and shakes and its number lands; the stage's own jolt runs with them. */
+.stage[data-hit-stop] *:not(:global(.fx-shake)):not([data-float]) {
+  animation-play-state: paused !important;
+}
 /* §9.9 — information holds still under reduced motion: the word stays its time and goes. */
 @media (prefers-reduced-motion: reduce) {
   html:not([data-motion='full']) .banner {
@@ -535,6 +540,28 @@ html[data-motion='reduced'] .banner {
   transform-origin: 0 100%;
   transition: transform var(--motion-fast) ease;
   filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.5));
+}
+/* §9.9 — the played card leaves: a lift, a step of the way toward its target, and gone. It stands outside the stage,
+   so it carries its own length from FX_MS. */
+.leaving {
+  position: fixed;
+  z-index: var(--z-toast);
+  pointer-events: none;
+  transform-origin: 0 0;
+  animation: cardLeave var(--fx-card-leave) var(--ease-step) forwards;
+}
+/* It stays seen for half its time, then fades as it goes (world, once played). */
+@keyframes cardLeave {
+  from {
+    transform: scale(var(--s0, 1));
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(calc(var(--dx) * 0.4), calc(var(--dy) * 0.4 - 24px)) scale(calc(var(--s0, 1) * 0.9));
+    opacity: 0;
+  }
 }
 /* Over a target: smaller, lit, and lifted up and aside, so the target's own card — its number, its HP — stays in sight. */
 .dragGhost[data-over] {

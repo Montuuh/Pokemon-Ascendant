@@ -8,6 +8,7 @@
   z-index: var(--z-modal);
   background: var(--scrim);
   backdrop-filter: blur(3px);
+  animation: global(scrimIn) var(--motion-fast) ease-out both;
 }
 .content {
   position: fixed;
@@ -19,6 +20,7 @@
   pointer-events: none;
 }
 .sheet {
+  animation: global(sheetIn) var(--motion-base) var(--ease-step) both;
   pointer-events: auto;
   width: min(760px, 100%);
   max-height: min(88vh, 900px);

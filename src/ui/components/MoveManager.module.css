@@ -9,6 +9,7 @@
   padding: var(--sp-5);
   background: var(--scrim);
   z-index: 40;
+  animation: global(scrimIn) var(--motion-fast) ease-out both;
 }
 .panel {
   position: relative;
@@ -20,6 +21,7 @@
   border: 2px solid var(--border-strong);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-modal);
+  animation: global(sheetIn) var(--motion-base) var(--ease-step) both;
 }
 .close {
   position: absolute;

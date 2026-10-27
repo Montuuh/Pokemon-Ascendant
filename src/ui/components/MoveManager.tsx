@@ -266,7 +266,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
 
   return (
     <div className={styles.scrim} role="dialog" aria-modal="true" aria-label={`${species.name}'s moves`} data-testid="move-manager-overlay">
-      <div className={`${styles.panel} fx-pop`}>
+      <div className={styles.panel}>
         <button type="button" className={styles.close} onClick={onClose} data-testid="btn-close-moves" aria-label="Close the Move Manager">
           <IconX size={20} />
         </button>

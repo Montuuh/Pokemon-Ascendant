@@ -3,6 +3,7 @@
   inset: 0;
   z-index: var(--z-modal);
   background: var(--scrim);
+  animation: global(scrimIn) var(--motion-fast) ease-out both;
 }
 .record {
   position: fixed;
@@ -21,6 +22,7 @@
   background: var(--surface-0);
   color: var(--ink-primary);
   box-shadow: var(--shadow-modal);
+  animation: global(sheetIn) var(--motion-base) var(--ease-step) both;
 }
 .head {
   display: flex;

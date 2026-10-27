@@ -31,6 +31,7 @@ export function FloatingNumbers({ uid, fx }: { uid: string; fx: FloatingFx[] }) 
       {mine.map((f, i) => (
         <span
           key={f.id}
+          data-float
           className={[styles.num, styles[f.kind], f.emphasis ? styles[f.emphasis] : '', f.lifted ? styles.lifted : ''].join(' ')}
           style={{ animationDelay: `${i * 90}ms`, left: `${50 + COLUMN[at[i]!.col % 3]!}%`, '--row': at[i]!.row } as CSSProperties}
         >

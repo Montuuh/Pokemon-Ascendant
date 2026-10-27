@@ -32,9 +32,16 @@ button {
   border: 0;
   background: none;
   padding: 0;
+  transition: scale var(--motion-fast) ease-out;
 }
 button:disabled {
   cursor: not-allowed;
+}
+/* D11 — a press answers at once: the button gives a little under the finger. `scale`, not `transform`, so it composes
+   with a button's own transform (a card's fan, a lift); a module's own `transition` may make the press instant. Never
+   on a button showing pixel art (D9: a sprite at 0.97 is off its grid); `:where` so any module can opt out. */
+:where(button:active:not(:disabled):not([aria-disabled='true']):not(:has(.pixel, img[src*='/art/']))) {
+  scale: 0.97;
 }
 button:focus-visible {
   outline: 3px solid var(--accent-action);

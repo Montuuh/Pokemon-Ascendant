@@ -121,6 +121,8 @@ export interface CombatFxState {
   opening: boolean;
   /** The turn the top bar says: a new one once the foes' turn has played out, not when End Turn resolves. */
   turn: number;
+  /** §9.9 / D12 — the stage holds its frame at a weighty impact (`FX_MS.hitStop`). */
+  hitStop: boolean;
 }
 
 /** A card's class outlives its keyframes by a frame or two, so a timer never cuts the last one. */
@@ -171,6 +173,12 @@ export const FX_MS = {
   fled: 500,
   /** A word over the arena, held and then faded. */
   banner: 1300,
+  /** The impact's held frame: everything on the stage stops a beat — longer for the blow that faints. */
+  hitStop: { medium: 60, heavy: 100 },
+  /** §9.9 — a played card leaving the hand toward its target. */
+  cardLeave: 220,
+  /** §9.9 — a whole HP bar emptying at the series' constant rate; `tokens.test.ts` holds `--motion-hp-drain` to it. */
+  hpDrain: 800,
 } as const;
 
 /** The beats' lengths as CSS custom properties on the arena, so the keyframes and the timers read one table. */
@@ -251,6 +259,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   const [logHold, setLogHold] = useState<number | null>(null);
   const [hpShown, setHpShown] = useState<Record<string, number>>({});
   const [shownTurn, setShownTurn] = useState<number | null>(null);
+  const [hitStop, setHitStop] = useState(false);
+  const hitStopUntil = useRef(0);
   // §9.9.2 — one clock for the moves across batches, in wall time: a card played while the last move is still in the air
   // starts at that move's impact, a Pokémon that dashed waits until it is back, and the HP and log a batch holds back are
   // let go by the batch that ends last.
@@ -373,6 +383,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     const fresh = state.events.filter((e) => e.seq >= seenSeq.current);
     seenSeq.current = state.nextSeq;
     const before = seen.current ?? look(state);
+    /** The HP each bar shows as this batch's hits land, one after another: what a blow takes off the bar. */
+    const barHp = new Map(before.hp);
     seen.current = look(state);
     if (fresh.length === 0) return;
 
@@ -540,8 +552,22 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           // §9.9 / D12 — weighted by what the hit did: the blow that faints is heavy, a super-effective or critical one
           // medium, the rest light.
           const heavy = e.amount > 0 && e.hpAfter === 0;
+          const weighty = heavy || emphasis === 'super' || emphasis === 'crit';
+          // The held frame: the move's picture and everyone else stop at the contact while the target flashes and
+          // shakes and its number lands (`.stage[data-hit-stop]`).
+          const stop = animate && e.amount > 0 && weighty ? FX_MS.hitStop[heavy ? 'heavy' : 'medium'] : 0;
+          if (stop) {
+            const until = t0 + at + stop;
+            schedule(() => {
+              hitStopUntil.current = Math.max(hitStopUntil.current, until);
+              setHitStop(true);
+            }, at);
+            schedule(() => {
+              if (Date.now() >= hitStopUntil.current - 5) setHitStop(false);
+            }, at + stop);
+          }
           if (e.amount > 0) {
-            if (heavy || emphasis === 'super' || emphasis === 'crit') addClass(e.targetUid, 'fx-shake', at, FX_MS.shake);
+            if (weighty) addClass(e.targetUid, 'fx-shake', at, FX_MS.shake);
             else addClass(e.targetUid, 'fx-recoil', at, FX_MS.recoil);
             if (heavy && animate) {
               schedule(() => setStageClass((c) => c ?? 'fx-jolt'), at);
@@ -552,8 +578,14 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           if (e.crit) addFloat({ uid: e.targetUid, kind: 'text', text: 'CRIT', under: true }, at + 120);
           else if (emphasis === 'super') addFloat({ uid: e.targetUid, kind: 'text', text: EFFECTIVENESS_LABEL[e.effectiveness] ?? '', under: true }, at + 120);
           if (animate && at > 0) hpAt.push({ at, uid: e.targetUid, hp: e.hpAfter });
-          // The blow that faints shakes to rest before the faint takes its card.
-          delay = Math.max(delay, at) + (heavy ? FX_MS.shake : 220);
+          // The blow that faints shakes to rest and its bar empties (HpBar's drain, by the share it crosses) before the
+          // faint takes its card: the bar tells the outcome first, as in the series.
+          // The bar loses what it showed, not the damage dealt: an overkill blow drains no further than empty.
+          const maxHp = [...state.player.team, ...state.enemies, ...state.defeatedEnemies].find((u) => u.uid === e.targetUid)?.maxHp ?? 0;
+          const shownBefore = barHp.get(e.targetUid) ?? e.amount + e.hpAfter;
+          barHp.set(e.targetUid, e.hpAfter);
+          const drainMs = maxHp > 0 ? FX_MS.hpDrain * (0.25 + 0.75 * Math.min(1, Math.max(0, shownBefore - e.hpAfter) / maxHp)) : 0;
+          delay = Math.max(delay, at) + (heavy ? Math.max(FX_MS.shake, drainMs) : 220);
           break;
         }
         case 'heal':
@@ -740,7 +772,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, acting, opening, turn: shownTurn ?? state?.turn ?? 1 };
+  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, acting, opening, turn: shownTurn ?? state?.turn ?? 1, hitStop };
 }
 
 export type { CombatEvent };

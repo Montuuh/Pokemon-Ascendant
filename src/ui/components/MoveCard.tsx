@@ -22,7 +22,8 @@ interface Props {
   /** §5.6 — this card is the one being dragged: it waits in the hand, faded, while its copy travels. */
   lifted?: boolean;
   /** §5.6 — the copy that travels under the pointer: not a control, not in the hand's fan. */
-  ghost?: boolean;
+  /** A copy of the card that is not in the hand (the drag's, the played card's): true, or the copy's own test id. */
+  ghost?: boolean | string;
 }
 
 /** §4.1.2 — the ×N chip said in words, for the label. */
@@ -66,7 +67,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
       type="button"
       className={ghost ? classes : `${classes} fx-card-in`}
       tabIndex={ghost ? -1 : undefined}
-      aria-hidden={ghost || undefined}
+      aria-hidden={!!ghost || undefined}
       style={{ ['--card-type' as string]: `var(--type-${move.type})`, ['--rot' as string]: `${rot}deg`, ['--lift' as string]: `${lift}px`, marginLeft: index > 0 && overlap ? -overlap : undefined, animationDelay: `${index * 40}ms` }}
       onClick={onClick}
       onPointerDown={(e) => {
@@ -84,7 +85,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         onHover(false);
       }}
       // `card-` is the card's own test id: the suites count a hand by it, so nothing inside a card takes the prefix.
-      data-testid={ghost ? 'drag-ghost-card' : `card-${move.id}`}
+      data-testid={typeof ghost === 'string' ? ghost : ghost ? 'drag-ghost-card' : `card-${move.id}`}
       data-card-id={play.card.id}
       data-mastery={play.card.mastery || undefined}
       data-crit={rhythmCrit || undefined}

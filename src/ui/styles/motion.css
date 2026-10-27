@@ -96,6 +96,21 @@
   }
 }
 
+/* D11 — a modal or a sheet arrives: its scrim fades in, its panel grows in from just under its size and from the
+   centre, bridging the jump from the screen behind. `scale`, not `transform`, so a panel's own centring stays. Both
+   on the motion tokens, so the reduced switches make them instant. */
+@keyframes scrimIn {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+
 /* No `to`: the card lands on its own transform (its place in the fan), not on an upright card it then jumps from. */
 @keyframes cardIn {
   from {

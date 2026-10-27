@@ -263,3 +263,44 @@ test.describe('Arena animations — §9.9', () => {
     await expect(page.locator('[data-testid^="branch-venusaur-"]').first()).toBeVisible();
   });
 });
+
+// §9.9 — "play lifts, glows and fades toward the target": a card played leaves the hand toward what it was played on,
+// as a copy that never holds the hand, and is gone in its beat.
+test.describe('The played card — §9.9', () => {
+  test('leaves its place in the hand toward the foe it was played on, and is gone', async ({ page }) => {
+    await page.goto('/?scenario=wild-basic&seed=7');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    const card = page.locator('[data-testid="hand"] [data-testid^="card-"][data-state="playable"]').first();
+    await card.click();
+    const from = (await card.boundingBox())!;
+    await page.locator('[data-testid^="enemy-"]').first().click();
+    const leaving = page.getByTestId('leaving-card');
+    await expect(leaving).toHaveCount(1);
+    // It starts where the card stood (its place, before the step toward the foe).
+    const left = await leaving.evaluate((el) => parseFloat((el as HTMLElement).style.left));
+    expect(Math.abs(left - from.x)).toBeLessThan(from.width / 2);
+    await expect(leaving).toHaveCount(0);
+  });
+
+  test("dropped on its target, it leaves from the ghost under the pointer, at the ghost's size", async ({ page }) => {
+    await page.goto('/?scenario=wild-basic&seed=7');
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    const card = page.locator('[data-testid="hand"] [data-testid^="card-"][data-state="playable"]').first();
+    const from = (await card.boundingBox())!;
+    const foe = (await page.locator('[data-testid^="enemy-"]').first().boundingBox())!;
+    await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(from.x + from.width / 2, from.y - 60, { steps: 4 });
+    await page.mouse.move(foe.x + foe.width / 2, foe.y + foe.height / 2, { steps: 8 });
+    // Held over the foe until the ghost has settled small, as a real drag does.
+    await page.waitForTimeout(400);
+    const ghost = (await page.getByTestId('drag-ghost-card').boundingBox())!;
+    await page.mouse.up();
+    const leaving = page.getByTestId('leaving-card');
+    await expect(leaving).toHaveCount(1);
+    const start = await leaving.evaluate((el) => ({ left: parseFloat((el as HTMLElement).style.left), s0: parseFloat((el as HTMLElement).style.getPropertyValue('--s0')) }));
+    expect(Math.abs(start.left - ghost.x)).toBeLessThan(4);
+    expect(start.s0).toBeLessThan(0.9);
+    await expect(leaving).toHaveCount(0);
+  });
+});

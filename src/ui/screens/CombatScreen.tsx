@@ -63,6 +63,9 @@ export function CombatScreen() {
   // §5.2 — one of yours under the pointer: the arrows aimed at its slot come forward.
   const [hoverAllySlot, setHoverAllySlot] = useState<SlotId | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  // §9.9 — the card just played, leaving the hand toward its target: where it stood and how far its target lies.
+  const [leaving, setLeaving] = useState<{ id: number; play: CardPlayability; left: number; top: number; scale: number; dx: number; dy: number } | null>(null);
+  const leavingId = useRef(0);
   const trayRef = useRef<HTMLElement | null>(null);
   // §9.2.1 — the stage, and where each slot's Pokémon stands on it: measured from the formation after every layout, so
   // the arena's beats (balls, ghosts, the catch, a move's picture) land on the sprite wherever the formation put it. A
@@ -169,11 +172,22 @@ export function CombatScreen() {
 
   /** Play a card at `targetUid` (absent: the enemy Lead); a Step-Backward card first asks for its bench. */
   const playCard = useCallback(
-    (play: CardPlayability, targetUid?: string, stepBackTo?: number) => {
+    (play: CardPlayability, targetUid?: string, stepBackTo?: number, dropped?: { from: HTMLElement; to: DOMRect | null }) => {
       if (play.needsStepBackChoice && stepBackTo === undefined) {
         select({ mode: 'step-back', cardId: play.card.id, ...(targetUid ? { targetUid } : {}) });
         fail('Step-Backward: choose which bench Pokémon takes the Lead.');
         return;
+      }
+      // §9.9 — the card does not vanish at the click: a copy leaves from its place in the hand toward its target (the
+      // stage's middle for a card with none named). Decoration only: the hand is never held for it.
+      // It starts at the size it was seen at — a lifted hand card, or the drag's shrunken ghost — not its own.
+      const source = dropped?.from ?? document.querySelector<HTMLElement>(`[data-testid="hand"] [data-card-id="${play.card.id}"]`);
+      const from = source?.getBoundingClientRect();
+      const to = dropped?.to ?? (targetUid ? document.querySelector<HTMLElement>(`[data-arrow-card="${targetUid}"]`) : null)?.getBoundingClientRect() ?? stageEl?.getBoundingClientRect();
+      if (animate && from && to) {
+        const id = ++leavingId.current;
+        setLeaving({ id, play, left: from.left, top: from.top, scale: from.width / (source!.offsetWidth || from.width), dx: to.left + to.width / 2 - (from.left + from.width / 2), dy: to.top + to.height / 2 - (from.top + from.height / 2) });
+        window.setTimeout(() => setLeaving((l) => (l?.id === id ? null : l)), FX_MS.cardLeave);
       }
       dispatch({
         type: 'play-card',
@@ -182,7 +196,7 @@ export function CombatScreen() {
         ...(targetUid === undefined ? {} : { targetUid }),
       });
     },
-    [dispatch, fail, select],
+    [animate, dispatch, fail, select, stageEl],
   );
 
   // §5.6 (v0.9.16) — a card is played onto its target, never cast at nothing: a card that lands on the foe only onto
@@ -194,8 +208,11 @@ export function CombatScreen() {
       const play = cardPlayability(live, d.id, ctx);
       if (!play || !d.out) return;
       if (!play.playable) return fail(play.reason ? REJECT_TEXT[play.reason] : 'Cannot play that.');
-      if (play.aimsAtFoe) return d.overUid ? playCard(play, d.overUid) : fail(DROP_ON_FOE);
-      if (d.overAlly !== null && play.allyTargets.includes(d.overAlly)) return playCard(play);
+      // The card leaves from where it was let go — the ghost under the pointer — toward what it was dropped on.
+      const from = document.querySelector<HTMLElement>('[data-testid="drag-ghost-card"]') ?? undefined;
+      const onto = (sel: string) => document.querySelector<HTMLElement>(sel)?.getBoundingClientRect() ?? null;
+      if (play.aimsAtFoe) return d.overUid ? playCard(play, d.overUid, undefined, from && { from, to: onto(`[data-arrow-card="${d.overUid}"]`) }) : fail(DROP_ON_FOE);
+      if (d.overAlly !== null && play.allyTargets.includes(d.overAlly)) return playCard(play, undefined, undefined, from && { from, to: onto(`[data-ally-index="${d.overAlly}"]`) });
       fail(dropOnAllyText(live, play.allyTargets));
     },
     [ctx, fail, playCard],
@@ -543,6 +560,7 @@ export function CombatScreen() {
           ref={setStageEl}
           className={`${styles.stage} ${fx.stageClass ?? ''}`}
           data-fx-stage
+          data-hit-stop={fx.hitStop || undefined}
           style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings(), ...motionTimings() }}
         >
         <div className={styles.stageTint} aria-hidden="true" />
@@ -723,6 +741,18 @@ export function CombatScreen() {
       {drag && draggedPlay && (
         <div className={styles.dragGhost} data-over={dropOk(draggedPlay, drag) || undefined} style={{ left: drag.x, top: drag.y }} aria-hidden="true" data-testid="drag-ghost">
           <MoveCard play={draggedPlay} selected={false} onClick={() => undefined} onHover={() => undefined} index={0} total={1} ghost />
+        </div>
+      )}
+
+      {leaving && (
+        <div
+          key={leaving.id}
+          className={styles.leaving}
+          style={{ left: leaving.left, top: leaving.top, '--s0': leaving.scale, '--fx-card-leave': `${FX_MS.cardLeave}ms`, '--dx': `${leaving.dx}px`, '--dy': `${leaving.dy}px` } as CSSProperties}
+          aria-hidden="true"
+          data-testid="leaving-card"
+        >
+          <MoveCard play={leaving.play} selected={false} onClick={() => undefined} onHover={() => undefined} index={0} total={1} ghost="leaving-card-face" />
         </div>
       )}
 

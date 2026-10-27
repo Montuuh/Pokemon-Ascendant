@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { lintMotionFiles, motionFiles } from '../../../scripts/lib/motion-lint.mjs';
+import { FX_MS } from '@/ui/hooks/useCombatFx';
 
 const ROOT = resolve(import.meta.dirname, '../../..');
 const tokens = readFileSync(resolve(ROOT, 'src/ui/styles/tokens.css'), 'utf8');
@@ -21,6 +22,11 @@ describe('Reduced motion, both switches — §9.6, D11', () => {
     expect(durations.length).toBeGreaterThan(0);
     expect(collapsed(":root:not([data-motion='full'])"), 'the system preference, unless Settings says Full').toEqual(durations);
     expect(collapsed(":root[data-motion='reduced']"), "Settings' Reduced").toEqual(durations);
+  });
+
+  // §9.9 — the bar's drain (CSS) and the faint that waits for it (useCombatFx) read one length.
+  it('Tokens_HpDrain_MatchesTheArenaTable', () => {
+    expect(tokens).toContain(`--motion-hp-drain: ${FX_MS.hpDrain}ms;`);
   });
 
   it('Stylesheets_ReducedMotionRules_ObeyBothSwitches', () => {

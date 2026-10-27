@@ -160,6 +160,8 @@
      loops that mean the same thing never drift out of phase. */
   --motion-loop-pulse: 1200ms;
   --motion-loop-breathe: 2600ms;
+  /* §9.9 — an HP bar empties at the series' constant rate: a whole bar takes this long, a chip a sliver of it. */
+  --motion-hp-drain: 800ms;
   --ease-spin: cubic-bezier(0.15, 0.85, 0.25, 1);
   --ease-reel: cubic-bezier(0.25, 0.6, 0.35, 1.06);
   /* §9.9 — the arena's beats (v0.9.3): a wild Pokémon's step in. Their lengths are not here but in
@@ -212,6 +214,7 @@
     --motion-dash-flow: 0ms;
     --motion-loop-pulse: 0ms;
     --motion-loop-breathe: 0ms;
+    --motion-hp-drain: 0ms;
   }
 }
 :root[data-motion='reduced'] {
@@ -228,4 +231,5 @@
   --motion-dash-flow: 0ms;
   --motion-loop-pulse: 0ms;
   --motion-loop-breathe: 0ms;
+  --motion-hp-drain: 0ms;
 }
