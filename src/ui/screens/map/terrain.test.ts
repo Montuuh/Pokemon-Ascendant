@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import { generateRegion, gymById, type RegionMap } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
-import { mapTerrain, nodeTile, TERRAIN_BY_TYPE, ROAD } from './terrain';
+import { mapTerrain, nodeTile, topMargin, TERRAIN_BY_TYPE, ROAD } from './terrain';
 import { piecesFor } from './tileset';
 
 // §2.5.4 — the route's terrain: a pure function of the map, so the same map always paints the same ground, every
@@ -26,7 +26,7 @@ describe('The route terrain — §2.5.4', () => {
       for (const n of Object.values(m.nodes)) {
         for (const id of n.next) {
           const line = t.edges[`${n.id}>${id}`]!;
-          expect(line, `${m.seed} ${n.id}>${id}`).toEqual([nodeTile(n), nodeTile(m.nodes[id]!)]);
+          expect(line, `${m.seed} ${n.id}>${id}`).toEqual([nodeTile(n, topMargin(m)), nodeTile(m.nodes[id]!, topMargin(m))]);
           const [p, q] = [line[0]!, line[1]!];
           for (let i = 0; i <= 20; i++) {
             const [x, y] = [Math.floor(p.x + ((q.x - p.x) * i) / 20), Math.floor(p.y + ((q.y - p.y) * i) / 20)];
@@ -59,7 +59,7 @@ describe('The route terrain — §2.5.4', () => {
       for (const lane of [0, 1]) {
         const want = TERRAIN_BY_TYPE[gymById(m.gyms[lane]!).type];
         const gym = Object.values(m.nodes).find((n) => n.kind === 'gym' && n.lane === lane)!;
-        expect(t.cells[nodeTile(gym).y]![lastX]!.t, `${m.seed} lane ${lane}`).toBe(want);
+        expect(t.cells[nodeTile(gym, topMargin(m)).y]![lastX]!.t, `${m.seed} lane ${lane}`).toBe(want);
       }
       // …and the trunk is the Region's road.
       expect(t.cells[Math.floor(t.h / 2)]![3]!.t).toBe(ROAD[m.regionIndex]);

@@ -130,7 +130,8 @@
   left: 50%;
   top: var(--sp-3);
   transform: translateX(-50%);
-  z-index: 2;
+  /* Over the board and its lane tags (z 4). */
+  z-index: var(--z-hud);
   margin: 0;
   padding: var(--sp-2) var(--sp-5);
   border-radius: var(--radius-pill);

@@ -49,6 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
+**v0.9.69 — Heads and captions.** The route no longer cuts its top row's heads or its bottom row's captions at 720p: more ground above the first row when a node stands in it, a board that always fits its height, and the lower lane's weather tag on the split, clear of the captions. Before it,
 **v0.9.68 — The blow, then the faint.** The combat log names the hit before the faint it caused, for your moves and the foes'. Before it,
 **v0.9.67 — The contact frame.** HP bars empty at the series' constant rate and a faint waits for its bar; a super-effective, critical or knockout blow holds the contact frame for a beat; a played card leaves toward its target; buttons give under a press and modals and sheets grow in. Before it,
 **v0.9.66 — Hits with weight.** The motion sweep: a routine hit recoils, a super-effective or critical one shakes, the blow that faints jolts the stage; under reduced motion the numbers hold and fade and the banners stay still; the hand hovers faster and tooltips open at once as you read across it. Before it,

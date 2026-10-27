@@ -3,7 +3,8 @@
 // running dev server, screenshots it, and measures what a doctrine can be measured on: how much text is on the
 // screen and where the long blocks are (D1), how many doors there are (D2), plain tables and text-only grids
 // (D3), contrast failures (D5), native title= and unnamed controls (D2/D8), overflow of the viewport and content
-// spilling out of its card, at 1920×1080 and 1280×720 (D8). Then the static half over the changed files: dead CSS
+// spilling out of its card, and content cut off inside a box that scrolls only the other way, at 1920×1080 and
+// 1280×720 (D8). Then the static half over the changed files: dead CSS
 // classes, hex literals, title= in JSX (D6/D7), and the motion lint (D11/D12, scripts/lib/motion-lint.mjs).
 //
 // It does not judge. The ui-reviewer agent reads its report and the screenshots and judges.
@@ -52,8 +53,8 @@ const SCREENS = {
   ])),
   // A16–A18 — complete move cells, overworld node registers and every physical market counter.
   'move-art-window': { url: '/?scenario=wild-basic&seed=7', ready: 'combat-screen', setup: ['hand(["flash", "fire-blast", "skull-bash", "surf", "barrier"])'], match: [/components\/MoveCard/] },
-  'map-region-2': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.dispatch({ type: "depart-city", modifierId: a.run.state().city.reflection[0] ?? null })', 'goTo("map")'], match: [/components\/(NodeMarker|HabitatArt|nodeArt)/] },
-  'map-region-3': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.dispatch({ type: "depart-city", modifierId: a.run.state().city.reflection[0] ?? null })', 'goTo("map")'], match: [/components\/(NodeMarker|HabitatArt|nodeArt)/] },
+  'map-region-2': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.dispatch({ type: "depart-city", modifierId: a.run.state().city.reflection[0] ?? null })', 'goTo("map")'], match: [/components\/(NodeMarker|HabitatArt|nodeArt)/, /screens\/map\//] },
+  'map-region-3': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 7)', 'run.city(1)', 'run.dispatch({ type: "depart-city", modifierId: a.run.state().city.reflection[0] ?? null })', 'goTo("map")'], match: [/components\/(NodeMarker|HabitatArt|nodeArt)/, /screens\/map\//] },
   'map-victory-road': { url: '/?screen=menu', ready: 'route-board', setup: ['run.new("squirtle", 7)', 'run.fill(6)', 'run.victoryRoad()', 'goTo("map")'], match: [/components\/(NodeMarker|HabitatArt|nodeArt)/] },
   ...Object.fromEntries(['trader', 'fence', 'showcase'].map((counter) => [`black-market-${counter}`, { url: '/?screen=menu', ready: 'market-counter', setup: ['run.new("squirtle", 7)', 'run.fill(5)', 'run.city(1)', 'run.pay(3000)', 'run.dispatch({ type: "enter-building", building: "game-corner" })', 'run.dispatch({ type: "push-switch" })', 'run.dispatch({ type: "enter-black-market" })'], clicks: [`market-${counter}`], match: [/screens\/BlackMarketScreen/, /screens\/black-market\//] }])),
   menu: { url: '/?screen=menu', match: [/screens\/MainMenu/, /App\.tsx/] },
@@ -79,7 +80,7 @@ const SCREENS = {
   'combat-boss': { url: '/?scenario=wild-boss-3phase&seed=7', match: [/components\/EnemyPanel/, /combat\/boss/] },
   // §5.9.5 — a Gym under its Leader's rule, the Leader on stage behind a group.
   'combat-gym': { url: '/?scenario=gym-sabrina-rule&seed=3', match: [/components\/RuleChip/, /combat\/gymRules/] },
-  map: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'goTo("map")'], match: [/screens\/MapScreen/, /components\/(NodeMarker|NodePreviewCard|BoxPanel|InventoryDrawer|Money)/] },
+  map: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'goTo("map")'], match: [/screens\/MapScreen/, /screens\/map\//, /components\/(NodeMarker|NodePreviewCard|BoxPanel|InventoryDrawer|Money)/] },
   ...Object.fromEntries(['wild', 'trainer', 'service', 'locked'].map((kind) => [`map-hover-${kind}`, {
     url: '/?screen=menu', motion: 'no-preference',
     setup: ['run.new("squirtle", 7)', ...(kind === 'service' ? ['run.jump("aid")'] : []), 'goTo("map")'],
@@ -166,7 +167,8 @@ const SCREENS = {
   find: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'], clicks: ['find-reel'], match: [/screens\/FindScreen/, /components\/FindPrize/] },
   // §9.9.3 — the Center's machine on a hurt Box (a click skips to the bars filled), and the map with every node named.
   'center-heal': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.patch((d) => { d.box[0].hp = 3; d.box[1].hp = 0; })'], clicks: ['door-center', 'center-heal'], match: [/components\/HealPanel/, /screens\/CenterScreen/] },
-  'map-labels': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'goTo("map")'], clicks: ['map-labels'], match: [/screens\/map\/RouteView/, /components\/nodeArt/, /components\/NodeMarker/] },
+  // Seed 2 is the tallest map — nodes in its first and last rows — so what cuts off first, heads or captions, shows here.
+  'map-labels': { url: '/?screen=menu', setup: ['run.new("squirtle", 2)', 'goTo("map")'], clicks: ['map-labels'], match: [/screens\/map\//, /components\/(NodeMarker|HabitatArt|nodeArt)/] },
   // §9.12 — the Team screen, from the map (a full formation, an item to give) and from a City's lobby.
   team: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(4)', 'run.patch((d) => { d.activeUids = d.box.slice(0, 3).map((m) => m.uid); d.bag = [...d.bag, "leftovers"]; })', 'goTo("map")'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /hooks\/useTeamKey/, /components\/BoxPanel/] },
   'team-city': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /screens\/city\/CityScreen/] },
@@ -443,6 +445,26 @@ function spills() {
   return out.sort((p, q) => q.px - p.px);
 }
 
+// Runs inside the page. A box that scrolls one way and hides the other (a route that scrolls sideways, never up) shows
+// none of what overflows its hidden axis, and neither the viewport check nor a spill can see it: the page does not
+// scroll and nothing pokes out. That content is cut off (D8) — v0.9.69's map lost its bottom captions that way.
+function hiddenOverflow() {
+  const MIN = 2;
+  const scrolls = (o) => o === 'auto' || o === 'scroll';
+  const hides = (o) => o === 'hidden' || o === 'clip';
+  const out = [];
+  for (const el of document.body.querySelectorAll('*')) {
+    const cs = getComputedStyle(el);
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0 || cs.visibility === 'hidden' || cs.display === 'none') continue;
+    const t = el.closest('[data-testid]');
+    const at = t ? t.getAttribute('data-testid') : el.tagName.toLowerCase();
+    if (scrolls(cs.overflowX) && hides(cs.overflowY) && el.scrollHeight - el.clientHeight >= MIN) out.push({ at, px: el.scrollHeight - el.clientHeight, axis: 'vertical' });
+    if (scrolls(cs.overflowY) && hides(cs.overflowX) && el.scrollWidth - el.clientWidth >= MIN) out.push({ at, px: el.scrollWidth - el.clientWidth, axis: 'horizontal' });
+  }
+  return out;
+}
+
 // ── Static checks over the changed files (D6, D7, D2, D11) ───────────────────────────────────────────────────
 function staticChecks(fileList) {
   const out = { deadCss: [], hexLiterals: [], titleAttrs: [], motion: [] };
@@ -546,6 +568,7 @@ async function main() {
       }
       const data = await page.evaluate(measure);
       data.spills = await page.evaluate(spills);
+      data.hidden = await page.evaluate(hiddenOverflow);
       const shot = `${id}.png`;
       await page.screenshot({ path: join(OUT, shot) });
       captures.at1080 = { screenshot: shot, root: s.root };
@@ -565,6 +588,7 @@ async function main() {
         return { overflowing: over, pageScrollX: document.documentElement.scrollWidth > vw + 1 };
       });
       small.spills = await page.evaluate(spills);
+      small.hidden = await page.evaluate(hiddenOverflow);
       await page.screenshot({ path: join(OUT, `${id}-720.png`) });
       captures.at720 = { screenshot: `${id}-720.png`, root: s.root };
       const result = { screen: id, status: 'captured', expectedRoot: s.root, captures, url: s.url, screenshot: shot, errors, ...data, at720: small };
@@ -579,7 +603,8 @@ async function main() {
       report.push(`- **D3 shape**: ${data.tables} table(s), ${data.textOnlyLists.length} text-only list(s) of 8+ rows${data.textOnlyLists.length ? ' (' + data.textOnlyLists.map((l) => `${l.at}: ${l.rows}`).join('; ') + ')' : ''}`);
       report.push(`- **D5 contrast**: ${data.contrastFails.length} failure(s)${data.contrastUnknownBg ? ` · ${data.contrastUnknownBg} block(s) on a gradient/image, unmeasured` : ''}`);
       for (const c of data.contrastFails) report.push(`  - ${c.ratio}:1 (needs ${c.need}) ${c.size}px @ \`${c.at}\` “${c.text}” fg ${c.fg} on ${c.bg}`);
-      report.push(`- **D8 works**: ${data.unnamed.length} unnamed control(s)${data.unnamed.length ? ' (' + data.unnamed.join(', ') + ')' : ''} · overflow 1080p: ${data.overflowing.length ? data.overflowing.join(', ') : 'none'}${data.pageScrollX ? ' · page scrolls sideways' : ''} · overflow 720p: ${small.overflowing.length ? small.overflowing.join(', ') : 'none'}${small.pageScrollX ? ' · page scrolls sideways' : ''} · spill 1080p: ${data.spills.length || 'none'} · spill 720p: ${small.spills.length || 'none'} · console errors: ${errors.length}`);
+      report.push(`- **D8 works**: ${data.unnamed.length} unnamed control(s)${data.unnamed.length ? ' (' + data.unnamed.join(', ') + ')' : ''} · overflow 1080p: ${data.overflowing.length ? data.overflowing.join(', ') : 'none'}${data.pageScrollX ? ' · page scrolls sideways' : ''} · overflow 720p: ${small.overflowing.length ? small.overflowing.join(', ') : 'none'}${small.pageScrollX ? ' · page scrolls sideways' : ''} · spill 1080p: ${data.spills.length || 'none'} · spill 720p: ${small.spills.length || 'none'} · hidden 1080p: ${data.hidden.length || 'none'} · hidden 720p: ${small.hidden.length || 'none'} · console errors: ${errors.length}`);
+      for (const [at, list] of [['1080p', data.hidden], ['720p', small.hidden]]) for (const h of list.slice(0, 8)) report.push(`  - hidden ${at}: \`${h.at}\` ${h.px} px cut off on its ${h.axis} axis, which does not scroll`);
       for (const [at, list] of [['1080p', data.spills], ['720p', small.spills]]) {
         for (const p of list.slice(0, 8)) report.push(`  - spill ${at}: \`${p.at}\` ${p.px} px ${p.side} \`${p.bound}\``);
         if (list.length > 8) report.push(`  - spill ${at}: … ${list.length - 8} more in \`${ARTIFACTS}/${id}.json\``);

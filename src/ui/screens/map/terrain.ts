@@ -14,9 +14,18 @@ import { gymById, type MapNode, type RegionMap } from '@/sim';
 /** Tiles per map column (left to right) and per map row (top to bottom). */
 export const COL_TILES = 7;
 export const ROW_TILES = 3;
-/** The scenery framing the route: tiles left and right of the first and last column, above and below the rows. */
+/** The scenery framing the route: tiles left and right of the first and last column (`MARGIN_X`), and below the last
+ *  row — where only a caption hangs — and above the first (`MARGIN_Y`, deepened by `HEADROOM`; see `topMargin`). The
+ *  board scales to fit its height (`RouteView`), so every margin is shown whole. */
 export const MARGIN_X = 5;
 export const MARGIN_Y = 2;
+/** More ground above the first row when a node stands in it: a node's picture rises from its point — a person about
+ *  twice the row spacing at 720 p — and `MARGIN_Y` alone cut the top row's heads off at the board's edge (v0.9.69).
+ *  A map with no node in the first row keeps the plain margin, so no empty band of scenery opens over it. */
+export const HEADROOM = 4;
+
+/** The margin above the first row, in tiles: `MARGIN_Y`, and `HEADROOM` more when a node stands in row 0. */
+export const topMargin = (map: Pick<RegionMap, 'nodes'>) => MARGIN_Y + (Object.values(map.nodes).some((n) => n.row === 0) ? HEADROOM : 0);
 /** How far either side of an edge's line the ground is kept clear of scenery, in tiles. */
 const CORRIDOR = 0.75;
 /** Where the river stands, in tiles right of the point of no return's column. */
@@ -126,10 +135,10 @@ function blob(seed: number, x: number, y: number, scale: number, salt: number): 
   return a + (b - a) * s(ty);
 }
 
-/** A node's centre, in tiles. */
-export const nodeTile = (node: Pick<MapNode, 'layer' | 'row'>) => ({
+/** A node's centre, in tiles, under a top margin of `top` tiles (`topMargin` of its map). */
+export const nodeTile = (node: Pick<MapNode, 'layer' | 'row'>, top: number) => ({
   x: MARGIN_X + node.layer * COL_TILES,
-  y: MARGIN_Y + node.row * ROW_TILES + 1,
+  y: top + node.row * ROW_TILES + 1,
 });
 
 /** The terrain a node's own stretch wears: its lane's, its leaning track's, or the Region's road. */
@@ -143,13 +152,14 @@ export function terrainOfNode(map: RegionMap, node: MapNode): TerrainId {
 export function mapTerrain(map: RegionMap): MapTerrain {
   const nodes = Object.values(map.nodes);
   const w = MARGIN_X * 2 + (map.layers - 1) * COL_TILES;
-  const h = MARGIN_Y * 2 + (map.rows - 1) * ROW_TILES + 2;
+  const top = topMargin(map);
+  const h = top + MARGIN_Y + (map.rows - 1) * ROW_TILES + 2;
   const road = ROAD[Math.min(map.regionIndex, ROAD.length - 1)]!;
   const laneTerrain = map.gyms.map((id) => TERRAIN_BY_TYPE[gymById(id).type] ?? road);
   const seed = map.seed * 31 + map.regionIndex;
 
   const at: MapTerrain['at'] = {};
-  for (const n of nodes) at[n.id] = nodeTile(n);
+  for (const n of nodes) at[n.id] = nodeTile(n, top);
 
   // The point of no return's river, in tile columns (placed here because a line that crosses it needs a bridge).
   const noReturnCol = map.forkLayer - 1;
@@ -217,7 +227,7 @@ export function mapTerrain(map: RegionMap): MapTerrain {
   const colOf = (x: number) => Math.max(0, Math.min(map.layers - 1, Math.round((x - MARGIN_X) / COL_TILES)));
   const byLayer = new Map<number, MapNode[]>();
   for (const n of nodes) byLayer.set(n.layer, [...(byLayer.get(n.layer) ?? []), n].sort((a, b) => a.row - b.row));
-  const tileY = (row: number) => MARGIN_Y + row * ROW_TILES + 1;
+  const tileY = (row: number) => top + row * ROW_TILES + 1;
   /** The line between two groups of tracks in a column, in tiles: halfway between the last of one and the first of the other. */
   const split = (layer: number, above: (n: MapNode) => boolean, below: (n: MapNode) => boolean): number | null => {
     const col = byLayer.get(layer) ?? [];

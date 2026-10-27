@@ -79,12 +79,13 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
     };
   }, [terrain]);
 
-  // The board fills the height it is given; the route is as long as it is.
+  // The board fills the height it is given, never more: nothing scrolls up or down, so a taller board would cut its top
+  // row's heads or its bottom row's captions off. The route is as long as it is.
   useLayoutEffect(() => {
     const el = scroller.current;
     if (!el) return;
     const fit = () => {
-      setScale(Math.max(1, el.clientHeight / (terrain.h * TILE)));
+      setScale(el.clientHeight / (terrain.h * TILE));
     };
     fit();
     const obs = new ResizeObserver(fit);
@@ -182,17 +183,13 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
         <div className={styles.board} style={{ width: boardW, height: terrain.h * px, '--node-scale': nodeScale, '--node-label-size': `${Math.min(16, 12 + nodeScale)}px`, '--column-reach': `${Math.floor((COL_TILES * px) / 2) - 8}px`, '--reach': `${(Math.floor((COL_TILES * px) / 2) - 8) / nodeScale}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
           <canvas ref={canvas} className={styles.terrain} style={{ width: boardW, height: terrain.h * px }} aria-hidden="true" />
 
-          {/* §2.5.4 — each lane's Battlefield, drawn over its stretch as weather, and named at the lane's mouth. */}
+          {/* §2.5.4 — each lane's Battlefield, drawn over its stretch as weather (named after the nodes, below). */}
           {terrain.lanes.map((z) => {
             const field = laneField(run, z.lane);
             if (!field) return null;
             const style: CSSProperties = { left: z.x0 * px, top: z.y0 * px, width: (z.x1 - z.x0) * px, height: (z.y1 - z.y0) * px };
             return (
-              <div key={z.lane} className={`${styles.weather} ${WEATHER_CLASS[field] ?? ''}`} style={style} data-field={field}>
-                <Tipped tip={fieldTip(field)} className={styles.weatherTag} style={{ left: px * 4, [z.lane === 0 ? 'top' : 'bottom']: px * 0.5 }}>
-                  {FIELD_LABEL[field]}
-                </Tipped>
-              </div>
+              <div key={z.lane} className={`${styles.weather} ${WEATHER_CLASS[field] ?? ''}`} style={style} />
             );
           })}
 
@@ -223,6 +220,19 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
                 style={{ left: at.x * px, top: at.y * px, '--node-top': `${at.y * px}px` } as CSSProperties}
                 onClick={() => onEnter(node.id)}
               />
+            );
+          })}
+
+          {/* §2.5.4 — each lane named at its mouth, on its top edge: the lower lane's on the split between the rows, never
+              at the board's foot, where the bottom row's captions and the Labels toggle hang. Drawn after the nodes and
+              above them, so the tag takes the pointer, not the hit box of a node standing behind it (v0.9.69). */}
+          {terrain.lanes.map((z) => {
+            const field = laneField(run, z.lane);
+            if (!field) return null;
+            return (
+              <Tipped key={z.lane} tip={fieldTip(field)} className={styles.weatherTag} style={{ left: (z.x0 + 4) * px, top: (z.y0 + 0.5) * px }} data-field={field} data-testid="weather-tag">
+                {FIELD_LABEL[field]}
+              </Tipped>
             );
           })}
         </div>

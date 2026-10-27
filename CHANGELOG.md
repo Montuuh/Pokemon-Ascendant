@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.69 — Heads and captions · 2026-10-27
+
+The route shows its top and bottom rows whole at 720p.
+
+- **Top row.** A map with nodes in its first row gets room for their heads.
+- **Fits its height.** The board scales to its box; nothing is cut below.
+- **Lane tags.** The lower lane's weather tag moves clear of the captions.
+
 ### v0.9.68 — The blow, then the faint · 2026-10-27
 
 The combat log tells a knockout in the order it happened.

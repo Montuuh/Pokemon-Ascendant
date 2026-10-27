@@ -357,6 +357,51 @@ test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', asy
   await expect(page.getByTestId('btn-continue-run')).toHaveCount(0);
 });
 
+// §9.3 — a map whose first and last rows hold nodes (seed 2), Labels on: every picture stands inside the board, heads
+// included, and every caption and lane tag hangs inside it, with nothing hidden above or below — the route scrolls
+// sideways only (v0.9.69: the top row's heads were cut off, then a taller board cut the bottom row's captions).
+test("the map keeps its top row's heads and its bottom row's captions at 1280x720", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto('/?screen=menu');
+  await page.evaluate(() => {
+    const a = (window as unknown as { __ascendant: { run: Record<string, (...x: unknown[]) => unknown>; goTo: (s: string) => void } }).__ascendant;
+    a.run.new!('squirtle', 2);
+    a.goTo('map');
+  });
+  await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
+  const toggle = page.getByTestId('map-labels');
+  if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  const scroller = page.getByTestId('route-scroller');
+  const board = (await scroller.boundingBox())!;
+  expect(await scroller.evaluate((el) => el.scrollHeight - el.clientHeight)).toBeLessThanOrEqual(0);
+  const tops = await page.locator('[data-testid^="node-"][data-kind] img').evaluateAll((imgs) => imgs.map((i) => i.getBoundingClientRect().top));
+  expect(tops.length).toBeGreaterThan(0);
+  expect(Math.min(...tops)).toBeGreaterThanOrEqual(board.y);
+  const hung = await page.locator('[data-testid^="node-"][data-kind] [data-chip], [data-testid="weather-tag"], [data-testid="no-return"]').evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).map((r) => ({ top: r.top, bottom: r.bottom })));
+  expect(hung.length).toBeGreaterThan(0);
+  expect(Math.max(...hung.map((r) => r.bottom))).toBeLessThanOrEqual(board.y + board.height);
+  expect(Math.min(...hung.map((r) => r.top))).toBeGreaterThanOrEqual(board.y);
+  // A lane's tag is read, not buried: no node's caption covers it.
+  const covered = await page.evaluate(() => {
+    const boxes = (sel: string) => [...document.querySelectorAll(sel)].map((e) => e.getBoundingClientRect());
+    const chips = boxes('[data-testid^="node-"][data-kind] [data-chip]');
+    return boxes('[data-testid="weather-tag"]').filter((t) => chips.some((c) => c.left < t.right - 1 && c.right > t.left + 1 && c.top < t.bottom - 1 && c.bottom > t.top + 1)).length;
+  });
+  expect(covered).toBe(0);
+  // …and it takes its own pointer, over the hit box of any node standing behind it.
+  const tags = await page.getByTestId('weather-tag').all();
+  expect(tags.length).toBeGreaterThan(0);
+  for (const tag of tags) {
+    await tag.scrollIntoViewIfNeeded();
+    const reached = await tag.evaluate((t) => {
+      const r = t.getBoundingClientRect();
+      return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('[data-testid="weather-tag"]') === t;
+    });
+    expect(reached, await tag.textContent() ?? '').toBe(true);
+  }
+});
+
 test('the map is usable at 1280x720', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await startRun(page);
@@ -377,6 +422,10 @@ test('the map is usable at 1280x720', async ({ page }) => {
     if (!box) continue;
     expect(box.y).toBeGreaterThanOrEqual(board.y - 1);
     expect(box.y + box.height).toBeLessThanOrEqual(board.y + board.height + 1);
+    for (const chip of await node.locator('[data-chip]').all()) {
+      const c = await chip.boundingBox();
+      if (c) expect(c.y + c.height).toBeLessThanOrEqual(board.y + board.height + 1);
+    }
   }
   await page.screenshot({ path: 'playtest/run-map-720.png' });
 

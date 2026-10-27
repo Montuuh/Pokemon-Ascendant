@@ -1,9 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-27 · **Version:** v0.9.68 (*The blow, then the faint*).
+**Date:** 2026-10-27 · **Version:** v0.9.69 (*Heads and captions*).
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
-**Next:** v1.0 and the remaining art-review blocks. Open: e2e run.spec.ts "map usable at 1280x720" fails most runs (node above the board, pre-existing); the audit's dead-CSS scan follows only modules imported as `styles`. Shortlisted for later: web-design-guidelines, break-ui, kill-ai-slop scanner.
+**Next:** v1.0 and the remaining art-review blocks. Open: the audit's dead-CSS scan follows only modules imported as `styles`. Shortlisted for later: web-design-guidelines, break-ui, kill-ai-slop scanner.
 **Motion review (v0.9.62):** D11 chrome / D12 world in ui-doctrine.md; checklist docs/design/ui/motion-review.md (adapted from Emil Kowalski MIT + game-feel Apache-2.0); npm run ui:motion; ui:audit reports D11 motion; ui-reviewer watches motion at full and reduced. Evidence: playtest/motion-review-2026-10-26.
+**Route margins (v0.9.69):** terrain topMargin = MARGIN_Y + HEADROOM when row 0 holds a node; RouteView fits the board's height (no scale floor); lane tags on their zone's top edge; ui:audit reports *hidden* (cut off in a one-axis scroller); map-labels preset = seed 2.
 **Contact frame (v0.9.67):** HP drain at a constant rate (--motion-hp-drain = FX_MS.hpDrain), faint waits for the bar; hit-stop 60/100 ms holds all but the target, its number and the jolt; played card leaves toward its target (or from the drop); :where() press 0.97, none on pixel art; scrimIn/sheetIn on Modal, Move Manager, Team, PC sheet, Run record.
 **Motion sweep (v0.9.66):** hits weighed (recoil / shake / KO jolt, FX_MS), reduced motion holds numbers and banners, no Turn N banner (the chip pops), hover at --motion-fast, tooltip warm window, loop tokens --motion-loop-pulse/-breathe, ui:motion at zero.
 **Green e2e (v0.9.65):** the Dojo effect is unmounted under reduced motion (test asks for none); refused bag rows are `aria-disabled`; the route caption scan caches each image's opaque box. The full suite at default workers still times out a few heavy cases (each passes alone).
