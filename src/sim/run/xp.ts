@@ -143,6 +143,15 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
   return up;
 }
 
+/**
+ * §2.12.3 — the Training Grounds' Level Push: exactly the XP the next level needs, granted now, with the stats, moves and
+ * evolution flag that level brings. One function for the reducer and for the screen's preview of the same push (it hands
+ * the screen a copy, so the level-up beat can show what is about to be learned before anything is committed).
+ */
+export function levelPush(mon: PartyMon, content: ContentRegistry, config = DEFAULT_PROGRESSION): LevelUp | null {
+  return grantXp(mon, xpToNext(mon.level, config) - mon.xp, content, config);
+}
+
 /** §6.2.4 — is this Pokémon standing at its evolution threshold, with a branch to pick? */
 /** §6.3.2 — what a stone does for this species, or null when it does nothing for it. */
 export function stoneUse(stoneId: string, speciesId: string, content: ContentRegistry): EvolutionItemUse | null {

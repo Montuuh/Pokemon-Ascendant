@@ -33,6 +33,16 @@
 .panel:not([data-place='lead'])::before {
   display: none;
 }
+/* On a light screen (Training): the cream panel keeps its gold edge but sits on a hard plate like the buttons, not a cloud. */
+.onScreen {
+  box-shadow: 0 4px 0 var(--accent-action-deep);
+}
+/* A short window (720 p): two stats a row, so a level that teaches two moves still fits under its scene at large text. */
+@media (max-height: 760px) {
+  .onScreen .rows {
+    grid-template-columns: repeat(6, auto);
+  }
+}
 .folding {
   opacity: 0;
   transition: opacity var(--motion-fast) ease;

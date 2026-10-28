@@ -6,7 +6,9 @@ import {
   DEFAULT_PROGRESSION,
   VICTORY_ROAD,
   TRAINING_UPGRADES,
+  levelPush,
   trainingOptions,
+  type LevelUp,
   type PartyMon,
   type TrainingUpgrade,
 } from '@/sim';
@@ -18,6 +20,7 @@ import { ownedMonTip } from '@/ui/ownedMonTip';
 import { SHOP_TEXT, STAT_LONG, TRAINING_TEXT } from '@/ui/strings';
 import { moveDefTip, trainingTip, trainingUpgradeTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
+import { TrainingLevelUp, levelBeatMs } from './TrainingLevelUp';
 import { TrainingTrainee } from './TrainingTrainee';
 import styles from './TrainingScreen.module.css';
 
@@ -48,16 +51,21 @@ export function TrainingScreen() {
   // After Train: 'hop' (the trainee's two steps), then 'result' (what it did, where Train stood), then the road.
   const [beat, setBeat] = useState<'hop' | 'result' | null>(null);
   const [result, setResult] = useState('');
+  // A Level Push is told as a level-up: the sim's own preview of the push (a copy; nothing is committed yet).
+  const [levelUp, setLevelUp] = useState<LevelUp | null>(null);
   const animate = useMotionPref();
   const timers = useRef<number[]>([]);
   const committed = useRef(false);
   /** The training the player has been shown the result of: it happens whatever closes the screen (the way back, a click). */
-  const pending = useRef<Parameters<typeof dispatch>[0] | null>(null);
+  const pending = useRef<{ action: Parameters<typeof dispatch>[0]; uid: string } | null>(null);
   const commit = () => {
     if (committed.current || !pending.current) return;
     committed.current = true;
     timers.current.forEach((t) => window.clearTimeout(t));
-    dispatch(pending.current);
+    // Only into the run it was told in: a run swapped out under the screen (a menu abandon) is not trained.
+    const now = useRunStore.getState().run;
+    if (!now || now.phase !== 'training' || !now.box.some((m) => m.uid === pending.current!.uid)) return;
+    dispatch(pending.current.action);
   };
   const commitOnClose = useRef(commit);
   useEffect(() => {
@@ -134,17 +142,26 @@ export function TrainingScreen() {
               : text['move-replace'](move(moveId), move(newMoveId));
     const hop = animate ? HOP_MS : 0;
     pending.current = {
-      type: 'train',
       uid: mon.uid,
-      upgrade,
-      ...(stat ? { stat } : {}),
-      ...(moveId ? { moveId } : {}),
-      ...(newMoveId ? { newMoveId } : {}),
+      action: {
+        type: 'train',
+        uid: mon.uid,
+        upgrade,
+        ...(stat ? { stat } : {}),
+        ...(moveId ? { moveId } : {}),
+        ...(newMoveId ? { newMoveId } : {}),
+      },
     };
+    const up = upgrade === 'level' ? levelPush(structuredClone(mon), content, DEFAULT_PROGRESSION) : null;
+    setLevelUp(up);
     setResult(line);
     setBeat(animate ? 'hop' : 'result');
     if (animate) timers.current.push(window.setTimeout(() => setBeat('result'), hop));
-    const read = upgrade === 'move-upgrade' || upgrade === 'move-replace' ? READ_LONG_MS : READ_MS;
+    const read = up
+      ? levelBeatMs(up)
+      : upgrade === 'move-upgrade' || upgrade === 'move-replace'
+        ? READ_LONG_MS
+        : READ_MS;
     timers.current.push(window.setTimeout(commit, hop + read));
   };
 
@@ -318,12 +335,15 @@ export function TrainingScreen() {
               </>
             )}
           </button>
+          {beat === 'result' && levelUp && mon && (
+            <TrainingLevelUp name={content.species(mon.speciesId).name} up={levelUp} onSkip={commit} />
+          )}
         </div>
       </div>
 
       <p className="sr-only" role="status" aria-live="polite">
         {beat === 'result'
-          ? `${content.species(mon!.speciesId).name}: ${result}`
+          ? `${content.species(mon!.speciesId).name}: ${result}${levelUp?.learned.length ? `. New: ${levelUp.learned.map((id) => content.move(id).name).join(', ')}` : ''}`
           : run.log.slice(-1).join(' ')}
       </p>
     </main>

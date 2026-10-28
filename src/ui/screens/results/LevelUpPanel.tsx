@@ -10,6 +10,8 @@ const STATS = ['hp', 'attack', 'defense', 'speed'] as const;
 /** Where the panel's beat turns: the gains are up from the start, the totals count up across this stretch. */
 const COUNT_FROM = 0.3;
 const COUNT_TO = 0.62;
+/** Where the window stands finished: the gains up, the totals counted, not yet folding (a screen that ends its beat by leaving). */
+export const LEVEL_UP_SETTLED = COUNT_TO;
 /** It folds away over the beat's last stretch. */
 const FOLD_AT = 0.93;
 
@@ -21,11 +23,29 @@ const FOLD_AT = 0.93;
  * It stands in reserved ground right of the Lead, separately from the Badge. The card whose news it is glows;
  * only the Lead's panel has a pointer. Enlarged text and learned moves wrap inside that reserved width.
  */
-export function LevelUpPanel({ name, up, p, place }: { name: string; up: LevelUp; p: number; place: Place }) {
+export function LevelUpPanel({
+  name,
+  up,
+  p,
+  place,
+  variant = 'stage',
+}: {
+  name: string;
+  up: LevelUp;
+  p: number;
+  place: Place;
+  variant?: 'stage' | 'screen';
+}) {
   const content = getContent();
   const count = Math.max(0, Math.min(1, (p - COUNT_FROM) / (COUNT_TO - COUNT_FROM)));
   return (
-    <div className={`${styles.panel} ${p >= FOLD_AT ? styles.folding : ''}`} data-place={place} role="status" aria-live="polite" data-testid={`levelup-panel-${up.uid}`}>
+    <div
+      className={`${styles.panel} ${p >= FOLD_AT ? styles.folding : ''} ${variant === 'screen' ? styles.onScreen : ''}`}
+      data-place={place}
+      // On a screen that already says the result aloud (Training), the window is the picture of it, not a second announcement.
+      {...(variant === 'stage' ? { role: 'status', 'aria-live': 'polite' as const } : {})}
+      data-testid={`levelup-panel-${up.uid}`}
+    >
       <span className={`${styles.head} display`}>{RESULT_TEXT.grew(name, up.to)}</span>
       {up.gains && up.statsAt && (
         <span className={styles.rows}>

@@ -236,6 +236,11 @@
   font-size: var(--type-h3);
   box-shadow: 0 5px 0 var(--accent-action-deep);
 }
+/* A Level Push's stat window, under the result: the width it has at the fight's end, never the whole scene. */
+.levelNews {
+  width: min(100%, 320px);
+  cursor: pointer;
+}
 .train:disabled {
   background: var(--surface-2);
   border-color: var(--border-subtle);

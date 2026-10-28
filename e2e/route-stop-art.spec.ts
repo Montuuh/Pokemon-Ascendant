@@ -346,3 +346,118 @@ test('Training_ClickDuringTheHop_SkipsStraightToTheRoad', async ({ page }) => {
     attack,
   );
 });
+
+// A Level Push is a level-up: the same fanfare and stat window the fight's end plays, with the move it teaches.
+for (const motion of ['no-preference', 'reduce'] as const)
+  test(`Training_LevelPush_PlaysTheLevelUpWindow_WithTheTaughtMove_${motion}`, async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.emulateMedia({ reducedMotion: motion });
+    await atStop(page, 'training');
+    // Squirtle learns Water Gun at Lv 8: one level short of it, the push teaches it.
+    await page.evaluate(() =>
+      window.__ascendant!.run.patch((d) => {
+        const m = d.box[0]!;
+        m.level = 7;
+        m.xp = 0;
+        m.pool = ['tackle', 'tail-whip', 'bubble'];
+        m.moveIds = ['tackle', 'tail-whip', 'bubble'];
+      }),
+    );
+    const uid = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.uid);
+    await page.getByTestId(`train-mon-${uid}`).click();
+    await page.getByTestId('train-upgrade-level').click();
+    const scene = await box(page, 'route-stop-vignette');
+    await page.getByTestId('btn-train').click();
+    const panel = page.getByTestId(`levelup-panel-${uid}`);
+    await expect(panel).toBeVisible();
+    await expect(page.getByTestId('train-result')).toHaveText('Lv 7 → 8');
+    await expect(panel).toContainText('Squirtle grew to Lv 8!');
+    await expect(panel).toContainText('Water Gun');
+    // Said aloud too, since the window itself is silent on this screen.
+    await expect(page.getByTestId('training-screen').locator('p.sr-only')).toContainText('New: Water Gun');
+    // Finished and standing, not folding: with motion off by a settled clock, not by an animation's fill.
+    await expect(panel).toHaveCSS('opacity', '1');
+    expect(await panel.evaluate((e) => /folding/.test(e.className))).toBe(false);
+    // Under the scene, inside its column, and nothing above it moved.
+    const p = (await panel.boundingBox())!;
+    expect(p.y).toBeGreaterThanOrEqual(scene.y + scene.height);
+    expect(p.x).toBeGreaterThanOrEqual(scene.x - 1);
+    expect(p.x + p.width).toBeLessThanOrEqual(scene.x + scene.width + 1);
+    expect((await box(page, 'route-stop-vignette')).y).toBe(scene.y);
+    await page.screenshot({ path: `playtest/b18/level-push-${motion}.png` });
+    // The push still lands once, with the move in the pool, whether the beat plays out or is skipped.
+    await page.getByTestId('btn-train').click();
+    await expect(page.getByTestId('map-screen')).toBeVisible();
+    const after = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!);
+    expect(after.level).toBe(8);
+    expect(after.pool).toContain('water-gun');
+  });
+
+test('Training_RunSwappedDuringTheBeat_IsNotTrained', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await atStop(page, 'training');
+  await page.locator('[data-testid^="train-mon-"]').first().click();
+  await page.getByTestId('train-upgrade-stat').click();
+  await page.getByTestId('train-stat-attack').click();
+  await page.getByTestId('btn-train').click();
+  // The run is abandoned for a new one under the screen: the stored training must not land in it.
+  await page.evaluate(() => {
+    const a = window.__ascendant!;
+    a.run.new('squirtle', 7);
+    a.goTo('map');
+  });
+  await expect(page.getByTestId('training-screen')).toBeHidden();
+  await page.waitForTimeout(400);
+  expect(await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.boosts?.attack ?? 0)).toBe(0);
+});
+
+// A level that teaches two moves is the tallest window; at 720p with large text it must still fit under its scene.
+for (const text of [100, 150])
+  test(`Training_LevelPushTeachingTwoMoves_FitsAt720p_Text${text}_NoScroll`, async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await atStop(page, 'training', { text });
+    // Snorlax learns Harden and Ice Beam together at Lv 24.
+    await page.evaluate(() =>
+      window.__ascendant!.run.patch((d) => {
+        const m = d.box[0]!;
+        m.speciesId = 'snorlax';
+        m.level = 23;
+        m.xp = 0;
+        m.pool = ['headbutt', 'amnesia', 'rest', 'body-slam'];
+        m.moveIds = ['headbutt', 'amnesia', 'rest', 'body-slam'];
+      }),
+    );
+    const uid = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.uid);
+    await page.getByTestId(`train-mon-${uid}`).click();
+    await page.getByTestId('train-upgrade-level').click();
+    await page.getByTestId('btn-train').click();
+    const panel = page.getByTestId(`levelup-panel-${uid}`);
+    await expect(panel).toContainText('Ice Beam');
+    await expect(panel).toContainText('Harden');
+    const fit = await page
+      .getByTestId('training-screen')
+      .evaluate((e) => ({ scroll: e.scrollHeight, client: e.clientHeight }));
+    expect(fit.scroll).toBeLessThanOrEqual(fit.client);
+    await page.screenshot({ path: `playtest/b18/level-push-two-moves-${text}.png` });
+  });
+
+test('Training_LevelPush_EscapeAndAClickOnTheWindowSkipToTheRoad', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  for (const skip of ['escape', 'click'] as const) {
+    await atStop(page, 'training');
+    const uid = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.uid);
+    const level = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.level);
+    await page.getByTestId(`train-mon-${uid}`).click();
+    await page.getByTestId('train-upgrade-level').click();
+    await page.getByTestId('btn-train').click();
+    const panel = page.getByTestId(`levelup-panel-${uid}`);
+    await expect(panel).toBeVisible();
+    if (skip === 'escape') await page.keyboard.press('Escape');
+    else await panel.click();
+    await expect(page.getByTestId('map-screen')).toBeVisible();
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.level)).toBe(level + 1);
+  }
+});

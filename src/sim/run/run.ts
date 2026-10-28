@@ -24,7 +24,7 @@ import { generateLeague, microRestPct } from './league';
 import { BLACK_MARKET, candyPrice, fencePrice, rollBlackMarket, showcaseLevel, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { prizeLabel, spinReel } from './finds';
-import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
+import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelPush, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
 import { BOND_TIER } from '../meta/bond';
 import { copyIsShiny } from './shiny';
 import type { BlackMarketState, HealLine, LevelUp, MapNode, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunPhase, RunReduceResult, RunState, ShopSlot } from './types';
@@ -1599,7 +1599,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           if (!mon.pool.includes(to)) mon.pool.push(to);
           say(draft, `${name}'s ${ctx.content.move(from).name} became ${ctx.content.move(to).name}.`);
         } else if (action.upgrade === 'level') {
-          grantXp(mon, xpToNext(mon.level, ctx.progression) - mon.xp, ctx.content, ctx.progression);
+          levelPush(mon, ctx.content, ctx.progression);
           say(draft, `${name} grew to level ${mon.level}.`);
         } else if (action.upgrade === 'evolve') {
           if (!draft.pendingEvolutions.some((p) => p.uid === mon.uid)) {

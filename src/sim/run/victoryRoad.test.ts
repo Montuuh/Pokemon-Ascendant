@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import {
-  ALL_GYMS, buildScenario, createRun, defaultRunCtx, effectiveMax, generateVictoryRoad, newPartyMon, runReducer, VICTORY_ROAD,
+  ALL_GYMS, buildScenario, createRun, defaultRunCtx, effectiveMax, generateVictoryRoad, levelPush, newPartyMon, runReducer, VICTORY_ROAD,
   type CombatOutcomeReport, type MapNode, type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
@@ -138,6 +138,14 @@ describe('Victory Road, the run — §2.12', () => {
     expect(stat.phase).toBe('map');
     // A level.
     expect(apply(base, { type: 'train', uid: mon.uid, upgrade: 'level' }).box[0]!.level).toBe(mon.level + 1);
+    // The screen's preview of that level is the very push the reducer makes: same level, same moves, same stats.
+    const preview = levelPush(structuredClone(mon), content)!;
+    const pushed = apply(base, { type: 'train', uid: mon.uid, upgrade: 'level' }).box[0]!;
+    expect(preview.to).toBe(pushed.level);
+    expect(pushed.pool).toEqual(expect.arrayContaining(preview.learned));
+    expect(pushed.moveIds).toEqual(expect.arrayContaining(preview.activated));
+    expect(levelPush(structuredClone(mon), content)).toEqual(preview);
+    expect(mon.level).toBe(base.box[0]!.level); // the preview touched a copy
     // A move that has no stronger self is refused.
     expect(refusal(base, { type: 'train', uid: mon.uid, upgrade: 'move-upgrade', moveId: 'no-such-move' })).toBe('no-upgrade');
     // Walking on spends nothing.

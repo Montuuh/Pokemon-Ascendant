@@ -44,7 +44,7 @@ export { FIGHT_SUPPLIES, SUPPLY_TABLE, PRIZE_TABLE, RELIC_REWARD, rollFightSuppl
 export { MYSTERY_EVENTS, mysteryEvent, rollEvent, allOutcomes, assertEventContent, eventRiskOf, RISK_LABEL, type MysteryEvent, type EventChoice, type EventOutcome, type EventRisk } from './run/events';
 export { MODIFIERS, AVAILABLE_MODIFIERS, modifierById, modifierValue, hasModifier, modifierXpMultiplier, battleConfigFor, type DifficultyModifier } from './run/modifiers';
 export { activeRegionModifier, regionModifierValue, rollRegionModifierOffer, regionModifierOffer, REGION_MODIFIERS_ON, priceFor, traumaZone1Pct, victoryHealPct } from './run/regionModifiers';
-export { DEFAULT_PROGRESSION, encounterXp, levelXpFactor, grantXp, xpToNext, isEvolutionReady, applyBranch, autoPickMoves, learnMove, previewBranch, stoneUse, stonesForBox, type ProgressionConfig, type BranchPreview } from './run/xp';
+export { DEFAULT_PROGRESSION, encounterXp, levelXpFactor, grantXp, levelPush, xpToNext, isEvolutionReady, applyBranch, autoPickMoves, learnMove, previewBranch, stoneUse, stonesForBox, type ProgressionConfig, type BranchPreview } from './run/xp';
 export { buildOutcomeReport } from './run/report';
 export { GYM_FIELD, laneField, fieldsFor, applyFields } from './run/battlefields';
 export { FIELD_CATEGORY, battlefields, fieldsSuppressed, isGrounded, type FieldId, type FieldState } from './combat/fields';
