@@ -68,7 +68,10 @@ const SCREENS = {
   'hub-mart': { url: '/?screen=hub', setup: ['meta.tokens(9)'], clicks: ['kiosk-mart'], match: [/hub\/(PokeMart|frames)/] },
   'hub-card': { url: '/?screen=hub', setup: ['meta.xp(3000)'], clicks: ['kiosk-card'], match: [/hub\/(TrainerCard|RewardTrack|trackText)/] },
   'center-daycare': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-center', 'door-center-daycare'], rootAttributes: { 'data-counter': 'daycare' }, match: [/screens\/CenterScreen/] },
-  starter: { url: '/?screen=starter', match: [/screens\/StarterSelect/] },
+  starter: { url: '/?screen=starter', match: [/screens\/(StarterSelect|DifficultyShelf)/] },
+  // B27 — the difficulty step with its locked shelf open (a fresh account: all ten rows), and a veteran's (all open, no shelf).
+  'starter-shelf': { url: '/?screen=starter', ready: 'step-difficulty', clicks: ['difficulty-shelf-toggle'], match: [/screens\/(StarterSelect|DifficultyShelf)/] },
+  'starter-veteran': { url: '/?screen=starter', ready: 'step-difficulty', setup: ['meta.xp(200000)'], match: [/screens\/(StarterSelect|DifficultyShelf)/] },
   combat: { url: '/?scenario=wild-basic&seed=7', match: [/screens\/CombatScreen/, /components\/(EnemyPanel|Portrait|MoveCard|HpBar|ConsumableCard|CombatLog|FloatingNumbers|SwapOrSkip|TypeBadge|OutcomeOverlay)/, /ui\/tooltip/, /ui\/tips/] },
   // A14–A15 — review selected move silhouettes in the actual card windows, not only on a contact sheet.
   'move-art-sound': { url: '/?scenario=wild-basic&seed=7', ready: 'combat-screen', setup: ['hand(["sing", "screech", "roar", "flash"])'], match: [/components\/MoveCard/] },
@@ -203,7 +206,7 @@ const EXPECTED_ROOT = {
   victory: 'victory-screen', defeat: 'defeat-screen', 'victory-record': 'run-record', 'defeat-record': 'run-record',
   menu: 'main-menu', about: 'about-screen', changelog: 'changelog-screen', settings: 'settings-screen',
   hub: 'hub-screen', 'hub-pc': 'pc-terminal', 'hub-pc-sheet': 'pc-sheet', 'hub-mart': 'poke-mart', 'hub-card': 'trainer-card',
-  starter: 'starter-select', combat: 'combat-screen', 'combat-group': 'combat-screen', 'combat-field': 'combat-screen', 'combat-boss': 'combat-screen', 'combat-gym': 'combat-screen',
+  starter: 'starter-select', 'starter-shelf': 'starter-select', 'starter-veteran': 'starter-select', combat: 'combat-screen', 'combat-group': 'combat-screen', 'combat-field': 'combat-screen', 'combat-boss': 'combat-screen', 'combat-gym': 'combat-screen',
   'move-art-window': 'combat-screen', 'move-art-sound': 'combat-screen', 'move-art-impact': 'combat-screen', 'move-art-projectiles': 'combat-screen',
   map: 'map-screen', 'map-labels': 'map-screen', 'map-labels-end': 'map-screen', 'map-region-2-end': 'map-screen', 'map-region-2': 'map-screen', 'map-region-3': 'map-screen', 'map-victory-road': 'map-screen',
   'map-hover-wild': 'map-screen', 'map-hover-trainer': 'map-screen', 'map-hover-service': 'map-screen', 'map-hover-locked': 'map-screen',

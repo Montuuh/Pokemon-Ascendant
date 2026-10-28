@@ -6,9 +6,10 @@ import { DEFAULT_BATTLE_CONFIG, type BattleConfig } from '../combat/battleConfig
 // Rows are gated by Trainer Level (`unlockLevel`, §8.8.2) from v0.6; whether an account has reached a row is
 // `meta/unlocks.ts`'s question, so this table stays free of account state and the fixtures can name any row.
 //
-// Every row is here, including the three v0.4 cannot honour yet. A modifier that silently does nothing while
+// Every row is here, including any the build cannot honour yet. A modifier that silently does nothing while
 // still charging its XP premium would be a lie told to the only player who went looking for difficulty, so a
-// pending row is `available: false`, the picker greys it out and says which version unblocks it.
+// pending row is `available: false`: the new-run step lists it on its locked shelf, says why in its own words, and
+// never lets it be taken.
 
 export interface DifficultyModifier {
   id: string;

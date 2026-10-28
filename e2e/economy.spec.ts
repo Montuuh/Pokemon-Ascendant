@@ -411,11 +411,13 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await page.waitForFunction(() => !!window.__ascendant);
     await expect(page.getByTestId('step-difficulty')).toBeVisible();
 
-    // §8.8.4 — the baseline is the floor: nothing is selected to begin with.
-    await expect(page.getByTestId('difficulty-xp')).toContainText('×1.00');
+    // §8.8.4 — the baseline is the floor: it is the picked card, and with nothing to price there is no XP tally to read.
+    await expect(page.getByTestId('difficulty-baseline')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('difficulty-xp')).toHaveCount(0);
 
-    // §8.8.2 — on a fresh account every row is below its Trainer Level: named, locked, and saying which level.
-    await expect(page.getByTestId('difficulty-iron-will')).toBeDisabled();
+    // §8.8.2 — on a fresh account every row is below its Trainer Level: named, locked, and saying which level — on the
+    // shelf, closed until the player asks (B27).
+    await page.getByTestId('difficulty-shelf-toggle').click();
     await expect(page.getByTestId('difficulty-lock-iron-will')).toContainText('Lv 3');
 
     // Six levels in, the first four rows are open.
@@ -433,11 +435,107 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await expect(page.getByTestId('difficulty-tight-schedule')).toBeEnabled();
     await expect(page.getByTestId('difficulty-tight-schedule')).toContainText('League');
     // Greater Threats is live since the Regions have stat tiers (§2.2.1) — locked by level, not by version.
+    await page.getByTestId('difficulty-shelf-toggle').click();
     await expect(page.getByTestId('difficulty-lock-greater-threats')).toContainText('Lv 10');
-    // And a row above your level is locked by level, not by version.
-    await expect(page.getByTestId('difficulty-faint-echo')).toBeDisabled();
+    // And a row above your level is locked by level, not by version: it is a row of the shelf, not a card to press.
+    await expect(page.getByTestId('difficulty-faint-echo')).toHaveAttribute('data-locked', 'true');
     await expect(page.getByTestId('difficulty-lock-faint-echo')).toContainText('Lv 9');
     await page.screenshot({ path: 'playtest/new-run-difficulty.png' });
+  });
+
+  // B27 — a new player's first step is the baseline and Continue; the modifiers they cannot take are a closed shelf.
+  test('a fresh account meets the baseline and one closed shelf, not ten locked cards', async ({ page }) => {
+    await page.goto('/?screen=starter&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant);
+    await page.evaluate(() => window.localStorage.clear());
+    await page.goto('/?screen=starter&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant);
+    const step = page.getByTestId('step-difficulty');
+    await expect(step).toBeVisible();
+
+    // The baseline is the one card, and it is the picked one; no locked row is on the screen.
+    await expect(page.getByTestId('difficulty-baseline')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('[data-locked]')).toHaveCount(0);
+    await expect(page.getByTestId('difficulty-shelf-toggle')).toContainText('Next at Trainer Lv 3');
+    await expect(page.getByTestId('difficulty-shelf-toggle')).toHaveAttribute('aria-expanded', 'false');
+    // Little to read: a heading, two lines, the baseline and the shelf's one line (it was ~1200 characters).
+    expect((await step.innerText()).length).toBeLessThan(300);
+
+    // Continue starts the baseline run: no modifier reaches it.
+    await page.getByTestId('btn-continue').click();
+    await expect(page.getByTestId('step-starter')).toBeVisible();
+    await page.getByTestId('btn-continue').click();
+    await expect(page.getByTestId('step-relic')).toBeVisible();
+    await page.getByTestId('btn-continue').click();
+    await expect(page.getByTestId('map-screen')).toBeVisible();
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.modifiers)).toEqual([]);
+  });
+
+  test('the shelf opens from the keyboard and each locked row says what it does on focus', async ({ page }) => {
+    await page.goto('/?screen=starter&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant);
+    await page.evaluate(() => window.localStorage.clear());
+    await page.goto('/?screen=starter&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant);
+    const toggle = page.getByTestId('difficulty-shelf-toggle');
+    await toggle.focus();
+    await page.keyboard.press('Enter');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    // Every locked row is on the shelf and says its level; the effect is its tooltip.
+    await expect(page.locator('[data-locked]')).toHaveCount(10);
+    await page.getByTestId('difficulty-iron-will').focus();
+    await expect(page.getByTestId('tooltip')).toContainText('+20 % Max HP');
+    await expect(page.getByTestId('tooltip')).toContainText('Trainer Lv 3');
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('tooltip')).toHaveCount(0);
+    // Space closes it again.
+    await toggle.focus();
+    await page.keyboard.press('Space');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('an experienced account compares and picks open modifiers, and the baseline card puts it back', async ({ page }) => {
+    await page.goto('/?screen=starter&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant);
+    await page.evaluate(() => window.__ascendant!.meta.xp(200_000));
+    await page.goto('/?screen=starter&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant);
+    // Everything is open: ten cards beside the baseline, and no shelf.
+    await expect(page.getByTestId('difficulty-shelf')).toHaveCount(0);
+    await expect(page.getByTestId('difficulty-masters-challenge')).toBeEnabled();
+    await page.getByTestId('difficulty-greater-threats').click();
+    await expect(page.getByTestId('difficulty-xp')).toContainText('×1.40');
+    await expect(page.getByTestId('difficulty-baseline')).toHaveAttribute('aria-pressed', 'false');
+    // Picking it again is the way back, and so is the baseline card.
+    await page.getByTestId('difficulty-greater-threats').click();
+    await expect(page.getByTestId('difficulty-xp')).toContainText('×1.00');
+    await page.getByTestId('difficulty-iron-will').click();
+    await page.getByTestId('difficulty-baseline').click();
+    await expect(page.getByTestId('difficulty-xp')).toContainText('×1.00');
+    await expect(page.getByTestId('difficulty-baseline')).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('the difficulty step keeps Continue in view and its shelf inside the screen at 720p and 150 % text', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto('/?screen=starter&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant);
+    await page.evaluate(() => window.localStorage.clear());
+    await page.goto('/?screen=starter&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant);
+    await page.evaluate(() => document.documentElement.style.setProperty('--text-scale', '1.5'));
+    await expect(page.getByTestId('btn-continue')).toBeInViewport();
+    await page.getByTestId('difficulty-shelf-toggle').click();
+    // Opening it brings the rows into view, and none spills out of its row or past the screen's sides.
+    await expect(page.getByTestId('difficulty-iron-will')).toBeInViewport();
+    const spill = await page.evaluate(
+      () =>
+        [...document.querySelectorAll('[data-locked]')].filter((li) => {
+          const r = li.getBoundingClientRect();
+          return li.scrollWidth > li.clientWidth + 1 || r.left < 0 || r.right > innerWidth;
+        }).length,
+    );
+    expect(spill).toBe(0);
+    await expect(page.getByTestId('btn-continue')).toBeInViewport();
   });
 
   test('the Starting Relic offer is three Common-or-Uncommon rows, and taking one is optional', async ({ page }) => {

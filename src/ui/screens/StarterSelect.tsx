@@ -1,5 +1,5 @@
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
-import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconHandGrab, IconHeartFilled, IconLock, IconTargetArrow, IconX } from '@tabler/icons-react';
+import { IconAlertTriangle, IconArrowLeft, IconArrowRight, IconHandGrab, IconHeartFilled, IconTargetArrow, IconX } from '@tabler/icons-react';
 import { entryRunSeed, useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
@@ -11,6 +11,7 @@ import { ArenaSprite } from '@/ui/components/ArenaSprite';
 import card from '@/ui/components/UnitCard.module.css';
 import { TitleBattle } from '@/ui/title/TitleBattle';
 import { ItemCard } from '@/ui/components/ItemCard';
+import { DifficultyShelf } from './DifficultyShelf';
 import { TypeBadge, TypeLabel } from '@/ui/components/TypeBadge';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { bondStatusTip, clearPartnerTip, moveDefTip, twinRunTip } from '@/ui/tips';
@@ -189,6 +190,10 @@ export function StarterSelect() {
   }
 
   const xpBonus = modifierXpMultiplier(modifiers);
+  // §8.8.2 — the rows this account can take (a pending row is never one), and the rest, in the order they open.
+  const byLevel = [...MODIFIERS].sort((a, b) => a.unlockLevel - b.unlockLevel);
+  const openRows = byLevel.filter((d) => d.available && modifierUnlocked(account, d));
+  const lockedRows = byLevel.filter((d) => !(d.available && modifierUnlocked(account, d)));
   // §8.8 — the Box the account has bought (an Expanded Box, a Twin Run's partner): what Box Squeeze takes two from.
   const boxBonus = runPerksFor(account, content, !!second && second !== pick).boxBonus;
   const STEPS = ['Difficulty', 'Starter', 'Relic', 'Region'].slice(0, LAST_STEP + 1);
@@ -216,43 +221,40 @@ export function StarterSelect() {
               Make it harder, if you want to
               <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting — the baseline is the floor. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={`Each opens at a Trainer Level; you are ${trainerLevel}.`} />} />
             </h2>
-            <p className={styles.stepLede}>Optional. The baseline is the floor.</p>
-            <p className={styles.xpTally} data-testid="difficulty-xp">
-              Trainer XP this run: <b className="tabular">×{xpBonus.toFixed(2)}</b>
-              {modifiers.length === 0 && <span className={styles.xpNote}> — baseline. Nothing selected.</span>}
-            </p>
+            {openRows.length > 0 && (
+              <p className={styles.xpTally} data-testid="difficulty-xp">
+                Trainer XP this run: <b className="tabular">×{xpBonus.toFixed(2)}</b>
+              </p>
+            )}
           </div>
 
-          <div className={styles.difficulties}>
-            {[...MODIFIERS].sort((a, b) => a.unlockLevel - b.unlockLevel).map((d) => {
+          <div className={styles.difficulties} role="group" aria-label="Difficulty">
+            {/* §8.8.4 — the baseline is the floor, and the first card: picked until a modifier is, a click puts it back. */}
+            <button
+              type="button"
+              className={`${styles.diffCard} ${modifiers.length === 0 ? styles.picked : ''}`}
+              onClick={() => setModifiers([])}
+              aria-pressed={modifiers.length === 0}
+              data-testid="difficulty-baseline"
+            >
+              <span className={`${styles.diffName} display`}>{DIFFICULTY_TEXT.baseline}</span>
+              <span className={styles.diffEffect}>{DIFFICULTY_TEXT.baselineNote}</span>
+            </button>
+            {openRows.map((d) => {
               const on = modifiers.includes(d.id);
-              // §8.8.2 — a row below your Trainer Level is shown, named and locked, not hidden.
-              const open = d.available && modifierUnlocked(account, d);
               return (
                 <button
                   key={d.id}
                   type="button"
-                  className={`${styles.diffCard} ${on ? styles.picked : ''} ${open ? '' : styles.locked}`}
-                  onClick={() => open && toggleModifier(d.id)}
-                  disabled={!open}
+                  className={`${styles.diffCard} ${on ? styles.picked : ''}`}
+                  onClick={() => toggleModifier(d.id)}
                   aria-pressed={on}
                   data-testid={`difficulty-${d.id}`}
                 >
                   <span className={`${styles.diffName} display`}>{d.name}</span>
                   <span className={styles.diffXp}>×{d.xpMultiplier.toFixed(2)} XP</span>
                   <span className={styles.diffEffect}>{modifierEffect(d.id, d.effect, boxBonus)}</span>
-                  {/* §7.7's rule applied to modifiers: a row whose system does not exist says so and cannot
-                      be taken, rather than charging its XP premium for nothing. */}
-                  {!d.available ? (
-                    <span className={styles.lockTag}>
-                      <IconLock size={13} /> {d.pending}
-                    </span>
-                  ) : !open ? (
-                    <span className={styles.lockTag} data-testid={`difficulty-lock-${d.id}`}>
-                      <IconLock size={13} /> {d.unlock}
-                    </span>
-                  ) : null}
-                  {d.available && d.partial && (
+                  {d.partial && (
                     <span className={styles.partialTag}>
                       <IconAlertTriangle size={13} /> {d.partial}
                     </span>
@@ -261,6 +263,10 @@ export function StarterSelect() {
               );
             })}
           </div>
+
+          {/* §8.8.2 — a row below your Trainer Level is shown, named and locked, not hidden: on a shelf, closed to start with
+              (D4 — a new player has nothing to decide there). §7.7's rule rides along: a pending row says so in its place. */}
+          <DifficultyShelf locked={lockedRows} effectOf={(d) => modifierEffect(d.id, d.effect, boxBonus)} />
         </section>
       ) : step === 2 ? (
         <section className={styles.body} data-testid="step-relic">

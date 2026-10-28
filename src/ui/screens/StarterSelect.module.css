@@ -83,14 +83,17 @@
   gap: var(--sp-6);
   align-content: start;
 }
+/* The cards the account can take, and the shelf of the rest under them, share one centred column so their edges line up.
+   The step scrolls as a whole (.body), never a scroller inside a scroller. Column and card minimum scale with the text, so a
+   name is not broken one word to a line at 150 %. */
 .difficulties {
   grid-column: 1 / -1;
+  justify-self: center;
+  width: min(100%, calc(72rem * var(--text-scale)));
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(calc(260px * var(--text-scale)), 1fr));
   gap: var(--sp-3);
   align-content: start;
-  overflow-y: auto;
-  padding: var(--sp-1);
 }
 .diffCard {
   position: relative;
@@ -104,12 +107,13 @@
   background: var(--surface-1);
   transition: transform var(--motion-fast) var(--ease-spring);
 }
-.diffCard:hover:not(:disabled) {
+.diffCard:hover {
   transform: translateY(-2px);
 }
 .diffName {
   font-size: var(--type-h3);
-  padding-right: 64px;
+  /* Room for the XP chip, which is drawn in the card's corner and grows with the text. */
+  padding-right: calc(72px * var(--text-scale));
 }
 .diffEffect {
   color: var(--ink-secondary);
@@ -122,28 +126,21 @@
 .diffEffect b {
   color: var(--ink-primary);
 }
-/* A locked or partial row explains itself in place, under the effect — an asterisk with no footnote is
-   exactly the kind of thing §7.7 exists to stop. */
-.lockTag,
+/* A partial row explains itself in place, under the effect — an asterisk with no footnote is
+   exactly the kind of thing §7.7 exists to stop. (Locked rows live on the shelf, DifficultyShelf.) */
 .partialTag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px var(--sp-2);
-  border-left: 3px solid var(--border-strong);
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-2);
+  border-left: 3px solid var(--accent-warning);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: var(--surface-2);
-  color: var(--ink-secondary);
-  font-size: 11px;
-  line-height: 1.3;
-}
-.partialTag {
-  border-left-color: var(--accent-warning);
   background: color-mix(in srgb, var(--accent-warning) 12%, transparent);
   color: var(--ink-primary);
+  font-size: var(--type-micro);
+  line-height: 1.3;
 }
 .partialTag svg { color: var(--accent-warning); flex: none; }
-.lockTag svg { flex: none; }
 
 /* §8.8.3 — the XP premium is the whole reason to take one, so it sits where the eye lands first. */
 .diffXp {
@@ -154,16 +151,9 @@
   border-radius: var(--radius-pill);
   background: var(--accent-action);
   color: var(--ink-on-accent);
-  font-size: 11px;
+  font-size: var(--type-micro);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-}
-/* A locked row says "not now" with its lock and its level, never with opacity (D5): its name steps back in colour. */
-.locked {
-  cursor: not-allowed;
-}
-.locked .diffName {
-  color: var(--ink-secondary);
 }
 .picked {
   border-color: var(--brand-red);
@@ -571,7 +561,6 @@
   margin: var(--sp-3) 0 0;
   font-size: var(--type-small);
 }
-.xpNote { color: var(--ink-secondary); }
 
 /* §8.6.3 — the 1-of-3 Starting Relic offer. */
 .relics {

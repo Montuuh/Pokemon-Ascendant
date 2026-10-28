@@ -1,0 +1,94 @@
+/* The locked modifiers of the new-run step: one closed line, the rows a click away. Quiet on purpose — it sits under the
+   choice a new player can make (Continue as the baseline) and above nothing they need. */
+.shelf {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: min(100%, calc(72rem * var(--text-scale)));
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+.trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-md);
+  text-align: left;
+  color: var(--ink-primary);
+  font-size: var(--type-small);
+}
+.trigger:hover {
+  background: var(--surface-2);
+}
+.lock {
+  flex: none;
+  color: var(--ink-secondary);
+}
+.label {
+  font-size: var(--type-body);
+}
+.count {
+  min-width: 1.6em;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  color: var(--ink-primary);
+  text-align: center;
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+.next {
+  color: var(--ink-secondary);
+}
+.chevron {
+  flex: none;
+  margin-left: auto;
+  color: var(--ink-secondary);
+  transition: transform var(--motion-fast) var(--ease-step);
+}
+.trigger[data-state='open'] .chevron {
+  transform: rotate(180deg);
+}
+.content {
+  padding: var(--sp-2) var(--sp-4) var(--sp-4);
+}
+.rows {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(260px * var(--text-scale)), 1fr));
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* The rail is the quiet ink, not the highlight yellow: ten rows that cannot be taken must not look like the focus ring. */
+.row {
+  display: grid;
+  gap: var(--sp-1);
+  align-content: start;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--ink-muted);
+  background: var(--surface-2);
+  cursor: help;
+}
+.row:focus-visible {
+  outline: 3px solid var(--accent-action);
+  outline-offset: 2px;
+}
+.name {
+  font-size: var(--type-small);
+  color: var(--ink-primary);
+}
+.gate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+  line-height: 1.3;
+}
+.gate svg {
+  flex: none;
+}

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { battlefields, fieldsFor, groupPlanFor, wildChancesFor, type PartyMon, type RunState } from '@/sim';
+import { battlefields, fieldsFor, groupPlanFor, wildChancesFor, type DifficultyModifier, type PartyMon, type RunState } from '@/sim';
 import { nodeHint } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
@@ -387,6 +387,14 @@ export function twinRunTip(): ReactNode {
 /** §8.4.2 — the partner's ×. */
 export function clearPartnerTip(): ReactNode {
   return <Tip title={STARTER_TEXT.clearPartner} body="Set out with one starter. You can pick another partner until you continue." />;
+}
+
+/**
+ * §8.8.2 — a modifier the account has not opened, read from the shelf: what it does, what it pays and what opens it. The
+ * shelf shows only the name and the level; the effect lives here (D4) so the goal stays one hover away.
+ */
+export function lockedModifierTip(m: DifficultyModifier, effect: ReactNode): ReactNode {
+  return <Tip title={m.name} meta={[`×${m.xpMultiplier.toFixed(2)} XP`]} body={m.partial ? <>{effect}<div>{m.partial}</div></> : effect} footer={m.available ? m.unlock : m.pending} />;
 }
 
 /** §6.3 — the Pokédex's evolution paths. */

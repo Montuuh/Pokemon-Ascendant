@@ -1137,6 +1137,13 @@ export const DIFFICULTY_TEXT = {
     tail: ', and no relic expands it.',
     plain: (yours: number, bought: number) => `The Box holds ${yours} instead of ${bought}, and no relic expands it.`,
   },
+  /** The standard run, as the first card of the picker: picked while no modifier is. */
+  baseline: 'Baseline',
+  baselineNote: 'The standard run. Nothing added.',
+  /** The shelf of modifiers the account has not opened yet: one closed line, the rows a click away. */
+  shelf: 'Locked modifiers',
+  shelfNext: (level: number) => `Next at Trainer Lv ${level}`,
+  shelfNone: 'Not available yet',
 };
 
 export const STARTER_TEXT = {
