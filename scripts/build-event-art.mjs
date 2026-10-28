@@ -1,6 +1,9 @@
 // §2.10.1 — one illustrated beat for every implemented Mystery Event, on a native 256×112 GBA grid.
 // Reuses credited FRLG tiles and furniture; new NPC/object cuts are authentic Pokémon Emerald pixels.
 // No random reward is depicted: closed crates and the shrine conceal their contents.
+// B19 — the event's identifying prop is the largest, brightest thing in its frame: an item the choice names is
+// drawn from its own icon at 1× (its own size, never resampled), a person or object from its native sprite, and nothing
+// else is allowed to share its row of pixels.
 // Usage: node scripts/build-event-art.mjs [--fetch] (cached, pinned sources are retained alongside outputs).
 import { mkdir, readFile, writeFile, access } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -176,9 +179,13 @@ await scene('roadside-trader', (put) => {
   put(box, 136, 64);
   put(counter, 104, 72);
 });
-await scene('field-medic', (put) => {
-  put(npc.ranger, 120, 40);
-  put(bag, 140, 64);
+await scene('field-medic', async (put) => {
+  // The kit is laid out on the path — exactly what the choice hands over (two Super Potions, a Full Heal) — and
+  // nothing else: no bag, so it cannot be mistaken for the lost pack's. Items are drawn at their own size (1×).
+  put(npc.ranger, 104, 40);
+  put(await local('items/super-potion.png'), 128, 64);
+  put(await local('items/super-potion.png'), 158, 64);
+  put(await local('items/full-heal.png'), 188, 64);
 });
 await scene('lost-backpack', (put) => {
   put(sign, 120, 42);
@@ -226,10 +233,9 @@ await scene('hot-spring', async (put) => {
 await scene('slot-booth', async (put) => {
   put(npc.carny, 120, 40);
   put(counter, 112, 72);
-  // A single coin is a scene prop, never a preview of the flip's outcome.
-  const coin = await local('items/tacticians-coin.png');
-  const small = await sharp(coin).resize({ width: 15, height: 15, kernel: 'nearest' }).png().toBuffer();
-  put(small, 122, 68);
+  // A single coin is a scene prop, never a preview of the flip's outcome. It is the one thing in the scene drawn at
+  // the item's own size (1×, never resampled) and sits at the carny's hand, so it is the brightest thing in the frame.
+  put(await local('items/tacticians-coin.png'), 138, 46);
 });
 await scene('cursed-trinket', async (put) => {
   // Closed shrine: showing a particular relic would promise a random outcome before it is rolled.
@@ -241,20 +247,14 @@ await scene('cursed-trinket', async (put) => {
   put(bush, 144, 48);
 });
 await scene('mysterious-stone', (put) => {
-  put(boulder, 120, 48);
-  put(bush, 112, 56);
-  put(bush, 136, 56);
+  // Alone on the sand, where it is the darkest thing in the frame (no bush: the tile's grass backing shows as a
+  // square on sand). No particular stone is shown, because which Evolution Item it turns out to be is rolled when
+  // it is taken.
+  put(boulder, 120, 64);
 });
 await scene('stone-cache', async (put) => {
-  for (let i = 0; i < stones.length; i++) {
-    const small = await sharp(stones[i])
-      .resize(15, 15, { kernel: 'nearest', fit: 'contain' })
-      .png()
-      .toBuffer();
-    put(small, 96 + i * 24, 48);
-  }
-  put(bush, 80, 48);
-  put(bush, 168, 48);
+  // The three stones the choices name, each at its item's own size.
+  for (let i = 0; i < stones.length; i++) put(stones[i], 77 + i * 36, 52);
 });
 await scene('unmarked-cave', async (put) => {
   const cave = await local('map/habitat/cave.png');
@@ -274,7 +274,7 @@ await writeFile(
       processing: {
         script: 'scripts/build-event-art.mjs',
         grid: [256, 112],
-        resampling: 'none for tiles and NPCs; exact half-scale for named stone/coin props',
+        resampling: 'none: tiles, people and named item icons are placed at their native size',
         dithering: false,
         alpha: 'palette-zero exact RGB key on opaque sprite sheets',
         sharp: sharp.versions.sharp,

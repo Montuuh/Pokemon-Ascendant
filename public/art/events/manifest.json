@@ -7,7 +7,7 @@
       256,
       112
     ],
-    "resampling": "none for tiles and NPCs; exact half-scale for named stone/coin props",
+    "resampling": "none: tiles, people and named item icons are placed at their native size",
     "dithering": false,
     "alpha": "palette-zero exact RGB key on opaque sprite sheets",
     "sharp": "0.35.4"
@@ -176,6 +176,16 @@
       "attribution": "docs/art/ATTRIBUTION.md"
     },
     {
+      "file": "../items/super-potion.png",
+      "sha256": "81280672b68b5f8c0e4bf7b7d39567ce170d840296f7812935f740203da66fd5",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../items/full-heal.png",
+      "sha256": "fc471f27e944e7ce3dc5894981c09faccf9371940e6c2f1355a62a72b9a88466",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
       "file": "../items/tacticians-coin.png",
       "sha256": "f9c96d0802a7c5b2e19a458e3013468a63d5d299ae5b84a9d322e2ff731a3e2d",
       "attribution": "docs/art/ATTRIBUTION.md"
@@ -260,7 +270,7 @@
       "file": "field-medic.png",
       "width": 256,
       "height": 112,
-      "sha256": "e6d56b4e3f2775c9fb58c08c8a5aef5dff234f9d3b5aa1a8e43ea4578ce5daac"
+      "sha256": "aed390f75de8567ab4712047bc3bc02c55821eea5b44e96a886eedcf9f3c00ce"
     },
     {
       "file": "lost-backpack.png",
@@ -308,7 +318,7 @@
       "file": "slot-booth.png",
       "width": 256,
       "height": 112,
-      "sha256": "25e4e6d80a450fad471db2a882849a86fe1d2bcb8e4e1465f5b683705ee7377f"
+      "sha256": "d2d360dc6bd08ad84bf25e48bc191838da81c5f8dec54cd53a6787f6c9ebf71f"
     },
     {
       "file": "cursed-trinket.png",
@@ -320,13 +330,13 @@
       "file": "mysterious-stone.png",
       "width": 256,
       "height": 112,
-      "sha256": "36bc2731ded26f52b85637844d75d99f454e1968607745b214ce28b557e6afae"
+      "sha256": "4b7144510320622672377b941e2c9d06f02a04f5ade43837aba442ea0d75f197"
     },
     {
       "file": "stone-cache.png",
       "width": 256,
       "height": 112,
-      "sha256": "8fc1958b59976ec019139e797798ff011bfa576e082cd05451b98f7f6e01046b"
+      "sha256": "cc20600c6ec2c6f8f61c59a9f40b44f32924c308b65a40e8d1c8998bc6603ab5"
     },
     {
       "file": "unmarked-cave.png",

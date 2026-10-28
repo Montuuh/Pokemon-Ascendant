@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.78 — Told by the picture · 2026-10-28
+
+Event scenes lead with the one thing that makes them that event.
+
+- **The coin.** The carny's coin is full size; it was a dot on the counter.
+- **The kit.** The Ranger lays out what she hands over.
+- **The cache.** Eevee's three stones are full size.
+- **The stone.** A lone mossy rock on the sand, nothing else to mistake it for.
+
 ### v0.9.77 — One visit · 2026-10-28
 
 Training and the field nurse are one scene each, choice beside place.
