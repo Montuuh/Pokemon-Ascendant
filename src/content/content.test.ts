@@ -29,6 +29,13 @@ describe('content registry', () => {
     }
   });
 
+  it('every species has a practice sprite, plain and shiny, for the Dojo and the Training Grounds', () => {
+    for (const s of reg.allSpecies()) {
+      expect(existsSync(`public/art/dojo/pokemon/${s.id}.png`), `${s.id} practice sprite`).toBe(true);
+      expect(existsSync(`public/art/dojo/pokemon/${s.id}-shiny.png`), `${s.id} shiny practice sprite`).toBe(true);
+    }
+  });
+
   it('every run-layer asset the map can name exists on disk', () => {
     // The run generates its own nodes, so these are not covered by the scenario fixtures above.
     for (const sprite of TRAINER_SPRITES) {

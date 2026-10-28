@@ -266,6 +266,14 @@ export const TRAINING_TEXT = {
   pickDetail: 'Choose how.',
   ready: 'Ready to train.',
   train: 'Train',
+  /** What the beat after Train says it did, on the scene's foot where Train stood. */
+  trained: {
+    stat: (stat: string, add: number) => `${stat} +${add}`,
+    'move-upgrade': (from: string, to: string) => `${from} → ${to}`,
+    level: (from: number, to: number) => `Lv ${from} → ${to}`,
+    evolve: 'Ready to evolve',
+    'move-replace': (out: string, into: string) => `${out} → ${into}`,
+  },
   upgrade: {
     stat: 'Stat Boost',
     'move-upgrade': 'Move Upgrade',

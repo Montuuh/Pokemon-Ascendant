@@ -134,6 +134,25 @@
   font-weight: 800;
 }
 
+/* The field nurse at her stop: the scene to the left with the total directly under it (the result stands next to
+   whoever did it), the bars to its right in three columns, both from the same top. With nothing to heal there are no bars
+   and the scene stands alone, centred. */
+.staged {
+  align-items: flex-start;
+  gap: var(--sp-6);
+}
+.stageCol {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-3);
+}
+.staged .patients {
+  display: grid;
+  grid-template-columns: repeat(3, 128px);
+  justify-content: center;
+  max-width: none;
+}
+
 /* The Center's band is slimmer: the machine and the bars side by side, above its counters. */
 .center .patient { width: 112px; padding: var(--sp-2); }
 

@@ -139,6 +139,9 @@
   --type-hero-major: calc(84px * var(--text-scale));
 
   /* ---- Motion (§1.6) — reduced-motion collapses these to 0 ---- */
+  /* The route stops' (Training, field nurse) top margin: the optical centre — a tall window leaves about 45 % of its spare
+     height above the visit, a short one starts at 48 px. One value so the stops stay in step. */
+  --stop-top: clamp(var(--sp-8), calc((100vh - 640px) / 2.2), 220px);
   --motion-fast: 120ms;
   --motion-base: 220ms;
   --motion-slow: 350ms;

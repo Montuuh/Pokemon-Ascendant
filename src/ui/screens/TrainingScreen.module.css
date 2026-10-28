@@ -5,11 +5,12 @@
   height: 100%;
   display: grid;
   grid-auto-rows: auto;
-  /* From the top, not centred: a row appearing below a choice never moves the choices above it. */
+  /* From the top, not centred: a row appearing below a choice never moves the choices above it. The top margin is the
+     optical centre instead (`--stop-top`). */
   align-content: start;
   justify-items: center;
   gap: var(--sp-4);
-  padding: var(--sp-8) var(--sp-5) var(--sp-5);
+  padding: var(--stop-top) var(--sp-5) var(--sp-5);
   position: relative;
   background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
   color: var(--ink-primary);
@@ -27,12 +28,56 @@
 }
 .stop {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 760px);
   align-items: start;
+  justify-content: center;
   gap: var(--sp-6);
   width: min(100%, 1640px);
 }
+/* The scene and what starts it: one column, so Train belongs to the practice floor it acts on. */
+.scene {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-4);
+}
+/* The trainee, on the mat in front of the coach: the Dojo's own practice sprite, 32 px of art on a 256 px scene, so it is
+   a whole multiple of its pixels at every scene size (percentages of the frame, never px). */
+.trainee {
+  position: absolute;
+  left: calc(var(--x) / 256 * 100%);
+  top: calc(var(--y) / 112 * 100%);
+  width: 12.5%;
+  /* Steps on in whole art pixels: 12.5 % of the sprite is exactly four of them, at every scene size. */
+  animation: traineeStep var(--motion-base) steps(4, end) both;
+}
+@keyframes traineeStep {
+  from {
+    transform: translateY(-12.5%);
+    opacity: 0;
+  }
+}
+/* After Train: two hops of four art pixels, then back on the mat (a stepped sprite, not a tween). */
+.trainee.hop {
+  animation: traineeHop calc(var(--motion-base) * 2) steps(2, end) 1 both;
+}
+@keyframes traineeHop {
+  0%,
+  100% {
+    transform: none;
+  }
+  25%,
+  75% {
+    transform: translateY(-12.5%);
+  }
+  50% {
+    transform: none;
+  }
+}
 .controls {
+  grid-column: 2;
+  grid-row: 1;
   display: grid;
   justify-items: center;
   align-content: start;
@@ -57,6 +102,10 @@
   color: var(--ink-secondary);
   font-size: var(--type-body);
   font-weight: 600;
+}
+/* Told, the line under the title has nothing left to say; it keeps its place so nothing moves. */
+.quiet {
+  visibility: hidden;
 }
 
 .box,
@@ -89,10 +138,14 @@
 }
 
 /* The five upgrades: what each does, or why it cannot be done on this Pokémon. */
+.upgrades > li {
+  display: flex;
+}
 .upgrade {
   display: grid;
   gap: 2px;
   width: 176px;
+  height: 100%;
   min-height: 60px;
   align-content: start;
   padding: var(--sp-2) var(--sp-3);
@@ -115,6 +168,10 @@
 .upgradeLine {
   font-size: var(--type-caption);
   color: var(--ink-secondary);
+  /* Two lines held from the first frame: what an upgrade would do fills a card that was already that tall, so choosing a
+     Pokémon moves nothing. */
+  line-height: 1.3;
+  min-height: 2.6em;
 }
 
 .detail {
@@ -148,6 +205,15 @@
   font-size: var(--type-small);
 }
 
+/* Every tab stop has the ring the other stops use: the global yellow is the card's own colour on cream. */
+.mon:focus-visible,
+.upgrade:focus-visible,
+.chip:focus-visible,
+.train:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 3px;
+}
+
 /* The one picked in each row. Doubled, so it outranks the row's own border whatever the order. */
 .mon.picked,
 .upgrade.picked,
@@ -177,13 +243,33 @@
   box-shadow: none;
   cursor: not-allowed;
 }
+/* A short window (720 p): the rows a step closer, so the longest choice (eight moves further up) still fits at 150 % text. */
+@media (max-height: 760px) {
+  .root,
+  .controls {
+    gap: var(--sp-2);
+  }
+}
+/* A wide window seats all five upgrades in one row. */
+@media (min-width: 1800px) {
+  .stop {
+    grid-template-columns: auto minmax(0, 920px);
+    width: min(100%, 1760px);
+  }
+}
 @media (max-width: 1100px) {
   .root {
-    align-content: start;
     padding-top: var(--sp-10);
   }
   .stop {
     grid-template-columns: minmax(0, 1fr);
     justify-items: center;
+  }
+  .scene,
+  .controls {
+    grid-column: 1;
+  }
+  .controls {
+    grid-row: 2;
   }
 }

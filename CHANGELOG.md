@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.77 — One visit · 2026-10-28
+
+Training and the field nurse are one scene each, choice beside place.
+
+- **Trainee on the mat.** Your pick steps onto the coach's mat; Train sits under it.
+- **Told on the spot.** Train hops, then says what it did, before the road.
+- **Nurse's total.** Her heal total sits under her scene, bars beside it.
+- **Steady layout.** Nothing moves as you choose; the longest choice fits.
+
 ### v0.9.76 — Plates on the rim · 2026-10-27
 
 The Ring's rungs are small plates, so the arena is the picture.

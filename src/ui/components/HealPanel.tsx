@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { getContent } from '@/content/registry';
 import { runHelpers, type HealLine, type PartyMon } from '@/sim';
 import { hubArt, trainerSprite } from '@/ui/art';
@@ -53,8 +53,13 @@ interface Props {
   machineStyle?: CSSProperties;
   /** Once the heal has landed, keep its per-Pokémon history behind a disclosure in the lobby. */
   compactAfterDone?: boolean;
-  /** Route-stop scenes already contain their grounded overworld nurse. */
+  /** The nurse's own sprite beside the total; on by default, off when a `stage` scene already holds her. */
   showNurseArt?: boolean;
+  /**
+   * The place the heal happens in (the field nurse's route-stop scene). It stands to the left with the total directly
+   * under it, and the bars to its right: the result lands beside the one who did it.
+   */
+  stage?: ReactNode;
   testId?: string;
 }
 
@@ -66,7 +71,8 @@ export function HealPanel({
   onDone,
   machineStyle,
   compactAfterDone = false,
-  showNurseArt = true,
+  showNurseArt,
+  stage,
   testId = 'heal',
 }: Props) {
   const animate = useMotionPref();
@@ -159,59 +165,66 @@ export function HealPanel({
     </ul>
   );
 
+  const stand = (
+    <button
+      type="button"
+      className={styles.stand}
+      aria-label={shown ? total : HEAL_TEXT.skip}
+      // Done, it has nothing left to skip: it stays focusable for its bubble.
+      aria-disabled={beat === 'done' || undefined}
+      onClick={(e) => {
+        e.stopPropagation();
+        skip();
+      }}
+      data-testid={`${testId}-stand`}
+      {...tip}
+    >
+      {variant === 'center' ? (
+        <span className={`${styles.machine} ${beat === 'run' ? styles.running : ''}`} style={machineStyle}>
+          <img className="pixel" src={hubArt('heal-machine')} alt="" draggable={false} />
+          {SOCKETS.slice(0, Math.min(balls, lines.length)).map(([x, y], i) => (
+            <img
+              key={i}
+              className={`pixel ${styles.ball}`}
+              src={hubArt('heal-ball')}
+              alt=""
+              style={{ '--x': x, '--y': y, animationDelay: `${(i % 2) * 120}ms` } as React.CSSProperties}
+              draggable={false}
+            />
+          ))}
+        </span>
+      ) : (showNurseArt ?? !stage) ? (
+        <img
+          className={`pixel ${styles.nurseSprite} ${beat === 'run' ? styles.working : ''}`}
+          src={trainerSprite('nurse')}
+          alt=""
+          width={120}
+          height={120}
+          draggable={false}
+        />
+      ) : null}
+      <span className={`${styles.total} display tabular`} data-testid={`${testId}-total`} aria-live="polite">
+        {total}
+      </span>
+    </button>
+  );
+
   return (
     <section
-      className={`${styles.root} ${styles[variant] ?? ''}`}
+      className={`${styles.root} ${variant === 'center' ? styles.center : ''} ${stage ? styles.staged : ''}`}
       data-testid={testId}
       data-beat={beat}
       aria-label={HEAL_TEXT.label}
       onClick={skip}
     >
-      <button
-        type="button"
-        className={styles.stand}
-        aria-label={shown ? total : HEAL_TEXT.skip}
-        // Done, it has nothing left to skip: it stays focusable for its bubble.
-        aria-disabled={beat === 'done' || undefined}
-        onClick={(e) => {
-          e.stopPropagation();
-          skip();
-        }}
-        data-testid={`${testId}-stand`}
-        {...tip}
-      >
-        {variant === 'center' ? (
-          <span className={`${styles.machine} ${beat === 'run' ? styles.running : ''}`} style={machineStyle}>
-            <img className="pixel" src={hubArt('heal-machine')} alt="" draggable={false} />
-            {SOCKETS.slice(0, Math.min(balls, lines.length)).map(([x, y], i) => (
-              <img
-                key={i}
-                className={`pixel ${styles.ball}`}
-                src={hubArt('heal-ball')}
-                alt=""
-                style={{ '--x': x, '--y': y, animationDelay: `${(i % 2) * 120}ms` } as React.CSSProperties}
-                draggable={false}
-              />
-            ))}
-          </span>
-        ) : showNurseArt ? (
-          <img
-            className={`pixel ${styles.nurseSprite} ${beat === 'run' ? styles.working : ''}`}
-            src={trainerSprite('nurse')}
-            alt=""
-            width={120}
-            height={120}
-            draggable={false}
-          />
-        ) : null}
-        <span
-          className={`${styles.total} display tabular`}
-          data-testid={`${testId}-total`}
-          aria-live="polite"
-        >
-          {total}
-        </span>
-      </button>
+      {stage ? (
+        <div className={styles.stageCol}>
+          {stage}
+          {stand}
+        </div>
+      ) : (
+        stand
+      )}
 
       {patients && compactAfterDone && beat === 'done' ? (
         <details className={styles.report} onClick={(event) => event.stopPropagation()}>
@@ -244,14 +257,17 @@ function Patient({
   const hp = beat === 'done' ? mon.hp : shown ? line.to : line.from;
   const gain = line.to - line.from;
   const tip = useTip(
-    ownedMonTip(mon, partyTip(
-      s.name,
-      mon.level,
-      hp,
-      max,
-      beat === 'done' ? (mon.status?.kind ?? null) : null,
-      mon.traumaStacks,
-    )),
+    ownedMonTip(
+      mon,
+      partyTip(
+        s.name,
+        mon.level,
+        hp,
+        max,
+        beat === 'done' ? (mon.status?.kind ?? null) : null,
+        mon.traumaStacks,
+      ),
+    ),
   );
   return (
     <li
@@ -266,7 +282,11 @@ function Patient({
       <span className={styles.bar}>
         <HpBar hp={hp} maxHp={max} height={8} />
       </span>
-      <span className={`${styles.gain} tabular`} aria-hidden={!shown || gain <= 0} data-shown={shown && gain > 0 ? 'true' : undefined}>
+      <span
+        className={`${styles.gain} tabular`}
+        aria-hidden={!shown || gain <= 0}
+        data-shown={shown && gain > 0 ? 'true' : undefined}
+      >
         {gain > 0 ? `+${gain}` : ''}
       </span>
       {/* A fainted one back on its feet says so; otherwise a status that came off. */}

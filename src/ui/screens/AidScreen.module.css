@@ -3,15 +3,16 @@
 .root {
   height: 100%;
   display: grid;
-  grid-template-rows: auto auto;
-  align-content: center;
+  grid-auto-rows: auto;
+  /* The optical centre, not the middle (`--stop-top`): the group never moves as the heal runs. */
+  align-content: start;
   justify-items: center;
   gap: var(--sp-5);
-  padding: var(--sp-5);
+  padding: var(--stop-top) var(--sp-5) var(--sp-5);
   position: relative;
   background: radial-gradient(130% 90% at 50% 0%, var(--brand-cream) 0%, var(--surface-0) 70%);
   color: var(--ink-primary);
-  overflow: hidden;
+  overflow-y: auto;
 }
 /* The way on, where every stop keeps it: the top-left corner. */
 .corner {
@@ -25,21 +26,9 @@
   justify-items: center;
   gap: var(--sp-2);
 }
-.stop {
-  display: grid;
-  grid-template-columns: auto minmax(0, 500px);
-  align-items: center;
-  gap: var(--sp-6);
-}
 @media (max-width: 1100px) {
   .root {
-    overflow-y: auto;
-    align-content: start;
     padding-top: var(--sp-10);
-  }
-  .stop {
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
   }
 }
 .title {

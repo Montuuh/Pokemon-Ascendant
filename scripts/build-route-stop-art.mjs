@@ -126,7 +126,8 @@ await scene('aid', 'route', (put) => {
 await scene('training', 'cave', (put) => {
   put(equipment, 64, 40);
   put(scrolls, 160, 40);
-  put(trainer, 120, 40);
+  // The coach stands well back from the mat so the tallest trainee drawn on it (TrainingScreen) never overlaps his boots.
+  put(trainer, 120, 24);
   put(platform, 104, 80);
 });
 
