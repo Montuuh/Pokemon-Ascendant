@@ -25,6 +25,7 @@ code re-implemented — see `docs/migration/from-unity.md`.
 | Unit tests only (sim + content) | `npm test` |
 | Doc guards: § citations and catalogue ids resolve | `npm run check:refs` · `npm run check:catalogs` (both in `check`) |
 | Screens: assert + screenshot to `playtest/*.png` | `npm run shot` (full e2e incl. UI playthrough: `npm run e2e`) |
+| UI audit: capture + measured-blocker gate (exit 3 in strict; not a review) | `npm run ui:audit -- --screens <ids>` · `npm run ui:audit:strict -- --screens <ids>` |
 | Motion lint, whole UI or named files (D11/D12) | `npm run ui:motion` · `npm run ui:motion -- <files>` |
 | A beat filmed in real time, as a contact sheet | `npm run ui:film -- --url <deep-link> --act "<js>"` (motion-review.md §5) |
 | Balance table (auto-player over all fixtures) | `npm run balance` · regenerate goldens after a deliberate rules change: `UPDATE_GOLDEN=1 npm test` |

@@ -61,6 +61,13 @@ launching the agent, and for every round after a fix:
 
 Then say in the brief what you already measured, so the agent spends its round on what you could not.
 
+**Read the three opening lines before anything else** — *Capture*, *Quality gate*, *Review*. "Captured 12/12" says the
+screens were photographed, nothing more; the gate line says whether the measurements hold a Blocker (D5, D8, D2 title=); the
+review line is always *not performed* until the agent has run. A measured blocker is fixed in this change, not argued with.
+Close the loop with `npm run ui:audit:strict -- --screens <ids>` (exit 3 = a blocker is still measured; the report is written
+either way) or `node scripts/ui-audit.mjs --check-report playtest/ui-audit` over the last run. Never write "audit clean" in a
+closing report: write what the three lines said.
+
 ## 2. Review
 
 Launch the **`ui-reviewer`** agent (the Agent tool, `subagent_type: ui-reviewer`). The Agent tool runs it in the

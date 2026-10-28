@@ -13,6 +13,11 @@
 //        npm run ui:audit -- --screens hub,combat  named screens
 //        npm run ui:audit -- --all
 //        npm run ui:audit -- --files src/ui/screens/hub/PokeMart.tsx   (map these files to screens)
+//        npm run ui:audit:strict                 same, and a measured blocker (D5 contrast, D8 overflow/spill/cut-off/pointer/
+//                                                names/console, D2 title=) exits 3 — after the report is written
+//        node scripts/ui-audit.mjs --check-report playtest/ui-audit   the gate over a stored report, no browser
+// Captured is not approved (B31): the report keeps three separate facts — capture complete, quality gate (measured
+// blockers), review (not performed; the ui-reviewer's verdict). Exit: 0 · 1 a capture failed · 2 no server · 3 strict blockers.
 // Needs the dev server on http://localhost:5173 (npm run dev). Writes playtest/ui-audit/<screen>.{png,json}
 // and playtest/ui-audit/report.md, and prints the report.
 import { chromium } from '@playwright/test';
@@ -22,6 +27,7 @@ import { join, relative, resolve, dirname, basename } from 'node:path';
 import { auditHover, auditObserved, auditReady } from './lib/ui-audit-ready.mjs';
 import { formatMotion, lintMotion } from './lib/motion-lint.mjs';
 import { assertOurServer, devBase } from './lib/dev-server.mjs';
+import { EXIT, blockersOf, exitCodeFor, summarise, verdictLines } from './lib/ui-audit-quality.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const OUT = resolve(ROOT, process.env.UI_AUDIT_OUT ?? 'playtest/ui-audit');
@@ -30,6 +36,8 @@ const READY_TIMEOUT = Number(process.env.UI_AUDIT_TIMEOUT ?? 15_000);
 const BASE = devBase;
 const args = process.argv.slice(2);
 const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : null);
+// Strict: a measured blocker (scripts/lib/ui-audit-quality.mjs) fails the run with exit 3, after the report is written.
+const strict = args.includes('--strict') || process.env.UI_AUDIT_STRICT === '1';
 
 // ── Screens: how to reach each one, and which source files it is the picture of ──────────────────────────
 // `setup` runs against window.__ascendant (the dev hook); `clicks` are data-testids pressed in order.
@@ -226,6 +234,21 @@ if (args.includes('--list')) {
   process.exit(Object.values(SCREENS).some((screen) => !screen.root) ? 1 : 0);
 }
 
+// The gate without the browser: re-reads a stored report (a directory or its report.json) and applies the same rules, so a
+// release summary quotes the gate and not the capture. Exit 0 / 1 (a failed capture) / 3 (a measured blocker).
+if (args.includes('--check-report')) {
+  if (!opt('--check-report') || opt('--check-report').startsWith('--')) { console.error('ui-audit: --check-report needs a report directory or report.json'); process.exit(EXIT.captureFailed); }
+  const target = resolve(ROOT, opt('--check-report'));
+  const file = /\.json$/.test(target) ? target : join(target, 'report.json');
+  if (!existsSync(file)) { console.error(`ui-audit: no report at ${file}`); process.exit(EXIT.captureFailed); }
+  const stored = JSON.parse(readFileSync(file, 'utf8'));
+  const verdict = summarise(stored.screens ?? {}, stored.summary?.requested ?? Object.keys(stored.screens ?? {}).length);
+  // A report left by an earlier run is not this run's: say when and at which commit it was written.
+  console.log(`Report: written ${stored.generatedAt ?? 'at an unknown time (before B31)'}${stored.head ? ` at ${stored.head.slice(0, 9)}` : ''} — ${relative(ROOT, file)}`);
+  for (const line of verdictLines(verdict, true)) console.log(line);
+  process.exit(exitCodeFor(verdict, true));
+}
+
 // ── Which screens? ───────────────────────────────────────────────────────────────────────────────────────
 function changedFiles() {
   const list = (cmd) => execSync(cmd, { cwd: ROOT, encoding: 'utf8' }).split('\n').map((s) => s.trim()).filter(Boolean);
@@ -296,6 +319,7 @@ function measure() {
   let totalChars = 0;
   const long = [];
   const contrastFails = [];
+  const contrastFaded = [];
   const accentText = [];
   let unknownBg = 0;
   for (const [el, text] of blocks) {
@@ -310,7 +334,18 @@ function measure() {
     if (bg.unknown) { unknownBg++; continue; }
     const ratio = contrast(fg.a < 1 ? blend(fg, bg) : fg, bg);
     const large = size >= 24 || (size >= 18.66 && weight >= 700);
-    if (ratio < (large ? 3 : 4.5)) contrastFails.push({ ratio: Math.round(ratio * 100) / 100, need: large ? 3 : 4.5, size: Math.round(size), at: where(el), text: text.slice(0, 60), fg: cs.color, bg: `rgb(${Math.round(bg.r)}, ${Math.round(bg.g)}, ${Math.round(bg.b)})` });
+    const need = large ? 3 : 4.5;
+    const rgb = `rgb(${Math.round(bg.r)}, ${Math.round(bg.g)}, ${Math.round(bg.b)})`;
+    if (ratio < need) { contrastFails.push({ ratio: Math.round(ratio * 100) / 100, need, size: Math.round(size), at: where(el), text: text.slice(0, 60), fg: cs.color, bg: rgb }); continue; }
+    // D5: "say 'not now' with the price chip, a lock or a label, never with opacity". Text faded by its own or an ancestor's
+    // opacity is seen at the composited colour. Whether it is a plan the player reads (a Blocker) or history (may fade) is the
+    // reviewer's call, so it is listed beside the failures and does not fail the gate.
+    let opacity = 1;
+    for (let e = el; e; e = e.parentElement) opacity *= parseFloat(getComputedStyle(e).opacity);
+    if (opacity < 0.999) {
+      const faded = contrast(blend({ ...fg, a: fg.a * opacity }, bg), bg);
+      if (faded < need) contrastFaded.push({ ratio: Math.round(faded * 100) / 100, need, size: Math.round(size), opacity: Math.round(opacity * 100) / 100, at: where(el), text: text.slice(0, 60), fg: cs.color, bg: rgb });
+    }
   }
   long.sort((a, b) => b.chars - a.chars);
 
@@ -322,7 +357,7 @@ function measure() {
   // Names (D8).
   const unnamed = [...document.querySelectorAll('button, a, input, select, textarea, [role="button"]')].filter(vis).filter((e) => {
     const name = (e.getAttribute('aria-label') || e.textContent || '').trim();
-    return !name && !e.getAttribute('aria-labelledby') && !e.querySelector('img[alt]:not([alt=""])');
+    return !name && !e.getAttribute('aria-labelledby') && !e.labels?.length && !e.querySelector('img[alt]:not([alt=""])');
   }).map(where);
 
   // Plain grids (D3): tables, and lists of 8+ children with no picture in them.
@@ -340,7 +375,7 @@ function measure() {
   const pageScrollX = document.documentElement.scrollWidth > vw + 1;
 
   const interactive = [...document.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(vis).length;
-  return { totalChars, blocks: blocks.size, long: long.slice(0, 10), contrastFails: contrastFails.slice(0, 20), contrastUnknownBg: unknownBg, tipped, infoDots, titles, unnamed, tables, textOnlyLists, overflowing, pageScrollX, interactive, accentText };
+  return { totalChars, blocks: blocks.size, long: long.slice(0, 10), contrastFails: contrastFails.slice(0, 20), contrastFaded: contrastFaded.slice(0, 20), contrastUnknownBg: unknownBg, tipped, infoDots, titles, unnamed, tables, textOnlyLists, overflowing, pageScrollX, interactive, accentText };
 }
 
 // Runs inside the page, at whatever size the viewport is. A card's content spilling out of its card (D8) does not
@@ -645,10 +680,16 @@ async function main() {
       await page.screenshot({ path: join(OUT, `${id}-720.png`) });
       captures.at720 = { screenshot: `${id}-720.png`, root: s.root };
       const result = { screen: id, status: 'captured', expectedRoot: s.root, captures, url: s.url, screenshot: shot, errors, ...data, at720: small };
+      // Captured is not approved: what the measurements hold is its own field (scripts/lib/ui-audit-quality.mjs).
+      const blockers = blockersOf(result);
+      result.quality = { status: blockers.length ? 'blockers' : 'no-blockers', blockers };
       results[id] = result;
       writeFileSync(join(OUT, `${id}.json`), JSON.stringify(result, null, 2));
       report.push(`## ${id}  (${s.url}${s.clicks ? ' → ' + s.clicks.join(' → ') : ''})`);
       report.push(`- **Captured**: expected root \`${s.root}\` verified at both sizes`);
+      report.push(`- **Quality**: ${blockers.length ? `⛔ ${blockers.length} measured blocker(s)` : 'no measured blockers (a measurement, not an approval)'}${data.contrastUnknownBg ? ` · ${data.contrastUnknownBg} text block(s) unmeasured (gradient/image)` : ''}${data.contrastFaded.length ? ` · ${data.contrastFaded.length} faded text block(s) under AA` : ''}`);
+      for (const b of blockers.slice(0, 12)) report.push(`  - [${b.doctrine} · ${b.rule} · ${b.size}] ${b.detail}`);
+      if (blockers.length > 12) report.push(`  - … ${blockers.length - 12} more in \`${ARTIFACTS}/${id}.json\``);
       report.push(`- screenshot: \`${ARTIFACTS}/${shot}\` (and \`${id}-720.png\`)`);
       report.push(`- **D1 text**: ${data.totalChars} chars in ${data.blocks} blocks · ${data.long.length} block(s) over 120 chars`);
       for (const l of data.long) report.push(`  - ${l.chars} chars @ \`${l.at}\`: “${l.text}”`);
@@ -656,6 +697,7 @@ async function main() {
       report.push(`- **D3 shape**: ${data.tables} table(s), ${data.textOnlyLists.length} text-only list(s) of 8+ rows${data.textOnlyLists.length ? ' (' + data.textOnlyLists.map((l) => `${l.at}: ${l.rows}`).join('; ') + ')' : ''}`);
       report.push(`- **D5 contrast**: ${data.contrastFails.length} failure(s)${data.contrastUnknownBg ? ` · ${data.contrastUnknownBg} block(s) on a gradient/image, unmeasured` : ''}`);
       for (const c of data.contrastFails) report.push(`  - ${c.ratio}:1 (needs ${c.need}) ${c.size}px @ \`${c.at}\` “${c.text}” fg ${c.fg} on ${c.bg}`);
+      for (const c of data.contrastFaded.slice(0, 8)) report.push(`  - faded (advisory): ${c.ratio}:1 (needs ${c.need}) at opacity ${c.opacity} @ \`${c.at}\` “${c.text}” — plan or history? (D5)`);
       report.push(`- **D8 works**: ${data.unnamed.length} unnamed control(s)${data.unnamed.length ? ' (' + data.unnamed.join(', ') + ')' : ''} · overflow 1080p: ${data.overflowing.length ? data.overflowing.join(', ') : 'none'}${data.pageScrollX ? ' · page scrolls sideways' : ''} · overflow 720p: ${small.overflowing.length ? small.overflowing.join(', ') : 'none'}${small.pageScrollX ? ' · page scrolls sideways' : ''} · spill 1080p: ${data.spills.length || 'none'} · spill 720p: ${small.spills.length || 'none'} · hidden 1080p: ${data.hidden.length || 'none'} · hidden 720p: ${small.hidden.length || 'none'} · pointer 1080p: ${data.pointer.length || 'none'} · pointer 720p: ${small.pointer.length || 'none'} · console errors: ${errors.length}`);
       for (const [at, list] of [['1080p', data.hidden], ['720p', small.hidden]]) for (const h of list.slice(0, 8)) report.push(`  - hidden ${at}: \`${h.at}\` ${h.px} px cut off on its ${h.axis} axis, which does not scroll`);
       for (const [at, list] of [['1080p', data.pointer], ['720p', small.pointer]]) for (const p of list.slice(0, 8)) report.push(`  - pointer ${at}: \`${p.at}\` cannot be pointed at — its centre belongs to \`${p.by}\``);
@@ -691,14 +733,30 @@ async function main() {
   report.push(`- **D11 motion**: ${formatMotion(st.motion).join(' · ')}`);
   for (const h of st.motion.slice(0, 12)) report.push(`  - [${h.rule}] \`${h.file}:${h.line}\` ${h.detail}`);
   if (st.motion.length > 12) report.push(`  - … ${st.motion.length - 12} more: \`npm run ui:motion -- <files>\``);
-  const failed = Object.values(results).filter((result) => result.status === 'failed').map((result) => result.screen);
-  const summary = { requested: screens.length, captured: Object.values(results).filter((result) => result.status === 'captured').length, failed };
-  const md = `# UI audit — ${new Date().toISOString().slice(0, 16).replace('T', ' ')}\n\nScreens: ${screens.join(', ') || '—'}\n\nCaptured: ${summary.captured}/${summary.requested} · Failed: ${failed.join(', ') || 'none'}\n\n${report.join('\n')}\n`;
+  // Three separate facts (B31): captured, measured-without-blockers, reviewed. Only the first two are ours to state.
+  // `summary` is the legacy capture-only shape (requested / captured / failed): it says nothing about quality.
+  const verdict = summarise(results, screens.length);
+  const lines = verdictLines(verdict, strict);
+  const summary = { requested: verdict.capture.requested, captured: verdict.capture.captured, failed: verdict.capture.failed };
+  const generatedAt = new Date().toISOString();
+  let head = null;
+  try { head = execSync('git rev-parse HEAD', { cwd: ROOT, encoding: 'utf8' }).trim(); } catch { /* not a checkout: the report just carries no commit */ }
+  const top = [];
+  if (verdict.quality.screensWithBlockers.length) {
+    top.push('## Measured blockers');
+    for (const { screen } of verdict.quality.screensWithBlockers) {
+      top.push(`- **${screen}**`);
+      for (const b of results[screen].quality.blockers.slice(0, 6)) top.push(`  - [${b.doctrine} · ${b.rule} · ${b.size}] ${b.detail}`);
+    }
+    top.push('');
+  }
+  const md = `# UI audit — ${generatedAt.slice(0, 16).replace('T', ' ')}\n\nScreens: ${screens.join(', ') || '—'}\n\n${lines.map((l) => `- **${l.split(':')[0]}**:${l.slice(l.indexOf(':') + 1)}`).join('\n')}\n- Measured: contrast and names at 1080p only; layout (overflow, spill, cut-off, pointer) at 1080p and 720p. Text on a gradient or image is not measured; text faded by opacity is listed, not failed (the reviewer judges plan versus history, D5). Judgement (D1, D3, D4, D7) and motion are the reviewer's.\n\n${top.join('\n')}${top.length ? '\n' : ''}${report.join('\n')}\n`;
   writeFileSync(join(OUT, 'report.md'), md);
-  writeFileSync(join(OUT, 'report.json'), JSON.stringify({ summary, screens: results, static: st, files }, null, 2));
-  if (failed.length) process.exitCode = 1;
+  writeFileSync(join(OUT, 'report.json'), JSON.stringify({ generatedAt, head, summary, ...verdict, strict, screens: results, static: st, files }, null, 2));
+  process.exitCode = exitCodeFor(verdict, strict);
   console.log(md);
   console.log(`→ ${relative(ROOT, join(OUT, 'report.md'))}`);
+  for (const l of lines) console.log(l);
 }
 
 main().catch((e) => {

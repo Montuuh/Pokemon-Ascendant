@@ -106,7 +106,7 @@ its own (§9.9.1). *(Added 2026-10-26, adapted from the game-feel skill of aweso
 
 | Level | Means | On a review |
 |---|---|---|
-| **Blocker** | D5 contrast failure on body text · D8 broken interaction or overflow · D2 a mystery with no door on a decision-bearing element · D11 motion that makes the player wait on an every-turn action, information a decision needs animating in, or motion either reduced-motion switch does not stop | Fix before the change is done |
+| **Blocker** | D5 contrast failure on body text · D8 broken interaction or overflow, a page error or a failed request · D2 native `title=` (banned) · D2 a mystery with no door on a decision-bearing element · D11 motion that makes the player wait on an every-turn action, information a decision needs animating in, or motion either reduced-motion switch does not stop | Fix before the change is done |
 | **Should** | D1 / D3 / D4 violations on a base screen · D7 garbage · D6 literals · D11 `ease-in`, over 300 ms, `scale(0)`, `transition: all` or a layout property on chrome · D12 feedback heavier or lighter than its event, or that does not return to rest | Fix in the same change unless the user says otherwise |
 | **Nit** | wording, spacing, a door that could be one level closer · D11/D12 origin, stagger, enter/exit timing | Note; fix if cheap |
 

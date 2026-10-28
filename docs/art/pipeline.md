@@ -109,7 +109,24 @@ phase; a partial image is diagnostic evidence only. Old images for that preset a
 Never use a Run over landing page as evidence for a Mystery Event or Evolution. The current fixtures enter
 those states through the run reducer; Trainer Card and Center Daycare use their current building controls.
 `UI_AUDIT_BASE` selects the server; `UI_AUDIT_OUT` selects an isolated evidence directory.
-Run `node --test scripts/ui-audit.test.mjs` to check root declarations and failure/continuation behavior.
+Run `npm run test:audit` (`node --test` over `scripts/ui-audit.test.mjs` and `scripts/ui-audit-quality.test.mjs`; manual, not in `npm run check`, because it drives Chrome) to check root declarations,
+failure/continuation behavior and the quality gate below.
+
+**Captured, measured, reviewed (B31).** A report states three separate facts and never merges them. *Capture*: every
+requested screen reached its root and was photographed at both sizes. *Quality gate*: the measurements hold no established
+Blocker (`scripts/lib/ui-audit-quality.mjs` — D5 contrast, D8 viewport overflow, spill, cut-off, unreachable pointer,
+unnamed control, console error, D2 native `title=`); text on a gradient or image is counted as unmeasured, which is neither
+a pass nor a fail. *Review*: always `not-performed` in the tool's output — the `ui-reviewer` verdict is the review, and
+`no measured blockers` is "a measurement, not an approval". D1/D3/D4/D6/D7, motion and text faded by opacity (D5's "never with
+opacity" — a plan the player reads, or a spent row that may fade? — is the reviewer's call) stay advisory: the faded blocks are
+counted on the gate line and listed per screen. `report.md` opens with the three lines, lists every screen's measured blockers
+before the per-screen sections, and `report.json` carries `capture`, `quality`, `review`, `generatedAt` and `head` beside the
+legacy `summary` (capture only: requested / captured / failed — it says nothing about quality, so read `quality.status`).
+A strict run, and `--check-report`, also fail (exit 1) when fewer screens were measured than requested or none were; the check
+prints when and at which commit the stored report was written, so an old report is never mistaken for this run's. Exit codes: `0`; `1` a capture failed (it outranks the rest) or `--check-report` has nothing to read; `2` no
+server; `3` blockers in strict mode (`npm run ui:audit:strict`, `--strict` or `UI_AUDIT_STRICT=1`) — always after the
+screenshots and the report are written. `node scripts/ui-audit.mjs --check-report <dir|report.json>` applies the strict
+gate to a stored report without a browser. Quote the gate line, not "70/70 captured", in a release summary.
 
 Source/output hashes verify identity and processing, not ownership. The current stage and move manifests
 cover 45 and 161 outputs respectively; twelve A14 moves additionally retain exact prompts and raw outputs.

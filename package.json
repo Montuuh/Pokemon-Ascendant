@@ -49,6 +49,8 @@
     "art:types": "node scripts/fetch-type-icons.mjs",
     "art:moves": "node scripts/gen-move-art.mjs",
     "ui:audit": "node scripts/ui-audit.mjs",
+    "ui:audit:strict": "node scripts/ui-audit.mjs --strict",
+    "test:audit": "node --test scripts/ui-audit.test.mjs scripts/ui-audit-quality.test.mjs",
     "ui:motion": "node scripts/lib/motion-lint.mjs",
     "ui:film": "node scripts/motion-film.mjs"
   },

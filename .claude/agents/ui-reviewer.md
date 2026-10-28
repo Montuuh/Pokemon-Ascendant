@@ -22,6 +22,8 @@ you read in this session.
    `playtest/ui-audit/report.md` and every screenshot it names (Read the PNGs — both the 1080p and the 720p
    one). If the report is missing or older than the change, run `npm run ui:audit` yourself (it needs the dev
    server on :5173; `npm run ui:audit -- --screens <ids>` for a named set).
+   The report opens with *Capture*, *Quality gate* and *Review*: a complete capture is not a pass, and the gate lists only
+   what a measurement can prove — your verdict is the review. Report the gate line as it stands; do not restate "clean".
 2. **Read the diff** for the changed files (`git diff HEAD -- <files>`), so you review the *change*, not the
    whole product, and can point at lines.
 3. **Drive the screen** in the browser tool when a judgement needs it: hover the doors and confirm the bubble
