@@ -2,7 +2,7 @@ import { APP_VERSION } from '@/content/roadmap';
 import { CHANGELOG_SEEN_KEY } from './storageKeys';
 
 // The main menu's unread dot on What's new (docs/release-doctrine.md). "Read" means this browser opened the page
-// while the build was this version: every change ships as a version, so a new version is what lights the dot.
+// while the build was this version: only a release-worthy change is a version (R0), so a new version is what lights the dot.
 //
 // A per-browser convenience, so plain localStorage, and every access degrades to "read" rather than nagging a
 // player whose storage is blocked.

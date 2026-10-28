@@ -20,8 +20,9 @@
 - **Art:** permission to download and to generate images is standing. Fetch every real object (Pokémon,
   items, badges, trainers, battle backdrops); generate only invented scenes. Never generate a Pokémon.
 - **Every version ships by `docs/release-doctrine.md`** (the `ship-version` skill): a `CHANGELOG.md` entry the
-  game shows as What's new, and the version stamped everywhere; `npm run check:version` guards it. Work that
-  reaches `main` between versions goes under `## Next`.
+  game shows as What's new, and the version stamped everywhere; `npm run check:version` guards it. **Only a big,
+  player-informative change is a version** (design, large art; R0, the user's call 2026-10-28): small changes are
+  committed and pushed with no version suffix, no changelog line and no stamp.
 - **Playtest findings arrive in chat** ("I found that…"); they go to the roadmap — a fix into the next
   subversion, an idea into the backlog — never only into the reply.
 - **The user runs other agents in this same folder** (other Claude sessions, and Codex: `AGENTS.md`,

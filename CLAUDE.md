@@ -77,6 +77,8 @@ state, and any place the build still disagrees with canon.
 - Feature / multi-file: state the plan in a few lines (files, approach, § touched), then build unless the user objects. Ask only when different readings would produce materially different work.
 - **Commit and push every finished unit to `main`** — the user's standing instruction. Conventional commits
   (`feat(sim): …`, `feat(ui): …`, `content: …`, `design: …`, `docs: …`), no attribution lines, never force.
+  **Only a big, player-informative change is a version** (design and large art changes — `docs/release-doctrine.md`
+  R0); a small one is committed and pushed without a number, a changelog line or any stamp.
   **Other agents work in this folder too**: stage only your own files (`docs/session/standing-facts.md`, *Working in
   a shared folder*).
 - **Reply to the user in Spanish**; code, docs, commits and game text stay in English (en-GB). How the user works
@@ -84,8 +86,8 @@ state, and any place the build still disagrees with canon.
   with the user*: read it before your first reply.
 - End of a task: update `docs/session/active.md` (≤ 30 lines) and, if scope moved, `docs/roadmap.md`.
 - **Every version ships with its changelog and is stamped everywhere** — `docs/release-doctrine.md`, walked by
-  `.claude/skills/ship-version`: the `CHANGELOG.md` entry (the game's What's new screen reads it; brief and technical — the main
-  points, no roleplay; every change ships as the next patch, there is no `## Next`), `npm version X.Y.Z --no-git-tag-version`, the roadmap mark, the
+  `.claude/skills/ship-version`; a version is for a change that earns one (R0), not for every commit: the `CHANGELOG.md` entry (the game's What's new screen reads it; brief and technical — the main
+  points, no roleplay; a release takes the next patch, there is no `## Next`), `npm version X.Y.Z --no-git-tag-version`, the roadmap mark, the
   README Status line, the session header. `npm run check:version` fails the check until all of them agree.
 - Subagents (`.claude/agents/`): `designer` for pillar/balance review, `qa` for edge-case hunts, `ui-reviewer` for every visual change (doctrine in `docs/design/ui-doctrine.md`). Use them for review, not for writing code in parallel on the same files.
 

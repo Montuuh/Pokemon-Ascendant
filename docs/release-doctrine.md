@@ -1,9 +1,41 @@
-# Release doctrine — every version, written down and stamped everywhere
+# Release doctrine — a version is a release worth announcing, written down and stamped everywhere
 
 > The user's rule (2026-09-23): **every time a version of the game ships, the changelog says what it added,
 > and every place that shows the active version is changed with it.** A version is not shipped until both are
 > true. `npm run check:version` (part of `npm run check`) proves the stamping; `changelog.test.ts` proves the
 > changelog reads. The `ship-version` skill walks the steps.
+>
+> **Not every commit is a version** (the user's call, 2026-10-28, replacing "every change ships as a version"):
+> only a change that is informative to a player and big enough for the game earns one — see R0. Everything
+> else is still committed and pushed to `main`, without a number or a changelog line.
+
+## R0 — What earns a version
+
+A change ships as a version, with a changelog entry and every stamp, when **a player would want to be told**
+and it is **large for the game**:
+
+- **Design:** a new or changed rule, mechanic, mode, system or number that changes how a run plays; new content
+  a player meets (a Region, a roster, a building, a relic family).
+- **Art:** a large change a player sees at once — new scenes or backdrops, a screen recomposed around new art,
+  a set of sprites, icons or effects replaced across the game.
+- **A fix** only when a player could have hit the bug *and* it was serious (a lost run or save, a soft-lock, a
+  wrong result), not a cosmetic one.
+
+Everything else is a **maintenance commit**: one-screen polish and spacing, a single asset swapped, motion or
+focus-ring tuning, accessibility and contrast nits, review-block follow-ups, refactors, tests, tooling, docs,
+workshop (`.claude/`) changes. A maintenance commit:
+
+- is committed and pushed to `main` like any finished unit, with a conventional message **and no `— vX.Y.Z`
+  suffix**;
+- does **not** run `npm version`, touch `CHANGELOG.md`, the roadmap's ✅ marks, the README Status line or the
+  session header's version — `check:version` keeps passing because the version did not move;
+- is recorded in `docs/session/active.md` when the next session needs to know (≤ 30 lines), and may be
+  summed up in the roadmap's "Shipped" paragraph of the next release it ships alongside.
+
+Several small changes that together make a player-visible step (a round of art-review blocks, a screen family
+recomposed) are **batched into one release** rather than one per commit. When in doubt, ask: *would I put this
+on the What's new screen of a game I played?* If not, it is a maintenance commit. The user can always promote a
+maintenance commit to a version by saying so.
 
 ## R1 — What a version is
 
@@ -19,11 +51,11 @@ Versions are numbered `major.minor.patch`, and the number alone says how big the
 from the number (`levelOf` in `src/content/changelog.ts`) and never styled by hand, so the order of importance
 cannot drift from the numbering.
 
-**Every change ships as a version** (the user's call, 2026-09-29). There is no "unreleased" block: work that
-reaches `main` outside a planned sub-version — a round of polish, a fix — takes the **next patch number** and its
-own changelog entry, the same day. The numbering stays three parts (npm and the guard read `X.Y.Z`), so the
-patch after v0.7.10 is v0.7.11, never v0.7.10.1; a planned sub-version that was next on the roadmap moves up by
-one in `docs/roadmap.md` in the same commit.
+**A version that does ship takes the next patch number** (R0 decides whether one ships at all). There is no
+"unreleased" block: a release-worthy change outside a planned sub-version takes the next patch number and its own
+changelog entry, the same day; maintenance commits wait for no number. The numbering stays three parts (npm and
+the guard read `X.Y.Z`), so the patch after v0.7.10 is v0.7.11, never v0.7.10.1; a planned sub-version that was
+next on the roadmap moves up by one in `docs/roadmap.md` in the same commit.
 
 ## R2 — The changelog entry
 
@@ -68,6 +100,8 @@ The game has no other hard-coded version string, and must not grow one: a screen
 added to this table and to `scripts/check-version.mjs` in the same change.
 
 ## R4 — The ritual
+
+(Only for a release, R0. A maintenance commit skips it: run `npm run check`, commit, push.)
 
 1. Write the new entry, newest first, with today's date (R2). A minor that finishes takes its date and a summary.
 2. `npm version X.Y.Z --no-git-tag-version`.

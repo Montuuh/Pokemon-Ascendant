@@ -5,16 +5,25 @@ description: >
   game's What's new screen reads, bump the version, and stamp it in every place that shows it (package.json and
   its lockfile, the roadmap, the README Status line, the session header), then prove it with check:version.
   Use whenever a version or patch is finished ("ship v0.7.4", "cierra la versión", "sube la versión"), and when
-  any change is about to land on main — every change ships as the next patch.
+  a change big enough to announce (a design change, large art) is about to land on main. Small changes do not
+  get a version: commit and push them without one (docs/release-doctrine.md R0).
 ---
 
 # Ship a version
 
 Read `docs/release-doctrine.md` first; this is its checklist.
 
-## Every change is a version
+## Does it earn a version? (R0 first)
 
-There is no `## Next`: work that reaches main outside a planned sub-version takes the next patch number
+Only a change that is informative to a player and large for the game ships as a version: a design or rule
+change, new player-met content, a large art change (new scenes, a screen recomposed around new art, a set of
+sprites or effects), or a serious fix (lost run, soft-lock, wrong result). Everything else — polish, spacing,
+motion or focus tuning, a11y nits, review-block follow-ups, refactors, tests, tooling, docs, `.claude/` — is a
+**maintenance commit**: `npm run check`, a conventional commit with **no `— vX.Y.Z`**, push; no `npm version`,
+no changelog, no roadmap ✅, no README/session version stamp. Batch several small steps into one release when they
+add up to something a player would see. When in doubt: would it go on the What's new screen of a game you played?
+
+There is no `## Next`: a release-worthy change outside a planned sub-version takes the next patch number
 (v0.7.10 → v0.7.11, never v0.7.10.1) and ships the same day, with the steps below.
 
 ## Shipping vX.Y.Z
