@@ -13,7 +13,7 @@ import sharp from 'sharp';
 const root = resolve(import.meta.dirname, '..');
 const out = resolve(root, 'public/art/events');
 const commit = '731ad5bfd6e6f265508d0efcca0ba42f9dcf5881';
-const origin = `https://raw.githubusercontent.com/pret/pokeemerald/${commit}/graphics/object_events/pics`;
+const origin = `https://raw.githubusercontent.com/pret/pokeemerald/${commit}/graphics`;
 const sources = [];
 const outputs = [];
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -24,9 +24,9 @@ const exists = (path) =>
     () => false,
   );
 
-async function external(name, file) {
+async function external(name, file, base = 'object_events/pics') {
   const path = resolve(out, `sources/${name}.png`);
-  const url = `${origin}/${file}.png`;
+  const url = `${origin}/${base}/${file}.png`;
   if (process.argv.includes('--fetch') || !(await exists(path))) {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`${response.status}: ${url}`);
@@ -109,6 +109,8 @@ for (const [name, file] of Object.entries({
   trader: 'man_3',
   ranger: 'picnicker',
   carny: 'man_4',
+  salesman: 'devon_employee',
+  springWoman: 'hot_springs_old_woman',
 }))
   npc[name] = await frame(await external(name, `people/${file}`), 16, 32);
 const bag = await frame(await external('bag', 'misc/birchs_bag'), 16, 16);
@@ -124,6 +126,13 @@ const shelf = await local('mart/mart.png', [112, 16, 48, 24]);
 const counter = await local('mart/mart.png', [16, 94, 32, 16]);
 const bush = await local('route/route/tall.png');
 const boulder = await frame(await external('boulder', 'misc/pushable_boulder'), 16, 16);
+// Emerald's field-effect glint (the bright four-point star) and shrine statue, and its overworld Pikachu (facing down).
+const glintSheet = await external('glint', 'small_sparkle', 'field_effects/pics');
+const glint = await frame(glintSheet, 16, 16, 16, 0);
+const glintSmall = await frame(glintSheet, 16, 16, 0, 0);
+const question = await frame(await external('question', 'emotion_question', 'field_effects/pics'), 16, 16);
+const statue = await frame(await external('statue', 'misc/statue'), 16, 32);
+const pikachu = await frame(await external('pikachu', 'pikachu', 'object_events/pics/pokemon'), 16, 16);
 const sign = await crop(routeMap, 'sources/route1-frlg.png', [144, 496, 16, 16]);
 const fence = await crop(routeMap, 'sources/route1-frlg.png', [128, 576, 16, 16]);
 const stones = await Promise.all(
@@ -133,8 +142,10 @@ const stones = await Promise.all(
 async function scene(id, build, terrain = 'route') {
   const layers = [];
   const put = (input, left, top) => layers.push({ input, left, top });
-  const tile = await local(`route/${terrain}/ground.png`);
-  for (let y = 0; y < 112; y += 16) for (let x = 0; x < 256; x += 16) put(tile, x, y);
+  if (terrain !== 'none') {
+    const tile = await local(`route/${terrain}/ground.png`);
+    for (let y = 0; y < 112; y += 16) for (let x = 0; x < 256; x += 16) put(tile, x, y);
+  }
   if (terrain === 'route') {
     const path = await local('route/route/path-c.png');
     const north = await local('route/route/path-n.png');
@@ -175,9 +186,10 @@ await scene('traveling-apothecary', (put) => {
   put(box, 176, 64);
 });
 await scene('roadside-trader', (put) => {
-  put(npc.trader, 112, 40);
-  put(box, 136, 64);
-  put(counter, 104, 72);
+  // A salesman in his red suit, out on the road with the last crate: no counter (that is the carny's and the
+  // apothecary's picture) and no sign (the lost pack's).
+  put(npc.salesman, 108, 40);
+  put(box, 130, 66);
 });
 await scene('field-medic', async (put) => {
   // The kit is laid out on the path — exactly what the choice hands over (two Super Potions, a Full Heal) — and
@@ -188,8 +200,9 @@ await scene('field-medic', async (put) => {
   put(await local('items/full-heal.png'), 188, 64);
 });
 await scene('lost-backpack', (put) => {
-  put(sign, 120, 42);
-  put(bag, 136, 58);
+  // Nobody in sight: the pack alone on the grass, where its brown stands out, under Emerald's question bubble.
+  put(bag, 120, 44);
+  put(question, 120, 28);
 });
 await scene('fallen-crate', (put) => {
   put(box, 112, 64);
@@ -198,9 +211,10 @@ await scene('fallen-crate', (put) => {
   put(ball, 132, 52);
 });
 await scene('abandoned-pokeball', (put) => {
-  put(bush, 112, 48);
-  put(ball, 124, 56);
-  put(bush, 136, 56);
+  // The overworld item ball (the one every Poké Ball on the ground is in the games), alone in the grass with a glint:
+  // the dent and the hum are the title's. No bush: the tile's grass backing shows as a square.
+  put(ball, 120, 44);
+  put(glint, 134, 36);
 });
 await scene('berry-bush', (put) => {
   put(berry, 104, 32);
@@ -217,18 +231,46 @@ await scene('moving-truck', async (put) => {
   put(box, 80, 48);
 });
 await scene('daycare-recovery', async (put) => {
-  // The pen stays empty: the event never asks the player to choose or forfeit a Pokémon.
-  for (const x of [96, 112, 128, 144]) put(fence, x, 32);
-  put(fence, 80, 48);
-  put(fence, 160, 48);
-  put(npc.grandfather, 96, 48);
-  put(npc.grandmother, 144, 48);
-  put(tree, 176, 16);
+  // A fenced pen with one Pokémon resting in it, the couple at either side. Pikachu is scenery, not a stand-in for
+  // the player's own; the event never asks the player to choose or forfeit one. The pen stands on the grass, where
+  // the fence tile's backing does not show.
+  for (const x of [88, 104, 120, 136]) {
+    put(fence, x, 12);
+    put(fence, x, 44);
+  }
+  for (const y of [28]) {
+    put(fence, 72, y);
+    put(fence, 152, y);
+  }
+  put(pikachu, 112, 28);
+  put(npc.grandfather, 60, 40);
+  put(npc.grandmother, 166, 40);
 });
 await scene('hot-spring', async (put) => {
-  // Emerald's actual bathhouse pool and entrance: no generic pond standing in for the story's hot spring.
-  put(await crop(spaMap, 'sources/lavaridge-emerald.png', [0, 16, 256, 112]), 0, 0);
-  put(npc.grandmother, 112, 80);
+  // Emerald's actual bathhouse pool, cut out of the Lavaridge map and set on the route like every other scene: the
+  // pool is the picture (the Pokémon Centre beside it used to be the loudest thing in the frame). The map's wooden
+  // steps over the rim's top right are covered with a copy of the rim and water 36 px to their left, and what lies
+  // outside the rim's rounded rectangle is keyed out.
+  const box = [30, 26, 100, 90];
+  const { data, info } = await sharp(spaMap)
+    .extract({ left: box[0], top: box[1], width: box[2], height: box[3] })
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  cuts.push({ source: 'sources/lavaridge-emerald.png', box });
+  const W = info.width;
+  for (let y = 5; y < 23; y++) for (let x = 66; x < 85; x++) for (let c = 0; c < 4; c++) data[(y * W + x) * 4 + c] = data[(y * W + x - 36) * 4 + c];
+  const [x0, y0, x1, y1, r] = [7, 8, 93, 83, 6];
+  for (let y = 0; y < info.height; y++)
+    for (let x = 0; x < W; x++) {
+      const dx = Math.max(x0 + r - x, 0, x - (x1 - r));
+      const dy = Math.max(y0 + r - y, 0, y - (y1 - r));
+      if (x < x0 || x > x1 || y < y0 || y > y1 || dx * dx + dy * dy > r * r) data[(y * W + x) * 4 + 3] = 0;
+      const i = (y * W + x) * 4;
+      if (data[i] > data[i + 1] + 40 && data[i] > data[i + 2] + 40 && data[i + 1] < 110) data[i + 3] = 0; // the map's red cliff
+    }
+  put(await sharp(data, { raw: { width: W, height: info.height, channels: 4 } }).extract({ left: x0, top: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }).png().toBuffer(), 85, 8);
+  put(npc.springWoman, 122, 34); // Emerald's bathing sprite: head and shoulders above the water
 });
 await scene('slot-booth', async (put) => {
   put(npc.carny, 120, 40);
@@ -238,19 +280,22 @@ await scene('slot-booth', async (put) => {
   put(await local('items/tacticians-coin.png'), 138, 46);
 });
 await scene('cursed-trinket', async (put) => {
-  // Closed shrine: showing a particular relic would promise a random outcome before it is rolled.
-  const grave = await local('route/tower/fill.png');
+  // A shrine: a stone statue on old paving, one bright glint where the trinket sits and two small ones. The trinket
+  // itself is not drawn, because which relic it is gets rolled when it is taken.
   const paving = await local('route/tower/path.png');
-  for (let y = 32; y <= 64; y += 16) for (let x = 104; x <= 136; x += 16) put(paving, x, y);
-  put(grave, 120, 40);
-  put(bush, 96, 48);
-  put(bush, 144, 48);
+  for (let y = 48; y <= 64; y += 16) for (let x = 104; x <= 136; x += 16) put(paving, x, y);
+  put(statue, 120, 32);
+  put(glint, 118, 22);
+  put(glintSmall, 98, 56);
+  put(glintSmall, 140, 52);
 });
 await scene('mysterious-stone', (put) => {
-  // Alone on the sand, where it is the darkest thing in the frame (no bush: the tile's grass backing shows as a
-  // square on sand). No particular stone is shown, because which Evolution Item it turns out to be is rolled when
-  // it is taken.
+  // Alone on the sand, where it is the darkest thing in the frame, with the faint glints of its hum. No bush (the
+  // tile's grass backing shows as a square on sand) and no particular stone: which Evolution Item it turns out to be
+  // is rolled when it is taken.
   put(boulder, 120, 64);
+  put(glint, 100, 58);
+  put(glint, 138, 52);
 });
 await scene('stone-cache', async (put) => {
   // The three stones the choices name, each at its item's own size.

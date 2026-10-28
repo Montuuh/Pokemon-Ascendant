@@ -86,7 +86,7 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     id: 'lost-backpack',
     risk: 'safe',
     title: 'An unattended pack',
-    scene: 'Left against a signpost, dusty, with nobody in sight for an hour in either direction.',
+    scene: 'Left by the path, dusty, with nobody in sight for an hour in either direction.',
     choices: [
       { label: 'Take the supplies', detail: 'A Super Potion, an Antidote and an Ether.', outcomes: [{ kind: 'consumables', ids: ['super-potion', 'antidote', 'ether'] }] },
       { label: 'Take the cash', detail: '200 ₽.', outcomes: [{ kind: 'money', amount: 200 }] },

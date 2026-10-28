@@ -77,6 +77,20 @@
       "height": 32
     },
     {
+      "file": "sources/salesman.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/devon_employee.png",
+      "sha256": "02d411e5afe1c7b8bf9434d7312c4dc1d3a67bacf6fd5fb769e0dcdc5a329d81",
+      "width": 144,
+      "height": 32
+    },
+    {
+      "file": "sources/springWoman.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/people/hot_springs_old_woman.png",
+      "sha256": "644dfb5c5efdfff25bb0954dba971bc43f209355b0ac3b4163243a2b53503a1b",
+      "width": 144,
+      "height": 32
+    },
+    {
       "file": "sources/bag.png",
       "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/birchs_bag.png",
       "sha256": "4facdd95cf1a101d93aea09b65aa68f5de1a2f911672d0f9f41bd1dc1206f266",
@@ -116,6 +130,34 @@
       "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/pushable_boulder.png",
       "sha256": "9ff11e929fbc9c221dd5228e342be51a04b19591b7248ad12aa698e60221e663",
       "width": 16,
+      "height": 16
+    },
+    {
+      "file": "sources/glint.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/field_effects/pics/small_sparkle.png",
+      "sha256": "22efd626966ed2a35c8c710b699595c64249d0c711e924521acf0ba0be7bdbea",
+      "width": 32,
+      "height": 16
+    },
+    {
+      "file": "sources/question.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/field_effects/pics/emotion_question.png",
+      "sha256": "e86ae8192f9cf8ed8d62aaf862258564f2864c217a62375e3e984d4dfa16f4fa",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "sources/statue.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/statue.png",
+      "sha256": "2a014882d709345e917e16339ea8f5a332a4101c36d6c18bca7adbc96720b47e",
+      "width": 16,
+      "height": 32
+    },
+    {
+      "file": "sources/pikachu.png",
+      "url": "https://raw.githubusercontent.com/pret/pokeemerald/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/pokemon/pikachu.png",
+      "sha256": "be1241f5e31dfb4b98a1dfe76799ed65b97d6ba1d6d9cb593547f197712344ec",
+      "width": 48,
       "height": 16
     }
   ],
@@ -191,11 +233,6 @@
       "attribution": "docs/art/ATTRIBUTION.md"
     },
     {
-      "file": "../route/tower/fill.png",
-      "sha256": "ab2b0bd87a48bccf598bf96944ffcca60eeb2446f7d368c8562a984318ab8ec2",
-      "attribution": "docs/art/ATTRIBUTION.md"
-    },
-    {
       "file": "../route/tower/path.png",
       "sha256": "cb31b2b27d01fa2a90776a3b161fdb2f84a6aa6b813a6a6ad34b3d3c9e0ecd3d",
       "attribution": "docs/art/ATTRIBUTION.md"
@@ -246,10 +283,10 @@
     {
       "source": "sources/lavaridge-emerald.png",
       "box": [
-        0,
-        16,
-        256,
-        112
+        30,
+        26,
+        100,
+        90
       ]
     }
   ],
@@ -264,7 +301,7 @@
       "file": "roadside-trader.png",
       "width": 256,
       "height": 112,
-      "sha256": "7a6818eb2cb57a84f742c2ffc88644954d497efb40012f4cf65df4342f95d34b"
+      "sha256": "fd19b3e3680412a4925994c6f33498d6718247fbd37a9fa194133cbe8c246549"
     },
     {
       "file": "field-medic.png",
@@ -276,7 +313,7 @@
       "file": "lost-backpack.png",
       "width": 256,
       "height": 112,
-      "sha256": "98084aed222c1f208af7e13d9e6981dc52ffcc4871301594ac429a14f5bf4e47"
+      "sha256": "0c95c55ed667587ce6338b4a2ea6c349394ba0465959826e4b6adb72b602920c"
     },
     {
       "file": "fallen-crate.png",
@@ -288,7 +325,7 @@
       "file": "abandoned-pokeball.png",
       "width": 256,
       "height": 112,
-      "sha256": "193c3ef2f26ff57873eefc1e07869d511885f5b8329c01dd30174542b727b548"
+      "sha256": "6a09c24d4a988f230a658d1364e96ceb9bd80fb6f8b5ac4c3b624618b404e65e"
     },
     {
       "file": "berry-bush.png",
@@ -306,13 +343,13 @@
       "file": "daycare-recovery.png",
       "width": 256,
       "height": 112,
-      "sha256": "7dedd775a68d58db543db973735665db8d21dcdc15607fd62eea9c7e0cb0a7bb"
+      "sha256": "3a2c18db44d3133c7ea4b4130471311e4ffaa318687c2ff6a430b7362800f7cb"
     },
     {
       "file": "hot-spring.png",
       "width": 256,
       "height": 112,
-      "sha256": "8b627c8a28a1372f2cd2bbb90f1372cbc0b4d5b44fba23c26c96f8b529fafd13"
+      "sha256": "842acc28104b184b5f0c26946c07e910019855b529c5ddfdf7de34a921aab9ce"
     },
     {
       "file": "slot-booth.png",
@@ -324,13 +361,13 @@
       "file": "cursed-trinket.png",
       "width": 256,
       "height": 112,
-      "sha256": "03fc2d5ffc708127647d8b5c4425f3c86c1576260199b6531f480ab33d35d940"
+      "sha256": "a7e9296821e83d9970c29751507a75e16cd90ce6df69ff5fb515e6a144a88bf5"
     },
     {
       "file": "mysterious-stone.png",
       "width": 256,
       "height": 112,
-      "sha256": "4b7144510320622672377b941e2c9d06f02a04f5ade43837aba442ea0d75f197"
+      "sha256": "a0ea803ad7686e634cff2738b340e33c66cebf9fd3734bc82a4629df90e2ad2b"
     },
     {
       "file": "stone-cache.png",

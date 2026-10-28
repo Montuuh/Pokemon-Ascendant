@@ -62,8 +62,8 @@ Add a row for every third-party asset you bring in (game-icons.net entries need 
 The 15 native 256×112 scenes in `public/art/events` combine previously credited FRLG route tiles, Mart furniture, habitat props and bag-item pixels with these additional sources:
 
 - [Kanto Route 1 FRLG](https://archives.bulbagarden.net/wiki/File:Kanto_Route_1_FRLG.png), via Bulbagarden Archives: sign and fence crops.
-- [Lavaridge Town Emerald](https://archives.bulbagarden.net/wiki/File:Lavaridge_Town_E.png), via Bulbagarden Archives: the actual hot-spring pool and bathhouse entrance.
-- [pret/pokeemerald, pinned revision 731ad5b](https://github.com/pret/pokeemerald/tree/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics): authentic Emerald overworld people, truck, moving boxes, item ball, Birch's bag, Oran trees and boulder.
+- [Lavaridge Town Emerald](https://archives.bulbagarden.net/wiki/File:Lavaridge_Town_E.png), via Bulbagarden Archives: the actual hot-spring pool (its rim and water only; the steps and cliff around it are covered or keyed out).
+- [pret/pokeemerald, pinned revision 731ad5b](https://github.com/pret/pokeemerald/tree/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics): authentic Emerald overworld people (including the bathing old woman and the salesman), truck, moving boxes, item ball, Birch's bag, Oran trees, boulder, the shrine statue, the overworld Pikachu (`object_events/pics/pokemon`) and the field-effect glint and question bubble (`field_effects/pics`).
 
 Pokémon artwork © Nintendo / Creatures / GAME FREAK; map renders by the Bulbagarden community and Emerald extraction by pret, used for this non-commercial fan project. The manifest retains sources, exact crops and hashes; `scripts/build-event-art.mjs` reproduces the compositions without generated imagery. The reused cave landmark includes its previously authored pixel opening; this entry does not claim every pixel of that composite is official artwork.
 

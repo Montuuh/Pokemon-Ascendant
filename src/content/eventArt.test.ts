@@ -7,15 +7,23 @@ import sharp from 'sharp';
 
 const art = resolve(import.meta.dirname, '../../public/art');
 
-async function pixels(path: string) {
-  const { data, info } = await sharp(resolve(art, path)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+type Frame = [left: number, top: number, width: number, height: number];
+
+/** An image's pixels, optionally one frame of a sheet whose opaque background is its top-left colour (palette zero). */
+async function pixels(path: string, frame?: Frame) {
+  let image = sharp(resolve(art, path)).ensureAlpha();
+  if (frame) image = image.extract({ left: frame[0], top: frame[1], width: frame[2], height: frame[3] });
+  const { data, info } = await image.raw().toBuffer({ resolveWithObject: true });
+  if (frame)
+    for (let p = 0; p < info.width * info.height; p++)
+      if ([0, 1, 2].every((c) => data[p * 4 + c] === data[c])) data[p * 4 + 3] = 0;
   return { data, width: info.width, height: info.height };
 }
 
 /** Share of the icon's opaque pixels found, within a small colour tolerance, at the best whole-pixel offset. */
-async function bestMatch(scene: string, item: string) {
+async function bestMatch(scene: string, item: string, frame?: Frame) {
   const s = await pixels(`events/${scene}.png`);
-  const i = await pixels(`items/${item}.png`);
+  const i = await pixels(item.includes('/') ? item : `items/${item}.png`, frame);
   const opaque: number[] = [];
   for (let p = 0; p < i.width * i.height; p++) if (i.data[p * 4 + 3]! > 200) opaque.push(p);
   let best = 0;
@@ -41,7 +49,22 @@ const SHOWN: Array<[scene: string, items: string[]]> = [
   ['stone-cache', ['fire-stone', 'water-stone', 'thunder-stone']],
 ];
 
+// B19 follow-up — the scenes whose subject is a person or a thing, not an item: the shrine, the pen, the stone.
+const SPRITES: Array<[scene: string, name: string, path: string, frame: Frame]> = [
+  ['cursed-trinket', 'the shrine statue', 'events/sources/statue.png', [0, 0, 16, 32]],
+  ['daycare-recovery', 'a Pokémon in the pen', 'events/sources/pikachu.png', [0, 0, 16, 16]],
+  ['hot-spring', 'a bather in the pool', 'events/sources/springWoman.png', [0, 0, 16, 32]],
+  ['roadside-trader', 'the salesman', 'events/sources/salesman.png', [0, 0, 16, 32]],
+  ['lost-backpack', 'the question bubble over the pack', 'events/sources/question.png', [0, 0, 16, 16]],
+  ['mysterious-stone', 'the glint of its hum', 'events/sources/glint.png', [16, 0, 16, 16]],
+];
+
 describe('EventArt_IdentifyingProp_DrawnAtItsOwnSize', () => {
+  for (const [scene, name, path, frame] of SPRITES)
+    it(`${scene} shows ${name}`, async () => {
+      expect(await bestMatch(scene, path, frame)).toBeGreaterThanOrEqual(0.9);
+    }, 20_000);
+
   for (const [scene, items] of SHOWN)
     for (const item of items)
       it(`${scene} shows ${item} at 1×`, async () => {

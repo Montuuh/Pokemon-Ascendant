@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.79 — At a glance · 2026-10-28
+
+More Mystery Event scenes name themselves before you read the title.
+
+- **The shrine.** A stone statue on old paving, glinting; no relic shown.
+- **The pen.** A Pikachu rests inside it, the couple at the fence.
+- **The spring.** A bather in the pool, without the Centre beside it.
+- **Lone props.** Glints on the stone and ball; a "?" over the pack.
+
 ### v0.9.78 — Told by the picture · 2026-10-28
 
 Event scenes lead with the one thing that makes them that event.
