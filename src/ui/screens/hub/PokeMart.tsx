@@ -1,6 +1,5 @@
 import { useState, type ReactNode } from 'react';
 import { IconAward, IconBox, IconCheck, IconDiamond, IconEye, IconFirstAidKit, IconLock, IconMountain, IconShoppingCart, IconSquareRounded, IconUsers, IconAdjustments } from '@tabler/icons-react';
-import NumberFlow from '@number-flow/react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
@@ -9,9 +8,8 @@ import {
   type AccountState, type HubUpgrade, type MartError, type MartItem, type ShelfId, BOND_TIER } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon, trainerSprite } from '@/ui/art';
-import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
-import { cosmeticTip, hubUpgradeTip, relicTierTip, starterTip, tokenTip, martShelvesTip } from '@/ui/tips';
+import { cosmeticTip, hubUpgradeTip, relicTierTip, starterTip, martShelvesTip } from '@/ui/tips';
 import { FRAME_CLASS } from './frames';
 import { TokenIcon } from './TokenIcon';
 import styles from './Hub.module.css';
@@ -55,7 +53,6 @@ export function PokeMart() {
   const buy = useAccountStore((s) => s.buy);
   const wear = useAccountStore((s) => s.wear);
   const content = getContent();
-  const animate = useMotionPref();
   const [shelf, setShelf] = useState<ShelfId>(() => defaultShelf(account));
   const [notice, setNotice] = useState<{ text: string; tone: 'ok' | 'warn' } | null>(null);
 
@@ -96,12 +93,6 @@ export function PokeMart() {
           Trainer Level opens the shelves; Tokens buy from them.
           <InfoDot tip={martShelvesTip()} />
         </span>
-        <Tipped tip={tokenTip(account.tokens, account.tokensEarned)}>
-          <span className={styles.wallet} data-testid="mart-tokens" data-tokens={account.tokens}>
-            <span className={styles.walletLabel}>You have</span>
-            <span className={`${styles.walletValue} display tabular`}><TokenIcon /> <NumberFlow value={account.tokens} animated={animate} /></span>
-          </span>
-        </Tipped>
       </div>
 
       <Tabs.Root value={shelf} onValueChange={(v) => { setShelf(v as ShelfId); setNotice(null); }}>

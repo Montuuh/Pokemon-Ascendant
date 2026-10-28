@@ -355,25 +355,6 @@
   /* motion-ok: known width bar (§2), scaleX pass pending — it lands on the value, never past it */
   transition: width var(--motion-slow) var(--ease-step);
 }
-.wallet {
-  display: grid;
-  justify-items: end;
-  gap: 2px;
-  padding: var(--sp-2) var(--sp-4);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--surface-1);
-}
-.walletLabel {
-  font-size: var(--type-caption);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-secondary);
-}
-.walletValue {
-  font-size: var(--type-h2);
-  line-height: 1;
-}
 .noticeOk {
   border-left-color: var(--accent-positive);
 }

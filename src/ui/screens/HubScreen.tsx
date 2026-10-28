@@ -88,7 +88,7 @@ export function HubScreen() {
             </span>
           </span>
           <Tipped tip={tokenTip(account.tokens, account.tokensEarned)}>
-            <span className={styles.statusPill} aria-label={`${account.tokens} Tokens`}><TokenIcon /> <b className="tabular"><NumberFlow value={account.tokens} animated={animate} /></b></span>
+            <span className={styles.statusPill} data-testid="hub-tokens" data-tokens={account.tokens} aria-label={`${account.tokens} Tokens`}><TokenIcon /> <b className="tabular"><NumberFlow value={account.tokens} animated={animate} /></b></span>
           </Tipped>
         </div>
       </header>

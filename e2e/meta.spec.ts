@@ -271,7 +271,10 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.evaluate(() => window.__ascendant!.meta.tokens(9));
     await page.goto('/?screen=hub');
     await openKiosk(page, 'mart');
-    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '9');
+    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '9');
+    // B28 — one wallet: the header's. The Mart repeats no balance of its own beside the shelf.
+    await expect(page.getByTestId('hub-tokens')).toHaveCount(1);
+    await expect(page.getByTestId('poke-mart').getByText('You have', { exact: true })).toHaveCount(0);
     await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'buyable');
     await page.getByTestId('mart-price-title-veteran').click();
     await expect(page.getByTestId('mart-notice')).toContainText('Veteran is yours');
@@ -280,7 +283,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('mart-price-avatar-hiker').click();
     await page.getByTestId('mart-price-frame-great').click();
     await page.getByTestId('mart-price-title-ace-trainer').click();
-    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '0');
+    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '0');
     await expect(page.getByTestId('mart-title-ace-trainer')).toContainText('Wearing');
     await expect(page.getByTestId('mart-wear-title-veteran')).toBeVisible();
     await page.screenshot({ path: 'playtest/hub-mart-corner.png' });
@@ -303,18 +306,18 @@ test.describe('The Trainer Hub — §8.4', () => {
     await openKiosk(page, 'mart');
     await expect(page.getByTestId('mart-tab-mastery')).toHaveAttribute('data-open', 'true');
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
-    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '13');
+    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '13');
     await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'buyable');
     await page.getByTestId('mart-price-sages-tome').click();
     await expect(page.getByTestId('mart-notice')).toContainText("Sage's Tome is in your pool");
-    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '8');
+    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '8');
     await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'owned');
     await page.screenshot({ path: 'playtest/hub-mart.png' });
     await page.getByTestId('mart-tab-starters').click();
     await expect(page.getByTestId('mart-eevee')).toHaveAttribute('data-state', 'buyable');
     await page.getByTestId('mart-price-eevee').click();
     await expect(page.getByTestId('mart-notice')).toContainText('Eevee can start your next run');
-    await expect(page.getByTestId('mart-tokens')).toHaveAttribute('data-tokens', '2');
+    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '2');
     // Magikarp at four is now unaffordable, and the shelf says so without hiding it; so is Pikachu at six, whose
     // kit shipped with Region 2 (v0.7.3) — sold, just not to a wallet of two.
     await expect(page.getByTestId('mart-price-magikarp')).toHaveAttribute('aria-label', /Not enough Tokens/);
