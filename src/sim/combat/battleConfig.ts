@@ -127,7 +127,9 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   stabMultiplier: 1.5,
   critMultiplier: 1.5,
   critRhythm: {
-    tiers: [{ speed: 110, every: 3 }, { speed: 80, every: 4 }, { speed: 50, every: 5 }, { speed: 0, every: 6 }],
+    // v0.9.80 (the user: a tier of 2 for allies too) — the fastest fill in 2, and the 3 / 4 cuts move up to 100 / 80 so the
+    // 100–109 crowd (Charizard, Pidgeot, Zapdos…) is no longer level with a Pikachu.
+    tiers: [{ speed: 120, every: 2 }, { speed: 100, every: 3 }, { speed: 80, every: 4 }, { speed: 50, every: 5 }, { speed: 0, every: 6 }],
     // v0.9.80 (the user: a Dugtrio and a Golem should not read alike) — it was 3 / 3 / 4 / 4, two values for 151 species. The
     // fastest now fill in 2, the middle keeps 3 and 4, and only the very slowest take 5; the table still stops at 4 for
     // the Rock Gym's walls (Golem 45, Graveler 35), which is what v0.9.59 measured it must.

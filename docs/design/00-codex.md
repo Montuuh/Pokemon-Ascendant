@@ -204,7 +204,7 @@ unless the card has Step-Forward; **Ranged plays anywhere** at ×0.75.
 **Damage** = `floor( Power × (Atk/Def) × Range × Crit × STAB × TypeEff / 8 )`. One floor at the end. No minimum
 clamp — only immunity deals 0. Level is not in the formula.
 **Divisor 5** (v0.9.12; 8 until enemies got their whole HP back) · STAB 1.5 · Crit 1.5 · Ranged 0.75.
-**Critical rhythm** (§4.1.3.1): every Pokémon, both sides, crits its next hit after 3–6 cards (an enemy: 2–5 actions), set by its Speed; an enemy's crit is declared as CRIT on its intent.
+**Critical rhythm** (§4.1.3.1): every Pokémon, both sides, crits its next hit after 2–6 cards (an enemy: 2–5 actions), set by its Speed; an enemy's crit is declared as CRIT on its intent.
 **Stats:** one Attack, one Defence, derived from Gen I as `attack = max(Atk, Spc)`,
 `defence = round((Def+Spc)/2)`. Effective = `base + growth×(level−1)`, then stage, then status.
 

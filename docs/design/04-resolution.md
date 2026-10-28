@@ -103,8 +103,10 @@ species and not how far into the run it is:
 
 | Level-free Speed | Your Pokémon: cards to fill | An enemy: actions to fill |
 |---|---|---|
-| 110 + | 3 | 2 |
-| 80–109 | 4 | 3 |
+| 120 + | 2 | 2 |
+| 110–119 | 3 | 2 |
+| 100–109 | 3 | 3 |
+| 80–99 | 4 | 3 |
 | 50–79 | 5 | 4 |
 | 30–49 | 6 | 4 |
 | under 30 | 6 | 5 |
@@ -113,13 +115,16 @@ species and not how far into the run it is:
 a turn where your side plays three cards, and because Speed already favours you against slow walls through the quick
 swap: measured on the same table, the Rock Gym (Geodude, Golem) stopped costing Pokémon (§3.3.1.1). That is why it
 stops at 4 for Golem (45) and Graveler (35), and why only the very slowest (Slowpoke, Geodude, Grimer, Rhyhorn) take 5.
+Your side reaches 2 for the six fastest species (Electrode, Jolteon, Aerodactyl, Mewtwo, Dugtrio, Alakazam: a crit every
+second card, one or two a turn) and its 3 / 4 cuts sit at 100 / 80, so the fourteen species at 100–109 (Charizard,
+Pidgeot, Zapdos…) are no longer level with a Pikachu. The enemy table is the same shape on a coarser grid.
 
 *Why the enemy's fast end reaches 2 (v0.9.80, the user):* the table used to be 3 / 3 / 4 / 4 — two values for 151
 species — so a Dugtrio (base 120, 254 on its card at Lv 33) filled in as many acts as a Meowth (90), and a Golem (45)
 as many as a Pidgeotto (71). The ten fastest species (Electrode, Jolteon, Aerodactyl, Mewtwo, Dugtrio, Alakazam,
 Persian, Starmie, Gengar, Tauros) now crit every other action. The Speed the tiers read is the *level-free* one, so the
-number on a card (which grows with its level) is not the one to compare: the dial's tooltip prints the Speed it reads
-and the next tier up.
+number on a card (which grows with its level) is not the one to compare. The dial's tooltip says so — the Speed it reads,
+the card's own number and the level that grew it — and prints every tier of its side with the Pokémon's own marked.
 
 **Shown before it lands (Pillar 1).** Every Pokémon's card wears its meter as a **dial** on its outer edge, at the
 middle of its window (v0.9.60, the user's choice of five looks): a ring of one segment per act, the acts still to go

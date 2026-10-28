@@ -68,12 +68,16 @@ export const RHYTHM_TEXT = {
   label: (left: number) => `Critical rhythm: ${left} to go`,
   readyLabel: 'Critical ready',
   body: (left: number, side: 'ally' | 'foe') =>
-    `${left} more ${side === 'ally' ? (left === 1 ? 'card' : 'cards') : left === 1 ? 'action' : 'actions'} and its next hit is a critical. Every ${side === 'ally' ? 'card it plays' : 'action it takes'} fills the ring; the faster it is, the fewer it needs.`,
+    `${left} more ${side === 'ally' ? (left === 1 ? 'card' : 'cards') : left === 1 ? 'action' : 'actions'} and its next hit is a critical. Every ${side === 'ally' ? 'card it plays' : 'action it takes'} fills the ring.`,
   readyBody: (side: 'ally' | 'foe') =>
     side === 'ally' ? 'Its next damaging card is a critical — its cards in your hand wear the ✦ and a gold edge, and their numbers count it.' : 'Its next hit is a critical: CRIT on its intent, and the number there counts it.',
-  /** v0.9.80 — why the ring has the size it has: the Speed it reads (the card's own number has the level in it) and the next tier up. */
-  pace: (speed: number, faster: { speed: number; every: number } | null) =>
-    `Speed ${speed} for this, ignoring level — the number on the card grows with its level, this does not. ${faster ? `From ${faster.speed} it fills in ${faster.every}.` : 'The fastest pace there is.'}`,
+  /** v0.9.80 — the tooltip's table: the Speed the ring reads (the card's own number has its level in it) and every tier. */
+  reads: (speed: number, card: number, level: number, factor: number) =>
+    level <= 1 ? `Reads Speed ${speed}, as on its card.` : `Reads Speed ${speed} — the card's ${card} less Lv ${level}'s growth (× ${factor.toFixed(1)}).`,
+  tierFrom: (speed: number) => `${speed}+`,
+  tierBelow: (speed: number) => `under ${speed}`,
+  tierFills: (every: number, side: 'ally' | 'foe') => `${every} ${side === 'ally' ? (every === 1 ? 'card' : 'cards') : every === 1 ? 'action' : 'actions'}`,
+  here: 'this one',
   always: (owner: string) => `✦ Always a critical — and it never spends ${owner}'s rhythm, so a full one stays for another card.`,
   card: (owner: string) => `Critical: ${owner}'s rhythm is full, so this hit is a critical. The first of its damaging cards you play spends it.`,
 };

@@ -21,7 +21,7 @@ describe('Critical rhythm — §4.1.3.1', () => {
   it('Rhythm_TiersReadLevelFreeSpeed', () => {
     const s = fight();
     const at = (speed: number, level = 1) => rhythmEvery({ ...leadOf(s), base: { ...leadOf(s).base, speed }, level }, ctx.config);
-    expect([at(140), at(110), at(109), at(80), at(79), at(50), at(49), at(15)]).toEqual([3, 3, 4, 4, 5, 5, 6, 6]);
+    expect([at(140), at(120), at(119), at(100), at(99), at(80), at(79), at(50), at(49), at(15)]).toEqual([2, 2, 3, 3, 4, 4, 5, 5, 6, 6]);
     // The level is taken back out: 90 at Lv 1 and 90 × 1.7 at Lv 21 are the same tier.
     expect(at(Math.round(90 * (1 + 0.035 * 20)), 21)).toBe(at(90));
     // The enemy's table is tighter at the slow end (it acts once where you play three cards) and reaches 2 at the fast end
@@ -32,7 +32,7 @@ describe('Critical rhythm — §4.1.3.1', () => {
 
   it('Rhythm_ParalysisAndStagesSlowIt', () => {
     const s = pinSpeed(fight(), 120, 50);
-    expect(rhythmEvery(leadOf(s), ctx.config)).toBe(3);
+    expect(rhythmEvery(leadOf(s), ctx.config)).toBe(2);
     const para = tweak(s, (d) => { d.player.team[0]!.status = { kind: 'paralysis', appliedTurn: 0, turnsLeft: 3 }; });
     expect(rhythmEvery(leadOf(para), ctx.config)).toBe(5); // 60
     const slowed = tweak(s, (d) => { d.player.team[0]!.stages.speed = -3; });
@@ -40,7 +40,7 @@ describe('Critical rhythm — §4.1.3.1', () => {
   });
 
   it('Player_FullMeter_NextHitCrits_PreviewSaysSo_ThenEmpties', () => {
-    let s = pinSpeed(fight(), 120, 50); // every 3
+    let s = pinSpeed(fight(), 100, 50); // every 3
     s = tweak(s, (d) => { d.player.ap = 9; d.player.team[0]!.rhythm = 1; });
     s = withHand(s, ['tackle', 'tail-whip', 'water-gun']);
     // A hit on a meter not yet full is an ordinary hit, and fills it a step.
@@ -58,7 +58,7 @@ describe('Critical rhythm — §4.1.3.1', () => {
   });
 
   it('Player_UtilityCardFillsButNeverSpends_AndTheMeterCaps', () => {
-    let s = pinSpeed(fight(), 120, 50);
+    let s = pinSpeed(fight(), 100, 50);
     s = tweak(s, (d) => { d.player.ap = 9; d.player.team[0]!.rhythm = 3; });
     s = withHand(s, ['tail-whip']);
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'tail-whip').id });
@@ -66,7 +66,7 @@ describe('Critical rhythm — §4.1.3.1', () => {
   });
 
   it('Player_AlwaysCritMove_LeavesTheMeterFull', () => {
-    let s = pinSpeed(fight(), 120, 50);
+    let s = pinSpeed(fight(), 100, 50);
     s = tweak(s, (d) => { d.player.ap = 9; d.player.team[0]!.rhythm = 3; });
     s = withHand(s, ['slash']);
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'slash').id });
@@ -74,7 +74,7 @@ describe('Critical rhythm — §4.1.3.1', () => {
   });
 
   it('Enemy_FullMeter_DeclaresCrit_HitsCrit_ThenEmpties', () => {
-    let s = pinSpeed(fight(), 50, 120); // its every is 3
+    let s = pinSpeed(fight(), 50, 90); // its every is 3
     s = tweak(s, (d) => { d.enemies[0]!.rhythm = 3; });
     s = tweak(s, (d) => { markRhythm(d.enemies[0]!, ctx); });
     expect(enemyOf(s).intent!.crit).toBe(true);

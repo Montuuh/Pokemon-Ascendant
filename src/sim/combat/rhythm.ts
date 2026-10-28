@@ -13,15 +13,26 @@ import { effectiveSpeed, STAT_GROWTH_RATE } from './stats';
  * the Dojo's points) rather than how far into the run it is: every stat grows by the same share a level (§6.2.3).
  */
 export function rhythmSpeed(c: Combatant, config: BattleConfig): number {
-  return effectiveSpeed(c, config) / (1 + STAT_GROWTH_RATE * (Math.max(1, Math.trunc(c.level)) - 1));
+  return effectiveSpeed(c, config) / rhythmLevelFactor(c);
 }
 
-/** §4.1.3.1 — how many acts fill its meter: the first tier its level-free Speed reaches, on its side's table. */
-export function rhythmEvery(c: Combatant, config: BattleConfig): number {
+/** §4.1.3.1 — the growth its level gave every stat (§6.2.3): what the card's Speed carries and the rhythm takes back out. */
+export function rhythmLevelFactor(c: Pick<Combatant, 'level'>): number {
+  return 1 + STAT_GROWTH_RATE * (Math.max(1, Math.trunc(c.level)) - 1);
+}
+
+/** §4.1.3.1 — which row of its side's table it sits in (fastest first): the first tier its level-free Speed reaches. */
+export function rhythmTierIndex(c: Combatant, config: BattleConfig): number {
   const s = rhythmSpeed(c, config);
   const tiers = 'tier' in c ? config.critRhythm.enemyTiers : config.critRhythm.tiers;
-  for (const t of tiers) if (s >= t.speed) return t.every;
-  return tiers.at(-1)?.every ?? Infinity;
+  const at = tiers.findIndex((t) => s >= t.speed);
+  return at < 0 ? tiers.length - 1 : at;
+}
+
+/** §4.1.3.1 — how many acts fill its meter: its tier's `every`, on its side's table. */
+export function rhythmEvery(c: Combatant, config: BattleConfig): number {
+  const tiers = 'tier' in c ? config.critRhythm.enemyTiers : config.critRhythm.tiers;
+  return tiers[rhythmTierIndex(c, config)]?.every ?? Infinity;
 }
 
 /** §4.1.3.1 — its meter is full: its next hit is a critical. */
