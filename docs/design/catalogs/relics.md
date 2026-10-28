@@ -83,7 +83,7 @@ Pokémon, which may take a run to 3 (§2.11.6).
 | id | Name | Cat | Effect | Origin | Status |
 |---|---|---|---|---|---|
 | `battle-hardened` | Battle Hardened | combat | Every Active Pokémon starts each combat with a Shield = 10 % of max HP | Boon 15→10 % | ✅ |
-| `flow-state` | Flow State | lead | The first manual swap each combat costs 0 AP | Boon | ✅ |
+| `flow-state` | Flow State | lead | The first manual swap of every turn costs 0 AP (Tactician's Coin gives one per combat; the two stack, the turn's own spent first) | Boon | ✅ |
 | `last-stand` | Last Stand | combat | Once per combat the first Pokémon that would faint survives at 1 HP | Boon | ✅ |
 | `type-mastery` | Type Mastery | combat | Super-effective moves deal +0.15× bonus | Boon 0.25→0.15 | ✅ |
 | `clear-mind` | Clear Mind | combat | Every Unknown intent is revealed, every combat | Boon | ✅ |

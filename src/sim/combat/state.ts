@@ -199,6 +199,8 @@ export interface PlayerState {
    * reads and the save writes, instead of being re-derived from abilities in three places.
    */
   freeSwaps: number;
+  /** §7.3.7 Flow State — the free swaps a relic grants afresh every turn, spent before the combat's bank and lost if unused. */
+  turnFreeSwaps: number;
   /** §7.3 — the run's relics, read-only inside a fight. */
   relics: string[];
   /** §5.10 — the run's Badges, read-only inside a fight. Resolved through the same hooks as relics (§7.3.6). */

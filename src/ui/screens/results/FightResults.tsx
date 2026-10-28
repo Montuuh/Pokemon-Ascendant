@@ -70,7 +70,7 @@ export function FightResults() {
   const spoils = useMemo(() => (gymPick ? [] : spoilsOf(run)), [run, gymPick]);
   const badgeId = rec?.badge ?? (gymPick ? run.badges[run.badges.length - 1] : undefined) ?? null;
   const plan = useMemo(() => revealPlan(mons, spoils.length, { badge: !!badgeId && !gymPick }), [mons, spoils.length, badgeId, gymPick]);
-  const { t, done, advance, skip } = useReveal(plan, motion && !gymPick);
+  const { t, done, held: waiting, advance, skip } = useReveal(plan, motion && !gymPick);
   const moneyFirst = spoils[0]?.kind === 'money';
   const sound = useCallback((b: Beat) => soundFor(b, moneyFirst), [moneyFirst]);
   useRevealSounds(plan, t, sound);
@@ -117,18 +117,30 @@ export function FightResults() {
     leave();
   };
 
-  // A click on the field goes to the next stop (a bar's end, a panel's); Escape, or Skip, goes to the end.
+  // A click on the field goes to the next stop (a bar's end, a panel's); Escape, or Skip, goes to the end. A panel that waits
+  // on a new move is let go by Space or Enter too, so the keyboard does not have to give up the levels after it (v0.9.80).
   useEffect(() => {
     if (done) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
         skip();
+      } else if (waiting && (e.key === ' ' || e.key === 'Enter')) {
+        e.preventDefault();
+        advance();
       }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [done, skip]);
+    // Space presses a focused button on key-up; the hold it just let go of must not become a Skip.
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (waiting && e.key === ' ') e.preventDefault();
+    };
+    window.addEventListener('keydown', onKey, true);
+    window.addEventListener('keyup', onKeyUp, true);
+    return () => {
+      window.removeEventListener('keydown', onKey, true);
+      window.removeEventListener('keyup', onKeyUp, true);
+    };
+  }, [done, skip, advance, waiting]);
   // The way on takes the focus, whichever it is: Skip while the reveal plays, then Continue (D8).
   const main = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -155,8 +167,9 @@ export function FightResults() {
   const tone = ribbonTone(outcome);
   const field = mons.filter((m): m is ResultMon & { place: NonNullable<ResultMon['place']> } => !!m.place);
   const box = mons.filter((m) => !m.place && m.xp);
-  // §9.4.5 — one level-up panel in reserved ground beside the Lead; the Pokémon whose news it is glows.
-  const levelling = field.map((m) => ({ m, p: monAt(m, plan, t).panel })).find((x) => x.p !== null && x.m.up) ?? null;
+  // §9.4.5 — one level-up panel in reserved ground beside the Lead; the Pokémon whose news it is glows. One panel per level
+  // gained (v0.9.80), the next arriving as the last goes.
+  const levelling = field.map((m) => ({ m, panel: monAt(m, plan, t).panel })).find((x) => x.panel !== null && x.m.steps[x.panel.step]) ?? null;
   const stage = rec?.stage ?? run.pendingScenario?.stage ?? 'gym';
   const pickTip = gymPick ? gymRelicTip(offer.some((id) => content.relic(id).rarity === 'legendary'), false) : rec?.kind === 'gauntlet' ? gauntletPrizeTip() : elitePrizeTip();
   const pickHead = gymPick ? RESULT_TEXT.gymPrize : rec?.kind === 'gauntlet' ? VICTORY_TEXT.gauntletPrize : RESULT_TEXT.elitePrize;
@@ -211,7 +224,7 @@ export function FightResults() {
                   levelTip={up && done ? levelGainTip(species.name, up.from, up.to, up.gains ?? {}, up.statsAt, learned) : undefined}
                   tag={PLACE_TAG[m.place]}
                   lead={m.place === 'lead'}
-                  hp={{ now: at.hp, max: m.hp.max }}
+                  hp={{ now: at.hp, max: at.maxHp }}
                   xp={m.xp ? { was: at.was, fill: at.fill, gain: m.xp.gain, tip: xpGainTip(m.xp.gain, false, Math.max(0, xpToNext(m.mon.level) - m.mon.xp)) } : null}
                   trauma={m.mon.traumaStacks}
                   fainted={at.hp <= 0}
@@ -227,7 +240,14 @@ export function FightResults() {
         <div className={`${combat.middle} ${styles.middle}`}>
           {levelling && (
             <div className={styles.levelNews}>
-              <LevelUpPanel name={content.species(levelling.m.mon.speciesId).name} up={levelling.m.up!} p={levelling.p!} place={levelling.m.place} />
+              <LevelUpPanel
+                key={`${levelling.m.mon.uid}-${levelling.panel!.step}`}
+                name={content.species(levelling.m.mon.speciesId).name}
+                up={levelling.m.steps[levelling.panel!.step]!}
+                p={levelling.panel!.p}
+                place={levelling.m.place}
+                held={waiting}
+              />
             </div>
           )}
           {badge && (

@@ -37,10 +37,11 @@
 .onScreen {
   box-shadow: 0 4px 0 var(--accent-action-deep);
 }
-/* A short window (720 p): two stats a row, so a level that teaches two moves still fits under its scene at large text. */
+/* A short window (720 p): the panel packs tighter, so a level that teaches a move still fits under the caption at large text. */
 @media (max-height: 760px) {
-  .onScreen .rows {
-    grid-template-columns: repeat(6, auto);
+  .panel {
+    gap: 0;
+    padding: var(--sp-1) var(--sp-2);
   }
 }
 .folding {
@@ -51,6 +52,86 @@
   font-size: var(--type-small);
   line-height: 1.15;
   overflow-wrap: anywhere;
+  /* Room for the timer ring at the corner. */
+  padding-right: var(--sp-5);
+}
+/* v0.9.80 — how long the panel will stay: a ring at its top right that drains, and stands full while the panel waits. */
+.timer {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+  width: 22px;
+  height: 22px;
+  rotate: -90deg;
+}
+.timerTrack,
+.timerArc {
+  fill: none;
+  stroke-width: 3.5;
+}
+.timerTrack {
+  stroke: color-mix(in srgb, var(--ink-on-accent) 16%, transparent);
+}
+.timerArc {
+  stroke: var(--accent-action-deep);
+  stroke-linecap: round;
+}
+/* Waiting for a click: the ring stands full, and pops once on arrival, then rests (D12). */
+.timer[data-held] {
+  animation: arrive var(--motion-base) var(--ease-spring) both;
+}
+@keyframes arrive {
+  from { scale: 0.6; }
+  to { scale: 1; }
+}
+/* A level that teaches a move is the news of the fight: the panel lights up in gold and the move is the largest thing in it. */
+.teaches {
+  border-color: var(--rarity-legendary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rarity-legendary) 70%, transparent), 0 14px 32px rgba(0, 0, 0, 0.5);
+  animation: appear var(--motion-base) ease both, teach var(--motion-slow) var(--ease-spring) both;
+}
+@keyframes teach {
+  from { scale: 0.94; }
+  to { scale: 1; }
+}
+.teaches .move {
+  position: relative;
+  padding: var(--sp-1) var(--sp-2);
+  margin-top: var(--sp-1);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--rarity-legendary) 26%, var(--brand-cream));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--rarity-legendary) 70%, transparent);
+  overflow: hidden;
+}
+/* One pass of light across the move as it lands, then still. The durations are tokens, so both motion switches
+   collapse it to its end state (the light already past, clipped by the move's box). */
+.teaches .move::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, color-mix(in srgb, var(--brand-cream) 85%, transparent) 50%, transparent 65%);
+  translate: -110% 0;
+  animation: shine calc(var(--motion-slow) * 2) var(--motion-base) ease-out both;
+  pointer-events: none;
+}
+@keyframes shine {
+  from { translate: -110% 0; }
+  to { translate: 110% 0; }
+}
+.moveName {
+  font-size: var(--type-body);
+}
+.resume {
+  justify-self: center;
+  margin-top: var(--sp-1);
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--ink-on-accent);
+  color: var(--brand-cream);
+  font-size: var(--type-caption);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .rows {
   display: grid;

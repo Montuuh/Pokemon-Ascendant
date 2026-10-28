@@ -1,7 +1,7 @@
 import type { ContentRegistry, RelicRarity } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import type { NodeKind } from './types';
-import { inPool, isOfferable, rollLegendaryOffer, rollRelic, rollRelicOffer } from './economy';
+import { LEGENDARY_CAP, inPool, isOfferable, rollLegendaryOffer, rollRelic } from './economy';
 
 // §2.7.2 / §2.8 / §2.6.2 / §7.3.1 — what a won fight hands over besides money and XP (v0.8.6, the user's call of
 // 2026-09-30). Consumables are spent now (§3.5), so a fight is where most of them come from; relics are scarce,
@@ -104,8 +104,15 @@ export const RELIC_REWARD = {
   /** §2.8.1 — the Elite Trainer's pick: two Uncommons and a Rare. */
   elitePick: ['uncommon', 'uncommon', 'rare'] as RelicRarity[],
   eliteWild: 'rare' as RelicRarity,
-  /** §7.3.7 — the Region whose Gym offers Rares rather than Legendaries (the first). */
+  /** §7.3.7 — the Region whose Gym offers a mixed pick rather than Legendaries (the first). */
   rareGymRegions: 1,
+  /**
+   * §7.3.7 — v0.9.80 (the user: too many reds). A pick of three is no longer three Rares: a measured run took 1.6 Rares
+   * for every 0.07 Uncommons, because nearly every source asked for a Rare. The first Gym's pick is the Elite's mix.
+   */
+  gymFirstPick: ['uncommon', 'uncommon', 'rare'] as RelicRarity[],
+  /** §7.3.7 — a Gym or Summit pick at the Legendary cap: still the big moment, so two Rares and an Uncommon. */
+  gymCappedPick: ['rare', 'rare', 'uncommon'] as RelicRarity[],
 };
 
 /**
@@ -137,9 +144,12 @@ export function rollMixedOffer(rng: GameRng, content: ContentRegistry, held: rea
  * falls back, so the moment never offers fewer than it can.
  */
 export function gymRelicOffer(rng: GameRng, content: ContentRegistry, held: readonly string[], regionIndex: number, accountPool: readonly string[] | null = null): string[] {
+  const atCap = held.filter((id) => content.relic(id).rarity === 'legendary').length >= LEGENDARY_CAP;
   const offer = regionIndex < RELIC_REWARD.rareGymRegions
-    ? rollRelicOffer(rng, content, held, 'rare', 3, accountPool)
-    : rollLegendaryOffer(rng, content, held, 3, accountPool);
+    ? rollMixedOffer(rng, content, held, RELIC_REWARD.gymFirstPick, accountPool)
+    : atCap
+      ? rollMixedOffer(rng, content, held, RELIC_REWARD.gymCappedPick, accountPool)
+      : rollLegendaryOffer(rng, content, held, 3, accountPool);
   while (offer.length < 3) {
     const taken = [...held, ...offer];
     const id = rollRelic(rng, content, taken, bestOpenRarity(content, taken, 'rare', accountPool), accountPool);

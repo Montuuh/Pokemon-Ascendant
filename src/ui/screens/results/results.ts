@@ -1,5 +1,5 @@
 import type { getContent } from '@/content/registry';
-import { FLEE_TOLL, fleeTierFor, maxHpOf, xpToNext, type FightRecord, type LevelUp, type PartyMon, type RunState } from '@/sim';
+import { FLEE_TOLL, fleeTierFor, maxHpOf, statAtLevel, xpToNext, type FightRecord, type LevelUp, type PartyMon, type RunState } from '@/sim';
 
 // §9.4.5 — what the result screen shows, as plain data: each Pokémon's HP and XP from where the fight left it to where
 // the reward put it, the spoils, and the reveal's beats in order. Pure, so the order and the timings are tested without
@@ -25,9 +25,52 @@ export interface ResultMon {
   xp: { gain: number; segments: XpSegment[] } | null;
   /** What its levels gave, when it gained any. */
   up: LevelUp | null;
+  /** v0.9.80 — the same news a level at a time (the user: one panel per level), oldest first; empty without a level gained. */
+  steps: LevelUp[];
+  /** v0.9.80 — its Max HP at each level the fight crossed, so the bar's ceiling rises with the level tag and not before it. */
+  maxHpAt: Record<number, number>;
 }
 
 const PLACES: Place[] = ['lead', 'b1', 'b2'];
+
+const STAT_KEYS = ['hp', 'attack', 'defense', 'speed'] as const;
+
+/**
+ * v0.9.80 — a LevelUp cut into its levels: each step is the news of one level (its own gains, its totals, the moves that
+ * level teaches), so a Pokémon that grew three levels shows three panels. The sim reports one LevelUp for the fight; the
+ * learnset says at which level each move came.
+ */
+export function levelSteps(mon: PartyMon, up: LevelUp, content: Content): LevelUp[] {
+  const sp = content.species(mon.speciesId);
+  const at = (k: (typeof STAT_KEYS)[number], level: number) => statAtLevel(sp, k, level, mon.archetype);
+  const learnset = content.lineLearnset(mon.speciesId);
+  const levelOf = (id: string) => learnset.find((l) => l.move === id && l.level > up.from && l.level <= up.to)?.level ?? up.to;
+  const steps: LevelUp[] = [];
+  for (let level = up.from + 1; level <= up.to; level++) {
+    const learned = up.learned.filter((id) => levelOf(id) === level);
+    steps.push({
+      uid: up.uid,
+      from: level - 1,
+      to: level,
+      learned,
+      activated: up.activated.filter((id) => learned.includes(id)),
+      gains: Object.fromEntries(STAT_KEYS.map((k) => [k, at(k, level) - at(k, level - 1)])) as NonNullable<LevelUp['gains']>,
+      statsAt: Object.fromEntries(STAT_KEYS.map((k) => [k, at(k, level)])) as NonNullable<LevelUp['statsAt']>,
+    });
+  }
+  return steps;
+}
+
+/** v0.9.80 — Max HP at the levels from `from` to `to`: the stat's growth carried over the Trauma the Pokémon wears now. */
+function maxHpByLevel(mon: PartyMon, from: number, to: number, content: Content): Record<number, number> {
+  const sp = content.species(mon.speciesId);
+  const stat = (level: number) => statAtLevel(sp, 'hp', level, mon.archetype);
+  const now = maxHpOf(mon, content);
+  const share = now / Math.max(1, stat(to));
+  const out: Record<number, number> = {};
+  for (let level = from; level <= to; level++) out[level] = level === to ? now : Math.max(1, Math.round(stat(level) * share));
+  return out;
+}
 
 /** §9.4.5 — the team that fought, in its final places, then the Box, each with its bars' start and end. */
 export function resultMons(run: RunState, content: Content): ResultMon[] {
@@ -44,12 +87,15 @@ export function resultMons(run: RunState, content: Content): ResultMon[] {
     const at = formation.indexOf(uid);
     const max = maxHpOf(mon, content);
     const gain = reward?.xpAwarded.find((a) => a.uid === uid)?.amount ?? 0;
+    const up = reward?.levelUps.find((l) => l.uid === uid) ?? null;
     out.push({
       mon,
       place: at >= 0 && at < PLACES.length ? PLACES[at]! : null,
       hp: { from: Math.min(max, before?.hp ?? mon.hp), to: Math.min(max, mon.hp), max },
       xp: reward && gain > 0 ? { gain, segments: xpSegments(before ?? { level: mon.level, xp: mon.xp }, mon) } : null,
-      up: reward?.levelUps.find((l) => l.uid === uid) ?? null,
+      up,
+      steps: up ? levelSteps(mon, up, content) : [],
+      maxHpAt: up ? maxHpByLevel(mon, up.from, up.to, content) : {},
     });
   }
   return out;
@@ -111,8 +157,10 @@ export const RESULT_MS = {
   /** An XP bar's fill: a long stretch and a short one, matching their whistles. */
   xpLong: 700,
   xpShort: 400,
-  /** A level gained: the fanfare and the stat panel beside the card — its gains, then the totals counting up. */
+  /** A level gained: the fanfare and the stat panel beside the card — its gains, then the totals counting up. One per level. */
   level: 1700,
+  /** v0.9.80 — a Pokémon's later levels, when they teach nothing: a beat each, so three levels do not cost five seconds. */
+  levelNext: 1100,
   /** Between one Pokémon's bar and the next. */
   gap: 120,
   /** A spoil dealt into the tray, and the next one after it. */
@@ -127,10 +175,17 @@ export const RESULT_MS = {
 /** A fill shorter than this share of a bar takes the short whistle. */
 const SHORT_FILL = 0.35;
 
+/**
+ * v0.9.80 — where a level panel that teaches a move stops the clock, as a share of its beat: after the totals have
+ * counted up and before the panel folds, so the move is on the screen for as long as the player takes to read it.
+ */
+export const HOLD_AT = 0.9;
+
 export type Beat =
   | { kind: 'ribbon' | 'foe' | 'badge' | 'heal'; at: number; dur: number }
   | { kind: 'xp'; at: number; dur: number; uid: string; seg: number; short: boolean }
-  | { kind: 'level'; at: number; dur: number; uid: string }
+  /** One level's panel; `step` is its index in the Pokémon's `steps`, `hold` that it teaches a move and waits for a click. */
+  | { kind: 'level'; at: number; dur: number; uid: string; step: number; hold: boolean }
   | { kind: 'spoil'; at: number; dur: number; index: number };
 
 export interface RevealPlan {
@@ -138,6 +193,8 @@ export interface RevealPlan {
   total: number;
   /** Where a click or a key jumps to: the end of each beat a player waits on (a bar, a panel), then the end. */
   stops: number[];
+  /** v0.9.80 — the moments the clock stops until the player clicks: a panel that teaches a move, in time order. */
+  holds: number[];
 }
 
 /**
@@ -147,6 +204,7 @@ export interface RevealPlan {
  */
 export function revealPlan(mons: readonly ResultMon[], spoils: number, opts: { badge?: boolean } = {}): RevealPlan {
   const beats: Beat[] = [{ kind: 'ribbon', at: 0, dur: RESULT_MS.ribbon }, { kind: 'foe', at: 120, dur: RESULT_MS.foe }];
+  const holds: number[] = [];
   if (opts.badge) beats.push({ kind: 'badge', at: 260, dur: RESULT_MS.foe });
   let t = 520;
   if (mons.some((m) => m.place && m.hp.to > m.hp.from)) {
@@ -156,8 +214,6 @@ export function revealPlan(mons: readonly ResultMon[], spoils: number, opts: { b
   for (const m of mons) {
     if (!m.place || !m.xp) continue;
     const segs = m.xp.segments;
-    // The panel stops after the last level crossed, before the bar's stretch into the new level.
-    const lastCrossed = segs.length > 1 ? segs.length - 2 : -1;
     segs.forEach((s, i) => {
       if (s.to <= s.from && i !== 0) return;
       // A whole level crossed in the middle of a fill runs at the short whistle: several levels in one fight cost the
@@ -166,17 +222,23 @@ export function revealPlan(mons: readonly ResultMon[], spoils: number, opts: { b
       const dur = short ? RESULT_MS.xpShort : RESULT_MS.xpLong;
       beats.push({ kind: 'xp', at: t, dur, uid: m.mon.uid, seg: i, short });
       t += dur;
-      if (i === lastCrossed && m.up) {
-        beats.push({ kind: 'level', at: t, dur: RESULT_MS.level, uid: m.mon.uid });
-        t += RESULT_MS.level;
+      // v0.9.80 — every level the bar tops out gets its own panel (the user), before the bar goes on into the next.
+      const step = i < segs.length - 1 ? m.steps[i] : undefined;
+      if (step) {
+        const hold = step.learned.length > 0;
+        const dur = i === 0 || hold ? RESULT_MS.level : RESULT_MS.levelNext;
+        beats.push({ kind: 'level', at: t, dur, uid: m.mon.uid, step: i, hold });
+        if (hold) holds.push(t + dur * HOLD_AT);
+        t += dur;
       }
     });
     t += RESULT_MS.gap;
   }
   for (let i = 0; i < spoils; i++) beats.push({ kind: 'spoil', at: t + i * RESULT_MS.stagger, dur: RESULT_MS.deal, index: i });
   const end = Math.max(t + (spoils ? (spoils - 1) * RESULT_MS.stagger + RESULT_MS.deal : 0), ...beats.map((b) => b.at + b.dur)) + RESULT_MS.settle;
-  const stops = [...new Set(beats.filter((b) => b.kind === 'xp' || b.kind === 'level').map((b) => b.at + b.dur)), end].sort((a, b) => a - b);
-  return { beats, total: end, stops };
+  // A hold is a stop too: a click on the way to a panel's end lands on the move before it goes.
+  const stops = [...new Set([...beats.filter((b) => b.kind === 'xp' || b.kind === 'level').map((b) => b.at + b.dur), ...holds, end])].sort((a, b) => a - b);
+  return { beats, total: end, stops, holds };
 }
 
 /** A beat's progress at `t`: 0 before it, 1 after it. */
@@ -185,12 +247,12 @@ export function progress(beat: { at: number; dur: number }, t: number): number {
 }
 
 /** What the screen draws for one Pokémon at `t`: its HP, the bar's level and fill, and whether its panel is up. */
-export function monAt(m: ResultMon, plan: RevealPlan, t: number): { hp: number; level: number; fill: number; was: number; panel: number | null } {
+export function monAt(m: ResultMon, plan: RevealPlan, t: number): { hp: number; maxHp: number; level: number; fill: number; was: number; panel: { step: number; p: number } | null } {
   const heal = plan.beats.find((b) => b.kind === 'heal');
-  const hp = !m.place || !heal ? m.hp.to : Math.round(m.hp.from + (m.hp.to - m.hp.from) * progress(heal, t));
+  const hpNow = !m.place || !heal ? m.hp.to : Math.round(m.hp.from + (m.hp.to - m.hp.from) * progress(heal, t));
   const segs = m.xp?.segments ?? [];
   const mine = plan.beats.filter((b): b is Extract<Beat, { kind: 'xp' }> => b.kind === 'xp' && b.uid === m.mon.uid);
-  const level = plan.beats.find((b): b is Extract<Beat, { kind: 'level' }> => b.kind === 'level' && b.uid === m.mon.uid);
+  const levels = plan.beats.filter((b): b is Extract<Beat, { kind: 'level' }> => b.kind === 'level' && b.uid === m.mon.uid);
   // Before its first beat the bar stands where the fight left it; a Box member's, or one without beats, at the end.
   let seg = mine.length ? 0 : Math.max(0, segs.length - 1);
   let p = mine.length ? 0 : 1;
@@ -201,7 +263,7 @@ export function monAt(m: ResultMon, plan: RevealPlan, t: number): { hp: number; 
     }
   }
   // Every beat played (a bar that stopped exactly on a level has no stretch of its own after it): where it ends.
-  const last = Math.max(0, ...mine.map((b) => b.at + b.dur), level ? level.at + level.dur : 0);
+  const last = Math.max(0, ...mine.map((b) => b.at + b.dur), ...levels.map((b) => b.at + b.dur));
   if (mine.length && t >= last) {
     seg = segs.length - 1;
     p = 1;
@@ -209,9 +271,13 @@ export function monAt(m: ResultMon, plan: RevealPlan, t: number): { hp: number; 
   const s = segs[seg];
   const fill = s ? s.from + (s.to - s.from) * p : 0;
   // The level tag ticks over as the bar tops out; a segment's level is the one its bar belongs to.
-  const shownLevel = s ? (p >= 1 && s.to >= 1 && seg < segs.length - 1 ? s.level + 1 : s.level) : m.mon.level;
-  const panel = level && t >= level.at && t < level.at + level.dur ? progress(level, t) : null;
-  return { hp, level: Math.min(shownLevel, m.mon.level), fill, was: s && seg === 0 ? s.from : 0, panel };
+  const shownLevel = Math.min(s ? (p >= 1 && s.to >= 1 && seg < segs.length - 1 ? s.level + 1 : s.level) : m.mon.level, m.mon.level);
+  const on = levels.find((b) => t >= b.at && t < b.at + b.dur);
+  const panel = on ? { step: on.step, p: progress(on, t) } : null;
+  // v0.9.80 — the bar's ceiling is the level shown's, so Max HP (and with it the HP the card reads) rises with the tag and
+  // the panel, never ahead of the news. The victory heal fills what it can of it.
+  const maxHp = m.maxHpAt[shownLevel] ?? m.hp.max;
+  return { hp: Math.min(hpNow, maxHp), maxHp, level: shownLevel, fill, was: s && seg === 0 ? s.from : 0, panel };
 }
 
 /** §9.4.5 — the outcome's word and its ribbon's tone. */

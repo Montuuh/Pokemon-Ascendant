@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { IconMenu2, IconBackpack, IconSparkles } from '@tabler/icons-react';
+import { IconMenu2, IconBackpack, IconCrown, IconSparkles } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
@@ -16,7 +16,7 @@ import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { LEAGUE_TEXT, ROUTE_TEXT, RUN_REJECT_TEXT, VICTORY_TEXT } from '@/ui/strings';
 import { LeagueHall } from './map/LeagueHall';
-import { bagTip, ballsTip, forkFooter, forkGymTip, moneyTip, regionTip, victoryRoadTip, leagueTip } from '@/ui/tips';
+import { apexRevealTip, bagTip, ballsTip, forkFooter, forkGymTip, moneyTip, regionTip, victoryRoadTip, leagueTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
 import { RouteView } from './map/RouteView';
 import styles from './MapScreen.module.css';
@@ -131,6 +131,13 @@ export function MapScreen() {
           <div className={styles.regionRow}>
             <h1 className={`${styles.regionName} display`}>{run.zone === 'league' ? LEAGUE_TEXT.name : run.zone === 'victory-road' ? VICTORY_TEXT.name : `Region ${run.regionIndex + 1}`}</h1>
             <InfoDot tip={run.zone === 'league' ? leagueTip() : run.zone === 'victory-road' ? victoryRoadTip() : regionTip(run.regionIndex, run.modifiers.includes('greater-threats'))} />
+            {/* §8.4.2 — the Apex Reveal: the Legendary waiting on Victory Road, named once the upgrade is bought. */}
+            {!run.zone && run.apexLegendary && run.regionIndex === 2 && (
+              <Tipped tip={apexRevealTip(getContent().species(run.apexLegendary).name)} className={styles.apexChip} data-testid="apex-reveal">
+                <IconCrown size={13} aria-hidden="true" />
+                {getContent().species(run.apexLegendary).name}
+              </Tipped>
+            )}
           </div>
           <p className={styles.progress}>
             {!run.zone && regionName(run.regionIndex) ? `${regionName(run.regionIndex)} · ` : ''}

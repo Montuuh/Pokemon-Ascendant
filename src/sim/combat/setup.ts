@@ -125,6 +125,7 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
       pendingLeadPick: false,
       guards: { status: 0, cleave: { charges: 0, percent: 0 } },
       freeSwaps: 0,
+      turnFreeSwaps: 0,
       relics: [...(scenario.player.relics ?? [])],
       badges: [...(scenario.player.badges ?? [])],
       regionModifier: scenario.player.regionModifier ?? null,

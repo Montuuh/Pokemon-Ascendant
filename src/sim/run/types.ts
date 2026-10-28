@@ -603,6 +603,8 @@ export interface RunState {
   bonusBadge?: string;
   /** §2.12.6 — the two Gyms each Region offered, in order: what a Perfect Clear can pay. Absent on older saves. */
   gymsOffered?: string[][];
+  /** §8.4.2 Apex Pokémon Reveal — the Legendary Victory Road's Apex will be, fixed and shown on entering Region 3. Absent without the upgrade. */
+  apexLegendary?: string;
   /** §2.12 — where the run stands after the third Gym: Victory Road. Absent on the Regions' routes. */
   zone?: 'victory-road' | 'league';
   /** §2.12.4 — the Summit's Legendary relics, while the run stands on it. */
@@ -691,6 +693,8 @@ export interface RunPerks {
   insight: boolean;
   /** §8.4.2 Trauma Salve Cache — the first City's shop always stocks a Trauma Salve. */
   salveCache?: boolean;
+  /** §8.4.2 Apex Pokémon Reveal — Region 3 names the Legendary waiting on Victory Road. */
+  apexReveal?: boolean;
 }
 
 /** What a finished combat reports back to the run layer. */

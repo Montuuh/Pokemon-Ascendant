@@ -110,10 +110,16 @@ describe('Relics are scarce — §7.3.1, §2.8.1, §7.3.7', () => {
     expect(pick.map((id) => content.relic(id).rarity)).toEqual(['uncommon', 'uncommon', 'uncommon']);
   });
 
-  it('TheGym_OffersRaresInRegion1_LegendariesAfter', () => {
+  it('TheGym_OffersOneRareInRegion1_LegendariesAfter_§7.3.7', () => {
     const rng = new RngStreams(11).get('LootRNG');
-    expect(gymRelicOffer(rng, content, [], 0).map((id) => content.relic(id).rarity)).toEqual(['rare', 'rare', 'rare']);
+    expect(gymRelicOffer(rng, content, [], 0).map((id) => content.relic(id).rarity)).toEqual(['uncommon', 'uncommon', 'rare']);
     expect(gymRelicOffer(rng, content, [], 1).map((id) => content.relic(id).rarity)).toEqual(['legendary', 'legendary', 'legendary']);
+  });
+
+  it('TheGym_AtTheLegendaryCap_OffersTwoRaresAndAnUncommon_§7.3.7', () => {
+    const rng = new RngStreams(11).get('LootRNG');
+    const held = content.allRelics().filter((r) => r.rarity === 'legendary').slice(0, 2).map((r) => r.id);
+    expect(gymRelicOffer(rng, content, held, 1).map((id) => content.relic(id).rarity)).toEqual(['rare', 'rare', 'uncommon']);
   });
 
   it('TheGymFight_DropsNoRelicOfItsOwn', () => {

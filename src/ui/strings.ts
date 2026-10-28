@@ -71,6 +71,9 @@ export const RHYTHM_TEXT = {
     `${left} more ${side === 'ally' ? (left === 1 ? 'card' : 'cards') : left === 1 ? 'action' : 'actions'} and its next hit is a critical. Every ${side === 'ally' ? 'card it plays' : 'action it takes'} fills the ring; the faster it is, the fewer it needs.`,
   readyBody: (side: 'ally' | 'foe') =>
     side === 'ally' ? 'Its next damaging card is a critical — its cards in your hand wear the ✦ and a gold edge, and their numbers count it.' : 'Its next hit is a critical: CRIT on its intent, and the number there counts it.',
+  /** v0.9.80 — why the ring has the size it has: the Speed it reads (the card's own number has the level in it) and the next tier up. */
+  pace: (speed: number, faster: { speed: number; every: number } | null) =>
+    `Speed ${speed} for this, ignoring level — the number on the card grows with its level, this does not. ${faster ? `From ${faster.speed} it fills in ${faster.every}.` : 'The fastest pace there is.'}`,
   always: (owner: string) => `✦ Always a critical — and it never spends ${owner}'s rhythm, so a full one stays for another card.`,
   card: (owner: string) => `Critical: ${owner}'s rhythm is full, so this hit is a critical. The first of its damaging cards you play spends it.`,
 };
@@ -911,7 +914,9 @@ export const RESULT_TEXT = {
   wildFoe: (name: string) => `the wild ${name}`,
   /** The level-up panel's heading, as the series says it. */
   grew: (name: string, level: number) => `${name} grew to Lv ${level}!`,
-  learned: 'New',
+  learned: 'New move',
+  /** v0.9.80 — a level that teaches a move waits for the player; this is what the waiting panel asks for. */
+  clickOn: 'Click to go on',
   fainted: 'Fainted',
   stillThere: 'Still there',
   newCatch: 'New',

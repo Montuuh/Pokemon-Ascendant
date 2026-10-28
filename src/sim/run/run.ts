@@ -19,7 +19,7 @@ import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { runnerById } from './objectives';
 import { rollTradeOffers, tradeLevel, tradeRefusal } from './trader';
 import { VICTORY_ROAD, generateVictoryRoad, perfectClearBadge, trainingOptions } from './victoryRoad';
-import { ACTIVE_TEAM, fillTeam, hasPlaceFor, placesTaken } from './legendaries';
+import { ACTIVE_TEAM, fillTeam, hasPlaceFor, placesTaken, rollLegendary } from './legendaries';
 import { generateLeague, microRestPct } from './league';
 import { BLACK_MARKET, candyPrice, fencePrice, rollBlackMarket, showcaseLevel, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
@@ -321,7 +321,7 @@ function endRegion(draft: RunState, ctx: RunCtx): void {
 function enterVictoryRoad(draft: RunState, ctx: RunCtx): void {
   const mapRng = new RngStreams(draft.seed).get('MapRNG');
   mapRng.cursor = draft.cursors.MapRNG ?? mapRng.cursor;
-  draft.map = generateVictoryRoad(mapRng, ctx.content, draft.seed, draft.box);
+  draft.map = generateVictoryRoad(mapRng, ctx.content, draft.seed, draft.box, draft.apexLegendary);
   draft.cursors.MapRNG = mapRng.cursor;
   draft.zone = 'victory-road';
   draft.position = null;
@@ -1941,6 +1941,15 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // §2.12.6 — the Gyms this Region offers, for a Perfect Clear to pay the one passed by.
         draft.gymsOffered = [...(draft.gymsOffered ?? []), [...draft.map.gyms]];
         draft.cursors.MapRNG = mapRng.cursor;
+        // §8.4.2 Apex Pokémon Reveal — the Legendary Victory Road will hold is fixed now and named, on a stream of its own
+        // so a run without the upgrade rolls exactly what it always did.
+        if (draft.perks.apexReveal && draft.regionIndex === VICTORY_ROAD.regionIndex - 1) {
+          const apex = rollLegendary(new RngStreams(draft.seed ^ 0xa9e8).get('MapRNG'), draft.box);
+          if (apex) {
+            draft.apexLegendary = apex;
+            say(draft, `Word on the road: ${ctx.content.species(apex).name} waits at the top of Victory Road.`);
+          }
+        }
         draft.position = null;
         draft.reachable = [...draft.map.entry];
         draft.visited = [];

@@ -2,7 +2,7 @@ import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { ROUTE_LAYERS, WILD_TIERS, evolvedAt, regionContent, wildBandFor, type WildTier } from './region';
 import { ALL_GYMS } from './region';
-import { APEX, LEGENDARY_ARENAS, rollLegendary, type LegendaryId } from './legendaries';
+import { APEX, LEGENDARY_ARENAS, legendariesOpen, rollLegendary, type LegendaryId } from './legendaries';
 import type { MapNode, NodeKind, NodePreview, PartyMon, RegionMap, RunState } from './types';
 
 // §2.12 — Victory Road: the last climb between the third Gym and the League. A small map of its own — four columns of
@@ -64,7 +64,7 @@ export function victoryRoadLevel(extra: number): number {
 }
 
 /** §2.12 — Victory Road's map: four columns of three tracks, the Summit last. Deterministic in `rng`. */
-export function generateVictoryRoad(rng: GameRng, content: ContentRegistry, seed: number, box: readonly PartyMon[] = []): RegionMap {
+export function generateVictoryRoad(rng: GameRng, content: ContentRegistry, seed: number, box: readonly PartyMon[] = [], revealed?: string): RegionMap {
   const VR = VICTORY_ROAD;
   const tracks = VR.rows.length;
   const pick = <T,>(list: readonly T[]): T => list[Math.min(list.length - 1, Math.floor(rng.range01() * list.length))]!;
@@ -85,7 +85,10 @@ export function generateVictoryRoad(rng: GameRng, content: ContentRegistry, seed
   // The rest: Ace trainers and the cave's wild Pokémon, about half and half.
   for (const col of kinds) for (let t = 0; t < tracks; t++) if (col[t] === 'trainer' && rng.range01() < VR.wildShare) col[t] = 'wild';
   // §2.12.2 — the Apex: one Legendary the Box does not hold, on one track of the last column — not on every path.
-  const legendary = rollLegendary(rng, box);
+  // §8.4.2 — the roll is always made, so the stream moves the same with or without the Reveal; the species the Reveal named
+  // wins over it while the Box still lacks it.
+  const rolled = rollLegendary(rng, box);
+  const legendary = (legendariesOpen(box) as string[]).includes(revealed ?? '') ? (revealed as LegendaryId) : rolled;
   if (legendary) {
     const open = [...Array(tracks).keys()].filter((t) => kinds[APEX.column]![t] !== 'training');
     const t = open[rng.range(0, open.length)];

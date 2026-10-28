@@ -169,7 +169,7 @@ export interface SwapOption {
  */
 export function swapOptions(state: CombatState, config: BattleConfig = DEFAULT_BATTLE_CONFIG): SwapOption[] {
   // §3.3.1 — the 1/2/3 ladder, unless a free swap is banked (Run Down, Tactician's Coin, Flow State).
-  const ladder = state.player.freeSwaps > 0 ? 0 : Math.min(3, state.player.swapCounter + 1);
+  const ladder = state.player.freeSwaps > 0 || state.player.turnFreeSwaps > 0 ? 0 : Math.min(3, state.player.swapCounter + 1);
   const l = lead(state);
   const foe = activeEnemy(state);
   return benchIndices(state).map((benchIndex) => {

@@ -89,6 +89,7 @@ export function runPerksFor(account: AccountState, content: ContentRegistry, twi
     familiar: Object.entries(account.dex).filter(([, e]) => e.tier >= 1).map(([id]) => id),
     insight: hasHubUpgrade(account, 'pokedex-insight'),
     salveCache: hasHubUpgrade(account, 'trauma-salve-cache'),
+    apexReveal: hasHubUpgrade(account, 'apex-reveal'),
   };
 }
 

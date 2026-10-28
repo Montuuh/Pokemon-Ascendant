@@ -100,6 +100,17 @@ describe('The Apex — §2.12.2', () => {
     }
   });
 
+  it('VictoryRoad_ApexIsTheRevealedOne_WhileTheBoxLacksIt_§8.4.2', () => {
+    for (const named of ['mew', 'articuno'] as const) {
+      const map = generateVictoryRoad(new RngStreams(5).get('MapRNG'), content, 5, [], named);
+      expect(Object.values(map.nodes).find((n) => n.kind === 'apex')!.preview.legendary).toBe(named);
+    }
+    // Held by now (the Black Market): the road rolls another rather than offer a Legendary the Box already has.
+    const box = [newPartyMon('mew', 40, content, 5, 'p-mew')];
+    const map = generateVictoryRoad(new RngStreams(5).get('MapRNG'), content, 5, box, 'mew');
+    expect(Object.values(map.nodes).find((n) => n.kind === 'apex')!.preview.legendary).not.toBe('mew');
+  });
+
   it('VictoryRoad_NoApex_WhenTheBoxHoldsAllFive', () => {
     const all = LEGENDARY_IDS.map((id, i) => newPartyMon(id, 40, content, 1, `l${i}`));
     const map = generateVictoryRoad(new RngStreams(5).get('MapRNG'), content, 5, all);

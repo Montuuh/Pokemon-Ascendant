@@ -204,7 +204,7 @@ unless the card has Step-Forward; **Ranged plays anywhere** at ×0.75.
 **Damage** = `floor( Power × (Atk/Def) × Range × Crit × STAB × TypeEff / 8 )`. One floor at the end. No minimum
 clamp — only immunity deals 0. Level is not in the formula.
 **Divisor 5** (v0.9.12; 8 until enemies got their whole HP back) · STAB 1.5 · Crit 1.5 · Ranged 0.75.
-**Critical rhythm** (§4.1.3.1): every Pokémon, both sides, crits its next hit after 3–6 cards (an enemy: 3–4 actions), set by its Speed; an enemy's crit is declared as CRIT on its intent.
+**Critical rhythm** (§4.1.3.1): every Pokémon, both sides, crits its next hit after 3–6 cards (an enemy: 2–5 actions), set by its Speed; an enemy's crit is declared as CRIT on its intent.
 **Stats:** one Attack, one Defence, derived from Gen I as `attack = max(Atk, Spc)`,
 `defence = round((Def+Spc)/2)`. Effective = `base + growth×(level−1)`, then stage, then status.
 
@@ -357,8 +357,8 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
   Mystery Events are supplies.
 - **60 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 25 Common (10 of them the +10 % party Elemental
   Gems) / 18 Uncommon / 7 Rare / **10 Legendary**. A trainer drops a Common 15 % of the time; the Elite Trainer
-  offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym a Rare 1-of-3**,
-  later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run**. Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
+  offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym the same mix, 1-of-3**,
+  later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run** (at the cap: two Rares and an Uncommon). Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
   of list per relic bought this run.
 - **32 held items.** 11 unique type boosts (+20 % wearer-only) · 14 Type Plates (+10 % wearer, +5 % Lead Aura for the bench) · Leftovers, Eviolite, Focus
   Sash · Power Bracer, Choice Scarf · Thick Club, Light Ball.
@@ -390,7 +390,7 @@ start), and the door to the Elite Four that starts a run — all as the Indigo P
 (v0.9.2, §8.4); the Daycare Lady and the Mystery Door are gone.
 **Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·
 Starters Lv 2 (Magikarp 4, Eevee 6, Pikachu 6 — sold since v0.7.3, holding a Light Ball) · Hub upgrades Lv 4 (4–8) · Mastery
-lane Lv 6 (Tier-3, 5). 7 Hub upgrades, all QoL; the Apex Reveal waits off the shelf for Victory Road.
+lane Lv 6 (Tier-3, 5). 7 Hub upgrades, all QoL; the Apex Reveal (4) names Victory Road's Legendary on entering Region 3.
 **Starters** — 3 default + 3 meta bought at the Mart; any Soulbound line (Bond rank 4) for free; a Soulbound starter line always starts shiny.
 **Relics** — 60 = 50 drop-pool + 10 Legendary. Meta tiers T1 20 / T2 20 event-unlocked, never sold / T3 10
 Token-bought; tier ≠ rarity. Drop weight 60/30/10.

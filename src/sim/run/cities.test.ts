@@ -104,6 +104,18 @@ describe('The seam — §2.1.4', () => {
     expect(s.pendingScenario!.enemies.map((e) => e.level)).toEqual(gym.preview.enemies!.map((e) => e.level));
   });
 
+  it('TheGate_IntoRegionThree_NamesTheApex_OnlyWithTheReveal_§8.4.2', () => {
+    const perks = { boxBonus: 0, relicPool: null, mastery: {}, bond: {}, familiar: [], insight: false, apexReveal: true };
+    const depart = (s: RunState) => apply(inCity(s, 1), { type: 'depart-city', modifierId: null });
+    const withIt = depart(createRun('squirtle', 7, ctx, 0, [], undefined, undefined, perks));
+    expect(withIt.regionIndex).toBe(2);
+    expect(withIt.apexLegendary).toBeTruthy();
+    expect(withIt.log.join('\n')).toContain(`${content.species(withIt.apexLegendary!).name} waits at the top of Victory Road`);
+    // Region 2 is not Region 3, and a run without the upgrade keeps its secret.
+    expect(apply(inCity(createRun('squirtle', 7, ctx, 0, [], undefined, undefined, perks), 0), { type: 'depart-city', modifierId: null }).apexLegendary).toBeUndefined();
+    expect(depart(start()).apexLegendary).toBeUndefined();
+  });
+
   it('TheGate_OnlyTakesAModifierItOffered', () => {
     const s = clearRegion(start());
     // Off (v0.9.9): no pick is the only way out; any modifier is one the gate did not offer.

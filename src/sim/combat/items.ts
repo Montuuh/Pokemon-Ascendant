@@ -414,8 +414,13 @@ export function itemBankedAp(state: CombatState, content: ContentRegistry): numb
   return ap;
 }
 
+/** §7.3 Tactician's Coin — free swaps banked once, at combat start. A relic that grants them `perTurn` is not counted here. */
 export const itemFreeSwaps = (state: CombatState, content: ContentRegistry): number =>
-  relicsOf(state, content).reduce((n, r) => n + (r.hook === 'free-swap' ? num(r.params?.swaps, 0) : 0), 0);
+  relicsOf(state, content).reduce((n, r) => n + (r.hook === 'free-swap' && !r.params?.perTurn ? num(r.params?.swaps, 0) : 0), 0);
+
+/** §7.3.7 Flow State — free swaps granted afresh at the start of every turn. */
+export const itemTurnFreeSwaps = (state: CombatState, content: ContentRegistry): number =>
+  relicsOf(state, content).reduce((n, r) => n + (r.hook === 'free-swap' && r.params?.perTurn ? num(r.params?.swaps, 0) : 0), 0);
 
 export const itemStatusShield = (state: CombatState, content: ContentRegistry): number =>
   relicsOf(state, content).reduce((n, r) => n + (r.hook === 'status-shield' ? num(r.params?.charges, 0) : 0), 0);

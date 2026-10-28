@@ -7,7 +7,7 @@ import { declareIntent } from './intents';
 import { aliveTeam, benchIndices, lead, resolutionOrder } from './slots';
 import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { abilityTurnStartAp, turnEndBenchHeal, abilityLeadTrapDivisor } from './abilities';
-import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
+import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnFreeSwaps, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeTurn } from './enemyTurn';
 import { fieldDrawBonus, fieldsSuppressed, hailImmune, isGrounded, sandstormImmune } from './fields';
@@ -29,6 +29,8 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   p.ap = Math.max(0, ctx.config.baseApPerTurn - tempoApTax(state, ctx.config)) + p.bankedAp + abilityTurnStartAp(p.team, state.turn, ctx.content);
   p.bankedAp = 0;
   p.swapCounter = 0;
+  // §7.3.7 Flow State — a free swap every turn; one not spent is gone with the turn.
+  p.turnFreeSwaps = itemTurnFreeSwaps(state, ctx.content);
   p.itemsUsed = 0;
   p.defensiveDiscount = false;
   p.playedThisTurn = [];

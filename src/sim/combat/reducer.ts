@@ -325,13 +325,15 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
  */
 function manualSwap(state: CombatState, benchIndex: number, ctx: RunCtx): void {
   const player = state.player;
-  const free = player.freeSwaps > 0;
+  const free = player.turnFreeSwaps > 0 || player.freeSwaps > 0;
   const opt = swapOptions(state, ctx.config).find((o) => o.benchIndex === benchIndex);
   const cost = opt?.cost ?? (free ? 0 : Math.min(3, player.swapCounter + 1));
   const from = player.leadIndex;
   player.ap -= cost;
   // A free swap does not advance the ladder either: it is the swap that did not happen, economically.
-  if (free) player.freeSwaps -= 1;
+  // §7.3.7 — the turn's own free swap goes first, so the combat's bank (Tactician's Coin) is kept for later.
+  if (player.turnFreeSwaps > 0) player.turnFreeSwaps -= 1;
+  else if (free) player.freeSwaps -= 1;
   else player.swapCounter += 1;
   player.totalManualSwaps += 1;
   player.defensiveDiscount = true;

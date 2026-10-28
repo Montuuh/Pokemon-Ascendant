@@ -275,7 +275,7 @@ on the Trainer's Corner from Level 1, the rest on the Hub upgrades shelf from Le
 | Curated Starting Relic +1 | Corner (Lv 1) | 3 | Run start offers 4 Starting Relics instead of 3 |
 | Pokédex Insight | Hub upgrades (Lv 4) | 4 | The first fight each run against a species you have **not yet** made Familiar shows its opening intent free |
 | Trauma Salve Cache | Hub upgrades | 4 | City 1's shop is guaranteed to stock at least one Trauma Salve, in the Uncommon relic's slot *(sold since v0.7.1)* |
-| Apex Pokémon Reveal | Hub upgrades | 4 | The Victory Road Apex species is shown on entering Region 3 *(off the shelf until Victory Road ships, v0.9.20: a priced row that can never be bought is a promise, not a shelf)* |
+| Apex Pokémon Reveal | Hub upgrades | 4 | Leaving the City into Region 3 **fixes and names** the Legendary Victory Road's Apex will be (a log line and an "Apex: Mewtwo" chip on the route banner); the Road then keeps that one while the Box still lacks it. Sold since v0.9.80 *(it sat off the shelf, flagged "no Victory Road yet", for sixty versions after Victory Road shipped in v0.9.20; the roll is made on a stream of its own, so a run without the upgrade is unchanged)* |
 | Expanded Box | Hub upgrades | 5 | Box capacity 6 → 8 for all future runs |
 | Difficulty Modifier Slot +1 | Hub upgrades | 6 | Stack 2 difficulty modifiers per run instead of 1 |
 | Second Starter Slot (Twin Run) | Hub upgrades | 8 | Choose two starters; the Box starts +1 larger. Active Team stays 3. The start screen shows two places, **Lead** and **Partner**: a tile fills the place in focus, the focus moves to the partner once the Lead is chosen, a tile already in the other place trades places, and the partner comes off with its own button (v0.9.9) |

@@ -22,6 +22,8 @@
 }
 .levelNews {
   position: absolute;
+  /* Above the headline's caption: a panel that grows with large text covers it rather than being covered. */
+  z-index: 8;
   left: 0;
   top: calc(50% + var(--sp-5) + var(--sp-4));
   translate: 0 -50%;
@@ -29,6 +31,14 @@
 }
 .middle:has(.case) .levelNews {
   width: min(320px, calc(100% - var(--badge-ground) - var(--sp-3)));
+}
+/* A short window: the stage is too low to centre a tall panel under the caption, so it rests on the stage's floor. */
+@media (max-height: 760px) {
+  .levelNews {
+    top: auto;
+    bottom: var(--sp-2);
+    translate: none;
+  }
 }
 .middle .case {
   left: calc(100% - var(--badge-ground) / 2);
@@ -259,8 +269,9 @@ html[data-motion='reduced'] .sparkles i {
 
 /* ── The tray: the Box, the spoils, the way on ───────────────────────────────────────────────────────────── */
 /* The Box's column only as wide as what is in it (nothing, most fights); the way on reads its label on one line. */
+/* The two outer columns are the same width, so the spoils stand on the middle of the screen whatever the Box beside them holds. */
 .tray {
-  grid-template-columns: auto minmax(0, 1fr) 230px;
+  grid-template-columns: 230px minmax(0, 1fr) 230px;
   align-items: center;
 }
 .box {

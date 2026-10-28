@@ -52,6 +52,17 @@
   margin: 0;
   font-size: var(--type-h2);
 }
+/* §8.4.2 — the Apex Reveal: one crowned word beside the Region's name. */
+.apexChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px var(--sp-2);
+  border: 2px solid var(--rarity-legendary);
+  border-radius: var(--radius-pill);
+  font-size: var(--type-caption);
+  font-weight: 800;
+}
 .progress {
   margin: 0;
   font-size: var(--type-caption);

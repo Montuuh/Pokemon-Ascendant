@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import { createRun, defaultRunCtx, runReducer, xpToNext, type NodeKind, type RunAction, type RunState } from '@/sim';
-import { monAt, RESULT_MS, resultMons, revealPlan, spoilsOf, xpSegments } from './results';
+import { HOLD_AT, levelSteps, monAt, RESULT_MS, resultMons, revealPlan, spoilsOf, xpSegments } from './results';
 
 // §9.4.5 — the result screen's data: each bar from where the fight left it to where the reward put it, the spoils,
 // and the reveal's order and stops.
@@ -78,6 +78,36 @@ describe('The result screen — §9.4.5', () => {
     expect(end.fill).toBeCloseTo(lead.mon.xp / xpToNext(lead.mon.level));
     const level = plan.beats.find((b) => b.kind === 'level')!;
     expect(monAt(lead, plan, level.at + 10).panel).not.toBeNull();
+  });
+
+  it('revealPlan_SeveralLevels_OnePanelEach_AndAMoveHoldsTheClock_v0.9.80', () => {
+    const s = won('trainer');
+    const lead = resultMons(s, content)[0]!;
+    const learn = content.lineLearnset(lead.mon.speciesId).find((l) => l.level >= 7)!;
+    const from = learn.level - 2;
+    const up = { uid: lead.mon.uid, from, to: from + 3, learned: [learn.move], activated: [] };
+    const mon = { ...lead.mon, level: up.to };
+    const steps = levelSteps(mon, up, content);
+    // Three levels, three steps: the stats are each level's own, and the move sits on the level the learnset says.
+    expect(steps.map((x) => x.to)).toEqual([from + 1, from + 2, from + 3]);
+    expect(steps.map((x) => x.learned.length)).toEqual([0, 1, 0]);
+    expect(steps[0]!.gains!.attack + steps[1]!.gains!.attack + steps[2]!.gains!.attack).toBe(steps[2]!.statsAt!.attack - (steps[0]!.statsAt!.attack - steps[0]!.gains!.attack));
+    const many = { ...lead, mon, up, steps, xp: { gain: 500, segments: xpSegments({ level: from, xp: 0 }, { level: up.to, xp: 3 }) }, maxHpAt: { [from]: 20, [from + 1]: 23, [from + 2]: 26, [from + 3]: 30 } };
+    const plan = revealPlan([many], 0);
+    const levels = plan.beats.filter((b) => b.kind === 'level');
+    expect(levels).toHaveLength(3);
+    // Only the level that teaches stops the clock, near the end of its panel and before it folds.
+    expect(plan.holds).toHaveLength(1);
+    const taught = levels[1]!;
+    expect(plan.holds[0]).toBe(taught.at + taught.dur * HOLD_AT);
+    // The levels after the first that teach nothing take the shorter beat.
+    expect(levels.map((b) => b.dur)).toEqual([RESULT_MS.level, RESULT_MS.level, RESULT_MS.levelNext]);
+    expect(plan.stops).toContain(plan.holds[0]);
+    // Each panel is up in its turn, and the Max HP the card reads rises with the level, not before it.
+    expect(monAt(many, plan, 0).maxHp).toBe(20);
+    expect(monAt(many, plan, taught.at + 10)).toMatchObject({ maxHp: 26, panel: { step: 1 } });
+    expect(monAt(many, plan, levels[2]!.at + 10)).toMatchObject({ maxHp: 30, panel: { step: 2 } });
+    expect(monAt(many, plan, plan.total).panel).toBeNull();
   });
 
   it('spoilsOf_ThePrizeMoneyAndTheItems_LikeItemsCounted', () => {

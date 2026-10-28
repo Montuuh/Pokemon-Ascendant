@@ -24,9 +24,10 @@ describe('Critical rhythm — §4.1.3.1', () => {
     expect([at(140), at(110), at(109), at(80), at(79), at(50), at(49), at(15)]).toEqual([3, 3, 4, 4, 5, 5, 6, 6]);
     // The level is taken back out: 90 at Lv 1 and 90 × 1.7 at Lv 21 are the same tier.
     expect(at(Math.round(90 * (1 + 0.035 * 20)), 21)).toBe(at(90));
-    // The enemy's table is tighter at the slow end: the same Speed fills its meter sooner.
+    // The enemy's table is tighter at the slow end (it acts once where you play three cards) and reaches 2 at the fast end
+    // (v0.9.80: a Dugtrio, 120 base, and a Golem, 45, no longer read alike).
     const foe = (speed: number) => rhythmEvery({ ...enemyOf(s), base: { ...enemyOf(s).base, speed }, level: 1 }, ctx.config);
-    expect([foe(140), foe(90), foe(60), foe(15)]).toEqual([3, 3, 4, 4]);
+    expect([foe(140), foe(110), foe(109), foe(80), foe(79), foe(45), foe(30), foe(29), foe(15)]).toEqual([2, 2, 3, 3, 4, 4, 4, 5, 5]);
   });
 
   it('Rhythm_ParalysisAndStagesSlowIt', () => {
@@ -86,7 +87,7 @@ describe('Critical rhythm — §4.1.3.1', () => {
   });
 
   it('Enemy_FillsAStepPerAction_AndDeclaresTheCritTheTurnItIsFull', () => {
-    let s = pinSpeed(fight(), 50, 120); // every 3: turns 1–3 fill it, turn 4's Tackle is the crit
+    let s = pinSpeed(fight(), 50, 90); // every 3: turns 1–3 fill it, turn 4's Tackle is the crit
     const crits: boolean[] = [];
     for (let t = 0; t < 4; t++) {
       crits.push(!!enemyOf(s).intent!.crit);
@@ -101,7 +102,7 @@ describe('Critical rhythm — §4.1.3.1', () => {
       team: [{ species: 'squirtle', level: 12, moves: ['tackle', 'water-gun', 'tail-whip', 'bubble'] }],
       enemies: [{ species: 'pidgey', level: 7, tier: 'wild', phaseCount: 1, moves: ['tackle', 'gust'], acts: 2 }],
     }));
-    s = pinSpeed(s, 50, 120);
+    s = pinSpeed(s, 50, 90); // every 3
     s = tweak(s, (d) => { d.enemies[0]!.rhythm = 2; markRhythm(d.enemies[0]!, ctx); });
     const e = enemyOf(s);
     expect(e.second).toBeTruthy();

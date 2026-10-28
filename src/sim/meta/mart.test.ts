@@ -43,8 +43,8 @@ describe('Shelves — §8.3.5', () => {
     // §8.3.4 — ~134 (v0.9.2): about sixty runs of the track, the medals and the ₽ left over.
     expect(shopTotal(content)).toBeGreaterThan(120);
     expect(shopTotal(content)).toBeLessThan(150);
-    // The Apex Reveal waits on Victory Road and is not on the shelf until it can work.
-    expect(shelfItems('hub', content).map((i) => i.id)).not.toContain('apex-reveal');
+    // The Apex Reveal is on the shelf since Victory Road shipped (v0.9.20) and its Reveal was wired (v0.9.80).
+    expect(shelfItems('hub', content).map((i) => i.id)).toContain('apex-reveal');
   });
 });
 
@@ -76,7 +76,7 @@ describe('Buying — §8.3.4', () => {
     expect(buy(at(30, 99), { kind: 'relic', id: 'steady-aim' }, content)).toEqual({ error: 'unknown' });
   });
 
-  it('HubUpgrades_AreSoldNotGranted_AndThePendingOnesWait', () => {
+  it('HubUpgrades_AreSoldNotGranted', () => {
     const H = SHELVES.hub.level;
     expect(buy(at(H - 1, 20), { kind: 'hub', id: 'expanded-box' }, content)).toEqual({ error: 'locked' });
     const after = ok(buy(at(H, 20), { kind: 'hub', id: 'expanded-box' }, content));
@@ -84,9 +84,9 @@ describe('Buying — §8.3.4', () => {
     expect(after.tokens).toBe(20 - MART_PRICE.hub['expanded-box']);
     // The Corner sells the fourth Starting Relic from Level 1.
     expect(ok(buy(at(1, 3), { kind: 'hub', id: 'starting-relic-plus-one' }, content)).hub).toEqual(['starting-relic-plus-one']);
-    // v0.7.1 — the Cities opened, so the Salve Cache is sold now; the Apex Reveal still waits on Victory Road.
+    // v0.7.1 — the Cities opened, so the Salve Cache is sold now; the Apex Reveal followed with Victory Road.
     expect(ok(buy(at(H, 20), { kind: 'hub', id: 'trauma-salve-cache' }, content)).hub).toEqual(['trauma-salve-cache']);
-    expect(buy(at(H, 20), { kind: 'hub', id: 'apex-reveal' }, content)).toEqual({ error: 'pending' });
+    expect(ok(buy(at(H, 20), { kind: 'hub', id: 'apex-reveal' }, content)).hub).toEqual(['apex-reveal']);
   });
 
   it('ASoulboundLine_CountsAsAnOwnedStarter_§6.8.2', () => {

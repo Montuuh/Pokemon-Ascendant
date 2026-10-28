@@ -803,10 +803,11 @@
       "categories": [
         "lead"
       ],
-      "description": "Your first manual swap each combat is free.",
+      "description": "The first manual swap of every turn is free.",
       "hook": "free-swap",
       "params": {
-        "swaps": 1
+        "swaps": 1,
+        "perTurn": true
       }
     },
     {

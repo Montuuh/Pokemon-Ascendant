@@ -155,6 +155,31 @@ describe('Quick swap — §3.3.1.1', () => {
     expect(swapOptions(foeParalysed).find((o) => o.benchIndex === 1)!.quick).toBe(true);
   });
 
+  it('FlowState_FreeSwapEveryTurn_TacticiansCoinOnceACombat_§7.3.7', () => {
+    const team = [STARTERS[0]!, { species: 'squirtle', level: 8, moves: ['tackle', 'water-gun', 'rest', 'tail-whip'] }, STARTERS[2]!];
+    const fast = (s: ReturnType<typeof start>) => tweak(s, (d) => { d.enemies[0]!.base.speed = 999; });
+    // Flow State: the first swap of a turn is free, the second pays the ladder's first rung, and next turn the first is free again.
+    let flow = fast(start(scenario({ team, enemies: [PIDGEY], relics: ['flow-state'] })));
+    const ap = flow.player.ap;
+    flow = dispatch(flow, { type: 'swap', benchIndex: 1 });
+    expect(flow.player.ap).toBe(ap);
+    flow = dispatch(flow, { type: 'swap', benchIndex: 0 });
+    expect(flow.player.ap).toBe(ap - 1);
+    flow = dispatch(flow, { type: 'end-turn' });
+    expect(flow.player.turnFreeSwaps).toBe(1);
+    expect(swapOptions(flow)[0]!.cost).toBe(0);
+    // The Coin: one for the whole combat — the second turn's first swap is not free.
+    let coin = fast(start(scenario({ team, enemies: [PIDGEY], relics: ['tacticians-coin'] })));
+    expect(coin.player.turnFreeSwaps).toBe(0);
+    coin = dispatch(coin, { type: 'swap', benchIndex: 1 });
+    coin = dispatch(coin, { type: 'end-turn' });
+    expect(swapOptions(coin)[0]!.cost).toBe(1);
+    // Both: they stack — the turn's own is spent first and the Coin's stays banked.
+    let both = fast(start(scenario({ team, enemies: [PIDGEY], relics: ['flow-state', 'tacticians-coin'] })));
+    both = dispatch(both, { type: 'swap', benchIndex: 1 });
+    expect(both.player).toMatchObject({ turnFreeSwaps: 0, freeSwaps: 1 });
+  });
+
   it('QuickSwap_ABankedFreeSwapIsUntouched', () => {
     const s = tweak(pinned(60, 50), (d) => { d.player.freeSwaps = 1; });
     expect(swapOptions(s).find((o) => o.benchIndex === 1)!).toMatchObject({ cost: 0, quick: false });

@@ -478,6 +478,12 @@ nothing too; a practice fixture keeps its summary.
   a **stat panel beside its card** — "Pidgey grew to Lv 9!", each stat's gain, then the totals counting up, and a move
   the level brought — for the length of its beat, then it folds away; the lit level tag is its door afterwards. Nothing
   of it is on the card itself (the user's note, 2026-10-21). A Pokémon in the Box shows its XP at the tray's left.
+  *(v0.9.80, the user's notes.)* **One panel per level**: three levels in a fight are three panels, each with its own
+  gains, in order, the bar going on between them. A **ring at the panel's top right** drains over its stay. A level that
+  **teaches a move** lights the panel gold, makes the move its largest line and **stops the reveal's clock** with the
+  ring full until the player clicks (anywhere on the stage); Skip and Escape still go to the end. The card's **Max HP
+  and its HP number rise with the level tag**, never ahead of the panel that explains them. The spoils tray's outer
+  columns are the same width, so the spoils stand on the middle of the screen.
 - **Their side** — who you beat: a trainer steps forward with their beaten team at their feet; a wild one stays a ghost
   of its card; a catch stands where it was caught (*New*, or *Box full*); a runner leaves its sparkles. A Gym's
   **Badge** stands in its case between the two sides, with its fanfare.

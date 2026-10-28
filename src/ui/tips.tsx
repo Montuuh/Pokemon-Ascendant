@@ -902,6 +902,11 @@ export function nurseTip(): ReactNode {
   return <Tip title="Field nurse" body={`${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free.`} footer="Trauma stays — only a Pokémon Center's Therapy takes it off." />;
 }
 
+/** §8.4.2 — the Apex Pokémon Reveal: the Legendary the account's upgrade named for Victory Road. */
+export function apexRevealTip(name: string): ReactNode {
+  return <Tip title={`${name} waits on Victory Road`} meta={['Apex Pokémon Reveal']} body="Fought in its own arena at the top of the Road. Catch it and it joins you, two places in the team; beat it for a Legendary relic pick. Never both." footer="Shown because you bought the upgrade at the Poké Mart." />;
+}
+
 /** §2.12 — Victory Road: what it is, and what waits at its top. */
 export function victoryRoadTip(): ReactNode {
   return <Tip title="Victory Road" body="The last climb before the League: Region 3's strongest, a few levels up, the Gauntlets and the Training Grounds — and no healing until the Summit." footer="The Summit heals everyone and offers a Legendary relic; its gate is one way." />;
@@ -1357,17 +1362,17 @@ export function relicPremiumLine(bought: number, listPrice: number): string {
   return `Collector's premium: +${Math.round(RELIC_PREMIUM * 100)} % of the list price (${listPrice.toLocaleString('en-GB')} ₽) for each relic bought this run — ${bought} so far.`;
 }
 
-/** §7.3.7 — the Gym's pick: Rares at the first Gym, Legendaries from the second until the cap. */
+/** §7.3.7 — the Gym's pick: a Rare and two Uncommons at the first Gym, Legendaries from the second until the cap. */
 export function gymRelicTip(legendary: boolean, atCap: boolean): ReactNode {
   return (
     <Tip
-      title={legendary ? 'Legendary relics' : 'Rare relics'}
+      title={legendary ? 'Legendary relics' : atCap ? 'Rare relics' : 'The first Gym’s relics'}
       body={
         legendary
           ? 'Never on a shop shelf and never dropped — a pick like this, at a Gym victory, is the way to one.'
           : atCap
             ? `You already hold ${LEGENDARY_CAP} Legendaries, the most anyone carries, so this pick is the tier below.`
-            : 'The first Gym pays in Rares. From the second Gym on, the pick is Legendary.'
+            : 'The first Gym pays a Rare and two Uncommons. From the second Gym on, the pick is Legendary.'
       }
       footer={`Legendary picks stop at ${LEGENDARY_CAP} a run. Leaving all three is allowed.`}
     />

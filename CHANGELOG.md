@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.80 — Every level counts · 2026-10-29
+
+Fewer reds, a real Flow State, the Apex Reveal, and a result screen that waits.
+
+- **Relics.** Gym 1 offers one Rare, not three; Flow State frees a swap each turn.
+- **Apex Reveal.** On sale at the Mart; Region 3 names Victory Road's Legendary.
+- **One panel per level.** A new move holds the screen until you click.
+- **Enemy rhythm.** The fastest enemies crit every 2nd action, the slowest every 5th.
+
 ### v0.9.79 — At a glance · 2026-10-28
 
 More Mystery Event scenes name themselves before you read the title.

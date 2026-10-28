@@ -155,8 +155,8 @@ Sixty relics: **50 in the drop pool** (Common, Uncommon, Rare) plus **10 choice-
 | Rarity | Count | Drop weight | Typical source |
 |---|---|---|---|
 | Common | 25 | 60 % | A trainer now and then (15 %), the merchant's wildcard, City Shops, a rare event |
-| Uncommon | 18 | 30 % | The Elite Trainer's pick, City Shops, a rare event |
-| Rare | 7 | 10 % | The Elite Trainer's pick, the first Gym's pick, the beaten Elite Wild, the Ring, a rare Gamble event |
+| Uncommon | 18 | 30 % | The Elite Trainer's pick, the first Gym's pick, City Shops, a rare event |
+| Rare | 7 | 10 % | One of the Elite Trainer's three, one of the first Gym's three, the beaten Elite Wild, the Ring, a rare Gamble event |
 | **Legendary** | 10 | **never drops** | The Gym's 1-of-3 from the second Gym on, the Summit, and a beaten Apex (§7.3.7) |
 
 **Relics are scarce** (the user's call, 2026-09-30, v0.8.6). Before it a whole run ended holding about sixteen:
@@ -285,8 +285,8 @@ the relic system and retuned for permanent scope.
 
 | | |
 |---|---|
-| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory from the **second** on, and at the Victory Road Summit. The first Gym's pick is three Rares (v0.8.6: the apex tier arrives mid-run, not after the first boss). Seeded; already-held relics are excluded. And a beaten Apex on Victory Road offers the same 1-of-3 (§2.12.2). The Black Market's showcase sells a Legendary *Pokémon* since v0.9.21, not a relic (§2.11.6) |
-| **Hold cap** | **Maximum 2 per run**. At the cap, a pick-moment offers a Rare instead, or a skip |
+| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory from the **second** on, and at the Victory Road Summit. The first Gym's pick is the Elite's mix, two Uncommons and a Rare (v0.8.6 made it three Rares so the apex tier arrives mid-run; v0.9.80 took it back down — a harness run gained 1.6 Rares for every 0.07 Uncommons, because nearly every source asked for a Rare, and the user read a screen of reds as meaningless). Seeded; already-held relics are excluded. And a beaten Apex on Victory Road offers the same 1-of-3 (§2.12.2). The Black Market's showcase sells a Legendary *Pokémon* since v0.9.21, not a relic (§2.11.6) |
+| **Hold cap** | **Maximum 2 per run**. At the cap, a pick-moment offers two Rares and an Uncommon instead, or a skip |
 | **Never** | Not in Starting Relics, not in shop random stock, not in the drop pool |
 | **Meta status** | Available from run 1 — Legendary is a rarity class, not a meta tier |
 | **Power** | The six ported Boons were retuned to about **two-thirds** strength, because they now last a whole run instead of five League fights |
@@ -294,7 +294,7 @@ the relic system and retuned for permanent scope.
 | Legendary | Category | Effect |
 |---|---|---|
 | **Battle Hardened** | Combat | Every Active Pokémon starts each combat with a Shield equal to 10 % of its max HP — drawn as the pale blue end of its HP bar and a *Shield N* chip on its card, the rule in its bubble (the user's note, 2026-10-19: it had no picture) |
-| **Flow State** | Lead | The first manual swap each combat costs 0 AP |
+| **Flow State** | Lead | The first manual swap of **every turn** costs 0 AP. (It was word for word the Tactician's Coin, an Uncommon, until v0.9.80; the Coin keeps one per combat and the two stack, the turn's own spent first) |
 | **Last Stand** | Combat | Once per combat, the first Pokémon that would faint survives at 1 HP |
 | **Type Mastery** | Combat | Super-effective moves deal an extra +0.15× |
 | **Clear Mind** | Combat | Every Unknown intent is revealed, in every combat |

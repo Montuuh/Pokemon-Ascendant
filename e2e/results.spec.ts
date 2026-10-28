@@ -64,6 +64,64 @@ test.describe('The fight\'s end — §9.4.5', () => {
       await expect(results).toBeVisible();
     });
 
+    test('every level gets its own panel; a level that teaches a move holds the clock until a click (v0.9.80)', async ({ page }) => {
+      test.setTimeout(90_000);
+      // A Lv 5 team and a Gym's worth of XP: several levels in one fight.
+      await finish(page, { starter: 'charmander', seed: 11, kind: 'gym', outcome: 'victory', hp: [30, 30, 30] });
+      const lead = await page.evaluate(() => {
+        const s = window.__ascendant!.run.state()!;
+        const up = s.pendingReward!.levelUps.find((l) => l.uid === s.lastFight!.formation[0])!;
+        return { uid: up.uid, from: up.from, to: up.to, learned: up.learned };
+      });
+      expect(lead.to - lead.from).toBeGreaterThan(1);
+      const panel = page.getByTestId(`levelup-panel-${lead.uid}`);
+      const seen: number[] = [];
+      let heldShot = false;
+      for (let i = 0; i < 400 && seen.length < lead.to - lead.from; i++) {
+        if (await panel.count()) {
+          const head = (await panel.locator('span').first().textContent()) ?? '';
+          const level = Number(/Lv (\d+)/.exec(head)?.[1]);
+          if (level && seen.at(-1) !== level) seen.push(level);
+          if ((await panel.getAttribute('data-held')) !== null) {
+            // It teaches a move: the ring is full, the move is on show, and nothing moves on its own.
+            await expect(page.getByTestId('levelup-timer')).toHaveAttribute('data-held', 'true');
+            await expect(panel.locator('[data-testid^="learned-"]').first()).toBeVisible();
+            await page.waitForTimeout(2_200);
+            await expect(panel).toBeVisible();
+            await expect(panel).toHaveAttribute('data-held', 'true');
+            if (!heldShot) {
+              await page.screenshot({ path: 'playtest/results-levelup-move.png' });
+              heldShot = true;
+            }
+            await page.getByTestId('fight-results').locator('section').first().click({ position: { x: 20, y: 20 } });
+          }
+        }
+        await page.waitForTimeout(100);
+      }
+      // One panel per level, in order — none skipped, none shown twice.
+      expect(seen).toEqual(Array.from({ length: lead.to - lead.from }, (_, i) => lead.from + 1 + i));
+    });
+
+    test('a panel that teaches a move clears the caption at 150 % text on 720 p; Space lets it go (v0.9.80)', async ({ page }) => {
+      test.setTimeout(60_000);
+      await page.setViewportSize({ width: 1280, height: 720 });
+      await finish(page, { starter: 'charmander', seed: 11, kind: 'gym', outcome: 'victory', hp: [30, 30, 30] });
+      await page.evaluate(() => document.documentElement.style.setProperty('--text-scale', '1.5'));
+      const held = page.locator('[data-testid^="levelup-panel-"][data-held]');
+      await expect(held).toBeVisible({ timeout: 20_000 });
+      await page.waitForTimeout(600);
+      await page.screenshot({ path: 'playtest/results-levelup-move-150.png' });
+      const panel = await held.boundingBox();
+      const voice = await page.getByTestId('results-voice').boundingBox();
+      expect(panel!.y).toBeGreaterThanOrEqual(voice!.y + voice!.height - 1);
+      // Space on a waiting panel lets it go and skips nothing else.
+      const level = await held.locator('span').first().textContent();
+      await page.keyboard.press('Space');
+      await expect(page.getByTestId('fight-results')).not.toHaveAttribute('data-done', 'true');
+      await expect(held).toHaveCount(0, { timeout: 5_000 });
+      expect(level).toContain('grew to Lv');
+    });
+
     test('an evolution is a surprise: nothing on the result says one is coming, then it plays', async ({ page }) => {
       // Bulbasaur one XP short of 16, where it evolves (§6.2.4): the win carries it over.
       await finish(page, { starter: 'bulbasaur', seed: 7, level: 15, xpShare: 1, kind: 'wild', outcome: 'victory', hp: [50, 40, 30] });
