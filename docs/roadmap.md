@@ -1723,6 +1723,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 |---|---|---|
 | ~~**Motion opportunities**~~ built in v0.9.67. From the sweep of 2026-10-27, each through motion-review.md's gate: the HP bar drains at the series' constant rate (big hits weigh more); a hit-stop at medium and heavy impacts (60 / 100 ms); a press state on the main buttons; the played card leaving toward its target (§9.9); modals and sheets that fade and grow in | ui-reviewer, 2026-10-27 | the next v0.9 patches, or v1.1's VFX pass |
 | ~~**A Legendary Pokémon takes two team slots.**~~ Designed 2026-10-16 — the user's call: two places, one body (§2.3). Built with the Legendaries. | user, 2026-09-28 | v0.9.21 |
+| **A Steel Gym** (or a Dark/Steel Elite) — a 13th Badge, a lane with its own terrain and rule, a team of Magneton, Scizor, Steelix and Magnezone. Dark has only Umbreon, so it cannot carry a team. Left out of v0.9.84 on purpose; the user chose to keep it so | user, 2026-10-29 | a Region-pool design pass, after v1.0 |
 
 **Multiplayer** — everything that needs **player accounts and a server**. None of it is in v1.0, which is
 single-player (user, 2026-10-14). When accounts land (the save layer is already behind a provider interface for a
