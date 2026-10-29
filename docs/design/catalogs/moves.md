@@ -107,7 +107,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `swift` | Swift | Normal | Off | Ranged | — | 1 | 55 | — | — |
 | `skull-bash` | Skull Bash | Normal | Off | Melee | — | 3 | 95 | — | — |
 | `spike-cannon` | Spike Cannon | Normal | Off | Ranged | — | 1 | 50 | — | 3 hits |
-| `constrict` | Constrict | Normal | Off | Melee | — | 1 | 40 | — | foe Def −1 |
+| `constrict` | Constrict | Normal | Off | Melee | — | 1 | 40 | — | foe Spd −1 |
 | `soft-boiled` | Soft-Boiled | Normal | Def | Melee | — | 1 | — | cd 2 | heal 50 % |
 | `glare` | Glare | Normal | Util | Ranged | — | 1 | — | — | Paralysis 75 % |
 | `barrage` | Barrage | Normal | Off | Ranged | — | 1 | 50 | — | 3 hits |
@@ -227,7 +227,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 |---|---|---|---|---|---|---|---|---|---|
 | `twineedle` | Twineedle | Bug | Off | Ranged | — | 2 | 70 | — | 2 hits · Poison 20 % |
 | `pin-missile` | Pin Missile | Bug | Off | Ranged | — | 2 | 75 | — | 3 hits |
-| `string-shot` | String Shot | Bug | Util | Ranged | — | 0 | — | — | foe Def −1 |
+| `string-shot` | String Shot | Bug | Util | Ranged | — | 0 | — | — | foe Spd −1 |
 | `leech-life` | Leech Life | Bug | Off | Melee | — | 1 | 45 | — | drain 50 % |
 
 ### Water
@@ -237,7 +237,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `water-gun` | Water Gun | Water | Off | Ranged | — | 1 | 45 | — | — |
 | `hydro-pump` | Hydro Pump | Water | Off | Ranged | — | 4 | 120 | — | — |
 | `surf` | Surf | Water | Off | Ranged | — | 2 | 70 | cleave | — |
-| `bubble-beam` | Bubble Beam | Water | Off | Ranged | — | 2 | 65 | — | foe Atk −1 |
+| `bubble-beam` | Bubble Beam | Water | Off | Ranged | — | 2 | 65 | — | foe Spd −1 |
 | `withdraw` | Withdraw | Water | Def | Melee | — | 0 | — | — | self Def +1 |
 | `waterfall` | Waterfall | Water | Off | Melee | — | 2 | 75 | — | — |
 | `clamp` | Clamp | Water | Off | Melee | — | 1 | 45 | — | foe Def −1 |
@@ -253,7 +253,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `psychic` | Psychic | Psychic | Off | Ranged | — | 3 | 95 | — | — |
 | `hypnosis` | Hypnosis | Psychic | Util | Ranged | — | 1 | — | — | Sleep 60 % |
 | `meditate` | Meditate | Psychic | Util | Melee | — | 0 | — | — | self Atk +1 |
-| `agility` | Agility | Psychic | Util | Melee | — | 0 | — | — | self Atk +1 · draw 1 |
+| `agility` | Agility | Psychic | Util | Melee | — | 0 | — | — | self Spd +2 · draw 1 |
 | `teleport` | Teleport | Psychic | Util | Melee | — | 0 | — | — | draw 1 |
 | `barrier` | Barrier | Psychic | Def | Melee | — | 1 | — | — | self Def +2 |
 | `light-screen` | Light Screen | Psychic | Def | Melee | — | 1 | — | — | team guard: next Cleave −50 % |
@@ -300,10 +300,10 @@ stronger rider when the band is full; a utility's stage, chance, heal or draw on
 | `fire-spin-plus` | Fire Spin+ | Fire | Off | Ranged | — | 2 | 80 | — | Burn 30 % |
 | `bubble-plus` | Bubble+ | Water | Off | Ranged | — | 1 | 55 | — | foe Atk −1 |
 | `skull-bash-plus` | Skull Bash+ | Normal | Off | Melee | — | 3 | 100 | — | foe Def −1 |
-| `bubble-beam-plus` | Bubble Beam+ | Water | Off | Ranged | — | 2 | 80 | — | foe Atk −1 |
+| `bubble-beam-plus` | Bubble Beam+ | Water | Off | Ranged | — | 2 | 80 | — | foe Spd −1 |
 | `harden-plus` | Harden+ | Normal | Def | Melee | — | 0 | — | — | self Def +2 |
 | `leech-life-plus` | Leech Life+ | Bug | Off | Melee | — | 1 | 50 | — | drain 50 % · foe Def −1 |
-| `string-shot-plus` | String Shot+ | Bug | Util | Ranged | — | 0 | — | — | foe Def −2 |
+| `string-shot-plus` | String Shot+ | Bug | Util | Ranged | — | 0 | — | — | foe Spd −2 |
 | `gust-plus` | Gust+ | Flying | Off | Ranged | — | 1 | 55 | — | — |
 | `confusion-plus` | Confusion+ | Psychic | Off | Ranged | — | 1 | 55 | — | Confusion 30 % |
 | `poison-sting-plus` | Poison Sting+ | Poison | Off | Ranged | — | 1 | 55 | — | Poison 30 % |
@@ -359,7 +359,7 @@ stronger rider when the band is full; a utility's stage, chance, heal or draw on
 | `lick-plus` | Lick+ | Ghost | Off | Melee | — | 1 | 50 | — | Paralysis 30 % |
 | `confuse-ray-plus` | Confuse Ray+ | Ghost | Util | Ranged | — | 0 | — | — | Confusion |
 | `thunder-wave-plus` | Thunder Wave+ | Electric | Util | Ranged | — | 0 | — | — | Paralysis |
-| `agility-plus` | Agility+ | Psychic | Util | Melee | — | 0 | — | — | self Atk +2 · draw 2 |
+| `agility-plus` | Agility+ | Psychic | Util | Melee | — | 0 | — | — | self Spd +3 · draw 2 |
 | `dragon-rage-plus` | Dragon Rage+ | Dragon | Off | Ranged | — | 1 | 55 | — | foe Def −1 |
 | `barrier-plus` | Barrier+ | Psychic | Def | Melee | — | 1 | — | — | self Def +3 |
 

@@ -71,13 +71,11 @@ export const RHYTHM_TEXT = {
     `${left} more ${side === 'ally' ? (left === 1 ? 'card' : 'cards') : left === 1 ? 'action' : 'actions'} and its next hit is a critical. Every ${side === 'ally' ? 'card it plays' : 'action it takes'} fills the ring.`,
   readyBody: (side: 'ally' | 'foe') =>
     side === 'ally' ? 'Its next damaging card is a critical — its cards in your hand wear the ✦ and a gold edge, and their numbers count it.' : 'Its next hit is a critical: CRIT on its intent, and the number there counts it.',
-  /** v0.9.80 — the tooltip's table: the Speed the ring reads (the card's own number has its level in it) and every tier. */
-  reads: (speed: number, card: number, level: number, factor: number) =>
-    level <= 1 ? `Reads Speed ${speed}, as on its card.` : `Reads Speed ${speed} — the card's ${card} less Lv ${level}'s growth (× ${factor.toFixed(1)}).`,
-  tierFrom: (speed: number) => `${speed}+`,
-  tierBelow: (speed: number) => `under ${speed}`,
-  tierFills: (every: number, side: 'ally' | 'foe') => `${every} ${side === 'ally' ? (every === 1 ? 'card' : 'cards') : every === 1 ? 'action' : 'actions'}`,
-  here: 'this one',
+  /** The tooltip's lines: the species' own Speed (the card's number has its level in it), what is moving it now, and how long a full ring takes. */
+  reads: (speed: number, level: number) => (level <= 1 ? `Pace from Speed ${speed}.` : `Pace from the species' Speed ${speed} — the level on the card does not count.`),
+  pace: (acts: number, side: 'ally' | 'foe') => `A full ring takes ${acts.toFixed(1)} ${side === 'ally' ? 'cards' : 'actions'}`,
+  stage: (stage: number, mult: number) => `Speed ${stage > 0 ? '+' : '−'}${Math.abs(stage)}: × ${mult.toFixed(1)}`,
+  paralysed: (mult: number) => `Paralysed: × ${mult.toFixed(1)}`,
   always: (owner: string) => `✦ Always a critical — and it never spends ${owner}'s rhythm, so a full one stays for another card.`,
   card: (owner: string) => `Critical: ${owner}'s rhythm is full, so this hit is a critical. The first of its damaging cards you play spends it.`,
 };
@@ -132,7 +130,7 @@ export const STATUS_LABEL: Record<string, string> = {
 export const STATUS_HINT: Record<string, string> = {
   burn: '−25% Attack · loses HP each turn',
   poison: '−15% Defense · loses HP each turn',
-  paralysis: 'Its cards cost +1 AP (3 turns)',
+  paralysis: 'Its cards cost +1 AP · half Speed: the quick swap and the critical rhythm slow (3 turns)',
   sleep: 'Its cards are offline next turn · no new Sleep or Freeze while asleep',
   freeze: 'Cards offline · position locked · ×1.5 Fire damage · no new Sleep or Freeze while frozen',
   confusion: 'Discards 1 random card per turn (3 turns)',

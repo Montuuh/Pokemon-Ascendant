@@ -5,6 +5,15 @@ import type { GymRuleConfig } from './gymRules';
 // Web counterpart of the Unity BattleConfigSO. Values are canon unless a § says "tuned in playtest".
 // Content overlays (difficulty modifiers, badges, region modifiers) derive a per-run BattleConfig; the sim
 // only ever reads the instance it is given.
+/** §4.1.3.1 — one side's rhythm curve. */
+export interface RhythmCurve {
+  k: number;
+  minActs: number;
+  maxActs: number;
+  floorActs: number;
+  ceilActs: number;
+}
+
 export interface BattleConfig {
   /** §4.1.1 — damage formula divisor. Unity shipped 8; v0.9.12 took it to 5 when enemies got their whole HP back. */
   divisor: number;
@@ -13,11 +22,12 @@ export interface BattleConfig {
   /** §4.1.3 — critical hit multiplier. Crit base chance is 0 %; sources stack additively. */
   critMultiplier: number;
   /**
-   * §4.1.3.1 — the critical rhythm: acts to fill the meter by level-free Speed, fastest tier first (the first
-   * `speed` reached gives `every`). The enemy's table is tighter at the slow end: it acts once a turn where you play
-   * three cards, and the Rock Gym's slow walls must still cost Pokémon (measured, v0.9.59).
+   * §4.1.3.1 — the critical rhythm: how many acts fill a Pokémon's meter, per side. A curve, not tiers (v0.9.80): the
+   * species' level-free Speed gives `k / Speed` acts kept between `minActs` and `maxActs`; Speed stages and Paralysis then
+   * scale that pace and the result is kept between `floorActs` and `ceilActs`. The enemy's reach is shorter at the slow end:
+   * it acts once a turn where you play three cards, and the Rock Gym's slow walls must still cost Pokémon (v0.9.59).
    */
-  critRhythm: { tiers: readonly { speed: number; every: number }[]; enemyTiers: readonly { speed: number; every: number }[] };
+  critRhythm: { ally: RhythmCurve; enemy: RhythmCurve };
   /** §3.6 — Ranged moves deal a fraction of Melee damage. */
   rangedModifier: number;
   meleeModifier: number;
@@ -126,14 +136,13 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   comboBreakShare: 0.25,
   stabMultiplier: 1.5,
   critMultiplier: 1.5,
+  // v0.9.80 (the user: Speed stages and Paralysis should move the rhythm) — a curve instead of 4–5 tiers. Allies: 320 / Speed acts,
+  // between 2 and 6 (a Speed 160 fills in 2, 80 in 4, 53 in 6); a stage or Paralysis then scales it, down to 2 and up to 12.
+  // Enemies: 270 / Speed, between 2 and 4 (Speed 90 fills in 3; the slow walls in 4 as before), to a ceiling of 8. Both keep the mean of the
+  // tiers they replaced over the 151 species (allies 4.69 vs 4.68, enemies 3.53 vs 3.60).
   critRhythm: {
-    // v0.9.80 (the user: a tier of 2 for allies too) — the fastest fill in 2, and the 3 / 4 cuts move up to 100 / 80 so the
-    // 100–109 crowd (Charizard, Pidgeot, Zapdos…) is no longer level with a Pikachu.
-    tiers: [{ speed: 120, every: 2 }, { speed: 100, every: 3 }, { speed: 80, every: 4 }, { speed: 50, every: 5 }, { speed: 0, every: 6 }],
-    // v0.9.80 (the user: a Dugtrio and a Golem should not read alike) — it was 3 / 3 / 4 / 4, two values for 151 species. The
-    // fastest now fill in 2, the middle keeps 3 and 4, and only the very slowest take 5; the table still stops at 4 for
-    // the Rock Gym's walls (Golem 45, Graveler 35), which is what v0.9.59 measured it must.
-    enemyTiers: [{ speed: 110, every: 2 }, { speed: 80, every: 3 }, { speed: 30, every: 4 }, { speed: 0, every: 5 }],
+    ally: { k: 320, minActs: 2, maxActs: 6, floorActs: 2, ceilActs: 12 },
+    enemy: { k: 270, minActs: 2, maxActs: 4, floorActs: 2, ceilActs: 8 },
   },
   rangedModifier: 0.75,
   meleeModifier: 1.0,

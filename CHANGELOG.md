@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.81 — Pace · 2026-10-29
+
+The critical rhythm now follows Speed stages and Paralysis, as it happens.
+
+- **Continuous rhythm.** The dial fills smoothly; speed changes move it at once.
+- **Paralysis.** Halves the rhythm's pace too: a foe's crit comes later.
+- **Speed moves.** Agility +2; String Shot, Constrict and Bubble Beam slow.
+- **Hover.** Shows the Speed it reads, the card's own, and the curve.
+
 ### v0.9.80 — Every level counts · 2026-10-29
 
 Fewer reds, a real Flow State, the Apex Reveal, and a result screen that waits.

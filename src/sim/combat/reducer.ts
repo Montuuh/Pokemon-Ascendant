@@ -147,7 +147,7 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   log(state, 'player', `${owner.name} used ${move.name}!`);
 
   // §4.1.3.1 — a full critical rhythm makes this card's hit a critical, on every target it lands on, and empties.
-  const rhythmCrit = spendsRhythm(move) && rhythmReady(owner, ctx.config);
+  const rhythmCrit = spendsRhythm(move) && rhythmReady(owner);
   if (rhythmCrit) log(state, 'player', `${owner.name} is in rhythm!`);
 
   if (move.power > 0) {

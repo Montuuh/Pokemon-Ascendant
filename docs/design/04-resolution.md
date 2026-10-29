@@ -92,48 +92,48 @@ AlwaysCrit move.
 
 ### §4.1.3.1 The critical rhythm — Speed's second job
 
-Every Pokémon, **on both sides**, carries a meter. It fills **one step per act** — on your side every card that
-Pokémon plays, on the enemy's every action it takes (a Pokémon that acts twice fills it twice a turn). Full, its
-**next hit is a critical**: certain, never rolled. The hit that spends it empties it; anything else fills it a step,
-up to full, and a full meter waits for a hit. An AlwaysCrit move crits anyway and leaves the meter alone.
+Every Pokémon, **on both sides**, carries a meter from 0 to 1. Every **act** fills it by the share its **pace** allows —
+on your side every card that Pokémon plays, on the enemy's every action it takes (a Pokémon that acts twice fills it twice
+a turn). Full, its **next hit is a critical**: certain, never rolled. The hit that spends it empties it; anything else fills
+it, up to full, and a full meter waits for a hit. An AlwaysCrit move crits anyway and leaves the meter alone.
 
-**Speed sets the pace.** How many acts fill it is read off its **level-free Speed** — effective Speed (stages,
-Paralysis, the Dojo's points, the archetype's lean) divided by the level's growth (§6.2.3), so the tier reads the
-species and not how far into the run it is:
+**Speed sets the pace, and what happens to Speed moves it** (v0.9.80, the user's call: tiers hid Speed stages and
+Paralysis behind cuts a +10 % stage rarely crossed). The acts that fill a meter are a **curve**, in two steps:
 
-| Level-free Speed | Your Pokémon: cards to fill | An enemy: actions to fill |
-|---|---|---|
-| 120 + | 2 | 2 |
-| 110–119 | 3 | 2 |
-| 100–109 | 3 | 3 |
-| 80–99 | 4 | 3 |
-| 50–79 | 5 | 4 |
-| 30–49 | 6 | 4 |
-| under 30 | 6 | 5 |
+1. **The species.** Its *level-free* Speed (base, the archetype's lean and the Dojo's points, divided by the level's growth
+   §6.2.3, so it reads the species and not how far into the run it is) gives `k / Speed` acts, kept inside the side's
+   reach: **allies 320 / Speed, between 2 and 6** (Speed 160+ fills in 2, 80 in 4, 53 or less in 6); **enemies 270 /
+   Speed, between 2 and 4** (Speed 135+ in 2, 90 in 3, 67 or less in 4). Both keep the mean of the tiers they replaced over
+   the 151 species (allies 4.69, enemies 3.53); a Dugtrio (120) and a Meowth (90) no longer read alike, nor a Golem (45) and a
+   Pidgeotto (71).
+2. **What is happening to its Speed now.** The Speed stage (§4.2.6, ±10 % a stage) and Paralysis (×0.5, §4.2.2.3) multiply the
+   pace, *after* step 1, and the result is kept between **2 and 12 acts** (enemies 2 and 8). So a stage moves the pace of
+   everyone — a wall at 6 acts still gets to 5 with +2 — and Paralysis doubles the acts still to come even for a fast Pokémon or
+   a wall, instead of being swallowed at an edge. Only a Pokémon already at the 2-act floor gains nothing from a boost.
 
-(`critRhythm.tiers`, `critRhythm.enemyTiers`.) The enemy's table is tighter at the slow end because an enemy acts once
-a turn where your side plays three cards, and because Speed already favours you against slow walls through the quick
-swap: measured on the same table, the Rock Gym (Geodude, Golem) stopped costing Pokémon (§3.3.1.1). That is why it
-stops at 4 for Golem (45) and Graveler (35), and why only the very slowest (Slowpoke, Geodude, Grimer, Rhyhorn) take 5.
-Your side reaches 2 for the six fastest species (Electrode, Jolteon, Aerodactyl, Mewtwo, Dugtrio, Alakazam: a crit every
-second card, one or two a turn) and its 3 / 4 cuts sit at 100 / 80, so the fourteen species at 100–109 (Charizard,
-Pidgeot, Zapdos…) are no longer level with a Pikachu. The enemy table is the same shape on a coarser grid.
+A change of pace applies to the acts *still to come*: the meter keeps what it holds, and a meter already full is never
+taken back — so Agility, String Shot, Constrict, Bubble Beam, Thunder Wave and the like are tools for the **timing** of a
+crit, used before it is declared. (The first three Speed stages were content that did not exist until v0.9.80: Agility now
+gives +2 Speed, String Shot and Constrict −1, Bubble Beam −1; Thunder Wave and the other Paralysis moves already did.)
+The *quick swap* (§3.3.1.1) reads the same Speed, stages and Paralysis included.
 
-*Why the enemy's fast end reaches 2 (v0.9.80, the user):* the table used to be 3 / 3 / 4 / 4 — two values for 151
-species — so a Dugtrio (base 120, 254 on its card at Lv 33) filled in as many acts as a Meowth (90), and a Golem (45)
-as many as a Pidgeotto (71). The ten fastest species (Electrode, Jolteon, Aerodactyl, Mewtwo, Dugtrio, Alakazam,
-Persian, Starmie, Gengar, Tauros) now crit every other action. The Speed the tiers read is the *level-free* one, so the
-number on a card (which grows with its level) is not the one to compare. The dial's tooltip says so — the Speed it reads,
-the card's own number and the level that grew it — and prints every tier of its side with the Pokémon's own marked.
+*The number on a card is not the number the rhythm reads:* a card's Speed grows with its level (a Golem, base 45, shows 95 at
+Lv 33; a Dugtrio, 120, shows 254). The dial's tooltip prints the species' Speed, the card's own number beside it, the stage and
+Paralysis acting on it, the acts it needs now, and the curve at a few reference Speeds.
+
+(`critRhythm.ally`, `critRhythm.enemy`: `k`, `minActs`, `maxActs`, `floorActs`, `ceilActs`.) The enemy's reach is shorter at
+the slow end because an enemy acts once a turn where your side plays three cards, and because Speed already favours you
+against slow walls through the quick swap: measured on tiers, the Rock Gym (Geodude, Golem) stopped costing Pokémon
+(§3.3.1.1) when the slow end reached 6.
 
 **Shown before it lands (Pillar 1).** Every Pokémon's card wears its meter as a **dial** on its outer edge, at the
-middle of its window (v0.9.60, the user's choice of five looks): a ring of one segment per act, the acts still to go
-on its face; full, a turning star and a **CRIT** tab. Full on your side, every damaging card of that Pokémon in your
+middle of its window (v0.9.60, the user's choice of five looks): a ring that fills with the meter and is cut into the acts it takes now (a stage or Paralysis changes
+them while you watch), the whole acts still to go on its face; full, a turning star and a **CRIT** tab. Full on your side, every damaging card of that Pokémon in your
 hand wears the **✦** crit badge and a breathing gold edge, and its damage preview already counts the crit. The ✦ is
 the one crit mark (v0.9.61): an AlwaysCrit card wears it too, always, but never the edge — it does not spend the
 rhythm. An enemy's crit is **declared with its intent**: the chip says **CRIT**
 and its number is the critical one, a turn ahead. Nothing you do takes a declared crit back — the answer is the swap,
-the resist, or the Pokémon who can take it.
+the resist, or the Pokémon who can take it — but a foe slowed *before* its meter fills has its crit pushed later.
 
 *Why (the user's call, 2026-10-26):* a Speed-based crit chance, as Gen I had, was weighed and rejected — it would
 have made every preview a range and every enemy number a gamble. The rhythm keeps Speed's series meaning (fast
@@ -228,7 +228,10 @@ Permanent until cured (§4.2.7). **Poison-types are immune.**
 ### §4.2.2.3 Paralysis ⚡
 Every move belonging to that Pokémon costs **+1 AP** while it lasts, whether it is Lead or bench, and its **Speed is
 halved** (`paralysisSpeedMultiplier`) — which can cost it the quick swap (§3.3.1.1), and on the enemy Lead lowers the
-bar your Pokémon must clear. Swapping it in or out costs nothing extra. **3 turns. Electric-types are immune.**
+bar your Pokémon must clear. It also halves the **pace of its critical rhythm** (§4.1.3.1): the acts still to fill the meter
+double, on the curve's edges too, so Paralysis slows even a wall and even a fast Pokémon; a meter already full stays full.
+That makes Thunder Wave and its kin the way to *delay* a foe's crit before it is declared. Swapping it in or out costs
+nothing extra. **3 turns. Electric-types are immune.**
 *Economy disruption you can route around — play someone else's cards, or move it out.*
 
 ### §4.2.2.4 Sleep 💤

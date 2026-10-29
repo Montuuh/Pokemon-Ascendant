@@ -1,0 +1,21 @@
+/* §4.1.3.1 — the dial tooltip's body: what sets the pace, what is moving it now, how long a full ring takes. */
+.root {
+  display: grid;
+  gap: var(--sp-1);
+}
+.lead,
+.now {
+  margin: 0;
+}
+.now {
+  color: var(--accent-action);
+  font-weight: 800;
+}
+.mods {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1px;
+  font-weight: 700;
+}

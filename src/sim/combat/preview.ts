@@ -131,7 +131,7 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
   else if (foe && enemy && !canReach(state, move, enemy)) reason = 'out-of-reach';
 
   // §4.1.3.1 — a full rhythm is a certain crit, so the preview prints it.
-  const crit = !!move.alwaysCrit || state.player.critChance >= 1 || (spendsRhythm(move) && rhythmReady(owner, ctx.config));
+  const crit = !!move.alwaysCrit || state.player.critChance >= 1 || (spendsRhythm(move) && rhythmReady(owner));
   const damage = move.power > 0 && enemy ? breakdownFor(owner, enemy, move, crit, ctx, state) : null;
   const targets = state.enemies
     .filter((e) => e.hp > 0)

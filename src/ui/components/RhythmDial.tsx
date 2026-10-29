@@ -1,8 +1,8 @@
 import type { CSSProperties } from 'react';
-import { effectiveSpeed, rhythmEvery, rhythmLevelFactor, rhythmSpeed, rhythmTierIndex, type BattleConfig, type Combatant } from '@/sim';
+import { rhythmActs, rhythmLeft, rhythmReady, type BattleConfig, type Combatant } from '@/sim';
 import { RHYTHM_TEXT } from '@/ui/strings';
 import { Tip, Tipped } from '@/ui/tooltip';
-import { RhythmTiers } from './RhythmTiers';
+import { RhythmPace } from './RhythmPace';
 import styles from './RhythmDial.module.css';
 
 /**
@@ -12,22 +12,19 @@ import styles from './RhythmDial.module.css';
  * card's frame colour, so it reads as part of the card.
  */
 export function RhythmDial({ c, config, side, lead }: { c: Combatant; config: BattleConfig; side: 'ally' | 'foe'; lead: boolean }) {
-  const every = rhythmEvery(c, config);
-  const filled = Math.min(c.rhythm, every);
-  const ready = filled >= every;
-  const left = every - filled;
-  // v0.9.80 — the tier it sits in, read back to a Speed: the table of every tier, this one marked.
-  const tiers = side === 'ally' ? config.critRhythm.tiers : config.critRhythm.enemyTiers;
-  const speed = rhythmSpeed(c, config);
-  const card = effectiveSpeed(c, config);
+  // A continuous meter: the ring is its fill, the face the whole acts still to go at today's pace, and the ring's gaps the
+  // acts a full ring takes now, to the nearest whole one (a stage or Paralysis changes them while you watch).
+  const ready = rhythmReady(c);
+  const left = rhythmLeft(c, config);
+  const acts = rhythmActs(c, config);
   return (
     <Tipped
       className={[styles.dial, styles[side], lead ? styles.lead : '', ready ? styles.ready : ''].join(' ')}
-      style={{ '--fill': `${(filled / every) * 100}%`, '--segs': every } as CSSProperties}
+      style={{ '--fill': `${Math.min(1, c.rhythm) * 100}%`, '--segs': Math.max(2, Math.round(acts)) } as CSSProperties}
       aria-label={ready ? RHYTHM_TEXT.readyLabel : RHYTHM_TEXT.label(left)}
       data-testid="rhythm-dial"
       data-ready={ready || undefined}
-      tip={<Tip title={ready ? RHYTHM_TEXT.readyTitle : RHYTHM_TEXT.title} meta={[`${filled} / ${every}`]} body={ready ? RHYTHM_TEXT.readyBody(side) : RHYTHM_TEXT.body(left, side)} footer={<RhythmTiers tiers={tiers} side={side} mine={rhythmTierIndex(c, config)} speed={speed} card={card} level={c.level} factor={rhythmLevelFactor(c)} />} />}
+      tip={<Tip title={ready ? RHYTHM_TEXT.readyTitle : RHYTHM_TEXT.title} body={ready ? RHYTHM_TEXT.readyBody(side) : RHYTHM_TEXT.body(left, side)} footer={<RhythmPace c={c} config={config} side={side} />} />}
     >
       <span className={styles.face}>{ready ? <span className={styles.star}>✦</span> : <b>{left}</b>}</span>
       {ready && <span className={styles.tag}>CRIT</span>}
