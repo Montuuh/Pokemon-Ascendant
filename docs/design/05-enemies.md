@@ -368,7 +368,7 @@ the intent pattern resets.
 
 ## §5.8.3 Phase structure
 
-**Irreversible escalation with a telegraphed signature** (user, 2026-10-29; designed for v0.9.85, not yet
+**Irreversible escalation with a telegraphed signature** (user, 2026-10-29; designed for v0.9.86, not yet
 implemented). Thresholds remain BattleConfig data, drawn as HP-bar notches. Each enemy UID stores its active
 phase and the highest threshold it has crossed while alive. Healing never lowers either. This makes the
 escalation legible without changing the action the player has already been promised.
@@ -486,7 +486,7 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
   both; both are canon.
 
 Teams, roles, scripted kits and badges for all twelve: [`catalogs/gyms.md`](catalogs/gyms.md).
-The 2026-10-29 roster design awaits implementation and calibration in v0.9.85; current per-Leader Attack
+The 2026-10-29 roster design awaits implementation and calibration in v0.9.86; current per-Leader Attack
 scales are a baseline, not a claim that the replacement teams are already balanced.
 
 ## §5.9.4 Per-type signature Phase 2

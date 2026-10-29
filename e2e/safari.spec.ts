@@ -21,6 +21,37 @@ async function inTown(page: Page, cityIndex: 0 | 1 = 0, money = 2000, guide = fa
 }
 
 test.describe('The Safari Zone — §2.11.6', () => {
+  test('the first catch keeps its equipment gift when a full Box declines the recruit, with pointer and keyboard explanations', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await inTown(page, 0, 1000);
+    await page.evaluate(() => window.__ascendant!.run.fill(6));
+    await page.getByTestId('door-safari').click();
+    await page.getByTestId('btn-safari-ticket').click();
+    await page.getByTestId('btn-stalk-0').click();
+    await page.evaluate(() => window.__ascendant!.run.patch((draft) => {
+      const hunt = draft.city!.safari!.hunt!;
+      hunt.tiles = hunt.tiles.replace(/[rw]/g, 'g');
+      const facing = { n: [0, -1], e: [1, 0], s: [0, 1], w: [-1, 0] }[hunt.facing]!;
+      hunt.player = [hunt.mon[0] - facing[0]!, hunt.mon[1] - facing[1]!];
+      // A named deterministic RNG cursor makes the real throw succeed, without manufacturing its reward.
+      draft.cursors.SafariRNG = 1;
+    }));
+    await page.getByTestId('btn-safari-throw').click();
+    const gift = await page.evaluate(() => window.__ascendant!.run.state()!.city!.safari!.gift!);
+    expect(gift.itemId).toBeTruthy();
+    await page.evaluate(() => window.__ascendant!.run.dispatch({ type: 'resolve-recruit', releaseUid: null }));
+    const receipt = page.getByTestId('safari-gift');
+    await expect(receipt).toContainText('Ranger gift');
+    expect(await page.evaluate((id) => window.__ascendant!.run.state()!.bag.includes(id!), gift.itemId)).toBe(true);
+    await receipt.hover();
+    await expect(page.getByRole('tooltip')).toBeVisible();
+    await page.mouse.move(0, 0);
+    await expect(page.getByRole('tooltip')).toHaveCount(0);
+    await receipt.focus();
+    await expect(page.getByRole('tooltip')).toBeVisible();
+    await page.screenshot({ path: 'playtest/design-fixes-2026-10-30/safari-gift-live-720.png' });
+  });
+
   test('How to play opens by itself on the first visit, steps through its pages, and comes back from its button', async ({ page }) => {
     await inTown(page, 0, 1000, true);
     await page.getByTestId('door-safari').click();
@@ -51,6 +82,10 @@ test.describe('The Safari Zone — §2.11.6', () => {
     await expect(page.getByTestId('safari-spot-2')).toHaveAttribute('data-tier', 'rare');
     // No stalking before the ticket.
     await expect(page.getByTestId('btn-stalk-0')).toHaveCount(0);
+    await expect(page.getByTestId('btn-safari-ticket')).toContainText('First catch: Ranger gift');
+    await page.getByTestId('btn-safari-ticket').hover();
+    await expect(page.getByRole('tooltip')).toContainText('first catch earns a useful Held Item');
+    await page.mouse.move(0, 0);
     await page.screenshot({ path: 'playtest/safari.png' });
 
     await page.getByTestId('btn-safari-ticket').click();

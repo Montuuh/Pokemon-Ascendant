@@ -202,7 +202,7 @@ and a runner's countdown (a running figure and *in 2*, amber and solid on its la
 in a column on the window's top-left corner. A guard carries no catch pill. Its tier (Wild, Trainer, Elite, Gym
 Leader) is in the plate's bubble, not printed on every plate.
 
-**Phase information** (§5.8.3; designed for v0.9.85). The Phase N/M chip reads the sim's **active** phase.
+**Phase information** (§5.8.3; designed for v0.9.86). The Phase N/M chip reads the sim's **active** phase.
 When a threshold is crossed, a separate compact cue says *Phase 3 next turn*; the active chip does not advance
 early. Hovering or focusing the phase information explains its effect, activation time and concrete response.
 On commitment, one brief cue names the Pokémon and the effect; a direct jump to Phase 3 produces one combined

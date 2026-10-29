@@ -1504,7 +1504,13 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
-### v0.9.85 — Authored Gym teams and readable phases  ☐
+### v0.9.85 — Equipment and bounded control  ✅ 2026-10-30
+
+**Shipped.** Improve Safari's reward value after route-wide species availability; increase useful Held Item access without reopening relic saturation. Preserve strong Sleep/Freeze with a replacement-proof control limit, target Confusion's discard at its owner, expire enemy Confusion and charge Paralysis against both actions' shared AP. Burn, Poison and control strength are retained after auditing both sides.
+
+**Exit criteria:** first-catch Safari gift once per visit, including declined recruits and exhausted pools; trainer 50 % equipment, Elite guaranteed, merchant always and Mart two useful alternatives; save/reload and control regressions; matched-seed run measurement; `npm run check`, affected e2e, independent design/QA/UI reviews and release verification. [Audit](reviews/2026-10-30-rewards-and-status.md).
+
+### v0.9.86 — Authored Gym teams and readable phases  ☐
 
 **Designed 2026-10-29; not implemented.** The user's playtest: Gym teams repeat Pokémon or contain weak filler,
 and enemy phases lack useful UX. Decision: five members per Gym, allowing one explicitly telegraphed off-type

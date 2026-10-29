@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.85 — Equipment and bounded control · 2026-10-30
+
+More useful equipment and status control with reliable limits.
+
+- **Safari.** The first catch earns equipment, even when the recruit is declined.
+- **Equipment.** More trainer drops, guaranteed Elite items and useful shop stock.
+- **Control.** Sleep/Freeze cannot chain through a cure or replacement.
+- **Statuses.** Owner-only Confusion, enemy expiry and correct Paralysis AP.
+
 ### v0.9.84 — Dark and Steel · 2026-10-29
 
 Two new types, four new evolutions, and the moves and items that carry them.

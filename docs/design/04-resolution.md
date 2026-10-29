@@ -220,14 +220,14 @@ cards still earn their slot as attacks.
 # §4.2 Status conditions
 
 Status is the second axis of a fight. Every Gen I condition is redesigned as a **deterministic** effect so the
-player can plan around it. All six clear at combat end.
+player can plan around it. All six persist between fights (§4.2.7.1).
 
 A Pokémon carries **one primary status at a time** plus, independently, Confusion. A new primary replaces the
 old one.
 
 ## §4.2.1 Timing and interaction rules
 
-- **A status applied on turn N takes effect from turn N+1.** The application turn is telegraph only.
+- **Application changes stat multipliers, card costs and card/position locks immediately.** It never rewrites an enemy intent already declared. Sleep, Freeze and enemy Confusion affect the next declaration; live damage previews include current stat multipliers. DoT and countdowns start after the application turn. This separates the immediate tactical effect from spending its duration and preserves the shown enemy action.
 - **Damage-over-time computes on Effective Max HP** (§8.2.1), not base max HP — the HP bar and the DoT agree.
 - **Stat stage first, then the status multiplier**, multiplicatively (§4.1.5).
 - **Swapping does not cure anything** (§4.2.7).
@@ -242,7 +242,7 @@ Permanent until cured (§4.2.7). **Fire-types are immune.**
 
 ### §4.2.2.2 Poison ☠️
 `floor(EffectiveMaxHP / 16)` damage at the end of each Resolution Phase, and **Defence −15 %**.
-Permanent until cured (§4.2.7). **Poison-types are immune.**
+Permanent until cured (§4.2.7). **Poison- and Steel-types are immune.**
 *Defensive disruption — the poisoned Pokémon wants to come off the Lead.*
 
 > Burn and Poison are deliberate mirrors: same chip damage, one attacks your offence and one your defence, and
@@ -261,15 +261,15 @@ nothing extra. **3 turns. Electric-types are immune.**
 That Pokémon's cards are **unplayable**. Its position is **not** locked: it can be swapped in or out and can be
 the destination of another Pokémon's Step-Backward. It cannot initiate a Step-Forward, because that needs one of
 its own cards. **1 turn. No type immunity** — but it **cannot land on a Pokémon that is already Asleep or
-Frozen**: the play shows IMMUNE and is spent, exactly as §4.2.1 treats an immune target.
+Frozen, or before its last disabling turn has ended**: the play shows IMMUNE and is spent. Sleep and Freeze share per-Pokémon protection stored separately from the current primary: applying either on turn N with duration D blocks both through turn N+D. Curing or replacing the primary cannot erase it. Carried control seeds protection for its remaining turns; fainting clears it.
 
-*Why (playtest, 2026-09-24):* Sleep lasts one turn and the application turn is telegraph (§4.2.1), so a
+*Why (playtest, 2026-09-24):* Sleep lasts one turn and application preserves the declared enemy intent (§4.2.1), so a
 Pokémon put to sleep every turn never woke. Sleep Powder costs 1 AP; one card a turn locked any single enemy
 for the whole fight. Two fixes were weighed. **Refresh-not-stack** (a re-application resets the clock) does not
 break the loop — a one-turn clock refreshed every turn is still a permanent lock. **No Sleep on a sleeper** does:
 the enemy wakes at the end of its sleeping turn, acts on the turn Sleep is re-applied, and sleeps the next — at
 best every other turn, for a card a turn. Measured by `nerfs.test`: the enemy under the abuse acted **1 of 10**
-turns before, **5 of 10** after.
+turns before, **5 of 10** after. The 2026-10-30 audit found that Poison then Sleep bypassed the guard (1 action in 10 turns). Independent control history restores 5 in 10 even through replacement, preserving the strength of the denied turn.
 
 ### §4.2.2.5 Freeze 🧊
 Cards unplayable **and position-locked** — it cannot be swapped in or out, cannot be a Step-Backward
@@ -279,17 +279,15 @@ Frozen (§4.2.2.4) — the two silencing conditions never chain into each other.
 Faint precedence: a Frozen Lead that faints voids the lock (§3.3.5.1).
 
 > Sleep and Freeze are also mirrors: both silence a Pokémon for a turn, but Sleep lets you move it to safety and
-> Freeze does not. Freeze pays for that with the Fire vulnerability.
+> Freeze does not. Fire vulnerability is an extra opening for the attacker, not compensation for the target. Its one-turn duration, shared anti-chain protection and two type immunities bound that stronger control.
 
 ## §4.2.3 Secondary condition
 
 ### §4.2.3.1 Confusion 💫
-At the start of each Draw Phase, **1 random skill card is discarded per Confused Pokémon**. Consumable cards are
-immune. **3 turns**, tracked per Pokémon, and it coexists with any primary status.
+At the start of each Draw Phase, **each Confused Pokémon discards at most one random skill card belonging to itself**. Teammates' cards and consumables are immune. If none of its own cards were drawn, nothing is discarded but its clock advances. **3 turns**, tracked per Pokémon; coexists with any primary. This ties disruption to its source instead of letting one confused bench member remove a teammate's only answer. Randomness resolves before the hand is read, using CombatRNG.
 
 Confusion cannot stack on one Pokémon; re-applying resets the 3-turn timer. With all three Active Pokémon
-confused the player still draws 2 skill + 2 consumable cards, which is the **design safety floor** — no
-pity timer is needed, and `full-heal` cures it.
+confused, at most three skill cards are lost from the ordinary five-card draw: at least two remain. Consumables stay available under §3.5. Hand-Off Pouch can replace a discard but never triggers a second discard for that owner in the same Draw. `full-heal` cures it.
 
 ## §4.2.4 Type immunities
 
@@ -310,10 +308,10 @@ at the moment of application.
 |---|---|---|---|---|---|
 | Burn | Primary | Permanent | `EffMaxHP/16` per turn | Attack −25 % | No |
 | Poison | Primary | Permanent | `EffMaxHP/16` per turn | Defence −15 % | No |
-| Paralysis | Primary | 3 turns | That Pokémon's moves +1 AP | — | No |
-| Sleep | Primary | 1 turn | Its cards unplayable | Cannot land on a sleeper or a frozen one | No |
-| Freeze | Primary | 1 turn | Its cards unplayable | ×1.5 Fire damage taken; cannot land on a sleeper or a frozen one | **Yes** |
-| Confusion | Secondary | 3 turns | −1 skill card per turn, per Confused Pokémon | — | No |
+| Paralysis | Primary | 3 turns | Its moves +1 AP | Half Speed and slower critical rhythm | No |
+| Sleep | Primary | 1 turn | Its cards unplayable | Shared anti-chain protection through the original disabling turn | No |
+| Freeze | Primary | 1 turn | Its cards unplayable | ×1.5 Fire taken; shared anti-chain protection | **Yes** |
+| Confusion | Secondary | 3 turns | Up to −1 of its own skill cards per Draw | No discard if none drawn; clock still advances | No |
 
 **Every one of them outlives the combat that inflicted it** — the timed ones with what is left of their turns
 (§4.2.7.1).
@@ -362,19 +360,19 @@ Burn-and-Poison-only rule proposed earlier the same day.)*
 
 ## §4.2.8 Status on the enemy side
 
-Status is symmetric, but an enemy has no hand, so the five conditions translate:
+Status is symmetric, but an enemy has no hand, so the six conditions translate:
 
 | Condition | On an enemy |
 |---|---|
 | **Burn** | Chip damage and Attack −25 %, exactly as for the player |
 | **Poison** | Chip damage and Defence −15 %, exactly as for the player |
-| **Paralysis** | Every intent costs +1 AP against the enemy's 3-AP budget; intents it can no longer afford are unavailable. If nothing is affordable it skips, telegraphed as "can't act" |
+| **Paralysis** | Every move costs +1 AP against its per-move 3-AP limit and, for Acting Twice, both actions' shared budget (§5.6.1). Unaffordable moves are unavailable; with none it does nothing. Speed and critical rhythm slow as on the player side |
 | **Sleep** | It skips its action, telegraphed as "can't act" |
 | **Freeze** | It skips its action and takes ×1.5 from Fire |
 | **Confusion** | It picks **uniformly at random** among its legal intents instead of scoring them — still declared in advance, so the player still sees what is coming |
 
 Confusion on an enemy is therefore an information *and* a quality attack: the intent is still telegraphed, but
-it stops being the smart one. *(Ratified 2026-09-19; previously these translations existed only in code.)*
+it stops being the smart one. Its clock advances once at the end of each active Resolution, including turns it cannot act, and expires after three. A legal future plan already shown by Trainer's Instinct stays committed even when Confusion starts or expires (§5.5.1); only new choices use the current condition. *(Bounded duration repaired 2026-10-30.)*
 
 ---
 

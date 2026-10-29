@@ -88,7 +88,7 @@ Region 3's last wild band (`leagueBase`); every ace three-phase, every other Pok
 
 Sprites: Showdown's trainer set — Bruno, Agatha (its FireRed/LeafGreen sprite: there is no default one), Will, Lance and Blue (`npm run art:trainers`).
 
-## 8. Three-phase ace signatures — ⚠ v0.9.85 (§5.8.3)
+## 8. Three-phase ace signatures — ⚠ v0.9.86 (§5.8.3)
 
 The user chose irreversible escalation with an authored signature on 2026-10-29. These rows are designed,
 not implemented. Each signatureMove must be present in its encounter's active kit and fit the ordinary

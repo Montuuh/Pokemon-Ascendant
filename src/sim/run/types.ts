@@ -516,6 +516,8 @@ export interface SafariHunt {
 
 /** §2.11.6 — the Safari Zone for one City visit. */
 export interface SafariState {
+  /** §2.11.6 — receipt for the visit's one first-catch gift; absent in legacy visits. */
+  gift?: { itemId: string | null; money: number };
   fee: number;
   /** Safari Balls left. Bought with the ticket, lost when you leave. */
   balls: number;

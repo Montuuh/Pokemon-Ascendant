@@ -33,7 +33,7 @@ Consumables are spent (§3.5) and relics are scarce (§7.3.1). The tables and ra
 | Fight | Supplies | Poké Balls | Relic |
 |---|---|---|---|
 | Wild | 15 %: one | 30 %: 1–2 | — |
-| Trainer | always 1–2 | 20 %: one | 15 %: a Common |
+| Trainer | always 1–2 | 20 %: one | — (removed v0.9.10) |
 | Elite Trainer | 2 + a prize | 2 | a pick: two Uncommons and a Rare |
 | Elite Wild | 2 | — | beaten: a Rare |
 | Gym | 2 + a prize | — | the Gym's 1-of-3: Rares at the first, Legendaries after (§7.3.7) |
@@ -59,7 +59,7 @@ Hyper Potions (Celadon) on the first visit. Measured over 120 runs: a full run e
 | Common relic | 300 ₽ | 390 ₽ | + the collector's premium, 50 % per relic bought (§2.11.2.3; v0.9.10, was 175 ₽ and 25 %) |
 | Uncommon relic | — | 715 ₽ | + premium |
 | Rare relic | — | 1170 ₽ | City slot 6, a quarter of visits; + premium |
-| Held Item | 250–400 ₽ | 325–520 ₽ | curated to the team |
+| Held Item | 300 ₽ | 390 ₽ | useful equipment, §7.4.1; v0.9.85 broadens access without a price cut |
 | TM | 250–500 ₽ | 325–650 ₽ | curated to `compatibleSpecies` |
 | Evolution stone | 250 ₽ | 325 ₽ | |
 | **Shop re-roll** | 25 → 50 → 100 ₽ | — | up to 3 per visit (§2.9.3) |

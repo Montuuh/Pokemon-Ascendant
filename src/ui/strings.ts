@@ -136,9 +136,9 @@ export const STATUS_HINT: Record<string, string> = {
   burn: '−25% Attack · loses HP each turn',
   poison: '−15% Defense · loses HP each turn',
   paralysis: 'Its cards cost +1 AP · half Speed: the quick swap and the critical rhythm slow (3 turns)',
-  sleep: 'Its cards are offline next turn · no new Sleep or Freeze while asleep',
-  freeze: 'Cards offline · position locked · ×1.5 Fire damage · no new Sleep or Freeze while frozen',
-  confusion: 'Discards 1 random card per turn (3 turns)',
+  sleep: 'Cards offline for 1 turn · swapping allowed · curing or replacing it cannot reset the Sleep/Freeze limit',
+  freeze: 'Cards offline for 1 turn · position locked · ×1.5 Fire damage · curing or replacing it cannot reset the Sleep/Freeze limit',
+  confusion: 'Fumbles 1 of its own skill cards per draw, if drawn (3 turns). Enemies choose uniformly among legal intents.',
 };
 
 export const INTENT_LABEL: Record<string, string> = {
@@ -812,6 +812,8 @@ export const SAFARI_TRAIT: Record<string, { label: string; hint: string }> = {
 };
 /** §2.11.6 — the stalk's own words. */
 export const SAFARI_TEXT = {
+  giftPrompt: 'First catch: Ranger gift',
+  giftLabel: 'Ranger gift',
   closed: 'The park is closed this visit. It will be open in the next town.',
   exposed: 'It will see you there',
   backAway: 'Back away',

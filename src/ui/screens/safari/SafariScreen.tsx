@@ -16,7 +16,7 @@ import { SwapOrSkip } from '@/ui/components/SwapOrSkip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { BACK_TO_TOWN, LEAVE_WARNING, RUN_REJECT_TEXT, SAFARI_GUIDE, SAFARI_RESULT_LABEL, SAFARI_TEXT, SAFARI_TIER_LABEL, SAFARI_TRAIT } from '@/ui/strings';
 import {
-  moneyTip, safariAlarmTip, safariApTip, safariBaitTip, safariBallsTip, safariBoardTip, safariClockTip, safariRockTip, safariStateTip,
+  heldItemTip, moneyTip, safariAlarmTip, safariApTip, safariBaitTip, safariBallsTip, safariBoardTip, safariClockTip, safariRockTip, safariStateTip,
   safariThrowTip, safariTicketTip, safariTierTip, safariTraitTip,
 } from '@/ui/tips';
 import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
@@ -105,11 +105,12 @@ function Entrance({ safari, money, act, onHelp }: { safari: SafariState | null; 
         ))}
       </ul>
       <footer className={styles.footer}>
-        {stalked && lastLine && <p className={styles.lastLine}>{lastLine}</p>}
+        {safari.gift && <Tipped tip={safari.gift.itemId ? heldItemTip(getContent().heldItem(safari.gift.itemId)) : moneyTip(safari.gift.money)} className={styles.giftReceipt} data-testid="safari-gift">{SAFARI_TEXT.giftLabel}: {safari.gift.itemId ? getContent().heldItem(safari.gift.itemId).name : `${safari.gift.money} ₽`}</Tipped>}
+        {stalked && lastLine && !safari.gift && <p className={styles.lastLine}>{lastLine}</p>}
         {!safari.entered && (
           <Tipped tip={safariTicketTip(safari.fee, safari.balls, safari.clock)} as="span" className={styles.ticketWrap}>
             <button type="button" className={styles.primary} disabled={money < safari.fee} onClick={() => act({ type: 'enter-safari' })} data-testid="btn-safari-ticket">
-              Buy a ticket <Money amount={safari.fee} size={16} />
+              Buy a ticket <Money amount={safari.fee} size={16} /> · {SAFARI_TEXT.giftPrompt}
             </button>
           </Tipped>
         )}

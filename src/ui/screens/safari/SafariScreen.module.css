@@ -164,6 +164,15 @@
   gap: var(--sp-3);
 }
 .lastLine { margin: 0 auto 0 0; color: var(--ink-secondary); font-weight: 700; }
+.giftReceipt {
+  margin: 0 auto 0 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-weight: 700;
+}
 .ticketWrap { display: inline-flex; }
 .primary,
 .secondary,

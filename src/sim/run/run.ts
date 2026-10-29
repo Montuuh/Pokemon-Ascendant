@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
-import { RngStreams } from '../rng/rngStreams';
+import { fnv1a, RngStreams } from '../rng/rngStreams';
 import { knownMoves } from '../combat/stats';
 import { isImmuneToStatus } from '../combat/status';
 import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
@@ -537,6 +537,7 @@ function endHunt(draft: RunState, result: 'caught' | 'fled' | 'left' | 'closed',
   const safari = draft.city!.safari!;
   const hunt = safari.hunt!;
   const spot = safari.lineup[hunt.spot]!;
+  const firstCatch = !safari.lineup.some((entry) => entry.result === 'caught');
   spot.result = result;
   safari.hunt = null;
   const name = ctx.content.species(spot.species).name;
@@ -549,6 +550,21 @@ function endHunt(draft: RunState, result: 'caught' | 'fled' | 'left' | 'closed',
   if (result !== 'caught') return;
   draft.stats.catches += 1;
   say(draft, `Caught ${name}!`);
+  // §2.11.6 — the first catch earns one Ranger gift, even when a full Box declines the recruit.
+  if (firstCatch) {
+    // A visit-owned substream keeps the gift from moving any stalk's throw or the run's loot cursor.
+    const giftRng = new RngStreams(draft.seed ^ fnv1a(`SafariGift:${draft.regionIndex}`)).get('SafariRNG');
+    const gift = rollHeldItem(giftRng, ctx.content, ownedItems(draft), draft.box);
+    if (gift) {
+      draft.bag.push(gift);
+      safari.gift = { itemId: gift, money: 0 };
+      say(draft, `Caught ${name}! The Ranger gave you ${ctx.content.heldItem(gift).name}.`);
+    } else {
+      draft.money += sellPrice();
+      safari.gift = { itemId: null, money: sellPrice() };
+      say(draft, `Caught ${name}! The Ranger gave you ${sellPrice()} ₽ instead of equipment.`);
+    }
+  }
   if (draft.box.length < boxCapacity(draft)) {
     const recruit = newPartyMon(spot.species, spot.level, ctx.content, draft.seed, mintUid(draft));
     // §5.14 — a Safari catch is a new copy: the line's Shiny Charm rolls for it.
@@ -1274,10 +1290,10 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         }
         if (relicDrop) acquireRelic(draft, relicDrop, ctx.content);
 
-        // §7.4.6 — a Trainer drops a Held Item one time in five. Wild loot never contains one.
+        // §7.4.1 — trainers drop equipment half the time; the Elite guarantees it.
         let itemDrop: string | null = null;
-        if ((node.kind === 'trainer' || node.kind === 'elite') && lootRng.chance(HELD_ITEM_DROP_CHANCE)) {
-          itemDrop = rollHeldItem(lootRng, ctx.content, ownedItems(draft));
+        if (node.kind === 'elite' || (node.kind === 'trainer' && lootRng.chance(HELD_ITEM_DROP_CHANCE))) {
+          itemDrop = rollHeldItem(lootRng, ctx.content, ownedItems(draft), draft.box);
           if (itemDrop) {
             draft.bag.push(itemDrop);
             say(draft, `Found a ${ctx.content.heldItem(itemDrop).name}.`);

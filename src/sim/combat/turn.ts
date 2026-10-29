@@ -87,12 +87,14 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   const cons = openBag(state);
   emit(state, { t: 'draw', cardIds: drawn.map((c) => c.id), consumableIds: cons.map((c) => c.id) });
 
-  // §4.2.3.1 — Confusion: each Confused Pokémon discards 1 random skill card; consumables are immune.
+  // §4.2.3.1 — Confusion fumbles only the affected Pokémon's cards; teammates keep their answers.
   for (const c of p.team) {
     if (c.hp <= 0 || c.confusionTurns <= 0) continue;
     if (!statusActiveThisTurn({ appliedTurn: c.confusionAppliedTurn }, state.turn)) continue;
-    if (p.hand.length > 0) {
-      const idx = ctx.rng.range(0, p.hand.length);
+    const ownCards = p.hand.filter((card) => card.ownerUid === c.uid);
+    if (ownCards.length > 0) {
+      const picked = ownCards[ctx.rng.range(0, ownCards.length)]!;
+      const idx = p.hand.findIndex((card) => card.id === picked.id);
       const [card] = p.hand.splice(idx, 1);
       p.discard.push(card!);
       emit(state, { t: 'confusion-discard', uid: c.uid, cardId: card!.id });
@@ -258,6 +260,15 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
 
 export function tickStatuses(state: CombatState, c: Combatant, ctx: RunCtx): void {
   if (c.hp <= 0) return;
+  // §4.2.8 — enemies have no Draw discard, but Confusion still lasts only its three active turns.
+  if (state.enemies.some((enemy) => enemy.uid === c.uid) && c.confusionTurns > 0
+    && statusActiveThisTurn({ appliedTurn: c.confusionAppliedTurn }, state.turn)) {
+    c.confusionTurns -= 1;
+    if (c.confusionTurns === 0) {
+      emit(state, { t: 'status-cleared', targetUid: c.uid, status: 'confusion', cause: 'expired' });
+      log(state, 'system', `${c.name} snapped out of confusion.`);
+    }
+  }
   if (c.regen) {
     const amount = heal(state, c, c.maxHp * c.regen.percentOfMaxHp, 'regen');
     if (amount > 0) log(state, 'system', `${c.name} regenerated ${amount} HP.`);

@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import { IconLock, IconQuestionMark } from '@tabler/icons-react';
 import { IntentChip } from './IntentChip';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
-import { SLOT_LABEL, effectiveSpeed, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
+import { SLOT_LABEL, controlRecoveryThrough, effectiveSpeed, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
 import { CatchPicker } from './CatchPicker';
 import { intentGlyph, spriteOf } from '@/ui/art';
 import type { SpriteSlot } from '@/ui/hooks/useCombatFx';
@@ -88,7 +88,8 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
   // §5.6 — the card is the door to its place, and to what the card does not print: its tier and its phase. While a
   // card is aimed the bubble stays shut — the card's number and the breakdown are what is read then.
   const placeMeta = [tierLabel, `Speed ${effectiveSpeed(enemy, ctx.config)}`, ...(enemy.phaseCount > 1 ? [`Phase ${phase} of ${enemy.phaseCount}`] : []), ...(state.objective?.kind === 'hold' ? [OBJECTIVE_TEXT.guardMeta] : [])];
-  const cardTipProps = useTip(targetable ? null : placeTip(place, state.enemies.length + state.enemyQueue.length <= 1, !!enemy.shiny, placeMeta));
+  const recovery = controlRecoveryThrough(enemy, state.turn);
+  const cardTipProps = useTip(targetable ? null : placeTip(place, state.enemies.length + state.enemyQueue.length <= 1, !!enemy.shiny, placeMeta, recovery ?? undefined));
   const front = place === 'Lead' || !inGroup;
   // §9.2.4 — the HP the card would leave it: only on the one it is aimed at (or on all of them, for an area card) —
   // the number on every card's corner already compares them.

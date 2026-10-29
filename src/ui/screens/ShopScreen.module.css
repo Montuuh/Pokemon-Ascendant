@@ -42,7 +42,7 @@
   min-width: 0;
 }
 
-/* §2.9.2 — the cart stays in sight while its four offers are considered. */
+/* §2.9.2 — the cart stays in sight while its offers are considered. */
 .routeStop {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

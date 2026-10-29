@@ -9,7 +9,7 @@
 
 | id | Name | Effect | Sources |
 |---|---|---|---|
-| `charcoal` | Charcoal | Wearer's Fire moves +20 % | Trainer drop, City Shop slot 7 |
+| `charcoal` | Charcoal | Wearer's Fire moves +20 % | Trainer reward, merchant, City Shop, Safari gift (§7.4.1) |
 | `mystic-water` | Mystic Water | Wearer's Water moves +20 % | same |
 | `magnet` | Magnet | Wearer's Electric moves +20 % | same |
 | `miracle-seed` | Miracle Seed | Wearer's Grass moves +20 % | same |
@@ -70,8 +70,7 @@ ability-granted aura on the same Pokémon.
 
 ## 6. Rules
 
-- **Acquisition** (§7.4.6): Trainer battles drop one 20 % of the time (uniform across the generic items);
-  the Elite Trainer has a guaranteed slot; City Shop slot 7 is curated to the team; Mystery rewards.
+- **Acquisition** (§7.4.6): Trainer battles drop one 50 % of the time; the Elite Trainer guarantees one. The merchant always has equipment, the Mart offers two distinct choices and the Department Store four. The first successful Safari catch gives one Ranger gift per visit. Curation and exhaustion follow §7.4.1 and §2.11.6; Mystery rewards and ground finds remain sources. Implemented v0.9.85.
   Wild loot never contains Held Items. `thick-club` is not in any random pool.
 - **Box transfer**: releasing a Pokémon drops its item back to the inventory — never lost.
 - **Faint prevention order:** Sturdy (ability) → `last-stand` (Legendary) → `focus-sash` (held item) →

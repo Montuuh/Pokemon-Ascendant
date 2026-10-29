@@ -212,11 +212,16 @@ describe('The Safari Zone — §2.11.6', () => {
       });
       if (reject(s, { type: 'safari-throw' })) continue;
       const before = s.box.length;
+      const bagBefore = s.bag.length;
+      const cursorBefore = s.cursors.LootRNG;
       s = apply(s, { type: 'safari-throw' });
       if (s.city!.safari!.lineup[0]!.result !== 'caught') continue;
       while (s.phase === 'evolution') s = apply(s, { type: 'choose-branch', uid: s.pendingEvolutions[0]!.uid, branchId: s.pendingEvolutions[0]!.branchIds[0]! });
       expect(s.phase).toBe('safari');
       expect(s.box.length).toBe(before + 1);
+      expect(s.bag).toHaveLength(bagBefore + 1);
+      expect(s.cursors.LootRNG).toBe(cursorBefore);
+      expect(deserialiseRun(serialiseRun(s, 0), content)).toMatchObject({ ok: true, run: { bag: s.bag } });
       expect(s.city!.safari!.balls).toBe(SAFARI.cities['pallet-town'].balls - 1);
       expect(s.city!.safari!.done).toBe(false);
       return;
@@ -237,11 +242,51 @@ describe('The Safari Zone — §2.11.6', () => {
       if (reject(s, { type: 'safari-throw' })) continue;
       s = apply(s, { type: 'safari-throw' });
       if (s.phase !== 'swap-or-skip') continue;
+      expect(s.bag).toHaveLength(1);
       s = apply(s, { type: 'resolve-recruit', releaseUid: null });
       expect(s.phase).toBe('safari');
+      expect(s.bag).toHaveLength(1);
       return;
     }
     throw new Error('no seed caught in 40 tries');
+  });
+
+  it('FirstCatch_AlreadyCaughtEarlierThisVisit_DoesNotPayTwice', () => {
+    for (let seed = 1; seed < 40; seed++) {
+      let state = apply(inPark(0, seed), { type: 'safari-approach', spot: 1 });
+      state = produce(state, (draft) => {
+        draft.city!.safari!.lineup[0]!.result = 'caught';
+        const hunt = draft.city!.safari!.hunt!;
+        hunt.tiles = hunt.tiles.replace(/[rw]/g, 'g');
+        hunt.player = [hunt.mon[0], hunt.mon[1] + 1];
+      });
+      if (reject(state, { type: 'safari-throw' })) continue;
+      const next = apply(state, { type: 'safari-throw' });
+      if (next.city!.safari!.lineup[1]!.result !== 'caught') continue;
+      expect(next.bag).toEqual(state.bag);
+      expect(next.money).toBe(state.money);
+      return;
+    }
+    throw new Error('no second catch in 40 seeds');
+  });
+
+  it('FirstCatch_EquipmentPoolExhausted_PaysResaleValueInstead', () => {
+    for (let seed = 1; seed < 40; seed++) {
+      let state = apply(inPark(0, seed), { type: 'safari-approach', spot: 0 });
+      state = produce(state, (draft) => {
+        draft.bag = content.allHeldItems().map((item) => item.id);
+        const hunt = draft.city!.safari!.hunt!;
+        hunt.tiles = hunt.tiles.replace(/[rw]/g, 'g');
+        hunt.player = [hunt.mon[0], hunt.mon[1] + 1];
+      });
+      if (reject(state, { type: 'safari-throw' })) continue;
+      const next = apply(state, { type: 'safari-throw' });
+      if (next.city!.safari!.lineup[0]!.result !== 'caught') continue;
+      expect(next.bag).toEqual(state.bag);
+      expect(next.money).toBe(state.money + 90);
+      return;
+    }
+    throw new Error('no catch in 40 seeds');
   });
 
   it('Save_CarriesTheSafari_AndAVersion11CityHasNone', () => {

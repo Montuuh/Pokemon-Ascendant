@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { battlefields, fieldsFor, groupPlanFor, wildChancesFor, type DifficultyModifier, type PartyMon, type RunState } from '@/sim';
+import { controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, wildChancesFor, type DifficultyModifier, type PartyMon, type RunState } from '@/sim';
 import { nodeHint } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
@@ -216,8 +216,8 @@ const INTENT_BODY: Record<string, string> = {
 };
 
 /** §5.5 — what an intent means and what to do about it. `hidden` intents show the kind only. */
-export function intentTip(kind: string, detail?: string, hidden = false): ReactNode {
-  return <Tip title={`Enemy intent: ${INTENT_LABEL[kind] ?? cap(kind)}`} meta={detail && !hidden ? [detail] : undefined} body={INTENT_BODY[hidden ? 'unknown' : kind] ?? INTENT_BODY.unknown} footer="Every enemy move is telegraphed a turn ahead. Nothing here is a guess." />;
+export function intentTip(kind: string, detail?: string, hidden = false, recovery?: string): ReactNode {
+  return <Tip title={`Enemy intent: ${INTENT_LABEL[kind] ?? cap(kind)}`} meta={detail && !hidden ? [detail] : undefined} body={<>{INTENT_BODY[hidden ? 'unknown' : kind] ?? INTENT_BODY.unknown}{recovery && <div>{recovery}</div>}</>} footer="Every enemy move is telegraphed a turn ahead. Nothing here is a guess." />;
 }
 
 /**
@@ -228,13 +228,16 @@ export function intentTip(kind: string, detail?: string, hidden = false): ReactN
 export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecast: TurnForecast, action: 0 | 1 = 0, ifLead: { name: string; amount: number; ko: boolean }[], ctx: CombatCtx): ReactNode {
   const intent = action === 1 ? enemy.second ?? null : enemy.intent;
   if (!intent) return null;
+  const recovery = controlRecoveryThrough(enemy, state.turn);
+  const recoveryText = recovery !== null ? `Protected from Sleep and Freeze through Turn ${recovery}, even after curing or replacing the condition.` : undefined;
   const move = intent.moveId ? getContent().move(intent.moveId) : null;
   // §5.6.1 — a broken second action is not going to happen: its card says that and nothing else.
   if (intent.broken && move) return <Tip title={`${enemy.name}: ${move.name}`} meta={['Broken']} body="It will not happen this turn." />;
-  if (intent.hidden || !move) return intentTip(intent.kind, undefined, intent.hidden);
+  if (intent.hidden || !move) return intentTip(intent.kind, undefined, intent.hidden, recoveryText);
   const meta: ReactNode[] = [typeName(move.type), INTENT_LABEL[intent.kind] ?? cap(intent.kind)];
   if (move.power > 0) meta.push(`${move.power} power`, move.range === 'melee' ? 'Melee' : 'Ranged');
   const lines: ReactNode[] = [];
+  if (recoveryText) lines.push(recoveryText);
   const ally = intent.targetEnemyUid ? intentRecipient(state, enemy, intent) : enemy;
   if (intent.kind === 'cleave') lines.push('Aimed at every Pokémon on your side.');
   else if (intent.targetSlot) lines.push(`Aimed at your ${SLOT_LABEL[intent.targetSlot]} — ${slotOccupant(state, intent.targetSlot)?.name ?? 'nobody there'}.`);
@@ -457,8 +460,8 @@ export function groupTip(plan: GroupPlan): ReactNode {
 }
 
 /** §5.6 — an enemy's place in a group: the Lead in front, or one behind it. */
-export function placeTip(place: string, alone = false, shiny = false, meta: string[] = []): ReactNode {
-  const withShiny = (text: string): ReactNode => (shiny ? [<div key="r">{text}</div>, shinyLine(false)] : text);
+export function placeTip(place: string, alone = false, shiny = false, meta: string[] = [], recovery?: number): ReactNode {
+  const withShiny = (text: string): ReactNode => <><div>{text}</div>{recovery !== undefined && <div>Protected from Sleep and Freeze through Turn {recovery}.</div>}{shiny && shinyLine(false)}</>;
   if (place === 'Lead' && alone) return <Tip title="Enemy Lead" meta={meta} body={withShiny('It stands alone. Every card reaches it; Melee cards reach only the enemy that leads.')} />;
   if (place === 'Lead') {
     return <Tip title="Enemy Lead" meta={meta} body={withShiny('It stands in front of its group. Your Melee cards reach only this one; Ranged and area cards reach the rest. If it falls, the strongest of the others steps up.')} />;
@@ -545,7 +548,7 @@ export function traumaTip(stacks: number, max: number): ReactNode {
 }
 
 /** The Pokémon itself: species, types, level, ability, item — the summary a portrait owes on hover. */
-export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?: number; swapQuick?: boolean; incoming?: { name: string; move: string; amount: number; moot?: boolean }[]; incomingKo?: boolean; asLead?: { amount: number; ko: boolean } }): ReactNode {
+export function combatantTip(c: Combatant, extra?: { turn?: number; isLead?: boolean; swapCost?: number; swapQuick?: boolean; incoming?: { name: string; move: string; amount: number; moot?: boolean }[]; incomingKo?: boolean; asLead?: { amount: number; ko: boolean } }): ReactNode {
   const content = getContent();
   const meta: ReactNode[] = [`Lv ${c.level}`, ...c.types.map(typeName), `Speed ${effectiveSpeed(c, DEFAULT_BATTLE_CONFIG)}`];
   const lines: ReactNode[] = [];
@@ -557,6 +560,8 @@ export function combatantTip(c: Combatant, extra?: { isLead?: boolean; swapCost?
     const h = content.heldItem(c.heldItemId);
     lines.push(<div key="h"><b>{h.name}</b> — {h.description}</div>);
   }
+  const recovery = extra?.turn !== undefined ? controlRecoveryThrough(c, extra.turn) : null;
+  if (recovery !== null) lines.push(<div key="control"><b>Recovering</b> — protected from Sleep and Freeze through Turn {recovery}.</div>);
   if (c.status) lines.push(<div key="s"><b>{STATUS_LABEL[c.status.kind]}</b> — {STATUS_HINT[c.status.kind]}</div>);
   if (c.traumaStacks > 0) lines.push(<div key="t"><b>Trauma ×{c.traumaStacks}</b> — max HP is lowered until treated.</div>);
   if (c.shiny) lines.push(shinyLine(true));
@@ -1278,7 +1283,7 @@ export function floorTip(label: string, count: number): ReactNode {
 
 /** §2.11.6 — the ticket: what it buys. */
 export function safariTicketTip(fee: number, balls: number, clock: number): ReactNode {
-  return <Tip title="Safari ticket" meta={[`${fee} ₽`, `${balls} Safari Balls`, `${clock} turns`]} body="The balls and the turns are shared by every Pokémon you stalk. What is left when you leave stays behind." />;
+  return <Tip title="Safari ticket" meta={[`${fee} ₽`, `${balls} Safari Balls`, `${clock} turns`]} body="Your first catch earns a useful Held Item, even if you decline the recruit. If none remain, the Ranger gives you its resale value instead. Once per visit." footer="Balls and turns are shared by every stalk. What is left when you leave stays behind." />;
 }
 
 /** §2.11.6 — the Safari Balls left. */

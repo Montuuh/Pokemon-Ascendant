@@ -20,6 +20,7 @@ import styles from './Portrait.module.css';
 type Variant = 'lead' | 'bench';
 
 interface Props {
+  turn?: number;
   /** §9.9.1 — its faint has not played yet (`useCombatFx`): drawn standing until the beat. */
   faintPending?: boolean;
   mon: Combatant;
@@ -66,7 +67,7 @@ interface Props {
 // on a dark head, the animated back sprite in a window lit in its first type, its HP — with the part this turn's visible
 // intents will take striped — and on a bench the swap price and what it would take as the Lead. The hits coming at it
 // hang off the card's edge, towards the enemy. The whole card is one button: a swap, an ally target, a step-back choice.
-export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapQuick, swapAllowed, swapHint, targeted, selectable, rhythmGhost, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending, arrival }: Props) {
+export function Portrait({ turn, mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapQuick, swapAllowed, swapHint, targeted, selectable, rhythmGhost, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending, arrival }: Props) {
   // §9.9.1 — at 0 HP but its faint still to play: it stands through the hits on screen first.
   const fainted = mon.hp <= 0 && !faintPending;
   const classes = [card.card, styles.unit, styles[variant], targeted ? styles.targeted : '', selectable ? styles.selectable : '', fainted ? styles.fainted : '', arrival ? styles[arrival] : ''].filter(Boolean).join(' ');
@@ -74,7 +75,7 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
   // 2026-09-21 — the card's bubble is the Pokémon's summary: types, ability, held item, status, Trauma, and its role
   // right now (Lead, or what a swap costs).
   const hits = !fainted && incoming?.length ? incoming : null;
-  const tip = useTip(combatantTip(mon, { isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost, swapQuick: !!swapQuick } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}), ...(asLead && !fainted ? { asLead } : {}) }));
+  const tip = useTip(combatantTip(mon, { turn, isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost, swapQuick: !!swapQuick } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}), ...(asLead && !fainted ? { asLead } : {}) }));
   const incomingText = hits ? `; incoming: ${hits.map((h) => (h.moot ? `${h.name}'s ${h.move}, wasted on it being down` : `${h.amount} from ${h.name}'s ${h.move}`)).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
   // §9.2.5 — the HP left after the visible hits: what the striped end of the bar shows (a wasted hit takes nothing).
   const future = hits ? Math.max(0, mon.hp - hits.reduce((a, h) => a + (h.moot ? 0 : h.amount), 0)) : null;

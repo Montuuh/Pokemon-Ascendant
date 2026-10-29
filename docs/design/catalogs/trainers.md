@@ -104,7 +104,7 @@ above: the Ice Gym is the Seafoam kind, and a lane needs an archetype that looks
 | Trainer XP (meta) | 5 per node |
 | Poké Dollars | 50–150 R1 · 120–260 R2 · 200–400 R3 (archetype tier scales inside the band) |
 | Loot | 50 % common item / 30 % common relic / 20 % uncommon item, seeded |
-| Held Item | 20 % chance (§7.4.6), uniform over the 18 generic items |
+| Held Item | 50 % chance (§7.4.1), curated to useful, unowned generic equipment · ✅ v0.9.85 |
 | TM | 5 % chance |
 | Pokédex credit | each defeated Pokémon counts toward its species' kill thresholds (§5.13) |
 | In-run XP | `ProgressionConfig.trainerXp` = 45 base × the level band |

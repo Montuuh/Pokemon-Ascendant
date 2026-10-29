@@ -21,7 +21,7 @@ export { GYM_RULE_IDS, rolloutTurns, ruleCounter, synergyMultiplier, turnsUntil,
 export { slotOccupant, slotToIndex, indexToSlot, lead, benchIndices, aliveTeam, activeEnemy, aliveEnemies, isEnemyLead, resolutionOrder, enemySlotLabel, findCombatant, SLOT_LABEL } from './combat/slots';
 export { markRhythm, rhythmActs, rhythmFillOf, rhythmLeft, rhythmLevelFactor, rhythmModifier, rhythmReady, rhythmSpeed, spendsRhythm, type RhythmFill } from './combat/rhythm';
 export { effectiveAttack, effectiveDefense, effectiveSpeed, outspeeds, statAtLevel, effectiveMaxHp, hpFraction, isFainted, knownMoves, activeMoves } from './combat/stats';
-export { cardsLocked, isPositionLocked, isImmuneToStatus, dotDamage } from './combat/status';
+export { cardsLocked, isPositionLocked, isImmuneToStatus, dotDamage, controlRecoveryThrough } from './combat/status';
 export { breakdownFor } from './combat/damageFlow';
 export * from './rng/gameRng';
 export * from './rng/rngStreams';

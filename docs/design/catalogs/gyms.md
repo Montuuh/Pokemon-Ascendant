@@ -1,12 +1,12 @@
 # Gym Leader catalog — 12 (4 per Region)
 
-> Data for §5.9.2–§5.9.5 and §5.10. **⚠ Designed 2026-10-29; implementation and tuning pending v0.9.85.**
+> Data for §5.9.2–§5.9.5 and §5.10. **⚠ Designed 2026-10-29; implementation and tuning pending v0.9.86.**
 > The user chose five members with a thematic off-type support permitted. The build still pads two authored
 > members from lane pools; these replacement teams are not shipped. Species, moves and assets already exist.
 
 ## 1. Region 1 — Rock · Water · Bug · Normal
 
-Every member row: **⚠ v0.9.85 · §5.9.3**. Rows are deployment order; slot 5 is the ace. Roles describe the kit's
+Every member row: **⚠ v0.9.86 · §5.9.3**. Rows are deployment order; slot 5 is the ace. Roles describe the kit's
 job, not an extra support actor or an escalation buff. Levels and phase counts follow §5.9.3.
 
 ### `rock-gym-r1` — Brock · Rock Solid
@@ -64,7 +64,7 @@ Sing but never loops Rest. Raticate keeps Dig coverage.
 
 ## 2. Region 2 — Fire · Grass · Electric · Poison
 
-Every member row: **⚠ v0.9.85 · §5.9.3**. The Region's status accent remains (§2.2); it must not evict any of
+Every member row: **⚠ v0.9.86 · §5.9.3**. The Region's status accent remains (§2.2); it must not evict any of
 the four authored moves. Two enemies share the field; these are not five separate duels.
 
 ### `fire-gym-r2` — Blaine · Meltdown
@@ -120,7 +120,7 @@ Weezing/Golbat. Ground immunity and Psychic coverage remain visible species/inte
 
 ## 3. Region 3 — Psychic · Ground · Fighting · Ice
 
-Every member row: **⚠ v0.9.85 · §5.9.3**. Final forms only. Auto must not restore Recover on Alakazam or Rest
+Every member row: **⚠ v0.9.86 · §5.9.3**. Final forms only. Auto must not restore Recover on Alakazam or Rest
 on Lorelei's team. There is no additional escalating support actor.
 
 ### `psychic-gym-r3` — Sabrina · Mind Lock
@@ -181,7 +181,7 @@ baseline Gym. Fire shatters the Leader's armour on Slowbro too.
 Mapping and behaviour live in §5.9.4. The named archetype above describes the ace, not an override of another
 member's primary type. A one-phase member has no Phase-2 effect. Home Field and the Leader's rule stay fight-wide.
 
-**Phase-3 signatures — ⚠ v0.9.85, §5.8.3.** Each signatureMove names one move in the ace's four-move kit;
+**Phase-3 signatures — ⚠ v0.9.86, §5.8.3.** Each signatureMove names one move in the ace's four-move kit;
 these are data for the one-shot declaration contract, not extra moves, free actions or damage multipliers.
 The response is shown with its intent. A signature still uses ordinary move/status/type rules. Lapras uses
 Ice Beam rather than the 4-AP Blizzard: the normal per-move enemy cap is 3 AP even when an ace has a larger

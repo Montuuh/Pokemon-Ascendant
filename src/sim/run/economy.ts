@@ -141,9 +141,19 @@ function pickRarity(rng: GameRng): RelicRarity {
   return 'common';
 }
 
-/** §7.4.6 — held items drop from trainers 20 % of the time, uniform across the generic pool. */
-export function rollHeldItem(rng: GameRng, content: ContentRegistry, owned: readonly string[]): string | null {
-  const pool = content.allHeldItems().filter((i) => isOfferable(i) && !i.speciesLock && !owned.includes(i.id));
+/** §7.4.1 — typed equipment must support a damaging move the Box actually knows. */
+function heldPool(content: ContentRegistry, owned: readonly string[], party?: readonly PartyMon[]) {
+  const attacks = party?.flatMap((mon) => mon.pool.map((id) => content.move(id)).filter((move) => move.power > 0));
+  const types = attacks && new Set<string>(attacks.map((move) => move.type));
+  return content.allHeldItems().filter((item) => isOfferable(item) && !item.speciesLock && !owned.includes(item.id)
+    && (!types || typeof item.params?.type !== 'string' || types.has(item.params.type))
+    && (!party || !item.params?.notFullyEvolved || party.some((mon) => content.species(mon.speciesId).evolvesTo.length > 0))
+    && (!attacks || item.params?.range !== 'melee' || attacks.some((move) => move.range === 'melee')));
+}
+
+/** §7.4.1 — distinct, usable equipment; uncurated finds retain the full generic pool. */
+export function rollHeldItem(rng: GameRng, content: ContentRegistry, owned: readonly string[], party?: readonly PartyMon[]): string | null {
+  const pool = heldPool(content, owned, party);
   if (!pool.length) return null;
   return pool[Math.min(pool.length - 1, Math.floor(rng.range01() * pool.length))]!.id;
 }
@@ -200,7 +210,7 @@ function teamStone(rng: GameRng, content: ContentRegistry, run: RunState): ShopS
 /** A Held Item or a TM, whichever the team can actually use — a TM nobody can learn is a decoration. */
 function teamSpecial(rng: GameRng, content: ContentRegistry, run: RunState, kind: 'tm' | 'held-item' | 'either'): ShopSlot | null {
   const usableTms = content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
-  const itemId = rollHeldItem(rng, content, ownedItems(run));
+  const itemId = rollHeldItem(rng, content, ownedItems(run), run.box);
   const wantTm = kind === 'tm' || (kind === 'either' && usableTms.length > 0 && (rng.range01() < 0.5 || !itemId));
   if (wantTm && usableTms.length) {
     const tm = usableTms[Math.min(usableTms.length - 1, Math.floor(rng.range01() * usableTms.length))]!;
@@ -261,7 +271,7 @@ function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor
     }
     case 'held-items': {
       const owned = ownedItems(run);
-      const items = content.allHeldItems().filter((i) => isOfferable(i) && !i.speciesLock && !owned.includes(i.id));
+      const items = heldPool(content, owned, run.box);
       return drawDistinct(rng, items, 4).map((i) => ({ kind: 'held-item', id: i.id, price: PRICES.heldItem, sold: false }));
     }
     case 'relics':
@@ -293,7 +303,7 @@ export function floorRestockable(run: RunState, floor: StoreFloor, content: Cont
     tms: () => content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move))).map((tm) => tm.id),
     'held-items': () => {
       const owned = ownedItems(run);
-      return content.allHeldItems().filter((i) => isOfferable(i) && !i.speciesLock && !owned.includes(i.id)).map((i) => i.id);
+      return heldPool(content, owned, run.box).map((i) => i.id);
     },
     relics: () => relics('common', 'uncommon'),
     rare: () => [...relics('rare'), ...consumables(4), ...stonesForBox(run.box, content).filter((id) => !run.stones.includes(id))],
@@ -313,10 +323,10 @@ function rollStore(rng: GameRng, content: ContentRegistry, run: RunState, floors
  * A shop's stock, seeded per visit.
  *
  * **The travelling merchant** (§2.9.2) — four slots, basics only: two Tier-1 consumables, three Poké Balls, and
- * a wildcard that is a Common relic or a Held Item. One re-roll.
+ * a useful Held Item. A Common relic joins them one visit in five. One re-roll.
  *
- * **A City shop** (§2.11.2) — the Mart's eight curated slots (§2.11.2.2): two Tier-1 consumables, one Tier-2,
- * a Common and an Uncommon relic, a Rare half the time (otherwise a second Uncommon), a Held Item and a TM,
+ * **A City shop** (§2.11.2) — the Mart's nine curated slots (§2.11.2.2): Potions, two other Tier-1s, one Tier-2,
+ * a Common and an Uncommon relic (a Rare one visit in four), two different Held Items and a compatible TM,
  * plus Poké Balls always on the counter; everything 30 % dearer than the merchant (§2.11.2.3); three re-rolls.
  *
  * **The Department Store** (§2.11.2) — `storeFloor` above, every floor at once, or only `floors` when a re-roll
@@ -337,17 +347,15 @@ export function rollShopStock(
   const others = (t: number) => tier(t).filter((c) => c.id !== 'potion');
 
   if (kind === 'merchant') {
-    // §2.9.2 — bundles: Potions ×3 and one other Tier-1 item ×3, then the balls and the wildcard.
+    // §2.9.2 — bundles: Potions ×3 and another Tier-1 ×3, balls, equipment, and occasionally a relic.
     slots.push(bundleSlot(content.consumable('potion'), PRICES.bundle.byTier[1] ?? 3));
     for (const def of drawDistinct(rng, others(1), 1)) slots.push(bundleOf(def));
     slots.push({ kind: 'ball', id: 'poke-ball', price: PRICES.merchantBalls.price, qty: PRICES.merchantBalls.qty, sold: false });
-    // The wildcard: a Common relic one time in three, otherwise a Held Item (relics are scarce, §7.3.1).
+    // §2.9.2 — equipment has its own shelf; a Common relic is an occasional extra.
+    const equipment = teamSpecial(rng, content, run, 'held-item');
+    if (equipment) slots.push(equipment);
     const relic = rng.range01() < MERCHANT_RELIC_CHANCE ? rollRelic(rng, content, run.relics, 'common', pool) : null;
     if (relic) slots.push({ kind: 'relic', id: relic, price: PRICES.relic.common, sold: false });
-    else {
-      const item = teamSpecial(rng, content, run, 'held-item');
-      if (item) slots.push(item);
-    }
   } else if (kind === 'department-store') {
     slots.push(...rollStore(rng, content, run, floors));
     for (const slot of slots) slot.price = Math.round(slot.price * PRICES.cityMarkup);
@@ -368,6 +376,9 @@ export function rollShopStock(
     }
     const item = teamSpecial(rng, content, run, 'held-item');
     if (item) slots.push(item);
+    // §2.11.2.2 — two different equipment choices, excluding the first shelf's item.
+    const secondItem = rollHeldItem(rng, content, [...ownedItems(run), ...(item ? [item.id] : [])], run.box);
+    if (secondItem) slots.push({ kind: 'held-item', id: secondItem, price: PRICES.heldItem, sold: false });
     const tm = teamSpecial(rng, content, run, 'tm');
     if (tm) slots.push(tm);
     // §6.3.2 — a stone on the counter when someone in the Box can use one; the Mart is curated to the team.
@@ -395,7 +406,7 @@ export function rollShopStock(
 /** v0.9.10 — half again per relic already bought (was a quarter): relics are a run's few big moments, not a shopping list. */
 export const RELIC_PREMIUM = 0.5;
 
-/** §2.9.2 — the merchant's wildcard is a Common relic this often, otherwise a Held Item. */
+/** §2.9.2 — a Common relic joins the merchant's permanent shelves this often. */
 export const MERCHANT_RELIC_CHANCE = 1 / 5;
 /** §2.11.2.2 — a City Mart's second relic slot is a Rare this often, otherwise an Uncommon. */
 export const CITY_RARE_CHANCE = 0.25;

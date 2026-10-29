@@ -852,7 +852,7 @@ Region so a Region with four trainer nodes never repeats a team.
 | Poké Dollars | 50–150 (R1) · 120–260 (R2) · 200–400 (R3) |
 | Supplies | **1–2 consumables, always**, from the Region's supply table (Potions and cures in Region 1, Super Potions in Region 2, Hyper Potions in Region 3), and a Poké Ball one time in five |
 | Relic | **Never** (v0.9.10, the user's call: a won run ended holding ~10 relics; was 15 %, a Common). Relics are a run's few big moments — the start, the Elite, the Gym — and its shops |
-| Held Item | 20 % chance |
+| Held Item | 50 % chance; one useful, unowned item (§7.4.1) |
 | TM | 5 % chance |
 | Pokédex | Each defeated Pokémon counts toward its species' kill thresholds (§5.13) |
 
@@ -875,7 +875,7 @@ to catch is the choice.
 **Gym guest exception** (§5.9.3; user, 2026-10-29): a Gym with an off-type guest names that one species,
 its types and its thematic job on the preview and lane telegraph before commitment. The remaining four members
 and everyone's levels stay hidden. A fifth Pokémon may complicate the promised counter-pick; concealing the
-exception until the fight would make the lane's promise misleading. This exception awaits v0.9.85.
+exception until the fight would make the lane's promise misleading. This exception awaits v0.9.86.
 
 **Authoring rules.** A trainer's level band is **its layer's** wild band +1 to +2 (§2.6.5) — a step up from a wild fight,
 not a boss. The archetype must be readable from the trainer's sprite and name, because the player counter-picks their Active 3
@@ -1007,7 +1007,7 @@ comfortable, which is the point of the last stop before a boss.
 ## §2.9.2 The travelling merchant
 
 At least one per Region in the trunk's stops (columns 2–6), so what it sells has the route to pay back; one more
-may stand at the crossroads or in a lane's middle stop. At most one per column. A cart, four slots, basics only — sold **in bundles** since consumables are
+may stand at the crossroads or in a lane's middle stop. At most one per column. A cart, four permanent slots and an occasional fifth, basics only — sold **in bundles** since consumables are
 spent (§3.5, v0.8.6), at 10 % off the unit price.
 
 | Slot | Content | Price |
@@ -1015,7 +1015,8 @@ spent (§3.5, v0.8.6), at 10 % off the unit price.
 | 1 | **Potion ×3** | 110 ₽ |
 | 2 | Another Tier-1 consumable ×3 — a status cure, an Ether, an X Attack | 110 ₽ |
 | 3 | Poké Balls ×3 | 120 ₽ |
-| 4 | Wildcard — a Common relic one visit in five (one in three until v0.9.10), otherwise a Held Item | 300 ₽ + premium / 300 ₽ |
+| 4 | One useful, unowned Held Item, always when its pool permits | 300 ₽ |
+| 5 | A Common relic one visit in five; otherwise absent | 300 ₽ + premium |
 
 Stock is seeded per visit. The merchant does **not** buy anything: selling exists only in a City (§2.11.2.4).
 
@@ -1369,7 +1370,7 @@ Both Cities have one. *(Confirmed 2026-09-22.)*
 
 The run's largest economic surface, and always open. Its size is the difference between the two Cities.
 
-**Pallet Town — the Poké Mart.** One counter, **8 slots**, curated to your team, and a ninth — an Evolution Item the
+**Pallet Town — the Poké Mart.** One counter, **9 slots**, curated to your team, and a tenth — an Evolution Item the
 Box can use — when there is one.
 
 **Celadon City — the Department Store.** Five floors, each a category, each its own shelf and tab:
@@ -1423,11 +1424,11 @@ score = BaseRelevance
       + SeededJitter
 ```
 
-The top N populate the shop, sorted by category: 8 at the Mart, more per floor at the Department Store.
+The top N populate the shop, sorted by category: 9 at the Mart, more per floor at the Department Store.
 
 ### §2.11.2.2 Slots
 
-The Mart's eight, and the shape each Department Store floor follows:
+The Mart's nine, and the shape each Department Store floor follows:
 
 | Slot | Content |
 |---|---|
@@ -1436,15 +1437,15 @@ The Mart's eight, and the shape each Department Store floor follows:
 | 4 | A Tier-2 bundle (×2) — Super Potion, X Defense |
 | 5 | Common relic |
 | 6 | Uncommon relic — a **Rare** one visit in four |
-| 7 | Held Item, curated to the team |
-| 8 | TM, curated to the team's compatibility |
-| 9 | An Evolution Item someone in the Box can use — only when there is one (§6.3.2) |
+| 7–8 | Two different Held Items, curated to the Box's known attacks (§7.4.1) |
+| 9 | TM, curated to the team's compatibility |
+| 10 | An Evolution Item someone in the Box can use — only when there is one (§6.3.2) |
 
 **Bundles** (v0.8.6): consumables are spent now (§3.5), so a shop sells them the way a player buys them — a Tier-1
 item three to a slot, a Tier-2 two, a Tier-3 or 4 alone, at 10 % off the unit price. **Relics** went from three
 slots to two, and the Rare from half the visits to a quarter.
 
-**Poké Balls are always on the counter, outside the eight** — five to a slot at the bulk price. The route's merchant sells them three to a slot and
+**Poké Balls are always on the counter, outside the nine** — five to a slot at the bulk price. The route's merchant sells them three to a slot and
 nobody else on the route sells them at all, so a City that could roll a shelf without one would leave a run
 unable to catch for a whole Region on the luck of a draw. *(Settled while building v0.7.1, 2026-09-22.)*
 
@@ -1594,7 +1595,7 @@ route (§2.6.3), so the park's draw is **certainty**: its Rares are never a rout
 and where a route rolls them one time in ten or less, the park shows them at the gate, as basics, before you pay.
 *(Until v0.9.7 the line was "nothing a route offers"; the user's call to place the whole Pokédex on the routes
 traded that exclusivity for a sure sighting.)* **Dratini is the city's**: the one
-thing the town's park does not have. No XP and no loot: the Safari pays in Pokémon, and a catch here is a recruit
+thing the town's park does not have. No XP: the Safari pays in recruits, plus a Ranger gift for the **first successful catch per visit**. The gift is one useful, unowned Held Item (§7.4.1), delivered to the bag even if a full Box declines the recruit. If that pool is exhausted it pays the item's resale value (90 ₽). Failing, retreating or leaving without a catch pays nothing; later catches never repeat the gift. The ticket advertises it before payment. This restores value after route-wide species availability removed the park's exclusivity, without increasing relic supply. A catch here is a recruit
 like any other (Swap-or-Skip on a full Box, its Evolution screen if it stands at its threshold).
 
 **The stalk.** A square board of tall grass with open clearings, boulders and — for a water species — a pond it

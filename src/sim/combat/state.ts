@@ -43,6 +43,8 @@ export interface Combatant {
   /** §4.1.3.1 — the critical rhythm's meter, 0 to 1: each act fills the share its pace allows (v0.9.80: a fraction, not a count); full, its next hit is a critical. */
   rhythm: number;
   status: StatusInstance | null;
+  /** §4.2.2.4 — Sleep/Freeze cannot be reapplied through this turn, even after a cure or replacement. */
+  controlBlockedThroughTurn?: number;
   /** §4.2.3.1 — secondary status; 0 = not confused. */
   confusionTurns: number;
   confusionAppliedTurn: number;

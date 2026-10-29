@@ -44,6 +44,17 @@ export function isSilenced(target: Combatant): boolean {
   return target.status?.kind === 'sleep' || target.status?.kind === 'freeze';
 }
 
+/** §4.2.2.4 — a status replacement cannot erase the turn of control already owed. */
+export function controlBlocked(target: Combatant, turn: number): boolean {
+  return isSilenced(target) || turn <= (target.controlBlockedThroughTurn ?? -Infinity);
+}
+
+/** §4.2.2.4 — the last protected turn, for an explicit recovery explanation after curing/replacement. */
+export function controlRecoveryThrough(target: Combatant, turn: number): number | null {
+  const through = target.controlBlockedThroughTurn;
+  return !isSilenced(target) && through !== undefined && turn <= through ? through : null;
+}
+
 /**
  * §4.2.2 — applying a primary status replaces the existing one; §4.2.3.1 — Confusion coexists and re-application
  * resets its timer (§4.4.2: never stacks). Returns what happened so the caller can emit the right event.
@@ -51,13 +62,16 @@ export function isSilenced(target: Combatant): boolean {
 export function applyStatus(target: Combatant, status: StatusCondition, turn: number, config: BattleConfig, escalating = false): ApplyStatusResult {
   if (target.hp <= 0) return 'fainted';
   if (isImmuneToStatus(target.types, status)) return 'immune';
-  if ((status === 'sleep' || status === 'freeze') && isSilenced(target)) return 'already';
+  if ((status === 'sleep' || status === 'freeze') && controlBlocked(target, turn)) return 'already';
   if (status === 'confusion') {
     target.confusionTurns = config.confusionDuration;
     target.confusionAppliedTurn = turn;
     return 'applied';
   }
   target.status = { kind: status, appliedTurn: turn, turnsLeft: statusDuration(status, config) };
+  if (status === 'sleep' || status === 'freeze') {
+    target.controlBlockedThroughTurn = turn + statusDuration(status, config)!;
+  }
   // §7.5 Toxic — the same Poison, but the tick doubles. Tracked on the instance so a cure clears it too.
   if (escalating) target.status.escalatingTicks = 0;
   return 'applied';

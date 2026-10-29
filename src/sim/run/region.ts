@@ -1114,8 +1114,8 @@ export const RUN_START = {
 /** §7.5 — a TM drops from a Trainer battle at canon's 5 %, now that the Shop is its other source. */
 export const TM_DROP_CHANCE = 0.05;
 
-/** §7.4.6 — "Trainer battles drop one 20 % of the time". Wild loot never contains a Held Item. */
-export const HELD_ITEM_DROP_CHANCE = 0.2;
+/** §7.4.1 — trainers drop equipment half the time; the Elite guarantees it. No wild combat drops. */
+export const HELD_ITEM_DROP_CHANCE = 0.5;
 
 /** The three default starters (§8.5.1). */
 export const STARTER_IDS = ['bulbasaur', 'charmander', 'squirtle'];

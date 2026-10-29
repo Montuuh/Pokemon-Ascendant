@@ -178,6 +178,8 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
       if (applied === 'applied' && c.status) {
         if (setup.statusTurnsLeft !== undefined) c.status.turnsLeft = setup.statusTurnsLeft;
         if (setup.statusEscalating !== undefined) c.status.escalatingTicks = setup.statusEscalating;
+        // §4.2.7.1 / §4.2.2.4 — a carried disabling turn keeps its anti-chain window, too.
+        if (setup.status === 'sleep' || setup.status === 'freeze') c.controlBlockedThroughTurn = c.status.turnsLeft ?? 0;
       }
     }
     if (setup.confusionTurns && setup.confusionTurns > 0 && c.hp > 0) {
@@ -187,6 +189,7 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
   });
   scenario.enemies.forEach((e, i) => {
     if (e.status) applyStatus(enemies[i]!, e.status, -1, ctx.config);
+    if (e.status === 'sleep' || e.status === 'freeze') enemies[i]!.controlBlockedThroughTurn = enemies[i]!.status?.turnsLeft ?? 0;
   });
 
   // §3.2.1 — deck from the 4 moves of each Active Pokémon, shuffled once.

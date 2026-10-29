@@ -1,11 +1,90 @@
 import { describe, expect, it } from 'vitest';
 import { PIDGEY, STARTERS, consumableCard, ctx, dispatch, eventsOf, handCard, reject, scenario, start, tweak, withConsumableHand, withHand } from '../testing/harness';
 import { effectiveAttack, effectiveDefense } from './stats';
-import { applyStatus, isImmuneToStatus } from './status';
+import { applyStatus, cureStatus, isImmuneToStatus } from './status';
 
 const base = () => start(scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['antidote', 'full-heal', 'burn-heal', 'awakening'] }));
 
 describe('Status conditions — §4.2', () => {
+  it('Control_SeededOnEitherSide_CureCannotEraseFirstTurnProtection', () => {
+    for (const status of ['sleep', 'freeze'] as const) {
+      const state = start(scenario({ team: [{ species: 'squirtle', level: 8, status }], enemies: [{ species: 'pidgey', level: 8, tier: 'wild', phaseCount: 1, status }] }));
+      for (const target of [state.player.team[0]!, state.enemies[0]!]) {
+        const mon = structuredClone(target);
+        cureStatus(mon, 'all');
+        expect(applyStatus(mon, status, 1, ctx.config)).toBe('already');
+        expect(applyStatus(mon, status, 2, ctx.config)).toBe('applied');
+      }
+    }
+  });
+
+  it('Confusion_HandOffPouchReturnsTheOnlyCard_OneDiscardPerDraw', () => {
+    let state = start(scenario({ team: [{ species: 'squirtle', level: 8 }], enemies: [PIDGEY], relics: ['hand-off-pouch'] }));
+    state = tweak(state, (draft) => {
+      const mon = draft.player.team[0]!;
+      mon.confusionTurns = 3;
+      mon.confusionAppliedTurn = 1;
+      draft.player.deck = [draft.player.hand[0]!];
+      draft.player.hand = [];
+      draft.player.discard = [];
+    });
+    state = dispatch(state, { type: 'end-turn' });
+    expect(eventsOf(state, 'confusion-discard')).toHaveLength(1);
+    expect(state.player.hand).toHaveLength(1);
+    expect(state.player.team[0]!.confusionTurns).toBe(2);
+  });
+
+  it('Control_Faint_ClearsTheIndependentProtection', () => {
+    let state = withHand(base(), ['ember']);
+    state = tweak(state, (draft) => {
+      applyStatus(draft.enemies[0]!, 'sleep', 1, ctx.config);
+      draft.enemies[0]!.hp = 1;
+    });
+    state = dispatch(state, { type: 'play-card', cardId: handCard(state, 'ember').id });
+    expect(state.defeatedEnemies[0]!.controlBlockedThroughTurn).toBeUndefined();
+  });
+
+  it('Control_ReplacedOrCured_CannotBeReappliedBeforeItsOriginalWindowEnds', () => {
+    for (const status of ['sleep', 'freeze'] as const) {
+      for (const remove of ['replace', 'cure'] as const) {
+        const mon = structuredClone(base().player.team[1]!);
+        expect(applyStatus(mon, status, 1, ctx.config)).toBe('applied');
+        if (remove === 'replace') applyStatus(mon, 'poison', 2, ctx.config);
+        else cureStatus(mon, 'all');
+        expect(applyStatus(mon, status === 'sleep' ? 'freeze' : 'sleep', 2, ctx.config)).toBe('already');
+        expect(applyStatus(mon, status, 3, ctx.config)).toBe('applied');
+      }
+    }
+  });
+
+  it('Confusion_NoOwnCardsDrawn_PreservesTeammatesCardsAndStillCountsDown', () => {
+    let state = base();
+    state = tweak(state, (draft) => {
+      const confused = draft.player.team[0]!;
+      confused.confusionTurns = 3;
+      confused.confusionAppliedTurn = 1;
+      const allyCard = [...draft.player.hand, ...draft.player.deck].find((card) => card.ownerUid !== confused.uid)!;
+      draft.player.deck = Array.from({ length: 5 }, (_, i) => ({ ...allyCard, id: `ally-${i}` }));
+      draft.player.hand = [];
+      draft.player.discard = [];
+    });
+    state = dispatch(state, { type: 'end-turn' });
+    expect(state.player.hand).toHaveLength(5);
+    expect(eventsOf(state, 'confusion-discard')).toHaveLength(0);
+    expect(state.player.team[0]!.confusionTurns).toBe(2);
+  });
+
+  it('Confusion_OnEnemy_ExpiresAfterThreeActiveTurns', () => {
+    let state = tweak(base(), (draft) => {
+      applyStatus(draft.enemies[0]!, 'confusion', 1, ctx.config);
+    });
+    state = dispatch(state, { type: 'end-turn' });
+    expect(state.enemies[0]!.confusionTurns).toBe(3);
+    for (let i = 0; i < 3; i++) state = dispatch(state, { type: 'end-turn' });
+    expect(state.enemies[0]!.confusionTurns).toBe(0);
+    expect(eventsOf(state, 'status-cleared').some((event) => event.t === 'status-cleared' && event.targetUid === state.enemies[0]!.uid && event.status === 'confusion')).toBe(true);
+  });
+
   it('Immunity_Table_PerType', () => {
     expect(isImmuneToStatus(['fire'], 'burn')).toBe(true);
     expect(isImmuneToStatus(['fire'], 'freeze')).toBe(true);

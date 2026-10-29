@@ -227,17 +227,22 @@ describe('The City lobby — §2.11.0', () => {
 });
 
 describe('The route services — §2.9', () => {
-  it('TheMerchant_SellsFourSlots_BallsByThree_AndOneReRoll_§2.9.2', () => {
-    for (const seed of [1, 7, 42, 999]) {
+  it('TheMerchant_AlwaysSellsEquipment_WithAnOccasionalFifthRelicSlot_§2.9.2', () => {
+    let relics = 0;
+    for (let seed = 1; seed <= 120; seed++) {
       const run = start(seed);
       const stock = rollShopStock(new RngStreams(seed).get('EncounterRNG'), content, run, 'merchant');
-      expect(stock.slots.length, `seed ${seed}`).toBeLessThanOrEqual(4);
+      expect(stock.slots.filter((slot) => slot.kind === 'held-item'), `seed ${seed}`).toHaveLength(1);
+      expect(stock.slots.length, `seed ${seed}`).toBeLessThanOrEqual(5);
+      relics += stock.slots.filter((slot) => slot.kind === 'relic').length;
       const ball = stock.slots.find((x) => x.kind === 'ball')!;
       expect(ball.qty).toBe(PRICES.merchantBalls.qty);
       expect(ball.price).toBe(PRICES.merchantBalls.price);
       expect(rerollPrice(stock)).toBe(PRICES.rerolls[0]);
       expect(rerollPrice({ ...stock, rerolls: 1 })).toBeNull();
     }
+    expect(relics).toBeGreaterThan(10);
+    expect(relics).toBeLessThan(40);
   });
 
   it('TheMerchant_BallSlot_BuysThreeBalls', () => {

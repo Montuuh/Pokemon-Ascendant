@@ -15,7 +15,7 @@ import { forecastOn, forecastTurn } from './forecast';
 import { activeEnemy, slotOccupant, SLOT_LABEL } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent, QueuedIntent } from './state';
 import { hpFraction } from './stats';
-import { cardsLocked, isImmuneToStatus, paralysisApBonus } from './status';
+import { cardsLocked, controlBlocked, isImmuneToStatus, paralysisApBonus } from './status';
 import { objectiveIntent } from './objective';
 import { typeMultiplier } from './typeChart';
 
@@ -141,6 +141,7 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
     if (!status) return 0;
     if (status === 'confusion' ? occ.confusionTurns > 0 : occ.status !== null) return 0; // never redundant
     if (isImmuneToStatus(occ.types, status)) return 0;
+    if ((status === 'sleep' || status === 'freeze') && controlBlocked(occ, state.turn)) return 0;
     // §5.6 — nor redundant with what an ally already means to put there this turn.
     if (intent.targetSlot && groupPlansStatus(state, enemy, intent.targetSlot, status === 'confusion', ctx)) return 0;
   }
@@ -210,7 +211,7 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
     // §5.6.1 — a second action is a different move from the first, and both fit the turn's AP budget.
     if (moveId === exclude) continue;
     const move = ctx.content.move(moveId);
-    if (move.apCost > maxAp) continue;
+    if (move.apCost + paralysisApBonus(enemy, ctx.config) > maxAp) continue;
     const intent = classifyMove(state, enemy, move, ctx);
     if (!intent) continue;
     cands.push({ intent, move, score: scoreIntent(state, enemy, { intent, move }, ctx) });
@@ -262,14 +263,15 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
   }
   // §5.6.1 — a Pokémon that acts twice spends one budget on both actions: the first leaves room for the cheapest other.
   const budget = enemy.acts === 2 ? doubleActionBudget(enemy, ctx) : Infinity;
-  const roomFor = (except: string | null) => Math.min(...enemy.moveIds.filter((m) => m !== except).map((m) => ctx.content.move(m).apCost), Infinity);
+  const costOf = (id: string) => ctx.content.move(id).apCost + paralysisApBonus(enemy, ctx.config);
+  const roomFor = (except: string | null) => Math.min(...enemy.moveIds.filter((m) => m !== except).map(costOf), Infinity);
   if (locked || spun) {
     enemy.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };
   } else {
     // §5.5.1 — the plan you were shown last turn is the plan, unless it can no longer be played.
     const kept = planned && plannedStillLegal(state, enemy, planned, ctx) ? { ...planned.intent } : null;
     if (planned && !kept) log(state, 'enemy', `${enemy.name} changes its plan.`);
-    const firstCap = enemy.acts === 2 ? Math.max(...enemy.moveIds.map((m) => ctx.content.move(m).apCost).filter((ap) => ap + roomFor(null) <= budget), 0) : Infinity;
+    const firstCap = enemy.acts === 2 ? Math.max(...enemy.moveIds.map(costOf).filter((ap) => ap + roomFor(null) <= budget), 0) : Infinity;
     // §5.6.5 — the objective's last turn dictates: the runner's getaway, the guard's finisher.
     const forced = objectiveIntent(state, enemy, ctx);
     const intent = forced ?? kept ?? chooseIntent(state, enemy, ctx, rng, undefined, firstCap) ?? chooseIntent(state, enemy, ctx, rng);
@@ -288,7 +290,7 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     // §5.6.1 — a Pokémon that acts twice declares its second action now, chosen knowing the first: a different
     // move, and never a status the first (or the group) already means to put there. It hides what the first hides.
     if (enemy.acts === 2) {
-      const spent = enemy.intent.moveId ? ctx.content.move(enemy.intent.moveId).apCost : 0;
+      const spent = enemy.intent.moveId ? costOf(enemy.intent.moveId) : 0;
       const second = chooseIntent(state, enemy, ctx, rng, enemy.intent.moveId ?? undefined, budget - spent);
       enemy.second = second ? { ...second, hidden: enemy.intent.hidden } : null;
     }

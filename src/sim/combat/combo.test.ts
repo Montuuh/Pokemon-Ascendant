@@ -11,6 +11,14 @@ const TEAM = [{ species: 'squirtle', level: 14, moves: ['water-gun', 'surf', 'ta
 const fight = (enemy: EnemySetup = RATICATE, seed = 3) => start(scenario({ seed, team: TEAM, enemies: [enemy] }));
 
 describe('Acting twice, on an AP budget — §5.6.1', () => {
+  it('Paralysis_ChargesEachActionAgainstTheSharedBudget_§4.2.8', () => {
+    for (let seed = 1; seed <= 30; seed++) {
+      const state = fight({ ...RATICATE, status: 'paralysis' }, seed);
+      const enemy = state.enemies[0]!;
+      const ap = [enemy.intent, enemy.second].reduce((sum, intent) => sum + (intent?.moveId ? ctx.content.move(intent.moveId).apCost + ctx.config.paralysisApCostBonus : 0), 0);
+      expect(ap, `seed ${seed}`).toBeLessThanOrEqual(doubleActionBudget(enemy, ctx));
+    }
+  });
   it('Declare_ActsTwice_BothActionsFitTheBudget_OnEverySeed', () => {
     for (let seed = 1; seed <= 30; seed++) {
       const s = fight(RATICATE, seed);

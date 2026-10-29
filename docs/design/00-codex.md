@@ -10,9 +10,10 @@
 
 ---
 
+> **Rewards/status digest refreshed 2026-10-30:** Safari first-catch equipment gift, useful equipment access and bounded control (§2.11.6, §7.4.1, §4.2).
 > **Enemy/Gym digest refreshed 2026-10-29:** irreversible phases and declared ace signatures (§5.8.3,
 > §9.2.2.3), twelve authored Gym teams (§5.9.3–§5.9.4) and their guest exception (§2.7.3).
-> Design recorded; v0.9.85 implementation and tuning pending.
+> Design recorded; v0.9.86 implementation and tuning pending.
 
 ## 1. Identity
 
@@ -65,10 +66,10 @@ Pokémon.
   the **Executive's showcase** (one Legendary **Pokémon** every visit for **three of yours**, at the strongest given's level —
   and the deal closes the market). Measured as the relic it sold until v0.9.21: buying it by reflex cost Region 3 twelve points. *(2026-09-25.)*
   Both Cities hold the **Safari Zone** (§2.11.6): a ticket (200 / 350 ₽) buys 3 Safari Balls and a 10 / 12-turn
-  clock for a lineup of species no route offers (Dratini only in the city), each **stalked** on a tile board — two
+  clock for rare route sightings shown before payment (Dratini only in the city), each **stalked** on a tile board — two
   actions a turn, its path and its look shown, tall grass hides you, bait and rock, a throw is the whole turn at a
   printed chance, and every alarm (being seen, a missed ball) brings it closer to bolting; a Rare bolts at the first.
-  One or two recruits a visit; the rare, gone for first, lands about a third of the time. *(2026-09-24.)*
+  One or two recruits a visit; the first catch also gives useful equipment (or its resale value if exhausted), once per visit even if the recruit is declined. The rare, gone for first, lands about a third of the time. *(2026-09-24.)*
   Superseded: a City was a **Choice Plaza** — Shop and Reflection always, plus **2 of** {City Gym,
   Center, Grand Dojo, Black Market}.
 - **Region Modifiers are per-Region**: exactly 1 active, re-picked each Region, expiring with it. Relics and
@@ -224,16 +225,16 @@ combat end:
 | | Effect | Duration | Immune |
 |---|---|---|---|
 | **Burn** | `EffMaxHP/16`/turn, Attack −25 % | permanent | Fire |
-| **Poison** | `EffMaxHP/16`/turn, Defence −15 % | permanent | Poison |
+| **Poison** | `EffMaxHP/16`/turn, Defence −15 % | permanent | Poison, Steel |
 | **Paralysis** | its moves cost +1 AP | 3 turns | Electric |
 | **Sleep** | its cards unplayable, position free; never lands on a sleeper or a frozen one | 1 turn | — |
 | **Freeze** | cards unplayable + **position-locked** + ×1.5 Fire taken | 1 turn | Fire, Ice |
-| **Confusion** | discards 1 skill card/turn per Confused Pokémon | 3 turns | — |
+| **Confusion** | discards up to 1 of its own skill cards/Draw per Confused Pokémon | 3 turns | — |
 
-Applied on turn N, effective from N+1. DoT uses **Effective** Max HP. Stage first, then status, multiplicatively.
+Stats, card costs and card/position locks update on application; declared intents stay committed. DoT and countdowns begin after the application turn. Sleep/Freeze share control protection through their original disabling turn even after cure/replacement. DoT uses **Effective** Max HP. Stage first, then status, multiplicatively.
 **Stat stages:** linear ±6, 0.4 → 1.6 at ±0.1 per stage, reset at combat end, **persist across boss phases**.
 **On the enemy side:** Paralysis prices intents out of its 3-AP budget, Sleep/Freeze skip its action, Confusion
-makes it pick uniformly among legal intents — still telegraphed, just no longer smart.
+makes it pick uniformly among legal intents for three turns, preserving an already announced future plan. Paralysis charges each action against an Acting Twice shared budget.
 
 **Fields** (live since v0.8.4) — 10 Battlefields: Sun (Fire ×1.5, Water ×0.5), Rain (the reverse), Hail (3 % a turn
 to all but Ice), Electric Terrain (Electric ×1.3 into the grounded, who cannot be Paralysed), Grassy Terrain (Grass
@@ -302,7 +303,7 @@ evolution and no extra support actor.** Opener two phases, middle three one, ace
 +1 / −1 / +2 respectively. Each has four scripted moves, at least four share the Gym's type, and one thematic
 off-type guest is permitted and explicitly named before commitment (§2.7.3); no default starter line
 (Bulbasaur/Charmander/Squirtle) or Legendary. Later Mart starters remain eligible.
-The twelve replacement teams and kits are designed in catalogs/gyms.md, awaiting v0.9.85 calibration and code.
+The twelve replacement teams and kits are designed in catalogs/gyms.md, awaiting v0.9.86 calibration and code.
 The current Attack multipliers (×0.7 / ×0.62 / ×0.5, plus per-Leader scales) are the comparison baseline.
 **Every Leader fights under a rule of its own** (§5.9.5), shown on the map and top bar: Rock Solid, Riptide,
 Swarm, Rollout, Meltdown, Bloom, Overcharge, Toxic, Mind Lock, Tremor, Close Quarters and Ice Armour. The Leader
@@ -380,7 +381,7 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
   offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym the same mix, 1-of-3**,
   later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run** (at the cap: two Rares and an Uncommon). Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
   of list per relic bought this run.
-- **32 held items.** 11 unique type boosts (+20 % wearer-only) · 14 Type Plates (+10 % wearer, +5 % Lead Aura for the bench) · Leftovers, Eviolite, Focus
+- **35 held items.** Trainer drops 50 %, Elite guaranteed, merchant always stocked, Mart two choices, Department Store four; typed bonuses match learned attacks. 12 unique type boosts (+20 % wearer-only) · 16 Type Plates (+10 % wearer, +5 % Lead Aura for the bench) · Leftovers, Eviolite, Focus
   Sash · Power Bracer, Choice Scarf · Thick Club, Light Ball.
 - **15 TMs**, gated by `compatibleSpecies`, Mastery-exempt.
 - **Faint prevention order:** Sturdy → Last Stand → Focus Sash → Phoenix Feather.

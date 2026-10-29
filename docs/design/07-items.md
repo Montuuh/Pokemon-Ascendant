@@ -321,7 +321,9 @@ Thirty generic items plus two signatures, one slot per Pokémon.
 | **Persistence** | Across combats, nodes and Regions, until re-equipped or the run ends |
 | **Releasing a Pokémon** | Drops its item back to the inventory — never lost |
 | **Mid-combat** | No changes. The loadout locks with the Active Team (§2.3) |
-| **Sources** | Trainer battles 20 % of the time, the Elite Trainer's guaranteed slot, City Shop slot 7, Mystery rewards. **Never** in wild loot |
+| **Sources** | Trainers 50 %; the Elite Trainer always; the travelling merchant always; two Mart choices or four Department Store choices; first-catch Safari gift; Mystery rewards. **Never** in wild combat loot |
+
+Equipment rewards and shops exclude owned items (bag and every equipped Box member), pending rows and species signatures. Curated sources draw uniformly from useful alternatives: typed bonuses match a damaging move in a Box member's learned pool; Eviolite needs an unfinished evolution; Power Bracer needs a Melee attack. Generic alternatives remain available. Uncurated ground finds retain the general pool. More access and meaningful alternatives support build sculpting without increasing the party-wide relic count; list price remains 300 ₽.
 
 ## §7.4.2 Type boosts (12)
 

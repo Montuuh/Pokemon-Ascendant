@@ -37,6 +37,31 @@ function winAs(kind: NodeKind, seed = 7): RunState {
 }
 
 describe('Fight supplies — §2.7.2, §2.6.2', () => {
+  it('Equipment_TrainersDropOften_EliteAlwaysPays_§7.4.1', () => {
+    let trainerDrops = 0;
+    for (let seed = 1; seed <= 120; seed++) {
+      if (winAs('trainer', seed).pendingReward!.heldItem) trainerDrops++;
+      expect(winAs('elite', seed).pendingReward!.heldItem, `elite seed ${seed}`).toBeTruthy();
+    }
+    expect(trainerDrops).toBeGreaterThanOrEqual(45);
+    expect(trainerDrops).toBeLessThanOrEqual(75);
+  });
+
+  it('CityEquipment_TwoDifferentItems_TypedBonusesMatchKnownAttacks_§2.11.2.2', () => {
+    const run = start();
+    const attackTypes = new Set(run.box.flatMap((mon) => mon.pool.map((id) => content.move(id))).filter((move) => move.power > 0).map((move) => move.type));
+    for (let seed = 1; seed <= 80; seed++) {
+      const stock = rollShopStock(new RngStreams(seed).get('EncounterRNG'), content, run, 'city');
+      const gear = stock.slots.filter((slot) => slot.kind === 'held-item');
+      expect(gear).toHaveLength(2);
+      expect(new Set(gear.map((slot) => slot.id)).size).toBe(2);
+      for (const slot of gear) {
+        const type = content.heldItem(slot.id).params?.type;
+        if (typeof type === 'string') expect([...attackTypes], slot.id).toContain(type);
+      }
+    }
+  });
+
   it('ATrainer_AlwaysDropsSupplies_AndTheyAreInTheBag', () => {
     for (const seed of [1, 7, 42, 999, 2026]) {
       const before = start(seed).consumables.length;

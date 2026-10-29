@@ -488,7 +488,7 @@ export function CombatScreen() {
     const slot = indexToSlot(state!, bi);
     return (
       <div className={cls}>
-        <Portrait mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapQuick={opt?.quick} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} rhythmGhost={ghostFor(mon.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
+        <Portrait turn={state!.turn} mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapQuick={opt?.quick} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} rhythmGhost={ghostFor(mon.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -580,7 +580,7 @@ export function CombatScreen() {
           {benchUnit(benches[0], styles.slotB1)}
           {benchUnit(benches[1], styles.slotB2)}
           <div className={styles.slotLead}>
-            <Portrait mon={shownHp(lead)} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} rhythmGhost={ghostFor(lead.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} arrival={arrivalOf(lead.uid)} {...incomingFor(lead.uid)} />
+            <Portrait turn={state!.turn} mon={shownHp(lead)} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} rhythmGhost={ghostFor(lead.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} arrival={arrivalOf(lead.uid)} {...incomingFor(lead.uid)} />
           </div>
         </div>
 
