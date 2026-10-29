@@ -33,7 +33,7 @@ Confusion, Sleep and smokescreen pressure planning; Riptide remains the central 
 | 1 | `golduck` | Opening Psychic coverage and disruption | `confusion`, `water-gun`, `tail-whip`, `disable` |
 | 2 | `poliwhirl` | Sleep and physical coverage | `bubble-plus`, `body-slam`, `hypnosis`, `submission` |
 | 3 | `seaking` | Horn pressure and Confusion | `horn-attack-plus`, `water-gun`, `supersonic`, `tail-whip` |
-| 4 | `seadra` | Ranged pressure and disruption | `bubble-beam`, `smokescreen`, `leer`, `hydro-pump` |
+| 4 | `seadra` | Ranged pressure and Ice coverage | `bubble-beam`, `smokescreen`, `leer`, `ice-beam` |
 | 5 | `kingler` | Ace: claws and a hardened shell | `crabhammer`, `bubble-beam`, `stomp`, `harden` |
 
 ### `bug-gym-r1` — Aster · Swarm
@@ -174,12 +174,33 @@ baseline Gym. Fire shatters the Leader's armour on Slowbro too.
 | 2 | `jynx` | Sleep and Psychic coverage | `ice-beam`, `psychic`, `lovely-kiss`, `double-slap` |
 | 3 | `slowbro` | Guest: cold-water control | `ice-beam`, `psychic`, `disable`, `surf` |
 | 4 | `cloyster` | Armoured multi-hit pressure | `ice-beam`, `clamp-plus`, `spike-cannon`, `withdraw-plus` |
-| 5 | `lapras` | Ace: the freezing wave | `blizzard`, `surf`, `body-slam`, `mist` |
+| 5 | `lapras` | Ace: the freezing beam | `ice-beam`, `surf`, `body-slam`, `mist` |
 
-## 4. Phase-2 archetypes
+## 4. Phase archetypes and ace signatures
 
 Mapping and behaviour live in §5.9.4. The named archetype above describes the ace, not an override of another
 member's primary type. A one-phase member has no Phase-2 effect. Home Field and the Leader's rule stay fight-wide.
+
+**Phase-3 signatures — ⚠ v0.9.85, §5.8.3.** Each signatureMove names one move in the ace's four-move kit;
+these are data for the one-shot declaration contract, not extra moves, free actions or damage multipliers.
+The response is shown with its intent. A signature still uses ordinary move/status/type rules. Lapras uses
+Ice Beam rather than the 4-AP Blizzard: the normal per-move enemy cap is 3 AP even when an ace has a larger
+shared Acting Twice budget. Paralysis may still make a signature unaffordable and delay it; it is not waived.
+
+| Gym id | Ace | signatureMove | Printed AP | Concrete response |
+|---|---|---|---:|---|
+| `rock-gym-r1` | `graveler` | `rock-slide` | 2 | Rock-resistant Lead; reduce its Attack or finish the ace before Resolution |
+| `water-gym-r1` | `kingler` | `crabhammer` | 3 | Water/Grass resistance, Defence or a KO before its claws land |
+| `bug-gym-r1` | `butterfree` | `confusion` | 1 | Psychic resistance or Dark immunity; reduce the forecast rather than relying on a late Sleep |
+| `normal-gym-r1` | `raticate` | `hyper-fang` | 2 | Rock/Steel resistance or Ghost immunity; a defensive swap also answers Rollout |
+| `fire-gym-r2` | `arcanine` | `flamethrower` | 3 | Fire/Water/Rock resistance or damage reduction; remove it before the hit |
+| `grass-gym-r2` | `vileplume` | `petal-dance` | 3 | Grass-resistant Lead; the move retains its printed self-Confusion drawback |
+| `electric-gym-r2` | `electrode` | `thunderbolt` | 3 | Ground immunity or Electric resistance; the signature does not override either |
+| `poison-gym-r2` | `weezing` | `self-destruct` | 3 | Ghost immunity or Rock/Steel resistance; printed recoil follows damage, not an automatic self-KO |
+| `psychic-gym-r3` | `alakazam` | `psychic` | 3 | Dark immunity or Psychic/Steel resistance; keep its Attack debuffs in place |
+| `ground-gym-r3` | `rhydon` | `rock-slide` | 2 | Rock-resistant Lead and Defence; Water/Grass burst can KO it before Resolution |
+| `fighting-gym-r3` | `machamp` | `submission` | 3 | Ghost immunity or Fighting resistance; the move retains its printed recoil |
+| `ice-gym-r3` | `lapras` | `ice-beam` | 3 | Water/Fire/Ice/Steel resistance or damage reduction; Fire can also shatter Ice Armour |
 
 ## 5. Seeded selection
 

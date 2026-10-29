@@ -1510,8 +1510,11 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 and enemy phases lack useful UX. Decision: five members per Gym, allowing one explicitly telegraphed off-type
 support. All twelve teams, their deployment order, roles and four-move kits are authored in
 `design/catalogs/gyms.md`; rules in §5.9.3, the guest preview exception in §2.7.3. Lorelei uses Slowbro as the
-guest and Lapras as the ace. No new species. The phase contract options await the user's separate decision;
-the current 50 % / 20 % rules are not silently changed by the roster design.
+guest and Lapras as the ace. No new species. **Phase decision recorded:** irreversible escalation at the next
+turn boundary, before AP refill, with one authored, fully announced signature per three-phase ace (§5.8.3).
+Thresholds remain 50 % / 20 %, healing never reverses progression, and the current declared action stays honest.
+No extra action or universal Sturdy. The catalogue assigns each signature and its counterplay; this is still
+design awaiting code, not a claim that the current build follows it.
 
 **Exit criteria:**
 
@@ -1519,18 +1522,28 @@ the current 50 % / 20 % rules are not silently changed by the roster design.
   at least four on-type members, at most one declared guest and the ace last. Lane pools do not fill teams.
 - Preserve the current level budget, two-at-a-time formation, rules, rewards and regional accents; ensure the
   accent retains all four scripted moves. Explain guests before the fork/preview and in Team matchups.
-- Save compatibility: already generated Gym previews keep their legacy encounter contract through that Region;
+- Save compatibility: already generated Gym previews keep their legacy roster and phase contract through that Region;
   newly generated maps use the new teams. Never pair a saved old species order with the new slots' moves/phases
-  or replace an active combat. Cover a pre-update save and a new run with explicit regressions.
-- Reproduce and resolve the phase label/entry mismatch, healing regression, missing guaranteed signature and
-  species-only Sturdy discrepancy under the selected phase contract. UI shows effect, timing and response,
+  or replace an active combat/replay contract. An absent old signature profile is legacy data, not permission
+  to infer a new signature from species. Cover a pre-update save and a new run with explicit regressions.
+- Implement the selected phase contract: UID-owned pending/active phase and one-shot signature state; commit
+  before AP refill, preserve current intent, keep healing irreversible, apply skipped entries once and allow
+  KO before activation. Seed pending phase for an encounter starting below a threshold, before its first Draw.
+  Natural Sturdy remains the species ability, with no universal ace protection.
+- Signature tests: cooldown waiver only once; normal per-move/shared AP caps; Paralysis, existing Sleep/Freeze,
+  Confusion, legal-target failure, immunity, KO and recoil outcome order; no free retry after declaration;
+  first-action/Dense Fog visibility; Acting Twice budget and combo-break; future-plan invalidation. A signature
+  may occupy the whole budget rather than reserving room for a second move. Final ordinary AI drops the P2
+  move-type filter from P3 entry, even with the signature pending, while retaining persistent phase effects.
+  Every new three-phase ace needs authored data.
+- Resolve the label/entry mismatch with sim-owned active/pending state. UI shows effect, timing and response,
   accessible on hover/focus and under reduced motion, with 720p/1080p at 150 % text and independent UI review.
 - Measure every Leader against the same 240-run baseline, including arrivals, loss rate, duration tail,
   faints, phase visibility and post-Gym XP; confirm the 720-run Region curve. Do not uniformly raise difficulty:
   baseline Surge 0/35 defeats, Sabrina 0/8, Lorelei 6/13 and 42.4 turns (small conditional samples).
 - Focused regressions, `npm run check`, screen captures and the UI review pass; then release and production smoke.
 
-Evidence, exact findings and phase options: [review](reviews/2026-10-29-enemy-phases-and-gyms.md).
+Evidence, exact findings and the recorded phase decision: [review](reviews/2026-10-29-enemy-phases-and-gyms.md).
 
 ### v0.9.84 — Dark and Steel  ✅ 2026-10-29
 

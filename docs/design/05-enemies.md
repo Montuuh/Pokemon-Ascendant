@@ -82,6 +82,7 @@ cannot be Backstruck; that is the trade.
 # §5.5 Unknown intents
 
 An Unknown intent hides an enemy's action behind ❓.
+The declared ace signature is the explicit full-visibility exception in §5.8.3; it is never Unknown.
 
 **What is still visible.** An Unknown intent always shows its **kind glyph** — you know a Cleave, a Status or an
 Attack is coming, just not its magnitude or exact target. A hidden intent that could delete a bench Pokémon with
@@ -339,14 +340,15 @@ information is the player's reward for investing in it.
 ## §5.8.1 Phase behaviour
 
 Bosses follow scripted phase patterns with condition-based transitions. Within a phase the scoring function
-still chooses the target — a phase constrains the intent *type*, not the intent *target*.
+still chooses legal targets. The Phase-3 signature fixes the move for one declared action (§5.8.3), not an
+extra action or permission to change a target after declaration.
 
 | Phase type | Behaviour |
 |---|---|
 | **Mass Attack** | Every intent is Attack or Cleave |
 | **Mass Status** | Every intent applies a condition, chosen strategically |
 | **Setup** | Aggressive self-buffing ahead of a payoff |
-| **Signature** | The highest-impact move, ignoring its cooldown |
+| **Signature** | One authored move declared on reaching Phase 3; its cooldown is waived for that declaration only (§5.8.3) |
 | **Evolution** | The Pokémon evolves mid-fight, telegraphed one turn ahead |
 
 **Mid-fight evolution** belongs to the **Rival** and the **Champion** only — Gym aces do not evolve (§5.9.3).
@@ -366,20 +368,62 @@ the intent pattern resets.
 
 ## §5.8.3 Phase structure
 
-Thresholds are drawn as notches on the enemy's HP bar.
+**Irreversible escalation with a telegraphed signature** (user, 2026-10-29; designed for v0.9.85, not yet
+implemented). Thresholds remain BattleConfig data, drawn as HP-bar notches. Each enemy UID stores its active
+phase and the highest threshold it has crossed while alive. Healing never lowers either. This makes the
+escalation legible without changing the action the player has already been promised.
 
 | Phase | Trigger | Behaviour |
 |---|---|---|
-| **Phase 1** | HP > 50 % | Setup and reading the player: Buff, Status, methodical Attack |
-| **Phase 2** | HP ≤ 50 % | The forced phase type fires (§5.9.4 for Gyms) |
-| **Phase 3** *(aces)* | HP ≤ 20 % | Last stand: cooldowns reset, the signature move fires uncapped, Sturdy may save one lethal hit |
+| **Phase 1** | Starting phase | Setup and reading the player: Buff, Status, methodical Attack |
+| **Phase 2** | Cross HP ≤50 % alive; commit next turn | Apply entry effects once; Phase-2 archetype constrains ordinary intent selection (§5.9.4) |
+| **Phase 3** *(three-phase aces)* | Cross HP ≤20 % alive; commit next turn | Queue the authored signature once; keep prior stages and persistent phase effects; later ordinary choices use aggressive scoring |
 
-> ⚠️ **OPEN (2026-10-29, user decides):** retain HP-reversible phases, commit irreversible escalation at the
-> next Intent, or add an authored, telegraphed ace signature to that irreversible model. The audit found that
-> the label precedes entry effects, healing reverses the label but keeps stages, and the build has neither a
-> forced signature nor general ace survival. Options and reproductions are in
-> [the review](../reviews/2026-10-29-enemy-phases-and-gyms.md). Do not silently choose during the roster port;
-> natural species Sturdy remains distinct from any future boss survival mechanic.
+**Commit boundary.** At the next turn's start, **before Draw/AP refill**, commit every standing enemy's pending
+phase, apply its one-shot entry effects, then calculate phase-dependent AP and declare intents. The intent
+already declared this turn remains unchanged when a hit crosses a threshold. A survived hit from Phase 1 to
+≤20 % queues both entries; commit Phase 2 then Phase 3 once each. A heal between crossing and commitment does
+not cancel the pending phase. A new enemy UID starts its own progression; a two-phase enemy never enters Phase 3.
+Seed its pending threshold from its initial HP too: an encounter starting below a threshold commits the
+corresponding phase before its first Draw, rather than waiting for a damage event to discover it.
+
+**Burst is counterplay.** A KO cancels pending phases and an unspent signature. There is no threshold HP floor,
+phase shield, forced extra turn or universal ace survival charge. Species keep their natural Sturdy, at its
+normal timing; phase progression neither grants nor refills it. A phase must be dangerous through the move it
+promises, not an invisible rule preventing the player from winning.
+
+**The signature opportunity.** Every three-phase ace has one authored damaging signature move and a concrete
+response in its encounter profile. It occupies its first ordinary action, using the move's printed power,
+targeting and normal AP cost. It takes priority over ordinary scoring, an older queued next-turn plan and the
+Phase-2 move-type filter; target scoring and legality remain normal. Only that move's cooldown is waived for
+that declaration. Do not reset every cooldown, add damage or issue a bonus action. The opportunity is consumed
+when the signature is **declared**, even if the player then KOs the ace, supplies an immunity, or the action
+fizzles under the normal rules. It is never silently retargeted or granted a free retry.
+The same move may later be chosen as an ordinary intent under normal scoring and cooldowns; it no longer
+carries a signature opportunity or a visibility/cooldown exception.
+
+If Sleep/Freeze already active at declaration, insufficient AP (including Paralysis), or no legal target prevents
+the declaration, retain the opportunity and show why it is waiting. The enemy may take another ordinary legal
+action; a blocked signature is not a reason to soft-lock its whole AI. Sleep/Freeze inflicted during the current
+Action phase still follow §4.2.1: they do not cancel an attack already announced. While Confused, suspend forced
+priority and preserve §4.2.3.1's uniform legal choice, with the eligible signature included and no additional
+random draw; choosing it spends the opportunity, choosing another move leaves it pending. No status is cleansed
+by a transition. From Phase-3 entry onward, even while the signature is pending, ordinary scoring favours
+offensive moves and Phase-2 move-type filters no longer apply. Persistent Tempo Control tax and already-earned
+stages remain. Once the opportunity is spent, subsequent actions continue this ordinary Phase-3 selection.
+
+**Two actions and hidden information.** With Acting Twice, the signature is action one and a different second
+move may use only the remaining shared budget (§5.6.1); the signature must fit the normal per-move cap as well.
+Do not reserve room for a second move by refusing an otherwise affordable signature. Combo-break still cancels
+only the second action. A signature is **always fully visible**, including move, reach, target and forecast,
+even on the ace's first action or under Dense Fog (§5.5); this reveals no ordinary second action by itself.
+Trainer's Instinct flags that a pending transition will replace its old future plan (§5.5.1); the current-turn
+intent remains committed. Counter-intel (§5.7) does not replace the authored signature with another move.
+
+The concrete moves and responses live in catalogs/gyms.md and catalogs/elites.md. Existing three-phase fixtures
+must also declare a valid profile. Content validation rejects a missing signature, an absent kit move, or an
+unaffordable base cost; it does not invent a fallback signature from the strongest move. UI owns only the
+presentation of this state (§9.2.2.3); it must not infer an active phase from current HP.
 
 ## §5.8.4 Stages persist across phases
 Stat stages — the boss's own buffs and the player's debuffs alike — carry through every transition. A boss

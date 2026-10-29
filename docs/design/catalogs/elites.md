@@ -87,3 +87,27 @@ Region 3's last wild band (`leagueBase`); every ace three-phase, every other Pok
 | `champion` | Blue | — (Full Team Synergy) | gym | `pidgeot` +10 · `rhydon` +11 · `arcanine` +11 · `exeggutor` +11 (Egg Bomb, Psychic, Growth, Amnesia) · the counter-pick starter +13 |
 
 Sprites: Showdown's trainer set — Bruno, Agatha (its FireRed/LeafGreen sprite: there is no default one), Will, Lance and Blue (`npm run art:trainers`).
+
+## 8. Three-phase ace signatures — ⚠ v0.9.85 (§5.8.3)
+
+The user chose irreversible escalation with an authored signature on 2026-10-29. These rows are designed,
+not implemented. Each signatureMove must be present in its encounter's active kit and fit the ordinary
+per-move AP cap; porting these rows must explicitly retain that move rather than trusting Auto. The single
+opportunity, timing, cooldown waiver, concealment exception and status interactions belong to §5.8.3.
+Two-phase Elite Wilds, Gauntlet members and Apex Legendaries do not acquire a third phase or signature.
+
+| Encounter | Ace | signatureMove | Printed AP | Concrete response |
+|---|---|---|---:|---|
+| `elite-four-1` | `machamp` | `submission` | 3 | Ghost immunity or Fighting-resistant Lead; printed recoil remains |
+| `elite-four-2` | `gengar` | `night-shade-plus` | 2 | Normal immunity or Ghost-resistant Lead; this is ordinary typed damage, not unavoidable fixed damage |
+| `elite-four-3` | `alakazam` | `psychic` | 3 | Dark immunity or Psychic/Steel resistance; preserve the player's Attack debuffs |
+| `elite-four-4` | `dragonite` | `fly` | 3 | Flying-resistant Lead or damage reduction; this move grants no new invulnerability turn |
+| Champion counter-pick | `venusaur` | `petal-dance` | 3 | Grass resistance; its printed self-Confusion remains |
+| Champion counter-pick | `charizard` | `flamethrower` | 3 | Fire/Water/Rock resistance or damage reduction |
+| Champion counter-pick | `blastoise` | `surf` | 2 | Water-resistant team and Cleave protection; swapping only the Lead does not protect the bench |
+| Rock boss reference fixture | `golem` | `rock-slide` | 2 | Rock-resistant Lead or damage reduction; natural Sturdy is shown separately |
+
+The three-phase Rival R3 starter, when its reserved evolution encounter is built, uses the corresponding
+counter-pick starter profile above; this does not promote the current two-phase Elite Trainer to three phases.
+The Alakazam and Champion practice fixtures use their corresponding rows. Every newly authored three-phase
+ace requires its own profile; no missing row is inferred from species or the most powerful attack.

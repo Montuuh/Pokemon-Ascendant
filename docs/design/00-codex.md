@@ -10,8 +10,9 @@
 
 ---
 
-> **Gym roster digest refreshed 2026-10-29:** §5.9.3–§5.9.4, the guest exception in §2.7.3 and the
-> twelve authored replacement teams. Design recorded; v0.9.85 implementation and tuning pending.
+> **Enemy/Gym digest refreshed 2026-10-29:** irreversible phases and declared ace signatures (§5.8.3,
+> §9.2.2.3), twelve authored Gym teams (§5.9.3–§5.9.4) and their guest exception (§2.7.3).
+> Design recorded; v0.9.85 implementation and tuning pending.
 
 ## 1. Identity
 
@@ -287,8 +288,15 @@ knocked out first (its premium: XP ×2 and a Rare Candy, Pay Day ₽, XP ×3) or
 **guarded** — hold out to the end of turn 3–4 against a guard that gains an Attack stage every turn, or knock it out,
 and the find and its prize are yours. Both named on the map and counted down on screen.
 
-**Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
-signature uncapped, Sturdy — the 2026-10-29 audit found implementation gaps; see implementation-status).
+**Bosses (§5.8.3, user 2026-10-29; implementation pending)** — irreversible phases per enemy UID. Crossing
+50 % / 20 % HP alive queues the highest phase; commit next turn before Draw/AP refill, applying entries once.
+Healing never reverses progression and the current declared intent never changes. A three-phase ace gets one
+authored **Signature** declaration in its first ordinary action: normal damage/AP/target rules, one cooldown
+waiver, always fully visible, no extra attack or universal survival shield. KO can skip it. Existing Sleep/Freeze
+or unaffordability delays it; Confusion preserves uniform legal choice. Once declared it is spent even if
+countered. Acting Twice may use remaining AP for a distinct second action. Natural Sturdy remains separate.
+The phase chip shows active state; a pending cue names next-turn escalation and the signature intent names its
+move/target/forecast/response (§9.2.2.3). Concrete moves and counters are in the Gym and Elite catalogues.
 **Gyms (§5.9.3): five authored Pokémon from five different lines, two at a time, the ace last; no mid-fight
 evolution and no extra support actor.** Opener two phases, middle three one, ace three. Levels are band top
 +1 / −1 / +2 respectively. Each has four scripted moves, at least four share the Gym's type, and one thematic

@@ -78,7 +78,8 @@ Code paths are relative to `src/`. The full architecture is in [`docs/architectu
 
 These are implementation work items against the owning canon. The 2026-10-29 phase audit also found real
 code/canon gaps, distinguished below from content waiting on a system and from a new design not yet ported.
-The choice of a revised phase contract remains a design decision; the report does not silently ratify one.
+The user chose irreversible escalation with an authored, fully announced ace signature on 2026-10-29;
+§5.8.3 owns that contract. The new rows distinguish recorded design from runtime behaviour.
 
 | # | Canon says | The build does | Fix in |
 |---|---|---|---|
@@ -89,8 +90,8 @@ The choice of a revised phase contract remains a design decision; the report doe
 | 5 | Krabby learns `mud-shot` at 13, `metal-claw` at 17 and `stomp` at 21 (`catalogs/species-r1.md`) | Its evolveLevel is 12, so §6.9 makes all three unreachable — a catalogue slip. They moved onto Kingler at the same levels, so the *line* keeps every move | **catalogue fix** |
 | 6 | Five explicitly authored members, five species/lines after evolution; four on-type or more and at most one declared thematic guest (§5.9.3, `catalogs/gyms.md`) | `gymTeamFor` authors two and pads three from lane favourites. All twelve Gym teams repeat species. Replacement teams and all sixty four-move kits are designed, not implemented or balanced; `GymDef` may need a per-member Attack override if tuning requires it | **v0.9.85** |
 | 7 | A Gym guest is named with its types/job before commitment and included in Team matchups (§2.7.3, §5.9.3) | The preview hides every member and Team evaluates the Gym's nominal type; guest signalling and matchup coverage need explicit implementation | **v0.9.85** |
-| 8 | Phase 3 promises an uncapped signature and possible ace survival (§5.8.3 / §5.9.3) | `boss.ts` clears cooldowns once; normal scoring/filtering then continues. There is no authored forced signature. Sturdy is the species ability, available without a phase gate, and eleven of twelve current aces lack it. Reconcile under the selected phase contract; preserve natural Sturdy | **v0.9.85**, phase decision pending |
-| 9 | Visible phase thresholds should communicate the actual behaviour (§5.8.3, §9.2.2.3) | `EnemyPanel` derives its phase from current HP before `turn.ts` applies entry effects. Healing reverses the number but keeps one-shot stages/entry flags. Chip/notches/banner/sound exist, but no effect/timing/response explanation. Audit and HP-vs-committed-escalation options are in `../reviews/2026-10-29-enemy-phases-and-gyms.md` | **v0.9.85**, phase decision pending |
+| 8 | Irreversible pending/active phases, committed before AP refill, with one fully telegraphed signature opportunity per three-phase ace and no universal survival shield (§5.8.3) | `boss.ts` derives phase from current HP and clears all cooldowns at P3; no pending threshold/signature metadata exists. `turn.ts` calculates AP before phase entry; `intents.ts` has no one-shot forced signature/concealment exception. Preserve natural Sturdy and CC/AP rules. Gym/Elite catalogues now author all signature moves/counters; none are ported | **v0.9.85**, design settled |
+| 9 | The phase UI shows active state separately from pending escalation and explains the signature's effect, timing and response (§9.2.2.3) | `EnemyPanel` derives its phase from current HP before `turn.ts` applies entry effects. Healing reverses the number but keeps stages/flags. Chip/notches/banner/sound exist, but no effect/timing/response explanation. Audit and recorded decision: `../reviews/2026-10-29-enemy-phases-and-gyms.md` | **v0.9.85**, design settled |
 
 **Closed in v0.6:** the whole account layer (§8.3–§8.6, §8.9, §8.10) · the Pokédex tiers and the Mastery slot (§5.13, §6.8) · One Path (§8.8.2), now the fork exists · 14 more achievements (§8.7) · the Eevee line (§8.5.2) · the four Tier-3 relics the catalogue authored (§8.6.1).
 

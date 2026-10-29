@@ -1,6 +1,7 @@
 # Enemy phases and Gym roster review — 2026-10-29
 
-Status: runtime audit complete; twelve replacement teams authored, not implemented or balanced.
+Status: runtime audit complete; twelve replacement teams and the chosen phase contract authored, not
+implemented or balanced. Observations below describe the old runtime; they are not the newly selected rules.
 The user chose **five members, permitting one thematic off-type support**. Canon is §5.9.3 and
 `../design/catalogs/gyms.md`; this report records observations and alternatives, not a second rule source.
 
@@ -30,6 +31,11 @@ Local evidence: `playtest/enemy-phase-gym-review-2026-10-29/` (ignored, retained
   pass checks for unique resolved species/lines, type/guest/ace constraints, four distinct moves, default-starter
   and Legendary exclusion, and a pure-status option on phased Status Siege members. This checks authored data,
   not runtime implementation or balance. Independent designer verdict after corrections: **Proceed with notes**.
+- Phase-decision follow-up: `signature-options.mjs`, `signature-options.log`, `validate-signatures.mjs`,
+  `signature-validation.log` and `catalog-validation-phase-decision.log`. All **20 signature profiles** use
+  existing damaging moves, matching printed AP and the base per-move cap; each has an authored response.
+  Every Gym signature belongs to its ace's four-move kit, and all 60 authored kits have no unaffordable base
+  AP slot. These checks validate the design data; the new phase behaviour is not implemented yet.
 
 The first full `npm run check` passed typecheck, lint (one existing Fast Refresh warning), **967 tests with
 3 skipped**, and all § references, then failed the catalogue guard because Gym ids appeared in prose rather
@@ -86,31 +92,35 @@ deployment is claimed by this design/documentation unit.
 Relevant canon: §5.8.1–§5.8.4, §5.9.4, §9.2.2.3. Relevant code: `boss.ts`, `turn.ts`, `intents.ts`,
 `setup.ts`, `damageFlow.ts`, `EnemyPanel.tsx`, `HpBar.tsx`, `useCombatFx.ts`, `audio/sfx.ts`.
 
-## Phase directions awaiting the user's choice
+## Recorded phase decision — 2026-10-29
 
-These are alternatives, not ratified rules. Threshold numbers remain BattleConfig data.
+The user selected **irreversible escalation with an authored, telegraphed signature and counterplay**. The
+owning rule is §5.8.3, replacing the former HP-reversible contract; §9.2.2.3 owns its presentation. The OPEN flag
+is closed. This is design completion; the code still exhibits the audited behaviour until v0.9.85 is built.
 
-- **HP phases.** Preserve reversible phases and one-shot entries; distinguish the current HP band from an
-  entry effect waiting until the next Intent. Explain that permanent stage changes survive healing. Lowest
-  mechanic cost and preserves burst-through as a tactic, but requires two concepts and does not make a
-  climactic attack reliable. P1 ⚠ until timing is legible; P2/P3/P4/P5 ✅. Changes §9.2.2.3, clarifies
-  §5.8.3–§5.8.4 and reconciles the signature/ace-survival promise with actual rules.
-- **Committed escalation.** At the next Intent, enter the highest reached eligible phase and never regress;
-  do not rewrite the action already promised this turn. Final phase uses aggressive scoring. Easier to read,
-  avoids healing regressions and preserves debuff investment. Requires stored phase to govern all filters,
-  taxes and previews; burst/KO must not be defeated by an unannounced invulnerability gate. P1–P5 ✅ with
-  announced thresholds. Changes §5.8.3, boss/turn/intents and the phase UI. Ace survival still needs a clear
-  contract separate from natural Sturdy.
-- **Committed escalation with authored signature.** The preceding contract plus a named final-phase move
-  per ace, announced as the next intent with its target/damage/response. Gives every ace a recognisable
-  climax. More content, invalid-target/cooldown/incapacitation edge cases and risk of repeated burst or stall;
-  never allow a hidden extra action. P1–P5 ✅ if signature and counters are declared. Changes §5.8.1–§5.8.3,
-  boss/content definitions/intents and §9.2.2.3; requires per-ace balance and regression tests.
+The independent designer reviewed declaration timing, hidden information, AP, CC, phase skips and natural
+Sturdy. Three details were added to avoid contradictions: commitment precedes AP refill; the signature is
+fully visible under first-action concealment and Dense Fog; Confusion preserves uniform legal choice rather
+than being nullified by forced priority. The one opportunity is spent on declaration, with no free retry,
+extra action or universal survival shield. Burst remains an answer. P1–P5 align with the recorded contract;
+signature damage, phase frequency and fight-length effects still require runtime calibration.
+Final independent verdict: **Proceed with notes, P1–P5 aligned**. The review's two wording points are resolved:
+Phase-2 filters stop on Phase-3 entry even while the signature waits, and an encounter's initial low HP seeds
+its pending phase before the first Draw. Neither is left as an implementation-time design choice.
 
-All options need a keyboard-focusable phase explanation, effect/timing/response on demand, a named transition
-cue tied to the affected Pokémon, and persistent information that survives reduced motion. Avoid text across
-the stage or a new permanently expanded paragraph. A real UI change still needs measured audit and independent
-ui-reviewer review; these baseline screenshots are neither that audit nor a UI approval.
+The Gym and Elite catalogues now specify concrete signatures/responses for all twelve redesigned Gym aces,
+four League aces, the Champion's three possible starters and the Golem practice profile. The shared starter
+profiles also cover the reserved three-phase Rival encounter when built; existing two-phase enemies do not
+acquire a signature. Inspection caught two 4-AP dead slots: Seadra now carries Ice Beam instead of Hydro Pump,
+and Lapras's signature/kit uses Ice Beam instead of Blizzard. The per-move enemy cap is 3 even when Acting Twice
+has a larger shared budget. These are authored data corrections, not measured balance changes.
+
+A real UI implementation still needs measured audit and independent ui-reviewer review; the existing baseline
+screenshots are neither that audit nor a UI approval.
+
+Decision-recording verification: `npm run check` exits 0 in check-phase-decision.log, **967 passed / 3 skipped**,
+7,391 § citations resolved, catalogue and version guards green. The existing Fast Refresh warning remains;
+no runtime code, new release or deployed behaviour is claimed. Signature/data checks are recorded above.
 
 ## Gym repetition is structural
 
@@ -176,5 +186,6 @@ species/lines, update guest telegraphs and Team matchups, measure the same seeds
 and complete UI verification/review. Existing generated Gym previews need a legacy-compatible encounter path
 until that Region ends; only newly generated maps use the new roster. A stored old species order must never
 receive the replacement slots' unrelated moves or phases, and an active combat must remain intact.
-Fixing phases is a separate rule/content/UI work package after the choice
-above; natural Sturdy, guaranteed boss survival, phase skips and signature legality need explicit tests.
+Implementing phases is the next rule/content/UI work package under the settled contract. Its regressions must
+cover threshold latching, pre-refill commitment, healing, phase skips/KO, natural Sturdy without universal
+survival, CC/AP, signature visibility/legality, opportunity consumption, recoil outcome order and combo-break.

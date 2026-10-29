@@ -202,6 +202,21 @@ and a runner's countdown (a running figure and *in 2*, amber and solid on its la
 in a column on the window's top-left corner. A guard carries no catch pill. Its tier (Wild, Trainer, Elite, Gym
 Leader) is in the plate's bubble, not printed on every plate.
 
+**Phase information** (§5.8.3; designed for v0.9.85). The Phase N/M chip reads the sim's **active** phase.
+When a threshold is crossed, a separate compact cue says *Phase 3 next turn*; the active chip does not advance
+early. Hovering or focusing the phase information explains its effect, activation time and concrete response.
+On commitment, one brief cue names the Pokémon and the effect; a direct jump to Phase 3 produces one combined
+cue rather than competing banners. Persistent information remains readable with reduced motion and without sound.
+
+An ace's declared signature is its ordinary intent card marked **Signature**, with its actual move, reach,
+target, damage forecast and response. It remains fully visible under first-action concealment or Dense Fog;
+an ordinary second intent keeps its own visibility rules. A waiting opportunity shows the reason, such as
+*Signature waiting — Paralysed*, without presenting it as an action this turn. The response names what still
+works now: KO, a resistance/immunity swap, Defence or damage reduction; it never suggests that a Sleep/Freeze
+card can cancel an already declared action. New phase copy must fit 720p/1080p at 150 % text without adding a
+permanent paragraph across the arena or stealing the combat card's target click. All numbers and states come
+from the sim; phase effects and signature opportunities are not recomputed in the UI.
+
 The sprite is as much the target as the plate: a click on either aims the held card there.
 
 **A formation never outgrows its stage** (the user's report, 2026-10-19: at 720 p a group's Bench 1 intent was cut under
