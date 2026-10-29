@@ -123,7 +123,8 @@
         "pinsir",
         "kabuto",
         "kabutops",
-        "mew"
+        "mew",
+        "scizor"
       ],
       "description": "Teaches Swords Dance: a normal technique for 1 AP."
     },
@@ -362,7 +363,11 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "umbreon",
+        "steelix",
+        "scizor",
+        "magnezone"
       ],
       "description": "Teaches Toxic: a poison technique for 1 AP."
     },
@@ -410,7 +415,8 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "steelix"
       ],
       "description": "Hits every occupied slot for full damage. Expensive, and worth it against a wide team."
     },
@@ -552,7 +558,10 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "umbreon",
+        "steelix",
+        "magnezone"
       ],
       "description": "Teaches Body Slam: a normal melee hit of 85 power for 3 AP."
     },
@@ -705,7 +714,11 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "umbreon",
+        "steelix",
+        "scizor",
+        "magnezone"
       ],
       "description": "Teaches Take Down: a normal melee hit of 75 power for 2 AP."
     },
@@ -858,7 +871,11 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "umbreon",
+        "steelix",
+        "scizor",
+        "magnezone"
       ],
       "description": "Teaches Double-Edge: a normal melee hit of 120 power for 4 AP."
     },
@@ -1088,14 +1105,12 @@
         "golem",
         "rapidash",
         "slowbro",
-        "magneton",
         "farfetchd",
         "dodrio",
         "dewgong",
         "muk",
         "cloyster",
         "gengar",
-        "onix",
         "hypno",
         "kingler",
         "electrode",
@@ -1113,7 +1128,6 @@
         "seaking",
         "starmie",
         "mr-mime",
-        "scyther",
         "jynx",
         "electabuzz",
         "magmar",
@@ -1134,7 +1148,11 @@
         "moltres",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "umbreon",
+        "steelix",
+        "scizor",
+        "magnezone"
       ],
       "description": "Teaches Hyper Beam: a normal ranged hit of 130 power for 4 AP."
     },
@@ -1490,7 +1508,11 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "umbreon",
+        "steelix",
+        "scizor",
+        "magnezone"
       ],
       "description": "Teaches Rage: a normal melee hit of 40 power for 1 AP."
     },
@@ -1594,7 +1616,8 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "magnezone"
       ],
       "description": "Teaches Thunderbolt: a electric ranged hit of 95 power for 3 AP."
     },
@@ -1627,7 +1650,8 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "magnezone"
       ],
       "description": "Teaches Thunder: a electric ranged hit of 120 power for 4 AP."
     },
@@ -1655,7 +1679,8 @@
         "kabuto",
         "kabutops",
         "aerodactyl",
-        "mew"
+        "mew",
+        "steelix"
       ],
       "description": "Teaches Fissure: a ground melee hit of 130 power for 4 AP."
     },
@@ -1701,7 +1726,8 @@
         "omastar",
         "kabuto",
         "kabutops",
-        "mew"
+        "mew",
+        "steelix"
       ],
       "description": "Teaches Dig: a ground melee hit of 75 power for 2 AP."
     },
@@ -1912,7 +1938,11 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "umbreon",
+        "steelix",
+        "scizor",
+        "magnezone"
       ],
       "description": "Teaches Double Team: a normal technique for 0 AP."
     },
@@ -1991,7 +2021,8 @@
         "koffing",
         "weezing",
         "snorlax",
-        "mew"
+        "mew",
+        "steelix"
       ],
       "description": "Teaches Self-Destruct: a normal melee hit of 130 power for 3 AP."
     },
@@ -2165,7 +2196,9 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "umbreon",
+        "magnezone"
       ],
       "description": "Teaches Swift: a normal ranged hit of 55 power for 1 AP."
     },
@@ -2257,7 +2290,8 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "steelix"
       ],
       "description": "Teaches Skull Bash: a normal melee hit of 95 power for 3 AP."
     },
@@ -2473,7 +2507,11 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "umbreon",
+        "steelix",
+        "scizor",
+        "magnezone"
       ],
       "description": "Teaches Rest: a psychic technique for 1 AP."
     },
@@ -2505,7 +2543,8 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "magnezone"
       ],
       "description": "Teaches Thunder Wave: a electric technique for 1 AP."
     },
@@ -2555,7 +2594,8 @@
         "koffing",
         "weezing",
         "snorlax",
-        "mew"
+        "mew",
+        "steelix"
       ],
       "description": "Teaches Explosion: a normal melee hit of 170 power for 4 AP."
     },
@@ -2599,7 +2639,8 @@
         "dragonair",
         "dragonite",
         "mewtwo",
-        "mew"
+        "mew",
+        "steelix"
       ],
       "description": "Teaches Rock Slide: a rock ranged hit of 75 power for 2 AP."
     },
@@ -2615,6 +2656,187 @@
         "mew"
       ],
       "description": "Teaches Tri Attack: a normal ranged hit of 90 power for 3 AP."
+    },
+    {
+      "id": "tm50-crunch",
+      "name": "TM50 Crunch",
+      "move": "crunch",
+      "compatibleSpecies": [
+        "rattata",
+        "raticate",
+        "ekans",
+        "arbok",
+        "sandshrew",
+        "sandslash",
+        "meowth",
+        "persian",
+        "growlithe",
+        "arcanine",
+        "kangaskhan",
+        "eevee",
+        "vaporeon",
+        "jolteon",
+        "flareon",
+        "dratini",
+        "dragonair",
+        "dragonite",
+        "mew",
+        "umbreon"
+      ],
+      "description": "Teaches Crunch: a dark melee hit of 85 power for 3 AP."
+    },
+    {
+      "id": "tm51-dark-pulse",
+      "name": "TM51 Dark Pulse",
+      "move": "dark-pulse",
+      "compatibleSpecies": [
+        "zubat",
+        "golbat",
+        "abra",
+        "kadabra",
+        "alakazam",
+        "gastly",
+        "haunter",
+        "gengar",
+        "drowzee",
+        "hypno",
+        "mr-mime",
+        "mewtwo",
+        "mew",
+        "umbreon"
+      ],
+      "description": "Teaches Dark Pulse: a dark ranged hit of 80 power for 2 AP."
+    },
+    {
+      "id": "tm52-iron-head",
+      "name": "TM52 Iron Head",
+      "move": "iron-head",
+      "compatibleSpecies": [
+        "nidoran-f",
+        "nidorina",
+        "nidoqueen",
+        "nidoran-m",
+        "nidorino",
+        "nidoking",
+        "machop",
+        "machoke",
+        "machamp",
+        "geodude",
+        "graveler",
+        "golem",
+        "magnemite",
+        "magneton",
+        "rhyhorn",
+        "rhydon",
+        "kangaskhan",
+        "pinsir",
+        "tauros",
+        "lapras",
+        "snorlax",
+        "dratini",
+        "dragonair",
+        "dragonite",
+        "mew",
+        "steelix",
+        "scizor",
+        "magnezone"
+      ],
+      "description": "Teaches Iron Head: a steel melee hit of 75 power for 2 AP."
+    },
+    {
+      "id": "tm53-flash-cannon",
+      "name": "TM53 Flash Cannon",
+      "move": "flash-cannon",
+      "compatibleSpecies": [
+        "clefairy",
+        "clefable",
+        "abra",
+        "kadabra",
+        "alakazam",
+        "magnemite",
+        "magneton",
+        "voltorb",
+        "electrode",
+        "staryu",
+        "starmie",
+        "porygon",
+        "mewtwo",
+        "mew",
+        "steelix",
+        "scizor",
+        "magnezone"
+      ],
+      "description": "Teaches Flash Cannon: a steel ranged hit of 70 power for 2 AP."
+    },
+    {
+      "id": "tm54-iron-tail",
+      "name": "TM54 Iron Tail",
+      "move": "iron-tail",
+      "compatibleSpecies": [
+        "charmander",
+        "charmeleon",
+        "charizard",
+        "squirtle",
+        "wartortle",
+        "blastoise",
+        "rattata",
+        "raticate",
+        "pikachu",
+        "raichu",
+        "sandshrew",
+        "sandslash",
+        "nidoran-f",
+        "nidorina",
+        "nidoqueen",
+        "nidoran-m",
+        "nidorino",
+        "nidoking",
+        "growlithe",
+        "arcanine",
+        "magnemite",
+        "magneton",
+        "kangaskhan",
+        "tauros",
+        "eevee",
+        "vaporeon",
+        "jolteon",
+        "flareon",
+        "dratini",
+        "dragonair",
+        "dragonite",
+        "mew",
+        "umbreon",
+        "steelix",
+        "scizor",
+        "magnezone"
+      ],
+      "description": "Teaches Iron Tail: a steel melee hit of 85 power for 3 AP."
+    },
+    {
+      "id": "tm55-steel-wing",
+      "name": "TM55 Steel Wing",
+      "move": "steel-wing",
+      "compatibleSpecies": [
+        "pidgey",
+        "pidgeotto",
+        "pidgeot",
+        "spearow",
+        "fearow",
+        "magnemite",
+        "magneton",
+        "farfetchd",
+        "doduo",
+        "dodrio",
+        "aerodactyl",
+        "dratini",
+        "dragonair",
+        "dragonite",
+        "mew",
+        "steelix",
+        "scizor",
+        "magnezone"
+      ],
+      "description": "Teaches Steel Wing: a steel melee hit of 65 power for 2 AP."
     }
   ]
 }

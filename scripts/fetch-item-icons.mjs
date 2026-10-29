@@ -37,6 +37,8 @@ const TMS = [
   ['tm-rock', 'tm-rock'],
   ['tm-ghost', 'tm-ghost'],
   ['tm-dragon', 'tm-dragon'],
+  ['tm-dark', 'tm-dark'],
+  ['tm-steel', 'tm-steel'],
 ];
 
 /** Held items (§7.4) — all 32 are real Pokémon items and keep their own names. */

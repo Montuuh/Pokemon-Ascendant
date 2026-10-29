@@ -82,6 +82,13 @@ const TMS = [
   [47, 'explosion', inLines('geodude', 'onix', 'voltorb', 'koffing', 'gastly', 'snorlax', 'shellder', 'grimer')],
   [48, 'rock-slide', any(hasType('rock', 'ground'), inLines('machop', 'mankey', 'kangaskhan', 'snorlax', 'tauros', 'dratini', 'nidoran-f', 'nidoran-m', 'mewtwo'))],
   [49, 'tri-attack', inLines('porygon', 'doduo', 'mewtwo')],
+  // Dark and Steel (v0.9.84): the type's own species, and the families the series taught each move to.
+  [50, 'crunch', any(hasType('dark'), inLines('rattata', 'meowth', 'ekans', 'growlithe', 'gyarados', 'dratini', 'kangaskhan', 'eevee', 'sandshrew'))],
+  [51, 'dark-pulse', any(hasType('dark'), inLines('gastly', 'abra', 'drowzee', 'zubat', 'mr-mime', 'mewtwo'))],
+  [52, 'iron-head', any(hasType('steel'), inLines('rhyhorn', 'tauros', 'snorlax', 'kangaskhan', 'machop', 'geodude', 'nidoran-f', 'nidoran-m', 'pinsir', 'lapras', 'dratini'))],
+  [53, 'flash-cannon', any(hasType('steel'), inLines('porygon', 'voltorb', 'abra', 'staryu', 'clefairy', 'mewtwo'))],
+  [54, 'iron-tail', any(hasType('steel'), inLines('rattata', 'pikachu', 'charmander', 'squirtle', 'sandshrew', 'nidoran-f', 'nidoran-m', 'eevee', 'dratini', 'kangaskhan', 'tauros', 'growlithe'))],
+  [55, 'steel-wing', any(hasType('steel'), inLines('pidgey', 'spearow', 'doduo', 'farfetchd', 'aerodactyl', 'dratini'))],
 ];
 
 /** The three the game shipped first keep their ids and take rules too (they had hand lists of 3, 9 and 6). */

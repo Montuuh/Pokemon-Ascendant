@@ -1,4 +1,4 @@
-# TM catalog — 46
+# TM catalog — 52
 
 > Implements §7.5 and §5.4.1. A TM is a Consumable-class item that **never enters the combat pile**: it is
 > applied from the Map View, permanently adding its move to a compatible Pokémon's Learned Move Pool (§6.7).
@@ -17,55 +17,60 @@ Jigglypuff lines); Mew learns them all. Caterpie, Weedle, their cocoons, Magikar
 |---|---|---|---|---|---|---|---|
 | 01 | `tm01-mega-punch` | `mega-punch` | Normal | 75 | 2 | 56 | ✅ v0.9.10 |
 | 02 | `tm02-razor-wind` | `razor-wind` | Normal | 95 | 3 | 20 | ✅ v0.9.10 |
-| 03 | `tm03-swords-dance` | `swords-dance` | Normal | — | 1 | 26 | ✅ v0.9.10 |
+| 03 | `tm03-swords-dance` | `swords-dance` | Normal | — | 1 | 27 | ✅ v0.9.10 |
 | 04 | `tm04-flamethrower` | `flamethrower` | Fire | 95 | 3 | 26 | ✅ v0.9.10 |
 | 05 | `tm05-surf` | `surf` | Water | 70 | 2 | 44 | ✅ v0.9.10 |
-| 06 | `tm06-toxic` | `toxic` | Poison | — | 1 | 145 | ✅ v0.9.10 |
-| 07 | `tm07-earthquake` | `earthquake` | Ground | 90 | 3 | 40 | ✅ v0.9.10 |
-| 08 | `tm08-body-slam` | `body-slam` | Normal | 85 | 3 | 134 | ✅ v0.9.10 |
-| 09 | `tm09-take-down` | `take-down` | Normal | 75 | 2 | 145 | ✅ v0.9.10 |
-| 10 | `tm10-double-edge` | `double-edge` | Normal | 120 | 4 | 145 | ✅ v0.9.10 |
+| 06 | `tm06-toxic` | `toxic` | Poison | — | 1 | 149 | ✅ v0.9.10 |
+| 07 | `tm07-earthquake` | `earthquake` | Ground | 90 | 3 | 41 | ✅ v0.9.10 |
+| 08 | `tm08-body-slam` | `body-slam` | Normal | 85 | 3 | 137 | ✅ v0.9.10 |
+| 09 | `tm09-take-down` | `take-down` | Normal | 75 | 2 | 149 | ✅ v0.9.10 |
+| 10 | `tm10-double-edge` | `double-edge` | Normal | 120 | 4 | 149 | ✅ v0.9.10 |
 | 11 | `tm11-bubble-beam` | `bubble-beam` | Water | 65 | 2 | 32 | ✅ v0.9.10 |
 | 12 | `tm12-water-gun` | `water-gun` | Water | 45 | 1 | 32 | ✅ v0.9.10 |
 | 13 | `tm13-ice-beam` | `ice-beam` | Ice | 95 | 3 | 50 | ✅ v0.9.10 |
 | 14 | `tm14-blizzard` | `blizzard` | Ice | 120 | 4 | 42 | ✅ v0.9.10 |
-| 15 | `tm15-hyper-beam` | `hyper-beam` | Normal | 130 | 4 | 80 | ✅ v0.9.10 |
+| 15 | `tm15-hyper-beam` | `hyper-beam` | Normal | 130 | 4 | 81 | ✅ v0.9.10 |
 | 16 | `tm16-pay-day` | `pay-day` | Normal | 50 | 1 | 3 | ✅ v0.9.10 |
 | 17 | `tm17-submission` | `submission` | Fighting | 90 | 3 | 56 | ✅ v0.9.10 |
 | 18 | `tm18-counter` | `counter` | Fighting | 65 | 2 | 56 | ✅ v0.9.10 |
 | 19 | `tm19-seismic-toss` | `seismic-toss` | Fighting | 70 | 2 | 56 | ✅ v0.9.10 |
-| 20 | `tm20-rage` | `rage` | Normal | 40 | 1 | 145 | ✅ v0.9.10 |
+| 20 | `tm20-rage` | `rage` | Normal | 40 | 1 | 149 | ✅ v0.9.10 |
 | 21 | `tm21-mega-drain` | `mega-drain` | Grass | 70 | 2 | 15 | ✅ v0.9.10 |
 | 22 | `tm22-solar-beam` | `solar-beam` | Grass | 120 | 4 | 19 | ✅ v0.9.10 |
 | 23 | `tm23-dragon-rage` | `dragon-rage` | Dragon | 50 | 1 | 8 | ✅ v0.9.10 |
-| 24 | `tm24-thunderbolt` | `thunderbolt` | Electric | 95 | 3 | 30 | ✅ v0.9.10 |
-| 25 | `tm25-thunder` | `thunder` | Electric | 120 | 4 | 25 | ✅ v0.9.10 |
-| 27 | `tm27-fissure` | `fissure` | Ground | 130 | 4 | 20 | ✅ v0.9.10 |
-| 28 | `tm28-dig` | `dig` | Ground | 75 | 2 | 38 | ✅ v0.9.10 |
+| 24 | `tm24-thunderbolt` | `thunderbolt` | Electric | 95 | 3 | 31 | ✅ v0.9.10 |
+| 25 | `tm25-thunder` | `thunder` | Electric | 120 | 4 | 26 | ✅ v0.9.10 |
+| 27 | `tm27-fissure` | `fissure` | Ground | 130 | 4 | 21 | ✅ v0.9.10 |
+| 28 | `tm28-dig` | `dig` | Ground | 75 | 2 | 39 | ✅ v0.9.10 |
 | 29 | `tm29-psychic` | `psychic` | Psychic | 95 | 3 | 28 | ✅ v0.9.10 |
 | 30 | `tm30-teleport` | `teleport` | Psychic | — | 0 | 14 | ✅ v0.9.10 |
-| 32 | `tm32-double-team` | `double-team` | Normal | — | 0 | 145 | ✅ v0.9.10 |
+| 32 | `tm32-double-team` | `double-team` | Normal | — | 0 | 149 | ✅ v0.9.10 |
 | 33 | `tm33-reflect` | `reflect` | Psychic | — | 1 | 25 | ✅ v0.9.10 |
 | 35 | `tm35-metronome` | `metronome` | Normal | — | 1 | 11 | ✅ v0.9.10 |
-| 36 | `tm36-self-destruct` | `self-destruct` | Normal | 130 | 3 | 19 | ✅ v0.9.10 |
+| 36 | `tm36-self-destruct` | `self-destruct` | Normal | 130 | 3 | 20 | ✅ v0.9.10 |
 | 37 | `tm37-egg-bomb` | `egg-bomb` | Normal | 95 | 3 | 6 | ✅ v0.9.10 |
 | 38 | `tm38-fire-blast` | `fire-blast` | Fire | 120 | 4 | 26 | ✅ v0.9.10 |
-| 39 | `tm39-swift` | `swift` | Normal | 55 | 1 | 118 | ✅ v0.9.10 |
-| 40 | `tm40-skull-bash` | `skull-bash` | Normal | 95 | 3 | 84 | ✅ v0.9.10 |
+| 39 | `tm39-swift` | `swift` | Normal | 55 | 1 | 120 | ✅ v0.9.10 |
+| 40 | `tm40-skull-bash` | `skull-bash` | Normal | 95 | 3 | 85 | ✅ v0.9.10 |
 | 41 | `tm41-soft-boiled` | `soft-boiled` | Normal | — | 1 | 2 | ✅ v0.9.10 |
 | 42 | `tm42-dream-eater` | `dream-eater` | Psychic | 90 | 2 | 17 | ✅ v0.9.10 |
 | 43 | `tm43-sky-attack` | `sky-attack` | Flying | 110 | 4 | 20 | ✅ v0.9.10 |
-| 44 | `tm44-rest` | `rest` | Psychic | — | 1 | 145 | ✅ v0.9.10 |
-| 45 | `tm45-thunder-wave` | `thunder-wave` | Electric | — | 1 | 24 | ✅ v0.9.10 |
+| 44 | `tm44-rest` | `rest` | Psychic | — | 1 | 149 | ✅ v0.9.10 |
+| 45 | `tm45-thunder-wave` | `thunder-wave` | Electric | — | 1 | 25 | ✅ v0.9.10 |
 | 46 | `tm46-psywave` | `psywave` | Psychic | 50 | 1 | 17 | ✅ v0.9.10 |
-| 47 | `tm47-explosion` | `explosion` | Normal | 170 | 4 | 17 | ✅ v0.9.10 |
-| 48 | `tm48-rock-slide` | `rock-slide` | Rock | 75 | 2 | 36 | ✅ v0.9.10 |
+| 47 | `tm47-explosion` | `explosion` | Normal | 170 | 4 | 18 | ✅ v0.9.10 |
+| 48 | `tm48-rock-slide` | `rock-slide` | Rock | 75 | 2 | 37 | ✅ v0.9.10 |
 | 49 | `tm49-tri-attack` | `tri-attack` | Normal | 90 | 3 | 5 | ✅ v0.9.10 |
+| 50 | `tm50-crunch` | `crunch` | Dark | 85 | 3 | 20 | ✅ v0.9.85 |
+| 51 | `tm51-dark-pulse` | `dark-pulse` | Dark | 80 | 2 | 14 | ✅ v0.9.85 |
+| 52 | `tm52-iron-head` | `iron-head` | Steel | 75 | 2 | 28 | ✅ v0.9.85 |
+| 53 | `tm53-flash-cannon` | `flash-cannon` | Steel | 70 | 2 | 17 | ✅ v0.9.85 |
+| 54 | `tm54-iron-tail` | `iron-tail` | Steel | 85 | 3 | 36 | ✅ v0.9.85 |
+| 55 | `tm55-steel-wing` | `steel-wing` | Steel | 65 | 2 | 18 | ✅ v0.9.85 |
 
 **Notes**
-- Every TM is a Gen I move since v0.9.5 (`moves.md`), as Gen I's own TMs were. Iron Tail, Shadow Bone and Foresight
-  left with the rest of the moves Gen I never had; Rock Slide, Dig and Swift took their numbers. (Foresight's idea — the
-  move version of `keen-eye`, revealing intents for a turn — waits for a card that can carry it.)
+- TM01–TM49 are Gen I moves, as Gen I's own TMs were (Shadow Bone and Foresight left with the moves Gen I never had; Rock Slide, Dig and Swift took their numbers). Iron Tail returned with Steel in v0.9.84. (Foresight's idea — the move version of `keen-eye`, revealing intents for a turn — waits for a card that can carry it.)
+- Six more arrived with Dark and Steel (v0.9.85, TM50–TM55: Crunch, Dark Pulse, Iron Head, Flash Cannon, Iron Tail, Steel Wing — the moves the two types share with the wider roster; the signature ones stay learnset-only). Their compatibility is a rule like the rest, so the four new species and the Pokémon the series taught each move to are covered.
 - TM13 is Dragon, which has no strong resist in the 15-type chart; at 1 AP it is a utility filler, not a staple.
 
 **Acquisition** (§7.5): Region Shop special slot and City Shop slot 8 at 250–500 ₽ (curated to the team's
