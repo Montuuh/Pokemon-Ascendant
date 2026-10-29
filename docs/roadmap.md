@@ -1504,6 +1504,34 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Shipped.** B04 selects exact first-frame battle sprites for final teams when system or in-game reduced motion applies. Normal and shiny palettes, native half-step scales and baselines are retained. System preference changes update live; Full motion retains GIF animation. No game rule or composition change.
 
+### v0.9.85 — Authored Gym teams and readable phases  ☐
+
+**Designed 2026-10-29; not implemented.** The user's playtest: Gym teams repeat Pokémon or contain weak filler,
+and enemy phases lack useful UX. Decision: five members per Gym, allowing one explicitly telegraphed off-type
+support. All twelve teams, their deployment order, roles and four-move kits are authored in
+`design/catalogs/gyms.md`; rules in §5.9.3, the guest preview exception in §2.7.3. Lorelei uses Slowbro as the
+guest and Lapras as the ace. No new species. The phase contract options await the user's separate decision;
+the current 50 % / 20 % rules are not silently changed by the roster design.
+
+**Exit criteria:**
+
+- Port all five explicit slots per Gym; validate unique species and evolutionary lines after evolution,
+  at least four on-type members, at most one declared guest and the ace last. Lane pools do not fill teams.
+- Preserve the current level budget, two-at-a-time formation, rules, rewards and regional accents; ensure the
+  accent retains all four scripted moves. Explain guests before the fork/preview and in Team matchups.
+- Save compatibility: already generated Gym previews keep their legacy encounter contract through that Region;
+  newly generated maps use the new teams. Never pair a saved old species order with the new slots' moves/phases
+  or replace an active combat. Cover a pre-update save and a new run with explicit regressions.
+- Reproduce and resolve the phase label/entry mismatch, healing regression, missing guaranteed signature and
+  species-only Sturdy discrepancy under the selected phase contract. UI shows effect, timing and response,
+  accessible on hover/focus and under reduced motion, with 720p/1080p at 150 % text and independent UI review.
+- Measure every Leader against the same 240-run baseline, including arrivals, loss rate, duration tail,
+  faints, phase visibility and post-Gym XP; confirm the 720-run Region curve. Do not uniformly raise difficulty:
+  baseline Surge 0/35 defeats, Sabrina 0/8, Lorelei 6/13 and 42.4 turns (small conditional samples).
+- Focused regressions, `npm run check`, screen captures and the UI review pass; then release and production smoke.
+
+Evidence, exact findings and phase options: [review](reviews/2026-10-29-enemy-phases-and-gyms.md).
+
 ### v0.9.84 — Dark and Steel  ✅ 2026-10-29
 
 **Shipped.** The user's call: add Dark and Steel to the game with the Pokémon, moves, relics and items they need — decided as: retype what exists, add the four evolutions the two types bring, relax the Gen I move rule for these two types only. (1) **Chart** (§4.1.2): 17 types at Gen II values — Dark hits Ghost and Psychic, is immune to Psychic and weak to Fighting and Bug; Steel hits Ice and Rock, resists nearly everything and is immune to Poison (so Poison status too, §4.2.4; Toxic Spikes and Sandstorm spare it); a 17×17 independent matrix test. (2) **Pokémon**: Magnemite and Magneton Electric/Steel, and four new species — **Umbreon** (Eevee's fourth path, Moon Stone, `eevee-dark`), **Scizor** (Scyther, L26, Metal Coat), **Steelix** (Onix, L26, Metal Coat) and **Magnezone** (Magneton, L26, Thunder Stone; the line is three stages now, so its Mastery gains `thunder-plus-plus`) — each with its payload branches, learnset and a real kit (the content tests walk all 155). Eevee's four paths required: two paths to *different* species may share an archetype; the evolution screen lays four paths out two by two on a short window. (3) **Moves** (§3.6): Bite is Dark; 14 later moves (6 Dark, 8 Steel) with art (`later-moves.json` is the list the content test allows); `slash-plus` is 100 power (Scyther's Lv2 Mastery) and Charizard's Drakewing path keeps the Slash it already holds; Rattata learns Hyper Fang at L10 so it keeps a Normal attack worth playing; Raticate's Vanguard path turns Bite into Crunch. (4) **Items**: Dark and Steel Gems (62 relics), Black Glasses, Dread and Iron Plates (35 held items; Steel has no 20 % booster — its Metal Coat is the evolution item), the Metal Coat. (5) **Wild pools**: Scyther and Onix move to Region 1 (first forms), the four new forms to Region 3, Region 2's Onix to Marowak and Rhydon; Bruno fields a Steelix. **Measured** over 120 runs × 3 starters, before → after: R1 54 → 57, R2|R1 56 → 61, R3|R2 46 → 43, League|R3 58 → 54, full run 8 → 8 % — inside the noise. A first pass with the Region 3 Engineers on Magnezone and the Hiker on Steelix read R3|R2 34 %: those three fights now field Electabuzz, Raichu and Rhydon. Type labels (FRLG), the per-type sound and motion tables, `--type-dark` / `--type-steel`, icons for the new items; the Gen VII box icon (enlarged) stands in for the four species the Gen VIII set lacks; six TMs (TM50–55) teach the Dark and Steel moves the wider roster shares.

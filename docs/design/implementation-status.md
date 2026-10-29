@@ -76,9 +76,9 @@ Code paths are relative to `src/`. The full architecture is in [`docs/architectu
 
 ## Where the build disagrees with canon
 
-Canon is correct; these are work items, not open questions. v0.2 closed four, v0.3 closed four and opened
-four, and v0.4 closed all of those. What is left is content waiting on a system, not a rule implemented wrong
-— and every waiting row says so where a player can read it (§7.7).
+These are implementation work items against the owning canon. The 2026-10-29 phase audit also found real
+code/canon gaps, distinguished below from content waiting on a system and from a new design not yet ported.
+The choice of a revised phase contract remains a design decision; the report does not silently ratify one.
 
 | # | Canon says | The build does | Fix in |
 |---|---|---|---|
@@ -87,6 +87,10 @@ four, and v0.4 closed all of those. What is left is content waiting on a system,
 | 3 | A boss ace reaches Phase 4 under Master's Challenge (`catalogs/modifiers.md`) | §5.8.3 defines three phases and no fourth threshold, entry effect or marker, so a three-phase ace keeps three; the picker says so | **v0.6** |
 | 4 | Snorlax's boss script runs `snore` (playable only while asleep), `yawn` (delayed status), `heavy-slam` (conditional power) and `giga-impact-v` (recharge) | Four effect kinds the sim does not have. The shipped profile is the half that has a definition — Amnesia, Rest, Body Slam, Crunch — and the §2.8.2 catch mechanic, which is the reason the node exists, is intact | **v0.6** |
 | 5 | Krabby learns `mud-shot` at 13, `metal-claw` at 17 and `stomp` at 21 (`catalogs/species-r1.md`) | Its evolveLevel is 12, so §6.9 makes all three unreachable — a catalogue slip. They moved onto Kingler at the same levels, so the *line* keeps every move | **catalogue fix** |
+| 6 | Five explicitly authored members, five species/lines after evolution; four on-type or more and at most one declared thematic guest (§5.9.3, `catalogs/gyms.md`) | `gymTeamFor` authors two and pads three from lane favourites. All twelve Gym teams repeat species. Replacement teams and all sixty four-move kits are designed, not implemented or balanced; `GymDef` may need a per-member Attack override if tuning requires it | **v0.9.85** |
+| 7 | A Gym guest is named with its types/job before commitment and included in Team matchups (§2.7.3, §5.9.3) | The preview hides every member and Team evaluates the Gym's nominal type; guest signalling and matchup coverage need explicit implementation | **v0.9.85** |
+| 8 | Phase 3 promises an uncapped signature and possible ace survival (§5.8.3 / §5.9.3) | `boss.ts` clears cooldowns once; normal scoring/filtering then continues. There is no authored forced signature. Sturdy is the species ability, available without a phase gate, and eleven of twelve current aces lack it. Reconcile under the selected phase contract; preserve natural Sturdy | **v0.9.85**, phase decision pending |
+| 9 | Visible phase thresholds should communicate the actual behaviour (§5.8.3, §9.2.2.3) | `EnemyPanel` derives its phase from current HP before `turn.ts` applies entry effects. Healing reverses the number but keeps one-shot stages/entry flags. Chip/notches/banner/sound exist, but no effect/timing/response explanation. Audit and HP-vs-committed-escalation options are in `../reviews/2026-10-29-enemy-phases-and-gyms.md` | **v0.9.85**, phase decision pending |
 
 **Closed in v0.6:** the whole account layer (§8.3–§8.6, §8.9, §8.10) · the Pokédex tiers and the Mastery slot (§5.13, §6.8) · One Path (§8.8.2), now the fork exists · 14 more achievements (§8.7) · the Eevee line (§8.5.2) · the four Tier-3 relics the catalogue authored (§8.6.1).
 

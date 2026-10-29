@@ -358,11 +358,11 @@ the intent pattern resets.
 
 | Tier | Count | Pokémon each | Phases | Fights |
 |---|---|---|---|---|
-| Gym Leader | 3 per run (of 12) | 2, sequential | 2; ace 3 | 6 |
+| Gym Leader | 3 per run (of 12) | 5, two at a time | opener 2; middle three 1; ace 3 | 15 |
 | Elite Four 1–2 | 2 | 2, sequential | 2; ace 3 | 4 |
 | Elite Four 3–4 | 2 | 3, sequential | 2; ace 3 | 6 |
 | Champion | 1 | 5 (final two simultaneous) | 2–3; ace 3 + evolution | 5 |
-| **Total** | | | | **21 boss-tier Pokémon** |
+| **Total** | | | | **30 boss-tier Pokémon** |
 
 ## §5.8.3 Phase structure
 
@@ -373,6 +373,13 @@ Thresholds are drawn as notches on the enemy's HP bar.
 | **Phase 1** | HP > 50 % | Setup and reading the player: Buff, Status, methodical Attack |
 | **Phase 2** | HP ≤ 50 % | The forced phase type fires (§5.9.4 for Gyms) |
 | **Phase 3** *(aces)* | HP ≤ 20 % | Last stand: cooldowns reset, the signature move fires uncapped, Sturdy may save one lethal hit |
+
+> ⚠️ **OPEN (2026-10-29, user decides):** retain HP-reversible phases, commit irreversible escalation at the
+> next Intent, or add an authored, telegraphed ace signature to that irreversible model. The audit found that
+> the label precedes entry effects, healing reverses the label but keeps stages, and the build has neither a
+> forced signature nor general ace survival. Options and reproductions are in
+> [the review](../reviews/2026-10-29-enemy-phases-and-gyms.md). Do not silently choose during the roster port;
+> natural species Sturdy remains distinct from any future boss survival mechanic.
 
 ## §5.8.4 Stages persist across phases
 Stat stages — the boss's own buffs and the player's debuffs alike — carry through every transition. A boss
@@ -400,19 +407,28 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
 
 ## §5.9.3 Leader design rules
 
-- **Five Pokémon, two at a time** (§5.6.3; user, 2026-09-30: "at least four, if not five" — five since v0.8.8, once
-  the balance pass made it affordable). **No support beyond the two on the field**: the second Pokémon out *is* the
-  Gym's support, at full strength, and nothing escalates beside it — the v0.8.3 option of a support that grows every
-  turn cost Region 3 seventeen points in fights this long, and two at a time already gives the Gym a back row. The Leader's own non-ace opens; its lane's favourites pad the team (§2.5) at the
-  route's last level (the band's top less one); **the ace always comes out last**, with three phases and Sturdy in Phase 3.
+- **Five authored Pokémon, two at a time** (§5.6.3; user, 2026-10-29). Each Gym defines all five members and
+  their four-move kits; lane favourites never pad the team. The actual fielded forms must be five distinct
+  species from five distinct evolutionary lines, checked after evolution resolution. This prevents different
+  young forms becoming the same evolved Pokémon. The opener has two phases, the middle three one each and
+  **the ace enters last**, with three phases and the Phase-3 contract of §5.8.3. The first two enter together;
+  replacements follow catalogue order, so the ace may still have a partner. **No additional support actor or
+  passive escalation** is added: the other Pokémon on the field already supplies that tactical pressure.
 - **No mid-fight evolution.** That belongs to the Rival and the Champion. **Levels read right** (2026-10-20): the
   Leader's non-ace sits **one over** the Region's wild band top and the ace **two over** (GYM_LEVEL_PREMIUM +1 / +2), so
-  the climax stands over the team that reaches it. *(Since v0.8.6 they had stood −2 / 0 with the padding eight under —
+  the climax stands over the team that reaches it. The middle three stand at **band top −1**, retaining the
+  existing level budget rather than raising every member to the opener's premium. *(Since v0.8.6 they had stood −2 / 0 with the padding eight under —
   Lv 3 Pokémon in front of Brock — which kept the fight winnable by putting the team eight levels over the Gym.)*
-- **Single-type identity.** The Leader's own Pokémon are the Gym's type and its padding comes from the lane that
-  telegraphs it, which is what makes the counter-pick meaningful.
+- **Type identity with one declared guest** (user, 2026-10-29). At least four members share the Gym's type;
+  at most one may be an off-type Pokémon with a concrete thematic support or disruption job. The ace always
+  shares the Gym's type. The three default starter lines (Bulbasaur, Charmander and Squirtle) and Legendaries
+  never fill a slot; later Mart starter unlocks such as Pikachu and Eevee remain eligible. This gives Ice's
+  four non-legendary species a fifth member without duplication or a Legendary exception. The guest's species, types and job
+  are promised before commitment (§2.7.3), and included in the Team screen's matchup explanation. It may
+  complicate the counter-pick, but must not silently invalidate the lane's advertised answers.
 - **But never a free win.** Each team carries at least one answer to a full-resist party — usually an
-  off-type coverage move, like the Rock Gym's Fighting-typed `body-press`.
+  off-type coverage move, like Graveler's Ground-typed Dig or Machamp's Thunder Punch. Coverage must be visible
+  on its intent, not an unannounced immunity or a new rule added to make a counter fail.
 - **A Home Field** of its type is set at combat start (§4.3.5), over the Gym's own Battlefield (§4.3.14).
 - **The Gym's Attack is its own** (`GYM_ATTACK_MULTIPLIER` ×0.7 / ×0.62 / ×0.5 by Region since 2026-10-20, when its
   levels came up; ×1.15 / ×0.95 / ×0.9 before), with a **Leader's own scale** where its rule and its type's matchups make
@@ -425,11 +441,15 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
 - **Giovanni is both** a Gym Leader (Viridian, Ground, Region 3) and an Elite Trainer (§2.8.1). A run can face
   both; both are canon.
 
-Teams, levels and badges for all twelve: [`catalogs/gyms.md`](catalogs/gyms.md).
+Teams, roles, scripted kits and badges for all twelve: [`catalogs/gyms.md`](catalogs/gyms.md).
+The 2026-10-29 roster design awaits implementation and calibration in v0.9.85; current per-Leader Attack
+scales are a baseline, not a claim that the replacement teams are already balanced.
 
 ## §5.9.4 Per-type signature Phase 2
 
-Every Gym type maps to exactly **one** of four Phase-2 archetypes. They are telegraphed, learnable and
+Every phased Pokémon maps by its **own primary type** to one of four Phase-2 archetypes; a Gym's table names
+its ace's archetype, not an override of its other members. Thus Giovanni's Nidoqueen has Status Siege and his
+Rhydon Entrenchment; one-phase members have no phase-entry effect. They are telegraphed, learnable and
 repeatable — the point is that a second run against the same type is a different experience because you know
 what is coming.
 

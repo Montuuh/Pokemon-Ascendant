@@ -1,130 +1,211 @@
-# Gym Leader catalog — 12 (4 per Region tier)
+# Gym Leader catalog — 12 (4 per Region)
 
-> Implements §5.9 (branching Gym paths, type pool, leader design rules), §5.9.4 (per-type signature
-> Phase 2), §5.10 (badges — full effects in `badges.md`), §4.3.5 (Home Field). Status legend in
-> `README.md`.
->
-> **The Gym contract.** 2 Pokémon, sequential. The second is the **ace**: 3 phases, Sturdy in Phase 3, and
-> **no mid-fight evolution** — the threat is a power premium, not a transformation. The
-> leader sets an enemy-owned **Home Field** of its type at combat start: its own type-moves deal ×1.5, the
-> player gets no boost (§4.3.5). The first intent of each Gym Pokémon is **Hidden**, but it still shows its
-> kind glyph — you know a Cleave is coming, not how hard (§5.5).
->
-> **Power premium**: non-ace = wild band + 4, ace = wild band + 6 (R1: 12–14 and 14–16 against a 5–10 band).
+> Data for §5.9.2–§5.9.5 and §5.10. **⚠ Designed 2026-10-29; implementation and tuning pending v0.9.85.**
+> The user chose five members with a thematic off-type support permitted. The build still pads two authored
+> members from lane pools; these replacement teams are not shipped. Species, moves and assets already exist.
 
-## 1. Region 1 pool — Rock · Water · Bug · Normal (2 of 4 drawn per run)
+## 1. Region 1 — Rock · Water · Bug · Normal
 
-| id | Leader | Type | Slot 1 (2-phase) | Ace (3-phase, Sturdy) | Phase-2 archetype | Badge |
-|---|---|---|---|---|---|---|
-| `rock-gym-r1` | Brock | Rock | `geodude` L14 | `graveler` L16 | **Entrenchment** (+2 Def, race the wall) | `boulder-badge` |
-| `water-gym-r1` | Misty | Water | `krabby` L12 | `kingler` L14 | **Tempo Control** (AP tax + Confusion) | `cascade-badge` |
-| `bug-gym-r1` | Aster | Bug | `caterpie` L12 | `butterfree` L15 | **Status Siege** (Sleep/Confusion flood) | `hive-badge` |
-| `normal-gym-r1` | Whitney | Normal | `pidgey` L13 | `raticate` L15 | **Onslaught** (Mass Attack ×1.5 Home Field) | `plain-badge` |
+Every member row: **⚠ v0.9.85 · §5.9.3**. Rows are deployment order; slot 5 is the ace. Roles describe the kit's
+job, not an extra support actor or an escalation buff. Levels and phase counts follow §5.9.3.
 
-> **The Water Gym fields Krabby and Kingler** (decided 2026-09-19). The Unity build used Squirtle and
-> Wartortle — a starter line the player may own themselves, which cannibalises the starter's identity. A Gym
-> Leader should field Pokémon you do not already have.
->
-> **Rock Gym levels set by the run harness** (2026-09-19). The v0.1 fixture used Geodude L12 + **Golem** L14.
-> A final form in the *first* Gym was a wall: over 90 simulated runs it ended 52 of them, and two of the three
-> starters could not clear the Region at all. The ace is now the line's **mid-stage at a level premium** —
-> Geodude L14 + Graveler L16 against a route team that arrives around Lv 14 having evolved once. Golem is a
-> Region 3 problem. Measured result: Bulbasaur 56 %, Charmander 33 %, Squirtle 89 % over 18 seeds each.
-> Charmander's low figure is the Fire-into-Rock matchup and is intended; the answer is the Box.
+### `rock-gym-r1` — Brock · Rock Solid
 
-**Rock Gym ace detail** (the shipped fixture, the reference for the other 11):
+`rock-gym-r1` · `boulder-badge` · Entrenchment. Sandslash is the guest: sand disruption and Ground coverage.
+Water and Grass remain good answers. Kabutops and Omastar have modest kits and one phase; their base stats are
+a named Region 1 balance risk, not permission to flatten their HP. Graveler's three phases distinguish the ace.
 
-- P1 (>50 %): `defense-curl`, `rock-throw`, `magnitude` — setup and read.
-- P2 (≤50 %): **Entrenchment** — immediately +2 Def stages, then `rock-blast` (Backstrike) and `earthquake`
-  (Cleave, cd1). The wall is the phase.
-- P3 (≤20 %): cooldowns reset, `stone-edge` (always-crit) fires uncapped, Sturdy survives one lethal hit.
-
-## 2. Region 2 pool — Fire · Grass · Electric · Poison ✅ v0.7.3
-
-> The levels below are the catalogue's; the fight's come from the band (`GYM_LEVEL_PREMIUM`, +1 / +2 on the top of
-> Region 2's 14–22 route since 2026-10-20), so every Region 2 Gym fields its others at Lv 23 and its ace at Lv 24. Slot 1 was written as the line's
-> young one — Growlithe, Weepinbell, Voltorb, Koffing — but since v0.9.8 every Gym is walked through its evolutions
-> like any roster (§2.7.3), so at Lv 20 they stand as Arcanine, Weepinbell, Electrode and Weezing. Stages: volcano, forest, power-plant, dark-city.
-
-| id | Leader | Type | Slot 1 | Ace | Phase-2 archetype | Badge |
-|---|---|---|---|---|---|---|
-| `fire-gym-r2` | Blaine | Fire | `growlithe*` L20 | `arcanine*` L22 | **Onslaught** | `volcano-badge` |
-| `grass-gym-r2` | Erika | Grass | `weepinbell` L20 | `vileplume` L22 | **Status Siege** | `rainbow-badge` |
-| `electric-gym-r2` | Surge | Electric | `voltorb*` L20 | `electrode*` L22 | **Tempo Control** | `thunder-badge` |
-| `poison-gym-r2` | Koga | Poison | `koffing*` L20 | `weezing*` L22 | **Status Siege** | `soul-badge` |
-
-## 3. Region 3 pool — Psychic · Ground · Fighting · Ice ✅ v0.7.4
-
-> As built: levels from the band (24–32, so the others at 30 and the ace at 32). Stages: library, desert, gym,
-> ice-cave. Two aces carry a scripted kit for the off-type answer their learnset lacks at 36 (§5.9.3):
-> Alakazam `psychic` `psyshock` `calm-mind` **`shadow-ball`**, Machamp `cross-chop` `dynamic-punch`
-> `close-combat` **`thunder-punch`**; Rhydon's Megahorn and Dewgong's Surf are their own. Kiyo wears the
-> Gen IV Black Belt sprite, Lorelei FireRed's. Nidoqueen's primary type is Poison, so Giovanni's slot 1 plays
-> Status Siege and his ace the Entrenchment the table names (§5.9.4 reads the Pokémon's own type).
-
-| id | Leader | Type | Slot 1 | Ace | Phase-2 archetype | Badge |
-|---|---|---|---|---|---|---|
-| `psychic-gym-r3` | Sabrina | Psychic | `kadabra*` L33 | `alakazam*` L35 | **Tempo Control** | `marsh-badge` |
-| `ground-gym-r3` | Giovanni | Ground | `nidoqueen*` L34 | `rhydon*` L36 | **Entrenchment** | `earth-badge` |
-| `fighting-gym-r3` | Kiyo | Fighting | `machoke` L34 | `machamp` L36 | **Onslaught** | `knuckle-badge` |
-| `ice-gym-r3` | Lorelei | Ice | `dewgong*` L34 | `cloyster*` L36 | **Tempo Control** | `glacier-badge` |
-
-Giovanni appears **both** here and at the R3 Elite Trainer node (`elites.md`) — both lanes are canon
-and a player may defeat both in one run.
-
-## 4. The four Phase-2 archetypes (§5.9.4)
-
-| Archetype | Types | What Phase 2 does | Counter |
+| Slot | Pokémon | Role | Scripted four moves |
 |---|---|---|---|
-| **Entrenchment** | Rock, Ground | Ace gains +2 Def stages and a damage-reduction clause from its Home Field | DoT, stat-stage strip, Defence-ignoring moves (`psyshock`, `swift`) |
-| **Status Siege** | Poison, Grass, Bug | Mass-Status phase: the Lead is flooded with the Gym's signature status | Cleanse (`full-heal`), swap the statused Lead, immune typing |
-| **Onslaught** | Fire, Fighting, Normal | Mass-Attack phase amplified by the Home Field ×1.5 — a burst race | Resist wall, defensive swaps, healing |
-| **Tempo Control** | Electric, Psychic, Ice, Water | AP and swap taxes plus Paralysis/Freeze locks | AP management, status immunity, planning two turns out |
+| 1 | `onix` | Opening bind and Defence pressure | `rock-throw`, `bind`, `screech`, `tackle` |
+| 2 | `kabutops` | Physical pressure and Grass drain | `scratch-plus`, `rock-throw`, `absorb`, `harden` |
+| 3 | `omastar` | Ranged coverage and a braced shell | `bubble-beam`, `horn-attack`, `withdraw`, `rock-slide` |
+| 4 | `sandslash` | Guest: sand control | `slash`, `sand-attack`, `dig`, `defense-curl` |
+| 5 | `graveler` | Ace: Rock/Ground wall | `rock-slide`, `rock-throw`, `harden`, `dig` |
 
-## 5. Seeded selection (§5.9.2, §2.5 v2)
+### `water-gym-r1` — Misty · Riptide
 
-Per Region the MapRNG draws **2 distinct types** from the 4-type pool and assigns one to each terminal Gym node
-at L11. Both routes telegraph their Gym's type and Badge from the fork at L9 (Pillar 1). The unchosen Gym is
-abandoned for the run. Over a run: 3 Badges from 12, 220 possible combinations.
+`water-gym-r1` · `cascade-badge` · Tempo Control. Five swimming lines replace the repeated Kingler and Magikarp.
+Confusion, Sleep and smokescreen pressure planning; Riptide remains the central constraint.
 
-The **One Path** difficulty modifier makes both routes show the **same Gym type**, removing the counter-pick
-entirely (§8.8.2). That is a real difficulty increase and the one place a player may opt into knowing less.
-
-## 6. Rewards (§2.14)
-
-| Reward | Value |
-|---|---|
-| Badge | the type's Badge, permanent for the run (`badges.md`) |
-| Relic | a guaranteed Rare **plus** a 1-of-3 **Legendary** pick |
-| Poké Dollars | 500 |
-| Trainer XP (meta) | 50 |
-| In-run XP | `ProgressionConfig.gymXp` = 140 base |
-
-## 7. Authoring rules
-
-1. **Single-type identity**: every Pokémon on the team is the Gym's type (dual-types are fine if one half
-   matches). This is what makes the fork a counter-pick decision.
-2. The ace's Phase-2 archetype is fixed by type (the table in §4); never mix archetypes within one Gym.
-3. Both Pokémon must have at least one answer to a full-resist team, or the counter-pick becomes a free win —
-   usually a Normal-type coverage move (the Rock Gym's `body-press` is Fighting, not Rock, for exactly this).
-4. The Home Field badge is shown persistently; the damage preview already accounts for it (§4.3.6).
-
-## 8. The Leader's rule (§5.9.5) ✅ v0.9.13
-
-One rule per Leader, for the whole fight, on every one of its Pokémon. The numbers are `BattleConfig.gymRules`, tuned
-on the whole-run harness (`BALANCE_REPORT=1`, which prints every rule's loss rate and length).
-
-| id | Leader | Gym | What it does (v0.9.13 numbers) |
+| Slot | Pokémon | Role | Scripted four moves |
 |---|---|---|---|
-| `rock-solid` | Brock | `rock-gym-r1` | No single hit takes more than 40 % of his Pokémon's Max HP; multi-hits capped hit by hit |
-| `riptide` | Misty | `water-gym-r1` | Every second turn, at its end, the tide trades your Lead with Bench 1 (Bench 2 if Bench 1 is down) |
-| `swarm` | Aster | `bug-gym-r1` | Her Pokémon on the field hit +20 % per Pokémon of hers still waiting |
-| `rollout` | Whitney | `normal-gym-r1` | Her Lead hits +25 % per turn in a row your Lead has been the same Pokémon, up to four turns |
-| `meltdown` | Blaine | `fire-gym-r2` | Every attack his Pokémon land lowers its target's Defence a stage, down to −2 |
-| `bloom` | Erika | `grass-gym-r2` | Each of her Pokémon on the field that took no damage this turn restores 8 % at its end |
-| `overcharge` | Surge | `electric-gym-r2` | Every second turn, the first card you play costs +1 AP |
-| `toxic` | Koga | `poison-gym-r2` | Every Poison his side inflicts is badly poisoned (§7.5) |
-| `mind-lock` | Sabrina | `psychic-gym-r3` | Every second turn, at the draw, she seals the strongest attack in your hand for the turn |
-| `tremor` | Giovanni | `ground-gym-r3` | Every third turn, at its end, each of your grounded Pokémon loses 5 % of its Max HP |
-| `close-quarters` | Kiyo | `fighting-gym-r3` | Your Ranged cards deal 70 % against his Pokémon; your Melee cards 110 % |
-| `ice-armour` | Lorelei | `ice-gym-r3` | At each Intent phase her Lead's ice armour is set to 4 % of its Max HP; Fire shatters it |
+| 1 | `golduck` | Opening Psychic coverage and disruption | `confusion`, `water-gun`, `tail-whip`, `disable` |
+| 2 | `poliwhirl` | Sleep and physical coverage | `bubble-plus`, `body-slam`, `hypnosis`, `submission` |
+| 3 | `seaking` | Horn pressure and Confusion | `horn-attack-plus`, `water-gun`, `supersonic`, `tail-whip` |
+| 4 | `seadra` | Ranged pressure and disruption | `bubble-beam`, `smokescreen`, `leer`, `hydro-pump` |
+| 5 | `kingler` | Ace: claws and a hardened shell | `crabhammer`, `bubble-beam`, `stomp`, `harden` |
+
+### `bug-gym-r1` — Aster · Swarm
+
+`bug-gym-r1` · `hive-badge` · Status Siege. Gloom is a forest-floor guest. There is no cocoon filler, and no
+Scyther/Pinsir/Scizor stat jump: this early Gym tests condition management. Fire and Flying still answer all five.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `venomoth` | Opening Confusion siege and Psychic coverage | `psybeam`, `leech-life`, `disable`, `supersonic` |
+| 2 | `parasect` | Drain and Paralysis | `leech-life-plus`, `absorb`, `stun-spore`, `slash` |
+| 3 | `beedrill` | Multi-hit pressure | `twineedle-plus`, `poison-sting-plus`, `agility`, `harden-plus` |
+| 4 | `gloom` | Guest: garden spores and drain | `mega-drain`, `acid-plus`, `poison-powder`, `stun-spore` |
+| 5 | `butterfree` | Ace: Sleep and Confusion | `sleep-powder`, `confusion`, `gust`, `harden` |
+
+### `normal-gym-r1` — Whitney · Rollout
+
+`normal-gym-r1` · `plain-badge` · Onslaught. Five Normal lines with different coverage and tempo. Wigglytuff may
+Sing but never loops Rest. Raticate keeps Dig coverage.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `pidgeotto` | Opening Flying pressure | `wing-attack`, `gust`, `sand-attack`, `quick-attack-plus` |
+| 2 | `farfetchd` | Light pressure and debuffs | `peck`, `gust`, `leer`, `sand-attack` |
+| 3 | `persian` | Fast Dark coverage | `slash`, `bite-plus`, `pay-day`, `screech` |
+| 4 | `wigglytuff` | Sleep and physical staying power | `body-slam`, `double-slap-plus`, `sing`, `defense-curl` |
+| 5 | `raticate` | Ace: burst and Ground coverage | `hyper-fang`, `quick-attack-plus`, `dig`, `tail-whip` |
+
+## 2. Region 2 — Fire · Grass · Electric · Poison
+
+Every member row: **⚠ v0.9.85 · §5.9.3**. The Region's status accent remains (§2.2); it must not evict any of
+the four authored moves. Two enemies share the field; these are not five separate duels.
+
+### `fire-gym-r2` — Blaine · Meltdown
+
+`fire-gym-r2` · `volcano-badge` · Onslaught. Five Fire lines bring speed, disruption and coverage before the ace.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `ninetales` | Opening ranged pressure and trapping | `flamethrower`, `quick-attack`, `fire-spin`, `tail-whip-plus` |
+| 2 | `rapidash` | Fast physical pressure | `stomp-plus`, `ember`, `agility`, `growl` |
+| 3 | `magmar` | Confusion and close pressure | `fire-punch`, `confuse-ray`, `ember`, `leer` |
+| 4 | `flareon` | Mixed reach and disruption | `flamethrower`, `swift`, `sand-attack`, `fire-spin` |
+| 5 | `arcanine` | Ace: physical and Dark coverage | `flamethrower`, `take-down`, `bite-plus`, `roar` |
+
+### `grass-gym-r2` — Erika · Bloom
+
+`grass-gym-r2` · `rainbow-badge` · Status Siege. Constriction, Paralysis, Psychic coverage, physical setup and
+Poison occupy different slots. Drain stays species identity; repeated percentage heals do not join the kits.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `tangela` | Opening drain and constriction | `mega-drain`, `constrict`, `poison-powder`, `bind` |
+| 2 | `parasect` | Paralysis and physical drain | `leech-life-plus`, `slash`, `stun-spore`, `absorb` |
+| 3 | `exeggutor` | Psychic coverage and seeded pressure | `razor-leaf`, `psychic`, `leech-seed`, `stomp` |
+| 4 | `victreebel` | Physical setup and Grass pressure | `razor-leaf`, `vine-whip-plus`, `slam-plus`, `swords-dance` |
+| 5 | `vileplume` | Ace: Poison and draining flowers | `petal-dance`, `mega-drain`, `toxic-plus`, `sludge` |
+
+### `electric-gym-r2` — Surge · Overcharge
+
+`electric-gym-r2` · `thunder-badge` · Tempo Control. Magneton contributes Steel; Jolteon's Bug coverage and
+Electrode's Normal burst keep Ground useful without letting it answer every action.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `raichu` | Opening Paralysis and mixed reach | `thunderbolt`, `thunder-wave`, `quick-attack-plus`, `slam` |
+| 2 | `magneton` | Armoured ranged pressure | `thunderbolt`, `sonic-boom-plus`, `swift`, `supersonic` |
+| 3 | `electabuzz` | Speed and Defence disruption | `thunderbolt`, `quick-attack`, `leer`, `screech` |
+| 4 | `jolteon` | Fast Bug coverage | `thunderbolt`, `pin-missile`, `swift`, `sand-attack` |
+| 5 | `electrode` | Ace: charged burst | `thunderbolt`, `thunder-wave`, `sonic-boom-plus`, `self-destruct` |
+
+### `poison-gym-r2` — Koga · Toxic
+
+`poison-gym-r2` · `soul-badge` · Status Siege. A snake, bat, sludge, moth and gas cloud replace repeated
+Weezing/Golbat. Ground immunity and Psychic coverage remain visible species/intent properties.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `arbok` | Opening constriction and Paralysis | `wrap-plus`, `glare`, `bite-plus`, `sludge` |
+| 2 | `golbat` | Flying coverage and Confusion | `wing-attack`, `bite-plus`, `supersonic`, `haze` |
+| 3 | `muk` | Durable Poison pressure and disruption | `sludge`, `acid-plus`, `disable`, `pound-plus` |
+| 4 | `venomoth` | Poison delivery and Psychic coverage | `psybeam`, `poison-powder`, `supersonic`, `leech-life` |
+| 5 | `weezing` | Ace: poison cloud and explosion | `smog-plus`, `poison-gas`, `smokescreen-plus`, `self-destruct` |
+
+## 3. Region 3 — Psychic · Ground · Fighting · Ice
+
+Every member row: **⚠ v0.9.85 · §5.9.3**. Final forms only. Auto must not restore Recover on Alakazam or Rest
+on Lorelei's team. There is no additional escalating support actor.
+
+### `psychic-gym-r3` — Sabrina · Mind Lock
+
+`psychic-gym-r3` · `marsh-badge` · Tempo Control. Five Psychic lines. The hand seal remains central; Defence
+is setup rather than an unbounded healing loop.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `hypno` | Opening Sleep and disruption | `psychic`, `headbutt`, `hypnosis`, `disable` |
+| 2 | `mr-mime` | Barrier and Defence-independent coverage | `psychic`, `reflect`, `barrier`, `seismic-toss` |
+| 3 | `slowbro` | Water coverage and disruption | `surf`, `psychic`, `disable`, `growl` |
+| 4 | `exeggutor` | Grass coverage and seeded pressure | `razor-leaf`, `stomp`, `leech-seed`, `psychic` |
+| 5 | `alakazam` | Ace: fast pressure without Recover | `psychic`, `psybeam`, `reflect`, `seismic-toss` |
+
+### `ground-gym-r3` — Giovanni · Tremor
+
+`ground-gym-r3` · `earth-badge` · Entrenchment on the ace. All five share Ground. Nidoqueen's primary Poison
+type still gives her Status Siege (§5.9.4). Bone, sand and rock replace the duplicate and unrelated Ninetales.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `nidoqueen` | Opening Poison siege and heavy pressure | `earthquake`, `body-slam`, `sludge`, `toxic-plus` |
+| 2 | `sandslash` | Dig and sand disruption | `slash`, `dig`, `sand-attack`, `swift` |
+| 3 | `dugtrio` | Fast Ground pressure | `earthquake`, `slash`, `sand-attack`, `growl` |
+| 4 | `marowak` | Bone strikes and Defence disruption | `bone-club-plus`, `earthquake`, `headbutt`, `leer` |
+| 5 | `rhydon` | Ace: Rock/Ground wall | `rock-slide`, `dig`, `stomp-plus`, `tail-whip` |
+
+### `fighting-gym-r3` — Kiyo · Close Quarters
+
+`fighting-gym-r3` · `knuckle-badge` · Onslaught. All five Fighting lines. Water and elemental coverage make
+the kit matter after the player counter-picks Psychic or Flying.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `primeape` | Opening aggression and Rock coverage | `karate-chop-plus`, `thrash`, `rock-slide`, `leer` |
+| 2 | `poliwrath` | Water coverage and Sleep pressure | `submission-plus`, `bubble-beam`, `hypnosis`, `ice-punch` |
+| 3 | `hitmonlee` | Kicks and setup | `double-kick`, `rolling-kick`, `meditate`, `swift` |
+| 4 | `hitmonchan` | Physical and elemental coverage | `submission`, `mega-punch`, `fire-punch`, `ice-punch` |
+| 5 | `machamp` | Ace: heavy blows and Electric coverage | `karate-chop`, `submission`, `seismic-toss`, `thunder-punch` |
+
+### `ice-gym-r3` — Lorelei · Ice Armour
+
+`ice-gym-r3` · `glacier-badge` · Tempo Control. Slowbro is the declared cold-water guest with Ice Beam;
+Articuno is not a filler slot. Lapras becomes the ace. Nobody carries Rest/Recover: this is already the longest
+baseline Gym. Fire shatters the Leader's armour on Slowbro too.
+
+| Slot | Pokémon | Role | Scripted four moves |
+|---|---|---|---|
+| 1 | `dewgong` | Opening Water/Ice pressure | `aurora-beam`, `surf`, `take-down`, `growl` |
+| 2 | `jynx` | Sleep and Psychic coverage | `ice-beam`, `psychic`, `lovely-kiss`, `double-slap` |
+| 3 | `slowbro` | Guest: cold-water control | `ice-beam`, `psychic`, `disable`, `surf` |
+| 4 | `cloyster` | Armoured multi-hit pressure | `ice-beam`, `clamp-plus`, `spike-cannon`, `withdraw-plus` |
+| 5 | `lapras` | Ace: the freezing wave | `blizzard`, `surf`, `body-slam`, `mist` |
+
+## 4. Phase-2 archetypes
+
+Mapping and behaviour live in §5.9.4. The named archetype above describes the ace, not an override of another
+member's primary type. A one-phase member has no Phase-2 effect. Home Field and the Leader's rule stay fight-wide.
+
+## 5. Seeded selection
+
+The pools, two-Gym draw, counter-pick and One Path remain §5.9.1–§5.9.2 / §8.8.2. Stable Gym ids, trainers,
+Badges and arenas stay. The preview names the guest and its job without exposing the other four (§2.7);
+the matchup summary includes its types. All five positions are authored, not drawn from lane favourites.
+
+## 6. Rewards
+
+Rewards remain §2.14, §6.2.1 and §7.3.7. This redesign adds no XP, second relic or money to compensate for five
+useful members. Whole-run traces must measure XP and post-Gym levels alongside difficulty.
+
+## 7. Authoring and validation
+
+Validate the actual fielded forms after evolution: five unique species **and five unique evolutionary lines**,
+at least four sharing the Gym's type, at most one declared guest, four existing moves per member, ace last,
+and none of the three default starter lines (Bulbasaur, Charmander, Squirtle) or a Legendary. Pikachu and Eevee
+lines unlocked later at the Mart are permitted; the broader isStarterLine helper is not this validator.
+Gym membership is explicit. A new evolution that collapses two members fails a
+content guard rather than silently substituting a species. Scripted coverage may use a line's appropriate Gen I
+moves before its learnset teaches them, as existing aces do; this never teaches those moves to the player.
+
+Implementation compares every Gym against the same seeded baseline, then checks the 720-run Region curve
+(§2.2.1), faints, damage per AP, duration tail, repeated status/Defence setup, phase entries and subsequent XP.
+Knobs: GYM_ATTACK_MULTIPLIER, GymDef.attackScale, member attackMultiplier and the four moves. Values remain
+tuning candidates until measured; species HP is not flattened.
+
+The baseline is not a target to preserve blindly: Surge and Sabrina lost no sampled fights, while Lorelei lost
+46 % and averaged 42.4 turns in a small arrival sample. Evidence: the 2026-10-29 review in `../../reviews/`.

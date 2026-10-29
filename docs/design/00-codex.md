@@ -10,6 +10,9 @@
 
 ---
 
+> **Gym roster digest refreshed 2026-10-29:** §5.9.3–§5.9.4, the guest exception in §2.7.3 and the
+> twelve authored replacement teams. Design recorded; v0.9.85 implementation and tuning pending.
+
 ## 1. Identity
 
 A **roguelike deckbuilder where your party is your deck**. Three Active Pokémon each contribute 4 moves to one
@@ -27,7 +30,7 @@ grimdark.
 
 ## 2. The run *(Topic 2)*
 
-Pre-run → Region ×3 → Victory Road → League. **90–100 minutes** for a win. 8 climactic fights = 21 boss-tier
+Pre-run → Region ×3 → Victory Road → League. **90–100 minutes** for a win. 8 climactic fights = 30 boss-tier
 Pokémon.
 
 - **Pre-run:** difficulty → starter → 1 of 3 Starting Relics → 1 of 3 Region Modifiers. Confirming the modifier
@@ -285,9 +288,18 @@ knocked out first (its premium: XP ×2 and a Rare Candy, Pay Day ₽, XP ×3) or
 and the find and its prize are yours. Both named on the map and counted down on screen.
 
 **Bosses** — ≥2 phases, aces 3. P1 setup > 50 % · P2 forced type ≤ 50 % · P3 last stand ≤ 20 % (cooldowns reset,
-signature uncapped, Sturdy). **Gyms:** 2 Pokémon, ace 3-phase, **no mid-fight evolution** — the threat is a level
-premium (band −2 non-ace, +0 ace, v0.8.6) plus a Home Field and its own Attack (×1.15 / ×1.1 / ×1.15, v0.9.8); **five Pokémon, two at a time, the ace last** (v0.8.8), no support beyond the two on the field. **Every Leader fights under a rule of its own** (§5.9.5, v0.9.13), shown on the map and the top bar: Brock's Rock Solid (no hit over 40 %), Misty's Riptide (the tide swaps your Lead every second turn), Aster's Swarm, Whitney's Rollout (a Lead that never changes is hit harder), Blaine's Meltdown, Erika's Bloom, Surge's Overcharge, Koga's Toxic, Sabrina's Mind Lock (your best card sealed every second turn), Giovanni's Tremor, Kiyo's Close Quarters (Ranged ×0.7), Lorelei's Ice Armour; the Leader stands behind its team. Mid-fight evolution belongs to the **Rival and the Champion**.
-**Per-type Phase 2:** Entrenchment (Rock, Ground) · Status Siege (Poison, Grass, Bug) · Onslaught (Fire,
+signature uncapped, Sturdy — the 2026-10-29 audit found implementation gaps; see implementation-status).
+**Gyms (§5.9.3): five authored Pokémon from five different lines, two at a time, the ace last; no mid-fight
+evolution and no extra support actor.** Opener two phases, middle three one, ace three. Levels are band top
++1 / −1 / +2 respectively. Each has four scripted moves, at least four share the Gym's type, and one thematic
+off-type guest is permitted and explicitly named before commitment (§2.7.3); no default starter line
+(Bulbasaur/Charmander/Squirtle) or Legendary. Later Mart starters remain eligible.
+The twelve replacement teams and kits are designed in catalogs/gyms.md, awaiting v0.9.85 calibration and code.
+The current Attack multipliers (×0.7 / ×0.62 / ×0.5, plus per-Leader scales) are the comparison baseline.
+**Every Leader fights under a rule of its own** (§5.9.5), shown on the map and top bar: Rock Solid, Riptide,
+Swarm, Rollout, Meltdown, Bloom, Overcharge, Toxic, Mind Lock, Tremor, Close Quarters and Ice Armour. The Leader
+stands behind the team. Mid-fight evolution belongs to the **Rival and the Champion**.
+**Per-type Phase 2** (each phased Pokémon's own primary type, not the Gym's): Entrenchment (Rock, Ground) · Status Siege (Poison, Grass, Bug) · Onslaught (Fire,
 Fighting, Normal) · Tempo Control (Electric, Psychic, Ice, Water).
 **Gym pool:** 4 types per Region, seed picks 2. R1 Rock/Water/Bug/Normal · R2 Fire/Grass/Electric/Poison ·
 R3 Psychic/Ground/Fighting/Ice. **12 Badges, 3 per run, max 4.**

@@ -872,6 +872,11 @@ is the surprise, as it is in the games. Pillar 1 is about the enemy's *actions* 
 is still telegraphed a turn ahead — not about a trainer's party. A wild node keeps its species on show: which one
 to catch is the choice.
 
+**Gym guest exception** (§5.9.3; user, 2026-10-29): a Gym with an off-type guest names that one species,
+its types and its thematic job on the preview and lane telegraph before commitment. The remaining four members
+and everyone's levels stay hidden. A fifth Pokémon may complicate the promised counter-pick; concealing the
+exception until the fight would make the lane's promise misleading. This exception awaits v0.9.85.
+
 **Authoring rules.** A trainer's level band is **its layer's** wild band +1 to +2 (§2.6.5) — a step up from a wild fight,
 not a boss. The archetype must be readable from the trainer's sprite and name, because the player counter-picks their Active 3
 from it. No hidden intents at baseline. **Every trainer's, Elite Trainer's
