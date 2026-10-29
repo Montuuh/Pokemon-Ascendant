@@ -21,6 +21,9 @@ const allSpecies = speciesData.species;
 const force = process.argv.includes('--force');
 
 const ICON_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons';
+// The Gen VIII set the repo mirrors stops at Generation I's Pokémon; the four Dark and Steel evolutions (v0.9.84) come from the
+// Gen VII set (40×30), centred unscaled on the same 68×56 canvas — the same pixel art, a little smaller.
+const ICON_FALLBACK = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons';
 
 async function exists(p) {
   try {
@@ -84,8 +87,14 @@ for (const s of allSpecies) {
   }
   try {
     const res = await fetch(`${ICON_BASE}/${s.dex}.png`);
-    if (!res.ok) throw new Error(`${res.status}`);
-    await writeFile(iconDest, Buffer.from(await res.arrayBuffer()));
+    if (res.ok) await writeFile(iconDest, Buffer.from(await res.arrayBuffer()));
+    else {
+      const old = await fetch(`${ICON_FALLBACK}/${s.dex}.png`);
+      if (!old.ok) throw new Error(`${res.status} / ${old.status}`);
+      const src = Buffer.from(await old.arrayBuffer());
+      const meta = await sharp(src).metadata();
+      await writeFile(iconDest, await sharp({ create: { width: 68, height: 56, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }).composite([{ input: src, left: Math.floor((68 - meta.width) / 2), top: Math.floor((56 - meta.height) / 2) }]).png().toBuffer());
+    }
     fetchedIcons++;
   } catch (e) {
     failed++;

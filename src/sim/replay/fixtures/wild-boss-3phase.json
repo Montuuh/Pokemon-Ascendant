@@ -27,10 +27,6 @@
       "cardId": "c6"
     },
     {
-      "type": "play-card",
-      "cardId": "c9"
-    },
-    {
       "type": "end-turn"
     },
     {
@@ -43,11 +39,7 @@
     },
     {
       "type": "play-card",
-      "cardId": "c3"
-    },
-    {
-      "type": "swap",
-      "benchIndex": 2
+      "cardId": "c9"
     },
     {
       "type": "play-card",
@@ -66,22 +58,26 @@
     },
     {
       "type": "play-card",
+      "cardId": "c3"
+    },
+    {
+      "type": "play-card",
       "cardId": "c4"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c10"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c9"
     },
     {
       "type": "end-turn"
     },
     {
-      "type": "pick-lead",
-      "benchIndex": 1
+      "type": "use-consumable",
+      "cardId": "k12",
+      "targetIndex": 0
+    },
+    {
+      "type": "play-card",
+      "cardId": "c6"
+    },
+    {
+      "type": "end-turn"
     },
     {
       "type": "play-card",
@@ -89,10 +85,10 @@
     },
     {
       "type": "play-card",
-      "cardId": "c6"
+      "cardId": "c4"
     }
   ],
-  "fingerprint": "t5 victory lead=1 ap=0 team=[wartortle:66/100,butterfree:98/98,rattata:0/56] enemies=[geodude:0/77,golem:0/149] events=90 rng=2115160436",
-  "turns": 5,
+  "fingerprint": "t6 victory lead=0 ap=1 team=[wartortle:71/100,butterfree:98/98,rattata:56/56] enemies=[geodude:0/77,golem:0/149] events=94 rng=2418029724",
+  "turns": 6,
   "outcome": "victory"
 }

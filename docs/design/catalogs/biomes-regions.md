@@ -44,9 +44,9 @@ Region 1 — Tall Grass, Forest, Flower Meadow, Cave, Rocky Ridge, Fishing Spot,
 | Habitat | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
 |---|---|---|---|
 | `tall-grass` | `pidgey` `rattata` `spearow` `nidoran-f` `nidoran-m` | `ekans` `meowth` `doduo` `jigglypuff` | `eevee` |
-| `forest` | `caterpie` `weedle` `oddish` `paras` | `bellsprout` `venonat` `exeggcute` | `pikachu` `bulbasaur` |
+| `forest` | `caterpie` `weedle` `oddish` `paras` | `bellsprout` `venonat` `exeggcute` | `pikachu` `bulbasaur` `scyther` |
 | `meadow` | `oddish` `bellsprout` `jigglypuff` `nidoran-f` | `clefairy` `exeggcute` `vulpix` `growlithe` `ponyta` | `bulbasaur` `eevee` |
-| `cave` | `zubat` `geodude` `diglett` `paras` | `clefairy` `sandshrew` `cubone` `rhyhorn` | `kabuto` `omanyte` |
+| `cave` | `zubat` `geodude` `diglett` `paras` | `clefairy` `sandshrew` `cubone` `rhyhorn` `onix` | `kabuto` `omanyte` |
 | `ridge` | `geodude` `mankey` `machop` `sandshrew` `spearow` | `rhyhorn` `cubone` `ponyta` `growlithe` | `charmander` |
 | `river` | `magikarp` `poliwag` `goldeen` `psyduck` `krabby` | `slowpoke` `horsea` `shellder` | `dratini` `squirtle` |
 | `shore` | `tentacool` `krabby` `shellder` `psyduck` | `staryu` `seel` `horsea` | `squirtle` `omanyte` |
@@ -59,25 +59,25 @@ Region 2 — Open Sea, Power Plant, Fishing Spot, Rocky Shore, Cave, Mountain Tr
 |---|---|---|---|
 | `sea` | `tentacruel` `seadra` `seaking` `golduck` | `starmie` `dewgong` `slowbro` | `jynx` `dragonair` |
 | `river` | `poliwhirl` `seaking` `golduck` `kingler` | `slowbro` `seadra` | `wartortle` `dragonair` |
-| `shore` | `kingler` `golbat` `graveler` `pidgeotto` | `onix` `dewgong` `starmie` | `farfetchd` `wartortle` |
+| `shore` | `kingler` `golbat` `graveler` `pidgeotto` | `marowak` `dewgong` `starmie` | `farfetchd` `wartortle` |
 | `power-plant` | `magneton` `electrode` `raichu` | `electabuzz` `muk` `weezing` | `porygon` `ditto` |
-| `cave` | `golbat` `graveler` `dugtrio` `sandslash` | `onix` `haunter` `kadabra` | `charmeleon` |
-| `ridge` | `machoke` `primeape` `graveler` `sandslash` | `dugtrio` `onix` `nidorino` | `hitmonlee` `hitmonchan` |
+| `cave` | `golbat` `graveler` `dugtrio` `sandslash` | `rhydon` `haunter` `kadabra` | `charmeleon` |
+| `ridge` | `machoke` `primeape` `graveler` `sandslash` | `dugtrio` `marowak` `nidorino` | `hitmonlee` `hitmonchan` |
 | `swamp` | `muk` `weezing` `arbok` `gloom` | `haunter` `golbat` `weepinbell` `venomoth` | `ditto` |
 | `tall-grass` | `raticate` `pidgeotto` `arbok` `nidorina` `nidorino` | `persian` `wigglytuff` `clefable` `lickitung` `hypno` | `farfetchd` `ivysaur` |
-| `forest` | `butterfree` `beedrill` `parasect` `venomoth` `metapod` `kakuna` | `gloom` `weepinbell` `tangela` | `scyther` `pinsir` `ivysaur` |
+| `forest` | `butterfree` `beedrill` `parasect` `venomoth` `metapod` `kakuna` | `gloom` `weepinbell` `tangela` | `victreebel` `pinsir` `ivysaur` |
 
 Region 3 — Volcano Slope, Badlands, Deep Cave, Underground Lake, Sky Cliffs, Haunted Tower, Overgrown Ruins (weights 4 · 2 · 2 · 2 · 2 · 1 · 1):
 
 | Habitat | Common (60 %) | Uncommon (30 %) | Rare (10 %) |
 |---|---|---|---|
 | `volcano` | `arcanine` `ninetales` `rapidash` `rhydon` | `magmar` `flareon` `golem` | `charizard` |
-| `badlands` | `rhydon` `golem` `nidoking` `nidoqueen` | `marowak` `tauros` `dodrio` | `aerodactyl` |
-| `cave` | `machamp` `golem` `poliwrath` | `omastar` `kabutops` `marowak` | `snorlax` `kangaskhan` |
+| `badlands` | `rhydon` `golem` `nidoking` `nidoqueen` | `marowak` `tauros` `dodrio` `steelix` | `aerodactyl` |
+| `cave` | `machamp` `golem` `poliwrath` | `omastar` `kabutops` `marowak` `magnezone` | `snorlax` `kangaskhan` |
 | `lake` | `cloyster` `poliwrath` `vaporeon` | `gyarados` `omastar` `kabutops` | `lapras` `blastoise` |
-| `sky` | `pidgeot` `fearow` `dodrio` | `gyarados` `scyther` `jolteon` | `dragonite` `aerodactyl` |
-| `tower` | `gengar` `hypno` | `alakazam` `mr-mime` `exeggutor` `vileplume` | `chansey` `venusaur` |
-| `ruins` | `vileplume` `victreebel` `exeggutor` | `hypno` `jolteon` `mr-mime` `scyther` | `venusaur` |
+| `sky` | `pidgeot` `fearow` `dodrio` | `gyarados` `scizor` `jolteon` | `dragonite` `aerodactyl` |
+| `tower` | `gengar` `hypno` | `alakazam` `mr-mime` `exeggutor` `vileplume` `umbreon` | `chansey` `venusaur` |
+| `ruins` | `vileplume` `victreebel` `exeggutor` | `hypno` `jolteon` `mr-mime` `scizor` | `venusaur` |
 
 ## 3. Level bands (§2.6.5)
 

@@ -414,10 +414,6 @@
           "to": "charizard",
           "upgrades": [
             {
-              "from": "scratch",
-              "to": "slash-plus"
-            },
-            {
               "from": "growl",
               "to": "wing-attack"
             }
@@ -501,7 +497,8 @@
       "evolvesTo": [],
       "rarity": "rare",
       "tutorMoves": [
-        "hyper-fang"
+        "hyper-fang",
+        "metal-claw"
       ],
       "branches": []
     },
@@ -1491,6 +1488,10 @@
         {
           "level": 8,
           "move": "bite"
+        },
+        {
+          "level": 10,
+          "move": "hyper-fang"
         }
       ],
       "availableAbilities": [
@@ -1517,7 +1518,7 @@
           "upgrades": [
             {
               "from": "bite",
-              "to": "hyper-fang"
+              "to": "crunch"
             },
             {
               "from": "quick-attack",
@@ -1575,7 +1576,7 @@
       "learnset": [
         {
           "level": 18,
-          "move": "hyper-fang"
+          "move": "crunch"
         },
         {
           "level": 30,
@@ -1594,7 +1595,8 @@
       "evolvesTo": [],
       "rarity": "common",
       "tutorMoves": [
-        "slam"
+        "slam",
+        "pursuit"
       ],
       "branches": []
     },
@@ -1857,7 +1859,8 @@
       ],
       "tutorMoves": [
         "earthquake",
-        "slam"
+        "slam",
+        "crunch"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -2009,7 +2012,8 @@
         "run-down"
       ],
       "tutorMoves": [
-        "body-slam"
+        "body-slam",
+        "iron-tail"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
@@ -3918,7 +3922,8 @@
       ],
       "tutorMoves": [
         "thunderbolt",
-        "slam"
+        "slam",
+        "feint-attack"
       ],
       "evolvesTo": [],
       "rarity": "common",
@@ -5872,7 +5877,8 @@
       "id": "magnemite",
       "name": "Magnemite",
       "types": [
-        "electric"
+        "electric",
+        "steel"
       ],
       "stage": "basic",
       "baseStats": {
@@ -5962,7 +5968,8 @@
       "id": "magneton",
       "name": "Magneton",
       "types": [
-        "electric"
+        "electric",
+        "steel"
       ],
       "stage": "stage1",
       "baseStats": {
@@ -5988,9 +5995,51 @@
       "tutorMoves": [
         "double-edge"
       ],
-      "evolvesTo": [],
+      "evolvesTo": [
+        "magnezone"
+      ],
       "rarity": "common",
-      "branches": []
+      "branches": [
+        {
+          "id": "magnezone-vanguard",
+          "archetype": "vanguard",
+          "label": "Gunmetal",
+          "description": "The tackle becomes a meteor, and a claw of steel replaces the hum.",
+          "to": "magnezone",
+          "upgrades": [
+            {
+              "from": "tackle",
+              "to": "meteor-mash"
+            },
+            {
+              "from": "supersonic",
+              "to": "metal-claw"
+            }
+          ],
+          "adds": [],
+          "abilityId": "sturdy"
+        },
+        {
+          "id": "magnezone-specialist",
+          "archetype": "specialist",
+          "label": "Mag Cannon",
+          "description": "The boom becomes a bomb of magnets, and the hum a cannon of light.",
+          "to": "magnezone",
+          "upgrades": [
+            {
+              "from": "sonic-boom",
+              "to": "magnet-bomb"
+            },
+            {
+              "from": "supersonic",
+              "to": "flash-cannon"
+            }
+          ],
+          "adds": [],
+          "abilityId": "static"
+        }
+      ],
+      "evolveLevel": 26
     },
     {
       "dex": 83,
@@ -6847,28 +6896,70 @@
         {
           "level": 24,
           "move": "harden"
-        },
-        {
-          "level": 34,
-          "move": "earthquake"
         }
       ],
       "availableAbilities": [
         "sturdy",
         "rock-head"
       ],
-      "evolvesTo": [],
+      "evolvesTo": [
+        "steelix"
+      ],
       "rarity": "uncommon",
       "tutorMoves": [
         "strength",
         "explosion",
         "body-slam"
       ],
-      "branches": [],
+      "branches": [
+        {
+          "id": "steelix-vanguard",
+          "archetype": "vanguard",
+          "label": "Iron Tail",
+          "description": "The body is coated in steel: the tackle becomes a head of iron, and the bind a claw.",
+          "to": "steelix",
+          "upgrades": [
+            {
+              "from": "tackle",
+              "to": "iron-head"
+            },
+            {
+              "from": "bind",
+              "to": "metal-claw"
+            }
+          ],
+          "adds": [
+            "iron-tail"
+          ],
+          "abilityId": "rock-head"
+        },
+        {
+          "id": "steelix-support",
+          "archetype": "support",
+          "label": "Bulwark",
+          "description": "The harder it hardens the more it reflects: the throw becomes a cannon of light.",
+          "to": "steelix",
+          "upgrades": [
+            {
+              "from": "harden",
+              "to": "harden-plus"
+            },
+            {
+              "from": "rock-throw",
+              "to": "flash-cannon"
+            }
+          ],
+          "adds": [
+            "steel-wing"
+          ],
+          "abilityId": "sturdy"
+        }
+      ],
       "hiddenAbility": "weak-armor",
       "eggMoves": [
         "leer"
-      ]
+      ],
+      "evolveLevel": 26
     },
     {
       "dex": 96,
@@ -7533,7 +7624,8 @@
         "rock-head"
       ],
       "tutorMoves": [
-        "swords-dance"
+        "swords-dance",
+        "iron-tail"
       ],
       "evolvesTo": [],
       "rarity": "rare",
@@ -7988,7 +8080,8 @@
       ],
       "tutorMoves": [
         "surf",
-        "thunderbolt"
+        "thunderbolt",
+        "iron-head"
       ],
       "evolvesTo": [],
       "rarity": "uncommon",
@@ -8710,10 +8803,6 @@
         {
           "level": 24,
           "move": "wing-attack"
-        },
-        {
-          "level": 28,
-          "move": "pin-missile"
         }
       ],
       "availableAbilities": [
@@ -8723,15 +8812,60 @@
       "tutorMoves": [
         "double-edge"
       ],
-      "evolvesTo": [],
+      "evolvesTo": [
+        "scizor"
+      ],
       "rarity": "rare",
-      "branches": [],
-      "archetype": "vanguard",
+      "branches": [
+        {
+          "id": "scizor-vanguard",
+          "archetype": "vanguard",
+          "label": "Pincer",
+          "description": "The scythes are plated: the cut becomes a claw of steel, and the first strike lands first.",
+          "to": "scizor",
+          "upgrades": [
+            {
+              "from": "cut",
+              "to": "metal-claw"
+            },
+            {
+              "from": "quick-attack",
+              "to": "bullet-punch"
+            }
+          ],
+          "adds": [
+            "iron-head"
+          ],
+          "abilityId": "swarm"
+        },
+        {
+          "id": "scizor-specialist",
+          "archetype": "specialist",
+          "label": "Gale Blade",
+          "description": "The wings are plated: the swift becomes a cannon, and the night itself is cut.",
+          "to": "scizor",
+          "upgrades": [
+            {
+              "from": "wing-attack",
+              "to": "steel-wing"
+            },
+            {
+              "from": "swift",
+              "to": "flash-cannon"
+            }
+          ],
+          "adds": [
+            "night-slash"
+          ],
+          "abilityId": "steadfast"
+        }
+      ],
       "eggMoves": [
         "counter",
         "gust"
       ],
-      "hiddenAbility": "tough-claws"
+      "hiddenAbility": "tough-claws",
+      "evolveLevel": 26
     },
     {
       "dex": 124,
@@ -9335,7 +9469,8 @@
       "evolvesTo": [
         "flareon",
         "jolteon",
-        "vaporeon"
+        "vaporeon",
+        "umbreon"
       ],
       "rarity": "rare",
       "evolveLevel": 12,
@@ -9407,6 +9542,27 @@
             "aurora-beam"
           ],
           "abilityId": "water-absorb"
+        },
+        {
+          "id": "eevee-dark",
+          "archetype": "support",
+          "label": "Umbreon",
+          "description": "Dark. The deepest Defence of the four, and it bites back.",
+          "to": "umbreon",
+          "upgrades": [
+            {
+              "from": "tackle",
+              "to": "bite"
+            },
+            {
+              "from": "quick-attack",
+              "to": "pursuit"
+            }
+          ],
+          "adds": [
+            "feint-attack"
+          ],
+          "abilityId": "inner-focus"
         }
       ],
       "hiddenAbility": "anticipation",
@@ -9906,7 +10062,8 @@
       "hiddenAbility": "tough-claws",
       "tutorMoves": [
         "earthquake",
-        "fire-punch"
+        "fire-punch",
+        "steel-wing"
       ],
       "evolvesTo": [],
       "rarity": "rare",
@@ -10384,7 +10541,8 @@
       ],
       "tutorMoves": [
         "fire-punch",
-        "thunder-punch"
+        "thunder-punch",
+        "steel-wing"
       ],
       "evolvesTo": [],
       "rarity": "rare",
@@ -10488,6 +10646,170 @@
       "rarity": "legendary",
       "branches": [],
       "archetype": "support"
+    },
+    {
+      "dex": 197,
+      "id": "umbreon",
+      "name": "Umbreon",
+      "types": [
+        "dark"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 95,
+        "attack": 65,
+        "defense": 120,
+        "speed": 65
+      },
+      "learnset": [
+        {
+          "level": 16,
+          "move": "snarl"
+        },
+        {
+          "level": 22,
+          "move": "crunch"
+        },
+        {
+          "level": 28,
+          "move": "dark-pulse"
+        }
+      ],
+      "availableAbilities": [
+        "adaptability",
+        "run-down",
+        "anticipation",
+        "inner-focus"
+      ],
+      "tutorMoves": [
+        "ice-beam",
+        "toxic",
+        "swords-dance"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": []
+    },
+    {
+      "dex": 208,
+      "id": "steelix",
+      "name": "Steelix",
+      "types": [
+        "steel",
+        "ground"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 75,
+        "attack": 85,
+        "defense": 133,
+        "speed": 30
+      },
+      "learnset": [
+        {
+          "level": 28,
+          "move": "meteor-mash"
+        },
+        {
+          "level": 34,
+          "move": "earthquake"
+        }
+      ],
+      "availableAbilities": [
+        "sturdy",
+        "rock-head",
+        "solid-rock"
+      ],
+      "tutorMoves": [
+        "strength",
+        "body-slam"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": []
+    },
+    {
+      "dex": 212,
+      "id": "scizor",
+      "name": "Scizor",
+      "types": [
+        "bug",
+        "steel"
+      ],
+      "stage": "stage1",
+      "baseStats": {
+        "hp": 70,
+        "attack": 130,
+        "defense": 90,
+        "speed": 65
+      },
+      "learnset": [
+        {
+          "level": 27,
+          "move": "pin-missile"
+        },
+        {
+          "level": 32,
+          "move": "iron-tail"
+        },
+        {
+          "level": 38,
+          "move": "meteor-mash"
+        }
+      ],
+      "availableAbilities": [
+        "swarm",
+        "steadfast",
+        "tough-claws"
+      ],
+      "tutorMoves": [
+        "double-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": [],
+      "hiddenAbility": "tough-claws"
+    },
+    {
+      "dex": 462,
+      "id": "magnezone",
+      "name": "Magnezone",
+      "types": [
+        "electric",
+        "steel"
+      ],
+      "stage": "stage2",
+      "baseStats": {
+        "hp": 70,
+        "attack": 130,
+        "defense": 103,
+        "speed": 60
+      },
+      "learnset": [
+        {
+          "level": 27,
+          "move": "magnet-bomb"
+        },
+        {
+          "level": 33,
+          "move": "iron-head"
+        },
+        {
+          "level": 39,
+          "move": "flash-cannon"
+        }
+      ],
+      "availableAbilities": [
+        "sturdy",
+        "static",
+        "solid-rock"
+      ],
+      "tutorMoves": [
+        "double-edge"
+      ],
+      "evolvesTo": [],
+      "rarity": "rare",
+      "branches": []
     }
   ]
 }

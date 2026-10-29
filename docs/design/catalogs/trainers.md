@@ -84,10 +84,10 @@ same identity. Levels here are the spread; the band places them (§2.7.3).
 | `hex-maniac-r3-b` | Hex Maniac (veiled) | `mr-mime` + `slowbro` | 30, 31 |
 | `rocket-grunt-r3-a` | Rocket Grunt | `weezing` + `arbok` | 30, 31 |
 | `rocket-grunt-r3-b` | Rocket Grunt | `golbat` + `muk` | 30, 31 |
-| `engineer-r3-a` | Engineer | `electrode` + `magneton` | 30, 31 |
-| `engineer-r3-b` | Engineer | `porygon` + `magneton` | 30, 31 |
+| `engineer-r3-a` | Engineer | `electrode` + `electabuzz` | 30, 31 |
+| `engineer-r3-b` | Engineer | `porygon` + `raichu` | 30, 31 |
 | `hiker-r3-a` | Hiker | `rhyhorn` + `golem` | 31, 32 |
-| `hiker-r3-b` | Hiker | `onix` + `machamp` | 30, 32 |
+| `hiker-r3-b` | Hiker | `rhydon` + `machamp` | 30, 32 |
 | `swimmer-r3-a` | Swimmer | `dewgong` + `seaking` | 30, 31 |
 | `swimmer-r3-b` | Swimmer | `cloyster` + `starmie` | 30, 31 |
 

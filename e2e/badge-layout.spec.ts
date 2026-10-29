@@ -7,7 +7,7 @@ for (const viewport of [{ width: 1920, height: 1080 }, { width: 1280, height: 72
     test.use({ viewport, reducedMotion: 'no-preference' });
 
     test('the animated case and name never cross the formation or defeated party', async ({ page }) => {
-      test.setTimeout(40_000);
+      test.setTimeout(70_000);
       await page.goto('/?screen=menu');
       await page.evaluate((textScale) => {
         window.localStorage.clear();
@@ -56,6 +56,8 @@ for (const viewport of [{ width: 1920, height: 1080 }, { width: 1280, height: 72
               maxScale = Math.max(maxScale, b.width / badge.offsetWidth);
               const panel = results.querySelector<HTMLElement>('[data-testid^="levelup-panel-"]');
               const voice = results.querySelector<HTMLElement>('[data-testid="results-voice"]')!;
+              // v0.9.80 — a level that teaches a move holds the reveal until a click: the test is the player who clicks.
+              if (panel?.hasAttribute('data-held')) results.querySelector<HTMLElement>('section')!.click();
               if (panel) {
                 learnedMoveSeen ||= panel.textContent!.includes('Water Gun');
                 panels.add(panel.dataset.testid!);
@@ -72,11 +74,16 @@ for (const viewport of [{ width: 1920, height: 1080 }, { width: 1280, height: 72
               }
               if (b.left < 0 || b.top < 0 || b.right > innerWidth || b.bottom > innerHeight) violations.push(`frame ${frames}, clipped case`);
             }
-            if (results.dataset.done === 'true' || performance.now() - start > 25_000) resolve();
+            // One panel a level (v0.9.80) makes the whole reveal long: once every Pokémon's panel and the learned move have been
+            // measured against the badge, the rest is skipped — what is left is the same layout again.
+            const seenEnough = panels.size === 3 && learnedMoveSeen && frames > 3 && maxScale > 1.06;
+            if (results.dataset.done === 'true' || seenEnough || performance.now() - start > 45_000) resolve();
             else requestAnimationFrame(sample);
           };
           requestAnimationFrame(sample);
         });
+        document.querySelector<HTMLElement>('[data-testid="btn-skip-results"]')?.click();
+        for (let i = 0; i < 60 && results.dataset.done !== 'true'; i++) await new Promise((r) => setTimeout(r, 50));
         return { violations, frames, maxScale, panels: panels.size, learnedMoveSeen, done: results.dataset.done };
       });
       await page.screenshot({ path: `playtest/a01-a02/results-gym-${viewport.height}-${scale}.png` });

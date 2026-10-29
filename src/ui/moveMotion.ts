@@ -101,6 +101,8 @@ const AREA_BY_TYPE: Record<PokemonType, AreaStyle> = {
   rock: 'rockfall',
   ghost: 'darkness',
   dragon: 'dragon',
+  dark: 'darkness',
+  steel: 'shockwave',
 };
 
 /** The streams: a move that is one continuous line from its user to its target. */
@@ -127,6 +129,8 @@ const PROJECTILE_BY_TYPE: Record<PokemonType, ProjectileStyle> = {
   rock: 'rocks',
   ghost: 'shadow',
   dragon: 'orb',
+  dark: 'shadow',
+  steel: 'stars',
 };
 
 /** The base move an upgraded card is drawn as: Flamethrower+ moves as Flamethrower does. */

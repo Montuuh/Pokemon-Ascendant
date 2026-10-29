@@ -16,7 +16,7 @@ async function inCeladon(page: Page, money = 5000, relics: string[] = []): Promi
       dev.run.fill(5);
       // Everyone at a level where nobody owes an Evolution screen, so the counters are what is on screen.
       for (const mon of dev.run.state()!.box) dev.run.levelTo(30, mon.uid);
-      const settled = ['blastoise', 'tauros', 'kangaskhan', 'lapras', 'snorlax', 'scyther'];
+      const settled = ['blastoise', 'tauros', 'kangaskhan', 'lapras', 'snorlax', 'pinsir'];
       dev.run.patch((d) => {
         d.box.forEach((mon, i) => {
           mon.speciesId = settled[i]!;

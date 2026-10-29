@@ -258,8 +258,9 @@ describe('Held items — §7.4', () => {
     for (const i of content.allHeldItems().filter((x) => x.hook === 'none')) {
       expect(i.pending, `${i.id} is inert but does not say why`).toBeTruthy();
     }
-    // 11 Unique Type-Boosters + 14 Type Plates + 3 Sustain/Defence + 2 Tempo + 2 Signature = 32 (§7.4).
-    expect(content.allHeldItems()).toHaveLength(32);
+    // 12 Unique Type-Boosters + 16 Type Plates + 3 Sustain/Defence + 2 Tempo + 2 Signature = 35 (§7.4; Black Glasses, the Dread
+    // Plate and the Iron Plate joined with Dark and Steel in v0.9.84).
+    expect(content.allHeldItems()).toHaveLength(35);
   });
 
   it('AnItemLockedToASpeciesTheGameCannotProduce_NeverReachesAPlayer_§7.4.2', () => {

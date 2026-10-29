@@ -19,7 +19,7 @@ Every creature, trainer, item, TM, relic, badge, overworld tile, town building a
 | Layer | Source & Register | Status & Path |
 |---|---|---|
 | **Battle sprites** (front/back, normal & shiny) | Pokémon Showdown `gen5ani` & `gen5ani-shiny` (`npm run art:sprites`) | ✅ `public/art/pokemon/battle/*.gif` |
-| **Box / party / owner icons** | PokéAPI pixel box icons (`npm run art:portraits`); 151 compact derivatives trimmed to exact alpha bounds without resampling (`node scripts/build-compact-icons.mjs`) | ✅ `public/art/pokemon/{icons,compact}/*.png` |
+| **Box / party / owner icons** | PokéAPI pixel box icons (`npm run art:portraits`; Gen VIII, with the Gen VII icon as the fallback for the four evolutions that set lacks, v0.9.84); 151 compact derivatives trimmed to exact alpha bounds without resampling (`node scripts/build-compact-icons.mjs`) | ✅ `public/art/pokemon/{icons,compact}/*.png` |
 | **Pokémon portraits** (475²) | PokéAPI official artwork (or pixel sprites where pixel-unified) | ✅ `public/art/pokemon/portraits/*.png` |
 | **Type labels** ×15 | **Authentic FRLG pixel boxes** (32×12, `npm run art:types`), rendered nearest-neighbour only at 12/18/24 px | ✅ `public/art/icons/type/*.png` |
 | **Consumable, Held, Stone, Ball, TM & Relic icons** | **Authentic pixel bag sprites** (`PokeAPI/sprites/items` & Bulbagarden Archives, `npm run art:items`), retained at native resolution: current files are mostly 30×30, one 24×24. Exact source-game editions are not established for every file. **Never** smooth 3D renders. Every relic and held item uses a **unique** pixel sprite | ✅ `public/art/items/*.png` |

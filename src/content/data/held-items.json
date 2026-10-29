@@ -375,6 +375,43 @@
         "multiplier": 1.25
       },
       "speciesLock": "pikachu"
+    },
+    {
+      "id": "black-glasses",
+      "name": "Black Glasses",
+      "description": "The wearer deals +20 % with dark moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "dark",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "dread-plate",
+      "name": "Dread Plate",
+      "description": "The wearer deals +10 % with dark moves; while leading, benched Pokémon deal +5 % with dark moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "dark",
+        "multiplier": 1.1,
+        "wearerOnly": true,
+        "percent": 5
+      },
+      "grantsLeadAura": "dark"
+    },
+    {
+      "id": "iron-plate",
+      "name": "Iron Plate",
+      "description": "The wearer deals +10 % with steel moves; while leading, benched Pokémon deal +5 % with steel moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "steel",
+        "multiplier": 1.1,
+        "wearerOnly": true,
+        "percent": 5
+      },
+      "grantsLeadAura": "steel"
     }
   ]
 }

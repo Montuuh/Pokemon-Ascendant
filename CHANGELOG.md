@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.84 — Dark and Steel · 2026-10-29
+
+Two new types, four new evolutions, and the moves and items that carry them.
+
+- **Types.** Dark and Steel join the chart; Bite is Dark now.
+- **Evolutions.** Umbreon, Scizor, Steelix, Magnezone; Magnemite is Steel.
+- **Moves.** Fourteen new Dark and Steel moves, from Crunch to Iron Tail.
+- **Items.** Dark and Steel Gems, Black Glasses, two Plates, a Metal Coat.
+
 ### v0.9.83 — See the ring · 2026-10-29
 
 The critical rhythm tells you what a card will do before you play it.

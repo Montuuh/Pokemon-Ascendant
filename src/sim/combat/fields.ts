@@ -99,11 +99,11 @@ export function fieldBlocksStatus(state: CombatState, target: Combatant, status:
 export const hailImmune = (c: Combatant): boolean => c.types.includes('ice');
 
 /** §4.3.12 — who Toxic Spikes spare: Poison- and Steel-types, and anything not on the ground. */
-export const toxicSpikesSpare = (c: Combatant, content: ContentRegistry): boolean => c.types.includes('poison') || !isGrounded(c, content);
+export const toxicSpikesSpare = (c: Combatant, content: ContentRegistry): boolean => c.types.includes('poison') || c.types.includes('steel') || !isGrounded(c, content);
 
-/** §4.3.4 — who a Sandstorm spares: Rock-, Ground- and Fighting-types. */
+/** §4.3.4 — who a Sandstorm spares: Rock-, Ground-, Fighting- and Steel-types. */
 export function sandstormImmune(c: Combatant): boolean {
-  return c.types.some((t) => t === 'rock' || t === 'ground' || t === 'fighting');
+  return c.types.some((t) => t === 'rock' || t === 'ground' || t === 'fighting' || t === 'steel');
 }
 
 /**

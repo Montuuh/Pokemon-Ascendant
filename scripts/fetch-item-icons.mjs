@@ -50,12 +50,14 @@ const HELD = [
   'splash-plate', 'flame-plate', 'zap-plate', 'meadow-plate', 'mind-plate',
   'icicle-plate', 'fist-plate', 'earth-plate', 'sky-plate', 'stone-plate',
   'toxic-plate', 'insect-plate', 'spooky-plate', 'draco-plate',
+  // Dark and Steel (v0.9.84): the Dark booster and the two plates
+  'black-glasses', 'dread-plate', 'iron-plate',
   // §7.4.4–§7.4.6 Sustain, tempo, signatures (7)
   'leftovers', 'eviolite', 'focus-sash', 'power-bracer', 'choice-scarf', 'thick-club', 'light-ball',
 ];
 
 /** Evolution Items (§6.3.2, §7.2.5) — the five Gen I stones, real items under their own names. */
-const STONES = ['fire-stone', 'water-stone', 'thunder-stone', 'leaf-stone', 'moon-stone'];
+const STONES = ['fire-stone', 'water-stone', 'thunder-stone', 'leaf-stone', 'moon-stone', 'metal-coat'];
 
 /** §2.11.6 — the Safari Zone's own ball, the Black Market Fence's Rare Candy, and the Great and Ultra Balls (§7.2.5): real items all. */
 const SAFARI = ['safari-ball', 'rare-candy', 'great-ball', 'ultra-ball', 'master-ball'];
@@ -75,6 +77,8 @@ const RELIC_ICON = {
   'psychic-gem': 'psychic-gem',
   'fighting-gem': 'fighting-gem',
   'normal-gem': 'normal-gem',
+  'dark-gem': 'dark-gem',
+  'steel-gem': 'steel-gem',
 
   'barrier-charm': 'light-clay',
   'berry-pouch': 'berry-pouch',
@@ -86,17 +90,17 @@ const RELIC_ICON = {
   'brave-charm': 'red-flute',
   'recycle-tag': 'macho-brace',
   'hikers-coat': 'rocky-helmet',
-  'defense-curl-charm': 'metal-coat',
+  'defense-curl-charm': 'metal-powder',
   'soothe-bell': 'soothe-bell',
   'wide-lens': 'wide-lens',
-  'battle-hat': 'black-glasses',
+  'battle-hat': 'safety-goggles',
   'quick-claw-charm': 'quick-claw',
   'choice-specs': 'choice-specs',
   'choice-band': 'choice-band',
   'type-resonance': 'odd-keystone',
   'adrenal-surge': 'life-orb',
   'reactor-core': 'power-herb',
-  'pressure-plate': 'iron-plate',
+  'pressure-plate': 'pixie-plate',
   'vital-pendant': 'shell-bell',
   'tacticians-coin': 'relic-gold',
   'steady-aim': 'zoom-lens',

@@ -1,6 +1,6 @@
 // Core game vocabulary shared by every sim module.
-// Per docs/design/04-resolution.md §4.1.2 — 15-type chart with Gen II effectiveness (Dark/Steel/Fairy intentionally absent;
-// the Unity port carried an 18-value enum for serialisation reasons only — see docs/migration/from-unity.md).
+// Per docs/design/04-resolution.md §4.1.2 — 17-type chart with Gen II effectiveness (Fairy intentionally absent; Dark and Steel
+// joined in v0.9.84 with the Pokémon, moves and items that carry them).
 export const POKEMON_TYPES = [
   'normal',
   'fire',
@@ -17,6 +17,8 @@ export const POKEMON_TYPES = [
   'rock',
   'ghost',
   'dragon',
+  'dark',
+  'steel',
 ] as const;
 export type PokemonType = (typeof POKEMON_TYPES)[number];
 

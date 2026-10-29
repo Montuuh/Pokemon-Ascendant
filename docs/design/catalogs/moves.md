@@ -4,8 +4,9 @@
 > `MoveDef` (`src/sim/content/defs.ts`); every table below is generated from `moves.json`, so it is the build.
 >
 > **Every move is a Gen I move (v0.9.5, the user's call, 2026-10-08).** Its name is the Gen I name; its type is the
-> modern one where the game has that type — Gust is Flying, Karate Chop Fighting, Sand Attack Ground — and Bite stays
-> Normal, as there is no Dark. A **+** is that move made better, the card an evolution upgrades into when its type has
+> modern one where the game has that type — Gust is Flying, Karate Chop Fighting, Sand Attack Ground, Bite Dark (since
+> v0.9.84, when the type joined) — **and the only moves that are not Gen I's are the 14 of the two types Gen I lacked,
+> Dark and Steel (§1b).** A **+** is that move made better, the card an evolution upgrades into when its type has
 > no stronger Gen I move to climb to (Lick → Lick+); a Mastery tier is the line's Lv1 move's **+** and **++**
 > (§6.8.4). A content test holds every row to the 165 moves of Generation I (`gen1-moves.json`). The enemy-only
 > `call-for-help` and `cover` are actions, not moves anyone learns.
@@ -37,10 +38,11 @@
 | Set | Moves |
 |---|---|
 | Gen I moves | 161 of the 165 |
+| Later moves, Dark and Steel (§1b) | 14 |
 | Made better (+) | 70 |
-| Mastery tiers (+, ++) | 38 |
+| Mastery tiers (+, ++) | 39 |
 | Enemy actions | 2 |
-| **Total in `moves.json`** | **271** |
+| **Total in `moves.json`** | **286** |
 
 Not in the game: the Gen I moves no rule here can express — Whirlwind and Roar's escape, Bide, Counter's exact
 return, Mimic, Metronome's lottery, Mirror Move's copy, Substitute, Conversion's retype, Teleport, Struggle — keep
@@ -81,7 +83,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `double-edge` | Double-Edge | Normal | Off | Melee | — | 4 | 120 | — | recoil 33 % |
 | `tail-whip` | Tail Whip | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
 | `leer` | Leer | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
-| `bite` | Bite | Normal | Off | Melee | — | 1 | 50 | — | — |
+| `bite` | Bite | Dark | Off | Melee | — | 1 | 50 | — | — |
 | `growl` | Growl | Normal | Util | Ranged | — | 0 | — | — | foe Atk −1 |
 | `roar` | Roar | Normal | Util | Ranged | — | 1 | — | — | foe Atk −1 · foe Def −1 |
 | `sing` | Sing | Normal | Util | Ranged | — | 1 | — | — | Sleep 55 % |
@@ -285,6 +287,39 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `confuse-ray` | Confuse Ray | Ghost | Util | Ranged | — | 1 | — | — | Confusion |
 | `lick` | Lick | Ghost | Off | Melee | — | 1 | 40 | — | Paralysis 30 % |
 
+## 1b. Later moves — Dark and Steel (v0.9.84)
+
+Generation I has neither type, so these 14 are the game's only moves of a later generation (the user's call, 2026-10-29): the
+Gen II–IV moves the series gave them, cut into the AP bands (§6.3.6.4), their riders kept as deterministic stages. Reference
+data for the content test: `src/content/data/later-moves.json`. A new row here needs one there, and an illustration
+(`docs/art/prompts/move-art.json`).
+
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `pursuit` | Pursuit | Dark | Off | Melee | — | 1 | 40 | — | foe Spd −1 |
+| `feint-attack` | Feint Attack | Dark | Off | Melee | SB | 2 | 60 | — | — |
+| `crunch` | Crunch | Dark | Off | Melee | — | 3 | 85 | — | foe Def −1 |
+| `snarl` | Snarl | Dark | Off | Ranged | — | 1 | 45 | — | foe Atk −1 |
+| `dark-pulse` | Dark Pulse | Dark | Off | Ranged | — | 2 | 80 | — | — |
+| `night-slash` | Night Slash | Dark | Off | Melee | — | 2 | 60 | — | always crit |
+| `metal-claw` | Metal Claw | Steel | Off | Melee | — | 1 | 40 | — | self Atk +1 |
+| `bullet-punch` | Bullet Punch | Steel | Off | Melee | SF | 1 | 40 | — | — |
+| `magnet-bomb` | Magnet Bomb | Steel | Off | Ranged | — | 1 | 50 | — | — |
+| `steel-wing` | Steel Wing | Steel | Off | Melee | — | 2 | 65 | — | self Def +1 |
+| `iron-head` | Iron Head | Steel | Off | Melee | — | 2 | 75 | — | — |
+| `flash-cannon` | Flash Cannon | Steel | Off | Ranged | — | 2 | 70 | — | foe Def −1 |
+| `iron-tail` | Iron Tail | Steel | Off | Melee | — | 3 | 85 | — | foe Def −1 |
+| `meteor-mash` | Meteor Mash | Steel | Off | Melee | — | 3 | 85 | — | self Atk +1 |
+
+*Who learns them besides the four new evolutions:* Persian tutors `feint-attack`; Raticate learns `crunch` (and Gyarados and Arbok
+tutor it; Raticate's Vanguard path turns `bite` into it); Raticate tutors `pursuit`; Dragonite and Aerodactyl tutor `steel-wing`;
+Rhydon and Golem `iron-head`; Marowak and Raichu `iron-tail`; Charizard `metal-claw`. Rattata, whose Bite is Dark now, learns Hyper
+Fang at L10 so it keeps a Normal attack worth playing (§6.3.6).
+
+*Notes:* `pursuit` slows the foe (the chase, made a Speed stage that moves its critical rhythm, §4.1.3.1); `feint-attack` is a hit
+and a retreat (SB); `bullet-punch` is the Steel hit that arrives first (SF); `night-slash` is Slash in Dark, crit every time;
+`metal-claw` and `meteor-mash` raise Attack, `steel-wing` Defence; `flash-cannon`, `iron-tail` and `crunch` lower Defence.
+
 ## 2. Made better (+)
 
 What a first or final evolution upgrades a card into, derived from its move: more power within its band, or a
@@ -296,7 +331,7 @@ stronger rider when the band is full; a utility's stage, chance, heal or draw on
 | `mega-drain-plus` | Mega Drain+ | Grass | Off | Ranged | — | 2 | 85 | — | drain 50 % |
 | `growth-plus` | Growth+ | Normal | Util | Melee | — | 0 | — | — | self Atk +2 |
 | `ember-plus` | Ember+ | Fire | Off | Ranged | — | 1 | 55 | — | Burn 10 % |
-| `slash-plus` | Slash+ | Normal | Off | Melee | — | 2 | 75 | — | always crit |
+| `slash-plus` | Slash+ | Normal | Off | Melee | — | 2 | 100 | — | always crit |
 | `fire-spin-plus` | Fire Spin+ | Fire | Off | Ranged | — | 2 | 80 | — | Burn 30 % |
 | `bubble-plus` | Bubble+ | Water | Off | Ranged | — | 1 | 55 | — | foe Atk −1 |
 | `skull-bash-plus` | Skull Bash+ | Normal | Off | Melee | — | 3 | 100 | — | foe Def −1 |
@@ -384,6 +419,7 @@ riders kept.
 | `sky-attack-plus-plus` | Sky Attack++ | Flying | Off | Melee | SF | 3 | 130 | — | always crit |
 | `super-fang-plus` | Super Fang+ | Normal | Off | Melee | — | 2 | — | — | 65 % of current HP |
 | `thunder-plus` | Thunder+ | Electric | Off | Ranged | — | 2 | 100 | — | Paralysis 10 % |
+| `thunder-plus-plus` | Thunder++ | Electric | Off | Ranged | — | 3 | 130 | — | Paralysis 10 % |
 | `earthquake-plus` | Earthquake+ | Ground | Off | Melee | — | 2 | 100 | cleave | — |
 | `double-kick-plus` | Double Kick+ | Fighting | Off | Melee | — | 2 | 100 | — | 2 hits |
 | `double-kick-plus-plus` | Double Kick++ | Fighting | Off | Melee | — | 3 | 130 | — | 2 hits |

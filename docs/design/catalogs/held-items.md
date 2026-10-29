@@ -1,11 +1,11 @@
-# Held Item catalog — 32
+# Held Item catalog — 35
 
 > Implements §7.4. One slot per Pokémon, always-on, swapped only in the Map View, persists to run end
 > (§7.4.1). Distinct from the party-wide **Elemental Gem relics** (+10 % to the whole party, §7.3.3): a
 > unique type-boost Held Item is wearer-only and stronger (+20 %, §7.4.2), while a Type Plate grants
 > +10 % to the wearer and a Lead Aura (+5 % for the bench while the wearer leads, §7.4.3).
 
-## 1. Unique Type-boost items (11) — +20 % wearer-only (§7.4.2)
+## 1. Unique Type-boost items (12) — +20 % wearer-only (§7.4.2)
 
 | id | Name | Effect | Sources |
 |---|---|---|---|
@@ -20,8 +20,9 @@
 | `soft-sand` | Soft Sand | Wearer's Ground moves +20 % | same |
 | `hard-stone` | Hard Stone | Wearer's Rock moves +20 % | same |
 | `silk-scarf` | Silk Scarf | Wearer's Normal moves +20 % | same |
+| `black-glasses` | Black Glasses | Wearer's Dark moves +20 % | same (v0.9.84; Steel has none — its Metal Coat is the evolution item) |
 
-## 2. Type Plates — +10 % wearer, +5 % Lead Aura for the bench (14) 🆕 authored, canon §7.4.3 / §6.5.4
+## 2. Type Plates — +10 % wearer, +5 % Lead Aura for the bench (16) 🆕 authored, canon §7.4.3 / §6.5.4
 
 The wearer deals +10 % with moves of that type. While the wearer is **Lead**, every bench Pokémon's moves of that type deal +5 %. Auras stack additively with an
 ability-granted aura on the same Pokémon.
@@ -42,6 +43,8 @@ ability-granted aura on the same Pokémon.
 | `insect-plate` | Insect Plate | Bug | Wearer Bug +10 %; while Lead, bench Bug +5 % | same |
 | `spooky-plate` | Spooky Plate | Ghost | Wearer Ghost +10 %; while Lead, bench Ghost +5 % | same |
 | `draco-plate` | Draco Plate | Dragon | Wearer Dragon +10 %; while Lead, bench Dragon +5 % | same |
+| `dread-plate` | Dread Plate | Dark | Wearer Dark +10 %; while Lead, bench Dark +5 % | same (v0.9.84) |
+| `iron-plate` | Iron Plate | Steel | Wearer Steel +10 %; while Lead, bench Steel +5 % | same (v0.9.84) |
 
 ## 3. Sustain & defence (3)
 

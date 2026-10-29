@@ -68,7 +68,7 @@ combo partner. Both are deliberately the priciest utilities.
 Balls are a **counted run resource**: start 3 (`EconomyConfig.startingPokeballs`), +1 per Region, buyable. A
 throw spends one whether it succeeds or fails. The catch card appears in a wild combat only while the count > 0.
 
-## 5. Evolution Items (5) — **expendable, Move Manager only** (§6.3.2) ✅ v0.7.5
+## 5. Evolution Items (6) — **expendable, Move Manager only** (§6.3.2) ✅ v0.7.5
 
 Not combat cards: they never enter the Consumable Pile. Applying one is a between-nodes action like a TM.
 
@@ -76,9 +76,10 @@ Not combat cards: they never enter the Consumable Pile. Applying one is a betwee
 |---|---|---|---|
 | `fire-stone` | Eevee → Flareon; Vulpix, Growlithe — from L8 | Mystery `mysterious-stone`, Eevee's Stone Cache, City shops | 250 |
 | `water-stone` | Eevee → Vaporeon; Shellder, Staryu from L8; Poliwhirl from L18 | same | 250 |
-| `thunder-stone` | Eevee → Jolteon; Pikachu — from L8 | same | 250 |
+| `thunder-stone` | Eevee → Jolteon; Pikachu — from L8; Magneton → Magnezone from L18 | same | 250 |
 | `leaf-stone` | Exeggcute from L8; Gloom, Weepinbell from L18 | Mystery, City shops | 250 |
-| `moon-stone` | Clefairy, Jigglypuff from L8; Nidorina, Nidorino from L18 | same | 250 |
+| `moon-stone` | Clefairy, Jigglypuff from L8; Nidorina, Nidorino from L18; Eevee → Umbreon from L8 | same | 250 |
+| `metal-coat` | Scyther → Scizor, Onix → Steelix — from L18 (v0.9.84) | City shops, Mystery | 250 |
 
 > **A stone buys time** (§6.3.2, v0.7.5): the line evolves earlier than its level threshold, on the ordinary
 > Evolution screen; Eevee's stone also picks its Eeveelution. The level path always remains.

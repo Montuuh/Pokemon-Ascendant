@@ -172,7 +172,7 @@ test('FinalTeam_SettingsPointerAndKeyboard_150Percent — §9.6', async ({ page 
 test('BattleStills_AllRosterVariants_ExactFirstFrameAndCanvas — §9.6', async () => {
   const { readFileSync } = await import('node:fs');
   const manifest = JSON.parse(readFileSync('public/art/pokemon/battle/stills-manifest.json', 'utf8')) as { entries: { name: string }[] };
-  expect(manifest.entries).toHaveLength(604);
+  expect(manifest.entries).toHaveLength(620);
   for (const { name } of manifest.entries) {
     const gif = await sharp(`public/art/pokemon/battle/${name}.gif`, { page: 0, pages: 1 }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
     const png = await sharp(`public/art/pokemon/battle/${name}.png`).ensureAlpha().raw().toBuffer({ resolveWithObject: true });

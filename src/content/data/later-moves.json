@@ -1,0 +1,89 @@
+{
+  "_note": "v0.9.84 — the moves of later generations the game carries, all of the two types Generation I does not have (Dark, Steel). Reference data for the content test that keeps every move in moves.json either a Gen I move (gen1-moves.json) or one of these (§3.6); the game never reads it.",
+  "moves": [
+    {
+      "id": "pursuit",
+      "name": "Pursuit",
+      "type": "dark",
+      "power": 40
+    },
+    {
+      "id": "feint-attack",
+      "name": "Feint Attack",
+      "type": "dark",
+      "power": 60
+    },
+    {
+      "id": "crunch",
+      "name": "Crunch",
+      "type": "dark",
+      "power": 85
+    },
+    {
+      "id": "snarl",
+      "name": "Snarl",
+      "type": "dark",
+      "power": 45
+    },
+    {
+      "id": "dark-pulse",
+      "name": "Dark Pulse",
+      "type": "dark",
+      "power": 80
+    },
+    {
+      "id": "night-slash",
+      "name": "Night Slash",
+      "type": "dark",
+      "power": 60
+    },
+    {
+      "id": "metal-claw",
+      "name": "Metal Claw",
+      "type": "steel",
+      "power": 40
+    },
+    {
+      "id": "bullet-punch",
+      "name": "Bullet Punch",
+      "type": "steel",
+      "power": 40
+    },
+    {
+      "id": "magnet-bomb",
+      "name": "Magnet Bomb",
+      "type": "steel",
+      "power": 50
+    },
+    {
+      "id": "steel-wing",
+      "name": "Steel Wing",
+      "type": "steel",
+      "power": 65
+    },
+    {
+      "id": "iron-head",
+      "name": "Iron Head",
+      "type": "steel",
+      "power": 75
+    },
+    {
+      "id": "flash-cannon",
+      "name": "Flash Cannon",
+      "type": "steel",
+      "power": 70
+    },
+    {
+      "id": "iron-tail",
+      "name": "Iron Tail",
+      "type": "steel",
+      "power": 85
+    },
+    {
+      "id": "meteor-mash",
+      "name": "Meteor Mash",
+      "type": "steel",
+      "power": 85
+    }
+  ]
+}

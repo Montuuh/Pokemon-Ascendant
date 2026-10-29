@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ballsIn } from './rewards';
 import { buildRegistry } from '@/content/registry';
-import { BIOMES, PAD_LEVEL_GAP } from './region';
+import { BIOMES, PAD_LEVEL_GAP, evolvedAt } from './region';
 import {
   activeSetups, applyBranch, resetUidCounter, previewBranch, autoPickMoves, createRun, defaultRunCtx, deserialiseRun, generateRegion,
   isEvolutionReady, LAYERS, maxHpOf, nodesInLayer, runReducer, serialiseRun, xpToNext, assertRegionContent,
@@ -715,8 +715,8 @@ describe('Evolution — §6.2.4, §6.3', () => {
   });
 
   it('Eevee_EvolvesIntoTheSpeciesItsBranchNames_§8.5.2', () => {
-    // §8.5.2 — Eevee's archetype *is* its species choice: three branches, three species, one type each.
-    for (const [branchId, to, ability] of [['eevee-vanguard', 'flareon', 'flash-fire'], ['eevee-specialist', 'jolteon', 'volt-absorb'], ['eevee-support', 'vaporeon', 'water-absorb']] as const) {
+    // §8.5.2 — Eevee's archetype *is* its species choice: four branches, four species, one type each (Umbreon joined in v0.9.84).
+    for (const [branchId, to, ability] of [['eevee-vanguard', 'flareon', 'flash-fire'], ['eevee-specialist', 'jolteon', 'volt-absorb'], ['eevee-support', 'vaporeon', 'water-absorb'], ['eevee-dark', 'umbreon', 'inner-focus']] as const) {
       let s = start(7, 'eevee');
       const mon = s.box[0]!;
       mon.level = 11;
@@ -729,7 +729,7 @@ describe('Evolution — §6.2.4, §6.3', () => {
       });
       s = apply(s, { type: 'claim-reward' });
       expect(s.phase).toBe('evolution');
-      expect(s.pendingEvolutions[0]!.branchIds).toEqual(['eevee-vanguard', 'eevee-specialist', 'eevee-support']);
+      expect(s.pendingEvolutions[0]!.branchIds).toEqual(['eevee-vanguard', 'eevee-specialist', 'eevee-support', 'eevee-dark']);
       s = apply(s, { type: 'choose-branch', uid: mon.uid, branchId });
       const evolved = s.box[0]!;
       expect(evolved.speciesId).toBe(to);
@@ -1149,6 +1149,41 @@ describe('Evolution Items — §6.3.2', () => {
     s = apply(s, { type: 'choose-branch', uid, branchId: 'eevee-vanguard' });
     expect(s.box[0]!.speciesId).toBe('flareon');
     expect(s.phase).toBe('map');
+  });
+
+  it('DarkAndSteel_TheFourNewEvolutions_EachHasItsItem_AndItsType_v0.9.84', () => {
+    // [species at 18, the item, the branch it picks, what it becomes, the types it carries]
+    const cases = [
+      ['eevee', 'moon-stone', 'eevee-dark', 'umbreon', ['dark']],
+      ['scyther', 'metal-coat', 'scizor-vanguard', 'scizor', ['bug', 'steel']],
+      ['onix', 'metal-coat', 'steelix-vanguard', 'steelix', ['steel', 'ground']],
+      ['magneton', 'thunder-stone', 'magnezone-specialist', 'magnezone', ['electric', 'steel']],
+    ] as const;
+    for (const [species, item, branchId, to, types] of cases) {
+      let s = holding(start(7, 'squirtle'), [item], 18);
+      s = { ...s, box: [{ ...newPartyMon(species, 18, content, 7), uid: 'x' }] };
+      s = apply(s, { type: 'use-stone', uid: 'x', stoneId: item });
+      expect(s.phase, species).toBe('evolution');
+      // The Eevee's stone narrows its screen to the one path; the others open every path of the line.
+      expect(s.pendingEvolutions[0]!.branchIds.includes(branchId), species).toBe(true);
+      s = apply(s, { type: 'choose-branch', uid: 'x', branchId });
+      expect(s.box[0]!.speciesId, species).toBe(to);
+      expect(content.species(to).types, to).toEqual(types);
+    }
+    // A Metal Coat opens nothing for a species it does not know, and Magnemite's line is three stages long now.
+    const wrong = { ...holding(start(7, 'squirtle'), ['metal-coat'], 18), box: [{ ...newPartyMon('pidgey', 18, content, 7), uid: 'p' }] };
+    expect(reject(wrong, { type: 'use-stone', uid: 'p', stoneId: 'metal-coat' })).toBe('incompatible-stone');
+    expect(content.species('magnemite').types).toEqual(['electric', 'steel']);
+  });
+
+  it('Scyther_EvolvesByItsLevelToo_AtTwentySix_WhateverItHolds', () => {
+    let s = start(7, 'squirtle');
+    s = { ...s, box: [{ ...newPartyMon('scyther', 26, content, 7), uid: 'x' }] };
+    expect(evolvedAt('scyther', 25, content)).toBe('scyther');
+    expect(evolvedAt('scyther', 26, content)).toBe('scizor');
+    expect(evolvedAt('onix', 26, content)).toBe('steelix');
+    expect(evolvedAt('magneton', 26, content)).toBe('magnezone');
+    expect(s.box[0]!.speciesId).toBe('scyther');
   });
 
   it('UseStone_RefusesTooEarly_AndTheWrongSpecies_AndAStoneNotHeld', () => {

@@ -148,13 +148,13 @@ own item.
 
 # §7.3 Relics
 
-Sixty relics: **50 in the drop pool** (Common, Uncommon, Rare) plus **10 choice-only Legendaries**.
+Sixty-two relics: **52 in the drop pool** (Common, Uncommon, Rare) plus **10 choice-only Legendaries**.
 
 ## §7.3.1 Rarity
 
 | Rarity | Count | Drop weight | Typical source |
 |---|---|---|---|
-| Common | 25 | 60 % | A trainer now and then (15 %), the merchant's wildcard, City Shops, a rare event |
+| Common | 27 | 60 % | A trainer now and then (15 %), the merchant's wildcard, City Shops, a rare event |
 | Uncommon | 18 | 30 % | The Elite Trainer's pick, the first Gym's pick, City Shops, a rare event |
 | Rare | 7 | 10 % | One of the Elite Trainer's three, one of the first Gym's three, the beaten Elite Wild, the Ring, a rare Gamble event |
 | **Legendary** | 10 | **never drops** | The Gym's 1-of-3 from the second Gym on, the Summit, and a beaten Apex (§7.3.7) |
@@ -194,10 +194,10 @@ Every relic carries one primary and optionally one secondary category. The City 
 | **Meta-Acquisition** | XP, money, recruitment, the Pokédex |
 | **Status** | Applying, curing, prolonging or exploiting conditions |
 
-## §7.3.3 Common relics (25)
+## §7.3.3 Common relics (27)
 
-Ten of them are the **Elemental Gems** — Ground, Water, Fire, Grass, Rock, Flying, Electric, Psychic, Fighting and
-Normal Gem — each giving **+10 % to that type's moves for the whole party**. They are the reliable backbone of the
+Twelve of them are the **Elemental Gems** — Ground, Water, Fire, Grass, Rock, Flying, Electric, Psychic, Fighting,
+Normal, Dark and Steel Gem — each giving **+10 % to that type's moves for the whole party**. They are the reliable backbone of the
 Common tier and the reason a mono-type team can commit, sitting alongside the wearer-only Held Items (+20 %) and
 the Type Plates (+10 % wearer, +5 % Lead Aura for the bench).
 
@@ -323,16 +323,17 @@ Thirty generic items plus two signatures, one slot per Pokémon.
 | **Mid-combat** | No changes. The loadout locks with the Active Team (§2.3) |
 | **Sources** | Trainer battles 20 % of the time, the Elite Trainer's guaranteed slot, City Shop slot 7, Mystery rewards. **Never** in wild loot |
 
-## §7.4.2 Type boosts (11)
+## §7.4.2 Type boosts (12)
 
-Charcoal · Mystic Water · Magnet · Miracle Seed · NeverMeltIce · Black Belt · Sharp Beak · Twisted Spoon · Soft Sand · Hard Stone · Silk Scarf.
+Charcoal · Mystic Water · Magnet · Miracle Seed · NeverMeltIce · Black Belt · Sharp Beak · Twisted Spoon · Soft Sand · Hard Stone · Silk Scarf · Black Glasses (Dark).
+Steel has no booster of its own: the series' Metal Coat is the item that evolves Scyther and Onix here (§6.3.2), so the type's boost is its Plate.
 Each gives the **wearer** +20 % on that type's moves.
 
 Together with the Common **Elemental Gem** relics (+10 % party-wide, §7.3.3) and the **Type Plates** (+10 % wearer, +5 % Lead Aura for the bench, §7.4.3), they form a clean three-tier elemental hierarchy with zero duplicate icons: Gems boost the whole team modestly, unique items boost one specialist strongly, and Plates reward both the wearer and the Lead/Swap positioning loop.
 
-## §7.4.3 Type Plates (14) — the Lead Aura source
+## §7.4.3 Type Plates (16) — the Lead Aura source
 
-Splash · Flame · Zap · Meadow · Mind · Icicle · Fist · Earth · Sky · Stone · Toxic · Insect · Spooky · Draco Plate. The wearer's moves of that
+Splash · Flame · Zap · Meadow · Mind · Icicle · Fist · Earth · Sky · Stone · Toxic · Insect · Spooky · Draco · Dread (Dark) · Iron (Steel) Plate. The wearer's moves of that
 type deal **+10 %**; and while the wearer is **Lead**, every bench Pokémon's moves of that
 type deal **+5 %** (§6.5.4). Rare drops and the Mysterious Stone event.
 
@@ -381,9 +382,8 @@ ultimate for the biggest Normal-types) and **Foresight** (0 AP, reveals every Un
 
 Full list with compatibility: [`catalogs/tms.md`](catalogs/tms.md).
 
-Two type notes: there is no Steel type (§4.1.2), so Iron Tail is Rock-typed; and Dragon has no strong resist in
-the 15-type chart, so TM13 Dragon Rage deals a **fixed 40** damage and stays a utility filler rather than a
-coverage staple.
+One type note: Dragon is resisted only by Steel in the 17-type chart (§4.1.2) and hits nothing else hard, so
+TM13 Dragon Rage deals a **fixed 40** damage and stays a utility filler rather than a coverage staple.
 
 ---
 

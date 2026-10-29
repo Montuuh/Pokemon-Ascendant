@@ -1,8 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-29 · **Version:** v0.9.83 (*See the ring*).
+**Date:** 2026-10-29 · **Version:** v0.9.84 (*Dark and Steel*).
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 and the remaining art-review blocks. Open: the audit's dead-CSS scan follows only modules imported as `styles`. Shortlisted for later: web-design-guidelines, break-ui, kill-ai-slop scanner.
+**Dark and Steel (v0.9.84):** 17-type chart (Dark, Steel, Gen II values); Umbreon/Scizor/Steelix/Magnezone (155 species), 14 later moves (`later-moves.json`), Gems/Black Glasses/Plates/Metal Coat; Magnemite Electric/Steel; Eevee has 4 paths (archetype rule is per target species); R3 trainers with Magnezone/Steelix cost 13 pts of win rate and were swapped out; the Gen VII box icon stands in for 4 species. Open: no Dark/Steel Gym or Elite, no TMs for the new moves.
 **See the ring (v0.9.83):** rhythm UX — `rhythmFillOf` preview, card hover line, ghost arc on the owner's dial, ▲/▼ pace mark, `rhythm-ready` cue (0.35 s delay). UI review: Ship with fixes, fixed. Open: cue timed by delay not impact; held/dragged and 720p ghosts not reviewed.
 **Worth its AP (v0.9.82):** ally rhythm fills by printed AP (`stepRhythm(..., units)`, ally k 260 · 2–5 AP · carry 0.5; enemy per action unchanged); calibrated to 11.0 crits/run vs 11.5; dial counts AP; golden regenerated; UI review deferred (strings only). Open: show the fill of a card on its own hover.
 **Pace (v0.9.81):** critical rhythm = continuous meter (`rhythmActs`/`stepRhythm`; ally k 320 · 2–6, enemy k 270 · 2–4; stages and Paralysis scale the pace after the species reach); Agility +2 Speed, String Shot/Constrict/Bubble Beam slow; dial hover `RhythmPace`; golden `wild-boss-3phase` regenerated, boss envelope relaxed to 0.3 / 0.7. Open: more Speed sources.

@@ -99,7 +99,7 @@
     "magnemite": [
       "thunder",
       "thunder-plus",
-      null
+      "thunder-plus-plus"
     ],
     "doduo": [
       "sky-attack",
@@ -213,7 +213,7 @@
     ],
     "onix": [
       "rock-slide",
-      null,
+      "rock-slide-plus",
       null
     ],
     "mr-mime": [
@@ -223,7 +223,7 @@
     ],
     "scyther": [
       "slash",
-      null,
+      "slash-plus",
       null
     ],
     "jynx": [

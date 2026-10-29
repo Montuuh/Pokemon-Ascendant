@@ -189,6 +189,8 @@ const SCREENS = {
   team: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(4)', 'run.patch((d) => { d.activeUids = d.box.slice(0, 3).map((m) => m.uid); d.bag = [...d.bag, "leftovers"]; })', 'goTo("map")'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /hooks\/useTeamKey/, /components\/BoxPanel/] },
   'team-city': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)'], clicks: ['btn-team'], match: [/components\/TeamScreen/, /screens\/city\/CityScreen/] },
   evolution: { url: '/?screen=menu', setup: ['run.new("bulbasaur", 7)', 'run.fill(3)', 'run.levelTo(12)', 'run.victoryRoad()', 'run.jump("training")', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'run.dispatch({ type: "train", uid: a.run.state().box[0].uid, upgrade: "evolve" })', 'goTo("map")'], match: [/screens\/EvolutionScreen/] },
+  // v0.9.84 — Eevee has four paths: the two-by-two layout a short window gets (EvolutionScreen data-count).
+  'evolution-eevee': { url: '/?screen=menu', setup: ['run.new("eevee", 7)', 'run.fill(3)', 'run.levelTo(12)', 'run.victoryRoad()', 'run.jump("training")', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'run.dispatch({ type: "train", uid: a.run.state().box[0].uid, upgrade: "evolve" })', 'goTo("map")'], match: [/screens\/EvolutionScreen/] },
   // §9.4.5 — a fight's end on its own stage: a trainer win (levels, spoils, the progress door), a Gym's Badge, a run's toll.
   results: {
     url: '/?screen=menu',
@@ -224,7 +226,7 @@ const EXPECTED_ROOT = {
   'game-corner': 'game-corner-room', 'game-corner-roulette': 'game-corner-screen', 'game-corner-slots': 'game-corner-screen', 'game-corner-open': 'game-corner-room', 'game-corner-shut': 'game-corner-room',
   'black-market': 'black-market-screen', 'black-market-gambler': 'market-counter', 'black-market-trader': 'market-counter', 'black-market-fence': 'market-counter', 'black-market-showcase': 'market-counter',
   safari: 'safari-screen', 'safari-guide': 'safari-guide', 'safari-stalk': 'safari-screen',
-  mystery: 'event-screen', evolution: 'evolution-screen', summit: 'summit-screen', league: 'league-hall', 'league-champion': 'league-hall',
+  mystery: 'event-screen', evolution: 'evolution-screen', 'evolution-eevee': 'evolution-screen', summit: 'summit-screen', league: 'league-hall', 'league-champion': 'league-hall',
   'find-preview': 'node-preview', find: 'find-screen', team: 'team-screen', 'team-city': 'team-screen',
   results: 'fight-results', 'results-gym': 'fight-results', 'results-escape': 'fight-results',
 };

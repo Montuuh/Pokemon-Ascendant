@@ -93,7 +93,9 @@ function EvolutionChoice({ uid }: { uid: string }) {
   };
   // A radiogroup: one tab stop, the arrows move between paths and pick (WAI-ARIA), Enter and Space pick.
   const onCardKey = (e: KeyboardEvent, i: number) => {
-    const step = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+    // Four paths on a short window sit two by two, so Up and Down cross a row.
+    const row = previews.length === 4 && window.matchMedia('(max-height: 820px)').matches ? 2 : 1;
+    const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowDown' ? row : e.key === 'ArrowUp' ? -row : 0;
     if (step) {
       e.preventDefault();
       const j = (i + step + previews.length) % previews.length;
@@ -168,7 +170,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
           </section>
         </aside>
 
-        <section className={styles.branches} role="radiogroup" aria-label="Paths">
+        <section className={styles.branches} role="radiogroup" aria-label="Paths" data-count={previews.length}>
           {previews.map((p, i) => {
             const branch = content.branch(p.branchId);
             const on = picked === p.branchId;
@@ -220,8 +222,10 @@ function EvolutionChoice({ uid }: { uid: string }) {
                   {p.upgrades.map((u) => (
                     <li key={u.from} className={styles.change}>
                       <MoveChip id={u.from} struck inCard />
-                      <IconArrowNarrowRight size={16} className={styles.arrow} />
-                      <MoveChip id={u.to} active={p.kit.includes(u.to)} fresh={!mon.pool.includes(u.to)} inCard />
+                      <span className={styles.target}>
+                        <IconArrowNarrowRight size={16} className={styles.arrow} />
+                        <MoveChip id={u.to} active={p.kit.includes(u.to)} fresh={!mon.pool.includes(u.to)} inCard />
+                      </span>
                     </li>
                   ))}
                   {p.adds.map((a) => (

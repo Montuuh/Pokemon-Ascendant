@@ -37,13 +37,6 @@
 .onScreen {
   box-shadow: 0 4px 0 var(--accent-action-deep);
 }
-/* A short window (720 p): the panel packs tighter, so a level that teaches a move still fits under the caption at large text. */
-@media (max-height: 760px) {
-  .panel {
-    gap: 0;
-    padding: var(--sp-1) var(--sp-2);
-  }
-}
 .folding {
   opacity: 0;
   transition: opacity var(--motion-fast) ease;
@@ -184,4 +177,33 @@
 .pool {
   font-size: var(--type-micro);
   color: color-mix(in srgb, var(--ink-on-accent) 80%, var(--brand-cream));
+}
+
+/* A short window (720 p): the panel packs tighter, so a level that teaches a move still fits under the caption at large text. */
+@media (max-height: 760px) {
+  .panel {
+    gap: 0;
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .stat,
+  .value {
+    line-height: 1.05;
+  }
+  .gain {
+    line-height: 1.2;
+  }
+  .head {
+    line-height: 1.05;
+  }
+  /* On a screen (Training) the stats pair up, two to a line. */
+  .onScreen .rows {
+    grid-template-columns: repeat(6, auto);
+  }
+  .resume {
+    margin-top: 0;
+  }
+  .teaches .move {
+    margin-top: 0;
+    padding-block: 0;
+  }
 }

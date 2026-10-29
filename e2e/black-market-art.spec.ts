@@ -7,7 +7,7 @@ async function downstairs(page: Page, relics: string[] = []) {
     const a = window.__ascendant!;
     a.run.new('squirtle', 7);
     a.run.fill(6);
-    const settled = ['blastoise', 'tauros', 'kangaskhan', 'lapras', 'snorlax', 'scyther'];
+    const settled = ['blastoise', 'tauros', 'kangaskhan', 'lapras', 'snorlax', 'pinsir'];
     a.run.patch((d) => {
       d.box.forEach((m, i) => {
         m.speciesId = settled[i]!;

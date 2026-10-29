@@ -80,7 +80,7 @@ Region 3's last wild band (`leagueBase`); every ace three-phase, every other Pok
 
 | id | Member | Type · Battlefield | Stage | Team (levels over the base) |
 |---|---|---|---|---|
-| `elite-four-1` | Bruno | Fighting · Sandstorm | cave | `onix` +4 · `machamp` +5 |
+| `elite-four-1` | Bruno | Fighting · Sandstorm | cave | `steelix` +4 · `machamp` +5 |
 | `elite-four-2` | Agatha | Ghost · Toxic Spikes | tower | `arbok` +6 · `gengar` +7 |
 | `elite-four-3` | Will | Psychic · Psychic Terrain | library | `jynx` +7 · `slowbro` +8 · `alakazam` +9 |
 | `elite-four-4` | Lance | Dragon · Rain | sky-pillar | `gyarados` +9 · `aerodactyl` +10 · `dragonite` +11 |

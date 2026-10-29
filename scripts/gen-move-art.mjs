@@ -35,6 +35,8 @@ const PALETTE = {
   rock: 'grey-brown stone and tan',
   ghost: 'deep purple and black with a pale glow',
   dragon: 'indigo, violet and blue',
+  dark: 'deep violet-black shapes with a bright pale-lilac rim light and a few white highlight pixels, so it glows against a dark background',
+  steel: 'cool silver, steel blue-grey and white highlights',
 };
 
 const args = process.argv.slice(2);

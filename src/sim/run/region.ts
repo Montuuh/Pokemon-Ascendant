@@ -60,7 +60,7 @@ export const BIOMES: Partial<Record<BiomeId, BiomePool>> & Record<'meadow' | 'ca
     id: 'forest', name: 'Forest', stage: 'forest',
     common: ['caterpie', 'weedle', 'oddish', 'paras'],
     uncommon: ['bellsprout', 'venonat', 'exeggcute'],
-    rare: ['pikachu', 'bulbasaur'],
+    rare: ['pikachu', 'bulbasaur', 'scyther'],
   },
   meadow: {
     id: 'meadow', name: 'Flower Meadow', stage: 'meadow',
@@ -71,7 +71,7 @@ export const BIOMES: Partial<Record<BiomeId, BiomePool>> & Record<'meadow' | 'ca
   cave: {
     id: 'cave', name: 'Cave', stage: 'cave',
     common: ['zubat', 'geodude', 'diglett', 'paras'],
-    uncommon: ['clefairy', 'sandshrew', 'cubone', 'rhyhorn'],
+    uncommon: ['clefairy', 'sandshrew', 'cubone', 'rhyhorn', 'onix'],
     rare: ['kabuto', 'omanyte'],
   },
   ridge: {
@@ -559,7 +559,7 @@ export const BIOMES_R2: Partial<Record<BiomeId, BiomePool>> = {
   shore: {
     id: 'shore', name: 'Rocky Shore', stage: 'beach',
     common: ['kingler', 'golbat', 'graveler', 'pidgeotto'],
-    uncommon: ['onix', 'dewgong', 'starmie'],
+    uncommon: ['marowak', 'dewgong', 'starmie'],
     rare: ['farfetchd', 'wartortle'],
   },
   'power-plant': {
@@ -571,13 +571,13 @@ export const BIOMES_R2: Partial<Record<BiomeId, BiomePool>> = {
   cave: {
     id: 'cave', name: 'Cave', stage: 'cave',
     common: ['golbat', 'graveler', 'dugtrio', 'sandslash'],
-    uncommon: ['onix', 'haunter', 'kadabra'],
+    uncommon: ['rhydon', 'haunter', 'kadabra'],
     rare: ['charmeleon'],
   },
   ridge: {
     id: 'ridge', name: 'Mountain Trail', stage: 'mountain',
     common: ['machoke', 'primeape', 'graveler', 'sandslash'],
-    uncommon: ['dugtrio', 'onix', 'nidorino'],
+    uncommon: ['dugtrio', 'marowak', 'nidorino'],
     rare: ['hitmonlee', 'hitmonchan'],
   },
   swamp: {
@@ -596,7 +596,7 @@ export const BIOMES_R2: Partial<Record<BiomeId, BiomePool>> = {
     id: 'forest', name: 'Forest', stage: 'forest',
     common: ['butterfree', 'beedrill', 'parasect', 'venomoth', 'metapod', 'kakuna'],
     uncommon: ['gloom', 'weepinbell', 'tangela'],
-    rare: ['scyther', 'pinsir', 'ivysaur'],
+    rare: ['victreebel', 'pinsir', 'ivysaur'],
   },
 };
 
@@ -741,13 +741,13 @@ export const BIOMES_R3: Partial<Record<BiomeId, BiomePool>> = {
   badlands: {
     id: 'badlands', name: 'Badlands', stage: 'badlands',
     common: ['rhydon', 'golem', 'nidoking', 'nidoqueen'],
-    uncommon: ['marowak', 'tauros', 'dodrio'],
+    uncommon: ['marowak', 'tauros', 'dodrio', 'steelix'],
     rare: ['aerodactyl'],
   },
   cave: {
     id: 'cave', name: 'Deep Cave', stage: 'cave',
     common: ['machamp', 'golem', 'poliwrath'],
-    uncommon: ['omastar', 'kabutops', 'marowak'],
+    uncommon: ['omastar', 'kabutops', 'marowak', 'magnezone'],
     rare: ['snorlax', 'kangaskhan'],
   },
   lake: {
@@ -759,19 +759,19 @@ export const BIOMES_R3: Partial<Record<BiomeId, BiomePool>> = {
   sky: {
     id: 'sky', name: 'Sky Cliffs', stage: 'sky-pillar',
     common: ['pidgeot', 'fearow', 'dodrio'],
-    uncommon: ['gyarados', 'scyther', 'jolteon'],
+    uncommon: ['gyarados', 'scizor', 'jolteon'],
     rare: ['dragonite', 'aerodactyl'],
   },
   tower: {
     id: 'tower', name: 'Haunted Tower', stage: 'tower',
     common: ['gengar', 'hypno'],
-    uncommon: ['alakazam', 'mr-mime', 'exeggutor', 'vileplume'],
+    uncommon: ['alakazam', 'mr-mime', 'exeggutor', 'vileplume', 'umbreon'],
     rare: ['chansey', 'venusaur'],
   },
   ruins: {
     id: 'ruins', name: 'Overgrown Ruins', stage: 'ruins',
     common: ['vileplume', 'victreebel', 'exeggutor'],
-    uncommon: ['hypno', 'jolteon', 'mr-mime', 'scyther'],
+    uncommon: ['hypno', 'jolteon', 'mr-mime', 'scizor'],
     rare: ['venusaur'],
   },
 };
@@ -806,13 +806,13 @@ export const TRAINERS_R3: TrainerRoster[] = [
   { id: 'rocket-grunt-r3-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Team Rocket never loses twice. Well — never three times.',
     team: [{ species: 'golbat', level: 30 }, { species: 'muk', level: 31 }] },
   { id: 'engineer-r3-a', archetype: 'engineer', name: 'Engineer Otto', sprite: 'scientist', line: 'The geothermal plant runs on these two. So do I.',
-    team: [{ species: 'electrode', level: 30 }, { species: 'magneton', level: 31 }] },
+    team: [{ species: 'electrode', level: 30 }, { species: 'electabuzz', level: 31 }] },
   { id: 'engineer-r3-b', archetype: 'engineer', name: 'Engineer Silvia', sprite: 'scientist', line: 'Porygon was built at Silph. I rebuilt it better.',
-    team: [{ species: 'porygon', level: 30 }, { species: 'magneton', level: 31 }] },
+    team: [{ species: 'porygon', level: 30 }, { species: 'raichu', level: 31 }] },
   { id: 'hiker-r3-a', archetype: 'hiker', name: 'Hiker Ernesto', sprite: 'hiker', line: 'This mountain was here before you. So were we.',
     team: [{ species: 'rhyhorn', level: 31 }, { species: 'golem', level: 32 }] },
   { id: 'hiker-r3-b', archetype: 'hiker', name: 'Hiker Ivan', sprite: 'hiker', line: 'I carried Machamp up here. Then it carried me.',
-    team: [{ species: 'onix', level: 30 }, { species: 'machamp', level: 32 }] },
+    team: [{ species: 'rhydon', level: 30 }, { species: 'machamp', level: 32 }] },
   { id: 'swimmer-r3-a', archetype: 'swimmer', name: 'Swimmer Nerea', sprite: 'swimmer', line: 'The water under the ice is freezing. You get used to it.',
     team: [{ species: 'dewgong', level: 30 }, { species: 'seaking', level: 31 }] },
   { id: 'swimmer-r3-b', archetype: 'swimmer', name: 'Swimmer Marco', sprite: 'swimmer', line: 'Swim the ice caves long enough and nothing scares you.',

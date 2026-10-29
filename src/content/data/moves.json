@@ -617,7 +617,7 @@
     {
       "id": "bite",
       "name": "Bite",
-      "type": "normal",
+      "type": "dark",
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
@@ -2575,7 +2575,7 @@
       "range": "melee",
       "modifier": "none",
       "apCost": 2,
-      "power": 75,
+      "power": 100,
       "effects": [],
       "alwaysCrit": true
     },
@@ -2869,7 +2869,7 @@
     {
       "id": "bite-plus",
       "name": "Bite+",
-      "type": "normal",
+      "type": "dark",
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
@@ -4256,6 +4256,234 @@
         }
       ],
       "cooldown": 2
+    },
+    {
+      "id": "pursuit",
+      "name": "Pursuit",
+      "type": "dark",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "speed",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "feint-attack",
+      "name": "Feint Attack",
+      "type": "dark",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-backward",
+      "apCost": 2,
+      "power": 60,
+      "effects": []
+    },
+    {
+      "id": "crunch",
+      "name": "Crunch",
+      "type": "dark",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 85,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "snarl",
+      "name": "Snarl",
+      "type": "dark",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "dark-pulse",
+      "name": "Dark Pulse",
+      "type": "dark",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 80,
+      "effects": []
+    },
+    {
+      "id": "night-slash",
+      "name": "Night Slash",
+      "type": "dark",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 60,
+      "effects": [],
+      "alwaysCrit": true
+    },
+    {
+      "id": "metal-claw",
+      "name": "Metal Claw",
+      "type": "steel",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "bullet-punch",
+      "name": "Bullet Punch",
+      "type": "steel",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-forward",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "magnet-bomb",
+      "name": "Magnet Bomb",
+      "type": "steel",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 50,
+      "effects": []
+    },
+    {
+      "id": "steel-wing",
+      "name": "Steel Wing",
+      "type": "steel",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "iron-head",
+      "name": "Iron Head",
+      "type": "steel",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "flash-cannon",
+      "name": "Flash Cannon",
+      "type": "steel",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "iron-tail",
+      "name": "Iron Tail",
+      "type": "steel",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 85,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "meteor-mash",
+      "name": "Meteor Mash",
+      "type": "steel",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 85,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "thunder-plus-plus",
+      "name": "Thunder++",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 130,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.1
+        }
+      ]
     }
   ]
 }

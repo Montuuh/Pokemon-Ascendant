@@ -37,6 +37,9 @@ export const TYPE_TIMBRE: Record<PokemonType, Step[]> = {
   rock: [hiss({ filter: 'lowpass', from: 700, to: 200, dur: 0.18, gain: 0.6 }), hiss({ filter: 'lowpass', from: 500, dur: 0.1, gain: 0.4, delay: 0.1 })],
   ghost: [tone({ wave: 'sine', from: 300, to: 200, dur: 0.4, gain: 0.15 }), tone({ wave: 'sine', from: 310, to: 205, dur: 0.4, gain: 0.12 })],
   dragon: [tone({ wave: 'sawtooth', from: 110, to: 220, dur: 0.3, gain: 0.2, cutoff: 1200 }), hiss({ filter: 'bandpass', from: 400, to: 1600, q: 1, dur: 0.3, gain: 0.35 })],
+  // Dark: a low, closing growl under a short hiss, the ghost's drift turned sharp. Steel: a struck bar — a bright ring over a clank.
+  dark: [tone({ wave: 'sawtooth', from: 150, to: 70, dur: 0.22, gain: 0.2, cutoff: 700 }), hiss({ filter: 'lowpass', from: 1100, to: 250, dur: 0.16, gain: 0.35, delay: 0.03 })],
+  steel: [tone({ wave: 'triangle', from: 1760, to: 1500, dur: 0.3, gain: 0.12 }), hiss({ filter: 'highpass', from: 3500, dur: 0.05, gain: 0.3 }), tone({ wave: 'square', from: 220, to: 160, dur: 0.1, gain: 0.12, cutoff: 1500 })],
 };
 
 /** §9.5.3 — the status stings, one motif each. */

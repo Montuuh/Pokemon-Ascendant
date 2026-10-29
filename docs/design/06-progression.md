@@ -162,9 +162,10 @@ then. Single use.
 |---|---|
 | Fire | Eevee → **Flareon**, Vulpix, Growlithe |
 | Water | Eevee → **Vaporeon**, Shellder, Staryu, Poliwhirl |
-| Thunder | Eevee → **Jolteon**, Pikachu |
+| Thunder | Eevee → **Jolteon**, Pikachu, Magneton → **Magnezone** |
 | Leaf | Exeggcute, Gloom, Weepinbell |
-| Moon | Clefairy, Jigglypuff, Nidorina, Nidorino |
+| Moon | Clefairy, Jigglypuff, Nidorina, Nidorino, Eevee → **Umbreon** |
+| Metal Coat | Scyther → **Scizor**, Onix → **Steelix** |
 
 For **Eevee** the stone also *is* the branch: the Evolution screen offers only the Eeveelution it makes. Every
 other line keeps all its archetypes on a stone's screen. The level path always still exists.
@@ -226,7 +227,7 @@ Pokémon's own type worth playing (a Charizard on Scratch and Ember, a Butterfre
 Beedrill with one attack); the learnset fills every path, whatever the branches chose. The pool is the choice; the
 deck is still each Pokémon's active four.
 
-**Every path ends with a real kit** — a content test walks all 151, every path, at the last level the form is held: a
+**Every path ends with a real kit** — a content test walks all 155, every path, at the last level the form is held: a
 move of its own type worth playing for its stage (a base form 45, a middle form 65, a final or single form 75 — Gen
 I's ceiling where the type has none higher: Poison and Ghost 70, Dragon 50), at least three attacks once evolved, and
 one Ranged attack so it plays from the bench. Magikarp and Ditto are the jokes the series makes of them; a cocoon is a

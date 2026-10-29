@@ -48,11 +48,23 @@ with the result is a bug — both call the same pure function.
 
 ## §4.1.2 The type chart
 
-The **15-type chart with Gen II effectiveness**: Normal, Fire, Water, Electric, Grass, Ice, Fighting,
-Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon. Dark, Steel and Fairy do not exist in Pokémon
+The **17-type chart with Gen II effectiveness**: Normal, Fire, Water, Electric, Grass, Ice, Fighting,
+Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, **Dark** and **Steel**. Fairy does not exist in Pokémon
 Ascendant. Effectiveness relationships use Generation II to resolve Gen I's balance defects (Ghost hits
 Psychic for 2.0× rather than Gen I's 0× bug; Fire resists Ice at 0.5×; Bug hits Poison for 0.5×; Poison hits Bug
 neutrally at 1.0×).
+
+**Dark and Steel** (v0.9.84, the user's call) are Generation II's two additions, at their Generation II values — the chart was
+the 15 Gen I types until then, and the two arrive with the Pokémon, moves and items that carry them (§6.3, §3.6, §7.3–§7.4).
+
+| Type | Hits for ×2 | Resisted (×0.5) by | Takes ×2 from | Resists (×0.5) | Immune to |
+|---|---|---|---|---|---|
+| **Dark** | Ghost, Psychic | Fighting, Dark, Steel | Fighting, Bug | Ghost, Dark | Psychic |
+| **Steel** | Ice, Rock | Fire, Water, Electric, Steel | Fire, Fighting, Ground | Normal, Grass, Ice, Flying, Psychic, Bug, Rock, Ghost, Dragon, Steel | Poison |
+
+*Why:* Dark is the one type Psychic and Ghost cannot beat, and the first thing in the game that answers them; Steel is the
+series' wall — nearly everything resists it and only three types hurt it — so it is the type a Normal or Flying team meets
+with dread. The same chart gives the two new types their own weaknesses, so neither is a free pick: Fighting is the answer to both.
 
 | Matchup | Multiplier | Label |
 |---|---|---|
@@ -68,12 +80,9 @@ Water/Flying = 2.0 × 2.0 = **4.0**; Ground vs Water/Rock = 1.0 × 2.0 = **2.0**
 0.0 × 1.0 = **0.0** — immunity always wins.
 
 Immunities are preserved (Ghost immune to Normal and Fighting, Ground immune to Electric, Flying immune to
-Ground, Normal immune to Ghost, and so on). They are displayed in the Intent Phase and on card hover — never hidden.
+Ground, Normal immune to Ghost, Dark immune to Psychic, Steel immune to Poison, and so on). They are displayed in the Intent Phase and on card hover — never hidden.
 
 **STAB** is 1.5 when the card's type matches either of the user's types.
-
-Because Steel does not exist, moves that are Steel-typed in the source material are typed **Rock** here
-(`iron-tail`, `metal-claw`), and there is no Steel poison-immunity row.
 
 ## §4.1.3 Crit
 
@@ -290,6 +299,7 @@ pity timer is needed, and `full-heal` cures it.
 | Ice | Freeze |
 | Electric | Paralysis |
 | Poison | Poison |
+| Steel | Poison |
 
 Abilities add more (`immunity`, `insomnia`, `limber`, `inner-focus`, `vital-spirit` — §6.6). Immunity is checked
 at the moment of application.

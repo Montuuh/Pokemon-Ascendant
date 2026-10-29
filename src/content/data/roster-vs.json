@@ -496,6 +496,10 @@
         {
           "dex": 82,
           "id": "magneton"
+        },
+        {
+          "dex": 462,
+          "id": "magnezone"
         }
       ]
     },
@@ -583,6 +587,10 @@
         {
           "dex": 95,
           "id": "onix"
+        },
+        {
+          "dex": 208,
+          "id": "steelix"
         }
       ]
     },
@@ -785,6 +793,10 @@
         {
           "dex": 123,
           "id": "scyther"
+        },
+        {
+          "dex": 212,
+          "id": "scizor"
         }
       ]
     },
@@ -882,6 +894,10 @@
         {
           "dex": 136,
           "id": "flareon"
+        },
+        {
+          "dex": 197,
+          "id": "umbreon"
         }
       ]
     },

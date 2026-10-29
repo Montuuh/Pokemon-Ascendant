@@ -2,12 +2,13 @@ import type { PokemonType, PrimaryStatus, StatusCondition } from '../types';
 import type { BattleConfig } from './battleConfig';
 import type { Combatant } from './state';
 
-// §4.2.4 — type/condition immunities (Steel is not in the Gen I chart).
+// §4.2.4 — type/condition immunities (Steel since v0.9.84).
 const IMMUNITIES: Readonly<Partial<Record<PokemonType, readonly StatusCondition[]>>> = {
   fire: ['burn', 'freeze'],
   ice: ['freeze'],
   electric: ['paralysis'],
   poison: ['poison'],
+  steel: ['poison'],
 };
 
 export function isImmuneToStatus(types: readonly PokemonType[], status: StatusCondition): boolean {

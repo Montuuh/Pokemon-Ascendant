@@ -208,8 +208,8 @@ clamp — only immunity deals 0. Level is not in the formula.
 **Stats:** one Attack, one Defence, derived from Gen I as `attack = max(Atk, Spc)`,
 `defence = round((Def+Spc)/2)`. Effective = `base + growth×(level−1)`, then stage, then status.
 
-**Type chart:** **15 types** with **Gen II effectiveness** — no Dark, Steel or Fairy. ×4 / ×2 / ×1 / ×0.5 / ×0.25 / ×0; dual
-types multiply; immunity always wins. Steel-typed source moves are typed Rock here.
+**Type chart:** **17 types** with **Gen II effectiveness** — Dark and Steel joined the 15 Gen I types in v0.9.84; no Fairy. ×4 / ×2 / ×1 / ×0.5 / ×0.25 / ×0; dual
+types multiply; immunity always wins (Steel is immune to Poison, Dark to Psychic).
 
 **Crit:** base **0 %**. Only AlwaysCrit moves, consumables and abilities grant it; additive, soft cap ~30–35 %.
 
@@ -355,7 +355,7 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
   Potions → Super → Hyper), a wild node ~30 % leaves 1–2 Poké Balls, the Elite and the Gym add a prize, the nurse
   and a City's Center hand over a pair, shops sell **bundles** (Potion ×3 / ×5, Balls ×3 / ×5, 10 % off), and three
   Mystery Events are supplies.
-- **60 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 25 Common (10 of them the +10 % party Elemental
+- **62 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 27 Common (12 of them the +10 % party Elemental
   Gems) / 18 Uncommon / 7 Rare / **10 Legendary**. A trainer drops a Common 15 % of the time; the Elite Trainer
   offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym the same mix, 1-of-3**,
   later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run** (at the cap: two Rares and an Uncommon). Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
@@ -385,7 +385,7 @@ runs. **Trainer Tokens** also come from Gold (+2) and Platinum (+5) achievements
 decide what you take home. The whole shop (~134) is about sixty runs of income (`balance/accountCareer.test.ts`).
 
 **Hub** — PC Terminal (Pokédex · Medals · relic discoveries; the Pokédex is the one book: cards that open a sheet with
-Record · Kit · the line's Bond, §8.9.2, and a per-species record, §8.9.1; all 151 species are in the book, and an unmet one is a silhouette, "???" and no types until any trace of it lands on the account — 2026-09-23), Trainer Card, Poké Mart (from the
+Record · Kit · the line's Bond, §8.9.2, and a per-species record, §8.9.1; all 155 species (the 151 of Gen I and the four Dark and Steel evolutions) are in the book, and an unmet one is a silhouette, "???" and no types until any trace of it lands on the account — 2026-09-23), Trainer Card, Poké Mart (from the
 start), and the door to the Elite Four that starts a run — all as the Indigo Plateau Pokémon Center lobby, a FRLG room
 (v0.9.2, §8.4); the Daycare Lady and the Mystery Door are gone.
 **Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·

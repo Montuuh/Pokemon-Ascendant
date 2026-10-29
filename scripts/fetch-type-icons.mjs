@@ -13,10 +13,10 @@ const args = process.argv.slice(2);
 const force = args.includes('--force');
 const set = args.includes('--set') ? args[args.indexOf('--set') + 1] : 'generation-iii/firered-leafgreen';
 
-// PokéAPI's type ids. Dark, Steel and Fairy are not Gen I and are not fetched (§1.6.2).
+// PokéAPI's type ids. Fairy is not in the game and is not fetched; Dark and Steel joined in v0.9.84.
 const TYPES = {
   normal: 1, fighting: 2, flying: 3, poison: 4, ground: 5, rock: 6, bug: 7, ghost: 8,
-  fire: 10, water: 11, grass: 12, electric: 13, psychic: 14, ice: 15, dragon: 16,
+  fire: 10, water: 11, grass: 12, electric: 13, psychic: 14, ice: 15, dragon: 16, steel: 9, dark: 17,
 };
 const url = (id) => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/${set}/${id}.png`;
 

@@ -1,4 +1,4 @@
-# Relic catalog — 60 (50 drop-pool + 10 Legendary)
+# Relic catalog — 62 (52 drop-pool + 10 Legendary)
 
 > Implements §7.3 (catalog, rarity, synergy categories), §8.6 (meta tiers, pool construction, starting-relic
 > curation), §7.3.7 (Legendary class). Status legend in `README.md`.
@@ -29,6 +29,8 @@
 | `psychic-gem` | Psychic Gem | combat | Psychic moves +10 % | `on-damage` | ✅ |
 | `fighting-gem` | Fighting Gem | combat | Fighting moves +10 % | `on-damage` | ✅ |
 | `normal-gem` | Normal Gem | combat | Normal moves +10 % | `on-damage` | ✅ |
+| `dark-gem` | Dark Gem | combat | Dark moves +10 % | `on-damage` | ✅ v0.9.84 |
+| `steel-gem` | Steel Gem | combat | Steel moves +10 % | `on-damage` | ✅ v0.9.84 |
 | `cleanse-tag` | Cleanse Tag | status | The first status applied to your side each combat is blocked | `on-status-apply` | ✅ |
 | `lucky-egg-token` | Lucky Egg Token | meta | In-run XP ×1.15 | `on-xp` | ✅ |
 | `exp-share` | Exp Share | meta | Benched Box Pokémon earn 100 % XP (from the 75 % baseline) | `on-xp` | ✅ |

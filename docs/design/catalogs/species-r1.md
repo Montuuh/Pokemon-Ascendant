@@ -194,23 +194,26 @@
 |---|---|---|---|
 | → `primeape` | **Fury** — `karate-chop` → `karate-chop-plus` · `low-kick` → `submission` · **+`thrash`** | **Brawler** — `low-kick` → `seismic-toss` · `scratch` → `fury-swipes` · **+`rock-slide`** | — |
 
-### `eevee` line — Normal → Water / Electric / Fire · 3 branches = 3 species · 🆕 · rare (Meadow) · meta-starter (§8.5.2)
+### `eevee` line — Normal → Water / Electric / Fire / Dark · 4 branches = 4 species · 🆕 · rare (Meadow) · meta-starter (§8.5.2)
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `eevee` | 133 | basic | Normal | 55/55/50/65/55 | rare | **L12** → one of `vaporeon` / `jolteon` / `flareon` (the matching Stone allows it from L8) | 1 `tackle` · 1 `tail-whip` · 4 `sand-attack` · 8 `quick-attack` · 10 `swift` |
+| `eevee` | 133 | basic | Normal | 55/55/50/65/55 | rare | **L12** → one of `vaporeon` / `jolteon` / `flareon` / `umbreon` (the matching Stone allows it from L8) | 1 `tackle` · 1 `tail-whip` · 4 `sand-attack` · 8 `quick-attack` · 10 `swift` |
 | `vaporeon` | 134 | stage1 (final) | Water ★ | 130/65/60/110/65 | — | — | 16 `bite` · 20 `bubble-beam` · 26 `surf` · 32 `hydro-pump` |
 | `jolteon` | 135 | stage1 (final) | Electric ★ | 65/65/60/110/130 | — | — | — *(its base form's kit, rewritten by evolution)* |
 | `flareon` | 136 | stage1 (final) | Fire | 65/130/60/110/65 | — | — | — *(its base form's kit, rewritten by evolution)* |
+| `umbreon` | 197 | stage1 (final) | Dark | 95/65/110/60·130/65 | — | — | 16 `snarl` · 22 `crunch` · 28 `dark-pulse` (v0.9.84; derived Atk/Def 65/120) |
 
-**Abilities** `adaptability` `run-down` `anticipation` (Vaporeon adds `water-absorb`; Jolteon `volt-absorb`, `speed-boost`; Flareon `flash-fire`, `guts`) · **Mastery** `take-down` → `take-down-plus`
+**Abilities** `adaptability` `run-down` `anticipation` (Vaporeon adds `water-absorb`; Jolteon `volt-absorb`, `speed-boost`; Flareon `flash-fire`, `guts`; Umbreon `inner-focus`) · **Mastery** `take-down` → `take-down-plus`
 
-| Evolution | Vanguard (→ Flareon) | Specialist (→ Jolteon) | Support (→ Vaporeon) |
-|---|---|---|---|
-| → branch species | `bite` → `fire-fang` · **+`flare-blitz`** | `swift` → `thunderbolt` · **+`thunder-wave`** | `tail-whip` → `aqua-ring` · **+`wish`** |
+| Evolution | Vanguard (→ Flareon) | Specialist (→ Jolteon) | Support (→ Vaporeon) | Support (→ Umbreon) |
+|---|---|---|---|---|
+| → branch species | `bite` → `fire-fang` · **+`flare-blitz`** | `swift` → `thunderbolt` · **+`thunder-wave`** | `tail-whip` → `aqua-ring` · **+`wish`** | `tackle` → `bite` · `quick-attack` → `pursuit` · **+`feint-attack`** · grants `inner-focus` (Moon Stone, `branch: eevee-dark`) |
 
-> Eevee's archetype **is** its species choice: the branch defines the type. Three branches, not four — Gen I
-> has exactly three Eeveelutions, and the Gen I constraint outranks the older promise of a fourth (§8.5.2).
+> Eevee's archetype **is** its species choice: the branch defines the type. Three branches while the game was Gen I only — Gen I
+> has exactly three Eeveelutions, and that constraint outranked the older promise of a fourth (§8.5.2). Dark made the
+> fourth possible (v0.9.84): **Umbreon**, the deepest Defence of the four, reached through the Moon Stone. Two paths to
+> *different* species may share an archetype (Vaporeon and Umbreon are both Support); two to the same species may not.
 
 ---
 
@@ -260,13 +263,18 @@
 > Arena Trap is Diglett's hidden ability since v0.7.5, rewritten for a game with no flee to trap: while the wearer
 > leads, every enemy loses 1/16 of its HP each turn (§6.8.3). The reserved "-x" id is retired.
 
-### `onix` — Rock/Ground · single stage · 2 archetypes via Training Grounds only · 🆕 · uncommon
+### `onix` line — Rock/Ground → Steel/Ground · 2 branches · 🆕 · uncommon (R1 Cave; Steelix in R3) · v0.9.84
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `onix` | 95 | basic (final) | Rock/Ground | 35/45/160/30/70 | uncommon | — (single stage: +25 % growth, §6.2.4) | 1 `tackle` · 1 `screech` · 8 `bind` · 16 `rock-throw` · 20 `dig` · 24 `harden` · 34 `earthquake` |
+| `onix` | 95 | basic | Rock/Ground | 35/45/160/30/70 | uncommon | **L26** → `steelix` (the Metal Coat allows it from L18) | 1 `tackle` · 1 `screech` · 8 `bind` · 16 `rock-throw` · 20 `dig` · 24 `harden` |
+| `steelix` | 208 | stage1 (final) | Steel/Ground | 75/85/200/55·65/30 | — | — | 28 `meteor-mash` · 34 `earthquake` |
 
-**Abilities** `sturdy` `rock-head` `weak-armor` · **Mastery** `rock-slide`
+**Abilities** `sturdy` `rock-head` `weak-armor` (Onix), `solid-rock` (Steelix) · **Mastery** `rock-slide` → `rock-slide-plus` · **Tutor** Steelix: `strength` `body-slam`
+
+| Evolution | Vanguard | Support |
+|---|---|---|
+| → `steelix` | **Iron Tail** — `tackle` → `iron-head` · `bind` → `metal-claw` · **+`iron-tail`** · grants `rock-head` | **Bulwark** — `harden` → `harden-plus` · `rock-throw` → `flash-cannon` · **+`steel-wing`** · grants `sturdy` |
 
 ### `machop` line — Fighting · 2 archetypes (Vanguard, Support) · 🆕 · uncommon
 

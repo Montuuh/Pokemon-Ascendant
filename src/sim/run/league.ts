@@ -44,7 +44,7 @@ export const LEAGUE_MEMBERS: readonly LeagueMember[] = [
   {
     id: 'elite-four-1', name: 'Bruno', title: 'Elite Four', sprite: 'bruno', type: 'fighting', battlefield: { hazard: 'sandstorm' }, stage: 'league-bruno',
     line: 'We will grind you down with our superior power! Hoo hah!',
-    team: [{ species: 'onix', over: 4, phaseCount: 2 }, { species: 'machamp', over: 5, phaseCount: 3 }],
+    team: [{ species: 'steelix', over: 4, phaseCount: 2 }, { species: 'machamp', over: 5, phaseCount: 3 }],
   },
   {
     id: 'elite-four-2', name: 'Agatha', title: 'Elite Four', sprite: 'agatha', type: 'ghost', battlefield: { hazard: 'toxic-spikes' }, stage: 'league-agatha',

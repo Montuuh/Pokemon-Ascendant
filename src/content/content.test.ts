@@ -177,12 +177,16 @@ describe('content registry', () => {
     }
   });
 
-  it('§6.3.3 — a species that evolves offers at least two archetypes, and no two share one', () => {
+  it('§6.3.3 — a species that evolves offers at least two archetypes, and no two paths to the same species share one', () => {
     for (const s of reg.allSpecies()) {
       if (!s.evolvesTo.length) continue;
       expect(s.branches.length, s.id).toBeGreaterThanOrEqual(2);
-      const seen = new Set(s.branches.map((b) => b.archetype));
-      expect(seen.size, `${s.id} repeats an archetype`).toBe(s.branches.length);
+      // Eevee's fourth path (v0.9.84) leads to a species of its own, so it may repeat an archetype another species has.
+      for (const to of s.evolvesTo) {
+        const paths = s.branches.filter((b) => b.to === to);
+        expect(new Set(paths.map((b) => b.archetype)).size, `${s.id} → ${to} repeats an archetype`).toBe(paths.length);
+      }
+      expect(new Set(s.branches.map((b) => b.to)), s.id).toEqual(new Set(s.evolvesTo));
     }
   });
 
@@ -244,7 +248,7 @@ describe('content registry', () => {
     }
   });
 
-  it('§6.3.5 — MoveCount_EverySpecies_StaysUnderItsCaps_OnEveryPath (all 151)', () => {
+  it('§6.3.5 — MoveCount_EverySpecies_StaysUnderItsCaps_OnEveryPath (all of them)', () => {
     // Every form's kit on every path through its line, what it learns by level included (kitPaths, the Pokédex's own).
     const kits = new Map(reg.allSpecies().map((s) => [s.id, Math.max(...kitPaths(reg, s.id).map((p) => p.pool.length))]));
     let checked = 0;
@@ -259,11 +263,15 @@ describe('content registry', () => {
       const offered = kit + s.tutorMoves.length + egg + 1;
       expect(offered, `${s.id} offered: kit ${kit} + tutor ${s.tutorMoves.length} + egg ${egg} + Mastery`).toBeLessThanOrEqual(MOVE_CAP.offered);
     }
-    expect(checked).toBe(151);
+    // The 151 of Generation I, and the four evolutions Dark and Steel brought (v0.9.84): Umbreon, Steelix, Scizor, Magnezone.
+    expect(checked).toBe(155);
   });
 
-  it('§3.6 — every move is a Gen I move at its Gen I name and its modern type, or one made better (+, ++)', () => {
-    const gen1 = new Map((JSON.parse(readFileSync('src/content/data/gen1-moves.json', 'utf8')) as { moves: { id: string; name: string; type: string }[] }).moves.map((m) => [m.id, m]));
+  it('§3.6 — every move is a Gen I move at its Gen I name and its modern type, or one of the later Dark and Steel moves, or one made better (+, ++)', () => {
+    const table = (file: string) => (JSON.parse(readFileSync(`src/content/data/${file}`, 'utf8')) as { moves: { id: string; name: string; type: string }[] }).moves;
+    const gen1 = new Map([...table('gen1-moves.json'), ...table('later-moves.json')].map((m) => [m.id, m]));
+    // The later moves are only ever Dark or Steel: the two types Generation I does not have.
+    for (const m of table('later-moves.json')) expect(['dark', 'steel'], m.id).toContain(m.type);
     const enemyOnly = new Set(['call-for-help', 'cover']);
     for (const m of reg.allMoves()) {
       if (enemyOnly.has(m.id)) continue;

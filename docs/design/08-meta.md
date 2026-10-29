@@ -335,13 +335,13 @@ diversity rather than raising power. In any order; the track has paid for all th
 | Starter | 🎟 | Type | Design slot |
 |---|---|---|---|
 | **Magikarp** | 4 | Water → Water/Flying | The late bloomer. Nearly useless until level 18, a monster afterwards — the cheapest because the first Region is the price |
-| **Eevee** | 6 | Normal | The branch-flex pick: its evolution *is* its type choice — Vaporeon, Jolteon or Flareon |
+| **Eevee** | 6 | Normal | The branch-flex pick: its evolution *is* its type choice — Vaporeon, Jolteon, Flareon or Umbreon |
 | **Pikachu** | 6 | Electric | The iconic pick. Ranged-leaning kit |
 
 *(Prices set 2026-09-21; until then the track granted Pikachu at Level 4, Eevee at 8 and Magikarp at 12.)*
 
-**Eevee has three branches, not four.** Gen I has exactly three Eeveelutions, and the Gen I constraint (§1.6.2)
-outranks a promise of a fourth.
+**Eevee has four branches** (v0.9.84). It had three while the game was Gen I only — Gen I has exactly three Eeveelutions, and
+that constraint outranked an older promise of a fourth. Dark arriving made the fourth possible: **Umbreon**, through the Moon Stone.
 
 **Any line at Bond rank 4 (Soulbound) may also start a run** (§6.8.2) — a fourth road to the
 starter screen, earned by playing the line across some twenty runs rather than by Trainer Level. *(Added 2026-09-21;

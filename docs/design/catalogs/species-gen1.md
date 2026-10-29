@@ -253,13 +253,19 @@
 
 **Abilities** `moxie` `guts` · **Tutor** Pinsir: `earthquake` `rock-slide` · **Archetype** vanguard
 
-### `scyther` — Bug/Flying · rare · single stage
+### `scyther` line — Bug/Flying → Bug/Steel · 2 branches · rare (R1 Forest; Scizor in R3) · v0.9.84
 
-| id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
+| id | dex | Stage | Types | Gen I/II HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `scyther` | 123 | basic | Bug/Flying | 70/110/80/55/105 | 110/68 | rare | — | 1 `quick-attack` · 1 `leer` · 8 `focus-energy` · 12 `cut` · 16 `swift` · 24 `wing-attack` · 28 `pin-missile` |
+| `scyther` | 123 | basic | Bug/Flying | 70/110/80/55/105 | 110/68 | rare | **L26** → `scizor` (the Metal Coat allows it from L18) | 1 `quick-attack` · 1 `leer` · 8 `focus-energy` · 12 `cut` · 16 `swift` · 24 `wing-attack` |
+| `scizor` | 212 | stage1 (final) | Bug/Steel | 70/130/100/55·80/65 | 130/90 | — | — | 27 `pin-missile` · 32 `iron-tail` · 38 `meteor-mash` |
 
-**Abilities** `swarm` `steadfast` · **Tutor** Scyther: `double-edge` · **Archetype** vanguard
+**Abilities** `swarm` `steadfast` `tough-claws` (hidden) · **Tutor** `double-edge` · **Egg** Scyther: `counter` `gust` · **Mastery** `slash` → `slash-plus`
+*(Gen II splits Special in two, so Scizor's derived defence is `round((Def + SpD) / 2)` and its attack `max(Atk, SpA)`.)*
+
+| Evolution | Vanguard | Specialist |
+|---|---|---|
+| → `scizor` | **Pincer** — `cut` → `metal-claw` · `quick-attack` → `bullet-punch` · **+`iron-head`** · grants `swarm` | **Gale Blade** — `wing-attack` → `steel-wing` · `swift` → `flash-cannon` · **+`night-slash`** · grants `steadfast` |
 
 ## 3. Fire, water and sea
 

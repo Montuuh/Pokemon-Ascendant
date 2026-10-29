@@ -56,7 +56,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     // §5.13 / §8.9 — the PC Terminal opens on the Pokédex: number, silhouette, name, the line's pips; every
     // species listed, none met, no line played.
     await openKiosk(page, 'pc');
-    await expect(page.getByTestId('dex-legend')).toContainText('0 of 151 met');
+    await expect(page.getByTestId('dex-legend')).toContainText('0 of 155 met');
     await expect(page.getByTestId('dex-legend')).toContainText('0 of 79 lines played');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-met', 'false');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-rank', '0');

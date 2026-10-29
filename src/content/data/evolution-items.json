@@ -28,10 +28,11 @@
       "id": "thunder-stone",
       "name": "Thunder Stone",
       "price": 250,
-      "description": "A green stone with a thunderbolt caught inside. It evolves Eevee into Jolteon, and Pikachu early.",
+      "description": "A green stone with a thunderbolt caught inside. It evolves Eevee into Jolteon, Pikachu early, and Magneton into Magnezone.",
       "uses": [
         { "species": "eevee", "fromLevel": 8, "branch": "eevee-specialist" },
-        { "species": "pikachu", "fromLevel": 8 }
+        { "species": "pikachu", "fromLevel": 8 },
+        { "species": "magneton", "fromLevel": 18 }
       ]
     },
     {
@@ -49,12 +50,23 @@
       "id": "moon-stone",
       "name": "Moon Stone",
       "price": 250,
-      "description": "A stone as black as the night it fell from. It evolves Clefairy, Jigglypuff, Nidorina and Nidorino early.",
+      "description": "A stone as black as the night it fell from. It evolves Clefairy, Jigglypuff, Nidorina and Nidorino early, and Eevee into Umbreon.",
       "uses": [
         { "species": "clefairy", "fromLevel": 8 },
         { "species": "jigglypuff", "fromLevel": 8 },
         { "species": "nidorina", "fromLevel": 18 },
-        { "species": "nidorino", "fromLevel": 18 }
+        { "species": "nidorino", "fromLevel": 18 },
+        { "species": "eevee", "fromLevel": 8, "branch": "eevee-dark" }
+      ]
+    },
+    {
+      "id": "metal-coat",
+      "name": "Metal Coat",
+      "price": 250,
+      "description": "A film of metal that makes what it covers harder. It evolves Scyther into Scizor and Onix into Steelix early.",
+      "uses": [
+        { "species": "scyther", "fromLevel": 18 },
+        { "species": "onix", "fromLevel": 18 }
       ]
     }
   ]

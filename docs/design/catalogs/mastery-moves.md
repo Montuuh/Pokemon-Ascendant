@@ -30,7 +30,7 @@
 | `growlithe` | `fire-blast` | `fire-blast-plus` | — |
 | `tentacool` | `surf` | `surf-plus` | — |
 | `ponyta` | `fire-blast` | `fire-blast-plus` | — |
-| `magnemite` | `thunder` | `thunder-plus` | — |
+| `magnemite` | `thunder` | `thunder-plus` | `thunder-plus-plus` |
 | `doduo` | `sky-attack` | `sky-attack-plus` | — |
 | `seel` | `ice-beam` | `ice-beam-plus` | — |
 | `grimer` | `body-slam` | `body-slam-plus` | — |
@@ -53,9 +53,9 @@
 | `geodude` | `mega-punch` | `mega-punch-plus` | `mega-punch-plus-plus` |
 | `gastly` | `dream-eater` | `dream-eater-plus` | `dream-eater-plus-plus` |
 | `farfetchd` | `cut` | — | — |
-| `onix` | `rock-slide` | — | — |
+| `onix` | `rock-slide` | `rock-slide-plus` | — |
 | `mr-mime` | `psybeam` | — | — |
-| `scyther` | `slash` | — | — |
+| `scyther` | `slash` | `slash-plus` | — |
 | `jynx` | `blizzard` | — | — |
 | `electabuzz` | `thunder` | — | — |
 | `magmar` | `flamethrower` | — | — |

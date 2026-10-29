@@ -14,7 +14,7 @@
 .card {
   width: min(1040px, 100%);
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 320px minmax(0, 1fr);
   grid-template-areas:
     'head head'
     'hero branches'
@@ -287,8 +287,17 @@
 }
 .change {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-1);
+  max-width: 100%;
+}
+/* The arrow never parts from the move it points at when the line wraps. */
+.target {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-wrap: nowrap;
 }
 .arrow {
   color: var(--ink-secondary);
@@ -389,6 +398,14 @@
   }
   .branches {
     gap: var(--sp-2);
+  }
+  /* Eevee's four paths (v0.9.84) lay out two by two on a short window, so the choice and its button still fit. */
+  .branches[data-count='4'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: center;
+  }
+  .branches[data-count='4'] .branch {
+    min-width: 0;
   }
   .branch {
     padding: var(--sp-2) var(--sp-3);

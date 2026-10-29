@@ -142,6 +142,34 @@
       }
     },
     {
+      "id": "dark-gem",
+      "name": "Dark Gem",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +10 % with dark moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "dark",
+        "multiplier": 1.1
+      }
+    },
+    {
+      "id": "steel-gem",
+      "name": "Steel Gem",
+      "rarity": "common",
+      "categories": [
+        "combat"
+      ],
+      "description": "Your whole team deals +10 % with steel moves.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "steel",
+        "multiplier": 1.1
+      }
+    },
+    {
       "id": "barrier-charm",
       "name": "Barrier Charm",
       "rarity": "common",

@@ -89,7 +89,7 @@
   /* §9.3 — behind the route's painted terrain while its tiles load: FRLG's darkest tree green. */
   --route-backdrop: #1d2a22;
 
-  /* ---- Pokémon type palette (§9.1.3.2, Gen I 15 — canonical hues, kept verbatim) ---- */
+  /* ---- Pokémon type palette (§9.1.3.2, 15 Gen I types and Dark and Steel — canonical hues, kept verbatim) ---- */
   --type-normal: #a8a878;
   --type-fire: #f08030;
   --type-water: #6890f0;
@@ -105,6 +105,8 @@
   --type-rock: #b8a038;
   --type-ghost: #705898;
   --type-dragon: #7038f8;
+  --type-dark: #705848;
+  --type-steel: #b8b8d0;
 
   /* ---- Status condition palette (matches public/art/icons/status/*.svg fills) ---- */
   --status-burn: #f08030;

@@ -100,17 +100,19 @@
 |---|---|---|---|
 | → `electrode` | **Ball Lightning** — `tackle` → `self-destruct` · `thunder-shock` → `thunder-shock-plus` · **+`swift`** | **Capacitor** — `thunder-shock` → `thunderbolt` · `sonic-boom` → `sonic-boom-plus` · **+`light-screen`** · grants `static` | — |
 
-### `magnemite` line — Electric · common
+### `magnemite` line — Electric/Steel · common · v0.9.84: Steel from Gen II, and a third stage
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `magnemite` | 81 | basic | Electric | 25/35/70/95/45 | 95/83 | common | **L12** → `magneton` | 1 `tackle` · 1 `sonic-boom` · 4 `thunder-shock` · 8 `supersonic` |
-| `magneton` | 82 | stage1 | Electric | 50/60/95/120/70 | 120/108 | — | — | 16 `thunderbolt` · 22 `swift` |
+| `magnemite` | 81 | basic | Electric/Steel | 25/35/70/95/45 | 95/83 | common | **L12** → `magneton` | 1 `tackle` · 1 `sonic-boom` · 4 `thunder-shock` · 8 `supersonic` |
+| `magneton` | 82 | stage1 | Electric/Steel | 50/60/95/120/70 | 120/108 | — | **L26** → `magnezone` (the Thunder Stone allows it from L18) | 16 `thunderbolt` · 22 `swift` |
+| `magnezone` | 462 | stage2 (final) | Electric/Steel | 70/70/115/130·90/60 | 130/103 | rare | — | 27 `magnet-bomb` · 33 `iron-head` · 39 `flash-cannon` |
 
 **Abilities** `sturdy` `static` `solid-rock` (the third is hidden, §6.8.3) · **Tutor** Magnemite: `defense-curl` `slash` · Magneton: `double-edge`
 
 | Evolution | Vanguard | Specialist | Support |
 |---|---|---|---|
+| → `magnezone` | **Gunmetal** — `tackle` → `meteor-mash` · `supersonic` → `metal-claw` · grants `sturdy` | **Mag Cannon** — `sonic-boom` → `magnet-bomb` · `supersonic` → `flash-cannon` · grants `static` | — |
 | → `magneton` | — | **Tri-Coil** — `thunder-shock` → `thunderbolt` · `sonic-boom` → `sonic-boom-plus` · **+`swift`** | **Field Lock** — `supersonic` → `thunder-wave` · `tackle` → `screech` · **+`light-screen`** · grants `sturdy` |
 
 ### `pikachu` line — Electric · uncommon · the third meta-starter (§8.5.2)
