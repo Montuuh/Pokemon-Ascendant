@@ -54,4 +54,32 @@ test.describe('The rhythm dial hover — §4.1.3.1', () => {
     await dials.nth(lead).hover();
     await expect(page.getByTestId('rhythm-pace').last().locator('[data-mod="stage"]')).toContainText('Speed +2');
   });
+
+  test('a card under the pointer says what it feeds the ring and draws it as a ghost; a Speed change marks the dial', async ({ page }) => {
+    await page.goto('/?scenario=wild-basic&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant?.state());
+    // Embers cost 1 AP, Growl 0: the first fills part of Charmander's ring, the second nothing.
+    const ghosts = page.locator('[data-testid="rhythm-dial"][data-ghost]');
+    await expect(ghosts).toHaveCount(0);
+    await page.getByTestId('card-ember').hover();
+    await expect(ghosts).toHaveCount(1);
+    await expect(page.getByText(/Its 1 AP fill \d+ % of Charmander's ring/)).toBeVisible();
+    await page.screenshot({ path: 'playtest/rhythm-ghost.png' });
+    await page.mouse.move(5, 5);
+    await expect(ghosts).toHaveCount(0);
+    // A free card feeds nothing and says nothing: no ghost, no line.
+    await page.getByTestId('card-growl').first().hover();
+    await expect(ghosts).toHaveCount(0);
+    await expect(page.getByText(/AP fill/)).toHaveCount(0);
+    await page.mouse.move(5, 5);
+    // No chevron until something changes its pace; then one on the dial that is filling quicker.
+    await expect(page.getByTestId('rhythm-pace-mark')).toHaveCount(0);
+    await page.evaluate(() => {
+      const a = window.__ascendant!;
+      a.hand(['agility']);
+      a.dispatch({ type: 'play-card', cardId: 'dbg-0-agility', targetUid: a.state()!.enemies[0]!.uid });
+    });
+    await expect(page.getByTestId('rhythm-pace-mark')).toHaveCount(1);
+    await expect(page.getByTestId('rhythm-pace-mark')).toHaveText('▲');
+  });
 });

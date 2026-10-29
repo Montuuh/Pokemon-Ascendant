@@ -3,7 +3,7 @@ import { IconCards, IconMenu2, IconPaw, IconStar, IconTrophy, IconUser } from '@
 import { useAppStore } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
-import { FLEE_TOLL, SLOT_LABEL, cardPlayability, fleeTierFor, consumablePlayability, fieldsSuppressed, asLeadDamage, forecastTurn, indexToSlot, pickLeadOptions, swapOptions, type CardPlayability, type CombatState, type SlotId, type EnemyCombatant, benchIndices, metronomeNext, visibleMoot } from '@/sim';
+import { DEFAULT_BATTLE_CONFIG, rhythmFillOf, FLEE_TOLL, SLOT_LABEL, cardPlayability, fleeTierFor, consumablePlayability, fieldsSuppressed, asLeadDamage, forecastTurn, indexToSlot, pickLeadOptions, swapOptions, type CardPlayability, type CombatState, type SlotId, type EnemyCombatant, benchIndices, metronomeNext, visibleMoot } from '@/sim';
 import { stageBackdrop, trainerSprite } from '@/ui/art';
 import { CombatLog } from '@/ui/components/CombatLog';
 import { BagButton } from '@/ui/components/BagButton';
@@ -321,6 +321,9 @@ export function CombatScreen() {
   const previewPlay = draggedPlay ?? plays.find((p) => p.card.id === hoverCardId) ?? selectedPlay;
   // §9.2.2.4 — what the card under the pointer (dragged, hovered, or held) would spend: shown on the AP capsule.
   const costPreview = previewPlay && previewPlay.apCost > 0 ? previewPlay.apCost : null;
+  // §4.1.3.1 — the same card's other cost: what it would feed its owner's rhythm ring, drawn on that dial as a ghost.
+  const ghostFill = previewPlay ? rhythmFillOf(previewPlay.owner, previewPlay.move, DEFAULT_BATTLE_CONFIG) : null;
+  const ghostFor = (uid: string): number | null => (previewPlay?.owner.uid === uid && ghostFill?.kind === 'fills' ? ghostFill.after : null);
   // The enemy the held card points at: under the drag, or under the mouse while a card is selected.
   const aimUid = drag ? drag.overUid : selectedPlay && selection.mode === 'card' ? hoverEnemyUid : null;
   const aimedTarget = previewPlay && aimUid ? previewPlay.targets.find((t) => t.uid === aimUid) ?? null : null;
@@ -485,7 +488,7 @@ export function CombatScreen() {
     const slot = indexToSlot(state!, bi);
     return (
       <div className={cls}>
-        <Portrait mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapQuick={opt?.quick} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
+        <Portrait mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapQuick={opt?.quick} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} rhythmGhost={ghostFor(mon.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -577,7 +580,7 @@ export function CombatScreen() {
           {benchUnit(benches[0], styles.slotB1)}
           {benchUnit(benches[1], styles.slotB2)}
           <div className={styles.slotLead}>
-            <Portrait mon={shownHp(lead)} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} arrival={arrivalOf(lead.uid)} {...incomingFor(lead.uid)} />
+            <Portrait mon={shownHp(lead)} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} rhythmGhost={ghostFor(lead.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} arrival={arrivalOf(lead.uid)} {...incomingFor(lead.uid)} />
           </div>
         </div>
 

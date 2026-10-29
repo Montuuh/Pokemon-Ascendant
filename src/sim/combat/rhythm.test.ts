@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ctx, dispatch, enemyOf, eventsOf, handCard, leadOf, scenario, start, tweak, withHand } from '../testing/harness';
 import { cardPlayability } from './preview';
-import { markRhythm, rhythmActs, rhythmLeft, rhythmReady, stepRhythm } from './rhythm';
+import { markRhythm, rhythmActs, rhythmFillOf, rhythmLeft, rhythmReady, stepRhythm } from './rhythm';
 import type { CombatState } from './state';
 
 // §4.1.3.1 — the critical rhythm. Squirtle leads with a pinned kit; one Pidgey that only ever Tackles.
@@ -219,5 +219,26 @@ describe('Critical rhythm — §4.1.3.1', () => {
     const e = enemyOf(s);
     expect(e.second).toBeTruthy();
     expect([!!e.intent!.crit, !!e.second!.crit]).toEqual([false, true]);
+  });
+
+  it('FillPreview_SaysWhatStepRhythmWillDo_ForTheCardsHoverAndTheDialsGhost', () => {
+    const lead = structuredClone(leadOf(pinSpeed(fight(), ALLY_4, 50)));
+    const move = (id: string) => ctx.content.move(id);
+    // Free, a 1-AP and a 2-AP card on a quarter-an-AP ring.
+    expect(rhythmFillOf(lead, move('tail-whip'), ctx.config)).toEqual({ kind: 'free' });
+    expect(rhythmFillOf(lead, move('tackle'), ctx.config)).toMatchObject({ kind: 'fills', ap: 1, share: 0.25, after: 0.25, completes: false });
+    lead.rhythm = 0.75;
+    const done = rhythmFillOf(lead, move('slash'), ctx.config);
+    expect(done).toMatchObject({ kind: 'fills', ap: 2, completes: true, after: 1 });
+    expect((done as { share: number }).share).toBeCloseTo(0.25, 9);
+    // The preview is what stepRhythm then does.
+    const before = lead.rhythm;
+    stepRhythm(lead, ctx.config, false, move('slash').apCost);
+    expect(lead.rhythm).toBe(1.25);
+    expect(Math.min(1, lead.rhythm)).toBe((done as { after: number }).after);
+    expect(before).toBe(0.75);
+    // Full: a damaging card spends it, anything else leaves it.
+    expect(rhythmFillOf(lead, move('tackle'), ctx.config)).toEqual({ kind: 'spends' });
+    expect(rhythmFillOf(lead, move('tail-whip'), ctx.config)).toEqual({ kind: 'ready' });
   });
 });

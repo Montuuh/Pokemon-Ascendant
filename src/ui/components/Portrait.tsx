@@ -42,6 +42,8 @@ interface Props {
   targeted?: boolean;
   /** Selection mode wants a click here (step-back destination, an item for an ally, a card for your own side). */
   selectable?: boolean;
+  /** §4.1.3.1 — where its ring would stand after the card under the pointer (or held, or dragged) is played: the dial draws it as a ghost. */
+  rhythmGhost?: number | null;
   /** §5.2 — this card is under the pointer: the arrows aimed at its slot come forward. */
   onHover?: (hovering: boolean) => void;
   onClick?: () => void;
@@ -64,7 +66,7 @@ interface Props {
 // on a dark head, the animated back sprite in a window lit in its first type, its HP — with the part this turn's visible
 // intents will take striped — and on a bench the swap price and what it would take as the Lead. The hits coming at it
 // hang off the card's edge, towards the enemy. The whole card is one button: a swap, an ally target, a step-back choice.
-export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapQuick, swapAllowed, swapHint, targeted, selectable, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending, arrival }: Props) {
+export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapQuick, swapAllowed, swapHint, targeted, selectable, rhythmGhost, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending, arrival }: Props) {
   // §9.9.1 — at 0 HP but its faint still to play: it stands through the hits on screen first.
   const fainted = mon.hp <= 0 && !faintPending;
   const classes = [card.card, styles.unit, styles[variant], targeted ? styles.targeted : '', selectable ? styles.selectable : '', fainted ? styles.fainted : '', arrival ? styles[arrival] : ''].filter(Boolean).join(' ');
@@ -132,7 +134,7 @@ export function Portrait({ mon, variant, slotLabel, slotId, allyIndex, fxSlot, s
 
       <span className={card.window}>
         {/* §4.1.3.1 — the critical rhythm, on the card's outer edge at the window's middle. */}
-        {!fainted && <RhythmDial c={mon} config={DEFAULT_BATTLE_CONFIG} side="ally" lead={variant === 'lead'} />}
+        {!fainted && <RhythmDial c={mon} config={DEFAULT_BATTLE_CONFIG} side="ally" lead={variant === 'lead'} ghost={rhythmGhost ?? null} />}
         <span className={card.stand} data-fx-slot={fxSlot} data-arrow-to={slotId}>
           <span className={`${card.sprite} ${fxClass ?? ''} ${spriteClass ?? ''}`}>
             <ArenaSprite src={spriteOf(mon, 'back', !!mon.shiny)} shiny={!!mon.shiny} concealed={fainted} imgClassName={card.breathe} />

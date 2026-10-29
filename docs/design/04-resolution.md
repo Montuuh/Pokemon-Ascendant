@@ -140,6 +140,15 @@ rhythm. An enemy's crit is **declared with its intent**: the chip says **CRIT**
 and its number is the critical one, a turn ahead. Nothing you do takes a declared crit back — the answer is the swap,
 the resist, or the Pokémon who can take it — but a foe slowed *before* its meter fills has its crit pushed later.
 
+**Planning aids on your side** (v0.9.83, the user's call to improve the rhythm's UX): a ring you cannot plan with is a ring
+you watch. (1) A card's **hover** says what it feeds its owner's ring — "Its 1 AP fill 25 % of Charmander's ring", "…the next
+damaging card is a critical", or "Free: fills nothing". (2) While a card is hovered, held or dragged, its owner's dial draws
+where the ring **would** stand as a lighter **ghost** arc, the same arithmetic as the play (`rhythmFillOf` beside `stepRhythm`),
+so the AP capsule's "what this costs" has its twin, "what this feeds". (3) A small **▲ / ▼** on the dial's rim says a Speed
+stage or Paralysis is making it fill quicker or slower (green when it favours you, red when it does not — for a foe, quicker is
+red); the hover lists the modifiers. (4) One of **your** rings becoming full plays a short rising cue, once, never when a
+screen opens already full.
+
 *Why (the user's call, 2026-10-26):* a Speed-based crit chance, as Gen I had, was weighed and rejected — it would
 have made every preview a range and every enemy number a gamble. The rhythm keeps Speed's series meaning (fast
 Pokémon crit more) and keeps every number exact. The user set the enemy's side: every enemy has it, wild ones too;

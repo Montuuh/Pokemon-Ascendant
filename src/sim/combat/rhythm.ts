@@ -77,6 +77,20 @@ export function stepRhythm(c: Combatant, config: BattleConfig, spent: boolean, u
   c.rhythm = spent ? Math.max(0, c.rhythm - 1) : Math.min(1 + rhythmCurve(c, config).carry, c.rhythm + units * rhythmPace(c, config));
 }
 
+/**
+ * §4.1.3.1 — what playing this card would do to its owner's ring, for the card's hover and the dial's ghost: it spends a full
+ * ring (a damaging card, ring ready), or fills it — `free` when it costs nothing printed, otherwise by how much of the ring
+ * (`share`, 0–1), to where it would stand (`after`, as the dial draws it, at most full) and whether that completes it.
+ * The same arithmetic `stepRhythm` does, so the preview cannot disagree with what happens.
+ */
+export type RhythmFill = { kind: 'spends' } | { kind: 'ready' } | { kind: 'free' } | { kind: 'fills'; ap: number; share: number; after: number; completes: boolean };
+export function rhythmFillOf(c: Combatant, move: MoveDef, config: BattleConfig): RhythmFill {
+  if (rhythmReady(c)) return spendsRhythm(move) ? { kind: 'spends' } : { kind: 'ready' };
+  if (move.apCost <= 0) return { kind: 'free' };
+  const next = Math.min(1 + rhythmCurve(c, config).carry, c.rhythm + move.apCost * rhythmPace(c, config));
+  return { kind: 'fills', ap: move.apCost, share: Math.min(1, next) - c.rhythm, after: Math.min(1, next), completes: next >= 1 - EPS };
+}
+
 /** §4.1.3.1 — an intent that hits: an attack on a slot, a Cleave, a Backstrike. */
 function hits(intent: Intent | null | undefined, ctx: CombatCtx): boolean {
   if (!intent || !intent.moveId || intent.broken) return false;

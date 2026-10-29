@@ -69,6 +69,8 @@ export const SFX = {
   ],
   'hit-resisted': [hiss({ filter: 'lowpass', from: 400, to: 150, dur: 0.1, gain: 0.4 })],
   crit: [tone({ wave: 'sine', from: hz(100), dur: 0.18, gain: 0.15 }), tone({ wave: 'sine', from: hz(107), dur: 0.25, gain: 0.1, delay: 0.04 })],
+  // §4.1.3.1 — one of your rhythm rings fills: three rising notes, short, under the crit's own tone.
+  'rhythm-ready': arp([79, 84, 88], 0.04, 0.1, 0.07, 'sine'),
   heal: arp([72, 76, 79, 84], 0.05, 0.18, 0.08, 'sine'),
   // §9.5.3 — a confident step plus a chord for your swap; directional whooshes for the steps.
   swap: [hiss({ filter: 'lowpass', from: 300, dur: 0.06, gain: 0.5 }), ...chord([60, 64, 67], 0.3, 0.07, 0.06)],

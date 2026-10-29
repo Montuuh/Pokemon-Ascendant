@@ -6,6 +6,11 @@
   inherits: true;
   initial-value: 0%;
 }
+@property --ghost {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
 .dial {
   --rhythm: var(--accent-action);
   --bezel: var(--border-subtle);
@@ -22,10 +27,10 @@
   /* The segments: a dark gap every 1/segs of a turn over the fill, gold up to --fill. */
   background:
     repeating-conic-gradient(from 0deg, transparent 0 calc(360deg / var(--segs) - 7deg), var(--tip-surface) calc(360deg / var(--segs) - 7deg) calc(360deg / var(--segs))),
-    conic-gradient(var(--rhythm) 0 var(--fill), color-mix(in srgb, var(--surface-1) 80%, black) var(--fill) 100%);
+    conic-gradient(var(--rhythm) 0 var(--fill), color-mix(in srgb, var(--rhythm) 38%, transparent) var(--fill) var(--ghost), color-mix(in srgb, var(--surface-1) 80%, black) var(--ghost) 100%);
   box-shadow: 0 0 0 2px var(--bezel), 0 3px 8px rgba(0, 0, 0, 0.55);
   transform: translateY(-50%);
-  transition: --fill var(--motion-base) var(--ease-spring);
+  transition: --fill var(--motion-base) var(--ease-spring), --ghost var(--motion-fast) var(--ease-step);
 }
 .dial:focus-visible {
   outline: 2px solid var(--accent-action);
@@ -56,11 +61,24 @@
   display: inline-block;
   color: var(--rhythm);
   font-size: calc(var(--size) * 0.46);
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 black;
+}
+/* Speed stages or Paralysis are changing its pace: a chevron on the rim, up for quicker, down for slower. */
+.pace {
+  position: absolute;
+  right: calc(var(--size) * -0.08);
+  top: calc(var(--size) * -0.1);
+  font-size: calc(var(--size) * 0.26);
+  line-height: 1;
+  color: var(--accent-positive);
+  text-shadow: 0 1px 0 black, 0 0 2px black;
+}
+.dial[data-pace='slower'] .pace {
+  color: var(--accent-negative);
 }
 /* Full: a still ring. The cards that will crit already breathe (MoveCard critEdge); one state, one loop (D12). */
 .ready {
-  background: conic-gradient(var(--rhythm), #fff8 12%, var(--rhythm) 24%, var(--rhythm));
+  background: conic-gradient(var(--rhythm), color-mix(in srgb, white 53%, transparent) 12%, var(--rhythm) 24%, var(--rhythm));
   box-shadow: 0 0 0 2px var(--bezel), 0 0 0 4px var(--rhythm), 0 3px 8px rgba(0, 0, 0, 0.55);
 }
 /* Full: a CRIT tab under the ring — the word the enemy's intent chip and your card use. */
@@ -87,4 +105,11 @@
 }
 html[data-motion='reduced'] .dial {
   transition: none;
+}
+/* Seen from your side a foe filling quicker is the bad news, and slower the good. */
+.foe[data-pace='quicker'] .pace {
+  color: var(--accent-negative);
+}
+.foe[data-pace='slower'] .pace {
+  color: var(--accent-positive);
 }

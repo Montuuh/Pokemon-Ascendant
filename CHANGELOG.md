@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.83 — See the ring · 2026-10-29
+
+The critical rhythm tells you what a card will do before you play it.
+
+- **Card hover.** Says how much of the ring the card fills.
+- **Ghost arc.** A held or hovered card previews the ring on its dial.
+- **Pace mark.** ▲ or ▼ when a Speed stage or Paralysis changes the fill.
+- **Cue.** A short rising sound when one of your rings fills.
+
 ### v0.9.82 — Worth its AP · 2026-10-29
 
 Your critical rhythm now fills by the AP your cards cost.

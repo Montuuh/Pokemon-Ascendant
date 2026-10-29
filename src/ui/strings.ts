@@ -78,6 +78,9 @@ export const RHYTHM_TEXT = {
   pace: (acts: number, side: 'ally' | 'foe') => `A full ring takes ${acts.toFixed(1)} ${side === 'ally' ? 'AP' : 'actions'}`,
   stage: (stage: number, mult: number) => `Speed ${stage > 0 ? '+' : '−'}${Math.abs(stage)}: × ${mult.toFixed(1)}`,
   paralysed: (mult: number) => `Paralysed: × ${mult.toFixed(1)}`,
+  /** A card's hover: what it feeds its owner's ring. */
+  feeds: (owner: string, ap: number, pct: number, completes: boolean) =>
+    completes ? `Its ${ap} AP fill ${owner}'s ring: the next damaging card is a critical.` : `Its ${ap} AP fill ${pct} % of ${owner}'s ring.`,
   always: (owner: string) => `✦ Always a critical — and it never spends ${owner}'s rhythm, so a full one stays for another card.`,
   card: (owner: string) => `Critical: ${owner}'s rhythm is full, so this hit is a critical. The first of its damaging cards you play spends it.`,
 };
