@@ -92,9 +92,13 @@ AlwaysCrit move.
 
 ### §4.1.3.1 The critical rhythm — Speed's second job
 
-Every Pokémon, **on both sides**, carries a meter from 0 to 1. Every **act** fills it by the share its **pace** allows —
-on your side every card that Pokémon plays, on the enemy's every action it takes (a Pokémon that acts twice fills it twice
-a turn). Full, its **next hit is a critical**: certain, never rolled. The hit that spends it empties it; anything else fills
+Every Pokémon, **on both sides**, carries a meter from 0 to 1. Every **act** fills it by the share its **pace** allows.
+**On your side an act is AP spent**: each AP of a card's *printed* cost that Pokémon plays fills one share, so a 2-AP card fills
+twice a 1-AP card and a free card fills nothing (v0.9.82, the user's call: a Growl fed the ring as much as a 4-AP attack, so
+cheap decks crit more for the same AP; now the share of your AP that ends as crit is set by Speed alone, and the AP of a swap,
+spent by nobody's card, fills no meter — one more small cost of changing Lead). Printed, not paid: a discount, a free swap or
+Paralysis's +1 AP changes what a card costs, not what it feeds. **On the enemy's side an act is an action** (a Pokémon that
+acts twice fills it twice a turn). Full, its **next hit is a critical**: certain, never rolled. The hit that spends it empties it; anything else fills
 it, up to full, and a full meter waits for a hit. An AlwaysCrit move crits anyway and leaves the meter alone.
 
 **Speed sets the pace, and what happens to Speed moves it** (v0.9.80, the user's call: tiers hid Speed stages and
@@ -102,17 +106,18 @@ Paralysis behind cuts a +10 % stage rarely crossed). The acts that fill a meter 
 
 1. **The species.** Its *level-free* Speed (base, the archetype's lean and the Dojo's points, divided by the level's growth
    §6.2.3, so it reads the species and not how far into the run it is) gives `k / Speed` acts, kept inside the side's
-   reach: **allies 320 / Speed, between 2 and 6** (Speed 160+ fills in 2, 80 in 4, 53 or less in 6); **enemies 270 /
-   Speed, between 2 and 4** (Speed 135+ in 2, 90 in 3, 67 or less in 4). Both keep the mean of the tiers they replaced over
-   the 151 species (allies 4.69, enemies 3.53); a Dugtrio (120) and a Meowth (90) no longer read alike, nor a Golem (45) and a
-   Pidgeotto (71).
+   reach: **allies 260 / Speed AP, between 2 and 5** (Speed 130+ fills in 2 AP, 65 in 4, 52 or less in 5); **enemies 270 /
+   Speed actions, between 2 and 4** (Speed 135+ in 2, 90 in 3, 67 or less in 4). A Dugtrio (120) and a Meowth (90) no longer
+   read alike, nor a Golem (45) and a Pidgeotto (71). The ally constant keeps the old per-card pace's crits a run: the
+   auto-player plays 0.8 AP a card, so the 4.7 cards that filled a ring were about 3.9 AP, and 11.0 crits a run read 11.5 before.
 2. **What is happening to its Speed now.** The Speed stage (§4.2.6, ±10 % a stage) and Paralysis (×0.5, §4.2.2.3) multiply the
-   pace, *after* step 1, and the result is kept between **2 and 12 acts** (enemies 2 and 8). So a stage moves the pace of
+   pace, *after* step 1, and the result is kept between **2 and 10 acts** (enemies 2 and 8). So a stage moves the pace of
    everyone — a wall at 6 acts still gets to 5 with +2 — and Paralysis doubles the acts still to come even for a fast Pokémon or
    a wall, instead of being swallowed at an edge. Only a Pokémon already at the 2-act floor gains nothing from a boost.
 
 A change of pace applies to the acts *still to come*: the meter keeps what it holds, and a meter already full is never
-taken back — so Agility, String Shot, Constrict, Bubble Beam, Thunder Wave and the like are tools for the **timing** of a
+taken back. A big card can fill past full: your meter holds up to half a meter beyond it, which the crit leaves behind, so one
+card never makes two criticals and a 4-AP card is not wasted — so Agility, String Shot, Constrict, Bubble Beam, Thunder Wave and the like are tools for the **timing** of a
 crit, used before it is declared. (The first three Speed stages were content that did not exist until v0.9.80: Agility now
 gives +2 Speed, String Shot and Constrict −1, Bubble Beam −1; Thunder Wave and the other Paralysis moves already did.)
 The *quick swap* (§3.3.1.1) reads the same Speed, stages and Paralysis included.

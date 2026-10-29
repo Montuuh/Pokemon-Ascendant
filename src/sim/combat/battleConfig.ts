@@ -12,6 +12,8 @@ export interface RhythmCurve {
   maxActs: number;
   floorActs: number;
   ceilActs: number;
+  /** Fill kept past a full meter, to start the next one: a big card that overshoots is not wasted (0: none). */
+  carry: number;
 }
 
 export interface BattleConfig {
@@ -136,13 +138,13 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   comboBreakShare: 0.25,
   stabMultiplier: 1.5,
   critMultiplier: 1.5,
-  // v0.9.80 (the user: Speed stages and Paralysis should move the rhythm) — a curve instead of 4–5 tiers. Allies: 320 / Speed acts,
-  // between 2 and 6 (a Speed 160 fills in 2, 80 in 4, 53 in 6); a stage or Paralysis then scales it, down to 2 and up to 12.
-  // Enemies: 270 / Speed, between 2 and 4 (Speed 90 fills in 3; the slow walls in 4 as before), to a ceiling of 8. Both keep the mean of the
-  // tiers they replaced over the 151 species (allies 4.69 vs 4.68, enemies 3.53 vs 3.60).
+  // A curve instead of tiers, so Speed stages and Paralysis move the rhythm. Allies fill by the AP their cards cost, printed: 260 / Speed
+  // AP, between 2 and 5 (Speed 130+ fills in 2 AP, 65 in 4, 52 or less in 5); a stage or Paralysis then scales it, down to 2 and up to 10.
+  // The constant is the one that keeps the old per-card pace's crits a run over the auto-player's runs (11.0 against 11.5): it plays
+  // 0.8 AP a card, so 4.7 cards were ~3.9 AP. Enemies fill per action: 270 / Speed, between 2 and 4 (Speed 90 fills in 3), to a ceiling of 8.
   critRhythm: {
-    ally: { k: 320, minActs: 2, maxActs: 6, floorActs: 2, ceilActs: 12 },
-    enemy: { k: 270, minActs: 2, maxActs: 4, floorActs: 2, ceilActs: 8 },
+    ally: { k: 260, minActs: 2, maxActs: 5, floorActs: 2, ceilActs: 10, carry: 0.5 },
+    enemy: { k: 270, minActs: 2, maxActs: 4, floorActs: 2, ceilActs: 8, carry: 0 },
   },
   rangedModifier: 0.75,
   meleeModifier: 1.0,

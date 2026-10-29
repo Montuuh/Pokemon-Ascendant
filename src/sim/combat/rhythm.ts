@@ -43,7 +43,7 @@ export function rhythmModifier(c: Combatant, config: BattleConfig): number {
   return stageMultiplier(c.stages.speed, config) * (c.status?.kind === 'paralysis' ? config.paralysisSpeedMultiplier : 1);
 }
 
-/** §4.1.3.1 — how many acts fill its meter right now (a fraction: 3.4 means the fourth act completes it). */
+/** §4.1.3.1 — how many acts fill its meter right now — on your side AP of printed cost, on the enemy's actions (a fraction: 3.4 means the fourth completes it). */
 export function rhythmActs(c: Combatant, config: BattleConfig): number {
   const curve = rhythmCurve(c, config);
   return Math.max(curve.floorActs, Math.min(curve.ceilActs, rhythmActsAt(rhythmSpeed(c), curve) / rhythmModifier(c, config)));
@@ -68,9 +68,13 @@ export function spendsRhythm(move: MoveDef | null): boolean {
   return !!move && move.power > 0 && !move.alwaysCrit;
 }
 
-/** §4.1.3.1 — after an act: a rhythm crit empties the meter; anything else fills it a step at today's pace, up to full. */
-export function stepRhythm(c: Combatant, config: BattleConfig, spent: boolean): void {
-  c.rhythm = spent ? 0 : Math.min(1, c.rhythm + rhythmPace(c, config));
+/**
+ * §4.1.3.1 — after an act: a rhythm crit empties the meter (keeping what a big card had carried past full); anything else fills
+ * it at today's pace. `units` is what the act is worth: the printed AP of the card on your side (v0.9.82), one act on the enemy's.
+ * The meter holds a little past full (`carry`), so one card never gives more than one critical.
+ */
+export function stepRhythm(c: Combatant, config: BattleConfig, spent: boolean, units = 1): void {
+  c.rhythm = spent ? Math.max(0, c.rhythm - 1) : Math.min(1 + rhythmCurve(c, config).carry, c.rhythm + units * rhythmPace(c, config));
 }
 
 /** §4.1.3.1 — an intent that hits: an attack on a slot, a Cleave, a Backstrike. */

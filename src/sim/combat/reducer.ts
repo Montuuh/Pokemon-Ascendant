@@ -178,7 +178,8 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   } else {
     applyMoveEffects(state, ctx, owner, enemy, move);
   }
-  stepRhythm(owner, ctx.config, rhythmCrit);
+  // §4.1.3.1 — the card is worth its *printed* AP: a discount, a free swap or Paralysis changes what it costs, not what it feeds.
+  stepRhythm(owner, ctx.config, rhythmCrit, move.apCost);
 
   // Draw effects belong to the hand, so the reducer resolves them here.
   for (const fx of move.effects) {

@@ -65,15 +65,17 @@ export const UNIT_CHIPS_TEXT = {
 export const RHYTHM_TEXT = {
   title: 'Critical rhythm',
   readyTitle: 'Critical ready',
-  label: (left: number) => `Critical rhythm: ${left} to go`,
+  label: (left: number, side: 'ally' | 'foe') => `Critical rhythm: ${left} ${side === 'ally' ? 'AP' : left === 1 ? 'action' : 'actions'} to go`,
   readyLabel: 'Critical ready',
   body: (left: number, side: 'ally' | 'foe') =>
-    `${left} more ${side === 'ally' ? (left === 1 ? 'card' : 'cards') : left === 1 ? 'action' : 'actions'} and its next hit is a critical. Every ${side === 'ally' ? 'card it plays' : 'action it takes'} fills the ring.`,
+    side === 'ally'
+      ? `${left} more AP spent on its cards and its next hit is a critical. Each AP a card costs fills the ring; a free card, or the AP of a swap, fills nothing.`
+      : `${left} more ${left === 1 ? 'action' : 'actions'} and its next hit is a critical. Every action it takes fills the ring.`,
   readyBody: (side: 'ally' | 'foe') =>
     side === 'ally' ? 'Its next damaging card is a critical — its cards in your hand wear the ✦ and a gold edge, and their numbers count it.' : 'Its next hit is a critical: CRIT on its intent, and the number there counts it.',
   /** The tooltip's lines: the species' own Speed (the card's number has its level in it), what is moving it now, and how long a full ring takes. */
   reads: (speed: number, level: number) => (level <= 1 ? `Pace from Speed ${speed}.` : `Pace from the species' Speed ${speed} — the level on the card does not count.`),
-  pace: (acts: number, side: 'ally' | 'foe') => `A full ring takes ${acts.toFixed(1)} ${side === 'ally' ? 'cards' : 'actions'}`,
+  pace: (acts: number, side: 'ally' | 'foe') => `A full ring takes ${acts.toFixed(1)} ${side === 'ally' ? 'AP' : 'actions'}`,
   stage: (stage: number, mult: number) => `Speed ${stage > 0 ? '+' : '−'}${Math.abs(stage)}: × ${mult.toFixed(1)}`,
   paralysed: (mult: number) => `Paralysed: × ${mult.toFixed(1)}`,
   always: (owner: string) => `✦ Always a critical — and it never spends ${owner}'s rhythm, so a full one stays for another card.`,

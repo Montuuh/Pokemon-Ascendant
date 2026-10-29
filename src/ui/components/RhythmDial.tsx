@@ -21,7 +21,7 @@ export function RhythmDial({ c, config, side, lead }: { c: Combatant; config: Ba
     <Tipped
       className={[styles.dial, styles[side], lead ? styles.lead : '', ready ? styles.ready : ''].join(' ')}
       style={{ '--fill': `${Math.min(1, c.rhythm) * 100}%`, '--segs': Math.max(2, Math.round(acts)) } as CSSProperties}
-      aria-label={ready ? RHYTHM_TEXT.readyLabel : RHYTHM_TEXT.label(left)}
+      aria-label={ready ? RHYTHM_TEXT.readyLabel : RHYTHM_TEXT.label(left, side)}
       data-testid="rhythm-dial"
       data-ready={ready || undefined}
       tip={<Tip title={ready ? RHYTHM_TEXT.readyTitle : RHYTHM_TEXT.title} body={ready ? RHYTHM_TEXT.readyBody(side) : RHYTHM_TEXT.body(left, side)} footer={<RhythmPace c={c} config={config} side={side} />} />}

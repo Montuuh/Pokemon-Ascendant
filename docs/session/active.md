@@ -1,8 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-10-29 · **Version:** v0.9.81 (*Pace*).
+**Date:** 2026-10-29 · **Version:** v0.9.82 (*Worth its AP*).
 **First, read [standing-facts.md](standing-facts.md): Working with the user and Working in a shared folder.**
 **Next:** v1.0 and the remaining art-review blocks. Open: the audit's dead-CSS scan follows only modules imported as `styles`. Shortlisted for later: web-design-guidelines, break-ui, kill-ai-slop scanner.
+**Worth its AP (v0.9.82):** ally rhythm fills by printed AP (`stepRhythm(..., units)`, ally k 260 · 2–5 AP · carry 0.5; enemy per action unchanged); calibrated to 11.0 crits/run vs 11.5; dial counts AP; golden regenerated; UI review deferred (strings only). Open: show the fill of a card on its own hover.
 **Pace (v0.9.81):** critical rhythm = continuous meter (`rhythmActs`/`stepRhythm`; ally k 320 · 2–6, enemy k 270 · 2–4; stages and Paralysis scale the pace after the species reach); Agility +2 Speed, String Shot/Constrict/Bubble Beam slow; dial hover `RhythmPace`; golden `wild-boss-3phase` regenerated, boss envelope relaxed to 0.3 / 0.7. Open: more Speed sources.
 **Every level counts (v0.9.80):** six playtest findings — Gym 1 pick = 2 Uncommon + 1 Rare (`RELIC_REWARD.gymFirstPick`/`gymCappedPick`); Flow State = free swap each turn (`turnFreeSwaps`); Apex Reveal sold + wired (`RunState.apexLegendary`); result screen one panel per level, held on a learned move (`RevealPlan.holds`); rhythm tables enemy 2/3/4/5 at 110/80/30/0 and allies 2/3/4/5/6 at 120/100/80/50/0 (neutral over 120×3 runs), dial hover prints the tier table. UI review: Rework → fixed (panel clears the caption at 150 % / 720p, chip beside the Region title, hard gold edge, full ring on a held panel, Space releases a hold).
 **Motion review (v0.9.62):** D11 chrome / D12 world in ui-doctrine.md; checklist docs/design/ui/motion-review.md (adapted from Emil Kowalski MIT + game-feel Apache-2.0); npm run ui:motion; ui:audit reports D11 motion; ui-reviewer watches motion at full and reduced. Evidence: playtest/motion-review-2026-10-26.

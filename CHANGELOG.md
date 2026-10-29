@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.82 — Worth its AP · 2026-10-29
+
+Your critical rhythm now fills by the AP your cards cost.
+
+- **By AP.** A 2-AP card fills twice a 1-AP card; a free card fills nothing.
+- **Swaps.** The AP of a swap fills no ring.
+- **Big cards.** One that overshoots keeps the extra, never two crits.
+- **Hover.** Says how many AP a full ring takes.
+
 ### v0.9.81 — Pace · 2026-10-29
 
 The critical rhythm now follows Speed stages and Paralysis, as it happens.
