@@ -269,6 +269,8 @@ const EnemySetupBase = z.object({
   /** §5.14 — a wild Pokémon in its shiny palette. */
   shiny: z.boolean().optional(),
   acts: z.union([z.literal(1), z.literal(2)]).optional(),
+  /** §5.8.3 — a three-phase ace's authored signature. */
+  signature: z.object({ move: KebabId, response: z.string().min(1) }).optional(),
 });
 /** §5.6.2 — a caller's companions are enemy setups of their own; they call nobody in turn. */
 const EnemySetupSchema = EnemySetupBase.extend({ helpers: z.array(EnemySetupBase).min(1).max(3).optional() });

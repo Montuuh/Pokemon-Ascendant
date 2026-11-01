@@ -30,8 +30,9 @@
       "type": "end-turn"
     },
     {
-      "type": "play-card",
-      "cardId": "c1"
+      "type": "use-consumable",
+      "cardId": "k12",
+      "targetIndex": 0
     },
     {
       "type": "use-consumable",
@@ -39,7 +40,15 @@
     },
     {
       "type": "play-card",
+      "cardId": "c1"
+    },
+    {
+      "type": "play-card",
       "cardId": "c9"
+    },
+    {
+      "type": "swap",
+      "benchIndex": 0
     },
     {
       "type": "play-card",
@@ -47,10 +56,6 @@
     },
     {
       "type": "end-turn"
-    },
-    {
-      "type": "swap",
-      "benchIndex": 0
     },
     {
       "type": "play-card",
@@ -69,7 +74,7 @@
     },
     {
       "type": "use-consumable",
-      "cardId": "k12",
+      "cardId": "k13",
       "targetIndex": 0
     },
     {
@@ -88,7 +93,7 @@
       "cardId": "c4"
     }
   ],
-  "fingerprint": "t6 victory lead=0 ap=1 team=[wartortle:71/100,butterfree:98/98,rattata:56/56] enemies=[geodude:0/77,golem:0/149] events=95 rng=2792278177",
+  "fingerprint": "t6 victory lead=0 ap=1 team=[wartortle:38/100,butterfree:98/98,rattata:56/56] enemies=[geodude:0/77,golem:0/149] events=99 rng=2792278177",
   "turns": 6,
   "outcome": "victory"
 }

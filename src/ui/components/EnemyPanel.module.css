@@ -361,3 +361,39 @@ html[data-motion='reduced'] .fallen {
 html[data-motion='reduced'] .card.targetable {
   animation: none;
 }
+
+/* §9.2.2.3 — the phase chip while the next one is pending: dashed amber on the card's surface — "not yet" by shape. */
+.phasePending {
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  box-shadow: none;
+  outline: 1.5px dashed var(--accent-warning);
+  outline-offset: -1.5px;
+}
+/* §9.2.2.3 — a signature that waits: quiet, dashed, no glyph and no target, so it never reads as this turn's action. */
+.sigWait {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 2px var(--sp-2);
+  border: 1.5px dashed var(--accent-warning);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  color: var(--ink-secondary);
+  font-family: var(--font-display);
+  font-size: var(--type-micro);
+  font-weight: 700;
+  white-space: nowrap;
+}
+/* §9.2.2.3 — "Signature" on the ace's intent: a gold tag before the move's name; the border keeps the intent's kind. */
+.signature {
+  font-family: var(--font-display);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+}

@@ -603,6 +603,7 @@ export function CombatScreen() {
                     held={heldPlace(i)}
                     state={state}
                     enemy={shownHp(enemy)}
+                    shownPhase={fx.phase[enemy.uid]}
                     ctx={ctx}
                     forecast={forecast}
                     targetable={enemyTargetable}

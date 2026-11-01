@@ -10,7 +10,8 @@ import { emit, log } from './context';
 import { breakdownFor } from './damageFlow';
 import { teamRevealsIntents, abilityBlocksMove } from './abilities';
 import { relicsQueueIntents, relicsRevealIntents, relicsSkipFirstTurn } from './items';
-import { bossArchetype, currentPhase } from './boss';
+import { bossArchetype } from './boss';
+import { signatureIntent, spendSignature } from './phases';
 import { forecastOn, forecastTurn } from './forecast';
 import { activeEnemy, slotOccupant, SLOT_LABEL } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent, QueuedIntent } from './state';
@@ -108,14 +109,17 @@ function pickBackstrikeSlot(state: CombatState, enemy: EnemyCombatant, move: Mov
 
 const OFFENSIVE: readonly IntentKind[] = ['attack', 'cleave', 'backstrike'];
 
-/** §5.3 — Score = BaseWeight × TypeEff × StatusState × HPState × CooldownGate (× phase aggression, §5.8.3). */
-export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { intent: Intent; move: MoveDef }, ctx: CombatCtx): number {
+/**
+ * §5.3 — Score = BaseWeight × TypeEff × StatusState × HPState × CooldownGate (× phase aggression, §5.8.3).
+ * `waive` names the one move whose cooldown does not count: an ace's signature, for its single declaration (§5.8.3).
+ */
+export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { intent: Intent; move: MoveDef }, ctx: CombatCtx, waive?: string): number {
   const cfg = ctx.config;
   const { intent, move } = cand;
   let score = move.power > 0 ? move.power : cfg.defaultUtilityWeight;
 
   // CooldownGate — 0 while on cooldown.
-  if ((enemy.cooldowns[move.id] ?? 0) > 0) return 0;
+  if (move.id !== waive && (enemy.cooldowns[move.id] ?? 0) > 0) return 0;
   // §4.2.2.3 — a Paralysed enemy cannot afford its heaviest moves (+1 AP against a 3-AP budget).
   if (move.apCost + paralysisApBonus(enemy, cfg) > cfg.baseApPerTurn) return 0;
 
@@ -189,14 +193,15 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
   if (OFFENSIVE.includes(intent.kind) && selfHp < cfg.lowSelfHpThreshold) score *= cfg.aggressiveSelfMultiplier;
   if (intent.kind === 'buff' && hpFraction(recipient) > cfg.highSelfHpThreshold) score *= cfg.setupSelfMultiplier;
 
-  // §5.8.3 — Phase 2+ bosses press the attack.
-  if (enemy.phaseCount > 1 && currentPhase(enemy, cfg) >= 2 && OFFENSIVE.includes(intent.kind)) score *= cfg.bossPhaseAggressionMultiplier;
+  // §5.8.3 — a boss that has entered Phase 2 or 3 presses the attack.
+  if (enemy.phaseCount > 1 && enemy.phase >= 2 && OFFENSIVE.includes(intent.kind)) score *= cfg.bossPhaseAggressionMultiplier;
   return score;
 }
 
-/** §5.9.4 — Phase-2 archetype filters constrain intent TYPE, not target. */
+/** §5.9.4 — Phase-2 archetype filters constrain intent TYPE, not target. §5.8.3 — they stop at Phase 3's entry. */
 function applyArchetypeFilter(enemy: EnemyCombatant, cands: Candidate[], config: BattleConfig): Candidate[] {
-  if (enemy.phaseCount < 2 || currentPhase(enemy, config) < 2) return cands;
+  void config;
+  if (enemy.phaseCount < 2 || enemy.phase !== 2) return cands;
   const arch = bossArchetype(enemy);
   let filtered = cands;
   if (arch === 'onslaught') filtered = cands.filter((c) => OFFENSIVE.includes(c.intent.kind));
@@ -205,7 +210,7 @@ function applyArchetypeFilter(enemy: EnemyCombatant, cands: Candidate[], config:
 }
 
 /** Build, score and pick this enemy's intent for the turn. Returns null if it has no legal action. */
-export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, rng: GameRng, exclude?: string, maxAp = Infinity): Intent | null {
+export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx, rng: GameRng, exclude?: string, maxAp = Infinity, waive?: string): Intent | null {
   const cands: Candidate[] = [];
   for (const moveId of enemy.moveIds) {
     // §5.6.1 — a second action is a different move from the first, and both fit the turn's AP budget.
@@ -214,7 +219,7 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
     if (move.apCost + paralysisApBonus(enemy, ctx.config) > maxAp) continue;
     const intent = classifyMove(state, enemy, move, ctx);
     if (!intent) continue;
-    cands.push({ intent, move, score: scoreIntent(state, enemy, { intent, move }, ctx) });
+    cands.push({ intent, move, score: scoreIntent(state, enemy, { intent, move }, ctx, waive) });
   }
   // Ties resolve toward pressure: offensive intents are considered before setup/utility with equal scores.
   const KIND_PRIORITY: Record<IntentKind, number> = { attack: 0, cleave: 0, backstrike: 0, status: 1, debuff: 2, summon: 3, guard: 3, stall: 3, buff: 4, unknown: 5, incapacitated: 5, getaway: 6 };
@@ -230,7 +235,7 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
   for (let i = 1; i < pool.length; i++) if (pool[i]!.score > pool[top]!.score) top = i;
 
   // §5.3 — randomness floor (suppressed while a boss is in an aggressive phase, §5.8.3).
-  const aggressive = enemy.phaseCount > 1 && currentPhase(enemy, ctx.config) >= 2;
+  const aggressive = enemy.phaseCount > 1 && enemy.phase >= 2;
   if (!aggressive && pool.length >= 2 && rng.chance(ctx.config.randomnessFloorChance)) {
     const others = pool.filter((_, i) => i !== top);
     return rng.pickWeighted(others.map((c) => [c.intent, c.score] as const));
@@ -244,7 +249,7 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
  */
 function plannedStillLegal(state: CombatState, enemy: EnemyCombatant, planned: QueuedIntent, ctx: CombatCtx): boolean {
   if (!planned.intent.moveId) return false;
-  if (enemy.phaseCount > 1 && planned.phase !== currentPhase(enemy, ctx.config)) return false;
+  if (enemy.phaseCount > 1 && planned.phase !== enemy.phase) return false;
   const move = ctx.content.move(planned.intent.moveId);
   return scoreIntent(state, enemy, { intent: planned.intent, move }, ctx) > 0;
 }
@@ -265,6 +270,12 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
   const budget = enemy.acts === 2 ? doubleActionBudget(enemy, ctx) : Infinity;
   const costOf = (id: string) => ctx.content.move(id).apCost + paralysisApBonus(enemy, ctx.config);
   const roomFor = (except: string | null) => Math.min(...enemy.moveIds.filter((m) => m !== except).map(costOf), Infinity);
+  // §5.8.3 — an open signature opportunity: declared now as the first action, or the reason it waits is recorded (the
+  // intent card shows it; it is never presented as this turn's action).
+  const sig = enemy.signature?.state === 'ready' ? signatureIntent(state, enemy, ctx) : null;
+  if (enemy.signature) delete enemy.signature.wait;
+  if (sig && 'wait' in sig) enemy.signature!.wait = sig.wait;
+  let veiled = false;
   if (locked || spun) {
     enemy.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };
   } else {
@@ -274,7 +285,13 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     const firstCap = enemy.acts === 2 ? Math.max(...enemy.moveIds.map(costOf).filter((ap) => ap + roomFor(null) <= budget), 0) : Infinity;
     // §5.6.5 — the objective's last turn dictates: the runner's getaway, the guard's finisher.
     const forced = objectiveIntent(state, enemy, ctx);
-    const intent = forced ?? kept ?? chooseIntent(state, enemy, ctx, rng, undefined, firstCap) ?? chooseIntent(state, enemy, ctx, rng);
+    // §5.8.3 — the signature takes the first action over an older plan, the Phase-2 filter and the room a second action
+    // would want. A Confused ace keeps its uniform pick, the signature (cooldown waived) among the options.
+    const open = !forced && sig && 'intent' in sig ? sig.intent : null;
+    const confusedPick = open && enemy.confusionTurns > 0 ? chooseIntent(state, enemy, ctx, rng, undefined, Infinity, open.moveId ?? undefined) : null;
+    const signature = open && enemy.confusionTurns <= 0 ? open : confusedPick && confusedPick.moveId === open?.moveId ? { ...confusedPick, signature: true } : null;
+    const intent = forced ?? signature ?? confusedPick ?? kept ?? chooseIntent(state, enemy, ctx, rng, undefined, firstCap) ?? chooseIntent(state, enemy, ctx, rng);
+    if (signature) spendSignature(state, enemy);
     enemy.intent = intent ?? { kind: 'stall', moveId: null, targetSlot: null, hidden: false };
     // §5.5 (CL-011) — Elite/Gym enemies hide their first intent until they have fired a move.
     // §8.8 Dense Fog extends the same one-intent blind to the ordinary enemies, which is the whole modifier:
@@ -286,13 +303,15 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     // shows one intent free the first time you meet a species you have not yet earned that on.
     const known = state.familiar.includes(enemy.speciesId) || (!enemy.witnessed && state.insight.includes(enemy.speciesId));
     // §7.3.7 Clear Mind does what §6.5.2's ability does, from the relic case instead of the party.
-    enemy.intent.hidden = !forced && hides && !known && !teamRevealsIntents(state.player.team, ctx.content, !enemy.witnessed) && !relicsRevealIntents(state, ctx.content, !enemy.witnessed, state.turn);
+    veiled = !forced && hides && !known && !teamRevealsIntents(state.player.team, ctx.content, !enemy.witnessed) && !relicsRevealIntents(state, ctx.content, !enemy.witnessed, state.turn);
+    // §5.8.3 — a declared signature is always fully visible, under an Elite's first-action veil or Dense Fog alike.
+    enemy.intent.hidden = enemy.intent.signature ? false : veiled;
     // §5.6.1 — a Pokémon that acts twice declares its second action now, chosen knowing the first: a different
     // move, and never a status the first (or the group) already means to put there. It hides what the first hides.
     if (enemy.acts === 2) {
       const spent = enemy.intent.moveId ? costOf(enemy.intent.moveId) : 0;
       const second = chooseIntent(state, enemy, ctx, rng, enemy.intent.moveId ?? undefined, budget - spent);
-      enemy.second = second ? { ...second, hidden: enemy.intent.hidden } : null;
+      enemy.second = second ? { ...second, hidden: veiled } : null;
     }
     // §4.1.3.1 — a full critical rhythm is declared here, on the hit that will spend it.
     markRhythm(enemy, ctx);
@@ -301,7 +320,7 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
   // exactly as much as this turn's intent does: seeing further ahead is not seeing through a veil.
   if (relicsQueueIntents(state, ctx.content)) {
     const plan = chooseIntent(state, enemy, ctx, rng);
-    if (plan) enemy.next = { intent: { ...plan, hidden: enemy.intent.hidden }, phase: currentPhase(enemy, ctx.config) };
+    if (plan) enemy.next = { intent: { ...plan, hidden: veiled }, phase: enemy.phase };
   }
   emit(state, { t: 'intent', enemyUid: enemy.uid, intent: { ...enemy.intent } });
   if (!enemy.intent.hidden) log(state, 'intent', `${enemy.name} ${describeIntent(state, enemy, ctx, enemy.intent, false)}`);

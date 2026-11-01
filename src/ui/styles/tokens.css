@@ -81,7 +81,7 @@
   --medal-platinum: #b9e3ea;
   /* The dark bubble every tooltip and the progress panel sit on, whatever the theme. */
   --tip-surface: #2a2230;
-  /* The bubble's inks, the same on every theme because the bubble is. Muted is 4.6:1 on --tip-surface (D5; the
+  /* The bubble's inks, the same on every theme because the bubble is. Muted is 5.8:1 on --tip-surface (D5; the
      tooltip's own #9e8fa0 was 4.1:1). */
   --tip-ink: #fff6ec;
   --tip-ink-secondary: #e0d2c2;

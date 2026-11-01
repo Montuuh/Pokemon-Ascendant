@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.87 — Readable boss phases · 2026-11-02
+
+Boss phases are announced, kept and explained; aces declare a signature.
+
+- **Phases.** Crossing a notch shows "1/3 → 2"; the phase starts next turn and healing never undoes it.
+- **Signature.** Each three-phase ace declares one authored move, always visible, with its answer.
+- **Rhythm.** Your ring fills, and its cue sounds, when the card's move lands.
+
 ### v0.9.86 — AP, evolution and Center choices · 2026-10-30
 
 See where AP comes from, postpone evolution and choose when to heal.

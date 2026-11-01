@@ -358,7 +358,7 @@ export interface GymDef {
    * `moves` scripts a member's kit when its learnset at that level has no off-type answer (§5.9.3: "a Gym you
    * can hard-counter with a single type is not a fight").
    */
-  team: { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[] }[];
+  team: { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[]; signature?: { move: string; response: string } }[];
   /** §2.5 — the one-line promise the map shows from layer 0, so the fork is never a surprise. */
   telegraph: string;
   /** §5.9.5 — the Leader's own rule, for the whole fight. */
@@ -403,7 +403,7 @@ export const GYMS: GymDef[] = [
     // climax is the line's mid-stage at a level premium, not its final form. Golem is a Region 3 problem.
     team: [
       { species: 'geodude', level: 14, phaseCount: 2 },
-      { species: 'graveler', level: 16, phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'] },
+      { species: 'graveler', level: 16, phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; reduce its Attack or finish the ace before Resolution.' } },
     ],
   },
   {
@@ -422,7 +422,7 @@ export const GYMS: GymDef[] = [
     // That is why the Water Gym is Krabby and Kingler rather than Squirtle and Wartortle.
     team: [
       { species: 'krabby', level: 14, phaseCount: 2 },
-      { species: 'kingler', level: 16, phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'] },
+      { species: 'kingler', level: 16, phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'], signature: { move: 'crabhammer', response: 'Water/Grass resistance, Defence or a KO before its claws land.' } },
     ],
   },
   {
@@ -437,7 +437,7 @@ export const GYMS: GymDef[] = [
     telegraph: 'Floods you with Sleep and Confusion. Bring cures, Fire or Flying.',
     team: [
       { species: 'metapod', level: 14, phaseCount: 2 },
-      { species: 'butterfree', level: 16, phaseCount: 3, moves: ['sleep-powder', 'confusion', 'gust', 'harden'] },
+      { species: 'butterfree', level: 16, phaseCount: 3, moves: ['sleep-powder', 'confusion', 'gust', 'harden'], signature: { move: 'confusion', response: 'Psychic resistance or Dark immunity; reduce the forecast rather than relying on a late Sleep.' } },
     ],
   },
   {
@@ -452,7 +452,7 @@ export const GYMS: GymDef[] = [
     telegraph: 'No weakness to exploit and a Home Field that makes every hit land harder. Bring Fighting, or bring more HP.',
     team: [
       { species: 'pidgeotto', level: 14, phaseCount: 2 },
-      { species: 'raticate', level: 16, phaseCount: 3, moves: ['hyper-fang', 'quick-attack-plus', 'dig', 'tail-whip'] },
+      { species: 'raticate', level: 16, phaseCount: 3, moves: ['hyper-fang', 'quick-attack-plus', 'dig', 'tail-whip'], signature: { move: 'hyper-fang', response: 'Rock/Steel resistance or Ghost immunity; a defensive swap also answers it.' } },
     ],
   },
 ];
@@ -463,7 +463,7 @@ export const GYMS: GymDef[] = [
  * instead means a change to the route length cannot silently leave the climax four levels behind, which is
  * exactly what v0.5's jump from ten layers to twelve did on its first measurement.
  */
-export function gymTeamFor(gym: GymDef): { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[] }[] {
+export function gymTeamFor(gym: GymDef): GymDef['team'] {
   const top = wildBandFor(ROUTE_LAYERS - 2, regionContent(gym.region - 1).wildBand)[1];
   const own = gym.team.map((m, i) => ({ ...m, level: top + (i === gym.team.length - 1 ? GYM_LEVEL_PREMIUM.ace : GYM_LEVEL_PREMIUM.other) }));
   // §5.6.3 / §5.9.3 — five (TEAM_SIZE.gym): the Leader's own, and its type's Pokémon from its lane (the lane theme's
@@ -691,28 +691,28 @@ export const GYMS_R2: GymDef[] = [
     stage: 'gym-fire',
     line: 'Hah! I hope you brought Burn Heal. My Pokémon burn hotter than this whole coast.',
     telegraph: 'A burst race on a Home Field that makes every Fire hit land harder. Bring Water or Rock, or bring more HP.',
-    team: [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'] }],
+    team: [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'], signature: { move: 'flamethrower', response: 'Fire/Water/Rock resistance or damage reduction; remove it before the hit.' } }],
   },
   {
     id: 'grass-gym-r2', region: 2, name: 'Leader Erika', sprite: 'erika', type: 'grass', badgeId: 'rainbow-badge', rule: 'bloom',
     stage: 'gym-grass',
     line: 'Oh… I was dozing among the flowers. Shall we? I do not intend to lose.',
     telegraph: 'Floods your Lead with Sleep and Poison. Bring cures, Fire or Flying.',
-    team: [{ species: 'weepinbell', level: 20, phaseCount: 2 }, { species: 'vileplume', level: 22, phaseCount: 3 }],
+    team: [{ species: 'weepinbell', level: 20, phaseCount: 2 }, { species: 'vileplume', level: 22, phaseCount: 3, signature: { move: 'petal-dance', response: 'Grass-resistant Lead; the move keeps its own self-Confusion drawback.' } }],
   },
   {
     id: 'electric-gym-r2', region: 2, name: 'Leader Surge', sprite: 'ltsurge', type: 'electric', badgeId: 'thunder-badge', rule: 'overcharge',
     stage: 'gym-electric',
     line: 'Hey, kid! Electric Pokémon saved me in the war. They will shock you just the same!',
     telegraph: 'Taxes your AP and locks your Lead with Paralysis. Bring Ground, and cards you can afford.',
-    team: [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'] }],
+    team: [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance; the signature overrides neither.' } }],
   },
   {
     id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'soul-badge', rule: 'toxic',
     stage: 'gym-poison',
     line: 'Fwahahaha! A ninja does not strike. He waits for the poison to do it.',
     telegraph: 'Poisons everything and waits you out. Bring cures, Psychic or Ground.',
-    team: [{ species: 'koffing', level: 20, phaseCount: 2 }, { species: 'weezing', level: 22, phaseCount: 3 }],
+    team: [{ species: 'koffing', level: 20, phaseCount: 2 }, { species: 'weezing', level: 22, phaseCount: 3, signature: { move: 'self-destruct', response: 'Ghost immunity or Rock/Steel resistance; its recoil follows the damage, not an automatic self-KO.' } }],
   },
 ];
 
@@ -865,7 +865,7 @@ export const GYMS_R3: GymDef[] = [
       { species: 'kadabra', level: 33, phaseCount: 2 },
       // §5.9.3 — Reflect, not Recover (2026-10-20): at its real level a Lv 34 Alakazam healing 40 % every other turn
       // through three phases outlasted the team — 160-turn fights, seven in ten lost. Mind Lock is the fight.
-      { species: 'alakazam', level: 35, phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'] },
+      { species: 'alakazam', level: 35, phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } },
     ],
   },
   {
@@ -873,7 +873,7 @@ export const GYMS_R3: GymDef[] = [
     stage: 'gym-ground',
     line: 'This Gym is the last thing between you and the League. It does not move.',
     telegraph: 'A wall that braces harder the more you hit it. Bring Water, Grass or Ice.',
-    team: [{ species: 'nidoqueen', level: 34, phaseCount: 2 }, { species: 'rhydon', level: 36, phaseCount: 3 }],
+    team: [{ species: 'nidoqueen', level: 34, phaseCount: 2 }, { species: 'rhydon', level: 36, phaseCount: 3, signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defence; Water or Grass burst can KO it before Resolution.' } }],
   },
   {
     id: 'fighting-gym-r3', region: 3, name: 'Leader Kiyo', sprite: 'kiyo', type: 'fighting', badgeId: 'knuckle-badge', rule: 'close-quarters',
@@ -882,7 +882,7 @@ export const GYMS_R3: GymDef[] = [
     telegraph: 'A burst race on a Home Field that makes every Fighting hit land harder. Bring Psychic or Flying, or more HP.',
     team: [
       { species: 'machoke', level: 34, phaseCount: 2 },
-      { species: 'machamp', level: 36, phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'] },
+      { species: 'machamp', level: 36, phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance; the move keeps its recoil.' } },
     ],
   },
   {
@@ -890,7 +890,7 @@ export const GYMS_R3: GymDef[] = [
     stage: 'gym-ice',
     line: 'Your Pokémon will freeze before they reach me. Let us see how long you last.',
     telegraph: 'Freezes your Lead and taxes your AP. Bring Fighting, Electric or Rock.',
-    team: [{ species: 'dewgong', level: 34, phaseCount: 2 }, { species: 'cloyster', level: 36, phaseCount: 3, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'] }],
+    team: [{ species: 'dewgong', level: 34, phaseCount: 2 }, { species: 'cloyster', level: 36, phaseCount: 3, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'], signature: { move: 'ice-beam', response: 'Water/Fire/Ice/Steel resistance or damage reduction; Fire can also shatter Ice Armour.' } }],
   },
 ];
 

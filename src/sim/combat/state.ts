@@ -84,11 +84,12 @@ export interface EnemyCombatant extends Combatant {
   tier: EnemyTier;
   /** §5.8.3 — 1 ordinary, 2 two-phase, 3 ace. */
   phaseCount: 1 | 2 | 3;
-  /** Current phase derived at the last Intent phase (kept for UI + one-shot transitions). */
+  /** §5.8.3 — the active phase: entered at a turn's start, never left (healing does not take it back). */
   phase: 1 | 2 | 3;
-  /** One-shot phase-entry effects already applied (§5.9.4 Entrenchment, §5.8.3 P3 cooldown reset). */
-  enteredPhase2: boolean;
-  enteredPhase3: boolean;
+  /** §5.8.3 — the highest threshold crossed while it stands and not yet entered: it commits next turn, before the AP refill. */
+  pendingPhase?: 2 | 3;
+  /** §5.8.3 — a three-phase ace's one authored signature opportunity. */
+  signature?: SignatureState;
   intent: Intent | null;
   /** §5.3 CooldownGate — moveId → turns remaining. */
   cooldowns: Record<string, number>;
@@ -111,6 +112,20 @@ export interface EnemyCombatant extends Combatant {
   hurtThisTurn?: boolean;
 }
 
+/** §5.8.3 — why an open signature opportunity is not this turn's action. */
+export type SignatureWait = 'asleep' | 'frozen' | 'paralysed' | 'no-target';
+
+/**
+ * §5.8.3 — `locked` until Phase 3 commits, `ready` from then until it is declared (or KO'd), then `spent`. `wait` says why
+ * a ready one was not declared this turn; the response is the authored counterplay the intent card shows.
+ */
+export interface SignatureState {
+  moveId: string;
+  response: string;
+  state: 'locked' | 'ready' | 'spent';
+  wait?: SignatureWait;
+}
+
 /** §5.5.1 — the intent queue: an enemy's committed plan for next turn, and the boss phase it was planned in. */
 export interface QueuedIntent {
   intent: Intent;
@@ -130,6 +145,8 @@ export interface Intent {
   broken?: boolean;
   /** §4.1.3.1 — its critical rhythm is full: this hit is a critical, declared and shown now. */
   crit?: boolean;
+  /** §5.8.3 — the ace's signature, declared: always shown, whatever veils its other intents. */
+  signature?: boolean;
 }
 
 export interface SkillCard {
@@ -278,7 +295,7 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'sturdy'; uid: string }
   | { t: 'faint'; uid: string; side: 'player' | 'enemy' }
   | { t: 'enemy-enter'; enemyUid: string; called?: boolean }
-  | { t: 'phase'; enemyUid: string; phase: 1 | 2 | 3 }
+  | { t: 'phase'; enemyUid: string; phase: 1 | 2 | 3; from?: 1 | 2 | 3 }
   /** §2.6.4.4 — `checks`: how many of the four shake checks passed (4 is the catch). */
   /** §2.6.4 — `targetUid`: the Pokémon the ball was thrown at, the Lead or one standing behind it (§5.6). */
   | { t: 'catch'; targetUid: string; success: boolean; chance: number; checks: number; ballsLeft: number }

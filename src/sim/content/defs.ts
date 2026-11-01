@@ -492,6 +492,8 @@ export interface EnemySetup {
   tier: EnemyTier;
   /** §5.8.3 — 1 = ordinary, 2 = two-phase, 3 = ace. */
   phaseCount: 1 | 2 | 3;
+  /** §5.8.3 — a three-phase ace's authored signature: a damaging move of its kit, and the answer the intent card names. */
+  signature?: { move: string; response: string };
   /** §5.14 — a wild Pokémon that rolled shiny. Catch it and the copy keeps the palette. */
   shiny?: boolean;
   /** §8.8 Iron Will — scales Max HP before hpPercent is applied. 1 (the default) is the baseline enemy. */

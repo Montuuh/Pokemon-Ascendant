@@ -1,9 +1,10 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-02 · **Version:** v0.9.86 (*AP, evolution and Center choices*).
+**Date:** 2026-11-02 · **Version:** v0.9.87 (*Readable boss phases*).
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
 **Current:** v0.9.86 shipped — AP provenance, postponable evolution and manual Center services; full browser suite 444/444 (one load timeout passed alone), UI review Ship. [Report](../reviews/2026-10-30-ap-evolution-center.md). Previous Safari/equipment/status fixes shipped in v0.9.85.
-**Next:** v0.9.87 readable boss phases and signatures, rhythm ready cue at impact, token cleanup; then v0.9.88 authored Gym teams and v1.0.
+**Shipped 2026-11-02:** v0.9.87 phases/signatures (`combat/phases.ts`, e2e boss-phases), rhythm cue at impact, token guard test (`tokens.test.ts`). Design-system artifact board not yet refreshed.
+**Next:** v0.9.88 authored Gym teams, then v1.0.
 **Art review (24 Oct):** closed by the user on 2026-11-02; its unimplemented findings (B20–B26, B29, B32, B33) are dropped, not pending. B30 fixed in architecture.md.
 
 **Gym design (2026-10-29, not implemented):** user chose five members with one thematic off-type support permitted. §5.9.3 and catalogs/gyms.md now author all 60 slots, four moves each, five distinct species/lines after evolution. Guests: Sandslash/Brock, Gloom/Aster, Slowbro/Lorelei; Lapras becomes Lorelei's ace. Default Bulbasaur/Charmander/Squirtle lines and Legendaries excluded; Mart starter lines allowed. Levels, two-at-a-time formation and rewards retained. Implementation/calibration planned v0.9.87.

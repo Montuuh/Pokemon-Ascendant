@@ -473,6 +473,42 @@ export const DOUBLE_ACTOR_HINT =
   'Two actions a turn, both shown. Hurt it by a quarter of its Max HP in your turn, or hit it super-effectively, and the second is broken.';
 
 /**
+ * §5.8.3 / §9.2.2.3 — a boss's phases in words: the chip, the pending cue, the commit banner, the bubble, and an open
+ * signature that waits. The effects name what §5.9.4's archetype does; the numbers come from BattleConfig.
+ */
+export const PHASE_TEXT = {
+  chip: (phase: number, of: number) => `Phase ${phase}/${of}`,
+  /** The pending cue on the card: short enough for 720p at 150 % text; "next turn" is in its label and bubble. */
+  pending: (phase: number) => `→ ${phase}`,
+  pendingLabel: (phase: number) => `Phase ${phase} next turn`,
+  title: (phase: number, of: number) => `Phase ${phase} of ${of}`,
+  /** One line per archetype: what entering Phase 2 changes. */
+  phase2: {
+    entrenchment: (def: number) => `Dug in: +${def} Defence, once. It presses the attack.`,
+    onslaught: () => 'Attacks only, and presses them.',
+    'status-siege': () => 'Inflicts status wherever it can.',
+    'tempo-control': (tax: number) => `Your AP −${tax} each turn while it stands.`,
+  },
+  phase3: (move: string | null) => (move ? `Last stand: presses the attack and declares ${move} at its next action.` : 'Last stand: presses the attack.'),
+  phase1: 'Its opening phase: no phase effect yet.',
+  next: (phase: number, pct: number) => `Phase ${phase} at ${pct} % HP — it starts the turn after the bar crosses the notch.`,
+  enters: 'A crossed notch is entered at the next turn’s start; healing never takes it back.',
+  answer: (response: string) => `Answer: ${response}`,
+  banner: (name: string, phase: number, effect: string) => `${name} · Phase ${phase} — ${effect}`,
+  /** The banner's effect, in a few words. */
+  short2: { entrenchment: 'digs in', onslaught: 'attacks only', 'status-siege': 'status siege', 'tempo-control': 'taxes your AP' } as const,
+  short3: (move: string | null) => (move ? `last stand: ${move} next` : 'last stand'),
+  signature: 'Signature',
+  /** When the asleep or frozen chip above already says why, the waiting chip does not say it again. */
+  waitingShort: 'Signature waiting',
+  archetype: { entrenchment: 'Entrenchment', onslaught: 'Onslaught', 'status-siege': 'Status Siege', 'tempo-control': 'Tempo Control' } as const,
+  fallback: (phase: number) => `Phase ${phase}`,
+  waitLabel: { asleep: 'Asleep', frozen: 'Frozen', paralysed: 'Paralysed', 'no-target': 'No target' } as const,
+  waiting: (reason: string) => `Signature waiting — ${reason}`,
+  waitingBody: (move: string) => `${move} comes at its first action it can take: not this turn. A Sleep or Freeze card does not cancel an action already declared.`,
+};
+
+/**
  * §5.6.5 — a fight with another objective, said once: the chip's words and the bubble's. The numbers are the
  * fight's own (its turns, the guard's escalation), never repeated here.
  */

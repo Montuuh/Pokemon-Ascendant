@@ -13,7 +13,7 @@ export { cardPlayability, consumablePlayability, swapOptions, catchStatus, catch
 export { CATCH, catchOdds, catchRateOf, catchPercent, type CatchOdds } from './combat/catch';
 export { predictIntentDamage, describeIntent, intentRecipient, summonCount, summonedBy } from './combat/intents';
 export { forecastTurn, forecastOn, forecastIfLead, asLeadDamage, type TurnForecast, type IntentForecast, type ForecastHit, visibleMoot } from './combat/forecast';
-export { currentPhase, phaseMarkers, bossArchetype } from './combat/boss';
+export { phaseMarkers, bossArchetype } from './combat/boss';
 export { ARENA_RULE_IDS, METRONOME_FIELDS, arenaCounter, arenaRuleOf, barrierUp, metronomeNext, type ArenaRuleId, type ArenaCounter, type ArenaRuleConfig } from './combat/arenaRules';
 export { LEAGUE, LEAGUE_MEMBERS, championAce, generateLeague, leagueBase, leagueMemberOf, leaguePreview, leagueTeam, microRestPct, type LeagueMember } from './run/league';
 export { ACTIVE_TEAM, APEX, LEGENDARY_ARENAS, LEGENDARY_IDS, fillTeam, hasPlaceFor, isLegendarySpecies, joinTeam, legendariesOpen, placeInTeam, placesOf, placesTaken, type LegendaryArena, type LegendaryId } from './run/legendaries';

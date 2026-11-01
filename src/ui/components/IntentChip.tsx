@@ -1,7 +1,7 @@
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
 import { SLOT_LABEL, asLeadDamage, comboBreakAt, intentRecipient, slotOccupant, summonedBy, visibleMoot } from '@/sim';
 import { intentGlyph } from '@/ui/art';
-import { INTENT_LABEL, OBJECTIVE_TEXT } from '@/ui/strings';
+import { INTENT_LABEL, OBJECTIVE_TEXT, PHASE_TEXT } from '@/ui/strings';
 import { intentCardTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
 import { intentTone } from '@/ui/intentTone';
@@ -14,12 +14,14 @@ interface Props {
   forecast: TurnForecast;
   /** §5.6.1 — 0 is the enemy's intent; 1 the second action of a Pokémon that acts twice. */
   action: 0 | 1;
+  /** §9.2.2.3 — false while the phase that opened the signature is still waiting for its banner. */
+  signatureShown?: boolean;
 }
 
 // §9.2.5 — one intent as a chip: the kind glyph, the move, its target and — for a single hit — the HP it will take
 // (the forecast's number for this action). An area intent says ALL and prints no number; a call names who comes.
 // Resting on it opens the intent card (§9.2.6).
-export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
+export function IntentChip({ state, enemy, ctx, forecast, action, signatureShown = true }: Props) {
   const intent = action === 0 ? enemy.intent : enemy.second ?? null;
   const move = intent?.moveId ? ctx.content.move(intent.moveId) : null;
   const slotOcc = intent?.targetSlot ? slotOccupant(state, intent.targetSlot) : null;
@@ -57,6 +59,12 @@ export function IntentChip({ state, enemy, ctx, forecast, action }: Props) {
         <>
           <img src={intentGlyph(intent.kind === 'incapacitated' ? 'stall' : intent.kind)} alt="" width={20} height={20} className={styles.intentIcon} />
           <span className={styles.intentText}>
+            {/* §5.8.3 / §9.2.2.3 — the ace's signature: its ordinary card, marked. */}
+            {intent.signature && signatureShown && (
+              <>
+                <b className={styles.signature} data-testid="intent-signature">{PHASE_TEXT.signature}</b>{' '}
+              </>
+            )}
             <b>{move ? move.name : INTENT_LABEL[intent.kind]}</b>
             {/* §4.1.3.1 — its rhythm is full: this hit is a critical, and its number already counts it. */}
             {intent.crit && <> <b className={styles.crit} data-testid="intent-crit">CRIT</b></>}

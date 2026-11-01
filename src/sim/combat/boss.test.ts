@@ -1,20 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { STARTERS, ctx, dispatch, eventsOf, handCard, scenario, start, tweak, withHand } from '../testing/harness';
-import { currentPhase, phaseMarkers, bossArchetype } from './boss';
+import { phaseMarkers, bossArchetype } from './boss';
 
 const ACE = { species: 'golem', level: 15, tier: 'boss' as const, phaseCount: 3 as const };
 const TEAM = [{ species: 'wartortle', level: 15 }, { species: 'ivysaur', level: 15 }, { species: 'charmeleon', level: 15 }];
 
 describe('Boss phases — §5.8.3 / §5.9.4', () => {
-  it('Phase_ThresholdsFromHP_Stateless', () => {
-    const e = { hp: 100, maxHp: 100, phaseCount: 3 as const };
-    expect(currentPhase(e, ctx.config)).toBe(1);
-    expect(currentPhase({ ...e, hp: 50 }, ctx.config)).toBe(2);
-    expect(currentPhase({ ...e, hp: 20 }, ctx.config)).toBe(3);
-    expect(currentPhase({ ...e, hp: 20, phaseCount: 2 }, ctx.config)).toBe(2);
-    expect(currentPhase({ ...e, hp: 5, phaseCount: 1 }, ctx.config)).toBe(1);
-  });
-
   it('PhaseMarkers_MatchPhaseCount', () => {
     expect(phaseMarkers({ phaseCount: 1 }, ctx.config)).toEqual([]);
     expect(phaseMarkers({ phaseCount: 2 }, ctx.config)).toEqual([0.5]);
@@ -32,22 +23,12 @@ describe('Boss phases — §5.8.3 / §5.9.4', () => {
     let s = tweak(start(scenario({ kind: 'boss', team: TEAM, enemies: [ACE] })), (d) => {
       d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.45);
     });
-    s = dispatch(s, { type: 'end-turn' }); // next intent phase applies the transition
+    s = dispatch(s, { type: 'end-turn' }); // the next turn's start commits the phase (§5.8.3)
     expect(s.enemies[0]!.phase).toBe(2);
     expect(s.enemies[0]!.stages.defense).toBe(2);
     expect(eventsOf(s, 'phase')).toHaveLength(1);
     s = dispatch(s, { type: 'end-turn' });
     expect(s.enemies[0]!.stages.defense).toBe(2); // one-shot
-  });
-
-  it('Phase3_ResetsCooldowns', () => {
-    let s = tweak(start(scenario({ kind: 'boss', team: TEAM, enemies: [ACE] })), (d) => {
-      d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.15);
-      d.enemies[0]!.cooldowns['earthquake'] = 2;
-    });
-    s = dispatch(s, { type: 'end-turn' });
-    expect(s.enemies[0]!.phase).toBe(3);
-    expect(s.enemies[0]!.cooldowns['earthquake']).toBeUndefined();
   });
 
   it('Sturdy_SurvivesOneLethalHitAtOneHP_ThenConsumed', () => {

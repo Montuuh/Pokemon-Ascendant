@@ -1523,17 +1523,30 @@ pending legacy stones once. Design decisions: user, 2026-10-30 (§2.11.1, §3.8,
 **Exit criteria:** focused regressions, full static/unit/browser checks, screenshots, measured audit and
 independent UI review. Evidence: `reviews/2026-10-30-ap-evolution-center.md`.
 
-### v0.9.87 — Authored Gym teams and readable phases  ☐
+### v0.9.87 — Readable boss phases and signatures  ✅ 2026-11-02
+
+**Shipped.** As below; UI review Ship with fixes, all applied (merged pending chip, phase and Entrenchment held until the banner).
+
+Split from the Gym-team release (2026-11-02, user: the phase UX was the priority). The phase contract of §5.8.3
+and its UX (§9.2.2.3) as decided on 2026-10-29: UID-owned active and pending phases, latched on every hit and at
+creation, committed at the turn's start before the Draw and the AP refill; healing never reverses; a jump to Phase 3
+applies Phase 2's entry once under one event; a KO cancels what had not begun. Each three-phase ace carries its
+authored signature (twelve Gyms, the Elite Four, the Champion's three counter-picks, the fixtures): declared as its
+first action with its cooldown waived once, never hidden by a veil or Dense Fog, spent on declaration; it waits —
+and says why — while asleep, frozen, paralysed past the cap or without a legal target. Phase 3 no longer wipes every
+cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted aces get Phase 3 without a signature.
+
+**Exit criteria:** `phases.test.ts` (latch, commit before refill, heal, skip, seed, tempo tax, cooldown, signature
+waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
+`boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
+
+### v0.9.88 — Authored Gym teams  ☐
 
 **Designed 2026-10-29; not implemented.** The user's playtest: Gym teams repeat Pokémon or contain weak filler,
-and enemy phases lack useful UX. Decision: five members per Gym, allowing one explicitly telegraphed off-type
-support. All twelve teams, their deployment order, roles and four-move kits are authored in
-`design/catalogs/gyms.md`; rules in §5.9.3, the guest preview exception in §2.7.3. Lorelei uses Slowbro as the
-guest and Lapras as the ace. No new species. **Phase decision recorded:** irreversible escalation at the next
-turn boundary, before AP refill, with one authored, fully announced signature per three-phase ace (§5.8.3).
-Thresholds remain 50 % / 20 %, healing never reverses progression, and the current declared action stays honest.
-No extra action or universal Sturdy. The catalogue assigns each signature and its counterplay; this is still
-design awaiting code, not a claim that the current build follows it.
+and enemy phases lack useful UX (the phases shipped in v0.9.87). Decision: five members per Gym, allowing one
+explicitly telegraphed off-type support. All twelve teams, their deployment order, roles and four-move kits are
+authored in `design/catalogs/gyms.md`; rules in §5.9.3, the guest preview exception in §2.7.3. Lorelei uses Slowbro
+as the guest and Lapras as the ace (her signature row, Ice Beam, already runs on today's Cloyster). No new species.
 
 **Exit criteria:**
 
@@ -1545,18 +1558,6 @@ design awaiting code, not a claim that the current build follows it.
   newly generated maps use the new teams. Never pair a saved old species order with the new slots' moves/phases
   or replace an active combat/replay contract. An absent old signature profile is legacy data, not permission
   to infer a new signature from species. Cover a pre-update save and a new run with explicit regressions.
-- Implement the selected phase contract: UID-owned pending/active phase and one-shot signature state; commit
-  before AP refill, preserve current intent, keep healing irreversible, apply skipped entries once and allow
-  KO before activation. Seed pending phase for an encounter starting below a threshold, before its first Draw.
-  Natural Sturdy remains the species ability, with no universal ace protection.
-- Signature tests: cooldown waiver only once; normal per-move/shared AP caps; Paralysis, existing Sleep/Freeze,
-  Confusion, legal-target failure, immunity, KO and recoil outcome order; no free retry after declaration;
-  first-action/Dense Fog visibility; Acting Twice budget and combo-break; future-plan invalidation. A signature
-  may occupy the whole budget rather than reserving room for a second move. Final ordinary AI drops the P2
-  move-type filter from P3 entry, even with the signature pending, while retaining persistent phase effects.
-  Every new three-phase ace needs authored data.
-- Resolve the label/entry mismatch with sim-owned active/pending state. UI shows effect, timing and response,
-  accessible on hover/focus and under reduced motion, with 720p/1080p at 150 % text and independent UI review.
 - Measure every Leader against the same 240-run baseline, including arrivals, loss rate, duration tail,
   faints, phase visibility and post-Gym XP; confirm the 720-run Region curve. Do not uniformly raise difficulty:
   baseline Surge 0/35 defeats, Sabrina 0/8, Lorelei 6/13 and 42.4 turns (small conditional samples).

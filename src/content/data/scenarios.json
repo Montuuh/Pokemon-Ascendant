@@ -347,7 +347,66 @@
           "species": "golem",
           "level": 19,
           "tier": "boss",
-          "phaseCount": 3
+          "phaseCount": 3,
+          "signature": {
+            "move": "rock-slide",
+            "response": "Rock-resistant Lead or damage reduction; natural Sturdy is shown on its own."
+          }
+        }
+      ]
+    },
+    {
+      "id": "ace-phases",
+      "name": "Ace phases",
+      "description": "A three-phase Golem alone, its signature authored: for watching a phase cross, commit and the signature declare.",
+      "kind": "boss",
+      "stage": "gym-rock",
+      "seed": 1006,
+      "trainer": {
+        "name": "Leader Brock",
+        "sprite": "brock"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "wartortle",
+            "level": 18
+          },
+          {
+            "species": "ivysaur",
+            "level": 18
+          },
+          {
+            "species": "charmeleon",
+            "level": 18
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "super-potion",
+          "potion",
+          "full-heal",
+          "ether",
+          "x-attack"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "golem",
+          "level": 18,
+          "tier": "boss",
+          "phaseCount": 3,
+          "moves": [
+            "rock-slide",
+            "earthquake",
+            "harden",
+            "tackle"
+          ],
+          "signature": {
+            "move": "rock-slide",
+            "response": "Rock-resistant Lead or damage reduction; natural Sturdy is shown on its own."
+          }
         }
       ]
     },
@@ -848,7 +907,11 @@
           "species": "alakazam",
           "level": 30,
           "tier": "boss",
-          "phaseCount": 3
+          "phaseCount": 3,
+          "signature": {
+            "move": "psychic",
+            "response": "Dark immunity or Psychic/Steel resistance; keep its Attack drops in place."
+          }
         }
       ],
       "onField": 2
@@ -1105,7 +1168,11 @@
           "species": "venusaur",
           "level": 45,
           "tier": "boss",
-          "phaseCount": 3
+          "phaseCount": 3,
+          "signature": {
+            "move": "petal-dance",
+            "response": "Grass resistance; its own self-Confusion still follows."
+          }
         }
       ]
     }

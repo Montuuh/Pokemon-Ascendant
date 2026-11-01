@@ -403,6 +403,7 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
       // §5.9.3 — the climax hits harder than its Region: a Gym that more levels made easier (they pay more XP).
       attackMultiplier: (GYM_ATTACK_MULTIPLIER[gym.region - 1] ?? 1) * (gym.attackScale ?? 1),
       ...(m.moves ? { moves: [...m.moves] } : {}),
+      ...(m.signature ? { signature: { ...m.signature } } : {}),
     })),
   };
 }

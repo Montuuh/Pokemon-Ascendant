@@ -4,11 +4,11 @@ import { nodeHint } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { visibleMoot, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
+import { visibleMoot, bossArchetype, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -234,7 +234,7 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
   // §5.6.1 — a broken second action is not going to happen: its card says that and nothing else.
   if (intent.broken && move) return <Tip title={`${enemy.name}: ${move.name}`} meta={['Broken']} body="It will not happen this turn." />;
   if (intent.hidden || !move) return intentTip(intent.kind, undefined, intent.hidden, recoveryText);
-  const meta: ReactNode[] = [typeName(move.type), INTENT_LABEL[intent.kind] ?? cap(intent.kind)];
+  const meta: ReactNode[] = [...(intent.signature ? [PHASE_TEXT.signature] : []), typeName(move.type), INTENT_LABEL[intent.kind] ?? cap(intent.kind)];
   if (move.power > 0) meta.push(`${move.power} power`, move.range === 'melee' ? 'Melee' : 'Ranged');
   const lines: ReactNode[] = [];
   if (recoveryText) lines.push(recoveryText);
@@ -279,6 +279,8 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
     if (fx.kind === 'drain') lines.push(`It heals ${Math.round(fx.percentOfDamage * 100)}% of the damage it deals.`);
   }
   if (move.cooldown) lines.push(`Then it cannot use it for ${move.cooldown} turn${move.cooldown === 1 ? '' : 's'}.`);
+  // §5.8.3 / §9.2.2.3 — a declared signature names its authored answer: what still works now.
+  if (intent.signature && enemy.signature) lines.push(<b key="answer">{PHASE_TEXT.answer(enemy.signature.response)}</b>);
   return (
     <Tip
       icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />}
@@ -1528,4 +1530,32 @@ export function progressNoteTip(kind: 'achievement' | 'discovery', id: string, n
 /** A piece of loot: a relic, a held item or a TM, said once on hover rather than in a paragraph. */
 export function lootTip(title: string, kind: string, body: string, footer: string): ReactNode {
   return <Tip title={title} meta={[kind]} body={body} footer={footer} />;
+}
+
+/**
+ * §5.8.3 / §9.2.2.3 — a boss's phase chip, opened: the active phase and what it does, when the next one comes, and — for an
+ * ace — its signature and the answer to it. Every state is the sim's (active, pending, signature); nothing is read off HP.
+ */
+export function phaseTip(enemy: EnemyCombatant, cfg: CombatCtx['config'], shown: { phase: number; pending?: number } = { phase: enemy.phase, ...(enemy.pendingPhase ? { pending: enemy.pendingPhase } : {}) }): ReactNode {
+  const sigMove = enemy.signature ? getContent().move(enemy.signature.moveId).name : null;
+  const arch = bossArchetype(enemy);
+  const effect =
+    shown.phase >= 3 ? PHASE_TEXT.phase3(enemy.signature?.state === 'spent' ? null : sigMove)
+    : shown.phase === 2 ? PHASE_TEXT.phase2[arch](arch === 'entrenchment' ? cfg.phase2EntrenchmentDefStages : cfg.phase2TempoApTax)
+    : PHASE_TEXT.phase1;
+  const lines: ReactNode[] = [effect];
+  if (shown.pending) lines.push(<b key="pending">{PHASE_TEXT.pendingLabel(shown.pending)}.</b>);
+  else if (shown.phase < enemy.phaseCount) {
+    const next = shown.phase + 1;
+    lines.push(PHASE_TEXT.next(next, Math.round((next === 2 ? cfg.bossPhase2HpThreshold : cfg.bossPhase3HpThreshold) * 100)));
+  }
+  if (enemy.signature && enemy.signature.state !== 'spent') lines.push(PHASE_TEXT.answer(enemy.signature.response));
+  return <Tip title={PHASE_TEXT.title(shown.phase, enemy.phaseCount)} meta={[PHASE_TEXT.archetype[arch]]} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={PHASE_TEXT.enters} />;
+}
+
+/** §9.2.2.3 — an open signature that cannot be this turn's action: why, and that it is still coming. */
+export function signatureWaitTip(enemy: EnemyCombatant): ReactNode {
+  if (!enemy.signature?.wait) return null;
+  const move = getContent().move(enemy.signature.moveId).name;
+  return <Tip title={PHASE_TEXT.waiting(PHASE_TEXT.waitLabel[enemy.signature.wait])} body={[<div key="b">{PHASE_TEXT.waitingBody(move)}</div>, <div key="a">{PHASE_TEXT.answer(enemy.signature.response)}</div>]} />;
 }

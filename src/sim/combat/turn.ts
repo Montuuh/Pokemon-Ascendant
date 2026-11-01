@@ -1,7 +1,7 @@
 import type { RunCtx } from './context';
 import { emit, log } from './context';
 import { discardHand, openBag, drawSkillCards, returnConsumableHand, sweepEchoes } from './deck';
-import { applyPhaseTransitions, tempoApTax } from './boss';
+import { commitPhases, tempoApTax } from './phases';
 import { dealDamage, heal } from './damageFlow';
 import { declareIntent } from './intents';
 import { aliveTeam, benchIndices, lead, resolutionOrder } from './slots';
@@ -28,6 +28,9 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   // §7.3 — AP banked by a relic last turn (Cycle Cell, Move Echo) lands on top of the refill.
   // §6.5.2 Speed Boost — its turn-2 AP lands beside the banked AP.
   log(state, 'turn', `— Turn ${state.turn} —`);
+  // §5.8.3 — the commit boundary: before the Draw and the AP refill, every standing enemy enters the phase it latched,
+  // so the refill below already pays Tempo Control's tax and the intents read the new phase.
+  commitPhases(state, ctx);
   if (p.ap > 0) changeAp(state, -p.ap, 'Unused AP expires before the new turn');
   changeAp(state, ctx.config.baseApPerTurn, 'Base turn refill', ctx.config.maxApPerTurn);
   const tax = tempoApTax(state, ctx.config);
@@ -129,7 +132,7 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   // §5.9.5 Mind Lock — with the hand complete, Sabrina seals its strongest attack before you read a thing.
   sealStrongest(state, ctx);
 
-  // §3.2.3 — Intent phase (boss phase transitions first, §5.8.3).
+  // §3.2.3 — Intent phase (boss phases were committed at the turn's start, §5.8.3).
   state.phase = 'intent';
   // §5.9.5 Ice Armour — the enemy Lead is armoured before it declares, so the shield is on the field you plan against.
   armourLead(state, ctx);
@@ -141,7 +144,6 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   }
   for (const e of state.enemies) {
     if (e.hp <= 0) continue;
-    applyPhaseTransitions(state, e, ctx);
     escalateSupport(state, e);
     declareIntent(state, e, ctx, ctx.rng);
   }

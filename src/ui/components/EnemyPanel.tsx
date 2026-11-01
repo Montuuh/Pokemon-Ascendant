@@ -2,19 +2,19 @@ import type { CSSProperties } from 'react';
 import { IconLock, IconQuestionMark } from '@tabler/icons-react';
 import { IntentChip } from './IntentChip';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
-import { SLOT_LABEL, controlRecoveryThrough, effectiveSpeed, currentPhase, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
+import { SLOT_LABEL, bossArchetype, controlRecoveryThrough, effectiveSpeed, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
 import { CatchPicker } from './CatchPicker';
 import { intentGlyph, spriteOf } from '@/ui/art';
 import type { SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { ArenaSprite } from './ArenaSprite';
-import { ARMOUR_LABEL, STAT_SHORT, INTENT_BADGE, INTENT_LABEL, OBJECTIVE_TEXT, UNIT_CHIPS_TEXT } from '@/ui/strings';
+import { ARMOUR_LABEL, STAT_SHORT, INTENT_BADGE, INTENT_LABEL, OBJECTIVE_TEXT, PHASE_TEXT, UNIT_CHIPS_TEXT } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
 import { ObjectiveChip } from './ObjectiveChip';
 import { UnitChips } from './UnitChips';
 import { RhythmDial } from './RhythmDial';
-import { armourTip, intentCardTip, nextIntentTip, placeTip } from '@/ui/tips';
+import { armourTip, intentCardTip, nextIntentTip, phaseTip, placeTip, signatureWaitTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
 import { UNIT_BADGE, UNIT_HP_BAR } from './unitCard';
@@ -56,6 +56,8 @@ interface Props {
   waiting?: boolean;
   /** §9.9.1 — a ball is rocking: what it was about to do is not the question now, so its intent steps back. */
   quiet?: boolean;
+  /** §9.2.2.3 — the phase the arena still shows until its commit banner (useCombatFx); the sim's otherwise. */
+  shownPhase?: number;
 }
 
 // Per §9.2.1 / §9.2.2.3 / §9.2.5 — one enemy on the field, as a card in the move card's grammar (v0.9.16): its intent
@@ -64,8 +66,12 @@ interface Props {
 // head, the animated front sprite in a window lit in its first type, its HP with phase markers (and, while a card is
 // aimed at it, the part that card would take, striped), its chips on the window's corner, the catch pill in a wild
 // fight and the held card's number on the corner (§9.2.4). The whole card, sprite and all, is the target.
-export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow, fallen, held, fxSlot, spriteClass, waiting, quiet }: Props) {
-  const phase = currentPhase(enemy, ctx.config);
+export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, preview, onClick, onHover, fxClass, interactive, onThrow, fallen, held, fxSlot, spriteClass, waiting, quiet, shownPhase }: Props) {
+  // §5.8.3 — the sim's active phase, never a reading of the HP bar; §9.2.2.3 — held at the old one until the banner says
+  // it changed, the new one standing as the pending cue meanwhile.
+  const phase = Math.min(enemy.phase, shownPhase ?? enemy.phase);
+  const pending = phase < enemy.phase ? enemy.phase : enemy.pendingPhase;
+  const phaseView = { phase, ...(pending ? { pending } : {}) };
   // §5.6 — every enemy names its place, one or three, so the fight reads the same either way.
   const place = held ? held.place : enemySlotLabel(state, enemy);
   const inGroup = held ? held.group : state.enemies.length > 1;
@@ -76,7 +82,10 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
   const alsoTipProps = useTip(enemy.second ? intentCardTip(state, enemy, forecast, 1, [], ctx) : null);
   // §5.6.5 — the flee race's runner: the one enemy of a fight that has one.
   const runner = state.objective?.kind === 'flee' && enemy.hp > 0;
-  const stageChips = (['attack', 'defense', 'speed'] as const).filter((s) => enemy.stages[s] !== 0);
+  // §9.2.2.3 — Phase 2's Entrenchment is part of what its banner announces: held back with the chip until then.
+  const heldDef = phase < 2 && enemy.phase >= 2 && bossArchetype(enemy) === 'entrenchment' ? ctx.config.phase2EntrenchmentDefStages : 0;
+  const stages = { ...enemy.stages, defense: enemy.stages.defense - heldDef };
+  const stageChips = (['attack', 'defense', 'speed'] as const).filter((s) => stages[s] !== 0);
   // §2.8.2 — an Elite Wild is boss-*tier* and is not a Gym Leader, so the label reads the scenario's kind
   // first. Tier is how hard it hits; kind is what it is, and the chip is telling the player what it is.
   const tierLabel =
@@ -108,7 +117,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
       <div className={styles.intents}>
         {/* A fallen foe's chip keeps its room, unseen, so the unit fades where it stood rather than dropping. */}
         <div className={[styles.chipLine, fallen ? styles.chipRoom : ''].join(' ')}>
-          <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={0} />
+          <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={0} signatureShown={phase >= enemy.phase} />
           {/* §5.6.1 / §5.5.1 — on a short stage a bench foe's second action and its next plan fold into badges on its
               chip's end, each with its whole bubble: as lines of their own they made the formation taller than the
               stage (the user's report, 2026-10-19). The hits still show one by one on your cards. */}
@@ -123,6 +132,18 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
             </span>
           )}
         </div>
+        {/* §9.2.2.3 — an open signature that cannot be this turn's action says why, and is never drawn as one. */}
+        {enemy.signature?.state === 'ready' && enemy.signature.wait && enemy.hp > 0 && !fallen && (
+          <Tipped
+            className={styles.sigWait}
+            data-testid="signature-waiting"
+            aria-label={PHASE_TEXT.waiting(PHASE_TEXT.waitLabel[enemy.signature.wait])}
+            tip={signatureWaitTip(enemy)}
+          >
+            {/* Asleep or frozen, the intent chip above already says so: the reason stays in the label and the bubble. */}
+            {enemy.signature.wait === 'asleep' || enemy.signature.wait === 'frozen' ? PHASE_TEXT.waitingShort : PHASE_TEXT.waiting(PHASE_TEXT.waitLabel[enemy.signature.wait])}
+          </Tipped>
+        )}
         {enemy.second && enemy.hp > 0 && (
           <div className={styles.fullOnly}>
             <IntentChip state={state} enemy={enemy} ctx={ctx} forecast={forecast} action={1} />
@@ -237,8 +258,8 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
                   ? [{ key: 'armour', label: `${ARMOUR_LABEL} ${enemy.shield}`, explain: UNIT_CHIPS_TEXT.armourBody(enemy.shield), node: <Tipped tip={armourTip(enemy.shield)} className={`${card.chip} ${card.info}`}>{ARMOUR_LABEL} {enemy.shield}</Tipped> }]
                   : []),
                 ...stageChips.map((s) => {
-                  const label = `${STAT_SHORT[s]} ${enemy.stages[s] > 0 ? '+' : ''}${enemy.stages[s]}`;
-                  return { key: s, label, node: <span className={`${card.chip} ${enemy.stages[s] > 0 ? card.up : card.down}`}>{label}</span> };
+                  const label = `${STAT_SHORT[s]} ${stages[s] > 0 ? '+' : ''}${stages[s]}`;
+                  return { key: s, label, node: <span className={`${card.chip} ${stages[s] > 0 ? card.up : card.down}`}>{label}</span> };
                 }),
               ]}
             />
@@ -249,11 +270,25 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
             <span className={`${card.hpText} display tabular`} data-testid="foe-hp">
               {enemy.hp} / {enemy.maxHp}
             </span>
-            {/* §5.9 — a boss's phase, on the card at every size: the notches on its bar are its thresholds. */}
+            {/* §5.8.3 / §9.2.2.3 — a boss's active phase, on the card at every size (the notches are its thresholds). Crossed
+                into but not yet entered, the same chip turns dashed and names the next one — "1/3 → 2" — so the cue costs
+                no width a 720p card at 150 % text does not have. One chip, one bubble. */}
             {enemy.phaseCount > 1 && (
-              <span className={`${card.chip} ${card.warn}`}>
-                Phase {phase}/{enemy.phaseCount}
-              </span>
+              <Tipped
+                className={`${card.chip} ${card.warn} ${pending && enemy.hp > 0 ? styles.phasePending : ''}`}
+                data-testid="phase-chip"
+                data-phase={phase}
+                aria-label={pending && enemy.hp > 0 ? `${PHASE_TEXT.title(phase, enemy.phaseCount)}; ${PHASE_TEXT.pendingLabel(pending)}` : undefined}
+                tip={phaseTip(enemy, ctx.config, phaseView)}
+              >
+                {pending && enemy.hp > 0 ? (
+                  <>
+                    {phase}/{enemy.phaseCount} <span data-testid="phase-pending">{PHASE_TEXT.pending(pending)}</span>
+                  </>
+                ) : (
+                  PHASE_TEXT.chip(phase, enemy.phaseCount)
+                )}
+              </Tipped>
             )}
           </span>
         </button>

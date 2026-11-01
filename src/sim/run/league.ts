@@ -31,7 +31,7 @@ export interface LeagueMember {
   stage: string;
   line: string;
   /** Levels over the League's base (Region 3's last wild band); the ace last, three phases. */
-  team: { species: string; over: number; phaseCount: 2 | 3; moves?: string[] }[];
+  team: { species: string; over: number; phaseCount: 2 | 3; moves?: string[]; signature?: { move: string; response: string } }[];
 }
 
 /**
@@ -44,22 +44,22 @@ export const LEAGUE_MEMBERS: readonly LeagueMember[] = [
   {
     id: 'elite-four-1', name: 'Bruno', title: 'Elite Four', sprite: 'bruno', type: 'fighting', battlefield: { hazard: 'sandstorm' }, stage: 'league-bruno',
     line: 'We will grind you down with our superior power! Hoo hah!',
-    team: [{ species: 'steelix', over: 4, phaseCount: 2 }, { species: 'machamp', over: 5, phaseCount: 3 }],
+    team: [{ species: 'steelix', over: 4, phaseCount: 2 }, { species: 'machamp', over: 5, phaseCount: 3, signature: { move: 'submission', response: 'Ghost immunity or a Fighting-resistant Lead; the move keeps its recoil.' } }],
   },
   {
     id: 'elite-four-2', name: 'Agatha', title: 'Elite Four', sprite: 'agatha', type: 'ghost', battlefield: { hazard: 'toxic-spikes' }, stage: 'league-agatha',
     line: 'Pokémon are for battling, child. I will show you how a real Trainer fights.',
-    team: [{ species: 'arbok', over: 6, phaseCount: 2 }, { species: 'gengar', over: 7, phaseCount: 3 }],
+    team: [{ species: 'arbok', over: 6, phaseCount: 2 }, { species: 'gengar', over: 7, phaseCount: 3, signature: { move: 'night-shade-plus', response: 'Normal immunity or a Ghost-resistant Lead; this is ordinary typed damage, not fixed damage.' } }],
   },
   {
     id: 'elite-four-3', name: 'Will', title: 'Elite Four', sprite: 'will', type: 'psychic', battlefield: { terrain: 'psychic-terrain' }, stage: 'league-will',
     line: 'I have trained all over the world to make my Psychic Pokémon powerful. I cannot lose now.',
-    team: [{ species: 'jynx', over: 7, phaseCount: 2 }, { species: 'slowbro', over: 8, phaseCount: 2 }, { species: 'alakazam', over: 9, phaseCount: 3 }],
+    team: [{ species: 'jynx', over: 7, phaseCount: 2 }, { species: 'slowbro', over: 8, phaseCount: 2 }, { species: 'alakazam', over: 9, phaseCount: 3, signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } }],
   },
   {
     id: 'elite-four-4', name: 'Lance', title: 'Elite Four', sprite: 'lance', type: 'dragon', battlefield: { weather: 'rain-dance' }, stage: 'league-lance',
     line: 'Dragons are mythical Pokémon. They are hard to catch and raise, but their power is superior.',
-    team: [{ species: 'gyarados', over: 9, phaseCount: 2 }, { species: 'aerodactyl', over: 10, phaseCount: 2 }, { species: 'dragonite', over: 11, phaseCount: 3 }],
+    team: [{ species: 'gyarados', over: 9, phaseCount: 2 }, { species: 'aerodactyl', over: 10, phaseCount: 2 }, { species: 'dragonite', over: 11, phaseCount: 3, signature: { move: 'fly', response: 'A Flying-resistant Lead or damage reduction; this Fly gives it no turn out of reach.' } }],
   },
   {
     id: 'champion', name: 'Blue', title: 'Champion', sprite: 'blue', type: null, stage: 'league-champion',
@@ -86,6 +86,13 @@ const COUNTER: Record<string, string> = {
 };
 export const championAce = (starter: string): string => COUNTER[starter] ?? 'charizard';
 
+/** §5.8.3 — the counter-pick ace's signature, per starter it answers (`catalogs/elites.md` §8). */
+export const CHAMPION_SIGNATURE: Record<string, { move: string; response: string }> = {
+  venusaur: { move: 'petal-dance', response: 'Grass resistance; its own self-Confusion still follows.' },
+  charizard: { move: 'flamethrower', response: 'Fire/Water/Rock resistance or damage reduction.' },
+  blastoise: { move: 'surf', response: 'A Water-resistant team and Cleave protection; swapping only the Lead does not shield the bench.' },
+};
+
 /** The League's base level: Region 3's last wild band, as Victory Road's is. */
 export const leagueBase = (): number => victoryRoadLevel(0);
 
@@ -96,7 +103,8 @@ export function leagueTeam(member: LeagueMember, run: Pick<RunState, 'starter'>,
     const level = base + m.over;
     const ace = member.id === 'champion' && i === member.team.length - 1;
     const species = ace ? championAce(run.starter) : evolvedAt(m.species, level, content);
-    return { species, level, tier: 'boss' as const, phaseCount: m.phaseCount, ...(m.moves ? { moves: [...m.moves] } : {}) };
+    const signature = ace ? CHAMPION_SIGNATURE[species] : m.signature;
+    return { species, level, tier: 'boss' as const, phaseCount: m.phaseCount, ...(m.moves ? { moves: [...m.moves] } : {}), ...(signature ? { signature: { ...signature } } : {}) };
   });
 }
 

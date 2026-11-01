@@ -11,9 +11,9 @@
 ---
 
 > **Rewards/status digest refreshed 2026-10-30:** Safari first-catch equipment gift, useful equipment access and bounded control (§2.11.6, §7.4.1, §4.2).
-> **Enemy/Gym digest refreshed 2026-10-29:** irreversible phases and declared ace signatures (§5.8.3,
-> §9.2.2.3), twelve authored Gym teams (§5.9.3–§5.9.4) and their guest exception (§2.7.3).
-> Design recorded; v0.9.86 implementation and tuning pending.
+> **Enemy/Gym digest refreshed 2026-11-02:** irreversible phases and declared ace signatures (§5.8.3,
+> §9.2.2.3) implemented in v0.9.87; twelve authored Gym teams (§5.9.3–§5.9.4) and their guest exception (§2.7.3)
+> designed, implementation and tuning pending v0.9.88.
 
 ## 1. Identity
 
@@ -289,7 +289,7 @@ knocked out first (its premium: XP ×2 and a Rare Candy, Pay Day ₽, XP ×3) or
 **guarded** — hold out to the end of turn 3–4 against a guard that gains an Attack stage every turn, or knock it out,
 and the find and its prize are yours. Both named on the map and counted down on screen.
 
-**Bosses (§5.8.3, user 2026-10-29; implementation pending)** — irreversible phases per enemy UID. Crossing
+**Bosses (§5.8.3, user 2026-10-29; implemented v0.9.87)** — irreversible phases per enemy UID. Crossing
 50 % / 20 % HP alive queues the highest phase; commit next turn before Draw/AP refill, applying entries once.
 Healing never reverses progression and the current declared intent never changes. A three-phase ace gets one
 authored **Signature** declaration in its first ordinary action: normal damage/AP/target rules, one cooldown
@@ -303,7 +303,7 @@ evolution and no extra support actor.** Opener two phases, middle three one, ace
 +1 / −1 / +2 respectively. Each has four scripted moves, at least four share the Gym's type, and one thematic
 off-type guest is permitted and explicitly named before commitment (§2.7.3); no default starter line
 (Bulbasaur/Charmander/Squirtle) or Legendary. Later Mart starters remain eligible.
-The twelve replacement teams and kits are designed in catalogs/gyms.md, awaiting v0.9.86 calibration and code.
+The twelve replacement teams and kits are designed in catalogs/gyms.md, awaiting v0.9.88 calibration and code.
 The current Attack multipliers (×0.7 / ×0.62 / ×0.5, plus per-Leader scales) are the comparison baseline.
 **Every Leader fights under a rule of its own** (§5.9.5), shown on the map and top bar: Rock Solid, Riptide,
 Swarm, Rollout, Meltdown, Bloom, Overcharge, Toxic, Mind Lock, Tremor, Close Quarters and Ice Armour. The Leader

@@ -1,11 +1,11 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import type { CombatEvent, CombatState, EnemyCombatant, PokemonType } from '@/sim';
-import { benchIndices, indexToSlot } from '@/sim';
+import { benchIndices, bossArchetype, indexToSlot } from '@/sim';
 import { getContent } from '@/content/registry';
 import { MOTION_MS, motionOf, type Motion } from '@/ui/moveMotion';
 import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
-import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, STATUS_LABEL } from '@/ui/strings';
+import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, PHASE_TEXT, STATUS_LABEL } from '@/ui/strings';
 
 // Turns new sim events into transient visual effects (§9.9): floating numbers, hits weighed by what they did, lunges —
 // and, since v0.9.3, the series' own beats (§9.9.1): a Poké Ball thrown from a trainer's hand and a Pokémon coming out
@@ -117,6 +117,8 @@ export interface CombatFxState {
   hp: Record<string, number>;
   /** §4.1.3.1 — uid → the rhythm your dial shows while the card that changed it is on its way. */
   rhythm: Record<string, number>;
+  /** §9.2.2.3 — uid → the phase a boss's chip shows until its commit banner says it changed. */
+  phase: Record<string, number>;
   /** §9.9.2 — the foes' moves are playing: their next intents wait until they have (the hand waits too, `busy`). */
   acting: boolean;
   /** §9.9.1 — the fight's Pokémon are still coming out of their balls: what is aimed at them waits until they are out. */
@@ -266,6 +268,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   const [logHold, setLogHold] = useState<number | null>(null);
   const [hpShown, setHpShown] = useState<Record<string, number>>({});
   const [rhythmShown, setRhythmShown] = useState<Record<string, number>>({});
+  const [phaseShown, setPhaseShown] = useState<Record<string, number>>({});
   const [shownTurn, setShownTurn] = useState<number | null>(null);
   const [hitStop, setHitStop] = useState(false);
   const hitStopUntil = useRef(0);
@@ -353,6 +356,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       setLogHold(null);
       setHpShown({});
       setRhythmShown({});
+      setPhaseShown({});
       setActing(false);
       clock.current = { impact: 0, dashes: {}, heldUntil: 0, actingUntil: 0 };
       held.current = null;
@@ -406,6 +410,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     const hpAt: { at: number; uid: string; hp: number }[] = [];
     // §4.1.3.1 / §9.9.2 — the ring a card fills fills when that card's move lands, as the HP it takes does.
     const impactOf = new Map<string, number>();
+    // §9.2.2.3 — the active chip does not advance before the cue that says it did.
+    const phaseAt: { at: number; uid: string; phase: number; from: number }[] = [];
     const marks = state.log.flatMap((l, i) => (i >= before.logLength && (usedLine(l) || sentLine(l) || faintLine(l)) ? [i] : []));
     const used = marks.filter((i) => usedLine(state.log[i]!));
     const sent = marks.filter((i) => sentLine(state.log[i]!));
@@ -695,10 +701,16 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           delay += 260;
           break;
         }
-        case 'phase':
-          showBanner(`Phase ${e.phase}!`, delay);
+        case 'phase': {
+          // §9.2.2.3 — one cue per commit, naming the Pokémon and what the phase does; a jump straight to Phase 3 is one cue.
+          const foe = state.enemies.find((x) => x.uid === e.enemyUid);
+          const sig = foe?.signature ? getContent().move(foe.signature.moveId).name : null;
+          const effect = e.phase >= 3 ? PHASE_TEXT.short3(sig) : foe ? PHASE_TEXT.short2[bossArchetype(foe)] : '';
+          showBanner(foe ? PHASE_TEXT.banner(foe.name, e.phase, effect) : PHASE_TEXT.fallback(e.phase), delay);
+          if (animate && delay > 0) phaseAt.push({ at: delay, uid: e.enemyUid, phase: e.phase, from: e.from ?? e.phase - 1 });
           delay += 300;
           break;
+        }
         case 'consumable-used':
           lastBall = e.consumableId;
           break;
@@ -762,7 +774,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     const rhythmAt = animate
       ? [...seen.current.rhythm].flatMap(([uid, now]) => (before.rhythm.get(uid) !== now && (impactOf.get(uid) ?? 0) > 0 ? [{ at: impactOf.get(uid)!, uid, rhythm: now }] : []))
       : [];
-    if (logCuts.length || hpAt.length || rhythmAt.length) {
+    if (logCuts.length || hpAt.length || rhythmAt.length || phaseAt.length) {
       if (logCuts.length) {
         const first = Math.max(before.logLength, ...logCuts.filter((c) => c.at <= 0).map((c) => c.upTo));
         setLogHold((h) => h ?? first);
@@ -784,19 +796,28 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         });
         for (const r of rhythmAt) schedule(() => setRhythmShown((c) => ({ ...c, [r.uid]: r.rhythm })), r.at);
       }
-      const end = Math.max(...logCuts.map((c) => c.at), ...hpAt.map((h) => h.at), ...rhythmAt.map((r) => r.at));
+      if (phaseAt.length) {
+        setPhaseShown((cur) => {
+          const next = { ...cur };
+          for (const p of phaseAt) if (!(p.uid in next)) next[p.uid] = p.from;
+          return next;
+        });
+        for (const p of phaseAt) schedule(() => setPhaseShown((c) => ({ ...c, [p.uid]: p.phase })), p.at);
+      }
+      const end = Math.max(...logCuts.map((c) => c.at), ...hpAt.map((h) => h.at), ...rhythmAt.map((r) => r.at), ...phaseAt.map((p) => p.at));
       clock.current.heldUntil = Math.max(clock.current.heldUntil, t0 + end);
       schedule(() => {
         if (Date.now() < clock.current.heldUntil - 5) return;
         setLogHold(null);
         setHpShown({});
         setRhythmShown({});
+        setPhaseShown({});
       }, end);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, rhythm: rhythmShown, acting, opening, turn: shownTurn ?? state?.turn ?? 1, hitStop };
+  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, rhythm: rhythmShown, phase: phaseShown, acting, opening, turn: shownTurn ?? state?.turn ?? 1, hitStop };
 }
 
 export type { CombatEvent };

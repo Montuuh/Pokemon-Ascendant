@@ -1,3 +1,4 @@
+import { cancelPhaseOnFaint, latchPhase } from './phases';
 import type { MoveDef } from '../content/defs';
 import { comboBreakAt } from './combo';
 import type { RunCtx } from './context';
@@ -354,6 +355,8 @@ export function dealDamage(
     }
   }
   target.hp = Math.max(0, target.hp - dmg);
+  // §5.8.3 — a threshold crossed while it stands is latched now and entered next turn.
+  if ('phaseCount' in target) latchPhase(target as EnemyCombatant, ctx.config);
   // §8.7 — the tally is of damage the *player* took, whatever caused it: a burn that chips you is still
   // damage taken, and "win without taking any" would be a lie if it were not counted.
   if (isPlayers(state, target)) state.player.totalDamageTaken += dmg;
@@ -482,6 +485,7 @@ export function onFaint(state: CombatState, ctx: RunCtx, c: Combatant): void {
     const e = c as EnemyCombatant;
     const wasLead = state.enemies[0]?.uid === e.uid;
     e.intent = null;
+    cancelPhaseOnFaint(e);
     state.enemies = state.enemies.filter((x) => x.uid !== e.uid);
     state.defeatedEnemies.push(e);
     // §5.12 — the Champion's last pair: from its count of fallen, two places stand open.
@@ -657,6 +661,7 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         const cost = Math.min(attacker.hp - 1, Math.floor(attacker.maxHp * fx.percentOfMaxHp));
         if (cost > 0) {
           attacker.hp -= cost;
+          if ('phaseCount' in attacker) latchPhase(attacker as EnemyCombatant, ctx.config);
           emit(state, { t: 'damage', sourceUid: attacker.uid, targetUid: attacker.uid, amount: cost, crit: false, effectiveness: 'neutral', hpAfter: attacker.hp, cause: 'move' });
           log(state, 'system', `${attacker.name} pays ${cost} HP.`);
         }

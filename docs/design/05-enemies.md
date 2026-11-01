@@ -368,8 +368,8 @@ the intent pattern resets.
 
 ## §5.8.3 Phase structure
 
-**Irreversible escalation with a telegraphed signature** (user, 2026-10-29; designed for v0.9.87, not yet
-implemented). Thresholds remain BattleConfig data, drawn as HP-bar notches. Each enemy UID stores its active
+**Irreversible escalation with a telegraphed signature** (user, 2026-10-29; implemented v0.9.87 in
+`combat/phases.ts`). Thresholds remain BattleConfig data, drawn as HP-bar notches. Each enemy UID stores its active
 phase and the highest threshold it has crossed while alive. Healing never lowers either. This makes the
 escalation legible without changing the action the player has already been promised.
 
@@ -424,6 +424,11 @@ The concrete moves and responses live in catalogs/gyms.md and catalogs/elites.md
 must also declare a valid profile. Content validation rejects a missing signature, an absent kit move, or an
 unaffordable base cost; it does not invent a fallback signature from the strongest move. UI owns only the
 presentation of this state (§9.2.2.3); it must not infer an active phase from current HP.
+
+The authored move is always in the ace's kit: where a slot's kit is built from the learnset (an Auto kit, or a
+preview whose species evolved), the signature takes the last move's place rather than being lost. A three-phase
+enemy without an authored profile — a two-phase enemy promoted by Master's Challenge (§8.8) — enters Phase 3 and
+presses the attack, but has no signature: the modifier adds a phase, not an authored move, and no profile is inferred.
 
 ## §5.8.4 Stages persist across phases
 Stat stages — the boss's own buffs and the player's debuffs alike — carry through every transition. A boss

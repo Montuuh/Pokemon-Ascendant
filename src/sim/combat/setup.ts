@@ -1,3 +1,4 @@
+import { latchPhase } from './phases';
 import type { EnemySetup, ScenarioDef, TeamMemberSetup } from '../content/defs';
 import { GameRng } from '../rng/gameRng';
 import { RngStreams } from '../rng/rngStreams';
@@ -66,13 +67,17 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
 }
 
 export function makeEnemy(uid: string, setup: EnemySetup, ctx: CombatCtx): EnemyCombatant {
-  return {
-    ...makeCombatant(uid, setup, ctx),
+  const base = makeCombatant(uid, setup, ctx);
+  // §5.8.3 — only a three-phase ace carries a signature, and the authored move is always in its kit: a kit built from the
+  // learnset (an evolved preview, an Auto kit) keeps it in place of its last move rather than losing it.
+  const sig = setup.phaseCount === 3 ? setup.signature : undefined;
+  if (sig && !base.moveIds.includes(sig.move)) base.moveIds = [...base.moveIds.slice(0, -1), sig.move];
+  const enemy: EnemyCombatant = {
+    ...base,
     tier: setup.tier,
     phaseCount: setup.phaseCount,
     phase: 1,
-    enteredPhase2: false,
-    enteredPhase3: false,
+    ...(sig ? { signature: { moveId: sig.move, response: sig.response, state: 'locked' as const } } : {}),
     intent: null,
     cooldowns: {},
     witnessed: false,
@@ -81,6 +86,9 @@ export function makeEnemy(uid: string, setup: EnemySetup, ctx: CombatCtx): Enemy
     ...(setup.helpers?.length ? { helpers: setup.helpers.map((h) => ({ ...h })) } : {}),
     fieldTurns: 0,
   };
+  // §5.8.3 — an encounter that starts below a threshold has that phase pending: it commits before the first Draw.
+  latchPhase(enemy, ctx.config);
+  return enemy;
 }
 
 /** Build the initial state and run the first Draw + Intent phases so the player starts in the Action phase. */
