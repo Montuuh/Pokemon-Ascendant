@@ -251,7 +251,7 @@ The other fifteen shape a turn rather than a type:
 | **Champion's Crest** | Combat | Each enemy a Pokémon defeats grants it +5 % damage this run, capped at +25 % |
 | **Time Spinner** | Combat | Every enemy but a boss loses its first turn of the fight |
 | **Phoenix Feather** | Combat | Once per run: prevent a faint and restore to 1 HP. Consumed |
-| **Sage's Tome** | Card | Max hand size +2; max AP per turn +1 |
+| **Sage's Tome** | Card | Draw 2 extra cards; +1 AP at the start of every turn, including turn 1; cap stays 6 |
 | **Crown of Echoes** | Combat | The first move each combat is copied free into your hand on turn 2 |
 | **Soul Link** | Combat | The two Pokémon that have travelled longest in your Box each deal +10 % while both stand in a fight |
 

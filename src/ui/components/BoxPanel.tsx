@@ -1,4 +1,4 @@
-import { IconCrown, IconAlertTriangle, IconBarbell, IconCards, IconUsersGroup, IconZzz } from '@tabler/icons-react';
+import { IconCrown, IconAlertTriangle, IconBarbell, IconCards, IconUsersGroup } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
 import { maxHpOf, stoneUse, xpToNext, type PartyMon, ACTIVE_TEAM, placesOf, placesTaken } from '@/sim';
 import { HpBar } from './HpBar';
@@ -7,7 +7,7 @@ import { ShinyMark } from './ShinyMark';
 import { TypeBadge } from './TypeBadge';
 import { statusGlyph } from '@/ui/art';
 import { STATUS_LABEL, TEAM_TEXT, TWO_PLACES } from '@/ui/strings';
-import { statusTip, teamTip, traumaTip, boostsTip, restingTip, shinyLine, twoPlacesTip } from '@/ui/tips';
+import { statusTip, teamTip, traumaTip, boostsTip, shinyLine, twoPlacesTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import styles from './BoxPanel.module.css';
 
@@ -26,8 +26,6 @@ interface Props {
   capacity: number;
   /** §6.3.2 — the Evolution Items held, so a stone someone can use now shows on that Pokémon's Move Manager badge. */
   stones?: readonly string[];
-  /** §2.11.1 — the Pokémon resting after the Daycare: it sits out the next fight, so its row cannot be fielded. */
-  restingUid?: string | null;
   /** §9.12 — the Team screen's door: the formation, the Box and each Pokémon's sheet. Absent: no door. */
   onOpenTeam?: () => void;
   /**
@@ -37,7 +35,7 @@ interface Props {
   readOnly?: boolean;
 }
 
-function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, onSetLead, onOpenMoves, stones = [], readOnly = false }: { mon: PartyMon; active: boolean; index: number; locked: boolean; resting?: boolean; onToggleActive: Props['onToggleActive']; onSetLead: Props['onSetLead']; onOpenMoves: Props['onOpenMoves']; stones?: readonly string[]; readOnly?: boolean }) {
+function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenMoves, stones = [], readOnly = false }: { mon: PartyMon; active: boolean; index: number; locked: boolean; onToggleActive: Props['onToggleActive']; onSetLead: Props['onSetLead']; onOpenMoves: Props['onOpenMoves']; stones?: readonly string[]; readOnly?: boolean }) {
   const content = getContent();
   const species = content.species(mon.speciesId);
   const max = maxHpOf(mon, content);
@@ -78,7 +76,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
         className={`${styles.row} ${readOnly ? styles.static : ''} ${active ? styles.active : ''} ${fainted ? styles.fainted : ''} ${isLead ? styles.lead : ''} ${onOpenMoves || (readOnly && waiting > 0) ? styles.hasMoves : ''}`}
         {...(readOnly
           ? { tabIndex: 0, role: 'group' }
-          : { type: 'button', onClick: () => (active && index > 0 && onSetLead ? onSetLead(mon.uid) : onToggleActive?.(mon.uid)), disabled: locked || resting })}
+          : { type: 'button', onClick: () => (active && index > 0 && onSetLead ? onSetLead(mon.uid) : onToggleActive?.(mon.uid)), disabled: locked })}
         data-testid={`box-row-${mon.speciesId}`}
         data-active={active}
         aria-label={[
@@ -88,7 +86,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
           mon.traumaStacks ? `Trauma ${mon.traumaStacks}` : null,
           mon.status ? STATUS_LABEL[mon.status.kind] ?? mon.status.kind : null,
           isLead ? 'Lead' : active ? 'Active' : 'in the Box',
-          resting ? 'resting until the next fight is over' : readOnly ? null : locked ? 'team locked' : active ? (index > 0 ? 'press to make Lead' : 'press to bench') : 'press to field',
+          readOnly ? null : locked ? 'team locked' : active ? (index > 0 ? 'press to make Lead' : 'press to bench') : 'press to field',
         ]
           .filter(Boolean)
           .join(', ')}
@@ -124,12 +122,6 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
           {mon.status && (
             <Tipped tip={statusTip(mon.status.kind)} className={styles.status} tabIndex={-1} data-testid={`box-status-${mon.speciesId}`}>
               <img src={statusGlyph(mon.status.kind)} alt={STATUS_LABEL[mon.status.kind] ?? mon.status.kind} height={12} className="pixel" />
-            </Tipped>
-          )}
-          {resting && (
-            <Tipped tip={restingTip()} className={styles.resting} tabIndex={-1} data-testid={`box-resting-${mon.speciesId}`}>
-              <IconZzz size={12} stroke={2.6} aria-hidden="true" />
-              Resting
             </Tipped>
           )}
           {/* §2.3 — a Legendary fills two of the Active Team's three places. */}
@@ -176,7 +168,7 @@ function BoxRow({ mon, active, index, locked, resting = false, onToggleActive, o
   );
 }
 
-export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMoves, capacity, stones = [], restingUid = null, onOpenTeam, readOnly = false }: Props) {
+export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMoves, capacity, stones = [], onOpenTeam, readOnly = false }: Props) {
   const locked = !readOnly && !onToggleActive;
 
   const activeMons = activeUids.map((uid) => box.find((m) => m.uid === uid)).filter((m): m is PartyMon => !!m);
@@ -209,7 +201,7 @@ export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMov
       </h2>
       <ul className={styles.list}>
         {benched.map((m) => (
-          <BoxRow key={m.uid} mon={m} active={false} index={-1} locked={locked} resting={m.uid === restingUid} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} stones={stones} readOnly={readOnly} />
+          <BoxRow key={m.uid} mon={m} active={false} index={-1} locked={locked} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} stones={stones} readOnly={readOnly} />
         ))}
       </ul>
       {benched.length === 0 && <p className={styles.empty}>Everyone you have is out front.</p>}

@@ -1075,7 +1075,7 @@ is capped/PEAT-safe and disabled in reduced-motion. **Loc:** `ui.evolution.*`, `
 >
 > The rest is as specified: the archetype cards show the payload as a before→after diff with the upgrades that
 > will land in your active 4 marked, the stat diff is a delta column, and Confirm is gated on a pick. There is
-> no cancel: §6.3.1 was reconciled with §6.2.2 and evolution is not deferrable — only the branch is a choice.
+> Evolve later and Escape before confirmation postpone the current stage (§6.3.1); Team sheet → Evolve resumes it.
 
 ---
 
@@ -1226,19 +1226,19 @@ buy has keyboard path; affordability not color-only (add "can't afford" label). 
 
 ## 4.6 Pokémon Center  (City building · §2.11.1, §8.2.4)
 
-**Purpose.** The warmest service stop: free automatic healing on entry, followed by optional Therapy,
-Daycare and PC Box decisions. The simulation owns each service and price; the screen dispatches actions.
-**Zones.** A dedicated room composed from authentic FRLG interior tiles and furniture, with central
-reception, a Daycare corner, a PC desk and a waiting area. The animated healing machine aligns with
-its furniture in the map; the heal's HP report and labelled service counters remain direct doors. A counter opens
-one service panel, with Lobby/Escape returning to its door. The PC retains the Team and Move Manager.
-**Sequence.** `HealPanel` mounts once for the visit. Balls, jingle, HP gains and completion keep the
-§9.9.3 order; service doors remain inert until completion or skip. Returning from a Daycare evolution
-does not replay the same heal. With reduced motion, the report is immediate.
-After the animation, per-Pokémon history folds into Healing report while the total stays visible.
-**States.** No HP missing, no Trauma, unaffordable Therapy, Daycare used/resting/needs a partner,
-and a full Box all remain explicit. Offers keep their prices and explanations. Room pixels use a
-fixed whole or half-step scale at 720p and 1080p. **Loc:** `CENTER_TEXT` and shared tooltips.
+**Purpose.** Free whole-Box healing on request from the nurse; optional Trauma therapy at the beds and team
+management at the PC. Entering starts no treatment. The simulation owns services, prices and eligibility.
+**Zones.** The existing FRLG room keeps its reception, beds, PC and waiting area. Nurse → Heal Pokémon;
+beds → Therapy; PC → Box. A persistent adjacent panel names every Box Pokémon and shows current/effective
+maximum HP and Trauma, including healthy Pokémon and reserves. Rows explain their Pokémon on hover/focus.
+**Sequence.** Asking the nurse dispatches the heal, then `HealPanel` reveals the machine, jingle, HP gains and
+completion in §9.9.3 order. Counters lock only during this requested animation; skip and reduced motion reveal
+the result immediately. Afterwards the health panel returns and treatment history remains in a disclosure.
+Therapy removes one stack at the current price without refilling HP. Lobby/Escape returns from a service to its
+door. The PC retains Team and Move Manager; a resumed evolution returns here without replaying or granting healing.
+**States.** Injured/fainted/statused, healthy, no Trauma, unaffordable Therapy and full Box remain explicit.
+Daycare and its paid level/rest restriction are removed. Room pixels use a fixed whole or half-step scale at
+720p and 1080p. **Loc:** `CENTER_TEXT` and shared tooltips.
 
 ---
 

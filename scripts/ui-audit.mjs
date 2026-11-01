@@ -75,7 +75,9 @@ const SCREENS = {
   'hub-pc-sheet': { url: '/?screen=hub', setup: ['meta.record([{ t: "combat-end", outcome: "victory", kind: "wild", damageTaken: 0, manualSwaps: 0, faints: 0, defeated: ["pidgey"], enemies: ["pidgey"], activeSpecies: ["squirtle"], leadTurns: { squirtle: 3 } }])'], clicks: ['kiosk-pc', 'dex-squirtle'], match: [/hub\/(PcSheet|SpeciesSheet|LineSheet|usePcSheet)/] },
   'hub-mart': { url: '/?screen=hub', setup: ['meta.tokens(9)'], clicks: ['kiosk-mart'], match: [/hub\/(PokeMart|frames)/] },
   'hub-card': { url: '/?screen=hub', setup: ['meta.xp(3000)'], clicks: ['kiosk-card'], match: [/hub\/(TrainerCard|RewardTrack|trackText)/] },
-  'center-daycare': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-center', 'door-center-daycare'], rootAttributes: { 'data-counter': 'daycare' }, match: [/screens\/CenterScreen/] },
+  'center-full-box': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.perks.boxBonus = 3; })', 'run.grantRelic("box-expander")', 'run.fill(11)', 'run.fill(11)', 'run.city(1)', 'run.trauma(3)', 'run.patch((d) => { d.box[0].hp = 1; d.box[1].hp = 0; })'], clicks: ['door-center'], match: [/screens\/CenterScreen/] },
+  'team-evolution': { url: '/?screen=menu', setup: ['run.new("eevee", 7)', 'run.levelTo(8)', 'run.grantStone("fire-stone")', 'run.city(0)', 'run.dispatch({ type: "use-stone", uid: a.run.state().box[0].uid, stoneId: "fire-stone" })', 'run.dispatch({ type: "defer-evolution", uid: a.run.state().box[0].uid })'], clicks: ['btn-team'], match: [/components\/TeamScreen/] },
+  'center-therapy': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.trauma(2)', 'run.patch((d) => { d.box[0].hp = 9; })', 'run.pay(1000)'], clicks: ['door-center', 'door-center-therapy'], rootAttributes: { 'data-counter': 'therapy' }, match: [/screens\/CenterScreen/] },
   starter: { url: '/?screen=starter', match: [/screens\/(StarterSelect|DifficultyShelf)/] },
   // B27 — the difficulty step with its locked shelf open (a fresh account: all ten rows), and a veteran's (all open, no shelf).
   'starter-shelf': { url: '/?screen=starter', ready: 'step-difficulty', clicks: ['difficulty-shelf-toggle'], match: [/screens\/(StarterSelect|DifficultyShelf)/] },
@@ -104,18 +106,18 @@ const SCREENS = {
   'city-celadon': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(1)'], match: [/screens\/city\//] },
   'city-gate': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)'], clicks: ['door-gate'], match: [/screens\/city\/CityScreen/] },
   dojo: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(600)'], clicks: ['door-dojo'], match: [/screens\/DojoScreen/, /components\/MoveManager/] },
-  center: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.trauma(2)', 'run.pay(600)'], clicks: ['door-center'], match: [/screens\/CenterScreen/] },
+  center: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.trauma(2)', 'run.patch((d) => { d.box[0].hp = 9; })', 'run.pay(600)'], clicks: ['door-center'], match: [/screens\/CenterScreen/] },
   shop: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.city(0)', 'run.pay(600)', 'run.wear("leftovers")'], clicks: ['door-mart'], match: [/screens\/ShopScreen/, /components\/ItemCard/] },
   // v0.7.2 — the city: the Ring (§2.9.4.1; its own building since v0.7.7), its prize, the Game Corner (§2.11.5), the store's floors (§2.11.2).
   // A fresh browser: the Ring's How to play opens by itself, so `ring` measures the guide and the others skip it.
-  'ring-guide': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-next'], match: [/screens\/RingGuide/] },
-  ring: { url: '/?screen=menu', ready: 'ring-screen', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip'], match: [/screens\/RingScreen/, /screens\/ring\//, /components\/ConfirmLeave/] },
+  'ring-guide': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.trauma(2)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-next'], match: [/screens\/RingGuide/] },
+  ring: { url: '/?screen=menu', ready: 'ring-screen', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.trauma(2)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip'], match: [/screens\/RingScreen/, /screens\/ring\//, /components\/ConfirmLeave/] },
   'ring-coliseum': { url: '/?screen=menu', ready: 'ring-screen', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip'], match: [/screens\/RingScreen/, /screens\/ring\//, /components\/ConfirmLeave/] },
   'ring-climb': { url: '/?screen=menu', ready: 'ring-screen', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(1)', 'run.pay(1000)'], clicks: ['door-ring', 'btn-ring-guide-skip', 'btn-ring-enter'], match: [/screens\/RingScreen/, /screens\/ring\//] },
   'ring-prize': {
     url: '/?screen=menu',
     setup: [
-      'run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.pay(1000)',
+      'run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.trauma(2)', 'run.pay(1000)',
       'run.dispatch({ type: "enter-building", building: "ring" })', 'run.dispatch({ type: "enter-ring" })',
       ...[0, 1].flatMap(() => ['run.dispatch({ type: "ring-fight" })', 'run.dispatch({ type: "finish-combat", report: { outcome: "victory", team: a.run.state().activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: a.run.state().balls, turns: 5 } })']),
       'goTo("map")',
@@ -179,7 +181,7 @@ const SCREENS = {
   'find-preview': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'goTo("map")'], match: [/components\/FindPrize/, /components\/NodePreviewCard/] },
   find: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'], clicks: ['find-reel'], match: [/screens\/FindScreen/, /components\/FindPrize/] },
   // §9.9.3 — the Center's machine on a hurt Box (a click skips to the bars filled), and the map with every node named.
-  'center-heal': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.patch((d) => { d.box[0].hp = 3; d.box[1].hp = 0; })'], clicks: ['door-center', 'center-heal'], match: [/components\/HealPanel/, /screens\/CenterScreen/] },
+  'center-heal': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.fill(3)', 'run.city(0)', 'run.patch((d) => { d.box[0].hp = 3; d.box[1].hp = 0; })'], clicks: ['door-center', 'door-center-heal', 'center-heal'], match: [/components\/HealPanel/, /screens\/CenterScreen/] },
   // Seed 2 is the tallest map — nodes in its first and last rows — so what cuts off first, heads or captions, shows here;
   // -end is the same map at the route's far end, where the lanes, their tags and the Gyms are.
   'map-labels-end': { url: '/?screen=menu', setup: ['run.new("squirtle", 2)', 'goTo("map")'], clicks: ['map-labels'], scroll: 'route-scroller', match: [/screens\/map\//, /components\/(NodeMarker|HabitatArt|nodeArt)/] },
@@ -220,7 +222,7 @@ const EXPECTED_ROOT = {
   'move-art-window': 'combat-screen', 'move-art-sound': 'combat-screen', 'move-art-impact': 'combat-screen', 'move-art-projectiles': 'combat-screen',
   map: 'map-screen', 'map-labels': 'map-screen', 'map-labels-end': 'map-screen', 'map-region-2-end': 'map-screen', 'map-region-2': 'map-screen', 'map-region-3': 'map-screen', 'map-victory-road': 'map-screen',
   'map-hover-wild': 'map-screen', 'map-hover-trainer': 'map-screen', 'map-hover-service': 'map-screen', 'map-hover-locked': 'map-screen',
-  city: 'city-screen', 'city-celadon': 'city-screen', 'city-gate': 'reflection', dojo: 'dojo-screen', center: 'center-screen', 'center-heal': 'center-screen', 'center-daycare': 'center-screen',
+  city: 'city-screen', 'city-celadon': 'city-screen', 'city-gate': 'reflection', dojo: 'dojo-screen', center: 'center-screen', 'center-full-box': 'center-screen', 'team-evolution': 'team-screen', 'center-heal': 'center-screen', 'center-therapy': 'center-screen',
   shop: 'shop-screen', merchant: 'shop-screen', store: 'shop-screen', aid: 'aid-screen', training: 'training-screen',
   'ring-guide': 'ring-guide', ring: 'ring-screen', 'ring-coliseum': 'ring-screen', 'ring-climb': 'ring-screen', 'ring-prize': 'ring-prize-screen',
   'game-corner': 'game-corner-room', 'game-corner-roulette': 'game-corner-screen', 'game-corner-slots': 'game-corner-screen', 'game-corner-open': 'game-corner-room', 'game-corner-shut': 'game-corner-room',

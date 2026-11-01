@@ -50,8 +50,7 @@
   align-items: center;
   gap: var(--sp-2);
 }
-/* D3/D4/D7 — a healthy visit has one reception pill, not an empty report column.
-   Keep the adjacent report in place throughout a real heal, including its closed disclosure. */
+/* §2.11.1 — the health report stays beside the room, including healthy visits. */
 .scene:has(.reception ul) {
   grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
   grid-template-rows: minmax(0, 1fr);
@@ -178,50 +177,6 @@
 .off {
   cursor: not-allowed;
 }
-.dayDecision {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: center;
-  gap: var(--sp-2);
-  max-width: 100%;
-}
-.restCue {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  color: var(--ink-secondary);
-  font-size: var(--type-caption);
-  visibility: hidden;
-}
-.patient:hover .restCue,
-.patient:focus .restCue {
-  visibility: visible;
-}
-.dayPrice {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-1) var(--sp-2);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-pill);
-  font-size: var(--type-caption);
-}
-.dayPrice[data-affordable='false'] {
-  border-style: dashed;
-  border-color: var(--border-strong);
-}
-.lock {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-1) var(--sp-3);
-  border-radius: var(--radius-pill);
-  border: 2px dashed var(--border-strong);
-  color: var(--ink-secondary);
-  font-size: var(--type-caption);
-  font-weight: 700;
-}
 .patientBody {
   display: grid;
   gap: var(--sp-1);
@@ -283,3 +238,12 @@
     gap: var(--sp-2);
   }
 }
+
+/* §2.11.1 — a persistent report of every Pokémon, including reserves. */
+.teamPanel { display: grid; gap: var(--sp-3); min-height: 0; }
+.healthList { display: grid; gap: var(--sp-3); margin: 0; padding: 0; list-style: none; max-height: 50dvh; overflow-y: auto; }
+.healthRow { display: flex; align-items: center; gap: var(--sp-2); }
+.healthDetails { flex: 1; min-width: 0; display: grid; gap: var(--sp-1); }
+.healthNumbers { font-size: var(--type-small); font-variant-numeric: tabular-nums; }
+
+.reception { max-height: 100%; overflow-y: auto; }

@@ -151,11 +151,13 @@ describe('The City lobby — §2.11.0', () => {
     expect(reject(start(), { type: 'depart-city', modifierId: 'x' })).toBe('not-in-city');
   });
 
-  it('TheCenter_HealsAndCuresOnTheWayIn_ThenLeadsBackToTheLobby_§2.9.1', () => {
+  it('TheCenter_HealsAndCuresWhenAsked_ThenLeadsBackToTheLobby_§2.11.1', () => {
     let s = inCity(start());
     s = { ...s, box: s.box.map((m) => ({ ...m, hp: 1, status: { kind: 'poison' as const, turnsLeft: null } })) };
     s = apply(s, { type: 'enter-building', building: 'center' });
     expect(s.phase).toBe('center');
+    expect(s.box.every((m) => m.hp === 1)).toBe(true);
+    s = apply(s, { type: 'heal-center' });
     expect(s.box.every((m) => m.status === null)).toBe(true);
     expect(s.box.every((m) => m.hp > 1)).toBe(true);
     s = apply(s, { type: 'leave-center' });

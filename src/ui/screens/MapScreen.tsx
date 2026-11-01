@@ -231,7 +231,7 @@ export function MapScreen() {
             onSetLead={null}
             onOpenMoves={null}
             stones={run.stones}
-            restingUid={run.resting}
+
             onOpenTeam={openTeam}
             readOnly
           />

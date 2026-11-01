@@ -101,11 +101,13 @@
   padding: 0;
   width: 100%;
   display: grid;
-  gap: var(--sp-1);
+  gap: var(--sp-1) var(--sp-2);
+  grid-template-columns: max-content minmax(0, 1fr) max-content max-content;
 }
 .statRow {
   display: grid;
-  grid-template-columns: 58px 1fr 34px 38px;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   align-items: center;
   gap: var(--sp-2);
   padding: 3px var(--sp-2);
@@ -242,6 +244,7 @@
 
 .branchHead {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-2);
 }
@@ -265,15 +268,27 @@
 .support .pill {
   background: var(--arch-support);
 }
+.branchTarget {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 1 0 auto;
+  min-width: 0;
+  max-width: 100%;
+}
 .branchName {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: var(--type-h3);
   cursor: help;
 }
 .branchIcon {
+  flex-shrink: 0;
   margin-left: auto;
   object-fit: contain;
 }
 .branchSprite {
+  flex-shrink: 0;
   margin-left: auto;
 }
 
@@ -433,3 +448,6 @@ html[data-motion='reduced'] .portraitWrap::before,
 html[data-motion='reduced'] .portrait {
   animation: none;
 }
+
+.later { padding: var(--sp-3) var(--sp-4); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-1); color: var(--ink-primary); }
+.later:hover { background: var(--surface-2); }

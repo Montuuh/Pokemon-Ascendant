@@ -41,7 +41,7 @@ const scaleFor = (largest: number) => Math.max(2, Math.min(8, Math.floor(STAGE_P
 
 type Phase = 'intro' | 'whiten' | 'trade' | 'bloom' | 'reveal';
 
-export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fromId: string; toId: string; shiny?: boolean; onDone: () => void }) {
+export function EvolutionCutscene({ fromId, toId, shiny = false, onDone, onCancel }: { fromId: string; toId: string; shiny?: boolean; onDone: () => void; onCancel?: () => void }) {
   const content = getContent();
   const from = content.species(fromId);
   const to = content.species(toId);
@@ -54,6 +54,12 @@ export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fro
     done.current = true;
     onDone();
   }, [onDone]);
+
+  const cancel = useCallback(() => {
+    if (done.current) return;
+    done.current = true;
+    onCancel?.();
+  }, [onCancel]);
 
   useEffect(() => {
     const timers: number[] = [];
@@ -89,21 +95,25 @@ export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fro
     };
   }, [finish]);
 
-  // Any key or click: skip to the end, as the series lets you (but never cancels — the evolution happens).
+  // §6.3 — Escape postpones an unconfirmed evolution; skipping a confirmed outro finishes it.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (['Enter', ' ', 'Escape'].includes(e.key)) {
+      if (e.key === 'Escape') {
         e.preventDefault();
-        finish();
+        if (onCancel) cancel(); else finish();
+      } else if (['Enter', ' '].includes(e.key) && !(e.target instanceof HTMLElement && e.target.closest('button'))) {
+        e.preventDefault(); finish();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [finish]);
+  }, [finish, cancel, onCancel]);
 
   const revealed = phase === 'reveal';
   const lit = phase !== 'intro' && !revealed;
-  const line = revealed ? EVOLUTION_TEXT.evolved(from.name, to.name) : EVOLUTION_TEXT.evolving(from.name);
+  const line = onCancel
+    ? (revealed ? EVOLUTION_TEXT.preview(from.name, to.name) : EVOLUTION_TEXT.preparing(from.name))
+    : (revealed ? EVOLUTION_TEXT.evolved(from.name, to.name) : EVOLUTION_TEXT.evolving(from.name));
   const vars = {
     '--evo-whiten': `${EVO_MS.whiten}ms`,
     '--evo-bloom': `${EVO_MS.bloom}ms`,
@@ -122,6 +132,7 @@ export function EvolutionCutscene({ fromId, toId, shiny = false, onDone }: { fro
 
   return (
     <div className={`${styles.root} theme-stage`} style={vars} role="dialog" aria-label={`${from.name} is evolving`} data-testid="evolution-cutscene" data-phase={phase} onClick={finish}>
+      {onCancel && <button type="button" className={`${styles.skip} ${styles.cancel}`} onClick={(event) => { event.stopPropagation(); cancel(); }} data-testid="evo-cancel">{EVOLUTION_TEXT.later}</button>}
       <button type="button" className={styles.skip} onClick={finish} data-testid="evo-skip">
         Skip <IconPlayerTrackNext size={16} />
       </button>

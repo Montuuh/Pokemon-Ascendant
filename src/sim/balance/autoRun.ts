@@ -597,6 +597,7 @@ function visitCity(get: () => RunState, content: CombatCtx['content'], policy: R
     if (!worst || run.money - therapyPrice(worst) < policy.keepReserve) break;
     step({ type: 'use-therapy', uid: worst.uid });
   }
+  step({ type: 'heal-center' });
   step({ type: 'leave-center' });
   // §2.11.6 — the Safari before the shop: a recruit the routes never give is worth more than a shelf item.
   const safari = get().city?.safari;
@@ -922,6 +923,7 @@ export function playRing(start: RunState, ctx: CombatCtx, policy: RunPolicy = DE
   const healthiest = () =>
     fillTeam([...run.box].filter((m) => m.hp > 0).sort((a, b) => b.level - a.level || b.hp - a.hp), ctx.content);
   step({ type: 'enter-building', building: 'center' });
+  step({ type: 'heal-center' });
   step({ type: 'leave-center' });
   step({ type: 'set-active', uids: healthiest() });
   step({ type: 'enter-building', building: 'ring' });

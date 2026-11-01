@@ -66,7 +66,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 21;
+export const RUN_SAVE_VERSION = 22;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -183,7 +183,6 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     pendingScenario: null,
     pendingReward: null,
     pendingLegendary: null,
-    resting: null,
     pendingRecruit: null,
     pendingEvolutions: [],
     outcome: 'in-progress',
@@ -267,6 +266,24 @@ function catalystLevels(run: RunState, content: ContentRegistry): number {
   if (!run.relics.includes('evolution-catalyst') || run.spentRelics.includes('evolution-catalyst')) return 0;
   const levels = content.relic('evolution-catalyst').params?.levels;
   return typeof levels === 'number' ? levels : 0;
+}
+
+/** §6.3 — manual resumption revalidates the current stage, level, Catalyst and reserved stone. */
+export function evolutionResume(run: RunState, mon: PartyMon, content: ContentRegistry): { stone?: string; forced?: boolean; catalyst?: boolean } | null {
+  if (mon.deferredEvolutionFrom === mon.speciesId && mon.deferredEvolutionForced) return { forced: true };
+  if (isEvolutionReady(mon, content)) return {};
+  const stone = mon.deferredEvolutionFrom === mon.speciesId ? mon.deferredEvolutionStone : undefined;
+  // Preserve an explicitly postponed stone and its branch before considering a different paid resource.
+  if (stone && run.stones.includes(stone) && stoneUse(stone, mon.speciesId, content)) return { stone };
+  return isEvolutionReady(mon, content, catalystLevels(run, content)) ? { catalyst: true } : null;
+}
+
+/** §6.3 — cancelling and confirming hand the remaining queue back to the same originating service. */
+function finishEvolutionPrompt(draft: RunState, returnTo: RunPhase | undefined, ctx: RunCtx): void {
+  if (draft.pendingEvolutions.length) draft.phase = 'evolution';
+  else if (returnTo) draft.phase = returnTo;
+  else if (draft.pendingNodeId) leaveNode(draft, draft.pendingNodeId, ctx);
+  else draft.phase = 'map';
 }
 
 /** §2.11.3 Naturalist's Lens — a Region Modifier that raises the Rare slot's chance is read when the map is drawn. */
@@ -391,23 +408,6 @@ export function rememberedMoves(mon: PartyMon, content: ContentRegistry): string
  */
 export function eggMovesFor(mon: PartyMon, content: ContentRegistry): string[] {
   return [...content.species(content.lineBase(mon.speciesId)).eggMoves];
-}
-
-/** §2.11.1 — the Center's Daycare, priced like everything else a City sells (modifiers included). */
-export function daycarePrice(run: RunState, content: ContentRegistry): number {
-  return priceFor(run, content, PRICES.daycare);
-}
-
-/**
- * §2.11.1 — after a fight, the Pokémon resting at the Daycare walks back: into the first free slot of the active
- * team, if there is one; otherwise it waits in the Box like any other.
- */
-function returnFromDaycare(draft: RunState, content: ContentRegistry): void {
-  const uid = draft.resting;
-  if (!uid) return;
-  draft.resting = null;
-  const mon = draft.box.find((m) => m.uid === uid);
-  if (mon && hasPlaceFor(draft, mon.speciesId, content) && !draft.activeUids.includes(uid)) draft.activeUids.push(uid);
 }
 
 /**
@@ -660,7 +660,7 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
     if (i >= 0) shop.slots[i] = { ...slot, ...(shop.slots[i]!.floor ? { floor: shop.slots[i]!.floor } : {}) };
     else shop.slots.push(slot);
   }
-  const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null }, safari: null, blackMarket: null, daycareUsed: false } }, ctx);
+  const ring = rollRing(rng, { ...draft, city: { id, shop, reflection: [], ring: null, casino: { wheel: null, slots: null }, safari: null, blackMarket: null } }, ctx);
   draft.cursors.EncounterRNG = rng.cursor;
   // The gate's offer is seeded from the run and the Region, like the pre-run offer is seeded from the run.
   const reflection = regionModifierOffer((draft.seed ^ Math.imul(draft.regionIndex + 1, 0x9e3779b1)) >>> 0, ctx.content, draft.box, draft.money);
@@ -675,7 +675,7 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
     blackMarket = rollBlackMarket(marketRng, ctx.content, draft);
     draft.cursors.MarketRNG = marketRng.cursor;
   }
-  draft.city = { id, shop, reflection, ring, casino: { wheel: null, slots: null }, safari, blackMarket, daycareUsed: false };
+  draft.city = { id, shop, reflection, ring, casino: { wheel: null, slots: null }, safari, blackMarket };
   draft.regionModifier = null;
   draft.pendingNodeId = null;
   draft.pendingShop = null;
@@ -758,7 +758,10 @@ function gymOfNode(draft: RunState, node: MapNode) {
 /** §6.3.1 — every Pokémon standing at its threshold owes one Evolution screen, in Box order. */
 function queueEvolutions(draft: RunState, content: ContentRegistry): void {
   let early = catalystLevels(draft, content);
+  // A queued early evolution already has the one Catalyst reservation, even while another prompt is confirmed.
+  if (draft.pendingEvolutions.some((p) => !p.stone && !p.forced && draft.box.some((m) => m.uid === p.uid && !isEvolutionReady(m, content)))) early = 0;
   for (const mon of draft.box) {
+    if (mon.deferredEvolutionFrom === mon.speciesId) continue;
     const ready = isEvolutionReady(mon, content) || (early > 0 && isEvolutionReady(mon, content, early));
     if (!ready) continue;
     if (draft.pendingEvolutions.some((p) => p.uid === mon.uid)) continue;
@@ -1409,15 +1412,14 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const from = ctx.content.species(mon.speciesId).name;
         // §8.6.1 Evolution Catalyst — an evolution below the threshold is the one it paid for. A stone's is the
         // stone's (§6.3.2), and leaves the Catalyst armed.
-        if (!pending.stone && !isEvolutionReady(mon, ctx.content) && !draft.spentRelics.includes('evolution-catalyst')) {
+        if (!pending.stone && !pending.forced && !isEvolutionReady(mon, ctx.content) && !draft.spentRelics.includes('evolution-catalyst')) {
           draft.spentRelics.push('evolution-catalyst');
           say(draft, 'The Evolution Catalyst is spent.');
         }
+        if (pending.stone) draft.stones.splice(draft.stones.indexOf(pending.stone), 1);
         applyBranch(mon, action.branchId, ctx.content);
         // §4.2.7.1 — an evolution into a type immune to the status it carries clears it.
         if (mon.status && isImmuneToStatus(ctx.content.species(mon.speciesId).types, mon.status.kind)) mon.status = null;
-        // §2.11.1 — evolved inside the Center (the Daycare's level): everyone there is at full HP, the new max too.
-        if (pending.returnTo === 'center') mon.hp = effectiveMax(draft, mon, ctx.content);
         const branch = ctx.content.branch(action.branchId);
         say(draft, `${from} evolved into ${ctx.content.species(mon.speciesId).name} — ${branch.label}.`);
         draft.pendingEvolutions.shift();
@@ -1426,13 +1428,35 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const queued = draft.pendingEvolutions.length;
         queueEvolutions(draft, ctx.content);
         if (pending.returnTo) for (const p of draft.pendingEvolutions.slice(queued)) p.returnTo ??= pending.returnTo;
-        if (draft.pendingEvolutions.length) break;
-        // §6.3.2 — a stone used between nodes hands back to where it was used; a level-up walks off the node.
-        if (pending.returnTo) {
-          draft.phase = pending.returnTo;
-          break;
-        }
-        leaveNode(draft, draft.pendingNodeId!, ctx);
+        finishEvolutionPrompt(draft, pending.returnTo, ctx);
+        break;
+      }
+
+      case 'defer-evolution': {
+        const pending = draft.pendingEvolutions.shift()!;
+        const mon = draft.box.find((m) => m.uid === pending.uid)!;
+        // An earned Training right belongs to this stage, even when another resource is previewed later.
+        const trained = pending.forced || (mon.deferredEvolutionFrom === mon.speciesId && mon.deferredEvolutionForced);
+        mon.deferredEvolutionFrom = mon.speciesId;
+        if (trained) mon.deferredEvolutionForced = true;
+        else delete mon.deferredEvolutionForced;
+        if (pending.stone) mon.deferredEvolutionStone = pending.stone;
+        else delete mon.deferredEvolutionStone;
+        say(draft, `${ctx.content.species(mon.speciesId).name}'s evolution is postponed. Resume it from its Pokémon sheet.`);
+        finishEvolutionPrompt(draft, pending.returnTo, ctx);
+        break;
+      }
+
+      case 'resume-evolution': {
+        const mon = draft.box.find((m) => m.uid === action.uid)!;
+        const ready = evolutionResume(draft, mon, ctx.content)!;
+        const use = ready.stone ? stoneUse(ready.stone, mon.speciesId, ctx.content) : null;
+        draft.pendingEvolutions.unshift({
+          uid: mon.uid, from: mon.speciesId,
+          branchIds: use?.branch ? [use.branch] : ctx.content.species(mon.speciesId).branches.map((b) => b.id),
+          ...(ready.stone ? { stone: ready.stone } : {}), ...(ready.forced ? { forced: true } : {}), returnTo: draft.phase,
+        });
+        draft.phase = 'evolution';
         break;
       }
 
@@ -1505,12 +1529,11 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
-      // §6.3.2 — an Evolution Item: the stone is spent and the ordinary Evolution screen opens now, below the
+      // §6.3.2 — reserve a stone; confirmation spends it. The ordinary screen opens below the
       // level threshold, narrowed to the stone's branch where it makes one (Eevee).
       case 'use-stone': {
         const mon = draft.box.find((m) => m.uid === action.uid)!;
         const use = stoneUse(action.stoneId, mon.speciesId, ctx.content)!;
-        draft.stones.splice(draft.stones.indexOf(action.stoneId), 1);
         const branches = ctx.content.species(mon.speciesId).branches.map((b) => b.id);
         draft.pendingEvolutions.unshift({
           uid: mon.uid,
@@ -1591,7 +1614,6 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const at = draft.box.findIndex((m) => m.uid === given.uid);
         draft.box.splice(at, 1, recruit);
         draft.activeUids = draft.activeUids.map((u) => (u === given.uid ? recruit.uid : u));
-        if (draft.resting === given.uid) draft.resting = null;
         draft.stats.recruits += 1;
         trade.done = { given: { speciesId: given.speciesId, level: given.level }, receivedUid: recruit.uid };
         say(draft, `Traded ${ctx.content.species(given.speciesId).name} for ${ctx.content.species(offer.speciesId).name} (Lv ${level}).`);
@@ -1619,7 +1641,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           say(draft, `${name} grew to level ${mon.level}.`);
         } else if (action.upgrade === 'evolve') {
           if (!draft.pendingEvolutions.some((p) => p.uid === mon.uid)) {
-            draft.pendingEvolutions.push({ uid: mon.uid, from: mon.speciesId, branchIds: ctx.content.species(mon.speciesId).branches.map((b) => b.id), returnTo: 'map' });
+            draft.pendingEvolutions.push({ uid: mon.uid, from: mon.speciesId, branchIds: ctx.content.species(mon.speciesId).branches.map((b) => b.id), returnTo: 'map', forced: true });
           }
           say(draft, `${name} is ready to evolve.`);
         } else {
@@ -1664,13 +1686,11 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
-      // §2.11.0 — the open doors. The Center heals on the way in, like the route's Centers always did; the
-      // shop brings back the stock rolled on arrival, so a sold slot stays sold across visits.
+      // §2.11.0 — entering opens services; only asking the nurse heals. Shop stock persists across visits.
       case 'enter-building': {
         const city = draft.city!;
         if (action.building === 'center') {
-          draft.lastHeal = healBox(draft, (_mon, max) => max, ctx.content);
-          say(draft, 'The Pokémon Center restored your whole Box.');
+          draft.lastHeal = [];
           // §2.11.1 — the first visit sends you off with a pair sized for the Region ahead (v0.8.6).
           if (!city.giftTaken) {
             city.giftTaken = true;
@@ -2057,22 +2077,10 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
-      // §8.2.4 — Therapy. One stack, priced by how bad it already is, so a broken Pokémon is a real decision.
-      // §2.11.1 — the Daycare: a whole level with whatever it brings, then the Pokémon rests through the next
-      // fight. It leaves the active team now; if that empties the team, the healthiest others stand in.
-      case 'daycare': {
-        const mon = draft.box.find((m) => m.uid === action.uid)!;
-        draft.money -= daycarePrice(draft, ctx.content);
-        draft.city!.daycareUsed = true;
-        grantXp(mon, xpToNext(mon.level, ctx.progression) - mon.xp, ctx.content, ctx.progression);
-        // Inside the Center everyone is at full HP: the level's new HP is filled too.
-        mon.hp = effectiveMax(draft, mon, ctx.content);
-        draft.resting = mon.uid;
-        draft.activeUids = draft.activeUids.filter((u) => u !== mon.uid);
-        if (!draft.activeUids.some((u) => (draft.box.find((m) => m.uid === u)?.hp ?? 0) > 0))
-          draft.activeUids = fillTeam(draft.box.filter((m) => m.uid !== mon.uid && m.hp > 0), ctx.content);
-        say(draft, `The Daycare raised ${ctx.content.species(mon.speciesId).name} to Lv ${mon.level}. It will sit out the next fight.`);
-        queueEvolutionsReturning(draft, ctx.content, 'center');
+      // §2.11.1 — the nurse restores HP and conditions when asked, without changing Trauma.
+      case 'heal-center': {
+        draft.lastHeal = healBox(draft, (_mon, max) => max, ctx.content);
+        say(draft, 'Nurse Joy restored your whole Box. Trauma is treated at the Therapy beds.');
         break;
       }
 
@@ -2150,8 +2158,6 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
     }
-    // §2.11.1 — one fight played, whatever it was (a route node, a Ring rung): the Daycare's Pokémon is back.
-    if (action.type === 'finish-combat') returnFromDaycare(draft, ctx.content);
   });
 
   return { state: next };
@@ -2200,8 +2206,6 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       // §2.3 — three places; a Legendary takes two of them.
       if (placesTaken(action.uids, state.box, ctx.content) > ACTIVE_TEAM.places || new Set(action.uids).size !== action.uids.length) return 'team-too-large';
       if (action.uids.some((u) => !state.box.some((m) => m.uid === u))) return 'unknown-pokemon';
-      // §2.11.1 — the Daycare's Pokémon sits this fight out.
-      if (state.resting && action.uids.includes(state.resting)) return 'resting';
       if (!action.uids.some((u) => (state.box.find((m) => m.uid === u)?.hp ?? 0) > 0)) return 'no-healthy-pokemon';
       return undefined;
     }
@@ -2210,11 +2214,30 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (!state.activeUids.includes(action.uid)) return 'unknown-pokemon';
       return undefined;
 
+    case 'defer-evolution': {
+      if (state.phase !== 'evolution') return 'wrong-phase';
+      const pending = state.pendingEvolutions[0];
+      return pending?.uid === action.uid && state.box.some((m) => m.uid === action.uid && m.speciesId === pending.from) ? undefined : 'unknown-pokemon';
+    }
+    case 'resume-evolution': {
+      if (!teamPhase(state) && state.phase !== 'dojo') return 'wrong-phase';
+      const mon = state.box.find((m) => m.uid === action.uid);
+      if (!mon) return 'unknown-pokemon';
+      return evolutionResume(state, mon, ctx.content) ? undefined : 'wrong-phase';
+    }
+
     case 'choose-branch': {
       const pending = state.pendingEvolutions[0];
       if (state.phase !== 'evolution' || !pending) return 'wrong-phase';
       if (action.uid !== pending.uid) return 'unknown-pokemon';
-      if (!pending.branchIds.includes(action.branchId)) return 'unknown-branch';
+      const mon = state.box.find((m) => m.uid === pending.uid);
+      if (!mon || mon.speciesId !== pending.from) return 'unknown-pokemon';
+      if (pending.stone) {
+        if (!state.stones.includes(pending.stone)) return 'no-such-item';
+        const use = stoneUse(pending.stone, mon.speciesId, ctx.content);
+        if (!use || (use.branch && use.branch !== action.branchId)) return 'unknown-branch';
+      } else if (!pending.forced && !isEvolutionReady(mon, ctx.content, catalystLevels(state, ctx.content))) return 'wrong-phase';
+      if (!pending.branchIds.includes(action.branchId) || !ctx.content.species(mon.speciesId).branches.some((b) => b.id === action.branchId)) return 'unknown-branch';
       return undefined;
     }
 
@@ -2241,7 +2264,7 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
 
     case 'use-stone': {
       // §6.3.2 — between nodes only: on the map, in a City's lobby, or at the Dojo's Move Manager.
-      if (state.phase !== 'map' && state.phase !== 'city' && state.phase !== 'dojo') return 'wrong-phase';
+      if (!teamPhase(state) && state.phase !== 'dojo') return 'wrong-phase';
       const mon = state.box.find((m) => m.uid === action.uid);
       if (!mon) return 'unknown-pokemon';
       if (!state.stones.includes(action.stoneId)) return 'no-such-item';
@@ -2500,16 +2523,8 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
     case 'leave-shop':
       return state.phase === 'shop' ? undefined : 'wrong-phase';
 
-    case 'daycare': {
-      if (state.phase !== 'center' || !state.city) return 'wrong-phase';
-      if (state.city.daycareUsed) return 'daycare-used';
-      const mon = state.box.find((m) => m.uid === action.uid);
-      if (!mon) return 'unknown-pokemon';
-      if (mon.level >= ctx.progression.maxLevel) return 'bad-payment';
-      // Someone has to fight the next battle while it rests.
-      if (!state.box.some((m) => m.uid !== mon.uid && m.hp > 0)) return 'needs-another';
-      return state.money < daycarePrice(state, ctx.content) ? 'cannot-afford' : undefined;
-    }
+    case 'heal-center':
+      return state.phase === 'center' ? undefined : 'wrong-phase';
 
     case 'use-therapy': {
       // §8.2.4 — Centres treat Trauma, and only Centres: the whole point of the service is that it is the

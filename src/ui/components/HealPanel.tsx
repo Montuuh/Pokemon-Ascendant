@@ -19,7 +19,7 @@ import styles from './HealPanel.module.css';
 // the bars fill, each with what it got back: the result lands with the machine, never before it — not on the bars, not in
 // a bubble (D8). A click or a key skips. With motion off the bars stand filled from the start; the jingle still plays.
 // Nothing to heal: the machine stays dark and says so, and no row repeats the Box. Once done, a bar reads the Pokémon as
-// it is now (a Daycare level or Therapy after the heal moves it); only its "+N" is the heal's.
+// it is now (evolution or Therapy after the heal can change it); only its "+N" is the heal's.
 
 type Beat = 'tray' | 'run' | 'fill' | 'done';
 
@@ -36,7 +36,7 @@ const SOCKETS: readonly [number, number][] = [
 ];
 /**
  * The heals already shown this session, by the run's stamp (`RunState.heals`): a screen that remounts on the same heal
- * (back from an Evolution the Daycare's level made ready) shows it done rather than running the machine again.
+ * (for example, returning from an evolution) shows it done rather than running the machine again.
  */
 const SHOWN = new Set<number>();
 

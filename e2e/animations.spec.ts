@@ -46,6 +46,7 @@ test.describe('The heal and the item ball, played — §9.9.3, §2.9.5', () => {
       });
     });
     await page.getByTestId('door-center').click();
+    await page.getByTestId('door-center-heal').click();
     const heal = page.getByTestId('center-heal');
     await expect(heal).toBeVisible();
     // Running: the pill says so, the counters wait, inert.
@@ -229,13 +230,13 @@ test.describe('Arena animations — §9.9', () => {
     });
     const cut = page.getByTestId('evolution-cutscene');
     await expect(cut).toBeVisible();
-    await expect(page.getByTestId('evolution-line')).toContainText('is evolving');
+    await expect(page.getByTestId('evolution-line')).toContainText('is preparing to evolve');
     // Into the trade: the two shapes of light swap places.
     await expect(cut).toHaveAttribute('data-phase', 'trade', { timeout: 4_000 });
     await page.waitForTimeout(900);
     await page.screenshot({ path: 'playtest/anim-evolution.png' });
     await expect(cut).toHaveAttribute('data-phase', 'reveal', { timeout: 6_000 });
-    await expect(page.getByTestId('evolution-line')).toContainText('evolved into Ivysaur');
+    await expect(page.getByTestId('evolution-line')).toContainText('could evolve into Ivysaur');
     await page.screenshot({ path: 'playtest/anim-evolution-reveal.png' });
     await page.getByTestId('evo-skip').click();
     await expect(page.getByTestId('evolution-screen')).toBeVisible();
@@ -254,11 +255,11 @@ test.describe('Arena animations — §9.9', () => {
       a.run.levelTo(27);
       a.run.goto('wild', true);
     });
-    await expect(page.getByTestId('evolution-line')).toContainText('Bulbasaur is evolving');
+    await expect(page.getByTestId('evolution-line')).toContainText('Bulbasaur is preparing to evolve');
     await page.getByTestId('evo-skip').click();
     await page.locator('[data-archetype="vanguard"]').click();
     await page.getByTestId('btn-evolve').click();
-    await expect(page.getByTestId('evolution-line')).toContainText('Ivysaur is evolving');
+    await expect(page.getByTestId('evolution-line')).toContainText('Ivysaur is preparing to evolve');
     await page.getByTestId('evo-skip').click();
     await expect(page.locator('[data-testid^="branch-venusaur-"]').first()).toBeVisible();
   });

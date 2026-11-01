@@ -3,7 +3,7 @@ import { IconCards, IconCrown, IconLock, IconPlus, IconX } from '@tabler/icons-r
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { battleSpriteUrl } from '@/content/schemas/species';
-import { benchXpShare, boxCapacity, gymById, matchupAgainst, placeInTeam, placesOf, runHelpers, teamStats, xpToNext, DEFAULT_PROGRESSION, type PartyMon, type RunAction } from '@/sim';
+import { benchXpShare, boxCapacity, evolutionResume, gymById, matchupAgainst, placeInTeam, placesOf, runHelpers, teamStats, xpToNext, DEFAULT_PROGRESSION, type PartyMon, type RunAction } from '@/sim';
 import { itemIcon } from '@/ui/art';
 import { ItemIcon } from '@/ui/components/FindPrize';
 import { HpBar } from '@/ui/components/HpBar';
@@ -24,7 +24,7 @@ import styles from './TeamScreen.module.css';
 // sheet — its stats as its next fight fields them, its ability, the item it holds (given or taken here), its four cards
 // (the Move Manager one click away), its evolution, and how it meets the Gyms the route ends at. A Pokémon is moved by
 // dragging it onto a place, by an empty place's "+", or by the place buttons on its sheet; every change is the run's
-// `set-active`, so the reducer keeps every rule (two places for a Legendary, nobody resting, somebody standing) and the
+// `set-active`, so the reducer keeps every rule (two places for a Legendary, somebody standing) and the
 // screen says why when it refuses. A modal: focus is held inside it (and inside the Move Manager while that is open),
 // stays where it was through every action, and goes back to the door that opened it.
 
@@ -120,7 +120,9 @@ export function TeamScreen({ onClose, locked = false, initialUid = null }: Props
     if (!dispatch(action)) {
       setToast(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? TEAM_TEXT.refused);
       window.setTimeout(() => setToast(null), 2600);
+      return false;
     }
+    return true;
   }
 
   /** §2.3 — put `uid` in place `slot` (0 the Lead), or in the Box (`null`): the formation as the run will hold it. */
@@ -245,7 +247,7 @@ export function TeamScreen({ onClose, locked = false, initialUid = null }: Props
                 <ul className={styles.tiles}>
                   {benched.map((m) => (
                     <li key={m.uid}>
-                      <BoxTile mon={m} selected={m.uid === mon.uid} resting={m.uid === run.resting} onSelect={() => setSelected(m.uid)} drag={drag(m.uid)} />
+                      <BoxTile mon={m} selected={m.uid === mon.uid} onSelect={() => setSelected(m.uid)} drag={drag(m.uid)} />
                     </li>
                   ))}
                 </ul>
@@ -264,6 +266,7 @@ export function TeamScreen({ onClose, locked = false, initialUid = null }: Props
             movesRef={movesBtn}
             onPlace={(slot) => place(mon.uid, slot)}
             onManage={() => setManaging(mon.uid)}
+            onEvolve={() => { if (act({ type: 'resume-evolution', uid: mon.uid })) onClose(); }}
             onEquip={(itemId) => {
               // Given, its Take button takes the focus; taken, the first item it could be given instead.
               focusNext(itemId ? '[data-testid="team-take"]' : '[data-testid^="team-give-"]');
@@ -324,13 +327,13 @@ function SlotCard({ mon, selected, onSelect, drag }: { mon: PartyMon; selected: 
 }
 
 /** A Pokémon in the Box: its face, its name and level, its HP. */
-function BoxTile({ mon, selected, resting, onSelect, drag }: { mon: PartyMon; selected: boolean; resting: boolean; onSelect: () => void; drag: DragProps }) {
+function BoxTile({ mon, selected, onSelect, drag }: { mon: PartyMon; selected: boolean; onSelect: () => void; drag: DragProps }) {
   const tip = useTip(ownedMonTip(mon));
   const content = getContent();
   const s = content.species(mon.speciesId);
   const max = runHelpers.maxHpOf(mon, content);
   return (
-    <button type="button" className={`${styles.tile} ${selected ? styles.selected : ''} ${mon.hp <= 0 ? styles.fainted : ''}`} onClick={onSelect} aria-pressed={selected} aria-label={TEAM_TEXT.monLabel(mon.shiny ? `Shiny ${s.name}` : s.name, mon.level, mon.hp, max) + (resting ? `, ${TEAM_TEXT.resting}` : '')} data-testid={`team-tile-${mon.uid}`} {...drag} {...tip}>
+    <button type="button" className={`${styles.tile} ${selected ? styles.selected : ''} ${mon.hp <= 0 ? styles.fainted : ''}`} onClick={onSelect} aria-pressed={selected} aria-label={TEAM_TEXT.monLabel(mon.shiny ? `Shiny ${s.name}` : s.name, mon.level, mon.hp, max)} data-testid={`team-tile-${mon.uid}`} {...drag} {...tip}>
       <MonIcon speciesId={s.id} shiny={mon.shiny} size={40} />
       <span className={`${styles.tileName} display`}>{s.name}</span>
       <span className={`${styles.tileLevel} tabular`}>Lv {mon.level}</span>
@@ -359,6 +362,7 @@ function Sheet({
   onPlace,
   onManage,
   onEquip,
+  onEvolve,
 }: {
   mon: PartyMon;
   slot: number;
@@ -370,6 +374,7 @@ function Sheet({
   onPlace: (slot: number | null) => void;
   onManage: () => void;
   onEquip: (itemId: string | null) => void;
+  onEvolve: () => void;
 }) {
   const run = useRunStore((s) => s.run)!;
   const content = getContent();
@@ -379,7 +384,10 @@ function Sheet({
   const ability = mon.abilityId ? content.ability(mon.abilityId) : null;
   const held = mon.heldItem ? content.heldItem(mon.heldItem) : null;
   const bagItems = [...new Set(run.bag)].map((id) => content.heldItem(id)).filter((i) => !i.speciesLock || i.speciesLock === mon.speciesId);
-  const evolve = s.evolveLevel !== undefined && s.evolvesTo.length ? (mon.level >= s.evolveLevel ? TEAM_TEXT.ready : TEAM_TEXT.evolvesAt(s.evolveLevel)) : null;
+  const evolution = s.evolveLevel !== undefined && s.evolvesTo.length ? (mon.level >= s.evolveLevel ? TEAM_TEXT.ready : TEAM_TEXT.evolvesAt(s.evolveLevel)) : null;
+  const resumable = evolutionResume(run, mon, content);
+  const readiness = resumable?.stone ? `${content.evolutionItem(resumable.stone).name} ready` : resumable?.forced ? 'Training ready' : resumable?.catalyst ? 'Catalyst ready' : evolution;
+  const evolve = readiness && (mon.deferredEvolutionFrom === mon.speciesId ? `Postponed · ${readiness}` : readiness);
   const abilityTip = useTip(abilitySheetTip(ability));
   const xpTip = useTip(teamXpTip(mon.xp, xpToNext(mon.level), benchXpShare(run, content, DEFAULT_PROGRESSION.benchXpShare)));
   // A place it cannot take: a gap in the formation, the last one out of it, or a locked team.
@@ -479,7 +487,7 @@ function Sheet({
         {evolve && (
           <>
             <span className={styles.rowLabel}>{TEAM_TEXT.evolution}</span>
-            <span className={styles.rowValue}>{evolve}</span>
+            <span className={styles.rowValue}>{evolve} {!locked && resumable && <button type="button" className={styles.small} onClick={onEvolve} data-testid="team-evolve">Evolve</button>}</span>
           </>
         )}
       </div>

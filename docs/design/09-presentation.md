@@ -738,7 +738,7 @@ total on a pill under the machine (*+146 HP · 1 cured*). The Center's three cou
 the PC Box's bars would otherwise tell the result first (D8). **The field nurse** plays the same jingle while she works
 on a Box laid out the same way, her half heal filling each bar. A click or a key skips to the end; with motion off the
 bars stand filled and the jingle still plays; with nothing to heal the machine stays dark and says so. A heal already
-shown is not run again when its screen comes back (from an Evolution the Daycare's level made ready).
+shown is not run again when its screen comes back (for example, after resuming an evolution at the Center).
 
 ---
 

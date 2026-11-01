@@ -100,14 +100,14 @@ for (const viewport of [{ width: 1920, height: 1080 }, { width: 1280, height: 72
         await expect(room.locator('[aria-pressed]')).toHaveCount(0);
         await pieces(page, room);
         await capture(page, `center-${suffix}`);
-        for (const id of ['pc', 'daycare', 'therapy']) {
+        for (const id of ['pc', 'therapy']) {
           const door = page.getByTestId(`door-center-${id}`);
           await expect(door).toHaveAttribute('aria-haspopup', 'dialog');
           await expect(door).toHaveAttribute('aria-expanded', 'false');
           await door.focus();
-          await door.press(id === 'daycare' ? 'Space' : 'Enter');
+          await door.press(id === 'therapy' ? 'Space' : 'Enter');
           await expect(door).toHaveAttribute('aria-expanded', 'true');
-          await expect(page.getByRole('dialog', { name: id === 'pc' ? /^PC Box/ : id === 'daycare' ? /^Daycare/ : /^Therapy/ })).toBeVisible();
+          await expect(page.getByRole('dialog', { name: id === 'pc' ? /^PC Box/ : /^Therapy/ })).toBeVisible();
           await expect(page.getByTestId('center-service-back')).toBeFocused();
           if (id === 'pc') await capture(page, `center-pc-${suffix}`);
           await page.keyboard.press('Escape');

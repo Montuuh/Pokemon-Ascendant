@@ -201,8 +201,10 @@ export interface PlayerState {
    * reads and the save writes, instead of being re-derived from abilities in three places.
    */
   freeSwaps: number;
+  freeSwapSources?: { source: string; remaining: number }[];
   /** §7.3.7 Flow State — the free swaps a relic grants afresh every turn, spent before the combat's bank and lost if unused. */
   turnFreeSwaps: number;
+  turnFreeSwapSources?: { source: string; remaining: number }[];
   /** §7.3 — the run's relics, read-only inside a fight. */
   relics: string[];
   /** §5.10 — the run's Badges, read-only inside a fight. Resolved through the same hooks as relics (§7.3.6). */
@@ -215,6 +217,7 @@ export interface PlayerState {
   order?: number[];
   /** §7.3 — AP banked by a relic for the next turn (Cycle Cell, Move Echo). */
   bankedAp: number;
+  bankedApSources?: { source: string; amount: number }[];
   /** Set when the deck reshuffled this turn, so a reshuffle relic can pay out next turn. */
   reshuffled: boolean;
   /** Relic charges spent once per combat: pinch-heal, first-hit reduction, lead-low. */
@@ -245,11 +248,13 @@ export interface PlayerState {
  * §9.2 — `intent` is an enemy's declaration for the turn ("readies Ember → Lead"): the intent chip already shows it,
  * so the log's ticker skips it and says what happened instead; the full log keeps it.
  */
-export type LogCategory = 'player' | 'enemy' | 'intent' | 'turn' | 'system';
+export type LogCategory = 'player' | 'enemy' | 'intent' | 'turn' | 'system' | 'ap';
 export interface LogEntry {
   turn: number;
   category: LogCategory;
   text: string;
+  /** §3.8 — actual committed AP changes, distinct from credits for a future turn. */
+  ap?: { kind: 'balance' | 'bank'; source: string; requested: number; before: number; after: number };
 }
 
 export type CombatEvent = { seq: number; turn: number } & (

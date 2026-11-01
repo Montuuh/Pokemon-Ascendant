@@ -233,6 +233,9 @@ export function previewBranch(mon: PartyMon, branchId: string, content: ContentR
  */
 export function applyBranch(mon: PartyMon, branchId: string, content: ContentRegistry): void {
   const branch = content.branch(branchId);
+  delete mon.deferredEvolutionFrom;
+  delete mon.deferredEvolutionStone;
+  delete mon.deferredEvolutionForced;
   mon.speciesId = branch.to;
   mon.archetype = branch.archetype;
 

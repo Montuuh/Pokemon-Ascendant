@@ -13,13 +13,13 @@ function withNumbers(text: string) {
  * §9.2.2.1 — the combat log, in the top bar: the last thing that happened on one line, the whole fight one click
  * away. The arena is for the fight; the sr-only announcer still says every line aloud.
  */
-export function CombatLog({ log, max = 200 }: { log: LogEntry[]; max?: number }) {
+export function CombatLog({ log, max = Infinity }: { log: LogEntry[]; max?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const lines = log.slice(-max);
   // The ticker says what happened: a turn marker and an enemy's declaration (its intent chip already shows it) are skipped.
-  const last = [...lines].reverse().find((l) => l.category !== 'turn' && l.category !== 'intent');
+  const last = [...lines].reverse().find((l) => l.category !== 'turn' && l.category !== 'intent' && l.category !== 'ap');
   useEffect(() => {
     const el = ref.current;
     if (el) el.scrollTop = el.scrollHeight;

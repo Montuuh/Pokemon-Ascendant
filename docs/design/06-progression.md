@@ -78,14 +78,12 @@ Multipliers stack multiplicatively: `lucky-egg-token` ×1.15, the `quick-study` 
 ## §6.2.2 Levelling up
 
 Level-ups are processed **between nodes**, never mid-combat. The fight's result (§9.4.5) shows the XP bar
-fill, applies the stat increase immediately, and **evolves any Pokémon that crossed its threshold** (§6.2.4) — as
+fill, applies the stat increase immediately, and **offers evolution to any Pokémon that crossed its threshold** (§6.2.4) — as
 the series' surprise, on Continue: nothing on the result says one is coming.
 
-Evolution is not optional and not deferred, because a base form's learnset ends two levels *below* its
-threshold (§6.9): a Pokémon that levels past 10 without evolving simply stops learning, and its four cards
-never change again for the rest of the run. Holding an evolution back is therefore not a strategic choice, it
-is a dead end — so the level-up applies it. What the player chooses is the **branch** (§6.3), on the Evolution
-screen (§3.6).
+Evolution can be **postponed** (§6.3.1; user decision, 2026-10-30). The current form keeps its existing stats and
+learnset until the player evolves it; its own learnset still ends below the threshold (§6.9). Resuming later
+applies the chosen branch and catches up the evolved form's learnset without replacing the chosen active four.
 
 ## §6.2.3 Stat growth
 
@@ -135,19 +133,27 @@ contributes, and it is the primary creative expression inside a run (Pillar 4).
 - Available when the Pokémon reaches its level threshold.
 - Crossing the threshold **queues an Archetype Selection screen** (§6.3.3), shown between nodes, after the
   fight's result (§9.4.5) and before the map. One screen per Pokémon, in Box order.
-- The evolution itself is **not optional** and not deferrable, for the reason §6.2.2 gives: a base form's
-  learnset ends below its threshold, so holding one back is a dead end rather than a tactic. What is
-  player-initiated is the **branch** — and that choice is permanent, so the screen confirms it.
-- The Victory Road Training Grounds can force an early evolution (§2.12.3).
+- **Evolve later** (also Escape before confirmation) postpones this Pokémon's current stage. The choice is saved
+  per UID and source species, and future level-ups/catches/visits do not repeat that stage's popup.
+- The Pokémon's **Team sheet → Evolve** resumes it manually outside combat. Revalidate its current stage, level,
+  available Evolution Catalyst and reserved stone before opening and again before committing a branch.
+- Resumption prefers an already-earned Training right, then free level eligibility, then the explicitly postponed
+  stone and its branch if still usable and owned. Catalyst is a fallback, so resuming a chosen stone never
+  silently spends that relic instead.
+- Only confirming a branch changes the Pokémon or spends a stone/Catalyst. A postponed stone remains in the bag;
+  older saves that already spent a pending stone receive it back once on migration. An unrelated Pokémon is free
+  to use the unspent Catalyst meanwhile; the postponed one must then meet its current eligibility again.
+- Confirmed evolution clears that stage's postponement. A newly eligible next stage can offer its own choice.
+  Queue order and the originating service are preserved when either confirming or postponing; evolving inside
+  the Center does not grant an implicit heal.
+- The Victory Road Training Grounds grant one early evolution (§2.12.3). Postponing keeps that already-earned
+  right for this UID/source stage; resuming it spends no stone or Catalyst. Previewing/postponing a stone does
+  not discard that earned right. It never carries to a second stage.
 - **A recruit caught past its threshold owes its screen straight away**, queued with the catch. Region 2's
   recruits arrive at Lv 14–22 and every basic evolves at 12, so the catch is where a Region 2 Pokémon chooses its
   branch — the same beat as levelling into it, one fight earlier. *(v0.7.3.)*
 
-> *Changed 2026-09-19 (v0.3).* This section used to say evolution was player-initiated and that delaying it was
-> a legitimate tactic, which contradicted §6.2.2. §6.2.2 is right and this now matches it: the level-up
-> applies the evolution, the player picks the archetype. Delaying stays meaningful in exactly one place — a
-> stone (§6.3.2) lets a line evolve *earlier*, and a stage-aware tutor list (§6.4.3) gives a reason to buy
-> before you evolve rather than after.
+> *Changed 2026-10-30 (v0.9.86).* Postponement and manual resumption supersede the mandatory-evolution decision of v0.3.
 
 ## §6.3.2 Evolution Items
 
@@ -156,7 +162,7 @@ Five stones exist: Fire, Water, Thunder, Leaf, Moon (§7.2.5).
 A stone lets its line evolve **earlier** than its level threshold: a basic **from level 8** (evolving at 12
 otherwise), a middle stage **from level 18** (at 26 otherwise). It is applied from the Move Manager between
 nodes — on the map, in a City lobby or at the Dojo — and opens the ordinary Evolution screen (§6.3.3) there and
-then. Single use.
+then. The stone is reserved while choosing and spent only on confirmation. Single use.
 
 | Stone | Lines |
 |---|---|

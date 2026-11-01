@@ -6,7 +6,7 @@ import type { DamageBreakdown } from './damage';
 import { catchOdds, type CatchOdds } from './catch';
 import { activeEnemy, aliveEnemies, benchIndices, lead } from './slots';
 import type { Combatant, CombatState, ConsumableCard, EnemyCombatant, RejectReason, SkillCard } from './state';
-import { choiceLockBlocks, itemApDelta } from './items';
+import { choiceLockBlocks, itemApAdjustments } from './items';
 import { cardsLocked, isPositionLocked, paralysisApBonus } from './status';
 import { DEFAULT_BATTLE_CONFIG, type BattleConfig } from './battleConfig';
 import { outspeeds } from './stats';
@@ -80,16 +80,28 @@ export function cardVictims(state: CombatState, move: MoveDef, target: EnemyComb
   return target ? [target] : [];
 }
 
-export function effectiveApCost(state: CombatState, move: MoveDef, owner: Combatant, ctx: CombatCtx): number {
-  let cost = move.apCost + paralysisApBonus(owner, ctx.config);
-  if (move.role === 'defensive' && state.player.defensiveDiscount) cost = Math.max(0, cost - 1);
-  // §7.3.4 / §7.4.5 — relic and held-item AP changes. Choice Specs and Choice Band return a large negative
-  // to mean "free", which the floor below turns into 0 without special-casing the sentinel anywhere else.
-  cost += itemApDelta(state, owner, move, ctx.content);
-  // §5.9.5 Overcharge — Surge's rule: the turn's first card costs more.
-  cost += ruleApDelta(state, ctx.config);
-  return Math.max(0, cost);
+/** §3.8 — pure pricing and its source labels are shared by preview and the committed ledger. */
+export function apCostDetails(state: CombatState, move: MoveDef, owner: Combatant, ctx: CombatCtx): { cost: number; details: string[] } {
+  let cost = move.apCost;
+  const details = [`base ${cost}`];
+  const paralysis = paralysisApBonus(owner, ctx.config);
+  if (paralysis) { cost += paralysis; details.push(`${owner.name}'s Paralysis +${paralysis}`); }
+  if (move.role === 'defensive' && state.player.defensiveDiscount) {
+    const discount = Math.min(cost, 1);
+    cost -= discount;
+    details.push(`Defensive swap discount −${discount}`);
+  }
+  for (const entry of itemApAdjustments(state, owner, move, ctx.content)) {
+    cost += entry.amount;
+    details.push(entry.free ? `${entry.source}: free` : `${entry.source} ${entry.amount >= 0 ? '+' : '−'}${Math.abs(entry.amount)}`);
+  }
+  const overcharge = ruleApDelta(state, ctx.config);
+  if (overcharge) { cost += overcharge; details.push(`Overcharge +${overcharge}`); }
+  return { cost: Math.max(0, cost), details };
 }
+
+export const effectiveApCost = (state: CombatState, move: MoveDef, owner: Combatant, ctx: CombatCtx): number =>
+  apCostDetails(state, move, owner, ctx).cost;
 
 export function stepBackOptions(state: CombatState): number[] {
   return benchIndices(state).filter((i) => {

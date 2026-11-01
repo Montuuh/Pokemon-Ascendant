@@ -123,7 +123,9 @@ describe('The heal, recorded — §2.4.2, §9.9.3', () => {
       d.box[2]!.status = { kind: 'poison', turnsLeft: null };
       arriveAtCity(d, ctx);
     });
-    const at = apply(run, { type: 'enter-building', building: 'center' });
+    const entered = apply(run, { type: 'enter-building', building: 'center' });
+    expect(entered.box).toEqual(run.box);
+    const at = apply(entered, { type: 'heal-center' });
     const lines = at.lastHeal!;
     expect(lines).toHaveLength(3);
     expect(lines[0]).toMatchObject({ from: 3, to: effectiveMax(at, at.box[0]!, content), cured: false });
@@ -139,7 +141,9 @@ describe('The heal, recorded — §2.4.2, §9.9.3', () => {
       d.box[0]!.hp = 999;
       arriveAtCity(d, ctx);
     });
-    const at = apply(run, { type: 'enter-building', building: 'center' });
+    const entered = apply(run, { type: 'enter-building', building: 'center' });
+    expect(entered.box).toEqual(run.box);
+    const at = apply(entered, { type: 'heal-center' });
     expect(at.box[0]!.hp).toBe(effectiveMax(at, at.box[0]!, content));
     expect(at.lastHeal![0]!.to).toBe(at.box[0]!.hp);
   });

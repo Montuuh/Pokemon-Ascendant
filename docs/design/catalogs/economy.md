@@ -71,7 +71,6 @@ Hyper Potions (Celadon) on the first visit. Measured over 120 runs: a full run e
 |---|---|---|
 | Heal | free | City Center (full, every status) · the route's nurse (50 %, every status) |
 | Therapy (−1 Trauma stack) | `100 × (1 + stacks)` ₽ | City Center only |
-| Daycare (+1 level, skips the next combat) | 200 ₽ | City Center |
 | Dojo: off-learnset move | 150 ₽ (`EconomyConfig.dojoMoveCost`) | Town Dojo · City Dojo (+30 %) |
 | Dojo: ability (set or swap) | 200 ₽ (`EconomyConfig.dojoAbilityCost`) | same |
 

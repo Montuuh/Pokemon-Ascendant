@@ -188,3 +188,5 @@
     opacity: 0;
   }
 }
+
+.cancel { right: auto; left: var(--sp-4); }

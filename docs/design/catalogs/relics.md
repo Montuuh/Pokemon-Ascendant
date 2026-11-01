@@ -72,7 +72,7 @@
 | `champions-crest` | Champion's Crest | combat | Each enemy a Pokémon defeats: +5 % damage for it this run (cap +25 %) | T3 | ✅ |
 | `time-spinner` | Time Spinner | combat | Every enemy but a boss loses its first turn of the fight, shown on its intent (v0.7.5 — was an activated skip) | T3 | ✅ |
 | `phoenix-feather` | Phoenix Feather | combat | Once per run: prevent a faint, restore to 1 HP. Consumed. | T2 | ✅ |
-| `sages-tome` | Sage's Tome | card | Max hand size +2; max AP per turn +1 | T3 | ✅ |
+| `sages-tome` | Sage's Tome | card | Draw 2 more cards; +1 AP every turn including turn 1; cap 6 | T3 | ✅ |
 | `crown-of-echoes` | Crown of Echoes | combat | The first move each combat is copied free into your hand on turn 2 | T3 | ✅ |
 | `soul-link` | Soul Link | combat | The two Pokémon longest in the Box each deal +10 % while both stand in the fight (v0.7.5 — was a pick on pickup) | T3 | ✅ |
 
@@ -130,7 +130,7 @@ the lane. Every Tier-3 relic should change *how a run works*, not how much damag
 |---|---|---|---|---|
 | `champions-crest` | Champion's Crest | combat | Kill credit grants that Pokémon +5 % damage this run, cap +25 % | ✅ |
 | `time-spinner` | Time Spinner | combat | Every enemy but a boss loses turn 1 | ✅ |
-| `sages-tome` | Sage's Tome | card | Max hand +2; max AP +1 | ✅ |
+| `sages-tome` | Sage's Tome | card | Draw 2 more cards; +1 AP every turn including turn 1; cap 6 | ✅ |
 | `crown-of-echoes` | Crown of Echoes | combat | The first move each combat is copied free into hand on turn 2 | ✅ |
 | `soul-link` | Soul Link | combat | The two longest-travelling Pokémon deal +10 % while both stand | ✅ |
 | `reactor-core` | Reactor Core | card | Max hand +1 (also reachable as a Tier-2 discovery) | ✅ |

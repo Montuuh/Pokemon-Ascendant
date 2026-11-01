@@ -122,7 +122,7 @@ test.describe('The town — §2.11', () => {
 });
 
 test.describe('Statuses between fights — §4.2.7.1', () => {
-  test('a carried status shows on the map and in town, and the Center clears it', async ({ page }) => {
+  test('a carried status persists through an untreated Center visit, and the nurse clears it on request', async ({ page }) => {
     await freshRun(page);
     await page.evaluate(() => window.__ascendant!.run.afflict('burn'));
     await expect(page.getByTestId('box-status-squirtle')).toBeVisible();
@@ -132,6 +132,11 @@ test.describe('Statuses between fights — §4.2.7.1', () => {
     await expect(page.getByTestId('city-mon-squirtle')).toHaveAttribute('aria-label', /Burn/);
 
     await page.getByTestId('door-center').click();
+    await page.getByTestId('btn-leave-center').click();
+    await expect(page.getByTestId('city-mon-squirtle')).toHaveAttribute('aria-label', /Burn/);
+    await page.getByTestId('door-center').click();
+    await page.getByTestId('door-center-heal').click();
+    await expect(page.getByTestId('center-heal')).toHaveAttribute('data-beat', 'done');
     await page.getByTestId('btn-leave-center').click();
     await expect(page.getByTestId('city-mon-squirtle')).not.toHaveAttribute('aria-label', /Burn/);
   });
@@ -326,8 +331,8 @@ test.describe('The Pokémon Centre — §2.11.1, §8.2.4', () => {
   });
 });
 
-test.describe('The Daycare and the PC Box — §2.11.1', () => {
-  test('the Daycare trades a fight for a level once a visit, and the PC Box picks the team indoors', async ({ page }) => {
+test.describe('The nurse and the PC Box — §2.11.1', () => {
+  test('the nurse heals when asked, and the PC Box picks the team indoors', async ({ page }) => {
     await freshRun(page);
     await page.evaluate(() => {
       window.__ascendant!.run.fill(3);
@@ -340,29 +345,10 @@ test.describe('The Daycare and the PC Box — §2.11.1', () => {
     await page.getByTestId('door-center-pc').click();
     await expect(page.getByTestId('center-pc').getByTestId('box-panel')).toBeVisible();
     await page.getByTestId('center-service-back').click();
-    await page.getByTestId('door-center-daycare').click();
-
-    // The Daycare: the second Pokémon in the Box, a level up, out of the team until a fight is played.
-    const second = await page.evaluate(() => window.__ascendant!.run.state()!.box[1]!);
-    await page.getByTestId(`daycare-${second.speciesId}`).click();
-    // A level that brings an evolution queues it as any other (§6.3.1), and the Evolution screen hands back here.
-    if (await page.getByTestId('evolution-screen').isVisible()) {
-      await page.locator('[data-testid^="branch-"]').first().click();
-      await page.getByTestId('btn-evolve').click();
-      await expect(page.getByTestId('center-screen')).toBeVisible();
-    }
+    await page.getByTestId('door-center-heal').click();
+    await expect(page.getByTestId('center-heal')).toHaveAttribute('data-beat', 'done');
     const after = await page.evaluate(() => window.__ascendant!.run.state()!);
-    expect(after.box[1]!.level).toBe(second.level + 1);
-    expect(after.resting).toBe(second.uid);
-    expect(after.activeUids).not.toContain(second.uid);
-    // An evolution may return to the lobby; reopen the counter to inspect the visit's record.
-    if (await page.getByTestId('center-screen').getAttribute('data-counter') === 'lobby') await page.getByTestId('door-center-daycare').click();
-    await expect(page.getByTestId('daycare-used')).toContainText('resting');
-    await page.getByTestId('center-service-back').click();
     await page.getByTestId('door-center-pc').click();
-    // In the PC Box its row is shut and says why.
-    await expect(page.getByTestId(`box-resting-${after.box[1]!.speciesId}`)).toBeVisible();
-    await expect(page.getByTestId(`box-row-${after.box[1]!.speciesId}`)).toBeDisabled();
 
     // The PC Box: field the third and make it the Lead, without leaving the Center.
     const third = after.box[2]!;
@@ -370,7 +356,7 @@ test.describe('The Daycare and the PC Box — §2.11.1', () => {
     await page.getByTestId(`box-row-${third.speciesId}`).click();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.activeUids[0])).toBe(third.uid);
     await page.waitForFunction(() => [...document.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0));
-    await page.screenshot({ path: 'playtest/run-center-daycare.png' });
+    await page.screenshot({ path: 'playtest/run-center-services.png' });
 
     await page.keyboard.press('Escape');
     await page.getByTestId('btn-leave-center').click();

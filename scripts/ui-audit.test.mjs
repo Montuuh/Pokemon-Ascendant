@@ -19,7 +19,7 @@ test('every audit preset declares its expected screen root', async () => {
   const result = await run(['--list']);
   assert.equal(result.code, 0, result.stderr);
   const presets = JSON.parse(result.stdout);
-  for (const id of ['menu', 'combat', 'hub-card', 'center-daycare', 'mystery', 'evolution', 'map-hover-wild', 'map-hover-trainer', 'map-hover-service', 'map-hover-locked', 'victory', 'defeat', 'victory-record', 'defeat-record']) {
+  for (const id of ['menu', 'combat', 'hub-card', 'center-therapy', 'center-full-box', 'team-evolution', 'mystery', 'evolution', 'map-hover-wild', 'map-hover-trainer', 'map-hover-service', 'map-hover-locked', 'victory', 'defeat', 'victory-record', 'defeat-record']) {
     assert.ok(presets[id], `${id} is a required canonical preset`);
   }
   for (const [id, preset] of Object.entries(presets)) assert.ok(preset.root, `${id} lacks an expected root`);

@@ -1,4 +1,5 @@
 import type { ContentRegistry, HeldItemDef, HookSource, MoveDef } from '../content/defs';
+import type { ApSource } from './ap';
 import type { PokemonType, Stat } from '../types';
 import type { Combatant, CombatState } from './state';
 
@@ -20,24 +21,24 @@ import type { Combatant, CombatState } from './state';
  * What is *not* shared is where they come from: a relic is picked up and a Badge is won from a Gym. That
  * distinction lives in the run layer, which is the only place it means anything.
  */
-const relicsOf = (state: CombatState, content: ContentRegistry): HookSource[] => {
-  const out: HookSource[] = [];
+const relicsOf = (state: CombatState, content: ContentRegistry): (HookSource & { name: string })[] => {
+  const out: (HookSource & { name: string })[] = [];
   for (const id of state.player.relics) {
     const r = content.relic(id);
     // A `pending` relic is authored but inert; §7.8's honest-degradation rule says it is shown and never
     // resolved, and this is where "never resolved" is actually enforced.
     if (r.pending) continue;
-    out.push({ id: r.id, hook: r.hook, params: r.params });
+    out.push({ id: r.id, name: r.name, hook: r.hook, params: r.params });
     // The second clause, flattened, so every hook site below sees one flat list (§7.3.5, §7.3.7).
-    if (r.also) out.push({ id: r.id, hook: r.also.hook, params: r.also.params });
+    if (r.also) out.push({ id: r.id, name: r.name, hook: r.also.hook, params: r.also.params });
   }
   for (const id of state.player.badges) out.push(content.badge(id));
   // §2.11.3 — and the Region Modifier, the third system on this vocabulary. Same `pending` rule as relics.
   if (state.player.regionModifier) {
     const m = content.regionModifier(state.player.regionModifier);
     if (!m.pending) {
-      out.push({ id: m.id, hook: m.hook, params: m.params });
-      if (m.also) out.push({ id: m.id, hook: m.also.hook, params: m.also.params });
+      out.push({ id: m.id, name: m.name, hook: m.hook, params: m.params });
+      if (m.also) out.push({ id: m.id, name: m.name, hook: m.also.hook, params: m.also.params });
     }
   }
   return out;
@@ -264,8 +265,8 @@ export const firstHitRelic = (state: CombatState, content: ContentRegistry): Hoo
  * and every later one costs more, which turns "what do I open with" into a real question rather than a
  * flat discount.
  */
-export function itemApDelta(state: CombatState, owner: Combatant, move: MoveDef, content: ContentRegistry): number {
-  let delta = 0;
+export function itemApAdjustments(state: CombatState, owner: Combatant, move: MoveDef, content: ContentRegistry): ApSource[] {
+  const changes: ApSource[] = [];
   const played = state.player.playedThisTurn;
 
   for (const relic of relicsOf(state, content)) {
@@ -275,37 +276,41 @@ export function itemApDelta(state: CombatState, owner: Combatant, move: MoveDef,
     if (p.firstOfRange) {
       if (move.range !== p.firstOfRange) continue;
       if (played.some((x) => content.move(x.moveId).range === p.firstOfRange)) continue;
-      delta += num(p.delta, 0);
+      changes.push({ source: relic.name, amount: num(p.delta, 0) });
       continue;
     }
     if (p.range) {
       const priorOfRange = played.filter((x) => content.move(x.moveId).range === p.range).length;
       if (move.range !== p.range) continue;
-      if (priorOfRange === 0 && p.freeFirst) return -99; // free, and nothing else can make it cheaper
-      if (priorOfRange > 0) delta += num(p.laterDelta, 0);
+      if (priorOfRange === 0 && p.freeFirst) return [{ source: relic.name, amount: -99, free: true }]; // free, and nothing else can make it cheaper
+      if (priorOfRange > 0) changes.push({ source: relic.name, amount: num(p.laterDelta, 0) });
       continue;
     }
     // §5.10.3 Earth Badge — the positional cards (Step-Forward, Step-Backward) are cheaper; nothing else is.
     if (p.stepOnly) {
       if (move.modifier === 'none') continue;
-      delta += num(p.delta, 0);
+      changes.push({ source: relic.name, amount: num(p.delta, 0) });
       continue;
     }
     if (p.afterMinAp) {
       const last = played[played.length - 1];
-      if (last && last.apCost >= num(p.afterMinAp, 99)) delta += num(p.delta, 0);
+      if (last && last.apCost >= num(p.afterMinAp, 99)) changes.push({ source: relic.name, amount: num(p.delta, 0) });
       continue;
     }
     if (p.firstEachTurn && played.length > 0) continue;
     // §7.3.2 Quick Claw Charm — the opening card of the fight, and nothing after it.
     if (p.firstOfCombat && (state.turn > 1 || played.length > 0)) continue;
-    delta += num(p.delta, 0);
+    changes.push({ source: relic.name, amount: num(p.delta, 0) });
   }
 
   const own = itemOf(owner, content);
-  if (own?.hook === 'choice-lock' && own.params?.apDelta !== undefined) delta += num(own.params.apDelta, 0);
-  return delta;
+  if (own?.hook === 'choice-lock' && own.params?.apDelta !== undefined) changes.push({ source: own.name, amount: num(own.params.apDelta, 0) });
+  return changes.filter((entry) => entry.amount !== 0);
 }
+
+/** §7.3 / §7.4 — previews sum the same sourced adjustments as the committed AP ledger. */
+export const itemApDelta = (state: CombatState, owner: Combatant, move: MoveDef, content: ContentRegistry): number =>
+  itemApAdjustments(state, owner, move, content).reduce((total, entry) => total + entry.amount, 0);
 
 /**
  * §7.4.5 — Choice Band makes the wearer's Ranged moves unplayable and Choice Scarf allows only one of the
@@ -395,26 +400,36 @@ export function itemRetainCards(state: CombatState, content: ContentRegistry): n
 }
 
 /** §7.3 — AP banked for next turn: a reshuffle, or three different moves from one Pokémon. */
-export function itemBankedAp(state: CombatState, content: ContentRegistry): number {
-  let ap = 0;
+export function itemApSources(state: CombatState, content: ContentRegistry, recurring = false): ApSource[] {
+  const entries: ApSource[] = [];
   for (const relic of relicsOf(state, content)) {
     if (relic.hook !== 'banked-ap') continue;
     const on = relic.params?.on;
-    if (on === 'always') ap += num(relic.params?.ap, 0);
-    if (on === 'reshuffle' && state.player.reshuffled) ap += num(relic.params?.ap, 0);
+    if ((on === 'always') !== recurring) continue;
+    const add = () => entries.push({ source: relic.name, amount: num(relic.params?.ap, 0) });
+    if (on === 'always') add();
+    if (on === 'reshuffle' && state.player.reshuffled) add();
     if (on === 'three-from-one') {
       const byOwner = new Map<string, Set<string>>();
       for (const x of state.player.playedThisTurn) {
         if (!byOwner.has(x.ownerUid)) byOwner.set(x.ownerUid, new Set());
         byOwner.get(x.ownerUid)!.add(x.moveId);
       }
-      if ([...byOwner.values()].some((s) => s.size >= 3)) ap += num(relic.params?.ap, 0);
+      if ([...byOwner.values()].some((s) => s.size >= 3)) add();
     }
   }
-  return ap;
+  return entries.filter((entry) => entry.amount !== 0);
 }
 
+export const itemBankedAp = (state: CombatState, content: ContentRegistry): number =>
+  itemApSources(state, content).reduce((sum, entry) => sum + entry.amount, 0);
+
 /** §7.3 Tactician's Coin — free swaps banked once, at combat start. A relic that grants them `perTurn` is not counted here. */
+/** §3.8 — keep the origin of each free swap so its zero AP cost can be explained. */
+export const itemFreeSwapSources = (state: CombatState, content: ContentRegistry, perTurn = false): { source: string; remaining: number }[] =>
+  relicsOf(state, content).filter((r) => r.hook === 'free-swap' && !!r.params?.perTurn === perTurn)
+    .map((r) => ({ source: r.name, remaining: num(r.params?.swaps, 0) })).filter((s) => s.remaining > 0);
+
 export const itemFreeSwaps = (state: CombatState, content: ContentRegistry): number =>
   relicsOf(state, content).reduce((n, r) => n + (r.hook === 'free-swap' && !r.params?.perTurn ? num(r.params?.swaps, 0) : 0), 0);
 

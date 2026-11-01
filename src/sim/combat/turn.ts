@@ -6,8 +6,9 @@ import { dealDamage, heal } from './damageFlow';
 import { declareIntent } from './intents';
 import { aliveTeam, benchIndices, lead, resolutionOrder } from './slots';
 import type { Combatant, CombatState, EnemyCombatant } from './state';
-import { abilityTurnStartAp, turnEndBenchHeal, abilityLeadTrapDivisor } from './abilities';
-import { itemBankedAp, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemTurnFreeSwaps, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
+import { abilityTurnStartApSources, turnEndBenchHeal, abilityLeadTrapDivisor } from './abilities';
+import { itemApSources, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemFreeSwapSources, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
+import { bankAp, changeAp } from './ap';
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeTurn } from './enemyTurn';
 import { fieldDrawBonus, fieldsSuppressed, hailImmune, isGrounded, sandstormImmune } from './fields';
@@ -26,11 +27,21 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   // §3.2.2 — AP refill (Tempo Control may tax it), swap counter and discount reset.
   // §7.3 — AP banked by a relic last turn (Cycle Cell, Move Echo) lands on top of the refill.
   // §6.5.2 Speed Boost — its turn-2 AP lands beside the banked AP.
-  p.ap = Math.max(0, ctx.config.baseApPerTurn - tempoApTax(state, ctx.config)) + p.bankedAp + abilityTurnStartAp(p.team, state.turn, ctx.content);
+  log(state, 'turn', `— Turn ${state.turn} —`);
+  if (p.ap > 0) changeAp(state, -p.ap, 'Unused AP expires before the new turn');
+  changeAp(state, ctx.config.baseApPerTurn, 'Base turn refill', ctx.config.maxApPerTurn);
+  const tax = tempoApTax(state, ctx.config);
+  if (tax > 0) changeAp(state, -tax, 'Enemy Tempo Control');
+  for (const entry of itemApSources(state, ctx.content, true)) changeAp(state, entry.amount, entry.source, ctx.config.maxApPerTurn);
+  const bank = p.bankedApSources ?? (p.bankedAp ? [{ source: 'Previously stored AP', amount: p.bankedAp }] : []);
+  for (const entry of bank) changeAp(state, entry.amount, `${entry.source} — stored last turn`, ctx.config.maxApPerTurn);
+  for (const entry of abilityTurnStartApSources(p.team, state.turn, ctx.content)) changeAp(state, entry.amount, entry.source, ctx.config.maxApPerTurn);
   p.bankedAp = 0;
+  p.bankedApSources = [];
   p.swapCounter = 0;
   // §7.3.7 Flow State — a free swap every turn; one not spent is gone with the turn.
-  p.turnFreeSwaps = itemTurnFreeSwaps(state, ctx.content);
+  p.turnFreeSwapSources = itemFreeSwapSources(state, ctx.content, true);
+  p.turnFreeSwaps = p.turnFreeSwapSources.reduce((sum, s) => sum + s.remaining, 0);
   p.itemsUsed = 0;
   p.defensiveDiscount = false;
   p.playedThisTurn = [];
@@ -38,7 +49,6 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   const leadNow = p.team[p.leadIndex];
   if (leadNow && leadNow.hp > 0) p.leadTurns[leadNow.uid] = (p.leadTurns[leadNow.uid] ?? 0) + 1;
   emit(state, { t: 'turn-start', ap: p.ap });
-  log(state, 'turn', `— Turn ${state.turn} —`);
 
   // §5.10.2 Rainbow Badge — a statused Lead restores a little at the top of the turn.
   const bloom = itemTurnStartLeadHeal(state, ctx.content);
@@ -231,7 +241,7 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
 
   // §3.2.5 — hand to discard (fainted owners' cards dropped), unused consumables back to the pool.
   // §7.3 — bank the AP a relic earned this turn before the turn's bookkeeping is cleared.
-  state.player.bankedAp += itemBankedAp(state, ctx.content);
+  bankAp(state, itemApSources(state, ctx.content));
   // §7.3 Battle Hat — keep a card past the discard when you did not swap.
   const keep = itemRetainCards(state, ctx.content);
   const aliveUids = new Set(aliveTeam(state).map((c) => c.uid));

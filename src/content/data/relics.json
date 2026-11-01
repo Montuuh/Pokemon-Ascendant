@@ -770,7 +770,7 @@
       "categories": [
         "card"
       ],
-      "description": "Draw 2 more cards each turn, and take 1 more AP.",
+      "description": "Draw 2 more cards and gain 1 extra AP at the start of every turn, including the first. The AP limit stays 6.",
       "hook": "draw",
       "params": {
         "cards": 2

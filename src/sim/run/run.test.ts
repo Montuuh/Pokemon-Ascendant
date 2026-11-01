@@ -1144,10 +1144,11 @@ describe('Evolution Items — §6.3.2', () => {
     const uid = s.box[0]!.uid;
     s = apply(s, { type: 'use-stone', uid, stoneId: 'fire-stone' });
     expect(s.phase).toBe('evolution');
-    expect(s.stones).toEqual([]);
+    expect(s.stones).toEqual(['fire-stone']);
     expect(s.pendingEvolutions[0]!.branchIds).toEqual(['eevee-vanguard']);
     s = apply(s, { type: 'choose-branch', uid, branchId: 'eevee-vanguard' });
     expect(s.box[0]!.speciesId).toBe('flareon');
+    expect(s.stones).toEqual([]);
     expect(s.phase).toBe('map');
   });
 

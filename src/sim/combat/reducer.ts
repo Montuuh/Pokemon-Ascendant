@@ -1,13 +1,14 @@
 import { produce } from 'immer';
 import type { CombatCtx, RunCtx } from './context';
 import { emit, log } from './context';
+import { changeAp } from './ap';
 import { absorbedByAbility, applyMoveEffects, breakdownFor, changeStage, heal, onEnterLead, strike } from './damageFlow';
 import { buildSkillDeck, drawSkillCards } from './deck';
 import { echoesFirstCard, itemCureHeal, itemRidersFirst, stepDrawBonus, swapDrawBonus, swapHealAmount } from './items';
 import { catchOdds, SHAKE_CHECKS, shakeChecks } from './catch';
 import { declareIntent } from './intents';
 import { rhythmReady, spendsRhythm, stepRhythm } from './rhythm';
-import { cardPlayability, cardVictims, catchTarget, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
+import { apCostDetails, cardPlayability, cardVictims, catchTarget, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
 import { rngFromState } from './setup';
 import { activeEnemy, lead, setLead } from './slots';
 import type { CombatAction, CombatState, RejectReason } from './state';
@@ -103,7 +104,8 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   const ownerIndex = player.team.indexOf(owner);
 
   // Pay AP; §3.3.1 — the defensive discount is consumed by the first Defensive card after a manual swap.
-  player.ap -= p.apCost;
+  const price = apCostDetails(state, move, owner, ctx);
+  changeAp(state, -p.apCost, `${owner.name}: ${move.name} (${price.details.join('; ')})`);
   if (move.role === 'defensive' && player.defensiveDiscount) player.defensiveDiscount = false;
 
   // §7.3.4 — the turn's play record, *after* the cost is priced off it and before anything else reads it.
@@ -135,6 +137,7 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
     const from = player.leadIndex;
     setLead(state, ownerIndex);
     emit(state, { t: 'swap', fromIndex: from, toIndex: ownerIndex, kind: 'step-forward', apCost: 0 });
+    changeAp(state, 0, `${owner.name}: Step Forward — free movement`);
     log(state, 'player', `${owner.name} steps forward!`);
     onEnterLead(state, ctx, ownerIndex);
     stepDraw(state, ctx);
@@ -198,6 +201,7 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
       const from = player.leadIndex;
       setLead(state, dest);
       emit(state, { t: 'swap', fromIndex: from, toIndex: dest, kind: 'step-backward', apCost: 0 });
+      changeAp(state, 0, `${owner.name}: Step Backward — free movement`);
       log(state, 'player', `${owner.name} steps back; ${player.team[dest]!.name} takes the Lead.`);
       onEnterLead(state, ctx, dest);
       stepDraw(state, ctx);
@@ -212,7 +216,7 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
   const player = state.player;
   const card = player.consumables.hand.find((c) => c.id === cardId)!;
   const def = p.def;
-  player.ap -= def.apCost;
+  changeAp(state, -def.apCost, `${def.name} — item cost`);
   player.itemsUsed += 1;
   player.consumables.hand = player.consumables.hand.filter((c) => c.id !== card.id);
   player.consumables.used.push(card);
@@ -282,8 +286,7 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
       break;
     }
     case 'ap':
-      player.ap = Math.min(ctx.config.maxApPerTurn, player.ap + fx.amount);
-      log(state, 'system', `+${fx.amount} AP.`);
+      changeAp(state, fx.amount, `${def.name} — restoration`, ctx.config.maxApPerTurn);
       break;
     case 'stage':
       if (ally) changeStage(state, ally, fx.stat, fx.stages);
@@ -330,9 +333,11 @@ function manualSwap(state: CombatState, benchIndex: number, ctx: RunCtx): void {
   const opt = swapOptions(state, ctx.config).find((o) => o.benchIndex === benchIndex);
   const cost = opt?.cost ?? (free ? 0 : Math.min(3, player.swapCounter + 1));
   const from = player.leadIndex;
-  player.ap -= cost;
+  const freeSource = (player.turnFreeSwaps > 0 ? player.turnFreeSwapSources : player.freeSwapSources)?.find((s) => s.remaining > 0);
+  changeAp(state, -cost, `Manual swap to ${player.team[benchIndex]!.name}${free ? ` — free: ${freeSource?.source ?? 'stored free swap charge'}` : opt?.quick ? ` — Quick swap discount ${ctx.config.quickSwapDiscount}` : ` — swap ladder ${player.swapCounter + 1}`}`);
   // A free swap does not advance the ladder either: it is the swap that did not happen, economically.
   // §7.3.7 — the turn's own free swap goes first, so the combat's bank (Tactician's Coin) is kept for later.
+  if (free && freeSource) freeSource.remaining -= 1;
   if (player.turnFreeSwaps > 0) player.turnFreeSwaps -= 1;
   else if (free) player.freeSwaps -= 1;
   else player.swapCounter += 1;

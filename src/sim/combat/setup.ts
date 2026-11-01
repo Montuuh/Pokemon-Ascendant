@@ -10,7 +10,7 @@ import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { activeMoves, effectiveMaxHp, statAtLevel } from './stats';
 import { applyStatus } from './status';
 import { abilityFreeFirstSwap, startStageBoosts } from './abilities';
-import { itemFreeSwaps, itemStatusShield, startShield } from './items';
+import { itemFreeSwapSources, itemStatusShield, startShield } from './items';
 import { beginTurn } from './turn';
 
 // §3.2.1 — Combat Start: lock the team, build the Skill Deck (4 × 3) and the Consumable Pile, set the Lead,
@@ -155,8 +155,12 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
 
   state.player.team = scenario.player.team.map((m, i) => makeCombatant(`p${i}`, m, ctx, m.traumaStacks ?? 0));
   // §6.5.2 Run Down + §7.3 Tactician's Coin — free manual swaps, banked once at combat start.
-  state.player.freeSwaps =
-    (state.player.team.some((c) => abilityFreeFirstSwap(c, ctx.content)) ? 1 : 0) + itemFreeSwaps(state, ctx.content);
+  const freeSwapAbility = state.player.team.find((c) => abilityFreeFirstSwap(c, ctx.content));
+  state.player.freeSwapSources = [
+    ...(freeSwapAbility ? [{ source: `${freeSwapAbility.name}: ${ctx.content.ability(freeSwapAbility.abilityIds.find((id) => ctx.content.ability(id).hook === 'swap-discount')!).name}`, remaining: 1 }] : []),
+    ...itemFreeSwapSources(state, ctx.content),
+  ];
+  state.player.freeSwaps = state.player.freeSwapSources.reduce((sum, s) => sum + s.remaining, 0);
   // §7.3 Cleanse Tag — a team-wide status shield the relic grants before the first turn.
   state.player.guards.status += itemStatusShield(state, ctx.content);
   // §7.3.7 Battle Hardened — every Active Pokémon opens behind a shield worth a share of its own max HP,

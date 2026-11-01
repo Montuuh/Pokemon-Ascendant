@@ -1345,9 +1345,8 @@ the doors, and you walk out through the gate when you are ready (§2.1.4).
 
 | Service | Effect | Cost |
 |---|---|---|
-| **Heal** | Full restore of every Box Pokémon to Effective Max HP, and every status cured | **Free, always, as often as you like** |
-| **Therapy** | Remove **1** Trauma stack from one Pokémon. Repeatable while affordable | `100 × (1 + stacks)` ₽ |
-| **Daycare** | Deposit one Pokémon: +1 level instantly, and it skips the next combat. **Once per City visit** | 200 ₽ |
+| **Heal (nurse, on request)** | Full restore of every Box Pokémon to Effective Max HP, and every status cured | **Free, always, as often as you like** |
+| **Therapy (beds)** | Remove **1** Trauma stack from one Pokémon. Repeatable while affordable | `100 × (1 + stacks)` ₽ |
 | **PC Box** | Inspect the Box and choose the team: the three who fight, the Lead, each one's four moves | Free |
 | **Supplies** | On the first visit: two Super Potions in Pallet Town, two Hyper Potions in Celadon (v0.8.6) | Free |
 
@@ -1355,14 +1354,16 @@ Healing is free because healing is free in Pokémon, and a fan game that charges
 the fantasy for a few coins. The squeeze is **Trauma**, which is the only damage a route cannot undo (§2.9.1)
 and the only one that compounds.
 
-**The Daycare** trades a fight for a level. The level is a whole one, with whatever it brings — a move, an
-evolution queued as any other (§6.3.1) — and the Pokémon then **rests through the next fight**: it leaves the
-active team and cannot be put back until one fight has been played (a Ring rung counts), after which it walks
-back into the first free slot. It needs another Pokémon able to fight, so a lone Pokémon cannot be deposited.
-**Once per City visit** (the user's call, 2026-09-28): 200 ₽ a level without a limit would sell levels at half
-the Black Market's Rare Candy (§2.11.6) with nothing but money in the way; once a visit, the price is a level
-for a fight sat out. **The PC Box** is the map's Box panel brought indoors: a City lobby has no map beside it, so
-this is where the team is chosen, the Lead set and the moves sculpted before the next door.
+**Healing is manual.** Entering does not change HP or conditions. Asking the nurse restores the entire Box,
+including reserves, without removing Trauma. The beds open **Therapy**: one Trauma stack per treatment at the
+existing price; treatment does not refill the newly restored maximum HP. The player may then ask the nurse to heal.
+A persistent health panel lists every Box Pokémon's current/effective maximum HP and Trauma, including healthy
+Pokémon and reserves. The PC remains the place to choose the team, Lead and moves.
+
+**Daycare is removed** (user decision, 2026-10-30, v0.9.86): no paid level and no next-fight rest restriction.
+Older saves retain purchased levels/XP and release the resting Pokémon to normal Box availability; only a free,
+legal active place may be filled, without displacing the chosen team. This removes the Center service, leaving
+the separate Mystery-event catalogue unchanged.
 
 Both Cities have one. *(Confirmed 2026-09-22.)*
 
@@ -1865,7 +1866,7 @@ v0.7.4 it was Region 1's tables sixteen levels up and went unnamed on the map.)*
 | Travelling merchant | No | spend | — | — | 4 basic slots + one re-roll |
 | Mystery | Varies | Varies | Varies | Varies | Choice-driven |
 | **Gym Leader** | Yes | 500 | 50 | **Rare relic + a 1-of-3 Legendary pick** | **Badge** |
-| City Center | No | spend on Trauma | — | — | Free heal + Therapy + Daycare |
+| City Center | No | spend on Trauma | — | — | Manual free heal + Therapy beds + PC Box |
 | City Shop | No | spend | — | — | 8 curated slots (Mart) / floors (Department Store) |
 | City Dojo | No | spend | — | — | Off-learnset moves + abilities |
 | Challenge Ring | Yes | fee → prize | — | Loot on the way out | 2–3 fights, no heal between; a loss is not a run loss |

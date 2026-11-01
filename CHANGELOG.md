@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.86 — AP, evolution and Center choices · 2026-10-30
+
+See where AP comes from, postpone evolution and choose when to heal.
+
+- **Combat.** Tome works from turn one; AP changes and the cap of 6 are logged.
+- **Evolution.** Postpone and resume from the sheet; stones spend on confirmation.
+- **Center.** Manual nurse healing, Therapy beds and whole-Box HP/Trauma.
+- **Daycare.** Removed. Old saves keep levels and release resting Pokémon.
+
 ### v0.9.85 — Equipment and bounded control · 2026-10-30
 
 More useful equipment and status control with reliable limits.

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type KeyboardEvent, type SyntheticEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type SyntheticEvent } from 'react';
 import { IconArrowNarrowRight, IconPlus, IconSparkles } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
@@ -61,6 +61,20 @@ function EvolutionChoice({ uid }: { uid: string }) {
   // The cutscene: before the choice when every path makes the same Pokémon, after it when they do not.
   const [cut, setCut] = useState<'intro' | 'choose' | 'outro'>(animate && oneSpecies ? 'intro' : 'choose');
 
+  const deferEvolution = useCallback(() => {
+    if (!dispatch({ type: 'defer-evolution', uid })) {
+      setRefused(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? RUN_REJECT_TEXT['internal-error']!);
+    }
+  }, [dispatch, uid, setRefused]);
+  useEffect(() => {
+    if (cut !== 'choose') return;
+    const onKey = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); deferEvolution(); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [cut, deferEvolution]);
+
   if (!pending || !mon) return null;
 
   const before = content.species(pending.from);
@@ -84,7 +98,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
     else evolve();
   };
 
-  if (cut === 'intro') return <EvolutionCutscene fromId={before.id} toId={target.id} shiny={!!mon.shiny} onDone={() => setCut('choose')} />;
+  if (cut === 'intro') return <EvolutionCutscene fromId={before.id} toId={target.id} shiny={!!mon.shiny} onDone={() => setCut('choose')} onCancel={deferEvolution} />;
   if (cut === 'outro' && picked) return <EvolutionCutscene fromId={before.id} toId={previews.find((p) => p.branchId === picked)!.to} shiny={!!mon.shiny} onDone={evolve} />;
 
   const choose = (id: string) => {
@@ -206,6 +220,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
                   <Tipped as="span" tabIndex={-1} tip={archetypeTip(branch.archetype)} className={styles.pill}>
                     {ARCHETYPE_LABEL[branch.archetype]}
                   </Tipped>
+                  <span className={styles.branchTarget}>
                   <Tipped as="span" tabIndex={-1} tip={branchTip(branch.label, branch.description, branch.archetype)} className={`${styles.branchName} display`}>
                     {branch.label}
                   </Tipped>
@@ -216,6 +231,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
                     ) : (
                       <img className={`pixel ${styles.branchIcon}`} src={boxIconUrl(to.dex, to.id)} alt={to.name} width={40} height={40} />
                     ))}
+                  </span>
                 </span>
 
                 <ul className={styles.diff}>
@@ -250,6 +266,7 @@ function EvolutionChoice({ uid }: { uid: string }) {
           <p className={styles.status} role="status">
             {picked ? '' : EVOLUTION_TEXT.pick}
           </p>
+          <button type="button" className={styles.later} onClick={deferEvolution} data-testid="btn-evolution-later">{EVOLUTION_TEXT.later}</button>
           <button type="button" className={styles.confirm} disabled={!picked} onClick={confirm} data-testid="btn-evolve" {...evolveTipProps}>
             {EVOLUTION_TEXT.evolve(picked ? content.branch(picked).label : null)}
           </button>

@@ -84,7 +84,13 @@ stateDiagram-v2
 ## §3.2.2 Draw Phase
 
 - Draw **5 skill cards** and **2 consumable cards**.
-- AP refills to **3**, modified by relics, Badges and Region Modifiers.
+- Unspent AP expires, then AP refills to **3**, modified by relics, Badges, Region Modifiers and abilities.
+  The refill, recurring bonuses (including Sage's Tome on turn 1), stored credits and restoration each obey the
+  **6 AP cap** (§3.8). Apply base refill, enemy Tempo Control tax, recurring bonuses, stored credits, then abilities.
+- The full combat log retains an AP ledger for every turn: each gain, expiry, spend and zero-cost action names its
+  source and actual before → after balance. Cost entries expose printed cost, condition taxes, discounts and free
+  effects. A capped gain states the amount blocked. Next-turn credits name their source when stored and when applied;
+  storing them does not change current AP. Pure previews and forecasts never add entries.
 - The swap counter resets to 0.
 - Confusion discards resolve now (§4.2.3.1).
 

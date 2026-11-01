@@ -218,12 +218,7 @@ for (const width of [1920, 1280]) {
     await shot(page, `swap-${width}`);
     await page.evaluate(() => { const a = window.__ascendant!; a.run.patch((d) => { d.pendingRecruit = null; d.phase = 'map'; }); a.run.city(0); a.run.pay(2000); a.run.trauma(1); });
     await shinyDoor(page, page.getByTestId('city-mon-charizard'));
-    await page.getByTestId('door-center').click(); await page.getByTestId('door-center-daycare').click();
-    await shiny(page.getByTestId('daycare-charizard'));
-    await shinyDoor(page, page.getByTestId('daycare-charizard'));
-    await expect(page.getByTestId('daycare-charizard')).toHaveAccessibleName(/Shiny Charizard/);
-    await shot(page, `daycare-${width}`);
-    await page.keyboard.press('Escape'); await page.getByTestId('door-center-therapy').click();
+    await page.getByTestId('door-center').click(); await page.getByTestId('door-center-therapy').click();
     await shiny(page.getByTestId('therapy-charizard'));
     await shinyDoor(page, page.getByTestId('therapy-charizard'));
     await shot(page, `therapy-${width}`);

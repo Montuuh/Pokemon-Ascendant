@@ -89,6 +89,9 @@
 .system {
   color: var(--ink-secondary);
 }
+.ap {
+  color: var(--ink-secondary);
+}
 /* Each turn under its own header, held at the top while its lines scroll under it. */
 .line:has(.turn) {
   position: sticky;

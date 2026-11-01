@@ -1234,24 +1234,17 @@ export function ringPrizeTip(banked: number, allRare: boolean): ReactNode {
 
 /** §2.11.1 — the Center: what is free, and what the three counters are for. */
 export function centerTip(): ReactNode {
-  return <Tip title="The Centre" body="Healing and status cures are free on entry. The counters do what the machine cannot: Therapy takes Trauma off, the Daycare trades a fight for a level, and the PC Box picks the team." />;
+  return <Tip title="The Centre" body="Ask the nurse for free whole-Box healing and status cures. The beds treat Trauma one stack at a time; the PC Box picks the team. Entering does not heal." />;
+}
+/** §2.11.1 — manual treatment is requested from the nurse, separate from the beds. */
+export function centerHealTip(): ReactNode {
+  return <Tip title="Nurse Joy" body="Free: restores HP and cures conditions across the whole Box. Entering does not heal." footer="Trauma is treated at the Therapy beds." />;
 }
 /** §8.2.4 — Therapy's price and why Trauma is worth paying for. */
 export function therapyTip(): ReactNode {
   return <Tip title="Therapy" meta={['100 ₽ × (1 + stacks)']} body="Each Trauma stack costs 5 % of max HP up to five, then 10 % each. It never heals on its own — Therapy is the only place it comes off, one stack at a time, dearer the worse the count." />;
 }
-/** §2.11.1 — the Daycare: a level for a fight sat out, once a visit. */
-export function daycareTip(price: number): ReactNode {
-  return <Tip title="Daycare" meta={[`${price} ₽`, 'Once a visit']} body="Leave one Pokémon for a whole level, with whatever the level brings. It then sits out the next fight and rejoins the team after it." footer="Someone else has to be able to fight while it rests." />;
-}
-/** §2.11.1 — a Pokémon resting after the Daycare. */
-export function restingTip(): ReactNode {
-  return <Tip title="Resting" meta={['Daycare']} body="It took a level at the Daycare and sits out the next fight. When that fight is over it rejoins the team, in the first free slot." />;
-}
-/** §2.11.1 — one Daycare offer: what the level brings, and why it cannot be taken when it cannot. */
-export function daycareRowTip(name: string, level: number, price: number, brings: string[], blocked: string | null): ReactNode {
-  return <Tip title={`${name} → Lv ${level}`} meta={[`${price} ₽`, 'Misses next fight']} body={`${name} sits out the next fight, then returns to the first free team slot or waits in the Box. ${brings.join(' ')}`} footer={blocked ?? 'Activate this row to buy. Once per City visit.'} />;
-}
+
 /** §2.11.1 — the PC Box: the map's Box panel, indoors. */
 export function pcBoxTip(): ReactNode {
   return <Tip title="PC Box" body="The team for the next door: click a Box row to field it, an Active row to make it the Lead, and the cards button to choose its four moves." />;

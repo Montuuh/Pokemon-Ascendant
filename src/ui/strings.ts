@@ -573,9 +573,6 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'nothing-to-restock': 'Nothing else to stock on this floor.',
   'bad-stake': 'That stake is not on the table.',
   'bad-bet': 'That bet is not on the table.',
-  'daycare-used': 'The Daycare has already taken a Pokémon this visit.',
-  'needs-another': 'Someone else has to be able to fight while it rests.',
-  resting: 'It is resting at the Daycare until the next fight is over.',
   'not-an-egg-move': 'That is not one of this line’s egg moves.',
   'safari-closed': 'The Safari is done for this visit.',
   'bad-tile': 'Not from here.',
@@ -653,15 +650,11 @@ export const DOJO_TEXT = {
 export const CENTER_TEXT = {
   lobby: 'Lobby',
   therapy: 'Therapy',
-  daycare: 'Daycare',
+  heal: 'Heal Pokémon',
+  pokemon: 'Your Pokémon',
   pcBox: 'PC Box',
   noTrauma: 'Nobody is carrying Trauma. Your Box is in better shape than most that get this far.',
-  resting: (name: string) => `${name} is resting until the next fight is over.`,
-  alone: 'Needs a partner',
-  missesFight: 'Misses next fight',
-  maxLevel: 'Maximum level',
   cannotAfford: 'Not enough money',
-  daycareDone: 'The Daycare has taken its Pokémon this visit.',
 };
 
 /** §2.3 / §9.12 — the Team screen (`TeamScreen`): the formation, the Box and the selected Pokémon's sheet. */
@@ -683,7 +676,6 @@ export const TEAM_TEXT = {
   /** §9.12 — the route's side panel is the team at a glance; the Team screen is where it changes. */
   panelHint: 'Change the team, its order and its moves on the Team screen (T).',
   waiting: (n: number) => `${n} waiting`,
-  resting: 'resting at the Daycare',
   placeLabel: 'Where it stands',
   ability: 'Ability',
   noAbility: 'No ability yet',
@@ -888,6 +880,9 @@ export const SLOT_FACE_LABEL: Record<string, string> = {
 // §6.3.4 — the three archetypes, in the words the Evolution screen uses.
 /** §6.3.3 / §9.9.1 — the Evolution screen and its cutscene (v0.9.5). */
 export const EVOLUTION_TEXT = {
+  later: 'Evolve later',
+  preparing: (name: string) => `${name} is preparing to evolve.`,
+  preview: (from: string, to: string) => `${from} could evolve into ${to}.`,
   evolving: (name: string) => `What? ${name} is evolving!`,
   evolved: (from: string, to: string) => `Congratulations! Your ${from} evolved into ${to}!`,
   choose: (name: string) => `Choose ${name}'s path`,
@@ -993,7 +988,7 @@ export const CITY_DOOR_LABEL: Record<CityBuildingDoor, string> = {
 };
 
 export const CITY_DOOR_HINT: Record<CityDoor, string> & { gatePlain: string } = {
-  center: 'Heals the whole Box and cures every status, free, as often as you like. Therapy takes Trauma off, the Daycare trades a fight for a level, and the PC Box picks the team.',
+  center: 'Ask the nurse for free whole-Box healing and status cures. The beds treat Trauma; the PC Box picks the team.',
   mart: 'A shelf picked for your team, and Poké Balls. Dearer than the merchant; buys held items back.',
   'department-store': 'The biggest shelf of the run, and Poké Balls. Dearer than the merchant; buys held items back.',
   dojo: 'Tutor moves off the learnset, the line’s egg moves and passive abilities, as many as you can pay for.',

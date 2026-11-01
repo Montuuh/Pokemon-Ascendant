@@ -130,6 +130,11 @@ test.describe('Chips on a short stage — §9.2.2.3', () => {
   test('at 720 p a card with many chips shows the first and "+N", whose bubble names the rest', async ({ page }) => {
     await page.goto('/?scenario=wild-boss-3phase&seed=7');
     await expect(page.getByTestId('combat-screen')).toBeVisible();
+    // Sprite measurements and web-font metrics must settle before aiming at the compact chip.
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await Promise.all([...document.images].map((image) => image.decode()));
+    });
     await page.evaluate(async () => {
       // The dev server serves the store's module: every chip turned on at once, as no fixture opens with.
       const path = '/src/app/combatStore.ts';

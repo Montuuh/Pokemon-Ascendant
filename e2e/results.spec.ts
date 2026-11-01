@@ -135,7 +135,7 @@ test.describe('The fight\'s end — §9.4.5', () => {
       await page.waitForTimeout(400);
       await page.getByTestId('btn-claim').click();
       await expect(page.getByTestId('evolution-cutscene')).toBeVisible();
-      await expect(page.getByTestId('evolution-line')).toContainText('is evolving');
+      await expect(page.getByTestId('evolution-line')).toContainText('is preparing to evolve');
     });
   });
 

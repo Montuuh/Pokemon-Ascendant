@@ -2,22 +2,16 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Dialog } from 'radix-ui';
 import {
   IconBuildingWarehouse,
-  IconCoinOff,
   IconHeartPlus,
-  IconLock,
   IconSparkles,
-  IconZzz,
 } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import {
   boxCapacity,
-  daycarePrice,
-  DEFAULT_PROGRESSION,
+  effectiveMax,
   joinTeam,
-  runHelpers,
   therapyPrice,
-  type PartyMon,
 } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { HealPanel } from '@/ui/components/HealPanel';
@@ -31,7 +25,7 @@ import { HpBar } from '@/ui/components/HpBar';
 import { Money, Price } from '@/ui/components/Money';
 import { SupplyStrip } from '@/ui/components/SupplyStrip';
 import { BACK_TO_TOWN, CENTER_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
-import { centerTip, daycareRowTip, daycareTip, pcBoxTip, therapyTip } from '@/ui/tips';
+import { centerTip, centerHealTip, pcBoxTip, therapyTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { BackButton } from '@/ui/components/BackButton';
 import styles from './CenterScreen.module.css';
@@ -40,13 +34,8 @@ import { CENTER_EXIT, CENTER_PEOPLE, CENTER_ROOM, CENTER_SPOTS } from './center/
 // Pokémon Center, §2.11.1 + §8.2.4 — "the warmest screen" (docs/design/ui/screens.md 4.6). A City building:
 // its door leads back to the town.
 //
-// The heal already happened: it is free, automatic and total, so it is reported rather than offered. What is
-// left are three doors in an authored room of authentic FRLG tiles. Therapy — §8.2.4 prices it at 100 × (1 + stacks), so the Pokémon you have
-// been leaning on hardest is also the most expensive to mend. The Daycare — a whole level for a fight sat out,
-// once a visit. The PC Box — the map's Box panel brought indoors, because a City lobby has no map beside it: the
-// team, the Lead and the moves are chosen here before the next door.
-
-type Counter = 'therapy' | 'daycare' | 'pc';
+// §2.11.1 — the nurse heals on request, the beds treat Trauma, and the PC manages the Box.
+type Counter = 'heal' | 'therapy' | 'pc';
 
 export function CenterScreen() {
   const run = useRunStore((s) => s.run)!;
@@ -54,8 +43,8 @@ export function CenterScreen() {
   const content = getContent();
   const [toast, setToast] = useState<string | null>(null);
   const [managing, setManaging] = useState<string | null>(null);
-  // §9.9.3 — the counters open once the machine has run: what it gave is said by the machine, not by the PC's bars first.
-  const [healed, setHealed] = useState(false);
+  const [healing, setHealing] = useState(false);
+  const [healShown, setHealShown] = useState(false);
   /** §9.12 — the Team screen, from the PC Box. */
   const [team, setTeam] = useState(false);
   const [counter, setCounter] = useState<Counter | null>(null);
@@ -95,7 +84,11 @@ export function CenterScreen() {
   }, []);
 
   const open = (id: Counter) => {
-    if (!healed) return;
+    if (healing) return;
+    if (id === 'heal') {
+      if (act({ type: 'heal-center' })) { setHealing(true); setHealShown(true); }
+      return;
+    }
     returnTo.current = document.activeElement as HTMLElement | null;
     setCounter(id);
   };
@@ -104,7 +97,9 @@ export function CenterScreen() {
     if (!dispatch(action)) {
       setToast(RUN_REJECT_TEXT[useRunStore.getState().lastRejected?.reason ?? ''] ?? 'Not now.');
       window.setTimeout(() => setToast(null), 2600);
+      return false;
     }
+    return true;
   }
   // Escape closes the Move Manager, as it does on the map.
   useEffect(() => {
@@ -125,23 +120,6 @@ export function CenterScreen() {
   };
 
   const traumatised = run.box.filter((m) => m.traumaStacks > 0);
-  const daycareUsed = !!run.city?.daycareUsed;
-  const resting = run.resting ? run.box.find((m) => m.uid === run.resting) : undefined;
-  const dayPrice = daycarePrice(run, content);
-  // §2.11.1 — someone else has to be able to fight while it rests.
-  const othersFor = (mon: PartyMon) => run.box.some((m) => m.uid !== mon.uid && m.hp > 0);
-  // What the Daycare's level brings, read off the content: the moves learnt at it, and an evolution it makes ready.
-  const bringsFor = (mon: PartyMon): string[] => {
-    const s = content.species(mon.speciesId);
-    const next = mon.level + 1;
-    const learnt = s.learnset.filter((l) => l.level === next).map((l) => content.move(l.move).name);
-    return [
-      ...(learnt.length ? [`Learns ${learnt.join(' and ')}.`] : []),
-      ...(s.evolveLevel !== undefined && next >= s.evolveLevel && mon.level < s.evolveLevel
-        ? [`Ready to evolve.`]
-        : []),
-    ];
-  };
 
   return (
     <main className={styles.root} data-testid="center-screen" data-counter={counter ?? 'lobby'}>
@@ -168,9 +146,9 @@ export function CenterScreen() {
       <div ref={roomFrame} className={styles.scene}>
         <div
           className={styles.room}
-          inert={!healed || undefined}
+          inert={healing || undefined}
           data-testid="center-counters"
-          data-ready={healed || undefined}
+          data-ready={!healing || undefined}
         >
           <PixelRoom<Counter>
             art={CENTER_ROOM.art}
@@ -188,12 +166,12 @@ export function CenterScreen() {
             ]}
             spots={[
               {
-                id: 'daycare',
-                semantics: { kind: 'dialog', open: counter === 'daycare' },
-                boxes: CENTER_SPOTS.daycare,
-                label: CENTER_TEXT.daycare,
-                tip: daycareTip(dayPrice),
-                testId: 'door-center-daycare',
+                id: 'heal',
+                semantics: { kind: 'navigation' },
+                boxes: CENTER_SPOTS.heal,
+                label: CENTER_TEXT.heal,
+                tip: centerHealTip(),
+                testId: 'door-center-heal',
               },
               {
                 id: 'therapy',
@@ -222,13 +200,14 @@ export function CenterScreen() {
           />
         </div>
         <div className={styles.reception}>
-          <HealPanel
+          {healShown && <HealPanel
+            key={run.heals}
+            compactAfterDone
             lines={run.lastHeal ?? []}
             box={run.box}
             stamp={run.heals ?? 0}
             variant="center"
-            compactAfterDone
-            onDone={() => setHealed(true)}
+            onDone={() => setHealing(false)}
             testId="center-heal"
             machineStyle={
               {
@@ -238,7 +217,25 @@ export function CenterScreen() {
                 '--px': 'var(--scene-px)',
               } as React.CSSProperties
             }
-          />
+          />}{!healing && <section className={styles.teamPanel} aria-label="Box health" data-testid="center-health">
+            <h2 className={styles.colTitle}>{CENTER_TEXT.pokemon} <InfoDot tip={centerTip()} /></h2>
+            <ul className={styles.healthList}>
+              {run.box.map((mon) => {
+                const max = effectiveMax(run, mon, content);
+                const name = content.species(mon.speciesId).name;
+                return <li key={mon.uid} className={styles.healthRow} data-testid={`center-health-${mon.uid}`}>
+                  <Tipped tip={ownedMonTip(mon)} aria-label={mon.shiny ? `Shiny ${name}` : name}>
+                    <MonIcon speciesId={mon.speciesId} shiny={mon.shiny} size={40} />
+                  </Tipped>
+                  <div className={styles.healthDetails}>
+                    <span className={styles.patientName}>{name} <small>Lv {mon.level}</small></span>
+                    <HpBar hp={mon.hp} maxHp={max} height={6} />
+                    <span className={styles.healthNumbers}>HP {mon.hp}/{max} · Trauma {mon.traumaStacks}</span>
+                  </div>
+                </li>;
+              })}
+            </ul>
+          </section>}
         </div>
       </div>
 
@@ -290,11 +287,11 @@ export function CenterScreen() {
                   </p>
                 ) : (
                   <ul className={styles.list}>
-                    {traumatised.map((mon: PartyMon) => {
+                    {traumatised.map((mon) => {
                       const s = content.species(mon.speciesId);
                       const price = therapyPrice(mon);
                       const affordable = run.money >= price;
-                      const max = runHelpers.maxHpOf(mon, content);
+                      const max = effectiveMax(run, mon, content);
                       return (
                         <li key={mon.uid}>
                           <Tipped
@@ -330,112 +327,7 @@ export function CenterScreen() {
               </section>
             )}
 
-            {/* The Daycare: a whole level, and the Pokémon sits out the next fight. Once a visit. */}
-            {counter === 'daycare' && (
-              <section
-                className={styles.service}
-                aria-label={CENTER_TEXT.daycare}
-                data-testid="center-daycare"
-              >
-                <Dialog.Title asChild>
-                  <h2 className={styles.colTitle}>
-                    <IconZzz size={16} aria-hidden="true" /> {CENTER_TEXT.daycare}
-                    <InfoDot tip={daycareTip(dayPrice)} />
-                  </h2>
-                </Dialog.Title>
-                {daycareUsed ? (
-                  <p className={styles.empty} data-testid="daycare-used">
-                    {resting
-                      ? CENTER_TEXT.resting(content.species(resting.speciesId).name)
-                      : CENTER_TEXT.daycareDone}
-                  </p>
-                ) : (
-                  <ul className={styles.list}>
-                    {run.box.map((mon) => {
-                      const s = content.species(mon.speciesId);
-                      const affordable = run.money >= dayPrice;
-                      const partnered = othersFor(mon);
-                      const capped = mon.level >= DEFAULT_PROGRESSION.maxLevel;
-                      const nextLevel = capped ? mon.level : mon.level + 1;
-                      const open = affordable && partnered && !capped;
-                      const blocked = capped
-                        ? CENTER_TEXT.maxLevel
-                        : !partnered
-                          ? RUN_REJECT_TEXT['needs-another']!
-                          : !affordable
-                            ? RUN_REJECT_TEXT['cannot-afford']!
-                            : null;
-                      return (
-                        <li key={mon.uid}>
-                          {/* aria-disabled, not disabled: a row that cannot be taken still opens its bubble to say why. */}
-                          <Tipped
-                            as="button"
-                            type="button"
-                            tip={ownedMonTip(
-                              mon,
-                              daycareRowTip(
-                                s.name,
-                                nextLevel,
-                                dayPrice,
-                                capped ? [] : bringsFor(mon),
-                                blocked,
-                              ),
-                            )}
-                            className={`${styles.patient} ${open ? '' : styles.off}`}
-                            aria-disabled={!open}
-                            onClick={() => open && act({ type: 'daycare', uid: mon.uid })}
-                            data-testid={`daycare-${s.id}`}
-                            aria-label={`Daycare for ${mon.shiny ? 'Shiny ' : ''}${s.name}: level ${mon.level} to ${nextLevel}, ${dayPrice} Poké Dollars, sits out the next fight${blocked ? `, ${blocked}` : ''}`}
-                          >
-                            <MonIcon speciesId={s.id} shiny={mon.shiny} size={44} />
-                            <span className={styles.patientBody}>
-                              <span className={`${styles.patientName} display`}>{s.name}</span>
-                              <span className={`${styles.patientMeta} tabular`}>
-                                Lv {mon.level}
-                                {!capped && (
-                                  <>
-                                    {' '}
-                                    → <b>{nextLevel}</b>
-                                  </>
-                                )}
-                              </span>
-                            </span>
-                            {/* D1/D4 — only the pointed-at or focused offer reveals the cost in fights beside its price. */}
-                            <span className={styles.dayDecision}>
-                              <span className={styles.restCue}>
-                                <IconZzz size={16} aria-hidden="true" /> {CENTER_TEXT.missesFight}
-                              </span>
-                              <span className={styles.dayPrice} data-affordable={affordable}>
-                                {affordable ? (
-                                  <Money amount={dayPrice} />
-                                ) : (
-                                  <>
-                                    <IconCoinOff size={14} aria-hidden="true" />
-                                    <b className="tabular">{dayPrice.toLocaleString('en-GB')}</b>
-                                  </>
-                                )}
-                              </span>
-                              {blocked && (
-                                <span className={styles.lock}>
-                                  <IconLock size={14} aria-hidden="true" />
-                                  {capped
-                                    ? CENTER_TEXT.maxLevel
-                                    : !partnered
-                                      ? CENTER_TEXT.alone
-                                      : CENTER_TEXT.cannotAfford}
-                                </span>
-                              )}
-                            </span>
-                          </Tipped>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </section>
-            )}
-
-            {/* The PC Box: the map's Box panel, indoors. */}
+            {/* §2.11.1 — the PC manages the formation, held items and moves. */}
             {counter === 'pc' && (
               <section className={styles.service} aria-label={CENTER_TEXT.pcBox} data-testid="center-pc">
                 <Dialog.Title asChild>
@@ -455,7 +347,6 @@ export function CenterScreen() {
                     setManaging(uid);
                   }}
                   stones={run.stones}
-                  restingUid={run.resting}
                   onOpenTeam={() => setTeam(true)}
                 />
               </section>

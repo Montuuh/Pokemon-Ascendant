@@ -173,6 +173,11 @@ export interface FightRecord {
 export interface PartyMon {
   uid: string;
   speciesId: string;
+  /** §6.3 — postponing is per Pokémon and source stage, persisted until a confirmed evolution. */
+  deferredEvolutionFrom?: string;
+  deferredEvolutionStone?: string;
+  /** §2.12.3 — one already-earned Training evolution, scoped to deferredEvolutionFrom. */
+  deferredEvolutionForced?: boolean;
   /** §5.14 — a shiny caught in the wild. Optional on purpose: every save from before v0.9.1 reads as not shiny. */
   shiny?: boolean;
   level: number;
@@ -297,6 +302,8 @@ export interface LevelUp {
 
 /** §6.3.3 — one queued Evolution screen: who, from what, and which archetypes are on offer. */
 export interface PendingEvolution {
+  /** §2.12.3 — Training paid for this one stage; no level, stone or Catalyst is needed. */
+  forced?: boolean;
   uid: string;
   from: string;
   branchIds: string[];
@@ -430,8 +437,6 @@ export interface CityState {
   safari: SafariState | null;
   /** §2.11.6 — Team Rocket's Black Market beneath the Game Corner, rolled on arrival; null where there is none. */
   blackMarket: BlackMarketState | null;
-  /** §2.11.1 — the Center's Daycare has taken its one Pokémon this visit. */
-  daycareUsed: boolean;
   /** §2.11.1 — the Center's supplies are handed over on the first visit only (v0.8.6). Absent in older saves. */
   giftTaken?: boolean;
 }
@@ -650,11 +655,6 @@ export interface RunState {
   pendingReward: RewardSummary | null;
   /** §7.3.7 — the three Legendaries on offer, while `phase` is 'legendary'. */
   pendingLegendary: string[] | null;
-  /**
-   * §2.11.1 — the Pokémon the Daycare raised a level: it sits out the next fight (out of the active team, and
-   * `set-active` will not take it back), then walks back into the first free slot. Null when nobody is resting.
-   */
-  resting: string | null;
   pendingRecruit: PendingRecruit | null;
   /** §6.3.1 — the Evolution screens still owed, oldest first. */
   pendingEvolutions: PendingEvolution[];
@@ -780,6 +780,10 @@ export type RunAction =
   | { type: 'resolve-recruit'; releaseUid: string | null }
   /** §6.3.3 — pick the archetype for the queued evolution. Permanent. */
   | { type: 'choose-branch'; uid: string; branchId: string }
+  | { type: 'defer-evolution'; uid: string }
+  | { type: 'resume-evolution'; uid: string }
+  /** §2.11.1 — free whole-Box treatment, only when the nurse is asked. */
+  | { type: 'heal-center' }
   /** §6.7.2 — the Move Manager: set one Pokémon's active 4 from its pool. */
   | { type: 'set-moves'; uid: string; moveIds: string[] }
   /** §6.4.1 — teach a held TM. Single use. */
@@ -858,8 +862,6 @@ export type RunAction =
   | { type: 'leave-shop' }
   /** §8.2.4 — a Centre's Therapy service: one Trauma stack off one Pokémon. */
   | { type: 'use-therapy'; uid: string }
-  /** §2.11.1 — the Daycare: one Pokémon, +1 level, and it rests through the next fight. */
-  | { type: 'daycare'; uid: string }
   /** §2.9.4.2 — the Dojo's scrolls: one of the line's egg moves. */
   | { type: 'teach-egg-move'; uid: string; moveId: string }
   /** §7.4.1 — equip a bagged held item, or take one off. `itemId` null unequips. */
@@ -919,9 +921,6 @@ export type RunRejectReason =
   | 'no-such-item'
   | 'item-locked-to-species'
   | 'no-trauma'
-  | 'daycare-used'
-  | 'needs-another'
-  | 'resting'
   | 'not-an-egg-move'
   | 'unknown-option'
   /** §2.11 — a City action outside a City, or a City shop action at the route's merchant. */

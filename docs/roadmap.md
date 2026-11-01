@@ -1510,7 +1510,20 @@ Art-review follow-up A14–A15: recognisable small move effects and an effective
 
 **Exit criteria:** first-catch Safari gift once per visit, including declined recruits and exhausted pools; trainer 50 % equipment, Elite guaranteed, merchant always and Mart two useful alternatives; save/reload and control regressions; matched-seed run measurement; `npm run check`, affected e2e, independent design/QA/UI reviews and release verification. [Audit](reviews/2026-10-30-rewards-and-status.md).
 
-### v0.9.86 — Authored Gym teams and readable phases  ☐
+### v0.9.86 — AP, evolution and Center choices  ✅ 2026-10-30
+
+**Shipped.** Sage's Tome grants +1 AP at the start of every turn,
+including the first, capped at 6. The combat console retains source-labelled gains, spends, expiry, capped
+bonuses, discounts and next-turn credits. Evolution can be postponed per Pokémon/stage and resumed from its
+Team sheet; stones and Catalyst spend only on confirmation, with reload-safe choices. The Center no longer
+heals on entry: the nurse heals the whole Box on request, the beds treat Trauma, and a persistent panel shows
+all Box HP/Trauma. Daycare and its rest restriction are removed; save v22 preserves old progress and returns
+pending legacy stones once. Design decisions: user, 2026-10-30 (§2.11.1, §3.8, §6.3, §7.3.5).
+
+**Exit criteria:** focused regressions, full static/unit/browser checks, screenshots, measured audit and
+independent UI review. Evidence: `reviews/2026-10-30-ap-evolution-center.md`.
+
+### v0.9.87 — Authored Gym teams and readable phases  ☐
 
 **Designed 2026-10-29; not implemented.** The user's playtest: Gym teams repeat Pokémon or contain weak filler,
 and enemy phases lack useful UX. Decision: five members per Gym, allowing one explicitly telegraphed off-type

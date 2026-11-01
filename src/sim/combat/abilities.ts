@@ -3,6 +3,7 @@ import type { PokemonType, Stat, StatusCondition } from '../types';
 import type { BattleConfig } from './battleConfig';
 import type { Combatant } from './state';
 import { hpFraction } from './stats';
+import type { ApSource } from './ap';
 
 // §6.5 — passive abilities as pure hooks over (combatant, content). Data lives in abilities.json.
 
@@ -109,12 +110,18 @@ export function abilityAbsorbBuff(target: Combatant, moveType: PokemonType, cont
 
 /** §6.5.2 Speed Boost — extra AP at the start of a given turn, summed over the living team. */
 export function abilityTurnStartAp(team: readonly Combatant[], turn: number, content: ContentRegistry): number {
-  let ap = 0;
+  return abilityTurnStartApSources(team, turn, content).reduce((sum, entry) => sum + entry.amount, 0);
+}
+
+/** §6.5.2 / §3.8 — retain each living Pokémon and ability as the refill's source. */
+export function abilityTurnStartApSources(team: readonly Combatant[], turn: number, content: ContentRegistry): ApSource[] {
+  const entries: ApSource[] = [];
   for (const c of team) {
     if (c.hp <= 0) continue;
-    for (const a of hooks(c, content)) if (a.hook === 'turn-start-ap' && Number(a.params?.turn ?? 0) === turn) ap += Number(a.params?.ap ?? 1);
+    for (const a of hooks(c, content)) if (a.hook === 'turn-start-ap' && Number(a.params?.turn ?? 0) === turn)
+      entries.push({ source: `${c.name}: ${a.name}`, amount: Number(a.params?.ap ?? 1) });
   }
-  return ap;
+  return entries;
 }
 
 /** §6.5.2 Inner Focus and friends — one condition simply cannot land on the wearer. */

@@ -1,5 +1,6 @@
 import type { ContentRegistry } from '../content/defs';
 import { RUN_SAVE_VERSION, mintUid, uidIndex } from './run';
+import { hasPlaceFor } from './legendaries';
 import type { RunState } from './types';
 
 // §10.8 — the save model. The simulation only knows how to turn a run into text and back; *where* that text
@@ -94,8 +95,8 @@ function migrateRouletteTo14(run: RunState): void {
  * under way has not used its Daycare yet.
  */
 function migrateDaycareTo15(run: RunState): void {
-  run.resting ??= null;
-  if (run.city) run.city.daycareUsed ??= false;
+  (run as RunState & { resting?: string | null }).resting ??= null;
+  if (run.city) (run.city as typeof run.city & { daycareUsed?: boolean }).daycareUsed ??= false;
 }
 
 /**
@@ -192,8 +193,24 @@ function migrateShowcaseTo21(run: RunState): void {
   market.showcase = null;
 }
 
+/** §2.11.1 / §6.3.2 — v21 → v22: release the old rest restriction; refund stones reserved by old saves. */
+function migrateCenterTo22(run: RunState, content: ContentRegistry): void {
+  run.version = RUN_SAVE_VERSION;
+  const legacy = run as RunState & { resting?: string | null };
+  const mon = run.box.find((m) => m.uid === legacy.resting);
+  if (mon && mon.hp > 0 && !run.activeUids.includes(mon.uid) && hasPlaceFor(run, mon.speciesId, content)) run.activeUids.push(mon.uid);
+  delete legacy.resting;
+  if (run.city) delete (run.city as typeof run.city & { daycareUsed?: boolean }).daycareUsed;
+  // Training was the first queued prompt, after leaving its node. Preserve its paid right even with Catalyst held.
+  const pending = run.pendingEvolutions[0];
+  if (pending && !pending.stone && pending.returnTo === 'map' && run.position && run.map.nodes[run.position]?.kind === 'training'
+    && run.log.includes(`${content.species(pending.from).name} is ready to evolve.`)) pending.forced = true;
+  // Old screens spent their stone when opened; from v22 it is spent only on confirmation. This runs once.
+  for (const pending of run.pendingEvolutions) if (pending.stone) run.stones.push(pending.stone);
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20, 20: migrateShowcaseTo21 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState, content: ContentRegistry) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20, 20: migrateShowcaseTo21, 21: migrateCenterTo22 };
 
 export type LoadResult =
   | { ok: true; run: RunState }
@@ -217,10 +234,10 @@ export function deserialiseRun(text: string | null, content: ContentRegistry): L
 
   // The checksum is of the run as it was written, so it is checked before any migration touches it.
   if (checksum(JSON.stringify(envelope.run)) !== envelope.checksum) return { ok: false, reason: 'corrupt' };
-  for (let v = envelope.version; v < RUN_SAVE_VERSION; v++) MIGRATIONS[v]!(envelope.run);
 
   // Content ids are part of the contract: a save that names a species we no longer ship is not loadable.
   try {
+    for (let v = envelope.version; v < RUN_SAVE_VERSION; v++) MIGRATIONS[v]!(envelope.run, content);
     for (const mon of envelope.run.box) {
       content.species(mon.speciesId);
       mon.moveIds.forEach((m) => content.move(m));
