@@ -156,7 +156,9 @@ where the ring **would** stand as a lighter **ghost** arc, the same arithmetic a
 so the AP capsule's "what this costs" has its twin, "what this feeds". (3) A small **▲ / ▼** on the dial's rim says a Speed
 stage or Paralysis is making it fill quicker or slower (green when it favours you, red when it does not — for a foe, quicker is
 red); the hover lists the modifiers. (4) One of **your** rings becoming full plays a short rising cue, once, never when a
-screen opens already full.
+screen opens already full. The ring a card fills fills **when that card's move lands** (§9.9.2: the dial is held like
+the HP it takes), and the cue follows that hit by a beat (`FX_MS.readyCue`); with motion off both are immediate. A cue
+timed to the release instead sounded before a projectile or an area move arrived, and after a quick melee hit.
 
 *Why (the user's call, 2026-10-26):* a Speed-based crit chance, as Gen I had, was weighed and rejected — it would
 have made every preview a range and every enemy number a gamble. The rhythm keeps Speed's series meaning (fast

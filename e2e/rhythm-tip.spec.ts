@@ -83,3 +83,46 @@ test.describe('The rhythm dial hover — §4.1.3.1', () => {
     await expect(page.getByTestId('rhythm-pace-mark')).toHaveText('▲');
   });
 });
+
+// §4.1.3.1 / §9.9.2 — a card that completes your ring completes it when its move lands: the dial (and its rising cue)
+// wait for the impact, as the HP the card takes does. With motion off there is no flight to wait for.
+test.describe('The ready cue at the impact — §4.1.3.1', () => {
+  test('a card that fills the ring fills it when its move lands, and the cue follows that hit', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/?scenario=wild-basic&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant?.state());
+    await page.evaluate(() => {
+      const a = window.__ascendant!;
+      a.setRhythm('lead', 0.99);
+      a.hand(['ember']);
+    });
+    await expect(page.locator('[data-testid="rhythm-dial"][data-ready]')).toHaveCount(0);
+    const played = await page.evaluate(() => {
+      const a = window.__ascendant!;
+      a.dispatch({ type: 'play-card', cardId: 'dbg-0-ember', targetUid: a.state()!.enemies[0]!.uid });
+      const s = a.state()!;
+      return { full: s.player.team[s.player.leadIndex]!.rhythm >= 1, at: performance.now() };
+    });
+    expect(played.full).toBe(true);
+    // The sim already holds a full ring; the screen does not, while Ember is in the air.
+    await expect(page.locator('[data-testid="rhythm-dial"][data-ready]')).toHaveCount(0);
+    expect(await page.evaluate(() => window.__ascendant!.audio.recent().includes('rhythm-ready'))).toBe(false);
+    await expect(page.locator('[data-testid="rhythm-dial"][data-ready]')).toHaveCount(1, { timeout: 3000 });
+    const landed = await page.evaluate(() => performance.now());
+    expect(landed - played.at).toBeGreaterThan(200);
+    await expect.poll(() => page.evaluate(() => window.__ascendant!.audio.recent().includes('rhythm-ready'))).toBe(true);
+  });
+
+  test('with reduced motion the ring is full at once', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/?scenario=wild-basic&seed=7');
+    await page.waitForFunction(() => !!window.__ascendant?.state());
+    await page.evaluate(() => {
+      const a = window.__ascendant!;
+      a.setRhythm('lead', 0.99);
+      a.hand(['ember']);
+      a.dispatch({ type: 'play-card', cardId: 'dbg-0-ember', targetUid: a.state()!.enemies[0]!.uid });
+    });
+    await expect(page.locator('[data-testid="rhythm-dial"][data-ready]')).toHaveCount(1, { timeout: 400 });
+  });
+});

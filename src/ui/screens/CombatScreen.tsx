@@ -348,6 +348,11 @@ export function CombatScreen() {
   const shownLog = fx.logHold === null ? state.log : state.log.slice(0, fx.logHold);
   /** §9.9.2 — a Pokémon as the screen shows it: with the HP it had until the move on its way lands. */
   const shownHp = <T extends { uid: string; hp: number }>(m: T): T => (m.uid in fx.hp ? { ...m, hp: fx.hp[m.uid]! } : m);
+  // §4.1.3.1 — your dial, as the HP: what it showed until the card that changed it lands.
+  const shownMon = <T extends { uid: string; hp: number; rhythm: number }>(m: T): T => {
+    const held = shownHp(m);
+    return m.uid in fx.rhythm ? { ...held, rhythm: fx.rhythm[m.uid]! } : held;
+  };
   // §9.9.2 — where each Pokémon's numbers rise: over its sprite, above everything a move draws.
   const floatSlots: [string, SpriteSlot][] = [
     [lead.uid, 'player'],
@@ -488,7 +493,7 @@ export function CombatScreen() {
     const slot = indexToSlot(state!, bi);
     return (
       <div className={cls}>
-        <Portrait turn={state!.turn} mon={shownHp(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapQuick={opt?.quick} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} rhythmGhost={ghostFor(mon.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
+        <Portrait turn={state!.turn} mon={shownMon(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapQuick={opt?.quick} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} rhythmGhost={ghostFor(mon.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -580,7 +585,7 @@ export function CombatScreen() {
           {benchUnit(benches[0], styles.slotB1)}
           {benchUnit(benches[1], styles.slotB2)}
           <div className={styles.slotLead}>
-            <Portrait turn={state!.turn} mon={shownHp(lead)} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} rhythmGhost={ghostFor(lead.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} arrival={arrivalOf(lead.uid)} {...incomingFor(lead.uid)} />
+            <Portrait turn={state!.turn} mon={shownMon(lead)} variant="lead" slotLabel="Lead" slotId="lead" allyIndex={leadIdx} fxSlot="player" spriteClass={fx.sprites[lead.uid]} targeted={targetSlots.has('lead')} selectable={(allySelectable && lead.hp > 0) || allyCardTargets.has(leadIdx)} rhythmGhost={ghostFor(lead.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? 'lead' : cur === 'lead' ? null : cur))} onClick={() => onTeamClick(leadIdx)} fxClass={fx.classes[lead.uid]} faintPending={!!fx.faintPending[lead.uid]} arrival={arrivalOf(lead.uid)} {...incomingFor(lead.uid)} />
           </div>
         </div>
 

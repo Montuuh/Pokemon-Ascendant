@@ -59,6 +59,8 @@ export interface AscendantDevTools {
   crowd: () => void;
   /** Debug: set one combatant's HP — `lead`, or a uid (`p0`, `e1`) — to see a knockout coming. */
   setHp: (who: string, hp: number) => void;
+  /** Debug: set one combatant's critical rhythm (0–1) — `lead`, or a uid — to watch a ring complete (§4.1.3.1). */
+  setRhythm: (who: string, rhythm: number) => void;
   replay: () => sim.RecordedCombat | null;
   state: () => sim.CombatState | null;
   run: AscendantRunTools;
@@ -225,6 +227,16 @@ export function installDevTools(): void {
         state: produce(s, (d) => {
           const c = who === 'lead' ? d.player.team[d.player.leadIndex] : [...d.player.team, ...d.enemies].find((x) => x.uid === who);
           if (c) c.hp = Math.max(0, Math.min(c.maxHp, hp));
+        }),
+      });
+    },
+    setRhythm: (who, rhythm) => {
+      const s = combat().state;
+      if (!s) return;
+      useCombatStore.setState({
+        state: produce(s, (d) => {
+          const c = who === 'lead' ? d.player.team[d.player.leadIndex] : [...d.player.team, ...d.enemies].find((x) => x.uid === who);
+          if (c) c.rhythm = Math.max(0, rhythm);
         }),
       });
     },

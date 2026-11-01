@@ -115,6 +115,8 @@ export interface CombatFxState {
   logHold: number | null;
   /** §9.9.2 — uid → the HP shown while a hit is on its way: what it had, until the move lands. */
   hp: Record<string, number>;
+  /** §4.1.3.1 — uid → the rhythm your dial shows while the card that changed it is on its way. */
+  rhythm: Record<string, number>;
   /** §9.9.2 — the foes' moves are playing: their next intents wait until they have (the hand waits too, `busy`). */
   acting: boolean;
   /** §9.9.1 — the fight's Pokémon are still coming out of their balls: what is aimed at them waits until they are out. */
@@ -179,6 +181,8 @@ export const FX_MS = {
   cardLeave: 220,
   /** §9.9 — a whole HP bar emptying at the series' constant rate; `tokens.test.ts` holds `--motion-hp-drain` to it. */
   hpDrain: 800,
+  /** §4.1.3.1 — your ring's rising cue, this long after the hit that filled it, so it follows the hit's own sound. */
+  readyCue: 120,
 } as const;
 
 /** The beats' lengths as CSS custom properties on the arena, so the keyframes and the timers read one table. */
@@ -222,6 +226,8 @@ interface Seen {
   lead: { uid: string; speciesId: string; shiny: boolean } | null;
   /** Everyone's HP, and how long the log was: what the screen showed before a batch. */
   hp: Map<string, number>;
+  /** Your Pokémon's critical rhythm: what the dials showed before a batch. */
+  rhythm: Map<string, number>;
   logLength: number;
 }
 
@@ -232,7 +238,8 @@ function look(state: CombatState): Seen {
   state.enemies.forEach((e, i) => enemies.set(e.uid, { speciesId: e.speciesId, shiny: !!e.shiny, slot: slotOf(i, state.enemies.length), enemy: e }));
   const l = state.player.team[state.player.leadIndex];
   const hp = new Map<string, number>([...state.player.team, ...state.enemies].map((m) => [m.uid, m.hp]));
-  return { enemies, lead: l && l.hp > 0 ? { uid: l.uid, speciesId: l.speciesId, shiny: !!l.shiny } : null, hp, logLength: state.log.length };
+  const rhythm = new Map(state.player.team.map((m) => [m.uid, m.rhythm]));
+  return { enemies, lead: l && l.hp > 0 ? { uid: l.uid, speciesId: l.speciesId, shiny: !!l.shiny } : null, hp, rhythm, logLength: state.log.length };
 }
 
 /** §9.9.2 — a line that starts a beat in the log: a move used, or a trainer's Pokémon sent out. */
@@ -258,6 +265,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
   const [faintPending, setFaintPending] = useState<Record<string, true>>({});
   const [logHold, setLogHold] = useState<number | null>(null);
   const [hpShown, setHpShown] = useState<Record<string, number>>({});
+  const [rhythmShown, setRhythmShown] = useState<Record<string, number>>({});
   const [shownTurn, setShownTurn] = useState<number | null>(null);
   const [hitStop, setHitStop] = useState(false);
   const hitStopUntil = useRef(0);
@@ -344,6 +352,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       setSprites({});
       setLogHold(null);
       setHpShown({});
+      setRhythmShown({});
       setActing(false);
       clock.current = { impact: 0, dashes: {}, heldUntil: 0, actingUntil: 0 };
       held.current = null;
@@ -395,6 +404,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // §9.9.2 — what this batch holds back, and when each is let go: the log's lines (up to `upTo`) and HPs.
     const logCuts: { at: number; upTo: number }[] = [];
     const hpAt: { at: number; uid: string; hp: number }[] = [];
+    // §4.1.3.1 / §9.9.2 — the ring a card fills fills when that card's move lands, as the HP it takes does.
+    const impactOf = new Map<string, number>();
     const marks = state.log.flatMap((l, i) => (i >= before.logLength && (usedLine(l) || sentLine(l) || faintLine(l)) ? [i] : []));
     const used = marks.filter((i) => usedLine(state.log[i]!));
     const sent = marks.filter((i) => sentLine(state.log[i]!));
@@ -509,6 +520,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       }
       const stagger = motion.kind === 'area' ? MOTION_MS.impact.stagger : 0;
       const hitAt = new Map(targets.map((uid, k) => [uid, delay + motion.impactMs + k * stagger]));
+      if (!impactOf.has(userUid)) impactOf.set(userUid, delay + motion.impactMs);
       clock.current.impact = Math.max(clock.current.impact, t0 + delay + motion.impactMs);
       delay += motion.impactMs;
       moving = { moveId, userUid, hitAt };
@@ -747,7 +759,10 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // §9.9.2 — before paint, the log and the HP as they stood (or as an earlier batch still holds them) — never a frame of
     // a result before its beat told it (v0.9.16); each cut and each hit lets a little more through; the batch that ends
     // last lets go of the rest.
-    if (logCuts.length || hpAt.length) {
+    const rhythmAt = animate
+      ? [...seen.current.rhythm].flatMap(([uid, now]) => (before.rhythm.get(uid) !== now && (impactOf.get(uid) ?? 0) > 0 ? [{ at: impactOf.get(uid)!, uid, rhythm: now }] : []))
+      : [];
+    if (logCuts.length || hpAt.length || rhythmAt.length) {
       if (logCuts.length) {
         const first = Math.max(before.logLength, ...logCuts.filter((c) => c.at <= 0).map((c) => c.upTo));
         setLogHold((h) => h ?? first);
@@ -761,18 +776,27 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         });
         for (const h of hpAt) schedule(() => setHpShown((c) => ({ ...c, [h.uid]: h.hp })), h.at);
       }
-      const end = Math.max(...logCuts.map((c) => c.at), ...hpAt.map((h) => h.at));
+      if (rhythmAt.length) {
+        setRhythmShown((cur) => {
+          const next = { ...cur };
+          for (const r of rhythmAt) if (!(r.uid in next)) next[r.uid] = before.rhythm.get(r.uid) ?? r.rhythm;
+          return next;
+        });
+        for (const r of rhythmAt) schedule(() => setRhythmShown((c) => ({ ...c, [r.uid]: r.rhythm })), r.at);
+      }
+      const end = Math.max(...logCuts.map((c) => c.at), ...hpAt.map((h) => h.at), ...rhythmAt.map((r) => r.at));
       clock.current.heldUntil = Math.max(clock.current.heldUntil, t0 + end);
       schedule(() => {
         if (Date.now() < clock.current.heldUntil - 5) return;
         setLogHold(null);
         setHpShown({});
+        setRhythmShown({});
       }, end);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, acting, opening, turn: shownTurn ?? state?.turn ?? 1, hitStop };
+  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, rhythm: rhythmShown, acting, opening, turn: shownTurn ?? state?.turn ?? 1, hitStop };
 }
 
 export type { CombatEvent };

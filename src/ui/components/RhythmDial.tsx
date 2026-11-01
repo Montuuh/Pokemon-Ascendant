@@ -1,6 +1,7 @@
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { rhythmActs, rhythmLeft, rhythmModifier, rhythmReady, type BattleConfig, type Combatant } from '@/sim';
 import { playSfx } from '@/ui/audio/sfx';
+import { FX_MS } from '@/ui/hooks/useCombatFx';
 import { RHYTHM_TEXT } from '@/ui/strings';
 import { Tip, Tipped } from '@/ui/tooltip';
 import { RhythmPace } from './RhythmPace';
@@ -25,11 +26,22 @@ export function RhythmDial({ c, config, side, lead, ghost = null }: { c: Combata
   const modifier = rhythmModifier(c, config);
   const pace = modifier > 1.0001 ? 'quicker' : modifier < 0.9999 ? 'slower' : null;
   const fill = Math.min(1, c.rhythm);
-  // Your ring completing, from a card or a Speed change: heard once, a beat after the card's own sounds, never on the screen opening full.
+  // Your ring completing, from a card or a Speed change: heard once, never on the screen opening full. The dial is handed
+  // the rhythm the arena still holds (useCombatFx), so it fills when the card's move lands and the cue follows that hit.
   const wasReady = useRef(ready);
+  // The cue waits its beat on a timer the next render can cancel: a frame that shows the ring full before the arena's hold
+  // reaches it (the hold is set in a layout effect after this render) never sounds.
   useEffect(() => {
-    if (ready && !wasReady.current && side === 'ally') playSfx('rhythm-ready', 0.35);
-    wasReady.current = ready;
+    if (!ready) {
+      wasReady.current = false;
+      return;
+    }
+    if (wasReady.current) return;
+    const cue = setTimeout(() => {
+      wasReady.current = true;
+      if (side === 'ally') playSfx('rhythm-ready');
+    }, FX_MS.readyCue);
+    return () => clearTimeout(cue);
   }, [ready, side]);
   return (
     <Tipped
