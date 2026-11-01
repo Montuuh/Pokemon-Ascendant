@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { join, relative, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { lintMotionFiles, motionFiles } from '../../../scripts/lib/motion-lint.mjs';
 import { FX_MS } from '@/ui/hooks/useCombatFx';
@@ -32,5 +32,33 @@ describe('Reduced motion, both switches — §9.6, D11', () => {
   it('Stylesheets_ReducedMotionRules_ObeyBothSwitches', () => {
     const hits = lintMotionFiles(ROOT, motionFiles(ROOT)).filter((h) => h.rule === 'one-switch' || h.rule === 'ungated-motion');
     expect(hits.map((h) => `${h.file}:${h.line} ${h.detail}`)).toEqual([]);
+  });
+});
+
+/** Every CSS module under src/ui, comments blanked (a hex in a note is not a colour). */
+function modules(): { file: string; lines: string[] }[] {
+  const out: { file: string; lines: string[] }[] = [];
+  (function walk(dir: string) {
+    for (const name of readdirSync(dir)) {
+      const p = join(dir, name);
+      if (statSync(p).isDirectory()) walk(p);
+      else if (name.endsWith('.module.css')) out.push({ file: relative(ROOT, p).split('\\').join('/'), lines: readFileSync(p, 'utf8').replace(/\/\*(?![^*]*token-ok)[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' ')).split('\n') });
+    }
+  })(resolve(ROOT, 'src/ui'));
+  return out;
+}
+
+describe('Tokens, not literals — D6', () => {
+  // A deliberate exception carries `/* token-ok: <reason> */` on its line (SVG user units, an em of a token-sized mark).
+  const hits = (re: RegExp) =>
+    modules().flatMap(({ file, lines }) => lines.flatMap((l, i) => (re.test(l) && !l.includes('token-ok') ? [`${file}:${i + 1} ${l.trim()}`] : [])));
+
+  it('Modules_NoLiteralHexColour', () => {
+    expect(hits(/#[0-9a-fA-F]{3,8}\b/)).toEqual([]);
+  });
+
+  // §9.6 — a literal size ignores the text-size setting; every size is a --type-* token (or a calc on one).
+  it('Modules_NoLiteralFontSize', () => {
+    expect(hits(/font-size:\s*[0-9.]+(px|rem|em)\s*;/)).toEqual([]);
   });
 });

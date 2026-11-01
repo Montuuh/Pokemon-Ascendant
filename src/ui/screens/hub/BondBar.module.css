@@ -41,8 +41,8 @@
   color: var(--ink-primary);
 }
 .markOn[data-rank='2'] { background: color-mix(in srgb, var(--type-psychic) 55%, var(--surface-1)); }
-.markOn[data-rank='3'] { background: color-mix(in srgb, var(--brand-blue) 55%, var(--surface-1)); color: #fff; }
-.markOn[data-rank='5'] { background: var(--brand-red); color: #fff; }
+.markOn[data-rank='3'] { background: color-mix(in srgb, var(--brand-blue) 55%, var(--surface-1)); color: var(--ink-on-accent); }
+.markOn[data-rank='5'] { background: var(--brand-red-deep); color: var(--ink-on-red); }
 .text {
   font-size: var(--type-small);
   color: var(--ink-secondary);

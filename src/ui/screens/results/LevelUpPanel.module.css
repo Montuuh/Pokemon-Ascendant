@@ -12,7 +12,7 @@
   border: 3px solid var(--accent-action);
   background: var(--brand-cream);
   color: var(--ink-on-accent);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-lg);
   animation: appear var(--motion-base) ease both;
 }
 @keyframes appear {

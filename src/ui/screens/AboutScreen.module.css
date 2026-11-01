@@ -6,7 +6,7 @@
   grid-template-rows: auto 1fr;
   gap: var(--sp-5);
   padding: var(--sp-5) var(--sp-5) var(--sp-6);
-  background: radial-gradient(120% 80% at 50% 0%, #fdf0dd 0%, var(--surface-0) 70%);
+  background: radial-gradient(120% 80% at 50% 0%, var(--surface-glow) 0%, var(--surface-0) 70%);
   color: var(--ink-primary);
   overflow-y: auto;
 }

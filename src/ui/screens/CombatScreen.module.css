@@ -293,7 +293,7 @@
   animation: global(popIn) var(--motion-fast) var(--ease-spring) both;
 }
 .previewValue {
-  font-size: 40px;
+  font-size: var(--type-display);
   line-height: 1;
   color: var(--accent-negative);
 }
@@ -362,7 +362,7 @@ html[data-motion='reduced'] .banner {
   padding: 5px 14px;
   font-size: var(--type-caption);
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-sm);
   animation: global(popIn) var(--motion-fast) var(--ease-spring) both;
 }
 .hintText {
@@ -386,7 +386,7 @@ html[data-motion='reduced'] .banner {
   border-radius: var(--radius-md);
   padding: 8px 16px;
   font-size: var(--type-small);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-md);
   animation: global(popIn) var(--motion-fast) var(--ease-spring) both;
 }
 

@@ -61,12 +61,12 @@
   color: var(--ink-secondary);
 }
 .trauma {
-  font-size: 11px;
+  font-size: var(--type-micro);
   font-weight: 700;
   padding: 1px 6px;
   border-radius: var(--radius-pill);
   background: var(--accent-warning);
-  color: #4a2a06;
+  color: var(--ink-on-accent);
 }
 .actions {
   display: flex;
@@ -88,7 +88,7 @@
 }
 .swap {
   background: var(--accent-negative);
-  color: #3a0d0d;
+  color: var(--ink-on-accent);
 }
 .swap:disabled {
   opacity: 0.5;

@@ -225,7 +225,7 @@
   opacity: 0.6;
 }
 .medal {
-  font-size: 22px;
+  font-size: var(--type-number);
 }
 .rowBody {
   display: grid;

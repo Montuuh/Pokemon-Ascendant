@@ -93,7 +93,7 @@
   color: var(--ink-on-accent);
   font-family: var(--font-number);
   font-synthesis: none;
-  font-size: 8px;
+  font-size: var(--type-pip);
   font-weight: 800;
   line-height: 1.5;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);

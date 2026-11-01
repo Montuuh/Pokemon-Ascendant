@@ -60,8 +60,8 @@
 }
 .primary {
   background: var(--accent-action);
-  color: #3a2e22;
-  box-shadow: 0 5px 0 #d9a51d;
+  color: var(--ink-on-accent);
+  box-shadow: var(--shadow-lip);
 }
 .primary:hover,
 .secondary:hover {

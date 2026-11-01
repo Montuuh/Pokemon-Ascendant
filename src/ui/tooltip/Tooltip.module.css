@@ -7,8 +7,8 @@
   max-width: 320px;
   padding: var(--sp-3) var(--sp-4);
   border-radius: var(--radius-md);
-  background: #2a2230;
-  color: #fff6ec;
+  background: var(--tip-surface);
+  color: var(--tip-ink);
   border: 1px solid rgba(255, 246, 236, 0.14);
   box-shadow: 0 14px 34px rgba(20, 15, 26, 0.45);
   pointer-events: none;
@@ -65,10 +65,10 @@
   white-space: nowrap;
 }
 .body {
-  color: #e0d2c2;
+  color: var(--tip-ink-secondary);
 }
 .footer {
-  color: #9e8fa0;
+  color: var(--tip-ink-muted);
   font-size: calc(12px * var(--text-scale));
 }
 

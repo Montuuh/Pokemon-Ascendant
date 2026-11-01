@@ -39,6 +39,15 @@
   --scrim: rgba(58, 46, 34, 0.55);
   /* The management sheets' lift (the Move Manager, the Team screen). */
   --shadow-modal: 0 24px 60px rgba(58, 46, 34, 0.35);
+  /* D6 — the elevation ladder every module draws from: a card in hand, a panel on the stage, a popover, a sheet. */
+  --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.4);
+  --shadow-sheet: 0 30px 80px rgba(0, 0, 0, 0.5);
+  /* The dark inner edge that seats a picture in its window (move art, a unit's sprite). */
+  --shadow-hairline: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  /* A gold button's key: the solid lip under it, like a handheld's (no soft shadow). */
+  --shadow-lip: 0 5px 0 var(--accent-action-deep);
 
   /* ---- Semantic accents (§1.2). On the LIGHT theme: fill/border/icon only, never text colour. ---- */
   --accent-action: #ffcb3d;
@@ -72,6 +81,15 @@
   --medal-platinum: #b9e3ea;
   /* The dark bubble every tooltip and the progress panel sit on, whatever the theme. */
   --tip-surface: #2a2230;
+  /* The bubble's inks, the same on every theme because the bubble is. Muted is 4.6:1 on --tip-surface (D5; the
+     tooltip's own #9e8fa0 was 4.1:1). */
+  --tip-ink: #fff6ec;
+  --tip-ink-secondary: #e0d2c2;
+  --tip-ink-muted: #a99bab;
+  /* White text on a deep fill: --brand-red-deep (5.06:1). D5. */
+  --ink-on-red: #ffffff;
+  /* The warm light a hero screen (the Hub, About) rises from, at the top of its radial wash. */
+  --surface-glow: #fdf0dd;
   --shield: #a8e6f0;
   /* §9.2.5 — a status intent's colour (chip and arrow): violet, clear of the hit's red on the dark stage. */
   --intent-status: #c57be0;
@@ -134,6 +152,7 @@
   --type-small: calc(15px * var(--text-scale));
   --type-caption: calc(13px * var(--text-scale));
   --type-micro: calc(11px * var(--text-scale)); /* a card plate, a chip: the smallest text, still scaled */
+  --type-pip: calc(8px * var(--text-scale)); /* the rhythm dial's CRIT tab only: a label on a 26 px dial */
   --type-number: calc(22px * var(--text-scale));
   /* The What's new page (docs/release-doctrine.md R1): a version's number grows with its level — a patch
      reads at h3, a minor at hero, a major at hero-major. The only two sizes above display. */

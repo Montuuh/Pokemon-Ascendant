@@ -19,7 +19,7 @@
   border-radius: var(--radius-md);
   border: var(--frame) solid var(--border-subtle);
   background: color-mix(in srgb, var(--surface-1) 94%, transparent);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-md);
   color: var(--ink-primary);
   font-family: var(--font-ui);
   text-align: left;
@@ -102,7 +102,7 @@
   background:
     radial-gradient(70% 45% at 50% 92%, rgba(0, 0, 0, 0.42), transparent 70%),
     radial-gradient(75% 85% at 50% 60%, color-mix(in srgb, var(--unit-type, var(--surface-2)) 46%, var(--night)), var(--night));
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-hairline);
 }
 /* The FX anchor and the arrows' end: the sprite's own box, a little in from the window's edges. */
 .stand {

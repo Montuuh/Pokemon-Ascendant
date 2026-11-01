@@ -16,7 +16,7 @@
   padding: var(--sp-6) var(--sp-8);
   min-width: 420px;
   max-width: 720px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-sheet);
   text-align: center;
   animation: global(sheetIn) var(--motion-base) var(--ease-step) both;
 }

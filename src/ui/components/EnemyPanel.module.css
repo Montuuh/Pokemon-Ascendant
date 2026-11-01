@@ -59,7 +59,7 @@
   padding: 3px var(--sp-2);
   font-size: var(--type-caption);
   color: var(--ink-primary);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-md);
   backdrop-filter: blur(4px);
   max-width: 100%;
 }
@@ -216,7 +216,7 @@ html[data-motion='reduced'] .fallen {
   color: var(--accent-negative);
   font-size: var(--type-h3);
   line-height: 1.2;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-md);
   z-index: 3;
   pointer-events: none;
 }

@@ -27,7 +27,7 @@
 .primary {
   background: var(--accent-action);
   color: var(--ink-primary);
-  box-shadow: 0 5px 0 #d9a51d;
+  box-shadow: var(--shadow-lip);
 }
 .secondary {
   background: var(--surface-2);
@@ -41,5 +41,5 @@
 }
 .danger {
   background: var(--accent-negative);
-  color: #3a0d0d;
+  color: var(--ink-on-accent);
 }

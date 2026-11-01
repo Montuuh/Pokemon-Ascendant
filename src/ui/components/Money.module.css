@@ -55,5 +55,5 @@
 
 /* On the dim stage theme the coin needs a brighter rim to stay readable. */
 :global(.theme-stage) .rim {
-  stroke: color-mix(in srgb, #fff 35%, transparent);
+  stroke: color-mix(in srgb, var(--ink-primary) 35%, transparent);
 }

@@ -8,7 +8,7 @@
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--surface-0) 88%, transparent);
   border: 1px solid var(--border-subtle);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-md);
 }
 /* As wide as its widest reading ("3 → 2 AP"), so the capsule keeps its place while a preview comes and goes. */
 .value {

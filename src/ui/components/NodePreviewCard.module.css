@@ -142,12 +142,12 @@
   outline: 2px solid var(--accent-action);
 }
 .leadTag {
-  font-size: 11px;
+  font-size: var(--type-micro);
   font-weight: 700;
   padding: 1px 6px;
   border-radius: var(--radius-pill);
   background: var(--accent-action);
-  color: #5a4406;
+  color: var(--ink-on-accent);
 }
 .lockNote {
   margin: 0;
@@ -185,7 +185,7 @@
   background: var(--accent-action);
   /* D5 — on the stage theme --ink-primary is cream: on gold that read 1.4:1. */
   color: var(--ink-on-accent);
-  box-shadow: 0 5px 0 #d9a51d;
+  box-shadow: var(--shadow-lip);
 }
 .enter:disabled {
   opacity: 0.5;

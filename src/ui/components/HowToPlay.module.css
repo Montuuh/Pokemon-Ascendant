@@ -76,7 +76,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--type-h3);
-  box-shadow: 0 6px 0 #d9a51d;
+  box-shadow: var(--shadow-lip);
 }
 .close:hover {
   transform: translateY(-2px);

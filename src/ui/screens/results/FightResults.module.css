@@ -111,7 +111,7 @@
   font-weight: 700;
   font-size: clamp(var(--type-small), 2.6cqh, var(--type-h3));
   white-space: nowrap;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ── The field ───────────────────────────────────────────────────────────────────────────────────────────── */
@@ -143,7 +143,7 @@
   border-radius: var(--radius-md);
   border: 1px solid var(--border-subtle);
   background: color-mix(in srgb, var(--surface-0) 88%, transparent);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-sm);
 }
 /* A party icon (68 × 56, the Pokémon standing on its bottom edge, about x 16–52 and y 14–54) at 1.5×, cropped to the
    Pokémon (D9) — at 2× on a tall stage. */

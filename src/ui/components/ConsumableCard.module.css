@@ -14,7 +14,7 @@
   transition:
     transform var(--motion-base) var(--ease-spring),
     box-shadow var(--motion-base) ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-sm);
   flex: 0 0 auto;
 }
 .card:hover,

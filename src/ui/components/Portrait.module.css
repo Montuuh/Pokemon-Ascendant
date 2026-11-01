@@ -118,7 +118,7 @@
   color: var(--accent-negative);
   font-size: var(--type-small);
   line-height: 1.3;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-sm);
 }
 /* §9.9.1 — no card before its Pokémon: while it waits in its ball the whole card is unseen (its place kept), and it
    comes in with the Pokémon, on the send-out's own beat. */
