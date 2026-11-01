@@ -29,7 +29,7 @@
 | Content validation | Zod | schemas = the master schema (§10.3.2) |
 | Unit tests | Vitest (151 cases, ~3 s) | colocated with the sim |
 | Screen tests + screenshots | Playwright on system Chrome | DOM assertions + PNGs Claude reads back |
-| Icons / fonts | Tabler (MIT) + own SVG set; Baloo 2 + Nunito bundled | one family, offline-safe |
+| Icons / fonts | Tabler (MIT) + own SVG set; Pixelify Sans + Tiny5 + Nunito bundled (SIL OFL) | display, numbers, prose; offline-safe |
 | Desktop (v1.0) | Tauri 2; Electron fallback | small binaries |
 
 ## 3. Repository layout (v0.1)
