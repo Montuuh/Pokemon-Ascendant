@@ -3,7 +3,7 @@
 **Date:** 2026-11-02 · **Version:** v0.9.87 (*Readable boss phases*).
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
 **Current:** v0.9.86 shipped — AP provenance, postponable evolution and manual Center services; full browser suite 444/444 (one load timeout passed alone), UI review Ship. [Report](../reviews/2026-10-30-ap-evolution-center.md). Previous Safari/equipment/status fixes shipped in v0.9.85.
-**Shipped 2026-11-02:** v0.9.87 phases/signatures (`combat/phases.ts`, e2e boss-phases), rhythm cue at impact, token guard test (`tokens.test.ts`). Design-system artifact board not yet refreshed.
+**Shipped 2026-11-02:** v0.9.87 phases/signatures (`combat/phases.ts`, e2e boss-phases), rhythm cue at impact, token guard test (`tokens.test.ts`). Final browser suite 449/450 (`ring-art` 1920 timed out under load, 5/5 alone — a known flaky check). Design-system artifact refreshed (all marks Keep; next is v0.9.88).
 **Next:** v0.9.88 authored Gym teams, then v1.0.
 **Art review (24 Oct):** closed by the user on 2026-11-02; its unimplemented findings (B20–B26, B29, B32, B33) are dropped, not pending. B30 fixed in architecture.md.
 
