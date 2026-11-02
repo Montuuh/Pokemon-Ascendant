@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.88 — Authored Gym teams · 2026-11-02
+
+Every Gym Leader fields five distinct, authored Pokémon.
+
+- **Five of their own.** No repeats or filler; each has four moves.
+- **Guests.** Brock, Aster and Lorelei name one off-type guest.
+- **Lorelei.** Lapras is her ace, Ice Beam its signature.
+- **Saves.** A map from before keeps the Gym it promised.
+
 ### v0.9.87 — Readable boss phases · 2026-11-02
 
 Boss phases are announced, kept and explained; aces declare a signature.

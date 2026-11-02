@@ -479,7 +479,7 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
   off-type coverage move, like Graveler's Ground-typed Dig or Machamp's Thunder Punch. Coverage must be visible
   on its intent, not an unannounced immunity or a new rule added to make a counter fail.
 - **A Home Field** of its type is set at combat start (§4.3.5), over the Gym's own Battlefield (§4.3.14).
-- **The Gym's Attack is its own** (`GYM_ATTACK_MULTIPLIER` ×0.7 / ×0.62 / ×0.5 by Region since 2026-10-20, when its
+- **The Gym's Attack is its own** (`GYM_ATTACK_MULTIPLIER` ×0.7 / ×0.55 / ×0.5 by Region — Region 2 ×0.62 until v0.9.88 — since 2026-10-20, when its
   levels came up; ×1.15 / ×0.95 / ×0.9 before), with a **Leader's own scale** where its rule and its type's matchups make
   it harder than its neighbours (`GymDef.attackScale`: Brock ×0.6 — Rock resists most of Region 1 and Rock Solid caps
   what gets through; Misty ×0.85 — the tide hits the whole team at once). A higher level premium once made the run
@@ -491,8 +491,11 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
   both; both are canon.
 
 Teams, roles, scripted kits and badges for all twelve: [`catalogs/gyms.md`](catalogs/gyms.md).
-The 2026-10-29 roster design awaits implementation and calibration in v0.9.87; current per-Leader Attack
-scales are a baseline, not a claim that the replacement teams are already balanced.
+The 2026-10-29 roster shipped in v0.9.88. Measured over 990 runs against the same code's legacy rosters, Gyms lose
+6 % / 10 % / 10 % by Region (legacy 6 % / 5 % / 18 %) and the whole run is won 22 % of the time (23 %). Region 2's four
+real attackers where padding had stood took its multiplier from ×0.62 to ×0.55, with Blaine ×0.85, Erika ×0.9 and Koga
+×0.85 on top. Lowering Lorelei's Attack lengthened her fights rather than easing them (83 % lost, 92 turns), so her scale
+stays: she remains the hardest Gym, 37 % at 32.6 turns, as before. Evidence: `playtest/gym-teams-2026-11-02/`.
 
 ## §5.9.4 Per-type signature Phase 2
 

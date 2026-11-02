@@ -229,6 +229,21 @@
   color: var(--ink-secondary);
 }
 
+/* §2.7.3 — a Gym's declared guest: the one member its preview names. */
+.guest {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--type-small);
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
 /* §2.9.5 — the find on the ground, as the bag will show it. */
 .find {
   display: flex;

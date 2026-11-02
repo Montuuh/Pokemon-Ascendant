@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import {
-  BIOMES_R3, createRun, defaultRunCtx, ELITE_R3, GYMS_R3, LANE_THEME_R3, REGIONS, regionName, runReducer, TRAINERS_R3, wildBandFor,
+  BIOMES_R3, createRun, defaultRunCtx, ELITE_R3, GYM_ROSTER, GYMS_R3, LANE_THEME_R3, REGIONS, regionName, runReducer, TRAINERS_R3, wildBandFor,
   type RunAction, type RunState,
 } from '@/sim';
 
@@ -72,7 +72,8 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
 
   it('EveryRegionThreeGym_FieldsItsOwnType_AndCarriesAnOffTypeAnswer_§5.9.3', () => {
     for (const gym of GYMS_R3) {
-      for (const m of gym.team) expect(content.species(m.species).types, `${gym.id} ${m.species}`).toContain(gym.type);
+      // §5.9.3 — every member but the one declared guest shares the Gym's type.
+      for (const m of gym.team.filter((x) => !x.guest)) expect(content.species(m.species).types, `${gym.id} ${m.species}`).toContain(gym.type);
       expect(gym.team.at(-1)!.phaseCount).toBe(3);
       expect(content.badge(gym.badgeId).type, gym.id).toBe(gym.type);
       expect(content.badge(gym.badgeId).region).toBe(3);
@@ -89,7 +90,7 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
     // A seed whose first lane ends at Sabrina's Gym, so the scripted ace is the one fought.
     const seed = Array.from({ length: 200 }, (_, i) => i + 1).find((n) => createRun('squirtle', n, ctx, 2).map.gyms[0] === 'psychic-gym-r3')!;
     expect(seed).toBeDefined();
-    const s = fightAt({ id: 'g', layer: 11, col: 0, row: 0, lane: 0, kind: 'gym', next: [], preview: { title: 'Sabrina', detail: '', speciesIds: [], levelBand: [34, 36] } }, seed);
+    const s = fightAt({ id: 'g', layer: 11, col: 0, row: 0, lane: 0, kind: 'gym', next: [], preview: { title: 'Sabrina', detail: '', speciesIds: [], levelBand: [34, 36], gymRoster: GYM_ROSTER } }, seed);
     const scripted = GYMS_R3.find((g) => g.id === 'psychic-gym-r3')!.team.at(-1)!.moves!;
     // The accent may add its type's status move after the kit (§2.2); the kit itself arrives whole.
     expect(s.pendingScenario!.enemies.at(-1)!.moves!.slice(0, scripted.length)).toEqual(scripted);

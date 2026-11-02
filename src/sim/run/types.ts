@@ -63,6 +63,13 @@ export interface NodePreview {
   /** Trainer and Gym nodes fix their roster at generation, so what the preview promised is what you fight. */
   enemies?: { species: string; level: number }[];
   /**
+   * §5.9.3 — the Gym roster this preview promised (`GYM_ROSTER`, v0.9.88). Absent on a map saved before it: that Gym
+   * keeps its legacy roster and phase contract, so a saved species order never meets the new slots' moves.
+   */
+  gymRoster?: number;
+  /** §2.7.3 — a Gym's declared off-type guest: the one member it names before commitment, and its job. */
+  guest?: { species: string; job: string };
+  /**
    * The map badge to draw, when the node kind alone is not specific enough. A trainer node names its
    * archetype here so the map says *who* is waiting, not just "a trainer" (Pillar 1: the preview is the
    * promise). Falls back to the node kind.

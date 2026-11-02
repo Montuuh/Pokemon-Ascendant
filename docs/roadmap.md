@@ -1540,9 +1540,10 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
-### v0.9.88 — Authored Gym teams  ☐
+### v0.9.88 — Authored Gym teams  ✅ 2026-11-02
 
-**Designed 2026-10-29; not implemented.** The user's playtest: Gym teams repeat Pokémon or contain weak filler,
+**Shipped 2026-11-02** (designed 2026-10-29). Region 2's Gym Attack ×0.62 → ×0.55 with Blaine/Erika/Koga scales;
+990-run evidence in `playtest/gym-teams-2026-11-02/`. The user's playtest: Gym teams repeat Pokémon or contain weak filler,
 and enemy phases lack useful UX (the phases shipped in v0.9.87). Decision: five members per Gym, allowing one
 explicitly telegraphed off-type support. All twelve teams, their deployment order, roles and four-move kits are
 authored in `design/catalogs/gyms.md`; rules in §5.9.3, the guest preview exception in §2.7.3. Lorelei uses Slowbro

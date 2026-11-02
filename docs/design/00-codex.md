@@ -13,7 +13,7 @@
 > **Rewards/status digest refreshed 2026-10-30:** Safari first-catch equipment gift, useful equipment access and bounded control (§2.11.6, §7.4.1, §4.2).
 > **Enemy/Gym digest refreshed 2026-11-02:** irreversible phases and declared ace signatures (§5.8.3,
 > §9.2.2.3) implemented in v0.9.87; twelve authored Gym teams (§5.9.3–§5.9.4) and their guest exception (§2.7.3)
-> designed, implementation and tuning pending v0.9.88.
+> shipped in v0.9.88.
 
 ## 1. Identity
 
@@ -303,7 +303,7 @@ evolution and no extra support actor.** Opener two phases, middle three one, ace
 +1 / −1 / +2 respectively. Each has four scripted moves, at least four share the Gym's type, and one thematic
 off-type guest is permitted and explicitly named before commitment (§2.7.3); no default starter line
 (Bulbasaur/Charmander/Squirtle) or Legendary. Later Mart starters remain eligible.
-The twelve replacement teams and kits are designed in catalogs/gyms.md, awaiting v0.9.88 calibration and code.
+The twelve five-member teams and kits of catalogs/gyms.md ship since v0.9.88; a pre-v0.9.88 map keeps its roster.
 The current Attack multipliers (×0.7 / ×0.62 / ×0.5, plus per-Leader scales) are the comparison baseline.
 **Every Leader fights under a rule of its own** (§5.9.5), shown on the map and top bar: Rock Solid, Riptide,
 Swarm, Rollout, Meltdown, Bloom, Overcharge, Toxic, Mind Lock, Tremor, Close Quarters and Ice Armour. The Leader

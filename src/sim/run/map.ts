@@ -2,7 +2,7 @@ import { fnv1a } from '../rng/rngStreams';
 import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import {
-  GYMS, REGION1_BIOME_WEIGHTS, eliteTeamFor, eliteWildTeamFor, evolvedAt, gymById, gymTeamFor, regionContent, trainerTeamFor,
+  GYMS, REGION1_BIOME_WEIGHTS, eliteTeamFor, eliteWildTeamFor, evolvedAt, GYM_ROSTER, gymById, gymTeamFor, regionContent, trainerTeamFor,
   WILD_TIER_ODDS, WILD_TIERS, wildBandFor, type BiomeId, type GymDef, type RegionContent, type TrainerRoster, type WildTier,
 } from './region';
 import { AID_HEAL_PCT } from './economy';
@@ -314,7 +314,11 @@ const typeName = (t: string) => t[0]!.toUpperCase() + t.slice(1);
 function gymPreview(content: ContentRegistry, gym: GymDef): NodePreview {
   const team = evolveTeam(gymTeamFor(gym), content);
   const levels = team.map((m) => m.level);
+  // §2.7.3 — the guest exception: the one member a Gym names before commitment.
+  const guest = team.find((m) => m.guest);
   return {
+    gymRoster: GYM_ROSTER,
+    ...(guest ? { guest: { species: guest.species, job: guest.guest! } } : {}),
     title: `${gym.name} — ${typeName(gym.type)} Gym`,
     icon: `gym-${gym.type}`,
     detail: `${teamSizeLine(team.length)} · ${gym.telegraph}`,

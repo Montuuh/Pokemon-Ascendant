@@ -178,6 +178,8 @@ const SCREENS = {
     match: [/screens\/map\/LeagueHall/, /screens\/league\//],
   },
   // §2.9.5 — the item ball: its reel on the preview card, and the reel stopped (a click lands it at once).
+  // §2.7.3 — a Gym's guest named on its preview (v0.9.88): seed 2's first Gym node is Brock's, with Sandslash.
+  'gym-guest-preview': { url: '/?screen=menu', setup: ['run.new("squirtle", 2)', 'run.jump("gym")', 'goTo("map")'], clicks: ['node-n19-0'], match: [/components\/NodePreviewCard/] },
   'find-preview': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'goTo("map")'], match: [/components\/FindPrize/, /components\/NodePreviewCard/] },
   find: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "cache" && n.preview.reel).id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'], clicks: ['find-reel'], match: [/screens\/FindScreen/, /components\/FindPrize/] },
   // §9.9.3 — the Center's machine on a hurt Box (a click skips to the bars filled), and the map with every node named.
@@ -229,7 +231,7 @@ const EXPECTED_ROOT = {
   'black-market': 'black-market-screen', 'black-market-gambler': 'market-counter', 'black-market-trader': 'market-counter', 'black-market-fence': 'market-counter', 'black-market-showcase': 'market-counter',
   safari: 'safari-screen', 'safari-guide': 'safari-guide', 'safari-stalk': 'safari-screen',
   mystery: 'event-screen', evolution: 'evolution-screen', 'evolution-eevee': 'evolution-screen', summit: 'summit-screen', league: 'league-hall', 'league-champion': 'league-hall',
-  'find-preview': 'node-preview', find: 'find-screen', team: 'team-screen', 'team-city': 'team-screen',
+  'gym-guest-preview': 'node-preview', 'find-preview': 'node-preview', find: 'find-screen', team: 'team-screen', 'team-city': 'team-screen',
   results: 'fight-results', 'results-gym': 'fight-results', 'results-escape': 'fight-results',
 };
 for (const [id, screen] of Object.entries(SCREENS)) screen.root = EXPECTED_ROOT[id];

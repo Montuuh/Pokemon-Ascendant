@@ -7,7 +7,7 @@ import { FieldChips } from './FieldChips';
 import { RuleChip } from './RuleChip';
 import { MetronomeChip } from './MetronomeChip';
 import { ObjectiveChip } from './ObjectiveChip';
-import { doubleActorTip, groupTip, perfectClearTip } from '@/ui/tips';
+import { doubleActorTip, groupTip, guestTip, perfectClearTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { itemIcon, mysterySign, nodeBadge } from '@/ui/art';
 import { kindName, nodeArt, titleSays } from './nodeArt';
@@ -17,7 +17,7 @@ import { WildPool } from './WildPool';
 import { ReelPool } from './FindPrize';
 import { Money } from './Money';
 import { SupplyStrip } from './SupplyStrip';
-import { TypeBadge } from './TypeBadge';
+import { TypeBadge, TypeLabel } from './TypeBadge';
 import styles from './NodePreviewCard.module.css';
 
 // Per docs/design/ui/screens.md §3.4 — the popover that says what is inside before you commit (Pillar 1).
@@ -179,6 +179,22 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
                   <TypeBadge key={t} type={t} size={16} />
                 ))}
               </p>
+            )}
+            {/* §2.7.3 — the guest exception: a Gym names its one off-type member, its types and its job. */}
+            {node.preview.guest && (
+              <Tipped
+                tip={guestTip(content.species(node.preview.guest.species).name, content.species(node.preview.guest.species).types, node.preview.guest.job, (node.preview.enemies?.length ?? 1) - 1)}
+                className={styles.guest}
+                data-testid="preview-guest"
+                data-tip-side="side"
+              >
+                <MonIcon speciesId={node.preview.guest.species} size={30} alt="" />
+                {PREVIEW_TEXT.guest(content.species(node.preview.guest.species).name)}
+                {/* The bubble names the types: the labels here are pictures, not a second door. */}
+                {content.species(node.preview.guest.species).types.map((t) => (
+                  <TypeLabel key={t} type={t} size={16} />
+                ))}
+              </Tipped>
             )}
           </>
         )}

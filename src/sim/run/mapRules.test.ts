@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
-import { GYM_LEVEL_PREMIUM, PAD_LEVEL_GAP, TEAM_SIZE } from './region';
+import { GYM_LEVEL_PREMIUM, TEAM_SIZE } from './region';
 import {
   LANE_THEME, LAYERS, MAP_ROWS, ROUTE_LAYERS, TRACK_GAP, Y_LAYER, drawGymPair, generateRegion, gymById, gymTeamFor,
   noReturnLayer, nodesInLayer, wildBandFor,
@@ -37,7 +37,7 @@ describe('Map generation rules — §2.5', () => {
   it('TheGymScalesWithTheRoute_§5.9.3', () => {
     // The power premium is derived from the band (GYM_LEVEL_PREMIUM), so a route change cannot leave the climax
     // behind — which is exactly what pinning the levels did on the jump to twelve. Since v0.8.5 the Leader fields
-    // TEAM_SIZE.gym Pokémon: its own non-ace at the premium, the padding under it, the ace last.
+    // TEAM_SIZE.gym Pokémon; since v0.9.88 all five authored, the ace last.
     const top = wildBandFor(ROUTE_LAYERS - 2)[1];
     for (const id of ['rock-gym-r1', 'water-gym-r1', 'bug-gym-r1', 'normal-gym-r1']) {
       const gym = gymById(id);
@@ -48,7 +48,8 @@ describe('Map generation rules — §2.5', () => {
       expect(team[team.length - 1]!.species).toBe(gym.team[gym.team.length - 1]!.species);
       // §5.9.3 — the ace is a three-phase Pokémon and the rest are not.
       expect(team[team.length - 1]!.phaseCount).toBe(3);
-      for (const m of team.slice(gym.team.length - 1, -1)) expect(m.level).toBe(top + GYM_LEVEL_PREMIUM.other - PAD_LEVEL_GAP.gym);
+      // v0.9.88 — the middle three stand at the old padding's level budget, one under the band's top.
+      for (const m of team.slice(1, -1)) expect(m.level).toBe(top + GYM_LEVEL_PREMIUM.middle);
     }
   });
 

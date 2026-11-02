@@ -39,3 +39,15 @@ export function matchupAgainst(mon: PartyMon, type: PokemonType, content: Conten
   const attack = hits.length ? Math.max(...hits.map((m) => typeMultiplier(m.type, [type]))) : 1;
   return { type, attack, defend: typeMultiplier(type, species.types) };
 }
+
+/**
+ * §2.7.3 / §5.9.3 — how a Pokémon meets a Gym's declared guest: its best card against the guest's types, and the
+ * guest's best type against it (a guest's attacks are its own types, as a Gym's are its type).
+ */
+export function matchupAgainstSpecies(mon: PartyMon, speciesId: string, content: ContentRegistry): { attack: number; defend: number } {
+  const own = content.species(mon.speciesId).types;
+  const theirs = content.species(speciesId).types;
+  const hits = mon.moveIds.map((id) => content.move(id)).filter((m) => m.power > 0);
+  const attack = hits.length ? Math.max(...hits.map((m) => typeMultiplier(m.type, theirs))) : 1;
+  return { attack, defend: Math.max(...theirs.map((t) => typeMultiplier(t, own))) };
+}

@@ -3,7 +3,7 @@ import { IconCards, IconCrown, IconLock, IconPlus, IconX } from '@tabler/icons-r
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import { battleSpriteUrl } from '@/content/schemas/species';
-import { benchXpShare, boxCapacity, evolutionResume, gymById, matchupAgainst, placeInTeam, placesOf, runHelpers, teamStats, xpToNext, DEFAULT_PROGRESSION, type PartyMon, type RunAction } from '@/sim';
+import { benchXpShare, boxCapacity, evolutionResume, gymById, matchupAgainst, matchupAgainstSpecies, placeInTeam, placesOf, runHelpers, teamStats, xpToNext, DEFAULT_PROGRESSION, type PartyMon, type RunAction } from '@/sim';
 import { itemIcon } from '@/ui/art';
 import { ItemIcon } from '@/ui/components/FindPrize';
 import { HpBar } from '@/ui/components/HpBar';
@@ -176,6 +176,8 @@ export function TeamScreen({ onClose, locked = false, initialUid = null }: Props
 
   // The route's Gyms, while there is a route: what the sheet's matchup is against.
   const gyms = !run.city && run.zone !== 'league' && run.zone !== 'victory-road' ? run.map.gyms.map((id) => gymById(id)) : [];
+  // §2.7.3 — each Gym's declared guest, as its node promised it (a map saved before v0.9.88 promised none).
+  const guests = run.map.gyms.map((_, lane) => Object.values(run.map.nodes).find((n) => n.kind === 'gym' && n.lane === lane)?.preview.guest);
   const monName = content.species(mon.speciesId).name;
 
   return (
@@ -263,6 +265,7 @@ export function TeamScreen({ onClose, locked = false, initialUid = null }: Props
             filled={active.length}
             locked={locked}
             gyms={gyms}
+            guests={guests}
             movesRef={movesBtn}
             onPlace={(slot) => place(mon.uid, slot)}
             onManage={() => setManaging(mon.uid)}
@@ -358,6 +361,7 @@ function Sheet({
   filled,
   locked,
   gyms,
+  guests,
   movesRef,
   onPlace,
   onManage,
@@ -370,6 +374,7 @@ function Sheet({
   filled: number;
   locked: boolean;
   gyms: ReturnType<typeof gymById>[];
+  guests: ({ species: string; job: string } | undefined)[];
   movesRef: React.RefObject<HTMLButtonElement | null>;
   onPlace: (slot: number | null) => void;
   onManage: () => void;
@@ -495,13 +500,15 @@ function Sheet({
       {gyms.length > 0 && (
         <div className={styles.matchups} aria-label={TEAM_TEXT.vsGyms}>
           <span className={styles.rowLabel}>{TEAM_TEXT.vsGyms}</span>
-          {gyms.map((g) => {
+          {gyms.map((g, lane) => {
             const m = matchupAgainst(mon, g.type, content);
+            const guest = guests[lane];
+            const gm = guest && { name: content.species(guest.species).name, types: content.species(guest.species).types, ...matchupAgainstSpecies(mon, guest.species, content) };
             // Good news or bad news by its border, and none when it is both: the words always carry it.
             const good = (m.attack > 1 || m.defend < 1) && m.defend <= 1;
             const bad = m.defend > 1 && m.attack <= 1;
             return (
-              <Tipped key={g.id} tip={matchupTip(g.name, g.type, m.attack, m.defend)} className={styles.matchup} data-good={good || undefined} data-bad={bad || undefined}>
+              <Tipped key={g.id} tip={matchupTip(g.name, g.type, m.attack, m.defend, gm || undefined)} className={styles.matchup} data-good={good || undefined} data-bad={bad || undefined}>
                 <TypeBadge type={g.type} size={12} mode="attack" />
                 <span className="tabular">{TEAM_TEXT.matchup(m.attack, m.defend)}</span>
               </Tipped>

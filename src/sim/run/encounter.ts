@@ -4,7 +4,7 @@ import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { activeMoves, statAtLevel } from '../combat/stats';
 import type { BiomeId } from './region';
-import { ALL_TRAINERS, ELITE_ATTACK_MULTIPLIER, GYM, GYM_ATTACK_MULTIPLIER, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamFor, regionContent, statTierFor } from './region';
+import { ALL_TRAINERS, ELITE_ATTACK_MULTIPLIER, GYM, GYM_ATTACK_MULTIPLIER, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamOf, regionContent, statTierFor } from './region';
 import { hasModifier, modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
 import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
@@ -395,7 +395,8 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
     // §5.9.3 — the team the *preview* promised, which is the band-derived one, not the catalogue row. The
     // species and level are read off the preview too, so a later Region's shift and evolution reach the Gym.
     // §5.9.3 — a scripted kit (the off-type answer a learnset lacks) travels with its slot.
-    enemies: gymTeamFor(gym).map((m, i): EnemySetup => ({
+    // §5.9.3 — the roster the preview promised: a map saved before v0.9.88 keeps its legacy one (`gymTeamOf`).
+    enemies: gymTeamOf(gym, node.preview.gymRoster).map((m, i): EnemySetup => ({
       species: node.preview.enemies?.[i]?.species ?? m.species,
       level: node.preview.enemies?.[i]?.level ?? m.level,
       tier: 'boss',

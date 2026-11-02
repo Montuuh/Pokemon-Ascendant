@@ -8,7 +8,7 @@ import { visibleMoot, bossArchetype, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PR
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
+import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -349,8 +349,10 @@ export function gymRuleTip(rule: GymRuleId): ReactNode {
  * §2.5 / §5.9.5 — one of the route's two Gyms on the fork banner: its type, its telegraph and its Leader's rule — or,
  * once the other lane is taken, that it is not yours any more.
  */
-export function forkGymTip(gym: GymDef, shut: boolean, footer: string): ReactNode {
+export function forkGymTip(gym: GymDef, shut: boolean, footer: string, guest?: { name: string; types: readonly PokemonType[] }): ReactNode {
   const meta = [`${typeName(gym.type)} Gym`, shut ? 'Not on your lane' : `Rule: ${GYM_RULE_LABEL[gym.rule]}`];
+  // §2.7.3 — the lane's telegraph names the Gym's one off-type guest, as its preview does.
+  if (guest && !shut) meta.push(`Guest: ${guest.name} (${guest.types.map(typeName).join('/')})`);
   if (shut) return <Tip title={gym.name} meta={meta} body={`${gym.name} is on the lane you did not take.`} />;
   return <Tip title={gym.name} meta={meta} body={`${gym.telegraph} ${gymRuleText(gym.rule, DEFAULT_BATTLE_CONFIG.gymRules)}`} footer={footer} />;
 }
@@ -843,10 +845,18 @@ export function teamStatTip(stat: 'hp' | 'attack' | 'defense' | 'speed', value: 
 }
 
 /** §4.1.2 — how a Pokémon meets a Gym's type: its best card against it, and that type against it. */
-export function matchupTip(leader: string, type: PokemonType, attack: number, defend: number): ReactNode {
+/** §2.7.3 — a Gym's declared guest on its preview: its types and its job, the exception to the hidden team. */
+export function guestTip(name: string, types: readonly PokemonType[], job: string, others: number): ReactNode {
+  return <Tip title={PREVIEW_TEXT.guestTitle(name)} meta={[types.map(typeName).join(' / ')]} body={job} footer={PREVIEW_TEXT.guestFooter(others)} />;
+}
+
+export function matchupTip(leader: string, type: PokemonType, attack: number, defend: number, guest?: { name: string; types: readonly PokemonType[]; attack: number; defend: number }): ReactNode {
   const hit = attack > 1 ? 'hits it hard' : attack < 1 ? 'is resisted' : 'hits it evenly';
   const take = defend > 1 ? 'is hit hard' : defend < 1 ? 'shrugs it off' : 'takes it evenly';
-  return <Tip title={`vs ${leader} · ${typeName(type)}`} meta={[`Its best card ×${fmtMult(attack)}`, `${typeName(type)} on it ×${fmtMult(defend)}`]} body={`Its best damaging card ${hit}; ${typeName(type)} attacks: it ${take}.`} footer="Build the answer before the fork: a Gym's own lane offers its type's friends, not its counter." />;
+  // §2.7.3 — the Gym's declared guest is the one member off its type: its matchup is named too.
+  const meta = [`Its best card ×${fmtMult(attack)}`, `${typeName(type)} on it ×${fmtMult(defend)}`];
+  if (guest) meta.push(`vs ${guest.name} ×${fmtMult(guest.attack)}`, `${guest.types.map(typeName).join('/')} on it ×${fmtMult(guest.defend)}`);
+  return <Tip title={`vs ${leader} · ${typeName(type)}`} meta={meta} body={`Its best damaging card ${hit}; ${typeName(type)} attacks: it ${take}.`} footer="Build the answer before the fork: a Gym's own lane offers its type's friends, not its counter." />;
 }
 
 /** §2.3 — a place on the sheet that is refused, and why. */

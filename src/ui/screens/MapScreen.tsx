@@ -157,10 +157,13 @@ export function MapScreen() {
             {run.map.gyms.map((id, lane) => {
               const gym = gymById(id);
               const shut = committedLane !== null && committedLane !== lane;
+              // §2.7.3 — the guest its Gym node promised (a map saved before v0.9.88 promised none).
+              const g = Object.values(run.map.nodes).find((n) => n.kind === 'gym' && n.lane === lane)?.preview.guest;
+              const guest = g && { name: getContent().species(g.species).name, types: getContent().species(g.species).types };
               return (
                 <Tipped
                   key={id}
-                  tip={forkGymTip(gym, shut, forkFooter((run.map.yLayer ?? run.map.forkLayer) + 1, noReturnLayer(run.map) + 1))}
+                  tip={forkGymTip(gym, shut, forkFooter((run.map.yLayer ?? run.map.forkLayer) + 1, noReturnLayer(run.map) + 1), guest)}
                   className={`${styles.forkGym} ${shut ? styles.forkShut : ''}`}
                   data-type={gym.type}
                   data-lane={lane}

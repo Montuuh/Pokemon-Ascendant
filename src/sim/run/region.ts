@@ -184,7 +184,7 @@ export const PAD_LEVEL_GAP = { trainer: 3, elite: 3, gym: 2 } as const;
  * time; then −2 and −2/0, which kept the difficulty by standing the boss five to eight levels under the team.
  */
 export const ELITE_LEVEL_PREMIUM = 2;
-export const GYM_LEVEL_PREMIUM = { other: 1, ace: 2 } as const;
+export const GYM_LEVEL_PREMIUM = { other: 1, middle: -1, ace: 2 } as const;
 /** §2.8.1 — the Elite's own Attack, on top of the Region's tier: its threat, now that its levels read right. */
 export const ELITE_ATTACK_MULTIPLIER: readonly number[] = [0.65, 0.85, 0.9];
 /**
@@ -193,9 +193,11 @@ export const ELITE_ATTACK_MULTIPLIER: readonly number[] = [0.65, 0.85, 0.9];
  * every Gym through its evolutions (§2.7.3) — Region 2's fielded Arcanine and Electrode where they had held a Growlithe
  * and a Voltorb, and lost 34 % of the time — so ×1.3 / ×1.5 / ×1.15 became ×1.15 / ×1.1 / ×1.15. v0.9.12 (whole HP,
  * divisor 5, the Gym's ace acting twice): ×1.15 / ×1.0 / ×1.0. v0.9.13 gave every Leader a rule of its own (§5.9.5), the
- * climax's threat by how it fights; Regions 2 and 3 handed back a little Attack for it: ×1.15 / ×0.95 / ×0.9.
+ * climax's threat by how it fights; Regions 2 and 3 handed back a little Attack for it: ×1.15 / ×0.95 / ×0.9. v0.9.88's
+ * authored fives put four real attackers where Region 2 had padding: its Gyms lost 16 % against 5 % over 990 runs, so
+ * Region 2 went 0.62 → 0.55.
  */
-export const GYM_ATTACK_MULTIPLIER: readonly number[] = [0.7, 0.62, 0.5];
+export const GYM_ATTACK_MULTIPLIER: readonly number[] = [0.7, 0.55, 0.5];
 
 /**
  * Pad a team to `size` from `pool` (another species first), deterministically: the pick is a hash of `key` and
@@ -343,6 +345,17 @@ export function eliteWildTeamFor(layer: number, eliteWild: EliteWildDef = ELITE_
   return [{ species: eliteWild.species, level: wildBandFor(layer, band)[1] + 3 }];
 }
 
+/** §5.9.3 — one authored Gym slot. `guest` is the declared off-type member's job, promised before the fork (§2.7.3). */
+export interface GymMember {
+  species: string;
+  phaseCount: 1 | 2 | 3;
+  moves: string[];
+  signature?: { move: string; response: string };
+  guest?: string;
+}
+/** A Gym slot as fielded: its level from the band. A legacy roster's padded slots carry no scripted kit. */
+export type GymFielded = Omit<GymMember, 'moves'> & { level: number; moves?: string[] };
+
 export interface GymDef {
   id: string;
   /** §5.9.2 — the Region whose pool it belongs to (1–3); its levels come from that Region's band. */
@@ -355,10 +368,10 @@ export interface GymDef {
   stage: string;
   line: string;
   /**
-   * `moves` scripts a member's kit when its learnset at that level has no off-type answer (§5.9.3: "a Gym you
-   * can hard-counter with a single type is not a fight").
+   * §5.9.3 — the Leader's five, in deployment order, the ace last (v0.9.88: authored, never padded from a lane). Each
+   * carries its four scripted moves; levels come from the Region's band (`gymTeamFor`).
    */
-  team: { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[]; signature?: { move: string; response: string } }[];
+  team: GymMember[];
   /** §2.5 — the one-line promise the map shows from layer 0, so the fork is never a surprise. */
   telegraph: string;
   /** §5.9.5 — the Leader's own rule, for the whole fight. */
@@ -375,9 +388,8 @@ export interface GymDef {
  * and puts one at the end of each lane (§2.5), so nine of the twelve Gym types in the game are missed by any
  * single run and the two you do meet are a choice rather than a schedule.
  *
- * Levels are the §5.9.3 power premium: the non-ace sits 4 levels above the Region's wild band and the ace 6.
- * The Rock Gym's exact numbers were set by the whole-run harness in v0.2 — a final form in the *first* Gym
- * was a wall that ended 52 of 90 simulated runs — and the other three are built to the same shape.
+ * Five authored members each (§5.9.3, v0.9.88 — `catalogs/gyms.md`): the opener two-phase, three one-phase, the
+ * three-phase ace last; levels come from the band (`gymTeamFor`), at most one member is a declared off-type guest.
  *
  * Every team carries one off-type answer (§5.9.3): a Gym you can hard-counter with a single type is not a
  * fight, it is a type check. Since v0.9.5 the aces' kits are scripted from their lines' Gen I moves, so the answer and
@@ -402,8 +414,11 @@ export const GYMS: GymDef[] = [
     // Tuned on the whole-run harness: a route team arrives around Lv 14 having evolved once, so the Region 1
     // climax is the line's mid-stage at a level premium, not its final form. Golem is a Region 3 problem.
     team: [
-      { species: 'geodude', level: 14, phaseCount: 2 },
-      { species: 'graveler', level: 16, phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; reduce its Attack or finish the ace before Resolution.' } },
+      { species: 'onix', phaseCount: 2, moves: ['rock-throw', 'bind', 'screech', 'tackle'] },
+      { species: 'kabutops', phaseCount: 1, moves: ['scratch-plus', 'rock-throw', 'absorb', 'harden'] },
+      { species: 'omastar', phaseCount: 1, moves: ['bubble-beam', 'horn-attack', 'withdraw', 'rock-slide'] },
+      { species: 'sandslash', phaseCount: 1, moves: ['slash', 'sand-attack', 'dig', 'defense-curl'], guest: 'Sand control: Ground coverage and accuracy drops.' },
+      { species: 'graveler', phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; reduce its Attack or finish the ace before Resolution.' } },
     ],
   },
   {
@@ -421,8 +436,11 @@ export const GYMS: GymDef[] = [
     // §5.9.3 forbids fielding a starter line: a Gym Leader should not hold a Pokémon the player may own.
     // That is why the Water Gym is Krabby and Kingler rather than Squirtle and Wartortle.
     team: [
-      { species: 'krabby', level: 14, phaseCount: 2 },
-      { species: 'kingler', level: 16, phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'], signature: { move: 'crabhammer', response: 'Water/Grass resistance, Defence or a KO before its claws land.' } },
+      { species: 'golduck', phaseCount: 2, moves: ['confusion', 'water-gun', 'tail-whip', 'disable'] },
+      { species: 'poliwhirl', phaseCount: 1, moves: ['bubble-plus', 'body-slam', 'hypnosis', 'submission'] },
+      { species: 'seaking', phaseCount: 1, moves: ['horn-attack-plus', 'water-gun', 'supersonic', 'tail-whip'] },
+      { species: 'seadra', phaseCount: 1, moves: ['bubble-beam', 'smokescreen', 'leer', 'ice-beam'] },
+      { species: 'kingler', phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'], signature: { move: 'crabhammer', response: 'Water/Grass resistance, Defence or a KO before its claws land.' } },
     ],
   },
   {
@@ -436,8 +454,11 @@ export const GYMS: GymDef[] = [
     line: 'Bug Pokémon are tougher than you think. Let me show you.',
     telegraph: 'Floods you with Sleep and Confusion. Bring cures, Fire or Flying.',
     team: [
-      { species: 'metapod', level: 14, phaseCount: 2 },
-      { species: 'butterfree', level: 16, phaseCount: 3, moves: ['sleep-powder', 'confusion', 'gust', 'harden'], signature: { move: 'confusion', response: 'Psychic resistance or Dark immunity; reduce the forecast rather than relying on a late Sleep.' } },
+      { species: 'venomoth', phaseCount: 2, moves: ['psybeam', 'leech-life', 'disable', 'supersonic'] },
+      { species: 'parasect', phaseCount: 1, moves: ['leech-life-plus', 'absorb', 'stun-spore', 'slash'] },
+      { species: 'beedrill', phaseCount: 1, moves: ['twineedle-plus', 'poison-sting-plus', 'agility', 'harden-plus'] },
+      { species: 'gloom', phaseCount: 1, moves: ['mega-drain', 'acid-plus', 'poison-powder', 'stun-spore'], guest: 'Garden spores: Poison, Paralysis and drain.' },
+      { species: 'butterfree', phaseCount: 3, moves: ['sleep-powder', 'confusion', 'gust', 'harden'], signature: { move: 'confusion', response: 'Psychic resistance or Dark immunity; reduce the forecast rather than relying on a late Sleep.' } },
     ],
   },
   {
@@ -451,30 +472,68 @@ export const GYMS: GymDef[] = [
     line: 'Nothing fancy. Just everything, all at once.',
     telegraph: 'No weakness to exploit and a Home Field that makes every hit land harder. Bring Fighting, or bring more HP.',
     team: [
-      { species: 'pidgeotto', level: 14, phaseCount: 2 },
-      { species: 'raticate', level: 16, phaseCount: 3, moves: ['hyper-fang', 'quick-attack-plus', 'dig', 'tail-whip'], signature: { move: 'hyper-fang', response: 'Rock/Steel resistance or Ghost immunity; a defensive swap also answers it.' } },
+      { species: 'pidgeotto', phaseCount: 2, moves: ['wing-attack', 'gust', 'sand-attack', 'quick-attack-plus'] },
+      { species: 'farfetchd', phaseCount: 1, moves: ['peck', 'gust', 'leer', 'sand-attack'] },
+      { species: 'persian', phaseCount: 1, moves: ['slash', 'bite-plus', 'pay-day', 'screech'] },
+      { species: 'wigglytuff', phaseCount: 1, moves: ['body-slam', 'double-slap-plus', 'sing', 'defense-curl'] },
+      { species: 'raticate', phaseCount: 3, moves: ['hyper-fang', 'quick-attack-plus', 'dig', 'tail-whip'], signature: { move: 'hyper-fang', response: 'Rock/Steel resistance or Ghost immunity; a defensive swap also answers it.' } },
     ],
   },
 ];
 
 /**
- * §5.9.3's power premium: the non-ace sits **4 levels above the Region's wild band** and the ace **6**. The
- * team levels in  are the catalogue's, tuned against a six-layer route; deriving them from the band
- * instead means a change to the route length cannot silently leave the climax four levels behind, which is
- * exactly what v0.5's jump from ten layers to twelve did on its first measurement.
+ * §5.9.3's level premium, read off the Region's band rather than the catalogue so a change to the route length
+ * cannot silently leave the climax behind (v0.5's jump from ten layers to twelve did): the opener one over the band's
+ * top, the middle three one under it — the old padding's budget, not the opener's premium — and the ace two over.
  */
-export function gymTeamFor(gym: GymDef): GymDef['team'] {
+export function gymTeamFor(gym: GymDef): GymFielded[] {
   const top = wildBandFor(ROUTE_LAYERS - 2, regionContent(gym.region - 1).wildBand)[1];
-  const own = gym.team.map((m, i) => ({ ...m, level: top + (i === gym.team.length - 1 ? GYM_LEVEL_PREMIUM.ace : GYM_LEVEL_PREMIUM.other) }));
-  // §5.6.3 / §5.9.3 — five (TEAM_SIZE.gym): the Leader's own, and its type's Pokémon from its lane (the lane theme's
-  // favourites) two levels under the premium, one phase each. The ace is always the last to come out.
-  const region = regionContent(gym.region - 1);
-  const theme = region.laneThemes[gym.type];
-  const pool = [...new Set([...(theme?.favours ?? []), ...gym.team.slice(0, -1).map((m) => m.species)])];
+  const last = gym.team.length - 1;
+  return gym.team.map((m, i) => ({
+    ...m,
+    moves: [...m.moves],
+    level: top + (i === 0 ? GYM_LEVEL_PREMIUM.other : i === last ? GYM_LEVEL_PREMIUM.ace : GYM_LEVEL_PREMIUM.middle),
+  }));
+}
+
+/**
+ * §5.9.3 — which Gym roster a map's preview promised. A map generated from v0.9.88 on stamps `GYM_ROSTER`; a saved map
+ * from before carries none, and its Gym keeps the roster it promised — the two v0.9.87 members and the lane padding —
+ * through that Region, so a saved species order is never paired with the new slots' moves or phases.
+ */
+export const GYM_ROSTER = 2;
+
+/** The v0.9.87 rows, frozen: what a pre-v0.9.88 map's Gym fields. Not content — do not author here. */
+const LEGACY_GYM_TEAMS: Record<string, { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[]; signature?: { move: string; response: string } }[]> = {
+  'rock-gym-r1': [{ species: 'geodude', level: 14, phaseCount: 2 }, { species: 'graveler', level: 16, phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; reduce its Attack or finish the ace before Resolution.' } }],
+  'water-gym-r1': [{ species: 'krabby', level: 14, phaseCount: 2 }, { species: 'kingler', level: 16, phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'], signature: { move: 'crabhammer', response: 'Water/Grass resistance, Defence or a KO before its claws land.' } }],
+  'bug-gym-r1': [{ species: 'metapod', level: 14, phaseCount: 2 }, { species: 'butterfree', level: 16, phaseCount: 3, moves: ['sleep-powder', 'confusion', 'gust', 'harden'], signature: { move: 'confusion', response: 'Psychic resistance or Dark immunity; reduce the forecast rather than relying on a late Sleep.' } }],
+  'normal-gym-r1': [{ species: 'pidgeotto', level: 14, phaseCount: 2 }, { species: 'raticate', level: 16, phaseCount: 3, moves: ['hyper-fang', 'quick-attack-plus', 'dig', 'tail-whip'], signature: { move: 'hyper-fang', response: 'Rock/Steel resistance or Ghost immunity; a defensive swap also answers it.' } }],
+  'fire-gym-r2': [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'], signature: { move: 'flamethrower', response: 'Fire/Water/Rock resistance or damage reduction; remove it before the hit.' } }],
+  'grass-gym-r2': [{ species: 'weepinbell', level: 20, phaseCount: 2 }, { species: 'vileplume', level: 22, phaseCount: 3, signature: { move: 'petal-dance', response: 'Grass-resistant Lead; the move keeps its own self-Confusion drawback.' } }],
+  'electric-gym-r2': [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance; the signature overrides neither.' } }],
+  'poison-gym-r2': [{ species: 'koffing', level: 20, phaseCount: 2 }, { species: 'weezing', level: 22, phaseCount: 3, signature: { move: 'self-destruct', response: 'Ghost immunity or Rock/Steel resistance; its recoil follows the damage, not an automatic self-KO.' } }],
+  'psychic-gym-r3': [{ species: 'kadabra', level: 33, phaseCount: 2 }, { species: 'alakazam', level: 35, phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } }],
+  'ground-gym-r3': [{ species: 'nidoqueen', level: 34, phaseCount: 2 }, { species: 'rhydon', level: 36, phaseCount: 3, signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defence; Water or Grass burst can KO it before Resolution.' } }],
+  'fighting-gym-r3': [{ species: 'machoke', level: 34, phaseCount: 2 }, { species: 'machamp', level: 36, phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance; the move keeps its recoil.' } }],
+  'ice-gym-r3': [{ species: 'dewgong', level: 34, phaseCount: 2 }, { species: 'cloyster', level: 36, phaseCount: 3, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'], signature: { move: 'ice-beam', response: 'Water/Fire/Ice/Steel resistance or damage reduction; Fire can also shatter Ice Armour.' } }],
+};
+
+/** The v0.9.87 Gym team, padded from the lane's favourites as it was: for a map generated before `GYM_ROSTER`. */
+export function legacyGymTeamFor(gym: GymDef): GymFielded[] {
+  const rows = LEGACY_GYM_TEAMS[gym.id] ?? [];
+  const top = wildBandFor(ROUTE_LAYERS - 2, regionContent(gym.region - 1).wildBand)[1];
+  const own = rows.map((m, i) => ({ ...m, level: top + (i === rows.length - 1 ? GYM_LEVEL_PREMIUM.ace : GYM_LEVEL_PREMIUM.other) }));
+  const theme = regionContent(gym.region - 1).laneThemes[gym.type];
+  const pool = [...new Set([...(theme?.favours ?? []), ...rows.slice(0, -1).map((m) => m.species)])];
   const size = TEAM_SIZE.gym[gym.region - 1] ?? own.length;
   const opening = padTeam(own.slice(0, -1), pool, size - 1, top + GYM_LEVEL_PREMIUM.other - PAD_LEVEL_GAP.gym, gym.id, { phaseCount: 1 as const });
   return [...opening, own[own.length - 1]!];
 }
+
+/** The roster a Gym node fields: the one its preview promised. */
+export const gymTeamOf = (gym: GymDef, roster: number | undefined): GymFielded[] =>
+  roster === GYM_ROSTER ? gymTeamFor(gym) : legacyGymTeamFor(gym);
 
 const GYM_BY_ID = new Map<string, GymDef>();
 /** Every Gym in the game, by id — the map stores ids, and a later Region's run still names Region 1's Badge. */
@@ -688,31 +747,61 @@ export const ELITE_WILD_R2: EliteWildDef = {
 export const GYMS_R2: GymDef[] = [
   {
     id: 'fire-gym-r2', region: 2, name: 'Leader Blaine', sprite: 'blaine', type: 'fire', badgeId: 'volcano-badge', rule: 'meltdown',
+    // §5.9.3 — five Fire attackers on a Home Field, not one: its authored team lost 17 % of 29 arrivals at the Region's Attack (v0.9.88).
+    attackScale: 0.85,
     stage: 'gym-fire',
     line: 'Hah! I hope you brought Burn Heal. My Pokémon burn hotter than this whole coast.',
     telegraph: 'A burst race on a Home Field that makes every Fire hit land harder. Bring Water or Rock, or bring more HP.',
-    team: [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'], signature: { move: 'flamethrower', response: 'Fire/Water/Rock resistance or damage reduction; remove it before the hit.' } }],
+    team: [
+      { species: 'ninetales', phaseCount: 2, moves: ['flamethrower', 'quick-attack', 'fire-spin', 'tail-whip-plus'] },
+      { species: 'rapidash', phaseCount: 1, moves: ['stomp-plus', 'ember', 'agility', 'growl'] },
+      { species: 'magmar', phaseCount: 1, moves: ['fire-punch', 'confuse-ray', 'ember', 'leer'] },
+      { species: 'flareon', phaseCount: 1, moves: ['flamethrower', 'swift', 'sand-attack', 'fire-spin'] },
+      { species: 'arcanine', phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'], signature: { move: 'flamethrower', response: 'Fire/Water/Rock resistance or damage reduction; remove it before the hit.' } },
+    ],
   },
   {
     id: 'grass-gym-r2', region: 2, name: 'Leader Erika', sprite: 'erika', type: 'grass', badgeId: 'rainbow-badge', rule: 'bloom',
+    // §5.9.3 — five members each untouched by a hit bloom back: its authored team lost 14 % of 28 arrivals (v0.9.88).
+    attackScale: 0.9,
     stage: 'gym-grass',
     line: 'Oh… I was dozing among the flowers. Shall we? I do not intend to lose.',
     telegraph: 'Floods your Lead with Sleep and Poison. Bring cures, Fire or Flying.',
-    team: [{ species: 'weepinbell', level: 20, phaseCount: 2 }, { species: 'vileplume', level: 22, phaseCount: 3, signature: { move: 'petal-dance', response: 'Grass-resistant Lead; the move keeps its own self-Confusion drawback.' } }],
+    team: [
+      { species: 'tangela', phaseCount: 2, moves: ['mega-drain', 'constrict', 'poison-powder', 'bind'] },
+      { species: 'parasect', phaseCount: 1, moves: ['leech-life-plus', 'slash', 'stun-spore', 'absorb'] },
+      { species: 'exeggutor', phaseCount: 1, moves: ['razor-leaf', 'psychic', 'leech-seed', 'stomp'] },
+      { species: 'victreebel', phaseCount: 1, moves: ['razor-leaf', 'vine-whip-plus', 'slam-plus', 'swords-dance'] },
+      { species: 'vileplume', phaseCount: 3, moves: ['petal-dance', 'mega-drain', 'toxic-plus', 'sludge'], signature: { move: 'petal-dance', response: 'Grass-resistant Lead; the move keeps its own self-Confusion drawback.' } },
+    ],
   },
   {
     id: 'electric-gym-r2', region: 2, name: 'Leader Surge', sprite: 'ltsurge', type: 'electric', badgeId: 'thunder-badge', rule: 'overcharge',
     stage: 'gym-electric',
     line: 'Hey, kid! Electric Pokémon saved me in the war. They will shock you just the same!',
     telegraph: 'Taxes your AP and locks your Lead with Paralysis. Bring Ground, and cards you can afford.',
-    team: [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance; the signature overrides neither.' } }],
+    team: [
+      { species: 'raichu', phaseCount: 2, moves: ['thunderbolt', 'thunder-wave', 'quick-attack-plus', 'slam'] },
+      { species: 'magneton', phaseCount: 1, moves: ['thunderbolt', 'sonic-boom-plus', 'swift', 'supersonic'] },
+      { species: 'electabuzz', phaseCount: 1, moves: ['thunderbolt', 'quick-attack', 'leer', 'screech'] },
+      { species: 'jolteon', phaseCount: 1, moves: ['thunderbolt', 'pin-missile', 'swift', 'sand-attack'] },
+      { species: 'electrode', phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance; the signature overrides neither.' } },
+    ],
   },
   {
     id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'soul-badge', rule: 'toxic',
+    // §5.9.3 — Toxic doubling on five Poison carriers, not two: 25 % of 64 arrivals lost at the Region's Attack (v0.9.88).
+    attackScale: 0.85,
     stage: 'gym-poison',
     line: 'Fwahahaha! A ninja does not strike. He waits for the poison to do it.',
     telegraph: 'Poisons everything and waits you out. Bring cures, Psychic or Ground.',
-    team: [{ species: 'koffing', level: 20, phaseCount: 2 }, { species: 'weezing', level: 22, phaseCount: 3, signature: { move: 'self-destruct', response: 'Ghost immunity or Rock/Steel resistance; its recoil follows the damage, not an automatic self-KO.' } }],
+    team: [
+      { species: 'arbok', phaseCount: 2, moves: ['wrap-plus', 'glare', 'bite-plus', 'sludge'] },
+      { species: 'golbat', phaseCount: 1, moves: ['wing-attack', 'bite-plus', 'supersonic', 'haze'] },
+      { species: 'muk', phaseCount: 1, moves: ['sludge', 'acid-plus', 'disable', 'pound-plus'] },
+      { species: 'venomoth', phaseCount: 1, moves: ['psybeam', 'poison-powder', 'supersonic', 'leech-life'] },
+      { species: 'weezing', phaseCount: 3, moves: ['smog-plus', 'poison-gas', 'smokescreen-plus', 'self-destruct'], signature: { move: 'self-destruct', response: 'Ghost immunity or Rock/Steel resistance; its recoil follows the damage, not an automatic self-KO.' } },
+    ],
   },
 ];
 
@@ -861,11 +950,14 @@ export const GYMS_R3: GymDef[] = [
     stage: 'gym-psychic',
     line: 'I foresaw your arrival. I also foresaw how this ends.',
     telegraph: 'Taxes your AP and locks your hand. Bring Bug or Ghost, and cards you can afford.',
+    // §5.9.3 — Reflect, not Recover (2026-10-20): at its real level a Lv 34 Alakazam healing 40 % every other turn
+    // through three phases outlasted the team — 160-turn fights, seven in ten lost. Mind Lock is the fight.
     team: [
-      { species: 'kadabra', level: 33, phaseCount: 2 },
-      // §5.9.3 — Reflect, not Recover (2026-10-20): at its real level a Lv 34 Alakazam healing 40 % every other turn
-      // through three phases outlasted the team — 160-turn fights, seven in ten lost. Mind Lock is the fight.
-      { species: 'alakazam', level: 35, phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } },
+      { species: 'hypno', phaseCount: 2, moves: ['psychic', 'headbutt', 'hypnosis', 'disable'] },
+      { species: 'mr-mime', phaseCount: 1, moves: ['psychic', 'reflect', 'barrier', 'seismic-toss'] },
+      { species: 'slowbro', phaseCount: 1, moves: ['surf', 'psychic', 'disable', 'growl'] },
+      { species: 'exeggutor', phaseCount: 1, moves: ['razor-leaf', 'stomp', 'leech-seed', 'psychic'] },
+      { species: 'alakazam', phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } },
     ],
   },
   {
@@ -873,7 +965,13 @@ export const GYMS_R3: GymDef[] = [
     stage: 'gym-ground',
     line: 'This Gym is the last thing between you and the League. It does not move.',
     telegraph: 'A wall that braces harder the more you hit it. Bring Water, Grass or Ice.',
-    team: [{ species: 'nidoqueen', level: 34, phaseCount: 2 }, { species: 'rhydon', level: 36, phaseCount: 3, signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defence; Water or Grass burst can KO it before Resolution.' } }],
+    team: [
+      { species: 'nidoqueen', phaseCount: 2, moves: ['earthquake', 'body-slam', 'sludge', 'toxic-plus'] },
+      { species: 'sandslash', phaseCount: 1, moves: ['slash', 'dig', 'sand-attack', 'swift'] },
+      { species: 'dugtrio', phaseCount: 1, moves: ['earthquake', 'slash', 'sand-attack', 'growl'] },
+      { species: 'marowak', phaseCount: 1, moves: ['bone-club-plus', 'earthquake', 'headbutt', 'leer'] },
+      { species: 'rhydon', phaseCount: 3, moves: ['rock-slide', 'dig', 'stomp-plus', 'tail-whip'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defence; Water or Grass burst can KO it before Resolution.' } },
+    ],
   },
   {
     id: 'fighting-gym-r3', region: 3, name: 'Leader Kiyo', sprite: 'kiyo', type: 'fighting', badgeId: 'knuckle-badge', rule: 'close-quarters',
@@ -881,8 +979,11 @@ export const GYMS_R3: GymDef[] = [
     line: 'A hundred days on this mountain, training. Show me your hundred.',
     telegraph: 'A burst race on a Home Field that makes every Fighting hit land harder. Bring Psychic or Flying, or more HP.',
     team: [
-      { species: 'machoke', level: 34, phaseCount: 2 },
-      { species: 'machamp', level: 36, phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance; the move keeps its recoil.' } },
+      { species: 'primeape', phaseCount: 2, moves: ['karate-chop-plus', 'thrash', 'rock-slide', 'leer'] },
+      { species: 'poliwrath', phaseCount: 1, moves: ['submission-plus', 'bubble-beam', 'hypnosis', 'ice-punch'] },
+      { species: 'hitmonlee', phaseCount: 1, moves: ['double-kick', 'rolling-kick', 'meditate', 'swift'] },
+      { species: 'hitmonchan', phaseCount: 1, moves: ['submission', 'mega-punch', 'fire-punch', 'ice-punch'] },
+      { species: 'machamp', phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance; the move keeps its recoil.' } },
     ],
   },
   {
@@ -890,7 +991,13 @@ export const GYMS_R3: GymDef[] = [
     stage: 'gym-ice',
     line: 'Your Pokémon will freeze before they reach me. Let us see how long you last.',
     telegraph: 'Freezes your Lead and taxes your AP. Bring Fighting, Electric or Rock.',
-    team: [{ species: 'dewgong', level: 34, phaseCount: 2 }, { species: 'cloyster', level: 36, phaseCount: 3, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'], signature: { move: 'ice-beam', response: 'Water/Fire/Ice/Steel resistance or damage reduction; Fire can also shatter Ice Armour.' } }],
+    team: [
+      { species: 'dewgong', phaseCount: 2, moves: ['aurora-beam', 'surf', 'take-down', 'growl'] },
+      { species: 'jynx', phaseCount: 1, moves: ['ice-beam', 'psychic', 'lovely-kiss', 'double-slap'] },
+      { species: 'slowbro', phaseCount: 1, moves: ['ice-beam', 'psychic', 'disable', 'surf'], guest: 'Cold-water control: Ice Beam, Psychic and Disable.' },
+      { species: 'cloyster', phaseCount: 1, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'] },
+      { species: 'lapras', phaseCount: 3, moves: ['ice-beam', 'surf', 'body-slam', 'mist'], signature: { move: 'ice-beam', response: 'Water/Fire/Ice/Steel resistance or damage reduction; Fire can also shatter Ice Armour.' } },
+    ],
   },
 ];
 

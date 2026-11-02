@@ -197,6 +197,10 @@ export const MAP_LABEL: Partial<Record<string, string>> = {
 export const PREVIEW_TEXT = {
   /** §2.3 — the loadout locks on entry; the Team screen is where it changes (the route's panel only shows it). */
   teamLock: 'The team locks when you enter. Change it on the Team screen (T) first.',
+  /** §2.7.3 — a Gym's declared off-type member, the one it names before commitment. */
+  guest: (name: string) => `Guest: ${name}`,
+  guestTitle: (name: string) => `${name} — the Leader's guest`,
+  guestFooter: (others: number) => `The other ${others} share the Gym's type and stay hidden until the fight.`,
 };
 export const MAP_TEXT = {
   /** §5.6.5 — an item ball with a guard on it is a fight, and says so. */
