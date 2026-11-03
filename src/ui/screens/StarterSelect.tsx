@@ -17,6 +17,7 @@ import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { bondStatusTip, clearPartnerTip, moveDefTip, twinRunTip } from '@/ui/tips';
 import { describeMoveDef } from '@/ui/moveText';
 import { DIFFICULTY_TEXT, STAT_LONG, STARTER_TEXT } from '@/ui/strings';
+import { EvolveMethodLabel } from '@/ui/components/EvolveMethodLabel';
 import styles from './StarterSelect.module.css';
 
 // Per docs/design/ui/screens.md §3.3 — the new-run stepper: difficulty (§8.8), the Starter (§3.3b), the Starting Relic
@@ -132,11 +133,11 @@ export function StarterSelect() {
   const bestStat = (['hp', 'attack', 'defense', 'speed'] as const).reduce((a, k) => (chosen.baseStats[k] > chosen.baseStats[a] ? k : a), 'hp' as 'hp' | 'attack' | 'defense' | 'speed');
   /** The line from this form: each stage its forms (a fork shows every branch) and the level it is reached at. */
   const line = (() => {
-    const stages: { ids: string[]; at?: number }[] = [{ ids: [chosen.id] }];
+    const stages: { ids: string[]; from?: string }[] = [{ ids: [chosen.id] }];
     let cur = chosen;
     while (cur.evolvesTo.length) {
       // §8.5.2 Eevee — a line that forks into species, not archetypes, is shown as the fork it is.
-      stages.push({ ids: [...cur.evolvesTo], ...(cur.evolveLevel ? { at: cur.evolveLevel } : {}) });
+      stages.push({ ids: [...cur.evolvesTo], from: cur.id });
       if (cur.evolvesTo.length > 1) break;
       cur = content.species(cur.evolvesTo[0]!);
     }
@@ -477,7 +478,7 @@ export function StarterSelect() {
             <ol className={styles.evoLine} data-testid="starter-evo-line">
               {line.map((stage, i) => (
                 <li key={stage.ids.join('/')} className={styles.evoStage}>
-                  {i > 0 && <span className={styles.evoArrow}>{stage.at ? `Lv ${stage.at}` : '→'}</span>}
+                  {i > 0 && <span className={styles.evoArrow}>{stage.from ? <EvolveMethodLabel speciesId={stage.from} /> : '→'}</span>}
                   <span className={styles.evoForms}>
                     {stage.ids.map((id) => {
                       const sp = content.species(id);

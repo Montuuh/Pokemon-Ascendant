@@ -25,11 +25,11 @@
           "move": "growl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "vine-whip"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "leech-seed"
         }
       ],
@@ -42,7 +42,7 @@
         "ivysaur"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 16,
       "tutorMoves": [
         "harden"
       ],
@@ -131,7 +131,7 @@
       },
       "learnset": [
         {
-          "level": 20,
+          "level": 28,
           "move": "sludge"
         }
       ],
@@ -144,7 +144,7 @@
         "venusaur"
       ],
       "rarity": "common",
-      "evolveLevel": 26,
+      "evolveLevel": 32,
       "tutorMoves": [
         "body-slam",
         "recover"
@@ -225,15 +225,15 @@
       },
       "learnset": [
         {
-          "level": 30,
+          "level": 42,
           "move": "razor-leaf"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "petal-dance"
         },
         {
-          "level": 38,
+          "level": 53,
           "move": "body-slam"
         }
       ],
@@ -274,11 +274,11 @@
           "move": "growl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "ember"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "leer"
         }
       ],
@@ -291,7 +291,7 @@
         "charmeleon"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 16,
       "tutorMoves": [
         "low-kick",
         "bite"
@@ -383,11 +383,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 22,
           "move": "fire-spin"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "slash"
         }
       ],
@@ -400,7 +400,7 @@
         "charizard"
       ],
       "rarity": "common",
-      "evolveLevel": 26,
+      "evolveLevel": 36,
       "tutorMoves": [
         "karate-chop",
         "hyper-fang"
@@ -477,15 +477,15 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 39,
           "move": "wing-attack"
         },
         {
-          "level": 33,
+          "level": 46,
           "move": "flamethrower"
         },
         {
-          "level": 38,
+          "level": 53,
           "move": "fly"
         }
       ],
@@ -526,11 +526,11 @@
           "move": "tail-whip"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "bubble"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "water-gun"
         }
       ],
@@ -542,7 +542,7 @@
         "wartortle"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 16,
       "tutorMoves": [
         "headbutt",
         "harden",
@@ -635,11 +635,11 @@
       },
       "learnset": [
         {
-          "level": 18,
+          "level": 25,
           "move": "bubble-beam"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "bite"
         }
       ],
@@ -651,7 +651,7 @@
         "blastoise"
       ],
       "rarity": "common",
-      "evolveLevel": 26,
+      "evolveLevel": 36,
       "tutorMoves": [
         "slam"
       ],
@@ -729,15 +729,15 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 39,
           "move": "surf"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "skull-bash"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "hydro-pump"
         }
       ],
@@ -777,7 +777,7 @@
           "move": "string-shot"
         },
         {
-          "level": 3,
+          "level": 4,
           "move": "harden"
         },
         {
@@ -794,7 +794,7 @@
         "metapod"
       ],
       "rarity": "common",
-      "evolveLevel": 8,
+      "evolveLevel": 7,
       "tutorMoves": [
         "sand-attack"
       ],
@@ -887,7 +887,7 @@
         "butterfree"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 10,
       "tutorMoves": [],
       "branches": [
         {
@@ -972,15 +972,15 @@
       },
       "learnset": [
         {
-          "level": 14,
+          "level": 19,
           "move": "confusion"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "wing-attack"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "pin-missile"
         }
       ],
@@ -1021,7 +1021,7 @@
           "move": "string-shot"
         },
         {
-          "level": 3,
+          "level": 4,
           "move": "harden"
         },
         {
@@ -1038,7 +1038,7 @@
         "kakuna"
       ],
       "rarity": "common",
-      "evolveLevel": 8,
+      "evolveLevel": 7,
       "tutorMoves": [
         "sand-attack"
       ],
@@ -1111,7 +1111,7 @@
         "beedrill"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 10,
       "tutorMoves": [
         "withdraw"
       ],
@@ -1180,15 +1180,15 @@
       },
       "learnset": [
         {
-          "level": 18,
+          "level": 25,
           "move": "twineedle"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "pin-missile"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "sludge"
         }
       ],
@@ -1231,11 +1231,11 @@
           "move": "sand-attack"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "gust"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "quick-attack"
         }
       ],
@@ -1248,7 +1248,7 @@
         "pidgeotto"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 18,
       "tutorMoves": [
         "bite"
       ],
@@ -1335,11 +1335,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 22,
           "move": "wing-attack"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "swift"
         }
       ],
@@ -1352,7 +1352,7 @@
         "pidgeot"
       ],
       "rarity": "common",
-      "evolveLevel": 26,
+      "evolveLevel": 36,
       "tutorMoves": [
         "hyper-fang",
         "disable"
@@ -1437,11 +1437,11 @@
       },
       "learnset": [
         {
-          "level": 30,
+          "level": 42,
           "move": "fly"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "drill-peck"
         }
       ],
@@ -1482,15 +1482,15 @@
           "move": "tail-whip"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "quick-attack"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "bite"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "hyper-fang"
         }
       ],
@@ -1503,7 +1503,7 @@
         "raticate"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 20,
       "tutorMoves": [
         "sand-attack",
         "low-kick"
@@ -1575,15 +1575,15 @@
       },
       "learnset": [
         {
-          "level": 18,
+          "level": 25,
           "move": "crunch"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "swift"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "double-edge"
         }
       ],
@@ -1625,11 +1625,11 @@
           "move": "growl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "leer"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "fury-attack"
         }
       ],
@@ -1642,7 +1642,7 @@
         "quick-attack",
         "swift"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 20,
       "evolvesTo": [
         "fearow"
       ],
@@ -1710,15 +1710,15 @@
       },
       "learnset": [
         {
-          "level": 18,
+          "level": 25,
           "move": "drill-peck"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "swift"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "double-edge"
         }
       ],
@@ -1755,11 +1755,11 @@
           "move": "leer"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "poison-sting"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "bite"
         }
       ],
@@ -1772,7 +1772,7 @@
         "acid-armor",
         "dig"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 22,
       "evolvesTo": [
         "arbok"
       ],
@@ -1841,15 +1841,15 @@
       },
       "learnset": [
         {
-          "level": 20,
+          "level": 28,
           "move": "sludge"
         },
         {
-          "level": 26,
+          "level": 36,
           "move": "dig"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "body-slam"
         }
       ],
@@ -1890,11 +1890,11 @@
           "move": "growl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "quick-attack"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "thunder-wave"
         }
       ],
@@ -1906,7 +1906,7 @@
       "tutorMoves": [
         "surf"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 26,
       "evolvesTo": [
         "raichu"
       ],
@@ -1977,7 +1977,8 @@
       "eggMoves": [
         "recover",
         "rage"
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 26,
@@ -1995,15 +1996,15 @@
       },
       "learnset": [
         {
-          "level": 14,
+          "level": 26,
           "move": "thunder-punch"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "thunderbolt"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "swift"
         }
       ],
@@ -2043,15 +2044,15 @@
           "move": "defense-curl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "sand-attack"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "poison-sting"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "dig"
         }
       ],
@@ -2061,7 +2062,7 @@
       ],
       "hiddenAbility": "tough-claws",
       "tutorMoves": [],
-      "evolveLevel": 12,
+      "evolveLevel": 22,
       "evolvesTo": [
         "sandslash"
       ],
@@ -2129,15 +2130,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 22,
           "move": "dig"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "slash"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "swift"
         }
       ],
@@ -2176,11 +2177,11 @@
           "move": "scratch"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "tail-whip"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "poison-sting"
         }
       ],
@@ -2192,7 +2193,7 @@
       "tutorMoves": [
         "quick-attack"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 16,
       "evolvesTo": [
         "nidorina"
       ],
@@ -2262,11 +2263,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 22,
           "move": "bite"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "sludge"
         }
       ],
@@ -2277,7 +2278,7 @@
       "tutorMoves": [
         "take-down"
       ],
-      "evolveLevel": 26,
+      "evolveLevel": 36,
       "evolvesTo": [
         "nidoqueen"
       ],
@@ -2319,7 +2320,8 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 31,
@@ -2338,15 +2340,15 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 39,
           "move": "body-slam"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "earthquake"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "sludge"
         }
       ],
@@ -2386,11 +2388,11 @@
           "move": "tackle"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "horn-attack"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "poison-sting"
         }
       ],
@@ -2402,7 +2404,7 @@
       "tutorMoves": [
         "quick-attack"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 16,
       "evolvesTo": [
         "nidorino"
       ],
@@ -2470,15 +2472,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 22,
           "move": "horn-attack"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "sludge"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "double-kick"
         }
       ],
@@ -2489,7 +2491,7 @@
       "tutorMoves": [
         "take-down"
       ],
-      "evolveLevel": 26,
+      "evolveLevel": 36,
       "evolvesTo": [
         "nidoking"
       ],
@@ -2531,7 +2533,8 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 34,
@@ -2550,15 +2553,15 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 39,
           "move": "thrash"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "earthquake"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "sludge"
         }
       ],
@@ -2597,11 +2600,11 @@
           "move": "growl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "sing"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "double-slap"
         }
       ],
@@ -2611,7 +2614,7 @@
       ],
       "hiddenAbility": "healer",
       "tutorMoves": [],
-      "evolveLevel": 12,
+      "evolveLevel": 36,
       "evolvesTo": [
         "clefable"
       ],
@@ -2662,7 +2665,8 @@
       "eggMoves": [
         "amnesia",
         "splash"
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 36,
@@ -2680,19 +2684,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 36,
           "move": "swift"
         },
         {
-          "level": 22,
+          "level": 36,
           "move": "body-slam"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "psychic"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "double-edge"
         }
       ],
@@ -2732,11 +2736,11 @@
           "move": "tail-whip"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "quick-attack"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "roar"
         }
       ],
@@ -2749,7 +2753,7 @@
         "agility",
         "swift"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 32,
       "evolvesTo": [
         "ninetales"
       ],
@@ -2800,7 +2804,8 @@
       "eggMoves": [
         "hypnosis",
         "disable"
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 38,
@@ -2818,11 +2823,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 32,
           "move": "fire-spin"
         },
         {
-          "level": 22,
+          "level": 32,
           "move": "flamethrower"
         }
       ],
@@ -2862,11 +2867,11 @@
           "move": "pound"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "defense-curl"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "double-slap"
         }
       ],
@@ -2878,7 +2883,7 @@
       "tutorMoves": [
         "growl"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 36,
       "evolvesTo": [
         "wigglytuff"
       ],
@@ -2928,7 +2933,8 @@
       ],
       "eggMoves": [
         "take-down"
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 40,
@@ -2946,15 +2952,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 36,
           "move": "swift"
         },
         {
-          "level": 22,
+          "level": 36,
           "move": "body-slam"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "double-edge"
         }
       ],
@@ -2995,11 +3001,11 @@
           "move": "supersonic"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "bite"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "wing-attack"
         }
       ],
@@ -3011,7 +3017,7 @@
         "golbat"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 22,
       "tutorMoves": [
         "poison-sting",
         "gust",
@@ -3083,19 +3089,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 22,
           "move": "wing-attack"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "swift"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "sludge"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "fly"
         }
       ],
@@ -3137,11 +3143,11 @@
           "move": "poison-powder"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "stun-spore"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "acid"
         }
       ],
@@ -3154,7 +3160,7 @@
         "gloom"
       ],
       "rarity": "uncommon",
-      "evolveLevel": 12,
+      "evolveLevel": 21,
       "tutorMoves": [
         "vine-whip",
         "leech-seed"
@@ -3245,11 +3251,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 22,
           "move": "mega-drain"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "sludge"
         }
       ],
@@ -3262,7 +3268,7 @@
         "vileplume"
       ],
       "rarity": "uncommon",
-      "evolveLevel": 26,
+      "evolveLevel": 32,
       "tutorMoves": [
         "razor-leaf",
         "leech-seed",
@@ -3329,7 +3335,8 @@
           "adds": [],
           "abilityId": "healer"
         }
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "id": "vileplume",
@@ -3348,15 +3355,15 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 39,
           "move": "petal-dance"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "razor-leaf"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "sludge"
         }
       ],
@@ -3398,11 +3405,11 @@
           "move": "stun-spore"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "leech-life"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "absorb"
         }
       ],
@@ -3414,7 +3421,7 @@
       "tutorMoves": [
         "fury-swipes"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 24,
       "evolvesTo": [
         "parasect"
       ],
@@ -3485,19 +3492,19 @@
       },
       "learnset": [
         {
-          "level": 18,
+          "level": 25,
           "move": "mega-drain"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "pin-missile"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "razor-leaf"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "solar-beam"
         }
       ],
@@ -3535,15 +3542,15 @@
           "move": "disable"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "supersonic"
         },
         {
-          "level": 6,
+          "level": 8,
           "move": "poison-sting"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "confusion"
         }
       ],
@@ -3553,7 +3560,7 @@
       ],
       "hiddenAbility": "run-down",
       "tutorMoves": [],
-      "evolveLevel": 12,
+      "evolveLevel": 31,
       "evolvesTo": [
         "venomoth"
       ],
@@ -3623,23 +3630,23 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 31,
           "move": "psybeam"
         },
         {
-          "level": 20,
+          "level": 31,
           "move": "leech-life"
         },
         {
-          "level": 26,
+          "level": 36,
           "move": "sludge"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "pin-missile"
         },
         {
-          "level": 38,
+          "level": 53,
           "move": "psychic"
         }
       ],
@@ -3678,11 +3685,11 @@
           "move": "sand-attack"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "growl"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "dig"
         }
       ],
@@ -3694,7 +3701,7 @@
         "dugtrio"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 26,
       "tutorMoves": [
         "bind",
         "harden"
@@ -3764,19 +3771,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 26,
           "move": "dig"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "slash"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "earthquake"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "rock-slide"
         }
       ],
@@ -3815,11 +3822,11 @@
           "move": "growl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "bite"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "pay-day"
         }
       ],
@@ -3831,7 +3838,7 @@
       "tutorMoves": [
         "quick-attack"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 28,
       "evolvesTo": [
         "persian"
       ],
@@ -3900,19 +3907,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 28,
           "move": "fury-swipes"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "slash"
         },
         {
-          "level": 26,
+          "level": 36,
           "move": "swift"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "body-slam"
         }
       ],
@@ -3953,11 +3960,11 @@
           "move": "tail-whip"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "water-gun"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "disable"
         }
       ],
@@ -3970,7 +3977,7 @@
         "golduck"
       ],
       "rarity": "uncommon",
-      "evolveLevel": 12,
+      "evolveLevel": 33,
       "tutorMoves": [
         "swift",
         "headbutt",
@@ -4040,15 +4047,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 33,
           "move": "confusion"
         },
         {
-          "level": 20,
+          "level": 33,
           "move": "surf"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "hydro-pump"
         }
       ],
@@ -4090,11 +4097,11 @@
           "move": "leer"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "low-kick"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "karate-chop"
         }
       ],
@@ -4106,7 +4113,7 @@
         "meditate",
         "rolling-kick"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 28,
       "evolvesTo": [
         "primeape"
       ],
@@ -4173,19 +4180,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 28,
           "move": "seismic-toss"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "rock-slide"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "submission"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "thrash"
         }
       ],
@@ -4221,11 +4228,11 @@
           "move": "roar"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "ember"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "leer"
         }
       ],
@@ -4238,7 +4245,7 @@
         "confuse-ray",
         "agility"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 32,
       "evolvesTo": [
         "arcanine"
       ],
@@ -4290,7 +4297,8 @@
         "submission",
         "double-kick",
         "body-slam"
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 59,
@@ -4308,15 +4316,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 32,
           "move": "take-down"
         },
         {
-          "level": 22,
+          "level": 32,
           "move": "fire-spin"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "flamethrower"
         }
       ],
@@ -4355,11 +4363,11 @@
           "move": "hypnosis"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "water-gun"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "double-slap"
         }
       ],
@@ -4372,7 +4380,7 @@
         "poliwhirl"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 25,
       "tutorMoves": [
         "swift",
         "harden"
@@ -4462,11 +4470,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 25,
           "move": "bubble-beam"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "body-slam"
         }
       ],
@@ -4542,7 +4550,8 @@
           "adds": []
         }
       ],
-      "evolveLevel": 26
+      "evolveLevel": 36,
+      "evolveBy": "stone"
     },
     {
       "dex": 62,
@@ -4561,15 +4570,15 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 39,
           "move": "submission"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "surf"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "hydro-pump"
         }
       ],
@@ -4609,11 +4618,11 @@
           "move": "confusion"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "disable"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "kinesis"
         }
       ],
@@ -4625,7 +4634,7 @@
       "tutorMoves": [
         "swift"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 16,
       "evolvesTo": [
         "kadabra"
       ],
@@ -4690,19 +4699,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 22,
           "move": "psybeam"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "recover"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "swift"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "psychic"
         }
       ],
@@ -4714,7 +4723,7 @@
         "headbutt",
         "thunder-punch"
       ],
-      "evolveLevel": 26,
+      "evolveLevel": 36,
       "evolvesTo": [
         "alakazam"
       ],
@@ -4756,7 +4765,9 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "evolveBy": "held-item",
+      "evolveItem": "twisted-spoon"
     },
     {
       "dex": 65,
@@ -4774,15 +4785,15 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 39,
           "move": "psybeam"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "psychic"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "seismic-toss"
         }
       ],
@@ -4822,11 +4833,11 @@
           "move": "leer"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "karate-chop"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "focus-energy"
         }
       ],
@@ -4839,7 +4850,7 @@
         "machoke"
       ],
       "rarity": "uncommon",
-      "evolveLevel": 12,
+      "evolveLevel": 28,
       "tutorMoves": [
         "headbutt",
         "rock-throw",
@@ -4912,11 +4923,11 @@
       },
       "learnset": [
         {
-          "level": 20,
+          "level": 28,
           "move": "rock-throw"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "submission"
         }
       ],
@@ -4929,7 +4940,7 @@
         "machamp"
       ],
       "rarity": "uncommon",
-      "evolveLevel": 26,
+      "evolveLevel": 40,
       "tutorMoves": [
         "body-slam",
         "hyper-fang"
@@ -4973,7 +4984,9 @@
           "adds": [],
           "abilityId": "guts"
         }
-      ]
+      ],
+      "evolveBy": "held-item",
+      "evolveItem": "macho-brace"
     },
     {
       "id": "machamp",
@@ -4991,15 +5004,15 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 40,
           "move": "submission"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "rock-slide"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "earthquake"
         }
       ],
@@ -5041,11 +5054,11 @@
           "move": "growth"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "wrap"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "poison-powder"
         }
       ],
@@ -5057,7 +5070,7 @@
         "leech-seed",
         "mega-drain"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 21,
       "evolvesTo": [
         "weepinbell"
       ],
@@ -5132,7 +5145,7 @@
         "mega-drain",
         "toxic"
       ],
-      "evolveLevel": 26,
+      "evolveLevel": 32,
       "evolvesTo": [
         "victreebel"
       ],
@@ -5178,7 +5191,8 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 71,
@@ -5197,15 +5211,15 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 39,
           "move": "razor-leaf"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "sludge"
         },
         {
-          "level": 36,
+          "level": 50,
           "move": "petal-dance"
         }
       ],
@@ -5244,11 +5258,11 @@
           "move": "supersonic"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "wrap"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "poison-sting"
         }
       ],
@@ -5260,7 +5274,7 @@
       "tutorMoves": [
         "rest"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 30,
       "evolvesTo": [
         "tentacruel"
       ],
@@ -5331,15 +5345,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 30,
           "move": "bubble-beam"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "sludge"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "hydro-pump"
         }
       ],
@@ -5377,11 +5391,11 @@
           "move": "defense-curl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "rock-throw"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "self-destruct"
         }
       ],
@@ -5394,7 +5408,7 @@
         "graveler"
       ],
       "rarity": "common",
-      "evolveLevel": 12,
+      "evolveLevel": 25,
       "tutorMoves": [
         "bind",
         "sand-attack"
@@ -5492,7 +5506,7 @@
         "golem"
       ],
       "rarity": "common",
-      "evolveLevel": 26,
+      "evolveLevel": 40,
       "tutorMoves": [
         "slam",
         "dig"
@@ -5557,7 +5571,9 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "evolveBy": "held-item",
+      "evolveItem": "hard-stone"
     },
     {
       "id": "golem",
@@ -5576,11 +5592,11 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 40,
           "move": "earthquake"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "rock-slide"
         }
       ],
@@ -5623,11 +5639,11 @@
           "move": "tail-whip"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "stomp"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "growl"
         }
       ],
@@ -5640,7 +5656,7 @@
         "double-kick",
         "quick-attack"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 40,
       "evolvesTo": [
         "rapidash"
       ],
@@ -5709,15 +5725,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 40,
           "move": "stomp"
         },
         {
-          "level": 20,
+          "level": 40,
           "move": "fire-spin"
         },
         {
-          "level": 26,
+          "level": 40,
           "move": "flamethrower"
         }
       ],
@@ -5758,11 +5774,11 @@
           "move": "disable"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "headbutt"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "growl"
         }
       ],
@@ -5775,7 +5791,7 @@
         "bubble-beam",
         "body-slam"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 37,
       "evolvesTo": [
         "slowbro"
       ],
@@ -5844,19 +5860,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 37,
           "move": "water-gun"
         },
         {
-          "level": 20,
+          "level": 37,
           "move": "surf"
         },
         {
-          "level": 26,
+          "level": 37,
           "move": "psychic"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "hydro-pump"
         }
       ],
@@ -5897,11 +5913,11 @@
           "move": "sonic-boom"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "thunder-shock"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "supersonic"
         }
       ],
@@ -5914,7 +5930,7 @@
         "defense-curl",
         "slash"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 30,
       "evolvesTo": [
         "magneton"
       ],
@@ -5980,11 +5996,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 30,
           "move": "thunderbolt"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "swift"
         }
       ],
@@ -6039,7 +6055,8 @@
           "abilityId": "static"
         }
       ],
-      "evolveLevel": 26
+      "evolveLevel": 40,
+      "evolveBy": "stone"
     },
     {
       "dex": 83,
@@ -6066,31 +6083,31 @@
           "move": "sand-attack"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "leer"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "gust"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "fury-attack"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "wing-attack"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "swords-dance"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "slash"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "drill-peck"
         }
       ],
@@ -6138,11 +6155,11 @@
           "move": "growl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "fury-attack"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "quick-attack"
         }
       ],
@@ -6154,7 +6171,7 @@
       "tutorMoves": [
         "double-kick"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 31,
       "evolvesTo": [
         "dodrio"
       ],
@@ -6223,15 +6240,15 @@
       },
       "learnset": [
         {
-          "level": 20,
+          "level": 31,
           "move": "swift"
         },
         {
-          "level": 26,
+          "level": 36,
           "move": "drill-peck"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "tri-attack"
         }
       ],
@@ -6270,11 +6287,11 @@
           "move": "growl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "aurora-beam"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "water-gun"
         }
       ],
@@ -6284,7 +6301,7 @@
       ],
       "hiddenAbility": "healer",
       "tutorMoves": [],
-      "evolveLevel": 12,
+      "evolveLevel": 34,
       "evolvesTo": [
         "dewgong"
       ],
@@ -6355,15 +6372,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 34,
           "move": "aurora-beam"
         },
         {
-          "level": 24,
+          "level": 34,
           "move": "surf"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "blizzard"
         }
       ],
@@ -6402,11 +6419,11 @@
           "move": "poison-gas"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "disable"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "sludge"
         }
       ],
@@ -6418,7 +6435,7 @@
       "tutorMoves": [
         "sand-attack"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 38,
       "evolvesTo": [
         "muk"
       ],
@@ -6487,11 +6504,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 38,
           "move": "sludge"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "thunderbolt"
         }
       ],
@@ -6531,15 +6548,15 @@
           "move": "withdraw"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "supersonic"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "clamp"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "water-gun"
         }
       ],
@@ -6552,7 +6569,7 @@
         "bubble-beam",
         "harden"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 30,
       "evolvesTo": [
         "cloyster"
       ],
@@ -6603,7 +6620,8 @@
       "eggMoves": [
         "rock-throw",
         "twineedle"
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 91,
@@ -6622,19 +6640,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 30,
           "move": "aurora-beam"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "clamp"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "ice-beam"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "surf"
         }
       ],
@@ -6675,11 +6693,11 @@
           "move": "confuse-ray"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "night-shade"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "hypnosis"
         }
       ],
@@ -6691,7 +6709,7 @@
       "tutorMoves": [
         "screech"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 25,
       "evolvesTo": [
         "haunter"
       ],
@@ -6760,11 +6778,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 25,
           "move": "night-shade"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "sludge"
         }
       ],
@@ -6776,7 +6794,7 @@
         "thunderbolt",
         "mega-punch"
       ],
-      "evolveLevel": 26,
+      "evolveLevel": 40,
       "evolvesTo": [
         "gengar"
       ],
@@ -6818,7 +6836,9 @@
           ],
           "adds": []
         }
-      ]
+      ],
+      "evolveBy": "held-item",
+      "evolveItem": "spell-tag"
     },
     {
       "dex": 94,
@@ -6837,11 +6857,11 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 40,
           "move": "night-shade"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "psychic"
         }
       ],
@@ -6882,19 +6902,19 @@
           "move": "screech"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "bind"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "rock-throw"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "dig"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "harden"
         }
       ],
@@ -6959,7 +6979,9 @@
       "eggMoves": [
         "leer"
       ],
-      "evolveLevel": 26
+      "evolveLevel": 36,
+      "evolveBy": "held-item",
+      "evolveItem": "metal-coat"
     },
     {
       "dex": 96,
@@ -6985,11 +7007,11 @@
           "move": "hypnosis"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "disable"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "confusion"
         }
       ],
@@ -7002,7 +7024,7 @@
         "kinesis",
         "swift"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 26,
       "evolvesTo": [
         "hypno"
       ],
@@ -7071,15 +7093,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 26,
           "move": "psybeam"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "psychic"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "headbutt"
         }
       ],
@@ -7119,11 +7141,11 @@
           "move": "leer"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "vice-grip"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "harden"
         }
       ],
@@ -7134,7 +7156,7 @@
       "tutorMoves": [
         "barrier"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 28,
       "evolvesTo": [
         "kingler"
       ],
@@ -7205,19 +7227,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 28,
           "move": "waterfall"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "bubble-beam"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "stomp"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "surf"
         }
       ],
@@ -7256,11 +7278,11 @@
           "move": "screech"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "sonic-boom"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "thunder-shock"
         }
       ],
@@ -7273,7 +7295,7 @@
         "thunder-wave",
         "defense-curl"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 30,
       "evolvesTo": [
         "electrode"
       ],
@@ -7338,11 +7360,11 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 30,
           "move": "thunderbolt"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "swift"
         }
       ],
@@ -7383,15 +7405,15 @@
           "move": "hypnosis"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "reflect"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "leech-seed"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "confusion"
         }
       ],
@@ -7403,7 +7425,7 @@
         "absorb",
         "mega-drain"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 32,
       "evolvesTo": [
         "exeggutor"
       ],
@@ -7454,7 +7476,8 @@
       "eggMoves": [
         "rock-slide",
         "recover"
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 103,
@@ -7473,19 +7496,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 32,
           "move": "confusion"
         },
         {
-          "level": 20,
+          "level": 32,
           "move": "razor-leaf"
         },
         {
-          "level": 26,
+          "level": 36,
           "move": "psychic"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "solar-beam"
         }
       ],
@@ -7525,11 +7548,11 @@
           "move": "growl"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "tail-whip"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "leer"
         }
       ],
@@ -7540,7 +7563,7 @@
       "tutorMoves": [
         "sand-attack"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 28,
       "evolvesTo": [
         "marowak"
       ],
@@ -7608,15 +7631,15 @@
       },
       "learnset": [
         {
-          "level": 22,
+          "level": 30,
           "move": "headbutt"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "earthquake"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "rock-slide"
         }
       ],
@@ -7655,15 +7678,15 @@
           "move": "meditate"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "swift"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "rolling-kick"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "high-jump-kick"
         }
       ],
@@ -7707,27 +7730,27 @@
           "move": "agility"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "swift"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "thunder-punch"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "fire-punch"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "mega-punch"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "ice-punch"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "submission"
         }
       ],
@@ -7771,31 +7794,31 @@
           "move": "supersonic"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "stomp"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "lick"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "disable"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "body-slam"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "slam"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "swift"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "earthquake"
         }
       ],
@@ -7841,11 +7864,11 @@
           "move": "smog"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "smokescreen"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "self-destruct"
         }
       ],
@@ -7857,7 +7880,7 @@
         "acid-armor",
         "screech"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 35,
       "evolvesTo": [
         "weezing"
       ],
@@ -7927,15 +7950,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 35,
           "move": "smog-plus"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "thunderbolt"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "fire-blast"
         }
       ],
@@ -7976,11 +7999,11 @@
           "move": "tail-whip"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "stomp"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "rock-throw"
         }
       ],
@@ -7991,7 +8014,7 @@
       "tutorMoves": [
         "slam"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 42,
       "evolvesTo": [
         "rhydon"
       ],
@@ -8062,15 +8085,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 42,
           "move": "rock-slide"
         },
         {
-          "level": 22,
+          "level": 42,
           "move": "stomp"
         },
         {
-          "level": 28,
+          "level": 42,
           "move": "dig"
         }
       ],
@@ -8111,31 +8134,31 @@
           "move": "double-slap"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "sing"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "body-slam"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "growl"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "egg-bomb"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "soft-boiled"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "seismic-toss"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "psychic"
         }
       ],
@@ -8178,31 +8201,31 @@
           "move": "bind"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "absorb"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "vine-whip"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "poison-powder"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "mega-drain"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "stun-spore"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "slam"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "solar-beam"
         }
       ],
@@ -8248,31 +8271,31 @@
           "move": "rage"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "bite"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "swift"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "tail-whip"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "body-slam"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "mega-punch"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "earthquake"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "dizzy-punch"
         }
       ],
@@ -8318,11 +8341,11 @@
           "move": "smokescreen"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "leer"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "water-gun"
         }
       ],
@@ -8334,7 +8357,7 @@
       "tutorMoves": [
         "swift"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 32,
       "evolvesTo": [
         "seadra"
       ],
@@ -8404,15 +8427,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 32,
           "move": "bubble-beam"
         },
         {
-          "level": 22,
+          "level": 32,
           "move": "surf"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "hydro-pump"
         }
       ],
@@ -8451,15 +8474,15 @@
           "move": "tail-whip"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "supersonic"
         },
         {
-          "level": 6,
+          "level": 8,
           "move": "water-gun"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "horn-attack"
         }
       ],
@@ -8472,7 +8495,7 @@
         "bubble",
         "rage"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 33,
       "evolvesTo": [
         "seaking"
       ],
@@ -8540,15 +8563,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 33,
           "move": "waterfall"
         },
         {
-          "level": 22,
+          "level": 33,
           "move": "bubble-beam"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "surf"
         }
       ],
@@ -8588,11 +8611,11 @@
           "move": "harden"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "water-gun"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "swift"
         }
       ],
@@ -8604,7 +8627,7 @@
       "tutorMoves": [
         "agility"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 24,
       "evolvesTo": [
         "starmie"
       ],
@@ -8651,7 +8674,8 @@
           ],
           "abilityId": "healer"
         }
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "dex": 121,
@@ -8670,19 +8694,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 24,
           "move": "swift"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "surf"
         },
         {
-          "level": 26,
+          "level": 36,
           "move": "psychic"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "bubble-beam-plus"
         }
       ],
@@ -8721,27 +8745,27 @@
           "move": "barrier"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "light-screen"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "psywave"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "double-slap"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "psychic"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "reflect"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "seismic-toss"
         }
       ],
@@ -8789,19 +8813,19 @@
           "move": "leer"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "focus-energy"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "cut"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "swift"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "wing-attack"
         }
       ],
@@ -8865,7 +8889,9 @@
         "gust"
       ],
       "hiddenAbility": "tough-claws",
-      "evolveLevel": 26
+      "evolveLevel": 36,
+      "evolveBy": "held-item",
+      "evolveItem": "metal-coat"
     },
     {
       "dex": 124,
@@ -8892,27 +8918,27 @@
           "move": "lovely-kiss"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "lick"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "confusion"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "double-slap"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "ice-beam"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "ice-punch"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "psychic"
         }
       ],
@@ -8957,19 +8983,19 @@
           "move": "leer"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "thunder-shock"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "screech"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "thunderbolt"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "thunder-punch"
         }
       ],
@@ -9015,23 +9041,23 @@
           "move": "leer"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "confuse-ray"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "fire-spin"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "fire-punch"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "smokescreen"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "fire-blast"
         }
       ],
@@ -9078,27 +9104,27 @@
           "move": "focus-energy"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "seismic-toss"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "slash"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "harden"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "pin-missile"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "guillotine"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "submission"
         }
       ],
@@ -9144,35 +9170,35 @@
           "move": "tail-whip"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "stomp"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "horn-attack"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "leer"
         },
         {
-          "level": 18,
+          "level": 25,
           "move": "swift"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "body-slam"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "take-down"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "earthquake"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "thrash"
         }
       ],
@@ -9222,7 +9248,7 @@
         "gyarados"
       ],
       "rarity": "common",
-      "evolveLevel": 18,
+      "evolveLevel": 20,
       "tutorMoves": [
         "bubble",
         "harden"
@@ -9290,19 +9316,19 @@
       },
       "learnset": [
         {
-          "level": 20,
+          "level": 28,
           "move": "bite"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "dragon-rage"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "surf"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "hydro-pump"
         }
       ],
@@ -9345,31 +9371,31 @@
           "move": "growl"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "sing"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "aurora-beam"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "mist"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "surf"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "body-slam"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "blizzard"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "hydro-pump"
         }
       ],
@@ -9449,15 +9475,15 @@
           "move": "tail-whip"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "sand-attack"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "quick-attack"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "swift"
         }
       ],
@@ -9473,7 +9499,7 @@
         "umbreon"
       ],
       "rarity": "rare",
-      "evolveLevel": 12,
+      "evolveLevel": 30,
       "tutorMoves": [
         "dig",
         "body-slam",
@@ -9562,13 +9588,15 @@
           "adds": [
             "feint-attack"
           ],
-          "abilityId": "inner-focus"
+          "abilityId": "inner-focus",
+          "by": "friendship"
         }
       ],
       "hiddenAbility": "anticipation",
       "eggMoves": [
         "rage"
-      ]
+      ],
+      "evolveBy": "stone"
     },
     {
       "id": "vaporeon",
@@ -9586,19 +9614,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 30,
           "move": "bite"
         },
         {
-          "level": 20,
+          "level": 30,
           "move": "bubble-beam"
         },
         {
-          "level": 26,
+          "level": 36,
           "move": "surf"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "hydro-pump"
         }
       ],
@@ -9702,15 +9730,15 @@
           "move": "conversion"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "psybeam"
         },
         {
-          "level": 14,
+          "level": 19,
           "move": "recover"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "tri-attack"
         }
       ],
@@ -9753,11 +9781,11 @@
           "move": "withdraw"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "horn-attack"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "leer"
         }
       ],
@@ -9769,7 +9797,7 @@
         "sand-attack",
         "aurora-beam"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 40,
       "evolvesTo": [
         "omastar"
       ],
@@ -9839,15 +9867,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 40,
           "move": "bubble-beam"
         },
         {
-          "level": 22,
+          "level": 40,
           "move": "rock-slide"
         },
         {
-          "level": 28,
+          "level": 40,
           "move": "hydro-pump"
         }
       ],
@@ -9887,19 +9915,19 @@
           "move": "harden"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "absorb"
         },
         {
-          "level": 6,
+          "level": 8,
           "move": "water-gun"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "leer"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "rock-throw"
         }
       ],
@@ -9911,7 +9939,7 @@
         "sand-attack",
         "bubble-beam"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 40,
       "evolvesTo": [
         "kabutops"
       ],
@@ -9980,19 +10008,19 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 40,
           "move": "slash"
         },
         {
-          "level": 22,
+          "level": 40,
           "move": "rock-slide"
         },
         {
-          "level": 28,
+          "level": 40,
           "move": "surf"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "hydro-pump"
         }
       ],
@@ -10032,27 +10060,27 @@
           "move": "agility"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "supersonic"
         },
         {
-          "level": 12,
+          "level": 16,
           "move": "rock-throw"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "bite"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "take-down"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "fly"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "hyper-beam"
         }
       ],
@@ -10098,27 +10126,27 @@
           "move": "amnesia"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "rest"
         },
         {
-          "level": 16,
+          "level": 22,
           "move": "body-slam"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "earthquake"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "harden"
         },
         {
-          "level": 24,
+          "level": 33,
           "move": "ice-beam"
         },
         {
-          "level": 30,
+          "level": 42,
           "move": "hyper-beam"
         }
       ],
@@ -10161,15 +10189,15 @@
           "move": "ice-beam"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "blizzard"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "agility"
         },
         {
-          "level": 40,
+          "level": 56,
           "move": "mist"
         }
       ],
@@ -10211,15 +10239,15 @@
           "move": "drill-peck"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "thunder"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "agility"
         },
         {
-          "level": 40,
+          "level": 56,
           "move": "light-screen"
         }
       ],
@@ -10260,15 +10288,15 @@
           "move": "fire-spin"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "leer"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "agility"
         },
         {
-          "level": 40,
+          "level": 56,
           "move": "sky-attack"
         }
       ],
@@ -10309,15 +10337,15 @@
           "move": "leer"
         },
         {
-          "level": 4,
+          "level": 5,
           "move": "thunder-wave"
         },
         {
-          "level": 6,
+          "level": 8,
           "move": "dragon-rage"
         },
         {
-          "level": 8,
+          "level": 11,
           "move": "agility"
         }
       ],
@@ -10329,7 +10357,7 @@
       "tutorMoves": [
         "bubble"
       ],
-      "evolveLevel": 12,
+      "evolveLevel": 30,
       "evolvesTo": [
         "dragonair"
       ],
@@ -10415,15 +10443,15 @@
       },
       "learnset": [
         {
-          "level": 14,
+          "level": 30,
           "move": "dragon-rage"
         },
         {
-          "level": 18,
+          "level": 30,
           "move": "slam"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "bubble-beam"
         }
       ],
@@ -10432,7 +10460,7 @@
         "iron-shell"
       ],
       "tutorMoves": [],
-      "evolveLevel": 26,
+      "evolveLevel": 55,
       "evolvesTo": [
         "dragonite"
       ],
@@ -10519,19 +10547,19 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 55,
           "move": "dragon-rage"
         },
         {
-          "level": 30,
+          "level": 55,
           "move": "wing-attack"
         },
         {
-          "level": 34,
+          "level": 55,
           "move": "fly"
         },
         {
-          "level": 38,
+          "level": 55,
           "move": "hyper-beam"
         }
       ],
@@ -10572,15 +10600,15 @@
           "move": "disable"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "swift"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "psychic"
         },
         {
-          "level": 40,
+          "level": 56,
           "move": "barrier"
         }
       ],
@@ -10621,15 +10649,15 @@
           "move": "transform"
         },
         {
-          "level": 10,
+          "level": 14,
           "move": "mega-punch"
         },
         {
-          "level": 20,
+          "level": 28,
           "move": "metronome"
         },
         {
-          "level": 40,
+          "level": 56,
           "move": "psychic"
         }
       ],
@@ -10663,15 +10691,15 @@
       },
       "learnset": [
         {
-          "level": 16,
+          "level": 30,
           "move": "snarl"
         },
         {
-          "level": 22,
+          "level": 30,
           "move": "crunch"
         },
         {
-          "level": 28,
+          "level": 39,
           "move": "dark-pulse"
         }
       ],
@@ -10707,11 +10735,11 @@
       },
       "learnset": [
         {
-          "level": 28,
+          "level": 39,
           "move": "meteor-mash"
         },
         {
-          "level": 34,
+          "level": 47,
           "move": "earthquake"
         }
       ],
@@ -10745,15 +10773,15 @@
       },
       "learnset": [
         {
-          "level": 27,
+          "level": 37,
           "move": "pin-missile"
         },
         {
-          "level": 32,
+          "level": 44,
           "move": "iron-tail"
         },
         {
-          "level": 38,
+          "level": 53,
           "move": "meteor-mash"
         }
       ],
@@ -10787,15 +10815,15 @@
       },
       "learnset": [
         {
-          "level": 27,
+          "level": 40,
           "move": "magnet-bomb"
         },
         {
-          "level": 33,
+          "level": 46,
           "move": "iron-head"
         },
         {
-          "level": 39,
+          "level": 54,
           "move": "flash-cannon"
         }
       ],

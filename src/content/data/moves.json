@@ -4617,6 +4617,22 @@
       "pp": 2
     },
     {
+      "id": "return",
+      "name": "Return",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "friendship"
+        }
+      ]
+    },
+    {
       "id": "detect",
       "name": "Detect",
       "type": "fighting",

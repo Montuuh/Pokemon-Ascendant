@@ -5,6 +5,8 @@ import { bondRulesText, evoPathsTip } from '@/ui/tips';
 import { BranchCard } from '@/ui/components/BranchCard';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { DEX_EVO_TEXT } from '@/ui/strings';
+import { EvolveMethodLabel } from '@/ui/components/EvolveMethodLabel';
+import { evolveMethodShort } from '@/ui/evolutionText';
 import { InfoDot, Tip } from '@/ui/tooltip';
 import { BondBar } from './BondBar';
 import { RANK_ICON } from './rankIcons';
@@ -62,9 +64,9 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
             {cols.map((col, i) => (
               <div key={i} style={{ display: 'contents' }}>
                 {i > 0 && (
-                  <span className={styles.stageArrow} aria-hidden="true">
-                    <IconArrowRight size={20} />
-                    {content.species(cols[i - 1]![0]!).evolveLevel && col.some(metStage) ? <span className="tabular">Lv {content.species(cols[i - 1]![0]!).evolveLevel}</span> : null}
+                  <span className={styles.stageArrow}>
+                    <IconArrowRight size={20} aria-hidden="true" />
+                    {col.some(metStage) && <EvolveMethodLabel speciesId={cols[i - 1]![0]!} testId={`line-method-${cols[i - 1]![0]!}`} />}
                   </span>
                 )}
                 <div className={styles.stageCol}>
@@ -94,7 +96,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
             {/* One group per stage that evolves: its name and level once, then a card per path. */}
             {cols.flat().filter((id) => metStage(id) && content.species(id).branches.length).map((id) => (
               <div key={id} className={styles.branchGroup}>
-                <p className={styles.branchFrom}>{DEX_EVO_TEXT.from(content.species(id).name, content.species(id).evolveLevel ?? null)}</p>
+                <p className={styles.branchFrom}>{DEX_EVO_TEXT.from(content.species(id).name, evolveMethodShort(id, content))}</p>
                 <div className={styles.branches}>
                   {content.species(id).branches.map((b) => (
                     <BranchCard key={b.id} p={branchPayload(content, b.id)} toMet={metStage(b.to)} onSpecies={onSpecies} />

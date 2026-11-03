@@ -3,7 +3,7 @@ import { PIDGEY, STARTERS, dispatch, eventsOf, reject, scenario, start, tweak } 
 import { pickLeadOptions } from './preview';
 
 // A strong enemy so the Lead reliably faints during Resolution.
-const GOLEM = { species: 'golem', level: 30, tier: 'wild' as const, phaseCount: 1 as const };
+const GOLEM = { species: 'golem', level: 42, tier: 'wild' as const, phaseCount: 1 as const };
 const weak = () => start(scenario({ team: STARTERS, enemies: [GOLEM] }));
 
 describe('Faint resolution — §3.3.5', () => {

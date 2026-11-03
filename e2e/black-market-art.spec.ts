@@ -108,12 +108,13 @@ test.describe('Black Market retained contracts — §2.11.6', () => {
     await page.getByTestId(`candy-${before.box[1]!.uid}`).click();
     await page.getByTestId('btn-candy').click();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.box[1]!.level)).toBe(31);
-    expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(before.money - 400);
+    // v0.9.90 — a level is worth less on the stretched scale (§6.2.4): the Fence's candy is 280.
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(before.money - 280);
     await page.getByTestId('sell-coin-pouch').click();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.relics)).toContain('coin-pouch');
     await page.getByTestId('sell-coin-pouch').click();
     expect(await page.evaluate(() => window.__ascendant!.run.state()!.relics)).not.toContain('coin-pouch');
-    expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(before.money - 400 + 60);
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.money)).toBe(before.money - 280 + 60);
   });
   test('Gambler_PrintedRiskAndRefusedStake_KeepOutcome', async ({ page }) => {
     await downstairs(page, ['coin-pouch', 'brave-charm', 'ground-gem', 'water-gem', 'evolution-catalyst']);

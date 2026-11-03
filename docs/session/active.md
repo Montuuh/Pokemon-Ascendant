@@ -1,17 +1,17 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-03 · **Version:** v0.9.89 (*Move keywords*).
+**Date:** 2026-11-03 · **Version:** v0.9.90 (*Real evolution levels*).
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
-**Rework in progress (user, 2026-11-03; plan approved):** four versions. ✅ v0.9.89 move keywords (§3.11, §4.3.15, §5.2.1,
-§5.3.1; 38 Gen II–IV moves, no card above 3 AP). Next **v0.9.90**: real evolution levels (no squish, FRLG bands 5→63,
-`STAT_GROWTH_RATE` ~0.024 so each Gym's stats hold), stone evolutions item-only with guaranteed stock, trade evolutions by
-levelling with a held item (Twisted Spoon, Macho Brace, Hard Stone, Spell Tag, Metal Coat), a new in-run Friendship
-(Umbreon, Soothe Bell, Daisy's grooming, Return). Then **v0.9.91** progressive learnsets (`replaces` tracks, Move
-Reminder, no filler on a final form) and **v0.9.92** enemy kits by role, disruption effects, more double actions and
-telegraphed combos per Gym/Elite/League. Plan: `~/.claude/plans/quiero-hacer-un-rework-wobbly-steele.md`.
-**Shipped 2026-11-03 (v0.9.89):** keyword engine (`combat/keywords.ts`, `keywordTurn.ts`), content by
-`scripts/v0989-keywords.mjs`, UI chips (`keywordChips.tsx`, `SideChips.tsx`), e2e `keywords.spec.ts`. Run harness R1 69 ·
-R2|R1 49 · R3|R2 49 · run 10 % (noise); intent forecast 99 % (chance riders). UI review Ship with fixes, 3 rounds.
+**Rework in progress (user, 2026-11-03; plan approved):** four versions. ✅ v0.9.89 move keywords. ✅ v0.9.90 real
+evolution levels and methods, Friendship. Next **v0.9.91** progressive learnsets (`replaces` tracks, Move Reminder, no
+filler on a final form, MOVE_CAP ~16, the rest of Gen II–IV in learnsets), then **v0.9.92** enemy kits by role,
+disruption effects, more double actions, telegraphed combos per Gym/Elite/League, and the Gym teams re-cut to forms legal
+at their real levels. Plan: `~/.claude/plans/quiero-hacer-un-rework-wobbly-steele.md`.
+**Shipped 2026-11-03 (v0.9.90):** every level ×1.4 from Lv 1 (`scripts/v0990-levels.mjs`; catalogue cells by
+`scripts/v0990-catalogs.mjs`), Gen I levels and methods (`readyBranches`, §6.3.7–§6.3.9), trade items held and spent,
+Friendship (hearts, grooming, Soothe Bell, Return, hold-on at 255), guaranteed stock, save v23, Region Attack tier
+×0.55 / ×0.70 / ×0.76. Harness R1 61 · R2|R1 49 · R3|R2 56 · League 60 · run 10 %. UI review Ship with fixes.
+**Shipped 2026-11-03 (v0.9.89):** keyword engine and 38 Gen II–IV moves; UI chips; harness R1 69 · run 10 %.
 **Shipped 2026-11-02 (v0.9.88):** twelve five-member authored Gym teams; guest named on the preview; pre-v0.9.88 maps keep
 the legacy roster. Lorelei stays hardest (37 %).
 **Art review (24 Oct):** closed by the user on 2026-11-02; its unimplemented findings (B20–B26, B29, B32, B33) are dropped, not pending. B30 fixed in architecture.md.

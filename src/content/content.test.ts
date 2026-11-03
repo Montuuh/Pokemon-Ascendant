@@ -159,7 +159,8 @@ describe('content registry', () => {
       // Two deliberate exceptions: Magikarp's two-card deck until it evolves is the whole joke — Splash and Tackle,
       // which is all it ever learned in Gen I — and Ditto is a Transform and a spare (species-gen1.md).
       const floor = s.id === 'magikarp' || s.id === 'ditto' ? 2 : 4;
-      expect(activeMoves(reg, s.id, s.evolveLevel ?? 20).length, s.id).toBeGreaterThanOrEqual(floor);
+      // One that does not evolve has its four by Lv 28 (v0.9.90: Lv 20 on the old scale).
+      expect(activeMoves(reg, s.id, s.evolveLevel ?? 28).length, s.id).toBeGreaterThanOrEqual(floor);
     }
   });
 
@@ -300,6 +301,8 @@ describe('content registry', () => {
       m.effects.some((e) => e.kind === 'recharge') ? [130, 170]
       : m.effects.some((e) => e.kind === 'fatigue') ? [110, 120]
       : m.effects.some((e) => e.kind === 'stage' && e.target === 'self' && e.stages < 0) && m.apCost === 3 ? [110, 130]
+      // §6.3.9 Return — printed at full Friendship, a 3-AP hit for 2 AP: the premium is earned, and below it the hit is less.
+      : m.effects.some((e) => e.kind === 'power-bonus' && e.when === 'friendship') ? [85, 100]
       : null;
     const moves = reg.allMoves();
     const mastery = new Set(reg.allSpecies().flatMap((s) => reg.masteryMoves(s.id).slice(1)).filter(Boolean));

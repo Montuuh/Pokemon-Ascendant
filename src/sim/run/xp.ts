@@ -1,4 +1,4 @@
-import type { ContentRegistry, EvolutionBranch, EvolutionItemUse } from '../content/defs';
+import type { ContentRegistry, EvolutionBranch, EvolutionItemUse, EvolveMethod, SpeciesDef } from '../content/defs';
 import type { EnemyTier } from '../content/defs';
 import { holdsSlot, slotIndex, upgradeParents } from '../combat/kit';
 import { statAtLevel } from '../combat/stats';
@@ -34,6 +34,27 @@ export interface ProgressionConfig {
    * and paying every Pokémon of a trio in full left teams seven to ten levels over their Region (measured).
    */
   extraEnemyXpShare: number;
+  /** §6.3.9 — Friendship: what moves it, and what it opens. */
+  friendship: FriendshipConfig;
+}
+
+/** §6.3.9 — the series' 0–255 scale and its gains (Gen II's level-up steps), tuned against the run harness. */
+export interface FriendshipConfig {
+  /** A caught, received or starting Pokémon's (the series' 70). */
+  start: number;
+  max: number;
+  /** From here a level-up evolves a Friendship line (Gen II's 220). */
+  evolve: number;
+  /** Each won fight in the Active Team, and the Lead's extra on top. */
+  win: number;
+  lead: number;
+  /** Each level gained: below 100, below 200, and from 200 (Gen II's +5 / +3 / +2). */
+  levelUp: [number, number, number];
+  /** Lost for each faint. */
+  faint: number;
+  /** §6.3.9 — the Center's grooming: what it gives, and its price. */
+  groom: number;
+  groomPrice: number;
 }
 
 // Tuned against the whole-run harness (src/sim/balance/runBalance.test.ts), not a single fight: a seven-node
@@ -51,12 +72,30 @@ export const DEFAULT_PROGRESSION: ProgressionConfig = {
   apexXp: 66,
   leagueXp: 120,
   benchXpShare: 0.75,
-  levelUpBaseXp: 12,
-  levelUpSlopeXp: 4,
-  maxLevel: 60,
+  // v0.9.90 (§6.2.4): 12 + 4(L−1) → 8 + 2(L−1), so the XP to reach a real level is what reaching the compressed one
+  // cost (the levels stretched by 1.4: 8x + x² against 12x/1.4 + 2(x/1.4)², x the levels gained); the cap is the series' 100.
+  levelUpBaseXp: 8,
+  levelUpSlopeXp: 2,
+  maxLevel: 100,
   xpLevelExponent: 2.5,
   extraEnemyXpShare: 0.5,
+  // v0.9.90: an Eevee caught on Route 1 reaches 220 around the end of Region 2 on wins and levels alone; the grooming
+  // and the Soothe Bell bring it to the Region's middle.
+  friendship: { start: 70, max: 255, evolve: 220, win: 2, lead: 1, levelUp: [5, 3, 2], faint: 5, groom: 25, groomPrice: 150 },
 };
+
+/** §6.3.9 — change one Pokémon's Friendship, held inside the scale. Returns what it actually moved. */
+export function befriend(mon: PartyMon, amount: number, config = DEFAULT_PROGRESSION): number {
+  const was = mon.friendship;
+  mon.friendship = Math.max(0, Math.min(config.friendship.max, was + Math.round(amount)));
+  return mon.friendship - was;
+}
+
+/** §6.3.9 — the Friendship one level-up gives at this much (Gen II's steps). */
+function levelUpFriendship(friendship: number, config: ProgressionConfig): number {
+  const [low, mid, high] = config.friendship.levelUp;
+  return friendship < 100 ? low : friendship < 200 ? mid : high;
+}
 
 /** §6.2.3 — the XP needed to leave level L. */
 export function xpToNext(level: number, config = DEFAULT_PROGRESSION): number {
@@ -100,9 +139,11 @@ export { autoPickMoves } from '../combat/kit';
  * A level-up grows the **pool** (§6.7.1) and fills any free slot in the active 4, but never evicts a move the
  * player chose: past four, a new move waits in the pool until the Move Manager swaps it in. Evolution is not
  * applied here — crossing the threshold only flags it, because the branch is the player's call (§6.3.3) and
- * it is made on the Evolution screen between nodes (§3.6).
+ * it is made on the Evolution screen between nodes (§3.6). Each level adds Friendship (§6.3.9), times
+ * `friendshipScale` (the Soothe Bell's), and a level-up while a held-item or Friendship condition holds primes the
+ * evolution it opens (§6.3.8).
  */
-export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry, config = DEFAULT_PROGRESSION): LevelUp | null {
+export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry, config = DEFAULT_PROGRESSION, friendshipScale = 1): LevelUp | null {
   if (amount <= 0 || mon.level >= config.maxLevel) return null;
   const from = mon.level;
   mon.xp += Math.round(amount);
@@ -139,8 +180,27 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
     gains: { hp: at('hp') - was('hp'), attack: at('attack') - was('attack'), defense: at('defense') - was('defense'), speed: at('speed') - was('speed') },
     statsAt: { hp: at('hp'), attack: at('attack'), defense: at('defense'), speed: at('speed') },
   };
+  let befriended = 0;
+  for (let l = from; l < mon.level; l++) befriended += befriend(mon, levelUpFriendship(mon.friendship, config) * friendshipScale, config);
+  if (befriended) up.friendship = befriended;
+  // §6.3.8 — the level-up is the trigger: holding the item (or this fond of you) as it levels, it is ready.
+  if (evolutionConditionHolds(mon, sp, config)) mon.evolutionPrimed = mon.speciesId;
   if (isEvolutionReady(mon, content)) up.evolutionReady = true;
   return up;
+}
+
+/** §6.3.7 — how one branch evolves: its own method where it names one (Eevee's Umbreon), else its species'. */
+export function evolveMethod(species: SpeciesDef, branch: EvolutionBranch): 'level' | EvolveMethod {
+  return branch.by ?? species.evolveBy ?? 'level';
+}
+
+/** §6.3.8 — does a level-up now open a held-item or Friendship evolution of this species? */
+function evolutionConditionHolds(mon: PartyMon, species: SpeciesDef, config: ProgressionConfig): boolean {
+  return species.branches.some((b) => {
+    const method = evolveMethod(species, b);
+    return (method === 'held-item' && !!species.evolveItem && mon.heldItem === species.evolveItem)
+      || (method === 'friendship' && mon.friendship >= config.friendship.evolve);
+  });
 }
 
 /**
@@ -148,11 +208,10 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
  * evolution flag that level brings. One function for the reducer and for the screen's preview of the same push (it hands
  * the screen a copy, so the level-up beat can show what is about to be learned before anything is committed).
  */
-export function levelPush(mon: PartyMon, content: ContentRegistry, config = DEFAULT_PROGRESSION): LevelUp | null {
-  return grantXp(mon, xpToNext(mon.level, config) - mon.xp, content, config);
+export function levelPush(mon: PartyMon, content: ContentRegistry, config = DEFAULT_PROGRESSION, friendshipScale = 1): LevelUp | null {
+  return grantXp(mon, xpToNext(mon.level, config) - mon.xp, content, config, friendshipScale);
 }
 
-/** §6.2.4 — is this Pokémon standing at its evolution threshold, with a branch to pick? */
 /** §6.3.2 — what a stone does for this species, or null when it does nothing for it. */
 export function stoneUse(stoneId: string, speciesId: string, content: ContentRegistry): EvolutionItemUse | null {
   return content.evolutionItem(stoneId).uses.find((u) => u.species === speciesId) ?? null;
@@ -163,9 +222,28 @@ export function stonesForBox(box: readonly PartyMon[], content: ContentRegistry)
   return content.allEvolutionItems().filter((it) => box.some((m) => stoneUse(it.id, m.speciesId, content))).map((it) => it.id);
 }
 
-export function isEvolutionReady(mon: PartyMon, content: ContentRegistry, early = 0): boolean {
+/**
+ * §6.3.7 — the branches this Pokémon may take now, by each one's method: a level line at its threshold (`early` levels
+ * sooner, the Evolution Catalyst's), a held-item line primed and still holding its item, a Friendship branch primed. A
+ * stone's branches are never ready by themselves: the stone opens its own screen (`use-stone`).
+ */
+export function readyBranches(mon: PartyMon, content: ContentRegistry, early = 0): string[] {
   const species = content.species(mon.speciesId);
-  return species.evolveLevel !== undefined && mon.level + early >= species.evolveLevel && species.branches.length > 0;
+  if (species.evolveLevel === undefined) return [];
+  const primed = mon.evolutionPrimed === mon.speciesId;
+  return species.branches.filter((b) => {
+    switch (evolveMethod(species, b)) {
+      case 'level': return mon.level + early >= species.evolveLevel!;
+      case 'held-item': return primed && !!species.evolveItem && mon.heldItem === species.evolveItem;
+      case 'friendship': return primed;
+      case 'stone': return false;
+    }
+  }).map((b) => b.id);
+}
+
+/** §6.2.4 — is this Pokémon standing at an evolution, with a branch to pick? */
+export function isEvolutionReady(mon: PartyMon, content: ContentRegistry, early = 0): boolean {
+  return readyBranches(mon, content, early).length > 0;
 }
 
 /**
@@ -236,6 +314,7 @@ export function applyBranch(mon: PartyMon, branchId: string, content: ContentReg
   delete mon.deferredEvolutionFrom;
   delete mon.deferredEvolutionStone;
   delete mon.deferredEvolutionForced;
+  delete mon.evolutionPrimed;
   mon.speciesId = branch.to;
   mon.archetype = branch.archetype;
 
@@ -272,8 +351,11 @@ export interface BranchPayload {
   branchId: string;
   from: string;
   to: string;
-  /** The level it opens at, or null for a stone-only evolution. */
+  /** The level it opens at, or null for one that a stone, a held item or Friendship opens (§6.3.7). */
   level: number | null;
+  /** §6.3.7 — how it opens, and the held item it levels up with for `held-item`. */
+  method: 'level' | EvolveMethod;
+  item: string | null;
   /** §6.3.2 — the Evolution Items that make this branch (Eevee's stones). */
   stones: string[];
   archetype: EvolutionBranch['archetype'];
@@ -282,6 +364,8 @@ export interface BranchPayload {
   upgrades: { from: string; to: string }[];
   adds: string[];
   abilityId: string | null;
+  /** The level the two stat rows below are read at: the threshold, a stone's first level, or the series' trainers' level. */
+  statsAt: number;
   /** §6.3.4 — the stats at the threshold, before (the form as it stands) and after (the new form on this path's lean). */
   statsBefore: Record<'hp' | 'attack' | 'defense' | 'speed', number>;
   statsAfter: Record<'hp' | 'attack' | 'defense' | 'speed', number>;
@@ -292,20 +376,25 @@ export function branchPayload(content: ContentRegistry, branchId: string): Branc
   const from = content.allSpecies().find((s) => s.branches.some((b) => b.id === branchId))!;
   const to = content.species(branch.to);
   const stones = content.allEvolutionItems().filter((i) => i.uses.some((u) => u.species === from.id && (!u.branch || u.branch === branchId))).map((i) => i.id);
-  const level = from.evolveLevel ?? null;
-  const at = level ?? Math.min(...content.allEvolutionItems().flatMap((i) => i.uses.filter((u) => u.species === from.id).map((u) => u.fromLevel)), 30);
+  const method = evolveMethod(from, branch);
+  const level = method === 'level' ? from.evolveLevel ?? null : null;
+  // A stone's shows its stats at the stone's first level; a held item's and Friendship's where the series' trainers field it.
+  const at = level ?? (method === 'stone' ? Math.min(...content.allEvolutionItems().flatMap((i) => i.uses.filter((u) => u.species === from.id).map((u) => u.fromLevel)), 30) : from.evolveLevel ?? 30);
   const stats = (sp: typeof from, arch: EvolutionBranch['archetype'] | null) => ({ hp: statAtLevel(sp, 'hp', at, arch), attack: statAtLevel(sp, 'attack', at, arch), defense: statAtLevel(sp, 'defense', at, arch), speed: statAtLevel(sp, 'speed', at, arch) });
   return {
     branchId,
     from: from.id,
     to: to.id,
     level,
+    method,
+    item: method === 'held-item' ? from.evolveItem ?? null : null,
     stones,
     archetype: branch.archetype,
     label: branch.label,
     upgrades: branch.upgrades.map((u) => ({ from: u.from, to: u.to })),
     adds: [...branch.adds],
     abilityId: branch.abilityId ?? to.availableAbilities[0] ?? null,
+    statsAt: at,
     statsBefore: stats(from, from.archetype ?? null),
     statsAfter: stats(to, branch.archetype),
   };

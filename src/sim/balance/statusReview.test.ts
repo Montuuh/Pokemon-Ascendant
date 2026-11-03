@@ -6,8 +6,8 @@ import { ctx, dispatch, handCard, scenario, start, tweak, withHand } from '../te
 describe('Control recovery — §4.2.2.4', () => {
   it('Sleep_ReplacedWithPoisonBeforeReapplication_EnemyStillActsEveryOtherTurn', () => {
     let state = start(scenario({
-      team: [{ species: 'ivysaur', level: 16, moves: ['probe-sleep', 'probe-poison', 'vine-whip', 'growl'] }],
-      enemies: [{ species: 'geodude', level: 16, tier: 'trainer', phaseCount: 1 }],
+      team: [{ species: 'ivysaur', level: 22, moves: ['probe-sleep', 'probe-poison', 'vine-whip', 'growl'] }],
+      enemies: [{ species: 'geodude', level: 22, tier: 'trainer', phaseCount: 1 }],
     }));
     let acted = 0;
     for (let turn = 0; turn < 10; turn++) {

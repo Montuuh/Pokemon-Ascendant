@@ -17,7 +17,7 @@ const plain = (over: Parameters<typeof scenario>[0]) => scenario(over);
 
 describe('Relics — §7.3', () => {
   it('PressurePlate_DiscountsTheNextMoveThisTurn_NeverOneNextTurn', () => {
-    let s = withHand(start(scenario({ team: teamWithKit(['flamethrower', 'ember', 'scratch'], 'charmander', 20), enemies: [{ ...PIDGEY, level: 30 }], relics: ['pressure-plate'] })), ['flamethrower', 'ember', 'scratch']);
+    let s = withHand(start(scenario({ team: teamWithKit(['flamethrower', 'ember', 'scratch'], 'charmander', 20), enemies: [{ ...PIDGEY, level: 42 }], relics: ['pressure-plate'] })), ['flamethrower', 'ember', 'scratch']);
     const cost = (id: string) => effectiveApCost(s, ctx.content.move(id), leadOf(s), ctx);
     expect(cost('ember')).toBe(1);
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'flamethrower').id });
@@ -135,8 +135,8 @@ describe('Held items — §7.4', () => {
     // would let the test pick *its* Water Gun and quietly measure a Pokémon with no Bracer on.
     const kit = ['water-gun', 'tackle'];
     const bench = [STARTERS[0]!, STARTERS[2]!];
-    const withBracer = [{ species: 'squirtle', level: 12, moves: kit, heldItem: 'power-bracer' }, ...bench];
-    const without = [{ species: 'squirtle', level: 12, moves: kit }, ...bench];
+    const withBracer = [{ species: 'squirtle', level: 16, moves: kit, heldItem: 'power-bracer' }, ...bench];
+    const without = [{ species: 'squirtle', level: 16, moves: kit }, ...bench];
 
     const braced = withHand(start(plain({ team: withBracer, enemies: [PIDGEY] })), kit);
     const bare = withHand(start(plain({ team: without, enemies: [PIDGEY] })), kit);
@@ -155,7 +155,7 @@ describe('Held items — §7.4', () => {
 
   it('ChoiceBandRelic_FirstMeleeMoveEachTurnIsFree_LaterMeleeMovesCostPlusOne_§7.3.4', () => {
     let s = withHand(
-      start(scenario({ team: teamWithKit(['tackle', 'scratch', 'ember'], 'charmander', 20), enemies: [{ ...PIDGEY, level: 30 }], relics: ['choice-band'] })),
+      start(scenario({ team: teamWithKit(['tackle', 'scratch', 'ember'], 'charmander', 20), enemies: [{ ...PIDGEY, level: 42 }], relics: ['choice-band'] })),
       ['tackle', 'scratch', 'ember'],
     );
     const cost = (id: string) => effectiveApCost(s, ctx.content.move(id), leadOf(s), ctx);
@@ -167,15 +167,15 @@ describe('Held items — §7.4', () => {
 
   it('ThreeTierElementalHierarchy_PlateLeadAura_UniqueItem_AndGemRelic_StackMultiplicatively_§7.3.6', () => {
     const team = [
-      { species: 'charmander', level: 20, moves: ['ember'], heldItem: 'flame-plate' },
-      { species: 'vulpix', level: 20, moves: ['ember'], heldItem: 'charcoal' },
-      { species: 'bulbasaur', level: 20, moves: ['vine-whip'] },
+      { species: 'charmander', level: 28, moves: ['ember'], heldItem: 'flame-plate' },
+      { species: 'vulpix', level: 28, moves: ['ember'], heldItem: 'charcoal' },
+      { species: 'bulbasaur', level: 28, moves: ['vine-whip'] },
     ];
     const bareState = start(plain({
       team: [
-        { species: 'charmander', level: 20, moves: ['ember'] },
-        { species: 'vulpix', level: 20, moves: ['ember'] },
-        { species: 'bulbasaur', level: 20, moves: ['vine-whip'] },
+        { species: 'charmander', level: 28, moves: ['ember'] },
+        { species: 'vulpix', level: 28, moves: ['ember'] },
+        { species: 'bulbasaur', level: 28, moves: ['vine-whip'] },
       ],
       enemies: [PIDGEY],
     }));
@@ -195,8 +195,8 @@ describe('Held items — §7.4', () => {
     // 1. Wearer on bench: gets +10 % wearer bonus, no aura from lead
     const benchPlateState = start(plain({
       team: [
-        { species: 'bulbasaur', level: 20, moves: ['vine-whip'] },
-        { species: 'charmander', level: 20, moves: ['ember'], heldItem: 'flame-plate' },
+        { species: 'bulbasaur', level: 28, moves: ['vine-whip'] },
+        { species: 'charmander', level: 28, moves: ['ember'], heldItem: 'flame-plate' },
       ],
       enemies: [PIDGEY],
     }));
@@ -208,8 +208,8 @@ describe('Held items — §7.4', () => {
     // 2. Wearer on lead: wearer gets +10 %, teammate on bench gets +5 % aura
     const leadPlateState = start(plain({
       team: [
-        { species: 'charmander', level: 20, moves: ['ember'], heldItem: 'flame-plate' },
-        { species: 'vulpix', level: 20, moves: ['ember'] },
+        { species: 'charmander', level: 28, moves: ['ember'], heldItem: 'flame-plate' },
+        { species: 'vulpix', level: 28, moves: ['ember'] },
       ],
       enemies: [PIDGEY],
     }));
@@ -224,8 +224,8 @@ describe('Held items — §7.4', () => {
       tweak(
         start(plain({
           team: [
-            { species: 'squirtle', level: 12, moves: ['water-gun'], ...(wearer ? { heldItem: wearer } : {}) },
-            { species: 'bulbasaur', level: 12, moves: ['vine-whip'] },
+            { species: 'squirtle', level: 16, moves: ['water-gun'], ...(wearer ? { heldItem: wearer } : {}) },
+            { species: 'bulbasaur', level: 16, moves: ['vine-whip'] },
           ],
           enemies: [PIDGEY],
         }), 5),
@@ -241,8 +241,8 @@ describe('Held items — §7.4', () => {
   });
 
   it('FocusSash_SurvivesALethalHitOnce_§7.3.6', () => {
-    const team = [{ species: 'squirtle', level: 12, moves: ['water-gun'], heldItem: 'focus-sash' }, ...STARTERS.slice(1)];
-    const s = tweak(start(plain({ team, enemies: [{ species: 'onix', level: 20, tier: 'trainer', phaseCount: 1 }] })), (d) => {
+    const team = [{ species: 'squirtle', level: 16, moves: ['water-gun'], heldItem: 'focus-sash' }, ...STARTERS.slice(1)];
+    const s = tweak(start(plain({ team, enemies: [{ species: 'onix', level: 28, tier: 'trainer', phaseCount: 1 }] })), (d) => {
       d.player.team[0]!.hp = d.player.team[0]!.maxHp;
     });
     let turn = dispatch(s, { type: 'end-turn' });
@@ -259,8 +259,9 @@ describe('Held items — §7.4', () => {
       expect(i.pending, `${i.id} is inert but does not say why`).toBeTruthy();
     }
     // 12 Unique Type-Boosters + 16 Type Plates + 3 Sustain/Defence + 2 Tempo + 2 Signature = 35 (§7.4; Black Glasses, the Dread
-    // Plate and the Iron Plate joined with Dark and Steel in v0.9.84).
-    expect(content.allHeldItems()).toHaveLength(35);
+    // Plate and the Iron Plate joined with Dark and Steel in v0.9.84), and the three a trade line levels up with that were not
+    // held items yet (v0.9.90, §6.3.8): the Spell Tag, the Metal Coat (a stone before) and the Macho Brace.
+    expect(content.allHeldItems()).toHaveLength(38);
   });
 
   it('AnItemLockedToASpeciesTheGameCannotProduce_NeverReachesAPlayer_§7.4.2', () => {
@@ -368,7 +369,7 @@ describe('The last inert relics, made passive — §7.3', () => {
     expect(enemyOf(s).intent!.kind).toBe('incapacitated');
     const t2 = dispatch(s, { type: 'end-turn' });
     expect(enemyOf(t2).intent!.kind).not.toBe('incapacitated');
-    const boss = start(scenario({ team: STARTERS, enemies: [{ species: 'onix', level: 12, tier: 'boss', phaseCount: 2 }], relics: ['time-spinner'] }));
+    const boss = start(scenario({ team: STARTERS, enemies: [{ species: 'onix', level: 16, tier: 'boss', phaseCount: 2 }], relics: ['time-spinner'] }));
     expect(enemyOf(boss).intent!.kind).not.toBe('incapacitated');
   });
 

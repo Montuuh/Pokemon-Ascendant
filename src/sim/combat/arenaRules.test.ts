@@ -9,7 +9,7 @@ import { battlefields } from './fields';
 // §2.12.2.1 — a Legendary's arena rule. One each, for the whole fight, the Legendary's and never the player's.
 
 const a = ctx.config.arenaRules;
-const legendary = (species: string, moves?: string[]): EnemySetup => ({ species, level: 40, tier: 'boss', phaseCount: 2, ...(moves ? { moves } : {}) });
+const legendary = (species: string, moves?: string[]): EnemySetup => ({ species, level: 56, tier: 'boss', phaseCount: 2, ...(moves ? { moves } : {}) });
 const arena = (rule: NonNullable<ScenarioDef['arenaRule']>, enemy: EnemySetup, extra: Partial<ScenarioDef> = {}) =>
   start({
     ...scenario({ kind: 'wild', team: teamWithKit(['water-gun', 'ice-beam', 'tail-whip', 'tackle'], 'wartortle', 40), enemies: [enemy] }),

@@ -111,7 +111,7 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
 }
 
 /** §5.13.2 — the product of a move's `power-bonus` conditions that hold right now; 1 when none do. */
-function powerBonus(attacker: Combatant, target: Combatant, move: MoveDef, state: CombatState | undefined, ctx: Pick<RunCtx, 'content'>): number {
+function powerBonus(attacker: Combatant, target: Combatant, move: MoveDef, state: CombatState | undefined, ctx: Pick<RunCtx, 'content' | 'config'>): number {
   let m = 1;
   for (const fx of move.effects) {
     if (fx.kind !== 'power-bonus') continue;
@@ -120,6 +120,8 @@ function powerBonus(attacker: Combatant, target: Combatant, move: MoveDef, state
     if (fx.when === 'target-poisoned' && target.status?.kind === 'poison') m *= fx.multiplier ?? 1;
     if (fx.when === 'self-below' && attacker.hp < attacker.maxHp * (fx.below ?? 0)) m *= fx.multiplier ?? 1;
     if (fx.when === 'per-trauma' && move.power > 0) m *= (move.power + (fx.perStack ?? 0) * attacker.traumaStacks) / move.power;
+    // §6.3.9 Return — the printed power at full Friendship, its share below (the series' friendship / 2.5).
+    if (fx.when === 'friendship') m *= Math.max(1, attacker.friendship ?? ctx.config.friendship.foe) / ctx.config.friendship.max;
   }
   return m;
 }
@@ -377,6 +379,12 @@ export function dealDamage(
       target.endureAvailable = false;
       emit(state, { t: 'sturdy', uid: target.uid });
       log(state, 'system', `${target.name} hung on with its Focus Sash!`);
+    } else if (target.fondEndure) {
+      // §6.3.9 — at full Friendship it holds on, once a fight, so you will not be sad: after the item, before the feather.
+      dmg = target.hp - 1;
+      target.fondEndure = false;
+      emit(state, { t: 'sturdy', uid: target.uid });
+      log(state, 'system', `${target.name} held on for you!`);
     } else if (teamEndure) {
       dmg = target.hp - 1;
       state.player.spent.push(teamEndure.id);

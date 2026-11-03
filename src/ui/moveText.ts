@@ -24,6 +24,7 @@ export function describeMoveDef(move: MoveDef, opts: { guard?: number | null } =
         fx.when === 'target-poisoned' ? `×${fx.multiplier} power into a Poisoned target.`
         : fx.when === 'self-below' ? `×${fx.multiplier} power below ${Math.round((fx.below ?? 0) * 100)}% HP.`
         : fx.when === 'in-field' ? `×${fx.multiplier} power in ${FIELD_IN[fx.field ?? 'rain-dance']}.`
+        : fx.when === 'friendship' ? 'Full power at full Friendship; less the less fond it is.'
         : `+${fx.perStack} power per Trauma stack.`,
       );
     if (fx.kind === 'fixed-damage') parts.push(`Takes ${Math.round(fx.percentOfTargetHp * 100)}% of the target's current HP.`);

@@ -7,7 +7,7 @@ import type { CombatState } from './state';
 // §3.2.2 / §7.3.5 — a recurring refill must include the opening turn.
 describe('AP provenance — §3.8', () => {
   it('SagesTome_EveryTurnIncludingTheFirst_GrantsOneMoreAp', () => {
-    let state = start(scenario({ team: [{ species: 'snorlax', level: 30 }], enemies: [{ species: 'caterpie', level: 3, tier: 'wild', phaseCount: 1 }], relics: ['sages-tome'] }));
+    let state = start(scenario({ team: [{ species: 'snorlax', level: 42 }], enemies: [{ species: 'caterpie', level: 4, tier: 'wild', phaseCount: 1 }], relics: ['sages-tome'] }));
     for (let turn = 1; turn <= 4; turn++) {
       expect(state.player.ap, `turn ${turn}`).toBe(ctx.config.baseApPerTurn + 1);
       state = dispatch(state, { type: 'end-turn' });
@@ -15,7 +15,7 @@ describe('AP provenance — §3.8', () => {
   });
 
   it('CapsStackedTurnStartBonuses_AndNamesEachSourceAndBlockedAmount', () => {
-    let state = start(scenario({ team: [0, 1, 2].map(() => ({ species: 'snorlax', level: 60, abilityId: 'speed-boost' })), enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }], relics: ['sages-tome'] }));
+    let state = start(scenario({ team: [0, 1, 2].map(() => ({ species: 'snorlax', level: 84, abilityId: 'speed-boost' })), enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }], relics: ['sages-tome'] }));
     state = dispatch(state, { type: 'end-turn' });
     expect(state.player.ap).toBe(6);
     const ledger = state.log.filter((l) => l.turn === 2 && l.ap?.kind === 'balance');
@@ -26,7 +26,7 @@ describe('AP provenance — §3.8', () => {
   });
 
   it('EtherLogsItsSpendAndActualCappedRestorationSeparately', () => {
-    let state = start(scenario({ team: [0, 1, 2].map(() => ({ species: 'snorlax', level: 60, abilityId: 'speed-boost' })), enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }], relics: ['sages-tome'], consumables: ['ether'] }));
+    let state = start(scenario({ team: [0, 1, 2].map(() => ({ species: 'snorlax', level: 84, abilityId: 'speed-boost' })), enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }], relics: ['sages-tome'], consumables: ['ether'] }));
     state = withConsumableHand(dispatch(state, { type: 'end-turn' }), ['ether']);
     state = dispatch(state, { type: 'use-consumable', cardId: state.player.consumables.hand[0]!.id });
     expect(state.player.ap).toBe(6);
@@ -36,7 +36,7 @@ describe('AP provenance — §3.8', () => {
   });
 
   it('StoredCreditsNameTheirOrigin_WhenEarnedAndWhenApplied_WithoutDoublePayingTome', () => {
-    let state = start(scenario({ team: [{ species: 'snorlax', level: 60, moves: ['tackle', 'growl', 'defense-curl'] }], enemies: [{ species: 'caterpie', level: 60, tier: 'wild', phaseCount: 1 }], relics: ['sages-tome', 'cycle-cell', 'move-echo'] }));
+    let state = start(scenario({ team: [{ species: 'snorlax', level: 84, moves: ['tackle', 'growl', 'defense-curl'] }], enemies: [{ species: 'caterpie', level: 84, tier: 'wild', phaseCount: 1 }], relics: ['sages-tome', 'cycle-cell', 'move-echo'] }));
     state = withHand(state, ['tackle', 'growl', 'defense-curl']);
     for (const move of ['tackle', 'growl', 'defense-curl']) state = dispatch(state, { type: 'play-card', cardId: handCard(state, move).id });
     state = tweak(state, (d) => { d.player.reshuffled = true; });
@@ -49,7 +49,7 @@ describe('AP provenance — §3.8', () => {
   });
 
   it('FreeCostsNameTheRelicAndCondition_AndPreviewsNeverWriteToTheLog', () => {
-    let state = start(scenario({ team: [{ species: 'snorlax', level: 60, moves: ['tackle', 'water-gun'], status: 'paralysis' }], enemies: [{ species: 'caterpie', level: 60, tier: 'wild', phaseCount: 1 }], relics: ['choice-specs'] }));
+    let state = start(scenario({ team: [{ species: 'snorlax', level: 84, moves: ['tackle', 'water-gun'], status: 'paralysis' }], enemies: [{ species: 'caterpie', level: 84, tier: 'wild', phaseCount: 1 }], relics: ['choice-specs'] }));
     state = withHand(state, ['water-gun']);
     const before = state.log;
     const card = handCard(state, 'water-gun');
@@ -63,7 +63,7 @@ describe('AP provenance — §3.8', () => {
   });
 
   it('ManualFreeSwapsNameTheConsumedSource_AndEveryBalanceFormsAnUnbrokenLedger', () => {
-    let state = start(scenario({ team: [{ species: 'snorlax', level: 60 }, { species: 'pidgey', level: 60 }], enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }], relics: ['flow-state', 'tacticians-coin', 'sages-tome'] }));
+    let state = start(scenario({ team: [{ species: 'snorlax', level: 84 }, { species: 'pidgey', level: 84 }], enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }], relics: ['flow-state', 'tacticians-coin', 'sages-tome'] }));
     state = dispatch(state, { type: 'swap', benchIndex: 1 });
     state = dispatch(state, { type: 'swap', benchIndex: 0 });
     state = dispatch(state, { type: 'end-turn' });
@@ -76,7 +76,7 @@ describe('AP provenance — §3.8', () => {
   });
 
   it('LegacyNumericBankStillAppliesOnce_AndIsExplicitlyLabelled', () => {
-    let state: CombatState = start(scenario({ team: [{ species: 'snorlax', level: 60 }], enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }] }));
+    let state: CombatState = start(scenario({ team: [{ species: 'snorlax', level: 84 }], enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }] }));
     state = tweak(state, (d) => { d.player.bankedAp = 2; delete d.player.bankedApSources; });
     state = dispatch(state, { type: 'end-turn' });
     expect(state.player.ap).toBe(5); expect(state.player.bankedAp).toBe(0);
@@ -85,7 +85,7 @@ describe('AP provenance — §3.8', () => {
   });
 
   it('ASecondBankSourceDoesNotOverwriteUnlabelledLegacyCredits', () => {
-    let state = start(scenario({ team: [{ species: 'snorlax', level: 60 }], enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }], relics: ['cycle-cell'] }));
+    let state = start(scenario({ team: [{ species: 'snorlax', level: 84 }], enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }], relics: ['cycle-cell'] }));
     state = tweak(state, (d) => { d.player.bankedAp = 2; delete d.player.bankedApSources; d.player.reshuffled = true; });
     state = dispatch(state, { type: 'end-turn' });
     expect(state.player.ap).toBe(6);

@@ -78,10 +78,11 @@ test.describe('Move animations — §9.9.2', () => {
     await ready(page);
     const hp = page.getByTestId('foe-panel').first().getByTestId('foe-hp');
     const was = (await hp.textContent())!;
-    await play(page, 'ember');
+    // Water Gun, not Ember: the boss Geodude's Defense Curl Guard (§3.11.4, up from its declaration) eats a small hit whole.
+    await play(page, 'water-gun');
     // In the air: the card still says what the foe had.
     expect(await hp.textContent()).toBe(was);
-    await expect.poll(() => seen(page)).toContain('ember:projectile:flame');
+    await expect.poll(async () => (await seen(page)).some((id) => id.startsWith('water-gun:'))).toBe(true);
     await expect(hp).not.toHaveText(was, { timeout: 2_000 });
     // Its number rises on the field's overlay, drawn after the move's layer — over it — not inside the card.
     await expect(page.getByTestId('floats').first()).toBeAttached();

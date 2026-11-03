@@ -24,8 +24,8 @@ export const VICTORY_ROAD = {
   wildOdds: { common: 0.6, uncommon: 0.3, rare: 0.1 },
   wildRares: 3,
   /** A route fight here stands this many levels over Region 3's last wild band; a Gauntlet this many. */
-  levelOver: 2,
-  gauntletOver: 4,
+  levelOver: 3,
+  gauntletOver: 6,
   /** The map's own marker for its road: one past the three Regions (the painter's cave road). */
   regionIndex: 3,
   stage: 'victory-road',

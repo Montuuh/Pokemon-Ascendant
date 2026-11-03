@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Dialog } from 'radix-ui';
 import {
   IconBuildingWarehouse,
+  IconHeartFilled,
   IconHeartPlus,
   IconSparkles,
 } from '@tabler/icons-react';
@@ -9,10 +10,13 @@ import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
 import {
   boxCapacity,
+  DEFAULT_PROGRESSION,
   effectiveMax,
+  friendshipScale,
   joinTeam,
   therapyPrice,
 } from '@/sim';
+import { Hearts } from '@/ui/components/Hearts';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { HealPanel } from '@/ui/components/HealPanel';
 import { PixelRoom } from '@/ui/components/PixelRoom';
@@ -25,7 +29,7 @@ import { HpBar } from '@/ui/components/HpBar';
 import { Money, Price } from '@/ui/components/Money';
 import { SupplyStrip } from '@/ui/components/SupplyStrip';
 import { BACK_TO_TOWN, CENTER_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
-import { centerTip, centerHealTip, pcBoxTip, therapyTip } from '@/ui/tips';
+import { centerTip, centerHealTip, friendshipTip, groomTip, pcBoxTip, therapyTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { BackButton } from '@/ui/components/BackButton';
 import styles from './CenterScreen.module.css';
@@ -34,8 +38,8 @@ import { CENTER_EXIT, CENTER_PEOPLE, CENTER_ROOM, CENTER_SPOTS } from './center/
 // Pokémon Center, §2.11.1 + §8.2.4 — "the warmest screen" (docs/design/ui/screens.md 4.6). A City building:
 // its door leads back to the town.
 //
-// §2.11.1 — the nurse heals on request, the beds treat Trauma, and the PC manages the Box.
-type Counter = 'heal' | 'therapy' | 'pc';
+// §2.11.1 — the nurse heals on request, the beds treat Trauma, and the PC manages the Box; §6.3.9 — the lounge grooms.
+type Counter = 'heal' | 'therapy' | 'pc' | 'groom';
 
 export function CenterScreen() {
   const run = useRunStore((s) => s.run)!;
@@ -120,6 +124,9 @@ export function CenterScreen() {
   };
 
   const traumatised = run.box.filter((m) => m.traumaStacks > 0);
+  const groomPrice = DEFAULT_PROGRESSION.friendship.groomPrice;
+  // §6.3.9 Soothe Bell — the gain a grooming gives, as the sim multiplies it.
+  const groomGain = DEFAULT_PROGRESSION.friendship.groom * friendshipScale(run, content);
 
   return (
     <main className={styles.root} data-testid="center-screen" data-counter={counter ?? 'lobby'}>
@@ -188,6 +195,14 @@ export function CenterScreen() {
                 label: CENTER_TEXT.pcBox,
                 tip: pcBoxTip(),
                 testId: 'door-center-pc',
+              },
+              {
+                id: 'groom',
+                semantics: { kind: 'dialog', open: counter === 'groom' },
+                boxes: CENTER_SPOTS.groom,
+                label: CENTER_TEXT.groom,
+                tip: groomTip(friendshipScale(run, content)),
+                testId: 'door-center-groom',
               },
             ]}
             exit={{
@@ -324,6 +339,48 @@ export function CenterScreen() {
                     })}
                   </ul>
                 )}
+              </section>
+            )}
+
+            {/* §6.3.9 — the grooming: Friendship for one Pokémon, once each a visit. */}
+            {counter === 'groom' && (
+              <section className={styles.service} aria-label={CENTER_TEXT.groom}>
+                <Dialog.Title asChild>
+                  <h2 className={styles.colTitle}>
+                    <IconHeartPlus size={16} aria-hidden="true" /> {CENTER_TEXT.groom}
+                    <InfoDot tip={groomTip(friendshipScale(run, content))} />
+                  </h2>
+                </Dialog.Title>
+                <ul className={styles.list}>
+                  {run.box.map((mon) => {
+                    const s = content.species(mon.speciesId);
+                    const full = mon.friendship >= DEFAULT_PROGRESSION.friendship.max;
+                    const done = run.city?.groomed?.includes(mon.uid) || full;
+                    const affordable = run.money >= groomPrice;
+                    const name = `${mon.shiny ? 'Shiny ' : ''}${s.name}`;
+                    return (
+                      <li key={mon.uid}>
+                        <Tipped
+                          as="button"
+                          tip={ownedMonTip(mon, friendshipTip(mon.friendship, mon.speciesId))}
+                          type="button"
+                          className={`${styles.patient} ${affordable && !done ? '' : styles.off}`}
+                          aria-disabled={!affordable || done || undefined}
+                          onClick={() => affordable && !done && act({ type: 'groom', uid: mon.uid })}
+                          data-testid={`groom-${mon.uid}`}
+                          aria-label={full ? CENTER_TEXT.fullLabel(name) : done ? CENTER_TEXT.groomedLabel(name) : affordable ? CENTER_TEXT.groomLabel(name) : `${CENTER_TEXT.groomLabel(name)}: ${CENTER_TEXT.cannotAfford.toLowerCase()}`}
+                        >
+                          <MonIcon speciesId={s.id} shiny={mon.shiny} size={44} />
+                          <span className={styles.patientBody}>
+                            <span className={`${styles.patientName} display`}>{s.name}</span>
+                            <Hearts friendship={mon.friendship} />
+                          </span>
+                          {full ? <span className={styles.patientMeta}>{CENTER_TEXT.full}</span> : done ? <span className={styles.gained} data-testid={`groomed-${mon.uid}`}><IconHeartFilled size={14} aria-hidden="true" />{CENTER_TEXT.gained(groomGain)}</span> : <Price amount={groomPrice} affordable={affordable} />}
+                        </Tipped>
+                      </li>
+                    );
+                  })}
+                </ul>
               </section>
             )}
 

@@ -204,9 +204,9 @@ fight — a team of evolved Pokémon with relics and Badges out-grows a band tha
 
 | Region | Attack | Gym on top |
 |---|---|---|
-| 1 | ×0.62 | ×1.15 |
-| 2 | ×0.78 | ×1.0 |
-| 3 | ×0.82 | ×1.0 |
+| 1 | ×0.55 | ×1.15 |
+| 2 | ×0.70 | ×1.0 |
+| 3 | ×0.76 | ×1.0 |
 
 *(v0.9.12: until then the tier cut every enemy's Max HP — ×0.6 / ×0.45 / ×0.35 — and raised its Attack to match. With
 the whole HP back the fights doubled, and tuned by Attack alone Region 3 could not get past 37 % — Gyms of 46 turns,
@@ -214,6 +214,11 @@ every hit 3 % of a Pokémon's HP: attrition, not threat. So the damage divisor c
 the user's pick), and the escalation leans on Acting Twice (§5.6.1) from Region 2 rather than on Attack alone:
 **R1 60 % · R2|R1 61 % · R3|R2 46 % · the whole run 17 %** over 720 runs, fights 5.0 / 7.8 / 9.7 turns, Gyms 7.6 /
 13.4 / 19.5, the median hit 9 / 9 / 6 % of Max HP. The paragraphs below are the tier's history.)*
+
+*(v0.9.90: the series' evolution levels and methods (§6.2.4, §6.3.7) left the team evolving later — 2.7 evolutions in
+Region 1 where it had 4.0 — and the curve fell to R1 50 % · R2|R1 37 % · R3|R2 41 % · run 4 %. The enemies came down to
+meet it, ×0.62 / ×0.78 / ×0.82 → ×0.55 / ×0.70 / ×0.76: R1 61 % · R2|R1 49 % · R3|R2 56 % · League 60 % · run 10 %, the
+curve v0.9.89 shipped.)*
 
 *(v0.8.8, the balance pass: **enemies hit harder and fall faster.** The playtest of 2026-09-24 found the median enemy
 hit at 12 % of the target's Max HP — eight hits to faint anyone, so a telegraph rarely forced a swap (Pillar 2). The
@@ -795,13 +800,13 @@ at a percentage they read. Balancing of ball counts and prices waits on the cons
 
 | Region | Recruit level |
 |---|---|
-| 1 | 5–11 |
-| 2 | 14–22 |
-| 3 | 24–32 |
+| 1 | 5–18 |
+| 2 | 19–30 |
+| 3 | 33–44 |
 
 **The band walks with the route.** A Region's span is not applied flat to every node: layer 0 draws from the
-bottom of the band and the layer before the Gym from the top, two levels wide at any point. Region 1 therefore
-opens at Lv 5–6 and finishes at Lv 10–11.
+bottom of the band and the layer before the Gym from the top, a few levels wide at any point. *(v0.9.90: every level ×1.4
+from Lv 1, so the series' evolution levels fit the run, §6.2.4.)*
 
 A flat band was the first thing the whole-run harness (`src/sim/balance/autoRun.ts`) rejected: it made the
 opening node as dangerous as the last one, and a starter that has fought nothing yet meets the same Lv 10

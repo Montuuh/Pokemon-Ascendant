@@ -10,7 +10,7 @@ for (const motion of ['reduce', 'no-preference'] as const) {
     await page.setViewportSize({ width, height }); await page.emulateMedia({ reducedMotion: motion }); await fresh(page);
     await page.evaluate((scale) => document.documentElement.style.setProperty('--text-scale', String(scale)), scale);
     await page.evaluate(() => {
-      const a = window.__ascendant!; a.run.new('eevee', 7); a.run.levelTo(8); a.run.grantStone('fire-stone'); a.run.grantRelic('evolution-catalyst'); a.run.city(0);
+      const a = window.__ascendant!; a.run.new('eevee', 7); a.run.levelTo(11); a.run.grantStone('fire-stone'); a.run.grantRelic('evolution-catalyst'); a.run.city(0);
       a.run.dispatch({ type: 'use-stone', uid: a.run.state()!.box[0]!.uid, stoneId: 'fire-stone' });
     });
     if (motion === 'no-preference') { await expect(page.getByTestId('evolution-cutscene')).toBeVisible(); await page.keyboard.press('Escape'); }
@@ -62,13 +62,15 @@ test('Evolution stats and four branch headers have intrinsic room at 720p and 15
     await fresh(page);
     await page.evaluate((shiny) => {
       document.documentElement.style.setProperty('--text-scale', '1.5');
-      const a = window.__ascendant!; a.run.new('eevee', 7); a.run.levelTo(12);
-      a.run.patch((d) => { d.box[0]!.shiny = shiny; });
+      // §6.3.7 — Eevee never evolves by level: a Training right (§2.12.3) opens all four of its paths.
+      const a = window.__ascendant!; a.run.new('eevee', 7); a.run.levelTo(16);
+      a.run.patch((d) => { d.box[0]!.shiny = shiny; d.box[0]!.deferredEvolutionFrom = 'eevee'; d.box[0]!.deferredEvolutionForced = true; });
       a.run.dispatch({ type: 'resume-evolution', uid: a.run.state()!.box[0]!.uid }); a.goTo('map');
     }, shiny);
     await page.getByTestId('branch-eevee-specialist').click();
     const stats = page.getByRole('list', { name: 'Stats', exact: true });
-    await expect(stats.getByRole('listitem').last()).toContainText('+113');
+    // The widest Speed gain on the sheet (Jolteon's), at Lv 16.
+    await expect(stats.getByRole('listitem').last()).toContainText('+112');
     const overlaps = await stats.evaluate((list) => {
       const failures: string[] = [];
       for (const row of Array.from(list.children)) {
@@ -102,7 +104,7 @@ test('Evolution stats and four branch headers have intrinsic room at 720p and 15
 test('An unconfirmed evolution reveal remains a preview and can still be postponed', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' }); await fresh(page);
   await page.evaluate(() => {
-    const a = window.__ascendant!; a.run.new('eevee', 7); a.run.levelTo(8); a.run.grantStone('fire-stone'); a.run.grantRelic('evolution-catalyst'); a.run.city(0);
+    const a = window.__ascendant!; a.run.new('eevee', 7); a.run.levelTo(11); a.run.grantStone('fire-stone'); a.run.grantRelic('evolution-catalyst'); a.run.city(0);
     a.run.dispatch({ type: 'use-stone', uid: a.run.state()!.box[0]!.uid, stoneId: 'fire-stone' });
   });
   await expect(page.getByTestId('evolution-cutscene')).toHaveAttribute('data-phase', 'reveal', { timeout: 12_000 });

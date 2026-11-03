@@ -8,7 +8,7 @@ const base = () => start(scenario({ team: STARTERS, enemies: [PIDGEY], consumabl
 describe('Status conditions — §4.2', () => {
   it('Control_SeededOnEitherSide_CureCannotEraseFirstTurnProtection', () => {
     for (const status of ['sleep', 'freeze'] as const) {
-      const state = start(scenario({ team: [{ species: 'squirtle', level: 8, status }], enemies: [{ species: 'pidgey', level: 8, tier: 'wild', phaseCount: 1, status }] }));
+      const state = start(scenario({ team: [{ species: 'squirtle', level: 11, status }], enemies: [{ species: 'pidgey', level: 11, tier: 'wild', phaseCount: 1, status }] }));
       for (const target of [state.player.team[0]!, state.enemies[0]!]) {
         const mon = structuredClone(target);
         cureStatus(mon, 'all');
@@ -19,7 +19,7 @@ describe('Status conditions — §4.2', () => {
   });
 
   it('Confusion_HandOffPouchReturnsTheOnlyCard_OneDiscardPerDraw', () => {
-    let state = start(scenario({ team: [{ species: 'squirtle', level: 8 }], enemies: [PIDGEY], relics: ['hand-off-pouch'] }));
+    let state = start(scenario({ team: [{ species: 'squirtle', level: 11 }], enemies: [PIDGEY], relics: ['hand-off-pouch'] }));
     state = tweak(state, (draft) => {
       const mon = draft.player.team[0]!;
       mon.confusionTurns = 3;
@@ -207,7 +207,7 @@ describe('Status conditions — §4.2', () => {
     // Ember's burn rider vs a Fire enemy: across seeds the rider must roll at least once and always be immune.
     let sawImmune = false;
     for (let seed = 1; seed < 40 && !sawImmune; seed++) {
-      let t = start(scenario({ team: [{ species: 'charmander', level: 8 }], enemies: [{ species: 'charmander', level: 8, tier: 'wild', phaseCount: 1 }] }), seed);
+      let t = start(scenario({ team: [{ species: 'charmander', level: 11 }], enemies: [{ species: 'charmander', level: 11, tier: 'wild', phaseCount: 1 }] }), seed);
       t = withHand(t, ['ember']);
       t = dispatch(t, { type: 'play-card', cardId: handCard(t, 'ember').id });
       sawImmune = eventsOf(t, 'status-immune').length > 0;
@@ -266,7 +266,7 @@ describe('Status conditions — §4.2', () => {
   });
 
   it('Regen_AquaRing_HealsForThreeTurns', () => {
-    let s = start(scenario({ team: [{ species: 'blastoise', level: 30, hpPercent: 40, moves: ['probe-regen', 'surf', 'water-gun', 'withdraw'] }], enemies: [{ species: 'caterpie', level: 3, tier: 'wild', phaseCount: 1 }] }));
+    let s = start(scenario({ team: [{ species: 'blastoise', level: 42, hpPercent: 40, moves: ['probe-regen', 'surf', 'water-gun', 'withdraw'] }], enemies: [{ species: 'caterpie', level: 4, tier: 'wild', phaseCount: 1 }] }));
     s = withHand(s, ['probe-regen']);
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'probe-regen').id });
     expect(s.player.team[0]!.regen?.turnsLeft).toBe(3);

@@ -216,6 +216,13 @@ export interface PartyMon {
   heldItem: string | null;
   /** §7.3.5 Champion's Crest — enemies this Pokémon has personally knocked out this run. */
   defeats: number;
+  /** §6.3.9 — how it feels about you, 0–255 (the series' scale): gained by fighting and levelling with you, lost by fainting. */
+  friendship: number;
+  /**
+   * §6.3.8 — the species it levelled up as while its evolution's condition held (the held item it levels up with, or the
+   * Friendship): the level-up is the trigger, so equipping the item between nodes does not evolve it on the spot.
+   */
+  evolutionPrimed?: string;
 }
 
 export type RunPhase =
@@ -300,6 +307,8 @@ export interface LevelUp {
   activated: string[];
   /** §6.2.4 — the Pokémon stands at its threshold; the branch is picked on the Evolution screen (§3.6). */
   evolutionReady?: boolean;
+  /** §6.3.9 — the Friendship the levels added (after any Soothe Bell). Optional: absent is none. */
+  friendship?: number;
   /** §6.2.3 — what the levels added to each stat (growth × levels), for the fight's result (v0.9.6, §9.4.5). Optional: a save
    *  from before reads as none. */
   gains?: { hp: number; attack: number; defense: number; speed: number };
@@ -446,6 +455,8 @@ export interface CityState {
   blackMarket: BlackMarketState | null;
   /** §2.11.1 — the Center's supplies are handed over on the first visit only (v0.8.6). Absent in older saves. */
   giftTaken?: boolean;
+  /** §6.3.9 — the Pokémon groomed at the Center this visit (uids): once each a visit. */
+  groomed?: string[];
 }
 
 /** §2.11.6 — the Gambler's wager: what was aimed at, what was staked, the printed chance and how it fell. */
@@ -869,6 +880,8 @@ export type RunAction =
   | { type: 'leave-shop' }
   /** §8.2.4 — a Centre's Therapy service: one Trauma stack off one Pokémon. */
   | { type: 'use-therapy'; uid: string }
+  /** §6.3.9 — the Center's grooming: Friendship for one Pokémon, once a visit. */
+  | { type: 'groom'; uid: string }
   /** §2.9.4.2 — the Dojo's scrolls: one of the line's egg moves. */
   | { type: 'teach-egg-move'; uid: string; moveId: string }
   /** §7.4.1 — equip a bagged held item, or take one off. `itemId` null unequips. */
@@ -928,6 +941,8 @@ export type RunRejectReason =
   | 'no-such-item'
   | 'item-locked-to-species'
   | 'no-trauma'
+  /** §6.3.9 — groomed already this visit, or as fond of you as it can be. */
+  | 'already-groomed'
   | 'not-an-egg-move'
   | 'unknown-option'
   /** §2.11 — a City action outside a City, or a City shop action at the route's merchant. */

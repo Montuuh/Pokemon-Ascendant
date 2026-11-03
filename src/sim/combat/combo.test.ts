@@ -6,8 +6,8 @@ import { comboBreakAt, doubleActionBudget } from './combo';
 // §5.6.1 — acting twice, priced in AP (v0.9.12): one budget for both actions, and a second action you can break.
 
 // A Raticate that knows a 2-AP and two 1-AP moves: its pair must fit three AP.
-const RATICATE: EnemySetup = { species: 'raticate', level: 14, tier: 'wild', phaseCount: 1, acts: 2, moves: ['hyper-fang', 'quick-attack', 'bite', 'tail-whip'] };
-const TEAM = [{ species: 'squirtle', level: 14, moves: ['water-gun', 'surf', 'tackle', 'withdraw'] }, { species: 'charmander', level: 12 }];
+const RATICATE: EnemySetup = { species: 'raticate', level: 19, tier: 'wild', phaseCount: 1, acts: 2, moves: ['hyper-fang', 'quick-attack', 'bite', 'tail-whip'] };
+const TEAM = [{ species: 'squirtle', level: 19, moves: ['water-gun', 'surf', 'tackle', 'withdraw'] }, { species: 'charmander', level: 16 }];
 const fight = (enemy: EnemySetup = RATICATE, seed = 3) => start(scenario({ seed, team: TEAM, enemies: [enemy] }));
 
 describe('Acting twice, on an AP budget — §5.6.1', () => {

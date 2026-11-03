@@ -26,7 +26,7 @@
       "cardId": "c3"
     }
   ],
-  "fingerprint": "t2 victory lead=0 ap=2 team=[wartortle:76/97,ivysaur:98/98,charmeleon:95/95] enemies=[graveler:0/100] events=27 rng=2571440657",
+  "fingerprint": "t2 victory lead=0 ap=2 team=[wartortle:76/97,ivysaur:98/98,charmeleon:95/95] enemies=[graveler:0/99] events=27 rng=2571440657",
   "turns": 2,
   "outcome": "victory"
 }

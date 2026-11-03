@@ -9,10 +9,10 @@ import type { CombatState } from './state';
 // §3.11 — the move keywords. Each block is one keyword, on probe moves (the catalogue's rows land with v0.9.89's content).
 
 /** A wall that hits the Lead with one move, so every intent is known and nothing dies by accident. */
-const WALL = (moves: string[] = ['tackle']): EnemySetup => ({ species: 'snorlax', level: 30, tier: 'wild', phaseCount: 1, moves });
+const WALL = (moves: string[] = ['tackle']): EnemySetup => ({ species: 'snorlax', level: 42, tier: 'wild', phaseCount: 1, moves });
 
 const fight = (leadMoves: string[], enemyMoves?: string[]) =>
-  start(scenario({ team: [{ species: 'squirtle', level: 30, moves: leadMoves }, STARTERS[0]!, STARTERS[2]!], enemies: [WALL(enemyMoves)] }));
+  start(scenario({ team: [{ species: 'squirtle', level: 42, moves: leadMoves }, STARTERS[0]!, STARTERS[2]!], enemies: [WALL(enemyMoves)] }));
 
 /** Put one card in hand by name and play it, without caring what the deck dealt. */
 function play(state: CombatState, moveId: string, ownerIndex = 0, ap = 3): CombatState {
@@ -48,7 +48,7 @@ describe('Protect — §3.11.2', () => {
 
   it('EnemyProtect_IsUpWhenDeclared_SoYourSingleTargetCardSaysSo_§5.2.1', () => {
     // §5.3.1 — a hurt enemy is the one that raises its Protect.
-    const s = start(scenario({ team: [{ species: 'squirtle', level: 30, moves: ['tackle', 'water-gun'] }, STARTERS[0]!, STARTERS[2]!], enemies: [{ ...WALL(['probe-protect', 'tackle']), hpPercent: 0.3 }] }));
+    const s = start(scenario({ team: [{ species: 'squirtle', level: 42, moves: ['tackle', 'water-gun'] }, STARTERS[0]!, STARTERS[2]!], enemies: [{ ...WALL(['probe-protect', 'tackle']), hpPercent: 0.3 }] }));
     const e = s.enemies[0]!;
     expect(e.intent?.stance).toBe(true);
     expect(e.volatile?.protectTurn).toBe(s.turn);

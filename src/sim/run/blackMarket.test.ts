@@ -30,7 +30,7 @@ const inCity = (regionIndex = 1, { money = 5000, seed = 7, boxSize = 5, level = 
     d.relics = [...relics];
     const extra = [...holding, 'tauros', 'kangaskhan', 'farfetchd', 'lapras', 'snorlax', 'scyther'];
     d.box[0]!.level = level;
-    d.box[0]!.speciesId = level >= 26 ? 'blastoise' : level >= 12 ? 'wartortle' : 'squirtle';
+    d.box[0]!.speciesId = level >= 36 ? 'blastoise' : level >= 16 ? 'wartortle' : 'squirtle';
     for (let i = 1; i < boxSize; i++) d.box.push(newPartyMon(extra[i - 1]!, level, content, seed + i));
     d.activeUids = d.box.slice(0, 3).map((m) => m.uid);
     arriveAtCity(d, ctx);
@@ -112,7 +112,7 @@ describe('What is on offer — §2.11.6', () => {
 
 describe('The Trader — §2.11.6', () => {
   it('Trades_YoursForTheirs_AtYourLevel_Fresh_OnceAVisit', () => {
-    let s = downstairs(inCity(1, { level: 10 }));
+    let s = downstairs(inCity(1, { level: 14 }));
     s = produce(s, (d) => {
       d.box[1]!.heldItem = 'leftovers';
       d.box[1]!.traumaStacks = 3;
@@ -123,7 +123,7 @@ describe('The Trader — §2.11.6', () => {
     expect(after.box).toHaveLength(s.box.length);
     const got = after.box[1]!;
     expect(got.speciesId).toBe(species);
-    expect(got.level).toBe(10);
+    expect(got.level).toBe(14);
     expect(got.traumaStacks).toBe(0);
     expect(after.bag).toContain('leftovers');
     expect(after.activeUids).toContain(got.uid);
@@ -134,8 +134,8 @@ describe('The Trader — §2.11.6', () => {
   });
 
   it('ATradeAtOrPastTheThreshold_OpensTheEvolutionScreen_AndHandsBackBelow', () => {
-    // Dratini at 30 is past both of its thresholds: two screens in a row, and both hand back to the market.
-    let s = downstairs(inCity(1, { level: 30 }));
+    // Dratini at 57 is past both of its thresholds (30, 55): two screens in a row, and both hand back to the market.
+    let s = downstairs(inCity(1, { level: 57 }));
     s = produce(s, (d) => { d.city!.blackMarket!.trades = ['dratini', 'porygon']; });
     s = apply(s, { type: 'market-trade', offer: 0, giveUid: s.box[1]!.uid });
     expect(s.phase).toBe('evolution');
@@ -150,16 +150,16 @@ describe('The Trader — §2.11.6', () => {
 
 describe('The Fence — §2.11.6', () => {
   it('ARareCandy_IsExactlyOneLevel_AtItsPrice_ThreeAVisit', () => {
-    let s = downstairs(inCity(1, { level: 20 }));
+    let s = downstairs(inCity(1, { level: 28 }));
     const uid = s.box[1]!.uid;
     s = produce(s, (d) => { d.box[1]!.xp = 5; });
     const price = candyPrice(s, content);
     const after = apply(s, { type: 'market-candy', uid });
     const mon = after.box.find((m) => m.uid === uid)!;
-    expect(mon.level).toBe(21);
+    expect(mon.level).toBe(29);
     expect(mon.xp).toBe(0);
     expect(after.money).toBe(s.money - price);
-    expect(xpToNext(20, ctx.progression)).toBeGreaterThan(5);
+    expect(xpToNext(28, ctx.progression)).toBeGreaterThan(5);
     let t = after;
     for (let i = 1; i < BLACK_MARKET.candies; i++) t = apply(t, { type: 'market-candy', uid });
     expect(t.city!.blackMarket!.candies).toBe(0);
@@ -168,8 +168,8 @@ describe('The Fence — §2.11.6', () => {
   });
 
   it('ACandyToTheThreshold_OpensTheEvolutionScreen', () => {
-    const s = downstairs(inCity(1, { level: 11 }));
-    // Squirtle evolves at 12.
+    const s = downstairs(inCity(1, { level: 15 }));
+    // Squirtle evolves at 16.
     const after = apply(s, { type: 'market-candy', uid: s.box[0]!.uid });
     expect(after.phase).toBe('evolution');
     expect(after.pendingEvolutions[0]!.returnTo).toBe('black-market');

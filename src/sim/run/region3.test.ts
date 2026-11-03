@@ -49,9 +49,9 @@ describe('Region 3 — its own content — §2.2, §2.6.1, §2.13.3', () => {
   it('RegionThree_RampsAcrossItsOwnBand_§2.6.5', () => {
     const map = createRun('squirtle', 3, ctx, 2).map;
     for (const n of Object.values(map.nodes)) if (n.kind === 'wild' && !n.preview.objective) expect(n.preview.levelBand, n.id).toEqual(wildBandFor(n.layer, REGIONS[2]!.wildBand));
-    // catalogs/biomes-regions.md §3 — Region 3 recruits at 24–32 (v0.8.10).
-    expect(wildBandFor(0, REGIONS[2]!.wildBand)[0]).toBe(24);
-    expect(wildBandFor(18, REGIONS[2]!.wildBand)[1]).toBe(32);
+    // catalogs/biomes-regions.md §3 — Region 3 recruits at 33–44 (v0.8.10's 24–32, on v0.9.90's scale).
+    expect(wildBandFor(0, REGIONS[2]!.wildBand)[0]).toBe(33);
+    expect(wildBandFor(18, REGIONS[2]!.wildBand)[1]).toBe(44);
   });
 
   it('RegionThree_LanesLookLikeTheirGyms_§2.5', () => {
@@ -113,7 +113,7 @@ describe('The Region 3 Elites — §2.8', () => {
   });
 
   it('Aerodactyl_FightsWithItsCataloguedScript_§2.8.2', () => {
-    const s = fightAt({ id: 'ew', layer: 9, col: 0, row: 0, kind: 'elite-wild', next: [], preview: { title: 'Wild Aerodactyl', detail: '', speciesIds: ['aerodactyl'], levelBand: [32, 32], enemies: [{ species: 'aerodactyl', level: 32 }] } });
+    const s = fightAt({ id: 'ew', layer: 9, col: 0, row: 0, kind: 'elite-wild', next: [], preview: { title: 'Wild Aerodactyl', detail: '', speciesIds: ['aerodactyl'], levelBand: [32, 32], enemies: [{ species: 'aerodactyl', level: 44 }] } });
     const e = s.pendingScenario!.enemies[0]!;
     expect(e.tier).toBe('boss');
     expect(e.moves!.slice(0, 4)).toEqual(['agility', 'bite', 'fly', 'rock-slide']);

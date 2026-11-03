@@ -74,15 +74,15 @@ Not combat cards: they never enter the Consumable Pile. Applying one is a betwee
 
 | id | Effect | Source | Price ₽ |
 |---|---|---|---|
-| `fire-stone` | Eevee → Flareon; Vulpix, Growlithe — from L8 | Mystery `mysterious-stone`, Eevee's Stone Cache, City shops | 250 |
-| `water-stone` | Eevee → Vaporeon; Shellder, Staryu from L8; Poliwhirl from L18 | same | 250 |
-| `thunder-stone` | Eevee → Jolteon; Pikachu — from L8; Magneton → Magnezone from L18 | same | 250 |
-| `leaf-stone` | Exeggcute from L8; Gloom, Weepinbell from L18 | Mystery, City shops | 250 |
-| `moon-stone` | Clefairy, Jigglypuff from L8; Nidorina, Nidorino from L18; Eevee → Umbreon from L8 | same | 250 |
-| `metal-coat` | Scyther → Scizor, Onix → Steelix — from L18 (v0.9.84) | City shops, Mystery | 250 |
+| `fire-stone` | Eevee → Flareon; Vulpix, Growlithe — from L11 | Mystery `mysterious-stone`, Eevee's Stone Cache, City shops | 250 |
+| `water-stone` | Eevee → Vaporeon; Shellder, Staryu from L11; Poliwhirl from L25 | same | 250 |
+| `thunder-stone` | Eevee → Jolteon; Pikachu — from L11; Magneton → Magnezone from L25 | same | 250 |
+| `leaf-stone` | Exeggcute from L11; Gloom, Weepinbell from L25 | Mystery, City shops | 250 |
+| `moon-stone` | Clefairy, Jigglypuff from L11; Nidorina, Nidorino from L25 | same | 250 |
 
-> **A stone buys time** (§6.3.2, v0.7.5): the line evolves earlier than its level threshold, on the ordinary
-> Evolution screen; Eevee's stone also picks its Eeveelution. The level path always remains.
+> **A stone is the only way** (§6.3.2, v0.9.90): a stone line evolves by its stone, on the ordinary Evolution screen;
+> Eevee's stone also picks its Eeveelution (Umbreon is Friendship's, §6.3.9). The shops always carry one someone in the
+> Box can take (§6.3.7). The Metal Coat is a held item since v0.9.90 (§6.3.8, `held-items.md`).
 
 ## 6. Inventory & economy rules
 

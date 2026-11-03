@@ -337,6 +337,7 @@ with each move's generation. A new row here needs one there, and an illustration
 | `protect` | Protect | Normal | Def | Ranged | — | 1 | — | — | Protect · PP 2 |
 | `detect` | Detect | Fighting | Def | Ranged | — | 1 | — | — | Protect · PP 2 |
 | `endure` | Endure | Normal | Def | Ranged | — | 0 | — | — | Endure · PP 1 |
+| `return` | Return | Normal | Off | Melee | — | 2 | 90 | — | Power × Friendship / 255 (§6.3.9; v0.9.90) |
 | `rain-dance` | Rain Dance | Water | Util | Ranged | — | 1 | — | — | Rain 3 turns |
 | `sunny-day` | Sunny Day | Fire | Util | Ranged | — | 1 | — | — | Sun 3 turns |
 | `sandstorm` | Sandstorm | Rock | Util | Ranged | — | 1 | — | — | Sandstorm 3 turns |

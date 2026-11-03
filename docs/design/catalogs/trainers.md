@@ -3,6 +3,8 @@
 > Implements §2.7 (archetypes, rewards, generation) and §2.7.3 (per-Region eligibility). A Trainer node fields
 > **1–2 Pokémon sequentially** (the second enters the moment the first faints, §2.8 reserves 2-phase profiles
 > for Elites). Status legend in `README.md`.
+>> **Levels (v0.9.90).** The levels in this catalogue's tables are on the old scale; the data's moved by
+> `round(1 + 1.4 (L − 1))` — 12 → 16, 20 → 28, 26 → 36 — when evolution took the series' levels (§6.2.4).
 >
 > **Sequential, not simultaneous.** Multi-enemy (1 lead + supports) is a Region 3 accent (§5.6) and belongs to
 > the Elite/Gym layer, not to ordinary trainers.
@@ -43,7 +45,7 @@
 Each archetype has two variants so a Region with 4 trainer nodes never repeats a roster. The generator picks
 without replacement (§2.7.3, seeded).
 
-## 3. Region 2 rosters (levels 14–22) ✅ v0.7.3
+## 3. Region 2 rosters (levels 14–22 on the old scale; 19–30 since v0.9.90, §6.2.4) ✅ v0.7.3
 
 Written in the forms Region 2's band warrants — every Region 2 line evolves at 12 — and walked through the
 line's thresholds at the level the layer gives them (§2.7.3). Species rows: `species-r2.md`.

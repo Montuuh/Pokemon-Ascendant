@@ -3,7 +3,7 @@ import { PIDGEY, STARTERS, dispatch, reject, scenario, start, tweak } from '../t
 
 // §3.1.2 — running from a fight: the parting shot lands, then the fight ends as Escaped; never from a Gym.
 
-const ONIX_BOSS = { species: 'onix', level: 12, tier: 'boss' as const, phaseCount: 2 as const };
+const ONIX_BOSS = { species: 'onix', level: 16, tier: 'boss' as const, phaseCount: 2 as const };
 
 describe('Fleeing — §3.1.2', () => {
   it('Flee_TakesThePartingShot_ThenEndsAsEscaped', () => {
@@ -22,7 +22,7 @@ describe('Fleeing — §3.1.2', () => {
 
   it('Flee_WhenThePartingShotWipesTheTeam_IsADefeat', () => {
     // A team of one at 1 HP does not get away from anything.
-    let s = start(scenario({ team: [{ species: 'caterpie', level: 3 }], enemies: [{ ...PIDGEY, level: 12 }] }));
+    let s = start(scenario({ team: [{ species: 'caterpie', level: 4 }], enemies: [{ ...PIDGEY, level: 16 }] }));
     s = tweak(s, (d) => {
       d.player.team[0]!.hp = 1;
     });

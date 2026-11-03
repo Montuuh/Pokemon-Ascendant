@@ -91,8 +91,8 @@ applies the chosen branch and catches up the evolved form's learnset without rep
 has very few in total, Gyarados very many; Legendaries and single stages higher"):
 
 ```
-stat(level) = base × (1 + STAT_GROWTH_RATE × (level − 1))      STAT_GROWTH_RATE = 0.035
-HP adds the level on top                                        HP_PER_LEVEL = 1
+stat(level) = base × (1 + STAT_GROWTH_RATE × (level − 1))      STAT_GROWTH_RATE = 0.025
+HP adds the level on top                                        HP_PER_LEVEL = 0.7
 ```
 
 The base is the species' own (§4.1.5.1: Attack the higher of Gen I's Attack and Special, Defence their mean), so a
@@ -102,24 +102,38 @@ Legendary carries the higher total its base already gives it — with no bonus o
 at Lv 30 where the old curves left it. *(Until v0.9.10 each line had a flat growth per level, shared by every stage
 and +25 % for a single stage: Geodude grew as fast as Golem, and Tauros and Lapras out-totalled Dragonite at Lv 30.)*
 
-The XP curve is `xpToNext(L) = 12 + (L − 1) × 4` (`levelUpBaseXp`, `levelUpSlopeXp`).
+The XP curve is `xpToNext(L) = 8 + (L − 1) × 2` (`levelUpBaseXp`, `levelUpSlopeXp`), to the series' Lv 100.
+*(v0.9.90: the levels stretched by 1.4 (§6.2.4), and the rate, the HP per level and the curve came down by the same
+factor — 0.035, 1 and 12 + 4(L − 1) before — so a Pokémon at the same point of the run has the stats and the XP to its
+next level it had at the compressed level.)*
 
 ## §6.2.4 The intended arc
 
-| Milestone | When |
-|---|---|
-| First evolution | End of Region 1 |
-| Final evolution | End of Region 2 |
-| Region 3 | A fully-evolved team being sculpted, not grown |
+**Evolution levels are the series' own** (v0.9.90, the user's call of 2026-11-03: "evolve at the original games' rate,
+no level squish"): each species takes its Gen I level and its Gen I method — a level, a stone, the held item a trade
+line levels up with (§6.3.8), or Friendship (§6.3.9). The run's level axis stretched to hold them, not its difficulty:
 
-To make that fit a three-Region run, **evolution levels are compressed and uniform**: a line's first evolution is
-at **level 12** and its final at **level 26**, regardless of what the source material says. Gen I's 16 and 32
-were written for a 50-hour journey, not a 90-minute run, and they leave every Region 2 recruit permanently
-mid-stage.
+| Stretch | Wild | Its Gym's ace |
+|---|---|---|
+| Region 1 | 5–18 | ~21 |
+| Region 2 | 19–30 | ~36 |
+| Region 3 | 33–44 | ~49 |
+| League | — | the Champion's ~63 |
 
-A handful of lines keep a bespoke threshold where the number *is* the joke or the identity — Magikarp evolves at
-18, and the two-stage bug lines evolve at 8 and 12 so they can actually complete inside Region 1. Those are
-listed per species in [`catalogs/species-r1.md`](catalogs/species-r1.md). *(Decided 2026-09-19.)*
+Every authored level moved by `L' = round(1 + 1.4 (L − 1))` — the old compression was Gen I's 16 → 12 and 36 → 26, a
+factor of 1.4 — and every gap between two levels by ×1.4 (§6.2.3 brought the stats down by the same factor).
+
+So the team evolves **staggered across the run**, each member at its own moment, and the deck rewrites itself all the
+way to the League rather than twice: Caterpie and Weedle early in Region 1 (7 / 10), the starters, Abra and the Nidoran
+at 16, Pidgey 18, Rattata and Magikarp 20, Oddish and Bellsprout 21 — Geodude and Gastly 25, Machop 28, Dratini and
+Magnemite 30, Ivysaur 32 in Region 2 — Charmeleon and Wartortle 36, Slowpoke 37, Ponyta 40, Rhyhorn 42 — and Dragonair
+55, a Dragonite as the run's last prize. A line that evolves late already carries the higher base stats for it: that is
+the series' bet, and it is kept. The enemies came down to meet the team that evolves later (§2.2: the Region's Attack
+tier, v0.9.90), not the levels.
+
+*(Until v0.9.90 every line evolved at a compressed and uniform 12 and 26, "Gen I's 16 and 32 were written for a 50-hour
+journey" (2026-09-19); every Region 2 recruit then arrived evolved or evolving, and every stone and trade line evolved by
+level too.)*
 
 ---
 
@@ -130,9 +144,11 @@ contributes, and it is the primary creative expression inside a run (Pillar 4).
 
 ## §6.3.1 Triggering it
 
-- Available when the Pokémon reaches its level threshold.
-- Crossing the threshold **queues an Archetype Selection screen** (§6.3.3), shown between nodes, after the
-  fight's result (§9.4.5) and before the map. One screen per Pokémon, in Box order.
+- Available when its method holds (§6.3.7): a level line at its level, a held-item line at a level-up while holding its
+  item, a Friendship branch at a level-up fond enough; a stone opens its own screen (§6.3.2).
+- Crossing it **queues an Archetype Selection screen** (§6.3.3), shown between nodes, after the
+  fight's result (§9.4.5) and before the map. One screen per Pokémon, in Box order, offering **only the branches whose
+  method holds** — a fond Eevee is offered Umbreon, not the stones' three.
 - **Evolve later** (also Escape before confirmation) postpones this Pokémon's current stage. The choice is saved
   per UID and source species, and future level-ups/catches/visits do not repeat that stage's popup.
 - The Pokémon's **Team sheet → Evolve** resumes it manually outside combat. Revalidate its current stage, level,
@@ -149,20 +165,20 @@ contributes, and it is the primary creative expression inside a run (Pillar 4).
 - The Victory Road Training Grounds grant one early evolution (§2.12.3). Postponing keeps that already-earned
   right for this UID/source stage; resuming it spends no stone or Catalyst. Previewing/postponing a stone does
   not discard that earned right. It never carries to a second stage.
-- **A recruit caught past its threshold owes its screen straight away**, queued with the catch. Region 2's
-  recruits arrive at Lv 14–22 and every basic evolves at 12, so the catch is where a Region 2 Pokémon chooses its
-  branch — the same beat as levelling into it, one fight earlier. *(v0.7.3.)*
+- **A recruit caught past its level threshold owes its screen straight away**, queued with the catch — the same beat as
+  levelling into it, one fight earlier. *(v0.7.3.)* Since v0.9.90 that is the exception, not the Region 2 rule: a
+  Region 2 Geodude at 26 owes one; most recruits arrive below their level.
 
 > *Changed 2026-10-30 (v0.9.86).* Postponement and manual resumption supersede the mandatory-evolution decision of v0.3.
 
 ## §6.3.2 Evolution Items
 
-Five stones exist: Fire, Water, Thunder, Leaf, Moon (§7.2.5).
-
-A stone lets its line evolve **earlier** than its level threshold: a basic **from level 8** (evolving at 12
-otherwise), a middle stage **from level 18** (at 26 otherwise). It is applied from the Move Manager between
-nodes — on the map, in a City lobby or at the Dojo — and opens the ordinary Evolution screen (§6.3.3) there and
-then. The stone is reserved while choosing and spent only on confirmation. Single use.
+Five stones exist: Fire, Water, Thunder, Leaf, Moon (§7.2.5). **A stone line evolves by its stone and only by it**
+(v0.9.90, the user's call: "only the item, with guaranteed access"). A stone works on a basic **from Lv 11** and on a
+middle stage **from Lv 25** — the levels the stones opened at before, on the stretched scale (§6.2.4): a Lv 5 Vulpix
+does not become a Ninetales on the first route, and pacing wins over faithfulness there (the tiebreaker). It is
+applied from the Move Manager between nodes — on the map, in a City lobby or at the Dojo — and opens the ordinary
+Evolution screen (§6.3.3) there and then. The stone is reserved while choosing and spent only on confirmation. Single use.
 
 | Stone | Lines |
 |---|---|
@@ -170,18 +186,17 @@ then. The stone is reserved while choosing and spent only on confirmation. Singl
 | Water | Eevee → **Vaporeon**, Shellder, Staryu, Poliwhirl |
 | Thunder | Eevee → **Jolteon**, Pikachu, Magneton → **Magnezone** |
 | Leaf | Exeggcute, Gloom, Weepinbell |
-| Moon | Clefairy, Jigglypuff, Nidorina, Nidorino, Eevee → **Umbreon** |
-| Metal Coat | Scyther → **Scizor**, Onix → **Steelix** |
+| Moon | Clefairy, Jigglypuff, Nidorina, Nidorino |
 
-For **Eevee** the stone also *is* the branch: the Evolution screen offers only the Eeveelution it makes. Every
-other line keeps all its archetypes on a stone's screen. The level path always still exists.
+For **Eevee** the stone also *is* the branch: the Evolution screen offers only the Eeveelution it makes; Umbreon is
+Friendship's (§6.3.9). Every other line keeps all its archetypes on a stone's screen. **A trainer or a wild Pokémon**
+fields a stone line's evolved form from the level its species names (`evolveLevel`: Pikachu 26, Vulpix 32…), the
+series' trainers' level, as it does a trade line's (§2.7.3).
 
-*Why tempo and not a stone-only branch (v0.7.5, replacing the 2026-09-19 "opens the stone-specific branch"):*
-every stone line's branches are already its whole identity — Gloom's three, Poliwhirl's three. A branch that only
-a stone opens either takes one away from the level path, turning an option into a wall, or needs a fourth branch
-no other line has. What a roguelike cannot otherwise buy is **time**: four levels in Region 1, eight across Region
-2. In a roguelike you cannot farm for an item, so a stone must be an opportunity and never a wall. The lines are
-Gen I's stone evolutions, all of them now that every species is built.
+**A stone is always on offer** while someone in the Box can take one (§6.3.7's access rule): in a roguelike you cannot
+farm for an item, so a stone must be an opportunity and never a wall. *(Until v0.9.90 the stone bought time — four
+levels in Region 1, eight across Region 2 — and the level path always still existed; and the Metal Coat was a stone,
+§6.3.8 made it a held item.)*
 
 ## §6.3.3 Archetype Selection
 
@@ -327,6 +342,65 @@ Gen I numbers.
   Snorlax). A four-Melee kit is a dead hand whenever that Pokémon is benched.
 - **A 0-AP move must never be strictly correct every turn.** Free utilities either decay (stat stages, which
   both sides watch diminish) or cost something elsewhere.
+
+## §6.3.7 How a line evolves — the four methods
+
+Each species names its method (`evolveBy`, absent for a level), and a branch can name its own (`by`: Eevee's Umbreon):
+
+| Method | Ready when | Lines |
+|---|---|---|
+| **Level** | its level reaches `evolveLevel` | most lines (§6.2.4) |
+| **Stone** | never by itself: its stone opens the screen (§6.3.2) | the five stones' |
+| **Held item** | a level-up while holding its item (§6.3.8) | Kadabra, Machoke, Graveler, Haunter, Scyther, Onix |
+| **Friendship** | a level-up with Friendship at 220 or more (§6.3.9) | Eevee → Umbreon |
+
+**Access is guaranteed** (v0.9.90): the route's merchant always carries one thing an evolution in the Box waits on — a
+stone someone can take now, or a trade line's held item the run does not carry — and a City's Mart and its Department
+Store's top floor always carry both kinds (§2.9.2, §2.11.2.2). The **accelerators** stay what they were: the Black
+Market's Rare Candy (priced by the level, 280 ₽), Training's Level Push and its early evolution — which pays **any**
+method's condition, a stone's, a held item's or Friendship's (§2.12.3) — and the Evolution Catalyst (§8.6.1, six levels
+early, for a level line).
+
+## §6.3.8 The trade evolutions — levelling up with a held item
+
+The series' trade evolutions evolve **at a level-up while holding their own item**, as Gen II's trade-with-an-item does,
+and the item is spent by the evolution (v0.9.90, the user's call: "no Linking Cord, no Cable Club — each its own held
+item, the spoon for Alakazam"). Each item is also a held item worth holding for itself, so carrying it costs the slot:
+
+| Line | Item | While held |
+|---|---|---|
+| Kadabra → Alakazam | **Twisted Spoon** | Psychic +20 % |
+| Machoke → Machamp | **Macho Brace** (Gen III) | XP ×1.5; the wearer starts every fight a Speed stage down (the series' effort training) |
+| Graveler → Golem | **Hard Stone** | Rock +20 % |
+| Haunter → Gengar | **Spell Tag** | Ghost +20 % |
+| Scyther → Scizor · Onix → Steelix | **Metal Coat** (a stone until v0.9.90) | Steel +20 % |
+
+The level-up is the trigger, not the equipping: putting the spoon on between nodes does nothing until Kadabra next
+levels, and a postponed evolution keeps the item (taking it off takes the evolution with it; putting it back brings it
+back). The rule to teach is short: *hold its item and level up*. Magnezone keeps the Thunder Stone, Scarlet and
+Violet's method.
+
+## §6.3.9 Friendship
+
+A new in-run progression (v0.9.90, the user's call: "Umbreon needs a Friendship system"): **per Pokémon and per run**,
+apart from Bond (§6.8), which is the account's and the line's. Bond is what a line learns with you across runs;
+Friendship is what this Pokémon feels for you in this one.
+
+- **The series' scale.** 0–255, shown as five hearts on the Team sheet with its words on hover ("It is very fond of
+  you."). A caught, received or starting Pokémon begins at **70**.
+- **It grows** with each fight won in the Active Team while standing (+2, the Lead +1 more), each level gained (+5 below
+  100, +3 below 200, +2 above: Gen II's steps), and the **Center's grooming** (+25 for 150 ₽, once a Pokémon a visit, at
+  the lounge table: Daisy's and the Haircut Brothers' service). The **Soothe Bell** relic doubles every gain (it was a
+  5 % damage bonus at full HP that nobody missed).
+- **It falls** by 5 for each faint.
+- **What it gives.** At **220**, a level-up evolves a Friendship branch (Eevee → Umbreon; night is not modelled), and the
+  screen can be postponed like any other. **Return** (Gen II, TM69) hits for its printed 90 at full Friendship and its
+  share below (the series' friendship / 2.5): a 3-AP hit for 2 AP, earned. At **255**, once a fight, the Pokémon **holds
+  on at 1 HP** through a lethal hit (X and Y's "toughed it out"): the faint-prevention ladder's rung after the held item
+  and before the Phoenix Feather (§7.3.6). An enemy's Return reads a trainer's 160.
+- Numbers: `ProgressionConfig.friendship` and `BattleConfig.friendship`. An Eevee caught on Route 1 reaches 220 on wins
+  and levels alone around the end of Region 2; the grooming and the Bell bring it into the Region's middle. It leaves
+  the door open to Gen II's other Friendship evolutions (Crobat, Blissey, Espeon) if the roster ever grows.
 
 ---
 

@@ -68,7 +68,11 @@ describe('Manual Center services — §2.11.1', () => {
     const loaded = deserialiseRun(oldSave(before, 'reserve'), content);
     expect(loaded.ok).toBe(true);
     if (!loaded.ok) return;
-    expect(loaded.run.box).toEqual(before.box); expect(loaded.run.money).toBe(before.money);
+    // v23 moves every level to the stretched scale (§6.2.4) and nothing else: no level more, no reward.
+    const rest = (box: RunState['box']) => box.map(({ level: _level, xp: _xp, ...m }) => m);
+    expect(rest(loaded.run.box)).toEqual(rest(before.box));
+    expect(loaded.run.box.map((m) => m.level)).toEqual(before.box.map((m) => Math.round(1 + 1.4 * (m.level - 1))));
+    expect(loaded.run.money).toBe(before.money);
     expect(loaded.run.activeUids).toEqual([...before.activeUids, 'reserve']);
     expect(loaded.run).not.toHaveProperty('resting'); expect(loaded.run.city).not.toHaveProperty('daycareUsed');
     const full = produce(before, (d) => {
@@ -91,7 +95,7 @@ describe('Manual Center services — §2.11.1', () => {
 
 describe('Postponed evolution — §6.3.1', () => {
   it('PostponingOneUidKeepsTheOtherPrompt_AndDoesNotOfferThePostponedStageAgain', () => {
-    let state = produce(center(), (d) => { d.box[0]!.level = 12; d.box[1]!.level = 12; });
+    let state = produce(center(), (d) => { d.box[0]!.level = 16; d.box[1]!.level = 18; });
     const uid = state.box[0]!.uid;
     state = queued(state, [uid, 'reserve']);
     state = apply(state, { type: 'defer-evolution', uid });
@@ -107,7 +111,7 @@ describe('Postponed evolution — §6.3.1', () => {
   });
 
   it('StoneIsRetainedOnOpenPostponeAndReload_AndSpentOnlyOnConfirmation', () => {
-    let state = produce(center(), (d) => { d.box[0] = newPartyMon('eevee', 8, content, 7, 'eevee'); d.activeUids = ['eevee']; d.stones = ['fire-stone']; });
+    let state = produce(center(), (d) => { d.box[0] = newPartyMon('eevee', 11, content, 7, 'eevee'); d.activeUids = ['eevee']; d.stones = ['fire-stone']; });
     state = apply(state, { type: 'use-stone', uid: 'eevee', stoneId: 'fire-stone' });
     expect(state.stones).toEqual(['fire-stone']);
     state = apply(state, { type: 'defer-evolution', uid: 'eevee' });
@@ -123,7 +127,7 @@ describe('Postponed evolution — §6.3.1', () => {
   });
 
   it('V21PendingStoneGetsOneRefund_WithoutDuplicationOnTheNextReload', () => {
-    let state = produce(center(), (d) => { d.box[0] = newPartyMon('eevee', 8, content, 7, 'eevee'); d.activeUids = ['eevee']; d.stones = ['fire-stone']; });
+    let state = produce(center(), (d) => { d.box[0] = newPartyMon('eevee', 11, content, 7, 'eevee'); d.activeUids = ['eevee']; d.stones = ['fire-stone']; });
     state = apply(state, { type: 'use-stone', uid: 'eevee', stoneId: 'fire-stone' });
     const loaded = deserialiseRun(oldSave(state, null, true), content);
     expect(loaded.ok).toBe(true); if (!loaded.ok) return;
@@ -136,7 +140,7 @@ describe('Postponed evolution — §6.3.1', () => {
 
   it('QueuedCatalystEvolutionDoesNotQueueAnotherEarlyCandidate', () => {
     let state = produce(center(), (d) => {
-      d.box = [newPartyMon('squirtle', 12, content, 7, 'natural'), newPartyMon('bulbasaur', 8, content, 7, 'early-a'), newPartyMon('charmander', 8, content, 7, 'early-b')];
+      d.box = [newPartyMon('squirtle', 16, content, 7, 'natural'), newPartyMon('bulbasaur', 11, content, 7, 'early-a'), newPartyMon('charmander', 11, content, 7, 'early-b')];
       d.activeUids = d.box.map((m) => m.uid); d.relics = ['evolution-catalyst'];
     });
     state = queued(state, ['natural', 'early-a']);
@@ -184,7 +188,7 @@ describe('Postponed evolution — §6.3.1', () => {
 
   it('DeferredStoneWithCatalystAvailable_ResumesTheChosenStoneAndBranch', () => {
     let state = produce(createRun('eevee', 7, ctx), (d) => {
-      d.box[0]!.level = 8; d.stones = ['fire-stone']; d.relics = ['evolution-catalyst'];
+      d.box[0]!.level = 11; d.stones = ['fire-stone']; d.relics = ['evolution-catalyst'];
     });
     const uid = state.box[0]!.uid;
     state = apply(state, { type: 'use-stone', uid, stoneId: 'fire-stone' });
@@ -204,7 +208,7 @@ describe('Postponed evolution — §6.3.1', () => {
 
   it('EarnedTrainingRightSurvivesAnAdditionalStonePreviewAndPostponement', () => {
     let state = produce(createRun('eevee', 7, ctx), (d) => {
-      d.box[0]!.level = 8; d.stones = ['fire-stone']; d.relics = ['evolution-catalyst'];
+      d.box[0]!.level = 11; d.stones = ['fire-stone']; d.relics = ['evolution-catalyst'];
       d.phase = 'training'; d.pendingNodeId = d.reachable[0]!; d.map.nodes[d.pendingNodeId]!.kind = 'training';
     });
     const uid = state.box[0]!.uid;

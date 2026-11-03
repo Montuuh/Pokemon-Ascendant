@@ -38,7 +38,7 @@ function board(rows: string[], over: Partial<SafariHunt> = {}): SafariHunt {
     bait: null, eating: 0, held: false, heldLast: false, lastThrow: null, turn: 1, ...over,
   };
 }
-const common: SafariSpot = { species: 'paras', tier: 'common', level: 12, result: null };
+const common: SafariSpot = { species: 'paras', tier: 'common', level: 16, result: null };
 
 describe('The Safari Zone — §2.11.6', () => {
   it('IsRolledOnArrival_ThreeInTheTown_FourInTheCity_AtTheNextRegionsFloor', () => {
@@ -143,7 +143,7 @@ describe('The Safari Zone — §2.11.6', () => {
   });
 
   it('SharpEars_HearYouThroughTheGrass_UnlessItIsEating', () => {
-    const pinsir: SafariSpot = { species: 'pinsir', tier: 'rare', level: 12, result: null };
+    const pinsir: SafariSpot = { species: 'pinsir', tier: 'rare', level: 16, result: null };
     const h = board(['PgMgg', 'ggggg', 'ggggg'], { facing: 's' });
     expect(notices(h, pinsir, h.player)).toBe(true);
     expect(notices({ ...h, eating: 2 }, pinsir, h.player)).toBe(false);
@@ -159,7 +159,7 @@ describe('The Safari Zone — §2.11.6', () => {
     expect(throwOdds({ ...near, seen: true }, common, content)!.chance).toBeLessThan(oNear.chance);
     const three = board(['ggPgg', 'ggggg', 'ggggg', 'ggMgg']);
     expect(throwOdds(three, common, content)).toBeNull();
-    const rare: SafariSpot = { species: 'chansey', tier: 'rare', level: 12, result: null };
+    const rare: SafariSpot = { species: 'chansey', tier: 'rare', level: 16, result: null };
     expect(throwOdds(far, rare, content)!.chance).toBeLessThan(oFar.chance);
   });
 

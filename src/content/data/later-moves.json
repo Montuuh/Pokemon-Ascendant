@@ -93,6 +93,13 @@
       "gen": 2
     },
     {
+      "id": "return",
+      "name": "Return",
+      "type": "normal",
+      "power": 102,
+      "gen": 2
+    },
+    {
       "id": "detect",
       "name": "Detect",
       "type": "fighting",

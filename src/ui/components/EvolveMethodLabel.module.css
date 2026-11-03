@@ -1,0 +1,13 @@
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  cursor: help;
+}
+.icon {
+  image-rendering: pixelated;
+}
+/* §6.3.9 — Friendship's heart, an icon tint (D5). */
+.heart {
+  color: var(--brand-red);
+}

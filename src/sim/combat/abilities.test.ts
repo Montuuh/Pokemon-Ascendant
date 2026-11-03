@@ -11,8 +11,8 @@ const withAbility = (species: string, abilityId: string, level = 16) =>
     scenario({
       team: [
         { species, level, abilityId },
-        { species: 'squirtle', level: 12 },
-        { species: 'bulbasaur', level: 12 },
+        { species: 'squirtle', level: 16 },
+        { species: 'bulbasaur', level: 16 },
       ],
       enemies: [PIDGEY],
     }),
@@ -21,7 +21,7 @@ const withAbility = (species: string, abilityId: string, level = 16) =>
 describe('Abilities — §6.5.2 (v0.3 hooks)', () => {
   it('ShellArmor_TakesAShareOffEveryHit_OnlyWhileLead', () => {
     // v0.9.10 — a share, not a flat 2: a 5-damage hit is no longer cut by 40 %.
-    const s = start(scenario({ team: [{ species: 'blastoise', level: 32, abilityId: 'shell-armor' }, { species: 'wartortle', level: 20, abilityId: 'shell-armor' }, { species: 'bulbasaur', level: 20 }], enemies: [PIDGEY] }));
+    const s = start(scenario({ team: [{ species: 'blastoise', level: 44, abilityId: 'shell-armor' }, { species: 'wartortle', level: 28, abilityId: 'shell-armor' }, { species: 'bulbasaur', level: 28 }], enemies: [PIDGEY] }));
     const [lead, bench] = [s.player.team[0]!, s.player.team[1]!];
     expect(abilityLeadReduction(lead, true, ctx.content)).toBe(15);
     expect(abilityLeadReduction(bench, false, ctx.content)).toBe(0);
@@ -135,9 +135,9 @@ describe('Abilities — §6.5.2 (v0.3 hooks)', () => {
     let s = start(
       scenario({
         team: [
-          { species: 'squirtle', level: 12 },
-          { species: 'gyarados', level: 20, abilityId: 'intimidate' },
-          { species: 'bulbasaur', level: 12 },
+          { species: 'squirtle', level: 16 },
+          { species: 'gyarados', level: 28, abilityId: 'intimidate' },
+          { species: 'bulbasaur', level: 16 },
         ],
         enemies: [PIDGEY],
       }),
@@ -187,7 +187,7 @@ describe('The six hidden abilities, and Damp — §6.8.3, §6.6', () => {
 
   it('Gluttony_APotionHealsHalfAgainOnTheWearer', () => {
     const drink = (ability: string) => {
-      let s = tweak(start(scenario({ team: [{ species: 'snorlax', level: 20, abilityId: ability }], enemies: [PIDGEY], consumables: ['potion'] })), (d) => {
+      let s = tweak(start(scenario({ team: [{ species: 'snorlax', level: 28, abilityId: ability }], enemies: [PIDGEY], consumables: ['potion'] })), (d) => {
         d.player.team[0]!.hp = 1;
       });
       const card = s.player.consumables.hand.find((c) => c.consumableId === 'potion')!;
@@ -199,7 +199,7 @@ describe('The six hidden abilities, and Damp — §6.8.3, §6.6', () => {
 
   it('RainDish_AWaterMoveHealsTheWearer', () => {
     let s = withHand(
-      tweak(start(scenario({ team: [{ species: 'wartortle', level: 16, abilityId: 'rain-dish', moves: ['water-gun', 'tackle'] }], enemies: [PIDGEY] })), (d) => {
+      tweak(start(scenario({ team: [{ species: 'wartortle', level: 22, abilityId: 'rain-dish', moves: ['water-gun', 'tackle'] }], enemies: [PIDGEY] })), (d) => {
         d.player.team[0]!.hp = 10;
       }),
       ['water-gun'],
@@ -209,7 +209,7 @@ describe('The six hidden abilities, and Damp — §6.8.3, §6.6', () => {
   });
 
   it('Damp_SelfDestructFails_AndTheAiNeverFiresIt', () => {
-    let s = start(scenario({ team: [{ species: 'psyduck', level: 12, abilityId: 'damp' }], enemies: [{ species: 'voltorb', level: 12, tier: 'wild', phaseCount: 1, moves: ['self-destruct', 'tackle'] }] }));
+    let s = start(scenario({ team: [{ species: 'psyduck', level: 16, abilityId: 'damp' }], enemies: [{ species: 'voltorb', level: 16, tier: 'wild', phaseCount: 1, moves: ['self-destruct', 'tackle'] }] }));
     expect(foe(s).intent?.moveId).not.toBe('self-destruct');
     s = tweak(s, (d) => { d.enemies[0]!.intent = { kind: 'attack', moveId: 'self-destruct', targetSlot: 'lead', hidden: false }; });
     const hp = leadOf(s).hp;

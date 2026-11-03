@@ -1,6 +1,7 @@
 import type { ContentRegistry } from '../content/defs';
 import { RUN_SAVE_VERSION, mintUid, uidIndex } from './run';
 import { hasPlaceFor } from './legendaries';
+import { DEFAULT_PROGRESSION, readyBranches, xpToNext } from './xp';
 import type { RunState } from './types';
 
 // §10.8 — the save model. The simulation only knows how to turn a run into text and back; *where* that text
@@ -209,8 +210,61 @@ function migrateCenterTo22(run: RunState, content: ContentRegistry): void {
   for (const pending of run.pendingEvolutions) if (pending.stone) run.stones.push(pending.stone);
 }
 
+/** §6.2.4 — v0.9.90's level scale: every level of v22 and before is `round(1 + 1.4 (L − 1))` now (Lv 12 → 16, 26 → 36). */
+const remapLevel = (level: number): number => Math.max(1, Math.round(1 + 1.4 * (level - 1)));
+
+/**
+ * §6.2.4 / §6.3.7–§6.3.9 — v22 → v23: real evolution levels. Every level the run holds moves to the stretched scale, and
+ * a Box Pokémon keeps its progress into its next level; everyone starts at the series' Friendship; the Metal Coat is a
+ * held item now, so a reserved one moves to the bag (a screen it had opened keeps the evolution it promised); and a
+ * screen opened under the old thresholds keeps its promise too, as Training's does (§2.12.3), rather than refusing.
+ */
+function migrateLevelsTo23(run: RunState, content: ContentRegistry): void {
+  run.version = RUN_SAVE_VERSION;
+  const oldToNext = (level: number) => 12 + 4 * (Math.max(1, level) - 1);
+  for (const mon of run.box) {
+    const share = mon.xp / oldToNext(mon.level);
+    mon.level = remapLevel(mon.level);
+    mon.xp = Math.min(xpToNext(mon.level) - 1, Math.round(share * xpToNext(mon.level)));
+    mon.friendship ??= DEFAULT_PROGRESSION.friendship.start;
+    if (mon.deferredEvolutionStone === 'metal-coat') delete mon.deferredEvolutionStone;
+  }
+  // Every other level the run carries — map previews and bands, a fight waiting to start, the last fight's record.
+  const walk = (node: unknown): void => {
+    if (Array.isArray(node)) return node.forEach(walk);
+    if (!node || typeof node !== 'object') return;
+    const o = node as Record<string, unknown>;
+    if (typeof o.level === 'number') o.level = remapLevel(o.level);
+    if (Array.isArray(o.levelBand)) o.levelBand = o.levelBand.map((l) => (typeof l === 'number' ? remapLevel(l) : l));
+    if (Array.isArray(o.learned) && typeof o.from === 'number' && typeof o.to === 'number') {
+      o.from = remapLevel(o.from);
+      o.to = remapLevel(o.to);
+    }
+    for (const [k, v] of Object.entries(o)) if (k !== 'levelBand') walk(v);
+  };
+  for (const [k, v] of Object.entries(run)) if (k !== 'box') walk(v);
+  // The Metal Coat: a screen it opened keeps its evolution, paid with it; the rest go to the bag.
+  for (const pending of run.pendingEvolutions) {
+    if (pending.stone !== 'metal-coat') continue;
+    run.stones.splice(run.stones.indexOf('metal-coat'), 1);
+    delete pending.stone;
+    pending.forced = true;
+  }
+  for (const id of run.stones.filter((s) => s === 'metal-coat')) {
+    run.stones.splice(run.stones.indexOf(id), 1);
+    run.bag.push(id);
+  }
+  for (const slot of [...(run.pendingShop?.slots ?? []), ...(run.city?.shop.slots ?? [])]) if (slot.kind === 'stone' && slot.id === 'metal-coat') slot.kind = 'held-item';
+  // A screen the old thresholds opened is kept: the Pokémon was told it could evolve.
+  for (const pending of run.pendingEvolutions) {
+    const mon = run.box.find((m) => m.uid === pending.uid);
+    if (!mon || pending.stone || pending.forced) continue;
+    if (readyBranches(mon, content).length === 0) pending.forced = true;
+  }
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState, content: ContentRegistry) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20, 20: migrateShowcaseTo21, 21: migrateCenterTo22 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState, content: ContentRegistry) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20, 20: migrateShowcaseTo21, 21: migrateCenterTo22, 22: migrateLevelsTo23 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

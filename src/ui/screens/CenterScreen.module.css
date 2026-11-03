@@ -190,6 +190,17 @@
   color: var(--ink-secondary);
   font-size: var(--type-caption);
 }
+/* §6.3.9 — what this visit's grooming gave: its heart an icon tint, its number ink (D5). */
+.gained {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+.gained svg {
+  color: var(--brand-red);
+}
 .empty {
   margin: 0;
   padding: var(--sp-5);

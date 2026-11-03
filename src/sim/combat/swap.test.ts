@@ -4,7 +4,7 @@ import { swapOptions } from './preview';
 import { indexToSlot } from './slots';
 
 // Squirtle carries Rest here: a defensive card at 1 AP, which is what the discount is about (§3.3.1).
-const base = () => start(scenario({ team: [STARTERS[0]!, { species: 'squirtle', level: 8, moves: ['tackle', 'water-gun', 'rest', 'tail-whip'] }, STARTERS[2]!], enemies: [PIDGEY] }));
+const base = () => start(scenario({ team: [STARTERS[0]!, { species: 'squirtle', level: 11, moves: ['tackle', 'water-gun', 'rest', 'tail-whip'] }, STARTERS[2]!], enemies: [PIDGEY] }));
 
 describe('Manual swap — §3.3.1', () => {
   it('Swap_TheOldLeadTakesThePlaceOfTheOneSteppingUp_TheOtherBenchStays', () => {
@@ -156,7 +156,7 @@ describe('Quick swap — §3.3.1.1', () => {
   });
 
   it('FlowState_FreeSwapEveryTurn_TacticiansCoinOnceACombat_§7.3.7', () => {
-    const team = [STARTERS[0]!, { species: 'squirtle', level: 8, moves: ['tackle', 'water-gun', 'rest', 'tail-whip'] }, STARTERS[2]!];
+    const team = [STARTERS[0]!, { species: 'squirtle', level: 11, moves: ['tackle', 'water-gun', 'rest', 'tail-whip'] }, STARTERS[2]!];
     const fast = (s: ReturnType<typeof start>) => tweak(s, (d) => { d.enemies[0]!.base.speed = 999; });
     // Flow State: the first swap of a turn is free, the second pays the ladder's first rung, and next turn the first is free again.
     let flow = fast(start(scenario({ team, enemies: [PIDGEY], relics: ['flow-state'] })));
@@ -189,7 +189,7 @@ describe('Quick swap — §3.3.1.1', () => {
 describe('Step-Forward / Step-Backward — §3.3.2–§3.3.4', () => {
   it('StepForward_FromBench_BecomesLeadBeforeEffect_NoCounter_NoDiscount', () => {
     // Wartortle (Quick Attack, SF) on the bench.
-    let s = start(scenario({ team: [{ species: 'charmander', level: 8 }, { species: 'wartortle', level: 23, moves: ['quick-attack', 'water-gun', 'bite', 'withdraw'] }], enemies: [PIDGEY] }));
+    let s = start(scenario({ team: [{ species: 'charmander', level: 11 }, { species: 'wartortle', level: 32, moves: ['quick-attack', 'water-gun', 'bite', 'withdraw'] }], enemies: [PIDGEY] }));
     s = withHand(s, ['quick-attack']);
     const enemyHp = s.enemies[0]!.hp;
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'quick-attack').id });
@@ -201,7 +201,7 @@ describe('Step-Forward / Step-Backward — §3.3.2–§3.3.4', () => {
   });
 
   it('StepBackward_FromLead_EffectThenSwapToChosenBench', () => {
-    let s = start(scenario({ team: [{ species: 'wartortle', level: 20, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 8 }, { species: 'bulbasaur', level: 8 }], enemies: [PIDGEY] }));
+    let s = start(scenario({ team: [{ species: 'wartortle', level: 28, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 11 }, { species: 'bulbasaur', level: 11 }], enemies: [PIDGEY] }));
     s = withHand(s, ['rolling-kick']);
     const enemyHp = s.enemies[0]!.hp;
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'rolling-kick').id, stepBackTo: 2 });
@@ -211,7 +211,7 @@ describe('Step-Forward / Step-Backward — §3.3.2–§3.3.4', () => {
   });
 
   it('StepBackward_NoLegalBench_LeadStays', () => {
-    let s = start(scenario({ team: [{ species: 'wartortle', level: 20, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 8 }], enemies: [PIDGEY] }));
+    let s = start(scenario({ team: [{ species: 'wartortle', level: 28, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 11 }], enemies: [PIDGEY] }));
     s = withHand(s, ['rolling-kick']);
     s = tweak(s, (d) => {
       d.player.team[1]!.status = { kind: 'freeze', appliedTurn: 0, turnsLeft: 1 };
@@ -221,7 +221,7 @@ describe('Step-Forward / Step-Backward — §3.3.2–§3.3.4', () => {
   });
 
   it('StepBackward_FromBench_IsIneligible_MeleeNeedsLead', () => {
-    let s = start(scenario({ team: [{ species: 'charmander', level: 8 }, { species: 'wartortle', level: 20, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }], enemies: [PIDGEY] }));
+    let s = start(scenario({ team: [{ species: 'charmander', level: 11 }, { species: 'wartortle', level: 28, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }], enemies: [PIDGEY] }));
     s = withHand(s, ['rolling-kick']);
     expect(reject(s, { type: 'play-card', cardId: handCard(s, 'rolling-kick').id })).toBe('melee-needs-lead');
   });

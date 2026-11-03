@@ -53,6 +53,10 @@ export interface Combatant {
   heldItemId: string | null;
   /** §7.4 Focus Sash — one endure charge, re-armed at combat end. */
   endureAvailable: boolean;
+  /** §6.3.9 — the run's Friendship (Return reads it); absent on an enemy, which uses BattleConfig's `friendship.foe`. */
+  friendship?: number;
+  /** §7.3.6 — at full Friendship, one hold-on at 1 HP this fight; true while it is unspent. */
+  fondEndure?: boolean;
   /**
    * §7.3.5 Champion's Crest — enemies this Pokémon has personally defeated, carried in from the run.
    * Zero in a fixture fight, which is right: there is no run behind it to have a record in.

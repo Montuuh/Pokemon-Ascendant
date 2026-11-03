@@ -74,7 +74,7 @@ describe('Card play — §3.2.4 / §3.3.1 Melee-Ranged', () => {
   });
 
   it('Play_DrawEffect_DrawsExtraCards', () => {
-    let s = start(scenario({ team: [{ species: 'pidgeotto', level: 16, moves: ['whirlwind', 'gust', 'quick-attack', 'agility'] }, ...STARTERS.slice(0, 2)], enemies: [PIDGEY] }));
+    let s = start(scenario({ team: [{ species: 'pidgeotto', level: 22, moves: ['whirlwind', 'gust', 'quick-attack', 'agility'] }, ...STARTERS.slice(0, 2)], enemies: [PIDGEY] }));
     s = withHand(s, ['whirlwind']);
     const before = s.player.hand.length;
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'whirlwind').id });
@@ -82,14 +82,14 @@ describe('Card play — §3.2.4 / §3.3.1 Melee-Ranged', () => {
   });
 
   it('Play_HealMove_CappedAtMaxHp', () => {
-    let s = start(scenario({ team: [{ species: 'pidgey', level: 10, hpPercent: 90, moves: ['recover', 'gust', 'tackle', 'sand-attack'] }], enemies: [PIDGEY] }));
+    let s = start(scenario({ team: [{ species: 'pidgey', level: 14, hpPercent: 90, moves: ['recover', 'gust', 'tackle', 'sand-attack'] }], enemies: [PIDGEY] }));
     s = withHand(s, ['recover']);
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'recover').id });
     expect(s.player.team[0]!.hp).toBe(s.player.team[0]!.maxHp);
   });
 
   it('Play_AlwaysCrit_AppliesCritMultiplier', () => {
-    let s = start(scenario({ team: [{ species: 'charmeleon', level: 13, moves: ['slash', 'ember', 'growl', 'smokescreen'] }], enemies: [{ species: 'geodude', level: 12, tier: 'wild', phaseCount: 1 }] }));
+    let s = start(scenario({ team: [{ species: 'charmeleon', level: 18, moves: ['slash', 'ember', 'growl', 'smokescreen'] }], enemies: [{ species: 'geodude', level: 16, tier: 'wild', phaseCount: 1 }] }));
     s = withHand(s, ['slash']);
     const p = cardPlayability(s, handCard(s, 'slash').id, ctx)!;
     expect(p.damage!.isCrit).toBe(true);
@@ -98,7 +98,7 @@ describe('Card play — §3.2.4 / §3.3.1 Melee-Ranged', () => {
 
   it('Play_ImmuneType_DealsZero', () => {
     // Geodude's Earthquake (ground) into Pidgey (flying) — ×0.
-    let s = start(scenario({ team: [{ species: 'geodude', level: 10, moves: ['earthquake', 'tackle'] }], enemies: [PIDGEY] }));
+    let s = start(scenario({ team: [{ species: 'geodude', level: 14, moves: ['earthquake', 'tackle'] }], enemies: [PIDGEY] }));
     s = withHand(s, ['earthquake']);
     const hp = s.enemies[0]!.hp;
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'earthquake').id });

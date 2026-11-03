@@ -353,11 +353,11 @@ for (const motion of ['no-preference', 'reduce'] as const)
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.emulateMedia({ reducedMotion: motion });
     await atStop(page, 'training');
-    // Squirtle learns Water Gun at Lv 8: one level short of it, the push teaches it.
+    // Squirtle learns Water Gun at Lv 11: one level short of it, the push teaches it.
     await page.evaluate(() =>
       window.__ascendant!.run.patch((d) => {
         const m = d.box[0]!;
-        m.level = 7;
+        m.level = 10;
         m.xp = 0;
         m.pool = ['tackle', 'tail-whip', 'bubble'];
         m.moveIds = ['tackle', 'tail-whip', 'bubble'];
@@ -370,8 +370,8 @@ for (const motion of ['no-preference', 'reduce'] as const)
     await page.getByTestId('btn-train').click();
     const panel = page.getByTestId(`levelup-panel-${uid}`);
     await expect(panel).toBeVisible();
-    await expect(page.getByTestId('train-result')).toHaveText('Lv 7 → 8');
-    await expect(panel).toContainText('Squirtle grew to Lv 8!');
+    await expect(page.getByTestId('train-result')).toHaveText('Lv 10 → 11');
+    await expect(panel).toContainText('Squirtle grew to Lv 11!');
     await expect(panel).toContainText('Water Gun');
     // Said aloud too, since the window itself is silent on this screen.
     await expect(page.getByTestId('training-screen').locator('p.sr-only')).toContainText('New: Water Gun');
@@ -389,7 +389,7 @@ for (const motion of ['no-preference', 'reduce'] as const)
     await page.getByTestId('btn-train').click();
     await expect(page.getByTestId('map-screen')).toBeVisible();
     const after = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!);
-    expect(after.level).toBe(8);
+    expect(after.level).toBe(11);
     expect(after.pool).toContain('water-gun');
   });
 
@@ -418,12 +418,12 @@ for (const text of [100, 150])
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await atStop(page, 'training', { text });
-    // Snorlax learns Harden and Ice Beam together at Lv 24.
+    // Snorlax learns Harden and Ice Beam together at Lv 33.
     await page.evaluate(() =>
       window.__ascendant!.run.patch((d) => {
         const m = d.box[0]!;
         m.speciesId = 'snorlax';
-        m.level = 23;
+        m.level = 32;
         m.xp = 0;
         m.pool = ['headbutt', 'amnesia', 'rest', 'body-slam'];
         m.moveIds = ['headbutt', 'amnesia', 'rest', 'body-slam'];

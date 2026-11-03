@@ -6,14 +6,14 @@
 > `mastery-moves.md`. Status legend in `README.md`.
 >
 > **Settled 2026-09-19:** stats derive by `max(Atk, Spc)` / `round((Def+Spc)/2)` (§4.1.5.1) · evolution levels
-> are compressed to **12 / 26** uniformly, with a few bespoke exceptions kept deliberately (§6.2.4) · a stone
-> lets a line evolve earlier **and** opens its branch, never blocking the level path (§6.3.2) · Eevee has three
-> branches (§8.5.2) · the learnset schema lands at **v0.2** (§6.9).
+> are the series' own since v0.9.90, by the series' method — a level, a stone only, a level-up holding a trade line's
+> item, Friendship (§6.2.4, §6.3.7; until then 12 / 26 uniformly, a stone only earlier) · Eevee has four branches
+> (§8.5.2), three stones' and Friendship's · the learnset schema lands at **v0.2** (§6.9).
 >
 > **Shipped state (2026-09-19).** v0.2 ported the learnsets; v0.3 ported the **evolution tables** below —
 > 63 branches over the 24 species the build carries, with their upgrade pairs, additions and archetype
 > availability exactly as the rows state. Three deviations, all recorded where they live: learnset *levels* are
-> compressed relative to these rows so every entry sits under its stage's threshold (§6.9's own rule, which
+> clamped relative to the series' rows so every entry sits under its stage's threshold (§6.9's own rule, which
 > some rows here break — Bulbasaur cannot learn Sleep Powder at 13 and evolve at 12); ten branch additions ship
 > with their effect clause omitted pending v0.4 effect kinds (`moves.md` section 0). The four abilities once
 > dropped from the pools (`rain-dish`, `infiltrator`, `weak-armor`, `arena-trap`) are every line's hidden third
@@ -44,8 +44,8 @@
 
 | id | dex | Stage | Types | HP/Atk/Def/Spc/Spd | Rarity | Evolves | Learnset (level → move) |
 |---|---|---|---|---|---|---|---|
-| `bulbasaur` | 1 | basic | Grass | 45/49/49/65/45 | starter | **L12** → `ivysaur` | 1 `tackle` · 1 `growl` · 4 `vine-whip` · 8 `leech-seed` |
-| `ivysaur` | 2 | stage1 | Grass/Poison | 60/62/63/80/60 | — | **L26** → `venusaur` | 20 `sludge` |
+| `bulbasaur` | 1 | basic | Grass | 45/49/49/65/45 | starter | **L16** → `ivysaur` | 1 `tackle` · 1 `growl` · 4 `vine-whip` · 8 `leech-seed` |
+| `ivysaur` | 2 | stage1 | Grass/Poison | 60/62/63/80/60 | — | **L32** → `venusaur` | 20 `sludge` |
 | `venusaur` | 3 | stage2 | Grass/Poison | 80/82/83/100/80 | — | — | 30 `razor-leaf` · 34 `petal-dance` · 38 `body-slam` |
 
 **Abilities** `overgrow` `chlorophyll` `healer` · **Mastery** `solar-beam` → `solar-beam-plus` → `solar-beam-plus-plus`
@@ -59,9 +59,9 @@
 
 | id | dex | Stage | Types | HP/Atk/Def/Spc/Spd | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `charmander` | 4 | basic | Fire | 39/52/43/50/65 | starter | **L12** → `charmeleon` | 1 `scratch` · 1 `growl` · 4 `ember` · 8 `leer` |
-| `charmeleon` | 5 | stage1 | Fire | 58/64/58/65/80 | — | **L26** → `charizard` | 16 `fire-spin` · 22 `slash` |
-| `charizard` | 6 | stage2 | Fire/Flying | 78/84/78/85/100 | — | — | 28 `wing-attack` · 33 `flamethrower` · 38 `fly` |
+| `charmander` | 4 | basic | Fire | 39/52/43/50/65 | starter | **L16** → `charmeleon` | 1 `scratch` · 1 `growl` · 5 `ember` · 11 `leer` |
+| `charmeleon` | 5 | stage1 | Fire | 58/64/58/65/80 | — | **L36** → `charizard` | 22 `fire-spin` · 30 `slash` |
+| `charizard` | 6 | stage2 | Fire/Flying | 78/84/78/85/100 | — | — | 39 `wing-attack` · 46 `flamethrower` · 53 `fly` |
 
 **Abilities** `blaze` `tough-claws` `snipe` · **Mastery** `fire-blast` → `fire-blast-plus` → `fire-blast-plus-plus`
 
@@ -74,9 +74,9 @@
 
 | id | dex | Stage | Types | HP/Atk/Def/Spc/Spd | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `squirtle` | 7 | basic | Water | 44/48/65/50/43 | starter | **L12** → `wartortle` | 1 `tackle` · 1 `tail-whip` · 4 `bubble` · 8 `water-gun` |
-| `wartortle` | 8 | stage1 | Water | 59/63/80/65/58 | — | **L26** → `blastoise` | 18 `bubble-beam` · 22 `bite` |
-| `blastoise` | 9 | stage2 | Water | 79/83/100/85/78 | — | — | 28 `surf` · 32 `skull-bash` · 36 `hydro-pump` |
+| `squirtle` | 7 | basic | Water | 44/48/65/50/43 | starter | **L16** → `wartortle` | 1 `tackle` · 1 `tail-whip` · 5 `bubble` · 11 `water-gun` |
+| `wartortle` | 8 | stage1 | Water | 59/63/80/65/58 | — | **L36** → `blastoise` | 25 `bubble-beam` · 30 `bite` |
+| `blastoise` | 9 | stage2 | Water | 79/83/100/85/78 | — | — | 39 `surf` · 44 `skull-bash` · 50 `hydro-pump` |
 
 **Abilities** `torrent` `shell-armor` `rain-dish` · **Mastery** `waterfall` → `waterfall-plus` → `waterfall-plus-plus`
 
@@ -93,9 +93,9 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `caterpie` | 10 | basic | Bug | 45/30/35/20/45 | common | L8 → `metapod` | 1 `tackle` · 1 `string-shot` · 3 `harden` · 6 `leech-life` |
-| `metapod` | 11 | stage1 | Bug | 50/20/55/25/30 | — | L12 → `butterfree` | — *(its base form's kit, rewritten by evolution)* |
-| `butterfree` | 12 | stage2 | Bug/Flying ★ | 60/45/50/80/70 | — | — | 14 `confusion` · 24 `wing-attack` · 30 `pin-missile` |
+| `caterpie` | 10 | basic | Bug | 45/30/35/20/45 | common | **L7** → `metapod` | 1 `tackle` · 1 `string-shot` · 4 `harden` · 6 `leech-life` |
+| `metapod` | 11 | stage1 | Bug | 50/20/55/25/30 | — | **L10** → `butterfree` | — |
+| `butterfree` | 12 | stage2 | Bug/Flying ★ | 60/45/50/80/70 | — | — | 19 `confusion` · 33 `wing-attack` · 42 `pin-missile` |
 
 **Abilities** `compound-eyes` `iron-shell` `swarm` · **Mastery** `psybeam` → `psybeam-plus` → `psybeam-plus-plus`
 
@@ -108,9 +108,9 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `weedle` | 13 | basic | Bug/Poison | 40/35/30/20/50 | common | L8 → `kakuna` | 1 `poison-sting` · 1 `string-shot` · 3 `harden` · 6 `leech-life` |
-| `kakuna` | 14 | stage1 | Bug/Poison | 45/25/50/25/35 | — | L12 → `beedrill` | — *(its base form's kit, rewritten by evolution)* |
-| `beedrill` | 15 | stage2 | Bug/Poison | 65/80/40/45/75 | — | — | 18 `twineedle` · 30 `pin-missile` · 34 `sludge` |
+| `weedle` | 13 | basic | Bug/Poison | 40/35/30/20/50 | common | **L7** → `kakuna` | 1 `poison-sting` · 1 `string-shot` · 4 `harden` · 6 `leech-life` |
+| `kakuna` | 14 | stage1 | Bug/Poison | 45/25/50/25/35 | — | **L10** → `beedrill` | — |
+| `beedrill` | 15 | stage2 | Bug/Poison | 65/80/40/45/75 | — | — | 25 `twineedle` · 42 `pin-missile` · 47 `sludge` |
 
 **Abilities** `swarm` `poison-point` `snipe` · **Mastery** `fury-attack` → `fury-attack-plus` → `fury-attack-plus-plus`
 
@@ -123,9 +123,9 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `pidgey` | 16 | basic | Normal/Flying | 40/45/40/35/56 | common | **L12** → `pidgeotto` | 1 `tackle` · 1 `sand-attack` · 4 `gust` · 8 `quick-attack` |
-| `pidgeotto` | 17 | stage1 | Normal/Flying | 63/60/55/50/71 | — | **L26** → `pidgeot` | 16 `wing-attack` · 20 `swift` |
-| `pidgeot` | 18 | stage2 | Normal/Flying | 83/80/75/70/91 | — | — | 30 `fly` · 36 `drill-peck` |
+| `pidgey` | 16 | basic | Normal/Flying | 40/45/40/35/56 | common | **L18** → `pidgeotto` | 1 `tackle` · 1 `sand-attack` · 5 `gust` · 11 `quick-attack` |
+| `pidgeotto` | 17 | stage1 | Normal/Flying | 63/60/55/50/71 | — | **L36** → `pidgeot` | 22 `wing-attack` · 28 `swift` |
+| `pidgeot` | 18 | stage2 | Normal/Flying | 83/80/75/70/91 | — | — | 42 `fly` · 50 `drill-peck` |
 
 **Abilities** `keen-eye` `tangled-feet` `healer` · **Mastery** `sky-attack` → `sky-attack-plus` → `sky-attack-plus-plus`
 
@@ -138,8 +138,8 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `rattata` | 19 | basic | Normal | 30/56/35/25/72 | common | **L12** → `raticate` | 1 `tackle` · 1 `tail-whip` · 4 `quick-attack` · 8 `bite` |
-| `raticate` | 20 | stage1 (final) | Normal | 55/81/60/50/97 | — | — | 18 `hyper-fang` · 30 `swift` · 36 `double-edge` |
+| `rattata` | 19 | basic | Normal | 30/56/35/25/72 | common | **L20** → `raticate` | 1 `tackle` · 1 `tail-whip` · 5 `quick-attack` · 11 `bite` · 14 `hyper-fang` |
+| `raticate` | 20 | stage1 (final) | Normal | 55/81/60/50/97 | — | — | 25 `crunch` · 42 `swift` · 50 `double-edge` |
 
 **Abilities** `guts` `hustle` `run-down` · **Mastery** `super-fang` → `super-fang-plus`
 
@@ -151,9 +151,9 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `oddish` | 43 | basic | Grass/Poison ★ | 45/50/55/75/30 | uncommon | **L12** → `gloom` | 1 `absorb` · 1 `poison-powder` · 4 `stun-spore` · 8 `acid` |
-| `gloom` | 44 | stage1 | Grass/Poison | 60/65/70/85/40 | — | **L26** → `vileplume` (Leaf Stone from L18) | 16 `mega-drain` · 22 `sludge` |
-| `vileplume` | 45 | stage2 | Grass/Poison | 75/80/85/100/50 | — | — | 28 `petal-dance` · 32 `razor-leaf` · 36 `sludge` |
+| `oddish` | 43 | basic | Grass/Poison ★ | 45/50/55/75/30 | uncommon | **L21** → `gloom` | 1 `absorb` · 1 `poison-powder` · 5 `stun-spore` · 11 `acid` |
+| `gloom` | 44 | stage1 | Grass/Poison | 60/65/70/85/40 | — | **Leaf Stone** (from L25) → `vileplume`; trainers field it from L32 | 22 `mega-drain` · 30 `sludge` |
+| `vileplume` | 45 | stage2 | Grass/Poison | 75/80/85/100/50 | — | — | 39 `petal-dance` · 44 `razor-leaf` · 50 `sludge` |
 
 **Abilities** `chlorophyll` `effect-spore` `healer` · **Mastery** `solar-beam` → `solar-beam-plus` → `solar-beam-plus-plus`
 
@@ -170,9 +170,9 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `bellsprout` | 69 | basic | Grass/Poison | 50/75/35/70/40 | uncommon | **L12** → `weepinbell` | 1 `vine-whip` · 1 `growth` · 4 `wrap` · 8 `poison-powder` |
-| `weepinbell` | 70 | stage1 | Grass/Poison | 65/90/50/85/55 | — | **L26** → `victreebel` (Leaf Stone from L18) | — *(its base form's kit, rewritten by evolution)* |
-| `victreebel` | 71 | stage2 | Grass/Poison | 80/105/65/100/70 | — | — | 28 `razor-leaf` · 32 `sludge` · 36 `petal-dance` |
+| `bellsprout` | 69 | basic | Grass/Poison | 50/75/35/70/40 | uncommon | **L21** → `weepinbell` | 1 `vine-whip` · 1 `growth` · 5 `wrap` · 11 `poison-powder` |
+| `weepinbell` | 70 | stage1 | Grass/Poison | 65/90/50/85/55 | — | **Leaf Stone** (from L25) → `victreebel`; trainers field it from L32 | — |
+| `victreebel` | 71 | stage2 | Grass/Poison | 80/105/65/100/70 | — | — | 39 `razor-leaf` · 44 `sludge` · 50 `petal-dance` |
 
 **Abilities** `chlorophyll` `gluttony` `snipe` · **Mastery** `solar-beam` → `solar-beam-plus` → `solar-beam-plus-plus`
 
@@ -185,8 +185,8 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `mankey` | 56 | basic | Fighting | 40/80/35/35/70 | uncommon | **L12** → `primeape` | 1 `scratch` · 1 `leer` · 4 `low-kick` · 8 `karate-chop` |
-| `primeape` | 57 | stage1 (final) | Fighting | 65/105/60/60/95 | — | — | 16 `seismic-toss` · 22 `rock-slide` · 28 `submission` · 34 `thrash` |
+| `mankey` | 56 | basic | Fighting | 40/80/35/35/70 | uncommon | **L28** → `primeape` | 1 `scratch` · 1 `leer` · 5 `low-kick` · 11 `karate-chop` |
+| `primeape` | 57 | stage1 (final) | Fighting | 65/105/60/60/95 | — | — | 28 `seismic-toss` · 30 `rock-slide` · 39 `submission` · 47 `thrash` |
 
 **Abilities** `anger-point` `vital-spirit` `guts` · **Mastery** `rage` → `rage-plus`
 
@@ -198,11 +198,11 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `eevee` | 133 | basic | Normal | 55/55/50/65/55 | rare | **L12** → one of `vaporeon` / `jolteon` / `flareon` / `umbreon` (the matching Stone allows it from L8) | 1 `tackle` · 1 `tail-whip` · 4 `sand-attack` · 8 `quick-attack` · 10 `swift` |
-| `vaporeon` | 134 | stage1 (final) | Water ★ | 130/65/60/110/65 | — | — | 16 `bite` · 20 `bubble-beam` · 26 `surf` · 32 `hydro-pump` |
-| `jolteon` | 135 | stage1 (final) | Electric ★ | 65/65/60/110/130 | — | — | — *(its base form's kit, rewritten by evolution)* |
-| `flareon` | 136 | stage1 (final) | Fire | 65/130/60/110/65 | — | — | — *(its base form's kit, rewritten by evolution)* |
-| `umbreon` | 197 | stage1 (final) | Dark | 95/65/110/60·130/65 | — | — | 16 `snarl` · 22 `crunch` · 28 `dark-pulse` (v0.9.84; derived Atk/Def 65/120) |
+| `eevee` | 133 | basic | Normal | 55/55/50/65/55 | rare | **Fire / Water / Thunder Stone** (from L11), or **a level-up at Friendship 220** (`umbreon`) → one of `flareon` / `jolteon` / `vaporeon` / `umbreon`; trainers field it from L30 | 1 `tackle` · 1 `tail-whip` · 5 `sand-attack` · 11 `quick-attack` · 14 `swift` |
+| `vaporeon` | 134 | stage1 (final) | Water ★ | 130/65/60/110/65 | — | — | 30 `bite` · 30 `bubble-beam` · 36 `surf` · 44 `hydro-pump` |
+| `jolteon` | 135 | stage1 (final) | Electric ★ | 65/65/60/110/130 | — | — | — |
+| `flareon` | 136 | stage1 (final) | Fire | 65/130/60/110/65 | — | — | — |
+| `umbreon` | 197 | stage1 (final) | Dark | 95/65/110/60·130/65 | — | — | 30 `snarl` · 30 `crunch` · 39 `dark-pulse` |
 
 **Abilities** `adaptability` `run-down` `anticipation` (Vaporeon adds `water-absorb`; Jolteon `volt-absorb`, `speed-boost`; Flareon `flash-fire`, `guts`; Umbreon `inner-focus`) · **Mastery** `take-down` → `take-down-plus`
 
@@ -223,8 +223,8 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `zubat` | 41 | basic | Poison/Flying | 40/45/35/40/55 | common | **L12** → `golbat` | 1 `leech-life` · 1 `supersonic` · 4 `bite` · 8 `wing-attack` |
-| `golbat` | 42 | stage1 (final) | Poison/Flying | 75/80/70/75/90 | — | — | 16 `wing-attack` · 20 `swift` · 24 `sludge` · 30 `fly` |
+| `zubat` | 41 | basic | Poison/Flying | 40/45/35/40/55 | common | **L22** → `golbat` | 1 `leech-life` · 1 `supersonic` · 5 `bite` · 11 `wing-attack` |
+| `golbat` | 42 | stage1 (final) | Poison/Flying | 75/80/70/75/90 | — | — | 22 `wing-attack` · 28 `swift` · 33 `sludge` · 42 `fly` |
 
 **Abilities** `inner-focus` `infiltrator` `snipe` · **Mastery** `sky-attack` → `sky-attack-plus`
 
@@ -236,9 +236,9 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `geodude` | 74 | basic | Rock/Ground | 40/80/100/30/20 | common | **L12** → `graveler` | 1 `tackle` · 1 `defense-curl` · 4 `rock-throw` · 8 `self-destruct` |
-| `graveler` | 75 | stage1 | Rock/Ground | 55/95/115/45/35 | — | **L26** → `golem` | — *(its base form's kit, rewritten by evolution)* |
-| `golem` | 76 | stage2 | Rock/Ground | 80/110/130/55/45 | — | — | 28 `earthquake` · 32 `rock-slide` |
+| `geodude` | 74 | basic | Rock/Ground | 40/80/100/30/20 | common | **L25** → `graveler` | 1 `tackle` · 1 `defense-curl` · 5 `rock-throw` · 11 `self-destruct` |
+| `graveler` | 75 | stage1 | Rock/Ground | 55/95/115/45/35 | — | **a level-up holding `hard-stone`** (Hard Stone) → `golem`; trainers field it from L40 | — |
+| `golem` | 76 | stage2 | Rock/Ground | 80/110/130/55/45 | — | — | 40 `earthquake` · 44 `rock-slide` |
 
 **Abilities** `sturdy` `rock-head` `solid-rock` · **Mastery** `mega-punch` → `mega-punch-plus` → `mega-punch-plus-plus`
 
@@ -251,8 +251,8 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `diglett` | 50 | basic | Ground | 10/55/25/45/95 | common | **L12** → `dugtrio` | 1 `scratch` · 1 `sand-attack` · 4 `growl` · 8 `dig` |
-| `dugtrio` | 51 | stage1 (final) | Ground | 35/80/50/70/120 | — | — | 16 `dig` · 22 `slash` · 28 `earthquake` · 32 `rock-slide` |
+| `diglett` | 50 | basic | Ground | 10/55/25/45/95 | common | **L26** → `dugtrio` | 1 `scratch` · 1 `sand-attack` · 5 `growl` · 11 `dig` |
+| `dugtrio` | 51 | stage1 (final) | Ground | 35/80/50/70/120 | — | — | 26 `dig` · 30 `slash` · 39 `earthquake` · 44 `rock-slide` |
 
 **Abilities** `sand-veil` `hustle` `arena-trap` · **Mastery** `tri-attack` → `tri-attack-plus`
 
@@ -267,8 +267,8 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `onix` | 95 | basic | Rock/Ground | 35/45/160/30/70 | uncommon | **L26** → `steelix` (the Metal Coat allows it from L18) | 1 `tackle` · 1 `screech` · 8 `bind` · 16 `rock-throw` · 20 `dig` · 24 `harden` |
-| `steelix` | 208 | stage1 (final) | Steel/Ground | 75/85/200/55·65/30 | — | — | 28 `meteor-mash` · 34 `earthquake` |
+| `onix` | 95 | basic | Rock/Ground | 35/45/160/30/70 | uncommon | **a level-up holding `metal-coat`** (Metal Coat) → `steelix`; trainers field it from L36 | 1 `tackle` · 1 `screech` · 11 `bind` · 22 `rock-throw` · 28 `dig` · 33 `harden` |
+| `steelix` | 208 | stage1 (final) | Steel/Ground | 75/85/200/55·65/30 | — | — | 39 `meteor-mash` · 47 `earthquake` |
 
 **Abilities** `sturdy` `rock-head` `weak-armor` (Onix), `solid-rock` (Steelix) · **Mastery** `rock-slide` → `rock-slide-plus` · **Tutor** Steelix: `strength` `body-slam`
 
@@ -280,9 +280,9 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `machop` | 66 | basic | Fighting | 70/80/50/35/35 | uncommon | **L12** → `machoke` | 1 `low-kick` · 1 `leer` · 4 `karate-chop` · 8 `focus-energy` |
-| `machoke` | 67 | stage1 | Fighting | 80/100/70/50/45 | — | **L26** → `machamp` | 20 `rock-throw` · 24 `submission` |
-| `machamp` | 68 | stage2 | Fighting | 90/130/80/65/55 | — | — | 28 `submission` · 32 `rock-slide` · 36 `earthquake` |
+| `machop` | 66 | basic | Fighting | 70/80/50/35/35 | uncommon | **L28** → `machoke` | 1 `low-kick` · 1 `leer` · 5 `karate-chop` · 11 `focus-energy` |
+| `machoke` | 67 | stage1 | Fighting | 80/100/70/50/45 | — | **a level-up holding `macho-brace`** (Macho Brace) → `machamp`; trainers field it from L40 | 28 `rock-throw` · 33 `submission` |
+| `machamp` | 68 | stage2 | Fighting | 90/130/80/65/55 | — | — | 40 `submission` · 44 `rock-slide` · 50 `earthquake` |
 
 **Abilities** `guts` `no-guard` `steadfast` · **Mastery** `seismic-toss` → `seismic-toss-plus` → `seismic-toss-plus-plus`
 
@@ -295,7 +295,7 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `aerodactyl` | 142 | basic (final) | Rock/Flying | 80/105/65/60/130 | rare | — (+25 % growth) | 1 `wing-attack` · 1 `agility` · 8 `supersonic` · 12 `rock-throw` · 16 `bite` · 24 `take-down` · 28 `fly` · 34 `hyper-beam` |
+| `aerodactyl` | 142 | basic (final) | Rock/Flying | 80/105/65/60/130 | rare | — (+25 % growth) | 1 `wing-attack` · 1 `agility` · 11 `supersonic` · 16 `rock-throw` · 22 `bite` · 33 `take-down` · 39 `fly` · 47 `hyper-beam` |
 
 **Abilities** `rock-head` `pressure` `tough-claws` · **Mastery** `rock-slide`
 
@@ -307,7 +307,7 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `lapras` | 131 | basic (final) | Water/Ice | 130/85/80/95/60 | rare | — (+25 % growth) | 1 `water-gun` · 1 `growl` · 8 `sing` · 12 `aurora-beam` · 16 `mist` · 20 `surf` · 24 `body-slam` · 28 `blizzard` · 34 `hydro-pump` |
+| `lapras` | 131 | basic (final) | Water/Ice | 130/85/80/95/60 | rare | — (+25 % growth) | 1 `water-gun` · 1 `growl` · 11 `sing` · 16 `aurora-beam` · 22 `mist` · 28 `surf` · 33 `body-slam` · 39 `blizzard` · 47 `hydro-pump` |
 
 **Abilities** `water-absorb` `shell-armor` `hydration` · **Mastery** `ice-beam`
 
@@ -319,8 +319,8 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `magikarp` | 129 | basic | Water | 20/10/55/20/80 | common | **L18** → `gyarados` *(bespoke — the number is the joke)* | 1 `splash` · 1 `tackle` |
-| `gyarados` | 130 | stage1 (final) | Water/Flying | 95/125/79/100/81 | — | — | 20 `bite` · 24 `dragon-rage` · 28 `surf` · 32 `hydro-pump` |
+| `magikarp` | 129 | basic | Water | 20/10/55/20/80 | common | **L20** → `gyarados` | 1 `splash` · 1 `tackle` |
+| `gyarados` | 130 | stage1 (final) | Water/Flying | 95/125/79/100/81 | — | — | 28 `bite` · 33 `dragon-rage` · 39 `surf` · 44 `hydro-pump` |
 
 **Abilities** `swift-swim` `intimidate` `moxie` · **Mastery** `hyper-beam` → `hyper-beam-plus`
 
@@ -334,9 +334,9 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `poliwag` | 60 | basic | Water | 40/50/40/40/90 | common | **L12** → `poliwhirl` | 1 `bubble` · 1 `hypnosis` · 4 `water-gun` · 8 `double-slap` |
-| `poliwhirl` | 61 | stage1 | Water | 65/65/65/50/90 | — | **L26** → `poliwrath` (Water Stone from L18) | 16 `bubble-beam` · 22 `body-slam` |
-| `poliwrath` | 62 | stage2 | Water/Fighting | 90/85/95/70/70 | — | — | 28 `submission` · 32 `surf` · 36 `hydro-pump` |
+| `poliwag` | 60 | basic | Water | 40/50/40/40/90 | common | **L25** → `poliwhirl` | 1 `bubble` · 1 `hypnosis` · 5 `water-gun` · 11 `double-slap` |
+| `poliwhirl` | 61 | stage1 | Water | 65/65/65/50/90 | — | **Water Stone** (from L25) → `poliwrath`; trainers field it from L36 | 25 `bubble-beam` · 30 `body-slam` |
+| `poliwrath` | 62 | stage2 | Water/Fighting | 90/85/95/70/70 | — | — | 39 `submission` · 44 `surf` · 50 `hydro-pump` |
 
 **Abilities** `water-absorb` `damp` `swift-swim` · **Mastery** `mega-punch` → `mega-punch-plus` → `mega-punch-plus-plus`
 
@@ -349,8 +349,8 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `psyduck` | 54 | basic | Water | 50/52/48/50/55 | uncommon | **L12** → `golduck` | 1 `scratch` · 1 `tail-whip` · 4 `water-gun` · 8 `disable` |
-| `golduck` | 55 | stage1 (final) | Water | 80/82/78/80/85 | — | — | 16 `confusion` · 20 `surf` · 30 `hydro-pump` |
+| `psyduck` | 54 | basic | Water | 50/52/48/50/55 | uncommon | **L33** → `golduck` | 1 `scratch` · 1 `tail-whip` · 5 `water-gun` · 11 `disable` |
+| `golduck` | 55 | stage1 (final) | Water | 80/82/78/80/85 | — | — | 33 `confusion` · 33 `surf` · 42 `hydro-pump` |
 
 **Abilities** `cloud-nine` `damp` `swift-swim` · **Mastery** `psybeam` → `psybeam-plus`
 
@@ -362,8 +362,8 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `krabby` | 98 | basic | Water | 30/105/90/25/50 | uncommon | **L12** → `kingler` | 1 `bubble` · 1 `leer` · 4 `vice-grip` · 8 `harden` |
-| `kingler` | 99 | stage1 (final) | Water | 55/130/115/50/75 | — | — | 16 `waterfall` · 22 `bubble-beam` · 28 `stomp` · 34 `surf` |
+| `krabby` | 98 | basic | Water | 30/105/90/25/50 | uncommon | **L28** → `kingler` | 1 `bubble` · 1 `leer` · 5 `vice-grip` · 11 `harden` |
+| `kingler` | 99 | stage1 (final) | Water | 55/130/115/50/75 | — | — | 28 `waterfall` · 30 `bubble-beam` · 39 `stomp` · 47 `surf` |
 
 **Abilities** `hyper-cutter` `shell-armor` `sheer-force` · **Mastery** `crabhammer` → `crabhammer-plus`
 
@@ -379,7 +379,7 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `snorlax` | 143 | basic (final) | Normal | 160/110/65/65/30 | boss-wild | — (+25 % growth) | 1 `headbutt` · 1 `amnesia` · 8 `rest` · 16 `body-slam` · 20 `earthquake` · 24 `harden` · 24 `ice-beam` · 30 `hyper-beam` |
+| `snorlax` | 143 | basic (final) | Normal | 160/110/65/65/30 | boss-wild | — (+25 % growth) | 1 `headbutt` · 1 `amnesia` · 11 `rest` · 22 `body-slam` · 28 `earthquake` · 33 `harden` · 33 `ice-beam` · 42 `hyper-beam` |
 
 **Abilities** `thick-fat` `immunity` `gluttony` · **Mastery** `double-edge`
 **Boss script**: P1 stall (`rest` heals every HP, self-Sleep, P1 only · `amnesia` +2 Def) → P2 offence (`body-slam` Melee 85, 30 % Paralysis · `headbutt`). Catch → recruit `snorlax` at its level with 0 Trauma.
@@ -388,7 +388,7 @@
 
 | id | dex | Stage | Types | Stats | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|
-| `marowak` | 105 | stage1 (final) | Ground | 60/80/110/50/45 | boss-wild recruit | — | 22 `headbutt` · 28 `earthquake` · 34 `rock-slide` |
+| `marowak` | 105 | stage1 (final) | Ground | 60/80/110/50/45 | boss-wild recruit | — | 30 `headbutt` · 39 `earthquake` · 47 `rock-slide` |
 | `marowak-spirit` | 105-s | boss variant | Ghost | 60/80/110/50/45 | boss-wild | — | fixed kit: Curse · `confuse-ray` · Shadow Bone · `lick` |
 
 **Abilities** `rock-head` `lightning-rod` `battle-armor` (spirit: `levitate` `cursed-body`) · **Mastery** `bonemerang` → `bonemerang-plus`

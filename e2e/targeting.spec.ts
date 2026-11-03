@@ -67,10 +67,10 @@ test.describe('Playing a card onto its target — §5.6', () => {
     await page.locator('[data-testid="foe-panel"][data-enemy-uid="e0"] [data-testid="arena-enemy"]').click();
     await expect(page.getByTestId('toast')).toContainText('Play it onto');
     await expect(card).toHaveCount(1);
-    // Onto its owner: played (Harden is free, so it is the card leaving the hand that says so).
+    // Onto its owner: played — the card leaves the hand and its 1 AP is spent (a Guard since v0.9.89, §3.11.4).
     await page.locator('[data-testid^="portrait-lead-"]').click();
     await expect(card).toHaveCount(0);
-    expect(await ap(page)).toBe(start);
+    expect(await ap(page)).toBe(start - 1);
   });
 
   test('what is coming is drawn: the HP about to go striped, the arrows in the intent\'s colour, the hovered target forward', async ({ page }) => {

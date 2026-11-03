@@ -4,7 +4,7 @@ import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
   activeSetups, arriveAtCity, createRun, defaultRunCtx, dojoPrice, GYMS, LAYERS, nodesInLayer, PRICES,
-  REGIONS, REGION_MODIFIERS_ON, rerollPrice, wildBandFor, rollShopStock, runReducer, sellPrice, xpToNext,
+  REGIONS, REGION_MODIFIERS_ON, rerollPrice, wildBandFor, rollShopStock, runReducer, sellPrice,
   type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
@@ -307,14 +307,10 @@ describe('Statuses carry between fights — §4.2.7.1', () => {
     // Eevee → Flareon: a burned Eevee that becomes a Fire type is no longer burned.
     let s = start(7, 'eevee');
     s.box[0]!.level = 11;
-    s.box[0]!.xp = xpToNext(11) - 1;
-    s = firstFight(s);
+    s.box[0]!.status = { kind: 'burn', turnsLeft: null };
+    s.stones = ['fire-stone'];
     const uid = s.activeUids[0]!;
-    s = apply(s, {
-      type: 'finish-combat',
-      report: { outcome: 'victory', team: [{ uid, hp: 10, status: { kind: 'burn', turnsLeft: null }, fainted: false }], caught: null, ballsLeft: 0, turns: 3 },
-    });
-    s = apply(s, { type: 'claim-reward' });
+    s = apply(s, { type: 'use-stone', uid, stoneId: 'fire-stone' });
     expect(s.phase).toBe('evolution');
     s = apply(s, { type: 'choose-branch', uid, branchId: 'eevee-vanguard' });
     const mon = s.box.find((m) => m.uid === uid)!;

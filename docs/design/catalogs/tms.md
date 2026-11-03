@@ -80,6 +80,7 @@ Jigglypuff lines); Mew learns them all. Caterpie, Weedle, their cocoons, Magikar
 | 66 | `tm66-bulk-up` | `bulk-up` | Fighting | — | 1 | 56 | ✅ v0.9.89 |
 | 67 | `tm67-roost` | `roost` | Flying | — | 1 | 20 | ✅ v0.9.89 |
 | 68 | `tm68-overheat` | `overheat` | Fire | 130 | 3 | 13 | ✅ v0.9.89 |
+| 69 | `tm69-return` | `return` | Normal | 90 | 2 | 149 | ✅ v0.9.90 (Gen II's TM27; power at full Friendship, §6.3.9) |
 
 **Notes**
 - TM01–TM49 are Gen I moves, as Gen I's own TMs were (Shadow Bone and Foresight left with the moves Gen I never had; Rock Slide, Dig and Swift took their numbers). Iron Tail returned with Steel in v0.9.84. (Foresight's idea — the move version of `keen-eye`, revealing intents for a turn — waits for a card that can carry it.)

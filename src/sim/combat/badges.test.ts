@@ -190,7 +190,7 @@ describe('Badges — §5.10.2', () => {
   });
 
   it('Rainbow_HealsAStatusedLeadAtTurnStart_AndNobodyElse_§5.10.2', () => {
-    const team = (status?: 'poison') => [{ species: 'squirtle', level: 12, moves: ['tackle'], hpPercent: 50, ...(status ? { status } : {}) }, STARTERS[0]!, STARTERS[2]!];
+    const team = (status?: 'poison') => [{ species: 'squirtle', level: 16, moves: ['tackle'], hpPercent: 50, ...(status ? { status } : {}) }, STARTERS[0]!, STARTERS[2]!];
     const opening = (badges: string[], status?: 'poison') => bare({ team: team(status), enemies: [PIDGEY], badges });
     // Poisoned: turn 1 opens 3 HP up, and every later turn start pays again (turn 2 is 6 up).
     expect(leadOf(opening(['rainbow-badge'], 'poison')).hp - leadOf(opening([], 'poison')).hp).toBe(3);
@@ -248,7 +248,7 @@ describe('Badges — §5.10.3', () => {
 
   it('Glacier_AStatusedEnemysNextAttackHitsSofter_ThenTheChillIsSpent_§5.10.3', () => {
     // An enemy whose only card is an attack, so its next action is the hit the chill is meant for.
-    const brute = { species: 'pidgey', level: 20, tier: 'wild' as const, phaseCount: 1 as const, moves: ['tackle'] };
+    const brute = { species: 'pidgey', level: 28, tier: 'wild' as const, phaseCount: 1 as const, moves: ['tackle'] };
     const play = (badges: string[]) => {
       const s = withHand(bare({ team: teamWithKit(['probe-poison', 'tackle']), enemies: [brute], badges }), ['probe-poison']);
       return dispatch(s, { type: 'play-card', cardId: handCard(s, 'probe-poison').id });

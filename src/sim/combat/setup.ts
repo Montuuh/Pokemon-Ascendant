@@ -17,6 +17,12 @@ import { beginTurn } from './turn';
 // §3.2.1 — Combat Start: lock the team, build the Skill Deck (4 × 3) and the Consumable Pile, set the Lead,
 // carry HP in, clear stages/statuses (unless the scenario seeds them), apply start-of-combat abilities.
 
+/** §6.3.8 — the Speed stage a held item starts its wearer at (the Macho Brace's −1); 0 for every other. */
+function heldStartSpeed(itemId: string | undefined, ctx: CombatCtx): number {
+  const stage = itemId ? ctx.content.heldItem(itemId).params?.speedStage : undefined;
+  return typeof stage === 'number' ? stage : 0;
+}
+
 function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: CombatCtx, traumaStacks = 0): Combatant {
   const species = ctx.content.species(setup.species);
   const arch = (setup as TeamMemberSetup).archetype;
@@ -44,7 +50,8 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
       defense: statAtLevel(species, 'defense', setup.level, arch) + (boosts.defense ?? 0),
       speed: statAtLevel(species, 'speed', setup.level, arch) + (boosts.speed ?? 0),
     },
-    stages: { attack: 0, defense: 0, speed: 0 },
+    // §6.3.8 Macho Brace — a held item that weighs its wearer down starts it a stage slower.
+    stages: { attack: 0, defense: 0, speed: heldStartSpeed((setup as TeamMemberSetup).heldItem, ctx) },
     rhythm: 0,
     status: null,
     confusionTurns: 0,
@@ -57,6 +64,8 @@ function makeCombatant(uid: string, setup: TeamMemberSetup | EnemySetup, ctx: Co
     regen: null,
     heldItemId: (setup as TeamMemberSetup).heldItem ?? null,
     endureAvailable: true,
+    ...((setup as TeamMemberSetup).friendship !== undefined ? { friendship: (setup as TeamMemberSetup).friendship } : {}),
+    ...(((setup as TeamMemberSetup).friendship ?? 0) >= ctx.config.friendship.endure ? { fondEndure: true } : {}),
     // §7.3.5 — the run carries the record in; a fixture fight starts everyone at zero.
     defeats: (setup as TeamMemberSetup).defeats ?? 0,
     ...((setup as TeamMemberSetup).soulLinked ? { soulLinked: true } : {}),

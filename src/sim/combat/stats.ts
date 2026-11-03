@@ -22,12 +22,13 @@ export const ARCHETYPE_STAT_BIAS: Record<BranchArchetype, Record<'hp' | Stat, nu
  * series'). Every stat grows in proportion to its own base, so a species' total at any level keeps the proportion
  * of its base total: Magikarp stays small and Gyarados grows big, a final form stands above its pre-evolutions at
  * the same level, and a single stage or a Legendary carries its higher total. Chosen so the mean total at Lv 30 is
- * where the old flat per-line growth left it (584).
+ * where the old flat per-line growth left it (584). v0.9.90: 0.035 → 0.025, as the levels stretched by 1.4 (§6.2.4): a
+ * Pokémon at the same point of the run has the same stats at its real level that it had at the compressed one.
  */
-export const STAT_GROWTH_RATE = 0.035;
+export const STAT_GROWTH_RATE = 0.025;
 
 /** §6.2.3 — HP also gains this much a level whatever its base, as the series adds the level to HP: a low-level fight keeps some length. */
-export const HP_PER_LEVEL = 1;
+export const HP_PER_LEVEL = 0.7;
 
 // §6.2.3 — level-scaled base stats: base × (1 + rate × (level − 1)), then the archetype's lean (§6.3.4) for a
 // Pokémon that has taken a path. (Until v0.9.10: base + a flat per-line growth × (level − 1), which gave Geodude

@@ -107,9 +107,9 @@ describe('Region Modifiers inside a fight — §7.3.6', () => {
     // Three Water Pokémon: the modifier boosts Water, and says so before it is taken.
     const water = start(scenario({
       team: [
-        { species: 'squirtle', level: 12 },
-        { species: 'poliwag', level: 12 },
-        { species: 'psyduck', level: 12 },
+        { species: 'squirtle', level: 16 },
+        { species: 'poliwag', level: 16 },
+        { species: 'psyduck', level: 16 },
       ],
       enemies: [PIDGEY],
       regionModifier: 'type-affinity',
@@ -169,7 +169,7 @@ describe("The v0.7.5 modifiers — §2.11.3", () => {
 
   it('MassMobilization_AStepForwardDrawsACard', () => {
     const step = (modifier?: string) => {
-      let s = start(scenario({ team: [STARTERS[1]!, { species: 'charmeleon', level: 16, moves: ['quick-attack', 'ember'] }], enemies: [PIDGEY], ...(modifier ? { regionModifier: modifier } : {}) }));
+      let s = start(scenario({ team: [STARTERS[1]!, { species: 'charmeleon', level: 22, moves: ['quick-attack', 'ember'] }], enemies: [PIDGEY], ...(modifier ? { regionModifier: modifier } : {}) }));
       const card = [...s.player.hand, ...s.player.deck].find((c) => combatContent.move(c.moveId).modifier === 'step-forward');
       if (!card) return null;
       s = tweak(s, (d) => {

@@ -98,7 +98,7 @@ Pokémon.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
   numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier on Attack only — an enemy's HP is
-  never scaled (v0.9.12; ×0.62 / ×0.78 / ×0.82, divisor 5) — **Acting Twice** from R2 (§5.6.1: two intents on one 3-AP
+  never scaled (v0.9.12; ×0.55 / ×0.70 / ×0.76 since v0.9.90's real evolution levels, divisor 5) — **Acting Twice** from R2 (§5.6.1: two intents on one 3-AP
   budget, broken by a quarter of its HP or a super-effective hit; a Rare, an Ace Trainer, a Gym's ace, R3's Elite), and a
   curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
@@ -144,7 +144,7 @@ trainer, the Leader at 2×, a Wild Area its habitat's landmark in one grass (the
 row — and **roll who leads on entry** (v0.9.7, §2.6.2). All 146 non-Legendary species placed by Region strength:
 R1 basics, R2 middle forms, R3 final forms only; the starters are Rares at their Region's form (§2.6.3). 8 biomes
 bound to Regions; **Naturalist's Lens** makes the Rare 30 %, the **Lure Module** keeps the better of two rolls.
-**Recruit bands:** R1 5–13 · R2 14–22 · R3 24–32 (v0.8.10: R2 and R3 up two, so the team stays a level or two over).
+**Recruit bands:** R1 5–18 · R2 19–30 · R3 33–44 (v0.9.90's real levels: v0.8.10's 5–13 · 14–22 · 24–32, every level ×1.4 from Lv 1, §6.2.4).
 
 **Running (§3.1.2, 2026-09-21)** — any Action-phase turn except a Gym: the enemy's telegraphed action lands, the
 fight ends as Escaped (no XP/drop/catch), and the toll comes off: wild −20 % ₽ + Trauma on the Lead · trainer
@@ -353,8 +353,10 @@ learnset of its own. Deck contribution is `min(known, 4)`. A run opens with a **
 recruit and level. **Every move is a Gen I move** at its modern type (v0.9.5), one made better (**+**) where its type
 has nowhere stronger to climb, or a later one: Dark and Steel's (v0.9.84) and Gen II–IV's keyword moves (v0.9.89).
 
-**Evolution** — player-initiated between nodes, permanent. **12 and 26** are the uniform thresholds (a few
-bespoke exceptions, e.g. Magikarp at 18). At **each** evolution you freely choose an archetype —
+**Evolution** — player-initiated between nodes, permanent. **The series' levels and methods** (v0.9.90, §6.2.4, §6.3.7):
+Gen I's level, or a stone only (§6.3.2), or a level-up holding its own item for a trade line (Twisted Spoon, Macho Brace,
+Hard Stone, Spell Tag, Metal Coat; §6.3.8), or Friendship for Umbreon (§6.3.9: 0–255 per Pokémon and run, the Center's
+grooming, the Soothe Bell, Return, a hold-on at 1 HP at its top); the shops always carry what an evolution waits on. At **each** evolution you freely choose an archetype —
 **Vanguard / Specialist / Support** — and stage 1 does not lock stage 2. Payload: **stat upscale**, then the first
 evolution **upgrades two slots and adds one** card, and the last **swaps up to three slots** for the archetype's
 signature and adds none; then the evolved form **learns its line's signature moves by level** (v0.9.11), so every path

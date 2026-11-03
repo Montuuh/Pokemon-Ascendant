@@ -58,7 +58,7 @@ export const SOCIAL_CALLERS: readonly string[] = [
 export const GROUP_BREATHER = { perEnemy: 8, cap: 30 } as const;
 
 /** Levels a pack's companions, a caller's helpers and a boss's support stand below the Pokémon they serve. */
-export const COMPANION_LEVEL_GAP = 2;
+export const COMPANION_LEVEL_GAP = 3;
 
 export type GroupPlan =
   | { kind: 'single' }

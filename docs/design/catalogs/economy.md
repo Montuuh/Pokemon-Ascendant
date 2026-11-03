@@ -113,8 +113,10 @@ and Dratini are the Safari's too: the park's are stalked, the Trader's are stole
 
 Each figure is **per enemy**, so a two-Pokémon trainer pays double.
 
-**Target arc** (§6.2.4): first evolution around the end of Region 1, final evolution around the end of
-Region 2, which is why the thresholds were compressed to a uniform 12 and 26.
+**Target arc** (§6.2.4): the series' own evolution levels, staggered across the run (v0.9.90); until then the
+thresholds were compressed to a uniform 12 and 26, first evolution at the end of Region 1 and final at the end of
+Region 2. The curve is `8 + 2(L − 1)` since v0.9.90 (§6.2.3), the old `12 + 4(L − 1)` on the stretched scale; the
+measurements below are on the old scale.
 
 **Measured, 2026-09-19.** The seven-node Region 1 route takes a Lv 5 starter to **Lv 14–17** and fires 2–4
 evolutions per run (`src/sim/balance/runBalance.test.ts`, 18 seeds per starter). The first values tried

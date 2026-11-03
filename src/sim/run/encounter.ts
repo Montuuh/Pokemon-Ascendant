@@ -87,6 +87,8 @@ export function activeSetups(run: RunState, content: ContentRegistry): ActiveSet
       if (mon.heldItem) setup.heldItem = mon.heldItem;
       // §7.3.5 — the run's record walks into the fight, so Champion's Crest is worth what it has earned.
       if (mon.defeats) setup.defeats = mon.defeats;
+      // §6.3.9 — and so does how it feels about you.
+      setup.friendship = mon.friendship;
       // §5.14 — a caught shiny wears its palette in every fight after.
       if (mon.shiny) setup.shiny = true;
       // §2.12.3 — and a Training Grounds' Stat Boost goes with it.

@@ -24,7 +24,7 @@ import { generateLeague, microRestPct } from './league';
 import { BLACK_MARKET, candyPrice, fencePrice, rollBlackMarket, showcaseLevel, wagerChance } from './blackMarket';
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { prizeLabel, spinReel } from './finds';
-import { applyBranch, autoPickMoves, DEFAULT_PROGRESSION, encounterXp, grantXp, isEvolutionReady, learnMove, levelPush, levelXpFactor, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
+import { applyBranch, autoPickMoves, befriend, DEFAULT_PROGRESSION, encounterXp, evolveMethod, grantXp, isEvolutionReady, learnMove, levelPush, levelXpFactor, readyBranches, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
 import { BOND_TIER } from '../meta/bond';
 import { copyIsShiny } from './shiny';
 import type { BlackMarketState, HealLine, LevelUp, MapNode, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunPhase, RunReduceResult, RunState, ShopSlot } from './types';
@@ -51,6 +51,8 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 // §2 — the run reducer. Pure: (state, action) → state, exactly like the combat reducer, so a run is a seed
 // plus an action log and a save is that pair (§10.7.4, §10.8).
 
+// 23 — v0.9.90: real evolution levels (every level ×1.4 from Lv 1), a Pokémon's Friendship and its primed evolution,
+//      the Metal Coat a held item (§6.2.4, §6.3.7–§6.3.9). Migrated from 22 in save.ts.
 // 13 — v0.7.7: the City carries Team Rocket's Black Market (`city.blackMarket`) and the MarketRNG cursor (§2.11.6),
 //      and the Ring is a building of its own (§2.9.4.1). Migrated from 12 in save.ts: a Celadon visit already under
 //      way has no market rolled, so its poster hides nothing this time.
@@ -66,7 +68,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 22;
+export const RUN_SAVE_VERSION = 23;
 
 export interface RunCtx {
   content: ContentRegistry;
@@ -119,6 +121,7 @@ export function newPartyMon(speciesId: string, level: number, content: ContentRe
     status: null,
     confusionTurns: 0,
     heldItem: null,
+    friendship: DEFAULT_PROGRESSION.friendship.start,
   };
   mon.hp = maxHpOf(mon, content);
   return mon;
@@ -266,6 +269,23 @@ function catalystLevels(run: RunState, content: ContentRegistry): number {
   if (!run.relics.includes('evolution-catalyst') || run.spentRelics.includes('evolution-catalyst')) return 0;
   const levels = content.relic('evolution-catalyst').params?.levels;
   return typeof levels === 'number' ? levels : 0;
+}
+
+/** §6.3.8 Macho Brace — what a held item multiplies its wearer's XP by: 1 for every other. */
+function heldXpMultiplier(mon: PartyMon, content: ContentRegistry): number {
+  if (!mon.heldItem) return 1;
+  const item = content.heldItem(mon.heldItem);
+  return item.hook === 'xp-multiplier' && typeof item.params?.multiplier === 'number' ? item.params.multiplier : 1;
+}
+
+/** §6.3.9 Soothe Bell — what every Friendship gain is multiplied by: 1 without one. */
+export function friendshipScale(run: RunState, content: ContentRegistry): number {
+  let m = 1;
+  for (const id of run.relics) {
+    const r = content.relic(id);
+    if (r.hook === 'friendship-multiplier' && typeof r.params?.multiplier === 'number') m *= r.params.multiplier;
+  }
+  return m;
 }
 
 /** §6.3 — manual resumption revalidates the current stage, level, Catalyst and reserved stone. */
@@ -766,12 +786,10 @@ function queueEvolutions(draft: RunState, content: ContentRegistry): void {
     if (!ready) continue;
     if (draft.pendingEvolutions.some((p) => p.uid === mon.uid)) continue;
     // One Pokémon per run: the first that qualifies takes the Catalyst's four levels, and nobody else does.
+    const branchIds = readyBranches(mon, content, isEvolutionReady(mon, content) ? 0 : early);
     if (!isEvolutionReady(mon, content)) early = 0;
-    draft.pendingEvolutions.push({
-      uid: mon.uid,
-      from: mon.speciesId,
-      branchIds: content.species(mon.speciesId).branches.map((b) => b.id),
-    });
+    // §6.3.7 — only the branches whose method holds: a Friendship Eevee is offered Umbreon, not the stones' three.
+    draft.pendingEvolutions.push({ uid: mon.uid, from: mon.speciesId, branchIds });
   }
 }
 
@@ -1082,6 +1100,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           }
           if (result.fainted) {
             mon.traumaStacks = Math.min(10, mon.traumaStacks + 1);
+            // §6.3.9 — a faint costs some Friendship.
+            befriend(mon, -ctx.progression.friendship.faint, ctx.progression);
             draft.stats.faints += 1;
             say(draft, `${ctx.content.species(mon.speciesId).name} fainted — Trauma ${mon.traumaStacks}.`);
           }
@@ -1193,10 +1213,18 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // §6.2.1 — scaled per Pokémon against the level of what was beaten (the average, for a team).
         const foes = draft.pendingScenario?.enemies ?? [];
         const foeLevel = foes.length ? foes.reduce((a, e) => a + e.level, 0) / foes.length : 1;
+        // §6.3.9 — a won fight befriends the Active Team that stood to its end, the Lead a little more; before the XP, so a
+        // level gained in the same fight sees it.
+        const fondness = friendshipScale(draft, ctx.content);
+        const { win, lead } = ctx.progression.friendship;
         for (const mon of draft.box) {
-          const scaled = pot * levelXpFactor(foeLevel, mon.level, ctx.progression);
+          if (activeIds.has(mon.uid) && mon.hp > 0) befriend(mon, (win + (mon.uid === draft.activeUids[0] ? lead : 0)) * fondness, ctx.progression);
+        }
+        for (const mon of draft.box) {
+          // §6.3.8 Macho Brace — its wearer takes half again.
+          const scaled = pot * levelXpFactor(foeLevel, mon.level, ctx.progression) * heldXpMultiplier(mon, ctx.content);
           const amount = Math.round(activeIds.has(mon.uid) ? scaled : scaled * share);
-          const up = grantXp(mon, amount, ctx.content, ctx.progression);
+          const up = grantXp(mon, amount, ctx.content, ctx.progression, fondness);
           xpAwarded.push({ uid: mon.uid, amount });
           if (up) {
             levelUps.push(up);
@@ -1211,7 +1239,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         // §5.6.5 — the runner's Rare Candy: one level for the Lead, with whatever the level brings (§2.11.6's).
         const candyFor = draft.box.find((m) => m.uid === draft.activeUids[0] && m.hp > 0) ?? draft.box.find((m) => activeIds.has(m.uid) && m.hp > 0);
         for (let i = 0; i < (runnerPrize?.candy ?? 0) && candyFor; i++) {
-          const up = grantXp(candyFor, xpToNext(candyFor.level, ctx.progression) - candyFor.xp, ctx.content, ctx.progression);
+          const up = grantXp(candyFor, xpToNext(candyFor.level, ctx.progression) - candyFor.xp, ctx.content, ctx.progression, fondness);
           if (!up) continue;
           const had = levelUps.find((l) => l.uid === up.uid);
           if (had) {
@@ -1417,7 +1445,12 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           say(draft, 'The Evolution Catalyst is spent.');
         }
         if (pending.stone) draft.stones.splice(draft.stones.indexOf(pending.stone), 1);
+        // §6.3.8 — the held item it levelled up with is spent by the evolution, as a traded one is in the series.
+        const species = ctx.content.species(mon.speciesId);
+        const spent = !pending.stone && !pending.forced && evolveMethod(species, ctx.content.branch(action.branchId)) === 'held-item' ? mon.heldItem : null;
+        if (spent) mon.heldItem = null;
         applyBranch(mon, action.branchId, ctx.content);
+        if (spent) say(draft, `The ${ctx.content.heldItem(spent).name} is gone.`);
         // §4.2.7.1 — an evolution into a type immune to the status it carries clears it.
         if (mon.status && isImmuneToStatus(ctx.content.species(mon.speciesId).types, mon.status.kind)) mon.status = null;
         const branch = ctx.content.branch(action.branchId);
@@ -1451,9 +1484,10 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const mon = draft.box.find((m) => m.uid === action.uid)!;
         const ready = evolutionResume(draft, mon, ctx.content)!;
         const use = ready.stone ? stoneUse(ready.stone, mon.speciesId, ctx.content) : null;
+        const all = ctx.content.species(mon.speciesId).branches.map((b) => b.id);
         draft.pendingEvolutions.unshift({
           uid: mon.uid, from: mon.speciesId,
-          branchIds: use?.branch ? [use.branch] : ctx.content.species(mon.speciesId).branches.map((b) => b.id),
+          branchIds: use?.branch ? [use.branch] : ready.stone || ready.forced ? all : readyBranches(mon, ctx.content, ready.catalyst ? catalystLevels(draft, ctx.content) : 0),
           ...(ready.stone ? { stone: ready.stone } : {}), ...(ready.forced ? { forced: true } : {}), returnTo: draft.phase,
         });
         draft.phase = 'evolution';
@@ -1637,7 +1671,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           if (!mon.pool.includes(to)) mon.pool.push(to);
           say(draft, `${name}'s ${ctx.content.move(from).name} became ${ctx.content.move(to).name}.`);
         } else if (action.upgrade === 'level') {
-          levelPush(mon, ctx.content, ctx.progression);
+          levelPush(mon, ctx.content, ctx.progression, friendshipScale(draft, ctx.content));
           say(draft, `${name} grew to level ${mon.level}.`);
         } else if (action.upgrade === 'evolve') {
           if (!draft.pendingEvolutions.some((p) => p.uid === mon.uid)) {
@@ -1841,7 +1875,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         const price = candyPrice(draft, ctx.content);
         draft.money -= price;
         market.candies -= 1;
-        grantXp(mon, xpToNext(mon.level, ctx.progression) - mon.xp, ctx.content, ctx.progression);
+        grantXp(mon, xpToNext(mon.level, ctx.progression) - mon.xp, ctx.content, ctx.progression, friendshipScale(draft, ctx.content));
         say(draft, `A Rare Candy for ${price} ₽: ${ctx.content.species(mon.speciesId).name} grew to Lv ${mon.level}.`);
         queueMarketEvolutions(draft, ctx.content);
         break;
@@ -2090,6 +2124,17 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         mon.traumaStacks = Math.max(0, mon.traumaStacks - 1);
         mon.hp = Math.min(effectiveMax(draft, mon, ctx.content), mon.hp);
         say(draft, `${ctx.content.species(mon.speciesId).name} looks steadier — Trauma ${mon.traumaStacks}.`);
+        break;
+      }
+
+      // §6.3.9 — the grooming: Friendship for one Pokémon, once each a visit.
+      case 'groom': {
+        const mon = draft.box.find((m) => m.uid === action.uid)!;
+        const city = draft.city!;
+        draft.money -= ctx.progression.friendship.groomPrice;
+        city.groomed = [...(city.groomed ?? []), mon.uid];
+        befriend(mon, ctx.progression.friendship.groom * friendshipScale(draft, ctx.content), ctx.progression);
+        say(draft, `${ctx.content.species(mon.speciesId).name} looks delighted with its grooming.`);
         break;
       }
 
@@ -2534,6 +2579,14 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       if (!mon) return 'unknown-pokemon';
       if (mon.traumaStacks <= 0) return 'no-trauma';
       return state.money < therapyPrice(mon) ? 'cannot-afford' : undefined;
+    }
+
+    case 'groom': {
+      if (state.phase !== 'center' || !state.city) return 'wrong-phase';
+      const mon = state.box.find((m) => m.uid === action.uid);
+      if (!mon) return 'unknown-pokemon';
+      if (state.city.groomed?.includes(mon.uid) || mon.friendship >= ctx.progression.friendship.max) return 'already-groomed';
+      return state.money < ctx.progression.friendship.groomPrice ? 'cannot-afford' : undefined;
     }
 
     case 'use-item': {

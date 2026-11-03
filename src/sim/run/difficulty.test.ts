@@ -38,9 +38,11 @@ describe('Enemies at the forms their levels warrant — §2.7.3', () => {
     expect(evolvedAt('caterpie', 8, content)).toBe('metapod');
     expect(evolvedAt('caterpie', 20, content)).toBe('butterfree');
     expect(evolvedAt('geodude', 11, content)).toBe('geodude');
-    expect(evolvedAt('geodude', 29, content)).toBe('golem');
-    expect(evolvedAt('magikarp', 17, content)).toBe('magikarp');
-    expect(evolvedAt('magikarp', 18, content)).toBe('gyarados');
+    expect(evolvedAt('geodude', 39, content)).toBe('graveler');
+    // §6.3.8 — a trade line's trainers field the last form from the series' level.
+    expect(evolvedAt('geodude', 40, content)).toBe('golem');
+    expect(evolvedAt('magikarp', 19, content)).toBe('magikarp');
+    expect(evolvedAt('magikarp', 20, content)).toBe('gyarados');
   });
 
   it('EveryRoster_StandsInTheFormItsLevelWarrants_TheWildShowsFirstForms', () => {
@@ -125,8 +127,8 @@ describe('The enemy stat tier — §2.2.1', () => {
   });
 
   it('TheAttackTier_ReachesTheCombatant', () => {
-    const plain = start(scenario({ team: [{ species: 'squirtle', level: 10 }], enemies: [PIDGEY] }));
-    const scaled = start(scenario({ team: [{ species: 'squirtle', level: 10 }], enemies: [{ ...PIDGEY, attackMultiplier: 1.5 }] }));
+    const plain = start(scenario({ team: [{ species: 'squirtle', level: 14 }], enemies: [PIDGEY] }));
+    const scaled = start(scenario({ team: [{ species: 'squirtle', level: 14 }], enemies: [{ ...PIDGEY, attackMultiplier: 1.5 }] }));
     expect(scaled.enemies[0]!.base.attack).toBe(Math.round(plain.enemies[0]!.base.attack * 1.5));
   });
 });

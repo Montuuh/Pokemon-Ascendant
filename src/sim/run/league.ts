@@ -44,33 +44,33 @@ export const LEAGUE_MEMBERS: readonly LeagueMember[] = [
   {
     id: 'elite-four-1', name: 'Bruno', title: 'Elite Four', sprite: 'bruno', type: 'fighting', battlefield: { hazard: 'sandstorm' }, stage: 'league-bruno',
     line: 'We will grind you down with our superior power! Hoo hah!',
-    team: [{ species: 'steelix', over: 4, phaseCount: 2 }, { species: 'machamp', over: 5, phaseCount: 3, signature: { move: 'submission', response: 'Ghost immunity or a Fighting-resistant Lead; the move keeps its recoil.' } }],
+    team: [{ species: 'steelix', over: 6, phaseCount: 2 }, { species: 'machamp', over: 7, phaseCount: 3, signature: { move: 'submission', response: 'Ghost immunity or a Fighting-resistant Lead; the move keeps its recoil.' } }],
   },
   {
     id: 'elite-four-2', name: 'Agatha', title: 'Elite Four', sprite: 'agatha', type: 'ghost', battlefield: { hazard: 'toxic-spikes' }, stage: 'league-agatha',
     line: 'Pokémon are for battling, child. I will show you how a real Trainer fights.',
-    team: [{ species: 'arbok', over: 6, phaseCount: 2 }, { species: 'gengar', over: 7, phaseCount: 3, signature: { move: 'night-shade-plus', response: 'Normal immunity or a Ghost-resistant Lead; this is ordinary typed damage, not fixed damage.' } }],
+    team: [{ species: 'arbok', over: 8, phaseCount: 2 }, { species: 'gengar', over: 10, phaseCount: 3, signature: { move: 'night-shade-plus', response: 'Normal immunity or a Ghost-resistant Lead; this is ordinary typed damage, not fixed damage.' } }],
   },
   {
     id: 'elite-four-3', name: 'Will', title: 'Elite Four', sprite: 'will', type: 'psychic', battlefield: { terrain: 'psychic-terrain' }, stage: 'league-will',
     line: 'I have trained all over the world to make my Psychic Pokémon powerful. I cannot lose now.',
-    team: [{ species: 'jynx', over: 7, phaseCount: 2 }, { species: 'slowbro', over: 8, phaseCount: 2 }, { species: 'alakazam', over: 9, phaseCount: 3, signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } }],
+    team: [{ species: 'jynx', over: 10, phaseCount: 2 }, { species: 'slowbro', over: 11, phaseCount: 2 }, { species: 'alakazam', over: 13, phaseCount: 3, signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } }],
   },
   {
     id: 'elite-four-4', name: 'Lance', title: 'Elite Four', sprite: 'lance', type: 'dragon', battlefield: { weather: 'rain-dance' }, stage: 'league-lance',
     line: 'Dragons are mythical Pokémon. They are hard to catch and raise, but their power is superior.',
-    team: [{ species: 'gyarados', over: 9, phaseCount: 2 }, { species: 'aerodactyl', over: 10, phaseCount: 2 }, { species: 'dragonite', over: 11, phaseCount: 3, signature: { move: 'fly', response: 'A Flying-resistant Lead or damage reduction; this Fly gives it no turn out of reach.' } }],
+    team: [{ species: 'gyarados', over: 13, phaseCount: 2 }, { species: 'aerodactyl', over: 14, phaseCount: 2 }, { species: 'dragonite', over: 15, phaseCount: 3, signature: { move: 'fly', response: 'A Flying-resistant Lead or damage reduction; this Fly gives it no turn out of reach.' } }],
   },
   {
     id: 'champion', name: 'Blue', title: 'Champion', sprite: 'blue', type: null, stage: 'league-champion',
     line: 'I hate to say it, but I was waiting for you. Now I get to beat you in front of everyone.',
     // The fifth is the counter-pick (`championAce`); the fourth is the support that stands beside it, buffing it.
     team: [
-      { species: 'pidgeot', over: 10, phaseCount: 2 },
-      { species: 'rhydon', over: 11, phaseCount: 2 },
-      { species: 'arcanine', over: 11, phaseCount: 2 },
-      { species: 'exeggutor', over: 11, phaseCount: 2, moves: ['egg-bomb', 'psychic', 'growth', 'amnesia'] },
-      { species: 'venusaur', over: 13, phaseCount: 3 },
+      { species: 'pidgeot', over: 14, phaseCount: 2 },
+      { species: 'rhydon', over: 15, phaseCount: 2 },
+      { species: 'arcanine', over: 15, phaseCount: 2 },
+      { species: 'exeggutor', over: 15, phaseCount: 2, moves: ['egg-bomb', 'psychic', 'growth', 'amnesia'] },
+      { species: 'venusaur', over: 18, phaseCount: 3 },
     ],
   },
 ];

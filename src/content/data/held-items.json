@@ -81,7 +81,7 @@
     {
       "id": "twisted-spoon",
       "name": "Twisted Spoon",
-      "description": "The wearer deals +20 % with psychic moves.",
+      "description": "The wearer deals +20 % with psychic moves. A Kadabra holding it evolves at its next level-up, and the spoon is spent.",
       "hook": "damage-dealt",
       "params": {
         "type": "psychic",
@@ -103,12 +103,44 @@
     {
       "id": "hard-stone",
       "name": "Hard Stone",
-      "description": "The wearer deals +20 % with rock moves.",
+      "description": "The wearer deals +20 % with rock moves. A Graveler holding it evolves at its next level-up, and the stone is spent.",
       "hook": "damage-dealt",
       "params": {
         "type": "rock",
         "multiplier": 1.2,
         "wearerOnly": true
+      }
+    },
+    {
+      "id": "spell-tag",
+      "name": "Spell Tag",
+      "description": "The wearer deals +20 % with ghost moves. A Haunter holding it evolves at its next level-up, and the tag is spent.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "ghost",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "metal-coat",
+      "name": "Metal Coat",
+      "description": "The wearer deals +20 % with steel moves. A Scyther or an Onix holding it evolves at its next level-up, and the coat is spent.",
+      "hook": "damage-dealt",
+      "params": {
+        "type": "steel",
+        "multiplier": 1.2,
+        "wearerOnly": true
+      }
+    },
+    {
+      "id": "macho-brace",
+      "name": "Macho Brace",
+      "description": "The wearer takes half again the XP, and starts every fight a Speed stage down. A Machoke holding it evolves at its next level-up, and the brace is spent.",
+      "hook": "xp-multiplier",
+      "params": {
+        "multiplier": 1.5,
+        "speedStage": -1
       }
     },
     {

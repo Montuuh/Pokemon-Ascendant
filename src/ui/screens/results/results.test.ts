@@ -31,7 +31,7 @@ function won(kind: NodeKind, hp = 10, money = 0): RunState {
 
 describe('The result screen — §9.4.5', () => {
   it('xpSegments_OneSegmentPerLevelCrossed', () => {
-    expect(xpSegments({ level: 5, xp: 10 }, { level: 5, xp: 20 })).toEqual([{ level: 5, from: 10 / xpToNext(5), to: 20 / xpToNext(5) }]);
+    expect(xpSegments({ level: 5, xp: 10 }, { level: 5, xp: 14 })).toEqual([{ level: 5, from: 10 / xpToNext(5), to: 14 / xpToNext(5) }]);
     const two = xpSegments({ level: 5, xp: 10 }, { level: 7, xp: 3 });
     expect(two.map((s) => s.level)).toEqual([5, 6, 7]);
     expect(two[0]!.to).toBe(1);

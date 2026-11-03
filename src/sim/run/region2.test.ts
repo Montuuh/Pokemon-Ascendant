@@ -42,8 +42,9 @@ describe('Region 2 — its own content — §2.2, §2.6.1', () => {
       if (n.kind !== 'wild' || n.preview.objective) continue;
       expect(n.preview.levelBand, n.id).toEqual(wildBandFor(n.layer, REGIONS[1]!.wildBand));
     }
-    expect(wildBandFor(0, REGIONS[1]!.wildBand)[0]).toBe(14);
-    expect(wildBandFor(18, REGIONS[1]!.wildBand)[1]).toBe(22);
+    // v0.9.90 (§6.2.4) — 14–22 on the old scale.
+    expect(wildBandFor(0, REGIONS[1]!.wildBand)[0]).toBe(19);
+    expect(wildBandFor(18, REGIONS[1]!.wildBand)[1]).toBe(30);
   });
 
   it('RegionTwo_LanesLookLikeTheirGyms_§2.5', () => {
@@ -92,7 +93,7 @@ describe('Region 2 — its own content — §2.2, §2.6.1', () => {
 describe('The Region 2 Elites — §2.8', () => {
   it('Lapras_FightsWithItsCataloguedScript_NotItsLevelsKit_§2.8.2', () => {
     let s = createRun('squirtle', 7, ctx, 1);
-    const node = { id: 'ew', layer: 9, col: 0, row: 0, kind: 'elite-wild' as const, next: [], preview: { title: 'Wild Lapras', detail: '', speciesIds: ['lapras'], levelBand: [23, 23] as [number, number], enemies: [{ species: 'lapras', level: 23 }] } };
+    const node = { id: 'ew', layer: 9, col: 0, row: 0, kind: 'elite-wild' as const, next: [], preview: { title: 'Wild Lapras', detail: '', speciesIds: ['lapras'], levelBand: [23, 23] as [number, number], enemies: [{ species: 'lapras', level: 32 }] } };
     s = { ...s, map: { ...s.map, nodes: { ...s.map.nodes, ew: node } }, reachable: ['ew'] };
     s = apply(apply(s, { type: 'enter-node', nodeId: 'ew' }), { type: 'begin-combat' });
     const e = s.pendingScenario!.enemies[0]!;
@@ -121,7 +122,7 @@ describe('Catching in Region 2 — §2.6.5, §6.3.1', () => {
     const report: CombatOutcomeReport = {
       outcome: 'caught',
       team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })),
-      caught: { speciesId: 'tentacool', level: 14 },
+      caught: { speciesId: 'tentacool', level: 30 },
       ballsLeft: 0 - 1,
       turns: 4,
     };
@@ -136,7 +137,7 @@ describe('Catching in Region 2 — §2.6.5, §6.3.1', () => {
 
 describe('Region 2 kit pieces — §6.5.2, §8.5.3', () => {
   it('ThickFat_HalvesFireAndIce_AndNothingElse', () => {
-    const seal = start(scenario({ team: [{ species: 'dewgong', level: 20, abilityId: 'thick-fat' }], enemies: [PIDGEY] }));
+    const seal = start(scenario({ team: [{ species: 'dewgong', level: 28, abilityId: 'thick-fat' }], enemies: [PIDGEY] }));
     const target = leadOf(seal);
     expect(abilityConditionalReduction(target, content.move('ember'), content)).toBe(0.5);
     expect(abilityConditionalReduction(target, content.move('ice-beam'), content)).toBe(0.5);
@@ -145,7 +146,7 @@ describe('Region 2 kit pieces — §6.5.2, §8.5.3', () => {
 
   it('LightBall_IsPikachusOnly_AndARaichuEvolvesOutOfIt_§8.5.3', () => {
     const hit = (species: string) => {
-      const s = start(scenario({ team: [{ species, level: 12, heldItem: 'light-ball' }], enemies: [PIDGEY] }));
+      const s = start(scenario({ team: [{ species, level: 16, heldItem: 'light-ball' }], enemies: [PIDGEY] }));
       return itemAttackMultiplier(s, leadOf(s), content.move('thunder-shock'), content);
     };
     expect(hit('pikachu')).toBeCloseTo(1.25);

@@ -17,7 +17,7 @@
 | `barrier-charm` | Barrier Charm | combat | First combat each Region: the first enemy attack deals −20 % | `on-combat-start` | ✅ canon |
 | `quick-claw-charm` | Quick Claw Charm | card | The first card of each fight costs 1 AP less (`ap-cost`, v0.7.5 — was an activated replay) | `ap-cost` | ✅ |
 | `berry-pouch` | Berry Pouch | combat | Healing consumables restore +20 % | `on-heal` | ✅ |
-| `soothe-bell` | Soothe Bell | combat | A Pokémon at full HP at turn start deals +5 % on its next attack | `on-turn-start` | ✅ |
+| `soothe-bell` | Soothe Bell | meta | Every Friendship gain ×2 (§6.3.9; v0.9.90 — until then +5 % at full HP, which nobody missed) | `friendship-multiplier` | ✅ |
 | `coin-pouch` | Coin Pouch | meta | Poké Dollar drops ×1.25 | `on-reward` | ✅ |
 | `ground-gem` | Ground Gem | combat | Ground moves +10 % (party-wide) | `on-damage` | ✅ |
 | `water-gem` | Water Gem | combat | Water moves +10 % | `on-damage` | ✅ |

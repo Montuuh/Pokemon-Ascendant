@@ -38,7 +38,7 @@ export const SAFARI = {
     },
   } as Record<CityId, Record<SafariTier, readonly string[]>>,
   /** A recruit stands at the next Region's recruit floor, up to this many levels over it. */
-  levelSpread: 2,
+  levelSpread: 3,
   /** The board, by tier: its side, and how the Pokémon behaves. */
   tiers: {
     common: { size: 7, sight: 2, speed: 1, temper: 3, ears: 0 },

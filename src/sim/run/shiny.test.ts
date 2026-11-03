@@ -17,8 +17,8 @@ const apply = (s: RunState, a: RunAction): RunState => {
 
 const wildFight = (species: string[]): ScenarioDef => ({
   id: 'x', name: 'x', description: '', kind: 'wild', stage: 'meadow', seed: 1,
-  player: { team: [{ species: 'squirtle', level: 5 }], leadIndex: 0, consumables: [], balls: 0 },
-  enemies: species.map((s) => ({ species: s, level: 5, tier: 'wild' as const, phaseCount: 1 as const })),
+  player: { team: [{ species: 'squirtle', level: 7 }], leadIndex: 0, consumables: [], balls: 0 },
+  enemies: species.map((s) => ({ species: s, level: 7, tier: 'wild' as const, phaseCount: 1 as const })),
 });
 const node = (id: string): MapNode => ({ id } as MapNode);
 
@@ -70,7 +70,7 @@ describe('Shiny — §5.14', () => {
 
   it('ApplyShiny_ATrainersPokemon_IsNeverShiny', () => {
     const run = { ...createRun('squirtle', 11, ctx), perks: { ...createRun('squirtle', 11, ctx).perks, bond: { pidgey: 5 } } };
-    const trainer = { ...wildFight(['pidgey']), kind: 'trainer' as const, enemies: [{ species: 'pidgey', level: 5, tier: 'trainer' as const, phaseCount: 1 as const }] };
+    const trainer = { ...wildFight(['pidgey']), kind: 'trainer' as const, enemies: [{ species: 'pidgey', level: 7, tier: 'trainer' as const, phaseCount: 1 as const }] };
     for (let i = 0; i < 500; i++) expect(applyShiny(trainer, node(`n${i}`), run, content).enemies[0]!.shiny).toBeUndefined();
   });
 
@@ -82,7 +82,7 @@ describe('Shiny — §5.14', () => {
     const report: CombatOutcomeReport = {
       outcome: 'caught',
       team: s.activeUids.map((uid) => ({ uid, hp: 8, status: null, fainted: false })),
-      caught: { speciesId: 'pidgey', level: 6, shiny: true },
+      caught: { speciesId: 'pidgey', level: 8, shiny: true },
       ballsLeft: 0,
       turns: 3,
     };

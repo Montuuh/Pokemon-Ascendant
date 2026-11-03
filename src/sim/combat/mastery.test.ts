@@ -5,7 +5,7 @@ import { purgeOwner } from './deck';
 // §5.13 / §8.6.1 / §8.10 — what the account hands a fight: the fifth card, the revealed intent, Perfect Recall,
 // and the tallies the Tier-2 discoveries read back out.
 
-const BOSS = { species: 'onix', level: 12, tier: 'boss' as const, phaseCount: 2 as const };
+const BOSS = { species: 'onix', level: 16, tier: 'boss' as const, phaseCount: 2 as const };
 
 describe('The Mastery slot — §5.13.2', () => {
   it('AMemberWithAMasteryMove_BringsFiveCards_AndAFaintPurgesFive', () => {
@@ -95,7 +95,7 @@ describe('The fight tally — §8.6.1', () => {
     expect(s.player.tally.damageBy.squirtle).toBeGreaterThanOrEqual(1);
     expect(s.player.tally.faintsOf).toEqual({});
     // A Lead that falls is one faint on its species' record.
-    let f = start(scenario({ team: [{ species: 'caterpie', level: 3 }, { species: 'pidgey', level: 5 }], enemies: [{ ...PIDGEY, level: 12 }] }));
+    let f = start(scenario({ team: [{ species: 'caterpie', level: 4 }, { species: 'pidgey', level: 7 }], enemies: [{ ...PIDGEY, level: 16 }] }));
     f = tweak(f, (d) => { d.player.team[0]!.hp = 1; });
     f = dispatch(f, { type: 'end-turn' });
     expect(f.player.tally.faintsOf).toEqual({ caterpie: 1 });

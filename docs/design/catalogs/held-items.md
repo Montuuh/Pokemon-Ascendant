@@ -16,11 +16,14 @@
 | `nevermeltice` | NeverMeltIce | Wearer's Ice moves +20 % | same |
 | `black-belt` | Black Belt | Wearer's Fighting moves +20 % | same |
 | `sharp-beak` | Sharp Beak | Wearer's Flying moves +20 % | same |
-| `twisted-spoon` | Twisted Spoon | Wearer's Psychic moves +20 % | same |
+| `twisted-spoon` | Twisted Spoon | Wearer's Psychic moves +20 %; a Kadabra holding it evolves at its next level-up, spending it (§6.3.8) | same |
 | `soft-sand` | Soft Sand | Wearer's Ground moves +20 % | same |
-| `hard-stone` | Hard Stone | Wearer's Rock moves +20 % | same |
+| `hard-stone` | Hard Stone | Wearer's Rock moves +20 %; a Graveler holding it evolves at its next level-up, spending it (§6.3.8) | same |
+| `spell-tag` | Spell Tag | Wearer's Ghost moves +20 %; a Haunter holding it evolves at its next level-up, spending it (§6.3.8) | same (v0.9.90) |
+| `metal-coat` | Metal Coat | Wearer's Steel moves +20 %; a Scyther or an Onix holding it evolves at its next level-up, spending it (§6.3.8) | same (v0.9.90: a stone before) |
+| `macho-brace` | Macho Brace | Wearer's XP ×1.5, and it starts every fight a Speed stage down; a Machoke holding it evolves at its next level-up, spending it (§6.3.8) | same (v0.9.90) |
 | `silk-scarf` | Silk Scarf | Wearer's Normal moves +20 % | same |
-| `black-glasses` | Black Glasses | Wearer's Dark moves +20 % | same (v0.9.84; Steel has none — its Metal Coat is the evolution item) |
+| `black-glasses` | Black Glasses | Wearer's Dark moves +20 % | same (v0.9.84) |
 
 ## 2. Type Plates — +10 % wearer, +5 % Lead Aura for the bench (16) 🆕 authored, canon §7.4.3 / §6.5.4
 

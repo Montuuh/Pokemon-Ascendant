@@ -3,6 +3,8 @@
 > Implements §2.8: two distinct node types above Trainer and below Gym. The **Elite Trainer** is the
 > late-trunk guaranteed node (≈L7); the **Elite Wild** is a seeded special node (≤1 per Region, not on every
 > route). Source of truth for the numbers: `docs/design/catalogs/elites.md`.
+>> **Levels (v0.9.90).** The levels in this catalogue's tables are on the old scale; the data's moved by
+> `round(1 + 1.4 (L − 1))` — 12 → 16, 20 → 28, 26 → 36 — when evolution took the series' levels (§6.2.4).
 
 ## 1. Elite Trainer roster weights (§2.8.1)
 

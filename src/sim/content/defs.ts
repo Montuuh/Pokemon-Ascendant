@@ -40,7 +40,7 @@ export type MoveEffect =
   /** §4.1.6 — heal a share of the damage this move actually dealt (Absorb, Mega Drain, Leech Life). */
   | { kind: 'drain'; percentOfDamage: number }
   /** §5.13.2 — more power while a condition holds: a Poisoned target, the user below a share of its HP, per Trauma stack. */
-  | { kind: 'power-bonus'; when: 'target-poisoned' | 'self-below' | 'per-trauma' | 'in-field'; multiplier?: number; below?: number; perStack?: number; field?: FieldId }
+  | { kind: 'power-bonus'; when: 'target-poisoned' | 'self-below' | 'per-trauma' | 'in-field' | 'friendship'; multiplier?: number; below?: number; perStack?: number; field?: FieldId }
   /** §5.13.2 Super Fang — the hit takes a share of the target's current HP. */
   | { kind: 'fixed-damage'; percentOfTargetHp: number }
   /** §5.13.2 Belly Drum — the user pays a share of its max HP, never below 1. */
@@ -144,7 +144,12 @@ export interface EvolutionBranch {
   adds: string[];
   /** §6.5.1 — the passive this branch grants, when the pool's first entry is not the right one. */
   abilityId?: string;
+  /** §6.3.7 — a branch with a method of its own (Eevee's Umbreon is Friendship); absent, the species' method. */
+  by?: 'level' | EvolveMethod;
 }
+
+/** §6.3.7 — the ways a Pokémon evolves besides its level. */
+export type EvolveMethod = 'stone' | 'held-item' | 'friendship';
 
 export interface SpeciesDef {
   id: string;
@@ -172,6 +177,13 @@ export interface SpeciesDef {
   eggMoves: string[];
   /** §6.2.4 — the level this species evolves at. Absent on a final form. */
   evolveLevel?: number;
+  /**
+   * §6.3.7 — how it evolves: absent is by level (`evolveLevel`); a stone, levelling up holding `evolveItem`, or
+   * Friendship. For those three `evolveLevel` is the level from which a trainer or the wild fields the evolved form (§2.7.3).
+   */
+  evolveBy?: EvolveMethod;
+  /** §6.3.8 — the held item a `held-item` line levels up with. */
+  evolveItem?: string;
   evolvesTo: string[];
   /** §6.3 — the archetypes on offer when this species evolves. Empty on a final form. */
   branches: EvolutionBranch[];
@@ -216,6 +228,8 @@ export type ItemHook =
   | 'status-duration'
   /** Run-layer multipliers. */
   | 'xp-multiplier'
+  /** §6.3.9 Soothe Bell — every Friendship gain, multiplied. */
+  | 'friendship-multiplier'
   | 'money-multiplier'
   | 'bench-xp-share'
   /** Wild nodes offer one more species to choose from. */
@@ -517,6 +531,8 @@ export interface TeamMemberSetup {
   heldItem?: string;
   /** §7.3.5 Champion's Crest — enemies this Pokémon has defeated so far this run. */
   defeats?: number;
+  /** §6.3.9 — the run's Friendship, carried in for Return and the hold-on (§7.3.6). Absent is a fixture's: the start value. */
+  friendship?: number;
   /** §5.14 — a shiny the run caught: it wears the official shiny palette. */
   shiny?: boolean;
   /** §2.12.3 — the Training Grounds' flat additions, carried from the Box. */

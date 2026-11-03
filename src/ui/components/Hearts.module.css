@@ -1,0 +1,17 @@
+/* §6.3.9 — Friendship's hearts: an icon tint (the brand red is never running text, D5). */
+.hearts {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--brand-red);
+}
+.heart {
+  position: relative;
+  display: inline-grid;
+}
+.fill {
+  position: absolute;
+  inset: 0;
+}
+.heart[data-fill='half'] .fill {
+  clip-path: inset(0 50% 0 0);
+}

@@ -26,7 +26,7 @@ export const BLACK_MARKET = {
   tradeOffers: 2,
   /** The Fence's Rare Candies: how many are on the counter a visit, and what one costs before modifiers. */
   candies: 3,
-  candyPrice: 400,
+  candyPrice: 280,
   /** The Fence pays this share of a relic's value. */
   fenceShare: 0.4,
   /** What a relic is worth to the Fence and the Gambler: its shop price, and a Legendary twice a Rare. */

@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { STARTERS, ctx, dispatch, eventsOf, handCard, scenario, start, tweak, withHand } from '../testing/harness';
 import { phaseMarkers, bossArchetype } from './boss';
 
-const ACE = { species: 'golem', level: 15, tier: 'boss' as const, phaseCount: 3 as const };
-const TEAM = [{ species: 'wartortle', level: 15 }, { species: 'ivysaur', level: 15 }, { species: 'charmeleon', level: 15 }];
+const ACE = { species: 'golem', level: 21, tier: 'boss' as const, phaseCount: 3 as const };
+const TEAM = [{ species: 'wartortle', level: 21 }, { species: 'ivysaur', level: 21 }, { species: 'charmeleon', level: 21 }];
 
 describe('Boss phases — §5.8.3 / §5.9.4', () => {
   it('PhaseMarkers_MatchPhaseCount', () => {
@@ -33,7 +33,7 @@ describe('Boss phases — §5.8.3 / §5.9.4', () => {
   });
 
   it('Sturdy_SurvivesOneLethalHitAtOneHP_ThenConsumed', () => {
-    let s = tweak(start(scenario({ team: [{ species: 'blastoise', level: 40, moves: ['surf', 'hydro-pump', 'water-gun', 'withdraw'] }], enemies: [ACE] })), (d) => {
+    let s = tweak(start(scenario({ team: [{ species: 'blastoise', level: 56, moves: ['surf', 'hydro-pump', 'water-gun', 'withdraw'] }], enemies: [ACE] })), (d) => {
       d.enemies[0]!.hp = 5;
       d.player.ap = 6;
     });
@@ -47,7 +47,7 @@ describe('Boss phases — §5.8.3 / §5.9.4', () => {
   });
 
   it('SequentialEnemies_NextEntersWithIntent_VictoryOnlyWhenQueueEmpty', () => {
-    let s = start(scenario({ kind: 'trainer', team: STARTERS, enemies: [{ species: 'caterpie', level: 3, tier: 'trainer', phaseCount: 1 }, { species: 'pidgey', level: 8, tier: 'trainer', phaseCount: 1 }] }));
+    let s = start(scenario({ kind: 'trainer', team: STARTERS, enemies: [{ species: 'caterpie', level: 4, tier: 'trainer', phaseCount: 1 }, { species: 'pidgey', level: 11, tier: 'trainer', phaseCount: 1 }] }));
     s = tweak(s, (d) => {
       d.enemies[0]!.hp = 1;
     });
@@ -62,7 +62,7 @@ describe('Boss phases — §5.8.3 / §5.9.4', () => {
 
   it('Onslaught_Phase2_OnlyOffensiveIntents', () => {
     // Pidgeot (normal) ace in phase 2 must not pick Roost/Tailwind/Sand Attack.
-    let s = tweak(start(scenario({ kind: 'boss', team: TEAM, enemies: [{ species: 'pidgeot', level: 15, tier: 'boss', phaseCount: 3 }] })), (d) => {
+    let s = tweak(start(scenario({ kind: 'boss', team: TEAM, enemies: [{ species: 'pidgeot', level: 21, tier: 'boss', phaseCount: 3 }] })), (d) => {
       d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.4);
     });
     for (let i = 0; i < 4; i++) {

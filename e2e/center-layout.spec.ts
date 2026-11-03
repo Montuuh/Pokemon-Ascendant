@@ -17,7 +17,7 @@ for (const [width, height] of [[1920, 1080], [1280, 720]] as const) {
       await expect(rows.first()).toContainText('HP 1/'); await expect(rows.first()).toContainText('Trauma 3'); await expect(rows.nth(1)).toContainText('HP 0/');
       await page.screenshot({ path: `playtest/ap-evolution-center-2026-10-30/full-box-top-${height}-${scale}.png` });
       for (const row of [rows.first(), rows.last()]) { await row.scrollIntoViewIfNeeded(); await expect(row).toBeInViewport(); }
-      for (const id of ['door-center-heal', 'door-center-therapy', 'door-center-pc', 'center-exit']) {
+      for (const id of ['door-center-heal', 'door-center-therapy', 'door-center-pc', 'door-center-groom', 'center-exit']) {
         const door = page.getByTestId(id); await door.scrollIntoViewIfNeeded(); await expect(door).toBeInViewport();
         expect(await door.evaluate((el) => { const r = el.getBoundingClientRect(); const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2); return hit === el || !!hit && el.contains(hit); })).toBe(true);
       }

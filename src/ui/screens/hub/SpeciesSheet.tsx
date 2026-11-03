@@ -8,6 +8,8 @@ import { PixelSprite } from '@/ui/components/PixelSprite';
 import { MoveChip } from '@/ui/components/MoveChip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { ARCHETYPE_LABEL, DEX_EVO_TEXT } from '@/ui/strings';
+import { EvolveMethodLabel } from '@/ui/components/EvolveMethodLabel';
+import { evolveSentence } from '@/ui/evolutionText';
 import { spriteOf, portraitOf } from '@/ui/art';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { abilityTip, branchTip, kitPathsTip, learnsetTip, moveDefTip } from '@/ui/tips';
@@ -67,7 +69,7 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
             {met && (
               <>
                 <Tipped tip={<Tip title={`${cap(s.rarity)} species`} body={`Familiar after ${familiarAt} knock-out${familiarAt === 1 ? '' : 's'}. Catch ceiling with a Poké Ball at ~0 HP: ${Math.round(catchRateOf(s.id, content) * 100)} %.`} />} className={styles.heroChip}>{cap(s.rarity)}</Tipped>
-                <Tipped tip={<Tip title={s.stage === 'basic' ? 'Basic form' : s.stage === 'stage1' ? 'First evolution' : 'Final evolution'} body={s.evolvesTo.length ? `Evolves at Lv ${s.evolveLevel} — the Kit tab has where.` : 'This line goes no further.'} />} className={styles.heroChip}>{s.stage === 'basic' ? 'Basic' : s.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}</Tipped>
+                <Tipped tip={<Tip title={s.stage === 'basic' ? 'Basic form' : s.stage === 'stage1' ? 'First evolution' : 'Final evolution'} body={s.evolvesTo.length ? `${evolveSentence(s.id, content)} The Kit tab has where.` : 'This line goes no further.'} />} className={styles.heroChip}>{s.stage === 'basic' ? 'Basic' : s.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}</Tipped>
               </>
             )}
             <button type="button" className={styles.heroChip} onClick={() => setTab('line')} data-testid="dex-sheet-line">
@@ -185,7 +187,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
           moves (v0.9.11) — the same on every path, so the rows below leave them out. */}
       {s.learnset.length > 0 && (
         <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>{DEX_EVO_TEXT.learnset} <InfoDot tip={learnsetTip(s.evolveLevel, s.evolvesTo.length > 0)} /></h3>
+          <h3 className={styles.sectionTitle}>{DEX_EVO_TEXT.learnset} <InfoDot tip={learnsetTip(s.id)} /></h3>
           <ul className={styles.moves}>{s.learnset.map((e, i) => moveRow(e.move, e.level, false, `${e.move}-${i}`))}</ul>
         </section>
       )}
@@ -248,7 +250,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
 
       {s.evolvesTo.length > 0 && (
         <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>Evolves {s.evolveLevel ? `at Lv ${s.evolveLevel}` : ''}</h3>
+          <h3 className={styles.sectionTitle}>Evolves <EvolveMethodLabel speciesId={s.id} testId="dex-sheet-evolves-method" /></h3>
           <div className={styles.stages}>
             {s.evolvesTo.map((id) => (
               <button key={id} type="button" className={styles.stage} onClick={() => onSpecies(id)} data-testid={`dex-sheet-evolves-${id}`}>

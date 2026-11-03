@@ -5,9 +5,9 @@ import type { CombatState, EnemyCombatant } from './state';
 import { ALL_GYMS } from '../run/region';
 import { CHAMPION_SIGNATURE, LEAGUE_MEMBERS } from '../run/league';
 
-const TEAM = [{ species: 'wartortle', level: 15 }, { species: 'ivysaur', level: 15 }, { species: 'charmeleon', level: 15 }];
-const GOLEM = { species: 'golem', level: 15, tier: 'boss' as const, phaseCount: 3 as const, moves: ['rock-slide', 'earthquake', 'harden', 'tackle'], signature: { move: 'earthquake', response: 'A Flying or Levitating Lead.' } };
-const MACHAMP = { species: 'machamp', level: 15, tier: 'boss' as const, phaseCount: 3 as const, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity.' } };
+const TEAM = [{ species: 'wartortle', level: 21 }, { species: 'ivysaur', level: 21 }, { species: 'charmeleon', level: 21 }];
+const GOLEM = { species: 'golem', level: 21, tier: 'boss' as const, phaseCount: 3 as const, moves: ['rock-slide', 'earthquake', 'harden', 'tackle'], signature: { move: 'earthquake', response: 'A Flying or Levitating Lead.' } };
+const MACHAMP = { species: 'machamp', level: 21, tier: 'boss' as const, phaseCount: 3 as const, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity.' } };
 
 const ace = (s: CombatState): EnemyCombatant => s.enemies[0]!;
 /** HP set the way a hit sets it: the latch runs, as it does after every hit. */
@@ -67,7 +67,7 @@ describe('Phase commit — §5.8.3', () => {
   });
 
   it('TempoTax_AppliesFromTheRefillAfterCommit', () => {
-    const lapras = { species: 'lapras', level: 15, tier: 'boss' as const, phaseCount: 2 as const };
+    const lapras = { species: 'lapras', level: 21, tier: 'boss' as const, phaseCount: 2 as const };
     let s = start(scenario({ kind: 'boss', team: TEAM, enemies: [lapras] }));
     expect(s.player.ap).toBe(ctx.config.baseApPerTurn);
     s = dispatch(hurtTo(s, 0.45), { type: 'end-turn' });
@@ -121,7 +121,7 @@ describe('Signature — §5.8.3', () => {
   });
 
   it('Signature_IntoAnImmunity_WaitsForALegalTarget', () => {
-    const ghosts = [{ species: 'haunter', level: 15 }, ...TEAM.slice(1)];
+    const ghosts = [{ species: 'haunter', level: 21 }, ...TEAM.slice(1)];
     let s = hurtTo(start(scenario({ kind: 'boss', team: ghosts, enemies: [MACHAMP] })), 0.1);
     s = dispatch(s, { type: 'end-turn' });
     expect(ace(s).signature).toMatchObject({ state: 'ready', wait: 'no-target' });
@@ -159,7 +159,7 @@ describe('Authored signatures — §5.8.3 validation', () => {
 
   it('AutoKitAce_KeepsItsSignatureInTheKit', () => {
     // Vileplume's Gym slot has no scripted kit: its learnset builds it, and the authored Petal Dance must stay in it.
-    const s = start(scenario({ kind: 'boss', team: TEAM, enemies: [{ species: 'vileplume', level: 22, tier: 'boss', phaseCount: 3, signature: { move: 'petal-dance', response: 'Grass resistance.' } }] }));
+    const s = start(scenario({ kind: 'boss', team: TEAM, enemies: [{ species: 'vileplume', level: 30, tier: 'boss', phaseCount: 3, signature: { move: 'petal-dance', response: 'Grass resistance.' } }] }));
     expect(ace(s).moveIds).toContain('petal-dance');
     expect(ace(s).moveIds).toHaveLength(4);
   });

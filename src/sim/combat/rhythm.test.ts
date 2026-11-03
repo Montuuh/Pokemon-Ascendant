@@ -3,12 +3,13 @@ import { ctx, dispatch, enemyOf, eventsOf, handCard, leadOf, scenario, start, tw
 import { cardPlayability } from './preview';
 import { markRhythm, rhythmActs, rhythmFillOf, rhythmLeft, rhythmReady, stepRhythm } from './rhythm';
 import type { CombatState } from './state';
+import { STAT_GROWTH_RATE } from './stats';
 
 // §4.1.3.1 — the critical rhythm. Squirtle leads with a pinned kit; one Pidgey that only ever Tackles.
 const fight = () =>
   start(scenario({
-    team: [{ species: 'squirtle', level: 12, moves: ['tackle', 'water-gun', 'tail-whip', 'slash'] }],
-    enemies: [{ species: 'pidgey', level: 7, tier: 'wild', phaseCount: 1, moves: ['tackle'] }],
+    team: [{ species: 'squirtle', level: 16, moves: ['tackle', 'water-gun', 'tail-whip', 'slash'] }],
+    enemies: [{ species: 'pidgey', level: 9, tier: 'wild', phaseCount: 1, moves: ['tackle'] }],
   }));
 const pinSpeed = (s: CombatState, mine: number, foe: number) => tweak(s, (d) => {
   d.player.team[0]!.base.speed = mine;
@@ -32,8 +33,8 @@ describe('Critical rhythm — §4.1.3.1', () => {
     expect(at(100)).toBeCloseTo(2.6, 5);
     expect(at(60)).toBeCloseTo(4.33, 2);
     expect([at(40), at(15)]).toEqual([5, 5]);
-    // The level is taken back out: 90 at Lv 1 and 90 × 1.7 at Lv 21 are the same pace.
-    expect(at(90 * (1 + 0.035 * 20), 21)).toBeCloseTo(at(90), 6);
+    // The level is taken back out: 90 at Lv 1 and 90 × 1.5 at Lv 21 are the same pace.
+    expect(at(90 * (1 + STAT_GROWTH_RATE * 20), 21)).toBeCloseTo(at(90), 6);
     // The enemy's curve is shorter at the slow end (it acts once where you play three cards) and still reaches 2 at the fast end.
     const foe = (speed: number) => rhythmActs({ ...enemyOf(s), base: { ...enemyOf(s).base, speed }, level: 1 }, ctx.config);
     expect(foe(FOE_3)).toBe(3);
@@ -211,8 +212,8 @@ describe('Critical rhythm — §4.1.3.1', () => {
 
   it('Enemy_ActingTwice_FillsTwiceATurn_AndTheSecondActionCanBeTheCrit', () => {
     let s = start(scenario({
-      team: [{ species: 'squirtle', level: 12, moves: ['tackle', 'water-gun', 'tail-whip', 'bubble'] }],
-      enemies: [{ species: 'pidgey', level: 7, tier: 'wild', phaseCount: 1, moves: ['tackle', 'gust'], acts: 2 }],
+      team: [{ species: 'squirtle', level: 16, moves: ['tackle', 'water-gun', 'tail-whip', 'bubble'] }],
+      enemies: [{ species: 'pidgey', level: 9, tier: 'wild', phaseCount: 1, moves: ['tackle', 'gust'], acts: 2 }],
     }));
     s = pinSpeed(s, 50, FOE_3); // a third an action
     s = tweak(s, (d) => { d.enemies[0]!.rhythm = 2 / 3; markRhythm(d.enemies[0]!, ctx); });

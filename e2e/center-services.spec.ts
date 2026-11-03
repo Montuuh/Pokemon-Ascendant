@@ -23,12 +23,21 @@ for (const [width, height] of [[1920, 1080], [1280, 720]] as const) {
         expect(treated.money).toBe(before.money - 300); expect(treated.box[0]!.traumaStacks).toBe(1); expect(treated.box[0]!.hp).toBe(1);
         expect(treated.box[0]!.level).toBe(before.box[0]!.level); expect(treated.activeUids).toEqual(before.activeUids);
         await page.keyboard.press('Escape'); await expect(page.getByTestId('door-center-therapy')).toBeFocused();
+        // §6.3.9 — the lounge's grooming: +25 Friendship for 150 ₽, once a Pokémon a visit, the gain shown where the price was.
+        await page.getByTestId('door-center-groom').focus(); await page.keyboard.press('Enter');
+        const groomed = before.box[1]!.uid;
+        await page.getByTestId(`groom-${groomed}`).focus(); await page.keyboard.press('Enter');
+        const fond = await page.evaluate(() => window.__ascendant!.run.state()!);
+        expect(fond.money).toBe(treated.money - 150); expect(fond.box[1]!.friendship).toBe(before.box[1]!.friendship + 25);
+        await expect(page.getByTestId(`groom-${groomed}`)).toHaveAttribute('aria-label', /is groomed for this visit/);
+        await expect(page.getByTestId(`groomed-${groomed}`)).toContainText('+25');
+        await page.keyboard.press('Escape'); await expect(page.getByTestId('door-center-groom')).toBeFocused();
         await page.getByTestId('door-center-heal').focus(); await page.keyboard.press('Enter');
         if (motion === 'no-preference') await page.getByTestId('center-heal-stand').click();
         await expect(page.getByTestId('center-heal')).toHaveAttribute('data-beat', 'done');
         await expect(page.getByTestId('center-health')).toBeVisible();
         const healed = await page.evaluate(() => window.__ascendant!.run.state()!);
-        expect(healed.box.every((m) => m.hp > 1)).toBe(true); expect(healed.money).toBe(treated.money); expect(healed.box[0]!.traumaStacks).toBe(1);
+        expect(healed.box.every((m) => m.hp > 1)).toBe(true); expect(healed.money).toBe(fond.money); expect(healed.box[0]!.traumaStacks).toBe(1);
         await page.reload();
         await page.evaluate((scale) => document.documentElement.style.setProperty('--text-scale', String(scale)), scale);
         await expect(page.getByTestId('center-health')).toBeVisible();

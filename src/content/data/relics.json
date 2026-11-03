@@ -347,11 +347,10 @@
       "categories": [
         "combat"
       ],
-      "description": "A Pokémon still at full HP deals 5 % more.",
-      "hook": "damage-dealt",
+      "description": "Your Pokémon grow fond of you twice as fast.",
+      "hook": "friendship-multiplier",
       "params": {
-        "atFullHp": true,
-        "multiplier": 1.05
+        "multiplier": 2
       },
       "tier": 2,
       "discovery": {
@@ -1005,10 +1004,10 @@
       "categories": [
         "meta"
       ],
-      "description": "Once per run, a Pokémon may evolve four levels early.",
+      "description": "Once per run, a Pokémon may evolve six levels early.",
       "hook": "early-evolution",
       "params": {
-        "levels": 4,
+        "levels": 6,
         "oncePerRun": true
       },
       "tier": 3

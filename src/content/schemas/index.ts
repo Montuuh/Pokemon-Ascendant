@@ -25,7 +25,7 @@ export const MoveEffectSchema = z.discriminatedUnion('kind', [
   // §5.13.2 (v0.7.5) — the Mastery moves' conditions: more power when a named condition holds.
   z.object({
     kind: z.literal('power-bonus'),
-    when: z.enum(['target-poisoned', 'self-below', 'per-trauma', 'in-field']),
+    when: z.enum(['target-poisoned', 'self-below', 'per-trauma', 'in-field', 'friendship']),
     multiplier: z.number().positive().optional(),
     below: z.number().positive().max(1).optional(),
     perStack: z.number().positive().optional(),
@@ -96,6 +96,8 @@ export const EvolutionBranchSchema = z.object({
   upgrades: z.array(z.object({ from: KebabId, to: KebabId })).max(3),
   adds: z.array(KebabId).max(1),
   abilityId: KebabId.optional(),
+  /** §6.3.7 — a branch with its own method (Eevee's Umbreon is Friendship, its other three stones). */
+  by: z.enum(['level', 'stone', 'held-item', 'friendship']).optional(),
 });
 
 export const SpeciesSchema = z.object({
@@ -119,6 +121,10 @@ export const SpeciesSchema = z.object({
   eggMoves: z.array(KebabId).default([]),
   /** §6.2.4 — absent on a final form. */
   evolveLevel: z.number().int().min(2).optional(),
+  /** §6.3.7 — how it evolves: by level (absent), a stone, levelling up with a held item, or Friendship. */
+  evolveBy: z.enum(['stone', 'held-item', 'friendship']).optional(),
+  /** §6.3.8 — the held item it levels up with, for `held-item`. */
+  evolveItem: KebabId.optional(),
   evolvesTo: z.array(KebabId),
   /** §6.3.3 — 2 archetypes for most lines, 3 for the starters. Empty on a final form. */
   branches: z.array(EvolutionBranchSchema).default([]),
@@ -150,6 +156,8 @@ export const ItemHookSchema = z.enum([
   'battlefield-choice',
   // v0.9.89 (§3.11.7) — the weather rocks: a field the wearer sets lasts longer.
   'field-duration',
+  // v0.9.90 (§6.3.9) — the Soothe Bell: Friendship comes twice as fast.
+  'friendship-multiplier',
   'none',
 ]);
 const ItemParams = z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]));

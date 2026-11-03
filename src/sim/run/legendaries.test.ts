@@ -48,7 +48,7 @@ function standOnTheApex(run: RunState): RunState {
 const report = (s: RunState, outcome: 'victory' | 'caught', caught: string | null = null): CombatOutcomeReport => ({
   outcome,
   team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })),
-  caught: caught ? { speciesId: caught, level: 46 } : null,
+  caught: caught ? { speciesId: caught, level: 64 } : null,
   ballsLeft: 0,
   turns: 6,
 });

@@ -103,6 +103,8 @@ const TMS = [
   [66, 'bulk-up', any(hasType('fighting'), BIPEDS)],
   [67, 'roost', hasType('flying')],
   [68, 'overheat', hasType('fire')],
+  // §6.3.9 (v0.9.90) — Return, Gen II's TM27: every trainable species, as in the series.
+  [69, 'return', all],
 ];
 
 /** The three the game shipped first keep their ids and take rules too (they had hand lists of 3, 9 and 6). */
@@ -121,7 +123,7 @@ for (const [n, move, rule] of TMS) {
     name: `TM${String(n).padStart(2, '0')} ${m.name}`,
     move,
     compatibleSpecies: compatible,
-    description: `Teaches ${m.name}: a ${m.type} ${m.power > 0 ? `${m.range} hit of ${m.power} power` : 'technique'} for ${m.apCost} AP.`,
+    description: `Teaches ${m.name}: a ${m.type} ${m.power > 0 ? `${m.range} hit of ${m.power} power` : 'technique'}${m.effects.some((e) => e.kind === 'power-bonus' && e.when === 'friendship') ? ' at full Friendship' : ''} for ${m.apCost} AP.`,
   });
 }
 tms.sort((a, b) => a.id.localeCompare(b.id));

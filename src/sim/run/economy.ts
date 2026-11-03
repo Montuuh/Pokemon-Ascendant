@@ -2,7 +2,7 @@ import type { ContentRegistry, RelicRarity } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import type { PartyMon, RunState, ShopSlot, ShopStock, StoreFloor } from './types';
 import { priceFor } from './regionModifiers';
-import { stonesForBox } from './xp';
+import { stoneUse, stonesForBox } from './xp';
 
 // §2.14 / docs/design/catalogs/economy.md — money, prices, drops and shop stock. Every number here names the
 // catalogue row it comes from, because this is the file a balance pass edits.
@@ -143,8 +143,10 @@ function pickRarity(rng: GameRng): RelicRarity {
 function heldPool(content: ContentRegistry, owned: readonly string[], party?: readonly PartyMon[]) {
   const attacks = party?.flatMap((mon) => mon.pool.map((id) => content.move(id)).filter((move) => move.power > 0));
   const types = attacks && new Set<string>(attacks.map((move) => move.type));
+  // §6.3.8 — the item a trade line in the party levels up with is useful whatever moves the party has.
+  const needed = new Set(party?.map((mon) => content.species(mon.speciesId).evolveItem).filter(Boolean));
   return content.allHeldItems().filter((item) => isOfferable(item) && !item.speciesLock && !owned.includes(item.id)
-    && (!types || typeof item.params?.type !== 'string' || types.has(item.params.type))
+    && (!types || needed.has(item.id) || typeof item.params?.type !== 'string' || types.has(item.params.type))
     && (!party || !item.params?.notFullyEvolved || party.some((mon) => content.species(mon.speciesId).evolvesTo.length > 0))
     && (!attacks || item.params?.range !== 'melee' || attacks.some((move) => move.range === 'melee')));
 }
@@ -203,6 +205,31 @@ function teamStone(rng: GameRng, content: ContentRegistry, run: RunState): ShopS
   if (!usable.length) return null;
   const id = usable[Math.min(usable.length - 1, Math.floor(rng.range01() * usable.length))]!;
   return { kind: 'stone', id, price: content.evolutionItem(id).price, sold: false };
+}
+
+/**
+ * §6.3.8 — the held items a trade line in the Box levels up with, that the run is not carrying: the shops always have
+ * one (§2.9.2, §2.11.2.2), because a roguelike cannot ask you to farm for it.
+ */
+export function evolveItemsForBox(run: RunState, content: ContentRegistry): string[] {
+  const owned = ownedItems(run);
+  const wanted = run.box.map((m) => content.species(m.speciesId)).filter((s) => s.evolveBy === 'held-item' && s.evolveItem).map((s) => s.evolveItem!);
+  return [...new Set(wanted)].filter((id) => !owned.includes(id));
+}
+
+/**
+ * §6.3.7 — one slot for an evolution someone in the Box is waiting on, or null: a stone it can take now (at or past the
+ * stone's level), or the held item its trade line levels up with. The route's merchant always carries it.
+ */
+function teamEvolution(rng: GameRng, content: ContentRegistry, run: RunState, shown: readonly string[]): ShopSlot | null {
+  const stones = content.allEvolutionItems()
+    .filter((it) => !run.stones.includes(it.id) && run.box.some((m) => { const use = stoneUse(it.id, m.speciesId, content); return !!use && m.level >= use.fromLevel; }))
+    .map((it) => ({ kind: 'stone' as const, id: it.id, price: it.price }));
+  const held = evolveItemsForBox(run, content).map((id) => ({ kind: 'held-item' as const, id, price: PRICES.heldItem }));
+  const options = [...stones, ...held].filter((o) => !shown.includes(o.id));
+  if (!options.length) return null;
+  const pick = options[Math.min(options.length - 1, Math.floor(rng.range01() * options.length))]!;
+  return { ...pick, sold: false };
 }
 
 /** A Held Item or a TM, whichever the team can actually use — a TM nobody can learn is a decoration. */
@@ -277,7 +304,9 @@ function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor
     case 'rare': {
       // §6.3.2 — the top floor keeps the stones, one the Box can use when there is one.
       const stone = teamStone(rng, content, run);
-      return [...relics('rare', 1), ...consumable(4, 1), ballSlot('ultra-ball', PRICES.bundle.ultraStore), ...(stone ? [stone] : [])];
+      // §6.3.8 — and a trade line's held item, on the same floor as the stones.
+      const evolveItem = evolveItemsForBox(run, content)[0];
+      return [...relics('rare', 1), ...consumable(4, 1), ballSlot('ultra-ball', PRICES.bundle.ultraStore), ...(stone ? [stone] : []), ...(evolveItem ? [{ kind: 'held-item' as const, id: evolveItem, price: PRICES.heldItem, sold: false }] : [])];
     }
   }
 }
@@ -304,7 +333,7 @@ export function floorRestockable(run: RunState, floor: StoreFloor, content: Cont
       return heldPool(content, owned, run.box).map((i) => i.id);
     },
     relics: () => relics('common', 'uncommon'),
-    rare: () => [...relics('rare'), ...consumables(4), ...stonesForBox(run.box, content).filter((id) => !run.stones.includes(id))],
+    rare: () => [...relics('rare'), ...consumables(4), ...stonesForBox(run.box, content).filter((id) => !run.stones.includes(id)), ...evolveItemsForBox(run, content)],
   };
   return candidates[floor]().some((id) => !shown.has(id));
 }
@@ -352,6 +381,9 @@ export function rollShopStock(
     // §2.9.2 — equipment has its own shelf; a Common relic is an occasional extra.
     const equipment = teamSpecial(rng, content, run, 'held-item');
     if (equipment) slots.push(equipment);
+    // §6.3.7 — and what an evolution in the Box is waiting on, when one is.
+    const evolution = teamEvolution(rng, content, run, slots.map((s) => s.id));
+    if (evolution) slots.push(evolution);
     const relic = rng.range01() < MERCHANT_RELIC_CHANCE ? rollRelic(rng, content, run.relics, 'common', pool) : null;
     if (relic) slots.push({ kind: 'relic', id: relic, price: PRICES.relic.common, sold: false });
   } else if (kind === 'department-store') {
@@ -382,6 +414,9 @@ export function rollShopStock(
     // §6.3.2 — a stone on the counter when someone in the Box can use one; the Mart is curated to the team.
     const stone = teamStone(rng, content, run);
     if (stone) slots.push(stone);
+    // §6.3.8 — and the held item a trade line in the Box levels up with, when no shelf above has it.
+    const evolveItem = evolveItemsForBox(run, content).find((id) => !slots.some((s) => s.id === id));
+    if (evolveItem) slots.push({ kind: 'held-item', id: evolveItem, price: PRICES.heldItem, sold: false });
     // §2.11.2.2 — Poké Balls are always on a City counter, outside the eight: a City that cannot sell you a ball
     // after the route's merchant stopped carrying many would be a Mart in name only.
     slots.push(...cityBalls());

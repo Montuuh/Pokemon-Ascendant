@@ -15,6 +15,24 @@ async function newRun(page: Page, setup: () => void) {
 const state = (page: Page) => page.evaluate(() => (window as unknown as { __ascendant: Dev }).__ascendant.run.state!() as { activeUids: string[]; box: { uid: string; speciesId: string; heldItem: string | null }[]; bag: string[] });
 
 test.describe('The Team screen — §2.3, §9.12', () => {
+  test('§6.3.8–§6.3.9 — a trade line holding its item says it evolves at its next level-up, and Friendship reads as hearts', async ({ page }) => {
+    await newRun(page, (() => {
+      const a = (window as unknown as { __ascendant: Dev }).__ascendant;
+      a.run.new!('squirtle', 7);
+      a.run.patch!((d: { box: { speciesId: string; level: number; heldItem: string | null; friendship: number }[] }) => {
+        Object.assign(d.box[0]!, { speciesId: 'kadabra', level: 30, heldItem: 'twisted-spoon', friendship: 95 });
+      });
+      a.goTo('map');
+    }));
+    await page.getByTestId('btn-team').click();
+    await expect(page.getByTestId('team-evolution')).toHaveText('Holding its Twisted Spoon: evolves at its next level-up');
+    // 95 is one and a half hearts: a grooming's +25 always moves one.
+    await expect(page.getByTestId('team-friendship')).toHaveAttribute('aria-label', 'Friendship: 1½ of 5 hearts');
+    await page.getByTestId('team-evolution').hover();
+    await expect(page.getByRole('tooltip')).toContainText('levelling up holding a Twisted Spoon');
+    await page.screenshot({ path: 'playtest/team-trade-line.png' });
+  });
+
   test('from the map: the formation, the Box, a drag to the Lead and the sheet', async ({ page }) => {
     await newRun(page, (() => {
       const a = (window as unknown as { __ascendant: Dev }).__ascendant;

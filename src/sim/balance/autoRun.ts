@@ -418,7 +418,8 @@ function visitShop(get: () => RunState, content: CombatCtx['content'], policy: R
       // already (§2.9.2); the Held Item slot does not, so check it here.
       if (kind === 'held-item') {
         const item = content.heldItem(stock.slots[index]!.id);
-        const wearer = run.box.find((m) => !m.heldItem && (!item.speciesLock || item.speciesLock === m.speciesId));
+        // §6.3.8 — the item a trade line levels up with always has its wearer.
+        const wearer = run.box.find((m) => (!m.heldItem && (!item.speciesLock || item.speciesLock === m.speciesId)) || content.species(m.speciesId).evolveItem === item.id);
         if (!wearer) break;
       }
       step({ type: 'buy', index });
@@ -463,6 +464,13 @@ function applyStones(get: () => RunState, content: CombatCtx['content'], step: (
  * and forgetting to equip is the single easiest way for a harness to under-report the system it is measuring.
  */
 function equipFromBag(get: () => RunState, content: CombatCtx['content'], step: (a: Parameters<typeof runReducer>[1]) => void): void {
+  // §6.3.8 — first, the item a trade line levels up with goes on that line, whatever it was holding.
+  for (let guard = 0; guard < 4; guard++) {
+    const run = get();
+    const mon = run.box.find((m) => { const s = content.species(m.speciesId); return s.evolveBy === 'held-item' && !!s.evolveItem && m.heldItem !== s.evolveItem && run.bag.includes(s.evolveItem); });
+    if (!mon) break;
+    step({ type: 'equip-item', uid: mon.uid, itemId: content.species(mon.speciesId).evolveItem! });
+  }
   for (let guard = 0; guard < 8; guard++) {
     const run = get();
     if (!run.bag.length) return;

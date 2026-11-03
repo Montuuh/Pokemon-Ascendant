@@ -18,7 +18,7 @@ describe('Sleep lock — §4.2.2.4', () => {
   // A Sleep card forced into every hand, played whenever it would land. Before v0.7.5 a sleeping Pokémon could
   // be put back to sleep, so one 1-AP card a turn meant the enemy never acted again after the opening turn.
   function enemyActions(moveId: string): number {
-    let s = start(scenario({ team: [{ species: 'ivysaur', level: 16, moves: ['sleep-powder', 'tackle', 'vine-whip', 'growl'] }], enemies: [{ species: 'geodude', level: 16, tier: 'trainer', phaseCount: 1 }] }));
+    let s = start(scenario({ team: [{ species: 'ivysaur', level: 22, moves: ['sleep-powder', 'tackle', 'vine-whip', 'growl'] }], enemies: [{ species: 'geodude', level: 22, tier: 'trainer', phaseCount: 1 }] }));
     let acted = 0;
     for (let t = 0; t < TURNS && s.outcome === 'in-progress'; t++) {
       s = topUp(withHand(s, [moveId, 'growl']));
@@ -47,8 +47,8 @@ describe('Drain — §4.1.6, catalogs/moves.md', () => {
   function sustain(heldItem?: string) {
     let s = start(
       scenario({
-        team: [{ species: 'ivysaur', level: 16, moves: ['mega-drain', 'tackle', 'vine-whip', 'growl'], ...(heldItem ? { heldItem } : {}) }],
-        enemies: [{ species: 'poliwhirl', level: 16, tier: 'trainer', phaseCount: 1, hpPercent: 100 }],
+        team: [{ species: 'ivysaur', level: 22, moves: ['mega-drain', 'tackle', 'vine-whip', 'growl'], ...(heldItem ? { heldItem } : {}) }],
+        enemies: [{ species: 'poliwhirl', level: 22, tier: 'trainer', phaseCount: 1, hpPercent: 100 }],
       }),
     );
     // A bottomless enemy: the fight must last the ten turns, so its HP is refilled before every card.
@@ -76,8 +76,8 @@ describe('Drain — §4.1.6, catalogs/moves.md', () => {
   function netPerTurn(): number {
     let s = start(
       scenario({
-        team: [{ species: 'ivysaur', level: 16, moves: ['mega-drain', 'tackle', 'vine-whip', 'growl'], heldItem: 'leftovers' }],
-        enemies: [{ species: 'raticate', level: 16, tier: 'trainer', phaseCount: 1 }],
+        team: [{ species: 'ivysaur', level: 22, moves: ['mega-drain', 'tackle', 'vine-whip', 'growl'], heldItem: 'leftovers' }],
+        enemies: [{ species: 'raticate', level: 22, tier: 'trainer', phaseCount: 1 }],
       }),
     );
     const maxHp = s.player.team[0]!.maxHp;

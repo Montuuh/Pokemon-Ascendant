@@ -208,7 +208,7 @@ The other fifteen shape a turn rather than a type:
 | **Barrier Charm** | Combat | The first enemy attack of the first combat each Region deals −20 % |
 | **Quick Claw Charm** | Card | The first card you play in each fight costs 1 AP less |
 | **Berry Pouch** | Combat | Healing consumables restore +20 % |
-| **Soothe Bell** | Combat | A Pokémon at full HP at turn start deals +5 % on its next attack |
+| **Soothe Bell** | Meta | Every Friendship gain ×2 (§6.3.9; v0.9.90) |
 | **Coin Pouch** | Meta | Poké Dollar drops ×1.25 |
 | **Cleanse Tag** | Status | The first status applied to your side each combat is blocked |
 | **Lucky Egg Token** | Meta | In-run XP ×1.15 |
@@ -271,8 +271,9 @@ Every Tier-3 relic changes *how a run works*, never how hard it hits.
 
 - **Choice Band and Choice Specs** can both be held. Each tracks its own first-move-of-type discount.
 - **Faint prevention resolves in this order:** Endure (the move, §3.11.3) → Sturdy (ability) → Last Stand (Legendary)
-  → Focus Sash (held item) → Phoenix Feather (relic). The card you paid for this turn first, then the ability, then the
-  run-long pick, then the equipped item, then the consumed relic as the true last resort.
+  → Focus Sash (held item) → full Friendship (§6.3.9, once a fight) → Phoenix Feather (relic). The card you paid for this
+  turn first, then the ability, then the run-long pick, then the equipped item, then what the Pokémon earned with you,
+  then the consumed relic as the true last resort.
 - **Trauma Salve** (relic) and **Trauma Salve Cache** (Hub upgrade) are independent: the upgrade guarantees one
   in a shop, the relic is the item itself.
 - **Type-boost relics, Held Items, Badges and fields** are each independent multiplicative terms in the damage
@@ -325,10 +326,10 @@ Thirty generic items plus two signatures, one slot per Pokémon.
 
 Equipment rewards and shops exclude owned items (bag and every equipped Box member), pending rows and species signatures. Curated sources draw uniformly from useful alternatives: typed bonuses match a damaging move in a Box member's learned pool; Eviolite needs an unfinished evolution; Power Bracer needs a Melee attack. Generic alternatives remain available. Uncurated ground finds retain the general pool. More access and meaningful alternatives support build sculpting without increasing the party-wide relic count; list price remains 300 ₽.
 
-## §7.4.2 Type boosts (12)
+## §7.4.2 Type boosts (14)
 
-Charcoal · Mystic Water · Magnet · Miracle Seed · NeverMeltIce · Black Belt · Sharp Beak · Twisted Spoon · Soft Sand · Hard Stone · Silk Scarf · Black Glasses (Dark).
-Steel has no booster of its own: the series' Metal Coat is the item that evolves Scyther and Onix here (§6.3.2), so the type's boost is its Plate.
+Charcoal · Mystic Water · Magnet · Miracle Seed · NeverMeltIce · Black Belt · Sharp Beak · Twisted Spoon · Soft Sand · Hard Stone · Silk Scarf · Black Glasses (Dark) · Spell Tag (Ghost) · Metal Coat (Steel).
+Four of them are also what a trade line levels up with to evolve, and the evolution spends them (§6.3.8): the Twisted Spoon (Kadabra), the Hard Stone (Graveler), the Spell Tag (Haunter), the Metal Coat (Scyther, Onix); the Macho Brace (Machoke) is the fifth, an XP item that slows its wearer a stage.
 Each gives the **wearer** +20 % on that type's moves.
 
 Together with the Common **Elemental Gem** relics (+10 % party-wide, §7.3.3) and the **Type Plates** (+10 % wearer, +5 % Lead Aura for the bench, §7.4.3), they form a clean three-tier elemental hierarchy with zero duplicate icons: Gems boost the whole team modestly, unique items boost one specialist strongly, and Plates reward both the wearer and the Lead/Swap positioning loop.
@@ -442,7 +443,7 @@ the hook vocabulary is listed in the catalogues.
 | Are TMs consumables? | A consumable **class**, applied from the Map View, never drawn as a card |
 | The relic rarity curve | 25 / 18 / 7 at 60 / 30 / 10 % (§7.3.1) |
 | Starting Relic pool | Common and Uncommon only (§8.6.3) |
-| Faint-prevention order | Sturdy → Last Stand → Focus Sash → Phoenix Feather (§7.3.6) |
+| Faint-prevention order | Endure → Sturdy → Last Stand → Focus Sash → full Friendship → Phoenix Feather (§7.3.6) |
 | Flat or percentage healing | **Flat**, the franchise numbers; the upgrade chain does the scaling (§7.2.2) |
 | Full Heal's AP cost | 1, so the single cures keep a purpose (§7.2.3) |
 

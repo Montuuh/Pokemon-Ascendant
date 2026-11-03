@@ -77,7 +77,7 @@
       "type": "end-turn"
     }
   ],
-  "fingerprint": "t4 victory lead=0 ap=0 team=[wartortle:70/100,butterfree:98/98,rattata:56/56] enemies=[geodude:0/77,golem:0/149] events=77 rng=1926902152",
+  "fingerprint": "t4 victory lead=0 ap=0 team=[wartortle:69/99,butterfree:98/98,rattata:55/55] enemies=[geodude:0/76,golem:0/148] events=77 rng=1926902152",
   "turns": 4,
   "outcome": "victory"
 }

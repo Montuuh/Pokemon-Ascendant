@@ -8,9 +8,9 @@ import type { CombatState } from './state';
 // §5.6.5 — fights with another objective: a runner that leaves after its last turn, and a find held to the end of
 // its last turn against a guard that grows angrier every turn.
 
-const ABRA: EnemySetup = { species: 'abra', level: 9, tier: 'wild', phaseCount: 1, moves: ['teleport'] };
-const PRIMEAPE: EnemySetup = { species: 'primeape', level: 11, tier: 'wild', phaseCount: 1, moves: ['thrash', 'rage', 'karate-chop'] };
-const RHYDON: EnemySetup = { species: 'rhydon', level: 30, tier: 'wild', phaseCount: 1, moves: ['horn-attack', 'stomp', 'horn-drill'] };
+const ABRA: EnemySetup = { species: 'abra', level: 12, tier: 'wild', phaseCount: 1, moves: ['teleport'] };
+const PRIMEAPE: EnemySetup = { species: 'primeape', level: 15, tier: 'wild', phaseCount: 1, moves: ['thrash', 'rage', 'karate-chop'] };
+const RHYDON: EnemySetup = { species: 'rhydon', level: 42, tier: 'wild', phaseCount: 1, moves: ['horn-attack', 'stomp', 'horn-drill'] };
 
 const fight = (objective: NonNullable<ScenarioDef['objective']>, enemies: EnemySetup[], consumables: string[] = []): CombatState =>
   start({ ...scenario({ team: STARTERS, enemies, consumables }), objective });

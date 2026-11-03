@@ -12,15 +12,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 8
+            "level": 11
           },
           {
             "species": "squirtle",
-            "level": 7
+            "level": 9
           },
           {
             "species": "bulbasaur",
-            "level": 7
+            "level": 9
           }
         ],
         "leadIndex": 0,
@@ -35,7 +35,7 @@
       "enemies": [
         {
           "species": "pidgey",
-          "level": 7,
+          "level": 9,
           "tier": "wild",
           "phaseCount": 1
         }
@@ -52,15 +52,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 8
+            "level": 11
           },
           {
             "species": "squirtle",
-            "level": 7
+            "level": 9
           },
           {
             "species": "bulbasaur",
-            "level": 7
+            "level": 9
           }
         ],
         "leadIndex": 0,
@@ -75,7 +75,7 @@
       "enemies": [
         {
           "species": "eevee",
-          "level": 8,
+          "level": 11,
           "tier": "wild",
           "phaseCount": 1
         }
@@ -93,15 +93,15 @@
         "team": [
           {
             "species": "squirtle",
-            "level": 8
+            "level": 11
           },
           {
             "species": "charmander",
-            "level": 8
+            "level": 11
           },
           {
             "species": "pidgey",
-            "level": 6
+            "level": 8
           }
         ],
         "leadIndex": 0,
@@ -115,7 +115,7 @@
       "enemies": [
         {
           "species": "caterpie",
-          "level": 8,
+          "level": 11,
           "tier": "wild",
           "phaseCount": 1,
           "hpPercent": 60
@@ -133,16 +133,16 @@
         "team": [
           {
             "species": "squirtle",
-            "level": 8,
+            "level": 11,
             "shiny": true
           },
           {
             "species": "charmander",
-            "level": 8
+            "level": 11
           },
           {
             "species": "pidgey",
-            "level": 6
+            "level": 8
           }
         ],
         "leadIndex": 0,
@@ -156,7 +156,7 @@
       "enemies": [
         {
           "species": "caterpie",
-          "level": 8,
+          "level": 11,
           "tier": "wild",
           "phaseCount": 1,
           "hpPercent": 25,
@@ -179,15 +179,15 @@
         "team": [
           {
             "species": "bulbasaur",
-            "level": 9
+            "level": 12
           },
           {
             "species": "charmander",
-            "level": 9
+            "level": 12
           },
           {
             "species": "squirtle",
-            "level": 8
+            "level": 11
           }
         ],
         "leadIndex": 0,
@@ -202,13 +202,13 @@
       "enemies": [
         {
           "species": "caterpie",
-          "level": 8,
+          "level": 11,
           "tier": "trainer",
           "phaseCount": 1
         },
         {
           "species": "pidgey",
-          "level": 10,
+          "level": 14,
           "tier": "trainer",
           "phaseCount": 1
         }
@@ -225,17 +225,17 @@
         "team": [
           {
             "species": "charmeleon",
-            "level": 12,
+            "level": 16,
             "status": "poison"
           },
           {
             "species": "wartortle",
-            "level": 12,
+            "level": 16,
             "status": "burn"
           },
           {
             "species": "ivysaur",
-            "level": 12,
+            "level": 16,
             "status": "paralysis"
           }
         ],
@@ -253,7 +253,7 @@
       "enemies": [
         {
           "species": "butterfree",
-          "level": 13,
+          "level": 18,
           "tier": "wild",
           "phaseCount": 1
         }
@@ -270,15 +270,15 @@
         "team": [
           {
             "species": "wartortle",
-            "level": 13
+            "level": 18
           },
           {
             "species": "ivysaur",
-            "level": 13
+            "level": 18
           },
           {
             "species": "charmeleon",
-            "level": 13
+            "level": 18
           }
         ],
         "leadIndex": 2,
@@ -294,7 +294,7 @@
       "enemies": [
         {
           "species": "graveler",
-          "level": 16,
+          "level": 22,
           "tier": "wild",
           "phaseCount": 1
         }
@@ -315,15 +315,15 @@
         "team": [
           {
             "species": "wartortle",
-            "level": 14
+            "level": 19
           },
           {
             "species": "butterfree",
-            "level": 13
+            "level": 18
           },
           {
             "species": "rattata",
-            "level": 13
+            "level": 18
           }
         ],
         "leadIndex": 0,
@@ -339,13 +339,13 @@
       "enemies": [
         {
           "species": "geodude",
-          "level": 16,
+          "level": 22,
           "tier": "boss",
           "phaseCount": 2
         },
         {
           "species": "golem",
-          "level": 19,
+          "level": 26,
           "tier": "boss",
           "phaseCount": 3,
           "signature": {
@@ -370,15 +370,15 @@
         "team": [
           {
             "species": "wartortle",
-            "level": 18
+            "level": 25
           },
           {
             "species": "ivysaur",
-            "level": 18
+            "level": 25
           },
           {
             "species": "charmeleon",
-            "level": 18
+            "level": 25
           }
         ],
         "leadIndex": 0,
@@ -394,7 +394,7 @@
       "enemies": [
         {
           "species": "golem",
-          "level": 18,
+          "level": 25,
           "tier": "boss",
           "phaseCount": 3,
           "moves": [
@@ -422,15 +422,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 9
+            "level": 12
           },
           {
             "species": "squirtle",
-            "level": 9
+            "level": 12
           },
           {
             "species": "bulbasaur",
-            "level": 9
+            "level": 12
           }
         ],
         "leadIndex": 0,
@@ -444,19 +444,19 @@
       "enemies": [
         {
           "species": "spearow",
-          "level": 8,
+          "level": 11,
           "tier": "wild",
           "phaseCount": 1
         },
         {
           "species": "spearow",
-          "level": 7,
+          "level": 9,
           "tier": "wild",
           "phaseCount": 1
         },
         {
           "species": "pidgey",
-          "level": 7,
+          "level": 9,
           "tier": "wild",
           "phaseCount": 1,
           "moves": [
@@ -482,15 +482,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 10
+            "level": 14
           },
           {
             "species": "squirtle",
-            "level": 10
+            "level": 14
           },
           {
             "species": "bulbasaur",
-            "level": 10
+            "level": 14
           }
         ],
         "leadIndex": 0,
@@ -504,13 +504,13 @@
       "enemies": [
         {
           "species": "oddish",
-          "level": 10,
+          "level": 14,
           "tier": "trainer",
           "phaseCount": 1
         },
         {
           "species": "bellsprout",
-          "level": 9,
+          "level": 12,
           "tier": "trainer",
           "phaseCount": 1,
           "moves": [
@@ -537,15 +537,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 11
+            "level": 15
           },
           {
             "species": "squirtle",
-            "level": 11
+            "level": 15
           },
           {
             "species": "bulbasaur",
-            "level": 11
+            "level": 15
           }
         ],
         "leadIndex": 1,
@@ -559,13 +559,13 @@
       "enemies": [
         {
           "species": "geodude",
-          "level": 11,
+          "level": 15,
           "tier": "trainer",
           "phaseCount": 1
         },
         {
           "species": "clefairy",
-          "level": 9,
+          "level": 12,
           "tier": "trainer",
           "phaseCount": 1,
           "moves": [
@@ -576,7 +576,7 @@
         },
         {
           "species": "machop",
-          "level": 10,
+          "level": 14,
           "tier": "trainer",
           "phaseCount": 1
         }
@@ -598,15 +598,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 14
+            "level": 19
           },
           {
             "species": "squirtle",
-            "level": 14
+            "level": 19
           },
           {
             "species": "bulbasaur",
-            "level": 14
+            "level": 19
           }
         ],
         "leadIndex": 0,
@@ -620,7 +620,7 @@
       "enemies": [
         {
           "species": "nidorino",
-          "level": 12,
+          "level": 16,
           "tier": "elite",
           "phaseCount": 2,
           "moves": [
@@ -632,7 +632,7 @@
         },
         {
           "species": "clefairy",
-          "level": 10,
+          "level": 14,
           "tier": "trainer",
           "phaseCount": 1,
           "moves": [
@@ -654,15 +654,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 10
+            "level": 14
           },
           {
             "species": "squirtle",
-            "level": 10
+            "level": 14
           },
           {
             "species": "bulbasaur",
-            "level": 10
+            "level": 14
           }
         ],
         "leadIndex": 0,
@@ -675,7 +675,7 @@
       "enemies": [
         {
           "species": "nidoran-m",
-          "level": 10,
+          "level": 14,
           "tier": "wild",
           "phaseCount": 1,
           "moves": [
@@ -687,7 +687,7 @@
           "helpers": [
             {
               "species": "nidoran-f",
-              "level": 9,
+              "level": 12,
               "tier": "wild",
               "phaseCount": 1,
               "role": "buffer",
@@ -699,7 +699,7 @@
             },
             {
               "species": "nidoran-m",
-              "level": 8,
+              "level": 11,
               "tier": "wild",
               "phaseCount": 1,
               "role": "attacker",
@@ -723,15 +723,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 13
+            "level": 18
           },
           {
             "species": "squirtle",
-            "level": 13
+            "level": 18
           },
           {
             "species": "bulbasaur",
-            "level": 13
+            "level": 18
           }
         ],
         "leadIndex": 1,
@@ -745,7 +745,7 @@
       "enemies": [
         {
           "species": "raticate",
-          "level": 13,
+          "level": 18,
           "tier": "wild",
           "phaseCount": 1,
           "acts": 2,
@@ -777,15 +777,15 @@
         "team": [
           {
             "species": "squirtle",
-            "level": 14
+            "level": 19
           },
           {
             "species": "bulbasaur",
-            "level": 14
+            "level": 19
           },
           {
             "species": "charmander",
-            "level": 13
+            "level": 18
           }
         ],
         "leadIndex": 0,
@@ -799,13 +799,13 @@
       "enemies": [
         {
           "species": "geodude",
-          "level": 13,
+          "level": 18,
           "tier": "boss",
           "phaseCount": 1
         },
         {
           "species": "onix",
-          "level": 15,
+          "level": 21,
           "tier": "boss",
           "phaseCount": 2
         }
@@ -825,16 +825,16 @@
         "team": [
           {
             "species": "psyduck",
-            "level": 12,
+            "level": 16,
             "abilityId": "swift-swim"
           },
           {
             "species": "charmander",
-            "level": 12
+            "level": 16
           },
           {
             "species": "bulbasaur",
-            "level": 12
+            "level": 16
           }
         ],
         "leadIndex": 0,
@@ -847,7 +847,7 @@
       "enemies": [
         {
           "species": "poliwag",
-          "level": 11,
+          "level": 15,
           "tier": "wild",
           "phaseCount": 1
         }
@@ -872,15 +872,15 @@
         "team": [
           {
             "species": "wartortle",
-            "level": 30
+            "level": 42
           },
           {
             "species": "ivysaur",
-            "level": 30
+            "level": 42
           },
           {
             "species": "charmeleon",
-            "level": 30
+            "level": 42
           }
         ],
         "leadIndex": 0,
@@ -893,19 +893,19 @@
       "enemies": [
         {
           "species": "kadabra",
-          "level": 28,
+          "level": 39,
           "tier": "boss",
           "phaseCount": 1
         },
         {
           "species": "hypno",
-          "level": 28,
+          "level": 39,
           "tier": "boss",
           "phaseCount": 1
         },
         {
           "species": "alakazam",
-          "level": 30,
+          "level": 42,
           "tier": "boss",
           "phaseCount": 3,
           "signature": {
@@ -927,15 +927,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 10
+            "level": 14
           },
           {
             "species": "squirtle",
-            "level": 10
+            "level": 14
           },
           {
             "species": "bulbasaur",
-            "level": 10
+            "level": 14
           }
         ],
         "leadIndex": 0,
@@ -949,7 +949,7 @@
       "enemies": [
         {
           "species": "abra",
-          "level": 9,
+          "level": 12,
           "tier": "wild",
           "phaseCount": 1
         }
@@ -970,15 +970,15 @@
         "team": [
           {
             "species": "charmander",
-            "level": 10
+            "level": 14
           },
           {
             "species": "squirtle",
-            "level": 10
+            "level": 14
           },
           {
             "species": "bulbasaur",
-            "level": 10
+            "level": 14
           }
         ],
         "leadIndex": 1,
@@ -992,7 +992,7 @@
       "enemies": [
         {
           "species": "primeape",
-          "level": 11,
+          "level": 15,
           "tier": "wild",
           "phaseCount": 1,
           "moves": [
@@ -1022,11 +1022,11 @@
         "team": [
           {
             "species": "zapdos",
-            "level": 46
+            "level": 64
           },
           {
             "species": "blastoise",
-            "level": 44
+            "level": 61
           }
         ],
         "leadIndex": 0,
@@ -1040,7 +1040,7 @@
       "enemies": [
         {
           "species": "mewtwo",
-          "level": 46,
+          "level": 64,
           "tier": "boss",
           "phaseCount": 2,
           "moves": [
@@ -1065,15 +1065,15 @@
         "team": [
           {
             "species": "wartortle",
-            "level": 40
+            "level": 56
           },
           {
             "species": "ivysaur",
-            "level": 40
+            "level": 56
           },
           {
             "species": "charmeleon",
-            "level": 40
+            "level": 56
           }
         ],
         "leadIndex": 0,
@@ -1086,7 +1086,7 @@
       "enemies": [
         {
           "species": "mew",
-          "level": 46,
+          "level": 64,
           "tier": "boss",
           "phaseCount": 2,
           "moves": [
@@ -1115,15 +1115,15 @@
         "team": [
           {
             "species": "blastoise",
-            "level": 46
+            "level": 64
           },
           {
             "species": "pidgeot",
-            "level": 45
+            "level": 63
           },
           {
             "species": "raichu",
-            "level": 45
+            "level": 63
           }
         ],
         "leadIndex": 0,
@@ -1136,25 +1136,25 @@
       "enemies": [
         {
           "species": "pidgeot",
-          "level": 42,
+          "level": 58,
           "tier": "boss",
           "phaseCount": 2
         },
         {
           "species": "rhydon",
-          "level": 43,
+          "level": 60,
           "tier": "boss",
           "phaseCount": 2
         },
         {
           "species": "arcanine",
-          "level": 43,
+          "level": 60,
           "tier": "boss",
           "phaseCount": 2
         },
         {
           "species": "exeggutor",
-          "level": 43,
+          "level": 60,
           "tier": "boss",
           "phaseCount": 2,
           "moves": [
@@ -1166,7 +1166,7 @@
         },
         {
           "species": "venusaur",
-          "level": 45,
+          "level": 63,
           "tier": "boss",
           "phaseCount": 3,
           "signature": {

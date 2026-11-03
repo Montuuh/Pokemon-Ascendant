@@ -9,11 +9,11 @@ import { statAtLevel } from './stats';
 
 // §5.6 — fights against a group: the formation, reach, area cards, the group's AI, and the honest intent.
 
-const RATTATA: EnemySetup = { species: 'rattata', level: 8, tier: 'wild', phaseCount: 1 };
-const SUPPORT: EnemySetup = { species: 'pidgey', level: 7, tier: 'wild', phaseCount: 1 };
+const RATTATA: EnemySetup = { species: 'rattata', level: 11, tier: 'wild', phaseCount: 1 };
+const SUPPORT: EnemySetup = { species: 'pidgey', level: 9, tier: 'wild', phaseCount: 1 };
 const KIT = ['tackle', 'water-gun', 'surf', 'withdraw'];
 // Only the kit's owner carries a Tackle, so the Melee card in hand is always the Lead's.
-const TEAM = [{ species: 'squirtle', level: 12, moves: KIT }, { species: 'charmander', level: 8 }];
+const TEAM = [{ species: 'squirtle', level: 16, moves: KIT }, { species: 'charmander', level: 11 }];
 
 function group(extra: Partial<Parameters<typeof scenario>[0]> = {}) {
   return start(scenario({ team: TEAM, enemies: [RATTATA, SUPPORT, { ...SUPPORT, species: 'spearow' }], onField: 3, balls: 2, ...extra }));
@@ -25,8 +25,8 @@ describe('Multi-enemy fights — §5.6', () => {
     expect(s.enemies).toHaveLength(3);
     expect(s.enemyQueue).toHaveLength(0);
     // v0.9.10 — behind the Lead stands a whole Pokémon: all its HP, as the Lead has all of its.
-    expect(s.enemies[1]!.maxHp).toBe(statAtLevel(ctx.content.species('pidgey'), 'hp', 7));
-    expect(s.enemies[0]!.maxHp).toBe(statAtLevel(ctx.content.species('rattata'), 'hp', 8));
+    expect(s.enemies[1]!.maxHp).toBe(statAtLevel(ctx.content.species('pidgey'), 'hp', 9));
+    expect(s.enemies[0]!.maxHp).toBe(statAtLevel(ctx.content.species('rattata'), 'hp', 11));
     // All three declared an intent in the same Intent phase.
     expect(s.enemies.every((e) => e.intent !== null)).toBe(true);
   });
@@ -266,7 +266,7 @@ describe('Calling for help — §5.6.2', () => {
 
   it('Call_FieldFull_NobodyComes', () => {
     const s = tweak(callNow('group-wild-flock'), (d) => {
-      d.enemies[0]!.helpers = [{ species: 'pidgey', level: 5, tier: 'wild', phaseCount: 1 }];
+      d.enemies[0]!.helpers = [{ species: 'pidgey', level: 7, tier: 'wild', phaseCount: 1 }];
     });
     const intent = classifyMove(s, s.enemies[0]!, ctx.content.move('call-for-help'), ctx)!;
     expect(scoreIntent(s, s.enemies[0]!, { intent, move: ctx.content.move('call-for-help') }, ctx)).toBe(0);

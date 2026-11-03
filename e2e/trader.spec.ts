@@ -25,16 +25,16 @@ async function atTrader(page: Page) {
 }
 
 test.describe('The roadside trader — §2.9.6', () => {
-  test('give one, pick a face-down offer, and the newcomer arrives two levels above', async ({ page }) => {
+  test('give one, pick a face-down offer, and the newcomer arrives three levels above', async ({ page }) => {
     await atTrader(page);
     const trade = page.getByTestId('btn-trade');
     await expect(page.locator('[data-testid^="trade-offer-"]')).toHaveCount(3);
     await expect(trade).toBeDisabled();
 
-    // Pidgey (Lv 8) goes: its card says the newcomer arrives at Lv 10.
+    // Pidgey (Lv 8) goes: its card says the newcomer arrives at Lv 11 (three over since v0.9.90's ×1.4).
     const give = page.locator('[data-testid^="trade-give-"]').nth(1);
     await give.click();
-    await expect(give).toContainText('Lv 8 → 10');
+    await expect(give).toContainText('Lv 8 → 11');
     await page.getByTestId('trade-offer-2').click();
     await expect(trade).toBeEnabled();
     await expect(trade).toContainText('Give Pidgey');
@@ -42,7 +42,7 @@ test.describe('The roadside trader — §2.9.6', () => {
 
     await trade.click();
     await expect(page.getByTestId('trade-reveal')).toContainText('joins you!');
-    await expect(page.getByTestId('trade-reveal')).toContainText('Lv 10');
+    await expect(page.getByTestId('trade-reveal')).toContainText('Lv 11');
     await page.getByTestId('trader-screen').screenshot({ path: 'playtest/trader-reveal.png' });
     await page.getByTestId('btn-trade-continue').click();
     await expect(page.getByTestId('trader-screen')).toBeHidden();

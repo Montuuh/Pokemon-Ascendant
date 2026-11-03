@@ -5,7 +5,7 @@ import { PIDGEY, STARTERS, ctx, dispatch, eventsOf, scenario, start, tweak } fro
 import { chooseIntent, classifyMove, predictIntentDamage, scoreIntent } from './intents';
 import { slotOccupant } from './slots';
 
-const GEODUDE = { species: 'geodude', level: 10, tier: 'wild' as const, phaseCount: 1 as const };
+const GEODUDE = { species: 'geodude', level: 14, tier: 'wild' as const, phaseCount: 1 as const };
 
 describe('Enemy AI — §5', () => {
   it('Classify_DamagingMove_AttacksLead_UtilityKinds', () => {
@@ -22,7 +22,7 @@ describe('Enemy AI — §5', () => {
 
   it('Score_NeverAttacksIntoImmunity', () => {
     // Geodude's Bone Club (ground) vs a Pidgey lead (flying) → 0.
-    const s = start(scenario({ team: [{ species: 'pidgey', level: 8 }, { species: 'squirtle', level: 8 }], enemies: [GEODUDE] }));
+    const s = start(scenario({ team: [{ species: 'pidgey', level: 11 }, { species: 'squirtle', level: 11 }], enemies: [GEODUDE] }));
     const e = s.enemies[0]!;
     const move = ctx.content.move('bone-club');
     const intent = classifyMove(s, e, move, ctx)!;
@@ -30,7 +30,7 @@ describe('Enemy AI — §5', () => {
   });
 
   it('Score_SuperEffective_DoublesWeight_LowTargetHp_Doubles', () => {
-    const s = start(scenario({ team: [{ species: 'charmander', level: 8 }], enemies: [GEODUDE] }));
+    const s = start(scenario({ team: [{ species: 'charmander', level: 11 }], enemies: [GEODUDE] }));
     const e = s.enemies[0]!;
     const move = ctx.content.move('rock-throw');
     const intent = classifyMove(s, e, move, ctx)!;
@@ -43,7 +43,7 @@ describe('Enemy AI — §5', () => {
   });
 
   it('Score_StatusOnAlreadyStatusedOrImmune_Zero', () => {
-    const s = start(scenario({ team: [{ species: 'charmander', level: 8 }], enemies: [{ species: 'butterfree', level: 12, tier: 'wild', phaseCount: 1 }] }));
+    const s = start(scenario({ team: [{ species: 'charmander', level: 11 }], enemies: [{ species: 'butterfree', level: 16, tier: 'wild', phaseCount: 1 }] }));
     const e = s.enemies[0]!;
     const move = ctx.content.move('sleep-powder');
     const intent = classifyMove(s, e, move, ctx)!;
@@ -55,7 +55,7 @@ describe('Enemy AI — §5', () => {
   });
 
   it('Score_CooldownGate_ZeroWhileCooling', () => {
-    const s = start(scenario({ team: STARTERS, enemies: [{ species: 'golem', level: 15, tier: 'wild', phaseCount: 1 }] }));
+    const s = start(scenario({ team: STARTERS, enemies: [{ species: 'golem', level: 21, tier: 'wild', phaseCount: 1 }] }));
     const e = s.enemies[0]!;
     const move = ctx.content.move('earthquake');
     const intent = classifyMove(s, e, move, ctx)!;
@@ -67,7 +67,7 @@ describe('Enemy AI — §5', () => {
   });
 
   it('Score_ParalysedEnemy_CannotAffordThreeAPMoves', () => {
-    const s = tweak(start(scenario({ team: STARTERS, enemies: [{ species: 'golem', level: 15, tier: 'wild', phaseCount: 1 }] })), (d) => {
+    const s = tweak(start(scenario({ team: STARTERS, enemies: [{ species: 'golem', level: 21, tier: 'wild', phaseCount: 1 }] })), (d) => {
       d.enemies[0]!.status = { kind: 'paralysis', appliedTurn: 0, turnsLeft: 3 };
     });
     const e = s.enemies[0]!;
@@ -78,7 +78,7 @@ describe('Enemy AI — §5', () => {
   });
 
   it('Choose_PicksTopScore_WhenFloorDisabled_FloorPicksOnlyLegalAlternatives', () => {
-    const s = start(scenario({ team: [{ species: 'charmander', level: 8 }], enemies: [{ ...GEODUDE, moves: ['rock-slide', 'rock-throw', 'tackle', 'defense-curl'] }] }));
+    const s = start(scenario({ team: [{ species: 'charmander', level: 11 }], enemies: [{ ...GEODUDE, moves: ['rock-slide', 'rock-throw', 'tackle', 'defense-curl'] }] }));
     // Scores vs a Fire lead: Magnitude 50×2 = 100 (top), Rock Throw 45×2 = 90, Tackle 40, Defense Curl 50×1.5 = 75.
     const noFloor = { ...ctx, config: { ...ctx.config, randomnessFloorChance: 0 } };
     expect(chooseIntent(s, s.enemies[0]!, noFloor, new GameRng(3))!.moveId).toBe('rock-slide');
@@ -105,7 +105,7 @@ describe('Enemy AI — §5', () => {
   });
 
   it('PredictedDamage_RecomputedForCurrentOccupant', () => {
-    let s = start(scenario({ team: [{ species: 'charmander', level: 8 }, { species: 'squirtle', level: 8 }], enemies: [GEODUDE] }));
+    let s = start(scenario({ team: [{ species: 'charmander', level: 11 }, { species: 'squirtle', level: 11 }], enemies: [GEODUDE] }));
     s = tweak(s, (d) => {
       d.enemies[0]!.intent = { kind: 'attack', moveId: 'rock-throw', targetSlot: 'lead', hidden: false };
     });
@@ -116,8 +116,8 @@ describe('Enemy AI — §5', () => {
   });
 
   it('Backstrike_TargetsBenchSlot_FizzlesIfEmpty_NoRedirect', () => {
-    const GRAVELER = { species: 'graveler', level: 12, tier: 'wild' as const, phaseCount: 1 as const };
-    let s = start(scenario({ team: [{ species: 'squirtle', level: 10 }, { species: 'charmander', level: 10 }], enemies: [GRAVELER] }));
+    const GRAVELER = { species: 'graveler', level: 16, tier: 'wild' as const, phaseCount: 1 as const };
+    let s = start(scenario({ team: [{ species: 'squirtle', level: 14 }, { species: 'charmander', level: 14 }], enemies: [GRAVELER] }));
     s = tweak(s, (d) => {
       d.enemies[0]!.intent = { kind: 'backstrike', moveId: 'razor-wind', targetSlot: 'bench1', hidden: false };
     });
@@ -135,7 +135,7 @@ describe('Enemy AI — §5', () => {
   });
 
   it('Cleave_HitsEveryOccupiedSlot_NeverFizzles', () => {
-    let s = start(scenario({ team: STARTERS, enemies: [{ species: 'golem', level: 12, tier: 'wild', phaseCount: 1 }] }));
+    let s = start(scenario({ team: STARTERS, enemies: [{ species: 'golem', level: 16, tier: 'wild', phaseCount: 1 }] }));
     s = tweak(s, (d) => {
       d.enemies[0]!.intent = { kind: 'cleave', moveId: 'earthquake', targetSlot: null, hidden: false };
       d.player.team[2]!.hp = 0; // one bench fainted → 2 targets
@@ -159,7 +159,7 @@ describe('Enemy AI — §5', () => {
   });
 
   it('HiddenIntent_BossFirstIntentHidden_UntilWitnessed', () => {
-    let s = start(scenario({ kind: 'boss', team: STARTERS, enemies: [{ species: 'geodude', level: 10, tier: 'boss', phaseCount: 2 }] }));
+    let s = start(scenario({ kind: 'boss', team: STARTERS, enemies: [{ species: 'geodude', level: 14, tier: 'boss', phaseCount: 2 }] }));
     expect(s.enemies[0]!.intent!.hidden).toBe(true);
     s = dispatch(s, { type: 'end-turn' });
     expect(s.enemies[0]!.witnessed).toBe(true);
@@ -167,14 +167,14 @@ describe('Enemy AI — §5', () => {
   });
 
   it('HiddenIntent_KeenEyeReveals', () => {
-    const s = start(scenario({ kind: 'boss', team: [{ species: 'pidgeotto', level: 12 }], enemies: [{ species: 'geodude', level: 10, tier: 'boss', phaseCount: 2 }] }));
+    const s = start(scenario({ kind: 'boss', team: [{ species: 'pidgeotto', level: 16 }], enemies: [{ species: 'geodude', level: 14, tier: 'boss', phaseCount: 2 }] }));
     expect(s.enemies[0]!.intent!.hidden).toBe(false);
   });
 });
 
 describe('Intent queue — §5.5.1', () => {
   it('TrainersInstinct_ShowsNextTurnsIntent_AndTheEnemyKeepsIt', () => {
-    let s = start(scenario({ team: STARTERS, enemies: [{ species: 'geodude', level: 9, tier: 'trainer', phaseCount: 1 }], relics: ['trainers-instinct'] }));
+    let s = start(scenario({ team: STARTERS, enemies: [{ species: 'geodude', level: 12, tier: 'trainer', phaseCount: 1 }], relics: ['trainers-instinct'] }));
     const planned = s.enemies[0]!.next!;
     expect(planned).toBeTruthy();
     s = dispatch(s, { type: 'end-turn' });

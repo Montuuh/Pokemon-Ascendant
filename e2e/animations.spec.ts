@@ -252,7 +252,7 @@ test.describe('Arena animations — §9.9', () => {
       a.run.new('bulbasaur', 7);
       a.goTo('map');
       a.run.fill(3);
-      a.run.levelTo(27);
+      a.run.levelTo(33); // past 16 and 32 (§6.2.4)
       a.run.goto('wild', true);
     });
     await expect(page.getByTestId('evolution-line')).toContainText('Bulbasaur is preparing to evolve');

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, ppLeft, wildChancesFor, type DifficultyModifier, type PartyMon, type RunState, type SideCondition } from '@/sim';
+import { DEFAULT_PROGRESSION, controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, ppLeft, wildChancesFor, type DifficultyModifier, type PartyMon, type RunState, type SideCondition } from '@/sim';
 import { nodeHint, AP_DEBT_TEXT, FIELD_IN, FIELD_TIMER_TEXT, KEYWORD_RULE, SIDE_CHIP_TEXT, SIDE_NAME, STANCE_FOOTER, STANCE_LABEL } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
@@ -8,6 +8,7 @@ import { visibleMoot, bossArchetype, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PR
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
 import { describeMoveDef } from '@/ui/moveText';
+import { evolveSentence, evolvesByFriendship, friendshipWords } from '@/ui/evolutionText';
 import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
@@ -447,8 +448,9 @@ export function evoPathsTip(): ReactNode {
 }
 
 /** §6.9 — a form's own learnset in the Pokédex: a base form's four, an evolved form's signature moves (v0.9.11). */
-export function learnsetTip(evolveLevel: number | undefined, evolves: boolean): ReactNode {
-  return <Tip title={DEX_EVO_TEXT.learnset} body={`Its own moves, by the level it learns them. A Pokémon knows every entry at or below its level${evolveLevel ? `, until it evolves at Lv ${evolveLevel}` : ''}.`} footer={evolves ? 'Evolving rewrites part of the kit and teaches the new form its own moves: the line tab shows each path.' : undefined} />;
+export function learnsetTip(speciesId: string): ReactNode {
+  const evolves = evolveSentence(speciesId, getContent());
+  return <Tip title={DEX_EVO_TEXT.learnset} body={`Its own moves, by the level it learns them. A Pokémon knows every entry at or below its level${evolves ? ', until it evolves' : ''}.`} footer={evolves ? `${evolves} Evolving rewrites part of the kit and teaches the new form its own moves: the line tab shows each path.` : undefined} />;
 }
 
 /** §6.3.5 — an evolved form's kit by path in the Pokédex: what each chain of branches leaves it with. */
@@ -922,6 +924,37 @@ export function teamXpTip(xp: number, next: number, benchShare: number): ReactNo
   return <Tip title={`${xp} / ${next} XP`} body={`To the next level. The formation earns a fight's XP in full; the Box earns ${Math.round(benchShare * 100)} % of it.`} />;
 }
 
+/** §6.3.9 — what moves Friendship, in the one sentence every Friendship tip uses. */
+const FRIENDSHIP_GAINS = "It grows with every fight won in the formation (more as the Lead), every level and the Center's grooming; a faint costs some.";
+
+/** §6.3.9 — the Friendship branch's heart on a path card (Eevee's Umbreon), and its Team sheet row. */
+export function friendshipEvolveTip(): ReactNode {
+  return <Tip title={DEX_EVO_TEXT.friendship} meta={[`${DEFAULT_PROGRESSION.friendship.evolve} / ${DEFAULT_PROGRESSION.friendship.max}`]} body="It takes this path at its next level-up once it is fond enough of you." footer={FRIENDSHIP_GAINS} />;
+}
+
+/** §6.3.9 — a Pokémon's Friendship on its sheet: how it feels, what moves it and what it opens (Umbreon only for a line that has it). */
+export function friendshipTip(friendship: number, speciesId?: string): ReactNode {
+  const f = DEFAULT_PROGRESSION.friendship;
+  const hold = `${f.max} it holds on at 1 HP once a fight.`;
+  const evolves = !!speciesId && evolvesByFriendship(speciesId, getContent());
+  return (
+    <Tip
+      title={friendshipWords(friendship)}
+      meta={[`${friendship} / ${f.max}`]}
+      body={`${FRIENDSHIP_GAINS} Return hits harder for it.`}
+      footer={evolves ? `At ${f.evolve} it evolves at its next level-up; at ${hold}` : `At ${hold}`}
+    />
+  );
+}
+
+/** §6.3.7 — how this species evolves, on the label between two stages and the Team sheet's row. */
+export function evolveMethodTip(speciesId: string): ReactNode {
+  const content = getContent();
+  const s = content.species(speciesId);
+  const held = s.evolveBy === 'held-item' && s.evolveItem ? content.heldItem(s.evolveItem) : null;
+  return <Tip title={DEX_EVO_TEXT.how} body={evolveSentence(speciesId, content) ?? ''} footer={held ? held.description : evolvesByFriendship(speciesId, content) ? FRIENDSHIP_GAINS : undefined} />;
+}
+
 /** §6.5.1 — a Pokémon's ability on its sheet, or why it has none yet. */
 export function abilitySheetTip(ability: { name: string; description: string } | null): ReactNode {
   return ability ? <Tip title={ability.name} body={ability.description} /> : <Tip title="No ability yet" body="A Pokémon takes its ability with its first evolution; the Dojo can teach it another." />;
@@ -1294,7 +1327,7 @@ export function ringPrizeTip(banked: number, allRare: boolean): ReactNode {
 
 /** §2.11.1 — the Center: what is free, and what the three counters are for. */
 export function centerTip(): ReactNode {
-  return <Tip title="The Centre" body="Ask the nurse for free whole-Box healing and status cures. The beds treat Trauma one stack at a time; the PC Box picks the team. Entering does not heal." />;
+  return <Tip title="The Centre" body="Ask the nurse for free whole-Box healing and status cures. The beds treat Trauma one stack at a time; the lounge grooms a Pokémon for Friendship; the PC Box picks the team. Entering does not heal." />;
 }
 /** §2.11.1 — manual treatment is requested from the nurse, separate from the beds. */
 export function centerHealTip(): ReactNode {
@@ -1303,6 +1336,12 @@ export function centerHealTip(): ReactNode {
 /** §8.2.4 — Therapy's price and why Trauma is worth paying for. */
 export function therapyTip(): ReactNode {
   return <Tip title="Therapy" meta={['100 ₽ × (1 + stacks)']} body="Each Trauma stack costs 5 % of max HP up to five, then 10 % each. It never heals on its own — Therapy is the only place it comes off, one stack at a time, dearer the worse the count." />;
+}
+
+/** §6.3.9 — the Center's grooming corner; `scale` is the Soothe Bell's, so the gain it names is the one it gives. */
+export function groomTip(scale = 1): ReactNode {
+  const f = DEFAULT_PROGRESSION.friendship;
+  return <Tip title="Grooming" meta={[`${f.groomPrice} ₽`, `+${f.groom * scale} Friendship`]} body="A brush and a fuss for one Pokémon, once each a visit. Friendship opens Umbreon, strengthens Return and, at its top, holds a Pokémon on at 1 HP once a fight." />;
 }
 
 /** §2.11.1 — the PC Box: the map's Box panel, indoors. */

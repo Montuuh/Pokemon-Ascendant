@@ -28,13 +28,13 @@ function standOn(make: (node: MapNode, run: RunState) => MapNode, seed = 7): Run
 const runnerNode = (runner: 'abra' | 'meowth' | 'chansey', species: string) => (node: MapNode): MapNode => ({
   ...node,
   kind: 'wild',
-  preview: { title: `Wild ${species}`, detail: '', speciesIds: [species], levelBand: [6, 6], enemies: [{ species, level: 6 }], objective: { kind: 'flee', runner, turns: 2 } },
+  preview: { title: `Wild ${species}`, detail: '', speciesIds: [species], levelBand: [6, 6], enemies: [{ species, level: 8 }], objective: { kind: 'flee', runner, turns: 2 } },
 });
 const guardNode = (prize: Extract<NonNullable<MapNode['preview']['objective']>, { kind: 'hold' }>['prize']) => (node: MapNode): MapNode => ({
   ...node,
   kind: 'cache',
   preview: {
-    title: 'A guarded find', detail: '', speciesIds: ['primeape'], levelBand: [7, 7], enemies: [{ species: 'primeape', level: 7 }], icon: 'cache',
+    title: 'A guarded find', detail: '', speciesIds: ['primeape'], levelBand: [7, 7], enemies: [{ species: 'primeape', level: 9 }], icon: 'cache',
     find: { items: ['potion'], money: 40 }, objective: { kind: 'hold', guard: 'primeape', turns: 3, prize },
   },
 });
@@ -123,7 +123,7 @@ describe('Objective fights — §5.6.5', () => {
   it('RunnerKnockedOut_PaysItsXpTimesItsMultiplier_AndARareCandyForTheLead', () => {
     // The same runner caught pays a wild fight's XP: a catch is a catch like any other.
     const s = standOn(runnerNode('abra', 'abra'));
-    const plain = apply(s, { type: 'finish-combat', report: { ...report(s, 'caught'), caught: { speciesId: 'abra', level: 6 } } });
+    const plain = apply(s, { type: 'finish-combat', report: { ...report(s, 'caught'), caught: { speciesId: 'abra', level: 8 } } });
     const after = apply(s, { type: 'finish-combat', report: report(s, 'victory') });
     const lead = after.activeUids[0]!;
     const xpOf = (r: RunState) => r.pendingReward!.xpAwarded.find((x) => x.uid === lead)!.amount;

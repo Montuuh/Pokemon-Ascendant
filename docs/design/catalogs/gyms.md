@@ -3,6 +3,8 @@
 > Data for §5.9.2–§5.9.5 and §5.10. **✅ v0.9.88** — all twelve five-slot teams ship in `run/region.ts` (the Phase-3
 > signatures since v0.9.87). The user chose five members with a thematic off-type support permitted (2026-10-29).
 > A map generated before v0.9.88 keeps its legacy roster through that Region (`gymTeamOf`).
+>> **Levels (v0.9.90).** The levels in this catalogue's tables are on the old scale; the data's moved by
+> `round(1 + 1.4 (L − 1))` — 12 → 16, 20 → 28, 26 → 36 — when evolution took the series' levels (§6.2.4).
 
 ## 1. Region 1 — Rock · Water · Bug · Normal
 

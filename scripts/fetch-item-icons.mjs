@@ -54,12 +54,14 @@ const HELD = [
   'toxic-plate', 'insect-plate', 'spooky-plate', 'draco-plate',
   // Dark and Steel (v0.9.84): the Dark booster and the two plates
   'black-glasses', 'dread-plate', 'iron-plate',
+  // v0.9.90 (§6.3.8): the held items a trade line levels up with — Metal Coat moved here from the stones
+  'spell-tag', 'macho-brace', 'metal-coat',
   // §7.4.4–§7.4.6 Sustain, tempo, signatures (7)
   'leftovers', 'eviolite', 'focus-sash', 'power-bracer', 'choice-scarf', 'thick-club', 'light-ball',
 ];
 
 /** Evolution Items (§6.3.2, §7.2.5) — the five Gen I stones, real items under their own names. */
-const STONES = ['fire-stone', 'water-stone', 'thunder-stone', 'leaf-stone', 'moon-stone', 'metal-coat'];
+const STONES = ['fire-stone', 'water-stone', 'thunder-stone', 'leaf-stone', 'moon-stone'];
 
 /** §2.11.6 — the Safari Zone's own ball, the Black Market Fence's Rare Candy, and the Great and Ultra Balls (§7.2.5): real items all. */
 const SAFARI = ['safari-ball', 'rare-candy', 'great-ball', 'ultra-ball', 'master-ball'];
@@ -90,7 +92,7 @@ const RELIC_ICON = {
   'exp-share': 'exp-share',
   'quick-draw': 'quick-powder',
   'brave-charm': 'red-flute',
-  'recycle-tag': 'macho-brace',
+  'recycle-tag': 'red-card',
   'hikers-coat': 'rocky-helmet',
   'defense-curl-charm': 'metal-powder',
   'soothe-bell': 'soothe-bell',

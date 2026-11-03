@@ -127,7 +127,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
 /** §2.12.2 — the Apex: one a run, in Victory Road's last column, at the Gauntlets' level and more, two phases. */
 export const APEX = {
   column: 3,
-  levelOver: 6,
+  levelOver: 8,
   phaseCount: 2 as const,
 };
 

@@ -83,11 +83,14 @@ Region 3 — Volcano Slope, Badlands, Deep Cave, Underground Lake, Sky Cliffs, H
 
 | Region | Wild recruits | Trainers | Elite (own · lent) | Gym non-ace / ace (lent) | Elite Wild |
 |---|---|---|---|---|---|
-| R1 | 5–13 | 6–15 | 12–14 · 9–10 | 14 / 15 (12) | 14–16 |
-| R2 | 14–22 | 15–24 | 21–23 · 18–19 | 23 / 24 (21) | 23–25 |
-| R3 | 24–32 | 25–34 | 31–33 · 28–29 | 33 / 34 (31) | 33–35 |
+| R1 | 5–18 | 8–21 | 16–19 · 12–14 | 19 / 21 (16) | 19–22 |
+| R2 | 19–30 | 21–33 | 29–32 · 25–26 | 32 / 33 (29) | 32–35 |
+| R3 | 33–44 | 35–47 | 43–46 · 39–40 | 46 / 47 (43) | 46–49 |
 
 A late-Region recruit spawns at the top of the band so it catches up rather than being dead weight.
+
+*(v0.9.90: every level ×1.4 from Lv 1, `round(1 + 1.4 (L − 1))`, so the series' evolution levels fit the run (§6.2.4);
+the gaps the premiums add moved by ×1.4 too. The history below is on the old scale.)*
 
 *(v0.8.10: Region 2 and Region 3 moved up two levels — 12–20 → 14–22, 22–30 → 24–32. Region 1's band ends at 13 and
 Region 2's began at 12, so a team that left Region 1 at Lv 15–16 walked into Region 2 four levels over everything;

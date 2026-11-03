@@ -33,7 +33,7 @@ describe('Recoil and the ability that answers it — §7.4', () => {
 
   it('RockHead_CancelsItEntirely_SoRecoilCanBeAnIdentityNotAClock_§6.5.2', () => {
     const team = [
-      { species: 'onix', level: 20, moves: ['take-down', 'rock-throw'], abilityId: 'rock-head' },
+      { species: 'onix', level: 28, moves: ['take-down', 'rock-throw'], abilityId: 'rock-head' },
       STARTERS[1]!,
       STARTERS[2]!,
     ];
@@ -96,7 +96,7 @@ describe('On-kill — §7.4', () => {
 
   it('Moxie_DoesTheSameFromTheAbilitySide_§6.5.2', () => {
     const team = [
-      { species: 'gyarados', level: 22, moves: ['bite', 'dragon-rage'], abilityId: 'moxie' },
+      { species: 'gyarados', level: 30, moves: ['bite', 'dragon-rage'], abilityId: 'moxie' },
       STARTERS[1]!,
       STARTERS[2]!,
     ];
@@ -156,7 +156,7 @@ describe('Support reach — §7.4', () => {
 
   it('Fissure_IgnoresTheTargetsDefenceStages_WhereAnOrdinaryGroundMoveDoesNot', () => {
     // Not Pidgey: Ground does ×0 into Flying, so both numbers would be zero and the test would prove nothing.
-    const GEODUDE = { species: 'geodude', level: 10, tier: 'wild' as const, phaseCount: 1 as const };
+    const GEODUDE = { species: 'geodude', level: 14, tier: 'wild' as const, phaseCount: 1 as const };
     const s = start(scenario({ team: teamWithKit(['fissure', 'water-gun']), enemies: [GEODUDE] }));
     const braced = tweak(s, (d) => {
       d.enemies[0]!.stages.defense = 4;
@@ -177,9 +177,9 @@ describe('Run Down — §6.5.2, §3.3.1', () => {
     let s = start(
       scenario({
         team: [
-          { species: 'rattata', level: 14, abilityId: 'run-down' },
-          { species: 'squirtle', level: 12 },
-          { species: 'bulbasaur', level: 12 },
+          { species: 'rattata', level: 19, abilityId: 'run-down' },
+          { species: 'squirtle', level: 16 },
+          { species: 'bulbasaur', level: 16 },
         ],
         enemies: [PIDGEY],
       }),
@@ -199,7 +199,7 @@ describe('Run Down — §6.5.2, §3.3.1', () => {
 });
 
 describe('The Mastery moves’ effects — §5.13.2 (v0.7.5)', () => {
-  const s0 = () => start(scenario({ team: STARTERS, enemies: [{ species: 'geodude', level: 12, tier: 'wild', phaseCount: 1 }] }));
+  const s0 = () => start(scenario({ team: STARTERS, enemies: [{ species: 'geodude', level: 16, tier: 'wild', phaseCount: 1 }] }));
   const hit = (s: ReturnType<typeof s0>, moveId: string, attacker = s.player.team[0]!) => breakdownFor(attacker, s.enemies[0]!, content.move(moveId), false, ctx, s).final;
 
   it('Venoshock_DoublesIntoAPoisonedTarget', () => {
@@ -223,13 +223,13 @@ describe('The Mastery moves’ effects — §5.13.2 (v0.7.5)', () => {
   });
 
   it('BellyDrum_PaysHpUpFront_NeverBelowOne_AndRaisesAttack', () => {
-    let s = start(scenario({ team: [{ species: 'snorlax', level: 20, moves: ['probe-belly-drum', 'tackle'] }], enemies: [PIDGEY] }));
+    let s = start(scenario({ team: [{ species: 'snorlax', level: 28, moves: ['probe-belly-drum', 'tackle'] }], enemies: [PIDGEY] }));
     s = withHand(s, ['probe-belly-drum']);
     const max = s.player.team[0]!.maxHp;
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'probe-belly-drum').id });
     expect(s.player.team[0]!.hp).toBe(max - Math.floor(max * 0.4));
     expect(s.player.team[0]!.stages.attack).toBe(4);
-    let low = tweak(withHand(start(scenario({ team: [{ species: 'snorlax', level: 20, moves: ['probe-belly-drum', 'tackle'] }], enemies: [PIDGEY] })), ['probe-belly-drum']), (d) => { d.player.team[0]!.hp = 2; });
+    let low = tweak(withHand(start(scenario({ team: [{ species: 'snorlax', level: 28, moves: ['probe-belly-drum', 'tackle'] }], enemies: [PIDGEY] })), ['probe-belly-drum']), (d) => { d.player.team[0]!.hp = 2; });
     low = dispatch(low, { type: 'play-card', cardId: handCard(low, 'probe-belly-drum').id });
     expect(low.player.team[0]!.hp).toBe(1);
   });

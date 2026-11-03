@@ -81,6 +81,10 @@
   display: inline-grid;
   cursor: help;
 }
+/* §6.3.9 — Friendship's heart, an icon tint. */
+.heart {
+  color: var(--brand-red);
+}
 .stats {
   list-style: none;
   margin: 0;

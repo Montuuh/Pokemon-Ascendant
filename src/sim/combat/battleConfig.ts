@@ -131,6 +131,11 @@ export interface BattleConfig {
     guardReferenceDefence: number;
   };
   /**
+   * §6.3.9 — Friendship in a fight: the scale's top (Return's full power), the value from which a Pokémon holds on at 1 HP
+   * once a fight (§7.3.6), and the value Return reads for a Pokémon that brings none (an enemy, a fixture's).
+   */
+  friendship: { max: number; endure: number; foe: number };
+  /**
    * §5.3.1 — how an enemy weighs the move keywords: a stance's score (against an attack's power) and when it is worth
    * it, and what a charge's warning and an ultimate's recharge take off a hit's score.
    */
@@ -226,6 +231,8 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   // singles' 0.5), and its two extra turns for a rock: 3 + 2 is the series' own 5 + 3 scaled to these longer turns.
   // Guard's reference is the roster's mean base Defence, so an average wall's Withdraw blocks the hit its power names.
   keywords: { screenMultiplier: 0.66, rockExtraTurns: 2, weatherHeal: { sun: 2, other: 0.5 }, guardReferenceDefence: 70 },
+  // §6.3.9 — the series' scale and start; X/Y's "toughed it out" at the top of it; a foe's Return at a trainer's fondness.
+  friendship: { max: 255, endure: 255, foe: 160 },
   // §5.3.1 — a stance scores against an attack's power (a 1-AP hit is 40–55): Protect is the hurt enemy's play, a
   // screen or a field one it makes once, a guard a weak turn. Measured on the harness with the v0.9.89 kits.
   keywordAi: {

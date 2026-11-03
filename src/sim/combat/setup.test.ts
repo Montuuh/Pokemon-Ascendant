@@ -27,18 +27,18 @@ describe('createCombat — §3.2.1 Combat Start', () => {
   });
 
   it('Start_StatsScaleWithLevel_PerGrowthCurve', () => {
-    const s = start(scenario({ team: [{ species: 'charmander', level: 8 }], enemies: [PIDGEY] }));
+    const s = start(scenario({ team: [{ species: 'charmander', level: 11 }], enemies: [PIDGEY] }));
     const c = s.player.team[0]!;
     const species = ctx.content.species('charmander');
-    // §6.2.3 (v0.9.10) — base × (1 + rate × 7), and HP adds the level.
-    expect(c.maxHp).toBe(Math.round(39 * (1 + STAT_GROWTH_RATE * 7) + HP_PER_LEVEL * 8));
+    // §6.2.3 (v0.9.10) — base × (1 + rate × 10), and HP adds the level.
+    expect(c.maxHp).toBe(Math.round(39 * (1 + STAT_GROWTH_RATE * 10) + HP_PER_LEVEL * 11));
     // §4.1.5.1 — Attack is max(Atk 52, Spc 60) = 60, not the raw physical stat.
-    expect(c.base.attack).toBe(Math.round(60 * (1 + STAT_GROWTH_RATE * 7)));
-    expect(c.base.attack).toBe(statAtLevel(species, 'attack', 8));
+    expect(c.base.attack).toBe(Math.round(60 * (1 + STAT_GROWTH_RATE * 10)));
+    expect(c.base.attack).toBe(statAtLevel(species, 'attack', 11));
   });
 
   it('Start_HpPercentAndStatus_SeedMidFightState', () => {
-    const s = start(scenario({ team: [{ species: 'charmander', level: 8, hpPercent: 50, status: 'poison' }], enemies: [PIDGEY] }));
+    const s = start(scenario({ team: [{ species: 'charmander', level: 11, hpPercent: 50, status: 'poison' }], enemies: [PIDGEY] }));
     const c = s.player.team[0]!;
     expect(c.hp).toBe(Math.round(c.maxHp / 2));
     expect(c.status?.kind).toBe('poison');
@@ -46,7 +46,7 @@ describe('createCombat — §3.2.1 Combat Start', () => {
 
   it('Start_CarriedStatus_KeepsItsClock_§4.2.7.1', () => {
     // A status carried in from the run's last fight resumes with what was left of it, not a fresh duration.
-    const s = start(scenario({ team: [{ species: 'charmander', level: 8, status: 'sleep', statusTurnsLeft: 1, confusionTurns: 2 }], enemies: [PIDGEY] }));
+    const s = start(scenario({ team: [{ species: 'charmander', level: 11, status: 'sleep', statusTurnsLeft: 1, confusionTurns: 2 }], enemies: [PIDGEY] }));
     const c = s.player.team[0]!;
     expect(c.status?.kind).toBe('sleep');
     expect(c.status?.turnsLeft).toBe(1);
@@ -63,8 +63,8 @@ describe('createCombat — §3.2.1 Combat Start', () => {
     expect(effectiveMaxHp(100, 6, ctx.config)).toBe(65);
     expect(effectiveMaxHp(100, 10, ctx.config)).toBe(25);
     expect(effectiveMaxHp(100, 14, ctx.config)).toBe(25); // capped
-    const s = start(scenario({ team: [{ species: 'charmander', level: 8, traumaStacks: 2 }], enemies: [PIDGEY] }));
-    expect(s.player.team[0]!.maxHp).toBe(Math.floor(statAtLevel(ctx.content.species('charmander'), 'hp', 8) * 0.9));
+    const s = start(scenario({ team: [{ species: 'charmander', level: 11, traumaStacks: 2 }], enemies: [PIDGEY] }));
+    expect(s.player.team[0]!.maxHp).toBe(Math.floor(statAtLevel(ctx.content.species('charmander'), 'hp', 11) * 0.9));
   });
 
   it('Start_TheWholeBagIsOpen_TwoItemsATurn_§3.5', () => {
@@ -87,7 +87,7 @@ describe('createCombat — §3.2.1 Combat Start', () => {
   });
 
   it('Start_IronShell_RaisesDefenseOneStage', () => {
-    const s = start(scenario({ team: [{ species: 'metapod', level: 10 }], enemies: [PIDGEY] }));
+    const s = start(scenario({ team: [{ species: 'metapod', level: 14 }], enemies: [PIDGEY] }));
     expect(s.player.team[0]!.stages.defense).toBe(1);
   });
 

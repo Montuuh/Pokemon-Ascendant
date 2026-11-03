@@ -123,7 +123,7 @@ export const REGION1_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
  * §2.6.3 — the whole route's wild span. A single flat band made layer 0 as dangerous as layer 5, so the band
  * walks with the route instead: the first node is L5–6, the last before the Gym is L12–13.
  */
-export const WILD_LEVEL_BAND: [number, number] = [5, 13];
+export const WILD_LEVEL_BAND: [number, number] = [5, 18];
 
 /**
  * The layer count the band is spread across. It is a constant here rather than an import from `map.ts`
@@ -173,7 +173,7 @@ export const TEAM_SIZE = { trainer: [3, 3, 3], elite: [4, 4, 4], gym: [5, 5, 5] 
  * (§2.8.1, "levels read right"): until then the gaps were 4 / 6 / 8, which put a Lv 2 Onix beside a Lv 8 Pidgeotto in
  * the Region 1 Elite and Lv 3 Pokémon in front of Brock — the user's playtest, against a team at Lv 11.
  */
-export const PAD_LEVEL_GAP = { trainer: 3, elite: 3, gym: 2 } as const;
+export const PAD_LEVEL_GAP = { trainer: 4, elite: 4, gym: 3 } as const;
 
 /**
  * §2.8.1 / §5.9.3 — the Elite's and the Gym's level premium over the band: **levels read right** (2026-10-20). A boss's
@@ -183,8 +183,8 @@ export const PAD_LEVEL_GAP = { trainer: 3, elite: 3, gym: 2 } as const;
  * higher level never refunds itself in XP. History: +2 and +4/+6 until v0.8.5, when a boss fought one Pokémon at a
  * time; then −2 and −2/0, which kept the difficulty by standing the boss five to eight levels under the team.
  */
-export const ELITE_LEVEL_PREMIUM = 2;
-export const GYM_LEVEL_PREMIUM = { other: 1, middle: -1, ace: 2 } as const;
+export const ELITE_LEVEL_PREMIUM = 3;
+export const GYM_LEVEL_PREMIUM = { other: 1, middle: -1, ace: 3 } as const;
 /** §2.8.1 — the Elite's own Attack, on top of the Region's tier: its threat, now that its levels read right. */
 export const ELITE_ATTACK_MULTIPLIER: readonly number[] = [0.65, 0.85, 0.9];
 /**
@@ -241,25 +241,25 @@ export interface TrainerRoster {
  */
 export const TRAINERS: TrainerRoster[] = [
   { id: 'bug-catcher-a', archetype: 'bug-catcher', name: 'Bug Catcher Rick', sprite: 'bug-catcher', line: 'My bugs are stronger than they look!',
-    team: [{ species: 'caterpie', level: 8 }, { species: 'weedle', level: 9 }] },
+    team: [{ species: 'caterpie', level: 11 }, { species: 'weedle', level: 12 }] },
   { id: 'bug-catcher-b', archetype: 'bug-catcher', name: 'Bug Catcher Doug', sprite: 'bug-catcher', line: 'I caught these myself, you know.',
-    team: [{ species: 'metapod', level: 10 }, { species: 'kakuna', level: 10 }] },
+    team: [{ species: 'metapod', level: 14 }, { species: 'kakuna', level: 14 }] },
   { id: 'youngster-a', archetype: 'youngster', name: 'Youngster Joey', sprite: 'youngster', line: 'My Rattata is in the top percentage!',
-    team: [{ species: 'rattata', level: 10 }] },
+    team: [{ species: 'rattata', level: 14 }] },
   { id: 'youngster-b', archetype: 'youngster', name: 'Youngster Ben', sprite: 'youngster', line: 'Shorts are comfy and easy to wear!',
-    team: [{ species: 'pidgey', level: 10 }, { species: 'rattata', level: 11 }] },
+    team: [{ species: 'pidgey', level: 14 }, { species: 'rattata', level: 15 }] },
   { id: 'lass-a', archetype: 'lass', name: 'Lass Iris', sprite: 'lass', line: 'Let me show you what I have been growing.',
-    team: [{ species: 'oddish', level: 10 }, { species: 'pidgey', level: 11 }] },
+    team: [{ species: 'oddish', level: 14 }, { species: 'pidgey', level: 15 }] },
   { id: 'lass-b', archetype: 'lass', name: 'Lass Nina', sprite: 'lass', line: 'Do not underestimate an Oddish.',
-    team: [{ species: 'weedle', level: 10 }, { species: 'oddish', level: 11 }] },
+    team: [{ species: 'weedle', level: 14 }, { species: 'oddish', level: 15 }] },
   { id: 'hiker-a', archetype: 'hiker', name: 'Hiker Marcos', sprite: 'hiker', line: 'This whole ridge is my training ground.',
-    team: [{ species: 'geodude', level: 11 }, { species: 'onix', level: 11 }] },
+    team: [{ species: 'geodude', level: 15 }, { species: 'onix', level: 15 }] },
   { id: 'hiker-b', archetype: 'hiker', name: 'Hiker Dov', sprite: 'hiker', line: 'You will not get past a wall of rock.',
-    team: [{ species: 'diglett', level: 10 }, { species: 'geodude', level: 12 }] },
+    team: [{ species: 'diglett', level: 14 }, { species: 'geodude', level: 16 }] },
   { id: 'swimmer-a', archetype: 'swimmer', name: 'Swimmer Cass', sprite: 'swimmer', line: 'The water is warmer than it looks. Come in.',
-    team: [{ species: 'poliwag', level: 10 }, { species: 'magikarp', level: 9 }] },
+    team: [{ species: 'poliwag', level: 14 }, { species: 'magikarp', level: 12 }] },
   { id: 'swimmer-b', archetype: 'swimmer', name: 'Swimmer Tomas', sprite: 'swimmer', line: 'I train out past the shelf. You would not last.',
-    team: [{ species: 'psyduck', level: 11 }, { species: 'krabby', level: 11 }] },
+    team: [{ species: 'psyduck', level: 15 }, { species: 'krabby', level: 15 }] },
 ];
 
 /** The rosters of one archetype, for the lane themes. */
@@ -286,8 +286,8 @@ export const ELITE: EliteDef = {
   sprite: 'acetrainer',
   line: 'I only battle people who are going somewhere. Show me.',
   team: [
-    { species: 'pidgeotto', level: 12, phaseCount: 2 },
-    { species: 'ivysaur', level: 13, phaseCount: 2 },
+    { species: 'pidgeotto', level: 16, phaseCount: 2 },
+    { species: 'ivysaur', level: 18, phaseCount: 2 },
   ],
 };
 
@@ -333,7 +333,7 @@ export interface EliteWildDef {
 export const ELITE_WILD: EliteWildDef = {
   id: 'elite-wild-snorlax',
   species: 'snorlax',
-  level: 15,
+  level: 21,
   /** §2.8.2 — boss-tier HP, two phases, no evolution: it is a wild, not an ace. */
   phaseCount: 2,
   stage: 'elite-snorlax',
@@ -342,7 +342,7 @@ export const ELITE_WILD: EliteWildDef = {
 
 /** §2.8.2 — the Elite Wild sits with the Elite Trainer's premium: it is the other hardest fight but one. */
 export function eliteWildTeamFor(layer: number, eliteWild: EliteWildDef = ELITE_WILD, band: readonly [number, number] = WILD_LEVEL_BAND): { species: string; level: number }[] {
-  return [{ species: eliteWild.species, level: wildBandFor(layer, band)[1] + 3 }];
+  return [{ species: eliteWild.species, level: wildBandFor(layer, band)[1] + 4 }];
 }
 
 /** §5.9.3 — one authored Gym slot. `guest` is the declared off-type member's job, promised before the fork (§2.7.3). */
@@ -505,18 +505,18 @@ export const GYM_ROSTER = 2;
 
 /** The v0.9.87 rows, frozen: what a pre-v0.9.88 map's Gym fields. Not content — do not author here. */
 const LEGACY_GYM_TEAMS: Record<string, { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[]; signature?: { move: string; response: string } }[]> = {
-  'rock-gym-r1': [{ species: 'geodude', level: 14, phaseCount: 2 }, { species: 'graveler', level: 16, phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; reduce its Attack or finish the ace before Resolution.' } }],
-  'water-gym-r1': [{ species: 'krabby', level: 14, phaseCount: 2 }, { species: 'kingler', level: 16, phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'], signature: { move: 'crabhammer', response: 'Water/Grass resistance, Defence or a KO before its claws land.' } }],
-  'bug-gym-r1': [{ species: 'metapod', level: 14, phaseCount: 2 }, { species: 'butterfree', level: 16, phaseCount: 3, moves: ['sleep-powder', 'confusion', 'gust', 'harden'], signature: { move: 'confusion', response: 'Psychic resistance or Dark immunity; reduce the forecast rather than relying on a late Sleep.' } }],
-  'normal-gym-r1': [{ species: 'pidgeotto', level: 14, phaseCount: 2 }, { species: 'raticate', level: 16, phaseCount: 3, moves: ['hyper-fang', 'quick-attack-plus', 'dig', 'tail-whip'], signature: { move: 'hyper-fang', response: 'Rock/Steel resistance or Ghost immunity; a defensive swap also answers it.' } }],
-  'fire-gym-r2': [{ species: 'growlithe', level: 20, phaseCount: 2 }, { species: 'arcanine', level: 22, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'], signature: { move: 'flamethrower', response: 'Fire/Water/Rock resistance or damage reduction; remove it before the hit.' } }],
-  'grass-gym-r2': [{ species: 'weepinbell', level: 20, phaseCount: 2 }, { species: 'vileplume', level: 22, phaseCount: 3, signature: { move: 'petal-dance', response: 'Grass-resistant Lead; the move keeps its own self-Confusion drawback.' } }],
-  'electric-gym-r2': [{ species: 'voltorb', level: 20, phaseCount: 2 }, { species: 'electrode', level: 22, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance; the signature overrides neither.' } }],
-  'poison-gym-r2': [{ species: 'koffing', level: 20, phaseCount: 2 }, { species: 'weezing', level: 22, phaseCount: 3, signature: { move: 'self-destruct', response: 'Ghost immunity or Rock/Steel resistance; its recoil follows the damage, not an automatic self-KO.' } }],
-  'psychic-gym-r3': [{ species: 'kadabra', level: 33, phaseCount: 2 }, { species: 'alakazam', level: 35, phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } }],
-  'ground-gym-r3': [{ species: 'nidoqueen', level: 34, phaseCount: 2 }, { species: 'rhydon', level: 36, phaseCount: 3, signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defence; Water or Grass burst can KO it before Resolution.' } }],
-  'fighting-gym-r3': [{ species: 'machoke', level: 34, phaseCount: 2 }, { species: 'machamp', level: 36, phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance; the move keeps its recoil.' } }],
-  'ice-gym-r3': [{ species: 'dewgong', level: 34, phaseCount: 2 }, { species: 'cloyster', level: 36, phaseCount: 3, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'], signature: { move: 'ice-beam', response: 'Water/Fire/Ice/Steel resistance or damage reduction; Fire can also shatter Ice Armour.' } }],
+  'rock-gym-r1': [{ species: 'geodude', level: 19, phaseCount: 2 }, { species: 'graveler', level: 22, phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; reduce its Attack or finish the ace before Resolution.' } }],
+  'water-gym-r1': [{ species: 'krabby', level: 19, phaseCount: 2 }, { species: 'kingler', level: 22, phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'], signature: { move: 'crabhammer', response: 'Water/Grass resistance, Defence or a KO before its claws land.' } }],
+  'bug-gym-r1': [{ species: 'metapod', level: 19, phaseCount: 2 }, { species: 'butterfree', level: 22, phaseCount: 3, moves: ['sleep-powder', 'confusion', 'gust', 'harden'], signature: { move: 'confusion', response: 'Psychic resistance or Dark immunity; reduce the forecast rather than relying on a late Sleep.' } }],
+  'normal-gym-r1': [{ species: 'pidgeotto', level: 19, phaseCount: 2 }, { species: 'raticate', level: 22, phaseCount: 3, moves: ['hyper-fang', 'quick-attack-plus', 'dig', 'tail-whip'], signature: { move: 'hyper-fang', response: 'Rock/Steel resistance or Ghost immunity; a defensive swap also answers it.' } }],
+  'fire-gym-r2': [{ species: 'growlithe', level: 28, phaseCount: 2 }, { species: 'arcanine', level: 30, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'], signature: { move: 'flamethrower', response: 'Fire/Water/Rock resistance or damage reduction; remove it before the hit.' } }],
+  'grass-gym-r2': [{ species: 'weepinbell', level: 28, phaseCount: 2 }, { species: 'vileplume', level: 30, phaseCount: 3, signature: { move: 'petal-dance', response: 'Grass-resistant Lead; the move keeps its own self-Confusion drawback.' } }],
+  'electric-gym-r2': [{ species: 'voltorb', level: 28, phaseCount: 2 }, { species: 'electrode', level: 30, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance; the signature overrides neither.' } }],
+  'poison-gym-r2': [{ species: 'koffing', level: 28, phaseCount: 2 }, { species: 'weezing', level: 30, phaseCount: 3, signature: { move: 'self-destruct', response: 'Ghost immunity or Rock/Steel resistance; its recoil follows the damage, not an automatic self-KO.' } }],
+  'psychic-gym-r3': [{ species: 'kadabra', level: 46, phaseCount: 2 }, { species: 'alakazam', level: 49, phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } }],
+  'ground-gym-r3': [{ species: 'nidoqueen', level: 47, phaseCount: 2 }, { species: 'rhydon', level: 50, phaseCount: 3, signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defence; Water or Grass burst can KO it before Resolution.' } }],
+  'fighting-gym-r3': [{ species: 'machoke', level: 47, phaseCount: 2 }, { species: 'machamp', level: 50, phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance; the move keeps its recoil.' } }],
+  'ice-gym-r3': [{ species: 'dewgong', level: 47, phaseCount: 2 }, { species: 'cloyster', level: 50, phaseCount: 3, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'], signature: { move: 'ice-beam', response: 'Water/Fire/Ice/Steel resistance or damage reduction; Fire can also shatter Ice Armour.' } }],
 };
 
 /** The v0.9.87 Gym team, padded from the lane's favourites as it was: for a map generated before `GYM_ROSTER`. */
@@ -680,33 +680,33 @@ export const REGION2_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
 export const TRAINERS_R2: TrainerRoster[] = [
   // §5.6.1 — an Ace Trainer's Lead acts twice from Region 2 (v0.9.12): two Pokémon at their best, one of them fast.
   { id: 'ace-trainer-r2-a', archetype: 'ace-trainer', name: 'Ace Trainer Iris', sprite: 'acetrainer', line: 'I train for the turn nobody sees coming.',
-    team: [{ species: 'pidgeotto', level: 17 }, { species: 'wartortle', level: 18 }] },
+    team: [{ species: 'pidgeotto', level: 23 }, { species: 'wartortle', level: 25 }] },
   { id: 'ace-trainer-r2-b', archetype: 'ace-trainer', name: 'Ace Trainer Marco', sprite: 'acetrainer', line: 'Two moves a turn. Keep up.',
-    team: [{ species: 'kadabra', level: 17 }, { species: 'charmeleon', level: 18 }] },
+    team: [{ species: 'kadabra', level: 23 }, { species: 'charmeleon', level: 25 }] },
   { id: 'youngster-r2-a', archetype: 'youngster', name: 'Youngster Calvin', sprite: 'youngster', line: 'I have been training since Pallet. Look how big they got!',
-    team: [{ species: 'raticate', level: 15 }, { species: 'pidgeotto', level: 16 }] },
+    team: [{ species: 'raticate', level: 21 }, { species: 'pidgeotto', level: 22 }] },
   { id: 'youngster-r2-b', archetype: 'youngster', name: 'Youngster Otis', sprite: 'youngster', line: 'Only one Pokémon. It is the only one I need.',
-    team: [{ species: 'raichu', level: 17 }] },
+    team: [{ species: 'raichu', level: 23 }] },
   { id: 'lass-r2-a', archetype: 'lass', name: 'Lass Dana', sprite: 'lass', line: 'The sea breeze is lovely. So is a good Sleep Powder.',
-    team: [{ species: 'gloom', level: 16 }, { species: 'starmie', level: 17 }] },
+    team: [{ species: 'gloom', level: 22 }, { species: 'starmie', level: 23 }] },
   { id: 'lass-r2-b', archetype: 'lass', name: 'Lass Mei', sprite: 'lass', line: 'Careful — mine sting.',
-    team: [{ species: 'weepinbell', level: 16 }, { species: 'raichu', level: 17 }] },
+    team: [{ species: 'weepinbell', level: 22 }, { species: 'raichu', level: 23 }] },
   { id: 'hiker-r2-a', archetype: 'hiker', name: 'Hiker Bruno', sprite: 'hiker', line: 'These cliffs are softer than my Pokémon.',
-    team: [{ species: 'graveler', level: 17 }, { species: 'machoke', level: 17 }] },
+    team: [{ species: 'graveler', level: 23 }, { species: 'machoke', level: 23 }] },
   { id: 'hiker-r2-b', archetype: 'hiker', name: 'Hiker Alan', sprite: 'hiker', line: 'The tide cannot move a mountain.',
-    team: [{ species: 'onix', level: 17 }, { species: 'graveler', level: 18 }] },
+    team: [{ species: 'onix', level: 23 }, { species: 'graveler', level: 25 }] },
   { id: 'swimmer-r2-a', archetype: 'swimmer', name: 'Swimmer Luis', sprite: 'swimmer', line: 'Out here the water bites back.',
-    team: [{ species: 'dewgong', level: 16 }, { species: 'tentacruel', level: 17 }] },
+    team: [{ species: 'dewgong', level: 22 }, { species: 'tentacruel', level: 23 }] },
   { id: 'swimmer-r2-b', archetype: 'swimmer', name: 'Swimmer Paula', sprite: 'swimmer', line: 'I race the Seadra to the point every morning.',
-    team: [{ species: 'seadra', level: 16 }, { species: 'cloyster', level: 17 }] },
+    team: [{ species: 'seadra', level: 22 }, { species: 'cloyster', level: 23 }] },
   { id: 'engineer-r2-a', archetype: 'engineer', name: 'Engineer Hugo', sprite: 'scientist', line: 'Give me two turns and I will show you a real current.',
-    team: [{ species: 'magneton', level: 17 }, { species: 'electrode', level: 18 }] },
+    team: [{ species: 'magneton', level: 23 }, { species: 'electrode', level: 25 }] },
   { id: 'engineer-r2-b', archetype: 'engineer', name: 'Engineer Ines', sprite: 'scientist', line: 'The plant never sleeps. Neither do I.',
-    team: [{ species: 'electrode', level: 17 }, { species: 'electabuzz', level: 18 }] },
+    team: [{ species: 'electrode', level: 23 }, { species: 'electabuzz', level: 25 }] },
   { id: 'rocket-grunt-r2-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Hand over anything rare and nobody gets poisoned.',
-    team: [{ species: 'weezing', level: 18 }, { species: 'golbat', level: 18 }] },
+    team: [{ species: 'weezing', level: 25 }, { species: 'golbat', level: 25 }] },
   { id: 'rocket-grunt-r2-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'You picked the wrong pier, kid.',
-    team: [{ species: 'raticate', level: 17 }, { species: 'weezing', level: 18 }] },
+    team: [{ species: 'raticate', level: 23 }, { species: 'weezing', level: 25 }] },
 ];
 
 /**
@@ -721,8 +721,8 @@ export const ELITE_R2: EliteDef = {
   sprite: 'blackbelt',
   line: 'I trained on these cliffs until the sea gave up first. Come.',
   team: [
-    { species: 'machoke', level: 22, phaseCount: 2 },
-    { species: 'hitmonchan', level: 23, phaseCount: 2 },
+    { species: 'machoke', level: 30, phaseCount: 2 },
+    { species: 'hitmonchan', level: 32, phaseCount: 2 },
   ],
 };
 
@@ -733,7 +733,7 @@ export const ELITE_R2: EliteDef = {
 export const ELITE_WILD_R2: EliteWildDef = {
   id: 'elite-wild-lapras',
   species: 'lapras',
-  level: 24,
+  level: 33,
   phaseCount: 2,
   stage: 'elite-lapras',
   moves: ['sing', 'body-slam', 'ice-beam', 'surf'],
@@ -883,29 +883,29 @@ export const REGION3_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
  */
 export const TRAINERS_R3: TrainerRoster[] = [
   { id: 'ace-trainer-r3-a', archetype: 'ace-trainer', name: 'Ace Trainer Rhea', sprite: 'acetrainer', line: 'Two Pokémon, both at their best. That is all an Ace needs.',
-    team: [{ species: 'pidgeot', level: 30 }, { species: 'arcanine', level: 32 }] },
+    team: [{ species: 'pidgeot', level: 42 }, { species: 'arcanine', level: 44 }] },
   { id: 'ace-trainer-r3-b', archetype: 'ace-trainer', name: 'Ace Trainer Dario', sprite: 'acetrainer', line: 'Mind or muscle? I brought both.',
-    team: [{ species: 'alakazam', level: 31 }, { species: 'machamp', level: 32 }] },
+    team: [{ species: 'alakazam', level: 43 }, { species: 'machamp', level: 44 }] },
   { id: 'hex-maniac-r3-a', archetype: 'hex-maniac', name: 'Hex Maniac Vera', sprite: 'hexmaniac', line: 'You cannot see what they are planning. That is the point.', veiled: true,
-    team: [{ species: 'hypno', level: 30 }, { species: 'gengar', level: 31 }] },
+    team: [{ species: 'hypno', level: 42 }, { species: 'gengar', level: 43 }] },
   { id: 'hex-maniac-r3-b', archetype: 'hex-maniac', name: 'Hex Maniac Mona', sprite: 'hexmaniac', line: 'The tower tells me your moves. It tells you nothing.', veiled: true,
-    team: [{ species: 'mr-mime', level: 30 }, { species: 'slowbro', level: 31 }] },
+    team: [{ species: 'mr-mime', level: 42 }, { species: 'slowbro', level: 43 }] },
   { id: 'rocket-grunt-r3-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'The Boss wants this mountain. You are standing on it.',
-    team: [{ species: 'weezing', level: 30 }, { species: 'arbok', level: 31 }] },
+    team: [{ species: 'weezing', level: 42 }, { species: 'arbok', level: 43 }] },
   { id: 'rocket-grunt-r3-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Team Rocket never loses twice. Well — never three times.',
-    team: [{ species: 'golbat', level: 30 }, { species: 'muk', level: 31 }] },
+    team: [{ species: 'golbat', level: 42 }, { species: 'muk', level: 43 }] },
   { id: 'engineer-r3-a', archetype: 'engineer', name: 'Engineer Otto', sprite: 'scientist', line: 'The geothermal plant runs on these two. So do I.',
-    team: [{ species: 'electrode', level: 30 }, { species: 'electabuzz', level: 31 }] },
+    team: [{ species: 'electrode', level: 42 }, { species: 'electabuzz', level: 43 }] },
   { id: 'engineer-r3-b', archetype: 'engineer', name: 'Engineer Silvia', sprite: 'scientist', line: 'Porygon was built at Silph. I rebuilt it better.',
-    team: [{ species: 'porygon', level: 30 }, { species: 'raichu', level: 31 }] },
+    team: [{ species: 'porygon', level: 42 }, { species: 'raichu', level: 43 }] },
   { id: 'hiker-r3-a', archetype: 'hiker', name: 'Hiker Ernesto', sprite: 'hiker', line: 'This mountain was here before you. So were we.',
-    team: [{ species: 'rhyhorn', level: 31 }, { species: 'golem', level: 32 }] },
+    team: [{ species: 'rhyhorn', level: 43 }, { species: 'golem', level: 44 }] },
   { id: 'hiker-r3-b', archetype: 'hiker', name: 'Hiker Ivan', sprite: 'hiker', line: 'I carried Machamp up here. Then it carried me.',
-    team: [{ species: 'rhydon', level: 30 }, { species: 'machamp', level: 32 }] },
+    team: [{ species: 'rhydon', level: 42 }, { species: 'machamp', level: 44 }] },
   { id: 'swimmer-r3-a', archetype: 'swimmer', name: 'Swimmer Nerea', sprite: 'swimmer', line: 'The water under the ice is freezing. You get used to it.',
-    team: [{ species: 'dewgong', level: 30 }, { species: 'seaking', level: 31 }] },
+    team: [{ species: 'dewgong', level: 42 }, { species: 'seaking', level: 43 }] },
   { id: 'swimmer-r3-b', archetype: 'swimmer', name: 'Swimmer Marco', sprite: 'swimmer', line: 'Swim the ice caves long enough and nothing scares you.',
-    team: [{ species: 'cloyster', level: 30 }, { species: 'starmie', level: 31 }] },
+    team: [{ species: 'cloyster', level: 42 }, { species: 'starmie', level: 43 }] },
 ];
 
 /**
@@ -920,8 +920,8 @@ export const ELITE_R3: EliteDef = {
   sprite: 'giovanni-rocket',
   line: 'So you are the one who keeps getting in Team Rocket’s way. I will end that here.',
   team: [
-    { species: 'dugtrio', level: 32, phaseCount: 2 },
-    { species: 'persian', level: 34, phaseCount: 2 },
+    { species: 'dugtrio', level: 44, phaseCount: 2 },
+    { species: 'persian', level: 47, phaseCount: 2 },
   ],
 };
 
@@ -932,7 +932,7 @@ export const ELITE_R3: EliteDef = {
 export const ELITE_WILD_R3: EliteWildDef = {
   id: 'elite-wild-aerodactyl',
   species: 'aerodactyl',
-  level: 34,
+  level: 47,
   phaseCount: 2,
   stage: 'elite-aerodactyl',
   moves: ['agility', 'bite', 'fly', 'rock-slide'],
@@ -1041,11 +1041,11 @@ export const REGIONS: readonly RegionContent[] = [
   },
   {
     // §2.6.5 — 14–22 and 24–32 since v0.8.10 (were 12–20, 22–30): the team entered Region 2 four levels over.
-    index: 1, name: 'Coastal Cliffs', biomes: BIOMES_R2, biomeWeights: REGION2_BIOME_WEIGHTS, wildBand: [14, 22], trunkStage: 'beach',
+    index: 1, name: 'Coastal Cliffs', biomes: BIOMES_R2, biomeWeights: REGION2_BIOME_WEIGHTS, wildBand: [19, 30], trunkStage: 'beach',
     trainers: TRAINERS_R2, elite: ELITE_R2, eliteWild: ELITE_WILD_R2, gyms: GYMS_R2, laneThemes: LANE_THEME_R2, levelOffset: 0,
   },
   {
-    index: 2, name: 'Volcanic Highlands', biomes: BIOMES_R3, biomeWeights: REGION3_BIOME_WEIGHTS, wildBand: [24, 32], trunkStage: 'volcano',
+    index: 2, name: 'Volcanic Highlands', biomes: BIOMES_R3, biomeWeights: REGION3_BIOME_WEIGHTS, wildBand: [33, 44], trunkStage: 'volcano',
     trainers: TRAINERS_R3, elite: ELITE_R3, eliteWild: ELITE_WILD_R3, gyms: GYMS_R3, laneThemes: LANE_THEME_R3, levelOffset: 0,
   },
 ];
@@ -1175,11 +1175,15 @@ export interface StatTier {
  * left Region 3 at 37 % with 46-turn Gyms and 3 % hits — attrition, not threat. So the damage divisor came down for
  * everyone (§4.1.1: 8 → 5, the user's pick) and the tier with it, with Acting Twice placed from Region 2 (§5.6.1):
  * Attack ×0.62 / ×0.78 / ×0.82 — R1 60 % · R2|R1 61 % · R3|R2 46 % · run 17 % (720 runs), fights 5.0 / 7.8 / 9.7 turns.
+ * v0.9.90 (§6.2.4) — real evolution levels: a team evolves when the series says, and a stone or trade line only by its item,
+ * so the harness's Region 1 team evolved 2.7 times where it evolved 4.0 (R1 50 % · R2|R1 37 % · R3|R2 41 % · run 4 %). The
+ * enemies come down to meet it, not the levels: ×0.55 / ×0.70 / ×0.76 — R1 61 % · R2|R1 49 % · R3|R2 56 % · League 60 %
+ * · run 10 % (360 runs), v0.9.89's curve.
  */
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { attack: 0.62 },
-  { attack: 0.78 },
-  { attack: 0.82 },
+  { attack: 0.55 },
+  { attack: 0.7 },
+  { attack: 0.76 },
 ];
 
 /**

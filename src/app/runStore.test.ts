@@ -11,7 +11,7 @@ function setup() {
   const provider: SaveProvider = { read: () => saved, write: (text) => { saved = text; }, clear: () => { saved = null; } };
   const content = getContent();
   const run = produce(createRun('squirtle', 7, defaultRunCtx(content)), (d) => {
-    d.box[0] = newPartyMon('eevee', 8, content, 7, 'eevee'); d.activeUids = ['eevee'];
+    d.box[0] = newPartyMon('eevee', 11, content, 7, 'eevee'); d.activeUids = ['eevee'];
     d.stones = ['fire-stone']; arriveAtCity(d, defaultRunCtx(content));
   });
   useRunStore.setState({ run, provider, lastRejected: null });

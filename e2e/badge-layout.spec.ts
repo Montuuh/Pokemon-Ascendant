@@ -19,8 +19,8 @@ for (const viewport of [{ width: 1920, height: 1080 }, { width: 1280, height: 72
         const a = window.__ascendant!;
         a.run.new('squirtle', 5);
         a.run.fill(3);
-        // Cross Water Gun at Lv 8 so the temporary panel also contains a learned-move row.
-        for (const m of a.run.state()!.box) a.run.levelTo(7, m.uid);
+        // Cross Water Gun at Lv 11 so the temporary panel also contains a learned-move row.
+        for (const m of a.run.state()!.box) a.run.levelTo(10, m.uid);
         a.run.dispatch({ type: 'set-active', uids: a.run.state()!.box.slice(0, 3).map((m) => m.uid) });
         a.goTo('map');
         a.run.jump('gym');

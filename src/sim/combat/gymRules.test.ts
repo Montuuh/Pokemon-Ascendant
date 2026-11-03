@@ -9,14 +9,14 @@ import { ruleDamageMultiplier, turnsUntil } from './gymRules';
 // already holds it.
 
 const g = ctx.config.gymRules;
-const ACE: EnemySetup = { species: 'golem', level: 20, tier: 'boss', phaseCount: 1 };
-const PAD: EnemySetup = { species: 'geodude', level: 14, tier: 'boss', phaseCount: 1 };
+const ACE: EnemySetup = { species: 'golem', level: 28, tier: 'boss', phaseCount: 1 };
+const PAD: EnemySetup = { species: 'geodude', level: 19, tier: 'boss', phaseCount: 1 };
 const gym = (rule: NonNullable<Parameters<typeof scenario>[0]['gymRule']>, opts: { moves?: string[]; enemies?: EnemySetup[]; onField?: 1 | 2 } = {}) =>
   start(
     scenario({
       kind: 'boss',
       gymRule: rule,
-      team: teamWithKit(opts.moves ?? ['water-gun', 'bubble', 'tackle', 'tail-whip'], 'wartortle', 20),
+      team: teamWithKit(opts.moves ?? ['water-gun', 'bubble', 'tackle', 'tail-whip'], 'wartortle', 28),
       enemies: opts.enemies ?? [ACE],
       ...(opts.onField ? { onField: opts.onField } : {}),
     }),
@@ -85,7 +85,7 @@ describe('The Leader rule — §5.9.5', () => {
   });
 
   it('Meltdown_HitLands_TargetDefenceDownToTheFloor', () => {
-    let s = gym('meltdown', { enemies: [{ species: 'arcanine', level: 20, tier: 'boss', phaseCount: 1, moves: ['ember'] }] });
+    let s = gym('meltdown', { enemies: [{ species: 'arcanine', level: 28, tier: 'boss', phaseCount: 1, moves: ['ember'] }] });
     s = dispatch(s, { type: 'end-turn' });
     const hit = s.player.team.find((m) => s.events.some((e) => e.t === 'damage' && e.targetUid === m.uid && e.amount > 0));
     expect(hit!.stages.defense).toBe(-1);
@@ -123,7 +123,7 @@ describe('The Leader rule — §5.9.5', () => {
   });
 
   it('Toxic_PoisonFromTheLeader_IsBadlyPoisoned', () => {
-    let s = gym('toxic', { enemies: [{ species: 'weezing', level: 20, tier: 'boss', phaseCount: 1, moves: ['probe-poison'] }] });
+    let s = gym('toxic', { enemies: [{ species: 'weezing', level: 28, tier: 'boss', phaseCount: 1, moves: ['probe-poison'] }] });
     s = dispatch(s, { type: 'end-turn' });
     const poisoned = s.player.team.find((m) => m.status?.kind === 'poison');
     expect(poisoned?.status?.escalatingTicks).toBe(0);

@@ -11,7 +11,7 @@ import type { MapNode, NodePreview, RegionMap, RunState } from './types';
 
 export const TRADER = {
   /** `TRADER_LEVEL_BONUS` — the newcomer arrives this many levels above the Pokémon you gave. */
-  levelBonus: 2,
+  levelBonus: 3,
   offers: 3,
   /** The offer's rarity, from the current Region's Wild Areas. */
   odds: { common: 0.5, uncommon: 0.35, rare: 0.15 } as Record<WildTier, number>,

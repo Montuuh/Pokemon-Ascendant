@@ -8,9 +8,9 @@ import { forecastTurn } from './forecast';
 // §4.3 — field effects: the damage terms, Electric Terrain's paralysis guard, the Sandstorm, the Home Field, Cloud
 // Nine, the weather draw and Defog.
 
-const CHARMANDER = { species: 'charmander', level: 12, moves: ['ember', 'scratch', 'growl', 'smokescreen'] };
-const SQUIRTLE = { species: 'squirtle', level: 12, moves: ['water-gun', 'tackle', 'tail-whip', 'withdraw'] };
-const RATTATA: EnemySetup = { species: 'rattata', level: 10, tier: 'wild', phaseCount: 1 };
+const CHARMANDER = { species: 'charmander', level: 16, moves: ['ember', 'scratch', 'growl', 'smokescreen'] };
+const SQUIRTLE = { species: 'squirtle', level: 16, moves: ['water-gun', 'tackle', 'tail-whip', 'withdraw'] };
+const RATTATA: EnemySetup = { species: 'rattata', level: 14, tier: 'wild', phaseCount: 1 };
 
 const withFields = (def: ScenarioDef, fields: ScenarioDef['fields']): ScenarioDef => ({ ...def, fields });
 
@@ -34,8 +34,8 @@ describe('Field effects — §4.3', () => {
   });
 
   it('ElectricTerrain_LiftsElectricIntoTheGrounded_NotTheFlying', () => {
-    const pika = { species: 'pikachu', level: 12, moves: ['thunder-shock', 'quick-attack', 'growl', 'tail-whip'] };
-    const s = start(withFields(scenario({ team: [pika], enemies: [RATTATA, { species: 'pidgey', level: 10, tier: 'wild', phaseCount: 1 }], onField: 2 }), { terrain: 'electric-terrain' }));
+    const pika = { species: 'pikachu', level: 16, moves: ['thunder-shock', 'quick-attack', 'growl', 'tail-whip'] };
+    const s = start(withFields(scenario({ team: [pika], enemies: [RATTATA, { species: 'pidgey', level: 14, tier: 'wild', phaseCount: 1 }], onField: 2 }), { terrain: 'electric-terrain' }));
     const shock = ctx.content.move('thunder-shock');
     expect(isGrounded(s.enemies[0]!, ctx.content)).toBe(true);
     expect(breakdownFor(s.player.team[0]!, s.enemies[0]!, shock, false, ctx, s).fieldMultiplier).toBe(ctx.config.electricTerrainBoost);
@@ -43,7 +43,7 @@ describe('Field effects — §4.3', () => {
   });
 
   it('ElectricTerrain_AGroundedPokemonCannotBeParalysed', () => {
-    const glare = { species: 'ekans', level: 12, moves: ['glare', 'wrap', 'leer', 'poison-sting'] };
+    const glare = { species: 'ekans', level: 16, moves: ['glare', 'wrap', 'leer', 'poison-sting'] };
     let s = start(withFields(scenario({ team: [glare], enemies: [RATTATA] }), { terrain: 'electric-terrain' }));
     s = withHand(tweak(s, (d) => { d.player.ap = 3; }), ['glare']);
     const after = dispatch(s, { type: 'play-card', cardId: handCard(s, 'glare').id });
@@ -52,7 +52,7 @@ describe('Field effects — §4.3', () => {
   });
 
   it('Sandstorm_ChipsTheExposed_SparesRockGroundFighting', () => {
-    const s = tweak(start(withFields(scenario({ team: [CHARMANDER, { species: 'geodude', level: 12 }], enemies: [RATTATA] }), { hazard: 'sandstorm' })), (d) => {
+    const s = tweak(start(withFields(scenario({ team: [CHARMANDER, { species: 'geodude', level: 16 }], enemies: [RATTATA] }), { hazard: 'sandstorm' })), (d) => {
       d.enemies[0]!.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };
     });
     const after = dispatch(s, { type: 'end-turn' });
@@ -65,8 +65,8 @@ describe('Field effects — §4.3', () => {
   });
 
   it('HomeField_LiftsOnlyTheEnemysOwnType', () => {
-    const geo: EnemySetup = { species: 'geodude', level: 12, tier: 'boss', phaseCount: 1, moves: ['rock-throw', 'tackle'] };
-    const s = start(withFields(scenario({ kind: 'boss', team: [{ species: 'onix', level: 12, moves: ['rock-throw', 'tackle', 'harden', 'bind'] }], enemies: [geo] }), { home: 'rock' }));
+    const geo: EnemySetup = { species: 'geodude', level: 16, tier: 'boss', phaseCount: 1, moves: ['rock-throw', 'tackle'] };
+    const s = start(withFields(scenario({ kind: 'boss', team: [{ species: 'onix', level: 16, moves: ['rock-throw', 'tackle', 'harden', 'bind'] }], enemies: [geo] }), { home: 'rock' }));
     const rock = ctx.content.move('rock-throw');
     expect(breakdownFor(s.enemies[0]!, s.player.team[0]!, rock, false, ctx, s).fieldMultiplier).toBe(ctx.config.homeFieldBoost);
     // The player's Rock move on the enemy's turf gets nothing.
@@ -74,20 +74,20 @@ describe('Field effects — §4.3', () => {
   });
 
   it('CloudNine_Leading_SuppressesEveryField', () => {
-    const psyduck = { species: 'psyduck', level: 12, abilityId: 'cloud-nine' };
+    const psyduck = { species: 'psyduck', level: 16, abilityId: 'cloud-nine' };
     const s = start(withFields(scenario({ team: [psyduck, CHARMANDER], enemies: [RATTATA] }), { weather: 'sunny-day' }));
     expect(fieldsSuppressed(s, ctx.content)).toBe(true);
     expect(breakdownFor(s.player.team[1]!, s.enemies[0]!, ctx.content.move('ember'), false, ctx, s).fieldMultiplier).toBeUndefined();
   });
 
   it('SwiftSwim_UnderRain_DrawsOneMoreOnTurnOne', () => {
-    const s = start(withFields(scenario({ team: [{ species: 'psyduck', level: 12, abilityId: 'swift-swim' }], enemies: [RATTATA] }), { weather: 'rain-dance' }));
+    const s = start(withFields(scenario({ team: [{ species: 'psyduck', level: 16, abilityId: 'swift-swim' }], enemies: [RATTATA] }), { weather: 'rain-dance' }));
     expect(fieldDrawBonus({ ...s, turn: 1 }, ctx.content)).toBe(1);
     expect(fieldDrawBonus({ ...s, turn: 2 }, ctx.content)).toBe(0);
   });
 
   it('Defog_ClearsEveryField_AndTheForecastFollows', () => {
-    const geo: EnemySetup = { species: 'geodude', level: 12, tier: 'boss', phaseCount: 1, moves: ['rock-throw', 'tackle'] };
+    const geo: EnemySetup = { species: 'geodude', level: 16, tier: 'boss', phaseCount: 1, moves: ['rock-throw', 'tackle'] };
     let s = start(withFields(scenario({ kind: 'boss', team: [CHARMANDER], enemies: [geo], consumables: ['defog'] }), { home: 'rock', hazard: 'sandstorm' }));
     s = withConsumableHand(tweak(s, (d) => { d.player.ap = 3; }), ['defog']);
     const before = forecastTurn(s, ctx);
@@ -104,7 +104,7 @@ describe('Field effects — §4.3', () => {
   };
 
   it('Hail_ChipsAllButTheIceTypes', () => {
-    const s = tweak(start(withFields(scenario({ team: [CHARMANDER, { species: 'dewgong', level: 22 }], enemies: [RATTATA] }), { weather: 'hail' })), quiet);
+    const s = tweak(start(withFields(scenario({ team: [CHARMANDER, { species: 'dewgong', level: 30 }], enemies: [RATTATA] }), { weather: 'hail' })), quiet);
     const after = dispatch(s, { type: 'end-turn' });
     const hit = eventsOf(after, 'damage').filter((e) => e.t === 'damage' && e.cause === 'hail').map((e) => (e.t === 'damage' ? e.targetUid : ''));
     expect(hit).toContain('p0');
@@ -113,7 +113,7 @@ describe('Field effects — §4.3', () => {
   });
 
   it('GrassyTerrain_LiftsGrassFromTheGround_AndMendsTheGrounded', () => {
-    const bulba = { species: 'bulbasaur', level: 12, moves: ['vine-whip', 'tackle', 'growl', 'leech-seed'] };
+    const bulba = { species: 'bulbasaur', level: 16, moves: ['vine-whip', 'tackle', 'growl', 'leech-seed'] };
     let s = start(withFields(scenario({ team: [bulba], enemies: [RATTATA] }), { terrain: 'grassy-terrain' }));
     expect(breakdownFor(s.player.team[0]!, s.enemies[0]!, ctx.content.move('vine-whip'), false, ctx, s).fieldMultiplier).toBe(ctx.config.typeTerrainBoost);
     s = tweak(s, (d) => {
@@ -125,7 +125,7 @@ describe('Field effects — §4.3', () => {
   });
 
   it('PsychicTerrain_LiftsPsychic_AndGuardsTheGroundedFromSleep', () => {
-    const abra = { species: 'drowzee', level: 12, moves: ['confusion', 'hypnosis', 'pound', 'disable'] };
+    const abra = { species: 'drowzee', level: 16, moves: ['confusion', 'hypnosis', 'pound', 'disable'] };
     let s = start(withFields(scenario({ team: [abra], enemies: [RATTATA] }), { terrain: 'psychic-terrain' }));
     expect(breakdownFor(s.player.team[0]!, s.enemies[0]!, ctx.content.move('confusion'), false, ctx, s).fieldMultiplier).toBe(ctx.config.typeTerrainBoost);
     s = withHand(tweak(s, (d) => { d.player.ap = 3; }), ['hypnosis']);
@@ -134,7 +134,7 @@ describe('Field effects — §4.3', () => {
   });
 
   it('MistyTerrain_GuardsTheGroundedFromEveryStatus', () => {
-    const ekans = { species: 'ekans', level: 12, moves: ['glare', 'wrap', 'leer', 'poison-sting'] };
+    const ekans = { species: 'ekans', level: 16, moves: ['glare', 'wrap', 'leer', 'poison-sting'] };
     let s = start(withFields(scenario({ team: [ekans], enemies: [RATTATA] }), { terrain: 'misty-terrain' }));
     s = withHand(tweak(s, (d) => { d.player.ap = 3; }), ['glare']);
     const after = dispatch(s, { type: 'play-card', cardId: handCard(s, 'glare').id });

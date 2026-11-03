@@ -1540,6 +1540,28 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.90 — Real evolution levels  ✅ 2026-11-03
+
+**Shipped.** Second of the four versions of the user's rework of 2026-11-03 ("evolve at the original games' rate, no
+level squish"; stones item-only with guaranteed access; trade evolutions by levelling with each line's own held item, no
+Linking Cord; a new in-run Friendship for Umbreon). (1) **Levels** (§6.2.3, §6.2.4, `scripts/v0990-levels.mjs`): every
+authored level `round(1 + 1.4 (L − 1))` and every gap ×1.4 (bands R1 5–18, R2 19–30, R3 33–44); `STAT_GROWTH_RATE` 0.025,
+`HP_PER_LEVEL` 0.7 and the XP curve 8 + 2(L − 1), so the stats and XP at each point of the run hold; each species takes
+its Gen I level and method, the learnsets remapped and clamped. (2) **Methods** (§6.3.7, `readyBranches`): a stone line
+only by its stone (from Lv 11 / 25), a trade line at a level-up holding its item — Twisted Spoon, Macho Brace (new: XP
+×1.5, −1 Speed), Hard Stone, Spell Tag (new), Metal Coat (a stone until now) — spent by the evolution (§6.3.8), Eevee's
+Umbreon by Friendship; a screen offers only the branches whose method holds. Shops always carry what an evolution in the
+Box waits on (`evolveItemsForBox`). (3) **Friendship** (§6.3.9): 0–255 per Pokémon and run, +2/+1 a won fight, Gen II's
+level steps, −5 a faint, the Center's grooming (+25, 150 ₽, the lounge table), the Soothe Bell doubles it (it was a
+5 % damage bonus); Return (TM69) by Friendship; a hold-on at 1 HP once a fight at 255. (4) Save v23 (levels and XP
+moved, Friendship 70, Metal Coat to the bag, an old screen kept as forced). (5) **UI**: `evolutionText.ts`,
+`EvolveMethodLabel`, `Hearts`; the Team sheet's Friendship and method rows, the Pokédex's labels and path-card icons, the
+Center's Grooming. UI review: Ship with fixes (7 Should fixed). Measured on the run harness: the later evolutions took
+the curve to R1 50 · R2|R1 37 · R3|R2 41 · run 4 %; the Region Attack tier ×0.62 / ×0.78 / ×0.82 → ×0.55 / ×0.70 / ×0.76
+brought it back to R1 61 · R2|R1 49 · R3|R2 56 · League 60 · run 10 % (360 runs). Goldens regenerated. **Not done:** the
+Gym teams re-cut to forms legal at their real levels (v0.9.92), the progressive learnsets and the Move Reminder (v0.9.91),
+Level Push still one level, Gen II's other Friendship evolutions.
+
 ### v0.9.89 — Move keywords  ✅ 2026-11-03
 
 **Shipped.** The user's rework of 2026-11-03 (special moves beyond attack/status/stage, after Slay the Spire, Across the

@@ -37,8 +37,9 @@ test.describe('What the fight reads out — §9.2.5, §9.2.3, §7.3.7', () => {
     await expect(page.getByTestId('combat-screen')).toBeVisible();
     await asc(page)(() => {
       const a = (window as unknown as { __ascendant: Ascendant }).__ascendant;
-      a.hand(['hyper-beam', 'hyper-beam', 'hyper-beam']);
-      for (let i = 0; i < 2; i++) a.dispatch({ type: 'play-card', cardId: a.state()!.player.hand[0]!.id, targetUid: a.state()!.enemies[0]!.uid });
+      // 9 AP: an Ember and two 3-AP Hyper Beams leave 2, short of the third (no card is printed above 3 AP, §3.7).
+      a.hand(['ember', 'hyper-beam', 'hyper-beam', 'hyper-beam']);
+      for (let i = 0; i < 3; i++) a.dispatch({ type: 'play-card', cardId: a.state()!.player.hand[0]!.id, targetUid: a.state()!.enemies[0]!.uid });
     });
     await expect(page.getByTestId('ap-short')).toHaveCount(1);
     await expect(page.getByTestId('ap-short')).toHaveText('Not enough AP');
@@ -145,7 +146,8 @@ test.describe('Chips on a short stage — §9.2.2.3', () => {
     });
     const more = page.getByTestId('unit-chips-more').first();
     await expect(more).toBeVisible();
-    await expect(more).toHaveText('+3');
+    // The boss Geodude's Defense Curl Guard is up from its declaration (§5.2.1): one chip more.
+    await expect(more).toHaveText('+4');
     await more.hover();
     await expect(page.getByRole('tooltip')).toContainText('Armour 15');
   });

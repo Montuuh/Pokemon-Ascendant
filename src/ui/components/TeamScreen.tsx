@@ -14,7 +14,9 @@ import { MoveManager } from '@/ui/components/MoveManager';
 import { ShinyMark } from '@/ui/components/ShinyMark';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { RUN_REJECT_TEXT, TEAM_TEXT } from '@/ui/strings';
-import { abilitySheetTip, heldItemTip, matchupTip, teamPlaceTip, teamStatTip, teamTip, teamXpTip } from '@/ui/tips';
+import { evolutionStatus, friendshipHearts } from '@/ui/evolutionText';
+import { Hearts } from '@/ui/components/Hearts';
+import { abilitySheetTip, evolveMethodTip, friendshipTip, heldItemTip, matchupTip, teamPlaceTip, teamStatTip, teamTip, teamXpTip } from '@/ui/tips';
 import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
 import styles from './TeamScreen.module.css';
 
@@ -389,12 +391,14 @@ function Sheet({
   const ability = mon.abilityId ? content.ability(mon.abilityId) : null;
   const held = mon.heldItem ? content.heldItem(mon.heldItem) : null;
   const bagItems = [...new Set(run.bag)].map((id) => content.heldItem(id)).filter((i) => !i.speciesLock || i.speciesLock === mon.speciesId);
-  const evolution = s.evolveLevel !== undefined && s.evolvesTo.length ? (mon.level >= s.evolveLevel ? TEAM_TEXT.ready : TEAM_TEXT.evolvesAt(s.evolveLevel)) : null;
+  const evolution = evolutionStatus(mon, content);
+  const hearts = friendshipHearts(mon.friendship);
   const resumable = evolutionResume(run, mon, content);
   const readiness = resumable?.stone ? `${content.evolutionItem(resumable.stone).name} ready` : resumable?.forced ? 'Training ready' : resumable?.catalyst ? 'Catalyst ready' : evolution;
   const evolve = readiness && (mon.deferredEvolutionFrom === mon.speciesId ? `Postponed · ${readiness}` : readiness);
   const abilityTip = useTip(abilitySheetTip(ability));
   const xpTip = useTip(teamXpTip(mon.xp, xpToNext(mon.level), benchXpShare(run, content, DEFAULT_PROGRESSION.benchXpShare)));
+  const fondTip = useTip(friendshipTip(mon.friendship, mon.speciesId));
   // A place it cannot take: a gap in the formation, the last one out of it, or a locked team.
   const refusal = (i: number | null): 'gap' | 'last' | 'locked' | null =>
     locked ? 'locked' : i === null ? (slot >= 0 && filled <= 1 ? 'last' : null) : i > (slot >= 0 ? filled - 1 : filled) ? 'gap' : null;
@@ -448,6 +452,12 @@ function Sheet({
           {ability ? ability.name : TEAM_TEXT.noAbility}
         </span>
 
+        {/* §6.3.9 — Friendship, as the series' checker reads it: five hearts, the words on hover. */}
+        <span className={styles.rowLabel}>{TEAM_TEXT.friendship}</span>
+        <span className={styles.rowValue} tabIndex={0} role="img" aria-label={TEAM_TEXT.hearts(hearts)} data-testid="team-friendship" data-friendship={mon.friendship} {...fondTip}>
+          <Hearts friendship={mon.friendship} />
+        </span>
+
         <span className={styles.rowLabel}>{TEAM_TEXT.held}</span>
         <span className={styles.rowValue}>
           {held ? (
@@ -492,7 +502,7 @@ function Sheet({
         {evolve && (
           <>
             <span className={styles.rowLabel}>{TEAM_TEXT.evolution}</span>
-            <span className={styles.rowValue}>{evolve} {!locked && resumable && <button type="button" className={styles.small} onClick={onEvolve} data-testid="team-evolve">Evolve</button>}</span>
+            <span className={styles.rowValue}><Tipped tip={evolveMethodTip(mon.speciesId)} data-testid="team-evolution">{evolve}</Tipped> {!locked && resumable && <button type="button" className={styles.small} onClick={onEvolve} data-testid="team-evolve">Evolve</button>}</span>
           </>
         )}
       </div>

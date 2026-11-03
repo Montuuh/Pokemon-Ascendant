@@ -5,7 +5,7 @@ import { BIOMES, PAD_LEVEL_GAP, evolvedAt } from './region';
 import {
   activeSetups, applyBranch, resetUidCounter, previewBranch, autoPickMoves, createRun, defaultRunCtx, deserialiseRun, generateRegion,
   isEvolutionReady, LAYERS, maxHpOf, nodesInLayer, runReducer, serialiseRun, xpToNext, assertRegionContent,
-  grantXp, newPartyMon, wildBandFor, PRICES, gymById, FLEE_TOLL, fleeTierFor, VICTORY_ROAD, LEAGUE_MEMBERS,
+  befriend, DEFAULT_PROGRESSION, grantXp, newPartyMon, wildBandFor, PRICES, gymById, FLEE_TOLL, fleeTierFor, VICTORY_ROAD, LEAGUE_MEMBERS,
   type CombatOutcomeReport, type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
@@ -392,7 +392,7 @@ describe('Catching and the Box — §2.6.4, §2.3.1', () => {
   const caughtReport = (s: RunState): CombatOutcomeReport => ({
     outcome: 'caught',
     team: s.activeUids.map((uid) => ({ uid, hp: 8, status: null, fainted: false })),
-    caught: { speciesId: 'pidgey', level: 6 },
+    caught: { speciesId: 'pidgey', level: 8 },
     // The throw already cost a ball inside the fight, so the report hands back what is left.
     ballsLeft: 0,
     turns: 3,
@@ -474,14 +474,15 @@ describe('Catching and the Box — §2.6.4, §2.3.1', () => {
     s = enter(s, s.map.nodes[s.reachable[0]!]!.kind);
     s = apply(s, { type: 'begin-combat' });
     if (s.phase !== 'combat') return;
-    s = apply(s, { type: 'finish-combat', report: { ...caughtReport(s), caught: { speciesId: 'shellder', level: 14 } } });
+    s = apply(s, { type: 'finish-combat', report: { ...caughtReport(s), caught: { speciesId: 'geodude', level: 26 } } });
     s = apply(s, { type: 'claim-reward' });
     expect(s.phase).toBe('swap-or-skip');
     s = apply(s, { type: 'resolve-recruit', releaseUid: s.box[5]!.uid });
     expect(s.phase).toBe('evolution');
-    const p = s.pendingEvolutions.find((e) => e.from === 'shellder')!;
+    const p = s.pendingEvolutions.find((e) => e.from === 'geodude')!;
     while (s.phase === 'evolution') s = apply(s, { type: 'choose-branch', uid: s.pendingEvolutions[0]!.uid, branchId: s.pendingEvolutions[0]!.branchIds[0]! });
-    expect(s.box.find((m) => m.uid === p.uid)!.speciesId).toBe('cloyster');
+    // §6.3.8 — Graveler goes no further by level: it levels up holding a Hard Stone.
+    expect(s.box.find((m) => m.uid === p.uid)!.speciesId).toBe('graveler');
     expect(s.phase).toBe('map');
     expect(s.pendingNodeId).toBeNull();
   });
@@ -606,7 +607,7 @@ describe('Evolution — §6.2.4, §6.3', () => {
   it('Threshold_FlagsTheEvolution_ButDoesNotApplyIt_§6.3.3', () => {
     const mon = newPartyMon('bulbasaur', 5, content, 1);
     expect(mon.moveIds).toEqual(['tackle', 'growl', 'vine-whip']);
-    const up = grantXp(mon, xpTo(13), content);
+    const up = grantXp(mon, xpTo(16), content);
     expect(up?.evolutionReady).toBe(true);
     // The branch is the player's call, so the species is untouched until the screen is answered.
     expect(mon.speciesId).toBe('bulbasaur');
@@ -662,7 +663,7 @@ describe('Evolution — §6.2.4, §6.3', () => {
     applyBranch(mon, 'ivysaur-support', content);
     // Grove Keeper names Healer, so it overrides the pool's first entry.
     expect(mon.abilityId).toBe('healer');
-    grantXp(mon, xpTo(27, 13), content);
+    grantXp(mon, xpTo(32, 13), content);
     expect(isEvolutionReady(mon, content)).toBe(true);
     applyBranch(mon, 'venusaur-vanguard', content);
     // A Support Ivysaur becomes a Vanguard Venusaur: nothing about the first pick locks the second.
@@ -695,8 +696,8 @@ describe('Evolution — §6.2.4, §6.3', () => {
   it('Run_QueuesTheScreen_ThenWalksOnWhenItIsAnswered', () => {
     let s = start(7, 'bulbasaur');
     const mon = s.box[0]!;
-    mon.level = 11;
-    mon.xp = xpToNext(11) - 1;
+    mon.level = 15;
+    mon.xp = xpToNext(15) - 1;
 
     s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'aid')!);
     s = apply(s, { type: 'begin-combat' });
@@ -717,31 +718,76 @@ describe('Evolution — §6.2.4, §6.3', () => {
   it('Eevee_EvolvesIntoTheSpeciesItsBranchNames_§8.5.2', () => {
     // §8.5.2 — Eevee's archetype *is* its species choice: four branches, four species, one type each (Umbreon joined in v0.9.84).
     for (const [branchId, to, ability] of [['eevee-vanguard', 'flareon', 'flash-fire'], ['eevee-specialist', 'jolteon', 'volt-absorb'], ['eevee-support', 'vaporeon', 'water-absorb'], ['eevee-dark', 'umbreon', 'inner-focus']] as const) {
-      let s = start(7, 'eevee');
-      const mon = s.box[0]!;
-      mon.level = 11;
-      mon.xp = xpToNext(11) - 1;
-      s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'aid')!);
-      s = apply(s, { type: 'begin-combat' });
-      s = apply(s, {
-        type: 'finish-combat',
-        report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 3 },
-      });
-      s = apply(s, { type: 'claim-reward' });
-      expect(s.phase).toBe('evolution');
-      expect(s.pendingEvolutions[0]!.branchIds).toEqual(['eevee-vanguard', 'eevee-specialist', 'eevee-support', 'eevee-dark']);
-      s = apply(s, { type: 'choose-branch', uid: mon.uid, branchId });
-      const evolved = s.box[0]!;
-      expect(evolved.speciesId).toBe(to);
-      expect(evolved.abilityId).toBe(ability);
+      const mon = newPartyMon('eevee', 30, content, 1);
+      applyBranch(mon, branchId, content);
+      expect(mon.speciesId).toBe(to);
+      expect(mon.abilityId).toBe(ability);
       expect(content.species(to).stage).toBe('stage1');
-      expect(s.phase).toBe('map');
     }
   });
 
+  /** One won fight for a Lead that is one XP from its next level, with this much Friendship. */
+  const levelInAFight = (starter: string, level: number, friendship: number): RunState => {
+    let s = start(7, starter);
+    const mon = s.box[0]!;
+    mon.level = level;
+    mon.xp = xpToNext(level) - 1;
+    mon.friendship = friendship;
+    s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'aid')!);
+    s = apply(s, { type: 'begin-combat' });
+    s = apply(s, {
+      type: 'finish-combat',
+      report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: 10, status: null, fainted: false })), caught: null, ballsLeft: 0, turns: 3 },
+    });
+    return apply(s, { type: 'claim-reward' });
+  };
+
+  it('Eevee_ByLevel_NeverEvolves_ItsStonesDo_§6.3.7', () => {
+    const s = levelInAFight('eevee', 40, 70);
+    expect(s.box[0]!.level).toBe(41);
+    expect(s.phase).not.toBe('evolution');
+    expect(isEvolutionReady(s.box[0]!, content)).toBe(false);
+  });
+
+  it('Eevee_AtAFriendlyLevelUp_IsOfferedUmbreonAlone_§6.3.9', () => {
+    // 217 + a won fight as the Lead (2 + 1) is 220 before the XP lands, so the level it gains is the friendly one.
+    let s = levelInAFight('eevee', 14, 217);
+    expect(s.box[0]!.friendship).toBeGreaterThanOrEqual(DEFAULT_PROGRESSION.friendship.evolve);
+    expect(s.phase).toBe('evolution');
+    expect(s.pendingEvolutions[0]!.branchIds).toEqual(['eevee-dark']);
+    expect(reject(s, { type: 'choose-branch', uid: s.box[0]!.uid, branchId: 'eevee-vanguard' })).toBe('unknown-branch');
+    s = apply(s, { type: 'choose-branch', uid: s.box[0]!.uid, branchId: 'eevee-dark' });
+    expect(s.box[0]!.speciesId).toBe('umbreon');
+  });
+
+  it('Friendship_BelowTheLine_LevelsWithoutEvolving_AndAWinAndALevelRaiseIt_§6.3.9', () => {
+    const s = levelInAFight('eevee', 14, 150);
+    // A win as the Lead (+3), then the level (+3 at 100–199).
+    expect(s.box[0]!.friendship).toBe(150 + 3 + 3);
+    expect(s.phase).not.toBe('evolution');
+  });
+
+  it('Friendship_AFaint_CostsSome_AndTheScaleHoldsAtItsEnds_§6.3.9', () => {
+    let s = start(7, 'squirtle');
+    s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'aid')!);
+    s = apply(s, { type: 'begin-combat' });
+    const lead = s.box[0]!.uid;
+    s = apply(s, {
+      type: 'finish-combat',
+      report: { outcome: 'victory', team: s.activeUids.map((uid) => ({ uid, hp: uid === lead ? 0 : 10, status: null, fainted: uid === lead })), caught: null, ballsLeft: 0, turns: 3 },
+    });
+    // The faint costs 5, and it still learns from the fight: +5 for each level it gained (below 100, Gen II's step).
+    const f = DEFAULT_PROGRESSION.friendship;
+    expect(s.box[0]!.friendship).toBe(f.start - f.faint + f.levelUp[0] * (s.box[0]!.level - 5));
+    const mon = newPartyMon('pidgey', 5, content, 1);
+    expect(befriend(mon, 999)).toBe(DEFAULT_PROGRESSION.friendship.max - DEFAULT_PROGRESSION.friendship.start);
+    expect(befriend(mon, -999)).toBe(-DEFAULT_PROGRESSION.friendship.max);
+    expect(mon.friendship).toBe(0);
+  });
+
   it('Kit_KeepsItsTwoStrongestAttacks_NotJustTheNewest_§6.3.6', () => {
-    // Oddish learns Absorb at 1 and Acid at 7; "the four most recent" dropped its only Grass attack.
-    const mon = newPartyMon('oddish', 10, content, 1);
+    // Oddish learns Absorb at 1 and Acid at 11; "the four most recent" dropped its only Grass attack.
+    const mon = newPartyMon('oddish', 14, content, 1);
     expect(mon.moveIds).toContain('absorb');
     const damaging = mon.moveIds.filter((m) => (content.move(m).power ?? 0) > 0);
     expect(damaging.length).toBeGreaterThanOrEqual(2);
@@ -1139,8 +1185,8 @@ describe('Evolution Items — §6.3.2', () => {
     box: s.box.map((m, i) => (i === 0 ? { ...m, level } : m)),
   });
 
-  it('UseStone_EeveeAtEight_OpensOnlyTheStonesBranch_AndHandsBackToTheMap', () => {
-    let s = holding(start(7, 'eevee'), ['fire-stone'], 8);
+  it('UseStone_EeveeAtEleven_OpensOnlyTheStonesBranch_AndHandsBackToTheMap', () => {
+    let s = holding(start(7, 'eevee'), ['fire-stone'], 11);
     const uid = s.box[0]!.uid;
     s = apply(s, { type: 'use-stone', uid, stoneId: 'fire-stone' });
     expect(s.phase).toBe('evolution');
@@ -1152,52 +1198,76 @@ describe('Evolution Items — §6.3.2', () => {
     expect(s.phase).toBe('map');
   });
 
-  it('DarkAndSteel_TheFourNewEvolutions_EachHasItsItem_AndItsType_v0.9.84', () => {
-    // [species at 18, the item, the branch it picks, what it becomes, the types it carries]
-    const cases = [
-      ['eevee', 'moon-stone', 'eevee-dark', 'umbreon', ['dark']],
-      ['scyther', 'metal-coat', 'scizor-vanguard', 'scizor', ['bug', 'steel']],
-      ['onix', 'metal-coat', 'steelix-vanguard', 'steelix', ['steel', 'ground']],
-      ['magneton', 'thunder-stone', 'magnezone-specialist', 'magnezone', ['electric', 'steel']],
-    ] as const;
-    for (const [species, item, branchId, to, types] of cases) {
-      let s = holding(start(7, 'squirtle'), [item], 18);
-      s = { ...s, box: [{ ...newPartyMon(species, 18, content, 7), uid: 'x' }] };
-      s = apply(s, { type: 'use-stone', uid: 'x', stoneId: item });
-      expect(s.phase, species).toBe('evolution');
-      // The Eevee's stone narrows its screen to the one path; the others open every path of the line.
-      expect(s.pendingEvolutions[0]!.branchIds.includes(branchId), species).toBe(true);
-      s = apply(s, { type: 'choose-branch', uid: 'x', branchId });
-      expect(s.box[0]!.speciesId, species).toBe(to);
-      expect(content.species(to).types, to).toEqual(types);
-    }
-    // A Metal Coat opens nothing for a species it does not know, and Magnemite's line is three stages long now.
-    const wrong = { ...holding(start(7, 'squirtle'), ['metal-coat'], 18), box: [{ ...newPartyMon('pidgey', 18, content, 7), uid: 'p' }] };
-    expect(reject(wrong, { type: 'use-stone', uid: 'p', stoneId: 'metal-coat' })).toBe('incompatible-stone');
+  it('DarkAndSteel_TheStoneOne_AndItsType_v0.9.84', () => {
+    let s = holding(start(7, 'squirtle'), ['thunder-stone'], 25);
+    s = { ...s, box: [{ ...newPartyMon('magneton', 30, content, 7), uid: 'x' }] };
+    s = apply(s, { type: 'use-stone', uid: 'x', stoneId: 'thunder-stone' });
+    expect(s.pendingEvolutions[0]!.branchIds).toContain('magnezone-specialist');
+    s = apply(s, { type: 'choose-branch', uid: 'x', branchId: 'magnezone-specialist' });
+    expect(s.box[0]!.speciesId).toBe('magnezone');
+    expect(content.species('magnezone').types).toEqual(['electric', 'steel']);
+    // Magnemite's line is three stages long now, and the Metal Coat is no stone.
     expect(content.species('magnemite').types).toEqual(['electric', 'steel']);
+    expect(content.allEvolutionItems().map((i) => i.id)).not.toContain('metal-coat');
   });
 
-  it('Scyther_EvolvesByItsLevelToo_AtTwentySix_WhateverItHolds', () => {
-    let s = start(7, 'squirtle');
-    s = { ...s, box: [{ ...newPartyMon('scyther', 26, content, 7), uid: 'x' }] };
-    expect(evolvedAt('scyther', 25, content)).toBe('scyther');
-    expect(evolvedAt('scyther', 26, content)).toBe('scizor');
-    expect(evolvedAt('onix', 26, content)).toBe('steelix');
-    expect(evolvedAt('magneton', 26, content)).toBe('magnezone');
-    expect(s.box[0]!.speciesId).toBe('scyther');
+  it('TradeLines_LevelUpHoldingTheirItem_EvolveAndSpendIt_§6.3.8', () => {
+    // [species, its item, the branch it picks, what it becomes, the types it carries]
+    const cases = [
+      ['kadabra', 'twisted-spoon', 'alakazam', ['psychic']],
+      ['machoke', 'macho-brace', 'machamp', ['fighting']],
+      ['graveler', 'hard-stone', 'golem', ['rock', 'ground']],
+      ['haunter', 'spell-tag', 'gengar', ['ghost', 'poison']],
+      ['scyther', 'metal-coat', 'scizor', ['bug', 'steel']],
+      ['onix', 'metal-coat', 'steelix', ['steel', 'ground']],
+    ] as const;
+    for (const [species, item, to, types] of cases) {
+      expect(content.species(species).evolveItem, species).toBe(item);
+      const mon = { ...newPartyMon(species, 20, content, 7), uid: 'x', heldItem: item };
+      let s: RunState = { ...start(7, 'squirtle'), box: [mon], activeUids: ['x'] };
+      s.box[0]!.xp = xpToNext(20) - 1;
+      s = enter(s, s.reachable.map((n) => s.map.nodes[n]!.kind).find((k) => k !== 'aid')!);
+      s = apply(s, { type: 'begin-combat' });
+      s = apply(s, { type: 'finish-combat', report: { outcome: 'victory', team: [{ uid: 'x', hp: 10, status: null, fainted: false }], caught: null, ballsLeft: 0, turns: 3 } });
+      s = apply(s, { type: 'claim-reward' });
+      expect(s.phase, species).toBe('evolution');
+      s = apply(s, { type: 'choose-branch', uid: 'x', branchId: s.pendingEvolutions[0]!.branchIds[0]! });
+      expect(s.box[0]!.speciesId, species).toBe(to);
+      expect(content.species(to).types, to).toEqual(types);
+      // The item is spent by the evolution, as a traded one is.
+      expect(s.box[0]!.heldItem, species).toBeNull();
+      expect(s.bag, species).not.toContain(item);
+    }
+  });
+
+  it('TradeLines_NeverByLevel_NorByHoldingAlone_AndAPostponedOneKeepsItsItem_§6.3.8', () => {
+    // Without the item, a level-up past the trainers' level is only a level.
+    const bare = newPartyMon('kadabra', 50, content, 7);
+    expect(grantXp(bare, xpToNext(50), content)?.evolutionReady).toBeUndefined();
+    // Equipping it is not enough: the level-up is the trigger.
+    const held = { ...newPartyMon('kadabra', 30, content, 7), heldItem: 'twisted-spoon' };
+    expect(isEvolutionReady(held, content)).toBe(false);
+    expect(grantXp(held, xpToNext(30), content)?.evolutionReady).toBe(true);
+    // Taking the spoon off before the screen takes the evolution with it; putting it back brings it back.
+    expect(isEvolutionReady({ ...held, heldItem: null }, content)).toBe(false);
+    expect(isEvolutionReady(held, content)).toBe(true);
+    // NPCs field the evolved form from the series' trainers' level (§2.7.3).
+    expect(evolvedAt('scyther', 35, content)).toBe('scyther');
+    expect(evolvedAt('scyther', 36, content)).toBe('scizor');
+    expect(evolvedAt('kadabra', 36, content)).toBe('alakazam');
   });
 
   it('UseStone_RefusesTooEarly_AndTheWrongSpecies_AndAStoneNotHeld', () => {
     const s = holding(start(7, 'eevee'), ['fire-stone', 'leaf-stone'], 7);
     const uid = s.box[0]!.uid;
     expect(reject(s, { type: 'use-stone', uid, stoneId: 'fire-stone' })).toBe('stone-too-early');
-    expect(reject({ ...s, box: [{ ...s.box[0]!, level: 9 }] }, { type: 'use-stone', uid, stoneId: 'leaf-stone' })).toBe('incompatible-stone');
+    expect(reject({ ...s, box: [{ ...s.box[0]!, level: 12 }] }, { type: 'use-stone', uid, stoneId: 'leaf-stone' })).toBe('incompatible-stone');
     expect(reject(s, { type: 'use-stone', uid, stoneId: 'moon-stone' })).toBe('no-such-item');
   });
 
   it('UseStone_OnALineWithBranches_OffersEveryBranch_AndLeavesTheCatalystArmed', () => {
-    let s = holding(start(7, 'squirtle'), ['water-stone'], 8);
-    s = { ...s, relics: ['evolution-catalyst'], box: [{ ...newPartyMon('shellder', 8, content, 7), uid: 'sh' }] };
+    let s = holding(start(7, 'squirtle'), ['water-stone'], 11);
+    s = { ...s, relics: ['evolution-catalyst'], box: [{ ...newPartyMon('shellder', 11, content, 7), uid: 'sh' }] };
     s = apply(s, { type: 'use-stone', uid: 'sh', stoneId: 'water-stone' });
     expect(s.pendingEvolutions[0]!.branchIds).toEqual(content.species('shellder').branches.map((b) => b.id));
     s = settle(s);

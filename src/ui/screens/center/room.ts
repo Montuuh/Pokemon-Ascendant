@@ -8,6 +8,8 @@ export const CENTER_SPOTS = {
   therapy: [[32, 80, 80, 80]],
   heal: [[168, 16, 40, 48]],
   pc: [[256, 48, 32, 40]],
+  // §6.3.9 — the lounge table and its two stools: the grooming corner.
+  groom: [[240, 144, 32, 48]],
 } as const satisfies Record<string, readonly Box[]>;
 export const CENTER_PEOPLE = {
   nurse: [176, 20, 18, 28],

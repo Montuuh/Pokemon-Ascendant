@@ -171,8 +171,8 @@ test('a TM is greyed out on an incompatible Pokémon, never hidden', async ({ pa
 
 test('a move left in the pool is reported, not lost', async ({ page }) => {
   await newRun(page, 'squirtle');
-  // Four learned by level 10 and a fifth from a TM, against four slots — §6.7.2's pressure, stated on the row.
-  await page.evaluate(() => window.__ascendant!.run.levelTo(10));
+  // Four learned by level 14 and a fifth from a TM, against four slots — §6.7.2's pressure, stated on the row.
+  await page.evaluate(() => window.__ascendant!.run.levelTo(14));
   await page.evaluate(() => {
     const a = window.__ascendant!;
     a.run.grantTm('tm05-surf');
@@ -194,7 +194,7 @@ test('a move left in the pool is reported, not lost', async ({ page }) => {
 
 test('an Evolution Item evolves early from the Move Manager and hands back to the map (§6.3.2)', async ({ page }) => {
   await newRun(page, 'eevee');
-  await page.evaluate(() => window.__ascendant!.run.levelTo(9));
+  await page.evaluate(() => window.__ascendant!.run.levelTo(11));
   await page.evaluate(() => window.__ascendant!.run.grantStone('fire-stone', 'leaf-stone'));
   // One stone it can take now: the badge counts it (its four learned moves all fit the kit).
   await expect(page.getByTestId('box-waiting-eevee')).toContainText('1');
@@ -244,8 +244,8 @@ test("Trainer's Instinct shows the enemy's next intent, and the enemy keeps it (
 test('a Pokémon past two thresholds evolves twice, each screen its own, then hands back to the route (§6.3.1)', async ({ page }) => {
   await newRun(page, 'bulbasaur');
   await page.evaluate(() => window.__ascendant!.run.fill(3));
-  // Past both thresholds (12 and 26) in one go: two evolutions owed, in a row.
-  await page.evaluate(() => window.__ascendant!.run.levelTo(27));
+  // Past both thresholds (16 and 32) in one go: two evolutions owed, in a row.
+  await page.evaluate(() => window.__ascendant!.run.levelTo(33));
   await page.evaluate(() => window.__ascendant!.run.goto('wild', true));
   await expect(page.getByTestId('evolution-screen')).toBeVisible();
   // Before a path is pointed at, the panel shows the Pokémon as it stands: its own kit, no deltas.

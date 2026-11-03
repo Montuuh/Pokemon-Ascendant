@@ -184,9 +184,9 @@ export const eventsOf = (state: CombatState, t: string) => state.events.filter((
 
 // Common builds
 export const STARTERS: TeamMemberSetup[] = [
-  { species: 'charmander', level: 8 },
-  { species: 'squirtle', level: 8 },
-  { species: 'bulbasaur', level: 8 },
+  { species: 'charmander', level: 11 },
+  { species: 'squirtle', level: 11 },
+  { species: 'bulbasaur', level: 11 },
 ];
 
 /**
@@ -196,5 +196,5 @@ export const STARTERS: TeamMemberSetup[] = [
 export function teamWithKit(moves: string[], species = 'squirtle', level = 12): TeamMemberSetup[] {
   return [{ species, level, moves }, STARTERS[0]!, STARTERS[2]!];
 }
-export const PIDGEY: EnemySetup = { species: 'pidgey', level: 7, tier: 'wild', phaseCount: 1 };
-export const GEODUDE: EnemySetup = { species: 'geodude', level: 7, tier: 'wild', phaseCount: 1 };
+export const PIDGEY: EnemySetup = { species: 'pidgey', level: 9, tier: 'wild', phaseCount: 1 };
+export const GEODUDE: EnemySetup = { species: 'geodude', level: 9, tier: 'wild', phaseCount: 1 };

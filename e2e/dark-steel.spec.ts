@@ -39,9 +39,10 @@ test.describe('Dark and Steel — §4.1.2', () => {
       const a = window.__ascendant!;
       a.run.new('eevee', 7);
       a.run.patch((d) => {
-        d.box[0]!.level = 12;
+        d.box[0]!.level = 16;
         d.phase = 'evolution';
-        d.pendingEvolutions = [{ uid: d.box[0]!.uid, from: 'eevee', branchIds: ['eevee-vanguard', 'eevee-specialist', 'eevee-support', 'eevee-dark'], returnTo: 'map' } as never];
+        // §6.3.7 — four paths at once only by Training's right (§2.12.3): a stone opens one, Friendship Umbreon.
+        d.pendingEvolutions = [{ uid: d.box[0]!.uid, from: 'eevee', branchIds: ['eevee-vanguard', 'eevee-specialist', 'eevee-support', 'eevee-dark'], returnTo: 'map', forced: true } as never];
       });
       a.goTo('map');
     });

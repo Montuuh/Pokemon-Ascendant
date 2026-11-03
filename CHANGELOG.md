@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.90 — Real evolution levels · 2026-11-03
+
+Pokémon evolve at the series' levels and by the series' methods.
+
+- **Series levels.** Starters at 16, Dragonite at 55; every level stretched ×1.4.
+- **Stones and trades.** Stones only; Kadabra and co. level up holding their item.
+- **Friendship.** Five hearts per Pokémon: Umbreon, Return, the Center's grooming.
+- **Always in stock.** Shops carry the stone or item an evolution waits on.
+
 ### v0.9.89 — Move keywords · 2026-11-03
 
 Moves that guard, heal, set the weather or pay later; no card above 3 AP.

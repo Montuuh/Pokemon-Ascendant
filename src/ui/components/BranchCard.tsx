@@ -1,9 +1,9 @@
-import { IconArrowNarrowRight, IconPlus, IconSparkles } from '@tabler/icons-react';
+import { IconArrowNarrowRight, IconHeartFilled, IconPlus, IconSparkles } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
 import { UNMET_NAME, type BranchPayload } from '@/sim';
 import { itemIcon } from '@/ui/art';
 import { ARCHETYPE_LABEL, DEX_EVO_TEXT, STAT_LONG, STAT_SHORT } from '@/ui/strings';
-import { abilityTip, archetypeTip, branchTip, evoStatTip, stoneUseTip } from '@/ui/tips';
+import { abilityTip, archetypeTip, branchTip, evoStatTip, friendshipEvolveTip, heldItemTip, stoneUseTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { MonIcon } from './MonIcon';
 import { MoveChip } from './MoveChip';
@@ -46,6 +46,17 @@ export function BranchCard({ p, toMet, onSpecies }: { p: BranchPayload; toMet: b
                 <img src={itemIcon(id)} alt={content.evolutionItem(id).name} width={18} height={18} />
               </Tipped>
             ))}
+            {/* §6.3.8 — the held item a trade line levels up with; §6.3.9 — Friendship's heart. */}
+            {p.item && (
+              <Tipped as="span" tip={heldItemTip(content.heldItem(p.item))} className={styles.stone}>
+                <img src={itemIcon(p.item)} alt={content.heldItem(p.item).name} width={15} height={15} />
+              </Tipped>
+            )}
+            {p.method === 'friendship' && (
+              <Tipped as="span" tip={friendshipEvolveTip()} className={`${styles.stone} ${styles.heart}`}>
+                <IconHeartFilled size={16} aria-label={DEX_EVO_TEXT.friendship} />
+              </Tipped>
+            )}
           </span>
         </span>
       </header>
@@ -54,7 +65,7 @@ export function BranchCard({ p, toMet, onSpecies }: { p: BranchPayload; toMet: b
         {STATS.map((k) => {
           const d = p.statsAfter[k] - p.statsBefore[k];
           return (
-            <Tipped as="li" key={k} tabIndex={-1} tip={evoStatTip(k, STAT_LONG[k]!, { name: from.name, value: p.statsBefore[k] }, { name: toName, value: p.statsAfter[k] }, p.level ?? 0)} className={`${styles.stat} ${d > 0 ? styles.up : d < 0 ? styles.down : ''}`}>
+            <Tipped as="li" key={k} tabIndex={-1} tip={evoStatTip(k, STAT_LONG[k]!, { name: from.name, value: p.statsBefore[k] }, { name: toName, value: p.statsAfter[k] }, p.statsAt)} className={`${styles.stat} ${d > 0 ? styles.up : d < 0 ? styles.down : ''}`}>
               <span className={styles.statName}>{STAT_SHORT[k]}</span>
               <b className="tabular">{d > 0 ? `+${d}` : d}</b>
             </Tipped>
